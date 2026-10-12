@@ -172,7 +172,7 @@ async function main() {
     // B3: каталог свёрнут в одну кнопку «Что построить?» — легенда тепловой карты свободна; по нажатию — 5 видов.
     const closed = await page.evaluate(() => {
       const t = document.querySelector(".birge-b3d-toggle"), d = document.querySelector("#birge-build3d-root .b3d-dock"),
-        lg = document.querySelector(".r07-maplegend");
+        lg = document.querySelector("#birge-legend .birge-legend-line") || document.querySelector(".r07-maplegend");  // чистый дизайн: строка легенды
       const box = (n) => (n && n.getClientRects().length && getComputedStyle(n).visibility !== "hidden" ? n.getBoundingClientRect() : null);
       const a = box(t), b = box(lg);
       return { toggle: t?.textContent || null, expanded: t?.getAttribute("aria-expanded"), catalogShown: !!box(d),
@@ -190,7 +190,7 @@ async function main() {
         bottom: Math.round(r.bottom), vh: innerHeight };
     });
     check("akimat: catalog shows 5 kinds and does not cover the right panel", dock?.state === "catalog" && dock.kinds === 5 && dock.right <= dock.panelLeft, dock);
-    const legendWhileOpen = await page.evaluate(() => getComputedStyle(document.querySelector(".r07-maplegend")).visibility);
+    const legendWhileOpen = await page.evaluate(() => getComputedStyle(document.querySelector("#birge-legend") || document.querySelector(".r07-maplegend")).visibility);
     check("akimat: while the catalog is open the legend steps aside (no overlap at the bottom of the map)", legendWhileOpen === "hidden", legendWhileOpen);
     await page.screenshot({ path: path.join(OUT, "b2-1366-akimat-catalog.png") });
 
@@ -240,7 +240,7 @@ async function main() {
     const hintLegend = await page.evaluate(() => {
       const box = (el) => { if (!el || !el.getClientRects().length || getComputedStyle(el).visibility === "hidden") return null;
         const r = el.getBoundingClientRect(); return r.width && r.height ? r : null; };
-      const h = box(document.querySelector('#birge-build3d-root .b3d-dock[data-state="hint"]')), l = box(document.querySelector(".r07-maplegend"));
+      const h = box(document.querySelector('#birge-build3d-root .b3d-dock[data-state="hint"]')), l = box(document.querySelector("#birge-legend .birge-legend-line") || document.querySelector(".r07-maplegend"));
       if (!h || !l) return { hint: !!h, legend: !!l, overlap: false };
       const overlap = h.left < l.right && h.right > l.left && h.top < l.bottom && h.bottom > l.top;
       return { hint: true, legend: true, overlap, h: [Math.round(h.left), Math.round(h.top), Math.round(h.right), Math.round(h.bottom)], l: [Math.round(l.left), Math.round(l.top), Math.round(l.right), Math.round(l.bottom)] };

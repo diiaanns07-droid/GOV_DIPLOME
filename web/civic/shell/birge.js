@@ -45,7 +45,8 @@
   const PHONE = 761;                         // как в shell.js: уже 761 px — телефонная схема
   // Кнопки карты из web/index.html и их ключи перевода (словари R11, shell.map.*).
   const MAP_BUTTONS = [["overview-map", "shell.map.fit_city"], ["zoom-in", "shell.map.zoom_in"],
-    ["zoom-out", "shell.map.zoom_out"], ["toggle-3d", "shell.map.view3d"], ["rotate-map", "shell.map.rotate"]];
+    ["zoom-out", "shell.map.zoom_out"], ["toggle-3d", "shell.map.view3d"], ["rotate-map", "shell.map.rotate"],
+    ["birge-locate", "common.map.locate"], ["birge-compass", "common.map.north"]];
 
   // Тексты: сначала словари R11 (BirgeI18n), затем запасной словарь оболочки (shell-text.js, ru + kk).
   const i18n = () => window.BirgeI18n || null;
@@ -591,6 +592,57 @@
     again();
   }
 
+  // ------------------------------------------------------------------ кнопки карты капсулой (R11 CLEAN_PASS №5)
+  // «Моё место» · [+ | −] одной капсулой · 3D · слои; компас вместо «Повернуть» — виден, только когда карта повёрнута
+  // или наклонена (нажатие — на север и плоско). «Вся Астана» — пункт поиска в шапке, отдельной кнопки нет.
+  // Телефон: пока как на ноутбуке (+/− и 3D скрыть — вопрос владельцу, R11 CLEAN_PASS §6.2).
+  let compass = null, compassMap = null;
+  function buildMapControls() {
+    const tools = document.querySelector(".map-tools");
+    if (!tools || tools.dataset.birgeCtl) return;
+    tools.dataset.birgeCtl = "1";
+    tools.classList.add("bk-mapctl");
+    const icon = (name) => '<svg class="ic" aria-hidden="true"><use href="/civic/ui-kit/icons.svg#i-' + name + '"></use></svg>';
+    const locate = el("button", { type: "button", id: "birge-locate", class: "icon-btn bk-mapbtn birge-locate" });
+    locate.innerHTML = icon("locate");
+    compass = el("button", { type: "button", id: "birge-compass", class: "icon-btn bk-mapbtn bk-compass birge-compass", hidden: true });
+    compass.innerHTML = icon("compass");
+    const zin = document.getElementById("zoom-in"), zout = document.getElementById("zoom-out");
+    if (zin && zout) {
+      const group = el("div", { class: "bk-mapctl__group birge-zoom" });
+      zin.before(group);
+      group.append(zin, zout);
+    }
+    tools.prepend(compass, locate);
+    locate.addEventListener("click", () => {
+      const m = currentMapObject();
+      const fail = () => window.BirgeUI?.toast?.(t("shell.map.locate_failed"));
+      if (!m || !navigator.geolocation) { fail(); return; }
+      navigator.geolocation.getCurrentPosition((pos) => {
+        m.easeTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: Math.max(m.getZoom(), 15), duration: 900 });
+      }, fail, { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 });
+    });
+    compass.addEventListener("click", () => { currentMapObject()?.easeTo({ bearing: 0, pitch: 0, duration: 600 }); });
+    bindCompass();
+  }
+  function syncCompass() {
+    const m = compassMap;
+    if (!compass || !m) return;
+    const bearing = m.getBearing(), pitch = m.getPitch();
+    compass.hidden = Math.abs(bearing) < 0.5 && pitch < 1;
+    compass.style.setProperty("--bearing", (-bearing).toFixed(1) + "deg");
+  }
+  function bindCompass() {
+    const m = currentMapObject();
+    if (!m) { setTimeout(bindCompass, 500); return; }
+    if (compassMap === m) return;
+    compassMap = m;
+    m.on("rotate", syncCompass);
+    m.on("pitch", syncCompass);
+    m.on("moveend", syncCompass);
+    syncCompass();
+  }
+
   // ------------------------------------------------------------------ один дополнительный слой карты (защита п. 1)
   // По умолчанию на карте только тепловая карта объектов и работы города. «Рядом», «Идеи», «Объявления» — слои
   // по одному переключателю, одновременно не больше одного; слой грузит данные только когда включён (п. 5).
@@ -700,6 +752,7 @@
     buildHeader();
     buildDay();
     buildScreen();
+    buildMapControls();
     watchExplore();
     // R12 волна 2 п. 6: QR-таблички — отдельная страница печати (web/civic/qr/print.html); пункт «Ещё → QR-таблички»
     // у акимата появляется, когда в сборке есть модуль QR R12 (report.js). Скрипты defer: проверяем после всех.

@@ -412,6 +412,12 @@
       wrap.dataset.open = "false";
       const host = document.createElement("div");
       host.className = "birge-legend-host";
+      // Чистый дизайн (R11 CLEAN_PASS №6): легенда ОДНОЙ строкой «мало ▬▬ много · ✓ исправлено · ?»; под «?» — подробная
+      // легенда R07 (числа 1–2 … 10+, «служба сообщила», «проверено жителями», «нет свежих данных»).
+      const line = document.createElement("div");
+      line.className = "birge-legend-line bk-legend--line";
+      line.innerHTML = '<span class="birge-legend-few"></span><i class="bk-legend__scale" aria-hidden="true"></i><span class="birge-legend-many"></span>'
+        + '<span aria-hidden="true">·</span><span class="bk-legend__fixed birge-legend-fixed"></span>';
       const more = document.createElement("button");
       more.type = "button";
       more.className = "birge-legend-q";
@@ -423,7 +429,8 @@
         more.setAttribute("aria-expanded", String(open));
         labelLegend();
       });
-      wrap.append(host, more);
+      line.append(more);
+      wrap.append(host, line);
       m.getContainer().append(wrap);
       labelLegend();
     }
@@ -435,6 +442,10 @@
     const text = T(wrap.dataset.open === "true" ? "shell.legend.less" : "shell.legend.more");
     more.setAttribute("aria-label", text);
     more.title = text;
+    const set = (sel, key) => { const node = wrap.querySelector(sel); if (node) node.textContent = T(key); };
+    set(".birge-legend-few", "heat.legend.few");
+    set(".birge-legend-many", "heat.legend.many");
+    set(".birge-legend-fixed", "heat.fixed");
   }
   // R07 «Карта жалоб» в панели и R09 «Сообщить о проблеме» (кнопка видна только жителю, birge.css).
   function mountBirgeModules() {

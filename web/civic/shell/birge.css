@@ -302,43 +302,42 @@ body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root:not(:has(.b3
    видны и при выключенном слое «Проекты» (проекты при этом скрыты самим R05); кнопка «Что построить?» — не к месту. */
 .birge-build3d-root:has(.b3d[data-b3d-picking]) .birge-b3d-toggle { display: none; }
 
-/* Компактная легенда (читаемость карты п. 3): ступени цвета одной строкой, «?» раскрывает заголовок и пояснения.
-   Контейнер — оболочки (shell.js legendHost), сама легенда — R07 (legendContainer), здесь она без своей позиции. */
-.birge-legend { position: absolute; z-index: 5; left: 12px; bottom: 34px; display: flex; align-items: flex-end; gap: 6px; max-width: min(440px, calc(100% - 24px)); }
+/* Легенда одной строкой (R11 CLEAN_PASS №6): «мало ▬▬ много · ✓ исправлено · ?» — белая «таблетка» внизу слева
+   (телефон — под шапкой); «?» открывает над ней подробную легенду R07 (числа 1–2 … 10+, «служба сообщила», «проверено
+   жителями», «нет свежих данных»). Контейнер — оболочки (shell.js legendHost), подробная легенда — R07 (legendContainer). */
+.birge-legend { position: absolute; z-index: 5; left: 12px; bottom: 34px; display: block; max-width: calc(100% - 24px); }
 .birge-legend:not(:has(.r07-maplegend:not([hidden]))) { display: none; }
+.birge-legend-line { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 4px 0 14px;
+  border-radius: 999px; background: var(--c-surface, #fff); box-shadow: var(--shadow-1, 0 2px 10px #15362818);
+  color: var(--c-text-2, #5b6a64); font-size: 13px; white-space: nowrap; }
+.birge-legend-line .bk-legend__scale { flex: none; width: 72px; height: 8px; border-radius: 4px;
+  background: linear-gradient(90deg, var(--heat-1, #f9cb80), var(--heat-2, #ef9f27), var(--heat-3, #e24b4a), var(--heat-4, #a32d2d)); }
+.birge-legend-line .bk-legend__fixed { display: inline-flex; align-items: center; gap: 4px; color: var(--c-ink, #152c26); }
+.birge-legend[data-open="false"] .birge-legend-host { display: none; }
+.birge-legend[data-open="true"] .birge-legend-host { position: absolute; left: 0; bottom: calc(100% + 8px); width: max-content; max-width: min(420px, calc(100vw - 32px)); }
 .birge-legend .r07-maplegend { position: static !important; inset: auto !important; max-width: none !important; margin: 0; }
-.birge-legend[data-open="false"] .r07-maplegend .r07-legend__title,
-.birge-legend[data-open="false"] .r07-maplegend .r07-legend__hint { display: none; }
+.birge-legend-q { flex: 0 0 auto; width: 40px; height: 40px; border: 0; border-radius: 50%; cursor: pointer; position: relative;
+  background: var(--c-fill, #eff1f2); color: var(--c-ink, #152c26); font: 600 17px/1 var(--b-font, system-ui, sans-serif); }
+.birge-legend-q::after { content: ""; position: absolute; inset: -4px; }  /* зона нажатия 48 px */
+.birge-legend-q[aria-expanded="true"] { background: var(--c-ink, #152c26); color: #fff; }
+.birge-legend-q:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
 @media (min-width: 761px) {
-  /* Строка цветов по содержимому до 640 px и не под правую панель (400 + 20 + отступы); шестой пункт волны 2
-     («служба сообщила») переносится на вторую строку, а не обрезается; «?» всегда рядом (R11 разбор 13, п. 1). */
-  .birge-legend { max-width: min(640px, calc(100% - 456px)); }
-  .birge-legend .r07-maplegend { flex: 0 1 auto; min-width: 0; }
-  .birge-legend[data-open="false"] .r07-maplegend ul { flex-wrap: wrap; white-space: nowrap; gap: 4px 10px; }
-  .birge-legend[data-open="false"] .r07-maplegend { padding: 8px 12px; }
   /* Сообщения R07 («Взято в работу», «Отмечено исправленным») — над легендой и кнопкой «Сообщить о проблеме», не на них. */
   .civic-mode .r07-toasts { bottom: 96px; }
 }
 @media (min-width: 761px) and (max-width: 1279px) {
   body[data-birge-mode="resident"].civic-mode .r07-toasts { bottom: 148px; }  /* легенда здесь над главной кнопкой */
 }
-.birge-legend-q { flex: 0 0 auto; width: 48px; height: 48px; border: 0; border-radius: 50%; cursor: pointer;
-  background: var(--c-surface, #fff); color: var(--c-ink, #152c26); font: 700 18px/1 var(--b-font, system-ui, sans-serif);
-  box-shadow: var(--shadow-1, 0 2px 10px #15362818); }
-.birge-legend-q[aria-expanded="true"] { background: var(--c-ink, #152c26); color: #fff; }
-.birge-legend-q:focus-visible { outline: 3px solid var(--c-focus, #1f6f50); outline-offset: 2px; }
 /* Состояния, в которых легенда R07 прячется (каталог, размещение, карточка проекта, мастер жалобы, полная шторка), —
-   прячут и контейнер с «?». */
+   прячут и строку с «?». */
 @media (min-width: 761px) {
   body:has(.birge-build3d-root[data-catalog="open"] .b3d-dock[data-state="catalog"]) .birge-legend,
   body:has(.birge-build3d-root .b3d-dock[data-state="placing"]) .birge-legend,
   body:has(.birge-build3d-root .b3d-dock[data-state="card"]) .birge-legend { visibility: hidden; }
 }
 @media (max-width: 760px) {
-  .civic-mode .birge-legend { top: 138px; bottom: auto; left: 10px; right: 66px; max-width: none; align-items: flex-start; }
-  .civic-mode .birge-legend { overflow: hidden; }  /* строка легенды не заходит под кнопки карты (r12_city 360: «+» был под ней) */
-  .civic-mode .birge-legend .r07-maplegend { flex: 1 1 auto; min-width: 0; overflow: hidden; }
-  .civic-mode .birge-legend-q { display: none; }  /* телефон: легенда R07 и так одной строкой, места для «?» нет */
+  .civic-mode .birge-legend { top: 120px; bottom: auto; left: 10px; right: auto; max-width: calc(100% - 76px); }
+  .civic-mode .birge-legend[data-open="true"] .birge-legend-host { top: calc(100% + 8px); bottom: auto; }  /* под строкой */
   body:has(.birge-build3d-root .b3d-dock[data-state="card"]) .birge-legend { visibility: hidden; }
   html.bc-open .civic-mode .birge-legend { display: none; }
   body[data-civic-sheet="full"].civic-mode .birge-legend { display: none; }
@@ -439,7 +438,7 @@ body[data-birge-tools="off"].civic-mode .civic-foot { display: none; }
 /* R11 CLEAN_PASS №7: плашка о запасном фоне карты — не бежевая плашка слева сверху (закрывала значок «Байқоңыр»),
    а тёмная строка-тост внизу по центру свободной части карты, 13 px; через 6 с гаснет (birge.js watchMapStatus). */
 body.civic-mode .civic-explore #map-status:not(.hidden) {
-  position: fixed; z-index: 48; top: auto; left: calc(50% - 220px); right: auto; bottom: 24px; transform: translateX(-50%);
+  position: fixed; z-index: 48; top: auto; left: calc(50% - 220px); right: auto; bottom: 96px; transform: translateX(-50%);
   width: max-content; max-width: min(480px, calc(100vw - 480px)); margin: 0; padding: 8px 14px; border: 0; border-radius: 10px;
   background: rgba(21, 44, 38, 0.86); color: #fff; box-shadow: none; font-size: 13px; line-height: 1.4; text-align: center;
   transition: opacity 0.4s ease, visibility 0.4s;
@@ -462,3 +461,20 @@ body[data-birge-tools="all"].civic-mode[data-birge-explore="header"] .civic-expl
 body[data-birge-tools="all"].civic-mode[data-birge-explore="header"] .civic-explore-objects { min-height: 48px; margin: 0; white-space: nowrap; }
 /* Шторка во всю высоту — над ней узкая полоса карты с подписью © OpenStreetMap; строку о запасном фоне не показываем. */
 body[data-civic-sheet="full"].civic-mode .civic-explore #map-status { display: none; }
+/* R11 CLEAN_PASS №5: кнопки карты — «моё место» · [+ | −] капсулой · 3D · слои; компас — когда карта повёрнута/наклонена.
+   «Вся Астана» — пункт поиска; «Повернуть» заменён компасом. Кнопки — белые круглые 48 px с мягкой тенью, без рамок. */
+.civic-mode #overview-map, .civic-mode #rotate-map { display: none !important; }
+.civic-mode .map-tools.bk-mapctl { display: flex; flex-direction: column; align-items: center; gap: var(--s-3, 12px); }
+.civic-mode .map-tools .icon-btn { width: 48px; height: 48px; border: 0; border-radius: var(--r-m, 10px);
+  background: var(--c-surface, #fff); color: var(--c-ink, #152c26); box-shadow: var(--shadow-1, 0 2px 10px #15362818); }
+.civic-mode .map-tools .icon-btn:hover { background: var(--c-fill, #eff1f2); }
+.civic-mode .map-tools .icon-btn::after { inset: 0; }
+.civic-mode .map-tools .bk-mapctl__group { display: flex; flex-direction: column; border-radius: var(--r-m, 10px);
+  background: var(--c-surface, #fff); box-shadow: var(--shadow-1, 0 2px 10px #15362818); overflow: hidden; }
+.civic-mode .map-tools .bk-mapctl__group > .icon-btn { border-radius: 0; box-shadow: none; }
+.civic-mode .map-tools .bk-mapctl__group > .icon-btn + .icon-btn { border-top: 1px solid var(--c-line, #e8eaeb); }
+.civic-mode .map-tools .three-d[aria-pressed="true"], .civic-mode .map-tools .three-d.active { background: var(--c-ink, #152c26); color: #fff; }
+.civic-mode .map-tools .bk-compass { border-radius: 50%; }
+.civic-mode .map-tools .bk-compass[hidden] { display: none; }
+.civic-mode .map-tools .bk-compass > .ic { transform: rotate(var(--bearing, 0deg)); transition: transform 0.15s ease; }
+.civic-mode .map-tools .ic { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
