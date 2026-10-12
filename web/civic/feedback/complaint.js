@@ -514,6 +514,15 @@
         // Признак для оболочки и соседей (R01, R07): идёт выбор места жалобы.
         document.documentElement.classList.toggle("bc-picking", picking);
       },
+      // Телефон, шаги 4–5: место — посередине видимой карты над шторкой (как Apple Maps). Сдвиг через offset —
+      // отступы карты (padding) оболочки R01 не трогаем; масштаб не меняем.
+      reveal: function (point, visibleTop, visibleBottom) {
+        if (!point || !map.easeTo) return;
+        var box = map.getContainer().getBoundingClientRect();
+        var dy = (visibleTop + visibleBottom) / 2 - (box.top + box.bottom) / 2;
+        var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        try { map.easeTo({ center: point, offset: [0, dy], duration: still ? 0 : 450 }); } catch (e) { /* карта ещё грузится */ }
+      },
       highlight: function (target, geometry, point) {
         var features = [];
         if (geometry) features.push({ type: "Feature", geometry: geometry,
@@ -830,9 +839,8 @@
       box.appendChild(h("div", { "class": "bk-banner bk-banner--danger bc-emergency", role: "alert" }, [
         h("p", { "class": "bk-banner__title" }, [icon("alert"), h("span", {}, t("complaint.emergency.title"))]),
         h("p", { "class": "bc-emergency__text" }, t("complaint.emergency.text", { phone: found.phone })),
-        // Значка «телефон» в ui-kit пока нет (попросили R11) — кнопка с одной подписью.
         h("a", { "class": "bk-btn bk-btn--primary bk-btn--block bc-emergency__call", href: "tel:" + found.phone },
-          h("span", {}, t("complaint.emergency.call", { phone: found.phone }))),
+          [icon("phone"), h("span", {}, t("complaint.emergency.call", { phone: found.phone }))]),
         h("p", { "class": "bk-banner__note" }, t("emergency.service." + found.phone)),
         h("p", { "class": "bk-banner__note" }, t("complaint.emergency.still_send"))]));
     }
@@ -885,7 +893,7 @@
       if (state.photos.length < PHOTO_MAX) {
         box.appendChild(h("button", { "class": "bk-btn bc-photo-add", type: "button", disabled: state.photoBusy || null,
                                       onclick: function () { input.click(); } },
-          [icon("plus"), h("span", {}, state.photos.length ? t("complaint.photo.count", { n: state.photos.length })
+          [icon("camera"), h("span", {}, state.photos.length ? t("complaint.photo.count", { n: state.photos.length })
                                                              : t("complaint.photo.add"))]));
       }
       box.appendChild(h("p", { "class": "bc-meta" }, t("complaint.photo.limit") + " · " + t("complaint.photo.private")));
@@ -905,7 +913,7 @@
             // Галочку у выбранного чипа рисует ui-kit (.bk-chip[aria-pressed=true]::before) — своей не добавляем.
             [icon(c ? c.icon : "dots"), h("span", {}, categoryLabel(state.category))]),
           h("button", { "class": "bk-btn bk-btn--ghost bc-change", type: "button",
-                        onclick: function () { state.gridOpen = true; renderCategory(); } }, t("complaint.step3.change"))
+                        onclick: function () { state.gridOpen = true; renderCategory(); } }, [icon("edit"), h("span", {}, t("complaint.step3.change"))])
         ]));
         // Уточнение — одним нажатием, по желанию (волна 1, п. 2). Модель уточнение не предсказывает.
         var subs = subtopicsOf(state.category);
@@ -929,9 +937,10 @@
       }
       if (!state.gridOpen && !state.category) {
         // Пока модель думает или текста мало — кнопка выбора вручную (без «загрузки модели»).
-        box.appendChild(h("button", { "class": "bk-btn bk-btn--ghost bc-change", type: "button",
+        // Строка-кнопка как в iOS: значок, подпись, «›» — видно, что её нажимают (дизайн-марафон).
+        box.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-change bc-change--pick", type: "button",
                                       onclick: function () { state.gridOpen = true; renderCategory(); } },
-          t("complaint.step3.choose")));
+          [icon("list"), h("span", { "class": "bc-change__label" }, t("complaint.step3.choose")), icon("chevron-right")]));
         return;
       }
       box.appendChild(h("p", { "class": "bc-label", id: "bc-cat-title" }, t("complaint.step3.choose")));
@@ -984,11 +993,12 @@
       els.textarea.setAttribute("placeholder", t("complaint.step3.example", { example: example }));
       field.appendChild(els.textarea);
       body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step3.privacy")));
+      // Срочный случай — сразу под полем, пока житель пишет (а не под категориями, ниже края экрана телефона).
+      els.emergencyBox = h("div", { "class": "bc-emergency-box" });
+      body.appendChild(els.emergencyBox);
       els.categoryBox = h("div", { "class": "bc-category", "aria-live": "polite" });
       body.appendChild(els.categoryBox);
       renderCategory();
-      els.emergencyBox = h("div", { "class": "bc-emergency-box" });
-      body.appendChild(els.emergencyBox);
       renderEmergency();
       els.photoBox = h("div", { "class": "bc-photos" });
       body.appendChild(els.photoBox);
@@ -1320,14 +1330,16 @@
           : (result.outcome === "author" ? t("complaint.step5.author") : t("complaint.step5.already"));
         body.appendChild(h("p", { "class": "bc-lead" }, message));
       } else {
-        body.appendChild(h("p", { "class": "bc-code" }, [
-          h("span", {}, t("complaint.step5.code_label") + " "),
-          h("strong", { "class": "bc-code__value" }, complaint.code),
-          h("button", { "class": "bk-btn bk-btn--ghost", type: "button",
-                        onclick: function (e) { copyCode(complaint.code, e.currentTarget); } }, t("complaint.step5.copy"))]));
+        // Номер — главное на экране успеха: подпись мелко сверху, номер крупно, «Скопировать» рядом.
+        body.appendChild(h("div", { "class": "bc-code" }, [
+          h("span", { "class": "bc-code__label" }, t("complaint.step5.code_label").replace(/[:\s]+$/, "")),
+          h("div", { "class": "bc-code__row" }, [
+            h("strong", { "class": "bc-code__value" }, complaint.code),
+            h("button", { "class": "bk-btn bk-btn--ghost bc-code__copy", type: "button",
+                          onclick: function (e) { copyCode(complaint.code, e.currentTarget); } }, [icon("copy"), h("span", {}, t("complaint.step5.copy"))])])]));
         // После отправки — что дальше и как найти обращение снова (волна 2, мелочи).
         if (complaint.due_at) body.appendChild(h("p", { "class": "bc-next" }, t("complaint.step5.next", { date: formatDate(complaint.due_at) })));
-        body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step5.find", { code: complaint.code })));
+        body.appendChild(h("p", { "class": "bc-meta bc-find" }, t("complaint.step5.find", { code: complaint.code })));
       }
       if (result.kind === "metoo" && result.outcome === "added") {
         body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step5.metoo_follow")));
@@ -1355,6 +1367,7 @@
           if (!state || state !== owner || state.view !== "mine") return;
           if (!res.ok) { state.mineError = true; render(); return; }
           state.mine = res.data.items || [];
+          state.mineEnter = true;   // пришли данные — карточки мягко появляются; перерисовка того же списка — без движения
           state.changes = changes && changes.ok ? changes.data : null;
           // «Что изменилось» — с прошлого визита; первый визит только запоминает момент.
           storageSet("localStorage", SEEN_KEY, new Date().toISOString());
@@ -1406,7 +1419,9 @@
              item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
              h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
         } else {
-          var what = item.kind === "status" ? t("mine.changes.status", { status: t("status." + item.status) }) : t(CHANGE_TEXT[item.kind]);
+          // «Исправлено» — это когда проверили жители; шаг службы — «Служба сообщила об устранении» (как на карте R07).
+          var what = item.kind === "status" ? (item.status === "fixed" ? t("mine.update.fixed") : t("mine.changes.status", { status: t("status." + item.status) }))
+            : t(CHANGE_TEXT[item.kind]);
           row = h("button", { "class": "bc-changes__item" + (state.focusEvent === item.id ? " bc-changes__item--focus" : ""),
                               type: "button", "data-event": item.id || "",
                               onclick: function () { state.focusCode = item.code; focusCard(); } },
@@ -1451,6 +1466,8 @@
         if (!res.ok) { if (button) button.disabled = false; toast(t("complaint.error.send"), function () { verify(item, answer); }); return; }
         toast(t(answer === "no" ? "verify.reopened_toast" : "verify.thanks"));
         if (answer !== "cant" && res.data.result === "recorded") announce(answer === "yes" ? "verified" : "reopened", res.data.complaint);
+        // Переход «служба сообщила → проверено жителями» — мягкий «отклик» точки статуса у этой карточки (один раз).
+        if (answer === "yes") state.justVerified = item.id;
         loadMine();
       });
     }
@@ -1488,12 +1505,15 @@
           after.map(function (id) { return photoThumb(item.id, id); })) : null,
         h("p", { "class": "bc-verify__question" }, t("verify.question"))]);
       var buttons = h("div", { "class": "bc-verify__buttons" });
-      // «Не могу проверить» — ссылкой, а не третьей кнопкой (R11 разбор 9 №3: заливка читалась как вторая главная).
-      [["yes", "verify.yes", "bk-btn bk-btn--block" + (primary ? " bk-btn--primary" : "")], ["no", "verify.no", "bk-btn bk-btn--block"],
-       ["cant", "verify.cant", "bc-link"]]
+      // Три большие кнопки (дизайн-марафон), главная одна: «Да, исправлено» — тёмная; «Проблема осталась» — серая;
+      // «Не могу проверить» — большая, но тихая, без заливки (R11 разбор 9 №3: не похожа на вторую главную).
+      [["yes", "verify.yes", "bk-btn bk-btn--block" + (primary ? " bk-btn--primary" : ""), "check"],
+       ["no", "verify.no", "bk-btn bk-btn--block", "refresh"],
+       ["cant", "verify.cant", "bk-btn bk-btn--ghost bk-btn--block bc-verify__quiet", "info"]]
         .forEach(function (b) {
           buttons.appendChild(h("button", { "class": b[2] + " bc-verify__" + b[0], type: "button",
-                                            onclick: function (e) { verify(item, b[0], e.currentTarget); } }, t(b[1])));
+                                            onclick: function (e) { verify(item, b[0], e.currentTarget); } },
+            [icon(b[3]), h("span", {}, t(b[1]))]));
         });
       box.appendChild(buttons);
       return box;
@@ -1557,20 +1577,31 @@
       if (item.status !== "rejected") {
         lines.push(p.fix_eta ? t("passport.fix_eta", { date: formatDate(p.fix_eta + "T12:00:00+05:00") }) : t("passport.fix_unknown"));
       }
-      // Полоса этапов — тоже здесь, не в карточке: статус в карточке показан один раз (R11 CLEAN_PASS R09 №6).
-      var more = h("details", { "class": "bk-details bc-more", open: open || null }, [h("summary", {}, t("common.action.more")),
-        stepsBar(item),
-        h("p", { "class": "bc-label" }, t("passport.title")),
-        h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); }))]);
+      // «Подробнее» (статус в карточке — один раз, R11 CLEAN_PASS R09 №6): лента статусов — как отслеживание заказа в iOS
+      // (дизайн-марафон): точки на линии, пройденное — тёмным, следующий шаг — серым; ниже — паспорт решения.
+      var more = h("details", { "class": "bk-details bc-more", open: open || null }, [h("summary", {}, t("common.action.more"))]);
       // «История» (R11 IA_WAVE2 §2.2, R10 W2-2): сообщили → в работе → служба сообщила → проверили / вернули.
       var steps = item.history || (item.updates || []).map(function (u) { return u; });
       if (steps.length) {
         more.appendChild(h("p", { "class": "bc-label" }, t("passport.history")));
-        more.appendChild(h("ol", { "class": "bc-updates bc-history" }, steps.map(function (u) {
-          return h("li", { "data-kind": u.kind }, [h("span", { "class": "bc-meta" }, formatDate(u.at) + " · "),
-                                                    h("span", {}, historyText(u))]);
-        })));
+        var line = h("ol", { "class": "bc-updates bc-history bc-timeline" }, steps.map(function (u, i) {
+          return h("li", { "class": "bc-timeline__item", "data-kind": u.kind, "data-state": i === steps.length - 1 ? "current" : "done" }, [
+            h("span", { "class": "bc-timeline__dot", "aria-hidden": "true" }),
+            h("div", { "class": "bc-timeline__body" }, [
+              h("span", { "class": "bc-timeline__title" }, historyTitle(u)),
+              historyDetail(u) ? h("span", { "class": "bc-timeline__text" }, historyDetail(u)) : null,
+              h("span", { "class": "bc-meta" }, formatDate(u.at))])]);
+        }));
+        var next = nextStage(item);
+        if (next) {
+          line.appendChild(h("li", { "class": "bc-timeline__item", "data-state": "next" }, [
+            h("span", { "class": "bc-timeline__dot", "aria-hidden": "true" }),
+            h("div", { "class": "bc-timeline__body" }, [h("span", { "class": "bc-timeline__title" }, t("status." + next))])]));
+        }
+        more.appendChild(line);
       }
+      more.appendChild(h("p", { "class": "bc-label" }, t("passport.title")));
+      more.appendChild(h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); })));
       var own = item.photos || [];
       if (own.length) {
         more.appendChild(h("p", { "class": "bc-label" }, t("mine.photos.title")));
@@ -1586,12 +1617,24 @@
       return more;
     }
 
-    function historyText(u) {
+    // Строка ленты: заголовок — что произошло, ниже — подробность (что сделали, текст службы).
+    function historyTitle(u) {
       if (u.kind === "created") return t("mine.history.created");
-      if (u.kind === "status") return t("mine.changes.status", { status: t("status." + u.status) });
+      if (u.kind === "status") return t("status." + u.status);
       if (u.kind === "verified") return t("mine.changes.verified");
-      return t("mine.update." + u.kind) + (u.text ? ": " + u.text : "");
+      return t("mine.update." + u.kind);
     }
+    function historyDetail(u) {
+      if (!u.text || u.kind === "created" || u.kind === "status" || u.kind === "verified") return "";
+      return u.kind === "fixed" ? t("verify.what_done", { text: u.text }) : u.text;
+    }
+    // Следующий этап на ленте (серым): новое → в работе → служба сообщила → проверено жителями.
+    function nextStage(item) {
+      var shown = displayStatus(item);
+      return { "new": "in_progress", accepted: "in_progress", in_progress: "reported_fixed", reopened: "reported_fixed",
+               reported_fixed: "verified" }[shown] || null;
+    }
+
 
     // «Подписки (N)» — свёрнуто внизу (R11 §2.1): «Я тоже» = подписка; «Отписаться» — голос остаётся.
     function renderSubscriptions(body) {
@@ -1618,8 +1661,11 @@
         return;
       }
       if (state.mine === null) {
-        body.appendChild(h("div", { "class": "bc-loading", role: "status" }, [
-          h("span", { "class": "bk-skel bc-skel-card" }), h("span", { "class": "bk-skel bc-skel-card" }),
+        // Скелетон повторяет карточку: категория, статус, строка «Передано…», мета (а не серые прямоугольники).
+        var skel = function () { return h("div", { "class": "bc-skel-card", "aria-hidden": "true" }, [
+          h("span", { "class": "bk-skel bc-skel-line bc-skel-line--title" }), h("span", { "class": "bk-skel bc-skel-line bc-skel-line--status" }),
+          h("span", { "class": "bk-skel bc-skel-line" }), h("span", { "class": "bk-skel bc-skel-line bc-skel-line--short" })]); };
+        body.appendChild(h("div", { "class": "bc-loading", role: "status" }, [skel(), skel(),
           h("span", { "class": "bc-loading__text" }, t("mine.loading"))]));
         return;
       }
@@ -1634,12 +1680,14 @@
         return;
       }
       renderWaitCheck(body);
-      var list = h("ul", { "class": "bc-mine" });
+      var list = h("ul", { "class": "bc-mine" + (state.mineEnter ? " bc-list--enter" : "") });
+      state.mineEnter = false;
       state.mine.forEach(function (item) {
         var c = category(item.category);
         var title = categoryLabel(item.category) + (item.subtopic ? " · " + subtopicLabel(item.category, item.subtopic) : "");
         var focused = !!item.code && state.focused === item.code;
-        list.appendChild(h("li", { "class": "bk-card bc-mine__card" + (focused ? " bc-mine__card--focus" : ""),
+        var fresh = state.justVerified === item.id && displayStatus(item) === "verified";
+        list.appendChild(h("li", { "class": "bk-card bc-mine__card" + (focused ? " bc-mine__card--focus" : "") + (fresh ? " bc-mine__card--verified-now" : ""),
                                    "data-code": item.code || "", "data-id": item.id }, [
           h("div", { "class": "bc-mine__head" }, [
             h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)])]),
@@ -1654,7 +1702,22 @@
           detailsBlock(item, focused)]));
       });
       body.appendChild(list);
+      if (state.mine) state.justVerified = null;
       renderSubscriptions(body);
+    }
+
+    // Галочка успеха: круг и «✓» рисуются линией (stroke-dashoffset), цвет — акцент #152c26 (не зелёный: зелёный
+    // в Birge — только «исправлено»). Без движения при prefers-reduced-motion.
+    function successMark() {
+      var ns = "http://www.w3.org/2000/svg";
+      var svg = document.createElementNS(ns, "svg");
+      svg.setAttribute("class", "bc-success__mark"); svg.setAttribute("viewBox", "0 0 56 56"); svg.setAttribute("aria-hidden", "true");
+      var circle = document.createElementNS(ns, "circle");
+      circle.setAttribute("class", "bc-success__circle"); circle.setAttribute("cx", "28"); circle.setAttribute("cy", "28"); circle.setAttribute("r", "25");
+      var tick = document.createElementNS(ns, "path");
+      tick.setAttribute("class", "bc-success__tick"); tick.setAttribute("d", "M17 29.5l7.5 7.5L39.5 21");
+      svg.appendChild(circle); svg.appendChild(tick);
+      return h("div", { "class": "bc-success" }, svg);
     }
 
     // ---------------------------------------------------------------- каркас панели
@@ -1666,8 +1729,10 @@
       // Шаг 2 на телефоне: пока места нет — низкая шторка (вопрос и «Моё местоположение»), карта почти вся видна
       // (R11 B1 №2); когда пришли варианты — до половины; дальше — полная. «Мои обращения»: список — полная,
       // загрузка — половина (скелетон), «пока пусто» и «нет связи» — по содержимому, без пустого белого низа.
+      // Шаги 4–5 (похожие, проверка, успех) — шторка по содержимому (как «средняя» шторка iOS): над ней видно место
+      // на карте, внизу нет пустого белого; текст (шаг 3) — полная, под клавиатуру.
       var snap = mine ? (state.mineError || (state.mine && !state.mine.length) ? "peek" : (state.mine ? "full" : "half"))
-        : (state.step !== 2 ? "full" : (state.candidates || state.candidatesLoading ? "half" : "peek"));
+        : (state.step === 2 ? (state.candidates || state.candidatesLoading ? "half" : "peek") : (state.step === 3 ? "full" : "fit"));
       panel.setAttribute("data-snap", snap);
       panel.setAttribute("data-step", mine ? "mine" : String(state.step));
       // Стекло (R11 GLASS.md, R09): «Мои обращения» — стеклянная панель/шторка над картой; мастер жалобы — форма,
@@ -1685,7 +1750,10 @@
                       onclick: close }, [icon("close"), h("span", { "class": "bc-close__label" }, t("complaint.wizard.close"))])]);
       panel.appendChild(h("div", { "class": "bc-handle", "aria-hidden": "true" }));
       panel.appendChild(head);
-      if (!mine) {
+      // Успех — без «Шаг 5 из 5»: крупная галочка рисуется (≈ 0,6 с) над заголовком, как в iOS.
+      var success = !mine && state.step === 5 && state.result && state.result.kind !== "queued";
+      if (success) panel.appendChild(successMark());
+      if (!mine && state.step !== 5) {
         var dots = h("div", { "class": "bk-wizard" }, [h("span", { "class": "bk-wizard__label" },
           t("complaint.wizard.step", { n: state.step, total: TOTAL_STEPS }))]);
         var track = h("span", { "class": "bk-wizard__dots", "aria-hidden": "true" });
@@ -1701,6 +1769,17 @@
             : (state.step === 5 && state.result.kind === "queued" ? t("complaint.queue.title") : t(titles[state.step]))));
       panel.appendChild(h("h2", { id: "bc-title", "class": "bc-title", tabindex: "-1" }, title));
       var body = h("div", { "class": "bc-body" });
+      // Смена шага — мягкий въезд содержимого (240 мс, вперёд справа, назад слева); перерисовка того же шага (язык,
+      // подсказка категории) — без движения. prefers-reduced-motion — без анимации (complaint.css).
+      var animKey = mine ? "mine" : state.step + (state.reviewing ? "r" : "");
+      if (state.animKey !== animKey) {
+        var from = state.animKey;
+        if (from !== undefined) {   // первое открытие — панель сама выезжает, содержимое не двигаем второй раз
+          body.classList.add("bc-body--enter");
+          body.setAttribute("data-dir", from !== "mine" && animKey !== "mine" && parseInt(animKey, 10) < parseInt(from, 10) ? "back" : "fwd");
+        }
+        state.animKey = animKey;
+      }
       panel.appendChild(body);
       if (mine) renderMine(body);
       else if (state.step === 2) renderPlace(body);
@@ -1708,6 +1787,16 @@
       else if (state.step === 4) { if (state.reviewing) renderReview(body); else renderSimilar(body); }
       else renderDone(body);
       setPicking(!mine && state.step === 2);
+      // Телефон, шаги 4–5 (шторка по содержимому): выбранное место видно над шторкой — один раз при входе в шаг.
+      if (body.classList.contains("bc-body--enter") && !mine && state.step >= 4 && map.reveal && window.innerWidth < 1024) {
+        var where = state.point || (state.target && state.result && state.result.complaint && state.result.complaint.point);
+        if (where) requestAnimationFrame(function () {
+          if (panel.hidden) return;
+          var top = panel.getBoundingClientRect().top;
+          var header = document.querySelector(".topbar, #birge-header");
+          map.reveal(where, header ? header.getBoundingClientRect().bottom : 0, top);
+        });
+      }
       if (state.lastFocusStep !== panel.getAttribute("data-step")) {
         state.lastFocusStep = panel.getAttribute("data-step");
         focusTitle();
@@ -1864,7 +1953,8 @@
     emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round14-wave2",
     // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
     displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
-    targetLabel: targetLabel, statusBadge: statusBadge
+    targetLabel: targetLabel, statusBadge: statusBadge, icon: icon,
+    categoryIcon: function (id) { var c = category(id); return c ? c.icon : "dots"; }
   };
   // Помощники фото для компонента сотрудника (complaint-staff.js): то же уменьшение и загрузка частями.
   window.BirgeComplaintPhotos = {

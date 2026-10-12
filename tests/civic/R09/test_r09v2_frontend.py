@@ -291,8 +291,9 @@ def test_clean_pass_r11_r09_items():
     # №6: в карточке «Мои обращения» статус один раз (.bk-statusline), полоса этапов — в «Подробнее»
     card = JS.split('list.appendChild(h("li", { "class": "bk-card bc-mine__card"', 1)[1].split("body.appendChild(list)", 1)[0]
     assert "statusLine(item)" in card and "stepsBar(" not in card and "statusBadge(" not in card
-    details = JS.split("function detailsBlock(item, open)", 1)[1].split("function historyText", 1)[0]
-    assert '"bk-details bc-more"' in details and "stepsBar(item)" in details
+    details = JS.split("function detailsBlock(item, open)", 1)[1].split("function historyTitle", 1)[0]
+    # Дизайн-марафон: этапы в «Подробнее» — вертикальная лента (точки на линии), вместо полосы и списка истории.
+    assert '"bk-details bc-more"' in details and '"bc-updates bc-history bc-timeline"' in details and "nextStage(item)" in details
     # №7 и правила 2, 4: ни лайма, ни бежевого, ни веса 700 в своих стилях
     for text in (css, kit):
         low = text.lower()
@@ -327,10 +328,31 @@ def test_glass_only_on_mine_panel():
     assert 'document.documentElement.classList.toggle("bc-mine-open", mine);' in JS
     assert '.bc-panel:not(.bk-glass) { background: var(--c-surface, #fff);' in css           # мастер — непрозрачный
     assert ':where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff);' in css   # запасной белый
-    assert "html.bc-mine-open body.civic-mode .civic-panel { visibility: hidden; }" in css
+    assert "html.bc-mine-open body.civic-mode .civic-panel,\nhtml.bc-open body.civic-mode .civic-panel { visibility: hidden; }" in css
     assert ".bk-glass .bc-staff__form { background: var(--c-surface, #fff);" in css            # формы сотрудника
     assert ".bc-inbox .bc-inbox__item.bk-card { background: var(--c-surface, #fff); }" in css  # строки «Обращений»
     for media in ("prefers-reduced-transparency: reduce", "@supports not ((-webkit-backdrop-filter", ".bk-glass-off .bc-panel.bk-glass .bc-head"):
         assert media in css
     # Главная кнопка и тосты — не стекло.
     assert "bk-glass" not in JS.split('els.fab = h("button"', 1)[1].split(");", 1)[0]
+
+
+def test_design_marathon_resident_path():
+    """DESIGN_MARATHON R09 (12–14 окт): успех с галочкой и без «Шаг 5 из 5», шторка шагов 4–5 по содержимому, мягкая
+    смена шага, лента статусов, три большие кнопки «Проблема решена?» (главная одна), «исправлено» службы — не
+    «Исправлено», крупные карточки категорий, пустые состояния со значком; всё движение — с prefers-reduced-motion."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    assert "if (success) panel.appendChild(successMark());" in JS and 'if (!mine && state.step !== 5) {' in JS
+    assert '(state.step === 3 ? "full" : "fit")' in JS and '.bc-panel[data-snap="fit"] { height: auto;' in css
+    assert 'body.classList.add("bc-body--enter");' in JS and "@keyframes bc-step-fwd" in css
+    verify = JS.split("function verifyCard(item, primary)", 1)[1].split("function renderWaitCheck", 1)[0]
+    assert verify.count("bk-btn--block") == 3 and verify.count("bk-btn--primary") == 1 and '"bc-link"' not in verify
+    assert 'item.status === "fixed" ? t("mine.update.fixed")' in JS
+    assert ".bc-panel .bk-catgrid > button { min-height: 64px;" in css
+    assert ".bc-panel .bk-empty > .ic, .bc-panel .bk-error > .ic" in css
+    reduced = "".join(css.split("@media (prefers-reduced-motion: reduce)")[1:])   # все такие блоки
+    for anim in (".bc-body--enter", ".bc-success__tick", ".bc-mine__card--verified-now"):
+        assert anim in reduced
+    # Срочный баннер — сразу под полем текста, до категорий.
+    text_step = JS.split("function renderText(body)", 1)[1].split("// ---------------------------------------------------------------- шаг 4", 1)[0]
+    assert text_step.index("els.emergencyBox = h(") < text_step.index("els.categoryBox = h(")

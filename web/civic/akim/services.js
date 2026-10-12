@@ -19,6 +19,17 @@
   "use strict";
 
   var doc = root.document;
+  var ICONS = ((doc.currentScript && doc.currentScript.src) || "").replace(/[^/]*$/, "") + "../ui-kit/icons.svg";
+  // Значок или линейная иллюстрация ui-kit (#i-* / #ill-* в icons.svg).
+  function sprite(cls, id) {
+    var svg = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", cls);
+    svg.setAttribute("aria-hidden", "true");
+    var use = doc.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", ICONS + "#" + id);
+    svg.appendChild(use);
+    return svg;
+  }
   // Ключи этого экрана, которых пока нет в словаре R11 (запас до слияния; список — INTEGRATION.txt §8).
   var KEYS = {
     ru: {
@@ -246,14 +257,20 @@
       rootEl.appendChild(h(tag, { class: "svc__title", text: tr("services.title") }));
       rootEl.appendChild(h("p", { class: "svc__hint bk-meta", text: tr("services.hint") }));
       if (state.status === "loading") {
-        rootEl.appendChild(h("div", { class: "bk-card" }, [h("div", { class: "bk-skel bk-skel--line" }), h("div", { class: "bk-skel bk-skel--line" })]));
+        // Скелет той же формы, что таблица: строки «тема — поле службы» (дизайн-марафон, чек-лист п. 8).
+        var skel = h("div", { class: "svc-skel", role: "status", "aria-label": tr("services.title") });
+        for (var i = 0; i < 4; i++)
+          skel.appendChild(h("div", { class: "svc-skel__row" }, [h("div", { class: "bk-skel svc-skel__label" }), h("div", { class: "bk-skel svc-skel__field" })]));
+        rootEl.appendChild(skel);
         return;
       }
       if (state.status === "error") {
         rootEl.appendChild(
-          h("div", { class: "bk-card bk-error", role: "alert" }, [
+          // Как у остальных разделов (R11 марафон §10): иллюстрация ui-kit, без карточки, обычная кнопка «Повторить».
+          h("div", { class: "bk-error", role: "alert" }, [
+            sprite("bk-ill", "ill-offline"),
             h("p", { class: "bk-error__title", text: tr("common.state.error_title") }),
-            h("button", { type: "button", class: "bk-btn bk-btn--primary", text: tr("common.action.retry"), onclick: load }),
+            h("button", { type: "button", class: "bk-btn", onclick: load }, [sprite("ic", "i-refresh"), tr("common.action.retry")]),
           ])
         );
         return;

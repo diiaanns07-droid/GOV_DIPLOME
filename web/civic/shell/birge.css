@@ -646,14 +646,10 @@ body.civic-mode #birge-header .birge-nav > [aria-current="page"]::after { bottom
 /* Меню («Ещё», аватар, слои) — один вид: отступ 8, пункты 48 со скруглением 10 (концентрично радиусу 18), обычный
    вес 400 (выбранный — 600 и «✓»), подсветка мягкой заливкой; 8 под капсулой шапки. */
 body.civic-mode .birge-more-menu { top: calc(100% + 14px); padding: 8px; gap: 0; min-width: 260px; white-space: nowrap; }
-body.civic-mode .birge-more-item { font-weight: 400; border-radius: 10px; padding: 0 16px; }
+body.civic-mode .birge-more-item { font-weight: 400; border-radius: 10px; padding: 0 12px; }  /* как .bk-menu__item ui-kit d2ed919f */
 body.civic-mode .birge-more-item:hover, body.civic-mode .birge-more-item:focus-visible { background: rgba(21, 44, 38, 0.06); }
 body.civic-mode .birge-more-item[aria-current="page"] { box-shadow: none; font-weight: 600; }
-body.civic-mode #birge-account.bk-menu { padding: 8px; min-width: 260px; }
-body.civic-mode #birge-account .bk-menu__item { border-radius: 10px; padding: 0 16px; }
 body.civic-mode #birge-account .bk-menu__item:hover, body.civic-mode #birge-account .bk-menu__item:focus-visible { background: rgba(21, 44, 38, 0.06); }
-body.civic-mode #birge-account .bk-menu__label { padding: 8px 16px 4px; }
-body.civic-mode #birge-account .bk-menu__sep { margin: 8px 16px; }
 /* Меню внутри стеклянной шапки не может размыть то, что под ним: шапка с backdrop-filter — «корень фона» для своих
    потомков (Chromium), и текст панели просвечивал резким даже при 96 %. Поэтому меню шапки — сплошной белый (как формы),
    с тенью и радиусом стекла; меню слоёв у кнопок карты остаётся стеклом (там размытие работает). */
@@ -662,7 +658,7 @@ body.civic-mode #birge-account { margin-top: 8px; }
 
 /* «Слой на карте» — пункты меню ui-kit (.bk-menu__radio: кружок скрыт, выбранный — 600 и «✓» справа; R11 §11.1). */
 body.civic-mode #birge-layer-list { padding: 8px; min-width: 248px; white-space: nowrap; }
-body.civic-mode #birge-layer-list .birge-layer__title { display: block; padding: 8px 16px 4px; }
+body.civic-mode #birge-layer-list .birge-layer__title { display: block; }
 body.civic-mode #birge-layer-list .birge-layer__opt.bk-menu__radio { border-radius: 10px; cursor: pointer; }
 
 /* «?» легенды — шкала 15/600, как подписи кнопок (было 17). */
@@ -785,3 +781,14 @@ body.civic-mode #birge-heat-root:empty::after { height: 48px; margin-top: 52px; 
   body.civic-mode #birge-heat-root:empty::before, body.civic-mode #birge-heat-root:empty::after { animation: birge-skel 1.2s ease-in-out infinite alternate; }
 }
 @keyframes birge-skel { from { opacity: 0.55; } to { opacity: 1; } }
+
+/* Круг 5 · соседи (R12 «× ящика ≥ 44», R09 M1/M5, R07 тост): крестик ящика сотрудника и окон — 44 круг; панель «Моих
+   обращений» R09 — на сетке оболочки (12 от края, как правая панель; у R09 было 20); на телефоне тост ui-kit — над
+   шторкой, не на её форме («Взято в работу» закрывал «что сделали»). */
+body.civic-mode .civic-close { width: 44px; height: 44px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 22px; color: var(--c-text-2, #5b6a64); }
+body.civic-mode .civic-close:hover { background: rgba(21, 44, 38, 0.06); }
+@media (min-width: 761px) { body.civic-mode .bc-panel { right: var(--be-edge, 12px); } }
+@media (max-width: 760px) {
+  body.civic-mode:has(.civic-panel[data-sheet="half"]) .bk-toasts { bottom: calc(46% + 12px); }
+  body.civic-mode:has(.civic-panel[data-sheet="half"] #birge-heat-root .r07-card) .bk-toasts { bottom: calc(56% + 12px); }
+}

@@ -118,6 +118,10 @@ async function clickMapAt(page, point) {
 }
 
 async function noHorizontalScroll(page) {
+  // Сначала дождаться конца анимаций (въезд шага 240 мс сдвигает содержимое на 18 px — это не вёрстка).
+  await page.evaluate(() => Promise.race([new Promise((ok) => setTimeout(ok, 1500)), Promise.all(document.getAnimations()
+    .filter((a) => a.effect && a.effect.getComputedTiming().iterations !== Infinity)   // бесконечные (скелетон) не ждём
+    .map((a) => a.finished.catch(() => null)))])).catch(() => null);
   return page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1 &&
     [...document.querySelectorAll(".bc-panel *")].every((n) => { const r = n.getBoundingClientRect();
       return r.width === 0 || (r.right <= window.innerWidth + 1 && r.left >= -1); }));
@@ -1008,11 +1012,12 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
     buttons: [...document.querySelectorAll(".bc-wait .bc-verify__buttons button")].map((b) => b.textContent.trim()),
     after: document.querySelectorAll(".bc-wait .bc-thumb").length,
     badge: (document.querySelector(".bc-mine__card .bk-status") || {}).textContent || "",
-    lastStep: (document.querySelector(".bc-mine__card .bk-steps__item:last-child") || { dataset: {} }).dataset.state }));
+    // Лента статусов (дизайн-марафон): последний пункт — следующий этап серым («Проверено жителями» ещё впереди).
+    lastStep: (document.querySelector(".bc-mine__card .bc-timeline__item:last-child") || { dataset: {} }).dataset.state }));
   check(`${tag}: [W2-1] «${verifyB.title}»: что сделали, фото «после», 3 ответа; статус «${verifyB.badge}»`,
         verifyB.buttons.length === 3 && (lang === "kk" ? /4 шам/.test(verifyB.what) && verifyB.badge === "Қызмет түзетілгенін хабарлады"
           : /Что сделали: Заменили 4 лампы/.test(verifyB.what) && verifyB.badge === "Служба сообщила об устранении") && verifyB.after === 1 &&
-        verifyB.lastStep === "current",   // «Исправлено» не пройдено, пока жители не проверили
+        verifyB.lastStep === "next",   // «Проверено жителями» не пройдено, пока жители не проверили
         JSON.stringify(verifyB));
   await pageB.waitForFunction(() => [...document.querySelectorAll(".bc-wait .bc-thumb img")].every((i) => i.src.startsWith("data:image/")), null, { timeout: 8000 })
     .catch(() => {});

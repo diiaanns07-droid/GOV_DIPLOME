@@ -37,6 +37,9 @@
       "qr.form.no_qr": "Генератор QR ещё не подключён. Пока на табличке будет только ссылка.",
       "qr.form.network": "Нет связи. Повторите.", "qr.form.loading": "Загружаем…", "qr.form.ready": "Готово табличек: {n}",
       "qr.form.base_other": "QR на табличках поведёт на {base} — это не адрес этого сервера. Проверьте адрес перед печатью.",
+      "qr.sign.call": "Сообщите о проблеме", "qr.sign.how": "Наведите камеру телефона на код",
+      "qr.form.size": "Размер таблички", "qr.form.size_a5": "A5 · 148 × 210 мм", "qr.form.size_a6": "A6 · 105 × 148 мм",
+      "qr.form.size_hint": "Печать на листах A4: две таблички A5 или четыре A6 — разрезать по пунктиру.",
     },
     kk: {
       "qr.title": "Нысандардың QR-тақтайшалары", "qr.print": "QR басып шығару", "qr.call": "Осы жерде мәселе бар ма? Телефон камерасын кодқа бағыттаңыз",
@@ -50,6 +53,9 @@
       "qr.form.no_qr": "QR генераторы әлі қосылмаған. Әзірге тақтайшада тек сілтеме болады.",
       "qr.form.network": "Байланыс жоқ. Қайталаңыз.", "qr.form.loading": "Жүктелуде…", "qr.form.ready": "Дайын тақтайшалар: {n}",
       "qr.form.base_other": "Тақтайшадағы QR {base} мекенжайына апарады — бұл осы сервердің мекенжайы емес. Басып шығарар алдында тексеріңіз.",
+      "qr.sign.call": "Мәселе туралы хабарлаңыз", "qr.sign.how": "Телефон камерасын кодқа бағыттаңыз",
+      "qr.form.size": "Тақтайша өлшемі", "qr.form.size_a5": "A5 · 148 × 210 мм", "qr.form.size_a6": "A6 · 105 × 148 мм",
+      "qr.form.size_hint": "A4 парағына басылады: екі A5 немесе төрт A6 тақтайша — үзік сызық бойымен қиыңыз.",
     },
   };
 
@@ -130,24 +136,56 @@
     return e;
   }
 
-  // Табличка (IA_WAVE2 §6.2): призыв kk · ru, QR ≥ 6 см, под ним адрес сайта, крупно название kk и ru, номер объекта.
-  // Чисел жалоб и статусов нет — табличка висит годами и не должна устаревать.
-  function sign(doc, info, base) {
+  // Уличная табличка (дизайн-марафон, IA_WAVE2 §6.2): тёмная полоса Birge с призывом kk и ru, крупный QR (≥ 6 см и на A6),
+  // как навести камеру, адрес сайта (видно, куда ведёт код — защита от подмены), название kk и ru, номер объекта.
+  // Чисел жалоб и статусов нет — табличка висит годами. Размеры — от ширины таблички (cqw), поэтому A5 и A6 одинаковы по виду.
+  var SIZES = { a5: { w: 148, h: 210 }, a6: { w: 105, h: 148 } };
+  function normalizeSize(v) { return v === "a6" ? "a6" : "a5"; }
+  function svgIcon(doc, name) {
+    var NS = "http://www.w3.org/2000/svg", svg = doc.createElementNS(NS, "svg"), use = doc.createElementNS(NS, "use");
+    svg.setAttribute("class", "ic"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
+    use.setAttribute("href", "/civic/ui-kit/icons.svg#i-" + name);
+    svg.appendChild(use);
+    return svg;
+  }
+  function sign(doc, info, base, size) {
     var url = reportUrl(base, info.target.id);
     var qr = qrSvg(doc, url);
     if (qr) qr.setAttribute("aria-label", "QR: " + url);
     var ru = info.target.label_ru, kk = info.target.label_kk || ru;
-    return h(doc, "article", { class: "bqp-sign", "data-id": info.target.id }, [
-      h(doc, "p", { class: "bqp-sign__call" }, [h(doc, "span", { lang: "kk", text: tx("qr.call", null, "kk") }),
-        h(doc, "span", { lang: "ru", text: tx("qr.call", null, "ru") })]),
-      h(doc, "div", { class: "bqp-qr" + (qr ? "" : " bqp-qr--missing") }, [qr || h(doc, "p", { class: "bqp-qr__missing", text: tx("qr.form.no_qr") })]),
-      h(doc, "p", { class: "bqp-sign__domain", text: domainOf(base) }),
-      h(doc, "h2", { class: "bqp-sign__title", lang: "kk", text: kk }),
-      kk !== ru ? h(doc, "p", { class: "bqp-sign__title bqp-sign__title--ru", lang: "ru", text: ru }) : null,
-      h(doc, "p", { class: "bqp-sign__number" }, [tx("qr.object_no", { id: groupDigits(info.number) }, "kk") + " · " +
-        tx("qr.object_no", { id: groupDigits(info.number) }, "ru")]),
-      h(doc, "p", { class: "bqp-sign__url", text: url }),
-    ]);
+    var num = groupDigits(info.number);
+    return h(doc, "article", { class: "bqp-sign", "data-id": info.target.id, "data-size": size, "data-long": kk.length > 40 ? "1" : null }, [
+      h(doc, "header", { class: "bqp-sign__band" }, [
+        h(doc, "p", { class: "bqp-sign__brand" }, [h(doc, "span", { class: "bqp-sign__mark" }, [svgIcon(doc, "building")]), "Birge"]),
+        h(doc, "p", { class: "bqp-sign__call", lang: "kk", text: tx("qr.sign.call", null, "kk") }),
+        h(doc, "p", { class: "bqp-sign__call bqp-sign__call--ru", lang: "ru", text: tx("qr.sign.call", null, "ru") })]),
+      h(doc, "div", { class: "bqp-sign__body" }, [
+        h(doc, "div", { class: "bqp-qr" + (qr ? "" : " bqp-qr--missing") }, [qr || h(doc, "p", { class: "bqp-qr__missing", text: tx("qr.form.no_qr") })]),
+        h(doc, "p", { class: "bqp-sign__how" }, [h(doc, "span", { lang: "kk", text: tx("qr.sign.how", null, "kk") }),
+          h(doc, "span", { lang: "ru", text: tx("qr.sign.how", null, "ru") })]),
+        h(doc, "p", { class: "bqp-sign__domain", text: domainOf(base) }),
+        h(doc, "div", { class: "bqp-sign__place" }, [
+          h(doc, "h2", { class: "bqp-sign__title", lang: "kk", text: kk }),
+          kk !== ru ? h(doc, "p", { class: "bqp-sign__title-ru", lang: "ru", text: ru }) : null,
+          h(doc, "p", { class: "bqp-sign__number" }, [tx("qr.object_no", { id: num }, "kk") + " · " + tx("qr.object_no", { id: num }, "ru")])])]),
+      // Полная ссылка — для чтения с экрана и проверки (на самой табличке крупно только адрес сайта).
+      h(doc, "p", { class: "bk-sr-only bqp-sign__url", text: url })]);
+  }
+  // Название не влезло (длинные kk и ru) — уменьшаем блок названия шагами, пока табличка не перестанет переполняться.
+  function fitSign(el) {
+    var place = el.querySelector(".bqp-sign__place");
+    if (!place) return 1;
+    var k = 1;
+    place.style.removeProperty("--fit");
+    while (el.scrollHeight > el.clientHeight + 1 && k > 0.6) {
+      k = Math.round((k - 0.05) * 100) / 100;
+      place.style.setProperty("--fit", String(k));
+    }
+    return k;
+  }
+  // Страница печати под размер: A5 — две на A4 альбомном, A6 — четыре на A4 книжном; поля 0, резать по пунктиру.
+  function pageCss(size) {
+    return size === "a6" ? "@page { size: A4 portrait; margin: 0; }" : "@page { size: A4 landscape; margin: 0; }";
   }
 
   function mount(options) {
@@ -162,6 +200,13 @@
     idsField.value = (params.get("ids") || "").split(",").join("\n");
     var baseField = h(doc, "input", { id: "bqp-base", type: "url", inputmode: "url", "aria-describedby": "bqp-base-hint", autocomplete: "off" });
     baseField.value = params.get("base") || root.location.origin;
+    var size = normalizeSize(params.get("size"));
+    var pageStyle = doc.getElementById("bqp-page") || h(doc, "style", { id: "bqp-page" });
+    if (!pageStyle.parentNode) doc.head.appendChild(pageStyle);
+    pageStyle.textContent = pageCss(size);
+    var sizeBtns = ["a5", "a6"].map(function (v) {
+      return h(doc, "button", { type: "button", "data-size": v, "aria-pressed": String(v === size), onclick: function () { setSize(v); } }, [tx("qr.form.size_" + v)]);
+    });
     var status = h(doc, "div", { class: "bqp-status", role: "status", "aria-live": "polite" });
     var sheet = h(doc, "div", { class: "bqp-sheet" });
     var showBtn = h(doc, "button", { type: "submit", class: "bk-btn bk-btn--primary", "data-act": "show" }, [tx("qr.form.show")]);
@@ -169,16 +214,32 @@
     var form = h(doc, "form", { class: "bqp-form no-print", novalidate: true }, [
       h(doc, "h1", { class: "bqp-h1", text: tx("qr.title") }),
       h(doc, "p", { class: "bqp-lead", text: tx("qr.form.lead") }),
-      h(doc, "label", { for: "bqp-ids", class: "bqp-label", text: tx("qr.form.ids") }), idsField,
-      h(doc, "p", { id: "bqp-ids-hint", class: "bqp-hint", text: tx("qr.form.ids_hint") }),
-      h(doc, "label", { for: "bqp-base", class: "bqp-label", text: tx("qr.form.base") }), baseField,
-      h(doc, "p", { id: "bqp-base-hint", class: "bqp-hint", text: tx("qr.form.base_hint") }),
+      h(doc, "div", { class: "bk-field bqp-field" }, [h(doc, "label", { for: "bqp-ids", class: "bk-field__label", text: tx("qr.form.ids") }), idsField,
+        h(doc, "p", { id: "bqp-ids-hint", class: "bk-field__hint", text: tx("qr.form.ids_hint") })]),
+      h(doc, "div", { class: "bk-field bqp-field" }, [h(doc, "label", { for: "bqp-base", class: "bk-field__label", text: tx("qr.form.base") }), baseField,
+        h(doc, "p", { id: "bqp-base-hint", class: "bk-field__hint", text: tx("qr.form.base_hint") })]),
+      h(doc, "div", { class: "bk-field bqp-field", role: "group", "aria-labelledby": "bqp-size-l" }, [
+        h(doc, "p", { id: "bqp-size-l", class: "bk-field__label", text: tx("qr.form.size") }),
+        h(doc, "div", { class: "bk-seg bqp-size" }, sizeBtns),
+        h(doc, "p", { class: "bk-field__hint", text: tx("qr.form.size_hint") })]),
       h(doc, "div", { class: "bqp-buttons" }, [
         showBtn, printBtn]),
       status]);
     form.addEventListener("submit", function (e) { e.preventDefault(); load(); });
     host.replaceChildren(form, sheet);
     doc.title = "Birge · " + tx("qr.title");
+    function fitAll() { Array.prototype.forEach.call(sheet.children, fitSign); }
+    // Шрифт мог догрузиться после первой раскладки — подбираем ещё раз.
+    if (doc.fonts && doc.fonts.ready && typeof doc.fonts.ready.then === "function") doc.fonts.ready.then(function () { fitAll(); });
+    function setSize(v) {
+      size = normalizeSize(v);
+      pageStyle.textContent = pageCss(size);
+      sizeBtns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-size") === size)); });
+      sheet.setAttribute("data-size", size);
+      Array.prototype.forEach.call(sheet.children, function (el) { el.setAttribute("data-size", size); });
+      fitAll();
+    }
+    sheet.setAttribute("data-size", size);
 
     function paintStatus() {
       status.replaceChildren.apply(status, S.messages.map(function (m) { return h(doc, "p", { class: "bqp-msg bqp-msg--" + m.kind, text: m.text }); }));
@@ -223,7 +284,8 @@
         });
         if (offline) S.messages.push({ kind: "error", text: tx("qr.form.network") });
         if (S.signs.length) S.messages.push({ kind: "ok", text: tx("qr.form.ready", { n: S.signs.length }) });
-        sheet.replaceChildren.apply(sheet, S.signs.map(function (info) { return sign(doc, info, base); }));
+        sheet.replaceChildren.apply(sheet, S.signs.map(function (info) { return sign(doc, info, base, size); }));
+        fitAll();
         S.state = "ready";
         paintStatus();
         return true;
@@ -231,7 +293,7 @@
     }
     paintStatus();
     if (params.get("ids")) load();
-    return { load: load, state: function () { return { signs: S.signs.length, messages: S.messages.slice(), state: S.state }; } };
+    return { load: load, setSize: setSize, state: function () { return { signs: S.signs.length, messages: S.messages.slice(), state: S.state, size: size }; } };
   }
 
   // Страница print.html: <main id="bqp-root" data-autostart> — запуск без встроенного скрипта (CSP R01 script-src 'self').
@@ -248,6 +310,6 @@
   }
 
   return { mount: mount, parseIds: parseIds, normalizeBase: normalizeBase, reportUrl: reportUrl, qrSvg: qrSvg, ID_RE: ID_RE, MAX_IDS: MAX_IDS,
-    groupDigits: groupDigits,
+    groupDigits: groupDigits, normalizeSize: normalizeSize, SIZES: SIZES, fitSign: fitSign,
     TEXT: TEXT };
 });

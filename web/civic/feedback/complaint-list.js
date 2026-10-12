@@ -84,6 +84,7 @@
         // 401/403 — не вошёл сотрудник (R11 разбор FINAL-3): это не «нет связи», а «войдите»
         if (!res.ok) { state.error = res.status === 401 || res.status === 403 ? "staff" : true; state.data = null; render(); return; }
         state.data = res.data;
+        state.enter = true;   // новые данные — строки мягко появляются (раскрытие строки — без движения)
         if (!state.tab) {
           // По умолчанию — «Новые»; если там пусто — первая непустая вкладка.
           var counts = res.data.counts || {};
@@ -106,7 +107,7 @@
         bar.appendChild(h("button", { "class": "bk-chip bc-inbox__tab", type: "button", role: "tab", "data-tab": id,
                                       "aria-selected": state.tab === id ? "true" : "false",
                                       "aria-pressed": state.tab === id ? "true" : "false",
-                                      onclick: function () { state.tab = id; state.open = null; closeStaff(); render(); } },
+                                      onclick: function () { state.tab = id; state.open = null; state.enter = true; closeStaff(); render(); } },
           [h("span", {}, t("inbox.tab." + id)), h("span", { "class": "bc-inbox__count" }, " " + (counts[id] || 0))]));
       });
       return bar;
@@ -121,17 +122,23 @@
       }
       var what = C().categoryLabel(group.category) + (group.subtopic ? " · " + C().subtopicLabel(group.category, group.subtopic) : "");
       var due = deadlineNode(group.deadline);
+      // Строка как в списке iOS (дизайн-марафон): слева — число людей в кружке цвета карты жалоб (1–2 / 3–5 / 6–9 / 10+),
+      // в середине — место 17, категория 15, «N человек · срок» 13; справа — «›», при раскрытии поворачивается.
+      var level = group.people >= 10 ? 4 : (group.people >= 6 ? 3 : (group.people >= 3 ? 2 : 1));
       var head = h("button", { "class": "bc-inbox__row", type: "button", "aria-expanded": expanded ? "true" : "false",
                                "data-key": group.key, onclick: function () { toggle(group); } }, [
-        h("span", { "class": "bc-inbox__place" }, [h("strong", {}, place),
-          group.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
-          // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
-          group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
-        // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
-        h("span", { "class": "bc-meta" }, what),
-        h("span", { "class": "bc-meta" }, [t("inbox.people", { n: group.people }),
-          group.complaints.length > 1 ? " · " + t("inbox.complaints", { n: group.complaints.length }) : "",
-          due ? " · " : null, due])]);
+        h("span", { "class": "bk-heat bc-inbox__heat", "data-level": String(level), "aria-hidden": "true" }, String(group.people)),
+        h("span", { "class": "bc-inbox__text" }, [
+          h("span", { "class": "bc-inbox__place" }, [h("strong", {}, place),
+            group.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
+            // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
+            group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
+          // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
+          h("span", { "class": "bc-inbox__what" }, [C().icon && C().categoryIcon ? C().icon(C().categoryIcon(group.category)) : null, h("span", {}, what)]),
+          h("span", { "class": "bc-meta" }, [t("inbox.people", { n: group.people }),
+            group.complaints.length > 1 ? " · " + t("inbox.complaints", { n: group.complaints.length }) : "",
+            due ? " · " : null, due])]),
+        C().icon ? C().icon("chevron-right") : null]);
       var li = h("li", { "class": "bk-card bc-inbox__item" + (expanded ? " bc-inbox__item--open" : "") }, head);
       if (expanded) {
         var detail = h("div", { "class": "bc-inbox__detail" });
@@ -191,7 +198,7 @@
       box.appendChild(title());
       if (state.error === "staff") {
         var shell = window.CivicShell;
-        box.appendChild(h("div", { "class": "bk-empty", role: "status" }, [
+        box.appendChild(h("div", { "class": "bk-empty", role: "status" }, [C().icon ? C().icon("user") : null,
           h("p", { "class": "bk-empty__title" }, t("proposal.need_staff")),
           // Не главная (bk-btn): главная кнопка в «Обращениях» — у карточки действий (контракт R09, одна на экран).
           h("button", { "class": "bk-btn", type: "button",
@@ -199,25 +206,29 @@
         return;
       }
       if (state.error) {
-        box.appendChild(h("div", { "class": "bk-error", role: "alert" }, [
+        box.appendChild(h("div", { "class": "bk-error", role: "alert" }, [C().icon ? C().icon("wifi-off") : null,
           h("p", { "class": "bk-error__title" }, t("mine.error.title")),
           h("p", {}, t("mine.error.hint")),
           h("button", { "class": "bk-btn", type: "button", onclick: load }, t("complaint.error.retry"))]));
         return;
       }
       if (!state.data) {
-        box.appendChild(h("div", { "class": "bc-loading", role: "status" }, [
-          h("span", { "class": "bk-skel bc-skel-card" }), h("span", { "class": "bk-skel bc-skel-card" }),
+        // Скелетон строк (как у «Моих обращений»): место, категория, «N человек · срок».
+        var skel = function () { return h("div", { "class": "bc-skel-card", "aria-hidden": "true" }, [
+          h("span", { "class": "bk-skel bc-skel-line bc-skel-line--title" }), h("span", { "class": "bk-skel bc-skel-line bc-skel-line--status" }),
+          h("span", { "class": "bk-skel bc-skel-line bc-skel-line--short" })]); };
+        box.appendChild(h("div", { "class": "bc-loading", role: "status" }, [skel(), skel(), skel(),
           h("span", { "class": "bc-loading__text" }, t("mine.loading"))]));
         return;
       }
       box.appendChild(tabs());
       var items = (state.data.items || []).filter(function (g) { return g.tab === state.tab; });
       if (!items.length) {
-        box.appendChild(h("div", { "class": "bk-empty" }, [h("p", { "class": "bk-empty__title" }, t("inbox.empty"))]));
+        box.appendChild(h("div", { "class": "bk-empty" }, [C().icon ? C().icon("check") : null, h("p", { "class": "bk-empty__title" }, t("inbox.empty"))]));
         return;
       }
-      box.appendChild(h("ul", { "class": "bc-inbox__list", role: "tabpanel" }, items.map(row)));
+      box.appendChild(h("ul", { "class": "bc-inbox__list" + (state.enter ? " bc-list--enter" : ""), role: "tabpanel" }, items.map(row)));
+      state.enter = false;
     }
 
     // Язык: оболочка зовёт setLang(lang); словарь R11 грузится асинхронно и потом шлёт "birge:lang" — перерисуем и тогда.
