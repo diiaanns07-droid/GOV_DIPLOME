@@ -32,6 +32,8 @@ GRAPH = "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json"
 GEOFENCE = "data/civic/astana/geofence.json"
 WAY_TAGS = "data/civic/astana/geo/way_tags.json"
 OSM_RAW = "data/civic/astana/osm-objects/raw"
+# Снимок пешеходной сети OSM (из него же собран граф): узлы светофоров, переходов и части остановок R12.
+OSM_WALKING = "data/civic/astana/osm-walking/overpass.json.gz"
 
 SEGMENT_TOL_M = 5.0      # §8.3: линия участка ≤ 5 м от формы ребра
 STOP_TOL_M = 60.0        # §8.3: остановка ≤ 60 м от улицы
@@ -135,6 +137,13 @@ class Graph:
         data = json.loads(path.read_text(encoding="utf-8"))
         self.id = data.get("id")
         self.edges = {e["id"]: e for e in data["edges"]}
+        # Узлы графа и сходящиеся в них рёбра: перекрёсток R12 (src "graph") — узел, где сходятся ≥ 3 ребра.
+        self.nodes = {n["id"]: [n["lon"], n["lat"]] for n in data.get("nodes", [])}
+        self.node_edges: dict[str, list[str]] = {}
+        for eid, e in self.edges.items():
+            for end in (e.get("from"), e.get("to")):
+                if end:
+                    self.node_edges.setdefault(end, []).append(eid)
         self.road_way = None
         if way_tags:
             classes = way_tags["classes"]
@@ -194,6 +203,22 @@ def load_osm_raw(root: Path):
                 c = el.get("center")
                 out[(el["type"], el["id"])] = [c["lon"], c["lat"]] if c else None
     return out
+
+
+def load_walking_raw(root: Path):
+    """Узлы с тегом highway из снимка пешеходной сети: {('node', id): ([lon, lat], highway)}; None — снимка нет."""
+    path = root / OSM_WALKING
+    if not path.is_file():
+        return None
+    data = json.load(gzip.open(path, "rt", encoding="utf-8"))
+    return {("node", el["id"]): ([el["lon"], el["lat"]], (el.get("tags") or {}).get("highway"))
+            for el in data.get("elements", []) if el.get("type") == "node" and (el.get("tags") or {}).get("highway")}
+
+
+# Вид объекта R12 → какие значения тега highway OSM ему соответствуют (для объектов из снимка пешеходной сети).
+WALKING_KINDS = {"crossing": {"crossing", "traffic_signals;crossing"},
+                 "traffic_signal": {"traffic_signals", "traffic_signals;crossing"},
+                 "bus_stop": {"bus_stop"}}
 
 
 def load_rail_ids(root: Path):
@@ -494,7 +519,42 @@ def check_stops(rep: Report, graph: Graph, sources, root: Path):
                  "max_road_m": round(rec["max_road_m"], 1)}, owner)
 
 
-def check_osm_points(rep: Report, root: Path, sources):
+def check_graph_intersections(rep: Report, graph, objs):
+    """Перекрёстки R12 (src "graph", id osm-node-N): узел osm-nN графа улиц на той же точке, в нём ≥ 3 ребра,
+    улицы подписи — среди улиц рёбер этого узла (POLISH_WAVE W1-1: «перекрёсток = узел, где сходятся ≥ 3 улицы»)."""
+    items = [it for it in objs["items"] if it.get("src") == "graph"]
+    if not items:
+        return
+    if graph is None or not graph.nodes:
+        rep.add("перекрёстки R12 = узлы графа улиц", "NOT_RUN", "в графе нет списка узлов", "R12")
+        return
+    missing, moved, low_degree, names, n = [], [], [], [], 0
+    for it in items:
+        m = re.match(r"^osm-node-(\d+)$", it["id"])
+        node = f"osm-n{m.group(1)}" if m else None
+        if node not in graph.nodes:
+            missing.append({"id": it["id"], "why": "нет такого узла в графе улиц" if m else "id не вида osm-node-N"})
+            continue
+        n += 1
+        d = dist_m(graph.nodes[node], it["point"])
+        if d > OSM_POINT_TOL_M:
+            moved.append({"id": it["id"], "moved_m": round(d, 2)})
+        edges = graph.node_edges.get(node, [])
+        if len(edges) < 3:
+            low_degree.append({"id": it["id"], "edges": len(edges)})
+        here = {graph.edges[e].get("name") for e in edges} - {None, ""}
+        lost = [st for st in it.get("streets_ru") or [] if st not in here]
+        if lost or len(it.get("streets_ru") or []) < 2:
+            names.append({"id": it["id"], "streets_ru": it.get("streets_ru"), "at_node": sorted(here)[:4]})
+    rep.add("перекрёстки R12 = узлы графа улиц", "FAIL" if missing or moved or low_degree else "PASS",
+            {"checked": n, "total": len(items), "missing": missing[:10], "moved": moved[:10],
+             "fewer_than_3_edges": low_degree[:10]}, "R12")
+    # Подпись «улица A / улица B» берётся из рёбер узла; если улицы нет у узла в графе — подпись неточна.
+    rep.add("перекрёстки R12: улицы подписи сходятся в узле", "FAIL" if names else "PASS",
+            {"checked": n, "mismatch": len(names), "examples": names[:8]}, "R12")
+
+
+def check_osm_points(rep: Report, root: Path, sources, graph=None):
     """§8.2: точечные объекты — реальные из OSM, с их координатами."""
     raw = load_osm_raw(root)
     if raw is None:
@@ -504,27 +564,40 @@ def check_osm_points(rep: Report, root: Path, sources):
     if objs is None:
         rep.add("объекты R12 = точки OSM", "NOT_RUN", "набора нет", "R12")
     else:
-        missing, moved, n = [], [], 0
+        walking = load_walking_raw(root)
+        missing, moved, not_checked, by_src, n = [], [], [], {}, 0
         for it in objs["items"]:
+            src = it.get("src")
+            if src == "graph":  # перекрёсток из графа улиц — отдельная проверка ниже (INTEGRATION §13.8)
+                continue
             # osm-relation-… (парки, площадки-мультиполигоны) R07 и R09 принимают; CONTRACT §4 его пока не называет.
             m = re.match(r"^osm-(node|way|relation)-(\d+)$", it["id"])
             if not m:
                 missing.append({"id": it["id"], "why": "id не вида osm-node-/osm-way-/osm-relation-"})
                 continue
             key = (m.group(1), int(m.group(2)))
-            if key not in raw:
-                # Остановки R12 частично взяты из снимка пешеходной сети (src = overpass.json.gz), а не из LOCAL-1:
-                # их проверяет правило «остановка у улицы», здесь пропускаем.
-                if it.get("src") in (None, "overpass.json.gz", "walking_graph", "osm-walking"):
+            if key in raw:
+                ref = raw[key]
+            elif src == "overpass.json.gz" and walking is not None and key in walking:
+                # Светофоры, переходы и часть остановок R12 — из снимка пешеходной сети, а не из LOCAL-1.
+                ref, highway = walking[key]
+                if highway not in WALKING_KINDS.get(it.get("kind"), {highway}):
+                    missing.append({"id": it["id"], "kind": it.get("kind"), "why": f"в OSM highway={highway}"})
                     continue
-                missing.append({"id": it["id"], "src": it.get("src")})
+            elif src in (None, "overpass.json.gz", "walking_graph", "osm-walking") and walking is None:
+                not_checked.append(it["id"])  # снимка пешеходной сети нет в сборке — сверить не с чем
+                continue
+            else:
+                missing.append({"id": it["id"], "src": src})
                 continue
             n += 1
-            ref = raw[key]
+            by_src[src] = by_src.get(src, 0) + 1
             if ref and key[0] == "node" and dist_m(ref, it["point"]) > OSM_POINT_TOL_M:
                 moved.append({"id": it["id"], "moved_m": round(dist_m(ref, it["point"]), 2)})
         rep.add("объекты R12 = точки OSM", "FAIL" if missing or moved else "PASS",
-                {"checked": n, "total": len(objs["items"]), "missing": missing[:10], "moved": moved[:10]}, "R12")
+                {"checked": n, "total": len(objs["items"]), "by_src": by_src, "not_checked": len(not_checked),
+                 "missing": missing[:10], "moved": moved[:10]}, "R12")
+        check_graph_intersections(rep, graph, objs)
     _, r05 = sources["R05 astana-existing.json"]
     if r05 is None:
         rep.add("объекты R05 = точки OSM", "NOT_RUN", "набора нет", "R05")
@@ -601,7 +674,7 @@ def run(root: Path) -> Report:
     check_boundary(rep, boundary, sources)
     check_segments(rep, graph, sources)
     check_stops(rep, graph, sources, root)
-    check_osm_points(rep, root, sources)
+    check_osm_points(rep, root, sources, graph)
     check_target_ids(rep, graph, sources)
     check_basemap(rep, graph, root)
     return rep
