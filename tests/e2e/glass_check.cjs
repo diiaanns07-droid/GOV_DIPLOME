@@ -237,7 +237,15 @@ const SOLIDSCAN = () => {
     if (!(r.width > 0 && r.height > 0 && s.display !== "none" && s.visibility !== "hidden")) continue;
     const m = String(s.backgroundColor).match(/rgba?\(([^)]+)\)/), v = m ? m[1].split(/[ ,/]+/).filter(Boolean).map(Number) : [0, 0, 0, 0];
     const f = s.backdropFilter || s.webkitBackdropFilter || "none";
-    out.push({ cls: String(e.className).slice(0, 50), filter: f, alpha: v.length > 3 ? v[3] : 1, solid: (f === "none" || !f) && (v.length > 3 ? v[3] : 1) >= 0.99 });
+    // Плоская кнопка внутри стеклянной полосы (прозрачная, без размытия: «?» в строке легенды) — непрозрачна, если
+    // непрозрачна полоса вокруг.
+    let solid = (f === "none" || !f) && (v.length > 3 ? v[3] : 1) >= 0.99;
+    if (!solid && (f === "none" || !f) && (v.length > 3 ? v[3] : 1) === 0) {
+      const outer = e.parentElement && e.parentElement.closest(".bk-glass, .bk-glass--control");
+      if (outer) { const os = getComputedStyle(outer), m2 = String(os.backgroundColor).match(/rgba?\(([^)]+)\)/), w = m2 ? m2[1].split(/[ ,/]+/).filter(Boolean).map(Number) : [0, 0, 0, 0];
+        solid = (os.backdropFilter === "none" || !os.backdropFilter) && (w.length > 3 ? w[3] : 1) >= 0.99; }
+    }
+    out.push({ cls: String(e.className).slice(0, 50), filter: f, alpha: v.length > 3 ? v[3] : 1, solid });
   }
   return out;
 };
