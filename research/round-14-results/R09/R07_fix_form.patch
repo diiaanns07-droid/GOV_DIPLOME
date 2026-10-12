@@ -1,40 +1,53 @@
 diff --git a/web/civic/heat/heat.js b/web/civic/heat/heat.js
-index 75bd55c..ae74ca4 100644
+index 75bd55c..eb0bffd 100644
 --- a/web/civic/heat/heat.js
 +++ b/web/civic/heat/heat.js
-@@ -1373,6 +1373,23 @@
+@@ -1373,6 +1373,36 @@
          btn.removeAttribute("aria-busy");
        }
      }
-+    // Форма R09 «Сообщить жителям об устранении» в карточке цели: пока она открыта, кнопки карточки скрыты
-+    // (одна главная кнопка). Перерисовка карточки (язык, новое событие) открывает её снова.
-+    function mountFixForm() {
-+      if (!S.fixFor || S.fixFor !== S.selected) { S.fixFor = null; return; }
-+      const it = findItem(S.selected);
++    // R09 в карточке цели (волна 2, IA_WAVE2 §2.2–2.4), только у сотрудника:
++    //  - «Отметить исправленным» открывает форму R09 «Сообщить жителям» (что сделали + фото «после», «Увидят N человек»);
++    //    пока она открыта, кнопки карточки скрыты (одна главная кнопка);
++    //  - под кнопками — паспорт решения («Изменить» → 3 поля) и «Обновление для всех» R09 без своей главной кнопки.
++    // Перерисовка карточки (язык, новое событие) открывает их снова. Без R09 на странице — карточка как раньше.
++    function mountR09() {
++      const it = S.selected && findItem(S.selected);
 +      const actions = panel.querySelector(".r07-actions");
-+      if (!it || !actions || !(it.open_ids || []).length) { S.fixFor = null; return; }
-+      actions.hidden = true;
-+      const holder = document.createElement("div");
-+      holder.className = "r07-fixform";
-+      actions.after(holder);
-+      window.BirgeComplaintStaff.fixForm(holder, {
-+        complaintIds: it.open_ids,
-+        onDone: async () => { S.fixFor = null; toast(t("heat.toast_fixed")); await load("event"); },
-+        onCancel: () => { S.fixFor = null; render(); },
-+      });
++      const R09 = window.BirgeComplaintStaff;
++      if (!it || !actions || !R09 || !(it.open_ids || []).length) { S.fixFor = null; return; }
++      if (S.fixFor && S.fixFor === S.selected && typeof R09.fixForm === "function") {
++        actions.hidden = true;
++        const holder = document.createElement("div");
++        holder.className = "r07-fixform";
++        actions.after(holder);
++        R09.fixForm(holder, {
++          complaintIds: it.open_ids,
++          onDone: async () => { S.fixFor = null; toast(t("heat.toast_fixed")); await load("event"); },
++          onCancel: () => { S.fixFor = null; render(); },
++        });
++        return;
++      }
++      S.fixFor = null;
++      if (S.role === "akimat" && typeof R09.mount === "function") {
++        const box = document.createElement("div");
++        box.className = "r07-r09staff";
++        actions.after(box);
++        R09.mount(box, { complaintId: it.open_ids[0], fix: false, compact: true, staffOnly: true });
++      }
 +    }
      async function metoo(it, btn) {
        const id = (it.open_ids || [])[0];
        if (!id) return;
-@@ -1424,6 +1441,7 @@
+@@ -1424,6 +1454,7 @@
        if (map) renderMapLegend(); else parts.push(legendHtml(false));
        panel.innerHTML = parts.join("");
        bindPanel();
-+      mountFixForm();
++      mountR09();
        if (map) declutter();   // легенда могла сменить размер (язык, режим) — значки не должны оказаться под ней
      }
  
-@@ -1728,7 +1746,13 @@
+@@ -1728,7 +1759,13 @@
          const it = findItem(S.selected);
          if (!it) return;
          if (b.dataset.act === "take") void setStatus(it, "in_progress", b);

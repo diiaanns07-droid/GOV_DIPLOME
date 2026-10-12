@@ -1085,6 +1085,10 @@
         [icon("users"), h("span", {}, t("complaint.step4.metoo"))]));
       // «Я тоже» = подписка на общий случай (волна 2, п. 3): одно обновление службы видят все.
       body.appendChild(h("p", { "class": "bc-meta bc-metoo-caption" }, t("broadcast.metoo_hint")));
+      // R04: текст при «Я тоже» тоже сохраняется — только для службы (обязательная мелочь «кто что увидит»).
+      if (state.text && state.text.trim().length >= 3) {
+        body.appendChild(h("p", { "class": "bc-meta bc-metoo-private" }, t("complaint.step4.note_private")));
+      }
       body.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-different", type: "button", onclick: openReview },
         t("complaint.step4.different")));
     }
@@ -1138,7 +1142,11 @@
     function metoo(match, button) {
       if (button) button.disabled = true;
       var owner = state;
-      request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", {}).then(function (res) {
+      // Волна мелочей п. 9 (R04): текст и место жителя уходят вместе с «Я тоже» — их видит только служба; если «Похоже
+      // на» ошиблось, сотрудник одним действием выделит это в отдельную жалобу жителя («Это разные проблемы»).
+      var note = state.text && state.text.trim().length >= 3
+        ? { text: state.text, point: state.point, target: state.target, category: state.category } : undefined;
+      request("POST", "/complaints/" + encodeURIComponent(match.id) + "/metoo", note ? { note: note } : {}).then(function (res) {
         if (button) button.disabled = false;
         if (state !== owner) return;
         // Лимит (429, R15): повтор снова упрётся в лимит — сообщаем без «Повторить», как при отправке жалобы.

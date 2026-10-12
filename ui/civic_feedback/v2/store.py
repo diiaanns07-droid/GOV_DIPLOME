@@ -25,6 +25,7 @@ from . import categories
 from . import lifecycle
 from . import photos as photos_mod
 from . import record as rec
+from . import separate as sep
 from .record import RecordError
 
 SCHEMA_SQL = """
@@ -63,6 +64,7 @@ CREATE TABLE IF NOT EXISTS complaint_metoo_v2 (
   PRIMARY KEY (complaint_id, device_hash)
 );
 CREATE INDEX IF NOT EXISTS complaint_metoo_v2_device ON complaint_metoo_v2 (device_hash);
+""" + sep.SCHEMA_SQL + """
 -- «Проверено жителями» (волна 2, п. 1): один голос устройства за раунд «служба сообщила об устранении».
 CREATE TABLE IF NOT EXISTS complaint_votes_v2 (
   complaint_id TEXT NOT NULL,
@@ -128,7 +130,8 @@ class Conflict(RecordError):
     pass
 
 
-class ComplaintStore:
+class ComplaintStore(sep.SeparateMixin):
+    # «Это разные проблемы» (separate, merged, текст «Я тоже») — separate.py (R04 + R09, волна мелочей п. 9).
     """Потокобезопасно: одно соединение под RLock (как FeedbackService v1)."""
 
     def __init__(self, db_path, *, clock: Callable[[], datetime] | None = None, limits: dict | None = None):
@@ -330,18 +333,24 @@ class ComplaintStore:
                 "due_at": rec.due_at(created_at, category),
                 "schema": rec.SCHEMA,
             }
+            flag = rec.moderation(record.get("text"))   # п. 8 (R04): акимат видит оригинал с пометкой
+            if flag:
+                record["moderation"] = flag
             self._save(db, record, device_hash=device, request_id=request_id)
             event = self._event(db, "created", record, created_at)
         self._emit([event])
         return record, True
 
     # ------------------------------------------------------------ «Я тоже»
-    def metoo(self, complaint_id: str, device_id: str) -> tuple[dict, str]:
+    def metoo(self, complaint_id: str, device_id: str, note: dict | None = None) -> tuple[dict, str]:
         """«Я тоже» — одно на устройство. -> (исходная запись, result):
         added | already (уже нажимал) | author (это его собственная жалоба).
-        Новую запись не создаёт никогда; если нажали на дубль — засчитывается исходной."""
+        Новую запись не создаёт никогда; если нажали на дубль — засчитывается исходной.
+        note — текст, место, цель, категория из формы жалобы (R04, п. 9): видит только акимат; если «Похоже на»
+        ошиблось, сотрудник одним действием выделит это в отдельную жалобу жителя (separate.py)."""
         device = self.device_hash(device_id)
         now = rec.iso(self._now())
+        parsed = self.parse_metoo_note(note)
         with self._tx() as db:
             record = self._root(db, complaint_id)
             author = db.execute("SELECT device_hash FROM complaints_v2 WHERE id = ?", (record["id"],)).fetchone()[0]
@@ -354,6 +363,8 @@ class ComplaintStore:
                 db.execute("UPDATE complaint_metoo_v2 SET muted = 0 WHERE complaint_id = ? AND device_hash = ?",
                            (record["id"], device))
                 return record, "already"
+            if parsed:
+                self._add_metoo_note(db, record["id"], device, now, parsed)
             self._recount_metoo(db, record)
             self._save(db, record)
             event = self._event(db, "metoo", record, now)
@@ -662,8 +673,12 @@ class ComplaintStore:
         return original
 
     def unmark_duplicate(self, complaint_id: str, *, actor: str | None = None) -> dict:
-        """Волна 1, п. 9: «Это разные проблемы» — отменить ошибочное объединение. Люди, перенесённые из дубля
-        в «Я тоже» исходной (via = дубль), возвращаются; дубль снова самостоятельная жалоба, цель пересчитывается."""
+        """Волна 1, п. 9: «Это разные проблемы» — отменить ошибочное объединение (то же, что separate(c-…) R04:
+        снимает «Я тоже» дубля по всей цепочке исходных и возвращает перепривязанные дубли)."""
+        return self.separate(complaint_id, actor=actor)[0]
+
+    def _unmark_duplicate_simple(self, complaint_id: str, *, actor: str | None = None) -> dict:
+        """Прежняя простая отмена (только прямая исходная, по via) — оставлена для сравнения в тестах."""
         now = rec.iso(self._now())
         with self._tx() as db:
             duplicate = self._load(db, complaint_id)

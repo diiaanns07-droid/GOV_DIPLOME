@@ -225,7 +225,7 @@ def history(record: dict) -> list[dict]:
     проверили / вернули; плюс план решения и сообщения службы. По времени, старое сверху; без имён сотрудников."""
     out = []
     for index, entry in enumerate(record.get("status_history") or []):
-        if entry.get("duplicate_of") or entry.get("unmerged_from"):
+        if entry.get("duplicate_of") or entry.get("unmerged_from") or entry.get("separated_from"):
             continue
         if index == 0:
             out.append({"at": entry["at"], "kind": "created"})
@@ -254,7 +254,7 @@ def _events(record: dict) -> list[dict]:
     for index, entry in enumerate(history):
         if index == 0:
             continue  # «new» при создании — это действие самого жителя
-        if entry.get("duplicate_of") or entry.get("unmerged_from"):
+        if entry.get("duplicate_of") or entry.get("unmerged_from") or entry.get("separated_from"):
             continue  # объединение и разъединение — служебные действия, жителю не показываем
         kind = "reopened" if entry.get("reopened_by_residents") else "status"
         if kind:

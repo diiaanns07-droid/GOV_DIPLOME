@@ -47,6 +47,8 @@ ROUTES = (
     ("POST", "/complaints/{id}/photos/{upload}"),
     ("GET", "/complaints/{id}/photos/{photo}"),
     ("POST", "/complaints/{id}/unsubscribe"), # житель: «Отписаться» от «Я тоже»
+    ("GET", "/complaints/merged"),            # только сотрудник: что объединено с жалобами цели (п. 9, R04)
+    ("POST", "/complaints/{id}/separate"),    # только сотрудник: «Это разные проблемы» (п. 9, R04)
 )
 
 

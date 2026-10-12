@@ -238,7 +238,8 @@ def test_staff_component_has_one_primary_and_required_what_done():
     # третья — в отдельной форме fixForm для карточки R07 (там кнопки карточки на время формы скрыты).
     assert STAFF_JS.count("bk-btn--primary") == 3
     assert "window.BirgeComplaintStaff = { mount: mount, fixForm: fixForm };" in STAFF_JS
-    assert "if (isOpen() && !fixing) {" in STAFF_JS and "if (isOpen() && fixing) {" in STAFF_JS
+    assert "if (opts.fix !== false && isOpen() && !fixing) {" in STAFF_JS
+    assert "if (opts.fix !== false && isOpen() && fixing) {" in STAFF_JS
     assert re.search(r'name: "what_done", maxlength: String\(WHAT_DONE_MAX\), required: true', STAFF_JS)
     assert "var WHAT_DONE_MAX = 120;" in STAFF_JS                     # R11 §2.3: одна строка ≤ 120 знаков
     assert "staff.fixed.need_what" in STAFF_JS

@@ -6,8 +6,10 @@
  *   ещё причина, временная мера, следующее обновление (п. 2);
  *   «Обновление для всех» — одно сообщение автору и всем «Я тоже» (п. 3). Перед действием — «Увидят N человек».
  *
- *   BirgeComplaintStaff.mount(container, { complaintId, csrf: "<токен R02>" | () => токен, onChange(complaint) })
+ *   BirgeComplaintStaff.mount(container, { complaintId, csrf: "<токен R02>" | () => токен, onChange(complaint),
+ *                                         fix: false (без «Отметить исправленным»), compact, staffOnly })
  *     -> { refresh(), destroy() }
+ *   BirgeComplaintStaff.fixForm(container, { complaintIds, csrf, onDone, onCancel }) — форма для карточки цели R07.
  * Тексты — словарь R11 (fix.*, passport.*, broadcast.*, service.*), запасной — complaint-strings.js.
  */
 (function () {
@@ -225,19 +227,23 @@
       var p = current.passport_view || {};
       var r = current.resolution || {};
       var shown = C().displayStatus ? C().displayStatus(current) : current.status;
-      root.appendChild(h("p", { "class": "bc-staff__summary" }, [
-        h("strong", {}, current.code + " · "), h("span", { "class": "bk-status", "data-status": shown }, t("status." + shown)),
-        " · ", t("mine.reporters", { n: current.reporters || 1 })]));
-      // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
-      root.appendChild(h("p", { "class": "bc-meta" }, C().categoryLabel(current.category) +
-        (current.subtopic ? " · " + C().subtopicLabel(current.category, current.subtopic) : "")));
+      // opts.compact (карточка цели R07): статус, число людей и категорию карточка уже показывает — не повторяем.
+      if (!opts.compact) {
+        root.appendChild(h("p", { "class": "bc-staff__summary" }, [
+          h("strong", {}, current.code + " · "), h("span", { "class": "bk-status", "data-status": shown }, t("status." + shown)),
+          " · ", t("mine.reporters", { n: current.reporters || 1 })]));
+        // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
+        root.appendChild(h("p", { "class": "bc-meta" }, C().categoryLabel(current.category) +
+          (current.subtopic ? " · " + C().subtopicLabel(current.category, current.subtopic) : "")));
+      }
       if (p.update_overdue) root.appendChild(h("p", { "class": "bc-overdue" }, t("passport.update_overdue")));
       if (r.state) root.appendChild(h("p", { "class": "bc-meta" }, t("staff.votes", {
         yes: (r.votes || {}).yes || 0, no: (r.votes || {}).no || 0, cant: (r.votes || {}).cant || 0 })));
       var willSee = t("fix.will_see", { n: current.subscribers || current.reporters || 1 });
 
       // 1) «Отметить исправленным» → форма «Сообщить жителям об устранении» — главное действие карточки.
-      if (isOpen() && !fixing) {
+      //    opts.fix === false — в карточке цели R07: там своя кнопка «Отметить исправленным» (открывает fixForm).
+      if (opts.fix !== false && isOpen() && !fixing) {
         root.appendChild(h("div", { "class": "bc-staff__form" }, [
           h("button", { "class": "bk-btn bk-btn--primary bk-btn--block bc-staff__open-fix", type: "button",
                         onclick: function () {
@@ -247,7 +253,7 @@
                         } }, t("heat.mark_fixed")),
           h("p", { "class": "bc-meta" }, willSee)]));
       }
-      if (isOpen() && fixing) {
+      if (opts.fix !== false && isOpen() && fixing) {
         var preview = h("ul", { "class": "bc-thumbs bc-thumbs--small" });
         var input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", "class": "bc-photo-input" });
         input.addEventListener("change", function () {
@@ -295,14 +301,21 @@
 
     function refresh() {
       return call("GET", "/complaints/" + encodeURIComponent(id)).then(function (res) {
-        if (res.ok) { current = res.data.complaint; render(); }
+        // opts.staffOnly (карточка R07): не сотрудник (нет служебных полей) или ошибка — блока просто нет.
+        if (res.ok && opts.staffOnly && !(res.data.complaint && "subscribers" in res.data.complaint)) { root.hidden = true; return; }
+        if (res.ok) { current = res.data.complaint; root.hidden = false; render(); }
+        else if (opts.staffOnly) { root.hidden = true; }
         else { root.innerHTML = ""; root.appendChild(h("p", { "class": "bk-error" }, t("mine.error.title"))); }
       });
     }
 
     // Смена языка (в том числе после асинхронной загрузки словаря R11) — перерисовать подписи; открытая правка
     // паспорта закрывается без потери сохранённого (несохранённые поля — как после «Отмена»).
-    function onLang() { if (current) render(); }
+    function onLang() {
+      // Карточку R07 перерисовывают целиком: снятый со страницы блок отписывается сам (без утечки слушателей).
+      if (!root.isConnected) { window.removeEventListener("birge:lang", onLang); return; }
+      if (current) render();
+    }
     window.addEventListener("birge:lang", onLang);
     render();
     refresh();
@@ -341,12 +354,24 @@
     var input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", "class": "bc-photo-input" });
     var error = h("p", { "class": "bc-staff__fix-error", role: "alert", hidden: true });
     var send = h("button", { "class": "bk-btn bk-btn--primary bk-btn--block", type: "submit" }, t("fix.send"));
+    // «Увидят N человек» до действия (R11 §2.3): автор и «Я тоже» всех открытых обращений цели.
+    var willSee = h("p", { "class": "bc-meta bc-fixform__will-see", hidden: true });
+    Promise.all(ids.map(function (cid) {
+      return fetch(API + "/complaints/" + encodeURIComponent(cid), { credentials: "same-origin", headers: { "Accept": "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+          var c = j && j.data && j.data.complaint;
+          return c && typeof c.subscribers === "number" ? c.subscribers : 0;
+        }, function () { return 0; });
+    })).then(function (counts) {
+      var n = counts.reduce(function (a, b) { return a + b; }, 0);
+      if (n > 0) { willSee.textContent = t("fix.will_see", { n: n }); willSee.hidden = false; }
+    });
     var form = h("form", { "class": "bc-staff bc-staff__form bc-staff__fix bc-fixform" }, [
       h("p", { "class": "bc-label" }, t("fix.title")),
       h("label", { "class": "bc-staff__field" }, [h("span", { "class": "bc-label" }, t("fix.what_done")), what]),
       input,
       h("button", { "class": "bk-btn", type: "button", onclick: function () { input.click(); } }, t("fix.photo")),
-      preview, error, send,
+      preview, error, send, willSee,
       h("button", { "class": "bc-link", type: "button", onclick: function () { destroy(); if (opts.onCancel) opts.onCancel(); } },
         t("common.action.cancel"))]);
     function fail(text) { error.textContent = text; error.hidden = false; send.disabled = false; }
