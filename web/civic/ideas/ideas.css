@@ -119,7 +119,7 @@
 }
 /* Мягкое появление карточек после загрузки и смены вкладки: подъём на 8 px с проявлением, по очереди через 40 мс. */
 .ri-body--in > * {
-  animation: ri-card-in 280ms var(--ease) both;
+  animation: ri-card-in var(--t-base, 260ms) var(--ease-out, var(--ease)) both;
   animation-delay: calc(var(--ri-i, 0) * 40ms);
 }
 @keyframes ri-card-in {
@@ -313,12 +313,12 @@
 .ri-votes__w {
   font-size: var(--fs-caption);
 }
-/* Число «перекатывается»: +1 въезжает снизу, −1 — сверху (280 мс, ease-out). */
+/* Число «перекатывается»: +1 въезжает снизу, −1 — сверху (--t-base 260 мс, ease-out ui-kit). */
 .ri-roll-up {
-  animation: ri-roll-up 280ms var(--ease) both;
+  animation: ri-roll-up var(--t-base, 260ms) var(--ease-out, var(--ease)) both;
 }
 .ri-roll-down {
-  animation: ri-roll-down 280ms var(--ease) both;
+  animation: ri-roll-down var(--t-base, 260ms) var(--ease-out, var(--ease)) both;
 }
 @keyframes ri-roll-up {
   from {
@@ -366,13 +366,19 @@
 .ri .ri-card .ri-foot > .bk-btn.ri-support[aria-pressed="true"]:hover {
   background-color: var(--c-brand-hover);
 }
+.ri .ri-support,
+.ri .ri-capsule {
+  transition:
+    background-color var(--t-fast, 200ms) var(--ease),
+    transform var(--t-press, 120ms) var(--ease);
+}
 .ri .ri-support:active,
 .ri .ri-capsule:active {
-  transform: scale(0.96);
+  transform: scale(var(--press-scale, 0.96));
 }
-/* Отклик на нажатие: капсула чуть «подпрыгивает» (300 мс). */
+/* Отклик на нажатие: капсула чуть «подпрыгивает» (--t-base). Сжатие при нажатии — --t-press ui-kit. */
 .ri-pop {
-  animation: ri-pop 300ms var(--ease) 1;
+  animation: ri-pop var(--t-base, 260ms) var(--ease-out, var(--ease)) 1;
 }
 @keyframes ri-pop {
   0% {
@@ -724,6 +730,11 @@
   display: flex;
   margin-bottom: var(--s-3);
 }
+.ri-empty__ill {
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--s-2);
+}
 .ri-empty__art > .ri-tile {
   width: 56px;
   height: 56px;
@@ -796,7 +807,7 @@
 }
 /* Шаг въезжает на 16 px с проявлением — только при смене шага (240 мс, ease-out). */
 .ri-step-in {
-  animation: ri-step-in var(--t-base) var(--ease) both;
+  animation: ri-step-in var(--t-base, 260ms) var(--ease-out, var(--ease)) both;
 }
 @keyframes ri-step-in {
   from {
@@ -935,12 +946,12 @@
 .ri-sent__mark circle {
   stroke-dasharray: 158;
   stroke-dashoffset: 158;
-  animation: ri-draw 350ms var(--ease) forwards;
+  animation: ri-draw var(--t-slow, 340ms) var(--ease-out, var(--ease)) forwards;
 }
 .ri-sent__mark path {
   stroke-dasharray: 40;
   stroke-dashoffset: 40;
-  animation: ri-draw 250ms var(--ease) 300ms forwards;
+  animation: ri-draw var(--t-base, 260ms) var(--ease-out, var(--ease)) 300ms forwards;
 }
 @keyframes ri-draw {
   to {
@@ -972,7 +983,7 @@
   display: grid;
   gap: var(--s-3);
   padding: var(--s-4);
-  animation: ri-bar-in var(--t-base) var(--ease) both;
+  animation: ri-bar-in var(--t-base, 260ms) var(--ease-out, var(--ease)) both;
 }
 :where(.ri-pick) {
   border-radius: var(--r-l);
@@ -1017,6 +1028,16 @@
 }
 .rw-head > .bk-btn {
   flex: 0 0 auto;
+}
+/* Телефон: «Район» во всю ширину (как в «Рядом»), под ним — «Добавить запись» во всю ширину. */
+@media (max-width: 760px) {
+  .rw-head > .bk-field,
+  .rw-head > .bk-btn {
+    flex: 1 1 100%;
+  }
+  .rw-head select {
+    width: 100%;
+  }
 }
 .rw-list {
   display: grid;

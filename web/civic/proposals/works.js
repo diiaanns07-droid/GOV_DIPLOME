@@ -60,6 +60,7 @@
       "works.form.district": "Район",
       "works.form.until": "до {date}",
       "works.form.error": "Не получилось сохранить. Проверьте связь и повторите.",
+      "staff.login.note": "Учётную запись выдаёт администратор.",
     },
     kk: {
       "works.form.add": "Жазба қосу",
@@ -93,6 +94,7 @@
       "works.form.district": "Аудан",
       "works.form.until": "мерзімі: {date}",
       "works.form.error": "Сақтау мүмкін болмады. Байланысты тексеріп, қайталаңыз.",
+      "staff.login.note": "Тіркелгіні әкімші береді.",
     },
   };
 
@@ -273,14 +275,26 @@
       } }, DISTRICTS.map(function (d) {
         return h("option", { value: d, selected: d === state.district, text: tr("district." + d) });
       }));
+      var list = h("div", { class: "rw-list" });
+      var noStaff = state.error && (state.error.status === 401 || state.error.status === 403);
+      if (noStaff) {
+        // Без входа — ни района, ни «Добавить запись»: одно состояние «войдите» (R11 INTEGRATION §9.3 b, §11.4) —
+        // рисунок «пропуск» ui-kit, подсказка и одна главная «Войти».
+        var ill = root.BirgeUI && typeof root.BirgeUI.illustration === "function";
+        root.BirgeUI.state(list, "empty", { title: tr("proposal.need_staff"), text: tr("staff.login.note"), illustration: "staff",
+          icon: ill ? null : "user", action: { label: tr("staff.login.submit"), onClick: function () {
+            if (root.BirgeShell) root.BirgeShell.setSection("map");
+            if (root.CivicShell && root.CivicShell.openEditor) root.CivicShell.openEditor();
+          } } });
+        rootEl.appendChild(list);
+        return;
+      }
       rootEl.appendChild(h("div", { class: "rw-head" }, [
         h("div", { class: "bk-field" }, [h("label", { class: "bk-field__label", for: "rw-district", text: tr("works.form.district") }), select]),
         button("bk-btn--primary", tr("works.form.add"), "plus", { "data-key": "add", onclick: function () { openForm(null); } }),
       ]));
-      var list = h("div", { class: "rw-list" });
       if (state.error) {
-        if (state.error.status === 401 || state.error.status === 403) root.BirgeUI.state(list, "empty", { title: tr("proposal.need_staff"), icon: "user" });
-        else root.BirgeUI.state(list, "error", { action: { onClick: load } });
+        root.BirgeUI.state(list, "error", { action: { onClick: load } });
       } else if (!state.items) {
         root.BirgeUI.state(list, "loading");
       } else if (!state.items.length) {

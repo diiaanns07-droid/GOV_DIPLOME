@@ -130,6 +130,7 @@
       "idea.check.progress": "«Да»: {n} из 4",
       "idea.check.ready": "Все четыре — «да»: можно делать проектом",
       "idea.hide_short": "Скрыть",
+      "staff.login.note": "Учётную запись выдаёт администратор.",
     },
     kk: {
       "idea.status.review": "Тексерілуде",
@@ -183,6 +184,7 @@
       "idea.check.progress": "«Иә»: {n}/4",
       "idea.check.ready": "Төртеуі де «иә»: жобаға айналдыруға болады",
       "idea.hide_short": "Жасыру",
+      "staff.login.note": "Тіркелгіні әкімші береді.",
     },
   };
 
@@ -261,6 +263,9 @@
   }
   function toast(text, opts) {
     if (root.BirgeUI) root.BirgeUI.toast(text, opts);
+  }
+  function hasIllustrations() {
+    return !!(root.BirgeUI && typeof root.BirgeUI.illustration === "function");
   }
   function stateBox(el, kind, opts) {
     if (root.BirgeUI) return root.BirgeUI.state(el, kind, opts || {});
@@ -591,7 +596,10 @@
       if (state.error) {
         if (akimat && (state.error.status === 401 || state.error.status === 403)) {
           // R11 разбор FINAL-3: кнопка входа прямо здесь (иначе вход спрятан в меню аватара)
-          stateBox(body, "empty", { title: tr("proposal.need_staff"), icon: "user", action: { label: tr("staff.login.submit"),
+          // Одно состояние «войдите» на все разделы (R11 INTEGRATION §9.3 b, §9.5 a): рисунок «пропуск» ui-kit,
+          // подсказка «Учётную запись выдаёт администратор», одна главная «Войти» (старый ui-kit — значок 48).
+          stateBox(body, "empty", { title: tr("proposal.need_staff"), text: tr("staff.login.note"), illustration: "staff",
+            icon: hasIllustrations() ? null : "user", action: { label: tr("staff.login.submit"),
             onClick: function () { if (root.BirgeShell) root.BirgeShell.setSection("map"); if (root.CivicShell && root.CivicShell.openEditor) root.CivicShell.openEditor(); } } });
         } else {
           stateBox(body, "error", { action: { onClick: load } });
@@ -629,8 +637,8 @@
           rootEl.appendChild(h("p", { class: "bk-meta ri-onevote", id: "ri-onevote" }, [icon("info"), h("span", { text: tr("proposal.one_vote") })]));
         }
         if (!shown.length) {
-          if (state.tab === "project") emptyBox(body, tr("idea.empty.project"), null, ["square", "sports"]);
-          else if (state.tab === "rejected") emptyBox(body, tr("idea.empty.rejected"), null, ["check"]);
+          if (state.tab === "project") emptyBox(body, tr("idea.empty.project"), null, ["square", "sports"], "list");
+          else if (state.tab === "rejected") emptyBox(body, tr("idea.empty.rejected"), null, ["check"], "list");
           else emptyBox(body, tr("idea.empty.title"), tr("idea.empty.text"));
         }
         shown.forEach(function (item) { body.appendChild(residentCard(item)); });
@@ -798,11 +806,19 @@
       body.appendChild(h("p", { class: "bk-sr-only", role: "status", text: tr("common.state.loading") }));
     }
     // Пусто: иллюстрация из линий ui-kit (три плитки видов объектов), заголовок и одна строка подсказки.
-    function emptyBox(body, title, text, kinds) {
-      body.appendChild(h("div", { class: "ri-empty", role: "status" }, [
-        h("div", { class: "ri-empty__art", "aria-hidden": "true" }, (kinds || ["square", "playground", "lighting"]).map(function (k) {
+    function emptyBox(body, title, text, kinds, ill) {
+      var art;
+      if (hasIllustrations()) {
+        // Рисунок из линий ui-kit R11 (тот же, что у других разделов) — единый вид пустых состояний.
+        art = h("span", { class: "ri-empty__ill", "aria-hidden": "true" });
+        art.innerHTML = root.BirgeUI.illustration(ill || "idea");
+      } else {
+        art = h("div", { class: "ri-empty__art", "aria-hidden": "true" }, (kinds || ["square", "playground", "lighting"]).map(function (k) {
           return h("span", { class: "ri-tile", "data-kind": k }, [icon(KIND_ICON[k] || k)]);
-        })),
+        }));
+      }
+      body.appendChild(h("div", { class: "ri-empty", role: "status" }, [
+        art,
         h("p", { class: "ri-empty__title", text: title }),
         text ? h("p", { class: "ri-empty__text", text: text }) : null,
       ]));
@@ -810,7 +826,7 @@
 
     // ── акимат: идеи на проверке ──
     function renderStaffIdeas(body, list) {
-      if (!list.length) emptyBox(body, tr("idea.empty.review"), null, ["check"]);  // «Новых идей на проверке нет»
+      if (!list.length) emptyBox(body, tr("idea.empty.review"), null, ["check"], "done");  // «Новых идей на проверке нет»
       list.forEach(function (item) { body.appendChild(staffCard(item)); });
       var decided = (state.items || []).filter(function (x) { return x.status === "rejected" || x.status === "project"; });
       if (!decided.length) return;
