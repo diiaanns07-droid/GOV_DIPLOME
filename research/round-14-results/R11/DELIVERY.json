@@ -4,8 +4,8 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "85a11f09 — последний коммит web/civic/ui-kit и web/civic/i18n: чистый дизайн (токены, компоненты, clean.html), словарь 1300 ключей ru=kk",
-  "tested_sha": "FINAL-2 шаг 4 R01 0f5101a3 (содержит R11 8d58318): review_build 44/44, kk 0, шаги 6–7 PASS, первый кадр = эталон 8bbace7; ui-kit @ 85a11f09: test_r11_ui_kit 18/18, витрина 4/4, clean.html 12 кадров 0 ошибок; FINAL-2 + ui-kit 85a11f09 — см. tests",
+  "code_sha": "2b8f72e2 — последний коммит web/civic/ui-kit и web/civic/i18n (ui-kit чистого дизайна — 85a11f09, после него только новые ключи R13 и ask.staff.week), словарь 1340 ключей ru=kk",
+  "tested_sha": "FINAL-2 шаг 4 R01 0f5101a3: как есть (R11 8d58318) и с ui-kit/i18n R11 85a11f09 (чистый дизайн) — в обоих случаях review_build 44/44, kk 0, шаги 6–7 PASS, первый кадр = эталон; с 85a11f09 — сценарий R10 demo_flow c2e3751: 172/0/0",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
     "c75a9ac UX_SPEC.md v1",
@@ -100,7 +100,9 @@
     "12 окт: tap_targets.cjs на 0f5101a3 — зона < 48 только у кнопки «i» MapLibre (24×24); с патчем R01_attrib_tap — 0 на 375, 1 угловая 48×32 на 1366": "PASS с патчем",
     "12 окт: QR-паспорт R12 /?report= — язык не меняется, вид «Житель», одна главная кнопка, неизвестный номер — «Нысан табылмады»; лист печати — 2 языка, номер, домен": "PASS (3 правки — UX_REVIEW разбор 14)",
     "12 окт: ui-kit 85a11f09 (чистый дизайн) — test_r11_ui_kit 18/18 (шкала 13/15/17/22/28, веса 400/600), i18n_tools check 1300 ключей, витрина 375/1366 × ru/kk 4/4, clean.html 12 кадров: 0 ошибок JS, 0 ключей, 0 прокрутки вбок": "PASS",
-    "12 окт: FINAL-2 0f5101a3 + ui-kit/i18n R11 85a11f09 — review_build и R10 demo_flow c2e3751": "идёт (см. STATUS.md)"
+    "12 окт: FINAL-2 0f5101a3 + ui-kit/i18n R11 85a11f09 (чистый дизайн) — review_build: сценарий 44/44, kk 0, витрина под CSP 4/4, кабинет kk, шаги 1–2, 6, 6–7 PASS, первый кадр = эталон 8bbace7": "PASS",
+    "12 окт: FINAL-2 0f5101a3 + ui-kit/i18n R11 85a11f09 — R10 tests/e2e/demo_flow.cjs c2e3751 (1366/375 × ru/kk, шаги 0–7 и E): 172 PASS / 0 FAIL / 0 NOT_RUN": "PASS",
+    "12 окт: R13 «Вопрос акиму» (afb77b6) — разбор по SCHEMES §3–4 по кадрам R13; 38 ключей R13 в словаре, missing_keys web/civic/qa = 0 (кроме составного ask.staff.answer_)": "PASS с 5 правками (UX_REVIEW разбор 15)"
   },
   "known_limits": [
     "Чистый дизайн в ui-kit меняет только компоненты bk-*; модули ролей со своим CSS (R07 heat.css, R08 akim.css, R09 complaint.css, оболочка R01) выглядят по-новому только после правок CLEAN_PASS §3",
@@ -110,7 +112,7 @@
     "Скриншоты — headless Chromium с программным WebGL, без интернета (запасной фон карты)",
     "Казахский — R11 и черновики ролей, не проверен носителем; 64 места ⚑ в KK_REVIEW.md; 7 правок уточнений не перенесены в categories_v2.json пакета"
   ],
-  "next_step": "R01 FINAL-3: взять ui-kit/i18n R11 85a11f09 + правки CLEAN_PASS R01 №1–8 + patches R01_badge_avoid, R01_attrib_tap; роли R07/R08/R09 — CLEAN_PASS §3; R11 разбирает FINAL-3 (review_build, tap_targets, сверка с clean.html) и код R06/R13 по SCHEMES_R06_R13",
+  "next_step": "R01 FINAL-3: взять ui-kit/i18n R11 2b8f72e2 (DELIVERY code_sha) + правки CLEAN_PASS R01 №1–8 + patches R01_badge_avoid, R01_attrib_tap; роли R07/R08/R09 — CLEAN_PASS §3; R11 разбирает FINAL-3 (review_build, tap_targets, сверка с clean.html) и код R06/R13 по SCHEMES_R06_R13; R13 «Вопрос акиму» принят с 5 правками (разбор 15), patch пульса R13 для R08 — принят",
   "wave_1": {
     "subtopics_kk": "39 уточнений вычитаны → ключи subtopic.<id>; 7 правок к черновику координатора — kk_review_extra.md",
     "emergency": "complaint.emergency.* + emergency.service.<номер>; ui-kit .bk-banner--danger; правило — UX_SPEC §10",
