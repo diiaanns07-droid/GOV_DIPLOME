@@ -201,7 +201,7 @@ def test_outsider_cannot_reopen_verified_fix(svc):
 STAFF_JS = ROOT / "web" / "civic" / "feedback" / "complaint-staff.js"
 
 
-@pytest.mark.xfail(strict=True, reason="B-056 (R10): fetch(blob:) под CSP — patch P-R09-3 для R09, ещё не в сборке")
+# P-R09-3 применил R01 в FINAL-3 (на R09 8a1d390): обычный тест-регрессия, xfail снят (так просит INTEGRATION R15).
 def test_staff_after_photo_is_not_read_through_blob_fetch():
     if not STAFF_JS.is_file():
         pytest.skip("в этой сборке нет web/civic/feedback/complaint-staff.js (R09 волна 2)")
