@@ -45,17 +45,28 @@
   background: var(--c-surface, #ffffff);
   box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
 }
-/* Смена вида панели — мягкое проявление (enterDock): только прозрачность, положение не трогаем */
+/* Смена вида панели (enterDock: каталог ↔ размещение, карточка, подсказка): панель проявляется, а её содержимое
+   приподнимается на 8 px за --t-base — «выезжает, а не появляется» (чек-лист п. 7, R10 motion_check). Сама панель
+   не сдвигается: fitDock меряет её сразу после отрисовки (отступ от шапки, сдвиг от легенды хозяина), сдвиг бы его сбил. */
 .b3d-dock--enter {
-  animation: b3d-dock-in var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  animation: b3d-dock-in var(--t-base, 260ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+}
+.b3d-dock--enter > * {
+  animation: b3d-dock-rise var(--t-base, 260ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 @keyframes b3d-dock-in {
   from {
     opacity: 0;
   }
 }
+@keyframes b3d-dock-rise {
+  from {
+    translate: 0 8px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .b3d-dock--enter {
+  .b3d-dock--enter,
+  .b3d-dock--enter > * {
     animation: none;
   }
 }

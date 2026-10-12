@@ -2,6 +2,8 @@
 // (claude/r14-R10 b84d46ff): сразу после смены состояния читаем document.getAnimations() — длительность, кривая, свойства;
 // панель должна выезжать (transform/translate), а не только проявляться; 200–350 мс (±30); ease-out; с «уменьшить
 // движение» анимаций нет. Анимация постройки 3D (WebGL, 1,1 с) сюда не попадает — она не CSS и описана в CHECKLIST.md.
+// Отличие от R10: кривую CSS-анимации берём из ключевых кадров (у R10 она читается как «linear» — так по спецификации
+// возвращает getTiming(); R10 пропускает «linear» только вместе с opacity).
 //
 //   NODE_PATH="$(npm root -g)" node tests/civic/R05/build3d/motion_check.mjs [--kit <выгрузка ui-kit R11>] [--out <файл.json>]
 //
@@ -70,7 +72,10 @@ const RUNNING = () =>
       const props = a.transitionProperty || [...new Set(kf.flatMap((k) => Object.keys(k).filter((x) => !["offset", "easing", "composite", "computedOffset"].includes(x))))].join(",");
       const el = t && t.nodeType === 1 ? t : t && t.element;
       const mine = !!(el && el.closest && el.closest(".b3d, .b3d-labels"));
-      return { mine, type: a.constructor.name, name: a.animationName || "", props, duration: Math.round(Number(tm.duration) || 0), easing: tm.easing || "", iterations: tm.iterations,
+      // У CSS-анимации (@keyframes) кривая по спецификации лежит в ключевых кадрах (animation-timing-function), а
+      // getTiming().easing всегда «linear» — берём кривую первого кадра. У переходов и Web Animations — из getTiming().
+      const kfEase = a.constructor.name === "CSSAnimation" && kf.length && kf[0].easing && kf[0].easing !== "linear" ? kf[0].easing : "";
+      return { mine, type: a.constructor.name, name: a.animationName || "", props, duration: Math.round(Number(tm.duration) || 0), easing: kfEase || tm.easing || "", iterations: tm.iterations,
         target: el ? "." + String(el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className).trim().split(/\s+/).slice(0, 2).join(".") : "?" };
     })
     .filter((x) => x.mine && x.iterations !== Infinity);
