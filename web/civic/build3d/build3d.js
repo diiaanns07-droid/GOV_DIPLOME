@@ -340,7 +340,8 @@
   // кнопкой «3D» оболочки R01 (web/interface.js: THREE_D_MIN_PITCH 30, наклон кнопки 52°).
   var PITCH_3D = 30;
   var TILT_3D = 52;
-  var OUTLINE_COLOR = 0x176b4a; // пунктир границы проекта (бренд)
+  // Пунктир границы проекта — вторичный цвет текста ui-kit (дизайн-марафон: «зелёный — только «исправлено»»; было #176b4a).
+  var OUTLINE_COLOR = 0x5b6a64;
   var OUTLINE_SELECTED = 0x152c26; // выбранный проект — как его табличка: сплошной #152c26 (дизайн-марафон; было — синий фокуса)
 
   // ───────────── mount ─────────────
@@ -1664,7 +1665,8 @@
         };
       }
       if (ghost) {
-        var color = tint || (invalid ? 0xb3362e : 0x176b4a);
+        // Призрак: можно — графит ui-kit (не зелёный: зелёный в Birge — только «исправлено»), нельзя — красный.
+        var color = tint || (invalid ? 0xb3362e : 0x3f524c);
         return {
           solid: new THREE.MeshLambertMaterial({ color: color, emissive: color, emissiveIntensity: 0.25, transparent: true, opacity: 0.55 }),
           glass: null,
@@ -2034,7 +2036,8 @@
           revealMats.forEach(function (m) {
             m.userData.reveal.value = k >= 1 ? 1e4 : k;
           });
-          if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(Math.min(1, Math.max(0, (k - 0.15) / 0.75)));
+          // Тень — когда части уже выросли (иначе на пустом газоне лежат тени будущих деревьев).
+          if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(Math.min(1, Math.max(0, (k - 0.45) / 0.55)));
           if (obj.dust) obj.dust.userData.step(k);
           if (k >= 1) {
             obj.building = false;
@@ -2080,7 +2083,7 @@
           objs.forEach(function (obj) {
             if (obj.removing || obj.building || S.objects[obj.p.id] !== obj) return;
             setReveal(obj, k >= 1 ? 1e4 : k);
-            if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(k);
+            if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(Math.max(0, (k - 0.4) / 0.6));
           });
           return k < 1;
         },
@@ -2088,13 +2091,13 @@
       repaint();
     }
 
-    // Кольцо на земле: от центра объекта к его краю расходится и тает мягкий овал цвета бренда (~0.8 с).
+    // Кольцо на земле: от центра объекта к его краю расходится и тает мягкий овал цвета бренда #152c26 (~0.8 с).
     function makePulse(obj) {
       var k = Core.KINDS[obj.p.kind];
       var rx = k.line ? 7 : k.w / 2 + 1,
         ry = k.line ? 7 : k.d / 2 + 1;
       var geo = new THREE.RingGeometry(0.86, 1, 72);
-      var mat = new THREE.MeshBasicMaterial({ color: 0x2f7d5b, transparent: true, opacity: 0, depthWrite: false });
+      var mat = new THREE.MeshBasicMaterial({ color: 0x152c26, transparent: true, opacity: 0, depthWrite: false });
       var ring = new THREE.Mesh(geo, mat);
       ring.frustumCulled = false;
       ring.renderOrder = 5;
@@ -2109,7 +2112,7 @@
         var e = easeOutCubic(Math.min(1, kk / 0.8));
         var sc = 0.35 + 0.8 * e;
         ring.scale.set(rx * sc, ry * sc, 1);
-        mat.opacity = 0.34 * (1 - e) * Math.min(1, kk / 0.08);
+        mat.opacity = 0.24 * (1 - e) * Math.min(1, kk / 0.08);
       };
       group.userData.step(0);
       return group;
