@@ -292,6 +292,24 @@ async function akimat(browser, base, srv, width, height, lang) {
     const row = await page.$(".bc-inbox__row");
     if (row) { await row.click(); await sleep(1500); }
     await shot(page, tag, "23-inbox-detail");
+    // Карточка цели R07 на карте: блок сотрудника R09 (паспорт, «Обновление для всех») и форма «что сделали».
+    // Открытое настоящее обращение у остановки (демо-примеры не меняются) — синтетика, своё устройство.
+    await fetch(base + "/api/civic/v2/complaints", { method: "POST", headers: { "Content-Type": "application/json",
+      "X-Birge-Device": "r09tourstaff" + Math.random().toString(36).slice(2, 12) },
+      body: JSON.stringify({ text: TEXT[lang], category: "lighting", point: STOP, target: { kind: "object", id: "osm-node-4109037549" } }) }).catch(() => null);
+    await page.evaluate(() => window.BirgeShell?.setSection?.("map"));
+    await sleep(1200);
+    await tapStop(page, width);
+    const card = await page.waitForSelector(".r07-card", { timeout: 8000 }).then(() => true, () => false);
+    if (card) {
+      await sleep(1200);
+      await shot(page, tag, "24-r07-card-staff");
+      const take = await page.$(".r07-card [data-act='take']");
+      if (take) { await take.click(); await sleep(1500); }
+      const fixed = await page.$(".r07-card [data-act='fixed']");
+      if (fixed) { await fixed.click(); await page.waitForSelector(".r07-fixform", { timeout: 4000 }).catch(() => null); await sleep(600);
+        await shot(page, tag, "25-r07-fixform"); }
+    }
   } finally { await ctx.close(); }
 }
 
