@@ -4,7 +4,7 @@
  "branch": "claude/r14-R11",
  "base_sha": "af77b78",
  "restored_from": null,
- "code_sha": "6a56d4f1 — последний коммит web/civic/ui-kit и web/civic/i18n (дизайн-марафон, круги 0–4): всё из 58b28edc + отклик нажатия и появление свойствами scale/translate (R10 B-068: не спорят с transform модулей), стекло внутри стекла — сплошное (меню в шапке, R01 25.3), карточки на стекле белые с волосяной линией (R13), числа у вкладок скрыты на телефоне, мягкая смена статуса и «встающая» галочка «Проверено жителями», .bk-menu__radio; словарь 1422 ключа ru=kk (akim.decision.forbidden — что делать)",
+ "code_sha": "d2ed919f — последний коммит web/civic/ui-kit и web/civic/i18n (дизайн-марафон, круги 0–4): всё из 58b28edc + отклик нажатия и появление свойствами scale/translate (R10 B-068: не спорят с transform модулей), стекло внутри стекла — сплошное (меню в шапке, R01 25.3), карточки на стекле белые с волосяной линией (R13), числа у вкладок скрыты на телефоне, мягкая смена статуса и «встающая» галочка «Проверено жителями», .bk-menu__radio, KPI на стекле без рамки, пункты меню вложены на 8 со скруглением 10; словарь 1422 ключа ru=kk (akim.decision.forbidden — что делать)",
  "tested_sha": "R01 41ccb57a как есть: review_build 44/44, kk 0, missing_keys 0, шаги 6–7 PASS, первый кадр = эталон. R01 41ccb57a + ui-kit R11 6a56d4f1: design_audit — зон < 44 px 0, без имени 0, тень в тени 0; нажатие «Сообщить о проблеме» — центр 683 → 818 из-за web/style.css R01 (правка 12.1 + R09 12.2 → 683 → 683, проверено). Предпросмотр 41ccb57a + ветки ролей + ui-kit R11: design_audit — весов 700 0, книга экранов 49 кадров. Ранее 65343341 + ui-kit: glass_contrast худший 7,38. test_r11_ui_kit 21/21, витрина 4/4",
  "push_status": "см. STATUS.md и финальное сообщение",
  "also_in_package_branch": [
@@ -140,7 +140,7 @@
   "Скриншоты — headless Chromium с программным WebGL, без интернета (запасной фон карты)",
   "Казахский — R11 и черновики ролей, не проверен носителем; 64 места ⚑ в KK_REVIEW.md; 7 правок уточнений не перенесены в categories_v2.json пакета"
  ],
- "next_step": "R01: взять ui-kit/i18n R11 6a56d4f1 и правки INTEGRATION §9–§13 (12.1 web/style.css :active через translate — B-068; §9.1 b/c отступы и #map-status; меню bk-glass--menu); роли — свои пункты §9–§13 (D-1 колонка 720 для всех списков); R11 — круг 5 на следующей сборке",
+ "next_step": "R01: взять ui-kit/i18n R11 d2ed919f и правки INTEGRATION §9–§15 (12.1 web/style.css :active через translate — B-068; §9.1 b/c отступы и #map-status; меню bk-glass--menu); роли — свои пункты §9–§15 (D-1 колонка 720 для всех списков); R11 — круг 5 на следующей сборке",
  "wave_1": {
   "subtopics_kk": "39 уточнений вычитаны → ключи subtopic.<id>; 7 правок к черновику координатора — kk_review_extra.md",
   "emergency": "complaint.emergency.* + emergency.service.<номер>; ui-kit .bk-banner--danger; правило — UX_SPEC §10",
@@ -183,7 +183,7 @@
  "design_marathon": {
   "book": "research/round-14-results/R11/DESIGN_BOOK.md — 27 экранов ru | kk, 1366 и 375 (design/book/, 49 JPEG), круг 4 — предпросмотр R01 41ccb57a + модули из веток ролей + ui-kit R11; сводка по 12 пунктам",
   "before_after": "research/round-14-results/R11/design/round1 (ui-kit до/после и правки соседям, проверенные вставкой CSS), round2 (состояния), round3-icons",
-  "edits_for_roles": "research/round-14-results/R11/INTEGRATION.txt §9 (круг 1), §10 (состояния), §11 (книга), §12 (B-068, стекло в стекле), §13 (решения по вопросам соседей D-1…D-8)",
+  "edits_for_roles": "research/round-14-results/R11/INTEGRATION.txt §9 (круг 1), §10 (состояния), §11 (книга), §12 (B-068, стекло в стекле), §13 (решения D-1…D-8), §14 (предпросмотр: стекло, состояния), §15 (R01: «i» карты на телефоне, подпись 13 px)",
   "tools": [
    "tests/civic/R11/review/design_audit.cjs",
    "tests/civic/R11/review/design_pairs.cjs",
