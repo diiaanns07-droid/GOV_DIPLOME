@@ -459,7 +459,7 @@ body.civic-mode .civic-explore #map-status:not(.hidden) {
   position: fixed; z-index: 48; top: auto; left: calc(50% - 220px); right: auto; bottom: 96px; transform: translateX(-50%);
   width: max-content; max-width: min(480px, calc(100vw - 480px)); margin: 0; padding: 8px 14px; border: 0; border-radius: 10px;
   background: rgba(21, 44, 38, 0.86); color: #fff; box-shadow: none; font-size: 13px; line-height: 1.4; text-align: center;
-  transition: opacity 0.4s ease, visibility 0.4s;
+  transition: opacity var(--t-slow, 340ms) var(--ease, ease-out), visibility var(--t-slow, 340ms);  /* R11 15.4 */
 }
 body.civic-mode .civic-explore #map-status[data-faded="1"] { opacity: 0; visibility: hidden; pointer-events: none; }
 @media (max-width: 760px) {
@@ -675,7 +675,7 @@ body.civic-mode .birge-legend-q { font-size: 15px; font-weight: 600; }
    текстом); зона нажатия 48 (::after) работает и у кнопки с position: absolute. Строка — тихая капсула. */
 body.civic-mode .maplibregl-ctrl-attrib-button { position: absolute; top: 2px; right: 2px; }
 body.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact-show { border-radius: 12px; padding: 4px 30px 4px 10px; min-height: 28px;
-  display: flex; align-items: center; font-size: 11px !important; color: var(--c-text-2, #5b6a64); }
+  display: flex; align-items: center; font-size: 13px !important; color: var(--c-text-2, #5b6a64); }  /* шкала: не мельче 13 (R11 15.2) */
 body.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact-show a { color: inherit; }
 
 /* Движение (чек-лист №7): 200–280 мс, ease-out ui-kit (--ease), только появление — скрытие мгновенное, чтобы проверки
@@ -801,3 +801,8 @@ body.civic-mode .civic-state strong, body.civic-mode .civic-state b { font-weigh
 body.civic-mode .civic-state { margin: 8px 16px 0; }
 body.civic-mode .civic-state[data-kind="warn"] { color: var(--glass-warn, #754c0f); }
 body.civic-mode .civic-state[data-kind="error"] { color: var(--glass-danger, #9a2e28); }
+/* Телефон: «i» подписи карты — у левого края над шторкой; справа его накрывал столбец кнопок карты, когда виден компас
+   (паспорт по QR, 3D, повёрнутая карта) — R11 INTEGRATION 15.1. */
+@media (max-width: 760px) {
+  body.civic-mode .maplibregl-ctrl-bottom-right { right: auto; left: 8px; }
+}

@@ -8,7 +8,7 @@
  *   2  сетка — отступы (padding, gap) не кратные 4 px у видимых блоков;
  *   6  глубина — тень внутри тени (элемент с box-shadow внутри предка с box-shadow, кроме стекла и фокуса);
  *   7  движение — transition/animation длиннее 350 мс (кроме пульса bk-pulse/r07-pulse);
- *   9  иконки — svg.ic с толщиной линии не 2 (кроме .ic--48 и иллюстраций .bk-ill — линия 1.5 намеренно);
+ *   9  иконки — видимая толщина линии svg.ic (линия × размер / 24) вне 1,4–2,4 px (кроме .ic--48 и иллюстраций .bk-ill);
  *   10 нажатия — кнопки/ссылки меньше 44 px по меньшей стороне; кнопки без видимой подписи и без aria-label.
  * Итог — по пунктам и классам (первые 2 класса), с примером текста.
  */
@@ -56,7 +56,7 @@ async function audit(p) {
       }
       const td = ms(s.transitionDuration), ad = s.animationName !== "none" ? ms(s.animationDuration) : 0;
       if ((td > 350 || ad > 350) && !/pulse|spin|skel|shimmer/i.test(s.animationName + " " + k)) add("motion", `${k} · ${td > 350 ? "transition " + td : "animation " + s.animationName + " " + ad}ms`, own);
-      if (e.matches("svg.ic:not(.ic--48)")) { /* 48 px в пустых состояниях — крупный рисунок, линия 1.5 (ui-kit) */ const w = parseFloat(s.strokeWidth); if (w && w !== 2) add("icon", `${key(e.parentElement)} · ${w}`, ""); }
+      if (e.matches("svg.ic:not(.ic--48)")) { /* видимая толщина = линия × размер / 24 (viewBox): у значка 20 px при линии 2 — 1,67 px; норма 1,4–2,4 px; 48 px в пустых состояниях — крупный рисунок (ui-kit) */ const w = parseFloat(s.strokeWidth), px = w * e.getBoundingClientRect().width / 24; if (w && (px < 1.4 || px > 2.4)) add("icon", `${key(e.parentElement)} · линия ${w} → ${px.toFixed(1)} px`, ""); }
       if (e.matches("button, a[href], [role=button], [role=tab], [role=menuitem], [role=menuitemradio], summary")) {
         const b = e.getBoundingClientRect();
         if (Math.min(b.width, b.height) < 43.5 && !e.closest(".maplibregl-marker")) add("small", `${k} · ${Math.round(b.width)}×${Math.round(b.height)}`, e.textContent.trim() || e.getAttribute("aria-label"));
@@ -108,7 +108,7 @@ async function audit(p) {
   await browser.close();
   fs.writeFileSync(OUT, JSON.stringify({ screens, total }, null, 1));
   const names = { offscale: "3 размер вне шкалы", weight: "3 вес не 400/600", long: "3 строка > 70 знаков", grid: "2 отступ не кратен 4", shadow2: "6 тень в тени",
-    motion: "7 движение > 350 мс", icon: "9 толщина иконки ≠ 2", small: "10 зона < 44 px", unnamed: "10 кнопка без подписи" };
+    motion: "7 движение > 350 мс", icon: "9 видимая толщина иконки вне 1,4–2,4 px", small: "10 зона < 44 px", unnamed: "10 кнопка без подписи" };
   for (const [b, title] of Object.entries(names)) {
     const rows = Object.entries(total[b] || {}).sort((a, c) => c[1].n - a[1].n);
     console.log(`\n== ${title}: ${rows.length} видов, ${rows.reduce((a, r) => a + r[1].n, 0)} элементов`);

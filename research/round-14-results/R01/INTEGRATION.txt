@@ -820,3 +820,6 @@ web/civic/offline/{style.json, boot.js}. Скриншоты до/после — 
 25.12 R05 2b33c59: web/civic/build3d (модели аккуратнее, постройка плавнее, previewOf) + data/previews/*.png (10 картинок
      240×160 и @2x) — ui/web_server.py: эти 10 файлов в CIVIC_ASSETS и тип .png → image/png (200, проверено curl);
      tests/civic/R05/build3d (design_shots, make_previews, test_models). Панель R05 с превью — их следующая поставка.
+25.13 R11 9a139eb8 (ui-kit: BirgeUI.loginState — одно «войдите как сотрудник» для R06/R09/R13) и R14 54f8003b (документы).
+     По R11 §15: 15.1 — телефон, «i» подписи карты у левого края над шторкой (справа его накрывал столбец кнопок с компасом);
+     15.2 — развёрнутая подпись 13 px; 15.4 — #map-status гаснет за --t-slow (было 0,4 с в более сильном правиле).
