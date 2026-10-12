@@ -5,8 +5,8 @@
  "base_sha": "4bbf456 (claude/round-14-package)",
  "restored_from": "— (новые пути tests/e2e/, tests/civic/R10/; в раунде 13 их не было)",
  "code_sha": "тесты R10 ветки claude/r14-R10 (12 окт): шапка FINAL-3 78a59b6, 7988ad7 (R01 INTEGRATION 21.6), «Идеи» и «Вопрос акиму» 1672078 и новее; ACCEPTED.json шаг 6",
- "tested_sha": "марафон: R01 de689c6f (круг 3 R10); FINAL-3 со стеклом 61be62e6 принят (ACCEPTANCE_FINAL3 §8)",
- "status": "partial — дизайн-марафон: 3 круга визуального контроля (8e67c65 → FINAL-3 61be62e6 → R01 cc4b5121 / 4c62df71 / de689c6f); на de689c6f сценарий 173/0/0 и все пять пунктов против эталона «да», экраны лучше FINAL-3 на 112 из 122, стекло 453/3 FAIL (B-073 мелочь), FPS = FINAL-3; закрыты B-068, B-069, B-070, B-072. Отчёт — design/DESIGN_REVIEW.md.",
+ "tested_sha": "марафон: R01 74834be0 (круг 5 R10); FINAL-3 со стеклом 61be62e6 принят (ACCEPTANCE_FINAL3 §8)",
+ "status": "partial — дизайн-марафон: 5 кругов визуального контроля; последняя сборка R01 74834be0 — сценарий 173/0/0, пять пунктов против эталона «да», стекло 457/0 FAIL, движение 50/50, FPS = FINAL-3; закрыты B-068…B-073; новый B-074 (телефон: «Повторить» под главной кнопкой). Отчёт design/DESIGN_REVIEW.md.",
  "push_status": "OK: ветка claude/r14-R10 в origin; последний SHA — в STATUS.md и итоговом сообщении",
  "environment": "облачный Linux, Python 3.13.16 (+pytest 9.1.1), Node 22.22.0, Playwright 1.56.1 + Chromium headless (программный WebGL), без интернета (подложка OpenFreeMap недоступна)",
  "changed_paths": [
@@ -117,7 +117,7 @@
   "Сценарий идёт с CIVIC_DEMO=1 (как run-city.bat); --no-demo — без синтетического набора R07.",
   "Проверка «Tab до главной кнопки» ограничена 40 нажатиями: с демо-набором R07 главная кнопка дальше (B-025)."
  ],
- "next_step": "Каждая новая сборка R01 марафона: design_book.cjs + design_summary.cjs + design_compare.cjs (8e67c65=…,FINAL-3=…,сейчас=…) + glass_check.cjs (стекло, FPS перетаскивания 1366/1024) → DESIGN_REVIEW.md круг N",
+ "next_step": "Новая сборка R01: run_r*.sh (design_book → summary → compare; glass_check; FPS --fps-only; demo_flow --audit --glass keep + map + compare_baseline; motion_check); проверить B-074",
  "night_11_12": {
   "baseline": "research/round-14-results/R10/baseline_8e67c65/ (README.md: состав, пороги, порядок сравнения FINAL-2)",
   "scripts": [
@@ -220,6 +220,23 @@
     "R09 — строки «Мои обращения», лента статусов",
     "R01 — «i» MapLibre 24 px",
     "R08 — вкладки «Рядом» телефон kk"
+   ]
+  },
+  "round4": {
+   "build": "e69b6f0d",
+   "result": "против круга 3 лучше 11 / хуже 1; сценарий 173/0/0, пять пунктов «да»; время шагов 3/5 ×1,21–1,23 к эталону на той же машине (в пороге), +3–4 с к FINAL-3 с de689c6f (R05 превью каталога)"
+  },
+  "round5": {
+   "build": "74834be0 (R01 круг 9, R07 7fd9f69c)",
+   "result": "сценарий 173/0/0, пять пунктов «да»; стекло 457/0 FAIL (минимум 5,3 на красном, 4,6 на чёрном) — B-073 закрыт; движение 50/50; FPS = FINAL-3 (стекло −1–2 к/с к bk-glass-off в облаке)",
+   "new": [
+    "B-074 заметно R07/R01: телефон, «нет связи» — «Повторить» под главной кнопкой"
+   ],
+   "open_minor": [
+    "R07 раскрывашки 10 px, перекраска 800 мс",
+    "R09 строки «Мои обращения»",
+    "R01 «i» MapLibre 24 px",
+    "R08 вкладки «Рядом» телефон kk"
    ]
   }
  }
