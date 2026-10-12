@@ -878,13 +878,43 @@
       return [hemi, sun, fill];
     }
 
-    // Мягкая тень объекта (только в браузере: нужен холст). Без карт теней — второй проход по чужому контексту
-    // MapLibre дорог и хрупок: высокие части (shadowShape) рисуются в маленький холст, размываются и ложатся
-    // текстурой на плоскость чуть выше газона — на землю, мощение и газон внутри объекта; плюс мягкий «след» прямо
-    // под скамейками и кронами. sx, sy — смещение тени на метр высоты в осях модели. Тень тёмно-зелёная бренда.
+    // Мягкая тень объекта. Без карт теней — второй проход по чужому контексту MapLibre дорог и хрупок: высокие части
+    // (shadowShape) растрируются в маленькую картинку (свой растеризатор — заливка пути холста на 3 000 треугольников
+    // сквера стоила ~40 мс, здесь ~2 мс), размываются и ложатся текстурой на плоскость чуть выше газона — на землю,
+    // мощение и газон внутри объекта; плюс мягкий «след» прямо под скамейками и кронами. sx, sy — смещение тени на метр
+    // высоты в осях модели. Тень тёмно-зелёная бренда. Работает и в Node (без DOM) — проверяется тестами.
     var SHADOW_Z = 0.2; // над газоном (0.18) и плитами; ниже бордюров и скамеек
-    function shadowMesh(geos, sx, sy, doc) {
-      if (!doc || !doc.createElement || !geos || !geos.solid) return null;
+    function rasterize(tris, x0, y0, ppm, W, H) {
+      var out = new Float32Array(W * H);
+      for (var i = 0; i < tris.length; i += 6) {
+        var ax = (tris[i] - x0) * ppm,
+          ay = (tris[i + 1] - y0) * ppm,
+          bx = (tris[i + 2] - x0) * ppm,
+          by = (tris[i + 3] - y0) * ppm,
+          cx = (tris[i + 4] - x0) * ppm,
+          cy = (tris[i + 5] - y0) * ppm;
+        var area = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay);
+        if (Math.abs(area) < 1e-9) continue;
+        var sgn = area > 0 ? 1 : -1;
+        var minX = Math.max(0, Math.floor(Math.min(ax, bx, cx))),
+          maxX = Math.min(W - 1, Math.ceil(Math.max(ax, bx, cx))),
+          minY = Math.max(0, Math.floor(Math.min(ay, by, cy))),
+          maxY = Math.min(H - 1, Math.ceil(Math.max(ay, by, cy)));
+        for (var y = minY; y <= maxY; y++) {
+          var py = y + 0.5;
+          for (var x = minX; x <= maxX; x++) {
+            var px = x + 0.5;
+            var w0 = ((bx - ax) * (py - ay) - (by - ay) * (px - ax)) * sgn,
+              w1 = ((cx - bx) * (py - by) - (cy - by) * (px - bx)) * sgn,
+              w2 = ((ax - cx) * (py - cy) - (ay - cy) * (px - cx)) * sgn;
+            if (w0 >= 0 && w1 >= 0 && w2 >= 0) out[y * W + x] = 1;
+          }
+        }
+      }
+      return out;
+    }
+    function shadowMesh(geos, sx, sy) {
+      if (!geos || !geos.solid) return null;
       var sh = shadowShape(geos.solid, sx, sy, 0.3);
       if (!sh) return null;
       var pad = 2.2;
@@ -892,45 +922,24 @@
         y0 = sh.bounds[1] - pad;
       var w = sh.bounds[2] - sh.bounds[0] + 2 * pad,
         h = sh.bounds[3] - sh.bounds[1] + 2 * pad;
-      var ppm = Math.min(8, 320 / Math.max(w, h)); // точек на метр: ≤ 320 точек по большей стороне
+      var ppm = Math.min(6, 224 / Math.max(w, h)); // точек на метр: ≤ 224 точки по большей стороне (тень всё равно размыта)
       var W = Math.max(8, Math.ceil(w * ppm)),
         H = Math.max(8, Math.ceil(h * ppm));
-      var cv = doc.createElement("canvas");
-      cv.width = W;
-      cv.height = H;
-      var ctx = cv.getContext && cv.getContext("2d");
-      if (!ctx) return null;
-      function alphaOf(tris) {
-        ctx.clearRect(0, 0, W, H);
-        ctx.fillStyle = "#000";
-        ctx.beginPath();
-        for (var i = 0; i < tris.length; i += 6) {
-          ctx.moveTo((tris[i] - x0) * ppm, H - (tris[i + 1] - y0) * ppm);
-          ctx.lineTo((tris[i + 2] - x0) * ppm, H - (tris[i + 3] - y0) * ppm);
-          ctx.lineTo((tris[i + 4] - x0) * ppm, H - (tris[i + 5] - y0) * ppm);
-          ctx.closePath();
-        }
-        ctx.fill();
-        var d = ctx.getImageData(0, 0, W, H).data;
-        var a = new Float32Array(W * H);
-        for (var k = 0; k < a.length; k++) a[k] = d[k * 4 + 3] / 255;
-        return a;
-      }
-      var cast = blur2(alphaOf(sh.cast), W, H, Math.max(1, Math.round(0.45 * ppm)));
-      var foot = blur2(alphaOf(sh.foot), W, H, Math.max(1, Math.round(1.0 * ppm)));
-      var img = ctx.createImageData(W, H);
-      var rgb = [21, 44, 38]; // P.shadow #152c26 в байтах холста (sRGB)
+      // Строка 0 — юг (низ плоскости, v = 0): картинка ложится на плоскость без переворота.
+      var cast = blur2(rasterize(sh.cast, x0, y0, ppm, W, H), W, H, Math.max(1, Math.round(0.45 * ppm)));
+      var foot = blur2(rasterize(sh.foot, x0, y0, ppm, W, H), W, H, Math.max(1, Math.round(1.0 * ppm)));
+      var data = new Uint8Array(W * H * 4);
       for (var k = 0; k < cast.length; k++) {
-        img.data[k * 4] = rgb[0];
-        img.data[k * 4 + 1] = rgb[1];
-        img.data[k * 4 + 2] = rgb[2];
-        img.data[k * 4 + 3] = Math.round(255 * Math.max(cast[k] * 0.26, foot[k] * 0.2));
+        data[k * 4] = 21; // P.shadow #152c26 (sRGB)
+        data[k * 4 + 1] = 44;
+        data[k * 4 + 2] = 38;
+        data[k * 4 + 3] = Math.round(255 * Math.max(cast[k] * 0.26, foot[k] * 0.2));
       }
-      ctx.putImageData(img, 0, 0);
-      var tex = new THREE.CanvasTexture(cv);
+      var tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat);
       tex.colorSpace = THREE.SRGBColorSpace;
-      tex.generateMipmaps = false;
+      tex.magFilter = THREE.LinearFilter;
       tex.minFilter = THREE.LinearFilter;
+      tex.needsUpdate = true;
       var mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
       var plane = new THREE.PlaneGeometry(w, h);
       plane.translate(x0 + w / 2, y0 + h / 2, SHADOW_Z);

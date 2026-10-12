@@ -61,7 +61,7 @@ window.render = (kind, W, H) => {
     if (k !== "decal") box.union(geos[k].boundingBox);
   }
   const wx = -M.SUN[0] / M.SUN[2], wy = -M.SUN[1] / M.SUN[2];
-  const shadow = M.shadowMesh(geos, wx, wy, document);
+  const shadow = M.shadowMesh(geos, wx, wy);
   if (shadow) {
     scene.add(shadow);
     shadow.geometry.computeBoundingBox();

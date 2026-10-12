@@ -107,11 +107,11 @@ async function shot(page, name) {
   await page.screenshot({ path: path.join(OUT, name) });
   made.push(name);
 }
-const want = (re) => !ONLY || ONLY.test(re);
+const want = (...names) => !ONLY || names.some((n) => ONLY.test(n)); // есть ли в этом шаге нужный кадр
 
 // 1. Крупные планы пяти объектов (панель скрыта: смотрим на сам объект и табличку).
 for (const [w, h] of [[1366, 768], [375, 812]]) {
-  if (!want(`obj_.*_${w}`)) continue;
+  if (!want(...Object.keys(CLOSE).map((k) => `obj_${k}_${w}.png`))) continue;
   const p = await open({ width: w, height: h }, "?store=local&lang=ru&role=resident&center=71.4008,51.1272&zoom=17.4&pitch=60&bearing=-30", SHOWCASE);
   await p.addStyleTag({ content: ".b3d-dock,.b3d-toasts,.demo-head,.bk-header,header{visibility:hidden!important}" });
   for (const [kind, v] of Object.entries(CLOSE)) {
@@ -124,14 +124,14 @@ for (const [w, h] of [[1366, 768], [375, 812]]) {
 // 2. Все объекты с панелью (как в демо, каталог открыт) — 1366/375, ru/kk.
 for (const lang of ["ru", "kk"]) {
   for (const [w, h] of [[1366, 768], [375, 812]]) {
-    if (!want(`all_${w}_${lang}`)) continue;
+    if (!want(`all_${w}_${lang}.png`)) continue;
     const p = await open({ width: w, height: h }, `?store=local&lang=${lang}&center=71.4008,51.1278&zoom=${w < 700 ? 16.9 : 17.5}&pitch=60&bearing=-30`, SHOWCASE);
     await shot(p, `all_${w}_${lang}.png`); // у акимата в демо каталог открыт сразу — это и есть кадр каталога
     await p.context().close();
   }
 }
 // 3. Постройка сквера, замедленная до 6 с: кадры по долям времени.
-if (want("build_")) {
+if (want(...[0.1, 0.25, 0.4, 0.55, 0.7, 0.85, 1].map((f) => `build_${f.toFixed(2)}.png`))) {
   const BUILD = 6000;
   const p = await open({ width: 1366, height: 768 }, `?reset=1&store=local&lang=ru&build_ms=${BUILD}&center=71.4006,51.1276&zoom=18.6&pitch=60&bearing=-30`);
   await p.addStyleTag({ content: ".b3d-toasts{visibility:hidden!important}" });

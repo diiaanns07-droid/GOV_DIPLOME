@@ -1661,13 +1661,57 @@
     // ───────────── Мягкая тень объекта (дизайн-марафон) ─────────────
     // Тень и свет — общие с превью каталога: build3d-models.js (shadowMesh, lights, SUN). Здесь — только поворот
     // солнца в оси модели. Освещение (длинный участок) — без проекции, только пятна у опор (в модели).
+    // Тени строятся не сразу, а в простое браузера, по одной (сквер ~11 мс): объекты появляются без задержки, тень
+    // проявляется за 0.22 с. Во время постройки её прозрачность ведёт анимация постройки (obj.building).
+    var shadowQueue = [];
+    var shadowTimer = 0;
+    function queueShadow(obj, geos) {
+      shadowQueue.push({ obj: obj, geos: geos });
+      scheduleShadows();
+    }
+    function scheduleShadows() {
+      if (shadowTimer || !shadowQueue.length || S.destroyed) return;
+      shadowTimer = root.requestIdleCallback ? root.requestIdleCallback(runShadows, { timeout: 300 }) : root.setTimeout(runShadows, 16);
+    }
+    function runShadows(deadline) {
+      shadowTimer = 0;
+      if (S.destroyed) {
+        shadowQueue = [];
+        return;
+      }
+      do {
+        var job = shadowQueue.shift();
+        var obj = job && job.obj;
+        if (!obj || S.objects[obj.p.id] !== obj || !obj.group || obj.removing || obj.mats.shadow) continue;
+        var shadow = makeShadow(obj.p, job.geos);
+        if (!shadow) continue;
+        obj.group.add(shadow);
+        obj.mats.shadow = shadow.material;
+        if (obj.building) shadow.material.opacity = 0;
+        else fadeIn(shadow.material);
+      } while (shadowQueue.length && deadline && deadline.timeRemaining && deadline.timeRemaining() > 12);
+      repaint();
+      scheduleShadows();
+    }
+    function fadeIn(mat) {
+      if (reducedMotion()) return;
+      var t0 = performance.now();
+      mat.opacity = 0;
+      anims.push({
+        update: function (now) {
+          var k = Math.min(1, (now - t0) / 220);
+          mat.opacity = easeOutCubic(k);
+          return k < 1;
+        },
+      });
+    }
     function makeShadow(p, geos) {
       if (p.kind === "lighting" || !geos.solid || !Models.shadowMesh) return null;
       var th = (p.rotation_deg || 0) * DEG; // группа повёрнута на −th — в осях модели солнце повёрнуто на +th
       var sun = Models.SUN;
       var wx = -sun[0] / sun[2],
         wy = -sun[1] / sun[2];
-      return Models.shadowMesh(geos, wx * Math.cos(th) - wy * Math.sin(th), wx * Math.sin(th) + wy * Math.cos(th), doc);
+      return Models.shadowMesh(geos, wx * Math.cos(th) - wy * Math.sin(th), wx * Math.sin(th) + wy * Math.cos(th));
     }
 
     function disposeGroup(group) {
@@ -1730,11 +1774,7 @@
       var geos = buildGeos(obj.p);
       obj.mats = makeMaterials(false);
       obj.group = makeMeshes(geos, obj.mats);
-      var shadow = makeShadow(obj.p, geos);
-      if (shadow) {
-        obj.group.add(shadow);
-        obj.mats.shadow = shadow.material;
-      }
+      queueShadow(obj, geos);
       obj.height = geos.height;
       obj.labelPoint = labelPointOf(obj.p, geos);
       placeGroup(obj.group, obj.p);
@@ -1940,6 +1980,7 @@
         m.userData.reveal.value = 0;
       });
       if (obj.mats.shadow) obj.mats.shadow.opacity = 0;
+      obj.building = true;
       if (obj.label) obj.label.classList.add("b3d-label--hidden");
       obj.dust = makePulse(obj);
       anims.push({
@@ -1951,6 +1992,7 @@
           if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(Math.min(1, Math.max(0, (k - 0.15) / 0.75)));
           if (obj.dust) obj.dust.userData.step(k);
           if (k >= 1) {
+            obj.building = false;
             if (obj.dust) {
               disposeGroup(obj.dust);
               obj.dust = null;
@@ -3542,7 +3584,7 @@
           get items() {
             return this.proposals; // то же под именем items (так их ищет сценарий R11)
           },
-          animating: anims.length > 0,
+          animating: anims.length > 0 || shadowQueue.length > 0, // тени в очереди — тоже «ещё рисуется»
           memory: renderer ? { geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs ? renderer.info.programs.length : null } : null,
           origin: origin ? origin.slice() : null,
           view: S.view, // light — лёгкие метки и карточки; 3d — модели (POLISH_WAVE_2: «3D — по кнопке»)

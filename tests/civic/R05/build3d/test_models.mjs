@@ -124,3 +124,23 @@ test("постройка: у тел aGrow (0 — плиты, до 0.5 — кра
   for (let i = 0; i < pos.count; i++) if (pos.getZ(i) > 2.5 && Math.abs(pos.getX(i)) < 4) roofPivots.add(pivot.getX(i).toFixed(2) + "," + pivot.getY(i).toFixed(2));
   assert.equal(roofPivots.size, 1, [...roofPivots].join(" "));
 });
+
+test("тень — текстура без DOM (свой растеризатор): плоскость над газоном, тень есть и сдвинута от солнца", () => {
+  const k = C.KINDS.stop;
+  const g = M.build("stop", { seed: "tex", w: k.w, d: k.d });
+  const mesh = M.shadowMesh(g, 0.3, 0.5);
+  assert.ok(mesh && mesh.material.map && mesh.material.map.image, "текстура");
+  const { data, width, height } = mesh.material.map.image;
+  assert.ok(width <= 224 && height <= 224, `размер ${width}×${height}`);
+  let sum = 0, sx = 0, sy = 0;
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) { const a = data[(y * width + x) * 4 + 3]; sum += a; sx += a * x; sy += a * y; }
+  assert.ok(sum > 0, "тень не пустая");
+  mesh.geometry.computeBoundingBox();
+  const bb = mesh.geometry.boundingBox;
+  assert.ok(Math.abs(bb.min.z - 0.2) < 1e-6, "плоскость на 0.2 м — над газоном");
+  // Центр тяжести тени — к северо-востоку от центра картинки (строка 0 — юг).
+  const cx = bb.min.x + ((sx / sum + 0.5) / width) * (bb.max.x - bb.min.x), cy = bb.min.y + ((sy / sum + 0.5) / height) * (bb.max.y - bb.min.y);
+  assert.ok(cx > 0 && cy > 0.85, `центр тени ${cx.toFixed(2)}, ${cy.toFixed(2)}`);
+  mesh.geometry.dispose();
+  mesh.material.map.dispose();
+});
