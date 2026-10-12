@@ -49,6 +49,19 @@ research/round-14-results/R08/. Чужие файлы я не менял. Ниж
     селекторы для тестов (.nb-tabs > button, [data-key="tab:…"], .nb-why summary, .nb-card, .svc__details, .svc__cat)
     сохранены. Проверено в сборке 77ee50be: shell_wave2_check 20/20, R10 wave_checks W2-4/W2-5/W2-8 30/0.
 
+9.6 СТЕКЛО (R11 GLASS.md §4 R08) — claude/r14-R08 @ 04fa206c:
+      git checkout origin/claude/r14-R08 -- web/civic/akim/akim.css      (+ файлы §9.5, если ещё не взяты)
+    R08 сам стекло не ставит: лист раздела — стекло R01 (GLASS.md §4 R01 №6). Внутри: числа без подложки, поля даты
+    и района — непрозрачные белые с линией, остальные цвета — переменные ui-kit (на стекле темнеют сами). «Рядом» и
+    «Службы» правок не потребовали.
+    R01, совет к №6 (ваш файл, решаете вы): .birge-day в web/civic/shell/birge.css задаёт background: var(--c-surface)
+    и грузится после components.css — при той же силе селектора белый фон перекроет .bk-glass. Нужно убрать фон
+    у .birge-day (или .birge-day.bk-glass { background-color: var(--glass-panel); background-image:
+    var(--glass-highlight); border-radius: var(--r-glass); } — так проверка R08 ставит стекло, пока его нет в сборке).
+    Проверка: NODE_PATH=$(npm root -g) node tests/civic/R08/glass_check.cjs http://127.0.0.1:<порт>
+      сборка 77ee50be + R11 7117132b + R08 04fa206c — 51/51 (стекло поставлено проверкой): худший контраст текста R08
+      над стеклом 80 % на чёрной карте 4,62:1; второго стекла внутри нет; печать белая.
+
 §8. ВОЛНА МЕЛОЧЕЙ (п. 4, 6, 7, 12) И ВОЛНА 2 (п. 1, 4, 5, 8) — 11 окт, что подключить
 ----------------------------------------------------------------------------------------
 8.1 R01 · маршруты и файлы — готовый patch research/round-14-results/R08/r01_wave2_r08.patch (git apply из корня):

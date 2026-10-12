@@ -1,18 +1,18 @@
 {
  "role": "R08",
- "title": "Картина дня для акима + волна мелочей (п. 4, 6, 7, 12) + волна 2 (п. 1, 4, 5, 8) + FINAL-3: чистый дизайн (CLEAN_PASS §3 R08)",
+ "title": "Картина дня для акима + волна мелочей + волна 2 + FINAL-3: чистый дизайн (CLEAN_PASS) и стекло (GLASS.md §4 R08)",
  "branch": "claude/r14-R08",
  "base_sha": "2131c15 (claude/round-14-package); волны — claude/round-14-package @ c86c515 (POLISH_WAVE_2 утверждена, categories_v2 heat_states)",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "9859307c",
- "tested_sha": "9859307c",
+ "code_sha": "04fa206c",
+ "tested_sha": "04fa206c",
  "tested_with": {
-  "r01_build": "claude/sharp-dijkstra-0t87gl @ 77ee50be (FINAL-3 final, R08 0fac615d уже внутри) + R08 web/civic/nearby и web/civic/akim @ 9859307c; ui-kit/i18n — как в сборке (R11 bdc9934f); база: init + seed-demo + seed-r14-demo + create-editor, CIVIC_DEMO=1",
-  "r11_ui_kit_i18n": "claude/r14-R11 @ 7fb62caa (код bdc9934f) — стенд",
+  "r01_build": "claude/sharp-dijkstra-0t87gl @ 77ee50be + ui-kit/i18n R11 @ 7117132b (стекло) + R08 web/civic/akim, web/civic/nearby @ 04fa206c; база: init + seed-demo + seed-r14-demo + create-editor, CIVIC_DEMO=1",
+  "r11_ui_kit_i18n": "claude/r14-R11 @ 7117132b (GLASS: .bk-glass, токены --glass-*) — сборка; @ 7fb62caa — стенд",
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 5e2789e — временная копия для стенда, в git R08 не входит",
   "env": "облачная сессия Claude Code, Linux, Python 3.13, Chromium (Playwright), без интернета"
  },
- "push_status": "OK — claude/r14-R08 (код 9859307c); DELIVERY, INTEGRATION §9.5, STATUS и кадры — следующим коммитом поверх",
+ "push_status": "OK — claude/r14-R08 (код 04fa206c); DELIVERY, INTEGRATION §9.6, STATUS и кадры — следующим коммитом поверх",
  "changed_paths": [
   "research/handoffs/astana/R08/round14/STATUS.md",
   "research/round-14-results/R08/",
@@ -71,7 +71,7 @@
  ],
  "tests": {
   "pytest tests/civic/R08 (с копией R07)": "229 PASS + 2 SKIP",
-  "ui_check.cjs (стенд --wave2-demo, 1366/375 × ru/kk, R11 9a8277f6)": "149/149 PASS — в т. ч. 7 новых проверок CLEAN_PASS ×4: строка «Данные — пример» внизу, плитки без карточек 28/600 + подпись 15 + одна строка изменения, «Подробнее» закрыто, сводка 17 без плашки и одна жирная фраза, заголовок 28/600 + одна строка 13 + поля с заливкой + ghost «Распечатать», решения списком с линиями и ghost «Выбрать», два начертания 400/600; пустой день — одно «пусто» без блоков-заглушек; печать",
+  "ui_check.cjs (стенд --wave2-demo, 1366/375 × ru/kk, R11 9a8277f6)": "149/149 PASS (повторно на 04fa206c)",
   "services_check.cjs": "26/26 PASS",
   "nearby_check.cjs": "52/52 PASS (+8 проверок чистого стиля: .bk-tabs role=tab и стрелки, «Зачем?» — .bk-details, без карточек и плашек, поле с заливкой, «Пример» одной строкой внизу)",
   "сборка R01 77a5e7d8 + R08 0fac615d + R11 9a8277f6: shell_wave2_check.cjs (вход редактора, «Выбрать», «Ещё → Службы», житель → «Рядом»)": "20/20 PASS",
@@ -81,7 +81,8 @@
   "сборка: pytest tests/civic/R08 + R15 test_r15_akim/test_r15_nearby + R01 test_r01_b061 + R13 test_r13_pulse_check": "287 PASS + 1 SKIP",
   "R10 demo_flow / приёмка FINAL-3, R11 разбор FINAL-3": "NOT_RUN — запускают R10 и R11 на сборке R01",
   "сборка R01 77ee50be + R08 9859307c: shell_wave2_check.cjs": "20/20 PASS",
-  "сборка R01 77ee50be + R08 9859307c: R10 tests/e2e/wave_checks.cjs --only W2-4,W2-5,W2-8": "30 PASS / 0 FAIL / 1 NOT_RUN (события подписки в «Мои обращения» — у R09)"
+  "сборка R01 77ee50be + R08 9859307c: R10 tests/e2e/wave_checks.cjs --only W2-4,W2-5,W2-8": "30 PASS / 0 FAIL / 1 NOT_RUN (события подписки в «Мои обращения» — у R09)",
+  "сборка 77ee50be + R11 7117132b + R08 04fa206c: glass_check.cjs («Картина дня», «Рядом», «Службы» на стекле)": "51/51 PASS — стекло листа поставлено проверкой (R01 №6 ещё не в сборке): худший контраст текста R08 над стеклом 80 % на чёрной карте 4,62:1 (норма 4,5), второго стекла внутри нет, числа без подложки, поля непрозрачные, печать белая"
  },
  "known_limits": [
   "Сроки «Просрочено» — демо-норматив R08 (deadlines.py), в рабочих днях РК 2026; у аварийных категорий — календарные. Переносы рабочих дней постановлением Правительства и точная дата Курбан айта не сверены (как и у R09).",
@@ -92,12 +93,12 @@
   "«Рядом»: данные работ и отключений с «Зачем» — пример R08, пока R06 не даст nearby_items; объекты R06 показываются без строк «Зачем».",
   "Подписки «Рядом» хранятся в .runtime/civic_akim/subscriptions.json (файл, не база) — для демо; события в «Мои обращения» покажет R09.",
   "Длинные названия служб в ҚАЗ на 375 px в поле выбора обрезаются браузером («Бағдаршам және жол таңбасы қыз…»).",
-  "Стекло (Liquid Glass) на панелях R08 — после того как R11 запушит GLASS.md и .bk-glass (на 11:30 UTC их в claude/r14-R11 нет)."
+  "Стекло листа «Картины дня», «Рядом», «Службы» ставит R01 (GLASS.md №6); до этого glass_check ставит его сам и пишет simulated_r01_glass: true. FPS со стеклом — замер R10."
  ],
- "next_step": "R01: взять web/civic/nearby/nearby.js, nearby.css, index.html и web/civic/akim/services.js, services.css, services.html из claude/r14-R08 @ 9859307c (INTEGRATION §9.5); «Картина дня» 0fac615d уже в сборке. После GLASS.md R11 — стекло на панелях R08 отдельной поставкой.",
- "delivery": "5.1 (12 окт, FINAL-3: чистый стиль «Рядом» и «Службы» по разбору R11 FINAL-3 п. 9)",
+ "next_step": "R01: взять из claude/r14-R08 @ 04fa206c web/civic/akim/akim.css (стекло) и 6 файлов «Рядом»/«Службы» (INTEGRATION §9.5–9.6); при стекле на листе #birge-day/#birge-screen убрать его белый фон в birge.css (§9.6). R10: glass_check.cjs можно запускать в приёмке.",
+ "delivery": "5.2 (12 окт, FINAL-3 + стекло: «Рядом»/«Службы» в чистом стиле, «Картина дня» на стекле)",
  "for_r01_final3": {
-  "take": "claude/r14-R08 @ 9859307c: web/civic/nearby/nearby.js, nearby.css, index.html; web/civic/akim/services.js, services.css, services.html (path-scoped); «Картина дня» (akim.js, akim.css @ 0fac615d) уже взята R01 на шаге 13; по желанию tests/civic/R08/nearby_check.cjs",
+  "take": "claude/r14-R08 @ 04fa206c (path-scoped): web/civic/akim/akim.css; web/civic/nearby/nearby.js, nearby.css, index.html; web/civic/akim/services.js, services.css, services.html; по желанию tests/civic/R08/nearby_check.cjs, glass_check.cjs. akim.js — как 0fac615d (уже в сборке).",
   "replaces": "R08 web/civic/nearby/* и web/civic/akim/services.* из FINAL-2 (9d593d96)",
   "no_changes_needed": "оболочка, маршруты, CIVIC_ASSETS, словарь, Python R08 (ui/civic_akim/summary.py и pulse.py в 0fac615d = FINAL-3 R01 77a5e7d8)",
   "clean_pass_items": {
@@ -114,6 +115,16 @@
    "«Не үшін?» — summary без стрелки": "СДЕЛАНО 9859307c: .bk-details со стрелкой",
    "вкладки «Рядом» — серый сегмент": "СДЕЛАНО 9859307c: .bk-tabs (role=tablist/tab/tabpanel), ←/→ через BirgeUI.tabs",
    "сверх списка (CLEAN_PASS §2)": "«Рядом»: строки с линией вместо карточек в панели, поле района с заливкой, «срок перенесён» словом, «Пример» — одна строка внизу; «Службы»: строки с линией, поля с заливкой, «Уточнения» — .bk-details"
+  },
+  "glass_md_r08": {
+   "лист раздела — стекло R01 (№6)": "у R01; совет: .birge-day в birge.css задаёт белый фон и грузится после components.css — фон перекроет .bk-glass, его надо убрать (INTEGRATION §9.6)",
+   "KPI": "без подложки на стекле (.bk-glass .akim-kpi.bk-kpi { background: transparent }) — как CLEAN_PASS п. 3",
+   "«Нужно решение акима»": "список с линиями, без рамок и своих фонов (с 0fac615d); блоки .bk-card — подложка 70 % от ui-kit",
+   "свои фоны #f7f8f4, #eef2ea и рамки": "нет — в CSS R08 только переменные ui-kit; на стекле они темнеют сами",
+   "рост/падение": "var(--c-danger) / var(--c-ok) — на стекле тёмные варианты ui-kit",
+   "форма даты/района": "непрозрачные белые поля с тонкой линией, как формы ui-kit на стекле",
+   "печать": "белая (ui-kit @media print) — glass_check PASS",
+   "«Рядом», «Службы»": "правок не нужно: корни без своего фона, цвета — переменные; поля выбора — непрозрачные (ui-kit)"
   }
  },
  "previous_delivery_4_2": {
