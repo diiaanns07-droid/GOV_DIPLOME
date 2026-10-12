@@ -4,8 +4,8 @@
  "base_sha": "4bbf456",
  "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
  "code_sha": "12 окт: 6b1b1ab (S30–S40, тесты идей и вопросов, P-R06-3, P-R13, P-R01-2, P-R01-3), b564e38, 0ea7afb; ночь 11→12: f291a88, 5ae8786, b1e2316, ad54a3d, 23a27d7; d80c038 (чек-лист «волны мелочей» + proposals/photo, 11 окт); d8791c1 (tests/civic/R15 + patches/P-R06-2, 11 окт); раньше c5b98a0 (tests/civic/R15); patches — b892532",
- "tested_sha": "2f643dc (R01 FINAL-3 кандидат, финальная проверка R15, 12 окт вечер); 32d5352 (R01 FINAL-3 шаг 10b, 12 окт); e4a7641 (R01 FINAL-3 шаг 8, 12 окт); 85cedb3, 7782b92 (FINAL-3 шаги 3, 1); 7782b92 (R01 FINAL-3 шаг 1); роли: R06 ae9ba29, R13 9db6dfb, R09 f80c0bf, R12 bea4fa9; 0f5101a (R01 FINAL-2 шаг 4, 12 окт); 28e23e3 (шаг 3); 34677e0 (шаг 1); 8bbace7 (круг 3); роли: R04 7c590b6, R08 ae65c09, R09 5d28c5a/d3f9c1e, R12 73ccec4; a2d90dd (FINAL-кандидат R01, перепроверен 11 окт новой сессией R15); раньше 96c1f99, 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
- "push_status": "OK — claude/r14-R15 (финальная проверка FINAL-3: этот коммит)",
+ "tested_sha": "f94f0fc (R01 FINAL-3 final, 12 окт: шаги 11–13 после кандидата — находок нет); 2f643dc (R01 FINAL-3 кандидат, финальная проверка R15, 12 окт вечер); 32d5352 (R01 FINAL-3 шаг 10b, 12 окт); e4a7641 (R01 FINAL-3 шаг 8, 12 окт); 85cedb3, 7782b92 (FINAL-3 шаги 3, 1); 7782b92 (R01 FINAL-3 шаг 1); роли: R06 ae9ba29, R13 9db6dfb, R09 f80c0bf, R12 bea4fa9; 0f5101a (R01 FINAL-2 шаг 4, 12 окт); 28e23e3 (шаг 3); 34677e0 (шаг 1); 8bbace7 (круг 3); роли: R04 7c590b6, R08 ae65c09, R09 5d28c5a/d3f9c1e, R12 73ccec4; a2d90dd (FINAL-кандидат R01, перепроверен 11 окт новой сессией R15); раньше 96c1f99, 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
+ "push_status": "OK — claude/r14-R15 (проверка FINAL-3 final f94f0fc: этот коммит)",
  "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
  "changed_paths": [
   "tests/civic/R15/conftest.py",
@@ -265,5 +265,17 @@
   "vendor": "web/vendor/qrcode/qrcode.js sha256 18ae399f…1780 = npm qrcode-generator@1.4.4",
   "secrets": "в дереве нет .env, баз, ключей, файлов > 50 МБ; .env.example — пустые значения",
   "diff_since_32d5352": "web/map.js (свёрнутая подпись OSM на телефоне), shell.css — без влияния на безопасность"
+ },
+ "final3_final_check": {
+  "build": "R01 claude/sharp-dijkstra-0t87gl @ f94f0fc1 (FINAL-3 final: шаги 11–13 и документы R14 после кандидата 2f643dc)",
+  "verdict": "PASS — новых находок нет; все 40 по-прежнему исправлены",
+  "diff_since_2f643dc": "ui/web_server.py (demo_build для R08 только при CIVIC_DEMO=1), ui/civic_akim/summary.py (пример «Нужно решение» в демо-сборке, B-061: id c-demo-*, demo.any → пометка «пример»), shell.js (ранняя загрузка /api/civic/v2/heat — только GET своего origin, 20 с), birge.js, explore.js, akim.js/css, ui-kit.js (один тост), R09/R06/R13 кнопка «Войти» и подсказки R11, i18n +78 ключей (без HTML и ссылок)",
+  "role_branches_reviewed": "R08 8bd4210 (= код R01: pulse.py, summary.py, akim.js), R11 7fb62ca, R12 ed7d644 (engine/civic_geo/api.py near_street_* = R01)",
+  "r15_tests": "236 passed",
+  "role_security_suites": "R01 api_v2 + R09 security + R13 qa + R06 round14 — 367 passed, 1 skipped; R01 b061 + gateway_hardening + R08 summary/wave2/api — 112 passed",
+  "browser": "B1 16/16, B2 28/28",
+  "csp": "8 страниц — 0 нарушений",
+  "vendor": "web/vendor/qrcode/qrcode.js sha256 18ae399f…1780 = npm qrcode-generator@1.4.4",
+  "secrets": "новых файлов 2 (patch R08 B-061, тест R01); .env, баз, ключей, файлов > 5 МБ нет; секретных строк в diff нет"
  }
 }
