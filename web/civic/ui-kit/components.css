@@ -132,9 +132,9 @@
   min-height: var(--tap);
   min-width: var(--tap);
   padding: 10px var(--s-5);
-  border: 1px solid var(--c-line-strong);
+  border: 1px solid transparent; /* чистый дизайн: второстепенная кнопка — серая заливка, без рамки */
   border-radius: var(--r-m);
-  background: var(--c-surface);
+  background: var(--c-fill);
   color: var(--c-ink);
   font: inherit;
   font-size: var(--fs-lead);
@@ -153,7 +153,7 @@
     transform var(--t-fast) var(--ease);
 }
 .bk-btn:hover {
-  border-color: var(--c-ink);
+  background: var(--c-fill-hover);
 }
 .bk-btn:active {
   transform: translateY(1px);
@@ -182,6 +182,7 @@
   color: #fff;
 }
 .bk-btn--danger {
+  background: var(--c-surface);
   border-color: var(--c-danger);
   color: var(--c-danger);
 }
@@ -249,7 +250,7 @@
   cursor: pointer;
 }
 .bk-mapbtn:hover {
-  background: var(--c-paper);
+  background: var(--c-fill);
 }
 .bk-mapbtn[aria-pressed="true"] {
   background: var(--c-ink);
@@ -286,16 +287,15 @@
   flex: none;
   min-height: 40px;
   padding: 6px 14px 6px 10px;
-  border: 1px solid var(--c-line-strong);
+  border: 1px solid transparent;
   border-radius: var(--r-pill);
-  background: var(--c-surface);
+  background: var(--c-fill);
   color: var(--c-ink);
   font: inherit;
   font-size: var(--fs-body);
   font-weight: var(--fw-semi);
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: var(--shadow-1);
   transition: background var(--t-fast) var(--ease);
 }
 /* Зона нажатия 48 px при видимой высоте 40 px */
@@ -305,12 +305,14 @@
   inset: -4px 0;
 }
 .bk-chip:hover {
-  border-color: var(--c-ink);
+  background: var(--c-fill-hover);
 }
+/* Выбранный чип — единственный акцент #152c26, белый текст; галочка — не только цвет (для 40+ и дальтоников) */
 .bk-chip[aria-pressed="true"],
 .bk-chip[aria-checked="true"] {
-  border-color: var(--c-ink);
-  background: var(--c-accent);
+  border-color: var(--c-brand);
+  background: var(--c-brand);
+  color: #fff;
 }
 .bk-chip[aria-pressed="true"]::before,
 .bk-chip[aria-checked="true"]::before {
@@ -322,9 +324,6 @@
   min-width: 0;
   white-space: normal; /* «Қар және көктайғақ санатына ұқсайды» длиннее экрана телефона */
   text-align: left;
-  border-style: dashed;
-  border-color: var(--c-brand);
-  background: var(--c-brand-soft);
 }
 
 /* Сегментный переключатель: ҚАЗ|РУС, Акимат|Житель, 7|30|90 */
@@ -333,8 +332,7 @@
   padding: 4px;
   gap: 2px;
   border-radius: var(--r-m);
-  background: var(--c-paper);
-  border: 1px solid var(--c-line);
+  background: var(--c-fill);
 }
 .bk-seg > button {
   position: relative;
@@ -377,9 +375,9 @@
   width: 100%;
   min-height: var(--tap);
   padding: 0 var(--tap) 0 44px;
-  border: 1px solid var(--c-line-strong);
+  border: 1px solid transparent;
   border-radius: var(--r-m);
-  background: var(--c-surface);
+  background: var(--c-fill);
   color: var(--c-ink);
   font: inherit;
   font-size: var(--fs-body);
@@ -417,12 +415,12 @@
   width: 100%;
   min-height: var(--tap);
   padding: 12px 14px;
-  border: 1px solid var(--c-line-strong);
+  border: 1px solid transparent;
   border-radius: var(--r-m);
-  background: var(--c-surface);
+  background: var(--c-fill);
   color: var(--c-ink);
   font: inherit;
-  font-size: var(--fs-body); /* 16 px: iOS не увеличивает страницу при фокусе */
+  font-size: 16px; /* 16 px, а не 15: iOS не увеличивает страницу при фокусе в поле */
 }
 .bk-field textarea {
   min-height: 112px;
@@ -446,9 +444,9 @@
   width: 100%;
   min-height: 56px;
   padding: var(--s-3) var(--s-4);
-  border: 1px solid var(--c-line-strong);
+  border: 1px solid transparent;
   border-radius: var(--r-m);
-  background: var(--c-surface);
+  background: var(--c-fill);
   color: var(--c-ink);
   font: inherit;
   text-align: left;
@@ -495,8 +493,9 @@
   height: 24px;
 }
 .bk-catgrid > button[aria-pressed="true"] {
-  border: 2px solid var(--c-ink);
-  background: var(--c-accent);
+  border: 2px solid var(--c-brand);
+  background: var(--c-brand);
+  color: #fff;
 }
 
 /* ───────────── Карточка, панель, шторка, шапка ───────────── */
@@ -549,55 +548,246 @@
   color: var(--c-text-2);
 }
 
-/* Шапка приложения */
+/* Шапка приложения — ОДНА строка (чистый дизайн, 12 окт):
+   [знак Birge] [поиск «Улица, остановка или район» — широкий] [Карта · Картина дня · …] [ҚАЗ · РУС] [◯ аватар]
+   Без подзаголовка бренда, без выпадающего «района» (район ищется в том же поле), без рамок у вкладок и языка.
+   Вид «Акимат / Житель», «Для сотрудников» и выход — в меню аватара (.bk-menu). */
 .bk-header {
   position: relative;
   z-index: var(--z-header);
   display: flex;
   align-items: center;
-  gap: var(--s-4);
+  gap: var(--s-5);
   height: var(--header-h);
-  padding: 0 var(--s-4);
+  padding: 0 var(--s-5);
   background: var(--c-surface);
-  box-shadow: var(--shadow-1);
+  border-bottom: 1px solid var(--c-line); /* тонкая линия вместо тени */
 }
 .bk-header__brand {
   display: flex;
   align-items: center;
   gap: var(--s-2);
   font-size: var(--fs-title);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semi);
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 .bk-header__mark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--c-ink);
-  color: var(--c-accent);
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--c-brand);
+  color: #fff;
 }
 .bk-header__search {
   flex: 1 1 auto;
-  max-width: 440px;
+  min-width: 200px;
+  max-width: 520px;
 }
 .bk-header__end {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: var(--s-4);
   margin-left: auto;
 }
+
+/* Разделы в шапке — вкладки ТЕКСТОМ: без рамок и подложек; выбранная — 600 и черта 2 px снизу */
+.bk-nav {
+  display: flex;
+  align-items: stretch;
+  gap: var(--s-1);
+  height: 100%;
+}
+.bk-nav > a,
+.bk-nav > button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--s-3);
+  border: 0;
+  background: none;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.bk-nav > a:hover,
+.bk-nav > button:hover {
+  color: var(--c-ink);
+}
+.bk-nav > [aria-current="page"] {
+  color: var(--c-ink);
+  font-weight: var(--fw-semi);
+}
+.bk-nav > [aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: var(--s-3);
+  right: var(--s-3);
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--c-brand);
+}
+/* Число новых изменений у «Мои обращения» — маленькая точка-число, единственный бейдж в шапке */
+.bk-nav__badge {
+  margin-left: 6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--heat-3);
+  color: #fff;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  line-height: 20px;
+  text-align: center;
+}
+
+/* «ҚАЗ · РУС» — текстом: выбранный язык тёмный 600, другой серый; без рамки-переключателя */
+.bk-langtext {
+  display: inline-flex;
+  align-items: center;
+}
+.bk-langtext > button {
+  position: relative;
+  min-width: 44px;
+  min-height: var(--tap);
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: var(--fs-body);
+  cursor: pointer;
+}
+.bk-langtext > button + button::before {
+  content: "·";
+  position: absolute;
+  left: -3px;
+  color: var(--c-text-3);
+}
+.bk-langtext > button[aria-pressed="true"] {
+  color: var(--c-ink);
+  font-weight: var(--fw-semi);
+}
+
+/* Круг-аватар с меню: вид «Акимат / Житель», «Для сотрудников», выход */
+.bk-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-fill);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  cursor: pointer;
+}
+.bk-avatar::after {
+  content: "";
+  position: absolute;
+  inset: -4px; /* зона нажатия 48 */
+}
+.bk-avatar[aria-expanded="true"] {
+  background: var(--c-brand);
+  color: #fff;
+}
+.bk-avatar[data-badge]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--c-surface);
+  border-radius: 50%;
+  background: var(--heat-3);
+}
+.bk-menu {
+  position: absolute;
+  z-index: var(--z-overlay);
+  min-width: 260px;
+  margin: 0;
+  padding: var(--s-2) 0;
+  border-radius: var(--r-l);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-3);
+  list-style: none;
+}
+.bk-menu__label {
+  padding: var(--s-2) var(--s-4) 2px;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 var(--s-4);
+  border: 0;
+  background: none;
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.bk-menu__item:hover,
+.bk-menu__item:focus-visible {
+  background: var(--c-brand-soft);
+}
+.bk-menu__item[aria-checked="true"],
+.bk-menu__item[aria-current="page"] {
+  font-weight: var(--fw-semi);
+}
+.bk-menu__item[aria-checked="true"]::after {
+  content: "✓";
+  margin-left: auto;
+}
+.bk-menu__sep {
+  height: 1px;
+  margin: var(--s-2) 0;
+  background: var(--c-line);
+}
+
+/* Телефон: [знак] [поиск] [ҚАЗ · РУС] [аватар]; разделы — первой группой в меню аватара */
 @media (max-width: 1023px) {
   .bk-header {
     height: var(--header-h-phone);
     gap: var(--s-2);
-    padding: 0 var(--s-2);
+    padding: 0 var(--s-3);
   }
   .bk-header__brand-text,
-  .bk-header__wide {
+  .bk-header__wide,
+  .bk-header .bk-nav {
     display: none;
+  }
+  .bk-header__search {
+    min-width: 0;
+  }
+  .bk-header__end {
+    gap: var(--s-1);
+  }
+  .bk-langtext > button {
+    min-width: 36px;
+    padding: 0 4px;
   }
 }
 
@@ -954,62 +1144,65 @@
 
 /* ───────────── Статусы и метки ───────────── */
 
-/* Статус обращения: точка-цвет + слово */
+/* Статус обращения: цветная точка + слово, без «таблетки» и без подписи «Статус:» (чистый дизайн: статус
+   показывается ОДИН раз; пояснение — одна строка .bk-statusline__note). Цвет точки — из цветов карты жалоб. */
 .bk-status {
+  --dot: var(--c-text-2);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: var(--r-pill);
-  font-size: var(--fs-caption);
+  gap: 8px;
+  padding: 0;
+  font-size: var(--fs-body);
   font-weight: var(--fw-semi);
   white-space: nowrap;
-  background: var(--c-paper);
+  background: transparent;
   color: var(--c-ink);
 }
 .bk-status::before {
   content: "";
-  width: 8px;
-  height: 8px;
+  flex: none;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: currentColor;
+  background: var(--dot);
 }
 .bk-status[data-status="new"] {
-  background: var(--c-paper);
-  color: var(--c-ink);
+  --dot: var(--heat-3);
 }
 .bk-status[data-status="accepted"] {
-  background: var(--c-info-soft);
-  color: var(--c-info);
+  --dot: var(--heat-2);
 }
 .bk-status[data-status="in_progress"] {
-  background: var(--c-warn-soft);
-  color: var(--c-warn);
+  --dot: var(--heat-2);
 }
-.bk-status[data-status="fixed"] {
-  background: var(--c-ok-soft);
-  color: var(--c-ok);
+.bk-status[data-status="fixed"],
+.bk-status[data-status="verified"] {
+  --dot: var(--fixed);
 }
 .bk-status[data-status="rejected"] {
-  background: var(--c-danger-soft);
-  color: var(--c-danger);
+  --dot: var(--nodata);
 }
-/* Волна 2, п. 1: два «исправлено» — сообщила служба / проверили жители; «осталось» — снова в работе */
-.bk-status[data-status="reported_fixed"] {
-  background: var(--c-ok-soft);
-  color: var(--c-ok);
-}
+/* Волна 2, п. 1: «служба сообщила» — пустая точка с пунктиром; «вернули жители» — снова красная */
 .bk-status[data-status="reported_fixed"]::before {
   background: transparent;
-  border: 2px dashed currentColor;
-}
-.bk-status[data-status="verified"] {
-  background: var(--c-ok);
-  color: #fff;
+  border: 2px dashed var(--fixed);
 }
 .bk-status[data-status="reopened"] {
-  background: var(--c-danger-soft);
-  color: var(--c-danger);
+  --dot: var(--heat-3);
+}
+/* Статус + одна строка пояснения: «● В работе» / «Служба ответит до 16 окт» */
+.bk-statusline {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+.bk-statusline .bk-status {
+  font-size: var(--fs-lead);
+}
+.bk-statusline__note {
+  padding-left: 18px; /* под словом, а не под точкой */
+  color: var(--c-text-2);
+  font-size: var(--fs-body);
 }
 
 /* Баннер в потоке экрана (не модальное окно): срочный случай (волна 1, п. 3), предупреждение, справка.
@@ -1019,9 +1212,9 @@
   gap: var(--s-2);
   padding: var(--s-3) var(--s-4);
   border-radius: var(--r-m);
-  border: 1px solid var(--c-info);
-  background: var(--c-info-soft);
-  color: var(--c-ink);
+  border: 0;
+  background: transparent;
+  color: var(--c-text-2);
   font-size: var(--fs-body);
   line-height: var(--lh-text);
 }
@@ -1042,13 +1235,15 @@
 .bk-banner--danger {
   border: 2px solid var(--c-danger);
   background: var(--c-danger-soft);
+  color: var(--c-ink);
 }
 .bk-banner--danger .bk-banner__title {
   color: var(--c-danger);
 }
 .bk-banner--warn {
-  border-color: var(--c-warn);
+  border: 1px solid var(--c-warn);
   background: var(--c-warn-soft);
+  color: var(--c-ink);
 }
 
 .bk-tag {
@@ -1064,8 +1259,10 @@
   color: var(--c-text-2);
 }
 .bk-tag--demo {
-  background: var(--c-demo-soft);
-  color: var(--c-demo);
+  padding-inline: 0;
+  background: transparent;
+  color: var(--c-text-2);
+  font-weight: var(--fw-regular);
 }
 .bk-tag--project {
   background: var(--c-accent);
@@ -1406,10 +1603,8 @@
 .bk-kpi {
   display: grid;
   gap: 2px;
-  padding: var(--s-4);
-  border-radius: var(--r-l);
-  background: var(--c-surface);
-  box-shadow: var(--shadow-1);
+  padding: var(--s-4) 0;
+  background: transparent; /* чистый дизайн: число и подпись без карточки-рамки, воздух вместо обводки */
 }
 .bk-kpi__value {
   font-size: var(--fs-num);
@@ -1582,6 +1777,191 @@
   .bk-skel {
     animation: none;
   }
+}
+
+/* ───────────── Управление картой (чистый дизайн): моё место · +/− одной капсулой · 3D · слои; компас — только
+   когда карта повёрнута или наклонена (нажатие возвращает на север). Порядок сверху вниз. ───────────── */
+.bk-mapctl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+}
+.bk-mapctl__group {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-m);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+.bk-mapctl__group > .bk-mapbtn {
+  border-radius: 0;
+  box-shadow: none;
+}
+.bk-mapctl__group > .bk-mapbtn + .bk-mapbtn {
+  border-top: 1px solid var(--c-line);
+}
+.bk-compass {
+  border-radius: 50%;
+}
+.bk-compass[hidden] {
+  display: none;
+}
+.bk-compass > .ic {
+  transform: rotate(var(--bearing, 0deg)); /* стрелка смотрит на север: --bearing = -bearing карты */
+  transition: transform var(--t-fast) var(--ease);
+}
+
+/* Легенда ОДНОЙ строкой: «мало ▬▬▬ много · ✓ исправлено» + «?» с подробностями (числа, «служба сообщила»,
+   «нет свежих данных») — подробности в подсказке, не на карте. */
+.bk-legend--line {
+  flex-wrap: nowrap;
+  gap: var(--s-2);
+  padding: 0 var(--s-2) 0 var(--s-3);
+  min-height: 40px;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-caption);
+  color: var(--c-text-2);
+  white-space: nowrap;
+}
+.bk-legend__scale {
+  flex: none;
+  width: 72px;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--heat-1), var(--heat-2), var(--heat-3), var(--heat-4));
+}
+.bk-legend__fixed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--c-ink);
+}
+.bk-legend__fixed::before {
+  content: "✓";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--fixed);
+  color: #fff;
+  font-size: 13px;
+  font-weight: var(--fw-semi);
+}
+.bk-legend--line .bk-iconbtn {
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+}
+
+/* Пометка «данные — пример»: одна серая строка ВНИЗУ панели, без плашки (вместо бежевых блоков сверху) */
+.bk-footnote {
+  margin: 0;
+  padding: var(--s-3) 0 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+  line-height: 1.4;
+}
+
+/* ───────────── Вкладки раздела и «Подробнее» (волна 2: «Идеи», «Вопрос акиму», «Обращения») ─────────────
+   Вкладки — <div class="bk-tabs" role="tablist"> с <button role="tab" aria-selected>; длинные kk-подписи
+   не переносятся: строка вкладок прокручивается сама по себе, страница вбок — нет. */
+.bk-tabs {
+  display: flex;
+  gap: var(--s-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--c-line);
+  margin: 0 0 var(--s-3);
+}
+.bk-tabs::-webkit-scrollbar {
+  display: none;
+}
+.bk-tabs[data-more="true"] {
+  -webkit-mask-image: linear-gradient(to right, #000 80%, transparent);
+  mask-image: linear-gradient(to right, #000 80%, transparent);
+}
+.bk-tabs > [role="tab"] {
+  flex: 0 0 auto;
+  min-height: var(--tap);
+  padding: 0 var(--s-2);
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.bk-tabs > [role="tab"][aria-selected="true"] {
+  color: var(--c-ink);
+  border-bottom-color: var(--c-brand);
+}
+.bk-tabs > [role="tab"]:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: -3px;
+}
+.bk-tabs .bk-num {
+  margin-left: 6px;
+  color: var(--c-text-3);
+}
+
+/* <details class="bk-details"><summary>Толығырақ</summary>…</details> — карточка не растёт (IA_WAVE2 §0.4) */
+.bk-details {
+  border-top: 1px solid var(--c-line);
+}
+.bk-details > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  color: var(--c-brand);
+  font-weight: var(--fw-semi);
+  cursor: pointer;
+  list-style: none;
+}
+.bk-details > summary::-webkit-details-marker {
+  display: none;
+}
+.bk-details > summary::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--t-fast) var(--ease);
+}
+.bk-details[open] > summary::before {
+  transform: rotate(45deg);
+}
+.bk-details > summary:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+}
+.bk-details > :not(summary) {
+  margin: 0 0 var(--s-3);
+}
+
+/* Значок идеи на карте и в списке (слой «Идеи жителей»): синий контур, число голосов — с 15-го масштаба */
+.bk-idea-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border: 3px solid var(--idea);
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  color: var(--idea);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
 }
 
 /* ───────────── Печать («Картина дня») ───────────── */

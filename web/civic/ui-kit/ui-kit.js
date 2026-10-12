@@ -189,9 +189,10 @@
   }
 
   // ── ҚАЗ | РУС ──
-  function langSwitch(el) {
+  // opts.text — «ҚАЗ · РУС» текстом (чистый дизайн, шапка в одну строку), иначе сегмент с подложкой.
+  function langSwitch(el, opts) {
     var I = root.BirgeI18n;
-    el.classList.add("bk-seg");
+    el.classList.add(opts && opts.text ? "bk-langtext" : "bk-seg");
     el.setAttribute("role", "group");
     el.innerHTML =
       '<button type="button" value="kk" lang="kk">ҚАЗ</button><button type="button" value="ru" lang="ru">РУС</button>';
@@ -243,6 +244,86 @@
     }
   }
 
+  // Меню аватара (чистый дизайн): кнопка .bk-avatar открывает список .bk-menu под собой у правого края.
+  // Esc, щелчок мимо и выбор пункта закрывают; ↑/↓ — по пунктам. menu(button, list) → {open(), close()}.
+  function menu(button, list) {
+    function items() { return Array.prototype.slice.call(list.querySelectorAll(".bk-menu__item")); }
+    function place() {
+      var b = button.getBoundingClientRect();
+      list.style.top = Math.round(b.bottom + 8 + root.scrollY) + "px";
+      list.style.right = Math.max(8, Math.round(doc.documentElement.clientWidth - b.right)) + "px";
+    }
+    function open() {
+      list.hidden = false;
+      place();
+      button.setAttribute("aria-expanded", "true");
+      var first = items()[0];
+      if (first) first.focus();
+    }
+    function close(focusBack) {
+      if (list.hidden) return;
+      list.hidden = true;
+      button.setAttribute("aria-expanded", "false");
+      if (focusBack) button.focus();
+    }
+    button.setAttribute("aria-haspopup", "menu");
+    button.setAttribute("aria-expanded", "false");
+    list.setAttribute("role", "menu");
+    list.hidden = true;
+    button.addEventListener("click", function () { if (list.hidden) open(); else close(false); });
+    list.addEventListener("click", function (e) { if (e.target.closest(".bk-menu__item")) close(true); });
+    doc.addEventListener("click", function (e) { if (!list.contains(e.target) && !button.contains(e.target)) close(false); });
+    doc.addEventListener("keydown", function (e) {
+      if (list.hidden) return;
+      if (e.key === "Escape") { e.preventDefault(); close(true); return; }
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      var all = items(), i = all.indexOf(doc.activeElement);
+      e.preventDefault();
+      all[(i + (e.key === "ArrowDown" ? 1 : all.length - 1) + all.length) % all.length].focus();
+    });
+    return { open: open, close: close };
+  }
+
+  // Вкладки раздела (волна 2): <div class="bk-tabs" role="tablist"><button role="tab" value="…">…</button></div>.
+  // Отмечает выбранную (aria-selected, tabindex), стрелки ←/→ переходят между вкладками; onChange(value) — по выбору.
+  function tabs(el, onChange) {
+    function all() { return Array.prototype.slice.call(el.querySelectorAll('[role="tab"]')); }
+    function select(btn, focus) {
+      all().forEach(function (b) {
+        b.setAttribute("aria-selected", b === btn ? "true" : "false");
+        b.tabIndex = b === btn ? 0 : -1;
+      });
+      if (focus) btn.focus();
+      if (btn.scrollIntoView) btn.scrollIntoView({ block: "nearest", inline: "nearest" });
+      if (onChange) onChange(btn.value || btn.getAttribute("data-value"));
+    }
+    el.addEventListener("click", function (e) {
+      var b = e.target.closest ? e.target.closest('[role="tab"]') : null;
+      if (b && el.contains(b)) select(b, false);
+    });
+    el.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      var list = all(), i = list.indexOf(doc.activeElement);
+      if (i < 0) return;
+      e.preventDefault();
+      select(list[(i + (e.key === "ArrowRight" ? 1 : list.length - 1)) % list.length], true);
+    });
+    var cur = el.querySelector('[role="tab"][aria-selected="true"]') || all()[0];
+    all().forEach(function (b) {
+      b.setAttribute("aria-selected", b === cur ? "true" : "false");
+      b.tabIndex = b === cur ? 0 : -1;
+    });
+    // Не помещаются (длинные kk-подписи на 375) — край строки затухает, пока есть что прокрутить вправо.
+    function edge() {
+      var more = el.scrollWidth - el.clientWidth - el.scrollLeft > 2;
+      if (more) el.setAttribute("data-more", "true");
+      else el.removeAttribute("data-more");
+    }
+    el.addEventListener("scroll", edge, { passive: true });
+    if (typeof ResizeObserver !== "undefined") new ResizeObserver(edge).observe(el);
+    edge();
+  }
+
   // Сезонный порядок категорий (POLISH_WAVE п. 11). Месяц — по часам устройства: зимой житель не ищет снег в конце.
   function seasonOrder(categories, date) {
     var list = (categories || []).slice();
@@ -256,5 +337,5 @@
   }
 
   root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, esc: esc,
-    seasonOrder: seasonOrder, SPRITE: SPRITE };
+    seasonOrder: seasonOrder, tabs: tabs, menu: menu, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);

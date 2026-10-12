@@ -42,6 +42,16 @@ async function startServer(port, db) {
   throw new Error("server did not start: " + srv.log.slice(-1500));
 }
 
+// Чистый дизайн (R11 CLEAN_PASS №2): поиск в шапке — одно поле; район выбирают подсказкой («Вся Астана», районы списком
+// при фокусе пустого поля). Без шапки (панель на карте) — список районов, как раньше. index 1 — первый район.
+async function chooseDistrict(page, index) {
+  const inHeader = await page.evaluate(() => document.body.dataset.birgeExplore === "header");
+  if (!inHeader) { await openExplore(page); await page.selectOption(".civic-explore select", { index }); return; }
+  await page.fill(".civic-explore-field input", "");
+  await page.click(".civic-explore-field input");
+  await page.waitForSelector(".civic-explore-list [role=option]", { timeout: 5000 });
+  await page.click(`.civic-explore-list [role=option]:nth-child(${index + 1})`);
+}
 // Телефон: раскрыть свёрнутую панель «Территория» (после выбора улицы она сворачивается сама — карта свободна).
 async function openExplore(page) {
   await page.evaluate(() => { const b = document.querySelector(".civic-explore-toggle"), box = document.querySelector(".civic-explore");
@@ -90,7 +100,7 @@ const layout = (page) => page.evaluate(() => {
     if (inHeader && /^(topbar×(explore|brand|menu)|brand×menu)$/.test(pair)) continue;
     if (ix > 1 && iy > 1) over.push(pair);
   }
-  return { scrollW: document.documentElement.scrollWidth, innerW: innerWidth, over, status: statusInfo,
+  return { scrollW: document.documentElement.scrollWidth, innerW: innerWidth, over, status: statusInfo, inHeader,
     explore: boxes.explore && Math.round(boxes.explore.r - boxes.explore.l) };
 });
 
@@ -198,7 +208,7 @@ async function emptyRegistry(browser, base) {
     await page.waitForTimeout(600);
     const toastText = await page.evaluate(() => document.querySelector(".toast")?.textContent || "");
     check(`${tag}: "К объектам" on an empty registry says the registry is empty`, /реестре пока нет/.test(toastText), toastText);
-    await page.selectOption(".civic-explore select", { index: 1 });
+    await chooseDistrict(page, 1);
     await page.waitForTimeout(2600);
     const view = await page.textContent(".civic-explore-view");
     check(`${tag}: district view on an empty registry says "реестр пуст"`, /реестр пуст/.test(view || ""), view);
@@ -224,7 +234,9 @@ async function emptyRegistry(browser, base) {
       check(`${tag}: navigation box, map tools, top bar and panel do not overlap`, lay.over.length === 0, lay.over);
       if (lay.status) check(`${tag}: map notice readable (not under the navigation box)`, lay.status.readable, lay.status);
       else notRun(`${tag}: map notice readable`, "no map notice shown (basemap loaded)");
-      check(`${tag}: navigation box wide enough for the district name and search (≥ 280px)`, (lay.explore || 0) >= 280, lay.explore);
+      // Чистый дизайн: поиск — одно поле в шапке (ноутбук ≥ 200 px, телефон ≥ 120 px — «Іздеу / Поиск»); на карте — прежняя панель ≥ 280 px.
+      const minExplore = lay.inHeader ? (w < 761 ? 120 : 200) : 280;
+      check(`${tag}: navigation box wide enough for the district name and search (≥ ${minExplore}px)`, (lay.explore || 0) >= minExplore, lay.explore);
       await page.screenshot({ path: path.join(OUT, `01_start_${tag}.png`) });
       const startView = await page.textContent(".civic-explore-view");
       check(`${tag}: city overview is named as such`, /Обзор: вся Астана/.test(startView || ""), startView);
@@ -354,7 +366,7 @@ async function emptyRegistry(browser, base) {
       const failed = await page.textContent(".civic-explore-status");
       check("360x800: index loading and failure are stated, not a silent empty list", /Загружаем список улиц/.test(loading) && /недоступен/.test(failed), { loading, failed });
       const cityZoom = await page.evaluate(() => map.getZoom());
-      await page.selectOption(".civic-explore select", { index: 1 });
+      await chooseDistrict(page, 1);
       await page.waitForTimeout(2000);
       const district = await page.evaluate(() => ({ zoom: map.getZoom(), value: document.querySelector(".civic-explore select").value,
         retryKept: !!document.querySelector(".civic-explore-retry") }));

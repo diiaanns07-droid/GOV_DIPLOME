@@ -131,32 +131,39 @@
         --sheet-half: 272px;
         --sheet-peek: 120px;
       }
-      @media (max-width: 1023px) {
-        .bk-header__search {
-          display: none;
-        }
-      }
     </style>
   </head>
   <body class="bk-app">
     <a class="bk-skip" href="#kit-primary" data-i18n="common.action.skip_to_main"></a>
 
+    <!-- Шапка в одну строку (чистый дизайн): знак · поиск · разделы текстом · ҚАЗ · РУС · аватар с меню -->
     <header class="bk-header">
       <div class="bk-header__brand">
         <span class="bk-header__mark" id="kit-mark"></span><span class="bk-header__brand-text" data-i18n="common.app_name"></span>
       </div>
       <div class="bk-search bk-header__search">
         <span id="kit-search-ic"></span>
-        <input type="search" data-i18n-attr="placeholder:common.search.placeholder;aria-label:common.search.label" />
+        <input type="search" data-i18n-attr="placeholder:common.search.placeholder_clean;aria-label:common.search.label" />
       </div>
+      <nav class="bk-nav" data-i18n-attr="aria-label:shell.nav.label">
+        <a href="#" aria-current="page" data-i18n="common.nav.map"></a>
+        <a href="#" data-i18n="common.nav.day"></a>
+        <a href="#" data-i18n="shell.nav.inbox"></a>
+        <a href="#" data-i18n="shell.nav.more"></a>
+      </nav>
       <div class="bk-header__end">
-        <div class="bk-seg bk-header__wide" id="kit-role" role="group" data-i18n-attr="aria-label:common.role.label">
-          <button type="button" value="akimat" aria-pressed="true" data-i18n="common.role.akimat"></button>
-          <button type="button" value="resident" aria-pressed="false" data-i18n="common.role.resident"></button>
-        </div>
         <div id="kit-lang"></div>
+        <button class="bk-avatar" type="button" id="kit-avatar" data-i18n-attr="aria-label:common.account.menu;title:common.account.menu" data-badge></button>
       </div>
     </header>
+    <div class="bk-menu" id="kit-menu">
+      <p class="bk-menu__label" data-i18n="common.role.label"></p>
+      <button class="bk-menu__item" type="button" role="menuitemradio" aria-checked="true" data-i18n="common.role.akimat"></button>
+      <button class="bk-menu__item" type="button" role="menuitemradio" aria-checked="false" data-i18n="common.role.resident"></button>
+      <div class="bk-menu__sep" role="separator"></div>
+      <button class="bk-menu__item" type="button" role="menuitem" data-i18n="shell.staff.open"></button>
+      <button class="bk-menu__item" type="button" role="menuitem" data-i18n="staff.login.logout"></button>
+    </div>
 
     <main class="kit-main">
       <section class="kit-section">
@@ -327,6 +334,57 @@
         </div>
       </section>
 
+      <!-- Волна 2: разделы «Идеи», «Вопрос акиму» — вкладки, правило, «Подробнее», значок идеи -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.sections"></h2>
+        <div class="kit-grid">
+          <div>
+            <div class="bk-banner"><span class="bk-banner__text" data-i18n="idea.honest"></span></div>
+            <div class="bk-tabs" role="tablist" id="kit-tabs" data-i18n-attr="aria-label:idea.title" style="margin-top: 12px">
+              <button type="button" role="tab" value="voting" aria-selected="true" data-i18n="idea.tab.voting"></button>
+              <button type="button" role="tab" value="project" aria-selected="false" data-i18n="idea.tab.project"></button>
+              <button type="button" role="tab" value="rejected" aria-selected="false" data-i18n="idea.tab.rejected"></button>
+            </div>
+            <article class="bk-card">
+              <div class="bk-card__row">
+                <span class="bk-tag bk-tag--demo" data-i18n="common.tag.demo"></span>
+                <span class="bk-meta" data-i18n="district.esil"></span>
+              </div>
+              <h3 class="bk-card__title" data-i18n="uikit.demo.idea_title"></h3>
+              <p style="margin: 0"><b data-i18n="idea.votes" data-i18n-params='{"n":47}'></b> · <span data-i18n="idea.status.voting"></span></p>
+              <div class="bk-actions">
+                <button class="bk-btn" type="button" data-kit-icon="thumb-up"><span data-i18n="idea.support"></span></button>
+                <button class="bk-btn bk-btn--ghost" type="button" data-kit-icon="pin"><span data-i18n="map.card.on_map"></span></button>
+              </div>
+              <p class="bk-meta" style="margin: 0" data-i18n="proposal.one_vote"></p>
+              <details class="bk-details">
+                <summary data-i18n="common.action.more"></summary>
+                <p data-i18n="uikit.demo.idea_text"></p>
+                <button class="bk-btn" type="button" data-kit-icon="cube"><span data-i18n="idea.view3d"></span></button>
+              </details>
+            </article>
+            <p class="kit-row"><span class="bk-idea-badge">47</span><span class="bk-meta" data-i18n="shell.layers.ideas"></span></p>
+          </div>
+          <article class="bk-card">
+            <p class="bk-section-title" data-i18n="ask.title"></p>
+            <p class="bk-meta" style="margin: 0" data-i18n="ask.rule"></p>
+            <div class="bk-card__row">
+              <span class="bk-tag bk-tag--demo" data-i18n="common.tag.demo"></span>
+              <span class="bk-meta" data-i18n="district.nura"></span>
+            </div>
+            <p style="margin: 0">«<span data-i18n="uikit.demo.question"></span>»</p>
+            <div class="bk-card__row">
+              <b data-i18n="ask.votes" data-i18n-params='{"n":34}'></b>
+              <button class="bk-btn" type="button" data-kit-icon="thumb-up"><span data-i18n="ask.support"></span></button>
+            </div>
+            <details class="bk-details" open>
+              <summary data-i18n="ask.answer"></summary>
+              <p data-i18n="uikit.demo.answer"></p>
+            </details>
+          </article>
+        </div>
+      </section>
+
       <!-- Этапы и шаги -->
       <section class="kit-section">
         <h2 class="bk-h2" data-i18n="uikit.section.stages"></h2>
@@ -465,7 +523,7 @@
         var ICONS = ("road snowflake walk bus bulb trees trash droplet wind shield parking dots search close back forward " +
           "chevron-right chevron-down plus minus locate layers filter pin check alert info refresh user users thumb-up " +
           "thumb-down calendar clock cube rotate-left rotate-right globe menu chart list edit building wifi-off send copy " +
-          "print playground ball phone camera").split(" ");
+          "print playground ball phone camera compass").split(" ");
         var COLORS = ["--c-ink", "--c-text-2", "--c-paper", "--c-brand", "--c-accent", "--c-focus", "--c-danger", "--c-warn",
           "--c-info", "--c-ok", "--c-demo", "--heat-1", "--heat-2", "--heat-3", "--heat-4", "--fixed", "--heat-3-badge", "--fixed-badge"];
         var STAGES = ["planned", "design", "procurement", "construction", "acceptance", "operating"];
@@ -480,6 +538,7 @@
             el.insertAdjacentHTML("afterbegin", UI.icon(el.getAttribute("data-kit-icon")));
           });
           $("kit-mark").innerHTML = UI.icon("building");
+          $("kit-avatar").innerHTML = UI.icon("user");
           $("kit-search-ic").outerHTML = UI.icon("search");
         }
 
@@ -547,9 +606,14 @@
 
         decorate();
         renderStatic();
-        UI.langSwitch($("kit-lang"));
-        UI.seg($("kit-role"));
+        UI.langSwitch($("kit-lang"), { text: true });
+        UI.menu($("kit-avatar"), $("kit-menu"));
+        $("kit-menu").addEventListener("click", function (e) {
+          var b = e.target.closest("[role=menuitemradio]");
+          if (b) $("kit-menu").querySelectorAll("[role=menuitemradio]").forEach(function (x) { x.setAttribute("aria-checked", String(x === b)); });
+        });
         UI.seg($("kit-period"));
+        UI.tabs($("kit-tabs"));
         $("kit-cat-chips").addEventListener("click", function (e) {
           var b = e.target.closest(".bk-chip");
           if (b) b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") === "true" ? "false" : "true");

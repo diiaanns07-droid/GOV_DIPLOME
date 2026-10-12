@@ -15,6 +15,17 @@ const checks = [];
 const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null });
   console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined && detail !== null ? " — " + JSON.stringify(detail).slice(0, 400) : "")); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Чистый дизайн (R11 CLEAN_PASS №4): вид «Акимат / Житель» и «Для сотрудников» — в меню аватара.
+async function viewUI(page, mode) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click(`#birge-account [data-mode=${mode}]`);
+  await page.waitForTimeout(150);
+}
+async function staffUI(page) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click("#birge-account [data-action=staff]");
+}
 const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
 
 async function startServer(port, db) {
@@ -48,12 +59,16 @@ const header = (page) => page.evaluate(() => {
   const visible = (e) => e.getClientRects().length && getComputedStyle(e).visibility !== "hidden" && getComputedStyle(e).display !== "none";
   const buttons = [...document.querySelectorAll("#birge-header button")].filter(visible);
   const out = buttons.map((b) => b.getBoundingClientRect()).filter((r) => r.right > innerWidth + 0.5 || r.left < -0.5);
-  const pressed = Object.fromEntries(["section", "mode", "lang"].map((g) =>
+  const pressed = Object.fromEntries(["section", "lang"].map((g) =>
     [g, document.querySelector(`#birge-header [data-${g}][aria-pressed="true"]`)?.dataset[g] || null]));
+  // Чистый дизайн: вид — в меню аватара (пункты menuitemradio, отмечен aria-checked).
+  pressed.mode = document.querySelector('#birge-account [data-mode][aria-checked="true"]')?.dataset.mode || null;
+  const account = [...document.querySelectorAll("#birge-account .bk-menu__item")].map((b) => b.textContent.trim());
   return {
     htmlLang: document.documentElement.lang, title: document.title,
     brand: document.querySelector(".brand-title")?.textContent, tagline: document.querySelector(".brand-sub")?.textContent,
-    labels: buttons.map((b) => b.textContent.trim()), pressed, out: out.length, minHeight: Math.min(...buttons.map((b) => b.getBoundingClientRect().height)),
+    labels: buttons.map((b) => b.textContent.trim()), account, avatar: !!document.querySelector("#birge-header .birge-avatar"),
+    headerMode: document.body.dataset.birgeHeader || "full", pressed, out: out.length, minHeight: Math.min(...buttons.map((b) => b.getBoundingClientRect().height)),
     oldModes: getComputedStyle(document.getElementById("civic-modes")).display, scrollW: document.documentElement.scrollWidth,
     mode: document.body.dataset.birgeMode, section: document.body.dataset.birgeSection, hash: location.hash,
     keys: document.body.innerText.match(/\b(shell|common|akim)\.[a-z_.]+\b/g) || [],
@@ -73,17 +88,19 @@ async function main() {
     let h = await header(page);
     check("1366: Birge brand, old mode switch hidden, akimat view and map by default",
       h.brand === "Birge" && h.oldModes === "none" && h.mode === "akimat" && h.pressed.section === "map" && h.pressed.mode === "akimat", h);
-    check("1366: header fits (no overflow, no horizontal scroll), segment buttons ≥ 40 px", h.out === 0 && h.scrollW <= 1366 && h.minHeight >= 40, h);
-    check("1366: ru labels, no raw translation keys", h.htmlLang === "ru" && h.labels.includes("Картина дня") && h.labels.includes("Акимат") && h.keys.length === 0, h);
+    check("1366: clean header in one row — sections as text, ҚАЗ · РУС, avatar; no overflow; buttons ≥ 40 px",
+      h.headerMode === "full" && h.avatar && h.out === 0 && h.scrollW <= 1366 && h.minHeight >= 40, h);
+    check("1366: ru labels, view «Акимат / Житель» in the avatar menu, no raw translation keys",
+      h.htmlLang === "ru" && h.labels.includes("Картина дня") && h.account.includes("Акимат") && h.account.includes("Житель") && h.keys.length === 0, h);
     const tools = await page.evaluate(() => ({ scen: getComputedStyle(document.getElementById("civic-scenarios-button")).display,
-      assistant: getComputedStyle(document.getElementById("civic-assistant-box")).display, staff: getComputedStyle(document.getElementById("civic-staff-button")).display }));
-    check("1366: round-13 tools outside the Birge demo (scenarios, assistant) hidden even for akimat; sign-in shown",
-      tools.scen === "none" && tools.assistant === "none" && tools.staff !== "none", tools);
+      assistant: getComputedStyle(document.getElementById("civic-assistant-box")).display, staff: !!document.querySelector("#birge-account [data-action=staff]") }));
+    check("1366: round-13 tools outside the Birge demo (scenarios, assistant) hidden even for akimat; sign-in in the avatar menu",
+      tools.scen === "none" && tools.assistant === "none" && tools.staff, tools);
     const panelBox = await page.evaluate(() => { const p = document.getElementById("civic-panel").getBoundingClientRect(), t = document.querySelector(".map-tools").getBoundingClientRect(),
       e = document.querySelector(".civic-explore").getBoundingClientRect(), bar = document.querySelector(".topbar").getBoundingClientRect();
       return { panelRight: Math.round(innerWidth - p.right), panelW: Math.round(p.width), toolsLeftOfPanel: t.right <= p.left,
-        exploreMode: document.body.dataset.birgeExplore, exploreInBar: e.top >= bar.top && e.bottom <= bar.bottom + 1 && e.width >= 300 }; });
-    check("1366: panel on the right (400 px), map buttons left of it, district + street search in the header (readability п. 3)",
+        exploreMode: document.body.dataset.birgeExplore, exploreInBar: e.top >= bar.top && e.bottom <= bar.bottom + 1 && e.width >= 200 }; });
+    check("1366: panel on the right (400 px), map buttons left of it, one search field (≥ 200 px) in the header",
       panelBox.panelW === 400 && panelBox.panelRight === 20 && panelBox.toolsLeftOfPanel && panelBox.exploreMode === "header" && panelBox.exploreInBar, panelBox);
     await page.screenshot({ path: path.join(OUT, "01_map_1366_ru.png") });
 
@@ -92,7 +109,7 @@ async function main() {
     await page.waitForFunction(() => document.documentElement.lang === "kk", null, { timeout: 5000 }).catch(() => null);
     h = await header(page);
     check("1366: ҚАЗ switches header, tagline and <html lang>",
-      h.htmlLang === "kk" && h.pressed.lang === "kk" && h.labels.includes("Күн қорытындысы") && h.labels.includes("Әкімдік") && /бірге/.test(h.tagline || "") && h.keys.length === 0, h);
+      h.htmlLang === "kk" && h.pressed.lang === "kk" && h.labels.includes("Күн қорытындысы") && h.account.includes("Әкімдік") && /бірге/.test(h.tagline || "") && h.keys.length === 0, h);
     check("1366: Kazakh header still fits", h.out === 0 && h.scrollW <= 1366, h);
     const panel = await page.evaluate(() => ({ title: document.getElementById("civic-works-title")?.textContent,
       area: document.querySelector(".civic-explore-row label span")?.textContent, view: document.querySelector(".civic-explore-view")?.textContent,
@@ -102,7 +119,7 @@ async function main() {
     check("1366: ҚАЗ also switches the shell panel and city navigation",
       panel.title === "Қалада не өзгеріп жатыр" && panel.area === "Аумақ" && /Шолу: бүкіл Астана/.test(panel.view || "") && panel.staff === "Қызметкерлерге"
       // «Іздеу» — слово словаря R11 после казахской вычитки (f0e5e80); «Табу» — запасной текст оболочки.
-      && ["Іздеу", "Табу"].includes(panel.find) && panel.placeholder === "Астана көшесі" && /Нұра/.test(panel.district), panel);
+      && ["Іздеу", "Табу"].includes(panel.find) && panel.placeholder === "Көше, аялдама немесе аудан" && /Нұра/.test(panel.district), panel);
     await page.screenshot({ path: path.join(OUT, "02_map_1366_kk.png") });
     await page.reload();
     await ready(page);
@@ -139,12 +156,12 @@ async function main() {
     // РУС back; «Житель» hides akimat tools, survives reload; «Картина дня» from resident switches to akimat
     await page.click("#birge-header [data-lang=ru]");
     await page.waitForFunction(() => document.documentElement.lang === "ru", null, { timeout: 5000 }).catch(() => null);
-    await page.click("#birge-header [data-mode=resident]");
+    await viewUI(page, "resident");
     await page.waitForTimeout(300);
     const res = await page.evaluate(() => ({ mode: document.body.dataset.birgeMode,
       scen: getComputedStyle(document.getElementById("civic-scenarios-button")).display,
-      staff: getComputedStyle(document.getElementById("civic-staff-button")).display }));
-    check("1366: «Житель» hides akimat tools, keeps sign-in", res.mode === "resident" && res.scen === "none" && res.staff !== "none", res);
+      staff: !!document.querySelector("#birge-account [data-action=staff]") }));
+    check("1366: «Житель» hides akimat tools, keeps sign-in (avatar menu)", res.mode === "resident" && res.scen === "none" && res.staff, res);
     await page.screenshot({ path: path.join(OUT, "04_map_1366_resident.png") });
     await page.reload();
     await ready(page);
@@ -195,43 +212,53 @@ async function main() {
     check("1366: no page errors or warnings", page.errs.length === 0, page.errs);
     await ctx.close();
 
-    // ---------------------------------------------------------------- phone 375x812 and tablet 768x1024 (< 1024: ≡ menu)
+    // ---------------------------------------------------------------- phone 375x812 and tablet 768x1024: avatar menu
+    // Чистый дизайн (R11 CLEAN_PASS №1, №4): шапка — знак · поиск · ҚАЗ · РУС · аватар; разделы — первой группой в меню аватара.
     for (const [w, hgt, lang] of [[375, 812, "ru"], [375, 812, "kk"], [768, 1024, "kk"]]) {
       const tag = `${w} ${lang}`;
       const m = await openPage(browser, base + "?lang=" + lang, w, hgt);
       let p = await header(m.page);
       const startMode = w < 761 ? "resident" : "akimat";
-      check(`${tag}: ${startMode} view by default, ҚАЗ/РУС and ≡ visible, sections and view in the menu`,
-        p.mode === startMode && p.htmlLang === lang && p.labels.length === 3 && p.pressed.lang === lang, p);
+      check(`${tag}: ${startMode} view by default, compact header: ҚАЗ · РУС and avatar visible, sections in the avatar menu`,
+        p.mode === startMode && p.htmlLang === lang && p.headerMode === "compact" && p.avatar && p.pressed.lang === lang, p);
       check(`${tag}: header fits, no horizontal scroll`, p.out === 0 && p.scrollW <= w, p);
       await m.page.screenshot({ path: path.join(OUT, `05_map_${w}_${lang}.png`) });
-      await m.page.click("#birge-header .birge-menu-btn");
+      await m.page.click("#birge-header .birge-avatar");
       await m.page.waitForTimeout(300);
-      const menu = await m.page.evaluate(() => { const box = document.getElementById("birge-menu").getBoundingClientRect();
-        const items = [...document.querySelectorAll("#birge-menu button")].filter((b) => getComputedStyle(b).display !== "none");
-        const hit = items.every((b) => { const r = b.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return e === b || b.contains(e); });
-        return { open: document.getElementById("birge-header").dataset.menu, expanded: document.querySelector(".birge-menu-btn").getAttribute("aria-expanded"),
-          inside: box.left >= 0 && box.right <= innerWidth, clickable: hit, items: items.map((b) => b.textContent.trim()),
-          nav: window.BirgeShell.navItems().length }; });
-      // Разделы — те, чьи модули есть в сборке (IA_WAVE2 §1: не больше 5), плюс два вида «Акимат / Житель».
-      check(`${tag}: ≡ opens the menu on top of the map, all items clickable and inside the screen`,
-        menu.open === "open" && menu.expanded === "true" && menu.inside && menu.clickable && menu.nav >= 2 && menu.nav <= 5
-          && menu.items.length === menu.nav + 2, menu);
+      const menu = await m.page.evaluate(() => { const box = document.getElementById("birge-account"); const r = box.getBoundingClientRect();
+        const items = [...box.querySelectorAll(".bk-menu__item")];
+        const hit = items.every((b) => { const q = b.getBoundingClientRect(); const e = document.elementFromPoint(q.left + q.width / 2, q.top + q.height / 2); return e === b || b.contains(e); });
+        return { open: !box.hidden, expanded: document.querySelector(".birge-avatar").getAttribute("aria-expanded"),
+          inside: r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight, clickable: hit, items: items.map((b) => b.textContent.trim()),
+          sections: box.querySelectorAll("[data-section], [data-action=mine]").length, modes: box.querySelectorAll("[data-mode]").length,
+          nav: window.BirgeShell.navItems().filter((x) => x !== "more").length }; });
+      // Разделы — те, чьи модули есть в сборке (IA_WAVE2 §1), «Ещё» — пунктами; затем вид и «Для сотрудников».
+      check(`${tag}: avatar opens the menu on top of the map: sections, view, sign-in — all clickable and inside the screen`,
+        menu.open && menu.expanded === "true" && menu.inside && menu.clickable && menu.sections >= menu.nav && menu.nav >= 2 && menu.modes === 2, menu);
       await m.page.screenshot({ path: path.join(OUT, `06_menu_${w}_${lang}.png`) });
-      if (startMode === "resident") {  // у жителя «Картины дня» в меню нет: «Акимат» → снова ≡ → «Картина дня»
-        await m.page.click("#birge-header [data-mode=akimat]");
+      if (startMode === "resident") {  // у жителя «Картины дня» в меню нет: «Акимат» → снова аватар → «Картина дня»
+        await m.page.click("#birge-account [data-mode=akimat]");
         await m.page.waitForTimeout(200);
-        await m.page.click("#birge-header .birge-menu-btn");
+        await m.page.click("#birge-header .birge-avatar");
         await m.page.waitForTimeout(300);
       }
-      await m.page.click("#birge-header [data-section=day]");
+      await m.page.click("#birge-account [data-section=day]");
       await m.page.waitForTimeout(400);
       p = await header(m.page);
-      const dayBox = await m.page.evaluate(() => { const d = document.getElementById("birge-day").getBoundingClientRect(); return { l: d.left, r: d.right, t: d.top }; });
+      const dayBox = await m.page.evaluate(() => { const d = document.getElementById("birge-day").getBoundingClientRect();
+        return { l: d.left, r: d.right, t: d.top, menuHidden: document.getElementById("birge-account").hidden }; });
       check(`${tag}: «Картина дня» from the menu: menu closed, view akimat, screen inside the window`,
-        p.section === "day" && p.mode === "akimat" && dayBox.l >= 0 && dayBox.r <= w && p.scrollW <= w, { p, dayBox });
+        p.section === "day" && p.mode === "akimat" && dayBox.menuHidden && dayBox.l >= 0 && dayBox.r <= w && p.scrollW <= w, { p, dayBox });
       await m.page.screenshot({ path: path.join(OUT, `07_day_${w}_${lang}.png`) });
-      await m.page.keyboard.press("Escape");
+      // R10 W2-4 (FINAL-2, 375): «Карта» из меню возвращает к карте — центр карты свободен.
+      await m.page.click("#birge-header .birge-avatar");
+      await m.page.waitForTimeout(200);
+      await m.page.click("#birge-account [data-section=map]");
+      await m.page.waitForTimeout(500);
+      const back = await m.page.evaluate(() => { const c = document.querySelector(".maplibregl-canvas"); if (!c) return null; const b = c.getBoundingClientRect();
+        const e = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+        return { section: document.body.dataset.birgeSection, top: e === c || !!e?.closest?.(".maplibregl-canvas-container") ? "map" : (e?.id || e?.className || e?.tagName || "").toString().slice(0, 60) }; });
+      check(`${tag}: «Карта» from the menu returns to the map (map centre not covered)`, back && back.section === "map" && back.top === "map", back);
       check(`${tag}: no page errors or warnings`, m.page.errs.length === 0, m.page.errs);
       await m.ctx.close();
     }

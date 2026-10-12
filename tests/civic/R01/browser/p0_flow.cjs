@@ -29,6 +29,17 @@ function checkPageErrors(name, errs) {
   if (ring.length) check(name + " — R03 demo-ring image race (R03-owned)", false, ring.length + " warning(s)");
 }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Чистый дизайн (R11 CLEAN_PASS №4): вид «Акимат / Житель» и «Для сотрудников» — в меню аватара.
+async function viewUI(page, mode) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click(`#birge-account [data-mode=${mode}]`);
+  await page.waitForTimeout(150);
+}
+async function staffUI(page) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click("#birge-account [data-action=staff]");
+}
 const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
 
 async function startServer(port, db) {
@@ -99,7 +110,7 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await page.screenshot({ path: path.join(OUT, "01_civic_start_1440.png") });
 
     // ---- editor (R04): wrong password, login
-    await page.click("#civic-staff-button");
+    await staffUI(page);
     await page.waitForSelector(fk("login-user"), { timeout: 10000 });
     await page.fill(fk("login-user"), USER);
     await page.fill(fk("login-pass"), "wrong-password-123");
@@ -357,16 +368,17 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     check("mobile: bottom sheet leaves the map visible", mob.panelTop > 844 * 0.4, mob.panelTop);
     check("mobile: tap targets ≥36px", mob.small.length === 0, mob.small);
     await m.page.screenshot({ path: path.join(OUT, "09_civic_start_390.png") });
-    // Round 14: a phone opens in the resident view — akimat tools hidden, sign-in kept; the ≡ menu switches to «Акимат».
+    // Round 14: a phone opens in the resident view — akimat tools hidden, sign-in kept (чистый дизайн: в меню аватара).
+    await m.page.click("#birge-header .birge-avatar");
     const resident = await m.page.evaluate(() => ({ mode: window.BirgeShell?.mode,
       scen: getComputedStyle(document.getElementById("civic-scenarios-button")).display,
-      staff: getComputedStyle(document.getElementById("civic-staff-button")).display }));
-    check("mobile: resident view by default, akimat tools hidden, sign-in kept", resident.mode === "resident" && resident.scen === "none" && resident.staff !== "none", resident);
-    await m.page.click("#birge-header .birge-menu-btn");
-    await m.page.click("#birge-header [data-mode=akimat]");
-    const akimat = await m.page.evaluate(() => ({ mode: window.BirgeShell.mode, menu: document.getElementById("birge-header").dataset.menu,
+      staff: !!document.querySelector("#birge-account:not([hidden]) [data-action=staff]") }));
+    check("mobile: resident view by default, akimat tools hidden, sign-in kept (avatar menu)", resident.mode === "resident" && resident.scen === "none" && resident.staff, resident);
+    await m.page.click("#birge-account [data-mode=akimat]");
+    await m.page.waitForTimeout(150);
+    const akimat = await m.page.evaluate(() => ({ mode: window.BirgeShell.mode, menuHidden: document.getElementById("birge-account").hidden,
       scen: getComputedStyle(document.getElementById("civic-scenarios-button")).display }));
-    check("mobile: ≡ menu switches to the akimat view and closes", akimat.mode === "akimat" && akimat.menu === "closed" && akimat.scen !== "none", akimat);
+    check("mobile: avatar menu switches to the akimat view and closes", akimat.mode === "akimat" && akimat.menuHidden, akimat);
     const attribSlot = () => m.page.evaluate(() => {
       const holder = document.querySelector(".maplibregl-ctrl-bottom-right");
       if (!holder) return { ok: false, reason: "no control container" };

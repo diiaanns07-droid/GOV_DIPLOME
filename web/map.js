@@ -274,6 +274,16 @@ async function loadMap() {
       new maplibregl.AttributionControl({ compact: true }),
       "bottom-right",
     );
+    // R11 (LOCAL_FINAL P3): у кнопки «i» MapLibre подпись по-английски («Toggle attribution») — ставим ru/kk.
+    const labelAttribution = () => {
+      const b = document.querySelector(".maplibregl-ctrl-attrib-button");
+      if (!b) return;
+      const text = mapText("map.attrib.toggle", "Показать источники карты");
+      b.setAttribute("aria-label", text);
+      b.setAttribute("title", text);
+    };
+    labelAttribution();
+    window.addEventListener("birge:lang", labelAttribution);
     map.on("error", (e) => {
       // Basemap style unreachable (offline/blocked host): continue on a plain local
       // background so data layers still work. No streets and no 3D buildings then.

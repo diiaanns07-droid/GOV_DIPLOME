@@ -128,17 +128,24 @@ def test_prototype_streets_are_generated_from_graph():
 
 def test_touch_targets_and_font_sizes():
     assert re.search(r"--tap:\s*48px", TOKENS)
+    # Чистый дизайн (владелец, 12 окт): шкала 13/15/17/22/28 — подписи не меньше 13, текст не меньше 15, два веса.
     sizes = [int(x) for x in re.findall(r"font-size:\s*(\d+)px", COMPONENTS)]
-    assert all(s >= 14 for s in sizes), sizes
-    assert "--fs-body: 16px" in TOKENS
+    assert all(s >= 13 for s in sizes), sizes
+    for name, px in (("caption", 13), ("body", 15), ("lead", 17), ("title", 22), ("h1", 28)):
+        assert f"--fs-{name}: {px}px" in TOKENS, name
+    weights = set(re.findall(r"font-weight:\s*(\d+)", TOKENS + COMPONENTS))
+    assert weights <= {"400", "600"}, weights
+    assert "--fw-bold: 600" in TOKENS
 
 
 def test_local_font_files_and_license():
-    for w in ("Regular", "SemiBold", "Bold"):
+    for w in ("Regular", "SemiBold"):
         f = KIT / "fonts" / f"Inter-{w}.woff2"
         assert f.exists() and f.read_bytes()[:4] == b"wOF2", f
         assert f.stat().st_size < 120_000
         assert f"fonts/Inter-{w}.woff2" in TOKENS
+    # 700 не подключаем (два веса); файл остаётся, пока он в списке статики шлюза R01
+    assert "Inter-Bold.woff2" not in TOKENS
     assert "SIL OPEN FONT LICENSE" in (KIT / "fonts/OFL.txt").read_text("utf-8")
 
 

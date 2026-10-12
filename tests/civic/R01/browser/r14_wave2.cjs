@@ -20,6 +20,17 @@ const checks = [];
 const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null });
   console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined && detail !== null ? " — " + JSON.stringify(detail).slice(0, 400) : "")); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Чистый дизайн (R11 CLEAN_PASS №4): вид «Акимат / Житель» и «Для сотрудников» — в меню аватара.
+async function viewUI(page, mode) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click(`#birge-account [data-mode=${mode}]`);
+  await page.waitForTimeout(150);
+}
+async function staffUI(page) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click("#birge-account [data-action=staff]");
+}
 const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
 
 async function startServer(port, db) {
@@ -108,7 +119,12 @@ async function main() {
       // Сдвиг карты: через 80 мс значок стоит там, где его точка (с transition 0,2 с он был бы ещё в пути).
       // eslint-disable-next-line no-undef
       const m = typeof map !== "undefined" && map && typeof map.panBy === "function" ? map : null;
-      const one = els.find((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
+      // Значок ближе к центру карты: у краёв R07 отодвигает значки от плашек оболочки (поиск, легенда, кнопки) —
+      // это сдвиг по замыслу, а не отставание от карты.
+      const cx = innerWidth * 0.35, cy = innerHeight * 0.55;
+      const one = els.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; })
+        .sort((a, b) => { const p = a.getBoundingClientRect(), q = b.getBoundingClientRect();
+          return Math.hypot(p.left - cx, p.top - cy) - Math.hypot(q.left - cx, q.top - cy); })[0];
       if (!m || !one) return { count: els.length, bad, lag: null, map: !!m, one: !!one };
       const before = one.getBoundingClientRect();
       m.panBy([140, 90], { duration: 0 });
@@ -121,7 +137,7 @@ async function main() {
     });
     check("map markers: no transition on transform/left/top; a badge follows the map at once (lag ≤ 2 px)",
       markers.count > 0 && markers.bad.length === 0 && markers.lag !== null && markers.lag <= 2, markers);
-    await page.click("#birge-header [data-mode=resident]");
+    await viewUI(page, "resident");
     await page.waitForTimeout(300);
     n = await nav(page);
     check("default resident menu: IA order, only sections with a module (Карта · Мои обращения always)",
@@ -140,7 +156,7 @@ async function main() {
     check("«Мои обращения»: badge with the number of new changes (R09 event), gone at 0; screen reader hears the count",
       badge.three.text === "3" && badge.three.shown && /3/.test(badge.three.label || "") && badge.zero.text === null && badge.zero.label === null, badge);
     // ---- читаемость карты (владелец, 11 окт): п. 3 панели, п. 7 границы районов, п. 8 наклон
-    await page.click("#birge-header [data-mode=akimat]");
+    await viewUI(page, "akimat");
     await page.waitForTimeout(400);
     const read = await page.evaluate(() => {
       const box = (sel) => { const e = document.querySelector(sel); if (!e || !e.getClientRects().length || getComputedStyle(e).display === "none") return null;
@@ -158,7 +174,7 @@ async function main() {
         titleShown: !!box("#birge-legend .r07-legend__title"), projects: b3d ? getComputedStyle(b3d).display : "absent",
         lines, pitch: Math.round(map.getPitch()), free: Math.round((free / total) * 1000) / 10 };
     });
-    check("readability 3: district + street search in the header (1366), header 68 px", read.explore === "header" && read.exploreInBar && read.barH === 68, read);
+    check("readability 3 + clean design: one search field in the header (1366), header strip 64 px", read.explore === "header" && read.exploreInBar && read.barH === 64, read);
     check("readability 3: legend is one compact row (no title) next to «?»; projects and «Что построить?» hidden by default",
       read.legendOpen === "false" && !read.titleShown && read.legendH <= 56 && read.projects === "none", read);
     check("readability 3: free map ≥ 60 % of the 1366×768 screen (akimat)", read.free >= 60, read.free);
@@ -203,7 +219,7 @@ async function main() {
     await page.waitForTimeout(150);
     check("1366 akimat: header with 5 items fits, no horizontal scroll", n.out === 0 && n.scrollW <= 1366, n);
     await page.screenshot({ path: path.join(OUT, "w2_1366_akimat_menu.png") });
-    await page.click("#birge-header [data-mode=resident]");
+    await viewUI(page, "resident");
     await page.waitForTimeout(300);
     n = await nav(page);
     check("resident menu (wave 2): Карта · Мои обращения · Рядом · Идеи · Ещё",
@@ -270,12 +286,12 @@ async function main() {
     await page.waitForTimeout(200);
 
     // Direct link to a section of the other view switches the view (link from a message, QR, «Ещё»).
-    await page.click("#birge-header [data-mode=akimat]");
+    await viewUI(page, "akimat");
     await page.evaluate(() => { location.hash = "#ideas"; });
     await page.waitForTimeout(400);
     n = await nav(page);
     check("link #ideas in the akimat view → resident view, «Идеи» screen", n.mode === "resident" && n.section === "ideas", n);
-    await page.click("#birge-header [data-mode=akimat]");
+    await viewUI(page, "akimat");
     await page.waitForTimeout(300);
     n = await nav(page);
     check("switching to «Акимат» from a resident-only section returns to the map", n.mode === "akimat" && n.section === "map", n);
@@ -298,7 +314,7 @@ async function main() {
     page = await newPage(ctx);
     await page.goto(base);
     await ready(page);
-    await page.click("#birge-header [data-mode=resident]");
+    await viewUI(page, "resident");
     const registered = await page.evaluate(() => window.BirgeShell.registerScreen({ id: "nearby", mount(root, opts) {
       window.__w2 = { mounted: true, api: typeof opts.api?.v2 === "function", lang: opts.lang, role: opts.role, section: opts.section,
         openTarget: typeof opts.openTarget === "function", close: typeof opts.close === "function" };
@@ -320,7 +336,7 @@ async function main() {
     check("leaving the section destroys the module (no work behind the map)", destroyed, destroyed);
     await page.evaluate(() => window.BirgeShell.registerScreen({ id: "qr-sheets", href: "/civic/qr/", modes: ["akimat"],
       title: { ru: "Листы QR для остановок", kk: "Аялдамаларға арналған QR парақтары" } }));
-    await page.click("#birge-header [data-mode=akimat]");
+    await viewUI(page, "akimat");
     await page.waitForTimeout(300);
     n = await nav(page);
     await page.click("#birge-header .birge-nav [data-section=more]");

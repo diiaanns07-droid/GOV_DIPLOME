@@ -83,16 +83,16 @@ async function check(browser, base, width, height, lang) {
         if (v && /^[a-z0-9_]+(\.[a-z0-9_]+){1,}$/.test(v)) out.keys.push(a + "=" + v);
       });
     });
-    document.querySelectorAll(".bk-btn,.bk-mapbtn,.bk-iconbtn,.bk-option,.bk-list__item").forEach((el) => {
+    document.querySelectorAll(".bk-btn,.bk-mapbtn,.bk-iconbtn,.bk-option,.bk-list__item,.bk-tabs > [role=tab],.bk-details > summary").forEach((el) => {
       if (!visible(el)) return;
       const h = el.getBoundingClientRect().height;
       if (h < 47.5) out.lowButtons.push((el.textContent.trim() || el.getAttribute("aria-label") || el.className) + " " + Math.round(h) + "px");
-      if (el.classList.contains("bk-btn") && parseFloat(getComputedStyle(el).fontSize) < 16) out.small.push(el.textContent.trim());
+      if (el.classList.contains("bk-btn") && parseFloat(getComputedStyle(el).fontSize) < 15) out.small.push(el.textContent.trim()); // чистый дизайн: кнопки ≥ 15 (обычно 17)
     });
     document.querySelectorAll("body *").forEach((el) => {
       if (!visible(el) || el.closest("code,figcaption,svg")) return;
       const own = Array.from(el.childNodes).some((c) => c.nodeType === 3 && c.textContent.trim());
-      if (own && parseFloat(getComputedStyle(el).fontSize) < 14) out.tinyText.push(el.className + ": " + el.textContent.trim().slice(0, 30));
+      if (own && parseFloat(getComputedStyle(el).fontSize) < 13) out.tinyText.push(el.className + ": " + el.textContent.trim().slice(0, 30));
     });
     return out;
   });
@@ -101,8 +101,16 @@ async function check(browser, base, width, height, lang) {
   if (r.lang !== lang) problems.push("html lang=" + r.lang + ", ожидали " + lang);
   r.keys.forEach((k) => problems.push("ключ вместо текста: " + k));
   r.lowButtons.forEach((k) => problems.push("кнопка ниже 48 px: " + k));
-  r.small.forEach((k) => problems.push("текст кнопки < 16 px: " + k));
-  r.tinyText.forEach((k) => problems.push("текст < 14 px: " + k));
+  r.small.forEach((k) => problems.push("текст кнопки < 15 px: " + k));
+  r.tinyText.forEach((k) => problems.push("текст < 13 px (шкала 13/15/17/22/28): " + k));
+  // Вкладки ui-kit (волна 2): щелчок и стрелка → aria-selected, выбрана ровно одна
+  if (await page.$("#kit-tabs")) {
+    await page.click('#kit-tabs [role="tab"]:nth-child(2)');
+    await page.keyboard.press("ArrowRight");
+    const sel = await page.$$eval('#kit-tabs [role="tab"]', (bs) => bs.map((b) => b.getAttribute("aria-selected")));
+    if (sel.join() !== "false,false,true") problems.push("вкладки: после щелчка по 2-й и → ждали 3-ю, " + sel.join());
+    await page.click('#kit-tabs [role="tab"]:nth-child(1)');
+  }
   if (SHOTS) {
     fs.mkdirSync(SHOTS, { recursive: true });
     const name = path.basename(PAGE, ".html").replace("index", "ui-kit") + `-${width}-${lang}`;

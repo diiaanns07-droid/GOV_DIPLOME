@@ -1053,6 +1053,8 @@
         reportFrame(label, "district");
         roomy(() => frame(b, 13.7));
       },
+      // Поиск в шапке (чистый дизайн): место с жалобами — карточка цели R07 (та же, что по значку на карте).
+      onPlace: (target) => { if (target?.kind && target?.id) S.mounted.heat?.focusTarget?.(target.kind, target.id); },
       onStreet: (street) => {
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: true });

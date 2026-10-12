@@ -23,6 +23,17 @@ const checks = [];
 const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null });
   console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined && detail !== null ? " — " + JSON.stringify(detail).slice(0, 400) : "")); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Чистый дизайн (R11 CLEAN_PASS №4): вид «Акимат / Житель» и «Для сотрудников» — в меню аватара.
+async function viewUI(page, mode) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click(`#birge-account [data-mode=${mode}]`);
+  await page.waitForTimeout(150);
+}
+async function staffUI(page) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click("#birge-account [data-action=staff]");
+}
 const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
 
 async function startServer(port, db) {
@@ -106,7 +117,7 @@ async function main() {
       && (lagging.body?.late?.length || 0) + (lagging.body?.stale?.length || 0) > 0, lagging.body && { late: lagging.body.late?.length, stale: lagging.body.stale?.length });
 
     // ---- step 1–2 with R12 and R04: the resident picks a real place and gets a category suggestion
-    await page.click("#birge-header [data-mode=resident]");
+    await viewUI(page, "resident");
     await page.waitForTimeout(300);
     const keysResident = await skipToMain(page);
     check("keyboard (resident): first Tab = «Перейти к главной кнопке», Enter -> «Сообщить о проблеме»",
@@ -143,7 +154,7 @@ async function main() {
       && ["object", "segment", "area"].includes(mine.target.kind), mine && { id: mine.id, target: mine.target, category: mine.category });
     await page.screenshot({ path: path.join(OUT, "b2-1366-resident-sent.png") });
     await page.keyboard.press("Escape");
-    await page.click("#birge-header [data-mode=akimat]");
+    await viewUI(page, "akimat");
     await page.waitForTimeout(300);
 
     // ---- step 5: akimat places a proposal in 3D
@@ -216,7 +227,7 @@ async function main() {
     check("the new proposal is in the public list (+1)", after.length === seeded.length + 1 && after.some((p) => p.id === newItem?.id), { before: seeded.length, after: after.length });
 
     // ---- resident votes «За»
-    await page.click("#birge-header [data-mode=resident]");
+    await viewUI(page, "resident");
     await page.waitForTimeout(300);
     await b3dReady(page);
     st = await b3dState(page);
@@ -254,7 +265,7 @@ async function main() {
     await page.screenshot({ path: path.join(OUT, "b2-1366-resident-vote.png") });
 
     // ---- akimat deletes it (R05 DELETE -> R06 withdraw)
-    await page.click("#birge-header [data-mode=akimat]");
+    await viewUI(page, "akimat");
     await page.waitForTimeout(300);
     await b3dReady(page);
     if (newItem) await page.evaluate((id) => window.CivicShell.build3d.select(id), newItem.id);

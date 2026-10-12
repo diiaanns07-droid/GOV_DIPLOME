@@ -20,6 +20,17 @@ const checks = [];
 const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null });
   console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined && detail !== null ? " — " + JSON.stringify(detail).slice(0, 400) : "")); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Чистый дизайн (R11 CLEAN_PASS №4): вид «Акимат / Житель» и «Для сотрудников» — в меню аватара.
+async function viewUI(page, mode) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click(`#birge-account [data-mode=${mode}]`);
+  await page.waitForTimeout(150);
+}
+async function staffUI(page) {
+  await page.click("#birge-header .birge-avatar");
+  await page.click("#birge-account [data-action=staff]");
+}
 const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
 
 async function startServer(port, db) {
@@ -131,7 +142,7 @@ async function main() {
     await page.keyboard.press("Escape");
 
     // ---- step 4: akimat — «Картина дня»
-    await page.click("#birge-header [data-mode=akimat]");
+    await viewUI(page, "akimat");
     const fabAkimat = await page.evaluate(() => getComputedStyle(document.querySelector(".bc-fab")).display);
     check("akimat: no «Сообщить о проблеме» button", fabAkimat === "none", fabAkimat);
     await page.click("#birge-header [data-section=day]");

@@ -118,7 +118,7 @@
     return node;
   }
   function segButton(group, value, pressed) {
-    return el("button", { type: "button", class: "bk-seg__btn", ["data-" + group]: value, "aria-pressed": String(pressed) });
+    return el("button", { type: "button", class: "birge-nav__item", ["data-" + group]: value, "aria-pressed": String(pressed) });
   }
 
   // ------------------------------------------------------------------ разделы
@@ -166,7 +166,7 @@
       let b = have.get(id);
       if (!b) {
         b = id === "mine"
-          ? el("button", { type: "button", class: "bk-seg__btn birge-mine-btn", "data-action": "mine", "aria-pressed": "false" })
+          ? el("button", { type: "button", class: "birge-nav__item birge-mine-btn", "data-action": "mine", "aria-pressed": "false" })
           : segButton("section", id, id === state.section);
         if (id === "more") { b.setAttribute("aria-haspopup", "menu"); b.setAttribute("aria-expanded", "false"); }
       }
@@ -213,47 +213,95 @@
 
   // ------------------------------------------------------------------ шапка
   let header = null;
+  // Чистый дизайн (R11 CLEAN_PASS, решение владельца 12 окт): шапка — одна белая полоса: знак + «Birge» · поиск ·
+  // разделы текстом · «ҚАЗ · РУС» текстом · круг-аватар. Вид «Акимат / Житель», «Для сотрудников» и «Выйти» — в меню
+  // аватара; когда разделы в строку не помещаются (телефон, узкий ноутбук, длинный ҚАЗ) — они тоже в меню аватара,
+  // первой группой (body[data-birge-header="compact"], birge.js placeHeader).
+  let account = null, accountMenu = null;
   function buildHeader() {
     const actions = document.querySelector(".topbar .top-actions");
     if (!actions || document.getElementById("birge-header")) return;
-    // На телефоне разделы и «Акимат / Житель» уходят в меню ≡ (UX_SPEC §1), ҚАЗ/РУС видны всегда.
-    // На ноутбуке .birge-menu — display: contents, кнопка меню скрыта (birge.css).
-    const menuButton = el("button", { type: "button", class: "bk-btn birge-menu-btn", "aria-expanded": "false",
-      "aria-controls": "birge-menu" });
-    menuButton.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/civic/ui-kit/icons.svg#i-menu"></use></svg><span></span>';
+    const avatar = el("button", { type: "button", class: "bk-avatar birge-avatar", "data-action": "account",
+      "aria-controls": "birge-account" });
+    avatar.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/civic/ui-kit/icons.svg#i-user"></use></svg>';
     header = el("div", { id: "birge-header", class: "birge-header bk-app" }, [
-      menuButton,
-      el("div", { id: "birge-menu", class: "birge-menu" }, [
-        // Пункты меню обоих видов; чужие для текущего вида и разделы без модуля скрыты (renderNav).
-        el("div", { class: "bk-seg birge-nav", role: "group", "data-group": "section" }),
-        el("div", { class: "bk-seg birge-role", role: "group", "data-group": "mode" },
-          MODES.map((m) => segButton("mode", m, m === state.mode))),
-      ]),
-      el("div", { class: "bk-seg birge-lang", role: "group", "data-group": "lang" },
-        ["kk", "ru"].map((l) => segButton("lang", l, l === lang()))),
+      // Пункты меню обоих видов; чужие для текущего вида и разделы без модуля скрыты (buildNav).
+      el("div", { class: "bk-nav birge-nav", role: "group", "data-group": "section" }),
+      el("div", { class: "bk-langtext birge-lang", role: "group", "data-group": "lang" },
+        ["kk", "ru"].map((l) => el("button", { type: "button", "data-lang": l, "aria-pressed": String(l === lang()) }))),
+      avatar,
     ]);
     actions.prepend(header);
+    account = el("div", { id: "birge-account", class: "bk-menu birge-account bk-app", role: "menu", hidden: true });
+    document.body.append(account);
+    accountMenu = window.BirgeUI && typeof window.BirgeUI.menu === "function" ? window.BirgeUI.menu(avatar, account) : null;
+    if (!accountMenu) {  // ui-kit не загрузился: простое открытие/закрытие
+      avatar.addEventListener("click", () => { account.hidden = !account.hidden; avatar.setAttribute("aria-expanded", String(!account.hidden)); });
+    }
+    avatar.addEventListener("click", () => { if (!account.hidden) renderAccount(true); });
     buildNav();
-    header.addEventListener("click", (event) => {
-      const button = event.target.closest("button");
-      if (!button || !header.contains(button)) return;
-      if (button === menuButton) { setMenu(header.dataset.menu !== "open"); return; }
-      if (button.dataset.action === "mine") { setSection("map"); setMenu(false); window.CivicShell?.openMine?.(); return; }
-      if (button.dataset.section === "more" && !button.closest(".birge-more-menu")) { toggleMore(button); return; }
+    const act = (button) => {
+      if (button.dataset.action === "mine") { setSection("map"); window.CivicShell?.openMine?.(); return; }
+      if (button.dataset.action === "staff") { setSection("map"); window.CivicShell?.openEditor?.(); return; }
+      if (button.dataset.action === "logout") { window.CivicShell?.api?.logout?.().then(renderAccount, renderAccount); return; }
+      if (button.dataset.section === "more" && !button.closest(".birge-more-menu, .birge-account")) { toggleMore(button); return; }
       if (button.closest(".birge-more-menu")) closeMore();
       if (button.dataset.section) setSection(button.dataset.section);
       else if (button.dataset.mode) setMode(button.dataset.mode);
       else if (button.dataset.lang && i18n()) i18n().setLang(button.dataset.lang);
-      if (!button.dataset.lang) setMenu(false);
+    };
+    header.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button || !header.contains(button) || button === avatar) return;
+      act(button);
     });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && moreOpen()) { closeMore(true); return; }
-      if (event.key === "Escape" && header.dataset.menu === "open") { setMenu(false); menuButton.focus(); }
+    account.addEventListener("click", (event) => {
+      const item = event.target.closest(".bk-menu__item");
+      if (item && item.tagName === "BUTTON") act(item);
+      if (!accountMenu && item) { account.hidden = true; avatar.setAttribute("aria-expanded", "false"); }
     });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape" && moreOpen()) closeMore(true); });
     document.addEventListener("click", (event) => {
       if (moreOpen() && !event.target.closest?.(".birge-more-menu, [data-section=more]")) closeMore();
-      if (header.dataset.menu === "open" && !header.contains(event.target)) setMenu(false);
     });
+    window.CivicShell?.api?.onSession?.(() => renderAccount());
+  }
+  // Меню аватара: [разделы — только в компактной шапке] · «Чей вид»: Акимат / Житель · «Для сотрудников» (после входа —
+  // «Кабинет сотрудника») · «Выйти» (только после входа).
+  function renderAccount(focusFirst) {
+    if (!account) return;
+    const items = [];
+    const item = (attrs, text) => { const b = el("button", { type: "button", class: "bk-menu__item", role: "menuitem", ...attrs }); b.textContent = text; return b; };
+    if (document.body.dataset.birgeHeader === "compact") {
+      for (const id of NAV[state.mode].filter((x) => x !== "more" && available(x, state.mode))) {
+        const b = id === "mine" ? item({ "data-action": "mine" }, t("common.nav.mine")) : item({ "data-section": id }, navTitle(id));
+        if (id === state.section) b.setAttribute("aria-current", "page");
+        if (id === "mine" && mineChanges > 0) {
+          const badge = el("span", { class: "bk-nav__badge", "aria-hidden": "true" });
+          badge.textContent = mineChanges > 9 ? "9+" : String(mineChanges);
+          b.append(badge);
+        }
+        items.push(b);
+      }
+      for (const id of moreItems(state.mode)) {  // «Ещё» в меню аватара — сразу пунктами (вложенных меню нет)
+        const extra = state.extra.find((x) => x.id === id);
+        const b = extra?.href ? el("a", { role: "menuitem", class: "bk-menu__item", href: extra.href }) : item({ "data-section": id }, "");
+        b.textContent = navTitle(id);
+        if (id === state.section) b.setAttribute("aria-current", "page");
+        items.push(b);
+      }
+      items.push(el("div", { class: "bk-menu__sep", role: "separator" }));
+    }
+    const label = el("p", { class: "bk-menu__label" }); label.textContent = t("common.role.label");
+    items.push(label);
+    for (const m of MODES) items.push(item({ "data-mode": m, role: "menuitemradio", "aria-checked": String(m === state.mode) }, t("common.role." + m)));
+    items.push(el("div", { class: "bk-menu__sep", role: "separator" }));
+    const signedIn = !!window.CivicShell?.api?.session?.authenticated;
+    items.push(item({ "data-action": "staff" }, t(signedIn ? "staff.cabinet.title" : "shell.staff.open")));
+    if (signedIn) items.push(item({ "data-action": "logout" }, t("staff.login.logout")));
+    account.replaceChildren(...items);
+    account.setAttribute("aria-label", t("common.account.menu"));
+    if (focusFirst && !account.hidden) account.querySelector(".bk-menu__item")?.focus();
   }
   // Первая точка Tab — «Перейти к главной кнопке» (ui-kit .bk-skip, ключ R11): житель — «Сообщить о проблеме» (R09),
   // акимат — «Карта жалоб» (R07) в панели. Без неё до главной кнопки было > 40 нажатий Tab (R10 B-025, LOCAL_B2 №7).
@@ -272,12 +320,6 @@
     });
     document.body.prepend(skip);
   }
-  function setMenu(open) {
-    if (!header) return;
-    header.dataset.menu = open ? "open" : "closed";
-    document.body.dataset.birgeMenu = open ? "open" : "closed";  // birge.css поднимает шапку над панелями карты
-    header.querySelector(".birge-menu-btn").setAttribute("aria-expanded", String(open));
-  }
 
   // «Мои обращения»: единственный бейдж меню (IA_WAVE2 §1) — число новых изменений по обращениям жителя. R09 шлёт
   // window "birge:complaint-changes" {detail: {n}} (после открытия «Мои обращения» n = 0). На телефоне — точка на ≡.
@@ -287,12 +329,15 @@
     if (!mine) return;
     mine.textContent = t("common.nav.mine");
     if (mineChanges > 0) {
-      const badge = el("span", { class: "birge-badge", "aria-hidden": "true" });
+      const badge = el("span", { class: "bk-nav__badge birge-badge", "aria-hidden": "true" });
       badge.textContent = mineChanges > 9 ? "9+" : String(mineChanges);
       mine.append(badge);
       mine.setAttribute("aria-label", t("common.nav.mine") + " · " + t("shell.nav.badge", { n: mineChanges }));
     } else mine.removeAttribute("aria-label");
     header.dataset.mineChanges = mineChanges > 0 ? "yes" : "no";
+    // Компактная шапка: разделы в меню аватара — точка на аватаре (ui-kit .bk-avatar[data-badge]).
+    const avatar = header.querySelector(".birge-avatar");
+    if (avatar) { if (mineChanges > 0 && state.mode === "resident") avatar.dataset.badge = ""; else delete avatar.dataset.badge; }
   }
   window.addEventListener("birge:complaint-changes", (event) => {
     const n = Math.max(0, Math.floor(Number(event && event.detail && event.detail.n) || 0));
@@ -305,10 +350,7 @@
     if (skip) skip.textContent = t("common.action.skip_to_main");
     if (header) {
       header.querySelector(".birge-nav").setAttribute("aria-label", t("shell.nav.label"));
-      header.querySelector(".birge-role").setAttribute("aria-label", t("common.role.label"));
       header.querySelector(".birge-lang").setAttribute("aria-label", t("common.lang.label"));
-      const menuLabel = header.querySelector(".birge-menu-btn span");
-      if (menuLabel) menuLabel.textContent = t("common.nav.menu");
       buildNav();
       labelMine();
       for (const b of header.querySelectorAll(".birge-nav > [data-section]")) {
@@ -317,16 +359,17 @@
         const current = b.dataset.section === state.section
           || (b.dataset.section === "more" && moreItems(state.mode).includes(state.section));
         b.setAttribute("aria-pressed", String(current));
-      }
-      for (const b of header.querySelectorAll("[data-mode]")) {
-        b.textContent = t("common.role." + b.dataset.mode);
-        b.setAttribute("aria-pressed", String(b.dataset.mode === state.mode));
+        if (current) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
       }
       for (const b of header.querySelectorAll("[data-lang]")) {
         b.textContent = t("common.lang." + b.dataset.lang);
         b.setAttribute("aria-pressed", String(b.dataset.lang === lang()));
         b.setAttribute("lang", b.dataset.lang);
       }
+      const avatar = header.querySelector(".birge-avatar");
+      if (avatar) { avatar.setAttribute("aria-label", t("common.account.menu")); avatar.title = t("common.account.menu"); }
+      renderAccount();
+      requestAnimationFrame(placeHeader);
     }
     if (document.body.classList.contains("civic-mode")) {
       const title = document.querySelector(".brand-title");
@@ -346,7 +389,7 @@
     renderDay();
     renderScreen();
     renderLayers();
-    requestAnimationFrame(placeExplore);  // длина меню и языка меняет место для панели в шапке
+    requestAnimationFrame(placeHeader);  // длина меню и языка меняет место для поиска в шапке
   }
 
   // ------------------------------------------------------------------ режим
@@ -489,87 +532,53 @@
     return true;
   }
 
-  // ------------------------------------------------------------------ «Территория» и поиск в шапке (читаемость п. 3)
-  // Ноутбук (≥ 1024 px): панель района и поиска улицы встаёт в шапку между логотипом и меню — карта свободна от панели.
-  // Места мало (меню из 5 пунктов, ҚАЗ) — по ступеням: прячется подзаголовок «Город и жители вместе» (название
-  // остаётся), кнопки меню плотнее (отступ 8 px вместо 12), поиск улицы сворачивается в лупу (поле — под шапкой по
-  // нажатию). Не хватает и так или телефон — панель остаётся на карте, как была.
-  // Полный вид — поле улицы не уже 200 px (R11 разбор 8, п. 2: при 65 px подсказка «Астана кө» обрезана):
-  // район 150 + 8 + поле 200 + 4 + лупа 48 = 410. Компактный — район 150 + 8 + лупа 48; поле по лупе — 320 px под шапкой.
-  const EXPLORE_FULL = 410, EXPLORE_COMPACT = 206;
-  const EXPLORE_STEPS = [
-    { brand: null, nav: null, size: "full", min: EXPLORE_FULL },
-    { brand: "short", nav: null, size: "full", min: EXPLORE_FULL },
-    { brand: "short", nav: "tight", size: "full", min: EXPLORE_FULL },
-    { brand: null, nav: null, size: "compact", min: EXPLORE_COMPACT },
-    { brand: "short", nav: null, size: "compact", min: EXPLORE_COMPACT },
-    { brand: "short", nav: "tight", size: "compact", min: EXPLORE_COMPACT },
-  ];
-  function setExploreStep(step) {
-    const d = document.body.dataset;
-    if (step && step.brand) d.birgeBrand = step.brand; else delete d.birgeBrand;
-    if (step && step.nav) d.birgeNav = step.nav; else delete d.birgeNav;
-    if (step) d.birgeExploreSize = step.size; else delete d.birgeExploreSize;
-  }
-  function placeExplore() {
+  // ------------------------------------------------------------------ шапка: поиск и разделы (чистый дизайн)
+  // Поиск — одно поле между знаком и разделами, 200–520 px (R11 CLEAN_PASS №1–2): районы, места, улицы (explore.js).
+  // Разделы в строку, если поле при этом не уже 200 px; иначе — в меню аватара (body[data-birge-header="compact"]).
+  // Телефон: шапка всегда компактная — знак · поиск («Іздеу / Поиск», от 120 px) · ҚАЗ · РУС · аватар.
+  const SEARCH_MIN = 200, SEARCH_MAX = 520, SEARCH_MIN_PHONE = 120;
+  function placeHeader() {
     const box = document.querySelector(".civic-explore"), brand = document.querySelector(".topbar .brand");
-    const civic = document.body.classList.contains("civic-mode");
-    const toMap = () => { document.body.dataset.birgeExplore = "map"; setExploreStep(null); closeExploreSearch(); };
-    if (!box || !brand || !header || !civic || innerWidth < 1024) { toMap(); return; }
-    const bar = brand.closest(".topbar").getBoundingClientRect();
-    // Замер по ступеням синхронно, до отрисовки кадра: промежуточные ступени на экране не мигают.
-    for (const step of EXPLORE_STEPS) {
-      setExploreStep(step);
-      const left = brand.getBoundingClientRect().right + 16, right = header.getBoundingClientRect().left - 16;
-      if (right - left < step.min) continue;
-      document.body.dataset.birgeExplore = "header";
-      if (step.size !== "compact") closeExploreSearch();
-      box.style.setProperty("--be-left", Math.round(left) + "px");
-      box.style.setProperty("--be-width", Math.round(Math.min(460, right - left)) + "px");
-      box.style.setProperty("--be-top", Math.round(bar.top + (bar.height - 48) / 2) + "px");
-      return;
+    const d = document.body.dataset;
+    if (!header || !brand || !document.body.classList.contains("civic-mode")) { d.birgeExplore = "map"; return; }
+    const wasCompact = d.birgeHeader === "compact";
+    // Замер синхронно, до отрисовки кадра: промежуточная раскладка не мигает.
+    if (innerWidth < PHONE) d.birgeHeader = "compact";
+    else {
+      delete d.birgeHeader;
+      const gap = header.getBoundingClientRect().left - brand.getBoundingClientRect().right - 32;
+      if (gap < SEARCH_MIN) d.birgeHeader = "compact";
     }
-    toMap();
+    if (wasCompact !== (d.birgeHeader === "compact")) renderAccount();
+    if (!box) { d.birgeExplore = "map"; return; }
+    const phone = innerWidth < PHONE, pad = phone ? 8 : 16;
+    const bar = brand.closest(".topbar").getBoundingClientRect();
+    // Телефон: слово «Birge» в шапке с поиском скрыто (birge.css) — поле начинается сразу за знаком.
+    const anchor = phone ? brand.querySelector(".brand-mark") || brand : brand;
+    const left = anchor.getBoundingClientRect().right + pad, right = header.getBoundingClientRect().left - pad;
+    if (right - left < (phone ? SEARCH_MIN_PHONE : SEARCH_MIN)) { d.birgeExplore = "map"; return; }
+    d.birgeExplore = "header";
+    box.style.setProperty("--be-left", Math.round(left) + "px");
+    box.style.setProperty("--be-width", Math.round(Math.min(SEARCH_MAX, right - left)) + "px");
+    box.style.setProperty("--be-top", Math.round(bar.top + (bar.height - 48) / 2) + "px");
   }
-  // Компактный поиск: лупа открывает поле под шапкой; повторное нажатие с текстом — «Найти»; Esc и щелчок мимо — закрыть.
-  function exploreSearchForm() { return document.querySelector(".civic-explore .civic-explore-search"); }
-  function closeExploreSearch() {
-    const form = exploreSearchForm();
-    if (!form || form.dataset.open !== "true") return;
-    form.dataset.open = "false";
-    form.querySelector(".civic-explore-go")?.setAttribute("aria-expanded", "false");
-  }
-  function compactSearch() { return document.body.dataset.birgeExplore === "header" && document.body.dataset.birgeExploreSize === "compact"; }
-  function watchExploreSearch() {
-    document.addEventListener("click", (event) => {
-      const go = event.target.closest?.(".civic-explore .civic-explore-go");
-      if (!go || !compactSearch()) return;
-      const form = go.closest(".civic-explore-search"), input = form && form.querySelector("input");
-      if (!form || !input) return;
-      if (form.dataset.open === "true" && input.value.trim()) return;  // поле открыто и есть текст — обычный «Найти»
-      event.preventDefault();
-      event.stopPropagation();
-      const open = form.dataset.open !== "true";
-      form.dataset.open = String(open);
-      go.setAttribute("aria-expanded", String(open));
-      if (open) input.focus();
-    }, true);
-    document.addEventListener("pointerdown", (event) => {
-      const form = exploreSearchForm();
-      if (form && form.dataset.open === "true" && !form.contains(event.target)) closeExploreSearch();
-    }, true);
-    document.addEventListener("keydown", (event) => {
-      const form = exploreSearchForm();
-      if (event.key !== "Escape" || !form || form.dataset.open !== "true" || !form.contains(document.activeElement)) return;
-      const list = form.querySelector(".civic-explore-list");
-      if (list && !list.hidden) return;  // сначала Esc закрывает список подсказок (explore.js)
-      closeExploreSearch();
-      form.querySelector(".civic-explore-go")?.focus();
-    });
+  // Строка о запасном фоне карты (R11 CLEAN_PASS №7) гаснет через 6 с после показа или смены текста.
+  function watchMapStatus() {
+    const status = document.getElementById("map-status");
+    if (!status || typeof MutationObserver !== "function") return;
+    let timer = null;
+    const shown = () => {
+      clearTimeout(timer);
+      delete status.dataset.faded;
+      if (status.classList.contains("hidden") || !status.textContent.trim()) return;
+      timer = setTimeout(() => { status.dataset.faded = "1"; }, 6000);
+    };
+    new MutationObserver(shown).observe(status, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    shown();
   }
   function watchExplore() {
-    watchExploreSearch();
-    const again = () => requestAnimationFrame(placeExplore);
+    watchMapStatus();
+    const again = () => requestAnimationFrame(placeHeader);
     window.addEventListener("resize", again);
     document.addEventListener("civic:mode", again);
     if (typeof ResizeObserver === "function" && header) new ResizeObserver(again).observe(header);

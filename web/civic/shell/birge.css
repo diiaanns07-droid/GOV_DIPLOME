@@ -5,30 +5,34 @@
  * Код и ссылки #school / #training остаются; оттуда кнопка «Город» возвращает на карту. */
 .civic-mode #civic-modes { display: none !important; }
 #birge-header { display: none; background: transparent; }
-.civic-mode #birge-header { display: flex; align-items: center; gap: var(--s-3, 12px); }
+/* Чистый дизайн (R11 CLEAN_PASS, решение владельца 12 окт): шапка — белая полоса во всю ширину 64 px (56 на телефоне),
+   линия 1 px снизу; знак 32 + «Birge» 22/600 без подзаголовка · поиск · разделы текстом · «ҚАЗ · РУС» · аватар. */
+.civic-mode .topbar { top: 0; left: 0; right: 0; height: 64px; padding: 0 20px; gap: 20px; border: 0; border-radius: 0;
+  border-bottom: 1px solid var(--c-line, #e8eaeb); background: var(--c-surface, #fff); box-shadow: none; }
+.civic-mode .brand { min-width: 0; gap: 8px; flex: 0 0 auto; }
+.civic-mode .brand-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--c-brand, #152c26); color: #fff; }
+.civic-mode .brand-mark svg { width: 20px; height: 20px; }
+.civic-mode .brand-title { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+.civic-mode .brand-sub { display: none !important; }
+.civic-mode #birge-header { display: flex; align-items: center; gap: var(--s-4, 16px); height: 100%; }
+.civic-mode .top-actions { height: 100%; }
 .civic-mode .top-actions > #birge-header { display: flex !important; } /* сильнее правила shell.css для старых кнопок */
-#birge-header .bk-seg > button { min-width: 48px; white-space: nowrap; }
+#birge-header .birge-nav { height: 100%; }
+#birge-header .birge-nav > button { min-height: 48px; }
 /* «Мои обращения» — только у жителя. Кнопка «Сообщить о проблеме» (R09) — тоже только у жителя
  * (акимат принимает жалобы, а не пишет их); на экране «Картина дня» её нет. */
-#birge-header .birge-mine-btn { min-height: 40px; white-space: nowrap; }
 body:not([data-birge-mode="resident"]) #birge-header .birge-mine-btn { display: none; }
-/* Бейдж новых изменений у «Мои обращения» (R09: событие birge:complaint-changes); на телефоне — точка на ≡ Меню. */
-#birge-header .birge-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px;
-  margin-left: 6px; padding: 0 6px; border-radius: 10px; background: var(--c-ink, #152c26); color: #fff;
-  font-size: 12px; font-weight: 700; line-height: 1; }
-#birge-header .birge-menu-btn { position: relative; }
-body[data-birge-mode="resident"] #birge-header[data-mine-changes="yes"]:not([data-menu="open"]) .birge-menu-btn::after {
-  content: ""; position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; border-radius: 50%;
-  background: var(--c-ink, #152c26); box-shadow: 0 0 0 2px var(--c-surface, #fff); }
+/* Компактная шапка (разделы не помещаются — телефон, узкий ноутбук, длинный ҚАЗ): разделы — в меню аватара. */
+body[data-birge-header="compact"] #birge-header .birge-nav { display: none; }
+/* Меню аватара — над панелями карты, у правого края под шапкой (ui-kit BirgeUI.menu). */
+.birge-account { z-index: 60; }
+.birge-account[hidden] { display: none; }
+.birge-account .bk-nav__badge { margin-left: auto; }
 body:not([data-birge-mode="resident"]) .bc-fab,
 body[data-birge-section]:not([data-birge-section="map"]) .bc-fab { display: none !important; }
 /* Меню по виду (волна 2, защита п. 2): пункты другого вида и разделы без модуля — скрыты (birge.js buildNav). */
 #birge-header .birge-nav > [hidden] { display: none !important; }
 
-/* Ноутбук: меню раскрыто в строку, кнопки ≡ нет. */
-.birge-menu { display: contents; }
-#birge-header .birge-menu-btn { display: none; }
-.civic-mode .brand-title { font-weight: 700; letter-spacing: 0.01em; }
 
 /* Модули раунда 13 вне сценария демо Birge (решение R01, INTEGRATION §6): сравнение перекрытий, помощник по объекту
  * и «Сообщения жителей» обратной связи v1 (жалоб Birge v2 там нет — пустой список, R10 B-035; статус жалоб меняют
@@ -45,7 +49,7 @@ body[data-birge-mode="resident"] #civic-moderation-button { display: none !impor
 
 /* «Картина дня»: экран поверх карты под шапкой (карта остаётся живой под ним). */
 .birge-day {
-  position: fixed; z-index: 30; top: 112px; left: 20px; right: 20px; bottom: 20px;
+  position: fixed; z-index: 30; top: 80px; left: 20px; right: 20px; bottom: 20px;  /* шапка 64 + 16 */
   overflow-y: auto; overscroll-behavior: contain;
   padding: var(--s-6, 24px); border-radius: var(--r-l, 16px);
   background: var(--c-surface, #fff); color: var(--c-ink, #152c26);
@@ -76,35 +80,11 @@ body.civic-mode[data-birge-section]:not([data-birge-section="map"]) #civic-root 
 .birge-layer__opt { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
 .birge-layer__opt input { width: 20px; height: 20px; margin: 0; }
 
-/* До 1100 px — телефонная схема шапки (UX_SPEC §1): [логотип] [≡ Меню] [ҚАЗ|РУС];
- * разделы и «Акимат / Житель» — в выпадающем листе под шапкой. Ровно 1024 (проектор): полная шапка в ҚАЗ шире экрана —
- * «РУС» за краем (R10 B-043, patches/R01_r10_night.patch), поэтому граница 1100, а не 1023. */
-@media (max-width: 1100px) {
-  .civic-mode #birge-header { gap: var(--s-2, 8px); }
-  #birge-header .birge-menu-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 12px; }
-  #birge-header .bk-seg > button { padding-left: 10px; padding-right: 10px; }
-  .birge-menu { display: none; }
-  /* .topbar — свой слой (z-index 4) ниже панелей карты; пока меню открыто, шапка выше них. */
-  body[data-birge-menu="open"] .topbar { z-index: 45; }
-  #birge-header[data-menu="open"] .birge-menu {
-    display: flex; flex-direction: column; align-items: stretch; gap: var(--s-3, 12px);
-    position: fixed; z-index: 40; top: 104px; right: 20px; width: min(420px, calc(100vw - 40px)); padding: var(--s-4, 16px);
-    border-radius: var(--r-l, 16px); background: var(--c-surface, #fff); box-shadow: var(--shadow-3, 0 12px 36px #15362833);
-  }
-  #birge-header[data-menu="open"] .birge-menu .bk-seg { display: flex; }
-  #birge-header[data-menu="open"] .birge-menu .bk-seg > button { flex: 1; white-space: normal; } /* казахский длиннее */
-  /* Волна 2: разделов до 5 — в листе меню столбиком, а не в ряд (на 375 kk «Маңайда · Идеялар · Тағы» налезали
-     друг на друга; IA_WAVE2 §1 «5 пунктов списком», R11 волна 2 разбор 3, patches/R01_wave2_phone_menu.patch). */
-  #birge-header[data-menu="open"] .birge-menu .birge-nav { flex-direction: column; align-items: stretch; }
-  #birge-header[data-menu="open"] .birge-menu .birge-nav > button { flex: none; min-height: 48px; justify-content: flex-start; text-align: start; padding: 0 16px; }
-  #birge-header[data-menu="open"] .birge-more-menu { position: static; box-shadow: none; padding: 0 0 0 16px; min-width: 0; }
-}
-/* Телефон: шапка ниже (как у shell.css), лист меню и «Картина дня» — во всю ширину с отступом 8 px. */
+/* Телефон: «Картина дня» и экраны разделов — во всю ширину с отступом 8 px под шапкой 56 px. */
 @media (max-width: 760px) {
   /* Житель на телефоне: внизу одна главная кнопка «Сообщить о проблеме»; вход сотрудника — в виде «Акимат». */
   body[data-birge-mode="resident"] .civic-foot { display: none; }
-  #birge-header[data-menu="open"] .birge-menu { top: 80px; left: 8px; right: 8px; width: auto; }
-  .birge-day { top: 80px; left: 8px; right: 8px; bottom: 8px; padding: var(--s-4, 16px); }
+  .birge-day { top: 64px; left: 8px; right: 8px; bottom: 8px; padding: var(--s-4, 16px); }
 }
 @media (prefers-reduced-motion: reduce) { .birge-day { scroll-behavior: auto; } }
 
@@ -154,15 +134,7 @@ body[data-birge-mode="resident"] .birge-b3d-toggle,
 /* Плашка о запасном фоне карты и подзаголовок шапки — не мельче 14 px (R11 B1 п. 5 и 14, R10 B-013). */
 .civic-mode .civic-explore #map-status { font-size: 14px; line-height: 1.4; }
 .civic-mode .brand-sub { font-size: 14px; }
-@media (max-width: 1100px) { .civic-mode .brand-sub { display: none; } }
-/* Поиск района в шапке не помещается рядом с меню из 5 пунктов — по ступеням (birge.js placeExplore): подзаголовок
-   прячется, кнопки меню плотнее, поиск улицы — лупа с полем под шапкой. */
-body.civic-mode[data-birge-brand="short"] .topbar .brand { min-width: 0; }
-body.civic-mode[data-birge-brand="short"] .brand-sub { display: none; }
-@media (min-width: 1101px) {
-  body.civic-mode[data-birge-nav="tight"] #birge-header { gap: var(--s-2, 8px); }
-  body.civic-mode[data-birge-nav="tight"] #birge-header .bk-seg > button { padding-left: 8px; padding-right: 8px; }
-}
+
 /* Панель «Территория» (раунд 13, explore.js): весь текст ≥ 14 px, кнопки ≥ 44 px (R11 B1 п. 7, R10 B-013/B-014). */
 .civic-mode .civic-explore-row > label > span,
 .civic-mode .civic-explore button, .civic-mode .civic-explore summary,
@@ -187,8 +159,11 @@ body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-pic
 .civic-explore-toggle { display: none; }
 @media (max-width: 760px) {
   /* Панель «Территория» свёрнута в кнопку 48 px; раскрытая — как раньше. */
-  .civic-mode .civic-explore[data-open="false"] { right: auto; padding: 0; }
-  .civic-mode .civic-explore[data-open="false"] > :not(.civic-explore-toggle) { display: none; }
+  body.civic-mode:not([data-birge-explore="header"]) .civic-explore[data-open="false"] { right: auto; padding: 0; }
+  body.civic-mode:not([data-birge-explore="header"]) .civic-explore[data-open="false"] > :not(.civic-explore-toggle) { display: none; }
+  /* Поиск в шапке (чистый дизайн): поле видно всегда, «Территория» не нужна; плашки и реестр — как на ноутбуке. */
+  body.civic-mode[data-birge-explore="header"] .civic-explore > .civic-explore-row,
+  body.civic-mode[data-birge-explore="header"] .civic-explore > .civic-explore-view { display: none; }
   .civic-mode .civic-explore-toggle {
     display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 14px;
     font-size: 16px; font-weight: 650; color: var(--c-ink, #152c26); background: transparent; border: 0;
@@ -260,8 +235,7 @@ body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
 
 /* LOCAL_FINAL (Codex, Windows, 8e67c65) №9 / P3 и UX_BRIEF: всё управление оболочки — зона нажатия 48 px (было 40–44).
    Шапка (разделы, вид, язык, ≡), колонка кнопок карты, «Для сотрудников», панель «Территория». */
-.civic-mode #birge-header .bk-seg > button,
-.civic-mode #birge-header .birge-menu-btn { min-height: 48px; }
+.civic-mode #birge-header .birge-nav > button, .civic-mode #birge-header .birge-lang > button { min-height: 48px; }
 .civic-mode .map-tools .icon-btn { width: 48px; height: 48px; }
 .civic-mode .civic-foot .btn { min-height: 48px; }
 .civic-mode .civic-explore button, .civic-mode .civic-explore summary,
@@ -281,52 +255,38 @@ body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
    оболочки для всех модулей; эффекты наведения — только на внутренних обёртках (R07: .r07-badge__dot/__count). */
 .civic-mode .maplibregl-marker { transition: none !important; }
 
-/* Читаемость карты п. 3 (владелец): «Территория» и поиск улицы — в шапке, между логотипом и меню (birge.js placeExplore).
-   Одна строка: район ▾ + поиск улицы. Подпись «Территория» и строка «Обзор…» — для экранного диктора; «Слои» на ноутбуке
-   не нужны (границы районов видны на уровне города сами). Уведомления (запасной фон и т. п.) — плашкой под шапкой. */
+/* Поиск в шапке (чистый дизайн, R11 CLEAN_PASS №2): ОДНО поле «Улица, остановка или район» 200–520 px между знаком и
+   разделами (birge.js placeHeader); районы, «Вся Астана», места и улицы — подсказками (explore.js). Выбор района
+   списком, «к объектам» и «Слои» в шапке не нужны: границы районов видны на уровне города сами. */
 body.civic-mode[data-birge-explore="header"] .civic-explore {
-  position: fixed; z-index: 46; top: var(--be-top, 34px); left: var(--be-left, 300px); right: auto; width: var(--be-width, 400px);
-  max-width: none; display: flex; align-items: center; gap: 8px; padding: 0; margin: 0;
+  position: fixed; z-index: 46; top: var(--be-top, 8px); left: var(--be-left, 180px); right: auto; width: var(--be-width, 400px);
+  max-width: none; display: block; padding: 0; margin: 0;
   background: transparent; box-shadow: none; border: 0; border-radius: 0;
 }
-body.civic-mode[data-birge-explore="header"] .civic-explore-row { flex: 0 0 auto; display: flex; align-items: center; gap: 0; margin: 0; }
-body.civic-mode[data-birge-explore="header"] .civic-explore-row > label { display: flex; align-items: center; }
-body.civic-mode[data-birge-explore="header"] .civic-explore-row > label > span,
+body.civic-mode[data-birge-explore="header"] .civic-explore-row,
+body.civic-mode[data-birge-explore="header"] .civic-explore-toggle,
+body.civic-mode[data-birge-explore="header"] .civic-explore .civic-explore-go { display: none; }
 body.civic-mode[data-birge-explore="header"] .civic-explore-view {
   position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
 }
-body.civic-mode[data-birge-explore="header"] .civic-explore-row details { display: none; }
-body.civic-mode[data-birge-explore="header"] .civic-explore-objects { min-height: 48px; margin-left: 8px; white-space: nowrap; }
-body.civic-mode[data-birge-explore="header"] .civic-explore select {
-  width: 150px; min-height: 48px; padding: 0 8px; border: 1px solid var(--c-line, #dfe5df); border-radius: var(--r-m, 12px);
-  background: var(--c-paper, #f6f7f3); font-size: 15px;
+body.civic-mode[data-birge-explore="header"] .civic-explore-search { position: relative; display: block; margin: 0; padding: 0; border: 0; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-field { position: relative; width: 100%; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-field input {
+  width: 100%; min-height: 48px; padding: 0 44px 0 44px; border: 0; border-radius: var(--r-m, 10px);
+  background: var(--c-fill, #eff1f2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235b6a64' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='m15.5 15.5 5 5'/%3E%3C/svg%3E") 14px center / 20px no-repeat;
+  color: var(--c-ink, #152c26); font-size: 15px;
 }
-body.civic-mode[data-birge-explore="header"] .civic-explore-search { flex: 1 1 auto; min-width: 0; margin: 0; padding: 0; border: 0; display: flex; align-items: center; gap: 4px; }
-body.civic-mode[data-birge-explore="header"] .civic-explore-field { flex: 1 1 auto; min-width: 0; }
-/* Шапка ниже на 8 px (76 → 68): карта на 1366×768 — не меньше 60 % экрана (читаемость п. 3). */
-@media (min-width: 1024px) { .civic-mode .topbar { height: 68px; } }
-body.civic-mode[data-birge-explore="header"] .civic-explore-field input { min-height: 48px; border-radius: var(--r-m, 12px); }
-/* «Найти / Іздеу» — квадратная кнопка 48 × 48 с рамкой и лупой (R11 разбор 6, п. 2: без рамки читалась как надпись);
-   слово остаётся именем кнопки для экранного диктора, место в шапке — полю поиска. */
-body.civic-mode[data-birge-explore="header"] .civic-explore .civic-explore-go {
-  flex: 0 0 48px; width: 48px; min-height: 48px; padding: 0; overflow: hidden; color: transparent; font-size: 0;
-  border: 1px solid var(--c-line-strong, #c9d3cb); border-radius: var(--r-m, 12px);
-  background: var(--c-surface, #fff) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23152c26' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='m15.5 15.5 5 5'/%3E%3C/svg%3E") center / 22px no-repeat;
+body.civic-mode[data-birge-explore="header"] .civic-explore-field input::placeholder { color: var(--c-text-2, #5b6a64); }
+body.civic-mode[data-birge-explore="header"] .civic-explore-field input:focus { outline: 2px solid var(--c-focus, #152c26); outline-offset: 0; background-color: var(--c-surface, #fff); }
+body.civic-mode[data-birge-explore="header"] .civic-explore .civic-explore-clear { right: 0; width: 48px; height: 48px; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-list { top: calc(100% + 6px); left: 0; right: 0; max-height: min(420px, 60vh); overflow-y: auto;
+  border-radius: var(--r-l, 14px); background: var(--c-surface, #fff); box-shadow: var(--shadow-3, 0 12px 36px #15362833); }
+body.civic-mode[data-birge-explore="header"] .civic-explore-list [role="option"] { min-height: 48px; padding: 6px 14px; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-list [role="option"][data-kind="city"] .civic-explore-opt-name { font-weight: 600; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-status:not([hidden]) {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; padding: 8px 14px; border-radius: var(--r-m, 10px);
+  background: var(--c-surface, #fff); box-shadow: var(--shadow-1, 0 2px 10px #15362818); font-size: 13px;
 }
-body.civic-mode[data-birge-explore="header"] .civic-explore .civic-explore-go:hover { border-color: var(--c-ink, #152c26); }
-body.civic-mode[data-birge-explore="header"][data-birge-explore-size="compact"] .civic-explore-search { flex: 0 0 48px; position: relative; }
-body.civic-mode[data-birge-explore="header"][data-birge-explore-size="compact"] .civic-explore-search:not([data-open="true"]) :is(.civic-explore-field, .civic-explore-list, .civic-explore-status) { display: none !important; }
-body.civic-mode[data-birge-explore="header"][data-birge-explore-size="compact"] .civic-explore-search[data-open="true"] .civic-explore-field {
-  position: absolute; z-index: 3; top: calc(100% + 18px); left: 0; width: 320px; padding: 6px;
-  border-radius: var(--r-l, 16px); background: var(--c-surface, #fff); box-shadow: var(--shadow-2, 0 8px 28px #15362824);
-}
-body.civic-mode[data-birge-explore="header"][data-birge-explore-size="compact"] .civic-explore-search[data-open="true"] :is(.civic-explore-list, .civic-explore-status) {
-  position: absolute; z-index: 3; top: calc(100% + 82px); left: 0; right: auto; width: 320px;
-}
-body.civic-mode[data-birge-explore="header"][data-birge-explore-size="compact"] .civic-explore-search[data-open="true"] .civic-explore-status:not([hidden]) {
-  padding: 8px 12px; border-radius: var(--r-m, 12px); background: var(--c-surface, #fff); box-shadow: var(--shadow-1, 0 2px 10px #15362818);
-}
-body.civic-mode[data-birge-explore="header"][data-birge-explore-size="compact"] .civic-explore-search[data-open="true"] .civic-explore-go { border-color: var(--c-ink, #152c26); }
 body.civic-mode[data-birge-explore="header"] .civic-explore-notices,
 body.civic-mode[data-birge-explore="header"] .civic-explore-registry {
   position: absolute; top: calc(100% + 18px); left: calc(20px - var(--be-left, 20px)); width: 420px; margin: 0;
@@ -445,3 +405,60 @@ body.birge-report-open .bc-fab { display: none !important; }
   /* подпись © OpenStreetMap (ODbL) — над поднятой шторкой, как при обычной */
   body.civic-mode:not([data-civic-drawer="open"]):has(.civic-panel[data-sheet="half"] #birge-heat-root .r07-card) .maplibregl-ctrl-bottom-right { bottom: calc(56% + 6px); transition: none; }
 }
+/* LOCAL_FINAL P3 (R11 patches/R01_attrib_tap.patch): кнопка «i» источников карты — 24 px; зона нажатия 48 px без изменения вида. */
+.civic-mode .maplibregl-ctrl-attrib-button { position: relative; }
+.civic-mode .maplibregl-ctrl-attrib-button::after { content: ""; position: absolute; inset: -12px; }
+
+/* Чистый дизайн: раскладка под шапкой-полосой (64 px ноутбук, 56 телефон). Панели и кнопки карты — на 16 px ниже шапки. */
+@media (min-width: 761px) {
+  .civic-mode .civic-panel, .civic-mode .civic-drawer { top: 80px; }
+  .civic-mode .map-tools { top: 80px; }
+  .civic-mode #map-status { top: 80px; }
+  body.civic-mode:not([data-birge-explore="header"]) .civic-explore { top: 80px; }
+}
+@media (max-width: 760px) {
+  .civic-mode .topbar { height: 56px; padding: 0 12px; gap: 8px; }
+  .civic-mode #birge-header { gap: var(--s-2, 8px); }
+  .civic-mode .civic-explore { top: 64px; }
+  .civic-mode .map-tools { top: 64px; }
+  .civic-mode #map-status { top: 64px; }
+  .civic-mode .birge-legend, .civic-mode .r07-maplegend { top: 120px; }
+}
+/* «Для сотрудников» — в меню аватара (R11 CLEAN_PASS №4); подвал панели без кнопок не показываем. */
+.civic-mode #civic-staff-button { display: none !important; }
+body[data-birge-tools="off"].civic-mode .civic-foot { display: none; }
+/* Телефон: знак без слова «Birge» (место — поиску); подсказки поиска — во всю ширину под шапкой. */
+@media (max-width: 760px) {
+  body.civic-mode[data-birge-explore="header"] .brand-title { display: none; }
+  body.civic-mode[data-birge-explore="header"] .civic-explore { top: 4px; }
+  body.civic-mode[data-birge-explore="header"] .civic-explore-list { position: fixed; top: 60px; left: 8px; right: 8px; }
+  /* строка состояния поиска («Выбрано…», «Не найдено») — не на колонке кнопок карты справа */
+  body.civic-mode[data-birge-explore="header"] .civic-explore-status:not([hidden]) { position: fixed; top: 60px; left: 8px; right: 70px; }
+  body.civic-mode[data-birge-explore="header"] .birge-legend, body.civic-mode[data-birge-explore="header"] .r07-maplegend { top: 64px; }
+}
+/* R11 CLEAN_PASS №7: плашка о запасном фоне карты — не бежевая плашка слева сверху (закрывала значок «Байқоңыр»),
+   а тёмная строка-тост внизу по центру свободной части карты, 13 px; через 6 с гаснет (birge.js watchMapStatus). */
+body.civic-mode .civic-explore #map-status:not(.hidden) {
+  position: fixed; z-index: 48; top: auto; left: calc(50% - 220px); right: auto; bottom: 24px; transform: translateX(-50%);
+  width: max-content; max-width: min(480px, calc(100vw - 480px)); margin: 0; padding: 8px 14px; border: 0; border-radius: 10px;
+  background: rgba(21, 44, 38, 0.86); color: #fff; box-shadow: none; font-size: 13px; line-height: 1.4; text-align: center;
+  transition: opacity 0.4s ease, visibility 0.4s;
+}
+body.civic-mode .civic-explore #map-status[data-faded="1"] { opacity: 0; visibility: hidden; pointer-events: none; }
+@media (max-width: 760px) {
+  /* Телефон: внизу карты — шторка, над ней — центр карты (туда камера ставит выбранное место); строка — под легендой. */
+  body.civic-mode .civic-explore #map-status:not(.hidden) { left: 50%; top: 112px; bottom: auto; max-width: calc(100vw - 32px); }
+}
+@media (prefers-reduced-motion: reduce) { body.civic-mode .civic-explore #map-status { transition: none; } }
+/* R11 CLEAN_PASS №8: одна акцентная краска #152c26 — зелёный и лайм раунда 13 (web/style.css) в Birge не используются;
+   сообщения — по одному: новое заменяет старое (стопка «Взято в работу» + «Отмечено…» была двумя тостами). */
+.civic-mode { --green: var(--c-brand, #152c26); --lime: var(--c-accent, #e3e9e6); }
+.civic-mode .r07-toasts > .r07-toast:not(:last-child) { display: none; }
+/* ?tools=all (проверки ролей, показ сотрудникам): в шапке рядом с поиском — «К объектам» реестра раунда 13. */
+body[data-birge-tools="all"].civic-mode[data-birge-explore="header"] .civic-explore { display: flex; align-items: center; gap: 8px; }
+body[data-birge-tools="all"].civic-mode[data-birge-explore="header"] .civic-explore > .civic-explore-search { flex: 1 1 auto; min-width: 0; }
+body[data-birge-tools="all"].civic-mode[data-birge-explore="header"] .civic-explore > .civic-explore-row { display: flex; order: 2; flex: 0 0 auto; margin: 0; }
+body[data-birge-tools="all"].civic-mode[data-birge-explore="header"] .civic-explore-row > :not(.civic-explore-objects) { display: none; }
+body[data-birge-tools="all"].civic-mode[data-birge-explore="header"] .civic-explore-objects { min-height: 48px; margin: 0; white-space: nowrap; }
+/* Шторка во всю высоту — над ней узкая полоса карты с подписью © OpenStreetMap; строку о запасном фоне не показываем. */
+body[data-civic-sheet="full"].civic-mode .civic-explore #map-status { display: none; }
