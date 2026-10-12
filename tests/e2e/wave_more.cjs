@@ -220,9 +220,13 @@ module.exports = function waveMore(H) {
     const pub = JSON.stringify(A.data(await A.call("GET", `/api/civic/v2/complaints/${c.rec.id}?view=public`)) || {});
     const heat = JSON.stringify(A.data(await A.call("GET", `/api/civic/v2/heat?bbox=${NURA}&days=30&zoom=16`)) || {});
     const sim = JSON.stringify(A.data(await A.call("POST", "/api/civic/v2/similar", { text: RUDE, point: STOPS[1].point, days: 30 })) || {});
-    const raw = /блядск|Заебал/i;
-    add("W1-8", "API", "публично (карточка, тепловая карта, похожие): грубые слова — звёздочками", st(!raw.test(pub) && !raw.test(heat) && !raw.test(sim) && /б\*{3,}/.test(pub)),
-      { public_masked: /б\*{3,}/.test(pub), raw_in_public: raw.test(pub), raw_in_heat: raw.test(heat), raw_in_similar: raw.test(sim) });
+    // Чужим жителям текст настоящих жалоб не показывается вовсе (публичная карточка без текста, на карте — только примеры);
+    // текст виден автору в «Моих обращениях» — он тоже не сотрудник, шлюз маскирует и там.
+    const own = JSON.stringify(await mine(A, D));
+    const raw = /блядск|Заебал/i, masked = /б\*{5,}|З\*{5,}/;
+    add("W1-8", "API", "не сотрудникам (карточка, карта, похожие, «Мои обращения»): грубых слов нет, в тексте — звёздочки",
+      st(!raw.test(pub) && !raw.test(heat) && !raw.test(sim) && !raw.test(own) && masked.test(own)),
+      { raw_in: { public: raw.test(pub), heat: raw.test(heat), similar: raw.test(sim), mine: raw.test(own) }, masked_in_mine: masked.test(own) });
     const login = staff && staff.user ? await A.login(staff.user, staff.pass) : { ok: false };
     const sv = login.ok ? A.data(await A.call("GET", `/api/civic/v2/complaints/${c.rec.id}`, null, true)) || {} : {};
     const sr = sv.complaint || sv;
@@ -255,7 +259,9 @@ module.exports = function waveMore(H) {
     const b = await file(A, { stop, device: devId("u"), text: "Нет урны у остановки, мусор на земле", category: "transport" });
     const login = staff && staff.user ? await A.login(staff.user, staff.pass) : { ok: false };
     if (!a.rec || !b.rec || !login.ok) { add("W1-9", "API", "подготовка: две жалобы и вход сотрудника", "FAIL", { a: a.http, b: b.http, login: login.ok }); return; }
-    const people = async (id) => { const r = await complaintById(A, id); return r ? (r.reporters ?? 1 + (r.metoo || 0)) : null; };
+    // Запись — напрямую (с сессией сотрудника): в списке по рамке дубли не показываются.
+    const recOf = async (id) => { const d = A.data(await A.call("GET", `/api/civic/v2/complaints/${id}`, null, true)) || {}; return d.complaint || (d.id ? d : null); };
+    const people = async (id) => { const r = await recOf(id); return r ? (r.reporters ?? 1 + (r.metoo || 0)) : null; };
     const p0 = await people(a.rec.id);
     const m = await A.call("POST", `/api/civic/v2/complaints/${b.rec.id}/duplicate`, { of: a.rec.id }, true);
     const p1 = await people(a.rec.id);
@@ -273,15 +279,15 @@ module.exports = function waveMore(H) {
         const block = card ? await L.firstVisible(K.page.locator("details, section").filter({ hasText: part(title) })) : null;
         if (block) { await block.locator("summary").click().catch(() => null); await L.sleep(800); }
         const sep = block ? await L.clickText(block, exact(W(lang, "merge.separate", say(lang, "Это разные проблемы", "Бұл әртүрлі мәселелер"))), { wait: 2500 }) : false;
-        const after = await complaintById(A, b.rec.id);
+        const after = await recOf(b.rec.id);
         add("W1-9", tag, "карточка места (R07): «Объединено с этим» → «Это разные проблемы» разделяет одним действием", st(!!block && sep && after && !after.duplicate_of),
           { card: !!card, block: !!block, clicked: sep, duplicate_of: after && after.duplicate_of }, await shotOf(K.page, `${tag}-W1-9-card`));
       } finally { await K.ctx.close(); }
     }
-    const still = await complaintById(A, b.rec.id);
+    const still = await recOf(b.rec.id);
     if (still && still.duplicate_of) {
       const u = await A.call("POST", `/api/civic/v2/complaints/${b.rec.id}/unduplicate`, {}, true);
-      const p2 = await people(a.rec.id), rb = await complaintById(A, b.rec.id);
+      const p2 = await people(a.rec.id), rb = await recOf(b.rec.id);
       add("W1-9", "API", "«Это разные проблемы» (POST unduplicate): дубль снова отдельный, число людей у исходной пересчитано", st([200, 201].includes(u.status) && rb && !rb.duplicate_of && p2 === p0),
         { http: u.status, people: [p0, p1, p2], duplicate_of: rb && rb.duplicate_of });
     }
