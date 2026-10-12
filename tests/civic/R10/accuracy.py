@@ -621,7 +621,7 @@ def check_osm_points(rep: Report, root: Path, sources, graph=None):
     if r07 is None:
         rep.add("объекты R07 = точки OSM", "NOT_RUN", "набора нет", "R07")
     else:
-        missing, moved, n = [], [], 0
+        missing, moved, n, street, walking = [], [], 0, 0, None
         for tid, t in r07["targets"].items():
             osm = t.get("osm")
             if t.get("kind") != "object":
@@ -631,13 +631,26 @@ def check_osm_points(rep: Report, root: Path, sources, graph=None):
                 missing.append({"id": tid, "why": "нет ссылки на OSM"})
                 continue
             key = (osm["type"], int(osm["id"]))
+            ref = raw.get(key)
             if key not in raw:
-                missing.append({"id": tid, "osm": osm})
-                continue
-            if key[0] == "node" and raw[key] and dist_m(raw[key], t["geometry"]["coordinates"]) > OSM_POINT_TOL_M:
-                moved.append({"id": tid, "moved_m": round(dist_m(raw[key], t["geometry"]["coordinates"]), 2)})
+                # Цели волны 1 п. 1 (R07 9e337dc, source osm-walking/…): светофор и переход — узлы снимка пешеходной сети,
+                # перекрёсток — узел графа улиц (≥ 3 ребра); их нет в LOCAL-1 — сверяем с теми же эталонами, что и R12.
+                sub = t.get("subtype")
+                if walking is None:
+                    walking = load_walking_raw(root) or {}
+                if sub in ("traffic_signal", "crossing") and key in walking and walking[key][1] in WALKING_KINDS[sub]:
+                    ref = walking[key][0]
+                elif sub == "intersection" and graph is not None and f"osm-n{key[1]}" in graph.nodes \
+                        and len(graph.node_edges.get(f"osm-n{key[1]}", [])) >= 3:
+                    ref = graph.nodes[f"osm-n{key[1]}"]
+                else:
+                    missing.append({"id": tid, "osm": osm, "subtype": sub})
+                    continue
+                street += 1
+            if key[0] == "node" and ref and dist_m(ref, t["geometry"]["coordinates"]) > OSM_POINT_TOL_M:
+                moved.append({"id": tid, "moved_m": round(dist_m(ref, t["geometry"]["coordinates"]), 2)})
         rep.add("объекты R07 = точки OSM", "FAIL" if missing or moved else ("PASS" if n else "NOT_RUN"),
-                {"objects": n, "missing": missing[:10], "moved": moved[:10]}, "R07")
+                {"objects": n, "street_points": street, "missing": missing[:10], "moved": moved[:10]}, "R07")
 
 
 def check_target_ids(rep: Report, graph: Graph, sources):
