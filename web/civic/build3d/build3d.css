@@ -63,7 +63,7 @@
 .b3d-row3d > .b3d-view3d {
   margin-left: auto;
   flex: 0 0 auto;
-  min-height: 40px;
+  min-height: var(--tap, 48px); /* LOCAL_FINAL п. 9: зона нажатия 48 px и на ноутбуке */
   padding-inline: var(--s-3, 12px);
 }
 .b3d-pcard__whererow > .bk-meta {
@@ -340,6 +340,10 @@
 }
 .b3d-toasts:empty {
   display: none;
+}
+/* «Отменить» / «Повторить» в сообщении — та же зона нажатия 48 px, что у остальных кнопок (LOCAL_FINAL п. 9). */
+.b3d-toasts .bk-btn {
+  min-height: var(--tap, 48px);
 }
 /* Подпись кнопки-значка — только для экранного диктора. */
 .b3d-sr {

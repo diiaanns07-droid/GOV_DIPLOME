@@ -1403,6 +1403,50 @@ await check("phone_placing_rotate_in_title_row_ghost_visible_375_ru_kk", async (
   assert(out["375_ru"].dock_h < 260 && out["375_kk"].dock_h < 280, JSON.stringify(out));
   return { status: "PASS", detail: out };
 });
+await check("controls_48px_all_states_1366_375_ru_kk", async () => {
+  // LOCAL_FINAL (Codex) п. 9, UX_BRIEF: зона нажатия каждой кнопки R05 — не меньше 48 × 48 px, на ноутбуке тоже:
+  // каталог акимата, размещение, карточка проекта (в лёгком виде — с «3D»), подсказка жителя, эскиз к идее, тост,
+  // таблички на карте (зона нажатия — сама кнопка таблички).
+  const small = {};
+  const measure = (p, tag) => p.evaluate((tag) => {
+    const vis = (n) => { const r = n.getBoundingClientRect(), cs = getComputedStyle(n); return r.width > 0 && r.height > 0 && cs.visibility !== "hidden" && cs.display !== "none" && !n.closest("[hidden]"); };
+    return [...document.querySelectorAll(".b3d button, .b3d [role=button], .b3d a[href], .b3d-labels button")].filter(vis).map((n) => {
+      const r = n.getBoundingClientRect();
+      return { tag, what: (n.dataset.action || n.dataset.kind || n.className.split(" ").slice(-1)[0]) + " «" + (n.getAttribute("aria-label") || n.textContent).trim().slice(0, 24) + "»", w: Math.round(r.width), h: Math.round(r.height) };
+    }).filter((x) => x.w < 47.5 || x.h < 47.5);
+  }, tag);
+  for (const [w, h, lang] of [[1366, 768, "ru"], [1366, 768, "kk"], [375, 812, "ru"], [375, 812, "kk"]]) {
+    const phone = w < 640;
+    const vp = Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {});
+    const bad = [];
+    // акимат: каталог → размещение → поставлено (тост) → карточка
+    let p = await openPage(vp, `?reset=1&store=local&role=akimat&lang=${lang}&` + MAIN_Q.slice(1));
+    bad.push(...(await measure(p, "catalog")));
+    await p.evaluate(() => __b3d.start("square"));
+    await p.waitForFunction(() => __b3d.getState().mode === "placing" && !!__b3d.getState().ghost, null, { timeout: 15000 });
+    bad.push(...(await measure(p, "placing")));
+    await p.click("[data-action=place]");
+    await p.waitForFunction(() => __b3d.getState().mode === "idle", null, { timeout: 15000 });
+    bad.push(...(await measure(p, "placed+toast")));
+    await p.evaluate(() => __b3d.select(__b3d.getState().proposals[0].id));
+    await p.waitForSelector(".b3d-dock[data-state=card]", { timeout: 10000 });
+    bad.push(...(await measure(p, "card_akimat")));
+    await p.evaluate(() => { window.__pk = __b3d.pickObject(); });
+    await p.waitForSelector(".b3d-dock[data-state=pick] .b3d-card", { timeout: 10000 });
+    bad.push(...(await measure(p, "pick")));
+    await p.context().close();
+    // житель, лёгкий вид: подсказка, таблички, лёгкая карточка с «3D»
+    p = await openPage(vp, `?reset=1&store=local&view=auto&role=resident&lang=${lang}&center=71.4008,51.1272&zoom=17.2&pitch=0&bearing=0`);
+    bad.push(...(await measure(p, "resident_hint+labels")));
+    await p.evaluate(() => __b3d.select(__b3d.getState().proposals.find((x) => x.kind !== "lighting").id));
+    await p.waitForSelector(".b3d-dock[data-state=card] [data-action=view3d]", { timeout: 10000 });
+    bad.push(...(await measure(p, "light_card")));
+    await p.context().close();
+    small[`${w}_${lang}`] = bad;
+  }
+  assert(Object.values(small).every((b) => b.length === 0), JSON.stringify(small));
+  return { status: "PASS", detail: "все кнопки R05 ≥ 48 × 48 px: каталог, размещение, тост, карточка акимата, эскиз, подсказка, таблички, лёгкая карточка — 1366/375 × ru/kk" };
+});
 await check("project_from_idea_card_says_by_residents_idea_ru_kk", async () => {
   // Акимат превратил идею в проект (R06): в карточке «По идее жителей · 47 голосов» / «Тұрғындар идеясы бойынша · 47 дауыс».
   const out = {};
