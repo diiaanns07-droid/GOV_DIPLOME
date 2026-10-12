@@ -589,12 +589,45 @@
       });
       return lim + 8;
     }
+    // Телефон в оболочке: карточка проекта во всю ширину внизу, и над ней должно остаться место для самого проекта —
+    // модели и таблички «Проект · 2027». На 375×667 и 360×800 высокая карточка акимата («Одобрить / Отклонить»,
+    // «Удалить») поднималась почти до шапки, и выбранный проект уходил под шапку и «Территорию». Если места меньше
+    // OBJECT_ROOM, опускаем карточку поверх свёрнутой шторки хозяина до низа экрана (у жителя оболочка так и кладёт
+    // карточку: поверх шторки). Сообщения на это время — над карточкой, не на её кнопках.
+    var OBJECT_ROOM = 150;
+    function lowerPhoneCard(r) {
+      var cr = map.getCanvas().getBoundingClientRect();
+      if (r.width < cr.width * 0.9) return r; // ноутбук и планшет: карточка сбоку или по центру, а не во всю ширину
+      var rects = avoidRects();
+      var target = r.top;
+      // Верхний край свободного места — низ панелей хозяина в верхней половине карты (шапка, «Территория», легенда
+      // строкой), которые окажутся выше карточки; узкий столбик кнопок карты у края не в счёт. Опущенная карточка
+      // может открыть ещё одну такую панель (легенду под «Территорией») — поэтому считаем дважды.
+      for (var i = 0; i < 2; i++) {
+        var band = Math.max(0, cr.top);
+        rects.forEach(function (a) {
+          if (a.top < target && a.top < cr.top + cr.height * 0.5 && a.width >= cr.width * 0.15) band = Math.max(band, a.bottom);
+        });
+        target = Math.max(r.top, band + OBJECT_ROOM);
+      }
+      // Опускаем сразу до низа экрана, как нижнюю шторку: «на недостающее» из-под карточки торчал наполовину
+      // закрытый заголовок шторки хозяина.
+      var shift = Math.min(cr.bottom, root.innerHeight || cr.bottom) - r.bottom;
+      if (target - r.top < 8 || shift < 8) return r;
+      dock.style.transform = "translateY(" + Math.round(shift) + "px)";
+      dock.setAttribute("data-lowered", "");
+      r = dock.getBoundingClientRect();
+      toasts.style.bottom = Math.round((root.innerHeight || cr.bottom) - r.top + 8) + "px";
+      return r;
+    }
     function fitDock() {
       if (S.destroyed) return;
       watchHost();
       dock.style.maxHeight = "";
       dock.style.maxWidth = "";
       dock.style.transform = "";
+      dock.removeAttribute("data-lowered");
+      toasts.style.bottom = "";
       dock.classList.remove("b3d-dock--fit");
       var st = dock.getAttribute("data-state");
       if (!st || st === "empty" || ui.hidden) return;
@@ -624,7 +657,7 @@
             var dx2 = L + (Rb - L - r.width) / 2 - r.left;
             dock.style.transform = "translateX(" + Math.round(dx2) + "px)";
             r = dock.getBoundingClientRect();
-          }
+          } else r = lowerPhoneCard(r);
         } else {
           // Подсказка жителю, каталог: узкая панель хозяина внизу (легенда R07 слева) — сдвиг вбок в той же строке,
           // если хватает места в области хозяина, иначе подъём над ней (R10 B-039). Полосы во всю ширину (шторка
@@ -882,17 +915,25 @@
       // Проект по идее жителей: строку даёт карточка R06, если умеет (BirgeProposals.showsIdea), иначе — модуль.
       var fromIdea = !(root.BirgeProposals && root.BirgeProposals.showsIdea) && ideaLine(p);
       if (fromIdea) dock.appendChild(fromIdea);
-      var where = placeText(p);
+      // Строка модуля под карточкой R06: слева «Рядом: …» и «Двор: …», справа «3D» и у акимата «Удалить».
+      // «Удалить» — второстепенное действие (главное — «Одобрить» R06): компактная кнопка в этой строке, а не во всю
+      // ширину. Карточка ниже на ряд — на телефоне над ней остаётся место для самого проекта.
       var whereRow = el("div", "b3d-pcard__whererow");
-      if (where) whereRow.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
-      withView3d(whereRow);
-      if (whereRow.firstChild) dock.appendChild(whereRow);
+      var info = el("div", "b3d-pcard__info");
+      var where = placeText(p);
+      if (where) info.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
       var yard = yardOf(p);
       if (yard) {
         var yardName = t.lang() === "kk" ? yard.label_kk || yard.label_ru : yard.label_ru || yard.label_kk;
-        dock.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
+        info.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
       }
-      if (o.role === "akimat") dock.appendChild(deleteBtn(p));
+      if (info.firstChild) whereRow.appendChild(info);
+      withView3d(whereRow);
+      if (o.role === "akimat") {
+        whereRow.classList.add("b3d-row3d");
+        whereRow.appendChild(deleteBtn(p));
+      }
+      if (whereRow.firstChild) dock.appendChild(whereRow);
     }
 
     // «Посмотреть в 3D» — второстепенная кнопка лёгкой карточки (главная — голос). Компактная, как кнопка «3D» карты:
@@ -1921,8 +1962,21 @@
       var v = new THREE.Vector3(point[0], point[1], point[2]);
       return v.applyMatrix4(obj.group.matrixWorld);
     }
+    // Точка проекта на земле: здесь его подпись, сюда смотрит камера (карточка, группа меток, «к проектам»).
+    // У освещения — средняя опора участка, как у подписи в 3D (labelPointOf), а не средняя вершина линии: у участка
+    // из двух точек «средняя вершина» — его конец, и камера ставила над карточкой конец участка, а подпись уходила
+    // под карточку (телефон 375×667). Считается один раз на геометрию.
+    var focusCache = typeof WeakMap === "function" ? new WeakMap() : null;
     function anchorLngLat(p) {
-      return p.kind === "lighting" ? p.geometry.coordinates[Math.floor(p.geometry.coordinates.length / 2)] : p.geometry.coordinates;
+      var g = p.geometry;
+      if (p.kind !== "lighting") return g.coordinates;
+      var hit = focusCache && focusCache.get(g);
+      if (hit) return hit;
+      var poles = lightingOpts(g.coordinates).poles;
+      var mid = poles[Math.floor(poles.length / 2)];
+      var ll = mid ? Core.fromLocal(g.coordinates[0], mid.p) : g.coordinates[Math.floor(g.coordinates.length / 2)];
+      if (focusCache) focusCache.set(g, ll);
+      return ll;
     }
     // Экранная точка подписи: в объёмном виде — над верхом модели; в лёгком — у самой точки проекта.
     function labelScreen(obj) {
@@ -1961,9 +2015,12 @@
         var pill = lab.firstChild || lab; // наложение считаем по видимой таблетке, а не по зоне нажатия
         it.obj.labelSize = { w: pill.offsetWidth || 120, h: pill.offsetHeight || 40 };
       });
-      // Ближние к зрителю (ниже на экране) — первыми; они и остаются полными подписями.
+      // Выбранный проект (открыта его карточка) — первым: его подпись всегда полная, а сосед, если мешает,
+      // сжимается в точку. Остальные — ближние к зрителю (ниже на экране) первыми; они и остаются полными подписями.
       items.sort(function (a, b) {
-        return b.sp.y - a.sp.y;
+        var sa = a.obj.p.id === S.selected ? 1 : 0,
+          sb = b.obj.p.id === S.selected ? 1 : 0;
+        return sb - sa || b.sp.y - a.sp.y;
       });
       var placed = [];
       var groups = [];
@@ -2051,7 +2108,7 @@
         .map(function (id) {
           var p = S.objects[id] && S.objects[id].p;
           if (!p) return null;
-          return p.kind === "lighting" ? p.geometry.coordinates[Math.floor(p.geometry.coordinates.length / 2)] : p.geometry.coordinates;
+          return anchorLngLat(p);
         })
         .filter(Boolean);
       if (!pts.length) return;
@@ -3113,6 +3170,9 @@
               }
             }
         }
+      // Нет полосы minH (телефон: над карточкой лишь узкая щель между «Территорией» и карточкой) — ищем пониже
+      // (80, затем 48 px), а не «вся область»: иначе объект и табличка встают под шапку и «Территорию».
+      if (!best && minH > 48) return largestFree(a, rects, minH > 80 ? 80 : 48);
       return best || a;
     }
     // minH — самая низкая полоса карты, которую ещё считаем свободной (по умолчанию 120 px; призраку хватает 80).
@@ -3160,7 +3220,9 @@
       if (!sp) return;
       var f = freeArea();
       var m = 48; // запас: подпись над объектом тоже должна быть видна
-      var inside = sp.x > f.x0 + m && sp.x < f.x1 - m && sp.y > f.y0 + m + 60 && sp.y < f.y1 - m;
+      // по горизонтали — не меньше половины подписи (она по центру над объектом), иначе край подписи за экраном
+      var mx = Math.max(m, obj.labelSize ? obj.labelSize.w / 2 + 8 : m);
+      var inside = sp.x > f.x0 + mx && sp.x < f.x1 - mx && sp.y > f.y0 + m + 60 && sp.y < f.y1 - m;
       if (inside && !extra) return;
       var tx = (f.x0 + f.x1) / 2,
         ty = f.y0 + (f.y1 - f.y0) * 0.6;
@@ -3169,7 +3231,7 @@
       // Смещение — от центра карты с учётом её отступов (оболочка R01 задаёт padding): от середины холста объект
       // уезжал под шапку.
       var cpt = map.project(map.getCenter());
-      var anchor = obj.p.kind === "lighting" ? obj.p.geometry.coordinates[Math.floor(obj.p.geometry.coordinates.length / 2)] : obj.p.geometry.coordinates;
+      var anchor = anchorLngLat(obj.p);
       map.easeTo(
         Object.assign(
           {
@@ -3189,7 +3251,7 @@
       how = how || {};
       var anchors = Object.keys(S.objects).map(function (id) {
         var p = S.objects[id].p;
-        return p.kind === "lighting" ? p.geometry.coordinates[Math.floor(p.geometry.coordinates.length / 2)] : p.geometry.coordinates;
+        return anchorLngLat(p);
       });
       if (!anchors.length) return false;
       var cx = 0,

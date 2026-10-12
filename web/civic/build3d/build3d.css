@@ -60,15 +60,34 @@
   align-items: center;
   gap: var(--s-2, 8px);
 }
-.b3d-row3d > .b3d-view3d {
-  margin-left: auto;
+/* Кнопки строки — 48 px (UX_BRIEF, LOCAL_FINAL № 9): «3D» и у акимата компактная «Удалить». Первая кнопка строки
+   прижата вправо, если слева нет текста. */
+.b3d-row3d > .bk-btn {
   flex: 0 0 auto;
   min-height: var(--tap, 48px); /* LOCAL_FINAL п. 9: зона нажатия 48 px и на ноутбуке */
   padding-inline: var(--s-3, 12px);
 }
+.b3d-row3d > .bk-btn:first-child,
+.b3d-row3d > .b3d-view3d {
+  margin-left: auto;
+}
 .b3d-pcard__whererow > .bk-meta {
   margin: 0;
   min-width: 0;
+}
+.b3d-pcard__info {
+  display: grid;
+  gap: var(--s-1, 4px);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.b3d-pcard__info > .bk-meta {
+  margin: 0;
+}
+/* Телефон: карточка проекта опущена до низа экрана поверх шторки хозяина (fitDock → lowerPhoneCard), чтобы над ней
+   был виден сам проект; низ — с безопасной зоной экрана. */
+.b3d-dock[data-lowered] {
+  padding-bottom: calc(var(--s-4, 16px) + env(safe-area-inset-bottom, 0px));
 }
 /* Высота ограничена местом под шапкой хозяина (fitDock): остальное — прокрутка внутри панели. */
 .b3d-dock--fit {
