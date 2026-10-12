@@ -1,0 +1,13 @@
+
+== legacy: 1 видов, 6 элементов
+  6× i · background #c9d4c5 (зеленоватая рамка) — «» [akimat-375 карта, akimat-375 карточка, resident-375 карта, …]
+
+== weight: 2 видов, 4 элементов
+  2× bc-inbox__title · 700 — «Обращения» [akimat-1366 inbox, akimat-375 inbox]
+  2× nb-card__title · 700 — «Ремонт дороги на улице Е-308» [resident-1366 nearby, resident-375 nearby]
+
+== tiny: 0 видов, 0 элементов
+
+== framed: 2 видов, 19 элементов
+  17× bk-btn.bk-btn--primary — «Войти» [akimat-1366 projects, resident-1366 карта, resident-1366 карточка, …]
+  2× bk-banner.bk-banner--warn — «Не будет холодной воды · завтра 10:00–16:00Где: ул» [resident-1366 nearby, resident-375 nearby]

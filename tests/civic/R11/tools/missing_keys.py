@@ -33,6 +33,9 @@ def main(argv):
         text = subprocess.run(["git", "show", f"{ref}:{f}"], cwd=ROOT, capture_output=True, text=True).stdout
         for pat in PATTERNS:
             for k in pat.findall(text):
+                # «ask.staff.answer_» + язык и т. п.: составной ключ — есть, если в словаре есть хоть одно продолжение
+                if k.endswith(("_", ".")) and any(d.startswith(k) for d in DICT):
+                    continue
                 if k not in DICT and not SKIP.search(k):
                     missing.setdefault(k, set()).add(f)
     for k in sorted(missing):

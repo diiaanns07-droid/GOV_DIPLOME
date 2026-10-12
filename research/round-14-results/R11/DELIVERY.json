@@ -4,8 +4,8 @@
   "branch": "claude/r14-R11",
   "base_sha": "af77b78",
   "restored_from": null,
-  "code_sha": "bdc9934f — последний коммит web/civic/ui-kit и web/civic/i18n: ui-kit по R01 §21.7 (имена без «·»/«✓», аватар 44/48, «Меню профиля»), один тост в BirgeUI.toast, ҚАЗ/РУС 48 на ноутбуке; словарь 1418 ключей ru=kk (+78 для FINAL-3: R06, R09, R12, R01)",
-  "tested_sha": "FINAL-3 кандидат R01 2f643dc как есть: review_build 44/44, kk 0, missing_keys 0 (с R11 bdc9934f), шаги 6–7 PASS, все значки видны, первый кадр = эталон; 2f643dc + ui-kit/i18n R11 bdc9934f: тесты R01 r14_shell 42/0, r14_wave2 42/0, r14_b1 16/0; витрина 4/4",
+  "code_sha": "7117132b — последний коммит web/civic/ui-kit и web/civic/i18n: стекло Apple Liquid Glass (.bk-glass, .bk-glass--control, токены --glass-*, запасной белый вид), поверх bdc9934f (§21.7, один тост); словарь 1418 ключей ru=kk (не менялся с bdc9934f)",
+  "tested_sha": "FINAL-3 R01 77ee50be (ui-kit/i18n R11 bdc9934f внутри): review_build 44/44, kk 0, витрина 4/4, missing_keys 0, шаги 6–7 PASS, значки видны, первый кадр = эталон; предпросмотр 77ee50be + R07 9899c30c + R08 9859307c: то же + место на телефоне не закрыто, clean_audit почти чисто; стекло 7117132b: test_r11_ui_kit 20/20, glass_contrast по макету — худший 5.56, glass_fallback_check 3/3",
   "push_status": "см. STATUS.md и финальное сообщение",
   "also_in_package_branch": [
     "c75a9ac UX_SPEC.md v1",
@@ -61,7 +61,13 @@
     "research/round-14-results/R11/screens/final3/",
     "research/round-14-results/R11/patches/R09_inbox_need_staff.patch",
     "research/round-14-results/R11/patches/R06_projects_login.patch",
-    "research/round-14-results/R11/patches/R13_qa_placeholder_answer_lang.patch"
+    "research/round-14-results/R11/patches/R13_qa_placeholder_answer_lang.patch",
+    "research/round-14-results/R11/GLASS.md",
+    "web/civic/ui-kit/prototypes/glass.html",
+    "tests/civic/R11/review/glass_contrast.cjs",
+    "tests/civic/R11/review/glass_fallback_check.cjs",
+    "research/round-14-results/R11/screens/glass/",
+    "research/round-14-results/R11/screens/final3b/"
   ],
   "tests": {
     "browser_check: витрина + prototypes/{index,akimat-map,complaint,day} × 375/1366 × ru/kk": "PASS",
@@ -114,7 +120,12 @@
     "FINAL-3 2f643dc: tap_targets — ≥ 48 кроме ҚАЗ/РУС 44 (в ui-kit R11 теперь 48) и 7/30/90 R07 у края шторки": "PASS с замечанием",
     "FINAL-3 2f643dc: «Обращения» и «Проекты и идеи» без входа — R09 показывает «Нет связи», у R06 нет кнопки входа; патчи R11 проверены на стенде (1366 kk, 375 ru → форма входа)": "FAIL как есть / PASS с патчами R09_inbox_need_staff, R06_projects_login",
     "FINAL-3 2f643dc + ui-kit/i18n R11 bdc9934f: R01 r14_shell 42/0, r14_wave2 42/0, r14_b1 16/0": "PASS",
-    "ui-kit bdc9934f: test_r11_ui_kit 18/18, витрина 4/4 (имена ҚАЗ/РУС и «Акимат» без знаков, аватар ≥ 44, один тост), ui_kit.test, i18n_tools check": "PASS"
+    "ui-kit bdc9934f: test_r11_ui_kit 18/18, витрина 4/4 (имена ҚАЗ/РУС и «Акимат» без знаков, аватар ≥ 44, один тост), ui_kit.test, i18n_tools check": "PASS",
+    "FINAL-3 R01 77ee50be: review_build 44/44, ҚАЗ 0, витрина под CSP 4/4, ключей вне словаря 0, шаги 1–2, 6, 6–7 PASS, все значки видны, первый кадр = эталон 8bbace7": "PASS",
+    "FINAL-3 R01 77ee50be: телефон 375×667 — выбранное место под плашкой «Карта улиц не загрузилась» (только без подложки)": "FAIL в облаке (без подложки) — на ноутбуке с PMTiles плашки нет",
+    "Предпросмотр 77ee50be + R07 9899c30c + R08 9859307c: review_build 44/44, kk 0, витрина 4/4, место на телефоне не закрыто, первый кадр = эталон; clean_audit — 1 старый цвет (ручка шторки R01), 2 заголовка 700, текст < 13 — 0": "PASS (4 мелочи — UX_REVIEW «FINAL-3 окончательно»)",
+    "Стекло 7117132b: test_r11_ui_kit 20/20 (контраст над чёрным ≥ 4.5 для всех цветов текста, диапазоны владельца, запасные варианты); prototypes/glass.html — glass_contrast по пикселям худший 5.56 (1366/375, ru/kk); glass_fallback_check: стекло / reduced-transparency / bk-glass-off — PASS": "PASS",
+    "Стекло в сборке R01": "NOT_RUN — ждёт поставок R01/R07/R08/R09 по GLASS.md §4"
   },
   "known_limits": [
     "Чистый дизайн в ui-kit меняет только компоненты bk-*; модули ролей со своим CSS (R07 heat.css, R08 akim.css, R09 complaint.css, оболочка R01) выглядят по-новому только после правок CLEAN_PASS §3",
@@ -124,7 +135,7 @@
     "Скриншоты — headless Chromium с программным WebGL, без интернета (запасной фон карты)",
     "Казахский — R11 и черновики ролей, не проверен носителем; 64 места ⚑ в KK_REVIEW.md; 7 правок уточнений не перенесены в categories_v2.json пакета"
   ],
-  "next_step": "R01: взять ui-kit/i18n R11 bdc9934f и патчи R09_inbox_need_staff, R06_projects_login, R13_qa_placeholder_answer_lang (если владельцы не взяли), правки UX_REVIEW «FINAL-3» №3–7; R07/R08 — чистый дизайн (№8–9); R11 — разбор новых поставок R07/R08 и окончательной сборки",
+  "next_step": "R01: взять ui-kit R11 7117132b и R07 9899c30c / R08 9859307c, стекло по GLASS.md §4 (R01 №1–8), ручку шторки — var(--c-line-strong); R07/R08/R09 — стекло на своих панелях; R11 — разбор стекла в сборке (glass_contrast 1366/1024/375, glass_fallback_check) и правки",
   "wave_1": {
     "subtopics_kk": "39 уточнений вычитаны → ключи subtopic.<id>; 7 правок к черновику координатора — kk_review_extra.md",
     "emergency": "complaint.emergency.* + emergency.service.<номер>; ui-kit .bk-banner--danger; правило — UX_SPEC §10",
@@ -145,7 +156,7 @@
     ],
     "schemes_r06_r13": "research/round-14-results/R11/SCHEMES_R06_R13.md — v2 под контракт оболочки R01 §11.2 (12 окт)"
   },
-  "updated": "2026-10-12 (вечер, FINAL-3)",
+  "updated": "2026-10-12 (вечер, FINAL-3 окончательно + стекло)",
   "clean_pass": {
     "doc": "research/round-14-results/R11/CLEAN_PASS.md",
     "prototype": "web/civic/ui-kit/prototypes/clean.html (?lang=kk, ?role=resident, ?rotated=1&menu=1)",
@@ -157,5 +168,11 @@
     "patches/R09_inbox_need_staff.patch (web/civic/feedback/complaint-list.js)",
     "patches/R06_projects_login.patch (web/civic/ideas/ideas.js)",
     "patches/R13_qa_placeholder_answer_lang.patch (web/civic/qa/qa.js)"
-  ]
+  ],
+  "glass": {
+    "doc": "research/round-14-results/R11/GLASS.md",
+    "prototype": "web/civic/ui-kit/prototypes/glass.html (?solid=1 — запасной вид)",
+    "classes": ".bk-glass (80 %), .bk-glass--bar, .bk-glass--sheet, .bk-glass--control (62 %); выключатель html.bk-glass-off",
+    "checks": "tests/civic/R11/review/glass_contrast.cjs, tests/civic/R11/review/glass_fallback_check.cjs, tests/civic/R11/test_r11_ui_kit.py"
+  }
 }
