@@ -81,6 +81,9 @@
 .r07-cat-toggle[aria-expanded="true"] .r07-ic--down { transform: rotate(90deg); }
 .r07-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .r07-chips[hidden] { display: none; }
+/* .bk-scroll-x — ряд ui-kit: на телефоне (ряд прокручивается) край мягко затухает, пока есть что листать (BirgeUI
+   подключает сам, R11 §16.4); на ноутбуке чипы переносятся — прокрутки нет, рамка фокуса не обрезается */
+@media (min-width: 761px) { .r07-chips.bk-scroll-x { overflow: visible; } }
 .r07-chip {
   position: relative; display: inline-flex; align-items: center; gap: 6px;
   min-height: 44px; padding: 0 14px 0 10px;
@@ -282,6 +285,9 @@
 /* Пусто и нет связи: линейная иллюстрация (линия 1.9, как у иконок ui-kit), заголовок 17/600, одна строка, действие */
 .r07-empty, .r07-error { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 8px 16px; text-align: center; }
 .r07-illo { width: 96px; height: 80px; margin-bottom: 4px; color: var(--r07-ink-2); opacity: 0.75; }
+/* рисунок ui-kit (.bk-ill: 96 px, на телефоне 80, линия 1,5) — в «нет связи» темнее, как .bk-error у ui-kit */
+.r07-empty .bk-ill, .r07-error .bk-ill { margin-bottom: 4px; }
+.r07-error .bk-ill { stroke: var(--c-text-2, #4c5853); }
 .r07-error .r07-ic { color: var(--r07-danger); }
 .r07-empty__title, .r07-error__title { margin: 0; font-size: 17px; font-weight: 600; }
 .r07-empty__hint, .r07-error__hint { margin: 0; color: var(--r07-ink-2); max-width: 30ch; }
