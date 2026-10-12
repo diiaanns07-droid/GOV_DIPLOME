@@ -168,3 +168,80 @@ R07 868de08 (читаемость карты) + R01: research/round-14-results/R
   birgeOverlayRects отдаёт R07 ещё «Аймақ», кнопки карты, легенду, шторку и её ручку, плашку запасного фона — значки
   районов на телефоне больше не встают под них (было 2 закрытых на 375). git apply --check на 34677e0; r12_city 81/0.
 
+
+9. ДИЗАЙН-МАРАФОН · круг 1 (12 октября, сборка R01 65343341 = FINAL-3 glass 61be62e6 + ui-kit R11)
+================================================================================
+Кадры: research/round-14-results/R11/design/round1/ (слева до, справа после). Проверка предложений R11 на стенде —
+вставкой CSS (design/round1/proposed_round1.css): обе пары proposed-*.png сняты так. Инструменты:
+  NODE_PATH="$(npm root -g)" node tests/civic/R11/review/design_audit.cjs http://127.0.0.1:<порт>/ out.json   # пункты 2,3,6,7,9,10
+  NODE_PATH="$(npm root -g)" node tests/civic/R11/review/design_pairs.cjs http://127.0.0.1:<порт>/ <папка> before|after
+
+9.0 Уже в ui-kit R11 (ничего делать не нужно, придёт с web/civic/ui-kit):
+  • серая кнопка на стекле — непрозрачная --c-fill (полупрозрачная брала цвет карты и была бежевой: «Кіру», «Жазылу»);
+  • кнопка-стекло внутри стеклянной строки (« ? » в строке легенды) — плоская, без второго стекла и второй тени;
+  • .bk-banner--warn — без рамки и бежевой плашки: серая заливка, заголовок и значок цветом warn («Суық су болмайды»);
+  • отступы по сетке 8 pt: .bk-btn 8/20, .bk-chip 8/16/8/12, поля 12/16, .bk-langtext 0/8, .bk-avatar, .bk-mapbtn,
+    .bk-glass--control — padding 0 (был 1 px браузера);
+  • иллюстрация ill-staff (пропуск сотрудника) для состояния «войдите как сотрудник» — BirgeUI.state(…{illustration:"staff"}).
+
+9.1 R01 · web/civic/shell/birge.css
+  a) Телефон: поле поиска вылезает над капсулой шапки (top 4 при капсуле 8…64). В блоке @media (max-width: 760px)
+     после «.brand-title { display: none; }»:
+-  body.civic-mode[data-birge-explore="header"] .civic-explore { top: 4px; }
+-  body.civic-mode[data-birge-explore="header"] .civic-explore-list { position: fixed; top: 60px; left: 8px; right: 8px; }
++  body.civic-mode[data-birge-explore="header"] .civic-explore { top: 12px; }          /* 8 + (56 − 48) / 2 */
++  body.civic-mode[data-birge-explore="header"] .civic-explore-list { position: fixed; top: 72px; left: 8px; right: 8px; }
+   и у строки состояния поиска там же: top: 60px → top: 72px.
+  b) Сетка 8 pt (design_audit п. 2): .topbar.bk-glass padding 0 8px 0 14px → 0 8px 0 16px; .birge-legend-line
+     padding 0 4px 0 14px → 0 4px 0 16px; #map-status padding 8px 14px → 8px 16px; .birge-more-item 0 14px → 0 16px;
+     .top-actions gap 9px/5px → 8px/4px; список подсказок [role=option] 6px 14px → 8px 16px.
+  c) Движение (п. 7): #map-status transition 0.4s → var(--t-slow) var(--ease) (340 мс, ease-out).
+  d) Меню: #birge-account, .birge-more-menu, #birge-layer-list — вместо своего радиуса 24 добавить класс bk-glass--menu
+     (радиус 18 и поля 8 сверху/снизу — GLASS.md §1); правило «border-radius: var(--r-glass, 24px)» для них убрать.
+  e) Телефон, карточка цели в шторке: при открытии карточки из списка шторка остаётся прокрученной — первая строка
+     («Аялдама · Нұра · Үлгі») уходит под ручку. При смене содержимого шторки — scrollTop = 0 (или R07 — у корня карточки).
+  f) Лист раздела (#birge-screen, #birge-day): колонка разделов-списков на ноутбуке разная — «Идеи» 720, «Рядом» и
+     «Вопрос акиму» 960, «Обращения» во всю ширину. Предложение: листы-списки — max-width 720 по центру (как «Идеи»),
+     «Картина дня» — дашборд, 1280. Если удобнее одной строкой у R01: .birge-screen-root > .nb, .birge-screen-root > .qa
+     { max-width: 720px; } (R08/R13 могут сделать у себя).
+
+9.2 R08 · web/civic/akim/akim.css и web/civic/nearby/nearby.css
+  a) Телефон kk: заголовок «Күн қорытындысы · 12 қазан» обрезан справа (дата nowrap вместе с последним словом), поле даты
+     «10/12/20» и «Барлық аудандар» обрезаны. В конец akim.css:
++ @media (max-width: 760px) {
++   .akim { padding-inline: 0; }                         /* край 24 — как «Обращения», «Идеи», шторка карты */
++   .akim__title-date { white-space: normal; }
++   .akim__controls { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; }
++   .akim__field input, .akim__field select { width: 100%; min-width: 0; }
++ }
+     Кадр: design/round1/proposed-day-375-kk-pair.png.
+  b) nearby.css: @media (max-width: 760px) { .nb { padding-inline: 0; } } — тот же край 24.
+  c) .nb-card__title font-weight 700 → var(--fw-semi) (два веса; design_audit п. 3 — единственный 700 на экранах).
+  d) «Картина дня», ноутбук: сводка .akim-summary__main — строка 1127 px (~150 знаков); max-width: 70ch (п. 3).
+     То же у .akim-decision__blocker / __meta (616 px — норма, но добавить max-width: 70ch не помешает).
+
+9.3 R09 · web/civic/feedback (complaint.css, inbox)
+  a) «Обращения» без входа: заголовок 22 (.bc-inbox__title) — у остальных разделов 28 → font-size: var(--fs-h1).
+  b) Состояние «войдите как сотрудник» — одно на все разделы (R06 «Проекты», R09 «Обращения», R13 «Вопрос акиму»):
+       BirgeUI.state(box, "empty", { illustration: "staff", title: tr("proposal.need_staff"),
+         text: tr("staff.login.note"), action: { label: tr("staff.login.submit"), onClick: openLogin } });
+     (кнопка «Войти» — главная, тёмная; иллюстрация — линия ui-kit; подсказка — «Учётную запись выдаёт администратор.»)
+  c) .bc-inbox__title 700 → 600 (если ещё 700 у вас в ветке).
+  d) Экран успеха мастера (шаг 5): галочка рисуется — ui-kit готов:
+       <svg class="bk-ill bk-check-draw" aria-hidden="true"><use href="…/icons.svg#ill-done"/></svg> над «Обращение
+     отправлено» (BirgeUI.illustration("done") + класс bk-check-draw); при reduced-motion ui-kit рисует сразу.
+  e) Нижняя кнопка «Далее» мастера закрывает последний ряд уточнений — у прокручиваемого тела мастера
+     padding-bottom = высота панели кнопки + 16 (или scroll-padding-bottom), чтобы последний чип был виден целиком.
+
+9.4 R13 · web/civic/qa
+  a) Без входа: «Кіру» серая и рядом «Қайталау» — повтор тут не нужен (это не ошибка связи). Состояние — как 9.3 b
+     (title: tr("ask.staff.login"), одна главная кнопка «Войти»). Кадр: design/round1/proposed-questions-375-kk-pair.png.
+  b) Телефон: @media (max-width: 760px) { .qa { padding-inline: 0; } } — край 24.
+
+9.5 R06 · web/civic/ideas
+  a) «Проекты и идеи» без входа: иллюстрация вместо значка 48 и подсказка — как 9.3 b; заголовок раздела «Проекты и идеи»
+     слева, состояние по центру колонки — выровнять: состояние тоже в колонке 720 (сейчас заголовок x 323, иконка — центр листа).
+  b) Ноутбук: «Предложить идею» — тёмная кнопка во всю колонку 720 px; на ≥ 761 px — по содержимому:
+     .ri-new > .bk-btn { flex: 0 1 auto; } (на телефоне — во всю ширину, как сейчас).
+  c) Строка-правило «Это опрос…» (.bk-banner.ri-honest) теперь выровнена по колонке сама (ui-kit: обычный .bk-banner
+     без заливки — без боковых полей); своё ничего не нужно.

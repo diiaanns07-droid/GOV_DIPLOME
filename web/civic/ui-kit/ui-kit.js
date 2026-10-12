@@ -237,7 +237,7 @@
     }
     var isError = kind === "error";
     // Иллюстрация из линий (дизайн-марафон): по умолчанию «список» для пустого и «нет связи» для ошибки;
-    // opts.illustration — list | map | search | done | offline | idea | question; opts.icon — прежняя иконка 48 px.
+    // opts.illustration — list | map | search | done | offline | idea | question | staff (вход сотрудника); opts.icon — прежняя иконка 48 px.
     var art = opts.icon ? icon(opts.icon, { size: 48 })
       : illustration(opts.illustration || (isError ? "offline" : "list"));
     el.innerHTML =

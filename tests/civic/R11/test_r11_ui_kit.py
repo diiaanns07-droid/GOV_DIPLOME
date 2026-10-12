@@ -70,7 +70,7 @@ def test_text_contrast_at_least_4_5():
 def test_icons_cover_categories_and_showcase():
     ids = set(re.findall(r'<symbol id="i-([a-z0-9-]+)"', ICONS))  # иконки; иллюстрации ill-* проверяются отдельно
     ills = set(re.findall(r'<symbol id="ill-([a-z0-9-]+)"', ICONS))
-    assert {"list", "map", "search", "done", "offline", "idea", "question"} <= ills, ills
+    assert {"list", "map", "search", "done", "offline", "idea", "question", "staff"} <= ills, ills
     assert ICONS.count('vector-effect="non-scaling-stroke"') >= 7  # линия иллюстраций не толстеет при 96 px
     assert len(ids) >= 30
     for c in CATS["categories"]:

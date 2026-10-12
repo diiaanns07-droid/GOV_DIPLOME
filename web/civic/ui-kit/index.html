@@ -549,7 +549,7 @@
             var v = css.getPropertyValue(name).trim();
             return '<div class="kit-swatch"><i style="background:' + v + '"></i><span><code>' + name + "</code><br>" + v + "</span></div>";
           }).join("");
-          $("kit-ills").innerHTML = ["list", "map", "search", "done", "offline", "idea", "question"].map(function (n) {
+          $("kit-ills").innerHTML = ["list", "map", "search", "done", "offline", "idea", "question", "staff"].map(function (n) {
             return "<figure>" + UI.illustration(n) + "<figcaption><code>ill-" + n + "</code></figcaption></figure>";
           }).join("");
           $("kit-icons").innerHTML = ICONS.map(function (n) {

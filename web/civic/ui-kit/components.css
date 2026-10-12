@@ -131,7 +131,7 @@
   gap: var(--s-2);
   min-height: var(--tap);
   min-width: var(--tap);
-  padding: 10px var(--s-5);
+  padding: var(--s-2) var(--s-5); /* сетка 8 pt: высоту даёт min-height 48 */
   border: 1px solid transparent; /* чистый дизайн: второстепенная кнопка — серая заливка, без рамки */
   border-radius: var(--r-m);
   background: var(--c-fill);
@@ -241,6 +241,7 @@
   justify-content: center;
   width: var(--tap);
   height: var(--tap);
+  padding: 0;
   border: 0;
   border-radius: var(--r-m);
   background: var(--c-surface);
@@ -287,7 +288,7 @@
   gap: 6px;
   flex: none;
   min-height: 40px;
-  padding: 6px 14px 6px 10px;
+  padding: var(--s-2) var(--s-4) var(--s-2) var(--s-3);
   border: 1px solid transparent;
   border-radius: var(--r-pill);
   background: var(--c-fill);
@@ -416,7 +417,7 @@
 .bk-field select {
   width: 100%;
   min-height: var(--tap);
-  padding: 12px 14px;
+  padding: var(--s-3) var(--s-4);
   border: 1px solid transparent;
   border-radius: var(--r-m);
   background: var(--c-fill);
@@ -662,7 +663,7 @@
   position: relative;
   min-width: 48px; /* ноутбук 48; телефон 44 (ниже) — зона нажатия (R01 §21.1) */
   min-height: var(--tap);
-  padding: 0 6px;
+  padding: 0 var(--s-2);
   border: 0;
   background: none;
   color: var(--c-text-2);
@@ -692,6 +693,7 @@
   flex: none;
   width: 48px; /* ноутбук: шапка 64 px; телефон — 44 (ниже) */
   height: 48px;
+  padding: 0;
   border: 0;
   border-radius: 50%;
   background: var(--c-fill);
@@ -733,7 +735,7 @@
   list-style: none;
 }
 .bk-menu__label {
-  padding: var(--s-2) var(--s-4) 2px;
+  padding: var(--s-2) var(--s-4) var(--s-1);
   color: var(--c-text-2);
   font-size: var(--fs-caption);
 }
@@ -1219,7 +1221,7 @@
 .bk-banner {
   display: grid;
   gap: var(--s-2);
-  padding: var(--s-3) var(--s-4);
+  padding: var(--s-2) 0; /* без заливки — без боковых полей: текст на одной линии с колонкой (марафон, п. 2) */
   border-radius: var(--r-m);
   border: 0;
   background: transparent;
@@ -1241,6 +1243,10 @@
 .bk-banner > .bk-btn {
   justify-self: start;
 }
+.bk-banner--danger,
+.bk-banner--warn {
+  padding: var(--s-3) var(--s-4);
+}
 .bk-banner--danger {
   border: 2px solid var(--c-danger);
   background: var(--c-danger-soft);
@@ -1250,9 +1256,15 @@
   color: var(--c-danger);
 }
 .bk-banner--warn {
-  border: 1px solid var(--c-warn);
-  background: var(--c-warn-soft);
+  /* дизайн-марафон: без рамки и бежевой плашки — серая заливка, предупреждение несёт заголовок/значок цветом warn */
+  border: 0;
+  background: var(--c-fill);
   color: var(--c-ink);
+}
+.bk-banner--warn .bk-banner__title,
+.bk-banner--warn > .ic:first-child,
+p.bk-banner--warn {
+  color: var(--c-warn);
 }
 
 .bk-tag {
@@ -2015,6 +2027,7 @@
   border-radius: var(--r-glass-sheet) var(--r-glass-sheet) 0 0;
 }
 .bk-glass--control {
+  padding: 0;
   background-color: var(--glass-control);
   border-radius: var(--r-pill);
   transition: background-color var(--t-fast) var(--ease);
@@ -2048,8 +2061,28 @@
   background-color: var(--c-surface);
   box-shadow: inset 0 0 0 1px var(--c-line);
 }
-.bk-glass .bk-btn:not(.bk-btn--primary):not(.bk-btn--ghost):not(.bk-btn--danger) {
-  background-color: rgba(16, 24, 22, 0.06); /* серая заливка кнопки поверх стекла — та же «капсула», но прозрачнее */
+.bk-glass .bk-btn:not(.bk-btn--primary):not(.bk-btn--ghost):not(.bk-btn--danger),
+.bk-glass .bk-banner--warn {
+  /* серая заливка поверх стекла — непрозрачная: полупрозрачная брала оттенок карты и выглядела бежевой (марафон, круг 1) */
+  background-color: var(--c-fill);
+}
+.bk-glass .bk-btn:not(.bk-btn--primary):not(.bk-btn--ghost):not(.bk-btn--danger):hover {
+  background-color: var(--c-fill-hover);
+}
+/* Кнопка-стекло внутри стеклянной строки (например «?» в строке легенды) — без второго слоя стекла и второй тени:
+   одна поверхность, кнопка плоская, при наведении — лёгкая заливка */
+.bk-glass .bk-glass--control:not([aria-pressed="true"]):not([aria-expanded="true"]) {
+  background-color: transparent;
+  background-image: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.bk-glass .bk-glass--control:not([aria-pressed="true"]):not([aria-expanded="true"]):hover {
+  background-color: rgba(16, 24, 22, 0.06);
+}
+.bk-glass .bk-glass--control {
+  box-shadow: none;
 }
 /* Запасной вид — непрозрачный белый: браузер без backdrop-filter, «уменьшить прозрачность» в системе,
    выключатель для слабых ноутбуков (R01 ставит html.bk-glass-off, если карта дёргается — замер R10) */
