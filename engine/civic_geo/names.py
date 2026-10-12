@@ -30,10 +30,23 @@ def _split_type(name: str, table) -> tuple[str, str] | None:
     return None
 
 
+# В name:kk OSM союз и нарицательное иногда с заглавной («Керей Және Жәнібек Хандар көшесі»); по-казахски — строчные
+# (UX_REVIEW R11, круг 7 п. 2). Только эти слова и не первым словом: имена собственные не трогаем.
+KK_LOWER_WORDS = {"Және": "және", "Хандар": "хандар"}
+
+
+def kk_case(name: str | None) -> str | None:
+    """«Керей Және Жәнібек Хандар көшесі» → «Керей және Жәнібек хандар көшесі»."""
+    if not name:
+        return name
+    words = name.split(" ")
+    return " ".join(w if i == 0 else KK_LOWER_WORDS.get(w, w) for i, w in enumerate(words))
+
+
 def kk_street(name_ru: str | None, name_kk: str | None = None) -> str | None:
     """Казахская подпись улицы: name:kk из OSM; иначе тип по-казахски после имени; иначе имя как есть."""
     if name_kk:
-        return name_kk
+        return kk_case(name_kk)
     if not name_ru:
         return None
     split = _split_type(name_ru, KK_TYPES)

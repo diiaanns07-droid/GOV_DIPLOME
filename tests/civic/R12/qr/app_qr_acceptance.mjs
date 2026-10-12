@@ -52,7 +52,7 @@ try {
     const { ctx, p, errors } = await page({ width: 1366, height: 768 }, "ru", "/?report=" + STOP);
     await reportState(p);
     const card = await p.locator("#birge-report-root").innerText();
-    check("ссылка ?report открывает паспорт остановки в панели", /Хан Шатыр/.test(card) && /Объект № 4109037549/.test(card), card.slice(0, 200));
+    check("ссылка ?report открывает паспорт остановки в панели", /Хан Шатыр/.test(card) && /Объект № 4\s109\s037\s549/.test(card), card.slice(0, 200));
     check("в паспорте видно, сколько людей сообщили, и статус", /Сообщил/.test(card) && /Статус/.test(card), card.slice(0, 300));
     check("одна главная кнопка в паспорте", (await p.locator("#birge-report-root .bk-btn--primary").count()) === 1, null);
     check("«Карта жалоб» спрятана, пока открыт паспорт (одна карточка)", !(await p.locator("#birge-heat-root").isVisible()), null);
@@ -62,6 +62,14 @@ try {
     const vis = await pointVisible(p, STOP_LL);
     check("ноутбук: остановка на карте видна, не под панелью", vis.inside && !vis.under, vis);
     await p.screenshot({ path: path.join(OUT, "app-qr-1366-ru.png") });
+    // «Подробнее»: текущие обращения и история (POLISH_WAVE_2 п. 6) — из публичного вида настоящего R09
+    await p.click("#birge-report-root details.bq-more > summary");
+    const casesOk = await p.waitForSelector("#birge-report-root .bq-cases li", { timeout: 10000 }).then(() => true, () => false);
+    const more = await p.locator("#birge-report-root details.bq-more").innerText();
+    check("«Подробнее»: «Обращения здесь» и «История» из R09, без текстов жителей и id",
+      casesOk && /Обращения здесь/.test(more) && /История/.test(more) && /Освещение/.test(more) && !/c-demo|osm-node/.test(more), more.slice(0, 400));
+    await p.screenshot({ path: path.join(OUT, "app-qr-details-1366-ru.png") });
+    await p.click("#birge-report-root details.bq-more > summary");
     if (await p.locator('#birge-report-root [data-act="metoo"]').count()) {
       await p.click('#birge-report-root [data-act="metoo"]');
       const ok = await p.waitForSelector("#birge-report-root .bq-notice--ok", { timeout: 10000 }).then(() => true, () => false);
@@ -84,7 +92,7 @@ try {
     const { ctx, p, errors } = await page({ width: 375, height: 740 }, "kk", "/?report=" + STOP);
     await reportState(p);
     const card = await p.locator("#birge-report-root").innerText();
-    check("телефон, kk: паспорт по-казахски", /аялдамасы/.test(card) && /Нысан № 4109037549/.test(card), card.slice(0, 200));
+    check("телефон, kk: паспорт по-казахски", /аялдамасы/.test(card) && /Нысан № 4\s109\s037\s549/.test(card), card.slice(0, 200));
     check("ссылка не переключила язык", (await p.evaluate(() => document.documentElement.lang)) === "kk", null);
     const btn = await p.locator("#birge-report-root .bk-btn--primary").boundingBox();
     check("главная кнопка видна без прокрутки страницы", !!btn && btn.y + btn.height <= 740 && btn.height >= 44, btn);
@@ -135,6 +143,7 @@ try {
     check("акимат: в карточке места есть «Распечатать QR» на лист этого объекта", link === "/civic/qr/print.html?ids=" + STOP, link);
     const prim = await p.locator("#birge-heat-root .r07-card .r07-btn--primary").count();
     check("в карточке места по-прежнему одна главная кнопка", prim <= 1, prim);
+    await p.screenshot({ path: path.join(OUT, "app-r07-card-qr-link-1366-ru.png") });
     await p.goto(BASE + "/civic/qr/print.html?ids=" + STOP);
     await p.waitForSelector(".bqp-sign", { timeout: 20000 }).catch(() => null);
     const sheet = await p.locator("#bqp-root").innerText().catch(() => "");

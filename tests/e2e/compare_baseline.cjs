@@ -30,7 +30,8 @@ const items = [];
 const ACCEPTED = (() => { try { return JSON.parse(fs.readFileSync(path.join(BASE, "ACCEPTED.json"), "utf8")); } catch { return {}; } })();
 const acceptedLayer = (id) => (ACCEPTED.layers || {})[id] || null;
 const acceptedControl = (c) => (ACCEPTED.controls || {})[c] || null;
-const add = (status, area, what, detail) => items.push({ status, area, what, detail: detail ?? null });
+// crit — критерий владельца (сценарий / тексты / шрифт / кнопки / контраст); old — то же нарушение было и в эталоне.
+const add = (status, area, what, detail, crit, old) => items.push({ status, area, what, detail: detail ?? null, ...(crit ? { crit } : {}), ...(old ? { old: true } : {}) });
 
 const sameMachine = (a, b) => !!(a && b && a.machine && b.machine && a.machine.cpu === b.machine.cpu && a.machine.cores === b.machine.cores && a.chromium === b.chromium);
 
@@ -42,15 +43,21 @@ function compareScenario(base, now, timeRef) {
   const bb = new Map(base.results.map((r) => [key(r), r]));
   let kept = 0;
   for (const [k, r] of bb) {
-    const n = nb.get(k);
+    let n = nb.get(k);
+    if (!n) {
+      // Уточнённое имя (старое + пояснение, например «… (с волны 2 — …)») или переименование из ACCEPTED.json → renamed.
+      const ren = (ACCEPTED.renamed || {})[r.name];
+      const k2 = [...nb.keys()].find((x) => !bb.has(x) && (x.startsWith(k) || (ren && x === `${r.layer} | ${r.step} | ${ren}`)));
+      if (k2) { n = nb.get(k2); nb.delete(k2); nb.set(k, n); add("ИНФО", "сценарий", "имя проверки уточнено", { was: k, now: k2 }); }
+    }
     if (!n) add("СМОТРЕТЬ", "сценарий", "проверки нет в новом прогоне (переименована или пропала)", { check: k, was: r.status });
-    else if (r.status === "PASS" && n.status !== "PASS") add("FAIL", "сценарий", "было PASS — стало " + n.status, { check: k, detail: n.detail, shot: n.shot });
+    else if (r.status === "PASS" && n.status !== "PASS") add("FAIL", "сценарий", "было PASS — стало " + n.status, { check: k, detail: n.detail, shot: n.shot }, "scenario");
     else if (r.status !== "PASS" && n.status === "PASS") add("ИНФО", "сценарий", "было " + r.status + " — стало PASS", { check: k });
     else if (r.status === "PASS") kept++;
   }
   const added = [...nb.keys()].filter((k) => !bb.has(k));
   add("OK", "сценарий", `PASS сохранились: ${kept}; итог эталона ${JSON.stringify(base.counts)}, нового ${JSON.stringify(now.counts)}`, added.length ? { new_checks: added.slice(0, 30) } : null);
-  for (const k of added) { const n = nb.get(k); if (n.status === "FAIL") add("FAIL", "сценарий", "новая проверка — FAIL", { check: k, detail: n.detail }); }
+  for (const k of added) { const n = nb.get(k); if (n.status === "FAIL") add("FAIL", "сценарий", "новая проверка — FAIL", { check: k, detail: n.detail }, "scenario"); }
   // Время шагов: тот же сценарий, то же время (с запасом на разброс).
   const ref = timeRef || base;
   if (!ref.timing || !now.timing) { add("СМОТРЕТЬ", "сценарий · время", "нет времени шагов (прогон старой версией demo_flow.cjs)"); return; }
@@ -125,7 +132,11 @@ function compareMap(base, now, timeRef) {
     const basemap = plus.filter((x) => /^(vector|raster|raster-dem|background)$/.test(kind[x] || ""));
     const accepted = plus.filter((x) => !basemap.includes(x) && acceptedLayer(x));
     for (const x of accepted) add("ИНФО", "карта · вид", `${tag}: новый слой ${x} — принято`, acceptedLayer(x));
-    const thematic = plus.filter((x) => !basemap.includes(x) && !acceptedLayer(x));
+    // Слой включён, но на виде по умолчанию ничего не рисует (rendered = 0) — не «видно сразу»: СМОТРЕТЬ, а не FAIL.
+    const rendered = (fn.style && fn.style.rendered) || {};
+    const empty = plus.filter((x) => !basemap.includes(x) && !acceptedLayer(x) && rendered[x] === 0);
+    if (empty.length) add("СМОТРЕТЬ", "карта · вид", `${tag}: новые слои включены, но по умолчанию пусты (0 объектов): ${empty.join(", ")}`, { kinds: empty.map((x) => kind[x] || "?") });
+    const thematic = plus.filter((x) => !basemap.includes(x) && !acceptedLayer(x) && !empty.includes(x));
     add(thematic.length ? "FAIL" : "OK", "карта · вид", `${tag}: видимые слои по умолчанию ${lb.length} → ${ln.length}` + (thematic.length ? " — новые функциональные слои видны сразу (правило 1)" : ""),
       thematic.length ? { new: thematic, kinds: thematic.map((x) => kind[x] || "?") } : null);
     if (basemap.length) add("СМОТРЕТЬ", "карта · вид", `${tag}: новые слои подложки (стиль карты) — сверить кадр`, { new: basemap.slice(0, 30), n: basemap.length });
@@ -233,6 +244,54 @@ async function compareShots(baseDir, newDir) {
   } finally { await browser.close(); }
 }
 
+// ------------------------------------------------------------------------------------------------ интерфейс по кадрам
+// Владелец, 12 окт: «FINAL-3 против эталона: сценарий не сломан, все тексты на месте, ничего не стало меньше 13 px,
+// кнопки ≥ 44 px, контраст в норме». Источник — uiAudit (ux_lib.cjs) на каждом кадре demo_flow.cjs --audit:
+// эталон — <base>/audit/RESULT.json (прогон 8e67c65 с --audit), новый — RESULT.json прогона с --audit.
+// Пороги абсолютные (шрифт < 13 px, зона нажатия < 44 px, контраст < 4.5:1 / 3:1 крупный) → FAIL на любом кадре; в
+// подробностях — было ли то же в эталоне. Кнопка лицензии MapLibre «i» (24 px) — СМОТРЕТЬ (чужой элемент карты),
+// ссылка внутри строки текста — ИНФО (исключение WCAG 2.5.8). Пропавшие строки текста — СМОТРЕТЬ со списком по кадру:
+// часть изменений намеренная (волна 2), решает человек; ключи перевода, «{n}», «undefined» вместо текста — FAIL.
+const CRIT = { scenario: "сценарий не сломан", texts: "все тексты на месте", font: "ничего меньше 13 px", tap: "кнопки ≥ 44 px", contrast: "контраст в норме" };
+function compareAudit(baseA, newA) {
+  if (!newA) { add("СМОТРЕТЬ", "интерфейс", "в новом прогоне нет audit (запустить demo_flow.cjs с --audit)", null); return false; }
+  const norm = (t) => t.replace(/\d+([.,:]\d+)*/g, "#").replace(/\s+/g, " ").trim().toLowerCase();
+  // Тот же элемент в эталоне — по тексту без чисел («Сообщили 6 человек» = «Сообщили 12 человек») и месту на экране.
+  // Значки на карте — по размеру (на кадре видны другие места, но тот же вид значка был в эталоне).
+  const key = (o) => JSON.stringify(o.where === "карта" && o.w ? [o.where, o.w, o.h] : [norm(String(o.text || o.name || "")), o.where]);
+  let shots = 0;
+  for (const [tag, byShot] of Object.entries(newA)) {
+    for (const [shot, a] of Object.entries(byShot)) {
+      if (!a || a.error) { add("СМОТРЕТЬ", "интерфейс", `${tag}-${shot}: замер не удался`, a && a.error); continue; }
+      shots++;
+      const b = baseA && baseA[tag] && baseA[tag][shot];
+      // Значок на карте — «был», если такой же вид значка был на любом кадре эталона этого варианта (места на кадрах разные).
+      const pool = (list, o) => (o.where === "карта" && baseA && baseA[tag] ? Object.values(baseA[tag]).flatMap((x) => (x && x[list]) || []) : (b && b[list]) || []);
+      // Зона значка на карте «не стала хуже», если в эталоне был значок с зоной не больше этой (значки выросли, но < 44 px — «было»).
+      const was = (list, o) => pool(list, o).some((x) => (list === "taps" && o.where === "карта" ? x.where === "карта" && Math.min(x.w, x.h) <= Math.min(o.w, o.h) : key(x) === key(o)));
+      const where = `${tag}-${shot}`;
+      for (const f of a.fonts) add("FAIL", "интерфейс · шрифт", `${where}: ${f.px} px «${f.text}» (${f.where})`, { в_эталоне: b ? was("fonts", f) : "нет кадра" }, "font", b ? was("fonts", f) : false);
+      for (const t of a.taps) {
+        const st = t.vendor ? "СМОТРЕТЬ" : t.inline ? "ИНФО" : "FAIL";
+        add(st, "интерфейс · кнопки", `${where}: «${t.name}» ${t.w}×${t.h} px (${t.where})${t.vendor ? " — кнопка MapLibre" : t.inline ? " — ссылка в строке текста" : ""}`,
+          { в_эталоне: b ? was("taps", t) : "нет кадра" }, "tap", b ? was("taps", t) : false);
+      }
+      for (const c of a.contrast) add("FAIL", "интерфейс · контраст", `${where}: ${c.ratio}:1 (нужно ${c.need}:1) «${c.text}» (${c.where})`, { в_эталоне: b ? was("contrast", c) : "нет кадра" }, "contrast", b ? was("contrast", c) : false);
+      for (const k of a.keys) add("FAIL", "интерфейс · тексты", `${where}: ключ перевода вместо текста «${k}»`, null, "texts");
+      for (const j of a.junk) add("FAIL", "интерфейс · тексты", `${where}: заготовка вместо текста «${j}»`, null, "texts");
+      for (const n of a.noName) add("FAIL", "интерфейс · тексты", `${where}: кнопка без подписи (${n})`, null, "texts");
+      for (const c of a.cut) add(b && (b.cut || []).includes(c) ? "СМОТРЕТЬ" : "FAIL", "интерфейс · тексты", `${where}: короткая надпись обрезана «${c}»`, null, "texts");
+      if (b && b.texts) {
+        const nowT = new Set(a.texts.map(norm));
+        const lost = [...new Set(b.texts.map(norm))].filter((t) => !nowT.has(t));
+        if (lost.length) add("СМОТРЕТЬ", "интерфейс · тексты", `${where}: строк эталона нет на кадре: ${lost.length} из ${new Set(b.texts.map(norm)).size}`, { нет: lost.slice(0, 14) }, "texts");
+      }
+    }
+  }
+  add("OK", "интерфейс", `кадров с замером: ${shots}; эталон — ${baseA ? Object.values(baseA).reduce((n, x) => n + Object.keys(x).length, 0) + " кадров" : "нет (audit эталона не снят)"}`, null);
+  return true;
+}
+
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const e2eB = readJ(find(BASE, "e2e", "RESULT.json")), e2eN = readJ(find(NEW, "e2e", "RESULT.json"));
@@ -242,9 +301,13 @@ async function compareShots(baseDir, newDir) {
   compareScenario(e2eB, e2eN, e2eC);
   compareMap(mapB, mapN, mapC);
   await compareShots(mapBf && path.dirname(mapBf), mapNf && path.dirname(mapNf));
+  const auditB = (readJ(find(BASE, "audit", "RESULT.json")) || {}).audit || (e2eB && e2eB.audit) || null;
+  const audited = compareAudit(auditB, e2eN && e2eN.audit);
   const counts = {};
   items.forEach((i) => (counts[i.status] = (counts[i.status] || 0) + 1));
-  const verdict = counts.FAIL ? "ХУЖЕ" : "НЕ ХУЖЕ";
+  // Правило 7 — «не стало хуже»: нарушение порога, которое было и в эталоне (old), вердикт не меняет — оно в таблице критериев.
+  const newFails = items.filter((i) => i.status === "FAIL" && !i.old).length;
+  const verdict = newFails ? "ХУЖЕ" : "НЕ ХУЖЕ";
   const meta = { base: BASE, new: NEW, control: CONTROL, when: new Date().toISOString(),
     base_sha: (e2eB && e2eB.meta.sha) || (mapB && mapB.meta.sha), new_sha: (e2eN && e2eN.meta.sha) || (mapN && mapN.meta.sha),
     same_machine: sameMachine((mapC || mapB || {}).meta, (mapN || {}).meta) };
@@ -252,10 +315,16 @@ async function compareShots(baseDir, newDir) {
   const order = ["FAIL", "СМОТРЕТЬ", "ИНФО", "OK"];
   const md = [`# R10 · сравнение с эталоном · ${meta.base_sha} → ${meta.new_sha}: **${verdict}**`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: ${order.filter((s) => counts[s]).map((s) => `${s} ${counts[s]}`).join(" · ")}`, "",
-    "FAIL — правило 7 нарушено (стало хуже); СМОТРЕТЬ — изменилось, решает человек по кадру `diff-*.jpg` (эталон | новый | разница красным).", "",
+    ...(audited ? ["Критерии владельца (12 окт). «Новое» — нарушения, которых в эталоне 8e67c65 не было (стало хуже); «было» — то же",
+      "нарушение уже было в эталоне (не стало хуже, но порог не выполнен).", "",
+      "| Критерий | Против эталона | По порогу | FAIL новое | FAIL было | СМОТРЕТЬ |", "|---|---|---|---:|---:|---:|",
+      ...Object.entries(CRIT).map(([k, name]) => { const fs_ = items.filter((i) => i.crit === k && i.status === "FAIL"), nw = fs_.filter((i) => !i.old).length, od = fs_.length - nw;
+        const w = items.filter((i) => i.crit === k && i.status === "СМОТРЕТЬ").length;
+        return `| ${name} | **${nw ? "стало хуже" : "не хуже"}** | ${fs_.length ? "нет" : w ? "да, смотреть" : "да"} | ${nw} | ${od} | ${w} |`; }), ""] : []),
+    "FAIL — правило 7 нарушено (стало хуже) или порог владельца не выполнен (у таких строк «в_эталоне: true» — было и в 8e67c65, вердикт не меняют); СМОТРЕТЬ — изменилось, решает человек по кадру `diff-*.jpg` (эталон | новый | разница красным).", "",
     "| Итог | Область | Что | Подробно |", "|---|---|---|---|",
     ...order.flatMap((s) => items.filter((i) => i.status === s).map((i) => `| **${i.status}** | ${i.area} | ${i.what} | ${i.detail ? JSON.stringify(i.detail).replace(/\|/g, "/").slice(0, 260) : ""} |`))];
   fs.writeFileSync(path.join(OUT, "COMPARE.md"), md.join("\n") + "\n");
   console.log(verdict, counts, "→", OUT);
-  process.exit(counts.FAIL ? 1 : 0);
+  process.exit(newFails ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(2); });

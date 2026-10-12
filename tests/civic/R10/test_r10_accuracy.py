@@ -121,3 +121,28 @@ def test_real_graph_edge_matches_itself_and_rejects_shifted_copy():
     shift = 6.0 / (A.M_PER_DEG_LAT * math.cos(math.radians(line[0][1])))  # 6 м на восток
     moved = [[x + shift, y] for x, y in line]
     assert A.hausdorff_m(moved, line) > A.SEGMENT_TOL_M
+
+
+def test_graph_intersection_check_rejects_wrong_node_point_and_street(tmp_path):
+    """Самопроверка правила «перекрёсток R12 = узел графа» (INTEGRATION §13.8) на маленьком графе из 3 рёбер."""
+    c, n, e, s = [71.40, 51.12], [71.40, 51.121], [71.401, 51.12], [71.40, 51.119]
+    g = {"id": "t", "nodes": [{"id": f"osm-n{i}", "lon": p[0], "lat": p[1]} for i, p in
+                              ((1, c), (2, n), (3, e), (4, s))],
+         "edges": [{"id": "osm-w10-0", "from": "osm-n1", "to": "osm-n2", "geometry": [c, n], "name": "улица А"},
+                   {"id": "osm-w11-0", "from": "osm-n1", "to": "osm-n3", "geometry": [c, e], "name": "улица Б"},
+                   {"id": "osm-w10-1", "from": "osm-n4", "to": "osm-n1", "geometry": [s, c], "name": "улица А"}]}
+    path = tmp_path / "g.json"
+    path.write_text(json.dumps(g, ensure_ascii=False), encoding="utf-8")
+    graph = A.Graph(path, None)
+
+    def run(items):
+        rep = A.Report()
+        A.check_graph_intersections(rep, graph, {"items": items})
+        return {ch["name"]: ch["status"] for ch in rep.checks}
+
+    good = {"id": "osm-node-1", "kind": "intersection", "point": c, "streets_ru": ["улица А", "улица Б"], "src": "graph"}
+    assert set(run([good]).values()) == {"PASS"}
+    assert run([dict(good, point=[71.4001, 51.12])])["перекрёстки R12 = узлы графа улиц"] == "FAIL"  # 7 м мимо узла
+    assert run([dict(good, id="osm-node-2", point=n)])["перекрёстки R12 = узлы графа улиц"] == "FAIL"  # 1 ребро
+    assert run([dict(good, id="osm-node-9")])["перекрёстки R12 = узлы графа улиц"] == "FAIL"  # узла нет
+    assert run([dict(good, streets_ru=["улица А", "улица В"])])["перекрёстки R12: улицы подписи сходятся в узле"] == "FAIL"

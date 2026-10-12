@@ -85,6 +85,7 @@ async function waitRecord(A, id, ok, ms = 15000) {
   return rec;
 }
 const part = (s) => L.textRe(s);  // неизменная часть строки с {параметрами}
+const say = (lang, ru, kk) => (lang === "kk" ? kk : ru);
 
 // ------------------------------------------------------------------------------------------------ есть ли пункт в сборке
 // Поиск по исходникам сборки (без tests/ и research/, без словарей и ui-kit R11 — это тексты, а не поставка).
@@ -117,6 +118,8 @@ const STATIC = {
   qrR12: () => [...(fs.existsSync(path.join(ROOT, "web/civic/qr")) ? ["web/civic/qr/"] : []),
     ...grepBuild(["web/civic", "ui"], /qr\.card\.(metoo|report_other|number)/, /(^|\/)(ui-kit|i18n|vendor|tests?|shell)\//)],
   shellMenu: () => grepBuild(["web/civic/shell"], /nav\.more|\bNAV\s*=/, /(^|\/)(vendor|tests?)\//),
+  // R13 прогноз в «Картине дня» (R11 UX_REVIEW: «пометка „Прототип…“ обязательна в обеих локалях — R10 проверит»)
+  forecast: () => grepBuild(["web/civic"], /forecast\.(title|prototype|risk)/),
 };
 const PROBE_TEXT = {
   "W1-3": "код R09: complaint.emergency / emergency_phone / tel:104|112 в web/civic/feedback, ui/civic_feedback",
@@ -126,6 +129,8 @@ const PROBE_TEXT = {
   "W2-6": "оболочка R01 с ?report= или R12: web/civic/qr/, qr.card.*",
   "W2-7": "модуль R06/R05 window.BirgeIdeas в странице",
   "P-12": "оболочка R01 с меню по видам (NAV, «Ещё»)",
+  "LF-2": "—",
+  "F-13": "код вывода прогноза R13 (forecast.title / forecast.prototype) в web/civic",
 };
 
 // Какие модули разделов загружены (window.<имя>) — один заход на главную.
@@ -136,7 +141,7 @@ async function runtimeProbe(browser, base) {
     await page.goto(base); await L.sleep(4000);
     return await page.evaluate(() => {
       const g = {};
-      for (const k of ["BirgeNearby", "BirgeIdeas", "BirgeProjects", "BirgeComplaintList", "BirgeAsk", "BirgeShell"]) g[k] = typeof window[k] !== "undefined";
+      for (const k of ["BirgeNearby", "BirgeIdeas", "BirgeProjects", "BirgeComplaintList", "BirgeAsk", "BirgeQuestions", "BirgeShell"]) g[k] = typeof window[k] !== "undefined";
       const sh = window.BirgeShell || {};
       return { globals: g, registerScreen: typeof sh.registerScreen === "function", registerLayer: typeof sh.registerLayer === "function",
         nav: typeof sh.navItems === "function" ? { resident: sh.navItems("resident"), akimat: sh.navItems("akimat") } : null };
@@ -168,9 +173,7 @@ async function goto(page, url, lang, { fixLang = true } = {}) {
 const menuRe = (lang) => exact(W(lang, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню"));
 // Кнопка в шапке или в «Меню» (телефон и экраны уже 1024).
 async function header(page, lang, re, wait = 1500) {
-  let ok = await L.clickText(page, re, { wait });
-  if (!ok && (await L.clickText(page, menuRe(lang)))) { ok = await L.clickText(page, re, { wait }); if (!ok) await page.keyboard.press("Escape").catch(() => null); }
-  return ok;
+  return L.headerClick(page, re, { wait, menuRe: menuRe(lang) });  // кнопка → «≡ Меню» → меню аватара (FINAL-3)
 }
 const modeRe = (lang, mode) => exact(mode === "akimat" ? W(lang, ["common.role.akimat", "shell.mode.akimat"], lang === "kk" ? "Әкімдік" : "Акимат") : W(lang, ["common.role.resident", "shell.mode.resident"], lang === "kk" ? "Тұрғын" : "Житель"));
 const mineRe = (lang) => part(W(lang, ["common.nav.mine", "mine.title"], lang === "kk" ? "Менің өтініштерім" : "Мои обращения"));
@@ -245,9 +248,20 @@ let filed = 0;
 async function fileComplaint(A, stop, device, text) {
   const body = { text: `${text} (${++filed})`, lang: "ru", category: "transport", category_source: "resident", point: stop.point,
     target: { kind: "object", id: stop.id, label_ru: `Остановка «${stop.name}»` }, device_id: device, demo: true };
-  const r = await A.call("POST", "/api/civic/v2/complaints", body, false, device);
+  const r = await postRetry(A, "/api/civic/v2/complaints", body, device);
   const rec = (A.data(r) || {}).complaint || A.data(r) || null;
   return rec && rec.id ? rec : { id: null, http: r.status, error: r.body && (r.body.error || r.body.message) };
+}
+// Лимит частоты (429, Retry-After ≤ 70 с) — подождать и повторить; дольше (часовое окно) — вернуть ответ как есть.
+async function postRetry(A, p, body, device, tries = 3) {
+  let r;
+  for (let i = 0; i < tries; i++) {
+    r = await A.call("POST", p, body, false, device);
+    const wait = r.status === 429 ? Number((r.res && r.res.headers.get("retry-after")) || 0) : 0;
+    if (!wait || wait > 70) return r;
+    await L.sleep(wait * 1000 + 300);
+  }
+  return r;
 }
 async function complaintById(A, id) {
   const l = await A.call("GET", `/api/civic/v2/complaints?bbox=${NURA_BBOX}`, null, true);
@@ -328,6 +342,98 @@ async function checkEmergency(ctx) {
   }
 }
 
+// ------------------------------------------------------------------------------------------------ LOCAL_FINAL P2
+// Codex LOCAL_FINAL P2 (11 окт): 375×812 → похожие → «У меня другое» → дождаться «Обращение отправлено» → сразу
+// Escape — отложенная классификация обращалась к закрытому мастеру (4 исключения JS). Проверка: ни одного исключения.
+async function checkQuickClose(ctx) {
+  const { browser, base, variants } = ctx;
+  const A = L.api(base);
+  const stop = STOPS[3];
+  const text = { ru: "Не горит фонарь на остановке, вечером темно", kk: "Аялдамада шам жанбайды, кешке қараңғы" };
+  for (const [size, lang] of variants) {
+    const tag = `${size[0]}-${lang}`;
+    // похожая жалоба (та же категория) — чтобы был шаг «Об этом уже сообщили»
+    const dq = devId("q");
+    await postRetry(A, "/api/civic/v2/complaints", { text: text[lang] + " (" + (++filed) + ")", lang, category: "lighting", category_source: "resident",
+      point: stop.point, target: { kind: "object", id: stop.id, label_ru: `Остановка «${stop.name}»` }, device_id: dq, demo: true }, dq);
+    const P = await openPage(browser, size, lang);
+    const errs = [];
+    P.page.on("pageerror", (e) => errs.push(String(e.message || e).slice(0, 200)));
+    try {
+      await goto(P.page, base, lang);
+      const wz = await wizardToText(P.page, lang, stop.point);
+      if (!wz.ok) { add("LF-2", tag, "мастер жалобы до шага текста", "FAIL", wz.why); continue; }
+      await wz.box.fill(text[lang]).catch(() => null);
+      await L.sleep(2500);
+      const catName = W(lang, "cat.lighting");
+      const sendRe = exact(W(lang, ["complaint.step3.send", "complaint.send"], lang === "kk" ? "Жіберу" : "Отправить"));
+      const nextRe = exact(W(lang, "complaint.wizard.next", lang === "kk" ? "Әрі қарай" : "Далее"));
+      const otherRe = exact(W(lang, "complaint.step4.different", lang === "kk" ? "Менде басқа мәселе" : "У меня другое"));
+      let other = false, sent = false;
+      for (let i = 0; i < 6 && !sent; i++) {
+        const dlg = (await L.firstVisible(P.page.getByRole("dialog"))) || P.page;
+        const ob = await L.firstVisible(dlg.getByRole("button", { name: otherRe }));
+        if (ob) { await ob.click().catch(() => null); other = true; await L.sleep(1200); continue; }
+        const sb = await L.firstVisible(dlg.getByRole("button", { name: sendRe }));
+        if (sb && (await sb.isEnabled().catch(() => false))) {
+          // M-3 (POLISH_WAVE_2, обязательные мелочи): перед отправкой — экран проверки и «увидят все / только служба».
+          const seen = {};
+          for (const k of ["complaint.review.title", "complaint.review.public", "complaint.review.private", "complaint.review.personal"]) {
+            const v = W(lang, k); seen[k.split(".").pop()] = v ? await L.visibleText(dlg, part(v)) : null; }
+          add("M-3", tag, "перед отправкой: экран проверки, «Это увидят все» / «Только служба» и подсказка убрать личное", st(Object.values(seen).every((x) => x === true)), seen,
+            await shotOf(P.page, `${tag}-M-3-review`));
+          await sb.click().catch(() => null); sent = true; break;
+        }
+        const nb = await L.firstVisible(dlg.getByRole("button", { name: nextRe }));
+        if (!nb) break;
+        if (!(await nb.isEnabled().catch(() => false)) && catName) await L.clickText(dlg, part(catName), { wait: 900 });
+        await nb.click({ timeout: 3000 }).catch(() => null); await L.sleep(1500);
+      }
+      let done = null;
+      const doneRe = part(W(lang, "complaint.step5.title", lang === "kk" ? "Өтініш жіберілді" : "Обращение отправлено"));
+      for (const t0 = Date.now(); sent && done === null && Date.now() - t0 < 12000; await L.sleep(100)) {
+        if (await L.visibleText(P.page, doneRe)) done = Date.now() - t0;
+      }
+      // M-2: после отправки — номер, следующий шаг и как найти обращение снова (до закрытия: сам кадр — после паузы P2 не берём)
+      if (done !== null) {
+        const code = await P.page.locator(".bc-code__value").first().innerText().catch(() => "");
+        const nxt = await L.visibleText(P.page, part(W(lang, "complaint.step5.next", say(lang, "Дальше: служба ответит до {date}", "Әрі қарай: қызмет {date} дейін жауап береді"))));
+        const find = await L.visibleText(P.page, part(W(lang, "complaint.step5.find", say(lang, "Найти обращение: «Мои обращения», номер {code}", "Өтінішті табу: «Менің өтініштерім», нөмірі {code}"))));
+        add("M-2", tag, "после отправки: номер обращения, следующий шаг (срок ответа) и как найти его снова", st(!!code.trim() && nxt && find), { code: code.trim(), next: nxt, find },
+          await shotOf(P.page, `${tag}-M-2-sent`));
+      }
+      // сразу закрыть — как в P2 (без паузы)
+      await P.page.keyboard.press("Escape").catch(() => null);
+      const before = errs.length;
+      await L.sleep(7000);
+      add("LF-2", tag, "«У меня другое» → «Отправить» → «Обращение отправлено» → сразу Escape: нет исключений JS (LOCAL_FINAL P2)",
+        sent && done !== null ? st(errs.length === 0) : "FAIL",
+        { other, sent, done_ms: done, errors: errs.slice(0, 4), errors_after_close: errs.length - before }, await shotOf(P.page, `${tag}-LF-2-closed`));
+    } finally { await P.ctx.close(); }
+  }
+}
+
+// ------------------------------------------------------------------------------------------------ R13 прогноз
+async function checkForecast(ctx) {
+  const { browser, base, variants } = ctx;
+  for (const [size, lang] of variants) {
+    const tag = `${size[0]}-${lang}`;
+    const K = await openPage(browser, size, lang, { "birge.mode": "akimat" });
+    try {
+      await goto(K.page, base, lang);
+      const day = await header(K.page, lang, exact(W(lang, ["common.nav.day", "shell.section.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня")), 2500);
+      await L.sleep(1500);
+      const title = W(lang, "forecast.title"), proto = W(lang, "forecast.prototype");
+      const block = title ? await L.visibleText(K.page, part(title)) : false;
+      if (!block) { await K.page.mouse.wheel(0, 1200).catch(() => null); await L.sleep(600); }
+      const block2 = block || (title ? await L.visibleText(K.page, part(title)) : false);
+      const mark = proto ? await L.visibleText(K.page, part(proto.split(":")[0] + ":")) : false;
+      add("F-13", tag, `«Картина дня»: блок прогноза R13 «${title}» с пометкой «${proto}»`, day && block2 ? st(mark) : "FAIL",
+        { day, block: block2, mark }, await shotOf(K.page, `${tag}-F-13-forecast`));
+    } finally { await K.ctx.close(); }
+  }
+}
+
 // ------------------------------------------------------------------------------------------------ W2-1 центральная сцена
 // Строки разделены по владельцам: запись обращения (R09: status + resolution.state reported → verified / reopened),
 // цвет цели на карте (R07: heat_states из categories_v2.json), карточка сотрудника (R07 встраивает форму R09),
@@ -382,6 +488,13 @@ async function checkCentral(ctx) {
       const word = card2 ? await L.visibleText(card2, part(W(lang, "status.reported_fixed"))) : false;
       add("W2-1", tag, `карта (R07): цель — «${W(lang, "status.reported_fixed")}» (светло-зелёный с пунктиром), не зелёный`,
         st(!!hi && hi.derived === "reported" && word), { heat: hi, card_text: word }, await shotOf(S.page, `${tag}-W2-1-2-reported`));
+      // R11 UX_REVIEW разбор 13 п. 2, IA_WAVE2 §3: до ответа жителей карточка не обещает «На карте зелёным до …» —
+      // срок зелёного цвета появляется после «Да, исправлено» (R10 demo_flow шаг 6 этого больше не требует).
+      if (card2 && word) {
+        const until = W(lang, "heat.fixed_until", lang === "kk" ? "Жасыл түспен көрсетілу мерзімі: {date}" : "На карте зелёным до {date}");
+        const early = await L.visibleText(card2, part(until));
+        add("W2-1", tag, `карточка (R07): до проверки жителями нет «${until.replace(/\s*\{date\}/, "")} …»`, st(!early), { early });
+      }
     } finally { await S.ctx.close(); }
     // 2. «Я тоже» (E) — тот же вопрос, что у автора (POLISH_WAVE_2 п. 1, IA §2.1, §2.4): до ответа автора.
     const M = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": E });
@@ -658,8 +771,15 @@ async function checkNearby(ctx) {
       add("W2-4", tag, "подписка: «Следить…» → «Вы подписаны / следите»", st(sub && subd), { sub, subd });
       if (STAND.nearby) { add("W2-4", tag, "«Карта» в меню возвращает к карте", "NOT_RUN", "стенд роли — без оболочки"); continue; }
       const toMap = await header(P.page, lang, exact(W(lang, "common.nav.map", "Карта")), 1500);
+      // Карта снова видна: из 9 точек верхней половины карты хотя бы 3 попадают в карту (холст или значок на ней) —
+      // одна точка в центре ловила значок места или шторку телефона (ложный FAIL на 375).
       const back = await P.page.evaluate(() => { const c = document.querySelector(".maplibregl-canvas"); if (!c) return false; const b = c.getBoundingClientRect();
-        return document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2) === c; }).catch(() => false);
+        let hit = 0;
+        for (const fx of [0.25, 0.5, 0.75]) for (const fy of [0.15, 0.3, 0.45]) {
+          const e = document.elementFromPoint(b.left + b.width * fx, b.top + b.height * fy);
+          if (e && (e === c || e.closest(".maplibregl-canvas-container, .maplibregl-marker"))) hit++;
+        }
+        return hit >= 3; }).catch(() => false);
       add("W2-4", tag, "«Карта» в меню возвращает к карте", st(opened && toMap && back), { opened, toMap, back });
     } finally { await P.ctx.close(); }
   }
@@ -678,7 +798,7 @@ async function checkQr(ctx) {
         await goto(P.page, new URL(`/?report=${encodeURIComponent(KHAN.id)}`, base).href, lang, { fixLang: false });
         const s = await P.page.evaluate(() => ({ lang: document.documentElement.lang, saved_mode: localStorage.getItem("birge.mode"), saved_lang: localStorage.getItem("birge.lang") }));
         // Переключатель вида на телефоне — в «Меню» (не на экране): смотрим состояние кнопки, а не её видимость.
-        const resident = await P.page.evaluate((src) => [...document.querySelectorAll("[aria-pressed=true]")].some((e) => new RegExp(src, "i").test(e.textContent.trim())), modeRe(lang, "resident").source);
+        const resident = await P.page.evaluate((src) => [...document.querySelectorAll("[aria-pressed=true], [aria-checked=true]")].some((e) => new RegExp(src, "i").test(e.textContent.trim())), modeRe(lang, "resident").source);
         add("W2-6", tag, "/?report=<id>: язык не сменился, вид «Житель» на этот заход, сохранённый вид не перезаписан", st(s.lang === lang && resident && s.saved_mode === "akimat" && s.saved_lang === lang),
           { ...s, resident_pressed: resident }, await shotOf(P.page, `${tag}-W2-6-report-shell`));
       } finally { await P.ctx.close(); }
@@ -699,7 +819,10 @@ async function checkQr(ctx) {
     const P = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": devId("q") });
     try {
       await goto(P.page, new URL(`/?report=${encodeURIComponent(KHAN.id)}`, base).href, lang, { fixLang: false });
-      const card = await L.firstVisible(P.page.locator("article, [role=dialog], section").filter({ hasText: new RegExp(esc(KHAN.name), "i") }));
+      // Карточка R12 — в слоте оболочки #birge-report-root (R01 §11.4); подождать, пока карточка загрузит место.
+      await P.page.locator("#birge-report-root").filter({ hasText: new RegExp(esc(KHAN.name), "i") }).first().waitFor({ state: "visible", timeout: 8000 }).catch(() => null);
+      const card = (await L.firstVisible(P.page.locator("#birge-report-root").filter({ hasText: new RegExp(esc(KHAN.name), "i") })))
+        || (await L.firstVisible(P.page.locator("article, [role=dialog], section").filter({ hasText: new RegExp(esc(KHAN.name), "i") })));
       const prim = card ? await primaries(card) : [];
       const metoo = card ? await L.firstVisible(card.getByRole("button", { name: part(W(lang, "qr.card.metoo")) })) : null;
       const other = card ? await L.firstVisible(card.getByRole("button", { name: part(W(lang, "qr.card.report_other")) })) : null;
@@ -716,25 +839,34 @@ async function checkQr(ctx) {
   const N = await openPage(browser, [375, 812], "ru");
   try {
     await goto(N.page, new URL("/?report=osm-node-1", base).href, "ru", { fixLang: false });
-    const nf = await L.visibleText(N.page, part(W("ru", "qr.error.not_found")));
-    add("W2-6", "375-ru", `неизвестный id → «${W("ru", "qr.error.not_found")}» и кнопка к карте (не пустая карта)`, st(nf), { not_found: nf }, await shotOf(N.page, "375-ru-W2-6-not-found"));
+    // Заголовок «Объект не найден» (дальше R12 пишет своё пояснение) и кнопка к карте.
+    const title = String(W("ru", "qr.error.not_found", "Объект не найден")).split(/[.!]/)[0];
+    const nf = await L.visibleText(N.page, part(title));
+    const toMap = await L.firstVisible(N.page.getByRole("button", { name: exact(W("ru", ["qr.card.to_map", "qr.error.to_map", "complaint.step5.to_map"], "На карту")) }));
+    add("W2-6", "375-ru", `неизвестный id → «${title}» и кнопка «На карту» (не пустая карта)`, st(nf && !!toMap), { not_found: nf, to_map: !!toMap }, await shotOf(N.page, "375-ru-W2-6-not-found"));
   } finally { await N.ctx.close(); }
   // в) Лист для печати (IA §6.2): QR ≥ 6 см (≥ 227 px), крупное название, «Объект № …», призыв kk и ru, домен; без чисел жалоб.
   const P = await openPage(browser, [1366, 768], "ru");
   try {
     let sheet = null;
-    for (const u of [`/civic/qr/?target=${KHAN.id}`, `/civic/qr/?id=${KHAN.id}`, `/civic/qr/?targets=${KHAN.id}`, "/civic/qr/"]) {
+    for (const u of [`/civic/qr/print.html?ids=${KHAN.id}`, `/civic/qr/?target=${KHAN.id}`, `/civic/qr/?id=${KHAN.id}`, `/civic/qr/?targets=${KHAN.id}`, "/civic/qr/"]) {
       const r = await P.page.goto(new URL(u, base).href).catch(() => null);
       if (r && r.ok()) { sheet = u; break; }
     }
     if (!sheet) { add("W2-6", "лист", "лист для печати web/civic/qr/ открывается", "FAIL", "нет страницы /civic/qr/"); return; }
     await L.sleep(2500);
+    // Лист — для печати: размеры QR и шрифта меряем в стиле печати (96 CSS px = 1 дюйм → 6 см = 227 px).
+    await P.page.emulateMedia({ media: "print" }).catch(() => null);
+    await L.sleep(500);
     const info = await P.page.evaluate(([callRu, callKk]) => {
       const qr = [...document.querySelectorAll("canvas, svg, img")].map((e) => e.getBoundingClientRect()).filter((b) => b.width >= 100 && Math.abs(b.width - b.height) < 6);
       const text = document.body.innerText;
       const big = [...document.querySelectorAll("body *")].filter((e) => !e.children.length && e.textContent.trim() && parseFloat(getComputedStyle(e).fontSize) >= 37).length;
       const print = [...document.styleSheets].some((s) => { try { return [...s.cssRules].some((r) => r.media && /print/.test(r.media.mediaText)); } catch (e) { return false; } });
-      return { qr: qr.length, qr_px: qr[0] ? Math.round(qr[0].width) : 0, big_text: big, number: /№\s*\d+/.test(text), call_ru: text.includes(callRu.slice(0, 20)), call_kk: text.includes(callKk.slice(0, 20)),
+      // Призыв на kk: из словаря R11 или хотя бы казахский текст (буквы ә ғ қ ң ө ұ ү һ і) в строке с вопросом.
+      const kkLine = text.split("\n").some((l) => /[әғқңөұүһі]/i.test(l) && /\?/.test(l));
+      return { qr: qr.length, qr_px: qr[0] ? Math.round(qr[0].width) : 0, big_text: big, number: /№\s*\d+/.test(text), call_ru: text.includes(callRu.slice(0, 20)),
+        call_kk: text.includes(callKk.slice(0, 20)) || kkLine, call_kk_r11: text.includes(callKk.slice(0, 20)),
         domain: /\b[a-z0-9-]+\.[a-z]{2,}\b/i.test(text) || /127\.0\.0\.1|localhost/.test(text), print, counts: /\d+\s*(человек|адам|жалоб|шағым)/i.test(text) };
     }, [W("ru", "qr.call"), W("kk", "qr.call")]);
     add("W2-6", "лист", "лист для печати: QR ≥ 6 см, крупное название, «Объект № …», призыв на kk и ru, домен, стиль печати; без чисел жалоб",
@@ -874,7 +1006,15 @@ const ITEMS = [
   { id: "W2-6", title: "QR-паспорт объекта", owner: "R12 (+R01 ссылка)", run: checkQr, probe: (s) => s.shellReport.length > 0 || s.qrR12.length > 0, done: "Скан распечатки телефоном → карточка этой остановки" },
   { id: "W2-7", title: "Идеи → голосование → проект в 3D", owner: "R06 + R05", run: checkIdeas, probe: (s, r) => !!r.globals.BirgeIdeas, done: "Путь «идея → голоса → проект в 3D» или «отказ с причиной и доработка»" },
   { id: "P-12", title: "Защита от перегруза: меню ≤ 5, один доп. слой", owner: "R01, R11", run: checkClutter, probe: (s) => s.shellMenu.length > 0, done: "правила 1–2 POLISH_WAVE_2, IA_WAVE2 §0–1" },
+  { id: "F-13", title: "Прогноз R13 в «Картине дня» с пометкой «Прототип…»", owner: "R13 + R08", run: checkForecast, probe: (s) => s.forecast.length > 0,
+    done: "пометка «Прототип: прогноз обучен на синтетической истории…» видна в обеих локалях (R11 UX_REVIEW, R13 INTEGRATION §6)" },
+  { id: "LF-2", title: "Отправка: экран проверки (M-3), номер и следующий шаг (M-2), быстрое закрытие без ошибок JS (Codex LOCAL_FINAL P2)", owner: "R09", run: checkQuickClose, probe: () => true, also: ["M-2", "M-3"],
+    done: "ни одного исключения JavaScript после «Обращение отправлено» → Escape" },
 ];
+
+// Остальные пункты волн 1–2 и обязательные мелочи — tests/e2e/wave_more.cjs (те же помощники).
+ITEMS.push(...require("./wave_more.cjs")({ add, st, W, Wany, part, exact, openPage, goto, header, modeRe, mineRe, shotOf, primaries, staffLogin,
+  openCard, wizardToText, devId, complaintById, grepBuild, postRetry, STOPS, ROOT, OUT, L }));
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -893,13 +1033,19 @@ const ITEMS = [
     for (const it of todo) {
       const ok = it.probe(stat, runtime);
       status[it.id] = { ok: ok || !!args.force, forced: !ok && !!args.force };
-      if (!status[it.id].ok) add(it.id, "сборка", `${it.title} — ЖДЁТ поставки (${it.owner})`, "PENDING", "в сборке нет: " + PROBE_TEXT[it.id]);
+      if (!status[it.id].ok) add(it.id, "сборка", `${it.title} — ЖДЁТ поставки (${it.owner})`, "PENDING", "в сборке нет: " + (PROBE_TEXT[it.id] || "кода роли " + it.owner));
     }
     const parts = { shellReport: stat.shellReport.length > 0 || !!args.force, qrR12: stat.qrR12.length > 0 || !!args.force };
     for (const it of todo.filter((x) => status[x.id].ok)) {
       add(it.id, "сборка", `${it.title}: ${status[it.id].forced ? "кода нет, --force — проверяю механику" : "есть в сборке — проверяю"}`, "INFO", { static: stat, runtime: runtime.globals });
-      try { await it.run({ browser, base: server.base, variants, staff: server.staff, runtime, parts }); }
-      catch (e) { add(it.id, "!", "проверка прервалась", "FAIL", String(e.message || e).slice(0, 300)); }
+      // Свой свежий сервер (временная база) на каждый пункт: лимиты частоты R15 (жалоб 5 в минуту, 30 в час с адреса)
+      // считаются в памяти процесса — иначе поздние пункты получают 429 от жалоб ранних. --one-server — один на всё.
+      const srv = args["one-server"] ? server : await L.startServer(ROOT);
+      try {
+        await L.api(srv.base).call("GET", "/api/civic/v2/heat?days=30&zoom=12");
+        await it.run({ browser, base: srv.base, variants, staff: srv.staff, runtime, parts });
+      } catch (e) { add(it.id, "!", "проверка прервалась", "FAIL", String(e.message || e).slice(0, 300)); }
+      finally { if (srv !== server) await srv.stop(); }
     }
   } finally { await browser.close(); await server.stop(); }
   const counts = { PASS: 0, FAIL: 0, PENDING: 0, NOT_RUN: 0, INFO: 0 };
@@ -910,7 +1056,7 @@ const ITEMS = [
   const md = [`# R10 · новые пункты волн 1–2 · ${sha}${args.force ? " · --force (проверка механики, не приёмка)" : ""}`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, ЖДЁТ ${counts.PENDING}, NOT_RUN ${counts.NOT_RUN}`, "",
     "| Пункт | Что | Владелец | Готово, когда | Состояние |", "|---|---|---|---|---|",
-    ...todo.map((i) => { const rs = results.filter((r) => r.item === i.id && r.status !== "INFO");
+    ...todo.map((i) => { const rs = results.filter((r) => (r.item === i.id || (i.also || []).includes(r.item)) && r.status !== "INFO");
       const s = !status[i.id] || !status[i.id].ok ? "ЖДЁТ" : rs.some((r) => r.status === "FAIL") ? "FAIL" : rs.length && rs.every((r) => r.status === "PASS") ? "PASS" : "частично";
       return `| ${i.id} | ${i.title} | ${i.owner} | ${i.done} | **${s}** |`; }),
     "", "| Пункт | Где | Проверка | Итог | Подробно | Кадр |", "|---|---|---|---|---|---|",

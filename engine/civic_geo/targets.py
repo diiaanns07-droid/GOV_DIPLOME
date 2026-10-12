@@ -103,7 +103,7 @@ def object_target(f) -> dict:
         ru, kk = street_points.labels(f.raw)
         return {"kind": "object", "id": f.id, "object_kind": f.kind, "label_ru": ru, "label_kk": kk}
     ru, kk, ru0, kk0 = OBJECT_LABELS.get(f.kind, ("{n}", "{n}", "Объект", "Нысан"))
-    name_ru, name_kk = f.name_ru or f.name_kk, f.name_kk or f.name_ru
+    name_ru, name_kk = f.name_ru or f.name_kk, names.kk_case(f.name_kk or f.name_ru)
     if f.kind == "park" and f.raw.get("subkind") == "garden" and name_ru:
         ru, kk = "Сквер «{n}»", "«{n}» гүлзары"
     return {"kind": "object", "id": f.id, "object_kind": f.kind,

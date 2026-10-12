@@ -49,7 +49,7 @@ const UI_STOPS = args.stop ? [STOP] : [STOP,
   { id: "osm-node-2716977767", name: "Национальный кардиологический центр", name_kk: "Ұлттық кардиохирургиялық орталық", point: [71.4131502, 51.1276695] }];
 const NURA_BBOX = "71.375,51.115,71.420,51.140";
 const DEVICE = "r10-e2e-device-" + Date.now();
-const { NOISE, TAB_LIMIT, uiScreen, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
+const { NOISE, TAB_LIMIT, uiScreen, uiAudit, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
 
 // Python: переменная PYTHON (например .venv\Scripts\python на Windows), иначе python3 / python.
 const PY = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
@@ -58,8 +58,13 @@ const results = [];
 // Время: у каждой строки ms — от старта теста; marks — начало каждого варианта экрана. Из них — время шагов
 // в RESULT.json (timing), для сравнения с эталоном «сценарий не стал медленнее» (POLISH_WAVE_2 правило 7).
 const T0 = Date.now(), marks = {};
+// --audit: на каждом кадре шага — uiAudit (шрифт, зоны нажатия, контраст, тексты) → RESULT.json audit; его время
+// вычитается из времени шагов, чтобы сравнение с эталоном по времени не менялось.
+const AUDIT = !!args.audit, audit = {};
+let auditMs = 0;
+const now = () => Date.now() - T0 - auditMs;
 const add = (layer, step, name, status, detail, shot) => {
-  results.push({ layer, step, name, status, detail: detail ?? null, shot: shot || null, ms: Date.now() - T0 });
+  results.push({ layer, step, name, status, detail: detail ?? null, shot: shot || null, ms: now() });
   console.log(`${status.padEnd(7)} ${layer} ${step} ${name}` + (detail ? " — " + JSON.stringify(detail).slice(0, 300) : ""));
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -246,6 +251,20 @@ async function apiFlow(A, staffInfo) {
   // 5. Предложение акимата + голос жителя (R06).
   const login = staffInfo && staffInfo.user ? await A.login(staffInfo.user, staffInfo.pass) : { ok: false, why: staffInfo && staffInfo.error };
   add("API", "5", "вход сотрудника акимата (сессия + CSRF)", login.ok ? "PASS" : "FAIL", login);
+  // LOCAL_FINAL P1 (Codex, 11 окт): если сотрудник вошёл заранее, мастер жалобы пропускал «Я тоже» — карточка похожей
+  // жалобы под сессией сотрудника приходила без числа людей (reporters). Тот же путь, что у мастера R09: /similar →
+  // GET /complaints/<id>?view=public → reporters (или 1 + metoo) — с сессией сотрудника и без неё.
+  if (login.ok) {
+    const sp = await A.call("POST", "/api/civic/v2/similar", { text: demoText, point: STOP.point, days: 30 }, true);
+    const first = ((A.data(sp) || {}).matches || []).find((m) => m && m.complaint_id);
+    const peopleOf = (c) => (c && typeof c.reporters === "number" && c.reporters > 0 ? c.reporters : c ? 1 + (Number(c.metoo) || 0) : 0);
+    const card = async (staff) => { const r = await A.call("GET", `/api/civic/v2/complaints/${encodeURIComponent(first.complaint_id)}?view=public`, null, staff);
+      const d = A.data(r) || {}; const c = d.complaint || d.item || d; return { status: r.status, reporters: c.reporters ?? null, metoo: c.metoo ?? null, people: r.status === 200 ? peopleOf(c) : 0 }; };
+    const pub = first ? await card(false) : null, stf = first ? await card(true) : null;
+    add("API", "5", "сотрудник вошёл заранее: похожая жалоба для «Я тоже» с его сессией — то же число людей, что без входа (LOCAL_FINAL P1)",
+      sp.status === 200 && first && pub.people > 0 && stf.people === pub.people ? "PASS" : "FAIL",
+      { similar: sp.status, id: first && first.complaint_id, public: pub, staff: stf });
+  }
   const pl = await A.call("GET", "/api/civic/v2/proposals");
   const plist = (A.data(pl) || {}).items || (A.data(pl) || {}).proposals || [];
   add("API", "5", "GET /proposals: демо-предложения (seed-r14-demo) со статусом", pl.status === 200 && plist.length > 0 && plist.every((p) => p.status) ? "PASS" : "FAIL",
@@ -280,8 +299,13 @@ async function apiFlow(A, staffInfo) {
       { in_progress: st1.status, fixed: st2.status, err: (st2.body && st2.body.error) || (st1.body && st1.body.error) });
     const h2 = await A.call("GET", `/api/civic/v2/heat?bbox=${NURA_BBOX}&days=30&zoom=16`);
     const it2 = ((A.data(h2) || {}).items || []).find((i) => i.target && i.target.id === ctx.target.id);
-    add("API", "6", "после «исправлено» цель зелёная (fixed_until задан, вес обнулён)", it2 && it2.fixed_until && (it2.weight === 0 || it2.level === 0 || it2.level === "fixed") ? "PASS" : "FAIL",
-      { item: it2 ? { level: it2.level, weight: it2.weight, fixed_until: it2.fixed_until } : null });
+    // До волны 2: «исправлено» = зелёная цель (fixed_until). С волны 2 (R09 resolution, R07 fixed_kind): «служба сообщила» —
+    // светло-зелёная, ждёт проверки жителями (IA_WAVE2 §3); зелёная с fixed_until — после «Да, исправлено» (шаг 7).
+    const fixedOk = it2 && (it2.weight === 0 || it2.level === 0 || it2.level === "fixed");
+    const reportedApi = !!(it2 && it2.fixed_kind === "reported");
+    add("API", "6", "после «исправлено» цель зелёная (fixed_until задан, вес обнулён) — с волны 2: fixed_kind reported, ждёт проверки жителей",
+      fixedOk && (it2.fixed_until || reportedApi) ? "PASS" : "FAIL",
+      { item: it2 ? { level: it2.level, weight: it2.weight, fixed_until: it2.fixed_until, fixed_kind: it2.fixed_kind, color: it2.color } : null });
     const l = await A.call("GET", `/api/civic/v2/complaints?bbox=${NURA_BBOX}`);
     const got = ((A.data(l) || {}).items || (A.data(l) || {}).complaints || []).find((c) => c.id === ctx.complaint.id);
     add("API", "6", "GET /complaints: статус fixed и история статусов", got && got.status === "fixed" && Array.isArray(got.status_history) && got.status_history.length >= 3 ? "PASS" : "FAIL",
@@ -324,6 +348,26 @@ const clickText = async (scope, re, opts = {}) => {
   return true;
 };
 const visibleText = async (scope, re) => !!(await firstVisible(scope.getByText(re)));
+// Кнопка шапки: сама кнопка → «≡ Меню» (FINAL-2 и раньше) → меню аватара FINAL-3 (R01 INTEGRATION §14.1:
+// .birge-avatar → #birge-account role=menu — разделы, вид menuitemradio, «Для сотрудников», «Выйти»).
+async function headerClick(page, re, { wait = 1200, menuRe = null } = {}) {
+  if (await clickText(page, re, { wait })) return true;
+  if (menuRe && (await clickText(page, menuRe))) {
+    if (await clickText(page, re, { wait })) return true;
+    await page.keyboard.press("Escape").catch(() => null);
+  }
+  const avatar = await firstVisible(page.locator(".birge-avatar"));
+  if (!avatar) return false;
+  await avatar.click({ timeout: 3000 }).catch(() => null);
+  await sleep(500);
+  const menu = (await firstVisible(page.locator("#birge-account"))) || page;
+  for (const role of ["menuitemradio", "menuitem", "button", "link"]) {
+    const it = await firstVisible(menu.getByRole(role, { name: re }));
+    if (it) { await it.click({ timeout: 3000 }).catch(() => null); await sleep(wait); return true; }
+  }
+  await page.keyboard.press("Escape").catch(() => null);
+  return false;
+}
 const tap = async (page, x, y) => { if (page.viewportSize().width < 1024) await page.touchscreen.tap(x, y); else await page.mouse.click(x, y); };
 // Нажать на найденный элемент по центру его рамки (касание на телефоне): так нажимает человек, а таблички
 // 3D-проектов двигаются вместе с картой — обычный click Playwright ждёт «неподвижности» и не срабатывает.
@@ -388,7 +432,7 @@ async function showPoint(page, point, zoom = 17) {
 async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const dict = loadDict(lang);
   const tag = `${w}-${lang}`;
-  marks[`UI ${tag}`] = Date.now() - T0;
+  marks[`UI ${tag}`] = now();
   const mobile = w < 761;
   const st = UI_STOPS[vi % UI_STOPS.length];  // остановка этого варианта (шаги 1–2 и 6)
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
@@ -400,18 +444,16 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
   page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errors.push(m.type() + ": " + m.text().slice(0, 200)); });
   // JPEG 70 %: кадр ~60 КБ вместо ~350 КБ PNG — отчёты лежат в Git.
-  const shot = async (s) => { const f = path.join(OUT, `${tag}-${s}.jpg`); await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null); return path.basename(f); };
+  const shot = async (s) => { const f = path.join(OUT, `${tag}-${s}.jpg`); await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+    if (AUDIT) { const a0 = Date.now(); (audit[tag] = audit[tag] || {})[s] = await uiAudit(page).catch((e) => ({ error: String(e.message || e).slice(0, 200) })); auditMs += Date.now() - a0; }
+    return path.basename(f); };
   const step = (s, name, ok, detail, file) => add(`UI ${tag}`, s, name, ok === null ? "NOT_RUN" : ok ? "PASS" : "FAIL", detail, file);
 
   const langRe = lang === "kk" ? /^ҚАЗ$/ : /^РУС$/;
   const menuRe = new RegExp("^" + T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню") + "$", "i");
   const setLang = async () => { const b = await firstVisible(page.getByRole("button", { name: langRe })); if (b) { await b.click().catch(() => null); await sleep(1000); } return !!b; };
   // Кнопка из шапки; в компактной шапке (телефон и узкий экран ниже 1024) — через «≡ Меню».
-  const header = async (re, wait = 1200) => {
-    let ok = await clickText(page, re, { wait });
-    if (!ok && (await clickText(page, menuRe))) { ok = await clickText(page, re, { wait }); if (!ok) await page.keyboard.press("Escape").catch(() => null); }
-    return ok;
-  };
+  const header = (re, wait = 1200) => headerClick(page, re, { wait, menuRe });
   const words = {
     resident: T(dict, ["common.role.resident", "shell.mode.resident"], lang === "kk" ? "Тұрғын" : "Житель"),
     akimat: T(dict, ["common.role.akimat", "shell.mode.akimat"], lang === "kk" ? "Әкімдік" : "Акимат"),
@@ -432,7 +474,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   step("0", "короткие надписи не обрезаны многоточием (название в шапке, кнопки)", scr.cutN === 0, { n: scr.cutN, ex: scr.cut });
   step("0", "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2", scr.lowContrastN === 0, { n: scr.lowContrastN, ex: scr.lowContrast });
   step("0", "нет ключей перевода и технических слов", scr.raw.length === 0 && scr.tech.length === 0, { raw: scr.raw, tech: scr.tech });
-  step("0", "шрифт: нет текста мельче 14 px (основной ≥ 16 px)", scr.tinyN === 0, { tiny: scr.tinyN, ex: scr.tiny, under16: scr.smallN, ex16: scr.small });
+  step("0", "шрифт: нет текста мельче 13 px (основной ≥ 15 px, CLEAN_PASS §4)", scr.tinyN === 0, { tiny: scr.tinyN, ex: scr.tiny, under15: scr.smallN, ex15: scr.small });
   step("0", "зоны нажатия ≥ 40 px (цель — 48 px)", scr.under40.length === 0, { under40N: scr.under40N, under40: scr.under40, under48: `${scr.under48N}/${scr.targetsN}` });
 
   // 0а. Выбор языка запоминается: после перезагрузки страница остаётся на выбранном языке.
@@ -753,16 +795,25 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     // С заглавной буквы и без флага i: в легенде карты то же слово строчными («исправлено») — его не считаем.
     const fixedShown = await visibleText(page, new RegExp(esc(fixedWord)));
     const green = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
+    // С волны 2 (IA_WAVE2 §3, R11 UX_REVIEW разбор 13): после «Отметить исправленным» — «Служба сообщила об устранении»,
+    // ждёт проверки жителями; «На карте зелёным до …» — только после «Да, исправлено» (шаг 7), здесь его НЕ требуем.
+    // Слова карточки R07 (у R07 свой словарь в heat.js) — запасные значения, если ключа нет в словаре R11.
+    const reportedRe = new RegExp(["heat.status.reported_fixed", "status.reported_fixed", "heat.reported_wait", "heat.level_word.reported"]
+      .map((k) => T(dict, k, null)).concat(lang === "kk"
+        ? ["Қызмет түзетілгенін хабарлады", "Тұрғындардың тексеруін күтуде", "тексеруді күтуде"]
+        : ["Служба сообщила об устранении", "Ждёт проверки жителями", "ждёт проверки"])
+      .filter(Boolean).map((x) => textRe(x).source).join("|"), "i");
+    const reportedCard = await visibleText(page, reportedRe);
     // Нет ни «Взять в работу», ни «Отметить исправленным», а цель уже «Исправлено» — новых жалоб нет: проверять нечего.
     // Нет «Взять в работу», но есть «Отметить исправленным» — место уже «В работе» (так бывает в демо-наборе R07): верно.
-    const nothingNew = !take && !fix && fixedShown;
-    step("6", `акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «${fixedWord}», зелёным на карте`,
-      nothingNew ? null : fix && fixedShown && green,
-      { under: s && s.under, take, fix, fixedShown, green,
+    const nothingNew = !take && !fix && (fixedShown || reportedCard);
+    step("6", `акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «${fixedWord}», зелёным на карте (с волны 2 — «служба сообщила», ждёт проверки жителей)`,
+      nothingNew ? null : fix && (reportedCard || (fixedShown && green)),
+      { under: s && s.under, take, fix, fixedShown, green, reportedCard,
         note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : (!take && fix ? "место уже «В работе» — кнопки «Взять в работу» нет" : undefined) }, await shot("6-fixed"));
-    if (!mobile && fixedShown) {
+    if (!mobile && (fixedShown || reportedCard)) {
       await page.keyboard.press("Escape"); await sleep(800);
-      const stillOpen = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
+      const stillOpen = await visibleText(page, reportedCard ? reportedRe : textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
       step("6", "клавиатура: Esc закрывает карточку остановки", !stillOpen, { stillOpen });
     }
   } else step("6", "акимат отмечает исправленным", null, "нет входа сотрудника");
@@ -808,8 +859,7 @@ async function networkErrors(browser, base, [w, h], lang) {
     .filter(Boolean).map(esc).join("|"), "i");
   const retryRe = new RegExp("^" + esc(T(dict, ["heat.retry", "common.action.retry"], lang === "kk" ? "Қайталау" : "Повторить")) + "$", "i");
   const menuRe = new RegExp("^" + esc(T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню")) + "$", "i");
-  const header = async (page, re) => { let ok = await clickText(page, re, { wait: 2000 });
-    if (!ok && (await clickText(page, menuRe))) ok = await clickText(page, re, { wait: 2000 }); return ok; };
+  const header = (page, re) => headerClick(page, re, { wait: 2000, menuRe });
   const cases = [
     { name: "тепловая карта", route: "**/api/civic/v2/heat**", mode: "akimat" },
     { name: "«Мои обращения»", route: "**/api/civic/v2/complaints/mine**", mode: "resident",
@@ -879,7 +929,8 @@ async function networkErrors(browser, base, [w, h], lang) {
   for (const t of Object.values(timing)) { t.total_ms = t.prev - t.start_ms; delete t.prev; }
   const meta = { root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
     when: new Date().toISOString(), node: process.version, total_ms: Date.now() - T0, ...(INJECT_CSS ? { inject_css: String(args["inject-css"]) } : {}) };
-  fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results }, null, 1));
+  if (AUDIT) meta.audit = { font_min_px: 13, tap_min_px: 44, shots: Object.values(audit).reduce((n, a) => n + Object.keys(a).length, 0), excluded_ms: auditMs };
+  fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results, ...(AUDIT ? { audit } : {}) }, null, 1));
   const md = [`# R10 e2e · сценарий демо · ${sha}${INJECT_CSS ? " · С ПРАВКОЙ CSS (не приёмка сборки)" : ""}`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, NOT_RUN ${counts.NOT_RUN}`, "", "| Слой | Шаг | Проверка | Итог | Подробно | Кадр |", "|---|---|---|---|---|---|",
     ...results.map((r) => `| ${r.layer} | ${r.step} | ${r.name} | **${r.status}** | ${r.detail ? JSON.stringify(r.detail).replace(/\|/g, "/").slice(0, 220) : ""} | ${r.shot || ""} |`)];

@@ -532,3 +532,21 @@ web/civic/offline/{style.json, boot.js}. Скриншоты до/после — 
 17.6 Проверено: pytest весь 3545 passed / 2 failed (только точность R10 c24/c26 — R12 D12.2 дал patch R10); R15 235/1 skip;
      R13 qa_browser 69/69; R06 app_r01_wave2 90/90, слой идей 16/16; браузер B2 28/0, B1 16/0, шапка 42/0, P0 63/0/1,
      город 81/0, волна 2 42/0.
+
+18. FINAL-3 шаг 7 (12 окт): R12 поставка 5 (a02e906), тесты R10 (78a59b6), документы R14 (e9236838)
+18.1 R12: git checkout a02e906 -- engine/civic_geo data/civic/astana/geo web/civic/map web/civic/qr tests/civic/R12
+     (удалённых файлов нет). R01_qr_report / R07_qr_print_link / R09_open_with_place уже в сборке (проверено: ссылка
+     «Распечатать QR» в heat.js и R09_open_with_place в R09 9cf4ca2 — на месте). R06 r12_snap_near_street.patch
+     наложен заново (в a02e906 его нет): /street-snap отдаёт near_street_ru/kk. R12: внесите его к себе — иначе каждая
+     поставка R12 его снимает.
+     Что нового у жителя/акимата: в «Подробнее» паспорта — «Обращения здесь» и «История»; номер объекта группами по 3
+     цифры; карточка работ «Пример…» и длинные даты; kk «… және … хандар көшесі»; кнопки 48 px.
+18.2 R12 — просьба: tests/civic/R12/qr/app_qr_acceptance.mjs шаг 5 переключает вид по тексту «Житель» (кнопки шапки
+     до чистого дизайна) — 28/1 на сборке. Вид теперь в меню аватара: page.click(".birge-avatar") →
+     page.click("#birge-account [data-mode=resident]") (или BirgeShell.setMode("resident")). С этой заменой (копия
+     теста во временном файле, в сборку не входит) — 30/0.
+18.3 R10: tests/civic/R10 и tests/e2e взяты с claude/r14-R10 78a59b6 (accuracy: перекрёстки R12 по узлам графа и цели R07
+     на точках R12 — c24/c26 теперь PASS; demo_flow/wave_more под чистую шапку §14).
+18.4 R14: docs/birge, docs/diploma, docs/gton, research/round-14-results/R14 на e9236838 (только документы).
+18.5 Проверено: pytest весь 3551 passed, 0 failed (24 skipped, 1 xfailed); QR R12 в приложении 28/1 (шаг 5 — 18.2;
+     с заменой выбора вида 30/0); браузер B2 28/0, B1 16/0, шапка 42/0, P0 63/0/1, город 81/0, волна 2 42/0.
