@@ -1005,9 +1005,10 @@
     // ── объекты (R06) ──
     function objectRow(o) {
       var tags = [];
-      if (o.delay_days > 0) tags.push(h("span", { class: "bk-tag bk-tag--warn", text: tr("object.late", { n: o.delay_days }) }));
+      // Отставание и «давно не обновлялось» — словами без плашек (дизайн-марафон: без бежевых плашек, CLEAN_PASS §2.2).
+      if (o.delay_days > 0) tags.push(h("span", { class: "akim-obj__late", text: tr("object.late", { n: o.delay_days }) }));
       if (o.stale && o.days_since_update != null)
-        tags.push(h("span", { class: "bk-tag akim-stale", text: tr("object.stale_days", { n: o.days_since_update }) }));
+        tags.push(h("span", { class: "akim-stale", text: tr("object.stale_days", { n: o.days_since_update }) }));
       var title = label(o, "title", "object.kind.");
       var main = [h("span", { class: "bk-list__title", text: title })];
       if (o.district) main.push(h("span", { class: "bk-list__sub", text: tr("district." + o.district) }));

@@ -682,13 +682,30 @@
   font-size: var(--fs-body);
 }
 .akim-obj__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-1);
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  font-size: var(--fs-caption);
+  text-align: right;
+}
+.akim-obj__late {
+  color: var(--c-warn);
+  font-weight: var(--fw-semi);
 }
 .akim-stale {
-  background: var(--c-paper);
   color: var(--c-text-2);
+}
+/* нажатие даёт отклик: строка чуть темнеет и «вдавливается» (чек-лист п. 10) */
+.akim-hot__item,
+.akim-obj--link,
+.akim-bar-btn {
+  transition: background-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.akim-hot__item:active,
+.akim-obj--link:active,
+.akim-bar-btn:active {
+  background: var(--c-fill);
+  transform: scale(0.99);
 }
 .akim-new {
   margin-left: var(--s-2);
@@ -773,6 +790,10 @@
     padding: var(--s-3) 0;
   }
   /* телефон: маленькая карта справа от заголовка, подпись OpenStreetMap (ODbL) — под списком */
+  .akim-obj__tags {
+    justify-items: start;
+    text-align: left;
+  }
   .akim-hot--map {
     grid-template-columns: minmax(0, 1fr) 88px;
     grid-template-areas: "head map" "list list" "credit credit";
