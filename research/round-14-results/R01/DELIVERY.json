@@ -67,9 +67,9 @@
   "final2_step4": "0f5101a",
   "FINAL-2": "12c925a"
  },
- "code_sha": "0464f5c",
- "tested_sha": "0464f5c (pytest 3551/0 и браузер R01 — на этом дереве; R13 qa, R06 app, R15 — на шаге 6 3d2529e; R09 app — на шаге 5 234da86)",
- "push_status": "OK: 0464f5c в origin/claude/sharp-dijkstra-0t87gl; документы — следующими коммитами",
+ "code_sha": "32d5352",
+ "tested_sha": "32d5352 (pytest 3552/0, браузер R01, R06 app, R10 demo_flow с 2 правками теста — на этом дереве; R13 qa и R15 — на 3d2529e; R09 app — на 234da86)",
+ "push_status": "OK: 32d5352 в origin/claude/sharp-dijkstra-0t87gl; документы — следующими коммитами",
  "changed_paths": [
   "ui/web_server.py",
   "web/index.html",
@@ -161,7 +161,7 @@
   "Код до FINAL-3 не откроет базу после миграции 9 (R06) — перед обновлением старой базы сделать backup.",
   "«Вопрос акиму» и «Идеи»: один голос с устройства + лимиты по адресу; без eGov/SMS новый device_id = новый «житель»."
  ],
- "next_step": "Приёмка R10 на 0464f5c (запущена R01 и/или R10) → STATUS; новые DELIVERY (R07/R08 под чистый дизайн, тест QR R12) — следующими шагами FINAL-3; официальный FINAL 15 окт и слияние в main — координатор.",
+ "next_step": "R10/R11 — проверка FINAL-3 32d5352 с правками тестов 21.6; новые DELIVERY (R07/R08 под чистый дизайн) — следующими шагами; официальный FINAL 15 окт и слияние в main — координатор.",
  "final2": {
   "in_build": {
    "R02": "f62cc93",
@@ -194,20 +194,23 @@
   ]
  },
  "final3": {
-  "candidate": "0464f5c",
+  "candidate": "32d5352",
   "steps": [
    "7782b92 P-R09-3",
    "10e5b3a + 85cedb3 чистый дизайн R11",
    "e9cfcf4 R06 21a9739",
    "234da86 R09 9cf4ca2",
    "3d2529e R13 198902f + R15 S30–S40 + пульс R08 + R11 2b8f72e2",
-   "0464f5c R12 a02e906 + тесты R10 78a59b6 + R14 e9236838"
+   "0464f5c R12 a02e906 + тесты R10 78a59b6 + R14 e9236838",
+   "e4a7641 генератор QR (B-060)",
+   "73edcc7 R05 03ac17c",
+   "f6df794 + 32d5352 правки по приёмке R10"
   ],
   "in_build": {
    "R02": "f62cc93 (+ R01: EXPECTED_TABLES миграции 9 в tests/civic/R02)",
    "R03": "0164d64",
    "R04": "8e2b2ae (+ r01_polish_r04; r09_polish_r04 не применялся — внутри R09)",
-   "R05": "395d9ea (+ proposed_r01_wave2.patch)",
+   "R05": "03ac17c (+ proposed_r01_wave2; из final3 — правило F3б вручную)",
    "R06": "21a9739 (+ r01_wave2_r06, P-R06-3 R15 слит вручную со статусом checking)",
    "R07": "9e337dc (+ R12 R07_qr_print_link, R09 R07_fix_form.patch)",
    "R08": "9d593d9 + r01_wave2_r08 + R13 r08_pulse_not_by_chance",
@@ -220,21 +223,23 @@
    "R15": "тесты e970cf2/9dc6da1; P-R01-2, P-R01-3, P-R06-3, P-R13 — S01–S40 в FIXED"
   },
   "checks": {
-   "pytest tests (0464f5c)": "PASS 3551 passed, 0 failed, 24 skipped, 1 xfailed",
-   "browser R01 (0464f5c)": "B2 28/0, B1 16/0, шапка 42/0, P0 63/0/1 NOT_RUN, город 81/0, волна 2 42/0",
-   "R12 app_qr_acceptance (0464f5c)": "28/1 — шаг 5 теста R12 ищет кнопку «Житель» старой шапки; с выбором вида через меню аватара 30/0 (INTEGRATION 18.2)",
+   "pytest tests (32d5352)": "PASS 3552 passed, 0 failed, 23 skipped, 1 xfailed",
+   "browser R01 (32d5352)": "B2 28/0, B1 16/0, шапка 42/0, P0 63/0/1 NOT_RUN, город 81/0, волна 2 42/0",
+   "R06 app_r01_wave2 / ideas_layer (32d5352)": "90/90, 16/16",
+   "R10 run_acceptance (0464f5c, тесты 78a59b6)": "точность 31/0; сценарий 95/26/14; UX 112/18; демо после репетиции 4/0; волны 165/59 — причины у R01 исправлены в f6df794/32d5352, у тестов R10 — INTEGRATION 21.6",
+   "R10 demo_flow (32d5352; копия теста с 2 правками 21.6а/б)": "167 PASS / 4 FAIL / 0 NOT_RUN — 4: «легенда с числами» (чистый дизайн, числа под «?»)",
+   "R12 app_qr_acceptance (0464f5c)": "28/1 — тест R12 ищет кнопку «Житель»; с меню аватара 30/0",
    "R13 qa_browser (3d2529e)": "69/69",
-   "R06 app_r01_wave2 / ideas_layer (3d2529e)": "90/90, 16/16",
    "R15 tests (3d2529e)": "235 passed, 1 skipped",
-   "R09 app_demo_r09 (234da86)": "75/75",
-   "R10 run_acceptance (0464f5c)": "RUNNING — итог в STATUS.md"
+   "R09 app_demo_r09 (234da86)": "75/75"
   },
   "requests": [
+   "R10: INTEGRATION 21.6 (аватар vs «Для сотрудников», форма «что сделали», P-12 на телефоне, легенда строкой)",
+   "R11: INTEGRATION 21.7 (имена в ui-kit, аватар ≥ 44, ключ common.account.menu)",
    "R12: app_qr_acceptance шаг 5 — выбор вида через меню аватара; r12_snap_near_street к себе",
-   "R06: взять P-R06-3 в слитом виде из сборки (иначе откат S30–S33)",
-   "R07: R07_fix_form.patch к себе; CLEAN_PASS §3",
-   "R08: r08_pulse_not_by_chance к себе",
-   "R11: разбор FINAL-3 0464f5c; ключи R06 (70) и R09 (6)"
+   "R06: P-R06-3 в слитом виде из сборки",
+   "R07: R07_fix_form.patch к себе; CLEAN_PASS §3; значки 44 px",
+   "R08: r08_pulse_not_by_chance к себе"
   ]
  }
 }
