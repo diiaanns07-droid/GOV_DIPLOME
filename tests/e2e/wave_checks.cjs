@@ -773,8 +773,15 @@ async function checkNearby(ctx) {
       add("W2-4", tag, "подписка: «Следить…» → «Вы подписаны / следите»", st(sub && subd), { sub, subd });
       if (STAND.nearby) { add("W2-4", tag, "«Карта» в меню возвращает к карте", "NOT_RUN", "стенд роли — без оболочки"); continue; }
       const toMap = await header(P.page, lang, exact(W(lang, "common.nav.map", "Карта")), 1500);
+      // Карта снова видна: из 9 точек верхней половины карты хотя бы 3 попадают в карту (холст или значок на ней) —
+      // одна точка в центре ловила значок места или шторку телефона (ложный FAIL на 375).
       const back = await P.page.evaluate(() => { const c = document.querySelector(".maplibregl-canvas"); if (!c) return false; const b = c.getBoundingClientRect();
-        return document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2) === c; }).catch(() => false);
+        let hit = 0;
+        for (const fx of [0.25, 0.5, 0.75]) for (const fy of [0.15, 0.3, 0.45]) {
+          const e = document.elementFromPoint(b.left + b.width * fx, b.top + b.height * fy);
+          if (e && (e === c || e.closest(".maplibregl-canvas-container, .maplibregl-marker"))) hit++;
+        }
+        return hit >= 3; }).catch(() => false);
       add("W2-4", tag, "«Карта» в меню возвращает к карте", st(opened && toMap && back), { opened, toMap, back });
     } finally { await P.ctx.close(); }
   }

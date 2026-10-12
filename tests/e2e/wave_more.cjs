@@ -475,7 +475,8 @@ module.exports = function waveMore(H) {
       st(dec.available === true && items.length >= 1 && items.length <= 3 && full.length === items.length), { available: dec.available, n: items.length, complete: full.length, source: dec.source, demo: dec.demo });
     const pulse = s.pulse || {}, pi = pulse.items || [];
     add("W2-8", "API", "«Пульс района»: 1–5 тревог с причиной (рост к обычному уровню) и местом на карте",
-      st(pulse.available === true && pi.length >= 1 && pi.length <= 5 && pi.every((p) => p.kind && (p.ratio || p.value) && (p.target || p.district))),
+      // Тревога по всему городу (spike_city) — без одной цели: место на карте = список районов (districts).
+      st(pulse.available === true && pi.length >= 1 && pi.length <= 5 && pi.every((p) => p.kind && (p.ratio || p.value) && (p.target || p.district || (p.districts && p.districts.length)))),
       { available: pulse.available, n: pi.length, kinds: pi.map((p) => p.kind), method: pulse.method });
     for (const [size, lang] of variants) {
       const tag = `${size[0]}-${lang}`;
@@ -526,12 +527,22 @@ module.exports = function waveMore(H) {
       const P = await openPage(browser, size, lang, { "birge.mode": "akimat" });
       try {
         await goto(P.page, base, lang);
-        // M-1 «Нет свежих данных» (R07): серый в легенде (полной — по «?») или на карте.
-        const help = await L.firstVisible(P.page.getByRole("button", { name: /^\?$|Что значат цвета|Түстер нені білдіреді/i }));
-        if (help) { await help.click().catch(() => null); await L.sleep(800); }
-        const nodata = await L.visibleText(P.page, part(W(lang, "heat.legend.nodata", say(lang, "Нет свежих данных", "Жаңа дерек жоқ"))));
-        add("M-1", tag, "тепловая карта: серый «Нет свежих данных» (нет жалоб ≠ «всё хорошо») — в легенде", st(nodata), { help: !!help }, await shotOf(P.page, `${tag}-M-1-legend`));
-        await P.page.keyboard.press("Escape").catch(() => null);
+        // M-1 «Нет свежих данных» (R07): районы без жалоб и осмотров за период — серые, в легенде пункт «нет свежих данных».
+        // Видно только на уровне районов и только если такой район есть: в демо все районы с жалобами — тогда NOT_RUN.
+        const A0 = L.api(base);
+        const dist = ((A0.data(await A0.call("GET", "/api/civic/v2/heat?days=7&zoom=10")) || {}).items) || [];
+        const noData = dist.filter((x) => x.state === "no_data");
+        if (!noData.length) add("M-1", tag, "тепловая карта: серый «Нет свежих данных» у районов без жалоб", "NOT_RUN",
+          { why: "в данных демо нет района без жалоб за 7 дней — серому нечего показать", districts: dist.length, states: [...new Set(dist.map((x) => x.state))] });
+        else {
+          await L.showPoint(P.page, [71.43, 51.13], 10);
+          await L.sleep(2000);
+          const help = await L.firstVisible(P.page.getByRole("button", { name: /^\?$|Что значат цвета|Түстер нені білдіреді/i }));
+          if (help) { await help.click().catch(() => null); await L.sleep(800); }
+          const nodata = await L.visibleText(P.page, part(W(lang, "heat.legend.nodata", say(lang, "Нет свежих данных", "Жаңа дерек жоқ"))));
+          add("M-1", tag, "тепловая карта: серый «Нет свежих данных» у районов без жалоб — в легенде", st(nodata), { help: !!help, no_data: noData.length }, await shotOf(P.page, `${tag}-M-1-legend`));
+          await P.page.keyboard.press("Escape").catch(() => null);
+        }
         // M-4 список рядом с картой (R07): «Горячие места» — кнопки, карточка без точного нажатия на значок.
         const items = P.page.locator(".r07-hot .r07-item");
         let n = await items.count().catch(() => 0);
