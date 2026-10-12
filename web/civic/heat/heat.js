@@ -441,6 +441,7 @@
       legendEl: null,         // легенда на карте
       fitted: false,          // карта уже подогнана под горячие места (один раз, до первого касания)
       pendingSelect: null,    // цель из ссылки / «Картины дня», ждёт загрузки данных
+      busyKey: null,          // строка «Горячих мест», которая «открывается» (перелёт к цели и её загрузка)
       prevColors: new Map(),  // ключ → цвет до обновления (для плавного перехода)
       markers: new Map(),     // ключ → { marker, el, item }
       clusters: [],           // кружки-кластеры: { key, marker, el, members: [ключи], ll, w, h }
@@ -607,12 +608,12 @@
     function afterLoad(reason) {
       if (S.pendingSelect) {
         const key = S.pendingSelect;
-        if (findItem(key)) { S.pendingSelect = null; select(key, false); return; }
+        if (findItem(key)) { S.pendingSelect = null; clearBusy(); select(key, false); return; }
         if (S.mode === "targets" && !S.pendingMoving) {
           S.pendingSelect = null;   // за этот период жалоб по цели нет — честно сказать, а не молчать
           clearBusy();
           toast(t("heat.empty.title", { n: S.filters.days }));
-        }
+        } else if (!S.pendingMoving && !(map && map.isMoving())) clearBusy();   // цель не открылась (перелёта не было) — строка не «крутится»
         return;
       }
       if (S.refitDistricts && S.mode === "districts") { S.refitDistricts = false; fitTop(reason === "filter"); return; }
@@ -697,6 +698,7 @@
       if (!daysChanged && findItem(key)) { select(key, true); return; }
       S.pendingSelect = key;
       S.pendingMoving = true;
+      S.busyKey = key;
       try {
         const q = new URLSearchParams({ kind, id, days: String(S.filters.days) });
         const res = await getJson("/heat/target?" + q.toString());
@@ -713,8 +715,10 @@
     }
     // Строка «Горячих мест», по которой нажали на обзоре районов: пока карта перелетает и грузится место (S.pendingSelect),
     // она «открывается» — подсветка и кольцо вместо стрелки, чтобы нажатие не казалось потерянным (дизайн-марафон №8, №10).
-    // Снимается, когда открылась карточка (списка уже нет), или с честным тостом «жалоб нет» / «нет связи».
+    // Снимается, когда открылась карточка (списка уже нет), с честным тостом «жалоб нет» / «нет связи» или если перелёт
+    // прервали.
     function clearBusy() {
+      S.busyKey = null;
       panel.querySelectorAll(".r07-item--busy").forEach((b) => { b.classList.remove("r07-item--busy"); b.removeAttribute("aria-busy"); });
     }
 
@@ -1680,7 +1684,7 @@
       // Строка (CLEAN_PASS R07 №7): без колонки ранга — значок-число цвета места + название 17/600 + «Тема · N чел.» 13 серым.
       const rows = items.slice(0, 10).map((it) => {
         const meta = topicName(it) + " · " + keep(t("heat.people_short", { count: it.count }));
-        const busy = S.pendingSelect === keyOf(it.target) && S.status === "ready";   // перерисовка во время перелёта
+        const busy = S.busyKey === keyOf(it.target);   // перерисовка во время перелёта
         return '<li><button type="button" class="r07-item' + (busy ? ' r07-item--busy" aria-busy="true' : "") + '" data-key="' + esc(keyOf(it.target)) + '">' +
           '<span class="r07-mini" data-level="' + esc(it.level) + '" style="--r07-c:' + esc(it.color) + '">' + fmtNum(it.count) + "</span>" +
           '<span class="r07-item__text"><span class="r07-item__title">' + esc(label(it.target)) + '</span><span class="r07-item__meta">' + esc(meta) + "</span></span>" +
@@ -1964,7 +1968,7 @@
       map.on("styledata", onStyleData);
       map.on("dragstart", () => { userMoved.value = true; });
       map.on("movestart", hideTip);
-      map.on("movestart", (e) => { if (e && e.originalEvent) userMoved.value = true; });   // колесо, щипок, кнопки
+      map.on("movestart", (e) => { if (e && e.originalEvent) { userMoved.value = true; if (S.busyKey) clearBusy(); } });   // колесо, щипок, кнопки; перелёт к месту прерван — строка не «крутится»
     }
     window.addEventListener("birge:complaint", onComplaintEvent);
     // Язык: i18n R11 шлёт "birge:lang" на document, другие модули — на window. Слушаем оба (повтор отсекается).

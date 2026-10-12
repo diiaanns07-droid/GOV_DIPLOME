@@ -280,10 +280,11 @@
 
 /* ---- Тосты (запасные; в оболочке — один общий тост ui-kit) ---- */
 .r07-toasts { position: fixed; z-index: 50; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; width: min(420px, calc(100vw - 24px)); pointer-events: none; }
-.r07-toast { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; border-radius: 10px; background: #152c26; color: #fff; font-size: 15px; box-shadow: 0 12px 40px #1018161f; animation: r07-in 0.4s var(--r07-ease); transition: opacity 0.3s; }
+.r07-toast { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; border-radius: 12px; background: #152c26; color: #fff; font-size: 17px; box-shadow: 0 12px 40px #1018161f; animation: r07-in 0.4s var(--r07-ease); transition: opacity 0.3s; }
 .r07-toast--error { background: #b3362e; }
 .r07-toasts > .r07-toast:not(:last-child) { display: none; } /* по одному: новый заменяет старый (CLEAN_PASS №10) */
-.r07-toast__action { pointer-events: auto; position: relative; min-height: 44px; padding: 0 14px; border: 1px solid #ffffff99; border-radius: 10px; background: transparent; color: #fff; font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap; }
+/* запасной тост (страница без оболочки; в оболочке — тост ui-kit): шкала 17, действие без рамки — как у .bk-toast */
+.r07-toast__action { pointer-events: auto; position: relative; min-height: 44px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #fff; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; white-space: nowrap; }
 .r07-toast__action::after { content: ""; position: absolute; inset: -2px 0; }
 .r07-toast--out { opacity: 0; }
 /* Выбор места жалобой (оболочка: body.birge-picking; без неё — heat.setPickMode). Оболочка B3 гасит нажатия
