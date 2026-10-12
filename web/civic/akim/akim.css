@@ -2,7 +2,13 @@
  * Birge · «Картина дня» (R08). Только раскладка поверх ui-kit R11: цвета, размеры и компоненты —
  * из web/civic/ui-kit (tokens.css, components.css). Своих цветов нет.
  * Главный размер — ноутбук 1366×768: заголовок, 4 числа, сводка и начало «Горячих мест» видны без прокрутки.
+ * FINAL-3 — чистый дизайн (R11 CLEAN_PASS §2, §3 R08): два веса 400/600, шкала 13/15/17/22/28, панели белые без рамок,
+ * внутри — разделители 1 px; «данные — пример» — серая строка внизу; пустые блоки не рисуются.
  */
+.akim strong,
+.akim b {
+  font-weight: var(--fw-semi); /* два веса: «жирный» = 600 */
+}
 
 .akim {
   display: block;
@@ -22,17 +28,12 @@
 }
 .akim__title {
   margin: 0;
-  font-size: var(--fs-h1);
+  font-size: var(--fs-h1); /* 28 */
   line-height: var(--lh-head);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semi);
 }
 .akim__title-date {
   white-space: nowrap;
-}
-/* «Пример» — одна метка на страницу, рядом с заголовком */
-.akim__title .bk-tag--demo {
-  margin-left: var(--s-2);
-  vertical-align: middle;
 }
 .akim__meta {
   margin: var(--s-1) 0 0;
@@ -52,51 +53,57 @@
   font-weight: var(--fw-semi);
   color: var(--c-text-2);
 }
+/* дата и район — поля ui-kit с заливкой (.bk-field), рамка только у фокуса */
 .akim__field input,
 .akim__field select {
   min-height: 48px;
   min-width: 168px;
   padding: 0 var(--s-3);
-  border: 1px solid var(--c-line-strong);
+  border: 1px solid transparent;
   border-radius: var(--r-m);
-  background: var(--c-surface);
+  background: var(--c-fill);
   color: var(--c-ink);
   font: inherit;
-  font-size: var(--fs-body);
+  font-size: 16px; /* iOS не увеличивает страницу при фокусе */
 }
 
-/* ── пометка «Пример» ── */
+/* ── «данные — пример»: серая строка внизу экрана (.bk-footnote ui-kit) ── */
 .akim-demo {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--s-2);
-  margin: var(--s-1) 0 0;
-  color: var(--c-text-2);
-  font-size: var(--fs-caption);
+  margin-top: var(--s-4);
 }
 
 /* ── 4 крупных числа ── */
 .akim-kpis {
   margin-bottom: var(--s-3);
 }
+/* KPI без карточек: число 28/600, подпись 15, одна строка изменения 13 (CLEAN_PASS §3 R08 п. 3) */
+.akim-kpis {
+  border-bottom: 1px solid var(--c-line);
+}
 .akim-kpi {
   align-content: start;
-  min-height: 132px;
 }
 .akim-kpi .bk-kpi__delta {
-  font-size: var(--fs-body);
-}
-.akim-kpi__vs,
-.akim-kpi__extra {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 4px;
   font-size: var(--fs-caption);
+}
+/* «Подробнее» под числами: за 7 дней, ждут ответа, самое давнее просроченное, проверка жителями */
+.akim-kpi-more {
+  margin-bottom: var(--s-3);
+  border-top: 0;
+}
+.akim-kpi-more__list {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0 0 var(--s-2);
+  padding: 0;
+  list-style: none;
   color: var(--c-text-2);
 }
-.akim-kpi__extra {
-  margin-top: var(--s-1);
-}
-.akim-kpi__extra .bk-kpi__delta {
-  font-size: var(--fs-caption);
+.akim-kpi-more__list .bk-kpi__delta {
+  font-size: var(--fs-body);
 }
 .akim-skel-kpi {
   height: 96px;
@@ -127,9 +134,9 @@
   gap: var(--s-2);
 }
 
-/* ── сводка текстом ── */
+/* ── сводка текстом: обычный абзац 17 без плашки ── */
 .akim-summary {
-  margin-bottom: var(--s-3);
+  margin: var(--s-2) 0 var(--s-5);
 }
 .akim-summary__title {
   margin: 0 0 var(--s-1);
@@ -140,8 +147,8 @@
 .akim-summary__text {
   margin: 0;
   max-width: 110ch;
-  font-size: var(--fs-lead);
-  line-height: 1.45;
+  font-size: var(--fs-lead); /* 17 */
+  line-height: 1.5;
 }
 
 /* ── волна 2: «Нужно решение акима» и «Пульс района» (схема R11 IA_WAVE2 §5) ──
@@ -166,16 +173,17 @@
   padding: 0;
   list-style: none;
 }
-/* Ноутбук: карточка во всю ширину — слева суть, справа два варианта; первая карточка видна без прокрутки. */
+/* Ноутбук: строка во всю ширину — слева суть, справа что нужно и два варианта; между вопросами — линия 1 px
+   (чистый дизайн: список с разделителями, не карточки в карточке). */
 .akim-decision {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   align-items: start;
   gap: var(--s-2) var(--s-4);
-  padding: var(--s-3);
-  border: 1px solid var(--c-line);
-  border-radius: var(--r-m);
-  background: var(--c-surface);
+  padding: var(--s-3) 0;
+}
+.akim-decisions__list > .akim-decision + .akim-decision {
+  border-top: 1px solid var(--c-line);
 }
 .akim-decision__info,
 .akim-decision__choice {
@@ -205,12 +213,10 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--s-1) var(--s-2);
-  padding: var(--s-1) var(--s-1) var(--s-1) var(--s-3);
-  border-radius: var(--r-m);
-  background: var(--c-paper);
+  padding: var(--s-1) 0;
 }
-.akim-decision__option.is-chosen {
-  background: var(--c-ok-soft);
+.akim-decision__options > .akim-decision__option + .akim-decision__option {
+  border-top: 1px solid var(--c-line);
 }
 .akim-decision__option-text {
   flex: 1 1 14em;
@@ -221,9 +227,9 @@
   min-height: 44px;
 }
 .akim-decision__chosen {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  flex: none;
+  min-height: 44px;
+  white-space: normal;
 }
 .akim-decision__needed {
   font-weight: var(--fw-semi);
@@ -310,6 +316,10 @@
 .akim-hot__item {
   color: inherit;
 }
+.akim-hot__item .bk-list__title {
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
+}
 .akim-hot__rank {
   flex: none;
   width: 1.5em;
@@ -329,6 +339,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px var(--s-2);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
 }
 .akim-hot__sub .bk-status {
   padding: 1px 8px;
@@ -487,10 +499,6 @@
   .akim-print-bottom {
     display: flex;
   }
-  /* дату сравнения уже показывает строка под заголовком — на телефоне не повторяем в каждой карточке */
-  .akim-kpi__vs {
-    display: none;
-  }
   .akim__field input,
   .akim__field select {
     min-width: 0;
@@ -550,18 +558,14 @@
   .akim-pulse-none { order: 4; }
   .akim-grid { order: 5; }
   .akim-print-bottom { order: 6; }
+  .akim-kpi-more { order: 1; }
+  .akim-demo { order: 7; }
   .akim__controls {
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   }
   .akim__today {
     grid-column: 1 / -1;
     order: 3;
-  }
-}
-/* Телефон: в карточке одно изменение — к прошлой неделе. «За 7 дней» — только на ноутбуке (UX_REVIEW день 3, п. 10). */
-@media (max-width: 479px) {
-  .akim-kpi[data-kind="new"] .akim-kpi__extra {
-    display: none;
   }
 }
 
@@ -670,9 +674,6 @@
   }
   .akim-kpi {
     min-height: 0;
-  }
-  .akim-kpi__vs {
-    display: block !important;
   }
   .akim-kpis,
   .akim-summary,
