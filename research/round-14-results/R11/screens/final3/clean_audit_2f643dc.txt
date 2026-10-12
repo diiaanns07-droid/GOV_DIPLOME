@@ -1,0 +1,40 @@
+
+== legacy: 9 видов, 54 элементов
+  12× r07-note.r07-note--demo · background #f1efe6 (бежевая плашка R07) — «Примеры: жалобы придуманы, улицы и остановки насто» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  8× r07-btn.r07-cat-toggle · border #c9d4c5 (зеленоватая рамка) — «» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  8× select · border #c9d4c5 (зеленоватая рамка) — «» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  8× r07-seg · background #eef2ea (серо-зелёная подложка R07) — «» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  6× i · background #c9d4c5 (зеленоватая рамка) — «» [akimat-375 карта, akimat-375 карточка, resident-375 карта, …]
+  4× r07-btn.r07-btn--ghost · color #176b4a (старый зелёный бренд) — «Горячие места» [resident-1366 mine, resident-1366 мастер, akimat-375 карточка, …]
+  4× r07-tag · background #f1efe6 (бежевая плашка R07) — «Пример» [resident-1366 mine, resident-1366 мастер, akimat-375 карточка, …]
+  3× r07-spark · background #f7f8f4 (старая бумага (беж-зелёный)) — «» [resident-1366 mine, resident-1366 мастер, resident-375 карточка]
+  1× li · background #f7f8f4 (старая бумага (беж-зелёный)) — «» [akimat-375 карточка]
+
+== weight: 21 видов, 187 элементов
+  24× button · 650 — «7 дней» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  24× r07-mini · 800 — «19» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  22× icon-btn.three-d · 750 — «3D» [akimat-1366 карта, akimat-1366 карточка, akimat-1366 day, …]
+  20× r07-item__rank · 800 — «1» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  20× r07-item__title · 650 — «Остановка «Республиканский диагностический центр»» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  10× r07-h · 750 — «Карта жалоб» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  10× birge-day-title · 700 — «Картина дня» [akimat-1366 day, akimat-1366 inbox, akimat-1366 projects, …]
+  8× span · 650 — «Все категории» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  6× r07-h3 · 700 — «Горячие места за 30 дней» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  6× r07-muted · 500 — «за 30 дней» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  6× r07-h4 · 700 — «Жалобы по дням» [resident-1366 mine, resident-1366 мастер, akimat-375 карточка, …]
+  4× r07-btn.r07-btn--ghost · 650 — «Горячие места» [resident-1366 mine, resident-1366 мастер, akimat-375 карточка, …]
+  4× r07-eyebrow · 700 — «Остановка Пример» [resident-1366 mine, resident-1366 мастер, akimat-375 карточка, …]
+  4× r07-tag · 700 — «Пример» [resident-1366 mine, resident-1366 мастер, akimat-375 карточка, …]
+  4× r07-card__title · 750 — «Остановка «Республиканский диагностический центр»» [resident-1366 mine, resident-1366 мастер, akimat-375 карточка, …]
+  4× r07-level · 700 — «19Очень много жалоб» [resident-1366 mine, resident-1366 мастер, akimat-375 карточка, …]
+  4× r07-status · 650 — «В работе» [resident-1366 mine, resident-1366 мастер, akimat-375 карточка, …]
+  2× bc-inbox__title · 700 — «Обращения» [akimat-1366 inbox, akimat-375 inbox]
+
+== tiny: 0 видов, 0 элементов
+
+== framed: 5 видов, 39 элементов
+  15× bk-btn.bk-btn--primary — «Сообщить о проблеме» [resident-1366 карта, resident-1366 карточка, resident-1366 mine, …]
+  12× civic-panel — «Карта жалобБольше всего жалоб: Остановка «Республи» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  8× r07-btn.r07-cat-toggle — «Все категории» [akimat-1366 карта, akimat-1366 карточка, resident-1366 карта, …]
+  2× akim-decision — «Вечером в проходе полностью темно.Проход между дом» [akimat-1366 day, akimat-375 day]
+  2× bk-banner.bk-banner--warn — «Не будет холодной воды · завтра 10:00–16:00Где: ул» [resident-1366 nearby, resident-375 nearby]

@@ -659,7 +659,7 @@
 }
 .bk-langtext > button {
   position: relative;
-  min-width: 44px; /* и на телефоне: зона нажатия не уже 44 px (R01 §21.1) */
+  min-width: 48px; /* ноутбук 48; телефон 44 (ниже) — зона нажатия (R01 §21.1) */
   min-height: var(--tap);
   padding: 0 6px;
   border: 0;
@@ -794,6 +794,7 @@
     height: 44px;
   }
   .bk-langtext > button {
+    min-width: 44px;
     padding: 0 4px;
   }
 }
