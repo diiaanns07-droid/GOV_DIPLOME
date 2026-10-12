@@ -5,7 +5,7 @@
  "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
  "code_sha": "12 окт: 6b1b1ab (S30–S40, тесты идей и вопросов, P-R06-3, P-R13, P-R01-2, P-R01-3), b564e38, 0ea7afb; ночь 11→12: f291a88, 5ae8786, b1e2316, ad54a3d, 23a27d7; d80c038 (чек-лист «волны мелочей» + proposals/photo, 11 окт); d8791c1 (tests/civic/R15 + patches/P-R06-2, 11 окт); раньше c5b98a0 (tests/civic/R15); patches — b892532",
  "tested_sha": "f94f0fc (R01 FINAL-3 final, 12 окт: шаги 11–13 после кандидата — находок нет); 2f643dc (R01 FINAL-3 кандидат, финальная проверка R15, 12 окт вечер); 32d5352 (R01 FINAL-3 шаг 10b, 12 окт); e4a7641 (R01 FINAL-3 шаг 8, 12 окт); 85cedb3, 7782b92 (FINAL-3 шаги 3, 1); 7782b92 (R01 FINAL-3 шаг 1); роли: R06 ae9ba29, R13 9db6dfb, R09 f80c0bf, R12 bea4fa9; 0f5101a (R01 FINAL-2 шаг 4, 12 окт); 28e23e3 (шаг 3); 34677e0 (шаг 1); 8bbace7 (круг 3); роли: R04 7c590b6, R08 ae65c09, R09 5d28c5a/d3f9c1e, R12 73ccec4; a2d90dd (FINAL-кандидат R01, перепроверен 11 окт новой сессией R15); раньше 96c1f99, 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
- "push_status": "OK — claude/r14-R15 (проверка FINAL-3 final f94f0fc: этот коммит)",
+ "push_status": "OK — claude/r14-R15 (сторож стекла: этот коммит)",
  "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
  "changed_paths": [
   "tests/civic/R15/conftest.py",
@@ -28,7 +28,8 @@
   "tests/civic/R15/test_r15_r06_stages.py",
   "research/round-14-results/R15/patches/P-R06-2.diff",
   "research/round-14-results/R15/proposals/photo/image_clean.py",
-  "research/round-14-results/R15/proposals/photo/test_image_clean.py"
+  "research/round-14-results/R15/proposals/photo/test_image_clean.py",
+  "tests/civic/R15/test_r15_glass.py"
  ],
  "findings": {
   "critical": 0,
@@ -254,7 +255,7 @@
   "S17–S21 (мелочи R06) открыты на FINAL a2d90dd — patch P-R06-2 должен взять R06/R01",
   "S18 после P-R06-2: первый этап объекта после миграции из v1 задаётся без причины (так работает редактор R06)"
  ],
- "next_step": "13–15 окт: официальный FINAL — та же проверка на итоговом SHA (тесты R15, B1/B2, CSP-страницы, qrcode.js, скан секретов); статусы в SECURITY_REVIEW и DELIVERY.",
+ "next_step": "Сборка R01 со стеклом (после GLASS.md R11) и окончательный FINAL-3: полная проверка на новом SHA — тесты R15 (с test_r15_glass.py), ролевые, B1/B2, CSP 8 страниц, qrcode.js, скан секретов; 13–15 окт — официальный FINAL, статусы в SECURITY_REVIEW и DELIVERY.",
  "final3_check": {
   "build": "R01 claude/sharp-dijkstra-0t87gl @ 2f643dc7 (FINAL-3 кандидат; позже — только документы)",
   "verdict": "PASS — новых находок нет; все 40 (15 важных, 25 мелочей) исправлены",
@@ -277,5 +278,12 @@
   "csp": "8 страниц — 0 нарушений",
   "vendor": "web/vendor/qrcode/qrcode.js sha256 18ae399f…1780 = npm qrcode-generator@1.4.4",
   "secrets": "новых файлов 2 (patch R08 B-061, тест R01); .env, баз, ключей, файлов > 5 МБ нет; секретных строк в diff нет"
+ },
+ "glass_guard": {
+  "what": "FINAL-3 стиль «стекло» (Apple Liquid Glass): сторож tests/civic/R15/test_r15_glass.py — CSP 7 страниц только 'self' + tiles.openfreemap.org (+ sha256, 'unsafe-inline' только style-src); CSS/HTML без @import, url(http…), внешних link/script/img/iframe, expression()/behavior:/-moz-binding",
+  "on_R01_77ee50b": "9 passed (до стекла)",
+  "mutation_check": "шрифт Google в connect-src, @import Google Fonts в ui-kit/components.css, внешний <link> в qa/index.html — 9 failed",
+  "rules_for_roles": "INTEGRATION.txt «СТЕКЛО»: только CSS, CSP не трогать, без внешних шрифтов/CDN и SF Pro, SVG-фильтры — url(#id)/data:",
+  "status": "ждём GLASS.md R11 и сборку R01 со стеклом — тогда полная финальная проверка"
  }
 }
