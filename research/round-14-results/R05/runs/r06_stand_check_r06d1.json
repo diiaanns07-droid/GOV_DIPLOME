@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-11T20:28:51.170Z",
+ "generated_at": "2026-10-12T04:00:33.505Z",
  "stand": {
   "url": "http://127.0.0.1:8616/civic/proposals/demo.html",
   "r06_sha": "3d10f7d",
@@ -15,8 +15,8 @@
     "kinds": [
      "stop:2027:demo",
      "playground:2027:demo",
-     "square:2027:demo",
      "sports:2027:demo",
+     "square:2027:demo",
      "lighting:2027:demo"
     ]
    }
@@ -25,7 +25,7 @@
    "id": "list_sends_device_id_no_bbox",
    "status": "PASS",
    "detail": [
-    "/api/civic/v2/proposals?device_id=dev-96ad54f11324680551bfe6d7fa67e9dc"
+    "/api/civic/v2/proposals?device_id=dev-10cb7335190ec2df556a0d4671fc644f"
    ]
   },
   {
@@ -99,7 +99,7 @@
    "id": "created_on_server_with_year_and_rotation",
    "status": "PASS",
    "detail": {
-    "id": "p-8733bfad80b5",
+    "id": "p-9563c16eb09b",
     "kind": "stop",
     "geometry": {
      "type": "Point",
@@ -121,7 +121,7 @@
     "near_street": null,
     "near_street_kk": null,
     "target": null,
-    "created_at": "2026-10-11T20:28:30+00:00",
+    "created_at": "2026-10-12T04:00:19+00:00",
     "demo": false,
     "idea": null
    }
@@ -134,7 +134,7 @@
   {
    "id": "vote_through_r06_card_with_device_id",
    "status": "PASS",
-   "detail": "{\"value\":1,\"device_id\":\"dev-2fad170dea2c0507dd328ef1d26decdb\"}"
+   "detail": "{\"value\":1,\"device_id\":\"dev-ca6aa5a43451d52c38d0d4f7de5c607e\"}"
   },
   {
    "id": "vote_synced_to_3d_object",
@@ -152,15 +152,15 @@
     "POST /api/civic/v2/proposals",
     "POST /api/civic/v2/proposals",
     "POST /api/civic/v2/proposals",
-    "POST /api/civic/v2/proposals/p-8733bfad80b5/vote",
-    "POST /api/civic/v2/proposals/p-8733bfad80b5/withdraw"
+    "POST /api/civic/v2/proposals/p-9563c16eb09b/vote",
+    "POST /api/civic/v2/proposals/p-9563c16eb09b/withdraw"
    ]
   },
   {
    "id": "undo_recreates_on_old_r06",
    "status": "PASS",
    "detail": {
-    "id": "p-eac7c98c5be4",
+    "id": "p-788b10650c84",
     "votes_up": 0
    }
   },

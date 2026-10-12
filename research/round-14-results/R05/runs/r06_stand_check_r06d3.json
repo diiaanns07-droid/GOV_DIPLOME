@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-11T20:29:49.827Z",
+ "generated_at": "2026-10-12T04:01:21.793Z",
  "stand": {
   "url": "http://127.0.0.1:8619/civic/proposals/demo.html",
   "r06_sha": "d707efc",
@@ -13,11 +13,11 @@
     "storeMode": "api",
     "count": 5,
     "kinds": [
-     "playground:2027:demo",
      "stop:2027:demo",
+     "lighting:2027:demo",
      "sports:2027:demo",
-     "square:2027:demo",
-     "lighting:2027:demo"
+     "playground:2027:demo",
+     "square:2027:demo"
     ]
    }
   },
@@ -25,7 +25,7 @@
    "id": "list_sends_device_id_no_bbox",
    "status": "PASS",
    "detail": [
-    "/api/civic/v2/proposals?device_id=dev-a9748d54d971da6a7790af27232d8378"
+    "/api/civic/v2/proposals?device_id=dev-28151450e43ddd4bbc2b87a556b07660"
    ]
   },
   {
@@ -105,7 +105,7 @@
    "id": "created_on_server_with_year_and_rotation",
    "status": "PASS",
    "detail": {
-    "id": "p-52175efb82ca",
+    "id": "p-cb2bce069737",
     "kind": "stop",
     "geometry": {
      "type": "Point",
@@ -132,7 +132,7 @@
      "label_kk": "Evolution",
      "label_ru": "Evolution"
     },
-    "created_at": "2026-10-11T20:29:30+00:00",
+    "created_at": "2026-10-12T04:01:05+00:00",
     "demo": false,
     "idea": null
    }
@@ -187,15 +187,15 @@
    "detail": [
     "POST /api/civic/v1/session/login",
     "POST /api/civic/v2/proposals",
-    "POST /api/civic/v2/proposals/p-52175efb82ca/vote",
-    "POST /api/civic/v2/proposals/p-52175efb82ca/withdraw"
+    "POST /api/civic/v2/proposals/p-cb2bce069737/vote",
+    "POST /api/civic/v2/proposals/p-cb2bce069737/withdraw"
    ]
   },
   {
    "id": "undo_restores_same_proposal_with_vote",
    "status": "PASS",
    "detail": {
-    "id": "p-52175efb82ca",
+    "id": "p-cb2bce069737",
     "votes_up": 1
    }
   },
