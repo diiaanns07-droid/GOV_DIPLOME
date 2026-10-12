@@ -217,6 +217,19 @@ const DESIGN = () => {
   }
   R.texts = { tech: tech.slice(0, 8), long_buttons: longBtn.slice(0, 8), buttons: all.filter((e) => e.matches("button, [role=button]")).map((b) => (b.innerText || b.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 30)).filter(Boolean).slice(0, 40) };
 
+  // 10. Нажатия: кнопку не закрывает другая кнопка/панель (середина кнопки — она сама), если она в пределах экрана.
+  const covered = [];
+  for (const b of all.filter((e) => e.matches("button, [role=button], a.bk-btn") && !e.closest(".maplibregl-marker, .maplibregl-ctrl, .r07-badge"))) {
+    const r = b.getBoundingClientRect(); if (r.width < 20 || r.height < 20 || r.bottom > innerHeight - 1 || r.top < 0) continue;
+    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    if (!hit || b === hit || b.contains(hit) || hit.contains(b)) continue;
+    const by = hit.closest("button, [role=button], a, [role=dialog], .bc-fab") || hit;
+    if (by === document.body || by.closest(".maplibregl-canvas-container")) continue;
+    covered.push({ label: label(b).slice(0, 30), by: label(by).slice(0, 30), owner: ownerOf(b) });
+    issue("10 нажатия", ownerOf(b), `кнопка «${label(b).slice(0, 20)}» закрыта «${label(by).slice(0, 20)}»`);
+  }
+  R.covered = covered.slice(0, 6);
+
   // 12. «Вау» (для сведения): анимации появления и пульса на экране.
   R.wow = { animated: [...new Set(all.map((e) => getComputedStyle(e).animationName).filter((n) => n && n !== "none"))].slice(0, 10) };
   return R;
