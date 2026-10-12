@@ -756,7 +756,24 @@
       });
     }
 
+    // Стекло R11 (GLASS.md §4, «R05 — карточка проекта 3D и каталог — bk-glass»): панель модуля — стеклянная, если
+    // ui-kit сборки его умеет (есть токен --glass-panel); иначе — прежняя белая панель. Таблички на карте и тосты —
+    // без стекла. Запасной непрозрачный вид (нет backdrop-filter, «уменьшить прозрачность», html.bk-glass-off) даёт ui-kit.
+    var glassKnown = null;
+    function syncGlass() {
+      if (!glassKnown) {
+        try {
+          glassKnown = !!(root.getComputedStyle && root.getComputedStyle(doc.documentElement).getPropertyValue("--glass-panel").trim());
+        } catch (e) {
+          glassKnown = false;
+        }
+      }
+      dock.classList.toggle("bk-glass", glassKnown);
+      // Телефон, панель у нижнего края (демо без хозяина) — как шторка: скругление только сверху.
+      dock.classList.toggle("bk-glass--sheet", glassKnown && ui.classList.contains("b3d--overlay") && phoneLayout());
+    }
     function renderDock() {
+      syncGlass();
       // Эскиз к идее (pickObject) показываем и при выключенном слое «Проекты»: мастер идеи R06 — свой путь, не слой.
       ui.hidden = !S.visible && !pick;
       if (pick) ui.setAttribute("data-b3d-picking", "");
