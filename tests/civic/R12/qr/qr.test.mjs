@@ -212,12 +212,26 @@ test("print sheet: QR + domain + bilingual address + number; bad and unknown ids
   await r.page.emulateMedia({ media: "print" });
   assert.equal(await r.page.locator(".bqp-form").isVisible(), false, "в печать идут только таблички");
   // IA_WAVE2 §6.2: A4, одна табличка на лист, QR ≥ 6 см, название ≥ 28 pt, без чисел жалоб и статусов
-  const pm = await r.page.evaluate(() => ({ qr: document.querySelector(".bqp-qr").getBoundingClientRect().width,
-    title: parseFloat(getComputedStyle(document.querySelector(".bqp-sign__title")).fontSize),
-    brk: getComputedStyle(document.querySelector(".bqp-sign")).breakAfter }));
+  // Дизайн-марафон: уличная табличка A5 (148 × 210 мм, две на A4 альбомном), без переполнения
+  const mm = (px) => (px / 96) * 25.4;
+  const pm = await r.page.evaluate(() => { const el = document.querySelector(".bqp-sign"), q = el.getBoundingClientRect();
+    return { w: q.width, h: q.height, over: el.scrollHeight - el.clientHeight, qr: el.querySelector(".bqp-qr").getBoundingClientRect().width,
+      title: parseFloat(getComputedStyle(el.querySelector(".bqp-sign__title")).fontSize), page: document.getElementById("bqp-page")?.textContent || "" }; });
+  assert.ok(Math.abs(mm(pm.w) - 148) < 1 && Math.abs(mm(pm.h) - 210) < 1, "A5 " + mm(pm.w) + "×" + mm(pm.h));
+  assert.ok(pm.over <= 1, "текст не вылезает за табличку: " + pm.over);
   assert.ok(pm.qr >= (6 / 2.54) * 96, "QR " + pm.qr + " px");
   assert.ok(pm.title >= (28 * 96) / 72 - 0.5, "название " + pm.title + " px");
-  assert.equal(pm.brk, "page");
+  assert.match(pm.page, /A4 landscape/);
+  // A6: четыре на A4 книжном, QR всё ещё ≥ 6 см
+  await r.page.emulateMedia({ media: "screen" });
+  await r.page.click('.bqp-size [data-size="a6"]');
+  await r.page.emulateMedia({ media: "print" });
+  const p6 = await r.page.evaluate(() => { const el = document.querySelector(".bqp-sign"), q = el.getBoundingClientRect();
+    return { w: q.width, over: Math.max(...[...document.querySelectorAll(".bqp-sign")].map((e) => e.scrollHeight - e.clientHeight)),
+      qr: el.querySelector(".bqp-qr").getBoundingClientRect().width, page: document.getElementById("bqp-page")?.textContent || "" }; });
+  assert.ok(Math.abs(mm(p6.w) - 105) < 1, "A6 " + mm(p6.w));
+  assert.ok(p6.qr >= (6 / 2.54) * 96 - 1 && p6.over <= 1, JSON.stringify(p6));
+  assert.match(p6.page, /A4 portrait/);
   assert.doesNotMatch(first, /Сообщил|Статус|адам хабарлады|Мәртебе/);
   await r.ctx.close();
   // без генератора QR — честное предупреждение, печать не предлагается
