@@ -491,6 +491,10 @@
   font-weight: var(--fw-semi, 600);
   line-height: 1.4;
   white-space: nowrap;
+  transition:
+    translate var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+    box-shadow var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+    scale var(--t-press, 120ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 }
 /* «Хвостик» вниз — к объекту. */
 .b3d-label__pill::after {
@@ -505,8 +509,27 @@
   border-bottom: 2px solid var(--c-surface, #ffffff);
   transform: translateX(-50%) rotate(45deg);
 }
-.b3d-label--hover .b3d-label__pill {
-  box-shadow: 0 0 0 3px var(--c-brand, #152c26), var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
+/* Наведение (на табличку или на саму модель) — табличка мягко приподнимается с тенью, а не тёмное кольцо:
+   кольцо цвета бренда выглядело как выбранный проект. Нажатие — лёгкое сжатие, как кнопки ui-kit. */
+.b3d-label--hover .b3d-label__pill,
+.b3d-label:hover .b3d-label__pill {
+  translate: 0 -2px;
+  box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
+}
+.b3d-label:active .b3d-label__pill {
+  scale: var(--press-scale, 0.97);
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d-label__pill {
+    transition: none;
+  }
+  .b3d-label--hover .b3d-label__pill,
+  .b3d-label:hover .b3d-label__pill {
+    translate: none;
+  }
+  .b3d-label:active .b3d-label__pill {
+    scale: none;
+  }
 }
 .b3d-label:focus-visible {
   outline: none;
@@ -523,9 +546,18 @@
 }
 /* Сжатая подпись (подписи перекрываются или карта далеко): точка цвета «проект» в той же зоне 48 px.
    Текст не обнуляется по размеру, а прячется как для экранного диктора — его по-прежнему читает aria. */
-.b3d-label__icon,
 .b3d-label__count {
   display: none;
+}
+/* Значок вида перед «Проект · 2027» (дизайн-марафон): сквер, площадка, остановка различимы без чтения, как метки
+   Apple Maps; в сжатой подписи-точке он один. Цвет — текста таблички (на выбранной — белый). */
+.b3d-label__icon {
+  display: block;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  color: currentColor;
 }
 /* Точка 32 px со значком вида проекта (UX_SPEC §5: значки на карте ≥ 24 px; R10 B-026). */
 .b3d-label--dot .b3d-label__pill {
@@ -539,6 +571,7 @@
   display: block;
   width: 18px;
   height: 18px;
+  margin-right: 0;
   color: var(--c-ink, #152c26);
 }
 /* Несколько проектов в одной точке — одна метка с числом; нажатие приближает к ним. */
