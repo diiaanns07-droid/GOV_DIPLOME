@@ -757,11 +757,12 @@
       const add = (layer) => map.addLayer(layer, before);
       // Районы (мелкий масштаб)
       // «Нет свежих данных» (волна 2) — только районы на обзоре города: серая заливка, у мест серого нет (R11 §3)
-      const districtFill = ["case", ["boolean", ["get", "nodata"], false], 0.22, ["==", ["get", "level"], 0], 0, 0.28 * soft];
+      // Дизайн-марафон: обзор города спокойнее — заливка 0,22 (было 0,28), граница 1,5 px и 0,6 (было 2 px и 0,8)
+      const districtFill = ["case", ["boolean", ["get", "nodata"], false], 0.2, ["==", ["get", "level"], 0], 0, 0.22 * soft];
       add({ id: "r07-district-fill", type: "fill", source: SRC, filter: ["==", ["get", "kind"], "district"],
         paint: { "fill-color": color, "fill-opacity": districtFill } });
       add({ id: "r07-district-line", type: "line", source: SRC, filter: ["==", ["get", "kind"], "district"],
-        paint: { "line-color": color, "line-width": 2, "line-opacity": 0.8 } });
+        paint: { "line-color": color, "line-width": 1.5, "line-opacity": 0.6 } });
       // Дворы и кварталы
       // Мягкая ячейка: размытая кайма + полупрозрачная заливка, чтобы квартал не выглядел жёстким квадратом.
       // Дизайн-марафон: кайма тоньше и тише (0,22) — на среднем масштабе прежняя (0,45) читалась как грязное пятно.
@@ -798,7 +799,9 @@
       // на 12–15 объекты уровней 1–2 не рисуются вовсе, а уровни 3–4 и «исправлено» — ореол + значок с числом;
       // с 15-го масштаба — все объекты: точка, ореол и значок.
       const haloRadius = ["interpolate", ["linear"], ["zoom"], 12, ["+", 8, ["*", ["get", "w"], 1.2 * soft]], 17, ["+", 20, ["*", ["get", "w"], 4 * soft]]];
-      const haloPaint = { "circle-color": color, "circle-opacity": 0.32 * soft, "circle-blur": 0.45, "circle-radius": haloRadius };
+      // Ореол — мягкий диск с тонким краем, а не размытое пятно (на 12–15 под кластером он читался как грязь)
+      const haloPaint = { "circle-color": color, "circle-opacity": 0.2 * soft, "circle-blur": 0.18, "circle-radius": haloRadius,
+        "circle-stroke-color": color, "circle-stroke-width": 1, "circle-stroke-opacity": 0.35 * soft };
       add({ id: "r07-obj-halo-lo", type: "circle", source: SRC_PTS, minzoom: 12, maxzoom: 15, filter: [">=", ["get", "level"], 3], paint: haloPaint });
       add({ id: "r07-obj-halo", type: "circle", source: SRC_PTS, minzoom: 15, paint: haloPaint });
       add({ id: "r07-obj-dot", type: "circle", source: SRC_PTS, minzoom: 15,
@@ -808,15 +811,15 @@
       S.layerOpacity = {
         "r07-district-fill": ["fill-opacity", districtFill],
         "r07-seg-dashed": ["line-opacity", 1],
-        "r07-district-line": ["line-opacity", 0.8],
+        "r07-district-line": ["line-opacity", 0.6],
         "r07-area-glow": ["line-opacity", 0.22 * soft],
         "r07-area-fill": ["fill-opacity", ["case", ["get", "fixed"], 0.2, 0.34 * soft]],
         "r07-area-line": ["line-opacity", 0.9],
         "r07-area-approx": ["line-opacity", 1],
         "r07-seg-casing": ["line-opacity", 1],
         "r07-seg": ["line-opacity", 1],
-        "r07-obj-halo-lo": ["circle-opacity", 0.32 * soft],
-        "r07-obj-halo": ["circle-opacity", 0.32 * soft],
+        "r07-obj-halo-lo": ["circle-opacity", 0.2 * soft],
+        "r07-obj-halo": ["circle-opacity", 0.2 * soft],
         "r07-obj-dot": ["circle-opacity", 1],
       };
       applyFocus();
