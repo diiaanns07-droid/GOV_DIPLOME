@@ -20,7 +20,7 @@
   color: var(--c-ink, #152c26);
   font-family: var(--font, system-ui, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif);
   font-size: var(--fs-body, 15px); line-height: 1.45;
-  padding: 0 20px 20px; overflow-y: auto; overscroll-behavior: contain;
+  padding: 0 20px 20px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;   /* въезд шага не даёт полосы прокрутки вбок */
   animation: bc-in-right var(--t-base, 240ms) var(--ease, cubic-bezier(.22, 1, .36, 1));
 }
 .bc-panel[hidden] { display: none; }

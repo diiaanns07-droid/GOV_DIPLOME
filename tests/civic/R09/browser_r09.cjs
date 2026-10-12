@@ -118,6 +118,10 @@ async function clickMapAt(page, point) {
 }
 
 async function noHorizontalScroll(page) {
+  // Сначала дождаться конца анимаций (въезд шага 240 мс сдвигает содержимое на 18 px — это не вёрстка).
+  await page.evaluate(() => Promise.race([new Promise((ok) => setTimeout(ok, 1500)), Promise.all(document.getAnimations()
+    .filter((a) => a.effect && a.effect.getComputedTiming().iterations !== Infinity)   // бесконечные (скелетон) не ждём
+    .map((a) => a.finished.catch(() => null)))])).catch(() => null);
   return page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1 &&
     [...document.querySelectorAll(".bc-panel *")].every((n) => { const r = n.getBoundingClientRect();
       return r.width === 0 || (r.right <= window.innerWidth + 1 && r.left >= -1); }));
