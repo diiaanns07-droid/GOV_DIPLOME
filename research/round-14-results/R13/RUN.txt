@@ -25,8 +25,9 @@ R13 · раунд 14 · команды и что теперь можно сде�
 
 5. «Вопрос акиму» (волна 2 п. 9) — в сборке R01 с patch (INTEGRATION §8.1)
    python3 -m pytest -q tests/civic/R13/qa                       # 43 (в ветке R13 без шлюза R01 — 41 + 2 SKIP)
-   BIRGE_REPO=<сборка R01> node tests/civic/R13/qa/qa_browser.cjs <папка>   # 81 проверка, снимки 375/1366 × ru/kk
-   QA_GLASS=1 BIRGE_REPO=<сборка R01> node tests/civic/R13/qa/qa_browser.cjs <папка>  # + стекло листа и контраст (91)
+   BIRGE_REPO=<сборка R01> node tests/civic/R13/qa/qa_browser.cjs <папка>   # 85 проверок, снимки 375/1366 × ru/kk
+   QA_GLASS=1 BIRGE_REPO=<сборка R01> node tests/civic/R13/qa/qa_browser.cjs <папка>  # + стекло листа и контраст (95)
+   BIRGE_REPO=<сборка R01> node tests/civic/R13/qa/qa_states.cjs <папка>     # 76 кадров всех состояний + STATES.json (замеры)
    Демо: run-city.bat (CIVIC_DEMO=1) — 12 вопросов «Пример» появятся сами; вход сотрудника — как для «Обращений»
    (python -m ui.civic_store create-editor <логин>). Отдельная страница без оболочки: /civic/qa/ (?role=akimat).
 
