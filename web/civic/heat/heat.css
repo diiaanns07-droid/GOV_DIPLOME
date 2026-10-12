@@ -329,3 +329,6 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 .r07-card__due[data-overdue="true"] { color: #a32d2d; font-weight: 700; }
 /* «О чём сообщают»: уточнение под категорией */
 .r07-topics__sub { display: block; font-size: 14px; color: var(--r07-ink-2, #3d4b45); font-weight: 400; }
+/* R12 волна 2 п. 6: ссылка «Распечатать QR» у акимата — внизу карточки, не главная кнопка. */
+.r07-qr { margin: 4px 0 0; }
+.r07-qr .r07-btn { text-decoration: none; }

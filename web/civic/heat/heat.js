@@ -69,6 +69,7 @@
       "heat.approximate": "Примерное место: точный объект не выбран, показана область.",
       "heat.take": "Взять в работу",
       "heat.mark_fixed": "Отметить исправленным",
+      "qr.print": "Распечатать QR",
       "heat.metoo": "Я тоже",
       "heat.metoo_done": { one: "Вы с нами. Сообщил {count} человек", few: "Вы с нами. Сообщили {count} человека", many: "Вы с нами. Сообщили {count} человек" },
       "heat.metoo_already": "Вы уже отметились",
@@ -171,6 +172,7 @@
       "heat.approximate": "Шамамен көрсетілген орын: нақты нысан таңдалмаған, аумақ көрсетілген.",
       "heat.take": "Жұмысқа алу",
       "heat.mark_fixed": "Түзетілді деп белгілеу",
+      "qr.print": "QR басып шығару",
       "heat.metoo": "Мен де",
       "heat.metoo_done": { other: "Сіз бізбен біргесіз. {count} адам хабарлады" },
       "heat.metoo_already": "Сіз бұған дейін белгі қойғансыз",
@@ -320,6 +322,8 @@
     return "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
   }
   function keyOf(target) { return target.kind + ":" + target.id; }
+  // Цели, на которые можно повесить QR-табличку (R12: тот же вид id, что принимает /?report=): объект, участок, двор.
+  const QR_ID = /^(osm-(node|way|relation)-[0-9]{1,15}|osm-w[0-9]{1,15}-[0-9]{1,6}|yard-r?[0-9]{1,15}(-[0-9]{1,3})?)$/;
   function inRing(pt, ring) {
     let inside = false;
     for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
@@ -1373,6 +1377,36 @@
         btn.removeAttribute("aria-busy");
       }
     }
+    // R09 в карточке цели (волна 2, IA_WAVE2 §2.2–2.4), только у сотрудника:
+    //  - «Отметить исправленным» открывает форму R09 «Сообщить жителям» (что сделали + фото «после», «Увидят N человек»);
+    //    пока она открыта, кнопки карточки скрыты (одна главная кнопка);
+    //  - под кнопками — паспорт решения («Изменить» → 3 поля) и «Обновление для всех» R09 без своей главной кнопки.
+    // Перерисовка карточки (язык, новое событие) открывает их снова. Без R09 на странице — карточка как раньше.
+    function mountR09() {
+      const it = S.selected && findItem(S.selected);
+      const actions = panel.querySelector(".r07-actions");
+      const R09 = window.BirgeComplaintStaff;
+      if (!it || !actions || !R09 || !(it.open_ids || []).length) { S.fixFor = null; return; }
+      if (S.fixFor && S.fixFor === S.selected && typeof R09.fixForm === "function") {
+        actions.hidden = true;
+        const holder = document.createElement("div");
+        holder.className = "r07-fixform";
+        actions.after(holder);
+        R09.fixForm(holder, {
+          complaintIds: it.open_ids,
+          onDone: async () => { S.fixFor = null; toast(t("heat.toast_fixed")); await load("event"); },
+          onCancel: () => { S.fixFor = null; render(); },
+        });
+        return;
+      }
+      S.fixFor = null;
+      if (S.role === "akimat" && typeof R09.mount === "function") {
+        const box = document.createElement("div");
+        box.className = "r07-r09staff";
+        actions.after(box);
+        R09.mount(box, { complaintId: it.open_ids[0], fix: false, compact: true, staffOnly: true });
+      }
+    }
     async function metoo(it, btn) {
       const id = (it.open_ids || [])[0];
       if (!id) return;
@@ -1424,6 +1458,7 @@
       if (map) renderMapLegend(); else parts.push(legendHtml(false));
       panel.innerHTML = parts.join("");
       bindPanel();
+      mountR09();
       if (map) declutter();   // легенда могла сменить размер (язык, режим) — значки не должны оказаться под ней
     }
 
@@ -1597,6 +1632,9 @@
         (!fixed ? '<div class="r07-chart" aria-label="' + esc(t("heat.chart")) + '"><h4 class="r07-h4">' + esc(t("heat.chart")) + '</h4><div class="r07-spark">' + bars +
           '</div><div class="r07-axis"><span>' + esc(t("heat.chart_from")) + "</span><span>" + esc(t("heat.chart_to")) + "</span></div></div>" : "") +
         (topics ? '<h4 class="r07-h4">' + esc(t("heat.topics")) + '</h4><ul class="r07-topics">' + topics + "</ul>" : "") +
+        // R12 волна 2 п. 6 (IA_WAVE2 §6.2): акимату — ссылка на лист QR-табличек этого места (второстепенная, внизу карточки).
+        (S.role === "akimat" && QR_ID.test(it.target.id) ? '<p class="r07-qr"><a class="r07-btn r07-btn--ghost" href="/civic/qr/print.html?ids=' +
+          encodeURIComponent(it.target.id) + '" target="_blank" rel="noopener">' + esc(t("qr.print")) + "</a></p>" : "") +
         "</article>";
     }
 
@@ -1728,7 +1766,13 @@
         const it = findItem(S.selected);
         if (!it) return;
         if (b.dataset.act === "take") void setStatus(it, "in_progress", b);
-        if (b.dataset.act === "fixed") void setStatus(it, "fixed", b);
+        if (b.dataset.act === "fixed") {
+          // R09 волна 2 (IA_WAVE2 §2.3, R11 разбор 9 №1): «что сделали» + фото «после» — форма R09 в этой же карточке.
+          // Без модуля R09 на странице — как раньше: сразу «исправлено».
+          if (window.BirgeComplaintStaff && typeof window.BirgeComplaintStaff.fixForm === "function" && (it.open_ids || []).length) {
+            S.fixFor = S.selected; render();
+          } else void setStatus(it, "fixed", b);
+        }
         if (b.dataset.act === "metoo") void metoo(it, b);
         if (b.dataset.act === "separate") void separate(it, b.dataset.item, b);
       }));
