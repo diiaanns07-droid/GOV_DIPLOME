@@ -389,6 +389,10 @@ class ComplaintStore:
             if status == "fixed":
                 after = self._photo_ids(db, record["id"], "after", photos)
                 record["resolution"] = lifecycle.new_resolution(record.get("resolution"), now, what_done, actor, after)
+                # R15-S24: кто нажал «Я тоже» до этой минуты, может проверить ремонт; кто после — нет. Порядок вставки
+                # (rowid) точнее времени: «Я тоже» и «исправлено» могут прийти в одну секунду.
+                record["resolution"]["metoo_upto"] = db.execute(
+                    "SELECT COALESCE(MAX(rowid), 0) FROM complaint_metoo_v2").fetchone()[0]
                 db.execute("UPDATE complaint_photos_v2 SET round = ? WHERE complaint_id = ? AND kind = 'after' "
                            "AND round IS NULL", (record["resolution"]["round"], record["id"]))
                 self._add_update(record, now, "fixed", what_done)
@@ -439,6 +443,22 @@ class ComplaintStore:
                              "AND muted = 0", (record["id"], device))
             return "unsubscribed" if cur.rowcount else "not_subscribed"
 
+    def _verifier(self, db, record: dict, device: str) -> str | None:
+        """Кто может проверить ремонт (R15-S24): автор и «Я тоже», нажатые ДО «служба сообщила об устранении».
+        Иначе любой посторонний: «Я тоже» после ремонта -> «Проблема осталась» -> проверенный ремонт снова «в работе»."""
+        relation = self._participant(db, record, device)
+        if relation != "metoo":
+            return relation
+        resolution = record.get("resolution") or {}
+        row = db.execute("SELECT rowid, at FROM complaint_metoo_v2 WHERE complaint_id = ? AND device_hash = ?",
+                         (record["id"], device)).fetchone()
+        if row is None:
+            return None
+        if isinstance(resolution.get("metoo_upto"), int):
+            return "metoo" if row[0] <= resolution["metoo_upto"] else None
+        reported = resolution.get("reported_at")      # записи до patch: по времени
+        return "metoo" if reported and row[1] <= reported else None
+
     def participant(self, complaint_id: str, device_id) -> str | None:
         try:
             device = self.device_hash(device_id)
@@ -464,7 +484,7 @@ class ComplaintStore:
             resolution = record.get("resolution") or {}
             if record["status"] != "fixed" or resolution.get("state") not in ("reported", "verified"):
                 return False
-            if self._participant(self._db, record, device) is None:
+            if self._verifier(self._db, record, device) is None:
                 return False
             voted = self._db.execute("SELECT 1 FROM complaint_votes_v2 WHERE complaint_id = ? AND round = ? "
                                      "AND device_hash = ?", (record["id"], resolution["round"], device)).fetchone()
@@ -482,7 +502,7 @@ class ComplaintStore:
         events = []
         with self._tx() as db:
             record = self._root(db, complaint_id)
-            if self._participant(db, record, device) is None:
+            if self._verifier(db, record, device) is None:
                 return record, "not_participant"
             resolution = record.get("resolution")
             if record["status"] != "fixed" or not resolution or resolution.get("state") not in ("reported", "verified"):

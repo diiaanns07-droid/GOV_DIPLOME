@@ -17,6 +17,10 @@ MAX_RESIDENT = 3               # фото жителя на жалобу
 MAX_AFTER = 3                  # фото «после» на один раунд «исправлено»
 CHUNK_BYTES = 36_000           # часть загрузки: base64 ≈ 48 КБ, шлюз R01 пропускает ≤ 64 КБ тела
 MIMES = ("image/jpeg", "image/png", "image/webp")
+# R15-S23: стороны не больше 4096 px — иначе PNG 16000×16000 одного цвета весит < 1 МБ, а у сотрудника в браузере
+# разворачивается в ~1 ГБ и вешает карточку («фото-бомба»). Интерфейс и так уменьшает фото до 1600 px.
+MAX_SIDE = 4096
+_JPEG_SOF = {0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF}
 
 _JPEG_KEEP_APP = {0xE0, 0xE2, 0xEE}            # APP0 JFIF, APP2 ICC-профиль, APP14 Adobe (цвета)
 _PNG_DROP = {b"eXIf", b"tEXt", b"zTXt", b"iTXt", b"tIME"}
@@ -37,8 +41,9 @@ def sniff(data: bytes) -> str | None:
     return None
 
 
-def _strip_jpeg(data: bytes) -> bytes:
+def _strip_jpeg(data: bytes) -> tuple[bytes, tuple[int, int] | None]:
     out = bytearray(b"\xff\xd8")
+    size = None
     i = 2
     while i < len(data):
         if data[i] != 0xFF:
@@ -61,9 +66,27 @@ def _strip_jpeg(data: bytes) -> bytes:
             raise PhotoError("Фото повреждено.")
         segment = data[i:i + length]
         i += length
-        if marker == 0xDA:                            # SOS: дальше сжатые данные до конца файла — без изменений
-            out += bytes((0xFF, marker)) + segment + data[i:]
-            return bytes(out)
+        if marker == 0xDA:
+            # SOS: сжатые данные идут до следующего маркера (FF00 и RSTn — часть данных). R15-S22: после EOI телефоны
+            # дописывают второе изображение (MPF) или видео «живого фото» со своими EXIF/GPS — их не берём.
+            out += bytes((0xFF, marker)) + segment
+            j = i
+            while True:
+                k = data.find(b"\xff", j)
+                if k < 0 or k + 1 >= len(data):
+                    raise PhotoError("Фото повреждено.")
+                nxt = data[k + 1]
+                if nxt == 0x00 or 0xD0 <= nxt <= 0xD7 or nxt == 0xFF:
+                    j = k + (1 if nxt == 0xFF else 2)
+                    continue
+                break
+            out += data[i:k]
+            if nxt == 0xD9:                           # EOI — конец картинки, хвост отбрасываем
+                return bytes(out) + b"\xff\xd9", size
+            i = k                                     # прогрессивный JPEG: следующий проход (DHT, SOS …)
+            continue
+        if marker in _JPEG_SOF and length >= 7:
+            size = (struct.unpack(">H", segment[5:7])[0], struct.unpack(">H", segment[3:5])[0])
         if (0xE0 <= marker <= 0xEF and marker not in _JPEG_KEEP_APP) or marker == 0xFE:
             continue                                  # EXIF/GPS, XMP, IPTC, комментарии — выбрасываем
         out += bytes((0xFF, marker)) + segment
@@ -120,6 +143,26 @@ def _strip_webp(data: bytes) -> bytes:
     return b"RIFF" + struct.pack("<I", len(payload)) + payload
 
 
+def _size(mime: str, clean: bytes) -> tuple[int, int] | None:
+    """Ширина и высота из заголовка PNG/WebP (без декодирования картинки)."""
+    if mime == "image/png" and len(clean) >= 24:
+        return struct.unpack(">II", clean[16:24])
+    if mime == "image/webp":
+        i = 12
+        while i + 8 <= len(clean):
+            kind, size = clean[i:i + 4], struct.unpack("<I", clean[i + 4:i + 8])[0]
+            body = clean[i + 8:i + 8 + size]
+            if kind == b"VP8X" and len(body) >= 10:
+                return int.from_bytes(body[4:7], "little") + 1, int.from_bytes(body[7:10], "little") + 1
+            if kind == b"VP8 " and len(body) >= 10:
+                return struct.unpack("<H", body[6:8])[0] & 0x3FFF, struct.unpack("<H", body[8:10])[0] & 0x3FFF
+            if kind == b"VP8L" and len(body) >= 5:
+                bits = int.from_bytes(body[1:5], "little")
+                return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+            i += 8 + size + (size & 1)
+    return None
+
+
 def sanitize(data: bytes) -> tuple[str, bytes]:
     """-> (mime, байты без метаданных). PhotoError — не фото, повреждено или больше MAX_BYTES."""
     if not isinstance(data, (bytes, bytearray)) or not data:
@@ -129,5 +172,11 @@ def sanitize(data: bytes) -> tuple[str, bytes]:
     mime = sniff(bytes(data[:16]))
     if mime is None:
         raise PhotoError("Подходят только фото JPEG, PNG или WebP.")
-    clean = {"image/jpeg": _strip_jpeg, "image/png": _strip_png, "image/webp": _strip_webp}[mime](bytes(data))
+    if mime == "image/jpeg":
+        clean, size = _strip_jpeg(bytes(data))
+    else:
+        clean = {"image/png": _strip_png, "image/webp": _strip_webp}[mime](bytes(data))
+        size = _size(mime, clean)
+    if size is None or not (0 < size[0] <= MAX_SIDE and 0 < size[1] <= MAX_SIDE):
+        raise PhotoError("Фото слишком большое по размеру сторон.")
     return mime, clean

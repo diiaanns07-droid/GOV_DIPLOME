@@ -1681,11 +1681,20 @@
       render();
     }
 
-    function open() {
+    // preset (R12 QR-паспорт): {target, point, geometry, approximate} — место уже известно, сразу шаг ③ (текст).
+    function open(preset) {
       var keepText = state && state.view === "wizard" && state.step < 5 ? state : null;
       state = keepText || freshState();
       state.view = "wizard";
       if (state.step === 5) state = freshState();
+      if (preset && preset.target && preset.target.kind && preset.target.id && Array.isArray(preset.point)) {
+        state.point = [Number(preset.point[0]), Number(preset.point[1])];
+        state.target = Object.assign({}, preset.target, preset.approximate ? { approximate: true } : {});
+        state.geometry = preset.geometry || null;
+        state.candidates = null; state.candidatesLoading = false;
+        state.step = 3;
+        if (map.highlight) map.highlight(state.target, state.geometry, state.point);
+      }
       els.textarea = null;
       // Сначала рисуем (высота шторки уже нужная), потом показываем — без прыжка «полная → половина».
       render();
