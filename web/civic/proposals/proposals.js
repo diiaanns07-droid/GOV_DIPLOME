@@ -199,10 +199,14 @@
     if (!p.voting_open) note = t("proposal.voting_closed");
     var html =
       '<article class="bk-card r06-card" aria-labelledby="' + id + '" data-proposal="' + esc(p.id) + '">' +
-      '<div class="bk-card__row"><span class="bk-card__eyebrow">' + icon(KIND_ICON[p.kind] || "flag") + "<span>" +
+      // Шапка «как в App Store» (дизайн-марафон): плитка вида объекта, над названием — вид и «Проект · 2027», под ним —
+      // район и «Пример». Без ui-kit (R10 B-006) плитки нет — значков нечем рисовать.
+      '<div class="r06-head">' + (root.BirgeUI ? '<span class="r06-tile" aria-hidden="true">' + icon(KIND_ICON[p.kind] || "flag") + "</span>" : "") +
+      '<div class="r06-head__text"><div class="bk-card__row r06-kicker"><span class="bk-card__eyebrow"><span>' +
       esc(t("proposal.kind." + p.kind)) + "</span></span>" + tags + "</div>" +
       '<h3 class="bk-card__title" id="' + id + '" lang="' + ttl.lang + '">' + esc(ttl.text) + "</h3>" +
       (place || demoTag ? '<p class="bk-meta r06-place">' + place + (place && demoTag ? "\u00a0· " : "") + demoTag + "</p>" : "") +
+      "</div></div>" +
       // Проект из идеи жителей (волна 2 п. 7): «По идее жителей · 47 голосов» — голоса за идею на момент решения.
       (p.idea ? '<p class="r06-idea">' + icon("users") + "<span>" + esc(t("idea.by_residents", { n: p.idea.votes || 0 })) + "</span></p>" : "") +
       '<div class="bk-card__row"><span class="bk-meta">' + esc(t("status.label")) + '</span><span class="bk-status" data-status="' +
