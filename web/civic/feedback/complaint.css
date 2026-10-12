@@ -201,6 +201,8 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
                          border-radius: var(--r-m, 12px); }
 .bc-staff__note { margin: 0; min-height: 1.4em; font-weight: 600; color: var(--c-ok, #2f6b12); }
 .bc-staff__note--error { color: var(--c-danger, #b3362e); }
+.bc-staff__fix-error { margin: 0; font-weight: 600; color: var(--c-danger, #b3362e); }
+.bc-staff .bc-thumb__remove { font-size: 22px; line-height: 1; color: #fff; text-shadow: 0 0 3px rgba(21, 44, 38, .9); }
 
 /* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01): список целей, вкладки, карточка действий. */
 .bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 960px; margin: 0 auto; }

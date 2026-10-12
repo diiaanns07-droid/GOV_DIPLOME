@@ -87,15 +87,26 @@
       return true;
     }
 
+    // Ошибка — прямо в форме, над кнопкой (внизу карточки её не видно, R10 B-056).
+    function fixError(form, text) {
+      var box = form.querySelector(".bc-staff__fix-error");
+      if (!text) { if (box) box.parentNode.removeChild(box); return; }
+      if (!box) {
+        box = h("p", { "class": "bc-staff__fix-error", role: "alert" });
+        form.insertBefore(box, form.querySelector("button[type=submit]"));
+      }
+      box.textContent = text;
+    }
+
     function markFixed(form) {
       var what = form.querySelector("[name=what_done]").value.trim();
-      if (what.length < 3) { note(t("staff.fixed.need_what"), true); return; }
+      if (what.length < 3) { fixError(form, t("staff.fixed.need_what")); return; }
       var button = form.querySelector("button[type=submit]");
       button.disabled = true;
+      fixError(form, null);
+      // R10 B-056: фото — сам Blob после уменьшения, без fetch(blob:…) (CSP сборки: connect-src 'self').
       var upload = photo
-        ? fetch(photo.url).then(function (r) { return r.blob(); }).then(function (blob) {
-            return window.BirgeComplaintPhotos.upload(id, blob, "after", csrf());
-          })
+        ? window.BirgeComplaintPhotos.upload(id, photo.blob, "after", csrf()).then(null, function () { throw { photo: true }; })
         : Promise.resolve(null);
       upload.then(function (uploaded) {
         var steps = current && current.status === "new" ? call("POST", "/complaints/" + id + "/status", { status: "in_progress" })
@@ -106,9 +117,12 @@
         });
       }).then(function (res) {
         button.disabled = false;
-        if (res && res.ok) photo = null;
-        done(res);
-      }, function () { button.disabled = false; note(t("complaint.error.send"), true); });
+        if (res && res.ok) { photo = null; done(res); return; }
+        fixError(form, (res && res.error && res.error.message) || t("complaint.error.send"));
+      }, function (err) {
+        button.disabled = false;
+        fixError(form, t(err && err.photo ? "staff.photo.failed" : "complaint.error.send"));
+      });
     }
 
     function savePassport(form) {
@@ -218,8 +232,11 @@
           window.BirgeComplaintPhotos.shrink(file).then(function (shrunk) {
             photo = shrunk;
             preview.innerHTML = "";
-            preview.appendChild(h("li", { "class": "bc-thumb" }, h("img", { src: shrunk.url, alt: "" })));
-          }, function () { note(t("complaint.photo.bad_type"), true); });
+            preview.appendChild(h("li", { "class": "bc-thumb" }, [h("img", { src: shrunk.url, alt: "" }),
+              h("button", { "class": "bk-iconbtn bc-thumb__remove", type: "button", "aria-label": t("complaint.photo.remove"),
+                            onclick: function () { photo = null; preview.innerHTML = ""; } }, "×")]));
+            input.value = "";
+          }, function () { fixError(input.form || input.parentNode, t("complaint.photo.bad_type")); });
         });
         var fixed = h("form", { "class": "bc-staff__form bc-staff__fix", onsubmit: function (e) { e.preventDefault(); markFixed(fixed); } }, [
           h("p", { "class": "bc-label" }, t("fix.title")),

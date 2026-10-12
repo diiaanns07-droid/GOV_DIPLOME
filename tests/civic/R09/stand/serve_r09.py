@@ -248,6 +248,11 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        if ctype.startswith("text/html"):
+            # Как CSP сборки R01 (ui/web_server.py): fetch/XHR — только к своему серверу; blob: — для картинок и
+            # воркеров. Так стенд ловит то, что ловит приложение (R10 B-056: fetch(blob:) у сотрудника).
+            self.send_header("Content-Security-Policy",
+                             "connect-src 'self'; img-src 'self' data: blob:; worker-src 'self' blob:; child-src 'self' blob:")
         for key, value in (headers or {}).items():
             self.send_header(key, value)
         self.end_headers()

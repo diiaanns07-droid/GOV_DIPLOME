@@ -1137,11 +1137,26 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
   // Сотрудник сообщает об устранении прямо из списка → группа уходит во «Ждут проверки».
   await page.click(".bc-inbox__item--open .bc-staff__open-fix");
   await page.fill(".bc-inbox__item--open [name=what_done]", lang === "kk" ? "Шұңқыр жамалды" : "Заделали яму");
+  // R10 B-056: фото «после» под CSP сборки (connect-src 'self') и сбой загрузки — сообщение в форме, ничего не отмечено.
+  await page.setInputFiles(".bc-inbox__item--open .bc-photo-input", { name: "after.jpg", mimeType: "image/jpeg", buffer: await exifJpeg(page, 640, 480) });
+  await page.waitForSelector(".bc-inbox__item--open .bc-thumb img", { timeout: 8000 });
+  await page.route("**/photos", (route) => route.abort());
+  await page.click(".bc-inbox__item--open .bc-staff__fix button[type=submit]");
+  const failed = await page.waitForSelector(".bc-inbox__item--open .bc-staff__fix-error", { timeout: 8000 }).then(async (e) => (await e.textContent()).trim(), () => "");
+  const still = (await deviceApi(base, "GET", `/complaints/${made.data.complaint.id}`, null, "dev-r09-inbox-stranger-1")).data.complaint.status;
+  const enabled = await page.$eval(".bc-inbox__item--open .bc-staff__fix button[type=submit]", (b) => !b.disabled);
+  check(`${tag}: [B-056] фото не загрузилось — «${failed.slice(0, 40)}…», кнопка доступна, обращение не отмечено`,
+        (lang === "kk" ? /Фото жүктелмеді/.test(failed) : /Фото не загрузилось/.test(failed)) && enabled && still !== "fixed", still);
+  await page.unroute("**/photos");
+  page.problems = page.problems.filter((p) => !/photos|ERR_FAILED|Failed to load/.test(p));   // обрыв подставлен тестом
   await page.click(".bc-inbox__item--open .bc-staff__fix button[type=submit]");
   await page.waitForFunction(() => !document.querySelector(".bc-inbox__item--open [name=what_done]"), null, { timeout: 15000 });
   await page.click(".bc-inbox__tab[data-tab='waiting_check']");
   const moved = await page.waitForSelector(`.bc-inbox__row[data-key="${key}"]`, { timeout: 8000 }).then(() => true, () => false);
   check(`${tag}: [§2.5] после «Сообщить жителям» — во вкладке «Ждут проверки»`, moved);
+  const withPhoto = (await staffApi(base, "GET", `/complaints/${made.data.complaint.id}`)).data.complaint;
+  check(`${tag}: [B-056] фото «после» дошло с повторной попытки (CSP connect-src 'self')`,
+        ((withPhoto.resolution || {}).photos_after || []).length === 1, JSON.stringify((withPhoto.resolution || {}).photos_after));
   // Пример (demo) — только просмотр, без формы (как карточка R07).
   await page.click(".bc-inbox__tab[data-tab='new']");
   const demoRow = await page.$(".bc-inbox__item .bk-tag--demo");
