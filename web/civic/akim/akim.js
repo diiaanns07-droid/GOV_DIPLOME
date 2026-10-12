@@ -661,6 +661,7 @@
           return null;
         });
     }
+    var justChosen = null;
     function chooseOption(item, n, statusEl) {
       statusEl.textContent = "";
       return csrf()
@@ -677,7 +678,9 @@
         .then(function (r) {
           if (r.ok) {
             item.chosen = { option: n };
+            justChosen = item.id; // подтверждение мягко «проявится» один раз — сразу после нажатия
             render();
+            justChosen = null;
             var again = rootEl.querySelector('[data-key="decision:' + item.id + '"]');
             if (again) again.focus({ preventScroll: true });
             load(true);
@@ -708,7 +711,12 @@
             h("li", { class: "akim-decision__option" + (chosen ? " is-chosen" : "") }, [
               h("span", { class: "akim-decision__option-text", text: tr("akim.decision.option", { n: n, text: o[l] || o.ru }) }),
               chosen
-                ? h("span", { class: "bk-status akim-decision__chosen", "data-status": "fixed", text: tr("akim.decision.chosen", { n: n }) })
+                ? h("span", {
+                    class: "bk-status akim-decision__chosen",
+                    "data-status": "fixed",
+                    "data-just": justChosen === it.id ? "" : null,
+                    text: tr("akim.decision.chosen", { n: n }),
+                  })
                 : h("button", {
                     type: "button",
                     class: "bk-btn bk-btn--ghost akim-decision__choose",

@@ -456,6 +456,25 @@
   flex: none;
   min-height: 44px;
 }
+/* «Выбран вариант N» — сразу после нажатия мягко проявляется (240 мс), точка один раз «пульсирует» */
+.akim-decision__chosen[data-just] {
+  animation: akim-chosen 240ms var(--ease) both;
+}
+@keyframes akim-chosen {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .akim-decision__chosen[data-just] {
+    animation: none;
+  }
+}
 .akim-decision__chosen {
   flex: none;
   min-height: 44px;
