@@ -461,7 +461,7 @@ body.civic-mode .civic-explore #map-status:not(.hidden) {
   position: fixed; z-index: 48; top: auto; left: calc(50% - 220px); right: auto; bottom: 96px; transform: translateX(-50%);
   width: max-content; max-width: min(480px, calc(100vw - 480px)); margin: 0; padding: 8px 14px; border: 0; border-radius: 10px;
   background: rgba(21, 44, 38, 0.86); color: #fff; box-shadow: none; font-size: 13px; line-height: 1.4; text-align: center;
-  transition: opacity var(--t-slow, 340ms) var(--ease, ease-out), visibility var(--t-slow, 340ms);  /* R11 15.4 */
+  transition: opacity var(--t-slow, 340ms) var(--ease, ease-out), visibility var(--t-slow, 340ms) var(--ease, ease-out);  /* R11 15.4 */
 }
 body.civic-mode .civic-explore #map-status[data-faded="1"] { opacity: 0; visibility: hidden; pointer-events: none; }
 @media (max-width: 760px) {
@@ -741,7 +741,7 @@ body.civic-mode .topbar.bk-glass { padding: 0 8px 0 16px; }
 body.civic-mode .top-actions { gap: 8px; }
 body.civic-mode .birge-legend-line { padding: 0 4px 0 16px; }
 body.civic-mode .civic-explore #map-status:not(.hidden) { padding: 8px 16px; }
-body.civic-mode .civic-explore #map-status { transition: opacity var(--t-slow, 340ms) var(--ease, ease-out), visibility var(--t-slow, 340ms); }
+body.civic-mode .civic-explore #map-status { transition: opacity var(--t-slow, 340ms) var(--ease, ease-out), visibility var(--t-slow, 340ms) var(--ease, ease-out); }
 @media (max-width: 760px) {
   body.civic-mode .topbar.bk-glass { padding: 0 4px 0 8px; }
   body.civic-mode .top-actions { gap: 4px; }
