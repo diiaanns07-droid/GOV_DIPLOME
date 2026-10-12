@@ -306,7 +306,8 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
     # записи и их история не меняются.
     (9, "round 14 wave 2 residents ideas and nearby works", (
         # Идея жителя. Тексты — на том языке, на котором их написали (lang); у демо-идей — оба языка.
-        # review → voting → project | rejected; review → hidden (модерация: личные данные, грубые слова).
+        # review → voting → checking (акимат проверяет, голосование закрыто) → project | rejected;
+        # review → hidden (модерация: личные данные, грубые слова).
         """CREATE TABLE civic_ideas (
             id TEXT PRIMARY KEY CHECK (length(id) BETWEEN 1 AND 64),
             lang TEXT NOT NULL CHECK (lang IN ('ru', 'kk')),
@@ -314,7 +315,7 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
             geometry_json TEXT NOT NULL,
             district TEXT,
             object_json TEXT,
-            status TEXT NOT NULL CHECK (status IN ('review', 'voting', 'project', 'rejected', 'hidden')),
+            status TEXT NOT NULL CHECK (status IN ('review', 'voting', 'checking', 'project', 'rejected', 'hidden')),
             author_hash TEXT CHECK (author_hash IS NULL OR length(author_hash) = 64),
             check_json TEXT,
             reason TEXT NOT NULL DEFAULT '',

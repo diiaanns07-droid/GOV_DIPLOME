@@ -159,36 +159,60 @@
 
   function makeRequest(opts) {
     var v2 = opts.api && typeof opts.api.v2 === "function" ? opts.api.v2 : null;
+    // Чтение для сотрудника (GET /staff/ideas, GET /works): шлюз R01 для staff-маршрутов требует CSRF-токен и на GET
+    // (R15 route policy), а клиент оболочки шлёт его только в изменяющих запросах — такие GET идут напрямую с токеном.
+    var staffGet = function (method, path) { return method === "GET" && /^\/(staff\/|works(\?|$))/.test(path); };
+    // Все запросы сотрудника (чтение очереди, решения по идеям, записи «Рядом») — напрямую с токеном: не зависят от того,
+    // успела ли оболочка узнать сессию после перезагрузки страницы.
+    var staffPath = function (path) { return /^\/(staff\/|works(\/|\?|$))/.test(path) || /^\/ideas\/[^/]+\/decide$/.test(path); };
+    // Токен сотрудника: у оболочки (CivicShell) — когда она уже узнала сессию; иначе (экран открыт сразу после
+    // перезагрузки) — из GET /api/civic/v1/session, как у карточек R06 (proposals.js).
+    var token = null;
+    function csrf(fresh) {
+      var shellToken = root.CivicShell && root.CivicShell.csrfToken ? root.CivicShell.csrfToken() : null;
+      if (shellToken && !fresh) return Promise.resolve(shellToken);
+      if (token && !fresh) return Promise.resolve(token);
+      return root.fetch("/api/civic/v1/session", { credentials: "same-origin", headers: { Accept: "application/json" } })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { var d = (j && j.data) || j || {}; token = d.authenticated ? d.csrf_token || null : null; return token; },
+          function () { return null; });
+    }
+    function direct(method, path, body, retried) {
+      return csrf(retried).then(function (tok) {
+        var headers = { Accept: "application/json" };
+        if (body !== undefined) headers["Content-Type"] = "application/json";
+        if (tok && (method !== "GET" || staffGet(method, path))) headers["X-CSRF-Token"] = tok;
+        return root.fetch((opts.apiBase || API) + path, { method: method, headers: headers, credentials: "same-origin",
+          body: body !== undefined ? JSON.stringify(body) : undefined });
+      }).then(function (res) {
+        return res.json().catch(function () { return null; }).then(function (json) {
+          if (res.ok && json && json.ok === true) return json.data; // конверт стенда R06
+          if (res.ok) return json;
+          var e = (json && json.error) || {};
+          var err = new Error((typeof e === "object" ? e.message : json && json.message) || "HTTP " + res.status);
+          err.status = res.status;
+          err.code = typeof e === "string" ? e : e.code;
+          err.fields = (typeof e === "object" && e.fields) || (json && json.fields) || {};
+          throw err;
+        });
+      }, function () {
+        var err = new Error("network");
+        err.status = 0;
+        err.code = "network";
+        throw err;
+      }).catch(function (err) {
+        if (!retried && err.code === "csrf_failed") return direct(method, path, body, true); // токен устарел — один повтор
+        throw err;
+      });
+    }
     return function (method, path, body) {
-      if (v2) {
+      if (v2 && !staffPath(path)) {
         return Promise.resolve().then(function () { return v2(method, path, body); }).catch(function (err) {
           err.code = err.code || err.error;
           throw err;
         });
       }
-      var headers = { Accept: "application/json" };
-      if (body !== undefined) headers["Content-Type"] = "application/json";
-      var csrf = root.CivicShell && root.CivicShell.csrfToken ? root.CivicShell.csrfToken() : opts.csrfToken || null;
-      if (csrf && method !== "GET") headers["X-CSRF-Token"] = csrf;
-      return root.fetch((opts.apiBase || API) + path, { method: method, headers: headers, credentials: "same-origin",
-        body: body !== undefined ? JSON.stringify(body) : undefined })
-        .then(function (res) {
-          return res.json().catch(function () { return null; }).then(function (json) {
-            if (res.ok && json && json.ok === true) return json.data;
-            if (res.ok) return json;
-            var e = (json && json.error) || {};
-            var err = new Error((typeof e === "object" ? e.message : json && json.message) || "HTTP " + res.status);
-            err.status = res.status;
-            err.code = typeof e === "string" ? e : e.code;
-            err.fields = (typeof e === "object" && e.fields) || (json && json.fields) || {};
-            throw err;
-          });
-        }, function () {
-          var err = new Error("network");
-          err.status = 0;
-          err.code = "network";
-          throw err;
-        });
+      return direct(method, path, body, false);
     };
   }
 

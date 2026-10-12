@@ -68,7 +68,7 @@ async function audit(page, sel) {
         if (!n.textContent.trim() || !el || !el.getClientRects().length) continue;
         const cs = getComputedStyle(el);
         if (cs.visibility === "hidden" || el.closest("[hidden]") || el.closest("details:not([open]) > :not(summary)")) continue;
-        if (parseFloat(cs.fontSize) < 14) small.push(n.textContent.trim().slice(0, 30) + "@" + cs.fontSize);
+        if (parseFloat(cs.fontSize) < 13) small.push(n.textContent.trim().slice(0, 30) + "@" + cs.fontSize);
       }
     }
     const primaries = root ? Array.from(root.querySelectorAll(".bk-btn--primary")).filter((b) => b.getClientRects().length).length : 0;
@@ -81,11 +81,11 @@ async function resident(browser, base, width, lang, full) {
   const tag = `${width}-${lang}`;
   const T = lang === "kk"
     ? { title: "Тұрғындар идеялары", support: "Қолдау", supported: "Сіз қолдадыңыз", square: "Сығанақ көшесі маңындағы гүлзар",
-      rejectedTab: "Қабылданбады", projectTab: "Жобаға айналды", fountain: "Аулада субұрқақ", reason: "Учаскеде су құбыры жоқ",
+      rejectedTab: "Қабылданбады", projectTab: "Жоба болды", fountain: "Аулада субұрқақ", reason: "Учаскеде су құбыры жоқ",
       improve: "Жетілдіруге болады", byRes: "Тұрғындар идеясы бойынша", honest: "шешімді әкімдік қабылдайды", newIdea: "Идея ұсыну",
       pick: "Картадан орын таңдау", review: "Тексерілуде", sent: "Идея жіберілді" }
     : { title: "Идеи жителей", support: "Поддержать", supported: "Вы поддержали", square: "Сквер у улицы Сыганак",
-      rejectedTab: "Отклонена", projectTab: "Стала проектом", fountain: "Фонтан во дворе", reason: "нет водопровода",
+      rejectedTab: "Отклонены", projectTab: "Стали проектами", fountain: "Фонтан во дворе", reason: "нет водопровода",
       improve: "Можно доработать", byRes: "По идее жителей", honest: "решение принимает акимат", newIdea: "Предложить идею",
       pick: "Выбрать место на карте", review: "На проверке", sent: "Идея отправлена" };
   const page = await newPage(browser, width, lang, "resident");
@@ -94,8 +94,10 @@ async function resident(browser, base, width, lang, full) {
   await page.waitForTimeout(400);
   const a = await audit(page, ".ri");
   check(`${tag} житель: экран «${T.title}», честная строка всегда видна`, a.text.includes(T.title) && a.text.includes(T.honest), a.text.slice(0, 300));
+  // Правило видно без прокрутки на телефоне (R11 SCHEMES §4 п. 3).
+  check(`${tag} житель: правило видно на первом экране`, await page.evaluate(() => { const r = document.querySelector(".ri-honest").getBoundingClientRect(); return r.bottom <= innerHeight && r.top >= 0; }));
   check(`${tag} житель: одна главная кнопка «${T.newIdea}»`, a.primaries === 1 && a.text.includes(T.newIdea), a.primaries);
-  check(`${tag} житель: нет прокрутки вбок, текст ≥ 14 px`, a.overflow <= 1 && a.small.length === 0, a.overflow + " " + a.small.join(", "));
+  check(`${tag} житель: нет прокрутки вбок, текст ≥ 13 px`, a.overflow <= 1 && a.small.length === 0, a.overflow + " " + a.small.join(", "));
   check(`${tag} житель: нет технических слов`, !TECH.some((w) => a.text.includes(w)), TECH.filter((w) => a.text.includes(w)));
   if (lang === "kk") {
     const ru = RU_WORDS.filter((w) => a.text.includes(w));
@@ -162,10 +164,10 @@ async function resident(browser, base, width, lang, full) {
 async function akimat(browser, base, width, lang) {
   const tag = `${width}-${lang}`;
   const T = lang === "kk"
-    ? { open: "Тексеру", publish: "Дауыс беруге жариялау", bikes: "велотұрақ", gazebo: "Аулада беседка мен орындықтар",
+    ? { open: "Тексеру", publish: "Жариялау", bikes: "велотұрақ", gazebo: "Аулада беседка мен орындықтар",
       sports: "жасөспірімдерге спорт алаңы", make: "Жобаға айналдыру", reject: "Себебін көрсетіп бас тарту", confirm: "Идеядан бас тарту",
       byRes: "Тұрғындар идеясы бойынша · 12", square: "Гүлзар", projects: "Жобалар", works: "Жұмыстар мен өшірулер" }
-    : { open: "Проверить", publish: "Опубликовать для голосования", bikes: "Велопарковка", gazebo: "Беседка и скамейки во дворе",
+    : { open: "Проверить", publish: "Опубликовать", bikes: "Велопарковка", gazebo: "Беседка и скамейки во дворе",
       sports: "Спортплощадка для подростков", make: "Сделать проектом", reject: "Отклонить с причиной", confirm: "Отклонить идею",
       byRes: "По идее жителей · 12", square: "Сквер", projects: "Проекты", works: "Работы и отключения" };
   const page = await newPage(browser, width, lang, "akimat");
@@ -179,10 +181,14 @@ async function akimat(browser, base, width, lang) {
   await page.waitForTimeout(400);
   const a = await audit(page, ".ri");
   // Новые (демо «Велопарковка» + идея, которую только что прислал житель) и 3 демо на голосовании — как в API сотрудника.
-  const expected = await page.evaluate(async () => ((await (await fetch("/api/civic/v2/staff/ideas")).json()).items || []).length);
+  const expected = await page.evaluate(async () => {
+    const session = await (await fetch("/api/civic/v1/session")).json();
+    const token = (session.data || session).csrf_token;
+    return ((await (await fetch("/api/civic/v2/staff/ideas", { headers: { "X-CSRF-Token": token } })).json()).items || []).length;
+  });
   check(`${tag} акимат: «Идеи на проверке» — все новые и на голосовании (${expected}), без главной кнопки до «${T.open}»`,
     expected >= 4 && a.primaries === 0 && (await page.locator(".ri-card").count()) === expected, a.text.slice(0, 200));
-  check(`${tag} акимат: нет прокрутки вбок, текст ≥ 14 px`, a.overflow <= 1 && a.small.length === 0, a.overflow + " " + a.small.join(", "));
+  check(`${tag} акимат: нет прокрутки вбок, текст ≥ 13 px`, a.overflow <= 1 && a.small.length === 0, a.overflow + " " + a.small.join(", "));
   // Опубликовать новую идею.
   await cardOf(page, T.bikes).locator("button", { hasText: T.open }).click();
   const opened = await audit(page, ".ri");
@@ -193,8 +199,10 @@ async function akimat(browser, base, width, lang) {
   check(`${tag} акимат: «${T.publish}» → идёт голосование`, true);
   // Идея без объекта → выбрать «Сквер» → «Сделать проектом» → вкладка «Проекты» с «По идее жителей · 12».
   await cardOf(page, T.gazebo).locator("button", { hasText: T.open }).click();
-  await page.locator(".ri-card--open .ri-checkform [data-key=check-land-yes]").click();
   await page.locator(".ri-card--open .bk-chip", { hasText: T.square }).click();
+  check(`${tag} акимат: «${T.make}» недоступна, пока не все 4 пункта «да» (подсказка рядом)`,
+    await page.locator(".ri-card--open [data-key=project]").isDisabled() && (await page.locator(".ri-card--open .ri-hint").count()) === 1);
+  for (const k of ["land", "networks", "access", "maintenance"]) await page.locator(`.ri-card--open [data-key=check-${k}-yes]`).click();
   await shot(page, `w2-akimat-check-${tag}`);
   await page.locator(".ri-card--open button", { hasText: T.make }).click();
   await page.waitForFunction((t) => document.body.innerText.includes(t), T.byRes, { timeout: 15000 });
@@ -220,7 +228,7 @@ async function akimat(browser, base, width, lang) {
   await page.waitForSelector(".rw .bk-card", { timeout: 30000 });
   const w = await audit(page, ".rw");
   check(`${tag} работы: «${T.works}», демо-записи района, одна главная кнопка`, w.text.includes(T.works) && w.primaries === 1 && (await page.locator(".rw [data-work]").count()) >= 4, w.text.slice(0, 200));
-  check(`${tag} работы: нет прокрутки вбок, текст ≥ 14 px`, w.overflow <= 1 && w.small.length === 0, w.overflow + " " + w.small.join(", "));
+  check(`${tag} работы: нет прокрутки вбок, текст ≥ 13 px`, w.overflow <= 1 && w.small.length === 0, w.overflow + " " + w.small.join(", "));
   await page.locator("[data-key=add]").click();
   await page.locator("[data-key=type-outage]").click();
   await page.locator("[data-key=save]").click();

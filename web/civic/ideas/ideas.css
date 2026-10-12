@@ -8,7 +8,7 @@
 .rw {
   display: grid;
   gap: var(--s-4);
-  max-width: 960px;
+  max-width: 720px; /* R11 SCHEMES §1: колонка до 720 px по центру листа оболочки */
   margin: 0 auto;
   min-width: 0;
 }
@@ -39,28 +39,44 @@
   color: var(--c-text-2);
 }
 
-/* Вкладки: на 375 одной строкой с прокруткой и тенью справа (как «Рядом» R08), без переноса в три ряда. */
+/* Вкладки — bk-tabs ui-kit R11 (текстом, выбранная — 600 и черта, затухание края — data-more). Здесь — только то,
+   что нужно и со старым ui-kit без bk-tabs: одна строка с прокруткой, зона нажатия 48 px, выбранная видна не цветом. */
 .ri-tabs {
+  display: flex;
+  gap: var(--s-4);
   max-width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
-  mask-image: linear-gradient(90deg, #000 85%, transparent);
-  padding-right: var(--s-6);
+  border-bottom: 1px solid var(--c-line);
 }
 .ri-tabs::-webkit-scrollbar {
   display: none;
 }
-.ri-tabs > button {
-  white-space: nowrap;
+.ri-tabs > [role="tab"] {
   flex: 0 0 auto;
+  white-space: nowrap;
+  min-height: var(--tap, 48px);
+  padding: 0 var(--s-1);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--c-text-2);
+  font: inherit;
+  cursor: pointer;
 }
-@media (min-width: 761px) {
-  .ri-tabs {
-    -webkit-mask-image: none;
-    mask-image: none;
-    padding-right: 0;
-  }
+.ri-tabs > [role="tab"][aria-selected="true"] {
+  color: var(--c-ink);
+  font-weight: var(--fw-semi);
+  border-bottom-color: var(--c-brand);
+}
+.ri-rule {
+  display: grid;
+  gap: var(--s-1);
+}
+.ri-pb,
+.ri-onevote,
+.ri-hint {
+  margin: 0;
 }
 
 .ri-body {
@@ -170,8 +186,9 @@
   align-items: center;
   gap: var(--s-2);
 }
+/* Раскрытая карточка — мягкая тонкая обводка, не рамка (чистый дизайн R11: без рамок и плашек). */
 .ri-card--open {
-  box-shadow: inset 0 0 0 2px var(--c-brand);
+  box-shadow: 0 0 0 1px var(--c-line-strong, var(--c-line)), var(--shadow-2, none);
 }
 /* Карточка, открытая по нажатию на метку идеи на карте, — коротко подсвечена. */
 .ri-card--flash {

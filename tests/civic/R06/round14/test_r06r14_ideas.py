@@ -11,6 +11,9 @@ from r06r14_helpers import NURA_POINT, call, context, device, make_service
 from ui.civic_store import v2 as v2mod
 
 
+ALL_YES = {"land": "yes", "networks": "yes", "access": "yes", "maintenance": "yes"}
+
+
 def idea_body(n=1, **over):
     body = {"title": "Сквер у дома", "description": "Нужны деревья и скамейки.",
             "geometry": {"type": "Point", "coordinates": NURA_POINT}, "device_id": device(n), "lang": "ru"}
@@ -175,13 +178,18 @@ def test_reject_needs_a_reason_and_shows_it_with_can_improve(stack, staff):
     assert decide(staff, item["id"], action="publish")["status"] == 409         # решение уже принято
 
 
-def test_checklist_is_private_until_decision(stack, staff):
+def test_check_closes_voting_and_checklist_is_private_until_decision(stack, staff):
     svc, v2 = stack
     item = new_idea(v2)
     decide(staff, item["id"], action="publish")
+    support(v2, item["id"], 2)
     check = {"land": "yes", "networks": "yes", "access": "unknown", "maintenance": "yes"}
     assert decide(staff, item["id"], action="check", check=check)["status"] == 200
-    assert call(v2, "GET", f"/ideas/{item['id']}")["body"]["data"]["item"]["check"] is None
+    got = call(v2, "GET", f"/ideas/{item['id']}")["body"]["data"]["item"]
+    # «Акимат проверяет» (R11 SCHEMES §2.1): голосование закрыто, число голосов заморожено, чек-лист — после решения.
+    assert got["status"] == "checking" and got["voting_open"] is False and got["votes"] == 1 and got["check"] is None
+    assert support(v2, item["id"], 3)["status"] == 409
+    assert item["id"] in [i["id"] for i in call(v2, "GET", "/ideas", query="status=checking")["body"]["data"]["items"]]
     staff_item = staff.call("GET", "/staff/ideas")["body"]["data"]["items"][0]
     assert staff_item["check"] == check
     bad = decide(staff, item["id"], action="check", check={"land": "maybe"})
@@ -194,7 +202,8 @@ def test_idea_becomes_project_by_residents_and_back_when_project_removed(stack, 
     decide(staff, item["id"], action="publish")
     for n in (2, 3, 4):
         support(v2, item["id"], n)
-    result = decide(staff, item["id"], action="project", near_street="улица Сыганак")
+    assert decide(staff, item["id"], action="project", near_street="улица Сыганак")["body"]["error"]["fields"].keys() == {"check"}
+    result = decide(staff, item["id"], action="project", near_street="улица Сыганак", check=ALL_YES)
     assert result["status"] == 200, result
     data = result["body"]["data"]
     project = data["proposal"]
@@ -215,17 +224,20 @@ def test_idea_becomes_project_by_residents_and_back_when_project_removed(stack, 
     with svc.db.read() as conn:
         actions = [r["action"] for r in conn.execute(
             "SELECT action FROM civic_idea_history WHERE idea_id = ? ORDER BY id", (item["id"],))]
-    assert actions == ["create", "publish", "project", "reopen", "project"]
+    assert actions == ["create", "publish", "project", "reopen", "project"]  # чек-лист пришёл вместе с «Сделать проектом»
 
 
-def test_project_needs_a_catalog_kind_and_lighting_needs_a_street_line(stack, staff):
+def test_project_needs_four_yes_a_catalog_kind_and_lighting_needs_a_street_line(stack, staff):
     svc, v2 = stack
     item = new_idea(v2)
     decide(staff, item["id"], action="publish")
-    assert decide(staff, item["id"], action="project")["body"]["error"]["fields"].keys() == {"kind"}
-    assert "geometry" in decide(staff, item["id"], action="project", kind="lighting")["body"]["error"]["fields"]
+    almost = dict(ALL_YES, maintenance="unknown")
+    assert decide(staff, item["id"], action="project", kind="square", check=almost)["body"]["error"]["fields"].keys() == {"check"}
+    assert decide(staff, item["id"], action="project", check=ALL_YES)["body"]["error"]["fields"].keys() == {"kind"}
+    # Отказ откатывает всю правку (и чек-лист из того же запроса) — чек-лист передаём снова.
+    assert "geometry" in decide(staff, item["id"], action="project", kind="lighting", check=ALL_YES)["body"]["error"]["fields"]
     line = {"type": "LineString", "coordinates": [NURA_POINT, [71.3503, 51.1302]]}
-    ok = decide(staff, item["id"], action="project", kind="lighting", geometry=line)
+    ok = decide(staff, item["id"], action="project", kind="lighting", geometry=line, check=ALL_YES)
     assert ok["status"] == 200 and ok["body"]["data"]["proposal"]["kind"] == "lighting"
 
 

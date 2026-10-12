@@ -21,7 +21,7 @@ index 111c2621..573d3531 100644
  ]
  
 diff --git a/ui/web_server.py b/ui/web_server.py
-index 42e2c89e..9311665a 100644
+index 42e2c89e..6a6231b7 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
 @@ -96,6 +96,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
@@ -71,10 +71,10 @@ index 42e2c89e..9311665a 100644
 +    "ideas.get": V2Handler("R06", ("ui.civic_store.v2",), "get_idea"),
 +    "ideas.support": V2Handler("R06", ("ui.civic_store.v2",), "support_idea"),
 +    "ideas.decide": V2Handler("R06", ("ui.civic_store.v2",), "decide_idea", staff=True),
-+    # Чтение для сотрудника (GET): без staff=True — шлюз требует для staff-маршрутов CSRF, а клиент оболочки шлёт его
-+    # только в изменяющих запросах. Сессию сотрудника функции R06 проверяют сами (R15-S17): без входа — 401.
-+    "ideas.staff": V2Handler("R06", ("ui.civic_store.v2",), "list_ideas_staff"),
-+    "works.list": V2Handler("R06", ("ui.civic_store.v2",), "list_works"),
++    # Чтение для сотрудника (очередь модерации, записи «Рядом»): staff=True — сессия и CSRF (R15 route policy);
++    # модули R06 шлют X-CSRF-Token и в этих GET (клиент оболочки шлёт его только в изменяющих запросах).
++    "ideas.staff": V2Handler("R06", ("ui.civic_store.v2",), "list_ideas_staff", staff=True),
++    "works.list": V2Handler("R06", ("ui.civic_store.v2",), "list_works", staff=True),
 +    "works.create": V2Handler("R06", ("ui.civic_store.v2",), "create_work", staff=True),
 +    "works.update": V2Handler("R06", ("ui.civic_store.v2",), "update_work", staff=True),
 +    "works.remove": V2Handler("R06", ("ui.civic_store.v2",), "remove_work", staff=True),

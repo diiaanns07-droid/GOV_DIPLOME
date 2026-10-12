@@ -132,7 +132,7 @@ def test_seed_makes_the_whole_idea_path_once(stack, staff):
     assert seed_r14_demo(svc)["ideas"] == [{"action": "kept"}]                     # повтор ничего не дублирует
     public = call(v2, "GET", "/ideas")["body"]["data"]
     by_title = {i["title_ru"]: i for i in public["items"]}
-    assert public["counts"] == {"voting": 3, "project": 1, "rejected": 1}
+    assert public["counts"] == {"voting": 3, "checking": 0, "project": 1, "rejected": 1}
     square = by_title["Сквер у улицы Сыганак"]
     assert square["votes"] == 47 and square["demo"] is True and square["object"]["kind"] == "square"
     assert square["title_kk"] == "Сығанақ көшесі маңындағы гүлзар" and square["check"] is None

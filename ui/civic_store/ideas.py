@@ -3,7 +3,8 @@
 Путь идеи:
     review   — житель прислал; видна только автору («Идею опубликуют после проверки») и сотруднику;
     voting   — сотрудник опубликовал; соседи поддерживают («Поддержать», одна поддержка с устройства);
-    project  — акимат проверил реализуемость и сделал из идеи проект (civic_proposals, «По идее жителей · N голосов»);
+    checking — акимат проверяет реализуемость (чек-лист сохранён): голосование закрыто, идея — во вкладке «Голосование»;
+    project  — по всем 4 пунктам чек-листа «да», акимат сделал проект (civic_proposals, «По идее жителей · N голосов»);
     rejected — отказ с причиной (видна всем) и, по желанию, «Можно доработать: …»;
     hidden   — не опубликована при модерации (личные данные, грубые слова, реклама); автор видит, что идея не прошла.
 
@@ -28,8 +29,8 @@ from .stages import parse_district
 from .validate import ValidationError, _Errors, clean_geometry, clean_text, is_valid_id
 
 
-STATUSES = ("review", "voting", "project", "rejected", "hidden")
-PUBLIC_STATUSES = ("voting", "project", "rejected")
+STATUSES = ("review", "voting", "checking", "project", "rejected", "hidden")
+PUBLIC_STATUSES = ("voting", "checking", "project", "rejected")
 ACTIONS = ("publish", "hide", "check", "project", "reject")
 CHECK_KEYS = ("land", "networks", "access", "maintenance")  # чек-лист R11: idea.check.*
 CHECK_ANSWERS = ("yes", "no", "unknown")
@@ -138,7 +139,7 @@ class IdeaRepository:
         allowed = STATUSES if staff else PUBLIC_STATUSES
         if any(value not in allowed for value in raw):
             raise BadRequest("Недопустимый фильтр.", {"status": "Допустимо: " + ", ".join(allowed)})
-        statuses = sorted(set(raw)) or (["review", "voting"] if staff else list(PUBLIC_STATUSES))
+        statuses = sorted(set(raw)) or (["review", "voting", "checking"] if staff else list(PUBLIC_STATUSES))
         with self.db.read() as conn:
             device = self._device(conn, device_id)
             rows = conn.execute(
@@ -151,9 +152,10 @@ class IdeaRepository:
                 if district is not None and row["district"] != district:
                     continue
                 items.append(self._dto(conn, row, device, staff=staff))
-        # Порядок для жителя: свои на проверке сверху, затем больше голосов — выше (внутри статуса).
-        rank = {"review": 0, "hidden": 0, "voting": 1, "project": 2, "rejected": 3}
-        items.sort(key=lambda i: (rank[i["status"]], -i["votes"], i["created_at"]), reverse=False)
+        # Порядок (R11 SCHEMES §2.1): свои на проверке сверху, затем больше голосов — выше, при равенстве — новее.
+        rank = {"review": 0, "hidden": 0, "voting": 1, "checking": 1, "project": 2, "rejected": 3}
+        items.sort(key=lambda i: i["created_at"], reverse=True)
+        items.sort(key=lambda i: (rank[i["status"]], -i["votes"]))
         counts = {s: sum(1 for i in items if i["status"] == s) for s in statuses}
         return {"items": items, "counts": counts, "truncated": len(rows) > MAX_LIST}
 
@@ -335,11 +337,11 @@ class IdeaRepository:
     def decide(self, actor, idea_id, payload: dict) -> dict:
         """Действие сотрудника: {action, …}.
             publish                        review → voting (идея видна всем)
-            hide    {reason}               review | voting → hidden (служебная причина)
-            check   {check}                сохранить чек-лист реализуемости (review | voting)
+            hide    {reason}               review | voting | checking → hidden (служебная причина)
+            check   {check}                чек-лист реализуемости: voting | checking → checking (голосование закрыто)
             project {check?, kind?, geometry?, rotation_deg?, near_street?, near_street_kk?, planned_year?}
-                                           voting → project: создать проект (предложение) «По идее жителей»
-            reject  {reason, can_improve?, check?}   review | voting → rejected (причина видна всем)
+                                           voting | checking → project, только при 4 «да»: проект «По идее жителей»
+            reject  {reason, can_improve?, check?}   review | voting | checking → rejected (причина видна всем)
         """
         errors = _Errors()
         action = payload.get("action")
@@ -366,8 +368,8 @@ class IdeaRepository:
         with self.db.write() as conn:
             row = self._row(conn, idea_id)
             status = row["status"]
-            sources = {"publish": ("review",), "hide": ("review", "voting"), "check": ("review", "voting"),
-                       "project": ("voting",), "reject": ("review", "voting")}[action]
+            sources = {"publish": ("review",), "hide": ("review", "voting", "checking"), "check": ("voting", "checking"),
+                       "project": ("voting", "checking"), "reject": ("review", "voting", "checking")}[action]
             if status not in sources:
                 raise Conflict("Решение по идее уже принято: обновите карточку.", None, code="already_decided")
             check_json = _dumps(check) if check is not None else row["check_json"]
@@ -380,9 +382,10 @@ class IdeaRepository:
                                     decided_by = ? WHERE id = ?""", (reason, now, now, actor.user_id, idea_id))
                 self._history(conn, idea_id, now, "hide", "hidden", reason, actor.user_id, actor.label)
             elif action == "check":
-                conn.execute("UPDATE civic_ideas SET check_json = ?, updated_at = ? WHERE id = ?",
+                # Акимат начал проверку — голосование закрыто, число голосов больше не меняется (R11 SCHEMES §2.1).
+                conn.execute("UPDATE civic_ideas SET status = 'checking', check_json = ?, updated_at = ? WHERE id = ?",
                              (check_json, now, idea_id))
-                self._history(conn, idea_id, now, "check", status, "", actor.user_id, actor.label)
+                self._history(conn, idea_id, now, "check", "checking", "", actor.user_id, actor.label)
             elif action == "reject":
                 conn.execute("""UPDATE civic_ideas SET status = 'rejected', reason = ?, can_improve = ?,
                                     check_json = ?, votes_at_decision = ?, updated_at = ?, decided_at = ?,
@@ -397,6 +400,10 @@ class IdeaRepository:
     def _to_project(self, conn, actor, row, payload, check_json, now) -> dict:
         """Проект из идеи: вид и место — из запроса сотрудника, иначе из эскиза жителя (объект R05), иначе точка идеи.
         Название проекта — «вид + улица рядом» на обоих языках (как у демо-проектов); текст жителя остаётся в идее."""
+        check = _loads(check_json) if check_json else None
+        if not check or any(check.get(k) != "yes" for k in CHECK_KEYS):
+            # R11 SCHEMES §2.3: «Сделать проектом» — только когда по всем четырём пунктам «да».
+            raise ValidationError({"check": "Проект — только когда по всем четырём пунктам чек-листа «да»."})
         obj = _loads(row["object_json"]) if row["object_json"] else {}
         kind = payload.get("kind") or obj.get("kind")
         geometry = payload.get("geometry") or obj.get("geometry") or _loads(row["geometry_json"])
