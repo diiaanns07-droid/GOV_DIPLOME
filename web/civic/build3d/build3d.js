@@ -340,7 +340,7 @@
   var PITCH_3D = 30;
   var TILT_3D = 52;
   var OUTLINE_COLOR = 0x176b4a; // пунктир границы проекта (бренд)
-  var OUTLINE_SELECTED = 0x2f7fd6; // выбранный проект — цвет фокуса ui-kit
+  var OUTLINE_SELECTED = 0x152c26; // выбранный проект — как его табличка: сплошной #152c26 (дизайн-марафон; было — синий фокуса)
 
   // ───────────── mount ─────────────
 
@@ -834,6 +834,24 @@
       dock.appendChild(box);
     }
 
+    // Картинка карточки каталога (дизайн-марафон): превью модели из data/previews (тот же свет и угол, что на карте).
+    // Не загрузилась (сборка без data/previews) — прежний значок.
+    function previewSrc(kind) {
+      var base = o.dataUrl + "previews/" + kind;
+      return { src: base + ".png", srcset: base + ".png 1x, " + base + "@2x.png 2x", width: 240, height: 160 };
+    }
+    function cardPic(kind) {
+      var k = Core.KINDS[kind];
+      var pv = previewSrc(kind);
+      var wrap = el("span", "b3d-card__pic");
+      var img = el("img", "", { src: pv.src, srcset: pv.srcset, alt: "", width: "120", height: "80", decoding: "async", draggable: "false" });
+      img.addEventListener("error", function () {
+        if (wrap.parentNode) wrap.parentNode.replaceChild(icon(k.icon, o.iconsUrl), wrap);
+      });
+      wrap.appendChild(img);
+      return wrap;
+    }
+
     function renderCatalog() {
       dock.setAttribute("data-state", "catalog");
       var head = el("div", "b3d-head");
@@ -846,7 +864,7 @@
         var k = Core.KINDS[kind];
         var name = t(k.key);
         var b = el("button", "b3d-card", { type: "button", "data-kind": kind, "aria-label": t("build3d.catalog.place", { kind: name }) });
-        b.appendChild(icon(k.icon, o.iconsUrl));
+        b.appendChild(cardPic(kind));
         b.appendChild(el("span", "b3d-card__label", { text: name }));
         if (count >= Core.MAX_OBJECTS) b.disabled = true;
         b.addEventListener("click", function (ev) {
@@ -2402,7 +2420,7 @@
         if (kind === "lighting") return;
         var k = Core.KINDS[kind];
         var b = el("button", "b3d-card", { type: "button", "data-kind": kind, "aria-label": t(k.key) });
-        b.appendChild(icon(k.icon, o.iconsUrl));
+        b.appendChild(cardPic(kind));
         b.appendChild(el("span", "b3d-card__label", { text: t(k.key) }));
         b.addEventListener("click", function (ev) {
           start(kind, { keyboard: ev.detail === 0, pick: true });
@@ -3559,9 +3577,7 @@
       // Картинка-превью объекта для карточек каталога (дизайн-марафон): {src, srcset} из data/previews/ (рендер тех же
       // моделей — tests/civic/R05/build3d/make_previews.mjs, 240×160 и @2x). Без three.js — годится для лёгкого вида.
       previewOf: function (kind) {
-        if (!Core.KINDS[kind]) return null;
-        var base = o.dataUrl + "previews/" + kind;
-        return { src: base + ".png", srcset: base + ".png 1x, " + base + "@2x.png 2x", width: 240, height: 160 };
+        return Core.KINDS[kind] ? previewSrc(kind) : null;
       },
       flyToProposals: flyToProposals,
       setMode: setMode,

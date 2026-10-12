@@ -165,7 +165,7 @@
   margin: 0;
 }
 
-/* ── Каталог: 5 карточек с иконкой и подписью ── */
+/* ── Каталог: 5 карточек — превью модели и подпись (дизайн-марафон; раньше — значок-линия) ── */
 .b3d-cards {
   display: flex;
   gap: var(--s-3, 12px);
@@ -189,11 +189,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--s-2, 8px);
-  padding: var(--s-2, 8px);
-  border: 1px solid var(--c-line-strong, #c9d3cb);
-  border-radius: var(--r-m, 12px);
+  gap: 6px;
+  padding: var(--s-2, 8px) var(--s-2, 8px) 10px;
+  border: 0;
+  border-radius: var(--r-l, 16px);
+  /* Без рамки и тени (одна тень — у панели, GLASS.md): тонкая внутренняя линия, на стекле — 72 % белого */
   background: var(--c-surface, #ffffff);
+  box-shadow: inset 0 0 0 1px var(--c-line, #e2e8e4);
   color: var(--c-ink, #152c26);
   font: inherit;
   font-size: var(--fs-body, 16px);
@@ -203,21 +205,41 @@
   cursor: pointer;
   touch-action: manipulation;
   transition:
-    border-color var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    background var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    transform var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+    box-shadow var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+    background-color var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+    transform var(--t-press, 120ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.bk-glass .b3d-card {
+  background: rgba(255, 255, 255, 0.72);
 }
 .b3d-card .ic {
   width: 32px;
   height: 32px;
   color: var(--c-brand, #176b4a);
 }
+/* Превью: прозрачный фон, вписано по высоте строки (ноутбук 72 px, телефон 64 px) */
+.b3d-card__pic {
+  display: block;
+  width: 100%;
+  height: 72px;
+}
+.b3d-card__pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 .b3d-card:hover {
-  border-color: var(--c-brand, #176b4a);
-  background: var(--c-brand-soft, #e6f1eb);
+  background: var(--c-surface, #ffffff);
+  box-shadow: inset 0 0 0 1px rgba(21, 44, 38, 0.28);
 }
 .b3d-card:active {
-  transform: translateY(1px);
+  transform: scale(var(--press-scale, 0.97)); /* отклик нажатия — лёгкое сжатие (токены движения R11) */
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d-card:active {
+    transform: none;
+  }
 }
 .b3d-card:disabled {
   opacity: 0.5;
@@ -225,6 +247,8 @@
 }
 .b3d-card--skel {
   border: 0;
+  box-shadow: none;
+  min-height: 115px; /* как карточка с превью — каталог не «прыгает» после загрузки */
 }
 .b3d-card__label {
   overflow-wrap: normal;
@@ -457,7 +481,12 @@
 .b3d-label:focus-visible {
   outline: none;
 }
-.b3d-label[aria-pressed="true"] .b3d-label__pill,
+/* Выбранный проект (дизайн-марафон): как нажатая кнопка ui-kit — сплошной #152c26, белый текст (GLASS.md: «нажатая —
+   сплошная #152c26»; одна акцентная краска). Синее кольцо — только фокус с клавиатуры. */
+.b3d-label[aria-pressed="true"] .b3d-label__pill {
+  background: var(--c-ink, #152c26);
+  color: var(--c-on-ink, #ffffff);
+}
 .b3d-label:focus-visible .b3d-label__pill {
   outline: 3px solid var(--c-focus, #2f7fd6);
   outline-offset: 2px;
@@ -565,6 +594,12 @@
   }
   .b3d-dock:not(.bk-glass) {
     border-radius: var(--r-xl, 20px) var(--r-xl, 20px) 0 0;
+  }
+  .b3d-card__pic {
+    height: 64px;
+  }
+  .b3d-card--skel {
+    min-height: 107px;
   }
   .b3d-card {
     flex: 0 0 144px; /* «Спортплощадка» одним словом — 16 px без переноса */
