@@ -8,9 +8,9 @@
 .nb {
   display: grid;
   gap: var(--s-3);
-  max-width: 960px;
+  max-width: 720px; /* листы-списки — колонка 720 по центру, как «Идеи» (R11 марафон §9.1 f) */
   margin: 0 auto;
-  padding: var(--s-5) var(--s-6) var(--s-8);
+  padding: 0 0 var(--s-4); /* поля даёт лист раздела R01; отдельная страница — index.html */
 }
 .nb__title {
   margin: 0;
@@ -156,9 +156,6 @@
   color: var(--c-danger);
 }
 @media (max-width: 720px) {
-  .nb {
-    padding: var(--s-3) var(--s-4) var(--s-6);
-  }
   .nb__district {
     max-width: none;
   }

@@ -296,6 +296,8 @@
         });
       rootEl.appendChild(list);
       rootEl.appendChild(
+        // «Сохранить» — плавающая капсула у нижнего края (как панель инструментов iOS); «Службы» — форма, поэтому
+        // не стекло, а непрозрачная (GLASS.md G-1, R11 марафон §11.5).
         h("div", { class: "svc__actions" }, [
           h("button", { type: "button", class: "bk-btn bk-btn--primary svc__save", text: tr("common.action.save"), onclick: save }),
           h("p", { class: "svc__status", role: "status", "data-kind": state.messageKind, text: state.message }),

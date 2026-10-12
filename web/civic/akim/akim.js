@@ -149,6 +149,12 @@
     svg.appendChild(use);
     return svg;
   }
+  // Линейная иллюстрация ui-kit (#ill-* в icons.svg, класс .bk-ill — R11, дизайн-марафон).
+  function illustration(name) {
+    var svg = svgEl("svg", { class: "bk-ill", "aria-hidden": "true", focusable: "false" });
+    svg.appendChild(svgEl("use", { href: ICONS + "#ill-" + name }));
+    return svg;
+  }
   function svgEl(tag, attrs) {
     var el = doc.createElementNS("http://www.w3.org/2000/svg", tag);
     Object.keys(attrs || {}).forEach(function (k) {
@@ -453,7 +459,8 @@
       var title = h("div", { class: "akim__titlebox" }, [
         h(/^h[1-3]$/.test(opts.titleTag) ? opts.titleTag : "h1", { class: "akim__title" }, [
           tr("akim.title") + " ",
-          h("span", { class: "akim__title-date", text: "· " + I().formatDate(date) }),
+          // На телефоне дата — своей строкой и без точки (иначе в ҚАЗ строка начиналась с «· 12 қазан»).
+          h("span", { class: "akim__title-date" }, [h("span", { class: "akim__title-sep", text: "· " }), I().formatDate(date)]),
         ]),
         // Одна строка мета 13 серым; «данные — пример» — серой строкой внизу экрана (CLEAN_PASS §3 R08 п. 1).
         h("p", { class: "akim__meta bk-meta", text: meta.join(" · ") }),
@@ -548,9 +555,11 @@
     }
     function renderError() {
       var kind = state.error;
-      var box = h("div", { class: "bk-card akim-card" }, [
+      // Как у остальных разделов (R11 марафон §10.2): без карточки (на стекле листа и так подложка), иллюстрация
+      // ui-kit, «Повторить» — обычная кнопка (главное на экране — сами данные, а не повтор).
+      var box = h("div", { class: "akim-card akim-error" }, [
         h("div", { class: "bk-error", role: "alert" }, [
-          icon(kind === "network" ? "wifi-off" : "alert", 48),
+          illustration(kind === "network" ? "offline" : "search"),
           h("p", {
             class: "bk-error__title",
             text: kind === "network" ? tr("common.state.network_title") : kind === "date" ? tr("akim.bad_date") : tr("common.state.error_title"),
@@ -562,7 +571,7 @@
             "button",
             {
               type: "button",
-              class: "bk-btn bk-btn--primary",
+              class: "bk-btn",
               onclick: function () {
                 if (kind === "date") setDate(null);
                 else load();
@@ -661,6 +670,7 @@
           return null;
         });
     }
+    var justChosen = null;
     function chooseOption(item, n, statusEl) {
       statusEl.textContent = "";
       return csrf()
@@ -677,7 +687,9 @@
         .then(function (r) {
           if (r.ok) {
             item.chosen = { option: n };
+            justChosen = item.id; // подтверждение мягко «проявится» один раз — сразу после нажатия
             render();
+            justChosen = null;
             var again = rootEl.querySelector('[data-key="decision:' + item.id + '"]');
             if (again) again.focus({ preventScroll: true });
             load(true);
@@ -708,7 +720,12 @@
             h("li", { class: "akim-decision__option" + (chosen ? " is-chosen" : "") }, [
               h("span", { class: "akim-decision__option-text", text: tr("akim.decision.option", { n: n, text: o[l] || o.ru }) }),
               chosen
-                ? h("span", { class: "bk-status akim-decision__chosen", "data-status": "fixed", text: tr("akim.decision.chosen", { n: n }) })
+                ? h("span", {
+                    class: "bk-status akim-decision__chosen",
+                    "data-status": "fixed",
+                    "data-just": justChosen === it.id ? "" : null,
+                    text: tr("akim.decision.chosen", { n: n }),
+                  })
                 : h("button", {
                     type: "button",
                     class: "bk-btn bk-btn--ghost akim-decision__choose",

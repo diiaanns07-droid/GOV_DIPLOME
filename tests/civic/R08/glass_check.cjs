@@ -11,6 +11,7 @@
  *     сверху — свои фоны предков текста (подложки .bk-card и т. п.); норма 4,5:1 (крупный текст — 3:1);
  *   - внутри R08 нет второго стекла (backdrop-filter) — стекло только у листа R01 и у компактной полосы раздела
  *     «Картины дня» (.akim__bar-btn, появляется при прокрутке — GLASS.md §2 «шапка»);
+ *   - «Службы» — форма: непрозрачный белый контейнер (GLASS.md G-1, R11 марафон §11.5);
  *   - числа «Картины дня» без подложки (CLEAN_PASS п. 3), поля даты/района/выбора службы — непрозрачные;
  *   - в печати лист белый (ui-kit @media print).
  * Итог — glass_check.json в папке кадров.
@@ -158,6 +159,10 @@ async function open(browser, { w, h, lang, mode, hash }) {
           const f = await page.evaluate((root) => Array.from(document.querySelectorAll(root + " select")).filter((e) => e.getClientRects().length)
             .map((e) => getComputedStyle(e).backgroundColor), s.root);
           check(`${tag}: поля выбора непрозрачные`, f.length >= 1 && f.every((b) => /^rgb\(/.test(b)), f.slice(0, 3));
+          if (s.name === "services") {
+            const bg = await page.evaluate(() => getComputedStyle(document.querySelector("#birge-screen-root > .svc, #birge-screen-root.svc")).backgroundColor);
+            check(`${tag}: «Службы» — форма в непрозрачном белом контейнере (не стекло)`, bg === "rgb(255, 255, 255)", bg);
+          }
         }
         check(`${tag}: без ошибок JS`, errors.length === 0, errors.slice(0, 3));
         await ctx.close();

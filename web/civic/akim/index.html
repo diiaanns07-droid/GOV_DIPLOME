@@ -11,6 +11,10 @@
   <link rel="stylesheet" href="akim.css">
   <style>
     html, body { margin: 0; }
+    /* поля отдельной страницы (в оболочке R01 их даёт лист раздела) */
+    main.akim { padding: var(--s-5) var(--s-6) var(--s-8); }
+    @media (max-width: 720px) { main.akim { padding: var(--s-3) var(--s-4) var(--s-6); } }
+    @media print { main.akim { padding: 0; } }
     body { min-height: 100vh; }
     .akim-header__nav { display: flex; gap: var(--s-1); }
     .akim-header__nav a {

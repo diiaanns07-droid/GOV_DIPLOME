@@ -94,6 +94,7 @@ async function login(page) {
       await page.waitForSelector("#birge-day-root.akim[data-state=ok]", { timeout: 60000 });
       const chosen = await page.$eval(`[data-key="${key}"]`, (e) => (e.querySelector(".akim-decision__chosen") || {}).textContent || "");
       check("«Выбрать» после входа сотрудника — сохранено на сервере (CSRF оболочки)", st === 200 && /Выбран вариант \d/.test(chosen), { st, chosen });
+      await page.waitForTimeout(700); // блоки «Картины дня» проявляются ~0,4 с — кадр после анимации
       await page.screenshot({ path: path.join(OUT, "day-1366-ru-chosen.png") });
       // «Ещё» → «Службы»
       // «Ещё»: с FINAL-2 (R01 d791fc0) — маленькое меню в шапке; раньше (a96f6e3) — экран #more со списком.

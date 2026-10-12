@@ -10,18 +10,19 @@
   font-weight: var(--fw-semi); /* два веса: «жирный» = 600 */
 }
 
-.akim {
+.akim { /* внешних полей нет: в оболочке их даёт лист раздела R01 (заголовки разделов на одной высоте),
+           на отдельной странице — index.html */
   display: block;
   max-width: 1280px;
   margin: 0 auto;
-  padding: var(--s-5) var(--s-6) var(--s-8);
+  padding: 0 0 var(--s-4);
 }
 
 /* ── шапка страницы ── */
 .akim__top {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: flex-start; /* заголовок на той же высоте, что у соседних разделов листа R01 */
   justify-content: space-between;
   gap: var(--s-3) var(--s-5);
   margin-bottom: var(--s-4);
@@ -256,6 +257,24 @@
   }
 }
 
+/* уже 1280 (проектор 1024, телефон): колонка «Горячих мест» узкая — маленькая карта справа от заголовка,
+   список во всю ширину, подпись OpenStreetMap (ODbL) — под списком */
+@media (max-width: 1279px) {
+  .akim-hot--map {
+    grid-template-columns: minmax(0, 1fr) 96px;
+    grid-template-areas: "head map" "list list" "credit credit";
+  }
+  .akim-minimap {
+    display: contents;
+  }
+  .akim-minimap__svg {
+    grid-area: map;
+  }
+  .akim-minimap__credit {
+    grid-area: credit;
+  }
+}
+
 /* ── загрузка: скелет той же формы, что экран ── */
 .akim-skel__num {
   width: 64px;
@@ -366,7 +385,7 @@
 
 /* ── сводка текстом: обычный абзац 17 без плашки ── */
 .akim-summary {
-  margin: var(--s-2) 0 var(--s-5);
+  margin: var(--s-2) 0 var(--s-4);
 }
 .akim-summary__title {
   margin: 0 0 var(--s-1);
@@ -376,7 +395,7 @@
 }
 .akim-summary__text {
   margin: 0;
-  max-width: 110ch;
+  max-width: 70ch; /* строка не длиннее ~70 знаков (чек-лист марафона п. 3, R11 §9.2 d) */
   font-size: var(--fs-lead); /* 17 */
   line-height: 1.5;
 }
@@ -428,6 +447,10 @@
   font-size: var(--fs-body);
   line-height: 1.35;
 }
+.akim-decision__blocker,
+.akim-decision__meta {
+  max-width: 70ch;
+}
 .akim-decision__blocker {
   color: var(--c-text-2);
 }
@@ -455,6 +478,25 @@
 .akim-decision__choose {
   flex: none;
   min-height: 44px;
+}
+/* «Выбран вариант N» — сразу после нажатия мягко проявляется (240 мс), точка один раз «пульсирует» */
+.akim-decision__chosen[data-just] {
+  animation: akim-chosen 240ms var(--ease) both;
+}
+@keyframes akim-chosen {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .akim-decision__chosen[data-just] {
+    animation: none;
+  }
 }
 .akim-decision__chosen {
   flex: none;
@@ -735,10 +777,10 @@
   height: auto;
   margin: 0 auto var(--s-3);
 }
-.akim-empty__line {
+.akim-empty__line { /* как иллюстрации ui-kit (.bk-ill): линия 1,5, цвет --c-text-3 */
   fill: none;
-  stroke: var(--c-text-2);
-  stroke-width: 2;
+  stroke: var(--c-text-3);
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -772,11 +814,14 @@
   .akim-proposals { order: 5; }
 }
 @media (max-width: 720px) {
-  .akim {
-    padding: var(--s-3) var(--s-4) var(--s-6);
-  }
   .akim__top {
     align-items: stretch;
+  }
+  .akim__title-date {
+    display: block;
+  }
+  .akim__title-sep {
+    display: none;
   }
   /* дата и район — каждый во всю ширину: «Барлық аудандар» не обрезается */
   .akim__controls {
@@ -815,23 +860,12 @@
     min-height: 0;
     padding: var(--s-3) 0;
   }
-  /* телефон: маленькая карта справа от заголовка, подпись OpenStreetMap (ODbL) — под списком */
   .akim-obj__tags {
     justify-items: start;
     text-align: left;
   }
   .akim-hot--map {
-    grid-template-columns: minmax(0, 1fr) 88px;
-    grid-template-areas: "head map" "list list" "credit credit";
-  }
-  .akim-minimap {
-    display: contents;
-  }
-  .akim-minimap__svg {
-    grid-area: map;
-  }
-  .akim-minimap__credit {
-    grid-area: credit;
+    grid-template-columns: minmax(0, 1fr) 88px; /* телефон: карта ещё меньше */
   }
   .akim-bars .bk-bar {
     grid-template-columns: minmax(0, 9.5em) 1fr 3ch;
