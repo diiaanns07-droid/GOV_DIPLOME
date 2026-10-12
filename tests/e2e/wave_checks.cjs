@@ -166,7 +166,7 @@ async function goto(page, url, lang, { fixLang = true } = {}) {
   await page.waitForFunction(() => document.readyState === "complete" && document.body.innerText.length > 50, null, { timeout: 40000 }).catch(() => null);
   await L.sleep(2500);
   if (fixLang && (await page.evaluate(() => document.documentElement.lang)) !== lang) {
-    const b = await L.firstVisible(page.getByRole("button", { name: lang === "kk" ? /^ҚАЗ$/ : /^РУС$/ }));
+    const b = await L.firstVisible(page.getByRole("button", { name: lang === "kk" ? /^(·\s*)?ҚАЗ$/ : /^(·\s*)?РУС$/ }));
     if (b) { await b.click().catch(() => null); await L.sleep(1000); }
   }
 }
@@ -463,7 +463,8 @@ async function checkCentral(ctx) {
       const card = await openCard(S.page, stop);
       const fix = card ? await L.clickText(card, part(W(lang, ["target.mark_fixed", "heat.mark_fixed"], lang === "kk" ? "Түзетілді деп белгілеу" : "Отметить исправленным")), { wait: 1500 }) : false;
       const scope = card || S.page;
-      const whatBox = await L.firstVisible(scope.getByRole("textbox", { name: part(W(lang, "fix.what_done")) }));
+      const whatBox = (await L.firstVisible(scope.getByRole("textbox", { name: part(W(lang, "fix.what_done")) })))
+        || (await L.firstVisible(scope.locator(".r07-fixform input[name=what_done], .r07-fixform textarea, input[name=what_done]")));  // FINAL-3: форма R09 в карточке
       if (whatBox) await whatBox.fill("Заменили крышу павильона").catch(() => null);
       const files = scope.locator("input[type=file]");
       let photo = false;
@@ -935,7 +936,21 @@ async function checkClutter(ctx) {
   const { browser, base, variants, runtime } = ctx;
   const want = { resident: ["common.nav.map", "common.nav.mine", "common.nav.nearby|shell.nav.nearby", "common.nav.ideas|shell.nav.ideas", "common.nav.more|shell.nav.more"],
     akimat: ["common.nav.map", "common.nav.day", "common.nav.complaints|shell.nav.inbox", "common.nav.projects|shell.nav.projects", "common.nav.more|shell.nav.more"] };
+  // FINAL-3 на телефоне (CLEAN_PASS, R01 §14.1): разделов в шапке нет — первая группа меню аватара: разделы и пункты «Ещё»
+  // подряд (без пункта «Ещё»). Возвращает разделы; пункты «Ещё» — в avatarExtra (проверка «Ещё ≤ 4» ниже).
+  const avatarMenu = async (page) => {
+    if (!(await L.firstVisible(page.locator(".birge-avatar")))) return null;
+    await page.locator(".birge-avatar").first().click().catch(() => null); await L.sleep(600);
+    const items = await page.evaluate(() => { const out = []; for (const e of document.querySelectorAll("#birge-account [role^=menuitem], #birge-account [role=separator]")) {
+      if (e.getAttribute("role") === "separator") break; out.push((e.innerText || "").trim()); } return out; });
+    await page.keyboard.press("Escape").catch(() => null);
+    return items;
+  };
   const navOf = async (page, lang, mobile) => {
+    if (mobile && !(await L.firstVisible(page.getByRole("button", { name: menuRe(lang) })))) {
+      const items = await avatarMenu(page);
+      if (items) return items;
+    }
     if (mobile) await L.clickText(page, menuRe(lang), { wait: 900 });
     const items = await page.evaluate(() => [...document.querySelectorAll(".birge-nav button, .birge-nav a")]
       .filter((e) => e.getClientRects().length && !e.hidden && getComputedStyle(e).visibility !== "hidden").map((e) => (e.innerText || e.getAttribute("aria-label") || "").trim().split("\n")[0]).filter(Boolean));
@@ -950,7 +965,10 @@ async function checkClutter(ctx) {
       let P = await openPage(browser, size, lang, { "birge.mode": mode });
       try {
         await goto(P.page, base, lang);
-        const nav = await navOf(P.page, lang, P.mobile);
+        const all = await navOf(P.page, lang, P.mobile);
+        // Меню аватара (телефон FINAL-3): разделы — из эталона IA, остальное — пункты «Ещё» (их ≤ 4 — отдельная строка ниже).
+        const viaAvatar = P.mobile && !all.includes(expected[4]);
+        const nav = viaAvatar ? all.filter((x) => expected.includes(x)) : all;
         const dayInResident = mode === "resident" && nav.includes(W(lang, "common.nav.day"));
         add("P-12", `${tag} ${mode}`, "меню по умолчанию: ≤ 5 пунктов, только разделы с модулями" + (mode === "resident" ? ", без «Картины дня»" : ""),
           st(nav.length > 0 && nav.length <= 5 && !dayInResident && nav.every((x) => expected.includes(x))), { nav, expected, modules: runtime.nav && runtime.nav[mode] }, await shotOf(P.page, `${tag}-P-12-${mode}`));
@@ -959,7 +977,15 @@ async function checkClutter(ctx) {
       P = await openPage(browser, size, lang, { "birge.mode": mode });
       try {
         await goto(P.page, new URL("/?screens=all", base).href, lang);
-        const nav = await navOf(P.page, lang, P.mobile);
+        const allNav = await navOf(P.page, lang, P.mobile);
+        if (P.mobile && !allNav.includes(expected[4])) {
+          // Телефон FINAL-3: «Ещё» — не пункт, а продолжение списка меню аватара (оно и есть маленький список role=menu).
+          const main = allNav.filter((x) => expected.includes(x)), extra = allNav.filter((x) => !expected.includes(x));
+          add("P-12", `${tag} ${mode}`, `?screens=all (меню аватара): разделы «${expected.slice(0, 4).join(" · ")}», пунктов «Ещё» 1–4`,
+            st(JSON.stringify(main) === JSON.stringify(expected.slice(0, 4)) && extra.length >= 1 && extra.length <= 4), { main, extra });
+          continue;
+        }
+        const nav = allNav;
         add("P-12", `${tag} ${mode}`, `?screens=all: меню ровно «${expected.join(" · ")}»`, st(JSON.stringify(nav) === JSON.stringify(expected)), { nav, expected });
         if (P.mobile) await L.clickText(P.page, menuRe(lang), { wait: 900 });
         const more = await L.clickText(P.page, exact(expected[4]), { wait: 900 });

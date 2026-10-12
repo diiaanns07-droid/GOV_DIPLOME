@@ -351,16 +351,23 @@ const visibleText = async (scope, re) => !!(await firstVisible(scope.getByText(r
 // Кнопка шапки: сама кнопка → «≡ Меню» (FINAL-2 и раньше) → меню аватара FINAL-3 (R01 INTEGRATION §14.1:
 // .birge-avatar → #birge-account role=menu — разделы, вид menuitemradio, «Для сотрудников», «Выйти»).
 async function headerClick(page, re, { wait = 1200, menuRe = null } = {}) {
-  if (await clickText(page, re, { wait })) return true;
+  // Сама кнопка — но не аватар: его имя «Меню: вид, вход для сотрудников» совпадает с поиском «Для сотрудников» (R01 §21.6а).
+  const own = await firstVisible(page.getByRole("button", { name: re }).and(page.locator(":not(.birge-avatar)")));
+  if (own) { await own.click({ timeout: 4000 }).catch(() => null); await sleep(wait); return true; }
   if (menuRe && (await clickText(page, menuRe))) {
     if (await clickText(page, re, { wait })) return true;
     await page.keyboard.press("Escape").catch(() => null);
   }
-  const avatar = await firstVisible(page.locator(".birge-avatar"));
-  if (!avatar) return false;
-  await avatar.click({ timeout: 3000 }).catch(() => null);
-  await sleep(500);
-  const menu = (await firstVisible(page.locator("#birge-account"))) || page;
+  // Меню могло остаться открытым после выбора вида (menuitemradio): тогда искать в нём, а не нажимать аватар (он его закроет).
+  let menu = await firstVisible(page.locator("#birge-account"));
+  if (!menu) {
+    const avatar = await firstVisible(page.locator(".birge-avatar"));
+    if (!avatar) return false;
+    await avatar.click({ timeout: 3000 }).catch(() => null);
+    await sleep(500);
+    menu = await firstVisible(page.locator("#birge-account"));
+    if (!menu) return false;
+  }
   for (const role of ["menuitemradio", "menuitem", "button", "link"]) {
     const it = await firstVisible(menu.getByRole(role, { name: re }));
     if (it) { await it.click({ timeout: 3000 }).catch(() => null); await sleep(wait); return true; }
@@ -449,7 +456,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     return path.basename(f); };
   const step = (s, name, ok, detail, file) => add(`UI ${tag}`, s, name, ok === null ? "NOT_RUN" : ok ? "PASS" : "FAIL", detail, file);
 
-  const langRe = lang === "kk" ? /^ҚАЗ$/ : /^РУС$/;
+  const langRe = lang === "kk" ? /^(·\s*)?ҚАЗ$/ : /^(·\s*)?РУС$/;
   const menuRe = new RegExp("^" + T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню") + "$", "i");
   const setLang = async () => { const b = await firstVisible(page.getByRole("button", { name: langRe })); if (b) { await b.click().catch(() => null); await sleep(1000); } return !!b; };
   // Кнопка из шапки; в компактной шапке (телефон и узкий экран ниже 1024) — через «≡ Меню».
@@ -488,7 +495,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   // 0б. Казахский полный: на экране kk не должно остаться русских строк из экрана ru (кроме имён и чисел).
   if (lang === "kk") {
     const kkLines = await cyrLines(page), kkAll = await cyrLines(page, { all: true });
-    if (await clickText(page, /^РУС$/, { wait: 1000 })) {
+    if (await clickText(page, /^(·\s*)?РУС$/, { wait: 1000 })) {
       const same = untranslated(kkLines, await cyrLines(page)), sameAll = untranslated(kkAll, await cyrLines(page, { all: true }));
       await setLang();
       step("0", "ҚАЗ: на экране нет строк, оставшихся по-русски", same.length === 0, { n: same.length, ex: same.slice(0, 8) });
@@ -585,7 +592,9 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   for (const txt of [T(dict, "heat.legend", null), T(dict, "heat.legend.title", null), lang === "kk" ? "Қанша адам хабарлады" : "Сколько человек сообщили"])
     if (txt && !legend) legend = await visibleText(page, textRe(txt));
   if (!legend) legend = (await visibleText(page, /^1[–-]2$/)) && (await visibleText(page, /^10\+$/));
-  step("3", "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна", heat.map && heat.rendered > 0 && heat.badges > 0 && legend, { ...heat, legend }, await shot("3-heat"));
+  // FINAL-3 (R11 CLEAN_PASS №8): легенда одной строкой «мало ▬▬ много · ✓ исправлено · ?», числа — под «?».
+  if (!legend) legend = (await visibleText(page, textRe(T(dict, "heat.legend.few", lang === "kk" ? "аз" : "мало")))) && (await visibleText(page, textRe(T(dict, "heat.legend.many", lang === "kk" ? "көп" : "много"))));
+  step("3", "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна (с FINAL-3 — строка «мало ▬ много», числа под «?»)", heat.map && heat.rendered > 0 && heat.badges > 0 && legend, { ...heat, legend }, await shot("3-heat"));
 
   // 3б. DEMO_SCRIPT шаг 3.3: «Фильтры: Освещение, 30 дней → Сбросить». Пункт категории ищем вне табличек 3D-проектов.
   const allCatRe = new RegExp("^" + esc(T(dict, ["heat.category_all", "heat.filter.all_categories"], lang === "kk" ? "Барлық санаттар" : "Все категории")), "i");
@@ -792,6 +801,17 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
       sel.badge ? sel.inView && !sel.covered : null, sel.badge ? sel : "значок выбранного места не найден (.r07-badge--selected)");
     const take =await clickText(page, textRe(T(dict, ["target.take", "heat.take"], lang === "kk" ? "Жұмысқа алу" : "Взять в работу")), { wait: 2000 });
     const fix = await clickText(page, textRe(T(dict, ["target.mark_fixed", "heat.mark_fixed"], "Отметить исправленным")), { wait: 2500 });
+    // FINAL-3 (R01 §21.6б): «Отметить исправленным» открывает в карточке форму R09 (.r07-fixform) — строка «что сделали»
+    // и «Сообщить жителям» (как ведущий; фото «после» в демо не обязательно).
+    const fixForm = fix ? await firstVisible(page.locator(".r07-fixform")) : null;
+    let fixFormSent = null;
+    if (fixForm) {
+      const what = await firstVisible(fixForm.locator("input[name=what_done], textarea[name=what_done], textarea, input[type=text]"));
+      if (what) await what.fill(lang === "kk" ? "Шам ауыстырылды" : "Заменили лампу").catch(() => null);
+      const send = (await firstVisible(fixForm.locator("button[type=submit]"))) || (await firstVisible(fixForm.getByRole("button", { name: textRe(T(dict, "fix.send", lang === "kk" ? "Тұрғындарға хабарлау" : "Сообщить жителям")) })));
+      if (send) { await send.click({ timeout: 4000 }).catch(() => null); await sleep(3000); }
+      fixFormSent = !!(what && send);
+    }
     // С заглавной буквы и без флага i: в легенде карты то же слово строчными («исправлено») — его не считаем.
     const fixedShown = await visibleText(page, new RegExp(esc(fixedWord)));
     const green = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
@@ -809,7 +829,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     const nothingNew = !take && !fix && (fixedShown || reportedCard);
     step("6", `акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «${fixedWord}», зелёным на карте (с волны 2 — «служба сообщила», ждёт проверки жителей)`,
       nothingNew ? null : fix && (reportedCard || (fixedShown && green)),
-      { under: s && s.under, take, fix, fixedShown, green, reportedCard,
+      { under: s && s.under, take, fix, fixForm: !!fixForm, fixFormSent, fixedShown, green, reportedCard,
         note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : (!take && fix ? "место уже «В работе» — кнопки «Взять в работу» нет" : undefined) }, await shot("6-fixed"));
     if (!mobile && (fixedShown || reportedCard)) {
       await page.keyboard.press("Escape"); await sleep(800);
@@ -875,7 +895,7 @@ async function networkErrors(browser, base, [w, h], lang) {
     await page.route(c.route, (r) => (broken ? r.abort("internetdisconnected") : r.continue()));
     try {
       await page.goto(base); await sleep(3500);
-      const lb = await firstVisible(page.getByRole("button", { name: lang === "kk" ? /^ҚАЗ$/ : /^РУС$/ }));
+      const lb = await firstVisible(page.getByRole("button", { name: lang === "kk" ? /^(·\s*)?ҚАЗ$/ : /^(·\s*)?РУС$/ }));
       if (lb) { await lb.click().catch(() => null); await sleep(800); }
       const opened = c.open ? await c.open(page) : true;
       await sleep(1500);

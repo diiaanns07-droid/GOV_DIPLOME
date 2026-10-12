@@ -123,16 +123,23 @@ const visibleText = async (scope, re) => !!(await firstVisible(scope.getByText(r
 // Кнопка шапки: сама кнопка → «≡ Меню» (FINAL-2 и раньше) → меню аватара FINAL-3 (R01 INTEGRATION §14.1: .birge-avatar →
 // #birge-account role=menu: разделы, «Чей вид» menuitemradio, «Для сотрудников», «Выйти»). Возвращает true, если нажато.
 async function headerClick(page, re, { wait = 1200, menuRe = null } = {}) {
-  if (await clickText(page, re, { wait })) return true;
+  // Сама кнопка — но не аватар: его имя «Меню: вид, вход для сотрудников» совпадает с поиском «Для сотрудников» (R01 §21.6а).
+  const own = await firstVisible(page.getByRole("button", { name: re }).and(page.locator(":not(.birge-avatar)")));
+  if (own) { await own.click({ timeout: 4000 }).catch(() => null); await sleep(wait); return true; }
   if (menuRe && (await clickText(page, menuRe))) {
     if (await clickText(page, re, { wait })) return true;
     await page.keyboard.press("Escape").catch(() => null);
   }
-  const avatar = await firstVisible(page.locator(".birge-avatar"));
-  if (!avatar) return false;
-  await avatar.click({ timeout: 3000 }).catch(() => null);
-  await sleep(500);
-  const menu = (await firstVisible(page.locator("#birge-account"))) || page;
+  // Меню могло остаться открытым после выбора вида (menuitemradio): тогда искать в нём, а не нажимать аватар (он его закроет).
+  let menu = await firstVisible(page.locator("#birge-account"));
+  if (!menu) {
+    const avatar = await firstVisible(page.locator(".birge-avatar"));
+    if (!avatar) return false;
+    await avatar.click({ timeout: 3000 }).catch(() => null);
+    await sleep(500);
+    menu = await firstVisible(page.locator("#birge-account"));
+    if (!menu) return false;
+  }
   for (const role of ["menuitemradio", "menuitem", "button", "link"]) {
     const it = await firstVisible(menu.getByRole(role, { name: re }));
     if (it) { await it.click({ timeout: 3000 }).catch(() => null); await sleep(wait); return true; }
