@@ -62,6 +62,14 @@ try {
     const vis = await pointVisible(p, STOP_LL);
     check("ноутбук: остановка на карте видна, не под панелью", vis.inside && !vis.under, vis);
     await p.screenshot({ path: path.join(OUT, "app-qr-1366-ru.png") });
+    // «Подробнее»: текущие обращения и история (POLISH_WAVE_2 п. 6) — из публичного вида настоящего R09
+    await p.click("#birge-report-root details.bq-more > summary");
+    const casesOk = await p.waitForSelector("#birge-report-root .bq-cases li", { timeout: 10000 }).then(() => true, () => false);
+    const more = await p.locator("#birge-report-root details.bq-more").innerText();
+    check("«Подробнее»: «Обращения здесь» и «История» из R09, без текстов жителей и id",
+      casesOk && /Обращения здесь/.test(more) && /История/.test(more) && /Освещение/.test(more) && !/c-demo|osm-node/.test(more), more.slice(0, 400));
+    await p.screenshot({ path: path.join(OUT, "app-qr-details-1366-ru.png") });
+    await p.click("#birge-report-root details.bq-more > summary");
     if (await p.locator('#birge-report-root [data-act="metoo"]').count()) {
       await p.click('#birge-report-root [data-act="metoo"]');
       const ok = await p.waitForSelector("#birge-report-root .bq-notice--ok", { timeout: 10000 }).then(() => true, () => false);
