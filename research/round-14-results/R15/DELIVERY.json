@@ -3,9 +3,9 @@
  "branch": "claude/r14-R15",
  "base_sha": "4bbf456",
  "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
- "code_sha": "12 окт (день): следующий коммит — test_r15_route_policy.py, проверка qrcode.js по sha256 npm, B-056 (P-R09-3), S25 в FIXED; ночь 11→12: f291a88, 5ae8786, b1e2316, ad54a3d, 23a27d7; d80c038 (чек-лист «волны мелочей» + proposals/photo, 11 окт); d8791c1 (tests/civic/R15 + patches/P-R06-2, 11 окт); раньше c5b98a0 (tests/civic/R15); patches — b892532",
- "tested_sha": "0f5101a (R01 FINAL-2 шаг 4, 12 окт); 28e23e3 (шаг 3); 34677e0 (шаг 1); 8bbace7 (круг 3); роли: R04 7c590b6, R08 ae65c09, R09 5d28c5a/d3f9c1e, R12 73ccec4; a2d90dd (FINAL-кандидат R01, перепроверен 11 окт новой сессией R15); раньше 96c1f99, 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
- "push_status": "OK — claude/r14-R15 (12 окт, день: этот коммит)",
+ "code_sha": "12 окт: 6b1b1ab (S30–S40, тесты идей и вопросов, P-R06-3, P-R13, P-R01-2, P-R01-3), b564e38, 0ea7afb; ночь 11→12: f291a88, 5ae8786, b1e2316, ad54a3d, 23a27d7; d80c038 (чек-лист «волны мелочей» + proposals/photo, 11 окт); d8791c1 (tests/civic/R15 + patches/P-R06-2, 11 окт); раньше c5b98a0 (tests/civic/R15); patches — b892532",
+ "tested_sha": "7782b92 (R01 FINAL-3 шаг 1); роли: R06 ae9ba29, R13 9db6dfb, R09 f80c0bf, R12 bea4fa9; 0f5101a (R01 FINAL-2 шаг 4, 12 окт); 28e23e3 (шаг 3); 34677e0 (шаг 1); 8bbace7 (круг 3); роли: R04 7c590b6, R08 ae65c09, R09 5d28c5a/d3f9c1e, R12 73ccec4; a2d90dd (FINAL-кандидат R01, перепроверен 11 окт новой сессией R15); раньше 96c1f99, 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
+ "push_status": "OK — claude/r14-R15 (12 окт: 6b1b1ab и следующий коммит)",
  "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
  "changed_paths": [
   "tests/civic/R15/conftest.py",
@@ -32,8 +32,8 @@
  ],
  "findings": {
   "critical": 0,
-  "important": 13,
-  "minor": 16,
+  "important": 15,
+  "minor": 25,
   "fixed": {
    "S09": "R06 ef35fb6, R01 d3c33d9",
    "S01": "FINAL-кандидат R01 2b9e837 (patches R15)",
@@ -121,15 +121,49 @@
    ],
    "P-R09-3": [
     "B-056 R10 (не находка: строгая CSP и фото «после» сотрудника)"
+   ],
+   "P-R06-3": [
+    "S30",
+    "S31",
+    "S32",
+    "S33"
+   ],
+   "P-R13": [
+    "S35",
+    "S36",
+    "S37",
+    "S39",
+    "S40"
+   ],
+   "P-R01-2": [
+    "S34",
+    "S36"
+   ],
+   "P-R01-3": [
+    "S34",
+    "S38",
+    "маршруты R13 «Вопрос акиму»"
    ]
   },
   "fixed_in_role_branch_pending_build": {},
-  "open_in_final_candidate": [],
-  "open_note": "Открытых находок нет: все 29 (13 важных, 16 мелочей) исправлены в FINAL-2 шаг 4 0f5101a.",
+  "open_in_final_candidate": [
+   "S30",
+   "S31",
+   "S32",
+   "S33",
+   "S34",
+   "S35",
+   "S36",
+   "S37",
+   "S38",
+   "S39",
+   "S40"
+  ],
+  "open_note": "S01–S29 исправлены в FINAL-2/FINAL-3 (7782b92). S30–S40 — новые разделы волны 2: идеи R06 (S30 важно) и «Вопрос акиму» R13 (S35 важно) ещё не в сборке; P-R01-2 (S34, S36 у шлюза) можно взять сразу.",
   "not_findings_for_final3": {
-   "B-056": "R10: фото «после» через fetch(blob:) под CSP — patch P-R09-3 (R09 c765bb0); тест xfail strict test_staff_after_photo_is_not_read_through_blob_fetch",
+   "B-056": "исправлено в FINAL-3 шаг 1 7782b92 (P-R09-3 побайтно)",
    "qrcode.js": "LOCAL-11 ещё не положен; ожидаемый sha256 18ae399f81182bc9de916e9c77b195df20cc58d6f2d55a62b085a299f1bf1780 (npm qrcode-generator@1.4.4, архив сверен с dist.integrity)",
-   "ideas_R06_ask_R13": "ещё не поставлены (R11: схемы готовы); правила маршрутов — test_r15_route_policy.py"
+   "ideas_R06_ask_R13": "поставлены 12 окт (R06 ae9ba29, R13 9db6dfb) — ревью: S30–S40"
   }
  },
  "tests": {
@@ -200,7 +234,12 @@
   "browser_on_0f5101a": "B1 15/15, B2 28/28; CSP 7 страниц (/, akim, ui-kit, akim/services, nearby, qr/print.html, /?report=) — 0 нарушений; на листе QR в консоли только отказ выполнить отсутствующий qrcode.js (404, nosniff) — ожидаемо до LOCAL-11",
   "r10_W2-1_B-056": "tests/e2e/wave_checks.cjs --only W2-1 1366 ru на 0f5101a: шаг «через «Обращения» с фото «после»» FAIL; с P-R09-3 — PASS",
   "route_policy_on_0f5101a": "PASS 4/4; проверка самой проверки: снятый staff у approve и лимит у proposals.vote ловятся",
-  "secrets_scan_12oct": "FINAL-2 и пакет: в Git нет .env, баз, ключей, файлов > 50 МБ; .env.example — пустые значения; доказательства LOCAL без cookie/CSRF/паролей"
+  "secrets_scan_12oct": "FINAL-2 и пакет: в Git нет .env, баз, ключей, файлов > 50 МБ; .env.example — пустые значения; доказательства LOCAL без cookie/CSRF/паролей",
+  "r15_on_final3_step1_7782b92": "PASS — 209 passed, 3 skipped (B-056 исправлен)",
+  "r15_ideas_R06_ae9ba29": "test_r15_ideas.py: 3 passed, 9 xfailed (S30–S33); с P-R06-3 — 9 XPASS; R06 round14+store 425 passed, 8 skipped с patch и без",
+  "r15_qa_R13_9db6dfb": "test_r15_qa.py: 1 passed, 3 skipped, 8 xfailed (S35–S37, S39, S40); с P-R13 — 8 XPASS; R13 qa 41 passed, 2 skipped с patch и без",
+  "r15_on_7782b92_plus_R01_2_3_and_R13": "R01 api_v2 116 passed; tests/civic/R15 209 passed, 15 skipped; test_r15_qa.py 11 XPASS; test_r15_route_policy PASS",
+  "final3_plus_R09_f80c0bf_R12_bea4fa9": "тесты R15 209 passed (файлы ролей подложены в копию FINAL-3)"
  },
  "known_limits": [
   "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
@@ -212,5 +251,5 @@
   "S17–S21 (мелочи R06) открыты на FINAL a2d90dd — patch P-R06-2 должен взять R06/R01",
   "S18 после P-R06-2: первый этап объекта после миграции из v1 задаётся без причины (так работает редактор R06)"
  ],
- "next_step": "FINAL-3 (вечер 12 окт): R01 берёт P-R09-3, снимает xfail B-056; R15 — тесты R15 + test_r15_route_policy + браузер B1/B2 + CSP-страницы на каждом SHA FINAL-3; идеи R06 и «Вопрос акиму» R13 — ревью (накрутка, модерация, личные данные) по мере поставки; qrcode.js — sha256 при появлении; 13–15 окт — финальная проверка и статусы."
+ "next_step": "FINAL-3 (вечер 12 окт): R01 берёт P-R01-2 сразу; R13 с P-R13 и маршрутами P-R01-3; R06 с P-R06-3. R15 — на каждом SHA FINAL-3: тесты R15 (+ test_r15_ideas, test_r15_qa, route_policy), браузер B1/B2, CSP-страницы (+ #questions, #ideas); S30–S40 в FIXED по мере сборки; 13–15 окт — финальная проверка и статусы."
 }

@@ -13,7 +13,14 @@ FINAL-2 шаг 3 = 28e23e3 (круг 5): R09 8a1d390 + P-R09-2 побайтно 
 ремонта в V2_RATE_LIMITS — как просил R15. Тесты R15 194 passed, HTTP-тесты волны 2 11 passed, B1 15/15, B2 28/28, CSP чисто.
 FINAL-2 шаг 4 = 0f5101a (12 окт): QR R12 d4e2a77 + P-R12 побайтно (S25) — исправлены все 29 находок. Тесты R15
 208 passed, 3 skipped, 1 xfail (B-056); B1 15/15, B2 28/28; CSP 7 страниц (с листом QR и /?report=) — чисто.
-ОСТАЛОСЬ для FINAL-3 (R01):
+FINAL-3 шаг 1 = 7782b92 (12 окт): P-R09-3 побайтно, xfail B-056 снят; тесты R15 209 passed, 3 skipped.
+ОСТАЛОСЬ для FINAL-3 (R01), 12 окт днём:
+  - P-R01-2 (сразу, на 7782b92): шлюз проверяет сессию + CSRF у маршрутов kind="service" с staff=True (S34) и
+    «\Z» вместо «$» в CIVIC_ID / V2_DEVICE_ID / V2_DISTRICT / V2_DATE (S36). tests/civic/R01/test_r01_api_v2.py — 116 passed.
+  - «Вопрос акиму» R13: брать R13 с P-R13 и маршруты по P-R01-3 (это r01_questions_route.patch R13 + staff=True у
+    qa.publish/reject/answer + суточное окно qa.create 30). Без staff=True сторож test_r15_route_policy.py красный.
+  - Идеи R06: брать R06 с P-R06-3 (S30 важно: «Отклонить» без проверки публикует текст идеи).
+  (Пункты ниже — с утра 12 окт, P-R09-3 уже в сборке.)
   - P-R09-3 (web/civic/feedback/complaint-staff.js) — B-056 R10: фото «после» у сотрудника через fetch(blob:…), строгая
     CSP его запрещает. Не расширять connect-src: patch отдаёт в upload сам Blob. Затем снять xfail с
     tests/civic/R15/test_r15_photos.py::test_staff_after_photo_is_not_read_through_blob_fetch.
@@ -36,6 +43,10 @@ FINAL-2 шаг 4 = 0f5101a (12 окт): QR R12 d4e2a77 + P-R12 побайтно 
   P-R04-2.diff ui/civic_ml_api/profanity.py                       S26 (важно) — фильтр мата, ночь 11→12 (v2, на R04 7c590b6)
   P-R08.diff   ui/civic_akim/{nearby,routing,decisions,api}.py    S27 S28 S29 (мелочи) — «Рядом», «Службы», выбор акима (на R08 ae65c09)
   P-R09-3.diff web/civic/feedback/complaint-staff.js             B-056 R10 (не находка: CSP и фото «после»), на R09 c765bb0
+  P-R06-3.diff ui/civic_store/{ideas,nearby,proposals}.py, web/civic/ideas/ideas.js  S30 (важно) S31 S32 S33 — на R06 ae9ba29
+  P-R13.diff   ui/civic_qa/{service,store}.py, web/civic/qa/qa.js, tests/civic/R13/qa  S35 (важно) S36 S37 S39 S40 — на R13 9db6dfb
+  P-R01-2.diff ui/web_server.py                                  S34 (шлюз: staff у «сервисов») S36 (\Z в id) — на R01 7782b92
+  P-R01-3.diff ui/web_server.py, web/index.html, tests/civic/R01  маршруты R13 r01_questions_route.patch + S34 S38 — поверх P-R01-2
 
 Как применить (из корня рабочей копии сборки R01):
   git fetch origin claude/r14-R15
@@ -239,6 +250,49 @@ S29  api.routing_update / api.decision_choose: без principal -> PermissionErr
 Для R01 (R09 фото, когда войдут в сборку): маршруты частей фото (POST /complaints/{id}/photos/{upload}) — в
   V2_RATE_LIMITS по адресу (например, 300 частей/мин ≈ 10 МБ): незаконченная загрузка держит до 1,5 МБ в базе час,
   число начатых загрузок у автора не ограничено.
+
+
+--------------------------------------------------------------------------------
+P-R06-3  ui/civic_store/{ideas,nearby,proposals}.py, web/civic/ideas/ideas.js  (R06; 12 окт, claude/r14-R06 @ ae9ba29)
+--------------------------------------------------------------------------------
+S30  ideas.list/get: публичны только идеи со статусом из PUBLIC_STATUSES И с published_at (отказ из «на проверке» не
+     публикует текст; автор видит свою отклонённую с причиной); decide hide — и из rejected/project. ideas.js: в карточке
+     rejected/project — тихая «Скрыть» (форма причины как у hide).
+S31  create: название/описание с e-mail, ИИН (12 цифр), телефоном (+7/8 …) → 422 «Не пишите телефон, e-mail или ИИН:
+     идею увидят все жители.» (шаблоны как ui/civic_feedback/text.py R09); дома, годы, время проходят.
+S32  create: очередь ≥ REVIEW_QUEUE_MAX (300) — отказ только адресам (client_key), подававшим идеи за сутки (память
+     процесса); новые адреса — до REVIEW_QUEUE_HARD_MAX (600). Полностью накрутку без входа не закрыть (как S08).
+S33  nearby._clean: район — только строка; nearby._moment: год 2000–2100; ideas._to_project: kind — строка, geometry —
+     словарь; proposals._clean_new: DEFAULT_TITLES только для строки → 422 вместо 500.
+     Проверено на ae9ba29: tests/civic/R06/round14 + store — 425 passed, 8 skipped (как без patch); тесты R15
+     test_r15_ideas.py: 9 xfail → 9 XPASS, 3 PASS. (Ревью — агент R15 через шлюз R01 7782b92 + r01_wave2_r06.patch.)
+     В патче R06 для R01 лимиты ideas.create (3/мин, 10/ч) и ideas.support (30/мин, 20/сут на идею) есть — R15 согласен.
+
+--------------------------------------------------------------------------------
+P-R13  ui/civic_qa/{service,store}.py, web/civic/qa/qa.js, tests/civic/R13/qa/test_r13_qa.py  (R13; 12 окт, @ 9db6dfb)
+--------------------------------------------------------------------------------
+S35  store.reject: причина personal_data — можно и после ответа (другие причины — 409, как было); qa.js: кнопка
+     «Отклонить» в «Отвеченных». service.PII_PATTERNS: телефон «701 123 45 67», «8 (7172) 55-66-77», «7011234567»,
+     ИИН «950101 300 123»; даты, «до 23:00», «с 2024 года», «дом 12» — без подсказки.
+S36  DEVICE_RE, REQUEST_RE, ID_RE — «\Z» вместо «$» («dev\n» → 400).
+S37  create: host_allowed/is_same_origin False → 403 (как vote).
+S39  store.answer: answered_by = COALESCE(answered_by, ?) — автор первого ответа остаётся; не присланный язык ответа не
+     стирается; новая колонка answer_edited_at (ALTER TABLE, если нет) — дата правки; публично answer.edited_at.
+     В тесте R13 test_public_view_has_no_device_staff_login_or_reject_reason — ключ edited_at в наборе ответа.
+S40  qa.js deviceId(): без localStorage — один id на страницу в памяти (как report.js R12).
+     Проверено на 9db6dfb: tests/civic/R13/qa — 41 passed, 2 skipped (как без patch); тесты R15 test_r15_qa.py — 8 xfail
+     → 8 XPASS; node --check qa.js. Браузерный qa_browser.cjs R13 после правки qa.js — NOT_RUN (R13 перепроверит).
+
+--------------------------------------------------------------------------------
+P-R01-2  ui/web_server.py  (R01; 12 окт, на FINAL-3 шаг 1 7782b92) и P-R01-3 (поверх P-R01-2)
+--------------------------------------------------------------------------------
+S34  CivicV2Gateway.handle: для kind="service" с handler.staff — self._staff(context) (сессия R02 + CSRF) до _delegate.
+     У R09 staff=False — поведение не меняется; R09/R13 проверяют сотрудника и сами (защита в глубину).
+S36  CIVIC_ID, V2_DEVICE_ID, V2_DISTRICT, V2_DATE — «\Z» вместо «$».
+P-R01-3 = r01_questions_route.patch R13 (маршруты /questions, активы qa/*, лимиты) + staff=True у qa.publish/reject/answer
+     (S34) + qa.create третье окно (86400, 30) (S38).
+     Проверено: R01 7782b92 + P-R01-2 + P-R01-3 + ui/civic_qa и web/civic/qa R13 с P-R13: tests/civic/R01/test_r01_api_v2.py
+     116 passed; tests/civic/R15 — 209 passed, 15 skipped (идей R06 в этой копии нет); test_r15_qa.py — 11 XPASS.
 
 
 --------------------------------------------------------------------------------
