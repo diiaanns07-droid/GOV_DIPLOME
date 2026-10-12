@@ -317,6 +317,7 @@
 .bk-chip[aria-pressed="true"]::before,
 .bk-chip[aria-checked="true"]::before {
   content: "✓";
+  content: "✓" / ""; /* знак не входит в доступное имя (чтение с экрана, поиск кнопки по имени — R01 §21.7) */
   font-weight: var(--fw-bold);
 }
 .bk-chip--suggest {
@@ -658,7 +659,7 @@
 }
 .bk-langtext > button {
   position: relative;
-  min-width: 44px;
+  min-width: 44px; /* и на телефоне: зона нажатия не уже 44 px (R01 §21.1) */
   min-height: var(--tap);
   padding: 0 6px;
   border: 0;
@@ -670,9 +671,11 @@
 }
 .bk-langtext > button + button::before {
   content: "·";
+  content: "·" / ""; /* точка — не часть имени «РУС» (R01 §21.1) */
   position: absolute;
   left: -3px;
   color: var(--c-text-3);
+  pointer-events: none; /* не перехватывает нажатие у «ҚАЗ» */
 }
 .bk-langtext > button[aria-pressed="true"] {
   color: var(--c-ink);
@@ -686,8 +689,8 @@
   align-items: center;
   justify-content: center;
   flex: none;
-  width: 40px;
-  height: 40px;
+  width: 48px; /* ноутбук: шапка 64 px; телефон — 44 (ниже) */
+  height: 48px;
   border: 0;
   border-radius: 50%;
   background: var(--c-fill);
@@ -700,7 +703,7 @@
 .bk-avatar::after {
   content: "";
   position: absolute;
-  inset: -4px; /* зона нажатия 48 */
+  inset: -2px; /* на телефоне 44 + 2 × 2 = зона 48 */
 }
 .bk-avatar[aria-expanded="true"] {
   background: var(--c-brand);
@@ -759,6 +762,7 @@
 }
 .bk-menu__item[aria-checked="true"]::after {
   content: "✓";
+  content: "✓" / ""; /* «Акимат», а не «Акимат✓» в имени пункта (R01 §21.2) */
   margin-left: auto;
 }
 .bk-menu__sep {
@@ -785,8 +789,11 @@
   .bk-header__end {
     gap: var(--s-1);
   }
+  .bk-avatar {
+    width: 44px;
+    height: 44px;
+  }
   .bk-langtext > button {
-    min-width: 36px;
     padding: 0 4px;
   }
 }
@@ -1840,6 +1847,7 @@
 }
 .bk-legend__fixed::before {
   content: "✓";
+  content: "✓" / "";
   display: inline-flex;
   align-items: center;
   justify-content: center;

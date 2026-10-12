@@ -128,7 +128,7 @@
  "common.chars_left": "Осталось знаков: {n}",
  "common.search.placeholder_clean": "Улица, остановка или район",
  "common.search.all_city": "Вся Астана",
- "common.account.menu": "Меню: вид, вход для сотрудников",
+ "common.account.menu": "Меню профиля",
  "common.map.north": "Повернуть карту на север",
  "common.map.layers": "Слои карты",
  "common.demo_footnote": "Данные — пример: жалобы придуманы, улицы и остановки — OpenStreetMap.",

@@ -103,6 +103,19 @@ async function check(browser, base, width, height, lang) {
   r.lowButtons.forEach((k) => problems.push("кнопка ниже 48 px: " + k));
   r.small.forEach((k) => problems.push("текст кнопки < 15 px: " + k));
   r.tinyText.forEach((k) => problems.push("текст < 13 px (шкала 13/15/17/22/28): " + k));
+  // Чистый дизайн (R01 §21.1–21.2): «·» и «✓» нарисованы, но не входят в имя — кнопки находятся по точному имени
+  if (await page.$("#kit-lang")) {
+    const kz = await page.getByRole("button", { name: /^ҚАЗ$/ }).count(), ruB = await page.getByRole("button", { name: /^РУС$/ }).count();
+    if (kz !== 1 || ruB !== 1) problems.push(`язык: кнопки по точному имени ҚАЗ ${kz}, РУС ${ruB} (ждали 1 и 1)`);
+  }
+  if (await page.$("#kit-avatar")) {
+    const av = await page.$eval("#kit-avatar", (b) => [b.offsetWidth, b.offsetHeight]);
+    if (Math.min(...av) < 44) problems.push("аватар меньше 44 px: " + av.join("×"));
+    await page.click("#kit-avatar");
+    const who = lang === "kk" ? /^Әкімдік$/ : /^Акимат$/;
+    if ((await page.getByRole("menuitemradio", { name: who }).count()) !== 1) problems.push("меню: пункт вида не находится по точному имени (✓ в имени?)");
+    await page.keyboard.press("Escape");
+  }
   // Вкладки ui-kit (волна 2): щелчок и стрелка → aria-selected, выбрана ровно одна
   if (await page.$("#kit-tabs")) {
     await page.click('#kit-tabs [role="tab"]:nth-child(2)');
