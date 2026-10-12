@@ -21,7 +21,7 @@
  *   dataUrl    — папка data/ модуля ("/civic/build3d/data/");
  *   streets    — свой источник улиц {nearest(lngLat, maxM, name?), section(a, b)} (например, R12 /targets);
  *   year       — год на табличке (2027);  autoZoom — приблизить карту, если она дальше 15.5 (true);
- *   buildMs    — длительность анимации постройки (1200 мс);
+ *   buildMs    — длительность анимации постройки (1100 мс);
  *   onToolChange(active, kind) — модуль взял/отдал щелчки по карте (R01: map.setInteractionEnabled);
  *   onSelect(proposal|null)    — выбрано предложение (R06 может показать свою карточку);
  *   renderCard: false          — не показывать встроенную карточку (её рисует R06).
@@ -321,11 +321,6 @@
   function easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
-  function easeOutBack(t) {
-    var c1 = 1.4,
-      c3 = c1 + 1;
-    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-  }
   function fetchJson(url) {
     return fetch(url, { headers: { Accept: "application/json" } }).then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status + " " + url);
@@ -333,7 +328,7 @@
     });
   }
 
-  var BUILD_MS = 1200; // анимация постройки
+  var BUILD_MS = 1100; // анимация постройки (волна частей ~0.55 с каждая)
   var REMOVE_MS = 320;
   var ROTATE_STEP = 15;
   var PLACE_ZOOM = 17.5; // масштаб, на котором модели хорошо видны (UX_REVIEW день 3 #20)
@@ -1412,14 +1407,15 @@
     function setupScene() {
       scene = new THREE.Scene();
       camera = new THREE.Camera();
-      // Мягкий свет: небо/земля + солнце с юго-запада (тени не считаем — только мягкое пятно под объектом).
-      var hemi = new THREE.HemisphereLight(0xffffff, 0xcfd6c8, 2.1);
+      // Мягкий свет: небо/земля + солнце с юго-запада (белое: тёплое красило мощение и крыши в беж) (оттуда же мягкие тени объектов — makeShadow) +
+      // холодная подсветка с северо-востока, чтобы теневые стороны не проваливались в серое.
+      var hemi = new THREE.HemisphereLight(0xffffff, 0xbcc6ba, 2.0);
       hemi.position.set(0, 0, 1);
       scene.add(hemi);
-      var sun = new THREE.DirectionalLight(0xffffff, 1.7);
-      sun.position.set(-0.55, -0.85, 1.3);
+      var sun = new THREE.DirectionalLight(0xffffff, 1.8);
+      sun.position.set(SUN[0], SUN[1], SUN[2]);
       scene.add(sun);
-      var fill = new THREE.DirectionalLight(0xffffff, 0.45);
+      var fill = new THREE.DirectionalLight(0xe9f0ff, 0.4);
       fill.position.set(0.7, 0.6, 0.5);
       scene.add(fill);
       var c = map.getCenter();
@@ -1594,13 +1590,22 @@
     }
 
     // ───────────── Материалы ─────────────
-    // «Постройка снизу вверх»: вершины выше uReveal прижимаются к этой высоте. Программа шейдера общая,
-    // значение — у каждого объекта своё (собственный экземпляр материала).
+    // Постройка (дизайн-марафон): uReveal — доля постройки 0…1 (1e4 — готово). Каждая часть модели (дерево, скамейка,
+    // павильон — группы в build3d-models.js) растёт из своего основания: высота 0 → 1 и ширина 0.82 → 1 вокруг aPivot,
+    // с плавным замедлением; начало — aGrow (газон и плиты сразу, дальше от центра — позже). Ещё не начатые части не
+    // рисуются (раньше вершины прижимались к высоте uReveal, и в начале кроны и фонтан лежали на земле «мозаикой»).
+    // Программа шейдера общая, значение — у каждого объекта своё (собственный экземпляр материала).
     function revealHook(shader) {
       shader.uniforms.uReveal = this.userData.reveal;
       shader.vertexShader =
-        "uniform float uReveal;\n" +
-        shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\ntransformed.z = min(transformed.z, uReveal);");
+        "attribute float aGrow;\nattribute vec2 aPivot;\nuniform float uReveal;\nvarying float vGrow;\n" +
+        shader.vertexShader.replace(
+          "#include <begin_vertex>",
+          "#include <begin_vertex>\nfloat bGrow = clamp((uReveal - aGrow) / 0.5, 0.0, 1.0);\nfloat bEase = 1.0 - pow(1.0 - bGrow, 3.0);\n" +
+            "transformed.z *= bEase;\ntransformed.xy = aPivot + (transformed.xy - aPivot) * (0.82 + 0.18 * bEase);\nvGrow = bGrow;"
+        );
+      shader.fragmentShader =
+        "varying float vGrow;\n" + shader.fragmentShader.replace("#include <clipping_planes_fragment>", "#include <clipping_planes_fragment>\nif (vGrow <= 0.0) discard;");
     }
     function revealKey() {
       return "birge-build3d-reveal";
@@ -1647,6 +1652,98 @@
       return group;
     }
 
+    // ───────────── Мягкая тень объекта (дизайн-марафон) ─────────────
+    // Без карт теней (второй проход по чужому контексту MapLibre дорог и хрупок): высокие части модели проецируются на
+    // землю вдоль солнца (Models.shadowShape), рисуются в маленький холст, размываются и ложатся текстурой на плоскость
+    // чуть выше газона — на землю, мощение и газон внутри объекта. Дополнительно — мягкий «след» прямо под скамейками и
+    // кронами (затенение у земли). Освещение (длинный участок) — только пятна у опор (в модели).
+    var SUN = [-0.5, -0.8, 1.6]; // направление на солнце: запад-юг, высоко (восток, север, вверх)
+    var SHADOW_Z = 0.2; // над газоном (0.18) и плитами; ниже бордюров и скамеек
+    function makeShadow(p, geos) {
+      if (p.kind === "lighting" || !geos.solid || !Models.shadowShape || !doc.createElement) return null;
+      var th = (p.rotation_deg || 0) * DEG; // группа повёрнута на −th — в осях модели солнце повёрнуто на +th
+      var wx = -SUN[0] / SUN[2],
+        wy = -SUN[1] / SUN[2];
+      var sh = Models.shadowShape(geos.solid, wx * Math.cos(th) - wy * Math.sin(th), wx * Math.sin(th) + wy * Math.cos(th), 0.3);
+      if (!sh) return null;
+      var pad = 2.2;
+      var x0 = sh.bounds[0] - pad,
+        y0 = sh.bounds[1] - pad;
+      var w = sh.bounds[2] - sh.bounds[0] + 2 * pad,
+        h = sh.bounds[3] - sh.bounds[1] + 2 * pad;
+      var ppm = Math.min(8, 320 / Math.max(w, h)); // точек на метр: ≤ 320 точек по большей стороне
+      var W = Math.max(8, Math.ceil(w * ppm)),
+        H = Math.max(8, Math.ceil(h * ppm));
+      var cv = doc.createElement("canvas");
+      cv.width = W;
+      cv.height = H;
+      var ctx = cv.getContext && cv.getContext("2d");
+      if (!ctx) return null;
+      function alphaOf(tris) {
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = "#000";
+        ctx.beginPath();
+        for (var i = 0; i < tris.length; i += 6) {
+          ctx.moveTo((tris[i] - x0) * ppm, H - (tris[i + 1] - y0) * ppm);
+          ctx.lineTo((tris[i + 2] - x0) * ppm, H - (tris[i + 3] - y0) * ppm);
+          ctx.lineTo((tris[i + 4] - x0) * ppm, H - (tris[i + 5] - y0) * ppm);
+          ctx.closePath();
+        }
+        ctx.fill();
+        var d = ctx.getImageData(0, 0, W, H).data;
+        var a = new Float32Array(W * H);
+        for (var k = 0; k < a.length; k++) a[k] = d[k * 4 + 3] / 255;
+        return a;
+      }
+      var cast = blur2(alphaOf(sh.cast), W, H, Math.max(1, Math.round(0.45 * ppm)));
+      var foot = blur2(alphaOf(sh.foot), W, H, Math.max(1, Math.round(1.0 * ppm)));
+      var img = ctx.createImageData(W, H);
+      for (var k = 0; k < cast.length; k++) {
+        img.data[k * 4] = 21; // #152c26 — тёмно-зелёный бренда, не чёрный: тень «тёплая», не грязная
+        img.data[k * 4 + 1] = 44;
+        img.data[k * 4 + 2] = 38;
+        img.data[k * 4 + 3] = Math.round(255 * Math.max(cast[k] * 0.26, foot[k] * 0.2));
+      }
+      ctx.putImageData(img, 0, 0);
+      var tex = new THREE.CanvasTexture(cv);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.generateMipmaps = false;
+      tex.minFilter = THREE.LinearFilter;
+      var mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
+      var plane = new THREE.PlaneGeometry(w, h);
+      plane.translate(x0 + w / 2, y0 + h / 2, SHADOW_Z);
+      var mesh = new THREE.Mesh(plane, mat);
+      mesh.renderOrder = 2;
+      mesh.frustumCulled = false;
+      mesh.userData.part = "shadow";
+      return mesh;
+    }
+    // Размытие «коробкой» дважды по каждой оси (≈ гаусс); края — пусто.
+    function blur2(src, W, H, r) {
+      var a = boxBlur(src, W, H, r, true);
+      a = boxBlur(a, W, H, r, false);
+      a = boxBlur(a, W, H, r, true);
+      return boxBlur(a, W, H, r, false);
+    }
+    function boxBlur(src, W, H, r, horiz) {
+      var out = new Float32Array(W * H);
+      var n = horiz ? W : H,
+        lines = horiz ? H : W,
+        d = 2 * r + 1;
+      for (var l = 0; l < lines; l++) {
+        var at = function (i) {
+          return i < 0 || i >= n ? 0 : src[horiz ? l * W + i : i * W + l];
+        };
+        var acc = 0;
+        for (var i = -r; i <= r; i++) acc += at(i);
+        for (var j = 0; j < n; j++) {
+          out[horiz ? l * W + j : j * W + l] = acc / d;
+          acc += at(j + r + 1) - at(j - r);
+        }
+      }
+      return out;
+    }
+
     function disposeGroup(group) {
       if (!group) return;
       group.traverse(function (n) {
@@ -1654,6 +1751,7 @@
         if (n.geometry) n.geometry.dispose();
         if (n.material) {
           (Array.isArray(n.material) ? n.material : [n.material]).forEach(function (m) {
+            if (m.map) m.map.dispose(); // текстура тени
             m.dispose();
           });
         }
@@ -1706,6 +1804,11 @@
       var geos = buildGeos(obj.p);
       obj.mats = makeMaterials(false);
       obj.group = makeMeshes(geos, obj.mats);
+      var shadow = makeShadow(obj.p, geos);
+      if (shadow) {
+        obj.group.add(shadow);
+        obj.mats.shadow = shadow.material;
+      }
       obj.height = geos.height;
       obj.labelPoint = labelPointOf(obj.p, geos);
       placeGroup(obj.group, obj.p);
@@ -1902,29 +2005,26 @@
       });
     }
 
-    // Постройка: вершины «вырастают» снизу вверх, объект слегка «пружинит», по краям — пыль.
+    // Постройка: газон и плиты появляются сразу, затем части объекта вырастают волной от центра к краям (шейдер
+    // revealHook), тень проявляется, по земле расходится мягкое кольцо цвета бренда. Без «пружины» и пыли.
     function animateBuild(obj) {
       var t0 = performance.now();
-      var H = obj.height + 0.5;
       var revealMats = [obj.mats.solid, obj.mats.glass, obj.mats.glow].filter(Boolean);
       revealMats.forEach(function (m) {
         m.userData.reveal.value = 0;
       });
-      obj.group.scale.set(0.94, 0.94, 1);
+      if (obj.mats.shadow) obj.mats.shadow.opacity = 0;
       if (obj.label) obj.label.classList.add("b3d-label--hidden");
-      obj.dust = makeDust(obj);
+      obj.dust = makePulse(obj);
       anims.push({
         update: function (now) {
           var k = Math.min(1, (now - t0) / o.buildMs);
-          var reveal = easeInOutCubic(Math.min(1, k / 0.85)) * H;
           revealMats.forEach(function (m) {
-            m.userData.reveal.value = k >= 1 ? 1e4 : reveal;
+            m.userData.reveal.value = k >= 1 ? 1e4 : k;
           });
-          var sc = 0.94 + 0.06 * easeOutBack(Math.min(1, k / 0.6));
-          obj.group.scale.set(sc, sc, 1);
+          if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(Math.min(1, Math.max(0, (k - 0.15) / 0.75)));
           if (obj.dust) obj.dust.userData.step(k);
           if (k >= 1) {
-            obj.group.scale.set(1, 1, 1);
             if (obj.dust) {
               disposeGroup(obj.dust);
               obj.dust = null;
@@ -1938,45 +2038,28 @@
       repaint();
     }
 
-    // Лёгкая пыль: 14 низкополигональных «облачков» по контуру, растут, поднимаются и тают за ~1 с.
-    function makeDust(obj) {
-      var N = 14;
-      var geo = new THREE.IcosahedronGeometry(0.9, 0);
-      var mat = new THREE.MeshLambertMaterial({ color: 0xefe6d6, transparent: true, opacity: 0.6, depthWrite: false });
-      var mesh = new THREE.InstancedMesh(geo, mat, N);
-      mesh.frustumCulled = false;
-      mesh.renderOrder = 5;
-      var pts = [];
+    // Кольцо на земле: от центра объекта к его краю расходится и тает мягкий овал цвета бренда (~0.8 с).
+    function makePulse(obj) {
       var k = Core.KINDS[obj.p.kind];
-      var rand = Models.rng(obj.p.id + "dust");
-      for (var i = 0; i < N; i++) {
-        var a = (i / N) * Math.PI * 2;
-        var rx = k.line ? 6 : k.w / 2 + 0.5,
-          ry = k.line ? 6 : k.d / 2 + 0.5;
-        var base = obj.p.kind === "lighting" ? obj.labelPoint : [0, 0];
-        pts.push({ x: base[0] + Math.cos(a) * rx * (0.85 + rand() * 0.2), y: base[1] + Math.sin(a) * ry * (0.85 + rand() * 0.2), d: rand() * 0.18, s: 0.7 + rand() * 0.6 });
-      }
+      var rx = k.line ? 7 : k.w / 2 + 1,
+        ry = k.line ? 7 : k.d / 2 + 1;
+      var geo = new THREE.RingGeometry(0.86, 1, 72);
+      var mat = new THREE.MeshBasicMaterial({ color: 0x2f7d5b, transparent: true, opacity: 0, depthWrite: false });
+      var ring = new THREE.Mesh(geo, mat);
+      ring.frustumCulled = false;
+      ring.renderOrder = 5;
       var group = new THREE.Group();
-      group.add(mesh);
+      group.add(ring);
       group.position.copy(obj.group.position);
       group.rotation.copy(obj.group.rotation);
+      var base = obj.p.kind === "lighting" && obj.labelPoint ? obj.labelPoint : [0, 0];
+      ring.position.set(base[0], base[1], 0.25);
       scene.add(group);
-      var m4 = new THREE.Matrix4(),
-        q = new THREE.Quaternion(),
-        v = new THREE.Vector3(),
-        sc = new THREE.Vector3();
       group.userData.step = function (kk) {
-        pts.forEach(function (p, i) {
-          var local = Math.max(0, Math.min(1, (kk - p.d) / 0.75));
-          var e = easeOutCubic(local);
-          var s = p.s * (0.4 + 1.3 * e);
-          v.set(p.x, p.y, 0.3 + 1.4 * e);
-          sc.set(s, s, s * 0.7);
-          m4.compose(v, q, sc);
-          mesh.setMatrixAt(i, m4);
-        });
-        mesh.instanceMatrix.needsUpdate = true;
-        mat.opacity = 0.6 * (1 - easeOutCubic(Math.min(1, kk / 0.95)));
+        var e = easeOutCubic(Math.min(1, kk / 0.8));
+        var sc = 0.35 + 0.8 * e;
+        ring.scale.set(rx * sc, ry * sc, 1);
+        mat.opacity = 0.34 * (1 - e) * Math.min(1, kk / 0.08);
       };
       group.userData.step(0);
       return group;
@@ -1992,15 +2075,15 @@
         return done && done();
       }
       var t0 = performance.now();
-      var H = obj.height + 0.5;
       var revealMats = [obj.mats.solid, obj.mats.glass, obj.mats.glow].filter(Boolean);
       obj.removing = true;
       anims.push({
         update: function (now) {
           var k = Math.min(1, (now - t0) / REMOVE_MS);
           revealMats.forEach(function (m) {
-            m.userData.reveal.value = (1 - easeInOutCubic(k)) * H;
+            m.userData.reveal.value = 1 - k; // части уходят в обратном порядке — от краёв к центру
           });
+          if (obj.mats.shadow) obj.mats.shadow.opacity = 1 - easeInOutCubic(k);
           if (k >= 1) {
             // «Отменить» могло уже вернуть объект с тем же id (R06 ≥ d043e7b, заглушка) — новый не трогаем.
             if (S.objects[id] === obj) disposeObject(id);
