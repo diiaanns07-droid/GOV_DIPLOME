@@ -842,7 +842,108 @@
       return { cast: new Float32Array(cast), foot: new Float32Array(foot), bounds: b };
     }
 
-    return { build: build, palette: P, rng: rng, shadowShape: shadowShape };
+    // Свет сцены (общий для карты и превью каталога): небо/земля, белое солнце с юго-запада (оттуда же тени —
+    // shadowMesh), холодная подсветка с северо-востока, чтобы теневые стороны не проваливались в серое. Белое солнце:
+    // тёплое красило мощение и крыши в беж.
+    var SUN = [-0.5, -0.8, 1.6]; // направление на солнце в осях сцены: восток, север, вверх
+    function lights() {
+      var hemi = new THREE.HemisphereLight(0xffffff, 0xbcc6ba, 2.0);
+      hemi.position.set(0, 0, 1);
+      var sun = new THREE.DirectionalLight(0xffffff, 1.8);
+      sun.position.set(SUN[0], SUN[1], SUN[2]);
+      var fill = new THREE.DirectionalLight(0xe9f0ff, 0.4);
+      fill.position.set(0.7, 0.6, 0.5);
+      return [hemi, sun, fill];
+    }
+
+    // Мягкая тень объекта (только в браузере: нужен холст). Без карт теней — второй проход по чужому контексту
+    // MapLibre дорог и хрупок: высокие части (shadowShape) рисуются в маленький холст, размываются и ложатся
+    // текстурой на плоскость чуть выше газона — на землю, мощение и газон внутри объекта; плюс мягкий «след» прямо
+    // под скамейками и кронами. sx, sy — смещение тени на метр высоты в осях модели. Тень тёмно-зелёная бренда.
+    var SHADOW_Z = 0.2; // над газоном (0.18) и плитами; ниже бордюров и скамеек
+    function shadowMesh(geos, sx, sy, doc) {
+      if (!doc || !doc.createElement || !geos || !geos.solid) return null;
+      var sh = shadowShape(geos.solid, sx, sy, 0.3);
+      if (!sh) return null;
+      var pad = 2.2;
+      var x0 = sh.bounds[0] - pad,
+        y0 = sh.bounds[1] - pad;
+      var w = sh.bounds[2] - sh.bounds[0] + 2 * pad,
+        h = sh.bounds[3] - sh.bounds[1] + 2 * pad;
+      var ppm = Math.min(8, 320 / Math.max(w, h)); // точек на метр: ≤ 320 точек по большей стороне
+      var W = Math.max(8, Math.ceil(w * ppm)),
+        H = Math.max(8, Math.ceil(h * ppm));
+      var cv = doc.createElement("canvas");
+      cv.width = W;
+      cv.height = H;
+      var ctx = cv.getContext && cv.getContext("2d");
+      if (!ctx) return null;
+      function alphaOf(tris) {
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = "#000";
+        ctx.beginPath();
+        for (var i = 0; i < tris.length; i += 6) {
+          ctx.moveTo((tris[i] - x0) * ppm, H - (tris[i + 1] - y0) * ppm);
+          ctx.lineTo((tris[i + 2] - x0) * ppm, H - (tris[i + 3] - y0) * ppm);
+          ctx.lineTo((tris[i + 4] - x0) * ppm, H - (tris[i + 5] - y0) * ppm);
+          ctx.closePath();
+        }
+        ctx.fill();
+        var d = ctx.getImageData(0, 0, W, H).data;
+        var a = new Float32Array(W * H);
+        for (var k = 0; k < a.length; k++) a[k] = d[k * 4 + 3] / 255;
+        return a;
+      }
+      var cast = blur2(alphaOf(sh.cast), W, H, Math.max(1, Math.round(0.45 * ppm)));
+      var foot = blur2(alphaOf(sh.foot), W, H, Math.max(1, Math.round(1.0 * ppm)));
+      var img = ctx.createImageData(W, H);
+      var rgb = [21, 44, 38]; // P.shadow #152c26 в байтах холста (sRGB)
+      for (var k = 0; k < cast.length; k++) {
+        img.data[k * 4] = rgb[0];
+        img.data[k * 4 + 1] = rgb[1];
+        img.data[k * 4 + 2] = rgb[2];
+        img.data[k * 4 + 3] = Math.round(255 * Math.max(cast[k] * 0.26, foot[k] * 0.2));
+      }
+      ctx.putImageData(img, 0, 0);
+      var tex = new THREE.CanvasTexture(cv);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.generateMipmaps = false;
+      tex.minFilter = THREE.LinearFilter;
+      var mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
+      var plane = new THREE.PlaneGeometry(w, h);
+      plane.translate(x0 + w / 2, y0 + h / 2, SHADOW_Z);
+      var mesh = new THREE.Mesh(plane, mat);
+      mesh.renderOrder = 2;
+      mesh.frustumCulled = false;
+      mesh.userData.part = "shadow";
+      return mesh;
+    }
+    // Размытие «коробкой» дважды по каждой оси (≈ гаусс); края — пусто.
+    function blur2(src, W, H, r) {
+      var a = boxBlur(src, W, H, r, true);
+      a = boxBlur(a, W, H, r, false);
+      a = boxBlur(a, W, H, r, true);
+      return boxBlur(a, W, H, r, false);
+    }
+    function boxBlur(src, W, H, r, horiz) {
+      var out = new Float32Array(W * H);
+      var n = horiz ? W : H,
+        lines = horiz ? H : W,
+        d = 2 * r + 1;
+      for (var l = 0; l < lines; l++) {
+        var acc = 0;
+        for (var i = -r; i <= r; i++) acc += i < 0 || i >= n ? 0 : src[horiz ? l * W + i : i * W + l];
+        for (var j = 0; j < n; j++) {
+          out[horiz ? l * W + j : j * W + l] = acc / d;
+          var ia = j + r + 1,
+            ib = j - r;
+          acc += (ia < n ? src[horiz ? l * W + ia : ia * W + l] : 0) - (ib >= 0 ? src[horiz ? l * W + ib : ib * W + l] : 0);
+        }
+      }
+      return out;
+    }
+
+    return { build: build, palette: P, rng: rng, shadowShape: shadowShape, shadowMesh: shadowMesh, lights: lights, SUN: SUN };
   }
 
   return { create: create };

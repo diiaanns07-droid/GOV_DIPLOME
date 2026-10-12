@@ -33,7 +33,7 @@
  *   api                        — клиент оболочки R01 ({v2(method, path, body)}); map — карта или функция map().
  *
  * Handle: start(kind), cancel(), select(id), flyToProposals(), setMode(mode), update({mode, dock, visible}), refresh(),
- *         setVisible(bool), getState(), destroy().
+ *         setVisible(bool), getState(), destroy(); previewOf(kind) → {src, srcset} картинки объекта для каталога.
  * Событие для соседей: document "civic-build3d:tool" {active, kind} — как "civic-editor:tool" у редактора.
  */
 (function (root) {
@@ -1407,17 +1407,11 @@
     function setupScene() {
       scene = new THREE.Scene();
       camera = new THREE.Camera();
-      // Мягкий свет: небо/земля + солнце с юго-запада (белое: тёплое красило мощение и крыши в беж) (оттуда же мягкие тени объектов — makeShadow) +
-      // холодная подсветка с северо-востока, чтобы теневые стороны не проваливались в серое.
-      var hemi = new THREE.HemisphereLight(0xffffff, 0xbcc6ba, 2.0);
-      hemi.position.set(0, 0, 1);
-      scene.add(hemi);
-      var sun = new THREE.DirectionalLight(0xffffff, 1.8);
-      sun.position.set(SUN[0], SUN[1], SUN[2]);
-      scene.add(sun);
-      var fill = new THREE.DirectionalLight(0xe9f0ff, 0.4);
-      fill.position.set(0.7, 0.6, 0.5);
-      scene.add(fill);
+      // Свет — общий с превью каталога (Models.lights): небо/земля, белое солнце с юго-запада (оттуда же тени),
+      // холодная подсветка с северо-востока.
+      Models.lights().forEach(function (l) {
+        scene.add(l);
+      });
       var c = map.getCenter();
       origin = [c.lng, c.lat];
       var s = Core.meterInMerc(origin[1]);
@@ -1653,95 +1647,15 @@
     }
 
     // ───────────── Мягкая тень объекта (дизайн-марафон) ─────────────
-    // Без карт теней (второй проход по чужому контексту MapLibre дорог и хрупок): высокие части модели проецируются на
-    // землю вдоль солнца (Models.shadowShape), рисуются в маленький холст, размываются и ложатся текстурой на плоскость
-    // чуть выше газона — на землю, мощение и газон внутри объекта. Дополнительно — мягкий «след» прямо под скамейками и
-    // кронами (затенение у земли). Освещение (длинный участок) — только пятна у опор (в модели).
-    var SUN = [-0.5, -0.8, 1.6]; // направление на солнце: запад-юг, высоко (восток, север, вверх)
-    var SHADOW_Z = 0.2; // над газоном (0.18) и плитами; ниже бордюров и скамеек
+    // Тень и свет — общие с превью каталога: build3d-models.js (shadowMesh, lights, SUN). Здесь — только поворот
+    // солнца в оси модели. Освещение (длинный участок) — без проекции, только пятна у опор (в модели).
     function makeShadow(p, geos) {
-      if (p.kind === "lighting" || !geos.solid || !Models.shadowShape || !doc.createElement) return null;
+      if (p.kind === "lighting" || !geos.solid || !Models.shadowMesh) return null;
       var th = (p.rotation_deg || 0) * DEG; // группа повёрнута на −th — в осях модели солнце повёрнуто на +th
-      var wx = -SUN[0] / SUN[2],
-        wy = -SUN[1] / SUN[2];
-      var sh = Models.shadowShape(geos.solid, wx * Math.cos(th) - wy * Math.sin(th), wx * Math.sin(th) + wy * Math.cos(th), 0.3);
-      if (!sh) return null;
-      var pad = 2.2;
-      var x0 = sh.bounds[0] - pad,
-        y0 = sh.bounds[1] - pad;
-      var w = sh.bounds[2] - sh.bounds[0] + 2 * pad,
-        h = sh.bounds[3] - sh.bounds[1] + 2 * pad;
-      var ppm = Math.min(8, 320 / Math.max(w, h)); // точек на метр: ≤ 320 точек по большей стороне
-      var W = Math.max(8, Math.ceil(w * ppm)),
-        H = Math.max(8, Math.ceil(h * ppm));
-      var cv = doc.createElement("canvas");
-      cv.width = W;
-      cv.height = H;
-      var ctx = cv.getContext && cv.getContext("2d");
-      if (!ctx) return null;
-      function alphaOf(tris) {
-        ctx.clearRect(0, 0, W, H);
-        ctx.fillStyle = "#000";
-        ctx.beginPath();
-        for (var i = 0; i < tris.length; i += 6) {
-          ctx.moveTo((tris[i] - x0) * ppm, H - (tris[i + 1] - y0) * ppm);
-          ctx.lineTo((tris[i + 2] - x0) * ppm, H - (tris[i + 3] - y0) * ppm);
-          ctx.lineTo((tris[i + 4] - x0) * ppm, H - (tris[i + 5] - y0) * ppm);
-          ctx.closePath();
-        }
-        ctx.fill();
-        var d = ctx.getImageData(0, 0, W, H).data;
-        var a = new Float32Array(W * H);
-        for (var k = 0; k < a.length; k++) a[k] = d[k * 4 + 3] / 255;
-        return a;
-      }
-      var cast = blur2(alphaOf(sh.cast), W, H, Math.max(1, Math.round(0.45 * ppm)));
-      var foot = blur2(alphaOf(sh.foot), W, H, Math.max(1, Math.round(1.0 * ppm)));
-      var img = ctx.createImageData(W, H);
-      for (var k = 0; k < cast.length; k++) {
-        img.data[k * 4] = 21; // #152c26 — тёмно-зелёный бренда, не чёрный: тень «тёплая», не грязная
-        img.data[k * 4 + 1] = 44;
-        img.data[k * 4 + 2] = 38;
-        img.data[k * 4 + 3] = Math.round(255 * Math.max(cast[k] * 0.26, foot[k] * 0.2));
-      }
-      ctx.putImageData(img, 0, 0);
-      var tex = new THREE.CanvasTexture(cv);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      tex.generateMipmaps = false;
-      tex.minFilter = THREE.LinearFilter;
-      var mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
-      var plane = new THREE.PlaneGeometry(w, h);
-      plane.translate(x0 + w / 2, y0 + h / 2, SHADOW_Z);
-      var mesh = new THREE.Mesh(plane, mat);
-      mesh.renderOrder = 2;
-      mesh.frustumCulled = false;
-      mesh.userData.part = "shadow";
-      return mesh;
-    }
-    // Размытие «коробкой» дважды по каждой оси (≈ гаусс); края — пусто.
-    function blur2(src, W, H, r) {
-      var a = boxBlur(src, W, H, r, true);
-      a = boxBlur(a, W, H, r, false);
-      a = boxBlur(a, W, H, r, true);
-      return boxBlur(a, W, H, r, false);
-    }
-    function boxBlur(src, W, H, r, horiz) {
-      var out = new Float32Array(W * H);
-      var n = horiz ? W : H,
-        lines = horiz ? H : W,
-        d = 2 * r + 1;
-      for (var l = 0; l < lines; l++) {
-        var at = function (i) {
-          return i < 0 || i >= n ? 0 : src[horiz ? l * W + i : i * W + l];
-        };
-        var acc = 0;
-        for (var i = -r; i <= r; i++) acc += at(i);
-        for (var j = 0; j < n; j++) {
-          out[horiz ? l * W + j : j * W + l] = acc / d;
-          acc += at(j + r + 1) - at(j - r);
-        }
-      }
-      return out;
+      var sun = Models.SUN;
+      var wx = -sun[0] / sun[2],
+        wy = -sun[1] / sun[2];
+      return Models.shadowMesh(geos, wx * Math.cos(th) - wy * Math.sin(th), wx * Math.sin(th) + wy * Math.cos(th), doc);
     }
 
     function disposeGroup(group) {
@@ -3535,6 +3449,13 @@
       },
       cancel: cancel,
       select: select,
+      // Картинка-превью объекта для карточек каталога (дизайн-марафон): {src, srcset} из data/previews/ (рендер тех же
+      // моделей — tests/civic/R05/build3d/make_previews.mjs, 240×160 и @2x). Без three.js — годится для лёгкого вида.
+      previewOf: function (kind) {
+        if (!Core.KINDS[kind]) return null;
+        var base = o.dataUrl + "previews/" + kind;
+        return { src: base + ".png", srcset: base + ".png 1x, " + base + "@2x.png 2x", width: 240, height: 160 };
+      },
       flyToProposals: flyToProposals,
       setMode: setMode,
       // R01: update({mode, visible}) — то же, что setMode / setVisible.
