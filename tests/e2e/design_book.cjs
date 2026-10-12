@@ -100,7 +100,8 @@ const DESIGN = () => {
     const area = r.width * r.height, owner = ownerOf(e);
     if (bg && bg[3] >= 0.3 && area >= 300) {
       const [h, sat, l] = hsl(bg);
-      if (h >= 25 && h <= 60 && sat >= 12 && sat <= 75 && l >= 80 && l <= 97) { beige.push({ c: hex(bg), owner, label: label(e).slice(0, 24) }); issue("4 цвет", owner, `бежевая плашка ${hex(bg)}: «${label(e).slice(0, 20)}»`); }
+      // Бежевые и кремовые плашки (CLEAN_PASS: «без бежевых плашек»): тёплый оттенок, светлая заливка.
+      if (h >= 25 && h <= 60 && sat >= 12 && l >= 80 && l <= 97) { beige.push({ c: hex(bg), owner, label: label(e).slice(0, 24) }); issue("4 цвет", owner, `бежевая плашка ${hex(bg)}: «${label(e).slice(0, 20)}»`); }
       if (sat >= 45 && l >= 20 && l <= 75 && !near(bg, 60)) accents[hex(bg)] = (accents[hex(bg)] || 0) + 1;
     }
     const bw = parseFloat(s.borderTopWidth) + parseFloat(s.borderRightWidth) + parseFloat(s.borderBottomWidth) + parseFloat(s.borderLeftWidth);
