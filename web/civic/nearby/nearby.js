@@ -364,8 +364,22 @@
     }
 
     var fadeTab = false;
+    // Словарь ещё грузится (оболочка открыла #nearby сразу по адресу и уже зовёт setLang/render) — рисуем только
+    // скелет без слов: иначе мелькают ключи без перевода и в консоли «неизвестный ключ» (R01 r14_wave2, INFO).
+    var textReady = !I();
     function render() {
       rootEl.textContent = "";
+      if (!textReady) {
+        rootEl.setAttribute("data-state", "loading");
+        rootEl.appendChild(
+          h("div", { class: "bk-card nb-loading", "aria-hidden": "true" }, [
+            h("div", { class: "bk-skel bk-skel--title" }),
+            h("div", { class: "bk-skel bk-skel--line" }),
+            h("div", { class: "bk-skel bk-skel--line" }),
+          ])
+        );
+        return;
+      }
       rootEl.setAttribute("data-state", state.status);
       var tagName = /^h[1-3]$/.test(opts.titleTag) ? opts.titleTag : "h1";
       rootEl.appendChild(h(tagName, { class: "nb__title", text: tr("nearby.title") }));
@@ -507,6 +521,7 @@
 
     var off = null;
     (I() ? I().ready : Promise.resolve()).then(function () {
+      textReady = true;
       if (I()) off = I().onChange(render);
       load();
     });

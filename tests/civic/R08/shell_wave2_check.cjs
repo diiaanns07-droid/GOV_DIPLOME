@@ -32,7 +32,11 @@ async function open(browser, { w, h, lang, mode, hash }) {
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  page.on("console", (m) => m.type() === "error" && !/Failed to load resource/.test(m.text()) && errors.push(m.text()));
+  page.on("console", (m) => {
+    if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push(m.text());
+    // ключ без перевода в модуле R08 (раньше «Рядом» по прямому адресу рисовался до загрузки словаря)
+    if (/\[i18n\] неизвестный ключ/.test(m.text())) errors.push(m.text());
+  });
   await page.addInitScript(([l, m]) => {
     try { localStorage.setItem("birge.lang", l); localStorage.setItem("birge.mode", m); } catch (e) { /* */ }
   }, [lang, mode]);
@@ -66,7 +70,7 @@ async function login(page) {
       }));
       check(`${tag}: «Картина дня» в оболочке — решения и пульс, заголовки модуля h2, без прокрутки вбок`,
         info.dec >= 1 && info.dec <= 3 && info.decTitleTag === "H2" && info.pulse && info.h1 === 0 && info.hscroll <= 0, info);
-      check(`${tag}: без ошибок JS`, errors.length === 0, errors.slice(0, 3));
+      check(`${tag}: без ошибок JS и ключей без перевода`, errors.length === 0, errors.slice(0, 3));
       await ctx.close();
     }
   }
@@ -138,7 +142,7 @@ async function login(page) {
       }));
       check(`${tag}: житель → «Рядом» в оболочке (h2, 4 вкладки, баннер ≤ 2, одна главная кнопка, без прокрутки вбок)`,
         info.title === "H2" && info.tabs === 4 && info.banners >= 1 && info.banners <= 2 && info.primary === 1 && info.hscroll <= 0, info);
-      check(`${tag}: без ошибок JS`, errors.length === 0, errors.slice(0, 3));
+      check(`${tag}: без ошибок JS и ключей без перевода`, errors.length === 0, errors.slice(0, 3));
       if (w === 1366 && lang === "ru") {
         await page.click('#birge-screen-root [data-key="follow"]');
         await page.waitForSelector("#birge-screen-root .nb-follow__done", { timeout: 10000 }).catch(() => {});
