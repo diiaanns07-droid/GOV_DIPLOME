@@ -966,7 +966,10 @@
           h("span", {}, t("complaint.step2.selected", { label: targetLabel(state.target || { approximate: true }) }))]));
       }
       var example = t("complaint.example." + (state.category || "roads"));
-      body.appendChild(h("label", { "class": "bc-label", "for": "bc-text" }, t("complaint.step3.label")));
+      // Поле — .bk-field ui-kit (заливка, рамка только у фокуса; R11 CLEAN_PASS R09 №3).
+      var field = h("div", { "class": "bk-field bc-field" }, [
+        h("label", { "class": "bk-field__label bc-label", "for": "bc-text" }, t("complaint.step3.label"))]);
+      body.appendChild(field);
       if (!els.textarea) {
         els.textarea = h("textarea", { id: "bc-text", "class": "bc-textarea", rows: "4", maxlength: "2000" });
         els.textarea.addEventListener("input", function () {
@@ -979,7 +982,7 @@
       }
       els.textarea.value = state.text;
       els.textarea.setAttribute("placeholder", t("complaint.step3.example", { example: example }));
-      body.appendChild(els.textarea);
+      field.appendChild(els.textarea);
       body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step3.privacy")));
       els.categoryBox = h("div", { "class": "bc-category", "aria-live": "polite" });
       body.appendChild(els.categoryBox);
@@ -1525,8 +1528,13 @@
       var p = item.passport || {};
       if (item.status === "rejected" || (!p.assignee && !p.assignee_id)) return null;
       var due = item.status === "new" ? deadlineNode(p.deadline) : null;
-      return h("p", { "class": "bc-meta bc-assignee" }, [h("span", {}, t("service.assigned", { service: serviceName(p) })),
+      return h("span", { "class": "bk-statusline__note bc-assignee" }, [h("span", {}, t("service.assigned", { service: serviceName(p) })),
         due ? " · " : null, due]);
+    }
+
+    // Статус — один раз (R11 CLEAN_PASS, правило 5): точка + слово и одна строка пояснения («Передано: … · осталось …»).
+    function statusLine(item) {
+      return h("div", { "class": "bk-statusline bc-mine__status" }, [statusBadge(displayStatus(item)), passportLine(item)]);
     }
 
     // Задержка — баннер-предупреждение в карточке (R11 §2.2): причина · временная мера · следующее обновление.
@@ -1549,7 +1557,9 @@
       if (item.status !== "rejected") {
         lines.push(p.fix_eta ? t("passport.fix_eta", { date: formatDate(p.fix_eta + "T12:00:00+05:00") }) : t("passport.fix_unknown"));
       }
-      var more = h("details", { "class": "bc-more", open: open || null }, [h("summary", {}, t("common.action.more")),
+      // Полоса этапов — тоже здесь, не в карточке: статус в карточке показан один раз (R11 CLEAN_PASS R09 №6).
+      var more = h("details", { "class": "bk-details bc-more", open: open || null }, [h("summary", {}, t("common.action.more")),
+        stepsBar(item),
         h("p", { "class": "bc-label" }, t("passport.title")),
         h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); }))]);
       // «История» (R11 IA_WAVE2 §2.2, R10 W2-2): сообщили → в работе → служба сообщила → проверили / вернули.
@@ -1587,7 +1597,7 @@
     function renderSubscriptions(body) {
       var subs = state.mine.filter(function (item) { return item.relation === "metoo"; });
       if (!subs.length) return;
-      var more = h("details", { "class": "bc-more bc-subs" }, [
+      var more = h("details", { "class": "bk-details bc-more bc-subs" }, [
         h("summary", {}, t("mine.subscriptions") + " (" + subs.length + ")"),
         h("ul", { "class": "bc-subs__list" }, subs.map(function (item) {
           return h("li", { "class": "bc-subs__item" }, [
@@ -1632,17 +1642,15 @@
         list.appendChild(h("li", { "class": "bk-card bc-mine__card" + (focused ? " bc-mine__card--focus" : ""),
                                    "data-code": item.code || "", "data-id": item.id }, [
           h("div", { "class": "bc-mine__head" }, [
-            h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)]),
-            statusBadge(displayStatus(item))]),
+            h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)])]),
+          statusLine(item),
           h("p", { "class": "bc-meta" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
             item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null]),
           item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
           item.relation === "metoo" ? h("p", { "class": "bc-meta" }, t("mine.metoo_badge")) : null,
           // Все люди, сообщившие о том же на этом месте (как на шаге «Я тоже»), а не только по этой жалобе.
           h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || reportersOf(item) || 1 })),
-          passportLine(item),
           delayBanner(item),
-          stepsBar(item),
           detailsBlock(item, focused)]));
       });
       body.appendChild(list);
@@ -1676,7 +1684,8 @@
         var dots = h("div", { "class": "bk-wizard" }, [h("span", { "class": "bk-wizard__label" },
           t("complaint.wizard.step", { n: state.step, total: TOTAL_STEPS }))]);
         var track = h("span", { "class": "bk-wizard__dots", "aria-hidden": "true" });
-        for (var i = 1; i <= TOTAL_STEPS; i++) track.appendChild(h("span", { "data-state": i < state.step ? "done" : (i === state.step ? "current" : "todo") }));
+        // Точки шага — <i>, как в ui-kit R11 (.bk-wizard__dots > i): со <span> ui-kit их не рисовал.
+        for (var i = 1; i <= TOTAL_STEPS; i++) track.appendChild(h("i", { "data-state": i < state.step ? "done" : (i === state.step ? "current" : "todo") }));
         dots.appendChild(track);
         panel.appendChild(dots);
       }

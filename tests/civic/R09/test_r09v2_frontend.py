@@ -275,3 +275,26 @@ def test_inbox_screen_contract_for_r01():
     assert "bk-btn--primary" not in LIST_JS            # главная кнопка — у карточки действий (одна на экран)
     from ui.civic_feedback.v2 import lifecycle
     assert list(lifecycle.INBOX_TABS) == ["new", "in_progress", "waiting_check", "overdue", "reopened"]
+
+
+def test_clean_pass_r11_r09_items():
+    """R11 CLEAN_PASS §3 R09 (чистый дизайн, решение владельца 12 окт): статус один раз, поле с заливкой,
+    прилипающая главная кнопка, точки шага — <i> ui-kit, без лайма и бежевого, два веса."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    kit = (WEB / "kit-fallback.css").read_text(encoding="utf-8")
+    # №1: точки шага рисует ui-kit только для <i> (.bk-wizard__dots > i)
+    assert 'track.appendChild(h("i", {' in JS and ".bk-wizard__dots > i" in kit
+    # №3: поле текста — .bk-field
+    assert '"class": "bk-field bc-field"' in JS and "field.appendChild(els.textarea)" in JS
+    # №5: главная кнопка шага прилипает к низу шторки
+    assert re.search(r"\.bc-body > \.bk-btn--primary\.bk-btn--block \{\s*position: sticky; bottom: 0;", css)
+    # №6: в карточке «Мои обращения» статус один раз (.bk-statusline), полоса этапов — в «Подробнее»
+    card = JS.split('list.appendChild(h("li", { "class": "bk-card bc-mine__card"', 1)[1].split("body.appendChild(list)", 1)[0]
+    assert "statusLine(item)" in card and "stepsBar(" not in card and "statusBadge(" not in card
+    details = JS.split("function detailsBlock(item, open)", 1)[1].split("function historyText", 1)[0]
+    assert '"bk-details bc-more"' in details and "stepsBar(item)" in details
+    # №7 и правила 2, 4: ни лайма, ни бежевого, ни веса 700 в своих стилях
+    for text in (css, kit):
+        low = text.lower()
+        assert not any(c in low for c in ("#d7f57c", "#f1fbd3", "#f7f8f4", "#f1efe6")), "лайм/бежевый"
+        assert "font-weight: 700" not in text
