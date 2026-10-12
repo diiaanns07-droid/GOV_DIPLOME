@@ -67,9 +67,9 @@
   "final2_step4": "0f5101a",
   "FINAL-2": "12c925a"
  },
- "code_sha": "32d5352",
- "tested_sha": "32d5352 (pytest 3552/0, браузер R01, R06 app, R10 demo_flow с 2 правками теста — на этом дереве; R13 qa и R15 — на 3d2529e; R09 app — на 234da86)",
- "push_status": "OK: 32d5352 в origin/claude/sharp-dijkstra-0t87gl; документы — следующими коммитами",
+ "code_sha": "2f643dc",
+ "tested_sha": "2f643dc (браузер R01 P0/шапка/волна 2/город/B2 — на этом дереве; pytest 3552/0, B1, R06 app, R10 demo_flow — на 32d5352, разница только web/map.js и shell.css; R13 qa и R15 — на 3d2529e; R09 app — на 234da86)",
+ "push_status": "OK: 2f643dc в origin/claude/sharp-dijkstra-0t87gl",
  "changed_paths": [
   "ui/web_server.py",
   "web/index.html",
@@ -194,7 +194,7 @@
   ]
  },
  "final3": {
-  "candidate": "32d5352",
+  "candidate": "2f643dc",
   "steps": [
    "7782b92 P-R09-3",
    "10e5b3a + 85cedb3 чистый дизайн R11",
@@ -204,7 +204,8 @@
    "0464f5c R12 a02e906 + тесты R10 78a59b6 + R14 e9236838",
    "e4a7641 генератор QR (B-060)",
    "73edcc7 R05 03ac17c",
-   "f6df794 + 32d5352 правки по приёмке R10"
+   "f6df794 + 32d5352 правки по приёмке R10",
+   "2f643dc подпись карты на телефоне свёрнута в «i»"
   ],
   "in_build": {
    "R02": "f62cc93 (+ R01: EXPECTED_TABLES миграции 9 в tests/civic/R02)",
@@ -231,7 +232,8 @@
    "R12 app_qr_acceptance (0464f5c)": "28/1 — тест R12 ищет кнопку «Житель»; с меню аватара 30/0",
    "R13 qa_browser (3d2529e)": "69/69",
    "R15 tests (3d2529e)": "235 passed, 1 skipped",
-   "R09 app_demo_r09 (234da86)": "75/75"
+   "R09 app_demo_r09 (234da86)": "75/75",
+   "R15 (их проверка 32d5352)": "236 passed, браузер и CSP чисто, новых находок нет (R15 ee7b4d2)"
   },
   "requests": [
    "R10: INTEGRATION 21.6 (аватар vs «Для сотрудников», форма «что сделали», P-12 на телефоне, легенда строкой)",
