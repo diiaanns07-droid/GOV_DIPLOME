@@ -119,7 +119,7 @@ const SCAN = () => {
     // Надпись открыта целиком (не закрыта кнопкой, другой панелью): сетка 5 × 3 точек в видимой части — везде она сама.
     let open = true;
     for (let i = 0; i < 5 && open; i++) for (let j = 0; j < 3 && open; j++) {
-      const hx = Math.min(Math.max(cl.l + (cl.r - cl.l) * (0.1 + 0.2 * i), 0), innerWidth - 1), hy = Math.min(Math.max(cl.t + (cl.b - cl.t) * (0.2 + 0.3 * j), 0), innerHeight - 1);
+      const hx = Math.min(Math.max(cl.l + (cl.r - cl.l) * (0.04 + 0.23 * i), 0), innerWidth - 1), hy = Math.min(Math.max(cl.t + (cl.b - cl.t) * (0.08 + 0.42 * j), 0), innerHeight - 1);
       const hit = document.elementFromPoint(hx, hy);
       if (!hit || !(hit === e || e.contains(hit) || hit.contains(e))) open = false;
     }
@@ -367,7 +367,12 @@ async function contrastRun(browser, base, size, lang, mode) {
         // Надписи, которые пропали за время замера (плашка погасла, панель закрылась), не считаются.
         const alive = new Set(await page.evaluate(() => [...document.querySelectorAll("[data-r10t]")].filter((e) => {
           const r = e.getBoundingClientRect(); let o = 1; for (let p = e; p && p !== document.documentElement; p = p.parentElement) { const s = getComputedStyle(p); o *= Number(s.opacity); if (s.visibility === "hidden" || s.display === "none") o = 0; }
-          return r.width > 0 && r.height > 0 && o >= 0.98; }).map((e) => Number(e.getAttribute("data-r10t")))));
+          if (!(r.width > 0 && r.height > 0 && o >= 0.98)) return false;
+          // И всё ещё открыта целиком (поверх могло выехать что-то после разметки — главная кнопка, тост).
+          for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++) {
+            const hx = Math.min(Math.max(r.left + r.width * (0.04 + 0.23 * i), 0), innerWidth - 1), hy = Math.min(Math.max(r.top + r.height * (0.08 + 0.42 * j), 0), innerHeight - 1);
+            const hit = document.elementFromPoint(hx, hy); if (!hit || !(hit === e || e.contains(hit) || hit.contains(e))) return false; }
+          return true; }).map((e) => Number(e.getAttribute("data-r10t")))));
         await page.evaluate(() => { const e = document.getElementById("r10-hide"); if (e) e.remove(); });
         const res = await pixelContrast(ctx, png, scan.texts.filter((t) => alive.has(t.n)), 1);
         const fails = res.filter((r) => !r.ok);
