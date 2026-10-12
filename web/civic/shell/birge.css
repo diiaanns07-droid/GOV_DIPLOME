@@ -589,3 +589,131 @@ html.bk-glass-off body.civic-mode .map-tools .bk-glass--control:is([aria-pressed
 @media print {
   body.civic-mode .bk-glass, body.civic-mode .bk-glass--control { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
 }
+
+/* ===================================================================================================================
+   Дизайн-марафон R01 (research/round-14/DESIGN_MARATHON.md, 12–14 окт): только вид, движение и состояния оболочки.
+   Чек-лист: сетка 8/12/16/24, шкала 13/15/17/22, веса 400/600, единые радиусы, движение 200–350 мс ease-out.
+   =================================================================================================================== */
+
+/* Сетка ноутбука: всё от края экрана на 12 — как шапка-капсула (было: панель 20 справа и 34 снизу). Панель, ящик
+   сотрудника, кнопки карты, 3D-каталог R05 и подпись карты стоят на одних линиях. */
+@media (min-width: 761px) {
+  body.civic-mode { --be-edge: 12px; --be-panel: 400px; --be-drawer: 440px; }
+  body.civic-mode .civic-panel { right: var(--be-edge); bottom: var(--be-edge); }
+  body.civic-mode .civic-drawer { right: var(--be-edge); bottom: var(--be-edge); }
+  body.civic-mode .map-tools { right: calc(var(--be-edge) + var(--be-panel) + 12px); }
+  body.civic-mode[data-civic-drawer="open"] .map-tools { right: calc(var(--be-edge) + var(--be-drawer) + 12px); }
+  body[data-civic-drawer="open"].civic-mode:has(#civic-scenarios:not([hidden])) .map-tools { right: calc(var(--be-edge) + 520px + 12px); }
+  body.civic-mode .birge-build3d-root { left: var(--be-edge); right: calc(var(--be-edge) + var(--be-panel) + 12px); bottom: var(--be-edge); }
+  body.civic-mode[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
+  /* Подпись карты (© OpenStreetMap) — у нижнего края свободной карты, а не на углу стеклянной панели. */
+  body.civic-mode .maplibregl-ctrl-bottom-right { right: calc(var(--be-edge) + var(--be-panel) + 12px); bottom: 6px; }
+  body.civic-mode[data-civic-drawer="open"] .maplibregl-ctrl-bottom-right { right: calc(var(--be-edge) + var(--be-drawer) + 12px); }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  body.civic-mode { --be-panel: 360px; --be-drawer: 380px; }
+  body[data-civic-drawer="open"].civic-mode:has(#civic-scenarios:not([hidden])) .map-tools { right: calc(var(--be-edge) + 380px + 12px); }
+}
+
+/* Поиск в шапке — капсула в капсуле: поле 48 с отступом 6 (телефон 4) и радиусом капсулы — края концентричны. */
+body.civic-mode[data-birge-explore="header"] .civic-explore-field input { border-radius: var(--r-pill, 999px); padding-left: 46px; background-position: 16px center; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-field input:focus { outline-offset: 2px; }
+body.civic-mode[data-birge-explore="header"] .civic-explore .civic-explore-clear { border-radius: 50%; right: 0; }
+@media (max-width: 760px) {
+  /* было top: 4px для прежней полосы 0–56: поле стояло выше капсулы (8–64) — теперь по центру капсулы (birge.js) */
+  body.civic-mode[data-birge-explore="header"] .civic-explore { top: var(--be-top, 12px); }
+}
+/* Подсказки поиска: шкала 15/13, отступ 8 под капсулой, радиус панелей. */
+body.civic-mode[data-birge-explore="header"] .civic-explore-list { top: calc(100% + 14px); border-radius: var(--r-glass, 24px); padding: 8px; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-list [role="option"] { border-radius: 16px; padding: 8px 16px; }
+body.civic-mode .civic-explore-list .civic-explore-opt-name { font-size: 15px; font-weight: 600; }
+body.civic-mode .civic-explore-list .civic-explore-opt-place { font-size: 13px; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-status:not([hidden]) { top: calc(100% + 14px); border-radius: 16px; padding: 12px 16px; }
+
+/* Разделы: черта выбранного — под словом (8 от низа капсулы), а не на краю стекла. */
+body.civic-mode #birge-header .birge-nav > [aria-current="page"]::after { bottom: 8px; left: 12px; right: 12px; height: 2px; }
+
+/* Меню («Ещё», аватар, слои) — один вид: отступ 8, пункты 48 со скруглением 16 (концентрично радиусу 24), обычный
+   вес 400 (выбранный — 600 и «✓»), подсветка мягкой заливкой; 8 под капсулой шапки. */
+body.civic-mode .birge-more-menu { top: calc(100% + 14px); padding: 8px; gap: 0; min-width: 260px; }
+body.civic-mode .birge-more-item { font-weight: 400; border-radius: 16px; padding: 0 16px; }
+body.civic-mode .birge-more-item:hover, body.civic-mode .birge-more-item:focus-visible { background: rgba(21, 44, 38, 0.06); }
+body.civic-mode .birge-more-item[aria-current="page"] { box-shadow: none; font-weight: 600; }
+body.civic-mode #birge-account.bk-menu { padding: 8px; min-width: 260px; }
+body.civic-mode #birge-account .bk-menu__item { border-radius: 16px; padding: 0 16px; }
+body.civic-mode #birge-account .bk-menu__item:hover, body.civic-mode #birge-account .bk-menu__item:focus-visible { background: rgba(21, 44, 38, 0.06); }
+body.civic-mode #birge-account .bk-menu__label { padding: 8px 16px 4px; }
+body.civic-mode #birge-account .bk-menu__sep { margin: 8px 16px; }
+/* Меню внутри стеклянной шапки не может размыть то, что под ним: шапка с backdrop-filter — «корень фона» для своих
+   потомков (Chromium), и текст панели просвечивал резким даже при 96 %. Поэтому меню шапки — сплошной белый (как формы),
+   с тенью и радиусом стекла; меню слоёв у кнопок карты остаётся стеклом (там размытие работает). */
+body.civic-mode .topbar :is(#birge-account, .birge-more-menu).bk-glass { background-color: var(--glass-solid, #fff); background-image: none; }
+body.civic-mode #birge-account { margin-top: 8px; }
+
+/* «Слой на карте» — как меню: строки 48, радиокнопки цвета бренда, текст в одну строку. */
+body.civic-mode #birge-layer-list { padding: 8px; min-width: 260px; white-space: nowrap; }
+body.civic-mode #birge-layer-list .birge-layer__title { display: block; padding: 8px 16px 4px; font-size: 13px; font-weight: 400; color: var(--c-text-2, #5b6a64); }
+body.civic-mode #birge-layer-list .birge-layer__opt { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 16px;
+  border-radius: 16px; font-size: 15px; cursor: pointer; }
+body.civic-mode #birge-layer-list .birge-layer__opt:hover { background: rgba(21, 44, 38, 0.06); }
+body.civic-mode #birge-layer-list .birge-layer__opt input { accent-color: var(--c-brand, #152c26); width: 20px; height: 20px; margin: 0; flex: none; }
+body.civic-mode #birge-layer-list .birge-layer__opt:has(input:checked) { font-weight: 600; }
+
+/* «?» легенды — шкала 15/600, как подписи кнопок (было 17). */
+body.civic-mode .birge-legend-q { font-size: 15px; font-weight: 600; }
+
+/* Телефон: свёрнутая подпись карты — маленький круг-«i» на стекле, а не белая полоска-переключатель. */
+@media (max-width: 760px) {
+  body.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact:not(.maplibregl-compact-show) {
+    min-height: 28px; width: 28px; padding: 0; border-radius: 50%; background-color: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 0 0 1px rgba(16, 24, 22, 0.08); }
+  body.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact:not(.maplibregl-compact-show) .maplibregl-ctrl-attrib-button { top: 2px; right: 2px; }
+}
+/* Подпись карты: «i» снова справа в строке (R01_attrib_tap поставил кнопку в поток — «i» вставал отдельной строкой над
+   текстом); зона нажатия 48 (::after) работает и у кнопки с position: absolute. Строка — тихая капсула. */
+body.civic-mode .maplibregl-ctrl-attrib-button { position: absolute; top: 2px; right: 2px; }
+body.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact-show { border-radius: 12px; padding: 4px 30px 4px 10px; min-height: 28px;
+  display: flex; align-items: center; font-size: 11px !important; color: var(--c-text-2, #5b6a64); }
+body.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact-show a { color: inherit; }
+
+/* Движение (чек-лист №7): 200–280 мс, ease-out ui-kit (--ease), только появление — скрытие мгновенное, чтобы проверки
+   и клавиатура сразу видели прежнее состояние. Лист раздела поднимается на 12 px и проявляется; меню — сверху на 6 px
+   с лёгким масштабом от своей кнопки. prefers-reduced-motion — без движения (ниже). */
+body.civic-mode .birge-day:not([hidden]) {
+  transition: opacity var(--t-base, 240ms) var(--ease, ease-out), transform var(--t-base, 240ms) var(--ease, ease-out);
+}
+@starting-style { body.civic-mode .birge-day:not([hidden]) { opacity: 0; transform: translateY(12px); } }
+body.civic-mode :is(#birge-account, .birge-more-menu, #birge-layer-list):not([hidden]) {
+  transform-origin: top right;
+  transition: opacity var(--t-fast, 200ms) var(--ease, ease-out), transform var(--t-fast, 200ms) var(--ease, ease-out);
+}
+@starting-style {
+  body.civic-mode :is(#birge-account, .birge-more-menu, #birge-layer-list):not([hidden]) { opacity: 0; transform: translateY(-6px) scale(0.98); }
+}
+body.civic-mode .birge-more-menu:not([hidden]) { transform-origin: top left; }
+body.civic-mode #birge-layer-list:not([hidden]) { transform-origin: top right; }
+/* Отклик нажатия (№10): кнопки карты и аватар чуть сжимаются, пункты меню — плотнее подсветка. */
+@media (prefers-reduced-motion: no-preference) {
+  body.civic-mode :is(.map-tools .icon-btn, .birge-avatar, .birge-legend-q) {
+    transition: transform 120ms var(--ease, ease-out), background-color var(--t-fast, 200ms) var(--ease, ease-out); }
+  body.civic-mode :is(.map-tools .icon-btn, .birge-avatar, .birge-legend-q):active { transform: scale(0.94); }
+  body.civic-mode .map-tools .bk-mapctl__group > .icon-btn:active { transform: none; background-color: rgba(21, 44, 38, 0.08); }
+}
+body.civic-mode :is(.birge-more-item, #birge-account .bk-menu__item, #birge-layer-list .birge-layer__opt):active { background: rgba(21, 44, 38, 0.1); }
+@media (prefers-reduced-motion: reduce) {
+  body.civic-mode .birge-day:not([hidden]), body.civic-mode :is(#birge-account, .birge-more-menu, #birge-layer-list):not([hidden]) { transition: none; }
+}
+
+/* Проектор 1024 (марафон, список R01): разделы остаются в шапке, а не уходят в меню аватара — плотнее отступы
+   разделов (8 вместо 12), промежутки шапки 8 и только знак Birge без слова. Поле поиска — по-прежнему ≥ 200 px
+   (birge.js placeHeader: не влезает — шапка компактная, как раньше). */
+@media (min-width: 761px) and (max-width: 1180px) {
+  body.civic-mode #birge-header { gap: 8px; }
+  body.civic-mode #birge-header .birge-nav > button { padding: 0 8px; }
+  body.civic-mode #birge-header .birge-nav > [aria-current="page"]::after { left: 8px; right: 8px; }
+  body.civic-mode .topbar .brand-title { display: none; }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  body.civic-mode #birge-header .birge-nav > button { padding: 0 6px; }
+  body.civic-mode #birge-header .birge-nav > [aria-current="page"]::after { left: 6px; right: 6px; }
+}

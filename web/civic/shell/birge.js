@@ -198,8 +198,9 @@
       return item;
     }));
     const r = button.getBoundingClientRect(), box = header.getBoundingClientRect();
-    menu.style.setProperty("--more-left", Math.round(r.left - box.left) + "px");
     menu.hidden = false;
+    // Под своей кнопкой, но не шире шапки: правый край меню — не правее края капсулы (марафон: меню 260 px).
+    menu.style.setProperty("--more-left", Math.round(Math.max(0, Math.min(r.left - box.left, box.width - menu.offsetWidth))) + "px");
     button.setAttribute("aria-expanded", "true");
     menu.querySelector("[role=menuitem]")?.focus();
   }
@@ -581,7 +582,11 @@
     if (right - left < (phone ? SEARCH_MIN_PHONE : SEARCH_MIN)) { d.birgeExplore = "map"; return; }
     d.birgeExplore = "header";
     box.style.setProperty("--be-left", Math.round(left) + "px");
-    box.style.setProperty("--be-width", Math.round(Math.min(SEARCH_MAX, right - left)) + "px");
+    const width = Math.round(Math.min(SEARCH_MAX, right - left));
+    box.style.setProperty("--be-width", width + "px");
+    // Подсказка поля — по его ширине (как explore.js relabel): < 300 px — короткая «Поиск / Іздеу».
+    const input = box.querySelector(".civic-explore-field input");
+    if (input) input.placeholder = t(phone || width < 300 ? "common.search.short" : "common.search.placeholder_clean");
     box.style.setProperty("--be-top", Math.round(bar.top + (bar.height - 48) / 2) + "px");
   }
   // Строка о запасном фоне карты (R11 CLEAN_PASS №7) гаснет через 6 с после показа или смены текста.

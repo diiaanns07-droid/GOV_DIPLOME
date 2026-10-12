@@ -379,7 +379,9 @@
         }
       }
       select.querySelectorAll("option[data-district]").forEach((option, i) => { option.textContent = districtLabel(features[i]); });
-      input.placeholder = T(phone() ? "common.search.short" : "common.search.placeholder_clean");
+      // Узкое поле в шапке (проектор 1024, казахский): короткая подсказка «Іздеу / Поиск», а не обрезанная длинная.
+      const narrow = phone() || parseFloat(box.style.getPropertyValue("--be-width")) < 300;
+      input.placeholder = T(narrow ? "common.search.short" : "common.search.placeholder_clean");
       map?.getSource?.(PREFIX + "labels")?.setData(labelPoints());  // подписи районов — на новом языке
       if (index.state === "ready") {
         index = { state: "ready", items: labelStreets(rawStreets, features) };
