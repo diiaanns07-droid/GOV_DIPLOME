@@ -19,7 +19,9 @@ function loadPlaywright() {
 const { chromium } = loadPlaywright();
 const ROOT = path.resolve(__dirname, "../../..");
 const args = process.argv.slice(2);
-// --r11 <папка с web/civic/ui-kit и web/civic/i18n R11>: стенд подключает настоящий ui-kit и словари R11.
+// --r11 <папка WEB ветки R11, в ней civic/ui-kit и civic/i18n>: стенд подключает настоящий ui-kit и словари R11.
+//   Например: git archive origin/claude/r14-R11 web/civic/ui-kit web/civic/i18n | tar -x -C /tmp/r11 → --r11 /tmp/r11/web
+//   (корень репозитория вместо web — стенд без стилей и ложные FAIL, R11 разбор 5 №5).
 const r11Dir = args.includes("--r11") ? path.resolve(args[args.indexOf("--r11") + 1]) : null;
 // --real: стенд вызывает настоящие R12 engine.civic_geo и R04 ui.civic_ml_api (их пакеты должны лежать в дереве).
 const real = args.includes("--real");
@@ -1148,8 +1150,12 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
     return bad;
   });
   check(`${tag}: [UX] «Обращения» — текст ≥ 14 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  // Вкладки — одним рядом с прокруткой внутри ряда (R11 разбор 5 №4в); страница вбок не прокручивается.
+  const tabsRow = await page.$$eval(".bc-inbox__tab", (n) => new Set(n.map((b) => Math.round(b.getBoundingClientRect().top))).size);
+  check(`${tag}: [R11 5 №4в] 5 вкладок одним рядом`, tabsRow === 1, String(tabsRow));
   check(`${tag}: нет горизонтальной прокрутки`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1 &&
-        [...document.querySelectorAll(".bc-inbox *")].every((n) => { const r = n.getBoundingClientRect(); return !r.width || r.right <= innerWidth + 1; })));
+        [...document.querySelectorAll(".bc-inbox *")].filter((n) => !n.closest(".bc-inbox__tabs"))
+          .every((n) => { const r = n.getBoundingClientRect(); return !r.width || r.right <= innerWidth + 1; })));
   await shot(page, `${tag}-inbox`);
   // Сотрудник сообщает об устранении прямо из списка → группа уходит во «Ждут проверки».
   await page.click(".bc-inbox__item--open .bc-staff__open-fix");

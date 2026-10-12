@@ -610,3 +610,15 @@ def test_nearby_updates_join_what_changed(store):
     store.nearby_lookup = lambda device, since: 1 / 0
     items = service.handle("GET", "/api/civic/v2/complaints/changes", None, None, None, ctx)["body"]["data"]["items"]
     assert [i["kind"] for i in items] == ["note"]
+
+
+def test_own_cell_gets_street_label_from_r12():
+    """R11 разбор 5 №4б: «Другое место» — подпись R12 с улицей («Примерное место — проспект Туран»), а не общая."""
+    point = [71.406553, 51.131155]
+    own = rec.cell_target(*point)
+    lookup = lambda t: {"label_ru": "Примерное место — проспект Туран", "label_kk": "Шамамен орны — Тұран даңғылы",
+                        "approximate": True, "geometry": {"type": "Point", "coordinates": point}}
+    got = rec.checked_target(dict(own), point, lookup)
+    assert got["id"] == own["id"] and got["label_kk"] == "Шамамен орны — Тұран даңғылы" and got["approximate"] is True
+    assert rec.checked_target(dict(own), point, lambda t: 1 / 0)["label_ru"] == "Примерное место"
+    assert rec.checked_target(dict(own), point, None)["label_ru"] == "Примерное место"

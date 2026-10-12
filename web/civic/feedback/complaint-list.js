@@ -99,7 +99,8 @@
 
     function tabs() {
       var counts = (state.data && state.data.counts) || {};
-      var bar = h("div", { "class": "bk-chips bk-chips--wrap bc-inbox__tabs", role: "tablist" });
+      // Одним рядом с прокруткой (на 375 — без переноса в 3 ряда, R11 разбор 5 №4в; как вкладки «Рядом» R08).
+      var bar = h("div", { "class": "bk-chips bc-inbox__tabs", role: "tablist" });
       TABS.forEach(function (id) {
         bar.appendChild(h("button", { "class": "bk-chip bc-inbox__tab", type: "button", role: "tab", "data-tab": id,
                                       "aria-selected": state.tab === id ? "true" : "false",
@@ -113,6 +114,10 @@
     function row(group) {
       var expanded = state.open === group.key;
       var place = C().targetLabel(group.target);
+      // Общая подпись «Примерное место» у нескольких строк неразличима (R11 разбор 5 №4б) — добавляем номер.
+      if (group.target && group.target.approximate && place === t("complaint.step2.approximate") && group.complaints[0]) {
+        place += " · " + group.complaints[0].code;
+      }
       var what = C().categoryLabel(group.category) + (group.subtopic ? " · " + C().subtopicLabel(group.category, group.subtopic) : "");
       var due = deadlineNode(group.deadline);
       var head = h("button", { "class": "bc-inbox__row", type: "button", "aria-expanded": expanded ? "true" : "false",

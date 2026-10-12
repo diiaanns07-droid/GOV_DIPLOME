@@ -1477,9 +1477,11 @@
           after.map(function (id) { return photoThumb(item.id, id); })) : null,
         h("p", { "class": "bc-verify__question" }, t("verify.question"))]);
       var buttons = h("div", { "class": "bc-verify__buttons" });
-      [["yes", "verify.yes", primary ? " bk-btn--primary" : ""], ["no", "verify.no", ""], ["cant", "verify.cant", " bk-btn--ghost"]]
+      // «Не могу проверить» — ссылкой, а не третьей кнопкой (R11 разбор 9 №3: заливка читалась как вторая главная).
+      [["yes", "verify.yes", "bk-btn bk-btn--block" + (primary ? " bk-btn--primary" : "")], ["no", "verify.no", "bk-btn bk-btn--block"],
+       ["cant", "verify.cant", "bc-link"]]
         .forEach(function (b) {
-          buttons.appendChild(h("button", { "class": "bk-btn bk-btn--block bc-verify__" + b[0] + b[2], type: "button",
+          buttons.appendChild(h("button", { "class": b[2] + " bc-verify__" + b[0], type: "button",
                                             onclick: function (e) { verify(item, b[0], e.currentTarget); } }, t(b[1])));
         });
       box.appendChild(buttons);

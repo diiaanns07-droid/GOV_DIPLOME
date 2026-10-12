@@ -279,6 +279,23 @@ def distance_to_geometry_m(point, geometry) -> float | None:
     return None
 
 
+def _own_cell(point: list[float], lookup=None) -> dict:
+    """Ячейка «примерного места» у точки. Подпись — с карты R12, если он подключён: «Примерное место — проспект
+    Туран» (R11 разбор 5 №4б: подряд одинаковые «Примерное место» в «Обращениях» неразличимы); иначе общая."""
+    cell = cell_target(*point)
+    if lookup is None:
+        return cell
+    try:
+        found = lookup({"kind": cell["kind"], "id": cell["id"], "approximate": True})
+    except Exception:  # noqa: BLE001 — карта R12 недоступна: общая подпись
+        return cell
+    if isinstance(found, dict):
+        for name in ("label_ru", "label_kk"):
+            if isinstance(found.get(name), str) and found[name].strip():
+                cell[name] = found[name].strip()[:LABEL_MAX]
+    return cell
+
+
 def checked_target(target: dict, point: list[float], lookup=None) -> dict:
     """R15-S04/S12: цель, которой можно верить. Подписи — только с карты (R12), не из запроса жителя.
 
@@ -286,9 +303,9 @@ def checked_target(target: dict, point: list[float], lookup=None) -> dict:
     (подключает R01). Цель неизвестна карте или дальше TARGET_MAX_M от точки -> «примерное место» у точки.
     Без lookup подписи жителя не сохраняются (интерфейс покажет общее слово по виду цели).
     """
-    own_cell = cell_target(*point)
+    own_cell = _own_cell(point, lookup)
     if target["id"] == own_cell["id"]:
-        return own_cell  # «Другое место»: ячейка R09 у точки жителя, подписи — свои
+        return own_cell  # «Другое место»: ячейка у точки жителя (подпись с улицей — от R12, если он есть)
     clean = {"kind": target["kind"], "id": target["id"]}
     if target.get("approximate") is True:
         clean["approximate"] = True

@@ -177,6 +177,9 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-verify__reported { font-weight: 600; color: var(--c-ok, #2f6b12); }
 .bc-verify__question { font-weight: 700; font-size: var(--fs-lead, 18px); }
 .bc-verify__buttons { display: flex; flex-direction: column; gap: 8px; }
+.bc-link { align-self: center; min-height: 44px; padding: 8px 12px; border: 0; background: none; font: inherit;
+           font-weight: 600; color: var(--c-brand, #176b4a); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.bc-link:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 /* Сроки в рабочих днях: цвет + слово (UX_SPEC §10). */
 .bc-deadline--warn { color: var(--c-warn, #8a5a12); font-weight: 600; }
 .bc-deadline--danger { color: var(--c-danger, #b3362e); font-weight: 700; }
@@ -212,7 +215,8 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 /* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01): список целей, вкладки, карточка действий. */
 .bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 960px; margin: 0 auto; }
 .bc-inbox__title { margin: 0; font-size: var(--fs-title, 22px); }
-.bc-inbox__tabs .bk-chip { min-height: 44px; }
+.bc-inbox__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
+.bc-inbox__tabs .bk-chip { min-height: 44px; flex: 0 0 auto; white-space: nowrap; }
 .bc-inbox__count { font-weight: 700; }
 .bc-inbox__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .bc-inbox__item { padding: 0; overflow: hidden; }
