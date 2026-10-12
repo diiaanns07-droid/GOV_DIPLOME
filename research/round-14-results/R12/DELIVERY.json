@@ -7,15 +7,15 @@
  "delivery": 9,
  "for_build": "сборка R01 дизайн-марафона (после 41ccb57)",
  "base_sha": "R01 claude/sharp-dijkstra-0t87gl 6534334 (FINAL-3 со стеклом; R12 там = e3223d2), перепроверено на 41ccb57",
- "code_sha": "70136b88f45343eb3ff746d567ea15ed4aa7b477",
- "code_sha_note": "Марафон: e7a2487 (паспорт), cd03ab6 (табличка), 4b0b872 (кабинет), 1eb716e (вау паспорта, ключи R11), a4a0e25 (кабинет: заголовок записи, белое на сером, CHECKLIST), 3b0b4cb (кнопки паспорта: значок у подписи в две строки; значок светофора; кадры 1024). 70136b8 (круг 6: карточка работ на карте web/civic/map на токенах ui-kit). После — только документы.",
- "tested_sha": "70136b88f45343eb3ff746d567ea15ed4aa7b477",
+ "code_sha": "bee6068092b2552521bd57d581260ce44d7059f3",
+ "code_sha_note": "Марафон: e7a2487 (паспорт), cd03ab6 (табличка), 4b0b872 (кабинет), 1eb716e (вау паспорта, ключи R11), a4a0e25 (кабинет: заголовок записи, белое на сером, CHECKLIST), 3b0b4cb (кнопки паспорта: значок у подписи в две строки; значок светофора; кадры 1024). 70136b8 (круг 6: карточка работ на карте web/civic/map на токенах ui-kit). bee6068 (круг 7: кабинет на ҚАЗ — подписи формы через tr). После — только документы.",
+ "tested_sha": "bee6068092b2552521bd57d581260ce44d7059f3",
  "tested_note": "Среда: Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 41ccb57 + пути R12 из code_sha (web/civic/qr, web/civic/editor, tests/civic/R12); CIVIC_DEMO=1, временная база засеяна как run-city.bat, временный сотрудник для кабинета; ничего не коммитилось.",
- "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код 70136b8; этот DELIVERY — следующим коммитом)",
+ "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код bee6068; этот DELIVERY — следующим коммитом)",
  "take": "git checkout <code_sha> -- web/civic/qr web/civic/editor web/civic/map/civic-map.css tests/civic/R12",
  "take_note": "На R01 41ccb57 эти пути = R12 FINAL-3 (e3223d2 и раньше), поэтому checkout приносит только изменения марафона. web/civic/map — только civic-map.css (js и данные без изменений); engine/civic_geo и data/ — брать не нужно.",
  "logic_changed": false,
- "logic_note": "Только вид, движение, состояния и тексты. editor.js не менялся; report.js — классы, разметка состояний и флаг одной анимации после «Я тоже»; print.js — разметка таблички, размер A5/A6 (?size=), подбор шрифта. API, ключи данных, data-fk и сценарий демо — те же. civic-map.css — только стили карточки работ (классы и разметка прежние).",
+ "logic_note": "Только вид, движение, состояния и тексты. editor.js: видимые подписи формы идут через tr(\"staff.form.*\") (ru — прежний текст, kk — черновик R12), «Обязательное поле.» переводится при показе; проверки, отправка и data-fk — прежние. report.js — классы, разметка состояний и флаг одной анимации после «Я тоже»; print.js — разметка таблички, размер A5/A6 (?size=), подбор шрифта; civic-map.css — только стили карточки работ. API, ключи данных и сценарий демо — те же.",
  "items_status": [
   {
    "id": "DESIGN_MARATHON R12 · 1",
@@ -44,6 +44,13 @@
    "status": "done",
    "what": "13/15/22 (было 12–19), 400/600 (было до 750), фонов 7 → 3: без пунктирной «Пример» и бежевых «перенесён»; статус — точка + слово как .bk-status; заголовки разделов без капса; кнопки 15/600; рамка полей 3:1 сохранена; на 320 px первый вариант выбора виден",
    "evidence": "design/works/ (до/после, акимат 1366/375 × ru/kk, «Подробнее»)"
+  },
+  {
+   "id": "DESIGN_MARATHON R12 · круг 7 (чек-лист №3, №11)",
+   "title": "Кабинет сотрудника на ҚАЗ",
+   "status": "done (подсказки под полями — после разбора R11)",
+   "what": "разделы, поля, кнопки, «Қаралама болады», ошибка сохранения и «Міндетті өріс.» — 65 ключей staff.form.* (kk — черновик R12); обрезанного текста нет",
+   "evidence": "design/editor/after (kk), i18n_keys.json"
   }
  ],
  "checklist": "research/round-14-results/R12/design/CHECKLIST.md — 12 пунктов по трём экранам и замеры до/после",
@@ -70,7 +77,7 @@
   {
    "name": "редактор R12",
    "status": "PASS",
-   "result": "core 31, e2e 25, e2e_r13 14, e2e_r12 8, e2e_r12_real 1, e2e_r12_kk 3, preview_parity 3, contract_mock 9 — fail 0"
+   "result": "core 31, e2e 25, e2e_r13 14, e2e_r12 8, e2e_r12_real 1, e2e_r12_kk 3, preview_parity 3, contract_mock 9 — fail 0 (и после круга 7)"
   },
   {
    "name": "карта R12 (стенд)",
@@ -91,7 +98,7 @@
   {
    "name": "R01 P0 (браузер, R01 41ccb57 + R12)",
    "status": "PASS",
-   "result": "63/0/1 — как у R01 без R12"
+   "result": "63/0/1 — как у R01 без R12 (и после круга 7)"
   },
   {
    "name": "pytest tests/civic/R12 + tests/civic/R15/test_r15_qr.py",
@@ -111,7 +118,7 @@
   },
   {
    "for": "R11",
-   "note": "10 новых ключей в i18n_keys.json: target.type.playground/pitch/park/waste, qr.sign.call/how, qr.form.size/size_a5/size_a6/size_hint"
+   "note": "75 новых ключей в i18n_keys.json: 10 марафона кругов 1–2 (target.type.playground/pitch/park/waste, qr.sign.call/how, qr.form.size*) и 65 staff.form.* кабинета (круг 7); kk — черновик R12"
   }
  ],
  "owner_questions": [
@@ -120,7 +127,7 @@
   "Нужен ли короткий номер объекта («А-1234») вместо цифр OSM?"
  ],
  "known_limits": [
-  "Форма кабинета на kk частично по-русски (тексты раунда 13 R04/R13) — известное ограничение.",
+  "Длинные подсказки под полями кабинета на ҚАЗ пока по-русски (тексты раунда 13); подписи, кнопки и ошибки — уже kk (черновик R12).",
   "Новые 10 ключей — пока запасные тексты в report.js/print.js, kk — черновик R12 до проверки R11.",
   "Кадры карты — с запасным фоном (без интернета в контейнере); экраны R12 от фона не зависят.",
   "Демо-жалобы и записи работ — synthetic (CIVIC_DEMO=1, метка «Пример»); стенд QR — synthetic heat_fixture.json."
