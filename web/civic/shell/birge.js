@@ -652,7 +652,8 @@
   const GLASS = [
     [".topbar", "bk-glass bk-glass--bar"],                       // №1 шапка — плавающая капсула
     ["#birge-account, .birge-more-menu, #birge-layer-list", "bk-glass bk-glass--menu"],   // №2 меню (радиус 18, ui-kit 58b28edc)
-    ["#birge-locate, #toggle-3d, #birge-layer-btn, #birge-compass, .birge-legend-q, .map-tools .bk-mapctl__group", "bk-glass--control"],  // №3
+    // «?» легенды — не отдельное стекло: плоская кнопка внутри стеклянной строки (ui-kit R11 «стекло в стекле», R10 G-2).
+    ["#birge-locate, #toggle-3d, #birge-layer-btn, #birge-compass, .map-tools .bk-mapctl__group", "bk-glass--control"],  // №3
     [".birge-legend-line", "bk-glass bk-glass--bar"],             // №4 строка легенды
     ["#civic-panel", "bk-glass"],                                 // №5 панель / шторка
     ["#birge-day, #birge-screen", "bk-glass"],                    // №6 лист раздела

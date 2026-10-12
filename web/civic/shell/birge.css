@@ -792,3 +792,6 @@ body.civic-mode .civic-close:hover { background: rgba(21, 44, 38, 0.06); }
   body.civic-mode:has(.civic-panel[data-sheet="half"]) .bk-toasts { bottom: calc(46% + 12px); }
   body.civic-mode:has(.civic-panel[data-sheet="half"] #birge-heat-root .r07-card) .bk-toasts { bottom: calc(56% + 12px); }
 }
+/* «?» легенды — плоская кнопка в стеклянной строке: без своей подложки, при наведении — мягкая заливка. */
+body.civic-mode .birge-legend-q:not([aria-expanded="true"]) { background: transparent; }
+body.civic-mode .birge-legend-q:not([aria-expanded="true"]):hover { background: rgba(21, 44, 38, 0.06); }
