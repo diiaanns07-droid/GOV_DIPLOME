@@ -61,6 +61,10 @@
       "status.verified": "Проверено жителями", "status.reopened": "Проблема осталась — снова в работе", "status.label": "Статус",
       "common.action.close": "Закрыть", "common.action.retry": "Повторить",
       "qr.card.complaints": "Обращения здесь", "passport.history": "История", "passport.answer_due": "Ответ службы до {date}",
+      "target.type.playground": "Детская площадка", "target.type.pitch": "Спортплощадка", "target.type.park": "Парк или сквер",
+      "target.type.waste": "Контейнерная площадка", "target.kind.cell": "Примерное место",
+      "common.state.network_text": "Проверьте интернет и повторите.", "common.state.error_text": "Попробуйте ещё раз через минуту.",
+      "heat.fixed_until": "На карте зелёным до {date}",
     },
     kk: {
       "common.tag.demo": "Үлгі", "common.tag.approx": "Шамамен көрсетілген орын",
@@ -83,6 +87,10 @@
       "status.verified": "Тұрғындар тексерді", "status.reopened": "Мәселе қалды — қайта жұмыста", "status.label": "Мәртебесі",
       "common.action.close": "Жабу", "common.action.retry": "Қайталау",
       "qr.card.complaints": "Осы жердегі өтініштер", "passport.history": "Тарих", "passport.answer_due": "Қызмет жауабының мерзімі: {date}",
+      "target.type.playground": "Балалар алаңы", "target.type.pitch": "Спорт алаңы", "target.type.park": "Саябақ немесе гүлзар",
+      "target.type.waste": "Контейнер алаңы", "target.kind.cell": "Шамамен көрсетілген орын",
+      "common.state.network_text": "Интернетті тексеріп, қайталап көріңіз.", "common.state.error_text": "Бір минуттан кейін қайталап көріңіз.",
+      "heat.fixed_until": "Жасыл түспен көрсетілу мерзімі: {date}",
     },
   };
   // Подпись «за 30 дней»: в ru — формы числа, как в словаре R11.
@@ -161,13 +169,23 @@
     try { id = decodeURIComponent(m[1].replace(/\+/g, " ")); } catch (e) { return null; }
     return REPORT_ID_RE.test(id) ? id : null;
   }
-  // Слово вида над заголовком — ключ target.type.* словаря R11; для парков/площадок слова нет (заголовок и так говорит).
-  var TYPE_KEY = { bus_stop: "stop", traffic_signal: "traffic_signal", crossing: "crossing", intersection: "intersection" };
+  // Слово вида над заголовком — ключ target.type.* словаря R11 (площадки, парки, контейнеры — ключи R12, запасной текст выше).
+  var TYPE_KEY = { bus_stop: "stop", traffic_signal: "traffic_signal", crossing: "crossing", intersection: "intersection",
+    playground: "playground", pitch: "pitch", park: "park", waste: "waste" };
+  var KIND_ICON = { bus_stop: "bus", crossing: "walk", intersection: "road", playground: "playground", pitch: "ball",
+    park: "trees", waste: "trash" };
   function kindKey(target) {
     if (!target) return null;
     if (target.kind === "object") return TYPE_KEY[target.object_kind] ? "target.type." + TYPE_KEY[target.object_kind] : null;
     if (target.kind === "segment") return "target.type.segment";
-    return String(target.id || "").indexOf("yard-") === 0 ? "target.type.yard" : null;
+    var id = String(target.id || "");
+    return id.indexOf("yard-") === 0 ? "target.type.yard" : id.indexOf("cell-") === 0 ? "target.kind.cell" : null;
+  }
+  function kindIcon(target) {
+    if (!target) return "pin";
+    if (target.kind === "segment") return "road";
+    if (target.kind === "object") return KIND_ICON[target.object_kind] || "pin";
+    return String(target.id || "").indexOf("yard-") === 0 ? "building" : "pin";
   }
   // Состояния волны 2 (categories_v2 heat_states): verified_fixed → «Проверено жителями».
   function statusKey(status) { return "status." + (status === "verified_fixed" ? "verified" : status || "new"); }
@@ -238,7 +256,8 @@
     var sprite = opts.iconSprite || "/civic/ui-kit/icons.svg";
     var fetchFn = opts.fetch || (root.fetch && root.fetch.bind(root));
     var S = { id: null, info: null, heat: null, state: "idle", error: null, seq: 0, notice: null, busy: false, detailsOpen: false,
-      cases: null };  // cases: {key, rows} — обращения места (R09, публичный вид), грузятся только при раскрытии «Подробнее»
+      cases: null,  // cases: {key, rows} — обращения места (R09, публичный вид), грузятся только при раскрытии «Подробнее»
+      enter: false };  // enter: карточка только что открылась — один раз мягко «поднимается» (bk-rise, reduced-motion — без)
     var box = h("section", { class: "bq-report", "aria-live": "polite", "data-state": "idle" });
     host.appendChild(box);
     var destroyed = false;
@@ -263,7 +282,7 @@
 
     function open(id) {
       var my = ++S.seq;
-      S.id = id; S.info = null; S.heat = null; S.notice = null; S.error = null;
+      S.id = id; S.info = null; S.heat = null; S.notice = null; S.error = null; S.enter = true;
       if (!REPORT_ID_RE.test(String(id || ""))) { S.state = "error"; S.error = "bad_link"; render(); return Promise.resolve(false); }
       S.state = "loading"; render();
       return getJson("/target?id=" + encodeURIComponent(id)).then(function (info) {
@@ -342,49 +361,63 @@
       // (.civic-panel, по GLASS.md §4 №5 — стекло) паспорт лежит на её стекле: второе стекло или карточка в карточке не нужны.
       box.classList.toggle("bk-glass", !(box.parentElement && box.parentElement.closest && box.parentElement.closest(".bk-glass, .civic-panel")));
       box.lang = lang();
-      var kids = [];
-      // Крестик — в углу карточки, а не отдельной строкой: на телефоне главная кнопка остаётся видна без прокрутки.
-      kids.push(h("button", { type: "button", class: "bk-iconbtn bq-report__close", "aria-label": t("common.action.close"), title: t("common.action.close"),
-        onclick: function () { if (typeof opts.onClose === "function") opts.onClose(); destroy(); } }, [icon("close", sprite)]));
+      var kids;
       if (S.state === "loading" || S.state === "idle") {
-        kids.push(h("div", { class: "bq-skel", "aria-busy": "true" }, [
-          h("span", { class: "bk-sr-only", text: t("map.card.loading") }),
-          h("i", { class: "bk-skel bk-skel--line" }), h("i", { class: "bk-skel bk-skel--title" }), h("i", { class: "bk-skel bk-skel--block" })]));
+        // Скелетон повторяет карточку: строка вида, заголовок, строка статуса, кнопка — ничего не «прыгает», когда придут данные.
+        kids = [top([h("i", { class: "bk-skel bk-skel--line bq-skel__eyebrow" })]),
+          h("div", { class: "bq-skel", "aria-busy": "true" }, [
+            h("span", { class: "bk-sr-only", text: t("map.card.loading") }),
+            h("i", { class: "bk-skel bk-skel--title" }), h("i", { class: "bk-skel bk-skel--line bq-skel__short" }),
+            h("i", { class: "bk-skel bk-skel--line" }), h("i", { class: "bk-skel bq-skel__button" })])];
       } else if (S.state === "error") {
-        var retry = S.error === "network" || S.error === "server";
-        // Неизвестный или испорченный номер — «Объект не найден» + подсказка и «На карту» (IA_WAVE2 §6.1), не пустая карта.
-        var gone = !retry;
-        kids.push(h("div", { class: "bk-error bq-error", role: "alert", "data-error": S.error }, [
-          h("p", { class: "bk-error__title", text: t(gone ? "map.card.not_found" : S.error === "server" ? "map.card.error" : "common.state.network_title") }),
-          gone ? h("p", { class: "bk-error__text", text: t("map.card.not_found_hint") }) : null,
-          h("div", { class: "bq-actions" }, [
-            retry ? h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--block", "data-act": "retry", onclick: function () { open(S.id); } }, [icon("refresh", sprite), t("common.action.retry")]) : null,
-            typeof opts.onOpenMap === "function" ? h("button", { type: "button", class: "bk-btn bk-btn--block " + (retry ? "bk-btn--ghost" : "bk-btn--primary"),
-              "data-act": "map", onclick: function () { opts.onOpenMap(null); } }, [t("complaint.step5.to_map")]) : null])]));
+        kids = [top([])].concat(errorView());
       } else {
-        kids = kids.concat(card());
+        kids = card();
+        if (S.enter) { box.classList.add("bq-enter"); S.enter = false; } else box.classList.remove("bq-enter");
       }
       box.replaceChildren.apply(box, kids);
+    }
+    // Верхняя строка во всех состояниях: вид объекта слева, крестик справа (не поверх скелетона и текста).
+    function top(content) {
+      return h("div", { class: "bq-top" }, [h("p", { class: "bq-eyebrow" }, content),
+        h("button", { type: "button", class: "bk-iconbtn bq-report__close", "aria-label": t("common.action.close"), title: t("common.action.close"),
+          onclick: function () { if (typeof opts.onClose === "function") opts.onClose(); destroy(); } }, [icon("close", sprite)])]);
+    }
+    // Ошибка = что случилось + что делать (DESIGN_MARATHON п. 8): значок, заголовок, подсказка, одна главная кнопка.
+    function errorView() {
+      var retry = S.error === "network" || S.error === "server";
+      // Неизвестный или испорченный номер — «Объект не найден» + подсказка и «На карту» (IA_WAVE2 §6.1), не пустая карта.
+      var gone = !retry;
+      var big = icon(gone ? "search" : S.error === "network" ? "wifi-off" : "alert", sprite);
+      big.setAttribute("class", "ic ic--48");
+      return [h("div", { class: "bk-error bq-error", role: "alert", "data-error": S.error }, [big,
+        h("p", { class: "bk-error__title", text: t(gone ? "map.card.not_found" : S.error === "server" ? "map.card.error" : "common.state.network_title") }),
+        h("p", { class: "bk-error__text", text: t(gone ? "map.card.not_found_hint" : S.error === "server" ? "common.state.error_text" : "common.state.network_text") }),
+        h("div", { class: "bq-actions" }, [
+          retry ? h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--block", "data-act": "retry", onclick: function () { open(S.id); } }, [icon("refresh", sprite), t("common.action.retry")]) : null,
+          typeof opts.onOpenMap === "function" ? h("button", { type: "button", class: "bk-btn bk-btn--block " + (retry ? "bk-btn--ghost" : "bk-btn--primary"),
+            "data-act": "map", onclick: function () { opts.onOpenMap(null); } }, [icon("pin", sprite), t("complaint.step5.to_map")]) : null])])];
     }
 
     function card() {
       var info = S.info, tg = info.target, it = S.heat, l = lang();
       var title = (l === "kk" ? tg.label_kk : tg.label_ru) || tg.label_ru;
       var demo = !!(it && it.demo);
-      var out = [];
-      var kk = kindKey(tg);
-      out.push(h("p", { class: "bk-card__eyebrow bq-eyebrow" }, [
-        icon(tg.kind === "segment" ? "road" : tg.object_kind === "bus_stop" ? "bus" : "pin", sprite),
-        kk ? t(kk) : null,
-        demo ? h("span", { class: "bk-tag bk-tag--demo", text: t("common.tag.demo") }) : null]));
+      var kk = kindKey(tg), kindWord = kk ? t(kk) : "";
+      // Слово вида не повторяем, если заголовок с него начинается («Светофор на перекрёстке…», «Контейнерная площадка»).
+      if (kindWord && title.toLowerCase().indexOf(kindWord.toLowerCase()) === 0) kindWord = "";
+      var out = [top([icon(kindIcon(tg), sprite), kindWord ? h("span", { text: kindWord }) : null,
+        demo ? h("span", { class: "bk-tag bk-tag--demo", text: t("common.tag.demo") }) : null])];
       out.push(h("h2", { class: "bq-title", tabindex: "-1", text: title }));
       out.push(h("p", { class: "bq-number", text: t("qr.object_no", { id: groupDigits(info.number) }) }));
       if (info.approximate) out.push(h("p", { class: "bk-tag bk-tag--approx bq-approx", text: t("common.tag.approx") }));
-      // Сколько людей и статус — сразу под заголовком: видно без прокрутки на 375 px. Жалоб нет — блока нет (IA_WAVE2 §0 п. 6).
+      // Статус и сколько людей — сразу под заголовком (видно без прокрутки на 375 px), как строка статуса ui-kit:
+      // «● Новое» / «Сообщили 5 человек · за 30 дней». Жалоб нет — блока нет (IA_WAVE2 §0 п. 6).
       if (it && it.count > 0) {
-        out.push(h("p", { class: "bq-reported" }, [h("b", { text: reportedText(it.count) }), " · " + t("common.period.last_days", { n: DAYS })]));
-        out.push(h("p", { class: "bq-status" }, [t("status.label") + ": ",
-          h("span", { class: "bk-status", "data-status": it.status, text: t(statusKey(it.status)) })]));
+        var notes = [h("span", { class: "bk-statusline__note bq-reported" }, [h("b", { text: reportedText(it.count) }), " · " + t("common.period.last_days", { n: DAYS })])];
+        if (isFixed(it) && it.fixed_until) notes.push(h("span", { class: "bk-statusline__note", text: t("heat.fixed_until", { date: fmtDate(it.fixed_until) }) }));
+        out.push(h("div", { class: "bk-statusline bq-statusline" }, [h("span", { class: "bk-status", "data-status": it.status === "verified_fixed" ? "verified" : it.status,
+          "aria-label": t("status.label") + ": " + t(statusKey(it.status)), text: t(statusKey(it.status)) })].concat(notes)));
       }
       // Одна главная кнопка (UX_BRIEF п. 3, POLISH_WAVE_2 защита п. 4).
       var main = mainAction(it, tg), actions = [];
@@ -394,42 +427,44 @@
         actions.push(h("button", { type: "button", class: "bk-btn bk-btn--ghost bk-btn--block", "data-act": "report-other", onclick: report },
           [t("report.other")]));
       } else {
-        if (it && !isFixed(it) && (it.open_ids || []).length && metooDone(tg)) {
+        // Одно подтверждение: сразу после «Я тоже» — «Спасибо…» (ниже), иначе — тихая строка «Вы отметили «Я тоже»».
+        if (it && !isFixed(it) && (it.open_ids || []).length && metooDone(tg) && !(S.notice && S.notice.ok)) {
           out.push(h("p", { class: "bq-done" }, [icon("check", sprite), t("target.metoo_done")]));
         }
         actions.push(h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--lg bk-btn--block", "data-act": "report", onclick: report },
           [icon("send", sprite), t(it && it.count > 0 && !isFixed(it) ? "report.other" : "report.here")]));
       }
+      // Подтверждение или ошибка — над кнопкой, где житель смотрит (на телефоне ниже кнопки его не видно).
+      if (S.notice) out.push(h("p", { class: "bq-notice" + (S.notice.ok ? " bq-notice--ok" : " bq-notice--error"), role: S.notice.ok ? "status" : "alert" },
+        [icon(S.notice.ok ? "check" : "alert", sprite), h("span", { text: S.notice.text })]));
       out.push(h("div", { class: "bq-actions" }, actions));
-      if (S.notice) out.push(h("p", { class: "bq-notice" + (S.notice.ok ? " bq-notice--ok" : " bq-notice--error"), role: S.notice.ok ? "status" : "alert", text: S.notice.text }));
-      // Остальное — свёрнуто.
+      // Остальное — свёрнуто (ui-kit .bk-details: стрелка, 48 px).
       var more = [];
+      var section = function (key, body) { more.push(h("section", { class: "bq-sec" }, [h("h3", { class: "bq-h3", text: t(key) })].concat(body))); };
       if (it && (it.daily || []).length) {
         var max = Math.max.apply(null, it.daily.concat([1]));
-        more.push(h("h3", { class: "bq-h3", text: t("target.by_day") }));
-        more.push(h("div", { class: "bk-spark bq-spark", "aria-hidden": "true" }, it.daily.map(function (n) {
-          var bar = h("i"); bar.style.height = Math.max(n ? 8 : 2, Math.round((n / max) * 100)) + "%"; return bar; })));
+        section("target.by_day", [h("div", { class: "bk-spark bq-spark", "aria-hidden": "true" }, it.daily.map(function (n) {
+          var bar = h("i"); bar.style.height = Math.max(n ? 8 : 2, Math.round((n / max) * 100)) + "%"; return bar; }))]);
       }
       var topics = it && it.by_category ? Object.keys(it.by_category) : [];
       if (topics.length) {
-        more.push(h("h3", { class: "bq-h3", text: t("heat.topics") }));
-        more.push(h("ul", { class: "bq-topics" }, topics.map(function (c) { return h("li", {}, [h("span", { text: catName(c) }), h("b", { text: String(it.by_category[c]) })]); })));
+        section("heat.topics", [h("ul", { class: "bq-rows" }, topics.map(function (c) {
+          return h("li", { class: "bq-row" }, [h("span", { text: catName(c) }), h("b", { class: "bq-row__num", text: String(it.by_category[c]) })]); }))]);
       }
       var cases = S.cases && S.cases.rows;
       if (cases && cases.length) {
-        more.push(h("h3", { class: "bq-h3", text: t("qr.card.complaints") }));
-        more.push(h("ul", { class: "bq-cases" }, cases.map(function (c) {
+        section("qr.card.complaints", [h("ul", { class: "bq-rows bq-cases" }, cases.map(function (c) {
           var st = c.heat_state || c.status, open = !isFixed({ status: st }) && c.status !== "rejected";
-          return h("li", {}, [h("span", { class: "bq-case__what", text: catName(c.category) + " · " + t(statusKey(st)) }),
+          return h("li", { class: "bq-case" }, [h("span", { class: "bq-case__what" }, [catName(c.category) + " · ",
+              h("span", { class: "bk-status bq-case__status", "data-status": st === "verified_fixed" ? "verified" : st, text: t(statusKey(st)) })]),
             h("span", { class: "bq-case__meta", text: reportedText(c.reporters || 1) +
               (open && c.due_at ? " · " + t("passport.answer_due", { date: fmtDate(c.due_at) }) : "") })]);
-        })));
+        }))]);
         var hist = historyRows(cases);
         if (hist.length) {
-          more.push(h("h3", { class: "bq-h3", text: t("passport.history") }));
-          more.push(h("ol", { class: "bq-history" }, hist.map(function (e) {
-            return h("li", {}, [h("time", { datetime: String(e.at), text: fmtDate(e.at) }), " — " + t(statusKey(e.status))]);
-          })));
+          section("passport.history", [h("ol", { class: "bq-rows bq-history" }, hist.map(function (e) {
+            return h("li", { class: "bq-hist" }, [h("time", { datetime: String(e.at), text: fmtDate(e.at) }), h("span", { text: t(statusKey(e.status)) })]);
+          }))]);
         }
       }
       if (typeof opts.onOpenMap === "function") {
@@ -437,7 +472,7 @@
           [icon("pin", sprite), t("complaint.step5.to_map")]));
       }
       if (more.length) {
-        var det = h("details", { class: "bq-more", open: S.detailsOpen ? true : null }, [h("summary", { text: t("common.action.more") })].concat(more));
+        var det = h("details", { class: "bk-details bq-more", open: S.detailsOpen ? true : null }, [h("summary", { text: t("common.action.more") })].concat(more));
         det.addEventListener("toggle", function () { S.detailsOpen = det.open; if (det.open) loadCases(); });
         out.push(det);
       }
@@ -460,5 +495,5 @@
   }
 
   return { mount: mount, parseReportId: parseReportId, kindKey: kindKey, mainAction: mainAction, REPORT_ID_RE: REPORT_ID_RE,
-    statusKey: statusKey, groupDigits: groupDigits, historyRows: historyRows, PENDING: PENDING, version: "r12-wave2-qr-2" };
+    statusKey: statusKey, groupDigits: groupDigits, historyRows: historyRows, kindIcon: kindIcon, PENDING: PENDING, version: "r12-marathon-qr-3" };
 });

@@ -78,7 +78,13 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   assert.deepEqual((await page.evaluate(() => window.__events.at(-1))).type, "metoo");
   await page.waitForFunction(() => /Сообщили 4 человека/.test(document.querySelector(".bq-report").innerText));
   assert.match(await page.locator(".bk-btn--primary").innerText(), /Сообщить о другом/);
-  assert.match(await page.locator(".bq-report").innerText(), /Вы отметили «Я тоже»/);
+  // одно подтверждение — «Спасибо…» над кнопкой (дизайн-марафон: не два подряд); «Вы отметили…» — при следующем открытии
+  const after = await page.locator(".bq-report").innerText();
+  assert.match(after, /Спасибо/);
+  assert.doesNotMatch(after, /Вы отметили «Я тоже»/);
+  const order = await page.evaluate(() => { const n = document.querySelector(".bq-notice"), a = document.querySelector(".bq-actions");
+    return !!(n && a && (n.compareDocumentPosition(a) & Node.DOCUMENT_POSITION_FOLLOWING)); });
+  assert.ok(order, "подтверждение над кнопкой");
   // «Сообщить о другом» отдаёт оболочке цель, точку и форму (мастер R09 откроется с этим местом)
   await page.click('[data-act="report"]');
   const rep = await page.evaluate(() => window.__reports.at(-1));

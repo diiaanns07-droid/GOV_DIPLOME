@@ -65,7 +65,8 @@ try {
     await reportState(p);
     const card = await p.locator("#birge-report-root").innerText();
     check("ссылка ?report открывает паспорт остановки в панели", /Хан Шатыр/.test(card) && /Объект № 4\s109\s037\s549/.test(card), card.slice(0, 200));
-    check("в паспорте видно, сколько людей сообщили, и статус", /Сообщил/.test(card) && /Статус/.test(card), card.slice(0, 300));
+    const statusLabel = await p.locator("#birge-report-root .bq-statusline .bk-status").getAttribute("aria-label").catch(() => null);
+    check("в паспорте видно, сколько людей сообщили, и статус", /Сообщил/.test(card) && /^Статус: /.test(statusLabel || ""), [card.slice(0, 300), statusLabel]);
     check("одна главная кнопка в паспорте", (await p.locator("#birge-report-root .bk-btn--primary").count()) === 1, null);
     // GLASS.md R11: в панели оболочки паспорт лежит на её стекле — своего стекла (карточки в карточке) у него нет
     const glass = await p.evaluate(() => ({ panel: document.querySelector("#birge-report-root")?.closest(".civic-panel")?.classList.contains("bk-glass") || false,
