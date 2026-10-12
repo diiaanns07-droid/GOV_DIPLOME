@@ -452,7 +452,8 @@ body.civic-mode .civic-explore #map-status:not(.hidden) {
 body.civic-mode .civic-explore #map-status[data-faded="1"] { opacity: 0; visibility: hidden; pointer-events: none; }
 @media (max-width: 760px) {
   /* Телефон: внизу карты — шторка, над ней — центр карты (туда камера ставит выбранное место); строка — под легендой. */
-  body.civic-mode .civic-explore #map-status:not(.hidden) { left: 50%; top: 112px; bottom: auto; max-width: calc(100vw - 32px); }
+  /* Левее столбика кнопок карты (48 + 15 + 12 px): строка не закрывает «+ | −» (R10 FINAL-3, 375). */
+  body.civic-mode .civic-explore #map-status:not(.hidden) { left: calc(50% - 37px); top: 112px; bottom: auto; max-width: calc(100vw - 32px - 74px); }
 }
 @media (prefers-reduced-motion: reduce) { body.civic-mode .civic-explore #map-status { transition: none; } }
 /* R11 CLEAN_PASS №8: одна акцентная краска #152c26 — зелёный и лайм раунда 13 (web/style.css) в Birge не используются;
@@ -484,3 +485,18 @@ body[data-civic-sheet="full"].civic-mode .civic-explore #map-status { display: n
 .civic-mode .map-tools .bk-compass[hidden] { display: none; }
 .civic-mode .map-tools .bk-compass > .ic { transform: rotate(var(--bearing, 0deg)); transition: transform 0.15s ease; }
 .civic-mode .map-tools .ic { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* Меню аватара: «✓» у выбранного вида — только картинка, не часть имени пункта (иначе программа чтения с экрана и
+   поиск по имени слышат «Акимат✓», R10 demo_flow setMode). Браузер без «/ альтернативы» берёт правило ui-kit. */
+#birge-account .bk-menu__item[aria-checked="true"]::after { content: "✓" / ""; }
+/* «ҚАЗ · РУС»: точка-разделитель — картинка (не часть имени «РУС») и не перехватывает нажатие у «ҚАЗ» (R10 FINAL-3:
+   «ҚАЗ под РУС», поиск кнопки «РУС» по имени). Зона нажатия на телефоне — не уже 44 px (ui-kit даёт 36, R10 порог 40). */
+#birge-header .birge-lang > button + button::before { content: "·" / ""; pointer-events: none; }
+@media (max-width: 760px) { #birge-header .birge-lang > button { min-width: 44px; } }
+/* Телефон (R10 FINAL-3 375/360): строка легенды помещается между краем и столбиком кнопок карты — не наезжает на «моё
+   место»; капсула масштаба целая [+ | −] (раунд 13 прятал «−» на телефоне; убрать ли +/− совсем — вопрос владельцу 5). */
+@media (max-width: 760px) {
+  .civic-mode .birge-legend-line { max-width: 100%; box-sizing: border-box; gap: 6px; padding-left: 10px; }
+  .civic-mode .birge-legend-line .bk-legend__scale { width: 40px; }
+  .civic-mode .map-tools .bk-mapctl__group > #zoom-out { display: grid; }
+}
