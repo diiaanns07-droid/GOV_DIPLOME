@@ -68,7 +68,10 @@ def test_text_contrast_at_least_4_5():
 
 
 def test_icons_cover_categories_and_showcase():
-    ids = set(re.findall(r'<symbol id="i-([a-z0-9-]+)"', ICONS))
+    ids = set(re.findall(r'<symbol id="i-([a-z0-9-]+)"', ICONS))  # иконки; иллюстрации ill-* проверяются отдельно
+    ills = set(re.findall(r'<symbol id="ill-([a-z0-9-]+)"', ICONS))
+    assert {"list", "map", "search", "done", "offline", "idea", "question"} <= ills, ills
+    assert ICONS.count('vector-effect="non-scaling-stroke"') >= 7  # линия иллюстраций не толстеет при 96 px
     assert len(ids) >= 30
     for c in CATS["categories"]:
         assert c["icon"] in ids, c["icon"]
@@ -77,6 +80,12 @@ def test_icons_cover_categories_and_showcase():
     assert names == ids, f"витрина и спрайт расходятся: {names ^ ids}"
     for used in re.findall(r'data-kit-icon="([a-z0-9-]+)"', SHOWCASE):
         assert used in ids, used
+
+
+def test_icon_sprite_is_well_formed_xml():
+    # битый спрайт = ни одной иконки на всех экранах (так было при вставке иллюстраций в комментарий)
+    import xml.dom.minidom
+    xml.dom.minidom.parseString(ICONS.encode("utf-8"))
 
 
 def test_icons_are_local_and_symbols_have_viewbox():

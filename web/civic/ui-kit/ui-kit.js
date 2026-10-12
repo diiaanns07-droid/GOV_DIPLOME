@@ -49,6 +49,12 @@
     );
   }
 
+  // Линейная иллюстрация пустого состояния (спрайт ui-kit, символы ill-*)
+  function illustration(name) {
+    var safe = /^[a-z-]+$/.test(String(name)) ? name : "list";
+    return '<svg class="bk-ill" aria-hidden="true" focusable="false"><use href="' + SPRITE + "#ill-" + safe + '"></use></svg>';
+  }
+
   // ── Тосты ──
   var toastBox = null;
   function toastContainer() {
@@ -230,9 +236,13 @@
       return;
     }
     var isError = kind === "error";
+    // Иллюстрация из линий (дизайн-марафон): по умолчанию «список» для пустого и «нет связи» для ошибки;
+    // opts.illustration — list | map | search | done | offline | idea | question; opts.icon — прежняя иконка 48 px.
+    var art = opts.icon ? icon(opts.icon, { size: 48 })
+      : illustration(opts.illustration || (isError ? "offline" : "list"));
     el.innerHTML =
       '<div class="' + (isError ? "bk-error" : "bk-empty") + '" role="' + (isError ? "alert" : "status") + '">' +
-      icon(opts.icon || (isError ? "wifi-off" : "search"), { size: 48 }) +
+      art +
       '<p class="' + (isError ? "bk-error__title" : "bk-empty__title") + '"></p>' +
       '<p class="' + (isError ? "bk-error__text" : "bk-empty__text") + '"></p></div>';
     var box = el.firstChild;
@@ -345,5 +355,5 @@
   }
 
   root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, esc: esc,
-    seasonOrder: seasonOrder, tabs: tabs, menu: menu, SPRITE: SPRITE };
+    seasonOrder: seasonOrder, tabs: tabs, menu: menu, illustration: illustration, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);

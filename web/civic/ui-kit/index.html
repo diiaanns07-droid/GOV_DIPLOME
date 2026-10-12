@@ -475,6 +475,7 @@
           <div class="bk-card" id="kit-empty"></div>
           <div class="bk-card" id="kit-error"></div>
         </div>
+        <div class="kit-icons kit-ills" id="kit-ills" aria-hidden="true"></div>
         <div class="bk-banner bk-banner--danger" role="alert" id="kit-emergency">
           <div class="bk-banner__title" data-kit-icon="alert"><span data-i18n="complaint.emergency.title"></span></div>
           <div data-i18n="complaint.emergency.text" data-i18n-params='{"phone":"104"}'></div>
@@ -547,6 +548,9 @@
           $("kit-colors").innerHTML = COLORS.map(function (name) {
             var v = css.getPropertyValue(name).trim();
             return '<div class="kit-swatch"><i style="background:' + v + '"></i><span><code>' + name + "</code><br>" + v + "</span></div>";
+          }).join("");
+          $("kit-ills").innerHTML = ["list", "map", "search", "done", "offline", "idea", "question"].map(function (n) {
+            return "<figure>" + UI.illustration(n) + "<figcaption><code>ill-" + n + "</code></figcaption></figure>";
           }).join("");
           $("kit-icons").innerHTML = ICONS.map(function (n) {
             return "<figure>" + UI.icon(n) + "<figcaption><code>" + n + "</code></figcaption></figure>";

@@ -156,7 +156,8 @@
   background: var(--c-fill-hover);
 }
 .bk-btn:active {
-  transform: translateY(1px);
+  transform: scale(var(--press-scale)); /* лёгкое сжатие — отклик нажатия */
+  transition-duration: var(--t-press);
 }
 .bk-btn:disabled,
 .bk-btn[aria-disabled="true"] {
@@ -2006,6 +2007,10 @@
 .bk-glass--bar {
   border-radius: var(--r-pill);
 }
+.bk-glass--menu {
+  border-radius: var(--r-glass-menu);
+  padding-block: var(--s-2);
+}
 .bk-glass--sheet {
   border-radius: var(--r-glass-sheet) var(--r-glass-sheet) 0 0;
 }
@@ -2087,6 +2092,120 @@
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     box-shadow: none;
+  }
+}
+
+/* Иллюстрация пустого состояния / ошибки — линейная, спокойная, 96 px (на телефоне 80) */
+.bk-ill {
+  width: 96px;
+  height: 96px;
+  flex: none;
+  fill: none;
+  stroke: var(--c-text-3);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bk-empty .bk-ill,
+.bk-error .bk-ill {
+  margin-bottom: var(--s-2);
+}
+.bk-error .bk-ill {
+  stroke: var(--c-text-2);
+}
+@media (max-width: 1023px) {
+  .bk-ill {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* ───────────── Движение и отклик (дизайн-марафон): 200–350 мс, ease-out; при prefers-reduced-motion — без движения ───────────── */
+.bk-chip,
+.bk-mapbtn,
+.bk-glass--control,
+.bk-iconbtn,
+.bk-option,
+.bk-list__item,
+.bk-menu__item,
+.bk-tabs > [role="tab"] {
+  transition:
+    background-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    transform var(--t-press) var(--ease);
+}
+.bk-chip:active,
+.bk-mapbtn:active,
+.bk-glass--control:active,
+.bk-iconbtn:active,
+.bk-option:active,
+.bk-list__item:active {
+  transform: scale(var(--press-scale));
+}
+/* Панели выезжают, а не появляются: добавьте класс на время показа (или всегда — анимация один раз при вставке) */
+.bk-enter-up {
+  animation: bk-enter-up var(--t-base) var(--ease-out) both;
+}
+.bk-enter-right {
+  animation: bk-enter-right var(--t-base) var(--ease-out) both;
+}
+.bk-enter-fade {
+  animation: bk-fade var(--t-fast) var(--ease-out) both;
+}
+.bk-enter-pop {
+  animation: bk-enter-pop var(--t-base) var(--ease-out) both;
+}
+@keyframes bk-enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes bk-enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes bk-enter-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Галочка успеха рисуется линией (экран «Отправлено», «Проверено жителями») */
+.bk-check-draw path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: bk-draw var(--t-slow) var(--ease-out) 120ms forwards;
+}
+@keyframes bk-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bk-enter-up,
+  .bk-enter-right,
+  .bk-enter-fade,
+  .bk-enter-pop {
+    animation: none;
+  }
+  .bk-check-draw path {
+    animation: none;
+    stroke-dashoffset: 0;
   }
 }
 
