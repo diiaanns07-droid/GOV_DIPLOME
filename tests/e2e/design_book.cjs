@@ -108,7 +108,7 @@ const DESIGN = () => {
   // 4. Цвет и 6. Глубина: фоны, рамки, радиусы, тени
   const HEAT = ["#fac775", "#ef9f27", "#e24b4a", "#a32d2d", "#152c26"].map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)));
   const near = (c, d) => HEAT.some((h) => Math.abs(h[0] - c[0]) + Math.abs(h[1] - c[1]) + Math.abs(h[2] - c[2]) < d);
-  const RADII = [0, 8, 10, 14, 20, 24, 28];
+  const RADII = [0, 8, 10, 14, 18, 20, 24, 28];  // токены ui-kit: --r-s/m/l/xl, --r-glass-menu 18, --r-glass 24, --r-glass-sheet 28
   const beige = [], accents = {}, radii = {}, offRadii = [], shadows = [], doubles = [], borders = {};
   for (const e of all) {
     if (inMap(e) && !e.closest(".r07-badge")) continue;

@@ -7,7 +7,8 @@
 "use strict";
 // Микро-отклик (100–170 мс, только цвет/тень/сжатие) — не замечание (то же правило, что в design_book.cjs с круга 2).
 const MICRO = /^переход ((?:transform|scale|translate|background-color|background|color|box-shadow|opacity|filter|border-color|outline-color)(?:, )?)+ (1[0-6]\d) мс/;
-const keep = (w) => !MICRO.test(w);
+// Радиус 18 px — токен ui-kit --r-glass-menu (R11 b39e586d), в книгах до круга 3 считался «вне токенов».
+const keep = (w) => !MICRO.test(w) && !/^радиус 18 px/.test(w);
 const fs = require("fs"), path = require("path");
 const { chromium } = require("playwright");
 const L = require("./r10_lib.cjs");
