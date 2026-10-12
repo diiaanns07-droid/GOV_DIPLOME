@@ -32,7 +32,7 @@ module.exports = function waveMore(H) {
     const body = { text, lang, category, category_source: "resident", point: (target && target.point) || stop.point, device_id: device, demo: true,
       target: target ? { kind: "object", id: target.id, label_ru: target.label_ru, label_kk: target.label_kk } : { kind: "object", id: stop.id, label_ru: `Остановка «${stop.name}»` },
       ...(subtopic !== undefined ? { subtopic } : {}) };
-    const r = await A.call("POST", "/api/civic/v2/complaints", body, false, device);
+    const r = await H.postRetry(A, "/api/civic/v2/complaints", body, device);
     const rec = (A.data(r) || {}).complaint || A.data(r) || null;
     return { http: r.status, rec: rec && rec.id ? rec : null, error: r.body && (r.body.error || r.body.message) };
   }

@@ -250,9 +250,20 @@ let filed = 0;
 async function fileComplaint(A, stop, device, text) {
   const body = { text: `${text} (${++filed})`, lang: "ru", category: "transport", category_source: "resident", point: stop.point,
     target: { kind: "object", id: stop.id, label_ru: `Остановка «${stop.name}»` }, device_id: device, demo: true };
-  const r = await A.call("POST", "/api/civic/v2/complaints", body, false, device);
+  const r = await postRetry(A, "/api/civic/v2/complaints", body, device);
   const rec = (A.data(r) || {}).complaint || A.data(r) || null;
   return rec && rec.id ? rec : { id: null, http: r.status, error: r.body && (r.body.error || r.body.message) };
+}
+// Лимит частоты (429, Retry-After ≤ 70 с) — подождать и повторить; дольше (часовое окно) — вернуть ответ как есть.
+async function postRetry(A, p, body, device, tries = 3) {
+  let r;
+  for (let i = 0; i < tries; i++) {
+    r = await A.call("POST", p, body, false, device);
+    const wait = r.status === 429 ? Number((r.res && r.res.headers.get("retry-after")) || 0) : 0;
+    if (!wait || wait > 70) return r;
+    await L.sleep(wait * 1000 + 300);
+  }
+  return r;
 }
 async function complaintById(A, id) {
   const l = await A.call("GET", `/api/civic/v2/complaints?bbox=${NURA_BBOX}`, null, true);
@@ -344,8 +355,9 @@ async function checkQuickClose(ctx) {
   for (const [size, lang] of variants) {
     const tag = `${size[0]}-${lang}`;
     // похожая жалоба (та же категория) — чтобы был шаг «Об этом уже сообщили»
-    await A.call("POST", "/api/civic/v2/complaints", { text: text[lang] + " (" + (++filed) + ")", lang, category: "lighting", category_source: "resident",
-      point: stop.point, target: { kind: "object", id: stop.id, label_ru: `Остановка «${stop.name}»` }, device_id: devId("q"), demo: true });
+    const dq = devId("q");
+    await postRetry(A, "/api/civic/v2/complaints", { text: text[lang] + " (" + (++filed) + ")", lang, category: "lighting", category_source: "resident",
+      point: stop.point, target: { kind: "object", id: stop.id, label_ru: `Остановка «${stop.name}»` }, device_id: dq, demo: true }, dq);
     const P = await openPage(browser, size, lang);
     const errs = [];
     P.page.on("pageerror", (e) => errs.push(String(e.message || e).slice(0, 200)));
@@ -838,12 +850,18 @@ async function checkQr(ctx) {
     }
     if (!sheet) { add("W2-6", "лист", "лист для печати web/civic/qr/ открывается", "FAIL", "нет страницы /civic/qr/"); return; }
     await L.sleep(2500);
+    // Лист — для печати: размеры QR и шрифта меряем в стиле печати (96 CSS px = 1 дюйм → 6 см = 227 px).
+    await P.page.emulateMedia({ media: "print" }).catch(() => null);
+    await L.sleep(500);
     const info = await P.page.evaluate(([callRu, callKk]) => {
       const qr = [...document.querySelectorAll("canvas, svg, img")].map((e) => e.getBoundingClientRect()).filter((b) => b.width >= 100 && Math.abs(b.width - b.height) < 6);
       const text = document.body.innerText;
       const big = [...document.querySelectorAll("body *")].filter((e) => !e.children.length && e.textContent.trim() && parseFloat(getComputedStyle(e).fontSize) >= 37).length;
       const print = [...document.styleSheets].some((s) => { try { return [...s.cssRules].some((r) => r.media && /print/.test(r.media.mediaText)); } catch (e) { return false; } });
-      return { qr: qr.length, qr_px: qr[0] ? Math.round(qr[0].width) : 0, big_text: big, number: /№\s*\d+/.test(text), call_ru: text.includes(callRu.slice(0, 20)), call_kk: text.includes(callKk.slice(0, 20)),
+      // Призыв на kk: из словаря R11 или хотя бы казахский текст (буквы ә ғ қ ң ө ұ ү һ і) в строке с вопросом.
+      const kkLine = text.split("\n").some((l) => /[әғқңөұүһі]/i.test(l) && /\?/.test(l));
+      return { qr: qr.length, qr_px: qr[0] ? Math.round(qr[0].width) : 0, big_text: big, number: /№\s*\d+/.test(text), call_ru: text.includes(callRu.slice(0, 20)),
+        call_kk: text.includes(callKk.slice(0, 20)) || kkLine, call_kk_r11: text.includes(callKk.slice(0, 20)),
         domain: /\b[a-z0-9-]+\.[a-z]{2,}\b/i.test(text) || /127\.0\.0\.1|localhost/.test(text), print, counts: /\d+\s*(человек|адам|жалоб|шағым)/i.test(text) };
     }, [W("ru", "qr.call"), W("kk", "qr.call")]);
     add("W2-6", "лист", "лист для печати: QR ≥ 6 см, крупное название, «Объект № …», призыв на kk и ru, домен, стиль печати; без чисел жалоб",
@@ -991,7 +1009,7 @@ const ITEMS = [
 
 // Остальные пункты волн 1–2 и обязательные мелочи — tests/e2e/wave_more.cjs (те же помощники).
 ITEMS.push(...require("./wave_more.cjs")({ add, st, W, Wany, part, exact, openPage, goto, header, modeRe, mineRe, shotOf, primaries, staffLogin,
-  openCard, wizardToText, devId, complaintById, grepBuild, STOPS, ROOT, OUT, L }));
+  openCard, wizardToText, devId, complaintById, grepBuild, postRetry, STOPS, ROOT, OUT, L }));
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -1015,8 +1033,14 @@ ITEMS.push(...require("./wave_more.cjs")({ add, st, W, Wany, part, exact, openPa
     const parts = { shellReport: stat.shellReport.length > 0 || !!args.force, qrR12: stat.qrR12.length > 0 || !!args.force };
     for (const it of todo.filter((x) => status[x.id].ok)) {
       add(it.id, "сборка", `${it.title}: ${status[it.id].forced ? "кода нет, --force — проверяю механику" : "есть в сборке — проверяю"}`, "INFO", { static: stat, runtime: runtime.globals });
-      try { await it.run({ browser, base: server.base, variants, staff: server.staff, runtime, parts }); }
-      catch (e) { add(it.id, "!", "проверка прервалась", "FAIL", String(e.message || e).slice(0, 300)); }
+      // Свой свежий сервер (временная база) на каждый пункт: лимиты частоты R15 (жалоб 5 в минуту, 30 в час с адреса)
+      // считаются в памяти процесса — иначе поздние пункты получают 429 от жалоб ранних. --one-server — один на всё.
+      const srv = args["one-server"] ? server : await L.startServer(ROOT);
+      try {
+        await L.api(srv.base).call("GET", "/api/civic/v2/heat?days=30&zoom=12");
+        await it.run({ browser, base: srv.base, variants, staff: srv.staff, runtime, parts });
+      } catch (e) { add(it.id, "!", "проверка прервалась", "FAIL", String(e.message || e).slice(0, 300)); }
+      finally { if (srv !== server) await srv.stop(); }
     }
   } finally { await browser.close(); await server.stop(); }
   const counts = { PASS: 0, FAIL: 0, PENDING: 0, NOT_RUN: 0, INFO: 0 };

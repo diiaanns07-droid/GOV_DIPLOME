@@ -210,7 +210,8 @@ function uiAudit(page) {
     const where = (e) => { const z = e.closest(".maplibregl-marker, .b3d-labels") ? "карта" : e.closest(".maplibregl-ctrl") ? "кнопки карты"
       : e.closest("[role=dialog], dialog, .bk-sheet, .bc-panel, .r07-card, aside") ? "панель" : e.closest("header, nav, .birge-nav, .bk-topbar") ? "шапка" : "экран";
       return z; };
-    const nameOf = (e) => clean(e.getAttribute("aria-label") || e.innerText || e.getAttribute("title") || e.value || "").slice(0, 40);
+    // innerText пуст, пока блок разворачивается (переход высоты), — тогда имя по textContent.
+    const nameOf = (e) => clean(e.getAttribute("aria-label") || e.innerText || e.textContent || e.getAttribute("title") || e.value || "").slice(0, 40);
     // 1. Шрифт
     const fonts = [];
     for (const el of document.querySelectorAll("body *")) {
