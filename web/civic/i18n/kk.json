@@ -1018,7 +1018,7 @@
  "works.form.until": "{date} дейін",
  "works.form.error": "Сақтау мүмкін болмады. Байланысты тексеріп, қайталаңыз.",
  "map.card.back": "Барлық нысандар",
- "map.card.on_map": "Картада",
+ "map.card.on_map": "Картадан көрсету",
  "map.card.title": "Нысан карточкасы",
  "map.card.loading": "Карточка жүктеліп жатыр…",
  "map.card.not_found": "Нысан табылмады",

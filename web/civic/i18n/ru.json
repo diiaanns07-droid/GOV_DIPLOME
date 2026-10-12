@@ -1227,7 +1227,7 @@
  "works.form.until": "до {date}",
  "works.form.error": "Не получилось сохранить. Проверьте связь и повторите.",
  "map.card.back": "Все объекты",
- "map.card.on_map": "На карте",
+ "map.card.on_map": "Показать на карте",
  "map.card.title": "Карточка объекта",
  "map.card.loading": "Загружаем карточку…",
  "map.card.not_found": "Объект не найден",
