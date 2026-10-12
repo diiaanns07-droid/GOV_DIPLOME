@@ -140,12 +140,47 @@
   font: 600 16px system-ui, sans-serif;
 }
 
-/* «По идее жителей · 47 голосов» (волна 2 п. 7): проект вырос из идеи жителей. */
+/* «По идее жителей · 47 голосов» (волна 2 п. 7): проект вырос из идеи жителей. Тёмным — зелёный только «исправлено»
+   (дизайн-марафон, п. 4 чек-листа). */
 .r06-idea {
   display: flex;
   gap: var(--s-2);
   align-items: center;
   margin: 0;
-  color: var(--c-ok);
+  color: var(--c-ink);
   font-weight: var(--fw-semi);
+}
+
+/* Дизайн-марафон: статус проекта — одна краска. «Одобрен» — тёмная точка (не зелёная: зелёный — «исправлено»),
+   «Предложение» — кольцо, «Отклонён» — серая. data-status ui-kit остаётся для запасного вида. */
+.r06-card .bk-status[data-r06-status] {
+  --dot: var(--c-brand);
+  white-space: normal;
+}
+.r06-card .bk-status[data-r06-status="proposal"]::before {
+  box-sizing: border-box;
+  border: 2px solid var(--c-brand);
+  background: transparent;
+}
+.r06-card .bk-status[data-r06-status="rejected"] {
+  --dot: var(--c-text-3);
+}
+/* Список «Проекты» у акимата: «Одобрить» — серая капсула, «Отклонить» — тихая красным, обе по содержимому. */
+.r06-actions--list {
+  justify-content: flex-start;
+}
+.r06-actions--list > .bk-btn {
+  flex: 0 0 auto;
+  min-height: 44px;
+  font-size: var(--fs-body);
+}
+.r06-card .r06-capsule {
+  border-radius: var(--r-pill);
+  padding: 0 var(--s-4) 0 var(--s-3);
+}
+.r06-card .r06-reject {
+  color: var(--c-danger);
+}
+.r06-card .r06-reject:hover {
+  background: var(--c-danger-soft);
 }

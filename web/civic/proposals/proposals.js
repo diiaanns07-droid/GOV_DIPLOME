@@ -204,7 +204,7 @@
       // Проект из идеи жителей (волна 2 п. 7): «По идее жителей · 47 голосов» — голоса за идею на момент решения.
       (p.idea ? '<p class="r06-idea">' + icon("users") + "<span>" + esc(t("idea.by_residents", { n: p.idea.votes || 0 })) + "</span></p>" : "") +
       '<div class="bk-card__row"><span class="bk-meta">' + esc(t("status.label")) + '</span><span class="bk-status" data-status="' +
-      (STATUS_LOOK[p.status] || "new") + '">' + esc(t("proposal.status." + p.status)) + "</span></div>" +
+      (STATUS_LOOK[p.status] || "new") + '" data-r06-status="' + esc(p.status) + '">' + esc(t("proposal.status." + p.status)) + "</span></div>" +
       (akimat
         ? // Акимат голосует не здесь: голоса — числами (только чтение), одна главная кнопка — «Одобрить»
           // (UX_REVIEW R11, день 3, п. 16). Текст — тот же, что в «Картине дня» R08 (akim.proposals.votes).
@@ -216,9 +216,13 @@
       (akimat ? (p.voting_open ? "" : '<p class="bk-meta r06-vote__note">' + esc(t("proposal.voting_closed")) + "</p>")
         : '<p class="bk-meta r06-vote__note" aria-live="polite">' + esc(note) + "</p>");
     if (akimat && p.status === "proposal") {
+      // В списке «Проекты» (opts.list) карточек несколько — «Одобрить» там серая капсула, «Отклонить» — тихая красным:
+      // одна главная кнопка на экран (дизайн-марафон). Одна карточка на карте — как была: «Одобрить» главная.
+      var approveCls = opts.list ? "bk-btn r06-capsule" : "bk-btn bk-btn--primary";
+      var rejectCls = opts.list ? "bk-btn bk-btn--ghost r06-reject" : "bk-btn bk-btn--danger";
       html +=
-        '<div class="bk-actions"><button class="bk-btn bk-btn--primary" type="button" data-action="approve">' + icon("check") +
-        "<span>" + esc(t("proposal.approve")) + '</span></button><button class="bk-btn bk-btn--danger" type="button" data-action="reject">' +
+        '<div class="bk-actions' + (opts.list ? " r06-actions--list" : "") + '"><button class="' + approveCls + '" type="button" data-action="approve">' + icon("check") +
+        "<span>" + esc(t("proposal.approve")) + '</span></button><button class="' + rejectCls + '" type="button" data-action="reject">' +
         icon("close") + "<span>" + esc(t("proposal.reject")) + "</span></button></div>";
     }
     return html + "</article>";

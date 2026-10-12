@@ -23,6 +23,9 @@
   var UTILITIES = ["water", "heating", "power", "gas", "road_closure"];
   var WHY = ["problem", "reason", "result", "inconvenience"];
   var ASTANA_MS = 5 * 3600 * 1000;
+  // Плитка-иллюстрация записи — значок ui-kit по виду работ / что отключат (дизайн-марафон).
+  var KIND_ICON = { roadworks: "road", construction: "building", landscaping: "trees", lighting: "bulb", event: "calendar", other: "dots" };
+  var UTILITY_ICON = { water: "droplet", heating: "droplet", power: "bulb", gas: "alert", road_closure: "road" };
 
   var KEYS = {
     ru: {
@@ -288,24 +291,42 @@
       rootEl.appendChild(list);
     }
 
+    // Строка записи (дизайн-марафон): плитка вида работ, тихая строка «вид · Пример», название, срок одной строкой.
+    // Сдвинутый срок — «до / после»: плановый зачёркнут → новый, метка «срок перенесён». «Изменить» — капсула, «Удалить» — тихая.
+    function tileOf(item) {
+      var ic = item.type === "outage" ? UTILITY_ICON[item.utility] || "alert" : KIND_ICON[item.work_kind] || "dots";
+      return h("span", { class: "ri-tile", "aria-hidden": "true" }, [icon(ic)]);
+    }
+    function whenLine(item) {
+      if (item.type === "outage") {
+        return h("p", { class: "rw-when" }, [date(item.start) + " " + (I() ? I().formatTime(item.start) + "–" + I().formatTime(item.end) : "")]);
+      }
+      var shifted = item.forecast_end && item.planned_end && item.forecast_end > item.planned_end;
+      if (!shifted) {
+        return h("p", { class: "rw-when" }, [tr(WORK_STATUS[item.status]) + " · " + tr("works.form.until", { date: date(item.forecast_end || item.planned_end) })]);
+      }
+      return h("p", { class: "rw-when" }, [
+        h("span", { text: tr(WORK_STATUS[item.status]) + " ·" }),
+        h("s", { text: tr("works.form.until", { date: date(item.planned_end) }) }),
+        h("span", { "aria-hidden": "true", text: "→" }),
+        h("span", { class: "rw-when__new", text: date(item.forecast_end) }),
+        h("span", { class: "bk-tag bk-tag--warn", text: tr("works.shift_later") }),
+      ]);
+    }
     function card(item) {
       var l = lang();
       var title = item["title_" + l] || item.title_ru;
-      var when = item.type === "outage"
-        ? date(item.start) + " " + (I() ? I().formatTime(item.start) + "–" + I().formatTime(item.end) : "")
-        : tr(WORK_STATUS[item.status]) + " · " + tr("works.form.until", { date: date(item.forecast_end || item.planned_end) }) +
-          (item.forecast_end && item.planned_end && item.forecast_end > item.planned_end ? " · " + tr("works.shift_later") : "");
       var confirming = state.confirm === item.id;
-      return h("article", { class: "bk-card", "data-work": item.id }, [
-        h("div", { class: "bk-card__row" }, [h("span", { class: "bk-card__eyebrow", text: kindLabel(item) }),
-          item.demo ? h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }) : null]),
-        h("h3", { class: "bk-card__title", lang: item["title_" + l] ? l : "ru", text: title }),
-        h("p", { class: "bk-meta", text: when }),
-        item.type === "outage" && item.zone_ru ? h("p", { class: "bk-meta", text: tr("nearby.outage.zone", { text: item["zone_" + l] || item.zone_ru }) }) : null,
-        h("div", { class: "bk-actions" }, [
-          button("", tr("works.form.edit_title"), "edit", { "data-key": "edit-" + item.id, onclick: function () { openForm(item); } }),
-          button(confirming ? "bk-btn--danger" : "bk-btn--ghost", tr(confirming ? "works.form.remove_confirm" : "works.form.remove"), "trash",
+      var meta = h("p", { class: "ri-meta" }, [h("span", { text: kindLabel(item) }),
+        item.demo ? h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }) : null]);
+      return h("article", { class: "bk-card rw-card", "data-work": item.id }, [
+        h("div", { class: "ri-app" }, [tileOf(item), h("div", { class: "ri-app__body" }, [meta,
+          h("h3", { class: "bk-card__title rw-title", lang: item["title_" + l] ? l : "ru", text: title }), whenLine(item)])]),
+        item.type === "outage" && item.zone_ru ? h("p", { class: "rw-where", text: tr("nearby.outage.zone", { text: item["zone_" + l] || item.zone_ru }) }) : null,
+        h("div", { class: "rw-foot" }, [
+          button(confirming ? "bk-btn--danger" : "bk-btn--ghost rw-remove", tr(confirming ? "works.form.remove_confirm" : "works.form.remove"), "trash",
             { "data-key": "remove-" + item.id, onclick: function () { remove(item); } }),
+          button("rw-capsule", tr("works.form.edit_title"), "edit", { "data-key": "edit-" + item.id, onclick: function () { openForm(item); } }),
         ]),
       ]);
     }
@@ -421,9 +442,10 @@
         grid.appendChild(input("detour", "works.form.detour", "text", f.detour, function (v) { f.detour = v; }, { maxlength: "200" }));
       }
       form.appendChild(grid);
-      var why = h("fieldset", {}, [h("legend", { text: tr("works.form.why") })]);
+      var whyGrid = h("div", { class: "rw-why" });
+      var why = h("fieldset", {}, [h("legend", { text: tr("works.form.why") }), whyGrid]);
       WHY.forEach(function (k) {
-        why.appendChild(input("why." + k, "nearby.why." + k, "textarea", f.why[k], function (v) { f.why[k] = v; }));
+        whyGrid.appendChild(input("why." + k, "nearby.why." + k, "textarea", f.why[k], function (v) { f.why[k] = v; }));
       });
       form.appendChild(why);
       form.appendChild(h("div", { class: "bk-actions" }, [
