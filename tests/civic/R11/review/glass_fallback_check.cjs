@@ -12,12 +12,23 @@ const URL = process.argv[2] || "http://127.0.0.1:8766/civic/ui-kit/prototypes/gl
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
   const cdp = await p.context().newCDPSession(p);
+  // Намеренные исключения GLASS.md: нажатая кнопка (aria-pressed / aria-expanded) — сплошной акцент; кнопка-стекло внутри
+  // стеклянной строки — плоская прозрачная; стекло внутри стекла (меню в шапке) — сплошное белое в любом режиме.
   const state = () => p.evaluate(() => [...document.querySelectorAll(".bk-glass, .bk-glass--control")].filter((e) => e.getClientRects().length)
-    .map((e) => { const c = getComputedStyle(e); return { bg: c.backgroundColor, bf: c.backdropFilter || c.webkitBackdropFilter || "none" }; }));
+    .map((e) => { const c = getComputedStyle(e), outer = e.parentElement && e.parentElement.closest(".bk-glass");
+      return { name: (e.id ? "#" + e.id : "") + "." + [...e.classList].slice(0, 2).join("."), bg: c.backgroundColor, bf: c.backdropFilter || c.webkitBackdropFilter || "none",
+        pressed: e.matches("[aria-pressed=true], [aria-expanded=true]"), nested: !!outer, control: e.matches(".bk-glass--control") }; }));
   let bad = 0;
   const check = (name, list, opaque) => {
-    const wrong = list.filter((x) => opaque ? !(x.bg === "rgb(255, 255, 255)" && x.bf === "none") : (x.bf === "none" || !/rgba\(255, 255, 255, 0\.\d+\)/.test(x.bg)));
-    console.log(`${wrong.length ? "FAIL" : "PASS"} ${name}: элементов ${list.length}, не так — ${wrong.length}`); bad += wrong.length || (list.length ? 0 : 1);
+    const ok = (x) => {
+      if (x.pressed) return x.bf === "none" || /rgb\(21, 44, 38\)/.test(x.bg);         // сплошной #152c26
+      if (x.nested && x.control) return x.bf === "none";                                 // плоская внутри строки
+      if (x.nested) return x.bg === "rgb(255, 255, 255)" && x.bf === "none";             // меню в стеклянной шапке
+      return opaque ? x.bg === "rgb(255, 255, 255)" && x.bf === "none" : x.bf !== "none" && /rgba\(255, 255, 255, 0\.\d+\)/.test(x.bg);
+    };
+    const wrong = list.filter((x) => !ok(x));
+    console.log(`${wrong.length ? "FAIL" : "PASS"} ${name}: элементов ${list.length}, не так — ${wrong.length}${wrong.length ? " · " + wrong.map((x) => `${x.name} ${x.bg} ${x.bf}`).join(" | ") : ""}`);
+    bad += wrong.length || (list.length ? 0 : 1);
   };
   await p.goto(URL, { waitUntil: "networkidle" }); await p.waitForTimeout(800);
   check("стекло по умолчанию", await state(), false);
