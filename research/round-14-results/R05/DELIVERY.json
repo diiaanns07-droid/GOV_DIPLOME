@@ -8,7 +8,7 @@
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
  "code_sha": "2b33c59",
  "tested_sha": "2b33c59 (web/civic/build3d; после него в ветке — только документы и результаты прогонов)",
- "tested_note": "Демо R05 с ui-kit R11 7117132: browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync (R11 head) exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0. В сборке R01 65343341 + R05 b4f9236: shell smoke exit 0 pass=27 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0 (runs/marathon_r01_65343341_b4f9236.txt). Оболочка — на R05 b4f9236: от 2b33c59 отличается только условием подъёма моделей при переходе в 3D (не сразу после загрузки) — подтверждающий прогон на 2b33c59 следующим коммитом.",
+ "tested_note": "Демо R05 с ui-kit R11 7117132: browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync (R11 head) exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0. В сборке R01 65343341 + R05 2b33c59: shell smoke exit 0 pass=27 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0 (runs/marathon_r01_65343341_2b33c59.txt; на b4f9236 — то же, runs/marathon_r01_65343341_b4f9236.txt).",
  "previous_delivery": {
   "code_sha": "60c445b",
   "delivery_commit": "41503d81",
@@ -419,11 +419,11 @@
    "r10_glass_check": "R10 glass_check.cjs (7855976) считает значки «.b3d-labels» картой — у R05 стекла на них нет (GLASS.md §2); прогон по сборке — у R10/R01"
   },
   "design_marathon_in_r01": {
-   "build": "R01 65343341 + R05 b4f9236 (2b33c59 — тот же код, кроме условия подъёма при переходе в 3D)",
+   "build": "R01 65343341 + R05 2b33c59",
    "app_b2_smoke": "shell smoke exit 0 pass=27 fail=0",
    "r01_r14_b2": "R01 r14_b2 exit 0 pass=28 fail=0",
    "r01_r14_shell": "R01 r14_shell exit 0 pass=42 fail=0",
-   "report": "runs/marathon_r01_65343341_b4f9236.txt",
+   "report": "runs/marathon_r01_65343341_2b33c59.txt",
    "note": "на R05 3f0e872 r14_b2 был 27/28: предупреждение Chrome «Canvas2D: Multiple readback…» от тени на холсте; с 5e8b2cc тень без холста"
   }
  },
