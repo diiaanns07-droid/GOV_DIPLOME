@@ -85,6 +85,7 @@ async function waitRecord(A, id, ok, ms = 15000) {
   return rec;
 }
 const part = (s) => L.textRe(s);  // неизменная часть строки с {параметрами}
+const say = (lang, ru, kk) => (lang === "kk" ? kk : ru);
 
 // ------------------------------------------------------------------------------------------------ есть ли пункт в сборке
 // Поиск по исходникам сборки (без tests/ и research/, без словарей и ui-kit R11 — это тексты, а не поставка).
@@ -140,7 +141,7 @@ async function runtimeProbe(browser, base) {
     await page.goto(base); await L.sleep(4000);
     return await page.evaluate(() => {
       const g = {};
-      for (const k of ["BirgeNearby", "BirgeIdeas", "BirgeProjects", "BirgeComplaintList", "BirgeAsk", "BirgeShell"]) g[k] = typeof window[k] !== "undefined";
+      for (const k of ["BirgeNearby", "BirgeIdeas", "BirgeProjects", "BirgeComplaintList", "BirgeAsk", "BirgeQuestions", "BirgeShell"]) g[k] = typeof window[k] !== "undefined";
       const sh = window.BirgeShell || {};
       return { globals: g, registerScreen: typeof sh.registerScreen === "function", registerLayer: typeof sh.registerLayer === "function",
         nav: typeof sh.navItems === "function" ? { resident: sh.navItems("resident"), akimat: sh.navItems("akimat") } : null };
@@ -340,7 +341,7 @@ async function checkQuickClose(ctx) {
   const A = L.api(base);
   const stop = STOPS[3];
   const text = { ru: "Не горит фонарь на остановке, вечером темно", kk: "Аялдамада шам жанбайды, кешке қараңғы" };
-  for (const [size, lang] of variants.filter(([s]) => s[0] < 761)) {
+  for (const [size, lang] of variants) {
     const tag = `${size[0]}-${lang}`;
     // похожая жалоба (та же категория) — чтобы был шаг «Об этом уже сообщили»
     await A.call("POST", "/api/civic/v2/complaints", { text: text[lang] + " (" + (++filed) + ")", lang, category: "lighting", category_source: "resident",
@@ -364,7 +365,15 @@ async function checkQuickClose(ctx) {
         const ob = await L.firstVisible(dlg.getByRole("button", { name: otherRe }));
         if (ob) { await ob.click().catch(() => null); other = true; await L.sleep(1200); continue; }
         const sb = await L.firstVisible(dlg.getByRole("button", { name: sendRe }));
-        if (sb && (await sb.isEnabled().catch(() => false))) { await sb.click().catch(() => null); sent = true; break; }
+        if (sb && (await sb.isEnabled().catch(() => false))) {
+          // M-3 (POLISH_WAVE_2, обязательные мелочи): перед отправкой — экран проверки и «увидят все / только служба».
+          const seen = {};
+          for (const k of ["complaint.review.title", "complaint.review.public", "complaint.review.private", "complaint.review.personal"]) {
+            const v = W(lang, k); seen[k.split(".").pop()] = v ? await L.visibleText(dlg, part(v)) : null; }
+          add("M-3", tag, "перед отправкой: экран проверки, «Это увидят все» / «Только служба» и подсказка убрать личное", st(Object.values(seen).every((x) => x === true)), seen,
+            await shotOf(P.page, `${tag}-M-3-review`));
+          await sb.click().catch(() => null); sent = true; break;
+        }
         const nb = await L.firstVisible(dlg.getByRole("button", { name: nextRe }));
         if (!nb) break;
         if (!(await nb.isEnabled().catch(() => false)) && catName) await L.clickText(dlg, part(catName), { wait: 900 });
@@ -374,6 +383,14 @@ async function checkQuickClose(ctx) {
       const doneRe = part(W(lang, "complaint.step5.title", lang === "kk" ? "Өтініш жіберілді" : "Обращение отправлено"));
       for (const t0 = Date.now(); sent && done === null && Date.now() - t0 < 12000; await L.sleep(100)) {
         if (await L.visibleText(P.page, doneRe)) done = Date.now() - t0;
+      }
+      // M-2: после отправки — номер, следующий шаг и как найти обращение снова (до закрытия: сам кадр — после паузы P2 не берём)
+      if (done !== null) {
+        const code = await P.page.locator(".bc-code__value").first().innerText().catch(() => "");
+        const nxt = await L.visibleText(P.page, part(W(lang, "complaint.step5.next", say(lang, "Дальше: служба ответит до {date}", "Әрі қарай: қызмет {date} дейін жауап береді"))));
+        const find = await L.visibleText(P.page, part(W(lang, "complaint.step5.find", say(lang, "Найти обращение: «Мои обращения», номер {code}", "Өтінішті табу: «Менің өтініштерім», нөмірі {code}"))));
+        add("M-2", tag, "после отправки: номер обращения, следующий шаг (срок ответа) и как найти его снова", st(!!code.trim() && nxt && find), { code: code.trim(), next: nxt, find },
+          await shotOf(P.page, `${tag}-M-2-sent`));
       }
       // сразу закрыть — как в P2 (без паузы)
       await P.page.keyboard.press("Escape").catch(() => null);
@@ -962,9 +979,13 @@ const ITEMS = [
   { id: "P-12", title: "Защита от перегруза: меню ≤ 5, один доп. слой", owner: "R01, R11", run: checkClutter, probe: (s) => s.shellMenu.length > 0, done: "правила 1–2 POLISH_WAVE_2, IA_WAVE2 §0–1" },
   { id: "F-13", title: "Прогноз R13 в «Картине дня» с пометкой «Прототип…»", owner: "R13 + R08", run: checkForecast, probe: (s) => s.forecast.length > 0,
     done: "пометка «Прототип: прогноз обучен на синтетической истории…» видна в обеих локалях (R11 UX_REVIEW, R13 INTEGRATION §6)" },
-  { id: "LF-2", title: "Быстрое закрытие мастера после отправки — без ошибок JS (Codex LOCAL_FINAL P2)", owner: "R09", run: checkQuickClose, probe: () => true,
+  { id: "LF-2", title: "Отправка: экран проверки (M-3), номер и следующий шаг (M-2), быстрое закрытие без ошибок JS (Codex LOCAL_FINAL P2)", owner: "R09", run: checkQuickClose, probe: () => true, also: ["M-2", "M-3"],
     done: "ни одного исключения JavaScript после «Обращение отправлено» → Escape" },
 ];
+
+// Остальные пункты волн 1–2 и обязательные мелочи — tests/e2e/wave_more.cjs (те же помощники).
+ITEMS.push(...require("./wave_more.cjs")({ add, st, W, Wany, part, exact, openPage, goto, header, modeRe, mineRe, shotOf, primaries, staffLogin,
+  openCard, wizardToText, devId, complaintById, grepBuild, STOPS, ROOT, OUT, L }));
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -983,7 +1004,7 @@ const ITEMS = [
     for (const it of todo) {
       const ok = it.probe(stat, runtime);
       status[it.id] = { ok: ok || !!args.force, forced: !ok && !!args.force };
-      if (!status[it.id].ok) add(it.id, "сборка", `${it.title} — ЖДЁТ поставки (${it.owner})`, "PENDING", "в сборке нет: " + PROBE_TEXT[it.id]);
+      if (!status[it.id].ok) add(it.id, "сборка", `${it.title} — ЖДЁТ поставки (${it.owner})`, "PENDING", "в сборке нет: " + (PROBE_TEXT[it.id] || "кода роли " + it.owner));
     }
     const parts = { shellReport: stat.shellReport.length > 0 || !!args.force, qrR12: stat.qrR12.length > 0 || !!args.force };
     for (const it of todo.filter((x) => status[x.id].ok)) {
@@ -1000,7 +1021,7 @@ const ITEMS = [
   const md = [`# R10 · новые пункты волн 1–2 · ${sha}${args.force ? " · --force (проверка механики, не приёмка)" : ""}`, "", "```", JSON.stringify(meta), "```", "",
     `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, ЖДЁТ ${counts.PENDING}, NOT_RUN ${counts.NOT_RUN}`, "",
     "| Пункт | Что | Владелец | Готово, когда | Состояние |", "|---|---|---|---|---|",
-    ...todo.map((i) => { const rs = results.filter((r) => r.item === i.id && r.status !== "INFO");
+    ...todo.map((i) => { const rs = results.filter((r) => (r.item === i.id || (i.also || []).includes(r.item)) && r.status !== "INFO");
       const s = !status[i.id] || !status[i.id].ok ? "ЖДЁТ" : rs.some((r) => r.status === "FAIL") ? "FAIL" : rs.length && rs.every((r) => r.status === "PASS") ? "PASS" : "частично";
       return `| ${i.id} | ${i.title} | ${i.owner} | ${i.done} | **${s}** |`; }),
     "", "| Пункт | Где | Проверка | Итог | Подробно | Кадр |", "|---|---|---|---|---|---|",
