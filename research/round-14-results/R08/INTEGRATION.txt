@@ -40,6 +40,15 @@ research/round-14-results/R08/. Чужие файлы я не менял. Ниж
     имели; свои замечания к ним (поле района с рамкой, карточки внутри панели, «Пример» у каждой карточки) — готов
     исправить по вашему разбору.
 
+9.5 R01 · «Рядом» и «Службы» в чистом стиле (разбор R11 FINAL-3 п. 9) — claude/r14-R08 @ 9859307c, path-scoped:
+      git checkout origin/claude/r14-R08 -- web/civic/nearby/nearby.js web/civic/nearby/nearby.css \
+        web/civic/nearby/index.html web/civic/akim/services.js web/civic/akim/services.css web/civic/akim/services.html
+    Только вид: вкладки .bk-tabs (role=tablist/tab, панель role=tabpanel, ←/→ — BirgeUI.tabs, если ui-kit.js загружен;
+    без него — щелчок), «Зачем?» и «Уточнения» — .bk-details, строки с линией вместо .bk-card, поля с заливкой,
+    «Пример» — одна строка .bk-footnote внизу («Рядом», ключ common.tag.demo_hint). API, ключи, mount() — прежние;
+    селекторы для тестов (.nb-tabs > button, [data-key="tab:…"], .nb-why summary, .nb-card, .svc__details, .svc__cat)
+    сохранены. Проверено в сборке 77ee50be: shell_wave2_check 20/20, R10 wave_checks W2-4/W2-5/W2-8 30/0.
+
 §8. ВОЛНА МЕЛОЧЕЙ (п. 4, 6, 7, 12) И ВОЛНА 2 (п. 1, 4, 5, 8) — 11 окт, что подключить
 ----------------------------------------------------------------------------------------
 8.1 R01 · маршруты и файлы — готовый patch research/round-14-results/R08/r01_wave2_r08.patch (git apply из корня):
