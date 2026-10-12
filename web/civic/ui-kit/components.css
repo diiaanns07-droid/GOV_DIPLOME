@@ -768,6 +768,44 @@
   content: "✓" / ""; /* «Акимат», а не «Акимат✓» в имени пункта (R01 §21.2) */
   margin-left: auto;
 }
+/* Выбор одного из списка в меню (слой на карте и т. п.): <label class="bk-menu__radio"><input type="radio">Текст</label> —
+   как пункт меню, выбранный — полужирный с ✓ справа; сам кружок радио скрыт, но остаётся для клавиатуры и диктора */
+.bk-menu__radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--tap);
+  padding: var(--s-1) var(--s-4);
+  color: var(--c-ink);
+  font-size: var(--fs-body);
+  cursor: pointer;
+}
+.bk-menu__radio > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+.bk-menu__radio > span {
+  flex: 1;
+}
+.bk-menu__radio:hover,
+.bk-menu__radio:has(> input:focus-visible) {
+  background: var(--c-brand-soft);
+}
+.bk-menu__radio:has(> input:focus-visible) {
+  outline: 2px solid var(--c-focus);
+  outline-offset: -2px;
+}
+.bk-menu__radio:has(> input:checked) {
+  font-weight: var(--fw-semi);
+}
+.bk-menu__radio:has(> input:checked)::after {
+  content: "✓";
+  content: "✓" / "";
+}
 .bk-menu__sep {
   height: 1px;
   margin: var(--s-2) 0;
