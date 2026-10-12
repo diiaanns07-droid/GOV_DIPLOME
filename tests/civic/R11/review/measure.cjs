@@ -1,7 +1,7 @@
 /*
  * R11 · общие замеры для UX-разбора экранов ролей (используют r07/r08/r06/r05 *_shots.cjs).
  * measure(page, rootSelector) → { scroll, small, low, keys, tech, demo, clipped, lang }
- *   small  — видимый текст < 14 px (UX_BRIEF: основной 16, мета 14)
+ *   small  — видимый текст < 13 px (чистый дизайн 12 окт: шкала 13/15/17/22/28, подписи ≥ 13)
  *   low    — кнопки/ссылки-кнопки ниже 44 px (чипы 40 + зона 48 считаются отдельно, порог 39.5)
  *   keys   — «сырые» ключи вида heat.card.title на экране
  *   tech   — технические слова (UX_BRIEF, правило 4)
@@ -29,7 +29,7 @@ async function measure(page, rootSelector) {
       const cs = getComputedStyle(el);
       if (own) {
         const fs = parseFloat(cs.fontSize);
-        if (fs < 13.9) { const k = Math.round(fs * 2) / 2 + "px"; (out.small[k] = out.small[k] || []).push(own.slice(0, 32)); }
+        if (fs < 12.9) { const k = Math.round(fs * 2) / 2 + "px"; (out.small[k] = out.small[k] || []).push(own.slice(0, 32)); }
         if (/^[a-z0-9_]+(\.[a-z0-9_]+){1,}$/.test(own)) out.keys.push(own);
         const m = own.match(TECH); if (m) out.tech.push(m[0] + " «" + own.slice(0, 40) + "»");
         if (/(^|[^а-яёa-z])(демо|demo)/i.test(own)) out.demo.push(own.slice(0, 50));

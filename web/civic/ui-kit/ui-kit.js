@@ -93,7 +93,15 @@
     x.innerHTML = icon("close");
     x.addEventListener("click", close);
     el.appendChild(x);
-    toastContainer().appendChild(el);
+    // Чистый дизайн (CLEAN_PASS, правило 10): на экране один тост — новый заменяет прежние. Исключение — ошибка
+    // с «Повторить»: её не убирает обычное сообщение (иначе человек не успеет повторить), только новая ошибка.
+    var box = toastContainer();
+    Array.prototype.slice.call(box.children).forEach(function (old) {
+      if (old.__bkClose && !(old.__bkSticky && !isError)) old.__bkClose();
+    });
+    el.__bkClose = close;
+    el.__bkSticky = !!(isError && opts.action);
+    box.appendChild(el);
     // Ошибка с действием висит, пока её не закроют: пользователь должен успеть нажать «Повторить».
     var ms = opts.timeout != null ? opts.timeout : isError && opts.action ? 0 : 4000;
     if (ms > 0) timer = setTimeout(close, ms);

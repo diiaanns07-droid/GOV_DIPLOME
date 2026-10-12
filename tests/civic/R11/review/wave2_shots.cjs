@@ -40,14 +40,21 @@ const facts = (p) => p.evaluate((src) => {
 (async () => {
   const browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
   const report = {};
+  const moreIds = {}; // разделы «Ещё» по виду — с ноутбука; на телефоне (меню аватара) открываем их через оболочку
+  // Раздел: видимая кнопка в шапке (ноутбук) — нажатием; иначе (телефон, чистый дизайн FINAL-3) — BirgeShell.setSection
+  const go = (p, sid) => p.evaluate((id) => {
+    const b = [...document.querySelectorAll(`#birge-header [data-section="${id}"]`)].find((x) => x.getClientRects().length);
+    if (b) b.click(); else window.BirgeShell.setSection(id);
+  }, sid);
   for (const [w, h] of [[1366, 768], [375, 812]]) for (const lang of ["kk", "ru"]) for (const mode of ["akimat", "resident"]) {
     const { ctx, p, errors } = await open(browser, mode, lang, w, h);
     const tag = `${mode}-${w}-${lang}`;
-    const menuBtn = await p.$(".birge-menu-btn");
+    const menuBtn = await p.$(".birge-menu-btn") || await p.$(".birge-avatar"); // ≡ (до FINAL-3) или аватар
     if (menuBtn && (await menuBtn.isVisible())) { await menuBtn.click(); await p.waitForTimeout(400); }
     await p.screenshot({ path: path.join(OUT, `w2-${tag}-0-menu.png`) });
-    const sections = await p.evaluate(() => [...document.querySelectorAll("#birge-header [data-section]")]
+    let sections = await p.evaluate(() => [...document.querySelectorAll("#birge-header [data-section]")]
       .filter((b) => b.getClientRects().length && getComputedStyle(b).visibility !== "hidden").map((b) => ({ id: b.dataset.section, text: b.textContent.trim() })));
+    if (!sections.length) sections = await p.evaluate(() => (window.BirgeShell?.navItems?.() || []).map((id) => ({ id, text: "(меню аватара)" })));
     report[tag] = { sections, screens: {} };
     if (menuBtn && (await menuBtn.isVisible())) { await p.keyboard.press("Escape"); await p.waitForTimeout(300); }
     // «Слой на карте»
@@ -56,16 +63,21 @@ const facts = (p) => p.evaluate((src) => {
     const ids = sections.map((s) => s.id).filter((id) => id !== "map");
     const more = [];
     for (const id of ids) {
-      await p.evaluate((sid) => { const b = document.querySelector(`#birge-header [data-section="${sid}"]`); if (b) b.click(); }, id);
+      if (id === "more" && w < 761) continue; // на телефоне «Ещё» — группа меню аватара, разделы ниже
+      await go(p, id);
       await p.waitForTimeout(2200);
       await p.screenshot({ path: path.join(OUT, `w2-${tag}-${id}.png`), fullPage: true });
       report[tag].screens[id] = await facts(p);
       if (id === "more") more.push(...(await p.evaluate(() => [...document.querySelectorAll(".birge-more-item[data-section]")].map((b) => b.dataset.section))));
     }
+    if (more.length) moreIds[mode] = [...more]; else more.push(...(moreIds[mode] || []));
     for (const id of more) {
-      await p.evaluate((sid) => { const b = document.querySelector(`#birge-header [data-section="more"]`); if (b) b.click(); }, id);
-      await p.waitForTimeout(800);
-      await p.evaluate((sid) => { const b = document.querySelector(`.birge-more-item[data-section="${sid}"]`); if (b) b.click(); }, id);
+      const inHeader = await p.evaluate(() => !!document.querySelector('#birge-header [data-section="more"]')?.getClientRects().length);
+      if (inHeader) {
+        await p.evaluate(() => document.querySelector('#birge-header [data-section="more"]').click());
+        await p.waitForTimeout(800);
+        await p.evaluate((sid) => { const b = document.querySelector(`.birge-more-item[data-section="${sid}"]`); if (b) b.click(); }, id);
+      } else await go(p, id);
       await p.waitForTimeout(2200);
       await p.screenshot({ path: path.join(OUT, `w2-${tag}-more-${id}.png`), fullPage: true });
       report[tag].screens["more/" + id] = await facts(p);

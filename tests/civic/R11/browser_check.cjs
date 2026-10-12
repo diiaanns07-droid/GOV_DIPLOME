@@ -116,6 +116,13 @@ async function check(browser, base, width, height, lang) {
     if ((await page.getByRole("menuitemradio", { name: who }).count()) !== 1) problems.push("меню: пункт вида не находится по точному имени (✓ в имени?)");
     await page.keyboard.press("Escape");
   }
+  // Один тост на экране (CLEAN_PASS, правило 10): два сообщения подряд — виден только последний
+  if (await page.$("#kit-toast-ok")) {
+    await page.click("#kit-toast-ok"); await page.click("#kit-toast-ok");
+    const n = await page.$$eval(".bk-toast", (ts) => ts.filter((t) => t.getClientRects().length).length);
+    if (n !== 1) problems.push(`тосты: видно ${n}, ждали 1`);
+    await page.$$eval(".bk-toast", (ts) => ts.forEach((t) => t.remove()));
+  }
   // Вкладки ui-kit (волна 2): щелчок и стрелка → aria-selected, выбрана ровно одна
   if (await page.$("#kit-tabs")) {
     await page.click('#kit-tabs [role="tab"]:nth-child(2)');
