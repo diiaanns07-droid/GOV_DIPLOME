@@ -770,3 +770,19 @@ body.civic-mode[data-birge-section]:not([data-birge-section="map"]) :is(#birge-l
 /* Зона нажатия раздела ≥ 44 и на проекторе (плотные отступы 6: «Ещё» был 42 px). Крестик поиска — знак 20 px. */
 body.civic-mode #birge-header .birge-nav > button { min-width: 44px; justify-content: center; }
 body.civic-mode .civic-explore .civic-explore-clear { font-size: 20px; line-height: 1; color: var(--c-text-2, #5b6a64); }
+
+/* Загрузка (чек-лист №8): до первой раскладки поиска поле скрыто (не мелькает прежняя «Территория»); на телефоне слово
+   Birge не показываем и до появления поиска — шапка не прыгает. Пустая панель «Карта жалоб» до прихода модуля R07 —
+   скелет из ui-kit-полос (заголовок и три строки), мягко пульсирует; при «уменьшить движение» — без пульса. */
+body.civic-mode:not([data-birge-explore]) .civic-explore { visibility: hidden; }
+@media (max-width: 760px) { body.civic-mode .topbar .brand-title { display: none; } }
+body.civic-mode #birge-heat-root:empty { display: block; min-height: 248px; padding: 20px 16px 0; }  /* shell.css прятал пустой слот */
+body.civic-mode #birge-heat-root:empty::before,
+body.civic-mode #birge-heat-root:empty::after { content: ""; display: block; background: var(--c-fill, #eceee9); }
+body.civic-mode #birge-heat-root:empty::before { width: 60%; height: 22px; border-radius: 8px; box-shadow: 0 34px 0 -4px var(--c-fill, #eceee9); }
+body.civic-mode #birge-heat-root:empty::after { height: 48px; margin-top: 52px; border-radius: 12px;
+  box-shadow: 0 60px 0 var(--c-fill, #eceee9), 0 120px 0 var(--c-fill, #eceee9); }
+@media (prefers-reduced-motion: no-preference) {
+  body.civic-mode #birge-heat-root:empty::before, body.civic-mode #birge-heat-root:empty::after { animation: birge-skel 1.2s ease-in-out infinite alternate; }
+}
+@keyframes birge-skel { from { opacity: 0.55; } to { opacity: 1; } }

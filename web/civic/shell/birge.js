@@ -607,7 +607,9 @@
       if (gap < SEARCH_MIN) d.birgeHeader = "compact";
     }
     if (wasCompact !== (d.birgeHeader === "compact")) renderAccount();
-    if (!box) { d.birgeExplore = "map"; return; }
+    // Поиска ещё нет (панель монтируется, когда готова карта) — место не решено: поле скрыто до первой раскладки
+    // (birge.css), иначе на телефоне на кадр мелькала прежняя «Территория ▾».
+    if (!box) { delete d.birgeExplore; return; }
     const phone = innerWidth < PHONE, pad = phone ? 8 : 16;
     const bar = brand.closest(".topbar").getBoundingClientRect();
     // Телефон: слово «Birge» в шапке с поиском скрыто (birge.css) — поле начинается сразу за знаком.
@@ -717,7 +719,8 @@
     const root = document.getElementById("civic-root") || document.body;
     const isExplore = (n) => n.nodeType === 1 && (n.classList?.contains("civic-explore") || n.querySelector?.(".civic-explore"));
     if (typeof MutationObserver === "function") new MutationObserver((records) => {
-      if (records.some((r) => [...r.addedNodes].some(isExplore))) { again(); reshowStatus(); }
+      // Сразу, до отрисовки кадра (наблюдатель — микрозадача): поле встаёт в шапку без промежуточного вида.
+      if (records.some((r) => [...r.addedNodes].some(isExplore))) { placeHeader(); reshowStatus(); }
     }).observe(root, { childList: true, subtree: true });
     again();
   }
