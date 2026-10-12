@@ -2,15 +2,15 @@
  "role": "R09",
  "round": 14,
  "title": "Жалоба жителя v2 — дизайн-марафон (путь жителя «как в iOS»), стекло GLASS.md, FINAL-3",
- "status": "READY_FOR_FINAL_3_MARATHON (R01: взять пути R09 @ c2fd325 целиком — в сборке ab227e6e лежит R09 db4030a5; патчей нет)",
+ "status": "READY_FOR_FINAL_3_MARATHON (R01: взять пути R09 @ 118a415 целиком; патчей нет)",
  "branch": "claude/modest-shannon-0ki93p",
  "branch_note": "Ветка по BRANCHES.md. Ночной код (wizardly-ptolemy-qy8ltw @ ee94ef1, код f4fb7b9) перенесён сюда побайтно в 38e6d67; ночную ветку больше не трогаем.",
- "base_sha": "8a1d390 (волна 2) → c765bb0 (правки сборки R01 0f5101a) → f80c0bf (замечания приёмки) → 5e99e2c (CLEAN_PASS) → 2d2cf80 (B-063, B-064) → 9cf4ca2 (прилипающая кнопка: белое и под ней) → 0b8e3db (R11 FINAL-3 №1, №12) → bfba320 (стекло) → 3546567 (дизайн-марафон: круги 1–5) → b2b1236 (круг 6: место над шторкой) → 1188e1d (круг 7: правки R11 §9.3/§10.3/§11.6/§12.2/D-1/D-5/D-7) → 77c8400 (круг 8: высота панелей) → c2fd325 (круг 9: замечания R10 DESIGN_REVIEW круг 2)",
- "code_sha": "c2fd325a2b807d181942a2d64859e9aa2baabc01",
- "tested_sha": "c2fd325a2b807d181942a2d64859e9aa2baabc01 (пути R09) на R01 claude/sharp-dijkstra-0t87gl @ ab227e6e (марафон R01; ui-kit = claude/r14-R11 @ d2ed919f)",
- "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout c2fd325 -- ui/civic_feedback web/civic/feedback tests/civic/R09",
+ "base_sha": "8a1d390 (волна 2) → c765bb0 (правки сборки R01 0f5101a) → f80c0bf (замечания приёмки) → 5e99e2c (CLEAN_PASS) → 2d2cf80 (B-063, B-064) → 9cf4ca2 (прилипающая кнопка: белое и под ней) → 0b8e3db (R11 FINAL-3 №1, №12) → bfba320 (стекло) → 3546567 (дизайн-марафон: круги 1–5) → b2b1236 (круг 6: место над шторкой) → 1188e1d (круг 7: правки R11 §9.3/§10.3/§11.6/§12.2/D-1/D-5/D-7) → 77c8400 (круг 8: высота панелей) → c2fd325 (круг 9: замечания R10 DESIGN_REVIEW круг 2) → 118a415 (круг 10: R11 §16.3 loginState, §16.4 затухание края вкладок)",
+ "code_sha": "118a415db8268788906880609b91d34b155a538a",
+ "tested_sha": "118a415db8268788906880609b91d34b155a538a (пути R09) на R01 claude/sharp-dijkstra-0t87gl @ d2b5f087 + ui-kit/i18n claude/r14-R11 @ 91df50dc",
+ "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout 118a415 -- ui/civic_feedback web/civic/feedback tests/civic/R09",
  "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22, Playwright + Chromium headless (программный WebGL), без интернета; настоящий телефон — NOT_RUN",
- "push_status": "код c2fd325 — push OK; документы и этот файл — следующим коммитом (SHA — в финальном сообщении)",
+ "push_status": "код 118a415 — push OK; документы и этот файл — следующим коммитом (SHA — в финальном сообщении)",
  "changed_paths": {
   "code_and_tests": [
    "tests/civic/R09/app_demo_r09.cjs",
@@ -81,7 +81,8 @@
    "research/round-14-results/R09/design/",
    "research/round-14-results/R09/design/round7/",
    "research/round-14-results/R09/design/round8/",
-   "research/round-14-results/R09/design/round9/"
+   "research/round-14-results/R09/design/round9/",
+   "research/round-14-results/R09/design/round10/"
   ]
  },
  "done": {
@@ -157,18 +158,19 @@
    "map_reveal": "phone steps 4–5: the chosen place is moved into the visible map above the sheet (offset easeTo, no padding change)",
    "round7_r11_edits": "R11 INTEGRATION 9.3 a/b/d/e, 10.3, 11.6, 12.2, D-1, D-5, D-7: inbox title 28; one sign-in state (ill-staff, note, primary «Войти»); offline with ill-offline + common.state.network_text + ⟳; empty states ill-list/ill-done; success = ill-done geometry with bk-ill bk-check-draw drawn inline (selector cannot reach <use>); scroll-padding under sticky «Далее»; zero tab counts hidden; FAB centred without transform; inbox column 720; one «Пример» footnote per list; white skeleton with hairline on glass",
    "round8_panel_heights": "laptop: R09 panel hugs content in every state; phone: «Мои обращения» list sheet fits content (data-snap fit)",
-   "round9_r10_review_circle2": "B-070 FAB hidden while an R07 place card is open at every width; B-071 place type not repeated (display-side dedupe, R12/R07 producers informed); one text line in «Мои обращения» cards (icon/dot column 20, text 28); fix-form example under the field (aria-describedby); spacing 6/10/14 → 8/12/16; «B-0003» already 600 since round 2"
+   "round9_r10_review_circle2": "B-070 FAB hidden while an R07 place card is open at every width; B-071 place type not repeated (display-side dedupe, R12/R07 producers informed); one text line in «Мои обращения» cards (icon/dot column 20, text 28); fix-form example under the field (aria-describedby); spacing 6/10/14 → 8/12/16; «B-0003» already 600 since round 2",
+   "round10_r11_16": "«Обращения» sign-in via BirgeUI.loginState (own identical fallback); inbox tab row .bk-scroll-x with ui-kit edge fade (16.4); 16.1 closed in round 7"
   }
  },
  "tests": {
-  "marathon_tree": "R01 ab227e6e (design marathon build; ui-kit = R11 d2ed919f) + R09 c2fd325 (byte-identical paths)",
-  "pytest_r09v2_r01_r15_r11_r04": "1001 passed, 2 skipped",
-  "real_app": "75/75 PASS (c2fd325)",
-  "glass_r09": "34/34 PASS (c2fd325; card-on-glass check follows ui-kit D-7: white with hairline)",
-  "stand_r11_glass_kit": "474/474 PASS (c2fd325)",
-  "stand_kit_fallback": "474/474 PASS (c2fd325)",
-  "design_tour": "round 7: before 112 / after 120 frames (375/1366 ru/kk); round 8: 60 (375/1366 ru); round 9: 88 (375 ru/kk, 1366 ru); 0 tour errors — design/round7–9",
-  "r10_wave_checks": "W2-1/W2-2/W1-8 (claude/r14-R10 wave_checks.cjs, unchanged since e978a6f) on c2fd325 and 77c8400: 59 PASS / 0 FAIL / 1 NOT_RUN (R10's own placeholder: needs an overdue record) / 3 INFO",
+  "marathon_tree": "R01 d2b5f087 + ui-kit/i18n R11 91df50dc + R09 118a415 (byte-identical paths); rounds 7–9 also on R01 ab227e6e",
+  "pytest_r09v2_r01_r15_r11_r04": "1001 passed, 2 skipped (d2b5f087 tree)",
+  "real_app": "75/75 PASS (118a415)",
+  "glass_r09": "34/34 PASS (118a415)",
+  "stand_r11_glass_kit": "474/474 PASS (118a415, R11 ui-kit 91df50dc)",
+  "stand_kit_fallback": "474/474 PASS (118a415)",
+  "design_tour": "round 7: before 112 / after 120 (375/1366 ru/kk); round 8: 60; round 9: 88; round 10: 90 (375 ru/kk, 1366 ru); 0 tour errors — design/round7–10",
+  "r10_wave_checks": "W2-1/W2-2/W1-8 on c2fd325 and 77c8400: 59 PASS / 0 FAIL / 1 NOT_RUN (R10's own placeholder) / 3 INFO; round 10 touches only the inbox sign-in state and tab row (not in these scenarios)",
   "phone_device": "NOT_RUN (no device in the cloud session)",
   "rounds1_6": {
    "marathon_tree_rounds1_6": "R01 65343341 (FINAL-3 with glass) + R09 b2b1236",
