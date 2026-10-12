@@ -29,6 +29,13 @@
   var KIND_ICON = { square: "trees", playground: "playground", sports: "ball", stop: "bus", lighting: "bulb" };
   var CHECK_KEYS = ["land", "networks", "access", "maintenance"];
   var ANSWERS = ["yes", "no", "unknown"];
+  // R15-S31: телефон, почта, ИИН — те же шаблоны, что у сервера (ui/civic_store/ideas.py _PERSONAL, жалобы R09).
+  // Мастер ловит их сам, до отправки: житель видит, какое поле исправить. Сервер всё равно проверит (422).
+  var PERSONAL = [/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/, /(^|\D)\d{12}(?!\d)/,
+    /(^|[^\w+])(?:\+?7|8)[\s\-()]*\d{3}[\s\-()]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}(?!\d)/];
+  function hasPersonal(text) {
+    return PERSONAL.some(function (rx) { return rx.test(String(text || "")); });
+  }
   var TITLE_MAX = 60;
   var TEXT_MAX = 300;
   var RESIDENT_TABS = ["voting", "project", "rejected"];
@@ -94,6 +101,7 @@
       "idea.error": "Не получилось сохранить. Проверьте связь и повторите.",
       "idea.not_found": "Идея не найдена",
       "idea.empty.review": "Новых идей на проверке нет",
+      "idea.decided": "Решённые идеи",
       "idea.check_open": "Проверить",
       "idea.check_close": "Свернуть",
       "idea.hide": "Скрыть: личные данные или грубые слова",
@@ -135,6 +143,7 @@
       "idea.error": "Сақтау мүмкін болмады. Байланысты тексеріп, қайталаңыз.",
       "idea.not_found": "Идея табылмады",
       "idea.empty.review": "Тексерудегі жаңа идея жоқ",
+      "idea.decided": "Шешім қабылданған идеялар",
       "idea.check_open": "Тексеру",
       "idea.check_close": "Жасыру",
       "idea.hide": "Жасыру: жеке деректер немесе дөрекі сөздер",
@@ -440,7 +449,10 @@
     // ── загрузка ──
     function load() {
       state.error = null;
-      var q = akimat ? request("GET", "/staff/ideas") : request("GET", "/ideas?device_id=" + encodeURIComponent(deviceId()));
+      // Акимат: на проверке и голосовании — сверху; решённые (отклонена, стала проектом) — свёрнуто внизу: их можно скрыть
+      // (R15-S30: личные данные заметили позже, просьба автора).
+      var q = akimat ? request("GET", "/staff/ideas?status=review,voting,checking,rejected,project")
+        : request("GET", "/ideas?device_id=" + encodeURIComponent(deviceId()));
       var p = akimat ? request("GET", "/proposals?device_id=" + encodeURIComponent(deviceId())) : Promise.resolve(null);
       state.items = null;
       render();
@@ -540,7 +552,9 @@
       var body = h("div", { class: "ri-body" });
       if (state.error) {
         if (akimat && (state.error.status === 401 || state.error.status === 403)) {
-          stateBox(body, "empty", { title: tr("proposal.need_staff"), icon: "user" });
+          // R11 разбор FINAL-3: кнопка входа прямо здесь (иначе вход спрятан в меню аватара)
+          stateBox(body, "empty", { title: tr("proposal.need_staff"), icon: "user", action: { label: tr("staff.login.submit"),
+            onClick: function () { if (root.BirgeShell) root.BirgeShell.setSection("map"); if (root.CivicShell && root.CivicShell.openEditor) root.CivicShell.openEditor(); } } });
         } else {
           stateBox(body, "error", { action: { onClick: load } });
         }
@@ -668,11 +682,15 @@
 
     // ── акимат: идеи на проверке ──
     function renderStaffIdeas(body, list) {
-      if (!list.length) {
-        stateBox(body, "empty", { title: tr("idea.empty.review"), icon: "check" });  // «Новых идей на проверке нет»
-        return;
-      }
+      if (!list.length) stateBox(body, "empty", { title: tr("idea.empty.review"), icon: "check" });  // «Новых идей на проверке нет»
       list.forEach(function (item) { body.appendChild(staffCard(item)); });
+      var decided = (state.items || []).filter(function (x) { return x.status === "rejected" || x.status === "project"; });
+      if (!decided.length) return;
+      var box = h("details", { class: "bk-details ri-decided" }, [h("summary", { text: tr("idea.decided") + " · " + decided.length })]);
+      if (state.decidedOpen || decided.some(function (x) { return x.id === state.open; })) box.open = true;
+      box.addEventListener("toggle", function () { state.decidedOpen = box.open; });
+      decided.forEach(function (item) { box.appendChild(staffCard(item)); });
+      body.appendChild(box);
     }
     function staffCard(item) {
       var open = state.open === item.id;
@@ -690,7 +708,12 @@
       var form = state.form || (state.form = { id: item.id, check: Object.assign({ land: "unknown", networks: "unknown", access: "unknown", maintenance: "unknown" }, item.check || {}),
         kind: item.object && item.object.kind || null, mode: null, reason: "", improve: "" });
       var panel = h("div", { class: "ri-panel" });
-      if (item.status === "review") {
+      if (item.status === "rejected" || item.status === "project") {
+        // R15-S30: уже решённую идею можно скрыть (личные данные заметили позже, просьба автора).
+        panel.appendChild(h("div", { class: "bk-actions" }, [
+          button("bk-btn--ghost", tr("idea.hide"), null, { onclick: function () { form.mode = "hide"; render(); } }),
+        ]));
+      } else if (item.status === "review") {
         // Модерация до голосования (R11 SCHEMES §2.3): «Опубликовать» / «Отклонить с причиной»; третья, тихая кнопка —
         // «Скрыть» для личных данных и грубых слов (отклонённая идея видна всем, скрытая — нет).
         panel.appendChild(h("div", { class: "bk-actions" }, [
@@ -853,14 +876,15 @@
         box.appendChild(h("h3", { class: "bk-h2", text: tr("idea.step.text") }));
         box.appendChild(counted("ri-title", "idea.name", draft.title, TITLE_MAX, function (v) { draft.title = v; saveDraft(); }, 0, "idea.name_hint"));
         box.appendChild(counted("ri-text", "idea.description", draft.text, TEXT_MAX, function (v) { draft.text = v; saveDraft(); }, 4));
+        // Ошибки полей (короткое название, телефон/почта/ИИН) — у самого поля, фокус на первом (как форма R09).
         box.appendChild(h("p", { class: "bk-field__hint", text: tr("idea.privacy") }));
         box.appendChild(h("div", { class: "bk-actions" }, [
           button("bk-btn--primary", tr("common.action.next"), "forward", { "data-key": "next", onclick: function () {
-            if (draft.title.trim().length < 3) {
-              toast(tr("idea.field_required"), { type: "error" });
-              doc.getElementById("ri-title").focus();
-              return;
-            }
+            var errs = {};
+            if (draft.title.trim().length < 3) errs["ri-title"] = tr("idea.field_required");
+            else if (hasPersonal(draft.title)) errs["ri-title"] = tr("idea.privacy");
+            if (hasPersonal(draft.text)) errs["ri-text"] = tr("idea.privacy");
+            if (showFieldErrors(errs)) return;
             go(3);
           } }),
           button("bk-btn--ghost", tr("common.action.back"), "back", { onclick: function () { go(1); } }),
@@ -884,20 +908,46 @@
       box.appendChild(h("p", {}, [button("bk-btn--ghost ri-cancel", tr("common.action.cancel"), "close", { onclick: closeWizard })]));
       rootEl.appendChild(box);
     }
+    // Ошибки полей мастера: {id поля: текст}. Перерисовка с подсветкой; true — ошибки есть (фокус на первом поле).
+    function showFieldErrors(errs) {
+      state.fieldErrors = errs;
+      var first = Object.keys(errs)[0];
+      if (!first) return false;
+      render();
+      var el = doc.getElementById(first);
+      if (el) el.focus();
+      return true;
+    }
     function counted(id, labelKey, value, max, onInput, rows, hintKey) {
       var left = h("span", { class: "bk-field__hint ri-left", "aria-live": "polite", text: tr("common.chars_left", { n: max - (value || "").length }) });
       var input = rows ? h("textarea", { id: id, rows: String(rows), maxlength: String(max), "data-key": id })
         : h("input", { id: id, type: "text", maxlength: String(max), "data-key": id, autocomplete: "off" });
       input.value = value || "";
+      var errors = state.fieldErrors || {};
+      var err = errors[id] ? h("p", { class: "bk-field__error", id: id + "-err", text: errors[id] }) : null;
+      var field = h("div", { class: "bk-field" + (err ? " bk-field--error" : "") });
       input.addEventListener("input", function () {
         left.textContent = tr("common.chars_left", { n: max - input.value.length });
         onInput(input.value);
+        if (errors[id]) {  // поле исправляют — ошибка уходит сразу, без перерисовки
+          delete errors[id];
+          field.classList.remove("bk-field--error");
+          input.removeAttribute("aria-invalid");
+          input.setAttribute("aria-describedby", hintKey ? id + "-hint" : "");
+          if (err) err.remove();
+        }
       });
       var hint = hintKey ? h("p", { class: "bk-field__hint", id: id + "-hint", text: tr(hintKey) }) : null;
-      if (hint) input.setAttribute("aria-describedby", id + "-hint");
-      return h("div", { class: "bk-field" }, [h("label", { class: "bk-field__label", for: id, text: tr(labelKey) }), hint, input, left]);
+      var described = [hint ? id + "-hint" : null, err ? id + "-err" : null].filter(Boolean).join(" ");
+      if (described) input.setAttribute("aria-describedby", described);
+      if (err) input.setAttribute("aria-invalid", "true");
+      [h("label", { class: "bk-field__label", for: id, text: tr(labelKey) }), hint, input, err, left].forEach(function (c) {
+        if (c) field.appendChild(c);
+      });
+      return field;
     }
     function go(step) {
+      state.fieldErrors = {};
       state.step = draft.step = step;
       saveDraft();
       render();
@@ -951,8 +1001,18 @@
         state.busy = false;
         if (btn) btn.removeAttribute("aria-busy");
         var fields = err.fields || {};
-        if (fields.title) go(2);
-        else if (fields.geometry) go(1);
+        if (fields.title || fields.description) {
+          // R15-S31: телефон, почта или ИИН (или короткое название) — вернуть на шаг 2 с ошибкой у поля, не «нет связи».
+          var personal = function (m) { return /ИИН|e-mail|телефон/i.test(String(m || "")); };
+          var errs = {};
+          if (fields.title) errs["ri-title"] = personal(fields.title) ? tr("idea.privacy") : tr("idea.field_required");
+          if (fields.description) errs["ri-text"] = personal(fields.description) ? tr("idea.privacy") : tr("idea.field_required");
+          state.step = draft.step = 2;
+          saveDraft();
+          showFieldErrors(errs);
+          return;
+        }
+        if (fields.geometry) go(1);
         var retry = err.status === 0 || err.status >= 500;
         toast(fields.geometry ? tr("idea.place_needed") : err.status === 429 ? tr("idea.limit_new") : errorText(err),
           retry ? { type: "error", action: { label: tr("common.action.retry"), onClick: send } } : { type: "error" });

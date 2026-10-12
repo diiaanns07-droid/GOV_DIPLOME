@@ -147,7 +147,7 @@ class NearbyRepository:
         district = payload.get("district")
         if district is None and geometry is not None:
             district = district_of(geometry)
-        if district not in DISTRICT_NAMES:
+        if not isinstance(district, str) or district not in DISTRICT_NAMES:
             errors.add("district", "Выберите район: " + ", ".join(DISTRICT_NAMES) + ".")
         elif geometry is not None and district_of(geometry) not in (None, district):
             errors.add("geometry", "Точка — в другом районе.")
@@ -361,6 +361,9 @@ def _moment(value, path, errors):
         return None
     if moment.tzinfo is None:
         moment = moment.replace(tzinfo=ASTANA_TZ)
+    if not 2000 <= moment.year <= 2100:  # R15: и datetime.max/min не переполняются в astimezone
+        errors.add(path, "Дата и время, например 2026-10-13T10:00.")
+        return None
     return moment.astimezone(ASTANA_TZ).replace(microsecond=0)
 
 
