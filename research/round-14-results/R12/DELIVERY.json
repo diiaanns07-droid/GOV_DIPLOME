@@ -1,85 +1,197 @@
 {
  "role": "R12",
  "round": 14,
- "title": "Точность карты · поставка 8 к окончательному FINAL-3: стекло на паспорте QR (GLASS.md), кабинет — один заголовок",
+ "title": "Дизайн-марафон: паспорт объекта по QR, уличная QR-табличка A5/A6, кабинет сотрудника в чистом стиле",
  "branch": "claude/tender-brahmagupta-ef5ztl",
- "branch_note": "Ветка этой сессии (продолжение claude/r14-R12); в BRANCHES.md её нет — реестр правит координатор.",
- "delivery": 8,
- "for_build": "FINAL-3 окончательный (R01, после 3d8c426)",
- "base_sha": "R12 поставка 6 b1bd13e (в FINAL-3 с ea44476)",
- "code_sha": "e3223d2e8cba6201805ebdf80fc938ea4f1e8ea9",
- "tested_sha": "e3223d2e8cba6201805ebdf80fc938ea4f1e8ea9",
- "code_sha_note": "e3223d2 = b1bd13e + 8edc13e (кабинет сотрудника: один заголовок в панели, без полосы) + e3223d2 (паспорт QR: своё .bk-glass только вне панели оболочки). Python и данные не менялись с b1bd13e.",
- "tested_note": "Linux-контейнер Claude Code, без интернета. Сборка: detached worktree R01 3d8c426 (кабинет — на 77ee50b) + web/civic/qr, web/civic/editor, tests/civic/R12 из R12; вариант с ui-kit R11 (tokens/components с GLASS.md); CIVIC_DEMO=1, база засеяна; ничего не коммитилось.",
- "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (коммит с этим файлом — в финальном сообщении)",
+ "branch_note": "Ветка этой сессии (продолжение claude/r14-R12, одна история). В BRANCHES.md её нет — реестр правит координатор.",
+ "delivery": 9,
+ "for_build": "сборка R01 дизайн-марафона (после 41ccb57)",
+ "base_sha": "R01 claude/sharp-dijkstra-0t87gl 6534334 (FINAL-3 со стеклом; R12 там = e3223d2), перепроверено на 41ccb57",
+ "code_sha": "a4a0e252c3b33d67fd3021babc0a1bb6a9dab6c6",
+ "code_sha_note": "Марафон: e7a2487 (паспорт), cd03ab6 (табличка), 4b0b872 (кабинет), 1eb716e (вау паспорта, ключи R11), a4a0e25 (кабинет: заголовок записи, белое на сером, CHECKLIST). После — только документы.",
+ "tested_sha": "a4a0e252c3b33d67fd3021babc0a1bb6a9dab6c6",
+ "tested_note": "Среда: Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 41ccb57 + пути R12 из code_sha (web/civic/qr, web/civic/editor, tests/civic/R12); CIVIC_DEMO=1, временная база засеяна как run-city.bat, временный сотрудник для кабинета; ничего не коммитилось.",
+ "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код a4a0e25; этот DELIVERY — следующим коммитом)",
  "take": "git checkout <code_sha> -- web/civic/qr web/civic/editor tests/civic/R12",
+ "take_note": "На R01 41ccb57 эти пути = R12 e3223d2 (FINAL-3), поэтому checkout приносит только изменения марафона. engine/civic_geo, data/civic/astana/geo, web/civic/map — без изменений с поставки 5/6 (брать не нужно).",
+ "logic_changed": false,
+ "logic_note": "Только вид, движение, состояния и тексты. editor.js не менялся; report.js — классы, разметка состояний и флаг одной анимации после «Я тоже»; print.js — разметка таблички, размер A5/A6 (?size=), подбор шрифта. API, ключи данных, data-fk и сценарий демо — те же.",
  "items_status": [
   {
-   "id": "R12 в «Коротко для владельца — FINAL-3»",
-   "title": "тест QR под меню аватара",
-   "status": "done — в FINAL-3 с ea44476; на 3d8c426 + R12 33/0"
+   "id": "DESIGN_MARATHON R12 · 1",
+   "title": "Паспорт объекта по QR — красивая страница на телефоне",
+   "status": "done",
+   "what": "шкала 13/17/22 (было 6 размеров), веса 400/600; строка «вид · Пример · ✕»; статус .bk-statusline; скелетон; ошибки .bk-error (что + что делать); «Подробнее» .bk-details; «Спасибо» над кнопкой; значки видов объекта; подъём карточки 240 мс; «вау» — галочка 320 мс и число людей 360 мс после «Я тоже»",
+   "evidence": "design/passport/ (до/после, 9 состояний × 375/1366 × ru/kk, *_metrics.json)"
   },
   {
-   "id": "UX_REVIEW R11 FINAL-3 п. 11",
-   "title": "кабинет сотрудника: один заголовок, без цветной полосы",
-   "status": "done (8edc13e)"
+   "id": "DESIGN_MARATHON R12 · 2",
+   "title": "Лист QR-табличек — настоящая уличная табличка A6/A5",
+   "status": "done",
+   "what": "полоса Birge «Мәселе туралы хабарлаңыз / Сообщите о проблеме», QR A5 74 мм / A6 61 мм, «Наведите камеру…» kk/ru, адрес сайта, название kk 28 pt (A5) и ru, «Нысан № … · Объект № …»; печать 2 × A5 (A4 альбомный) или 4 × A6 (A4 книжный), линии реза; длинные названия ужимаются; форма на полях ui-kit с выбором размера",
+   "evidence": "design/qr-sign/ (до, после A5 и A6, PDF)"
   },
   {
-   "id": "GLASS.md §4 (R12, по желанию)",
-   "title": "паспорт QR на стекле; лист печати белый",
-   "status": "done (e3223d2): в панели R01 — её стекло, вне оболочки — .bk-glass"
+   "id": "DESIGN_MARATHON R12 · 3",
+   "title": "Редактор сотрудника в чистом стиле",
+   "status": "done",
+   "what": "токены ui-kit, одна краска #152c26, 13/15/17 и 400/600 (было 11–17 и 400–700), поля и кнопки 48 без рамок, секции с линией вместо рамок, вкладки-сегменты, строки списка, без бежевого, ссылки «к полю» строкой, белое внутри серых блоков, мягкие сообщения; зоны < 44: 12 → 0; фонов 11 → 6",
+   "evidence": "design/editor/ (до/после, 9 состояний × 1366/375 × ru/kk, *_metrics.json)"
   }
  ],
+ "checklist": "research/round-14-results/R12/design/CHECKLIST.md — 12 пунктов по трём экранам и замеры до/после",
+ "glass": "по GLASS.md R11: паспорт в панели оболочки — на её стекле, вне оболочки — .bk-glass; табличка и кабинет — без стекла",
  "tests": [
   {
-   "name": "QR и мастер R09 в приложении (R01 3d8c426 + R12)",
+   "name": "QR и мастер R09 в приложении (R01 41ccb57 + R12)",
    "status": "PASS",
-   "result": "33/0/0 с ui-kit сборки; 33/0/0 с ui-kit R11 (стекло)",
-   "evidence": "runs/app_qr_acceptance.json"
-  },
-  {
-   "name": "стекло паспорта: панель со стеклом / без (ui-kit R11), 1366 ru и 375 kk",
-   "status": "PASS",
-   "result": "в панели у паспорта своего стекла нет (фон прозрачный) — в обоих вариантах",
-   "evidence": "screenshots/glass/"
+   "result": "33/0/0",
+   "tool": "tests/civic/R12/qr/app_qr_acceptance.mjs"
   },
   {
    "name": "QR стенд",
    "status": "PASS",
-   "result": "6/6 (в т. ч. «вне панели — .bk-glass»)",
-   "sha": "e3223d2e8cba6201805ebdf80fc938ea4f1e8ea9",
-   "evidence_type": "synthetic"
+   "result": "6/6",
+   "evidence_type": "synthetic",
+   "tool": "tests/civic/R12/qr/qr.test.mjs"
   },
   {
-   "name": "кабинет сотрудника в приложении (77ee50b + R12)",
+   "name": "«Я тоже»: анимация и reduced-motion",
    "status": "PASS",
-   "result": "один заголовок до и после входа, 375 ru и 1366 kk, ошибок 0",
-   "evidence": "screenshots/final3/"
+   "result": "число 14 → 15 с bq-bump, галочка bq-pop; reduce — animation none"
   },
   {
-   "name": "редактор: core / e2e / e2e_r13 / e2e_r12 / e2e_r12_real / e2e_r12_kk",
+   "name": "редактор R12",
    "status": "PASS",
-   "result": "31, 25, 14, 8, 1, 3",
-   "sha": "8edc13e (редактор после не менялся)"
+   "result": "core 31, e2e 25, e2e_r13 14, e2e_r12 8, e2e_r12_real 1, e2e_r12_kk 3, preview_parity 3, contract_mock 9 — fail 0"
   },
   {
-   "name": "R01 браузер (77ee50b + R12)",
+   "name": "кабинет: один заголовок (через меню аватара)",
    "status": "PASS",
-   "result": "r14_shell 42/0, r14_b1 16/0"
+   "result": "375 ru, 1366 kk, ошибок 0",
+   "tool": "tests/civic/R12/editor/app_cabinet_title.mjs"
   },
   {
-   "name": "pytest",
-   "status": "не менялось",
-   "note": "Python-код R12 не менялся с b1bd13e (R12 42/42; на 2f643dc + R12: R12/R06/R01/R15/R10 1164 passed)"
+   "name": "R01 P0 (браузер, R01 41ccb57 + R12)",
+   "status": "PASS",
+   "result": "63/0/1 — как у R01 без R12"
+  },
+  {
+   "name": "pytest tests/civic/R12 + tests/civic/R15/test_r15_qr.py",
+   "status": "PASS",
+   "result": "53 passed"
+  },
+  {
+   "name": "tests/civic/R04/* (старые копии тестов редактора)",
+   "status": "FAIL (не от марафона)",
+   "result": "e2e 21/4, e2e_r13 12/2, joint_r03 0/2 — те же падения и с editor.css самой R01 41ccb57; актуальные — tests/civic/R12/editor"
   }
  ],
- "known_limits": [
-  "Стекло на правой панели — у R01 (GLASS.md §4 №5); до этого паспорт лежит на белой панели (как в FINAL-3 сейчас).",
-  "На телефоне кнопка R09 «Сообщить о проблеме» поверх открытого кабинета — оболочка R01 (INTEGRATION F3b.3).",
-  "186 из 3 820 светофоров/переходов без улицы в 150 м — без «у улицы X»."
+ "patches_for_others": [
+  {
+   "for": "R01",
+   "note": "patch нет; замечание: «×» ящика сотрудника 36 px (< 44); правило .civic-drawer h3 13px R12 обошёл у себя"
+  },
+  {
+   "for": "R11",
+   "note": "10 новых ключей в i18n_keys.json: target.type.playground/pitch/park/waste, qr.sign.call/how, qr.form.size/size_a5/size_a6/size_hint"
+  }
  ],
- "next_step": "R01: web/civic/qr, web/civic/editor, tests/civic/R12 из e3223d2 в окончательный FINAL-3. R12 дальше: замечания по окончательной сборке.",
+ "owner_questions": [
+  "Размер таблички по умолчанию — A5 или A6? Сейчас A5.",
+  "Какой адрес сайта печатать на табличках к показу? Сейчас — адрес сервера листа.",
+  "Нужен ли короткий номер объекта («А-1234») вместо цифр OSM?"
+ ],
+ "known_limits": [
+  "Форма кабинета на kk частично по-русски (тексты раунда 13 R04/R13) — известное ограничение.",
+  "Новые 10 ключей — пока запасные тексты в report.js/print.js, kk — черновик R12 до проверки R11.",
+  "Кадры карты — с запасным фоном (без интернета в контейнере); экраны R12 от фона не зависят.",
+  "Демо-жалобы и записи работ — synthetic (CIVIC_DEMO=1, метка «Пример»); стенд QR — synthetic heat_fixture.json."
+ ],
+ "next_step": "R01: пути R12 из code_sha в сборку марафона; R11: 10 ключей и разбор kk-черновиков; R01: «×» ящика ≥ 44. R12 дальше: следующие круги по замечаниям R10/R11 к кадрам.",
  "previous": {
+  "delivery_8": {
+   "role": "R12",
+   "round": 14,
+   "title": "Точность карты · поставка 8 к окончательному FINAL-3: стекло на паспорте QR (GLASS.md), кабинет — один заголовок",
+   "branch": "claude/tender-brahmagupta-ef5ztl",
+   "branch_note": "Ветка этой сессии (продолжение claude/r14-R12); в BRANCHES.md её нет — реестр правит координатор.",
+   "delivery": 8,
+   "for_build": "FINAL-3 окончательный (R01, после 3d8c426)",
+   "base_sha": "R12 поставка 6 b1bd13e (в FINAL-3 с ea44476)",
+   "code_sha": "e3223d2e8cba6201805ebdf80fc938ea4f1e8ea9",
+   "tested_sha": "e3223d2e8cba6201805ebdf80fc938ea4f1e8ea9",
+   "code_sha_note": "e3223d2 = b1bd13e + 8edc13e (кабинет сотрудника: один заголовок в панели, без полосы) + e3223d2 (паспорт QR: своё .bk-glass только вне панели оболочки). Python и данные не менялись с b1bd13e.",
+   "tested_note": "Linux-контейнер Claude Code, без интернета. Сборка: detached worktree R01 3d8c426 (кабинет — на 77ee50b) + web/civic/qr, web/civic/editor, tests/civic/R12 из R12; вариант с ui-kit R11 (tokens/components с GLASS.md); CIVIC_DEMO=1, база засеяна; ничего не коммитилось.",
+   "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (коммит с этим файлом — в финальном сообщении)",
+   "take": "git checkout <code_sha> -- web/civic/qr web/civic/editor tests/civic/R12",
+   "items_status": [
+    {
+     "id": "R12 в «Коротко для владельца — FINAL-3»",
+     "title": "тест QR под меню аватара",
+     "status": "done — в FINAL-3 с ea44476; на 3d8c426 + R12 33/0"
+    },
+    {
+     "id": "UX_REVIEW R11 FINAL-3 п. 11",
+     "title": "кабинет сотрудника: один заголовок, без цветной полосы",
+     "status": "done (8edc13e)"
+    },
+    {
+     "id": "GLASS.md §4 (R12, по желанию)",
+     "title": "паспорт QR на стекле; лист печати белый",
+     "status": "done (e3223d2): в панели R01 — её стекло, вне оболочки — .bk-glass"
+    }
+   ],
+   "tests": [
+    {
+     "name": "QR и мастер R09 в приложении (R01 3d8c426 + R12)",
+     "status": "PASS",
+     "result": "33/0/0 с ui-kit сборки; 33/0/0 с ui-kit R11 (стекло)",
+     "evidence": "runs/app_qr_acceptance.json"
+    },
+    {
+     "name": "стекло паспорта: панель со стеклом / без (ui-kit R11), 1366 ru и 375 kk",
+     "status": "PASS",
+     "result": "в панели у паспорта своего стекла нет (фон прозрачный) — в обоих вариантах",
+     "evidence": "screenshots/glass/"
+    },
+    {
+     "name": "QR стенд",
+     "status": "PASS",
+     "result": "6/6 (в т. ч. «вне панели — .bk-glass»)",
+     "sha": "e3223d2e8cba6201805ebdf80fc938ea4f1e8ea9",
+     "evidence_type": "synthetic"
+    },
+    {
+     "name": "кабинет сотрудника в приложении (77ee50b + R12)",
+     "status": "PASS",
+     "result": "один заголовок до и после входа, 375 ru и 1366 kk, ошибок 0",
+     "evidence": "screenshots/final3/"
+    },
+    {
+     "name": "редактор: core / e2e / e2e_r13 / e2e_r12 / e2e_r12_real / e2e_r12_kk",
+     "status": "PASS",
+     "result": "31, 25, 14, 8, 1, 3",
+     "sha": "8edc13e (редактор после не менялся)"
+    },
+    {
+     "name": "R01 браузер (77ee50b + R12)",
+     "status": "PASS",
+     "result": "r14_shell 42/0, r14_b1 16/0"
+    },
+    {
+     "name": "pytest",
+     "status": "не менялось",
+     "note": "Python-код R12 не менялся с b1bd13e (R12 42/42; на 2f643dc + R12: R12/R06/R01/R15/R10 1164 passed)"
+    }
+   ],
+   "known_limits": [
+    "Стекло на правой панели — у R01 (GLASS.md §4 №5); до этого паспорт лежит на белой панели (как в FINAL-3 сейчас).",
+    "На телефоне кнопка R09 «Сообщить о проблеме» поверх открытого кабинета — оболочка R01 (INTEGRATION F3b.3).",
+    "186 из 3 820 светофоров/переходов без улицы в 150 м — без «у улицы X»."
+   ],
+   "next_step": "R01: web/civic/qr, web/civic/editor, tests/civic/R12 из e3223d2 в окончательный FINAL-3. R12 дальше: замечания по окончательной сборке."
+  },
   "delivery_7": {
    "role": "R12",
    "round": 14,
