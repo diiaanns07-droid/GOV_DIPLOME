@@ -1,15 +1,17 @@
 {
- "generated_at": "2026-10-11T21:26:56.872Z",
- "url": "http://127.0.0.1:8812/",
- "r01": "claude/sharp-dijkstra-0t87gl@28e23e3 (FINAL-2 шаг 3) как есть + R05 395d9ea",
+ "generated_at": "2026-10-12T04:07:22.630Z",
+ "url": "http://127.0.0.1:8813/",
+ "r01": "claude/sharp-dijkstra-0t87gl@0f5101a (FINAL-2 шаг 4) + R05 5c8bc4ce",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
    "status": "PASS",
    "detail": {
     "labels": [
+     "Проект · 20272",
      "Проект · 2027",
-     "Проект · 20275",
+     "Проект · 2027",
+     "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027"
@@ -56,7 +58,7 @@
     "posts": [
      201
     ],
-    "id": "p-c5716f42fc51",
+    "id": "p-0fa199435cb2",
     "year": 2027
    }
   },
@@ -92,8 +94,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 436.681882327525,
-     "y": 254.8889508546402
+     "x": 436.6818892862471,
+     "y": 254.8890077684272
     },
     "under": []
    }
@@ -182,12 +184,12 @@
    "detail": {
     "1366_ru": {
      "heldBefore": 1,
-     "count": 5,
+     "count": 7,
      "console_errors": []
     },
     "375_kk": {
      "heldBefore": 1,
-     "count": 5,
+     "count": 7,
      "console_errors": []
     }
    }
@@ -264,8 +266,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 19,
-      "selected": "p-c243840e75dd"
+      "geometries": 27,
+      "selected": "p-0f6c0344a389"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -283,8 +285,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 19,
-      "selected": "p-c243840e75dd"
+      "geometries": 27,
+      "selected": "p-0f6c0344a389"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -302,8 +304,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 19,
-      "selected": "p-c243840e75dd"
+      "geometries": 27,
+      "selected": "p-0f6c0344a389"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -321,8 +323,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 19,
-      "selected": "p-c243840e75dd"
+      "geometries": 27,
+      "selected": "p-0f6c0344a389"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -350,8 +352,8 @@
      },
      "on": {
       "phase": "ready",
-      "count": 5,
-      "labels": 5,
+      "count": 7,
+      "labels": 7,
       "data_requests": [
        "nura-streets.json",
        "astana-districts.json",
@@ -374,8 +376,8 @@
      },
      "on": {
       "phase": "ready",
-      "count": 5,
-      "labels": 5,
+      "count": 7,
+      "labels": 7,
       "data_requests": [
        "nura-streets.json",
        "astana-districts.json",
@@ -406,7 +408,7 @@
      "placing": {
       "ghost": [
        150,
-       236
+       252
       ],
       "ghost_on_map": true,
       "rotate_in_head": true,
@@ -416,8 +418,8 @@
      "now": {
       "place_on_map": true,
       "toast": [
-       557,
-       652
+       553,
+       651
       ],
       "toast_visible": true,
       "toast_over_place": false,
@@ -426,8 +428,8 @@
       "label_visible": false,
       "label_over_legend": false,
       "label": [
-       173,
-       221
+       188,
+       236
       ],
       "legend": [
        138,
@@ -439,8 +441,8 @@
       "label_visible": true,
       "label_over_legend": false,
       "label": [
-       173,
-       221
+       188,
+       236
       ],
       "legend": [
        138,
@@ -464,7 +466,7 @@
      "now": {
       "place_on_map": true,
       "toast": [
-       713,
+       710,
        808
       ],
       "toast_visible": true,
@@ -512,8 +514,8 @@
      "now": {
       "place_on_map": true,
       "toast": [
-       691,
-       785
+       688,
+       786
       ],
       "toast_visible": true,
       "toast_over_place": false,
@@ -553,8 +555,8 @@
    "detail": {
     "375x667_kk": {
      "label": [
-      173,
-      221
+      188,
+      236
      ],
      "legend": [
       138,
@@ -593,40 +595,40 @@
     "kk": {
      "sheet_before": "half",
      "tapped": [
-      187,
-      195
+      188,
+      187
      ],
      "state": "card",
      "sheet": "peek",
      "dock": [
-      218,
+      210,
       609
      ],
      "header_bottom": 72,
      "header_free": true,
      "object": [
       202,
-      164
+      160
      ],
      "object_above_card": true
     },
     "ru": {
      "sheet_before": "half",
      "tapped": [
-      187,
-      195
+      188,
+      187
      ],
      "state": "card",
      "sheet": "peek",
      "dock": [
-      186,
+      210,
       609
      ],
      "header_bottom": 72,
      "header_free": true,
      "object": [
       188,
-      112
+      126
      ],
      "object_above_card": true
     }

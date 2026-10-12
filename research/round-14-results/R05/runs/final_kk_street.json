@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-10-11T20:31:49.340Z",
- "build": "claude/sharp-dijkstra-0t87gl@28e23e3 (FINAL-2 шаг 3) + R05 426b25d5",
+ "generated_at": "2026-10-12T04:02:51.069Z",
+ "build": "claude/sharp-dijkstra-0t87gl@0f5101a (FINAL-2 шаг 4) + R05 5c8bc4ce",
  "place": [
   71.402341,
   51.117181
  ],
- "proposal": "p-99db37978cf1",
+ "proposal": "p-b380b50f5fa4",
  "status": "PASS",
  "checks": [
   {
