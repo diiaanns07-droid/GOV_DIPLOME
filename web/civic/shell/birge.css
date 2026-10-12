@@ -861,3 +861,14 @@ body.civic-mode[data-birge-explore="header"] .civic-explore-registry { left: cal
   body.civic-mode .civic-explore:has(#map-status:not(.hidden):not([data-faded="1"])) .civic-explore-registry { visibility: hidden; }
 }
 body.civic-mode[data-birge-section]:not([data-birge-section="map"]) .civic-explore-registry { visibility: hidden; }
+
+/* Круг 9 · каталог R05 «Что построить?» на ноутбуке: открытый лист (до 720, по центру свободной части карты) доходил до
+   подписи карты — из-под его края торчало «…contributors ⓘ». Пока каталог открыт, подпись — круг «i» 28 (как на
+   телефоне, R11 15.1; текст — по нажатию/фокусу на «i»), а лист кончается за 12 до круга. */
+@media (min-width: 761px) {
+  body.civic-mode:has(.birge-build3d-root[data-catalog="open"]) .birge-build3d-root { right: calc(var(--be-edge, 12px) + var(--be-panel, 400px) + 12px + 28px + 12px); }
+  body.civic-mode:has(.birge-build3d-root[data-catalog="open"]) .maplibregl-ctrl-attrib:not(:focus-within) {
+    width: 28px; min-height: 28px; padding: 0; border-radius: 50%; background-color: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 0 0 1px rgba(16, 24, 22, 0.08); }
+  body.civic-mode:has(.birge-build3d-root[data-catalog="open"]) .maplibregl-ctrl-attrib:not(:focus-within) .maplibregl-ctrl-attrib-inner { display: none; }
+}
