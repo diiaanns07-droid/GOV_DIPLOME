@@ -844,7 +844,9 @@ body.civic-mode:not(.birge-ready) .topbar .brand-title { font-size: 0; }
 body.civic-mode:not(.birge-ready) .topbar .brand-title::before { content: "Birge"; font-size: 22px; }
 body.civic-mode:not(.birge-ready) :is(.map-tools, #map-status) { visibility: hidden; }
 @media (prefers-reduced-motion: no-preference) {
-  body.civic-mode.birge-ready .map-tools, body.civic-mode #birge-header { animation: birge-fade var(--t-base, 260ms) var(--ease, ease-out) both; }
+  /* backwards, не both: анимация, оставшаяся «в силе» после конца, делает столбец кнопок «корнем фона» (Chromium) — меню
+     слоёв и сами кнопки переставали размывать карту (круг 10) */
+  body.civic-mode.birge-ready .map-tools, body.civic-mode #birge-header { animation: birge-fade var(--t-base, 260ms) var(--ease, ease-out) backwards; }
 }
 
 /* R01-1 — «Реестр пуст: опубликованных записей пока нет…» (свежая база без записей реестра): не зелёная плашка раунда 13
@@ -877,3 +879,6 @@ body.civic-mode[data-birge-section]:not([data-birge-section="map"]) .civic-explo
    прокруткой, а невидимая часть списка в Chromium рисовалась бледным прямоугольником поверх карты); «Ещё…» — 13 серым. */
 body.civic-mode[data-birge-explore="header"] .civic-explore-list { max-height: calc(100vh - 96px); }
 body.civic-mode .civic-explore-list .civic-explore-more { font-size: 13px; color: var(--c-text-2, #5b6a64); padding: 8px 16px; }
+/* Подробная легенда под «?» и плашка о карте внизу по центру на 1024 ложились друг на друга — сообщения по одному:
+   пока открыта легенда, плашка ждёт (она и так гаснет через 6 с) */
+body.civic-mode:has(#birge-legend[data-open="true"]) .civic-explore #map-status { visibility: hidden; }
