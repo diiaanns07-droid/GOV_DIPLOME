@@ -1,79 +1,153 @@
 {
  "role": "R12",
  "round": 14,
- "title": "Точность карты · поставка 6 к FINAL-3: тест QR под меню аватара, patch R06 street-snap в ветке R12",
+ "title": "Точность карты · поставка 7 к окончательному FINAL-3: кабинет сотрудника — один заголовок (R11 п. 11)",
  "branch": "claude/tender-brahmagupta-ef5ztl",
- "branch_note": "Ветка этой сессии (продолжение claude/r14-R12, одна история); в BRANCHES.md её нет — реестр правит координатор.",
- "delivery": 6,
- "for_build": "FINAL-3 (R01, кандидат 2f643dc)",
- "base_sha": "R12 поставка 5 a02e906 (в FINAL-3 с шага 7, 0464f5c)",
- "code_sha": "b1bd13e612242cb212586c2a6eeadf99218e3118",
- "tested_sha": "b1bd13e612242cb212586c2a6eeadf99218e3118",
- "code_sha_note": "b1bd13e = a02e906 + тест QR под меню аватара + api.py с patch R06 (near_street_ru/kk) + тест на него. После — только документы и результаты прогонов.",
- "tested_note": "Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета. Сборка: detached worktree R01 2f643dc + пути R12 из b1bd13e (побайтно, 0 отличий; engine/civic_geo/api.py совпадает со сборкой); CIVIC_DEMO=1, база засеяна как run-city.bat; ничего не коммитилось.",
+ "branch_note": "Ветка этой сессии (продолжение claude/r14-R12); в BRANCHES.md её нет — реестр правит координатор.",
+ "delivery": 7,
+ "for_build": "FINAL-3 окончательный (R01, после 77ee50b)",
+ "base_sha": "R12 поставка 6 b1bd13e (в FINAL-3 с ea44476)",
+ "code_sha": "8edc13e8099e6a65a12be357b13026d0340a1dd8",
+ "tested_sha": "8edc13e8099e6a65a12be357b13026d0340a1dd8",
+ "code_sha_note": "8edc13e = b1bd13e + web/civic/editor (editor.js: data-only у шапки; editor.css: без полосы, h2 скрыт в .civic-drawer, «Вы вошли» и «Выйти» одной строкой) + tests/civic/R12/editor/app_cabinet_title.mjs. После — документы.",
+ "tested_note": "Linux-контейнер Claude Code, без интернета. Сборка: detached worktree R01 77ee50b + web/civic/editor из 8edc13e (остальные пути R12 в 77ee50b уже равны b1bd13e); CIVIC_DEMO=1, база засеяна, временный сотрудник; ничего не коммитилось.",
  "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (коммит с этим файлом — в финальном сообщении)",
- "take": "git checkout <code_sha> -- engine/civic_geo tests/civic/R12 web/civic/editor/editor.js (data, web/civic/map, web/civic/qr не менялись с a02e906)",
- "fixed": [
+ "take": "git checkout <code_sha> -- web/civic/editor tests/civic/R12",
+ "items_status": [
   {
-   "id": "R01 INTEGRATION 18.2 (просьба R12 в STATUS FINAL-3)",
-   "what": "tests/civic/R12/qr/app_qr_acceptance.mjs: вид «Житель/Акимат» — через меню аватара .birge-avatar → #birge-account [data-mode] (старые сборки — кнопки шапки); + «по ссылке в меню аватара отмечен «Житель»»; + настоящий QR и «Распечатать QR» на листе, если генератор в сборке",
-   "test": "на 2f643dc + R12: 32/0/0 (было 28/1)"
+   "id": "R12 в «Коротко для владельца — FINAL-3»",
+   "title": "тест QR под меню аватара",
+   "status": "done — в сборке с ea44476 (поставка 6); на 77ee50b 32/0"
   },
   {
-   "id": "R01 INTEGRATION 18.1",
-   "what": "patch R06 r12_snap_near_street (/street-snap → near_street_ru/kk) теперь в ветке R12, код как в сборке",
-   "test": "test_civic_geo.py::test_street_snap_gives_the_named_street_near_an_unnamed_drive"
+   "id": "UX_REVIEW R11 FINAL-3 п. 11",
+   "title": "кабинет сотрудника: один заголовок, без цветной полосы",
+   "status": "done (8edc13e)"
   },
   {
-   "id": "поправка к поставке 5",
-   "what": "web/civic/editor/editor.js (kk «Жарияланған», одна строка) в FINAL-3 не попал — в INTEGRATION D12 было ошибочно «editor не менялся»; взять (INTEGRATION F3.3). На экране разницы нет — словарь R11 главнее"
+   "id": "GLASS (R11)",
+   "title": "стекло",
+   "status": "не для R12: GLASS.md ещё не опубликован; поверхности R12 — паспорт QR внутри панели оболочки (стекло даёт R01), лист печати и кабинет — формы (по правилу стекла — без него)"
   }
  ],
  "tests": [
   {
-   "name": "QR и мастер R09 в настоящем приложении: FINAL-3 2f643dc + R12",
+   "name": "кабинет в настоящем приложении (77ee50b + R12), 375 ru и 1366 kk",
    "status": "PASS",
-   "result": "32/0/0",
-   "command": "node tests/civic/R12/qr/app_qr_acceptance.mjs http://127.0.0.1:<порт> <папка>",
-   "evidence": "runs/app_qr_acceptance.json, screenshots/wave2/app-*"
+   "result": "до входа: «Кабинет сотрудника» + «Вход для сотрудника»; после — один «Кабинет сотрудника»; шапка редактора без фона; ошибок 0",
+   "command": "node tests/civic/R12/editor/app_cabinet_title.mjs http://127.0.0.1:<порт> <папка> <файл-пароля>",
+   "evidence": "screenshots/final3/cabinet-*.png"
   },
   {
-   "name": "pytest tests/civic/R12 R06 R01 R15 R10 на 2f643dc + R12",
+   "name": "редактор: core / e2e / e2e_r13 / e2e_r12 / e2e_r12_real / e2e_r12_kk",
    "status": "PASS",
-   "result": "1164 passed, 3 skipped"
+   "result": "31, 25, 14, 8, 1, 3 — 0 FAIL",
+   "sha": "8edc13e8099e6a65a12be357b13026d0340a1dd8"
   },
   {
-   "name": "engine/civic_geo (pytest, ветка)",
+   "name": "QR и мастер R09 в приложении (77ee50b + R12)",
    "status": "PASS",
-   "result": "42/42",
-   "sha": "b1bd13e612242cb212586c2a6eeadf99218e3118"
+   "result": "32/0/0"
   },
   {
-   "name": "QR стенд",
+   "name": "R01 браузер на 77ee50b + R12",
    "status": "PASS",
-   "result": "6/6",
-   "sha": "b1bd13e612242cb212586c2a6eeadf99218e3118",
-   "evidence_type": "synthetic"
+   "result": "r14_shell 42/0, r14_b1 16/0"
   },
   {
-   "name": "карта, редактор, точность, bench",
-   "status": "PASS",
-   "result": "без изменений с поставки 5 (карта 30/69/6, редактор 31/25/14/8/1/3, точность 7164/7164, p95 1,77 мс)",
-   "sha": "a02e906 (код карты/редактора/данных не менялся)"
+   "name": "R11 staff_kk_check.cjs",
+   "status": "NOT_RUN (тест устарел)",
+   "note": "ищет кнопку до меню аватара — таймаут на FINAL-3 и без правки R12 (INTEGRATION F3b.4)"
   },
   {
-   "name": "полный pytest на 2f643dc + R12",
-   "status": "NOT_RUN",
-   "note": "не запускался в этой поставке; R01 на 32d5352 (те же пути R12, кроме api.py = его же patch) — 3552/0"
+   "name": "pytest",
+   "status": "не менялось",
+   "note": "Python-код R12 не менялся с b1bd13e (pytest R12 42/42; на 2f643dc + R12 — R12/R06/R01/R15/R10 1164 passed)"
   }
  ],
  "known_limits": [
-  "Изменение R12 в сборке — только тест и одна строка editor.js; поведение приложения не меняется (api.py уже такой в FINAL-3).",
-  "Демо-жалобы — synthetic (CIVIC_DEMO=1, «Пример»); стенд QR — synthetic.",
-  "Остаётся из поставки 5: 186 из 3 820 светофоров/переходов без улицы с названием в 150 м — просто «Пешеходный переход»/«Светофор»; 2 новых ключа для R11 (qr.card.complaints, qr.form.base_other)."
+  "Изменение только во внешнем виде кабинета (CSS + один data-атрибут); логика входа и списка прежняя.",
+  "На телефоне кнопка R09 «Сообщить о проблеме» поверх открытого кабинета — оболочка R01 (INTEGRATION F3b.3).",
+  "Остаётся из прошлых поставок: 186 из 3 820 светофоров/переходов без улицы в 150 м — без «у улицы X»; 2 ключа для R11 (qr.card.complaints, qr.form.base_other) — проверить, взяты ли."
  ],
- "next_step": "R01: пути R12 из b1bd13e (тест QR и одна строка editor.js) в окончательный FINAL-3; R10: app_qr_acceptance.mjs можно включить в приёмку FINAL-3. R12 дальше: замечания по окончательному FINAL-3.",
+ "next_step": "R01: web/civic/editor и tests/civic/R12 из 8edc13e в окончательный FINAL-3. R12 дальше: если R11 опубликует GLASS.md с требованиями к элементам R12 — внести; замечания по окончательной сборке.",
  "previous": {
+  "delivery_6": {
+   "role": "R12",
+   "round": 14,
+   "title": "Точность карты · поставка 6 к FINAL-3: тест QR под меню аватара, patch R06 street-snap в ветке R12",
+   "branch": "claude/tender-brahmagupta-ef5ztl",
+   "branch_note": "Ветка этой сессии (продолжение claude/r14-R12, одна история); в BRANCHES.md её нет — реестр правит координатор.",
+   "delivery": 6,
+   "for_build": "FINAL-3 (R01, кандидат 2f643dc)",
+   "base_sha": "R12 поставка 5 a02e906 (в FINAL-3 с шага 7, 0464f5c)",
+   "code_sha": "b1bd13e612242cb212586c2a6eeadf99218e3118",
+   "tested_sha": "b1bd13e612242cb212586c2a6eeadf99218e3118",
+   "code_sha_note": "b1bd13e = a02e906 + тест QR под меню аватара + api.py с patch R06 (near_street_ru/kk) + тест на него. После — только документы и результаты прогонов.",
+   "tested_note": "Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета. Сборка: detached worktree R01 2f643dc + пути R12 из b1bd13e (побайтно, 0 отличий; engine/civic_geo/api.py совпадает со сборкой); CIVIC_DEMO=1, база засеяна как run-city.bat; ничего не коммитилось.",
+   "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (коммит с этим файлом — в финальном сообщении)",
+   "take": "git checkout <code_sha> -- engine/civic_geo tests/civic/R12 web/civic/editor/editor.js (data, web/civic/map, web/civic/qr не менялись с a02e906)",
+   "fixed": [
+    {
+     "id": "R01 INTEGRATION 18.2 (просьба R12 в STATUS FINAL-3)",
+     "what": "tests/civic/R12/qr/app_qr_acceptance.mjs: вид «Житель/Акимат» — через меню аватара .birge-avatar → #birge-account [data-mode] (старые сборки — кнопки шапки); + «по ссылке в меню аватара отмечен «Житель»»; + настоящий QR и «Распечатать QR» на листе, если генератор в сборке",
+     "test": "на 2f643dc + R12: 32/0/0 (было 28/1)"
+    },
+    {
+     "id": "R01 INTEGRATION 18.1",
+     "what": "patch R06 r12_snap_near_street (/street-snap → near_street_ru/kk) теперь в ветке R12, код как в сборке",
+     "test": "test_civic_geo.py::test_street_snap_gives_the_named_street_near_an_unnamed_drive"
+    },
+    {
+     "id": "поправка к поставке 5",
+     "what": "web/civic/editor/editor.js (kk «Жарияланған», одна строка) в FINAL-3 не попал — в INTEGRATION D12 было ошибочно «editor не менялся»; взять (INTEGRATION F3.3). На экране разницы нет — словарь R11 главнее"
+    }
+   ],
+   "tests": [
+    {
+     "name": "QR и мастер R09 в настоящем приложении: FINAL-3 2f643dc + R12",
+     "status": "PASS",
+     "result": "32/0/0",
+     "command": "node tests/civic/R12/qr/app_qr_acceptance.mjs http://127.0.0.1:<порт> <папка>",
+     "evidence": "runs/app_qr_acceptance.json, screenshots/wave2/app-*"
+    },
+    {
+     "name": "pytest tests/civic/R12 R06 R01 R15 R10 на 2f643dc + R12",
+     "status": "PASS",
+     "result": "1164 passed, 3 skipped"
+    },
+    {
+     "name": "engine/civic_geo (pytest, ветка)",
+     "status": "PASS",
+     "result": "42/42",
+     "sha": "b1bd13e612242cb212586c2a6eeadf99218e3118"
+    },
+    {
+     "name": "QR стенд",
+     "status": "PASS",
+     "result": "6/6",
+     "sha": "b1bd13e612242cb212586c2a6eeadf99218e3118",
+     "evidence_type": "synthetic"
+    },
+    {
+     "name": "карта, редактор, точность, bench",
+     "status": "PASS",
+     "result": "без изменений с поставки 5 (карта 30/69/6, редактор 31/25/14/8/1/3, точность 7164/7164, p95 1,77 мс)",
+     "sha": "a02e906 (код карты/редактора/данных не менялся)"
+    },
+    {
+     "name": "полный pytest на 2f643dc + R12",
+     "status": "NOT_RUN",
+     "note": "не запускался в этой поставке; R01 на 32d5352 (те же пути R12, кроме api.py = его же patch) — 3552/0"
+    }
+   ],
+   "known_limits": [
+    "Изменение R12 в сборке — только тест и одна строка editor.js; поведение приложения не меняется (api.py уже такой в FINAL-3).",
+    "Демо-жалобы — synthetic (CIVIC_DEMO=1, «Пример»); стенд QR — synthetic.",
+    "Остаётся из поставки 5: 186 из 3 820 светофоров/переходов без улицы с названием в 150 м — просто «Пешеходный переход»/«Светофор»; 2 новых ключа для R11 (qr.card.complaints, qr.form.base_other)."
+   ],
+   "next_step": "R01: пути R12 из b1bd13e (тест QR и одна строка editor.js) в окончательный FINAL-3; R10: app_qr_acceptance.mjs можно включить в приёмку FINAL-3. R12 дальше: замечания по окончательному FINAL-3."
+  },
   "delivery_5": {
    "role": "R12",
    "round": 14,
