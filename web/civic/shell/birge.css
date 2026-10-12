@@ -686,24 +686,26 @@ body.civic-mode .maplibregl-ctrl-attrib.maplibregl-compact-show a { color: inher
    и клавиатура сразу видели прежнее состояние. Лист раздела поднимается на 12 px и проявляется; меню — сверху на 6 px
    с лёгким масштабом от своей кнопки. prefers-reduced-motion — без движения (ниже). */
 body.civic-mode .birge-day:not([hidden]) {
-  transition: opacity var(--t-base, 240ms) var(--ease, ease-out), transform var(--t-base, 240ms) var(--ease, ease-out);
+  transition: opacity var(--t-base, 240ms) var(--ease, ease-out), translate var(--t-base, 240ms) var(--ease, ease-out);
 }
-@starting-style { body.civic-mode .birge-day:not([hidden]) { opacity: 0; transform: translateY(12px); } }
+@starting-style { body.civic-mode .birge-day:not([hidden]) { opacity: 0; translate: 0 12px; } }
 body.civic-mode :is(#birge-account, .birge-more-menu, #birge-layer-list):not([hidden]) {
   transform-origin: top right;
-  transition: opacity var(--t-fast, 200ms) var(--ease, ease-out), transform var(--t-fast, 200ms) var(--ease, ease-out);
+  transition: opacity var(--t-fast, 200ms) var(--ease, ease-out), translate var(--t-fast, 200ms) var(--ease, ease-out),
+    scale var(--t-fast, 200ms) var(--ease, ease-out);
 }
 @starting-style {
-  body.civic-mode :is(#birge-account, .birge-more-menu, #birge-layer-list):not([hidden]) { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  body.civic-mode :is(#birge-account, .birge-more-menu, #birge-layer-list):not([hidden]) { opacity: 0; translate: 0 -6px; scale: 0.98; }
 }
 body.civic-mode .birge-more-menu:not([hidden]) { transform-origin: top left; }
 body.civic-mode #birge-layer-list:not([hidden]) { transform-origin: top right; }
 /* Отклик нажатия (№10): кнопки карты и аватар чуть сжимаются, пункты меню — плотнее подсветка. */
 @media (prefers-reduced-motion: no-preference) {
+  /* свойство scale, не transform — не спорит с transform модулей и общим button:active (R11 12.0, R10 B-068) */
   body.civic-mode :is(.map-tools .icon-btn, .birge-avatar, .birge-legend-q) {
-    transition: transform 120ms var(--ease, ease-out), background-color var(--t-fast, 200ms) var(--ease, ease-out); }
-  body.civic-mode :is(.map-tools .icon-btn, .birge-avatar, .birge-legend-q):active { transform: scale(0.94); }
-  body.civic-mode .map-tools .bk-mapctl__group > .icon-btn:active { transform: none; background-color: rgba(21, 44, 38, 0.08); }
+    transition: scale var(--t-press, 120ms) var(--ease, ease-out), background-color var(--t-fast, 200ms) var(--ease, ease-out); }
+  body.civic-mode :is(.map-tools .icon-btn, .birge-avatar, .birge-legend-q):active { scale: 0.94; }
+  body.civic-mode .map-tools .bk-mapctl__group > .icon-btn:active { scale: none; background-color: rgba(21, 44, 38, 0.08); }
 }
 body.civic-mode :is(.birge-more-item, #birge-account .bk-menu__item, #birge-layer-list .birge-layer__opt):active { background: rgba(21, 44, 38, 0.1); }
 @media (prefers-reduced-motion: reduce) {
@@ -746,11 +748,8 @@ body.civic-mode .civic-explore #map-status { transition: opacity var(--t-slow, 3
   body.civic-mode .topbar.bk-glass { padding: 0 4px 0 8px; }
   body.civic-mode .top-actions { gap: 4px; }
 }
-/* «Картина дня» — дашборд: лист до 1280; разделы-списки («Рядом», «Вопрос акиму») — колонка 720 по центру листа 1080
-   (как «Идеи»; R11 §9.1 f). «Обращения» сотрудника — таблица во всю ширину листа. */
-@media (min-width: 1105px) {
-  body.civic-mode #birge-day.birge-day.bk-glass { left: max(12px, calc(50% - 640px)); right: max(12px, calc(50% - 640px)); }
-}
+/* Разделы-списки — одна колонка 720 по центру листа 1080 (R11 решение D-1: «Рядом», «Вопрос акиму»; «Идеи» и
+   «Обращения» — у ролей); «Картина дня» — дашборд на весь лист (≤ 1080). */
 body.civic-mode .birge-screen-root.nb, body.civic-mode .birge-screen-root > .qa { max-width: 720px; margin-inline: auto; }
 /* Открыт раздел (лист поверх карты уже не во всю ширину) — элементы карты по краям не выглядывают из-под листа:
    легенда, кнопки карты, подпись карты и 3D-каталог прячутся до возврата на «Карту». */
@@ -764,8 +763,8 @@ body.civic-mode[data-birge-section]:not([data-birge-section="map"]) :is(#birge-l
   body.civic-mode .birge-legend[data-open="true"] .birge-legend-host { animation: birge-rise var(--t-fast, 200ms) var(--ease, ease-out); }
   body.civic-mode .civic-explore #map-status:not(.hidden):not([data-faded="1"]) { animation: birge-fade var(--t-base, 260ms) var(--ease, ease-out); }
 }
-@keyframes birge-underline { from { transform: scaleX(0.2); opacity: 0; } to { transform: none; opacity: 1; } }
-@keyframes birge-rise { from { transform: translateY(6px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes birge-underline { from { scale: 0.2 1; opacity: 0; } to { scale: 1; opacity: 1; } }
+@keyframes birge-rise { from { translate: 0 6px; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 @keyframes birge-fade { from { opacity: 0; } to { opacity: 1; } }
 /* Зона нажатия раздела ≥ 44 и на проекторе (плотные отступы 6: «Ещё» был 42 px). Крестик поиска — знак 20 px. */
 body.civic-mode #birge-header .birge-nav > button { min-width: 44px; justify-content: center; }

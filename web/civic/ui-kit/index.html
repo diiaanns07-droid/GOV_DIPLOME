@@ -29,6 +29,15 @@
         padding-bottom: var(--s-2);
         border-bottom: 1px solid var(--c-line);
       }
+      .kit-menu-static {
+        position: static;
+      }
+      .kit-row--top {
+        align-items: flex-start;
+      }
+      .kit-warn {
+        max-width: 360px;
+      }
       .kit-row {
         display: flex;
         flex-wrap: wrap;
@@ -275,6 +284,11 @@
           <span class="bk-status" data-status="verified" data-i18n="status.verified"></span>
           <span class="bk-status" data-status="reopened" data-i18n="status.reopened"></span>
         </div>
+        <!-- Переход «служба сообщила → проверено жителями» (марафон, п. 12): точка мягко меняет цвет, галочка «встаёт» -->
+        <div class="kit-row">
+          <span class="bk-status" id="kit-flow" data-status="reported_fixed" data-i18n="status.reported_fixed" aria-live="polite"></span>
+          <button class="bk-btn" type="button" id="kit-flow-btn"><span data-i18n="verify.yes"></span></button>
+        </div>
         <div class="kit-row">
           <span class="bk-tag bk-tag--demo" data-i18n="common.tag.demo" data-i18n-attr="title:common.tag.demo_hint"></span>
           <span class="bk-tag bk-tag--project" data-i18n="common.tag.project"></span>
@@ -476,6 +490,19 @@
           <div class="bk-card" id="kit-error"></div>
         </div>
         <div class="kit-icons kit-ills" id="kit-ills" aria-hidden="true"></div>
+        <!-- Выбор в меню (.bk-menu__radio, марафон): как список «Слой на карте» оболочки; предупреждение без рамки -->
+        <div class="kit-row kit-row--top">
+          <div class="bk-menu kit-menu-static" role="radiogroup" id="kit-layer" data-i18n-attr="aria-label:shell.layers.label">
+            <span class="bk-menu__label" data-i18n="shell.layers.label"></span>
+            <label class="bk-menu__radio"><input type="radio" name="kit-layer" checked /><span data-i18n="shell.layers.none"></span></label>
+            <label class="bk-menu__radio"><input type="radio" name="kit-layer" /><span data-i18n="shell.layers.nearby"></span></label>
+            <label class="bk-menu__radio"><input type="radio" name="kit-layer" /><span data-i18n="shell.layers.ideas"></span></label>
+          </div>
+          <div class="bk-banner bk-banner--warn kit-warn">
+            <div class="bk-banner__title" data-kit-icon="droplet"><span data-i18n="nearby.tab.outages"></span> · <span data-i18n="nearby.utility.water"></span></div>
+            <div data-i18n="nearby.outage.zone" data-i18n-params='{"text":"Кабанбай батыр, 48–56"}'></div>
+          </div>
+        </div>
         <div class="bk-banner bk-banner--danger" role="alert" id="kit-emergency">
           <div class="bk-banner__title" data-kit-icon="alert"><span data-i18n="complaint.emergency.title"></span></div>
           <div data-i18n="complaint.emergency.text" data-i18n-params='{"phone":"104"}'></div>
@@ -611,6 +638,12 @@
         decorate();
         renderStatic();
         UI.langSwitch($("kit-lang"), { text: true });
+        $("kit-flow-btn").addEventListener("click", function () {
+          var st = $("kit-flow"), done = st.getAttribute("data-status") === "verified";
+          st.setAttribute("data-status", done ? "reported_fixed" : "verified");
+          st.setAttribute("data-i18n", done ? "status.reported_fixed" : "status.verified");
+          st.textContent = I.t(done ? "status.reported_fixed" : "status.verified");
+        });
         UI.menu($("kit-avatar"), $("kit-menu"));
         $("kit-menu").addEventListener("click", function (e) {
           var b = e.target.closest("[role=menuitemradio]");

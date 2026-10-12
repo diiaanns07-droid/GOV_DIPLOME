@@ -59,10 +59,10 @@ button:not(:disabled) {
   transition:
     background 0.18s,
     box-shadow 0.18s,
-    transform 0.18s;
+    translate 0.18s;
 }
 button:active:not(:disabled) {
-  transform: translateY(1px);
+  translate: 0 1px; /* не transform: не сбивает центровку и выезд модулей (R10 B-068, R11 INTEGRATION 12.1) */
 }
 svg {
   width: 20px;

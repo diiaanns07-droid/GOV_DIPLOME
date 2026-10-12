@@ -150,20 +150,22 @@
     background var(--t-fast) var(--ease),
     border-color var(--t-fast) var(--ease),
     box-shadow var(--t-fast) var(--ease),
-    transform var(--t-fast) var(--ease);
+    scale var(--t-fast) var(--ease);
 }
 .bk-btn:hover {
   background: var(--c-fill-hover);
 }
 .bk-btn:active {
-  transform: scale(var(--press-scale)); /* лёгкое сжатие — отклик нажатия */
+  /* лёгкое сжатие — отклик нажатия. Свойство scale, а не transform: transform модуля (центровка translateX(-50%)
+     у «Сообщить о проблеме» R09) остаётся, кнопка не прыгает (R10 B-068) */
+  scale: var(--press-scale);
   transition-duration: var(--t-press);
 }
 .bk-btn:disabled,
 .bk-btn[aria-disabled="true"] {
   cursor: not-allowed;
   opacity: 0.5;
-  transform: none;
+  scale: none;
 }
 .bk-btn--primary {
   border-color: var(--c-brand);
@@ -1239,6 +1241,37 @@
 .bk-status[data-status="reopened"] {
   --dot: var(--heat-3);
 }
+/* Марафон, п. 12 «вау»: смена статуса — мягко (точка и рамка меняют цвет за 260 мс); «Проверено жителями» — зелёный круг
+   с белой галочкой, который «встаёт» при переходе «исправлено → проверено» (анимация запускается при смене атрибута) */
+.bk-status::before {
+  transition:
+    background-color var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease);
+}
+.bk-status[data-status="verified"]::before {
+  width: 16px;
+  height: 16px;
+  background: var(--fixed)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E")
+    center / 10px no-repeat;
+  animation: bk-status-pop var(--t-slow) var(--ease-out);
+}
+@keyframes bk-status-pop {
+  from {
+    scale: 0.4;
+  }
+  60% {
+    scale: 1.15;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bk-status::before {
+    transition: none;
+  }
+  .bk-status[data-status="verified"]::before {
+    animation: none;
+  }
+}
 /* Статус + одна строка пояснения: «● В работе» / «Служба ответит до 16 окт» */
 .bk-statusline {
   display: grid;
@@ -1813,7 +1846,7 @@ p.bk-banner--warn {
 @keyframes bk-rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    translate: 0 12px;
   }
 }
 @keyframes bk-shimmer {
@@ -1970,6 +2003,13 @@ p.bk-banner--warn {
   margin-left: 6px;
   color: var(--c-text-3);
 }
+/* Телефон: числа у вкладок не показываем — три вкладки помещаются в строку целиком (решение R11 по вопросу R13, марафон);
+   число остаётся в доступном имени вкладки, если модуль его туда кладёт, и в заголовке списка */
+@media (max-width: 480px) {
+  .bk-tabs .bk-num {
+    display: none;
+  }
+}
 
 /* <details class="bk-details"><summary>Толығырақ</summary>…</details> — карточка не растёт (IA_WAVE2 §0.4) */
 .bk-details {
@@ -2087,11 +2127,22 @@ p.bk-banner--warn {
 .bk-mapctl__group.bk-glass--control > .bk-mapbtn + .bk-mapbtn {
   border-top-color: rgba(16, 24, 22, 0.1);
 }
+/* Стекло внутри стекла (меню аватара и «Ещё» в стеклянной шапке): у предка с backdrop-filter свой «корень фона» — вложенное
+   стекло размывает только сам предок, а не карту под ним, и текст карты просвечивает резко (R01 INTEGRATION 25.3).
+   Поэтому вложенная панель — сплошная белая (форма и тень те же); стекло — у меню вне шапки (слои у кнопок карты). */
+.bk-glass .bk-glass {
+  background-color: var(--glass-solid);
+  background-image: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
 /* Внутри стекла: карточки — более плотная белая подложка без тени; поля форм — непрозрачные */
 .bk-glass .bk-card,
 .bk-glass .bk-kpi {
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: none;
+  /* плотная белая карточка с волосяной линией: подложка 70 % почти сливалась со стеклом 80 % на светлой карте и список
+     читался сплошным текстом (R13 10.3, марафон круг 4); тени нет — одна тень у самого стекла */
+  background: var(--c-surface);
+  box-shadow: inset 0 0 0 1px rgba(16, 24, 22, 0.08);
 }
 .bk-glass input,
 .bk-glass select,
@@ -2203,7 +2254,7 @@ p.bk-banner--warn {
   transition:
     background-color var(--t-fast) var(--ease),
     color var(--t-fast) var(--ease),
-    transform var(--t-press) var(--ease);
+    scale var(--t-press) var(--ease);
 }
 .bk-chip:active,
 .bk-mapbtn:active,
@@ -2211,9 +2262,10 @@ p.bk-banner--warn {
 .bk-iconbtn:active,
 .bk-option:active,
 .bk-list__item:active {
-  transform: scale(var(--press-scale));
+  scale: var(--press-scale); /* не transform — см. .bk-btn:active (B-068) */
 }
-/* Панели выезжают, а не появляются: добавьте класс на время показа (или всегда — анимация один раз при вставке) */
+/* Панели выезжают, а не появляются: добавьте класс на время показа (или всегда — анимация один раз при вставке).
+   Анимируются свойства translate/scale, а не transform: своё transform элемента (центровка, выезд шторки) не сбивается */
 .bk-enter-up {
   animation: bk-enter-up var(--t-base) var(--ease-out) both;
 }
@@ -2229,31 +2281,31 @@ p.bk-banner--warn {
 @keyframes bk-enter-up {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    translate: 0 16px;
   }
   to {
     opacity: 1;
-    transform: none;
+    translate: none;
   }
 }
 @keyframes bk-enter-right {
   from {
     opacity: 0;
-    transform: translateX(24px);
+    translate: 24px 0;
   }
   to {
     opacity: 1;
-    transform: none;
+    translate: none;
   }
 }
 @keyframes bk-enter-pop {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    scale: 0.96;
   }
   to {
     opacity: 1;
-    transform: none;
+    scale: none;
   }
 }
 /* Галочка успеха рисуется линией (экран «Отправлено», «Проверено жителями») */
