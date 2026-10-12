@@ -1,6 +1,6 @@
 {
  "role": "R13",
- "title": "Прогноз проблемных территорий (прототип)",
+ "title": "Прогноз проблемных территорий (прототип) + волна 2: «Вопрос акиму» (п. 9) и проверка метода «Пульса» (п. 8)",
  "branch": "claude/r14-R13",
  "base_sha": "46f2308 (claude/round-14-package)",
  "restored_from": null,
@@ -10,51 +10,69 @@
   "data/civic/astana/geofence.json": "только чтение (районы)",
   "research/round-14/categories_v2.json": "только чтение (12 категорий)",
   "ui/web_server.py R01": "claude/sharp-dijkstra-0t87gl @ d3c33d9 — только для patch и теста шлюза",
-  "LOCAL-9 погода": "ещё нет в claude/round-14-package — работает синтетическая фикстура того же формата",
-  "data/civic/astana/weather/": "claude/round-14-package @ a2ff96e (LOCAL-9, Open-Meteo Historical Weather API, CC BY 4.0, real) — без изменений"
+  "data/civic/astana/weather/": "claude/round-14-package @ a2ff96e (LOCAL-9, Open-Meteo Historical Weather API, CC BY 4.0, real) — без изменений",
+  "ui/web_server.py, web/index.html R01": "claude/sharp-dijkstra-0t87gl @ 0f5101a (FINAL-2 шаг 4) — только для patch §8 и проверок",
+  "ui/civic_akim/pulse.py R08": "claude/r14-R08 @ 8e0b2ac (= сборка R01 0f5101a) — только для проверки метода и patch §9"
  },
  "evidence": {
   "territories": "real (OSM через R12), 2334",
   "complaint_history": "synthetic, demo: true (history.py, seed 2026)",
-  "weather": "synthetic fixture (weather_fixture.csv) до LOCAL-9",
-  "results": "на синтетике — не реальная точность"
+  "weather": "real (LOCAL-9, Open-Meteo, CC BY 4.0)",
+  "results": "на синтетике — не реальная точность",
+  "questions_demo": "synthetic, demo: true (ui/civic_qa/demo.py: 12 придуманных вопросов, телефон заведомо несуществующий)",
+  "pulse_check": "synthetic (потоки жалоб из истории R13 + вставленные всплески)"
  },
- "code_sha": "a0133e9",
- "tested_sha": "a0133e9 (Linux, Python 3.13, scikit-learn, numpy)",
- "push_status": "a0133e9 и документы — в origin/claude/r14-R13 (см. git log)",
+ "code_sha": "198902f",
+ "tested_sha": "198902f — сборка «как у R01»: claude/sharp-dijkstra-0t87gl @ 0f5101a + пути R13 с 198902f + patches/r01_questions_route.patch + patches/r08_pulse_not_by_chance.patch (Linux, Python 3.13.16, scikit-learn 1.9.1, Node 22, Chromium 1194 Playwright 1.56)",
+ "push_status": "198902f и документы — в origin/claude/r14-R13 (см. git log)",
  "changed_paths": [
-  "ml/civic_forecast/ (targets, weather, history, features, model, reasons, backtest, CLI, README, RESULTS, data/)",
-  "ui/civic_forecast/ (forecast, forecast_response, attention_next_month, build, data/forecast_cache.json)",
-  "tests/civic/R13/",
-  "research/round-14-results/R13/",
+  "ui/civic_qa/ (store, service, demo — «Вопрос акиму»)",
+  "web/civic/qa/ (qa.js — window.BirgeAsk, qa.css, index.html, qa-page.js)",
+  "tests/civic/R13/qa/ (test_r13_qa.py, qa_browser.cjs)",
+  "ml/civic_forecast/pulse_check.py, ml/civic_forecast/results_pulse.json (проверка метода «Пульса»)",
+  "ml/civic_forecast/reasons.py (kk «+28 °C-тан жоғары»)",
+  "tests/civic/R13/test_r13_pulse_check.py, tests/civic/R13/test_r13_forecast.py",
+  "ml/civic_forecast/ и ui/civic_forecast/ — прочее без изменений с a0133e9",
+  "research/round-14-results/R13/ (INTEGRATION §8–9, RUN 5–6, PULSE_METHOD.md, patches/, screens/qa/)",
   "research/handoffs/astana/R13/round14/STATUS.md"
  ],
- "results_on_synthetic": "История жалоб — СИНТЕТИКА, погода — real (LOCAL-9). precision@10/20/30: бустинг 0,57/0,51/0,47; без погоды 0,59/0,51/0,46; запасная 0,57/0,51/0,46; «как в прошлом месяце» 0,47/0,40/0,38; «как год назад» 0,40/0,36/0,32; случайно 0,04. Ориентир Gton 60–70 % не достигнут; погодные признаки ≈ 0 (−0,006).",
+ "results_on_synthetic": "История жалоб — СИНТЕТИКА, погода — real (LOCAL-9). precision@10/20/30: бустинг 0,57/0,51/0,47; без погоды 0,59/0,51/0,46; запасная 0,57/0,51/0,46; «как в прошлом месяце» 0,47/0,40/0,38; «как год назад» 0,40/0,36/0,32; случайно 0,04. Ориентир Gton 60–70 % не достигнут; погодные признаки ≈ 0 (−0,006). Пульс (R08, проверка R13, синтетика): на обычной неделе ~2,9 ложной тревоги; с проверкой «не случайно ли» ~0,3; всплеск ×5 находится в 90 % недель (было 95 %), ×3 — 61 % (было 79 %).",
  "tests": {
-  "pytest tests/civic/R13 @a0133e9": "PASS 32 passed, 7 skipped (без шлюза R01)",
-  "pytest tests/civic/R13/test_r13_gateway_r01.py c R13_R01_WEB_SERVER = ui/web_server.py R01 d9a8895": "PASS 7/7",
-  "backtest 3 seed × 16 месяцев на реальной погоде": "PASS — RESULTS.md (копия в research/round-14-results/R13/)",
-  "сезонность генератора на реальной и на синтетической погоде": "PASS (полная история, те же пороги)",
-  "forecast() < 300 мс": "PASS (кэш; без изменений с поставки 1)",
-  "интерфейс R08": "NOT_RUN: блок прогноза в «Картине дня» показывает R08; в B3 R01 /forecast — только API"
+  "pytest tests/civic/R13 (сборка 0f5101a + R13 198902f + оба patch)": "PASS 97 passed",
+  "pytest tests/civic/R13 + tests/civic/R08 + tests/civic/R01/test_r01_api_v2.py (та же сборка)": "PASS 469 passed, 1 skipped",
+  "pytest tests/civic/R01 + tests/civic/R15 (0f5101a + patch R01 §8)": "PASS 376 passed, 1 skipped",
+  "pytest tests/civic/R13 в ветке R13 (без шлюза и модуля R08)": "PASS 87 passed, 10 skipped",
+  "браузер tests/civic/R13/qa/qa_browser.cjs (житель и акимат, 375/1366 × ru/kk)": "PASS 69/69 (три прогона, в т. ч. на чистой сборке)",
+  "браузер tests/civic/R01/browser/r14_wave2.cjs (меню оболочки, «Ещё → Вопрос акиму», #ask, Назад, ҚАЗ)": "PASS 42/0",
+  "демо «Картины дня» с patch R08 (CIVIC_DEMO=1)": "PASS — первые 4 тревоги пульса те же, 5-я (свёрнутая) меняется",
+  "backtest прогноза": "без изменений с a0133e9 (RESULTS.md)",
+  "интерфейс прогноза R08": "NOT_RUN — в FINAL-2 прогноз только API /forecast (решение R01/R08); note_ru/note_kk «Прототип…» в ответе"
  },
  "known_limits": [
-  "История жалоб синтетическая: модель учит закономерности, заложенные генератором. Реальная точность — только в пилоте.",
-  "Ориентир Gton 60–70 % на синтетике не достигнут (precision@10 0,58, @20 0,49, @30 0,44 при доле проблемных 3,3 %).",
-  "Погода — синтетическая фикстура до LOCAL-9; погодные признаки на синтетике ничего не добавили.",
-  "Месяц вне кэша считается ~3–4 с при первом запросе (дальше из памяти). Прогноз возможен на 2025-02 … 2026-11.",
-  "Территории — снимок данных R12 @ d13f49a; при их обновлении нужно build-targets + build-cache.",
-  "Безымянные территории подписаны ориентиром OSM; 138 из 1307 — без ориентира в 800 м (просто «Двор»/«Аялдама»).",
-  "Казахские тексты причин — черновик R13, нужна вычитка (KK_REVIEW R11)."
+  "История жалоб синтетическая: модель прогноза учит закономерности генератора. Реальная точность — только в пилоте; ориентир Gton 60–70 % на синтетике не достигнут.",
+  "«Вопрос акиму»: голос — «одно устройство — один голос» + лимиты по адресу; новый device_id = новый «житель» (как R06/R09, R15 S08). Полное решение — вход через eGov/SMS.",
+  "«Вопрос акиму»: 41 новый ключ ask.* — запасные ru/kk в qa.js (казахский — черновик R13, ждёт вычитки R11). Тексты вопросов и ответов не переводятся: показываются на языке автора (ответ — на языке интерфейса, если есть, иначе на другом).",
+  "«Вопрос акиму»: автор не видит статус своего вопроса после отправки («Мои вопросы» схема R11 не предусматривает); причина отказа хранится для акимата, жителю не показывается.",
+  "Пульс: patch R08 снижает ложные тревоги, но слабые всплески ×2–×3 при малых числах находит реже; порог 1 % проверен только на синтетике.",
+  "Территории прогноза — снимок данных R12 @ d13f49a; при обновлении — build-targets + build-cache."
  ],
- "next_step": "R01 (FINAL): взять по путям на code_sha a0133e9 — ml/civic_forecast/, ui/civic_forecast/, tests/civic/R13/, data/civic/astana/weather/ (тот же файл LOCAL-9, что в пакете). Маршрут /forecast без изменений. R08: если блок прогноза выводится — пометка «Прототип…» в обеих локалях.",
- "delivery": 2,
- "delivery_note": "Поставка 2 (ночь 10→11 окт) для FINAL R01: казахские правки R11 (KK_REVIEW), backtest и кэш на реальной погоде LOCAL-9. Поставка 1: 8705829 (в B2/B3 R01).",
+ "next_step": "R01 (FINAL-3): взять пути R13 на code_sha 198902f (ui/civic_qa/, web/civic/qa/, tests/civic/R13/, ml/civic_forecast/, ui/civic_forecast/) и применить patches/r01_questions_route.patch; patch R08 — по решению R08/R01 (§9). R11: разбор экрана «Вопрос акиму» по IA_WAVE2 §7 и 41 ключ (INTEGRATION §8.4). R15: §8.3. R10: §8.5.",
+ "delivery": 3,
+ "delivery_note": "Поставка 3 (12 окт, для FINAL-3): волна 2 п. 9 «Вопрос акиму» (новый модуль), п. 8 «Пульс» — проверка метода R08 и patch, kk-причина «жаркие дни». Поставка 2: a0133e9 (в FINAL-кандидате и FINAL-2). Поставка 1: 8705829.",
  "night_fixes": {
   "R11 KK_REVIEW (причины)": "«шешілмей тұр», «жылдық норма», «(+28 °C және одан жоғары) — қоқыс пен жағымсыз иіс» — test_reason_texts_ru_kk",
   "R11 KK_REVIEW (подписи территорий)": "«Аула · жанында …» без запятой и двоеточия (257 подписей в кэше; числа прогноза не изменились — сравнено поле за полем)",
   "R11 UX_REVIEW день 4 (ключи)": "forecast.title «Келесі айда назар аудару керек орындар», forecast.prototype «синтетикалық тарихи деректерде» — в INTEGRATION и в note_kk ответа",
   "LOCAL-9 (реальная погода)": "backtest 3 seed × 16 мес. и кэш на реальной погоде; RESULTS.md «Погода: real»; жалобы — по-прежнему синтетика",
   "R11 UX_REVIEW ночь п. 5 (улицы в kk)": "подписи территорий в ҚАЗ без «улица/проспект»: «Кенгир көшесі», «… даңғылы» (правило R07 kk_street_from_ru); 0 из 2334 — test_kk_labels_have_no_russian_street_words"
- }
+ },
+ "patches_for_others": {
+  "R01": "research/round-14-results/R13/patches/r01_questions_route.patch — ui/web_server.py (+7 маршрутов qa.*, kind=service ui.civic_qa.make_service, лимиты qa.create/qa.vote, 4 ассета), web/index.html (css + script после nearby), tests/civic/R01/test_r01_api_v2.py (+7 примеров). git apply --check OK на 0f5101a.",
+  "R08": "research/round-14-results/R13/patches/r08_pulse_not_by_chance.patch — ui/civic_akim/pulse.py (проверка «не случайно ли», SURPRISE_P=0.01) + тест R08. git apply --check OK на R08 8e0b2ac и R01 0f5101a."
+ },
+ "wave2": {
+  "8 Пульс района (R13 метод + R08 вывод)": "метод в сборке — R08 (экран принят R11); R13: проверка на известных всплесках (PULSE_METHOD.md) и patch R08 «не случайно ли»",
+  "9 Вопрос акиму (R13 новый модуль)": "ui/civic_qa + web/civic/qa: вопросы с модерацией, голоса (одно устройство — один голос), топ-5 недели, ответы акима ru/kk, демо 9 опубликованных (2 с ответом) + 3 на проверке, demo: true"
+ },
+ "polish_wave_1": "пунктов R13 в POLISH_WAVE.md нет"
 }
