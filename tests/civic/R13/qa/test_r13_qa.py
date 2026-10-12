@@ -291,7 +291,7 @@ def test_public_view_has_no_device_staff_login_or_reject_reason(demo):
     _s, page = call(demo, "GET", "/questions", query="tab=new&device_id=" + DEV_A)
     for q in page["items"]:
         assert set(q) == {"id", "text", "lang", "district", "votes", "published_at", "answer", "demo", "my_vote"}
-        assert q["answer"] is None or set(q["answer"]) == {"ru", "kk", "answered_at"}
+        assert q["answer"] is None or set(q["answer"]) == {"ru", "kk", "answered_at", "edited_at"}  # R15-S39
     blob = repr(page)
     assert "device_hash" not in blob and "editor" not in blob and "moderated" not in blob
 

@@ -33,15 +33,15 @@ NOTE_MAX = 200
 WEEKLY_TOP = 5  # «Раз в неделю аким отвечает на 5 вопросов с наибольшим числом голосов» (ask.rule)
 LIST_LIMIT = 30
 REJECT_REASONS = ("personal_data", "rude", "not_question", "duplicate", "other")
-DEVICE_RE = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
-REQUEST_RE = re.compile(r"^[A-Za-z0-9._:-]{8,64}$")
-ID_RE = re.compile(r"^q-[a-z0-9-]{4,40}$")
+DEVICE_RE = re.compile(r"[A-Za-z0-9._:-]{8,128}\Z")
+REQUEST_RE = re.compile(r"[A-Za-z0-9._:-]{8,64}\Z")
+ID_RE = re.compile(r"q-[a-z0-9-]{4,40}\Z")
 ASTANA = timezone(timedelta(hours=5))
 
 # Подсказка модератору «похоже на личные данные» (сам вопрос не меняем: решает человек, причина — personal_data).
 PII_PATTERNS = (
-    ("phone", re.compile(r"(?<!\d)(?:\+?7|8)[\s(-]*\d{3}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}(?!\d)")),
-    ("iin", re.compile(r"(?<!\d)\d{12}(?!\d)")),
+    ("phone", re.compile(r"(?<![\d+])(?:(?:\+\s*)?[78][\s(-]*)?7(?:[\s().-]{0,2}\d){9}(?!\d)")),
+    ("iin", re.compile(r"(?<!\d)(?:\d[\s-]?){11}\d(?!\d)")),
     ("email", re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")),
 )
 
@@ -219,8 +219,8 @@ class QuestionService:
         return {
             "id": row["id"], "text": row["text"], "lang": row["lang"], "district": row["district"],
             "votes": int(row.get("votes") or 0), "published_at": row.get("published_at"),
-            "answer": ({"ru": row.get("answer_ru"), "kk": row.get("answer_kk"), "answered_at": row["answered_at"]}
-                       if answered else None),
+            "answer": ({"ru": row.get("answer_ru"), "kk": row.get("answer_kk"), "answered_at": row["answered_at"],
+                        "edited_at": row.get("answer_edited_at")} if answered else None),
             "demo": bool(row.get("demo")), "my_vote": bool(mine),
         }
 
@@ -257,6 +257,8 @@ class QuestionService:
                                                                                     "text_max": TEXT_MAX}})
 
     def create(self, body: dict, context) -> dict:
+        if context.get("host_allowed") is False or context.get("is_same_origin") is False:
+            raise ApiError(403, "forbidden", "Запрос с чужого сайта отклонён.")
         device = self._device(body, context)
         text = clean_text(body.get("text"), field="text", low=TEXT_MIN, high=TEXT_MAX)
         district = self._district(body.get("district"), required=True)

@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS qa_votes (
 # Сколько голосов у вопроса: демо-основа + настоящие голоса устройств.
 _VOTES = "(q.base_votes + (SELECT COUNT(*) FROM qa_votes v WHERE v.question_id = q.id))"
 _COLUMNS = ("id, text, lang, district, status, created_at, published_at, rejected_at, reject_reason, reject_note, "
-            "device_hash, answer_ru, answer_kk, answered_at, demo")
+            "device_hash, answer_ru, answer_kk, answered_at, answer_edited_at, demo")
 
 
 def utc_now() -> datetime:
@@ -92,6 +92,9 @@ class QuestionStore:
         self._write = threading.Lock()
         with self._read() as conn:
             conn.executescript(SCHEMA)
+            # R15-S39: правка ответа видна всем (дата правки); базы до этого поля получают его здесь.
+            if "answer_edited_at" not in {r[1] for r in conn.execute("PRAGMA table_info(qa_questions)")}:
+                conn.execute("ALTER TABLE qa_questions ADD COLUMN answer_edited_at TEXT")
         with self._tx() as conn:
             conn.execute("INSERT OR IGNORE INTO qa_meta (key, value) VALUES ('device_salt', ?)", (secrets.token_hex(16),))
             self._salt = conn.execute("SELECT value FROM qa_meta WHERE key = 'device_salt'").fetchone()[0]
@@ -199,7 +202,8 @@ class QuestionStore:
                 raise LookupError(question_id)
             if row["status"] == "rejected":
                 raise Conflict("already_moderated", "Вопрос уже отклонён.")
-            if row["answered_at"]:
+            # Личные данные снимаем и после ответа (закон о персональных данных); по другим причинам — нет.
+            if row["answered_at"] and reason != "personal_data":
                 raise Conflict("answered", "На этот вопрос уже ответили — его нельзя снять.")
             conn.execute("UPDATE qa_questions SET status = 'rejected', rejected_at = ?, reject_reason = ?, "
                          "reject_note = ?, moderated_by = ? WHERE id = ?",
@@ -207,16 +211,25 @@ class QuestionStore:
         return self.get(question_id)
 
     def answer(self, question_id: str, answer_ru: str | None, answer_kk: str | None, actor: str) -> dict:
-        """Ответ акима на опубликованный вопрос. Повторный ответ правит текст, дата первого ответа сохраняется."""
+        """Ответ акима на опубликованный вопрос. Повторный ответ правит текст, дата первого ответа сохраняется.
+
+        R15-S39: правка не стирает автора первого ответа (answered_by) и второй язык, если его не прислали; дата
+        правки (answer_edited_at) видна жителям — тихо переписать ответ акима нельзя."""
         with self._tx() as conn:
-            row = conn.execute("SELECT status, answered_at FROM qa_questions WHERE id = ?", (question_id,)).fetchone()
+            row = conn.execute("SELECT status, answered_at, answer_ru, answer_kk FROM qa_questions WHERE id = ?",
+                               (question_id,)).fetchone()
             if row is None:
                 raise LookupError(question_id)
             if row["status"] != "published":
                 raise Conflict("not_published", "Сначала опубликуйте вопрос.")
-            conn.execute("UPDATE qa_questions SET answer_ru = ?, answer_kk = ?, answered_at = ?, answered_by = ? "
-                         "WHERE id = ?", (answer_ru, answer_kk, row["answered_at"] or iso(self.now()), actor,
-                                          question_id))
+            new_ru = answer_ru if answer_ru is not None else row["answer_ru"]
+            new_kk = answer_kk if answer_kk is not None else row["answer_kk"]
+            edited = bool(row["answered_at"]) and (new_ru, new_kk) != (row["answer_ru"], row["answer_kk"])
+            conn.execute("UPDATE qa_questions SET answer_ru = ?, answer_kk = ?, answered_at = ?, "
+                         "answered_by = COALESCE(answered_by, ?), "
+                         "answer_edited_at = CASE WHEN ? THEN ? ELSE answer_edited_at END WHERE id = ?",
+                         (new_ru, new_kk, row["answered_at"] or iso(self.now()), actor, int(edited), iso(self.now()),
+                          question_id))
         return self.get(question_id)
 
     def seed(self, rows: list[dict]) -> int:

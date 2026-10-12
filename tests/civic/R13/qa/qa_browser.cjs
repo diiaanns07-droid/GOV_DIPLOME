@@ -45,7 +45,7 @@ async function newPage(ctx) {
   return page;
 }
 const noSideScroll = (page) => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1
-  && [...document.querySelectorAll(".qa *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1 || e.closest(".qa-tabs-wrap")));
+  && [...document.querySelectorAll(".qa *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1 || e.closest(".qa-tabs-wrap, .bk-tabs")));
 const openSection = async (page, base, mode, lang) => {
   await page.goto(`${base}/#questions`);
   await page.waitForSelector(".qa", { timeout: 40000 });
@@ -196,6 +196,24 @@ const openSection = async (page, base, mode, lang) => {
           // Ответ виден жителю.
           const pub = await sp.evaluate(async (id) => (await (await fetch("/api/civic/v2/questions?tab=answered")).json()).items.some((q) => q.id === id), topId);
           check(`${tag} ответ виден всем во вкладке «С ответом»`, pub);
+          // Правка ответа видна всем (R15 S39): «изменён …» в строке «Ответ акима».
+          await sp.click(`.qa-card[data-id="${topId}"] .qa-card__actions .bk-btn:first-child`);
+          await sp.fill(`.qa-card[data-id="${topId}"] textarea[lang=${lang}]`, lang === "kk" ? "Бағдаршам қарашаның соңында орнатылады." : "Светофор поставят в конце ноября.");
+          await sp.click(`.qa-card[data-id="${topId}"] .qa-panel button[type=submit]`);
+          await sp.waitForFunction((id) => !document.querySelector(`.qa-card[data-id="${id}"] .qa-panel`), topId, { timeout: 10000 });
+          await sp.waitForSelector(`.qa-card[data-id="${topId}"] .qa-answer`, { timeout: 10000 });
+          const edited = await sp.evaluate(async (id) => {
+            const q = (await (await fetch("/api/civic/v2/questions?tab=answered")).json()).items.find((x) => x.id === id);
+            const sum = document.querySelector(`.qa-card[data-id="${id}"] .qa-answer > summary`).textContent;
+            return { api: !!(q && q.answer.edited_at), shown: sum.split(" · ").length === 3, sum };
+          }, topId);
+          check(`${tag} правка ответа: дата правки в API и на экране`, edited.api && edited.shown, edited);
+          // Отвеченный вопрос снимают только из-за личных данных (R15 S35): в форме одна причина, она уже выбрана.
+          await sp.click(`.qa-card[data-id="${topId}"] .qa-card__actions .bk-btn:nth-child(2)`);
+          const reasons = await sp.$$eval(`.qa-card[data-id="${topId}"] .qa-reason input`, (els) => els.map((e) => [e.value, e.checked]));
+          check(`${tag} отвеченный: снять можно только из-за личных данных`, reasons.length === 1 && reasons[0][0] === "personal_data" && reasons[0][1], reasons);
+          await sp.screenshot({ path: path.join(OUT, `${tag}-akimat-answered-reject.png`) });
+          await sp.click(`.qa-card[data-id="${topId}"] .qa-panel .bk-btn--ghost`);
         }
         check(`${tag} акимат: нет ошибок JS`, sp.errs.length === 0, sp.errs.slice(0, 3));
         await sctx.close();

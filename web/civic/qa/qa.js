@@ -102,6 +102,11 @@
       "ask.staff.login_btn": "Войти",
       "ask.staff.empty.queue": "Новых вопросов на проверке нет",
       "ask.staff.empty.top": "Вопросов без ответа нет",
+      "ask.placeholder": "Например: «Когда поставят светофор на улице Е-308?»",
+      "ask.answer.only_ru": "Ответ дан на русском языке",
+      "ask.answer.only_kk": "Ответ дан на казахском языке",
+      "ask.answer.edited": "изменён {date}",
+      "ask.staff.reason_answered": "На вопрос уже ответили: снять его можно только из-за личных данных",
     },
     kk: {
       "ask.title": "Әкімге сұрақ",
@@ -166,6 +171,11 @@
       "ask.staff.login_btn": "Кіру",
       "ask.staff.empty.queue": "Тексеруді күтетін жаңа сұрақ жоқ",
       "ask.staff.empty.top": "Жауапсыз сұрақ жоқ",
+      "ask.placeholder": "Мысалы: «Е-308 көшесіне бағдаршам қашан қойылады?»",
+      "ask.answer.only_ru": "Жауап орыс тілінде берілген",
+      "ask.answer.only_kk": "Жауап қазақ тілінде берілген",
+      "ask.answer.edited": "өзгертілді: {date}",
+      "ask.staff.reason_answered": "Сұраққа жауап берілген: оны тек жеке деректерге байланысты алып тастауға болады",
     },
   };
   // Общие ключи словаря R11 (common.*, district.*) — запас на случай страницы без словаря.
@@ -269,13 +279,15 @@
     return Array.prototype.map.call(arr, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
   }
   // Тот же id устройства, что у формы жалобы R09: «одно устройство — один голос» (R15 S08; в базе — только хэш).
+  var memoryDevice = null; // хранилище недоступно — один id на страницу (как report.js R12), а не новый на каждый запрос
   function deviceId() {
     var id = storage(DEVICE_KEY);
-    if (!id || !/^[A-Za-z0-9._:-]{8,128}$/.test(id)) {
-      id = "d-" + randomHex(12);
-      storage(DEVICE_KEY, id);
+    if (id && /^[A-Za-z0-9._:-]{8,128}$/.test(id)) return id;
+    if (!memoryDevice) {
+      memoryDevice = "d-" + randomHex(12);
+      storage(DEVICE_KEY, memoryDevice);
     }
-    return id;
+    return memoryDevice;
   }
   function toast(text, type) {
     if (root.BirgeUI && typeof root.BirgeUI.toast === "function") root.BirgeUI.toast(text, type ? { type: type } : {});
@@ -383,7 +395,8 @@
           box.appendChild(h("p", { class: "qa__week" }, [icon("calendar"),
             h("span", { text: tr("ask.staff.week", { n: state.data.week.answered || 0 }) })]));
         }
-        box.appendChild(renderBody());
+        box.appendChild(h("div", { class: "qa-panel-body", role: "tabpanel", id: "qa-tabpanel",
+          "aria-labelledby": "qa-tab-" + state.tab }, [renderBody()]));
       }
       if (focusKey) {
         var again = box.querySelector('[data-focus="' + focusKey + '"]');
@@ -391,40 +404,48 @@
       }
     }
 
+    // Вкладки — ui-kit .bk-tabs (чистый дизайн, R11 разбор FINAL-3 №10): текстом, черта под выбранной, число рядом;
+    // стрелки ←/→ и затухание края, если вкладки не помещаются (kk на 375), — BirgeUI.tabs; без ui-kit — то же своё.
     function renderTabs() {
       var tabs = staff() ? ["queue", "top", "answered"] : ["top", "new", "answered"];
       var counts = (state.data && state.data.counts) || {};
-      var seg = h("div", { class: "bk-seg qa-tabs", role: "group", "aria-label": tr("ask.tabs_label") });
+      var list = h("div", { class: "bk-tabs qa-tabs", role: "tablist", "aria-label": tr("ask.tabs_label") });
       tabs.forEach(function (id) {
-        var label = tr(staff() ? "ask.staff." + id : "ask.tab." + id);
         var count = counts[id];
-        seg.appendChild(h("button", {
-          type: "button", "aria-pressed": String(state.tab === id), "data-focus": "tab-" + id,
-          onclick: function () {
-            if (state.tab === id) return;
-            state.tab = id;
-            state.open = null;
-            load();
-          },
-        }, [h("span", { text: label }), count != null && state.status === "ready"
-          ? h("span", { class: "qa-tabs__count", "aria-hidden": "true", text: num(count) }) : null]));
+        list.appendChild(h("button", {
+          type: "button", role: "tab", id: "qa-tab-" + id, value: id, "aria-controls": "qa-tabpanel",
+          "aria-selected": String(state.tab === id), tabindex: state.tab === id ? "0" : "-1", "data-focus": "tab-" + id,
+        }, [tr(staff() ? "ask.staff." + id : "ask.tab." + id), count != null && state.status === "ready"
+          ? h("span", { class: "bk-num", "aria-hidden": "true", text: num(count) }) : null]));
       });
-      var wrap = h("div", { class: "qa-tabs-wrap" }, [seg]);
-      // Не все вкладки помещаются (kk на 375): затухание справа — видно, что вкладок больше (R11, разбор 4 п. 1а);
-      // выбранная вкладка прокручивается в видимую часть.
-      function edge() {
-        wrap.classList.toggle("qa-tabs-wrap--more", wrap.scrollWidth - wrap.clientWidth - wrap.scrollLeft > 2);
+      function choose(id) {
+        if (!id || state.tab === id) return;
+        state.tab = id;
+        state.open = null;
+        load();
       }
-      wrap.addEventListener("scroll", edge, { passive: true });
+      if (root.BirgeUI && typeof root.BirgeUI.tabs === "function") {
+        root.BirgeUI.tabs(list, choose);
+      } else {
+        list.addEventListener("click", function (e) {
+          var b = e.target.closest ? e.target.closest('[role="tab"]') : null;
+          if (b) choose(b.value);
+        });
+        list.addEventListener("scroll", function () { edge(list); }, { passive: true });
+      }
       (root.requestAnimationFrame || setTimeout)(function () {
-        var active = seg.querySelector('[aria-pressed="true"]');
-        if (active && wrap.scrollWidth > wrap.clientWidth) {
-          var right = active.offsetLeft + active.offsetWidth - wrap.clientWidth + 24;
-          if (right > wrap.scrollLeft) wrap.scrollLeft = right;
+        var active = list.querySelector('[aria-selected="true"]');
+        if (active && list.scrollWidth > list.clientWidth) {
+          var right = active.offsetLeft + active.offsetWidth - list.clientWidth + 24;
+          if (right > list.scrollLeft) list.scrollLeft = right;
         }
-        edge();
+        edge(list);
       });
-      return wrap;
+      return list;
+    }
+    function edge(list) {
+      if (list.scrollWidth - list.clientWidth - list.scrollLeft > 2) list.setAttribute("data-more", "true");
+      else list.removeAttribute("data-more");
     }
 
     function stateBox(kind, title, text, action) {
@@ -492,8 +513,12 @@
       var l = lang();
       var text = a[l] || a[l === "kk" ? "ru" : "kk"];
       var textLangAttr = a[l] ? l : l === "kk" ? "ru" : "kk";
-      return h("details", { class: "qa-answer", open: open ? true : null }, [
-        h("summary", {}, [h("span", { text: tr("ask.answer") + " · " + date(a.answered_at) }), icon("chevron-down")]),
+      // Свёрнутый блок — ui-kit .bk-details (стрелка и отступы общие для всех разделов чистого дизайна).
+      return h("details", { class: "bk-details qa-answer", open: open ? true : null }, [
+        h("summary", {}, [h("span", { text: tr("ask.answer") + " · " + date(a.answered_at)
+          + (a.edited_at ? " · " + tr("ask.answer.edited", { date: date(a.edited_at) }) : "") })]),
+        // Ответ только на другом языке — честно говорим об этом (R11 разбор 15 №3)
+        !a[l] && text ? h("p", { class: "qa-answer__lang", text: tr(l === "kk" ? "ask.answer.only_ru" : "ask.answer.only_kk") }) : null,
         h("p", { class: "qa-answer__text", lang: textLangAttr, text: text || "" }),
       ]);
     }
@@ -564,7 +589,7 @@
       var counter = h("span", { class: "qa-form__count", id: "qa-text-count", "aria-live": "polite",
         text: num(d.text.trim().length) + " / " + num(TEXT_MAX) });
       var area = h("textarea", { id: "qa-text", rows: "4", maxlength: String(TEXT_MAX), "aria-describedby": "qa-text-count qa-privacy" + (textError ? " qa-text-error" : ""),
-        "aria-invalid": textError ? "true" : null, lang: textLang(d.text) });
+        "aria-invalid": textError ? "true" : null, lang: textLang(d.text), placeholder: tr("ask.placeholder") }); // R11 разбор 15 №2
       area.value = d.text;
       area.addEventListener("input", function () {
         d.text = area.value;
@@ -699,13 +724,17 @@
       } else {
         row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "ans-" + q.id,
           onclick: function () { openPanel(q, "answer"); } }, [icon("edit"), tr("ask.staff.answer")]));
+        // Снять отвеченный вопрос можно только по причине «личные данные» (сервер отвечает 409 на другие причины).
+        row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "rej-" + q.id,
+          onclick: function () { openPanel(q, "reject"); }, text: tr("ask.staff.reject") }));
       }
       return row;
     }
 
     function openPanel(q, kind) {
       state.open = { id: q.id, kind: kind };
-      state.staffDraft = { reason: null, note: "", answer_ru: (q.answer && q.answer.ru) || "",
+      state.staffDraft = { reason: kind === "reject" && q.answer ? "personal_data" : null, note: "",
+        answer_ru: (q.answer && q.answer.ru) || "",
         answer_kk: (q.answer && q.answer.kk) || "", error: null, busy: false };
       render();
       var first = box.querySelector('[data-id="' + q.id + '"] .qa-panel input, [data-id="' + q.id + '"] .qa-panel textarea');
@@ -721,7 +750,10 @@
     function rejectPanel(q) {
       var d = state.staffDraft;
       var group = h("fieldset", { class: "qa-reasons" }, [h("legend", { class: "bk-field__label", text: tr("ask.staff.reason_title") })]);
-      REASONS.forEach(function (r) {
+      // Отвеченный вопрос снимают только из-за личных данных (R15 S35; сервер на другие причины отвечает 409).
+      var answered = !!q.answer;
+      if (answered) group.appendChild(h("p", { class: "bk-meta", text: tr("ask.staff.reason_answered") }));
+      (answered ? ["personal_data"] : REASONS).forEach(function (r) {
         var input = h("input", { type: "radio", name: "qa-reason-" + q.id, value: r, checked: d.reason === r ? true : null });
         input.addEventListener("change", function () { d.reason = r; });
         group.appendChild(h("label", { class: "qa-reason" }, [input, h("span", { text: tr("ask.staff.reason." + r) })]));
