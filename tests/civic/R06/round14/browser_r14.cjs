@@ -66,7 +66,8 @@ async function layoutChecks(page, label, warnings) {
       titles: Array.from(document.querySelectorAll(".r06-card[data-proposal] .bk-card__title")).map((e) => e.textContent),
       objectTitles: Array.from(document.querySelectorAll(".r06-card[data-object] .bk-card__title")).map((e) => e.getAttribute("lang") + ":" + e.textContent),
       htmlLang: document.documentElement.lang,
-      // UX_BRIEF «Восемь правил» и чек-лист: технические слова, кегль ≥ 14 px, контраст ≥ 4.5:1, анимации ≤ 800 мс.
+      // UX_BRIEF «Восемь правил» и чек-лист: технические слова, кегль ≥ 13 px (подписи — CLEAN_PASS R11 §4, шкала
+      // 13/15/17/22/28 дизайн-марафона; было ≥ 14 до ui-kit 12 окт), контраст ≥ 4.5:1, анимации ≤ 800 мс.
       techWords: (text.match(/\b(ребр[оа]|рёбра|граф[а-я]*|геометри[а-я]*|сценари[а-я]*|payload|demo-ring|bbox|device_id|undefined|null|NaN)\b/gi) || []),
       small: (() => {
         const out = [];
@@ -74,7 +75,7 @@ async function layoutChecks(page, label, warnings) {
           const own = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
           if (!own || !el.offsetParent) return;
           const fs = parseFloat(getComputedStyle(el).fontSize);
-          if (fs < 14) out.push(fs + "px «" + el.textContent.trim().slice(0, 24) + "»");
+          if (fs < 13) out.push(fs + "px «" + el.textContent.trim().slice(0, 24) + "»");
         });
         return out;
       })(),
@@ -126,7 +127,7 @@ async function layoutChecks(page, label, warnings) {
   else check(label + ": «давно не обновлялось» видно", m.stale.length > 0, String(m.stale.length));
   check(label + ": п.15 — в названиях нет «Демо»/«синтетика»", m.techTitles.length === 0, m.techTitles.join(" | "));
   check(label + ": UX_BRIEF — нет технических слов", m.techWords.length === 0, m.techWords.slice(0, 5).join(", "));
-  check(label + ": UX_BRIEF — текст карточек не мельче 14 px", m.small.length === 0, m.small.slice(0, 4).join(" | "));
+  check(label + ": UX_BRIEF — текст карточек не мельче 13 px (подписи, CLEAN_PASS §4)", m.small.length === 0, m.small.slice(0, 4).join(" | "));
   check(label + ": UX_BRIEF — контраст текста ≥ 4.5:1 (крупный ≥ 3:1)", m.lowContrast.length === 0, m.lowContrast.slice(0, 4).join(" | "));
   check(label + ": UX_BRIEF — анимации не длиннее 800 мс", m.slowMotion.length === 0, m.slowMotion.slice(0, 3).join(" | "));
   check(label + ": п.17 — «Отстают» только с «Отстаёт на…», «Давно не обновлялись» без него, без повторов",

@@ -172,7 +172,7 @@
   // Слово вида над заголовком — ключ target.type.* словаря R11 (площадки, парки, контейнеры — ключи R12, запасной текст выше).
   var TYPE_KEY = { bus_stop: "stop", traffic_signal: "traffic_signal", crossing: "crossing", intersection: "intersection",
     playground: "playground", pitch: "pitch", park: "park", waste: "waste" };
-  var KIND_ICON = { bus_stop: "bus", crossing: "walk", intersection: "road", playground: "playground", pitch: "ball",
+  var KIND_ICON = { bus_stop: "bus", crossing: "walk", traffic_signal: "road", intersection: "road", playground: "playground", pitch: "ball",
     park: "trees", waste: "trash" };
   function kindKey(target) {
     if (!target) return null;
@@ -236,6 +236,8 @@
     (kids || []).forEach(function (c) { if (c !== null && c !== undefined && c !== false) e.append(c.nodeType ? c : root.document.createTextNode(String(c))); });
     return e;
   }
+  // Подпись кнопки рядом со значком: в две строки (длинное kk) — текст остаётся у значка, а не по центру кнопки.
+  function btnText(text) { return h("span", { class: "bq-btn__text", text: text }); }
   function icon(name, sprite) {
     var NS = "http://www.w3.org/2000/svg";
     var svg = root.document.createElementNS(NS, "svg");
@@ -394,9 +396,9 @@
         h("p", { class: "bk-error__title", text: t(gone ? "map.card.not_found" : S.error === "server" ? "map.card.error" : "common.state.network_title") }),
         h("p", { class: "bk-error__text", text: t(gone ? "map.card.not_found_hint" : S.error === "server" ? "common.state.error_text" : "common.state.network_text") }),
         h("div", { class: "bq-actions" }, [
-          retry ? h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--block", "data-act": "retry", onclick: function () { open(S.id); } }, [icon("refresh", sprite), t("common.action.retry")]) : null,
+          retry ? h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--block", "data-act": "retry", onclick: function () { open(S.id); } }, [icon("refresh", sprite), btnText(t("common.action.retry"))]) : null,
           typeof opts.onOpenMap === "function" ? h("button", { type: "button", class: "bk-btn bk-btn--block " + (retry ? "bk-btn--ghost" : "bk-btn--primary"),
-            "data-act": "map", onclick: function () { opts.onOpenMap(null); } }, [icon("pin", sprite), t("complaint.step5.to_map")]) : null])])];
+            "data-act": "map", onclick: function () { opts.onOpenMap(null); } }, [icon("pin", sprite), btnText(t("complaint.step5.to_map"))]) : null])])];
     }
 
     function card() {
@@ -425,7 +427,7 @@
       var main = mainAction(it, tg), actions = [];
       if (main === "metoo") {
         actions.push(h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--lg bk-btn--block", "data-act": "metoo",
-          "aria-busy": S.busy ? "true" : null, disabled: S.busy, onclick: metoo }, [icon("users", sprite), t("target.metoo")]));
+          "aria-busy": S.busy ? "true" : null, disabled: S.busy, onclick: metoo }, [icon("users", sprite), btnText(t("target.metoo"))]));
         actions.push(h("button", { type: "button", class: "bk-btn bk-btn--ghost bk-btn--block", "data-act": "report-other", onclick: report },
           [t("report.other")]));
       } else {
@@ -434,7 +436,7 @@
           out.push(h("p", { class: "bq-done" }, [icon("check", sprite), t("target.metoo_done")]));
         }
         actions.push(h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--lg bk-btn--block", "data-act": "report", onclick: report },
-          [icon("send", sprite), t(it && it.count > 0 && !isFixed(it) ? "report.other" : "report.here")]));
+          [icon("send", sprite), btnText(t(it && it.count > 0 && !isFixed(it) ? "report.other" : "report.here"))]));
       }
       // Подтверждение или ошибка — над кнопкой, где житель смотрит (на телефоне ниже кнопки его не видно).
       if (S.notice) out.push(h("p", { class: "bq-notice" + (S.notice.ok ? " bq-notice--ok" : " bq-notice--error"), role: S.notice.ok ? "status" : "alert" },
@@ -471,7 +473,7 @@
       }
       if (typeof opts.onOpenMap === "function") {
         more.push(h("button", { type: "button", class: "bk-btn bk-btn--ghost bq-map", "data-act": "map", onclick: function () { opts.onOpenMap(tg); } },
-          [icon("pin", sprite), t("complaint.step5.to_map")]));
+          [icon("pin", sprite), btnText(t("complaint.step5.to_map"))]));
       }
       if (more.length) {
         var det = h("details", { class: "bk-details bq-more", open: S.detailsOpen ? true : null }, [h("summary", { text: t("common.action.more") })].concat(more));

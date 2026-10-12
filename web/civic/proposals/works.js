@@ -23,6 +23,9 @@
   var UTILITIES = ["water", "heating", "power", "gas", "road_closure"];
   var WHY = ["problem", "reason", "result", "inconvenience"];
   var ASTANA_MS = 5 * 3600 * 1000;
+  // Плитка-иллюстрация записи — значок ui-kit по виду работ / что отключат (дизайн-марафон).
+  var KIND_ICON = { roadworks: "road", construction: "building", landscaping: "trees", lighting: "bulb", event: "calendar", other: "dots" };
+  var UTILITY_ICON = { water: "droplet", heating: "droplet", power: "bulb", gas: "alert", road_closure: "road" };
 
   var KEYS = {
     ru: {
@@ -57,6 +60,7 @@
       "works.form.district": "Район",
       "works.form.until": "до {date}",
       "works.form.error": "Не получилось сохранить. Проверьте связь и повторите.",
+      "staff.login.note": "Учётную запись выдаёт администратор.",
     },
     kk: {
       "works.form.add": "Жазба қосу",
@@ -90,6 +94,7 @@
       "works.form.district": "Аудан",
       "works.form.until": "мерзімі: {date}",
       "works.form.error": "Сақтау мүмкін болмады. Байланысты тексеріп, қайталаңыз.",
+      "staff.login.note": "Тіркелгіні әкімші береді.",
     },
   };
 
@@ -270,14 +275,26 @@
       } }, DISTRICTS.map(function (d) {
         return h("option", { value: d, selected: d === state.district, text: tr("district." + d) });
       }));
+      var list = h("div", { class: "rw-list" });
+      var noStaff = state.error && (state.error.status === 401 || state.error.status === 403);
+      if (noStaff) {
+        // Без входа — ни района, ни «Добавить запись»: одно состояние «войдите» (R11 INTEGRATION §9.3 b, §11.4) —
+        // рисунок «пропуск» ui-kit, подсказка и одна главная «Войти».
+        var ill = root.BirgeUI && typeof root.BirgeUI.illustration === "function";
+        root.BirgeUI.state(list, "empty", { title: tr("proposal.need_staff"), text: tr("staff.login.note"), illustration: "staff",
+          icon: ill ? null : "user", action: { label: tr("staff.login.submit"), onClick: function () {
+            if (root.BirgeShell) root.BirgeShell.setSection("map");
+            if (root.CivicShell && root.CivicShell.openEditor) root.CivicShell.openEditor();
+          } } });
+        rootEl.appendChild(list);
+        return;
+      }
       rootEl.appendChild(h("div", { class: "rw-head" }, [
         h("div", { class: "bk-field" }, [h("label", { class: "bk-field__label", for: "rw-district", text: tr("works.form.district") }), select]),
         button("bk-btn--primary", tr("works.form.add"), "plus", { "data-key": "add", onclick: function () { openForm(null); } }),
       ]));
-      var list = h("div", { class: "rw-list" });
       if (state.error) {
-        if (state.error.status === 401 || state.error.status === 403) root.BirgeUI.state(list, "empty", { title: tr("proposal.need_staff"), icon: "user" });
-        else root.BirgeUI.state(list, "error", { action: { onClick: load } });
+        root.BirgeUI.state(list, "error", { action: { onClick: load } });
       } else if (!state.items) {
         root.BirgeUI.state(list, "loading");
       } else if (!state.items.length) {
@@ -288,24 +305,45 @@
       rootEl.appendChild(list);
     }
 
+    // Строка записи (дизайн-марафон): плитка вида работ, тихая строка «вид · Пример», название, срок одной строкой.
+    // Сдвинутый срок — «до / после»: плановый зачёркнут → новый, метка «срок перенесён». «Изменить» — капсула, «Удалить» — тихая.
+    function tileOf(item) {
+      var ic = item.type === "outage" ? UTILITY_ICON[item.utility] || "alert" : KIND_ICON[item.work_kind] || "dots";
+      return h("span", { class: "ri-tile", "aria-hidden": "true" }, [icon(ic)]);
+    }
+    function whenLine(item) {
+      if (item.type === "outage") {
+        return h("p", { class: "rw-when" }, [date(item.start) + " " + (I() ? I().formatTime(item.start) + "–" + I().formatTime(item.end) : "")]);
+      }
+      var shifted = item.forecast_end && item.planned_end && item.forecast_end > item.planned_end;
+      if (!shifted) {
+        return h("p", { class: "rw-when" }, [tr(WORK_STATUS[item.status]) + " · " + tr("works.form.until", { date: date(item.forecast_end || item.planned_end) })]);
+      }
+      return h("p", { class: "rw-when" }, [
+        h("span", { text: tr(WORK_STATUS[item.status]) + " ·" }),
+        h("s", { text: tr("works.form.until", { date: date(item.planned_end) }) }),
+        h("span", { "aria-hidden": "true", text: "→" }),
+        h("span", { class: "rw-when__new", text: date(item.forecast_end) }),
+        // Задержка — словом в той же строке, без плашки (чистый стиль R11 §2.5, как в «Рядом» R08).
+        h("span", { class: "rw-late", text: "· " + tr("works.shift_later") }),
+      ]);
+    }
     function card(item) {
       var l = lang();
       var title = item["title_" + l] || item.title_ru;
-      var when = item.type === "outage"
-        ? date(item.start) + " " + (I() ? I().formatTime(item.start) + "–" + I().formatTime(item.end) : "")
-        : tr(WORK_STATUS[item.status]) + " · " + tr("works.form.until", { date: date(item.forecast_end || item.planned_end) }) +
-          (item.forecast_end && item.planned_end && item.forecast_end > item.planned_end ? " · " + tr("works.shift_later") : "");
       var confirming = state.confirm === item.id;
-      return h("article", { class: "bk-card", "data-work": item.id }, [
-        h("div", { class: "bk-card__row" }, [h("span", { class: "bk-card__eyebrow", text: kindLabel(item) }),
-          item.demo ? h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }) : null]),
-        h("h3", { class: "bk-card__title", lang: item["title_" + l] ? l : "ru", text: title }),
-        h("p", { class: "bk-meta", text: when }),
-        item.type === "outage" && item.zone_ru ? h("p", { class: "bk-meta", text: tr("nearby.outage.zone", { text: item["zone_" + l] || item.zone_ru }) }) : null,
-        h("div", { class: "bk-actions" }, [
-          button("", tr("works.form.edit_title"), "edit", { "data-key": "edit-" + item.id, onclick: function () { openForm(item); } }),
-          button(confirming ? "bk-btn--danger" : "bk-btn--ghost", tr(confirming ? "works.form.remove_confirm" : "works.form.remove"), "trash",
-            { "data-key": "remove-" + item.id, onclick: function () { remove(item); } }),
+      // «вид · Пример»: точка прилипает к слову слева, перенос — только после неё (как в «Идеях»).
+      var meta = h("p", { class: "ri-meta" }, [h("span", { text: kindLabel(item) }),
+        item.demo ? doc.createTextNode("\u00a0· ") : null,
+        item.demo ? h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }) : null]);
+      return h("article", { class: "bk-card rw-card", "data-work": item.id }, [
+        h("div", { class: "ri-app" }, [tileOf(item), h("div", { class: "ri-app__body" }, [meta,
+          h("h3", { class: "bk-card__title rw-title", lang: item["title_" + l] ? l : "ru", text: title }), whenLine(item)])]),
+        item.type === "outage" && item.zone_ru ? h("p", { class: "rw-where", text: tr("nearby.outage.zone", { text: item["zone_" + l] || item.zone_ru }) }) : null,
+        h("div", { class: "rw-foot" }, [
+          button(confirming ? "bk-btn--danger" : "bk-btn--ghost rw-remove", tr(confirming ? "works.form.remove_confirm" : "works.form.remove"), "trash",
+            { "data-key": "remove-" + item.id, title: tr(confirming ? "works.form.remove_confirm" : "works.form.remove"), onclick: function () { remove(item); } }),
+          button("rw-capsule", tr("works.form.edit_title"), "edit", { "data-key": "edit-" + item.id, onclick: function () { openForm(item); } }),
         ]),
       ]);
     }
@@ -421,9 +459,10 @@
         grid.appendChild(input("detour", "works.form.detour", "text", f.detour, function (v) { f.detour = v; }, { maxlength: "200" }));
       }
       form.appendChild(grid);
-      var why = h("fieldset", {}, [h("legend", { text: tr("works.form.why") })]);
+      var whyGrid = h("div", { class: "rw-why" });
+      var why = h("fieldset", {}, [h("legend", { text: tr("works.form.why") }), whyGrid]);
       WHY.forEach(function (k) {
-        why.appendChild(input("why." + k, "nearby.why." + k, "textarea", f.why[k], function (v) { f.why[k] = v; }));
+        whyGrid.appendChild(input("why." + k, "nearby.why." + k, "textarea", f.why[k], function (v) { f.why[k] = v; }));
       });
       form.appendChild(why);
       form.appendChild(h("div", { class: "bk-actions" }, [

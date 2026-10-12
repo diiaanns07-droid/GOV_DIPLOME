@@ -76,6 +76,18 @@ async function audit(page, sel) {
   }, sel);
 }
 const cardOf = (page, title) => page.locator(".ri-card", { hasText: title }).first();
+// Контраст двух цветов CSS «rgb(a)(…)» (WCAG). Фон — непрозрачный цвет кнопки.
+function contrast(bg, fg) {
+  const lum = (c) => {
+    const [r, g, b] = (c.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map((v) => {
+      const x = Number(v) / 255;
+      return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const [a, b] = [lum(bg), lum(fg)].sort((x, y) => y - x);
+  return (a + 0.05) / (b + 0.05);
+}
 
 async function resident(browser, base, width, lang, full) {
   const tag = `${width}-${lang}`;
@@ -113,6 +125,17 @@ async function resident(browser, base, width, lang, full) {
   await page.waitForFunction((t) => Array.from(document.querySelectorAll(".ri-card")).some((c) => c.textContent.includes(t) && c.querySelector(".ri-support[aria-pressed=true]")), T.square);
   const after = await votes();
   check(`${tag} житель: «${T.support}» → ${before + 1}, «${T.supported}»`, after === before + 1 && (await card.innerText()).includes(T.supported), `${before} → ${after}`);
+  // Дизайн-марафон: «Вы поддержали» — тёмная капсула с белым текстом (на стекле ui-kit тоже), контраст ≥ 4.5.
+  // Цвета читаем в странице у текущей кнопки (карточка перерисовывается после ответа — старый узел уже не в документе).
+  const look = await page.waitForFunction((t) => {
+    const c = Array.from(document.querySelectorAll(".ri-card")).find((x) => x.textContent.includes(t));
+    const b = c && c.querySelector(".ri-support[aria-pressed=true]");
+    if (!b || !b.isConnected) return null;
+    const cs = getComputedStyle(b);
+    return cs.backgroundColor ? { bg: cs.backgroundColor, fg: cs.color } : null;
+  }, T.square, { timeout: 5000 }).then((h) => h.jsonValue()).catch(() => ({ bg: "", fg: "" }));
+  check(`${tag} житель: «${T.supported}» — тёмная капсула, текст читается (≥ 4.5:1)`, !/rgba\([^)]*,\s*0(\.\d+)?\)/.test(look.bg) && contrast(look.bg, look.fg) >= 4.5, JSON.stringify(look));
+  check(`${tag} житель: правило «один голос» — один раз над списком`, (await page.locator(".ri-onevote").count()) === 1, await page.locator(".ri-onevote").count());
   await card.locator(".ri-support").click();
   await page.waitForFunction((t) => Array.from(document.querySelectorAll(".ri-card")).some((c) => c.textContent.includes(t) && c.querySelector(".ri-support[aria-pressed=false]")), T.square);
   check(`${tag} житель: повторное нажатие снимает поддержку`, (await votes()) === before, await votes());

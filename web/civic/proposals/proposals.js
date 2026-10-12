@@ -183,8 +183,10 @@
     var total = p.votes_up + p.votes_down;
     var upShare = total ? Math.round((p.votes_up / total) * 100) : 0;
     var tags =
-      '<span class="bk-tag bk-tag--project">' + esc(p.planned_year ? t("proposal.label", { year: String(p.planned_year) }) : t("common.tag.project")) + "</span>" +
-      (p.demo ? '<span class="bk-tag bk-tag--demo" title="' + esc(t("common.tag.demo_hint")) + '">' + esc(t("common.tag.demo")) + "</span>" : "");
+      '<span class="bk-tag bk-tag--project">' + esc(p.planned_year ? t("proposal.label", { year: String(p.planned_year) }) : t("common.tag.project")) + "</span>";
+    // «Пример» — в тихой строке района («район Нура · Пример»), а не третьей меткой в ряду: ряд не переносится (дизайн-марафон).
+    var demoTag = p.demo ? '<span class="bk-tag bk-tag--demo" title="' + esc(t("common.tag.demo_hint")) + '">' + esc(t("common.tag.demo")) + "</span>" : "";
+    var place = p.district ? esc(t("district.name", { name: t("district." + p.district) })) : "";
     var voteBtn = function (value, key, ic, count) {
       var pressed = p.my_vote === value;
       return (
@@ -197,14 +199,18 @@
     if (!p.voting_open) note = t("proposal.voting_closed");
     var html =
       '<article class="bk-card r06-card" aria-labelledby="' + id + '" data-proposal="' + esc(p.id) + '">' +
-      '<div class="bk-card__row"><span class="bk-card__eyebrow">' + icon(KIND_ICON[p.kind] || "flag") + "<span>" +
+      // Шапка «как в App Store» (дизайн-марафон): плитка вида объекта, над названием — вид и «Проект · 2027», под ним —
+      // район и «Пример». Без ui-kit (R10 B-006) плитки нет — значков нечем рисовать.
+      '<div class="r06-head">' + (root.BirgeUI ? '<span class="r06-tile" aria-hidden="true">' + icon(KIND_ICON[p.kind] || "flag") + "</span>" : "") +
+      '<div class="r06-head__text"><div class="bk-card__row r06-kicker"><span class="bk-card__eyebrow"><span>' +
       esc(t("proposal.kind." + p.kind)) + "</span></span>" + tags + "</div>" +
       '<h3 class="bk-card__title" id="' + id + '" lang="' + ttl.lang + '">' + esc(ttl.text) + "</h3>" +
-      (p.district ? '<p class="bk-meta" style="margin:0">' + esc(t("district.name", { name: t("district." + p.district) })) + "</p>" : "") +
+      (place || demoTag ? '<p class="bk-meta r06-place">' + place + (place && demoTag ? "\u00a0· " : "") + demoTag + "</p>" : "") +
+      "</div></div>" +
       // Проект из идеи жителей (волна 2 п. 7): «По идее жителей · 47 голосов» — голоса за идею на момент решения.
       (p.idea ? '<p class="r06-idea">' + icon("users") + "<span>" + esc(t("idea.by_residents", { n: p.idea.votes || 0 })) + "</span></p>" : "") +
       '<div class="bk-card__row"><span class="bk-meta">' + esc(t("status.label")) + '</span><span class="bk-status" data-status="' +
-      (STATUS_LOOK[p.status] || "new") + '">' + esc(t("proposal.status." + p.status)) + "</span></div>" +
+      (STATUS_LOOK[p.status] || "new") + '" data-r06-status="' + esc(p.status) + '">' + esc(t("proposal.status." + p.status)) + "</span></div>" +
       (akimat
         ? // Акимат голосует не здесь: голоса — числами (только чтение), одна главная кнопка — «Одобрить»
           // (UX_REVIEW R11, день 3, п. 16). Текст — тот же, что в «Картине дня» R08 (akim.proposals.votes).
@@ -216,9 +222,13 @@
       (akimat ? (p.voting_open ? "" : '<p class="bk-meta r06-vote__note">' + esc(t("proposal.voting_closed")) + "</p>")
         : '<p class="bk-meta r06-vote__note" aria-live="polite">' + esc(note) + "</p>");
     if (akimat && p.status === "proposal") {
+      // В списке «Проекты» (opts.list) карточек несколько — «Одобрить» там серая капсула, «Отклонить» — тихая красным:
+      // одна главная кнопка на экран (дизайн-марафон). Одна карточка на карте — как была: «Одобрить» главная.
+      var approveCls = opts.list ? "bk-btn r06-capsule" : "bk-btn bk-btn--primary";
+      var rejectCls = opts.list ? "bk-btn bk-btn--ghost r06-reject" : "bk-btn bk-btn--danger";
       html +=
-        '<div class="bk-actions"><button class="bk-btn bk-btn--primary" type="button" data-action="approve">' + icon("check") +
-        "<span>" + esc(t("proposal.approve")) + '</span></button><button class="bk-btn bk-btn--danger" type="button" data-action="reject">' +
+        '<div class="bk-actions' + (opts.list ? " r06-actions--list" : "") + '"><button class="' + approveCls + '" type="button" data-action="approve">' + icon("check") +
+        "<span>" + esc(t("proposal.approve")) + '</span></button><button class="' + rejectCls + '" type="button" data-action="reject">' +
         icon("close") + "<span>" + esc(t("proposal.reject")) + "</span></button></div>";
     }
     return html + "</article>";
@@ -258,6 +268,9 @@
           toast(t(data.changed && data.previous ? "proposal.vote_changed" : "proposal.vote_saved"));
           var again = el.querySelector('.r06-vote__btn[data-value="' + value + '"]');
           if (again) again.focus(); // фокус остаётся на нажатой кнопке после перерисовки
+          // Отклик (дизайн-марафон): число на нажатой кнопке «перекатывается» — как счётчик «Поддержать» в «Идеях».
+          var count = again && again.querySelector(".bk-btn__count");
+          if (count) count.classList.add("r06-roll");
           if (opts.onChange) opts.onChange(state.p);
         },
         function (err) {
