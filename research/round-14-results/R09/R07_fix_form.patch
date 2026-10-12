@@ -1,0 +1,51 @@
+diff --git a/web/civic/heat/heat.js b/web/civic/heat/heat.js
+index 75bd55c..ae74ca4 100644
+--- a/web/civic/heat/heat.js
++++ b/web/civic/heat/heat.js
+@@ -1373,6 +1373,23 @@
+         btn.removeAttribute("aria-busy");
+       }
+     }
++    // Форма R09 «Сообщить жителям об устранении» в карточке цели: пока она открыта, кнопки карточки скрыты
++    // (одна главная кнопка). Перерисовка карточки (язык, новое событие) открывает её снова.
++    function mountFixForm() {
++      if (!S.fixFor || S.fixFor !== S.selected) { S.fixFor = null; return; }
++      const it = findItem(S.selected);
++      const actions = panel.querySelector(".r07-actions");
++      if (!it || !actions || !(it.open_ids || []).length) { S.fixFor = null; return; }
++      actions.hidden = true;
++      const holder = document.createElement("div");
++      holder.className = "r07-fixform";
++      actions.after(holder);
++      window.BirgeComplaintStaff.fixForm(holder, {
++        complaintIds: it.open_ids,
++        onDone: async () => { S.fixFor = null; toast(t("heat.toast_fixed")); await load("event"); },
++        onCancel: () => { S.fixFor = null; render(); },
++      });
++    }
+     async function metoo(it, btn) {
+       const id = (it.open_ids || [])[0];
+       if (!id) return;
+@@ -1424,6 +1441,7 @@
+       if (map) renderMapLegend(); else parts.push(legendHtml(false));
+       panel.innerHTML = parts.join("");
+       bindPanel();
++      mountFixForm();
+       if (map) declutter();   // легенда могла сменить размер (язык, режим) — значки не должны оказаться под ней
+     }
+ 
+@@ -1728,7 +1746,13 @@
+         const it = findItem(S.selected);
+         if (!it) return;
+         if (b.dataset.act === "take") void setStatus(it, "in_progress", b);
+-        if (b.dataset.act === "fixed") void setStatus(it, "fixed", b);
++        if (b.dataset.act === "fixed") {
++          // R09 волна 2 (IA_WAVE2 §2.3, R11 разбор 9 №1): «что сделали» + фото «после» — форма R09 в этой же карточке.
++          // Без модуля R09 на странице — как раньше: сразу «исправлено».
++          if (window.BirgeComplaintStaff && typeof window.BirgeComplaintStaff.fixForm === "function" && (it.open_ids || []).length) {
++            S.fixFor = S.selected; render();
++          } else void setStatus(it, "fixed", b);
++        }
+         if (b.dataset.act === "metoo") void metoo(it, b);
+         if (b.dataset.act === "separate") void separate(it, b.dataset.item, b);
+       }));

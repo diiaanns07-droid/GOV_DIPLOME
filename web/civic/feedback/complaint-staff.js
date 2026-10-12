@@ -309,5 +309,84 @@
     } };
   }
 
-  window.BirgeComplaintStaff = { mount: mount };
+  // ---------------------------------------------------------------- форма для карточки цели R07
+  // «Отметить исправленным» в карточке цели R07 (R11 разбор 9 №1, IA_WAVE2 §2.3): та же одна строка «что сделали»
+  // и фото «после», но для всех открытых обращений цели (R07 отмечает исправленными все open_ids).
+  //   BirgeComplaintStaff.fixForm(container, { complaintIds, csrf, onDone(results), onCancel() }) -> { destroy() }
+  function fixForm(container, opts) {
+    opts = opts || {};
+    var ids = (opts.complaintIds || []).filter(Boolean);
+    var csrf = function () {
+      if (typeof opts.csrf === "function") return opts.csrf() || "";
+      if (opts.csrf) return opts.csrf;
+      var shell = window.CivicShell;
+      return shell && typeof shell.csrfToken === "function" ? (shell.csrfToken() || "") : "";
+    };
+    var photo = null;
+    function post(path, body) {
+      return fetch(API + path, { method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "Accept": "application/json", "X-CSRF-Token": csrf() },
+        body: JSON.stringify(body) }).then(function (r) {
+          return r.json().catch(function () { return null; }).then(function (j) {
+            if (!r.ok || !j || j.ok === false) { var e = new Error("HTTP " + r.status); e.status = r.status; e.body = j; throw e; }
+            return j.data;
+          });
+        });
+    }
+    var what = h("input", { name: "what_done", maxlength: "120", required: true, placeholder: t("staff.fixed.what_hint") });
+    var preview = h("ul", { "class": "bc-thumbs bc-thumbs--small" });
+    var input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", "class": "bc-photo-input" });
+    var error = h("p", { "class": "bc-staff__fix-error", role: "alert", hidden: true });
+    var send = h("button", { "class": "bk-btn bk-btn--primary bk-btn--block", type: "submit" }, t("fix.send"));
+    var form = h("form", { "class": "bc-staff bc-staff__form bc-staff__fix bc-fixform" }, [
+      h("p", { "class": "bc-label" }, t("fix.title")),
+      h("label", { "class": "bc-staff__field" }, [h("span", { "class": "bc-label" }, t("fix.what_done")), what]),
+      input,
+      h("button", { "class": "bk-btn", type: "button", onclick: function () { input.click(); } }, t("fix.photo")),
+      preview, error, send,
+      h("button", { "class": "bc-link", type: "button", onclick: function () { destroy(); if (opts.onCancel) opts.onCancel(); } },
+        t("common.action.cancel"))]);
+    function fail(text) { error.textContent = text; error.hidden = false; send.disabled = false; }
+    input.addEventListener("change", function () {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      window.BirgeComplaintPhotos.shrink(file).then(function (shrunk) {
+        photo = shrunk;
+        preview.innerHTML = "";
+        preview.appendChild(h("li", { "class": "bc-thumb" }, [h("img", { src: shrunk.url, alt: "" }),
+          h("button", { "class": "bk-iconbtn bc-thumb__remove", type: "button", "aria-label": t("complaint.photo.remove"),
+                        onclick: function () { photo = null; preview.innerHTML = ""; } }, "×")]));
+        input.value = "";
+      }, function () { fail(t("complaint.photo.bad_type")); });
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var text = what.value.trim();
+      if (text.length < 3) { fail(t("staff.fixed.need_what")); return; }
+      send.disabled = true; error.hidden = true;
+      var results = [];
+      // По очереди: фото «после» каждому обращению цели (его жители проверяют своё), затем «исправлено».
+      ids.reduce(function (chain, id) {
+        return chain.then(function () {
+          var up = photo ? window.BirgeComplaintPhotos.upload(id, photo.blob, "after", csrf())
+            .then(null, function () { throw { photo: true }; }) : Promise.resolve(null);
+          return up.then(function (uploaded) {
+            return post("/complaints/" + encodeURIComponent(id) + "/status",
+                        { status: "fixed", what_done: text, photos: uploaded ? [uploaded.id] : [] });
+          }).then(function (data) { results.push(data); });
+        });
+      }, Promise.resolve()).then(function () {
+        destroy();
+        if (opts.onDone) opts.onDone(results);
+      }, function (err) {
+        fail(t(err && err.photo ? "staff.photo.failed" : "complaint.error.send"));
+      });
+    });
+    function destroy() { if (form.parentNode) form.parentNode.removeChild(form); }
+    container.appendChild(form);
+    what.focus();
+    return { destroy: destroy };
+  }
+
+  window.BirgeComplaintStaff = { mount: mount, fixForm: fixForm };
 })();
