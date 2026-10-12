@@ -259,6 +259,12 @@
   height: 100%;
   object-fit: contain;
 }
+/* Кольцо фокуса с клавиатуры — внутри плитки (как у вкладок ui-kit в прокручиваемой строке): снаружи его срезал край
+   строки каталога с прокруткой, у первой плитки — слева */
+.b3d-card:focus-visible {
+  outline: 3px solid var(--c-focus, #2f7fd6);
+  outline-offset: -3px;
+}
 .b3d-card:hover {
   background: var(--c-fill-hover, #e5e8ea);
 }
@@ -347,6 +353,13 @@
 }
 .b3d-act[data-action="place"] {
   flex: 1 1 160px;
+}
+/* Одна кнопка в ряду («Отменить» в каталоге эскиза к идее): на ноутбуке — компактная справа, как второстепенное
+   действие диалога, а не серая полоса во всю панель (телефон — во всю ширину, ниже) */
+.b3d-actions > .b3d-act:only-child {
+  flex: 0 1 auto;
+  min-width: 160px;
+  margin-left: auto;
 }
 
 /* ── Карточка предложения ── */
@@ -694,6 +707,10 @@
   }
   .b3d-act[data-action="place"] {
     grid-column: span 1;
+  }
+  /* Одна кнопка в ряду («Отменить» в каталоге эскиза к идее) — во всю ширину, а не половина ряда у левого края */
+  .b3d-actions > .bk-btn:only-child {
+    grid-column: 1 / -1;
   }
 }
 
