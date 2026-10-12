@@ -4,9 +4,9 @@
  "branch": "claude/r14-R14",
  "base_sha": "4bbf456 (claude/round-14-package)",
  "restored_from": null,
- "code_sha": "22d01541",
- "tested_sha": "22d01541 (документы, после независимой сверки марафона); свои проверки сборки — R01 FINAL-3 со стеклом 61be62e6 (pytest 3 571 passed / 1 failed — порог скорости R07 под нагрузкой, отдельно проходит; 42 кадра 1366/375 ru/kk), раньше 3d8c426/b3d0f90, 2f643dc, FINAL-2 12c925a, 8e67c65",
- "push_status": "OK: claude/r14-R14 (… 12.10 день, FINAL-3: 7b09b1f …; 12.10 вечер, дизайн-марафон: a1aa49b1, f07b4686, 2bac1960, 947fd707, 16eb929b, 50608155, c07706a0, 9a57227e, 22d01541 (исправления сверки) и коммит с этим файлом)",
+ "code_sha": "54f8003b",
+ "tested_sha": "54f8003b (документы); свои проверки сборки — R01 FINAL-3 со стеклом 61be62e6 (pytest 3 571 / 1 — порог скорости R07 под нагрузкой; 42 кадра) и ветка марафона R01 cc4b5121, 4c62df71 (по 42 кадра, до/после); раньше 3d8c426/b3d0f90, 2f643dc, FINAL-2 12c925a, 8e67c65",
+ "push_status": "OK: claude/r14-R14 (… 12.10 вечер, дизайн-марафон: a1aa49b1 … 22d01541, 17101b31; круг 2: c6aaf176, 54f8003b и коммит с этим файлом)",
  "facts_snapshot": "ночь 10→11.10, ветки ролей (git show): R01 13ae790 (B2-кандидат f54361d, B3 d9a8895, FINAL-кандидат 2b9e837), R02 2a95286, R03 945dc11 (LOCAL-4 c19b889, model card d472baf, ночь 937f665), R04 94bd9ac, R05 812cc04, R06 224075b, R07 328e793, R08 b9c089a, R09 5dd6465, R10 25b2dde, R11 8451468, R12 8bb7bf8, R13 8746927, R15 8dae85b, pkg a38da11 (LOCAL_B2, погода a2ff96e)",
  "changed_paths": [
   "docs/birge/README.md",
@@ -37,7 +37,8 @@
   "docs/birge/BRAND.md",
   "docs/diploma/02b_interfeys.md",
   "research/round-14-results/R14/design/shots.cjs",
-  "research/round-14-results/R14/design/glass-61be62e/"
+  "research/round-14-results/R14/design/glass-61be62e/",
+  "research/round-14-results/R14/design/marathon-4c62df71/"
  ],
  "owned_paths_only": true,
  "code_changed": false,
@@ -131,7 +132,7 @@
   "Диплом (docs/diploma) и docs/birge ещё описывают FINAL-кандидат 0a7a346 — перенос 8e67c65 из FACTS §10–§14 — следующий шаг R14.",
   "Центральная сцена второй волны в SPEECH написана по спецификации POLISH_WAVE_2 и коду сервера R09: экранов нет, клики и тексты кнопок сверить со сборкой, когда она появится; казахские тексты кнопок — [ПРОВЕРИТЬ ПО СБОРКЕ]."
  ],
- "next_step": "Дизайн-марафон: git fetch; сборка R01 после круга марафона → кадры shots.cjs до/после, FACTS §17, §2.11 (табл. 2.11.1), SPEECH/NUMBERS; DESIGN_BOOK.md R11 → рисунки §2.11; книга экранов R10 → §2.11.11; официальный FINAL 15.10 → главы 3.12, 5.8; тексты людей → глава 4.",
+ "next_step": "Дизайн-марафон: независимая сверка круга 2 → исправления; следующая сборка R01 (итог марафона) → кадры до/после, табл. 2.11.1, приёмка R10 → §2.11.11 и глава 5; SPEECH — сборка для показа по STATUS R01; официальный FINAL 15.10 → главы 3.12, 5.8; тексты людей → глава 4.",
  "facts_snapshot_11_10_day": "11.10, день: R01 claude/sharp-dijkstra-0t87gl @ a2d90dd (FINAL-кандидат 8e67c65, BUILD_LOG 2ad7f10); R10 claude/r14-R10 @ 55fb6be (ACCEPTANCE_FINAL 9e1f20f); LOCAL_FINAL pkg @ 2c3f559; R15 claude/r14-R15 @ bc5d921 (SECURITY_REVIEW d8791c1); R03 claude/r14-R03 @ 0f6e1a8 (DELIVERY e12e4ca); R13 claude/r14-R13 @ 956e6f7 (RESULTS 15fc856); OFF claude/r14-offline @ 82218f7 (код afbc6ee); R09 claude/modest-shannon-0ki93p @ 8c07864e (вторая волна, сервер); pkg claude/round-14-package @ c86c515 (POLISH_WAVE_2, heat_states)",
  "facts_snapshot_12_10": "12.10, ночь (до ~04:30 UTC): R01 claude/sharp-dijkstra-0t87gl: FINAL-2 = 12c925a (документы 9c6cc2d; шаг 4 — 0f5101a), голова 7782b92 — FINAL-3 шаг 1; R10 claude/r14-R10 @ 931ed65 / 552a388 (ACCEPTANCE_FINAL2 на 28e23e3, BUGS B-051…B-056); R11 claude/r14-R11 @ 07708d8 / b06020a (UX_REVIEW, IA_WAVE2, DEMO_PHRASES_KK); R15 claude/r14-R15 @ 69c2420 / b564e38 (29 находок, все исправлены на 0f5101a); R09 claude/modest-shannon-0ki93p @ d3f9c1e (DELIVERY 8a1d390) / 06f445b; R07 claude/upbeat-knuth-i0rqaa @ d01f76e (DELIVERY 9e337dc); R08 claude/r14-R08 @ 8e0b2ac (DELIVERY 9d593d96); R12 claude/tender-brahmagupta-ef5ztl @ 73ccec4 (DELIVERY d4e2a77); R05 claude/r14-R05 (DELIVERY 395d9ea); R13 claude/r14-R13 @ f71e3b5; R06 claude/r14-R06 @ 57b7b53; pkg claude/round-14-package @ c734f3b (POLISH_WAVE, POLISH_WAVE_2, LOCAL_FINAL, LOCAL-11 qrcode)",
  "facts_snapshot_12_10_day": "12.10, день (~10:00 UTC): R01 claude/sharp-dijkstra-0t87gl — кандидат FINAL-3 2f643dc (документы f601f16, 6e13279), шаг 11 77a5e7d, шаг 12 ea44476, STATUS b6e4cb3; R10 claude/r14-R10 @ 5c14d65 (ACCEPTANCE_FINAL2, BUGS до B-067; ACCEPTANCE_FINAL3 ещё нет); R11 claude/r14-R11 @ aa8a1c2 / 9a8277f / df7056b (CLEAN_PASS); R15 claude/r14-R15 @ 7eac1e4 (40 находок, финальная проверка 2f643dc); R06 claude/r14-R06 @ 5cfbdb5 (DELIVERY 21a9739); R13 claude/r14-R13 @ 9db6dfb (DELIVERY 198902f); R09 claude/modest-shannon-0ki93p @ fe630f7 (DELIVERY 9cf4ca2); R12 claude/tender-brahmagupta-ef5ztl @ ed7d644 (DELIVERY b1bd13e); R07 claude/r14-R07 @ 9be814b; R08 claude/r14-R08 @ 93a7f5b; R05 claude/r14-R05 @ 7450d28 (DELIVERY 03ac17c); pkg @ c734f3b (LOCAL-11); после 10:40 UTC: R01 77ee50b (тесты R10 55d5a95), b3d0f90 (шаг 13), f94f0fc; R10 8a7b8646 (ACCEPTANCE_FINAL3 — 2f643dc принят 173/0/0); R11 7fb62caa (финальный разбор FINAL-3, bdc9934f); R15 5b5b7bf; GLASS.md R11 — ещё нет (~11:25 UTC); ~11:35 UTC: R11 7117132 (GLASS.md), R10 6e5cd8ee (окончательный FINAL-3 f94f0fc принят 173/0/0), R01 3d8c426 (шаг 14: R07 dee03b8b)",
@@ -155,6 +156,13 @@
   },
   "for_R01": "документы R14 брать по code_sha; кода продукта R14 не менял; замечания к оболочке — R14/INTEGRATION.txt §4.1, §4.3",
   "next": "переснять кадры на сборке R01 после круга марафона (до/после к 61be62e6); заменить рисунки §2.11 кадрами DESIGN_BOOK.md R11; итоги книги экранов R10 — в §2.11.11; SPEECH — сверить надписи с DEMO_SCRIPT новой сборки",
-  "fact_check": "независимый проверяющий агент: ~120 утверждений сверено с первоисточниками (код 61be62e6, R10 §8, R11 GLASS/tokens 7117132b и 9cc4dcf9, R15, R01 INTEGRATION 24.7–24.8), 16 ошибок исправлено в 22d01541; непроверяемое (свой pytest) — сводка в R14/runs/pytest_61be62e6.txt"
+  "fact_check": "независимый проверяющий агент: ~120 утверждений сверено с первоисточниками (код 61be62e6, R10 §8, R11 GLASS/tokens 7117132b и 9cc4dcf9, R15, R01 INTEGRATION 24.7–24.8), 16 ошибок исправлено в 22d01541; непроверяемое (свой pytest) — сводка в R14/runs/pytest_61be62e6.txt",
+  "round2": [
+   "рисунки §2.11 — книга экранов R11 DESIGN_BOOK.md (book/01, 02, 05, 15, 16–18, 22, 29), запасные — кадры R14",
+   "§2.11.11 «Что дал редизайн — в числах» (R10 compare-r1, R11 DESIGN_BOOK), рис. 2.11.6 до/после на сборках 61be62e6 → 4c62df71",
+   "кадры R14 сборки марафона R01 4c62df71: 42/42, 6 пар в research/round-14-results/R14/design/marathon-4c62df71/",
+   "BRAND: стекло внутри стекла — сплошное, scale/translate (B-068), колонка списков 720, шкала на дашборде, «Пример» одной строкой, иллюстрации 96 px",
+   "FACTS §18; NUMBERS — метрики марафона; SPEECH — надписи сверены на 4c62df71; INTEGRATION 4.1 (плашка закрывает заголовки), 4.2 закрыто"
+  ]
  }
 }
