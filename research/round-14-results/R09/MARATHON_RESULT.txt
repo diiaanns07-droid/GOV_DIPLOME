@@ -4,6 +4,7 @@ app_demo_r09.cjs — ИТОГ: 75/75 PASS;  glass_r09.cjs — ИТОГ: 34/34 PA
 browser_r09.cjs --r11 <сборка> — ИТОГ: 474/474 PASS;  browser_r09.cjs (kit-fallback) — ИТОГ: 474/474 PASS
 pytest tests/civic/R09/test_r09v2_*.py + R01 + R15 + R11 + R04 — 1001 passed, 2 skipped
 design_tour_r09.cjs --only 375-ru,1366-ru,375-kk — 88 кадров, 0 ошибок обхода; кадры — design/round9/before|after.
+R10 wave_checks --only W2-1,W2-2,W1-8 на c2fd325: ИТОГ: { PASS: 59, FAIL: 0, PENDING: 0, NOT_RUN: 1, INFO: 3 }.
 
 R09 · дизайн-марафон — круг 8 (12 окт, вечер). Код R09: 77c8400 (круги 7–8). Дерево: R01 claude/sharp-dijkstra-0t87gl
 @ ab227e6e (ui-kit = claude/r14-R11 @ d2ed919f) + пути R09 @ 77c8400 (побайтно, diff -rq пуст).
