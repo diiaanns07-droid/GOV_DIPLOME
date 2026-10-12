@@ -162,7 +162,7 @@ class HeatService:
                                  bbox=None if mode == "districts" else bbox)
         items = computed["items"]
         if mode == "districts":
-            items = engine.districts_summary(items, self.config)
+            items = engine.districts_summary(items, self.config, district=district)
             if bbox is not None:
                 items = [it for it in items if geo.bbox_intersects(geo.bbox_of(it["geometry"]), bbox)]
         result = {
@@ -224,6 +224,8 @@ class HeatService:
         return {
             "categories_version": self.config.version,
             "categories": [{"id": c["id"], "ru": c["ru"], "kk": c["kk"], "icon": c.get("icon")} for c in self.config.categories],
+            # Уточнения (волна 1, п. 2 и 12): подписи для карточки «О чём сообщают» — из categories_v2.json, не из кода.
+            "subtopics": [{"id": k, "ru": v["ru"], "kk": v["kk"], "category": v["category"]} for k, v in (self.config.subtopics or {}).items()],
             "legend": self.config.legend(),
             "periods": list(PERIODS),
             "default_days": DEFAULT_DAYS,

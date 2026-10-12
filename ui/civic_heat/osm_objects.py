@@ -19,6 +19,8 @@ from . import geo
 from .config import ROOT
 
 OSM_OBJECTS_DIR = ROOT / "data" / "civic" / "astana" / "osm-objects"
+# Светофоры, переходы, перекрёстки из снимка OSM 2026-05-06 (build_fixtures --street-nodes) — пока нет LOCAL-10.
+STREET_NODES_PATH = Path(__file__).resolve().parent / "fixtures" / "street_nodes.json.gz"
 KK_LETTERS = re.compile(r"[әғқңөұүһіӘҒҚҢӨҰҮҺІ]")
 
 # Набор → (вид цели, подтип, подпись без имени ru, kk, шаблон с именем ru, kk)
@@ -32,13 +34,18 @@ SETS = {
     "waste_disposal": ("object", "waste_disposal", "Контейнерная площадка", "Қоқыс алаңы", "Контейнерная площадка «{n}»", "«{n}» қоқыс алаңы"),
     "recycling": ("object", "recycling", "Пункт приёма вторсырья", "Қайталама шикізат қабылдау пункті", "Пункт приёма вторсырья «{n}»", "«{n}» қайталама шикізат қабылдау пункті"),
     "street_lamps": ("object", "street_lamp", "Фонарь", "Көше шамы", "Фонарь «{n}»", "«{n}» көше шамы"),
+    # Волна 1, п. 12 (LOCAL-10): если наборов ещё нет — те же объекты из fixtures/street_nodes.json.gz.
+    "traffic_signals": ("object", "traffic_signal", "Светофор", "Бағдаршам", "Светофор «{n}»", "«{n}» бағдаршамы"),
+    "crossings": ("object", "crossing", "Пешеходный переход", "Жаяу жүргіншілер өткелі", "Переход «{n}»", "«{n}» жаяу жүргіншілер өткелі"),
     "schools": ("object", "school", "Школа", "Мектеп", "{n}", "{n}"),
     "kindergartens": ("object", "kindergarten", "Детский сад", "Балабақша", "{n}", "{n}"),
     "residential": ("area", "yard", "Двор", "Аула", "Двор ЖК «{n}»", "«{n}» ТК ауласы"),
 }
 # Порядок важен: при повторе (type, id) в нескольких наборах берётся первый (остановка важнее платформы).
 SET_ORDER = ("bus_stops", "platforms", "playgrounds", "pitches", "parks", "gardens", "waste_disposal",
-             "recycling", "schools", "kindergartens", "street_lamps", "residential")
+             "recycling", "schools", "kindergartens", "traffic_signals", "crossings", "street_lamps", "residential")
+# Подтипы без своего набора OSM: перекрёсток — узел графа улиц (R12 п. 1).
+EXTRA_PLAIN = {"intersection": ("Перекрёсток", "Қиылыс")}
 
 _JK_PREFIX = re.compile(r"^(ЖК|Жилой комплекс|жилой комплекс|ТК)\s+", re.U)
 
@@ -85,7 +92,7 @@ for _name in SET_ORDER:
 def plain_labels(subtype: str | None) -> tuple[str, str] | None:
     """Подпись без имени по подтипу: ('Остановка', 'Аялдама'); None — подтип неизвестен."""
     name = _SET_BY_SUBTYPE.get(subtype or "")
-    return (SETS[name][2], SETS[name][3]) if name else None
+    return (SETS[name][2], SETS[name][3]) if name else EXTRA_PLAIN.get(subtype or "")
 
 
 def labels_for_subtype(subtype: str | None, name_ru: str | None, name_kk: str | None = None) -> tuple[str, str] | None:
@@ -220,8 +227,23 @@ def load(directory: Path | None = None) -> dict:
                     "source": f"osm-objects/{set_name}", "osm": {"type": el["type"], "id": el["id"]},
                 }
         if directory is None:
+            _add_street_nodes(out)
             _cache = out
         return out
+
+
+def _add_street_nodes(out: dict) -> None:
+    """Светофоры / переходы / перекрёстки из fixtures/street_nodes.json.gz — только те, которых нет в наборах LOCAL."""
+    try:
+        raw = json.loads(gzip.open(STREET_NODES_PATH).read().decode("utf-8"))
+    except (OSError, ValueError):
+        return
+    for tid, (subtype, lon, lat, ru, kk, district) in raw.get("nodes", {}).items():
+        if tid in out:
+            continue
+        out[tid] = {"kind": "object", "subtype": subtype, "geometry": {"type": "Point", "coordinates": [lon, lat]},
+                    "label_ru": ru, "label_kk": kk, "needs_street_label": False, "district": district,
+                    "source": f"osm-walking/{subtype}", "osm": {"type": "node", "id": int(tid.rsplit("-", 1)[1])}}
 
 
 def available() -> bool:

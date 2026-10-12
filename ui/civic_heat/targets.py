@@ -41,6 +41,8 @@ _NEAR_WORDS = {
     "street_lamp": ("Фонарь", "маңындағы көше шамы"),
     "park": ("Парк", "маңындағы саябақ"),
     "garden": ("Сквер", "маңындағы гүлзар"),
+    "traffic_signal": ("Светофор", "маңындағы бағдаршам"),
+    "crossing": ("Пешеходный переход", "маңындағы жаяу жүргіншілер өткелі"),
 }
 
 
@@ -55,6 +57,42 @@ def near_street_labels(subtype: str, street_ru: str | None, street_kk: str | Non
     return ru, f"{street_kk or kk_street_from_ru(street_ru)} {tail_kk}"
 
 APPROX_LABELS = ("Примерное место", "Шамамен көрсетілген орын")
+
+def kk_and(word: str) -> str:
+    """Союз «и» по-казахски зависит от последнего звука: мен (гласные, м н ң), бен (ж з л р у й), пен (остальные)."""
+    last = (word or "").rstrip()[-1:].lower()
+    if not last or last in "аәеиоөұүыіэюяёмнң":
+        return "мен"
+    if last in "жзлруй":
+        return "бен"
+    return "пен"
+
+
+# Перекрёсток и то, что на нём (волна 1, п. 12; R12 п. 1: «Перекрёсток ул. A и ул. B»).
+_AT_CROSSROADS = {
+    "intersection": ("Перекрёсток {a} и {b}", "{a} {and_} {b_gen} қиылысы", "{a} – {b} қиылысы"),
+    "traffic_signal": ("Светофор на перекрёстке {a} и {b}", "{a} {and_} {b_gen} қиылысындағы бағдаршам", "{a} – {b} қиылысындағы бағдаршам"),
+    "crossing": ("Переход на перекрёстке {a} и {b}", "{a} {and_} {b_gen} қиылысындағы жаяу жүргіншілер өткелі",
+                 "{a} – {b} қиылысындағы жаяу жүргіншілер өткелі"),
+}
+
+
+def node_labels(subtype: str, streets: list) -> tuple[str, str] | None:
+    """Подпись узла улиц по названиям улиц, которые в нём сходятся: streets = [(ru, kk | None), …] по важности.
+    Две улицы и больше → «Перекрёсток ул. Сыганак и пр. Туран» / «Сығанақ көшесі мен Тұран даңғылының қиылысы»;
+    одна → «Светофор у ул. …» (как у остановок); ни одной → None."""
+    named = [(ru, kk or kk_street_from_ru(ru)) for ru, kk in streets if ru]
+    if len(named) >= 2 and subtype in _AT_CROSSROADS:
+        (a_ru, a_kk), (b_ru, b_kk) = named[:2]
+        tpl_ru, tpl_kk, tpl_kk_plain = _AT_CROSSROADS[subtype]
+        ru = tpl_ru.format(a=short_street_ru(a_ru), b=short_street_ru(b_ru))
+        gen = kk_genitive(b_kk)
+        kk = tpl_kk.format(a=a_kk, and_=kk_and(a_kk), b_gen=gen) if gen else tpl_kk_plain.format(a=a_kk, b=b_kk)
+        return ru, kk
+    if named and subtype in _NEAR_WORDS:
+        return near_street_labels(subtype, named[0][0], named[0][1])
+    return None
+
 _APPROX_KK_SHORT = "Шамамен орны"
 # Источники формы без собственного названия: только здесь подпись из записи жалобы допустима (R15-S11).
 RECORD_LABEL_SOURCES = frozenset({"cell-grid", "cell-grid-r09"})

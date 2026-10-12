@@ -340,6 +340,30 @@
  "heat.legend.nodata": "нет свежих данных",
  "heat.legend.nodata_hint": "Нет жалоб и осмотров за период — это не значит, что всё хорошо",
  "heat.reopened_mark": "вернули жители",
+ "heat.cluster.label": "Рядом {places}: {people}. Нажмите, чтобы приблизить",
+ "heat.cluster.places": {
+  "one": "{count} место",
+  "few": "{count} места",
+  "many": "{count} мест"
+ },
+ "heat.cluster.tip": "{places} · {people} — нажмите, чтобы приблизить",
+ "heat.cluster.zoom": "Нажмите, чтобы приблизить",
+ "heat.tip.people": {
+  "one": "{count} человек",
+  "few": "{count} человека",
+  "many": "{count} человек"
+ },
+ "heat.already_changed": "Статус уже изменён — карта обновлена",
+ "heat.kind.traffic_signal": "Светофор",
+ "heat.level_word.reported": "Служба сообщила — ждёт проверки",
+ "heat.reopened_note": "Проблема осталась — снова в работе · вернули жители",
+ "heat.reported_wait": "Ждёт проверки жителями",
+ "heat.status.reported_fixed": "Служба сообщила об устранении",
+ "heat.verified_note": {
+  "one": "Проверил {count} житель",
+  "few": "Проверили {count} жителя",
+  "many": "Проверили {count} жителей"
+ },
  "target.kind.stop": "Остановка «{name}»",
  "target.kind.stop_noname": "Остановка без названия",
  "target.kind.playground": "Детская площадка",
@@ -1008,6 +1032,8 @@
  "build3d.idea.pick_note": "Это эскиз к идее, а не проект: решение принимает акимат",
  "build3d.idea.pick_title": "Как это может выглядеть?",
  "build3d.idea.tag": "Идея",
+ "build3d.idea.hint_rotate": "Поверните и нажмите «Готово»",
+ "build3d.idea.hint_touch": "Двигайте карту или коснитесь места. Затем нажмите «Готово»",
  "forecast.title": "На что обратить внимание в следующем месяце",
  "forecast.prototype": "Прототип: прогноз обучен на синтетической истории, не реальная оценка",
  "forecast.risk": "Риск {pct} %",

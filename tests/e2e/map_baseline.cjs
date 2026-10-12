@@ -15,7 +15,7 @@
 //   3. Плавность: сдвиг карты 2 с и полёт 12 → 15 (кадры requestAnimationFrame: кадр/с, p95, кадры > 50 мс).
 //      В облаке WebGL программный — сравнивать только с прогоном на той же машине.
 //   4. Время отклика интерфейса (мс от нажатия до результата): «Сообщить о проблеме» → форма; «Мои обращения»;
-//      «Житель → Акимат» → «Что построить?»; «Картина дня» → 4 числа; место из «Горячих мест» → значок выбран;
+//      «Житель → Акимат» (кнопка вида нажата); «Картина дня» → 4 числа; место из «Горячих мест» → значок выбран;
 //      ҚАЗ ↔ РУС.
 //   5. Карточка места «Хан Шатыр» (правила 3–4): высота содержимого, кнопки, главные кнопки, главная видна без прокрутки.
 //   6. API: медиана 5 запросов /heat (город z12, Нура z16), /akim/summary, /classify, /similar, /targets, /proposals.
@@ -91,8 +91,12 @@ const FINGERPRINT = () => {
     const shown = layers.filter((l) => l.visible);
     const rendered = {};
     for (const l of shown) { try { rendered[l.id] = m.queryRenderedFeatures({ layers: [l.id] }).length; } catch (e) { rendered[l.id] = null; } }
+    // Тип источника слоя: подложка (vector / raster) или функциональный слой (geojson, image, custom 3D) — правило 1
+    // запрещает новые функциональные слои по умолчанию; смена стиля подложки — решение владельца, её смотрят глазами.
+    const srcs = m.getStyle().sources || {};
+    const layer_kind = Object.fromEntries(shown.map((l) => [l.id, l.type === "custom" ? "custom" : (srcs[l.source] && srcs[l.source].type) || (l.type === "background" ? "background" : "?")]));
     const c = m.getCenter();
-    style = { center: [Number(c.lng.toFixed(4)), Number(c.lat.toFixed(4))], zoom: Number(m.getZoom().toFixed(2)), pitch: Math.round(m.getPitch()), bearing: Math.round(m.getBearing()),
+    style = { layer_kind, center: [Number(c.lng.toFixed(4)), Number(c.lat.toFixed(4))], zoom: Number(m.getZoom().toFixed(2)), pitch: Math.round(m.getPitch()), bearing: Math.round(m.getBearing()),
       layers_total: layers.length, layers_visible: shown.map((l) => l.id), layers_hidden: layers.filter((l) => !l.visible).map((l) => l.id),
       rendered, sources: Object.keys(m.getStyle().sources || {}) };
   }
@@ -280,9 +284,10 @@ async function transitions(page, dict, lang, mode, mobile) {
     res.mine_ms = (await press(L.textRe(mine))) ? await until(L.textRe(empty).source) : null;
     await back();
     const akimat = T(dict, ["common.role.akimat", "shell.mode.akimat"], lang === "kk" ? "Әкімдік" : "Акимат");
-    // Вид «Акимат» готов, когда видна его кнопка «Что построить?» (у жителя её нет; на телефоне «Горячие места» — в шторке).
-    const build = T(dict, "proposal.catalog.title", lang === "kk" ? "Не салу керек?" : "Что построить?");
-    res.to_akimat_ms = (await press(new RegExp("^" + L.esc(akimat) + "$", "i"))) ? await until("^" + L.esc(build) + "$") : null;
+    // Вид «Акимат» включился: кнопка «Акимат» нажата (aria-pressed) — одинаково в 8e67c65 и FINAL-2 (там «Что построить?»
+    // спрятана в слой «Проекты», а «Горячие места» на телефоне — в шторке).
+    res.to_akimat_ms = (await press(new RegExp("^" + L.esc(akimat) + "$", "i")))
+      ? await L.timeUntil(page, (src) => [...document.querySelectorAll("[aria-pressed=true]")].some((e) => new RegExp(src, "i").test(e.textContent.trim())), "^" + L.esc(akimat) + "$", 15000) : null;
   } else {
     // Как ведущий на шаге 3: сначала место из «Горячих мест» (вид по умолчанию), потом «Картина дня».
     const hotRe = new RegExp("^" + L.esc(T(dict, "heat.hot_title", lang === "kk" ? "Шағымы көп орындар" : "Горячие места")), "i");

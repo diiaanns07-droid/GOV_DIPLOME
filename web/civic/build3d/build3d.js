@@ -61,6 +61,12 @@
       "build3d.poles": { one: "{n} фонарь", few: "{n} фонаря", many: "{n} фонарей" },
       "build3d.cluster": { one: "{n} проект", few: "{n} проекта", many: "{n} проектов" },
       "build3d.cluster.open": "{count} рядом — показать ближе",
+      "build3d.idea.tag": "Идея",
+      "build3d.idea.label": "Идея · {n}",
+      "build3d.idea.open": { one: "Идея жителей, {n} голос — открыть", few: "Идея жителей, {n} голоса — открыть", many: "Идея жителей, {n} голосов — открыть" },
+      "build3d.card.from_idea_plain": "По идее жителей",
+      "build3d.idea.hint_rotate": "Поверните и нажмите «Готово»",
+      "build3d.idea.hint_touch": "Двигайте карту или коснитесь места. Затем нажмите «Готово»",
       "build3d.err.far_from_street": "Нажмите ближе к улице",
       "build3d.err.other_street": "Выберите конец на той же улице: {street}",
       "build3d.err.too_short": "Участок слишком короткий. Выберите точки дальше друг от друга",
@@ -81,6 +87,7 @@
       "build3d.card.your_vote_up": "Ваш голос: за",
       "build3d.card.your_vote_down": "Ваш голос: против",
       "build3d.card.open": "{kind}: проект {year}, открыть карточку",
+      "build3d.card.view3d": "Посмотреть в 3D",
       "build3d.catalog.place": "{kind}: поставить на карту",
       "build3d.local_note": "Сохраняется только на этом устройстве, пока не подключён сервер предложений",
       "build3d.near.stop": "Рядом уже есть остановка, {m} м",
@@ -110,6 +117,12 @@
       "build3d.poles": "{n} шам",
       "build3d.cluster": "{n} жоба",
       "build3d.cluster.open": "Жақын жерде {count} — жақындатып көрсету",
+      "build3d.idea.tag": "Идея",
+      "build3d.idea.label": "Идея · {n}",
+      "build3d.idea.open": "Тұрғындар идеясы, {n} дауыс — ашу",
+      "build3d.card.from_idea_plain": "Тұрғындар идеясы бойынша",
+      "build3d.idea.hint_rotate": "Бұрып, «Дайын» түймесін басыңыз",
+      "build3d.idea.hint_touch": "Картаны жылжытыңыз немесе орынды түртіңіз. Содан кейін «Дайын» түймесін басыңыз",
       "build3d.err.far_from_street": "Көшеге жақынырақ басыңыз",
       "build3d.err.other_street": "Соңын сол көшеден таңдаңыз: {street}",
       "build3d.err.too_short": "Бөлік тым қысқа. Нүктелерді бір-бірінен алысырақ таңдаңыз",
@@ -130,6 +143,7 @@
       "build3d.card.your_vote_up": "Сіздің дауысыңыз: жақтаймын",
       "build3d.card.your_vote_down": "Сіздің дауысыңыз: қарсымын",
       "build3d.card.open": "{kind}: {year} жылғы жоба, карточканы ашу",
+      "build3d.card.view3d": "3D көріністе қарау",
       "build3d.catalog.place": "{kind}: картаға қою",
       "build3d.local_note": "Ұсыныстар сервері қосылғанша тек осы құрылғыда сақталады",
       "build3d.near.stop": "Жанында аялдама бар, {m} м",
@@ -169,6 +183,10 @@
       "proposal.status.proposal": "Предложение",
       "proposal.limit": "Можно поставить до 20 объектов",
       "common.action.cancel": "Отменить",
+      "common.action.done": "Готово",
+      "idea.object": "Объект из каталога (по желанию)",
+      "idea.honest": "Это опрос для выбора концепции, решение принимает акимат.",
+      "idea.by_residents": { one: "По идее жителей · {n} голос", few: "По идее жителей · {n} голоса", many: "По идее жителей · {n} голосов" },
       "common.action.close": "Закрыть",
       "common.action.retry": "Повторить",
       "common.tag.project": "Проект",
@@ -201,6 +219,10 @@
       "proposal.status.proposal": "Ұсыныс",
       "proposal.limit": "20 нысанға дейін қоюға болады",
       "common.action.cancel": "Болдырмау",
+      "common.action.done": "Дайын",
+      "idea.object": "Каталогтағы нысан (қаласаңыз)",
+      "idea.honest": "Бұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды.",
+      "idea.by_residents": "Тұрғындар идеясы бойынша · {n} дауыс",
       "common.action.close": "Жабу",
       "common.action.retry": "Қайталау",
       "common.tag.project": "Жоба",
@@ -318,6 +340,10 @@
   var VIEW_ZOOM = 17.4; // «показать проекты» — тот же крупный план
   var DOT_PX = 32; // сжатая подпись-точка: ≥ 24 px (UX_SPEC §5, R10 B-026), зона нажатия — 48 px
   var LAYER_ID = "civic-build3d";
+  // «Лёгкая карточка раньше 3D; 3D — по кнопке» (POLISH_WAVE_2): объёмный вид — когда карта наклонена так же, как
+  // кнопкой «3D» оболочки R01 (web/interface.js: THREE_D_MIN_PITCH 30, наклон кнопки 52°).
+  var PITCH_3D = 30;
+  var TILT_3D = 52;
   var OUTLINE_COLOR = 0x176b4a; // пунктир границы проекта (бренд)
   var OUTLINE_SELECTED = 0x2f7fd6; // выбранный проект — цвет фокуса ui-kit
 
@@ -361,10 +387,11 @@
       return function () {
         var args = arguments;
         if (inner) return inner[name].apply(inner, args);
-        if (name === "update" || name === "setVisible" || name === "setMode")
+        if (name === "update" || name === "setVisible" || name === "setMode" || name === "setIdeas")
           queued.push(function (h) {
             h[name].apply(h, args);
           });
+        if (name === "pickObject" || name === "view3dIdea") return Promise.resolve(name === "pickObject" ? null : false); // карты ещё нет
         return name === "start" || name === "flyToProposals" ? false : undefined;
       };
     }
@@ -375,6 +402,10 @@
       select: later("select"),
       flyToProposals: later("flyToProposals"),
       refresh: later("refresh"),
+      view3d: later("view3d"),
+      pickObject: later("pickObject"),
+      setIdeas: later("setIdeas"),
+      view3dIdea: later("view3dIdea"),
       setVisible: later("setVisible"),
       setMode: later("setMode"),
       update: later("update"),
@@ -411,13 +442,16 @@
       useR06Card: opts.useR06Card !== false, // карточка R06 при настоящем API (если её модуль подключён)
       dock: opts.dock !== false, // каталог/подсказка видны (карточка и размещение — всегда)
       storage: opts.storage || safeLocalStorage(),
+      // auto — плоская карта: лёгкие метки и карточки без three.js; наклон ≥ 30° (кнопка «3D»), «Посмотреть в 3D»
+      // или размещение — объёмный вид. 3d — всегда объёмный (демо-страница 3D-превью). light — только по кнопке.
+      view: opts.view === "3d" || opts.view === "light" ? opts.view : "auto",
     };
     var i18n = opts.i18n || root.BirgeI18n || null;
     var t = makeT(i18n);
 
     // Состояние модуля. Всё, что видит пользователь, перерисовывается из него.
     var S = {
-      phase: "loading", // loading | ready | error | unsupported
+      phase: "idle", // idle (данные ещё не нужны: слой выключен) | loading | ready | error | unsupported
       mode: "idle", // idle | placing
       kind: null,
       ghost: null, // {pos, rot, shownRot, follow, valid, manualRot, a, aStreet, section, hover}
@@ -426,10 +460,12 @@
       visible: true,
       destroyed: false,
       leaving: false, // страница уходит (перезагрузка, переход): обрыв запросов — не сбой
-      storeMode: "pending",
+      storeMode: "idle", // idle (данные не грузили) | pending (грузим) | api | local
       error: null,
       hint: null, // {key, params, error:true}
       cardBusy: null,
+      view: "light", // light — метки и карточки без 3D; 3d — модели three.js на карте
+      three: "idle", // idle | loading | ready | unsupported | error — объёмный вид грузится только когда нужен
     };
     var THREE = null,
       Models = null,
@@ -476,6 +512,7 @@
       var g = S.ghost;
       return JSON.stringify([
         S.phase, S.mode, S.kind, S.hint, S.visible, S.storeMode, S.cardBusy, t.lang(), Object.keys(S.objects).length, o.dock, o.role,
+        S.view, S.three,
         g ? [g.valid && g.valid.ok, !!(g.section && g.section.ok), nearInfo()] : null,
         sel ? [sel.p.id, sel.p.votes_up, sel.p.votes_down, sel.p.my_vote, sel.pending] : null,
       ]);
@@ -540,12 +577,15 @@
     var fitObserver = null;
     var fitWatched = [];
     var fitFrame = 0;
-    function topLimit() {
+    function topLimit(d) {
       var cr = map.getCanvas().getBoundingClientRect();
       var lim = Math.max(0, cr.top);
       avoidRects().forEach(function (r) {
         // полоса во всю ширину у верхнего края карты (шапка), а не шторка или колонка
         if (r.width > cr.width * 0.6 && r.top - cr.top < cr.height * 0.2 && r.bottom - cr.top < cr.height * 0.4) lim = Math.max(lim, r.bottom);
+        // панель хозяина над панелью модуля, закрывающая заметную часть её ширины («Территория» слева на ноутбуке);
+        // узкая колонка кнопок карты не в счёт
+        else if (d && Math.min(r.right, d.right) - Math.max(r.left, d.left) >= d.width * 0.25 && r.bottom < d.bottom - 160) lim = Math.max(lim, r.bottom);
       });
       return lim + 8;
     }
@@ -553,37 +593,61 @@
       if (S.destroyed) return;
       watchHost();
       dock.style.maxHeight = "";
+      dock.style.maxWidth = "";
       dock.style.transform = "";
       dock.classList.remove("b3d-dock--fit");
       var st = dock.getAttribute("data-state");
       if (!st || st === "empty" || ui.hidden) return;
       var r = dock.getBoundingClientRect();
       if (!r.height) return;
-      // Узкая панель хозяина внизу (легенда R07 слева) под лёгкой панелью модуля (подсказка жителю, каталог)
-      // (R10 B-039): сдвигаем панель вбок в той же строке, если рядом хватает места в области хозяина, иначе
-      // поднимаем над ней (вверх — значит закрыть саму карту). Полосы во всю ширину (шторка телефона) не трогаем:
-      // карточка и подсказка лежат поверх шторки по замыслу оболочки.
-      if (st !== "card" && !ui.classList.contains("b3d--overlay")) {
+      if (!ui.classList.contains("b3d--overlay")) {
         var cw = map.getCanvas().getBoundingClientRect().width;
         var box = ui.parentNode && ui.parentNode.getBoundingClientRect ? ui.parentNode.getBoundingClientRect() : r;
-        var dx = 0,
-          lift = 0;
-        avoidRects().forEach(function (a) {
-          if (a.width > cw * 0.6) return;
-          if (!(a.left < r.right && a.right > r.left && a.top < r.bottom && a.bottom > r.top && a.top > r.top - 8)) return;
-          var toRight = a.right + 8 - r.left,
-            toLeft = r.right - (a.left - 8);
-          var onLeft = a.left + a.right < box.left + box.right; // панель хозяина в левой половине области
-          if (onLeft && r.right + toRight <= box.right) dx = Math.max(dx, toRight);
-          else if (!onLeft && r.left - toLeft >= box.left) dx = Math.min(dx, -toLeft);
-          else lift = Math.max(lift, r.bottom - a.top + 8);
-        });
-        if (dx || lift) {
-          dock.style.transform = "translate(" + Math.round(dx) + "px, " + -Math.round(lift) + "px)";
-          r = dock.getBoundingClientRect();
+        if (st === "card") {
+          // Карточка проекта (ноутбук, корень хозяина): в промежуток между узкими панелями хозяина слева
+          // («Территория») и справа (кнопки карты), по центру, до 440 px. Промежуток уже 360 px — не двигаем,
+          // ниже ограничим высоту (topLimit) с прокруткой.
+          var L = box.left,
+            Rb = box.right,
+            hit = false;
+          avoidRects().forEach(function (a) {
+            if (a.width > cw * 0.6 || a.bottom <= r.top || a.top >= r.bottom) return;
+            if (a.left + a.right < box.left + box.right) L = Math.max(L, a.right + 8);
+            else Rb = Math.min(Rb, a.left - 8);
+            if (a.left < r.right && a.right > r.left) hit = true;
+          });
+          if (hit && Rb - L >= 360) {
+            if (r.width > Rb - L) {
+              dock.style.maxWidth = Math.floor(Rb - L) + "px";
+              r = dock.getBoundingClientRect(); // уже — значит и левый край другой (панель по центру корня)
+            }
+            var dx2 = L + (Rb - L - r.width) / 2 - r.left;
+            dock.style.transform = "translateX(" + Math.round(dx2) + "px)";
+            r = dock.getBoundingClientRect();
+          }
+        } else {
+          // Подсказка жителю, каталог: узкая панель хозяина внизу (легенда R07 слева) — сдвиг вбок в той же строке,
+          // если хватает места в области хозяина, иначе подъём над ней (R10 B-039). Полосы во всю ширину (шторка
+          // телефона) не трогаем: карточка и подсказка лежат поверх шторки по замыслу оболочки.
+          var dx = 0,
+            lift = 0;
+          avoidRects().forEach(function (a) {
+            if (a.width > cw * 0.6) return;
+            if (!(a.left < r.right && a.right > r.left && a.top < r.bottom && a.bottom > r.top && a.top > r.top - 8)) return;
+            var toRight = a.right + 8 - r.left,
+              toLeft = r.right - (a.left - 8);
+            var onLeft = a.left + a.right < box.left + box.right; // панель хозяина в левой половине области
+            if (onLeft && r.right + toRight <= box.right) dx = Math.max(dx, toRight);
+            else if (!onLeft && r.left - toLeft >= box.left) dx = Math.min(dx, -toLeft);
+            else lift = Math.max(lift, r.bottom - a.top + 8);
+          });
+          if (dx || lift) {
+            dock.style.transform = "translate(" + Math.round(dx) + "px, " + -Math.round(lift) + "px)";
+            r = dock.getBoundingClientRect();
+          }
         }
       }
-      var top = topLimit();
+      var top = topLimit(r);
       if (r.top >= top - 0.5) return;
       var avail = Math.floor(r.bottom - top);
       if (avail < 160) return; // места почти нет — не превращать панель в щель
@@ -616,14 +680,21 @@
     }
 
     function renderDock() {
-      ui.hidden = !S.visible;
+      // Эскиз к идее (pickObject) показываем и при выключенном слое «Проекты»: мастер идеи R06 — свой путь, не слой.
+      ui.hidden = !S.visible && !pick;
+      if (pick) ui.setAttribute("data-b3d-picking", "");
+      else ui.removeAttribute("data-b3d-picking");
       dock.textContent = "";
       dock.removeAttribute("data-state");
-      if (S.phase === "loading") return renderLoading();
+      if (S.phase === "loading" || S.phase === "idle") return renderLoading();
       if (S.phase === "unsupported") return renderMessage("alert", t("build3d.unsupported_title"), t("build3d.unsupported_text"), false);
       if (S.phase === "error") return renderMessage("wifi-off", t("build3d.load_failed"), "", true);
-      if (S.mode === "placing") return renderPlacing();
+      if (S.mode === "placing") return S.three === "ready" ? renderPlacing() : renderLoading();
+      if (pendingStart && S.three === "loading") return renderLoading();
+      if (pick) return renderPickCatalog();
       if (S.selected && S.objects[S.selected] && o.renderCard) return renderCard(S.objects[S.selected].p);
+      // Без WebGL2 жители видят проекты и голосуют (лёгкие метки), а поставить объект нельзя — говорим прямо.
+      if (o.role === "akimat" && o.dock && S.three === "unsupported") return renderMessage("alert", t("build3d.unsupported_title"), t("build3d.unsupported_text"), false);
       if (!o.dock) {
         dock.setAttribute("data-state", "empty"); // хозяин спрятал каталог; объекты и карточки работают
         return;
@@ -704,7 +775,25 @@
       title.appendChild(icon(k.icon, o.iconsUrl));
       title.appendChild(el("span", "", { text: t(k.key) }));
       head.appendChild(title);
-      head.appendChild(el("span", "bk-tag bk-tag--project", { text: t("common.tag.project") }));
+      // Телефон (R10 B-041): ↺ ↻ — значками в строке названия, а не отдельным рядом: панель ниже на 64 px, и над ней
+      // видно место, куда встанет объект (имя кнопки для экранного диктора — то же).
+      var compact = phoneLayout();
+      var rotBtns = k.line ? [] : [
+        actionBtn("rotate-left", t("proposal.rotate_left"), compact ? "b3d-act--icon" : "", function () {
+          rotate(-ROTATE_STEP);
+        }, "rotate-left"),
+        actionBtn("rotate-right", t("proposal.rotate_right"), compact ? "b3d-act--icon" : "", function () {
+          rotate(ROTATE_STEP);
+        }, "rotate-right"),
+      ];
+      if (compact) {
+        var tools = el("div", "b3d-head__tools");
+        rotBtns.forEach(function (b) {
+          tools.appendChild(b);
+        });
+        head.appendChild(tools);
+      }
+      head.appendChild(pick ? el("span", "bk-tag b3d-tag--idea", { text: t("build3d.idea.tag") }) : el("span", "bk-tag bk-tag--project", { text: t("common.tag.project") }));
       dock.appendChild(head);
       var hint = el("p", "b3d-hint" + (S.hint && S.hint.error ? " b3d-hint--error" : ""), { role: "status", "aria-live": "polite" });
       if (S.hint && S.hint.error) hint.appendChild(icon("alert", o.iconsUrl));
@@ -721,17 +810,13 @@
         dock.appendChild(line);
       }
       var actions = el("div", "b3d-actions");
-      if (!k.line) {
-        actions.appendChild(actionBtn("rotate-left", t("proposal.rotate_left"), "", function () {
-          rotate(-ROTATE_STEP);
-        }, "rotate-left"));
-        actions.appendChild(actionBtn("rotate-right", t("proposal.rotate_right"), "", function () {
-          rotate(ROTATE_STEP);
-        }, "rotate-right"));
-      }
+      if (!compact)
+        rotBtns.forEach(function (b) {
+          actions.appendChild(b);
+        });
       actions.appendChild(actionBtn("close", t("common.action.cancel"), "", cancel, "cancel"));
       var canPlace = g && g.valid && g.valid.ok && (!k.line || (g.section && g.section.ok));
-      var place = actionBtn("check", t("proposal.place"), "bk-btn--primary", place_, "place");
+      var place = actionBtn("check", t(pick ? "common.action.done" : "proposal.place"), "bk-btn--primary", place_, "place");
       if (!canPlace) place.setAttribute("aria-disabled", "true");
       actions.appendChild(place);
       dock.appendChild(actions);
@@ -740,7 +825,9 @@
     function actionBtn(iconName, label, extra, onClick, action) {
       var b = el("button", "bk-btn b3d-act " + (extra || ""), { type: "button", "data-action": action });
       b.appendChild(icon(iconName, o.iconsUrl));
-      b.appendChild(el("span", "", { text: label }));
+      // Кнопка-значок: подпись остаётся в кнопке для экранного диктора (и подсказкой title), на экране её не видно.
+      b.appendChild(el("span", /b3d-act--icon/.test(extra || "") ? "b3d-sr" : "", { text: label }));
+      if (/b3d-act--icon/.test(extra || "")) b.setAttribute("title", label);
       b.addEventListener("click", function () {
         if (b.getAttribute("aria-disabled") === "true") return;
         onClick();
@@ -792,14 +879,56 @@
         dock.textContent = "";
         return renderOwnCard(p);
       }
+      // Проект по идее жителей: строку даёт карточка R06, если умеет (BirgeProposals.showsIdea), иначе — модуль.
+      var fromIdea = !(root.BirgeProposals && root.BirgeProposals.showsIdea) && ideaLine(p);
+      if (fromIdea) dock.appendChild(fromIdea);
       var where = placeText(p);
-      if (where) dock.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
+      var whereRow = el("div", "b3d-pcard__whererow");
+      if (where) whereRow.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
+      withView3d(whereRow);
+      if (whereRow.firstChild) dock.appendChild(whereRow);
       var yard = yardOf(p);
       if (yard) {
         var yardName = t.lang() === "kk" ? yard.label_kk || yard.label_ru : yard.label_ru || yard.label_kk;
         dock.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
       }
       if (o.role === "akimat") dock.appendChild(deleteBtn(p));
+    }
+
+    // «Посмотреть в 3D» — второстепенная кнопка лёгкой карточки (главная — голос). Компактная, как кнопка «3D» карты:
+    // значок и «3D», полное «Посмотреть в 3D» — в имени кнопки и подсказке; карточка от неё не растёт.
+    function view3dBtn() {
+      if (S.view === "3d" && S.three === "ready") return null;
+      if (S.three === "unsupported") return null;
+      var loading = S.three === "loading";
+      var name = t(loading ? "build3d.loading" : "build3d.card.view3d");
+      var b = el("button", "bk-btn bk-btn--ghost b3d-view3d", { type: "button", "data-action": "view3d", "aria-label": name, title: name });
+      b.appendChild(icon("cube", o.iconsUrl));
+      b.appendChild(el("span", "", { text: "3D" }));
+      b.addEventListener("click", function () {
+        // Наклон и «объект над карточкой» — одним движением камеры: второе easeTo оборвало бы наклон.
+        var sel = S.selected && S.objects[S.selected];
+        var tilt = o.view !== "3d" && map.getPitch() < PITCH_3D;
+        enable3d({ tilt: tilt && !sel });
+        if (sel && tilt) keepAboveDock(sel, { pitch: TILT_3D, bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
+      });
+      if (loading) b.setAttribute("aria-busy", "true");
+      return b;
+    }
+    function ideaLine(p) {
+      if (!p.idea) return null;
+      var line = el("p", "bk-meta b3d-pcard__idea");
+      line.appendChild(icon("users", o.iconsUrl));
+      line.appendChild(el("span", "", { text: p.idea.votes != null ? t("idea.by_residents", { n: p.idea.votes }) : t("build3d.card.from_idea_plain") }));
+      return line;
+    }
+    // Строка карточки с кнопкой «3D» справа (строка «Рядом: …» или ряд меток).
+    function withView3d(row) {
+      var v3 = view3dBtn();
+      if (!v3) return row;
+      row.classList.add("b3d-row3d");
+      row.appendChild(v3);
+      return row;
     }
 
     function deleteBtn(p) {
@@ -837,7 +966,9 @@
       // Статус словом и цветом (R06: proposal | approved | rejected).
       var st = p.status === "approved" || p.status === "rejected" ? p.status : "proposal";
       tags.appendChild(el("span", "bk-status", { "data-status": st === "approved" ? "fixed" : st === "rejected" ? "rejected" : "accepted", text: t("proposal.status." + st) }));
-      card.appendChild(tags);
+      card.appendChild(withView3d(tags));
+      var fromIdea = ideaLine(p);
+      if (fromIdea) card.appendChild(fromIdea);
       var where = placeText(p);
       if (where) card.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
       var yard = yardOf(p);
@@ -981,13 +1112,9 @@
 
     function boot() {
       S.phase = "loading";
+      if (!store) S.storeMode = "pending";
       S.error = null;
       render();
-      var threeP = THREE
-        ? Promise.resolve(THREE)
-        : import(/* webpackIgnore: true */ o.threeUrl).then(function (mod) {
-            return mod;
-          });
       // Улицы и районы нужны для освещения и проверки места; без них модуль работает, но беднее.
       var streetsP = streets
         ? Promise.resolve(null)
@@ -1015,18 +1142,18 @@
           fixture = { proposals: [] };
         }
       );
-      return Promise.all([threeP, streetsP, districtsP, fixtureP])
-        .then(function (res) {
-          if (S.destroyed) return;
-          THREE = res[0];
-          Models = ModelsLib.create(THREE);
-          store = makeStore();
-          return whenStyleReady().then(addLayer);
-        })
+      // three.js (≈ 600 КБ) — не здесь: первая отрисовка — лёгкие метки и карточки; объёмный вид — по кнопке.
+      return Promise.all([streetsP, districtsP, fixtureP])
         .then(function () {
           if (S.destroyed) return;
-          if (S.phase === "unsupported") return render();
+          store = makeStore();
           return loadProposals();
+        })
+        .then(function () {
+          if (S.destroyed || S.phase !== "ready") return;
+          if (want3d()) return enable3d();
+          // Акимат ставит объекты — модуль three.js подгружаем заранее в фоне (без слоя), чтобы «Поставить» не ждало.
+          if (o.role === "akimat" && S.visible) loadThree().catch(function () {});
         })
         .catch(function (err) {
           if (S.destroyed) return;
@@ -1149,7 +1276,7 @@
         if (renderer) return; // после смены стиля слой добавляется снова — рендерер тот же
         var isGL2 = typeof root.WebGL2RenderingContext !== "undefined" && gl instanceof root.WebGL2RenderingContext;
         if (!isGL2) {
-          S.phase = "unsupported";
+          S.three = "unsupported";
           return;
         }
         renderer = new THREE.WebGLRenderer({ canvas: m.getCanvas(), context: gl, antialias: true });
@@ -1219,11 +1346,12 @@
 
     // После смены стиля карты (map.setStyle) MapLibre убирает все слои — возвращаем свой.
     function onStyleData() {
-      if (!THREE || !renderer || S.destroyed || S.phase === "unsupported") return;
+      if (!THREE || !renderer || S.destroyed || S.three !== "ready") return;
       if (map.getLayer(LAYER_ID)) return;
       layerAdded = false;
       try {
         addLayer();
+        setLayerVisibility();
       } catch (e) {
         // JSON стиля ещё не разобран — попробуем, когда карта успокоится.
         map.once("idle", onStyleData);
@@ -1232,6 +1360,129 @@
 
     function repaint() {
       if (map && !S.destroyed) map.triggerRepaint();
+    }
+
+    // ── Лёгкий вид и объёмный ──
+    var threeP = null;
+    function loadThree() {
+      if (THREE) return Promise.resolve(THREE);
+      if (!threeP)
+        threeP = import(/* webpackIgnore: true */ o.threeUrl).then(
+          function (mod) {
+            THREE = mod;
+            Models = ModelsLib.create(THREE);
+            return THREE;
+          },
+          function (err) {
+            threeP = null; // «Повторить» загрузит заново
+            throw err;
+          }
+        );
+      return threeP;
+    }
+    // Видно ли что-то объёмное: проекты (слой «Проекты» оболочки — setVisible) или идеи (setIdeas). Невидимому модулю
+    // three.js не грузим, даже если оболочка сама наклонила карту (R01: 52° с 15-го масштаба).
+    function anyVisible() {
+      return S.visible || Object.keys(ideas).length > 0 || !!pick;
+    }
+    function want3d() {
+      return anyVisible() && (o.view === "3d" || (o.view === "auto" && map.getPitch() >= PITCH_3D));
+    }
+    function setLayerVisibility() {
+      // Проекты прячет слой «Проекты» оболочки (setVisible), идеи — свой слой (setIdeas): у моделей — своя видимость.
+      Object.keys(S.objects).forEach(function (id) {
+        if (S.objects[id].group) S.objects[id].group.visible = S.visible;
+      });
+      labelsLayer.classList.toggle("b3d-labels--projects-off", !S.visible);
+      try {
+        if (layerAdded && map.getLayer(LAYER_ID)) map.setLayoutProperty(LAYER_ID, "visibility", anyVisible() && S.view === "3d" ? "visible" : "none");
+      } catch (e) {
+        /* стиль ещё не готов — слой вернётся в onStyleData */
+      }
+      repaint();
+    }
+    // Слой и модели всех проектов (без анимации постройки — они уже стоят). Синхронно, если three.js уже загружен.
+    function finish3d() {
+      if (S.destroyed) return false;
+      addLayer();
+      if (S.three === "unsupported" || !renderer) {
+        S.three = renderer ? S.three : "unsupported";
+        S.view = "light";
+        setLayerVisibility();
+        render();
+        return false;
+      }
+      S.three = "ready";
+      Object.keys(S.objects).forEach(function (id) {
+        if (!S.objects[id].group) buildGroup(S.objects[id]);
+      });
+      Object.keys(ideas).forEach(function (id) {
+        if (!ideas[id].group && ideas[id].p.kind) buildIdeaGroup(ideas[id]);
+      });
+      setLayerVisibility();
+      render();
+      repaint();
+      return true;
+    }
+    function enable3d(how) {
+      how = how || {};
+      if (S.destroyed || S.three === "unsupported") return Promise.resolve(false);
+      if (how.tilt && o.view !== "3d" && map.getPitch() < PITCH_3D) {
+        map.easeTo({ pitch: TILT_3D, bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
+      }
+      S.view = "3d";
+      if (S.three === "ready") {
+        setLayerVisibility();
+        render();
+        repaint();
+        return Promise.resolve(true);
+      }
+      if (THREE && styleJsonReady()) return Promise.resolve(finish3d());
+      S.three = "loading";
+      render();
+      return loadThree()
+        .then(whenStyleReady)
+        .then(finish3d)
+        .catch(function (err) {
+          if (S.destroyed) return false;
+          logFail("[build3d] 3D не загрузилось", err);
+          S.three = "error";
+          S.view = "light";
+          if (S.mode === "placing") cancel();
+          render();
+          toast(t("build3d.load_failed"), {
+            error: true,
+            action: t("common.action.retry"),
+            actionId: "retry-3d",
+            onAction: function () {
+              enable3d(how);
+            },
+          });
+          return false;
+        });
+    }
+    function disable3d() {
+      if (S.view !== "3d") return;
+      S.view = "light";
+      setLayerVisibility();
+      render();
+      updateLabels();
+    }
+    // Кнопка «3D» оболочки наклоняет карту (≥ 30°) — объёмный вид; вернули плоскую — снова лёгкие метки.
+    // Выходим из объёмного вида только когда наклонённую карту сделали плоской (кнопка «3D» ещё раз): модель,
+    // поставленную на плоской карте, следующий сдвиг карты не прячет.
+    var wasTilted = false;
+    function onViewMoveEnd() {
+      if (o.view !== "auto" || S.destroyed || (S.phase !== "ready" && S.phase !== "idle")) return;
+      var tilted = map.getPitch() >= PITCH_3D;
+      if (tilted && S.view !== "3d" && anyVisible()) enable3d();
+      else if (!tilted && wasTilted && S.view === "3d" && S.mode !== "placing" && !anims.length) disable3d();
+      wasTilted = tilted;
+    }
+    // Лёгкий вид: метки двигаются вместе с картой (в объёмном их ставит слой three.js в каждом кадре).
+    function onMapRender() {
+      if (S.destroyed) return;
+      if (S.view !== "3d" || S.three !== "ready") updateLabels();
     }
 
     // ───────────── Материалы ─────────────
@@ -1253,9 +1504,9 @@
       return mat;
     }
 
-    function makeMaterials(ghost, invalid) {
+    function makeMaterials(ghost, invalid, tint) {
       if (ghost) {
-        var color = invalid ? 0xb3362e : 0x176b4a;
+        var color = tint || (invalid ? 0xb3362e : 0x176b4a);
         return {
           solid: new THREE.MeshLambertMaterial({ color: color, emissive: color, emissiveIntensity: 0.25, transparent: true, opacity: 0.55 }),
           glass: null,
@@ -1333,20 +1584,30 @@
 
     function addObject(p, flags) {
       flags = flags || {};
-      if (!scene) return null;
       if (S.objects[p.id]) disposeObject(p.id); // тот же id ещё исчезает после «Удалить» — убрать сразу
-      var geos = buildGeos(p);
-      var mats = makeMaterials(false);
-      var group = makeMeshes(geos, mats);
-      placeGroup(group, p);
-      scene.add(group);
-      var obj = { p: p, group: group, height: geos.height, mats: mats, label: null, pending: !!flags.pending };
-      obj.labelPoint = labelPointOf(p, geos);
+      // Лёгкий вид: только данные и метка; модель строится, когда включат объёмный вид (buildGroup).
+      var obj = { p: p, group: null, height: 0, mats: null, label: null, labelPoint: null, pending: !!flags.pending };
+      if (scene) buildGroup(obj);
       obj.label = makeLabel(obj);
       S.objects[p.id] = obj;
-      if (flags.animate && !reducedMotion()) animateBuild(obj);
+      if (flags.animate && obj.group && S.view === "3d" && !reducedMotion()) animateBuild(obj);
       repaint();
       return obj;
+    }
+    function buildGroup(obj) {
+      var geos = buildGeos(obj.p);
+      obj.mats = makeMaterials(false);
+      obj.group = makeMeshes(geos, obj.mats);
+      obj.height = geos.height;
+      obj.labelPoint = labelPointOf(obj.p, geos);
+      placeGroup(obj.group, obj.p);
+      obj.group.visible = S.visible;
+      scene.add(obj.group);
+      var outline = obj.group.children.find(function (m) {
+        return m.userData.part === "outline";
+      });
+      if (outline && S.selected === obj.p.id) outline.material.color.set(OUTLINE_SELECTED);
+      obj.labelSize = null;
     }
 
     // Точка подписи «Проект · 2027» — над верхом объекта (у освещения — над средней опорой).
@@ -1395,12 +1656,130 @@
     function disposeObject(id) {
       var obj = S.objects[id];
       if (!obj) return;
-      disposeGroup(obj.group);
+      if (obj.group) disposeGroup(obj.group);
       if (obj.dust) disposeGroup(obj.dust);
       if (obj.label && obj.label.parentNode) obj.label.parentNode.removeChild(obj.label);
       delete S.objects[id];
       if (S.selected === id) S.selected = null;
       repaint();
+    }
+
+    // ── Слой «Идеи» (POLISH_WAVE_2 п. 7) ──
+    // По умолчанию пуст: идеи показывает хозяин переключателем слоя (защита от перегруза, правило 1) — setIdeas(list),
+    // убирает setIdeas(null). Идея — метка «Идея · 47» и, если житель приложил объект, полупрозрачная модель в 3D.
+    // Нажатие — opts.onIdeaSelect(идея) и событие civic-build3d:idea: карточку идеи рисует R06.
+    var IDEA_TINT = 0xb7791f;
+    var ideas = {};
+    function setIdeas(list) {
+      Object.keys(ideas).forEach(removeIdea);
+      (Array.isArray(list) ? list : []).forEach(function (raw) {
+        var p = Core.normalizeIdea(raw);
+        if (!p || ideas[p.id]) return;
+        var it = { p: p, group: null, label: null };
+        it.label = makeIdeaLabel(it);
+        ideas[p.id] = it;
+        if (scene && p.kind) buildIdeaGroup(it);
+      });
+      setLayerVisibility();
+      if ((S.phase === "ready" || S.phase === "idle") && S.view !== "3d" && want3d()) enable3d(); // идеи не ждут данных проектов
+      updateLabels();
+      return Object.keys(ideas).length;
+    }
+    // «3D-де көру» в карточке идеи (R06, по кнопке — R11 IA_WAVE2 §8): объёмный вид у этой идеи. Идеи нет на карте
+    // (слой «Идеи» выключен) — показываем только её, до следующего setIdeas / view3dIdea(null).
+    function view3dIdea(raw) {
+      Object.keys(ideas).forEach(function (id) {
+        if (ideas[id].temp) removeIdea(id);
+      });
+      var p = raw ? Core.normalizeIdea(raw) : null;
+      if (!p) {
+        setLayerVisibility();
+        updateLabels();
+        return Promise.resolve(false);
+      }
+      if (!ideas[p.id]) {
+        var it = { p: p, group: null, label: null, temp: true };
+        it.label = makeIdeaLabel(it);
+        ideas[p.id] = it;
+        if (scene && p.kind) buildIdeaGroup(it);
+      }
+      setLayerVisibility();
+      map.easeTo({ center: p.geometry.coordinates, zoom: Math.max(map.getZoom(), VIEW_ZOOM), pitch: Math.max(map.getPitch(), TILT_3D),
+        bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
+      return enable3d().then(function (ok) {
+        updateLabels();
+        return ok;
+      });
+    }
+    function buildIdeaGroup(it) {
+      var k = Core.KINDS[it.p.kind];
+      var geos = Models.build(it.p.kind, { seed: it.p.id, w: k.w, d: k.d });
+      it.mats = makeMaterials(true, false, IDEA_TINT);
+      it.group = makeMeshes(geos, it.mats);
+      it.height = geos.height;
+      placeGroup(it.group, it.p);
+      scene.add(it.group);
+    }
+    function removeIdea(id) {
+      var it = ideas[id];
+      if (!it) return;
+      if (it.group) disposeGroup(it.group);
+      if (it.label && it.label.parentNode) it.label.parentNode.removeChild(it.label);
+      delete ideas[id];
+    }
+    function makeIdeaLabel(it) {
+      var b = el("button", "b3d-label b3d-label--idea", { type: "button", "data-idea": it.p.id });
+      var pill = el("span", "b3d-label__pill bk-tag b3d-tag--idea");
+      var ic = icon("users", o.iconsUrl);
+      ic.setAttribute("class", "ic b3d-label__icon");
+      pill.appendChild(ic);
+      pill.appendChild(el("span", "b3d-label__text", { text: t("build3d.idea.label", { n: it.p.votes }) }));
+      b.appendChild(pill);
+      b.setAttribute("aria-label", t("build3d.idea.open", { n: it.p.votes }));
+      b.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        if (S.mode === "placing") return;
+        var copy = JSON.parse(JSON.stringify(it.p));
+        if (typeof opts.onIdeaSelect === "function") {
+          try {
+            opts.onIdeaSelect(copy);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        try {
+          doc.dispatchEvent(new CustomEvent("civic-build3d:idea", { detail: copy }));
+        } catch (e) {
+          /* старые браузеры */
+        }
+      });
+      labelsLayer.appendChild(b);
+      return b;
+    }
+    function positionIdeas() {
+      var canvas = map.getCanvas();
+      var w = canvas.clientWidth,
+        h = canvas.clientHeight,
+        compact = map.getZoom() < 14;
+      Object.keys(ideas).forEach(function (id) {
+        var it = ideas[id];
+        var sp;
+        if (S.view === "3d" && it.group && lastMatrix) {
+          var wp = new THREE.Vector3(0, 0, (it.height || 0) + 1.5).applyMatrix4(it.group.matrixWorld);
+          sp = projectLocal(wp.x, wp.y, wp.z);
+        } else {
+          var q = map.project(it.p.geometry.coordinates);
+          sp = { x: q.x, y: q.y - 4 };
+        }
+        if (!sp || sp.x < -80 || sp.x > w + 80 || sp.y < -40 || sp.y > h + 40) {
+          it.label.style.visibility = "hidden";
+          return;
+        }
+        it.label.style.visibility = "";
+        it.label.classList.toggle("b3d-label--dot", compact);
+        it.label.style.transform = "translate(" + Math.round(sp.x) + "px," + Math.round(sp.y) + "px) translate(-50%,-100%)";
+        it.label.style.zIndex = String(500 + Math.round(sp.y)); // под метками проектов
+      });
     }
 
     // ── Анимации ──
@@ -1496,7 +1875,7 @@
       var obj = S.objects[id];
       if (!obj) return done && done();
       if (obj.label) obj.label.classList.add("b3d-label--hidden");
-      if (reducedMotion()) {
+      if (reducedMotion() || !obj.group || S.view !== "3d") {
         disposeObject(id);
         return done && done();
       }
@@ -1542,6 +1921,18 @@
       var v = new THREE.Vector3(point[0], point[1], point[2]);
       return v.applyMatrix4(obj.group.matrixWorld);
     }
+    function anchorLngLat(p) {
+      return p.kind === "lighting" ? p.geometry.coordinates[Math.floor(p.geometry.coordinates.length / 2)] : p.geometry.coordinates;
+    }
+    // Экранная точка подписи: в объёмном виде — над верхом модели; в лёгком — у самой точки проекта.
+    function labelScreen(obj) {
+      if (S.view === "3d" && obj.group && obj.labelPoint && lastMatrix) {
+        var wp = worldOf(obj, obj.labelPoint);
+        return projectLocal(wp.x, wp.y, wp.z);
+      }
+      var q = map.project(anchorLngLat(obj.p));
+      return { x: q.x, y: q.y - 4, depth: 0 };
+    }
 
     function updateLabels() {
       var canvas = map.getCanvas();
@@ -1552,8 +1943,7 @@
       Object.keys(S.objects).forEach(function (id) {
         var obj = S.objects[id];
         if (!obj.label) return;
-        var wp = worldOf(obj, obj.labelPoint);
-        var sp = projectLocal(wp.x, wp.y, wp.z);
+        var sp = labelScreen(obj);
         if (!sp || sp.x < -80 || sp.x > w + 80 || sp.y < -40 || sp.y > h + 40) {
           obj.label.style.visibility = "hidden";
           return;
@@ -1567,6 +1957,7 @@
         if (it.obj.labelSize) return;
         var lab = it.obj.label;
         lab.classList.remove("b3d-label--dot", "b3d-label--cluster");
+        lab._clusterKey = null; // группу (число, aria) setCluster вернёт заново, а не сочтёт уже показанной
         var pill = lab.firstChild || lab; // наложение считаем по видимой таблетке, а не по зоне нажатия
         it.obj.labelSize = { w: pill.offsetWidth || 120, h: pill.offsetHeight || 40 };
       });
@@ -1634,6 +2025,7 @@
         lab.style.transform = "translate(" + Math.round(it.pos.x) + "px," + Math.round(it.pos.y) + "px) translate(-50%,-100%)";
         lab.style.zIndex = String(1000 + Math.round(it.pos.y) + (lab._cluster ? 2000 : 0));
       });
+      positionIdeas();
     }
 
     // Метка группы: число проектов, aria «5 проектов рядом — показать ближе»; нажатие приближает к ним.
@@ -1724,12 +2116,92 @@
       return { key: "build3d.near." + S.kind + (named ? "_named" : ""), params: { m: m, name: name }, id: near.id };
     }
 
+    var pendingStart = null;
+
+    // ── Объект к идее жителя (POLISH_WAVE_2 п. 7, с R06) ──
+    // Хозяин (экран идеи R06) просит: «Как это может выглядеть?» — житель выбирает вид, ставит и поворачивает объект,
+    // «Готово» отдаёт эскиз {kind, geometry, rotation_deg, near_street, near_street_kk, target}; ничего не сохраняем.
+    // «Отмена» — null. Освещение (участок улицы) к идее не предлагаем.
+    var pick = null;
+    function pickObject(how) {
+      how = how || {};
+      if (pick) finishPick(null);
+      // Слой «Проекты» не включали — данные модуля (улицы для «у улицы …») ещё не грузили: сначала они.
+      if (S.phase === "idle" || S.phase === "loading")
+        return ensureBoot().then(function () {
+          return S.phase === "ready" ? pickObject(how) : null;
+        });
+      if (S.phase !== "ready" || S.three === "unsupported") return Promise.resolve(null);
+      if (S.mode === "placing") cancel();
+      return new Promise(function (resolve) {
+        pick = { resolve: resolve };
+        S.selected = null;
+        if (how.kind && Core.KINDS[how.kind] && how.kind !== "lighting") start(how.kind, { pick: true });
+        else render(true);
+        focusDock(".b3d-card");
+      });
+    }
+    function finishPick(result) {
+      var pk = pick;
+      pick = null;
+      if (pk) setLayerVisibility(); // слой «Проекты» выключен и идей нет — объёмный слой снова скрыт
+      if (pk) pk.resolve(result);
+    }
+    function cancelPick() {
+      if (S.mode === "placing") cancel();
+      else {
+        finishPick(null);
+        render(true);
+      }
+    }
+    function renderPickCatalog() {
+      // Своё состояние «pick», не «catalog»: оболочка прячет свёрнутый каталог акимата «Что построить?» по data-state.
+      dock.setAttribute("data-state", "pick");
+      var head = el("div", "b3d-head");
+      head.appendChild(el("p", "b3d-title", { text: t("idea.object"), id: "b3d-catalog-title" }));
+      head.appendChild(el("span", "bk-tag b3d-tag--idea", { text: t("build3d.idea.tag") }));
+      dock.appendChild(head);
+      var row = el("div", "b3d-cards", { role: "group", "aria-labelledby": "b3d-catalog-title" });
+      Core.KIND_ORDER.forEach(function (kind) {
+        if (kind === "lighting") return;
+        var k = Core.KINDS[kind];
+        var b = el("button", "b3d-card", { type: "button", "data-kind": kind, "aria-label": t(k.key) });
+        b.appendChild(icon(k.icon, o.iconsUrl));
+        b.appendChild(el("span", "b3d-card__label", { text: t(k.key) }));
+        b.addEventListener("click", function (ev) {
+          start(kind, { keyboard: ev.detail === 0, pick: true });
+        });
+        row.appendChild(b);
+      });
+      dock.appendChild(row);
+      dock.appendChild(el("p", "bk-meta b3d-note", { text: t("idea.honest") }));
+      var actions = el("div", "b3d-actions");
+      actions.appendChild(actionBtn("close", t("common.action.cancel"), "", cancelPick, "cancel"));
+      dock.appendChild(actions);
+    }
+
     function start(kind, how) {
       how = how || {};
-      if (!Core.KINDS[kind] || S.phase !== "ready" || o.role !== "akimat") return false;
-      if (Object.keys(S.objects).length >= Core.MAX_OBJECTS) {
+      if (!Core.KINDS[kind] || S.phase !== "ready" || (o.role !== "akimat" && !pick) || S.three === "unsupported") return false;
+      if (pick && kind === "lighting") return false;
+      if (!pick && Object.keys(S.objects).length >= Core.MAX_OBJECTS) {
         toast(t("proposal.limit"), { error: true });
         return false;
+      }
+      // Размещение — объёмное (призрак модели). three.js ещё грузится — продолжим, когда загрузится.
+      if (S.three !== "ready" || S.view !== "3d") {
+        var pend = (pendingStart = { kind: kind, how: how });
+        enable3d().then(function (ok) {
+          if (pendingStart !== pend) return;
+          pendingStart = null;
+          if (ok) start(kind, how);
+          else render();
+        });
+        if (S.three !== "ready") {
+          render();
+          return true;
+        }
+        pendingStart = null; // загрузилось синхронно (three.js уже был в памяти)
       }
       if (S.mode === "placing") clearGhost();
       S.selected = null;
@@ -1762,11 +2234,18 @@
       }
       updateGhost(true);
       render();
+      // Панель размещения уже на месте — призрак в видимую часть карты, если центр холста ею закрыт.
+      if (S.ghost.follow === "center") {
+        S.ghost.pos = focusLngLat();
+        updateGhost(false);
+        render();
+      }
       focusDock("[data-action=place]");
       return true;
     }
 
     function cancel() {
+      pendingStart = null;
       if (S.mode !== "placing") return;
       clearGhost();
       S.mode = "idle";
@@ -1774,7 +2253,8 @@
       S.ghost = null;
       S.hint = null;
       setTool(false);
-      render();
+      if (pick) finishPick(null); // «Отмена» при эскизе идеи — эскиза нет
+      render(true);
       focusDock(".b3d-card");
     }
 
@@ -1794,7 +2274,10 @@
       }
     }
 
+    // Эскиз к идее: кнопка — «Готово», а не «Поставить»; подсказки называют её же.
+    var PICK_HINTS = { "build3d.hint.rotate": "build3d.idea.hint_rotate", "build3d.hint.touch": "build3d.idea.hint_touch" };
     function setHint(key, params, error) {
+      if (pick && PICK_HINTS[key]) key = PICK_HINTS[key];
       S.hint = key ? { key: key, params: params || null, error: !!error } : null;
     }
 
@@ -1919,6 +2402,7 @@
       }
       var draft = draftFromGhost();
       var v = Core.checkPlacement(draft, existingList(), districts);
+      if (pick && !v.ok && v.reason === "limit") v = { ok: true };
       var wasInvalid = g.valid && !g.valid.ok;
       g.valid = v;
       if (!v.ok) setHint("build3d.err." + (v.reason === "limit" ? "overlap" : v.reason), null, true);
@@ -2059,9 +2543,28 @@
     function onMapMove() {
       if (S.mode !== "placing" || !S.ghost || S.kind === "lighting") return;
       if (S.ghost.follow !== "center") return;
-      var c = map.getCenter();
-      S.ghost.pos = [c.lng, c.lat];
+      S.ghost.pos = focusLngLat();
       scheduleGhost();
+    }
+    // Палец и клавиатура ставят объект «за центром карты». На телефоне в оболочке центр холста закрыт панелью
+    // размещения и шторкой (R10 B-041: призрак и поставленный проект не видно) — тогда точка — центр видимой части
+    // карты (freeArea). Где центр холста виден, всё как раньше.
+    function focusLngLat() {
+      var c = map.getCenter();
+      var f = freeArea(80),
+        cp = map.project(c),
+        m = 24;
+      if (cp.x > f.x0 + m && cp.x < f.x1 - m && cp.y > f.y0 + m && cp.y < f.y1 - m) return [c.lng, c.lat];
+      // Ниже середины полосы: над объектом встанет табличка «Проект · 2027».
+      var q = map.unproject([(f.x0 + f.x1) / 2, f.y0 + (f.y1 - f.y0) * 0.7]);
+      return [q.lng, q.lat];
+    }
+    function phoneLayout() {
+      try {
+        return !!(root.matchMedia && root.matchMedia("(max-width: 760px)").matches);
+      } catch (e) {
+        return false;
+      }
     }
 
     function onMapClick(e) {
@@ -2242,11 +2745,11 @@
 
     // Попадание щелчком в объект: экранный прямоугольник его 3D-габарита (у освещения — опоры).
     function hitTest(point) {
-      if (!lastMatrix) return null;
+      if (!lastMatrix || S.view !== "3d" || !S.visible) return null; // в лёгком виде проект открывают по его метке
       var best = null;
       Object.keys(S.objects).forEach(function (id) {
         var obj = S.objects[id];
-        if (obj.removing) return;
+        if (obj.removing || !obj.group) return;
         var box = obj.group.children.length ? new THREE.Box3().setFromObject(obj.group) : null;
         if (!box || box.isEmpty()) return;
         if (obj.p.kind === "lighting") {
@@ -2351,8 +2854,22 @@
       if (S.mode !== "placing" || !S.ghost) return;
       var draft = draftFromGhost();
       var v = draft ? Core.checkPlacement(draft, existingList(), districts) : { ok: false, reason: "invalid" };
+      if (pick && !v.ok && v.reason === "limit") v = { ok: true }; // эскиз идеи — не проект, лимит проектов не про него
       if (!v.ok) {
         if (v.reason === "limit") toast(t("proposal.limit"), { error: true });
+        return;
+      }
+      if (pick) {
+        var sketch = { kind: draft.kind, geometry: draft.geometry, rotation_deg: draft.rotation_deg, near_street: draft.near_street || null,
+          near_street_kk: draft.near_street_kk || null, target: draft.target || null };
+        clearGhost();
+        S.mode = "idle";
+        S.kind = null;
+        S.ghost = null;
+        S.hint = null;
+        setTool(false);
+        finishPick(sketch);
+        render(true);
         return;
       }
       // Сразу строим (отзывчиво), а сохраняем параллельно. Не сохранилось — убираем и предлагаем повторить.
@@ -2505,7 +3022,7 @@
       Object.keys(S.objects).forEach(function (k) {
         var obj = S.objects[k];
         updateLabelText(obj);
-        var outline = obj.group.children.find(function (m) {
+        var outline = obj.group && obj.group.children.find(function (m) {
           return m.userData.part === "outline";
         });
         if (outline) outline.material.color.set(k === id ? OUTLINE_SELECTED : OUTLINE_COLOR);
@@ -2542,30 +3059,64 @@
         return r && r.width && r.height;
       });
     }
-    // Вычесть из свободной области панель r: отрезаем ту сторону, после которой остаётся больше места
-    // (шапка — сверху, колонка справа — справа, плашка «Территория» в углу — слева). Панель вне области — без изменений.
-    function cutBest(a, r) {
-      var g = 12;
-      if (r.x1 <= a.x0 || r.x0 >= a.x1 || r.y1 <= a.y0 || r.y0 >= a.y1) return a;
-      var opts2 = [
-        { x0: Math.max(a.x0, r.x1 + g), y0: a.y0, x1: a.x1, y1: a.y1 },
-        { x0: a.x0, y0: a.y0, x1: Math.min(a.x1, r.x0 - g), y1: a.y1 },
-        { x0: a.x0, y0: Math.max(a.y0, r.y1 + g), x1: a.x1, y1: a.y1 },
-        { x0: a.x0, y0: a.y0, x1: a.x1, y1: Math.min(a.y1, r.y0 - g) },
-      ];
+    // Самый большой прямоугольник внутри a, не задевающий панели хозяина (с зазором 12 px). Перебор по краям панелей:
+    // их немного (шапка, «Территория», легенда, кнопки карты, шторка), поэтому быстро и не зависит от порядка панелей
+    // в разметке (прежнее «отрезать по одной» в оболочке R01 выбирало полосу над легендой — под шапкой, R10 B-041).
+    // Нет места не меньше minW × minH — оставляем a: лучше частично, чем никак.
+    function largestFree(a, rects, minH) {
+      var g = 12,
+        minW = 160;
+      minH = minH || 120;
+      var obs = rects
+        .map(function (r) {
+          return { x0: r.x0 - g, y0: r.y0 - g, x1: r.x1 + g, y1: r.y1 + g };
+        })
+        .filter(function (r) {
+          return r.x1 > a.x0 && r.x0 < a.x1 && r.y1 > a.y0 && r.y0 < a.y1;
+        });
+      if (!obs.length) return a;
+      var edges = function (lo, hi, k0, k1) {
+        var v = [lo, hi];
+        obs.forEach(function (r) {
+          v.push(r[k0], r[k1]);
+        });
+        return v
+          .map(function (x) {
+            return Math.min(hi, Math.max(lo, x));
+          })
+          .sort(function (p, q) {
+            return p - q;
+          })
+          .filter(function (x, i, arr) {
+            return i === 0 || x !== arr[i - 1];
+          });
+      };
+      var xs = edges(a.x0, a.x1, "x0", "x1"),
+        ys = edges(a.y0, a.y1, "y0", "y1");
       var best = null,
         bestArea = 0;
-      opts2.forEach(function (b) {
-        var ar = Math.max(0, b.x1 - b.x0) * Math.max(0, b.y1 - b.y0);
-        if (ar > bestArea) {
-          best = b;
-          bestArea = ar;
+      for (var i = 0; i < xs.length; i++)
+        for (var j = i + 1; j < xs.length; j++) {
+          var w = xs[j] - xs[i];
+          if (w < minW) continue;
+          for (var k = 0; k < ys.length; k++)
+            for (var l = k + 1; l < ys.length; l++) {
+              var h = ys[l] - ys[k];
+              if (h < minH || w * h <= bestArea) continue;
+              var c = { x0: xs[i], y0: ys[k], x1: xs[j], y1: ys[l] };
+              var hit = obs.some(function (r) {
+                return r.x0 < c.x1 && r.x1 > c.x0 && r.y0 < c.y1 && r.y1 > c.y0;
+              });
+              if (!hit) {
+                best = c;
+                bestArea = w * h;
+              }
+            }
         }
-      });
-      // Слишком мало места (панели закрывают почти всё) — оставляем как было: лучше частично, чем никак.
-      return best && best.x1 - best.x0 >= 160 && best.y1 - best.y0 >= 120 ? best : a;
+      return best || a;
     }
-    function freeArea() {
+    // minH — самая низкая полоса карты, которую ещё считаем свободной (по умолчанию 120 px; призраку хватает 80).
+    function freeArea(minH) {
       var canvas = map.getCanvas();
       var cr = canvas.getBoundingClientRect();
       var w = canvas.clientWidth,
@@ -2584,9 +3135,13 @@
         if (left > a.x0 + (a.x1 - a.x0) * 0.45 && top < a.y0 + (a.y1 - a.y0) * 0.3) a.x1 = Math.max(a.x0 + 120, left); // карточка справа
         else a.y1 = Math.max(a.y0 + 120, top); // панель снизу
       }
-      avoidRects().forEach(function (r) {
-        a = cutBest(a, { x0: r.left - cr.left, y0: r.top - cr.top, x1: r.right - cr.left, y1: r.bottom - cr.top });
-      });
+      a = largestFree(
+        a,
+        avoidRects().map(function (r) {
+          return { x0: r.left - cr.left, y0: r.top - cr.top, x1: r.right - cr.left, y1: r.bottom - cr.top };
+        }),
+        minH
+      );
       // Видимый тост («Проект поставлен… Отменить») тоже занимает место над панелью — объект ставим выше него.
       var tr = toasts.getBoundingClientRect();
       if (tr.height && tr.top - cr.top < a.y1 && tr.left - cr.left < a.x1) a.y1 = Math.max(a.y0 + 120, tr.top - cr.top);
@@ -2595,26 +3150,36 @@
     // Выбранный объект не должен прятаться под карточкой (UX_REVIEW день 3 #21): считаем свободную часть карты
     // (слева от карточки на ноутбуке, над панелью на телефоне) и, если объект вне её, плавно ставим его в её
     // центр. Это ответ на нажатие пользователя, поэтому правило «карта сама не двигается» не нарушается.
-    function keepAboveDock(obj) {
-      if (!obj || !lastMatrix) return;
-      var ground = worldOf(obj, obj.p.kind === "lighting" ? [obj.labelPoint[0], obj.labelPoint[1], 0] : [0, 0, 0]);
-      var sp = projectLocal(ground.x, ground.y, 0);
+    function keepAboveDock(obj, extra) {
+      if (!obj) return;
+      var sp;
+      if (S.view === "3d" && obj.group && lastMatrix) {
+        var ground = worldOf(obj, obj.p.kind === "lighting" ? [obj.labelPoint[0], obj.labelPoint[1], 0] : [0, 0, 0]);
+        sp = projectLocal(ground.x, ground.y, 0);
+      } else sp = map.project(anchorLngLat(obj.p));
       if (!sp) return;
       var f = freeArea();
       var m = 48; // запас: подпись над объектом тоже должна быть видна
       var inside = sp.x > f.x0 + m && sp.x < f.x1 - m && sp.y > f.y0 + m + 60 && sp.y < f.y1 - m;
-      if (inside) return;
+      if (inside && !extra) return;
       var tx = (f.x0 + f.x1) / 2,
         ty = f.y0 + (f.y1 - f.y0) * 0.6;
       // easeTo с offset: MapLibre ставит точку объекта в нужное место экрана с учётом наклона
       // (panBy двигает центр, а при наклоне точки у края экрана смещаются на другое расстояние).
-      var canvas = map.getCanvas();
+      // Смещение — от центра карты с учётом её отступов (оболочка R01 задаёт padding): от середины холста объект
+      // уезжал под шапку.
+      var cpt = map.project(map.getCenter());
       var anchor = obj.p.kind === "lighting" ? obj.p.geometry.coordinates[Math.floor(obj.p.geometry.coordinates.length / 2)] : obj.p.geometry.coordinates;
-      map.easeTo({
-        center: anchor,
-        offset: [tx - canvas.clientWidth / 2, ty - canvas.clientHeight / 2],
-        duration: reducedMotion() ? 0 : 450,
-      });
+      map.easeTo(
+        Object.assign(
+          {
+            center: anchor,
+            offset: [tx - cpt.x, ty - cpt.y],
+            duration: reducedMotion() ? 0 : 450,
+          },
+          extra || {} // «Посмотреть в 3D»: тот же сдвиг вместе с наклоном
+        )
+      );
     }
 
     // Крупный план проектов (для оболочки: открыли «3D-превью» — камера к проектам; UX_REVIEW день 3 #20).
@@ -2679,11 +3244,13 @@
       var r = mode === "resident" ? "resident" : "akimat";
       if (r === o.role) return;
       if (S.mode === "placing") cancel();
+      finishPick(null);
       // «Проект поставлен · Отменить» акимата — не для жителя (и закрывал бы объект над карточкой).
       clearToast();
       o.role = r;
       ui.setAttribute("data-b3d-role", r);
       render(true);
+      if (r === "akimat" && S.phase === "ready" && S.visible && !THREE) loadThree().catch(function () {}); // заранее, без слоя
     }
     function onShellMode(e) {
       if (e && e.detail && e.detail.mode) setMode(e.detail.mode);
@@ -2695,6 +3262,8 @@
     map.on("move", onMapMove);
     map.on("styledata", onStyleData);
     map.on("idle", refitSoon); // панели хозяина появляются позже модуля (легенда R07 — после загрузки жалоб)
+    map.on("moveend", onViewMoveEnd);
+    map.on("render", onMapRender);
     doc.addEventListener("keydown", onKey);
     if (opts.followShellMode !== false) doc.addEventListener("birge:mode", onShellMode);
     var onResize = function () {
@@ -2713,15 +3282,35 @@
     if (i18n && typeof i18n.onChange === "function") unsubLang = i18n.onChange(onLang);
 
     render();
-    var ready = (i18n && i18n.ready ? Promise.resolve(i18n.ready).catch(function () {}) : Promise.resolve()).then(function () {
+    var i18nReady = (i18n && i18n.ready ? Promise.resolve(i18n.ready).catch(function () {}) : Promise.resolve()).then(function () {
       render();
-      return boot();
+    });
+    // Данные модуля (улицы, районы, список проектов) — только когда они нужны: слой «Проекты» включён, начали эскиз
+    // к идее или размещение (защита от перегруза, правило 5: «новые слои грузятся только когда включены»).
+    // Хозяин выключает слой сразу после mount (setVisible(false) синхронно) — тогда на первой отрисовке карты
+    // модуль ничего не запрашивает.
+    var bootP = null;
+    function ensureBoot() {
+      if (!bootP)
+        bootP = i18nReady.then(function () {
+          if (!S.destroyed) return boot();
+        });
+      return bootP;
+    }
+    var ready = i18nReady.then(function () {
+      if (S.visible) return ensureBoot();
     });
 
     // ───────────── Handle ─────────────
     var handle = {
       ready: ready,
       start: function (kind) {
+        if (S.phase === "idle") {
+          ensureBoot().then(function () {
+            start(kind, { keyboard: true });
+          });
+          return Core.KINDS[kind] ? true : false;
+        }
         return start(kind, { keyboard: true });
       },
       cancel: cancel,
@@ -2741,14 +3330,29 @@
         return handle;
       },
       refresh: function () {
-        return store ? loadProposals() : ready;
+        return store ? loadProposals() : S.visible ? ensureBoot() : ready;
+      },
+      // Идеи жителей (R06): объект к идее — Promise эскиза или null; слой «Идеи» — список или null (выключить).
+      pickObject: pickObject,
+      setIdeas: setIdeas,
+      view3dIdea: view3dIdea,
+      // Объёмный вид по кнопке хозяина: view3d(true) — включить (и наклонить карту), view3d(false) — лёгкий вид.
+      view3d: function (on) {
+        if (on === false) {
+          disable3d();
+          return Promise.resolve(false);
+        }
+        return enable3d({ tilt: true });
       },
       setVisible: function (v) {
         S.visible = !!v;
-        labelsLayer.hidden = !S.visible;
-        if (layerAdded && map.getLayer(LAYER_ID)) map.setLayoutProperty(LAYER_ID, "visibility", S.visible ? "visible" : "none");
+        setLayerVisibility();
         if (!S.visible) cancel();
+        else if (S.phase === "idle") ensureBoot(); // первое включение слоя — теперь грузим данные
+        else if (S.phase === "ready" && S.view !== "3d" && want3d()) enable3d(); // слой включили на наклонённой карте
+        else if (S.phase === "ready" && o.role === "akimat" && !THREE) loadThree().catch(function () {});
         render();
+        updateLabels();
       },
       getState: function () {
         return {
@@ -2788,24 +3392,32 @@
           animating: anims.length > 0,
           memory: renderer ? { geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs ? renderer.info.programs.length : null } : null,
           origin: origin ? origin.slice() : null,
+          view: S.view, // light — лёгкие метки и карточки; 3d — модели (POLISH_WAVE_2: «3D — по кнопке»)
+          three: S.three,
+          ideas: Object.keys(ideas).length,
+          picking: !!pick,
         };
       },
       // Для проверок точности (tests/civic/R05): экранная точка 3D-точки объекта (x, y, z в метрах модели).
       _project: function (id, point) {
         var obj = S.objects[id];
-        if (!obj || !lastMatrix) return null;
+        if (!obj || !lastMatrix || !obj.group) return null;
         var wp = worldOf(obj, point || [0, 0, 0]);
         return projectLocal(wp.x, wp.y, wp.z);
       },
       destroy: function () {
         if (S.destroyed) return;
         if (S.mode === "placing") cancel();
+        finishPick(null);
+        Object.keys(ideas).forEach(removeIdea);
         S.destroyed = true;
         map.off("mousemove", onMouseMove);
         map.off("click", onMapClick);
         map.off("move", onMapMove);
         map.off("styledata", onStyleData);
         map.off("idle", refitSoon);
+        map.off("moveend", onViewMoveEnd);
+        map.off("render", onMapRender);
         doc.removeEventListener("keydown", onKey);
         doc.removeEventListener("birge:mode", onShellMode);
         root.removeEventListener("resize", onResize);

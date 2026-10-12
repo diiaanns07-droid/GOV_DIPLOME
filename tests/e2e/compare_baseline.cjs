@@ -25,6 +25,11 @@ const OUT = path.resolve(String(args.out || path.join(NEW, "compare")));
 const find = (dir, sub, file) => [path.join(dir, sub, file), path.join(dir, file)].find((f) => fs.existsSync(f)) || null;
 const readJ = (f) => (f ? JSON.parse(fs.readFileSync(f, "utf8")) : null);
 const items = [];
+// Одобренные изменения (решения владельца, записанные ролями): <эталон>/ACCEPTED.json — {layers: {id: причина},
+// controls: {"зона: имя": причина}}. Такое изменение — «ИНФО: принято», а не FAIL/СМОТРЕТЬ; владелец может вычеркнуть строку.
+const ACCEPTED = (() => { try { return JSON.parse(fs.readFileSync(path.join(BASE, "ACCEPTED.json"), "utf8")); } catch { return {}; } })();
+const acceptedLayer = (id) => (ACCEPTED.layers || {})[id] || null;
+const acceptedControl = (c) => (ACCEPTED.controls || {})[c] || null;
 const add = (status, area, what, detail) => items.push({ status, area, what, detail: detail ?? null });
 
 const sameMachine = (a, b) => !!(a && b && a.machine && b.machine && a.machine.cpu === b.machine.cpu && a.machine.cores === b.machine.cores && a.chromium === b.chromium);
@@ -49,17 +54,31 @@ function compareScenario(base, now, timeRef) {
   // Время шагов: тот же сценарий, то же время (с запасом на разброс).
   const ref = timeRef || base;
   if (!ref.timing || !now.timing) { add("СМОТРЕТЬ", "сценарий · время", "нет времени шагов (прогон старой версией demo_flow.cjs)"); return; }
+  // Шаг, которого в эталоне не было (все строки NOT_RUN — например, шаг 7 «житель проверяет ремонт» до волны 2),
+  // по времени не сравнивается и не входит в «целиком». Одобренная добавка времени шагу — ACCEPTED.json → steps:
+  // {"2": {"extra_ms": 4000, "why": "…"}}: в её пределах — «ИНФО: принято».
+  const notRunSteps = new Set(Object.entries(ref.results.reduce((acc, r) => { const k = `${r.layer}|${r.step}`; (acc[k] = acc[k] || []).push(r.status); return acc; }, {}))
+    .filter(([, sts]) => sts.every((x) => x === "NOT_RUN")).map(([k]) => k));
+  const allow = ACCEPTED.steps || {};
   for (const [layer, t] of Object.entries(ref.timing)) {
     const n = now.timing[layer];
     if (!n) continue;
+    let extraTotal = 0, skipped = 0;
     for (const [st, ms] of Object.entries(t.steps)) {
       const m = n.steps[st];
       if (m === undefined) continue;
+      if (notRunSteps.has(`${layer}|${st}`)) { skipped += m; add("ИНФО", "сценарий · время", `${layer} шаг ${st}: в эталоне не выполнялся — ${(m / 1000).toFixed(1)} с, не сравнивается`); continue; }
+      const extra = (allow[st] && allow[st].extra_ms) || 0;
       const slow = m > ms * 1.25 && m - ms > 2000;
-      add(slow ? "FAIL" : "OK", "сценарий · время", `${layer} шаг ${st}: ${(ms / 1000).toFixed(1)} → ${(m / 1000).toFixed(1)} с`, slow ? { ratio: +(m / ms).toFixed(2) } : null);
+      const okAccepted = slow && extra && m - ms <= extra;
+      if (okAccepted) extraTotal += m - ms;
+      add(okAccepted ? "ИНФО" : slow ? "FAIL" : "OK", "сценарий · время", `${layer} шаг ${st}: ${(ms / 1000).toFixed(1)} → ${(m / 1000).toFixed(1)} с` + (okAccepted ? " — принято" : ""),
+        okAccepted ? allow[st].why : slow ? { ratio: +(m / ms).toFixed(2) } : null);
     }
-    const slow = n.total_ms > t.total_ms * 1.15 && n.total_ms - t.total_ms > 5000;
-    add(slow ? "FAIL" : "OK", "сценарий · время", `${layer} целиком: ${(t.total_ms / 1000).toFixed(0)} → ${(n.total_ms / 1000).toFixed(0)} с`);
+    const total = n.total_ms - skipped - extraTotal;
+    const slow = total > t.total_ms * 1.15 && total - t.total_ms > 5000;
+    add(slow ? "FAIL" : "OK", "сценарий · время", `${layer} целиком: ${(t.total_ms / 1000).toFixed(0)} → ${(n.total_ms / 1000).toFixed(0)} с` +
+      (skipped || extraTotal ? ` (без нового шага и принятых добавок — ${(total / 1000).toFixed(0)} с)` : ""));
   }
 }
 
@@ -79,7 +98,8 @@ function compareMap(base, now, timeRef) {
     for (const k of ["dcl", "map_loaded", "first_badge", "primary_visible", "wall_ms"]) {
       const was = r.median && r.median[k], is = n.median && n.median[k];
       if (typeof was !== "number") continue;
-      if (typeof is !== "number") { add("FAIL", "карта · загрузка", `${tag}: «${k}» не наступило`, { was }); continue; }
+      // У акимата «главное» — заголовок «Горячие места» (не кнопка): не наступило — смотреть кадр, не FAIL.
+      if (typeof is !== "number") { add(k === "primary_visible" && /akimat$/.test(tag) ? "СМОТРЕТЬ" : "FAIL", "карта · загрузка", `${tag}: «${k}» не наступило`, { was }); continue; }
       const slow = is > Math.max(was * 1.25, was + 500);
       add(slow ? slowStatus : "OK", "карта · загрузка", `${tag}: ${k} ${(was / 1000).toFixed(2)} → ${(is / 1000).toFixed(2)} с`);
     }
@@ -99,7 +119,16 @@ function compareMap(base, now, timeRef) {
     const fb = b.fingerprint || {}, fn = n.fingerprint || {};
     const lb = (fb.style && fb.style.layers_visible) || [], ln = (fn.style && fn.style.layers_visible) || [];
     const plus = ln.filter((x) => !lb.includes(x)), minus = lb.filter((x) => !ln.includes(x));
-    add(plus.length ? "FAIL" : "OK", "карта · вид", `${tag}: видимые слои по умолчанию ${lb.length} → ${ln.length}` + (plus.length ? " — новые слои видны сразу (правило 1)" : ""), plus.length ? { new: plus } : null);
+    // Новые слои подложки (источник vector / raster — стиль карты, решение владельца) — «СМОТРЕТЬ»; новые функциональные
+    // слои (geojson, image, custom 3D) по умолчанию — FAIL (правило 1). Без сведений об источнике — FAIL (строже).
+    const kind = (fn.style && fn.style.layer_kind) || {};
+    const basemap = plus.filter((x) => /^(vector|raster|raster-dem|background)$/.test(kind[x] || ""));
+    const accepted = plus.filter((x) => !basemap.includes(x) && acceptedLayer(x));
+    for (const x of accepted) add("ИНФО", "карта · вид", `${tag}: новый слой ${x} — принято`, acceptedLayer(x));
+    const thematic = plus.filter((x) => !basemap.includes(x) && !acceptedLayer(x));
+    add(thematic.length ? "FAIL" : "OK", "карта · вид", `${tag}: видимые слои по умолчанию ${lb.length} → ${ln.length}` + (thematic.length ? " — новые функциональные слои видны сразу (правило 1)" : ""),
+      thematic.length ? { new: thematic, kinds: thematic.map((x) => kind[x] || "?") } : null);
+    if (basemap.length) add("СМОТРЕТЬ", "карта · вид", `${tag}: новые слои подложки (стиль карты) — сверить кадр`, { new: basemap.slice(0, 30), n: basemap.length });
     if (minus.length) add("СМОТРЕТЬ", "карта · вид", `${tag}: слои пропали или переименованы`, minus);
     for (const id of ln.filter((x) => lb.includes(x))) {
       const was = fb.style.rendered[id], is = fn.style.rendered[id];
@@ -120,7 +149,8 @@ function compareMap(base, now, timeRef) {
     const cname = (c) => `${c.zone}: ${c.name}`;
     const cb = new Set((fb.controls || []).map(cname)), cn = (fn.controls || []).map(cname);
     const newCtl = cn.filter((c) => !cb.has(c)), goneCtl = [...cb].filter((c) => !cn.includes(c));
-    const overMap = newCtl.filter((c) => c.startsWith("поверх карты"));
+    const overMap = newCtl.filter((c) => c.startsWith("поверх карты") && !acceptedControl(c));
+    for (const c of newCtl.filter((x) => acceptedControl(x))) add("ИНФО", "интерфейс", `${tag}: новая кнопка «${c}» — принято`, acceptedControl(c));
     add(overMap.length ? "СМОТРЕТЬ" : "OK", "интерфейс", `${tag}: кнопок вне карты ${cb.size} → ${cn.length}` + (overMap.length ? " — новые кнопки поверх карты (правило 1)" : ""),
       newCtl.length || goneCtl.length ? { new: newCtl.slice(0, 20), gone: goneCtl.slice(0, 20) } : null);
     if (JSON.stringify(b.menu) !== JSON.stringify(n.menu)) add("СМОТРЕТЬ", "интерфейс", `${tag}: пункты меню изменились (правило 2: житель ≤ 5, акимат ≤ 5)`, { was: b.menu, now: n.menu });

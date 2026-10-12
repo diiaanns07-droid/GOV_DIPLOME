@@ -154,7 +154,8 @@
                    : { top: 32, left: 48, bottom: 140, right: panel.getBoundingClientRect().width + 48 };
     };
     const heat = window.CivicHeat.mount({ root: document.getElementById("heat-root"), map, role, lang, fitPadding,
-      fit: !P.get("z") && !P.get("c"), handleOpenTarget: true,
+      // вид из ссылки (z, c, крупный план view=nura|stops) важнее подгонки карты под 10 горячих мест
+      fit: !P.get("z") && !P.get("c") && (!P.get("view") || P.get("view") === "city"), handleOpenTarget: true,
       // значки не под подписью OSM и не под кнопками карты (панель модуль обходит сам)
       avoidRects: () => [...document.querySelectorAll(".attr, .mapbtns button, #demo-new")].map((el) => el.getBoundingClientRect()) });
     window.__heat = heat;

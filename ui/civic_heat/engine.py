@@ -10,6 +10,12 @@
   закрытым. Новых жалоб нет → цель 7 дней зелёная «исправлено», вес 0. Пришли новые → снова краснеет.
 - count — сколько человек сообщили за период (без затухания): это число на значке и в карточке.
   level — по весу (с затуханием): так цель «остывает», если новых жалоб нет.
+- Проверка жителями (волна 2, п. 1; categories_v2.json → heat_states). Ответы жителей после ремонта читаются терпимо
+  (resident_answers): «Да, исправлено» → цель «проверено жителями» (зелёный, 7 дней от ответа); ответов нет →
+  «служба сообщила об устранении» (светло-зелёный пунктир, 7 дней от ремонта); последний ответ «Проблема осталась» →
+  жалоба снова открыта («вернули жители»): цвет по весу, отметка на значке, люди этой жалобы снова в счёте, а их
+  вес считается от момента возврата (житель подтвердил, что проблема есть сейчас). «Не могу проверить» — без влияния.
+- Ремонт закрывает цель, только пока он «стоит»: исправленная жалоба, которую жители вернули, — не ремонт.
 """
 from __future__ import annotations
 
@@ -18,7 +24,7 @@ import re
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
-from . import geo
+from . import deadline, geo
 from .config import DAILY_WINDOW_DAYS, DISTRICT_LEVEL_SCALE, HeatConfig
 
 ASTANA_TZ = timezone(timedelta(hours=5))
@@ -62,6 +68,137 @@ def fixed_at(c: dict) -> datetime | None:
     if last is None and c.get("status") == "fixed":
         last = parse_time(c.get("updated_at")) or parse_time(c.get("created_at"))
     return last
+
+
+# Ответ жителя после ремонта (волна 2, п. 1). Слова — с запасом: поле R09 ещё не утверждено (INTEGRATION R07 §2е).
+_YES = {"yes", "confirmed", "fixed", "verified", "resolved", "ok", "да", "иә"}
+_NO = {"no", "not_fixed", "still", "still_there", "remains", "reopened", "problem_remains", "нет", "жоқ"}
+_CANT = {"cant_check", "cant", "cannot_check", "unknown", "skip", "not_sure"}
+_ANSWER_KEYS = ("answer", "state", "result", "value")
+
+
+def _answer(value) -> str | None:
+    if value is True:
+        return "yes"
+    s = str(value or "").strip().lower().replace("-", "_").replace(" ", "_")
+    if s in _YES:
+        return "yes"
+    if s in _NO:
+        return "no"
+    if s in _CANT:
+        return "cant"
+    return None
+
+
+def _answer_of(d: dict):
+    for k in _ANSWER_KEYS:
+        if k in d:
+            return d[k]
+    return None
+
+
+def resident_answers(c: dict) -> list[tuple[str, datetime | None]]:
+    """Ответы жителей «исправлено?» из записи: [(yes|no|cant, когда)], без повторов.
+
+    Читается любое из (что даст R09): resident_checks / checks — список {answer|state|result, at};
+    resident_check / verification — один такой объект или строка; verified / verified_by_residents /
+    resident_confirmed = true (только true: false по умолчанию у непроверенных не значит «осталось»);
+    записи status_history с полем resident_check / check / answer или со статусом verified / confirmed (да),
+    reopened / resident_not_fixed (осталось)."""
+    out: list = []
+    seen = set()
+
+    def add(value, at):
+        a = _answer(value)
+        if not a:
+            return
+        t = parse_time(at)
+        k = (a, t.isoformat() if t else None)
+        if k not in seen:
+            seen.add(k)
+            out.append((a, t))
+
+    fallback_at = c.get("verified_at") or c.get("checked_at") or c.get("updated_at")
+    for key in ("resident_checks", "checks"):
+        val = c.get(key)
+        if isinstance(val, list):
+            for x in val:
+                if isinstance(x, dict):
+                    add(_answer_of(x), x.get("at"))
+                else:
+                    add(x, fallback_at)
+    for key in ("resident_check", "verification"):
+        val = c.get(key)
+        if isinstance(val, dict):
+            add(_answer_of(val), val.get("at") or fallback_at)
+        elif isinstance(val, str):
+            add(val, fallback_at)
+    for key in ("verified", "verified_by_residents", "resident_confirmed"):
+        if c.get(key) is True:
+            add(True, fallback_at)
+    for h in c.get("status_history") or []:
+        if not isinstance(h, dict):
+            continue
+        for k in ("resident_check", "check", "answer"):
+            if k in h:
+                v = h[k]
+                add(_answer_of(v) if isinstance(v, dict) else v, h.get("at"))
+                break
+        else:
+            st = str(h.get("status") or h.get("event") or "")
+            if h.get("reopened_by_residents") is True:     # R09: шаг истории возврата в работу
+                add("no", h.get("at"))
+            elif st in ("verified", "verified_fixed", "confirmed", "resident_confirmed", "resident_verified"):
+                add("yes", h.get("at"))
+            elif st in ("reopened", "resident_not_fixed", "resident_reopened"):
+                add("no", h.get("at"))
+    return out
+
+
+def _resolution_state(c: dict, f: datetime | None) -> tuple[str, datetime, dict] | None:
+    """Основная форма R09 (lifecycle.py, claude/modest-shannon-0ki93p): resolution = {round, state: reported | verified |
+    reopened, reported_at, verified_at, reopened_at, votes {yes, no, cant}}. Её и берём, если она есть."""
+    res = c.get("resolution")
+    if not isinstance(res, dict) or res.get("state") not in ("reported", "verified", "reopened"):
+        return None
+    votes = res.get("votes") if isinstance(res.get("votes"), dict) else {}
+    counts = {k: int(votes.get(k) or 0) for k in ("yes", "no", "cant")}
+    state = res["state"]
+    at = parse_time(res.get(state + "_at" if state != "reported" else "reported_at")) or f or parse_time(c.get("updated_at"))
+    if at is None:
+        return None
+    return state, at, counts
+
+
+def repair_state(c: dict) -> tuple[str, datetime, dict] | None:
+    """Что с последним ремонтом жалобы: ("reported" | "verified" | "reopened", когда, {yes, no, cant}).
+    None — ремонта не было. Решает последний ответ после ремонта; «не могу проверить» не решает ничего.
+    Есть resolution R09 — решает она (так же считает «Картина дня» R08)."""
+    f = fixed_at(c)
+    res = _resolution_state(c, f)
+    if res is not None:
+        return res
+    if f is None:
+        return None
+    after = [(a, t or f) for a, t in resident_answers(c) if t is None or t >= f - timedelta(minutes=1)]
+    counts = {"yes": 0, "no": 0, "cant": 0}
+    for a, _ in after:
+        counts[a] += 1
+    decisive = sorted([(t, a) for a, t in after if a != "cant"])
+    if decisive and decisive[-1][1] == "no":
+        return "reopened", decisive[-1][0], counts
+    yes = [t for a, t in after if a == "yes"]
+    if yes:
+        return "verified", max(yes), counts
+    return "reported", f, counts
+
+
+def subtopic_of(c: dict) -> str | None:
+    """Уточнение, выбранное жителем (волна 1, п. 2, R09: поле subtopic — id из categories_v2.json)."""
+    st = c.get("subtopic")
+    if isinstance(st, dict):
+        st = st.get("id")
+    return str(st) if st else None
 
 
 def reports(c: dict, created: datetime) -> list[datetime]:
@@ -148,28 +285,43 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
             m["district"] = cd or m["district"]
 
     items = []
+    totals = {"fixed_reported": 0, "fixed_verified": 0, "reopened": 0}
     for key, rows in groups.items():
         m = meta[key]
+        repairs = {id(c): repair_state(c) for c, _ in rows}
+        reopened = {i: r[1] for i, r in repairs.items() if r and r[0] == "reopened"}
+        # Ремонт закрывает цель, только пока он стоит: жалоба в статусе fixed, которую жители не вернули.
         t_fixed = None
         for c, _ in rows:
-            f = fixed_at(c)
-            if f and (t_fixed is None or f > t_fixed):
-                t_fixed = f
+            if c.get("status") == "fixed" and id(c) not in reopened:
+                f = fixed_at(c)
+                if f and (t_fixed is None or f > t_fixed):
+                    t_fixed = f
         # Открыта жалоба со статусом new / accepted / in_progress (R10 B-036, R09: статус каждой жалобы честный —
         # «исправлено» у одной не закрывает остальные). Только примеры R07, статус которых не поменять (общая сборка),
         # закрывает более поздний ремонт места — иначе цель с примерами никогда не стала бы зелёной.
+        # Возвращённая жителями жалоба открыта всегда, даже если R09 ещё не сменил ей статус.
         active = [(c, cr) for c, cr in rows
-                  if c.get("status", "new") in OPEN_STATUSES
-                  and (actionable is None or actionable(c) or t_fixed is None or cr > t_fixed)]
+                  if c.get("status") != "rejected"
+                  and (id(c) in reopened
+                       or (c.get("status", "new") in OPEN_STATUSES
+                           and (actionable is None or actionable(c) or t_fixed is None or cr > t_fixed)))]
         latest = now + timedelta(minutes=5)   # небольшой запас на расхождение часов
         weight = 0.0
         count = 0
         by_cat: dict = defaultdict(int)
+        by_sub: dict = defaultdict(int)
         status_rank = 0
         in_period = []
         events_in_period = []                # (жалоба, момент) — для графика по дням
+        reopened_at = None
+        due = None
         for c, cr in active:
-            moments = [t for t in reports(c, cr) if period_start <= t <= latest]
+            back = reopened.get(id(c))
+            moments = reports(c, cr)
+            if back is not None:
+                moments = [max(t, back) for t in moments]   # житель подтвердил: проблема есть сейчас
+            moments = [t for t in moments if period_start <= t <= latest]
             if not moments:
                 continue
             in_period.append((c, max(moments)))
@@ -178,21 +330,61 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
                 events_in_period.append(t)
             count += len(moments)
             by_cat[c.get("category") or "other"] += len(moments)
-            status_rank = max(status_rank, STATUS_RANK.get(c.get("status", "new"), 0))
+            sub = subtopic_of(c)
+            if sub:
+                by_sub[sub] += len(moments)
+            if back is not None:
+                status_rank = max(status_rank, STATUS_RANK["in_progress"])
+                reopened_at = back if reopened_at is None or back > reopened_at else reopened_at
+            else:
+                status_rank = max(status_rank, STATUS_RANK.get(c.get("status", "new"), 0))
+            # Срок ответа (R09 due_at) — только у новых: «просрочено» по R09 = никто не ответил, а срок прошёл.
+            if c.get("status", "new") == "new" and back is None:
+                d = parse_time(c.get("due_at"))
+                if d is not None and (due is None or d < due):
+                    due = d
 
         state = "active"
         fixed_until = None
+        fixed_kind = None
+        checks = None
         if count == 0:
-            if t_fixed is not None and now < t_fixed + fixed_span:
-                state = "fixed"
-                fixed_until = t_fixed + fixed_span
-                closed = [(c, cr) for c, cr in rows if c.get("status") != "rejected" and cr <= t_fixed
-                          and cr >= t_fixed - timedelta(days=days)]
-                count = sum(people(c) for c, _ in closed)
-                for c, _ in closed:
-                    by_cat[c.get("category") or "other"] += people(c)
-            else:
+            if t_fixed is None:
                 continue
+            # Тот же ремонт — все исправленные за сутки до последнего (сотрудник закрывает жалобы места по одной).
+            round_ = [repairs[id(c)] for c, _ in rows if c.get("status") == "fixed" and id(c) not in reopened
+                      and repairs[id(c)] and repairs[id(c)][1] >= t_fixed - timedelta(days=1)]
+            verified = [r[1] for r in round_ if r[0] == "verified"]
+            if verified:
+                fixed_kind = "verified"
+                fixed_until = max(verified) + timedelta(days=config.verified_days())
+            else:
+                fixed_kind = "reported"
+                fixed_until = t_fixed + fixed_span
+            if now >= fixed_until:
+                continue
+            state = "fixed"
+            tally = {"yes": 0, "no": 0, "cant": 0}
+            for r in round_:
+                for k in tally:
+                    tally[k] += r[2][k]
+            checks = tally if any(tally.values()) else None
+            closed = [(c, cr) for c, cr in rows if c.get("status") != "rejected" and id(c) not in reopened
+                      and cr <= t_fixed and cr >= t_fixed - timedelta(days=days)]
+            count = sum(people(c) for c, _ in closed)
+            for c, _ in closed:
+                by_cat[c.get("category") or "other"] += people(c)
+                sub = subtopic_of(c)
+                if sub:
+                    by_sub[sub] += people(c)
+        elif reopened_at is not None:
+            tally = {"yes": 0, "no": 0, "cant": 0}
+            for c, _ in active:
+                r = repairs[id(c)]
+                if r and r[0] == "reopened":
+                    for k in tally:
+                        tally[k] += r[2][k]
+            checks = tally
 
         resolved = resolver.resolve(m["target"], m["point"])
         if not resolved:
@@ -213,7 +405,10 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
                 daily[idx] += 1
 
         level = config.level_for(weight) if state == "active" else "fixed"
-        color = config.color_for(level) if state == "active" else config.fixed_color
+        if state == "active":
+            color = config.color_for(level)
+        else:
+            color = config.state_color("verified_fixed" if fixed_kind == "verified" else "reported_fixed")
         status = "fixed" if state == "fixed" else ("new", "accepted", "in_progress")[status_rank]
         open_sorted = sorted(in_period, key=lambda x: x[1], reverse=True)
         label_ru = "Примерное место" if m["missing"] else resolved["label_ru"]
@@ -221,6 +416,12 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
         target_out = {"kind": key[0], "id": key[1], "label_ru": label_ru, "label_kk": label_kk}
         if resolved.get("subtype"):
             target_out["subtype"] = resolved["subtype"]   # например bus_stop → в карточке «Остановка»
+        subs = dict(sorted(by_sub.items(), key=lambda kv: -kv[1]))
+        top_sub = next(((sid, n) for sid, n in subs.items() if sid in (config.subtopics or {})), None)
+        if fixed_kind:
+            totals["fixed_" + fixed_kind] += 1
+        if state == "active" and reopened_at is not None:
+            totals["reopened"] += 1
         items.append({
             "target": target_out,
             "geometry": resolved["geometry"],
@@ -231,10 +432,18 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
             "count": count,
             "fixed_until": iso(fixed_until) if fixed_until else None,
             "state": state,
+            "fixed_kind": fixed_kind,              # reported | verified | None (волна 2, п. 1)
+            "reopened": state == "active" and reopened_at is not None,
+            "reopened_at": iso(reopened_at) if state == "active" and reopened_at is not None else None,
+            "checks": checks,                      # {yes, no, cant} — ответы жителей о последнем ремонте
             "status": status,
+            "due": deadline.response_due(due, now, ASTANA_TZ) if due is not None and state == "active" else None,
             "approximate": approximate,
             "district": m["district"],
             "by_category": dict(sorted(by_cat.items(), key=lambda kv: -kv[1])),
+            "subtopics": subs,                     # id уточнения → людей (R09 subtopic)
+            "top_subtopic": ({"id": top_sub[0], "ru": config.subtopics[top_sub[0]]["ru"], "kk": config.subtopics[top_sub[0]]["kk"],
+                              "count": top_sub[1]} if top_sub else None),
             "daily": daily,
             "last_at": iso(m["last"]),
             "open_ids": [c.get("id") for c, _ in open_sorted if c.get("id") and (actionable is None or actionable(c))][:MAX_OPEN_IDS],
@@ -242,6 +451,7 @@ def compute(complaints, *, now: datetime, days: int, config: HeatConfig, resolve
             "demo": all(bool(c.get("demo")) for c, _ in rows),
         })
 
+    stats.update(totals)
     items.sort(key=lambda it: (it["state"] == "active", it["level"] if it["state"] == "active" else 0, it["weight"], it["count"]), reverse=True)
     return {"items": items, "stats": stats}
 
@@ -304,7 +514,7 @@ def text_groups(complaints, *, kind: str, target_id: str, now: datetime, days: i
 
 
 def _rude(text: str) -> bool:
-    """Есть ли грубые слова (фильтр R04 ui.civic_ml_api.profanity); фильтр недоступен — False."""
+    """Есть ли грубые слова (фильтр R04 ui.civic_ml_api.profanity); фильтр недоступен — False. (R04, волна 1, п. 8)"""
     try:
         from ui.civic_ml_api.profanity import is_rude
     except Exception:
@@ -312,41 +522,53 @@ def _rude(text: str) -> bool:
     return is_rude(text)
 
 
-def districts_summary(target_items: list, config: HeatConfig) -> list:
-    """Мелкий масштаб: сумма по району. Пороги уровней умножены на DISTRICT_LEVEL_SCALE."""
+def districts_summary(target_items: list, config: HeatConfig, *, district: str | None = None) -> list:
+    """Мелкий масштаб: сумма по району. Пороги уровней умножены на DISTRICT_LEVEL_SCALE.
+    Район без единой жалобы за период — «нет свежих данных» (серый, волна 2): отсутствие жалоб не значит «всё хорошо».
+    Серый — только у районов (на крупном масштабе тысячи серых объектов перегрузили бы карту) и только у тех, что
+    проходят фильтр района."""
     acc: dict = {}
     for it in target_items:
         d = it.get("district")
         if not d:
             continue
-        a = acc.setdefault(d, {"weight": 0.0, "count": 0, "targets": 0, "fixed": 0, "top": None})
+        a = acc.setdefault(d, {"weight": 0.0, "count": 0, "targets": 0, "fixed": 0, "verified": 0, "reopened": 0, "top": None})
         if it["state"] == "fixed":
             a["fixed"] += 1
+            a["verified"] += 1 if it.get("fixed_kind") == "verified" else 0
             continue
         a["weight"] += it["weight"]
         a["count"] += it["count"]
         a["targets"] += 1
+        a["reopened"] += 1 if it.get("reopened") else 0
         if a["top"] is None or it["weight"] > a["top"]["weight"]:
             a["top"] = {"target": it["target"], "weight": it["weight"], "count": it["count"]}
     out = []
     all_d = geo.districts()
-    for d_id, a in acc.items():
-        d = all_d.get(d_id)
-        if not d:
+    no_data_color = config.state("no_data").get("color")
+    for d_id, d in all_d.items():
+        if district and d_id != district:
             continue
+        a = acc.get(d_id)
+        if a is None and not no_data_color:
+            continue
+        a = a or {"weight": 0.0, "count": 0, "targets": 0, "fixed": 0, "verified": 0, "reopened": 0, "top": None, "none": True}
         level = config.level_for(a["weight"], DISTRICT_LEVEL_SCALE) if a["count"] else 0
+        state = "no_data" if a.get("none") else ("active" if a["count"] else "calm")
         out.append({
             "target": {"kind": "district", "id": d_id, "label_ru": d["name_ru"], "label_kk": d["name_kk"]},
             "geometry": d["geometry"],
             "anchor": [round(v, 6) for v in geo.anchor_of(d["geometry"])],
             "weight": round(a["weight"], 3),
             "level": level,
-            "color": config.color_for(level),
+            "color": no_data_color if state == "no_data" else config.color_for(level),
             "count": a["count"],
             "fixed_until": None,
-            "state": "active" if a["count"] else "calm",
+            "state": state,
             "targets": a["targets"],
             "fixed_targets": a["fixed"],
+            "verified_targets": a["verified"],
+            "reopened_targets": a["reopened"],
             "top": a["top"],
             "district": d_id,
         })

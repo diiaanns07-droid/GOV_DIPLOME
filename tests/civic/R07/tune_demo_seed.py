@@ -51,7 +51,8 @@ def measure(seed: int):
     recs = demo_seed.demo_records(now=demo_seed.ANCHOR, seed=seed)
     heat = HeatService(source=lambda since: recs, clock=lambda: demo_seed.ANCHOR)
     s = AkimService(heat=heat, clock=lambda: demo_seed.ANCHOR).summary(now=demo_seed.ANCHOR)
-    k = {n: (v["value"], v["prev"]) for n, v in s["kpi"].items()}
+    # только числовые показатели {value, prev}: R08 кладёт в kpi и флаги (verification_available: bool) — R01 §13.2
+    k = {n: (v["value"], v["prev"]) for n, v in s["kpi"].items() if isinstance(v, dict) and "value" in v}
     d = {i["district"]: (i["value"], i["prev"]) for i in s["districts"]["items"]}
     return k, d, heat.heat(days=30)["items"]
 

@@ -3,6 +3,7 @@
 
 Без тепловой карты R07 (heat=False), кроме «Пульса» — ему цели карты передаются списком.
 """
+import json
 from datetime import date, datetime, timedelta
 
 import pytest
@@ -450,3 +451,40 @@ def test_gateway_functions_for_r01(tmp_path, monkeypatch):
     with pytest.raises(ValueError) as exc:
         api.decision_choose("c-nope", {"option": 1}, principal={"username": "akim1", "role": "staff"})
     assert (exc.value.status, exc.value.code) == (404, "not_found")
+
+
+# ---------------------------------------------------------------- R15 S27–S29 (ночь 11→12 окт)
+
+def test_r15_s28_public_answers_have_no_staff_login(tmp_path, monkeypatch):
+    from ui.civic_akim import api, routing
+    monkeypatch.setattr(routing, "OVERRIDE_PATH", tmp_path / "r.json")
+    monkeypatch.setattr(decisions, "STORE_PATH", tmp_path / "d.json")
+    routing.update({"rules": {"roads/marking": "road"}}, actor="ivanov.a")
+    assert "ivanov.a" not in json.dumps(routing.table()) and "updated_by" not in routing.table()
+    r = rec(1, age_days=20, category="roads", status="in_progress")
+    r["delay"] = _delay()
+    s = svc([r])
+    assert api.handle_post("/api/civic/v2/akim/decisions/c-r08-1", {"option": 1}, staff=True, actor="ivanov.a", service=s)[1]["chosen"]["by"] == "ivanov.a"
+    pub = s.summary(now=NOW)
+    assert pub["decisions"]["items"][0]["chosen"] == {"option": 1, "at": pub["decisions"]["items"][0]["chosen"]["at"]}
+    assert "ivanov.a" not in json.dumps(pub, ensure_ascii=False)
+
+
+def test_r15_s29_write_functions_need_staff_principal(tmp_path, monkeypatch):
+    from ui.civic_akim import api, routing
+    monkeypatch.setattr(routing, "OVERRIDE_PATH", tmp_path / "r.json")
+    with pytest.raises(PermissionError):
+        api.routing_update({"rules": {"roads": "akimat"}})
+    with pytest.raises(PermissionError):
+        api.decision_choose("c-demo-decision-1", {"option": 1})
+    assert not (tmp_path / "r.json").exists()
+
+
+def test_r15_s27_subscriptions_keep_only_device_hash(tmp_path):
+    from ui.civic_akim import nearby as nb
+    path, dev = tmp_path / "s.json", "d-abcdefghijklmnopqrstuvwx"
+    nb.subscribe(dev, "district", "nura", path=path)
+    raw = path.read_text("utf-8")
+    assert dev not in raw and nb.subscriptions(dev, path)[0]["id"] == "nura"
+    path.write_text(json.dumps({dev: [{"scope": "district", "id": "esil", "since": NOW.isoformat()}]}), "utf-8")
+    assert nb.subscriptions(dev, path)[0]["id"] == "esil"  # старый файл с сырым id читается и переводится

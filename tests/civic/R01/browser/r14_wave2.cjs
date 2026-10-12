@@ -382,6 +382,32 @@ async function main() {
     await page.screenshot({ path: path.join(OUT, "w2_375_nearby_kk.png") });
     check("no page errors (375, links)", page.errs.length === 0, page.errs);
     await ctx.close();
+
+    // ---------------------------------------------------------------- R10 B-051: phone place card
+    // Карточка места в шторке: главная кнопка видна без прокрутки, выбранный значок — над шторкой (375×667, оба вида).
+    for (const mode of ["resident", "akimat"]) {
+      ctx = await browser.newContext({ viewport: { width: 375, height: 667 }, isMobile: true, hasTouch: true });
+      page = await newPage(ctx);
+      await page.addInitScript((m) => { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", "ru"); }, mode);
+      await page.goto(base);
+      await ready(page);
+      await page.waitForFunction(() => window.CivicShell?.heat?.state?.().status === "ready", null, { timeout: 20000 }).catch(() => null);
+      await page.evaluate(() => window.CivicShell.heat.focusTarget("object", "osm-node-4109037549"));
+      await page.waitForSelector(".r07-card", { timeout: 10000 }).catch(() => null);
+      await page.waitForTimeout(2500);
+      const card = await page.evaluate(() => {
+        const panel = document.querySelector(".civic-panel").getBoundingClientRect();
+        const main = document.querySelector(".r07-card .r07-btn--primary, .r07-card .bk-btn--primary");
+        const m = main && main.getBoundingClientRect(), b = document.querySelector(".maplibregl-marker.r07-badge--selected");
+        const p = b && b.getBoundingClientRect();
+        return { main: main && main.textContent.trim(), mainVisible: !!m && m.top >= panel.top && m.bottom <= innerHeight,
+          placeAbove: !!p && p.bottom <= panel.top && p.top >= 0, sheetTop: Math.round(panel.top), badge: p && [Math.round(p.top), Math.round(p.bottom)] };
+      });
+      check(`375×667 ${mode}: place card — main button visible without scrolling, selected badge above the sheet (R10 B-051)`,
+        card.mainVisible && card.placeAbove, card);
+      await page.screenshot({ path: path.join(OUT, `w2_375x667_card_${mode}.png`) });
+      await ctx.close();
+    }
   } finally {
     await browser.close();
     srv.kill();

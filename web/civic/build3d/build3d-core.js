@@ -679,6 +679,43 @@
       target: raw.target && typeof raw.target === "object" ? raw.target : null,
       created_at: typeof raw.created_at === "string" ? raw.created_at : null,
       demo: raw.demo === true,
+      idea: ideaOf(raw),
+    };
+  }
+
+  // Проект по идее жителей (POLISH_WAVE_2 п. 7): R06 отдаёт ссылку на идею и число голосов за неё — модуль показывает
+  // «По идее жителей · 47 голосов». Принимаем {idea: {id, votes}}, {source: {kind: "idea", id, votes}} или плоские
+  // idea_id / idea_votes; ничего такого — null.
+  function ideaOf(raw) {
+    var src = raw.idea && typeof raw.idea === "object" ? raw.idea : raw.source && typeof raw.source === "object" && raw.source.kind === "idea" ? raw.source : null;
+    var id = src ? src.id : raw.idea_id;
+    var votes = src ? (src.votes != null ? src.votes : src.votes_up) : raw.idea_votes;
+    if (id == null && votes == null) return null;
+    votes = Number(votes);
+    return { id: id != null ? String(id) : null, votes: isFinite(votes) && votes >= 0 ? Math.round(votes) : null };
+  }
+
+  // Идея жителя на карте (слой «Идеи», POLISH_WAVE_2 п. 7): точка, по желанию — объект каталога 3D, голоса.
+  // Объекта нет — только метка «Идея». Неверная запись — null (её не рисуем).
+  function normalizeIdea(raw) {
+    if (!raw || typeof raw !== "object" || raw.id == null) return null;
+    var g = raw.geometry;
+    var pt = g && g.type === "Point" && isLngLat(g.coordinates) ? [Number(g.coordinates[0]), Number(g.coordinates[1])] : null;
+    var obj = raw.object && typeof raw.object === "object" ? raw.object : raw;
+    var kind = KINDS[obj.kind] && obj.kind !== "lighting" ? obj.kind : null; // идея с освещением — без модели (участок рисует проект)
+    var og = obj.geometry && obj.geometry.type === "Point" && isLngLat(obj.geometry.coordinates) ? [Number(obj.geometry.coordinates[0]), Number(obj.geometry.coordinates[1])] : null;
+    var at = og || pt;
+    if (!at) return null;
+    var votes = Number(raw.votes != null ? raw.votes : raw.votes_up);
+    return {
+      id: String(raw.id),
+      kind: kind,
+      geometry: { type: "Point", coordinates: at },
+      rotation_deg: normDeg(Number(obj.rotation_deg) || 0),
+      votes: isFinite(votes) && votes >= 0 ? Math.round(votes) : 0,
+      title: typeof raw.title === "string" ? raw.title : typeof raw.text === "string" ? raw.text : null,
+      status: typeof raw.status === "string" ? raw.status : "voting",
+      demo: raw.demo === true,
     };
   }
 
@@ -1178,6 +1215,7 @@
     toServerProposal: toServerProposal,
     toServerTarget: toServerTarget,
     kkStreetFromRu: kkStreetFromRu,
+    normalizeIdea: normalizeIdea,
     streetFromR12Label: streetFromR12Label,
     isMissingApi: isMissingApi,
     LOCAL_KEY: LOCAL_KEY,

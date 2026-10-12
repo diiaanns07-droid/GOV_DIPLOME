@@ -106,7 +106,7 @@ async function colorOnlyCheck(page) {
     const out = [];
     const z = map.getZoom();
     const feats = map.queryRenderedFeatures({ layers: ["r07-obj-halo-lo", "r07-obj-halo", "r07-obj-dot"].filter((l) => map.getLayer(l)) });
-    const shown = new Set([...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden).map((b) => b.title));
+    const shown = new Set([...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden).map((b) => b.dataset.label));
     if (z < 15) {
       const low = feats.filter((f) => f.properties.level < 3);
       if (low.length) out.push("на " + z.toFixed(1) + " видны объекты уровней 1–2 без числа: " + low.length);
@@ -130,11 +130,11 @@ async function colorOnlyCheck(page) {
         const keys = window.__heat.state().fittedKeys;
         const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
         const labels = d.items.filter((x) => keys.includes(x.target.kind + ":" + x.target.id)).map((x) => x.target.label_ru);
-        const badges = [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden && labels.includes(b.title));
+        const badges = [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden && labels.includes(b.dataset.label));
         const outside = badges.filter((b) => { const r = b.getBoundingClientRect(); return r.left < 0 || r.right > innerWidth || r.bottom > sheetTop || r.top < 56; });
-        return { fitted: keys.length, shown: badges.length, outside: outside.map((b) => b.title) };
+        return { fitted: keys.length, shown: badges.length, outside: outside.map((b) => b.dataset.label) };
       });
-      if (bad.fitted < 2) out.push("карта не подогнана под горячие места (№5)");
+      // view=nura — крупный план из ссылки: карта не подгоняется (подгонку под 10 мест проверяет open-fit-top10-*)
       if (bad.outside.length) out.push("горячие значки за краем или под шторкой (№5): " + bad.outside.join(", "));
       const inView = await page.evaluate(() => {
         const sheetTop = document.getElementById("panel").getBoundingClientRect().top;
@@ -143,6 +143,33 @@ async function colorOnlyCheck(page) {
       if (inView < 4) out.push("над шторкой видно мало значков (№5): " + inView);
       return out;
     });
+    // Просьба владельца, п. 1: при открытии карта вписывает 10 горячих мест из списка — список и карта совпадают
+    for (const size of ["desktop", "phone"]) {
+      await shot(browser, `open-fit-top10-${size === "desktop" ? 1366 : 375}-${lang}`, size, `?lang=${lang}&role=akimat&sheet=peek`, null, async (page) => {
+        const r = await page.evaluate(() => {
+          const st = window.__heat.state();
+          const list = [...document.querySelectorAll(".r07-item")].map((b) => b.dataset.key);
+          const map = window.__map, host = map.getContainer().getBoundingClientRect();
+          const panel = document.getElementById("panel").getBoundingClientRect();
+          const phone = innerWidth < 700;
+          const freeBottom = phone ? panel.top : innerHeight, freeRight = phone ? innerWidth : panel.left;
+          return { mode: st.mode, fitted: st.fittedKeys, list, freeBottom, freeRight, top: host.top };
+        });
+        const places = await page.evaluate(async (keys) => {
+          const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
+          return d.items.filter((x) => keys.includes(x.target.kind + ":" + x.target.id)).map((x) => {
+            const p = window.__map.project(x.anchor), host = window.__map.getContainer().getBoundingClientRect();
+            return { key: x.target.kind + ":" + x.target.id, x: host.left + p.x, y: host.top + p.y };
+          });
+        }, r.fitted);
+        const out = [];
+        if (r.fitted.length !== Math.min(10, r.list.length) || r.list.length < 3) out.push(`вписано ${r.fitted.length} мест, в списке ${r.list.length}`);
+        if (r.fitted.join() !== r.list.join()) out.push("вписаны не те места, что в списке");
+        const outside = places.filter((q) => q.x < 0 || q.x > r.freeRight || q.y < r.top || q.y > r.freeBottom);
+        if (outside.length) out.push("место из списка за краем видимой карты: " + outside.map((q) => q.key).join(", "));
+        return out;
+      });
+    }
     // Карточка акимата: контраст «Взять в работу» и «Что пишут жители» (№1, №4)
     await shot(browser, `card-akimat-1366-${lang}`, "desktop", `?lang=${lang}&view=nura`, async (page) => {
       await page.click(".r07-item");
@@ -187,7 +214,7 @@ async function colorOnlyCheck(page) {
         const bad = shown.filter((b) => { const x = b.getBoundingClientRect();
           const underLegend = !(x.right < leg.left || leg.right < x.left || x.bottom < leg.top || leg.bottom < x.top);
           return x.left < 0 || x.right > innerWidth || x.bottom > sheetTop || underLegend; });
-        return { total: all.length, shown: shown.length, bad: bad.map((b) => b.title) };
+        return { total: all.length, shown: shown.length, bad: bad.map((b) => b.dataset.label) };
       });
       const out = [];
       if (r.shown < r.total) out.push(`видно районов ${r.shown} из ${r.total}`);
@@ -282,7 +309,7 @@ async function colorOnlyCheck(page) {
   // слушатель map.on("click") — как адаптер R09 (complaint.js maplibreAdapter).
   for (const [size, lang] of [["desktop", "ru"], ["desktop", "kk"], ["phone", "ru"], ["phone", "kk"]]) {
     const w = size === "desktop" ? "1366" : "375";
-    await shot(browser, `pick-badge-${w}-${lang}`, size, `?lang=${lang}&role=resident&view=nura`, async (page) => {
+    await shot(browser, `pick-badge-${w}-${lang}`, size, (size === "phone" ? `?lang=${lang}&role=resident&view=nura&c=71.4061,51.1262&z=15.4` : `?lang=${lang}&role=resident&view=nura&z=15.4`), async (page) => {
       const pre = await page.evaluate(async () => {
         const map = window.__map;
         const css = document.createElement("style");
@@ -299,10 +326,10 @@ async function colorOnlyCheck(page) {
         if (!badge) return { error: "нет значка объекта в видимой части карты" };
         badge.id = "pick-me";
         const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
-        const it = d.items.find((x) => x.target.label_ru === badge.title || x.target.label_kk === badge.title);
+        const it = d.items.find((x) => x.target.label_ru === badge.dataset.label || x.target.label_kk === badge.dataset.label);
         const r = badge.getBoundingClientRect();
         // нажатие ближе к краю значка (не в центр) — всё равно точно в цель
-        return { x: r.left + r.width * 0.8, y: r.top + r.height * 0.5, anchor: it && it.anchor, title: badge.title };
+        return { x: r.left + r.width * 0.8, y: r.top + r.height * 0.5, anchor: it && it.anchor, title: badge.dataset.label };
       });
       if (pre.error) return pre;
       const hit = await page.evaluate((p) => { const el = document.elementFromPoint(p.x, p.y); const b = document.getElementById("pick-me"); return el === b || b.contains(el); }, pre);
@@ -336,7 +363,7 @@ async function colorOnlyCheck(page) {
 
   // Вместе с новым R09 (ветка R09 night, complaint.js): класс html.bc-picking и свой перехват нажатий по маркерам
   // в фазе захвата. Нажатие по значку должно дать ровно ОДИН выбор места, карточка R07 не открывается.
-  await shot(browser, "pick-with-r09-capture-1366-ru", "desktop", "?lang=ru&role=resident&view=nura", async (page) => {
+  await shot(browser, "pick-with-r09-capture-1366-ru", "desktop", "?lang=ru&role=resident&view=nura&z=15.4", async (page) => {
     const pre = await page.evaluate(() => {
       const map = window.__map, container = map.getContainer();
       document.documentElement.classList.add("bc-picking");
@@ -392,7 +419,7 @@ async function colorOnlyCheck(page) {
       const hit = [...document.querySelectorAll(".r07-badge")].filter((x) => !x.hidden).filter((x) => {
         const r = x.getBoundingClientRect();
         return Math.min(r.right, fr.right) - Math.max(r.left, fr.left) > 2 && Math.min(r.bottom, fr.bottom) - Math.max(r.top, fr.top) > 2;
-      }).map((x) => x.title);
+      }).map((x) => x.dataset.label);
       return { key: b.key, overlapping: hit };
     });
   }, async (page, m, x) => (x.overlapping.length ? ["значок R07 поверх чужой таблички: " + x.overlapping.join(", ")] : []));
@@ -405,9 +432,9 @@ async function colorOnlyCheck(page) {
       return { visible: vis.length, tabbable: vis.filter((b) => b.tabIndex === 0).length };
     });
     await page.focus('.r07-badge[tabindex="0"]');
-    const first = await page.evaluate(() => document.activeElement.title);
+    const first = await page.evaluate(() => document.activeElement.dataset.label);
     await page.keyboard.press("ArrowRight");
-    const second = await page.evaluate(() => ({ title: document.activeElement.title, badge: document.activeElement.classList.contains("r07-badge"),
+    const second = await page.evaluate(() => ({ title: document.activeElement.dataset.label, badge: document.activeElement.classList.contains("r07-badge"),
       tabbable: [...document.querySelectorAll(".r07-badge")].filter((b) => b.tabIndex === 0).length }));
     await page.keyboard.press("Enter");
     await page.waitForTimeout(500);
@@ -741,7 +768,7 @@ async function colorOnlyCheck(page) {
         const res = await r.fetch();
         const d = await res.json();
         const it = d.items.find((x) => x.state === "active");
-        if (it) { it.examples_open = it.open_ids.length; it.open_ids = []; }
+        if (it && it.open_ids) { it.examples_open = it.open_ids.length; it.open_ids = []; }
         await r.fulfill({ response: res, json: d });
       }));
     await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });

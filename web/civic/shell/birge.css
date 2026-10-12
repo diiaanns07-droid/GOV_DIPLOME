@@ -337,7 +337,10 @@ body.civic-mode[data-birge-explore="header"] .civic-explore #map-status {
 
 /* Режим «Проекты» (читаемость карты п. 3): 3D-проекты R05, «Что построить?» и подсказка о голосовании — только когда
    включён слой «Проекты» (кнопка «слои» у кнопок карты, shell.js registerLayer). По умолчанию — жалобы и работы города. */
-body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root { display: none !important; }
+body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root:not(:has(.b3d[data-b3d-picking])) { display: none !important; }
+/* Эскиз к идее (R06 зовёт CivicShell.build3d.pickObject(), волна 2 п. 7): каталог «Объект из каталога» и «Готово» R05
+   видны и при выключенном слое «Проекты» (проекты при этом скрыты самим R05); кнопка «Что построить?» — не к месту. */
+.birge-build3d-root:has(.b3d[data-b3d-picking]) .birge-b3d-toggle { display: none; }
 
 /* Компактная легенда (читаемость карты п. 3): ступени цвета одной строкой, «?» раскрывает заголовок и пояснения.
    Контейнер — оболочки (shell.js legendHost), сама легенда — R07 (legendContainer), здесь она без своей позиции. */
@@ -347,8 +350,17 @@ body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root { display: n
 .birge-legend[data-open="false"] .r07-maplegend .r07-legend__title,
 .birge-legend[data-open="false"] .r07-maplegend .r07-legend__hint { display: none; }
 @media (min-width: 761px) {
-  .birge-legend[data-open="false"] .r07-maplegend ul { flex-wrap: nowrap; white-space: nowrap; gap: 0 10px; }
+  /* Строка цветов по содержимому до 640 px и не под правую панель (400 + 20 + отступы); шестой пункт волны 2
+     («служба сообщила») переносится на вторую строку, а не обрезается; «?» всегда рядом (R11 разбор 13, п. 1). */
+  .birge-legend { max-width: min(640px, calc(100% - 456px)); }
+  .birge-legend .r07-maplegend { flex: 0 1 auto; min-width: 0; }
+  .birge-legend[data-open="false"] .r07-maplegend ul { flex-wrap: wrap; white-space: nowrap; gap: 4px 10px; }
   .birge-legend[data-open="false"] .r07-maplegend { padding: 8px 12px; }
+  /* Сообщения R07 («Взято в работу», «Отмечено исправленным») — над легендой и кнопкой «Сообщить о проблеме», не на них. */
+  .civic-mode .r07-toasts { bottom: 96px; }
+}
+@media (min-width: 761px) and (max-width: 1279px) {
+  body[data-birge-mode="resident"].civic-mode .r07-toasts { bottom: 148px; }  /* легенда здесь над главной кнопкой */
 }
 .birge-legend-q { flex: 0 0 auto; width: 48px; height: 48px; border: 0; border-radius: 50%; cursor: pointer;
   background: var(--c-surface, #fff); color: var(--c-ink, #152c26); font: 700 18px/1 var(--b-font, system-ui, sans-serif);
@@ -423,3 +435,13 @@ body:has(#birge-header .birge-more-menu:not([hidden])) .topbar { z-index: 45; }
 body.birge-report-open #birge-heat-root, body.birge-report-open .civic-works { display: none; }
 /* …и кнопка «Сообщить о проблеме» R09 не перекрывает главную кнопку паспорта (как при карточке R07). */
 body.birge-report-open .bc-fab { display: none !important; }
+/* R10 B-051 (телефон): карточка места в шторке «наполовину» — статус и главная кнопка («Я тоже», «Взять в работу») видны
+   без прокрутки. Пока карточка открыта: заголовок «Карта жалоб» над ней и подвал «Для сотрудников» скрыты, шторка выше
+   (56 % вместо 46 %; без анимации — камера оболочки сразу считает свободную часть карты по новой высоте). */
+@media (max-width: 760px) {
+  body:has(#birge-heat-root .r07-card) #birge-heat-root .r07-head { display: none; }
+  body.civic-mode:has(#birge-heat-root .r07-card) .civic-foot { display: none; }
+  .civic-mode .civic-panel[data-sheet="half"]:has(#birge-heat-root .r07-card) { height: 56%; transition: none; }
+  /* подпись © OpenStreetMap (ODbL) — над поднятой шторкой, как при обычной */
+  body.civic-mode:not([data-civic-drawer="open"]):has(.civic-panel[data-sheet="half"] #birge-heat-root .r07-card) .maplibregl-ctrl-bottom-right { bottom: calc(56% + 6px); transition: none; }
+}

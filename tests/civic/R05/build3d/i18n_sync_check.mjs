@@ -35,11 +35,12 @@ const file = JSON.parse(await readFile(path.join(OUT, "i18n_build3d.json"), "utf
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const diffs = [];
+const fresh = []; // новые ключи R05, которых в словаре R11 ещё нет (переданы в INTEGRATION) — не расхождение
 let n = 0;
 for (const l of ["ru", "kk"]) {
   for (const [k, v] of Object.entries(STRINGS[l])) {
     n++;
-    if (dict[l][k] === undefined) diffs.push({ where: "module", lang: l, key: k, module: v, r11: null });
+    if (dict[l][k] === undefined) fresh.push({ lang: l, key: k, module: v });
     else if (!same(v, dict[l][k])) diffs.push({ where: "module", lang: l, key: k, module: v, r11: dict[l][k] });
   }
   for (const [k, v] of Object.entries(COMMON[l])) {
@@ -52,6 +53,7 @@ for (const l of ["ru", "kk"]) {
   }
 }
 for (const d of diffs) console.log("DIFF " + JSON.stringify(d));
+for (const f of fresh) console.log("NEW  " + JSON.stringify(f));
 const report = {
   generated_at: new Date().toISOString(),
   r11: LABEL,
@@ -59,8 +61,9 @@ const report = {
   common_fallback_keys: Object.keys(COMMON.ru).length,
   compared: n,
   diffs,
+  new_for_r11: fresh,
   status: diffs.length ? "FAIL" : "PASS",
 };
 await writeFile(path.join(OUT, "runs", "i18n_sync_r11.json"), JSON.stringify(report, null, 1) + "\n");
-console.log(`${report.status} — ключей build3d ${report.build3d_keys}, общих запасных ${report.common_fallback_keys}, сравнений ${n}, расхождений ${diffs.length}`);
+console.log(`${report.status} — ключей build3d ${report.build3d_keys}, общих запасных ${report.common_fallback_keys}, сравнений ${n}, расхождений ${diffs.length}, новых для R11 ${fresh.length}`);
 process.exit(diffs.length ? 1 : 0);

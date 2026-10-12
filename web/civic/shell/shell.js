@@ -391,6 +391,13 @@
         if (r.width > 0 && r.height > 0) rects.push(r);
       }
     }
+    // Плашки и кнопки оболочки поверх карты: значок R07 не встаёт под «Аймақ», кнопки карты, легенду и край шторки
+    // (R07 868de08 приближает карту к районам — на 375 «Байқоңыр» уходил под «Аймақ», «Есіл» — под ручку шторки; R11).
+    for (const el of document.querySelectorAll(".civic-explore, .map-tools, #birge-legend, #civic-panel, #civic-sheet-handle, #map-status")) {
+      if (!el.getClientRects().length || getComputedStyle(el).visibility === "hidden") continue;
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) rects.push(r);
+    }
     return rects;
   }
   // Компактная легенда (читаемость карты п. 3): ступени цвета одной строкой поверх карты, «?» — заголовок и пояснения.
@@ -543,7 +550,9 @@
         api: window.BirgeShell?.api,
         // Шапка, «Территория», панель/шторка и кнопки карты лежат поверх карты: открыв карточку проекта, R05 ставит
         // объект в свободную часть карты, а не под них.
-        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools"),
+        // Легенда тепловой карты тоже: на телефоне она строкой под «Территорией» — призрак и табличка поставленного
+        // проекта (R10 B-041) встают ниже неё, а не под неё.
+        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools, #birge-legend"),
         // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
         onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
         // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —
@@ -945,6 +954,27 @@
     m.once("moveend", () => setTimeout(run, 60));
     setTimeout(run, 1600);  // R03 may not move the camera at all
   }
+
+  // Телефон, карточка места R07 (R10 B-051): шторка с карточкой выше (56 %, birge.css), а R07 ставит место в центр экрана —
+  // значок оказывался под шторкой. После выбора (и конца перелёта) — сдвиг в свободную часть карты над шторкой.
+  function keepHeatSelection() {
+    const m = currentMap();
+    if (!m || innerWidth >= 761) return;
+    const seq = ++S.keepSeq;
+    const run = () => {
+      if (seq !== S.keepSeq || m.isMoving()) return;
+      const el = document.querySelector(".maplibregl-marker.r07-badge--selected");
+      if (!el || el.hidden) return;
+      const r = el.getBoundingClientRect(), c = m.getContainer().getBoundingClientRect(), pad = freeArea();
+      const x = r.left + r.width / 2 - c.left, y = r.top + r.height / 2 - c.top;
+      const free = { l: pad.left, t: pad.top, r: c.width - pad.right, b: c.height - pad.bottom };
+      if (x >= free.l && x <= free.r && y >= free.t && y <= free.b) return;
+      m.panBy([x - (free.l + free.r) / 2, y - (free.t + free.b) / 2], { duration: motionSafe() ? 350 : 0 });
+    };
+    if (m.isMoving()) m.once("moveend", () => setTimeout(run, 60)); else setTimeout(run, 80);
+    setTimeout(run, 1300);  // перелёт R07 мог закончиться без moveend
+  }
+  document.addEventListener("birge:heat-select", (event) => { if (event.detail?.target) keepHeatSelection(); });
 
   // The navigation box names what the camera shows; an open record overrides it until the card closes.
   // render — функция, дающая строку на текущем языке: при ҚАЗ/РУС строка пересчитывается (relabelShell).

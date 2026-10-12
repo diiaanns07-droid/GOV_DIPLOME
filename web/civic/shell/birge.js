@@ -494,11 +494,16 @@
   // Места мало (меню из 5 пунктов, ҚАЗ) — по ступеням: прячется подзаголовок «Город и жители вместе» (название
   // остаётся), кнопки меню плотнее (отступ 8 px вместо 12), поиск улицы сворачивается в лупу (поле — под шапкой по
   // нажатию). Не хватает и так или телефон — панель остаётся на карте, как была.
+  // Полный вид — поле улицы не уже 200 px (R11 разбор 8, п. 2: при 65 px подсказка «Астана кө» обрезана):
+  // район 150 + 8 + поле 200 + 4 + лупа 48 = 410. Компактный — район 150 + 8 + лупа 48; поле по лупе — 320 px под шапкой.
+  const EXPLORE_FULL = 410, EXPLORE_COMPACT = 206;
   const EXPLORE_STEPS = [
-    { brand: null, nav: null, size: "full", min: 300 },
-    { brand: "short", nav: null, size: "full", min: 300 },
-    { brand: "short", nav: "tight", size: "full", min: 300 },
-    { brand: "short", nav: "tight", size: "compact", min: 206 },  // район 150 + 8 + лупа 48
+    { brand: null, nav: null, size: "full", min: EXPLORE_FULL },
+    { brand: "short", nav: null, size: "full", min: EXPLORE_FULL },
+    { brand: "short", nav: "tight", size: "full", min: EXPLORE_FULL },
+    { brand: null, nav: null, size: "compact", min: EXPLORE_COMPACT },
+    { brand: "short", nav: null, size: "compact", min: EXPLORE_COMPACT },
+    { brand: "short", nav: "tight", size: "compact", min: EXPLORE_COMPACT },
   ];
   function setExploreStep(step) {
     const d = document.body.dataset;
