@@ -116,7 +116,7 @@
   "Сценарий идёт с CIVIC_DEMO=1 (как run-city.bat); --no-demo — без синтетического набора R07.",
   "Проверка «Tab до главной кнопки» ограничена 40 нажатиями: с демо-набором R07 главная кнопка дальше (B-025)."
  ],
- "next_step": "Когда R01/R07/R08/R09 вставят стекло: glass_check.cjs --root <сборка> --sizes 1366x768,1024x768,375x812 --control <f94f0fc> + demo_flow --audit + compare против baseline_8e67c65 → ACCEPTANCE_FINAL3.md §7; B-067 — проверить после шага R01 с R07 9899c30c",
+ "next_step": "Идёт приёмка сборки со стеклом R01 61be62e6: glass_check (1366/1024/375 × ru/kk), сценарий --audit + сравнение с эталоном, FPS стекло/bk-glass-off/3d8c426f, волны → ACCEPTANCE_FINAL3.md §8",
  "night_11_12": {
   "baseline": "research/round-14-results/R10/baseline_8e67c65/ (README.md: состав, пороги, порядок сравнения FINAL-2)",
   "scripts": [
@@ -175,7 +175,7 @@
  },
  "for_R01": {
   "final3_candidate": "3d8c426f (шаг 14), f94f0fc и 2f643dc приняты R10 (ACCEPTANCE_FINAL3.md §0а, §0)",
-  "R10_tests_to_take": "tests/e2e/ и tests/civic/R10/ с claude/r14-R10 (последний SHA — STATUS R10): шапка FINAL-3, форма «что сделали», легенда строкой, P-12 телефона, «Идеи», «Вопрос акиму», сверка интерфейса --audit",
+  "R10_tests_to_take": "tests/e2e/ и tests/civic/R10/ с claude/r14-R10 @ 999aa085 или новее: glass_check.cjs исправлен по замечаниям R01 24.5 (Range текста, ожидание <html>, поле-фильтр ≠ форма; INTEGRATION R10 §5); шапка FINAL-3, форма «что сделали», легенда строкой, P-12, «Идеи», «Вопрос акиму», --audit",
   "baseline": "research/round-14-results/R10/baseline_8e67c65/ (+ audit/, ACCEPTED.json: шаг 2 и 6, r07-seg-dashed, переименование проверки шрифта)",
   "open_for_others": "R07 — B-067 (9899c30c, взять в сборку), B-065 частично; R08 — B-059; R11 — --glass-text-2 потемнее на шаг (на чёрном 4,1–4,5:1); R08 — свой белый фон .akim-hot__list на телефоне закрывает стекло",
   "glass": "Стекла в сборке нет. Перед вставкой: убрать свой фон #birge-header (birge.css:7 background: transparent — ID сильнее .bk-glass, запасной белый ui-kit не работает); у #map-status на стекле — тёмный текст (№7); замер к/с для №8 в облаке всегда < 30 (программный WebGL) — выключатель сработает в облаке, на ноутбуке — замер Codex М9. Проверка: tests/e2e/glass_check.cjs (RUN.txt).",
