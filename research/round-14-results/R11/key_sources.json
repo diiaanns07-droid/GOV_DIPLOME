@@ -1033,5 +1033,7 @@
  "uikit.demo.answer": "R11 · витрина ui-kit, пример ответа",
  "idea.tab.voting": "R06 · «Идеи», вкладка (коротко, вместо idea.status.voting)",
  "idea.tab.project": "R06 · «Идеи», вкладка",
- "idea.tab.rejected": "R06 · «Идеи», вкладка"
+ "idea.tab.rejected": "R06 · «Идеи», вкладка",
+ "qr.form.base_other": "R12 · листы QR (web/civic/qr/print.js), предупреждение R15-S25 до печати",
+ "map.attrib.toggle": "R01 · web/map.js, кнопка «i» MapLibre (aria-label и подсказка)"
 }
