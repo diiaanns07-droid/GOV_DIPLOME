@@ -1,0 +1,11 @@
+/* Пробное R01 №1–7 (GLASS.md §4): у элементов оболочки свой фон и рамку убрать — фон даёт стекло ui-kit.
+   Только когда стекло включено (не трогает запасной вид). Это проба R10, не код R01. */
+@media not (prefers-reduced-transparency: reduce) {
+  html:not(.bk-glass-off) :is(#birge-header, #birge-account, .birge-more-menu, #birge-layer, .birge-legend-line, #civic-panel, #birge-screen, #birge-day, #map-status).bk-glass {
+    background-color: var(--glass-panel) !important; background-image: var(--glass-highlight) !important; border-color: transparent !important; }
+  html:not(.bk-glass-off) :is(#birge-locate, #toggle-3d, #birge-layer-btn, #birge-compass, .bk-mapctl__group, .birge-legend-q).bk-glass--control:not([aria-pressed="true"]):not([aria-expanded="true"]) {
+    background-color: var(--glass-control) !important; }
+}
+:is(#birge-header, #birge-account, .birge-more-menu, #birge-layer, .birge-legend-line, #civic-panel, #birge-screen, #birge-day, #map-status).bk-glass { border: 0 !important; }
+/* R01 №7: плашка карты на стекле — тёмный текст */
+html:not(.bk-glass-off) #map-status.bk-glass { color: var(--c-ink, #152c26) !important; }

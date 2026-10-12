@@ -1,0 +1,3 @@
+/* Плохое стекло (контроль проверки): 45 % белого, серый текст #8a958f в панели и легенде */
+html:not(.bk-glass-off) :is(#birge-header, #civic-panel, .birge-legend-line, #birge-day, #birge-screen).bk-glass { background-color: rgba(255,255,255,.45) !important; background-image: none !important; }
+#civic-panel.bk-glass *, .birge-legend-line.bk-glass * { color: #8a958f !important; }

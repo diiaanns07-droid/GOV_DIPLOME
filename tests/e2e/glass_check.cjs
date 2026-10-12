@@ -116,10 +116,14 @@ const SCAN = () => {
     }
     const shown = Math.max(0, cl.r - cl.l) * Math.max(0, cl.b - cl.t) / Math.max(1, r.width * r.height);
     if (shown < 0.6 || fade < 0.98) continue;
-    // Надпись видна сверху (не закрыта другим элементом): в середине — она сама.
-    const hx = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1), hy = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
-    const hit = document.elementFromPoint(hx, hy);
-    if (!hit || !(hit === e || e.contains(hit) || hit.contains(e))) continue;
+    // Надпись открыта целиком (не закрыта кнопкой, другой панелью): сетка 5 × 3 точек в видимой части — везде она сама.
+    let open = true;
+    for (let i = 0; i < 5 && open; i++) for (let j = 0; j < 3 && open; j++) {
+      const hx = Math.min(Math.max(cl.l + (cl.r - cl.l) * (0.1 + 0.2 * i), 0), innerWidth - 1), hy = Math.min(Math.max(cl.t + (cl.b - cl.t) * (0.2 + 0.3 * j), 0), innerHeight - 1);
+      const hit = document.elementFromPoint(hx, hy);
+      if (!hit || !(hit === e || e.contains(hit) || hit.contains(e))) open = false;
+    }
+    if (!open) continue;
     e.setAttribute("data-r10t", String(n));
     texts.push({ n: n++, text: own.slice(0, 40), x: cl.l, y: cl.t, w: cl.r - cl.l, h: cl.b - cl.t, color: c, fs: parseFloat(cs.fontSize), bold: Number(cs.fontWeight) >= 600, glass: name(g) });
   }
