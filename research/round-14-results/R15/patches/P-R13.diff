@@ -1,0 +1,156 @@
+diff --git a/tests/civic/R13/qa/test_r13_qa.py b/tests/civic/R13/qa/test_r13_qa.py
+index ad23d6d4..ad82f01c 100644
+--- a/tests/civic/R13/qa/test_r13_qa.py
++++ b/tests/civic/R13/qa/test_r13_qa.py
+@@ -291,7 +291,7 @@ def test_public_view_has_no_device_staff_login_or_reject_reason(demo):
+     _s, page = call(demo, "GET", "/questions", query="tab=new&device_id=" + DEV_A)
+     for q in page["items"]:
+         assert set(q) == {"id", "text", "lang", "district", "votes", "published_at", "answer", "demo", "my_vote"}
+-        assert q["answer"] is None or set(q["answer"]) == {"ru", "kk", "answered_at"}
++        assert q["answer"] is None or set(q["answer"]) == {"ru", "kk", "answered_at", "edited_at"}  # R15-S39
+     blob = repr(page)
+     assert "device_hash" not in blob and "editor" not in blob and "moderated" not in blob
+ 
+diff --git a/ui/civic_qa/service.py b/ui/civic_qa/service.py
+index e47ef52e..78848ebf 100644
+--- a/ui/civic_qa/service.py
++++ b/ui/civic_qa/service.py
+@@ -33,15 +33,15 @@ NOTE_MAX = 200
+ WEEKLY_TOP = 5  # «Раз в неделю аким отвечает на 5 вопросов с наибольшим числом голосов» (ask.rule)
+ LIST_LIMIT = 30
+ REJECT_REASONS = ("personal_data", "rude", "not_question", "duplicate", "other")
+-DEVICE_RE = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
+-REQUEST_RE = re.compile(r"^[A-Za-z0-9._:-]{8,64}$")
+-ID_RE = re.compile(r"^q-[a-z0-9-]{4,40}$")
++DEVICE_RE = re.compile(r"[A-Za-z0-9._:-]{8,128}\Z")
++REQUEST_RE = re.compile(r"[A-Za-z0-9._:-]{8,64}\Z")
++ID_RE = re.compile(r"q-[a-z0-9-]{4,40}\Z")
+ ASTANA = timezone(timedelta(hours=5))
+ 
+ # Подсказка модератору «похоже на личные данные» (сам вопрос не меняем: решает человек, причина — personal_data).
+ PII_PATTERNS = (
+-    ("phone", re.compile(r"(?<!\d)(?:\+?7|8)[\s(-]*\d{3}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}(?!\d)")),
+-    ("iin", re.compile(r"(?<!\d)\d{12}(?!\d)")),
++    ("phone", re.compile(r"(?<![\d+])(?:(?:\+\s*)?[78][\s(-]*)?7(?:[\s().-]{0,2}\d){9}(?!\d)")),
++    ("iin", re.compile(r"(?<!\d)(?:\d[\s-]?){11}\d(?!\d)")),
+     ("email", re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")),
+ )
+ 
+@@ -219,8 +219,8 @@ class QuestionService:
+         return {
+             "id": row["id"], "text": row["text"], "lang": row["lang"], "district": row["district"],
+             "votes": int(row.get("votes") or 0), "published_at": row.get("published_at"),
+-            "answer": ({"ru": row.get("answer_ru"), "kk": row.get("answer_kk"), "answered_at": row["answered_at"]}
+-                       if answered else None),
++            "answer": ({"ru": row.get("answer_ru"), "kk": row.get("answer_kk"), "answered_at": row["answered_at"],
++                        "edited_at": row.get("answer_edited_at")} if answered else None),
+             "demo": bool(row.get("demo")), "my_vote": bool(mine),
+         }
+ 
+@@ -257,6 +257,8 @@ class QuestionService:
+                                                                                     "text_max": TEXT_MAX}})
+ 
+     def create(self, body: dict, context) -> dict:
++        if context.get("host_allowed") is False or context.get("is_same_origin") is False:
++            raise ApiError(403, "forbidden", "Запрос с чужого сайта отклонён.")
+         device = self._device(body, context)
+         text = clean_text(body.get("text"), field="text", low=TEXT_MIN, high=TEXT_MAX)
+         district = self._district(body.get("district"), required=True)
+diff --git a/ui/civic_qa/store.py b/ui/civic_qa/store.py
+index 196e2c7d..bb78e702 100644
+--- a/ui/civic_qa/store.py
++++ b/ui/civic_qa/store.py
+@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS qa_votes (
+ # Сколько голосов у вопроса: демо-основа + настоящие голоса устройств.
+ _VOTES = "(q.base_votes + (SELECT COUNT(*) FROM qa_votes v WHERE v.question_id = q.id))"
+ _COLUMNS = ("id, text, lang, district, status, created_at, published_at, rejected_at, reject_reason, reject_note, "
+-            "device_hash, answer_ru, answer_kk, answered_at, demo")
++            "device_hash, answer_ru, answer_kk, answered_at, answer_edited_at, demo")
+ 
+ 
+ def utc_now() -> datetime:
+@@ -92,6 +92,9 @@ class QuestionStore:
+         self._write = threading.Lock()
+         with self._read() as conn:
+             conn.executescript(SCHEMA)
++            # R15-S39: правка ответа видна всем (дата правки); базы до этого поля получают его здесь.
++            if "answer_edited_at" not in {r[1] for r in conn.execute("PRAGMA table_info(qa_questions)")}:
++                conn.execute("ALTER TABLE qa_questions ADD COLUMN answer_edited_at TEXT")
+         with self._tx() as conn:
+             conn.execute("INSERT OR IGNORE INTO qa_meta (key, value) VALUES ('device_salt', ?)", (secrets.token_hex(16),))
+             self._salt = conn.execute("SELECT value FROM qa_meta WHERE key = 'device_salt'").fetchone()[0]
+@@ -199,7 +202,8 @@ class QuestionStore:
+                 raise LookupError(question_id)
+             if row["status"] == "rejected":
+                 raise Conflict("already_moderated", "Вопрос уже отклонён.")
+-            if row["answered_at"]:
++            # Личные данные снимаем и после ответа (закон о персональных данных); по другим причинам — нет.
++            if row["answered_at"] and reason != "personal_data":
+                 raise Conflict("answered", "На этот вопрос уже ответили — его нельзя снять.")
+             conn.execute("UPDATE qa_questions SET status = 'rejected', rejected_at = ?, reject_reason = ?, "
+                          "reject_note = ?, moderated_by = ? WHERE id = ?",
+@@ -207,16 +211,25 @@ class QuestionStore:
+         return self.get(question_id)
+ 
+     def answer(self, question_id: str, answer_ru: str | None, answer_kk: str | None, actor: str) -> dict:
+-        """Ответ акима на опубликованный вопрос. Повторный ответ правит текст, дата первого ответа сохраняется."""
++        """Ответ акима на опубликованный вопрос. Повторный ответ правит текст, дата первого ответа сохраняется.
++
++        R15-S39: правка не стирает автора первого ответа (answered_by) и второй язык, если его не прислали; дата
++        правки (answer_edited_at) видна жителям — тихо переписать ответ акима нельзя."""
+         with self._tx() as conn:
+-            row = conn.execute("SELECT status, answered_at FROM qa_questions WHERE id = ?", (question_id,)).fetchone()
++            row = conn.execute("SELECT status, answered_at, answer_ru, answer_kk FROM qa_questions WHERE id = ?",
++                               (question_id,)).fetchone()
+             if row is None:
+                 raise LookupError(question_id)
+             if row["status"] != "published":
+                 raise Conflict("not_published", "Сначала опубликуйте вопрос.")
+-            conn.execute("UPDATE qa_questions SET answer_ru = ?, answer_kk = ?, answered_at = ?, answered_by = ? "
+-                         "WHERE id = ?", (answer_ru, answer_kk, row["answered_at"] or iso(self.now()), actor,
+-                                          question_id))
++            new_ru = answer_ru if answer_ru is not None else row["answer_ru"]
++            new_kk = answer_kk if answer_kk is not None else row["answer_kk"]
++            edited = bool(row["answered_at"]) and (new_ru, new_kk) != (row["answer_ru"], row["answer_kk"])
++            conn.execute("UPDATE qa_questions SET answer_ru = ?, answer_kk = ?, answered_at = ?, "
++                         "answered_by = COALESCE(answered_by, ?), "
++                         "answer_edited_at = CASE WHEN ? THEN ? ELSE answer_edited_at END WHERE id = ?",
++                         (new_ru, new_kk, row["answered_at"] or iso(self.now()), actor, int(edited), iso(self.now()),
++                          question_id))
+         return self.get(question_id)
+ 
+     def seed(self, rows: list[dict]) -> int:
+diff --git a/web/civic/qa/qa.js b/web/civic/qa/qa.js
+index 160744aa..5e76f187 100644
+--- a/web/civic/qa/qa.js
++++ b/web/civic/qa/qa.js
+@@ -269,13 +269,15 @@
+     return Array.prototype.map.call(arr, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+   }
+   // Тот же id устройства, что у формы жалобы R09: «одно устройство — один голос» (R15 S08; в базе — только хэш).
++  var memoryDevice = null; // хранилище недоступно — один id на страницу (как report.js R12), а не новый на каждый запрос
+   function deviceId() {
+     var id = storage(DEVICE_KEY);
+-    if (!id || !/^[A-Za-z0-9._:-]{8,128}$/.test(id)) {
+-      id = "d-" + randomHex(12);
+-      storage(DEVICE_KEY, id);
++    if (id && /^[A-Za-z0-9._:-]{8,128}$/.test(id)) return id;
++    if (!memoryDevice) {
++      memoryDevice = "d-" + randomHex(12);
++      storage(DEVICE_KEY, memoryDevice);
+     }
+-    return id;
++    return memoryDevice;
+   }
+   function toast(text, type) {
+     if (root.BirgeUI && typeof root.BirgeUI.toast === "function") root.BirgeUI.toast(text, type ? { type: type } : {});
+@@ -699,6 +701,9 @@
+       } else {
+         row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "ans-" + q.id,
+           onclick: function () { openPanel(q, "answer"); } }, [icon("edit"), tr("ask.staff.answer")]));
++        // Снять отвеченный вопрос можно только по причине «личные данные» (сервер отвечает 409 на другие причины).
++        row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "rej-" + q.id,
++          onclick: function () { openPanel(q, "reject"); }, text: tr("ask.staff.reject") }));
+       }
+       return row;
+     }
