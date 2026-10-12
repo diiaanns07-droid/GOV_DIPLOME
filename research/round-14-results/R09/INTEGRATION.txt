@@ -1,7 +1,7 @@
 R09 · РАУНД 14 · INTEGRATION — ДИЗАЙН-МАРАФОН (12–14 окт; сначала этот раздел, ниже — «FINAL-3, стекло» и раньше)
-Ветка R09: claude/modest-shannon-0ki93p, код — DELIVERY.json (code_sha). Только вид, движение, состояния и тексты; логика,
+Ветка R09: claude/modest-shannon-0ki93p, код 3546567 (DELIVERY.json). Только вид, движение, состояния и тексты; логика,
 API и сценарий демо не менялись; новых ключей словаря нет. Журнал и кадры «до/после» — DESIGN_R09.md, design/.
-    git checkout <code_sha> -- ui/civic_feedback web/civic/feedback tests/civic/R09
+    git checkout 3546567 -- ui/civic_feedback web/civic/feedback tests/civic/R09
 M1) R01: патчей нет. Что R09 делает с чужими элементами (только CSS, на время открытой панели R09):
     - html.bc-open / html.bc-mine-open → .civic-panel { visibility: hidden } — одна панель/шторка над картой
       (на телефоне не две шторки одна над другой; под стеклом «Моих обращений» нет размытого списка R07);

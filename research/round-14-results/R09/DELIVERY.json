@@ -1,20 +1,21 @@
 {
  "role": "R09",
  "round": 14,
- "title": "Жалоба жителя v2 — волны 1–2, замечания приёмки, CLEAN_PASS и стекло Apple Liquid Glass (GLASS.md) для FINAL-3",
- "status": "READY_FOR_FINAL_3_GLASS (R01: взять пути R09 @ bfba320; патчи R01_separate_routes и R07_fix_form уже в сборке)",
+ "title": "Жалоба жителя v2 — дизайн-марафон (путь жителя «как в iOS»), стекло GLASS.md, FINAL-3",
+ "status": "READY_FOR_FINAL_3_MARATHON (R01: взять пути R09 @ 3546567; патчей нет)",
  "branch": "claude/modest-shannon-0ki93p",
  "branch_note": "Ветка по BRANCHES.md. Ночной код (wizardly-ptolemy-qy8ltw @ ee94ef1, код f4fb7b9) перенесён сюда побайтно в 38e6d67; ночную ветку больше не трогаем.",
- "base_sha": "8a1d390 (волна 2) → c765bb0 (правки сборки R01 0f5101a) → f80c0bf (замечания приёмки) → 5e99e2c (CLEAN_PASS) → 2d2cf80 (B-063, B-064) → 9cf4ca2 (прилипающая кнопка: белое и под ней) → 0b8e3db (R11 FINAL-3 №1, №12) → bfba320 (стекло)",
- "code_sha": "bfba3204d0dc2449484b5a1170e6182a76614c80",
- "tested_sha": "bfba3204d0dc2449484b5a1170e6182a76614c80 (пути R09) на окончательном FINAL-3 R01 @ 77ee50be (+ ui-kit R11 7117132b со стеклом для проверок стекла)",
- "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout bfba320 -- ui/civic_feedback web/civic/feedback tests/civic/R09",
+ "base_sha": "8a1d390 (волна 2) → c765bb0 (правки сборки R01 0f5101a) → f80c0bf (замечания приёмки) → 5e99e2c (CLEAN_PASS) → 2d2cf80 (B-063, B-064) → 9cf4ca2 (прилипающая кнопка: белое и под ней) → 0b8e3db (R11 FINAL-3 №1, №12) → bfba320 (стекло) → 3546567 (дизайн-марафон: круги 1–5)",
+ "code_sha": "3546567842c2455d652c170a173762b12654ddca",
+ "tested_sha": "3546567842c2455d652c170a173762b12654ddca (пути R09) на R01 claude/sharp-dijkstra-0t87gl @ 65343341 (FINAL-3 со стеклом)",
+ "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout 3546567 -- ui/civic_feedback web/civic/feedback tests/civic/R09",
  "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22, Playwright + Chromium headless (программный WebGL), без интернета; настоящий телефон — NOT_RUN",
- "push_status": "код bfba320 — push OK; документы и этот файл — следующим коммитом (SHA — в финальном сообщении)",
+ "push_status": "код 3546567 — push OK; документы и этот файл — следующим коммитом (SHA — в финальном сообщении)",
  "changed_paths": {
   "code_and_tests": [
    "tests/civic/R09/app_demo_r09.cjs",
    "tests/civic/R09/browser_r09.cjs",
+   "tests/civic/R09/design_tour_r09.cjs",
    "tests/civic/R09/glass_r09.cjs",
    "tests/civic/R09/stand/index.html",
    "tests/civic/R09/stand/serve_r09.py",
@@ -74,7 +75,10 @@
    "research/round-14-results/R09/GLASS_R09.md",
    "research/round-14-results/R09/GLASS_RESULT.txt",
    "research/round-14-results/R09/FINAL3_CHECK.txt",
-   "research/round-14-results/R09/screens-glass/"
+   "research/round-14-results/R09/screens-glass/",
+   "research/round-14-results/R09/DESIGN_R09.md",
+   "research/round-14-results/R09/MARATHON_RESULT.txt",
+   "research/round-14-results/R09/design/"
   ]
  },
  "done": {
@@ -132,40 +136,66 @@
    "GLASS_no_glass_on_forms": "wizard, staff forms, «Обращения» rows opaque; FAB/toasts solid",
    "GLASS_fallbacks": "opaque white without glass ui-kit (:where), reduced-transparency, no backdrop-filter, bk-glass-off, print",
    "GLASS_one_layer": "shell .civic-panel hidden while «Мои обращения» is open; #map-status hidden under the open phone sheet"
+  },
+  "design_marathon": {
+   "one_sheet_over_map": "shell .civic-panel hidden while an R09 panel is open; map banner hidden under the phone sheet",
+   "smooth_steps": "240 ms slide between steps, reduced-motion off; lists appear softly on new data",
+   "category_cards": "large 64 px cards with icon 26 and 15/600 label; tappable «Выберите категорию» row",
+   "emergency_banner_visible": "right under the text field",
+   "sheet_heights": "phone: steps 4–5 content height; laptop: wizard steps 2/4/5 hug content",
+   "success_screen": "drawn checkmark, no step counter, number as hero with copy",
+   "mine_timeline": "vertical status timeline in «Подробнее» (done / current / next), map colours for service-reported / verified / reopened",
+   "verify_three_buttons": "three large buttons, one main; «Не могу проверить» without fill",
+   "texts": "«Служба сообщила об устранении» instead of «Статус: Исправлено» in changes",
+   "states": "structured skeletons; empty / error / need-staff with a large line icon in a circle",
+   "inbox_rows": "iOS list rows: people count in map-coloured circle, place 17, category 15 with icon, chevron",
+   "layout": "R09 panel = shell panel geometry (20 px, 360 px on 1024–1100); FAB clear of legend and panel at every width",
+   "weights_sizes": "weights 400/600 only; ≤ 4 font sizes per screen"
   }
  },
  "tests": {
-  "final3_tree": "R01 77ee50be (final FINAL-3) + R09; glass checks on the same + R11 ui-kit 7117132b",
-  "final3_pytest_r09_r04_r01_r15": "1326 passed, 2 skipped (FINAL3_CHECK.txt)",
-  "final3_real_app": "75/75 PASS (FINAL3_CHECK.txt)",
-  "glass_pytest_r09_r11_r01_r15": "995 passed, 1 skipped",
-  "glass_r09_cjs": "31/31 PASS — glass on «Мои обращения» at 1366/1024/375, pixel contrast dark ≥ 9.2 / grey ≥ 4.6, reduced-transparency and bk-glass-off opaque, wizard opaque, «Обращения» rows opaque (GLASS_RESULT.txt)",
-  "glass_real_app": "75/75 PASS (GLASS_RESULT.txt)",
-  "glass_stand_r11_kit": "470/470 PASS (R11 ui-kit 7117132b with glass)",
-  "stand_kit_fallback": "470/470 PASS (no glass ui-kit — opaque fallback)",
+  "marathon_tree": "R01 65343341 (FINAL-3 with glass) + R09 3546567",
+  "pytest_r09_r01_r15_r11_r04": "1357 passed, 2 skipped",
+  "real_app": "75/75 PASS",
+  "glass_r09": "34/34 PASS",
+  "stand_r11_glass_kit": "470/470 PASS",
+  "stand_kit_fallback": "470/470 PASS",
+  "r10_wave_checks_W2-1_W2-2_W1-8": "59 PASS / 0 FAIL / 1 NOT_RUN",
+  "design_tour": "26 states × 375/1366 ru/kk (+1024 ru), 0 tour errors — design/before|after",
   "phone_device": "NOT_RUN (no device in the cloud session)",
-  "day12_tree": "R01 7782b92 + R09 2d2cf80/9cf4ca2 + R01_separate_routes.patch + R07_fix_form.patch",
-  "day12_pytest_r09_r04_r01_r15_r07_r12_r08": "1752 passed, 4 skipped, 1 failed (R07 timing test under parallel browser load; R07 alone 175 passed)",
-  "day12_pytest_r02_r03_r05_r06_r11_r13_citywide": "all passed (on f80c0bf)",
-  "day12_pytest_r09_v2_in_branch": "178 passed, 3 skipped (R12/R04 packages absent in the R09 branch)",
-  "day12_pytest_r10": "34 passed, 2 failed — test_r10_accuracy (R12/R07 objects vs OSM points: no full OSM extract in the cloud), not R09",
-  "day12_r04_app_polish": "39/39 PASS — APP_RESULT_R04_DAY12.txt",
-  "day12_r10_demo_reset_check": "4/4 PASS",
-  "day12_r10_wave_checks": "W1-3/W2-1/W2-2/W2-4: 91 PASS / 10 FAIL / 2 NOT_RUN — FAIL not R09 (R07 card text B-055/B-057, R07 card does not open on 1366 — same without the R07 patch, «Карта» on 375); WAVE_R10_DAY12.txt",
-  "day12_r10_wave_more": "W1-8/W1-9/W1-12: 11 PASS / 2 FAIL (R07 card does not open on 1366); WAVE_R10_MORE_DAY12.txt",
-  "day12_r09_real_app": "75/75 PASS on 2d2cf80 (steps 1–7, R07 card fix form, akimat «Обращения») — APP_RESULT_DAY12.txt",
-  "day12_r09_stand": "470/470 (kit-fallback, 2d2cf80) — BROWSER_RESULT_DAY12.txt",
-  "day12_r09_stand_r11_kit_d9f2ff9": "470/470 (R11 ui-kit + dictionary d9f2ff9, clean design, 9cf4ca2) — BROWSER_RESULT_DAY12_R11UI.txt",
-  "previous_wave2": {
-   "pytest_r09_v2": "168 passed, 3 skipped (R12/R04 packages absent in R09 branch) — PYTEST_WAVE2.txt",
-   "stand_r09_kit": "450/450 — BROWSER_RESULT_WAVE2.txt",
-   "stand_r11_kit_and_dictionary": "450/450 (claude/r14-R11 @ 537dbd3) — BROWSER_RESULT_WAVE2_R11UI.txt",
-   "wave_scenarios": "232 checks, 375/1366 × ru/kk (--only wave)",
-   "real_app_r01_a96f6e3_plus_r09_plus_patch": "73/73 (steps 1–7, akimat «Обращения») — APP_RESULT_WAVE2.txt",
-   "r01_pytest_same_tree": "all passed (1 skipped)",
-   "r01_r14_wave2_same_tree": "29/31 — expected: with R09 module the akimat menu gains «Обращения» (R01 §11.1); R01 updates 2 expectations",
-   "default_map_unchanged": "checked on 4 combos: no bc-* layers, only the FAB before opening the wizard",
-   "phone_device": "NOT_RUN (no device in the cloud session)"
+  "previous": {
+   "final3_tree": "R01 77ee50be (final FINAL-3) + R09; glass checks on the same + R11 ui-kit 7117132b",
+   "final3_pytest_r09_r04_r01_r15": "1326 passed, 2 skipped (FINAL3_CHECK.txt)",
+   "final3_real_app": "75/75 PASS (FINAL3_CHECK.txt)",
+   "glass_pytest_r09_r11_r01_r15": "995 passed, 1 skipped",
+   "glass_r09_cjs": "31/31 PASS — glass on «Мои обращения» at 1366/1024/375, pixel contrast dark ≥ 9.2 / grey ≥ 4.6, reduced-transparency and bk-glass-off opaque, wizard opaque, «Обращения» rows opaque (GLASS_RESULT.txt)",
+   "glass_real_app": "75/75 PASS (GLASS_RESULT.txt)",
+   "glass_stand_r11_kit": "470/470 PASS (R11 ui-kit 7117132b with glass)",
+   "stand_kit_fallback": "470/470 PASS (no glass ui-kit — opaque fallback)",
+   "phone_device": "NOT_RUN (no device in the cloud session)",
+   "day12_tree": "R01 7782b92 + R09 2d2cf80/9cf4ca2 + R01_separate_routes.patch + R07_fix_form.patch",
+   "day12_pytest_r09_r04_r01_r15_r07_r12_r08": "1752 passed, 4 skipped, 1 failed (R07 timing test under parallel browser load; R07 alone 175 passed)",
+   "day12_pytest_r02_r03_r05_r06_r11_r13_citywide": "all passed (on f80c0bf)",
+   "day12_pytest_r09_v2_in_branch": "178 passed, 3 skipped (R12/R04 packages absent in the R09 branch)",
+   "day12_pytest_r10": "34 passed, 2 failed — test_r10_accuracy (R12/R07 objects vs OSM points: no full OSM extract in the cloud), not R09",
+   "day12_r04_app_polish": "39/39 PASS — APP_RESULT_R04_DAY12.txt",
+   "day12_r10_demo_reset_check": "4/4 PASS",
+   "day12_r10_wave_checks": "W1-3/W2-1/W2-2/W2-4: 91 PASS / 10 FAIL / 2 NOT_RUN — FAIL not R09 (R07 card text B-055/B-057, R07 card does not open on 1366 — same without the R07 patch, «Карта» on 375); WAVE_R10_DAY12.txt",
+   "day12_r10_wave_more": "W1-8/W1-9/W1-12: 11 PASS / 2 FAIL (R07 card does not open on 1366); WAVE_R10_MORE_DAY12.txt",
+   "day12_r09_real_app": "75/75 PASS on 2d2cf80 (steps 1–7, R07 card fix form, akimat «Обращения») — APP_RESULT_DAY12.txt",
+   "day12_r09_stand": "470/470 (kit-fallback, 2d2cf80) — BROWSER_RESULT_DAY12.txt",
+   "day12_r09_stand_r11_kit_d9f2ff9": "470/470 (R11 ui-kit + dictionary d9f2ff9, clean design, 9cf4ca2) — BROWSER_RESULT_DAY12_R11UI.txt",
+   "previous_wave2": {
+    "pytest_r09_v2": "168 passed, 3 skipped (R12/R04 packages absent in R09 branch) — PYTEST_WAVE2.txt",
+    "stand_r09_kit": "450/450 — BROWSER_RESULT_WAVE2.txt",
+    "stand_r11_kit_and_dictionary": "450/450 (claude/r14-R11 @ 537dbd3) — BROWSER_RESULT_WAVE2_R11UI.txt",
+    "wave_scenarios": "232 checks, 375/1366 × ru/kk (--only wave)",
+    "real_app_r01_a96f6e3_plus_r09_plus_patch": "73/73 (steps 1–7, akimat «Обращения») — APP_RESULT_WAVE2.txt",
+    "r01_pytest_same_tree": "all passed (1 skipped)",
+    "r01_r14_wave2_same_tree": "29/31 — expected: with R09 module the akimat menu gains «Обращения» (R01 §11.1); R01 updates 2 expectations",
+    "default_map_unchanged": "checked on 4 combos: no bc-* layers, only the FAB before opening the wizard",
+    "phone_device": "NOT_RUN (no device in the cloud session)"
+   }
   }
  },
  "evidence": {
@@ -182,10 +212,11 @@
   "Glass needs R11 ui-kit 7117132b+ (older ui-kit: same layout, opaque white).",
   "FPS of the map under glass is measured by R10 (GLASS §5.3); R09 panel follows html.bk-glass-off."
  ],
- "next_step": "R01: take R09 @ bfba320 for FINAL-3 with glass; when the shell glass (floating header, glass .civic-panel) is built — run tests/civic/R09/glass_r09.cjs and app_demo_r09.cjs on it. R10: contrast/FPS per GLASS §5. R09: re-run on the glass build; real phone (LOCAL).",
+ "next_step": "R01: take R09 @ 3546567 into the marathon build (no patches; see INTEGRATION «ДИЗАЙН-МАРАФОН» M1). R10: W2-1/W2-2 selectors notes in INTEGRATION M2. R11: frames for DESIGN_BOOK in design/after. R09: real phone check of sheets and transitions (LOCAL).",
  "previous": {
   "wave2_code_sha": "8a1d39077edf0055620145fdb81c9d39c88ce88f",
   "wave2_status": "READY_FOR_FINAL_2 (волны 1–2 сделаны по схемам R11 IA_WAVE2 §2; R01 нужно взять пути R09 @ 8a1d390 и применить r01_wave2_assets.patch)",
   "wave2_next_step": "R01: take 8a1d390 + r01_wave2_assets.patch into FINAL-2, update 2 expectations in r14_wave2.cjs and DEMO_SCRIPT steps 6–7; R11: review SCREENS_WAVE2.md and add 42 R09 keys; R07: heat_state colours and verified/reopened events; then R09 re-runs app_demo_r09.cjs on FINAL-2."
- }
+ },
+ "previous_code_sha": "bfba3204d0dc2449484b5a1170e6182a76614c80"
 }
