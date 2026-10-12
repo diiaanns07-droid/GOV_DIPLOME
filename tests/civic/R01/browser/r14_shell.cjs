@@ -101,7 +101,7 @@ async function main() {
       return { panelRight: Math.round(innerWidth - p.right), panelW: Math.round(p.width), toolsLeftOfPanel: t.right <= p.left,
         exploreMode: document.body.dataset.birgeExplore, exploreInBar: e.top >= bar.top && e.bottom <= bar.bottom + 1 && e.width >= 200 }; });
     check("1366: panel on the right (400 px), map buttons left of it, one search field (≥ 200 px) in the header",
-      panelBox.panelW === 400 && panelBox.panelRight === 20 && panelBox.toolsLeftOfPanel && panelBox.exploreMode === "header" && panelBox.exploreInBar, panelBox);
+      panelBox.panelW === 400 && panelBox.panelRight === 12 /* марафон: сетка 12 от края, как шапка */ && panelBox.toolsLeftOfPanel && panelBox.exploreMode === "header" && panelBox.exploreInBar, panelBox);
     await page.screenshot({ path: path.join(OUT, "01_map_1366_ru.png") });
 
     // ҚАЗ: labels, brand, <html lang>; choice survives reload

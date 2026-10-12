@@ -371,10 +371,17 @@
       header.querySelector(".birge-lang").setAttribute("aria-label", t("common.lang.label"));
       buildNav();
       labelMine();
+      // Открыты «Мои обращения» (окно R09 поверх карты, html.bc-mine-open) — выбран этот пункт, а не «Карта».
+      const mineOpen = document.documentElement.classList.contains("bc-mine-open") && state.section === "map";
+      const mineBtn = header.querySelector(".birge-mine-btn");
+      if (mineBtn) {
+        mineBtn.setAttribute("aria-pressed", String(mineOpen));
+        if (mineOpen) mineBtn.setAttribute("aria-current", "page"); else mineBtn.removeAttribute("aria-current");
+      }
       for (const b of header.querySelectorAll(".birge-nav > [data-section]")) {
         b.textContent = navTitle(b.dataset.section);
         // «Ещё» подсвечен и на экранах, открытых из него.
-        const current = b.dataset.section === state.section
+        const current = (b.dataset.section === state.section && !(mineOpen && b.dataset.section === "map"))
           || (b.dataset.section === "more" && moreItems(state.mode).includes(state.section));
         b.setAttribute("aria-pressed", String(current));
         if (current) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
@@ -851,6 +858,14 @@
     buildMapControls();
     watchExplore();
     watchGlass();
+    // «Мои обращения» R09 открываются и закрываются сами (класс html.bc-mine-open) — пункт в шапке следует за ними.
+    if (typeof MutationObserver === "function") {
+      let mineWas = false;
+      new MutationObserver(() => {
+        const now = document.documentElement.classList.contains("bc-mine-open");
+        if (now !== mineWas) { mineWas = now; render(); }
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    }
     // R12 волна 2 п. 6: QR-таблички — отдельная страница печати (web/civic/qr/print.html); пункт «Ещё → QR-таблички»
     // у акимата появляется, когда в сборке есть модуль QR R12 (report.js). Скрипты defer: проверяем после всех.
     const linkQr = () => { if (window.BirgeReport && !screenModule("qr")) registerScreen({ id: "qr", href: "/civic/qr/print.html" }); };

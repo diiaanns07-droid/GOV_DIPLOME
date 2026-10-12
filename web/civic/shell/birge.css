@@ -623,12 +623,22 @@ body.civic-mode[data-birge-explore="header"] .civic-explore .civic-explore-clear
   /* было top: 4px для прежней полосы 0–56: поле стояло выше капсулы (8–64) — теперь по центру капсулы (birge.js) */
   body.civic-mode[data-birge-explore="header"] .civic-explore { top: var(--be-top, 12px); }
 }
-/* Подсказки поиска: шкала 15/13, отступ 8 под капсулой, радиус панелей. */
-body.civic-mode[data-birge-explore="header"] .civic-explore-list { top: calc(100% + 14px); border-radius: var(--r-glass, 24px); padding: 8px; }
+/* Подсказки поиска: шкала 15/13, 8 под капсулой шапки, радиус панелей; над плашкой карты (на телефоне плашка
+   «Карта улиц не загрузилась» ложилась поверх списка — прячем её, пока список открыт). */
+@media (min-width: 761px) {
+  body.civic-mode[data-birge-explore="header"] .civic-explore-list { top: calc(100% + 14px); }
+  body.civic-mode[data-birge-explore="header"] .civic-explore-status:not([hidden]) { top: calc(100% + 14px); }
+}
+@media (max-width: 760px) {
+  body.civic-mode[data-birge-explore="header"] .civic-explore-list { top: 72px; }
+  body.civic-mode[data-birge-explore="header"] .civic-explore-status:not([hidden]) { top: 72px; }
+}
+body.civic-mode[data-birge-explore="header"] .civic-explore-list { border-radius: var(--r-glass, 24px); padding: 8px; z-index: 5; }
 body.civic-mode[data-birge-explore="header"] .civic-explore-list [role="option"] { border-radius: 16px; padding: 8px 16px; }
 body.civic-mode .civic-explore-list .civic-explore-opt-name { font-size: 15px; font-weight: 600; }
 body.civic-mode .civic-explore-list .civic-explore-opt-place { font-size: 13px; }
-body.civic-mode[data-birge-explore="header"] .civic-explore-status:not([hidden]) { top: calc(100% + 14px); border-radius: 16px; padding: 12px 16px; }
+body.civic-mode[data-birge-explore="header"] .civic-explore-status:not([hidden]) { border-radius: 16px; padding: 12px 16px; }
+body.civic-mode .civic-explore:has(.civic-explore-list:not([hidden])) #map-status { visibility: hidden; }
 
 /* Разделы: черта выбранного — под словом (8 от низа капсулы), а не на краю стекла. */
 body.civic-mode #birge-header .birge-nav > [aria-current="page"]::after { bottom: 8px; left: 12px; right: 12px; height: 2px; }
@@ -716,4 +726,12 @@ body.civic-mode :is(.birge-more-item, #birge-account .bk-menu__item, #birge-laye
 @media (min-width: 761px) and (max-width: 1100px) {
   body.civic-mode #birge-header .birge-nav > button { padding: 0 6px; }
   body.civic-mode #birge-header .birge-nav > [aria-current="page"]::after { left: 6px; right: 6px; }
+}
+/* Фокус с клавиатуры (№10) — кольцо ui-kit и у кнопок карты, легенды и подписи карты (они вне .bk-app). */
+body.civic-mode :is(.map-tools, #birge-legend, .maplibregl-ctrl-attrib) :focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+
+/* Лист раздела на широком экране — плавающая стеклянная карточка шириной до 1080, по центру, по краям видна карта
+   (было: во всю ширину 1342 при содержимом 720–960 — пустое стекло по бокам). До 1104 px — как раньше, 12 от краёв. */
+@media (min-width: 1105px) {
+  body.civic-mode .birge-day.bk-glass { left: max(12px, calc(50% - 540px)); right: max(12px, calc(50% - 540px)); }
 }
