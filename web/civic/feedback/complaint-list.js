@@ -191,7 +191,7 @@
       box.appendChild(title());
       if (state.error === "staff") {
         var shell = window.CivicShell;
-        box.appendChild(h("div", { "class": "bk-empty", role: "status" }, [
+        box.appendChild(h("div", { "class": "bk-empty", role: "status" }, [C().icon ? C().icon("user") : null,
           h("p", { "class": "bk-empty__title" }, t("proposal.need_staff")),
           // Не главная (bk-btn): главная кнопка в «Обращениях» — у карточки действий (контракт R09, одна на экран).
           h("button", { "class": "bk-btn", type: "button",
@@ -199,22 +199,25 @@
         return;
       }
       if (state.error) {
-        box.appendChild(h("div", { "class": "bk-error", role: "alert" }, [
+        box.appendChild(h("div", { "class": "bk-error", role: "alert" }, [C().icon ? C().icon("wifi-off") : null,
           h("p", { "class": "bk-error__title" }, t("mine.error.title")),
           h("p", {}, t("mine.error.hint")),
           h("button", { "class": "bk-btn", type: "button", onclick: load }, t("complaint.error.retry"))]));
         return;
       }
       if (!state.data) {
-        box.appendChild(h("div", { "class": "bc-loading", role: "status" }, [
-          h("span", { "class": "bk-skel bc-skel-card" }), h("span", { "class": "bk-skel bc-skel-card" }),
+        // Скелетон строк (как у «Моих обращений»): место, категория, «N человек · срок».
+        var skel = function () { return h("div", { "class": "bc-skel-card", "aria-hidden": "true" }, [
+          h("span", { "class": "bk-skel bc-skel-line bc-skel-line--title" }), h("span", { "class": "bk-skel bc-skel-line bc-skel-line--status" }),
+          h("span", { "class": "bk-skel bc-skel-line bc-skel-line--short" })]); };
+        box.appendChild(h("div", { "class": "bc-loading", role: "status" }, [skel(), skel(), skel(),
           h("span", { "class": "bc-loading__text" }, t("mine.loading"))]));
         return;
       }
       box.appendChild(tabs());
       var items = (state.data.items || []).filter(function (g) { return g.tab === state.tab; });
       if (!items.length) {
-        box.appendChild(h("div", { "class": "bk-empty" }, [h("p", { "class": "bk-empty__title" }, t("inbox.empty"))]));
+        box.appendChild(h("div", { "class": "bk-empty" }, [C().icon ? C().icon("check") : null, h("p", { "class": "bk-empty__title" }, t("inbox.empty"))]));
         return;
       }
       box.appendChild(h("ul", { "class": "bc-inbox__list", role: "tabpanel" }, items.map(row)));

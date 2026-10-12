@@ -41,9 +41,11 @@
 @media (prefers-reduced-transparency: reduce) {
   .bc-panel.bk-glass .bc-head { background: var(--glass-solid, #fff); -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
-/* Пока открыты «Мои обращения», правая панель/шторка оболочки (R01 .civic-panel со списком R07) не просвечивает под
-   стеклом размытыми пятнами: одна стеклянная панель над картой (GLASS.md: «на стекле R01»). После закрытия — как была. */
-html.bc-mine-open body.civic-mode .civic-panel { visibility: hidden; }
+/* Пока открыта панель R09 («Мои обращения» или мастер жалобы), правая панель/шторка оболочки (R01 .civic-panel со
+   списком R07) не видна: одна панель/шторка над картой — под стеклом нет размытых пятен, на телефоне нет двух шторок
+   одна над другой (дизайн-марафон). После закрытия — как была. */
+html.bc-mine-open body.civic-mode .civic-panel,
+html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bk-glass-off .bc-panel.bk-glass .bc-head { background: var(--glass-solid, #fff); -webkit-backdrop-filter: none; backdrop-filter: none; }
 @media print { .bc-panel.bk-glass .bc-head { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; } }
 .bc-handle { display: none; }
@@ -62,6 +64,8 @@ html.bc-mine-open body.civic-mode .civic-panel { visibility: hidden; }
   /* Шторка «Мои обращения» — стекло со скруглением 28 сверху (как .bk-glass--sheet). */
   .bc-panel.bk-glass, :where(.bc-panel.bk-glass) { border-radius: var(--r-glass-sheet, 28px) var(--r-glass-sheet, 28px) 0 0; }
   .bc-panel[data-snap="half"] { height: 50vh; height: 50dvh; }
+  /* Шаги 4–5: шторка по содержимому — над ней видно место на карте, без пустого белого низа. */
+  .bc-panel[data-snap="fit"] { height: auto; max-height: 92vh; max-height: 92dvh; }
   /* Шаг 2, место ещё не выбрано: только вопрос и «Моё местоположение» — шторка по содержимому (R11 B1 №2). */
   .bc-panel[data-snap="peek"] { height: auto; max-height: 50vh; max-height: 50dvh; }
   /* Главная кнопка на телефоне — во всю ширину, одна строка, 56 px (R11 день 2 №7, B1 №8; UX_SPEC §1). */
@@ -85,7 +89,7 @@ html.bc-mine-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-panel .bk-wizard { margin-top: 4px; }
 .bc-panel .bk-wizard__label { font-size: var(--fs-caption, 13px); color: var(--c-text-2, #5b6a64); }
 .bc-title:focus { outline: none; }
-.bc-title:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+.bc-title:focus-visible { outline: none; }   /* заголовок получает фокус программно (для чтения с экрана), это не кнопка */
 .bc-body { display: flex; flex-direction: column; gap: 12px; }
 .bc-hint { margin: 0; }
 .bc-lead { margin: 0; font-size: var(--fs-lead, 17px); font-weight: 600; }
@@ -130,15 +134,26 @@ html.bc-mine-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-loading { display: flex; flex-direction: column; gap: 8px; }
 .bc-loading__text { color: var(--c-text-2, #5b6a64); }
 .bc-skel-line { height: 56px; border-radius: var(--r-m, 12px); }
-.bc-skel-card { height: 120px; border-radius: var(--r-l, 16px); }
+/* Скелетон карточки: строки на месте категории, статуса, «Передано…» и меты. */
+.bc-skel-card { display: grid; gap: 10px; padding: 16px; border-radius: var(--r-l, 14px); background: var(--c-surface, #fff); }
+.bk-glass .bc-skel-card { background: rgba(255, 255, 255, .7); }
+.bc-skel-line { display: block; height: 12px; width: 72%; border-radius: 6px; }
+.bc-skel-line--title { height: 16px; width: 44%; }
+.bc-skel-line--status { width: 30%; }
+.bc-skel-line--short { width: 52%; }
 
 .bc-similar { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--r-l, 16px);
               background: var(--c-paper, #f4f5f6); }
 .bc-similar__count { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 600; }
 .bc-similar__status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 
-.bc-code { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; font-size: var(--fs-lead, 17px); }
-.bc-code__value { font-size: var(--fs-title, 22px); letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bc-code { display: grid; justify-items: center; gap: 0; margin: 0; }
+.bc-code__label { font-size: var(--fs-caption, 13px); color: var(--c-text-2, #5b6a64); }
+.bc-code__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 8px; }
+.bc-code__value { font-size: var(--fs-h1, 28px); font-weight: var(--fw-semi, 600); letter-spacing: .01em;
+                  font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bc-code__copy { min-height: 44px; padding: 0 10px; font-size: var(--fs-body, 15px); }
+.bc-code__copy .ic { width: 18px; height: 18px; }
 .bc-nowrap { white-space: nowrap; }   /* номер «B-0007» не рвётся на дефисе */
 
 .bc-mine { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
@@ -278,3 +293,93 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-inbox__item--open { box-shadow: 0 0 0 2px var(--c-brand, #152c26); }
 .bc-inbox__detail { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 16px; }
 .bc-inbox__map { align-self: flex-start; }
+
+/* ───────────── Дизайн-марафон (12–14 окт): путь жителя «как в iOS» — только вид, движение и состояния ───────────── */
+/* Смена шага: содержимое мягко въезжает (вперёд — справа, назад — слева), 240 мс, ease-out. */
+@keyframes bc-step-fwd { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes bc-step-back { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+.bc-body--enter[data-dir="fwd"] { animation: bc-step-fwd 240ms var(--ease, cubic-bezier(.22, 1, .36, 1)) backwards; }
+.bc-body--enter[data-dir="back"] { animation: bc-step-back 240ms var(--ease, cubic-bezier(.22, 1, .36, 1)) backwards; }
+
+/* Успех: круг и галочка рисуются линией акцента (зелёный в Birge — только «исправлено»). */
+.bc-success { display: flex; justify-content: center; margin: 8px 0 0; }
+.bc-success__mark { width: 64px; height: 64px; animation: bc-success-in 320ms var(--ease, cubic-bezier(.22, 1, .36, 1)) backwards; }
+.bc-success__circle { fill: var(--c-brand-soft, #eef1f0); stroke: var(--c-brand, #152c26); stroke-width: 2.5;
+                      stroke-dasharray: 158; stroke-dashoffset: 158; transform: rotate(-90deg); transform-origin: 28px 28px;
+                      animation: bc-draw 520ms ease-out 80ms forwards; }
+.bc-success__tick { fill: none; stroke: var(--c-brand, #152c26); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round;
+                    stroke-dasharray: 34; stroke-dashoffset: 34; animation: bc-draw 300ms ease-out 480ms forwards; }
+@keyframes bc-draw { to { stroke-dashoffset: 0; } }
+@keyframes bc-success-in { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
+.bc-panel[data-step="5"] .bc-title { text-align: center; margin-top: 8px; }
+.bc-panel[data-step="5"] .bc-body > .bc-lead, .bc-panel[data-step="5"] .bc-body > .bc-next,
+.bc-panel[data-step="5"] .bc-body > .bc-find { text-align: center; }
+
+/* Категории — крупные карточки с иконкой: заливка вместо рамки, иконка 26, подпись 15/600; выбранная — акцент. */
+.bc-panel .bk-catgrid { gap: 8px; }
+.bc-panel .bk-catgrid > button { min-height: 64px; padding: 10px 12px; gap: 10px; border: 1px solid transparent;
+  border-radius: var(--r-m, 10px); background: var(--c-fill, #eff1f2); color: var(--c-ink, #152c26);
+  font-size: var(--fs-body, 15px); font-weight: var(--fw-semi, 600); line-height: 1.25;
+  transition: background-color 150ms ease-out, scale 120ms ease-out; }
+.bc-panel .bk-catgrid > button .ic { width: 26px; height: 26px; stroke-width: 1.75; }
+.bc-panel .bk-catgrid > button:hover { background: var(--c-fill-hover, #e5e8ea); }
+.bc-panel .bk-catgrid > button[aria-pressed="true"] { background: var(--c-brand, #152c26); border-color: var(--c-brand, #152c26); color: #fff; }
+.bc-panel .bk-catgrid > button[data-suggested="true"]:not([aria-pressed="true"]) { border-color: var(--c-brand, #152c26); }
+/* «Выберите категорию» — строка-кнопка со значком и «›»; «Сменить категорию» — тихая, со значком карандаша. */
+.bc-change--pick { align-self: stretch; justify-content: flex-start; gap: 12px; padding: 0 14px; }
+.bc-change--pick .bc-change__label { flex: 1; text-align: left; }
+.bc-change--pick .ic:last-child { color: var(--c-text-2, #5b6a64); }
+.bc-change:not(.bc-change--pick) { font-size: var(--fs-body, 15px); }
+.bc-change .ic { width: 18px; height: 18px; }
+
+/* «Проблема решена?» — три большие кнопки, главная одна; третья — без заливки. */
+.bc-verify__buttons .bk-btn { min-height: 52px; }
+.bc-verify__quiet { color: var(--c-brand, #152c26); }
+
+/* «Мои обращения» → «Подробнее»: лента статусов (точки на линии; пройденное — акцентом, следующий шаг — серым;
+   «служба сообщила» — пунктирное кольцо, «проверено жителями» — зелёная точка, «вернули» — красная, как на карте). */
+.bc-timeline { list-style: none; margin: 4px 0 12px; padding: 0; }
+.bc-timeline__item { position: relative; display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: 12px; padding-bottom: 16px; }
+.bc-timeline__item:last-child { padding-bottom: 0; }
+.bc-timeline__item:not(:last-child)::before { content: ""; position: absolute; left: 9px; top: 20px; bottom: 0; width: 2px;
+                                               border-radius: 1px; background: var(--c-brand, #152c26); }
+.bc-timeline__item[data-state="current"]:not(:last-child)::before {
+  background: repeating-linear-gradient(to bottom, var(--c-line-strong, #d3d8db) 0 4px, transparent 4px 8px); }
+.bc-timeline__dot { box-sizing: border-box; width: 12px; height: 12px; margin: 5px 4px 0; border-radius: 50%; background: var(--c-brand, #152c26); }
+.bc-timeline__item[data-state="current"] .bc-timeline__dot { width: 16px; height: 16px; margin: 3px 2px 0;
+                                                            box-shadow: 0 0 0 4px var(--c-brand-soft, #eef1f0); }
+.bc-timeline__item[data-kind="fixed"] .bc-timeline__dot { background: var(--c-surface, #fff); border: 2.5px dashed var(--fixed, #639922); }
+.bc-timeline__item[data-kind="verified"] .bc-timeline__dot { background: var(--fixed, #639922); }
+.bc-timeline__item[data-kind="reopened"] .bc-timeline__dot { background: var(--heat-3, #E24B4A); }
+.bc-timeline__item[data-state="next"] .bc-timeline__dot { background: transparent; border: 2px solid var(--c-line-strong, #d3d8db); box-shadow: none; }
+.bc-timeline__body { display: grid; gap: 2px; min-width: 0; }
+.bc-timeline__title { font-weight: var(--fw-semi, 600); }
+.bc-timeline__item[data-state="next"] .bc-timeline__title { font-weight: 400; color: var(--c-text-2, #5b6a64); }
+.bc-timeline__text { overflow-wrap: anywhere; }
+
+/* «Проверено жителями»: точка статуса этой карточки мягко «откликается» один раз. */
+@keyframes bc-pop { 0% { transform: scale(.4); } 60% { transform: scale(1.4); } 100% { transform: scale(1); } }
+@keyframes bc-glow { from { box-shadow: 0 0 0 0 rgba(99, 153, 34, .5); } to { box-shadow: 0 0 0 12px rgba(99, 153, 34, 0); } }
+.bc-mine__card--verified-now .bc-mine__status .bk-status::before {
+  animation: bc-pop 520ms cubic-bezier(.34, 1.56, .64, 1), bc-glow 900ms ease-out 200ms; }
+
+/* Пусто / нет связи / нужен вход: крупный линейный значок ui-kit в мягком круге — как пустые состояния iOS. */
+.bc-panel .bk-empty > .ic, .bc-panel .bk-error > .ic, .bc-inbox .bk-empty > .ic, .bc-inbox .bk-error > .ic {
+  box-sizing: border-box; width: 72px; height: 72px; padding: 20px; margin-bottom: 4px; border-radius: 50%;
+  background: var(--c-fill, #eff1f2); color: var(--c-text-2, #5b6a64); stroke-width: 1.6; }
+
+/* Нажатие даёт отклик — лёгкое сжатие (чек-лист №10). */
+/* Свойство scale, а не transform: кнопка «Сообщить о проблеме» на ноутбуке центрируется transform — не сдвигаем её. */
+.bc-panel .bk-btn, .bc-panel .bc-option, .bc-panel .bk-chip, .bc-fab { transition: scale 120ms ease-out, background-color 150ms ease-out; }
+.bc-panel .bk-btn:not(:disabled):active, .bc-panel .bc-option:active, .bc-panel .bk-chip:active,
+.bc-panel .bk-catgrid > button:active, .bc-fab:active { scale: .98; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-body--enter, .bc-success__mark, .bc-success__circle, .bc-success__tick,
+  .bc-mine__card--verified-now .bc-mine__status .bk-status::before { animation: none !important; }
+  .bc-success__circle, .bc-success__tick { stroke-dashoffset: 0; }
+  .bc-panel .bk-btn:active, .bc-panel .bc-option:active, .bc-panel .bk-chip:active,
+  .bc-panel .bk-catgrid > button:active, .bc-fab:active { scale: none; }
+}
+/* Два веса (CLEAN_PASS §2.4): <strong> у браузера — 700; на экранах R09 — 600. */
+.bc-panel strong, .bc-inbox strong, .bc-staff strong { font-weight: var(--fw-semi, 600); }
