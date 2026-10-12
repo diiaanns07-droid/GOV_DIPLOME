@@ -380,6 +380,13 @@ frame-ancestors), паспорт объекта по QR без личного, �
   и скриншоты PNG — без tEXt/eXIf. Новых библиотек в web/vendor нет. R01 e63a3c24: тесты R15 256 passed; ролевые 367/1;
   R08/R11 144 passed; B1 16/16, B2 28/28; CSP 8 страниц — 0; qrcode.js = npm; документы R14 (BRAND.md, глава
   интерфейса) — без телефонов/почты/ИИН; секретов нет. test_r15_marathon.py R01 ещё не скопировал. **Находок нет.**
+- Круг 2 (16:45 UTC): R01 d5c98029 (марафон круги 3–7: ui-kit R11 9a139eb8 с loginState, R05 2b33c59 + превью PNG,
+  R06 cb6a35ad, R08 1969046a/e37c5f36, R09 b2b1236, R12 3b0b4cbc/a4a0e252, R14 docs) + ветки R05 8561ee2, R06 96ebe5e,
+  R07 0fde5fa, R08 b4bcce5, R09 6fb67e6, R11 f8f34d9, R12 9d99057. web_server.py: в белый список статики — 10 превью
+  build3d/data/previews/*.png по точным именам, тип image/png (nosniff есть); в PNG нет tEXt/eXIf. Новые innerHTML —
+  только BirgeUI.illustration (имя [a-z-]) и постоянная галочка; loginState ui-kit — только вид «войдите». Тесты R15
+  256 passed; ролевые 367/1; R01 hardening + R08 + R11 124 passed; B1 16/16, B2 28/28; CSP 8 страниц — 0; qrcode.js =
+  npm; секретов и личных данных в новых документах нет. test_r15_marathon.py R01 ещё не скопировал. **Находок нет.**
 
 ## Следующий шаг
 1. Круги марафона: ревью поставок ролей; сборка R01 после марафона / официальный FINAL 13–15 окт: та же проверка на новом SHA (с test_r15_glass.py и test_r15_marathon.py) —
