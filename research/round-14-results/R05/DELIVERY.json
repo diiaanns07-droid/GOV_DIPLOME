@@ -1,18 +1,22 @@
 {
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
- "delivery": 12,
- "for_build": "дизайн-марафон: R01 claude/sharp-dijkstra-0t87gl @ d2b5f087 (в нём R05 2b33c59 — поставка 11) + proposed_r01_marathon.patch (по желанию, «×» в листе каталога)",
+ "delivery": 13,
+ "for_build": "дизайн-марафон: R01 claude/sharp-dijkstra-0t87gl @ fcb9b30e (в нём R05 e3a52f57 — поставка 12 — и proposed_r01_marathon.patch)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "e3a52f57",
- "tested_sha": "e3a52f57 (web/civic/build3d; после него в ветке — только документы и результаты прогонов)",
- "tested_note": "Демо R05 с ui-kit R11 7117132: browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0. В сборке R01 d2b5f087 + proposed_r01_marathon.patch + R05 e3a52f57: shell smoke (с патчем, повтор после правки теста) exit 0 pass=28 fail=0; R01 r14_b2 (с патчем) exit 0 pass=28 fail=0; R01 r14_shell (с патчем) exit 0 pass=42 fail=0 (первый прогон smoke с патчем — 27/28: в проверке phone_akimat_card_with_half_sheet… подпись проекта закрывала облачная плашка #map-status оболочки; проверка теперь пробует 3 положения объекта). Без патча (R01 d2b5f087 как есть + R05 e3a52f57): shell smoke (как есть) exit 0 pass=28 fail=0 (runs/marathon_r01_d2b5f087_e3a52f57.txt).",
+ "code_sha": "78aa2f46",
+ "tested_sha": "78aa2f46 (web/civic/build3d; после него в ветке — только документы и результаты прогонов)",
+ "tested_note": "Демо R05 с ui-kit R11 7117132: browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0. В сборке R01 fcb9b30e + R05 78aa2f46: shell smoke exit 0 pass=28 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0; R01 r14_wave2 exit 0 pass=42 fail=0; R10 demo_flow (тесты 53d1c070) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m11_demo (runs/marathon_r01_fcb9b30e_78aa2f46.txt).",
  "previous_delivery": {
-  "code_sha": "2b33c59",
-  "delivery_commit": "6a16b4e1",
+  "code_sha": "e3a52f57",
+  "delivery_commit": "e092977e",
   "before": [
+   {
+    "code_sha": "2b33c59",
+    "delivery_commit": "6a16b4e1"
+   },
    {
     "code_sha": "60c445b",
     "delivery_commit": "41503d81"
@@ -89,8 +93,8 @@
   }
  ],
  "owned_paths_only": true,
- "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, web/civic/ui-kit/, ветки R01/R06/R11/R12. Оболочка R01 — только по желанию патчем research/round-14-results/R05/proposed_r01_marathon.patch (к d2b5f087, git apply --check: OK): «×» в листе каталога вместо «Закрыть» под листом; без патча всё работает как раньше.",
- "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3.13, Chromium (Playwright 1.56.1) headless, WebGL2 SwiftShader без GPU; ui-kit/i18n R11 @ 7117132 (--kit; тот же в R01 65343341), словарь сверен и с R11 @ 4e0b4235; оболочка R01 d2b5f087; без интернета (подложка — запасной фон)",
+ "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, web/civic/ui-kit/, ветки R01/R06/R11/R12. Оболочку R01 менять не нужно: proposed_r01_marathon.patch уже в fcb9b30e.",
+ "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3.13, Chromium (Playwright 1.56.1) headless, WebGL2 SwiftShader без GPU; ui-kit/i18n R11 @ 7117132 (--kit; тот же в R01 65343341), словарь сверен и с R11 @ 4e0b4235; оболочка R01 fcb9b30e; без интернета (подложка — запасной фон)",
  "ux_review_r11_day3": {
   "source": "claude/r14-R11 @ 52d7c59, research/round-14-results/R11/UX_REVIEW.md, «День 3», пп. 20–26 (и «День 4» — пунктов для R05 нет, кроме правок kk)",
   "table": "research/round-14-results/R05/UX_REVIEW_DAY3.md",
@@ -423,13 +427,13 @@
    "r10_glass_check": "R10 glass_check.cjs (7855976) считает значки «.b3d-labels» картой — у R05 стекла на них нет (GLASS.md §2); прогон по сборке — у R10/R01"
   },
   "design_marathon_in_r01": {
-   "build": "R01 d2b5f087 + proposed_r01_marathon.patch + R05 e3a52f57",
-   "app_b2_smoke": "shell smoke (с патчем, повтор после правки теста) exit 0 pass=28 fail=0",
-   "app_b2_smoke_first_run": "shell smoke (с патчем) exit 1 pass=27 fail=1 FAIL phone_akimat_card_with_half_sheet_does_not_cover_shell_header — {\"kk\":{\"sheet_before\":\"half\",\"tapped\":null,\"state",
-   "r01_r14_b2": "R01 r14_b2 (с патчем) exit 0 pass=28 fail=0",
-   "r01_r14_shell": "R01 r14_shell (с патчем) exit 0 pass=42 fail=0",
-   "app_b2_smoke_without_patch": "shell smoke (как есть) exit 0 pass=28 fail=0",
-   "report": "runs/marathon_r01_d2b5f087_e3a52f57.txt"
+   "build": "R01 fcb9b30e + R05 78aa2f46",
+   "app_b2_smoke": "shell smoke exit 0 pass=28 fail=0",
+   "r01_r14_b2": "R01 r14_b2 exit 0 pass=28 fail=0",
+   "r01_r14_shell": "R01 r14_shell exit 0 pass=42 fail=0",
+   "r01_r14_wave2": "R01 r14_wave2 exit 0 pass=42 fail=0",
+   "r10_demo_flow": "R10 demo_flow (тесты 53d1c070) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m11_demo",
+   "report": "runs/marathon_r01_fcb9b30e_78aa2f46.txt"
   }
  },
  "screenshots": {
@@ -519,7 +523,7 @@
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: в сборку марафона web/civic/build3d = e3a52f57 (с data/previews/); по желанию — proposed_r01_marathon.patch («×» в листе каталога). R10/R11: разбор 3D и панели после марафона (design/after, design/panel); LOCAL-R05-1 — плавность на ноутбуке с GPU.",
+ "next_step": "R01: web/civic/build3d = 78aa2f46 (с data/previews/); оболочку не трогать. R10/R11: разбор после марафона; LOCAL-R05-1 — плавность на ноутбуке с GPU.",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -819,7 +823,8 @@
   "to": "d2b5f087",
   "what": "shell.js: onCatalogClose в mount (свернуть каталог, фокус на «Что построить?»); birge.css: кнопка оболочки прячется, пока каталог открыт и в его листе есть «×» R05",
   "apply_check": "git apply --check на d2b5f087: OK",
-  "without_patch": "каталог закрывается кнопкой оболочки «Закрыть», как раньше"
+  "without_patch": "каталог закрывается кнопкой оболочки «Закрыть», как раньше",
+  "in_build": "в R01 fcb9b30e уже внутри"
  },
  "two_sessions": "12 окт. в ветке работали две сессии R05 (01FDvgz… и 01Nh9Qu…, разные аккаунты), без force push, каждая — git pull --rebase перед коммитом. Раздел работы (STATUS.md): 01FDvgz… — телефонная карточка, освещение, 1024, полный прогон и этот DELIVERY; 01Nh9Qu… — 48 px (dba5691), «Идеи» с R06 (фильтр слоя 3efb785, r06_ideas_check 6/6, INTEGRATION B и E). 12 окт ~07:15 UTC: сессия 01Nh9Qu… подняла code_sha до 03ac17c (правки «Идей», ideas_fix_03ac17c) — иначе FINAL-3 с R06 «Идеи» терял 4-ю идею и строку «По идее жителей». 12 окт, вечер: сессия 01FDvgz… с 06:26 UTC не коммитила; стекло, исправление карточки (60c445b) и поставку 10 делает 01Nh9Qu… (STATUS.md).",
  "final_3": {
@@ -940,7 +945,10 @@
    "catalog_close": "«×» в листе каталога (onCatalogClose хозяина) вместо «Закрыть» под листом — R11 11.3/16.5; для R01 — proposed_r01_marathon.patch",
    "selected_state": "выбранный проект — табличка сплошным #152c26 с белым текстом и пунктир #152c26, как нажатая кнопка ui-kit (было синее кольцо фокуса); синий — только фокус с клавиатуры",
    "no_green": "«зелёный — только «исправлено»»: пунктир проекта #5b6a64, призрак размещения — графит (нельзя — красный), кольцо постройки — #152c26; запасные --c-brand в CSS — #152c26",
-   "panel_motion": "панель при смене вида мягко проявляется (200 мс, только прозрачность — положение модуль меряет сразу); тень при постройке — когда части выросли"
+   "panel_motion": "панель при смене вида мягко проявляется (200 мс, только прозрачность — положение модуль меряет сразу); тень при постройке — когда части выросли",
+   "ghost": "призрак размещения — сама модель в своих цветах, 72 %, пунктир #152c26; нельзя поставить — краснеет (было однотонное зелёное, затем графитовое пятно)",
+   "type_grid": "шкала ui-kit 13/15/17/22/28: подписи каталога в узкой оболочке 15 (было 14 вне шкалы), запасные --fs-* = значения ui-kit; карточка каталога и метка-группа — отступы сетки 8 pt",
+   "toast_icon": "тост ошибки — со значком «внимание» (ui-kit: значок | текст | действие)"
   },
   "evidence": [
    "research/round-14-results/R05/design/before/ → after/ (design_shots.mjs)",
@@ -948,6 +956,7 @@
    "screens/ideas_layer_*, idea_view3d_*, b2_* (оболочка)",
    "design/panel/ — каталог с превью, выбранный проект; design/before/selected_* — было"
   ],
-  "not_checked_in_cloud": "плавность теней и анимаций на ноутбуке с видеокартой (LOCAL-R05-1); облако — программный WebGL"
+  "not_checked_in_cloud": "плавность теней и анимаций на ноутбуке с видеокартой (LOCAL-R05-1); облако — программный WebGL",
+  "r10_circle3": "R10 53d1c070 (дизайн-марафон, круг 3 на R01 de689c6f): «Проекты и идеи» (R06+R05) — «лучше» FINAL-3 во всех 4 вариантах (1366/375 × ru/kk)"
  }
 }

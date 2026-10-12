@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-12T17:36:32.717Z",
+ "generated_at": "2026-10-12T18:15:46.305Z",
  "ui_kit_i18n": "выгрузка --kit",
  "checks": [
   {
@@ -28,7 +28,7 @@
    "id": "r11_25_offline_basemap_osm_yards_1366_ru",
    "status": "PASS",
    "detail": {
-    "yards_rendered": 11
+    "yards_rendered": 10
    }
   },
   {
@@ -51,7 +51,7 @@
     },
     "object": {
      "x": 683,
-     "y": 337,
+     "y": 335,
      "under_card": false
     }
    }
@@ -118,7 +118,7 @@
     },
     "object": {
      "x": 683,
-     "y": 345,
+     "y": 343,
      "under_card": false
     }
    }
@@ -185,7 +185,7 @@
     },
     "object": {
      "x": 188,
-     "y": 354,
+     "y": 352,
      "under_card": false
     }
    }
@@ -252,7 +252,7 @@
     },
     "object": {
      "x": 188,
-     "y": 360,
+     "y": 359,
      "under_card": false
     }
    }
