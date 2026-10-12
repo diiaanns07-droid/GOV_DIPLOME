@@ -150,7 +150,8 @@ body[data-civic-drawer="open"].civic-mode .civic-panel { visibility: hidden; }
   body[data-civic-sheet="peek"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(24% + 6px); }
   /* Full sheet: attribution goes left, between the basemap notice and the sheet (clear of map tools). */
   body[data-civic-sheet="full"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(100% - 178px); right: auto; left: 6px; }
-  body[data-civic-drawer="open"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(62% + 6px); right: 4px; left: auto; }
+  /* Слева, как при полной шторке: справа на этой высоте столбик кнопок карты (капсула «+ | −» с FINAL-3) закрыл бы «i». */
+  body[data-civic-drawer="open"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(62% + 6px); right: auto; left: 6px; }
   /* A full sheet would stick out above the drawer and cover the map strip the drawer leaves free;
      the panel keeps its state (scroll, sheet size) and comes back when the drawer closes. */
   body[data-civic-drawer="open"].civic-mode .civic-panel { visibility: hidden; }

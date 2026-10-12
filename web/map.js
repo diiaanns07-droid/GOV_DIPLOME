@@ -274,6 +274,23 @@ async function loadMap() {
       new maplibregl.AttributionControl({ compact: true }),
       "bottom-right",
     );
+    // Телефон: подпись «© OpenStreetMap contributors» сразу свёрнута в «i» (MapLibre держит её развёрнутой до первого
+    // перетаскивания карты). Развёрнутая, она шла от центра свободной карты вправо и забирала нажатия по значкам и в
+    // мастере жалобы рядом (R10 FINAL-3, 375: карточка «Хан Шатыр» не открывалась). Нажатие на «i» раскрывает её, как прежде.
+    const attribBox = map.getContainer().querySelector(".maplibregl-ctrl-attrib");
+    if (attribBox && window.matchMedia("(max-width: 760px)").matches) {
+      const collapse = () => {
+        if (!attribBox.classList.contains("maplibregl-compact-show")) return false;
+        attribBox.classList.remove("maplibregl-compact-show");
+        attribBox.setAttribute("open", "");  // так сворачивает сам MapLibre (_toggleAttribution)
+        return true;
+      };
+      if (!collapse()) {
+        const watch = new MutationObserver(() => { if (collapse()) watch.disconnect(); });
+        watch.observe(attribBox, { attributes: true, attributeFilter: ["class"] });
+        setTimeout(() => watch.disconnect(), 30000);
+      }
+    }
     // R11 (LOCAL_FINAL P3): у кнопки «i» MapLibre подпись по-английски («Toggle attribution») — ставим ru/kk.
     const labelAttribution = () => {
       const b = document.querySelector(".maplibregl-ctrl-attrib-button");
