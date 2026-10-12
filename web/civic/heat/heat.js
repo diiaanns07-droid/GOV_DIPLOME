@@ -391,6 +391,37 @@
     } catch (e) { /* приватный режим — не страшно */ }
   }
 
+  // ---------- Предзагрузка первого кадра (R01 INTEGRATION 21.9, «первый значок ≤ 3 с») ----------
+  // Ответ /heat приходит по сети за десятки мс, но на старте главный поток занят картой и модулями, и разбор ответа,
+  // запрошенного при монтировании, ждал до 1 с. С атрибутом <script … data-prefetch> (или CivicHeat.prefetch()) модуль
+  // запрашивает то же, что попросит первым кадром (справочник, районы города и места за 30 дней), сразу при загрузке
+  // скрипта; mount берёт эти ответы один раз, если фильтры по умолчанию. Ответ /heat одинаков для всех (тексты жителей
+  // — только в /heat/target), промах или ошибка — обычный запрос. Без атрибута ничего не меняется.
+  const PREFETCH_TTL = 60000;
+  let prefetched = null;
+  function unwrap(body) {
+    // Шлюз R01 может завернуть ответ в конверт {ok, data} (как в civic-v1) — принимаем оба вида.
+    return body && body.ok === true && body.data && !body.items && !body.categories ? body.data : body;
+  }
+  function prefetch(apiBase) {
+    const base = (apiBase || "/api/civic/v2").replace(/\/$/, "");
+    if (prefetched && prefetched.base === base) return;
+    const get = (path) => window.fetch(base + path, { headers: { Accept: "application/json" }, credentials: "same-origin" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("HTTP " + res.status)))).then(unwrap);
+    const reqs = { meta: get("/heat/meta"), districts: get("/heat?days=30&zoom=" + (DISTRICT_ZOOM - 1)), targets: get("/heat?days=30&zoom=" + (DISTRICT_ZOOM + 2)) };
+    Object.values(reqs).forEach((p) => p.catch(() => { /* при монтировании будет обычный запрос */ }));
+    prefetched = { base, at: Date.now(), reqs };
+  }
+  function takePrefetch(base) {
+    const p = prefetched;
+    prefetched = null;   // только первый кадр: дальше данные свежие, по запросу
+    return p && p.base === base && Date.now() - p.at < PREFETCH_TTL ? p.reqs : null;
+  }
+  try {
+    const me = document.currentScript;
+    if (me && me.hasAttribute("data-prefetch") && typeof window.fetch === "function") prefetch(me.getAttribute("data-api") || undefined);
+  } catch (e) { /* без предзагрузки */ }
+
   // ---------- Модуль ----------
   function mount(options) {
     const opts = options || {};
@@ -516,10 +547,11 @@
         err.body = body;
         throw err;
       }
-      // Шлюз R01 может завернуть ответ в конверт {ok, data} (как в civic-v1) — принимаем оба вида.
-      if (body && body.ok === true && body.data && !body.items && !body.categories) return body.data;
-      return body;
+      return unwrap(body);
     }
+    // Ответы предзагрузки (её включает сама страница атрибутом data-prefetch; GET оболочки — тот же fetch).
+    // opts.prefetch: false — не брать (например, проверка с подменённым fetch на той же странице).
+    let early = opts.prefetch === false ? null : takePrefetch(apiBase);
 
     function zoomNow() { return map ? map.getZoom() : 14; }
     function modeFor(z) { return z < ((S.meta && S.meta.district_zoom_max) || DISTRICT_ZOOM) ? "districts" : "targets"; }
@@ -528,7 +560,14 @@
       const seq = ++S.reqSeq;
       if (!S.data) { S.status = "loading"; render(); }
       try {
-        if (!S.meta) S.meta = await getJson("/heat/meta");
+        // Справочник (/heat/meta) и сами жалобы (/heat) — одновременно, а не друг за другом: на старте главный поток
+        // занят картой и модулями, и каждый лишний круг «ответ → следующий запрос» стоил до 1 с до первого значка
+        // (R01 INTEGRATION 21.9). Порог районов до прихода справочника — тот же DISTRICT_ZOOM, что присылает сервер.
+        // Первый кадр с предзагрузкой (data-prefetch): берём её ответы, если фильтры по умолчанию; иначе — как обычно.
+        const pre = early && S.filters.days === 30 && !S.filters.category && !S.filters.district ? early : null;
+        early = null;
+        const via = (p, path) => (p ? p.catch(() => getJson(path)) : getJson(path));
+        const metaReq = S.meta ? Promise.resolve(S.meta) : via(pre && pre.meta, "/heat/meta");
         const query = (zoom) => {
           const q = new URLSearchParams();
           q.set("days", String(S.filters.days));
@@ -539,9 +578,10 @@
         };
         // На мелком масштабе карта — районы, а список «Горячие места» — всё равно 10 мест: их берём вторым запросом.
         const districtsView = modeFor(zoomNow()) === "districts";
-        const [data, places] = await Promise.all([getJson(query(zoomNow())),
-          districtsView ? getJson(query(DISTRICT_ZOOM + 2)).catch(() => null) : Promise.resolve(null)]);
+        const [meta, data, places] = await Promise.all([metaReq, via(pre && pre[districtsView ? "districts" : "targets"], query(zoomNow())),
+          districtsView ? via(pre && pre.targets, query(DISTRICT_ZOOM + 2)).catch(() => null) : Promise.resolve(null)]);
         if (seq !== S.reqSeq || S.destroyed) return;   // пришёл устаревший ответ — пропускаем
+        S.meta = meta;
         const placeItems = ((places && places.mode === "targets") ? places : data).items || [];
         S.top = placeItems.filter((it) => it.state === "active" && it.count > 0 && it.target.kind !== "district").slice(0, TOP_N);
         S.topItems = new Map(S.top.map((it) => [keyOf(it.target), it]));
@@ -1906,5 +1946,5 @@
   }
 
   // messages — запасной словарь ru/kk (R11 переносит ключи heat.* в общие ru.json / kk.json).
-  window.CivicHeat = { mount, version: VERSION, schema: "civic-v2", messages: DICT };
+  window.CivicHeat = { mount, prefetch, version: VERSION, schema: "civic-v2", messages: DICT };
 })();
