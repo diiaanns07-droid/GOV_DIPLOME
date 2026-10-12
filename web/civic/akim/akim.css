@@ -646,12 +646,12 @@
     display: grid !important;
     gap: 8px;
   }
-  .bk-card,
-  .bk-kpi {
+  .bk-card {
     padding: 10px 12px;
   }
   .akim-kpi {
     min-height: 0;
+    padding: 4px 0;
   }
   .akim-kpis,
   .akim-summary,
@@ -676,21 +676,21 @@
   .akim-bars .bk-bar {
     min-height: 20px;
   }
-  .akim-pulse__more > summary { /* на бумаге «Ещё N» раскрыто (akim.js открывает details перед печатью) */
+  .akim-pulse__more > summary,
+  .akim-kpi-more > summary { /* на бумаге «Ещё N» и «Подробнее» раскрыты (akim.js открывает details перед печатью) */
     display: none;
   }
-  .akim-decision {
+  .akim-decision { /* решения на бумаге — тем же списком с линиями, что на экране (CLEAN_PASS п. 5) */
     break-inside: avoid;
-    padding: 6px 8px;
+    padding: 6px 0;
   }
-  .akim-decisions__list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-  }
-  .bk-kpi,
   .akim-card {
     box-shadow: none !important;
     border: 1px solid #c9d3cb;
+    break-inside: avoid;
+  }
+  .akim-kpi.bk-kpi { /* числа без карточек и на бумаге (CLEAN_PASS п. 3); рамку печати ui-kit снимаем */
+    border: 0;
     break-inside: avoid;
   }
   .bk-kpis {
