@@ -1,18 +1,22 @@
 {
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
- "delivery": 13,
- "for_build": "дизайн-марафон: R01 claude/sharp-dijkstra-0t87gl @ fcb9b30e (в нём R05 e3a52f57 — поставка 12 — и proposed_r01_marathon.patch)",
+ "delivery": 14,
+ "for_build": "дизайн-марафон: R01 claude/sharp-dijkstra-0t87gl @ 3d18f280 (в нём R05 78aa2f46 — поставка 13)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "78aa2f46",
- "tested_sha": "78aa2f46 (web/civic/build3d; после него в ветке — только документы и результаты прогонов)",
- "tested_note": "Демо R05 с ui-kit R11 7117132: browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0. В сборке R01 fcb9b30e + R05 78aa2f46: shell smoke exit 0 pass=28 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0; R01 r14_wave2 exit 0 pass=42 fail=0; R10 demo_flow (тесты 53d1c070) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m11_demo (runs/marathon_r01_fcb9b30e_78aa2f46.txt).",
+ "code_sha": "0e27479",
+ "tested_sha": "0e27479 (web/civic/build3d; после него в ветке — только документы и результаты прогонов)",
+ "tested_note": "Демо R05 с ui-kit/i18n R11 claude/r14-R11 @ 49d1ee64 (код b39e586d): browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0; движение панели (motion_check.mjs, правила R10) — {\"PASS\": 35}. В сборке R01 3d18f280 + R05 0e27479: shell smoke exit 0 pass=28 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0; R01 r14_wave2 exit 0 pass=42 fail=0; R10 demo_flow (тесты b84d46ff) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m14_demo (runs/marathon_r01_3d18f280_0e27479.txt).",
  "previous_delivery": {
-  "code_sha": "e3a52f57",
-  "delivery_commit": "e092977e",
+  "code_sha": "78aa2f46",
+  "delivery_commit": "500f9a8a",
   "before": [
+   {
+    "code_sha": "e3a52f57",
+    "delivery_commit": "e092977e"
+   },
    {
     "code_sha": "2b33c59",
     "delivery_commit": "6a16b4e1"
@@ -93,8 +97,8 @@
   }
  ],
  "owned_paths_only": true,
- "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, web/civic/ui-kit/, ветки R01/R06/R11/R12. Оболочку R01 менять не нужно: proposed_r01_marathon.patch уже в fcb9b30e.",
- "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3.13, Chromium (Playwright 1.56.1) headless, WebGL2 SwiftShader без GPU; ui-kit/i18n R11 @ 7117132 (--kit; тот же в R01 65343341), словарь сверен и с R11 @ 4e0b4235; оболочка R01 fcb9b30e; без интернета (подложка — запасной фон)",
+ "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, web/civic/ui-kit/, ветки R01/R06/R10/R11/R12. Оболочку R01 менять не нужно; API модуля прежний.",
+ "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3.13, Chromium (Playwright 1.56.1) headless, WebGL2 SwiftShader без GPU; ui-kit/i18n R11 claude/r14-R11 @ 49d1ee64 (код b39e586d) (--kit для демо; оболочка R01 — со своим ui-kit); оболочка R01 3d18f280; тесты R10 claude/r14-R10 @ b84d46ff; без интернета (подложка — запасной фон)",
  "ux_review_r11_day3": {
   "source": "claude/r14-R11 @ 52d7c59, research/round-14-results/R11/UX_REVIEW.md, «День 3», пп. 20–26 (и «День 4» — пунктов для R05 нет, кроме правок kk)",
   "table": "research/round-14-results/R05/UX_REVIEW_DAY3.md",
@@ -201,7 +205,7 @@
   },
   "browser_check": {
    "status": "PASS",
-   "detail": "browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json (ui-kit R11 7117132)"
+   "detail": "browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json (ui-kit/i18n R11 claude/r14-R11 @ 49d1ee64 (код b39e586d))"
   },
   "browser_checks": {
    "load_auto_falls_back_to_local_store": "PASS",
@@ -427,13 +431,17 @@
    "r10_glass_check": "R10 glass_check.cjs (7855976) считает значки «.b3d-labels» картой — у R05 стекла на них нет (GLASS.md §2); прогон по сборке — у R10/R01"
   },
   "design_marathon_in_r01": {
-   "build": "R01 fcb9b30e + R05 78aa2f46",
+   "build": "R01 3d18f280 + R05 0e27479",
    "app_b2_smoke": "shell smoke exit 0 pass=28 fail=0",
    "r01_r14_b2": "R01 r14_b2 exit 0 pass=28 fail=0",
    "r01_r14_shell": "R01 r14_shell exit 0 pass=42 fail=0",
    "r01_r14_wave2": "R01 r14_wave2 exit 0 pass=42 fail=0",
-   "r10_demo_flow": "R10 demo_flow (тесты 53d1c070) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m11_demo",
-   "report": "runs/marathon_r01_fcb9b30e_78aa2f46.txt"
+   "r10_demo_flow": "R10 demo_flow (тесты b84d46ff) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m14_demo",
+   "report": "runs/marathon_r01_3d18f280_0e27479.txt"
+  },
+  "motion_check": {
+   "status": "PASS",
+   "detail": "{\"PASS\": 35} — runs/motion_check.json (до круга 9: runs/motion_check_before.json — 30 PASS / 5 СМОТРЕТЬ)"
   }
  },
  "screenshots": {
@@ -523,7 +531,7 @@
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: web/civic/build3d = 78aa2f46 (с data/previews/); оболочку не трогать. R10/R11: разбор после марафона; LOCAL-R05-1 — плавность на ноутбуке с GPU.",
+ "next_step": "R01: web/civic/build3d = 0e27479 (с data/previews/); оболочку не трогать. R10/R11: разбор после марафона (таблички со значками, движение панели); LOCAL-R05-1 — плавность на ноутбуке с GPU.",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -945,18 +953,26 @@
    "catalog_close": "«×» в листе каталога (onCatalogClose хозяина) вместо «Закрыть» под листом — R11 11.3/16.5; для R01 — proposed_r01_marathon.patch",
    "selected_state": "выбранный проект — табличка сплошным #152c26 с белым текстом и пунктир #152c26, как нажатая кнопка ui-kit (было синее кольцо фокуса); синий — только фокус с клавиатуры",
    "no_green": "«зелёный — только «исправлено»»: пунктир проекта #5b6a64, призрак размещения — графит (нельзя — красный), кольцо постройки — #152c26; запасные --c-brand в CSS — #152c26",
-   "panel_motion": "панель при смене вида мягко проявляется (200 мс, только прозрачность — положение модуль меряет сразу); тень при постройке — когда части выросли",
+   "panel_motion": "смена вида панели — проявление за --t-base 260 мс, содержимое приподнимается на 8 px (панель сама не сдвигается — fitDock); motion_check 35/35",
    "ghost": "призрак размещения — сама модель в своих цветах, 72 %, пунктир #152c26; нельзя поставить — краснеет (было однотонное зелёное, затем графитовое пятно)",
    "type_grid": "шкала ui-kit 13/15/17/22/28: подписи каталога в узкой оболочке 15 (было 14 вне шкалы), запасные --fs-* = значения ui-kit; карточка каталога и метка-группа — отступы сетки 8 pt",
-   "toast_icon": "тост ошибки — со значком «внимание» (ui-kit: значок | текст | действие)"
+   "toast_icon": "тост ошибки — со значком «внимание» (ui-kit: значок | текст | действие)",
+   "card_delete": "карточка проекта акимата: «Удалить» — компактная кнопка справа в строке «Один голос с устройства» (было — красная полоса во всю ширину); на телефоне карточка ниже на ряд",
+   "placing_tag": "размещение: пометка «Проект» сразу за названием объекта (была справа от ↺ ↻ и читалась как подпись к кнопкам)",
+   "demo_card_top": "демо 1366: карточка проекта под кнопкой «3D» (--b3d-card-top хозяина), тёмный край кнопки больше не выглядывает из-под угла",
+   "near_hint_color": "«Рядом уже есть остановка…» — текст обычным цветом, синий только значок «i» (синий текст читался как ссылка)",
+   "label_icons": "таблички «Проект · 2027» — значок вида перед текстом (как в заголовке карточки и в точке дальнего вида); наведение — мягкий подъём с тенью вместо тёмного кольца; нажатие — сжатие ui-kit; reduced-motion — без движения",
+   "resident_hint_phone": "телефон (демо): подсказка жителю — плавающая стеклянная плашка с отступом 16 px, а не шторка без низа",
+   "lone_action": "одна кнопка в ряду («Отменить» каталога эскиза к идее): ноутбук — компактная справа, телефон — во всю ширину",
+   "focus_ring": "кольцо фокуса с клавиатуры на плитке каталога — внутри плитки (было срезано краем прокручиваемой строки)"
   },
   "evidence": [
-   "research/round-14-results/R05/design/before/ → after/ (design_shots.mjs)",
-   "research/round-14-results/R05/design/CHECKLIST.md — разбор по 12 пунктам",
-   "screens/ideas_layer_*, idea_view3d_*, b2_* (оболочка)",
-   "design/panel/ — каталог с превью, выбранный проект; design/before/selected_* — было"
+   "research/round-14-results/R05/design/before → after (круги 1–2), panel/ (3), r5before → r5after … r8before → r8after (5–8)",
+   "research/round-14-results/R05/design/CHECKLIST.md — разбор по 12 пунктам, круги 1–9",
+   "runs/motion_check_before.json → runs/motion_check.json (п. 7)"
   ],
   "not_checked_in_cloud": "плавность теней и анимаций на ноутбуке с видеокартой (LOCAL-R05-1); облако — программный WebGL",
-  "r10_circle3": "R10 53d1c070 (дизайн-марафон, круг 3 на R01 de689c6f): «Проекты и идеи» (R06+R05) — «лучше» FINAL-3 во всех 4 вариантах (1366/375 × ru/kk)"
+  "r10_circle3": "R10 53d1c070 (дизайн-марафон, круг 3 на R01 de689c6f): «Проекты и идеи» (R06+R05) — «лучше» FINAL-3 во всех 4 вариантах (1366/375 × ru/kk)",
+  "r10_note": "для R10 motion_check: у CSS-анимаций (@keyframes) getTiming().easing по спецификации «linear» — кривая лежит в getKeyframes()[0].easing; без opacity такая ease-out анимация получила бы «СМОТРЕТЬ»"
  }
 }
