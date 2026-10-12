@@ -92,10 +92,9 @@
       if (what.length < 3) { note(t("staff.fixed.need_what"), true); return; }
       var button = form.querySelector("button[type=submit]");
       button.disabled = true;
+      // B-056 / R15: сам Blob из shrink(), без fetch(blob:…) — строгая CSP сборки (connect-src без blob:) его запрещает.
       var upload = photo
-        ? fetch(photo.url).then(function (r) { return r.blob(); }).then(function (blob) {
-            return window.BirgeComplaintPhotos.upload(id, blob, "after", csrf());
-          })
+        ? window.BirgeComplaintPhotos.upload(id, photo.blob, "after", csrf())
         : Promise.resolve(null);
       upload.then(function (uploaded) {
         var steps = current && current.status === "new" ? call("POST", "/complaints/" + id + "/status", { status: "in_progress" })
@@ -106,7 +105,10 @@
         });
       }).then(function (res) {
         button.disabled = false;
-        if (res && res.ok) photo = null;
+        if (res && res.ok) {
+          if (photo && photo.url) URL.revokeObjectURL(photo.url);
+          photo = null;
+        }
         done(res);
       }, function () { button.disabled = false; note(t("complaint.error.send"), true); });
     }
