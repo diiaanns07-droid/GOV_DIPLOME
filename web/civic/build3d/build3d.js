@@ -24,6 +24,7 @@
  *   buildMs    — длительность анимации постройки (1100 мс);
  *   onToolChange(active, kind) — модуль взял/отдал щелчки по карте (R01: map.setInteractionEnabled);
  *   onSelect(proposal|null)    — выбрано предложение (R06 может показать свою карточку);
+ *   onCatalogClose()           — хозяин сворачивает каталог сам: в листе каталога — «×» (дизайн-марафон, R11 11.3);
  *   renderCard: false          — не показывать встроенную карточку (её рисует R06).
  *   avoid: () => [элементы]    — элементы хозяина поверх карты (шапка, панели, кнопки карты R01): модуль ставит
  *                                объект при открытой карточке в свободную часть карты, а в режиме overlay — и свою
@@ -858,6 +859,16 @@
       head.appendChild(el("p", "b3d-title", { text: t("proposal.catalog.title"), id: "b3d-catalog-title" }));
       var count = Object.keys(S.objects).length;
       if (count >= Core.MAX_OBJECTS) head.appendChild(el("span", "bk-tag bk-tag--warn", { text: t("proposal.limit") }));
+      // Хозяин сворачивает каталог сам (оболочка R01: кнопка «Что построить?» / «Закрыть»): «×» — в листе, в правом
+      // верхнем углу, как у карточки (R11 INTEGRATION 11.3), а не отдельной кнопкой под листом.
+      if (typeof opts.onCatalogClose === "function") {
+        var x = el("button", "bk-iconbtn b3d-head__close", { type: "button", "aria-label": t("common.action.close"), title: t("common.action.close"), "data-action": "close-catalog" });
+        x.appendChild(icon("close", o.iconsUrl));
+        x.addEventListener("click", function () {
+          opts.onCatalogClose();
+        });
+        head.appendChild(x);
+      }
       dock.appendChild(head);
       var row = el("div", "b3d-cards", { role: "group", "aria-labelledby": "b3d-catalog-title" });
       Core.KIND_ORDER.forEach(function (kind) {
