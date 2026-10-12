@@ -117,6 +117,21 @@
   display: grid;
   gap: var(--s-3);
 }
+/* Мягкое появление карточек после загрузки и смены вкладки: подъём на 8 px с проявлением, по очереди через 40 мс. */
+.ri-body--in > * {
+  animation: ri-card-in 280ms var(--ease) both;
+  animation-delay: calc(var(--ri-i, 0) * 40ms);
+}
+@keyframes ri-card-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
 
 /* ── карточка идеи «как в App Store» ── */
 .ri .ri-card,
@@ -215,25 +230,18 @@
 }
 /* «Сквер · район Нура · Пример» — одна тихая строка над названием. */
 .ri-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0;
+  display: block; /* строкой: перенос — только после «·» (разделители — текст с неразрывным пробелом, ideas.js) */
   margin: 0;
   font-size: var(--fs-caption);
-  line-height: 1.35;
+  line-height: 1.4;
   color: var(--c-text-2);
-}
-.ri-meta > span:not(.ri-mine) + span:not(.ri-mine)::before {
-  content: "·";
-  content: "·" / "";
-  margin: 0 6px;
 }
 .ri-meta > .bk-tag--demo {
   display: inline;
   font-size: inherit;
 }
 .ri-meta > .ri-mine {
+  display: inline-block;
   margin-left: var(--s-2);
   background: var(--c-accent);
   color: var(--c-ink);
@@ -293,6 +301,17 @@
   color: var(--c-ink);
   font-size: var(--fs-lead);
   font-weight: var(--fw-semi);
+}
+.ri-votes--stack {
+  display: grid;
+  justify-items: start;
+  line-height: 1.15;
+}
+.ri-votes--stack > .ri-votes__n {
+  font-size: var(--fs-lead);
+}
+.ri-votes__w {
+  font-size: var(--fs-caption);
 }
 /* Число «перекатывается»: +1 въезжает снизу, −1 — сверху (280 мс, ease-out). */
 .ri-roll-up {
@@ -468,6 +487,20 @@
 .ri-more[open] {
   display: grid;
   gap: var(--s-3);
+}
+/* «Подробнее» раскрывается плавно там, где браузер умеет анимировать details (Chrome 131+); в остальных — сразу. */
+.ri {
+  interpolate-size: allow-keywords;
+}
+.ri-more::details-content {
+  height: 0;
+  overflow: clip;
+  transition:
+    height var(--t-base) var(--ease),
+    content-visibility var(--t-base) allow-discrete;
+}
+.ri-more[open]::details-content {
+  height: auto;
 }
 .ri .ri-3d {
   justify-self: start;
@@ -775,6 +808,19 @@
     opacity: 1;
   }
 }
+.ri-step-in--down {
+  animation-name: ri-panel-in;
+}
+@keyframes ri-panel-in {
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
 .ri-pickart {
   display: grid;
   place-items: center;
@@ -1010,6 +1056,10 @@
   color: var(--c-ink);
   font-weight: var(--fw-semi);
 }
+.rw-late {
+  color: var(--c-warn);
+  font-weight: var(--fw-semi);
+}
 .rw-where {
   margin: 0;
   color: var(--c-text-2);
@@ -1050,6 +1100,24 @@
 .rw .rw-remove {
   color: var(--c-danger);
   font-weight: var(--fw-regular);
+}
+/* Телефон: «Удалить» — значок корзины (подпись — для диктора и в title), чтобы «Изменить запись» встала в ту же строку.
+   «Точно удалить» (второе нажатие) — с подписью, красной рамкой. */
+@media (max-width: 760px) {
+  .rw .rw-remove {
+    width: 44px;
+    min-width: 44px;
+    padding: 0;
+    border-radius: 50%;
+  }
+  .rw .rw-remove > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 }
 .rw-form {
   display: grid;
@@ -1165,11 +1233,15 @@
 @media (prefers-reduced-motion: reduce) {
   .ri-roll-up,
   .ri-roll-down,
+  .ri-body--in > *,
   .ri-pop,
   .ri-step-in,
   .ri-pick,
   .ri-card--flash {
     animation: none;
+  }
+  .ri-more::details-content {
+    transition: none;
   }
   .ri-card--flash {
     box-shadow: 0 0 0 2px var(--c-focus);

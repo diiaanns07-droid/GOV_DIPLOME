@@ -12,6 +12,13 @@
 .r06-card .bk-card__title {
   overflow-wrap: anywhere; /* длинные казахские названия переносятся, а не обрезаются */
 }
+.r06-place {
+  margin: 0;
+}
+.r06-place > .bk-tag--demo {
+  display: inline;
+  font-size: inherit;
+}
 
 /* «За» / «Против»: две крупные кнопки в ряд, на узком экране — тоже в ряд (по 50 %). */
 .r06-vote {

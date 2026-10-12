@@ -129,6 +129,7 @@
       "idea.check.hint.maintenance": "Есть кому убирать и чинить",
       "idea.check.progress": "«Да»: {n} из 4",
       "idea.check.ready": "Все четыре — «да»: можно делать проектом",
+      "idea.hide_short": "Скрыть",
     },
     kk: {
       "idea.status.review": "Тексерілуде",
@@ -181,6 +182,7 @@
       "idea.check.hint.maintenance": "Тазалап, жөндейтін жауапты бар",
       "idea.check.progress": "«Иә»: {n}/4",
       "idea.check.ready": "Төртеуі де «иә»: жобаға айналдыруға болады",
+      "idea.hide_short": "Жасыру",
     },
   };
 
@@ -243,6 +245,15 @@
     span.style.display = "contents";
     span.innerHTML = root.BirgeUI ? root.BirgeUI.icon(name) : "";
     return span.firstChild || doc.createTextNode("");
+  }
+  // «вид · район · Пример»: точка прилипает к слову слева (неразрывный пробел), перенос — только после точки.
+  function metaParts(parts) {
+    var out = [];
+    parts.forEach(function (p, i) {
+      if (i) out.push(doc.createTextNode("\u00a0· "));
+      out.push(p);
+    });
+    return out;
   }
   function button(cls, label, ic, attrs) {
     return h("button", Object.assign({ type: "button", class: "bk-btn" + (cls ? " " + cls : "") }, attrs || {}),
@@ -421,7 +432,9 @@
     function onClick(e) {
       point = [Math.round(e.lngLat.lng * 1e6) / 1e6, Math.round(e.lngLat.lat * 1e6) / 1e6];
       if (root.maplibregl && root.maplibregl.Marker) {
-        if (!marker) marker = new root.maplibregl.Marker({ color: "#185FA5" });
+        // Булавка места — цвет слоя идей ui-kit (--idea, одна краска), а не синий по умолчанию.
+        var ideaColor = (root.getComputedStyle(doc.documentElement).getPropertyValue("--idea") || "").trim() || "#152c26";
+        if (!marker) marker = new root.maplibregl.Marker({ color: ideaColor });
         marker.setLngLat(point).addTo(m);
       }
       // На обзоре города точка неточная: приближаем к ней до улиц — второе нажатие уточняет место.
@@ -483,6 +496,7 @@
         if (!alive) return;
         state.items = (res[0] && res[0].items) || [];
         state.counts = (res[0] && res[0].counts) || {};
+        state.appear = true;
         state.projects = res[1] ? res[1].items || [] : [];
         if (state.flash) focusIdea(state.flash);
         render();
@@ -546,6 +560,7 @@
         if (id && id !== state.tab) {
           state.tab = id;
           state.open = null;
+          state.appear = true;
           render();
         }
       }
@@ -620,6 +635,12 @@
         }
         shown.forEach(function (item) { body.appendChild(residentCard(item)); });
       }
+      // Карточки мягко появляются одна за другой (40 мс) — только после загрузки и смены вкладки, не при каждой перерисовке.
+      if (state.appear) {
+        body.classList.add("ri-body--in");
+        Array.prototype.forEach.call(body.children, function (el, i) { el.style.setProperty("--ri-i", String(Math.min(i, 8))); });
+        state.appear = false;
+      }
       rootEl.appendChild(body);
     }
 
@@ -635,9 +656,10 @@
     }
     function metaLine(item) {
       var kind = item.object && item.object.kind;
-      var row = h("p", { class: "ri-meta" }, [h("span", { text: kind ? tr("proposal.kind." + kind) : tr("idea.kind_none") })]);
-      if (item.district) row.appendChild(h("span", { text: tr("district.name", { name: tr("district." + item.district) }) }));
-      if (item.demo) row.appendChild(h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }));
+      var parts = [h("span", { text: kind ? tr("proposal.kind." + kind) : tr("idea.kind_none") })];
+      if (item.district) parts.push(h("span", { text: tr("district.name", { name: tr("district." + item.district) }) }));
+      if (item.demo) parts.push(h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }));
+      var row = h("p", { class: "ri-meta" }, metaParts(parts));
       if (item.mine) row.appendChild(h("span", { class: "bk-tag ri-mine", text: tr("idea.mine") }));
       return row;
     }
@@ -659,6 +681,8 @@
       var full = tr("idea.votes", { n: n }), num = I() ? I().formatNumber(n) : String(n), at = full.indexOf(num);
       var bump = state.bump && state.bump.id === item.id ? state.bump.dir : 0;
       var numEl = h("span", { class: "ri-votes__n bk-num" + (bump > 0 ? " ri-roll-up" : bump < 0 ? " ri-roll-down" : ""), text: num });
+      // Число сверху крупно, слово под ним мелко (как оценки в App Store) — узкая колонка, капсула на телефоне в той же строке.
+      if (at === 0) return h("p", { class: "ri-votes ri-votes--stack" }, [numEl, h("span", { class: "ri-votes__w", text: full.slice(num.length).trim() })]);
       return h("p", { class: "ri-votes" }, at < 0 ? [full] : [full.slice(0, at), numEl, full.slice(at + num.length)]);
     }
     // «Подпись: текст» — подпись жирным, текст обычным (раньше вся строка «Можно доработать: …» была жирной).
@@ -740,7 +764,9 @@
         state.bump = { id: item.id, dir: (data.item.votes || 0) >= was ? 1 : -1 };
         render();
         setTimeout(function () { if (state.bump && state.bump.id === item.id) state.bump = null; }, 600);
-        toast(tr(on ? "idea.support_saved" : "idea.support_removed"));
+        // Подтверждение — сама капсула («Вы поддержали», галочка) и число; тост внизу экрана не закрывает список.
+        // Для экранного диктора — та же фраза в живой области.
+        announce(tr(on ? "idea.support_saved" : "idea.support_removed"));
       }, function (err) {
         state.busy = false;
         btn.removeAttribute("aria-busy");
@@ -748,6 +774,14 @@
         toast(errorText(err), retry ? { type: "error", action: { label: tr("common.action.retry"), onClick: function () { support(item, on, btn); } } } : { type: "error" });
         if (err.code === "voting_closed") load();
       });
+    }
+
+    // Живая область для диктора (вне перерисовываемого списка — иначе новая область с текстом не читается).
+    var live = h("p", { class: "bk-sr-only", role: "status", "aria-live": "polite" });
+    function announce(text) {
+      if (!live.isConnected) doc.body.appendChild(live);
+      live.textContent = "";
+      setTimeout(function () { live.textContent = text; }, 60);
     }
 
     // ── состояния списка: скелетон, пусто ──
@@ -795,15 +829,22 @@
       var toggle;
       if (isDecided(item)) {
         // Решённую идею проверять нечего — сразу тихая «Скрыть» (R15-S30: личные данные заметили позже, просьба автора).
-        toggle = button("bk-btn--ghost ri-hidebtn", tr(open ? "idea.check_close" : "idea.hide"), open ? "chevron-down" : null,
+        // Короткое «Скрыть» в строке карточки; почему скрывают (личные данные, грубые слова) — в подписи поля причины.
+        toggle = button("bk-btn--ghost ri-hidebtn", tr(open ? "idea.check_close" : "idea.hide_short"), open ? "chevron-down" : null,
           { "aria-expanded": String(open), "data-key": "open-" + item.id, onclick: function () {
             state.open = open ? null : item.id;
+            state.panelIn = state.open;
             state.form = null;
             render();
           } });
       } else {
         toggle = button("ri-capsule" + (open ? " bk-btn--ghost" : ""), tr(open ? "idea.check_close" : "idea.check_open"), open ? "chevron-down" : "edit",
-          { "aria-expanded": String(open), "data-key": "open-" + item.id, onclick: function () { state.open = open ? null : item.id; state.form = null; render(); } });
+          { "aria-expanded": String(open), "data-key": "open-" + item.id, onclick: function () {
+            state.open = open ? null : item.id;
+            state.panelIn = state.open;
+            state.form = null;
+            render();
+          } });
       }
       var counted = item.status !== "review" && item.status !== "hidden";
       var kids = [head(item)];
@@ -841,7 +882,9 @@
     function staffPanel(item) {
       var form = state.form || (state.form = { id: item.id, check: Object.assign({ land: "unknown", networks: "unknown", access: "unknown", maintenance: "unknown" }, item.check || {}),
         kind: item.object && item.object.kind || null, mode: isDecided(item) ? "hide" : null, reason: "", improve: "" });
-      var panel = h("div", { class: "ri-panel" });
+      // Панель раскрывается мягко — только в момент открытия (ответы чек-листа перерисовывают её без движения).
+      var panel = h("div", { class: "ri-panel" + (state.panelIn === item.id ? " ri-step-in ri-step-in--down" : "") });
+      if (state.panelIn === item.id) state.panelIn = null;
       if (isDecided(item)) {
         // R15-S30: уже решённую идею можно скрыть — сразу форма причины (кнопка «Скрыть» — в строке карточки).
         form.mode = "hide";
@@ -1197,6 +1240,7 @@
       setLang: function () { render(); },
       destroy: function () {
         alive = false;
+        if (live.parentNode) live.parentNode.removeChild(live);
         if (mounted === current) mounted = null;
         if (typeof offLang === "function") offLang();
         rootEl.classList.remove("ri");

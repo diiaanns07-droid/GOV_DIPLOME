@@ -310,14 +310,17 @@
         h("s", { text: tr("works.form.until", { date: date(item.planned_end) }) }),
         h("span", { "aria-hidden": "true", text: "→" }),
         h("span", { class: "rw-when__new", text: date(item.forecast_end) }),
-        h("span", { class: "bk-tag bk-tag--warn", text: tr("works.shift_later") }),
+        // Задержка — словом в той же строке, без плашки (чистый стиль R11 §2.5, как в «Рядом» R08).
+        h("span", { class: "rw-late", text: "· " + tr("works.shift_later") }),
       ]);
     }
     function card(item) {
       var l = lang();
       var title = item["title_" + l] || item.title_ru;
       var confirming = state.confirm === item.id;
+      // «вид · Пример»: точка прилипает к слову слева, перенос — только после неё (как в «Идеях»).
       var meta = h("p", { class: "ri-meta" }, [h("span", { text: kindLabel(item) }),
+        item.demo ? doc.createTextNode("\u00a0· ") : null,
         item.demo ? h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }) : null]);
       return h("article", { class: "bk-card rw-card", "data-work": item.id }, [
         h("div", { class: "ri-app" }, [tileOf(item), h("div", { class: "ri-app__body" }, [meta,
@@ -325,7 +328,7 @@
         item.type === "outage" && item.zone_ru ? h("p", { class: "rw-where", text: tr("nearby.outage.zone", { text: item["zone_" + l] || item.zone_ru }) }) : null,
         h("div", { class: "rw-foot" }, [
           button(confirming ? "bk-btn--danger" : "bk-btn--ghost rw-remove", tr(confirming ? "works.form.remove_confirm" : "works.form.remove"), "trash",
-            { "data-key": "remove-" + item.id, onclick: function () { remove(item); } }),
+            { "data-key": "remove-" + item.id, title: tr(confirming ? "works.form.remove_confirm" : "works.form.remove"), onclick: function () { remove(item); } }),
           button("rw-capsule", tr("works.form.edit_title"), "edit", { "data-key": "edit-" + item.id, onclick: function () { openForm(item); } }),
         ]),
       ]);

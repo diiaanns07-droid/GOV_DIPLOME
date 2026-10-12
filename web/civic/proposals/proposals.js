@@ -183,8 +183,10 @@
     var total = p.votes_up + p.votes_down;
     var upShare = total ? Math.round((p.votes_up / total) * 100) : 0;
     var tags =
-      '<span class="bk-tag bk-tag--project">' + esc(p.planned_year ? t("proposal.label", { year: String(p.planned_year) }) : t("common.tag.project")) + "</span>" +
-      (p.demo ? '<span class="bk-tag bk-tag--demo" title="' + esc(t("common.tag.demo_hint")) + '">' + esc(t("common.tag.demo")) + "</span>" : "");
+      '<span class="bk-tag bk-tag--project">' + esc(p.planned_year ? t("proposal.label", { year: String(p.planned_year) }) : t("common.tag.project")) + "</span>";
+    // «Пример» — в тихой строке района («район Нура · Пример»), а не третьей меткой в ряду: ряд не переносится (дизайн-марафон).
+    var demoTag = p.demo ? '<span class="bk-tag bk-tag--demo" title="' + esc(t("common.tag.demo_hint")) + '">' + esc(t("common.tag.demo")) + "</span>" : "";
+    var place = p.district ? esc(t("district.name", { name: t("district." + p.district) })) : "";
     var voteBtn = function (value, key, ic, count) {
       var pressed = p.my_vote === value;
       return (
@@ -200,7 +202,7 @@
       '<div class="bk-card__row"><span class="bk-card__eyebrow">' + icon(KIND_ICON[p.kind] || "flag") + "<span>" +
       esc(t("proposal.kind." + p.kind)) + "</span></span>" + tags + "</div>" +
       '<h3 class="bk-card__title" id="' + id + '" lang="' + ttl.lang + '">' + esc(ttl.text) + "</h3>" +
-      (p.district ? '<p class="bk-meta" style="margin:0">' + esc(t("district.name", { name: t("district." + p.district) })) + "</p>" : "") +
+      (place || demoTag ? '<p class="bk-meta r06-place">' + place + (place && demoTag ? "\u00a0· " : "") + demoTag + "</p>" : "") +
       // Проект из идеи жителей (волна 2 п. 7): «По идее жителей · 47 голосов» — голоса за идею на момент решения.
       (p.idea ? '<p class="r06-idea">' + icon("users") + "<span>" + esc(t("idea.by_residents", { n: p.idea.votes || 0 })) + "</span></p>" : "") +
       '<div class="bk-card__row"><span class="bk-meta">' + esc(t("status.label")) + '</span><span class="bk-status" data-status="' +
