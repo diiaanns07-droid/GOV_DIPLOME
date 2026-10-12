@@ -4,7 +4,7 @@
  "branch": "claude/r14-R11",
  "base_sha": "af77b78",
  "restored_from": null,
- "code_sha": "d4a850b0 — последний коммит web/civic/ui-kit и web/civic/i18n (дизайн-марафон, круги 0–4): всё из 58b28edc + отклик нажатия и появление свойствами scale/translate (R10 B-068: не спорят с transform модулей), стекло внутри стекла — сплошное (меню в шапке, R01 25.3), карточки на стекле белые с волосяной линией (R13), числа у вкладок скрыты на телефоне, мягкая смена статуса и «встающая» галочка «Проверено жителями», .bk-menu__radio, KPI на стекле без рамки, пункты меню вложены на 8 со скруглением 10; словарь 1434 ключа ru=kk (+12 ключей R13 марафона ask.*; akim.decision.forbidden — что делать)",
+ "code_sha": "9a139eb8 — последний коммит web/civic/ui-kit и web/civic/i18n (дизайн-марафон, круги 0–4): всё из 58b28edc + отклик нажатия и появление свойствами scale/translate (R10 B-068: не спорят с transform модулей), стекло внутри стекла — сплошное (меню в шапке, R01 25.3), карточки на стекле белые с волосяной линией (R13), числа у вкладок скрыты на телефоне, мягкая смена статуса и «встающая» галочка «Проверено жителями», .bk-menu__radio, KPI на стекле без рамки, пункты меню вложены на 8 со скруглением 10, BirgeUI.loginState — одно состояние «войдите как сотрудник»; словарь 1434 ключа ru=kk (+12 ключей R13 марафона ask.*; akim.decision.forbidden — что делать)",
  "tested_sha": "R01 ab227e6e как есть (ui-kit R11 6a56d4f1 внутри): review_build 44/44, kk 0, шаги 1–2, 6, 6–7 PASS, значки видны, первый кадр = эталон; ключей вне словаря 12 (R13 марафон) → 0 со словарём R11 этого коммита. ab227e6e + ui-kit R11 d2ed919f: design_audit — вне шкалы 0, весов 700 0, иконок 0, зон < 44 0, без имени 0, тень в тени 0; меню R01 не задвоились. Предпросмотр 41ccb57a + ветки ролей: glass_contrast худший 7,64, glass_fallback 3/3. test_r11_ui_kit 21/21, витрина 4/4",
  "push_status": "см. STATUS.md и финальное сообщение",
  "also_in_package_branch": [
@@ -140,7 +140,7 @@
   "Скриншоты — headless Chromium с программным WebGL, без интернета (запасной фон карты)",
   "Казахский — R11 и черновики ролей, не проверен носителем; 64 места ⚑ в KK_REVIEW.md; 7 правок уточнений не перенесены в categories_v2.json пакета"
  ],
- "next_step": "R01: взять ui-kit/i18n R11 d4a850b0 и правки INTEGRATION §9–§15 (12.1 web/style.css :active через translate — B-068; §9.1 b/c отступы и #map-status; меню bk-glass--menu); роли — свои пункты §9–§15 (D-1 колонка 720 для всех списков); R11 — круг 5 на следующей сборке",
+ "next_step": "R01: взять ui-kit/i18n R11 9a139eb8 и правки INTEGRATION §9–§16 (12.1 web/style.css :active через translate — B-068; §9.1 b/c отступы и #map-status; меню bk-glass--menu); роли — свои пункты §9–§16 (D-1 колонка 720 для всех списков); R11 — круг 5 на следующей сборке",
  "wave_1": {
   "subtopics_kk": "39 уточнений вычитаны → ключи subtopic.<id>; 7 правок к черновику координатора — kk_review_extra.md",
   "emergency": "complaint.emergency.* + emergency.service.<номер>; ui-kit .bk-banner--danger; правило — UX_SPEC §10",
@@ -192,6 +192,6 @@
    "tests/civic/R11/review/book_compose.py",
    "tests/civic/R11/review/glass_contrast.cjs"
   ],
-  "ui_kit_new": ".bk-menu__radio; BirgeUI.illustration('staff'); .bk-enter-up|right|fade|pop; .bk-check-draw; .bk-glass--menu; токены --t-press/--t-fast/--t-base/--t-slow, --ease, --ease-out, --press-scale"
+  "ui_kit_new": ".bk-menu__radio; BirgeUI.illustration('staff'); .bk-enter-up|right|fade|pop; .bk-check-draw; .bk-glass--menu; токены --t-press/--t-fast/--t-base/--t-slow, --ease, --ease-out, --press-scale; BirgeUI.loginState(el, onLogin, opts); .bk-status[data-status=verified] — галочка «встаёт»"
  }
 }
