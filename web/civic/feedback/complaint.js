@@ -390,6 +390,21 @@
     return svg;
   }
 
+  // Линейная иллюстрация пустого состояния / ошибки из ui-kit R11 (символы ill-*: list | map | search | done | offline |
+  // idea | question | staff; 96 px, на телефоне 80). Старый ui-kit без иллюстраций — значок ui-kit (fallback) в круге.
+  function illustration(name, fallback) {
+    var kit = window.BirgeUI;
+    if (!kit || typeof kit.illustration !== "function") return icon(fallback || "list");
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "bk-ill");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("focusable", "false");
+    var use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", (kit.SPRITE || "/civic/ui-kit/icons.svg") + "#ill-" + name);
+    svg.appendChild(use);
+    return svg;
+  }
+
   function statusBadge(status) {
     return h("span", { "class": "bk-status", "data-status": status }, t("status." + status));
   }
@@ -1416,7 +1431,6 @@
           row = h("button", { "class": "bc-changes__item bc-changes__item--nearby", type: "button", "data-event": item.id || "",
                               onclick: function () { close(); window.location.hash = "#nearby"; } },
             [h("strong", {}, title), h("span", {}, " — " + t("nearby.tab." + (item.tab || "now"))),
-             item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
              h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
         } else {
           // «Исправлено» — это когда проверили жители; шаг службы — «Служба сообщила об устранении» (как на карте R07).
@@ -1580,6 +1594,7 @@
       // «Подробнее» (статус в карточке — один раз, R11 CLEAN_PASS R09 №6): лента статусов — как отслеживание заказа в iOS
       // (дизайн-марафон): точки на линии, пройденное — тёмным, следующий шаг — серым; ниже — паспорт решения.
       var more = h("details", { "class": "bk-details bc-more", open: open || null }, [h("summary", {}, t("common.action.more"))]);
+      if (item.demo) more.appendChild(h("span", { "class": "bk-tag bk-tag--demo bc-more__demo" }, t("common.demo")));
       // «История» (R11 IA_WAVE2 §2.2, R10 W2-2): сообщили → в работе → служба сообщила → проверили / вернули.
       var steps = item.history || (item.updates || []).map(function (u) { return u; });
       if (steps.length) {
@@ -1653,9 +1668,10 @@
 
     function renderMine(body) {
       if (state.mineError) {
-        body.appendChild(h("div", { "class": "bk-error", role: "alert" }, [icon("wifi-off"),
+        // Как BirgeUI.state(…, "error") у всех разделов: иллюстрация «нет связи», общая фраза, серая ⟳ «Повторить».
+        body.appendChild(h("div", { "class": "bk-error", role: "alert" }, [illustration("offline", "wifi-off"),
           h("p", { "class": "bk-error__title" }, t("mine.error.title")),
-          h("p", {}, t("mine.error.hint")),
+          h("p", { "class": "bk-error__text" }, t("common.state.network_text")),
           h("button", { "class": "bk-btn", type: "button", onclick: function () { loadMine(); } }, [icon("refresh"), h("span", {}, t("complaint.error.retry"))])]));
         renderPending(body);
         return;
@@ -1672,9 +1688,9 @@
       renderChanges(body);
       renderPending(body);
       if (!state.mine.length && !readOutbox().length) {
-        body.appendChild(h("div", { "class": "bk-empty" }, [icon("list"),
+        body.appendChild(h("div", { "class": "bk-empty" }, [illustration("list", "list"),
           h("p", { "class": "bk-empty__title" }, t("mine.empty.title")),
-          h("p", {}, t("mine.empty.hint")),
+          h("p", { "class": "bk-empty__text" }, t("mine.empty.hint")),
           h("button", { "class": "bk-btn bk-btn--primary", type: "button", onclick: function () { open(); } },
             [icon("plus"), h("span", {}, t("complaint.start.button"))])]));
         return;
@@ -1694,7 +1710,6 @@
           statusLine(item),
           h("p", { "class": "bc-meta" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
             item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null]),
-          item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
           item.relation === "metoo" ? h("p", { "class": "bc-meta" }, t("mine.metoo_badge")) : null,
           // Все люди, сообщившие о том же на этом месте (как на шаге «Я тоже»), а не только по этой жалобе.
           h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || reportersOf(item) || 1 })),
@@ -1704,18 +1719,29 @@
       body.appendChild(list);
       if (state.mine) state.justVerified = null;
       renderSubscriptions(body);
+      demoFootnote(body, state.mine.some(function (item) { return item.demo; }) ||
+        !!(state.changes && (state.changes.items || []).some(function (item) { return item.demo; })));
+    }
+
+    // «Пример» — не у каждой карточки: одна серая строка внизу списка (R11 D-5, как в «Рядом»); у карточки, открытой
+    // в «Подробнее», и у похожей на шаге «Я тоже» метка остаётся рядом с содержимым (честная пометка, R15).
+    function demoFootnote(body, any) {
+      if (any) body.appendChild(h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint")));
     }
 
     // Галочка успеха: круг и «✓» рисуются линией (stroke-dashoffset), цвет — акцент #152c26 (не зелёный: зелёный
     // в Birge — только «исправлено»). Без движения при prefers-reduced-motion.
+    // Галочка успеха — иллюстрация ill-done ui-kit (те же круг и галочка, класс bk-check-draw), но линиями в самой
+    // разметке: селектор «.bk-check-draw path» не достаёт до содержимого <use> (теневое дерево) — так она рисуется.
     function successMark() {
       var ns = "http://www.w3.org/2000/svg";
       var svg = document.createElementNS(ns, "svg");
-      svg.setAttribute("class", "bc-success__mark"); svg.setAttribute("viewBox", "0 0 56 56"); svg.setAttribute("aria-hidden", "true");
+      svg.setAttribute("class", "bk-ill bk-check-draw bc-success__mark"); svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
       var circle = document.createElementNS(ns, "circle");
-      circle.setAttribute("class", "bc-success__circle"); circle.setAttribute("cx", "28"); circle.setAttribute("cy", "28"); circle.setAttribute("r", "25");
+      circle.setAttribute("class", "bc-success__circle"); circle.setAttribute("cx", "12"); circle.setAttribute("cy", "12"); circle.setAttribute("r", "8.5");
       var tick = document.createElementNS(ns, "path");
-      tick.setAttribute("class", "bc-success__tick"); tick.setAttribute("d", "M17 29.5l7.5 7.5L39.5 21");
+      tick.setAttribute("class", "bc-success__tick"); tick.setAttribute("d", "m8.2 12.3 2.6 2.6 5-5.4");
       svg.appendChild(circle); svg.appendChild(tick);
       return h("div", { "class": "bc-success" }, svg);
     }
@@ -1953,7 +1979,7 @@
     emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round14-wave2",
     // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
     displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
-    targetLabel: targetLabel, statusBadge: statusBadge, icon: icon,
+    targetLabel: targetLabel, statusBadge: statusBadge, icon: icon, illustration: illustration,
     categoryIcon: function (id) { var c = category(id); return c ? c.icon : "dots"; }
   };
   // Помощники фото для компонента сотрудника (complaint-staff.js): то же уменьшение и загрузка частями.

@@ -1189,9 +1189,13 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
         ((withPhoto.resolution || {}).photos_after || []).length === 1, JSON.stringify((withPhoto.resolution || {}).photos_after));
   // Пример (demo) — только просмотр, без формы (как карточка R07).
   await page.click(".bc-inbox__tab[data-tab='new']");
-  const demoRow = await page.$(".bc-inbox__item .bk-tag--demo");
+  const demoRow = await page.$(".bc-inbox__item[data-demo] .bc-inbox__row");
   if (demoRow) {
-    await page.evaluate(() => document.querySelector(".bc-inbox__item .bk-tag--demo").closest(".bc-inbox__row").click());
+    // R11 D-5: в списке «Пример» — одна сноска внизу, не у каждой строки; метка — у раскрытой строки.
+    const note = await page.evaluate(() => ({ rowTags: document.querySelectorAll(".bc-inbox__row .bk-tag--demo").length,
+      footnote: (document.querySelector(".bc-inbox > .bc-demo-note") || {}).textContent || "" }));
+    check(`${tag}: [D-5] «Пример» — сноской под списком, не в строках`, note.rowTags === 0 && /пример|үлгі/i.test(note.footnote), JSON.stringify(note));
+    await page.evaluate(() => document.querySelector(".bc-inbox__item[data-demo] .bc-inbox__row").click());
     await page.waitForSelector(".bc-inbox__item--open", { timeout: 5000 });
     const ro = await page.evaluate(() => ({ form: !!document.querySelector(".bc-inbox__item--open .bc-staff"),
       text: document.querySelector(".bc-inbox__item--open .bc-inbox__detail").textContent }));

@@ -31,6 +31,13 @@
     return el;
   }
 
+  // Иллюстрация ui-kit (через R09 complaint.js); если её нет — значок.
+  function art(name, fallback) {
+    var c = C();
+    if (c.illustration) return c.illustration(name, fallback);
+    return c.icon ? c.icon(fallback) : null;
+  }
+
   function csrfToken() {
     var shell = window.CivicShell;
     return shell && typeof shell.csrfToken === "function" ? (shell.csrfToken() || "") : "";
@@ -99,6 +106,12 @@
       return h(tag, { "class": "bc-inbox__title", id: "bc-inbox-title" }, t("shell.nav.inbox"));
     }
 
+    // Число у вкладки; ноль скрыт стилем (data-zero) — видно, где есть работа (R11 INTEGRATION 11.6).
+    function countBadge(n) {
+      n = n || 0;
+      return h("span", { "class": "bc-inbox__count", "data-zero": n ? null : "" }, " " + n);
+    }
+
     function tabs() {
       var counts = (state.data && state.data.counts) || {};
       // Одним рядом с прокруткой (на 375 — без переноса в 3 ряда, R11 разбор 5 №4в; как вкладки «Рядом» R08).
@@ -108,7 +121,7 @@
                                       "aria-selected": state.tab === id ? "true" : "false",
                                       "aria-pressed": state.tab === id ? "true" : "false",
                                       onclick: function () { state.tab = id; state.open = null; state.enter = true; closeStaff(); render(); } },
-          [h("span", {}, t("inbox.tab." + id)), h("span", { "class": "bc-inbox__count" }, " " + (counts[id] || 0))]));
+          [h("span", {}, t("inbox.tab." + id)), countBadge(counts[id])]));
       });
       return bar;
     }
@@ -130,7 +143,6 @@
         h("span", { "class": "bk-heat bc-inbox__heat", "data-level": String(level), "aria-hidden": "true" }, String(group.people)),
         h("span", { "class": "bc-inbox__text" }, [
           h("span", { "class": "bc-inbox__place" }, [h("strong", {}, place),
-            group.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
             // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
             group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
           // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
@@ -139,9 +151,11 @@
             group.complaints.length > 1 ? " · " + t("inbox.complaints", { n: group.complaints.length }) : "",
             due ? " · " : null, due])]),
         C().icon ? C().icon("chevron-right") : null]);
-      var li = h("li", { "class": "bk-card bc-inbox__item" + (expanded ? " bc-inbox__item--open" : "") }, head);
+      var li = h("li", { "class": "bk-card bc-inbox__item" + (expanded ? " bc-inbox__item--open" : ""), "data-demo": group.demo ? "true" : null }, head);
       if (expanded) {
         var detail = h("div", { "class": "bc-inbox__detail" });
+        // Раскрытая строка — карточка: метка «Пример» здесь, у действий (в списке — одна сноска внизу, R11 D-5).
+        if (group.demo) detail.appendChild(h("span", { "class": "bk-tag bk-tag--demo bc-inbox__demo" }, t("common.demo")));
         if (typeof opts.openTarget === "function" && group.target && group.target.id) {
           detail.appendChild(h("button", { "class": "bk-btn bc-inbox__map", type: "button",
                                            onclick: function () { opts.openTarget(group.target.kind, group.target.id, 14); } },
@@ -182,7 +196,7 @@
         state.data.counts = res.data.counts;
         box.querySelectorAll(".bc-inbox__tab").forEach(function (b) {
           var n = b.querySelector(".bc-inbox__count");
-          if (n) n.textContent = " " + (res.data.counts[b.getAttribute("data-tab")] || 0);
+          if (n) n.replaceWith(countBadge(res.data.counts[b.getAttribute("data-tab")]));
         });
         state.pending = res.data;   // список перерисуем при смене вкладки, чтобы карточка не прыгала под рукой
       });
@@ -198,18 +212,22 @@
       box.appendChild(title());
       if (state.error === "staff") {
         var shell = window.CivicShell;
-        box.appendChild(h("div", { "class": "bk-empty", role: "status" }, [C().icon ? C().icon("user") : null,
+        // Одно состояние «войдите как сотрудник» на все разделы (R11 INTEGRATION 9.3 b): иллюстрация staff, подсказка,
+        // «Войти» — главная: без входа карточки действий нет, это единственная кнопка экрана (10.3).
+        box.appendChild(h("div", { "class": "bk-empty", role: "status" }, [art("staff", "user"),
           h("p", { "class": "bk-empty__title" }, t("proposal.need_staff")),
-          // Не главная (bk-btn): главная кнопка в «Обращениях» — у карточки действий (контракт R09, одна на экран).
-          h("button", { "class": "bk-btn", type: "button",
+          h("p", { "class": "bk-empty__text" }, t("staff.login.note")),
+          h("button", { "class": "bk-btn bk-btn--primary", type: "button",
             onclick: function () { if (window.BirgeShell) window.BirgeShell.setSection("map"); if (shell && shell.openEditor) shell.openEditor(); } }, t("staff.login.submit"))]));
         return;
       }
       if (state.error) {
-        box.appendChild(h("div", { "class": "bk-error", role: "alert" }, [C().icon ? C().icon("wifi-off") : null,
+        // Как BirgeUI.state(…, "error"): иллюстрация «нет связи», общая фраза, серая ⟳ «Повторить» (R11 10.3).
+        box.appendChild(h("div", { "class": "bk-error", role: "alert" }, [art("offline", "wifi-off"),
           h("p", { "class": "bk-error__title" }, t("mine.error.title")),
-          h("p", {}, t("mine.error.hint")),
-          h("button", { "class": "bk-btn", type: "button", onclick: load }, t("complaint.error.retry"))]));
+          h("p", { "class": "bk-error__text" }, t("common.state.network_text")),
+          h("button", { "class": "bk-btn", type: "button", onclick: load },
+            [C().icon ? C().icon("refresh") : null, h("span", {}, t("complaint.error.retry"))])]));
         return;
       }
       if (!state.data) {
@@ -224,11 +242,12 @@
       box.appendChild(tabs());
       var items = (state.data.items || []).filter(function (g) { return g.tab === state.tab; });
       if (!items.length) {
-        box.appendChild(h("div", { "class": "bk-empty" }, [C().icon ? C().icon("check") : null, h("p", { "class": "bk-empty__title" }, t("inbox.empty"))]));
+        box.appendChild(h("div", { "class": "bk-empty" }, [art("done", "check"), h("p", { "class": "bk-empty__title" }, t("inbox.empty"))]));
         return;
       }
       box.appendChild(h("ul", { "class": "bc-inbox__list" + (state.enter ? " bc-list--enter" : ""), role: "tabpanel" }, items.map(row)));
       state.enter = false;
+      if (items.some(function (g) { return g.demo; })) box.appendChild(h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint")));
     }
 
     // Язык: оболочка зовёт setLang(lang); словарь R11 грузится асинхронно и потом шлёт "birge:lang" — перерисуем и тогда.
