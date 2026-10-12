@@ -1,0 +1,11 @@
+R11 glass_fallback_check.cjs (claude/r14-R11 @ 7117132) на демо R05 (код 60c445b) + ui-kit R11 7117132, 2026-10-12T12:08Z
+== demo.html?store=local&lang=ru
+PASS стекло по умолчанию: элементов 1, не так — 0
+PASS prefers-reduced-transparency: reduce → белый: элементов 1, не так — 0
+PASS html.bk-glass-off → белый: элементов 1, не так — 0
+exit 0
+== demo.html?store=local&lang=kk&center=71.4008,51.1272&zoom=17.4&pitch=60&bearing=-30
+PASS стекло по умолчанию: элементов 1, не так — 0
+PASS prefers-reduced-transparency: reduce → белый: элементов 1, не так — 0
+PASS html.bk-glass-off → белый: элементов 1, не так — 0
+exit 0
