@@ -1,77 +1,32 @@
-diff --git a/tests/civic/R10/accuracy.py b/tests/civic/R10/accuracy.py
-index 8cbfc4c..0f5313e 100644
 --- a/tests/civic/R10/accuracy.py
 +++ b/tests/civic/R10/accuracy.py
-@@ -135,6 +135,8 @@ class Graph:
-         data = json.loads(path.read_text(encoding="utf-8"))
-         self.id = data.get("id")
-         self.edges = {e["id"]: e for e in data["edges"]}
-+        # Узлы графа (id «osm-n<узел OSM>» → (lon, lat)): эталон для перекрёстков R12 (src "graph").
-+        self.nodes = {nd["id"]: (nd["lon"], nd["lat"]) for nd in data.get("nodes", ())}
-         self.road_way = None
-         if way_tags:
-             classes = way_tags["classes"]
-@@ -494,7 +496,7 @@ def check_stops(rep: Report, graph: Graph, sources, root: Path):
-                  "max_road_m": round(rec["max_road_m"], 1)}, owner)
- 
- 
--def check_osm_points(rep: Report, root: Path, sources):
-+def check_osm_points(rep: Report, root: Path, sources, graph: "Graph | None" = None):
-     """§8.2: точечные объекты — реальные из OSM, с их координатами."""
-     raw = load_osm_raw(root)
-     if raw is None:
-@@ -504,7 +506,7 @@ def check_osm_points(rep: Report, root: Path, sources):
-     if objs is None:
-         rep.add("объекты R12 = точки OSM", "NOT_RUN", "набора нет", "R12")
+@@ -621,7 +621,7 @@
+     if r07 is None:
+         rep.add("объекты R07 = точки OSM", "NOT_RUN", "набора нет", "R07")
      else:
 -        missing, moved, n = [], [], 0
-+        missing, moved, n, n_graph = [], [], 0, 0
-         for it in objs["items"]:
-             # osm-relation-… (парки, площадки-мультиполигоны) R07 и R09 принимают; CONTRACT §4 его пока не называет.
-             m = re.match(r"^osm-(node|way|relation)-(\d+)$", it["id"])
-@@ -512,10 +514,27 @@ def check_osm_points(rep: Report, root: Path, sources):
-                 missing.append({"id": it["id"], "why": "id не вида osm-node-/osm-way-/osm-relation-"})
++        missing, moved, n, walking07 = [], [], 0, None
+         for tid, t in r07["targets"].items():
+             osm = t.get("osm")
+             if t.get("kind") != "object":
+@@ -632,7 +632,19 @@
                  continue
-             key = (m.group(1), int(m.group(2)))
-+            if it.get("src") == "graph" and graph is not None:
-+                # Перекрёстки R12 (волна 1 п. 1) — узлы графа улиц OSM, а не точки LOCAL-1: сверяем с узлом графа.
-+                node = graph.nodes.get("osm-n" + m.group(2)) if m.group(1) == "node" else None
-+                if node is None:
-+                    missing.append({"id": it["id"], "src": "graph", "why": "узла нет в графе улиц"})
-+                elif dist_m(node, it["point"]) > OSM_POINT_TOL_M:
-+                    moved.append({"id": it["id"], "moved_m": round(dist_m(node, it["point"]), 2)})
-+                else:
-+                    n_graph += 1
-+                continue
+             key = (osm["type"], int(osm["id"]))
              if key not in raw:
-                 # Остановки R12 частично взяты из снимка пешеходной сети (src = overpass.json.gz), а не из LOCAL-1:
-                 # их проверяет правило «остановка у улицы», здесь пропускаем.
-                 if it.get("src") in (None, "overpass.json.gz", "walking_graph", "osm-walking"):
-+                    # …а светофоры/переходы R12 из того же снимка — узлы графа улиц: если узел есть, сверяем точку.
-+                    node = graph.nodes.get("osm-n" + m.group(2)) if graph is not None and m.group(1) == "node" else None
-+                    if node is not None:
-+                        if dist_m(node, it["point"]) > OSM_POINT_TOL_M:
-+                            moved.append({"id": it["id"], "moved_m": round(dist_m(node, it["point"]), 2)})
-+                        else:
-+                            n_graph += 1
-                     continue
-                 missing.append({"id": it["id"], "src": it.get("src")})
+-                missing.append({"id": tid, "osm": osm})
++                # Цель R07 на светофоре/переходе/перекрёстке R12 (волна 1 п. 1): эталон — снимок пешеходной сети OSM
++                # (узел с тегом highway) или узел графа улиц, как для объектов R12 выше.
++                ref = None
++                if key[0] == "node":
++                    if walking07 is None:
++                        walking07 = load_walking_raw(root) or {}
++                    ref = (walking07.get(key) or (None,))[0]
++                    if ref is None and graph is not None:
++                        ref = graph.nodes.get(f"osm-n{key[1]}")
++                if ref is None:
++                    missing.append({"id": tid, "osm": osm})
++                elif dist_m(ref, t["geometry"]["coordinates"]) > OSM_POINT_TOL_M:
++                    moved.append({"id": tid, "moved_m": round(dist_m(ref, t["geometry"]["coordinates"]), 2)})
                  continue
-@@ -524,7 +543,7 @@ def check_osm_points(rep: Report, root: Path, sources):
-             if ref and key[0] == "node" and dist_m(ref, it["point"]) > OSM_POINT_TOL_M:
-                 moved.append({"id": it["id"], "moved_m": round(dist_m(ref, it["point"]), 2)})
-         rep.add("объекты R12 = точки OSM", "FAIL" if missing or moved else "PASS",
--                {"checked": n, "total": len(objs["items"]), "missing": missing[:10], "moved": moved[:10]}, "R12")
-+                {"checked": n, "graph_nodes": n_graph, "total": len(objs["items"]), "missing": missing[:10], "moved": moved[:10]}, "R12")
-     _, r05 = sources["R05 astana-existing.json"]
-     if r05 is None:
-         rep.add("объекты R05 = точки OSM", "NOT_RUN", "набора нет", "R05")
-@@ -601,7 +620,7 @@ def run(root: Path) -> Report:
-     check_boundary(rep, boundary, sources)
-     check_segments(rep, graph, sources)
-     check_stops(rep, graph, sources, root)
--    check_osm_points(rep, root, sources)
-+    check_osm_points(rep, root, sources, graph)
-     check_target_ids(rep, graph, sources)
-     check_basemap(rep, graph, root)
-     return rep
+             if key[0] == "node" and raw[key] and dist_m(raw[key], t["geometry"]["coordinates"]) > OSM_POINT_TOL_M:
+                 moved.append({"id": tid, "moved_m": round(dist_m(raw[key], t["geometry"]["coordinates"]), 2)})
