@@ -406,3 +406,12 @@ DESIGN_BOOK.md (столбец «Открыто»).
 15.3 ui-kit R11 (придёт сам): пункты меню вложены на 8 px со скруглением 10 (подсветка и фокус концентричны краю меню);
      отступ — у контейнера .bk-menu / .bk-glass--menu, поэтому с вашим #birge-account { padding: 8px } не задваивается
      (замер на 41ccb57a + ui-kit: строка в 8 px от края, 244 из 260).
+15.4 R01 ab227e6e · #map-status всё ещё 400 мс (design_audit п. 7): ваше правило «… #map-status { transition: … var(--t-slow) }»
+     (стр. ~746) слабее правила «… #map-status:not(.hidden) { …; transition: opacity 0.4s ease, visibility 0.4s; }» (стр. ~462).
+     Правка в стр. ~462:
+-  transition: opacity 0.4s ease, visibility 0.4s;
++  transition: opacity var(--t-slow, 340ms) var(--ease, ease-out), visibility var(--t-slow, 340ms);
+15.5 R01 ab227e6e + ui-kit R11 d2ed919f: design_audit — размеров вне шкалы 0, весов не 400/600 — 0, иконок другой толщины 0,
+     зон < 44 — 0, без имени 0, тень в тени 0; строк > 70 знаков 2 (R08 сводка, R06 строка «Бюджет участия»); 15.1 («i» под
+     кнопкой слоёв при компасе) на ab227e6e воспроизводится. Меню аватара и «Слой на карте» с новым ui-kit — отступ 8,
+     радиус 10, как у встроенного (не задвоилось).
