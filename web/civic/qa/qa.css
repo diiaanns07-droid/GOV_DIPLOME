@@ -61,10 +61,10 @@
   align-items: center;
   gap: var(--s-2);
   color: var(--c-text-2);
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-semi);
+  font-size: var(--fs-body);
 }
 .qa-card__text {
+  max-width: 40em; /* строка ≤ ~70 знаков на ноутбуке */
   font-size: var(--fs-lead);
   line-height: var(--lh-text);
   overflow-wrap: break-word;
@@ -79,7 +79,12 @@
   gap: var(--s-2);
 }
 .qa-card__row {
+  flex-wrap: nowrap; /* число голосов слева, «Поддержать» справа — одной строкой и на 375 */
   justify-content: space-between;
+}
+.qa-card__row > .bk-btn,
+.qa-card__row > .qa-card__voted {
+  flex: none;
 }
 .qa-card__votes,
 .qa-card__voted {
@@ -87,6 +92,11 @@
   align-items: center;
   gap: 6px;
   font-weight: var(--fw-semi);
+  white-space: nowrap;
+}
+.qa-card__vote {
+  padding-left: var(--s-3);
+  padding-right: var(--s-3);
 }
 .qa-card__voted {
   min-height: 44px;
@@ -102,24 +112,50 @@
   gap: 4px;
   white-space: normal;
 }
-/* Ответ акима — свёрнут (IA_WAVE2 §7: карточка не растёт); стрелка и отступы — ui-kit .bk-details. */
+/* Ответ акима — свёрнут в «Популярных» и «Новых», открыт в «С ответом»; стрелка и отступы — ui-kit .bk-details.
+   Внутри — карточка-цитата: текст 17, подпись «Аким · дата» (дата правки — R15 S39), тонкая линия слева. */
 .qa-answer > summary {
   padding-top: var(--s-1);
 }
+.qa-answer__card {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border-left: 3px solid var(--c-brand); /* прямая полоса цитаты, как в почте Apple */
+  border-radius: 0 var(--r-l) var(--r-l) 0;
+  background: rgba(16, 24, 22, 0.04);
+}
 .qa-answer__lang {
-  font-size: var(--fs-caption);
   color: var(--c-text-2);
 }
 .qa-answer__text {
-  padding: var(--s-1) 0 var(--s-2);
+  max-width: 40em;
+  margin: 0;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-text);
   white-space: pre-line;
   overflow-wrap: break-word;
+}
+.qa-answer__sign {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--c-text-2);
+}
+.qa-answer__sign .ic {
+  width: 18px;
+  height: 18px;
 }
 .qa-form,
 .qa-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--s-3);
+}
+/* Подписи и пояснения экрана — 15 (не 13): шкала экрана 28 / 17 / 15, читается и в 40+. */
+.qa .bk-meta {
+  font-size: var(--fs-body);
 }
 /* Формы — непрозрачные (GLASS.md §2 «Нет: формы»): белый блок поверх стекла и карточки. */
 .qa-form,
@@ -141,7 +177,6 @@
 }
 .qa-form__count {
   margin-left: auto;
-  font-size: var(--fs-caption);
   color: var(--c-text-2);
   white-space: nowrap;
 }
@@ -149,7 +184,6 @@
   display: flex;
   align-items: flex-start;
   gap: var(--s-2);
-  font-weight: var(--fw-semi);
 }
 .qa-form__privacy .ic {
   flex: none;
@@ -184,21 +218,158 @@
   height: 20px;
   margin: 0;
 }
-.qa-sent,
-.qa-login,
+/* Пустое состояние, «войдите», «отправлено»: картинка из линий, заголовок 17/600, подсказка 15, действие. */
 .qa-empty {
   display: grid;
   justify-items: center;
   gap: var(--s-2);
+  padding: var(--s-6) var(--s-4);
   text-align: center;
 }
-.qa-sent .ic {
-  width: 40px;
-  height: 40px;
-  color: var(--c-ok);
+.qa-empty__art {
+  width: 120px;
+  height: 88px;
+  margin-bottom: var(--s-2);
+  fill: none;
+  stroke: var(--c-text-2);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.7;
 }
-.qa-sent .bk-empty__title:focus {
+.qa-empty__art .qa-empty__dot {
+  fill: var(--c-text-2);
+  stroke: none;
+}
+.qa-empty__title {
+  max-width: 28em;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
+}
+.qa-empty__title:focus {
   outline: none;
+}
+.qa-empty__hint {
+  max-width: 32em;
+  color: var(--c-text-2);
+}
+.qa-empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+.qa-empty > .bk-btn {
+  margin-top: var(--s-2);
+}
+.qa-login__icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--s-2);
+  border-radius: 50%;
+  background: rgba(16, 24, 22, 0.06);
+}
+.qa-login__icon .ic {
+  width: 26px;
+  height: 26px;
+}
+.qa-sent__mark {
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--s-2);
+  fill: none;
+  stroke: var(--c-ok);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.qa-sent__mark circle {
+  stroke-width: 2;
+  opacity: 0.35;
+}
+.qa-sent__mark path {
+  stroke-width: 3.5;
+  stroke-dasharray: 34;
+  stroke-dashoffset: 34;
+  animation: qa-draw 360ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms forwards;
+}
+/* Скелетон: те же карточки, что у списка */
+.qa-skeleton .qa-card {
+  gap: var(--s-3);
+}
+.qa-skel--short {
+  width: 40%;
+}
+.qa-skel--half {
+  width: 60%;
+}
+
+/* Движение (ease-out, 200–360 мс): карточки мягко появляются, смена вкладки — без мигания, голос «подпрыгивает». */
+@keyframes qa-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes qa-bump {
+  40% {
+    transform: scale(1.12);
+  }
+}
+@keyframes qa-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.qa-list--enter > li {
+  animation: qa-in var(--t-base) cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.qa-list--enter > li:nth-child(2) { animation-delay: 30ms; }
+.qa-list--enter > li:nth-child(3) { animation-delay: 60ms; }
+.qa-list--enter > li:nth-child(4) { animation-delay: 90ms; }
+.qa-list--enter > li:nth-child(n + 5) { animation-delay: 120ms; }
+.qa-list--busy {
+  opacity: 0.5;
+  pointer-events: none; /* прежняя вкладка — только вид: нажать по её карточкам нельзя */
+  transition: opacity var(--t-fast) ease-out;
+}
+.qa-bump > span {
+  display: inline-block;
+  animation: qa-bump 280ms ease-out;
+}
+.qa-form,
+.qa-panel,
+.qa-empty,
+.qa-answer[open] > .qa-answer__card {
+  animation: qa-in var(--t-base) cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .qa *,
+  .qa-list--enter > li {
+    animation: none !important;
+    transition: none !important;
+  }
+  .qa-sent__mark path {
+    stroke-dashoffset: 0;
+  }
+}
+/* Телефон: три вкладки жителя помещаются целиком (меньше воздуха между ними, зона нажатия та же 48). */
+@media (max-width: 420px) {
+  .qa[data-role="resident"] .qa-tabs {
+    gap: 0;
+  }
+  .qa[data-role="resident"] .qa-tabs > [role="tab"] {
+    padding: 0 6px;
+  }
+  .qa[data-role="resident"] .qa-tabs .bk-num {
+    display: none; /* числа — на ноутбуке; на телефоне три вкладки целиком важнее */
+  }
 }
 @media (max-width: 720px) {
   .qa {

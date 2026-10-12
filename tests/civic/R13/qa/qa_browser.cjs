@@ -48,6 +48,8 @@ const noSideScroll = (page) => page.evaluate(() => document.documentElement.scro
   && [...document.querySelectorAll(".qa *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1 || e.closest(".qa-tabs-wrap, .bk-tabs")));
 // QA_GLASS=1 — стекло R11 (GLASS.md №6) на листе раздела #birge-screen, если оболочка R01 его ещё не поставила.
 const GLASS = process.env.QA_GLASS === "1";
+// После смены вкладки прежний список виден приглушённым (.qa-list--busy), пока не придёт новый — ждём новый.
+const idle = (page) => page.waitForFunction(() => !document.querySelector(".qa-list--busy, .qa-skeleton"), null, { timeout: 15000 });
 const openSection = async (page, base, mode, lang) => {
   await page.goto(`${base}/#questions`);
   await page.waitForSelector(".qa", { timeout: 40000 });
@@ -178,13 +180,17 @@ const worstContrast = (page) => page.evaluate(() => {
           await page.click(".qa-sent .bk-btn--primary");
           await page.waitForSelector(".qa-card", { timeout: 10000 });
         }
-        // «С ответом»: ответ свёрнут, раскрывается.
-        await page.click(".qa-tabs > button:nth-child(3)");
+        // «Новые»: ответ свёрнут и раскрывается; «С ответом»: ответ сразу открыт, с подписью «Аким · дата».
+        await page.click(".qa-tabs > button:nth-child(2)"); await idle(page);
         await page.waitForSelector(".qa-answer", { timeout: 10000 });
         const closed = await page.$eval(".qa-answer", (d) => !d.open);
         await page.click(".qa-answer > summary");
         const text = await page.$eval(".qa-answer .qa-answer__text", (p) => p.textContent);
-        check(`${tag} житель: ответ акима свёрнут и раскрывается`, closed && text.length > 20, text.slice(0, 60));
+        check(`${tag} житель: в «Новых» ответ акима свёрнут и раскрывается`, closed && text.length > 20, text.slice(0, 60));
+        await page.click(".qa-tabs > button:nth-child(3)"); await idle(page);
+        await page.waitForSelector(".qa-answer", { timeout: 10000 });
+        const openAns = await page.evaluate(() => [...document.querySelectorAll(".qa-answer")].map((d) => [d.open, (d.querySelector(".qa-answer__sign") || {}).textContent || ""]));
+        check(`${tag} житель: в «С ответом» ответы открыты, подпись и дата`, openAns.length >= 2 && openAns.every(([o, sg]) => o && /·/.test(sg)), openAns.slice(0, 2));
         await page.screenshot({ path: path.join(OUT, `${tag}-resident-answered.png`) });
         check(`${tag} житель: нет ошибок JS`, page.errs.length === 0, page.errs.slice(0, 3));
         await ctx.close();
@@ -234,7 +240,7 @@ const worstContrast = (page) => page.evaluate(() => {
             check(`${tag} акимат: отказ только с причиной`, !!need, need);
           }
           // Топ-5 недели: ответить на первый.
-          await sp.click(".qa-tabs > button:nth-child(2)");
+          await sp.click(".qa-tabs > button:nth-child(2)"); await idle(sp);
           await sp.waitForSelector(".qa__week", { timeout: 10000 });
           const topCount = await sp.$$eval(".qa-card", (c) => c.length);
           const topId = await sp.$eval(".qa-card", (c) => c.dataset.id);
@@ -245,7 +251,7 @@ const worstContrast = (page) => page.evaluate(() => {
           check(`${tag} форма ответа акима непрозрачная`, ar.formsOpaque && ar.forms.length === 1, ar);
           await sp.click(`.qa-card[data-id="${topId}"] .qa-panel button[type=submit]`);
           await sp.waitForFunction((id) => !document.querySelector(`.qa-card[data-id="${id}"] .qa-panel`), topId, { timeout: 10000 });
-          await sp.click(".qa-tabs > button:nth-child(3)");
+          await sp.click(".qa-tabs > button:nth-child(3)"); await idle(sp);
           await sp.waitForSelector(`.qa-card[data-id="${topId}"] .qa-answer[open]`, { timeout: 10000 });
           const week = await sp.evaluate(async () => (await (await fetch("/api/civic/v2/questions/staff?tab=top")).json()).week.answered);
           check(`${tag} акимат: топ-5 ≤ 5, ответ виден в «Отвечено», неделя +1`, topCount <= 5 && week >= 1, { topCount, week });
@@ -261,7 +267,7 @@ const worstContrast = (page) => page.evaluate(() => {
           await sp.waitForSelector(`.qa-card[data-id="${topId}"] .qa-answer`, { timeout: 10000 });
           const edited = await sp.evaluate(async (id) => {
             const q = (await (await fetch("/api/civic/v2/questions?tab=answered")).json()).items.find((x) => x.id === id);
-            const sum = document.querySelector(`.qa-card[data-id="${id}"] .qa-answer > summary`).textContent;
+            const sum = document.querySelector(`.qa-card[data-id="${id}"] .qa-answer__sign`).textContent;
             return { api: !!(q && q.answer.edited_at), shown: sum.split(" · ").length === 3, sum };
           }, topId);
           check(`${tag} правка ответа: дата правки в API и на экране`, edited.api && edited.shown, edited);
