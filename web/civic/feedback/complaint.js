@@ -1670,6 +1670,11 @@
         : (state.step !== 2 ? "full" : (state.candidates || state.candidatesLoading ? "half" : "peek"));
       panel.setAttribute("data-snap", snap);
       panel.setAttribute("data-step", mine ? "mine" : String(state.step));
+      // Стекло (R11 GLASS.md, R09): «Мои обращения» — стеклянная панель/шторка над картой; мастер жалобы — форма,
+      // остаётся непрозрачным. Без ui-kit со стеклом — непрозрачный белый (complaint.css, :where).
+      panel.classList.toggle("bk-glass", mine);
+      // Под стеклом «Моих обращений» — одна карта, без второй панели (список R07 размытыми пятнами): complaint.css.
+      document.documentElement.classList.toggle("bc-mine-open", mine);
       if (!mine && state.reviewing && state.step === 4) panel.setAttribute("data-review", "1");
       else panel.removeAttribute("data-review");
       var canBack = !mine && state.step > 2 && state.step < 5;
@@ -1763,7 +1768,7 @@
       if (map.clear) map.clear();
       els.panel.hidden = true;
       els.fab.hidden = opts.fab === false;
-      document.documentElement.classList.remove("bc-open");
+      document.documentElement.classList.remove("bc-open", "bc-mine-open");
       if (state && (state.step === 5 || state.view === "mine")) state = null;
       els.fab.focus({ preventScroll: true });
     }
@@ -1832,6 +1837,7 @@
       state: function () { return state; },
       destroy: function () {
         setPicking(false);
+        document.documentElement.classList.remove("bc-open", "bc-mine-open");
         document.removeEventListener("keydown", onKey);
         window.removeEventListener("hashchange", onHash);
         window.removeEventListener("online", onOnline);

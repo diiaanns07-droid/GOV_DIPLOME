@@ -317,3 +317,20 @@ def test_inbox_without_staff_login_asks_to_sign_in():
     assert s["ru"]["proposal.need_staff"] == "Войдите как сотрудник акимата" and s["kk"]["staff.login.submit"] == "Кіру"
     css = (WEB / "complaint.css").read_text(encoding="utf-8")
     assert re.search(r"\.bc-inbox__title \{[^}]*font-weight: var\(--fw-semi, 600\)", css)
+
+
+def test_glass_only_on_mine_panel():
+    """R11 GLASS.md (решение владельца 12 окт), R09: «Мои обращения» — стекло ui-kit (.bk-glass), мастер жалобы и формы
+    сотрудника — непрозрачные; без ui-kit со стеклом — белый (:where, нулевая специфичность); под стеклом одна панель."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    assert 'panel.classList.toggle("bk-glass", mine);' in JS
+    assert 'document.documentElement.classList.toggle("bc-mine-open", mine);' in JS
+    assert '.bc-panel:not(.bk-glass) { background: var(--c-surface, #fff);' in css           # мастер — непрозрачный
+    assert ':where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff);' in css   # запасной белый
+    assert "html.bc-mine-open body.civic-mode .civic-panel { visibility: hidden; }" in css
+    assert ".bk-glass .bc-staff__form { background: var(--c-surface, #fff);" in css            # формы сотрудника
+    assert ".bc-inbox .bc-inbox__item.bk-card { background: var(--c-surface, #fff); }" in css  # строки «Обращений»
+    for media in ("prefers-reduced-transparency: reduce", "@supports not ((-webkit-backdrop-filter", ".bk-glass-off .bc-panel.bk-glass .bc-head"):
+        assert media in css
+    # Главная кнопка и тосты — не стекло.
+    assert "bk-glass" not in JS.split('els.fab = h("button"', 1)[1].split(");", 1)[0]
