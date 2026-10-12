@@ -7,11 +7,11 @@
  "delivery": 9,
  "for_build": "сборка R01 дизайн-марафона (после 41ccb57)",
  "base_sha": "R01 claude/sharp-dijkstra-0t87gl 6534334 (FINAL-3 со стеклом; R12 там = e3223d2), перепроверено на 41ccb57",
- "code_sha": "a4a0e252c3b33d67fd3021babc0a1bb6a9dab6c6",
- "code_sha_note": "Марафон: e7a2487 (паспорт), cd03ab6 (табличка), 4b0b872 (кабинет), 1eb716e (вау паспорта, ключи R11), a4a0e25 (кабинет: заголовок записи, белое на сером, CHECKLIST). После — только документы.",
- "tested_sha": "a4a0e252c3b33d67fd3021babc0a1bb6a9dab6c6",
+ "code_sha": "3b0b4cbc6a53b8843b33f30fce307d56d55b0865",
+ "code_sha_note": "Марафон: e7a2487 (паспорт), cd03ab6 (табличка), 4b0b872 (кабинет), 1eb716e (вау паспорта, ключи R11), a4a0e25 (кабинет: заголовок записи, белое на сером, CHECKLIST), 3b0b4cb (кнопки паспорта: значок у подписи в две строки; значок светофора; кадры 1024). После — только документы.",
+ "tested_sha": "3b0b4cbc6a53b8843b33f30fce307d56d55b0865",
  "tested_note": "Среда: Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 41ccb57 + пути R12 из code_sha (web/civic/qr, web/civic/editor, tests/civic/R12); CIVIC_DEMO=1, временная база засеяна как run-city.bat, временный сотрудник для кабинета; ничего не коммитилось.",
- "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код a4a0e25; этот DELIVERY — следующим коммитом)",
+ "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код 3b0b4cb; этот DELIVERY — следующим коммитом)",
  "take": "git checkout <code_sha> -- web/civic/qr web/civic/editor tests/civic/R12",
  "take_note": "На R01 41ccb57 эти пути = R12 e3223d2 (FINAL-3), поэтому checkout приносит только изменения марафона. engine/civic_geo, data/civic/astana/geo, web/civic/map — без изменений с поставки 5/6 (брать не нужно).",
  "logic_changed": false,
@@ -45,7 +45,7 @@
   {
    "name": "QR и мастер R09 в приложении (R01 41ccb57 + R12)",
    "status": "PASS",
-   "result": "33/0/0",
+   "result": "33/0/0 (и на a4a0e25, и на 3b0b4cb)",
    "tool": "tests/civic/R12/qr/app_qr_acceptance.mjs"
   },
   {
