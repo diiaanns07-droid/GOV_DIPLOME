@@ -345,6 +345,12 @@
       b.tabIndex = b === cur ? 0 : -1;
     });
     // Не помещаются (длинные kk-подписи на 375) — край строки затухает, пока есть что прокрутить вправо.
+    scrollFade(el);
+  }
+
+  // Ряд, который прокручивается вбок (вкладки, фильтры-чипы «Обращений», чипы уточнений): data-more="true", пока справа
+  // есть что прокрутить — CSS ui-kit даёт мягкое затухание края (.bk-tabs, .bk-scroll-x). scrollFade(el) → el.
+  function scrollFade(el) {
     function edge() {
       var more = el.scrollWidth - el.clientWidth - el.scrollLeft > 2;
       if (more) el.setAttribute("data-more", "true");
@@ -353,6 +359,7 @@
     el.addEventListener("scroll", edge, { passive: true });
     if (typeof ResizeObserver !== "undefined") new ResizeObserver(edge).observe(el);
     edge();
+    return el;
   }
 
   // Сезонный порядок категорий (POLISH_WAVE п. 11). Месяц — по часам устройства: зимой житель не ищет снег в конце.
@@ -367,6 +374,6 @@
     return list;
   }
 
-  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, loginState: loginState, esc: esc,
+  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, loginState: loginState, scrollFade: scrollFade, esc: esc,
     seasonOrder: seasonOrder, tabs: tabs, menu: menu, illustration: illustration, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);
