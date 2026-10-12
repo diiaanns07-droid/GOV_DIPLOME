@@ -89,7 +89,9 @@ function run(cmd, argv, opts = {}) {
     const nodeEnv = { NODE_PATH: process.env.NODE_PATH || "", PYTHON: PY };
     // --sizes / --langs — те же размеры и языки для сценария и UX (например, малые телефоны: --sizes 360x800,375x667).
     const pass_ = [...(args.sizes ? ["--sizes", String(args.sizes)] : []), ...(args.langs ? ["--langs", String(args.langs)] : [])];
-    run(process.execPath, [path.join(HERE, "demo_flow.cjs"), "--root", ROOT, "--url", base, "--user", user, "--pass", pass, "--out", path.join(OUT, "e2e"), ...pass_],
+    // С --baseline — ещё и замер интерфейса по кадрам (шрифт, кнопки, контраст, тексты) для сверки с эталоном.
+    run(process.execPath, [path.join(HERE, "demo_flow.cjs"), "--root", ROOT, "--url", base, "--user", user, "--pass", pass, "--out", path.join(OUT, "e2e"), ...pass_,
+      ...(args.baseline ? ["--audit"] : [])],
       { log: "e2e.log", env: nodeEnv });
     // 4. UX по экранам
     run(process.execPath, [path.join(HERE, "ux_screens.cjs"), "--screens", path.join(HERE, "screens_build.json"), "--base", base, "--out", path.join(OUT, "ux"),
@@ -135,7 +137,11 @@ function run(cmd, argv, opts = {}) {
   const cmp = read("compare/COMPARE.json");
   summary.push("", "## 7. Регресс к эталону (map_baseline.cjs + compare_baseline.cjs)", "",
     cmp ? `**${cmp.verdict}** · ${Object.entries(cmp.counts).map(([k, v]) => `${k} ${v}`).join(" · ")} — подробно compare/COMPARE.md` : (args.baseline ? "не выполнен — см. map.log, compare.log" : "пропущено (нет --baseline)"));
-  if (cmp) cmp.items.filter((i) => i.status === "FAIL").forEach((i) => summary.push(`- FAIL ${i.area}: ${i.what}`));
+  if (cmp) {
+    const crit = { scenario: "сценарий не сломан", texts: "все тексты на месте", font: "ничего меньше 13 px", tap: "кнопки ≥ 44 px", contrast: "контраст в норме" };
+    summary.push("", "Критерии владельца: " + Object.entries(crit).map(([k, n]) => `${n} — ${cmp.items.some((i) => i.crit === k && i.status === "FAIL") ? "НЕТ" : "да"}`).join(" · "));
+    cmp.items.filter((i) => i.status === "FAIL").forEach((i) => summary.push(`- FAIL ${i.area}: ${i.what}`));
+  }
   fs.writeFileSync(path.join(OUT, "SUMMARY.md"), summary.join("\n") + "\n");
   console.log(summary.slice(0, 12).join("\n"));
   console.log("Сводка:", path.join(OUT, "SUMMARY.md"));

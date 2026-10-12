@@ -802,7 +802,10 @@ async function checkQr(ctx) {
     const P = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": devId("q") });
     try {
       await goto(P.page, new URL(`/?report=${encodeURIComponent(KHAN.id)}`, base).href, lang, { fixLang: false });
-      const card = await L.firstVisible(P.page.locator("article, [role=dialog], section").filter({ hasText: new RegExp(esc(KHAN.name), "i") }));
+      // Карточка R12 — в слоте оболочки #birge-report-root (R01 §11.4); подождать, пока карточка загрузит место.
+      await P.page.locator("#birge-report-root").filter({ hasText: new RegExp(esc(KHAN.name), "i") }).first().waitFor({ state: "visible", timeout: 8000 }).catch(() => null);
+      const card = (await L.firstVisible(P.page.locator("#birge-report-root").filter({ hasText: new RegExp(esc(KHAN.name), "i") })))
+        || (await L.firstVisible(P.page.locator("article, [role=dialog], section").filter({ hasText: new RegExp(esc(KHAN.name), "i") })));
       const prim = card ? await primaries(card) : [];
       const metoo = card ? await L.firstVisible(card.getByRole("button", { name: part(W(lang, "qr.card.metoo")) })) : null;
       const other = card ? await L.firstVisible(card.getByRole("button", { name: part(W(lang, "qr.card.report_other")) })) : null;
@@ -819,14 +822,17 @@ async function checkQr(ctx) {
   const N = await openPage(browser, [375, 812], "ru");
   try {
     await goto(N.page, new URL("/?report=osm-node-1", base).href, "ru", { fixLang: false });
-    const nf = await L.visibleText(N.page, part(W("ru", "qr.error.not_found")));
-    add("W2-6", "375-ru", `неизвестный id → «${W("ru", "qr.error.not_found")}» и кнопка к карте (не пустая карта)`, st(nf), { not_found: nf }, await shotOf(N.page, "375-ru-W2-6-not-found"));
+    // Заголовок «Объект не найден» (дальше R12 пишет своё пояснение) и кнопка к карте.
+    const title = String(W("ru", "qr.error.not_found", "Объект не найден")).split(/[.!]/)[0];
+    const nf = await L.visibleText(N.page, part(title));
+    const toMap = await L.firstVisible(N.page.getByRole("button", { name: exact(W("ru", ["qr.card.to_map", "qr.error.to_map", "complaint.step5.to_map"], "На карту")) }));
+    add("W2-6", "375-ru", `неизвестный id → «${title}» и кнопка «На карту» (не пустая карта)`, st(nf && !!toMap), { not_found: nf, to_map: !!toMap }, await shotOf(N.page, "375-ru-W2-6-not-found"));
   } finally { await N.ctx.close(); }
   // в) Лист для печати (IA §6.2): QR ≥ 6 см (≥ 227 px), крупное название, «Объект № …», призыв kk и ru, домен; без чисел жалоб.
   const P = await openPage(browser, [1366, 768], "ru");
   try {
     let sheet = null;
-    for (const u of [`/civic/qr/?target=${KHAN.id}`, `/civic/qr/?id=${KHAN.id}`, `/civic/qr/?targets=${KHAN.id}`, "/civic/qr/"]) {
+    for (const u of [`/civic/qr/print.html?ids=${KHAN.id}`, `/civic/qr/?target=${KHAN.id}`, `/civic/qr/?id=${KHAN.id}`, `/civic/qr/?targets=${KHAN.id}`, "/civic/qr/"]) {
       const r = await P.page.goto(new URL(u, base).href).catch(() => null);
       if (r && r.ok()) { sheet = u; break; }
     }
