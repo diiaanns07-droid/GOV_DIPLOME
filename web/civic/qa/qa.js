@@ -302,6 +302,7 @@
       staffDraft: { reason: null, note: "", answer_ru: "", answer_kk: "", error: null, busy: false },
       busyVote: {},
       alive: true,
+      lang: null,
     };
     var box = h("section", { class: "qa", "data-role": state.role });
     rootEl.appendChild(box);
@@ -364,7 +365,8 @@
       var focusKey = doc.activeElement && box.contains(doc.activeElement) ? doc.activeElement.getAttribute("data-focus") : null;
       box.setAttribute("data-role", state.role);
       box.replaceChildren();
-      box.appendChild(h(opts.titleTag || "h2", { class: "qa__title", id: "qa-title", tabindex: "-1",
+      state.lang = lang();
+      box.appendChild(h(opts.titleTag || "h2", { class: "qa__title", id: "qa-title", tabindex: "-1", "data-focus": "title",
         text: tr(staff() ? "ask.staff.title" : "ask.title") }));
       box.appendChild(h("p", { class: "qa__rule" }, [icon("info"), h("span", { text: tr("ask.rule") })]));
       if (!staff() && state.view === "form") box.appendChild(renderForm());
@@ -477,8 +479,8 @@
     function eyebrow(q, extra) {
       var parts = [];
       if (q.demo) parts.push(h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }));
-      parts.push(h("span", { text: tr("district." + q.district) }));
-      if (extra) parts.push(h("span", { class: "qa-card__when", text: extra }));
+      // Район и дата — одним текстом: при переносе на 375 разделитель «·» не встаёт в начало строки.
+      parts.push(h("span", { class: "qa-card__place", text: tr("district." + q.district) + (extra ? " · " + extra : "") }));
       return h("p", { class: "qa-card__eyebrow" }, parts);
     }
     function questionText(q) {
@@ -491,7 +493,7 @@
       var text = a[l] || a[l === "kk" ? "ru" : "kk"];
       var textLangAttr = a[l] ? l : l === "kk" ? "ru" : "kk";
       return h("details", { class: "qa-answer", open: open ? true : null }, [
-        h("summary", {}, [h("span", { text: tr("ask.answer") + " · " + date(a.answered_at) })]),
+        h("summary", {}, [h("span", { text: tr("ask.answer") + " · " + date(a.answered_at) }), icon("chevron-down")]),
         h("p", { class: "qa-answer__text", lang: textLangAttr, text: text || "" }),
       ]);
     }
@@ -647,7 +649,7 @@
     function renderSent() {
       return h("div", { class: "bk-empty qa-sent", role: "status" }, [
         icon("check"),
-        h("p", { class: "bk-empty__title", id: "qa-sent-title", tabindex: "-1", text: tr("ask.sent_title") }),
+        h("p", { class: "bk-empty__title", id: "qa-sent-title", tabindex: "-1", "data-focus": "sent-title", text: tr("ask.sent_title") }),
         h("p", { class: "bk-empty__text", text: tr("ask.moderation") }),
         h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "back", onclick: function () {
           state.view = "list";
@@ -802,7 +804,12 @@
     }
 
     // ---------------------------------------------------------------- язык и вид
-    var offLang = I() && typeof I().onChange === "function" ? I().onChange(function () { render(); }) : null;
+    // Перерисовка только при настоящей смене языка: оболочка зовёт setLang при каждой своей перерисовке,
+    // а лишняя перерисовка сбрасывала бы фокус (заголовок «Вопрос отправлен») и введённый текст.
+    function relang() {
+      if (state.lang !== lang()) render();
+    }
+    var offLang = I() && typeof I().onChange === "function" ? I().onChange(relang) : null;
     function onMode(e) {
       var mode = e && e.detail && e.detail.mode;
       if ((mode === "akimat" || mode === "resident") && mode !== state.role) {
@@ -820,7 +827,7 @@
     else load();
 
     return {
-      setLang: function () { render(); },
+      setLang: relang,
       refresh: function () { return load(true); },
       destroy: function () {
         state.alive = false;

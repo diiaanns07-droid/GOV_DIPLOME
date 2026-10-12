@@ -93,10 +93,6 @@
   font-size: var(--fs-caption);
   font-weight: var(--fw-semi);
 }
-.qa-card__when::before {
-  content: "·";
-  margin-right: var(--s-2);
-}
 .qa-card__text {
   font-size: var(--fs-lead);
   line-height: var(--lh-text);
@@ -143,10 +139,21 @@
 .qa-answer > summary {
   display: flex;
   align-items: center;
+  gap: 6px;
   min-height: 44px;
   cursor: pointer;
+  list-style: none;
   color: var(--c-brand);
   font-weight: var(--fw-semi);
+}
+.qa-answer > summary::-webkit-details-marker {
+  display: none;
+}
+.qa-answer > summary .ic {
+  transition: transform 0.15s;
+}
+.qa-answer[open] > summary .ic {
+  transform: rotate(180deg);
 }
 .qa-answer__text {
   padding: var(--s-1) 0 var(--s-2);
