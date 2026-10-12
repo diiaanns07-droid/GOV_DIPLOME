@@ -32,6 +32,7 @@ BOOK = [
     ("15-resident-map", B + "/b-r-5-resident-{w}-{l}.png"),
     ("16-wizard-place", B + "/b-r-6-wizard-place-{w}-{l}.png"),
     ("17-wizard-text", B + "/b-r-7-wizard-text-{w}-{l}.png"),
+    ("17b-wizard-review", B + "/b-r-7b-wizard-review-{w}-{l}.png"),
     ("18-wizard-done", B + "/b-r-8-wizard-done-{w}-{l}.png"),
     ("19-mine", B + "/b-r-9-mine-{w}-{l}.png"),
     ("20-fixed-verified", B + "/b-r-10-fixed-{w}-{l}.png"),

@@ -1677,5 +1677,21 @@
  "ask.staff.empty.top_hint": "Когда жители поддержат опубликованные вопросы, здесь появится пятёрка недели.",
  "ask.staff.empty.answered_hint": "Ответьте на вопросы из «Топ-5 недели» — ответы увидят все.",
  "ask.staff.empty.to_top": "Открыть топ-5 недели",
- "ask.staff.edit_answer": "Изменить ответ"
+ "ask.staff.edit_answer": "Изменить ответ",
+ "idea.empty.title": "Идей пока нет",
+ "idea.empty.text": "Предложите первую — соседи смогут её поддержать.",
+ "idea.empty.project": "Пока ни одна идея не стала проектом",
+ "idea.empty.rejected": "Отклонённых идей нет",
+ "idea.check.hint.land": "Участок свободен, его можно занять",
+ "idea.check.hint.networks": "Трубы и кабели под землёй не мешают",
+ "idea.check.hint.access": "Можно подойти, в том числе с коляской",
+ "idea.check.hint.maintenance": "Есть кому убирать и чинить",
+ "idea.check.progress": "«Да»: {n} из 4",
+ "idea.check.ready": "Все четыре — «да»: можно делать проектом",
+ "idea.hide_short": "Скрыть",
+ "qr.form.size": "Размер таблички",
+ "qr.form.size_hint": "Печать на листах A4: две таблички A5 или четыре A6 — разрезать по пунктиру.",
+ "qr.sign.call": "Сообщите о проблеме",
+ "target.type.playground": "Детская площадка",
+ "target.type.waste": "Контейнерная площадка"
 }

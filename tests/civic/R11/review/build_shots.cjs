@@ -123,7 +123,12 @@ async function clickMapAt(p, ll) {
         for (let i = 0; i < 4; i++) {
           await p.waitForSelector(".bc-panel[data-step='4'], .bc-panel[data-step='5']", { timeout: 15000 });
           if (await p.$(".bc-panel[data-step='5']")) break;
-          if (await p.$(".bc-panel[data-review='1']")) { logs.push("R11: шаг «Жіберер алдында тексеріңіз»"); await p.click(".bc-panel[data-review='1'] .bc-send"); }
+          if (await p.$(".bc-panel[data-review='1']")) {
+            logs.push("R11: шаг «Жіберер алдында тексеріңіз»");
+            // книга экранов: кадр проверки перед отправкой — без записи в отчёт (счёт шагов сценария прежний, 44)
+            await p.waitForTimeout(500); await p.screenshot({ path: path.join(OUT, `b-${TAG}-7b-wizard-review-${size}-${lang}.png`) }).catch(() => {});
+            await p.click(".bc-panel[data-review='1'] .bc-send");
+          }
           else if (await p.$(".bc-different")) await p.click(".bc-different");
           await p.waitForTimeout(900);
         }

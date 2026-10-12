@@ -351,6 +351,8 @@
   // Ряд, который прокручивается вбок (вкладки, фильтры-чипы «Обращений», чипы уточнений): data-more="true", пока справа
   // есть что прокрутить — CSS ui-kit даёт мягкое затухание края (.bk-tabs, .bk-scroll-x). scrollFade(el) → el.
   function scrollFade(el) {
+    if (el.__bkFade) return el; // уже подключено (вкладки ui-kit или автоподключение ниже)
+    el.__bkFade = true;
     function edge() {
       var more = el.scrollWidth - el.clientWidth - el.scrollLeft > 2;
       if (more) el.setAttribute("data-more", "true");
@@ -372,6 +374,25 @@
       if (idOf(list[i]) === first) { list.unshift(list.splice(i, 1)[0]); break; }
     }
     return list;
+  }
+
+  // Автоподключение затухания края: роли размечают .bk-tabs / .bk-scroll-x и не всегда вызывают BirgeUI.tabs — на телефоне
+  // казахские вкладки обрезались краем без признака прокрутки (R10 DESIGN_REVIEW, круг 2: «Рядом», «Идеи»).
+  // Новые узлы ловит MutationObserver; повторно один и тот же ряд не подключается.
+  function autoFade(node) {
+    if (!node || node.nodeType !== 1) return;
+    if (node.matches && node.matches(".bk-tabs, .bk-scroll-x")) scrollFade(node);
+    if (node.querySelectorAll) Array.prototype.forEach.call(node.querySelectorAll(".bk-tabs, .bk-scroll-x"), scrollFade);
+  }
+  if (doc && typeof MutationObserver !== "undefined") {
+    var startFade = function () {
+      autoFade(doc.body);
+      new MutationObserver(function (list) {
+        list.forEach(function (m) { Array.prototype.forEach.call(m.addedNodes, autoFade); });
+      }).observe(doc.body, { childList: true, subtree: true });
+    };
+    if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", startFade);
+    else if (doc.body) startFade();
   }
 
   root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, loginState: loginState, scrollFade: scrollFade, esc: esc,
