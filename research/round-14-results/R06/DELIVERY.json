@@ -22,8 +22,8 @@
   "R15": "claude/r14-R15 @ 85180b04: SECURITY_REVIEW S30–S40, tests/civic/R15/test_r15_glass.py",
   "Марафон": "claude/round-14-package bc1885b1: research/round-14/DESIGN_MARATHON.md (чек-лист 12 пунктов, задачи R06)"
  },
- "code_sha": "eee3c88",
- "tested_sha": "eee3c88 (облако Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright 1.56, без интернета)",
+ "code_sha": "cb6a35ad",
+ "tested_sha": "cb6a35ad (облако Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright 1.56, без интернета)",
  "push_status": "OK — origin/claude/r14-R06",
  "delivery": 6,
  "delivery_note": "Поставка 6 (12–13 окт): дизайн-марафон — только вид, движение, состояния, тексты интерфейса (API, данные, демо не менялись). Поставка 5 (FINAL-3 + стекло): eee3c88 (в сборке R01 с 8201da18). Поставка 4 (волна 2): 21a9739. Поставка 3: d707efc. Поставки 1–2: 7031afa, b42e790.",
