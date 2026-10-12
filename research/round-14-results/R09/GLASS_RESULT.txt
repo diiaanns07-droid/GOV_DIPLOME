@@ -1,0 +1,53 @@
+R09 · стекло (R11 GLASS.md) — проверки на коде R09 bfba320. 12 окт, вечер.
+Дерево: R01 claude/sharp-dijkstra-0t87gl @ 77ee50be (окончательный FINAL-3) + ui-kit и словарь R11 claude/r14-R11 @ 7117132b (стекло) + пути R09.
+Облако, Linux, Python 3.13, Node 22, Chromium headless (программный WebGL), без интернета (запасной фон карты).
+
+pytest tests/civic/R09 R11 R01 R15 — 995 passed, 1 skipped
+
+===== node tests/civic/R09/glass_r09.cjs --root <дерево> =====
+PASS 1366-ru: подготовка — жалоба устройства — {"http":201}
+PASS 1366-ru: «Мои обращения» — стекло ui-kit (80 % белого, размытие, радиус) — {"glass":true,"step":"mine","bg":"rgba(255, 255, 255, 0.8)","blur":"blur(22px) saturate(1.7)","radius":"24px","headBg":"rgba(255, 255, 255, 0.8)","headBlur":"blur(22px) saturate(1.7)","card":"rgba(255, 255, 255, 0.7)","text2":"#4c5853"}
+PASS 1366-ru: карточки на стекле — плотная подложка (как .bk-card ui-kit) — "rgba(255, 255, 255, 0.7)"
+PASS 1366-ru: шапка «Закрыть» над прокруткой — тем же стеклом (размытие) — {"headBg":"rgba(255, 255, 255, 0.8)","headBlur":"blur(22px) saturate(1.7)"}
+PASS 1366-ru: под стеклом нет второй панели (R01 .civic-panel скрыта, пока открыты «Мои обращения») — {"mineOpen":true,"panel":"hidden"}
+PASS 1366-ru: контраст текста на стекле ≥ 4.5 (тёмный 9.68, серый 4.86) — {"darkest":[210,209,206],"text2":"#4c5853"}
+PASS 1366-ru: prefers-reduced-transparency — панель и шапка белые, без размытия — {"bg":"rgb(255, 255, 255)","blur":"none","headBg":"rgb(255, 255, 255)","headBlur":"none"}
+PASS 1366-ru: html.bk-glass-off — панель и шапка белые, без размытия — {"bg":"rgb(255, 255, 255)","blur":"none","headBg":"rgb(255, 255, 255)","headBlur":"none"}
+PASS 1366-ru: мастер жалобы — без стекла (непрозрачный белый), панель оболочки снова видна — {"step":"2","glass":false,"bg":"rgb(255, 255, 255)","blur":"none","mineOpen":false,"panel":"visible"}
+PASS 1366-ru: нет ошибок на странице — []
+PASS 375-kk: подготовка — жалоба устройства — {"http":201}
+PASS 375-kk: «Мои обращения» — стекло ui-kit (80 % белого, размытие, радиус) — {"glass":true,"step":"mine","bg":"rgba(255, 255, 255, 0.8)","blur":"blur(22px) saturate(1.7)","radius":"28px","headBg":"rgba(255, 255, 255, 0.8)","headBlur":"blur(22px) saturate(1.7)","card":"rgba(255, 255, 255, 0.7)","text2":"#4c5853"}
+PASS 375-kk: карточки на стекле — плотная подложка (как .bk-card ui-kit) — "rgba(255, 255, 255, 0.7)"
+PASS 375-kk: шапка «Закрыть» над прокруткой — тем же стеклом (размытие) — {"headBg":"rgba(255, 255, 255, 0.8)","headBlur":"blur(22px) saturate(1.7)"}
+PASS 375-kk: под стеклом нет второй панели (R01 .civic-panel скрыта, пока открыты «Мои обращения») — {"mineOpen":true,"panel":"hidden"}
+PASS 375-kk: контраст текста на стекле ≥ 4.5 (тёмный 10.65, серый 5.35) — {"darkest":[219,219,215],"text2":"#4c5853"}
+PASS 375-kk: prefers-reduced-transparency — панель и шапка белые, без размытия — {"bg":"rgb(255, 255, 255)","blur":"none","headBg":"rgb(255, 255, 255)","headBlur":"none"}
+PASS 375-kk: html.bk-glass-off — панель и шапка белые, без размытия — {"bg":"rgb(255, 255, 255)","blur":"none","headBg":"rgb(255, 255, 255)","headBlur":"none"}
+PASS 375-kk: мастер жалобы — без стекла (непрозрачный белый), панель оболочки снова видна — {"step":"2","glass":false,"bg":"rgb(255, 255, 255)","blur":"none","mineOpen":false,"panel":"visible"}
+PASS 375-kk: нет ошибок на странице — []
+PASS 1024-ru: подготовка — жалоба устройства — {"http":201}
+PASS 1024-ru: «Мои обращения» — стекло ui-kit (80 % белого, размытие, радиус) — {"glass":true,"step":"mine","bg":"rgba(255, 255, 255, 0.8)","blur":"blur(22px) saturate(1.7)","radius":"24px","headBg":"rgba(255, 255, 255, 0.8)","headBlur":"blur(22px) saturate(1.7)","card":"rgba(255, 255, 255, 0.7)","text2":"#4c5853"}
+PASS 1024-ru: карточки на стекле — плотная подложка (как .bk-card ui-kit) — "rgba(255, 255, 255, 0.7)"
+PASS 1024-ru: шапка «Закрыть» над прокруткой — тем же стеклом (размытие) — {"headBg":"rgba(255, 255, 255, 0.8)","headBlur":"blur(22px) saturate(1.7)"}
+PASS 1024-ru: под стеклом нет второй панели (R01 .civic-panel скрыта, пока открыты «Мои обращения») — {"mineOpen":true,"panel":"hidden"}
+PASS 1024-ru: контраст текста на стекле ≥ 4.5 (тёмный 9.68, серый 4.86) — {"darkest":[210,209,206],"text2":"#4c5853"}
+PASS 1024-ru: prefers-reduced-transparency — панель и шапка белые, без размытия — {"bg":"rgb(255, 255, 255)","blur":"none","headBg":"rgb(255, 255, 255)","headBlur":"none"}
+PASS 1024-ru: html.bk-glass-off — панель и шапка белые, без размытия — {"bg":"rgb(255, 255, 255)","blur":"none","headBg":"rgb(255, 255, 255)","headBlur":"none"}
+PASS 1024-ru: мастер жалобы — без стекла (непрозрачный белый), панель оболочки снова видна — {"step":"2","glass":false,"bg":"rgb(255, 255, 255)","blur":"none","mineOpen":false,"panel":"visible"}
+PASS 1024-ru: нет ошибок на странице — []
+PASS 1366-ru: «Обращения» — строки непрозрачные белые — {"login":200,"rows":["rgb(255, 255, 255)","rgb(255, 255, 255)"]}
+
+ИТОГ: 31/31 PASS
+EXIT 0
+
+===== node tests/civic/R09/app_demo_r09.cjs --root <дерево> (итог) =====
+ИТОГ: 75/75 PASS
+EXIT 0
+
+===== стенд node tests/civic/R09/browser_r09.cjs --r11 <ui-kit R11 7117132b со стеклом> (итог) =====
+ИТОГ: 470/470 PASS
+EXIT 0
+
+===== стенд node tests/civic/R09/browser_r09.cjs (kit-fallback, без стекла) (итог) =====
+ИТОГ: 470/470 PASS
+EXIT 0
