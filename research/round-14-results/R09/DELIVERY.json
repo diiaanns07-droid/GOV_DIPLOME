@@ -2,15 +2,15 @@
  "role": "R09",
  "round": 14,
  "title": "Жалоба жителя v2 — дизайн-марафон (путь жителя «как в iOS»), стекло GLASS.md, FINAL-3",
- "status": "READY_FOR_FINAL_3_MARATHON (R01: взять пути R09 @ 3546567; патчей нет)",
+ "status": "READY_FOR_FINAL_3_MARATHON (R01: взять пути R09 @ b2b1236; патчей нет)",
  "branch": "claude/modest-shannon-0ki93p",
  "branch_note": "Ветка по BRANCHES.md. Ночной код (wizardly-ptolemy-qy8ltw @ ee94ef1, код f4fb7b9) перенесён сюда побайтно в 38e6d67; ночную ветку больше не трогаем.",
- "base_sha": "8a1d390 (волна 2) → c765bb0 (правки сборки R01 0f5101a) → f80c0bf (замечания приёмки) → 5e99e2c (CLEAN_PASS) → 2d2cf80 (B-063, B-064) → 9cf4ca2 (прилипающая кнопка: белое и под ней) → 0b8e3db (R11 FINAL-3 №1, №12) → bfba320 (стекло) → 3546567 (дизайн-марафон: круги 1–5)",
- "code_sha": "3546567842c2455d652c170a173762b12654ddca",
- "tested_sha": "3546567842c2455d652c170a173762b12654ddca (пути R09) на R01 claude/sharp-dijkstra-0t87gl @ 65343341 (FINAL-3 со стеклом)",
- "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout 3546567 -- ui/civic_feedback web/civic/feedback tests/civic/R09",
+ "base_sha": "8a1d390 (волна 2) → c765bb0 (правки сборки R01 0f5101a) → f80c0bf (замечания приёмки) → 5e99e2c (CLEAN_PASS) → 2d2cf80 (B-063, B-064) → 9cf4ca2 (прилипающая кнопка: белое и под ней) → 0b8e3db (R11 FINAL-3 №1, №12) → bfba320 (стекло) → 3546567 (дизайн-марафон: круги 1–5) → b2b1236 (круг 6: место над шторкой)",
+ "code_sha": "b2b1236be46e39273796bdcc9a90d08e635d7786",
+ "tested_sha": "b2b1236be46e39273796bdcc9a90d08e635d7786 (пути R09) на R01 claude/sharp-dijkstra-0t87gl @ 65343341 (FINAL-3 со стеклом)",
+ "take": "git fetch origin claude/modest-shannon-0ki93p && git checkout b2b1236 -- ui/civic_feedback web/civic/feedback tests/civic/R09",
  "test_env": "облачная сессия Claude Code: Linux, Python 3.13.16, Node 22.22, Playwright + Chromium headless (программный WebGL), без интернета; настоящий телефон — NOT_RUN",
- "push_status": "код 3546567 — push OK; документы и этот файл — следующим коммитом (SHA — в финальном сообщении)",
+ "push_status": "код b2b1236 — push OK; документы и этот файл — следующим коммитом (SHA — в финальном сообщении)",
  "changed_paths": {
   "code_and_tests": [
    "tests/civic/R09/app_demo_r09.cjs",
@@ -150,16 +150,17 @@
    "states": "structured skeletons; empty / error / need-staff with a large line icon in a circle",
    "inbox_rows": "iOS list rows: people count in map-coloured circle, place 17, category 15 with icon, chevron",
    "layout": "R09 panel = shell panel geometry (20 px, 360 px on 1024–1100); FAB clear of legend and panel at every width",
-   "weights_sizes": "weights 400/600 only; ≤ 4 font sizes per screen"
+   "weights_sizes": "weights 400/600 only; ≤ 4 font sizes per screen",
+   "map_reveal": "phone steps 4–5: the chosen place is moved into the visible map above the sheet (offset easeTo, no padding change)"
   }
  },
  "tests": {
-  "marathon_tree": "R01 65343341 (FINAL-3 with glass) + R09 3546567",
+  "marathon_tree": "R01 65343341 (FINAL-3 with glass) + R09 b2b1236",
   "pytest_r09_r01_r15_r11_r04": "1357 passed, 2 skipped",
-  "real_app": "75/75 PASS",
-  "glass_r09": "34/34 PASS",
-  "stand_r11_glass_kit": "470/470 PASS",
-  "stand_kit_fallback": "470/470 PASS",
+  "real_app": "75/75 PASS (b2b1236)",
+  "glass_r09": "34/34 PASS (b2b1236)",
+  "stand_r11_glass_kit": "470/470 PASS (b2b1236)",
+  "stand_kit_fallback": "470/470 PASS (3546567; round 6 changes JS map camera only)",
   "r10_wave_checks_W2-1_W2-2_W1-8": "59 PASS / 0 FAIL / 1 NOT_RUN",
   "design_tour": "26 states × 375/1366 ru/kk (+1024 ru), 0 tour errors — design/before|after",
   "phone_device": "NOT_RUN (no device in the cloud session)",
@@ -212,7 +213,7 @@
   "Glass needs R11 ui-kit 7117132b+ (older ui-kit: same layout, opaque white).",
   "FPS of the map under glass is measured by R10 (GLASS §5.3); R09 panel follows html.bk-glass-off."
  ],
- "next_step": "R01: take R09 @ 3546567 into the marathon build (no patches; see INTEGRATION «ДИЗАЙН-МАРАФОН» M1). R10: W2-1/W2-2 selectors notes in INTEGRATION M2. R11: frames for DESIGN_BOOK in design/after. R09: real phone check of sheets and transitions (LOCAL).",
+ "next_step": "R01: take R09 @ b2b1236 into the marathon build (no patches; see INTEGRATION «ДИЗАЙН-МАРАФОН» M1). R10: W2-1/W2-2 selectors notes in INTEGRATION M2. R11: frames for DESIGN_BOOK in design/after. R09: real phone check of sheets and transitions (LOCAL).",
  "previous": {
   "wave2_code_sha": "8a1d39077edf0055620145fdb81c9d39c88ce88f",
   "wave2_status": "READY_FOR_FINAL_2 (волны 1–2 сделаны по схемам R11 IA_WAVE2 §2; R01 нужно взять пути R09 @ 8a1d390 и применить r01_wave2_assets.patch)",
