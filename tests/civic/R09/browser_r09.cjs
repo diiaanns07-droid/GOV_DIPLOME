@@ -953,10 +953,23 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   await staff.click(".bc-staff__edit");
   const delayFields = await staff.$$eval(".bc-staff__passport-form [name]", (n) => n.map((x) => x.name + (x.required ? "*" : "")));
   check(`${tag}: [W2-2/§2.3] при задержке — ещё причина, мера, дата обновления (обязательна) · служб ${options - 1}`,
-        delayFields.join() === "service,next_step,fix_eta,delay_reason,temp_measure,next_update_at*" && options === 21, delayFields.join());
+        delayFields.join().startsWith("service,next_step,fix_eta,delay_reason,temp_measure,next_update_at*,needs_decision") && options === 21,
+        delayFields.join());
   await staff.fill("[name=temp_measure]", lang === "kk" ? "Уақытша шам қойылды" : "Поставили временный фонарь");
+  // R08 «Нужно решение акима» (волна 2 п. 5): отметка открывает 2 варианта и «что нужно от акима».
+  const hiddenBefore = await staff.$eval(".bc-staff__decision", (n) => n.hidden);
+  await staff.check("[name=needs_decision]");
+  await staff.fill("[name=option_1]", lang === "kk" ? "Әкімдік есебінен ауыстыру" : "Заменить за счёт акимата");
+  await staff.fill("[name=option_2]", lang === "kk" ? "Электр желілеріне беру" : "Передать электросетям");
+  await staff.fill("[name=decision]", lang === "kk" ? "Кім төлейтінін таңдау" : "Выбрать, кто платит");
   await staff.click(".bc-staff__passport-form button[type=submit]");
   await staff.waitForSelector(".bc-staff__edit", { timeout: 8000 });
+  const decided = (await staff.textContent(".bc-staff .bc-passport")).replace(/\s+/g, " ");
+  const stored = (await staffApi(base, "GET", `/complaints/${id}`)).data.complaint.passport.delay;
+  check(`${tag}: [R08 п.5] «Нужно решение руководителя»: поля скрыты до отметки, 2 варианта и «что нужно» сохранены`,
+        hiddenBefore && stored.needs_decision === true && stored.options.length === 2 && !!stored.decision &&
+        (lang === "kk" ? /Әкімнің шешімі керек/.test(decided) && /1-нұсқа/.test(decided) : /Нужно решение акима/.test(decided) && /Вариант 2: Передать электросетям/.test(decided)),
+        decided.slice(0, 160));
   await staff.fill("[name=text]", lang === "kk" ? "Көтергіш сәрсенбіде келеді" : "Подъёмник приедет в среду");
   await staff.click(".bc-staff__broadcast button[type=submit]");
   await staff.waitForFunction(() => !document.querySelector("[name=text]").value, null, { timeout: 8000 });
@@ -1056,6 +1069,7 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
              items: document.querySelectorAll(".bc-changes__item").length,
              passport: [...card.querySelectorAll(".bc-passport li")].map((n) => n.textContent),
              updates: (card.querySelector(".bc-updates") || {}).textContent || "",
+             history: [...card.querySelectorAll(".bc-history li")].map((n) => n.dataset.kind),
              primaries: [...document.querySelectorAll(".bc-panel .bk-btn--primary")].map((b) => b.className),
              open: !!card.querySelector("details[open]") };
   });
@@ -1066,6 +1080,9 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
         mine.open && (lang === "kk" ? /Келесі қадам: Тіректердегі шамдарды ауыстыру/.test(pl) && /Түзету: шамамен 20/.test(pl)
                                     : /Следующий шаг: Заменить лампы на опорах/.test(pl) && /Устранение: ориентир 20/.test(pl)), pl);
   check(`${tag}: [W2-3] обновление службы и история видны автору`, lang === "kk" ? /сәрсенбіде/.test(mine.updates) : /Подъёмник приедет в среду/.test(mine.updates), mine.updates.slice(0, 200));
+  check(`${tag}: [R10 W2-2] «История»: сообщили → … → служба сообщила → вернули → служба сообщила (${mine.history.length} шагов)`,
+        mine.history[0] === "created" && mine.history.includes("reopened") && mine.history.filter((k) => k === "fixed").length === 2 &&
+        mine.history.indexOf("reopened") > mine.history.indexOf("fixed"), mine.history.join(","));
   check(`${tag}: [защита п.4] на экране одна главная кнопка — «Да, исправлено» в «Ждут вашей проверки»`,
         mine.primaries.length === 1 && /bc-verify__yes/.test(mine.primaries[0]), mine.primaries.join(" | "));
   await shot(pageA, `${tag}-mine-changes`);

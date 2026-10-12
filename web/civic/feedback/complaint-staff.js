@@ -130,6 +130,12 @@
       var body = { service: get("service"), next_step: get("next_step"), fix_eta: get("fix_eta") };
       if (form.querySelector("[name=delay_reason]")) {
         body.delay_reason = get("delay_reason"); body.temp_measure = get("temp_measure"); body.next_update_at = get("next_update_at");
+        // «Нужно решение руководителя» → блок R08 «Нужно решение акима» (волна 2 п. 5): два варианта и что нужно.
+        var needs = form.querySelector("[name=needs_decision]");
+        body.needs_decision = !!(needs && needs.checked);
+        if (body.needs_decision) {
+          body.option_1 = get("option_1"); body.option_2 = get("option_2"); body.decision = get("decision");
+        }
       }
       call("POST", "/complaints/" + id + "/passport", body).then(done);
     }
@@ -163,6 +169,12 @@
       if (d.reason) lines.push(t("passport.delay_reason", { text: d.reason }));
       if (d.temp_measure) lines.push(t("passport.temp_measure", { text: d.temp_measure }));
       if (d.next_update_at) lines.push(t("passport.next_update", { date: dateText(d.next_update_at) }));
+      if (d.needs_decision) {
+        lines.push(t("akim.decision.title") + (d.decision ? " · " + t("akim.decision.needed", { text: d.decision }) : ""));
+        (d.options || []).forEach(function (o, i) { lines.push(t("akim.decision.option", { n: i + 1, text: o.ru || o.kk || "" })); });
+        if ((d.options || []).length < 2) lines.push(t("akim.decision.no_options"));
+        if (p.decision_choice) lines.push(t("akim.decision.chosen", { n: p.decision_choice.option }));
+      }
       return h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); }));
     }
 
@@ -188,6 +200,15 @@
         fields.push(field(t("passport.field.reason"), reason),
                     field(t("passport.field.temp"), h("input", { name: "temp_measure", maxlength: "160", value: d.temp_measure || "" })),
                     field(t("passport.field.next_update"), next));
+        // Задержку не сдвинуть без руководителя: два варианта и что нужно от акима (R08 «Нужно решение акима»).
+        var opts = d.options || [];
+        var extra = h("div", { "class": "bc-staff__decision", hidden: d.needs_decision ? null : true }, [
+          field(t("passport.field.option", { n: 1 }), h("input", { name: "option_1", maxlength: "160", value: (opts[0] || {}).ru || "" })),
+          field(t("passport.field.option", { n: 2 }), h("input", { name: "option_2", maxlength: "160", value: (opts[1] || {}).ru || "" })),
+          field(t("passport.field.decision"), h("input", { name: "decision", maxlength: "160", value: d.decision || "" }))]);
+        var box = h("input", { type: "checkbox", name: "needs_decision", checked: d.needs_decision ? true : null });
+        box.addEventListener("change", function () { extra.hidden = !box.checked; });
+        fields.push(h("label", { "class": "bc-staff__check" }, [box, h("span", {}, t("passport.field.needs_decision"))]), extra);
       }
       var form = h("form", { "class": "bc-staff__form bc-staff__passport-form",
                              onsubmit: function (e) { e.preventDefault(); savePassport(form); } },

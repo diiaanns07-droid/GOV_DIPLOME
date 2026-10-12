@@ -58,7 +58,7 @@ def test_every_key_used_in_code_exists():
     used = set(re.findall(r'\bt\("([a-z0-9_.]+)"', JS + STAFF_JS + LIST_JS))
     # t("status." + x) и т. п. — составные ключи; каждый вариант проверяется ниже.
     dynamic_prefixes = {"status.", "complaint.example.", "cat.", "emergency.service.", "service.", "subtopic.",
-                        "mine.passport.next_default.", "mine.update.", "inbox.tab."}
+                        "mine.passport.next_default.", "mine.update.", "inbox.tab.", "nearby.tab."}
     missing = sorted(k for k in used if k not in data["ru"] and k not in dynamic_prefixes)
     assert not missing, missing
     # Ключи, собираемые в коде из частей: status.<статус>, complaint.example.<категория>
@@ -81,6 +81,8 @@ def test_every_key_used_in_code_exists():
         assert "mine.passport.next_default." + status in data["ru"]
     for kind in ("fixed", "reopened", "passport", "note"):
         assert "mine.update." + kind in data["ru"]
+    for tab in ("now", "done", "planned", "outages"):                 # вкладки «Рядом» R08 (события подписок)
+        assert "nearby.tab." + tab in data["ru"]
 
 
 def test_placeholders_match_between_languages():

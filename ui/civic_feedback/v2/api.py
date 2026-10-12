@@ -257,6 +257,8 @@ class ComplaintsV2Service:
         view["relation"] = relation
         view["resolution"] = lifecycle.participant_resolution(record)
         view["passport"] = lifecycle.passport_view(record, self.store._now(), self.store.assignee_lookup)
+        view["passport"].pop("decision_choice", None)   # выбор акима — служебное (R15-S28: кто выбрал — не наружу)
+        view["history"] = lifecycle.history(record)
         # Обновления без имён сотрудников: «что сделали», следующий шаг, сообщения службы.
         view["updates"] = [{"at": u["at"], "kind": u["kind"], "text": u.get("text")} for u in record.get("updates") or []]
         view["can_verify"] = bool(device) and self.store.can_verify(record["id"], device)
@@ -268,7 +270,9 @@ class ComplaintsV2Service:
         view["reporters"] = rec.reporters(record)
         now = self.store._now()
         view["heat_state"] = lifecycle.heat_state(record, now)
-        view["passport_view"] = lifecycle.passport_view(record, now, self.store.assignee_lookup)
+        view["passport_view"] = lifecycle.passport_view(record, now, self.store.assignee_lookup,
+                                                        getattr(self.store, "decision_lookup", None))
+        view["history"] = lifecycle.history(record)
         view["deadline"] = lifecycle.deadline(record, now)
         # «Увидят N человек» до действия (R11 §2.3: fix.will_see) — автор и «Я тоже» без «Отписаться».
         view["subscribers"] = self.store.subscribers(record["id"])
@@ -382,7 +386,25 @@ class ComplaintsV2Service:
         since = params.get("since") or None
         if since and rec.parse_iso(since) is None:
             raise ApiError(422, "invalid", "Неверная дата.", {"since": "ISO-дата"})
-        return _ok(200, self.store.changes(self._device(context), since))
+        data = self.store.changes(self._device(context), since)
+        # Подписки «Рядом» (R08, волна 2 п. 4): их обновления — в том же «Что изменилось» (R10 W2-4).
+        nearby = self._nearby_updates(self._device(context), since)
+        if nearby:
+            data["items"] = sorted(data["items"] + nearby, key=lambda e: e.get("at") or "", reverse=True)
+        return _ok(200, data)
+
+    def _nearby_updates(self, device, since) -> list[dict]:
+        lookup = getattr(self.store, "nearby_lookup", None)
+        if lookup is None or not device:
+            return []
+        try:
+            found = lookup(device, since) or []
+        except Exception:  # noqa: BLE001 — «Рядом» R08 недоступен: «Что изменилось» по своим жалобам
+            LOGGER.warning("nearby updates unavailable", exc_info=True)
+            return []
+        return [{"id": "nearby." + str(item.get("id")), "kind": "nearby", "at": item.get("updated_at"),
+                 "tab": item.get("tab"), "title_ru": item.get("title_ru"), "title_kk": item.get("title_kk"),
+                 "demo": bool(item.get("demo"))} for item in found if item.get("updated_at")][:20]
 
     def _inbox(self, *, params, body, principal, context):
         """Акимат · «Обращения»: цели с открытыми обращениями по вкладкам (R11 IA_WAVE2 §2.5, R01 #complaints)."""

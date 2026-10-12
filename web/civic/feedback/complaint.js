@@ -1385,12 +1385,23 @@
       var list = h("ul", { "class": "bc-changes__list" });
       var shown = state.changesAll ? data.items : data.items.slice(0, CHANGES_SHOWN);
       shown.forEach(function (item) {
-        var what = item.kind === "status" ? t("mine.changes.status", { status: t("status." + item.status) }) : t(CHANGE_TEXT[item.kind]);
-        var row = h("button", { "class": "bc-changes__item" + (state.focusEvent === item.id ? " bc-changes__item--focus" : ""),
-                                type: "button", "data-event": item.id || "",
-                                onclick: function () { state.focusCode = item.code; focusCard(); } },
-          [h("strong", {}, targetLabel(item.target)), h("span", {}, " — " + what + (item.text ? ": " + item.text : "")),
-           h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
+        var row;
+        if (item.kind === "nearby") {
+          // Подписка «Рядом» (R08): нажатие ведёт в раздел «Рядом» оболочки R01 (#nearby).
+          var title = (currentLang() === "kk" ? item.title_kk : item.title_ru) || item.title_ru || item.title_kk || "";
+          row = h("button", { "class": "bc-changes__item bc-changes__item--nearby", type: "button", "data-event": item.id || "",
+                              onclick: function () { close(); window.location.hash = "#nearby"; } },
+            [h("strong", {}, title), h("span", {}, " — " + t("nearby.tab." + (item.tab || "now"))),
+             item.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
+             h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
+        } else {
+          var what = item.kind === "status" ? t("mine.changes.status", { status: t("status." + item.status) }) : t(CHANGE_TEXT[item.kind]);
+          row = h("button", { "class": "bc-changes__item" + (state.focusEvent === item.id ? " bc-changes__item--focus" : ""),
+                              type: "button", "data-event": item.id || "",
+                              onclick: function () { state.focusCode = item.code; focusCard(); } },
+            [h("strong", {}, targetLabel(item.target)), h("span", {}, " — " + what + (item.text ? ": " + item.text : "")),
+             h("span", { "class": "bc-meta" }, " · " + formatDate(item.at))]);
+        }
         list.appendChild(h("li", {}, row));
       });
       box.appendChild(list);
@@ -1531,11 +1542,13 @@
       var more = h("details", { "class": "bc-more", open: open || null }, [h("summary", {}, t("common.action.more")),
         h("p", { "class": "bc-label" }, t("passport.title")),
         h("ul", { "class": "bc-passport" }, lines.map(function (line) { return h("li", {}, line); }))]);
-      var updates = (item.updates || []).slice(-5).reverse();
-      if (updates.length) {
+      // «История» (R11 IA_WAVE2 §2.2, R10 W2-2): сообщили → в работе → служба сообщила → проверили / вернули.
+      var steps = item.history || (item.updates || []).map(function (u) { return u; });
+      if (steps.length) {
         more.appendChild(h("p", { "class": "bc-label" }, t("passport.history")));
-        more.appendChild(h("ul", { "class": "bc-updates" }, updates.map(function (u) {
-          return h("li", {}, [h("span", { "class": "bc-meta" }, formatDate(u.at) + " · "), h("span", {}, t("mine.update." + u.kind) + (u.text ? ": " + u.text : ""))]);
+        more.appendChild(h("ol", { "class": "bc-updates bc-history" }, steps.map(function (u) {
+          return h("li", { "data-kind": u.kind }, [h("span", { "class": "bc-meta" }, formatDate(u.at) + " · "),
+                                                    h("span", {}, historyText(u))]);
         })));
       }
       var own = item.photos || [];
@@ -1551,6 +1564,13 @@
         if (open) setTimeout(load, 0);
       }
       return more;
+    }
+
+    function historyText(u) {
+      if (u.kind === "created") return t("mine.history.created");
+      if (u.kind === "status") return t("mine.changes.status", { status: t("status." + u.status) });
+      if (u.kind === "verified") return t("mine.changes.verified");
+      return t("mine.update." + u.kind) + (u.text ? ": " + u.text : "");
     }
 
     // «Подписки (N)» — свёрнуто внизу (R11 §2.1): «Я тоже» = подписка; «Отписаться» — голос остаётся.

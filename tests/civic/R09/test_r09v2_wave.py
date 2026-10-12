@@ -543,3 +543,70 @@ def test_inbox_http_is_staff_only(store):
     assert "text" not in json.dumps(data["items"], ensure_ascii=False)       # в списке нет текстов жителей
     bad = service.handle("GET", "/api/civic/v2/complaints/inbox", "tab=all", None, Staff(), {"headers": {}})
     assert bad["status"] == 422
+
+
+# ---------------------------------------------------------------- день 12 окт: история, решение акима, «Рядом»
+def test_history_timeline_for_details(store, clock):
+    """R10 W2-2 / R11 IA_WAVE2 §2.2: «История» — сообщили → в работе → служба сообщила → вернули → … → проверили."""
+    record = make(store)
+    store.metoo(record["id"], DEV_B)
+    clock.now += timedelta(hours=1)
+    store.set_status(record["id"], "in_progress")
+    clock.now += timedelta(hours=1)
+    store.update_passport(record["id"], {"next_step": "Электрик выедет завтра"})
+    clock.now += timedelta(hours=1)
+    store.set_status(record["id"], "fixed", what_done="Заменили лампу")
+    clock.now += timedelta(hours=1)
+    store.verify(record["id"], DEV_B, "no")
+    clock.now += timedelta(hours=1)
+    store.set_status(record["id"], "fixed", what_done="Заменили ещё и патрон")
+    clock.now += timedelta(hours=1)
+    store.verify(record["id"], DEV_A, "yes")
+    kinds = [(e["kind"], e.get("status"), e.get("text")) for e in lifecycle.history(store.get(record["id"]))]
+    assert kinds == [("created", None, None), ("status", "in_progress", None),
+                     ("passport", None, "Электрик выедет завтра"), ("fixed", None, "Заменили лампу"),
+                     ("reopened", None, None), ("fixed", None, "Заменили ещё и патрон"), ("verified", None, None)]
+    service = ComplaintsV2Service(store)
+    mine = service.handle("GET", "/api/civic/v2/complaints/mine", None, None, None, {"headers": {"X-Birge-Device": DEV_B}})
+    item = mine["body"]["data"]["items"][0]
+    assert [e["kind"] for e in item["history"]][0] == "created" and "by" not in json.dumps(item["history"])
+
+
+def test_needs_decision_fields_and_akim_choice(store, clock):
+    """R08 «Нужно решение акима» (волна 2 п. 5): отметка, два варианта, что нужно; выбор акима — в паспорте службы."""
+    record = make(store)
+    with_decision, _ = store.update_passport(record["id"], {
+        "delay_reason": "Опора на балансе другого ведомства", "next_update_at": "2026-10-16", "needs_decision": True,
+        "option_1": "Заменить за счёт акимата", "option_2": "Передать опору горэлектросетям", "decision": "Выбрать, кто платит"})
+    delay = with_decision["passport"]["delay"]
+    assert delay["needs_decision"] is True and delay["decision"] == "Выбрать, кто платит"
+    assert delay["options"] == [{"ru": "Заменить за счёт акимата"}, {"ru": "Передать опору горэлектросетям"}]
+    view = lifecycle.passport_view(with_decision, clock.now, None, lambda cid: {"option": 2, "at": "x", "by": "akim"})
+    assert view["decision_choice"] == {"option": 2, "at": "x"}                  # кто выбрал — не наружу
+    off, _ = store.update_passport(record["id"], {"delay_reason": "Ждём кабель", "next_update_at": "2026-10-16",
+                                                  "needs_decision": False})
+    assert "needs_decision" not in off["passport"]["delay"]
+    assert lifecycle.passport_view(off, clock.now, None, lambda cid: {"option": 1})["decision_choice"] is None
+    try:
+        from ui.civic_akim import decisions                                    # сборка с R08: тот же критерий
+    except ImportError:
+        return
+    assert decisions.needs_decision(with_decision) is True and decisions.needs_decision(off) is False
+
+
+def test_nearby_updates_join_what_changed(store):
+    """R10 W2-4: обновления подписок «Рядом» (R08) — в том же «Что изменилось»; R08 упал — свои события остаются."""
+    service = ComplaintsV2Service(store)
+    record = make(store)
+    store.post_update(record["id"], "Бригада выехала", actor="operator1")
+    ctx = {"headers": {"X-Birge-Device": DEV_A}}
+    calls = []
+    store.nearby_lookup = lambda device, since: calls.append((device, since)) or [
+        {"id": "work-1", "tab": "now", "title_ru": "Ремонт тротуара", "title_kk": "Тротуар жөндеу",
+         "updated_at": "2099-01-01T10:00:00+05:00", "demo": True}]
+    items = service.handle("GET", "/api/civic/v2/complaints/changes", None, None, None, ctx)["body"]["data"]["items"]
+    assert items[0]["kind"] == "nearby" and items[0]["id"] == "nearby.work-1" and items[0]["title_kk"] == "Тротуар жөндеу"
+    assert any(i["kind"] == "note" for i in items) and calls == [(DEV_A, None)]
+    store.nearby_lookup = lambda device, since: 1 / 0
+    items = service.handle("GET", "/api/civic/v2/complaints/changes", None, None, None, ctx)["body"]["data"]["items"]
+    assert [i["kind"] for i in items] == ["note"]

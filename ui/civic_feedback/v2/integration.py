@@ -69,6 +69,24 @@ def r08_assignee_lookup():
     return service_for
 
 
+def r08_decision_lookup():
+    """ui.civic_akim.decisions.choice_for (R08: выбор акима по обращению) или None."""
+    try:
+        from ui.civic_akim.decisions import choice_for
+    except ImportError:
+        return None
+    return choice_for
+
+
+def r08_nearby_lookup():
+    """ui.civic_akim.nearby.updates_for (R08: обновления подписок «Рядом» для «Что изменилось») или None."""
+    try:
+        from ui.civic_akim.nearby import updates_for
+    except ImportError:
+        return None
+    return updates_for
+
+
 def make_service(db_path, *, target_lookup=None, assignee_lookup="auto", demo_seed: bool = False,
                  **store_options) -> ComplaintsV2Service:
     store = ComplaintStore(db_path, **store_options)
@@ -76,6 +94,9 @@ def make_service(db_path, *, target_lookup=None, assignee_lookup="auto", demo_se
     store.target_lookup = geo_target_lookup() if target_lookup == "auto" else target_lookup
     # «Кому передано» (волна 1, п. 7): по умолчанию — таблица R08, если она в сборке.
     store.assignee_lookup = r08_assignee_lookup() if assignee_lookup == "auto" else assignee_lookup
+    # R08 в сборке: выбор акима в паспорте и подписки «Рядом» в «Что изменилось» (без R08 — None, всё работает).
+    store.decision_lookup = r08_decision_lookup() if assignee_lookup == "auto" else None
+    store.nearby_lookup = r08_nearby_lookup() if assignee_lookup == "auto" else None
     if demo_seed:
         from .demo_seed import seed_demo
         seed_demo(store)

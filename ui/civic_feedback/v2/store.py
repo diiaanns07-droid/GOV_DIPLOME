@@ -161,6 +161,10 @@ class ComplaintStore:
             # Волна 2 (R11 IA_WAVE2 §2.1): «Отписаться» — голос остаётся, обновления и «Мои обращения» — нет.
             if "muted" not in columns:
                 self._db.execute("ALTER TABLE complaint_metoo_v2 ADD COLUMN muted INTEGER NOT NULL DEFAULT 0")
+        # decision_lookup(complaint_id) -> {option, at} | None — выбор акима (R08 decisions.choice_for).
+        self.decision_lookup = None
+        # nearby_lookup(device_id, since) -> [карточки «Рядом»] — подписки R08 для «Что изменилось».
+        self.nearby_lookup = None
         # assignee_lookup(category, subtopic) — таблица R08 (подключает R01): лучше routing.service_for
         # ({"id","ru","kk","name_edited"}), можно и routing.assignee_lookup (строка). None — таблица R09.
         self.assignee_lookup = None
@@ -546,7 +550,7 @@ class ComplaintStore:
         if service not in (None, "") and service not in lifecycle.SERVICES:
             raise RecordError("Неизвестная служба.", {"service": ",".join(lifecycle.SERVICES)})
         clean["service"] = service or None
-        for name in ("next_step", "delay_reason", "temp_measure"):
+        for name in ("next_step", "delay_reason", "temp_measure", "decision", "option_1", "option_2"):
             value = fields.get(name)
             if value is None or value == "":
                 clean[name] = None
@@ -575,10 +579,16 @@ class ComplaintStore:
             if "service" in fields:
                 passport["assignee_id"] = clean["service"]
                 passport.pop("assignee", None)          # свободный текст старых версий уступает выбору из списка
-            if any(name in fields for name in ("delay_reason", "temp_measure", "next_update_at")):
+            if any(name in fields for name in ("delay_reason", "temp_measure", "next_update_at", "needs_decision")):
                 delay = {"reason": clean["delay_reason"], "temp_measure": clean["temp_measure"],
                          "next_update_at": clean["next_update_at"]}
-                passport["delay"] = delay if any(delay.values()) else None
+                # «Нужно решение руководителя» (R08 «Нужно решение акима», волна 2 п. 5): два варианта и что нужно
+                # от акима. Формат читает ui.civic_akim.decisions: delay.needs_decision, options [{ru}], decision.
+                if fields.get("needs_decision") is True:
+                    delay["needs_decision"] = True
+                    delay["options"] = [{"ru": clean[k]} for k in ("option_1", "option_2") if clean[k]]
+                    delay["decision"] = clean["decision"]
+                passport["delay"] = delay if any(v for k, v in delay.items()) else None
             passport["updated_at"] = now
             if actor:
                 passport["by"] = str(actor)[:80]

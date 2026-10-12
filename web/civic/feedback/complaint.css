@@ -201,6 +201,11 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
                          border-radius: var(--r-m, 12px); }
 .bc-staff__note { margin: 0; min-height: 1.4em; font-weight: 600; color: var(--c-ok, #2f6b12); }
 .bc-staff__note--error { color: var(--c-danger, #b3362e); }
+.bc-staff__check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 600; }
+.bc-staff__check input { width: 22px; height: 22px; }
+.bc-staff__decision { display: flex; flex-direction: column; gap: 8px; padding-left: 12px;
+                      border-left: 3px solid var(--c-warn, #8a5a12); }
+.bc-staff__decision[hidden] { display: none; }
 .bc-staff__fix-error { margin: 0; font-weight: 600; color: var(--c-danger, #b3362e); }
 .bc-staff .bc-thumb__remove { font-size: 22px; line-height: 1; color: #fff; text-shadow: 0 0 3px rgba(21, 44, 38, .9); }
 

@@ -189,7 +189,7 @@ def _assignee(record: dict, assignee_lookup) -> dict:
             "assignee_custom": bool(names.get("name_edited")), "assignee_source": source}
 
 
-def passport_view(record: dict, now: datetime, assignee_lookup=None) -> dict:
+def passport_view(record: dict, now: datetime, assignee_lookup=None, decision_lookup=None) -> dict:
     """«Паспорт решения» для карточки: кто отвечает, следующий шаг, два срока, задержка.
     next_step — текст сотрудника; без него интерфейс показывает шаг по статусу (ключ mine.passport.next_default.*)."""
     passport = dict(record.get("passport") or {})
@@ -205,7 +205,45 @@ def passport_view(record: dict, now: datetime, assignee_lookup=None) -> dict:
         # Просроченное обновление видит руководитель (R08): обещали обновить к дате — и не обновили.
         "update_overdue": bool(next_update and now > next_update and record.get("status") in rec.OPEN_STATUSES),
         "updated_at": passport.get("updated_at"),
+        # «Нужно решение акима» (волна 2 п. 5, R08): выбор акима — ui.civic_akim.decisions.choice_for(id).
+        "decision_choice": _decision_choice(record, decision_lookup),
     }
+
+
+def _decision_choice(record: dict, decision_lookup) -> dict | None:
+    if decision_lookup is None or not ((record.get("passport") or {}).get("delay") or {}).get("needs_decision"):
+        return None
+    try:
+        choice = decision_lookup(record["id"])
+    except Exception:  # noqa: BLE001 — файл выборов R08 недоступен: паспорт без выбора
+        return None
+    return {"option": choice.get("option"), "at": choice.get("at")} if isinstance(choice, dict) and choice.get("option") else None
+
+
+def history(record: dict) -> list[dict]:
+    """«История» в «Подробнее» (R11 IA_WAVE2 §2.2, R10 W2-2): сообщили → принято/в работе → служба сообщила →
+    проверили / вернули; плюс план решения и сообщения службы. По времени, старое сверху; без имён сотрудников."""
+    out = []
+    for index, entry in enumerate(record.get("status_history") or []):
+        if entry.get("duplicate_of") or entry.get("unmerged_from"):
+            continue
+        if index == 0:
+            out.append({"at": entry["at"], "kind": "created"})
+        elif entry.get("reopened_by_residents") or entry.get("status") == "fixed":
+            continue  # эти шаги несут обновления «reopened» / «fixed» (с «что сделали») — без двойной строки
+        else:
+            out.append({"at": entry["at"], "kind": "status", "status": entry.get("status")})
+    for update in record.get("updates") or []:
+        if update.get("kind") in ("fixed", "reopened", "passport", "note"):
+            out.append({"at": update["at"], "kind": update["kind"], "text": update.get("text")})
+    resolution = record.get("resolution") or {}
+    if resolution.get("verified_at"):
+        out.append({"at": resolution["verified_at"], "kind": "verified"})
+    # Одна секунда — несколько действий: шаги статуса раньше (в работу → исправлено), обновления — в своём порядке
+    # (список updates уже хронологический, сортировка устойчивая), «проверено» — последним.
+    group = {"created": 0, "status": 1, "verified": 3}
+    out.sort(key=lambda e: (e["at"], group.get(e["kind"], 2)))
+    return out
 
 
 # ---------------------------------------------------------------- «что изменилось с вашим участием» (волна 2, п. 10)
