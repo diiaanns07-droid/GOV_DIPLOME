@@ -103,6 +103,9 @@ def make_handler(store: DemoStore):
             if u.path.startswith(api.PREFIX + "/heat"):
                 status, body = api.handle_get(u.path, parse_qs(u.query), service=store.service)
                 return self._json(status, body)
+            if u.path == api.PREFIX + "/complaints/merged":
+                # R09 на стенде нет: «Объединено с этим» (контракт R09) — пустой список, а не 503 в консоли
+                return self._json(200, {"items": []})
             if u.path.startswith("/api/"):
                 return self._json(503, {"error": "module_not_ready", "module": u.path})
             rel = u.path.lstrip("/") or "civic/heat/demo.html"

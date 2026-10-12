@@ -155,7 +155,9 @@ async function resident(browser, base, width, lang, full) {
     await page.locator("[data-key=back-list]").click();
     await page.waitForSelector(".ri-card", { timeout: 10000 });
     const first = await page.locator(".ri-card").first().innerText();
-    check(`${tag} мастер: своя идея сверху с пометкой «${T.review}»`, first.includes(T.review), first);
+    // kk: словарь R11 (вычитка 12 окт) — «Тексеруде»; запасной текст R06 — «Тексерілуде». Словарь главнее (R01 FINAL-3).
+    const reviewWords = lang === "kk" ? [T.review, "Тексеруде"] : [T.review];
+    check(`${tag} мастер: своя идея сверху с пометкой «${reviewWords.join("» / «")}»`, reviewWords.some((w) => first.includes(w)), first);
   }
   check(`${tag} житель: нет ошибок JS`, page.errs.length === 0, page.errs.join(" | "));
   await page.context().close();

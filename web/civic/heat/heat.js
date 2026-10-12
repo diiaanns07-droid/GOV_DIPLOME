@@ -18,13 +18,14 @@
 (function () {
   "use strict";
 
-  const VERSION = "r07-round14-3";
+  const VERSION = "r07-round14-final3";
   const NBSP = " ";
   const ANIM_MS = 800;           // перетекание цвета при новой жалобе (UX_BRIEF: ~0.8 с)
-  const BADGE_W = 64, BADGE_H = 40;   // полный значок: кружок с иконкой + число
-  const MINI_W = 34, MINI_H = 26;     // маленькая плашка с числом (районы), когда полному значку тесно
+  // Значки ≥ 44 px (FINAL-3): кружок 44 + плашка с числом; размеры ниже — нижние границы, настоящие меряются в DOM.
+  const BADGE_W = 80, BADGE_H = 44;   // полный значок: кружок с иконкой + число
+  const MINI_W = 44, MINI_H = 44;     // маленькая плашка с числом (районы), когда полному значку тесно (кнопка 44 по высоте)
   const CLUSTER_R = 56;          // значки ближе 56 px на экране собираются в один кластер
-  const CLUSTER_W = 40;          // кружок-кластер ~40 px
+  const CLUSTER_W = 44;          // кружок-кластер 44 px
   const TOP_N = 10;              // «Горячие места»: список и стартовая подгонка карты — одни и те же 10 мест
   const DISTRICT_ZOOM = 12;      // меньше — районы (CONTRACT §6); сервер присылает то же значение в meta
   // «Меньше движения» в системе: карта не пролетает, а сразу встаёт на место (UX_BRIEF правило 8).
@@ -136,6 +137,10 @@
       "deadline.overdue": { one: "Просрочено на {n} день", few: "Просрочено на {n} дня", many: "Просрочено на {n} дней" },
       "heat.already_changed": "Статус уже изменён — карта обновлена",
       "heat.role.akimat": "Акимат", "heat.role.resident": "Житель",
+      // Чистый дизайн (R11 CLEAN_PASS, FINAL-3): ключи R11 (common.*, heat.legend.few/many) — запасные значения здесь
+      "common.demo_footnote": "Данные — пример: жалобы придуманы, улицы и остановки — OpenStreetMap.",
+      "heat.legend.few": "мало", "heat.legend.many": "много",
+      "heat.approx_short": "Примерное место",
     },
     kk: {
       "heat.title": "Шағымдар картасы",
@@ -236,6 +241,9 @@
       "deadline.overdue": { other: "{n} күнге кешікті" },
       "heat.already_changed": "Мәртебесі бұрын өзгертілген — карта жаңартылды",
       "heat.role.akimat": "Әкімдік", "heat.role.resident": "Тұрғын",
+      "common.demo_footnote": "Деректер — үлгі: шағымдар ойдан құрастырылған, көшелер мен аялдамалар — OpenStreetMap.",
+      "heat.legend.few": "аз", "heat.legend.many": "көп",
+      "heat.approx_short": "Шамамен көрсетілген орын",
     },
   };
 
@@ -391,6 +399,11 @@
     } catch (e) { /* приватный режим — не страшно */ }
   }
 
+  // Шлюз R01 может завернуть ответ в конверт {ok, data} (как в civic-v1) — принимаем оба вида.
+  function unwrap(body) {
+    return body && body.ok === true && body.data && !body.items && !body.categories ? body.data : body;
+  }
+
   // ---------- Модуль ----------
   function mount(options) {
     const opts = options || {};
@@ -460,9 +473,15 @@
       const name = top && top.count * 2 >= (it.count || 0) ? subName(top.id) || (S.lang === "kk" ? top.kk : top.ru) : null;
       return name || catName(cat || Object.keys(it.by_category || {})[0] || "other");
     };
-    const levelWord = (it) => (it.level !== "fixed" ? t("heat.level_word." + it.level)
-      : it.fixed_kind === "reported" ? t("heat.level_word.reported") : t("heat.fixed_word"));
     const legendLabel = (lv) => (S.lang === "kk" ? lv.kk : lv.ru);
+    // Район места словами (из справочника /heat/meta): «Остановка · Нура» в строке над названием
+    const distName = (id) => {
+      const d = id && S.meta && (S.meta.districts || []).find((x) => x.id === id);
+      return d ? (S.lang === "kk" ? d.kk || d.ru : d.ru) : "";
+    };
+    // У места только примеры R07 (в общей сборке их нет в хранилище жалоб R09): кнопок нет — честная пометка (R10 B-037)
+    const examplesOnly = (it) => it.state !== "fixed" && !(it.open_ids || []).length && Number(it.examples_open) > 0;
+    const lcFirst = (s) => (s ? s.charAt(0).toLocaleLowerCase(S.lang === "kk" ? "kk" : "ru") + s.slice(1) : s);
 
     // ----- разметка панели -----
     root.classList.add("r07-root");
@@ -516,9 +535,7 @@
         err.body = body;
         throw err;
       }
-      // Шлюз R01 может завернуть ответ в конверт {ok, data} (как в civic-v1) — принимаем оба вида.
-      if (body && body.ok === true && body.data && !body.items && !body.categories) return body.data;
-      return body;
+      return unwrap(body);
     }
 
     function zoomNow() { return map ? map.getZoom() : 14; }
@@ -528,7 +545,12 @@
       const seq = ++S.reqSeq;
       if (!S.data) { S.status = "loading"; render(); }
       try {
-        if (!S.meta) S.meta = await getJson("/heat/meta");
+        // Справочник (/heat/meta) и сами жалобы (/heat) — одновременно, а не друг за другом: на старте главный поток
+        // занят картой и модулями, и каждый лишний круг «ответ → следующий запрос» стоил до 1 с до первого значка
+        // (R01 INTEGRATION 21.9). Порог районов до прихода справочника — тот же DISTRICT_ZOOM, что присылает сервер.
+        // Первый кадр оболочка R01 запрашивает заранее и отдаёт через opts.fetch (R01 INTEGRATION 22.1: /heat/meta,
+        // районы и места за 30 дней при zoom 14) — здесь те же адреса.
+        const metaReq = S.meta ? Promise.resolve(S.meta) : getJson("/heat/meta");
         const query = (zoom) => {
           const q = new URLSearchParams();
           q.set("days", String(S.filters.days));
@@ -539,9 +561,10 @@
         };
         // На мелком масштабе карта — районы, а список «Горячие места» — всё равно 10 мест: их берём вторым запросом.
         const districtsView = modeFor(zoomNow()) === "districts";
-        const [data, places] = await Promise.all([getJson(query(zoomNow())),
+        const [meta, data, places] = await Promise.all([metaReq, getJson(query(zoomNow())),
           districtsView ? getJson(query(DISTRICT_ZOOM + 2)).catch(() => null) : Promise.resolve(null)]);
         if (seq !== S.reqSeq || S.destroyed) return;   // пришёл устаревший ответ — пропускаем
+        S.meta = meta;
         const placeItems = ((places && places.mode === "targets") ? places : data).items || [];
         S.top = placeItems.filter((it) => it.state === "active" && it.count > 0 && it.target.kind !== "district").slice(0, TOP_N);
         S.topItems = new Map(S.top.map((it) => [keyOf(it.target), it]));
@@ -601,6 +624,15 @@
       return padding;
     }
 
+    // Центр свободной части карты (без шапки, панели/шторки и кнопок — opts.fitPadding оболочки) относительно центра
+    // контейнера: место, к которому летим, встаёт туда, а не в середину экрана — на телефоне это под шторкой
+    // (R10 demo_flow 375 шаг 3: первое место из «Горячих мест» на обзоре города оставалось под ручкой шторки).
+    function freeOffset() {
+      if (!opts.fitPadding) return [0, 0];
+      const p = Object.assign({ top: 0, bottom: 0, left: 0, right: 0 }, typeof opts.fitPadding === "function" ? opts.fitPadding() : opts.fitPadding);
+      return [Math.round(((Number(p.left) || 0) - (Number(p.right) || 0)) / 2), Math.round(((Number(p.top) || 0) - (Number(p.bottom) || 0)) / 2)];
+    }
+
     // Карта сама вписывает 10 горячих мест из списка (просьба владельца, п. 1): при открытии и при смене фильтров.
     // Список и карта совпадают: в списке те же места, что видны на карте (на мелком масштабе — внутри своих районов).
     // При открытии — только если пользователь ещё не трогал карту (UX_BRIEF, правило 8); при смене фильтра — всегда
@@ -657,7 +689,7 @@
         if (map && item && item.anchor) {
           const zoom = Math.max(map.getZoom(), kind === "object" ? 16 : 15);
           // ждём конца перелёта (если камера уже на месте, moveend может не прийти — страховка 1,2 с)
-          await new Promise((done) => { map.once("moveend", done); setTimeout(done, 1200); map.easeTo({ center: item.anchor, zoom, duration: moveMs(600) }); });
+          await new Promise((done) => { map.once("moveend", done); setTimeout(done, 1200); map.easeTo({ center: item.anchor, zoom, offset: freeOffset(), duration: moveMs(600) }); });
         }
       } catch (err) { /* цели за период нет или сеть — ниже честно скажем */ }
       S.pendingMoving = false;
@@ -1036,15 +1068,9 @@
     // Смысловой зум (просьба владельца, п. 2): город (< 12) — районы; 12–15 — дворы и участки улиц; с 15 — и объекты.
     // Значок, которому тесно, и объекты на 12–15 не пропадают — собираются в кружок-кластер с числом людей и цветом
     // самого высокого уровня; нажатие на кластер приближает карту к его местам.
-    function declutter(how) {
-      if (!map) return;
-      const z = map.getZoom(), bearing = map.getBearing(), pitch = map.getPitch();
-      const placed = [];
-      // Значки не прячутся под легендой и другими плашками поверх карты (opts.avoidRects — от оболочки).
-      const host = map.getContainer().getBoundingClientRect();
-      const L = S.layout;
-      const full = how === "full" || !L || Math.abs(L.z - z) > 0.01 || Math.abs(L.bearing - bearing) > 0.5 ||
-        Math.abs(L.pitch - pitch) > 0.5 || Math.abs(L.w - host.width) > 1 || Math.abs(L.h - host.height) > 1;
+    // Плашки поверх карты, которые значок не должен закрывать: своя легенда и панель, кнопки MapLibre, чужие значки
+    // и таблички проектов R05, плашки оболочки (opts.avoidRects).
+    function overlayRects() {
       const overlays = [];
       if (S.legendEl && S.legendEl.isConnected) overlays.push(S.legendEl.getBoundingClientRect());
       // Своя панель / шторка поверх карты и кнопки MapLibre: значок наполовину под ними выглядит обрезанным.
@@ -1058,6 +1084,28 @@
         if (r.width && r.height && cs.visibility !== "hidden" && Number(cs.opacity) > 0.1) overlays.push(r);
       });
       if (typeof opts.avoidRects === "function") overlays.push(...(opts.avoidRects() || []));
+      return overlays;
+    }
+    const overlaySig = (list) => list.map((r) => (r && r.width ? Math.round(r.left) + "," + Math.round(r.top) + "," + Math.round(r.right) + "," + Math.round(r.bottom) : "")).join(";");
+    // Плашки оболочки появляются и двигаются без движения карты: строка легенды — после первой отрисовки, «Карта улиц
+    // не загрузилась» — когда не пришли тайлы, гаснет через 6 с. Раз в секунду (пока карта стоит) сверяем их рамки с
+    // прошлой раскладкой; изменились — раскладываем значки заново (R11 badges_covered 360×800: «Байқоңыр» под легендой).
+    const overlayTimer = map ? setInterval(() => {
+      if (S.destroyed || !S.markers.size || map.isMoving() || S.overlaySig === undefined) return;
+      if (overlaySig(overlayRects()) !== S.overlaySig) declutter();
+    }, 1000) : null;
+
+    function declutter(how) {
+      if (!map) return;
+      const z = map.getZoom(), bearing = map.getBearing(), pitch = map.getPitch();
+      const placed = [];
+      // Значки не прячутся под легендой и другими плашками поверх карты (opts.avoidRects — от оболочки).
+      const host = map.getContainer().getBoundingClientRect();
+      const L = S.layout;
+      const full = how === "full" || !L || Math.abs(L.z - z) > 0.01 || Math.abs(L.bearing - bearing) > 0.5 ||
+        Math.abs(L.pitch - pitch) > 0.5 || Math.abs(L.w - host.width) > 1 || Math.abs(L.h - host.height) > 1;
+      const overlays = overlayRects();
+      S.overlaySig = overlaySig(overlays);
       overlays.forEach((r) => { if (r && r.width) placed.push([r.left - host.left, r.top - host.top, r.right - host.left, r.bottom - host.top]); });
       const boxAt = (p, w, h) => [p.x - w / 2, p.y - h / 2, p.x + w / 2, p.y + h / 2];
       // Значок — только целиком внутри карты (обрезанный краем выглядит сломанным) и не поверх уже поставленных.
@@ -1068,7 +1116,7 @@
       const list = [...S.markers.values()].sort(prio);
       const districts = S.mode === "districts";
       const sizeOf = (m, mode) => (mode === "mini" ? [Math.max(m.mw || MINI_W, MINI_W), Math.max(m.mh || MINI_H, MINI_H)]
-        : [Math.max(m.w || BADGE_W, 40), Math.max(m.h || BADGE_H, 30)]);
+        : [Math.max(m.w || BADGE_W, 44), Math.max(m.h || BADGE_H, 44)]);
       const result = new Map();   // marker → [mode, spot]
       const pool = [];            // кому нет места / объекты на 12–15 → в кластеры
       // Объекты (остановки, площадки, фонари…) по отдельности — с 15-го масштаба; выбранная цель видна всегда.
@@ -1307,7 +1355,7 @@
       const it = findItem(key);
       if (it && moveMap && map && it.anchor) {
         // Плавно и только по просьбе пользователя (клик в списке). Наклон и поворот не трогаем.
-        map.easeTo({ center: it.anchor, zoom: Math.max(map.getZoom(), it.target.kind === "object" ? 16 : 15), duration: moveMs(600) });
+        map.easeTo({ center: it.anchor, zoom: Math.max(map.getZoom(), it.target.kind === "object" ? 16 : 15), offset: freeOffset(), duration: moveMs(600) });
       }
       render();
       declutter();
@@ -1433,33 +1481,39 @@
       if (S.destroyed) return;
       root.dataset.role = S.role;
       const parts = [];
-      // Подзаголовок — главное за 10 секунд: самое горячее место (на телефоне видно даже в свёрнутой шторке).
-      const top = S.data && (S.top || [])[0];
-      const sub = top ? t("heat.top_line", { target: label(top.target), people: t("heat.people_short", { count: top.count }) }) : t("heat.subtitle");
-      parts.push('<header class="r07-head"><div><h2 class="r07-h">' + esc(t("heat.title")) + '</h2><p class="r07-sub">' + esc(sub) + "</p></div></header>");
-      // Телефон, районы: «Приблизьте карту…» — строкой в шторке, на текущем языке (не тостом над главной кнопкой и не
-      // строкой легенды поверх карты: R11 ночь 4 п. 1, R10 B-038). На ноутбуке та же подсказка — в легенде на карте.
-      if (S.mode === "districts" && S.data) parts.push('<p class="r07-zoomhint">' + svgIcon("pin", 16) + esc(t("heat.zoom_hint")) + "</p>");
       const cardItem = S.selected && findItem(S.selected);
-      // В карточке цели фильтры не нужны: так кнопки действий видны без прокрутки. Пока данных нет (загрузка,
-      // нет связи) — тоже: на телефоне в шторке сразу видно скелетон или «Нет связи · Повторить», а не фильтры.
-      if (!cardItem && S.data) {
-        if ((S.data && S.data.demo) || (S.meta && S.meta.demo)) parts.push('<p class="r07-note r07-note--demo">' + esc(t("heat.demo_note")) + "</p>");
-        parts.push(filtersHtml());
+      root.dataset.view = cardItem ? "card" : "list";
+      // Чистый дизайн (R11 CLEAN_PASS, R07 №4): шапка «Карта жалоб / Больше всего жалоб: …» и фильтры — только у списка.
+      // В карточке одна навигация «‹ Горячие места ✕»; кнопки действий видны без прокрутки. Пока данных нет (загрузка,
+      // нет связи) — фильтров тоже нет: на телефоне в шторке сразу видно скелетон или «Нет связи · Повторить».
+      if (!cardItem) {
+        // Подзаголовок — главное за 10 секунд: самое горячее место (на телефоне видно даже в свёрнутой шторке).
+        const top = S.data && (S.top || [])[0];
+        const sub = top ? t("heat.top_line", { target: label(top.target), people: t("heat.people_short", { count: top.count }) }) : t("heat.subtitle");
+        parts.push('<header class="r07-head"><div><h2 class="r07-h">' + esc(t("heat.title")) + '</h2><p class="r07-sub">' + esc(sub) + "</p></div></header>");
+        // Телефон, районы: «Приблизьте карту…» — строкой в шторке, на текущем языке (не тостом над главной кнопкой и не
+        // строкой легенды поверх карты: R11 ночь 4 п. 1, R10 B-038). На ноутбуке та же подсказка — в легенде на карте.
+        if (S.mode === "districts" && S.data) parts.push('<p class="r07-zoomhint">' + svgIcon("pin", 16) + esc(t("heat.zoom_hint")) + "</p>");
+        if (S.data) parts.push(filtersHtml());
       }
       if (S.status === "loading" && !S.data) parts.push(skeletonHtml());
       else if ((S.status === "error" || S.status === "not_ready") && !S.data) parts.push(errorHtml());
-      else {
-        const it = S.selected && findItem(S.selected);
-        parts.push(it ? cardHtml(it) : listHtml());
-      }
-      // Легенда — на карте слева внизу (на телефоне — сверху), всегда видна (UX_REVIEW R11, день 3, №3).
-      // Без карты (страница-список) — в панели.
+      else parts.push(cardItem ? cardHtml(cardItem) : listHtml());
+      // «Данные — пример» — одна серая строка внизу панели, не плашка сверху (CLEAN_PASS R07 №5)
+      parts.push(footnoteHtml(cardItem));
+      // Легенда — на карте (в оболочке — под «?» её строки, opts.legendContainer). Без карты (страница-список) — в панели.
       if (map) renderMapLegend(); else parts.push(legendHtml(false));
       panel.innerHTML = parts.join("");
       bindPanel();
       mountR09();
       if (map) declutter();   // легенда могла сменить размер (язык, режим) — значки не должны оказаться под ней
+    }
+
+    function footnoteHtml(it) {
+      if (!S.data) return "";
+      // У места одни примеры: та же строка внизу, второй фразой — «статус примеров не меняется» (R10 B-037)
+      if (it && examplesOnly(it)) return '<p class="bk-footnote r07-footnote r07-note--demo">' + esc(t("heat.example_readonly")) + "</p>";
+      return S.data.demo || (S.meta && S.meta.demo) ? '<p class="bk-footnote r07-footnote">' + esc(t("common.demo_footnote")) + "</p>" : "";
     }
 
     function renderMapLegend() {
@@ -1471,13 +1525,15 @@
         host.append(S.legendEl);
       }
       S.legendEl.dataset.role = S.role;
+      S.legendEl.classList.toggle("r07-maplegend--more", Boolean(opts.legendContainer));
       const html = legendHtml(true);
       S.legendEl.innerHTML = html;
       S.legendEl.hidden = !html;   // нет данных (нет связи) — не пустая белая плашка над картой (R10 B-034)
     }
 
     function filtersHtml() {
-      // Категории спрятаны за одной кнопкой: 12 чипов сразу заняли бы пол-экрана и вытеснили список.
+      // Тема — одна кнопка-поле с заливкой (как .bk-field ui-kit): под ней 12 тем с иконками. Не нативный select —
+      // у тем иконки, и проверка демо R10 (шаг 3б «Все категории» → «Освещение» → «Сбросить») не меняется.
       const cats = (S.meta ? S.meta.categories : []).map((c) =>
         '<button type="button" class="r07-chip" data-cat="' + esc(c.id) + '" aria-pressed="' + (S.filters.category === c.id) + '">' +
         svgIcon(c.icon, 18) + "<span>" + esc(S.lang === "kk" ? c.kk : c.ru) + "</span></button>").join("");
@@ -1487,22 +1543,29 @@
         : "<span>" + esc(t("heat.category_all")) + "</span>";
       const periods = ((S.meta && S.meta.periods) || [7, 30, 90]).map((d) =>
         '<button type="button" data-days="' + d + '" aria-pressed="' + (S.filters.days === d) + '">' + esc(t("heat.days", { count: d })) + "</button>").join("");
-      const districts = ((S.meta && S.meta.districts) || []).slice().sort((a, b) => (a.ru > b.ru ? 1 : -1)).map((d) =>
-        '<option value="' + esc(d.id) + '"' + (S.filters.district === d.id ? " selected" : "") + ">" + esc(S.lang === "kk" ? d.kk : d.ru) + "</option>").join("");
+      // Район — в поиске шапки оболочки (CLEAN_PASS R01 №2, R07 №6); свой список районов — только по opts.districtFilter
+      // (страница без оболочки, demo.html) или если район уже выбран (чтобы его можно было снять).
+      const showDistrict = opts.districtFilter === true || Boolean(S.filters.district);
+      const districts = showDistrict ? ((S.meta && S.meta.districts) || []).slice().sort((a, b) => (a.ru > b.ru ? 1 : -1)).map((d) =>
+        '<option value="' + esc(d.id) + '"' + (S.filters.district === d.id ? " selected" : "") + ">" + esc(S.lang === "kk" ? d.kk : d.ru) + "</option>").join("") : "";
       const dirty = S.filters.category || S.filters.district || S.filters.days !== ((S.meta && S.meta.default_days) || 30);
       return '<section class="r07-filters" aria-label="' + esc(t("heat.filters")) + '">' +
-        '<div class="r07-row"><button type="button" class="r07-btn r07-cat-toggle' + (S.filters.category ? " r07-cat-toggle--on" : "") + '" data-cats-toggle aria-expanded="' + S.catsOpen + '" aria-controls="r07-cats">' +
+        '<div class="r07-row"><button type="button" class="r07-field r07-cat-toggle' + (S.filters.category ? " r07-cat-toggle--on" : "") + '" data-cats-toggle aria-expanded="' + S.catsOpen + '" aria-controls="r07-cats">' +
         current + svgIcon("back", 18).replace('class="r07-ic"', 'class="r07-ic r07-ic--down"') + "</button>" +
-        '<label class="r07-select"><span class="r07-vh">' + esc(t("heat.district")) + '</span><select data-district aria-label="' + esc(t("heat.district")) + '"><option value="">' + esc(t("heat.district_all")) + "</option>" + districts + "</select></label></div>" +
+        (showDistrict ? '<label class="r07-select"><span class="r07-vh">' + esc(t("heat.district")) + '</span><select class="r07-field" data-district aria-label="' + esc(t("heat.district")) + '"><option value="">' + esc(t("heat.district_all")) + "</option>" + districts + "</select></label>" : "") +
+        "</div>" +
         '<div class="r07-chips" id="r07-cats" role="group" aria-label="' + esc(t("heat.category_all")) + '"' + (S.catsOpen ? "" : " hidden") + ">" + all + cats + "</div>" +
-        '<div class="r07-row"><div class="r07-seg" role="group" aria-label="' + esc(t("heat.period")) + '">' + periods + "</div>" +
+        '<div class="r07-row"><div class="r07-seg bk-seg" role="group" aria-label="' + esc(t("heat.period")) + '">' + periods + "</div>" +
         (dirty ? '<button type="button" class="r07-btn r07-btn--ghost" data-reset>' + esc(t("heat.reset")) + "</button>" : "") + "</div></section>";
     }
 
     // Пункты легенды волны 2 — только по делу (R11 IA_WAVE2 §3): «сообщили об устранении», когда такая цель видна на
     // карте; «нет свежих данных», когда на обзоре города есть серые районы. На первом кадре легенда та же (5 пунктов).
+    // В оболочке подробная легенда открывается «?» строки «мало ▬ много · ✓ исправлено» (CLEAN_PASS R01 №6) — там
+    // показываем все состояния сразу: человек сам спросил, что значат цвета.
     function legendExtras() {
-      if (!S.data) return { reported: false, nodata: false };
+      if (!S.data) return { reported: false, nodata: false, verified: false };
+      if (opts.legendContainer) return { reported: true, nodata: true, verified: true };
       let inView = () => true;
       if (map) {
         const b = map.getBounds();
@@ -1511,6 +1574,7 @@
       return {
         reported: S.data.items.some((it) => it.state === "fixed" && it.fixed_kind === "reported" && inView(it)),
         nodata: S.mode === "districts" && S.data.items.some((it) => it.state === "no_data"),
+        verified: false,
       };
     }
     function legendHtml(onMap) {
@@ -1518,13 +1582,14 @@
       if (!lg) return "";
       const ex = legendExtras();
       const st = lg.states || {};
+      const fixedLabel = ex.verified ? t("heat.legend.verified") : S.lang === "kk" ? lg.fixed.kk : lg.fixed.ru;
       const rows = lg.levels.filter((lv) => lv.level > 0).map((lv) =>
         '<li><i class="r07-sw" style="background:' + esc(lv.color) + '"></i>' + esc(legendLabel(lv)) + "</li>").join("") +
-        '<li><i class="r07-sw" style="background:' + esc(lg.fixed.color) + '"></i>' + esc(S.lang === "kk" ? lg.fixed.kk : lg.fixed.ru) + "</li>" +
         (ex.reported && st.reported_fixed ? '<li data-extra="reported"><i class="r07-sw r07-sw--dashed" style="background:' + esc(st.reported_fixed.color) + '"></i>' + esc(t("heat.legend.reported_fixed")) + "</li>" : "") +
+        '<li><i class="r07-sw" style="background:' + esc(lg.fixed.color) + '"></i>' + esc(fixedLabel) + "</li>" +
         (ex.nodata && st.no_data ? '<li data-extra="nodata"><i class="r07-sw" style="background:' + esc(st.no_data.color) + '"></i>' + esc(t("heat.legend.nodata")) + "</li>" : "");
       const zoomHint = S.mode === "districts" ? '<p class="r07-legend__hint r07-legend__zoom">' + esc(t("heat.zoom_hint")) + "</p>" : "";
-      const nodataHint = ex.nodata ? '<p class="r07-legend__hint r07-legend__nodata">' + esc(t("heat.legend.nodata_hint")) + "</p>" : "";
+      const nodataHint = ex.nodata && !opts.legendContainer ? '<p class="r07-legend__hint r07-legend__nodata">' + esc(t("heat.legend.nodata_hint")) + "</p>" : "";
       const inner = '<h3 class="r07-legend__title">' + esc(t("heat.legend")) + "</h3><ul>" + rows + '</ul><p class="r07-legend__hint r07-legend__fresh">' + esc(t("heat.legend_hint")) + "</p>" + nodataHint + zoomHint;
       S.legendKey = (ex.reported ? "r" : "") + (ex.nodata ? "n" : "");
       return onMap ? inner : '<section class="r07-legend" aria-label="' + esc(t("heat.legend")) + '">' + inner + "</section>";
@@ -1552,10 +1617,10 @@
           (next ? '<button type="button" class="r07-btn r07-btn--primary" data-days-next="' + next + '">' + esc(t("heat.empty.show_days", { n: next })) + "</button>" : "") +
           (filtered ? '<button type="button" class="r07-btn" data-reset>' + esc(t("heat.filter.reset")) + "</button>" : "") + "</div></div>";
       }
-      const rows = items.slice(0, 10).map((it, i) => {
+      // Строка (CLEAN_PASS R07 №7): без колонки ранга — значок-число цвета места + название 17/600 + «Тема · N чел.» 13 серым.
+      const rows = items.slice(0, 10).map((it) => {
         const meta = topicName(it) + " · " + t("heat.people_short", { count: it.count });
         return '<li><button type="button" class="r07-item" data-key="' + esc(keyOf(it.target)) + '">' +
-          '<span class="r07-item__rank">' + (i + 1) + "</span>" +
           '<span class="r07-mini" data-level="' + esc(it.level) + '" style="--r07-c:' + esc(it.color) + '">' + fmtNum(it.count) + "</span>" +
           '<span class="r07-item__text"><span class="r07-item__title">' + esc(label(it.target)) + '</span><span class="r07-item__meta">' + esc(meta) + "</span></span>" +
           svgIcon("back", 18).replace('class="r07-ic"', 'class="r07-ic r07-ic--flip"') + "</button></li>";
@@ -1563,11 +1628,74 @@
       return '<section class="r07-hot"><h3 class="r07-h3">' + esc(t("heat.hot_title")) + ' <span class="r07-muted">' + esc(t("heat.for_days", { count: S.filters.days })) + '</span></h3><ol class="r07-list">' + rows + "</ol></section>";
     }
 
+    // Статус места — один раз (CLEAN_PASS R07 №1, ui-kit .bk-statusline): точка + слово + одна строка пояснения.
+    //  открытое — срок ответа акимату («Осталось 2 рабочих дня» / «Просрочено на 1 день») или ничего; «вернули жители» — ↺;
+    //  служба сообщила — «12 окт · ждёт проверки жителями» (без «зелёным до …»: зелёный — только после проверки, R10 W2-1);
+    //  проверено — «Подтвердили 3 жителя · На карте зелёным до 19 окт».
+    function statusLineHtml(it) {
+      const fixed = it.state === "fixed";
+      const note = [];
+      let st, word, overdue = false;
+      if (fixed && it.fixed_kind === "reported") {
+        st = "reported_fixed"; word = t("heat.status.reported_fixed");
+        if (it.fixed_at) note.push(fmtDate(it.fixed_at, S.lang));
+        note.push(note.length ? lcFirst(t("heat.reported_wait")) : t("heat.reported_wait"));
+      } else if (fixed) {
+        st = it.fixed_kind === "verified" ? "verified" : "fixed";
+        word = t(st === "verified" ? "heat.status.verified" : "heat.fixed_word");
+        if (st === "verified" && it.checks && it.checks.yes) note.push(t("heat.verified_note", { count: it.checks.yes }));
+        if (it.fixed_until) note.push(t("heat.fixed_until", { date: fmtDate(it.fixed_until, S.lang) }));
+      } else {
+        st = it.reopened ? "reopened" : it.status || "new";
+        word = t("heat.status." + (it.status || "new"));
+        if (it.reopened) note.push("↺ " + t("heat.reopened_mark"));
+        // Срок ответа (волна 1, п. 6) — только акимату и только у новых (R09: просрочено = никто не ответил, срок прошёл)
+        const due = S.role === "akimat" && it.due && (it.status === "new" || it.due.overdue_days) ? it.due : null;
+        if (due) {
+          overdue = Boolean(due.overdue_days);
+          note.push(due.overdue_days ? t("deadline.overdue", { n: due.overdue_days }) : due.workdays_left ? t("deadline.left", { n: due.workdays_left }) : t("deadline.today"));
+        }
+      }
+      return '<div class="bk-statusline r07-statusline"><span class="bk-status r07-status" data-status="' + esc(st) + '">' + esc(word) + "</span>" +
+        (note.length ? '<span class="bk-statusline__note r07-statusline__note"' + (overdue ? ' data-overdue="true"' : "") + ">" + esc(note.join(" · ")) + "</span>" : "") + "</div>";
+    }
+
+    // Блок «Подробнее» карточки — <details> ui-kit; пустые блоки не рисуются вовсе (CLEAN_PASS R07 №3)
+    function detailsHtml(cls, title, body, open) {
+      return '<details class="bk-details r07-details ' + cls + '"' + (open ? " open" : "") + '><summary class="r07-h4">' + title + "</summary>" + body + "</details>";
+    }
+
+    // Карточка (CLEAN_PASS R07 №2): «‹ Горячие места ✕» → вид места · район (13 серым) → название 22/600 → статус один раз →
+    // «Тема · Сообщили N человек · за 30 дней» 15 серым → одна главная кнопка → «Подробнее»: «Что пишут жители» (у акимата
+    // открыт), «Объединено с этим», «Жалобы по дням», «О чём сообщают»; акимату — ссылка на QR-лист внизу.
     function cardHtml(it) {
       const fixed = it.state === "fixed";
       const key = keyOf(it.target);
-      const maxDay = Math.max(1, ...(it.daily || [0]));
-      const bars = (it.daily || []).map((n) => '<i style="height:' + Math.max(n ? 8 : 2, Math.round((n / maxDay) * 100)) + '%" title="' + n + '"></i>').join("");
+      let actions = "";
+      if (!examplesOnly(it) && !fixed && S.role === "akimat") {
+        // Одна главная кнопка: у нового — «Взять в работу», «Отметить исправленным» рядом серой; в работе — только она.
+        const inWork = it.status === "in_progress";
+        actions = (!inWork ? '<button type="button" class="r07-btn r07-btn--primary" data-act="take">' + esc(t("heat.take")) + "</button>" : "") +
+          '<button type="button" class="r07-btn' + (inWork ? " r07-btn--primary" : "") + '" data-act="fixed">' + svgIcon("check", 20) + esc(t("heat.mark_fixed")) + "</button>";
+      } else if (!examplesOnly(it) && !fixed && S.role === "resident") {
+        actions = metooDone(key)
+          ? '<button type="button" class="r07-btn" disabled>' + svgIcon("check", 20) + esc(t("heat.metoo_already")) + "</button>"
+          : '<button type="button" class="r07-btn r07-btn--primary r07-btn--lg" data-act="metoo">' + svgIcon("users", 22) + esc(t("heat.metoo")) + "</button>";
+      }
+      // «Примерное место» — словами здесь (CLEAN_PASS R07 №2); если оно уже в названии — «Область на карте»
+      const kindWord = !it.approximate ? t("heat.kind." + (it.target.subtype || it.target.kind))
+        : label(it.target) === t("heat.approx_short") ? t("heat.kind.approximate") : t("heat.approx_short");
+      const eyebrow = [kindWord, distName(it.district)].filter(Boolean).map(esc).join(" · ") +
+        (it.demo ? ' · <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "");
+      // «Жалобы по дням» — только если в окне графика есть жалобы; «О чём сообщают» — только если тем больше одной
+      // (одна тема уже написана в строке «Тема · Сообщили …»).
+      const daily = it.daily || [];
+      const maxDay = Math.max(1, ...daily, 0);
+      const chart = !fixed && daily.some((n) => n > 0)
+        ? detailsHtml("r07-chart", esc(t("heat.chart")), '<div class="r07-spark" role="img" aria-label="' + esc(t("heat.chart")) + '">' +
+          daily.map((n) => '<i style="height:' + Math.max(n ? 8 : 2, Math.round((n / maxDay) * 100)) + '%" title="' + n + '"></i>').join("") +
+          '</div><div class="r07-axis"><span>' + esc(t("heat.chart_from")) + "</span><span>" + esc(t("heat.chart_to")) + "</span></div>", false)
+        : "";
       // «О чём сообщают»: категория и под ней самое частое уточнение этой категории (волна 1, п. 2 и 12)
       const subOf = (c) => {
         const ids = Object.entries(it.subtopics || {}).filter(([id]) => {
@@ -1579,59 +1707,23 @@
         const name = subName(id);
         return name ? '<small class="r07-topics__sub">' + esc(name) + " · " + fmtNum(n) + "</small>" : "";
       };
-      const topics = Object.entries(it.by_category || {}).map(([c, n]) =>
-        "<li>" + svgIcon(catIcon(c), 20) + "<span>" + esc(catName(c)) + subOf(c) + "</span><b>" + fmtNum(n) + "</b></li>").join("");
-      let actions = "";
-      // Только примеры R07 (в общей сборке их нет в хранилище жалоб R09): кнопок нет — честная пометка (R10 B-037).
-      const examplesOnly = !fixed && !(it.open_ids || []).length && Number(it.examples_open) > 0;
-      if (examplesOnly) {
-        actions = '<p class="r07-note r07-note--demo">' + esc(t("heat.example_readonly")) + "</p>";
-      } else if (!fixed && S.role === "akimat") {
-        actions = (it.status !== "in_progress" ? '<button type="button" class="r07-btn r07-btn--primary" data-act="take">' + esc(t("heat.take")) + "</button>" : "") +
-          '<button type="button" class="r07-btn' + (it.status === "in_progress" ? " r07-btn--primary" : "") + '" data-act="fixed">' + svgIcon("check", 20) + esc(t("heat.mark_fixed")) + "</button>";
-      } else if (!fixed && S.role === "resident") {
-        const done = metooDone(key);
-        actions = done
-          ? '<button type="button" class="r07-btn" disabled>' + svgIcon("check", 20) + esc(t("heat.metoo_already")) + "</button>"
-          : '<button type="button" class="r07-btn r07-btn--primary r07-btn--lg" data-act="metoo">' + svgIcon("users", 22) + esc(t("heat.metoo")) + "</button>";
-      }
-      const levelBadge = '<span class="r07-level" data-level="' + esc(it.level) + '"><span class="r07-mini" data-level="' + esc(it.level) + '" style="--r07-c:' + esc(it.color) + '">' +
-        (fixed ? svgIcon("check", 14) : fmtNum(it.count)) + "</span>" + esc(levelWord(it)) + "</span>";
-      // Волна 2: исправленное — «служба сообщила об устранении» или «проверено жителями»
-      const statusKey = fixed && it.fixed_kind === "reported" ? "reported_fixed" : fixed && it.fixed_kind === "verified" ? "verified" : it.status;
-      const statusPill = '<span class="r07-status" data-status="' + esc(statusKey) + '">' + esc(t("heat.status." + statusKey)) + "</span>";
-      let fixedNote = "";
-      if (fixed && it.fixed_until) {
-        const date = fmtDate(it.fixed_until, S.lang);
-        // одна строка: состояние проверки + прежняя «На карте зелёным до …» (ключ R11 heat.fixed_until)
-        const until = t("heat.fixed_until", { date });
-        fixedNote = it.fixed_kind === "reported" ? '<p class="r07-note r07-note--wait">' + esc(t("heat.reported_wait") + " · " + until) + "</p>"
-          : it.fixed_kind === "verified" && it.checks && it.checks.yes ? '<p class="r07-note r07-note--ok">' + esc(t("heat.verified_note", { count: it.checks.yes }) + " · " + until) + "</p>"
-          : '<p class="r07-note r07-note--ok">' + esc(until) + "</p>";
-      }
-      // Срок ответа (волна 1, п. 6) — только акимату и только у новых: «Осталось 2 рабочих дня» / «Просрочено на 1 день»
-      // R09: просрочено = новое (никто не ответил), а срок прошёл. Строка — пока место «Новое» или срок уже просрочен.
-      const due = !fixed && S.role === "akimat" && it.due && (it.status === "new" || it.due.overdue_days) ? it.due : null;
-      const dueLine = due ? '<p class="r07-card__due"' + (due.overdue_days ? ' data-overdue="true"' : "") + ">" + svgIcon(due.overdue_days ? "alert" : "clock", 16) +
-        esc(due.overdue_days ? t("deadline.overdue", { n: due.overdue_days }) : due.workdays_left ? t("deadline.left", { n: due.workdays_left }) : t("deadline.today")) + "</p>" : "";
+      const cats = Object.entries(it.by_category || {});
+      const topics = cats.length > 1
+        ? detailsHtml("r07-topics-box", esc(t("heat.topics")), '<ul class="r07-topics">' + cats.map(([c, n]) =>
+          "<li>" + svgIcon(catIcon(c), 20) + "<span>" + esc(catName(c)) + subOf(c) + "</span><b>" + fmtNum(n) + "</b></li>").join("") + "</ul>", false)
+        : "";
+      const topic = cats.length || it.top_subtopic ? topicName(it, cats.length ? cats[0][0] : null) : "";
       return '<article class="r07-card">' +
         '<div class="r07-card__nav"><button type="button" class="r07-btn r07-btn--ghost" data-back>' + svgIcon("back", 20) + esc(t("heat.back")) + "</button>" +
         '<button type="button" class="r07-icon-btn" data-back aria-label="' + esc(t("heat.close")) + '" title="' + esc(t("heat.close")) + '">' + svgIcon("close", 22) + "</button></div>" +
-        '<p class="r07-eyebrow">' + svgIcon(it.approximate ? "pin" : SUBTYPE_ICON[it.target.subtype] || KIND_ICON[it.target.kind] || "pin", 16) +
-          esc(t("heat.kind." + (it.approximate ? "approximate" : it.target.subtype || it.target.kind))) + (it.demo ? ' <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") + "</p>" +
-        '<h3 class="r07-card__title" tabindex="-1">' + esc(label(it.target)) + "</h3>" +
-        levelBadge +
-        '<p class="r07-card__reported">' + esc(t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count })) + " · " + esc(t("heat.for_days", { count: S.filters.days })) + "</p>" +
-        fixedNote +
-        (it.reopened ? '<p class="r07-note r07-note--warn r07-note--reopened">↺ ' + esc(t("heat.reopened_note")) + "</p>" : "") +
-        (it.approximate ? '<p class="r07-note r07-note--warn">' + esc(t("heat.approximate")) + "</p>" : "") +
-        // Статус и главная кнопка — сразу под числом: видны без прокрутки и на 1366, и на 375 px.
-        '<p class="r07-card__status">' + esc(t("heat.status")) + ": " + statusPill + "</p>" + dueLine +
+        '<div class="r07-card__head"><p class="r07-eyebrow">' + eyebrow + "</p>" +
+        '<h3 class="r07-card__title" tabindex="-1">' + esc(label(it.target)) + "</h3></div>" +
+        statusLineHtml(it) +
+        '<p class="r07-card__reported">' + (topic ? '<span class="r07-card__topic">' + esc(topic) + "</span> · " : "") +
+          esc(t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count })) + " · " + esc(t("heat.for_days", { count: S.filters.days })) + "</p>" +
         (actions ? '<div class="r07-actions">' + actions + "</div>" : "") +
         (S.role === "akimat" ? textsHtml(key) + mergedHtml(key) : "") +
-        (!fixed ? '<div class="r07-chart" aria-label="' + esc(t("heat.chart")) + '"><h4 class="r07-h4">' + esc(t("heat.chart")) + '</h4><div class="r07-spark">' + bars +
-          '</div><div class="r07-axis"><span>' + esc(t("heat.chart_from")) + "</span><span>" + esc(t("heat.chart_to")) + "</span></div></div>" : "") +
-        (topics ? '<h4 class="r07-h4">' + esc(t("heat.topics")) + '</h4><ul class="r07-topics">' + topics + "</ul>" : "") +
+        chart + topics +
         // R12 волна 2 п. 6 (IA_WAVE2 §6.2): акимату — ссылка на лист QR-табличек этого места (второстепенная, внизу карточки).
         (S.role === "akimat" && QR_ID.test(it.target.id) ? '<p class="r07-qr"><a class="r07-btn r07-btn--ghost" href="/civic/qr/print.html?ids=' +
           encodeURIComponent(it.target.id) + '" target="_blank" rel="noopener">' + esc(t("qr.print")) + "</a></p>" : "") +
@@ -1641,25 +1733,21 @@
     // «Что пишут жители» (UX_REVIEW R11, день 3, №4): 1–3 группы похожих текстов с числом людей.
     // Только для акимата. Сервер отдаёт тексты примеров (synthetic) всем, а настоящих жалоб — только сотруднику
     // после входа (шлюз R01 передаёт staff=True); жителю этот раздел не показывается вовсе.
+    // Чистый дизайн: блок «Подробнее», у акимата открыт; текстов нет — блока нет (пока грузятся — тоже нет).
     function textsKey(key) { return key + "|" + S.filters.days; }
     function textsHtml(key) {
       const st = S.texts.get(textsKey(key));
-      let body;
-      if (!st || st.status === "loading") body = '<div class="r07-skeleton r07-skeleton--line" aria-busy="true"><i></i><i></i></div>';
-      else if (st.status === "error") return "";
-      else {
-        const groups = (st.data && st.data.groups) || [];
-        const hidden = (st.data && st.data.hidden_people) || 0;
-        body = groups.length
-          ? '<ul class="r07-quotes">' + groups.map((g) =>
-            '<li><p class="r07-quote" lang="' + esc(g.lang === "kk" ? "kk" : g.lang === "ru" ? "ru" : S.lang) + '">«' + esc(g.text) + '»</p><p class="r07-quote__meta">' +
-            esc(t("heat.texts.people", { count: g.people })) + (g.demo ? ' <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") +
-            (g.rude ? ' <span class="r07-tag r07-tag--rude">' + esc(t("moderation.rude")) + "</span>" : "") + "</p></li>").join("") + "</ul>"
-          : "";
-        if (hidden) body += '<p class="r07-note">' + esc(t("heat.texts.staff_only")) + "</p>";
-        if (!body) body = '<p class="r07-muted">' + esc(t("heat.texts.none")) + "</p>";
-      }
-      return '<section class="r07-texts"><h4 class="r07-h4">' + esc(t("heat.texts.title")) + "</h4>" + body + "</section>";
+      if (!st || st.status !== "ready") return "";
+      const groups = (st.data && st.data.groups) || [];
+      const hidden = (st.data && st.data.hidden_people) || 0;
+      if (!groups.length && !hidden) return "";
+      const body = (groups.length
+        ? '<ul class="r07-quotes">' + groups.map((g) =>
+          '<li><p class="r07-quote" lang="' + esc(g.lang === "kk" ? "kk" : g.lang === "ru" ? "ru" : S.lang) + '">«' + esc(g.text) + '»</p><p class="r07-quote__meta">' +
+          esc(t("heat.texts.people", { count: g.people })) + (g.demo ? ' · <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") +
+          (g.rude ? ' <span class="r07-tag r07-tag--rude">' + esc(t("moderation.rude")) + "</span>" : "") + "</p></li>").join("") + "</ul>"
+        : "") + (hidden ? '<p class="r07-note">' + esc(t("heat.texts.staff_only")) + "</p>" : "");
+      return '<section class="r07-texts">' + detailsHtml("r07-texts__box", esc(t("heat.texts.title")), body, true) + "</section>";
     }
     // «Объединено с этим» (волна мелочей п. 9, R04 + R09): дубли и «Я тоже» с текстом жителя, присоединённые к жалобам
     // этой цели. Ошибочное объединение акимат отменяет одним нажатием «Это разные проблемы» — R09 выделяет жалобу
@@ -1675,7 +1763,7 @@
           '<p class="r07-quote__meta">' + esc(meta) + (m.moderation ? ' <span class="r07-tag r07-tag--rude">' + esc(t("moderation.rude")) + "</span>" : "") + "</p>" +
           '<button type="button" class="r07-btn r07-merged__btn" data-act="separate" data-item="' + esc(m.id) + '">' + esc(t("merge.separate")) + "</button></li>";
       }).join("");
-      return '<details class="r07-merged"' + (S.mergedOpen === key ? " open" : "") + '><summary class="r07-h4">' + esc(t("merge.title")) +
+      return '<details class="bk-details r07-details r07-merged"' + (S.mergedOpen === key ? " open" : "") + '><summary class="r07-h4">' + esc(t("merge.title")) +
         ' <span class="r07-merged__count">' + fmtNum(st.items.length) + "</span></summary>" +
         '<p class="r07-note">' + esc(t("merge.hint")) + '</p><ul class="r07-quotes">' + rows + "</ul></details>";
     }
@@ -1881,6 +1969,7 @@
     }
     function destroy() {
       S.destroyed = true;
+      if (overlayTimer) clearInterval(overlayTimer);
       if (S.anim) cancelAnimationFrame(S.anim);
       window.removeEventListener("birge:complaint", onComplaintEvent);
       window.removeEventListener("birge:lang", onLang);

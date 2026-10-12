@@ -31,10 +31,13 @@ async function open(browser, size, lang, query) {
 const card = (page) => page.evaluate(() => ({
   status: document.querySelector(".r07-card .r07-status")?.dataset.status || null,
   statusText: document.querySelector(".r07-card .r07-status")?.innerText || "",
-  notes: [...document.querySelectorAll(".r07-card .r07-note")].map((n) => n.innerText),
-  due: document.querySelector(".r07-card__due")?.innerText || null,
+  // Чистый дизайн (FINAL-3): статус один раз — точка + слово + одна строка пояснения (.r07-statusline__note)
+  statuses: document.querySelectorAll(".r07-card .bk-status").length,
+  notes: [...document.querySelectorAll(".r07-card .r07-statusline__note")].map((n) => n.innerText),
+  due: document.querySelector(".r07-card .r07-statusline__note")?.innerText || null,
   eyebrow: document.querySelector(".r07-eyebrow")?.textContent || "",
-  topics: [...document.querySelectorAll(".r07-topics__sub")].map((x) => x.innerText),
+  // уточнение: в «О чём сообщают» (тем больше одной) или в строке «Тема · Сообщили …» (одна тема)
+  topics: [...document.querySelectorAll(".r07-topics__sub, .r07-card__topic")].map((x) => x.innerText),
   legend: [...document.querySelectorAll(".r07-maplegend li")].map((l) => l.dataset.extra || "base"),
   badge: (() => { const b = document.querySelector(".r07-badge--selected"); return b ? { fixed: b.dataset.fixed || null, mark: !!b.querySelector(".r07-badge__mark"),
     border: getComputedStyle(b.querySelector(".r07-badge__dot")).borderStyle, aria: b.getAttribute("aria-label") } : null; })(),
@@ -65,11 +68,14 @@ const card = (page) => page.evaluate(() => ({
       await page.waitForTimeout(2200);
       const c = await card(page);
       const p = [];
+      if (c.statuses !== 1) p.push("статус в карточке не один раз: " + c.statuses);
       if (name === "reported") {
         if (c.status !== "reported_fixed") p.push("статус не «служба сообщила»: " + c.status);
         if (!c.badge || c.badge.fixed !== "reported" || c.badge.border !== "dashed") p.push("значок без пунктира: " + JSON.stringify(c.badge));
         if (!c.legend.includes("reported")) p.push("в легенде нет «сообщили об устранении», хотя такая цель на карте");
-        if (!c.notes.some((n) => (lang === "kk" ? /тексеруін күтуде/ : /Ждёт проверки/).test(n))) p.push("нет строки «ждёт проверки»");
+        if (!c.notes.some((n) => (lang === "kk" ? /тексеруін күтуде/i : /ждёт проверки/i).test(n))) p.push("нет строки «ждёт проверки»");
+        // до проверки жителями — без «На карте зелёным до …» (R10 W2-1, R11 разбор 13 п. 2)
+        if (c.notes.some((n) => (lang === "kk" ? /Жасыл түспен/ : /зелёным до/).test(n))) p.push("до проверки обещает «зелёным до …»");
       }
       if (name === "verified") {
         if (c.status !== "verified") p.push("статус не «проверено жителями»: " + c.status);
@@ -84,7 +90,8 @@ const card = (page) => page.evaluate(() => ({
       if (["signal", "crossing", "intersection"].includes(name)) {
         const word = { signal: lang === "kk" ? /Бағдаршам/ : /Светофор/, crossing: lang === "kk" ? /өткелі/ : /переход/i, intersection: lang === "kk" ? /Қиылыс/ : /Перекрёсток/ }[name];
         if (!word.test(c.eyebrow)) p.push("над названием не тот тип: " + c.eyebrow);
-        if (!c.topics.length) p.push("в «О чём сообщают» нет уточнения");
+        const sub = it.top_subtopic && it.top_subtopic[lang];
+        if (!c.topics.length || (sub && !c.topics.some((x) => x.includes(sub)))) p.push("в карточке нет уточнения «" + sub + "»: " + c.topics.join(" | "));
       }
       if (name === "due") {
         if (!c.due || !(lang === "kk" ? /жұмыс күні|бүгін|кешікті/ : /рабоч|сегодня|Просрочено/).test(c.due)) p.push("нет строки срока: " + c.due);

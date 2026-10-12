@@ -775,7 +775,8 @@ async function colorOnlyCheck(page) {
     await page.click(".r07-item");
     await page.waitForSelector(".r07-card");
     await page.waitForTimeout(400);
-    const x = await page.evaluate(() => ({ note: document.querySelector(".r07-card .r07-note--demo")?.innerText || "",
+    // чистый дизайн: пометка — серой строкой внизу панели (.bk-footnote), не плашкой в карточке
+    const x = await page.evaluate(() => ({ note: document.querySelector(".r07-panel .r07-footnote.r07-note--demo")?.innerText || "",
       buttons: document.querySelectorAll('.r07-card [data-act="take"], .r07-card [data-act="fixed"]').length }));
     const problems = [];
     if (x.buttons) problems.push("у цели только с примерами есть кнопки статуса");
@@ -798,7 +799,7 @@ async function colorOnlyCheck(page) {
     await page.close();
   }
 
-  // «Примерное место»: в карточке «Область на карте» + пометка, а не «Двор или квартал»
+  // «Примерное место»: в карточке «Область на карте» над названием «Примерное место», а не «Двор или квартал»
   for (const [size, lang] of [["desktop", "ru"], ["phone", "kk"]]) {
     const { page, errors } = await rawPage(size, `?lang=${lang}&role=akimat&view=nura&sheet=full`, (pg) =>
       pg.route(HEAT_GET, async (r) => {
@@ -812,10 +813,12 @@ async function colorOnlyCheck(page) {
     await page.evaluate(() => { const b = [...document.querySelectorAll(".r07-item")].find((x) => /Примерное место|Шамамен/.test(x.innerText)); if (b) b.click(); });
     await page.waitForSelector(".r07-card", { timeout: 5000 }).catch(() => {});
     await page.waitForTimeout(400);
-    const x = await page.evaluate(() => ({ eyebrow: document.querySelector(".r07-eyebrow")?.textContent, note: document.querySelector(".r07-note--warn")?.innerText }));
+    // чистый дизайн: «примерное» — словами над названием, без отдельной плашки
+    const x = await page.evaluate(() => ({ eyebrow: document.querySelector(".r07-eyebrow")?.textContent, title: document.querySelector(".r07-card__title")?.textContent,
+      plaques: document.querySelectorAll(".r07-card .r07-note--warn").length }));
     const want = lang === "kk" ? "Картадағы аумақ" : "Область на карте";
     const problems = [];
-    if (!x.eyebrow || !x.eyebrow.includes(want) || !x.note) problems.push("карточка примерного места: " + JSON.stringify(x));
+    if (!x.eyebrow || !x.eyebrow.includes(want) || !/Примерное место|Шамамен/.test(x.title || "") || x.plaques) problems.push("карточка примерного места: " + JSON.stringify(x));
     await finish(page, errors, `card-approximate-${size === "phone" ? 375 : 1366}-${lang}`, size, problems, x);
   }
 

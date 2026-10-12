@@ -202,12 +202,14 @@ def test_demo_edited_by_staff_keeps_staff_dates(stack, staff):
     assert water["start"] == "2026-10-14T09:00:00+05:00" and water["demo"] is True
 
 
-def test_r08_feed_uses_r06_items_when_available(stack, staff):
+def test_r08_feed_uses_r06_items_when_available(stack, staff, clock):
     """Стык с R08 (есть в дереве сборки R01): лента «Рядом» берёт записи R06, баннер отключения — из них."""
     nearby = pytest.importorskip("ui.civic_akim.nearby")
     svc, v2 = stack
     seed_r14_demo(svc)
-    now = datetime.now(timezone.utc)
+    # «Сейчас» — те же часы, по которым засеяно демо (сроки «завтра 10:00–16:00» считаются от них). С настоящим временем
+    # тест падал после 16:00 12 окт: отключение 12 окт уже прошло (R01 FINAL-3, время суток, не код).
+    now = clock()
     feed = nearby.feed("nura", now=now, nearby_fn=lambda district=None: v2.nearby.items(district), objects=lambda d, t: [])
     assert feed["sources"]["nearby"] == "r06"
     assert [b["id"] for b in feed["banners"]][:1] == ["nb-demo-water-nura"]
