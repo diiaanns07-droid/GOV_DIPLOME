@@ -53,6 +53,7 @@
     var id = opts.complaintId;
     var csrf = function () { return typeof opts.csrf === "function" ? opts.csrf() : (opts.csrf || ""); };
     var root = h("section", { "class": "bc-staff", "aria-label": t("staff.title") });
+    var uid = Math.random().toString(36).slice(2, 8);   // id подсказки поля (aria-describedby) — свой у каждой карточки
     container.appendChild(root);
     var current = null;
     var photo = null;
@@ -152,8 +153,10 @@
       });
     }
 
-    function field(label, input) {
-      return h("label", { "class": "bc-staff__field" }, [h("span", { "class": "bc-label" }, label), input]);
+    // Пример под полем — строкой, а не подсказкой внутри поля: на 375 она обрезалась и пропадает при вводе (R10 круг 2).
+    function field(label, input, hint, hintId) {
+      return h("label", { "class": "bc-staff__field" }, [h("span", { "class": "bc-label" }, label), input,
+        hint ? h("span", { "class": "bc-meta bc-staff__hint", id: hintId || null }, hint) : null]);
     }
 
     function isOpen() {
@@ -277,7 +280,7 @@
         var fixed = h("form", { "class": "bc-staff__form bc-staff__fix", onsubmit: function (e) { e.preventDefault(); markFixed(fixed); } }, [
           h("p", { "class": "bc-label" }, t("fix.title")),
           field(t("fix.what_done"), h("input", { name: "what_done", maxlength: String(WHAT_DONE_MAX), required: true,
-                                                 placeholder: t("staff.fixed.what_hint") })),
+                                                 "aria-describedby": "bc-what-hint-" + uid }), t("staff.fixed.what_hint"), "bc-what-hint-" + uid),
           input,
           h("button", { "class": "bk-btn bc-photo-add", type: "button", onclick: function () { input.click(); } },
             [C().icon ? C().icon("camera") : null, h("span", {}, t("fix.photo"))]),
@@ -356,7 +359,8 @@
           });
         });
     }
-    var what = h("input", { name: "what_done", maxlength: "120", required: true, placeholder: t("staff.fixed.what_hint") });
+    var hintId = "bc-fixform-hint-" + Math.random().toString(36).slice(2, 8);
+    var what = h("input", { name: "what_done", maxlength: "120", required: true, "aria-describedby": hintId });
     var preview = h("ul", { "class": "bc-thumbs bc-thumbs--small" });
     var input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", "class": "bc-photo-input" });
     var error = h("p", { "class": "bc-staff__fix-error", role: "alert", hidden: true });
@@ -375,7 +379,8 @@
     });
     var form = h("form", { "class": "bc-staff bc-staff__form bc-staff__fix bc-fixform" }, [
       h("p", { "class": "bc-label" }, t("fix.title")),
-      h("label", { "class": "bc-staff__field" }, [h("span", { "class": "bc-label" }, t("fix.what_done")), what]),
+      h("label", { "class": "bc-staff__field" }, [h("span", { "class": "bc-label" }, t("fix.what_done")), what,
+        h("span", { "class": "bc-meta bc-staff__hint", id: hintId }, t("staff.fixed.what_hint"))]),
       input,
       h("button", { "class": "bk-btn bc-photo-add", type: "button", onclick: function () { input.click(); } },
             [C().icon ? C().icon("camera") : null, h("span", {}, t("fix.photo"))]),

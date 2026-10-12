@@ -9,6 +9,9 @@
   max-width: calc(100vw - 32px);
 }
 .bc-fab[hidden] { display: none; }
+/* Открыта карточка места R07 со своей «Я тоже» — главную кнопку не показываем: одна главная на экране
+   (R11 B1 №8 на телефоне; R10 B-070 — и на ноутбуке). Карточку закрыли — кнопка снова на месте. */
+body:has(.r07-card) .bc-fab { display: none; }
 /* Ноутбук и планшет: по центру без transform (left/right + margin auto) — сжатие при нажатии строго на месте и
    общее button:active оболочки ничего не сдвигает (R11 INTEGRATION 12.2, R10 B-068). Область центровки — ниже. */
 @media (min-width: 761px) {
@@ -77,8 +80,6 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
   .bc-fab { left: 16px; right: 16px; transform: none; max-width: none; white-space: nowrap; justify-content: center; }
   /* Шторка R09 открыта: плашка карты R01 «Карта улиц не загрузилась» не ложится поверх её заголовка (карта под шторкой). */
   html.bc-open body.civic-mode #map-status { visibility: hidden; }
-  /* Открыта карточка места R07 со своей «Я тоже» — главную кнопку не показываем поверх неё (R11 B1 №8). */
-  body:has(.r07-card) .bc-fab { display: none; }
   .bc-handle { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--c-line, #e8eaeb);
                margin: 8px auto 0; flex: none; }
 }
@@ -112,10 +113,10 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-place { display: flex; align-items: center; gap: 8px; margin: 0; padding: 0;
             font-size: var(--fs-body, 15px); font-weight: var(--fw-semi, 600); }   /* строка с булавкой, без плашки (CLEAN_PASS №2) */
 
-.bc-field { display: grid; gap: 6px; }
+.bc-field { display: grid; gap: 8px; }
 .bc-textarea { width: 100%; box-sizing: border-box; min-height: 112px; resize: vertical;
                font: inherit; font-size: 16px; /* ≥16 px: iOS не масштабирует страницу при вводе */
-               padding: 12px 14px; border: 1px solid transparent; border-radius: var(--r-m, 10px);
+               padding: 12px 16px; border: 1px solid transparent; border-radius: var(--r-m, 10px);
                color: var(--c-ink, #152c26); background: var(--c-fill, #eff1f2); }   /* заливка вместо рамки (CLEAN_PASS №3) */
 .bc-textarea:focus { border-color: var(--c-focus, #2f7fd6); background: var(--c-surface, #fff); }
 .bc-textarea:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
@@ -140,16 +141,16 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-loading__text { color: var(--c-text-2, #5b6a64); }
 .bc-skel-line { height: 56px; border-radius: var(--r-m, 12px); }
 /* Скелетон карточки: строки на месте категории, статуса, «Передано…» и меты. */
-.bc-skel-card { display: grid; gap: 10px; padding: 16px; border-radius: var(--r-l, 14px); background: var(--c-surface, #fff); }
+.bc-skel-card { display: grid; gap: 12px; padding: 16px; border-radius: var(--r-l, 14px); background: var(--c-surface, #fff); }
 .bk-glass .bc-skel-card { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px rgba(16, 24, 22, .08); }   /* как .bk-glass .bk-card ui-kit (R11 D-7) */
 .bc-skel-line { display: block; height: 12px; width: 72%; border-radius: 6px; }
 .bc-skel-line--title { height: 16px; width: 44%; }
 .bc-skel-line--status { width: 30%; }
 .bc-skel-line--short { width: 52%; }
 
-.bc-similar { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--r-l, 16px);
+.bc-similar { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--r-l, 16px);
               background: var(--c-paper, #f4f5f6); }
-.bc-similar__count { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 600; }
+.bc-similar__count { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 600; }
 .bc-similar__status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 
 .bc-code { display: grid; justify-items: center; gap: 0; margin: 0; }
@@ -157,22 +158,31 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-code__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 8px; }
 .bc-code__value { font-size: var(--fs-title, 22px); font-weight: var(--fw-semi, 600); letter-spacing: .01em;
                   font-variant-numeric: tabular-nums; white-space: nowrap; }
-.bc-code__copy { min-height: 44px; padding: 0 10px; font-size: var(--fs-body, 15px); }
+.bc-code__copy { min-height: 44px; padding: 0 12px; font-size: var(--fs-body, 15px); }
 .bc-code__copy .ic { width: 18px; height: 18px; }
 .bc-nowrap { white-space: nowrap; }   /* номер «B-0007» не рвётся на дефисе */
 
 .bc-mine { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-.bc-mine__card { display: flex; flex-direction: column; gap: 6px; }
+.bc-mine__card { display: flex; flex-direction: column; gap: 8px; }
 .bc-mine__card > .bk-tag { align-self: flex-start; }   /* метка «Пример» — по тексту, не на всю ширину (R11 день 2 №9) */
 .bc-mine__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.bc-mine__cat { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-lead, 17px); font-weight: var(--fw-semi, 600); }
+.bc-mine__cat { display: inline-flex; align-items: center; gap: 8px; font-size: var(--fs-lead, 17px); font-weight: var(--fw-semi, 600); }
 /* Статус один раз: точка + слово, под ним одна строка «Передано: … · осталось …» (CLEAN_PASS R09 №6). */
 .bc-mine__status { display: grid; gap: 2px; margin: 0; }   /* то же, что .bk-statusline ui-kit — и со старым ui-kit */
 .bc-mine__status > .bk-status { justify-self: start; }   /* старый ui-kit рисует статус «таблеткой» — по слову, не во всю ширину */
-.bc-mine__status .bk-statusline__note { padding-left: 18px; color: var(--c-text-2, #5b6a64); font-size: var(--fs-body, 15px); }
+.bc-mine__status .bk-statusline__note { padding-left: 28px; color: var(--c-text-2, #5b6a64); font-size: var(--fs-body, 15px); }
+/* Одна левая линия текста в карточке (R10 круг 2, чек-лист №2): значок категории, точка статуса и «›» у «Подробнее» —
+   в колонке 20 px, весь текст карточки — от 28 px (пояснение статуса по-прежнему под словом, как в ui-kit). */
+.bc-mine__cat > .ic { width: 20px; height: 20px; flex: none; }
+.bc-mine__status > .bk-status { gap: 8px; }
+.bc-mine__status > .bk-status::before { margin-inline: 5px; }
+.bc-mine__status > .bk-status[data-status="verified"]::before { margin-inline: 2px; }
+.bc-mine__card > .bc-meta { padding-left: 28px; }
+.bc-mine__card .bc-more > summary { gap: 0; }
+.bc-mine__card .bc-more > summary::before { margin: 0 13px 0 5px; }
 .bc-mine__status .bc-deadline--warn, .bc-mine__status .bc-deadline--danger { font-weight: var(--fw-semi, 600); }
 .bc-more .bk-steps { margin: 4px 0 8px; }
-.bc-overdue { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--c-danger, #b3362e); font-weight: 600; }
+.bc-overdue { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--c-danger, #b3362e); font-weight: 600; }
 
 /* Центр без transform: анимация появления ui-kit (bk-rise) сама задаёт transform и сдвигала тост вправо. */
 .bc-toast { position: fixed; z-index: 60; left: 0; right: 0; margin-inline: auto; box-sizing: border-box;
@@ -210,19 +220,19 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-thumbs--small .bc-thumb { width: 56px; height: 56px; }
 
 /* Экран проверки перед отправкой. */
-.bc-review { display: grid; grid-template-columns: minmax(80px, auto) 1fr; gap: 6px 12px; margin: 0; }
+.bc-review { display: grid; grid-template-columns: minmax(80px, auto) 1fr; gap: 8px 12px; margin: 0; }
 .bc-review__row { display: contents; }
 .bc-review dt { color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 13px); padding-top: 2px; }
 .bc-review dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
 .bc-review__text { font-weight: 400; white-space: pre-wrap; }
-.bc-visibility { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: var(--r-m, 12px);
+.bc-visibility { display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; border-radius: var(--r-m, 12px);
                  background: var(--c-paper, #f4f5f6); }
 .bc-visibility p { display: flex; gap: 8px; align-items: flex-start; margin: 0; }
 .bc-next { margin: 0; font-weight: 600; }
 .bc-metoo-caption { margin-top: -4px; text-align: center; }
 
 /* «Мои обращения»: что изменилось, проверка ремонта, состояние, «Подробнее». */
-.bc-changes { display: flex; flex-direction: column; gap: 6px; border-color: var(--c-brand, #152c26); }
+.bc-changes { display: flex; flex-direction: column; gap: 8px; border-color: var(--c-brand, #152c26); }
 .bc-changes__title { margin: 0; font-size: var(--fs-lead, 17px); font-weight: var(--fw-semi, 600); }
 .bc-changes__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .bc-changes__item { display: block; width: 100%; min-height: 44px; padding: 8px 0; border: 0; background: none;
@@ -236,7 +246,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-verify { display: flex; flex-direction: column; gap: 8px; }
 .bc-verify + .bc-verify { padding-top: 12px; border-top: 1px solid var(--c-line, #e8eaeb); }
 .bc-verify p { margin: 0; }
-.bc-verify__place { display: flex; align-items: center; gap: 6px; }
+.bc-verify__place { display: flex; align-items: center; gap: 8px; }
 .bc-verify__reported { font-weight: 600; color: var(--c-ok, #2f6b12); }
 .bc-verify__question { font-weight: var(--fw-semi, 600); font-size: var(--fs-lead, 17px); }
 .bc-verify__buttons { display: flex; flex-direction: column; gap: 8px; }
@@ -268,7 +278,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-staff__field input:focus, .bc-staff__field select:focus { border-color: var(--c-focus, #2f7fd6); background: var(--c-surface, #fff); }
 .bc-staff__note { margin: 0; min-height: 1.4em; font-weight: 600; color: var(--c-ok, #2f6b12); }
 .bc-staff__note--error { color: var(--c-danger, #b3362e); }
-.bc-staff__check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 600; }
+.bc-staff__check { display: flex; align-items: center; gap: 12px; min-height: 44px; font-weight: 600; }
 .bc-staff__check input { width: 22px; height: 22px; }
 .bc-staff__decision { display: flex; flex-direction: column; gap: 8px; padding-left: 12px;
                       border-left: 3px solid var(--c-warn, #8a5a12); }
@@ -294,12 +304,12 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-inbox__item { padding: 0; overflow: hidden; }
 /* «Обращения» — на листе раздела R01 (стекло); строки и форма сотрудника внутри — непрозрачные (GLASS.md, R09). */
 .bc-inbox .bc-inbox__item.bk-card { background: var(--c-surface, #fff); }
-.bc-inbox__row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 14px; width: 100%;
+.bc-inbox__row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 16px; width: 100%;
                  min-height: 64px; padding: 12px 16px; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
 .bc-inbox__heat { min-width: 36px; height: 36px; font-size: var(--fs-body, 15px); }
 .bc-inbox__text { display: grid; gap: 2px; min-width: 0; }
 .bc-inbox__place strong { font-size: var(--fs-lead, 17px); }
-.bc-inbox__what { display: flex; align-items: center; gap: 6px; font-size: var(--fs-body, 15px); }
+.bc-inbox__what { display: flex; align-items: center; gap: 8px; font-size: var(--fs-body, 15px); }
 .bc-inbox__what .ic { width: 18px; height: 18px; color: var(--c-text-2, #5b6a64); }
 .bc-inbox__row > .ic { width: 20px; height: 20px; color: var(--c-text-2, #5b6a64); transition: rotate 200ms ease-out; }
 .bc-inbox__row[aria-expanded="true"] > .ic { rotate: 90deg; }
@@ -336,7 +346,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 
 /* Категории — крупные карточки с иконкой: заливка вместо рамки, иконка 26, подпись 15/600; выбранная — акцент. */
 .bc-panel .bk-catgrid { gap: 8px; }
-.bc-panel .bk-catgrid > button { min-height: 64px; padding: 10px 12px; gap: 10px; border: 1px solid transparent;
+.bc-panel .bk-catgrid > button { min-height: 64px; padding: 12px; gap: 8px; border: 1px solid transparent;
   border-radius: var(--r-m, 10px); background: var(--c-fill, #eff1f2); color: var(--c-ink, #152c26);
   font-size: var(--fs-body, 15px); font-weight: var(--fw-semi, 600); line-height: 1.25;
   transition: background-color 150ms ease-out, scale 120ms ease-out; }
@@ -345,7 +355,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-panel .bk-catgrid > button[aria-pressed="true"] { background: var(--c-brand, #152c26); border-color: var(--c-brand, #152c26); color: #fff; }
 .bc-panel .bk-catgrid > button[data-suggested="true"]:not([aria-pressed="true"]) { border-color: var(--c-brand, #152c26); }
 /* «Выберите категорию» — строка-кнопка со значком и «›»; «Сменить категорию» — тихая, со значком карандаша. */
-.bc-change--pick { align-self: stretch; justify-content: flex-start; gap: 12px; padding: 0 14px; }
+.bc-change--pick { align-self: stretch; justify-content: flex-start; gap: 12px; padding: 0 16px; }
 .bc-change--pick .bc-change__label { flex: 1; text-align: left; }
 .bc-change--pick .ic:last-child { color: var(--c-text-2, #5b6a64); }
 .bc-change:not(.bc-change--pick) { font-size: var(--fs-body, 15px); }

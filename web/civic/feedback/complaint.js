@@ -306,10 +306,20 @@
     return new Blob([bytes], { type: mime });
   }
 
+  // Тип места дважды (R10 B-071): имя из OSM уже со словом типа, а шаблон добавил его ещё раз —
+  // kk «Ғашықтар саябағы» саябағы → «Ғашықтар саябағы», ru Парк «Парк Победы» → «Парк Победы». Подпись делают R12/R07;
+  // здесь — только показ (запись не меняется).
+  function dedupeKind(label) {
+    return String(label)
+      .replace(/^«([^«»]*\s(\S+))» \2$/i, "«$1»")
+      .replace(/^(\S+) «(\1\s[^«»]+)»$/i, "«$2»");
+  }
+
   function targetLabel(target) {
     if (!target) return "";
     var lang = currentLang();
     var label = target["label_" + lang] || target.label_ru || target.label_kk;
+    if (label) label = dedupeKind(label);
     // «Примерное место»: подробную подпись R12 («Примерное место — проспект Кабанбай Батыра») показываем как есть;
     // общую подпись (своя ячейка R09 или её нет) — из словаря, чтобы перевод был единым с R11.
     if (target.approximate && (!label || GENERIC_APPROX[label])) return t("complaint.step2.approximate");

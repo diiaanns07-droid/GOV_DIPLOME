@@ -413,3 +413,24 @@ def test_design_marathon_round8_laptop_panel_hugs_content():
     assert '.bc-panel:not([data-step="mine"])[data-snap="peek"]' not in css
     # Телефон: список «Моих обращений» — шторка по содержимому (fit), загрузка — половина, пусто / нет связи — низкая.
     assert '(state.mine ? "fit" : "half")' in JS
+
+
+def test_design_marathon_round9_r10_circle2():
+    """Марафон, круг 9 — замечания R10 (DESIGN_REVIEW круг 2) к R09: B-070 одна главная кнопка при карточке места и на
+    ноутбуке; B-071 тип места не дважды; пример «что сделали» — строкой под полем; одна левая линия текста в карточке
+    «Моих обращений»; отступы по сетке 4/8."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    # B-070: правило не внутри @media телефона.
+    head = css.split("@media", 1)[0]
+    assert "body:has(.r07-card) .bc-fab { display: none; }" in head and css.count("body:has(.r07-card) .bc-fab") == 1
+    # B-071: показ подписи без повтора типа.
+    assert "function dedupeKind(label)" in JS and "if (label) label = dedupeKind(label);" in JS
+    # Пример под полем «Что сделали» в обеих формах, без placeholder.
+    assert STAFF_JS.count('"bc-meta bc-staff__hint"') == 2 and 'placeholder: t("staff.fixed.what_hint")' not in STAFF_JS
+    assert STAFF_JS.count('"aria-describedby"') == 2
+    # Одна левая линия текста: значок/точка — колонка 20, текст — от 28.
+    assert ".bc-mine__status .bk-statusline__note { padding-left: 28px;" in css and ".bc-mine__card > .bc-meta { padding-left: 28px; }" in css
+    # Отступы 6/10/14 px в правилах R09 больше не встречаются (кроме смещений точек ленты).
+    import re as _re
+    off = [m.group(0) for m in _re.finditer(r"(?:padding|gap|column-gap)(?:-[a-z]+)?: [^;]*\b(?:6|10|14)px", css)]
+    assert not off, off
