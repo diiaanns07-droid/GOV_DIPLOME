@@ -1973,6 +1973,123 @@
   font-weight: var(--fw-bold);
 }
 
+/* ───────────── Стекло Apple Liquid Glass (GLASS.md) — в конце файла: перекрывает фон компонентов выше ─────────────
+   .bk-glass           — панель с текстом (80 %): шапка-капсула, правая панель, меню, легенда, плашка-тост карты
+   .bk-glass--bar      — шапка: плавающая капсула над картой
+   .bk-glass--sheet    — шторка телефона (верхние углы 28)
+   .bk-glass--control  — мелкая кнопка карты (62 %, капсула/круг): только значок или подпись цветом --c-ink
+   НЕ для: значков карты (r07-badge и т. п.), форм (поля и мастер жалобы — непрозрачные), тостов (тёмные), карточек
+   внутри панели (они — более плотные «подложки», см. ниже). Размеры и положение элемента класс не меняет. */
+.bk-glass,
+.bk-glass--control {
+  /* текст внутри стекла — затемнённые варианты, чтобы контраст держался на любом фоне карты */
+  --c-text-2: var(--glass-text-2);
+  --c-text-3: var(--glass-text-2);
+  --c-danger: var(--glass-danger);
+  --c-warn: var(--glass-warn);
+  --c-ok: var(--glass-ok);
+  --c-info: var(--glass-info);
+  --c-demo: var(--glass-demo);
+  color: var(--c-ink);
+  background-color: var(--glass-panel);
+  background-image: var(--glass-highlight);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 0;
+  border-radius: var(--r-glass);
+  box-shadow:
+    inset 0 0 0 1px var(--glass-edge),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 0 0 0.5px var(--glass-hairline),
+    var(--glass-shadow);
+}
+.bk-glass--bar {
+  border-radius: var(--r-pill);
+}
+.bk-glass--sheet {
+  border-radius: var(--r-glass-sheet) var(--r-glass-sheet) 0 0;
+}
+.bk-glass--control {
+  background-color: var(--glass-control);
+  border-radius: var(--r-pill);
+  transition: background-color var(--t-fast) var(--ease);
+}
+.bk-glass--control:hover {
+  background-color: var(--glass-control-hover);
+}
+/* нажатая кнопка (3D включено, слой открыт) — сплошной акцент, как раньше */
+.bk-glass--control[aria-pressed="true"],
+.bk-glass--control[aria-expanded="true"] {
+  background-color: var(--c-brand);
+  background-image: none;
+  color: #fff;
+}
+/* капсула +/− из стекла: кнопки внутри прозрачные, разделитель светлый */
+.bk-mapctl__group.bk-glass--control > .bk-mapbtn {
+  background: transparent;
+}
+.bk-mapctl__group.bk-glass--control > .bk-mapbtn + .bk-mapbtn {
+  border-top-color: rgba(16, 24, 22, 0.1);
+}
+/* Внутри стекла: карточки — более плотная белая подложка без тени; поля форм — непрозрачные */
+.bk-glass .bk-card,
+.bk-glass .bk-kpi {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+}
+.bk-glass input,
+.bk-glass select,
+.bk-glass textarea {
+  background-color: var(--c-surface);
+  box-shadow: inset 0 0 0 1px var(--c-line);
+}
+.bk-glass .bk-btn:not(.bk-btn--primary):not(.bk-btn--ghost):not(.bk-btn--danger) {
+  background-color: rgba(16, 24, 22, 0.06); /* серая заливка кнопки поверх стекла — та же «капсула», но прозрачнее */
+}
+/* Запасной вид — непрозрачный белый: браузер без backdrop-filter, «уменьшить прозрачность» в системе,
+   выключатель для слабых ноутбуков (R01 ставит html.bk-glass-off, если карта дёргается — замер R10) */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .bk-glass,
+  .bk-glass--control {
+    background-color: var(--glass-solid);
+    background-image: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .bk-glass,
+  .bk-glass--control {
+    background-color: var(--glass-solid);
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+.bk-glass-off .bk-glass,
+.bk-glass-off .bk-glass--control {
+  background-color: var(--glass-solid);
+  background-image: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+@media (forced-colors: active) {
+  .bk-glass,
+  .bk-glass--control {
+    background: Canvas;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 1px solid CanvasText;
+  }
+}
+@media print {
+  .bk-glass,
+  .bk-glass--control {
+    background: #fff;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+}
+
 /* ───────────── Печать («Картина дня») ───────────── */
 @media print {
   .bk-header,

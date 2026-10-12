@@ -15,6 +15,9 @@ const { chromium } = require("playwright");
     await p.addInitScript(() => { localStorage.setItem("birge.lang", "kk"); localStorage.setItem("birge.mode", "akimat"); });
     await p.goto(process.argv[2]);
     await p.waitForFunction(() => window.CivicShell && window.CivicShell.heat && window.CivicShell.heat.state && window.CivicShell.heat.state().status === "ready", null, { timeout: 45000 }); await p.waitForTimeout(1200);
+    // Чистый дизайн (FINAL-3): «Қызметкерлерге» — пункт меню аватара; до FINAL-3 — кнопка в панели
+    const avatar = await p.$(".birge-avatar");
+    if (avatar) { await avatar.click(); await p.waitForTimeout(400); }
     const staffBtn = await p.$("text=Қызметкерлерге");
     if (!staffBtn) { console.log(w, "нет кнопки Қызметкерлерге"); await ctx.close(); continue; }
     await staffBtn.click(); await p.waitForTimeout(1500);

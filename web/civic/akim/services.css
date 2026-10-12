@@ -1,6 +1,8 @@
 /*
  * Birge · «Службы» (R08). Раскладка поверх ui-kit R11; своих цветов нет.
  * Ноутбук — колонка до 960 px по центру (R11 IA_WAVE2 §0.3), телефон — во всю ширину.
+ * FINAL-3, чистый стиль R11 (CLEAN_PASS §2): темы — строки с линией между ними, не карточки; поля выбора с заливкой
+ * без рамки; «Уточнения» — .bk-details со стрелкой; полоса «Сохранить» — белая с линией сверху.
  */
 .svc {
   display: block;
@@ -25,9 +27,16 @@
   padding: 0;
   list-style: none;
 }
+.svc__list {
+  gap: 0;
+}
 .svc__cat {
   display: grid;
-  gap: var(--s-2);
+  gap: var(--s-1);
+  padding: var(--s-3) 0;
+}
+.svc__cat + .svc__cat {
+  border-top: 1px solid var(--c-line);
 }
 .svc__row {
   display: grid;
@@ -41,25 +50,24 @@
 .svc__label--cat {
   font-weight: var(--fw-semi);
 }
-.svc__select {
+.svc__select { /* как поле ui-kit .bk-field: заливка, рамка только у фокуса */
   min-height: 48px;
   width: 100%;
   min-width: 0;
   padding: 0 var(--s-3);
-  border: 1px solid var(--c-line-strong);
+  border: 1px solid transparent;
   border-radius: var(--r-m);
-  background: var(--c-surface);
+  background: var(--c-fill);
   color: var(--c-ink);
   font: inherit;
-  font-size: var(--fs-body);
+  font-size: 16px;
 }
-.svc__details > summary {
-  display: flex;
-  align-items: center;
-  min-height: 44px;
-  cursor: pointer;
-  color: var(--c-brand);
-  font-weight: var(--fw-semi);
+.svc__select:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 1px;
+}
+.svc__details { /* строка темы плотная: без второй линии ui-kit над «Уточнениями» */
+  border-top: 0;
 }
 .svc__subs {
   padding: var(--s-2) 0 0 var(--s-4);
@@ -75,9 +83,10 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s-2) var(--s-3);
-  margin-top: var(--s-4);
+  margin-top: var(--s-2);
   padding: var(--s-3) 0;
-  background: var(--c-paper);
+  border-top: 1px solid var(--c-line);
+  background: var(--c-surface);
 }
 .svc__status {
   margin: 0;
@@ -96,9 +105,6 @@
   .svc__row {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--s-1);
-  }
-  .svc__cat.bk-card {
-    padding: var(--s-3);
   }
   /* без отступа слева: длинные названия служб («Служба светофоров и разметки») помещаются в поле целиком */
   .svc__subs {

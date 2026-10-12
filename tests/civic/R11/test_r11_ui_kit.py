@@ -205,6 +205,46 @@ def test_lang_order_in_node():
     assert r.returncode == 0, r.stdout + r.stderr
 
 
+
+def _contrast(a, b):
+    def lin(c):
+        c = c / 255
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+    la, lb = (0.2126 * lin(x[0]) + 0.7152 * lin(x[1]) + 0.0722 * lin(x[2]) for x in (a, b))
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+def test_glass_contrast_on_any_map_background():
+    """Стекло (GLASS.md): текст ≥ 4.5:1 даже если под стеклом чёрный — худший фон карты."""
+    tok = lambda name: re.search(r"--" + name + r":\s*([^;]+);", TOKENS).group(1).strip()
+    hexrgb = lambda h: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
+    alpha = lambda v: float(re.search(r"rgba\(\s*255,\s*255,\s*255,\s*([0-9.]+)\)", v).group(1))
+    a_panel, a_ctrl = alpha(tok("glass-panel")), alpha(tok("glass-control"))
+    assert 0.72 <= a_panel <= 0.80 and 0.55 <= a_ctrl <= 0.65, (a_panel, a_ctrl)  # диапазоны владельца
+    worst_panel = tuple(round(a_panel * 255) for _ in range(3))
+    worst_ctrl = tuple(round(a_ctrl * 255) for _ in range(3))
+    ink = hexrgb(tok("c-ink"))
+    assert _contrast(ink, worst_ctrl) >= 4.5, _contrast(ink, worst_ctrl)
+    for name in ("c-ink", "glass-text-2", "glass-danger", "glass-warn", "glass-ok", "glass-info", "glass-demo"):
+        c = _contrast(hexrgb(tok(name)), worst_panel)
+        assert c >= 4.5, (name, round(c, 2))
+    blur = int(re.search(r"(\d+)px", tok("glass-blur")).group(1))
+    assert 20 <= blur <= 24 and tok("glass-saturate") == "170%"
+
+
+def test_glass_has_opaque_fallbacks_and_scope():
+    css = COMPONENTS
+    assert "prefers-reduced-transparency: reduce" in css
+    assert "@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px)))" in css
+    assert ".bk-glass-off .bk-glass" in css and "forced-colors: active" in css
+    # текст внутри стекла — затемнённые цвета
+    block = css[css.index(".bk-glass,\n.bk-glass--control {"):]
+    block = block[:block.index("}")]
+    for v in ("--c-text-2: var(--glass-text-2)", "--c-danger: var(--glass-danger)", "--c-ok: var(--glass-ok)"):
+        assert v in block, v
+    # поля форм внутри стекла — непрозрачные
+    assert ".bk-glass input" in css and "background-color: var(--c-surface)" in css
+
 if __name__ == "__main__":
     failed = 0
     for name, fn in list(globals().items()):

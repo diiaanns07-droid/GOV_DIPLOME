@@ -272,7 +272,6 @@
       var tag = kindTag(x);
       var head = h("p", { class: "nb-card__eyebrow" }, [
         tag ? h("span", { class: "nb-card__kind" }, [x.type === "outage" ? icon(UTILITY_ICON[x.utility] || "alert", 18) : null, tag]) : null,
-        x.demo ? h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }) : null,
       ]);
       var lines = [];
       if (x.type === "outage") {
@@ -297,7 +296,9 @@
           h("p", { class: "nb-card__status" }, [
             h("span", { class: "nb-card__status-word", text: tr(status) }),
             " · " + when,
-            x.delayed && x.status !== "done" ? h("span", { class: "bk-tag bk-tag--warn nb-card__late", text: tr("works.shift_later") }) : null,
+            // Задержка — словом в той же строке, без плашки (чистый стиль R11 §2.5).
+            x.delayed && x.status !== "done" ? " · " : null,
+            x.delayed && x.status !== "done" ? h("span", { class: "nb-card__late", text: tr("works.shift_later") }) : null,
           ])
         );
         if (x.updated_min_ago != null) lines.push(h("p", { class: "bk-meta", text: tr("nearby.updated", { ago: ago(x.updated_min_ago) }) }));
@@ -312,7 +313,7 @@
           .map(function (k) {
             return [h("dt", { text: tr("nearby.why." + k) }), h("dd", { text: x.why[k + "_" + l] || x.why[k + "_ru"] })];
           });
-        why = h("details", { class: "nb-why" }, [
+        why = h("details", { class: "bk-details nb-why" }, [
           h("summary", { "data-key": "why:" + x.id, text: tr("nearby.why") }),
           h("dl", null, [].concat.apply([], rows)),
         ]);
@@ -355,7 +356,8 @@
           [icon(subbed ? "check" : "plus", 18), tr(subbed ? "nearby.subscribed" : "nearby.subscribe")]
         )
       );
-      return h("li", { class: "bk-card nb-card", "data-key": "card:" + x.id, "data-tab": x.tab }, [
+      // Строка списка с линией между строками, не карточка в панели (чистый стиль R11 §2.3).
+      return h("li", { class: "nb-card", "data-key": "card:" + x.id, "data-tab": x.tab }, [
         head,
         h("h3", { class: "nb-card__title", text: label(x, "title") }),
       ].concat(lines, [why, h("div", { class: "nb-card__actions" }, actions)]));
@@ -381,8 +383,12 @@
           return h("option", { value: d, text: tr("district." + d), selected: d === state.district });
         })
       );
+      // Поле района — с заливкой ui-kit (.bk-field), без рамки.
       rootEl.appendChild(
-        h("label", { class: "nb__district", for: "nb-district" }, [h("span", { class: "nb__district-label", text: tr("heat.filter.district") }), select])
+        h("label", { class: "bk-field nb__district", for: "nb-district" }, [
+          h("span", { class: "bk-field__label nb__district-label", text: tr("heat.filter.district") }),
+          select,
+        ])
       );
       if (state.status === "loading") {
         rootEl.appendChild(h("div", { class: "bk-card nb-loading", role: "status" }, [h("div", { class: "bk-skel bk-skel--title" }), h("div", { class: "bk-skel bk-skel--line" }), h("div", { class: "bk-skel bk-skel--line" })]));
@@ -409,45 +415,63 @@
             h("p", { class: "bk-banner__note" }, [
               b.source && I().has("service." + b.source) ? tr("nearby.outage.source", { text: tr("service." + b.source) }) + " · " : "",
               tr("nearby.updated", { ago: ago(b.updated_min_ago) }),
-              b.demo ? " · " + tr("common.tag.demo") : "",
             ]),
           ])
         );
       });
+      // Вкладки — .bk-tabs ui-kit (разбор R11 FINAL-3 п. 9): role=tab, стрелки ←/→ — BirgeUI.tabs, если он есть.
+      function pickTab(t, focus) {
+        if (!t || t === state.tab) return;
+        state.tab = t;
+        render();
+        var again = rootEl.querySelector('[data-key="tab:' + t + '"]');
+        if (again && focus) again.focus();
+      }
       var seg = h(
         "div",
-        { class: "bk-seg nb-tabs", role: "group", "aria-label": tr("nearby.title") },
+        { class: "bk-tabs nb-tabs", role: "tablist", "aria-label": tr("nearby.title") },
         TABS.map(function (t) {
           return h(
             "button",
             {
               type: "button",
+              role: "tab",
+              id: "nb-tab-" + t,
+              "aria-controls": "nb-panel",
+              "aria-selected": state.tab === t ? "true" : "false",
+              tabindex: state.tab === t ? "0" : "-1",
               "data-key": "tab:" + t,
-              "aria-pressed": state.tab === t ? "true" : "false",
-              onclick: function () {
-                state.tab = t;
-                render();
-                var again = rootEl.querySelector('[data-key="tab:' + t + '"]');
-                if (again) again.focus();
-              },
+              "data-value": t,
             },
-            [tr("nearby.tab." + t), d.tabs[t] ? h("span", { class: "nb-tabs__count", text: num(d.tabs[t]) }) : null]
+            [tr("nearby.tab." + t), d.tabs[t] ? h("span", { class: "bk-num nb-tabs__count", text: num(d.tabs[t]) }) : null]
           );
         })
       );
-      rootEl.appendChild(h("div", { class: "nb-tabs-wrap" }, [seg]));
+      var UI = root.BirgeUI;
+      if (UI && typeof UI.tabs === "function")
+        UI.tabs(seg, function (t) {
+          pickTab(t, true);
+        });
+      else
+        seg.addEventListener("click", function (e) {
+          var b = e.target.closest && e.target.closest('[role="tab"]');
+          if (b) pickTab(b.getAttribute("data-value"), true);
+        });
+      rootEl.appendChild(seg);
       var items = (d.items || []).filter(function (x) {
         return x.tab === state.tab;
       });
+      var panel = h("div", { id: "nb-panel", role: "tabpanel", "aria-labelledby": "nb-tab-" + state.tab });
       if (!items.length) {
-        rootEl.appendChild(h("div", { class: "bk-empty nb-empty" }, [icon("check", 48), h("p", { class: "bk-empty__title", text: tr("nearby.empty") })]));
+        panel.appendChild(h("div", { class: "bk-empty nb-empty" }, [icon("check", 48), h("p", { class: "bk-empty__title", text: tr("nearby.empty") })]));
       } else {
         var list = h("ul", { class: "nb-list" });
         items.forEach(function (x) {
           list.appendChild(card(x));
         });
-        rootEl.appendChild(list);
+        panel.appendChild(list);
       }
+      rootEl.appendChild(panel);
       // Главная кнопка экрана — подписка на район; подписан — строка и «Отписаться» (второстепенная).
       var subbed = isSub("district", state.district);
       var name = tr("district." + state.district);
@@ -472,6 +496,9 @@
           state.message ? h("p", { class: "nb-follow__error", role: "alert", text: state.message }) : null,
         ])
       );
+      // «Пример» — одна серая строка внизу, а не метка у каждой карточки (чистый стиль R11 §2.9).
+      if (d.demo || (d.banners || []).some(function (b) { return b.demo; }))
+        rootEl.appendChild(h("p", { class: "bk-footnote nb-demo", text: tr("common.tag.demo_hint") }));
     }
 
     var off = null;
@@ -504,5 +531,5 @@
     return handle;
   }
 
-  root.BirgeNearby = { mount: mount, version: "nearby-r14-w2" };
+  root.BirgeNearby = { mount: mount, version: "nearby-r14-clean" };
 })(window);

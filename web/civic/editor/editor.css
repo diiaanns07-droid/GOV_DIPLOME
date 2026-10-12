@@ -9,8 +9,13 @@
 }
 .civic-r04 *, .civic-r04 *::before, .civic-r04 *::after { box-sizing: inherit; }
 .civic-r04-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.civic-r04-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 14px 16px 10px; border-bottom: 1px solid var(--r4-line); background: linear-gradient(130deg, #fff, #eff4e6); }
-.civic-r04-head h2 { margin: 0; font-size: 20px; letter-spacing: -.3px; flex: 1 1 auto; }
+.civic-r04-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 14px 16px 10px; border-bottom: 1px solid var(--r4-line); background: transparent; }
+.civic-r04-head h2 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -.3px; flex: 1 1 auto; }
+/* Чистый дизайн FINAL-3 (UX_REVIEW R11 п. 11): в панели оболочки один заголовок — её «Кабинет сотрудника»;
+   у редактора без цветной полосы, свой h2 скрыт (имя секции — по aria-labelledby остаётся), пустая шапка не занимает место. */
+.civic-drawer .civic-r04-head > h2 { display: none; }
+.civic-drawer .civic-r04-head[data-only="title"] { display: none; }
+.civic-drawer .civic-r04-who { order: 0; flex: 1 1 auto; }  /* «Вы вошли: имя» слева, «Выйти» справа — одной строкой */
 .civic-r04-who { margin: 0; font-size: 14px; color: var(--r4-muted); flex: 1 1 100%; order: 3; }
 /* Служебная строка (роль, откуда правила проверки) — для разработчика; в оболочке Birge без ?tools=all скрыта (I-04). */
 .civic-r04-tech { margin: 0; font-size: 12px; color: var(--r4-muted); flex: 1 1 100%; order: 4; }

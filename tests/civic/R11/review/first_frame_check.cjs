@@ -25,10 +25,14 @@ async function frame(browser, mode, w, h) {
   if (menuBtn && (await menuBtn.isVisible())) { await menuBtn.click(); await p.waitForTimeout(400); }
   const r = await p.evaluate(() => {
     const vis = (e) => !!(e && e.getClientRects().length && getComputedStyle(e).visibility !== "hidden" && Number(getComputedStyle(e).opacity) > 0.05);
-    const label = (e) => (e.id ? "#" + e.id : "") + ([...e.classList].length ? "." + [...e.classList].filter((c) => !/^(is-|bk-btn$)/.test(c)).slice(0, 2).join(".") : "");
+    // Классы ui-kit (bk-*), добавленные к прежнему элементу оболочки (чистый дизайн: .map-tools.bk-mapctl), — тот же элемент
+    const label = (e) => { const own = [...e.classList].filter((c) => !/^(is-|bk-)/.test(c)); const cls = own.length ? own : [...e.classList];
+      return (e.id ? "#" + e.id : "") + (cls.length ? "." + cls.slice(0, 2).join(".") : ""); };
     const header = document.querySelector("#birge-header") || document.querySelector("header");
     // Разделы меню: кнопки data-section и data-action (кроме языка и режима), видимые на ноутбуке или в открытом меню.
-    const nav = header ? [...header.querySelectorAll("[data-section], [data-action]")].filter(vis).map((e) => e.textContent.trim().replace(/\s+/g, " ")) : [];
+    // Аватар (чистый дизайн) — не раздел: у него нет подписи, в нём вид и вход сотрудника
+    const nav = header ? [...header.querySelectorAll("[data-section], [data-action]")].filter(vis)
+      .filter((e) => !e.matches(".birge-avatar, [data-action=account]")).map((e) => e.textContent.trim().replace(/\s+/g, " ")).filter(Boolean) : [];
     const mapEl = document.getElementById("map"), map = mapEl.getBoundingClientRect();
     const over = new Set();
     for (const e of document.body.querySelectorAll("*")) {
@@ -77,9 +81,11 @@ async function frame(browser, mode, w, h) {
     if (r.nav.length > 5) { bad++; lines.push(`меню: ${r.nav.length} пунктов (${r.nav.join(" · ")}) — больше 5 разделов`); }
     if (base && base[k]) {
       const b = base[k];
-      const newOver = r.overlays.filter((x) => !b.overlays.includes(x));
+      const nz = (x) => x.replace(/\.bk-[a-z0-9_-]+/g, "") || x; // эталон снят до чистого дизайна — без классов ui-kit
+      const bo = b.overlays.map(nz), ro = r.overlays.map(nz);
+      const newOver = r.overlays.filter((x) => !bo.includes(nz(x)));
       if (newOver.length) { bad++; lines.push("НОВОЕ ПОВЕРХ КАРТЫ: " + newOver.join(", ")); }
-      const gone = b.overlays.filter((x) => !r.overlays.includes(x));
+      const gone = b.overlays.filter((x) => !ro.includes(nz(x)));
       if (gone.length) lines.push("пропало с карты: " + gone.join(", "));
       const newKinds = Object.keys(r.markers).filter((x) => !(x in b.markers));
       if (newKinds.length) { bad++; lines.push("НОВЫЙ ВИД МАРКЕРОВ ПО УМОЛЧАНИЮ: " + newKinds.map((x) => `${x} ×${r.markers[x]}`).join(", ")); }

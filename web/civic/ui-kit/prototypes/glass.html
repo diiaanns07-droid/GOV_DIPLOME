@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Birge · макет · стекло (Liquid Glass)</title>
+    <!-- Макет R11 «стекло Apple Liquid Glass» (решение владельца 12 окт, GLASS.md) поверх «чистого дизайна» (clean.html):
+         карта на весь экран, над ней плавающие стеклянные шапка-капсула, панель, меню, кнопки карты, легенда, шторка.
+         Классы ui-kit: .bk-glass (+ --bar, --sheet), .bk-glass--control. Значки карты и формы — без стекла.
+         Параметры: ?lang=kk · ?role=resident · ?rotated=1 · ?menu=1 · ?solid=1 (запасной непрозрачный вид, как без
+         backdrop-filter или при «уменьшить прозрачность») -->
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../components.css" />
+    <link rel="stylesheet" href="proto.css" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      .cl-page {
+        position: relative;
+        height: 100%;
+      }
+      .cl-stage {
+        position: absolute;
+        inset: 0; /* карта на весь экран — шапка, панель и кнопки плавают над ней */
+      }
+      .gl-header {
+        position: absolute;
+        z-index: var(--z-header);
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        height: 60px;
+        border-bottom: 0;
+      }
+      :root {
+        --gl-top: 84px; /* шапка 60 + отступ 12 + 12 */
+      }
+      .cl-map {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: var(--map-land);
+      }
+      /* Управление картой — справа, слева от панели */
+      .cl-ctl {
+        position: absolute;
+        z-index: var(--z-map-ui);
+        top: var(--gl-top);
+        right: calc(var(--panel-w) + 2 * var(--gap-edge));
+      }
+      .cl-legend {
+        position: absolute;
+        z-index: var(--z-map-ui);
+        left: var(--gap-edge);
+        bottom: var(--gap-edge);
+      }
+      .cl-panel {
+        position: absolute;
+        z-index: var(--z-panel);
+        top: var(--gl-top);
+        right: var(--gap-edge);
+        bottom: var(--gap-edge);
+        display: flex;
+        flex-direction: column;
+        width: var(--panel-w);
+        overflow: hidden; /* фон, граница, блик, тень, радиус — из .bk-glass */
+      }
+      .cl-panel__body {
+        flex: 1;
+        overflow-y: auto;
+        display: grid;
+        align-content: start;
+        gap: var(--s-4);
+        padding: var(--s-4) var(--s-5) var(--s-5);
+      }
+      .cl-panel__body p {
+        margin: 0;
+      }
+      .cl-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 calc(-1 * var(--s-3));
+      }
+      .cl-eyebrow {
+        color: var(--c-text-2);
+        font-size: var(--fs-caption);
+      }
+      .cl-title {
+        margin: 2px 0 0;
+        font-size: var(--fs-title);
+        font-weight: var(--fw-semi);
+        line-height: var(--lh-head);
+      }
+      .cl-meta {
+        color: var(--c-text-2);
+      }
+      .cl-quote {
+        margin: 0;
+        padding: var(--s-2) 0;
+        border-bottom: 1px solid var(--c-line);
+      }
+      .cl-quote:last-child {
+        border-bottom: 0;
+      }
+      .cl-quote small {
+        display: block;
+        color: var(--c-text-2);
+        font-size: var(--fs-caption);
+      }
+      .cl-panel__foot {
+        padding: 0 var(--s-5) var(--s-4);
+      }
+      .cl-panel__foot .bk-footnote {
+        border-top: 1px solid var(--c-line);
+      }
+      /* Телефон: панель — шторка снизу, управление картой справа сверху, легенда над шторкой */
+      @media (max-width: 1023px) {
+        .gl-header {
+          top: 8px;
+          left: 8px;
+          right: 8px;
+          height: 56px;
+          padding: 0 6px 0 10px;
+        }
+        :root {
+          --gl-top: 72px;
+        }
+        .cl-ctl {
+          right: var(--gutter-phone);
+          top: var(--gl-top);
+        }
+        /* Телефон: масштаб — двумя пальцами, 3D — в «Слоях»; на карте только «моё место» и «слои» (+ компас) */
+        .cl-ctl .bk-mapctl__group,
+        .cl-ctl .cl-3d {
+          display: none;
+        }
+        .cl-legend {
+          left: var(--gutter-phone);
+          bottom: calc(52% + var(--s-3));
+        }
+        .cl-panel {
+          top: auto;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          width: auto;
+          height: 52%;
+        }
+        .cl-panel__body {
+          padding: var(--s-2) var(--gutter-phone) var(--s-4);
+        }
+        .cl-panel__foot {
+          padding: 0 var(--gutter-phone) var(--s-3);
+        }
+        .cl-handle {
+          display: block;
+          width: 40px;
+          height: 5px;
+          margin: var(--s-2) auto 0;
+          border-radius: 3px;
+          background: var(--c-line-strong);
+        }
+      }
+      @media (min-width: 1024px) {
+        .cl-handle {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="bk-app">
+    <a class="bk-skip" href="#cl-primary" data-i18n="common.action.skip_to_main"></a>
+    <div class="cl-page">
+      <header class="bk-header gl-header bk-glass bk-glass--bar">
+        <div class="bk-header__brand">
+          <span class="bk-header__mark" id="cl-mark"></span><span class="bk-header__brand-text" data-i18n="common.app_name"></span>
+        </div>
+        <div class="bk-search bk-header__search">
+          <span id="cl-search-ic"></span>
+          <input type="search" id="cl-search" data-i18n-attr="aria-label:common.search.label" />
+        </div>
+        <nav class="bk-nav" id="cl-nav" data-i18n-attr="aria-label:shell.nav.label"></nav>
+        <div class="bk-header__end">
+          <div id="cl-lang"></div>
+          <button class="bk-avatar" type="button" id="cl-avatar" data-i18n-attr="aria-label:common.account.menu;title:common.account.menu"></button>
+        </div>
+      </header>
+      <div class="bk-menu bk-glass" id="cl-menu"></div>
+
+      <main class="cl-stage">
+        <div class="cl-map" id="cl-map"></div>
+
+        <div class="cl-ctl bk-mapctl">
+          <button class="bk-mapbtn bk-compass bk-glass--control" type="button" id="cl-compass" hidden data-i18n-attr="aria-label:common.map.north;title:common.map.north"></button>
+          <button class="bk-mapbtn bk-glass--control" type="button" id="cl-locate" data-i18n-attr="aria-label:common.map.locate;title:common.map.locate"></button>
+          <div class="bk-mapctl__group bk-glass--control">
+            <button class="bk-mapbtn" type="button" id="cl-in" data-i18n-attr="aria-label:common.map.zoom_in;title:common.map.zoom_in"></button>
+            <button class="bk-mapbtn" type="button" id="cl-out" data-i18n-attr="aria-label:common.map.zoom_out;title:common.map.zoom_out"></button>
+          </div>
+          <button class="bk-mapbtn cl-3d bk-glass--control" type="button" aria-pressed="false" data-i18n-attr="aria-label:common.map.view3d;title:common.map.view3d">3D</button>
+          <button class="bk-mapbtn bk-glass--control" type="button" id="cl-layers" data-i18n-attr="aria-label:common.map.layers;title:common.map.layers"></button>
+        </div>
+
+        <div class="cl-legend bk-legend bk-legend--line bk-glass bk-glass--bar" id="cl-legend"></div>
+
+        <section class="cl-panel bk-glass" id="cl-panel" aria-labelledby="cl-title">
+          <span class="cl-handle" aria-hidden="true"></span>
+          <div class="cl-panel__body" id="cl-body"></div>
+          <div class="cl-panel__foot"><p class="bk-footnote" data-i18n="common.demo_footnote"></p></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../i18n/i18n.js"></script>
+    <script src="../ui-kit.js"></script>
+    <script src="proto-streets.js"></script>
+    <script src="proto.js"></script>
+    <script>
+      (function () {
+        var I = BirgeI18n, UI = BirgeUI, P = BirgeProto;
+        var $ = function (id) { return document.getElementById(id); };
+        var role = P.query("role") === "resident" ? "resident" : "akimat";
+        var phone = function () { return matchMedia("(max-width: 1023px)").matches; };
+        if (P.query("solid")) document.documentElement.classList.add("bk-glass-off"); // запасной непрозрачный вид
+        // телефон: панель — шторка со скруглёнными верхними углами
+        function sheetClass() { $("cl-panel").classList.toggle("bk-glass--sheet", phone()); }
+        sheetClass();
+        addEventListener("resize", sheetClass);
+
+        // Значки кнопок
+        $("cl-mark").innerHTML = UI.icon("building");
+        $("cl-search-ic").outerHTML = UI.icon("search");
+        $("cl-avatar").innerHTML = UI.icon("user");
+        $("cl-compass").innerHTML = UI.icon("compass");
+        $("cl-locate").innerHTML = UI.icon("locate");
+        $("cl-in").innerHTML = UI.icon("plus");
+        $("cl-out").innerHTML = UI.icon("minus");
+        $("cl-layers").innerHTML = UI.icon("layers");
+        if (P.query("rotated")) {
+          $("cl-compass").hidden = false;
+          $("cl-compass").style.setProperty("--bearing", "-35deg");
+        }
+
+        // Карта-образец: улицы OSM, цели — примеры (как в akimat-map.html)
+        var map = null, sel = null;
+        function createMap() { // после загрузки словаря: подписи карты — тоже ключи
+          var targets = P.demoTargets().map(function (x) {
+            x.count = x.counts ? x.counts[30] : 0;
+            x.level = x.status === "fixed" ? "fixed" : P.levelOf(x.count);
+            return x;
+          });
+          map = P.createMap($("cl-map"), {});
+          map.render(targets);
+          sel = targets[0]; // остановка «Сауран», в работе
+          map.select(sel.id);
+        }
+
+        var SECTIONS = role === "akimat"
+          ? [["common.nav.map", true], ["common.nav.day"], ["shell.nav.inbox"], ["shell.nav.projects"], ["shell.nav.more"]]
+          : [["common.nav.map", true], ["common.nav.mine"], ["shell.nav.nearby"], ["shell.nav.ideas"], ["shell.nav.more"]];
+
+        function render() {
+          if (!sel) return; // словарь ещё грузится (onChange приходит раньше ready)
+          var t = I.t;
+          // Поиск: на телефоне короткая подсказка — длинная обрезается («Көше, аял…»)
+          $("cl-search").placeholder = t(phone() ? "common.search.short" : "common.search.placeholder_clean");
+          $("cl-nav").innerHTML = SECTIONS.map(function (s) {
+            return '<a href="#"' + (s[1] ? ' aria-current="page"' : "") + ">" + UI.esc(t(s[0])) + "</a>";
+          }).join("");
+          // Меню аватара: на телефоне сверху — разделы (в шапке им нет места), затем вид, сотрудникам, выход
+          var item = function (key, attrs) { return '<button class="bk-menu__item" type="button" ' + (attrs || 'role="menuitem"') + ">" + UI.esc(t(key)) + "</button>"; };
+          $("cl-menu").innerHTML =
+            (phone() ? SECTIONS.map(function (s) { return item(s[0], 'role="menuitem"' + (s[1] ? ' aria-current="page"' : "")); }).join("") + '<div class="bk-menu__sep" role="separator"></div>' : "") +
+            '<p class="bk-menu__label">' + UI.esc(t("common.role.label")) + "</p>" +
+            item("common.role.akimat", 'role="menuitemradio" aria-checked="' + (role === "akimat") + '"') +
+            item("common.role.resident", 'role="menuitemradio" aria-checked="' + (role === "resident") + '"') +
+            '<div class="bk-menu__sep" role="separator"></div>' + item("shell.staff.open") + (role === "akimat" ? item("staff.login.logout") : "");
+          // Легенда одной строкой: мало → много · ✓ исправлено · «?»
+          $("cl-legend").innerHTML = "<span>" + UI.esc(t("heat.legend.few")) + '</span><i class="bk-legend__scale" aria-hidden="true"></i><span>' +
+            UI.esc(t("heat.legend.many")) + '</span><span aria-hidden="true">·</span><span class="bk-legend__fixed">' + UI.esc(t("heat.fixed")) +
+            '</span><button class="bk-iconbtn" type="button" aria-label="' + UI.esc(t("shell.legend.more")) + '" title="' + UI.esc(t("shell.legend.more")) + '">?</button>';
+          // Карточка цели: что → статус ОДИН раз (точка + слово + одна строка) → сколько людей → одна главная кнопка → «Подробнее»
+          var name = sel.name[I.getLang()] || sel.name.ru;
+          var quotes = (sel.groups || []).map(function (g) {
+            return '<p class="cl-quote">«' + UI.esc(g[I.getLang()] || g.ru) + "»<small>" + UI.esc(t("common.people", { n: g.n })) + "</small></p>";
+          }).join("");
+          $("cl-body").innerHTML =
+            '<div class="cl-nav"><button class="bk-btn bk-btn--ghost" type="button">' + UI.icon("back") + UI.esc(t("heat.back")) + "</button>" +
+            '<button class="bk-iconbtn" type="button" aria-label="' + UI.esc(t("common.action.close")) + '">' + UI.icon("close") + "</button></div>" +
+            "<div><p class=\"cl-eyebrow\">" + UI.esc(t("district.name", { name: t("district.nura") })) + "</p>" +
+            '<h2 class="cl-title" id="cl-title">' + UI.esc(t("target.kind.stop", { name: name })) + "</h2></div>" +
+            '<div class="bk-statusline"><span class="bk-status" data-status="in_progress">' + UI.esc(t("status.in_progress")) + "</span>" +
+            '<span class="bk-statusline__note">' + UI.esc(t("service.assigned", { service: t("service.transport") }) + " · " + t("deadline.left", { n: 2 })) + "</span></div>" +
+            '<p class="cl-meta">' + UI.esc(t("target.reported", { n: sel.count })) + " · " + UI.esc(t("common.period.last_days", { n: 30 })) + "</p>" +
+            (role === "akimat"
+              ? '<button class="bk-btn bk-btn--primary bk-btn--block" id="cl-primary" type="button">' + UI.icon("check") + UI.esc(t("heat.mark_fixed")) + "</button>"
+              : '<button class="bk-btn bk-btn--primary bk-btn--block" id="cl-primary" type="button">' + UI.icon("users") + UI.esc(t("target.metoo")) + "</button>") +
+            (role === "akimat" && quotes ? '<details class="bk-details" open><summary>' + UI.esc(t("heat.texts.title")) + "</summary>" + quotes + "</details>" : "") +
+            '<details class="bk-details"><summary>' + UI.esc(t("heat.chart")) + "</summary><p class=\"cl-meta\">…</p></details>";
+          I.apply(document.body);
+        }
+
+        UI.langSwitch($("cl-lang"), { text: true });
+        var m = UI.menu($("cl-avatar"), $("cl-menu"));
+        I.ready.then(function () {
+          createMap();
+          render();
+          if (P.query("menu")) m.open();
+        });
+        I.onChange(render);
+        addEventListener("resize", render);
+      })();
+    </script>
+  </body>
+</html>

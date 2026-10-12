@@ -605,6 +605,69 @@
     // Панель построена заново (возврат из «Учебной модели» / «Школ»): та же плашка снова видна 6 с.
     return () => { last = ""; shown(); };
   }
+  // ------------------------------------------------------------------ стекло (R11 GLASS.md §4 R01, решение владельца 12 окт)
+  // Классы ui-kit .bk-glass / .bk-glass--control — только вид (фон, размытие, край, тень); раскладку задаёт birge.css.
+  // Не стекло: значки карты, формы, главные кнопки, тосты.
+  const GLASS = [
+    [".topbar", "bk-glass bk-glass--bar"],                       // №1 шапка — плавающая капсула
+    ["#birge-account, .birge-more-menu, #birge-layer-list", "bk-glass"],   // №2 меню
+    ["#birge-locate, #toggle-3d, #birge-layer-btn, #birge-compass, .birge-legend-q, .map-tools .bk-mapctl__group", "bk-glass--control"],  // №3
+    [".birge-legend-line", "bk-glass bk-glass--bar"],             // №4 строка легенды
+    ["#civic-panel", "bk-glass"],                                 // №5 панель / шторка
+    ["#birge-day, #birge-screen", "bk-glass"],                    // №6 лист раздела
+    ["#map-status", "bk-glass bk-glass--bar"],                    // №7 плашка о запасном фоне
+  ];
+  function glassify() {
+    if (!document.body.classList.contains("civic-mode")) return;
+    let moved = false;
+    for (const [selector, classes] of GLASS)
+      for (const node of document.querySelectorAll(selector)) {
+        const list = classes.split(" ");
+        if (list.every((c) => node.classList.contains(c))) continue;
+        node.classList.add(...list);
+        if (node.classList.contains("topbar")) moved = true;
+      }
+    if (moved) requestAnimationFrame(placeHeader);  // шапка стала капсулой — поле поиска заново по её середине
+  }
+  // №8: стекло дорогое для слабой видеокарты. Если карта при движении даёт < 30 кадров/с два раза подряд — непрозрачный
+  // белый вид (html.bk-glass-off) до конца сессии, один раз, без мигания. ?glass=off / ?glass=on — вручную (проверки).
+  function watchGlass() {
+    const root = document.documentElement, q = /[?&]glass=(on|off)(&|$)/.exec(location.search);
+    let stored = null;
+    try { stored = sessionStorage.getItem("birge.glass"); } catch (e) { /* хранилище закрыто — без запоминания */ }
+    if ((q && q[1] === "off") || (!q && stored === "off")) root.classList.add("bk-glass-off");
+    glassify();
+    if (typeof MutationObserver === "function") {
+      let queued = false;
+      new MutationObserver(() => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => { queued = false; glassify(); });
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+    if (q || root.classList.contains("bk-glass-off")) return;
+    let slow = 0, timer = null;
+    const watchMap = () => {
+      const m = currentMapObject();
+      if (!m || typeof m.on !== "function") { timer = setTimeout(watchMap, 1000); return; }
+      let frames = 0, started = 0, running = false;
+      const tick = () => { if (!running) return; frames++; requestAnimationFrame(tick); };
+      m.on("movestart", () => { running = true; frames = 0; started = performance.now(); requestAnimationFrame(tick); });
+      m.on("moveend", () => {
+        running = false;
+        const ms = performance.now() - started;
+        if (ms < 600 || root.classList.contains("bk-glass-off")) return;   // короткий сдвиг — не мерило
+        const fps = frames * 1000 / ms;
+        slow = fps < 30 ? slow + 1 : 0;
+        if (slow >= 2) {
+          root.classList.add("bk-glass-off");
+          try { sessionStorage.setItem("birge.glass", "off"); } catch (e) { /* без запоминания */ }
+        }
+      });
+    };
+    watchMap();
+    void timer;
+  }
   function watchExplore() {
     const reshowStatus = watchMapStatus() || (() => {});
     const again = () => requestAnimationFrame(placeHeader);
@@ -782,6 +845,7 @@
     buildScreen();
     buildMapControls();
     watchExplore();
+    watchGlass();
     // R12 волна 2 п. 6: QR-таблички — отдельная страница печати (web/civic/qr/print.html); пункт «Ещё → QR-таблички»
     // у акимата появляется, когда в сборке есть модуль QR R12 (report.js). Скрипты defer: проверяем после всех.
     const linkQr = () => { if (window.BirgeReport && !screenModule("qr")) registerScreen({ id: "qr", href: "/civic/qr/print.html" }); };

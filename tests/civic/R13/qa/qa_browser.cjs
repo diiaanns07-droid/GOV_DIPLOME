@@ -45,13 +45,51 @@ async function newPage(ctx) {
   return page;
 }
 const noSideScroll = (page) => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1
-  && [...document.querySelectorAll(".qa *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1 || e.closest(".qa-tabs-wrap")));
+  && [...document.querySelectorAll(".qa *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1 || e.closest(".qa-tabs-wrap, .bk-tabs")));
+// QA_GLASS=1 — стекло R11 (GLASS.md №6) на листе раздела #birge-screen, если оболочка R01 его ещё не поставила.
+const GLASS = process.env.QA_GLASS === "1";
 const openSection = async (page, base, mode, lang) => {
   await page.goto(`${base}/#questions`);
   await page.waitForSelector(".qa", { timeout: 40000 });
   await page.waitForSelector(".qa-card, .qa-empty, .qa-login", { timeout: 20000 });
+  if (GLASS) await page.evaluate(() => document.getElementById("birge-screen")?.classList.add("bk-glass"));
   await page.waitForTimeout(400);
 };
+// Стекло (GLASS.md §2): у корня .qa своего фона нет; формы (вопрос, отказ, ответ) — непрозрачные.
+const glassRules = (page) => page.evaluate(() => {
+  const alpha = (c) => { const m = /rgba?\(([^)]+)\)/.exec(c); if (!m) return 1; const p = m[1].split(",").map(Number); return p.length > 3 ? p[3] : 1; };
+  const root = document.querySelector(".qa");
+  const forms = [...document.querySelectorAll(".qa-form, .qa-panel")].map((f) => alpha(getComputedStyle(f).backgroundColor));
+  return { rootClear: alpha(getComputedStyle(root).backgroundColor) === 0, formsOpaque: forms.every((a) => a === 1), forms };
+});
+// Контраст текста экрана в худшем случае: под стеклом листа — чёрная карта. Фоны от листа до элемента
+// накладываются по прозрачности; крупный текст (≥ 24 px или ≥ 18,66 px жирный) — норма 3, остальной — 4,5.
+const worstContrast = (page) => page.evaluate(() => {
+  const parse = (c) => { const m = /rgba?\(([^)]+)\)/.exec(c || ""); if (!m) return null; const p = m[1].split(",").map(Number); return [p[0], p[1], p[2], p.length > 3 ? p[3] : 1]; };
+  const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = (c) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
+  const sheet = document.getElementById("birge-screen");
+  let worst = { ratio: 99 }, bad = [];
+  for (const el of document.querySelectorAll(".qa *")) {
+    const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+    const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+    if (!own || !r.width || cs.visibility === "hidden" || cs.display === "none") continue;
+    const chain = [];
+    for (let a = el; a; a = a.parentElement) { chain.unshift(a); if (a === sheet) break; }
+    let bg = [0, 0, 0];  // худший случай: чёрная карта под стеклом
+    for (const a of chain) {
+      const c = parse(getComputedStyle(a).backgroundColor);
+      if (c && c[3] > 0) bg = [0, 1, 2].map((i) => c[i] * c[3] + bg[i] * (1 - c[3]));
+    }
+    const fg = parse(cs.color), l1 = lum(fg), l2 = lum(bg);
+    const ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    const size = parseFloat(cs.fontSize), large = size >= 24 || (size >= 18.66 && Number(cs.fontWeight) >= 700);
+    const need = large ? 3 : 4.5;
+    if (ratio < worst.ratio) worst = { ratio: Math.round(ratio * 100) / 100, text: el.textContent.trim().slice(0, 40), color: cs.color };
+    if (ratio < need) bad.push({ text: el.textContent.trim().slice(0, 40), ratio: Math.round(ratio * 100) / 100, color: cs.color });
+  }
+  return { worst, bad: bad.slice(0, 5), glass: !!sheet && sheet.classList.contains("bk-glass") };
+});
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -87,6 +125,12 @@ const openSection = async (page, base, mode, lang) => {
         check(`${tag} житель: «Ещё» в меню`, r.more.includes("more"), r.more);
         check(`${tag} житель: нет прокрутки вбок`, await noSideScroll(page));
         await page.screenshot({ path: path.join(OUT, `${tag}-resident-top.png`) });
+        const gr = await glassRules(page);
+        check(`${tag} стекло: у корня экрана своего фона нет`, gr.rootClear, gr);
+        if (GLASS) {
+          const wc = await worstContrast(page);
+          check(`${tag} стекло: контраст текста ≥ 4,5 над чёрной картой (житель)`, wc.glass && !wc.bad.length, wc);
+        }
 
         if (w === 1366) {
           // «Ещё → Вопрос акиму» в меню жителя.
@@ -106,6 +150,7 @@ const openSection = async (page, base, mode, lang) => {
           const after = await page.$eval(".qa-card", (c) => c.querySelector(".qa-card__votes").textContent);
           await page.reload();
           await page.waitForSelector(".qa-card", { timeout: 30000 });
+          if (GLASS) await page.evaluate(() => document.getElementById("birge-screen")?.classList.add("bk-glass"));
           const kept = await page.$eval(".qa-card", (c) => !!c.querySelector(".qa-card__voted"));
           check("375-ru житель: «Поддержать» → «Вы поддержали», голос сохранён", before !== after && kept, { before, after, kept });
         }
@@ -115,6 +160,12 @@ const openSection = async (page, base, mode, lang) => {
           await page.waitForSelector("#qa-text");
           check(`${tag} форма: фокус в поле вопроса`, await page.evaluate(() => document.activeElement?.id === "qa-text"));
           await page.screenshot({ path: path.join(OUT, `${tag}-resident-form.png`) });
+          const fr = await glassRules(page);
+          check(`${tag} форма вопроса непрозрачная (не стекло)`, fr.formsOpaque && fr.forms.length === 1, fr);
+          if (GLASS) {
+            const wcf = await worstContrast(page);
+            check(`${tag} стекло: контраст текста формы`, !wcf.bad.length, wcf);
+          }
           await page.click(".qa-form button[type=submit]");
           const err = await page.$eval("#qa-text-error", (e) => e.textContent).catch(() => null);
           check(`${tag} форма: ошибка у пустого поля`, !!err, err);
@@ -161,6 +212,10 @@ const openSection = async (page, base, mode, lang) => {
         check(`${tag} акимат: без главной кнопки в списке`, a.primary === 0, a.primary);
         check(`${tag} акимат: нет прокрутки вбок`, await noSideScroll(sp));
         await sp.screenshot({ path: path.join(OUT, `${tag}-akimat-queue.png`) });
+        if (GLASS) {
+          const wcs = await worstContrast(sp);
+          check(`${tag} стекло: контраст текста ≥ 4,5 над чёрной картой (акимат)`, wcs.glass && !wcs.bad.length, wcs);
+        }
         if (w === 375 && lang === "ru" || w === 1366 && lang === "kk") {
           // Опубликовать первый; отклонить с причиной следующий.
           const firstId = await sp.$eval(".qa-card", (c) => c.dataset.id);
@@ -186,6 +241,8 @@ const openSection = async (page, base, mode, lang) => {
           await sp.click(`.qa-card[data-id="${topId}"] .qa-card__actions .bk-btn:not(.bk-btn--ghost)`);
           await sp.fill(`.qa-card[data-id="${topId}"] textarea[lang=${lang}]`, lang === "kk" ? "Бағдаршам қараша айында орнатылады, жоба келісілді." : "Светофор поставят в ноябре, проект согласован.");
           await sp.screenshot({ path: path.join(OUT, `${tag}-akimat-answer.png`) });
+          const ar = await glassRules(sp);
+          check(`${tag} форма ответа акима непрозрачная`, ar.formsOpaque && ar.forms.length === 1, ar);
           await sp.click(`.qa-card[data-id="${topId}"] .qa-panel button[type=submit]`);
           await sp.waitForFunction((id) => !document.querySelector(`.qa-card[data-id="${id}"] .qa-panel`), topId, { timeout: 10000 });
           await sp.click(".qa-tabs > button:nth-child(3)");
@@ -196,6 +253,24 @@ const openSection = async (page, base, mode, lang) => {
           // Ответ виден жителю.
           const pub = await sp.evaluate(async (id) => (await (await fetch("/api/civic/v2/questions?tab=answered")).json()).items.some((q) => q.id === id), topId);
           check(`${tag} ответ виден всем во вкладке «С ответом»`, pub);
+          // Правка ответа видна всем (R15 S39): «изменён …» в строке «Ответ акима».
+          await sp.click(`.qa-card[data-id="${topId}"] .qa-card__actions .bk-btn:first-child`);
+          await sp.fill(`.qa-card[data-id="${topId}"] textarea[lang=${lang}]`, lang === "kk" ? "Бағдаршам қарашаның соңында орнатылады." : "Светофор поставят в конце ноября.");
+          await sp.click(`.qa-card[data-id="${topId}"] .qa-panel button[type=submit]`);
+          await sp.waitForFunction((id) => !document.querySelector(`.qa-card[data-id="${id}"] .qa-panel`), topId, { timeout: 10000 });
+          await sp.waitForSelector(`.qa-card[data-id="${topId}"] .qa-answer`, { timeout: 10000 });
+          const edited = await sp.evaluate(async (id) => {
+            const q = (await (await fetch("/api/civic/v2/questions?tab=answered")).json()).items.find((x) => x.id === id);
+            const sum = document.querySelector(`.qa-card[data-id="${id}"] .qa-answer > summary`).textContent;
+            return { api: !!(q && q.answer.edited_at), shown: sum.split(" · ").length === 3, sum };
+          }, topId);
+          check(`${tag} правка ответа: дата правки в API и на экране`, edited.api && edited.shown, edited);
+          // Отвеченный вопрос снимают только из-за личных данных (R15 S35): в форме одна причина, она уже выбрана.
+          await sp.click(`.qa-card[data-id="${topId}"] .qa-card__actions .bk-btn:nth-child(2)`);
+          const reasons = await sp.$$eval(`.qa-card[data-id="${topId}"] .qa-reason input`, (els) => els.map((e) => [e.value, e.checked]));
+          check(`${tag} отвеченный: снять можно только из-за личных данных`, reasons.length === 1 && reasons[0][0] === "personal_data" && reasons[0][1], reasons);
+          await sp.screenshot({ path: path.join(OUT, `${tag}-akimat-answered-reject.png`) });
+          await sp.click(`.qa-card[data-id="${topId}"] .qa-panel .bk-btn--ghost`);
         }
         check(`${tag} акимат: нет ошибок JS`, sp.errs.length === 0, sp.errs.slice(0, 3));
         await sctx.close();

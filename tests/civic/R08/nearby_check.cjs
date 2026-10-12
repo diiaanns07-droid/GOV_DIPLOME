@@ -81,11 +81,34 @@ async function open(browser, w, h, lang, extra) {
       check(`${tag}: задержки видны — «${kk ? "мерзімі ауыстырылды" : "срок перенесён"}»`, info.late >= 1 && info.text.includes(kk ? "мерзімі ауыстырылды" : "срок перенесён"), info.late);
       check(`${tag}: одна главная кнопка — «${kk ? "Ауданды бақылау" : "Следить за районом"}»`, info.primary === 1 && info.text.includes(kk ? "Ауданды бақылау" : "Следить за районом"), info.primary);
       check(`${tag}: геолокацию не спрашиваем`, info.geo === 0, info.geo);
+      // Чистый стиль R11 (CLEAN_PASS §2, разбор FINAL-3 п. 9): вкладки .bk-tabs (role=tab), «Зачем?» — .bk-details,
+      // строки без карточек, поле района с заливкой, «Пример» — одна строка внизу.
+      const clean = await page.evaluate(() => {
+        const q = (s) => Array.from(document.querySelectorAll(s));
+        const sel = getComputedStyle(document.querySelector(".nb__select"));
+        const foot = document.querySelector(".nb .bk-footnote");
+        const last = Array.from(document.querySelector(".nb").children).pop();
+        return { tabs: q(".nb .bk-tabs[role=tablist] > [role=tab]").length, selected: q(".nb [role=tab][aria-selected=true]").length,
+                 panel: !!document.querySelector(".nb [role=tabpanel]"), why: q(".nb-why").every((d) => d.classList.contains("bk-details")),
+                 cards: q(".nb .bk-card").length, demoTags: q(".nb .bk-tag--demo, .nb .bk-tag").length,
+                 selectBorder: sel.borderTopColor, selectBg: sel.backgroundColor, foot: foot ? foot.textContent : "", footLast: last === foot };
+      });
+      check(`${tag}: чистый стиль — вкладки bk-tabs, «${kk ? "Не үшін?" : "Зачем?"}» bk-details, без карточек и плашек, «Пример» одной строкой внизу`,
+        clean.tabs === 4 && clean.selected === 1 && clean.panel && clean.why && clean.cards === 0 && clean.demoTags === 0
+          && /rgba\(0, 0, 0, 0\)|transparent/.test(clean.selectBorder) && clean.footLast
+          && clean.foot === (kk ? "Көрсетуге арналған үлгі, нақты дерек емес" : "Пример для показа, не настоящие данные"), clean);
       // «Зачем?» с клавиатуры: фокус на summary, Enter раскрывает 4 строки
       await page.focus(".nb-why summary");
       await page.keyboard.press("Enter");
       const why = await page.$$eval(".nb-why[open] dt", (els) => els.map((e) => e.textContent));
       check(`${tag}: «${kk ? "Не үшін?" : "Зачем?"}» с клавиатуры — 4 строки`, why.length === 4, why);
+      // Вкладки с клавиатуры: ← / → (BirgeUI.tabs)
+      await page.focus('.nb [role=tab][aria-selected=true]');
+      const before = await page.getAttribute('.nb [role=tab][aria-selected=true]', "data-value");
+      await page.keyboard.press("ArrowRight");
+      const afterKey = await page.evaluate(() => [document.querySelector('.nb [role=tab][aria-selected=true]').getAttribute("data-value"),
+        document.activeElement && document.activeElement.getAttribute("data-value")]);
+      check(`${tag}: вкладки стрелкой → — следующая вкладка выбрана и в фокусе`, afterKey[0] !== before && afterKey[0] === afterKey[1], [before, afterKey]);
       // Вкладка «Отключения»
       await page.click('[data-key="tab:outages"]');
       const outs = await page.$$eval('.nb-card[data-tab="outages"]', (els) => els.map((e) => e.innerText));

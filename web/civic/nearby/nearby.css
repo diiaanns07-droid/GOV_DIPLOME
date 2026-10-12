@@ -1,6 +1,9 @@
 /*
  * Birge · «Что делают рядом» (R08). Раскладка поверх ui-kit R11; своих цветов нет.
  * Ноутбук — колонка до 960 px по центру, телефон — во весь экран (R11 IA_WAVE2 §0.3, §4).
+ * FINAL-3, чистый стиль R11 (CLEAN_PASS §2, разбор FINAL-3 п. 9): поле района с заливкой (.bk-field), вкладки .bk-tabs,
+ * «Зачем?» — .bk-details, строки списка с линией между ними (не карточки в панели), задержка — словом без плашки,
+ * «Пример» — одна строка .bk-footnote внизу.
  */
 .nb {
   display: grid;
@@ -16,56 +19,24 @@
   font-weight: var(--fw-bold);
 }
 .nb__district {
-  display: grid;
-  gap: 2px;
   max-width: 320px;
 }
 .nb__district-label {
   font-size: var(--fs-caption);
-  font-weight: var(--fw-semi);
   color: var(--c-text-2);
 }
-.nb__select {
-  min-height: 48px;
-  padding: 0 var(--s-3);
-  border: 1px solid var(--c-line-strong);
-  border-radius: var(--r-m);
-  background: var(--c-surface);
-  color: var(--c-ink);
-  font: inherit;
-  font-size: var(--fs-body);
+.nb__select:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 1px;
 }
 .nb-banner p {
   margin: 0;
 }
-/* вкладки: в одну строку; не помещаются (kk на 375) — прокрутка вкладок, а не перенос (R11 §4) */
-.nb-tabs-wrap {
-  overflow-x: auto;
-  scrollbar-width: none;
-  margin: 0 calc(-1 * var(--s-1));
-  padding: 0 var(--s-1);
-}
-.nb-tabs-wrap::-webkit-scrollbar {
-  display: none;
-}
-.nb-tabs > button {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.nb-tabs__count {
-  min-width: 22px;
-  padding: 0 6px;
-  border-radius: 11px;
-  background: var(--c-line);
-  font-size: var(--fs-caption);
-  line-height: 22px;
-  text-align: center;
+/* вкладки — .bk-tabs ui-kit: в одну строку; не помещаются (kk на 375) — строка вкладок прокручивается сама (R11 §4) */
+.nb-tabs {
+  margin: 0;
 }
 .nb-list {
-  display: grid;
-  gap: var(--s-2);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -73,6 +44,10 @@
 .nb-card {
   display: grid;
   gap: var(--s-1);
+  padding: var(--s-3) 0;
+}
+.nb-card + .nb-card {
+  border-top: 1px solid var(--c-line);
 }
 .nb-card p {
   margin: 0;
@@ -100,18 +75,14 @@
   font-weight: var(--fw-semi);
 }
 .nb-card__late {
-  margin-left: var(--s-2);
+  color: var(--c-warn);
+  font-weight: var(--fw-semi);
 }
 .nb-card__when {
   font-weight: var(--fw-semi);
 }
-.nb-why > summary {
-  display: flex;
-  align-items: center;
-  min-height: 44px;
-  cursor: pointer;
-  color: var(--c-brand);
-  font-weight: var(--fw-semi);
+.nb-why {
+  margin-top: var(--s-1);
 }
 .nb-why dl {
   display: grid;

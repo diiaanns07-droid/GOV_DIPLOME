@@ -482,6 +482,9 @@
         } else kids.push(btn(tr("staff.login.logout", "Выйти"), askLogout, "ghost", "logout"));
       }
       head.replaceChildren(...kids);
+      // В выдвижной панели оболочки свой заголовок «Кабинет сотрудника» уже есть (UX_REVIEW R11 FINAL-3 п. 11):
+      // там h2 редактора скрыт, а шапка из одного заголовка (форма входа) не показывается вовсе (editor.css).
+      head.dataset.only = kids.length === 1 ? "title" : "";
     }
 
     function showLogin(alert) {

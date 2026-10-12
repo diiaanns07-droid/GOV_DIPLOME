@@ -281,14 +281,15 @@
             })
           );
           list.appendChild(
-            h("li", { class: "bk-card svc__cat", "data-key": cat.key }, [
+            // Строка списка с линией между темами, не карточка в панели (чистый стиль R11 §2.3).
+            h("li", { class: "svc__cat", "data-key": cat.key }, [
               h("div", { class: "svc__row" }, [
                 h("label", { class: "svc__label svc__label--cat", for: fieldId(cat), text: rowLabel(cat) }),
                 select(cat, catService),
                 cat.edited ? h("span", { class: "bk-tag svc__edited", text: tr("services.edited") }) : null,
               ]),
               subs.length
-                ? h("details", { class: "svc__details" }, [h("summary", { text: tr("services.subtopics", { n: subs.length }) }), subList])
+                ? h("details", { class: "bk-details svc__details" }, [h("summary", { text: tr("services.subtopics", { n: subs.length }) }), subList])
                 : null,
             ])
           );

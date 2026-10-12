@@ -690,3 +690,29 @@ web/civic/offline/{style.json, boot.js}. Скриншоты до/после — 
      кнопку «Войти» R11 и правку теста ленты «Рядом» R01; S30/S31 в интерфейсе (телефон/почта/ИИН — у поля, решённые идеи
      у акимата свёрнуты); полоса выбора места — .bk-glass (с ui-kit R11 ≥ 7117132b; без него — белая). pytest R06+R15 888
      passed; «Идеи» 96/96, слой 16/16.
+24.2 Стекло «Liquid Glass» (решение владельца 12 окт; R11 GLASS.md §4 R01 №1–8) — оболочка, только вид, логика прежняя:
+     ui-kit и i18n R11 на 7117132b (+ tests/civic/R11 с головы R11 8f9b99ff — те же пути, код ui-kit совпадает).
+     birge.js: список GLASS + glassify() ставит классы ui-kit (.bk-glass / --bar / --control) на шапку (капсула), меню
+     аватара/«Ещё»/слоёв, кнопки карты и капсулу +/−, строку легенды и «?», панель/шторку #civic-panel, лист раздела
+     #birge-day/#birge-screen, плашку #map-status; MutationObserver (rAF) ставит их и на позже созданные элементы.
+     №8: при движении карты ≥ 600 мс дважды < 30 к/с → html.bk-glass-off (белый вид до конца сессии, sessionStorage
+     birge.glass); ?glass=off / ?glass=on — вручную (проверки, проектор).
+     birge.css: шапка-капсула top 12 / left 12 / right 12 / высота 60 (телефон 8 / 56), панель радиус 24 (шторка 28 сверху),
+     лист раздела 12 от краёв и 12 под шапкой (top 84; телефон 72 / 8) — свой белый фон листа убран (R08 §9.6), кнопки
+     карты — капсулы/круги, «Сообщить о проблеме» и формы — сплошные. Запасной вид — непрозрачный белый без размытия:
+     нет backdrop-filter в браузере, prefers-reduced-transparency, html.bk-glass-off, forced-colors, печать.
+     freeArea() уже меряет шапку по живой раскладке — капсула 12+60 даёт отступ сверху 84 (телефон 76) сам.
+     shell.css: ручка шторки — var(--c-line-strong) (R11 FINAL-3 разбор №2).
+24.3 Поставки к стеклу (пути ролей, по DELIVERY):
+     - R07 9899c30c: web/civic/heat/{heat.css,demo.html} («↺» 13 px); heat.js/engine.py/devserver.py = сборка.
+       Стекло R07 (корень панели без фона, GLASS §4 R07) ещё не поставлено — панель R07 лежит на стекле со своим фоном.
+     - R08 04fa206c: web/civic/akim/akim.css (стекло «Картины дня»), «Рядом»/«Службы» 9859307c (6 файлов, §9.5),
+       tests/civic/R08/{glass_check,nearby_check}.cjs.
+     - R09 bfba320: «Мои обращения» на стекле, мастер жалобы и строки «Обращений» непрозрачные (complaint.css/.js),
+       tests/civic/R09/{glass_r09.cjs,test_r09v2_frontend.py}; остальные пути R09 = сборка (патчи R11/R12/R01 уже у R09).
+     - R12 e3223d2: web/civic/qr (паспорт: своё .bk-glass только вне панели), web/civic/editor (один заголовок кабинета),
+       tests/civic/R12.
+     - R13 816b06a: web/civic/qa/{qa.js,qa.css} (вкладки .bk-tabs, ответ .bk-details, формы непрозрачные),
+       tests/civic/R13/qa/qa_browser.cjs.
+     - Тесты: R10 78559761 tests/e2e/{glass_check,wave_checks}.cjs; R15 85180b04 tests/civic/R15/test_r15_glass.py.
+     - R05: в ветке идёт работа под стекло (60c445b2), DELIVERY R05 по-прежнему 03ac17c — не брал.

@@ -67,6 +67,10 @@ try {
     check("ссылка ?report открывает паспорт остановки в панели", /Хан Шатыр/.test(card) && /Объект № 4\s109\s037\s549/.test(card), card.slice(0, 200));
     check("в паспорте видно, сколько людей сообщили, и статус", /Сообщил/.test(card) && /Статус/.test(card), card.slice(0, 300));
     check("одна главная кнопка в паспорте", (await p.locator("#birge-report-root .bk-btn--primary").count()) === 1, null);
+    // GLASS.md R11: в панели оболочки паспорт лежит на её стекле — своего стекла (карточки в карточке) у него нет
+    const glass = await p.evaluate(() => ({ panel: document.querySelector("#birge-report-root")?.closest(".civic-panel")?.classList.contains("bk-glass") || false,
+      card: document.querySelector("#birge-report-root .bq-report")?.classList.contains("bk-glass") }));
+    check("в панели оболочки у паспорта нет второго стекла (стекло — у панели R01)", glass.card === false, glass);
     check("«Карта жалоб» спрятана, пока открыт паспорт (одна карточка)", !(await p.locator("#birge-heat-root").isVisible()), null);
     check("ссылка открывается в виде «Житель» (IA_WAVE2 §6.1), выбор не запоминается",
       (await p.evaluate(() => document.body.dataset.birgeMode)) === "resident" && (await p.evaluate(() => localStorage.getItem("birge.mode"))) === null,

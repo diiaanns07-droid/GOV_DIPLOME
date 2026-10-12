@@ -17,15 +17,35 @@
   top: calc(var(--header-h, 64px) + 12px); right: 12px; bottom: 12px;
   width: var(--panel-w, 400px); max-width: calc(100vw - 24px);
   display: flex; flex-direction: column;
-  background: var(--c-surface, #fff); color: var(--c-ink, #152c26);
-  border-radius: var(--r-l, 16px);
-  box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18));
+  color: var(--c-ink, #152c26);
   font-family: var(--font, system-ui, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif);
   font-size: var(--fs-body, 15px); line-height: 1.45;
   padding: 0 20px 20px; overflow-y: auto; overscroll-behavior: contain;
   animation: bc-in-right var(--t-base, 240ms) var(--ease, cubic-bezier(.22, 1, .36, 1));
 }
 .bc-panel[hidden] { display: none; }
+/* Мастер жалобы — форма: непрозрачная панель/шторка (R11 GLASS.md §2 «Нет»). */
+.bc-panel:not(.bk-glass) { background: var(--c-surface, #fff); border-radius: var(--r-l, 16px);
+                           box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18)); }
+/* «Мои обращения» — стекло ui-kit R11 (.bk-glass: фон, блик, размытие, рамка, тень, радиус 24). :where — нулевая
+   специфичность: если ui-kit без стекла (старая сборка, стенд с kit-fallback) — тот же вид, но непрозрачный белый. */
+:where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff); border-radius: var(--r-glass, 24px);
+                             box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18)); }
+/* Шапка «Закрыть» прилипает: прокрученные карточки под ней размыты тем же стеклом, а не просвечивают текстом. */
+.bc-panel.bk-glass .bc-head { background: var(--glass-panel, var(--c-surface, #fff));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 22px)) saturate(var(--glass-saturate, 170%));
+  backdrop-filter: blur(var(--glass-blur, 22px)) saturate(var(--glass-saturate, 170%)); }
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .bc-panel.bk-glass .bc-head { background: var(--glass-solid, #fff); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .bc-panel.bk-glass .bc-head { background: var(--glass-solid, #fff); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+/* Пока открыты «Мои обращения», правая панель/шторка оболочки (R01 .civic-panel со списком R07) не просвечивает под
+   стеклом размытыми пятнами: одна стеклянная панель над картой (GLASS.md: «на стекле R01»). После закрытия — как была. */
+html.bc-mine-open body.civic-mode .civic-panel { visibility: hidden; }
+.bk-glass-off .bc-panel.bk-glass .bc-head { background: var(--glass-solid, #fff); -webkit-backdrop-filter: none; backdrop-filter: none; }
+@media print { .bc-panel.bk-glass .bc-head { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; } }
 .bc-handle { display: none; }
 @keyframes bc-in-right { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes bc-in-up { from { transform: translateY(32px); opacity: .4; } to { transform: none; opacity: 1; } }
@@ -33,16 +53,21 @@
 @media (max-width: 1023px) {
   .bc-panel {
     top: auto; left: 0; right: 0; bottom: 0; width: auto; max-width: none;
-    border-radius: 20px 20px 0 0; padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));
     height: 92vh; height: 92dvh;
     transition: height var(--t-base, 240ms) var(--ease, ease);
     animation-name: bc-in-up;
   }
+  .bc-panel:not(.bk-glass) { border-radius: 20px 20px 0 0; }
+  /* Шторка «Мои обращения» — стекло со скруглением 28 сверху (как .bk-glass--sheet). */
+  .bc-panel.bk-glass, :where(.bc-panel.bk-glass) { border-radius: var(--r-glass-sheet, 28px) var(--r-glass-sheet, 28px) 0 0; }
   .bc-panel[data-snap="half"] { height: 50vh; height: 50dvh; }
   /* Шаг 2, место ещё не выбрано: только вопрос и «Моё местоположение» — шторка по содержимому (R11 B1 №2). */
   .bc-panel[data-snap="peek"] { height: auto; max-height: 50vh; max-height: 50dvh; }
   /* Главная кнопка на телефоне — во всю ширину, одна строка, 56 px (R11 день 2 №7, B1 №8; UX_SPEC §1). */
   .bc-fab { left: 16px; right: 16px; transform: none; max-width: none; white-space: nowrap; justify-content: center; }
+  /* Шторка R09 открыта: плашка карты R01 «Карта улиц не загрузилась» не ложится поверх её заголовка (карта под шторкой). */
+  html.bc-open body.civic-mode #map-status { visibility: hidden; }
   /* Открыта карточка места R07 со своей «Я тоже» — главную кнопку не показываем поверх неё (R11 B1 №8). */
   body:has(.r07-card) .bc-fab { display: none; }
   .bc-handle { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--c-line, #e8eaeb);
@@ -231,17 +256,21 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-staff__text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0; overflow-wrap: anywhere; }
 /* «Содержит грубые слова» — слово цветом опасности, без плашки (чистый дизайн R11). */
 .bc-tag--rude { color: var(--c-danger, #b3362e); background: transparent; padding: 0; font-size: var(--fs-caption, 13px); font-weight: var(--fw-semi, 600); }
+/* Формы сотрудника — непрозрачные и на стекле (R11 GLASS.md §2: «что сделали», паспорт): карточка R07, лист «Обращений». */
+.bk-glass .bc-staff__form { background: var(--c-surface, #fff); border-top: 0; border-radius: var(--r-m, 10px); padding: 12px; }
 .bc-staff__fix-error { margin: 0; font-weight: 600; color: var(--c-danger, #b3362e); }
 .bc-staff .bc-thumb__remove { font-size: 22px; line-height: 1; color: #fff; text-shadow: 0 0 3px rgba(21, 44, 38, .9); }
 
 /* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01): список целей, вкладки, карточка действий. */
 .bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 960px; margin: 0 auto; }
-.bc-inbox__title { margin: 0; font-size: var(--fs-title, 22px); }
+.bc-inbox__title { margin: 0; font-size: var(--fs-title, 22px); font-weight: var(--fw-semi, 600); }   /* заголовок h1/h2: не 700 (R11 разбор FINAL-3 №12) */
 .bc-inbox__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
 .bc-inbox__tabs .bk-chip { min-height: 44px; flex: 0 0 auto; white-space: nowrap; }
 .bc-inbox__count { font-weight: var(--fw-semi, 600); }
 .bc-inbox__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .bc-inbox__item { padding: 0; overflow: hidden; }
+/* «Обращения» — на листе раздела R01 (стекло); строки и форма сотрудника внутри — непрозрачные (GLASS.md, R09). */
+.bc-inbox .bc-inbox__item.bk-card { background: var(--c-surface, #fff); }
 .bc-inbox__row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 56px;
                  padding: 12px 16px; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
 .bc-inbox__row:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: -3px; }

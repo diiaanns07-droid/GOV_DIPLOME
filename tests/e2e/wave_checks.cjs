@@ -536,9 +536,12 @@ async function checkCentral(ctx) {
         await shotOf(K.page, `${tag}-W2-1-6-akimat`));
       await K.page.keyboard.press("Escape").catch(() => null);
       const day = await header(K.page, lang, exact(W(lang, ["common.nav.day", "shell.section.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня")), 2500);
-      // R08 akim.verify.split: «Служба сообщила {a} · жители проверили {b} · вернули {c}» (kk «тұрғындар тексерді»).
+      // R08 akim.verify.split: «Служба сообщила {a} · жители проверили {b} · вернули {c}» (kk «тұрғындар тексерді»); с чистым
+      // дизайном (R08 поставка 5) строка плитки — под «Подробнее», а в «Коротко о дне» — «тұрғындар тексергені: N».
+      const more = await L.firstVisible(K.page.locator("summary, button[aria-expanded=false]").filter({ hasText: part(W(lang, ["common.action.more", "akim.more"], say(lang, "Подробнее", "Толығырақ"))) }));
+      if (more) { await more.click().catch(() => null); await L.sleep(600); }
       const counter = await L.visibleText(K.page, new RegExp([part(W(lang, "akim.verify.split", "Служба сообщила {a} · жители проверили {b}")).source,
-        "подтвердил|проверено жител|проверили жител|жители проверили|тексерді|растады"].join("|"), "i"));
+        "подтвердил|проверено жител|проверили жител|жители проверили|тексерді|тексерген|растады"].join("|"), "i"));
       add("W2-1", tag, "«Картина дня» (R08): сколько исправлений проверили жители", st(day && counter), { day, counter }, await shotOf(K.page, `${tag}-W2-1-7-day`));
     } finally { await K.ctx.close(); }
   }
