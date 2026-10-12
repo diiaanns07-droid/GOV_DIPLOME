@@ -1043,8 +1043,10 @@ await check("reload_during_list_request_logs_no_console_error", async () => {
 });
 await check("card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk", async () => {
   // Ночь 9 (сборка R01 1dd5b53, 375, акимат, шторка «half»): хозяин ставит корень модуля над шторкой, высокая карточка
-  // проекта росла вверх и закрывала шапку. Теперь панель — до нижнего края шапки (opts.avoid) с прокруткой внутри;
-  // хозяин опустил шторку (атрибут на его панели) — ограничение снимается само.
+  // проекта росла вверх и закрывала шапку. Тогда панель ограничили шапкой с прокруткой внутри. FINAL-3 (12 окт): над
+  // карточкой должно оставаться место и для самого проекта (≥ 150 px под шапкой) — если его нет, карточка опускается до
+  // низа экрана поверх шторки хозяина (lowerPhoneCard). Проверяем при «half» и после того, как хозяин опустил шторку:
+  // шапка видна, карточка целиком на экране, над ней ≥ 150 px.
   const out = {};
   for (const lang of ["ru", "kk"]) {
     const p = await openPage({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true }, `?reset=1&store=local&lang=${lang}&` + MAIN_Q.slice(1));
@@ -1074,7 +1076,7 @@ await check("card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_k
     const m = () => p.evaluate(() => {
       const d = document.querySelector("#t-root .b3d-dock"), r = d.getBoundingClientRect(), hb = document.getElementById("t-head").getBoundingClientRect().bottom;
       return { state: d.dataset.state, top: Math.round(r.top), bottom: Math.round(r.bottom), headBottom: Math.round(hb), capped: !!d.style.maxHeight,
-        scrolls: d.scrollHeight > d.clientHeight + 1, headTop: document.elementFromPoint(40, hb - 6)?.id === "t-head" };
+        scrolls: d.scrollHeight > d.clientHeight + 1, headTop: document.elementFromPoint(40, hb - 6)?.id === "t-head", lowered: d.hasAttribute("data-lowered"), vh: innerHeight };
     });
     const half = await m();
     if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", `fit_header_375_${lang}_half.png`) });
@@ -1085,8 +1087,9 @@ await check("card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_k
     await p.evaluate(() => __t.destroy());
     await p.context().close();
     out[lang] = { half, peek };
-    assert(half.state === "card" && half.top >= half.headBottom && half.headTop && half.capped && half.scrolls, JSON.stringify(out));
-    assert(peek.state === "card" && peek.top >= peek.headBottom && peek.headTop && peek.bottom > half.bottom + 100, JSON.stringify(out));
+    const fine = (x) => x.state === "card" && x.headTop && x.top - x.headBottom >= 150 && x.bottom <= x.vh + 1 && (!x.capped || x.scrolls);
+    assert(fine(half) && half.lowered, JSON.stringify(out)); // при «half» места нет — карточка опущена поверх шторки
+    assert(fine(peek), JSON.stringify(out));
   }
   return { status: "PASS", detail: out };
 });

@@ -610,9 +610,16 @@
         });
         target = Math.max(r.top, band + OBJECT_ROOM);
       }
-      // Опускаем сразу до низа экрана, как нижнюю шторку: «на недостающее» из-под карточки торчал наполовину
-      // закрытый заголовок шторки хозяина.
-      var shift = Math.min(cr.bottom, root.innerHeight || cr.bottom) - r.bottom;
+      // Опускаем только поверх шторки хозяина, которая лежит прямо под карточкой (полоса во всю ширину из opts.avoid).
+      // Ниже карточки бывают и чужие кнопки вне avoid: у жителя оболочка ставит корень над кнопкой «Сообщить о проблеме»
+      // R09 (bottom: 84px) — туда не опускаемся. Опускаем сразу до низа шторки, как нижнюю шторку: «на недостающее»
+      // из-под карточки торчал наполовину закрытый заголовок шторки хозяина.
+      var sheet = null;
+      rects.forEach(function (a) {
+        if (a.width >= cr.width * 0.9 && a.top >= r.bottom - 16 && a.top <= r.bottom + 48 && (!sheet || a.top < sheet.top)) sheet = a;
+      });
+      if (!sheet) return r;
+      var shift = Math.min(sheet.bottom, cr.bottom, root.innerHeight || cr.bottom) - r.bottom;
       if (target - r.top < 8 || shift < 8) return r;
       dock.style.transform = "translateY(" + Math.round(shift) + "px)";
       dock.setAttribute("data-lowered", "");
@@ -620,7 +627,24 @@
       toasts.style.bottom = Math.round((root.innerHeight || cr.bottom) - r.top + 8) + "px";
       return r;
     }
+    // Карточка открыта, а хозяин после этого передвинул свою шторку (у оболочки R01 шторка «half» → «peek» уезжает
+    // анимацией уже после выбора проекта): карточка встала на новое место — объект снова ставим над ней. Без этого
+    // камера оставалась у первой, узкой полосы над ещё не опущенной карточкой (телефон, первый выбор после загрузки).
+    var fitCardTop = null;
     function fitDock() {
+      fitDockNow();
+      if (S.destroyed) return;
+      var obj = S.selected && S.objects[S.selected];
+      if (dock.getAttribute("data-state") !== "card" || !obj) {
+        fitCardTop = null;
+        return;
+      }
+      var top = dock.getBoundingClientRect().top;
+      var moved = fitCardTop !== null && Math.abs(top - fitCardTop) > 24;
+      fitCardTop = top;
+      if (moved && !map.isMoving()) keepAboveDock(obj);
+    }
+    function fitDockNow() {
       if (S.destroyed) return;
       watchHost();
       dock.style.maxHeight = "";

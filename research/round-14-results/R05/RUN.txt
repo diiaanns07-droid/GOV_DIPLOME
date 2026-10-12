@@ -54,9 +54,9 @@ R05 · раунд 14 · 3D-превью предложений — как зап
      git worktree add --detach ../r12 origin/claude/tender-brahmagupta-ef5ztl
      python3 tests/civic/R05/build3d/geo_stand.py --r12 ../r12 --port 8617 &
      node tests/civic/R05/build3d/geo_check.mjs http://127.0.0.1:8617          → runs/geo_check.json
-   Внутри оболочки R01 (сборка B2):
-     git worktree add --detach ../r01 origin/claude/sharp-dijkstra-0t87gl && cd ../r01   (B2 — f54361d)
-     git apply <эта ветка>/research/round-14-results/R05/proposed_r01_b2.patch
+   Внутри оболочки R01 (FINAL-3 — от FINAL-2 шаг 4 0f5101a; раньше B2 f54361d с proposed_r01_b2.patch):
+     git worktree add --detach ../r01 0f5101a && cd ../r01
+     git apply <эта ветка>/research/round-14-results/R05/proposed_r01_final3.patch   (без патча: 24 из 26 — см. DELIVERY)
      cp -r <эта ветка>/web/civic/build3d/. web/civic/build3d/
      export CIVIC_DB_PATH=/tmp/b2.sqlite3 CIVIC_DEMO=1
      python3 -B -m ui.civic_store --db /tmp/b2.sqlite3 init
@@ -65,7 +65,13 @@ R05 · раунд 14 · 3D-превью предложений — как зап
      python3 -B -m ui.civic_store --db /tmp/b2.sqlite3 create-editor operator --password-stdin < <файл с паролем>
      python3 -B app.py --host 127.0.0.1 --port 8801 &
      (из этой ветки) node tests/civic/R05/build3d/app_b2_smoke.mjs http://127.0.0.1:8801/ <файл с паролем>
-     (в ../r01)      node tests/civic/R01/browser/r14_b2.cjs <папка>     — тест самого R01 (20/20 с патчем)
+     (в ../r01)      NODE_PATH=$(npm root -g) node tests/civic/R01/browser/r14_b2.cjs <папка>   — тесты самого R01
+                     (r14_b2, r14_shell, r14_wave2 — каждый поднимает свой сервер)
+     Повторный прогон smoke на той же базе возможен: проекты, поставленные тестом, он сам удаляет. Проверки smoke по
+     номерам: п. 15 — проект виден над карточкой на телефонах 375×667/360×800/375×812 (5 видов), п. 16 — все кнопки R05
+     ≥ 48 px в 6 состояниях, п. 17 — 1024/1100/1280/1366: каталог, «Что построить?» и подсказка жителя не на легенде,
+     панели и кнопках карты (подсказке на 1024–1199 нужен патч).
+     Демо-сценарий R10: node <ветка R10>/tests/e2e/demo_flow.cjs --root ../r01 --out <папка>  (сам поднимает сервер)
 
 4. ПЕРЕСОБРАТЬ ДАННЫЕ МОДУЛЯ (детерминированно, без сети)
    python tests/civic/R05/build3d/make_fixtures.py
