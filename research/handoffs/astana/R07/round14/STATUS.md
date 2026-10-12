@@ -1,10 +1,9 @@
 Задача: Раунд 14 · R07 · Тепловая карта объектов — главный экран акимата
 Агент: Claude Code (облачная сессия) · Астана · Birge
 Обновлено: 2026-10-12, вечер (дизайн-марафон, круг 4; FINAL-3 — ниже)
-Статус: ready_for_review — чистый дизайн R07 (CLEAN_PASS §3 R07 1–8), значки ≥ 44 px, первый значок; проверено на
-окончательной сборке R01 FINAL-3 (b3d0f90).
-Ветка: claude/r14-R07 (продолжение claude/upbeat-knuth-i0rqaa) · код для FINAL-3 — DELIVERY.json code_sha
-(web/civic/heat/heat.js, heat.css; ui/civic_heat/engine.py — поле fixed_at; стенд demo.html, devserver.py, тесты стенда)
+Статус: ready_for_review — дизайн-марафон R07, круги 1–5: код 3d35218f (DELIVERY.json code_sha и «marathon»; взять
+web/civic/heat/heat.js и heat.css — INTEGRATION.txt §M). Проверено на сборке R01 9c3c051b. FINAL-3 (9899c30c) — ключ «final3».
+Ветка: claude/r14-R07 (продолжение claude/upbeat-knuth-i0rqaa).
 
 КОРОТКО ДЛЯ ВЛАДЕЛЬЦА — ДИЗАЙН-МАРАФОН (12 октября, вечер)
 - Панель «Карта жалоб» лежит на стекле оболочки: свои серые заливки R07 стали полупрозрачными, поле темы — белое с тонкой
