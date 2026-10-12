@@ -117,7 +117,10 @@
         });
       }).then(function (res) {
         button.disabled = false;
-        if (res && res.ok) { photo = null; done(res); return; }
+        if (res && res.ok) {
+          if (photo && photo.url) URL.revokeObjectURL(photo.url);
+          photo = null; done(res); return;
+        }
         fixError(form, (res && res.error && res.error.message) || t("complaint.error.send"));
       }, function (err) {
         button.disabled = false;
