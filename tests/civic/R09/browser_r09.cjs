@@ -627,7 +627,8 @@ async function phoneLayout(browser, base, hot, lang, tag) {
   await page.waitForSelector(".bc-panel[data-step='5']", { timeout: 15000 });
   const due = await page.$$eval(".bc-panel .bc-next", (n) => n.map((x) => x.textContent).join(" | "));
   // Волна 2: срок ответа — в строке «Дальше: …» (complaint.step5.next), дата в общем формате (R11 №10).
-  const months = lang === "kk" ? /Әрі қарай: қызмет \d{1,2}\u00a0(қаңтар|ақпан|наурыз|сәуір|мамыр|маусым|шілде|тамыз|қыркүйек|қазан|қараша|желтоқсан)/
+  // kk — текст словаря R11 b06020a: «Әрі қарай: қызмет жауабының мерзімі — 15 қазан».
+  const months = lang === "kk" ? /Әрі қарай: қызмет (жауабының мерзімі — )?\d{1,2}\u00a0(қаңтар|ақпан|наурыз|сәуір|мамыр|маусым|шілде|тамыз|қыркүйек|қазан|қараша|желтоқсан)/
     : /Дальше: служба ответит до \d{1,2}\u00a0(янв|фев|мар|апр|мая|июн|июл|авг|сен|окт|ноя|дек)/;
   check(`${tag}: [R11 №10/B1 №10] срок ответа — «Дальше: …» и общий формат даты`, months.test(due), due);
   const ticks = await page.$eval(".bc-panel .bk-steps", (l) => (l.textContent.match(/✓/g) || []).length);
