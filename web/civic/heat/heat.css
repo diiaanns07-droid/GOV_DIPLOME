@@ -85,14 +85,14 @@
   position: relative; display: inline-flex; align-items: center; gap: 6px;
   min-height: 44px; padding: 0 14px 0 10px;
   border: 1px solid transparent; border-radius: 999px; background: var(--r07-fill);
-  font-size: 17px; font-weight: 600; white-space: nowrap; cursor: pointer;
+  font-size: 17px; font-weight: 400; white-space: nowrap; cursor: pointer;   /* 12 тем подряд — обычным весом, спокойнее */
   transition: background 0.2s var(--r07-ease), transform 0.12s var(--r07-ease);
 }
 .r07-chip::after { content: ""; position: absolute; inset: -4px 0; } /* 44 видимые (R11: элементы ≥ 44) + кайма = 52 px */
 .r07-chip:hover { background: var(--r07-fill-hover); }
 .r07-chip .r07-ic { color: var(--r07-ink-2); }
 /* Выбранная тема — единственный акцент #152c26 с белым текстом и ✓ (не только цвет); ✓ не входит в имя кнопки */
-.r07-chip[aria-pressed="true"] { background: var(--r07-brand); color: #fff; }
+.r07-chip[aria-pressed="true"] { background: var(--r07-brand); color: #fff; font-weight: 600; }
 .r07-chip[aria-pressed="true"] .r07-ic { color: #fff; }
 .r07-chip[aria-pressed="true"]::before { content: "✓" / ""; font-weight: 600; }
 .r07-seg { display: inline-flex; gap: 2px; padding: 4px; border-radius: 10px; background: var(--r07-fill); }
@@ -149,7 +149,7 @@
  * (--heat-3-badge #c93b3a — 5:1 с белым; цвет карты #e24b4a дал бы 3,9:1). */
 .r07-mini {
   display: inline-grid; place-items: center; min-width: 40px; height: 32px; padding: 0 8px;
-  border-radius: 8px; background: var(--r07-c, #ccc); color: var(--r07-ink);
+  border-radius: 10px; background: var(--r07-c, #ccc); color: var(--r07-ink);
   font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums; flex-shrink: 0;
 }
 .r07-mini[data-level="3"] { background: var(--heat-3-badge, #c93b3a); color: #fff; }
@@ -298,6 +298,9 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 /* Увеличение при наведении и выборе — у внутренней обёртки, а не у маркера */
 .r07-badge__inner { display: inline-flex; align-items: center; transform-origin: 22px 50%; transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); }
 .r07-badge[hidden] { display: none; }
+/* Рамка фокуса с клавиатуры — по форме значка (капсула), а не прямоугольник вокруг кружка и плашки */
+.r07-badge { border-radius: 24px; }
+.r07-badge:focus-visible { outline-offset: 3px; }
 /* Зона нажатия значка ≥ 52 px (видимый значок 44 px). Маркер MapLibre уже position:absolute. */
 .r07-badge::after { content: ""; position: absolute; inset: -4px; }
 .r07-badge:hover, .r07-badge--selected { z-index: 3; }
