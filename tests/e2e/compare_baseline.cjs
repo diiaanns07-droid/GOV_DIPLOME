@@ -45,8 +45,9 @@ function compareScenario(base, now, timeRef) {
   for (const [k, r] of bb) {
     let n = nb.get(k);
     if (!n) {
-      // Уточнённое имя (старое + пояснение, например «… (с волны 2 — …)») — та же проверка.
-      const k2 = [...nb.keys()].find((x) => !bb.has(x) && x.startsWith(k));
+      // Уточнённое имя (старое + пояснение, например «… (с волны 2 — …)») или переименование из ACCEPTED.json → renamed.
+      const ren = (ACCEPTED.renamed || {})[r.name];
+      const k2 = [...nb.keys()].find((x) => !bb.has(x) && (x.startsWith(k) || (ren && x === `${r.layer} | ${r.step} | ${ren}`)));
       if (k2) { n = nb.get(k2); nb.delete(k2); nb.set(k, n); add("ИНФО", "сценарий", "имя проверки уточнено", { was: k, now: k2 }); }
     }
     if (!n) add("СМОТРЕТЬ", "сценарий", "проверки нет в новом прогоне (переименована или пропала)", { check: k, was: r.status });

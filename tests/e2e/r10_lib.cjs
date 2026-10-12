@@ -120,6 +120,26 @@ const clickText = async (scope, re, opts = {}) => {
   return true;
 };
 const visibleText = async (scope, re) => !!(await firstVisible(scope.getByText(re)));
+// Кнопка шапки: сама кнопка → «≡ Меню» (FINAL-2 и раньше) → меню аватара FINAL-3 (R01 INTEGRATION §14.1: .birge-avatar →
+// #birge-account role=menu: разделы, «Чей вид» menuitemradio, «Для сотрудников», «Выйти»). Возвращает true, если нажато.
+async function headerClick(page, re, { wait = 1200, menuRe = null } = {}) {
+  if (await clickText(page, re, { wait })) return true;
+  if (menuRe && (await clickText(page, menuRe))) {
+    if (await clickText(page, re, { wait })) return true;
+    await page.keyboard.press("Escape").catch(() => null);
+  }
+  const avatar = await firstVisible(page.locator(".birge-avatar"));
+  if (!avatar) return false;
+  await avatar.click({ timeout: 3000 }).catch(() => null);
+  await sleep(500);
+  const menu = (await firstVisible(page.locator("#birge-account"))) || page;
+  for (const role of ["menuitemradio", "menuitem", "button", "link"]) {
+    const it = await firstVisible(menu.getByRole(role, { name: re }));
+    if (it) { await it.click({ timeout: 3000 }).catch(() => null); await sleep(wait); return true; }
+  }
+  await page.keyboard.press("Escape").catch(() => null);
+  return false;
+}
 
 const tap = async (page, x, y) => { if (page.viewportSize().width < 1024) await page.touchscreen.tap(x, y); else await page.mouse.click(x, y); };
 // Показать точку на карте на свободной от панелей части холста и вернуть её место на экране (как demo_flow.cjs).
@@ -168,5 +188,5 @@ function machine() {
   return { cpu: cpus[0] && cpus[0].model, cores: cpus.length, mem_gb: Math.round(os.totalmem() / 2 ** 30), platform: `${os.platform()} ${os.release()}`, node: process.version };
 }
 
-module.exports = { parseArgs, sleep, PY, startServer, api, loadDict, T, esc, textRe, anyRe, firstVisible, clickText, visibleText,
+module.exports = { parseArgs, sleep, PY, startServer, api, loadDict, T, esc, textRe, anyRe, firstVisible, clickText, visibleText, headerClick,
   tap, showPoint, keyByText, timeUntil, median, buildSha, machine };

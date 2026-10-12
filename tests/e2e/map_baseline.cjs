@@ -234,12 +234,15 @@ async function variant(browser, base, size, lang, mode) {
       out.fingerprint = await r.page.evaluate(FINGERPRINT);
       // Меню: на телефоне и узком экране пункты шапки спрятаны в «Меню» — открыть и переписать новые кнопки.
       const menuRe = new RegExp("^" + L.esc(T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню")) + "$", "i");
-      const menu = await L.firstVisible(r.page.getByRole("button", { name: menuRe }));
+      // FINAL-3 (R01 §14.1): кнопки «≡ Меню» нет — разделы и вид в меню аватара (.birge-avatar → #birge-account).
+      const menu = (await L.firstVisible(r.page.getByRole("button", { name: menuRe }))) || (await L.firstVisible(r.page.locator(".birge-avatar")));
       if (menu) {
         const before = new Set(out.fingerprint.controls.map((c) => c.name));
         await menu.click().catch(() => null); await L.sleep(900);
         const after = await r.page.evaluate(FINGERPRINT);
-        out.menu = after.controls.filter((c) => !before.has(c.name)).map((c) => c.name);
+        const acct = await r.page.evaluate(() => { const m = document.querySelector("#birge-account");
+          return m && m.getClientRects().length ? [...m.querySelectorAll("[role^=menuitem], button, a")].filter((e) => e.getClientRects().length).map((e) => (e.getAttribute("aria-label") || e.innerText || "").trim().replace(/\s+/g, " ")).filter(Boolean) : null; });
+        out.menu = acct || after.controls.filter((c) => !before.has(c.name)).map((c) => c.name);
         await r.page.keyboard.press("Escape").catch(() => null); await L.sleep(600);
       } else out.menu = null;
       out.shot = `default-${tag}.png`;
@@ -262,9 +265,8 @@ async function variant(browser, base, size, lang, mode) {
 async function transitions(page, dict, lang, mode, mobile) {
   const res = {};
   const menuRe = new RegExp("^" + L.esc(T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню")) + "$", "i");
-  const press = async (re) => { let b = await L.firstVisible(page.getByRole("button", { name: re }));
-    if (!b) { const m = await L.firstVisible(page.getByRole("button", { name: menuRe })); if (m) { await m.click().catch(() => null); await L.sleep(700); b = await L.firstVisible(page.getByRole("button", { name: re })); } }
-    if (!b) return false; await b.click({ timeout: 4000 }).catch(() => null); return true; };
+  // Кнопка шапки — сама, в «≡ Меню» или в меню аватара FINAL-3 (L.headerClick); после нажатия ждём сами (wait 0).
+  const press = (re) => L.headerClick(page, re, { wait: 1, menuRe });
   const hasText = (s) => page.evaluate((src) => { const re = new RegExp(src, "i");
     return [...document.querySelectorAll("body *")].some((e) => !e.children.length && e.getBoundingClientRect().width > 0 && re.test(e.textContent)); }, s);
   // Видимый текст: лист без вложенных элементов или заголовок (у заголовка бывает вложенный счётчик).
@@ -287,7 +289,7 @@ async function transitions(page, dict, lang, mode, mobile) {
     // Вид «Акимат» включился: кнопка «Акимат» нажата (aria-pressed) — одинаково в 8e67c65 и FINAL-2 (там «Что построить?»
     // спрятана в слой «Проекты», а «Горячие места» на телефоне — в шторке).
     res.to_akimat_ms = (await press(new RegExp("^" + L.esc(akimat) + "$", "i")))
-      ? await L.timeUntil(page, (src) => [...document.querySelectorAll("[aria-pressed=true]")].some((e) => new RegExp(src, "i").test(e.textContent.trim())), "^" + L.esc(akimat) + "$", 15000) : null;
+      ? await L.timeUntil(page, (src) => [...document.querySelectorAll("[aria-pressed=true], [aria-checked=true]")].some((e) => new RegExp(src, "i").test(e.textContent.trim())), "^" + L.esc(akimat) + "$", 15000) : null;
   } else {
     // Как ведущий на шаге 3: сначала место из «Горячих мест» (вид по умолчанию), потом «Картина дня».
     const hotRe = new RegExp("^" + L.esc(T(dict, "heat.hot_title", lang === "kk" ? "Шағымы көп орындар" : "Горячие места")), "i");

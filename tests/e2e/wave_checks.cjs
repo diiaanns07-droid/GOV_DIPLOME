@@ -173,9 +173,7 @@ async function goto(page, url, lang, { fixLang = true } = {}) {
 const menuRe = (lang) => exact(W(lang, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню"));
 // Кнопка в шапке или в «Меню» (телефон и экраны уже 1024).
 async function header(page, lang, re, wait = 1500) {
-  let ok = await L.clickText(page, re, { wait });
-  if (!ok && (await L.clickText(page, menuRe(lang)))) { ok = await L.clickText(page, re, { wait }); if (!ok) await page.keyboard.press("Escape").catch(() => null); }
-  return ok;
+  return L.headerClick(page, re, { wait, menuRe: menuRe(lang) });  // кнопка → «≡ Меню» → меню аватара (FINAL-3)
 }
 const modeRe = (lang, mode) => exact(mode === "akimat" ? W(lang, ["common.role.akimat", "shell.mode.akimat"], lang === "kk" ? "Әкімдік" : "Акимат") : W(lang, ["common.role.resident", "shell.mode.resident"], lang === "kk" ? "Тұрғын" : "Житель"));
 const mineRe = (lang) => part(W(lang, ["common.nav.mine", "mine.title"], lang === "kk" ? "Менің өтініштерім" : "Мои обращения"));
@@ -800,7 +798,7 @@ async function checkQr(ctx) {
         await goto(P.page, new URL(`/?report=${encodeURIComponent(KHAN.id)}`, base).href, lang, { fixLang: false });
         const s = await P.page.evaluate(() => ({ lang: document.documentElement.lang, saved_mode: localStorage.getItem("birge.mode"), saved_lang: localStorage.getItem("birge.lang") }));
         // Переключатель вида на телефоне — в «Меню» (не на экране): смотрим состояние кнопки, а не её видимость.
-        const resident = await P.page.evaluate((src) => [...document.querySelectorAll("[aria-pressed=true]")].some((e) => new RegExp(src, "i").test(e.textContent.trim())), modeRe(lang, "resident").source);
+        const resident = await P.page.evaluate((src) => [...document.querySelectorAll("[aria-pressed=true], [aria-checked=true]")].some((e) => new RegExp(src, "i").test(e.textContent.trim())), modeRe(lang, "resident").source);
         add("W2-6", tag, "/?report=<id>: язык не сменился, вид «Житель» на этот заход, сохранённый вид не перезаписан", st(s.lang === lang && resident && s.saved_mode === "akimat" && s.saved_lang === lang),
           { ...s, resident_pressed: resident }, await shotOf(P.page, `${tag}-W2-6-report-shell`));
       } finally { await P.ctx.close(); }

@@ -348,6 +348,26 @@ const clickText = async (scope, re, opts = {}) => {
   return true;
 };
 const visibleText = async (scope, re) => !!(await firstVisible(scope.getByText(re)));
+// Кнопка шапки: сама кнопка → «≡ Меню» (FINAL-2 и раньше) → меню аватара FINAL-3 (R01 INTEGRATION §14.1:
+// .birge-avatar → #birge-account role=menu — разделы, вид menuitemradio, «Для сотрудников», «Выйти»).
+async function headerClick(page, re, { wait = 1200, menuRe = null } = {}) {
+  if (await clickText(page, re, { wait })) return true;
+  if (menuRe && (await clickText(page, menuRe))) {
+    if (await clickText(page, re, { wait })) return true;
+    await page.keyboard.press("Escape").catch(() => null);
+  }
+  const avatar = await firstVisible(page.locator(".birge-avatar"));
+  if (!avatar) return false;
+  await avatar.click({ timeout: 3000 }).catch(() => null);
+  await sleep(500);
+  const menu = (await firstVisible(page.locator("#birge-account"))) || page;
+  for (const role of ["menuitemradio", "menuitem", "button", "link"]) {
+    const it = await firstVisible(menu.getByRole(role, { name: re }));
+    if (it) { await it.click({ timeout: 3000 }).catch(() => null); await sleep(wait); return true; }
+  }
+  await page.keyboard.press("Escape").catch(() => null);
+  return false;
+}
 const tap = async (page, x, y) => { if (page.viewportSize().width < 1024) await page.touchscreen.tap(x, y); else await page.mouse.click(x, y); };
 // Нажать на найденный элемент по центру его рамки (касание на телефоне): так нажимает человек, а таблички
 // 3D-проектов двигаются вместе с картой — обычный click Playwright ждёт «неподвижности» и не срабатывает.
@@ -433,11 +453,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const menuRe = new RegExp("^" + T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню") + "$", "i");
   const setLang = async () => { const b = await firstVisible(page.getByRole("button", { name: langRe })); if (b) { await b.click().catch(() => null); await sleep(1000); } return !!b; };
   // Кнопка из шапки; в компактной шапке (телефон и узкий экран ниже 1024) — через «≡ Меню».
-  const header = async (re, wait = 1200) => {
-    let ok = await clickText(page, re, { wait });
-    if (!ok && (await clickText(page, menuRe))) { ok = await clickText(page, re, { wait }); if (!ok) await page.keyboard.press("Escape").catch(() => null); }
-    return ok;
-  };
+  const header = (re, wait = 1200) => headerClick(page, re, { wait, menuRe });
   const words = {
     resident: T(dict, ["common.role.resident", "shell.mode.resident"], lang === "kk" ? "Тұрғын" : "Житель"),
     akimat: T(dict, ["common.role.akimat", "shell.mode.akimat"], lang === "kk" ? "Әкімдік" : "Акимат"),
@@ -458,7 +474,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   step("0", "короткие надписи не обрезаны многоточием (название в шапке, кнопки)", scr.cutN === 0, { n: scr.cutN, ex: scr.cut });
   step("0", "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2", scr.lowContrastN === 0, { n: scr.lowContrastN, ex: scr.lowContrast });
   step("0", "нет ключей перевода и технических слов", scr.raw.length === 0 && scr.tech.length === 0, { raw: scr.raw, tech: scr.tech });
-  step("0", "шрифт: нет текста мельче 14 px (основной ≥ 16 px)", scr.tinyN === 0, { tiny: scr.tinyN, ex: scr.tiny, under16: scr.smallN, ex16: scr.small });
+  step("0", "шрифт: нет текста мельче 13 px (основной ≥ 15 px, CLEAN_PASS §4)", scr.tinyN === 0, { tiny: scr.tinyN, ex: scr.tiny, under15: scr.smallN, ex15: scr.small });
   step("0", "зоны нажатия ≥ 40 px (цель — 48 px)", scr.under40.length === 0, { under40N: scr.under40N, under40: scr.under40, under48: `${scr.under48N}/${scr.targetsN}` });
 
   // 0а. Выбор языка запоминается: после перезагрузки страница остаётся на выбранном языке.
@@ -843,8 +859,7 @@ async function networkErrors(browser, base, [w, h], lang) {
     .filter(Boolean).map(esc).join("|"), "i");
   const retryRe = new RegExp("^" + esc(T(dict, ["heat.retry", "common.action.retry"], lang === "kk" ? "Қайталау" : "Повторить")) + "$", "i");
   const menuRe = new RegExp("^" + esc(T(dict, ["common.nav.menu", "shell.menu"], lang === "kk" ? "Мәзір" : "Меню")) + "$", "i");
-  const header = async (page, re) => { let ok = await clickText(page, re, { wait: 2000 });
-    if (!ok && (await clickText(page, menuRe))) ok = await clickText(page, re, { wait: 2000 }); return ok; };
+  const header = (page, re) => headerClick(page, re, { wait: 2000, menuRe });
   const cases = [
     { name: "тепловая карта", route: "**/api/civic/v2/heat**", mode: "akimat" },
     { name: "«Мои обращения»", route: "**/api/civic/v2/complaints/mine**", mode: "resident",

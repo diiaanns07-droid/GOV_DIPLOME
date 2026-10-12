@@ -28,8 +28,9 @@ function uiScreen(page) {
       if (!vis(el) || el.children.length || !el.textContent.trim() || el.closest("svg, .maplibregl-ctrl-attrib") || /©/.test(el.textContent)) continue;
       const fs = parseFloat(getComputedStyle(el).fontSize);
       if (fs === 0) continue;  // текст спрятан намеренно (табличка-точка 3D-проекта на мелком масштабе)
-      if (fs < 14) tiny.push(`${fs}px «${el.textContent.trim().slice(0, 30)}»`);
-      else if (fs < 16) small.push(`${fs}px «${el.textContent.trim().slice(0, 30)}»`);
+      // Пороги — решение владельца 12 окт (R11 CLEAN_PASS §4, шкала 13/15/17): мелкий текст < 13 px, основной < 15 px.
+      if (fs < 13) tiny.push(`${fs}px «${el.textContent.trim().slice(0, 30)}»`);
+      else if (fs < 15) small.push(`${fs}px «${el.textContent.trim().slice(0, 30)}»`);
     }
     // Значки и таблички НА КАРТЕ (маркеры MapLibre, подписи 3D-проектов) UX_SPEC §5 разрешает 24–36 px — их считаем отдельно.
     const onMap = (e) => !!e.closest(".maplibregl-marker, .b3d-labels");
