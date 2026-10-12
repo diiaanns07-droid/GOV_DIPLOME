@@ -388,6 +388,26 @@ def test_kazakh_street_names_without_invented_translations():
         assert "учаске" not in kk.lower()
 
 
+def test_street_snap_gives_the_named_street_near_an_unnamed_drive(real):
+    """R06 волна 2 (r12_snap_near_street, R01 INTEGRATION 18.1): /street-snap у безымянного проезда отдаёт улицу с
+    названием рядом отдельными полями — та же, что в подписи «Проезд у улицы X»; у названной улицы — None."""
+    from engine.civic_geo.graph import get_graph
+    from engine.civic_geo.targets import segment_street
+    g = get_graph()
+    e = next(e for e in g.edges if not e.name and e.group == "service" and segment_street(g, e)[0])
+    mid = e.geometry[len(e.geometry) // 2]
+    status, body = api.handle("/street-snap", {"lon": [str(mid[0])], "lat": [str(mid[1])]})
+    assert status == 200, body
+    assert body["street_ru"] is None and body["near_street_ru"] and body["near_street_kk"]
+    from engine.civic_geo import names
+    snapped = next(x for x in g.edges if x.id == body["edge_id"])
+    assert (body["label_ru"], body["label_kk"]) == names.unnamed_labels(snapped.group, body["near_street_ru"], body["near_street_kk"])
+    named = next(e for e in g.edges if e.name and e.group == "road")
+    m2 = named.geometry[len(named.geometry) // 2]
+    status, body = api.handle("/street-snap", {"lon": [str(m2[0])], "lat": [str(m2[1])], "kind": ["road"]})
+    assert status == 200 and body["street_ru"] and body["near_street_ru"] is None and body["near_street_kk"] is None
+
+
 def test_kazakh_conjunction_and_common_noun_are_lowercase():
     """UX_REVIEW R11 круг 7 п. 2: name:kk OSM «Керей Және Жәнібек Хандар көшесі» → «және», «хандар» строчные."""
     from engine.civic_geo import names
