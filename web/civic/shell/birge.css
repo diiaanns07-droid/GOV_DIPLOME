@@ -155,6 +155,10 @@ body[data-birge-mode="resident"] .birge-b3d-toggle,
 
 /* B3: выбор места жителем — значки R07 и подписи R05 пропускают нажатие к карте (shell.js, setPickMode). */
 body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-picking .b3d-label { pointer-events: none; }
+/* Подпись «© OpenStreetMap» с кнопкой «i» (зона 48 px) на телефоне стоит у центра свободной карты: касание рядом браузер
+   «притягивал» к кнопке, и мастер жалобы не получал точку (R10 FINAL-3: W1-3/W1-10/LF-2 и шаг 1 на 375 — «нет вариантов
+   места»). Пока житель выбирает место, подпись видна, но нажатия пропускает к карте. */
+body.birge-picking .maplibregl-ctrl-attrib, body.birge-picking .maplibregl-ctrl-attrib-button { pointer-events: none; }
 /* Кнопка «Территория» — только на телефоне (explore.js). */
 .civic-explore-toggle { display: none; }
 @media (max-width: 760px) {
@@ -500,3 +504,8 @@ body[data-civic-sheet="full"].civic-mode .civic-explore #map-status { display: n
   .civic-mode .birge-legend-line .bk-legend__scale { width: 40px; }
   .civic-mode .map-tools .bk-mapctl__group > #zoom-out { display: grid; }
 }
+/* Круг-аватар: 44 px (ui-kit 40 — ниже порога R10 «кнопки ≥ 44 px», FINAL-3); на ноутбуке шапка 64 px — 48. */
+#birge-header .birge-avatar { width: 44px; height: 44px; }
+@media (min-width: 761px) { #birge-header .birge-avatar { width: 48px; height: 48px; } }
+/* «ҚАЗ · РУС» на любой ширине не уже 44 px (ui-kit: 44, на ≤ 1100 — 36). */
+#birge-header .birge-lang > button { min-width: 44px; }
