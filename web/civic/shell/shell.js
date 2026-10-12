@@ -375,8 +375,44 @@
   // Запросы модулей раунда 14 (опция fetch R07 и R05): сотруднику — X-CSRF-Token (R09 требует его для «Взять
   // в работу» и «Исправлено», R06 — для предложений). Id устройства для «Я тоже» (X-Birge-Device, ключ
   // birge.device — общий с формой жалобы R09) R07 @ 306074b ставит сам.
+  // Первый значок карты ≤ 3 с (R10 правило 5): данные первого кадра тепловой карты — meta, районы (вид города) и
+  // «Горячие места» — запрашиваются сразу при старте страницы, параллельно загрузке карты, а не после неё. R07 получает
+  // их через этот fetch ОДИН раз и только в первые 20 с; другой период/фильтр, повтор и обновление — обычный запрос.
+  // Сервер R07: при zoom < 12 ответ — районы, одинаковый для любого масштаба (ui/civic_heat/service.py, mode).
+  const early = new Map();
+  const EARLY_MS = 20000, HEAT_API = "/api/civic/v2/heat";
+  function earlyKey(url) {
+    let u;
+    try { u = new URL(url, location.href); } catch (e) { return null; }
+    if (u.origin !== location.origin) return null;
+    if (u.pathname === HEAT_API + "/meta" && !u.search) return "meta";
+    if (u.pathname !== HEAT_API) return null;
+    const keys = [...u.searchParams.keys()].sort().join(",");
+    const zoom = Number(u.searchParams.get("zoom"));
+    if (keys !== "days,zoom" || u.searchParams.get("days") !== "30" || !Number.isFinite(zoom)) return null;
+    if (zoom < 12) return "districts";
+    return zoom === 14 ? "places" : null;
+  }
+  function prefetchHeat() {
+    if (!window.CivicHeat || !window.fetch) return;
+    const get = (path) => fetch(path, { headers: { Accept: "application/json" }, credentials: "same-origin" });
+    const born = Date.now();
+    for (const [key, path] of [["meta", HEAT_API + "/meta"], ["districts", HEAT_API + "?days=30&zoom=0"], ["places", HEAT_API + "?days=30&zoom=14"]]) {
+      const promise = get(path);
+      promise.catch(() => {});  // ошибка — R07 сам повторит обычным запросом
+      early.set(key, { promise, born });
+    }
+  }
+  function takeEarly(url) {
+    const key = earlyKey(url), hit = key && early.get(key);
+    if (!hit) return null;
+    early.delete(key);
+    if (Date.now() - hit.born > EARLY_MS) return null;
+    return hit.promise.then((res) => (res.ok ? res : fetch(url, { headers: { Accept: "application/json" }, credentials: "same-origin" })),
+      () => fetch(url, { headers: { Accept: "application/json" }, credentials: "same-origin" }));
+  }
   function birgeFetch(url, init = {}) {
-    if (String(init.method || "GET").toUpperCase() === "GET") return fetch(url, init);
+    if (String(init.method || "GET").toUpperCase() === "GET") return takeEarly(url) || fetch(url, init);
     const headers = new Headers(init.headers || {});
     if (session.authenticated && session.csrfToken) headers.set("X-CSRF-Token", session.csrfToken);
     return fetch(url, { ...init, headers, credentials: "same-origin" });
@@ -1251,7 +1287,9 @@
   }, true);
   // Start after interface.js has registered its own DOMContentLoaded boot.
   const start = () => {
-    setMode(initialMode(), { persist: false });
+    const mode = initialMode();
+    if (mode === "civic") prefetchHeat();
+    setMode(mode, { persist: false });
     if (currentMap()) onMapReady();
     // The HttpOnly session cookie may already be valid (F5, new tab): learn it once on boot.
     void refreshSession().catch(() => null);

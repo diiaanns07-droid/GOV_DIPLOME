@@ -43,11 +43,26 @@
     return inside;
   }
   function inPolygon(pt, rings) { return inRing(pt, rings[0]) && !rings.slice(1).some((hole) => inRing(pt, hole)); }
+  // Рамка каждого многоугольника района считается один раз: точку вне рамки не проверяем по тысячам вершин
+  // (разметка ~5 тыс. улиц по районам занимала ~200 мс главного потока при загрузке — R10 «первый значок ≤ 3 с»).
+  const BOXES = new WeakMap();
+  function polysOf(f) {
+    let polys = BOXES.get(f);
+    if (polys) return polys;
+    const g = f.geometry;
+    polys = (g?.type === "Polygon" ? [g.coordinates] : g?.type === "MultiPolygon" ? g.coordinates : []).map((rings) => {
+      let w = Infinity, s = Infinity, e = -Infinity, n = -Infinity;
+      for (const [x, y] of rings[0] || []) { if (x < w) w = x; if (x > e) e = x; if (y < s) s = y; if (y > n) n = y; }
+      return { rings, box: [w, s, e, n] };
+    });
+    if (f && typeof f === "object") BOXES.set(f, polys);
+    return polys;
+  }
   function featureAt(pt, features) {
     for (const f of features || []) {
-      const g = f.geometry;
-      const polys = g?.type === "Polygon" ? [g.coordinates] : g?.type === "MultiPolygon" ? g.coordinates : [];
-      if (polys.some((rings) => inPolygon(pt, rings))) return f;
+      if (!f) continue;
+      if (polysOf(f).some(({ rings, box }) => pt[0] >= box[0] && pt[0] <= box[2] && pt[1] >= box[1] && pt[1] <= box[3]
+        && inPolygon(pt, rings))) return f;
     }
     return null;
   }
@@ -423,7 +438,14 @@
     paint();
     relabel();
     const offLang = global.BirgeI18n?.onChange?.(relabel);
-    loadIndex();
+    // Индекс улиц — не на пути к первому значку карты (R10 правило 5): в простое браузера (не позже 4 с) или сразу,
+    // как человек тронет поле поиска.
+    let indexAsked = false;
+    const askIndex = () => { if (indexAsked || destroyed) return; indexAsked = true; loadIndex(); };
+    input.addEventListener("pointerdown", askIndex);
+    input.addEventListener("focus", askIndex);
+    if (typeof global.requestIdleCallback === "function") global.requestIdleCallback(askIndex, { timeout: 4000 });
+    else setTimeout(askIndex, 2500);
     const view = box.querySelector(".civic-explore-view");
     function showRecords(items) {
       records = items;

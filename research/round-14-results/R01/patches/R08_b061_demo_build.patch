@@ -1,0 +1,37 @@
+diff --git a/ui/civic_akim/summary.py b/ui/civic_akim/summary.py
+index 33c14062..0ecb7fde 100644
+--- a/ui/civic_akim/summary.py
++++ b/ui/civic_akim/summary.py
+@@ -283,10 +283,12 @@ def districts() -> dict:
+ # ---------------------------------------------------------------- сервис
+ 
+ class AkimService:
+-    def __init__(self, *, heat=_AUTO, records=_AUTO, objects=_AUTO, proposals=_AUTO, clock=None):
++    def __init__(self, *, heat=_AUTO, records=_AUTO, objects=_AUTO, proposals=_AUTO, clock=None, demo_build=False):
+         """heat — HeatService R07 (False — без карты); records — функция since → записи v2;
+         objects / proposals — функции (district, today) → список (CONTRACT §7, R06).
++        demo_build — демо-сборка R01 (CIVIC_DEMO=1): пример «Нужно решение акима» виден, пока настоящих нет (R10 B-061).
+         По умолчанию всё подключается само (sources.py)."""
++        self.demo_build = bool(demo_build)
+         self.heat = sources.heat_service() if heat is _AUTO else (heat or None)
+         self.engine = sources.heat_engine() if self.heat is not None else None
+         self.source_names = {}
+@@ -658,13 +660,15 @@ class AkimService:
+     def _decisions_part(self, recs: list[dict], district, as_of: datetime, labels: dict) -> dict:
+         """«Нужно решение акима» (волна 2 п. 5). Критерий — decisions.py.
+ 
+-        Пример из фикстуры — только когда все жалобы демо (источник R07-демо или каждая запись demo: true, как в
+-        демо-сборке R01): среди настоящих обращений пример не подмешиваем никогда.
++        Пример из фикстуры — только когда все жалобы демо (источник R07-демо или каждая запись demo: true) или это
++        демо-сборка R01 (CIVIC_DEMO=1): там первая же жалоба репетиции (demo: false) прятала блок до перезапуска
++        (R10 B-061). Пример — только пока настоящих «нужно решение» нет, с пометкой demo/«пример»; в обычной сборке
++        среди настоящих обращений пример не подмешиваем никогда.
+         """
+         items = decisions.build(recs, as_of, status_at=status_at, parse_time=parse_time, labels=labels)
+         demo = False
+         all_demo = self.source_names.get("complaints") == "r07-demo" or (bool(recs) and all(r.get("demo") is True for r in recs))
+-        if not items and all_demo:
++        if not items and (all_demo or self.demo_build):
+             example = [r for r in decisions.fixture_records(as_of.date())
+                        if district is None or r.get("district") == district]
+             items = decisions.build(example, as_of, status_at=status_at, parse_time=parse_time)

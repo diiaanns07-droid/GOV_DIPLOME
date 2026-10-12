@@ -984,7 +984,12 @@ class CivicV2Gateway:
         try:
             akim = self._import("ui.civic_akim")
             if akim is not None and hasattr(akim, "configure"):
-                akim.configure()
+                # Демо-сборка: пример «Нужно решение акима» не пропадает после жалобы репетиции (R10 B-061).
+                kwargs = {"demo_build": True} if self.demo else {}
+                try:
+                    akim.configure(**kwargs)
+                except TypeError:  # R08 без demo_build — как раньше
+                    akim.configure()
         except Exception:
             LOGGER.exception("API v2: «Картина дня» (R08) не настроилась")
         if store is not None and hasattr(store, "target_lookup"):
