@@ -246,6 +246,20 @@ async function apiFlow(A, staffInfo) {
   // 5. Предложение акимата + голос жителя (R06).
   const login = staffInfo && staffInfo.user ? await A.login(staffInfo.user, staffInfo.pass) : { ok: false, why: staffInfo && staffInfo.error };
   add("API", "5", "вход сотрудника акимата (сессия + CSRF)", login.ok ? "PASS" : "FAIL", login);
+  // LOCAL_FINAL P1 (Codex, 11 окт): если сотрудник вошёл заранее, мастер жалобы пропускал «Я тоже» — карточка похожей
+  // жалобы под сессией сотрудника приходила без числа людей (reporters). Тот же путь, что у мастера R09: /similar →
+  // GET /complaints/<id>?view=public → reporters (или 1 + metoo) — с сессией сотрудника и без неё.
+  if (login.ok) {
+    const sp = await A.call("POST", "/api/civic/v2/similar", { text: demoText, point: STOP.point, days: 30 }, true);
+    const first = ((A.data(sp) || {}).matches || []).find((m) => m && m.complaint_id);
+    const peopleOf = (c) => (c && typeof c.reporters === "number" && c.reporters > 0 ? c.reporters : c ? 1 + (Number(c.metoo) || 0) : 0);
+    const card = async (staff) => { const r = await A.call("GET", `/api/civic/v2/complaints/${encodeURIComponent(first.complaint_id)}?view=public`, null, staff);
+      const d = A.data(r) || {}; const c = d.complaint || d.item || d; return { status: r.status, reporters: c.reporters ?? null, metoo: c.metoo ?? null, people: r.status === 200 ? peopleOf(c) : 0 }; };
+    const pub = first ? await card(false) : null, stf = first ? await card(true) : null;
+    add("API", "5", "сотрудник вошёл заранее: похожая жалоба для «Я тоже» с его сессией — то же число людей, что без входа (LOCAL_FINAL P1)",
+      sp.status === 200 && first && pub.people > 0 && stf.people === pub.people ? "PASS" : "FAIL",
+      { similar: sp.status, id: first && first.complaint_id, public: pub, staff: stf });
+  }
   const pl = await A.call("GET", "/api/civic/v2/proposals");
   const plist = (A.data(pl) || {}).items || (A.data(pl) || {}).proposals || [];
   add("API", "5", "GET /proposals: демо-предложения (seed-r14-demo) со статусом", pl.status === 200 && plist.length > 0 && plist.every((p) => p.status) ? "PASS" : "FAIL",
@@ -280,8 +294,13 @@ async function apiFlow(A, staffInfo) {
       { in_progress: st1.status, fixed: st2.status, err: (st2.body && st2.body.error) || (st1.body && st1.body.error) });
     const h2 = await A.call("GET", `/api/civic/v2/heat?bbox=${NURA_BBOX}&days=30&zoom=16`);
     const it2 = ((A.data(h2) || {}).items || []).find((i) => i.target && i.target.id === ctx.target.id);
-    add("API", "6", "после «исправлено» цель зелёная (fixed_until задан, вес обнулён)", it2 && it2.fixed_until && (it2.weight === 0 || it2.level === 0 || it2.level === "fixed") ? "PASS" : "FAIL",
-      { item: it2 ? { level: it2.level, weight: it2.weight, fixed_until: it2.fixed_until } : null });
+    // До волны 2: «исправлено» = зелёная цель (fixed_until). С волны 2 (R09 resolution, R07 fixed_kind): «служба сообщила» —
+    // светло-зелёная, ждёт проверки жителями (IA_WAVE2 §3); зелёная с fixed_until — после «Да, исправлено» (шаг 7).
+    const fixedOk = it2 && (it2.weight === 0 || it2.level === 0 || it2.level === "fixed");
+    const reportedApi = !!(it2 && it2.fixed_kind === "reported");
+    add("API", "6", "после «исправлено» цель зелёная (fixed_until задан, вес обнулён) — с волны 2: fixed_kind reported, ждёт проверки жителей",
+      fixedOk && (it2.fixed_until || reportedApi) ? "PASS" : "FAIL",
+      { item: it2 ? { level: it2.level, weight: it2.weight, fixed_until: it2.fixed_until, fixed_kind: it2.fixed_kind, color: it2.color } : null });
     const l = await A.call("GET", `/api/civic/v2/complaints?bbox=${NURA_BBOX}`);
     const got = ((A.data(l) || {}).items || (A.data(l) || {}).complaints || []).find((c) => c.id === ctx.complaint.id);
     add("API", "6", "GET /complaints: статус fixed и история статусов", got && got.status === "fixed" && Array.isArray(got.status_history) && got.status_history.length >= 3 ? "PASS" : "FAIL",
@@ -753,16 +772,25 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     // С заглавной буквы и без флага i: в легенде карты то же слово строчными («исправлено») — его не считаем.
     const fixedShown = await visibleText(page, new RegExp(esc(fixedWord)));
     const green = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
+    // С волны 2 (IA_WAVE2 §3, R11 UX_REVIEW разбор 13): после «Отметить исправленным» — «Служба сообщила об устранении»,
+    // ждёт проверки жителями; «На карте зелёным до …» — только после «Да, исправлено» (шаг 7), здесь его НЕ требуем.
+    // Слова карточки R07 (у R07 свой словарь в heat.js) — запасные значения, если ключа нет в словаре R11.
+    const reportedRe = new RegExp(["heat.status.reported_fixed", "status.reported_fixed", "heat.reported_wait", "heat.level_word.reported"]
+      .map((k) => T(dict, k, null)).concat(lang === "kk"
+        ? ["Қызмет түзетілгенін хабарлады", "Тұрғындардың тексеруін күтуде", "тексеруді күтуде"]
+        : ["Служба сообщила об устранении", "Ждёт проверки жителями", "ждёт проверки"])
+      .filter(Boolean).map((x) => textRe(x).source).join("|"), "i");
+    const reportedCard = await visibleText(page, reportedRe);
     // Нет ни «Взять в работу», ни «Отметить исправленным», а цель уже «Исправлено» — новых жалоб нет: проверять нечего.
     // Нет «Взять в работу», но есть «Отметить исправленным» — место уже «В работе» (так бывает в демо-наборе R07): верно.
-    const nothingNew = !take && !fix && fixedShown;
-    step("6", `акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «${fixedWord}», зелёным на карте`,
-      nothingNew ? null : fix && fixedShown && green,
-      { under: s && s.under, take, fix, fixedShown, green,
+    const nothingNew = !take && !fix && (fixedShown || reportedCard);
+    step("6", `акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «${fixedWord}», зелёным на карте (с волны 2 — «служба сообщила», ждёт проверки жителей)`,
+      nothingNew ? null : fix && (reportedCard || (fixedShown && green)),
+      { under: s && s.under, take, fix, fixedShown, green, reportedCard,
         note: nothingNew ? "у остановки нет новых жалоб — шаг 2 не отправил жалобу" : (!take && fix ? "место уже «В работе» — кнопки «Взять в работу» нет" : undefined) }, await shot("6-fixed"));
-    if (!mobile && fixedShown) {
+    if (!mobile && (fixedShown || reportedCard)) {
       await page.keyboard.press("Escape"); await sleep(800);
-      const stillOpen = await visibleText(page, textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
+      const stillOpen = await visibleText(page, reportedCard ? reportedRe : textRe(T(dict, "heat.fixed_until", "На карте зелёным до {date}")));
       step("6", "клавиатура: Esc закрывает карточку остановки", !stillOpen, { stillOpen });
     }
   } else step("6", "акимат отмечает исправленным", null, "нет входа сотрудника");

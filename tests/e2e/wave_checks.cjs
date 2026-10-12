@@ -117,6 +117,8 @@ const STATIC = {
   qrR12: () => [...(fs.existsSync(path.join(ROOT, "web/civic/qr")) ? ["web/civic/qr/"] : []),
     ...grepBuild(["web/civic", "ui"], /qr\.card\.(metoo|report_other|number)/, /(^|\/)(ui-kit|i18n|vendor|tests?|shell)\//)],
   shellMenu: () => grepBuild(["web/civic/shell"], /nav\.more|\bNAV\s*=/, /(^|\/)(vendor|tests?)\//),
+  // R13 прогноз в «Картине дня» (R11 UX_REVIEW: «пометка „Прототип…“ обязательна в обеих локалях — R10 проверит»)
+  forecast: () => grepBuild(["web/civic"], /forecast\.(title|prototype|risk)/),
 };
 const PROBE_TEXT = {
   "W1-3": "код R09: complaint.emergency / emergency_phone / tel:104|112 в web/civic/feedback, ui/civic_feedback",
@@ -126,6 +128,8 @@ const PROBE_TEXT = {
   "W2-6": "оболочка R01 с ?report= или R12: web/civic/qr/, qr.card.*",
   "W2-7": "модуль R06/R05 window.BirgeIdeas в странице",
   "P-12": "оболочка R01 с меню по видам (NAV, «Ещё»)",
+  "LF-2": "—",
+  "F-13": "код вывода прогноза R13 (forecast.title / forecast.prototype) в web/civic",
 };
 
 // Какие модули разделов загружены (window.<имя>) — один заход на главную.
@@ -328,6 +332,81 @@ async function checkEmergency(ctx) {
   }
 }
 
+// ------------------------------------------------------------------------------------------------ LOCAL_FINAL P2
+// Codex LOCAL_FINAL P2 (11 окт): 375×812 → похожие → «У меня другое» → дождаться «Обращение отправлено» → сразу
+// Escape — отложенная классификация обращалась к закрытому мастеру (4 исключения JS). Проверка: ни одного исключения.
+async function checkQuickClose(ctx) {
+  const { browser, base, variants } = ctx;
+  const A = L.api(base);
+  const stop = STOPS[3];
+  const text = { ru: "Не горит фонарь на остановке, вечером темно", kk: "Аялдамада шам жанбайды, кешке қараңғы" };
+  for (const [size, lang] of variants.filter(([s]) => s[0] < 761)) {
+    const tag = `${size[0]}-${lang}`;
+    // похожая жалоба (та же категория) — чтобы был шаг «Об этом уже сообщили»
+    await A.call("POST", "/api/civic/v2/complaints", { text: text[lang] + " (" + (++filed) + ")", lang, category: "lighting", category_source: "resident",
+      point: stop.point, target: { kind: "object", id: stop.id, label_ru: `Остановка «${stop.name}»` }, device_id: devId("q"), demo: true });
+    const P = await openPage(browser, size, lang);
+    const errs = [];
+    P.page.on("pageerror", (e) => errs.push(String(e.message || e).slice(0, 200)));
+    try {
+      await goto(P.page, base, lang);
+      const wz = await wizardToText(P.page, lang, stop.point);
+      if (!wz.ok) { add("LF-2", tag, "мастер жалобы до шага текста", "FAIL", wz.why); continue; }
+      await wz.box.fill(text[lang]).catch(() => null);
+      await L.sleep(2500);
+      const catName = W(lang, "cat.lighting");
+      const sendRe = exact(W(lang, ["complaint.step3.send", "complaint.send"], lang === "kk" ? "Жіберу" : "Отправить"));
+      const nextRe = exact(W(lang, "complaint.wizard.next", lang === "kk" ? "Әрі қарай" : "Далее"));
+      const otherRe = exact(W(lang, "complaint.step4.different", lang === "kk" ? "Менде басқа мәселе" : "У меня другое"));
+      let other = false, sent = false;
+      for (let i = 0; i < 6 && !sent; i++) {
+        const dlg = (await L.firstVisible(P.page.getByRole("dialog"))) || P.page;
+        const ob = await L.firstVisible(dlg.getByRole("button", { name: otherRe }));
+        if (ob) { await ob.click().catch(() => null); other = true; await L.sleep(1200); continue; }
+        const sb = await L.firstVisible(dlg.getByRole("button", { name: sendRe }));
+        if (sb && (await sb.isEnabled().catch(() => false))) { await sb.click().catch(() => null); sent = true; break; }
+        const nb = await L.firstVisible(dlg.getByRole("button", { name: nextRe }));
+        if (!nb) break;
+        if (!(await nb.isEnabled().catch(() => false)) && catName) await L.clickText(dlg, part(catName), { wait: 900 });
+        await nb.click({ timeout: 3000 }).catch(() => null); await L.sleep(1500);
+      }
+      let done = null;
+      const doneRe = part(W(lang, "complaint.step5.title", lang === "kk" ? "Өтініш жіберілді" : "Обращение отправлено"));
+      for (const t0 = Date.now(); sent && done === null && Date.now() - t0 < 12000; await L.sleep(100)) {
+        if (await L.visibleText(P.page, doneRe)) done = Date.now() - t0;
+      }
+      // сразу закрыть — как в P2 (без паузы)
+      await P.page.keyboard.press("Escape").catch(() => null);
+      const before = errs.length;
+      await L.sleep(7000);
+      add("LF-2", tag, "«У меня другое» → «Отправить» → «Обращение отправлено» → сразу Escape: нет исключений JS (LOCAL_FINAL P2)",
+        sent && done !== null ? st(errs.length === 0) : "FAIL",
+        { other, sent, done_ms: done, errors: errs.slice(0, 4), errors_after_close: errs.length - before }, await shotOf(P.page, `${tag}-LF-2-closed`));
+    } finally { await P.ctx.close(); }
+  }
+}
+
+// ------------------------------------------------------------------------------------------------ R13 прогноз
+async function checkForecast(ctx) {
+  const { browser, base, variants } = ctx;
+  for (const [size, lang] of variants) {
+    const tag = `${size[0]}-${lang}`;
+    const K = await openPage(browser, size, lang, { "birge.mode": "akimat" });
+    try {
+      await goto(K.page, base, lang);
+      const day = await header(K.page, lang, exact(W(lang, ["common.nav.day", "shell.section.day", "akim.title"], lang === "kk" ? "Күн қорытындысы" : "Картина дня")), 2500);
+      await L.sleep(1500);
+      const title = W(lang, "forecast.title"), proto = W(lang, "forecast.prototype");
+      const block = title ? await L.visibleText(K.page, part(title)) : false;
+      if (!block) { await K.page.mouse.wheel(0, 1200).catch(() => null); await L.sleep(600); }
+      const block2 = block || (title ? await L.visibleText(K.page, part(title)) : false);
+      const mark = proto ? await L.visibleText(K.page, part(proto.split(":")[0] + ":")) : false;
+      add("F-13", tag, `«Картина дня»: блок прогноза R13 «${title}» с пометкой «${proto}»`, day && block2 ? st(mark) : "FAIL",
+        { day, block: block2, mark }, await shotOf(K.page, `${tag}-F-13-forecast`));
+    } finally { await K.ctx.close(); }
+  }
+}
+
 // ------------------------------------------------------------------------------------------------ W2-1 центральная сцена
 // Строки разделены по владельцам: запись обращения (R09: status + resolution.state reported → verified / reopened),
 // цвет цели на карте (R07: heat_states из categories_v2.json), карточка сотрудника (R07 встраивает форму R09),
@@ -382,6 +461,13 @@ async function checkCentral(ctx) {
       const word = card2 ? await L.visibleText(card2, part(W(lang, "status.reported_fixed"))) : false;
       add("W2-1", tag, `карта (R07): цель — «${W(lang, "status.reported_fixed")}» (светло-зелёный с пунктиром), не зелёный`,
         st(!!hi && hi.derived === "reported" && word), { heat: hi, card_text: word }, await shotOf(S.page, `${tag}-W2-1-2-reported`));
+      // R11 UX_REVIEW разбор 13 п. 2, IA_WAVE2 §3: до ответа жителей карточка не обещает «На карте зелёным до …» —
+      // срок зелёного цвета появляется после «Да, исправлено» (R10 demo_flow шаг 6 этого больше не требует).
+      if (card2 && word) {
+        const until = W(lang, "heat.fixed_until", lang === "kk" ? "Жасыл түспен көрсетілу мерзімі: {date}" : "На карте зелёным до {date}");
+        const early = await L.visibleText(card2, part(until));
+        add("W2-1", tag, `карточка (R07): до проверки жителями нет «${until.replace(/\s*\{date\}/, "")} …»`, st(!early), { early });
+      }
     } finally { await S.ctx.close(); }
     // 2. «Я тоже» (E) — тот же вопрос, что у автора (POLISH_WAVE_2 п. 1, IA §2.1, §2.4): до ответа автора.
     const M = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": E });
@@ -874,6 +960,10 @@ const ITEMS = [
   { id: "W2-6", title: "QR-паспорт объекта", owner: "R12 (+R01 ссылка)", run: checkQr, probe: (s) => s.shellReport.length > 0 || s.qrR12.length > 0, done: "Скан распечатки телефоном → карточка этой остановки" },
   { id: "W2-7", title: "Идеи → голосование → проект в 3D", owner: "R06 + R05", run: checkIdeas, probe: (s, r) => !!r.globals.BirgeIdeas, done: "Путь «идея → голоса → проект в 3D» или «отказ с причиной и доработка»" },
   { id: "P-12", title: "Защита от перегруза: меню ≤ 5, один доп. слой", owner: "R01, R11", run: checkClutter, probe: (s) => s.shellMenu.length > 0, done: "правила 1–2 POLISH_WAVE_2, IA_WAVE2 §0–1" },
+  { id: "F-13", title: "Прогноз R13 в «Картине дня» с пометкой «Прототип…»", owner: "R13 + R08", run: checkForecast, probe: (s) => s.forecast.length > 0,
+    done: "пометка «Прототип: прогноз обучен на синтетической истории…» видна в обеих локалях (R11 UX_REVIEW, R13 INTEGRATION §6)" },
+  { id: "LF-2", title: "Быстрое закрытие мастера после отправки — без ошибок JS (Codex LOCAL_FINAL P2)", owner: "R09", run: checkQuickClose, probe: () => true,
+    done: "ни одного исключения JavaScript после «Обращение отправлено» → Escape" },
 ];
 
 (async () => {

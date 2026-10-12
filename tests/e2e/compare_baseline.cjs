@@ -42,7 +42,12 @@ function compareScenario(base, now, timeRef) {
   const bb = new Map(base.results.map((r) => [key(r), r]));
   let kept = 0;
   for (const [k, r] of bb) {
-    const n = nb.get(k);
+    let n = nb.get(k);
+    if (!n) {
+      // Уточнённое имя (старое + пояснение, например «… (с волны 2 — …)») — та же проверка.
+      const k2 = [...nb.keys()].find((x) => !bb.has(x) && x.startsWith(k));
+      if (k2) { n = nb.get(k2); nb.delete(k2); nb.set(k, n); add("ИНФО", "сценарий", "имя проверки уточнено", { was: k, now: k2 }); }
+    }
     if (!n) add("СМОТРЕТЬ", "сценарий", "проверки нет в новом прогоне (переименована или пропала)", { check: k, was: r.status });
     else if (r.status === "PASS" && n.status !== "PASS") add("FAIL", "сценарий", "было PASS — стало " + n.status, { check: k, detail: n.detail, shot: n.shot });
     else if (r.status !== "PASS" && n.status === "PASS") add("ИНФО", "сценарий", "было " + r.status + " — стало PASS", { check: k });
