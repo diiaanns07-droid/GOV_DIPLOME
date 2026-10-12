@@ -175,7 +175,8 @@ def test_public_view_hides_text_and_device(store):
     store.set_status(record["id"], "accepted", actor="operator1", note="внутренняя заметка")
     view = rec.public_view(store.get(record["id"]))
     flat = repr(view)
-    assert "701" not in flat and "text" not in view and "operator1" not in flat and "заметка" not in flat
+    # Номер телефона целиком, а не «701»: три цифры могут случайно встретиться в случайном id записи (~0,3 % прогонов).
+    assert "701 123 45 67" not in flat and "text" not in view and "operator1" not in flat and "заметка" not in flat
     assert view["reporters"] == 1
     staff = rec.staff_view(store.get(record["id"]))
     assert staff["text"].startswith("Звоните") and "device_hash" not in staff
