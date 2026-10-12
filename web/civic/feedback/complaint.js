@@ -514,6 +514,15 @@
         // Признак для оболочки и соседей (R01, R07): идёт выбор места жалобы.
         document.documentElement.classList.toggle("bc-picking", picking);
       },
+      // Телефон, шаги 4–5: место — посередине видимой карты над шторкой (как Apple Maps). Сдвиг через offset —
+      // отступы карты (padding) оболочки R01 не трогаем; масштаб не меняем.
+      reveal: function (point, visibleTop, visibleBottom) {
+        if (!point || !map.easeTo) return;
+        var box = map.getContainer().getBoundingClientRect();
+        var dy = (visibleTop + visibleBottom) / 2 - (box.top + box.bottom) / 2;
+        var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        try { map.easeTo({ center: point, offset: [0, dy], duration: still ? 0 : 450 }); } catch (e) { /* карта ещё грузится */ }
+      },
       highlight: function (target, geometry, point) {
         var features = [];
         if (geometry) features.push({ type: "Feature", geometry: geometry,
@@ -1778,6 +1787,16 @@
       else if (state.step === 4) { if (state.reviewing) renderReview(body); else renderSimilar(body); }
       else renderDone(body);
       setPicking(!mine && state.step === 2);
+      // Телефон, шаги 4–5 (шторка по содержимому): выбранное место видно над шторкой — один раз при входе в шаг.
+      if (body.classList.contains("bc-body--enter") && !mine && state.step >= 4 && map.reveal && window.innerWidth < 1024) {
+        var where = state.point || (state.target && state.result && state.result.complaint && state.result.complaint.point);
+        if (where) requestAnimationFrame(function () {
+          if (panel.hidden) return;
+          var top = panel.getBoundingClientRect().top;
+          var header = document.querySelector(".topbar, #birge-header");
+          map.reveal(where, header ? header.getBoundingClientRect().bottom : 0, top);
+        });
+      }
       if (state.lastFocusStep !== panel.getAttribute("data-step")) {
         state.lastFocusStep = panel.getAttribute("data-step");
         focusTitle();
