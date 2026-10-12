@@ -48,7 +48,7 @@ const text = (p) => p.evaluate(() => document.body.innerText.replace(/\s+/g, " "
       res.stage = "6";
       // Шаг 6: акимат — «Жұмысқа алу» → «Түзетілді деп белгілеу» (+ форма R09, если есть)
       await p.evaluate((pw) => window.CivicShell.api.login("operator", pw), PASSWORD);
-      await p.evaluate(() => { const b = document.querySelector("#birge-header [data-mode=akimat]"); if (b) b.click(); }); await p.waitForTimeout(1200);
+      await p.evaluate(() => { const b = document.querySelector("#birge-header [data-mode=akimat]"); if (b) b.click(); else window.BirgeShell.setMode("akimat"); }); await p.waitForTimeout(1200);
       await p.evaluate((t) => window.CivicShell.heat.focusTarget(t.kind, t.id), target);
       await p.waitForSelector("[data-act='take'], [data-act='fixed']", { timeout: 10000 });
       if (await p.$("[data-act='take']")) { await p.click("[data-act='take']"); await p.waitForTimeout(1200); }
@@ -60,7 +60,7 @@ const text = (p) => p.evaluate(() => document.body.innerText.replace(/\s+/g, " "
       res.stage = "7";
       // Шаг 7: житель — «Менің өтініштерім» → «Иә, түзетілді»
       await p.keyboard.press("Escape");
-      await p.evaluate(() => { const b = document.querySelector("#birge-header [data-mode=resident]"); if (b) b.click(); }); await p.waitForTimeout(1200);
+      await p.evaluate(() => { const b = document.querySelector("#birge-header [data-mode=resident]"); if (b) b.click(); else window.BirgeShell.setMode("resident"); }); await p.waitForTimeout(1200);
       res.badge = await p.evaluate(() => { const m = document.querySelector("#birge-header [data-action=mine]"); return m ? (m.getAttribute("aria-label") || m.textContent).replace(/\s+/g, " ").trim().slice(0, 60) : null; });
       await p.evaluate(() => { const b = document.querySelector("#birge-header [data-action=mine]"); if (b) b.click(); }); await p.waitForTimeout(2500);
       const before = await text(p);

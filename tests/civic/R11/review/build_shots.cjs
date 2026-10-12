@@ -17,6 +17,12 @@ fs.mkdirSync(OUT, { recursive: true });
 const ready = (p) => p.waitForFunction(() => window.CivicShell && window.CivicShell.mode === "civic" && typeof mapReady !== "undefined" && mapReady
   && window.CivicShell.heat && window.CivicShell.heat.state && window.CivicShell.heat.state().status === "ready", null, { timeout: 45000 }).then(() => p.waitForTimeout(900));
 const clickHidden = (p, sel) => p.evaluate((s) => { const el = document.querySelector(s); if (!el) throw new Error("нет " + s); el.click(); }, sel);
+// Вид «Акимат / Житель»: до FINAL-3 — кнопка в шапке, с чистым дизайном — пункт меню аватара (рисуется при открытии),
+// поэтому без кнопки в шапке — через оболочку (BirgeShell.setMode — то же, что делает пункт меню).
+const setMode = (p, m) => p.evaluate((mode) => {
+  const b = document.querySelector("#birge-header [data-mode=" + mode + "]");
+  if (b) b.click(); else window.BirgeShell.setMode(mode);
+}, m);
 // Клик по карте в видимой части (не под шторкой мастера, панелью «Территория», баннером подложки) и мимо значков
 // тепловой карты: значок в режиме выбора места перехватывает нажатие (ошибка сборки, UX_REVIEW день 4).
 // Свободную точку ищем по elementFromPoint: самый длинный вертикальный отрезок, где сверху лежит сам canvas карты.
@@ -92,7 +98,7 @@ async function clickMapAt(p, ll) {
       await step("2-akimat-card", async () => { await p.click(".r07-item"); await p.waitForTimeout(1200); });
       await step("3-day", async () => { await clickHidden(p, "#birge-header [data-section=day]"); await p.waitForSelector("#birge-day .akim-hot__item", { timeout: 15000 }); }, true);
       await step("4-hot-to-map", async () => { await p.click("#birge-day .akim-hot__item"); await p.waitForTimeout(1200); });
-      await step("5-resident", async () => { await clickHidden(p, "#birge-header [data-mode=resident]"); await p.waitForTimeout(1200); });
+      await step("5-resident", async () => { await setMode(p, "resident"); await p.waitForTimeout(1200); });
       await step("6-wizard-place", async () => {
         // С B3 на телефоне кнопка скрыта, пока открыта карточка места (у карточки своя «Я тоже») — закрываем карточку.
         if (!(await p.isVisible(".bc-fab"))) { await p.keyboard.press("Escape"); await p.waitForTimeout(700); }
@@ -127,7 +133,7 @@ async function clickMapAt(p, ll) {
       if (size === 1366 && PASSWORD) {
         await step("10-fixed", async () => {
           await p.keyboard.press("Escape");
-          await clickHidden(p, "#birge-header [data-mode=akimat]"); await p.waitForTimeout(800);
+          await setMode(p, "akimat"); await p.waitForTimeout(800);
           await p.evaluate((pw) => window.CivicShell.api.login("operator", pw), PASSWORD);
           const own = await p.evaluate(async () => { const r = await fetch("/api/civic/v2/complaints/mine", { headers: { "X-Birge-Device": localStorage.getItem("birge.device") || "" } }); const b = await r.json(); const it = (b.data && (b.data.items || b.data)) || []; return it[0] && it[0].target; });
           await p.evaluate((t) => window.CivicShell.heat.focusTarget(t.kind, t.id), own);
@@ -140,7 +146,7 @@ async function clickMapAt(p, ll) {
       if (size === 1366 && PASSWORD && !process.env.NO3D) {
         await step("11-catalog", async () => {
           await p.keyboard.press("Escape");
-          await clickHidden(p, "#birge-header [data-mode=akimat]"); await p.waitForTimeout(900);
+          await setMode(p, "akimat"); await p.waitForTimeout(900);
           // С R01 8bbace7 (читаемость карты, решение владельца 11 окт) проекты и «Что построить?» — за слоем «Проекты»
           // (по умолчанию выключен): DEMO_SCRIPT шаг 5 — «Слои → Проекты».
           if (!(await p.isVisible(".birge-b3d-toggle").catch(() => false))) await enableProjects();
@@ -163,7 +169,7 @@ async function clickMapAt(p, ll) {
           await p.click("[data-action=place]", { timeout: 8000 }); await p.waitForTimeout(4500);
         });
         await step("13-vote", async () => {
-          await clickHidden(p, "#birge-header [data-mode=resident]"); await p.waitForTimeout(1500);
+          await setMode(p, "resident"); await p.waitForTimeout(1500);
           if (!(await p.$(".b3d-label"))) await enableProjects();
           // Подпись «Проект · 2027» у только что поставленного проекта; на мелком масштабе — точка (b3d-label--dot).
           await p.waitForSelector(".b3d-label", { timeout: 10000 }).catch(() => {});
