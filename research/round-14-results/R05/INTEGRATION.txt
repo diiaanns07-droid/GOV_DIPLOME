@@ -17,7 +17,9 @@ FINAL-3 + СТЕКЛО (12.10, вечер) — что взять R01. Код —
   card_never_covers_host_header… — FAIL до исправления). В оболочке R01 корень во всю ширину — там не проявлялось.
 - Проверено: контраст текста на панели R05 по пикселям (R11 glass_contrast.cjs) — худший 7,22 при норме 4,5
   (runs/glass_contrast_r05.txt); browser_check glass_panel_from_ui_kit_1366_375 (стекло: blur 22px, 80 %; bk-glass-off —
-  непрозрачная; старый ui-kit — белая); мой smoke в FINAL-3 (77ee50b, R05 03ac17c) — 27/27 (runs/app_b2_smoke_r01_final3.json).
+  непрозрачная; старый ui-kit — белая); R11 glass_fallback_check — PASS (runs/glass_fallback_r05.txt). На R01 8201da1
+  (код 3d8c426 + R06 eee3c88) + ui-kit 7117132 + R05 60c445b: мой smoke 27/27, ваши r14_b2 28/28, r14_shell 42/42,
+  r14_wave2 42/42, R06 96/96 и слой идей 16/16, R10 demo_flow 173/0/0 (runs/final3_8201da1_glass_60c445b.txt).
 - Тест smoke (tests/civic/R05/build3d/app_b2_smoke.mjs) понимает чистый дизайн: «Акимат/Житель» — через меню аватара,
   легенда — #birge-legend, плашку «Карта улиц не загрузилась» (#map-status, только без тайлов) не считает помехой.
 

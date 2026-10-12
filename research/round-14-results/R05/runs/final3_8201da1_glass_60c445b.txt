@@ -1,0 +1,23 @@
+R05 · FINAL-3 окончательный + стекло · прогон 2026-10-12 (облако Claude Code, SwiftShader без GPU, без интернета)
+Код R05: 60c445b (web/civic/build3d). ui-kit R11 7117132 (стекло, GLASS.md) — в демо через --kit, в сборке поверх ui-kit R01 (только добавления; словарь тот же).
+Сборка R01: claude/sharp-dijkstra-0t87gl @ 8201da1 (код 3d8c426 + R06 eee3c88); web/civic/build3d заменён на 60c445b. Тесты R10: claude/r14-R10 @ 7855976.
+
+code 60c445b2 12:10
+browser_check (R11 glass kit) exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json 12:18
+ux_day3 (glass kit) exit 0 Итого: 29 PASS, 0 FAIL
+node exit 0 # pass 35 # fail 0 
+shell smoke exit 0 pass=27 fail=0  12:25
+R01 r14_b2 exit 0 pass=28 fail=0 
+R01 r14_shell exit 0 pass=42 fail=0 
+R01 r14_wave2 exit 0 pass=42 fail=0 
+R06 app_r01_wave2 («Идеи» и разделы волны 2 в сборке) exit 0 pass=96 fail=0 
+R10 demo_flow (тесты 7855976) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/g2_demo 12:40
+DONE
+R06 app_r01_ideas_layer exit 0 pass=16 fail=0 
+
+Перед этим (тот же вечер):
+- демо R05 на 33e5fe5 (до исправления карточки) с ui-kit 7117132: 53 PASS / 1 FAIL / 1 NOT_RUN — FAIL card_never_covers_host_header… «ру»: карточка 329 из 375 px не опускалась поверх шторки (исправлено в 60c445b);
+- smoke в R01 77ee50b + ui-kit 7117132 + R05 4e72e86: 27/27 (runs/app_b2_smoke_r01_77ee50b_glass.json);
+- R11 glass_contrast.cjs — худший 7,22 (runs/glass_contrast_r05.txt); R11 glass_fallback_check.cjs — PASS ru/kk (runs/glass_fallback_r05.txt);
+- правила R15 test_r15_glass.py (85180b0) по web/civic/build3d/*.css, *.html — 0 находок;
+- i18n_sync со словарём R11 7117132 — 0 расхождений (runs/i18n_sync_r11.json).
