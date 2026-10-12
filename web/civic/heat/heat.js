@@ -593,8 +593,11 @@
         if (seq !== S.reqSeq || S.destroyed) return;
         S.status = err.status === 503 ? "not_ready" : "error";
         if (!S.data) render();
-        else toast(S.status === "not_ready" ? t("heat.not_ready") : t("heat.error_title"), "error",
-          { label: t("heat.retry"), onClick: () => void load() });
+        else {
+          clearBusy();
+          toast(S.status === "not_ready" ? t("heat.not_ready") : t("heat.error_title"), "error",
+            { label: t("heat.retry"), onClick: () => void load() });
+        }
       }
     }
     function findItem(key) { return S.data ? S.data.items.find((it) => keyOf(it.target) === key) : null; }
@@ -607,6 +610,7 @@
         if (findItem(key)) { S.pendingSelect = null; select(key, false); return; }
         if (S.mode === "targets" && !S.pendingMoving) {
           S.pendingSelect = null;   // за этот период жалоб по цели нет — честно сказать, а не молчать
+          clearBusy();
           toast(t("heat.empty.title", { n: S.filters.days }));
         }
         return;
@@ -706,6 +710,12 @@
       } catch (err) { /* цели за период нет или сеть — ниже честно скажем */ }
       S.pendingMoving = false;
       await load();
+    }
+    // Строка «Горячих мест», по которой нажали на обзоре районов: пока карта перелетает и грузится место (S.pendingSelect),
+    // она «открывается» — подсветка и кольцо вместо стрелки, чтобы нажатие не казалось потерянным (дизайн-марафон №8, №10).
+    // Снимается, когда открылась карточка (списка уже нет), или с честным тостом «жалоб нет» / «нет связи».
+    function clearBusy() {
+      panel.querySelectorAll(".r07-item--busy").forEach((b) => { b.classList.remove("r07-item--busy"); b.removeAttribute("aria-busy"); });
     }
 
     function parseHash() {
@@ -1670,7 +1680,8 @@
       // Строка (CLEAN_PASS R07 №7): без колонки ранга — значок-число цвета места + название 17/600 + «Тема · N чел.» 13 серым.
       const rows = items.slice(0, 10).map((it) => {
         const meta = topicName(it) + " · " + keep(t("heat.people_short", { count: it.count }));
-        return '<li><button type="button" class="r07-item" data-key="' + esc(keyOf(it.target)) + '">' +
+        const busy = S.pendingSelect === keyOf(it.target) && S.status === "ready";   // перерисовка во время перелёта
+        return '<li><button type="button" class="r07-item' + (busy ? ' r07-item--busy" aria-busy="true' : "") + '" data-key="' + esc(keyOf(it.target)) + '">' +
           '<span class="r07-mini" data-level="' + esc(it.level) + '" style="--r07-c:' + esc(it.color) + '">' + fmtNum(it.count) + "</span>" +
           '<span class="r07-item__text"><span class="r07-item__title">' + esc(label(it.target)) + '</span><span class="r07-item__meta">' + esc(meta) + "</span></span>" +
           svgIcon("back", 18).replace('class="r07-ic"', 'class="r07-ic r07-ic--flip"') + "</button></li>";
@@ -1895,7 +1906,7 @@
         if (it) { select(b.dataset.key, true); return; }
         // Карта сейчас — районы: приблизить к месту и открыть его карточку.
         const place = S.topItems.get(b.dataset.key);
-        if (place) void focusTarget(place.target.kind, place.target.id);
+        if (place) { b.classList.add("r07-item--busy"); b.setAttribute("aria-busy", "true"); void focusTarget(place.target.kind, place.target.id); }
       }));
       panel.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => {
         S.selected = null; updateSelectionLayer(); render(); drawBadges();
