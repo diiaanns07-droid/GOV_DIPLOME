@@ -33,7 +33,9 @@ async function measure(page, rootSelector) {
         if (/^[a-z0-9_]+(\.[a-z0-9_]+){1,}$/.test(own)) out.keys.push(own);
         const m = own.match(TECH); if (m) out.tech.push(m[0] + " «" + own.slice(0, 40) + "»");
         if (/(^|[^а-яёa-z])(демо|demo)/i.test(own)) out.demo.push(own.slice(0, 50));
-        if ((cs.textOverflow === "ellipsis" || cs.webkitLineClamp !== "none") && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)) out.clipped.push(own.slice(0, 40));
+        // текст только для диктора (1×1 px, clip) — не «обрезан» (оболочка R01: «Обзор: вся Астана»)
+        const srOnly = el.clientWidth <= 1 || el.clientHeight <= 1;
+        if (!srOnly && (cs.textOverflow === "ellipsis" || cs.webkitLineClamp !== "none") && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)) out.clipped.push(own.slice(0, 40));
       }
       ["aria-label", "title", "placeholder"].forEach((a) => {
         const v = el.getAttribute(a);

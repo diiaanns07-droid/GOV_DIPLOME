@@ -25,7 +25,7 @@ const ready = (p) => p.waitForFunction(() => window.CivicShell?.mode === "civic"
 async function audit(p) {
   return p.evaluate((scale) => {
     const S = new Set(scale);
-    const vis = (e) => { const b = e.getBoundingClientRect(), s = getComputedStyle(e); return b.width > 0 && b.height > 0 && b.bottom > 0 && b.top < innerHeight && b.right > 0 && b.left < innerWidth && s.visibility !== "hidden" && s.display !== "none" && Number(s.opacity) > 0.05; };
+    const vis = (e) => { const b = e.getBoundingClientRect(), s = getComputedStyle(e); return b.width > 1 && b.height > 1 && /* 1×1 — текст для диктора */ b.bottom > 0 && b.top < innerHeight && b.right > 0 && b.left < innerWidth && s.visibility !== "hidden" && s.display !== "none" && Number(s.opacity) > 0.05; };
     const key = (e) => (typeof e.className === "string" && e.className.trim() ? e.className.trim().split(/\s+/).slice(0, 2).join(".") : e.tagName.toLowerCase());
     const skip = (e) => e.closest(".maplibregl-canvas-container, .maplibregl-ctrl-attrib, script, style, code, .maplibregl-marker, .bk-sr-only");
     const ms = (v) => Math.max(0, ...String(v).split(",").map((x) => parseFloat(x) * (/ms/.test(x) ? 1 : 1000) || 0));
