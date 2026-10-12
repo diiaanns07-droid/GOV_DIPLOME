@@ -6,6 +6,7 @@
 //   obj_<вид>_1366.png  — крупный план каждого из пяти объектов (панель модуля скрыта, табличка видна);
 //   obj_<вид>_375.png   — то же на телефоне (×2);
 //   all_<ширина>_<язык>.png — все объекты с панелью и каталогом «Что построить?», как в демо;
+//   selected_<ширина>_<язык>.png — выбранный проект (табличка и пунктир цвета выбора);
 //   build_<доля>.png    — постройка сквера (замедлена до 6 с): доли 0.1 … 1.0;
 // Набор как в browser_check (SHOWCASE: спортплощадка + примеры), без ?reset — иначе демо стирает набор.
 // Ничего не проверяет — только снимает (проверки остаются в browser_check.mjs). Сервер — статический web/ (+ ui-kit/i18n из --kit).
@@ -129,6 +130,16 @@ for (const lang of ["ru", "kk"]) {
     await shot(p, `all_${w}_${lang}.png`); // у акимата в демо каталог открыт сразу — это и есть кадр каталога
     await p.context().close();
   }
+}
+// 2б. Выбранный проект (табличка и пунктир — цвет выбора) — 1366 ru и 375 kk.
+for (const [w, h, lang] of [[1366, 768, "ru"], [375, 812, "kk"]]) {
+  if (!want(`selected_${w}_${lang}.png`)) continue;
+  const p = await open({ width: w, height: h }, `?store=local&lang=${lang}&role=resident&center=71.4008,51.1278&zoom=${w < 700 ? 16.9 : 17.5}&pitch=60&bearing=-30`, SHOWCASE);
+  await p.evaluate(() => __b3d.select("p-demo-square-yard-1148721825"));
+  await settle(p);
+  await p.waitForTimeout(600);
+  await shot(p, `selected_${w}_${lang}.png`);
+  await p.context().close();
 }
 // 3. Постройка сквера, замедленная до 6 с: кадры по долям времени.
 if (want(...[0.1, 0.25, 0.4, 0.55, 0.7, 0.85, 1].map((f) => `build_${f.toFixed(2)}.png`))) {

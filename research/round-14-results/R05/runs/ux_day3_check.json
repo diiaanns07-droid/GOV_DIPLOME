@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-12T16:35:13.285Z",
+ "generated_at": "2026-10-12T16:49:22.008Z",
  "ui_kit_i18n": "выгрузка --kit",
  "checks": [
   {
@@ -51,7 +51,7 @@
     },
     "object": {
      "x": 683,
-     "y": 352,
+     "y": 337,
      "under_card": false
     }
    }
@@ -118,7 +118,7 @@
     },
     "object": {
      "x": 683,
-     "y": 352,
+     "y": 345,
      "under_card": false
     }
    }
@@ -185,7 +185,7 @@
     },
     "object": {
      "x": 188,
-     "y": 365,
+     "y": 354,
      "under_card": false
     }
    }
@@ -252,7 +252,7 @@
     },
     "object": {
      "x": 188,
-     "y": 367,
+     "y": 360,
      "under_card": false
     }
    }
