@@ -1,23 +1,23 @@
 {
  "role": "R12",
  "round": 14,
- "title": "Точность карты · поставка 7 к окончательному FINAL-3: кабинет сотрудника — один заголовок (R11 п. 11)",
+ "title": "Точность карты · поставка 8 к окончательному FINAL-3: стекло на паспорте QR (GLASS.md), кабинет — один заголовок",
  "branch": "claude/tender-brahmagupta-ef5ztl",
  "branch_note": "Ветка этой сессии (продолжение claude/r14-R12); в BRANCHES.md её нет — реестр правит координатор.",
- "delivery": 7,
- "for_build": "FINAL-3 окончательный (R01, после 77ee50b)",
+ "delivery": 8,
+ "for_build": "FINAL-3 окончательный (R01, после 3d8c426)",
  "base_sha": "R12 поставка 6 b1bd13e (в FINAL-3 с ea44476)",
- "code_sha": "8edc13e8099e6a65a12be357b13026d0340a1dd8",
- "tested_sha": "8edc13e8099e6a65a12be357b13026d0340a1dd8",
- "code_sha_note": "8edc13e = b1bd13e + web/civic/editor (editor.js: data-only у шапки; editor.css: без полосы, h2 скрыт в .civic-drawer, «Вы вошли» и «Выйти» одной строкой) + tests/civic/R12/editor/app_cabinet_title.mjs. После — документы.",
- "tested_note": "Linux-контейнер Claude Code, без интернета. Сборка: detached worktree R01 77ee50b + web/civic/editor из 8edc13e (остальные пути R12 в 77ee50b уже равны b1bd13e); CIVIC_DEMO=1, база засеяна, временный сотрудник; ничего не коммитилось.",
+ "code_sha": "e3223d2e8cba6201805ebdf80fc938ea4f1e8ea9",
+ "tested_sha": "e3223d2e8cba6201805ebdf80fc938ea4f1e8ea9",
+ "code_sha_note": "e3223d2 = b1bd13e + 8edc13e (кабинет сотрудника: один заголовок в панели, без полосы) + e3223d2 (паспорт QR: своё .bk-glass только вне панели оболочки). Python и данные не менялись с b1bd13e.",
+ "tested_note": "Linux-контейнер Claude Code, без интернета. Сборка: detached worktree R01 3d8c426 (кабинет — на 77ee50b) + web/civic/qr, web/civic/editor, tests/civic/R12 из R12; вариант с ui-kit R11 (tokens/components с GLASS.md); CIVIC_DEMO=1, база засеяна; ничего не коммитилось.",
  "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (коммит с этим файлом — в финальном сообщении)",
- "take": "git checkout <code_sha> -- web/civic/editor tests/civic/R12",
+ "take": "git checkout <code_sha> -- web/civic/qr web/civic/editor tests/civic/R12",
  "items_status": [
   {
    "id": "R12 в «Коротко для владельца — FINAL-3»",
    "title": "тест QR под меню аватара",
-   "status": "done — в сборке с ea44476 (поставка 6); на 77ee50b 32/0"
+   "status": "done — в FINAL-3 с ea44476; на 3d8c426 + R12 33/0"
   },
   {
    "id": "UX_REVIEW R11 FINAL-3 п. 11",
@@ -25,53 +25,135 @@
    "status": "done (8edc13e)"
   },
   {
-   "id": "GLASS (R11)",
-   "title": "стекло",
-   "status": "не для R12: GLASS.md ещё не опубликован; поверхности R12 — паспорт QR внутри панели оболочки (стекло даёт R01), лист печати и кабинет — формы (по правилу стекла — без него)"
+   "id": "GLASS.md §4 (R12, по желанию)",
+   "title": "паспорт QR на стекле; лист печати белый",
+   "status": "done (e3223d2): в панели R01 — её стекло, вне оболочки — .bk-glass"
   }
  ],
  "tests": [
   {
-   "name": "кабинет в настоящем приложении (77ee50b + R12), 375 ru и 1366 kk",
+   "name": "QR и мастер R09 в приложении (R01 3d8c426 + R12)",
    "status": "PASS",
-   "result": "до входа: «Кабинет сотрудника» + «Вход для сотрудника»; после — один «Кабинет сотрудника»; шапка редактора без фона; ошибок 0",
-   "command": "node tests/civic/R12/editor/app_cabinet_title.mjs http://127.0.0.1:<порт> <папка> <файл-пароля>",
-   "evidence": "screenshots/final3/cabinet-*.png"
+   "result": "33/0/0 с ui-kit сборки; 33/0/0 с ui-kit R11 (стекло)",
+   "evidence": "runs/app_qr_acceptance.json"
+  },
+  {
+   "name": "стекло паспорта: панель со стеклом / без (ui-kit R11), 1366 ru и 375 kk",
+   "status": "PASS",
+   "result": "в панели у паспорта своего стекла нет (фон прозрачный) — в обоих вариантах",
+   "evidence": "screenshots/glass/"
+  },
+  {
+   "name": "QR стенд",
+   "status": "PASS",
+   "result": "6/6 (в т. ч. «вне панели — .bk-glass»)",
+   "sha": "e3223d2e8cba6201805ebdf80fc938ea4f1e8ea9",
+   "evidence_type": "synthetic"
+  },
+  {
+   "name": "кабинет сотрудника в приложении (77ee50b + R12)",
+   "status": "PASS",
+   "result": "один заголовок до и после входа, 375 ru и 1366 kk, ошибок 0",
+   "evidence": "screenshots/final3/"
   },
   {
    "name": "редактор: core / e2e / e2e_r13 / e2e_r12 / e2e_r12_real / e2e_r12_kk",
    "status": "PASS",
-   "result": "31, 25, 14, 8, 1, 3 — 0 FAIL",
-   "sha": "8edc13e8099e6a65a12be357b13026d0340a1dd8"
+   "result": "31, 25, 14, 8, 1, 3",
+   "sha": "8edc13e (редактор после не менялся)"
   },
   {
-   "name": "QR и мастер R09 в приложении (77ee50b + R12)",
-   "status": "PASS",
-   "result": "32/0/0"
-  },
-  {
-   "name": "R01 браузер на 77ee50b + R12",
+   "name": "R01 браузер (77ee50b + R12)",
    "status": "PASS",
    "result": "r14_shell 42/0, r14_b1 16/0"
   },
   {
-   "name": "R11 staff_kk_check.cjs",
-   "status": "NOT_RUN (тест устарел)",
-   "note": "ищет кнопку до меню аватара — таймаут на FINAL-3 и без правки R12 (INTEGRATION F3b.4)"
-  },
-  {
    "name": "pytest",
    "status": "не менялось",
-   "note": "Python-код R12 не менялся с b1bd13e (pytest R12 42/42; на 2f643dc + R12 — R12/R06/R01/R15/R10 1164 passed)"
+   "note": "Python-код R12 не менялся с b1bd13e (R12 42/42; на 2f643dc + R12: R12/R06/R01/R15/R10 1164 passed)"
   }
  ],
  "known_limits": [
-  "Изменение только во внешнем виде кабинета (CSS + один data-атрибут); логика входа и списка прежняя.",
+  "Стекло на правой панели — у R01 (GLASS.md §4 №5); до этого паспорт лежит на белой панели (как в FINAL-3 сейчас).",
   "На телефоне кнопка R09 «Сообщить о проблеме» поверх открытого кабинета — оболочка R01 (INTEGRATION F3b.3).",
-  "Остаётся из прошлых поставок: 186 из 3 820 светофоров/переходов без улицы в 150 м — без «у улицы X»; 2 ключа для R11 (qr.card.complaints, qr.form.base_other) — проверить, взяты ли."
+  "186 из 3 820 светофоров/переходов без улицы в 150 м — без «у улицы X»."
  ],
- "next_step": "R01: web/civic/editor и tests/civic/R12 из 8edc13e в окончательный FINAL-3. R12 дальше: если R11 опубликует GLASS.md с требованиями к элементам R12 — внести; замечания по окончательной сборке.",
+ "next_step": "R01: web/civic/qr, web/civic/editor, tests/civic/R12 из e3223d2 в окончательный FINAL-3. R12 дальше: замечания по окончательной сборке.",
  "previous": {
+  "delivery_7": {
+   "role": "R12",
+   "round": 14,
+   "title": "Точность карты · поставка 7 к окончательному FINAL-3: кабинет сотрудника — один заголовок (R11 п. 11)",
+   "branch": "claude/tender-brahmagupta-ef5ztl",
+   "branch_note": "Ветка этой сессии (продолжение claude/r14-R12); в BRANCHES.md её нет — реестр правит координатор.",
+   "delivery": 7,
+   "for_build": "FINAL-3 окончательный (R01, после 77ee50b)",
+   "base_sha": "R12 поставка 6 b1bd13e (в FINAL-3 с ea44476)",
+   "code_sha": "8edc13e8099e6a65a12be357b13026d0340a1dd8",
+   "tested_sha": "8edc13e8099e6a65a12be357b13026d0340a1dd8",
+   "code_sha_note": "8edc13e = b1bd13e + web/civic/editor (editor.js: data-only у шапки; editor.css: без полосы, h2 скрыт в .civic-drawer, «Вы вошли» и «Выйти» одной строкой) + tests/civic/R12/editor/app_cabinet_title.mjs. После — документы.",
+   "tested_note": "Linux-контейнер Claude Code, без интернета. Сборка: detached worktree R01 77ee50b + web/civic/editor из 8edc13e (остальные пути R12 в 77ee50b уже равны b1bd13e); CIVIC_DEMO=1, база засеяна, временный сотрудник; ничего не коммитилось.",
+   "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (коммит с этим файлом — в финальном сообщении)",
+   "take": "git checkout <code_sha> -- web/civic/editor tests/civic/R12",
+   "items_status": [
+    {
+     "id": "R12 в «Коротко для владельца — FINAL-3»",
+     "title": "тест QR под меню аватара",
+     "status": "done — в сборке с ea44476 (поставка 6); на 77ee50b 32/0"
+    },
+    {
+     "id": "UX_REVIEW R11 FINAL-3 п. 11",
+     "title": "кабинет сотрудника: один заголовок, без цветной полосы",
+     "status": "done (8edc13e)"
+    },
+    {
+     "id": "GLASS (R11)",
+     "title": "стекло",
+     "status": "не для R12: GLASS.md ещё не опубликован; поверхности R12 — паспорт QR внутри панели оболочки (стекло даёт R01), лист печати и кабинет — формы (по правилу стекла — без него)"
+    }
+   ],
+   "tests": [
+    {
+     "name": "кабинет в настоящем приложении (77ee50b + R12), 375 ru и 1366 kk",
+     "status": "PASS",
+     "result": "до входа: «Кабинет сотрудника» + «Вход для сотрудника»; после — один «Кабинет сотрудника»; шапка редактора без фона; ошибок 0",
+     "command": "node tests/civic/R12/editor/app_cabinet_title.mjs http://127.0.0.1:<порт> <папка> <файл-пароля>",
+     "evidence": "screenshots/final3/cabinet-*.png"
+    },
+    {
+     "name": "редактор: core / e2e / e2e_r13 / e2e_r12 / e2e_r12_real / e2e_r12_kk",
+     "status": "PASS",
+     "result": "31, 25, 14, 8, 1, 3 — 0 FAIL",
+     "sha": "8edc13e8099e6a65a12be357b13026d0340a1dd8"
+    },
+    {
+     "name": "QR и мастер R09 в приложении (77ee50b + R12)",
+     "status": "PASS",
+     "result": "32/0/0"
+    },
+    {
+     "name": "R01 браузер на 77ee50b + R12",
+     "status": "PASS",
+     "result": "r14_shell 42/0, r14_b1 16/0"
+    },
+    {
+     "name": "R11 staff_kk_check.cjs",
+     "status": "NOT_RUN (тест устарел)",
+     "note": "ищет кнопку до меню аватара — таймаут на FINAL-3 и без правки R12 (INTEGRATION F3b.4)"
+    },
+    {
+     "name": "pytest",
+     "status": "не менялось",
+     "note": "Python-код R12 не менялся с b1bd13e (pytest R12 42/42; на 2f643dc + R12 — R12/R06/R01/R15/R10 1164 passed)"
+    }
+   ],
+   "known_limits": [
+    "Изменение только во внешнем виде кабинета (CSS + один data-атрибут); логика входа и списка прежняя.",
+    "На телефоне кнопка R09 «Сообщить о проблеме» поверх открытого кабинета — оболочка R01 (INTEGRATION F3b.3).",
+    "Остаётся из прошлых поставок: 186 из 3 820 светофоров/переходов без улицы в 150 м — без «у улицы X»; 2 ключа для R11 (qr.card.complaints, qr.form.base_other) — проверить, взяты ли."
+   ],
+   "next_step": "R01: web/civic/editor и tests/civic/R12 из 8edc13e в окончательный FINAL-3. R12 дальше: если R11 опубликует GLASS.md с требованиями к элементам R12 — внести; замечания по окончательной сборке."
+  },
   "delivery_6": {
    "role": "R12",
    "round": 14,
