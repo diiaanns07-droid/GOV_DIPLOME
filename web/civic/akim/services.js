@@ -296,7 +296,8 @@
         });
       rootEl.appendChild(list);
       rootEl.appendChild(
-        h("div", { class: "svc__actions" }, [
+        // «Сохранить» — плавающая стеклянная капсула у нижнего края (дизайн-марафон, как панель инструментов iOS).
+        h("div", { class: "svc__actions bk-glass bk-glass--bar" }, [
           h("button", { type: "button", class: "bk-btn bk-btn--primary svc__save", text: tr("common.action.save"), onclick: save }),
           h("p", { class: "svc__status", role: "status", "data-kind": state.messageKind, text: state.message }),
         ])

@@ -10,7 +10,8 @@
  *   - контраст каждого видимого текста R08 в худшем случае — под стеклом чёрная карта: фон = стекло 80 % над #000,
  *     сверху — свои фоны предков текста (подложки .bk-card и т. п.); норма 4,5:1 (крупный текст — 3:1);
  *   - внутри R08 нет второго стекла (backdrop-filter) — стекло только у листа R01 и у компактной полосы раздела
- *     «Картины дня» (.akim__bar-btn, появляется при прокрутке — GLASS.md §2 «шапка»);
+ *     «Картины дня» (.akim__bar-btn, появляется при прокрутке — GLASS.md §2 «шапка») и у капсулы «Сохранить»
+ *     в «Службах» (.svc__actions — панель инструментов);
  *   - числа «Картины дня» без подложки (CLEAN_PASS п. 3), поля даты/района/выбора службы — непрозрачные;
  *   - в печати лист белый (ui-kit @media print).
  * Итог — glass_check.json в папке кадров.
@@ -75,7 +76,7 @@ async function contrast(page, rootSel, sheetSel) {
       if (cs.visibility === "hidden" || cs.display === "none") continue;
       // Разрешено одно: компактная полоса раздела «Картины дня» (.akim__bar-btn — шапка раздела, GLASS.md §2 «шапка»).
       if (((cs.backdropFilter && cs.backdropFilter !== "none") || (cs.webkitBackdropFilter && cs.webkitBackdropFilter !== "none"))
-        && !el.classList.contains("akim__bar-btn"))
+        && !el.classList.contains("akim__bar-btn") && !el.classList.contains("svc__actions"))
         out.nested.push(el.className.toString().slice(0, 40));
       const own = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
       if (!own) continue;

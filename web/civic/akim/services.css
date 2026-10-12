@@ -76,17 +76,24 @@
 .svc__edited {
   white-space: nowrap;
 }
-.svc__actions {
+.svc__actions { /* стекло — классы ui-kit bk-glass bk-glass--bar (запасной вид без размытия — белый, ui-kit) */
   position: sticky;
-  bottom: 0;
+  bottom: var(--s-3);
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s-2) var(--s-3);
-  margin-top: var(--s-2);
-  padding: var(--s-3) 0;
-  border-top: 1px solid var(--c-line);
-  background: var(--c-surface);
+  width: fit-content;
+  max-width: 100%;
+  margin-top: var(--s-4);
+  padding: var(--s-2);
+}
+.svc__actions .svc__status {
+  padding-right: var(--s-3);
+}
+.svc__actions .svc__status:empty {
+  display: none;
 }
 .svc__status {
   margin: 0;
@@ -114,7 +121,10 @@
   .svc__select {
     padding: 0 var(--s-2);
   }
+  .svc__actions {
+    width: 100%; /* телефон: капсула во всю ширину, кнопка — тоже */
+  }
   .svc__save {
-    width: 100%;
+    flex: 1 1 100%;
   }
 }
