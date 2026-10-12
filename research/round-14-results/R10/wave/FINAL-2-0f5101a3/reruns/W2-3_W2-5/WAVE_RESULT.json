@@ -1,0 +1,434 @@
+{
+ "meta": {
+  "root": "/home/user/bf2s4",
+  "sha": "0f5101a3",
+  "when": "2026-10-12T04:50:03.235Z",
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "node": "v22.22.0",
+  "runtime": {
+   "BirgeNearby": true,
+   "BirgeIdeas": false,
+   "BirgeProjects": false,
+   "BirgeComplaintList": true,
+   "BirgeAsk": false,
+   "BirgeQuestions": false,
+   "BirgeShell": true
+  }
+ },
+ "counts": {
+  "PASS": 20,
+  "FAIL": 0,
+  "PENDING": 0,
+  "NOT_RUN": 0,
+  "INFO": 2
+ },
+ "items": [
+  {
+   "id": "W2-3",
+   "title": "Один ответ всем «Я тоже» + W2-10 «Что изменилось»",
+   "owner": "R09",
+   "also": [
+    "W2-10"
+   ],
+   "done": "одно действие оператора → обновление у всех; житель видит смысл участия",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "W2-5",
+   "title": "«Нужно решение акима» + W2-8 «Пульс района»",
+   "owner": "R08 (+R13)",
+   "also": [
+    "W2-8"
+   ],
+   "done": "1–3 решения; 1–5 тревог с причиной и ссылкой на карту",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  }
+ ],
+ "results": [
+  {
+   "item": "W2-3",
+   "scope": "сборка",
+   "name": "Один ответ всем «Я тоже» + W2-10 «Что изменилось»: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-3",
+   "scope": "API",
+   "name": "одно обновление сотрудника → его видят автор и все «Я тоже» (в «Что изменилось»)",
+   "status": "PASS",
+   "detail": {
+    "http": 200,
+    "notified": 3,
+    "seen": {
+     "автор": true,
+     "«Я тоже» 1": true,
+     "«Я тоже» 2": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-10",
+   "scope": "API",
+   "name": "«Что изменилось»: события по своим обращениям с id (status, note, …) и итог",
+   "status": "PASS",
+   "detail": {
+    "kinds": [
+     "note",
+     "status"
+    ],
+    "summary": {
+     "verified": 0,
+     "waiting": 1,
+     "total": 1
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-10",
+   "scope": "1366-ru",
+   "name": "житель («Я тоже»): «Мои обращения» → «Что изменилось» с обновлением сотрудника",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "box": true,
+    "text": true
+   },
+   "shot": "1366-ru-W2-10-changes.jpg"
+  },
+  {
+   "item": "W2-10",
+   "scope": "1366-ru",
+   "name": "уведомление открывает конкретное изменение (#mine/event=…), а не главную",
+   "status": "PASS",
+   "detail": {
+    "event": "B-0003.note.20261012T094827",
+    "row": true,
+    "card": true
+   },
+   "shot": "1366-ru-W2-10-event.jpg"
+  },
+  {
+   "item": "W2-10",
+   "scope": "1366-kk",
+   "name": "житель («Я тоже»): «Мои обращения» → «Что изменилось» с обновлением сотрудника",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "box": true,
+    "text": true
+   },
+   "shot": "1366-kk-W2-10-changes.jpg"
+  },
+  {
+   "item": "W2-10",
+   "scope": "1366-kk",
+   "name": "уведомление открывает конкретное изменение (#mine/event=…), а не главную",
+   "status": "PASS",
+   "detail": {
+    "event": "B-0003.note.20261012T094827",
+    "row": true,
+    "card": true
+   },
+   "shot": "1366-kk-W2-10-event.jpg"
+  },
+  {
+   "item": "W2-10",
+   "scope": "375-ru",
+   "name": "житель («Я тоже»): «Мои обращения» → «Что изменилось» с обновлением сотрудника",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "box": true,
+    "text": true
+   },
+   "shot": "375-ru-W2-10-changes.jpg"
+  },
+  {
+   "item": "W2-10",
+   "scope": "375-ru",
+   "name": "уведомление открывает конкретное изменение (#mine/event=…), а не главную",
+   "status": "PASS",
+   "detail": {
+    "event": "B-0003.note.20261012T094827",
+    "row": true,
+    "card": true
+   },
+   "shot": "375-ru-W2-10-event.jpg"
+  },
+  {
+   "item": "W2-10",
+   "scope": "375-kk",
+   "name": "житель («Я тоже»): «Мои обращения» → «Что изменилось» с обновлением сотрудника",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "box": true,
+    "text": true
+   },
+   "shot": "375-kk-W2-10-changes.jpg"
+  },
+  {
+   "item": "W2-10",
+   "scope": "375-kk",
+   "name": "уведомление открывает конкретное изменение (#mine/event=…), а не главную",
+   "status": "PASS",
+   "detail": {
+    "event": "B-0003.note.20261012T094827",
+    "row": true,
+    "card": true
+   },
+   "shot": "375-kk-W2-10-event.jpg"
+  },
+  {
+   "item": "W2-5",
+   "scope": "сборка",
+   "name": "«Нужно решение акима» + W2-8 «Пульс района»: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-5",
+   "scope": "API",
+   "name": "«Нужно решение акима»: 1–3 решения, у каждого — проблема, что блокирует, 2 варианта, нужное решение (ru и kk)",
+   "status": "PASS",
+   "detail": {
+    "available": true,
+    "n": 3,
+    "complete": 3,
+    "source": "example",
+    "demo": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-8",
+   "scope": "API",
+   "name": "«Пульс района»: 1–5 тревог с причиной (рост к обычному уровню) и местом на карте",
+   "status": "PASS",
+   "detail": {
+    "available": true,
+    "n": 5,
+    "kinds": [
+     "spike_city",
+     "spike_new",
+     "spike",
+     "spike",
+     "spike"
+    ],
+    "method": {
+     "min_reports": 5,
+     "spike_ratio": 2,
+     "base_weeks": 4,
+     "min_metoo_week": 8
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-5",
+   "scope": "1366-ru",
+   "name": "«Картина дня»: блок «Нужно решение акима» виден; демо помечено «пример»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "block": true,
+    "demoMark": true
+   },
+   "shot": "1366-ru-W2-5-decisions.jpg"
+  },
+  {
+   "item": "W2-8",
+   "scope": "1366-ru",
+   "name": "«Картина дня»: «Пульс района» — 1–5 тревог, у тревоги ссылка «на карте» открывает карту",
+   "status": "PASS",
+   "detail": {
+    "rows": 5,
+    "link": true,
+    "toMap": true
+   },
+   "shot": "1366-ru-W2-8-pulse.jpg"
+  },
+  {
+   "item": "W2-5",
+   "scope": "1366-kk",
+   "name": "«Картина дня»: блок «Әкімнің шешімі керек» виден; демо помечено «пример»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "block": true,
+    "demoMark": true
+   },
+   "shot": "1366-kk-W2-5-decisions.jpg"
+  },
+  {
+   "item": "W2-8",
+   "scope": "1366-kk",
+   "name": "«Картина дня»: «Аудан пульсі» — 1–5 тревог, у тревоги ссылка «на карте» открывает карту",
+   "status": "PASS",
+   "detail": {
+    "rows": 5,
+    "link": true,
+    "toMap": true
+   },
+   "shot": "1366-kk-W2-8-pulse.jpg"
+  },
+  {
+   "item": "W2-5",
+   "scope": "375-ru",
+   "name": "«Картина дня»: блок «Нужно решение акима» виден; демо помечено «пример»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "block": true,
+    "demoMark": true
+   },
+   "shot": "375-ru-W2-5-decisions.jpg"
+  },
+  {
+   "item": "W2-8",
+   "scope": "375-ru",
+   "name": "«Картина дня»: «Пульс района» — 1–5 тревог, у тревоги ссылка «на карте» открывает карту",
+   "status": "PASS",
+   "detail": {
+    "rows": 5,
+    "link": true,
+    "toMap": true
+   },
+   "shot": "375-ru-W2-8-pulse.jpg"
+  },
+  {
+   "item": "W2-5",
+   "scope": "375-kk",
+   "name": "«Картина дня»: блок «Әкімнің шешімі керек» виден; демо помечено «пример»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "block": true,
+    "demoMark": true
+   },
+   "shot": "375-kk-W2-5-decisions.jpg"
+  },
+  {
+   "item": "W2-8",
+   "scope": "375-kk",
+   "name": "«Картина дня»: «Аудан пульсі» — 1–5 тревог, у тревоги ссылка «на карте» открывает карту",
+   "status": "PASS",
+   "detail": {
+    "rows": 5,
+    "link": true,
+    "toMap": true
+   },
+   "shot": "375-kk-W2-8-pulse.jpg"
+  }
+ ]
+}

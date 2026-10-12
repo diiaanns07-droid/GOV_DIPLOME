@@ -1,0 +1,188 @@
+{
+ "meta": {
+  "root": "/home/user/bf2s4r07",
+  "sha": "0f5101a3",
+  "when": "2026-10-12T04:42:05.161Z",
+  "sizes": [
+   "375x812"
+  ],
+  "langs": [
+   "ru"
+  ],
+  "node": "v22.22.0",
+  "runtime": {
+   "BirgeNearby": true,
+   "BirgeIdeas": false,
+   "BirgeProjects": false,
+   "BirgeComplaintList": true,
+   "BirgeAsk": false,
+   "BirgeQuestions": false,
+   "BirgeShell": true
+  }
+ },
+ "counts": {
+  "PASS": 6,
+  "FAIL": 0,
+  "PENDING": 0,
+  "NOT_RUN": 1,
+  "INFO": 1
+ },
+ "items": [
+  {
+   "id": "W2-6",
+   "title": "QR-паспорт объекта",
+   "owner": "R12 (+R01 ссылка)",
+   "done": "Скан распечатки телефоном → карточка этой остановки",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  }
+ ],
+ "results": [
+  {
+   "item": "W2-6",
+   "scope": "сборка",
+   "name": "QR-паспорт объекта: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed",
+      "web/civic/heat/heat.js: reported_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-6",
+   "scope": "375-ru",
+   "name": "/?report=<id>: язык не сменился, вид «Житель» на этот заход, сохранённый вид не перезаписан",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru",
+    "saved_mode": "akimat",
+    "saved_lang": "ru",
+    "resident_pressed": true
+   },
+   "shot": "375-ru-W2-6-report-shell.jpg"
+  },
+  {
+   "item": "W2-6",
+   "scope": "1366-kk",
+   "name": "ссылка с ?lang=ru не меняет сохранённый ҚАЗ: следующий заход — снова ҚАЗ",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk",
+    "saved": "kk"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-6",
+   "scope": "375-ru",
+   "name": "/?report=<id> → карточка «Хан Шатыр»: одна главная «Я тоже», «Сообщить о другом», «Подробнее»",
+   "status": "PASS",
+   "detail": {
+    "card": true,
+    "primary": [
+     "Я тоже"
+    ],
+    "metoo": true,
+    "other": true,
+    "more": true
+   },
+   "shot": "375-ru-W2-6-card.jpg"
+  },
+  {
+   "item": "W2-6",
+   "scope": "375-ru",
+   "name": "«Сообщить о другом» открывает мастер жалобы сразу на шаге текста с этим местом",
+   "status": "PASS",
+   "detail": {
+    "textbox": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-6",
+   "scope": "375-ru",
+   "name": "неизвестный id → «Объект не найден» и кнопка «На карту» (не пустая карта)",
+   "status": "PASS",
+   "detail": {
+    "not_found": true,
+    "to_map": true
+   },
+   "shot": "375-ru-W2-6-not-found.jpg"
+  },
+  {
+   "item": "W2-6",
+   "scope": "лист",
+   "name": "лист для печати: QR ≥ 6 см, крупное название, «Объект № …», призыв на kk и ru, домен, стиль печати; без чисел жалоб",
+   "status": "PASS",
+   "detail": {
+    "sheet": "/civic/qr/print.html?ids=osm-node-4109037549",
+    "qr": 1,
+    "qr_px": 340,
+    "big_text": 3,
+    "number": true,
+    "call_ru": true,
+    "call_kk": true,
+    "call_kk_r11": false,
+    "domain": true,
+    "print": true,
+    "counts": false
+   },
+   "shot": "1366-ru-W2-6-sheet.jpg"
+  },
+  {
+   "item": "W2-6",
+   "scope": "лист",
+   "name": "скан распечатки телефоном открывает карточку этой остановки; подмена ссылки",
+   "status": "NOT_RUN",
+   "detail": "только на устройстве — Codex/владелец (камера телефона); подмена ссылки — R15",
+   "shot": null
+  }
+ ]
+}

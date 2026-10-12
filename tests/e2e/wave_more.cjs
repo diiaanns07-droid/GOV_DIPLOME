@@ -425,6 +425,8 @@ module.exports = function waveMore(H) {
     for (const d of [D2, D3]) await A.call("POST", `/api/civic/v2/complaints/${c.rec.id}/metoo`, { device_id: d }, false, d);
     await A.call("POST", `/api/civic/v2/complaints/${c.rec.id}/status`, { status: "in_progress" }, true);
     const note = "R10: заменили лампу, вечером проверим";
+    // R09: «Что изменилось» — новое с прошлого визита (первый визит только запоминает момент): житель уже заходил до обновления.
+    const seenBefore = new Date(Date.now() - 60000).toISOString();
     const u = await A.call("POST", `/api/civic/v2/complaints/${c.rec.id}/update`, { text: note }, true);
     const ud = A.data(u) || {};
     const seen = {};
@@ -439,7 +441,7 @@ module.exports = function waveMore(H) {
     add("W2-10", "API", "«Что изменилось»: события по своим обращениям с id (status, note, …) и итог", st(!!ev && !!ch1.summary), { kinds: (ch1.items || []).filter((x) => x.complaint_id === c.rec.id).map((x) => x.kind), summary: ch1.summary });
     for (const [size, lang] of variants) {
       const tag = `${size[0]}-${lang}`;
-      const P = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": D2 });
+      const P = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": D2, "birge.complaint.changes_seen": seenBefore });
       try {
         await goto(P.page, base, lang);
         const opened = await header(P.page, lang, mineRe(lang), 2000);
@@ -447,12 +449,15 @@ module.exports = function waveMore(H) {
         const text = box ? await L.visibleText(box, /заменили лампу/i) : false;
         add("W2-10", tag, "житель («Я тоже»): «Мои обращения» → «Что изменилось» с обновлением сотрудника", st(opened && !!box && text), { opened, box: !!box, text }, await shotOf(P.page, `${tag}-W2-10-changes`));
         if (ev) {
-          const P2 = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": D1 });
+          const P2 = await openPage(browser, size, lang, { "birge.mode": "resident", "birge.device": D1, "birge.complaint.changes_seen": seenBefore });
           try {
             await goto(P2.page, new URL(`#mine/event=${encodeURIComponent(ev.id)}`, base).href, lang);
             await L.sleep(1500);
+            // Подсвечена строка изменения или раскрыта карточка этого обращения с этим изменением в истории.
             const focus = await L.firstVisible(P2.page.locator(".bc-changes__item--focus"));
-            add("W2-10", tag, "уведомление открывает конкретное изменение (#mine/event=…), а не главную", st(!!focus), { event: ev.id }, await shotOf(P2.page, `${tag}-W2-10-event`));
+            const card = await L.firstVisible(P2.page.locator("[class*=focus], [class*=highlight]").filter({ hasText: /заменили лампу/i }));
+            add("W2-10", tag, "уведомление открывает конкретное изменение (#mine/event=…), а не главную", st(!!focus || !!card), { event: ev.id, row: !!focus, card: !!card },
+              await shotOf(P2.page, `${tag}-W2-10-event`));
           } finally { await P2.ctx.close(); }
         }
       } finally { await P.ctx.close(); }
@@ -532,7 +537,7 @@ module.exports = function waveMore(H) {
         let n = await items.count().catch(() => 0);
         if (!n && P.mobile) { const t = await L.firstVisible(P.page.locator(".r07-sheet__handle, [class*=sheet] [class*=handle], .bk-sheet__handle")); if (t) { await t.click().catch(() => null); await L.sleep(800); n = await items.count().catch(() => 0); } }
         const first = n ? await L.firstVisible(items) : null;
-        if (first) { await first.click().catch(() => null); await L.sleep(2000); }
+        if (first) { await first.click().catch(() => null); await P.page.locator(".r07-card").first().waitFor({ state: "visible", timeout: 6000 }).catch(() => null); }
         const card = first ? await L.firstVisible(P.page.locator(".r07-card")) : null;
         add("M-4", tag, "рядом с картой — список мест («Горячие места»); нажатие по строке открывает карточку", st(n >= 3 && !!first && !!card), { items: n, card: !!card }, await shotOf(P.page, `${tag}-M-4-list`));
       } finally { await P.ctx.close(); }
@@ -542,7 +547,8 @@ module.exports = function waveMore(H) {
         const three = [];
         R.page.on("request", (q) => { if (/three(\.module|\.min)?(\.js)?|\/vendor\/three\//i.test(q.url())) three.push(q.url().split("/").slice(-2).join("/")); });
         await goto(R.page, base, lang);
-        add("M-5", tag, "лёгкая карточка раньше 3D: на главной (без слоя «Проекты» и 3D) 3D-библиотека не загружается", st(three.length === 0), { three: three.slice(0, 3) });
+        // POLISH_WAVE_2 правило 5 («новые слои грузятся только когда включены») и мелочь «лёгкая карточка раньше 3D; 3D — по кнопке».
+        add("M-5", tag, "лёгкая карточка раньше 3D (правило 5): на главной без слоя «Проекты» и 3D библиотека 3D не загружается", st(three.length === 0), { three: three.slice(0, 3) });
       } finally { await R.ctx.close(); }
     }
   }

@@ -1,0 +1,237 @@
+{
+ "meta": {
+  "root": "/home/user/bf2s4",
+  "sha": "0f5101a3",
+  "when": "2026-10-12T04:51:32.759Z",
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "node": "v22.22.0",
+  "runtime": {
+   "BirgeNearby": true,
+   "BirgeIdeas": false,
+   "BirgeProjects": false,
+   "BirgeComplaintList": true,
+   "BirgeAsk": false,
+   "BirgeQuestions": false,
+   "BirgeShell": true
+  }
+ },
+ "counts": {
+  "PASS": 4,
+  "FAIL": 8,
+  "PENDING": 0,
+  "NOT_RUN": 0,
+  "INFO": 1
+ },
+ "items": [
+  {
+   "id": "M",
+   "title": "Обязательные мелочи: серый «нет данных», список у карты, лёгкая карточка до 3D",
+   "owner": "R07, R05",
+   "also": [
+    "M-1",
+    "M-4",
+    "M-5"
+   ],
+   "done": "POLISH_WAVE_2 «обязательные мелочи» (номер и экран проверки — в LF-2, уведомление → W2-10, язык → W2-6)",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  }
+ ],
+ "results": [
+  {
+   "item": "M",
+   "scope": "сборка",
+   "name": "Обязательные мелочи: серый «нет данных», список у карты, лёгкая карточка до 3D: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "M-1",
+   "scope": "1366-ru",
+   "name": "тепловая карта: серый «Нет свежих данных» (нет жалоб ≠ «всё хорошо») — в легенде",
+   "status": "FAIL",
+   "detail": {
+    "help": true
+   },
+   "shot": "1366-ru-M-1-legend.jpg"
+  },
+  {
+   "item": "M-4",
+   "scope": "1366-ru",
+   "name": "рядом с картой — список мест («Горячие места»); нажатие по строке открывает карточку",
+   "status": "PASS",
+   "detail": {
+    "items": 10,
+    "card": true
+   },
+   "shot": "1366-ru-M-4-list.jpg"
+  },
+  {
+   "item": "M-5",
+   "scope": "1366-ru",
+   "name": "лёгкая карточка раньше 3D: на главной (без слоя «Проекты» и 3D) 3D-библиотека не загружается",
+   "status": "FAIL",
+   "detail": {
+    "three": [
+     "three/three.module.min.js"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "M-1",
+   "scope": "1366-kk",
+   "name": "тепловая карта: серый «Нет свежих данных» (нет жалоб ≠ «всё хорошо») — в легенде",
+   "status": "FAIL",
+   "detail": {
+    "help": true
+   },
+   "shot": "1366-kk-M-1-legend.jpg"
+  },
+  {
+   "item": "M-4",
+   "scope": "1366-kk",
+   "name": "рядом с картой — список мест («Горячие места»); нажатие по строке открывает карточку",
+   "status": "PASS",
+   "detail": {
+    "items": 10,
+    "card": true
+   },
+   "shot": "1366-kk-M-4-list.jpg"
+  },
+  {
+   "item": "M-5",
+   "scope": "1366-kk",
+   "name": "лёгкая карточка раньше 3D: на главной (без слоя «Проекты» и 3D) 3D-библиотека не загружается",
+   "status": "FAIL",
+   "detail": {
+    "three": [
+     "three/three.module.min.js"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "M-1",
+   "scope": "375-ru",
+   "name": "тепловая карта: серый «Нет свежих данных» (нет жалоб ≠ «всё хорошо») — в легенде",
+   "status": "FAIL",
+   "detail": {
+    "help": false
+   },
+   "shot": "375-ru-M-1-legend.jpg"
+  },
+  {
+   "item": "M-4",
+   "scope": "375-ru",
+   "name": "рядом с картой — список мест («Горячие места»); нажатие по строке открывает карточку",
+   "status": "PASS",
+   "detail": {
+    "items": 10,
+    "card": true
+   },
+   "shot": "375-ru-M-4-list.jpg"
+  },
+  {
+   "item": "M-5",
+   "scope": "375-ru",
+   "name": "лёгкая карточка раньше 3D: на главной (без слоя «Проекты» и 3D) 3D-библиотека не загружается",
+   "status": "FAIL",
+   "detail": {
+    "three": [
+     "three/three.module.min.js"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "M-1",
+   "scope": "375-kk",
+   "name": "тепловая карта: серый «Нет свежих данных» (нет жалоб ≠ «всё хорошо») — в легенде",
+   "status": "FAIL",
+   "detail": {
+    "help": false
+   },
+   "shot": "375-kk-M-1-legend.jpg"
+  },
+  {
+   "item": "M-4",
+   "scope": "375-kk",
+   "name": "рядом с картой — список мест («Горячие места»); нажатие по строке открывает карточку",
+   "status": "PASS",
+   "detail": {
+    "items": 10,
+    "card": true
+   },
+   "shot": "375-kk-M-4-list.jpg"
+  },
+  {
+   "item": "M-5",
+   "scope": "375-kk",
+   "name": "лёгкая карточка раньше 3D: на главной (без слоя «Проекты» и 3D) 3D-библиотека не загружается",
+   "status": "FAIL",
+   "detail": {
+    "three": [
+     "three/three.module.min.js"
+    ]
+   },
+   "shot": null
+  }
+ ]
+}
