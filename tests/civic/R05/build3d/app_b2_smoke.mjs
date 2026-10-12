@@ -273,15 +273,21 @@ try {
     const ll = target.ll;
     await q.evaluate((c) => map.jumpTo({ center: c, zoom: 17.4, pitch: 50, bearing: -20 }), ll);
     await q.waitForTimeout(500);
-    await q.evaluate((c) => { const s = map.project(c); map.panBy([s.x - map.getCanvas().clientWidth / 2, s.y - 230], { duration: 0 }); }, ll);
-    // Карта наклонена — объёмный вид включается, когда догрузится three.js (данные слоя «Проекты» грузятся при его
-    // включении): тогда метка встаёт над моделью. Место метки берём после этого, а не до.
-    await q.waitForFunction(() => { const s = CivicShell.build3d.getState(); return s.view !== "3d" || s.three === "ready" || s.three === "error"; }, null, { timeout: 30000 }).catch(() => {});
-    await q.waitForTimeout(1200);
-    const sheet0 = await q.evaluate(() => document.querySelector(".civic-panel").dataset.sheet);
-    // Нажимаем подпись именно этого проекта (раньше — первую видимую: попадалось освещение, у которого «точка
-    // объекта» _project — начало участка, а не подпись).
-    const lab = await q.evaluate((id) => { const b = document.querySelector(`.b3d-label[data-id="${id}"]`); if (!b || b.style.visibility === "hidden") return null; const r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, t = document.elementFromPoint(x, y); return t && b.contains(t) && y < 420 ? [Math.round(x), Math.round(y)] : null; }, target.id);
+    let sheet0 = null, lab = null;
+    // Объект на 230 px от верха; если его подпись закрыта (в облаке без тайлов — плашка #map-status оболочки «Карта улиц
+    // не загрузилась»), пробуем чуть ниже: проверка — про карточку и шапку, а не про плашку.
+    for (const yy of [230, 290, 340]) {
+      await q.evaluate(([c, y]) => { const s = map.project(c); map.panBy([s.x - map.getCanvas().clientWidth / 2, s.y - y], { duration: 0 }); }, [ll, yy]);
+      // Карта наклонена — объёмный вид включается, когда догрузится three.js (данные слоя «Проекты» грузятся при его
+      // включении): тогда метка встаёт над моделью. Место метки берём после этого, а не до.
+      await q.waitForFunction(() => { const s = CivicShell.build3d.getState(); return s.view !== "3d" || s.three === "ready" || s.three === "error"; }, null, { timeout: 30000 }).catch(() => {});
+      await q.waitForTimeout(1200);
+      sheet0 = await q.evaluate(() => document.querySelector(".civic-panel").dataset.sheet);
+      // Нажимаем подпись именно этого проекта (раньше — первую видимую: попадалось освещение, у которого «точка
+      // объекта» _project — начало участка, а не подпись).
+      lab = await q.evaluate((id) => { const b = document.querySelector(`.b3d-label[data-id="${id}"]`); if (!b || b.style.visibility === "hidden") return null; const r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, t = document.elementFromPoint(x, y); return t && b.contains(t) && y < 420 ? [Math.round(x), Math.round(y)] : null; }, target.id);
+      if (lab) break;
+    }
     if (lab) {
       await q.touchscreen.tap(lab[0], lab[1]);
       await q.waitForTimeout(1500);

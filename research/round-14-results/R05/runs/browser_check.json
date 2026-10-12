@@ -1,7 +1,7 @@
 {
  "role": "R05",
- "generated_at": "2026-10-12T17:13:22.514Z",
- "tested_sha": "a86356eae12c47ce601289ce0c7aeb6bb85fdee0",
+ "generated_at": "2026-10-12T17:35:27.658Z",
+ "tested_sha": "13f03b31b23eadc9384d44b1bc08fbf72e728188",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
@@ -10,8 +10,8 @@
   "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit12",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 5.8,
-  "fps_20_objects_swiftshader": 2.8,
+  "fps_0_objects_swiftshader": 6.9,
+  "fps_20_objects_swiftshader": 3.1,
   "gpu_geometries_20_objects": 100
  },
  "summary": {
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 2.8 кадр/с (без объектов 5.8)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.1 кадр/с (без объектов 6.9)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -204,7 +204,7 @@
   {
    "id": "r11_21_selected_object_not_under_card_1366_375",
    "status": "PASS",
-   "detail": "1366 px: объект (487, 486) на экране и не под карточкой; 375 px: объект (187, 291) на экране и не под карточкой"
+   "detail": "1366 px: объект (487, 486) на экране и не под карточкой; 375 px: объект (188, 291) на экране и не под карточкой"
   },
   {
    "id": "r11_22_23_demo_header_title_and_3d_label",
