@@ -1,7 +1,7 @@
 {
  "role": "R05",
- "generated_at": "2026-10-12T12:02:17.237Z",
- "tested_sha": "5dfcc4aa9b5cb8c051cd8599bfceca9d77df3b34",
+ "generated_at": "2026-10-12T12:18:57.821Z",
+ "tested_sha": "8ce26a3b4810e629a921360b723f920b62a15608",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
@@ -10,13 +10,13 @@
   "ui_kit_i18n": "из выгрузки --kit ../../../tmp/claude-0/-home-user-GOV-DIPLOME/ac81c6ec-58ee-5745-a243-c022fd55f1c1/scratchpad/r11kit12",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 5.2,
-  "fps_20_objects_swiftshader": 3.5,
+  "fps_0_objects_swiftshader": 5.4,
+  "fps_20_objects_swiftshader": 3.4,
   "gpu_geometries_20_objects": 75
  },
  "summary": {
-  "pass": 53,
-  "fail": 1,
+  "pass": 54,
+  "fail": 0,
   "not_run": 1
  },
  "checks": [
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 3.5 кадр/с (без объектов 5.2)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 75; SwiftShader 3.4 кадр/с (без объектов 5.4)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -418,8 +418,57 @@
   },
   {
    "id": "card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk",
-   "status": "FAIL",
-   "detail": "{\"ru\":{\"half\":{\"state\":\"card\",\"top\":80,\"bottom\":430,\"headBottom\":72,\"capped\":true,\"scrolls\":true,\"headTop\":true,\"lowered\":false,\"vh\":812},\"peek\":{\"state\":\"card\",\"top\":245,\"bottom\":609,\"headBottom\":72,\"capped\":false,\"scrolls\":false,\"headTop\":true,\"lowered\":false,\"vh\":812}}}"
+   "status": "PASS",
+   "detail": {
+    "ru": {
+     "half": {
+      "state": "card",
+      "top": 448,
+      "bottom": 812,
+      "headBottom": 72,
+      "capped": false,
+      "scrolls": false,
+      "headTop": true,
+      "lowered": true,
+      "vh": 812
+     },
+     "peek": {
+      "state": "card",
+      "top": 245,
+      "bottom": 609,
+      "headBottom": 72,
+      "capped": false,
+      "scrolls": false,
+      "headTop": true,
+      "lowered": false,
+      "vh": 812
+     }
+    },
+    "kk": {
+     "half": {
+      "state": "card",
+      "top": 448,
+      "bottom": 812,
+      "headBottom": 72,
+      "capped": false,
+      "scrolls": false,
+      "headTop": true,
+      "lowered": true,
+      "vh": 812
+     },
+     "peek": {
+      "state": "card",
+      "top": 245,
+      "bottom": 609,
+      "headBottom": 72,
+      "capped": false,
+      "scrolls": false,
+      "headTop": true,
+      "lowered": false,
+      "vh": 812
+     }
+    }
+   }
   },
   {
    "id": "resident_hint_moves_off_host_legend_1366_1100_ru_kk",
