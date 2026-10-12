@@ -2137,12 +2137,16 @@ p.bk-banner--warn {
   backdrop-filter: none;
 }
 /* Внутри стекла: карточки — более плотная белая подложка без тени; поля форм — непрозрачные */
-.bk-glass .bk-card,
-.bk-glass .bk-kpi {
+.bk-glass .bk-card {
   /* плотная белая карточка с волосяной линией: подложка 70 % почти сливалась со стеклом 80 % на светлой карте и список
      читался сплошным текстом (R13 10.3, марафон круг 4); тени нет — одна тень у самого стекла */
   background: var(--c-surface);
   box-shadow: inset 0 0 0 1px rgba(16, 24, 22, 0.08);
+}
+/* Числа KPI на стекле — без подложки и рамки (CLEAN_PASS: KPI без рамки), крупное число держит иерархию само */
+.bk-glass .bk-kpi {
+  background: transparent;
+  box-shadow: none;
 }
 .bk-glass input,
 .bk-glass select,
