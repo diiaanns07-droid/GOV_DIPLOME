@@ -46,7 +46,7 @@ SECURITY_REVIEW.md (claude/r14-R15), LOCAL_FINAL.md (claude/round-14-package) �
 
 ## Проверка на сборке R01 7782b92 (FINAL-3 шаг 1) + пути R09 + 2 патча R09
 
-Дерево: `claude/sharp-dijkstra-0t87gl @ 7782b92`, поверх — `ui/civic_feedback web/civic/feedback tests/civic/R09` из этой ветки,
+Дерево: `claude/sharp-dijkstra-0t87gl @ 7782b92`, поверх — `ui/civic_feedback web/civic/feedback tests/civic/R09` из этой ветки (код 2d2cf80/9cf4ca2),
 `R07_fix_form.patch` и `R01_separate_routes.patch`. Среда: облако, Linux, Python 3.13, Node 22, Chromium headless, без интернета.
 
 | Проверка | Итог |
@@ -57,9 +57,9 @@ SECURITY_REVIEW.md (claude/r14-R15), LOCAL_FINAL.md (claude/round-14-package) �
 | R04 `app_polish_r04.cjs` (п. 8–9) | 39/39 PASS — `APP_RESULT_R04_DAY12.txt`, кадры `screens-day12/r04-*` |
 | R10 `demo_reset_check.cjs` (B-048/B-049) | 4/4 PASS |
 | R10 `wave_checks.cjs --only W1-3,W2-1,W2-2,W2-4` | **91 PASS / 10 FAIL / 2 NOT_RUN** (`WAVE_R10_DAY12.txt`; прогон этого же дня до «Увидят N» и паспорта в карточке R07 — 88 PASS / 13 FAIL). Части R09 — PASS: форма «что сделали» + фото + «Увидят N» в карточке R07 (×4), «Изменить» → 3 поля (W2-2), «История», запись «служба сообщила» / «проверено» / «вернули». FAIL не R09: текст карточки R07 «На карте зелёным до …» до проверки (×4, B-055); на 1366 карточка R07 не открывается нажатием по цели в новой вкладке акимата после проверки жителями (×4, `card:false`) — **так же без патча R07** (прогон A/B на том же дереве без `R07_fix_form.patch`), т. е. карта R01/R07; «Карта» в меню на 375 (×2, R01/R08). NOT_RUN — проверки R10 ещё не написаны (W2-4 «Рядом» в «Что изменилось», W2-2 задержка через API) |
-| R09 `app_demo_r09.cjs` (шаги 1–7, акимат) | `APP_RESULT_DAY12.txt` |
+| R09 `app_demo_r09.cjs` (шаги 1–7, форма в карточке R07, акимат «Обращения») | **75/75 PASS** — `APP_RESULT_DAY12.txt` |
 | стенд `browser_r09.cjs` (ui-kit R09 kit-fallback) | **470/470 PASS** — `BROWSER_RESULT_DAY12.txt` |
-| стенд `browser_r09.cjs --r11` (ui-kit и словарь R11 d9f2ff9 — чистый дизайн) | `BROWSER_RESULT_DAY12_R11UI.txt` |
+| стенд `browser_r09.cjs --r11` (ui-kit и словарь R11 d9f2ff9 — чистый дизайн) | **470/470 PASS** — `BROWSER_RESULT_DAY12_R11UI.txt`, кадры `screens-day12/r11kit-*` |
 | R10 `wave_more` W1-8 / W1-9 / W1-12 (B-062…B-064) | 11 PASS / 2 FAIL (карточка R07 не открылась на 1366) — `WAVE_R10_MORE_DAY12.txt` |
 
 ## Волны 1–2 — сверка со STATUS.md

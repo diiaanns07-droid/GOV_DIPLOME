@@ -1,11 +1,11 @@
 R09 · РАУНД 14 · INTEGRATION — 12 ОКТ, ДЛЯ FINAL-3 (сначала этот раздел; ниже — волна 2 и ночные)
-Ветка R09: claude/modest-shannon-0ki93p, код 2d2cf80 (DELIVERY.json, DAY12_FIXES.md). Забрать пути R09 целиком:
+Ветка R09: claude/modest-shannon-0ki93p, код 9cf4ca2 (DELIVERY.json, DAY12_FIXES.md). Забрать пути R09 целиком:
     git fetch origin claude/modest-shannon-0ki93p
-    git checkout 2d2cf80 -- ui/civic_feedback web/civic/feedback tests/civic/R09
+    git checkout 9cf4ca2 -- ui/civic_feedback web/civic/feedback tests/civic/R09
 Новых файлов фронтенда и скриптов в index.html нет; новый модуль Python — ui/civic_feedback/v2/separate.py (берётся
 той же командой). Проверено на сборке R01 7782b92 + пути R09 + 2 патча ниже: pytest R09+R04+R01+R15+R07+R12+R08
 1752 passed (R07 замер времени — отдельно 175 passed); приложение app_demo_r09 — APP_RESULT_DAY12.txt; R04 app_polish_r04
-39/39; R10 demo_reset_check 4/4; R10 wave_checks/wave_more — WAVE_R10_DAY12.txt, WAVE_R10_MORE_DAY12.txt; стенд 470/470.
+39/39; R10 demo_reset_check 4/4; R10 wave_checks/wave_more — WAVE_R10_DAY12.txt, WAVE_R10_MORE_DAY12.txt; стенд 470/470 (ui-kit R09 и R11 d9f2ff9); приложение 75/75.
 
 === R01 — нужно сделать (FINAL-3) ===
 F1) Применить research/round-14-results/R09/R01_separate_routes.patch (git apply --check на 7782b92 — OK):

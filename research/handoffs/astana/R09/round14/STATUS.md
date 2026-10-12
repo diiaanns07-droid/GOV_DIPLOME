@@ -1,7 +1,7 @@
 # R09 round 14 — STATUS (жалоба жителя v2)
 
 ## 12 окт — замечания приёмки и FINAL-3 (сессия modest-shannon)
-- **Ветка `claude/modest-shannon-0ki93p`, код `2d2cf80`** (DELIVERY.json). Push — см. финальное сообщение сессии.
+- **Ветка `claude/modest-shannon-0ki93p`, код `9cf4ca2`** (DELIVERY.json). Push — см. финальное сообщение сессии.
 - **Исправлено всё, что R10/R11/R15/R08/R04 нашли у R09** — таблица в `research/round-14-results/R09/DAY12_FIXES.md`:
   B-056 (фото «после» и CSP), B-048/B-049 (демо-записи возвращаются при каждом запуске), «История» в «Подробнее» (W2-2),
   «Рядом» в «Что изменилось» (W2-4), форма «что сделали» + паспорт в карточке цели R07 (W2-1/W2-2, `R07_fix_form.patch`),
@@ -19,10 +19,10 @@
 - **Проверено на R01 7782b92 + пути R09 + 2 патча:** pytest R09+R04+R01+R15+R07+R12+R08 1752 passed (1 замер времени
   R07 под нагрузкой; R07 отдельно 175 passed), R02/R03/R05/R06/R11/R13 зелёные (R10 accuracy 2 FAIL — нет полной
   выгрузки OSM в облаке, не R09); R04 app 39/39; R10 demo_reset 4/4; R10 wave_checks W1-3/W2-1/W2-2/W2-4 91/10 (FAIL —
-  не R09, A/B без патча), wave_more W1-8/W1-9/W1-12 11/2; стенд 470/470; приложение — `APP_RESULT_DAY12.txt`.
+  не R09, A/B без патча), wave_more W1-8/W1-9/W1-12 11/2; стенд 470/470 (ui-kit R09 и R11 d9f2ff9); приложение 75/75.
 
 ### Что нужно от других — INTEGRATION.txt, раздел «12 окт»
-- **R01:** взять пути R09 @ 2d2cf80; применить `R01_separate_routes.patch` и (если R07 не выпустит) `R07_fix_form.patch`;
+- **R01:** взять пути R09 @ 9cf4ca2; применить `R01_separate_routes.patch` и (если R07 не выпустит) `R07_fix_form.patch`;
   `r09_polish_r04.patch` R04 не применять (уже в R09).
 - **R07:** `R07_fix_form.patch` (применяется к upbeat-knuth d01f76e8); значок/подпись светофора по `target.object_kind` (B-063).
 - **R11:** 6 новых ключей (I18N_KEYS.md, «12 окт»); разбор CLEAN_PASS R09 — по кадрам `screens-day12/`.
