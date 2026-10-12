@@ -288,6 +288,7 @@
       data: null,
       error: null,
       request: 0,
+      keep: false, // смена даты/района при показанных числах: прежние приглушены, без скелета
     };
     if (state.date && state.date > todayAstana()) state.date = null;
 
@@ -338,6 +339,9 @@
       silent = silent === true && state.status === "ok";
       var id = ++state.request;
       if (!silent) {
+        // Дата или район сменились при показанных числах — не мигаем скелетом: прежние числа приглушены, под
+        // заголовком тонкая полоса загрузки, потом новые мягко проявляются (дизайн-марафон, чек-лист п. 7–8).
+        state.keep = state.status === "ok" && !!state.data;
         state.status = "loading";
         render();
       }
@@ -384,7 +388,10 @@
         })
         .then(function () {
           clearTimeout(timer);
-          if (id === state.request && !silent) render();
+          if (id === state.request && !silent) {
+            state.keep = false;
+            render();
+          }
         });
     }
 
@@ -1221,9 +1228,13 @@
       renderTop();
       body.textContent = "";
       body.setAttribute("aria-busy", state.status === "loading" ? "true" : "false");
-      if (state.status === "loading") renderLoading();
+      var pending = state.status === "loading" && state.keep && !!state.data;
+      if (pending) renderOk(state.data);
+      else if (state.status === "loading") renderLoading();
       else if (state.status === "error") renderError();
       else renderOk(state.data);
+      if (pending) rootEl.setAttribute("data-pending", "");
+      else rootEl.removeAttribute("data-pending");
       // Блоки мягко поднимаются, только когда экран сменил состояние (загрузка → данные), а не при тихом обновлении
       // и смене языка; prefers-reduced-motion выключает (akim.css).
       if (state.status !== shownStatus && state.status !== "loading") {

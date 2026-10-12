@@ -605,6 +605,23 @@ async function shot(page, name, full) {
     await ctx.close();
   }
   {
+    // Смена района при показанных числах: без мигания скелетом — прежние приглушены, полоса загрузки, потом новые.
+    const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru" });
+    await waitState(page, "ok");
+    await page.route(API, async (route) => { await new Promise((r) => setTimeout(r, 900)); await route.continue(); });
+    await page.selectOption("#akim-district", "nura");
+    await page.waitForTimeout(250);
+    const mid = await page.evaluate(() => ({ state: document.getElementById("akim").dataset.state, pending: document.getElementById("akim").hasAttribute("data-pending"),
+      kpis: document.querySelectorAll(".akim-kpi .bk-kpi__value").length, skel: document.querySelectorAll(".akim-skel").length,
+      op: getComputedStyle(document.querySelector(".akim__body")).opacity }));
+    await page.screenshot({ path: path.join(OUT, "akim-pending-1366-ru.png") });
+    await waitState(page, "ok");
+    const end = await page.evaluate(() => ({ pending: document.getElementById("akim").hasAttribute("data-pending"), meta: document.querySelector(".akim__meta").textContent }));
+    check("смена района: без мигания — прежние числа приглушены, без скелета, затем новые", mid.state === "loading" && mid.pending && mid.kpis === 4
+      && mid.skel === 0 && parseFloat(mid.op) < 0.6 && !end.pending && /Нура/.test(end.meta), { mid, end });
+    await ctx.close();
+  }
+  {
     const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, reducedMotion: "reduce" });
     const page = await ctx.newPage();
     await page.addInitScript(() => { try { localStorage.setItem("birge.lang", "ru"); } catch (e) { /* */ } });

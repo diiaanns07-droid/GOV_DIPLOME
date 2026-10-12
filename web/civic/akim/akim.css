@@ -275,6 +275,50 @@
   }
 }
 
+/* ── смена даты/района: прежние числа приглушены, под заголовком — тонкая полоса загрузки (без мигания скелетом) ── */
+.akim[data-pending] .akim__body {
+  opacity: 0.45;
+  pointer-events: none;
+  transition: opacity var(--t-fast) var(--ease);
+}
+.akim__top {
+  position: relative;
+}
+.akim[data-pending] .akim-spark__line {
+  animation: none; /* приглушённая копия — без повторного «рисования» графиков */
+}
+.akim[data-pending] .akim__top::after {
+  content: "";
+  position: absolute;
+  bottom: calc(-1 * var(--s-2));
+  left: 0;
+  width: 30%;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--c-brand);
+  animation: akim-progress 1.1s var(--ease) infinite;
+}
+@keyframes akim-progress {
+  from {
+    left: 0;
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    left: 70%;
+    opacity: 0.3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .akim[data-pending] .akim__top::after {
+    width: 100%;
+    opacity: 0.4;
+    animation: none;
+  }
+}
+
 /* ── загрузка: скелет той же формы, что экран ── */
 .akim-skel__num {
   width: 64px;
