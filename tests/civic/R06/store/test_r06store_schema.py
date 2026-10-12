@@ -15,6 +15,8 @@ EXPECTED_TABLES = {
     # R06 раунд 14, миграция 6: этапы, предложения, голоса.
     "civic_object_stages", "civic_stage_history", "civic_proposals", "civic_proposal_history",
     "civic_votes", "civic_v2_settings",
+    # R06 раунд 14, миграция 9 (волна 2): идеи жителей и «Что делают рядом».
+    "civic_ideas", "civic_idea_votes", "civic_idea_history", "civic_nearby_items", "civic_nearby_history",
 }
 
 
