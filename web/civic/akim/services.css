@@ -6,9 +6,11 @@
  */
 .svc {
   display: block;
-  max-width: 960px;
+  max-width: 720px; /* как листы-списки (R11 марафон §9.1 f) */
   margin: 0 auto;
-  padding: 0 0 var(--s-4); /* поля даёт лист раздела R01; отдельная страница — services.html */
+  padding: var(--s-4); /* «Службы» — форма: непрозрачный белый контейнер на стекле листа (GLASS.md G-1, R11 §11.5) */
+  border-radius: var(--r-l);
+  background: var(--c-surface);
 }
 .svc__title {
   margin: 0;
@@ -76,7 +78,7 @@
 .svc__edited {
   white-space: nowrap;
 }
-.svc__actions { /* стекло — классы ui-kit bk-glass bk-glass--bar (запасной вид без размытия — белый, ui-kit) */
+.svc__actions { /* форма — не стекло: белая капсула с мягкой тенью */
   position: sticky;
   bottom: var(--s-3);
   z-index: 2;
@@ -88,6 +90,9 @@
   max-width: 100%;
   margin-top: var(--s-4);
   padding: var(--s-2);
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  box-shadow: 0 0 0 0.5px rgba(16, 24, 22, 0.1), 0 8px 24px rgba(16, 24, 22, 0.14);
 }
 .svc__actions .svc__status {
   padding-right: var(--s-3);

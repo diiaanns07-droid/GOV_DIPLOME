@@ -385,7 +385,7 @@
 
 /* ── сводка текстом: обычный абзац 17 без плашки ── */
 .akim-summary {
-  margin: var(--s-2) 0 var(--s-5);
+  margin: var(--s-2) 0 var(--s-4);
 }
 .akim-summary__title {
   margin: 0 0 var(--s-1);
@@ -395,7 +395,7 @@
 }
 .akim-summary__text {
   margin: 0;
-  max-width: 110ch;
+  max-width: 70ch; /* строка не длиннее ~70 знаков (чек-лист марафона п. 3, R11 §9.2 d) */
   font-size: var(--fs-lead); /* 17 */
   line-height: 1.5;
 }
@@ -446,6 +446,10 @@
 .akim-decision__problem {
   font-size: var(--fs-body);
   line-height: 1.35;
+}
+.akim-decision__blocker,
+.akim-decision__meta {
+  max-width: 70ch;
 }
 .akim-decision__blocker {
   color: var(--c-text-2);
@@ -773,10 +777,10 @@
   height: auto;
   margin: 0 auto var(--s-3);
 }
-.akim-empty__line {
+.akim-empty__line { /* как иллюстрации ui-kit (.bk-ill): линия 1,5, цвет --c-text-3 */
   fill: none;
-  stroke: var(--c-text-2);
-  stroke-width: 2;
+  stroke: var(--c-text-3);
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -812,6 +816,12 @@
 @media (max-width: 720px) {
   .akim__top {
     align-items: stretch;
+  }
+  .akim__title-date {
+    display: block;
+  }
+  .akim__title-sep {
+    display: none;
   }
   /* дата и район — каждый во всю ширину: «Барлық аудандар» не обрезается */
   .akim__controls {

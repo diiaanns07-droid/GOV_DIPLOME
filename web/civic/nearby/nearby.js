@@ -109,6 +109,16 @@
     });
     return el;
   }
+  // Линейная иллюстрация ui-kit (#ill-* в icons.svg, класс .bk-ill — R11, дизайн-марафон).
+  function illustration(name) {
+    var svg = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "bk-ill");
+    svg.setAttribute("aria-hidden", "true");
+    var use = doc.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", ICONS + "#ill-" + name);
+    svg.appendChild(use);
+    return svg;
+  }
   function icon(name, size) {
     var svg = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("class", "ic" + (size ? " ic--" + size : ""));
@@ -411,11 +421,12 @@
       }
       if (state.status === "error") {
         rootEl.appendChild(
-          h("div", { class: "bk-card bk-error", role: "alert" }, [
-            icon("wifi-off", 48),
+          // «Нет связи» как у остальных разделов (R11 марафон §10): иллюстрация ui-kit, без карточки, обычная кнопка.
+          h("div", { class: "bk-error", role: "alert" }, [
+            illustration("offline"),
             h("p", { class: "bk-error__title", text: tr("common.state.network_title") }),
             h("p", { class: "bk-error__text", text: tr("common.state.network_text") }),
-            h("button", { type: "button", class: "bk-btn bk-btn--primary", onclick: load }, [icon("refresh"), tr("common.action.retry")]),
+            h("button", { type: "button", class: "bk-btn", onclick: load }, [icon("refresh"), tr("common.action.retry")]),
           ])
         );
         return;
