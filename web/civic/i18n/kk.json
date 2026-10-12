@@ -384,7 +384,7 @@
  "akim.pulse.new_hot": "Жаңа ыстық орын: {place}",
  "akim.pulse.metoo_growth": "«Мен де» жиі басылады: {place}, аптасына +{n}",
  "akim.pulse.none": "Күрт өсу жоқ",
- "akim.decision.forbidden": "Нұсқаны тек әкімдік қызметкері таңдай алады",
+ "akim.decision.forbidden": "Нұсқаны тек әкімдік қызметкері таңдай алады. Жоғарғы оң жақтағы профиль белгісі арқылы кіріңіз.",
  "akim.decision.no_options": "Нұсқалар ұсынылмаған — оларды қызмет дайындауы керек",
  "akim.decision.save_error": "Таңдау сақталмады — қайталап көріңіз",
  "akim.overdue.longest": "Ең ұзақ кешіккені: {place}",

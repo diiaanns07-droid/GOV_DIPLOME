@@ -513,7 +513,7 @@
  "akim.pulse.new_hot": "Новое горячее место: {place}",
  "akim.pulse.metoo_growth": "Чаще жмут «Я тоже»: {place}, +{n} за неделю",
  "akim.pulse.none": "Резких всплесков нет",
- "akim.decision.forbidden": "Выбрать вариант может только сотрудник акимата",
+ "akim.decision.forbidden": "Выбрать вариант может только сотрудник акимата. Войдите через значок профиля справа вверху.",
  "akim.decision.no_options": "Варианты не предложены — служба должна их подготовить",
  "akim.decision.save_error": "Выбор не сохранился — попробуйте ещё раз",
  "akim.overdue.longest": "Дольше всех: {place}",
