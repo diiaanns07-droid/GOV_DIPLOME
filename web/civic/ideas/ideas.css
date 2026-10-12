@@ -244,7 +244,10 @@
   margin: 0;
 }
 
-/* Выбор места на карте: полоса внизу экрана с подсказкой и «Готово» / «Отменить». */
+/* Выбор места на карте: плавающая полоса внизу экрана с подсказкой и «Готово» / «Отменить».
+   Стекло (GLASS.md: панель над картой) — класс .bk-glass из ui-kit R11 (ставит ideas.js); непрозрачный белый вид — в
+   :where() (вес 0): со стеклом его перекрывает .bk-glass, без него (ui-kit до 12 окт) полоса остаётся белой.
+   «Готово» — главная кнопка: сплошная, как у ui-kit. */
 .ri-pick {
   position: fixed;
   left: 50%;
@@ -255,6 +258,8 @@
   display: grid;
   gap: var(--s-3);
   padding: var(--s-4);
+}
+:where(.ri-pick) {
   border-radius: var(--r-l);
   background: var(--c-paper);
   box-shadow: var(--shadow-3);
@@ -266,8 +271,9 @@
 /* Пока выбирается место: шторка и панель не закрывают карту, значки и подписи не ловят нажатие. */
 .ri-picking #civic-panel,
 .ri-picking .birge-layer,
-.ri-picking .bk-toasts {
-  visibility: hidden;
+.ri-picking .bk-toasts,
+.ri-picking .bc-fab {
+  visibility: hidden; /* .bc-fab — «Сообщить о проблеме» R09: иначе просвечивает сквозь стеклянную полосу выбора */
 }
 .ri-picking .r07-badge,
 .ri-picking .r07-maplegend,
@@ -357,4 +363,13 @@
     flex: 0 1 auto;
     min-width: 200px;
   }
+}
+
+/* Стекло (GLASS.md §2, §4): лист раздела — стеклянный у оболочки R01, корню .ri / .rw фон не задаём. Формы — непрозрачные
+   и на стекле: мастер новой идеи, раскрытая карточка акимата (чек-лист, отказ с причиной), «Работы и отключения».
+   Вес (0,3,0) — выше «плотной подложки» .bk-glass .bk-card (0,2,0) из ui-kit. */
+.ri .ri-wizard.bk-card,
+.ri .ri-card--open.bk-card,
+.rw .rw-form.bk-card {
+  background: var(--glass-solid, var(--c-surface, #fff));
 }

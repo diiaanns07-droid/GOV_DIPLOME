@@ -83,11 +83,11 @@ async function resident(browser, base, width, lang, full) {
     ? { title: "Тұрғындар идеялары", support: "Қолдау", supported: "Сіз қолдадыңыз", square: "Сығанақ көшесі маңындағы гүлзар",
       rejectedTab: "Қабылданбады", projectTab: "Жоба болды", fountain: "Аулада субұрқақ", reason: "Учаскеде су құбыры жоқ",
       improve: "Жетілдіруге болады", byRes: "Тұрғындар идеясы бойынша", honest: "шешімді әкімдік қабылдайды", newIdea: "Идея ұсыну",
-      pick: "Картадан орын таңдау", review: "Тексерілуде", sent: "Идея жіберілді" }
+      pick: "Картадан орын таңдау", review: "Тексерілуде", sent: "Идея жіберілді", privacyWord: "ЖСН" }
     : { title: "Идеи жителей", support: "Поддержать", supported: "Вы поддержали", square: "Сквер у улицы Сыганак",
       rejectedTab: "Отклонены", projectTab: "Стали проектами", fountain: "Фонтан во дворе", reason: "нет водопровода",
       improve: "Можно доработать", byRes: "По идее жителей", honest: "решение принимает акимат", newIdea: "Предложить идею",
-      pick: "Выбрать место на карте", review: "На проверке", sent: "Идея отправлена" };
+      pick: "Выбрать место на карте", review: "На проверке", sent: "Идея отправлена", privacyWord: "ИИН" };
   const page = await newPage(browser, width, lang, "resident");
   await page.goto(base + "#ideas");
   await page.waitForSelector(".ri .ri-card", { timeout: 30000 });
@@ -141,7 +141,13 @@ async function resident(browser, base, width, lang, full) {
     await page.waitForSelector(".ri-wizard .ri-place", { timeout: 10000 });
     check(`${tag} мастер: после выбора места — снова «Идеи», место выбрано`, page.url().includes("#ideas") && !(await page.$(".ri-pick")), page.url());
     await page.locator("[data-key=next]").click();
+    // Телефон в названии (R15-S31) — ошибка у поля, шаг 2 не пройден; исправили — ошибка уходит.
+    await page.fill("#ri-title", (lang === "kk" ? "Хабарласыңыз " : "Звоните ") + "+7 701 123 45 67");
+    await page.locator("[data-key=next]").click();
+    check(`${tag} мастер: телефон в названии — ошибка у поля «${T.privacyWord}», дальше не пускает`,
+      (await page.locator("#ri-title[aria-invalid=true]").count()) === 1 && (await page.locator("#ri-title-err").innerText()).includes(T.privacyWord));
     await page.fill("#ri-title", lang === "kk" ? "Аулаға орындықтар" : "Скамейки во дворе");
+    check(`${tag} мастер: исправили — ошибка ушла`, (await page.locator("#ri-title-err").count()) === 0);
     await page.fill("#ri-text", lang === "kk" ? "Отыратын орын жоқ." : "Негде присесть.");
     await page.locator("[data-key=next]").click();
     await page.locator("[data-key=kind-square]").click();
@@ -155,9 +161,10 @@ async function resident(browser, base, width, lang, full) {
     await page.locator("[data-key=back-list]").click();
     await page.waitForSelector(".ri-card", { timeout: 10000 });
     const first = await page.locator(".ri-card").first().innerText();
-    // kk: словарь R11 (вычитка 12 окт) — «Тексеруде»; запасной текст R06 — «Тексерілуде». Словарь главнее (R01 FINAL-3).
-    const reviewWords = lang === "kk" ? [T.review, "Тексеруде"] : [T.review];
-    check(`${tag} мастер: своя идея сверху с пометкой «${reviewWords.join("» / «")}»`, reviewWords.some((w) => first.includes(w)), first);
+    // Подпись статуса — из словаря сборки (R11 вычитывает kk: «Тексерілуде» → «Тексеруде»), запас — текст теста.
+    const review = await page.evaluate((fallback) => (window.BirgeI18n && window.BirgeI18n.has("idea.status.review")
+      ? window.BirgeI18n.t("idea.status.review") : fallback), T.review);
+    check(`${tag} мастер: своя идея сверху с пометкой «${review}»`, first.includes(review), first);
   }
   check(`${tag} житель: нет ошибок JS`, page.errs.length === 0, page.errs.join(" | "));
   await page.context().close();
@@ -166,10 +173,10 @@ async function resident(browser, base, width, lang, full) {
 async function akimat(browser, base, width, lang) {
   const tag = `${width}-${lang}`;
   const T = lang === "kk"
-    ? { open: "Тексеру", publish: "Жариялау", bikes: "велотұрақ", gazebo: "Аулада беседка мен орындықтар",
+    ? { open: "Тексеру", publish: "Жариялау", decided: "Шешім қабылданған идеялар", bikes: "велотұрақ", gazebo: "Аулада беседка мен орындықтар",
       sports: "жасөспірімдерге спорт алаңы", make: "Жобаға айналдыру", reject: "Себебін көрсетіп бас тарту", confirm: "Идеядан бас тарту",
       byRes: "Тұрғындар идеясы бойынша · 12", square: "Гүлзар", projects: "Жобалар", works: "Жұмыстар мен өшірулер" }
-    : { open: "Проверить", publish: "Опубликовать", bikes: "Велопарковка", gazebo: "Беседка и скамейки во дворе",
+    : { open: "Проверить", publish: "Опубликовать", decided: "Решённые идеи", bikes: "Велопарковка", gazebo: "Беседка и скамейки во дворе",
       sports: "Спортплощадка для подростков", make: "Сделать проектом", reject: "Отклонить с причиной", confirm: "Отклонить идею",
       byRes: "По идее жителей · 12", square: "Сквер", projects: "Проекты", works: "Работы и отключения" };
   const page = await newPage(browser, width, lang, "akimat");
@@ -189,7 +196,11 @@ async function akimat(browser, base, width, lang) {
     return ((await (await fetch("/api/civic/v2/staff/ideas", { headers: { "X-CSRF-Token": token } })).json()).items || []).length;
   });
   check(`${tag} акимат: «Идеи на проверке» — все новые и на голосовании (${expected}), без главной кнопки до «${T.open}»`,
-    expected >= 4 && a.primaries === 0 && (await page.locator(".ri-card").count()) === expected, a.text.slice(0, 200));
+    expected >= 4 && a.primaries === 0 && (await page.locator(".ri-body > .ri-card").count()) === expected, a.text.slice(0, 200));
+  // Решённые идеи — свёрнуто внизу (R15-S30: их можно скрыть); в демо 2 — отклонённая и ставшая проектом.
+  const decided = page.locator(".ri-decided");
+  check(`${tag} акимат: «${T.decided} · 2» свёрнуто внизу`, (await decided.count()) === 1 && !(await decided.evaluate((d) => d.open))
+    && (await decided.locator("summary").innerText()).includes(T.decided + " · 2"), await decided.count());
   check(`${tag} акимат: нет прокрутки вбок, текст ≥ 13 px`, a.overflow <= 1 && a.small.length === 0, a.overflow + " " + a.small.join(", "));
   // Опубликовать новую идею.
   await cardOf(page, T.bikes).locator("button", { hasText: T.open }).click();
@@ -221,7 +232,9 @@ async function akimat(browser, base, width, lang) {
   check(`${tag} акимат: без причины отказ не отправляется`, (await page.locator(".ri-card", { hasText: T.sports }).count()) === 1, "sent without reason");
   await page.fill(".ri-card--open .ri-reason textarea", lang === "kk" ? "Учаскеде орын жоқ" : "Нет свободного участка");
   await page.locator(".ri-card--open .ri-reason .bk-btn--danger").click();
-  await page.waitForFunction((t) => !Array.from(document.querySelectorAll(".ri-card")).some((c) => c.textContent.includes(t)), T.sports, { timeout: 10000 });
+  // Отклонённая идея уходит из списка на проверке в свёрнутые «Решённые идеи» (там её можно скрыть, R15-S30).
+  await page.waitForFunction((t) => !Array.from(document.querySelectorAll(".ri-body > .ri-card")).some((c) => c.textContent.includes(t))
+    && Array.from(document.querySelectorAll(".ri-decided .ri-card")).some((c) => c.textContent.includes(t)), T.sports, { timeout: 10000 });
   const pub = await (await fetch(base + "api/civic/v2/ideas?status=rejected")).json();
   check(`${tag} акимат: отказ с причиной виден жителям`, (pub.items || []).some((i) => i.reason === (lang === "kk" ? "Учаскеде орын жоқ" : "Нет свободного участка")), JSON.stringify(pub).slice(0, 300));
   check(`${tag} акимат: нет ошибок JS (идеи)`, page.errs.length === 0, page.errs.join(" | "));
