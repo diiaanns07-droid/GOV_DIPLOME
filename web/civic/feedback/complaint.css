@@ -99,6 +99,9 @@
    чтобы текст под ней не просвечивал; срочный звонок 104/112 — в своём баннере, не прилипает. */
 .bc-panel:not([data-step="mine"]) .bc-body > .bk-btn--primary.bk-btn--block {
   position: sticky; bottom: 0; z-index: 2; box-shadow: 0 0 0 8px var(--c-surface, #fff); }
+/* Последняя на шаге — белое и под ней: в нижнем отступе шторки не просвечивает прокрученное (после неё ничего нет). */
+.bc-panel:not([data-step="mine"]) .bc-body > .bk-btn--primary.bk-btn--block:last-child {
+  box-shadow: 0 0 0 8px var(--c-surface, #fff), 0 24px 0 8px var(--c-surface, #fff); }
 .bc-loading { display: flex; flex-direction: column; gap: 8px; }
 .bc-loading__text { color: var(--c-text-2, #5b6a64); }
 .bc-skel-line { height: 56px; border-radius: var(--r-m, 12px); }
