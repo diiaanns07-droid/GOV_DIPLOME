@@ -664,6 +664,23 @@
           // телефона) не трогаем: карточка и подсказка лежат поверх шторки по замыслу оболочки.
           var dx = 0,
             lift = 0;
+          // Узкий столбик хозяина, который спускается сверху (кнопки карты), заходит в угол панели: на 1024 px открытый
+          // каталог акимата закрывал кнопку «Слой на карте». Сужаем панель до столбика, левый край — на месте
+          // (карточки каталога прокручиваются внутри строки). Не уже 320 px; телефон не трогаем — там панель внизу.
+          if (!phoneLayout()) {
+            var trim = 0;
+            avoidRects().forEach(function (a) {
+              if (a.width > cw * 0.2 || a.top > r.top - 8) return;
+              if (!(a.left < r.right && a.right > r.left && a.top < r.bottom && a.bottom > r.top)) return;
+              if (a.left + a.right > r.left + r.right) trim = Math.max(trim, r.right - (a.left - 8)); // столбик справа
+            });
+            if (trim > 0 && r.width - trim >= 320) {
+              dock.style.maxWidth = Math.floor(r.width - trim) + "px";
+              var r2 = dock.getBoundingClientRect();
+              dx = r.left - r2.left; // панель по центру корня: сузилась — вернуть левый край
+              r = { left: r.left, right: r.left + r2.width, top: r2.top, bottom: r2.bottom, width: r2.width, height: r2.height };
+            }
+          }
           avoidRects().forEach(function (a) {
             if (a.width > cw * 0.6) return;
             if (!(a.left < r.right && a.right > r.left && a.top < r.bottom && a.bottom > r.top && a.top > r.top - 8)) return;
@@ -705,6 +722,9 @@
         list = [];
       }
       if (!fitObserver) fitObserver = new root.MutationObserver(refitSoon);
+      // И корень модуля у хозяина: оболочка R01 открывает каталог атрибутом data-catalog — панель появляется без
+      // событий модуля, а место для неё (столбик кнопок карты, легенда) надо пересчитать.
+      if (ui.parentNode && ui.parentNode.nodeType === 1) list.push(ui.parentNode);
       list.forEach(function (node) {
         if (!node || fitWatched.indexOf(node) >= 0 || typeof node.nodeType !== "number") return;
         fitWatched.push(node);

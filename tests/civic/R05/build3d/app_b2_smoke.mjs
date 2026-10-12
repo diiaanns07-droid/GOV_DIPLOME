@@ -347,7 +347,7 @@ try {
 
   // 13. Волна 2, защита от перегруза п. 5 и п. 7 (идеи): слой «Проекты» выключен (по умолчанию) — R05 не грузит ни
   // three.js, ни свои данные (улицы, районы, список проектов). Мастер идеи R06 зовёт pickObject() — каталог эскиза
-  // виден и при выключенном слое (нужен proposed_r01_wave2.patch: оболочка прячет корень R05 вместе со слоем), «Готово»
+  // виден и при выключенном слое (нужен proposed_r01_final3.patch (в нём и wave2): оболочка прячет корень R05 вместе со слоем), «Готово»
   // отдаёт эскиз, после — корень снова скрыт. Включили слой — только тогда проекты грузятся и видны.
   const lazy = {};
   for (const [vp, lang, extra] of [[{ width: 1366, height: 768 }, "ru", {}], [{ width: 375, height: 812 }, "kk", { hasTouch: true, isMobile: true }]]) {
@@ -408,7 +408,7 @@ try {
   check("projects_layer_off_r05_loads_nothing_then_loads_when_on", Object.values(lazy).every((r) => r.off.layer !== "projects" && r.off.phase === "idle" && r.off.three === "idle" &&
     r.off.data_requests.length === 0 && r.off.three_requests === 0 && r.off.root === "none" && r.off.labels === 0 && r.on.phase === "ready" && r.on.count > 0 && r.on.labels > 0 &&
     r.on.data_requests.length >= 3), lazy);
-  check("idea_pick_visible_with_projects_layer_off (proposed_r01_wave2.patch)", Object.entries(lazy).every(([k, r]) => r.pick.catalog_visible &&
+  check("idea_pick_visible_with_projects_layer_off (proposed_r01_final3.patch)", Object.entries(lazy).every(([k, r]) => r.pick.catalog_visible &&
     r.pick.done_button === (k.endsWith("_kk") ? "Дайын" : "Готово") && r.pick.toggle_hidden && r.pick.result === "sports" && r.pick.root_after === "none"), Object.fromEntries(Object.entries(lazy).map(([k, r]) => [k, r.pick])));
 
   // 14. R10 B-041: телефон, акимат, шаг 5 сценария — «Не салайық?» → «Гүлзар» → нажать на карту → ↺ ↻ → «Орнату».
@@ -482,7 +482,7 @@ try {
   check("r10_b041_phone_placed_project_not_under_message_or_panel", Object.values(b041).every((r) => r.login && r.placing.ghost_on_map && r.placing.rotate_in_head &&
     r.now.place_on_map && r.now.toast && r.now.toast_visible && !r.now.toast_over_place && !r.now.toast_over_3d && r.later.place_on_map && r.later.saved), b041);
   // Табличка поставленного проекта не под легендой оболочки: R05 видит легенду, только если она в opts.avoid (патч).
-  check("r10_b041_label_clear_of_shell_legend (proposed_r01_wave2.patch)", Object.values(b041).every((r) => r.later.label_visible && !r.later.label_over_legend),
+  check("r10_b041_label_clear_of_shell_legend (proposed_r01_final3.patch)", Object.values(b041).every((r) => r.later.label_visible && !r.later.label_over_legend),
     Object.fromEntries(Object.entries(b041).map(([k, r]) => [k, { label: r.later.label, legend: r.later.legend, visible: r.later.label_visible }])));
 
   check("phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
@@ -606,6 +606,45 @@ try {
     await ctx.close();
   }
   check("r05_controls_tap_zone_48px (LOCAL_FINAL №9)", Object.values(sizes).every((r) => r.placed_and_undone && r.below_48.length === 0), sizes);
+
+  // 17. R10 B-045 и проектор 1024 (R10 B-043/B-044): 1024–1366 px, слой «Проекты». «Что построить?», открытый каталог
+  // акимата и подсказка жителя не лежат на легенде, панели и кнопках карты. На 1024 открытый каталог закрывал кнопку
+  // «Слой на карте» (R05: панель сужается до столбика кнопок), подсказка жителя в полосе 162 px — тоже (оболочка:
+  // proposed_r01_final3.patch даёт ей всю ширину над легендой).
+  const wide = {};
+  for (const [w, h] of [[1024, 768], [1100, 800], [1280, 800], [1366, 768]]) {
+    for (const mode of ["akimat", "resident"]) {
+      const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+      await ctx.addInitScript(PROJECTS_ON);
+      await ctx.addInitScript((m) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", "kk"); } catch (e) { /* нет хранилища */ } }, mode);
+      const q = await ctx.newPage();
+      q.on("pageerror", (e) => errors.push(e.message));
+      await q.goto(URL0);
+      await q.waitForFunction(() => window.CivicShell?.build3d?.getState?.().phase === "ready", null, { timeout: 60000 });
+      await q.waitForTimeout(2500);
+      const look = () => q.evaluate(() => {
+        const R = (e) => { if (!e) return null; const cs = getComputedStyle(e); if (cs.display === "none" || cs.visibility === "hidden") return null; const r = e.getBoundingClientRect(); return r.width && r.height ? r : null; };
+        const ov = (a, b) => !!(a && b && a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1);
+        const mine = { toggle: R(document.querySelector(".birge-b3d-toggle")), dock: R(document.querySelector("#birge-build3d-root .b3d-dock")) };
+        const host = { legend: R(document.getElementById("birge-legend")), panel: R(document.getElementById("civic-panel")), tools: R(document.querySelector(".map-tools")), header: R(document.querySelector("header.topbar")) };
+        const hits = [];
+        for (const [a, ra] of Object.entries(mine)) for (const [b, rb] of Object.entries(host)) if (ov(ra, rb)) hits.push(a + "×" + b);
+        return { state: document.querySelector("#birge-build3d-root .b3d-dock")?.dataset.state, hits, dock_w: mine.dock ? Math.round(mine.dock.width) : null };
+      });
+      const r = { start: await look() };
+      if (mode === "akimat" && (await q.$(".birge-b3d-toggle")) && (await q.isVisible(".birge-b3d-toggle"))) {
+        await q.click(".birge-b3d-toggle");
+        await q.waitForTimeout(800);
+        r.catalog = await look();
+        if (w === 1024) await shot(q, "wide_1024_akimat_catalog.png");
+      }
+      if (mode === "resident" && w === 1024) await shot(q, "wide_1024_resident_hint.png");
+      wide[`${w}_${mode}`] = r;
+      await ctx.close();
+    }
+  }
+  check("r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons", Object.entries(wide).filter(([k]) => k.endsWith("_akimat")).every(([, r]) => r.start.hits.length === 0 && r.catalog && r.catalog.state === "catalog" && r.catalog.hits.length === 0), wide);
+  check("resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch)", Object.entries(wide).filter(([k]) => k.endsWith("_resident")).every(([, r]) => r.start.state === "hint" && r.start.hits.length === 0), Object.fromEntries(Object.entries(wide).filter(([k]) => k.endsWith("_resident"))));
 } catch (e) {
   check("run", false, e.message.split("\n")[0]);
 }
