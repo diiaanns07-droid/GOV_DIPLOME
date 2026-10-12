@@ -10,18 +10,19 @@
   font-weight: var(--fw-semi); /* два веса: «жирный» = 600 */
 }
 
-.akim {
+.akim { /* внешних полей нет: в оболочке их даёт лист раздела R01 (заголовки разделов на одной высоте),
+           на отдельной странице — index.html */
   display: block;
   max-width: 1280px;
   margin: 0 auto;
-  padding: var(--s-5) var(--s-6) var(--s-8);
+  padding: 0 0 var(--s-4);
 }
 
 /* ── шапка страницы ── */
 .akim__top {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: flex-start; /* заголовок на той же высоте, что у соседних разделов листа R01 */
   justify-content: space-between;
   gap: var(--s-3) var(--s-5);
   margin-bottom: var(--s-4);
@@ -791,9 +792,6 @@
   .akim-proposals { order: 5; }
 }
 @media (max-width: 720px) {
-  .akim {
-    padding: var(--s-3) var(--s-4) var(--s-6);
-  }
   .akim__top {
     align-items: stretch;
   }
