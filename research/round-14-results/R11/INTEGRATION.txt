@@ -348,6 +348,8 @@ R07 868de08 (читаемость карты) + R01: research/round-14-results/R
 +  html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 +}
      (рядом с вашим правилом «html.bc-open .civic-mode .civic-explore, … .r07-maplegend { display: none; }».)
+     ОБНОВЛЕНИЕ: R09 делает это сам в своей ветке (claude/modest-shannon-0ki93p db4030a5, INTEGRATION M1: html.bc-open →
+     .civic-panel { visibility: hidden }) — R01 ничего не нужно, достаточно взять поставку R09.
 12.4 R01 41ccb57a + ui-kit R11 (круг 4): закрыто — поиск по центру капсулы на телефоне (§9.1 a), слои как меню (§11.1),
      одно меню, движение листа 240 мс; остаётся §9.1 b (отступы 14/9/5 у .topbar, легенды, #map-status, .top-actions),
      §9.1 c (#map-status 400 мс), «Обзор: вся Астана» 14 px (.civic-explore-view → 13), §9.1 e, 12.1, 12.3.

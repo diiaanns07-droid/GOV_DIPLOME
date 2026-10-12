@@ -29,6 +29,15 @@
         padding-bottom: var(--s-2);
         border-bottom: 1px solid var(--c-line);
       }
+      .kit-menu-static {
+        position: static;
+      }
+      .kit-row--top {
+        align-items: flex-start;
+      }
+      .kit-warn {
+        max-width: 360px;
+      }
       .kit-row {
         display: flex;
         flex-wrap: wrap;
@@ -476,6 +485,19 @@
           <div class="bk-card" id="kit-error"></div>
         </div>
         <div class="kit-icons kit-ills" id="kit-ills" aria-hidden="true"></div>
+        <!-- Выбор в меню (.bk-menu__radio, марафон): как список «Слой на карте» оболочки; предупреждение без рамки -->
+        <div class="kit-row kit-row--top">
+          <div class="bk-menu kit-menu-static" role="radiogroup" id="kit-layer" data-i18n-attr="aria-label:shell.layers.label">
+            <span class="bk-menu__label" data-i18n="shell.layers.label"></span>
+            <label class="bk-menu__radio"><input type="radio" name="kit-layer" checked /><span data-i18n="shell.layers.none"></span></label>
+            <label class="bk-menu__radio"><input type="radio" name="kit-layer" /><span data-i18n="shell.layers.nearby"></span></label>
+            <label class="bk-menu__radio"><input type="radio" name="kit-layer" /><span data-i18n="shell.layers.ideas"></span></label>
+          </div>
+          <div class="bk-banner bk-banner--warn kit-warn">
+            <div class="bk-banner__title" data-kit-icon="droplet"><span data-i18n="nearby.tab.outages"></span> · <span data-i18n="nearby.utility.water"></span></div>
+            <div data-i18n="nearby.outage.zone" data-i18n-params='{"text":"Кабанбай батыр, 48–56"}'></div>
+          </div>
+        </div>
         <div class="bk-banner bk-banner--danger" role="alert" id="kit-emergency">
           <div class="bk-banner__title" data-kit-icon="alert"><span data-i18n="complaint.emergency.title"></span></div>
           <div data-i18n="complaint.emergency.text" data-i18n-params='{"phone":"104"}'></div>
