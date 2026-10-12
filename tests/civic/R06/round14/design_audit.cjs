@@ -45,7 +45,7 @@ async function measure(page, sel) {
     const parse = (c) => { const m = c && c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const v = m[1].split(/[ ,/]+/).filter(Boolean).map(Number); return v.length >= 3 && (v[3] === undefined || v[3] > 0.05) ? v.slice(0, 3) : null; };
     const legacy = (c) => { const v = parse(c); return v && LEGACY.some((l) => Math.abs(v[0] - l[0]) + Math.abs(v[1] - l[1]) + Math.abs(v[2] - l[2]) <= 4); };
     const roots = Array.from(document.querySelectorAll(sel));
-    const out = { sizes: {}, tiny: [], weight: [], framed: [], legacy: [], small: [], primaries: 0, anim: 0, overflow: document.scrollingElement.scrollWidth - innerWidth };
+    const out = { sizes: {}, tiny: [], weight: [], framed: [], legacy: [], small: [], clipped: [], primaries: 0, anim: 0, overflow: document.scrollingElement.scrollWidth - innerWidth };
     const vis = (e) => { const r = e.getBoundingClientRect(), s = getComputedStyle(e); return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && !e.closest("details:not([open]) > :not(summary)"); };
     for (const root of roots) for (const e of root.querySelectorAll("*")) {
       if (!vis(e) || e.closest("svg")) continue;
@@ -71,6 +71,13 @@ async function measure(page, sel) {
         const zone = a.content !== "none" && a.position === "absolute" ? r.height - Math.min(0, parseFloat(a.top) || 0) - Math.min(0, parseFloat(a.bottom) || 0) : r.height;
         if (zone < 43.5 && !(e.tagName === "INPUT" && /checkbox|radio/.test(e.type))) out.small.push(Math.round(r.height) + "px «" + (e.innerText || e.getAttribute("aria-label") || "").trim().slice(0, 20) + "»");
       }
+      // Обрезано краем: кнопка или подпись выходит за правый край раздела (а не в прокручиваемой строке вкладок).
+      if (/^(BUTTON|LABEL|SUMMARY|H2|H3|P)$/.test(e.tagName)) {
+        const r = e.getBoundingClientRect(), box = root.getBoundingClientRect();
+        let scroller = false;
+        for (let a = e.parentElement; a && a !== root; a = a.parentElement) { const ox = getComputedStyle(a).overflowX; if (ox === "auto" || ox === "scroll") { scroller = true; break; } }
+        if (!scroller && r.right > box.right + 1) out.clipped.push(Math.round(r.right - box.right) + "px «" + (e.innerText || "").trim().slice(0, 20) + "»");
+      }
       if (e.classList.contains("bk-btn--primary")) out.primaries++;
       if (s.animationName !== "none" && parseFloat(s.animationDuration) > 0.01) out.anim++;
     }
@@ -84,7 +91,7 @@ function verdict(tag, m, opts) {
   check(`${tag}: без рамок у плашек и старых цветов`, m.framed.length === 0 && m.legacy.length === 0, m.framed.concat(m.legacy).slice(0, 6));
   check(`${tag}: зоны нажатия ≥ 44 px`, m.small.length === 0, m.small.slice(0, 6));
   check(`${tag}: главных кнопок — ${opts.primaries}`, m.primaries === opts.primaries, m.primaries);
-  check(`${tag}: нет прокрутки вбок`, m.overflow <= 1, m.overflow);
+  check(`${tag}: нет прокрутки вбок и ничего не обрезано краем`, m.overflow <= 1 && m.clipped.length === 0, { overflow: m.overflow, clipped: m.clipped.slice(0, 6) });
 }
 
 async function newPage(browser, width, lang, mode, opts) {
