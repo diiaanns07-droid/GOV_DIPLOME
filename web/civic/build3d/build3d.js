@@ -916,9 +916,13 @@
       var g = S.ghost;
       var k = Core.KINDS[S.kind];
       var head = el("div", "b3d-head");
+      // Пометка «Проект» (или «Эскиз к идее») — сразу за названием, в одной строке текста: справа от ↺ ↻ она
+      // читалась как подпись к кнопкам. Длинное название переносится вместе с пометкой.
       var title = el("p", "b3d-title");
       title.appendChild(icon(k.icon, o.iconsUrl));
-      title.appendChild(el("span", "", { text: t(k.key) }));
+      var name = el("span", "b3d-title__text", { text: t(k.key) + " " });
+      name.appendChild(pick ? el("span", "bk-tag b3d-tag--idea", { text: t("build3d.idea.tag") }) : el("span", "bk-tag bk-tag--project", { text: t("common.tag.project") }));
+      title.appendChild(name);
       head.appendChild(title);
       // Телефон (R10 B-041): ↺ ↻ — значками в строке названия, а не отдельным рядом: панель ниже на 64 px, и над ней
       // видно место, куда встанет объект (имя кнопки для экранного диктора — то же).
@@ -938,7 +942,6 @@
         });
         head.appendChild(tools);
       }
-      head.appendChild(pick ? el("span", "bk-tag b3d-tag--idea", { text: t("build3d.idea.tag") }) : el("span", "bk-tag bk-tag--project", { text: t("common.tag.project") }));
       dock.appendChild(head);
       var hint = el("p", "b3d-hint" + (S.hint && S.hint.error ? " b3d-hint--error" : ""), { role: "status", "aria-live": "polite" });
       if (S.hint && S.hint.error) hint.appendChild(icon("alert", o.iconsUrl));
@@ -1138,8 +1141,15 @@
       card.appendChild(votes);
       var note = p.my_vote === 1 ? t("build3d.card.your_vote_up") : p.my_vote === -1 ? t("build3d.card.your_vote_down") : t("proposal.one_vote");
       if (p.voting_open === false) note = t("proposal.voting_closed");
-      card.appendChild(el("p", "bk-meta", { text: note }));
-      if (o.role === "akimat") card.appendChild(deleteBtn(p));
+      // «Удалить» — второстепенное действие акимата: компактной кнопкой справа в строке «Один голос…», как в строке
+      // под карточкой R06, а не красной полосой во всю ширину (карточка ниже на ряд, над ней виден сам проект).
+      var noteP = el("p", "bk-meta b3d-pcard__note", { text: note });
+      if (o.role === "akimat") {
+        var noteRow = el("div", "b3d-row3d b3d-pcard__noterow");
+        noteRow.appendChild(noteP);
+        noteRow.appendChild(deleteBtn(p));
+        card.appendChild(noteRow);
+      } else card.appendChild(noteP);
       dock.appendChild(card);
     }
 

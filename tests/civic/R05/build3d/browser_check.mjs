@@ -565,7 +565,10 @@ await check("resident_sees_objects_and_votes_no_catalog", async () => {
   const del = await p.$("[data-action=delete]");
   const vote = await p.$("[data-action=vote-up]");
   const started = await p.evaluate(() => __b3d.start("square"));
-  if (SHOTS) await p.screenshot({ path: path.join(OUT, "screens", "1366_ru_resident_card.png") });
+  if (SHOTS) {
+    await p.waitForTimeout(400); // карточка выезжает 260 мс — кадр после неё, а не пустой экран в начале движения
+    await p.screenshot({ path: path.join(OUT, "screens", "1366_ru_resident_card.png") });
+  }
   await p.context().close();
   assert(cards.length === 0 && !del && vote && started === false, JSON.stringify({ cards: cards.length, del: !!del, vote: !!vote, started }));
   return { status: "PASS", detail: "нет каталога и «Удалить», есть «За/Против»" };

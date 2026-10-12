@@ -117,13 +117,15 @@
 @media (min-width: 1024px) {
   .b3d--overlay:not(.b3d--host-right) .b3d-dock[data-state="card"] {
     position: absolute;
-    top: var(--gap-edge, 12px);
+    /* --b3d-card-top: хозяин опускает карточку под свои кнопки карты справа сверху (демо: «3D»), иначе она
+       закрывала их, и из-за скругления угла выглядывал край тёмной кнопки */
+    top: var(--b3d-card-top, var(--gap-edge, 12px));
     right: var(--gap-edge, 12px);
     width: min(var(--panel-w, 400px), calc(100% - 2 * var(--gap-edge, 12px)));
-    max-height: calc(100% - 2 * var(--gap-edge, 12px));
+    max-height: calc(100% - var(--b3d-card-top, var(--gap-edge, 12px)) - var(--gap-edge, 12px));
     overflow-y: auto;
     overscroll-behavior: contain;
-    animation: b3d-slide-in var(--t-base, 240ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+    animation: b3d-slide-in var(--t-base, 260ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
   }
 }
 @keyframes b3d-slide-in {
@@ -140,6 +142,19 @@
 .b3d-pcard__where,
 .b3d-pcard__yard {
   margin: 0;
+}
+/* Строка «Один голос с устройства» и справа у акимата компактная «Удалить» */
+.b3d-pcard__noterow > .b3d-pcard__note {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+/* Название в панели размещения: пометка «Проект» сразу за ним, переносится вместе с текстом */
+.b3d-title__text {
+  min-width: 0;
+}
+.b3d-title__text > .bk-tag {
+  margin-left: 2px;
 }
 /* Карточка R06 внутри панели: без второй тени и полей, «Закрыть» — в углу панели. */
 .b3d-head--end {
@@ -307,7 +322,8 @@
 .b3d-hint--lead .ic {
   color: var(--c-brand, #152c26);
 }
-.b3d-hint--info {
+/* «Рядом уже есть остановка…» — справка, не ссылка: текст обычным цветом, синим — только значок «i» */
+.b3d-hint--info .ic {
   color: var(--c-info, #1f5fa8);
 }
 .b3d-hint--info .bk-meta {
