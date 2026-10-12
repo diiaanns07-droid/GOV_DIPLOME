@@ -67,9 +67,9 @@
   "final2_step4": "0f5101a",
   "FINAL-2": "12c925a"
  },
- "code_sha": "2f643dc",
- "tested_sha": "2f643dc (браузер R01 P0/шапка/волна 2/город/B2 — на этом дереве; pytest 3552/0, B1, R06 app, R10 demo_flow — на 32d5352, разница только web/map.js и shell.css; R13 qa и R15 — на 3d2529e; R09 app — на 234da86)",
- "push_status": "OK: 2f643dc в origin/claude/sharp-dijkstra-0t87gl",
+ "code_sha": "3d8c426",
+ "tested_sha": "3d8c426 (pytest 3556/0, браузер R01, R09 app, R13 qa, R06 app, QR, R10 demo_flow 173/0/0 — на этом коде)",
+ "push_status": "OK: 3d8c426 в origin/claude/sharp-dijkstra-0t87gl; документы — следующими коммитами",
  "changed_paths": [
   "ui/web_server.py",
   "web/index.html",
@@ -161,7 +161,7 @@
   "Код до FINAL-3 не откроет базу после миграции 9 (R06) — перед обновлением старой базы сделать backup.",
   "«Вопрос акиму» и «Идеи»: один голос с устройства + лимиты по адресу; без eGov/SMS новый device_id = новый «житель»."
  ],
- "next_step": "R10/R11 — проверка FINAL-3 32d5352 с правками тестов 21.6; новые DELIVERY (R07/R08 под чистый дизайн) — следующими шагами; официальный FINAL 15 окт и слияние в main — координатор.",
+ "next_step": "R15 — финальная проверка безопасности 3d8c426; R10 — повтор приёмки на 3d8c426 по желанию; официальный FINAL 15 окт и слияние в main — координатор.",
  "final2": {
   "in_build": {
    "R02": "f62cc93",
@@ -194,7 +194,7 @@
   ]
  },
  "final3": {
-  "candidate": "2f643dc",
+  "candidate": "2f643dc (принят R10 173/0/0 и R11)",
   "steps": [
    "7782b92 P-R09-3",
    "10e5b3a + 85cedb3 чистый дизайн R11",
@@ -205,7 +205,13 @@
    "e4a7641 генератор QR (B-060)",
    "73edcc7 R05 03ac17c",
    "f6df794 + 32d5352 правки по приёмке R10",
-   "2f643dc подпись карты на телефоне свёрнута в «i»"
+   "2f643dc подпись карты на телефоне свёрнута в «i»",
+   "77a5e7d первый значок ~1,8 с, B-061, DEMO_SCRIPT",
+   "ea44476 R12 b1bd13e",
+   "b3d0f90 разбор R11 bdc9934f, патчи R11 для R09/R06/R13, R08 0fac615d",
+   "f94f0fc документы R14 00623847",
+   "77ee50b тесты R10 55d5a95",
+   "3d8c426 R07 dee03b8b + 2 теста R06"
   ],
   "in_build": {
    "R02": "f62cc93 (+ R01: EXPECTED_TABLES миграции 9 в tests/civic/R02)",
@@ -213,35 +219,36 @@
    "R04": "8e2b2ae (+ r01_polish_r04; r09_polish_r04 не применялся — внутри R09)",
    "R05": "03ac17c (+ proposed_r01_wave2; из final3 — правило F3б вручную)",
    "R06": "21a9739 (+ r01_wave2_r06, P-R06-3 R15 слит вручную со статусом checking)",
-   "R07": "9e337dc (+ R12 R07_qr_print_link, R09 R07_fix_form.patch)",
-   "R08": "9d593d9 + r01_wave2_r08 + R13 r08_pulse_not_by_chance",
+   "R07": "dee03b8b (чистый дизайн, значки 44 px; R09 fix form и R12 QR-ссылка внутри)",
+   "R08": "0fac615d (akim.js/css чистый дизайн; Python = сборка: B-061 R01 + пульс R13)",
    "R09": "9cf4ca2 (+ R01_separate_routes, R12 R09_open_with_place уже внутри)",
-   "R10": "тесты 78a59b6",
-   "R11": "ui-kit 85a11f0, словарь 2b8f72e2 (+ R01_badge_avoid, R01_attrib_tap)",
-   "R12": "a02e906 (+ R06 r12_snap_near_street; R01_qr_report уже в сборке)",
+   "R10": "тесты 55d5a95",
+   "R11": "ui-kit/словарь bdc9934f (разбор FINAL-3: принят) + патчи R11 R09_inbox_need_staff, R06_projects_login, R13_qa_placeholder_answer_lang (применил R01)",
+   "R12": "b1bd13e",
    "R13": "198902f (+ P-R13 R15; маршруты P-R01-3 вручную)",
-   "R14": "e9236838 (документы)",
+   "R14": "00623847 (документы)",
    "R15": "тесты e970cf2/9dc6da1; P-R01-2, P-R01-3, P-R06-3, P-R13 — S01–S40 в FIXED"
   },
   "checks": {
-   "pytest tests (32d5352)": "PASS 3552 passed, 0 failed, 23 skipped, 1 xfailed",
-   "browser R01 (32d5352)": "B2 28/0, B1 16/0, шапка 42/0, P0 63/0/1 NOT_RUN, город 81/0, волна 2 42/0",
-   "R06 app_r01_wave2 / ideas_layer (32d5352)": "90/90, 16/16",
-   "R10 run_acceptance (0464f5c, тесты 78a59b6)": "точность 31/0; сценарий 95/26/14; UX 112/18; демо после репетиции 4/0; волны 165/59 — причины у R01 исправлены в f6df794/32d5352, у тестов R10 — INTEGRATION 21.6",
-   "R10 demo_flow (32d5352; копия теста с 2 правками 21.6а/б)": "167 PASS / 4 FAIL / 0 NOT_RUN — 4: «легенда с числами» (чистый дизайн, числа под «?»)",
-   "R12 app_qr_acceptance (0464f5c)": "28/1 — тест R12 ищет кнопку «Житель»; с меню аватара 30/0",
-   "R13 qa_browser (3d2529e)": "69/69",
-   "R15 tests (3d2529e)": "235 passed, 1 skipped",
-   "R09 app_demo_r09 (234da86)": "75/75",
-   "R15 (их проверка 32d5352)": "236 passed, браузер и CSP чисто, новых находок нет (R15 ee7b4d2)"
+   "pytest tests (3d8c426)": "PASS 3556 passed, 0 failed, 23 skipped, 1 xfailed",
+   "browser R01 (3d8c426)": "B2 28/0, B1 16/0, шапка 42/0, P0 63/0/1 NOT_RUN, город 81/0, волна 2 42/0",
+   "R10 demo_flow (тесты 55d5a95, 3d8c426)": "173 PASS / 0 FAIL / 0 NOT_RUN",
+   "R10 приёмка кандидата 2f643dc (ACCEPTANCE_FINAL3.md R10)": "сценарий 173/0/0; «можно показывать: да»",
+   "R11 разбор FINAL-3 2f643dc": "принят, блокеров нет; правки R01 №3–7 сделаны в b3d0f90",
+   "R09 app_demo_r09 (3d8c426)": "75/75",
+   "R13 qa_browser (3d8c426)": "69/69",
+   "R06 app_r01_wave2 / ideas_layer (3d8c426)": "90/90 (дважды), 16/16",
+   "R12 app_qr_acceptance (3d8c426)": "32/0",
+   "первый значок карты (облако, 1366, 7 прогонов)": "1,61–1,86 с, медиана 1,77 с (норма ≤ 3 с)"
   },
   "requests": [
-   "R10: INTEGRATION 21.6 (аватар vs «Для сотрудников», форма «что сделали», P-12 на телефоне, легенда строкой)",
-   "R11: INTEGRATION 21.7 (имена в ui-kit, аватар ≥ 44, ключ common.account.menu)",
-   "R12: app_qr_acceptance шаг 5 — выбор вида через меню аватара; r12_snap_near_street к себе",
-   "R06: P-R06-3 в слитом виде из сборки",
-   "R07: R07_fix_form.patch к себе; CLEAN_PASS §3; значки 44 px",
-   "R08: r08_pulse_not_by_chance к себе"
-  ]
+   "R15: финальная проверка безопасности 3d8c426",
+   "R06: test_r06r14_nearby (часы демо) и app_r01_wave2 (kk словаря) — из сборки; P-R06-3 и R06_projects_login — из сборки",
+   "R09: R09_inbox_need_staff в варианте сборки (bk-btn, ключи в complaint-strings.js)",
+   "R13: R13_qa_placeholder_answer_lang — из сборки",
+   "R08: патч B-061 уже у R08 (0fac615d)",
+   "R11: DELIVERY.json code_sha → bdc9934f (в сборке он)"
+  ],
+  "final": "3d8c426"
  }
 }
