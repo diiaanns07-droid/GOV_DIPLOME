@@ -64,13 +64,23 @@ def demo_records(now) -> list[tuple[dict, list[tuple[str, str]]]]:
     return out
 
 
-def seed_demo(store, now=None) -> dict:
-    """Засеять демо-жалобы в хранилище R09. -> {"added": n, "kept": m}. Повторный вызов ничего не дублирует."""
+def seed_demo(store, now=None, *, reset: bool = True) -> dict:
+    """Засеять демо-жалобы в хранилище R09. -> {"added": n, "reset": m, "kept": k}. Повтор ничего не дублирует.
+
+    reset=True (по умолчанию; так зовёт шлюз R01 при каждом запуске с CIVIC_DEMO=1): демо-записи возвращаются в
+    исходное состояние со временем «30 ч / 52 ч назад» от этого запуска — R10 B-048 (репетиция «съедала» шаг 2:
+    «Хан Шатыр» уже «Исправлено») и B-049 (через 14 дней после первой настройки «Я тоже» пропадал: поиск похожих — за
+    14 дней). Настоящие жалобы жителей не трогаются. reset=False — старое поведение (только добавить недостающие)."""
     now = now or store._now()
-    added = kept = 0
+    added = was_reset = kept = 0
     for record, metoo in demo_records(now):
-        if store.import_record(record, metoo_devices=metoo):
+        if reset:
+            result = store.reset_demo_record(record, metoo_devices=metoo)
+            added += result == "added"
+            was_reset += result == "reset"
+            kept += result == "skipped"
+        elif store.import_record(record, metoo_devices=metoo):
             added += 1
         else:
             kept += 1
-    return {"added": added, "kept": kept, "target": KHAN_SHATYR["id"]}
+    return {"added": added, "reset": was_reset, "kept": kept, "target": KHAN_SHATYR["id"]}

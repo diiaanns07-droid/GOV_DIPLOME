@@ -912,6 +912,33 @@ class ComplaintStore:
         return [r for r in self.list(status="new") if rec.is_overdue(r, now)]
 
     # ------------------------------------------------------------ импорт (миграция, демо)
+    def reset_demo_record(self, record: dict, metoo_devices: list[tuple[str, str]] | None = None) -> str:
+        """Демо-запись (demo: true) — в исходное состояние при каждом запуске демо-сборки (R10 B-048, B-049):
+        статус «Новое», исходные синтетические «Я тоже», время — от текущего запуска. После репетиции (исправлено,
+        «Я тоже» ведущего, проверка ремонта) и через две недели после первой настройки шаг 2 демо снова такой же.
+        Настоящие жалобы не трогаются; если id занят настоящей записью — ничего не делаем.
+        -> added | reset | skipped."""
+        if not record.get("demo"):
+            raise RecordError("Сбрасывать можно только демо-запись.")
+        now = rec.iso(self._now())
+        with self._tx() as db:
+            old = self._load(db, record["id"])
+            if old is not None and not old.get("demo"):
+                return "skipped"
+            fresh = dict(record)
+            fresh["code"] = (old or {}).get("code") or fresh.get("code") or self._next_code(db)
+            fresh["metoo"] = len(metoo_devices or [])
+            self._save(db, fresh)
+            if old is not None:
+                for table in ("complaint_metoo_v2", "complaint_votes_v2", "complaint_photos_v2", "complaint_uploads_v2"):
+                    db.execute(f"DELETE FROM {table} WHERE complaint_id = ?", (record["id"],))
+            for device, at in metoo_devices or []:
+                db.execute("INSERT OR IGNORE INTO complaint_metoo_v2 (complaint_id, device_hash, at) VALUES (?,?,?)",
+                           (record["id"], device, at))
+            event = self._event(db, "update" if old is not None else "created", fresh, now)
+        self._emit([event])
+        return "reset" if old is not None else "added"
+
     def import_record(self, record: dict, *, legacy_v1_id: int | None = None,
                       metoo_devices: list[tuple[str, str]] | None = None) -> bool:
         """Сохранить готовую запись v2 (миграция v1, синтетика R02). Идемпотентно по id и legacy_v1_id.
