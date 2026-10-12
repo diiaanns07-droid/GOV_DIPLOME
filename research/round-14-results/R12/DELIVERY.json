@@ -7,13 +7,13 @@
  "delivery": 9,
  "for_build": "сборка R01 дизайн-марафона после f262ccd (R12 3b0b4cb там уже есть — 83207dc)",
  "base_sha": "R01 claude/sharp-dijkstra-0t87gl f262ccd (в нём R12 3b0b4cb); круги 1–5 сняты на 6534334/41ccb57",
- "code_sha": "bd9e526496cb7dce7479ce01b6709d9e869371eb",
- "code_sha_note": "Марафон: e7a2487 (паспорт), cd03ab6 (табличка), 4b0b872 (кабинет), 1eb716e (вау паспорта, ключи R11), a4a0e25 (кабинет: заголовок записи, белое на сером, CHECKLIST), 3b0b4cb (кнопки паспорта: значок у подписи в две строки; значок светофора; кадры 1024). 70136b8 (круг 6: карточка работ на карте web/civic/map на токенах ui-kit). bee6068 (круг 7: кабинет на ҚАЗ — подписи формы через tr). bd9e526 (круг 8: форма листа QR по R10 — 3 размера, строки ≤ 70, нейтральное «Готово»). После — только документы.",
- "tested_sha": "bd9e526496cb7dce7479ce01b6709d9e869371eb",
+ "code_sha": "7fb739d4d314d74aea1976d32090d5bd5e705679",
+ "code_sha_note": "Марафон: e7a2487 (паспорт), cd03ab6 (табличка), 4b0b872 (кабинет), 1eb716e (вау паспорта, ключи R11), a4a0e25 (кабинет: заголовок записи, белое на сером, CHECKLIST), 3b0b4cb (кнопки паспорта: значок у подписи в две строки; значок светофора; кадры 1024). 70136b8 (круг 6: карточка работ на карте web/civic/map на токенах ui-kit). bee6068 (круг 7: кабинет на ҚАЗ — подписи формы через tr). bd9e526 (круг 8: форма листа QR по R10 — 3 размера, строки ≤ 70, нейтральное «Готово»). 7fb739d (круг 9: фокус клавиатуры в паспорте при перерисовке). После — только документы.",
+ "tested_sha": "7fb739d4d314d74aea1976d32090d5bd5e705679",
  "tested_note": "Среда: Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 f262ccd + пути R12 из code_sha (web/civic/qr, web/civic/editor, web/civic/map/civic-map.css, tests/civic/R12); CIVIC_DEMO=1, временная база засеяна как run-city.bat, временный сотрудник; ничего не коммитилось. Круги 1–5 проверены также на 6534334 и 41ccb57.",
- "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код bd9e526; этот DELIVERY — следующим коммитом)",
+ "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код 7fb739d; этот DELIVERY — следующим коммитом)",
  "take": "git checkout <code_sha> -- web/civic/qr web/civic/editor web/civic/map/civic-map.css tests/civic/R12",
- "take_note": "R01 f262ccd уже содержит R12 3b0b4cb (круги 1–5, коммит 83207dc). checkout code_sha приносит круги 6–8: web/civic/editor/editor.js (kk-подписи формы), web/civic/map/civic-map.css (карточка работ), web/civic/qr/print.css (форма листа), tests/civic/R12 (ожидания стенда карты, инструменты кадров). engine/civic_geo и data/ — брать не нужно.",
+ "take_note": "R01 f262ccd уже содержит R12 3b0b4cb (круги 1–5, коммит 83207dc). checkout code_sha приносит круги 6–9: web/civic/editor/editor.js (kk-подписи формы), web/civic/map/civic-map.css (карточка работ), web/civic/qr/print.css (форма листа), web/civic/qr/report.js (фокус при перерисовке), tests/civic/R12 (ожидания стенда карты, инструменты кадров). engine/civic_geo и data/ — брать не нужно.",
  "logic_changed": false,
  "logic_note": "Только вид, движение, состояния и тексты. editor.js: видимые подписи формы идут через tr(\"staff.form.*\") (ru — прежний текст, kk — черновик R12), «Обязательное поле.» переводится при показе; проверки, отправка и data-fk — прежние. report.js — классы, разметка состояний и флаг одной анимации после «Я тоже»; print.js — разметка таблички, размер A5/A6 (?size=), подбор шрифта; civic-map.css — только стили карточки работ. API, ключи данных и сценарий демо — те же.",
  "items_status": [
@@ -58,6 +58,13 @@
    "status": "done (номер объекта — вопрос R11)",
    "what": "форма листа: 3 размера 28/17/13, строки ≤ 70 знаков, «Готово табличек» нейтрально; «Подробнее» паспорта со стрелкой с круга 1; номер «Объект № …» оставлен по IA_WAVE2 §6.1",
    "evidence": "design/qr-sign/after-a5/form-*, design/CHECKLIST.md (круг 8)"
+  },
+  {
+   "id": "DESIGN_MARATHON чек-лист №10 (круг 9)",
+   "title": "Клавиатура: фокус и кольцо",
+   "status": "done",
+   "what": "кольцо фокуса на всех остановках Tab (паспорт, лист QR, карточка работ, кабинет); паспорт не теряет фокус после «Я тоже» и «Подробнее»",
+   "evidence": "tests/civic/R12/design/focus_probe.mjs, design/CHECKLIST.md (круг 9)"
   }
  ],
  "checklist": "research/round-14-results/R12/design/CHECKLIST.md — 12 пунктов по трём экранам и замеры до/после",
@@ -66,13 +73,13 @@
   {
    "name": "QR и мастер R09 в приложении (R01 f262ccd + R12)",
    "status": "PASS",
-   "result": "33/0/0 (и на 41ccb57 + a4a0e25/3b0b4cb)",
+   "result": "33/0/0 (f262ccd + 7fb739d; раньше и на 41ccb57)",
    "tool": "tests/civic/R12/qr/app_qr_acceptance.mjs"
   },
   {
    "name": "QR стенд",
    "status": "PASS",
-   "result": "6/6",
+   "result": "6/6 (и после круга 9)",
    "evidence_type": "synthetic",
    "tool": "tests/civic/R12/qr/qr.test.mjs"
   },
@@ -116,6 +123,11 @@
    "name": "tests/civic/R04/* (старые копии тестов редактора)",
    "status": "FAIL (не от марафона)",
    "result": "e2e 21/4, e2e_r13 12/2, joint_r03 0/2 — те же падения и с editor.css самой R01 41ccb57; актуальные — tests/civic/R12/editor"
+  },
+  {
+   "name": "клавиатура (focus_probe / focus_metoo)",
+   "status": "PASS",
+   "result": "без кольца 0: лист QR 11/11, карточка работ 6/6, кабинет 12/12; после «Я тоже» фокус на заголовке карточки, после «Подробнее» — на summary"
   }
  ],
  "patches_for_others": [

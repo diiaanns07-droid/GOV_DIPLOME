@@ -42,7 +42,10 @@ M.3c Круг 7 — кабинет на ҚАЗ (web/civic/editor/editor.js, то
 M.3d Круг 8 — замечания R10 DESIGN_REVIEW (круги 1–2): форма листа QR (web/civic/qr/print.css) — 3 размера 28/17/13 (подписи
   полей, вводный текст, кнопки и выбор размера — 17), строки ≤ 70 знаков, «Готово табличек: N» — нейтральная серая строка.
   Паспорт: «Подробнее» со стрелкой — с круга 1; номер «Объект № …» оставлен по IA_WAVE2 §6.1 (вопрос R11 в STATUS).
-M.3e R01 f262ccd уже содержит R12 3b0b4cb (83207dc): из code_sha нужны круги 6–8 (editor.js, civic-map.css, print.css, тесты).
+M.3e R01 f262ccd уже содержит R12 3b0b4cb (83207dc): из code_sha нужны круги 6–9 (editor.js, civic-map.css, print.css,
+  report.js, тесты).
+M.3f Круг 9 — клавиатура: паспорт при перерисовке возвращает фокус на ту же кнопку или на заголовок (report.js render);
+  кольцо фокуса — на всех остановках Tab экранов R12. Инструменты: tests/civic/R12/design/focus_probe.mjs, clip_probe.mjs.
 M.4 Ключи для R11 (i18n_keys.json, status new, kk — черновик R12): target.type.playground / pitch / park / waste,
   qr.sign.call, qr.sign.how, qr.form.size, qr.form.size_a5, qr.form.size_a6, qr.form.size_hint.
   Плюс 65 ключей staff.form.* (круг 7). Пока ключа нет в
