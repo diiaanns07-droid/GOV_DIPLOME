@@ -166,7 +166,8 @@ async function waitReady(page, phase = "ready") {
 }
 async function idle(page) {
   // !isMoving: «тайлы загружены» бывает и посреди полёта камеры (fitBounds/easeTo) — ждать и его конца.
-  await page.waitForFunction(() => __map.loaded() && __map.areTilesLoaded() && !__map.isMoving() && !__b3d.getState().animating, null, { timeout: 60000 });
+  // + тени в очереди (дизайн-марафон: строятся в простое браузера) — иначе счёт геометрий «плавает».
+  await page.waitForFunction(() => { const s = __b3d.getState(); return __map.loaded() && __map.areTilesLoaded() && !__map.isMoving() && !s.animating && !s.shadowsPending; }, null, { timeout: 60000 });
 }
 const state = (page) => page.evaluate(() => __b3d.getState());
 // Вернуть модуль в исходное состояние между проверками и поставить камеру на известный вид.

@@ -1397,7 +1397,7 @@
         renderer.resetState();
         renderer.render(scene, camera);
         updateLabels();
-        if (anims.length) map.triggerRepaint();
+        if (anims.length || fades.length) map.triggerRepaint();
       },
       onRemove: function () {
         layerAdded = false;
@@ -1528,19 +1528,27 @@
       if (how.tilt && o.view !== "3d" && map.getPitch() < PITCH_3D) {
         map.easeTo({ pitch: TILT_3D, bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
       }
+      // Житель или акимат сам перешёл в объёмный вид (кнопка «3D», наклон карты) — модели «поднимаются» той же волной,
+      // что при постройке, но быстрее и без кольца (как дома в картах Apple при наклоне). При загрузке страницы — нет.
+      var rise = S.phase === "ready" && S.view !== "3d";
+      var done3d = function (ok) {
+        if (ok && rise) riseAll();
+        return ok;
+      };
       S.view = "3d";
       if (S.three === "ready") {
         setLayerVisibility();
         render();
         repaint();
-        return Promise.resolve(true);
+        return Promise.resolve(done3d(true));
       }
-      if (THREE && styleJsonReady()) return Promise.resolve(finish3d());
+      if (THREE && styleJsonReady()) return Promise.resolve(done3d(finish3d()));
       S.three = "loading";
       render();
       return loadThree()
         .then(whenStyleReady)
         .then(finish3d)
+        .then(done3d)
         .catch(function (err) {
           if (S.destroyed) return false;
           logFail("[build3d] 3D не загрузилось", err);
@@ -1663,7 +1671,9 @@
     // солнца в оси модели. Освещение (длинный участок) — без проекции, только пятна у опор (в модели).
     // Тени строятся не сразу, а в простое браузера, по одной (сквер ~11 мс): объекты появляются без задержки, тень
     // проявляется за 0.22 с. Во время постройки её прозрачность ведёт анимация постройки (obj.building).
+    // Проявление тени — не «анимация» для getState().animating (там — постройка, удаление, подъём): своя очередь fades.
     var shadowQueue = [];
+    var fades = [];
     var shadowTimer = 0;
     function queueShadow(obj, geos) {
       shadowQueue.push({ obj: obj, geos: geos });
@@ -1697,7 +1707,7 @@
       if (reducedMotion()) return;
       var t0 = performance.now();
       mat.opacity = 0;
-      anims.push({
+      fades.push({
         update: function (now) {
           var k = Math.min(1, (now - t0) / 220);
           mat.opacity = easeOutCubic(k);
@@ -1969,6 +1979,9 @@
       anims = anims.filter(function (a) {
         return a.update(now);
       });
+      fades = fades.filter(function (a) {
+        return a.update(now);
+      });
     }
 
     // Постройка: газон и плиты появляются сразу, затем части объекта вырастают волной от центра к краям (шейдер
@@ -2001,6 +2014,42 @@
             return false;
           }
           return true;
+        },
+      });
+      repaint();
+    }
+
+    // Подъём моделей при переходе в объёмный вид (0.7 с): uReveal 0 → 1 у всех стоящих объектов, тень проявляется;
+    // подписи не прячутся, кольца нет. «Уменьшить движение» — сразу.
+    var RISE_MS = 700;
+    function setReveal(obj, v) {
+      [obj.mats.solid, obj.mats.glass, obj.mats.glow].forEach(function (m) {
+        if (m && m.userData.reveal) m.userData.reveal.value = v;
+      });
+    }
+    function riseAll() {
+      if (reducedMotion()) return;
+      var objs = Object.keys(S.objects)
+        .map(function (id) {
+          return S.objects[id];
+        })
+        .filter(function (obj) {
+          return obj.group && obj.mats && !obj.building && !obj.removing;
+        });
+      if (!objs.length) return;
+      var t0 = performance.now();
+      objs.forEach(function (obj) {
+        setReveal(obj, 0);
+      });
+      anims.push({
+        update: function (now) {
+          var k = Math.min(1, (now - t0) / RISE_MS);
+          objs.forEach(function (obj) {
+            if (obj.removing || obj.building || S.objects[obj.p.id] !== obj) return;
+            setReveal(obj, k >= 1 ? 1e4 : k);
+            if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(k);
+          });
+          return k < 1;
         },
       });
       repaint();
@@ -3584,7 +3633,8 @@
           get items() {
             return this.proposals; // то же под именем items (так их ищет сценарий R11)
           },
-          animating: anims.length > 0 || shadowQueue.length > 0, // тени в очереди — тоже «ещё рисуется»
+          animating: anims.length > 0,
+          shadowsPending: shadowQueue.length + fades.length, // тени ещё строятся или проявляются (только для проверок)
           memory: renderer ? { geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs ? renderer.info.programs.length : null } : null,
           origin: origin ? origin.slice() : null,
           view: S.view, // light — лёгкие метки и карточки; 3d — модели (POLISH_WAVE_2: «3D — по кнопке»)

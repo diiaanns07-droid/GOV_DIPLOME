@@ -99,7 +99,7 @@ async function open(viewport, query, seed) {
   return page;
 }
 async function settle(page) {
-  await page.waitForFunction(() => __map.loaded() && __map.areTilesLoaded() && !__map.isMoving() && !__b3d.getState().animating, null, { timeout: 60000 }).catch(() => {});
+  await page.waitForFunction(() => { const s = __b3d.getState(); return __map.loaded() && __map.areTilesLoaded() && !__map.isMoving() && !s.animating && !s.shadowsPending; }, null, { timeout: 60000 }).catch(() => {});
   await page.waitForTimeout(350);
 }
 async function shot(page, name) {
