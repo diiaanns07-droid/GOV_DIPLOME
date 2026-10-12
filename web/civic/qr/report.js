@@ -340,7 +340,7 @@
       postJson("/complaints/" + encodeURIComponent(id) + "/metoo", { device_id: deviceId() }).then(function () {
         if (destroyed) return;
         rememberMetoo(tg);
-        S.busy = false; S.notice = { ok: true, text: t("heat.toast_metoo") };
+        S.busy = false; S.notice = { ok: true, text: t("heat.toast_metoo") }; S.bump = true;
         // R07 слушает это событие и перерисует тепловую карту (как после «Я тоже» в мастере R09).
         try { root.dispatchEvent(new root.CustomEvent("birge:complaint", { detail: { type: "metoo", complaint_id: id, target: tg } })); } catch (e) { /* */ }
         return loadHeat(S.seq);
@@ -414,7 +414,9 @@
       // Статус и сколько людей — сразу под заголовком (видно без прокрутки на 375 px), как строка статуса ui-kit:
       // «● Новое» / «Сообщили 5 человек · за 30 дней». Жалоб нет — блока нет (IA_WAVE2 §0 п. 6).
       if (it && it.count > 0) {
-        var notes = [h("span", { class: "bk-statusline__note bq-reported" }, [h("b", { text: reportedText(it.count) }), " · " + t("common.period.last_days", { n: DAYS })])];
+        // Сразу после «Я тоже» число один раз мягко «подпрыгивает» — видно, что голос учтён (только движение).
+        var bump = S.bump && S.notice && S.notice.ok; S.bump = false;
+        var notes = [h("span", { class: "bk-statusline__note bq-reported" }, [h("b", { class: bump ? "bq-bump" : null, text: reportedText(it.count) }), " · " + t("common.period.last_days", { n: DAYS })])];
         if (isFixed(it) && it.fixed_until) notes.push(h("span", { class: "bk-statusline__note", text: t("heat.fixed_until", { date: fmtDate(it.fixed_until) }) }));
         out.push(h("div", { class: "bk-statusline bq-statusline" }, [h("span", { class: "bk-status", "data-status": it.status === "verified_fixed" ? "verified" : it.status,
           "aria-label": t("status.label") + ": " + t(statusKey(it.status)), text: t(statusKey(it.status)) })].concat(notes)));
@@ -495,5 +497,5 @@
   }
 
   return { mount: mount, parseReportId: parseReportId, kindKey: kindKey, mainAction: mainAction, REPORT_ID_RE: REPORT_ID_RE,
-    statusKey: statusKey, groupDigits: groupDigits, historyRows: historyRows, kindIcon: kindIcon, PENDING: PENDING, version: "r12-marathon-qr-3" };
+    statusKey: statusKey, groupDigits: groupDigits, historyRows: historyRows, kindIcon: kindIcon, PENDING: PENDING, version: "r12-marathon-qr-4" };
 });

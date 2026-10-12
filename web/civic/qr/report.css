@@ -46,6 +46,11 @@
   animation: bk-rise var(--t-base, 240ms) var(--ease, ease-out) both;
 }
 .bq-notice--ok { background: var(--c-ok-soft, #eaf4dc); color: var(--c-ok, #2f6b12); }
+/* «Спасибо»: галочка появляется с лёгким «щелчком», число людей один раз подпрыгивает — голос учтён. */
+.bq-notice--ok .ic { animation: bq-pop 320ms var(--ease, ease-out) 80ms both; }
+.bq-bump { display: inline-block; animation: bq-bump 360ms var(--ease, ease-out) both; }
+@keyframes bq-pop { 0% { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes bq-bump { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
 .bq-notice--error { background: var(--c-danger-soft, #fdecea); color: var(--c-danger, #b3362e); }
 
 /* «Подробнее» (.bk-details): секции с тихими заголовками 13/600, строки 17, разделители вместо рамок. */
@@ -81,5 +86,5 @@
 .bq-enter > :nth-child(3) { animation-delay: 60ms; }
 .bq-enter > :nth-child(n + 4) { animation-delay: 90ms; }
 @media (prefers-reduced-motion: reduce) {
-  .bq-enter > *, .bq-notice { animation: none; }
+  .bq-enter > *, .bq-notice, .bq-notice--ok .ic, .bq-bump { animation: none; }
 }
