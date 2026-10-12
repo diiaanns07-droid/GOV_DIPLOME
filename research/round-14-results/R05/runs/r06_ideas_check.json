@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-12T04:11:47.930Z",
- "r06": "57b7b53 · ideas API",
+ "generated_at": "2026-10-12T06:23:53.455Z",
+ "r06": "5cfbdb5 · ideas API",
  "checks": [
   {
    "id": "r06_ideas_list_public_statuses",
@@ -16,53 +16,63 @@
    }
   },
   {
-   "id": "r06_ideas_layer_shows_voting_ideas_1366_ru",
+   "id": "r06_ideas_layer_shows_public_ideas_1366_ru",
    "status": "PASS",
    "detail": {
-    "set": 3,
+    "set": 4,
+    "shown": 4,
     "voting": 3,
     "with_model": 2,
     "labels": [
      {
-      "id": "i-demo-2327391b",
+      "id": "i-demo-e92e7e18",
       "text": "Идея · 47"
      },
      {
-      "id": "i-demo-acd5dc13",
+      "id": "i-demo-d7089e6b",
       "text": "Идея · 23"
      },
      {
-      "id": "i-demo-677a4cf2",
+      "id": "i-demo-cdc4b8ac",
       "text": "Идея · 12"
+     },
+     {
+      "id": "i-demo-a1b4c62f",
+      "text": "Идея · 52"
      }
     ],
     "geometries": 5,
-    "picked": "i-demo-2327391b"
+    "picked": "i-demo-e92e7e18"
    }
   },
   {
-   "id": "r06_ideas_layer_shows_voting_ideas_375_kk",
+   "id": "r06_ideas_layer_shows_public_ideas_375_kk",
    "status": "PASS",
    "detail": {
-    "set": 3,
+    "set": 4,
+    "shown": 4,
     "voting": 3,
     "with_model": 2,
     "labels": [
      {
-      "id": "i-demo-2327391b",
+      "id": "i-demo-e92e7e18",
       "text": "Идея · 47"
      },
      {
-      "id": "i-demo-acd5dc13",
+      "id": "i-demo-d7089e6b",
       "text": "Идея · 23"
      },
      {
-      "id": "i-demo-677a4cf2",
+      "id": "i-demo-cdc4b8ac",
       "text": "Идея · 12"
+     },
+     {
+      "id": "i-demo-a1b4c62f",
+      "text": "Идея · 52"
      }
     ],
     "geometries": 5,
-    "picked": "i-demo-2327391b"
+    "picked": "i-demo-e92e7e18"
    }
   },
   {
@@ -88,16 +98,18 @@
    "status": "PASS",
    "detail": {
     "proposal": {
-     "id": "p-a50a37f58078",
+     "id": "p-b81514948ff2",
      "kind": "lighting",
      "idea": {
-      "id": "i-demo-a60bc201",
+      "id": "i-demo-a1b4c62f",
       "votes": 52
      }
     },
     "lines": {
      "ru": "По идее жителей · 52 голоса",
-     "kk": "Тұрғындар идеясы бойынша · 52 дауыс"
+     "ru_drawn_by": "R06",
+     "kk": "Тұрғындар идеясы бойынша · 52 дауыс",
+     "kk_drawn_by": "R06"
     }
    }
   },

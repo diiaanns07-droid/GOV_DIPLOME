@@ -924,6 +924,9 @@
         title_ru: p.title_ru || name, title_kk: p.title_kk || null, district: p.district, planned_year: p.year,
         votes_up: p.votes_up, votes_down: p.votes_down, my_vote: p.my_vote || null,
         voting_open: p.voting_open !== false, demo: p.demo,
+        // Проект по идее жителей: строку «По идее жителей · N голосов» рисует карточка R06 (BirgeProposals.showsIdea)
+        // — без поля idea она пропала бы у обоих.
+        idea: p.idea ? { id: p.idea.id, votes: p.idea.votes } : null,
       };
     }
     function renderR06Card(p) {
@@ -1760,10 +1763,10 @@
       Object.keys(ideas).forEach(removeIdea);
       (Array.isArray(list) ? list : []).forEach(function (raw) {
         var p = Core.normalizeIdea(raw);
-        // Слой «Идеи жителей» — идеи, за которые сейчас голосуют (R06 voting). Стала проектом — она в слое «Проекты»;
-        // отклонённая, на проверке, скрытая — не для карты (у отклонённой причина — в карточке идеи R06).
-        // Открыть любую идею в 3D по кнопке её карточки — view3dIdea.
-        if (!p || ideas[p.id] || p.status !== "voting") return;
+        // Какие идеи показывать, решает R06 (их слой просит /ideas?status=voting,project). R05 только не ставит на карту
+        // то, чему там не место: на проверке модератором и скрытые (не публичны), отклонённые (причина — в карточке
+        // идеи R06). Голосование, «акимат проверяет» и ставшие проектом — показываем. Любую идею в 3D — view3dIdea.
+        if (!p || ideas[p.id] || p.status === "review" || p.status === "hidden" || p.status === "rejected") return;
         var it = { p: p, group: null, label: null };
         it.label = makeIdeaLabel(it);
         ideas[p.id] = it;

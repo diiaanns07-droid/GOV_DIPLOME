@@ -5,7 +5,8 @@
 //   (cd ../r06w && python3 tests/civic/R06/round14/serve_r14.py --port 8620 > /tmp/ideas_stand.json &)
 //   node tests/civic/R05/build3d/r06_ideas_check.mjs /tmp/ideas_stand.json
 // Проверяет то, что делает R05, на данных R06 (без экрана «Идеи» R06 — его ещё нет):
-//   1. GET /ideas → R05 читает все идеи (Core.normalizeIdea), слой «Идеи жителей» показывает те, за которые голосуют;
+//   1. GET /ideas → R05 читает все идеи (Core.normalizeIdea); слой «Идеи жителей» показывает голосование, «акимат
+//      проверяет» и ставшие проектом (так просит слой R06: status=voting,project), отклонённые — нет;
 //      модели — у идей с объектом каталога, у идеи без объекта — только метка «Идея · N»; нажатие → onIdeaSelect(id).
 //   2. Эскиз R05 pickObject() → POST /ideas R06 принимает его как поле object (201, «на проверке»).
 //   3. Проект из идеи (R06 кладёт idea {id, votes}) → в карточке проекта «По идее жителей · N голосов».
@@ -63,6 +64,7 @@ try {
   check("r06_ideas_list_public_statuses", list.status === 200 && items.length >= 3 && !items.some((x) => x.status === "review" || x.status === "hidden"),
     { http: list.status, count: items.length, by_status: byStatus });
   const voting = items.filter((x) => x.status === "voting");
+  const shown = items.filter((x) => ["voting", "checking", "project"].includes(x.status));
   const withKind = voting.filter((x) => x.object && x.object.kind && x.object.kind !== "lighting");
   for (const [w, h, lang] of [[1366, 768, "ru"], [375, 812, "kk"]]) {
     const phone = w < 640;
@@ -93,10 +95,10 @@ try {
       picked = await p.evaluate(() => window.__lastIdea && window.__lastIdea.id);
     }
     await p.context().close();
-    const expectLabels = voting.map((x) => `Идея · ${x.votes}`).sort();
-    check(`r06_ideas_layer_shows_voting_ideas_${w}_${lang}`, n === voting.length && st.ideas === voting.length &&
+    const expectLabels = shown.map((x) => `Идея · ${x.votes}`).sort();
+    check(`r06_ideas_layer_shows_public_ideas_${w}_${lang}`, n === shown.length && st.ideas === shown.length &&
       JSON.stringify(st.labels.map((l) => l.text).sort()) === JSON.stringify(expectLabels) && picked === (voting[0] && voting[0].id),
-      { set: n, voting: voting.length, with_model: withKind.length, labels: st.labels, geometries: st.geometries, picked });
+      { set: n, shown: shown.length, voting: voting.length, with_model: withKind.length, labels: st.labels, geometries: st.geometries, picked });
   }
 
   // 2. Эскиз R05 → новая идея R06 (житель): POST /ideas с object = результат pickObject.
@@ -142,8 +144,13 @@ try {
     const p3 = await open(`?store=api&r06=1&view=auto&lang=${lang}&center=${g[0]},${g[1]}&zoom=16.8&pitch=0&bearing=0`);
     await p3.waitForFunction(() => __b3d.getState().phase === "ready", null, { timeout: 60000 });
     await p3.evaluate((id) => __b3d.select(id), fromIdea.id);
-    lines[lang] = await p3.waitForSelector(".b3d-pcard__idea", { timeout: 10000 }).then((n) => n.textContent(), () => null);
-    if (lines[lang]) lines[lang] = lines[lang].trim();
+    // Строку рисует карточка R06 (BirgeProposals.showsIdea = true) или, без неё, сама карточка R05 (.b3d-pcard__idea).
+    await p3.waitForSelector(".b3d-dock[data-state=card]", { timeout: 10000 }).catch(() => {});
+    await p3.waitForTimeout(800);
+    lines[lang] = await p3.evaluate(() => { const d = document.querySelector(".b3d-dock[data-state=card]"); if (!d) return null;
+      const m = d.innerText.replace(/\s+/g, " ").match(/(По идее жителей|Тұрғындар идеясы бойынша) · \d+ [^\s·]+/); return m ? m[0] : null; });
+    const own = await p3.evaluate(() => !!document.querySelector(".b3d-pcard__idea"));
+    lines[lang + "_drawn_by"] = own ? "R05" : "R06";
     await p3.screenshot({ path: path.join(OUT, "screens", `r06_ideas_project_card_1366_${lang}.png`) });
     await p3.context().close();
   }
