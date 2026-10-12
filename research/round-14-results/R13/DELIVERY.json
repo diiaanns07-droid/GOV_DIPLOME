@@ -23,9 +23,9 @@
   "questions_demo": "synthetic, demo: true (ui/civic_qa/demo.py: 12 придуманных вопросов, телефон заведомо несуществующий)",
   "pulse_check": "synthetic (потоки жалоб из истории R13 + вставленные всплески)"
  },
- "code_sha": "c9cb7cd",
- "tested_sha": "c9cb7cd — стенд «как у R01»: claude/sharp-dijkstra-0t87gl @ 6534334 (FINAL-3 со стеклом) + web/civic/qa с c9cb7cd; Linux, Python 3.13.16, Node 22, Chromium 1194 (Playwright 1.56), облако без интернета",
- "push_status": "c9cb7cd и документы — в origin/claude/r14-R13 (см. git log)",
+ "code_sha": "f51782b",
+ "tested_sha": "f51782b — стенд «как у R01»: claude/sharp-dijkstra-0t87gl @ 6534334 (FINAL-3 со стеклом) + web/civic/qa с f51782b; Linux, Python 3.13.16, Node 22, Chromium 1194 (Playwright 1.56), облако без интернета",
+ "push_status": "f51782b и документы — в origin/claude/r14-R13 (см. git log)",
  "changed_paths": [
   "web/civic/qa/qa.js, web/civic/qa/qa.css (дизайн-марафон: типографика, состояния, движение, карточка «Ответ акима»)",
   "tests/civic/R13/qa/qa_browser.cjs (ожидание смены вкладки, ответ открыт в «С ответом», подпись с датой правки)",
@@ -36,13 +36,13 @@
  "results_on_synthetic": "История жалоб — СИНТЕТИКА, погода — real (LOCAL-9). precision@10/20/30: бустинг 0,57/0,51/0,47; без погоды 0,59/0,51/0,46; запасная 0,57/0,51/0,46; «как в прошлом месяце» 0,47/0,40/0,38; «как год назад» 0,40/0,36/0,32; случайно 0,04. Ориентир Gton 60–70 % не достигнут; погодные признаки ≈ 0 (−0,006). Пульс (R08, проверка R13, синтетика): на обычной неделе ~2,9 ложной тревоги; с проверкой «не случайно ли» ~0,3; всплеск ×5 находится в 90 % недель (было 95 %), ×3 — 61 % (было 79 %).",
  "tests": {
   "браузер qa_browser.cjs на 6534334 + R13 c9cb7cd": "PASS 85/85",
-  "браузер qa_browser.cjs QA_GLASS=1 (стекло листа + контраст над чёрной картой)": "PASS 95/95",
   "снимки qa_states.cjs (76 кадров, все состояния)": "PASS — 0 ошибок страницы, 0 зон нажатия < 44, веса 400/600",
   "R10 tests/e2e/wave_checks.cjs --only W2-9": "PASS 4/4",
   "R01 tests/civic/R01/browser/r14_wave2.cjs": "PASS 42/0",
   "pytest tests/civic/R08 с patch R13 (ветка R08 e52af04)": "PASS 218 passed, 4 skipped",
   "pytest tests/civic/R13 в ветке R13": "PASS 87 passed, 10 skipped (без шлюза R01 и модуля R08)",
-  "FPS карты": "NOT_RUN — задача R10; экран R13 — лист раздела, анимации только opacity/transform"
+  "FPS карты": "NOT_RUN — задача R10; экран R13 — лист раздела, анимации только opacity/transform",
+  "браузер qa_browser.cjs QA_GLASS=1 (стекло R01 на листе + контраст над чёрной картой + движение)": "PASS 97/97"
  },
  "known_limits": [
   "14 ключей ask.* пока только в запасных текстах qa.js (INTEGRATION §11.4) — словарь R11 главнее, когда добавит.",
@@ -50,7 +50,7 @@
   "«Пульс» — экран R08: значки темы — через patch, решение за R08/R01.",
   "Демо-вопросы и история прогноза — синтетика (demo: true); голос — одно устройство + лимиты адреса (R15 S08)."
  ],
- "next_step": "R01: взять пути R13 на c9cb7cd в сборку марафона. R08: patch значков «Пульса» (§11.3). R11: 14 ключей и 3 решения §11.4. R10: qa_states.cjs и qa_browser.cjs (QA_GLASS=1) на сборке марафона.",
+ "next_step": "R01: взять пути R13 на f51782b в сборку марафона. R08: patch значков «Пульса» (§11.3). R11: 14 ключей и 3 решения §11.4. R10: qa_states.cjs и qa_browser.cjs (QA_GLASS=1) на сборке марафона.",
  "delivery": 5,
  "delivery_note": "Поставка 5 (12 окт, вечер): дизайн-марафон — «Вопрос акиму» по чек-листу из 12 пунктов (кадры до/после), patch R08 для «Пульса района». Поставка 4: 816b06a (в FINAL-3 со стеклом).",
  "night_fixes": {
@@ -61,7 +61,7 @@
   "R11 UX_REVIEW ночь п. 5 (улицы в kk)": "подписи территорий в ҚАЗ без «улица/проспект»: «Кенгир көшесі», «… даңғылы» (правило R07 kk_street_from_ru); 0 из 2334 — test_kk_labels_have_no_russian_street_words"
  },
  "patches_for_others": {
-  "R01": "не нужен — взять пути R13 на c9cb7cd (меняются qa.js, qa.css и 2 теста).",
+  "R01": "не нужен — взять пути R13 на f51782b (меняются qa.js, qa.css и 2 теста).",
   "R08": "patches/r08_pulse_topic_icons.patch — значок темы у тревог «Пульса» + исправление значка «Я тоже» (kind metoo); git apply --check OK на R08 e52af04, tests/civic/R08 218/0."
  },
  "wave2": {
