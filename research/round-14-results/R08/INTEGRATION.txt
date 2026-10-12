@@ -6,7 +6,7 @@ research/round-14-results/R08/. Чужие файлы я не менял. Ниж
 
 §10. ДИЗАЙН-МАРАФОН (research/round-14/DESIGN_MARATHON.md) — 12 окт, база R01 65343341 (FINAL-3 со стеклом)
 ------------------------------------------------------------------------------------------------------
-10.1 R01 · взять из claude/r14-R08 (код e37c5f36; ec73b533 у вас уже есть) path-scoped — только мои пути, ключей и
+10.1 R01 · взять из claude/r14-R08 (код f92402da; ec73b533 у вас уже есть) path-scoped — только мои пути, ключей и
     файлов не добавлено:
       git checkout origin/claude/r14-R08 -- web/civic/akim/akim.js web/civic/akim/akim.css \
         web/civic/akim/services.js web/civic/akim/services.css \
@@ -14,7 +14,8 @@ research/round-14-results/R08/. Чужие файлы я не менял. Ниж
     После ec73b533 (круги 3–4): «Выбран вариант N» мягко проявляется; «Службы» — форма в белом контейнере 720 и белая
     капсула «Сохранить»; «Рядом» — колонка 720; внешние поля корней убраны (заголовки на y 108, как у соседей);
     «нет связи» — иллюстрация ui-kit #ill-offline; сводка ≤ 70 знаков; на 1024 мини-карта у заголовка; на телефоне
-    дата заголовка своей строкой. Проверено на 550f7a93 + R08 e37c5f36: r14_shell 42/0, r14_wave2 42/0,
+    дата заголовка своей строкой; смена даты/района — без мигания скелетом (круг 5, f92402da).
+    Проверено на 550f7a93 + R08 e37c5f36: r14_shell 42/0, r14_wave2 42/0,
     shell_wave2_check 20/20, glass_check 53/53, wave_checks W2-4/5/8 30/0, pytest 302.
     по желанию тесты: tests/civic/R08/ui_check.cjs, nearby_check.cjs, shell_wave2_check.cjs, glass_check.cjs,
       design_shots.cjs, test_r08_design.py.
