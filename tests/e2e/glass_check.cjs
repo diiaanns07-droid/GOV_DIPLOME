@@ -18,7 +18,7 @@
 //      ещё и другая сборка на этой машине. Программный WebGL (облако, < 10 к/с везде) — только ИНФО: мерить на ноутбуке.
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/glass_check.cjs --root <сборка> --out <папка> [--sizes 1366x768,1024x768]
-//        [--langs ru,kk] [--control <сборка без стекла>] [--fps-repeat 2] [--no-fps] [--force]
+//        [--langs ru,kk] [--control <сборка без стекла>] [--fps-repeat 2] [--no-fps | --fps-only] [--force]
 //        [--inject-css <файл>] [--inject-js <файл>]   (пробное стекло поверх сборки — самопроверка, не приёмка)
 // Итог: <out>/GLASS.json, GLASS.md, кадры; код возврата 1 — при FAIL.
 "use strict";
@@ -37,6 +37,7 @@ const INJECT = args["inject-css"] ? fs.readFileSync(path.resolve(String(args["in
 const INJECT_JS = args["inject-js"] ? fs.readFileSync(path.resolve(String(args["inject-js"])), "utf8") : null;
 const FPS_REPEAT = Math.max(1, Number(args["fps-repeat"] || 2));
 const NO_FPS = !!args["no-fps"];
+const FPS_ONLY = !!args["fps-only"];  // только плавность (отдельный прогон без другой нагрузки на машине)
 const DICT = { ru: L.loadDict(ROOT, "ru"), kk: L.loadDict(ROOT, "kk") };
 const word = (lang, key, ru, kk) => L.T(DICT[lang], key, lang === "kk" ? kk : ru);
 const exactRe = (s) => new RegExp("^\\s*" + L.esc(s) + "\\s*$", "i");
@@ -429,7 +430,7 @@ async function fallbackRun(browser, base, size) {
   const browser = await chromium.launch();
   const fps = [];
   try {
-    if (delivered || args.force) {
+    if ((delivered || args.force) && !FPS_ONLY) {
       for (const size of SIZES) for (const lang of LANGS) for (const mode of ["resident", "akimat"]) await contrastRun(browser, server.base, size, lang, mode);
       for (const size of SIZES) await fallbackRun(browser, server.base, size);
     }
