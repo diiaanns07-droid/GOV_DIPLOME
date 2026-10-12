@@ -1,18 +1,18 @@
 {
- "generated_at": "2026-10-12T12:09:54.492Z",
- "url": "http://127.0.0.1:8818/",
- "r01": "claude/sharp-dijkstra-0t87gl@77ee50b (FINAL-3) + ui-kit R11 7117132 (стекло) + R05 5dfcc4aa",
+ "generated_at": "2026-10-12T12:25:55.793Z",
+ "url": "http://127.0.0.1:8819/",
+ "r01": "claude/sharp-dijkstra-0t87gl@8201da1 (FINAL-3 окончательный, код 3d8c426 + R06 eee3c88) + ui-kit R11 7117132 (стекло) + R05 60c445b2",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
    "status": "PASS",
    "detail": {
     "labels": [
+     "Проект · 20275",
      "Проект · 2027",
      "Проект · 2027",
      "Проект · 2027",
-     "Проект · 2027",
-     "Проект · 20275"
+     "Проект · 2027"
     ],
     "catalog_folded_by_shell": true
    }
@@ -56,7 +56,7 @@
     "posts": [
      201
     ],
-    "id": "p-707d793cad93",
+    "id": "p-7cfc1d2a04a9",
     "year": 2027
    }
   },
@@ -92,8 +92,8 @@
    "status": "PASS",
    "detail": {
     "object": {
-     "x": 572.8047888517228,
-     "y": 319.2874406553678
+     "x": 572.8046180014738,
+     "y": 319.28445094478434
     },
     "under": []
    }
@@ -265,7 +265,7 @@
       "view": "3d",
       "pitch": 52,
       "geometries": 19,
-      "selected": "p-b859ba2f7d1d"
+      "selected": "p-ccea3fb9b4b8"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -284,7 +284,7 @@
       "view": "3d",
       "pitch": 52,
       "geometries": 19,
-      "selected": "p-b859ba2f7d1d"
+      "selected": "p-ccea3fb9b4b8"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -303,7 +303,7 @@
       "view": "3d",
       "pitch": 52,
       "geometries": 19,
-      "selected": "p-b859ba2f7d1d"
+      "selected": "p-ccea3fb9b4b8"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -322,7 +322,7 @@
       "view": "3d",
       "pitch": 52,
       "geometries": 19,
-      "selected": "p-b859ba2f7d1d"
+      "selected": "p-ccea3fb9b4b8"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -439,12 +439,12 @@
       "toast_over_place": false,
       "toast_over_3d": false,
       "saved": true,
-      "id": "p-2ae033ad1108",
+      "id": "p-2e311ec749c1",
       "label_visible": false,
       "label_over_legend": false,
       "label": [
-       166,
-       214
+       167,
+       215
       ],
       "legend": [
        64,
@@ -456,8 +456,8 @@
       "label_visible": true,
       "label_over_legend": false,
       "label": [
-       166,
-       214
+       167,
+       215
       ],
       "legend": [
        64,
@@ -488,7 +488,7 @@
       "toast_over_place": false,
       "toast_over_3d": false,
       "saved": true,
-      "id": "p-ca49a9dbe9c5",
+      "id": "p-238e058ed477",
       "label_visible": false,
       "label_over_legend": false,
       "label": [
@@ -537,7 +537,7 @@
       "toast_over_place": false,
       "toast_over_3d": false,
       "saved": true,
-      "id": "p-b9c0caec27fb",
+      "id": "p-b9dad2db1726",
       "label_visible": false,
       "label_over_legend": false,
       "label": [
@@ -572,8 +572,8 @@
    "detail": {
     "375x667_kk": {
      "label": [
-      166,
-      214
+      167,
+      215
      ],
      "legend": [
       64,
@@ -613,7 +613,7 @@
      "sheet_before": "half",
      "tapped": [
       187,
-      194
+      192
      ],
      "state": "card",
      "sheet": "peek",
@@ -629,8 +629,8 @@
      ],
      "object_above_card": true,
      "label": [
-      119,
-      167
+      117,
+      165
      ],
      "label_above_card": true
     },
@@ -638,24 +638,24 @@
      "sheet_before": "half",
      "tapped": [
       187,
-      194
+      192
      ],
      "state": "card",
      "sheet": "peek",
      "dock": [
-      252,
+      221,
       609
      ],
      "header_bottom": 56,
      "header_free": true,
      "object": [
       150,
-      179
+      160
      ],
      "object_above_card": true,
      "label": [
-      119,
-      167
+      99,
+      147
      ],
      "label_above_card": true
     }
@@ -666,6 +666,26 @@
    "status": "PASS",
    "detail": {
     "375x667_kk": {
+     "playground": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       310,
+       667
+      ],
+      "label": [
+       88,
+       151,
+       212,
+       199
+      ],
+      "visible": true,
+      "env_notice": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
      "stop": {
       "state": "card",
       "selected": true,
@@ -695,12 +715,12 @@
       ],
       "label": [
        87,
-       146,
+       145,
        211,
-       194
+       193
       ],
       "visible": true,
-      "env_notice": true,
+      "env_notice": false,
       "whole_on_screen": true,
       "above_card": true,
       "under": [],
@@ -745,19 +765,21 @@
       "above_card": true,
       "under": [],
       "dock_in_screen": true
-     },
+     }
+    },
+    "360x800_ru": {
      "playground": {
       "state": "card",
       "selected": true,
       "dock": [
-       310,
-       667
+       352,
+       800
       ],
       "label": [
-       88,
-       151,
-       212,
-       199
+       74,
+       177,
+       210,
+       225
       ],
       "visible": true,
       "env_notice": false,
@@ -765,9 +787,7 @@
       "above_card": true,
       "under": [],
       "dock_in_screen": true
-     }
-    },
-    "360x800_ru": {
+     },
      "stop": {
       "state": "card",
       "selected": true,
@@ -797,9 +817,9 @@
       ],
       "label": [
        74,
-       190,
+       189,
        210,
-       238
+       237
       ],
       "visible": true,
       "env_notice": false,
@@ -847,29 +867,31 @@
       "above_card": true,
       "under": [],
       "dock_in_screen": true
-     },
+     }
+    },
+    "375x812_ru": {
      "playground": {
       "state": "card",
       "selected": true,
       "dock": [
-       352,
-       800
+       221,
+       609
       ],
       "label": [
-       74,
-       177,
-       210,
-       225
+       82,
+       99,
+       218,
+       147
       ],
       "visible": true,
-      "env_notice": false,
+      "env_notice": true,
       "whole_on_screen": true,
       "above_card": true,
-      "under": [],
+      "under": [
+       "#birge-legend"
+      ],
       "dock_in_screen": true
-     }
-    },
-    "375x812_ru": {
+     },
      "stop": {
       "state": "card",
       "selected": true,
@@ -884,7 +906,7 @@
        167
       ],
       "visible": true,
-      "env_notice": true,
+      "env_notice": false,
       "whole_on_screen": true,
       "above_card": true,
       "under": [],
@@ -899,12 +921,12 @@
       ],
       "label": [
        82,
-       112,
+       111,
        218,
-       160
+       159
       ],
       "visible": true,
-      "env_notice": true,
+      "env_notice": false,
       "whole_on_screen": true,
       "above_card": true,
       "under": [],
@@ -942,28 +964,6 @@
        101,
        218,
        149
-      ],
-      "visible": true,
-      "env_notice": false,
-      "whole_on_screen": true,
-      "above_card": true,
-      "under": [
-       "#birge-legend"
-      ],
-      "dock_in_screen": true
-     },
-     "playground": {
-      "state": "card",
-      "selected": true,
-      "dock": [
-       221,
-       609
-      ],
-      "label": [
-       82,
-       99,
-       218,
-       147
       ],
       "visible": true,
       "env_notice": false,
