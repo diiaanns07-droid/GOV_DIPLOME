@@ -245,7 +245,8 @@ async function pressCheck(page, re) {
   const a = await read(); await page.mouse.down(); await L.sleep(300); const d = await read(); const box2 = await b.boundingBox();
   await page.mouse.move(2, 2); await page.mouse.up(); await L.sleep(200);
   // Отклик — да; но кнопка не должна «прыгать»: сдвиг рамки при нажатии больше 3 px — дефект (transform :active перебил свой).
-  const jump = box2 ? Math.round(Math.max(Math.abs(box2.x - box.x), Math.abs(box2.y - box.y))) : null;
+  // Сдвиг ЦЕНТРА (сжатие scale .97 уменьшает рамку к центру — это не прыжок).
+  const jump = box2 ? Math.round(Math.max(Math.abs(box2.x + box2.width / 2 - box.x - box.width / 2), Math.abs(box2.y + box2.height / 2 - box.y - box.height / 2))) : null;
   return { feedback: a !== d, jump_px: jump, jumps: jump !== null && jump > 3, normal: a.slice(0, 80), pressed: d.slice(0, 80) };
 }
 
