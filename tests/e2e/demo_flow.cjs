@@ -33,6 +33,9 @@ const LANGS = String(args.langs || "ru,kk").split(",");
 // --inject-css <файл> — проверить ПРЕДЛАГАЕМУЮ правку CSS (для INTEGRATION.txt): стиль добавляется на каждую загрузку
 // страницы. Такой прогон — не приёмка сборки: в RESULT пометка «С ПРАВКОЙ CSS».
 const INJECT_CSS = args["inject-css"] ? fs.readFileSync(path.resolve(String(args["inject-css"])), "utf8") : null;
+// --glass keep|off — стекло R11/R01: keep — держать стекло (снимать автовыключатель R01 №8, в облаке к/с всегда < 30), off — белый вид.
+const GLASS = args.glass ? String(args.glass) : null;
+const glassLog = {};
 // Реальная остановка Нуры из OSM (есть в целях R07 и в geo/objects.json R12).
 // --stop "lon,lat,id,Имя" — другая остановка (например, для стенда роли с узкой областью данных).
 const STOP = args.stop ? (([lon, lat, id, ...name]) => ({ id, name: name.join(","), point: [Number(lon), Number(lat)] }))(String(args.stop).split(","))
@@ -50,6 +53,7 @@ const UI_STOPS = args.stop ? [STOP] : [STOP,
 const NURA_BBOX = "71.375,51.115,71.420,51.140";
 const DEVICE = "r10-e2e-device-" + Date.now();
 const { NOISE, TAB_LIMIT, uiScreen, uiAudit, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
+const RL = require("./r10_lib.cjs");  // стекло: glassMode / glassSeen
 
 // Python: переменная PYTHON (например .venv\Scripts\python на Windows), иначе python3 / python.
 const PY = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
@@ -444,6 +448,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const st = UI_STOPS[vi % UI_STOPS.length];  // остановка этого варианта (шаги 1–2 и 6)
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
     locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+  await RL.glassMode(ctx, GLASS);
   if (INJECT_CSS) await ctx.addInitScript((css) => { document.addEventListener("DOMContentLoaded", () => {
     const s = document.createElement("style"); s.setAttribute("data-r10-patch", ""); s.textContent = css; document.head.appendChild(s); }); }, INJECT_CSS);
   const page = await ctx.newPage();
@@ -452,6 +457,7 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errors.push(m.type() + ": " + m.text().slice(0, 200)); });
   // JPEG 70 %: кадр ~60 КБ вместо ~350 КБ PNG — отчёты лежат в Git.
   const shot = async (s) => { const f = path.join(OUT, `${tag}-${s}.jpg`); await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+    if (GLASS) (glassLog[tag] = glassLog[tag] || {})[s] = await RL.glassSeen(page);
     if (AUDIT) { const a0 = Date.now(); (audit[tag] = audit[tag] || {})[s] = await uiAudit(page).catch((e) => ({ error: String(e.message || e).slice(0, 200) })); auditMs += Date.now() - a0; }
     return path.basename(f); };
   const step = (s, name, ok, detail, file) => add(`UI ${tag}`, s, name, ok === null ? "NOT_RUN" : ok ? "PASS" : "FAIL", detail, file);
@@ -889,6 +895,7 @@ async function networkErrors(browser, base, [w, h], lang) {
   ];
   for (const c of cases) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 });
+    await RL.glassMode(ctx, GLASS);
     const page = await ctx.newPage();
     await page.addInitScript(([m, l]) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", l); } catch (e) { /* пусто */ } }, [c.mode, lang]);
     let broken = true;
@@ -947,7 +954,7 @@ async function networkErrors(browser, base, [w, h], lang) {
     t.prev = r.ms;
   }
   for (const t of Object.values(timing)) { t.total_ms = t.prev - t.start_ms; delete t.prev; }
-  const meta = { root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
+  const meta = { ...(GLASS ? { glass: GLASS, glass_seen: glassLog } : {}), root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
     when: new Date().toISOString(), node: process.version, total_ms: Date.now() - T0, ...(INJECT_CSS ? { inject_css: String(args["inject-css"]) } : {}) };
   if (AUDIT) meta.audit = { font_min_px: 13, tap_min_px: 44, shots: Object.values(audit).reduce((n, a) => n + Object.keys(a).length, 0), excluded_ms: auditMs };
   fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results, ...(AUDIT ? { audit } : {}) }, null, 1));

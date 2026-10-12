@@ -206,7 +206,9 @@ const FORMSCAN = (withDialogs = false) => {
     const c = f.closest("form, [data-step], .r07-fixform, [role=dialog]");
     if (c && isInput(c)) forms.add(c); else fields.push(f);
   }
-  for (const c of document.querySelectorAll(withDialogs ? "[data-step], [role=dialog]" : "[data-step]")) if (vis(c)) forms.add(c);
+  // Шаг мастера — форма; «Мои обращения» R09 (.bc-panel[data-step="mine"]) — список на стекле, не форма (GLASS.md §4 R09).
+  for (const c of document.querySelectorAll(withDialogs ? "[data-step], [role=dialog]" : "[data-step]"))
+    if (vis(c) && c.getAttribute("data-step") !== "mine" && (withDialogs || isInput(c))) forms.add(c);
   const single = fields.map((f) => {
     let glass = null; for (let p = f; p && p !== document.documentElement; p = p.parentElement) if (glassOf(p)) { glass = p; break; }
     return { form: "поле " + (f.name || f.type || f.tagName.toLowerCase()), on_glass: !!glass && alpha(f) < 0.95, glass: glass ? (glass.id ? "#" + glass.id : glass.tagName.toLowerCase()) : null, opaque: alpha(f) >= 0.95 ? "само поле" : null, fields: 1 };
