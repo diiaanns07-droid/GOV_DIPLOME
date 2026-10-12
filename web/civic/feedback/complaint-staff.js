@@ -279,7 +279,8 @@
           field(t("fix.what_done"), h("input", { name: "what_done", maxlength: String(WHAT_DONE_MAX), required: true,
                                                  placeholder: t("staff.fixed.what_hint") })),
           input,
-          h("button", { "class": "bk-btn", type: "button", onclick: function () { input.click(); } }, t("fix.photo")),
+          h("button", { "class": "bk-btn bc-photo-add", type: "button", onclick: function () { input.click(); } },
+            [C().icon ? C().icon("camera") : null, h("span", {}, t("fix.photo"))]),
           preview,
           h("button", { "class": "bk-btn bk-btn--primary bk-btn--block", type: "submit" }, t("fix.send")),
           h("p", { "class": "bc-meta" }, willSee)]);
@@ -376,7 +377,8 @@
       h("p", { "class": "bc-label" }, t("fix.title")),
       h("label", { "class": "bc-staff__field" }, [h("span", { "class": "bc-label" }, t("fix.what_done")), what]),
       input,
-      h("button", { "class": "bk-btn", type: "button", onclick: function () { input.click(); } }, t("fix.photo")),
+      h("button", { "class": "bk-btn bc-photo-add", type: "button", onclick: function () { input.click(); } },
+            [C().icon ? C().icon("camera") : null, h("span", {}, t("fix.photo"))]),
       preview, error, send, willSee,
       h("button", { "class": "bc-link", type: "button", onclick: function () { destroy(); if (opts.onCancel) opts.onCancel(); } },
         t("common.action.cancel"))]);

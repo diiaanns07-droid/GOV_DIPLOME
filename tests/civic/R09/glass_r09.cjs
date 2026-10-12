@@ -182,8 +182,12 @@ async function openPage(browser, size, lang, storage) {
           const cp = document.querySelector(".civic-panel");
           return { step: p.getAttribute("data-step"), glass: p.classList.contains("bk-glass"), bg: cs.backgroundColor, blur: cs.backdropFilter,
                    mineOpen: document.documentElement.classList.contains("bc-mine-open"), panel: cp ? getComputedStyle(cp).visibility : null }; });
-        check(`${tag}: мастер жалобы — без стекла (непрозрачный белый), панель оболочки снова видна`,
-          wz && wz.step !== "mine" && !wz.glass && wz.bg === "rgb(255, 255, 255)" && wz.blur === "none" && !wz.mineOpen && wz.panel !== "hidden", wz);
+        check(`${tag}: мастер жалобы — без стекла (непрозрачный белый); одна шторка — панель оболочки скрыта, пока открыт мастер`,
+          wz && wz.step !== "mine" && !wz.glass && wz.bg === "rgb(255, 255, 255)" && wz.blur === "none" && !wz.mineOpen && wz.panel !== "visible", wz);
+        await page.keyboard.press("Escape"); await sleep(500);
+        const back = await page.evaluate(() => { const cp = document.querySelector(".civic-panel");
+          return { open: document.documentElement.classList.contains("bc-open"), panel: cp ? getComputedStyle(cp).visibility : null }; });
+        check(`${tag}: панель R09 закрыта — панель оболочки снова видна`, !back.open && back.panel !== "hidden", back);
         check(`${tag}: нет ошибок на странице`, page.errors.length === 0, page.errors);
       } finally { await ctx.close(); }
     }

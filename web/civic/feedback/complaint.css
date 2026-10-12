@@ -150,7 +150,7 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-code { display: grid; justify-items: center; gap: 0; margin: 0; }
 .bc-code__label { font-size: var(--fs-caption, 13px); color: var(--c-text-2, #5b6a64); }
 .bc-code__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 8px; }
-.bc-code__value { font-size: var(--fs-h1, 28px); font-weight: var(--fw-semi, 600); letter-spacing: .01em;
+.bc-code__value { font-size: var(--fs-title, 22px); font-weight: var(--fw-semi, 600); letter-spacing: .01em;
                   font-variant-numeric: tabular-nums; white-space: nowrap; }
 .bc-code__copy { min-height: 44px; padding: 0 10px; font-size: var(--fs-body, 15px); }
 .bc-code__copy .ic { width: 18px; height: 18px; }
@@ -286,8 +286,15 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-inbox__item { padding: 0; overflow: hidden; }
 /* «Обращения» — на листе раздела R01 (стекло); строки и форма сотрудника внутри — непрозрачные (GLASS.md, R09). */
 .bc-inbox .bc-inbox__item.bk-card { background: var(--c-surface, #fff); }
-.bc-inbox__row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 56px;
-                 padding: 12px 16px; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.bc-inbox__row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 14px; width: 100%;
+                 min-height: 64px; padding: 12px 16px; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.bc-inbox__heat { min-width: 36px; height: 36px; font-size: var(--fs-body, 15px); }
+.bc-inbox__text { display: grid; gap: 2px; min-width: 0; }
+.bc-inbox__place strong { font-size: var(--fs-lead, 17px); }
+.bc-inbox__what { display: flex; align-items: center; gap: 6px; font-size: var(--fs-body, 15px); }
+.bc-inbox__what .ic { width: 18px; height: 18px; color: var(--c-text-2, #5b6a64); }
+.bc-inbox__row > .ic { width: 20px; height: 20px; color: var(--c-text-2, #5b6a64); transition: rotate 200ms ease-out; }
+.bc-inbox__row[aria-expanded="true"] > .ic { rotate: 90deg; }
 .bc-inbox__row:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: -3px; }
 .bc-inbox__place { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .bc-inbox__item--open { box-shadow: 0 0 0 2px var(--c-brand, #152c26); }
@@ -383,3 +390,16 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 }
 /* Два веса (CLEAN_PASS §2.4): <strong> у браузера — 700; на экранах R09 — 600. */
 .bc-panel strong, .bc-inbox strong, .bc-staff strong { font-weight: var(--fw-semi, 600); }
+
+/* «Сообщить о проблеме» на ноутбуке — по центру свободной карты (слева от правой панели 400 + 12), а не всего экрана. */
+@media (min-width: 1024px) {
+  body.civic-mode .bc-fab { left: calc((100% - var(--panel-w, 400px) - 24px) / 2); }
+}
+@media (prefers-reduced-motion: reduce) { .bc-inbox__row > .ic { transition: none; } }
+
+/* Ноутбук: панель мастера — по содержимому, как боковая карточка Apple Maps (шаг 2, похожие, проверка, успех); снизу
+   нет пустого белого столба. Шаг 3 (текст) и «Мои обращения» — во всю высоту. */
+@media (min-width: 1024px) {
+  .bc-panel:not([data-step="mine"])[data-snap="peek"], .bc-panel:not([data-step="mine"])[data-snap="half"],
+  .bc-panel:not([data-step="mine"])[data-snap="fit"] { bottom: auto; max-height: calc(100vh - var(--header-h, 64px) - 24px); }
+}

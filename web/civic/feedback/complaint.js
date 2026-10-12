@@ -884,7 +884,7 @@
       if (state.photos.length < PHOTO_MAX) {
         box.appendChild(h("button", { "class": "bk-btn bc-photo-add", type: "button", disabled: state.photoBusy || null,
                                       onclick: function () { input.click(); } },
-          [icon("plus"), h("span", {}, state.photos.length ? t("complaint.photo.count", { n: state.photos.length })
+          [icon("camera"), h("span", {}, state.photos.length ? t("complaint.photo.count", { n: state.photos.length })
                                                              : t("complaint.photo.add"))]));
       }
       box.appendChild(h("p", { "class": "bc-meta" }, t("complaint.photo.limit") + " · " + t("complaint.photo.private")));
@@ -1932,7 +1932,8 @@
     emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round14-wave2",
     // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
     displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
-    targetLabel: targetLabel, statusBadge: statusBadge, icon: icon
+    targetLabel: targetLabel, statusBadge: statusBadge, icon: icon,
+    categoryIcon: function (id) { var c = category(id); return c ? c.icon : "dots"; }
   };
   // Помощники фото для компонента сотрудника (complaint-staff.js): то же уменьшение и загрузка частями.
   window.BirgeComplaintPhotos = {

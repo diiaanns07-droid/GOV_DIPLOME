@@ -3,7 +3,8 @@
  *
  *   node tests/civic/R09/design_tour_r09.cjs --root <папка сборки> --out <папка> [--only 375-ru,1366-kk]
  *
- * Сервер: python3 -B app.py с CIVIC_DEMO=1 на временной SQLite (как app_demo_r09.cjs). Размеры 375×812 и 1366×768, ru и kk.
+ * Сервер: python3 -B app.py с CIVIC_DEMO=1 на временной SQLite (как app_demo_r09.cjs). Размеры 375×812 и 1366×768, ru и kk
+ * (и 1024×768 — проектор — по --only 1024-ru).
  * Состояния: карта с кнопкой → «Где проблема?» → варианты места → текст (пусто / подсказка категории и уточнения / фото /
  * сетка категорий / срочный случай) → «Я тоже» → проверка перед отправкой → ошибка отправки → успех (новое и «Я тоже») →
  * «Мои обращения» (загрузка / список / «Подробнее» / «Ждут вашей проверки» / проверено / ошибка / пусто) → «Обращения»
@@ -299,7 +300,9 @@ async function akimat(browser, base, srv, width, height, lang) {
   let srv = null, browser = null;
   try {
     browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
-    const runs = [[375, 812, "ru"], [375, 812, "kk"], [1366, 768, "ru"], [1366, 768, "kk"]].filter(([w, , l]) => !ONLY || ONLY.includes(`${w}-${l}`));
+    // 1024×768 (проектор) — только по запросу: --only 1024-ru
+    const runs = [[375, 812, "ru"], [375, 812, "kk"], [1366, 768, "ru"], [1366, 768, "kk"], [1024, 768, "ru"]]
+      .filter(([w, , l]) => (ONLY ? ONLY.includes(`${w}-${l}`) : w !== 1024));
     for (const [w, h, lang] of runs) {
       // Свежая демо-база на каждый вариант: «Я тоже» и проверка начинаются с одного и того же вида.
       if (srv) srv.kill();

@@ -121,17 +121,23 @@
       }
       var what = C().categoryLabel(group.category) + (group.subtopic ? " · " + C().subtopicLabel(group.category, group.subtopic) : "");
       var due = deadlineNode(group.deadline);
+      // Строка как в списке iOS (дизайн-марафон): слева — число людей в кружке цвета карты жалоб (1–2 / 3–5 / 6–9 / 10+),
+      // в середине — место 17, категория 15, «N человек · срок» 13; справа — «›», при раскрытии поворачивается.
+      var level = group.people >= 10 ? 4 : (group.people >= 6 ? 3 : (group.people >= 3 ? 2 : 1));
       var head = h("button", { "class": "bc-inbox__row", type: "button", "aria-expanded": expanded ? "true" : "false",
                                "data-key": group.key, onclick: function () { toggle(group); } }, [
-        h("span", { "class": "bc-inbox__place" }, [h("strong", {}, place),
-          group.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
-          // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
-          group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
-        // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
-        h("span", { "class": "bc-meta" }, what),
-        h("span", { "class": "bc-meta" }, [t("inbox.people", { n: group.people }),
-          group.complaints.length > 1 ? " · " + t("inbox.complaints", { n: group.complaints.length }) : "",
-          due ? " · " : null, due])]);
+        h("span", { "class": "bk-heat bc-inbox__heat", "data-level": String(level), "aria-hidden": "true" }, String(group.people)),
+        h("span", { "class": "bc-inbox__text" }, [
+          h("span", { "class": "bc-inbox__place" }, [h("strong", {}, place),
+            group.demo ? h("span", { "class": "bk-tag bk-tag--demo" }, t("common.demo")) : null,
+            // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
+            group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
+          // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
+          h("span", { "class": "bc-inbox__what" }, [C().icon && C().categoryIcon ? C().icon(C().categoryIcon(group.category)) : null, h("span", {}, what)]),
+          h("span", { "class": "bc-meta" }, [t("inbox.people", { n: group.people }),
+            group.complaints.length > 1 ? " · " + t("inbox.complaints", { n: group.complaints.length }) : "",
+            due ? " · " : null, due])]),
+        C().icon ? C().icon("chevron-right") : null]);
       var li = h("li", { "class": "bk-card bc-inbox__item" + (expanded ? " bc-inbox__item--open" : "") }, head);
       if (expanded) {
         var detail = h("div", { "class": "bc-inbox__detail" });

@@ -350,7 +350,7 @@ def test_design_marathon_resident_path():
     assert 'item.status === "fixed" ? t("mine.update.fixed")' in JS
     assert ".bc-panel .bk-catgrid > button { min-height: 64px;" in css
     assert ".bc-panel .bk-empty > .ic, .bc-panel .bk-error > .ic" in css
-    reduced = css.split("@media (prefers-reduced-motion: reduce)")[-1]
+    reduced = "".join(css.split("@media (prefers-reduced-motion: reduce)")[1:])   # все такие блоки
     for anim in (".bc-body--enter", ".bc-success__tick", ".bc-mine__card--verified-now"):
         assert anim in reduced
     # Срочный баннер — сразу под полем текста, до категорий.
