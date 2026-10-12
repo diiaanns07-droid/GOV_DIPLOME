@@ -1241,6 +1241,37 @@
 .bk-status[data-status="reopened"] {
   --dot: var(--heat-3);
 }
+/* Марафон, п. 12 «вау»: смена статуса — мягко (точка и рамка меняют цвет за 260 мс); «Проверено жителями» — зелёный круг
+   с белой галочкой, который «встаёт» при переходе «исправлено → проверено» (анимация запускается при смене атрибута) */
+.bk-status::before {
+  transition:
+    background-color var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease);
+}
+.bk-status[data-status="verified"]::before {
+  width: 16px;
+  height: 16px;
+  background: var(--fixed)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E")
+    center / 10px no-repeat;
+  animation: bk-status-pop var(--t-slow) var(--ease-out);
+}
+@keyframes bk-status-pop {
+  from {
+    scale: 0.4;
+  }
+  60% {
+    scale: 1.15;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bk-status::before {
+    transition: none;
+  }
+  .bk-status[data-status="verified"]::before {
+    animation: none;
+  }
+}
 /* Статус + одна строка пояснения: «● В работе» / «Служба ответит до 16 окт» */
 .bk-statusline {
   display: grid;
