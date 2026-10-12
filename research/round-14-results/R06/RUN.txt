@@ -19,7 +19,7 @@ R06 · раунд 14 · команды и что теперь можно сде�
            && patch -p1 < <репо>/research/round-14-results/R06/r12_snap_near_street.patch)
   (cd $TR && python3 -m pytest -q tests/civic/R01 tests/civic/R06 tests/civic/R08 tests/civic/R15)
   Как в FINAL-3 (ui-kit и словарь R11 чистого дизайна): git -C <репо> archive origin/claude/r14-R11 web/civic/ui-kit web/civic/i18n | tar -x -C $TR
-  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_wave2.cjs $TR [папка-скриншотов]      # 90 проверок
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_wave2.cjs $TR [папка-скриншотов]      # 96 проверок
   С 3D R05 (слой идей): (cd $TR && git checkout origin/claude/r14-R05 -- web/civic/build3d
      && git show origin/claude/r14-R05:research/round-14-results/R05/proposed_r01_wave2.patch | patch -p1)
      (в $TR без .git: git -C <репо> archive origin/claude/r14-R05 web/civic/build3d | tar -x -C $TR)

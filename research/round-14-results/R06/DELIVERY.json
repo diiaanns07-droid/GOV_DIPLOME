@@ -1,76 +1,77 @@
 {
  "role": "R06",
- "title": "Предложения, голоса жителей, этапы и отставание объектов; волна 2 — идеи жителей и «Работы и отключения»",
+ "title": "Предложения, голоса жителей, этапы и отставание объектов; волна 2 — идеи жителей и «Работы и отключения»; FINAL-3 — стекло",
  "branch": "claude/r14-R06",
  "branch_note": "С 12 окт — ветка по COMMON (claude/r14-R06), создана от прежней claude/round-14-r06 (поставки 1–3, история) + слияние claude/round-14-package c86c515. Координатору: BRANCHES.md — R06 → claude/r14-R06.",
- "base_sha": "claude/round-14-package c86c515 (слит в ветку); код сверен с FINAL-2 R01 0f5101a и FINAL-3 шаг 1 7782b92 (claude/sharp-dijkstra-0t87gl)",
+ "base_sha": "claude/round-14-package c86c515 (слит в ветку); код сверен с FINAL-3 R01 77ee50be и 3d8c426f (claude/sharp-dijkstra-0t87gl)",
  "restored_from": {
   "ui/civic_store/": "claude/elegant-franklin-jbhprq @ 26793c8 (R02 раунда 13, код b9eb180)",
   "tests/civic/R06/store/": "tests/civic/R02 @ 26793c8, переименованы в r06store_*; тесты схемы/cookie/выгрузки/seed-demo/проекции обновлены под миграции 6–7, geometry_source и названия демо без служебных слов"
  },
  "synced_from_r01": {
   "ui/civic_store/{v2,proposals,stages,demo_r14}.py": "P-R06-2 (R15 S17–S21) из FINAL-2 0f5101a побайтно — чтобы поставка R06 его не откатила (fa44e53)",
-  "tests/civic/R06/*.py, *.cjs, harness/ (раунд 13)": "как в 0f5101a (R01 восстановил их по пинам раунда 13 и применил patch R06 tools_all) — без изменений"
+  "tests/civic/R06/*.py, *.cjs, harness/ (раунд 13)": "как в 0f5101a (R01 восстановил их по пинам раунда 13 и применил patch R06 tools_all) — без изменений",
+  "ui/civic_store/{ideas,nearby,proposals}.py, web/civic/ideas/ideas.js": "P-R06-3 (R15 S30–S33) и патч R11 R06_projects_login из FINAL-3 2f643dc/77ee50be — побайтно (4f83801); пути ui/civic_store/, web/civic/proposals/, tests/civic/R06/store/ совпадают со сборкой 3d8c426f"
  },
  "inputs_read_only": {
   "R05 3D": "claude/r14-R05 (web/civic/build3d @ 395d9ea, proposed_r01_wave2.patch) — для проверки слоя идей и клиента",
   "R10 приёмка": "claude/r14-R10 tests/e2e (demo_flow.cjs) — регресс сценария демо",
   "OSM": "data/civic/astana/osm-objects (LOCAL-1, real) и пешеходный граф — места демо-идей",
-  "R01 FINAL": "claude/sharp-dijkstra-0t87gl @ 0f5101a — дерево для проверок (ui/web_server.py, оболочка, R08, R12, R11 словарь); FINAL-3 шаг 1 @ 7782b92",
-  "R11 схемы и ui-kit": "claude/r14-R11 @ d9f2ff9 (код 2b8f72e): SCHEMES_R06_R13.md v2, CLEAN_PASS.md, ui-kit/словарь 1340 ключей"
+  "R01 FINAL": "claude/sharp-dijkstra-0t87gl @ 77ee50be (FINAL-3 окончательно) и 3d8c426f (шаг 14) — дерево для проверок",
+  "R11 схемы и ui-kit": "claude/r14-R11 @ 8f9b99ff (код ui-kit 7117132b — стекло): GLASS.md, SCHEMES_R06_R13.md v2, CLEAN_PASS.md, словарь",
+  "R15": "claude/r14-R15 @ 85180b04: SECURITY_REVIEW S30–S40, tests/civic/R15/test_r15_glass.py"
  },
- "code_sha": "21a9739",
- "tested_sha": "21a9739 (облако Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright 1.56, без интернета)",
+ "code_sha": "eee3c88",
+ "tested_sha": "eee3c88 (облако Linux, Python 3.13, SQLite 3.45, Node 22, Chromium Playwright 1.56, без интернета)",
  "push_status": "OK — origin/claude/r14-R06",
- "delivery": 4,
- "delivery_note": "Поставка 4 (12 окт, волна 2) для FINAL-3. Поставка 3: d707efc (в FINAL-2 0f5101a вместе с P-R06-2). Поставки 1–2: 7031afa, b42e790.",
+ "delivery": 5,
+ "delivery_note": "Поставка 5 (12 окт, вечер) для FINAL-3 окончательно: синхронизация R15 S30–S33 и R11 R06_projects_login, интерфейс для S30/S31, стекло по GLASS.md. Поставка 4 (волна 2): 21a9739 (в FINAL-3 77ee50be). Поставка 3: d707efc. Поставки 1–2: 7031afa, b42e790.",
  "changed_paths": [
-  "ui/civic_store/db.py (миграция 9: civic_ideas, civic_idea_votes, civic_idea_history, civic_nearby_items, civic_nearby_history; civic_proposals.idea_id)",
-  "ui/civic_store/ideas.py (новый: идеи жителей — проверка, поддержка, чек-лист, проект, отказ с причиной)",
-  "ui/civic_store/nearby.py (новый: работы и отключения для «Рядом» R08, формат ITEM)",
-  "ui/civic_store/proposals.py (create_in для проекта из идеи, поле idea {id, votes}, снятие/возврат проекта синхронизирует идею)",
-  "ui/civic_store/v2.py (маршруты стенда + функции шлюза: list_ideas, get_idea, create_idea, support_idea, decide_idea, list_ideas_staff, ideas_summary, nearby_items, list_works, create_work, update_work, remove_work)",
-  "ui/civic_store/demo_r14.py (6 демо-идей по OSM, 8 записей «Рядом» — пример R08 со сроками от сегодня)",
-  "web/civic/ideas/ideas.js, ideas.css (новые: «Идеи» жителя, «Проекты и идеи» акимата, мастер с выбором места на карте, слой «Идеи жителей»)",
-  "web/civic/proposals/works.js (новый: «Работы и отключения»)",
-  "web/civic/proposals/proposals.js, proposals.css («По идее жителей · N голосов», showsIdea)",
-  "tests/civic/R06/round14/ (test_r06r14_ideas.py, test_r06r14_nearby.py, test_r06r14_wave2_demo.py, app_r01_wave2.cjs, app_r01_ideas_layer.cjs; browser_r14.cjs — причина этапа по P-R06-2)",
-  "tests/civic/R06/store/test_r06store_schema.py (таблицы миграции 9)",
-  "research/round-14-results/R06/ (r01_wave2_r06.patch, r12_snap_near_street.patch, I18N_WAVE2_R06.json, screens/wave2/)",
-  "research/handoffs/astana/R06/round14/STATUS.md"
+  "web/civic/ideas/ideas.js (S31: телефон/e-mail/ИИН — ошибка у поля на шаге 2 и из ответа 422; S30: «Решённые идеи · N» у акимата со «Скрыть»; полоса выбора места — bk-glass; синхронизация P-R06-3 и R06_projects_login)",
+  "web/civic/ideas/ideas.css (стекло: полоса выбора места, запасной белый в :where(); формы на стекле непрозрачные; «Сообщить о проблеме» скрыта при выборе места)",
+  "ui/civic_store/{ideas,nearby,proposals}.py (P-R06-3 из FINAL-3 побайтно, 4f83801)",
+  "tests/civic/R06/round14/app_r01_wave2.cjs (96 проверок: + телефон в мастере, решённые идеи, подпись статуса из словаря сборки)",
+  "tests/civic/R06/round14/test_r06r14_nearby.py (часы ленты R08 — те же тестовые, clock())",
+  "research/round-14-results/R06/ (INTEGRATION раздел X, I18N_FINAL3_R06.json, screens/glass/)",
+  "research/handoffs/astana/R06/round14/STATUS.md",
+  "поставка 4 (волна 2) — без изменений: ui/civic_store/db.py (миграция 9), ideas.py, nearby.py, v2.py, demo_r14.py, web/civic/proposals/works.js, proposals.js/.css, tests/civic/R06/store/test_r06store_schema.py"
  ],
  "patches": {
-  "r01_wave2_r06.patch": "R01: ui/web_server.py (10 маршрутов, лимиты, файлы), web/index.html, tests/civic/R01/test_r01_api_v2.py — к 0f5101a чисто",
-  "r12_snap_near_street.patch": "R12 (через R01): /street-snap отдаёт near_street_ru/kk — название проекта из идеи «вид + улица»; необязателен",
-  "r01_app_e2e_r06_tools_all.patch": "из поставки 3 — уже применён R01 в 0f5101a"
+  "новых нет": "r01_wave2_r06.patch и r12_snap_near_street.patch уже применены R01 в FINAL-3; P-R06-3 и R06_projects_login — уже в ветке R06",
+  "r01_wave2_r06.patch": "поставка 4 — в FINAL-3",
+  "r12_snap_near_street.patch": "поставка 4 — в FINAL-3"
  },
  "tests": {
-  "pytest tests/civic/R06/round14 + store (ветка R06 @21a9739)": "PASS 425 passed, 8 skipped (SKIP: соседи по переменным окружения и стык с R08 без ui/civic_akim)",
-  "FINAL-3 шаг 1 7782b92 + ui-kit/словарь R11 2b8f72e + R05 395d9ea + пути R06 21a9739 + оба patch: pytest R01 R06 R08 R12 R15": "PASS 1345 passed, 7 skipped",
-  "то же дерево: app_r01_wave2.cjs (1366 ru/kk, 375 kk/ru: житель, мастер с местом на карте, акимат, работы → «Рядом» R08)": "PASS 90/90",
-  "то же дерево: app_r01_ideas_layer.cjs (слой «Идеи жителей» с R05 395d9ea)": "PASS 16/16",
-  "то же дерево: R10 demo_flow.cjs (claude/r14-R10 tests/e2e)": "PASS: ru (тесты R10 6edc451) 95/0/0; kk (1366, 375) — все шаги PASS в прогоне тестами R10 931ed65 (там 2 FAIL ru шага 6 — устаревшее ожидание «Исправлено», R10 исправил в 0ceb0c8; карточка R07 «Служба сообщила — ждёт проверки», не R06)",
-  "FINAL-2 0f5101a (ui-kit до 12 окт) + пути R06 21a9739 + оба patch: app_r01_wave2.cjs": "PASS 90/90",
-  "FINAL-2 0f5101a + R06 со старым R05: app_r01_ideas_layer.cjs (пункта слоя нет)": "PASS 4/4",
-  "FINAL-2 0f5101a + R06 d3fb9dd + patch: R10 demo_flow.cjs": "PASS 171, FAIL 0, NOT_RUN 0 (до правок по схеме R11 v2 — они не трогают шаги демо)",
-  "стенд browser_r14.cjs (ui-kit/словарь из 0f5101a)": "PASS 107/107",
-  "browser_nokit.cjs (R10 B-006)": "PASS 22/22",
-  "клиент R05 build3d-core 395d9ea против стенда": "PASS 17/17",
-  "app_r01_day_kk.cjs («Картина дня» ҚАЗ) на дереве с R06": "PASS 7/7",
-  "R15 test_r15_route_policy + R01 test_r01_api_v2 с patch на 7782b92": "PASS 123 passed",
+  "pytest tests/civic/R06/round14 + store (ветка R06 @eee3c88)": "PASS 425 passed, 8 skipped (SKIP: соседи по переменным окружения и стык с R08 без ui/civic_akim)",
+  "FINAL-3 77ee50be + ui-kit R11 7117132b (стекло) + пути R06 eee3c88: pytest R01 R06 R08 R12 R15": "PASS 1387 passed, 4 skipped",
+  "то же дерево: R15 test_r15_glass.py (85180b04: CSP, без внешних шрифтов/@import/url(http))": "PASS 9 passed",
+  "то же дерево: app_r01_wave2.cjs (1366 ru/kk, 375 kk/ru: житель, мастер с местом на карте и проверкой телефона, акимат с решёнными идеями и «4 × да», работы → «Рядом» R08)": "PASS 96/96 (дважды)",
+  "то же дерево: app_r01_ideas_layer.cjs (слой «Идеи жителей», R05 из сборки)": "PASS 16/16",
+  "стекло: кадры 1366 ru / 375 kk — житель, акимат, выбор места (screens/glass/)": "PASS по осмотру: полоса выбора места стеклянная, формы непрозрачные, текст тёмный. Без ui-kit 7117132b — прежний непрозрачный вид полосы (--c-paper ui-kit; правило в :where(), по CSS, отдельным кадром не снято)",
+  "R10 B-028: python -m ui.civic_store seed-r14-demo в консоли CP1251 (PYTHONIOENCODING=cp1251), дважды": "PASS: код 0, без UnicodeEncodeError (казахский — \\uXXXX), второй раз — kept",
+  "поставка 4: R10 demo_flow.cjs на дереве как FINAL-3": "PASS ru 95/0/0, kk — все шаги PASS (R10 принял FINAL-3 2f643dc: сценарий 173/0/0, W2-7 PASS 13)",
+  "поставка 4: стенд browser_r14.cjs 107/107, browser_nokit.cjs (B-006) 22/22, клиент R05 17/17": "PASS (код этих путей не менялся)",
+  "glass_contrast.cjs / glass_fallback_check.cjs R11 на сборке со стеклом R06": "NOT_RUN: стекло оболочки R01 (лист раздела, шапка) ещё не в сборке — разбор R11 после поставок R01/R07/R08/R09; полоса R06 использует только классы ui-kit",
   "Windows run-city.bat, вид полей даты/времени в Chrome ru/kk": "NOT_RUN: облако Linux (LOCAL-R06-1)"
  },
  "review_items": {
-  "R10 B-006": "исправлено (demo.html, 8102eaf → в поставке 4); в FINAL-2 старый файл — взять web/civic/proposals/ на code_sha; browser_nokit 22/22",
-  "R10 B-028": "исправлено с d707efc (уже в FINAL): CLI печатает отчёт в CP1251 без падения (test_r06r14_cli_encoding.py)",
-  "R10 W2-7 «Идеи»": "поставка есть: window.BirgeIdeas, API /ideas — проверено app_r01_wave2.cjs",
+  "R10 B-006": "исправлено (demo.html с поставки 4, в FINAL-3 77ee50be); browser_nokit 22/22 — R10: закрыть",
+  "R10 B-028": "исправлено с d707efc (в FINAL): CLI печатает отчёт в CP1251 без падения; перепроверено 12 окт вечером — R10: закрыть",
+  "R10 W2-7 «Идеи»": "PASS 13 в приёмке R10 FINAL-3 (2f643dc)",
   "R11 UX_REVIEW разбор 3 п. 4 («проверю, когда R06/R08 зарегистрируют слои»)": "слой «Идеи жителей» регистрируется (только с R05 ≥ 395d9ea)",
   "R15 S17–S21": "P-R06-2 в ветке R06 (fa44e53), побайтно как в FINAL-2",
   "LOCAL_FINAL (Codex)": "к R06 замечаний нет; UX NOT_RUN «страницы стендов 404» — ожидаемо (demo.html сервер не отдаёт)",
   "R11 SCHEMES_R06_R13 v2 (12 окт)": "экраны «Идеи» и «Проекты и идеи» приведены к схеме: колонка 720, правило + «Бюджет участия» текстом, bk-tabs с короткими подписями, «Акимат проверяет», «Сделать проектом» только при четырёх «да», ключи схемы; 6 отступлений с причинами — INTEGRATION W.5",
   "R11 CLEAN_PASS (чистый дизайн)": "R06 — только токены и компоненты ui-kit; раскрытая карточка без рамки; кадры с ui-kit 2b8f72e — screens/wave2/",
   "R10 B-059": "не R06: жалобы «исправлено 143» засевает R07 ui/civic_heat/demo_seed.py; в демо R06 жалоб нет",
-  "R15 route policy (GET очереди модерации — только сотруднику)": "GET /staff/ideas и GET /works — staff=True в patch R01; модули R06 шлют X-CSRF-Token и в GET"
+  "R15 route policy (GET очереди модерации — только сотруднику)": "GET /staff/ideas и GET /works — staff=True в patch R01; модули R06 шлют X-CSRF-Token и в GET",
+  "R15 S30 (решённую идею нельзя было скрыть)": "сервер — P-R06-3 из FINAL-3; интерфейс R06: «Решённые идеи · N» со «Скрыть» (кнопки не было)",
+  "R15 S31 (телефон/ИИН в идее)": "сервер — P-R06-3; интерфейс R06: ошибка у поля на шаге 2 и из ответа 422 (было «Нет связи»)",
+  "R15 S32, S33": "P-R06-3 из FINAL-3 побайтно (4f83801)",
+  "R11 FINAL-3 №2 «Проекты и идеи» без входа": "патч R11 R06_projects_login — в ветке R06 (кнопка «Войти» → форма входа)",
+  "R11 FINAL-3: отступления W.5 (1)–(6)": "R11 принял все шесть; схема SCHEMES_R06_R13 выполнена",
+  "R11 GLASS.md §4 (R06)": "лист раздела — стекло оболочки (корню фон не задан); полоса выбора места — bk-glass; формы непрозрачные; метки карты без стекла",
+  "R11 FINAL-3 окончательно (8f9b99ff)": "новых замечаний к R06 нет; clean_audit — R06 чисто"
  },
  "known_limits": [
   "Поддержка идеи и голос за проект — одна с устройства (хэш с солью) + лимиты по адресу; без eGov/SMS накрутку можно усложнить, но не исключить: это «мнение жителей», не официальное голосование.",
@@ -81,8 +82,9 @@
   "Название проекта из идеи — «вид + улица рядом»; улица — из R12 /street-snap (near_street_* — r12_snap_near_street.patch); без patch — только вид.",
   "Слой «Идеи жителей» — только с R05 ≥ 395d9ea (setIdeas); со старым R05 пункта нет.",
   "web/civic/notify/ не создан: «Мои уведомления» закрывают R08 (подписки) и R09 («Что изменилось»).",
-  "Код до поставки 4 не откроет базу после миграции 9 — перед обновлением backup.",
-  "Прежние ограничения поставки 3 (title_kk только у демо, район по полигонам OSM, stale) — в силе."
+  "Прежние ограничения поставки 3 (title_kk только у демо, район по полигонам OSM, stale) — в силе.",
+  "Код до поставки 4 не откроет базу после миграции 9 — перед обновлением backup (поставка 5 миграций не добавляет).",
+  "Стекло полосы выбора места — только с ui-kit R11 7117132b+ (.bk-glass); со старым ui-kit — прежний непрозрачный вид. При html.bk-glass-off или «уменьшить прозрачность» в системе — непрозрачный белый ui-kit."
  ],
- "next_step": "R01 (FINAL-3): взять R06 по путям на code_sha 21a9739 (ui/civic_store/, web/civic/proposals/, web/civic/ideas/, tests/civic/R06/round14/, tests/civic/R06/store/test_r06store_schema.py), применить r01_wave2_r06.patch и (по желанию) r12_snap_near_street.patch; для слоя идей — R05 ≥ 395d9ea. R11: 70 ключей I18N_WAVE2_R06.json и разбор экранов. R10: W2-7 и закрыть B-006/B-028. LOCAL: LOCAL-R06-1."
+ "next_step": "R01 (FINAL-3 окончательно): взять web/civic/ideas/ и tests/civic/R06/round14/ на code_sha eee3c88 (остальные пути R06 побайтно как в 3d8c426f; новых patch нет); ui-kit R11 ≥ 7117132b для стекла. R11: ключ idea.decided (I18N_FINAL3_R06.json), разбор стекла на сборке. R10: закрыть B-006/B-028; app_r01_wave2.cjs и app_r01_ideas_layer.cjs на окончательной сборке. Координатор: BRANCHES.md — R06 → claude/r14-R06. LOCAL: LOCAL-R06-1."
 }
