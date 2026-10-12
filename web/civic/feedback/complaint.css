@@ -415,11 +415,11 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 }
 @media (prefers-reduced-motion: reduce) { .bc-inbox__row > .ic { transition: none; } }
 
-/* Ноутбук: панель мастера — по содержимому, как боковая карточка Apple Maps (шаг 2, похожие, проверка, успех); снизу
-   нет пустого белого столба. Шаг 3 (текст) и «Мои обращения» — во всю высоту. */
+/* Ноутбук: панель — по содержимому, как боковая карточка Apple Maps, на всех шагах и в «Моих обращениях» (круг 8: и шаг 3,
+   и короткий список «Моих обращений» больше не тянут пустой белый / стеклянный столб до низа экрана). Длинное —
+   прокручивается внутри, панель не выше экрана под шапкой. */
 @media (min-width: 1024px) {
-  .bc-panel:not([data-step="mine"])[data-snap="peek"], .bc-panel:not([data-step="mine"])[data-snap="half"],
-  .bc-panel:not([data-step="mine"])[data-snap="fit"] { bottom: auto; max-height: calc(100vh - var(--header-h, 64px) - 24px); }
+  .bc-panel { bottom: auto; max-height: calc(100vh - var(--header-h, 64px) - 24px); }
 }
 
 /* Мягкое появление карточек «Моих обращений» и строк «Обращений» одна за другой (280 мс, шаг 40 мс; только первые 5).

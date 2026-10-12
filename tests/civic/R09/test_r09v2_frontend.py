@@ -402,3 +402,14 @@ def test_design_marathon_round7_r11_edits():
     assert "bk-tag--demo" not in LIST_JS.split('var head = h("button"', 1)[1].split("var li = ", 1)[0]
     assert 'match.demo ? h("span", { "class": "bk-tag bk-tag--demo" }' in JS   # похожая на шаге 4 — с меткой
     assert s["ru"]["common.tag.demo_hint"] == "Пример для показа, не настоящие данные"
+
+
+def test_design_marathon_round8_laptop_panel_hugs_content():
+    """Марафон, круг 8: на ноутбуке панель R09 по содержимому на всех шагах и в «Моих обращениях» (как карточка
+    Apple Maps): шаг 3 и короткий список не тянут пустой столб до низа экрана; длинное прокручивается внутри."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    block = css.split("@media (min-width: 1024px) {\n  .bc-panel { bottom: auto;", 1)
+    assert len(block) == 2 and "max-height: calc(100vh - var(--header-h, 64px) - 24px); }" in block[1].split("}", 1)[0] + "}"
+    assert '.bc-panel:not([data-step="mine"])[data-snap="peek"]' not in css
+    # Телефон: список «Моих обращений» — шторка по содержимому (fit), загрузка — половина, пусто / нет связи — низкая.
+    assert '(state.mine ? "fit" : "half")' in JS
