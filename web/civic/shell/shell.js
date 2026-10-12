@@ -165,7 +165,7 @@
   };
 
   // ---------------------------------------------------------------- page modes
-  const S = { keepSeq: 0, frameSeq: 0, view: null, recordCount: null, mode: null, mapState: "pending", modules: null, mounted: {}, selected: null, assistantSeq: 0, editorTool: false,
+  const S = { keepSeq: 0, frameSeq: 0, view: null, recordCount: null, mode: null, mapState: "pending", modules: undefined, mounted: {}, selected: null, assistantSeq: 0, editorTool: false,
     panelOpen: true, sheet: "half", started: false };
   const originalTitle = document.title;
   const brandTitle = document.querySelector(".brand-title");
@@ -338,7 +338,9 @@
     const store = S.modules?.store?.status;
     if (store === "ready") note.textContent = T("shell.panel.note");
     else note.textContent = "";
-    if (!S.modules) stateLine(T("shell.state.no_server"), "error");
+    // undefined — ответа /modules ещё нет (скелет панели, без ошибки); null — сервер не ответил (R10 B-069).
+    if (S.modules === undefined) stateLine("");
+    else if (!S.modules) stateLine(T("shell.state.no_server"), "error");
     else if (store !== "ready") stateLine(T("shell.state.no_store"), "warn");
     else stateLine("");
     $c("civic-staff-button").hidden = store !== "ready";

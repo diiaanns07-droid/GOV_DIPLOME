@@ -102,6 +102,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
                 "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
                 "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",
+                # Дизайн-марафон, R05 2b33c59: превью объектов для карточек каталога (240×160 и @2x, рендер моделей R05).
+                *(f"build3d/data/previews/{kind}{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
+                  for scale in ("", "@2x")),
                 # B3: запасной фон карты без интернета (web/map.js offlineStyle) — оси улиц OSM со стенда R07 @ 306074b.
                 "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
@@ -112,7 +115,7 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
               ".html": "text/html; charset=utf-8", ".woff2": "font/woff2",
-              ".geojson": "application/geo+json; charset=utf-8"}
+              ".geojson": "application/geo+json; charset=utf-8", ".png": "image/png"}
 for _asset in CIVIC_ASSETS:
     ASSETS["/civic/" + _asset] = ("civic/" + _asset, CIVIC_MIME.get(Path(_asset).suffix, "text/plain; charset=utf-8"))
 

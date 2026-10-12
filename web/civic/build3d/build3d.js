@@ -21,7 +21,7 @@
  *   dataUrl    — папка data/ модуля ("/civic/build3d/data/");
  *   streets    — свой источник улиц {nearest(lngLat, maxM, name?), section(a, b)} (например, R12 /targets);
  *   year       — год на табличке (2027);  autoZoom — приблизить карту, если она дальше 15.5 (true);
- *   buildMs    — длительность анимации постройки (1200 мс);
+ *   buildMs    — длительность анимации постройки (1100 мс);
  *   onToolChange(active, kind) — модуль взял/отдал щелчки по карте (R01: map.setInteractionEnabled);
  *   onSelect(proposal|null)    — выбрано предложение (R06 может показать свою карточку);
  *   renderCard: false          — не показывать встроенную карточку (её рисует R06).
@@ -33,7 +33,7 @@
  *   api                        — клиент оболочки R01 ({v2(method, path, body)}); map — карта или функция map().
  *
  * Handle: start(kind), cancel(), select(id), flyToProposals(), setMode(mode), update({mode, dock, visible}), refresh(),
- *         setVisible(bool), getState(), destroy().
+ *         setVisible(bool), getState(), destroy(); previewOf(kind) → {src, srcset} картинки объекта для каталога.
  * Событие для соседей: document "civic-build3d:tool" {active, kind} — как "civic-editor:tool" у редактора.
  */
 (function (root) {
@@ -321,11 +321,6 @@
   function easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
-  function easeOutBack(t) {
-    var c1 = 1.4,
-      c3 = c1 + 1;
-    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-  }
   function fetchJson(url) {
     return fetch(url, { headers: { Accept: "application/json" } }).then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status + " " + url);
@@ -333,7 +328,7 @@
     });
   }
 
-  var BUILD_MS = 1200; // анимация постройки
+  var BUILD_MS = 1100; // анимация постройки (волна частей ~0.55 с каждая)
   var REMOVE_MS = 320;
   var ROTATE_STEP = 15;
   var PLACE_ZOOM = 17.5; // масштаб, на котором модели хорошо видны (UX_REVIEW день 3 #20)
@@ -1017,7 +1012,7 @@
         // Наклон и «объект над карточкой» — одним движением камеры: второе easeTo оборвало бы наклон.
         var sel = S.selected && S.objects[S.selected];
         var tilt = o.view !== "3d" && map.getPitch() < PITCH_3D;
-        enable3d({ tilt: tilt && !sel });
+        enable3d({ tilt: tilt && !sel, rise: true });
         if (sel && tilt) keepAboveDock(sel, { pitch: TILT_3D, bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
       });
       if (loading) b.setAttribute("aria-busy", "true");
@@ -1342,6 +1337,7 @@
             if (!seen[id] && !S.objects[id].pending) disposeObject(id);
           });
           S.phase = "ready";
+          readyAt = performance.now();
           render();
           repaint();
         },
@@ -1349,6 +1345,7 @@
           if (S.destroyed) return;
           logFail("[build3d] предложения не загрузились", err);
           S.phase = "ready";
+          readyAt = performance.now();
           render();
           if (S.leaving) return;
           toast(t("build3d.load_failed"), {
@@ -1402,7 +1399,7 @@
         renderer.resetState();
         renderer.render(scene, camera);
         updateLabels();
-        if (anims.length) map.triggerRepaint();
+        if (anims.length || fades.length) map.triggerRepaint();
       },
       onRemove: function () {
         layerAdded = false;
@@ -1412,16 +1409,11 @@
     function setupScene() {
       scene = new THREE.Scene();
       camera = new THREE.Camera();
-      // Мягкий свет: небо/земля + солнце с юго-запада (тени не считаем — только мягкое пятно под объектом).
-      var hemi = new THREE.HemisphereLight(0xffffff, 0xcfd6c8, 2.1);
-      hemi.position.set(0, 0, 1);
-      scene.add(hemi);
-      var sun = new THREE.DirectionalLight(0xffffff, 1.7);
-      sun.position.set(-0.55, -0.85, 1.3);
-      scene.add(sun);
-      var fill = new THREE.DirectionalLight(0xffffff, 0.45);
-      fill.position.set(0.7, 0.6, 0.5);
-      scene.add(fill);
+      // Свет — общий с превью каталога (Models.lights): небо/земля, белое солнце с юго-запада (оттуда же тени),
+      // холодная подсветка с северо-востока.
+      Models.lights().forEach(function (l) {
+        scene.add(l);
+      });
       var c = map.getCenter();
       origin = [c.lng, c.lat];
       var s = Core.meterInMerc(origin[1]);
@@ -1538,19 +1530,28 @@
       if (how.tilt && o.view !== "3d" && map.getPitch() < PITCH_3D) {
         map.easeTo({ pitch: TILT_3D, bearing: map.getBearing() || -16, duration: reducedMotion() ? 0 : 900 });
       }
+      // Житель или акимат сам перешёл в объёмный вид (кнопка «3D», наклон карты: how.rise) — модели «поднимаются» той же
+      // волной, что при постройке, но быстрее и без кольца (как дома в картах Apple при наклоне). При загрузке и
+      // перезагрузке страницы — нет (первые 1.5 с после готовности данных объёмный вид включает сам модуль).
+      var rise = !!how.rise && S.view !== "3d" && S.phase === "ready" && performance.now() - readyAt > 1500;
+      var done3d = function (ok) {
+        if (ok && rise) riseAll();
+        return ok;
+      };
       S.view = "3d";
       if (S.three === "ready") {
         setLayerVisibility();
         render();
         repaint();
-        return Promise.resolve(true);
+        return Promise.resolve(done3d(true));
       }
-      if (THREE && styleJsonReady()) return Promise.resolve(finish3d());
+      if (THREE && styleJsonReady()) return Promise.resolve(done3d(finish3d()));
       S.three = "loading";
       render();
       return loadThree()
         .then(whenStyleReady)
         .then(finish3d)
+        .then(done3d)
         .catch(function (err) {
           if (S.destroyed) return false;
           logFail("[build3d] 3D не загрузилось", err);
@@ -1583,7 +1584,7 @@
     function onViewMoveEnd() {
       if (o.view !== "auto" || S.destroyed || (S.phase !== "ready" && S.phase !== "idle")) return;
       var tilted = map.getPitch() >= PITCH_3D;
-      if (tilted && S.view !== "3d" && anyVisible()) enable3d();
+      if (tilted && S.view !== "3d" && anyVisible()) enable3d({ rise: true });
       else if (!tilted && wasTilted && S.view === "3d" && S.mode !== "placing" && !anims.length) disable3d();
       wasTilted = tilted;
     }
@@ -1594,13 +1595,22 @@
     }
 
     // ───────────── Материалы ─────────────
-    // «Постройка снизу вверх»: вершины выше uReveal прижимаются к этой высоте. Программа шейдера общая,
-    // значение — у каждого объекта своё (собственный экземпляр материала).
+    // Постройка (дизайн-марафон): uReveal — доля постройки 0…1 (1e4 — готово). Каждая часть модели (дерево, скамейка,
+    // павильон — группы в build3d-models.js) растёт из своего основания: высота 0 → 1 и ширина 0.82 → 1 вокруг aPivot,
+    // с плавным замедлением; начало — aGrow (газон и плиты сразу, дальше от центра — позже). Ещё не начатые части не
+    // рисуются (раньше вершины прижимались к высоте uReveal, и в начале кроны и фонтан лежали на земле «мозаикой»).
+    // Программа шейдера общая, значение — у каждого объекта своё (собственный экземпляр материала).
     function revealHook(shader) {
       shader.uniforms.uReveal = this.userData.reveal;
       shader.vertexShader =
-        "uniform float uReveal;\n" +
-        shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\ntransformed.z = min(transformed.z, uReveal);");
+        "attribute float aGrow;\nattribute vec2 aPivot;\nuniform float uReveal;\nvarying float vGrow;\n" +
+        shader.vertexShader.replace(
+          "#include <begin_vertex>",
+          "#include <begin_vertex>\nfloat bGrow = clamp((uReveal - aGrow) / 0.5, 0.0, 1.0);\nfloat bEase = 1.0 - pow(1.0 - bGrow, 3.0);\n" +
+            "transformed.z *= bEase;\ntransformed.xy = aPivot + (transformed.xy - aPivot) * (0.82 + 0.18 * bEase);\nvGrow = bGrow;"
+        );
+      shader.fragmentShader =
+        "varying float vGrow;\n" + shader.fragmentShader.replace("#include <clipping_planes_fragment>", "#include <clipping_planes_fragment>\nif (vGrow <= 0.0) discard;");
     }
     function revealKey() {
       return "birge-build3d-reveal";
@@ -1613,6 +1623,17 @@
     }
 
     function makeMaterials(ghost, invalid, tint) {
+      // Эскиз идеи жителя (дизайн-марафон): цвета самой модели под лёгкой янтарной «сепией», полупрозрачно — видно,
+      // что это сквер или площадка (газон, дорожки, деревья), но ещё не проект. Было — сплошной охристый слепок.
+      if (ghost && tint) {
+        return {
+          solid: new THREE.MeshLambertMaterial({ vertexColors: true, color: 0xffe2a8, emissive: 0x6b4a12, emissiveIntensity: 0.12, transparent: true, opacity: 0.8 }),
+          glass: null,
+          glow: new THREE.MeshBasicMaterial({ color: 0xffe9b8, transparent: true, opacity: 0.8 }),
+          decal: null,
+          outline: new THREE.MeshBasicMaterial({ color: tint }),
+        };
+      }
       if (ghost) {
         var color = tint || (invalid ? 0xb3362e : 0x176b4a);
         return {
@@ -1625,7 +1646,8 @@
       }
       return {
         solid: withReveal(new THREE.MeshLambertMaterial({ vertexColors: true })),
-        glass: withReveal(new THREE.MeshLambertMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide })),
+        // Стекло остановки, сетки, струя фонтана — с мягким бликом (Phong), остальное матовое.
+        glass: withReveal(new THREE.MeshPhongMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, shininess: 48, specular: 0x4a4a4a })),
         glow: withReveal(new THREE.MeshBasicMaterial({ vertexColors: true })),
         decal: new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 }),
         outline: new THREE.MeshBasicMaterial({ color: OUTLINE_COLOR }),
@@ -1647,6 +1669,64 @@
       return group;
     }
 
+    // ───────────── Мягкая тень объекта (дизайн-марафон) ─────────────
+    // Тень и свет — общие с превью каталога: build3d-models.js (shadowMesh, lights, SUN). Здесь — только поворот
+    // солнца в оси модели. Освещение (длинный участок) — без проекции, только пятна у опор (в модели).
+    // Тени строятся не сразу, а в простое браузера, по одной (сквер ~11 мс): объекты появляются без задержки, тень
+    // проявляется за 0.22 с. Во время постройки её прозрачность ведёт анимация постройки (obj.building).
+    // Проявление тени — не «анимация» для getState().animating (там — постройка, удаление, подъём): своя очередь fades.
+    var shadowQueue = [];
+    var fades = [];
+    var shadowTimer = 0;
+    function queueShadow(obj, geos) {
+      shadowQueue.push({ obj: obj, geos: geos });
+      scheduleShadows();
+    }
+    function scheduleShadows() {
+      if (shadowTimer || !shadowQueue.length || S.destroyed) return;
+      shadowTimer = root.requestIdleCallback ? root.requestIdleCallback(runShadows, { timeout: 300 }) : root.setTimeout(runShadows, 16);
+    }
+    function runShadows(deadline) {
+      shadowTimer = 0;
+      if (S.destroyed) {
+        shadowQueue = [];
+        return;
+      }
+      do {
+        var job = shadowQueue.shift();
+        var obj = job && job.obj;
+        if (!obj || S.objects[obj.p.id] !== obj || !obj.group || obj.removing || obj.mats.shadow) continue;
+        var shadow = makeShadow(obj.p, job.geos);
+        if (!shadow) continue;
+        obj.group.add(shadow);
+        obj.mats.shadow = shadow.material;
+        if (obj.building) shadow.material.opacity = 0;
+        else fadeIn(shadow.material);
+      } while (shadowQueue.length && deadline && deadline.timeRemaining && deadline.timeRemaining() > 12);
+      repaint();
+      scheduleShadows();
+    }
+    function fadeIn(mat) {
+      if (reducedMotion()) return;
+      var t0 = performance.now();
+      mat.opacity = 0;
+      fades.push({
+        update: function (now) {
+          var k = Math.min(1, (now - t0) / 220);
+          mat.opacity = easeOutCubic(k);
+          return k < 1;
+        },
+      });
+    }
+    function makeShadow(p, geos) {
+      if (p.kind === "lighting" || !geos.solid || !Models.shadowMesh) return null;
+      var th = (p.rotation_deg || 0) * DEG; // группа повёрнута на −th — в осях модели солнце повёрнуто на +th
+      var sun = Models.SUN;
+      var wx = -sun[0] / sun[2],
+        wy = -sun[1] / sun[2];
+      return Models.shadowMesh(geos, wx * Math.cos(th) - wy * Math.sin(th), wx * Math.sin(th) + wy * Math.cos(th));
+    }
+
     function disposeGroup(group) {
       if (!group) return;
       group.traverse(function (n) {
@@ -1654,6 +1734,7 @@
         if (n.geometry) n.geometry.dispose();
         if (n.material) {
           (Array.isArray(n.material) ? n.material : [n.material]).forEach(function (m) {
+            if (m.map) m.map.dispose(); // текстура тени
             m.dispose();
           });
         }
@@ -1706,6 +1787,7 @@
       var geos = buildGeos(obj.p);
       obj.mats = makeMaterials(false);
       obj.group = makeMeshes(geos, obj.mats);
+      queueShadow(obj, geos);
       obj.height = geos.height;
       obj.labelPoint = labelPointOf(obj.p, geos);
       placeGroup(obj.group, obj.p);
@@ -1900,31 +1982,33 @@
       anims = anims.filter(function (a) {
         return a.update(now);
       });
+      fades = fades.filter(function (a) {
+        return a.update(now);
+      });
     }
 
-    // Постройка: вершины «вырастают» снизу вверх, объект слегка «пружинит», по краям — пыль.
+    // Постройка: газон и плиты появляются сразу, затем части объекта вырастают волной от центра к краям (шейдер
+    // revealHook), тень проявляется, по земле расходится мягкое кольцо цвета бренда. Без «пружины» и пыли.
     function animateBuild(obj) {
       var t0 = performance.now();
-      var H = obj.height + 0.5;
       var revealMats = [obj.mats.solid, obj.mats.glass, obj.mats.glow].filter(Boolean);
       revealMats.forEach(function (m) {
         m.userData.reveal.value = 0;
       });
-      obj.group.scale.set(0.94, 0.94, 1);
+      if (obj.mats.shadow) obj.mats.shadow.opacity = 0;
+      obj.building = true;
       if (obj.label) obj.label.classList.add("b3d-label--hidden");
-      obj.dust = makeDust(obj);
+      obj.dust = makePulse(obj);
       anims.push({
         update: function (now) {
           var k = Math.min(1, (now - t0) / o.buildMs);
-          var reveal = easeInOutCubic(Math.min(1, k / 0.85)) * H;
           revealMats.forEach(function (m) {
-            m.userData.reveal.value = k >= 1 ? 1e4 : reveal;
+            m.userData.reveal.value = k >= 1 ? 1e4 : k;
           });
-          var sc = 0.94 + 0.06 * easeOutBack(Math.min(1, k / 0.6));
-          obj.group.scale.set(sc, sc, 1);
+          if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(Math.min(1, Math.max(0, (k - 0.15) / 0.75)));
           if (obj.dust) obj.dust.userData.step(k);
           if (k >= 1) {
-            obj.group.scale.set(1, 1, 1);
+            obj.building = false;
             if (obj.dust) {
               disposeGroup(obj.dust);
               obj.dust = null;
@@ -1938,45 +2022,65 @@
       repaint();
     }
 
-    // Лёгкая пыль: 14 низкополигональных «облачков» по контуру, растут, поднимаются и тают за ~1 с.
-    function makeDust(obj) {
-      var N = 14;
-      var geo = new THREE.IcosahedronGeometry(0.9, 0);
-      var mat = new THREE.MeshLambertMaterial({ color: 0xefe6d6, transparent: true, opacity: 0.6, depthWrite: false });
-      var mesh = new THREE.InstancedMesh(geo, mat, N);
-      mesh.frustumCulled = false;
-      mesh.renderOrder = 5;
-      var pts = [];
+    // Подъём моделей при переходе в объёмный вид (0.7 с): uReveal 0 → 1 у всех стоящих объектов, тень проявляется;
+    // подписи не прячутся, кольца нет. «Уменьшить движение» — сразу.
+    var RISE_MS = 700;
+    var readyAt = Infinity; // когда данные проектов готовы (performance.now()); подъём — не раньше чем через 1.5 с
+    function setReveal(obj, v) {
+      [obj.mats.solid, obj.mats.glass, obj.mats.glow].forEach(function (m) {
+        if (m && m.userData.reveal) m.userData.reveal.value = v;
+      });
+    }
+    function riseAll() {
+      if (reducedMotion()) return;
+      var objs = Object.keys(S.objects)
+        .map(function (id) {
+          return S.objects[id];
+        })
+        .filter(function (obj) {
+          return obj.group && obj.mats && !obj.building && !obj.removing;
+        });
+      if (!objs.length) return;
+      var t0 = performance.now();
+      objs.forEach(function (obj) {
+        setReveal(obj, 0);
+      });
+      anims.push({
+        update: function (now) {
+          var k = Math.min(1, (now - t0) / RISE_MS);
+          objs.forEach(function (obj) {
+            if (obj.removing || obj.building || S.objects[obj.p.id] !== obj) return;
+            setReveal(obj, k >= 1 ? 1e4 : k);
+            if (obj.mats.shadow) obj.mats.shadow.opacity = easeOutCubic(k);
+          });
+          return k < 1;
+        },
+      });
+      repaint();
+    }
+
+    // Кольцо на земле: от центра объекта к его краю расходится и тает мягкий овал цвета бренда (~0.8 с).
+    function makePulse(obj) {
       var k = Core.KINDS[obj.p.kind];
-      var rand = Models.rng(obj.p.id + "dust");
-      for (var i = 0; i < N; i++) {
-        var a = (i / N) * Math.PI * 2;
-        var rx = k.line ? 6 : k.w / 2 + 0.5,
-          ry = k.line ? 6 : k.d / 2 + 0.5;
-        var base = obj.p.kind === "lighting" ? obj.labelPoint : [0, 0];
-        pts.push({ x: base[0] + Math.cos(a) * rx * (0.85 + rand() * 0.2), y: base[1] + Math.sin(a) * ry * (0.85 + rand() * 0.2), d: rand() * 0.18, s: 0.7 + rand() * 0.6 });
-      }
+      var rx = k.line ? 7 : k.w / 2 + 1,
+        ry = k.line ? 7 : k.d / 2 + 1;
+      var geo = new THREE.RingGeometry(0.86, 1, 72);
+      var mat = new THREE.MeshBasicMaterial({ color: 0x2f7d5b, transparent: true, opacity: 0, depthWrite: false });
+      var ring = new THREE.Mesh(geo, mat);
+      ring.frustumCulled = false;
+      ring.renderOrder = 5;
       var group = new THREE.Group();
-      group.add(mesh);
+      group.add(ring);
       group.position.copy(obj.group.position);
       group.rotation.copy(obj.group.rotation);
+      var base = obj.p.kind === "lighting" && obj.labelPoint ? obj.labelPoint : [0, 0];
+      ring.position.set(base[0], base[1], 0.25);
       scene.add(group);
-      var m4 = new THREE.Matrix4(),
-        q = new THREE.Quaternion(),
-        v = new THREE.Vector3(),
-        sc = new THREE.Vector3();
       group.userData.step = function (kk) {
-        pts.forEach(function (p, i) {
-          var local = Math.max(0, Math.min(1, (kk - p.d) / 0.75));
-          var e = easeOutCubic(local);
-          var s = p.s * (0.4 + 1.3 * e);
-          v.set(p.x, p.y, 0.3 + 1.4 * e);
-          sc.set(s, s, s * 0.7);
-          m4.compose(v, q, sc);
-          mesh.setMatrixAt(i, m4);
-        });
-        mesh.instanceMatrix.needsUpdate = true;
-        mat.opacity = 0.6 * (1 - easeOutCubic(Math.min(1, kk / 0.95)));
+        var e = easeOutCubic(Math.min(1, kk / 0.8));
+        var sc = 0.35 + 0.8 * e;
+        ring.scale.set(rx * sc, ry * sc, 1);
+        mat.opacity = 0.34 * (1 - e) * Math.min(1, kk / 0.08);
       };
       group.userData.step(0);
       return group;
@@ -1992,15 +2096,15 @@
         return done && done();
       }
       var t0 = performance.now();
-      var H = obj.height + 0.5;
       var revealMats = [obj.mats.solid, obj.mats.glass, obj.mats.glow].filter(Boolean);
       obj.removing = true;
       anims.push({
         update: function (now) {
           var k = Math.min(1, (now - t0) / REMOVE_MS);
           revealMats.forEach(function (m) {
-            m.userData.reveal.value = (1 - easeInOutCubic(k)) * H;
+            m.userData.reveal.value = 1 - k; // части уходят в обратном порядке — от краёв к центру
           });
+          if (obj.mats.shadow) obj.mats.shadow.opacity = 1 - easeInOutCubic(k);
           if (k >= 1) {
             // «Отменить» могло уже вернуть объект с тем же id (R06 ≥ d043e7b, заглушка) — новый не трогаем.
             if (S.objects[id] === obj) disposeObject(id);
@@ -3452,6 +3556,13 @@
       },
       cancel: cancel,
       select: select,
+      // Картинка-превью объекта для карточек каталога (дизайн-марафон): {src, srcset} из data/previews/ (рендер тех же
+      // моделей — tests/civic/R05/build3d/make_previews.mjs, 240×160 и @2x). Без three.js — годится для лёгкого вида.
+      previewOf: function (kind) {
+        if (!Core.KINDS[kind]) return null;
+        var base = o.dataUrl + "previews/" + kind;
+        return { src: base + ".png", srcset: base + ".png 1x, " + base + "@2x.png 2x", width: 240, height: 160 };
+      },
       flyToProposals: flyToProposals,
       setMode: setMode,
       // R01: update({mode, visible}) — то же, что setMode / setVisible.
@@ -3479,7 +3590,7 @@
           disable3d();
           return Promise.resolve(false);
         }
-        return enable3d({ tilt: true });
+        return enable3d({ tilt: true, rise: true });
       },
       setVisible: function (v) {
         S.visible = !!v;
@@ -3527,6 +3638,7 @@
             return this.proposals; // то же под именем items (так их ищет сценарий R11)
           },
           animating: anims.length > 0,
+          shadowsPending: shadowQueue.length + fades.length, // тени ещё строятся или проявляются (только для проверок)
           memory: renderer ? { geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs ? renderer.info.programs.length : null } : null,
           origin: origin ? origin.slice() : null,
           view: S.view, // light — лёгкие метки и карточки; 3d — модели (POLISH_WAVE_2: «3D — по кнопке»)

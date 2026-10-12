@@ -10,7 +10,7 @@
 .civic-mode .topbar { top: 0; left: 0; right: 0; height: 64px; padding: 0 20px; gap: 20px; border: 0; border-radius: 0;
   border-bottom: 1px solid var(--c-line, #e8eaeb); background: var(--c-surface, #fff); box-shadow: none; }
 .civic-mode .brand { min-width: 0; gap: 8px; flex: 0 0 auto; }
-.civic-mode .brand-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--c-brand, #152c26); color: #fff; }
+.civic-mode .brand-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--c-brand, #152c26); color: #fff; }
 .civic-mode .brand-mark svg { width: 20px; height: 20px; }
 .civic-mode .brand-title { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
 .civic-mode .brand-sub { display: none !important; }
@@ -795,3 +795,9 @@ body.civic-mode .civic-close:hover { background: rgba(21, 44, 38, 0.06); }
 /* «?» легенды — плоская кнопка в стеклянной строке: без своей подложки, при наведении — мягкая заливка. */
 body.civic-mode .birge-legend-q:not([aria-expanded="true"]) { background: transparent; }
 body.civic-mode .birge-legend-q:not([aria-expanded="true"]):hover { background: rgba(21, 44, 38, 0.06); }
+/* Строка состояния панели (R10 §6 R01): шкала 13, вес 600 только у заголовка, радиус 10, нейтральная заливка ui-kit. */
+body.civic-mode .civic-state { font-size: 13px; padding: 8px 12px; border-radius: 10px; background: var(--c-fill, #eff1f2); }
+body.civic-mode .civic-state strong, body.civic-mode .civic-state b { font-weight: 600; }
+body.civic-mode .civic-state { margin: 8px 16px 0; }
+body.civic-mode .civic-state[data-kind="warn"] { color: var(--glass-warn, #754c0f); }
+body.civic-mode .civic-state[data-kind="error"] { color: var(--glass-danger, #9a2e28); }
