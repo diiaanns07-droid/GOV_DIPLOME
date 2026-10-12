@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-12T18:22:15.049Z",
+ "generated_at": "2026-10-12T19:05:55.302Z",
  "url": "http://127.0.0.1:8819/",
- "r01": "claude/sharp-dijkstra-0t87gl@fcb9b30e (марафон, патч R05 внутри) + R05 78aa2f46",
+ "r01": "claude/sharp-dijkstra-0t87gl@e69b6f0d (марафон, патч R05 внутри) + R05 c3aa6873",
  "checks": [
   {
    "id": "shell_mounted_module_with_projects",
@@ -9,8 +9,8 @@
    "detail": {
     "labels": [
      "Проект · 2027",
-     "Проект · 20275",
      "Проект · 2027",
+     "Проект · 20275",
      "Проект · 2027",
      "Проект · 2027"
     ],
@@ -69,7 +69,7 @@
     "posts": [
      201
     ],
-    "id": "p-aed5c57516ba",
+    "id": "p-316e6668f89f",
     "year": 2027
    }
   },
@@ -277,8 +277,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 23,
-      "selected": "p-e289bff40d2c"
+      "geometries": 24,
+      "selected": "p-7b40505a1a77"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -297,7 +297,7 @@
       "view": "3d",
       "pitch": 52,
       "geometries": 24,
-      "selected": "p-e289bff40d2c"
+      "selected": "p-7b40505a1a77"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -315,8 +315,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 24,
-      "selected": "p-e289bff40d2c"
+      "geometries": 22,
+      "selected": "p-7b40505a1a77"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -334,8 +334,8 @@
      "after": {
       "view": "3d",
       "pitch": 52,
-      "geometries": 24,
-      "selected": "p-e289bff40d2c"
+      "geometries": 21,
+      "selected": "p-7b40505a1a77"
      },
      "after_shell_3d_button": {
       "view": "light",
@@ -452,7 +452,7 @@
       "toast_over_place": false,
       "toast_over_3d": false,
       "saved": true,
-      "id": "p-da3da199a5b6",
+      "id": "p-57e9049fba2f",
       "label_visible": false,
       "label_over_legend": false,
       "label": [
@@ -494,14 +494,14 @@
      "now": {
       "place_on_map": true,
       "toast": [
-       698,
-       796
+       707,
+       805
       ],
       "toast_visible": true,
       "toast_over_place": false,
       "toast_over_3d": false,
       "saved": true,
-      "id": "p-6836a83fe7d9",
+      "id": "p-fa7df79953ec",
       "label_visible": false,
       "label_over_legend": false,
       "label": [
@@ -550,7 +550,7 @@
       "toast_over_place": false,
       "toast_over_3d": false,
       "saved": true,
-      "id": "p-4afb5bcb9c78",
+      "id": "p-1570258d5fbe",
       "label_visible": false,
       "label_over_legend": false,
       "label": [
@@ -626,7 +626,7 @@
      "sheet_before": "half",
      "tapped": [
       187,
-      194
+      195
      ],
      "state": "card",
      "sheet": "peek",
@@ -651,7 +651,7 @@
      "sheet_before": "half",
      "tapped": [
       187,
-      194
+      195
      ],
      "state": "card",
      "sheet": "peek",
@@ -679,7 +679,27 @@
    "status": "PASS",
    "detail": {
     "375x667_kk": {
-     "stop": {
+     "lighting": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       301,
+       667
+      ],
+      "label": [
+       87,
+       137,
+       211,
+       185
+      ],
+      "visible": true,
+      "env_notice": true,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "sports": {
       "state": "card",
       "selected": true,
       "dock": [
@@ -719,6 +739,26 @@
       "under": [],
       "dock_in_screen": true
      },
+     "stop": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       335,
+       667
+      ],
+      "label": [
+       88,
+       171,
+       212,
+       219
+      ],
+      "visible": true,
+      "env_notice": false,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
      "square": {
       "state": "card",
       "selected": true,
@@ -738,19 +778,21 @@
       "above_card": true,
       "under": [],
       "dock_in_screen": true
-     },
+     }
+    },
+    "360x800_ru": {
      "lighting": {
       "state": "card",
       "selected": true,
       "dock": [
-       301,
-       667
+       374,
+       800
       ],
       "label": [
-       87,
-       137,
-       211,
-       185
+       74,
+       181,
+       210,
+       229
       ],
       "visible": true,
       "env_notice": false,
@@ -760,28 +802,6 @@
       "dock_in_screen": true
      },
      "sports": {
-      "state": "card",
-      "selected": true,
-      "dock": [
-       335,
-       667
-      ],
-      "label": [
-       88,
-       171,
-       212,
-       219
-      ],
-      "visible": true,
-      "env_notice": false,
-      "whole_on_screen": true,
-      "above_card": true,
-      "under": [],
-      "dock_in_screen": true
-     }
-    },
-    "360x800_ru": {
-     "stop": {
       "state": "card",
       "selected": true,
       "dock": [
@@ -825,6 +845,28 @@
       ],
       "dock_in_screen": true
      },
+     "stop": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       208,
+       600
+      ],
+      "label": [
+       74,
+       96,
+       210,
+       144
+      ],
+      "visible": true,
+      "env_notice": false,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [
+       "#birge-legend"
+      ],
+      "dock_in_screen": true
+     },
      "square": {
       "state": "card",
       "selected": true,
@@ -846,52 +888,32 @@
        "#birge-legend"
       ],
       "dock_in_screen": true
-     },
+     }
+    },
+    "375x812_ru": {
      "lighting": {
       "state": "card",
       "selected": true,
       "dock": [
-       374,
-       800
+       243,
+       609
       ],
       "label": [
-       74,
-       181,
-       210,
-       229
+       81,
+       104,
+       217,
+       152
       ],
       "visible": true,
-      "env_notice": false,
-      "whole_on_screen": true,
-      "above_card": true,
-      "under": [],
-      "dock_in_screen": true
-     },
-     "sports": {
-      "state": "card",
-      "selected": true,
-      "dock": [
-       208,
-       600
-      ],
-      "label": [
-       74,
-       96,
-       210,
-       144
-      ],
-      "visible": true,
-      "env_notice": false,
+      "env_notice": true,
       "whole_on_screen": true,
       "above_card": true,
       "under": [
        "#birge-legend"
       ],
       "dock_in_screen": true
-     }
-    },
-    "375x812_ru": {
-     "stop": {
+     },
+     "sports": {
       "state": "card",
       "selected": true,
       "dock": [
@@ -905,7 +927,7 @@
        185
       ],
       "visible": true,
-      "env_notice": true,
+      "env_notice": false,
       "whole_on_screen": true,
       "above_card": true,
       "under": [],
@@ -925,7 +947,27 @@
        183
       ],
       "visible": true,
-      "env_notice": true,
+      "env_notice": false,
+      "whole_on_screen": true,
+      "above_card": true,
+      "under": [],
+      "dock_in_screen": true
+     },
+     "stop": {
+      "state": "card",
+      "selected": true,
+      "dock": [
+       277,
+       609
+      ],
+      "label": [
+       82,
+       137,
+       218,
+       185
+      ],
+      "visible": true,
+      "env_notice": false,
       "whole_on_screen": true,
       "above_card": true,
       "under": [],
@@ -943,48 +985,6 @@
        130,
        218,
        178
-      ],
-      "visible": true,
-      "env_notice": false,
-      "whole_on_screen": true,
-      "above_card": true,
-      "under": [],
-      "dock_in_screen": true
-     },
-     "lighting": {
-      "state": "card",
-      "selected": true,
-      "dock": [
-       243,
-       609
-      ],
-      "label": [
-       81,
-       104,
-       217,
-       152
-      ],
-      "visible": true,
-      "env_notice": false,
-      "whole_on_screen": true,
-      "above_card": true,
-      "under": [
-       "#birge-legend"
-      ],
-      "dock_in_screen": true
-     },
-     "sports": {
-      "state": "card",
-      "selected": true,
-      "dock": [
-       277,
-       609
-      ],
-      "label": [
-       82,
-       137,
-       218,
-       185
       ],
       "visible": true,
       "env_notice": false,
