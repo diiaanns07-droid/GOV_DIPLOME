@@ -3,9 +3,9 @@
  "title": "Тепловая карта объектов",
  "branch": "claude/r14-R07",
  "delivery": "12 окт, вечер — ДИЗАЙН-МАРАФОН (текущая поставка; подробно — ключ «marathon»): R07 на стекле, шкала 13/17/22, движение, состояния, строка «открывается», карточка не прыгает при загрузке цитат. Прежняя поставка FINAL-3 9899c30c — ключ «final3»",
- "code_sha": "7fd9f69c",
- "tested_sha": "7fd9f69c на сборке R01 0a5ef2cc (круг 6), облако; прежние круги — ключ marathon.tested_on",
- "next_step": "R01: взять heat.js и heat.css @ 7fd9f69c (INTEGRATION.txt §M, M.1–M.12; сервер ui/civic_heat не менялся, патчей к оболочке нет) и посмотреть M.10 (плашка «Реестр пуст…», первый кадр, скелет). Владелец/R11 — вопросы в STATUS.md.",
+ "code_sha": "0bdd91a6",
+ "tested_sha": "0bdd91a6 на сборке R01 0a5ef2cc (круги 6–7), облако; прежние круги — ключ marathon.tested_on",
+ "next_step": "R01: взять heat.js и heat.css @ 0bdd91a6 (INTEGRATION.txt §M, M.1–M.13; сервер ui/civic_heat не менялся, патчей к оболочке нет) и посмотреть M.10 (плашка «Реестр пуст…», первый кадр, скелет). Владелец/R11 — вопросы в STATUS.md.",
  "base_sha": "d01f76e8 (последний коммит R07 на claude/upbeat-knuth-i0rqaa, наследник claude/round-14-package)",
  "restored_from": null,
  "code_commits": {
@@ -266,9 +266,9 @@
   }
  },
  "marathon": {
-  "delivery": "12 окт, дизайн-марафон: R07 на стекле (GLASS §4 R07), шкала 13/17/22, движение, состояния, спокойная карта; круг 4 — строка «открывается», капсула района; круг 5 — карточка не прыгает при загрузке цитат, «Подробнее» помнит выбор; круг 6 — иллюстрации ui-kit в «нет связи»/«пусто», затухание края ряда тем. Для сборки R01 с марафоном",
+  "delivery": "12 окт, дизайн-марафон: R07 на стекле (GLASS §4 R07), шкала 13/17/22, движение, состояния, спокойная карта; круг 4 — строка «открывается», капсула района; круг 5 — карточка не прыгает при загрузке цитат, «Подробнее» помнит выбор; круг 6 — иллюстрации ui-kit в «нет связи»/«пусто», затухание края ряда тем; круг 7 — движение на токенах ui-kit (перекраска 340 мс) и сетка 8 pt по R10 DESIGN_REVIEW. Для сборки R01 с марафоном",
   "base": "сборка R01 claude/sharp-dijkstra-0t87gl @ 0a5ef2cc (круг 6); круги 4–5 — 9c3c051b; круги 1–3 — 65343341 (код 61be62e6)",
-  "code_sha": "7fd9f69c",
+  "code_sha": "0bdd91a6",
   "take": [
    "web/civic/heat/heat.js",
    "web/civic/heat/heat.css",
@@ -290,10 +290,11 @@
    "692d0a98": "круг 4b: «открывается» по S.busyKey — снимается карточкой, тостом, если цель не открылась и при прерванном жестом перелёте; запасной тост 17 px без рамки у действия",
    "3d35218f": "круг 5: «Что пишут жители» — скелет трёх цитат на месте, пока грузятся (сдвиг 250 → 12 px), цитаты проявляются один раз; «Подробнее» помнит раскрытие по цели и анимируется только по нажатию; стенд — POST /complaints/{id}/verify + тест; видео «в работе → служба сообщила → проверено жителями»",
    "31d6857e": "круг 6a: «нет связи» и «пусто» — иллюстрации ui-kit (offline / map / search, R11 §10.1), «Повторить» с ⟳ ui-kit; без ui-kit — свои рисунки",
-   "7fd9f69c": "круг 6b: ряд тем на телефоне — .bk-scroll-x ui-kit (затухание края, R11 §16.4); на ноутбуке переносится"
+   "7fd9f69c": "круг 6b: ряд тем на телефоне — .bk-scroll-x ui-kit (затухание края, R11 §16.4); на ноутбуке переносится",
+   "0bdd91a6": "круг 7 (R10 DESIGN_REVIEW): перекраска значка --t-slow 340 мс (было 800), пружина 340, кольцо и пульс --t-heat 800; строки 12/8, легенда 16/18 и промежутки 8/16, график 4"
   },
   "checklist": "research/round-14-results/R07/design/DESIGN_R07.md",
-  "screens": "research/round-14-results/R07/design/round1/{before,after} (10 состояний × 1366 ru/375 kk), round3/ (7 состояний × 1366 kk/375 ru, значки 2×); все 15 состояний × 1366/375/1024 × ru/kk снимает tools/states.cjs (метрики в metrics.json); round4/ — after-busy-row-*.jpg (1366 ru, 375 kk, «меньше движения»), before-mini-district-375-3x.jpg, motion-1366-ru.webm (16 с), neighbors/ (кадры для R01); round5/ — fixed-verified-transition-1366-ru.webm (стенд: настоящие запросы статуса и ответа жителя), texts-loading-vs-ready-1366-ru.jpg, states-375-ru-kk.jpg, states-1366-ru-kk.jpg, after-mini-district-375-3x.jpg, metrics.json (60 кадров на 9c3c051b + R07); round6/ — before-after-error-empty-1366-ru.jpg, before-after-chips-fade-375-kk-2x.jpg",
+  "screens": "research/round-14-results/R07/design/round1/{before,after} (10 состояний × 1366 ru/375 kk), round3/ (7 состояний × 1366 kk/375 ru, значки 2×); все 15 состояний × 1366/375/1024 × ru/kk снимает tools/states.cjs (метрики в metrics.json); round4/ — after-busy-row-*.jpg (1366 ru, 375 kk, «меньше движения»), before-mini-district-375-3x.jpg, motion-1366-ru.webm (16 с), neighbors/ (кадры для R01); round5/ — fixed-verified-transition-1366-ru.webm (стенд: настоящие запросы статуса и ответа жителя), texts-loading-vs-ready-1366-ru.jpg, states-375-ru-kk.jpg, states-1366-ru-kk.jpg, after-mini-district-375-3x.jpg, metrics.json (60 кадров на 9c3c051b + R07); round6/ — before-after-error-empty-1366-ru.jpg, before-after-chips-fade-375-kk-2x.jpg; round7/before-after-list-legend-1366-ru.jpg",
   "tests": {
    "шрифты и веса (все кадры states.cjs, 1366/375/1024 × ru/kk)": "на всех экранах R07 только 13/17/22 и 400/600",
    "pytest tests/civic/R07": "153 passed, 2 skipped",
@@ -328,7 +329,8 @@
    "круг 5 · tools/texts_probe.cjs": "скелет цитат на месте при загрузке; сдвиг блоков ниже 12 px (1366 ru) и 11 px (375 kk) вместо ~250; раскрытый «Жалобы по дням» остаётся раскрытым после перерисовки; анимаций r07-enter у открытых блоков при перерисовке 0; ошибок 0",
    "круг 6 · R01 0a5ef2cc + R07 3d35218f": "r14_b1 16/0, r14_wave2 42/0, r14_shell 42/0, p0_flow 63/0/1; R10 demo_flow 173/0/0; R11 tap_targets — у R07 0 (375: ҚАЗ/РУС 44, аватар 46 — оболочка), clean_audit — у R07 0, reduced_motion 0, badges_covered — 4 «Байконур» под .civic-explore-registry (R01); стенд wave2 38/38",
    "круг 6 · R01 0a5ef2cc + R07 7fd9f69c": "r14_b1 16/0, r14_wave2 42/0; R10 demo_flow 173/0/0; R11 tap_targets — у R07 0, reduced_motion 0, clean_audit — у R07 0; стенд wave2 38/38, readability 18/18, shots 62/2 (известные nura-akimat-375 ru/kk); pytest R07 155/2",
-   "круг 6 · states.cjs error/empty/cats на 9c3c051b + R07": "13/17/22, 400/600, ошибок 0; иллюстрации ui-kit .bk-ill в «нет связи»/«пусто»"
+   "круг 6 · states.cjs error/empty/cats на 9c3c051b + R07": "13/17/22, 400/600, ошибок 0; иллюстрации ui-kit .bk-ill в «нет связи»/«пусто»",
+   "круг 7 · R01 0a5ef2cc + R07 0bdd91a6": "r14_b1 16/0, r14_wave2 42/0; R10 demo_flow 173/0/0; R11 tap_targets — у R07 0, reduced_motion 0, clean_audit — у R07 0; стенд wave2 38/38, readability 18/18, shots 62/2 (известные nura-akimat-375); pytest R07 155/2; states.cjs list/legend/card 13/17/22, 400/600"
   },
   "notes_for_neighbors": [
    "R11: R07 — основной текст 17 (как сумма «Картины дня» R08); вопрос владельцу в STATUS",
@@ -338,7 +340,7 @@
    "R01/R11: на 375 ҚАЗ/РУС 44 и аватар 46 — единственные зоны < 48 на экранах карты; R11/R06: рамка у «Войти»",
    "владелец/R01: подложка liberty с интернетом — дороги оранжевые/жёлтые, как цвета «1–2» и «3–5» жалоб; проверить на ноутбуке (вопрос 3 в STATUS)"
   ],
-  "tested_on": "круг 6: сборка R01 0a5ef2cc + R07 3d35218f / 7fd9f69c; круги 4–5: 9c3c051b + 692d0a98 / 3d35218f; круги 1–3: 65343341 + fd9114e7 — облако, Chromium, без интернета",
-  "next_step": "R01: взять heat.js и heat.css @ 7fd9f69c (INTEGRATION §M, M.1–M.12; сервер ui/civic_heat не менялся) и посмотреть M.10; R11: вопрос о 17 px; владелец: вопросы 3 (подложка) и 4 (число после «исправлено») в STATUS"
+  "tested_on": "круги 6–7: сборка R01 0a5ef2cc + R07 3d35218f / 7fd9f69c / 0bdd91a6; круги 4–5: 9c3c051b + 692d0a98 / 3d35218f; круги 1–3: 65343341 + fd9114e7 — облако, Chromium, без интернета",
+  "next_step": "R01: взять heat.js и heat.css @ 0bdd91a6 (INTEGRATION §M, M.1–M.13; сервер ui/civic_heat не менялся) и посмотреть M.10; R10: перекраска R07 теперь 340 мс (DESIGN_REVIEW «хуже» из-за 800 мс снято); R11: вопрос о 17 px; владелец: вопросы 3 и 4 в STATUS"
  }
 }
