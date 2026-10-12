@@ -1,0 +1,1266 @@
+[
+ {
+  "name": "list",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 6,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "legend",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 6,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "card-new",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 8,
+  "statuses": 1,
+  "label": "Остановка «Хан Шатыр»",
+  "errors": []
+ },
+ {
+  "name": "card-work",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 10,
+  "statuses": 1,
+  "label": "Остановка «Республиканский диагностический центр»",
+  "errors": []
+ },
+ {
+  "name": "card-reported",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": 44,
+  "badges": 7,
+  "statuses": 1,
+  "label": "Детская площадка у ул. Сыганак",
+  "errors": []
+ },
+ {
+  "name": "card-verified",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": 44,
+  "badges": 2,
+  "statuses": 1,
+  "label": "Участок ул. Ащысай",
+  "errors": []
+ },
+ {
+  "name": "card-reopened",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 4,
+  "statuses": 1,
+  "label": "Участок ул. Кунаева",
+  "errors": []
+ },
+ {
+  "name": "card-resident",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 8,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "cluster13",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 16,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "focus16",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 5,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "skeleton",
+  "tag": "1366-ru",
+  "fonts": [
+   "15px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "error",
+  "tag": "1366-ru",
+  "fonts": [
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(239, 241, 242)"
+  ],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "empty",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)"
+  ],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "glassoff",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 8,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "list",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 6,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "legend",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 6,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "card-new",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 8,
+  "statuses": 1,
+  "label": "Остановка «Хан Шатыр»",
+  "errors": []
+ },
+ {
+  "name": "card-work",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 10,
+  "statuses": 1,
+  "label": "Остановка «Республиканский диагностический центр»",
+  "errors": []
+ },
+ {
+  "name": "card-reported",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": 44,
+  "badges": 7,
+  "statuses": 1,
+  "label": "Детская площадка у ул. Сыганак",
+  "errors": []
+ },
+ {
+  "name": "card-verified",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": 44,
+  "badges": 2,
+  "statuses": 1,
+  "label": "Участок ул. Ащысай",
+  "errors": []
+ },
+ {
+  "name": "card-reopened",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 4,
+  "statuses": 1,
+  "label": "Участок ул. Кунаева",
+  "errors": []
+ },
+ {
+  "name": "card-resident",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 8,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "cluster13",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 16,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "focus16",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 5,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "skeleton",
+  "tag": "1366-kk",
+  "fonts": [
+   "15px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "error",
+  "tag": "1366-kk",
+  "fonts": [
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(239, 241, 242)"
+  ],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "empty",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)"
+  ],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "glassoff",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 8,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "list",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 4,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "legend",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "card-new",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "label": "Остановка «Хан Шатыр»",
+  "errors": []
+ },
+ {
+  "name": "card-work",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 3,
+  "statuses": 1,
+  "label": "Остановка «Республиканский диагностический центр»",
+  "errors": []
+ },
+ {
+  "name": "card-reported",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": 44,
+  "badges": 2,
+  "statuses": 1,
+  "label": "Детская площадка у ул. Сыганак",
+  "errors": []
+ },
+ {
+  "name": "card-verified",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "label": "Участок ул. Ащысай",
+  "errors": []
+ },
+ {
+  "name": "card-reopened",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "label": "Участок ул. Кунаева",
+  "errors": []
+ },
+ {
+  "name": "card-resident",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "cluster13",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 11,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "focus16",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "skeleton",
+  "tag": "375-ru",
+  "fonts": [
+   "15px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "error",
+  "tag": "375-ru",
+  "fonts": [
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(239, 241, 242)"
+  ],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "empty",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)"
+  ],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "glassoff",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "list",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 4,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "legend",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "card-new",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "label": "Остановка «Хан Шатыр»",
+  "errors": []
+ },
+ {
+  "name": "card-work",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 3,
+  "statuses": 1,
+  "label": "Остановка «Республиканский диагностический центр»",
+  "errors": []
+ },
+ {
+  "name": "card-reported",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": 44,
+  "badges": 2,
+  "statuses": 1,
+  "label": "Детская площадка у ул. Сыганак",
+  "errors": []
+ },
+ {
+  "name": "card-verified",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "label": "Участок ул. Ащысай",
+  "errors": []
+ },
+ {
+  "name": "card-reopened",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "label": "Участок ул. Кунаева",
+  "errors": []
+ },
+ {
+  "name": "card-resident",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "cluster13",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 11,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "focus16",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "errors": []
+ },
+ {
+  "name": "skeleton",
+  "tag": "375-kk",
+  "fonts": [
+   "15px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "error",
+  "tag": "375-kk",
+  "fonts": [
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(239, 241, 242)"
+  ],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "empty",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(239, 241, 242)",
+   "r07-seg rgb(239, 241, 242)",
+   " rgb(255, 255, 255)",
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)"
+  ],
+  "badgeMinH": null,
+  "badges": 0,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "glassoff",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-btn rgb(21, 44, 38)",
+   "r07-btn rgb(239, 241, 242)",
+   "r07-spark rgb(244, 245, 246)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 1,
+  "errors": []
+ }
+]

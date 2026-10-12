@@ -281,7 +281,7 @@
     traffic: '<rect x="8" y="2.5" width="8" height="19" rx="3"/><circle cx="12" cy="7" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/>',
     zebra: '<path d="M3.5 4.5h17M3.5 19.5h17"/><path d="M6.5 8v8M10.5 8v8M14.5 8v8M18.5 8v8" stroke-width="2.6"/>',
     crossroads: '<path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/>',
-    wifi_off: '<path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 12.6a10 10 0 0 1 5.1-2.6M19 12.6a10 10 0 0 0-2.3-1.7M12 20h.01"/>',
+    wifi_off: '<path d="m3 3 18 18"/><path d="M8.5 16.4a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 4.2-2.6M14.8 10.3A10 10 0 0 1 19 12.9M2 9.3a15 15 0 0 1 4-2.6M10.5 5.1A15 15 0 0 1 22 9.3"/><path d="M12 20h.01"/>',
   };
   const KIND_ICON = { object: "pin", segment: "road", area: "home", district: "pin" };
   // Подтип реального объекта OSM (ui/civic_heat/osm_objects.py) → иконка в карточке
@@ -291,6 +291,17 @@
   // На значке на карте — иконка категории; у светофора, перехода и перекрёстка — своя (волна 1, п. 12)
   const BADGE_SUBTYPE_ICON = { traffic_signal: "traffic", crossing: "zebra", intersection: "crossroads" };
 
+  // Линейные иллюстрации пустого состояния и ошибки (дизайн-марафон, чек-лист №8 и №12): та же линия 1.9, что у иконок.
+  const ILLO = {
+    // сложенная карта и лупа: «здесь пока ничего не нашлось»
+    empty: '<path d="M10 22 34 14l24 8 24-8v40l-24 8-24-8-24 8z"/><path d="M34 14v40M58 22v40"/>' +
+      '<circle cx="64" cy="44" r="12" fill="var(--r07-illo-bg, #fff)"/><path d="m72.5 52.5 8 8"/>',
+    // облако без связи
+    error: '<path d="M28 60h34a14 14 0 0 0 1-28 20 20 0 0 0-38-2 14 14 0 0 0 3 30z"/><path d="m22 14 52 52"/>',
+  };
+  function illo(name) {
+    return '<svg class="r07-illo" viewBox="0 0 96 80" width="96" height="80" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + ILLO[name] + "</svg>";
+  }
   function svgIcon(name, size) {
     const s = size || 20;
     return '<svg class="r07-ic" viewBox="0 0 24 24" width="' + s + '" height="' + s + '" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[name] || ICONS.dots) + "</svg>";
@@ -305,6 +316,7 @@
     if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return "few";
     return "many";
   }
+  const keep = (str) => String(str).replace(/ /g, NBSP);   // «за 30 дней» не рвётся на «за 30 / дней»
   function fmtNum(n) {
     const s = String(Math.round(Number(n) || 0));
     return s.length > 3 ? s.replace(/\B(?=(\d{3})+(?!\d))/g, NBSP) : s;
@@ -752,9 +764,10 @@
         paint: { "line-color": color, "line-width": 2, "line-opacity": 0.8 } });
       // Дворы и кварталы
       // Мягкая ячейка: размытая кайма + полупрозрачная заливка, чтобы квартал не выглядел жёстким квадратом.
+      // Дизайн-марафон: кайма тоньше и тише (0,22) — на среднем масштабе прежняя (0,45) читалась как грязное пятно.
       const AREA = ["in", ["get", "kind"], ["literal", ["area", "object_area"]]];
       add({ id: "r07-area-glow", type: "line", source: SRC, filter: AREA,
-        paint: { "line-color": color, "line-width": ["interpolate", ["linear"], ["zoom"], 12, 4, 17, 18], "line-blur": ["interpolate", ["linear"], ["zoom"], 12, 3, 17, 14], "line-opacity": 0.45 * soft } });
+        paint: { "line-color": color, "line-width": ["interpolate", ["linear"], ["zoom"], 12, 3, 17, 12], "line-blur": ["interpolate", ["linear"], ["zoom"], 12, 2, 17, 9], "line-opacity": 0.22 * soft } });
       add({ id: "r07-area-fill", type: "fill", source: SRC, filter: AREA,
         paint: { "fill-color": color, "fill-opacity": ["case", ["get", "fixed"], 0.2, 0.34 * soft] } });
       // пунктир — «примерное место» и «служба сообщила об устранении» (ждёт проверки жителями)
@@ -796,7 +809,7 @@
         "r07-district-fill": ["fill-opacity", districtFill],
         "r07-seg-dashed": ["line-opacity", 1],
         "r07-district-line": ["line-opacity", 0.8],
-        "r07-area-glow": ["line-opacity", 0.45 * soft],
+        "r07-area-glow": ["line-opacity", 0.22 * soft],
         "r07-area-fill": ["fill-opacity", ["case", ["get", "fixed"], 0.2, 0.34 * soft]],
         "r07-area-line": ["line-opacity", 0.9],
         "r07-area-approx": ["line-opacity", 1],
@@ -909,7 +922,9 @@
         if (!m) {
           const el = document.createElement("button");
           el.type = "button";
-          el.className = "r07-badge";
+          // Новый значок мягко проявляется (дизайн-марафон №12): класс снимается после анимации, перерисовка его не повторяет.
+          el.className = "r07-badge r07-badge--new";
+          setTimeout(() => el.classList.remove("r07-badge--new"), 700);
           el.tabIndex = -1;
           el.addEventListener("click", (ev) => { ev.stopPropagation(); hideTip(); onBadgeClick(key, ev); });
           el.addEventListener("keydown", (ev) => onBadgeKey(key, ev));
@@ -1011,9 +1026,19 @@
       el.removeAttribute("title");   // подсказка при наведении — своя (название · люди · категория), без двойной системной
       el.dataset.label = label(it.target);   // для проверок (R10, тесты R07): какое место у значка
       // Обёртка __inner — для увеличения при наведении/выборе: сам el — маркер MapLibre, его transform двигает карта.
-      el.innerHTML = '<span class="r07-badge__inner"><span class="r07-badge__dot" style="--r07-c:' + esc(it.color || "#999") + '">' + svgIcon(icon, 18) +
-        (it.reopened ? '<span class="r07-badge__mark" aria-hidden="true">↺</span>' : "") + "</span>" +
-        '<span class="r07-badge__count">' + (district ? '<span class="r07-badge__name">' + esc(label(it.target)) + " · </span>" : "") + fmtNum(it.count) + "</span></span>";
+      // Кружок и плашку обновляем на месте, а не пересоздаём: тогда цвет кружка перетекает за 0,8 с (новая жалоба,
+      // «исправлено → проверено»), а не меняется скачком (UX_BRIEF: плавное покраснение).
+      const dotHtml = svgIcon(icon, 18) + (it.reopened ? '<span class="r07-badge__mark" aria-hidden="true">↺</span>' : "");
+      const countHtml = (district ? '<span class="r07-badge__name">' + esc(label(it.target)) + " · </span>" : "") + fmtNum(it.count);
+      let dot = el.querySelector(".r07-badge__dot"), count = el.querySelector(".r07-badge__count");
+      if (!dot || !count) {
+        el.innerHTML = '<span class="r07-badge__inner"><span class="r07-badge__dot"></span><span class="r07-badge__count"></span></span>';
+        dot = el.querySelector(".r07-badge__dot");
+        count = el.querySelector(".r07-badge__count");
+      }
+      dot.style.setProperty("--r07-c", it.color || "#999");
+      if (dot.r07Html !== dotHtml) { dot.innerHTML = dotHtml; dot.r07Html = dotHtml; }
+      if (count.r07Html !== countHtml) { count.innerHTML = countHtml; count.r07Html = countHtml; }
     }
 
     // Где можно поставить значок цели: у участка улицы — середина и ещё две точки на линии (30 % и 70 %),
@@ -1487,9 +1512,9 @@
       // В карточке одна навигация «‹ Горячие места ✕»; кнопки действий видны без прокрутки. Пока данных нет (загрузка,
       // нет связи) — фильтров тоже нет: на телефоне в шторке сразу видно скелетон или «Нет связи · Повторить».
       if (!cardItem) {
-        // Подзаголовок — главное за 10 секунд: самое горячее место (на телефоне видно даже в свёрнутой шторке).
-        const top = S.data && (S.top || [])[0];
-        const sub = top ? t("heat.top_line", { target: label(top.target), people: t("heat.people_short", { count: top.count }) }) : t("heat.subtitle");
+        // Подзаголовок — одна строка «Где жители сообщают о проблемах» (дизайн-марафон): самое горячее место и так первая
+        // строка «Горячих мест» сразу ниже; длинное название в 2–3 строки отодвигало список вниз (на телефоне — под кнопку).
+        const sub = t("heat.subtitle");
         parts.push('<header class="r07-head"><div><h2 class="r07-h">' + esc(t("heat.title")) + '</h2><p class="r07-sub">' + esc(sub) + "</p></div></header>");
         // Телефон, районы: «Приблизьте карту…» — строкой в шторке, на текущем языке (не тостом над главной кнопкой и не
         // строкой легенды поверх карты: R11 ночь 4 п. 1, R10 B-038). На ноутбуке та же подсказка — в легенде на карте.
@@ -1504,6 +1529,11 @@
       // Легенда — на карте (в оболочке — под «?» её строки, opts.legendContainer). Без карты (страница-список) — в панели.
       if (map) renderMapLegend(); else parts.push(legendHtml(false));
       panel.innerHTML = parts.join("");
+      // Карточка и список не «выскакивают»: при смене вида (список → карточка, карточка → другая, назад к списку) —
+      // мягкий вход 240 мс (дизайн-марафон №7); перерисовка того же вида (тексты пришли, язык) — без анимации.
+      const view = cardItem ? "card:" + S.selected : S.data ? "list" : S.status;
+      if (S.lastView && S.lastView !== view && S.data) panel.querySelector(".r07-card, .r07-hot, .r07-empty")?.classList.add("r07-enter");
+      S.lastView = view;
       bindPanel();
       mountR09();
       if (map) declutter();   // легенда могла сменить размер (язык, режим) — значки не должны оказаться под ней
@@ -1526,6 +1556,7 @@
       }
       S.legendEl.dataset.role = S.role;
       S.legendEl.classList.toggle("r07-maplegend--more", Boolean(opts.legendContainer));
+      S.legendEl.classList.toggle("bk-glass", Boolean(opts.legendContainer));   // GLASS §2: легенда — стекло (ui-kit)
       const html = legendHtml(true);
       S.legendEl.innerHTML = html;
       S.legendEl.hidden = !html;   // нет данных (нет связи) — не пустая белая плашка над картой (R10 B-034)
@@ -1595,12 +1626,15 @@
       return onMap ? inner : '<section class="r07-legend" aria-label="' + esc(t("heat.legend")) + '">' + inner + "</section>";
     }
 
+    // Скелетон — в форме того, что сейчас появится (поле темы, 7/30/90, строки «Горячих мест»), а не серые полосы.
     function skeletonHtml() {
-      return '<div class="r07-skeleton" aria-busy="true" aria-label="' + esc(t("heat.loading")) + '"><i></i><i></i><i></i><i></i></div>';
+      const row = '<span class="r07-skel__row"><i class="r07-skel__sq"></i><span class="r07-skel__lines"><i></i><i></i></span></span>';
+      return '<div class="r07-skeleton" aria-busy="true" aria-label="' + esc(t("heat.loading")) + '"><i class="r07-skel__field"></i><i class="r07-skel__seg"></i>' +
+        row + row + row + row + "</div>";
     }
     function errorHtml() {
       const notReady = S.status === "not_ready";
-      return '<div class="r07-error" role="alert">' + svgIcon(notReady ? "alert" : "wifi_off", 40) + '<p class="r07-error__title">' +
+      return '<div class="r07-error" role="alert">' + (notReady ? svgIcon("alert", 40) : illo("error")) + '<p class="r07-error__title">' +
         esc(notReady ? t("heat.not_ready") : t("heat.error_title")) + "</p>" + (notReady ? "" : '<p class="r07-error__hint">' + esc(t("heat.error_hint")) + "</p>") +
         '<button type="button" class="r07-btn" data-retry>' + esc(t("heat.retry")) + "</button></div>";
     }
@@ -1612,20 +1646,20 @@
         // Пусто ≠ «всё исправлено»: иконка поиска, «За 7 дней жалоб нет» и действие «Показать 30 дней» (№8).
         const filtered = Boolean(S.filters.category || S.filters.district);
         const next = (S.meta && S.meta.periods || [7, 30, 90]).find((d) => d > S.filters.days);
-        return '<div class="r07-empty" role="status">' + svgIcon("search", 40) + '<p class="r07-empty__title">' + esc(t("heat.empty.title", { n: S.filters.days })) +
+        return '<div class="r07-empty" role="status">' + illo("empty") + '<p class="r07-empty__title">' + esc(t("heat.empty.title", { n: S.filters.days })) +
           '</p><p class="r07-empty__hint">' + esc(t(filtered ? "heat.empty.hint_filters" : "heat.empty.hint")) + '</p><div class="r07-empty__actions">' +
           (next ? '<button type="button" class="r07-btn r07-btn--primary" data-days-next="' + next + '">' + esc(t("heat.empty.show_days", { n: next })) + "</button>" : "") +
           (filtered ? '<button type="button" class="r07-btn" data-reset>' + esc(t("heat.filter.reset")) + "</button>" : "") + "</div></div>";
       }
       // Строка (CLEAN_PASS R07 №7): без колонки ранга — значок-число цвета места + название 17/600 + «Тема · N чел.» 13 серым.
       const rows = items.slice(0, 10).map((it) => {
-        const meta = topicName(it) + " · " + t("heat.people_short", { count: it.count });
+        const meta = topicName(it) + " · " + keep(t("heat.people_short", { count: it.count }));
         return '<li><button type="button" class="r07-item" data-key="' + esc(keyOf(it.target)) + '">' +
           '<span class="r07-mini" data-level="' + esc(it.level) + '" style="--r07-c:' + esc(it.color) + '">' + fmtNum(it.count) + "</span>" +
           '<span class="r07-item__text"><span class="r07-item__title">' + esc(label(it.target)) + '</span><span class="r07-item__meta">' + esc(meta) + "</span></span>" +
           svgIcon("back", 18).replace('class="r07-ic"', 'class="r07-ic r07-ic--flip"') + "</button></li>";
       }).join("");
-      return '<section class="r07-hot"><h3 class="r07-h3">' + esc(t("heat.hot_title")) + ' <span class="r07-muted">' + esc(t("heat.for_days", { count: S.filters.days })) + '</span></h3><ol class="r07-list">' + rows + "</ol></section>";
+      return '<section class="r07-hot"><h3 class="r07-h3">' + esc(t("heat.hot_title")) + ' <span class="r07-muted">' + esc(keep(t("heat.for_days", { count: S.filters.days }))) + '</span></h3><ol class="r07-list">' + rows + "</ol></section>";
     }
 
     // Статус места — один раз (CLEAN_PASS R07 №1, ui-kit .bk-statusline): точка + слово + одна строка пояснения.
@@ -1720,7 +1754,7 @@
         '<h3 class="r07-card__title" tabindex="-1">' + esc(label(it.target)) + "</h3></div>" +
         statusLineHtml(it) +
         '<p class="r07-card__reported">' + (topic ? '<span class="r07-card__topic">' + esc(topic) + "</span> · " : "") +
-          esc(t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count })) + " · " + esc(t("heat.for_days", { count: S.filters.days })) + "</p>" +
+          esc(t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count })) + " · " + esc(keep(t("heat.for_days", { count: S.filters.days }))) + "</p>" +
         (actions ? '<div class="r07-actions">' + actions + "</div>" : "") +
         (S.role === "akimat" ? textsHtml(key) + mergedHtml(key) : "") +
         chart + topics +
