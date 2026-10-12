@@ -87,12 +87,12 @@ async function check(browser, base, width, height, lang) {
       if (!visible(el)) return;
       const h = el.getBoundingClientRect().height;
       if (h < 47.5) out.lowButtons.push((el.textContent.trim() || el.getAttribute("aria-label") || el.className) + " " + Math.round(h) + "px");
-      if (el.classList.contains("bk-btn") && parseFloat(getComputedStyle(el).fontSize) < 16) out.small.push(el.textContent.trim());
+      if (el.classList.contains("bk-btn") && parseFloat(getComputedStyle(el).fontSize) < 15) out.small.push(el.textContent.trim()); // чистый дизайн: кнопки ≥ 15 (обычно 17)
     });
     document.querySelectorAll("body *").forEach((el) => {
       if (!visible(el) || el.closest("code,figcaption,svg")) return;
       const own = Array.from(el.childNodes).some((c) => c.nodeType === 3 && c.textContent.trim());
-      if (own && parseFloat(getComputedStyle(el).fontSize) < 14) out.tinyText.push(el.className + ": " + el.textContent.trim().slice(0, 30));
+      if (own && parseFloat(getComputedStyle(el).fontSize) < 13) out.tinyText.push(el.className + ": " + el.textContent.trim().slice(0, 30));
     });
     return out;
   });
@@ -101,8 +101,8 @@ async function check(browser, base, width, height, lang) {
   if (r.lang !== lang) problems.push("html lang=" + r.lang + ", ожидали " + lang);
   r.keys.forEach((k) => problems.push("ключ вместо текста: " + k));
   r.lowButtons.forEach((k) => problems.push("кнопка ниже 48 px: " + k));
-  r.small.forEach((k) => problems.push("текст кнопки < 16 px: " + k));
-  r.tinyText.forEach((k) => problems.push("текст < 14 px: " + k));
+  r.small.forEach((k) => problems.push("текст кнопки < 15 px: " + k));
+  r.tinyText.forEach((k) => problems.push("текст < 13 px (шкала 13/15/17/22/28): " + k));
   // Вкладки ui-kit (волна 2): щелчок и стрелка → aria-selected, выбрана ровно одна
   if (await page.$("#kit-tabs")) {
     await page.click('#kit-tabs [role="tab"]:nth-child(2)');

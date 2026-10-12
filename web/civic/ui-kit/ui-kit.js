@@ -189,9 +189,10 @@
   }
 
   // ── ҚАЗ | РУС ──
-  function langSwitch(el) {
+  // opts.text — «ҚАЗ · РУС» текстом (чистый дизайн, шапка в одну строку), иначе сегмент с подложкой.
+  function langSwitch(el, opts) {
     var I = root.BirgeI18n;
-    el.classList.add("bk-seg");
+    el.classList.add(opts && opts.text ? "bk-langtext" : "bk-seg");
     el.setAttribute("role", "group");
     el.innerHTML =
       '<button type="button" value="kk" lang="kk">ҚАЗ</button><button type="button" value="ru" lang="ru">РУС</button>';
@@ -241,6 +242,46 @@
       if (a.onClick) b.addEventListener("click", a.onClick);
       box.appendChild(b);
     }
+  }
+
+  // Меню аватара (чистый дизайн): кнопка .bk-avatar открывает список .bk-menu под собой у правого края.
+  // Esc, щелчок мимо и выбор пункта закрывают; ↑/↓ — по пунктам. menu(button, list) → {open(), close()}.
+  function menu(button, list) {
+    function items() { return Array.prototype.slice.call(list.querySelectorAll(".bk-menu__item")); }
+    function place() {
+      var b = button.getBoundingClientRect();
+      list.style.top = Math.round(b.bottom + 8 + root.scrollY) + "px";
+      list.style.right = Math.max(8, Math.round(doc.documentElement.clientWidth - b.right)) + "px";
+    }
+    function open() {
+      list.hidden = false;
+      place();
+      button.setAttribute("aria-expanded", "true");
+      var first = items()[0];
+      if (first) first.focus();
+    }
+    function close(focusBack) {
+      if (list.hidden) return;
+      list.hidden = true;
+      button.setAttribute("aria-expanded", "false");
+      if (focusBack) button.focus();
+    }
+    button.setAttribute("aria-haspopup", "menu");
+    button.setAttribute("aria-expanded", "false");
+    list.setAttribute("role", "menu");
+    list.hidden = true;
+    button.addEventListener("click", function () { if (list.hidden) open(); else close(false); });
+    list.addEventListener("click", function (e) { if (e.target.closest(".bk-menu__item")) close(true); });
+    doc.addEventListener("click", function (e) { if (!list.contains(e.target) && !button.contains(e.target)) close(false); });
+    doc.addEventListener("keydown", function (e) {
+      if (list.hidden) return;
+      if (e.key === "Escape") { e.preventDefault(); close(true); return; }
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      var all = items(), i = all.indexOf(doc.activeElement);
+      e.preventDefault();
+      all[(i + (e.key === "ArrowDown" ? 1 : all.length - 1) + all.length) % all.length].focus();
+    });
+    return { open: open, close: close };
   }
 
   // Вкладки раздела (волна 2): <div class="bk-tabs" role="tablist"><button role="tab" value="…">…</button></div>.
@@ -296,5 +337,5 @@
   }
 
   root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, esc: esc,
-    seasonOrder: seasonOrder, tabs: tabs, SPRITE: SPRITE };
+    seasonOrder: seasonOrder, tabs: tabs, menu: menu, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);

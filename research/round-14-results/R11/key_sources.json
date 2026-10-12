@@ -1035,5 +1035,13 @@
  "idea.tab.project": "R06 · «Идеи», вкладка",
  "idea.tab.rejected": "R06 · «Идеи», вкладка",
  "qr.form.base_other": "R12 · листы QR (web/civic/qr/print.js), предупреждение R15-S25 до печати",
- "map.attrib.toggle": "R01 · web/map.js, кнопка «i» MapLibre (aria-label и подсказка)"
+ "map.attrib.toggle": "R01 · web/map.js, кнопка «i» MapLibre (aria-label и подсказка)",
+ "common.search.placeholder_clean": "R01 · шапка, единое поле поиска (чистый дизайн; вместо выпадающего района)",
+ "common.search.all_city": "R01 · первый пункт подсказок поиска (бывшая кнопка «Вся Астана» на карте)",
+ "common.account.menu": "R01 · круг-аватар в шапке (aria-label)",
+ "common.map.north": "R01 · компас (виден, только когда карта повёрнута)",
+ "common.map.layers": "R01 · кнопка слоёв",
+ "heat.legend.few": "R01/R07 · легенда одной строкой «мало → много · ✓ исправлено»",
+ "heat.legend.many": "R01/R07 · легенда одной строкой",
+ "common.demo_footnote": "R07/R08/R09 · одна серая строка внизу панели (вместо бежевых плашек)"
 }

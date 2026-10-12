@@ -131,32 +131,39 @@
         --sheet-half: 272px;
         --sheet-peek: 120px;
       }
-      @media (max-width: 1023px) {
-        .bk-header__search {
-          display: none;
-        }
-      }
     </style>
   </head>
   <body class="bk-app">
     <a class="bk-skip" href="#kit-primary" data-i18n="common.action.skip_to_main"></a>
 
+    <!-- Шапка в одну строку (чистый дизайн): знак · поиск · разделы текстом · ҚАЗ · РУС · аватар с меню -->
     <header class="bk-header">
       <div class="bk-header__brand">
         <span class="bk-header__mark" id="kit-mark"></span><span class="bk-header__brand-text" data-i18n="common.app_name"></span>
       </div>
       <div class="bk-search bk-header__search">
         <span id="kit-search-ic"></span>
-        <input type="search" data-i18n-attr="placeholder:common.search.placeholder;aria-label:common.search.label" />
+        <input type="search" data-i18n-attr="placeholder:common.search.placeholder_clean;aria-label:common.search.label" />
       </div>
+      <nav class="bk-nav" data-i18n-attr="aria-label:shell.nav.label">
+        <a href="#" aria-current="page" data-i18n="common.nav.map"></a>
+        <a href="#" data-i18n="common.nav.day"></a>
+        <a href="#" data-i18n="shell.nav.inbox"></a>
+        <a href="#" data-i18n="shell.nav.more"></a>
+      </nav>
       <div class="bk-header__end">
-        <div class="bk-seg bk-header__wide" id="kit-role" role="group" data-i18n-attr="aria-label:common.role.label">
-          <button type="button" value="akimat" aria-pressed="true" data-i18n="common.role.akimat"></button>
-          <button type="button" value="resident" aria-pressed="false" data-i18n="common.role.resident"></button>
-        </div>
         <div id="kit-lang"></div>
+        <button class="bk-avatar" type="button" id="kit-avatar" data-i18n-attr="aria-label:common.account.menu;title:common.account.menu" data-badge></button>
       </div>
     </header>
+    <div class="bk-menu" id="kit-menu">
+      <p class="bk-menu__label" data-i18n="common.role.label"></p>
+      <button class="bk-menu__item" type="button" role="menuitemradio" aria-checked="true" data-i18n="common.role.akimat"></button>
+      <button class="bk-menu__item" type="button" role="menuitemradio" aria-checked="false" data-i18n="common.role.resident"></button>
+      <div class="bk-menu__sep" role="separator"></div>
+      <button class="bk-menu__item" type="button" role="menuitem" data-i18n="shell.staff.open"></button>
+      <button class="bk-menu__item" type="button" role="menuitem" data-i18n="staff.login.logout"></button>
+    </div>
 
     <main class="kit-main">
       <section class="kit-section">
@@ -516,7 +523,7 @@
         var ICONS = ("road snowflake walk bus bulb trees trash droplet wind shield parking dots search close back forward " +
           "chevron-right chevron-down plus minus locate layers filter pin check alert info refresh user users thumb-up " +
           "thumb-down calendar clock cube rotate-left rotate-right globe menu chart list edit building wifi-off send copy " +
-          "print playground ball phone camera").split(" ");
+          "print playground ball phone camera compass").split(" ");
         var COLORS = ["--c-ink", "--c-text-2", "--c-paper", "--c-brand", "--c-accent", "--c-focus", "--c-danger", "--c-warn",
           "--c-info", "--c-ok", "--c-demo", "--heat-1", "--heat-2", "--heat-3", "--heat-4", "--fixed", "--heat-3-badge", "--fixed-badge"];
         var STAGES = ["planned", "design", "procurement", "construction", "acceptance", "operating"];
@@ -531,6 +538,7 @@
             el.insertAdjacentHTML("afterbegin", UI.icon(el.getAttribute("data-kit-icon")));
           });
           $("kit-mark").innerHTML = UI.icon("building");
+          $("kit-avatar").innerHTML = UI.icon("user");
           $("kit-search-ic").outerHTML = UI.icon("search");
         }
 
@@ -598,8 +606,12 @@
 
         decorate();
         renderStatic();
-        UI.langSwitch($("kit-lang"));
-        UI.seg($("kit-role"));
+        UI.langSwitch($("kit-lang"), { text: true });
+        UI.menu($("kit-avatar"), $("kit-menu"));
+        $("kit-menu").addEventListener("click", function (e) {
+          var b = e.target.closest("[role=menuitemradio]");
+          if (b) $("kit-menu").querySelectorAll("[role=menuitemradio]").forEach(function (x) { x.setAttribute("aria-checked", String(x === b)); });
+        });
         UI.seg($("kit-period"));
         UI.tabs($("kit-tabs"));
         $("kit-cat-chips").addEventListener("click", function (e) {
