@@ -624,6 +624,15 @@
       return padding;
     }
 
+    // Центр свободной части карты (без шапки, панели/шторки и кнопок — opts.fitPadding оболочки) относительно центра
+    // контейнера: место, к которому летим, встаёт туда, а не в середину экрана — на телефоне это под шторкой
+    // (R10 demo_flow 375 шаг 3: первое место из «Горячих мест» на обзоре города оставалось под ручкой шторки).
+    function freeOffset() {
+      if (!opts.fitPadding) return [0, 0];
+      const p = Object.assign({ top: 0, bottom: 0, left: 0, right: 0 }, typeof opts.fitPadding === "function" ? opts.fitPadding() : opts.fitPadding);
+      return [Math.round(((Number(p.left) || 0) - (Number(p.right) || 0)) / 2), Math.round(((Number(p.top) || 0) - (Number(p.bottom) || 0)) / 2)];
+    }
+
     // Карта сама вписывает 10 горячих мест из списка (просьба владельца, п. 1): при открытии и при смене фильтров.
     // Список и карта совпадают: в списке те же места, что видны на карте (на мелком масштабе — внутри своих районов).
     // При открытии — только если пользователь ещё не трогал карту (UX_BRIEF, правило 8); при смене фильтра — всегда
@@ -680,7 +689,7 @@
         if (map && item && item.anchor) {
           const zoom = Math.max(map.getZoom(), kind === "object" ? 16 : 15);
           // ждём конца перелёта (если камера уже на месте, moveend может не прийти — страховка 1,2 с)
-          await new Promise((done) => { map.once("moveend", done); setTimeout(done, 1200); map.easeTo({ center: item.anchor, zoom, duration: moveMs(600) }); });
+          await new Promise((done) => { map.once("moveend", done); setTimeout(done, 1200); map.easeTo({ center: item.anchor, zoom, offset: freeOffset(), duration: moveMs(600) }); });
         }
       } catch (err) { /* цели за период нет или сеть — ниже честно скажем */ }
       S.pendingMoving = false;
@@ -1346,7 +1355,7 @@
       const it = findItem(key);
       if (it && moveMap && map && it.anchor) {
         // Плавно и только по просьбе пользователя (клик в списке). Наклон и поворот не трогаем.
-        map.easeTo({ center: it.anchor, zoom: Math.max(map.getZoom(), it.target.kind === "object" ? 16 : 15), duration: moveMs(600) });
+        map.easeTo({ center: it.anchor, zoom: Math.max(map.getZoom(), it.target.kind === "object" ? 16 : 15), offset: freeOffset(), duration: moveMs(600) });
       }
       render();
       declutter();

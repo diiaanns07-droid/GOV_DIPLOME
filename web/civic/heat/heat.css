@@ -327,6 +327,9 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
   .r07-badge__inner, .r07-badge__dot, .r07-details > summary::before { transition: none; }
 }
 @media (max-width: 760px) {
+  /* Поле телефона 16 px (ui-kit --gutter-phone; шторка оболочки даёт 12): тот же край, что у кнопки «Сообщить о проблеме»
+     поверх шторки — надпись под ней закрыта целиком, а не торчит краем (R10 demo_flow 375 шаг 0 «надписи не закрыты»). */
+  .r07-panel { padding-inline: 4px; }
   .r07-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; margin: 0 -2px; }
   .r07-chips::-webkit-scrollbar { display: none; }
 }
