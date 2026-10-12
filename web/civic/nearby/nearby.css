@@ -32,6 +32,14 @@
 .nb-banner p {
   margin: 0;
 }
+/* отключение — мягкая тёплая карточка без рамки (дизайн-марафон: без лишних рамок), заголовок 17 */
+.nb-banner.bk-banner--warn {
+  border: 0;
+  border-radius: var(--r-l);
+}
+.nb-banner .bk-banner__title {
+  font-size: var(--fs-lead);
+}
 /* вкладки — .bk-tabs ui-kit: в одну строку; не помещаются (kk на 375) — строка вкладок прокручивается сама (R11 §4) */
 .nb-tabs {
   margin: 0;
@@ -66,10 +74,29 @@
   align-items: center;
   gap: 4px;
 }
-.nb-card__title {
+.nb-card__title { /* строка списка, а не заголовок раздела: 17/600 */
   margin: 0;
-  font-size: var(--fs-title);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
   line-height: var(--lh-head);
+}
+.nb [role="tabpanel"][data-enter] {
+  animation: nb-fade 220ms var(--ease) both;
+}
+@keyframes nb-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nb [role="tabpanel"][data-enter] {
+    animation: none;
+  }
 }
 .nb-card__status-word {
   font-weight: var(--fw-semi);
@@ -97,11 +124,11 @@
 .nb-why dd {
   margin: 0;
 }
-.nb-card__actions {
+.nb-card__actions { /* тихие кнопки-текст: подпись на линии с текстом карточки */
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-2);
-  margin-top: var(--s-1);
+  gap: 0 var(--s-2);
+  margin: 0 0 0 calc(-1 * var(--s-3) - 1px);
 }
 .nb-card__actions .bk-btn {
   min-height: 44px;

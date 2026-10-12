@@ -327,7 +327,7 @@
           h(
             "a",
             {
-              class: "bk-btn nb-card__map",
+              class: "bk-btn bk-btn--ghost nb-card__map",
               href: href,
               onclick: function (e) {
                 // В оболочке R01 — её переход на карту с карточкой цели (openTarget), а не перезагрузка страницы.
@@ -346,7 +346,7 @@
           "button",
           {
             type: "button",
-            class: "bk-btn nb-card__sub",
+            class: "bk-btn bk-btn--ghost nb-card__sub",
             "data-key": "sub:" + x.id,
             "aria-pressed": subbed ? "true" : "false",
             onclick: function () {
@@ -363,6 +363,7 @@
       ].concat(lines, [why, h("div", { class: "nb-card__actions" }, actions)]));
     }
 
+    var fadeTab = false;
     function render() {
       rootEl.textContent = "";
       rootEl.setAttribute("data-state", state.status);
@@ -423,6 +424,7 @@
       function pickTab(t, focus) {
         if (!t || t === state.tab) return;
         state.tab = t;
+        fadeTab = true;
         render();
         var again = rootEl.querySelector('[data-key="tab:' + t + '"]');
         if (again && focus) again.focus();
@@ -461,7 +463,9 @@
       var items = (d.items || []).filter(function (x) {
         return x.tab === state.tab;
       });
-      var panel = h("div", { id: "nb-panel", role: "tabpanel", "aria-labelledby": "nb-tab-" + state.tab });
+      // Смена вкладки — список мягко проявляется (220 мс); подписка и язык перерисовывают без движения.
+      var panel = h("div", { id: "nb-panel", role: "tabpanel", "aria-labelledby": "nb-tab-" + state.tab, "data-enter": fadeTab ? "" : null });
+      fadeTab = false;
       if (!items.length) {
         panel.appendChild(h("div", { class: "bk-empty nb-empty" }, [icon("check", 48), h("p", { class: "bk-empty__title", text: tr("nearby.empty") })]));
       } else {
