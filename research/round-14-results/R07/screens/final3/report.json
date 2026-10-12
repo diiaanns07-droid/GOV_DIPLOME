@@ -1,0 +1,222 @@
+[
+ {
+  "tag": "1366-ru-akimat",
+  "card": true,
+  "statuses": 1,
+  "status": "Новое Осталось 2 рабочих дня",
+  "reported": "Освещение · Сообщили 5 человек · за 30 дней",
+  "eyebrow": "Остановка · Нура · Пример",
+  "primaryVisible": true,
+  "primaryText": "Взять в работу",
+  "footnote": "Данные — пример: жалобы придуманы, улицы и остановки — OpenStreetMap.",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "minBadgeH": 44,
+  "badges": 10,
+  "headHidden": true,
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ]
+ },
+ {
+  "tag": "1366-ru-resident",
+  "card": true,
+  "statuses": 1,
+  "status": "Новое",
+  "reported": "Освещение · Сообщили 5 человек · за 30 дней",
+  "eyebrow": "Остановка · Нура · Пример",
+  "primaryVisible": true,
+  "primaryText": "Я тоже",
+  "footnote": "Данные — пример: жалобы придуманы, улицы и остановки — OpenStreetMap.",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "minBadgeH": 44,
+  "badges": 10,
+  "headHidden": true,
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ]
+ },
+ {
+  "tag": "1366-kk-akimat",
+  "card": true,
+  "statuses": 1,
+  "status": "Жаңа 2 жұмыс күні қалды",
+  "reported": "Жарықтандыру · 5 адам хабарлады · соңғы 30 күнде",
+  "eyebrow": "Аялдама · Нұра · Үлгі",
+  "primaryVisible": true,
+  "primaryText": "Жұмысқа алу",
+  "footnote": "Деректер — үлгі: шағымдар ойдан құрастырылған, көшелер мен аялдамалар — OpenStreetMap.",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "minBadgeH": 44,
+  "badges": 10,
+  "headHidden": true,
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ]
+ },
+ {
+  "tag": "1366-kk-resident",
+  "card": true,
+  "statuses": 1,
+  "status": "Жаңа",
+  "reported": "Жарықтандыру · 5 адам хабарлады · соңғы 30 күнде",
+  "eyebrow": "Аялдама · Нұра · Үлгі",
+  "primaryVisible": true,
+  "primaryText": "Мен де",
+  "footnote": "Деректер — үлгі: шағымдар ойдан құрастырылған, көшелер мен аялдамалар — OpenStreetMap.",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "minBadgeH": 44,
+  "badges": 10,
+  "headHidden": true,
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ]
+ },
+ {
+  "tag": "375-ru-akimat",
+  "card": true,
+  "statuses": 1,
+  "status": "Новое Осталось 2 рабочих дня",
+  "reported": "Освещение · Сообщили 5 человек · за 30 дней",
+  "eyebrow": "Остановка · Нура · Пример",
+  "primaryVisible": true,
+  "primaryText": "Взять в работу",
+  "footnote": "Данные — пример: жалобы придуманы, улицы и остановки — OpenStreetMap.",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "minBadgeH": 44,
+  "badges": 1,
+  "headHidden": true,
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ]
+ },
+ {
+  "tag": "375-ru-resident",
+  "card": true,
+  "statuses": 1,
+  "status": "Новое",
+  "reported": "Освещение · Сообщили 5 человек · за 30 дней",
+  "eyebrow": "Остановка · Нура · Пример",
+  "primaryVisible": true,
+  "primaryText": "Я тоже",
+  "footnote": "Данные — пример: жалобы придуманы, улицы и остановки — OpenStreetMap.",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "minBadgeH": 44,
+  "badges": 1,
+  "headHidden": true,
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ]
+ },
+ {
+  "tag": "375-kk-akimat",
+  "card": true,
+  "statuses": 1,
+  "status": "Жаңа 2 жұмыс күні қалды",
+  "reported": "Жарықтандыру · 5 адам хабарлады · соңғы 30 күнде",
+  "eyebrow": "Аялдама · Нұра · Үлгі",
+  "primaryVisible": true,
+  "primaryText": "Жұмысқа алу",
+  "footnote": "Деректер — үлгі: шағымдар ойдан құрастырылған, көшелер мен аялдамалар — OpenStreetMap.",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "minBadgeH": 44,
+  "badges": 1,
+  "headHidden": true,
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ]
+ },
+ {
+  "tag": "375-kk-resident",
+  "card": true,
+  "statuses": 1,
+  "status": "Жаңа",
+  "reported": "Жарықтандыру · 5 адам хабарлады · соңғы 30 күнде",
+  "eyebrow": "Аялдама · Нұра · Үлгі",
+  "primaryVisible": true,
+  "primaryText": "Мен де",
+  "footnote": "Деректер — үлгі: шағымдар ойдан құрастырылған, көшелер мен аялдамалар — OpenStreetMap.",
+  "fonts": [
+   "13px",
+   "15px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "minBadgeH": 44,
+  "badges": 1,
+  "headHidden": true,
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ]
+ }
+]

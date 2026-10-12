@@ -70,7 +70,7 @@
   font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer;
   transition: background 0.2s var(--r07-ease);
 }
-.r07-chip::after { content: ""; position: absolute; inset: -2px 0; } /* 44 видимые (R11: элементы ≥ 44) + кайма = 48 px */
+.r07-chip::after { content: ""; position: absolute; inset: -4px 0; } /* 44 видимые (R11: элементы ≥ 44) + кайма = 52 px */
 .r07-chip:hover { background: var(--r07-fill-hover); }
 .r07-chip .r07-ic { color: var(--r07-ink-2); }
 /* Выбранная тема — единственный акцент #152c26 с белым текстом и ✓ (не только цвет); ✓ не входит в имя кнопки */
@@ -82,7 +82,9 @@
   position: relative; min-height: 44px; min-width: 48px; padding: 0 12px; border: 0; border-radius: 8px;
   background: transparent; color: var(--r07-ink-2); font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer;
 }
-.r07-seg > button::after { content: ""; position: absolute; inset: -2px 0; } /* 44 видимые + кайма = 48 px для пальца */
+/* 44 видимые + кайма 4 px = 52: зона ≥ 48 и тогда, когда край сегмента у шторки закрыт кнопкой «Сообщить о проблеме»
+   (R11 tap_targets 375 житель: было 46) */
+.r07-seg > button::after { content: ""; position: absolute; inset: -4px 0; }
 .r07-seg > button[aria-pressed="true"] { background: #fff; color: var(--r07-ink); box-shadow: var(--shadow-1, 0 1px 2px #1018160d, 0 2px 10px #1018160f); }
 .r07-select select {
   max-width: 100%; padding: 0 36px 0 12px; appearance: none;
@@ -195,7 +197,10 @@
   font-size: 15px; pointer-events: auto; }
 .r07-maplegend[hidden] { display: none; }
 .r07-zoomhint { display: none; margin: 0; align-items: center; gap: 6px; font-size: 13px; color: var(--r07-ink-2); }
-@media (max-width: 760px) { .r07-zoomhint { display: flex; } }
+@media (max-width: 760px) {
+  .r07-zoomhint { display: flex; }
+  .r07-maplegend--more .r07-legend__zoom { display: none; }   /* на телефоне подсказка уже строкой в шторке */
+}
 .r07-maplegend .r07-legend__title { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
 .r07-maplegend ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
 .r07-maplegend li { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
