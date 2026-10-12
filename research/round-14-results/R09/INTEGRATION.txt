@@ -1,3 +1,22 @@
+R09 · РАУНД 14 · INTEGRATION — FINAL-3, СТЕКЛО (12 окт, вечер; сначала этот раздел, ниже — «12 окт» и раньше)
+Ветка R09: claude/modest-shannon-0ki93p, код bfba320 (DELIVERY.json, GLASS_R09.md). Забрать пути R09 целиком:
+    git fetch origin claude/modest-shannon-0ki93p
+    git checkout bfba320 -- ui/civic_feedback web/civic/feedback tests/civic/R09
+Патчи прежние уже в сборке (R01_separate_routes, R07_fix_form) — заново не нужны. Новых файлов фронтенда нет;
+новый тест — tests/civic/R09/glass_r09.cjs (только проверка, в index.html не подключается).
+G1) Стекло R11 GLASS.md, часть R09: «Мои обращения» — .bk-glass ui-kit (панель/шторка); мастер жалобы, формы сотрудника,
+    строки «Обращений» — непрозрачные; «Сообщить о проблеме», тосты — сплошные. Нужен ui-kit R11 со стеклом (7117132b+);
+    со старым ui-kit — тот же вид непрозрачным белым.
+G2) Пока открыты «Мои обращения» — html.bc-mine-open: R09 скрывает .civic-panel (visibility: hidden), чтобы под стеклом
+    была карта, а не размытый список R07; на телефоне при открытой шторке R09 (html.bc-open) скрыт #map-status.
+G3) R11 FINAL-3 №1 (R09_inbox_need_staff, ваш 23.3) — теперь и в ветке R09 (побайтно из сборки); №12 — заголовок 600.
+G4) 13.3 (R04 ↔ R09 «Это разные проблемы») — закрыт: separate.py в R09 с 9cf4ca2, R10 FINAL-3 W1-9 PASS.
+G5) Шапка-капсула (GLASS R01 №1): верх панели R09 = var(--header-h, 64px) + 12px; для отступа 12 под капсулой 12+60 —
+    --header-h: 72px.
+Проверено: окончательный FINAL-3 77ee50be + R09 — pytest R09/R04/R01/R15 1326 passed, приложение 75/75 (FINAL3_CHECK.txt);
+то же + ui-kit R11 7117132b (стекло) — glass_r09, приложение, стенд, pytest R09/R11/R01/R15 995 passed (GLASS_RESULT.txt).
+
+
 R09 · РАУНД 14 · INTEGRATION — 12 ОКТ, ДЛЯ FINAL-3 (сначала этот раздел; ниже — волна 2 и ночные)
 Ветка R09: claude/modest-shannon-0ki93p, код 9cf4ca2 (DELIVERY.json, DAY12_FIXES.md). Забрать пути R09 целиком:
     git fetch origin claude/modest-shannon-0ki93p
