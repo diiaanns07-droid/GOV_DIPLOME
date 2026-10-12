@@ -889,11 +889,11 @@ test("buttons keep their own colours: primary text readable on its dark fill, li
     return { fg: hex(cs.color), bg: hex(cs.backgroundColor), ratio: window.CivicMapCore.contrast(hex(cs.color), hex(cs.backgroundColor)), btnSize: getComputedStyle(back).fontSize };
   });
   assert.ok(r.ratio >= 4.5, JSON.stringify(r));
-  assert.equal(r.btnSize, "13px", "class font size is not wiped by the reset");
+  assert.equal(r.btnSize, "15px", "class font size is not wiped by the reset (дизайн-марафон: кнопки 15 px, как .bk-btn)");
   await page.click('[data-r03-action="back"]');
   await page.selectOption('[data-r03-filter="period"]', "next30");
   const link = await page.evaluate(() => getComputedStyle(document.querySelector(".civic-r03-link-btn")).color);
-  assert.equal(link, "rgb(23, 107, 74)");
+  assert.equal(link, "rgb(21, 44, 38)", "ссылка — цвет бренда #152c26 (дизайн-марафон: одна краска), а не цвет сброса");
   await ctx.close();
 });
 

@@ -33,10 +33,10 @@ const URL = process.argv[2] || "http://127.0.0.1:8766/civic/ui-kit/prototypes/gl
   await p.goto(URL, { waitUntil: "networkidle" }); await p.waitForTimeout(800);
   check("стекло по умолчанию", await state(), false);
   await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-transparency", value: "reduce" }] });
-  await p.waitForTimeout(200);
+  await p.waitForTimeout(700); // переход фона кнопок 200 мс — читаем после него
   check("prefers-reduced-transparency: reduce → белый", await state(), true);
   await cdp.send("Emulation.setEmulatedMedia", { features: [] });
-  await p.evaluate(() => document.documentElement.classList.add("bk-glass-off")); await p.waitForTimeout(200);
+  await p.evaluate(() => document.documentElement.classList.add("bk-glass-off")); await p.waitForTimeout(700); // переход фона кнопок 200 мс — читаем после него
   check("html.bk-glass-off → белый", await state(), true);
   await b.close();
   process.exit(bad ? 1 : 0);

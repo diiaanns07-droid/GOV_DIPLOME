@@ -655,6 +655,16 @@
   // An R03 with the proposed setInteractive() lock stops selecting/hovering by itself; the undo in
   // onSelect stays as the fallback for R03 versions without it.
   const syncMapInteractive = () => S.mounted.map?.setInteractive?.(!mapToolActive());
+  // Карточка появляется после загрузки сведений (до ~8 с на медленной сети), а «Карта жалоб» выше неё ещё дорастает —
+  // ждём карточку и поправляем прокрутку ещё раз через секунду, если содержимое над ней сдвинулось.
+  function revealObjectCard(tries = 0, settle = 1) {
+    const card = document.querySelector("#civic-map-root .civic-r03-card:not([hidden])"), scroll = $c("civic-scroll");
+    if (!card || !scroll || !card.getClientRects().length) { if (tries < 80) setTimeout(() => revealObjectCard(tries + 1, settle), 100); return; }
+    const top = card.getBoundingClientRect().top - scroll.getBoundingClientRect().top + scroll.scrollTop - 8;
+    const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches && settle === 1;
+    scroll.scrollTo({ top: Math.max(0, top), behavior: smooth ? "smooth" : "auto" });
+    if (settle > 0) setTimeout(() => revealObjectCard(80, settle - 1), 1000);
+  }
   function onSelect(item, info) {
     if (item && info?.source === "map" && mapToolActive()) {
       setTimeout(() => S.mounted.map?.selectObject?.(null), 0);  // not inside R03's own selectObject
@@ -683,6 +693,9 @@
       const box = window.CivicExplore.bounds(item.geometry);
       if (box) keepVisible([(box[0] + box[2]) / 2, (box[1] + box[3]) / 2]);
     }
+    // Карточка работ (R03) — под «Картой жалоб» R07: по ссылке #object= и выбору на карте прокручиваем панель к ней
+    // (R12 марафон M.5), иначе она не видна без прокрутки. Обновление (refresh) и выбор в списке — уже на месте.
+    if (S.selected && ["permalink", "map", "api"].includes(info?.source)) revealObjectCard();
     S.selectedTitle = S.selected ? item?.title || null : null;
     if (S.selected) S.mounted.explore?.setView?.(selectedViewText(), "object");
     else S.mounted.explore?.setView?.(S.view?.render?.() || "", S.view?.kind || "");

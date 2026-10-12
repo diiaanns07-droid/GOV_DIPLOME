@@ -1104,3 +1104,105 @@
 .civic-r03-more-body {
   padding-bottom: 8px;
 }
+
+/* ===================================================================================================
+   R12 · дизайн-марафон (12 окт): карточка работ на токенах ui-kit R11 — как паспорт QR и кабинет.
+   Шкала 13/15/17/22, веса 400/600, одна краска #152c26, без бежевых и пунктирных плашек, зелёный — только
+   «завершено»; разделы — тихие заголовки без капса; рамки → заливка и тонкие линии. Логика и разметка — прежние.
+   =================================================================================================== */
+.civic-r03-root {
+  --civic-r03-ink: var(--c-ink, #152c26);
+  --civic-r03-muted: var(--c-text-2, #5b6a64);
+  --civic-r03-line: var(--c-line, #e8eaeb);
+  --civic-r03-paper: var(--c-fill, #eff1f2);
+  --civic-r03-green: var(--c-brand, #152c26);
+  --civic-r03-warn-bg: var(--c-fill, #eff1f2);
+  --civic-r03-warn-line: transparent;
+  --civic-r03-warn-ink: var(--c-warn, #8a5a12);
+  --civic-r03-demo-bg: var(--c-fill, #eff1f2);
+  --civic-r03-demo-line: transparent;
+  --civic-r03-demo-ink: var(--c-text-2, #5b6a64);
+  --civic-r03-focus: var(--c-focus, #2f7fd6);
+  font: 15px/1.45 var(--font, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
+}
+/* кнопки — как .bk-btn */
+.civic-r03-btn {
+  gap: 8px; padding: 10px 16px; border: 0; border-radius: var(--r-m, 10px); background: var(--c-fill, #eff1f2);
+  font-size: 15px; font-weight: 600;
+  transition: background-color var(--t-fast, 200ms) var(--ease, ease-out), transform var(--t-fast, 200ms) var(--ease, ease-out);
+}
+.civic-r03-btn:hover { background: var(--c-fill-hover, #e5e8ea); border-color: transparent; }
+.civic-r03-btn:active { transform: translateY(1px); }
+.civic-r03-btn-quiet, .civic-r03-btn-quiet:hover { background: transparent; }
+.civic-r03-btn-quiet { padding: 8px 8px 8px 6px; white-space: nowrap; }  /* «← Все объекты» · «На карте» — одной строкой и на 320 px */
+.civic-r03-btn-quiet:hover { background: var(--c-brand-soft, #eef1f0); }
+.civic-r03-btn-primary { background: var(--c-brand, #152c26); color: #fff; }
+.civic-r03-btn-primary:hover { background: var(--c-brand-hover, #0f221d); }
+.civic-r03-link-btn { font-size: 15px; font-weight: 600; color: var(--c-brand, #152c26); }
+/* верх карточки: «Все объекты» · «На карте» */
+.civic-r03-card-top .civic-r03-btn { font-size: 15px; }
+/* «Пример» — тихая подпись на серой заливке, без пунктира (как .bk-tag--demo) */
+.civic-r03-banner { padding: 12px 16px; border-radius: var(--r-m, 10px); font-size: 13px; }
+.civic-r03-banner-demo, .civic-r03-demo-note, .civic-r03-b-demo { border: 0; }
+.civic-r03-banner-warn { border: 0; }
+/* вид работ: точка цвета слоя, слово — тихое */
+.civic-r03-item-kind, .civic-r03-card-kind { font-size: 13px; font-weight: 600; color: var(--c-text-2, #5b6a64); }
+.civic-r03-card-title { margin: 4px 0 8px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+/* «Коротко»: серая плашка без рамки, подписи 13, ответы 15 */
+.civic-r03-summary { gap: 8px 16px; margin: 8px 0 16px; padding: 12px 16px; border: 0; border-radius: var(--r-l, 14px); font-size: 15px; }
+.civic-r03-summary dt { font-size: 13px; font-weight: 400; padding-top: 2px; }
+/* статус — как .bk-status: точка + слово, без цветной плашки; зелёный — только «завершено» */
+.civic-r03-status {
+  --dot: var(--c-text-2, #5b6a64);
+  display: inline-flex; align-items: center; gap: 8px; padding: 0; border-radius: 0; background: transparent;
+  color: var(--c-ink, #152c26); font-size: 15px; font-weight: 600;
+}
+.civic-r03-status::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--dot); }
+.civic-r03-status-in_progress { --dot: var(--heat-2, #ef9f27); background: transparent; color: var(--c-ink, #152c26); }
+.civic-r03-status-planned { --dot: var(--c-text-2, #5b6a64); background: transparent; color: var(--c-ink, #152c26); }
+.civic-r03-status-completed { --dot: var(--fixed, #639922); background: transparent; color: var(--c-ink, #152c26); }
+.civic-r03-status-cancelled { --dot: var(--nodata, #b4b2a9); background: transparent; color: var(--c-ink, #152c26); }
+.civic-r03-status-line { margin: 0 0 12px; font-size: 15px; }
+/* перенос срока: слово цветом предупреждения, без бежевой плашки */
+.civic-r03-shift-chip { margin-left: 6px; padding: 0; border: 0; background: transparent; font-size: 13px; font-weight: 600; color: var(--c-warn, #8a5a12); }
+.civic-r03-shift { padding: 12px 16px; border: 0; border-radius: var(--r-m, 10px); background: var(--c-fill, #eff1f2); color: var(--c-ink, #152c26); font-size: 15px; }
+.civic-r03-shift strong, .civic-r03-shift b { color: var(--c-warn, #8a5a12); font-weight: 600; }
+/* разделы: тихий заголовок 13/600 без капса, строки 15 */
+.civic-r03-sec { padding: 16px 0; }
+.civic-r03-sec h4 { margin: 0 0 8px; font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+.civic-r03-dl { gap: 8px 16px; font-size: 15px; }
+.civic-r03-dl dt { font-size: 13px; padding-top: 2px; }
+.civic-r03-basis, .civic-r03-src-meta, .civic-r03-meta, .civic-r03-h-when, .civic-r03-copy-note, .civic-r03-warn-text { font-size: 13px; }
+.civic-r03-sources, .civic-r03-notes { font-size: 15px; }
+.civic-r03-src-link { font-weight: 600; }
+.civic-r03-tech { font-size: 15px; }
+.civic-r03-tech > summary { font-weight: 600; }
+/* история: точки на линии, без бежевого; шаг 8 */
+.civic-r03-history { gap: 12px; font-size: 15px; border-left-color: var(--c-line, #e8eaeb); }
+.civic-r03-history li::before { border-color: var(--c-line-strong, #d3d8db); }
+.civic-r03-history li.civic-r03-h-schedule::before { border-color: var(--c-warn, #8a5a12); background: #fff; }
+.civic-r03-h-what { font-weight: 600; }
+.civic-r03-compare { border: 0; border-top: 1px solid var(--c-line, #e8eaeb); border-radius: 0; }
+.civic-r03-compare > .civic-r03-two, .civic-r03-cmp-out { padding: 0 0 12px; }
+.civic-r03-filters-summary, .civic-r03-legend > summary, .civic-r03-compare > summary { padding: 10px 0; font-size: 15px; font-weight: 600; }
+.civic-r03-actions { gap: 8px; padding-top: 16px; }
+/* «Подробнее» (ҚАЗ: «Толық мәліметтер») — 15/600 */
+.civic-r03-more > summary { font-size: 15px; font-weight: 600; }  /* ≤ 3 размеров на экране: 13/15/22 */
+.civic-r03-more > summary:focus-visible { outline-color: var(--c-focus, #2f7fd6); }
+/* строки списка и значки (если список показан) */
+.civic-r03-item-title { font-size: 15px; font-weight: 600; }
+.civic-r03-item-meta { font-size: 13px; }
+.civic-r03-badge { padding: 0 10px; border: 0; border-radius: 999px; font-size: 13px; font-weight: 600; line-height: 1.6; background: var(--c-fill, #eff1f2); color: var(--c-text-2, #5b6a64); }
+.civic-r03-b-warn { background: transparent; padding-inline: 0; color: var(--c-warn, #8a5a12); }
+.civic-r03-b-ok { background: var(--c-ok-soft, #eaf4dc); color: var(--c-ok, #2f6b12); }
+.civic-r03-title { font-weight: 600; }
+.civic-r03-city { font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+.civic-r03-root b, .civic-r03-root strong { font-weight: 600; }
+.civic-r03-field { font-size: 13px; font-weight: 600; }
+.civic-r03-hint { font-size: 13px; }
+/* поля (фильтры, сравнение редакций): рамка 3:1 остаётся (WCAG 1.4.11, проверка «field, chip and grip outlines»), текст 15 */
+.civic-r03-root .civic-r03-select, .civic-r03-root .civic-r03-date, .civic-r03-root .civic-r03-search { border-radius: var(--r-m, 10px); font-size: 15px; }
+@media (max-width: 760px) { .civic-r03-card-title { font-size: 22px; } }
+/* «Здесь несколько объектов» — заголовок списка, не объекта: 17, чтобы первый вариант был виден в шторке 320 px. */
+.civic-r03-root[data-civic-r03-view="pick"] .civic-r03-card-title { font-size: 17px; margin: 0 0 8px; }
+@media (prefers-reduced-motion: reduce) { .civic-r03-btn { transition: none; } }

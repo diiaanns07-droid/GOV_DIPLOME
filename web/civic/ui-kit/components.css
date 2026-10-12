@@ -2200,6 +2200,20 @@ p.bk-banner--warn {
     background-image: none;
   }
 }
+/* Запасной вид и через токены: правила модулей вида «… { background-color: var(--glass-control) }» (R01 и роли) тоже
+   становятся непрозрачными, независимо от порядка и силы их селекторов */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-panel: var(--glass-solid);
+    --glass-control: var(--glass-solid);
+    --glass-control-hover: var(--glass-solid);
+  }
+}
+.bk-glass-off {
+  --glass-panel: var(--glass-solid);
+  --glass-control: var(--glass-solid);
+  --glass-control-hover: var(--glass-solid);
+}
 @media (prefers-reduced-transparency: reduce) {
   .bk-glass,
   .bk-glass--control {
