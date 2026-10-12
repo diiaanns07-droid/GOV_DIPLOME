@@ -4,15 +4,15 @@
  "branch": "claude/r14-R08",
  "base_sha": "R01 claude/sharp-dijkstra-0t87gl @ 65343341 (FINAL-3 со стеклом) — база марафона",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "ec73b533",
- "tested_sha": "ec73b533",
+ "code_sha": "e37c5f36",
+ "tested_sha": "e37c5f36",
  "tested_with": {
-  "r01_build": "claude/sharp-dijkstra-0t87gl @ 65343341 + R08 ui/civic_akim, web/civic/akim, web/civic/nearby @ ec73b533; ui-kit/i18n — как в сборке; база: init + seed-demo + seed-r14-demo + create-editor, CIVIC_DEMO=1",
+  "r01_build": "claude/sharp-dijkstra-0t87gl @ 550f7a93 (марафон, круги 2–3; в нём уже R08 ec73b533 и ui-kit R11 58b28edc) + R08 ui/civic_akim, web/civic/akim, web/civic/nearby @ e37c5f36; база: init + seed-demo + seed-r14-demo + create-editor, CIVIC_DEMO=1",
   "r11_ui_kit_i18n": "claude/r14-R11 @ 7117132b (стекло) — стенд",
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 5e2789e — временная копия для стенда, в git R08 не входит",
   "env": "облачная сессия Claude Code, Linux, Python 3.13, Chromium (Playwright), без интернета (карта — запасной фон)"
  },
- "push_status": "OK — claude/r14-R08 (код ec73b533); DELIVERY, INTEGRATION §10, STATUS, CHECKLIST — следующим коммитом поверх",
+ "push_status": "OK — claude/r14-R08 (код e37c5f36); DELIVERY, INTEGRATION §10, STATUS, CHECKLIST — следующим коммитом поверх",
  "changed_paths": [
   "research/handoffs/astana/R08/round14/STATUS.md",
   "research/round-14-results/R08/",
@@ -73,13 +73,13 @@
   "pytest tests/civic/R08": "233 passed + 2 skipped (+4 test_r08_design: ряды мини-графиков)",
   "стенд ui_check.cjs (1366/375 × ru/kk)": "164/164 PASS (+15: мини-графики, мини-карта и © OpenStreetMap, объекты без плашек, стеклянная полоса после прокрутки, prefers-reduced-motion; печать 3 листа)",
   "стенд nearby_check.cjs": "52/52 PASS",
-  "стенд services_check.cjs": "26/26 PASS (на 9859307c; «Службы» в марафоне не менялись)",
-  "сборка 65343341 + R08 ec73b533: shell_wave2_check.cjs": "20/20 PASS (теперь ловит и «неизвестный ключ» i18n)",
-  "сборка: glass_check.cjs": "51/51 PASS — стекло R01 (не симуляция): худший контраст текста R08 на стекле над чёрной картой 4,62:1",
-  "сборка: R01 r14_shell / r14_wave2": "42/0 и 42/0; INFO о ключах R08 больше нет",
-  "сборка: R10 wave_checks --only W2-4,W2-5,W2-8": "30 PASS / 0 FAIL / 1 NOT_RUN (события подписки «Рядом» в «Мои обращения» — R09)",
+  "стенд services_check.cjs": "26/26 PASS",
+  "сборка: glass_check.cjs": "53/53 PASS — стекло R01: худший контраст текста R08 на стекле над чёрной картой 4,62:1; «Службы» — непрозрачная форма",
+  "сборка: R01 r14_shell / r14_wave2": "42/0 и 42/0; INFO о ключах R08 нет",
+  "сборка: R10 wave_checks --only W2-4,W2-5,W2-8": "30 PASS / 0 FAIL / 1 NOT_RUN (R09)",
   "сборка: pytest R08 + R15 akim/nearby + R01 b061 + R13 pulse + R06 pair": "302 passed + 1 skipped",
-  "FPS со стеклом, приёмка марафона": "NOT_RUN — замер и приёмка у R10 (INTEGRATION §10.2)"
+  "FPS со стеклом, приёмка марафона": "NOT_RUN — замер и приёмка у R10 (INTEGRATION §10.2)",
+  "сборка 550f7a93 + R08 e37c5f36: shell_wave2_check.cjs": "20/20 PASS (ловит и «неизвестный ключ» i18n)"
  },
  "known_limits": [
   "Сроки «Просрочено» — демо-норматив R08 (deadlines.py), в рабочих днях РК 2026; у аварийных категорий — календарные. Переносы рабочих дней постановлением Правительства и точная дата Курбан айта не сверены (как и у R09).",
@@ -94,8 +94,8 @@
   "Иллюстрация «тихий день» — своя, линиями 2 px; набора линейных иллюстраций ui-kit пока нет (R11).",
   "Шкала шрифтов на «Картине дня» — 5 размеров по CLEAN_PASS; пункт чек-листа марафона «≤ 3 размера» не выполнен намеренно (вопрос владельцу)."
  ],
- "next_step": "R01: взять 5 файлов из claude/r14-R08 @ ec73b533 (INTEGRATION §10.1). R10: FPS и приёмка марафона (селекторы §10.2). R11: ревью кадров design/round1 (§10.3).",
- "delivery": "6 (12 окт, дизайн-марафон: «Картина дня» как дашборд, «Рядом» спокойнее)",
+ "next_step": "R01: взять 7 файлов из claude/r14-R08 @ e37c5f36 (INTEGRATION §10.1) — новых ключей и файлов нет. R10: FPS и приёмка марафона (§10.2). R11: ревью design/round2 (§10.3); соседям — §10.4.",
+ "delivery": "6.1 (12 окт, дизайн-марафон, круги 1–4)",
  "for_r01_final3": {
   "take": "claude/r14-R08 @ 04fa206c (path-scoped): web/civic/akim/akim.css; web/civic/nearby/nearby.js, nearby.css, index.html; web/civic/akim/services.js, services.css, services.html; по желанию tests/civic/R08/nearby_check.cjs, glass_check.cjs. akim.js — как 0fac615d (уже в сборке).",
   "replaces": "R08 web/civic/nearby/* и web/civic/akim/services.* из FINAL-2 (9d593d96)",
@@ -279,7 +279,7 @@
   "круг 4 (02:20)": "новых замечаний к R08 нет (третий пустой круг подряд) — проверки остановлены; R15: S27–S29 «исправлено в FINAL-2 34677e0»"
  },
  "for_r01_marathon": {
-  "take": "claude/r14-R08 @ ec73b533 (path-scoped): web/civic/akim/akim.js, akim.css; web/civic/nearby/nearby.js, nearby.css; ui/civic_akim/summary.py; по желанию tests/civic/R08/*",
+  "take": "claude/r14-R08 @ e37c5f36 (path-scoped): web/civic/akim/akim.js, akim.css, services.js, services.css; web/civic/nearby/nearby.js, nearby.css; ui/civic_akim/summary.py; по желанию tests/civic/R08/* и стенд-страницы web/civic/akim/index.html, services.html, web/civic/nearby/index.html (поля отдельной страницы)",
   "no_changes_needed": "оболочка, маршруты, CIVIC_ASSETS (новых файлов нет), словарь (новых ключей нет)",
   "api_change": "GET /api/civic/v2/akim/summary: + kpi.new_day.series, kpi.in_progress.series, kpi.overdue.series, kpi.fixed_week.series (14 целых по дням); прежние поля без изменений",
   "marathon_items_r08": {
@@ -288,6 +288,15 @@
    "стеклянная шапка раздела": "СДЕЛАНО: компактная стеклянная полоса при прокрутке (лист — стекло R01)",
    "печать A4 красиво": "СДЕЛАНО: 3 листа, блоки рвутся между строками, графики и мини-карта печатаются",
    "чек-лист 12 пунктов": "research/round-14-results/R08/design/CHECKLIST.md"
+  },
+  "r11_marathon_items": {
+   "§9.2 a kk-заголовок и поля на телефоне": "СДЕЛАНО (ec73b533 + e37c5f36: дата своей строкой)",
+   "§9.2 b край 24 на телефоне («Рядом»)": "СДЕЛАНО: внешние поля корней убраны, край даёт лист R01",
+   "§9.2 c .nb-card__title 700": "СДЕЛАНО: 600",
+   "§9.2 d строки ≤ 70 знаков": "СДЕЛАНО: сводка и строки решений 70ch",
+   "§9.1 f колонка листов-списков 720": "СДЕЛАНО у R08: «Рядом» и «Службы» 720",
+   "§10.2 «нет связи» — иллюстрация, без карточки, обычная кнопка": "СДЕЛАНО («Картина дня» и «Рядом»)",
+   "§11.5 «Службы» — форма непрозрачная": "СДЕЛАНО"
   }
  },
  "previous_delivery_5_2": {
