@@ -657,7 +657,9 @@
     }
     function pill(kind) {
       var key = kind === "queue" ? "ask.staff.queue" : kind === "answered" ? "ask.status.answered" : "ask.status.waiting";
-      return h("span", { class: "qa-pill qa-pill--" + kind + " bk-pill" + PILL_UI[kind] }, [stIcon(PILL_ST[kind]), tr(key)]);
+      // значки st-* пришли в спрайт вместе с BirgeUI.statusIcon (ui-kit 3890fa74): на старом ui-kit — без пустого места
+      var withIcon = !!(root.BirgeUI && typeof root.BirgeUI.statusIcon === "function");
+      return h("span", { class: "qa-pill qa-pill--" + kind + " bk-pill" + PILL_UI[kind] }, [withIcon ? stIcon(PILL_ST[kind]) : null, tr(key)]);
     }
     function answerBlock(q) {
       var a = q.answer;

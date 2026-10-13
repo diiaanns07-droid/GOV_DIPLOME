@@ -214,20 +214,25 @@ const worstContrast = (page) => page.evaluate(() => {
           const d = [...document.querySelectorAll(".qa-answer")].find((x) => !x.querySelector(".qa-answer__more").hidden);
           return d ? d.closest(".qa-card").dataset.id : null;
         });
-        const sel = `.qa-card[data-id="${longId}"] .qa-answer`;
-        const clamp = await page.$eval(sel, (d) => {
-          const t = d.querySelector(".qa-answer__text"), more = d.querySelector(".qa-answer__more");
-          return { open: d.classList.contains("qa-answer--open"), lines: Math.round(t.getBoundingClientRect().height / parseFloat(getComputedStyle(t).lineHeight)),
-            more: more ? more.getAttribute("aria-expanded") : null };
-        });
-        await page.click(`${sel} .qa-answer__more`);
-        const opened = await page.$eval(sel, (d) => {
-          const t = d.querySelector(".qa-answer__text");
-          return { open: d.classList.contains("qa-answer--open"), expanded: d.querySelector(".qa-answer__more").getAttribute("aria-expanded"),
-            lines: Math.round(t.getBoundingClientRect().height / parseFloat(getComputedStyle(t).lineHeight)), text: t.textContent.length };
-        });
-        check(`${tag} житель: ответ акима — 2 строки и «Читать полностью», нажатие раскрывает`,
-          !clamp.open && clamp.lines === 2 && clamp.more === "false" && opened.open && opened.expanded === "true" && opened.lines > 2, { clamp, opened });
+        if (!longId) {
+          // широкая колонка (лист оболочки без patch §12.1): все цитаты влезли в 2 строки — раскрывать нечего
+          check(`${tag} житель: ответ акима — 2 строки и «Читать полностью», нажатие раскрывает`, fit.every(([cut]) => !cut), { allFit: true });
+        } else {
+          const sel = `.qa-card[data-id="${longId}"] .qa-answer`;
+          const clamp = await page.$eval(sel, (d) => {
+            const t = d.querySelector(".qa-answer__text"), more = d.querySelector(".qa-answer__more");
+            return { open: d.classList.contains("qa-answer--open"), lines: Math.round(t.getBoundingClientRect().height / parseFloat(getComputedStyle(t).lineHeight)),
+              more: more ? more.getAttribute("aria-expanded") : null };
+          });
+          await page.click(`${sel} .qa-answer__more`);
+          const opened = await page.$eval(sel, (d) => {
+            const t = d.querySelector(".qa-answer__text");
+            return { open: d.classList.contains("qa-answer--open"), expanded: d.querySelector(".qa-answer__more").getAttribute("aria-expanded"),
+              lines: Math.round(t.getBoundingClientRect().height / parseFloat(getComputedStyle(t).lineHeight)), text: t.textContent.length };
+          });
+          check(`${tag} житель: ответ акима — 2 строки и «Читать полностью», нажатие раскрывает`,
+            !clamp.open && clamp.lines === 2 && clamp.more === "false" && opened.open && opened.expanded === "true" && opened.lines > 2, { clamp, opened });
+        }
         await page.click(".qa-tabs > button:nth-child(3)"); await idle(page);
         await page.waitForSelector(".qa-answer", { timeout: 10000 });
         const signs = await page.evaluate(() => [...document.querySelectorAll(".qa-answer")].map((d) => [(d.querySelector(".qa-answer__sign") || {}).textContent || "",
