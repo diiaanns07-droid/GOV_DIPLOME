@@ -130,10 +130,14 @@ async function open(browser, { w, h, lang, route }) {
   {
     const { ctx, page } = await open(browser, { w: 1366, h: 768, lang: "ru", route: async (r) => { await new Promise((x) => setTimeout(x, 900)); await r.continue(); } });
     await page.waitForTimeout(400);
-    const skel = await page.$$eval("#today .bk-skel", (e) => e.length);
+    const skel = await page.evaluate(() => ({ tiles: document.querySelectorAll("#today .akim-today__kpi .bk-skel").length / 2,
+      rows: document.querySelectorAll("#today .akim-today__row--skel").length, h: Math.round(document.getElementById("today").getBoundingClientRect().height) }));
     await page.screenshot({ path: path.join(OUT, "today-loading-1366-ru.png") });
     await page.waitForSelector("#today[data-state=ok]");
-    check("долгий ответ — скелет трёх плиток (после 150 мс)", skel >= 3, skel);
+    await page.waitForTimeout(200);
+    skel.ok = await page.evaluate(() => Math.round(document.getElementById("today").getBoundingClientRect().height));
+    check("долгий ответ — скелет готовой формы (3 плитки, 3 строки мест) после 150 мс, без прыжка высоты (± 2)",
+      skel.tiles === 3 && skel.rows === 3 && Math.abs(skel.h - skel.ok) <= 2, skel);
     await ctx.close();
   }
   {

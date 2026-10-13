@@ -178,17 +178,54 @@
   font-weight: 500;
   cursor: pointer;
 }
+/* скелет — той же высоты, что готовая карточка: плитка 66, строка места 55, ссылка внизу (без прыжка, правило Linear 4) */
 .akim-today__skel-num {
   display: block;
   width: 40px;
   height: 22px;
-  margin-bottom: 6px;
+  margin: 2px 0 7px;
   border-radius: 6px;
 }
 .akim-today__skel-label {
   display: block;
   width: 70%;
   height: 12px;
+  margin-bottom: 3px;
+  border-radius: 4px;
+}
+.akim-today__row--skel {
+  min-height: 54px;
+}
+.akim-today__row--skel:hover {
+  background: none;
+}
+.akim-today__row--skel .akim-today__place {
+  flex: 1;
+  gap: 6px;
+}
+.akim-today__skel-name {
+  display: block;
+  width: 62%;
+  height: 13px;
+  border-radius: 4px;
+}
+.akim-today__hot > li:nth-child(2) .akim-today__skel-name {
+  width: 48%;
+}
+.akim-today__hot > li:nth-child(3) .akim-today__skel-name {
+  width: 70%;
+}
+.akim-today__skel-cat {
+  display: block;
+  width: 34%;
+  height: 10px;
+  border-radius: 4px;
+}
+.akim-today__skel-more {
+  display: block;
+  width: 132px;
+  height: 14px;
+  margin: 9px 0 1px;
   border-radius: 4px;
 }
 @media (prefers-reduced-motion: reduce) {

@@ -205,11 +205,26 @@
       );
       if (state.status === "loading") {
         if (!state.skeleton) return; // первые 150 мс — без скелета
+        // Скелет той же формы и высоты, что готовая карточка (3 плитки + 3 строки мест + ссылка): без прыжка при загрузке.
         el.appendChild(
           h("div", { class: "akim-today__kpis", "aria-hidden": "true" }, [0, 1, 2].map(function () {
             return h("div", { class: "akim-today__kpi" }, [h("span", { class: "bk-skel akim-today__skel-num" }), h("span", { class: "bk-skel akim-today__skel-label" })]);
           }))
         );
+        el.appendChild(
+          h("ol", { class: "akim-today__hot", "aria-hidden": "true" }, [0, 1, 2].map(function () {
+            return h("li", null, [
+              h("div", { class: "akim-today__row akim-today__row--skel" }, [
+                h("span", { class: "bk-skel akim-today__cnt" }),
+                h("span", { class: "akim-today__place" }, [
+                  h("span", { class: "bk-skel akim-today__skel-name" }),
+                  h("span", { class: "bk-skel akim-today__skel-cat" }),
+                ]),
+              ]),
+            ]);
+          }))
+        );
+        el.appendChild(h("span", { class: "bk-skel akim-today__skel-more", "aria-hidden": "true" }));
         return;
       }
       if (state.status === "error") {
