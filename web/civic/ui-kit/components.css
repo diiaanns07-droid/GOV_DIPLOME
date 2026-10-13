@@ -2303,6 +2303,23 @@ p.bk-banner--warn {
   width: 16px;
   height: 16px;
 }
+/* × без круга (эталон: сводка «Сегодня в Астане») — значок 18 вторичным цветом, зона нажатия 44 */
+.bk-x--plain {
+  width: 18px;
+  height: 18px;
+  background: none;
+  color: var(--c-text-3);
+}
+.bk-x--plain::after {
+  inset: -13px;
+}
+.bk-x--plain .ic {
+  width: 18px;
+  height: 18px;
+}
+.bk-x--plain:hover {
+  color: var(--c-ink);
+}
 /* Крупное число: «6 человек сообщили · за 14 дней» */
 .bk-big {
   display: flex;
