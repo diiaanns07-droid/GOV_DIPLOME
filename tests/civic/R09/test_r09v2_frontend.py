@@ -297,10 +297,13 @@ def test_clean_pass_r11_r09_items():
     details = JS.split("function detailsBlock(item, open)", 1)[1].split("function historyTitle", 1)[0]
     # Дизайн-марафон: этапы в «Подробнее» — вертикальная лента (точки на линии), вместо полосы и списка истории.
     assert '"bk-details bc-more"' in details and '"bc-updates bc-history bc-timeline"' in details and "nextStage(item)" in details
-    # №7 и правила 2, 4: ни лайма, ни бежевого, ни веса 700 в своих стилях
+    # №7 и правила 2, 4: ни лайма, ни бежевого, ни веса 700 в своих стилях. Эталон A (13 окт): лайм — только плитка «+»
+    # у «Сообщить о проблеме» (.fab i эталона); больше нигде.
     for text in (css, kit):
         low = text.lower()
-        assert not any(c in low for c in ("#d7f57c", "#f1fbd3", "#f7f8f4", "#f1efe6")), "лайм/бежевый"
+        assert low.count("#d7f57c") == (1 if text is css else 0), "лайм только у плитки «+»"
+        assert ".bc-fab__mark { width: 26px; height: 26px; border-radius: 8px; background: #D7F57C;" in css
+        assert not any(c in low for c in ("#f1fbd3", "#f7f8f4", "#f1efe6")), "лайм/бежевый"
         assert "font-weight: 700" not in text
 
 
@@ -327,7 +330,8 @@ def test_inbox_without_staff_login_asks_to_sign_in():
     assert s["ru"]["proposal.need_staff"] == "Войдите как сотрудник акимата" and s["kk"]["staff.login.submit"] == "Кіру"
     assert s["ru"]["staff.login.note"] == "Учётную запись выдаёт администратор." and s["kk"]["staff.login.note"] == "Тіркелгіні әкімші береді."
     css = (WEB / "complaint.css").read_text(encoding="utf-8")
-    assert re.search(r"\.bc-inbox__title \{[^}]*font-size: var\(--fs-h1, 28px\); font-weight: var\(--fw-semi, 600\)", css)
+    # Эталон A: заголовок листа 19/600 (был 28 по R11 9.3 a — эталон 13 окт важнее).
+    assert re.search(r"\.bc-inbox__title \{[^}]*font-size: 19px; font-weight: var\(--fw-semi, 600\)", css)
 
 
 def test_glass_only_on_mine_panel():
@@ -340,7 +344,7 @@ def test_glass_only_on_mine_panel():
     assert ':where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff);' in css   # запасной белый
     assert "html.bc-mine-open body.civic-mode .civic-panel,\nhtml.bc-open body.civic-mode .civic-panel { visibility: hidden; }" in css
     assert ".bk-glass .bc-staff__form { background: var(--c-surface, #fff);" in css            # формы сотрудника
-    assert ".bc-inbox .bc-inbox__item.bk-card { background: var(--c-surface, #fff); }" in css  # строки «Обращений»
+    assert ".bc-inbox__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;\n                  background: var(--c-surface, #fff);" in css  # список «Обращений» — непрозрачный
     for media in ("prefers-reduced-transparency: reduce", "@supports not ((-webkit-backdrop-filter", ".bk-glass-off .bc-panel.bk-glass .bc-head"):
         assert media in css
     # Главная кнопка и тосты — не стекло.
@@ -434,7 +438,8 @@ def test_design_marathon_round9_r10_circle2():
     assert ".bc-mine__status .bk-statusline__note { padding-left: 28px;" in css and ".bc-mine__card > .bc-meta { padding-left: 28px; }" in css
     # Отступы 6/10/14 px в правилах R09 больше не встречаются (кроме смещений точек ленты).
     import re as _re
-    off = [m.group(0) for m in _re.finditer(r"(?:padding|gap|column-gap)(?:-[a-z]+)?: [^;]*\b(?:6|10|14)px", css)]
+    # Исключение — «Сообщить о проблеме»: промежуток 10 px взят из эталона A (.fab gap: 10px).
+    off = [m.group(0) for m in _re.finditer(r"(?:padding|gap|column-gap)(?:-[a-z]+)?: [^;]*\b(?:6|10|14)px", css.replace("gap: 10px; border: 0; border-radius: 16px;", ""))]
     assert not off, off
     # R11 16.4: ряд вкладок «Обращений» — .bk-scroll-x с затуханием края ui-kit.
     assert '"bk-chips bk-scroll-x bc-inbox__tabs"' in LIST_JS and "window.BirgeUI.scrollFade(bar)" in LIST_JS

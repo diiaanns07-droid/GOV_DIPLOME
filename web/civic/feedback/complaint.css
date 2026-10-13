@@ -1,13 +1,19 @@
 /* R09 · путь жителя v2 и «Мои обращения». Цвета, размеры и шрифт — токены ui-kit R11
    (UX_SPEC §2), с запасными значениями на случай, если tokens.css ещё не подключён. */
 
+/* «Сообщить о проблеме» — как в эталоне A (research/round-14/design/REFERENCE.html, .fab): почти чёрная #121A17,
+   54 px, радиус 16, 16/600, слева лаймовая плитка 26 px с «+», тень 0 10 24. Значения — эталона (токены R11 придут). */
 .bc-fab {
   position: fixed; z-index: 30;
   bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  min-height: 56px; padding: 0 24px;
-  box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18));
   max-width: calc(100vw - 32px);
 }
+.bk-btn.bc-fab { min-height: 54px; padding: 0 20px 0 16px; gap: 10px; border: 0; border-radius: 16px;
+  background: #121A17; color: #fff; font-size: 16px; font-weight: 600; box-shadow: 0 10px 24px rgba(16, 24, 20, .3); }
+.bk-btn.bc-fab:hover { background: #1f2a26; }
+.bc-fab__mark { width: 26px; height: 26px; border-radius: 8px; background: #D7F57C; color: #2F4A10; flex: none;
+                display: inline-flex; align-items: center; justify-content: center; }
+.bc-fab__mark .ic { width: 16px; height: 16px; stroke-width: 2.4; }
 .bc-fab[hidden] { display: none; }
 /* Открыта карточка места R07 со своей «Я тоже» — главную кнопку не показываем: одна главная на экране
    (R11 B1 №8 на телефоне; R10 B-070 — и на ноутбуке). Карточку закрыли — кнопка снова на месте. */
@@ -18,23 +24,24 @@ body:has(.r07-card) .bc-fab { display: none; }
   .bc-fab { left: 0; right: 0; margin-inline: auto; width: max-content; transform: none; }
 }
 
-/* Панель: ноутбук — справа 400 px поверх карты; телефон — нижняя шторка. */
+/* Панель: ноутбук — карточка слева под поиском, как в эталоне A (.card: left 20, top 84 = поиск 20 + 52 + 12, ширина
+   388, радиус 18, выезжает слева за 300 мс); телефон — нижняя шторка (радиус 26, ручка 38×5). */
 .bc-panel {
   position: fixed; z-index: 40;
-  top: calc(var(--header-h, 64px) + 12px); right: 20px; bottom: 12px;   /* как правая панель оболочки R01 (shell.css) */
-  width: var(--panel-w, 400px); max-width: calc(100vw - 24px);
+  top: calc(var(--header-h, 64px) + 12px); left: 20px; bottom: 12px;
+  width: 388px; max-width: calc(100vw - 24px);
   display: flex; flex-direction: column;
   color: var(--c-ink, #152c26);
   font-family: var(--font, system-ui, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif);
   font-size: var(--fs-body, 15px); line-height: 1.45;
-  padding: 0 20px 20px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;   /* въезд шага не даёт полосы прокрутки вбок */
+  padding: 0 18px 18px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;   /* въезд шага не даёт полосы прокрутки вбок */
   scroll-padding-bottom: 80px;   /* под прилипшей «Далее» (56 + поле 8 + 16): чип в фокусе не прячется за ней (R11 9.3 e) */
-  animation: bc-in-right var(--t-base, 240ms) var(--ease, cubic-bezier(.22, 1, .36, 1));
+  animation: bc-in-left 300ms var(--ease, cubic-bezier(.22, 1, .36, 1));
 }
 .bc-panel[hidden] { display: none; }
-/* Мастер жалобы — форма: непрозрачная панель/шторка (R11 GLASS.md §2 «Нет»). */
-.bc-panel:not(.bk-glass) { background: var(--c-surface, #fff); border-radius: var(--r-l, 16px);
-                           box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18)); }
+/* Мастер жалобы — форма: непрозрачная карточка (эталон: «формы — без стекла»), радиус и тень карточки эталона. */
+.bc-panel:not(.bk-glass) { background: var(--c-surface, #fff); border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(16, 24, 20, .14), 0 0 0 .5px rgba(16, 24, 20, .10); }
 /* «Мои обращения» — стекло ui-kit R11 (.bk-glass: фон, блик, размытие, рамка, тень, радиус 24). :where — нулевая
    специфичность: если ui-kit без стекла (старая сборка, стенд с kit-fallback) — тот же вид, но непрозрачный белый. */
 :where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff); border-radius: var(--r-glass, 24px);
@@ -57,31 +64,32 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bk-glass-off .bc-panel.bk-glass .bc-head { background: var(--glass-solid, #fff); -webkit-backdrop-filter: none; backdrop-filter: none; }
 @media print { .bc-panel.bk-glass .bc-head { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; } }
 .bc-handle { display: none; }
-@keyframes bc-in-right { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes bc-in-left { from { transform: translateX(-24px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes bc-in-up { from { transform: translateY(32px); opacity: .4; } to { transform: none; opacity: 1; } }
 
 @media (max-width: 1023px) {
   .bc-panel {
     top: auto; left: 0; right: 0; bottom: 0; width: auto; max-width: none;
-    padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));   /* эталон .p-sheet: поля 16 */
     height: 92vh; height: 92dvh;
     transition: height var(--t-base, 240ms) var(--ease, ease);
     animation-name: bc-in-up;
   }
-  .bc-panel:not(.bk-glass) { border-radius: 20px 20px 0 0; }
-  /* Шторка «Мои обращения» — стекло со скруглением 28 сверху (как .bk-glass--sheet). */
-  .bc-panel.bk-glass, :where(.bc-panel.bk-glass) { border-radius: var(--r-glass-sheet, 28px) var(--r-glass-sheet, 28px) 0 0; }
+  /* Шторка — скругление 26 сверху, как .p-sheet эталона (и мастер, и «Мои обращения»). */
+  .bc-panel:not(.bk-glass) { border-radius: 26px 26px 0 0; }
+  .bc-panel.bk-glass, :where(.bc-panel.bk-glass) { border-radius: 26px 26px 0 0; }
   .bc-panel[data-snap="half"] { height: 50vh; height: 50dvh; }
   /* Шаги 4–5: шторка по содержимому — над ней видно место на карте, без пустого белого низа. */
   .bc-panel[data-snap="fit"] { height: auto; max-height: 92vh; max-height: 92dvh; }
   /* Шаг 2, место ещё не выбрано: только вопрос и «Моё местоположение» — шторка по содержимому (R11 B1 №2). */
   .bc-panel[data-snap="peek"] { height: auto; max-height: 50vh; max-height: 50dvh; }
-  /* Главная кнопка на телефоне — во всю ширину, одна строка, 56 px (R11 день 2 №7, B1 №8; UX_SPEC §1). */
-  .bc-fab { left: 16px; right: 16px; transform: none; max-width: none; white-space: nowrap; justify-content: center; }
+  /* Главная кнопка на телефоне — во всю ширину, одна строка (R11 B1 №8); эталон .fab: поля 16, снизу 34. */
+  .bc-fab { left: 16px; right: 16px; bottom: max(34px, calc(16px + env(safe-area-inset-bottom, 0px)));
+            transform: none; max-width: none; white-space: nowrap; justify-content: center; }
   /* Шторка R09 открыта: плашка карты R01 «Карта улиц не загрузилась» не ложится поверх её заголовка (карта под шторкой). */
   html.bc-open body.civic-mode #map-status { visibility: hidden; }
-  .bc-handle { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--c-line, #e8eaeb);
-               margin: 8px auto 0; flex: none; }
+  .bc-handle { display: block; width: 38px; height: 5px; border-radius: 3px; background: rgba(18, 26, 23, .08);
+               margin: 8px auto 0; flex: none; }   /* ручка эталона: 38×5, линия */
 }
 
 .bc-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 56px;
@@ -291,34 +299,90 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-staff__fix-error { margin: 0; font-weight: 600; color: var(--c-danger, #b3362e); }
 .bc-staff .bc-thumb__remove { font-size: 22px; line-height: 1; color: #fff; text-shadow: 0 0 3px rgba(21, 44, 38, .9); }
 
-/* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01): список целей, вкладки, карточка действий. */
-.bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px; margin: 0 auto; }   /* одна колонка 720 у всех разделов-списков (R11 D-1) */
-.bc-inbox__title { margin: 0; font-size: var(--fs-h1, 28px); font-weight: var(--fw-semi, 600); }   /* 28, как у остальных разделов (R11 9.3 a); не 700 (FINAL-3 №12) */
+/* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01) — список как в Linear (правило 5 эталона A):
+   фильтры-чипы сверху, группы по статусу, плотные строки 44 px с границей 1 px вместо теней, статус значком и смена
+   статуса прямо из строки. Цвета и линии — эталона (research/round-14/design/REFERENCE.html, :root). */
+.bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px; margin: 0 auto; color: #121A17; }   /* колонка 720 (R11 D-1) */
+.bc-inbox__title { margin: 0; font-size: 19px; font-weight: var(--fw-semi, 600); letter-spacing: -.01em; }   /* заголовок листа эталона 19/600 */
 .bc-inbox__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }   /* затухание края — .bk-scroll-x ui-kit */
 .bc-inbox__tabs::-webkit-scrollbar { display: none; }
 .bc-inbox__tabs .bk-chip { min-height: 44px; flex: 0 0 auto; white-space: nowrap; }
 .bc-inbox__count { font-weight: var(--fw-semi, 600); }
-/* Ноль не показываем: глаз сразу видит вкладки, где есть работа (R11 11.6, вариант «без числа» — серый ноль --c-text-3
-   был бы ниже 4,5:1 на заливке чипа). Пустую выбранную вкладку объясняет состояние «Здесь пусто» под ней. */
+/* Ноль не показываем: глаз сразу видит вкладки, где есть работа (R11 11.6). */
 .bc-inbox__count[data-zero] { display: none; }
-.bc-inbox__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.bc-inbox__item { padding: 0; overflow: hidden; }
-/* «Обращения» — на листе раздела R01 (стекло); строки и форма сотрудника внутри — непрозрачные (GLASS.md, R09). */
-.bc-inbox .bc-inbox__item.bk-card { background: var(--c-surface, #fff); }
-.bc-inbox__row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 16px; width: 100%;
-                 min-height: 64px; padding: 12px 16px; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
-.bc-inbox__heat { min-width: 36px; height: 36px; font-size: var(--fs-body, 15px); }
-.bc-inbox__text { display: grid; gap: 2px; min-width: 0; }
-.bc-inbox__place strong { font-size: var(--fs-lead, 17px); }
-.bc-inbox__what { display: flex; align-items: center; gap: 8px; font-size: var(--fs-body, 15px); }
-.bc-inbox__what .ic { width: 18px; height: 18px; color: var(--c-text-2, #5b6a64); }
-.bc-inbox__row > .ic { width: 20px; height: 20px; color: var(--c-text-2, #5b6a64); transition: rotate 200ms ease-out; }
+.bc-inbox__groups { display: flex; flex-direction: column; gap: 16px; }
+.bc-inbox__group { display: flex; flex-direction: column; gap: 8px; }
+.bc-inbox__ghead { display: flex; align-items: center; gap: 8px; min-height: 32px; margin: 0; padding: 0 12px;
+                   border-radius: 8px; background: rgba(18, 26, 23, .04); color: #4B5752; font-size: 13px; font-weight: var(--fw-semi, 600); }
+.bc-inbox__group[data-group="overdue"] .bc-inbox__ghead, .bc-inbox__group[data-group="reopened"] .bc-inbox__ghead { color: #B3362E; }
+.bc-inbox__gcount { color: #7E8A85; font-weight: 400; }
+.bc-inbox__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;
+                  background: var(--c-surface, #fff); border: 1px solid rgba(18, 26, 23, .08); border-radius: 12px; }
+/* «Обращения» на листе раздела R01 (стекло): сам список и форма сотрудника — непрозрачные (GLASS.md, R09). */
+.bc-inbox__item { position: relative; padding: 0; transition: background-color 150ms ease-out; }
+.bc-inbox__item + .bc-inbox__item { border-top: 1px solid rgba(18, 26, 23, .08); }
+.bc-inbox__item:first-child { border-radius: 11px 11px 0 0; }
+.bc-inbox__item:last-child { border-radius: 0 0 11px 11px; }
+.bc-inbox__item:only-child { border-radius: 11px; }
+.bc-inbox__item:hover, .bc-inbox__item--hover { background: rgba(18, 26, 23, .03); }
+.bc-inbox__item--hover { box-shadow: inset 3px 0 0 #121A17; }   /* значок цели подсвечен на карте — строка тоже */
+.bc-inbox__item--flash { animation: bc-flash 700ms ease-out; }
+@keyframes bc-flash { from { background: rgba(18, 26, 23, .08); } to { background: transparent; } }
+.bc-inbox__line { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; }
+.bc-inbox__status-wrap { position: relative; display: flex; }
+.bc-inbox__status { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex: none; }
+.bc-inbox__status--btn { padding: 0; border: 0; border-radius: 10px; background: none; color: inherit; cursor: pointer;
+                         transition: background-color 150ms ease-out; }
+.bc-inbox__status--btn:hover, .bc-inbox__status--btn[aria-expanded="true"] { background: rgba(18, 26, 23, .06); }
+.bc-inbox__status--btn:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: -3px; }
+.bc-inbox__row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; column-gap: 12px; width: 100%;
+                 min-height: 44px; padding: 0 12px 0 0; border: 0; background: none; font: inherit; font-size: 14px;
+                 color: inherit; text-align: left; cursor: pointer; }
+.bc-inbox__text { display: flex; align-items: center; gap: 8px; min-width: 0; white-space: nowrap; overflow: hidden; }
+.bc-inbox__place { display: inline-flex; align-items: center; gap: 8px; min-width: 0; flex: 0 1 auto; }
+.bc-inbox__place strong { font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+.bc-inbox__what { display: inline-flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto; color: #4B5752; }
+.bc-inbox__what > span { overflow: hidden; text-overflow: ellipsis; }
+.bc-inbox__what .ic { width: 16px; height: 16px; flex: none; color: #7E8A85; }
+.bc-inbox__meta { color: #4B5752; font-size: 13px; white-space: nowrap; }
+.bc-inbox__row > .ic { width: 16px; height: 16px; color: #7E8A85; transition: rotate 200ms ease-out; }
 .bc-inbox__row[aria-expanded="true"] > .ic { rotate: 90deg; }
-.bc-inbox__row:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: -3px; }
-.bc-inbox__place { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.bc-inbox__item--open { box-shadow: 0 0 0 2px var(--c-brand, #152c26); }
-.bc-inbox__detail { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 16px; }
+.bc-inbox__row:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: -3px; border-radius: 10px; }
+.bc-inbox__item--open { background: var(--c-surface, #fff); }
+.bc-inbox__detail { display: flex; flex-direction: column; gap: 12px; padding: 4px 12px 16px 44px; }
 .bc-inbox__map { align-self: flex-start; }
+/* Меню статуса строки — под значком, белое, линия 1 px и мягкая тень (как меню эталона), пункты 44 px. */
+.bc-inbox__menu { position: absolute; top: 42px; left: 4px; z-index: 5; min-width: 232px; margin: 0; padding: 4px;
+                  display: flex; flex-direction: column; background: var(--c-surface, #fff); border: 1px solid rgba(18, 26, 23, .08);
+                  border-radius: 12px; box-shadow: 0 12px 32px rgba(16, 24, 20, .14); }
+.bc-inbox__menu-item { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px;
+                       background: none; font: inherit; font-size: 14px; color: #121A17; text-align: left; cursor: pointer; }
+.bc-inbox__menu-item:hover, .bc-inbox__menu-item:focus-visible { background: rgba(18, 26, 23, .06); outline: none; }
+/* Телефон: место — первой строкой, категория и «N человек · срок» — второй (одна строка 44 на 375 не помещается). */
+@media (max-width: 600px) {
+  .bc-inbox__row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "text chev" "meta chev"; row-gap: 2px; padding: 8px 12px 8px 0; }
+  .bc-inbox__text { grid-area: text; flex-direction: column; align-items: flex-start; gap: 2px; white-space: normal; }
+  .bc-inbox__place, .bc-inbox__what { max-width: 100%; }
+  .bc-inbox__meta { grid-area: meta; white-space: normal; }
+  .bc-inbox__row > .ic { grid-area: chev; }
+}
+/* Статус значком (правило 3): пустой — новое, половина — в работе, с галочкой — служба сообщила, зелёный — проверено. */
+.bc-sicon { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.bc-sicon__fill { fill: currentColor; stroke: none; }
+.bc-sicon__tick { stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.bc-sicon--new { color: #E24B4A; }
+.bc-sicon--progress { color: #EF9F27; }
+.bc-sicon--reported { color: #3B8A2E; }
+.bc-sicon--verified { color: #3B8A2E; }
+.bc-sicon--verified .bc-sicon__ring { fill: currentColor; }
+.bc-sicon--verified .bc-sicon__tick { stroke: #fff; }
+/* Скелетон строк «Обращений» (только если ответ дольше 150 мс). */
+.bc-loading--rows { gap: 0; background: var(--c-surface, #fff); border: 1px solid rgba(18, 26, 23, .08); border-radius: 12px; }
+.bc-skel-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) 96px; align-items: center; column-gap: 12px; height: 44px; padding: 0 12px 0 0; }
+.bc-skel-row + .bc-skel-row { border-top: 1px solid rgba(18, 26, 23, .08); }
+.bc-skel-dot { display: block; width: 16px; height: 16px; border-radius: 50%; justify-self: center; }
+.bc-loading--rows .bc-loading__text { padding: 8px 12px; }
+.bc-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .bc-more__demo { display: inline-flex; margin-top: 8px; }
 /* Сноска «Пример для показа…» — внизу списка (R11 D-5); на стекле «Моих обращений» — тем же серым. */
 .bc-demo-note { text-align: left; }
@@ -424,7 +488,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 @media (min-width: 1280px) {
   body.civic-mode .bc-fab { right: 56px; }
 }
-@media (prefers-reduced-motion: reduce) { .bc-inbox__row > .ic { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .bc-inbox__row > .ic { transition: none; } .bc-inbox__item--flash { animation: none; } }
 
 /* Ноутбук: панель — по содержимому, как боковая карточка Apple Maps, на всех шагах и в «Моих обращениях» (круг 8: и шаг 3,
    и короткий список «Моих обращений» больше не тянут пустой белый / стеклянный столб до низа экрана). Длинное —
@@ -448,9 +512,8 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
   .bc-panel .bk-wizard__dots > i { transition: none; }
 }
 
-/* Проектор 1024–1100: правая панель оболочки — 360 (кнопки карты — слева от неё); панель R09 — та же ширина,
-   иначе закрывает кнопки карты. */
+/* Проектор 1024–1100: правая панель оболочки — 360; «Сообщить о проблеме» — по центру свободной карты левее неё.
+   Панель R09 — слева (эталон A), кнопки карты справа не закрывает. */
 @media (min-width: 1024px) and (max-width: 1100px) {
-  .bc-panel { width: 360px; }
   body.civic-mode .bc-fab { right: calc(360px + 32px); }
 }

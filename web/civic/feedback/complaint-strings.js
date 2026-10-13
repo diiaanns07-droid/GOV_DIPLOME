@@ -81,6 +81,11 @@
       "common.state.network_text": "Проверьте интернет и повторите.",
       "staff.login.note": "Учётную запись выдаёт администратор.",
       "common.tag.demo_hint": "Пример для показа, не настоящие данные",
+      "inbox.status_menu": "Сменить статус",
+      "staff.cabinet.tab.all": "Все",
+      "heat.take": "Взять в работу",
+      "heat.toast_taken": "Взято в работу",
+      "heat.action_failed": "Не получилось сохранить. Проверьте связь и попробуйте ещё раз",
       "mine.metoo_badge": "Вы нажали «Я тоже»",
       "mine.reporters": {"one": "Сообщил {n} человек", "few": "Сообщили {n} человека", "many": "Сообщили {n} человек"},
 
@@ -374,6 +379,11 @@
       "common.state.network_text": "Интернетті тексеріп, қайталап көріңіз.",
       "staff.login.note": "Тіркелгіні әкімші береді.",
       "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты дерек емес",
+      "inbox.status_menu": "Мәртебені өзгерту",
+      "staff.cabinet.tab.all": "Барлығы",
+      "heat.take": "Жұмысқа алу",
+      "heat.toast_taken": "Жұмысқа алынды",
+      "heat.action_failed": "Сақталмады. Байланысты тексеріп, қайталап көріңіз",
       "mine.metoo_badge": "Сіз «Мен де» түймесін бастыңыз",
       "mine.reporters": "{n} адам хабарлады",
 

@@ -71,7 +71,9 @@ async function tapStop(page, width) {
     const c = map.getCanvas().getBoundingClientRect();
     const panel = document.querySelector(".bc-panel"); const r = panel && !panel.hidden ? panel.getBoundingClientRect() : null;
     const mobile = innerWidth < 1024;
-    const want = { x: (c.left + (r && !mobile ? r.left : c.right)) / 2, y: (c.top + (r && mobile ? r.top : c.bottom)) / 2 };
+    // Ноутбук: панель R09 — карточка слева (эталон A) или справа (до 13 окт): середина видимой части карты.
+    const leftCard = r && !mobile && r.left + r.width / 2 < (c.left + c.right) / 2;
+    const want = { x: ((leftCard ? r.right : c.left) + (r && !mobile && !leftCard ? r.left : c.right)) / 2, y: (c.top + (r && mobile ? r.top : c.bottom)) / 2 };
     map.jumpTo({ center: p, zoom: 17 });
     const q = map.project(p);
     map.panBy([c.left + q.x - want.x, c.top + q.y - want.y], { duration: 0 });

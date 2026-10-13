@@ -83,9 +83,12 @@ async function centerOn(page, point, zoom = 17) {
     const panel = document.querySelector(".bc-panel");
     const r = panel && !panel.hidden ? panel.getBoundingClientRect() : null;
     const mobile = window.innerWidth < 1024;
-    const right = r && !mobile ? r.left : canvas.right;
+    // Ноутбук: панель R09 — карточка слева (эталон A, с 13 окт), раньше была справа — видимая часть карты по другую сторону.
+    const leftCard = r && !mobile && r.left + r.width / 2 < (canvas.left + canvas.right) / 2;
+    const left = leftCard ? r.right : canvas.left;
+    const right = r && !mobile && !leftCard ? r.left : canvas.right;
     const bottom = r && mobile ? r.top : canvas.bottom;
-    const want = { x: (canvas.left + right) / 2, y: (canvas.top + bottom) / 2 };
+    const want = { x: (left + right) / 2, y: (canvas.top + bottom) / 2 };
     for (let i = 0; i < 3; i++) {
       map.jumpTo({ center: p, zoom });
       const q = map.project(p);
@@ -1130,9 +1133,34 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
   });
   await page.waitForSelector(".bc-inbox__tab", { timeout: 8000 });
   const tabs = await page.$$eval(".bc-inbox__tab", (n) => n.map((b) => ({ id: b.dataset.tab, text: b.textContent.trim(), sel: b.getAttribute("aria-selected") })));
-  check(`${tag}: [§2.5] вкладки ${tabs.map((x) => x.text).join(" · ")}`, tabs.map((x) => x.id).join() === "new,in_progress,waiting_check,overdue,reopened" &&
-        tabs[0].sel === "true" && (lang === "kk" ? /^Жаңа \d+$/.test(tabs[0].text) : /^Новые \d+$/.test(tabs[0].text)), JSON.stringify(tabs));
+  // Эталон A, правило 5 (Linear): фильтры-чипы «Все» + 5 вкладок §2.5; по умолчанию «Все» — группы по статусу.
+  check(`${tag}: [§2.5, эталон п.5] фильтры ${tabs.map((x) => x.text).join(" · ")}`, tabs.map((x) => x.id).join() === "all,new,in_progress,waiting_check,overdue,reopened" &&
+        tabs[0].sel === "true" && (lang === "kk" ? /^Барлығы \d+$/.test(tabs[0].text) : /^Все \d+$/.test(tabs[0].text)), JSON.stringify(tabs));
+  const groupsSeen = await page.$$eval(".bc-inbox__group", (n) => n.map((g) => ({ id: g.dataset.group,
+    head: g.querySelector(".bc-inbox__ghead").textContent.trim(), icon: !!g.querySelector(".bc-inbox__ghead .bc-sicon"),
+    rows: [...g.querySelectorAll(".bc-inbox__row")].map((r) => Math.round(r.getBoundingClientRect().height)) })));
+  check(`${tag}: [эталон п.5] группы по статусу со значком, строки плотные (≤ 44 на ноутбуке)`, groupsSeen.length >= 1 &&
+        groupsSeen.every((g) => g.icon && g.rows.length) && (width < 700 || groupsSeen.every((g) => g.rows.every((hgt) => hgt >= 44 && hgt <= 46))),
+        JSON.stringify(groupsSeen));
   const key = `${tid}|roads`;
+  // Эталон п.4–5: смена статуса прямо из строки, с мгновенным откликом — строка переезжает в «В работе» до ответа
+  // сервера (ответ здесь нарочно задержан на 1,5 с), потом статус на сервере тот же.
+  await page.click(`.bc-inbox__status--btn[data-key="${key}"]`);
+  await page.waitForSelector(".bc-inbox__menu .bc-inbox__menu-item", { timeout: 3000 });
+  const menuItems = await page.$$eval(".bc-inbox__menu .bc-inbox__menu-item", (n) => n.map((b) => b.textContent.trim()));
+  await page.route("**/complaints/*/status", async (r) => { await new Promise((res) => setTimeout(res, 1500)); await r.continue(); });
+  await page.click(".bc-inbox__menu .bc-inbox__menu-item");
+  const movedNow = await page.waitForFunction((k) => {
+    const li = document.querySelector(`.bc-inbox__item[data-key="${k}"]`);
+    return !!li && li.closest(".bc-inbox__group").dataset.group === "in_progress";
+  }, key, { timeout: 400 }).then(() => true, () => false);
+  check(`${tag}: [эталон п.4–5] «${menuItems[0]}» из строки — сразу в «В работе», до ответа сервера`,
+        menuItems.length === 2 && movedNow && (lang === "kk" ? /Жұмысқа алу/.test(menuItems[0]) : /Взять в работу/.test(menuItems[0])), JSON.stringify(menuItems));
+  await page.waitForTimeout(2200);
+  await page.unroute("**/complaints/*/status");
+  const afterTake = (await staffApi(base, "GET", `/complaints/${made.data.complaint.id}`)).data.complaint.status;
+  check(`${tag}: [эталон п.4] после ответа — статус на сервере «в работе», строка там же`, afterTake === "in_progress" &&
+        await page.$eval(`.bc-inbox__item[data-key="${key}"]`, (li) => li.closest(".bc-inbox__group").dataset.group) === "in_progress", afterTake);
   const row = await page.$(`.bc-inbox__row[data-key="${key}"]`);
   const rowText = row ? (await row.textContent()).replace(/\s+/g, " ") : "";
   check(`${tag}: [§2.5] строка: место · категория · уточнение · людей · срок — «${rowText.slice(0, 90)}»`, !!row &&

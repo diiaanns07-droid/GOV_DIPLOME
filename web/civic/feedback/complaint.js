@@ -347,7 +347,12 @@
     return id;
   }
 
+  // «Мои обращения» с прошлого открытия (в этой вкладке браузера): при новом открытии список виден сразу и тихо
+  // обновляется (правило 4 эталона — без мигающей перезагрузки). Любое своё действие с обращениями — заново с сервера.
+  var mineCache = null;
+
   function request(method, path, body, timeoutMs, extraHeaders) {
+    if (method !== "GET" && /^\/complaints/.test(path)) mineCache = null;
     var controller = window.AbortController ? new AbortController() : null;
     var timer = controller ? setTimeout(function () { controller.abort(); }, timeoutMs || NET_TIMEOUT_MS) : null;
     var headers = Object.assign({ "Accept": "application/json", "X-Birge-Device": deviceId() }, extraHeaders || {});
@@ -412,6 +417,27 @@
     var use = document.createElementNS("http://www.w3.org/2000/svg", "use");
     use.setAttribute("href", (kit.SPRITE || "/civic/ui-kit/icons.svg") + "#ill-" + name);
     svg.appendChild(use);
+    return svg;
+  }
+
+  // Статус значком, как в Linear (правило качества 3 эталона): пустой кружок — новое, наполовину заполненный — в работе,
+  // кружок с галочкой — служба сообщила об устранении, заполненный зелёный с галочкой — проверено жителями.
+  // Иконка всегда рядом со словом. Рисует R11 в ui-kit; пока его значков нет — эти (те же 4 состояния, 16 px, линия 1,5).
+  function statusIcon(status) {
+    var kind = { "new": "new", accepted: "progress", in_progress: "progress", reopened: "progress",
+                 fixed: "reported", reported_fixed: "reported", verified: "verified" }[status] || "new";
+    var ns = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("class", "bc-sicon bc-sicon--" + kind);
+    svg.setAttribute("viewBox", "0 0 16 16"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
+    function el(tag, attrs) {
+      var n = document.createElementNS(ns, tag);
+      Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+      svg.appendChild(n);
+    }
+    el("circle", { cx: "8", cy: "8", r: "6.25", "class": "bc-sicon__ring" });
+    if (kind === "progress") el("path", { d: "M8 3.5a4.5 4.5 0 0 1 0 9Z", "class": "bc-sicon__fill" });
+    if (kind === "reported" || kind === "verified") el("path", { d: "m5.4 8.2 1.8 1.8 3.5-3.7", "class": "bc-sicon__tick" });
     return svg;
   }
 
@@ -541,12 +567,19 @@
       },
       // Телефон, шаги 4–5: место — посередине видимой карты над шторкой (как Apple Maps). Сдвиг через offset —
       // отступы карты (padding) оболочки R01 не трогаем; масштаб не меняем.
-      reveal: function (point, visibleTop, visibleBottom) {
-        if (!point || !map.easeTo) return;
+      // Место — в середину видимой части карты (area: { top, bottom, left, right } в координатах окна); onlyIfHidden —
+      // не двигать, если место и так видно (ноутбук: карта не «плывёт» без нужды, эталон — «никаких рывков карты»).
+      reveal: function (point, area) {
+        if (!point || !map.easeTo || !area) return;
         var box = map.getContainer().getBoundingClientRect();
-        var dy = (visibleTop + visibleBottom) / 2 - (box.top + box.bottom) / 2;
+        if (area.onlyIfHidden && map.project) {
+          var q = map.project(point), x = box.left + q.x, y = box.top + q.y;
+          if (x > area.left + 32 && x < area.right - 32 && y > area.top + 32 && y < area.bottom - 32) return;
+        }
+        var dx = (area.left + area.right) / 2 - (box.left + box.right) / 2;
+        var dy = (area.top + area.bottom) / 2 - (box.top + box.bottom) / 2;
         var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        try { map.easeTo({ center: point, offset: [0, dy], duration: still ? 0 : 450 }); } catch (e) { /* карта ещё грузится */ }
+        try { map.easeTo({ center: point, offset: [dx, dy], duration: still ? 0 : 300 }); } catch (e) { /* карта ещё грузится */ }
       },
       highlight: function (target, geometry, point) {
         var features = [];
@@ -592,7 +625,7 @@
 
     // Главная кнопка «Сообщить о проблеме» (одна на экран).
     els.fab = h("button", { "class": "bk-btn bk-btn--primary bc-fab", type: "button", onclick: function () { open(); } },
-      [icon("plus"), h("span", { "class": "bc-fab__label" })]);
+      [h("i", { "class": "bc-fab__mark", "aria-hidden": "true" }, icon("plus")), h("span", { "class": "bc-fab__label" })]);
     if (opts.fab !== false) root.appendChild(els.fab);
 
     els.panel = h("section", { "class": "bc-panel", role: "dialog", "aria-modal": "false", hidden: true,
@@ -1379,21 +1412,34 @@
 
     // ---------------------------------------------------------------- «Мои обращения»
     function loadMine(focusCode, focusEvent) {
-      state.mine = null; state.mineError = false; state.changes = null; state.changesAll = false;
+      var cached = mineCache;
+      state.mine = cached ? cached.items : null; state.mineError = false; state.changes = cached ? cached.changes : null;
+      state.changesAll = false; state.mineSlow = false;
       if (focusCode) state.focusCode = focusCode;
       if (focusEvent) { state.focusEvent = focusEvent; state.changesAll = true; }
       render();
+      if (cached) focusCard();
       var owner = state;
+      // Скелетон — только если ответа нет дольше 150 мс (быстрый ответ не мигает серыми полосами).
+      if (!cached) setTimeout(function () {
+        if (state === owner && state.view === "mine" && state.mine === null && !state.mineError) { state.mineSlow = true; render(); }
+      }, 150);
       var seen = storageGet("localStorage", SEEN_KEY);
       Promise.all([request("GET", "/complaints/mine"),
                    seen ? request("GET", "/complaints/changes?since=" + encodeURIComponent(seen)) : Promise.resolve(null)])
         .then(function (replies) {
           var res = replies[0], changes = replies[1];
           if (!state || state !== owner || state.view !== "mine") return;
-          if (!res.ok) { state.mineError = true; render(); return; }
+          if (!res.ok) {
+            if (cached) return;   // список уже на экране — фоновое обновление его не роняет
+            state.mineError = true; render(); return;
+          }
           state.mine = res.data.items || [];
-          state.mineEnter = true;   // пришли данные — карточки мягко появляются; перерисовка того же списка — без движения
-          state.changes = changes && changes.ok ? changes.data : null;
+          state.mineEnter = !cached;   // первые данные — карточки мягко появляются; обновление на месте — без движения
+          var fresh = changes && changes.ok ? changes.data : null;
+          // «Что изменилось» уже показано в этом открытии — не гасим его, если с прошлого запроса нового нет.
+          state.changes = fresh && (fresh.items || []).length ? fresh : (cached ? cached.changes : fresh);
+          mineCache = { items: state.mine, changes: state.changes };
           // «Что изменилось» — с прошлого визита; первый визит только запоминает момент.
           storageSet("localStorage", SEEN_KEY, new Date().toISOString());
           announceChanges(0);   // житель увидел изменения — значок у «Мои обращения» гаснет
@@ -1686,6 +1732,10 @@
         renderPending(body);
         return;
       }
+      if (state.mine === null && !state.mineSlow) {
+        body.appendChild(h("p", { "class": "bc-sr", role: "status" }, t("mine.loading")));
+        return;
+      }
       if (state.mine === null) {
         // Скелетон повторяет карточку: категория, статус, строка «Передано…», мета (а не серые прямоугольники).
         var skel = function () { return h("div", { "class": "bc-skel-card", "aria-hidden": "true" }, [
@@ -1825,14 +1875,17 @@
       else if (state.step === 4) { if (state.reviewing) renderReview(body); else renderSimilar(body); }
       else renderDone(body);
       setPicking(!mine && state.step === 2);
-      // Телефон, шаги 4–5 (шторка по содержимому): выбранное место видно над шторкой — один раз при входе в шаг.
-      if (body.classList.contains("bc-body--enter") && !mine && state.step >= 4 && map.reveal && window.innerWidth < 1024) {
+      // Шаги 4–5: выбранное место видно — телефон: над шторкой (всегда, один раз при входе в шаг); ноутбук: справа от
+      // карточки слева (эталон A), только если место ушло под карточку.
+      if (body.classList.contains("bc-body--enter") && !mine && state.step >= 4 && map.reveal) {
         var where = state.point || (state.target && state.result && state.result.complaint && state.result.complaint.point);
         if (where) requestAnimationFrame(function () {
           if (panel.hidden) return;
-          var top = panel.getBoundingClientRect().top;
+          var r = panel.getBoundingClientRect();
           var header = document.querySelector(".topbar, #birge-header");
-          map.reveal(where, header ? header.getBoundingClientRect().bottom : 0, top);
+          var top = header ? header.getBoundingClientRect().bottom : 0;
+          if (window.innerWidth < 1024) map.reveal(where, { top: top, bottom: r.top, left: 0, right: window.innerWidth });
+          else map.reveal(where, { top: top, bottom: window.innerHeight, left: r.right, right: window.innerWidth - 72, onlyIfHidden: true });
         });
       }
       if (state.lastFocusStep !== panel.getAttribute("data-step")) {
@@ -1991,7 +2044,7 @@
     emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round14-wave2",
     // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
     displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
-    targetLabel: targetLabel, statusBadge: statusBadge, icon: icon, illustration: illustration,
+    targetLabel: targetLabel, statusBadge: statusBadge, statusIcon: statusIcon, icon: icon, illustration: illustration,
     categoryIcon: function (id) { var c = category(id); return c ? c.icon : "dots"; }
   };
   // Помощники фото для компонента сотрудника (complaint-staff.js): то же уменьшение и загрузка частями.
