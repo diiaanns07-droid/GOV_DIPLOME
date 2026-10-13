@@ -1,0 +1,19 @@
+/* R06 → R01 (эталон 13 окт, вариант A): «Проекты и идеи» — лист 412 слева под поиском, справа — карта и карточка
+   выбранного (её ставит модуль R06 сам, body > .ri-pd-host). Добавить в конец web/civic/shell/birge.css.
+   Вес (1,4,1)+ — выше правил листа раздела .birge-day.bk-glass (0,3,1) и «до 1080 по центру» (0,3,1);
+   :not([hidden]) — чтобы display:flex не перебивал скрытие листа. */
+@media (min-width: 761px) {
+  body.civic-mode #birge-screen.birge-day.bk-glass:is([data-screen="projects"], [data-screen="ideas"]):not([hidden]) {
+    left: 20px; right: auto; top: 84px; bottom: 20px; width: 412px;
+    display: flex; flex-direction: column; padding: 0; overflow: hidden;
+    border-radius: var(--r-xl, 18px); background-color: var(--glass-strong, rgba(255, 255, 255, 0.86));
+  }
+}
+@media (max-width: 760px) {
+  body.civic-mode #birge-screen.birge-day.bk-glass:is([data-screen="projects"], [data-screen="ideas"]):not([hidden]) {
+    display: flex; flex-direction: column; padding: 0; overflow: hidden;
+  }
+}
+body.civic-mode #birge-screen:is([data-screen="projects"], [data-screen="ideas"]) > #birge-screen-root {
+  display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0;
+}

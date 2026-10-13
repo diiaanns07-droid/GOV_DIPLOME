@@ -113,11 +113,12 @@ class IdeaRepository:
         votes = self._votes(conn, row["id"])
         project = None
         if row["project_id"]:
-            p = conn.execute("SELECT id, kind, status, title_ru, title_kk FROM civic_proposals WHERE id = ?",
+            p = conn.execute("SELECT id, kind, status, title_ru, title_kk, planned_year FROM civic_proposals WHERE id = ?",
                              (row["project_id"],)).fetchone()
             if p is not None and p["status"] != "withdrawn":
+                # planned_year — «срок» в карточке идеи (эталон 13 окт: три цифры «поддержали · срок · …»)
                 project = {"id": p["id"], "kind": p["kind"], "status": p["status"], "title_ru": p["title_ru"],
-                           "title_kk": p["title_kk"]}
+                           "title_kk": p["title_kk"], "planned_year": p["planned_year"]}
         mine = device is not None and row["author_hash"] == device
         supported = None
         if device is not None:

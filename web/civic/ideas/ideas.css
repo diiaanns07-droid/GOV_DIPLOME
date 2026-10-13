@@ -1,13 +1,22 @@
 /*
- * R06 · «Идеи жителей» (волна 2 п. 7) и «Работы и отключения» (волна 2 п. 4, форма сотрудника).
- * Только раскладка поверх ui-kit R11 (tokens.css, components.css): цвета, кнопки, метки, поля — оттуда.
- * Экран раздела: колонка до 720 px по центру (ноутбук), во всю ширину (телефон) — R11 SCHEMES §1.
- * Дизайн-марафон (12–14 окт): карточки «как в App Store» (плитка-иллюстрация, название, одна строка, капсула действия),
- * одна краска для статусов идей, «до → после», скелетон и пустые состояния, движение 200–350 мс (reduced-motion — без него).
- * Сетка 8 pt: отступы 4/8/12/16/24/32 (токены --s-*).
+ * R06 · «Проекты и идеи» (идеи жителей, проекты акимата) и «Работы и отключения» (форма сотрудника).
+ * Эталон владельца 13 окт (research/round-14/design/REFERENCE.html, вариант A «2ГИС светлый» + качество Linear):
+ * лист 412 слева (заголовок и ×, сегмент, карточки как в App Store: картинка 84, название, одна строка, плашка статуса
+ * и капсула ♥ с числом), выбранная — в рамке 2 px; справа — карточка выбранного 340 (картинка 150, 3 цифры, одно
+ * предложение, «Поддержать» / «Подробнее», «это опрос…»). Размеры и цвета — из эталона; токены ui-kit R11 (3890fa74)
+ * с запасными значениями эталона. Движение 150–250 мс, скелетон не раньше 150 мс; reduced-motion — без движения.
  */
 
-.ri,
+/* ── корень: лист раздела (стекло и место — у оболочки R01, патч R06 «лист 412») ── */
+.ri {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  color: var(--c-ink, #121a17);
+  interpolate-size: allow-keywords;
+}
 .rw {
   display: grid;
   gap: var(--s-4);
@@ -15,410 +24,556 @@
   margin: 0 auto;
   min-width: 0;
 }
-.ri-title {
-  margin: 0;
-}
-.ri .bk-card,
 .rw .bk-card {
   min-width: 0;
 }
-.ri .bk-card__title,
 .rw .bk-card__title {
   overflow-wrap: anywhere; /* длинные казахские названия переносятся, а не обрезаются */
 }
 
-/* ── шапка экрана: правило, «Бюджет участия», главная кнопка ── */
-/* Правило — всегда видно (IA_WAVE2 §8): значок и текст по левой линии колонки (без внутреннего отступа баннера). */
-.ri-rule {
-  display: grid;
-  gap: var(--s-2);
-}
-.ri-honest {
-  display: flex;
-  gap: var(--s-2);
-  align-items: flex-start;
-  padding: 0;
-}
-.ri-honest > .ic {
-  margin-top: 2px;
-  color: var(--c-text-2);
-}
-.ri-honest .bk-banner__title {
-  margin: 0;
-  font-weight: var(--fw-regular);
-  color: var(--c-ink);
-}
-.ri-pb {
-  margin: 0;
-  padding-left: 28px; /* под текстом правила, а не под значком */
-  max-width: 56ch; /* ≤ 70 знаков в строке (R11 §15.5: строка «Бюджет участия» была длиннее) */
-}
-.ri-demo-note {
-  padding-top: 0;
-}
-.ri-honest-line {
-  margin: 0;
-  color: var(--c-ink);
-}
-.ri-new {
-  margin-top: var(--s-1);
-}
-/* Ноутбук: главная кнопка — по содержимому (flex ui-kit «1 1 160px» растягивал её на всю колонку). */
-@media (min-width: 761px) {
-  .ri-new > .bk-btn {
-    flex: 0 0 auto;
-    min-width: 240px;
-  }
-}
-
-/* Вкладки — bk-tabs ui-kit R11 (текстом, выбранная — 600 и черта, затухание края — data-more). Здесь — только то,
-   что нужно и со старым ui-kit без bk-tabs: одна строка с прокруткой, зона нажатия 48 px, выбранная видна не цветом. */
-.ri-tabs {
-  display: flex;
-  gap: var(--s-4);
-  max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
-  border-bottom: 1px solid var(--c-line);
-}
-.ri-tabs::-webkit-scrollbar {
-  display: none;
-}
-.ri-tabs > [role="tab"] {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  min-height: var(--tap, 48px);
-  padding: 0 var(--s-1);
-  border: 0;
-  border-bottom: 2px solid transparent;
-  background: none;
-  color: var(--c-text-2);
-  font: inherit;
-  cursor: pointer;
-}
-.ri-tabs > [role="tab"][aria-selected="true"] {
-  color: var(--c-ink);
-  font-weight: var(--fw-semi);
-  border-bottom-color: var(--c-brand);
-}
-/* «Один голос с устройства» — один раз над списком голосования. */
-.ri-onevote {
+/* Заголовок листа (эталон .sheet .hd: поля 16 18 10, 19/600) и × (круг 32, серая заливка, зона нажатия 44). */
+.ri-sheet-hd {
   display: flex;
   align-items: center;
-  gap: var(--s-2);
-  margin: calc(-1 * var(--s-1)) 0 0;
+  gap: 10px;
+  padding: 16px 18px 10px;
+  flex: none;
 }
-.ri-onevote .ic {
+.ri .ri-sheet-title {
+  margin: 0;
+  font-size: var(--fs-title, 19px);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1.25;
+  letter-spacing: var(--ls-title, -0.01em);
+}
+.ri-x {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
+  cursor: pointer;
+  transition: background-color var(--t-fast, 150ms) var(--ease, ease-out);
+}
+.ri-x::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+}
+.ri-x:hover {
+  background: var(--c-fill-hover, rgba(18, 26, 23, 0.1));
+}
+.ri-x .ic {
   width: 16px;
   height: 16px;
 }
-.ri-hint {
-  margin: 0;
-}
 
-.ri-body {
-  display: grid;
-  gap: var(--s-3);
-}
-/* Мягкое появление карточек после загрузки и смены вкладки: подъём на 8 px с проявлением, по очереди через 40 мс. */
-.ri-body--in > * {
-  animation: ri-card-in var(--t-base, 260ms) var(--ease-out, var(--ease)) both;
-  animation-delay: calc(var(--ri-i, 0) * 40ms);
-}
-@keyframes ri-card-in {
-  from {
-    transform: translateY(8px);
-    opacity: 0;
-  }
-  to {
-    transform: none;
-    opacity: 1;
-  }
-}
-
-/* ── карточка идеи «как в App Store» ── */
-.ri .ri-card,
-.ri .ri-skelcard {
-  gap: var(--s-3);
-  padding: var(--s-4);
-}
-@media (min-width: 761px) {
-  .ri .ri-card,
-  .ri .ri-skelcard {
-    padding: var(--s-4) var(--s-6);
-  }
-}
-.ri-app {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--s-3);
-  align-items: start;
-}
-@media (min-width: 761px) {
-  .ri-app {
-    gap: var(--s-4);
-  }
-}
-.ri-app__body {
-  display: grid;
-  gap: var(--s-1);
-  min-width: 0;
-  padding-top: 2px;
-}
-/* Плитка-иллюстрация: значок вида объекта из ui-kit на мягком светлом квадрате (как значок приложения). */
-.ri-tile {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
+/* Сегмент «Идеи жителей · N | Проекты акимата · M» (эталон .seg: поля 3, радиус 12; пункт 13/500, радиус 9). */
+.ri-seg {
+  display: flex;
   flex: none;
-  width: 56px;
-  height: 56px;
-  border-radius: var(--r-l);
-  background: linear-gradient(150deg, var(--c-accent-soft) 0%, var(--c-accent) 100%);
-  color: var(--c-ink);
+  margin: 0 18px 12px;
+  padding: 3px;
+  border-radius: var(--r-m, 12px);
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
 }
-.ri-tile > .ic {
-  width: 28px;
-  height: 28px;
-  stroke-width: 1.7; /* та же видимая толщина линии, что у значков 20 px */
+.ri-seg > button {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  padding: 7px 4px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--c-text-2, #4b5752);
+  font: inherit;
+  font-size: var(--fs-caption, 13px);
+  font-weight: var(--fw-medium, 500);
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color var(--t-fast, 150ms) var(--ease, ease-out), color var(--t-fast, 150ms) var(--ease, ease-out);
 }
-@media (min-width: 761px) {
-  .ri-tile {
-    width: 64px;
-    height: 64px;
-  }
-  .ri-tile > .ic {
-    width: 32px;
-    height: 32px;
-    stroke-width: 1.5;
-  }
-}
-.ri-tile--sm {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--r-m);
-}
-.ri-tile--sm > .ic {
-  width: 20px;
-  height: 20px;
-  stroke-width: 2;
-}
-/* На проверке — плитка без заливки (идея ещё не видна всем); отклонена — бледная; проект — галочка в углу. */
-.ri-tile[data-idea-status="review"],
-.ri-tile[data-idea-status="hidden"] {
-  background: var(--c-surface);
-  box-shadow: inset 0 0 0 1.5px var(--c-line-strong);
-}
-.ri-tile[data-idea-status="rejected"] > .ic,
-.ri-tile[data-idea-status="hidden"] > .ic {
-  opacity: 0.45;
-}
-.ri-tile__badge {
+.ri-seg > button::after {
+  content: "";
   position: absolute;
-  right: -4px;
-  bottom: -4px;
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--c-brand);
-  color: #fff;
-  box-shadow: 0 0 0 2px var(--c-surface);
+  inset: -5px 0; /* зона нажатия 44 */
 }
-.ri-tile__badge > .ic {
-  width: 14px;
-  height: 14px;
-  stroke-width: 2.5;
+.ri-seg > button[aria-selected="true"] {
+  background: var(--c-surface, #fff);
+  color: var(--c-ink, #121a17);
+  box-shadow: 0 1px 3px rgba(16, 24, 20, 0.12);
 }
-/* «Сквер · район Нура · Пример» — одна тихая строка над названием. */
-.ri-meta {
-  display: block; /* строкой: перенос — только после «·» (разделители — текст с неразрывным пробелом, ideas.js) */
+
+/* Список карточек (эталон .plist: поля 0 12 12, промежуток 10); листается сам, заголовок и сегмент стоят. */
+.ri-plist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 12px 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.ri-plist > .bk-footnote {
+  margin: 2px 6px 0;
+}
+
+/* Карточка «как в App Store» (эталон .pc: поля 10, радиус 16, белая 72 %; выбранная — рамка 2 px цвета текста). */
+.ri .ri-pc {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  flex: none;
+  padding: 10px;
+  border-radius: var(--r-l, 16px);
+  background: var(--c-sub, rgba(255, 255, 255, 0.72));
+  transition: box-shadow var(--t-fast, 150ms) var(--ease, ease-out), background-color var(--t-fast, 150ms) var(--ease, ease-out);
+}
+.ri .ri-pc:hover {
+  background: var(--c-sub-hover, rgba(255, 255, 255, 0.92));
+}
+.ri .ri-pc[aria-current="true"] {
+  box-shadow: 0 0 0 2px var(--c-ink, #121a17);
+}
+.ri .ri-pc:has(.ri-pc__open:focus-visible) {
+  outline: 3px solid var(--c-focus, #2f7fd6);
+  outline-offset: 2px;
+}
+.ri-thumb {
+  display: block;
+  flex: none;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--r-m, 12px);
+  overflow: hidden;
+}
+.ri-thumb > svg,
+.ri-pd__im > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  stroke: none; /* общее svg { stroke: currentColor } страницы не обводит фигуры рисунка */
+  stroke-width: 0;
+}
+.ri-pc__t {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+.ri .ri-pc__title {
   margin: 0;
-  font-size: var(--fs-caption);
-  line-height: 1.4;
-  color: var(--c-text-2);
+  font-size: var(--fs-body, 15px);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
-.ri-meta > .bk-tag--demo {
+/* Название — кнопка выбора; вся карточка нажимается (растянутая зона), капсула ♥ — поверх неё. */
+.ri-pc__open {
   display: inline;
-  font-size: inherit;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
-.ri-meta > .ri-mine {
-  display: inline-block;
-  margin-left: var(--s-2);
-  background: var(--c-accent);
-  color: var(--c-ink);
+.ri-pc__open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
 }
-.ri .ri-title-text {
-  font-size: var(--fs-lead);
+.ri-pc__open:focus-visible {
+  outline: none;
+}
+.ri .ri-pc__sub {
+  margin: 3px 0 0;
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-caption, 13px);
   line-height: 1.3;
 }
-.ri-line {
+.ri-pc__f {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-2) var(--s-3);
   align-items: center;
-  margin: 0;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
 }
-/* Статусы идей — одна краска (DESIGN_MARATHON п. 4): не цвета жалоб, зелёный — только «исправлено». */
-.ri .bk-status[data-idea-status] {
-  --dot: var(--c-brand);
-  white-space: normal;
-}
-.ri .bk-status[data-idea-status="review"]::before,
-.ri .bk-status[data-idea-status="checking"]::before {
-  box-sizing: border-box;
-  border: 2px solid var(--c-text-2);
-  background: transparent;
-}
-.ri .bk-status[data-idea-status="checking"]::before {
-  border-color: var(--c-brand);
-  background: linear-gradient(90deg, var(--c-brand) 50%, transparent 50%); /* «наполовину»: акимат проверяет */
-}
-.ri .bk-status[data-idea-status="rejected"],
-.ri .bk-status[data-idea-status="hidden"] {
-  --dot: var(--c-text-3);
+.ri-pc__f > * {
+  position: relative;
+  z-index: 1;
 }
 
-/* Нижняя строка карточки: голоса слева, «На карте» и капсула действия справа. */
-.ri-foot {
-  display: flex;
-  flex-wrap: wrap;
+/* Плашка статуса (эталон .pill: 12/600, поля 4 9). На проверке — янтарная, принято в проект — зелёная, остальное — серая. */
+.ri-pill {
+  display: inline-flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: var(--s-2);
-}
-.ri-foot > .ri-votes,
-.ri-foot > .ri-foot__space {
-  flex: 1 1 auto;
   min-width: 0;
+  padding: 4px 9px;
+  border-radius: var(--r-pill, 999px);
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-xs, 12px);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1.25;
 }
-.ri-votes {
-  margin: 0;
-  color: var(--c-text-2);
-  font-size: var(--fs-body);
-  white-space: nowrap;
+.ri-pill[data-tone="warn"] {
+  background: var(--c-warn-soft, #faeeda);
+  color: var(--c-warn, #7a520f);
 }
-.ri-votes__n {
+.ri-pill[data-tone="ok"] {
+  background: var(--c-ok-soft, #eaf3de);
+  color: var(--c-ok, #27500a);
+}
+.ri-pill[data-tone="muted"] {
+  color: var(--c-text-3, #7e8a85);
+}
+
+/* «Поддержать» прямо в списке (эталон .vote: 32, почти чёрная, сердце 14 + число 13/600; зона нажатия 44).
+   Поддержано — светлая капсула с заполненным сердцем (ui-kit R11 .bk-vote[aria-pressed]); только число — серая. */
+.ri .ri-vote {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  height: 32px;
+  min-height: 0;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--r-pill, 999px);
+  background: var(--c-primary, #121a17);
+  color: var(--c-on-primary, #fff);
+  font: inherit;
+  font-size: var(--fs-caption, 13px);
+  font-weight: var(--fw-semi, 600);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  cursor: pointer;
+  overflow: visible;
+  transition: background-color var(--t-fast, 150ms) var(--ease, ease-out), color var(--t-fast, 150ms) var(--ease, ease-out);
+}
+.ri .ri-vote::after {
+  content: "";
+  position: absolute;
+  inset: -6px 0;
+}
+.ri .ri-vote:hover {
+  background: var(--c-primary-hover, #24302b);
+}
+.ri .ri-vote[aria-pressed="true"],
+.ri .ri-vote.ri-vote--static {
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
+}
+.ri .ri-vote.ri-vote--static {
+  cursor: default;
+}
+.ri-heart-ic {
+  display: inline-flex;
+}
+.ri .ri-heart {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.ri-vote[aria-pressed="true"] .ri-heart {
+  fill: currentColor;
+}
+.ri-vote__n {
   display: inline-block;
-  color: var(--c-ink);
-  font-size: var(--fs-lead);
-  font-weight: var(--fw-semi);
 }
-.ri-votes--stack {
-  display: grid;
-  justify-items: start;
-  line-height: 1.15;
+/* Отклик (правило 4): капсула чуть «подпрыгивает», число перекатывается (+1 снизу, −1 сверху). */
+.ri-pop {
+  animation: ri-pop var(--t-base, 220ms) var(--ease-out, ease-out);
 }
-.ri-votes--stack > .ri-votes__n {
-  font-size: var(--fs-lead);
+@keyframes ri-pop {
+  40% {
+    transform: scale(1.06);
+  }
 }
-.ri-votes__w {
-  font-size: var(--fs-caption);
-}
-/* Число «перекатывается»: +1 въезжает снизу, −1 — сверху (--t-base 260 мс, ease-out ui-kit). */
 .ri-roll-up {
-  animation: ri-roll-up var(--t-base, 260ms) var(--ease-out, var(--ease)) both;
+  animation: ri-roll-up var(--t-base, 220ms) var(--ease-out, ease-out);
 }
 .ri-roll-down {
-  animation: ri-roll-down var(--t-base, 260ms) var(--ease-out, var(--ease)) both;
+  animation: ri-roll-down var(--t-base, 220ms) var(--ease-out, ease-out);
 }
 @keyframes ri-roll-up {
   from {
-    transform: translateY(65%);
+    transform: translateY(60%);
     opacity: 0;
-  }
-  to {
-    transform: none;
-    opacity: 1;
   }
 }
 @keyframes ri-roll-down {
   from {
-    transform: translateY(-65%);
+    transform: translateY(-60%);
     opacity: 0;
   }
-  to {
-    transform: none;
-    opacity: 1;
+}
+
+/* Появление карточек — только после загрузки и смены вкладки (не при каждом голосе): подъём 6 px, по очереди 30 мс. */
+.ri-body--in > * {
+  animation: ri-card-in var(--t-base, 220ms) var(--ease-out, ease-out) both;
+  animation-delay: calc(var(--ri-i, 0) * 30ms);
+}
+@keyframes ri-card-in {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
   }
 }
-/* Капсулы действий в карточке: «Поддержать», «Проверить». Высота 44 (зона нажатия 48 — ::after). */
-.ri .ri-support,
-.ri .ri-capsule {
+
+/* Нижняя строка листа у жителя: «Предложить идею» — тёмная, значок на лаймовой плашке (как кнопка телефона в эталоне). */
+.ri-sheet-ft {
+  flex: none;
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+}
+.ri .ri-newbtn {
+  width: 100%;
+  min-height: 44px;
+  gap: 10px;
+  border-radius: var(--r-m, 12px);
+  background: var(--c-primary, #121a17);
+  color: var(--c-on-primary, #fff);
+  font-size: var(--fs-body, 15px);
+  font-weight: var(--fw-semi, 600);
+}
+.ri-newbtn__ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: var(--c-lime, #d7f57c);
+  color: var(--c-lime-ink, #2f4a10);
+}
+.ri-newbtn__ic .ic {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── карточка выбранного (эталон .pd: справа 84, сверху 132, 340; картинка 150; поля 14 16 16) ── */
+.ri-pd-host {
+  position: fixed;
+  z-index: 31; /* над листом раздела оболочки (30) */
+  top: 132px;
+  right: 84px;
+  width: 340px;
+  max-height: calc(100vh - 152px);
+  max-height: calc(100dvh - 152px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: var(--r-xl, 18px);
+  color: var(--c-ink, #121a17);
+}
+.ri-pd {
   position: relative;
-  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: var(--r-xl, 18px);
+}
+.ri-pd__im {
+  display: block;
+  height: 150px;
+}
+.ri-pd__in {
+  display: block;
+  padding: 14px 16px 16px;
+}
+.ri-pd .ri-pd__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: var(--fw-semi, 600);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.ri-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.ri-fact {
+  min-width: 0;
+  padding: 9px 10px;
+  border-radius: var(--r-m, 12px);
+  background: var(--c-sub, rgba(255, 255, 255, 0.72));
+}
+.ri-fact > b {
+  display: block;
+  overflow: hidden;
+  font-size: var(--fs-lead, 16px);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ri-fact > span {
+  display: block;
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-xs, 12px);
+  line-height: 1.3;
+}
+/* Одно предложение (эталон .quote: 14/1.45, вторичным цветом, не больше 2 строк; «Подробнее» — целиком). */
+.ri-pd .ri-pd__text {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-small, 14px);
+  line-height: 1.45;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+.ri-pd .ri-pd__text--full {
+  display: block;
+  -webkit-line-clamp: unset;
+}
+.ri-pd .ri-pd__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0 0;
+}
+.ri-pd .ri-pd__acts > .bk-btn {
   min-height: 44px;
-  padding: 0 var(--s-4) 0 var(--s-3);
-  gap: 6px;
-  border-radius: var(--r-pill);
-  font-size: var(--fs-body);
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--r-m, 12px);
+  font-size: var(--fs-body, 15px);
+  font-weight: var(--fw-semi, 600);
+  box-shadow: none;
 }
-.ri .ri-support::after,
-.ri .ri-capsule::after {
-  content: "";
-  position: absolute;
-  inset: -2px 0;
+.ri-pd .ri-pd__acts > .ri-pd__main {
+  flex: 1 1 auto;
+  background: var(--c-primary, #121a17);
+  color: var(--c-on-primary, #fff);
 }
-/* Поддержано — тёмная капсула с галочкой и словами «Вы поддержали» (не только цветом). Вес (0,6,0) — выше правила
-   ui-kit для серых кнопок на стекле (.bk-glass .bk-btn:not(…)×3 = 0,5,0), иначе капсула становилась светлой с белым текстом. */
-.ri .ri-card .ri-foot > .bk-btn.ri-support[aria-pressed="true"] {
-  background-color: var(--c-brand);
-  color: #fff;
+.ri-pd .ri-pd__acts > .ri-pd__main[aria-pressed="true"] {
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
 }
-.ri .ri-card .ri-foot > .bk-btn.ri-support[aria-pressed="true"]:hover {
-  background-color: var(--c-brand-hover);
+.ri-pd .ri-pd__acts > .ri-pd__second,
+.ri-pd .ri-pd__acts > .ri-hidebtn {
+  flex: 0 1 auto;
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
 }
-.ri .ri-support,
-.ri .ri-capsule {
-  transition:
-    background-color var(--t-fast, 200ms) var(--ease),
-    transform var(--t-press, 120ms) var(--ease);
+.ri-pd .ri-pd__acts > .ri-pd__second[aria-pressed="true"] {
+  background: var(--c-primary, #121a17);
+  color: var(--c-on-primary, #fff);
 }
-.ri .ri-support:active,
-.ri .ri-capsule:active {
-  transform: scale(var(--press-scale, 0.96));
+.ri-pd .ri-pd__acts > p {
+  margin: 0;
 }
-/* Отклик на нажатие: капсула чуть «подпрыгивает» (--t-base). Сжатие при нажатии — --t-press ui-kit. */
-.ri-pop {
-  animation: ri-pop var(--t-base, 260ms) var(--ease-out, var(--ease)) 1;
+/* «Скрыть: личные данные…» — тихая строка под кнопками, по левому краю (не третья кнопка). */
+.ri-pd .ri-pd__staff > .ri-hidebtn {
+  justify-content: flex-start;
+  min-height: 40px;
+  margin-top: 4px;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-caption, 13px);
+  font-weight: var(--fw-medium, 500);
+  text-align: left;
+  box-shadow: none;
 }
-@keyframes ri-pop {
-  0% {
-    transform: scale(0.94);
+.ri-pd .ri-pd__staff > .ri-hidebtn:hover {
+  color: var(--c-ink, #121a17);
+  text-decoration: underline;
+}
+.ri-pd .ri-pd__note {
+  margin: 10px 0 0;
+  color: var(--c-text-3, #7e8a85);
+  font-size: var(--fs-xs, 12px);
+  line-height: 1.4;
+}
+.ri-pd__more {
+  display: grid;
+  gap: var(--s-2, 8px);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+}
+.ri-pd__more > p {
+  margin: 0;
+}
+.ri-pd .ri-decision {
+  margin-top: 0;
+}
+.ri-pd .ri-panel,
+.ri-pd .ri-reason {
+  margin-top: 12px;
+}
+/* В карточке 340 чек-лист — ответы под названием пункта (как на телефоне). */
+.ri-pd .ri-checkform__row {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+.ri-pd .ri-checkform__row > .ri-answer {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.ri-pd .ri-answer > button {
+  justify-content: center;
+  min-width: 0;
+  padding-inline: var(--s-2, 8px);
+}
+.ri-pd .ri-decide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ri-pd .ri-decide > .bk-btn,
+.ri-pd .ri-reason .bk-actions > .bk-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* Новая выбранная карточка въезжает справа на 8 px (200 мс); та же — без движения. */
+.ri-pd--in {
+  animation: ri-pd-in var(--t-base, 200ms) var(--ease-out, ease-out);
+}
+@keyframes ri-pd-in {
+  from {
+    transform: translateX(8px);
+    opacity: 0;
   }
-  60% {
-    transform: scale(1.04);
-  }
-  100% {
-    transform: none;
-  }
 }
-/* «На карте»: на ноутбуке — значок и подпись, на телефоне — только значок (подпись для диктора и в title). */
-.ri .ri-mapbtn {
-  flex: 0 0 auto;
-  min-height: 44px;
-  padding-inline: var(--s-3);
-  font-size: var(--fs-body);
+/* Телефон: карточка раскрывается под строкой списка — без стекла (лист уже стеклянный), картинка ниже. */
+.ri-pd.ri-pd--inline {
+  flex: none;
+  border: 0;
+  background: var(--glass-solid, #fff);
+  box-shadow: 0 0 0 1px var(--c-line, rgba(18, 26, 23, 0.08));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
-@media (max-width: 760px) {
-  .ri .ri-mapbtn {
-    width: 44px;
-    min-width: 44px;
-    padding: 0;
-    border-radius: 50%;
-  }
-  .ri .ri-mapbtn > span {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
+.ri-pd--inline .ri-pd__im {
+  height: 120px;
 }
-[aria-busy="true"] {
-  cursor: progress;
+.ri-pd--inline .ri-fact {
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
 }
 
 /* Решение по идее: отказ — мягкая серая подложка, подпись жирным, текст обычным. */
@@ -484,34 +639,7 @@
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
-/* «Подробнее» — тихая строка без линии сверху (карточка и так отделена воздухом). */
-.ri .ri-more {
-  border-top: 0;
-  margin-top: calc(-1 * var(--s-1));
-}
-.ri .ri-more > summary {
-  min-height: 44px;
-  font-size: var(--fs-body);
-}
-.ri-more[open] {
-  display: grid;
-  gap: var(--s-3);
-}
-/* «Подробнее» раскрывается плавно там, где браузер умеет анимировать details (Chrome 131+); в остальных — сразу. */
-.ri {
-  interpolate-size: allow-keywords;
-}
-.ri-more::details-content {
-  height: 0;
-  overflow: clip;
-  transition:
-    height var(--t-base) var(--ease),
-    content-visibility var(--t-base) allow-discrete;
-}
-.ri-more[open]::details-content {
-  height: auto;
-}
-.ri .ri-3d {
+:is(.ri, .ri-pd-host) .ri-3d {
   justify-self: start;
   padding-inline: 0;
 }
@@ -627,22 +755,22 @@
   font-weight: var(--fw-semi);
 }
 /* Ответ: выбранное «да» — тёмная капсула с галочкой, «нет» — красный текст на светлом, «неизвестно» — белая. */
-.ri .ri-answer > button {
+:is(.ri, .ri-pd-host) .ri-answer > button {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.ri .ri-answer > button .ic {
+:is(.ri, .ri-pd-host) .ri-answer > button .ic {
   width: 16px;
   height: 16px;
   stroke-width: 2.5;
 }
-.ri .ri-answer > button[data-answer="yes"][aria-pressed="true"] {
+:is(.ri, .ri-pd-host) .ri-answer > button[data-answer="yes"][aria-pressed="true"] {
   background: var(--c-brand);
   color: #fff;
 }
-.ri .ri-answer > button[data-answer="no"][aria-pressed="true"] {
+:is(.ri, .ri-pd-host) .ri-answer > button[data-answer="no"][aria-pressed="true"] {
   background: var(--c-danger-soft);
   color: var(--c-danger);
   box-shadow: inset 0 0 0 1px var(--c-danger);
@@ -657,7 +785,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
   }
-  .ri .ri-answer > button {
+  :is(.ri, .ri-pd-host) .ri-answer > button {
     justify-content: center;
     min-width: 0;
     padding-inline: var(--s-2);
@@ -673,22 +801,32 @@
 .ri-ready .ic {
   color: var(--c-brand);
 }
-.ri .ri-savecheck,
-.ri .ri-hidebtn {
+:is(.ri, .ri-pd-host) .ri-savecheck,
+:is(.ri, .ri-pd-host) .ri-hidebtn {
   justify-self: start;
   padding-inline: var(--s-2);
   font-size: var(--fs-body);
 }
-.ri .ri-hidebtn {
+:is(.ri, .ri-pd-host) .ri-hidebtn {
   color: var(--c-text-2);
   font-weight: var(--fw-regular);
 }
-.ri-card .ri-foot > .ri-hidebtn {
-  flex: 0 1 auto;
+/* Решённые идеи у акимата — свёрнуто внизу списка (R15-S30: их можно скрыть). */
+.ri-decided {
+  flex: none;
+  border-top: 0;
 }
-/* Раскрытая карточка — мягкая тонкая обводка, не рамка (чистый дизайн R11: без рамок и плашек). */
-.ri-card--open {
-  box-shadow: 0 0 0 1px var(--c-line-strong, var(--c-line)), var(--shadow-2, none);
+.ri-decided > summary {
+  min-height: 44px;
+  padding: 0 6px;
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-caption, 13px);
+  font-weight: var(--fw-semi, 600);
+}
+.ri-decided[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 /* Карточка, открытая по нажатию на метку идеи на карте, — коротко подсвечена. */
 .ri-card--flash {
@@ -699,29 +837,37 @@
     box-shadow: 0 0 0 4px var(--c-focus);
   }
   to {
-    box-shadow: 0 0 0 0 transparent;
+    box-shadow: 0 0 0 2px var(--c-ink, #121a17);
   }
 }
-.ri-decided > summary {
-  font-size: var(--fs-body);
-}
-.ri-decided[open] {
-  display: grid;
-  gap: var(--s-3);
-}
 
-/* ── скелетон и пустые состояния ── */
-.ri-skelcard .ri-foot > .bk-skel--line {
-  margin-right: auto;
+/* ── скелетон (виден не раньше 150 мс — быстрый ответ рисует список без мигания, правило 4) и пустые состояния ── */
+.ri-plist--skel > .ri-skelcard {
+  animation: ri-skel-show 1ms linear 150ms both;
 }
-.ri-skelcard .bk-skel--title {
-  width: 80%;
+@keyframes ri-skel-show {
+  from {
+    visibility: hidden;
+  }
+}
+.ri-skelcard .ri-pc__t {
+  gap: 8px;
+}
+.ri-skelcard .bk-skel--title,
+.ri-skelcard .bk-skel--line {
+  display: block;
 }
 .ri-skel-pill {
-  width: 132px;
-  height: 44px;
-  border-radius: var(--r-pill);
+  width: 96px;
+  height: 22px;
+  border-radius: var(--r-pill, 999px);
 }
+.ri-skel-vote {
+  width: 56px;
+  height: 32px;
+  border-radius: var(--r-pill, 999px);
+}
+
 .ri-empty {
   display: grid;
   justify-items: center;
@@ -761,17 +907,38 @@
 }
 
 /* ── мастер новой идеи ── */
+/* Плитка значка (место в мастере, рисунок пустого списка без ui-kit): 48, радиус 12, серая заливка. */
+.ri-tile {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-m, 12px);
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
+}
+.ri-tile--sm {
+  width: 40px;
+  height: 40px;
+}
+.ri-tile .ic {
+  width: 22px;
+  height: 22px;
+}
 .ri-wizard {
   display: grid;
   gap: var(--s-3);
 }
+/* Мастер — в листе 412 под заголовком: белая подложка (форма непрозрачна, GLASS.md §4), поля 16 18 18. */
 .ri .ri-wizard {
-  padding: var(--s-3) var(--s-4) var(--s-6);
-}
-@media (min-width: 761px) {
-  .ri .ri-wizard {
-    padding: var(--s-4) var(--s-8) var(--s-8);
-  }
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 12px 12px;
+  padding: 12px 16px 16px;
+  overflow-y: auto;
+  border-radius: var(--r-l, 16px);
+  box-shadow: none;
 }
 .ri-wtop {
   display: flex;
@@ -922,7 +1089,10 @@
   text-align: center;
 }
 .ri .ri-sent {
+  margin: 0 12px 12px;
   padding: var(--s-8) var(--s-4);
+  border-radius: var(--r-l, 16px);
+  box-shadow: none;
 }
 .ri-sent .bk-h2 {
   margin: 0;
@@ -1253,35 +1423,11 @@
   }
 }
 
-/* «Проекты» у акимата: карточки R06 (до 400 px) — сеткой на ноутбуке, столбиком на телефоне. */
-.ri-body--grid {
-  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
-  align-items: start;
-}
-.ri-body--grid .r06-card {
-  max-width: none;
-  padding: var(--s-4);
-}
-/* В списке «Проекты» карточки проектов — той же иерархии, что карточки идей рядом: название 17/600, не 22. */
-.ri-body--grid .r06-card .bk-card__title {
-  font-size: var(--fs-lead);
-  line-height: 1.3;
-}
-
-/* Ноутбук: кнопки решений и форм — по содержимому (не по 480 px каждая в колонке 720 px). */
-@media (min-width: 761px) {
-  .ri-decide > .bk-btn,
-  .ri-reason .bk-actions > .bk-btn {
-    flex: 0 1 auto;
-    min-width: 200px;
-  }
-}
-
 /* Стекло (GLASS.md §2, §4): лист раздела — стеклянный у оболочки R01, корню .ri / .rw фон не задаём. Формы — непрозрачные
    и на стекле: мастер новой идеи, раскрытая карточка акимата (чек-лист, отказ с причиной), «Работы и отключения».
    Вес (0,3,0) — выше «плотной подложки» .bk-glass .bk-card (0,2,0) из ui-kit. */
 .ri .ri-wizard.bk-card,
-.ri .ri-card--open.bk-card,
+.ri .ri-sent.bk-card,
 .rw .rw-form.bk-card {
   background: var(--glass-solid, var(--c-surface, #fff));
 }
@@ -1294,10 +1440,16 @@
   .ri-pop,
   .ri-step-in,
   .ri-pick,
+  .ri-pd--in,
   .ri-card--flash {
     animation: none;
   }
-  .ri-more::details-content {
+  .ri-plist--skel > .ri-skelcard {
+    animation: ri-skel-show 1ms linear 150ms both;
+  }
+  .ri .ri-pc,
+  .ri .ri-vote,
+  .ri-seg > button {
     transition: none;
   }
   .ri-card--flash {
@@ -1307,9 +1459,5 @@
   .ri-sent__mark path {
     animation: none;
     stroke-dashoffset: 0;
-  }
-  .ri .ri-support:active,
-  .ri .ri-capsule:active {
-    transform: none;
   }
 }
