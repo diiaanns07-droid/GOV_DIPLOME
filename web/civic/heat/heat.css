@@ -224,6 +224,7 @@
 .r07-actions > .r07-btn { flex: 1 1 auto; }
 .r07-actions > .r07-btn--primary { flex: 100 1 auto; }
 .r07-fixform, .r07-r09staff { padding: 12px var(--r07-gutter) 0; }
+.r07-tp > .r07-r09staff { padding: 14px 0 0; }
 /* Вкладки «Обзор · Обращения · История» (эталон .tabs): 14/500, активная — тёмная с чертой 2 px, линия 1 px от края до края */
 .r07-tabs { display: flex; gap: 18px; margin: 4px calc(-1 * var(--r07-bleed, 0px)) 0; padding: 2px calc(var(--r07-gutter) + var(--r07-bleed, 0px)) 0;
   border-bottom: 1px solid var(--r07-line); overflow-x: auto; scrollbar-width: none; }
@@ -244,6 +245,9 @@
 .r07-row__k { color: var(--r07-ink-2); }
 .r07-row__v { margin-left: auto; color: var(--r07-ink); font-weight: 500; text-align: right; overflow-wrap: anywhere; }
 .r07-row__v a, a.r07-qr { color: var(--r07-link); font-weight: 500; text-decoration: none; }
+/* R11 §21.9 b: ссылка в строке 17 px — зона нажатия 45 px невидимым расширением по высоте строки */
+a.r07-qr { position: relative; }
+a.r07-qr::after { content: ""; position: absolute; inset: -14px 0; }
 .r07-row__v a:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* Одна цитата в «Обзоре» (эталон .quote + .more): не длиннее 2 строк, «Ещё N обращений» ведёт во вкладку */
 .r07-lead { padding: 12px 0 0; }

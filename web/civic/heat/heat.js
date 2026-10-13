@@ -216,7 +216,7 @@
       "heat.row.reported": "Хабарлады",
       "heat.more_reports": { other: "Тағы {count} өтініш" },
       "heat.all_reports": "Барлық өтініштер",
-      "heat.group.new": "Жаңалары",
+      "heat.group.new": "Жаңа",
       "heat.group.work": "Орындалуда",
       "heat.loading": "Шағымдар жүктеліп жатыр…",
       "heat.empty.title": { other: "Соңғы {n} күнде шағым жоқ" },
@@ -462,10 +462,10 @@
   function metooDone(targetKey) {
     try { return JSON.parse(localStorage.getItem("birge.heat.metoo") || "{}")[targetKey] === true; } catch (e) { return false; }
   }
-  function rememberMetoo(targetKey) {
+  function rememberMetoo(targetKey, on) {
     try {
       const all = JSON.parse(localStorage.getItem("birge.heat.metoo") || "{}");
-      all[targetKey] = true;
+      if (on === false) delete all[targetKey]; else all[targetKey] = true;
       localStorage.setItem("birge.heat.metoo", JSON.stringify(all));
     } catch (e) { /* приватный режим — не страшно */ }
   }
@@ -508,6 +508,7 @@
       clusterSeq: 0,
       top: [],                // 10 самых горячих мест (и в режиме районов) — список «Горячие места» и подгонка карты
       topItems: new Map(),    // ключ → место из top (в режиме районов его нет в S.data.items)
+      places: [],             // все места (не районы) последнего ответа — для nearby() шторки «Рядом с вами»
       anim: null,
       reqSeq: 0,
       destroyed: false,
@@ -641,6 +642,7 @@
         const placeItems = ((places && places.mode === "targets") ? places : data).items || [];
         S.top = placeItems.filter((it) => it.state === "active" && it.count > 0 && it.target.kind !== "district").slice(0, TOP_N);
         S.topItems = new Map(S.top.map((it) => [keyOf(it.target), it]));
+        S.places = placeItems.filter((it) => it.target.kind !== "district" && it.anchor && (it.count > 0 || it.state === "fixed"));
         S.prevColors = new Map((S.data ? S.data.items : []).map((it) => [keyOf(it.target), it.color]));
         S.data = data;
         S.mode = data.mode;
@@ -1574,28 +1576,32 @@
       if (S.role === "akimat" && typeof R09.mount === "function") {
         const box = document.createElement("div");
         box.className = "r07-r09staff";
-        actions.after(box);
+        // эталон A: вкладки — сразу под кнопками; паспорт решения и «Обновление для всех» R09 — во вкладке «Обзор»
+        const overview = panel.querySelector("#r07-tp-overview");
+        if (overview) overview.appendChild(box); else actions.after(box);
         R09.mount(box, { complaintId: it.open_ids[0], fix: false, compact: true, staffOnly: true });
       }
     }
+    // «Я тоже» — оптимистично (эталон A, правило Linear 4): кнопка сразу «Вы уже отметились» и «Спасибо…», запрос — следом;
+    // ошибка — откат кнопки и прежнее «Не получилось — Повторить». Число людей приходит с сервера (load), без догадок.
     async function metoo(it, btn) {
       const id = (it.open_ids || [])[0];
       if (!id) return;
-      btn.setAttribute("aria-busy", "true");
-      btn.disabled = true;
+      const key = keyOf(it.target);
+      if (btn) { btn.setAttribute("aria-busy", "true"); btn.disabled = true; }
+      rememberMetoo(key);
+      render();
+      toast(t("heat.toast_metoo"));
       try {
         await post("/complaints/" + encodeURIComponent(id) + "/metoo", { device_id: deviceId() });
-        rememberMetoo(keyOf(it.target));
-        toast(t("heat.toast_metoo"));
         await load("event");
-        pulse(keyOf(it.target));
+        pulse(key);
       } catch (e) {
+        if (!(e && e.status === 409)) { rememberMetoo(key, false); render(); }   // 409 — это устройство уже отметилось
         actionFailed(e, () => {
-          const cur = findItem(keyOf(it.target));
+          const cur = findItem(key);
           if (cur) void metoo(cur, actButton("metoo"));
         });
-        btn.disabled = false;
-        btn.removeAttribute("aria-busy");
       }
     }
 
@@ -1836,7 +1842,10 @@
         // Одна главная кнопка: у нового — «Взять в работу», «Отметить исправленным» рядом серой; в работе — только она.
         const inWork = it.status === "in_progress";
         actions = (!inWork ? '<button type="button" class="r07-btn r07-btn--primary" data-act="take">' + esc(t("heat.take")) + "</button>" : "") +
-          '<button type="button" class="r07-btn' + (inWork ? " r07-btn--primary" : "") + '" data-act="fixed">' + (inWork ? "" : svgIcon("check", 18)) + esc(t("heat.mark_fixed")) + "</button>";
+          (inWork ? '<button type="button" class="r07-btn r07-btn--primary" data-act="fixed">' + esc(t("heat.mark_fixed")) + "</button>"
+            // эталон A: вторая кнопка рядом с главной и короче её (240 + 102) — у нового места «✓ Исправлено» (слово статуса),
+            // полная подпись — в подсказке; «Отметить исправленным» целиком — главная кнопка места «В работе»
+            : '<button type="button" class="r07-btn" data-act="fixed" title="' + esc(t("heat.mark_fixed")) + '">' + svgIcon("check", 18) + esc(t("heat.status.fixed")) + "</button>");
       } else if (!examplesOnly(it) && !fixed && S.role === "resident") {
         actions = metooDone(key)
           ? '<button type="button" class="r07-btn" disabled>' + svgIcon("check", 18) + esc(t("heat.metoo_already")) + "</button>"
@@ -2106,6 +2115,23 @@
       }
       return out.sort((a, b) => a.rank - b.rank || b.w - a.w).slice(0, Math.max(1, Number(n) || 5)).map((x) => x.v);
     }
+    // «Рядом с вами» (эталон A, телефон; R11 §21.2 — разметка шторки у R09): n ближайших мест к точке [lng, lat]
+    // (по умолчанию — центр карты), в том числе исправленные (строка с ✓ «… · проверьте»). Только данные и open().
+    function nearby(n, center) {
+      const c = Array.isArray(center) && center.length === 2 ? center.map(Number)
+        : map ? (({ lng, lat }) => [lng, lat])(map.getCenter()) : null;
+      if (!c) return [];
+      const kx = Math.cos((c[1] * Math.PI) / 180) * 111320, ky = 110540;
+      return (S.places || []).map((it) => {
+        const key = keyOf(it.target);
+        const fixed = it.state === "fixed";
+        const status = fixed ? (it.fixed_kind === "verified" ? "verified" : it.fixed_kind === "reported" ? "reported_fixed" : "fixed")
+          : ["accepted", "in_progress"].includes(it.status) ? it.status : "new";
+        return { key, kind: it.target.kind, id: it.target.id, label: label(it.target), count: it.count, level: fixed ? null : it.level,
+          state: it.state, status, status_word: t("heat.status." + status), check: fixed && status === "reported_fixed",
+          topic: topicName(it), meters: Math.round(Math.hypot((it.anchor[0] - c[0]) * kx, (it.anchor[1] - c[1]) * ky)), open: () => openKey(key) };
+      }).sort((a, b) => a.meters - b.meters).slice(0, Math.max(1, Number(n) || 3));
+    }
     function openKey(key) {
       if (findItem(key)) { select(key, true); return; }
       const p = S.topItems.get(key);
@@ -2293,6 +2319,7 @@
       //  close() — закрыть карточку места (×, Esc, нажатие на пустую карту — решает оболочка).
       suggest: (q, n) => suggest(q, n),
       stepHot: (d) => stepHot(d),
+      nearby: (n, center) => nearby(n, center),
       //  commands() — пункты командной палитры акимата (Ctrl+K, README правило 2): [{ id, group, title, hint, run }] —
       //    открыть горячее место, период 7 / 30 / 90, «Взять в работу» / «Отметить исправленным» у открытого места.
       commands: () => commands(),
