@@ -421,7 +421,8 @@
   }
 }
 @media (min-width: 761px) {
-  .b3d-dock.b3d-dock--pd {
+  .b3d-dock.b3d-dock--pd,
+  .b3d:not(.b3d--overlay) .b3d-dock.b3d-dock--pd[data-state="card"] {
     width: min(340px, 100%);
     border-radius: var(--r-card, 18px);
   }
@@ -429,6 +430,48 @@
 @media (min-width: 1024px) {
   .b3d--overlay:not(.b3d--host-right) .b3d-dock.b3d-dock--pd[data-state="card"] {
     width: min(340px, calc(100% - 2 * var(--gap-edge, 12px)));
+  }
+}
+/* Карточка R06 в панели модуля (оболочка с сервером): картинка эталона сверху на ноутбуке, «×» — поверх неё; на телефоне
+   картинки нет, «×» — в углу, как раньше. Поля карточки — у .b3d-pd__in. */
+.b3d-dock--r06pd {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.b3d-dock--r06pd > .b3d-head--end {
+  z-index: 1;
+}
+@media (min-width: 761px) {
+  .b3d-dock--r06pd > .b3d-head--end .bk-iconbtn {
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.72);
+  }
+}
+.b3d-pd__in--r06 {
+  gap: var(--s-3, 12px);
+}
+.b3d-pd__im--r06 {
+  flex: 0 0 auto;
+}
+.b3d-pd__im--r06[data-kind="playground"] {
+  background: #fdf3e3;
+}
+.b3d-pd__im--r06[data-kind="sports"] {
+  background: #e4f1e6;
+}
+.b3d-pd__im--r06[data-kind="stop"] {
+  background: #e8f0f6;
+}
+.b3d-pd__im--r06[data-kind="lighting"] {
+  background: #f6f1e4;
+}
+@media (max-width: 760px) {
+  .b3d-pd__im.b3d-pd__im--r06 {
+    display: none;
+  }
+  .b3d-dock.b3d-dock--r06pd {
+    padding-top: var(--s-2, 8px);
   }
 }
 .b3d-pd {

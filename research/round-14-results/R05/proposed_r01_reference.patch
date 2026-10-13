@@ -1,0 +1,18 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index b4b030f6..1db822c0 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -133,6 +133,13 @@ body[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
+ }
+ body[data-birge-mode="resident"] .birge-b3d-toggle,
+ .birge-build3d-root:has(.b3d-dock:is([data-state="placing"], [data-state="card"])) .birge-b3d-toggle { display: none; }
++/* R05, эталон 13.10 (вариант A, «Проекты и идеи», .pd): детальная карточка проекта — справа, левее капсулы кнопок карты
++   (right 84, top 132, ширина 340), а не внизу по центру; каталог и размещение остаются внизу. Включать, когда справа нет
++   постоянной панели (эталон: «Убрать все постоянные панели»). */
++@media (min-width: 1024px) {
++  body:not(:has(.civic-panel:not([hidden]))) .birge-build3d-root:has(.b3d-dock[data-state="card"]) { left: auto; right: 84px; top: 132px; bottom: auto; justify-content: flex-end; }
++  body:not(:has(.civic-panel:not([hidden]))) .birge-build3d-root:has(.b3d-dock[data-state="card"]) > .b3d:not([hidden]) { width: 340px; align-items: stretch; }
++}
+ /* Каталог открыт и в его листе есть «×» R05 (≥ дизайн-марафона) — отдельная «Закрыть» под листом не нужна (R11 11.3). */
+ .birge-build3d-root[data-catalog="open"]:has(.b3d-head__close) .birge-b3d-toggle { display: none; }
+ .birge-build3d-root[data-catalog="closed"] .b3d-dock:is([data-state="catalog"], [data-state="loading"], [data-state="error"]) { display: none; }

@@ -810,7 +810,7 @@
     }
     function renderDock() {
       syncGlass();
-      dock.classList.remove("b3d-dock--pd"); // своя карточка проекта (эталон) — без полей панели, картинка во всю ширину
+      dock.classList.remove("b3d-dock--pd", "b3d-dock--r06pd"); // карточка проекта (эталон) — без полей панели, картинка во всю ширину
       // Эскиз к идее (pickObject) показываем и при выключенном слое «Проекты»: мастер идеи R06 — свой путь, не слой.
       ui.hidden = !S.visible && !pick;
       if (pick) ui.setAttribute("data-b3d-picking", "");
@@ -1026,6 +1026,10 @@
     }
     function renderR06Card(p) {
       dock.setAttribute("data-state", "card");
+      // Эталон 13.10 (вариант A, детальная карточка .pd): сверху картинка — превью той же 3D-модели на светлом фоне вида
+      // (на ноутбуке; на телефоне скрыта — над карточкой должна быть видна сама модель), под ней карточка R06 и строка
+      // модуля в полях эталона. Содержимое карточки (название, цифры, кнопки) — у R06.
+      dock.classList.add("b3d-dock--pd", "b3d-dock--r06pd");
       var head = el("div", "b3d-head b3d-head--end");
       var close = el("button", "bk-iconbtn", { type: "button", "aria-label": t("common.action.close"), title: t("common.action.close"), "data-action": "close-card" });
       close.appendChild(icon("close", o.iconsUrl));
@@ -1034,8 +1038,17 @@
       });
       head.appendChild(close);
       dock.appendChild(head);
+      var pic = el("div", "b3d-pd__im b3d-pd__im--r06", { "data-kind": p.kind });
+      var pimg = el("img", "", { src: o.dataUrl + "previews/" + p.kind + "@2x.png", alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
+      pimg.addEventListener("error", function () {
+        if (pic.parentNode) pic.parentNode.removeChild(pic);
+      });
+      pic.appendChild(pimg);
+      dock.appendChild(pic);
+      var inner = el("div", "b3d-pd__in b3d-pd__in--r06");
+      dock.appendChild(inner);
       var host = el("div", "b3d-r06");
-      dock.appendChild(host);
+      inner.appendChild(host);
       try {
         root.BirgeProposals.renderProposal(host, toR06Item(p), {
           role: o.role,
@@ -1052,11 +1065,12 @@
       } catch (e) {
         console.error("[build3d] карточка R06", e);
         dock.textContent = "";
+        dock.classList.remove("b3d-dock--r06pd");
         return renderOwnCard(p);
       }
       // Проект по идее жителей: строку даёт карточка R06, если умеет (BirgeProposals.showsIdea), иначе — модуль.
       var fromIdea = !(root.BirgeProposals && root.BirgeProposals.showsIdea) && ideaLine(p);
-      if (fromIdea) dock.appendChild(fromIdea);
+      if (fromIdea) inner.appendChild(fromIdea);
       // Строка модуля под карточкой R06: слева «Рядом: …» и «Двор: …», справа «3D» и у акимата «Удалить».
       // «Удалить» — второстепенное действие (главное — «Одобрить» R06): компактная кнопка в этой строке, а не во всю
       // ширину. Карточка ниже на ряд — на телефоне над ней остаётся место для самого проекта.
@@ -1075,7 +1089,7 @@
         whereRow.classList.add("b3d-row3d");
         whereRow.appendChild(deleteBtn(p));
       }
-      if (whereRow.firstChild) dock.appendChild(whereRow);
+      if (whereRow.firstChild) inner.appendChild(whereRow);
     }
 
     // «Посмотреть в 3D» — второстепенная кнопка лёгкой карточки (главная — голос). Компактная, как кнопка «3D» карты:
