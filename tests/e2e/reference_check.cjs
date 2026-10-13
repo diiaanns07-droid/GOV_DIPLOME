@@ -41,20 +41,20 @@ const SPEC = {
   ],
   obj: [
     ["search", "R01", ".search", "search"], ["nav", "R01", ".nav", "nav"], ["me", "R01", ".me", "me"],
-    ["card", "R07", ".card", "card"], ["card-title", "R07", ".card h2", "cardTitle"], ["card-close", "R07", ".card .x", "cardClose"],
-    ["card-count", "R07", ".card .big b", "cardCount"], ["card-btn-main", "R07", ".card .btn.p", "cardMain"],
-    ["card-btn-2", "R07", ".card .btn.s", "cardSecond"], ["card-tabs", "R07", ".card .tabs", "cardTabs"],
+    ["card", "R07", ".card", "card", { placeBy: "R01" }], ["card-title", "R07", ".card h2", "cardTitle", { rel: "card" }], ["card-close", "R07", ".card .x", "cardClose", { rel: "card" }],
+    ["card-count", "R07", ".card .big b", "cardCount", { rel: "card" }], ["card-btn-main", "R07", ".card .btn.p", "cardMain", { rel: "card" }],
+    ["card-btn-2", "R07", ".card .btn.s", "cardSecond", { rel: "card" }], ["card-tabs", "R07", ".card .tabs", "cardTabs", { rel: "card" }],
     ["pin-sel", "R07", ".pin.sel .c", "pinSel", { pos: false, bg: false }], ["pin-dim", "R07", ".pin.dim .c", "pinDim", { pos: false, bg: false }], ["ctl", "R01", ".ctl", "ctl"],
   ],
   proj: [
     ["search", "R01", ".search", "search"], ["nav", "R01", ".nav", "nav"], ["nav-on", "R01", ".nav a.on", "navOn", { text: true }],
-    ["sheet", "R06", ".sheet", "projSheet"], ["sheet-title", "R06", ".sheet .hd b", "projTitle", { text: true }], ["seg", "R06", ".sheet .seg", "projSeg"],
-    ["pc", "R06", ".plist .pc", "projCard"], ["vote", "R06", ".plist .pc .vote", "projVote"], ["pd", "R06", ".pd", "projDetail"],
+    ["sheet", "R06", ".sheet", "projSheet", { placeBy: "R01" }], ["sheet-title", "R06", ".sheet .hd b", "projTitle", { text: true, rel: "sheet" }], ["seg", "R06", ".sheet .seg", "projSeg", { rel: "sheet" }],
+    ["pc", "R06", ".plist .pc", "projCard", { rel: "sheet" }], ["vote", "R06", ".plist .pc .vote", "projVote", { rel: "pc" }], ["pd", "R06", ".pd", "projDetail"],
     ["tag", "R05", ".tag", "projTag", { pos: false }],
   ],
   phone: [
-    ["p-search", "R01", ".p-search", "search"], ["p-sheet", "R09", ".p-sheet", "phoneSheet"], ["p-sheet-title", "R09", ".p-sheet b", "phoneSheetTitle", { text: true }],
-    ["p-hot", "R09", ".p-sheet .hot", "phoneHot"], ["fab", "R09", ".fab", "fab", { text: true }], ["fab-icon", "R09", ".fab i", "fabIcon"],
+    ["p-search", "R01", ".p-search", "search"], ["p-sheet", "R09", ".p-sheet", "phoneSheet"], ["p-sheet-title", "R09", ".p-sheet b", "phoneSheetTitle", { text: true, rel: "p-sheet" }],
+    ["p-hot", "R09", ".p-sheet .hot", "phoneHot", { rel: "p-sheet" }], ["fab", "R09", ".fab", "fab", { text: true }], ["fab-icon", "R09", ".fab i", "fabIcon"],
     ["pin", "R07", ".pin .c", "pin", { pos: false, bg: false }],
     ["легенда сверху", "R01", null, "legend", { absent: "в эталоне телефона поверх карты только поиск, шторка и кнопка" }],
     ["кнопки карты", "R01", null, "ctl", { absent: "в эталоне телефона кнопок карты нет" }],
@@ -212,10 +212,13 @@ function compare(ref, bld, opt = {}) {
   if (!ref) return { status: "нет в эталоне", notes: [] };
   if (!bld) return { status: "НЕТ В СБОРКЕ", notes: ["элемента нет"] };
   const notes = [];
-  const d = opt.pos === false ? { w: bld.w - ref.w, h: bld.h - ref.h } : { x: bld.x - ref.x, y: bld.y - ref.y, w: bld.w - ref.w, h: bld.h - ref.h };
+  // rel — место внутри родителя (карточки, листа): так видна работа владельца карточки, а место самой карточки — отдельно.
+  const P = opt.relTo, rx = P ? P.ref.x : 0, ry = P ? P.ref.y : 0, bx = P ? P.build.x : 0, by = P ? P.build.y : 0;
+  const d = opt.pos === false ? { w: bld.w - ref.w, h: bld.h - ref.h } : { x: (bld.x - bx) - (ref.x - rx), y: (bld.y - by) - (ref.y - ry), w: bld.w - ref.w, h: bld.h - ref.h };
   const geo = Math.max(...Object.values(d).map(Math.abs));
   if (geo > 4) notes.push(opt.pos === false ? `размер: эталон ${ref.w}×${ref.h} → ${bld.w}×${bld.h} (место по данным не сравнивается)`
-    : `место/размер: эталон ${ref.x},${ref.y} ${ref.w}×${ref.h} → ${bld.x},${bld.y} ${bld.w}×${bld.h} (Δx ${d.x}, Δy ${d.y}, Δw ${d.w}, Δh ${d.h})`);
+    : P ? `место в «${opt.rel}»/размер: эталон +${ref.x - rx},+${ref.y - ry} ${ref.w}×${ref.h} → +${bld.x - bx},+${bld.y - by} ${bld.w}×${bld.h} (Δx ${d.x}, Δy ${d.y}, Δw ${d.w}, Δh ${d.h})`
+    : `место/размер: эталон ${ref.x},${ref.y} ${ref.w}×${ref.h} → ${bld.x},${bld.y} ${bld.w}×${bld.h} (Δx ${d.x}, Δy ${d.y}, Δw ${d.w}, Δh ${d.h})${opt.placeBy && (Math.abs(d.x) > 4 || Math.abs(d.y) > 4) ? ` — место задаёт ${opt.placeBy}` : ""}`);
   if (bld.off) notes.push(`за краем экрана ${bld.x},${bld.y} — не виден без прокрутки`);
   const fam = (x) => (/^(Inter|Birge Sans)$/i.test(x) ? "Inter" : x);
   if (ref.font && bld.font && fam(ref.font.family) !== fam(bld.font.family)) notes.push(`шрифт ${ref.font.family} → ${bld.font.family}`);
@@ -315,7 +318,9 @@ const BAD = new Set(["расходится", "НЕТ В СБОРКЕ", "лишн
       if (!R[f] || !B[f]) continue;
       fs.writeFileSync(path.join(OUT, `${f}-ref.png`), R[f].png);
       const rows = R[f].items.map((it, i) => ({ id: it.id, owner: it.owner, ref: it.ref, build: (B[f].items[i] || {}).build, err: (B[f].items[i] || {}).err }));
-      SPEC[f].forEach((sp, i) => Object.assign(rows[i], compare(rows[i].ref, rows[i].build, sp[4] || {}), { absent: !!(sp[4] || {}).absent }));
+      SPEC[f].forEach((sp, i) => { const o = { ...(sp[4] || {}) };
+        if (o.rel) { const p = rows.find((x) => x.id === o.rel); if (p && p.ref && p.build) o.relTo = p; }
+        Object.assign(rows[i], compare(rows[i].ref, rows[i].build, o), { absent: !!o.absent }); });
       const bj = BEFORE && fs.existsSync(path.join(BEFORE, `${f}-build.jpg`)) ? { jpg: fs.readFileSync(path.join(BEFORE, `${f}-build.jpg`)).toString("base64"), label: was ? was.meta.label : "было" } : null;
       const px = await composites(browser, f, R[f].png, B[f].png, rows, bj);
       for (const r of rows) { r.pixels = px.sims[r.id] ?? null; const w = was && was.report[f] && was.report[f].rows.find((x) => x.id === r.id); r.was = w ? { status: w.status, pixels: w.pixels ?? null } : null; }
