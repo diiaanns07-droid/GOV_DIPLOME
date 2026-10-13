@@ -911,8 +911,9 @@
   line-height: 20px;
   letter-spacing: 0;
 }
-.akim-card__head {
-  margin-bottom: 8px;
+.akim-card__head,
+.akim-card > .bk-h2 { /* заголовок → содержимое 12 (зазор сетки карточки), как «Сегодня в Астане» → плитки в эталоне */
+  margin-bottom: 0;
 }
 .akim-card__hint {
   color: var(--c-text-3);
