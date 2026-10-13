@@ -67,7 +67,7 @@ async function layoutProblems(page) {
       const box = el.getBoundingClientRect();
       if (box.width <= 1 && box.height <= 1) continue; // только для экранного диктора — на экране не видно
       const hasText = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
-      if (hasText && parseFloat(cs.fontSize) < 13) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
+      if (hasText && parseFloat(cs.fontSize) < 12) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
       if (hasText && el.scrollWidth > el.clientWidth + 1 && cs.overflow !== "visible" && el.clientWidth > 0)
         out.clipped.push(el.className + ":" + el.textContent.trim().slice(0, 30));
     }
@@ -114,7 +114,7 @@ async function shot(page, name, full) {
       check(`${tag}: нет ключей перевода на экране`, !KEYLIKE.test(text), (text.match(KEYLIKE) || [])[0]);
       check(`${tag}: нет технических слов`, !TECH.test(text), (text.match(TECH) || [])[0]);
       check(`${tag}: нет предупреждений [i18n] и ошибок JS`, logs.length === 0, logs);
-      check(`${tag}: шрифт не меньше 13 px (шкала R11: 13/15/17/22/28)`, lp.small.length === 0, lp.small.slice(0, 5));
+      check(`${tag}: шрифт не меньше 12 px (эталон A: подписи 12)`, lp.small.length === 0, lp.small.slice(0, 5));
       check(`${tag}: текст не обрезан`, lp.clipped.length === 0, lp.clipped.slice(0, 5));
       check(`${tag}: зоны нажатия не меньше 44 px`, lp.tiny.length === 0, lp.tiny.slice(0, 5));
       const nums = await page.$$eval(".akim-kpi .bk-kpi__value", (els) => els.map((e) => e.textContent));
@@ -147,8 +147,9 @@ async function shot(page, name, full) {
                  card: cs.boxShadow !== "none" || parseFloat(cs.borderTopWidth) > 0 || !/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor),
                  num: v.fontSize + "/" + v.fontWeight, label: l.fontSize };
       }));
-      check(`${tag}: плитки без карточек, число 28/600, подпись 15, одна строка изменения (CLEAN_PASS п. 3)`,
-        kpiStyle.length === 4 && kpiStyle.every((k) => k.deltas === 1 && !k.card && k.num === "28px/600" && k.label === "15px"), kpiStyle);
+      // Эталон A (13 окт): числа — плитки, как «34 новых» в сводке эталона (фон белый 72 %, радиус 12).
+      check(`${tag}: числа — плитки эталона, число 28/600, подпись 13, одна строка изменения`,
+        kpiStyle.length === 4 && kpiStyle.every((k) => k.deltas === 1 && k.card && k.num === "28px/600" && k.label === "13px"), kpiStyle);
       const more = await page.evaluate(() => {
         const d = document.querySelector(".akim-kpis + .akim-kpi-more, .akim-kpi-more");
         return d ? { open: d.open, summary: d.querySelector("summary").textContent, rows: d.querySelectorAll("li").length } : null;
@@ -164,8 +165,8 @@ async function shot(page, name, full) {
                  bold: Array.from(p.querySelectorAll("*")).filter((e) => parseInt(getComputedStyle(e).fontWeight, 10) >= 600).map((e) => e.className),
                  mainWeight: (document.querySelector(".akim-summary__main") && getComputedStyle(document.querySelector(".akim-summary__main")).fontWeight) || "" };
       });
-      check(`${tag}: сводка — абзац 17 px без плашки, жирная только главная фраза (CLEAN_PASS п. 4)`,
-        sum.size === "17px" && !sum.plaque && sum.mainWeight === "600" && sum.bold.length === 1, sum);
+      check(`${tag}: сводка — абзац 15 px (текст эталона) без плашки, жирная только главная фраза`,
+        sum.size === "15px" && !sum.plaque && sum.mainWeight === "600" && sum.bold.length === 1, sum);
       // CLEAN_PASS п. 1–2: заголовок 28/600, одна серая строка 13; поля даты и района — с заливкой; «Распечатать» — ghost.
       const top = await page.evaluate(() => {
         const t = document.querySelector(".akim__title"), cs = getComputedStyle(t);
@@ -175,8 +176,8 @@ async function shot(page, name, full) {
                  print: (document.querySelector(".akim__print") || { className: "" }).className.includes("bk-btn--ghost"),
                  printIcon: !!document.querySelector(".akim__print svg") };
       });
-      check(`${tag}: заголовок 28/600, одна строка 13, поля с заливкой, «Распечатать» ghost со значком (CLEAN_PASS п. 1–2)`,
-        top.title === "28px/600" && top.metas === 1 && top.meta === "13px" && top.fields === 2 && top.print && top.printIcon, top);
+      check(`${tag}: заголовок 26/600 (эталон), одна строка 13, поля с заливкой, «Распечатать» ghost со значком`,
+        top.title === "26px/600" && top.metas === 1 && top.meta === "13px" && top.fields === 2 && top.print && top.printIcon, top);
       // CLEAN_PASS §2: два начертания — 400 и 600.
       const weights = await page.evaluate(() => {
         const set = new Set();
@@ -186,7 +187,7 @@ async function shot(page, name, full) {
         }
         return Array.from(set).sort();
       });
-      check(`${tag}: два начертания — 400 и 600 (CLEAN_PASS §2)`, weights.every((w) => w === "400" || w === "600"), weights);
+      check(`${tag}: начертания эталона — 400, 500, 600 и 700 (цифры на плашках)`, weights.every((w) => ["400", "500", "600", "700"].includes(w)), weights);
       // П. 14: у объектов полоса из 6 этапов (ui-kit .bk-stages--compact) и подпись «Этап N из 6: …».
       const stages = await page.$$eval(".akim-objects .akim-obj", (rows) => rows.map((r) => {
         const ol = r.querySelector(".bk-stages--compact");

@@ -12,7 +12,7 @@
  *   - внутри R08 нет второго стекла (backdrop-filter) — стекло только у листа R01 и у компактной полосы раздела
  *     «Картины дня» (.akim__bar-btn, появляется при прокрутке — GLASS.md §2 «шапка»);
  *   - «Службы» — форма: непрозрачный белый контейнер (GLASS.md G-1, R11 марафон §11.5);
- *   - числа «Картины дня» без подложки (CLEAN_PASS п. 3), поля даты/района/выбора службы — непрозрачные;
+ *   - числа «Картины дня» — плитки эталона A (белые 72 %), поля даты/района/выбора службы — непрозрачные;
  *   - в печати лист белый (ui-kit @media print).
  * Итог — glass_check.json в папке кадров.
  */
@@ -147,8 +147,8 @@ async function open(browser, { w, h, lang, mode, hash }) {
             kpi: Array.from(document.querySelectorAll("#birge-day-root .akim-kpi")).map((k) => getComputedStyle(k).backgroundColor),
             fields: Array.from(document.querySelectorAll("#birge-day-root .akim__field input, #birge-day-root .akim__field select")).map((f) => getComputedStyle(f).backgroundColor),
           }));
-          check(`${tag}: числа без подложки, поля даты и района непрозрачные`,
-            d.kpi.length === 4 && d.kpi.every((b) => /rgba\(0, 0, 0, 0\)|transparent/.test(b)) && d.fields.length === 2 && d.fields.every((b) => /^rgb\(/.test(b)), d);
+          check(`${tag}: числа — плитки эталона A (белые 72 %), поля даты и района непрозрачные`,
+            d.kpi.length === 4 && d.kpi.every((b) => b === "rgba(255, 255, 255, 0.72)") && d.fields.length === 2 && d.fields.every((b) => /^rgb\(/.test(b)), d);
           if (w === 1366 && lang === "ru") {
             await page.emulateMedia({ media: "print" });
             const pr = await page.evaluate(() => getComputedStyle(document.querySelector("#birge-day")).backgroundColor);
