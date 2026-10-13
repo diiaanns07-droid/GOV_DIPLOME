@@ -127,12 +127,12 @@ const measure = (page) => page.evaluate(() => {
       await page.click(`.qa-card[data-id="${rid}"] .qa-card__actions .bk-btn--ghost`); await sleep(300);
       await page.evaluate((id) => document.querySelector(`.qa-card[data-id="${id}"]`).scrollIntoView({ block: "center" }), rid); await sleep(200);
       await shot(page, "a-reject");
-      await page.click(`.qa-card[data-id="${rid}"] .qa-panel .bk-btn--ghost`); await sleep(200);
+      await page.click(`.qa-card[data-id="${rid}"] .qa-panel .qa-card__actions .bk-btn:last-child`); await sleep(200);
       await page.click(".qa-tabs [role=tab]:nth-child(2)"); await idle(page); await page.waitForSelector(".qa__week", { timeout: 10000 }); await sleep(300);
       await shot(page, "a-top");
       await page.click(".qa-card .qa-card__actions .bk-btn:not(.bk-btn--ghost)"); await sleep(300);
       await shot(page, "a-answer");
-      await page.click(".qa-card .qa-panel .bk-btn--ghost"); await sleep(200);
+      await page.click(".qa-card .qa-panel .qa-card__actions .bk-btn:last-child"); await sleep(200);
       await page.click(".qa-tabs [role=tab]:nth-child(3)"); await idle(page); await page.waitForSelector(".qa-answer", { timeout: 10000 }); await sleep(300);
       await shot(page, "a-answered");
       // «Картина дня»: блок «Пульс района» (R08 экран, метод R08 + проверка R13)

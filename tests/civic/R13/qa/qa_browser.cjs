@@ -293,7 +293,7 @@ const worstContrast = (page) => page.evaluate(() => {
           const reasons = await sp.$$eval(`.qa-card[data-id="${topId}"] .qa-reason input`, (els) => els.map((e) => [e.value, e.checked]));
           check(`${tag} отвеченный: снять можно только из-за личных данных`, reasons.length === 1 && reasons[0][0] === "personal_data" && reasons[0][1], reasons);
           await sp.screenshot({ path: path.join(OUT, `${tag}-akimat-answered-reject.png`) });
-          await sp.click(`.qa-card[data-id="${topId}"] .qa-panel .bk-btn--ghost`);
+          await sp.click(`.qa-card[data-id="${topId}"] .qa-panel .qa-card__actions .bk-btn:last-child`);
         }
         check(`${tag} акимат: нет ошибок JS`, sp.errs.length === 0, sp.errs.slice(0, 3));
         await sctx.close();
