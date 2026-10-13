@@ -483,8 +483,10 @@
       var title = (l === "kk" ? tg.label_kk : tg.label_ru) || tg.label_ru;
       var demo = !!(it && it.demo), has = !!(it && it.count > 0), fixed = isFixed(it);
       var kk = kindKey(tg), kindWord = kk ? t(kk) : "", cat = kindCat(tg);
+      // Подпись как в эталоне: «Остановки и транспорт · пр. Туран» — улица рядом (R12 /target), иначе район.
       var subParts = [cat ? catName(cat) : kindWord];
-      if (it && it.district) subParts.push(t("district.name", { name: t("district." + it.district) }));
+      if (info.street && (info.street.ru || info.street.kk)) subParts.push(l === "kk" ? info.street.kk || info.street.ru : info.street.ru);
+      else if (it && it.district) subParts.push(t("district.name", { name: t("district." + it.district) }));
       var sub = h("p", { class: "bq-sub" }, [subParts.filter(Boolean).join(" · "),
         demo ? h("span", { class: "bk-tag bk-tag--demo bq-demo", text: t("common.tag.demo") }) : null]);
       var tile = h("span", { class: "bq-tile", "data-tone": tileTone(it), "aria-hidden": "true" }, [icon(kindIcon(tg), sprite)]);

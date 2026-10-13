@@ -524,3 +524,11 @@ def test_report_id_rule_is_the_same_in_js_and_python():
         m = re.search(r"/\^\((osm-\(node.*?)\)\$/", text)
         assert m, js
         assert REPORT_ID_RE.pattern == "^(" + m.group(1).replace("\\/", "/") + ")$", js
+
+
+def test_target_info_street_for_card_subtitle():
+    """Эталон A: подпись карточки «Остановки и транспорт · пр. Туран» — проезжая улица рядом; у светофора и парка — нет."""
+    from engine.civic_geo import target_info
+    assert target_info("osm-node-4109037549")["street"] == {"ru": "пр. Туран", "kk": "Тұран даңғылы"}
+    assert "street" not in target_info("osm-node-2639491700"), "у светофора улицы уже в названии"
+    assert "street" not in target_info("osm-relation-15957444"), "у парка ближайшая «улица» — трасса, не подпись"
