@@ -362,8 +362,8 @@
   color: var(--qa-ink-2);
 }
 .qa-answer__lang {
-  font-size: 12px;
-  color: var(--qa-ink-3);
+  font-size: 13px;
+  color: var(--qa-ink-2); /* текст ≥ 4,5:1 — третичный эталона (3,6:1) только для линий картинок */
 }
 .qa .qa-answer__text {
   display: -webkit-box;
@@ -392,6 +392,9 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
+}
+.qa .qa-answer__more[hidden] {
+  display: none; /* .bk-more — inline-block; цитата короче 2 строк — кнопки нет */
 }
 .qa-answer__more::after {
   content: "";
@@ -434,7 +437,7 @@
 }
 .qa-form__count {
   margin-left: auto;
-  color: var(--qa-ink-3);
+  color: var(--qa-ink-2); /* «0 / 300» — текст, контраст ≥ 4,5:1 и на белом */
   white-space: nowrap;
 }
 .qa-form__privacy {

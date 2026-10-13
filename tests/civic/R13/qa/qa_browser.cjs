@@ -4,7 +4,7 @@
 //   BIRGE_REPO=<сборка R01 с patch R13> node tests/civic/R13/qa/qa_browser.cjs <папка_снимков>
 //
 // Проверяет (схема R11 IA_WAVE2 §7, UX_BRIEF): правило «5 вопросов в неделю» видно; у жителя одна главная кнопка;
-// вкладки; метка «Пример» у демо; «Ещё → Вопрос акиму» / «Вопросы жителей»; голос «Поддержать» → «Вы поддержали»
+// вкладки-сегменты; «Пример» в строке под демо-вопросом; «N голосов» словами; «Ещё → Вопрос акиму» / «Вопросы жителей»; голос «Поддержать» → «Вы поддержали»
 // и держится после перезагрузки; форма: ошибка на пустом поле, отправка → «Вопрос отправлен»; сотрудник: подсказка
 // «похоже на личные данные», «Опубликовать», «Отклонить с причиной», ответ → «С ответом»; без прокрутки вбок;
 // карта по умолчанию не изменилась (в #map нет элементов «Вопроса акиму»); нет ошибок JS.
@@ -115,7 +115,10 @@ const worstContrast = (page) => page.evaluate(() => {
           primary: [...document.querySelectorAll("#birge-screen .bk-btn--primary")].filter((b) => b.offsetParent).length,
           tabs: document.querySelectorAll(".qa-tabs > button").length,
           cards: document.querySelectorAll(".qa-card").length,
-          demoTags: document.querySelectorAll(".qa-card .bk-tag--demo").length,
+          // эталон A: «Пример» — первое слово строки под вопросом («Пример · Нура · 6 дней назад»), а не отдельная метка
+          demoTags: [...document.querySelectorAll(".qa-card .qa-card__meta")].filter((m) => /^(Пример|Үлгі) · /.test(m.textContent)).length,
+          // «34 голоса» словами есть в тексте страницы (для диктора; приёмка R10 W2-9 ищет «N голос/дауыс»)
+          votesText: (document.body.innerText.match(/\d+\s*(голос|дауыс)/g) || []).length,
           votes: document.querySelectorAll(".qa-card__vote").length,
           inMap: document.querySelectorAll("#map .qa, #map [class^='qa-']").length,
           more: window.BirgeShell?.navItems("resident") || [],
@@ -140,6 +143,7 @@ const worstContrast = (page) => page.evaluate(() => {
         }
         check(`${tag} житель: одна главная кнопка`, r.primary === 1, r.primary);
         check(`${tag} житель: 3 вкладки, карточки с меткой «Пример»`, r.tabs === 3 && r.cards >= 5 && r.demoTags === r.cards, r);
+        check(`${tag} житель: «N голосов» словами в тексте страницы (W2-9 R10)`, r.votesText >= 3, r.votesText);
         check(`${tag} житель: на карте ничего нового`, r.inMap === 0, r.inMap);
         check(`${tag} житель: «Ещё» в меню`, r.more.includes("more"), r.more);
         check(`${tag} житель: нет прокрутки вбок`, await noSideScroll(page));
@@ -197,17 +201,38 @@ const worstContrast = (page) => page.evaluate(() => {
           await page.click(".qa-sent .bk-btn--primary");
           await page.waitForSelector(".qa-card", { timeout: 10000 });
         }
-        // «Новые»: ответ свёрнут и раскрывается; «С ответом»: ответ сразу открыт, с подписью «Аким · дата».
+        // Эталон A: ответ акима — цитата в 2 строки (.quote) и «Читать полностью»; нажатие раскрывает весь текст.
         await page.click(".qa-tabs > button:nth-child(2)"); await idle(page);
         await page.waitForSelector(".qa-answer", { timeout: 10000 });
-        const closed = await page.$eval(".qa-answer", (d) => !d.open);
-        await page.click(".qa-answer > summary");
-        const text = await page.$eval(".qa-answer .qa-answer__text", (p) => p.textContent);
-        check(`${tag} житель: в «Новых» ответ акима свёрнут и раскрывается`, closed && text.length > 20, text.slice(0, 60));
+        // «Читать полностью» есть ровно у тех цитат, что не влезли в 2 строки (на телефоне kk — у коротких тоже)
+        const fit = await page.evaluate(() => [...document.querySelectorAll(".qa-answer")].map((d) => {
+          const t = d.querySelector(".qa-answer__text"), more = d.querySelector(".qa-answer__more");
+          return [t.scrollHeight > t.clientHeight + 1, !!more && !more.hidden];
+        }));
+        check(`${tag} житель: «Читать полностью» — у всех и только у обрезанных цитат`, fit.length >= 1 && fit.every(([cut, shown]) => cut === shown), fit);
+        const longId = await page.evaluate(() => {
+          const d = [...document.querySelectorAll(".qa-answer")].find((x) => !x.querySelector(".qa-answer__more").hidden);
+          return d ? d.closest(".qa-card").dataset.id : null;
+        });
+        const sel = `.qa-card[data-id="${longId}"] .qa-answer`;
+        const clamp = await page.$eval(sel, (d) => {
+          const t = d.querySelector(".qa-answer__text"), more = d.querySelector(".qa-answer__more");
+          return { open: d.classList.contains("qa-answer--open"), lines: Math.round(t.getBoundingClientRect().height / parseFloat(getComputedStyle(t).lineHeight)),
+            more: more ? more.getAttribute("aria-expanded") : null };
+        });
+        await page.click(`${sel} .qa-answer__more`);
+        const opened = await page.$eval(sel, (d) => {
+          const t = d.querySelector(".qa-answer__text");
+          return { open: d.classList.contains("qa-answer--open"), expanded: d.querySelector(".qa-answer__more").getAttribute("aria-expanded"),
+            lines: Math.round(t.getBoundingClientRect().height / parseFloat(getComputedStyle(t).lineHeight)), text: t.textContent.length };
+        });
+        check(`${tag} житель: ответ акима — 2 строки и «Читать полностью», нажатие раскрывает`,
+          !clamp.open && clamp.lines === 2 && clamp.more === "false" && opened.open && opened.expanded === "true" && opened.lines > 2, { clamp, opened });
         await page.click(".qa-tabs > button:nth-child(3)"); await idle(page);
         await page.waitForSelector(".qa-answer", { timeout: 10000 });
-        const openAns = await page.evaluate(() => [...document.querySelectorAll(".qa-answer")].map((d) => [d.open, (d.querySelector(".qa-answer__sign") || {}).textContent || ""]));
-        check(`${tag} житель: в «С ответом» ответы открыты, подпись и дата`, openAns.length >= 2 && openAns.every(([o, sg]) => o && /·/.test(sg)), openAns.slice(0, 2));
+        const signs = await page.evaluate(() => [...document.querySelectorAll(".qa-answer")].map((d) => [(d.querySelector(".qa-answer__sign") || {}).textContent || "",
+          (d.querySelector(".qa-answer__text") || {}).textContent || ""]));
+        check(`${tag} житель: в «С ответом» у ответов подпись и дата`, signs.length >= 2 && signs.every(([sg, t]) => /·/.test(sg) && t.length > 20), signs.slice(0, 2));
         await page.screenshot({ path: path.join(OUT, `${tag}-resident-answered.png`) });
         check(`${tag} житель: нет ошибок JS`, page.errs.length === 0, page.errs.slice(0, 3));
         await ctx.close();
@@ -228,7 +253,7 @@ const worstContrast = (page) => page.evaluate(() => {
         const a = await sp.evaluate(() => ({
           title: document.querySelector(".qa__title")?.textContent,
           cards: document.querySelectorAll(".qa-card").length,
-          pii: [...document.querySelectorAll(".qa-card__warn .bk-tag--warn")].map((t) => t.textContent),
+          pii: [...document.querySelectorAll(".qa-card__warn .qa-pill--warn")].map((t) => t.textContent),
           primary: [...document.querySelectorAll("#birge-screen .bk-btn--primary")].filter((b) => b.offsetParent).length,
         }));
         check(`${tag} акимат: очередь на проверке, подсказка о личных данных`, a.cards >= 1 && a.pii.length >= 1, a);
@@ -269,7 +294,7 @@ const worstContrast = (page) => page.evaluate(() => {
           await sp.click(`.qa-card[data-id="${topId}"] .qa-panel button[type=submit]`);
           await sp.waitForFunction((id) => !document.querySelector(`.qa-card[data-id="${id}"] .qa-panel`), topId, { timeout: 10000 });
           await sp.click(".qa-tabs > button:nth-child(3)"); await idle(sp);
-          await sp.waitForSelector(`.qa-card[data-id="${topId}"] .qa-answer[open]`, { timeout: 10000 });
+          await sp.waitForSelector(`.qa-card[data-id="${topId}"] .qa-answer`, { timeout: 10000 });
           const week = await sp.evaluate(async () => (await (await fetch("/api/civic/v2/questions/staff?tab=top")).json()).week.answered);
           check(`${tag} акимат: топ-5 ≤ 5, ответ виден в «Отвечено», неделя +1`, topCount <= 5 && week >= 1, { topCount, week });
           await sp.screenshot({ path: path.join(OUT, `${tag}-akimat-answered.png`) });

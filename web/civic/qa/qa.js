@@ -459,11 +459,33 @@
         box.appendChild(h("div", { class: "qa-panel-body", role: "tabpanel", id: "qa-tabpanel",
           "aria-labelledby": "qa-tab-" + state.tab }, [renderBody()]));
       }
+      fitAnswers();
       if (focusKey) {
         var again = box.querySelector('[data-focus="' + focusKey + '"]');
         if (again) again.focus();
       }
     }
+    // «Читать полностью» — только у цитаты, которая не влезла в 2 строки: это зависит от ширины листа, языка и шрифта,
+    // а не от числа знаков (100 знаков kk на телефоне — уже 3 строки). «Свернуть» — у раскрытой длиннее 2 строк.
+    function fitAnswers() {
+      var items = box.querySelectorAll(".qa-answer");
+      for (var i = 0; i < items.length; i++) {
+        var t = items[i].querySelector(".qa-answer__text");
+        var more = items[i].querySelector(".qa-answer__more");
+        if (!t || !more) continue;
+        var lh = parseFloat(root.getComputedStyle(t).lineHeight) || 20;
+        more.hidden = items[i].classList.contains("qa-answer--open") ? t.scrollHeight <= lh * 2 + 2 : t.scrollHeight <= t.clientHeight + 1;
+      }
+    }
+    var fitTimer = null;
+    function onResize() {
+      if (fitTimer) return;
+      fitTimer = root.setTimeout(function () {
+        fitTimer = null;
+        if (state.alive) fitAnswers();
+      }, 150);
+    }
+    if (typeof root.addEventListener === "function") root.addEventListener("resize", onResize);
 
     // Сегменты как в эталоне (лист «Проекты и идеи»: «Идеи жителей · 6 | Проекты акимата · 4»): подложка, выбранный —
     // белый с тенью, число через «·». Роли tablist/tab и стрелки ←/→ — BirgeUI.tabs (без ui-kit — своё то же).
@@ -625,7 +647,6 @@
       var text = a[l] || a[l === "kk" ? "ru" : "kk"] || "";
       var textLangAttr = a[l] ? l : l === "kk" ? "ru" : "kk";
       var open = !!state.openAnswer[q.id];
-      var long = text.length > 100; // ~2 строки листа 412 px — иначе «Читать полностью» не нужен
       // Подпись и дата — в строке над цитатой: «Ответ акима · 9 окт · изменён 12 окт» (R15 S39 — правка видна всем).
       return h("div", { class: "qa-answer" + (open ? " qa-answer--open" : "") }, [
         h("p", { class: "qa-answer__sign" }, [icon("building"), h("span", { text: tr("ask.answer") + " · " + date(a.answered_at)
@@ -633,11 +654,12 @@
         // Ответ только на другом языке — честно говорим об этом (R11 разбор 15 №3)
         !a[l] && text ? h("p", { class: "qa-answer__lang", text: tr(l === "kk" ? "ask.answer.only_ru" : "ask.answer.only_kk") }) : null,
         h("blockquote", { class: "qa-answer__text bk-quote", lang: textLangAttr, id: "qa-ans-" + q.id, text: text }),
-        long ? h("button", { type: "button", class: "qa-answer__more bk-more", "aria-expanded": String(open), "aria-controls": "qa-ans-" + q.id,
-          "data-focus": "more-" + q.id, onclick: function () {
+        // Кнопка видна, только если цитата правда длиннее 2 строк — это решает fitAnswers() после раскладки.
+        h("button", { type: "button", class: "qa-answer__more bk-more", hidden: true, "aria-expanded": String(open),
+          "aria-controls": "qa-ans-" + q.id, "data-focus": "more-" + q.id, onclick: function () {
             state.openAnswer[q.id] = !open;
             render();
-          }, text: tr(open ? "ask.answer.less" : "ask.answer.more") }) : null,
+          }, text: tr(open ? "ask.answer.less" : "ask.answer.more") }),
       ]);
     }
     // Капсула «♡ 34»: нажатие — «Поддержать» (один голос с устройства); после голоса — «✓ 35», светлая, без нажатия.
@@ -1025,6 +1047,8 @@
         state.alive = false;
         if (offLang) offLang();
         doc.removeEventListener("birge:mode", onMode);
+        if (typeof root.removeEventListener === "function") root.removeEventListener("resize", onResize);
+        if (fitTimer) root.clearTimeout(fitTimer);
         if (box.parentNode) box.parentNode.removeChild(box);
       },
     };
