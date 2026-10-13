@@ -197,7 +197,8 @@ async function focusToPrimary(page, labelRe, maxTabs = 80) {
 // Сверка «FINAL-3 против эталона» (владелец, 12 окт): на каждом кадре сценария — шрифт < 13 px, зона нажатия < 44 px,
 // контраст, ключи и заготовки вместо текста, обрезанный текст и список видимых строк (что пропало по сравнению с эталоном).
 // Зона нажатия — не только рамка элемента: в 4 точках на 22 px от середины (влево, вправо, вверх, вниз) проверяем, что
-// нажатие попадёт в него (так учитываются прозрачные поля и ::before у значков на карте). У флажка/переключателя — <label>.
+// нажатие попадёт в него (так учитываются прозрачные поля и ::before у значков на карте), а если нет — меряем фактическую
+// протяжённость зоны по оси (13 окт: несимметричное поле ::after, напр. вкладки R07). У флажка/переключателя — <label>.
 const AUDIT_FONT_MIN = 13, AUDIT_TAP_MIN = 44;
 function uiAudit(page) {
   return page.evaluate(({ raw, FONT, TAP }) => {
@@ -232,8 +233,11 @@ function uiAudit(page) {
       const r = e.getBoundingClientRect();
       const cx = r.left + r.width / 2, cy = r.top + r.height / 2, d = TAP / 2 - 0.5;
       const hit = (x, y) => { if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return false; const h = document.elementFromPoint(x, y); return !!h && (h === e || e.contains(h)); };
-      const wOk = r.width >= TAP || (hit(cx - d, cy) && hit(cx + d, cy));
-      const hOk = r.height >= TAP || (hit(cx, cy - d) && hit(cx, cy + d));
+      // Фактическая зона по оси: от середины в обе стороны (шаг 2 px), пока нажатие попадает в элемент. Так считается и
+      // несимметричная зона ::after (например, вкладка 30 px с полем 14 px сверху — 44 px), а не только ±22 px от центра.
+      const span = (dx, dy) => { let a = 0, b = 0; while (a < TAP && hit(cx - dx * (a + 2), cy - dy * (a + 2))) a += 2; while (a + b < TAP && hit(cx + dx * (b + 2), cy + dy * (b + 2))) b += 2; return a + b + 1; };
+      const wOk = r.width >= TAP || (hit(cx - d, cy) && hit(cx + d, cy)) || span(1, 0) >= TAP - 1;
+      const hOk = r.height >= TAP || (hit(cx, cy - d) && hit(cx, cy + d)) || span(0, 1) >= TAP - 1;
       if (wOk && hOk) continue;
       // Ссылка внутри строки текста — исключение WCAG 2.5.8 (inline): отмечаем, но не как кнопку.
       const inline = e.tagName === "A" && getComputedStyle(e).display === "inline" && clean(e.parentElement && e.parentElement.innerText).length > clean(e.innerText).length + 10;

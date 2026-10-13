@@ -117,8 +117,10 @@ const PAGE = () => {
     projTitle: () => byText(/^Проекты и идеи$|^Идеи жителей$/, document, "h1,h2,h3,b,strong"),
     projSeg: () => { const s = FIND.projSheet(); const t = btn(/^Идеи (жителей|на проверке)/) || byText(/Идеи жителей ·|Голосование/); return t ? (t.closest("[role=tablist], .bk-tabs, [class*=seg]") || t.parentElement) : (s ? all("[role=tablist], .bk-tabs", s)[0] || null : null); },
     projCard: () => { const s = FIND.projSheet() || document; return all("article.bk-card, article, .ri-card, .r06-card", s).find((e) => e.getBoundingClientRect().height >= 60) || null; },
-    projVote: () => btn(/Поддержать|Қолдау/) || (FIND.projCard() ? all(".ri-votes, [class*=vote]", FIND.projCard())[0] || null : null),
-    projDetail: () => null,
+    projVote: () => btn(/Поддержать|Қолдау/) || all(".bk-vote, .ri-vote, [class*=vote]:not([class*=votes__])", FIND.projSheet() || document).filter((e) => e.getBoundingClientRect().height >= 20)[0] || null,
+    // Деталь проекта рядом со списком: «.ri-pd» R06 или блок с «поддержали» (три цифры), отдельный от карточки списка.
+    projDetail: () => { const d = all(".ri-pd, [class*=-pd]:not([class*=-pd-host]):not([class*=pd__])")[0]; if (d) return d;
+      const t = byText(/^поддержали$|^қолдады$/); if (!t) return null; const b = glassUp(t) || boxOf(t.parentElement); return b === FIND.projSheet() ? null : b; },
     projTag: () => byText(/^Проект · 20\d\d$/),
     phoneSheet: () => all("#civic-panel, .civic-panel, [class*=sheet]").find((e) => e.getBoundingClientRect().top > 200) || null,
     phoneSheetTitle: () => { const s = FIND.phoneSheet(); return s ? all("h1,h2,h3,b,strong", s)[0] || null : null; },
