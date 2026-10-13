@@ -108,6 +108,7 @@
       "ask.answer.edited": "изменён {date}",
       "ask.answer.sign": "Аким · {date}",
       "ask.status.waiting": "Ждёт ответа",
+      "ask.staff.week_caption": "отвечено на этой неделе",
       "ask.status.answered": "Есть ответ",
       "ask.answer.more": "Читать полностью",
       "ask.answer.less": "Свернуть",
@@ -193,6 +194,7 @@
       "ask.answer.edited": "өзгертілді: {date}",
       "ask.answer.sign": "Әкім · {date}",
       "ask.status.waiting": "Жауап күтуде",
+      "ask.staff.week_caption": "осы аптада жауап берілді",
       "ask.status.answered": "Жауабы бар",
       "ask.answer.more": "Толық оқу",
       "ask.answer.less": "Жасыру",
@@ -453,8 +455,11 @@
         }
         box.appendChild(renderTabs());
         if (staff() && state.tab === "top" && state.status === "ready" && !state.switching && state.data && state.data.week) {
-          box.appendChild(h("p", { class: "qa__week" }, [icon("calendar"),
-            h("span", { text: tr("ask.staff.week", { n: state.data.week.answered || 0 }) })]));
+          // Крупное число карточки эталона (.big «6 | человек сообщили»): «0 / 5 | отвечено на этой неделе».
+          var wk = state.data.week;
+          box.appendChild(h("p", { class: "qa__week bk-big", "aria-label": tr("ask.staff.week", { n: wk.answered || 0 }) }, [
+            h("b", { "aria-hidden": "true", text: num(wk.answered || 0) + " / " + num(wk.limit || 5) }),
+            h("span", { "aria-hidden": "true", text: tr("ask.staff.week_caption") })]));
         }
         box.appendChild(h("div", { class: "qa-panel-body", role: "tabpanel", id: "qa-tabpanel",
           "aria-labelledby": "qa-tab-" + state.tab }, [renderBody()]));
@@ -635,10 +640,24 @@
       return h("p", { class: "qa-card__text bk-pc__title", lang: q.lang === "kk" ? "kk" : "ru", text: "«" + q.text + "»" });
     }
     // Цвета пилюль — как в эталоне: «На проверке» жёлтая (.pill.review), «Есть ответ» зелёная (.pill.ok), «Ждёт ответа» серая.
+    // Перед словом — статус-иконка ui-kit (правило 3 Linear, одна на весь Birge): на проверке — кольцо, ждёт ответа —
+    // половина, есть ответ — закрашенная галочка (путь вопроса: проверка → публикация → ответ).
     var PILL_UI = { queue: " bk-pill--review", answered: " bk-pill--accepted", waiting: "" };
+    var PILL_ST = { queue: "st-ring", waiting: "st-half", answered: "st-done" };
+    function stIcon(shape) {
+      var NS = "http://www.w3.org/2000/svg";
+      var svg = doc.createElementNS(NS, "svg");
+      svg.setAttribute("class", "qa-st");
+      svg.setAttribute("aria-hidden", "true");
+      svg.setAttribute("focusable", "false");
+      var use = doc.createElementNS(NS, "use");
+      use.setAttribute("href", ICONS + "#" + shape);
+      svg.appendChild(use);
+      return svg;
+    }
     function pill(kind) {
       var key = kind === "queue" ? "ask.staff.queue" : kind === "answered" ? "ask.status.answered" : "ask.status.waiting";
-      return h("span", { class: "qa-pill qa-pill--" + kind + " bk-pill" + PILL_UI[kind], text: tr(key) });
+      return h("span", { class: "qa-pill qa-pill--" + kind + " bk-pill" + PILL_UI[kind] }, [stIcon(PILL_ST[kind]), tr(key)]);
     }
     function answerBlock(q) {
       var a = q.answer;

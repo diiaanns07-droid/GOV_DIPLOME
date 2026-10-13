@@ -94,16 +94,23 @@
   width: 16px;
   height: 16px;
 }
-.qa__week {
+/* «0 / 5 · отвечено на этой неделе» — крупное число карточки эталона (.big: 34/600, подпись 14 ink-2) */
+.qa .qa__week {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0;
 }
-.qa__week .ic {
-  width: 16px;
-  height: 16px;
+.qa__week b {
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.qa__week span {
+  color: var(--qa-ink-2);
+  font-size: 14px;
 }
 
 /* ── кнопки как в эталоне (.btn): 44 px, радиус 12, 15/600; главная — почти чёрная, второстепенная — серая подложка ── */
@@ -269,6 +276,12 @@
   flex: none;
   width: 14px;
   height: 14px;
+}
+.qa-st {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-left: -2px;
 }
 
 /* капсула голосов (эталон .vote): 32 px, почти чёрная, «♡ 34», зона нажатия 44; после голоса — светлая «✓ 35» */
