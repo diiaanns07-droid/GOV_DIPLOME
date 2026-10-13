@@ -7,12 +7,12 @@
  "delivery": 10,
  "for_build": "сборка R01 по эталону A (после 69984f0)",
  "base_sha": "R01 claude/sharp-dijkstra-0t87gl 69984f0 (в ней R12 7fb739d); эталон — claude/round-14-package 766bd2f research/round-14/design/",
- "code_sha": "1dd770f64291a534002b911cc687c3c979419dd3",
- "tested_sha": "1dd770f64291a534002b911cc687c3c979419dd3",
- "code_sha_note": "11e3325 (паспорт = карточка эталона, вкладки, тесты), 092b1ad (индекс поиска, подписи без двойного «Парк»), bc330d6 (улица рядом в /target и в подписи карточки, patch R01 для индекса). 23084e8 (паспорт на каркасе ui-kit R11 .bk-objcard, статус-иконки, геометрия ± 1 px). 1dd770f (правило Linear 4: «Я тоже» мгновенно, откат при ошибке). После — только документы.",
+ "code_sha": "016c93b596f3a77fa74effe062c16e55607eadb5",
+ "tested_sha": "016c93b596f3a77fa74effe062c16e55607eadb5",
+ "code_sha_note": "11e3325 (паспорт = карточка эталона, вкладки, тесты), 092b1ad (индекс поиска, подписи без двойного «Парк»), bc330d6 (улица рядом в /target и в подписи карточки, patch R01 для индекса). 23084e8 (паспорт на каркасе ui-kit R11 .bk-objcard, статус-иконки, геометрия ± 1 px). 1dd770f (правило Linear 4: «Я тоже» мгновенно, откат при ошибке). 0e37224 (карточка работ ближе к эталону, только стили), 016c93b (подбор подсказок search_index.js для R01). После — только документы.",
  "tested_note": "Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 69984f0 + пути R12 из code_sha + patches/R01_search_index_asset.patch + ui-kit/i18n R11 a903884 (и без них — старый ui-kit сборки); CIVIC_DEMO=1, база init + seed-demo, временный сотрудник; эталон REFERENCE.html — python http.server, вариант A; ничего не коммитилось.",
- "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код 1dd770f; этот DELIVERY — следующим коммитом)",
- "take": "git checkout <code_sha> -- web/civic/qr engine/civic_geo web/civic/map/search_index.json tests/civic/R12",
+ "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код 016c93b; этот DELIVERY — следующим коммитом)",
+ "take": "git checkout <code_sha> -- web/civic/qr engine/civic_geo web/civic/map/search_index.json web/civic/map/search_index.js web/civic/map/civic-map.css tests/civic/R12",
  "take_note": "На 69984f0 эти пути = R12 7fb739d, checkout приносит только работу по эталону. Плюс patches/R01_search_index_asset.patch (одна строка CIVIC_ASSETS) и предложение контейнера карточки reference/r01_report_card.css — решает R01. Паспорт рассчитан на ui-kit R11 a903884 (.bk-objcard, статус-иконки); со старым ui-kit тоже выглядит по эталону.",
  "logic_changed": false,
  "logic_note": "Сценарий демо и действия паспорта прежние (ссылка → карточка, «Я тоже» R09, «Сообщить о другом» → мастер R09, «На карту»). «Подробнее» заменено вкладками эталона (обращения R09 грузятся при открытии вкладки, как раньше при раскрытии). Добавлено: поле street в /target (только данные), индекс поиска (статический файл), подписи объектов без двойного слова вида. «Я тоже» — оптимистично (правило Linear 4, владелец экрана): то же действие и те же запросы, отклик до ответа сервера, откат при ошибке.",
@@ -28,7 +28,7 @@
    "id": "Linear 1 · R12 (помогает R01)",
    "title": "Данные улиц и объектов для подсказок поиска",
    "status": "done (поле и список — R01)",
-   "what": "web/civic/map/search_index.json: 1 843 улицы и 679 объектов, ru/kk, точки, рамки, id карточек, районы; CLI search-index; тест свежести",
+   "what": "web/civic/map/search_index.json: 1 843 улицы и 679 объектов, ru/kk, точки, рамки, id карточек, районы; CLI search-index; тест свежести; подбор web/civic/map/search_index.js (с первой буквы, kk/ru, слова-типы, exclude горячих мест), ≤ 1,3 мс",
    "evidence": "tests/civic/R12/test_search_index.py, INTEGRATION E.3"
   },
   {
@@ -37,6 +37,13 @@
    "status": "done",
    "what": "«Я тоже» — число +1, «Спасибо» и кнопка сразу; ошибка — откат; скелетон карточки и строк обращений сразу",
    "evidence": "tests/civic/R12/qr/qr.test.mjs"
+  },
+  {
+   "id": "Эталон A · карточка работ (R12)",
+   "title": "Карточка работ ближе к «Выбран объект»",
+   "status": "done (только стили)",
+   "what": "название 19/600, «Коротко» строками с линией, статус работ иконкой Linear",
+   "evidence": "reference/works-1366-*-card.jpg"
   }
  ],
  "tests": [
@@ -76,6 +83,17 @@
    "status": "PASS",
    "result": "плитка, название, подпись, крестик, число, статус, кнопки, вкладки, строки, цитата — ± 1 px",
    "evidence": "reference/passport_geometry.txt"
+  },
+  {
+   "name": "подбор подсказок (node)",
+   "status": "PASS",
+   "result": "6/6; ≤ 1,3 мс на запрос",
+   "tool": "tests/civic/R12/map/search_index.test.mjs"
+  },
+  {
+   "name": "карта R12 и R01 город (после карточки работ)",
+   "status": "PASS",
+   "result": "стенд 69/0, core 30, accuracy 6, contract 4; R01 r12_city 81/0"
   }
  ],
  "patches_for_others": [
@@ -83,7 +101,7 @@
    "for": "R01",
    "file": "research/round-14-results/R12/patches/R01_search_index_asset.patch",
    "applies": "git apply --check OK на 69984f0",
-   "what": "CIVIC_ASSETS: map/search_index.json — чтобы сервер отдавал индекс подсказок"
+   "what": "CIVIC_ASSETS: map/search_index.json и map/search_index.js — индекс и подбор подсказок"
   },
   {
    "for": "R01",
