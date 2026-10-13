@@ -882,3 +882,12 @@ body.civic-mode .civic-explore-list .civic-explore-more { font-size: 13px; color
 /* Подробная легенда под «?», меню слоёв и меню шапки ложились на плашку о карте (1024 — легенда, 375 — легенда и слои) —
    сообщения по одному: пока открыто меню или легенда, плашка ждёт (она и так гаснет через 6 с) */
 body.civic-mode:has(#birge-legend[data-open="true"], #birge-layer-btn[aria-expanded="true"], .topbar [aria-expanded="true"]) .civic-explore #map-status { visibility: hidden; }
+
+/* R10 B-074 · телефон, «нет связи» / «пусто» «Карты жалоб» в шторке (половина экрана): «Повторить» лежала под главной
+   кнопкой «Сообщить о проблеме» — видно только после прокрутки. В шторке состояние компактнее: рисунок 48 × 40, отступы 4–8;
+   «Повторить» — выше главной кнопки сразу (ru/kk). */
+@media (max-width: 760px) {
+  body.civic-mode #birge-heat-root :is(.r07-error, .r07-empty) { padding-top: 8px; gap: 4px; }
+  body.civic-mode #birge-heat-root :is(.r07-error, .r07-empty) .bk-ill { width: 48px; height: 40px; margin-bottom: 0; }
+  body.civic-mode #birge-heat-root .r07-error .r07-btn { margin-top: 4px; }
+}
