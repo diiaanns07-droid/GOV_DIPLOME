@@ -305,7 +305,7 @@
     var S = { id: null, info: null, heat: null, state: "idle", error: null, seq: 0, notice: null, busy: false, tab: "overview",
       cases: null,  // cases: {key, rows} — обращения места (R09, публичный вид), грузятся только при раскрытии «Подробнее»
       enter: false };  // enter: карточка только что открылась — один раз мягко «поднимается» (bk-rise, reduced-motion — без)
-    var box = h("section", { class: "bq-report", "aria-live": "polite", "data-state": "idle" });
+    var box = h("section", { class: "bk-objcard bq-report", "aria-live": "polite", "data-state": "idle" });
     host.appendChild(box);
     var destroyed = false;
 
@@ -406,7 +406,8 @@
       box.setAttribute("data-state", S.state);
       // Стекло (GLASS.md R11 §4: «QR-паспорт — bk-glass на карточке»): своё — только вне панели оболочки. В панели R01
       // (.civic-panel, по GLASS.md §4 №5 — стекло) паспорт лежит на её стекле: второе стекло или карточка в карточке не нужны.
-      box.classList.toggle("bk-glass", !(box.parentElement && box.parentElement.closest && box.parentElement.closest(".bk-glass, .civic-panel")));
+      var own = !(box.parentElement && box.parentElement.closest && box.parentElement.closest(".bk-glass, .civic-panel"));
+      box.classList.toggle("bk-glass", own); box.classList.toggle("bk-glass--strong", own);
       box.lang = lang();
       var kids;
       if (S.state === "loading" || S.state === "idle") {
@@ -421,7 +422,7 @@
         kids = [top()].concat(errorView());
       } else {
         kids = card();
-        if (S.enter) { box.classList.add("bq-enter"); S.enter = false; } else box.classList.remove("bq-enter");
+        if (S.enter) { box.classList.add("bk-enter-left", "bq-enter"); S.enter = false; } else box.classList.remove("bk-enter-left", "bq-enter");
       }
       // Фокус клавиатуры не теряется при перерисовке («Я тоже», «Подробнее», «Повторить»): если он был в карточке —
       // на ту же кнопку, если она осталась и доступна, иначе на заголовок (tabindex=-1). Снаружи карточки — не трогаем.
@@ -436,11 +437,11 @@
       }
     }
     function closeBtn() {
-      return h("button", { type: "button", class: "bq-x bq-report__close", "aria-label": t("common.action.close"), title: t("common.action.close"),
+      return h("button", { type: "button", class: "bk-x bq-x bq-report__close", "aria-label": t("common.action.close"), title: t("common.action.close"),
         onclick: function () { if (typeof opts.onClose === "function") opts.onClose(); destroy(); } }, [icon("close", sprite)]);
     }
     // Шапка карточки эталона: плитка 48 с иконкой, название 19/600 и подпись, крестик 32 в круге (зона нажатия 44).
-    function head(tile, text) { return h("div", { class: "bq-hd" }, [tile, h("div", { class: "bq-hd__text" }, text), closeBtn()]); }
+    function head(tile, text) { return h("div", { class: "bk-objcard__hd bq-hd" }, [tile, h("div", { class: "bq-hd__text" }, text), closeBtn()]); }
     // Верхняя строка состояний ошибки: только крестик справа.
     function top() { return h("div", { class: "bq-top" }, [closeBtn()]); }
     // Ошибка = что случилось + что делать (DESIGN_MARATHON п. 8): значок, заголовок, подсказка, одна главная кнопка.
@@ -467,12 +468,12 @@
     }
     // Строка как в эталоне: значок в серой плитке 30, подпись слева, значение справа.
     function row(iconName, label, value, attrs) {
-      return h("div", Object.assign({ class: "bq-row" }, attrs || {}), [h("span", { class: "bq-row__ic", "aria-hidden": "true" }, [icon(iconName, sprite)]),
-        h("span", { class: "bq-row__label", text: label }), value == null ? null : h("b", { class: "bq-row__value" }, [value])]);
+      return h("div", Object.assign({ class: "bk-row bq-row" }, attrs || {}), [h("span", { class: "bk-row__ic bq-row__ic", "aria-hidden": "true" }, [icon(iconName, sprite)]),
+        h("span", { class: "bk-row__label bq-row__label", text: label }), value == null ? null : h("b", { class: "bk-row__value bq-row__value" }, [value])]);
     }
     function skelRows(n) {
       var out = [];
-      for (var i = 0; i < n; i++) out.push(h("div", { class: "bq-row bq-row--skel", "aria-hidden": "true" }, [h("i", { class: "bk-skel bq-row__ic" }), h("i", { class: "bk-skel bk-skel--line" })]));
+      for (var i = 0; i < n; i++) out.push(h("div", { class: "bk-row bq-row bq-row--skel", "aria-hidden": "true" }, [h("i", { class: "bk-skel bk-row__ic bq-row__ic" }), h("i", { class: "bk-skel bk-skel--line" })]));
       return out;
     }
 
@@ -487,18 +488,18 @@
       var subParts = [cat ? catName(cat) : kindWord];
       if (info.street && (info.street.ru || info.street.kk)) subParts.push(l === "kk" ? info.street.kk || info.street.ru : info.street.ru);
       else if (it && it.district) subParts.push(t("district.name", { name: t("district." + it.district) }));
-      var sub = h("p", { class: "bq-sub" }, [subParts.filter(Boolean).join(" · "),
+      var sub = h("p", { class: "bk-objcard__sub bq-sub" }, [subParts.filter(Boolean).join(" · "),
         demo ? h("span", { class: "bk-tag bk-tag--demo bq-demo", text: t("common.tag.demo") }) : null]);
-      var tile = h("span", { class: "bq-tile", "data-tone": tileTone(it), "aria-hidden": "true" }, [icon(kindIcon(tg), sprite)]);
-      var out = [head(tile, [h("h2", { class: "bq-title", tabindex: "-1", text: title }), sub])];
+      var tile = h("span", { class: "bk-tile bq-tile", "data-tone": tileTone(it), "aria-hidden": "true" }, [icon(kindIcon(tg), sprite)]);
+      var out = [head(tile, [h("h2", { class: "bk-objcard__title bq-title", tabindex: "-1", text: title }), sub])];
       if (info.approximate) out.push(h("p", { class: "bk-tag bk-tag--approx bq-approx", text: t("common.tag.approx") }));
       if (has) {
         // Сразу после «Я тоже» число один раз мягко «подпрыгивает» — видно, что голос учтён (только движение).
         var bump = S.bump && S.notice && S.notice.ok; S.bump = false;
-        out.push(h("p", { class: "bq-big bq-reported", "aria-label": reportedText(it.count) + " · " + t("common.period.last_days", { n: DAYS }) }, [
+        out.push(h("p", { class: "bk-big bq-big bq-reported", "aria-label": reportedText(it.count) + " · " + t("common.period.last_days", { n: DAYS }) }, [
           h("b", { class: bump ? "bq-bump" : null, text: String(it.count) }), h("span", { text: peopleWords(it.count) + " · " + t("common.period.last_days", { n: DAYS }) })]));
         var due = !fixed && it.due && it.due.at ? t("passport.until", { date: fmtDate(it.due.at) }) : fixed && it.fixed_until ? t("heat.fixed_until", { date: fmtDate(it.fixed_until) }) : null;
-        out.push(h("div", { class: "bq-st bq-statusline" }, [h("span", { class: "bk-status", "data-status": it.status === "verified_fixed" ? "verified" : it.status,
+        out.push(h("div", { class: "bk-stline bq-st bq-statusline" }, [h("span", { class: "bk-status", "data-status": it.status === "verified_fixed" ? "verified" : it.status,
           "aria-label": t("status.label") + ": " + t(statusKey(it.status)), text: t(statusKey(it.status)) }), due ? h("small", { text: due }) : null]));
       }
       // Одна главная кнопка (UX_BRIEF п. 3) и рядом вторая — как «Отметить исправленным · Ответить» в эталоне.
@@ -518,19 +519,19 @@
       // Подтверждение или ошибка — над кнопками, где житель смотрит (на телефоне ниже кнопки его не видно).
       if (S.notice) out.push(h("p", { class: "bq-notice" + (S.notice.ok ? " bq-notice--ok" : " bq-notice--error"), role: S.notice.ok ? "status" : "alert" },
         [icon(S.notice.ok ? "check" : "alert", sprite), h("span", { text: S.notice.text })]));
-      out.push(h("div", { class: "bq-actions" }, actions));
+      out.push(h("div", { class: "bk-acts bq-actions" }, actions));
 
       var number = row("pin", t("passport.sign_no"), "№ " + groupDigits(info.number));
-      var toMap = typeof opts.onOpenMap === "function" ? h("button", { type: "button", class: "bq-link", "data-act": "map", onclick: function () { opts.onOpenMap(tg); } },
+      var toMap = typeof opts.onOpenMap === "function" ? h("button", { type: "button", class: "bk-more bq-link", "data-act": "map", onclick: function () { opts.onOpenMap(tg); } },
         [icon("pin", sprite), t("complaint.step5.to_map")]) : null;
       if (!has) {
         // Жалоб нет — вкладки не нужны: номер с таблички и «На карту».
-        out.push(h("div", { class: "bq-rows bq-rows--top" }, [number, toMap ? h("div", { class: "bq-row bq-row--link" }, [toMap]) : null]));
+        out.push(h("div", { class: "bk-rows bq-rows bq-rows--top" }, [number, toMap ? h("div", { class: "bk-row bq-row bq-row--link" }, [toMap]) : null]));
         return out;
       }
       var openN = (it.open_ids || []).length;
       var TABS = [["overview", t("passport.tab.overview")], ["cases", t("common.nav.complaints") + (openN ? " · " + openN : "")], ["history", t("passport.history")]];
-      var tabs = h("div", { class: "bq-tabs", role: "tablist", "aria-label": title }, TABS.map(function (tb, i) {
+      var tabs = h("div", { class: "bk-tabs bq-tabs", role: "tablist", "aria-label": title }, TABS.map(function (tb, i) {
         var on = S.tab === tb[0];
         var b = h("button", { type: "button", role: "tab", class: "bq-tab", id: "bq-tab-" + tb[0], "data-tab": tb[0], "aria-selected": on ? "true" : "false",
           "aria-controls": "bq-panel", tabindex: on ? "0" : "-1", onclick: function () { setTab(tb[0]); } }, [tb[1]]);
@@ -553,10 +554,10 @@
         var g = it.texts && it.texts.groups && it.texts.groups[0];
         if (g && g.text) {
           var rest = Math.max(0, it.count - (g.people || 1));
-          panel.push(h("div", { class: "bq-row bq-row--quote" }, [h("p", { class: "bq-quote", text: "«" + g.text + "»" }),
-            rest ? h("button", { type: "button", class: "bq-link", "data-act": "cases", onclick: function () { setTab("cases", true); } }, [moreCases(rest)]) : null]));
+          panel.push(h("div", { class: "bk-row bq-row bq-row--quote" }, [h("p", { class: "bk-quote bq-quote", text: "«" + g.text + "»" }),
+            rest ? h("button", { type: "button", class: "bk-more bq-link", "data-act": "cases", onclick: function () { setTab("cases", true); } }, [moreCases(rest)]) : null]));
         }
-        if (toMap) panel.push(h("div", { class: "bq-row bq-row--link" }, [toMap]));
+        if (toMap) panel.push(h("div", { class: "bk-row bq-row bq-row--link" }, [toMap]));
       } else {
         // Открытых обращений нет — грузить нечего; иначе скелетон строк, пока R09 отвечает (без «прыжка»).
         var cases = openN ? S.cases && S.cases.rows : [];
@@ -564,7 +565,7 @@
         else if (S.tab === "cases") {
           panel = cases.length ? [h("ul", { class: "bq-list bq-cases" }, cases.map(function (c) {
             var st = c.heat_state || c.status, open = !isFixed({ status: st }) && c.status !== "rejected";
-            return h("li", { class: "bq-row bq-case" }, [h("span", { class: "bq-row__ic", "aria-hidden": "true" }, [icon(CAT_ICON[c.category] || "dots", sprite)]),
+            return h("li", { class: "bk-row bq-row bq-case" }, [h("span", { class: "bk-row__ic bq-row__ic", "aria-hidden": "true" }, [icon(CAT_ICON[c.category] || "dots", sprite)]),
               h("span", { class: "bq-case__what" }, [h("span", { class: "bq-case__cat", text: catName(c.category) }),
                 h("small", { class: "bq-case__meta", text: reportedText(c.reporters || 1) + (open && c.due_at ? " · " + t("passport.until", { date: fmtDate(c.due_at) }) : "") })]),
               h("span", { class: "bk-status bq-case__status", "data-status": st === "verified_fixed" ? "verified" : st, text: t(statusKey(st)) })]);
@@ -578,13 +579,13 @@
                 var bar = h("i"); bar.style.height = Math.max(n ? 8 : 2, Math.round((n / max) * 100)) + "%"; return bar; }))]));
           }
           if (hist.length) panel.push(h("ol", { class: "bq-list bq-history" }, hist.map(function (e) {
-            return h("li", { class: "bq-row bq-hist" }, [h("time", { datetime: String(e.at), text: fmtDate(e.at) }),
+            return h("li", { class: "bk-row bq-row bq-hist" }, [h("time", { datetime: String(e.at), text: fmtDate(e.at) }),
               h("span", { class: "bk-status", "data-status": e.status === "verified_fixed" ? "verified" : e.status, text: t(statusKey(e.status)) })]);
           })));
         }
       }
       var anim = S.tabAnim; S.tabAnim = false;
-      out.push(h("div", { class: "bq-panel bq-rows" + (anim ? " bq-panel--in" : ""), id: "bq-panel", role: "tabpanel", "aria-labelledby": "bq-tab-" + S.tab, "data-tab": S.tab }, panel));
+      out.push(h("div", { class: "bk-rows bq-panel bq-rows" + (anim ? " bq-panel--in" : ""), id: "bq-panel", role: "tabpanel", "aria-labelledby": "bq-tab-" + S.tab, "data-tab": S.tab }, panel));
       return out;
     }
 

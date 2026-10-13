@@ -1,176 +1,156 @@
-/* R12 · QR-паспорт объекта (web/civic/qr/report.js) = карточка «Выбран объект» эталона A
-   (research/round-14/design/REFERENCE.html, «2ГИС светлый», 13 окт): плитка 48 + название 19/600 + подпись 14, крестик 32,
-   крупное число 34/600, строка статуса 15 со сроком справа, две кнопки 44 в ряд, вкладки 14/500 «Обзор · Обращения ·
-   История», строки 14 со значком в плитке 30, цитата ≤ 2 строк. Отступ от края карточки — 18 (контейнер — без своих полей).
-   Цвета — токены эталона ниже; когда R11 перенесёт их в ui-kit, значения совпадут (замена — одна строка). */
+/* R12 · QR-паспорт объекта (web/civic/qr/report.js) = карточка «Выбран объект» эталона A (REFERENCE.html, 13 окт).
+   Каркас — ui-kit R11 .bk-objcard (шапка, .bk-tile, .bk-x, .bk-big, .bk-stline, .bk-acts, .bk-tabs, .bk-rows/.bk-row,
+   .bk-quote, .bk-more), статус-иконки — .bk-status[data-status] (правило Linear 3), появление — .bk-enter-left.
+   Ниже — только то, чего в ui-kit нет (тон плитки, «Спасибо», скелетон, ошибки), и те же размеры эталона запасом
+   (размеры шрифта — числами эталона: у старого ui-kit токены --fs-* другие):
+   пока в сборке старый ui-kit без .bk-objcard, паспорт выглядит так же. Цвета — токены ui-kit, в скобках — эталон. */
 .bq-report {
-  --bq-ink: #121a17; --bq-ink-2: #4b5752; --bq-ink-3: #7e8a85; --bq-line: rgba(18, 26, 23, 0.08);
-  --bq-sub: rgba(18, 26, 23, 0.06); --bq-sub-hover: rgba(18, 26, 23, 0.1); --bq-brand: #152c26; --bq-ok: #3b8a2e;
-  --bq-ease: cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   box-sizing: border-box;
+  width: auto;
   max-width: 420px;
   padding: 0 0 16px;
-  color: var(--bq-ink);
+  color: var(--c-ink, #121a17);
   font-size: 14px;
-  line-height: 1.4;
+  line-height: var(--lh-ui, 1.25);
   overflow-wrap: anywhere;
 }
 .bq-report *, .bq-report *::before, .bq-report *::after { box-sizing: border-box; }
 .bq-report [hidden] { display: none !important; }
-/* Своё стекло — только вне панели оболочки (GLASS.md): «плотное стекло 86 %» эталона. */
-.bq-report.bk-glass {
-  background: rgba(255, 255, 255, 0.86);
-  -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 18px;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 12px 32px rgba(16, 24, 20, 0.14), 0 0 0 0.5px rgba(16, 24, 20, 0.1);
-}
 
-/* ── Шапка: плитка, название, подпись, крестик ── */
+/* ── Шапка: плитка 48, название 19/600, подпись 14, крестик 32 (зона 44) ── */
 .bq-hd { display: flex; align-items: flex-start; gap: 12px; padding: 18px 18px 0; }
+.bq-hd__text { flex: 1 1 auto; min-width: 0; }
 .bq-tile {
   display: flex; align-items: center; justify-content: center; flex: none;
-  width: 48px; height: 48px; border-radius: 14px; background: var(--bq-sub); color: var(--bq-ink-2);
+  width: 48px; height: 48px; border-radius: var(--r-tile, 14px);
 }
 .bq-tile .ic { width: 24px; height: 24px; }
-.bq-tile[data-tone="red"] { background: #fcebeb; color: #a32d2d; }
+/* Тон плитки — по уровню значка R07 (эталон: светлый фон, значок тёмным того же цвета) */
+.bq-tile[data-tone="red"] { background: var(--c-danger-soft, #fcebeb); color: var(--heat-4, #a32d2d); }
 .bq-tile[data-tone="orange"] { background: #faeeda; color: #7a520f; }
 .bq-tile[data-tone="amber"] { background: #fdf5e6; color: #7a520f; }
-.bq-tile[data-tone="ok"] { background: #eaf3de; color: #27500a; }
-.bq-hd__text { flex: 1 1 auto; min-width: 0; }
+.bq-tile[data-tone="ok"] { background: var(--c-ok-soft, #eaf3de); color: #27500a; }
+.bq-tile[data-tone="none"] { background: var(--c-fill, rgba(18, 26, 23, 0.06)); color: var(--c-text-2, #4b5752); }
 .bq-title { margin: 0; font-size: 19px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
 .bq-title:focus { outline: none; }
 .bq-title:focus-visible { outline: 2px solid var(--c-focus, #2f7fd6); outline-offset: 2px; border-radius: 4px; }
-.bq-sub { margin: 3px 0 0; font-size: 14px; color: var(--bq-ink-2); }
+.bq-sub { margin: 3px 0 0; font-size: 14px; color: var(--c-text-2, #4b5752); }
 .bq-demo { margin-left: 8px; font-size: 12px; vertical-align: 1px; }
-/* Крестик 32 в круге, зона нажатия 44 (рисунок эталона, палец 40+). */
 .bq-x {
   position: relative; flex: none; display: flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px; margin: -6px -6px 0 auto; padding: 0; border: 0; background: transparent; color: var(--bq-ink); cursor: pointer;
+  width: 32px; height: 32px; margin-left: auto; padding: 0; border: 0; border-radius: 50%;
+  background: var(--c-fill, rgba(18, 26, 23, 0.06)); color: var(--c-ink, #121a17); cursor: pointer;
+  transition: background-color var(--t-fast, 150ms) var(--ease, ease-out), scale var(--t-fast, 150ms) var(--ease, ease-out);
 }
-.bq-x::before {
-  content: ""; position: absolute; width: 32px; height: 32px; border-radius: 50%; background: var(--bq-sub);
-  transition: background-color 150ms var(--bq-ease), transform 150ms var(--bq-ease);
-}
-.bq-x:hover::before { background: var(--bq-sub-hover); }
-.bq-x:active::before { transform: scale(0.94); }
-.bq-x .ic { position: relative; width: 16px; height: 16px; }
-.bq-x:focus-visible { outline: none; }
-.bq-x:focus-visible::before { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--c-focus, #2f7fd6); }
+.bq-x::after { content: ""; position: absolute; inset: -6px; }  /* зона нажатия 44 */
+.bq-x:hover { background: var(--c-fill-hover, rgba(18, 26, 23, 0.1)); }
+.bq-x:active { scale: 0.94; }
+.bq-x .ic { width: 16px; height: 16px; }
+.bq-x:focus-visible { outline: 2px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 .bq-approx { display: inline-block; margin: 12px 18px 0; }
 
 /* ── Сколько людей и статус ── */
 .bq-big { display: flex; align-items: baseline; gap: 8px; margin: 0; padding: 16px 18px 0; }
-.bq-big b { font-size: 34px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.bq-big span { font-size: 14px; color: var(--bq-ink-2); }
+.bq-big b { font-size: 34px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.bq-big span { font-size: 14px; color: var(--c-text-2, #4b5752); }
 .bq-st { display: flex; align-items: center; gap: 8px; margin: 12px 18px 0; font-size: 15px; }
-.bq-st .bk-status { gap: 8px; font-size: 15px; font-weight: 400; color: var(--bq-ink); white-space: normal; }
-.bq-st .bk-status::before { width: 9px; height: 9px; }
-.bq-st small { margin-left: auto; padding-left: 8px; color: var(--bq-ink-3); font-size: 13px; white-space: nowrap; }
-.bq-done { display: flex; align-items: center; gap: 8px; margin: 12px 18px 0; color: var(--bq-ok); font-size: 14px; }
+.bq-st .bk-status { font-weight: 400; white-space: normal; }
+.bq-st small { margin-left: auto; padding-left: 8px; color: var(--c-text-3, #7e8a85); font-size: 13px; white-space: nowrap; }
+.bq-done { display: flex; align-items: center; gap: 8px; margin: 12px 18px 0; color: var(--ok-mark, #3b8a2e); font-size: 14px; }
 .bq-done .ic, .bq-notice .ic { width: 18px; height: 18px; flex: none; }
 
-/* ── Кнопки: главная тёмная во всю ширину, вторая — серая по тексту ── */
+/* ── Кнопки: главная тёмная во всю ширину, вторая — серая по тексту (эталон .btn.p / .btn.s) ── */
 .bq-actions { display: flex; gap: 8px; padding: 16px 18px 0; }
-.bq-btn {
-  min-height: 44px; padding: 10px 16px; border: 0; border-radius: 12px; font-size: 15px; font-weight: 600; line-height: 1.25;
-  transition: background-color 150ms var(--bq-ease), transform 150ms var(--bq-ease);
-}
-.bq-btn:active:not(:disabled) { transform: scale(0.98); }
-.bq-btn--p { flex: 1 1 auto; min-width: 40%; background: var(--bq-ink); color: #fff; }
-.bq-btn--p:hover:not(:disabled) { background: #0b110f; }
-.bq-btn--s { flex: 0 1 auto; max-width: 58%; background: var(--bq-sub); color: var(--bq-ink); }
-.bq-btn--s:hover:not(:disabled) { background: var(--bq-sub-hover); }
+.bq-btn { min-height: 44px; padding: 10px 16px; border-radius: var(--r-m, 12px); font-size: 15px; font-weight: 600; line-height: 1.25; }
+.bq-btn--p { flex: 1 1 auto; min-width: 40%; }
+.bq-btn--s { flex: 0 1 auto; max-width: 58%; }
 .bq-btn .ic { width: 18px; height: 18px; }
 /* Значок и подпись — одной группой: одна строка — по центру; две строки (длинное kk) — текст у значка. */
 .bq-btn__text { min-width: 0; text-align: start; text-wrap: balance; }
 .bq-notice {
-  display: flex; gap: 8px; align-items: flex-start; margin: 12px 18px 0; padding: 10px 14px; border-radius: 12px; font-size: 14px;
-  animation: bq-fade 200ms var(--bq-ease) both;
+  display: flex; gap: 8px; align-items: flex-start; margin: 12px 18px 0; padding: 10px 14px; border-radius: var(--r-m, 12px);
+  font-size: 14px; animation: bq-fade var(--t-base, 200ms) var(--ease, ease-out) both;
 }
-.bq-notice--ok { background: #eaf3de; color: #27500a; }
-.bq-notice--error { background: #fcebeb; color: #a32d2d; }
+.bq-notice--ok { background: var(--c-ok-soft, #eaf3de); color: #27500a; }
+.bq-notice--error { background: var(--c-danger-soft, #fcebeb); color: var(--heat-4, #a32d2d); }
 
-/* ── Вкладки «Обзор · Обращения · История» (черта под выбранной; зона нажатия 44 при том же рисунке) ── */
-.bq-tabs { display: flex; gap: 18px; margin-top: 4px; padding: 0 18px; border-bottom: 1px solid var(--bq-line); }
-.bq-tab {
-  padding: 16px 0 10px; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 500; color: var(--bq-ink-3);
-  cursor: pointer; transition: color 150ms var(--bq-ease), box-shadow 150ms var(--bq-ease);
+/* ── Вкладки «Обзор · Обращения · История»: та же картинка, зона нажатия 44 (поле 16 — внутри вкладки) ── */
+.bq-tabs { display: flex; gap: 18px; margin: 4px 0 0; padding: 0 18px; border-bottom: 1px solid var(--c-line, rgba(18, 26, 23, 0.08)); }
+.bq-tabs > .bq-tab {
+  min-height: 0; padding: 16px 0 8px; border: 0; border-bottom: 2px solid transparent; background: none;
+  font: inherit; font-size: 14px; font-weight: 500; line-height: 18px; color: var(--c-text-3, #7e8a85); cursor: pointer;
+  transition: color var(--t-fast, 150ms) var(--ease, ease-out), border-color var(--t-fast, 150ms) var(--ease, ease-out);
 }
-.bq-tab:hover { color: var(--bq-ink-2); }
-.bq-tab[aria-selected="true"] { color: var(--bq-ink); box-shadow: inset 0 -2px 0 var(--bq-ink); }
-.bq-tab:focus-visible { outline: 2px solid var(--c-focus, #2f7fd6); outline-offset: 2px; border-radius: 4px; }
+.bq-tabs > .bq-tab:hover { color: var(--c-text-2, #4b5752); }
+.bq-tabs > .bq-tab[aria-selected="true"] { color: var(--c-ink, #121a17); border-bottom-color: var(--c-ink, #121a17); }
+.bq-tabs > .bq-tab:focus-visible { outline: 2px solid var(--c-focus, #2f7fd6); outline-offset: -2px; }
 
-/* ── Строки: значок в плитке 30, подпись, значение справа; между строками — линия 1 px ── */
+/* ── Строки: плитка 30, подпись, значение справа 500; между строками — линия 1 px ── */
 .bq-rows { padding: 6px 18px 0; }
 .bq-rows--top { padding-top: 10px; }
 .bq-list { margin: 0; padding: 0; list-style: none; }
 .bq-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 14px; }
-.bq-row + .bq-row, .bq-list > .bq-row + .bq-row, .bq-sec + .bq-list > .bq-row:first-child { border-top: 1px solid var(--bq-line); }
+.bq-row + .bq-row, .bq-sec + .bq-list > .bq-row:first-child { border-top: 1px solid var(--c-line, rgba(18, 26, 23, 0.08)); }
 .bq-row__ic {
   display: flex; align-items: center; justify-content: center; flex: none;
-  width: 30px; height: 30px; border-radius: 9px; background: var(--bq-sub); color: var(--bq-ink);
+  width: 30px; height: 30px; border-radius: 9px; background: var(--c-fill, rgba(18, 26, 23, 0.06));
 }
 .bq-row__ic .ic { width: 16px; height: 16px; }
-.bq-row__label { color: var(--bq-ink-2); }
+.bq-row__label { color: var(--c-text-2, #4b5752); }
 .bq-row__value { margin-left: auto; padding-left: 8px; font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
 .bq-row--quote { display: block; }
 .bq-quote {
-  margin: 0; font-size: 14px; line-height: 1.45; color: var(--bq-ink);
+  margin: 1em 0; font-size: 14px; line-height: 1.45;  /* эталон: поля абзаца 14 */
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
+/* «Ещё N обращений», «На карту» — ссылка-действие (.bk-more), зона нажатия 44 при том же месте текста */
 .bq-link {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin: -6px 0 -10px; padding: 0;
-  border: 0; background: none; font: inherit; font-size: 14px; font-weight: 500; color: var(--bq-brand); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin: -8px 0 -10px; padding: 0;
+  border: 0; background: none; font: inherit; font-size: 14px; font-weight: 500; color: var(--c-brand, #152c26); cursor: pointer;
 }
 .bq-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 .bq-link .ic { width: 16px; height: 16px; }
 .bq-row--link { padding: 4px 0; }
 .bq-row--skel .bk-skel--line { flex: 1 1 auto; height: 14px; }
 .bq-case__what { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
-.bq-case__cat { color: var(--bq-ink); }
-.bq-case__meta { color: var(--bq-ink-3); font-size: 12px; }
-.bq-case__status, .bq-hist .bk-status { margin-left: auto; font-size: 13px; font-weight: 500; white-space: nowrap; }
-.bq-case__status::before, .bq-hist .bk-status::before { width: 8px; height: 8px; }
-.bq-hist time { min-width: 56px; color: var(--bq-ink-3); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.bq-hist .bk-status { margin-left: 0; font-weight: 400; color: var(--bq-ink); }
+.bq-case__meta { color: var(--c-text-3, #7e8a85); font-size: 12px; }
+.bq-case__status { margin-left: auto; font-size: 13px; }
+.bq-hist time { min-width: 56px; color: var(--c-text-3, #7e8a85); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bq-hist .bk-status { font-size: 14px; font-weight: 400; }
 .bq-sec { padding: 10px 0 12px; }
-.bq-h3 { margin: 0 0 8px; color: var(--bq-ink-3); font-size: 13px; font-weight: 500; }
+.bq-h3 { margin: 0 0 8px; color: var(--c-text-3, #7e8a85); font-size: 13px; font-weight: 500; }
 .bq-spark { height: 40px; }
-.bq-empty { margin: 0; padding: 12px 0; color: var(--bq-ink-2); }
+.bq-empty { margin: 0; padding: 12px 0; color: var(--c-text-2, #4b5752); }
 
 /* ── Ошибка и «не найден» (ui-kit .bk-error) — в тех же полях 18 ── */
-.bq-top { display: flex; justify-content: flex-end; padding: 12px 18px 0; }
+.bq-top { display: flex; justify-content: flex-end; padding: 18px 18px 0; }
 .bq-error { padding: 0 18px; }
 .bq-error .bq-actions { flex-direction: column; width: 100%; padding: 8px 0 0; }
-.bq-error .bk-btn { min-height: 44px; border-radius: 12px; }
+.bq-error .bk-btn { min-height: 44px; border-radius: var(--r-m, 12px); }
 
 /* ── Скелетон в форме карточки — ничего не «прыгает», когда придут данные ── */
-.bq-skel__tile { width: 48px; height: 48px; border-radius: 14px; }
+.bq-skel__tile { width: 48px; height: 48px; border-radius: var(--r-tile, 14px); }
 .bq-skel__title { width: 70%; height: 20px; margin-top: 2px; }
 .bq-skel__sub { width: 45%; margin-top: 8px; }
 .bq-skel { display: grid; gap: 12px; padding: 18px 18px 0; }
 .bq-skel__big { width: 40%; height: 30px; }
 .bq-skel__st { width: 55%; }
 .bq-skel__acts { display: flex; gap: 8px; }
-.bq-skel__button { flex: 1 1 auto; height: 44px; border-radius: 12px; }
+.bq-skel__button { flex: 1 1 auto; height: 44px; border-radius: var(--r-m, 12px); }
 .bq-skel__button--s { flex: 0 0 34%; }
 
-/* ── Движение (эталон: карточка выезжает слева за 300 мс; вкладка сменяется за 150 мс) ── */
-.bq-enter { animation: bq-in 300ms var(--bq-ease) both; }
-.bq-panel--in { animation: bq-fade 150ms ease-out both; }
-@keyframes bq-in { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+/* ── Движение: карточка — .bk-enter-left ui-kit (слева, 250 мс); на телефоне в шторке — снизу; вкладка — 150 мс ── */
+.bq-panel--in { animation: bq-fade var(--t-fast, 150ms) ease-out both; }
 @keyframes bq-fade { from { opacity: 0; } to { opacity: 1; } }
-@media (max-width: 760px) {
-  .bq-enter { animation-name: bq-up; }
-  @keyframes bq-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-}
-/* «Спасибо»: галочка появляется с лёгким «щелчком», число людей один раз подпрыгивает — голос учтён. */
-.bq-notice--ok .ic { animation: bq-pop 300ms var(--bq-ease) 80ms both; }
-.bq-bump { display: inline-block; animation: bq-bump 250ms var(--bq-ease) both; }
+@keyframes bq-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (max-width: 760px) { .bq-report.bk-enter-left { animation-name: bq-up; } }
+/* «Спасибо»: галочка «щёлкает», число людей один раз подпрыгивает — голос учтён. */
+.bq-notice--ok .ic { animation: bq-pop var(--t-slow, 250ms) var(--ease, ease-out) 80ms both; }
+.bq-bump { display: inline-block; animation: bq-bump var(--t-slow, 250ms) var(--ease, ease-out) both; }
 @keyframes bq-pop { 0% { transform: scale(0.4); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
 @keyframes bq-bump { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) {
-  .bq-enter, .bq-panel--in, .bq-notice, .bq-notice--ok .ic, .bq-bump { animation: none; }
-  .bq-x::before, .bq-btn, .bq-tab { transition: none; }
+  .bq-report.bk-enter-left, .bq-panel--in, .bq-notice, .bq-notice--ok .ic, .bq-bump { animation: none; }
+  .bq-x, .bq-tab { transition: none; }
 }

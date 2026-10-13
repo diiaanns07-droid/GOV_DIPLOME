@@ -1,0 +1,20 @@
+// Геометрия карточки: эталон (.card в кадре obj) против паспорта в сборке — y и высоты деталей.
+import { createRequire } from "node:module"; import fs from "node:fs"; import path from "node:path";
+const require = createRequire(path.join(process.env.NODE_PATH, "x.js"));
+const pw = require("playwright");
+const [REF, BASE, CSS] = process.argv.slice(2);
+const b = await pw.chromium.launch();
+const r = await (await b.newContext({ viewport: { width: 1414, height: 1000 } })).newPage();
+await r.goto(REF); await r.click('.switch button[data-f="obj"]'); await r.waitForTimeout(300);
+const ref = await r.evaluate(() => { const st = document.querySelector("#stage").getBoundingClientRect(); const c = document.querySelector('.frame[data-f="obj"] .card');
+  const q = (s) => { const e = c.querySelector(s); if (!e) return null; const k = e.getBoundingClientRect(); return [Math.round(k.left - st.left), Math.round(k.top - st.top), Math.round(k.width), Math.round(k.height)]; };
+  return { card: q(":scope"), tile: q(".tile"), h2: q("h2"), sub: q(".sub"), x: q(".x"), big: q(".big"), st: q(".st"), acts: q(".acts"), btnp: q(".btn.p"), tabs: q(".tabs"), row1: q(".row"), quote: q(".quote") }; });
+const p = await (await b.newContext({ viewport: { width: 1366, height: 768 } })).newPage();
+await p.route(/^https?:\/\/(?!127\.0\.0\.1)/, (x) => x.abort());
+await p.goto(BASE + "/?report=osm-node-4109037549"); await p.addStyleTag({ content: fs.readFileSync(CSS, "utf8") });
+await p.waitForSelector(".bq-report[data-state=ready]"); await p.waitForTimeout(600);
+const got = await p.evaluate(() => { const c = document.querySelector(".bq-report");
+  const q = (s) => { const e = s === ":scope" ? c : c.querySelector(s); if (!e) return null; const k = e.getBoundingClientRect(); return [Math.round(k.left), Math.round(k.top), Math.round(k.width), Math.round(k.height)]; };
+  return { card: q(":scope"), tile: q(".bq-tile"), h2: q(".bq-title"), sub: q(".bq-sub"), x: q(".bq-x"), big: q(".bq-big"), st: q(".bq-st"), acts: q(".bq-actions"), btnp: q(".bq-btn--p"), tabs: q(".bq-tabs"), row1: q(".bq-row"), quote: q(".bq-quote") }; });
+for (const k of Object.keys(ref)) console.log(k.padEnd(6), "ref", JSON.stringify(ref[k]).padEnd(22), "got", JSON.stringify(got[k]).padEnd(22), ref[k] && got[k] ? "dy=" + (got[k][1] - ref[k][1]) + " dh=" + (got[k][3] - ref[k][3]) : "");
+await b.close();
