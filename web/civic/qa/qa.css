@@ -588,6 +588,15 @@
   gap: 10px;
   padding: 12px;
 }
+/* быстрый ответ (< 120 мс) — скелетон не мелькает: проявляется, только если ждём дольше (правило 4 README эталона) */
+.qa-skeleton {
+  animation: qa-appear 150ms ease-out 120ms both;
+}
+@keyframes qa-appear {
+  from {
+    opacity: 0;
+  }
+}
 .qa-skel--short {
   width: 40%;
 }
