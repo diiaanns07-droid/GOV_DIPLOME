@@ -261,7 +261,9 @@
 }
 
 /* «Поддержать» прямо в списке (эталон .vote: 32, почти чёрная, сердце 14 + число 13/600; зона нажатия 44).
-   Поддержано — светлая капсула с заполненным сердцем (ui-kit R11 .bk-vote[aria-pressed]); только число — серая. */
+   Поддержано — светлая капсула с заполненным сердцем (ui-kit R11 .bk-vote[aria-pressed]). Где поддержать нельзя (на
+   проверке, решённые, акимат) — та же тёмная капсула с числом, как в эталоне, но не кнопка: нажатие проходит сквозь
+   неё и открывает карточку (там сказано, почему голосовать нельзя). */
 .ri .ri-vote {
   position: relative;
   display: inline-flex;
@@ -292,13 +294,12 @@
 .ri .ri-vote:hover {
   background: var(--c-primary-hover, #24302b);
 }
-.ri .ri-vote[aria-pressed="true"],
-.ri .ri-vote.ri-vote--static {
+.ri .ri-vote[aria-pressed="true"] {
   background: var(--c-fill, rgba(18, 26, 23, 0.06));
   color: var(--c-ink, #121a17);
 }
 .ri .ri-vote.ri-vote--static {
-  cursor: default;
+  pointer-events: none;
 }
 .ri-heart-ic {
   display: inline-flex;
