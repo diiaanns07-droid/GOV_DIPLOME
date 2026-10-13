@@ -69,20 +69,33 @@ const clickPayloadText = (page, scope) => page.evaluate((scope) => {
   for (let n = tw.nextNode(); n; n = tw.nextNode()) {
     if (!n.nodeValue.includes("R15X") || !n.parentElement || !n.parentElement.getClientRects().length) continue;
     const hit = n.parentElement.closest("button, a, [role=button], [role=option], [role=row], li, article, [tabindex]");
-    if (hit) { hit.click(); return true; }
+    if (hit) {
+      hit.click();
+      const el = n.parentElement;   // после клика запись могла перерисоваться — к тексту нагрузки ведём заново
+      setTimeout(() => { const again = [...root.querySelectorAll("*")].find((x) => x.childElementCount === 0 && (x.textContent || "").includes("R15X")) || el;
+        again.scrollIntoView({ block: "center" }); }, 300);
+      return true;
+    }
   }
   return false;
 }, scope || null);
 
 // Раздел: открыть, затем пройти все видимые вкладки ([role=tab]) и в каждой открыть запись с нагрузкой.
-async function visit(page, id) {
+// Снимок в момент, когда нагрузка на экране: доказательство «показана текстом» (evidence-<раздел>-<n>.png).
+async function evidence(page, name) {
+  if (!(await clickPayloadText(page))) return 0;
+  await sleep(700);
+  await page.screenshot({ path: path.join(OUT, `evidence-${name}.png`) }).catch(() => null);
+  return 1;
+}
+async function visit(page, id, who) {
   const r = await section(page, id); await sleep(1800);
-  let opened = await clickPayloadText(page) ? 1 : 0; await sleep(700);
+  let opened = await evidence(page, `${who}-${id}-0`);
   const tabs = await page.evaluate(() => [...document.querySelectorAll("[role=tab]")].filter((x) => x.getClientRects().length).length);
   for (let i = 0; i < tabs; i++) {
     await page.evaluate((i) => { const x = [...document.querySelectorAll("[role=tab]")].filter((y) => y.getClientRects().length)[i]; x && x.click(); }, i);
     await sleep(900);
-    opened += await clickPayloadText(page) ? 1 : 0; await sleep(700);
+    opened += await evidence(page, `${who}-${id}-${i + 1}`);
   }
   return (r === "hash" ? "через адрес" : "кнопка") + `, вкладок ${tabs}, открыто записей с нагрузкой ${opened}`;
 }
@@ -167,7 +180,7 @@ async function main() {
     });
     await page.keyboard.press("Escape");
     for (const id of ["day", "inbox", "projects", "questions"]) {
-      await step(page, "akimat-" + id, false, () => visit(page, id));
+      await step(page, "akimat-" + id, false, () => visit(page, id, "akimat"));
       await page.keyboard.press("Escape");
     }
     await section(page, "map"); await sleep(600);
@@ -213,7 +226,7 @@ async function main() {
     });
     await rp.keyboard.press("Escape");
     for (const id of ["nearby", "ideas", "questions"]) {
-      await step(rp, "resident-" + id, true, () => visit(rp, id));
+      await step(rp, "resident-" + id, true, () => visit(rp, id, "resident"));
       await rp.keyboard.press("Escape");
     }
     await step(rp, "resident-passport", true, async () => {
