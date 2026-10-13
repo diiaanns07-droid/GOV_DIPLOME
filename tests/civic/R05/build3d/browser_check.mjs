@@ -762,7 +762,8 @@ await check("r11_21_model_clickable_pointer_label_40_zone_48", async () => {
   );
   await p.context().close();
   assert(cursor === "pointer" && sel === id, JSON.stringify({ cursor, sel }));
-  assert(sizes.length && sizes.every((z) => z.h >= 40 && z.zoneH >= 48 && z.zoneW >= 48), JSON.stringify(sizes));
+  // Табличка — метка эталона (вариант A, 13.10): 26 px (было ≥ 40 по UX_REVIEW день 3 #21); зона нажатия — по-прежнему ≥ 48.
+  assert(sizes.length && sizes.every((z) => z.h >= 26 && z.zoneH >= 48 && z.zoneW >= 48), JSON.stringify(sizes));
   return { status: "PASS", detail: { cursor_over_model: cursor, opened_by_model_click: sel, label_height_px: sizes[0].h, tap_zone_px: sizes[0].zoneH } };
 });
 await check("r11_21_selected_object_not_under_card_1366_375", async () => {

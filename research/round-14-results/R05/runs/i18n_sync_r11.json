@@ -1,10 +1,41 @@
 {
- "generated_at": "2026-10-12T20:06:55.605Z",
+ "generated_at": "2026-10-13T10:52:11.935Z",
  "r11": "claude/r14-R11 @ 49d1ee64",
- "build3d_keys": 54,
- "common_fallback_keys": 32,
- "compared": 280,
+ "build3d_keys": 57,
+ "common_fallback_keys": 34,
+ "compared": 290,
  "diffs": [],
- "new_for_r11": [],
+ "new_for_r11": [
+  {
+   "lang": "ru",
+   "key": "build3d.card.fact_up",
+   "module": "поддержали"
+  },
+  {
+   "lang": "ru",
+   "key": "build3d.card.fact_down",
+   "module": "против"
+  },
+  {
+   "lang": "ru",
+   "key": "build3d.card.fact_year",
+   "module": "срок"
+  },
+  {
+   "lang": "kk",
+   "key": "build3d.card.fact_up",
+   "module": "қолдады"
+  },
+  {
+   "lang": "kk",
+   "key": "build3d.card.fact_down",
+   "module": "қарсы"
+  },
+  {
+   "lang": "kk",
+   "key": "build3d.card.fact_year",
+   "module": "мерзімі"
+  }
+ ],
  "status": "PASS"
 }

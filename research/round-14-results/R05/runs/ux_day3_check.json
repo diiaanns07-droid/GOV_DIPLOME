@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-12T20:06:55.027Z",
+ "generated_at": "2026-10-13T10:52:11.255Z",
  "ui_kit_i18n": "выгрузка --kit",
  "checks": [
   {
@@ -47,7 +47,7 @@
     "cursor": "pointer",
     "label": {
      "zone": 48,
-     "pill": 40
+     "pill": 26
     },
     "object": {
      "x": 683,
@@ -114,7 +114,7 @@
     "cursor": "pointer",
     "label": {
      "zone": 48,
-     "pill": 40
+     "pill": 26
     },
     "object": {
      "x": 683,
@@ -181,11 +181,11 @@
     "cursor": "n/a",
     "label": {
      "zone": 48,
-     "pill": 40
+     "pill": 26
     },
     "object": {
-     "x": 188,
-     "y": 352,
+     "x": 187,
+     "y": 230,
      "under_card": false
     }
    }
@@ -208,7 +208,7 @@
    "status": "PASS",
    "detail": {
     "zoom": 17.4,
-    "projects_on_screen": 1,
+    "projects_on_screen": 2,
     "need": 1
    }
   },
@@ -248,11 +248,11 @@
     "cursor": "n/a",
     "label": {
      "zone": 48,
-     "pill": 40
+     "pill": 26
     },
     "object": {
-     "x": 188,
-     "y": 359,
+     "x": 187,
+     "y": 230,
      "under_card": false
     }
    }

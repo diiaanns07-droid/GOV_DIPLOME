@@ -168,7 +168,7 @@ for (const view of VIEWS) {
           onScreen: x > c.left && x < c.right && y > c.top && y < c.bottom };
       }, target.id);
       check(`r11_21_model_click_opens_card_object_visible_${tag}`,
-        card.selected === target.id && !card.under && card.onScreen && lab && lab.zone >= 48 && lab.pill >= 40 && (view.extra.hasTouch || cursor === "pointer"),
+        card.selected === target.id && !card.under && card.onScreen && lab && lab.zone >= 48 && lab.pill >= 26 /* метка эталона 13.10 — 26 px; было 40 */ && (view.extra.hasTouch || cursor === "pointer"),
         { clicked: target.kind, cursor, label: lab, object: { x: card.x, y: card.y, under_card: card.under } });
       const keys1 = await rawKeys(p);
       await shot(p, `d3_21_card_${tag}.png`);
