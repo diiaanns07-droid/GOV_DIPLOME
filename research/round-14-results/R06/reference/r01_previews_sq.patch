@@ -1,0 +1,12 @@
+--- a/ui/web_server.py	2026-10-13 12:14:54.511199995 +0000
++++ b/ui/web_server.py	2026-10-13 12:14:54.527520791 +0000
+@@ -105,6 +105,9 @@
+                 # Дизайн-марафон, R05 2b33c59: превью объектов для карточек каталога (240×160 и @2x, рендер моделей R05).
+                 *(f"build3d/data/previews/{kind}{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
+                   for scale in ("", "@2x")),
++                # Эталон 13 окт (R05 3997d91e → R06): квадратные превью 84 × 84 и @2x для строк списка «Проекты и идеи».
++                *(f"build3d/data/previews/{kind}-sq{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
++                  for scale in ("", "@2x")),
+                 # B3: запасной фон карты без интернета (web/map.js offlineStyle) — оси улиц OSM со стенда R07 @ 306074b.
+                 "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
+                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.

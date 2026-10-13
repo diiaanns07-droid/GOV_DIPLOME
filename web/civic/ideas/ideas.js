@@ -864,7 +864,7 @@
         setTimeout(function () { if (state.mapFor === x.id) moveMap(x, tries + 1); }, 300);
         return;
       }
-      if (state.tab === "ideas") ideasLayer(0);
+      sectionLayer(0);
       if (!m) return;
       var reduce = root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches;
       try {
@@ -872,17 +872,21 @@
           padding: { left: 452, right: detailHost && detailHost.isConnected ? 444 : 84, top: 84, bottom: 40 } });
       } catch (e) { /* карта не готова — без перехода */ }
     }
-    // Метки идей на карте — слой «Идеи жителей» (R05), пока открыт раздел; закрыли раздел — карта как была (destroy).
-    // Слой регистрируется, когда поднялся 3D-модуль R05 (registerLayer ниже) — до этого пробуем снова, до ~12 с.
-    // Включённый жителем другой слой не трогаем.
-    function ideasLayer(tries) {
-      if (!alive || state.view !== "list" || state.tab !== "ideas" || doc.body.dataset.birgeLayer) return;
-      var S = shell();
-      if (S && S.setLayer && build3d() && build3d().setIdeas) {
-        S.setLayer("ideas");
-        if (doc.body.dataset.birgeLayer === "ideas") { state.layerMine = true; return; }
+    // На карте — объекты открытой вкладки: «Идеи жителей» (метки «Идея · N», R05 setIdeas) или «Проекты» (метки
+    // «Проект · 2027» лаймом и 3D, слой оболочки R01) — пока открыт раздел; закрыли раздел — карта как была (destroy).
+    // Слой, выбранный жителем самим, не трогаем. Слои регистрируются, когда поднялся R05, — пробуем снова, до ~12 с.
+    function sectionLayer(tries) {
+      if (!alive || state.view !== "list") return;
+      var want = state.tab === "projects" ? "projects" : "ideas";
+      var cur = doc.body.dataset.birgeLayer || "";
+      if (cur === want || (cur && cur !== state.layerMine)) return;
+      var S = shell(), b = build3d();
+      var ready = S && S.setLayer && b && (want === "projects" || typeof b.setIdeas === "function");
+      if (ready) {
+        S.setLayer(want);
+        if (doc.body.dataset.birgeLayer === want) { state.layerMine = want; return; }
       }
-      if (tries < 40) setTimeout(function () { ideasLayer(tries + 1); }, 300);
+      if (tries < 40) setTimeout(function () { sectionLayer(tries + 1); }, 300);
     }
     // ↑ ↓ / J K — по строкам списка, Enter — открыть, Esc — закрыть карточку (правило 2 эталона).
     function onKeys(e) {
@@ -1594,7 +1598,7 @@
       destroy: function () {
         alive = false;
         removeDetail();
-        if (state.layerMine && doc.body.dataset.birgeLayer === "ideas" && shell() && shell().setLayer) shell().setLayer(null);
+        if (state.layerMine && doc.body.dataset.birgeLayer === state.layerMine && shell() && shell().setLayer) shell().setLayer(null);
         rootEl.removeEventListener("keydown", onKeys);
         if (live.parentNode) live.parentNode.removeChild(live);
         if (mounted === current) mounted = null;
