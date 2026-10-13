@@ -96,12 +96,30 @@ async function main() {
       assistant: getComputedStyle(document.getElementById("civic-assistant-box")).display, staff: !!document.querySelector("#birge-account [data-action=staff]") }));
     check("1366: round-13 tools outside the Birge demo (scenarios, assistant) hidden even for akimat; sign-in in the avatar menu",
       tools.scen === "none" && tools.assistant === "none" && tools.staff, tools);
-    const panelBox = await page.evaluate(() => { const p = document.getElementById("civic-panel").getBoundingClientRect(), t = document.querySelector(".map-tools").getBoundingClientRect(),
-      e = document.querySelector(".civic-explore").getBoundingClientRect(), bar = document.querySelector(".topbar").getBoundingClientRect();
-      return { panelRight: Math.round(innerWidth - p.right), panelW: Math.round(p.width), toolsLeftOfPanel: t.right <= p.left,
-        exploreMode: document.body.dataset.birgeExplore, exploreInBar: e.top >= bar.top && e.bottom <= bar.bottom + 1 && e.width >= 200 }; });
-    check("1366: panel on the right (400 px), map buttons left of it, one search field (≥ 200 px) in the header",
-      panelBox.panelW === 400 && panelBox.panelRight === 12 /* марафон: сетка 12 от края, как шапка */ && panelBox.toolsLeftOfPanel && panelBox.exploreMode === "header" && panelBox.exploreInBar, panelBox);
+    // Эталон A (FINAL-4, birge-ref.js/css): постоянной панели нет. Поиск 20 / 20, 388 × 52; разделы — капсула между поиском
+    // и «ҚАЗ · РУС + аватар» (справа 20); главная акимата — сводка «Сегодня в Астане» R08 слева 20 / 132; кнопки карты — справа 20.
+    const refBox = await page.evaluate(() => { const r = (sel) => { const e = document.querySelector(sel); if (!e || !e.getClientRects().length) return null; const b = e.getBoundingClientRect(); return { x: Math.round(b.x), y: Math.round(b.y), w: Math.round(b.width), h: Math.round(b.height), right: Math.round(innerWidth - b.right) }; };
+      return { layout: document.body.dataset.birgeLayout, left: document.body.dataset.birgeLeft, field: r(".civic-explore-field"), nav: r("#birge-header .birge-nav"),
+        me: r("#birge-header .birge-me"), today: r("#birge-today"), panel: r("#civic-panel"), tools: r(".map-tools"), chips: r("#birge-chips"),
+        exploreMode: document.body.dataset.birgeExplore }; });
+    const rb = refBox;
+    check("1366 (эталон A): search 20/20 388×52, nav capsule between search and profile, profile right 20, no permanent panel, summary left 20/132, map buttons right 20",
+      rb.layout === "ref" && rb.exploreMode === "header" && rb.field && rb.field.x === 20 && rb.field.y === 20 && rb.field.w === 388 && rb.field.h === 52
+        && rb.nav && rb.me && rb.nav.x >= rb.field.x + rb.field.w && rb.nav.x + rb.nav.w <= rb.me.x && rb.me.right === 20 && rb.me.y === 20
+        && !rb.panel && rb.left === "summary" && rb.today && rb.today.x === 20 && rb.today.y === 132 && rb.today.w === 388
+        && rb.tools && rb.tools.right === 20 && rb.chips && rb.chips.x === 20, rb);
+    // Прежний вид — по адресу ?layout=classic: панель справа 400, кнопки карты левее, поиск в полосе шапки.
+    {
+      const classic = await openPage(browser, base + "?layout=classic", 1366, 768);
+      const panelBox = await classic.page.evaluate(() => { const p = document.getElementById("civic-panel").getBoundingClientRect(), t = document.querySelector(".map-tools").getBoundingClientRect(),
+        e = document.querySelector(".civic-explore").getBoundingClientRect(), bar = document.querySelector(".topbar").getBoundingClientRect();
+        return { layout: document.body.dataset.birgeLayout, panelRight: Math.round(innerWidth - p.right), panelW: Math.round(p.width), toolsLeftOfPanel: t.right <= p.left,
+          exploreMode: document.body.dataset.birgeExplore, exploreInBar: e.top >= bar.top && e.bottom <= bar.bottom + 1 && e.width >= 200 }; });
+      check("1366 ?layout=classic: panel on the right (400 px), map buttons left of it, one search field (≥ 200 px) in the header",
+        panelBox.layout === "classic" && panelBox.panelW === 400 && panelBox.panelRight === 12 /* марафон: сетка 12 от края, как шапка */ && panelBox.toolsLeftOfPanel && panelBox.exploreMode === "header" && panelBox.exploreInBar, panelBox);
+      await classic.page.screenshot({ path: path.join(OUT, "01b_map_1366_classic.png") });
+      await classic.ctx.close();
+    }
     await page.screenshot({ path: path.join(OUT, "01_map_1366_ru.png") });
 
     // ҚАЗ: labels, brand, <html lang>; choice survives reload

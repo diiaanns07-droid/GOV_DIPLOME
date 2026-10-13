@@ -170,14 +170,18 @@ async function main() {
         total++; const e = document.elementFromPoint(x, y);
         if (e && (e.tagName === "CANVAS" || e.closest(".maplibregl-canvas-container"))) free++;
       }
-      return { explore: document.body.dataset.birgeExplore, exploreInBar: !!(ex && bar && ex.t >= bar.t && ex.b <= bar.b + 1), barH: bar && Math.round(bar.h),
+      return { layout: document.body.dataset.birgeLayout, exploreTop: ex && Math.round(ex.t), exploreH: ex && Math.round(ex.h),
+        explore: document.body.dataset.birgeExplore, exploreInBar: !!(ex && bar && ex.t >= bar.t && ex.b <= bar.b + 1), barH: bar && Math.round(bar.h),
         glassBar: !!document.querySelector(".topbar.bk-glass"), legendH: legend && Math.round(legend.h), legendOpen: document.getElementById("birge-legend")?.dataset.open,
         titleShown: !!box("#birge-legend .r07-legend__title"), projects: b3d ? getComputedStyle(b3d).display : "absent",
         lines, pitch: Math.round(map.getPitch()), free: Math.round((free / total) * 1000) / 10 };
     });
     // стекло (R11 GLASS.md №1): шапка — капсула 60 px с отступом 12; без стекла — полоса 64 px
-    check("readability 3 + clean design: one search field in the header (1366), header strip 64 px / glass capsule 60 px",
-      read.explore === "header" && read.exploreInBar && read.barH === (read.glassBar ? 60 : 64), read);
+    // Эталон A (FINAL-4): полосы шапки нет (высота 0) — одно поле поиска само сверху слева, 20 px от края.
+    // Прежний вид (?layout=classic): полоса 64 px / стеклянная капсула 60 px с полем внутри.
+    check("readability 3 + clean design: one search field in the header (1366): reference — search on top 20 px, no header strip; classic — strip 64 px / glass capsule 60 px",
+      read.explore === "header" && (read.layout === "ref" ? read.barH === 0 && read.exploreTop === 20
+        : read.exploreInBar && read.barH === (read.glassBar ? 60 : 64)), read);
     check("readability 3: legend is one compact row (no title) next to «?»; projects and «Что построить?» hidden by default",
       read.legendOpen === "false" && !read.titleShown && read.legendH <= 56 && read.projects === "none", read);
     check("readability 3: free map ≥ 60 % of the 1366×768 screen (akimat)", read.free >= 60, read.free);

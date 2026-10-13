@@ -69,7 +69,8 @@ async function skipToMain(page) {
     return { skip: a.classList.contains("birge-skip"), text: a.textContent.trim(), top: Math.round(r.top) }; });
   await page.keyboard.press("Enter");
   const target = await page.evaluate(() => { const a = document.activeElement;
-    return { fab: a.classList.contains("bc-fab"), heat: !!a.closest("#birge-heat-root"), text: (a.textContent || "").trim().slice(0, 40) }; });
+    return { fab: a.classList.contains("bc-fab"), heat: !!a.closest("#birge-heat-root"), today: !!a.closest("#birge-today"),
+      layout: document.body.dataset.birgeLayout, text: (a.textContent || "").trim().slice(0, 40) }; });
   return { first, target };
 }
 
@@ -91,8 +92,10 @@ async function main() {
     await ready(page);
 
     const keysAkimat = await skipToMain(page);
-    check("keyboard (akimat): first Tab = «Перейти к главной кнопке», Enter -> «Карта жалоб» panel",
-      keysAkimat.first.skip && keysAkimat.first.top >= 0 && keysAkimat.first.text.length > 3 && keysAkimat.target.heat, keysAkimat);
+    // Эталон A (FINAL-4): на главной акимата слева сводка «Сегодня в Астане» (R08) — главное там; прежний вид — «Карта жалоб».
+    check("keyboard (akimat): first Tab = «Перейти к главной кнопке», Enter -> left card (reference: «Сегодня в Астане»; classic: «Карта жалоб»)",
+      keysAkimat.first.skip && keysAkimat.first.top >= 0 && keysAkimat.first.text.length > 3
+        && (keysAkimat.target.layout === "ref" ? keysAkimat.target.today || keysAkimat.target.heat : keysAkimat.target.heat), keysAkimat);
 
     // ---- what B2 connects
     const modules = (await api(page, "/api/civic/v2/modules")).body.modules;
@@ -186,10 +189,15 @@ async function main() {
       const d = document.querySelector("#birge-build3d-root .b3d-dock"), p = document.querySelector(".civic-panel");
       if (!d) return null;
       const r = d.getBoundingClientRect(), q = p.getBoundingClientRect();
-      return { state: d.dataset.state, kinds: d.querySelectorAll(".b3d-card[data-kind]").length, right: Math.round(r.right), panelLeft: Math.round(q.left),
-        bottom: Math.round(r.bottom), vh: innerHeight };
+      // Эталон A: панели справа нет; каталог не должен закрывать карточку/сводку слева, поиск и кнопки карты.
+      const hit = (sel) => { const e = document.querySelector(sel); if (!e || !e.getClientRects().length) return false; const b = e.getBoundingClientRect();
+        return b.width > 0 && r.left < b.right && b.left < r.right && r.top < b.bottom && b.top < r.bottom; };
+      return { layout: document.body.dataset.birgeLayout, state: d.dataset.state, kinds: d.querySelectorAll(".b3d-card[data-kind]").length,
+        left: Math.round(r.left), right: Math.round(r.right), panelLeft: Math.round(q.left), bottom: Math.round(r.bottom), vh: innerHeight,
+        covers: ["#birge-today", "#civic-panel", ".civic-explore-field", ".map-tools"].filter(hit) };
     });
-    check("akimat: catalog shows 5 kinds and does not cover the right panel", dock?.state === "catalog" && dock.kinds === 5 && dock.right <= dock.panelLeft, dock);
+    check("akimat: catalog shows 5 kinds and does not cover the left card / summary, search and map buttons (classic: the right panel)",
+      dock?.state === "catalog" && dock.kinds === 5 && (dock.layout === "ref" ? dock.covers.length === 0 : dock.right <= dock.panelLeft), dock);
     const legendWhileOpen = await page.evaluate(() => getComputedStyle(document.querySelector("#birge-legend") || document.querySelector(".r07-maplegend")).visibility);
     check("akimat: while the catalog is open the legend steps aside (no overlap at the bottom of the map)", legendWhileOpen === "hidden", legendWhileOpen);
     await page.screenshot({ path: path.join(OUT, "b2-1366-akimat-catalog.png") });

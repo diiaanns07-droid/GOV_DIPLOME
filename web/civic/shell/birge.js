@@ -358,9 +358,13 @@
     skip.addEventListener("click", (event) => {
       event.preventDefault();
       const fab = document.querySelector(".bc-fab");
+      // Эталон A: на главной акимата панели нет — главное слева в сводке «Сегодня в Астане» (R08, birge-ref.js).
+      const today = document.getElementById("birge-today");
+      const todayShown = today && !today.hidden && today.getClientRects().length;
       const target = state.section === "day" ? document.getElementById("birge-day-title")
         : state.section !== "map" ? document.getElementById("birge-screen-title")
         : state.mode === "resident" && fab && getComputedStyle(fab).display !== "none" ? fab
+        : todayShown ? today.querySelector("button, [tabindex]:not([tabindex='-1']), a[href]")
         : document.querySelector("#birge-heat-root button, #birge-heat-root [tabindex], #birge-heat-root a[href]");
       if (target) target.focus();
     });
