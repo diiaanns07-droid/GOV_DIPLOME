@@ -107,7 +107,7 @@ const SC = [
     target: "() => { const s = window.__R.screen(); return !!s && [...s.querySelectorAll('article')].filter((e) => e.getBoundingClientRect().height > 40).length >= 1 && !window.__R.busy(s); }",
     prep: async (page) => clickOf(await navBtn(page, /^\s*Проекты( и идеи)?\s*$/)) },
   { id: "vote", fresh: true, owner: "R06", name: "«Поддержать» идею (житель)", mode: "resident", optimistic: true, region: "#birge-screen, .birge-screen, .ri-card",
-    target: "() => { const b = window.__R.voteBtn; if (!b) return false; const card = b.closest('article') || b.parentElement; return b.getAttribute('aria-pressed') === 'true' || !/Поддержать/.test(b.innerText) || (card && card.innerText.replace(/\\s+/g, ' ') !== window.__R.before.replace(/\\s+/g, ' ')); }",
+    target: "() => { const b = window.__R.voteBtn; if (!b) return false; const card = b.closest('article') || b.parentElement; return b.getAttribute('aria-pressed') === 'true' || (card && card.innerText.replace(/\\s+/g, ' ') !== window.__R.before.replace(/\\s+/g, ' ')); }",
     prep: async (page) => {
       let ok = !!(await navBtn(page, /^\s*Идеи\s*$/));
       if (ok) await (await navBtn(page, /^\s*Идеи\s*$/)).click();
@@ -117,8 +117,8 @@ const SC = [
       await v.evaluate((b) => { window.__R.voteBtn = b; const c = b.closest("article") || b.parentElement; window.__R.before = c ? c.innerText : ""; });
       return clickOf(v);
     } },
-  { id: "mine", owner: "R09", name: "«Мои обращения» — повторное открытие", mode: "resident", region: "#birge-screen, .birge-screen, [class*=mine]",
-    target: "() => { const s = window.__R.screen(); return !!s && s.getBoundingClientRect().width > 0 && /Мои обращения/.test(s.innerText) && !window.__R.busy(s); }",
+  { id: "mine", owner: "R09", name: "«Мои обращения» — повторное открытие", mode: "resident", region: "#birge-complaint-root, .bc-panel, #birge-screen",
+    target: "() => { const s = [...document.querySelectorAll('.bc-panel, #birge-screen')].find((e) => e.getBoundingClientRect().width > 0 && /Мои обращения/.test(e.innerText)); return !!s && !window.__R.busy(s) && !/Загружаем|Жүктеп/.test(s.innerText); }",
     prep: async (page) => { const a = await navBtn(page, /^\s*Мои обращения\s*$/); if (!a) return null; await a.click(); await L.sleep(2500); await page.keyboard.press("Escape"); await L.sleep(800);
       const m = await navBtn(page, /^\s*Карта\s*$/); if (m) { await m.click(); await L.sleep(1200); } return clickOf(await navBtn(page, /^\s*Мои обращения\s*$/)); } },
   { id: "search", owner: "R01", name: "Поиск: подсказки с первой буквы («Х»)", mode: "akimat", region: "body",
