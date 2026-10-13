@@ -1,0 +1,18 @@
+R05 · эталон 13.10, круги 1–6 — полный прогон поставки 16 (13.10, облако, SwiftShader)
+Код R05: 4595563 (прогон на HEAD f6c0d214 — тот же web/civic/build3d)
+Демо: ui-kit эталона R11 e6aaca1f (--kit); оболочка: R01 claude/sharp-dijkstra-0t87gl @ 69984f0f (в нём R05 0e27479) + R05 4595563; тесты R10 demo_flow 53d1c070
+
+demo code f6c0d214 12:03
+browser_check exit 0 Итого: 56 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json
+ux_day3 exit 0 Итого: 29 PASS, 0 FAIL
+node exit 0 # pass 38 # fail 0 
+i18n_sync exit 0 PASS — ключей build3d 57, общих запасных 34, сравнений 296, расхождений 0, новых для R11 6
+motion exit 0 Итого: { PASS: 35 } → research/round-14-results/R05/runs/motion_check.json
+DONE
+code f6c0d214 12:16
+shell smoke exit 0 pass=28 fail=0  12:23
+R01 r14_b2 exit 0 pass=28 fail=0 
+R01 r14_shell exit 0 pass=42 fail=0 
+R01 r14_wave2 exit 0 pass=42 fail=0 
+R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m16_demo 12:38
+DONE
