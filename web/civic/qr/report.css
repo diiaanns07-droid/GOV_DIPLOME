@@ -1,92 +1,176 @@
-/* R12 · QR-паспорт объекта (web/civic/qr/report.js). Токены, кнопки, статус, «Подробнее» — ui-kit R11.
-   Дизайн-марафон: три размера (13 подписи · 17 текст и кнопки · 22 заголовок), два веса (400/600), шаг 8,
-   цвета только токенами (на стекле панели ui-kit сам делает их тёмными), мягкое появление (bk-rise). */
+/* R12 · QR-паспорт объекта (web/civic/qr/report.js) = карточка «Выбран объект» эталона A
+   (research/round-14/design/REFERENCE.html, «2ГИС светлый», 13 окт): плитка 48 + название 19/600 + подпись 14, крестик 32,
+   крупное число 34/600, строка статуса 15 со сроком справа, две кнопки 44 в ряд, вкладки 14/500 «Обзор · Обращения ·
+   История», строки 14 со значком в плитке 30, цитата ≤ 2 строк. Отступ от края карточки — 18 (контейнер — без своих полей).
+   Цвета — токены эталона ниже; когда R11 перенесёт их в ui-kit, значения совпадут (замена — одна строка). */
 .bq-report {
+  --bq-ink: #121a17; --bq-ink-2: #4b5752; --bq-ink-3: #7e8a85; --bq-line: rgba(18, 26, 23, 0.08);
+  --bq-sub: rgba(18, 26, 23, 0.06); --bq-sub-hover: rgba(18, 26, 23, 0.1); --bq-brand: #152c26; --bq-ok: #3b8a2e;
+  --bq-ease: cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   box-sizing: border-box;
-  max-width: 480px;
-  padding: 8px 16px 24px;
-  color: var(--c-ink, #152c26);
-  font-size: var(--fs-lead, 17px);
+  max-width: 420px;
+  padding: 0 0 16px;
+  color: var(--bq-ink);
+  font-size: 14px;
   line-height: 1.4;
   overflow-wrap: anywhere;
 }
 .bq-report *, .bq-report *::before, .bq-report *::after { box-sizing: border-box; }
-/* Своё стекло (вне панели оболочки): отступ под радиус капсулы. */
-.bq-report.bk-glass { padding: 12px 20px 24px; }
 .bq-report [hidden] { display: none !important; }
-
-/* Верхняя строка: вид объекта · «Пример» слева, крестик справа — во всех состояниях. */
-.bq-top { display: flex; align-items: center; gap: 8px; min-height: 48px; margin: 0 -8px 0 0; }
-.bq-eyebrow {
-  flex: 1 1 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-width: 0; margin: 0;
-  color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 13px); font-weight: var(--fw-semi, 600);
+/* Своё стекло — только вне панели оболочки (GLASS.md): «плотное стекло 86 %» эталона. */
+.bq-report.bk-glass {
+  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 18px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 12px 32px rgba(16, 24, 20, 0.14), 0 0 0 0.5px rgba(16, 24, 20, 0.1);
 }
-.bq-eyebrow .ic { width: 20px; height: 20px; flex: none; }
-.bq-eyebrow .bk-tag { font-size: var(--fs-caption, 13px); }
-.bq-report__close { flex: none; min-width: 48px; min-height: 48px; }
 
-.bq-title { margin: 0 0 4px; font-size: var(--fs-title, 22px); line-height: 1.25; font-weight: var(--fw-semi, 600); letter-spacing: -0.01em; }
+/* ── Шапка: плитка, название, подпись, крестик ── */
+.bq-hd { display: flex; align-items: flex-start; gap: 12px; padding: 18px 18px 0; }
+.bq-tile {
+  display: flex; align-items: center; justify-content: center; flex: none;
+  width: 48px; height: 48px; border-radius: 14px; background: var(--bq-sub); color: var(--bq-ink-2);
+}
+.bq-tile .ic { width: 24px; height: 24px; }
+.bq-tile[data-tone="red"] { background: #fcebeb; color: #a32d2d; }
+.bq-tile[data-tone="orange"] { background: #faeeda; color: #7a520f; }
+.bq-tile[data-tone="amber"] { background: #fdf5e6; color: #7a520f; }
+.bq-tile[data-tone="ok"] { background: #eaf3de; color: #27500a; }
+.bq-hd__text { flex: 1 1 auto; min-width: 0; }
+.bq-title { margin: 0; font-size: 19px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
 .bq-title:focus { outline: none; }
-.bq-number { margin: 0 0 16px; color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 13px); font-variant-numeric: tabular-nums; }
-.bq-approx { display: inline-block; margin: 0 0 16px; }
+.bq-title:focus-visible { outline: 2px solid var(--c-focus, #2f7fd6); outline-offset: 2px; border-radius: 4px; }
+.bq-sub { margin: 3px 0 0; font-size: 14px; color: var(--bq-ink-2); }
+.bq-demo { margin-left: 8px; font-size: 12px; vertical-align: 1px; }
+/* Крестик 32 в круге, зона нажатия 44 (рисунок эталона, палец 40+). */
+.bq-x {
+  position: relative; flex: none; display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; margin: -6px -6px 0 auto; padding: 0; border: 0; background: transparent; color: var(--bq-ink); cursor: pointer;
+}
+.bq-x::before {
+  content: ""; position: absolute; width: 32px; height: 32px; border-radius: 50%; background: var(--bq-sub);
+  transition: background-color 150ms var(--bq-ease), transform 150ms var(--bq-ease);
+}
+.bq-x:hover::before { background: var(--bq-sub-hover); }
+.bq-x:active::before { transform: scale(0.94); }
+.bq-x .ic { position: relative; width: 16px; height: 16px; }
+.bq-x:focus-visible { outline: none; }
+.bq-x:focus-visible::before { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--c-focus, #2f7fd6); }
+.bq-approx { display: inline-block; margin: 12px 18px 0; }
 
-/* Статус как в ui-kit: «● Новое» и под словом — сколько людей (17, без канцелярита). */
-.bq-statusline { margin: 0 0 16px; gap: 4px; }
-.bq-statusline .bk-status { font-size: var(--fs-lead, 17px); }
-.bq-report .bk-statusline__note { font-size: var(--fs-lead, 17px); color: var(--c-text-2, #5b6a64); }
-.bq-reported b { color: var(--c-ink, #152c26); font-weight: var(--fw-semi, 600); }
-.bq-done { display: flex; gap: 8px; align-items: center; margin: 0 0 16px; color: var(--c-ok, #2f6b12); }
-.bq-done .ic, .bq-notice .ic { width: 20px; height: 20px; flex: none; }
+/* ── Сколько людей и статус ── */
+.bq-big { display: flex; align-items: baseline; gap: 8px; margin: 0; padding: 16px 18px 0; }
+.bq-big b { font-size: 34px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.bq-big span { font-size: 14px; color: var(--bq-ink-2); }
+.bq-st { display: flex; align-items: center; gap: 8px; margin: 12px 18px 0; font-size: 15px; }
+.bq-st .bk-status { gap: 8px; font-size: 15px; font-weight: 400; color: var(--bq-ink); white-space: normal; }
+.bq-st .bk-status::before { width: 9px; height: 9px; }
+.bq-st small { margin-left: auto; padding-left: 8px; color: var(--bq-ink-3); font-size: 13px; white-space: nowrap; }
+.bq-done { display: flex; align-items: center; gap: 8px; margin: 12px 18px 0; color: var(--bq-ok); font-size: 14px; }
+.bq-done .ic, .bq-notice .ic { width: 18px; height: 18px; flex: none; }
 
-.bq-actions { display: grid; gap: 8px; margin: 0 0 16px; }
-.bq-actions .bk-btn { min-height: 48px; }
-/* Значок и подпись — одной группой: одна строка — по центру кнопки; две строки — текст слева, у значка. */
+/* ── Кнопки: главная тёмная во всю ширину, вторая — серая по тексту ── */
+.bq-actions { display: flex; gap: 8px; padding: 16px 18px 0; }
+.bq-btn {
+  min-height: 44px; padding: 10px 16px; border: 0; border-radius: 12px; font-size: 15px; font-weight: 600; line-height: 1.25;
+  transition: background-color 150ms var(--bq-ease), transform 150ms var(--bq-ease);
+}
+.bq-btn:active:not(:disabled) { transform: scale(0.98); }
+.bq-btn--p { flex: 1 1 auto; min-width: 40%; background: var(--bq-ink); color: #fff; }
+.bq-btn--p:hover:not(:disabled) { background: #0b110f; }
+.bq-btn--s { flex: 0 1 auto; max-width: 58%; background: var(--bq-sub); color: var(--bq-ink); }
+.bq-btn--s:hover:not(:disabled) { background: var(--bq-sub-hover); }
+.bq-btn .ic { width: 18px; height: 18px; }
+/* Значок и подпись — одной группой: одна строка — по центру; две строки (длинное kk) — текст у значка. */
 .bq-btn__text { min-width: 0; text-align: start; text-wrap: balance; }
 .bq-notice {
-  display: flex; gap: 8px; align-items: flex-start; margin: 0 0 16px; padding: 12px 16px; border-radius: var(--r-m, 10px);
-  animation: bk-rise var(--t-base, 240ms) var(--ease, ease-out) both;
+  display: flex; gap: 8px; align-items: flex-start; margin: 12px 18px 0; padding: 10px 14px; border-radius: 12px; font-size: 14px;
+  animation: bq-fade 200ms var(--bq-ease) both;
 }
-.bq-notice--ok { background: var(--c-ok-soft, #eaf4dc); color: var(--c-ok, #2f6b12); }
+.bq-notice--ok { background: #eaf3de; color: #27500a; }
+.bq-notice--error { background: #fcebeb; color: #a32d2d; }
+
+/* ── Вкладки «Обзор · Обращения · История» (черта под выбранной; зона нажатия 44 при том же рисунке) ── */
+.bq-tabs { display: flex; gap: 18px; margin-top: 4px; padding: 0 18px; border-bottom: 1px solid var(--bq-line); }
+.bq-tab {
+  padding: 16px 0 10px; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 500; color: var(--bq-ink-3);
+  cursor: pointer; transition: color 150ms var(--bq-ease), box-shadow 150ms var(--bq-ease);
+}
+.bq-tab:hover { color: var(--bq-ink-2); }
+.bq-tab[aria-selected="true"] { color: var(--bq-ink); box-shadow: inset 0 -2px 0 var(--bq-ink); }
+.bq-tab:focus-visible { outline: 2px solid var(--c-focus, #2f7fd6); outline-offset: 2px; border-radius: 4px; }
+
+/* ── Строки: значок в плитке 30, подпись, значение справа; между строками — линия 1 px ── */
+.bq-rows { padding: 6px 18px 0; }
+.bq-rows--top { padding-top: 10px; }
+.bq-list { margin: 0; padding: 0; list-style: none; }
+.bq-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 14px; }
+.bq-row + .bq-row, .bq-list > .bq-row + .bq-row, .bq-sec + .bq-list > .bq-row:first-child { border-top: 1px solid var(--bq-line); }
+.bq-row__ic {
+  display: flex; align-items: center; justify-content: center; flex: none;
+  width: 30px; height: 30px; border-radius: 9px; background: var(--bq-sub); color: var(--bq-ink);
+}
+.bq-row__ic .ic { width: 16px; height: 16px; }
+.bq-row__label { color: var(--bq-ink-2); }
+.bq-row__value { margin-left: auto; padding-left: 8px; font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
+.bq-row--quote { display: block; }
+.bq-quote {
+  margin: 0; font-size: 14px; line-height: 1.45; color: var(--bq-ink);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.bq-link {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin: -6px 0 -10px; padding: 0;
+  border: 0; background: none; font: inherit; font-size: 14px; font-weight: 500; color: var(--bq-brand); cursor: pointer;
+}
+.bq-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.bq-link .ic { width: 16px; height: 16px; }
+.bq-row--link { padding: 4px 0; }
+.bq-row--skel .bk-skel--line { flex: 1 1 auto; height: 14px; }
+.bq-case__what { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+.bq-case__cat { color: var(--bq-ink); }
+.bq-case__meta { color: var(--bq-ink-3); font-size: 12px; }
+.bq-case__status, .bq-hist .bk-status { margin-left: auto; font-size: 13px; font-weight: 500; white-space: nowrap; }
+.bq-case__status::before, .bq-hist .bk-status::before { width: 8px; height: 8px; }
+.bq-hist time { min-width: 56px; color: var(--bq-ink-3); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bq-hist .bk-status { margin-left: 0; font-weight: 400; color: var(--bq-ink); }
+.bq-sec { padding: 10px 0 12px; }
+.bq-h3 { margin: 0 0 8px; color: var(--bq-ink-3); font-size: 13px; font-weight: 500; }
+.bq-spark { height: 40px; }
+.bq-empty { margin: 0; padding: 12px 0; color: var(--bq-ink-2); }
+
+/* ── Ошибка и «не найден» (ui-kit .bk-error) — в тех же полях 18 ── */
+.bq-top { display: flex; justify-content: flex-end; padding: 12px 18px 0; }
+.bq-error { padding: 0 18px; }
+.bq-error .bq-actions { flex-direction: column; width: 100%; padding: 8px 0 0; }
+.bq-error .bk-btn { min-height: 44px; border-radius: 12px; }
+
+/* ── Скелетон в форме карточки — ничего не «прыгает», когда придут данные ── */
+.bq-skel__tile { width: 48px; height: 48px; border-radius: 14px; }
+.bq-skel__title { width: 70%; height: 20px; margin-top: 2px; }
+.bq-skel__sub { width: 45%; margin-top: 8px; }
+.bq-skel { display: grid; gap: 12px; padding: 18px 18px 0; }
+.bq-skel__big { width: 40%; height: 30px; }
+.bq-skel__st { width: 55%; }
+.bq-skel__acts { display: flex; gap: 8px; }
+.bq-skel__button { flex: 1 1 auto; height: 44px; border-radius: 12px; }
+.bq-skel__button--s { flex: 0 0 34%; }
+
+/* ── Движение (эталон: карточка выезжает слева за 300 мс; вкладка сменяется за 150 мс) ── */
+.bq-enter { animation: bq-in 300ms var(--bq-ease) both; }
+.bq-panel--in { animation: bq-fade 150ms ease-out both; }
+@keyframes bq-in { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+@keyframes bq-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 760px) {
+  .bq-enter { animation-name: bq-up; }
+  @keyframes bq-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+}
 /* «Спасибо»: галочка появляется с лёгким «щелчком», число людей один раз подпрыгивает — голос учтён. */
-.bq-notice--ok .ic { animation: bq-pop 320ms var(--ease, ease-out) 80ms both; }
-.bq-bump { display: inline-block; animation: bq-bump 360ms var(--ease, ease-out) both; }
-@keyframes bq-pop { 0% { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
+.bq-notice--ok .ic { animation: bq-pop 300ms var(--bq-ease) 80ms both; }
+.bq-bump { display: inline-block; animation: bq-bump 250ms var(--bq-ease) both; }
+@keyframes bq-pop { 0% { transform: scale(0.4); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
 @keyframes bq-bump { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
-.bq-notice--error { background: var(--c-danger-soft, #fdecea); color: var(--c-danger, #b3362e); }
-
-/* «Подробнее» (.bk-details): секции с тихими заголовками 13/600, строки 17, разделители вместо рамок. */
-.bq-more { margin-top: 8px; }
-.bq-sec { margin: 8px 0 16px; }
-.bq-h3 { margin: 0 0 8px; color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 13px); font-weight: var(--fw-semi, 600); }
-.bq-spark { height: 48px; }
-.bq-rows { list-style: none; margin: 0; padding: 0; }
-.bq-row, .bq-case, .bq-hist { padding: 8px 0; border-bottom: 1px solid var(--c-line, #e8eaeb); }
-.bq-rows > li:last-child { border-bottom: 0; }
-.bq-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
-.bq-row__num { font-weight: var(--fw-semi, 600); font-variant-numeric: tabular-nums; }
-.bq-case { display: grid; gap: 2px; }
-.bq-case__status { font-size: var(--fs-lead, 17px); }
-.bq-case__meta { color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 13px); }
-.bq-hist { display: grid; grid-template-columns: minmax(64px, auto) 1fr; gap: 16px; align-items: baseline; }
-.bq-hist time { color: var(--c-text-2, #5b6a64); font-size: var(--fs-caption, 13px); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.bq-map { margin-top: 8px; min-height: 48px; }
-
-/* Ошибка и «не найден»: ui-kit .bk-error (значок, заголовок, подсказка, действие). */
-.bq-error { padding-top: 8px; }
-.bq-error .bq-actions { width: 100%; margin-top: 8px; }
-
-/* Скелетон повторяет карточку — без «прыжка», когда придут данные. */
-.bq-skel { display: grid; gap: 12px; padding-top: 4px; }
-.bq-skel__eyebrow { width: 40%; }
-.bq-skel__short { width: 45%; }
-.bq-skel__button { height: 56px; border-radius: var(--r-m, 10px); margin-top: 4px; }
-
-/* Мягкое появление: карточка «поднимается» один раз при открытии (не при смене языка или «Я тоже»). */
-.bq-enter > * { animation: bk-rise var(--t-base, 240ms) var(--ease, ease-out) both; }
-.bq-enter > :nth-child(2) { animation-delay: 30ms; }
-.bq-enter > :nth-child(3) { animation-delay: 60ms; }
-.bq-enter > :nth-child(n + 4) { animation-delay: 90ms; }
 @media (prefers-reduced-motion: reduce) {
-  .bq-enter > *, .bq-notice, .bq-notice--ok .ic, .bq-bump { animation: none; }
+  .bq-enter, .bq-panel--in, .bq-notice, .bq-notice--ok .ic, .bq-bump { animation: none; }
+  .bq-x::before, .bq-btn, .bq-tab { transition: none; }
 }

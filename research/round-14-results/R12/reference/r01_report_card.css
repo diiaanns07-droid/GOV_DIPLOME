@@ -1,0 +1,14 @@
+/* R12 → R01 (эталон A, 13 окт): предложение для оболочки — паспорт QR в карточке слева под поиском, как «Выбран объект»
+   в REFERENCE.html: left 20, top 84 (ниже строки поиска 20 + 52 + 12), ширина 388, радиус 18, высота по содержимому,
+   поля карточки даёт сам паспорт (18), у контейнера своих полей нет. Телефон — шторка оболочки, без своих полей.
+   R01 решает, как вписать в свою раскладку «карточка слева» (это файл-предложение, а не код R12). */
+@media (min-width: 761px) {
+  body.birge-report-open .civic-panel {
+    left: 20px; right: auto; top: 84px; bottom: auto; width: 388px; height: auto; max-height: calc(100% - 104px);
+    border-radius: 18px;
+  }
+  body.birge-report-open .civic-panel .civic-scroll { padding: 0; }
+}
+@media (max-width: 760px) {
+  body.birge-report-open .civic-panel .civic-scroll { padding: 0 0 88px; }
+}

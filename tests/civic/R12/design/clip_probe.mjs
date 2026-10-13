@@ -27,7 +27,7 @@ for (const [w, h] of [[375, 812], [1366, 768]]) for (const lang of ["kk", "ru"])
   const k = `${w}-${lang}`;
   // паспорт: длинное kk
   { const { ctx, p } = await mk("resident"); await p.goto(BASE + "/?report=osm-node-2639491700"); await p.waitForSelector(".bq-report .bq-title", { timeout: 30000 }).catch(() => null); await p.waitForTimeout(600);
-    await p.click(".bq-more summary").catch(() => null); await p.waitForTimeout(300); res[k + " passport"] = await p.evaluate(clip, ".bq-report"); await ctx.close(); }
+    await p.click('.bq-tab[data-tab="cases"]').catch(() => null); await p.waitForTimeout(300); res[k + " passport"] = await p.evaluate(clip, ".bq-report"); await ctx.close(); }
   // лист QR
   { const { ctx, p } = await mk("akimat"); await p.goto(BASE + "/civic/qr/print.html?lang=" + lang + "&ids=osm-node-2639491700,osm-node-4109037549"); await p.waitForTimeout(1500);
     res[k + " print"] = await p.evaluate(clip, ".bqp"); await ctx.close(); }

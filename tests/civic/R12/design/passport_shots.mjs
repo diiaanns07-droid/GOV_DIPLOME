@@ -38,8 +38,8 @@ for (const name of only) {
     if (st.route === "hold") { await p.waitForSelector("#birge-report-root .bq-report", { timeout: 30000 }); await p.waitForTimeout(700); }
     else await p.waitForFunction(() => /ready|error/.test(document.querySelector("#birge-report-root .bq-report")?.dataset.state || ""), null, { timeout: 30000 });
     await p.waitForTimeout(900);
-    if (st.act === "details") { await p.click("#birge-report-root details.bq-more > summary"); await p.waitForSelector("#birge-report-root .bq-cases li", { timeout: 8000 }).catch(() => null); await p.waitForTimeout(300);
-      await p.evaluate(() => document.querySelector("#birge-report-root details.bq-more")?.scrollIntoView({ block: "start" })); await p.waitForTimeout(300); }
+    if (st.act === "details") { await p.click('#birge-report-root .bq-tab[data-tab="cases"]'); await p.waitForSelector("#birge-report-root .bq-cases li", { timeout: 8000 }).catch(() => null); await p.waitForTimeout(300);
+      await p.evaluate(() => document.querySelector("#birge-report-root .bq-tabs")?.scrollIntoView({ block: "start" })); await p.waitForTimeout(300); }
     if (st.act === "metoo") { await p.click('#birge-report-root [data-act="metoo"]').catch(() => null); await p.waitForSelector("#birge-report-root .bq-notice", { timeout: 8000 }).catch(() => null); await p.waitForTimeout(400); }
     const file = `${name}-${w}-${lang}.png`;
     await p.screenshot({ path: path.join(OUT, file) });
@@ -48,7 +48,7 @@ for (const name of only) {
       const all = [...r.querySelectorAll("*")].filter((e) => e.childElementCount === 0 && e.textContent.trim() && e.getClientRects().length);
       const sizes = [...new Set(all.map((e) => getComputedStyle(e).fontSize))];
       const weights = [...new Set(all.map((e) => getComputedStyle(e).fontWeight))];
-      const small = [...r.querySelectorAll("button, a, summary")].filter((e) => e.getClientRects().length).map((e) => { const q = e.getBoundingClientRect(); return { t: (e.textContent || e.getAttribute("aria-label") || "").trim().slice(0, 24), h: Math.round(q.height), w: Math.round(q.width) }; }).filter((x) => x.h < 44 || x.w < 44);
+      const small = [...r.querySelectorAll("button, a, summary, [role=tab]")].filter((e) => e.getClientRects().length).map((e) => { const q = e.getBoundingClientRect(); return { t: (e.textContent || e.getAttribute("aria-label") || "").trim().slice(0, 24), h: Math.round(q.height), w: Math.round(q.width) }; }).filter((x) => x.h < 44 || x.w < 44);
       const primary = r.querySelectorAll(".bk-btn--primary").length;
       return { sizes, weights, small, primary, state: r.dataset.state };
     });

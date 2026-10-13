@@ -64,9 +64,13 @@ try {
     const { ctx, p, errors } = await page({ width: 1366, height: 768 }, "ru", "/?report=" + STOP);
     await reportState(p);
     const card = await p.locator("#birge-report-root").innerText();
-    check("ссылка ?report открывает паспорт остановки в панели", /Хан Шатыр/.test(card) && /Объект № 4\s109\s037\s549/.test(card), card.slice(0, 200));
+    check("ссылка ?report открывает паспорт остановки в панели", /Хан Шатыр/.test(card) && /Номер на табличке\s*№ 4\s109\s037\s549/.test(card), card.slice(0, 200));
     const statusLabel = await p.locator("#birge-report-root .bq-statusline .bk-status").getAttribute("aria-label").catch(() => null);
-    check("в паспорте видно, сколько людей сообщили, и статус", /Сообщил/.test(card) && /^Статус: /.test(statusLabel || ""), [card.slice(0, 300), statusLabel]);
+    check("в паспорте видно, сколько людей сообщили, и статус", /\d+\s+человека? сообщил/.test(card) && /^Статус: /.test(statusLabel || ""), [card.slice(0, 300), statusLabel]);
+    // эталон A «Выбран объект»: вкладки «Обзор · Обращения · История», открыт «Обзор»
+    const tabs = await p.locator("#birge-report-root .bq-tab").allInnerTexts();
+    check("вкладки эталона: «Обзор · Обращения · История», открыт «Обзор»", tabs.length === 3 && /Обзор/.test(tabs[0]) && /Обращения/.test(tabs[1]) && /История/.test(tabs[2])
+      && (await p.locator('#birge-report-root .bq-tab[aria-selected="true"]').getAttribute("data-tab")) === "overview", tabs);
     check("одна главная кнопка в паспорте", (await p.locator("#birge-report-root .bk-btn--primary").count()) === 1, null);
     // GLASS.md R11: в панели оболочки паспорт лежит на её стекле — своего стекла (карточки в карточке) у него нет
     const glass = await p.evaluate(() => ({ panel: document.querySelector("#birge-report-root")?.closest(".civic-panel")?.classList.contains("bk-glass") || false,
@@ -86,14 +90,22 @@ try {
       await p.waitForTimeout(200);
     }
     await p.screenshot({ path: path.join(OUT, "app-qr-1366-ru.png") });
-    // «Подробнее»: текущие обращения и история (POLISH_WAVE_2 п. 6) — из публичного вида настоящего R09
-    await p.click("#birge-report-root details.bq-more > summary");
+    // Вкладки «Обращения» и «История» (POLISH_WAVE_2 п. 6) — из публичного вида настоящего R09, грузятся при открытии
+    await p.click('#birge-report-root .bq-tab[data-tab="cases"]');
     const casesOk = await p.waitForSelector("#birge-report-root .bq-cases li", { timeout: 10000 }).then(() => true, () => false);
-    const more = await p.locator("#birge-report-root details.bq-more").innerText();
-    check("«Подробнее»: «Обращения здесь» и «История» из R09, без текстов жителей и id",
-      casesOk && /Обращения здесь/.test(more) && /История/.test(more) && /Освещение/.test(more) && !/c-demo|osm-node/.test(more), more.slice(0, 400));
+    const more = await p.locator("#birge-report-root #bq-panel").innerText();
     await p.screenshot({ path: path.join(OUT, "app-qr-details-1366-ru.png") });
-    await p.click("#birge-report-root details.bq-more > summary");
+    await p.click('#birge-report-root .bq-tab[data-tab="history"]');
+    const histOk = await p.waitForSelector("#birge-report-root .bq-history li", { timeout: 10000 }).then(() => true, () => false);
+    const hist = await p.locator("#birge-report-root #bq-panel").innerText();
+    check("вкладки «Обращения» и «История» из R09, без id",
+      casesOk && histOk && /Освещение/.test(more) && /Новое|В работе/.test(hist) && !/c-demo|osm-node/.test(more + hist), [more.slice(0, 300), hist.slice(0, 200)]);
+    // цитата — только из публичных текстов тепловой карты (без входа — лишь примеры, R07 api: тексты жалоб — сотруднику)
+    await p.click('#birge-report-root .bq-tab[data-tab="overview"]');
+    const quote = await p.locator("#birge-report-root .bq-quote").innerText().catch(() => "");
+    const pub = await p.evaluate(async (id) => { const r = await fetch("/api/civic/v2/heat/target?kind=object&id=" + id + "&days=30"); const j = await r.json();
+      return ((j.item && j.item.texts && j.item.texts.groups) || []).map((g) => ({ text: g.text, demo: g.demo })); }, STOP);
+    check("цитата в «Обзоре» — из публичных текстов (без входа — только примеры)", !quote || pub.some((g) => g.demo && quote.includes(g.text)), [quote, pub]);
     if (await p.locator('#birge-report-root [data-act="metoo"]').count()) {
       await p.click('#birge-report-root [data-act="metoo"]');
       const ok = await p.waitForSelector("#birge-report-root .bq-notice--ok", { timeout: 10000 }).then(() => true, () => false);
@@ -116,7 +128,7 @@ try {
     const { ctx, p, errors } = await page({ width: 375, height: 740 }, "kk", "/?report=" + STOP);
     await reportState(p);
     const card = await p.locator("#birge-report-root").innerText();
-    check("телефон, kk: паспорт по-казахски", /аялдамасы/.test(card) && /Нысан № 4\s109\s037\s549/.test(card), card.slice(0, 200));
+    check("телефон, kk: паспорт по-казахски", /аялдамасы/.test(card) && /Тақтайшадағы нөмір\s*№ 4\s109\s037\s549/.test(card), card.slice(0, 200));
     check("ссылка не переключила язык", (await p.evaluate(() => document.documentElement.lang)) === "kk", null);
     const btn = await p.locator("#birge-report-root .bk-btn--primary").boundingBox();
     check("главная кнопка видна без прокрутки страницы", !!btn && btn.y + btn.height <= 740 && btn.height >= 44, btn);
