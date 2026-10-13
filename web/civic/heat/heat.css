@@ -7,17 +7,17 @@
  * Зоны нажатия ≥ 48 px, значки на карте ≥ 44 px, цвет всегда с числом или словом. */
 
 .r07-root {
-  /* Токены эталона A (research/round-14/design/REFERENCE.html :root): почти чёрный #121A17 для главного, серые 4B5752 / 7E8A85,
-     линии 1 px rgba(18,26,23,.08), второстепенные заливки rgba(18,26,23,.06), радиусы 12/14/18. Когда R11 перенесёт их в
-     ui-kit, значения совпадут. */
-  --r07-ink: #121A17;
-  --r07-ink-2: #4B5752;
-  --r07-ink-3: #7E8A85;
-  --r07-line: rgba(18, 26, 23, 0.08);
+  /* Токены эталона A (research/round-14/design/REFERENCE.html :root) — через токены ui-kit R11 (ветка R11 7f0fdb9a: --c-ink
+     #121A17, --c-text-2 #4B5752, --c-text-3 #7E8A85, --c-line rgba(18,26,23,.08)); запасные — те же значения эталона.
+     Решение владельца по серому (R10 B-075: #7E8A85 3,4–3,6:1) придёт одной правкой токена R11 — и в R07 тоже. */
+  --r07-ink: var(--c-ink, #121A17);
+  --r07-ink-2: var(--c-text-2, #4B5752);
+  --r07-ink-3: var(--c-text-3, #7E8A85);
+  --r07-line: var(--c-line, rgba(18, 26, 23, 0.08));
   --r07-paper: rgba(18, 26, 23, 0.04);
   --r07-fill: rgba(18, 26, 23, 0.06);
   --r07-fill-hover: rgba(18, 26, 23, 0.1);
-  --r07-brand: #121A17;
+  --r07-brand: var(--c-ink, #121A17);   /* эталон .btn.p — var(--ink) */
   --r07-brand-hover: #000;
   --r07-brand-soft: rgba(18, 26, 23, 0.05);
   --r07-link: #152C26;
@@ -109,7 +109,7 @@
 .r07-seg > button::before { content: ""; position: absolute; inset: 6.5px 0; z-index: -1; border-radius: 9px; transition: background 0.15s var(--r07-ease), box-shadow 0.15s var(--r07-ease); }
 .r07-seg > button[aria-pressed="true"] { color: var(--r07-ink); }
 .r07-seg > button[aria-pressed="true"]::before { background: #fff; box-shadow: 0 1px 3px rgba(16, 24, 20, 0.12); }
-.r07-zoomhint { display: none; margin: 8px 0 0; align-items: center; gap: 6px; font-size: 13px; color: var(--r07-ink-2); }
+.r07-zoomhint { display: none; margin: 12px 0 4px; align-items: center; gap: 6px; font-size: 13px; color: var(--r07-ink-2); }
 .r07-select select {
   max-width: 100%; padding: 0 36px 0 12px; appearance: none;
   background: var(--r07-fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23152c26' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center / 18px;
@@ -233,6 +233,9 @@
 .r07-tabs::-webkit-scrollbar { display: none; }
 .r07-tab { position: relative; flex: none; min-height: 44px; padding: 14px 0 10px; border: 0; background: none; color: var(--r07-ink-3); font-size: 14px; font-weight: 500;
   white-space: nowrap; cursor: pointer; transition: color 0.15s var(--r07-ease); }
+/* R11 §22.3 a: зона нажатия ≥ 44 и по ширине («Обзор» 43, «Шолу» 35) — невидимое поле 7 px по бокам (между вкладками 18),
+   черта выбранной — по ширине текста, как в эталоне */
+.r07-tab::after { content: ""; position: absolute; inset: 0 -7px; }
 .r07-tab:hover { color: var(--r07-ink-2); }
 .r07-tab[aria-selected="true"] { color: var(--r07-ink); box-shadow: inset 0 -2px 0 var(--r07-ink); }
 .r07-tp { padding: 6px var(--r07-gutter) 0; }

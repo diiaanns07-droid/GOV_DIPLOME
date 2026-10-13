@@ -572,7 +572,7 @@
     }
     function toast(text, kind, action) {
       if (kind === "error") closeErrorToast();
-      const keep = (h) => { if (kind === "error") S.errorToast = h; return h; };
+      const keep = (h) => { if (kind === "error") S.errorToast = h; else S.okToast = h; return h; };
       // В оболочке — общий тост ui-kit R11 (body, z-toast 60): не прячется под каталогом R05 и шторками (R10 B-023).
       const ui = window.BirgeUI;
       if (ui && typeof ui.toast === "function") {
@@ -1563,6 +1563,8 @@
       const R09 = window.BirgeComplaintStaff;
       if (!it || !actions || !R09 || !(it.open_ids || []).length) { S.fixFor = null; return; }
       if (S.fixFor && S.fixFor === S.selected && typeof R09.fixForm === "function") {
+        // R09 M5: на телефоне тост «Взято в работу» (3–4 с) лежал на форме «Что сделали» — форма открылась, тост больше не нужен
+        if (S.okToast) { try { S.okToast.close(); } catch (e) { /* уже закрыт */ } S.okToast = null; }
         actions.hidden = true;
         const holder = document.createElement("div");
         holder.className = "r07-fixform";
@@ -1756,10 +1758,11 @@
     function listHtml() {
       // Всегда места (и на мелком масштабе, где карта — районы): те же 10, что карта вписывает при открытии.
       const items = S.top || [];
-      const head = listHeadHtml() +
-        // Районы: «Приблизьте карту…» — строкой здесь, на текущем языке (R11 ночь 4 п. 1, R10 B-038)
-        (S.mode === "districts" ? '<p class="r07-zoomhint">' + svgIcon("pin", 16) + esc(t("heat.zoom_hint")) + "</p>" : "") +
-        filtersHtml();
+      const head = listHeadHtml() + filtersHtml();
+      // Районы: «Приблизьте карту…» — строкой на текущем языке (R11 ночь 4 п. 1, R10 B-038; видна только на телефоне —
+      // на ноутбуке она в легенде). Под списком, а не над ним: на телефоне первая строка сразу под фильтрами, выше
+      // кнопки «Сообщить о проблеме» (R10 INTEGRATION §10, эталон «Житель, телефон» — строки сразу под заголовком).
+      const hint = S.mode === "districts" ? '<p class="r07-zoomhint">' + svgIcon("pin", 16) + esc(t("heat.zoom_hint")) + "</p>" : "";
       if (!items.length) {
         // Пусто ≠ «всё исправлено»: иллюстрация, «За 7 дней жалоб нет» и действие «Показать 30 дней» (№8).
         const filtered = Boolean(S.filters.category || S.filters.district);
@@ -1767,7 +1770,7 @@
         return '<section class="r07-hot" aria-labelledby="r07-hot-h">' + head + '<div class="r07-empty" role="status">' + illo(filtered ? "empty_filtered" : "empty") + '<p class="r07-empty__title">' + esc(t("heat.empty.title", { n: S.filters.days })) +
           '</p><p class="r07-empty__hint">' + esc(t(filtered ? "heat.empty.hint_filters" : "heat.empty.hint")) + '</p><div class="r07-empty__actions">' +
           (next ? '<button type="button" class="r07-btn r07-btn--primary" data-days-next="' + next + '">' + esc(t("heat.empty.show_days", { n: next })) + "</button>" : "") +
-          (filtered ? '<button type="button" class="r07-btn" data-reset>' + esc(t("heat.filter.reset")) + "</button>" : "") + "</div></div></section>";
+          (filtered ? '<button type="button" class="r07-btn" data-reset>' + esc(t("heat.filter.reset")) + "</button>" : "") + "</div></div>" + hint + "</section>";
       }
       // Строки как в Linear (README эталона, правило 5): 44 px — статус-иконка, число на плашке цвета места (эталон .cnt),
       // название 14/500 в одну строку, тема серым справа; группы по статусу «Новые» / «В работе». Порядок — по весу, как был.
@@ -1789,7 +1792,7 @@
       // Смена статуса прямо из строки (Linear): одна плавающая кнопка у строки под мышью или в фокусе (вне строк — список
       // строк и их кнопки для сценария R10 не меняются); только у сотрудника и только у мест с обращениями, а не примерами.
       const quick = S.role === "akimat" ? '<button type="button" class="r07-quick" data-quick hidden></button>' : "";
-      return '<section class="r07-hot" aria-labelledby="r07-hot-h">' + head + '<div class="r07-groups">' + body + "</div>" + quick + "</section>";
+      return '<section class="r07-hot" aria-labelledby="r07-hot-h">' + head + '<div class="r07-groups">' + body + "</div>" + hint + quick + "</section>";
     }
 
     // Статус места — один раз (CLEAN_PASS R07 №1, ui-kit .bk-statusline): точка + слово + одна строка пояснения.
@@ -2036,7 +2039,7 @@
 
     // Список ↔ карта синхронно (README эталона, правило 5): наведение или фокус на строке подсвечивает значок места, наведение
     // на значок — его строку. Значок и строка получают .r07-badge--hot / .r07-item--hot; без анимации карты.
-    function setHot(key) {
+    function setHot(key, from) {
       if (S.hotKey === key) return;
       const prev = S.hotKey;
       S.hotKey = key || null;
@@ -2048,6 +2051,18 @@
         const sel = window.CSS && CSS.escape ? CSS.escape(k) : k;
         panel.querySelectorAll('.r07-item[data-key="' + sel + '"]').forEach((r) => r.classList.toggle("r07-item--hot", on));
       }
+      // Правило 5 Linear «список ↔ карта» с «Обращениями» R09: значок под мышью подсвечивает строку там (source "map");
+      // строку R09 под мышью сообщает то же событие с source "inbox" — его не пересылаем обратно.
+      if (from !== "inbox") {
+        const i = S.hotKey ? S.hotKey.indexOf(":") : -1;
+        window.dispatchEvent(new CustomEvent("birge:target-hover",
+          { detail: i > 0 ? { kind: S.hotKey.slice(0, i), id: S.hotKey.slice(i + 1), source: "map" } : null }));
+      }
+    }
+    function onTargetHover(ev) {
+      const d = ev && ev.detail;
+      if (d && d.source === "map") return;
+      setHot(d && d.kind && d.id ? d.kind + ":" + d.id : null, "inbox");
     }
     // Строки «Горячих мест»: ↑ ↓ (и J K, как в Linear) — по строкам, Home / End — к первой и последней; одна строка в порядке
     // Tab (roving tabindex). Плавающая кнопка смены статуса — у строки под мышью или в фокусе.
@@ -2296,6 +2311,7 @@
       map.on("movestart", (e) => { if (e && e.originalEvent) { userMoved.value = true; if (S.busyKey) clearBusy(); } });   // колесо, щипок, кнопки; перелёт к месту прерван — строка не «крутится»
     }
     window.addEventListener("birge:complaint", onComplaintEvent);
+    window.addEventListener("birge:target-hover", onTargetHover);
     // Язык: i18n R11 шлёт "birge:lang" на document, другие модули — на window. Слушаем оба (повтор отсекается).
     window.addEventListener("birge:lang", onLang);
     document.addEventListener("birge:lang", onLang);
@@ -2374,6 +2390,7 @@
       if (overlayTimer) clearInterval(overlayTimer);
       if (S.anim) cancelAnimationFrame(S.anim);
       window.removeEventListener("birge:complaint", onComplaintEvent);
+      window.removeEventListener("birge:target-hover", onTargetHover);
       window.removeEventListener("birge:lang", onLang);
       document.removeEventListener("birge:lang", onLang);
       document.removeEventListener("keydown", onKey);
