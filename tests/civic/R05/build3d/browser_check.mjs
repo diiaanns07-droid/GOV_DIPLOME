@@ -633,6 +633,25 @@ await check("phone_375_touch_layout", async () => {
   assert(g.follow === "center", "на телефоне призрак за центром карты: " + g.follow);
   return { status: "PASS", detail: "нет горизонтальной прокрутки, все кнопки ≥ 48 px, текст не обрезан; призрак идёт за центром карты" };
 });
+// Эталон 13.10 (вариант A): R06 рисует строку списка «Проекты и идеи» с миниатюрой 84×84 — квадратное превью той же
+// модели и светлый фон вида из handle.previewOf(kind); картинки должны загружаться (1x и 2x) и быть нужного размера.
+await check("preview_square_and_tint_for_project_list", async () => {
+  const p = await openPage({}, "?reset=1&store=local");
+  const r = await p.evaluate(async () => {
+    const out = {};
+    for (const kind of ["square", "playground", "sports", "stop", "lighting"]) {
+      const pv = __b3d.previewOf(kind);
+      const load = (src) => new Promise((ok) => { const im = new Image(); im.onload = () => ok([im.naturalWidth, im.naturalHeight]); im.onerror = () => ok(null); im.src = src; });
+      out[kind] = { tint: pv.tint, square: pv.square && [pv.square.width, pv.square.height], sq1: await load(pv.square.src), sq2: await load(pv.square.srcset.split(", ")[1].split(" ")[0]), wide: await load(pv.src) };
+    }
+    out.unknown = __b3d.previewOf("nope");
+    return out;
+  });
+  await p.context().close();
+  const bad = Object.entries(r).filter(([k, v]) => k !== "unknown" && !(/^#[0-9a-f]{6}$/.test(v.tint) && String(v.square) === "84,84" && String(v.sq1) === "84,84" && String(v.sq2) === "168,168" && String(v.wide) === "240,160"));
+  assert(!bad.length && r.unknown === null, JSON.stringify(r));
+  return { status: "PASS", detail: "5 видов: квадрат 84×84 и 168×168, фон вида, прямоугольник 240×160; неизвестный вид — null" };
+});
 await check("catalog_labels_fit_ru_kk_1366_375", async () => {
   const bad = [];
   for (const lang of ["ru", "kk"]) {

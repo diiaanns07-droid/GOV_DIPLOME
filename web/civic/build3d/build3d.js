@@ -34,7 +34,8 @@
  *   api                        — клиент оболочки R01 ({v2(method, path, body)}); map — карта или функция map().
  *
  * Handle: start(kind), cancel(), select(id), flyToProposals(), setMode(mode), update({mode, dock, visible}), refresh(),
- *         setVisible(bool), getState(), destroy(); previewOf(kind) → {src, srcset} картинки объекта для каталога.
+ *         setVisible(bool), getState(), destroy(); previewOf(kind) → {src, srcset, width, height, tint, square} картинки
+ *         объекта для каталога, карточки и списка проектов (square — 84×84 для строки списка R06).
  * Событие для соседей: document "civic-build3d:tool" {active, kind} — как "civic-editor:tool" у редактора.
  */
 (function (root) {
@@ -874,9 +875,19 @@
 
     // Картинка карточки каталога (дизайн-марафон): превью модели из data/previews (тот же свет и угол, что на карте).
     // Не загрузилась (сборка без data/previews) — прежний значок.
+    // Светлый фон вида под картинкой (эталон 13.10: миниатюры списка и картинка детальной карточки — на цветной подложке).
+    var PREVIEW_TINT = { square: "#e7f2dd", playground: "#fdf3e3", sports: "#e4f1e6", stop: "#e8f0f6", lighting: "#f6f1e4" };
     function previewSrc(kind) {
       var base = o.dataUrl + "previews/" + kind;
-      return { src: base + ".png", srcset: base + ".png 1x, " + base + "@2x.png 2x", width: 240, height: 160 };
+      return {
+        src: base + ".png",
+        srcset: base + ".png 1x, " + base + "@2x.png 2x",
+        width: 240,
+        height: 160,
+        tint: PREVIEW_TINT[kind] || "#eef1ec",
+        // Квадратная миниатюра для строки списка «Проекты и идеи» (эталон, .thumb 84×84).
+        square: { src: base + "-sq.png", srcset: base + "-sq.png 1x, " + base + "-sq@2x.png 2x", width: 84, height: 84 },
+      };
     }
     function cardPic(kind) {
       var k = Core.KINDS[kind];
@@ -1127,7 +1138,7 @@
       dock.classList.add("b3d-dock--pd");
       var k = Core.KINDS[p.kind];
       var card = el("article", "b3d-pcard b3d-pd", { "aria-labelledby": "b3d-pcard-title", "data-kind": p.kind });
-      var im = el("div", "b3d-pd__im");
+      var im = el("div", "b3d-pd__im"); // фон — по виду в build3d.css (те же цвета, что previewOf(kind).tint)
       var img = el("img", "", { src: o.dataUrl + "previews/" + p.kind + "@2x.png", alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
       img.addEventListener("error", function () {
         if (img.parentNode) img.parentNode.replaceChild(icon(k.icon, o.iconsUrl), img);
@@ -3668,8 +3679,10 @@
       },
       cancel: cancel,
       select: select,
-      // Картинка-превью объекта для карточек каталога (дизайн-марафон): {src, srcset} из data/previews/ (рендер тех же
-      // моделей — tests/civic/R05/build3d/make_previews.mjs, 240×160 и @2x). Без three.js — годится для лёгкого вида.
+      // Картинка-превью объекта (дизайн-марафон; эталон 13.10): {src, srcset, width, height, tint, square} из
+      // data/previews/ (рендер тех же моделей — tests/civic/R05/build3d/make_previews.mjs): 240×160 и @2x — каталог и
+      // детальная карточка; square — 84×84 и @2x для строки списка «Проекты и идеи» (R06); tint — светлый фон вида под
+      // картинкой (у PNG прозрачный фон). Без three.js — годится для лёгкого вида.
       previewOf: function (kind) {
         return Core.KINDS[kind] ? previewSrc(kind) : null;
       },
