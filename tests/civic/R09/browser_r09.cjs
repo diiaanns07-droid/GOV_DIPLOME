@@ -1194,12 +1194,15 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
       const r = n.getBoundingClientRect();
       if (!r.width || getComputedStyle(n).display === "none") return;
       const own = [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim());
-      if (own && parseFloat(getComputedStyle(n).fontSize) < 13) bad.push("text " + n.textContent.trim().slice(0, 24));
-      if (/^(BUTTON|A|INPUT|SELECT)$/.test(n.tagName) && r.height < 44) bad.push("tap " + (n.name || n.textContent.trim().slice(0, 24)) + " " + Math.round(r.height));
+      if (own && parseFloat(getComputedStyle(n).fontSize) < 12) bad.push("text " + n.textContent.trim().slice(0, 24));
+      // Зона нажатия — с ::after (кнопка статуса строки ui-kit .bk-lrow__st: значок 28, зона 44 через inset: -8px).
+      const after = getComputedStyle(n, "::after");
+      const grow = after.content && after.content !== "none" && after.position === "absolute" ? Math.max(0, -parseFloat(after.top) || 0) * 2 : 0;
+      if (/^(BUTTON|A|INPUT|SELECT)$/.test(n.tagName) && r.height + grow < 44) bad.push("tap " + (n.name || n.textContent.trim().slice(0, 24)) + " " + Math.round(r.height + grow));
     });
     return bad;
   });
-  check(`${tag}: [UX] «Обращения» — текст ≥ 13 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: [UX] «Обращения» — текст ≥ 12 px (эталон: мета 12), кнопки ≥ 44 px (с зоной ::after)`, sizes.length === 0, sizes.join("; "));
   // Вкладки — одним рядом с прокруткой внутри ряда (R11 разбор 5 №4в); страница вбок не прокручивается.
   const tabsRow = await page.$$eval(".bc-inbox__tab", (n) => new Set(n.map((b) => Math.round(b.getBoundingClientRect().top))).size);
   check(`${tag}: [R11 5 №4в] 5 вкладок одним рядом`, tabsRow === 1, String(tabsRow));

@@ -191,10 +191,10 @@
       var canTake = idsWith(group, ["new", "accepted"]).length > 0;
       var canFix = idsWith(group, ["new", "accepted", "in_progress"]).length > 0;
       if (!canTake && !canFix) {
-        return h("span", { "class": "bc-inbox__status", title: t("status." + st) }, sicon(st));
+        return h("span", { "class": "bk-lrow__st bc-inbox__status", title: t("status." + st) }, sicon(st));
       }
       var open = state.menu === group.key;
-      var btn = h("button", { "class": "bc-inbox__status bc-inbox__status--btn", type: "button", "aria-haspopup": "menu",
+      var btn = h("button", { "class": "bk-lrow__st bc-inbox__status bc-inbox__status--btn", type: "button", "aria-haspopup": "menu",
                               "aria-expanded": open ? "true" : "false", "data-key": group.key,
                               "aria-label": t("inbox.status_menu") + ": " + t("status." + st),
                               onclick: function (e) { e.stopPropagation(); state.menu = open ? null : group.key; render(); } }, sicon(st));
@@ -218,28 +218,32 @@
       if (group.target && group.target.approximate && place === t("complaint.step2.approximate") && group.complaints[0]) {
         place += " · " + group.complaints[0].code;
       }
-      var what = C().categoryLabel(group.category) + (group.subtopic ? " · " + C().subtopicLabel(group.category, group.subtopic) : "");
+      var what = C().categoryLabel(group.category) + (group.subtopic ? " · " + C().subtopicLabel(group.category, group.subtopic) : "") +
+        (group.complaints.length > 1 ? " · " + t("inbox.complaints", { n: group.complaints.length }) : "");
       var due = deadlineNode(group.deadline);
-      // Плотная строка 44 px, как в Linear: значок статуса · место · категория · «N человек · срок» · «›».
+      var level = group.people >= 10 ? 4 : (group.people >= 6 ? 3 : (group.people >= 3 ? 2 : 1));
+      var people = t("inbox.people", { n: group.people });
+      // Строка Linear ui-kit R11 (.bk-lrow, правило 5): значок статуса · место (500) · «категория · уточнение» серым ·
+      // число людей плашкой цвета карты (.bk-lrow__cnt) · срок (.bk-lrow__time) · «›».
       var head = h("button", { "class": "bc-inbox__row", type: "button", "aria-expanded": expanded ? "true" : "false",
                                "data-key": group.key, onclick: function () { toggle(group); },
                                onmouseenter: function () { hover(group, true); }, onmouseleave: function () { hover(group, false); },
                                onfocus: function () { hover(group, true); }, onblur: function () { hover(group, false); } }, [
-        h("span", { "class": "bc-inbox__text" }, [
-          h("span", { "class": "bc-inbox__place" }, [h("strong", {}, place),
+        h("span", { "class": "bk-lrow__main bc-inbox__text" }, [
+          h("span", { "class": "bk-lrow__title bc-inbox__place" }, [place,
             // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
             group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
           // Уточнение — после категории (UX_SPEC §10), не отдельный бейдж.
-          h("span", { "class": "bc-inbox__what" }, [C().icon && C().categoryIcon ? C().icon(C().categoryIcon(group.category)) : null, h("span", {}, what)])]),
-        h("span", { "class": "bc-inbox__meta" }, [t("inbox.people", { n: group.people }),
-          group.complaints.length > 1 ? " · " + t("inbox.complaints", { n: group.complaints.length }) : "",
-          due ? " · " : null, due]),
+          h("span", { "class": "bk-lrow__meta bc-inbox__what" }, what)]),
+        h("span", { "class": "bk-lrow__cnt bc-inbox__cnt", "data-level": String(level), title: people },
+          [h("span", { "aria-hidden": "true" }, String(group.people)), h("span", { "class": "bc-sr" }, people)]),
+        h("span", { "class": "bk-lrow__time bc-inbox__meta" }, due || ""),
         C().icon ? C().icon("chevron-right") : null]);
       var li = h("li", { "class": "bc-inbox__item" + (expanded ? " bc-inbox__item--open" : "") +
-                                  (state.hover && group.target && state.hover === group.target.id ? " bc-inbox__item--hover" : "") +
                                   (state.flash === group.key ? " bc-inbox__item--flash" : ""),
                          "data-demo": group.demo ? "true" : null, "data-key": group.key, "data-target": (group.target || {}).id || null },
-        h("div", { "class": "bc-inbox__line" }, [statusControl(group), head]));
+        h("div", { "class": "bk-lrow bc-inbox__line" + (state.hover && group.target && state.hover === group.target.id ? " is-hover" : "") },
+          [statusControl(group), head]));
       if (expanded) {
         var detail = h("div", { "class": "bc-inbox__detail" });
         if (typeof opts.openTarget === "function" && group.target && group.target.id) {
@@ -278,7 +282,8 @@
       if (d && d.source === "inbox") return;
       state.hover = d && d.id ? d.id : null;
       box.querySelectorAll(".bc-inbox__item").forEach(function (li) {
-        li.classList.toggle("bc-inbox__item--hover", !!state.hover && li.getAttribute("data-target") === state.hover);
+        var line = li.querySelector(".bk-lrow");
+        if (line) line.classList.toggle("is-hover", !!state.hover && li.getAttribute("data-target") === state.hover);
       });
     }
 
@@ -413,7 +418,7 @@
       if (!state.data) {
         // Скелетон строк — только если ответ дольше 150 мс (быстрый ответ не мигает серыми полосами).
         if (!state.slow) { box.appendChild(h("div", { "class": "bc-loading", role: "status" }, h("span", { "class": "bc-loading__text bc-sr" }, t("mine.loading")))); return; }
-        var skel = function () { return h("div", { "class": "bc-skel-row", "aria-hidden": "true" }, [
+        var skel = function () { return h("div", { "class": "bk-lrow bk-lrow--skel bc-skel-row", "aria-hidden": "true" }, [
           h("span", { "class": "bk-skel bc-skel-dot" }), h("span", { "class": "bk-skel bc-skel-line bc-skel-line--title" }),
           h("span", { "class": "bk-skel bc-skel-line bc-skel-line--short" })]); };
         box.appendChild(h("div", { "class": "bc-loading bc-loading--rows", role: "status" }, [skel(), skel(), skel(), skel(),
@@ -434,9 +439,9 @@
         if (!list.length) return;
         var gid = "bc-inbox-g-" + tab;
         groups.appendChild(h("section", { "class": "bc-inbox__group", "data-group": tab, "aria-labelledby": gid }, [
-          h("h3", { "class": "bc-inbox__ghead", id: gid }, [sicon(tabStatus(tab)), h("span", {}, t("inbox.tab." + tab)),
-            h("span", { "class": "bc-inbox__gcount" }, String(list.length))]),
-          h("ul", { "class": "bc-inbox__list" }, list.map(row))]));
+          h("h3", { "class": "bk-lgroup bc-inbox__ghead", id: gid }, [sicon(tabStatus(tab)), h("span", {}, t("inbox.tab." + tab)),
+            h("span", { "class": "bk-lgroup__count bc-inbox__gcount" }, String(list.length))]),
+          h("ul", { "class": "bk-llist bc-inbox__list" }, list.map(row))]));
       });
       box.appendChild(groups);
       state.enter = false;

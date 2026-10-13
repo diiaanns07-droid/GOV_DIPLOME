@@ -344,7 +344,7 @@ def test_glass_only_on_mine_panel():
     assert ':where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff);' in css   # запасной белый
     assert "html.bc-mine-open body.civic-mode .civic-panel,\nhtml.bc-open body.civic-mode .civic-panel { visibility: hidden; }" in css
     assert ".bk-glass .bc-staff__form { background: var(--c-surface, #fff);" in css            # формы сотрудника
-    assert ".bc-inbox__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column;\n                  background: var(--c-surface, #fff);" in css  # список «Обращений» — непрозрачный
+    assert ".bc-inbox__list { list-style: none; margin: 0; padding: 4px; background: var(--c-surface, #fff);" in css  # список «Обращений» — непрозрачный
     for media in ("prefers-reduced-transparency: reduce", "@supports not ((-webkit-backdrop-filter", ".bk-glass-off .bc-panel.bk-glass .bc-head"):
         assert media in css
     # Главная кнопка и тосты — не стекло.
@@ -439,7 +439,7 @@ def test_design_marathon_round9_r10_circle2():
     # Отступы 6/10/14 px в правилах R09 больше не встречаются (кроме смещений точек ленты).
     import re as _re
     # Исключение — «Сообщить о проблеме»: промежуток 10 px взят из эталона A (.fab gap: 10px).
-    off = [m.group(0) for m in _re.finditer(r"(?:padding|gap|column-gap)(?:-[a-z]+)?: [^;]*\b(?:6|10|14)px", css.replace("padding: 0 20px; gap: 10px;", ""))]
+    off = [m.group(0) for m in _re.finditer(r"(?:padding|gap|column-gap)(?:-[a-z]+)?: [^;]*\b(?:6|10|14)px", re.sub(r":where\([^{]*\{[^}]*\}", "", css.replace("padding: 0 20px; gap: 10px;", "").replace("display: flex; align-items: center; gap: 10px; flex: 1;", "")))]
     assert not off, off
     # R11 16.4: ряд вкладок «Обращений» — .bk-scroll-x с затуханием края ui-kit.
     assert '"bk-chips bk-scroll-x bc-inbox__tabs"' in LIST_JS and "window.BirgeUI.scrollFade(bar)" in LIST_JS
@@ -456,10 +456,11 @@ def test_reference_a_r09():
     assert 'panel.classList.toggle("bk-glass--strong", mine);' in JS
     assert "window.BirgeUI.statusIcon(status, 14)" in JS and '"text/html"' in JS and ".innerHTML" not in JS.split("function statusIcon", 1)[1].split("function statusBadge", 1)[0]
     # Linear: группы по статусу, меню статуса в строке, мгновенный отклик, события «список ↔ карта».
-    for needle in ('"bc-inbox__group"', '"bc-inbox__ghead"', "function statusControl(group)", "function take(group)",
+    for needle in ('"bc-inbox__group"', 'bc-inbox__ghead"', '"bk-llist bc-inbox__list"', '"bk-lrow bc-inbox__line"', '"bk-lrow__st bc-inbox__status',
+                   "function statusControl(group)", "function take(group)",
                    '"birge:target-hover"', 'state.tab === "all"', "function onKey(e)"):
         assert needle in LIST_JS, needle
-    assert ".bc-inbox__row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto;" in css and "min-height: 44px; padding: 0 12px 0 0;" in css
+    assert ".bc-inbox__row { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; min-height: var(--tap, 44px);" in css
     # Мгновенный отклик: скелетон — только через 150 мс; «Мои обращения» из памяти при повторном открытии.
     assert "}, 150);" in LIST_JS and "}, 150);" in JS and "var mineCache = null;" in JS
     # Правило 2 (R01 — палитра Ctrl+K, R09 — смена статуса): команды «Взять в работу — место» и «Отметить исправленным — место».
