@@ -35,7 +35,8 @@
  *
  * Handle: start(kind), cancel(), select(id), flyToProposals(), setMode(mode), update({mode, dock, visible}), refresh(),
  *         setVisible(bool), getState(), destroy(); previewOf(kind) → {src, srcset, width, height, tint, square} картинки
- *         объекта для каталога, карточки и списка проектов (square — 84×84 для строки списка R06).
+ *         объекта для каталога, карточки и списка проектов (square — 84×84 для строки списка R06);
+ *         highlight(id, {padding}) — отметить проект на карте без карточки модуля (лист «Проекты и идеи» R06, эталон 13.10).
  * Событие для соседей: document "civic-build3d:tool" {active, kind} — как "civic-editor:tool" у редактора.
  */
 (function (root) {
@@ -835,7 +836,7 @@
       if (S.mode === "placing") return S.three === "ready" ? renderPlacing() : renderLoading();
       if (pendingStart && S.three === "loading") return renderLoading();
       if (pick) return renderPickCatalog();
-      if (S.selected && S.objects[S.selected] && o.renderCard) return renderCard(S.objects[S.selected].p);
+      if (S.selected && S.objects[S.selected] && o.renderCard && !S.cardless) return renderCard(S.objects[S.selected].p);
       // Без WebGL2 жители видят проекты и голосуют (лёгкие метки), а поставить объект нельзя — говорим прямо.
       if (o.role === "akimat" && o.dock && S.three === "unsupported") return renderMessage("alert", t("build3d.unsupported_title"), t("build3d.unsupported_text"), false);
       if (!o.dock) {
@@ -3418,10 +3419,8 @@
       );
     }
 
-    function select(id) {
-      if (id && !S.objects[id]) id = null;
-      if (S.mode === "placing" && id) cancel();
-      S.selected = id;
+    // Вид выбранного проекта на карте: табличка «нажата» (кольцо), пунктир границы — цветом выбора.
+    function selectionLook(id) {
       Object.keys(S.objects).forEach(function (k) {
         var obj = S.objects[k];
         updateLabelText(obj);
@@ -3430,6 +3429,13 @@
         });
         if (outline) outline.material.color.set(k === id ? OUTLINE_SELECTED : OUTLINE_COLOR);
       });
+    }
+    function select(id) {
+      if (id && !S.objects[id]) id = null;
+      if (S.mode === "placing" && id) cancel();
+      S.selected = id;
+      S.cardless = false;
+      selectionLook(id);
       render();
       emitSelect(id ? S.objects[id].p : null);
       if (id) {
@@ -3441,6 +3447,25 @@
         keepAboveDock(S.objects[id]);
       }
       repaint();
+    }
+
+    // Эталон 13.10 («Проекты и идеи»: карта следует за выбором в списке R06). Проект отмечен на карте — табличка с кольцом
+    // и пунктир цвета выбора, — но карточка модуля не открывается (детали показывает лист R06) и хозяину не сообщается
+    // (onSelect — только для выбора на самой карте). how.padding {top,right,bottom,left} — камера плавно ставит проект
+    // в свободную часть карты (между листом и деталями); без него камера не двигается. highlight(null) — снять отметку.
+    function highlight(id, how) {
+      how = how || {};
+      if (id && !S.objects[id]) return false;
+      if (S.mode === "placing") return false;
+      S.selected = id || null;
+      S.cardless = !!id;
+      selectionLook(S.selected);
+      render();
+      if (id && how.padding) {
+        map.easeTo({ center: anchorLngLat(S.objects[id].p), padding: how.padding, duration: reducedMotion() ? 0 : 450 });
+      }
+      repaint();
+      return true;
     }
 
     // Прямоугольники панелей хозяина поверх карты (шапка, шторка, колонки, кнопки), видимые сейчас.
@@ -3723,6 +3748,7 @@
       },
       cancel: cancel,
       select: select,
+      highlight: highlight,
       // Картинка-превью объекта (дизайн-марафон; эталон 13.10): {src, srcset, width, height, tint, square} из
       // data/previews/ (рендер тех же моделей — tests/civic/R05/build3d/make_previews.mjs): 240×160 и @2x — каталог и
       // детальная карточка; square — 84×84 и @2x для строки списка «Проекты и идеи» (R06); tint — светлый фон вида под
@@ -3776,6 +3802,7 @@
           kind: S.kind,
           storeMode: S.storeMode,
           selected: S.selected,
+          highlighted: !!(S.selected && S.cardless),
           count: Object.keys(S.objects).length,
           ghost: S.ghost
             ? {

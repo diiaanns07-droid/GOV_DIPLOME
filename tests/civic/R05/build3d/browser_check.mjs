@@ -689,6 +689,30 @@ await check("card_closes_by_esc_focus_back_and_by_empty_map", async () => {
   assert(esc.selected === null && esc.state !== "card" && esc.focus === "p-demo-stop-syganak" && map === null, JSON.stringify({ esc, map }));
   return { status: "PASS", detail: { esc, empty_map_click: "закрыта" } };
 });
+// Эталон 13.10 («Проекты и идеи»: карта следует за выбором в списке R06): highlight(id) отмечает проект на карте —
+// табличка с кольцом, — карточку модуля не открывает и onSelect хозяину не шлёт; нажатие по табличке — обычная карточка.
+await check("highlight_marks_project_without_card", async () => {
+  const p = await openPage({}, "?reset=1&store=local&role=resident&center=71.4008,51.1272&zoom=17.4&pitch=60&bearing=-30");
+  const r = await p.evaluate(async () => {
+    const id = "p-demo-stop-syganak";
+    const ok = __b3d.highlight(id, { padding: { top: 132, right: 440, bottom: 20, left: 452 } });
+    await new Promise((res) => setTimeout(res, 700));
+    const lab = document.querySelector(`.b3d-label[data-id="${id}"]`);
+    const s1 = __b3d.getState();
+    const a = { ok, selected: s1.selected, highlighted: s1.highlighted, dock: document.querySelector(".b3d-dock").getAttribute("data-state"), pressed: lab && lab.getAttribute("aria-pressed") };
+    const unknown = __b3d.highlight("nope");
+    __b3d.highlight(null);
+    const s2 = __b3d.getState();
+    return { a, unknown, cleared: { selected: s2.selected, highlighted: s2.highlighted, pressed: lab && lab.getAttribute("aria-pressed") } };
+  });
+  await p.click('.b3d-label[data-id="p-demo-stop-syganak"]');
+  await p.waitForSelector(".b3d-dock[data-state=card]", { timeout: 5000 }).catch(() => {});
+  const card = await p.evaluate(() => ({ dock: document.querySelector(".b3d-dock").getAttribute("data-state"), highlighted: __b3d.getState().highlighted }));
+  await p.context().close();
+  assert(r.a.ok && r.a.selected === "p-demo-stop-syganak" && r.a.highlighted && r.a.dock !== "card" && r.a.pressed === "true" && r.unknown === false &&
+    r.cleared.selected === null && !r.cleared.highlighted && r.cleared.pressed !== "true" && card.dock === "card" && !card.highlighted, JSON.stringify({ r, card }));
+  return { status: "PASS", detail: { ...r, then_label_click: card } };
+});
 await check("keyboard_tab_enter_escape", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   let found = false;
