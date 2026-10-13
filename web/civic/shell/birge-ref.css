@@ -33,19 +33,19 @@ body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not
     position: fixed; z-index: 41; top: 20px; left: var(--birge-nav-left, 50%); transform: translateX(-50%);
     height: 44px; padding: 0 4px; gap: 2px; border-radius: var(--r-pill, 999px);
   }
+  /* Кнопка 44 px (зона нажатия), видимая «таблетка» 36 px — её собственный фон внутри прозрачной рамки 4 px
+     (background-clip): проверки контраста R10/R11 видят настоящий фон надписи, а не стекло капсулы. */
   body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button {
-    position: relative; isolation: isolate; height: 44px; min-height: 44px; padding: 0 16px; border: 0; border-radius: var(--r-pill, 999px);
-    background: transparent; color: var(--c-text-2, #4b5752); font-size: 14px; font-weight: 500; white-space: nowrap;
+    position: relative; height: 44px; min-height: 44px; padding: 0 16px; border: 4px solid transparent; border-left-width: 0; border-right-width: 0;
+    border-radius: var(--r-pill, 999px); background: transparent; background-clip: padding-box;
+    color: var(--c-text-2, #4b5752); font-size: 14px; font-weight: 500; white-space: nowrap;
+    transition: background-color var(--t-fast, 150ms) var(--ease, ease), color var(--t-fast, 150ms) var(--ease, ease);
   }
-  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button::before {
-    content: ""; position: absolute; z-index: -1; inset: 4px 0; border-radius: var(--r-pill, 999px); background: transparent;
-    transition: background-color var(--t-fast, 150ms) var(--ease, ease);
-  }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button::before,
   body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button::after { display: none; }   /* черта .bk-nav */
-  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button:hover { color: var(--c-ink, #121a17); }
-  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button:hover::before { background: var(--c-fill, rgba(18, 26, 23, 0.06)); }
-  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button[aria-current="page"] { color: var(--c-on-primary, #fff); }
-  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button[aria-current="page"]::before { background: var(--c-primary, #121a17); }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button:hover { color: var(--c-ink, #121a17); background-color: var(--c-fill, rgba(18, 26, 23, 0.06)); }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button[aria-current="page"],
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button[aria-current="page"]:hover { color: var(--c-on-primary, #fff); background-color: var(--c-primary, #121a17); }
   body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: -2px; }
 
   /* «ҚАЗ · РУС» + аватар — капсула справа (эталон .me: 44, поля 0 4 0 14; аватар 36 лайм). */
@@ -69,11 +69,10 @@ body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not
     display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 4px 0 11px; border-radius: var(--r-l, 16px);
   }
   body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-logo {
-    display: flex; flex: none; align-self: center; align-items: center; justify-content: center; width: 30px; height: 30px;
-    min-width: 30px; min-height: 0; max-height: 30px; padding: 0; border: 0; box-shadow: none;
-    border-radius: 9px; background: var(--c-brand, #152c26); color: var(--c-lime, #d7f57c); cursor: pointer;
+    display: flex; flex: none; align-self: center; align-items: center; justify-content: center; width: 44px; height: 44px;
+    min-width: 44px; min-height: 44px; max-height: 44px; margin: 0 -7px; padding: 0; border: 7px solid transparent; box-shadow: none;
+    border-radius: 16px; background: var(--c-brand, #152c26); background-clip: padding-box; color: var(--c-lime, #d7f57c); cursor: pointer;
   }
-  body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-logo::after { content: ""; position: absolute; inset: -7px; }
   body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-logo { position: relative; }
   body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-logo:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
   body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-search-ic { display: flex; flex: none; color: var(--c-text-3, #7e8a85); }
@@ -84,7 +83,7 @@ body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not
   body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore-field input::placeholder { color: var(--c-text-3, #7e8a85); }
   body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore-field input:focus { outline: none; background: transparent; }
   body.civic-mode[data-birge-layout="ref"] .civic-explore-field.bk-searchbar:focus-within { box-shadow: 0 0 0 2px var(--c-focus, #152c26), var(--glass-shadow, 0 12px 32px rgba(16, 24, 20, 0.14)); }
-  body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-kbd { display: inline-flex; flex: none; margin-right: 10px; }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-kbd { display: inline-flex; flex: none; margin-right: 10px; font-size: 13px; }
   body.civic-mode[data-birge-layout="ref"] .civic-explore-field input:not(:placeholder-shown) ~ .birge-ref-kbd { display: none; }
   body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore .civic-explore-clear {
     position: static; flex: none; width: 44px; height: 44px; min-height: 44px; border-radius: 12px; transform: none;
@@ -142,7 +141,8 @@ body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not
 
   /* ---------- карточка слева: только когда есть что показать ---------- */
   body.civic-mode[data-birge-layout="ref"] .civic-panel {
-    left: 20px; right: auto; top: 84px; bottom: auto; width: 388px; height: auto; max-height: calc(100% - 104px); border-radius: 18px;
+    /* снизу — место для строки легенды (20 + 44 + 20): карточка её не закрывает */
+    left: 20px; right: auto; top: 84px; bottom: auto; width: 388px; height: auto; max-height: calc(100% - 84px - 84px); border-radius: 18px;
   }
   body.civic-mode[data-birge-layout="ref"] .civic-panel .civic-scroll { flex: 0 1 auto; }
   body.civic-mode[data-birge-layout="ref"]:is([data-birge-left="none"], [data-birge-left="summary"]) .civic-panel { display: none; }
@@ -153,14 +153,21 @@ body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not
 
   /* Сводка «Сегодня в Астане» (R08) на главной акимата: 20 / 132, 388. */
   body.civic-mode[data-birge-layout="ref"] #birge-today {
-    position: fixed; z-index: 6; top: 132px; left: 20px; width: 388px; max-height: calc(100% - 152px); overflow: auto;
+    position: fixed; z-index: 6; top: 132px; left: 20px; width: 388px; max-height: calc(100% - 132px - 84px); overflow: auto;
   }
   body.civic-mode[data-birge-layout="ref"] #birge-today:not([hidden]) { animation: birge-ref-enter-left var(--t-slow, 250ms) var(--ease, cubic-bezier(.22, 1, .36, 1)) both; }
   body.civic-mode[data-birge-layout="ref"]:not([data-birge-left="summary"]) #birge-today { display: none; }
+  /* Приёмка R10 (шаг 0): текст не мельче 13 px и контраст ≥ 4,5 — подписи чисел и тема строки в сводке R08 (12 px, --c-text-3
+     3,5:1 в эталоне). Правило временно здесь, R08 перенесёт в today.css (INTEGRATION R01 §FINAL-4). */
+  body.civic-mode[data-birge-layout="ref"] #birge-today .akim-today__kpi span { font-size: 13px; }
+  body.civic-mode[data-birge-layout="ref"] #birge-today .akim-today__place small { font-size: 13px; color: var(--c-text-2, #4b5752); }
 
   /* ---------- кнопки карты: колонка справа, по центру ---------- */
   body.civic-mode[data-birge-layout="ref"] .map-tools { right: 20px; top: 50%; transform: translateY(-50%); }
   body.civic-mode[data-birge-layout="ref"][data-civic-drawer="open"] .map-tools { right: 472px; }
+
+  /* Плашка о запасном фоне карты — по центру свободной части карты справа от карточки (20 + 388), не на ней. */
+  body.civic-mode[data-birge-layout="ref"] .civic-explore #map-status:not(.hidden) { left: calc(50% + 204px); max-width: min(480px, calc(100vw - 560px)); }
 
   /* ---------- легенда-строка: слева внизу ---------- */
   body.civic-mode[data-birge-layout="ref"] .birge-legend { left: 20px; bottom: 20px; }

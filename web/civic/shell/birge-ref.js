@@ -74,6 +74,9 @@
     if (body.classList.contains("birge-report-open")) return "report";
     if (hasCard()) return "card";
     if (S.listOpen) return "list";
+    // Нет связи с тепловой картой: значков нет — слева «Карта жалоб» R07 с понятным сообщением и «Повторить» (приёмка R10 E).
+    const h = heat();
+    try { if (h && h.state && h.state().status === "error") return "list"; } catch (e) { /* R07 ещё не готов */ }
     if (desktop() && mode() === "akimat" && !S.todayClosed && window.BirgeToday) return "summary";
     if (!desktop() && mode() === "resident" && window.BirgeComplaint && typeof window.BirgeComplaint.mountNear === "function") return "near";
     return "none";
@@ -105,14 +108,17 @@
     queue();
     return true;
   }
-  // Закрыть то, что слева: карточку места, список, карточку работ. true — что-то было открыто.
-  function closeLeft() {
+  // Закрыть то, что слева. true — что-то было открыто.
+  //  all = false (Esc): один слой — карточка места или работ; открыта из «Горячих мест» — снова виден список
+  //    (как «назад»: ведущий идёт по списку Esc → следующее место); нет карточки — закрывается список.
+  //  all = true (нажатие на пустую карту, знак Birge): карточка и список сразу.
+  function closeLeft(all) {
     let did = false;
     const h = heat();
-    if (h && h.state && h.state().selected && typeof h.close === "function") did = h.close() || did;
-    if (S.listOpen) { S.listOpen = false; did = true; }
+    if (h && h.state && h.state().selected && typeof h.close === "function") { h.close(); did = true; }
     const works = document.querySelector("#civic-map-root .civic-r03-card:not([hidden]) [data-close], #civic-map-root .civic-r03-card:not([hidden]) .civic-close");
     if (works) { works.click(); did = true; }
+    if (S.listOpen && (all || !did)) { S.listOpen = false; did = true; }
     queue();
     return did;
   }
@@ -171,7 +177,7 @@
     if (!field || field.querySelector(".birge-ref-logo")) return;
     const input = field.querySelector("input");
     const logo = el("button", { type: "button", class: "bk-logo birge-ref-logo", "aria-label": "Birge — " + t("common.nav.map"), title: t("common.nav.map") }, [icon("home", 18)]);
-    logo.addEventListener("click", () => { if (window.BirgeShell) window.BirgeShell.setSection("map"); closeLeft(); });
+    logo.addEventListener("click", () => { if (window.BirgeShell) window.BirgeShell.setSection("map"); closeLeft(true); });
     const glass = el("span", { class: "birge-ref-search-ic", "aria-hidden": "true" }, [icon("search", 18)]);
     const kbd = el("kbd", { class: "bk-kbd birge-ref-kbd", "aria-hidden": "true", text: "/" });
     field.prepend(logo, glass);
@@ -260,7 +266,7 @@
       // Модуль под пальцем (значок, участок, объект) выбирает своё сам — ждём его, и если выбор не сменился — закрываем.
       setTimeout(() => {
         const after = h && h.state ? h.state().selected : null;
-        if (!hit && after === before) closeLeft();
+        if (!hit && after === before) closeLeft(true);
       }, 80);
     });
   }
