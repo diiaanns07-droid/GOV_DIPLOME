@@ -25,9 +25,14 @@ A1) R01 (хром, место и закрытие карточек):
 A2) R07 (значки, «Горячие места», синхронизация «список ↔ карта»):
     - «Обращения» (R09) шлют window CustomEvent "birge:target-hover" { kind, id, source: "inbox" } при наведении/фокусе
       на строку и null при уходе — подсветите значок цели; то же событие с карты (source: "map") подсветит строку.
-    - Шторка телефона «Рядом с вами» (эталон: ваш список горячих мест в стиле .hot): строки «✓ <место> — <что> ·
-      проверьте» даёт R09: BirgeComplaint (handle).waitingChecks() → Promise<[{ code, place, category, status:
-      "reported_fixed", open() }]>; open() открывает «Мои обращения» на этой карточке.
+    - Шторка телефона «Рядом с вами» — по решению R11 (INTEGRATION §21.2) разметка R09, данные — ваши (GET /heat, те же,
+      что у карты жалоб; текстов жалоб нет). Готово: BirgeComplaint.mountNear(root, { map, onOpen(target, anchor),
+      onAll(), limit: 3 }) → { refresh, setLang, destroy } — .bk-phsheet ui-kit, 3 ближайших к центру карты места
+      (.bk-hot: плашка числа цвета уровня; исправленное службой — «✓» и «… · проверьте»), «ҚАЗ · РУС» в шапке,
+      «Все горячие места». Сдвиг карты — пересчёт на месте, без запроса. Ваш полный список «Горячие места» — по onAll
+      (и когда шторку тянут вверх, это решит R01). Проверка в настоящем приложении — tests/civic/R09/near_r09.cjs 18/18.
+      R01: на телефоне жителя вместо шторки «Карта жалоб» ставьте mountNear (onOpen → карточка места R07 / CivicShell
+      .openTarget(kind, id), onAll → ваш лист R07). Мои обращения жителя, ждущие его проверки, — waitingChecks().
 A3) R10: новые селекторы — «Обращения»: .bc-inbox__tab[data-tab=all|new|…] (по умолчанию «all»), .bc-inbox__group
     [data-group] с .bc-inbox__ghead, строка li.bc-inbox__item[data-key][data-target] > .bc-inbox__line >
     (.bc-inbox__status--btn | .bc-inbox__status) + button.bc-inbox__row; меню .bc-inbox__menu > .bc-inbox__menu-item.

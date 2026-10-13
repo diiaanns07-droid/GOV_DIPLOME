@@ -473,3 +473,12 @@ def test_reference_a_r09():
     assert "body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-strong, rgba(255, 255, 255, .86));" in css
     assert "--c-text-2: var(--glass-text-2, #3f4a46); }" in css
     assert "html.bk-glass-off body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }" in css
+    # Шторка «Рядом с вами» (решение R11 §21.2): разметка ui-kit, данные /heat, 3 ближайших, ✓ «проверьте», «Все горячие места».
+    near = JS.split("function mountNear(root, opts)", 1)[1].split("function mount(opts)", 1)[0]
+    for needle in ('"bk-phsheet bk-glass bk-glass--strong bk-glass--sheet bc-near"', 'request("GET", "/heat?days=30&zoom=15")',
+                   't("home.near.title")', 't("home.near.check")', 't("home.near.all_hot")', 't("home.near.empty")', '"bk-hot__cnt"',
+                   'opts.map.on("moveend", onMove)', "BirgeUI.langSwitch(lang, { text: true })"):
+        assert needle in near, needle
+    assert "mountNear: mountNear" in JS
+    s = strings()
+    assert s["ru"]["home.near.title"] == "Рядом с вами" and s["kk"]["home.near.title"] == "Сіздің маңайыңызда"

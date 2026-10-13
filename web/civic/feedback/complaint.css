@@ -543,3 +543,24 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 @media (min-width: 1024px) and (max-width: 1100px) {
   body.civic-mode .bc-fab { right: calc(360px + 32px); }
 }
+
+/* Телефон, главная: шторка «Рядом с вами» (эталон A .p-sheet; решение R11 §21.2). Каркас — .bk-phsheet ui-kit R11, строки
+   .bk-hot; здесь — только то, что делает строку кнопкой (на всю ширину, без рамки и фона кнопки) и запасной вид. */
+/* Высота — 360 эталона, но не меньше содержимого (казахские названия длиннее — строка в 2 строки); снизу — место под
+   «Сообщить о проблеме» (.bk-fab: 54 + 34 снизу + 12), чтобы «Все горячие места» не уходили под кнопку. */
+.bc-near { display: flex; flex-direction: column; color: var(--c-ink, #121A17);
+           box-sizing: border-box; height: auto; min-height: var(--sheet-half, 360px); max-height: 75dvh; overflow-y: auto;
+           padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); overscroll-behavior: contain; }
+:where(.bc-near) { padding: 8px 16px 0; background: var(--glass-solid, #fff); border-radius: var(--r-sheet, 26px) var(--r-sheet, 26px) 0 0; }
+.bc-near__list { list-style: none; margin: 0; padding: 0; }
+.bc-near__item + .bc-near__item .bk-hot { border-top: 1px solid var(--c-line, rgba(18, 26, 23, .08)); }
+.bc-near__row { width: 100%; min-height: 50px; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.bc-near__row:hover .bk-hot__name { text-decoration: underline; text-underline-offset: 3px; }
+.bc-near__row:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; border-radius: 8px; }
+.bc-near__lang { font-size: var(--fs-caption, 13px); color: var(--c-text-3, #7E8A85); }
+.bc-near__all { align-self: flex-start; min-height: 44px; }
+.bc-near__state { display: flex; align-items: center; gap: 12px; margin: 8px 0; color: var(--c-text-2, #4B5752); font-size: var(--fs-small, 14px); }
+.bc-near__state .bk-more { min-height: 44px; }
+.bc-near__skel { min-height: 46px; }
+.bc-near__skel-cnt { display: block; width: 34px; height: 26px; border-radius: 8px; flex: none; }
+.bc-near__skel-line { display: block; width: 60%; height: 12px; border-radius: 6px; }

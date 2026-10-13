@@ -619,6 +619,111 @@
   }
 
   // ------------------------------------------------------------------ мастер
+  // ---------------------------------------------------------------- телефон: шторка «Рядом с вами» (эталон A)
+  // Решение R11 (INTEGRATION §21.2, кадр эталона «Житель, телефон»): на главной телефона — шторка «Рядом с вами»:
+  // ручка, заголовок 19/600 + «ҚАЗ · РУС», 3 ближайших к центру карты горячих места строками .bk-hot (плашка числа
+  // цвета уровня; исправленное службой — «✓» и «… · проверьте»), «Все горячие места». Разметка — R09, данные — те же,
+  // что у карты жалоб R07 (GET /heat, без текстов жалоб), разметка ui-kit R11 (.bk-phsheet, .bk-hot, .bk-more).
+  //   mountNear(root, { map, onOpen(target, anchor), onAll(), limit }) -> { refresh(), setLang(), destroy() }
+  function mountNear(root, opts) {
+    opts = opts || {};
+    var limit = opts.limit || 3;
+    var alive = true, items = null, failed = false, slow = false, moveTimer = null;
+    var sheet = h("section", { "class": "bk-phsheet bk-glass bk-glass--strong bk-glass--sheet bc-near", "aria-labelledby": "bc-near-title" });
+    root.appendChild(sheet);
+
+    function center() {
+      try { var c = opts.map && opts.map.getCenter && opts.map.getCenter(); return c ? [c.lng, c.lat] : null; } catch (e) { return null; }
+    }
+    function far(a, c) { var dx = (a[0] - c[0]) * Math.cos(c[1] * Math.PI / 180), dy = a[1] - c[1]; return dx * dx + dy * dy; }
+    function nearest() {
+      var list = (items || []).filter(function (it) {
+        return it.target && it.target.kind !== "district" && it.count > 0 && it.anchor &&
+               (it.state === "active" || (it.state === "fixed" && it.fixed_kind === "reported"));
+      });
+      var c = center();
+      if (c) list.sort(function (a, b) { return far(a.anchor, c) - far(b.anchor, c); });
+      return list.slice(0, limit);
+    }
+    function topic(it) {
+      var st = it.top_subtopic;
+      if (st) return currentLang() === "kk" ? (st.kk || st.ru) : (st.ru || st.kk);
+      var cats = Object.keys(it.by_category || {});
+      return cats.length ? categoryLabel(cats[0]) : "";
+    }
+    function lower(text) { return text ? text.charAt(0).toLocaleLowerCase() + text.slice(1) : text; }
+    function subline(it) {
+      if (it.state === "fixed") return topic(it) + " · " + t("home.near.check");
+      var word = it.status && it.status !== "new" && hasKey("status." + it.status) ? lower(t("status." + it.status)) : "";
+      return word ? topic(it) + " · " + word : topic(it);
+    }
+    function row(it) {
+      var fixed = it.state === "fixed";
+      var name = targetLabel(it.target);
+      return h("li", { "class": "bc-near__item" }, h("button", {
+        "class": "bk-hot bc-near__row", type: "button", "data-key": it.target.kind + ":" + it.target.id,
+        "aria-label": name + ", " + (fixed ? t("status.reported_fixed") : t("inbox.people", { n: it.count })) + ", " + subline(it),
+        onclick: function () { if (opts.onOpen) opts.onOpen(it.target, it.anchor); } }, [
+        h("span", { "class": "bk-hot__cnt", "data-level": fixed ? "fixed" : String(it.level || 1), "aria-hidden": "true" },
+          fixed ? "✓" : formatNumber(it.count)),
+        h("span", { "class": "bk-hot__name" }, [name, h("small", {}, subline(it))])]));
+    }
+    function render() {
+      if (!alive) return;
+      sheet.innerHTML = "";
+      sheet.appendChild(h("div", { "class": "bk-handle", "aria-hidden": "true" }));
+      var lang = h("div", { "class": "bc-near__lang" });
+      var head = h("header", { "class": "bk-phsheet__hd" }, [h("h2", { "class": "bk-phsheet__title", id: "bc-near-title" }, t("home.near.title")), lang]);
+      sheet.appendChild(head);
+      if (window.BirgeUI && typeof window.BirgeUI.langSwitch === "function") window.BirgeUI.langSwitch(lang, { text: true });
+      else head.removeChild(lang);
+      if (failed) {
+        sheet.appendChild(h("div", { "class": "bc-near__state", role: "alert" }, [h("span", {}, t("mine.error.title")),
+          h("button", { "class": "bk-more", type: "button", onclick: function () { load(); } }, t("complaint.error.retry"))]));
+        return;
+      }
+      if (items === null) {
+        // Скелетон — только если ответ дольше 150 мс (правило 4 эталона).
+        if (slow) sheet.appendChild(h("ul", { "class": "bc-near__list", "aria-hidden": "true" }, [1, 2, 3].map(function () {
+          return h("li", { "class": "bk-hot bc-near__skel" }, [h("span", { "class": "bk-skel bc-near__skel-cnt" }), h("span", { "class": "bk-skel bc-near__skel-line" })]);
+        })));
+        return;
+      }
+      var list = nearest();
+      if (!list.length) sheet.appendChild(h("p", { "class": "bc-near__state" }, t("home.near.empty")));
+      else sheet.appendChild(h("ul", { "class": "bc-near__list" }, list.map(row)));
+      if (opts.onAll) sheet.appendChild(h("button", { "class": "bk-more bc-near__all", type: "button", onclick: function () { opts.onAll(); } },
+        t("home.near.all_hot")));
+    }
+    function load() {
+      failed = false; slow = false;
+      if (items === null) setTimeout(function () { if (alive && items === null && !failed) { slow = true; render(); } }, 150);
+      render();
+      return request("GET", "/heat?days=30&zoom=15").then(function (res) {
+        if (!alive) return;
+        if (!res.ok) { if (items === null) failed = true; render(); return; }
+        items = (res.data && res.data.items) || [];
+        render();
+      });
+    }
+    // Карту подвинули — ближайшие пересчитываются на месте, без запроса (данные те же).
+    function onMove() { clearTimeout(moveTimer); moveTimer = setTimeout(render, 200); }
+    function onLang() { render(); }
+    if (opts.map && opts.map.on) opts.map.on("moveend", onMove);
+    window.addEventListener("birge:lang", onLang);
+    load();
+    return {
+      refresh: load,
+      setLang: function () { render(); },
+      destroy: function () {
+        alive = false; clearTimeout(moveTimer);
+        if (opts.map && opts.map.off) opts.map.off("moveend", onMove);
+        window.removeEventListener("birge:lang", onLang);
+        if (sheet.parentNode) sheet.parentNode.removeChild(sheet);
+      }
+    };
+  }
+
   function mount(opts) {
     opts = opts || {};
     var root = opts.root || document.body;
@@ -2037,7 +2142,7 @@
         if (!res.ok) return [];
         return (res.data.items || []).filter(function (item) { return item.can_verify; }).map(function (item) {
           return { id: item.id, code: item.code, place: targetLabel(item.target), category: categoryLabel(item.category),
-                   status: "reported_fixed", open: function () { openMine(item.code); } };
+                   status: "reported_fixed", open: function () { openMine(item.code || undefined); } };
         });
       });
     }
@@ -2079,7 +2184,8 @@
     // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
     displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
     targetLabel: targetLabel, statusBadge: statusBadge, statusIcon: statusIcon, icon: icon, illustration: illustration,
-    categoryIcon: function (id) { var c = category(id); return c ? c.icon : "dots"; }
+    categoryIcon: function (id) { var c = category(id); return c ? c.icon : "dots"; },
+    mountNear: mountNear
   };
   // Помощники фото для компонента сотрудника (complaint-staff.js): то же уменьшение и загрузка частями.
   window.BirgeComplaintPhotos = {
