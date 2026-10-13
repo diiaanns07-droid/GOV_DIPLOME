@@ -268,7 +268,7 @@ async function colorOnlyCheck(page) {
           await page.waitForSelector(".r07-card", { timeout: 10000 });
           await page.waitForTimeout(700);
         }, async (page) => {
-          const st = await page.evaluate(() => ({ s: window.__heat.state(), text: document.querySelector(".r07-card__reported").innerText }));
+          const st = await page.evaluate(() => ({ s: window.__heat.state(), text: document.querySelector(".r07-big").innerText }));
           const out = [];
           if (st.s.filters.days !== 7) out.push("период не 7 дней: " + st.s.filters.days);
           if (st.s.selected !== top.target.kind + ":" + top.target.id) out.push("открыта не та цель: " + st.s.selected);
@@ -297,7 +297,6 @@ async function colorOnlyCheck(page) {
     await page.waitForTimeout(350);
   });
   await shot(browser, "filter-snow-7days-1366-kk", "desktop", "?lang=kk&view=nura", async (page) => {
-    await page.click("[data-cats-toggle]");
     await page.click('[data-cat="snow_ice"]');
     await page.waitForTimeout(500);
     await page.click('[data-days="7"]');
@@ -853,7 +852,7 @@ async function colorOnlyCheck(page) {
     page.on("request", (r) => { if (r.url().includes("/metoo")) headers.push(r.headers()["x-birge-device"] || ""); });
     await page.evaluate(() => document.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang: "kk" } })));
     await page.waitForTimeout(300);
-    const kk = await page.evaluate(() => window.__heat.state().lang === "kk" && document.querySelector(".r07-h").innerText === "Шағымдар картасы");
+    const kk = await page.evaluate(() => window.__heat.state().lang === "kk" && document.querySelector(".r07-h").innerText === "Шағымы көп орындар");   // эталон A: заголовок списка
     await page.click(".r07-item");
     await page.waitForSelector('[data-act="metoo"]');
     await page.click('[data-act="metoo"]');
