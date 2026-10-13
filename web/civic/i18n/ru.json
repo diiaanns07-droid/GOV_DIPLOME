@@ -1490,6 +1490,10 @@
   "many": "{n} человек"
  },
  "nearby.title": "Что делают рядом",
+ "home.near.title": "Рядом с вами",
+ "home.near.all_hot": "Все горячие места",
+ "home.near.check": "проверьте",
+ "home.near.empty": "Рядом пока нет обращений",
  "nearby.district": "Район: {name}",
  "nearby.tab.now": "Ремонтируют сейчас",
  "nearby.tab.done": "Завершили",
