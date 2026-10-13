@@ -10,7 +10,7 @@ research/round-14-results/R08/. Чужие файлы я не менял. Ниж
 закрывается) и «Картина дня» в том же стиле.
 
 11.0 Что брать (13 окт, круг 2 — на ui-kit R11 3890fa74 «reference A»): claude/r14-R08, код — последний коммит ветки
-    (SHA — в DELIVERY.json, поле code_sha; на 13 окт ~16:40 — 9f7aa61a), path-scoped, только мои пути:
+    (SHA — в DELIVERY.json, поле code_sha; на 13 окт ~16:50 — d5719635), path-scoped, только мои пути:
       git checkout origin/claude/r14-R08 -- web/civic/akim/akim.js web/civic/akim/akim.css \
         web/civic/akim/today.js web/civic/akim/today.css web/civic/akim/today.html web/civic/akim/today-stand.js \
         web/civic/nearby/nearby.css
@@ -63,8 +63,9 @@ research/round-14-results/R08/. Чужие файлы я не менял. Ниж
 11.4 R10 · проверка: NODE_PATH=$(npm root -g) node tests/civic/R08/today_check.cjs http://127.0.0.1:8508 (стенд) —
     35/35 (ui-kit 7117132b, 3890fa74, a2342cc1): размеры эталона (325 ± 3), числа и места = /akim/summary, события,
     карта → сводка, клавиатура, скелет ≤ 150 мс, ошибка. Попиксельно с эталоном — today_ref_compare.cjs
-    <REFERENCE.html> <стенд> [допуск] (каждая строка текста |dx|, |dy| ≤ 1; с a2342cc1 — 0). ui_check «Картины дня» — 171/171, новые проверки: наведение на место → birge:hover-target; кегли только из
-    шкалы эталона 12/13/14/15/16/19/22/34.
+    <REFERENCE.html> <стенд> [допуск] (каждая строка текста |dx|, |dy| ≤ 1; с a2342cc1 — 0). ui_check «Картины дня» —
+    171/171, новые проверки: наведение на место → birge:hover-target; кегли только из шкалы эталона
+    12/13/14/15/16/19/22/34.
 11.5 R01 · «Картина дня» по эталону (только akim.css, логика прежняя): заголовок раздела 22/600 (шкала эталона; на 375 —
     одной строкой «Картина дня · 13 окт»), четыре числа — плитки один в один со сводкой (поля 10/12, число 22/600,
     подпись 12, плашка белая 72 %, радиус 12), заголовок карточки → содержимое 12, как в сводке. Кадры
