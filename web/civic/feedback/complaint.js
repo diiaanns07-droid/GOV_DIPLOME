@@ -1846,11 +1846,14 @@
       if (!mine && state.reviewing && state.step === 4) panel.setAttribute("data-review", "1");
       else panel.removeAttribute("data-review");
       var canBack = !mine && state.step > 2 && state.step < 5;
-      var head = h("header", { "class": "bc-head" }, [
+      // Закрыть — круглая «×» 32 px на светлой подложке в правом верхнем углу, как у карточки эталона A (.x); зона
+      // нажатия 44, подпись «Закрыть» — для чтения с экрана. «Мои обращения»: заголовок — в той же строке, слева.
+      var closeBtn = h("button", { "class": "bc-close", type: "button", "aria-label": t("complaint.wizard.close"), onclick: close },
+        [h("span", { "class": "bc-x", "aria-hidden": "true" }, icon("close")), h("span", { "class": "bc-close__label" }, t("complaint.wizard.close"))]);
+      var head = h("header", { "class": "bc-head" + (mine ? " bc-head--title" : "") }, [
         canBack ? h("button", { "class": "bk-btn bk-btn--ghost bc-back", type: "button", onclick: back },
           [icon("back"), h("span", {}, t("complaint.wizard.back"))]) : h("span", { "class": "bc-head__spacer" }),
-        h("button", { "class": "bk-btn bk-btn--ghost bc-close", type: "button", "aria-label": t("complaint.wizard.close"),
-                      onclick: close }, [icon("close"), h("span", { "class": "bc-close__label" }, t("complaint.wizard.close"))])]);
+        closeBtn]);
       panel.appendChild(h("div", { "class": "bc-handle", "aria-hidden": "true" }));
       panel.appendChild(head);
       // Успех — без «Шаг 5 из 5»: крупная галочка рисуется (≈ 0,6 с) над заголовком, как в iOS.
@@ -1870,7 +1873,9 @@
         : (state.step === 4 ? (state.reviewing ? t("complaint.review.title") : t("complaint.step4.title", { n: placeCount(state.similar) }))
           : (state.step === 5 && state.result.kind === "metoo" ? t("complaint.step5.metoo_title")
             : (state.step === 5 && state.result.kind === "queued" ? t("complaint.queue.title") : t(titles[state.step]))));
-      panel.appendChild(h("h2", { id: "bc-title", "class": "bc-title", tabindex: "-1" }, title));
+      var heading = h("h2", { id: "bc-title", "class": "bc-title", tabindex: "-1" }, title);
+      if (mine) head.replaceChild(heading, head.firstChild);   // «Мои обращения (1)» и «×» — одна строка, как в эталоне
+      else panel.appendChild(heading);
       var body = h("div", { "class": "bc-body" });
       // Смена шага — мягкий въезд содержимого (240 мс, вперёд справа, назад слева); перерисовка того же шага (язык,
       // подсказка категории) — без движения. prefers-reduced-motion — без анимации (complaint.css).

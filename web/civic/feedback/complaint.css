@@ -111,8 +111,18 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 56px;
            position: sticky; top: 0; background: inherit; z-index: 1; }
 .bc-head__spacer { flex: 1; }
-.bc-back, .bc-close { padding: 0 8px; }
-@media (max-width: 359px) { .bc-close__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } }
+.bc-back { padding: 0 8px; }
+/* «×» эталона (.x): круг 32 на --c-fill, значок 16; кнопка — 44 × 44 (зона нажатия), край — к краю карточки. */
+.bc-close { display: inline-grid; place-items: center; width: 44px; height: 44px; margin-right: -6px; padding: 0; border: 0;
+            border-radius: 50%; background: none; color: var(--c-ink, #121A17); cursor: pointer; flex: none; }
+.bc-x { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--c-fill, rgba(18, 26, 23, .06));
+        transition: background-color var(--t-fast, 150ms) ease-out; }
+.bc-x .ic { width: 16px; height: 16px; }
+.bc-close:hover .bc-x { background: var(--c-fill-hover, rgba(18, 26, 23, .1)); }
+.bc-close:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: -3px; }
+.bc-close__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* «Мои обращения»: заголовок слева в строке шапки, как .hd карточки эталона. */
+.bc-head--title .bc-title { margin: 0; flex: 1; min-width: 0; }
 
 .bc-title { font-size: var(--fs-title, 22px); font-weight: var(--fw-semi, 600); line-height: 1.25; margin: 4px 0 12px; }
 /* «Шаг 3 из 5» — 13 серым над заголовком (R11 CLEAN_PASS R09 №1); точки — <i> ui-kit. */
