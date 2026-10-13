@@ -22,7 +22,7 @@
   const NBSP = " ";
   const ANIM_MS = 800;           // перетекание цвета при новой жалобе (UX_BRIEF: ~0.8 с)
   // Значки ≥ 44 px (FINAL-3): кружок 44 + плашка с числом; размеры ниже — нижние границы, настоящие меряются в DOM.
-  const BADGE_W = 80, BADGE_H = 44;   // полный значок: кружок с иконкой + число
+  const BADGE_W = 60, BADGE_H = 44;   // полный значок (эталон A): кружок 34 + плашка числа; кнопка 44 по высоте
   const MINI_W = 44, MINI_H = 44;     // маленькая плашка с числом (районы), когда полному значку тесно (кнопка 44 по высоте)
   const CLUSTER_R = 56;          // значки ближе 56 px на экране собираются в один кластер
   const CLUSTER_W = 44;          // кружок-кластер 44 px
@@ -81,6 +81,19 @@
       "heat.action_failed": "Не получилось сохранить. Проверьте связь и попробуйте ещё раз",
       "heat.back": "Горячие места",
       "heat.close": "Закрыть",
+      "heat.card.people": { one: "человек сообщил", few: "человека сообщили", many: "человек сообщили" },
+      "heat.card.people_fixed": { one: "человек сообщал", few: "человека сообщали", many: "человек сообщали" },
+      "heat.tab.overview": "Обзор",
+      "heat.tab.reports": "Обращения",
+      "heat.tab.history": "История",
+      "heat.row.most": "Чаще всего",
+      "heat.row.topic": "Тема",
+      "heat.row.qr": "Табличка с QR",
+      "heat.row.qr_action": "Распечатать",
+      "heat.row.period": "Период",
+      "heat.row.reported": "Сообщили",
+      "heat.more_reports": { one: "Ещё {count} обращение", few: "Ещё {count} обращения", many: "Ещё {count} обращений" },
+      "heat.all_reports": "Все обращения",
       "heat.loading": "Загружаем жалобы…",
       // Пустой фильтр (UX_REVIEW R11, день 3, №8) — ключи и тексты из общего словаря R11
       "heat.empty.title": { one: "За {n} день жалоб нет", few: "За {n} дня жалоб нет", many: "За {n} дней жалоб нет" },
@@ -188,6 +201,19 @@
       "heat.action_failed": "Сақталмады. Байланысты тексеріп, қайталап көріңіз",
       "heat.back": "Шағымы көп орындар",
       "heat.close": "Жабу",
+      "heat.card.people": { other: "адам хабарлады" },
+      "heat.card.people_fixed": { other: "адам хабарлаған" },
+      "heat.tab.overview": "Шолу",
+      "heat.tab.reports": "Өтініштер",
+      "heat.tab.history": "Тарих",
+      "heat.row.most": "Ең жиі",
+      "heat.row.topic": "Тақырып",
+      "heat.row.qr": "QR тақтайша",
+      "heat.row.qr_action": "Басып шығару",
+      "heat.row.period": "Кезең",
+      "heat.row.reported": "Хабарлады",
+      "heat.more_reports": { other: "Тағы {count} өтініш" },
+      "heat.all_reports": "Барлық өтініштер",
       "heat.loading": "Шағымдар жүктеліп жатыр…",
       "heat.empty.title": { other: "Соңғы {n} күнде шағым жоқ" },
       "heat.empty.hint": "Ұзағырақ кезеңді таңдап көріңіз",
@@ -281,6 +307,8 @@
     traffic: '<rect x="8" y="2.5" width="8" height="19" rx="3"/><circle cx="12" cy="7" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/>',
     zebra: '<path d="M3.5 4.5h17M3.5 19.5h17"/><path d="M6.5 8v8M10.5 8v8M14.5 8v8M18.5 8v8" stroke-width="2.6"/>',
     crossroads: '<path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/>',
+    list: '<path d="M8 6h12M8 12h12M8 18h8"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',
+    qr: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2M20 14v.01M14 20h.01M17 17h3v3"/>',
     wifi_off: '<path d="m3 3 18 18"/><path d="M8.5 16.4a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 4.2-2.6M14.8 10.3A10 10 0 0 1 19 12.9M2 9.3a15 15 0 0 1 4-2.6M10.5 5.1A15 15 0 0 1 22 9.3"/><path d="M12 20h.01"/>',
   };
   const KIND_ICON = { object: "pin", segment: "road", area: "home", district: "pin" };
@@ -309,6 +337,25 @@
     if (name === "not_ready") return svgIcon("alert", 40);
     const own = ILLO[name === "empty_filtered" ? "empty" : name];
     return '<svg class="r07-illo" viewBox="0 0 96 80" width="96" height="80" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + own + "</svg>";
+  }
+  // Статус-иконки (README эталона, правило 3 «Linear»; рисует R11 в ui-kit — если есть BirgeUI.statusIcon, берём её):
+  // пустой кружок — новое, наполовину заполненный — в работе, кружок с галочкой — служба сообщила об устранении,
+  // заполненный зелёный с галочкой — проверено жителями. Иконка + слово, одинаково на карте, в карточке и в списке.
+  const STI_RING = '<circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"/>';
+  const STI = {
+    new: STI_RING,
+    reopened: STI_RING,
+    accepted: STI_RING + '<path d="M8 4.5A3.5 3.5 0 0 1 11.5 8H8Z" fill="currentColor"/>',
+    in_progress: STI_RING + '<path d="M8 4.5a3.5 3.5 0 0 1 0 7Z" fill="currentColor"/>',
+    reported_fixed: STI_RING + '<path d="m5.3 8.2 1.8 1.8 3.6-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
+    verified: '<circle cx="8" cy="8" r="7" fill="currentColor"/><path d="m5.1 8.2 1.9 1.9 3.9-4" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+  };
+  STI.fixed = STI.verified;
+  const STC = { new: "#E24B4A", reopened: "#E24B4A", accepted: "#EF9F27", in_progress: "#EF9F27", reported_fixed: "#3B8A2E", verified: "#3B8A2E", fixed: "#3B8A2E", rejected: "#7E8A85" };
+  function statusIcon(st) {
+    const ui = window.BirgeUI;
+    if (ui && typeof ui.statusIcon === "function") { try { const h = ui.statusIcon(st); if (h) return h; } catch (e) { /* своя ниже */ } }
+    return '<svg class="r07-sti" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false" style="color:' + (STC[st] || STC.new) + '">' + (STI[st] || STI.new) + "</svg>";
   }
   function svgIcon(name, size) {
     const s = size || 20;
@@ -1737,7 +1784,7 @@
           note.push(due.overdue_days ? t("deadline.overdue", { n: due.overdue_days }) : due.workdays_left ? t("deadline.left", { n: due.workdays_left }) : t("deadline.today"));
         }
       }
-      return '<div class="bk-statusline r07-statusline"><span class="bk-status r07-status" data-status="' + esc(st) + '">' + esc(word) + "</span>" +
+      return '<div class="bk-statusline r07-statusline r07-st"><span class="bk-status r07-status" data-status="' + esc(st) + '">' + statusIcon(st) + esc(word) + "</span>" +
         (note.length ? '<span class="bk-statusline__note r07-statusline__note"' + (overdue ? ' data-overdue="true"' : "") + ">" + esc(note.join(" · ")) + "</span>" : "") + "</div>";
     }
 
@@ -1749,9 +1796,10 @@
       return '<details class="bk-details r07-details ' + cls + '" data-dk="' + esc(k) + '"' + (isOpen ? " open" : "") + '><summary class="r07-h4">' + title + "</summary>" + body + "</details>";
     }
 
-    // Карточка (CLEAN_PASS R07 №2): «‹ Горячие места ✕» → вид места · район (13 серым) → название 22/600 → статус один раз →
-    // «Тема · Сообщили N человек · за 30 дней» 15 серым → одна главная кнопка → «Подробнее»: «Что пишут жители» (у акимата
-    // открыт), «Объединено с этим», «Жалобы по дням», «О чём сообщают»; акимату — ссылка на QR-лист внизу.
+    // Карточка «Выбран объект» — как в эталоне A (research/round-14/design/REFERENCE.html, .card): плитка с иконкой
+    // категории, название 19/600, «вид места · район», × справа; крупное число людей; статус одной строкой (статус-иконка +
+    // слово, справа серым срок/дата); одна главная кнопка и вторая серая; вкладки «Обзор · Обращения · История».
+    // «Карточка = 5 секунд»: подробности — во вкладках, цитаты не длиннее 2 строк.
     function cardHtml(it) {
       const fixed = it.state === "fixed";
       const key = keyOf(it.target);
@@ -1760,26 +1808,84 @@
         // Одна главная кнопка: у нового — «Взять в работу», «Отметить исправленным» рядом серой; в работе — только она.
         const inWork = it.status === "in_progress";
         actions = (!inWork ? '<button type="button" class="r07-btn r07-btn--primary" data-act="take">' + esc(t("heat.take")) + "</button>" : "") +
-          '<button type="button" class="r07-btn' + (inWork ? " r07-btn--primary" : "") + '" data-act="fixed">' + svgIcon("check", 20) + esc(t("heat.mark_fixed")) + "</button>";
+          '<button type="button" class="r07-btn' + (inWork ? " r07-btn--primary" : "") + '" data-act="fixed">' + (inWork ? "" : svgIcon("check", 18)) + esc(t("heat.mark_fixed")) + "</button>";
       } else if (!examplesOnly(it) && !fixed && S.role === "resident") {
         actions = metooDone(key)
-          ? '<button type="button" class="r07-btn" disabled>' + svgIcon("check", 20) + esc(t("heat.metoo_already")) + "</button>"
-          : '<button type="button" class="r07-btn r07-btn--primary r07-btn--lg" data-act="metoo">' + svgIcon("users", 22) + esc(t("heat.metoo")) + "</button>";
+          ? '<button type="button" class="r07-btn" disabled>' + svgIcon("check", 18) + esc(t("heat.metoo_already")) + "</button>"
+          : '<button type="button" class="r07-btn r07-btn--primary" data-act="metoo">' + svgIcon("users", 20) + esc(t("heat.metoo")) + "</button>";
       }
       // «Примерное место» — словами здесь (CLEAN_PASS R07 №2); если оно уже в названии — «Область на карте»
       const kindWord = !it.approximate ? t("heat.kind." + (it.target.subtype || it.target.kind))
         : label(it.target) === t("heat.approx_short") ? t("heat.kind.approximate") : t("heat.approx_short");
       const eyebrow = [kindWord, distName(it.district)].filter(Boolean).map(esc).join(" · ") +
         (it.demo ? ' · <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "");
-      // «Жалобы по дням» — только если в окне графика есть жалобы; «О чём сообщают» — только если тем больше одной
-      // (одна тема уже написана в строке «Тема · Сообщили …»).
+      const cats = Object.entries(it.by_category || {});
+      const topCat = cats.length ? cats[0][0] : "other";
+      const level = fixed ? (it.fixed_kind === "reported" ? "reported" : "fixed") : String(it.level);
+      const tileIcon = BADGE_SUBTYPE_ICON[it.target.subtype] || catIcon(topCat);
+      const people = t(fixed ? "heat.card.people_fixed" : "heat.card.people", { count: it.count });
+      const tab = S.cardTab && S.cardTab.key === key ? S.cardTab.tab : "overview";
+      const tabs = [["overview", t("heat.tab.overview")]];
+      if (S.role === "akimat") tabs.push(["reports", t("heat.tab.reports") + " · " + fmtNum(it.count)]);
+      tabs.push(["history", t("heat.tab.history")]);
+      const panelOf = (id, html) => '<div class="r07-tp" role="tabpanel" id="r07-tp-' + id + '" aria-labelledby="r07-tab-' + id + '"' + (id === tab ? "" : " hidden") + ">" + html + "</div>";
+      return '<article class="r07-card" data-level="' + esc(level) + '">' +
+        '<header class="r07-card__hd"><span class="r07-tile" aria-hidden="true">' + svgIcon(tileIcon, 24) + "</span>" +
+          '<div class="r07-card__hg"><h3 class="r07-card__title" tabindex="-1">' + esc(label(it.target)) + "</h3>" +
+          '<p class="r07-card__sub r07-eyebrow">' + eyebrow + "</p></div>" +
+          '<button type="button" class="r07-x" data-back aria-label="' + esc(t("heat.close")) + '" title="' + esc(t("heat.close")) + '">' + svgIcon("close", 16) + "</button></header>" +
+        '<p class="r07-big"><b>' + fmtNum(it.count) + "</b><span>" + esc(people) + " · " + esc(keep(t("heat.for_days", { count: S.filters.days }))) + "</span></p>" +
+        statusLineHtml(it) +
+        (actions ? '<div class="r07-actions">' + actions + "</div>" : "") +
+        '<div class="r07-tabs" role="tablist" aria-label="' + esc(label(it.target)) + '">' + tabs.map(([id, name]) =>
+          '<button type="button" role="tab" class="r07-tab" id="r07-tab-' + id + '" data-tab="' + id + '" aria-controls="r07-tp-' + id +
+          '" aria-selected="' + (id === tab) + '" tabindex="' + (id === tab ? 0 : -1) + '">' + esc(name) + "</button>").join("") + "</div>" +
+        panelOf("overview", overviewHtml(it, key, topCat)) +
+        (S.role === "akimat" ? panelOf("reports", textsHtml(key) || '<p class="r07-note r07-tp__empty">' + esc(t("heat.texts.staff_only")) + "</p>") : "") +
+        panelOf("history", historyHtml(it, cats)) +
+        "</article>";
+    }
+    // Строка «подпись — значение» с иконкой в плитке 30 px (эталон .row)
+    function rowHtml(icon, name, value, extra) {
+      return '<div class="r07-row' + (extra ? " " + extra : "") + '"><span class="r07-row__ic" aria-hidden="true">' + svgIcon(icon, 16) + "</span>" +
+        '<span class="r07-row__k">' + esc(name) + '</span><b class="r07-row__v">' + value + "</b></div>";
+    }
+    // «Обзор»: чаще всего / тема / табличка QR, одна цитата (≤ 2 строк) и «Ещё N обращений», у сотрудника — «Объединено с этим»
+    function overviewHtml(it, key, topCat) {
+      const rows = [];
+      const most = topicName(it, topCat);
+      rows.push(rowHtml(catIcon(topCat), t("heat.row.most"), esc(most), "r07-card__topic-row"));
+      if (catName(topCat) !== most) rows.push(rowHtml("list", t("heat.row.topic"), esc(catName(topCat))));
+      // R12 волна 2 п. 6 (IA_WAVE2 §6.2): акимату — лист QR-табличек этого места
+      if (S.role === "akimat" && QR_ID.test(it.target.id)) rows.push(rowHtml("qr", t("heat.row.qr"),
+        '<a class="r07-qr" href="/civic/qr/print.html?ids=' + encodeURIComponent(it.target.id) + '" target="_blank" rel="noopener">' + esc(t("qr.print")) + "</a>"));
+      let lead = "";
+      if (S.role === "akimat") {
+        const st = S.texts.get(textsKey(key));
+        if (st && st.status === "loading") lead = '<div class="r07-lead r07-lead--skel" aria-hidden="true"><i></i><i></i></div>';
+        else if (st && st.status === "ready" && st.data && (st.data.groups || []).length) {
+          const g = st.data.groups[0];
+          const rest = Math.max(0, (it.count || 0) - (g.people || 1));
+          lead = '<div class="r07-lead"><p class="r07-quote r07-lead__q" lang="' + esc(g.lang === "kk" ? "kk" : g.lang === "ru" ? "ru" : S.lang) + '">«' + esc(g.text) + "»</p>" +
+            (g.rude ? '<span class="r07-tag r07-tag--rude">' + esc(t("moderation.rude")) + "</span>" : "") +
+            '<button type="button" class="r07-more" data-tab-go="reports">' + esc(rest ? t("heat.more_reports", { count: rest }) : t("heat.all_reports")) + "</button></div>";
+        }
+      }
+      return '<div class="r07-rows">' + rows.join("") + lead + "</div>" + (S.role === "akimat" ? mergedHtml(key) : "");
+    }
+    // «История»: жалобы по дням и о чём сообщают (то, что раньше было в «Подробнее»)
+    function historyHtml(it, cats) {
+      const fixed = it.state === "fixed";
       const daily = it.daily || [];
       const maxDay = Math.max(1, ...daily, 0);
-      const chart = !fixed && daily.some((n) => n > 0)
-        ? detailsHtml("r07-chart", esc(t("heat.chart")), '<div class="r07-spark" role="img" aria-label="' + esc(t("heat.chart")) + '">' +
+      const parts = [];
+      parts.push('<div class="r07-rows">' + rowHtml("clock", t("heat.row.period"), esc(keep(t("heat.for_days", { count: S.filters.days })))) +
+        rowHtml("users", t("heat.row.reported"), esc(t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count }))) + "</div>");
+      if (!fixed && daily.some((n) => n > 0)) {
+        parts.push('<section class="r07-chart"><h4 class="r07-h4">' + esc(t("heat.chart")) + '</h4><div class="r07-spark" role="img" aria-label="' + esc(t("heat.chart")) + '">' +
           daily.map((n) => '<i style="height:' + Math.max(n ? 8 : 2, Math.round((n / maxDay) * 100)) + '%" title="' + n + '"></i>').join("") +
-          '</div><div class="r07-axis"><span>' + esc(t("heat.chart_from")) + "</span><span>" + esc(t("heat.chart_to")) + "</span></div>", false)
-        : "";
+          '</div><div class="r07-axis"><span>' + esc(t("heat.chart_from")) + "</span><span>" + esc(t("heat.chart_to")) + "</span></div></section>");
+      }
       // «О чём сообщают»: категория и под ней самое частое уточнение этой категории (волна 1, п. 2 и 12)
       const subOf = (c) => {
         const ids = Object.entries(it.subtopics || {}).filter(([id]) => {
@@ -1791,27 +1897,9 @@
         const name = subName(id);
         return name ? '<small class="r07-topics__sub">' + esc(name) + " · " + fmtNum(n) + "</small>" : "";
       };
-      const cats = Object.entries(it.by_category || {});
-      const topics = cats.length > 1
-        ? detailsHtml("r07-topics-box", esc(t("heat.topics")), '<ul class="r07-topics">' + cats.map(([c, n]) =>
-          "<li>" + svgIcon(catIcon(c), 20) + "<span>" + esc(catName(c)) + subOf(c) + "</span><b>" + fmtNum(n) + "</b></li>").join("") + "</ul>", false)
-        : "";
-      const topic = cats.length || it.top_subtopic ? topicName(it, cats.length ? cats[0][0] : null) : "";
-      return '<article class="r07-card">' +
-        '<div class="r07-card__nav"><button type="button" class="r07-btn r07-btn--ghost" data-back>' + svgIcon("back", 20) + esc(t("heat.back")) + "</button>" +
-        '<button type="button" class="r07-icon-btn" data-back aria-label="' + esc(t("heat.close")) + '" title="' + esc(t("heat.close")) + '">' + svgIcon("close", 22) + "</button></div>" +
-        '<div class="r07-card__head"><p class="r07-eyebrow">' + eyebrow + "</p>" +
-        '<h3 class="r07-card__title" tabindex="-1">' + esc(label(it.target)) + "</h3></div>" +
-        statusLineHtml(it) +
-        '<p class="r07-card__reported">' + (topic ? '<span class="r07-card__topic">' + esc(topic) + "</span> · " : "") +
-          esc(t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count })) + " · " + esc(keep(t("heat.for_days", { count: S.filters.days }))) + "</p>" +
-        (actions ? '<div class="r07-actions">' + actions + "</div>" : "") +
-        (S.role === "akimat" ? textsHtml(key) + mergedHtml(key) : "") +
-        chart + topics +
-        // R12 волна 2 п. 6 (IA_WAVE2 §6.2): акимату — ссылка на лист QR-табличек этого места (второстепенная, внизу карточки).
-        (S.role === "akimat" && QR_ID.test(it.target.id) ? '<p class="r07-qr"><a class="r07-btn r07-btn--ghost" href="/civic/qr/print.html?ids=' +
-          encodeURIComponent(it.target.id) + '" target="_blank" rel="noopener">' + esc(t("qr.print")) + "</a></p>" : "") +
-        "</article>";
+      if (cats.length > 1) parts.push('<section class="r07-topics-box"><h4 class="r07-h4">' + esc(t("heat.topics")) + '</h4><ul class="r07-topics">' + cats.map(([c, n]) =>
+        "<li>" + svgIcon(catIcon(c), 18) + "<span>" + esc(catName(c)) + subOf(c) + "</span><b>" + fmtNum(n) + "</b></li>").join("") + "</ul></section>");
+      return parts.join("");
     }
 
     // «Что пишут жители» (UX_REVIEW R11, день 3, №4): 1–3 группы похожих текстов с числом людей.
@@ -1825,8 +1913,7 @@
       const st = S.texts.get(textsKey(key));
       if (st && st.status === "loading") {
         const q = '<span class="r07-texts__q"><i></i><i></i><i class="r07-skel__meta"></i></span>';   // цитата 2 строки + «N человек»
-        const skel = '<div class="r07-texts__skel" aria-hidden="true">' + q + q + q + "</div>";
-        return '<section class="r07-texts r07-texts--loading" aria-busy="true">' + detailsHtml("r07-texts__box", esc(t("heat.texts.title")), skel, true) + "</section>";
+        return '<section class="r07-texts r07-texts--loading" aria-busy="true"><div class="r07-texts__skel" aria-hidden="true">' + q + q + q + "</div></section>";
       }
       if (!st || st.status !== "ready") return "";
       const groups = (st.data && st.data.groups) || [];
@@ -1834,11 +1921,11 @@
       if (!groups.length && !hidden) return "";
       const body = (groups.length
         ? '<ul class="r07-quotes">' + groups.map((g) =>
-          '<li><p class="r07-quote" lang="' + esc(g.lang === "kk" ? "kk" : g.lang === "ru" ? "ru" : S.lang) + '">«' + esc(g.text) + '»</p><p class="r07-quote__meta">' +
+          '<li><p class="r07-quote" lang="' + esc(g.lang === "kk" ? "kk" : g.lang === "ru" ? "ru" : S.lang) + '" title="' + esc(g.text) + '">«' + esc(g.text) + '»</p><p class="r07-quote__meta">' +
           esc(t("heat.texts.people", { count: g.people })) + (g.demo ? ' · <span class="r07-tag">' + esc(t("heat.demo_tag")) + "</span>" : "") +
           (g.rude ? ' <span class="r07-tag r07-tag--rude">' + esc(t("moderation.rude")) + "</span>" : "") + "</p></li>").join("") + "</ul>"
         : "") + (hidden ? '<p class="r07-note">' + esc(t("heat.texts.staff_only")) + "</p>" : "");
-      return '<section class="r07-texts">' + detailsHtml("r07-texts__box", esc(t("heat.texts.title")), body, true) + "</section>";
+      return '<section class="r07-texts">' + body + "</section>";
     }
     // «Объединено с этим» (волна мелочей п. 9, R04 + R09): дубли и «Я тоже» с текстом жителя, присоединённые к жалобам
     // этой цели. Ошибочное объединение акимат отменяет одним нажатием «Это разные проблемы» — R09 выделяет жалобу
@@ -1942,6 +2029,29 @@
       panel.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => {
         S.selected = null; updateSelectionLayer(); render(); drawBadges();
       }));
+      // Вкладки карточки «Обзор · Обращения · История» (эталон A): выбор помнится для этого места (перерисовка не сбрасывает),
+      // ← → — по вкладкам (ARIA tabs), «Ещё N обращений» ведёт во «Обращения»; смена — мягко, 180 мс.
+      const tabs = [...panel.querySelectorAll(".r07-tab")];
+      const goTab = (id, focus) => {
+        if (!S.selected) return;
+        S.cardTab = { key: S.selected, tab: id };
+        tabs.forEach((b) => { const on = b.dataset.tab === id; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
+        panel.querySelectorAll(".r07-tp").forEach((tp) => {
+          const on = tp.id === "r07-tp-" + id;
+          if (on && tp.hidden) { tp.classList.remove("r07-tp--in"); void tp.offsetWidth; tp.classList.add("r07-tp--in"); }
+          tp.hidden = !on;
+        });
+      };
+      tabs.forEach((b, i) => {
+        b.addEventListener("click", () => goTab(b.dataset.tab));
+        b.addEventListener("keydown", (e) => {
+          const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+          if (!d) return;
+          e.preventDefault();
+          goTab(tabs[(i + d + tabs.length) % tabs.length].dataset.tab, true);
+        });
+      });
+      panel.querySelectorAll("[data-tab-go]").forEach((b) => b.addEventListener("click", () => goTab(b.dataset.tabGo, true)));
       panel.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => {
         const it = findItem(S.selected);
         if (!it) return;
