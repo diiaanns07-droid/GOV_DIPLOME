@@ -640,3 +640,10 @@ reference/build-*.jpg («эталон / было R01 69984f0f / стало 69984
         3) иначе — компактная шапка (как сейчас: разделы в меню аватара).
      c) Чипы под поиском по-казахски длиннее («Барлық санаттар», «Қар және көктайғақ»): один ряд .bk-scroll-x шириной
         до кнопок карты (calc(100vw − 40px − 64px)), затухание края подключается само (ui-kit).
+21.8 R01 — шрифт хрома. У сборки шрифт страницы «Segoe UI», Inter, Arial (web/style.css body): на Windows-ноутбуке демо
+     поиск, кнопки карты, легенда и панели рисовались бы Segoe UI, а не Inter эталона (R10 pv1: «шрифт Inter → Segoe UI /
+     Helvetica Neue» у ctl и legend). ui-kit R11 (этот коммит): .bk-glass, .bk-glass--control и все детали эталона сами
+     ставят font-family: var(--font) — на стенде кнопки карты, легенда, навигация, панель уже Birge Sans. Осталось у R01:
+       body.civic-mode { font-family: var(--font); }        (web/civic/shell/birge.css — одна строка; всё остальное
+                                                             на странице Birge тоже станет Inter)
+       поле поиска — font: inherit (сейчас input берёт «Segoe UI» из web/style.css).

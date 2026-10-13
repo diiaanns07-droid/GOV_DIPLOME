@@ -2093,6 +2093,26 @@ p.bk-banner--warn {
    Компоненты один в один с эталоном; размеры, отступы и цвета — оттуда же (R11 REFERENCE_A.md). Хром экрана (где стоит
    поиск, навигация, карточка) — у R01; содержимое карточек — у ролей; здесь — сами детали. */
 
+/* Шрифт деталей эталона — свой, не со страницы (сборка R01: body «Segoe UI»; на Windows иначе весь хром был бы Segoe UI) */
+.bk-searchbar,
+.bk-navpill,
+.bk-me,
+.bk-chip,
+.bk-objcard,
+.bk-sum,
+.bk-psheet,
+.bk-pd,
+.bk-phsheet,
+.bk-psearch,
+.bk-fab,
+.bk-tag-proj,
+.bk-pin,
+.bk-llist,
+.bk-legend,
+.bk-mapbtn {
+  font-family: var(--font);
+}
+
 /* Поиск со знаком слева (эталон .search: 388 × 52, радиус 16, плотное стекло; знак 30, радиус 9; подсказка «/») */
 .bk-searchbar {
   line-height: var(--lh-ui);
@@ -3047,6 +3067,7 @@ p.bk-banner--warn {
   --c-info: var(--glass-info);
   --c-demo: var(--glass-demo);
   color: var(--c-ink);
+  font-family: var(--font); /* хром эталона — всегда Inter (Birge Sans), даже если у страницы свой шрифт (у сборки — Segoe UI) */
   background-color: var(--glass-panel);
   background-image: var(--glass-highlight);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
