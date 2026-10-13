@@ -7,10 +7,12 @@
 - GET  /api/civic/v2/complaints/<id>    СИНТЕТИКА из heat_fixture.json["complaints"] (публичный вид R09: без текста)
 - POST /api/civic/v2/complaints/<id>/metoo   запоминает вызов и прибавляет 1 к числу людей (СИНТЕТИКА)
 - GET  /api/test/calls                   что приходило на «Я тоже» (для проверок)
+- GET  /api/test/set?fail_metoo=1&delay_metoo_ms=N   сбой или задержка «Я тоже» (откат и мгновенный отклик)
 - статика: /civic/** и /vendor/** из web/, /stand/** из этой папки;
   /vendor/qrcode/qrcode.js — настоящий файл LOCAL-11, если есть; ?fakeqr подменяет его ТЕСТОВОЙ заглушкой.
 """
 import json
+import time
 import re
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -28,7 +30,7 @@ FIXTURE = json.loads((HERE / "heat_fixture.json").read_text("utf-8"))
 HEAT = FIXTURE["items"]
 COMPLAINTS = FIXTURE.get("complaints", {})
 CALLS = []
-STATE = {"fail_target": 0, "fail_heat": 0, "fake_qr": False}
+STATE = {"fail_target": 0, "fail_heat": 0, "fail_metoo": 0, "delay_metoo_ms": 0, "fake_qr": False}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -53,7 +55,7 @@ class Handler(BaseHTTPRequestHandler):
         if u.path == "/api/test/calls":
             return self._send(200, {"calls": CALLS})
         if u.path == "/api/test/set":
-            for k in ("fail_target", "fail_heat"):
+            for k in ("fail_target", "fail_heat", "fail_metoo", "delay_metoo_ms"):
                 if k in q:
                     STATE[k] = int(q[k][0])
             if "fake_qr" in q:
@@ -92,6 +94,11 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(404, {"error": "not_found"})
         body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0) or 0) or b"{}")
         CALLS.append({"complaint_id": m.group(1), "device_id": body.get("device_id")})
+        if STATE["delay_metoo_ms"]:  # медленная сеть: отклик карточки не ждёт сервера (правило Linear 4)
+            time.sleep(STATE["delay_metoo_ms"] / 1000)
+        if STATE["fail_metoo"]:
+            STATE["fail_metoo"] -= 1
+            return self._send(503, {"error": "unavailable"})
         for item in HEAT.values():
             if m.group(1) in item.get("open_ids", []):
                 item["count"] += 1

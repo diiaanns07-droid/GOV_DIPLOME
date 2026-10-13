@@ -110,6 +110,37 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   await ctx.close();
 });
 
+test("QR: «Я тоже» answers at once (Linear rule 4) and rolls back honestly when the server fails", { skip: SKIP }, async () => {
+  // медленный сервер: число +1 и «Спасибо» видны раньше ответа (не ждём 1,5 с)
+  await set("delay_metoo_ms=1500");
+  let r = await open("?report=" + STOP);
+  await ready(r.page);
+  const num = async (p) => Number((await p.locator(".bq-big b").innerText()).trim());
+  const n0 = await num(r.page);
+  const t0 = Date.now();
+  await r.page.click('[data-act="metoo"]');
+  await r.page.waitForSelector(".bq-notice--ok", { timeout: 1000 });
+  assert.ok(Date.now() - t0 < 700, "отклик раньше ответа сервера: " + (Date.now() - t0) + " мс");
+  assert.equal(await num(r.page), n0 + 1, "число людей +1 сразу");
+  assert.equal(await r.page.locator('[data-act="metoo"]').count(), 0, "«Я тоже» сменилась сразу");
+  await r.page.waitForTimeout(1800);
+  assert.equal(await num(r.page), n0 + 1, "после ответа сервера число то же (без «мигания»)");
+  await r.ctx.close();
+  await set("delay_metoo_ms=0");
+  // сбой сервера: число и кнопка возвращаются, «Спасибо» сменяется честной ошибкой, отметка устройства снята
+  await set("fail_metoo=1");
+  r = await open("?report=" + STOP);
+  await ready(r.page);
+  const n1 = await num(r.page);
+  await r.page.click('[data-act="metoo"]');
+  await r.page.waitForSelector(".bq-notice--error", { timeout: 5000 });
+  assert.equal(await num(r.page), n1, "откат числа");
+  assert.match(await r.page.locator(".bq-notice--error").innerText(), /Не удалось отправить/);
+  assert.equal(await r.page.locator('[data-act="metoo"]').count(), 1, "«Я тоже» снова доступна");
+  assert.equal(await r.page.evaluate(() => JSON.parse(localStorage.getItem("birge.heat.metoo") || "{}")["object:" + "osm-node-10272524280"]), undefined);
+  await r.ctx.close();
+});
+
 test("QR: object without complaints — no empty block (IA_WAVE2 §0 п. 6), main button «Сообщить о проблеме здесь»; details open the map", { skip: SKIP }, async () => {
   const { ctx, page, errors } = await open("?report=" + QUIET);
   await ready(page);

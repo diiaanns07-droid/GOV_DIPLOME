@@ -246,6 +246,13 @@
       root.localStorage.setItem(METOO_KEY, JSON.stringify(all));
     } catch (e) { /* приватный режим: отметка останется до перезагрузки */ }
   }
+  function forgetMetoo(target) {
+    try {
+      var all = JSON.parse(root.localStorage.getItem(METOO_KEY) || "{}");
+      delete all[metooKey(target)];
+      root.localStorage.setItem(METOO_KEY, JSON.stringify(all));
+    } catch (e) { /* нет хранилища */ }
+  }
   var memoryDevice = null;
   function deviceId() {
     try {
@@ -380,19 +387,24 @@
         render();
       });
     }
+    // Правило Linear 4 (эталон A): действие видно сразу — число +1, «Спасибо», кнопка меняется, не дожидаясь сервера;
+    // сервер подтверждает фоном (затем — свежие числа R07), ошибка — откат числа и отметки и честное «Не удалось отправить».
     function metoo() {
       var it = S.heat, tg = S.info.target, id = it && (it.open_ids || [])[0];
       if (!id || S.busy) return;
-      S.busy = true; S.notice = null; render();
+      var before = it.count, my = S.seq;
+      S.busy = true; it.count = before + 1; rememberMetoo(tg);
+      S.notice = { ok: true, text: t("heat.toast_metoo") }; S.bump = true; render();
       postJson("/complaints/" + encodeURIComponent(id) + "/metoo", { device_id: deviceId() }).then(function () {
-        if (destroyed) return;
-        rememberMetoo(tg);
-        S.busy = false; S.notice = { ok: true, text: t("heat.toast_metoo") }; S.bump = true;
+        if (destroyed || my !== S.seq) return;
+        S.busy = false;
         // R07 слушает это событие и перерисует тепловую карту (как после «Я тоже» в мастере R09).
         try { root.dispatchEvent(new root.CustomEvent("birge:complaint", { detail: { type: "metoo", complaint_id: id, target: tg } })); } catch (e) { /* */ }
         return loadHeat(S.seq);
       }, function () {
-        if (destroyed) return;
+        if (destroyed || my !== S.seq) return;
+        if (S.heat === it) it.count = before;
+        forgetMetoo(tg);
         S.busy = false; S.notice = { ok: false, text: t("complaint.send_error") }; render();
       });
     }

@@ -107,9 +107,13 @@ try {
       return ((j.item && j.item.texts && j.item.texts.groups) || []).map((g) => ({ text: g.text, demo: g.demo })); }, STOP);
     check("цитата в «Обзоре» — из публичных текстов (без входа — только примеры)", !quote || pub.some((g) => g.demo && quote.includes(g.text)), [quote, pub]);
     if (await p.locator('#birge-report-root [data-act="metoo"]').count()) {
+      // отклик мгновенный (правило Linear 4), поэтому «принято сервером» — по ответу R09, а не по «Спасибо» на экране
+      const resp = p.waitForResponse((r) => /\/complaints\/[^/]+\/metoo$/.test(r.url()) && r.request().method() === "POST", { timeout: 10000 }).catch(() => null);
       await p.click('#birge-report-root [data-act="metoo"]');
-      const ok = await p.waitForSelector("#birge-report-root .bq-notice--ok", { timeout: 10000 }).then(() => true, () => false);
-      check("«Я тоже» из паспорта принято сервером R09", ok, await p.locator("#birge-report-root").innerText().catch(() => ""));
+      const r = await resp;
+      await p.waitForTimeout(400);
+      const ok = !!r && r.ok() && (await p.locator("#birge-report-root .bq-notice--ok").count()) === 1 && (await p.locator("#birge-report-root .bq-notice--error").count()) === 0;
+      check("«Я тоже» из паспорта принято сервером R09 (ответ " + (r ? r.status() : "нет") + "), «Спасибо» осталось", ok, await p.locator("#birge-report-root").innerText().catch(() => ""));
     } else checks.push({ name: "«Я тоже» из паспорта", status: "NOT_RUN", detail: "на устройстве уже отмечено" });
     await p.click('#birge-report-root [data-act="report"], #birge-report-root [data-act="report-other"]');
     await p.waitForTimeout(600);
