@@ -1358,6 +1358,17 @@
   .akim-card.bk-card {
     padding: 10px 12px;
   }
+  /* строки эталона на бумаге плотнее (селекторы той же силы, что у экрана) */
+  .akim-hot__item.bk-list__item {
+    min-height: 0;
+    padding: 2px 8px;
+  }
+  .akim-pulse__item {
+    padding: 4px 0;
+  }
+  .akim-districts .akim-bar-btn {
+    min-height: 0;
+  }
   .bk-kpis {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }

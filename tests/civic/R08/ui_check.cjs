@@ -606,6 +606,23 @@ async function shot(page, name, full) {
     await ctx.close();
   }
   {
+    // Правило Linear 4: быстрый ответ (80 мс) — без мигания скелетом; правило 2: ↓ / J / K по «Горячим местам».
+    const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru",
+      route: async (route) => { await new Promise((r) => setTimeout(r, 80)); await route.continue(); } });
+    let sawSkel = false;
+    for (let i = 0; i < 15; i++) { if (await page.$(".akim-skel, .akim-loading")) sawSkel = true; await page.waitForTimeout(10); }
+    await waitState(page, "ok");
+    await page.focus(".akim-hot__item >> nth=0");
+    await page.keyboard.press("ArrowDown");
+    const k1 = await page.evaluate(() => Array.from(document.querySelectorAll(".akim-hot__item")).indexOf(document.activeElement));
+    await page.keyboard.press("j");
+    const k2 = await page.evaluate(() => Array.from(document.querySelectorAll(".akim-hot__item")).indexOf(document.activeElement));
+    await page.keyboard.press("k");
+    const k3 = await page.evaluate(() => Array.from(document.querySelectorAll(".akim-hot__item")).indexOf(document.activeElement));
+    check("быстрый ответ — без скелета (Linear 4); ↓ / J / K по «Горячим местам» (Linear 2)", !sawSkel && k1 === 1 && k2 === 2 && k3 === 1, { sawSkel, k1, k2, k3 });
+    await ctx.close();
+  }
+  {
     // Смена района при показанных числах: без мигания скелетом — прежние приглушены, полоса загрузки, потом новые.
     const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru" });
     await waitState(page, "ok");
