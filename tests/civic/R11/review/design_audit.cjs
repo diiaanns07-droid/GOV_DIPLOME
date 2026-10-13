@@ -3,9 +3,9 @@
  *   NODE_PATH="$(npm root -g)" node tests/civic/R11/review/design_audit.cjs http://127.0.0.1:<порт>/ <out.json>
  * Экраны: карта акимата/жителя, карточка цели, разделы меню (BirgeShell.setSection), мастер жалобы; 1366 и 375; ru.
  * Пункты чек-листа (номер — как в DESIGN_MARATHON):
- *   3  типографика — размеры шрифта видимого текста на экране (норма шкалы 13/15/17/22/28; «не больше 3 размеров» —
- *      считаем основной текст без чисел KPI и заголовка экрана), веса не 400/600, строки длиннее 70 знаков (блоки текста);
- *   2  сетка — отступы (padding, gap) не кратные 4 px у видимых блоков;
+ *   3  типографика — размеры шрифта видимого текста (эталон A 13 окт: шкала 12/13/14/15/16/18/19/22/34), веса не
+ *      400/500/600 (700 — только числа в плашках и значках), строки длиннее 70 знаков (блоки текста);
+ *   2  сетка — в эталоне A отступы свои (18, 10, 13, 7…), поэтому кратность 4 только считается для справки, не ошибка;
  *   6  глубина — тень внутри тени (элемент с box-shadow внутри предка с box-shadow, кроме стекла и фокуса);
  *   7  движение — transition/animation длиннее 350 мс (кроме пульса bk-pulse/r07-pulse);
  *   9  иконки — видимая толщина линии svg.ic (линия × размер / 24) вне 1,4–2,4 px (кроме .ic--48 и иллюстраций .bk-ill);
@@ -17,7 +17,7 @@ const fs = require("fs");
 const { chromium } = require("playwright");
 const BASE = process.argv[2] || "http://127.0.0.1:8752/";
 const OUT = process.argv[3] || "design_audit.json";
-const SCALE = new Set([13, 15, 17, 22, 28]);
+const SCALE = new Set([12, 13, 14, 15, 16, 18, 19, 22, 34]); // эталон A (REFERENCE.html, 13 окт)
 
 const ready = (p) => p.waitForFunction(() => window.CivicShell?.mode === "civic" && typeof mapReady !== "undefined" && mapReady
   && window.CivicShell.heat?.state?.().status === "ready", null, { timeout: 45000 }).then(() => p.waitForTimeout(1500));
@@ -39,7 +39,8 @@ async function audit(p) {
         const fs = Math.round(parseFloat(s.fontSize));
         out.sizes[fs] = (out.sizes[fs] || 0) + 1;
         if (!S.has(fs) && fs !== 16) add("offscale", `${k} · ${fs}px`, own); // 16 — поля ввода (iOS не увеличивает)
-        if (s.fontWeight !== "400" && s.fontWeight !== "600") add("weight", `${k} · ${s.fontWeight}`, own);
+        const numPlate = s.fontWeight === "700" && /^[\d\s✓·+]+$/.test(own); // числа в плашках и значках — 700 (эталон .n/.cnt)
+        if (!["400", "500", "600"].includes(s.fontWeight) && !numPlate) add("weight", `${k} · ${s.fontWeight}`, own);
         if (own.length > 70 && e.getBoundingClientRect().width / (parseFloat(s.fontSize) * 0.5) > 80) add("long", `${k} · ${Math.round(e.getBoundingClientRect().width)}px`, own);
       }
       for (const prop of ["paddingTop", "paddingLeft", "rowGap", "columnGap"]) {
@@ -55,11 +56,16 @@ async function audit(p) {
         }
       }
       const td = ms(s.transitionDuration), ad = s.animationName !== "none" ? ms(s.animationDuration) : 0;
-      if ((td > 350 || ad > 350) && !/pulse|spin|skel|shimmer/i.test(s.animationName + " " + k)) add("motion", `${k} · ${td > 350 ? "transition " + td : "animation " + s.animationName + " " + ad}ms`, own);
+      // Linear (правило 6): движение 150–250 мс; порог 300 (эталон: «карточка выезжает за 300 мс») — длиннее считаем
+      if ((td > 300 || ad > 300) && !/pulse|spin|skel|shimmer/i.test(s.animationName + " " + k)) add("motion", `${k} · ${td > 300 ? "transition " + td : "animation " + s.animationName + " " + ad}ms`, own);
       if (e.matches("svg.ic:not(.ic--48)")) { /* видимая толщина = линия × размер / 24 (viewBox): у значка 20 px при линии 2 — 1,67 px; норма 1,4–2,4 px; 48 px в пустых состояниях — крупный рисунок (ui-kit) */ const w = parseFloat(s.strokeWidth), px = w * e.getBoundingClientRect().width / 24; if (w && (px < 1.4 || px > 2.4)) add("icon", `${key(e.parentElement)} · линия ${w} → ${px.toFixed(1)} px`, ""); }
       if (e.matches("button, a[href], [role=button], [role=tab], [role=menuitem], [role=menuitemradio], summary")) {
         const b = e.getBoundingClientRect();
-        if (Math.min(b.width, b.height) < 43.5 && !e.closest(".maplibregl-marker")) add("small", `${k} · ${Math.round(b.width)}×${Math.round(b.height)}`, e.textContent.trim() || e.getAttribute("aria-label"));
+        // невидимое расширение зоны нажатия (ui-kit: ::after с отрицательным inset — сегмент 30, «Поддержать» 32, × 32 → 44)
+        const a = getComputedStyle(e, "::after"), neg = (v) => Math.max(0, -parseFloat(v) || 0);
+        const ext = a.content !== "none" && a.position === "absolute"
+          ? { w: neg(a.left) + neg(a.right), h: neg(a.top) + neg(a.bottom) } : { w: 0, h: 0 };
+        if (Math.min(b.width + ext.w, b.height + ext.h) < 43.5 && !e.closest(".maplibregl-marker")) add("small", `${k} · ${Math.round(b.width)}×${Math.round(b.height)}`, e.textContent.trim() || e.getAttribute("aria-label"));
         if (!e.textContent.trim() && !e.getAttribute("aria-label") && !e.getAttribute("title") && !e.getAttribute("aria-labelledby")) add("unnamed", k, "");
       }
     }
@@ -107,8 +113,8 @@ async function audit(p) {
   }
   await browser.close();
   fs.writeFileSync(OUT, JSON.stringify({ screens, total }, null, 1));
-  const names = { offscale: "3 размер вне шкалы", weight: "3 вес не 400/600", long: "3 строка > 70 знаков", grid: "2 отступ не кратен 4", shadow2: "6 тень в тени",
-    motion: "7 движение > 350 мс", icon: "9 видимая толщина иконки вне 1,4–2,4 px", small: "10 зона < 44 px", unnamed: "10 кнопка без подписи" };
+  const names = { offscale: "3 размер вне шкалы", weight: "3 вес не 400/500/600", long: "3 строка > 70 знаков", grid: "2 отступ не кратен 4 (справка)", shadow2: "6 тень в тени",
+    motion: "7 движение > 300 мс", icon: "9 видимая толщина иконки вне 1,4–2,4 px", small: "10 зона < 44 px", unnamed: "10 кнопка без подписи" };
   for (const [b, title] of Object.entries(names)) {
     const rows = Object.entries(total[b] || {}).sort((a, c) => c[1].n - a[1].n);
     console.log(`\n== ${title}: ${rows.length} видов, ${rows.reduce((a, r) => a + r[1].n, 0)} элементов`);
