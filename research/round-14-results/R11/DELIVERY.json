@@ -4,8 +4,8 @@
  "branch": "claude/r14-R11",
  "base_sha": "af77b78",
  "restored_from": null,
- "code_sha": "b39e586d — последний коммит web/civic/ui-kit и web/civic/i18n (дизайн-марафон, круги 0–4): всё из 58b28edc + отклик нажатия и появление свойствами scale/translate (R10 B-068: не спорят с transform модулей), стекло внутри стекла — сплошное (меню в шапке, R01 25.3), карточки на стекле белые с волосяной линией (R13), числа у вкладок скрыты на телефоне, мягкая смена статуса и «встающая» галочка «Проверено жителями», .bk-menu__radio, KPI на стекле без рамки, запасной вид стекла и через токены, пункты меню вложены на 8 со скруглением 10, BirgeUI.loginState — одно состояние «войдите как сотрудник», BirgeUI.scrollFade + .bk-scroll-x — затухание края у рядов с прокруткой (подключается само ко всем .bk-tabs/.bk-scroll-x); словарь 1450 ключей ru=kk (+12 ключей R13 марафона ask.*, +16 R06/R12 со сборки 9c3c051b; akim.decision.forbidden — что делать; map.card.on_map — глагол «Показать на карте»)",
- "tested_sha": "R01 d2b5f087 (ui-kit/i18n R11 7cbbc767 внутри): review_build 44/44, kk 0, ключей вне словаря 0, шаги 1–2, 6, 6–7 PASS, значки видны, первый кадр = эталон; design_audit — вне шкалы 0, весов 700 0, движение > 350 мс 0, зон < 44 0, без имени 0, тень в тени 0; reduced_motion_check 0; glass_contrast 7,60; glass_fallback 3/3. test_r11_ui_kit 21/21, ui_kit.test PASS, витрина 4/4",
+ "code_sha": "910e8c04 — последний коммит web/civic/ui-kit и web/civic/i18n (эталон A владельца 13 окт): токены и детали REFERENCE.html вариант A один в один (цвета #121A17/#4B5752/#7E8A85, линия rgba(18,26,23,.08), бумага #F3F1EC, лайм только знак/аватар/«Проект»; стекло 72 % и .bk-glass--strong 86 %, blur 24 + saturate 180 %, настоящая граница 1 px и тень эталона; радиусы 12/14/16/18/26; Inter 400/500/600 (+Inter-Medium.woff2), шкала 12–34, --lh-ui 1.21, движение 150–250 мс); детали: .bk-searchbar/.bk-logo/.bk-kbd, .bk-chip--glass, .bk-navpill, .bk-me/.bk-ava, кнопки карты 14, легенда-строка, .bk-objcard (плитка, ×, крупное число, строка статуса, кнопки, вкладки 44, строки, цитата ≤ 2, «Ещё»), .bk-sum/.bk-kpis--3/.bk-hot, .bk-psheet/.bk-pc/.bk-thumb/.bk-pill/.bk-vote, .bk-pd/.bk-facts, .bk-tag-proj, .bk-pin (34/44/35 %), .bk-psearch/.bk-phsheet/.bk-handle/.bk-fab; статус-иконки 4 состояния (.bk-status, BirgeUI.statusIcon — правило 3); строки Linear .bk-llist/.bk-lgroup/.bk-lrow + BirgeUI.skelRows (правило 5, R09/R07); иконки heart/school/home/message; словарь 1452 ru = kk",
+ "tested_sha": "Макет ui-kit prototypes/reference-a.html против REFERENCE.html (вариант A): геометрия 0–2 px (ref_geom.cjs; исключения с причиной — REFERENCE_A.md §3), разница пикселей 1,2–2,7 % кадра (значки, статус-иконка, тёмный «исправлено»); glass_contrast макета 1366/375 — худший 8,16:1; glass_fallback 3/3. Стенд R01 69984f0f + ui-kit (+ строка Inter-Medium в CIVIC_ASSETS): витрина browser_check 4/4 (нормы эталона: 44 px, текст ≥ 12), glass_fallback 3/3, шрифт 500 отдаётся 200. test_r11_ui_kit 21/21, ui_kit.test PASS, i18n.test PASS",
  "push_status": "см. STATUS.md и финальное сообщение",
  "also_in_package_branch": [
   "c75a9ac UX_SPEC.md v1",
@@ -71,7 +71,16 @@
   "tests/civic/R11/review/design_audit.cjs",
   "tests/civic/R11/review/state_shots.cjs",
   "research/round-14-results/R11/DESIGN_BOOK.md",
-  "research/round-14-results/R11/design/"
+  "research/round-14-results/R11/design/",
+  "web/civic/ui-kit/prototypes/reference-a.html",
+  "web/civic/ui-kit/fonts/Inter-Medium.woff2",
+  "research/round-14-results/R11/REFERENCE_A.md",
+  "research/round-14-results/R11/reference/",
+  "tests/civic/R11/review/ref_compare.cjs",
+  "tests/civic/R11/review/ref_frames.cjs",
+  "tests/civic/R11/review/ref_proto_shots.cjs",
+  "tests/civic/R11/review/ref_geom.cjs",
+  "tests/civic/R11/review/ref_triple.py"
  ],
  "tests": {
   "browser_check: витрина + prototypes/{index,akimat-map,complaint,day} × 375/1366 × ru/kk": "PASS",
@@ -140,7 +149,7 @@
   "Скриншоты — headless Chromium с программным WebGL, без интернета (запасной фон карты)",
   "Казахский — R11 и черновики ролей, не проверен носителем; 64 места ⚑ в KK_REVIEW.md; 7 правок уточнений не перенесены в categories_v2.json пакета"
  ],
- "next_step": "R01: взять ui-kit/i18n R11 b39e586d и правки INTEGRATION §9–§19 (12.1 web/style.css :active через translate — B-068; §9.1 b/c отступы и #map-status; меню bk-glass--menu); роли — свои пункты §9–§19 (D-1 колонка 720 для всех списков); R11 — круг 5 на следующей сборке",
+ "next_step": "R01: взять ui-kit/i18n R11 910e8c04 и INTEGRATION §20.1 (обязательно: \"ui-kit/fonts/Inter-Medium.woff2\" в CIVIC_ASSETS ui/web_server.py; хром эталона: поиск слева 388 × 52, чипы под ним, капсула по центру, «ҚАЗ · РУС» + аватар справа, кнопки карты справа по центру, легенда слева внизу; убрать постоянную панель — слева одна закрываемая карточка 388 (×, Esc, клик по карте)); роли — §20.2–§20.6 (разметка из web/civic/ui-kit/prototypes/reference-a.html); R11 — круги проверки сборки против эталона (reference/build-*.jpg)",
  "wave_1": {
   "subtopics_kk": "39 уточнений вычитаны → ключи subtopic.<id>; 7 правок к черновику координатора — kk_review_extra.md",
   "emergency": "complaint.emergency.* + emergency.service.<номер>; ui-kit .bk-banner--danger; правило — UX_SPEC §10",
@@ -161,7 +170,7 @@
   ],
   "schemes_r06_r13": "research/round-14-results/R11/SCHEMES_R06_R13.md — v2 под контракт оболочки R01 §11.2 (12 окт)"
  },
- "updated": "2026-10-12 (поздний вечер, дизайн-марафон, круги 0–7)",
+ "updated": "2026-10-13 (эталон A владельца + правила Linear)",
  "clean_pass": {
   "doc": "research/round-14-results/R11/CLEAN_PASS.md",
   "prototype": "web/civic/ui-kit/prototypes/clean.html (?lang=kk, ?role=resident, ?rotated=1&menu=1)",
@@ -193,5 +202,28 @@
    "tests/civic/R11/review/glass_contrast.cjs"
   ],
   "ui_kit_new": ".bk-menu__radio; BirgeUI.illustration('staff'); .bk-enter-up|right|fade|pop; .bk-check-draw; .bk-glass--menu; токены --t-press/--t-fast/--t-base/--t-slow, --ease, --ease-out, --press-scale; BirgeUI.loginState(el, onLogin, opts); .bk-status[data-status=verified] — галочка «встаёт»; BirgeUI.scrollFade(el), .bk-scroll-x"
+ },
+ "reference_a": {
+  "task": "ДИЗАЙН ПО ЭТАЛОНУ — «лучше 2ГИС»: вариант A research/round-14/design/REFERENCE.html + 7 правил Linear (README)",
+  "r11_part": "токены эталона → ui-kit; детали эталона классами; статус-иконки (правило 3); границы/движение/иконки (правило 6); строки Linear для R09/R07 (правило 5); проверка экранов и правки ролям (правило 7)",
+  "mapping_doc": "research/round-14-results/R11/REFERENCE_A.md",
+  "mockup": "web/civic/ui-kit/prototypes/reference-a.html (?f=home|obj|proj|phone, ?solid=1) — только классы ui-kit",
+  "shots": [
+   "research/round-14-results/R11/reference/kit-{home,obj,proj,phone}.jpg — эталон / макет ui-kit",
+   "research/round-14-results/R11/reference/build-{home,obj,proj,phone}.jpg — эталон / было R01 69984f0f / стало 69984f0f + ui-kit"
+  ],
+  "integration": "INTEGRATION.txt §20: соответствие «эталон → класс», §20.1 R01 (CIVIC_ASSETS Inter-Medium; хром и место карточки), §20.2 R07, §20.3 R08, §20.4 R06+R05, §20.5 R09, §20.6 R12/R13, §20.7 R10",
+  "tools": [
+   "tests/civic/R11/review/ref_frames.cjs — кадры эталона",
+   "tests/civic/R11/review/ref_compare.cjs — кадры сборки 1366/375",
+   "tests/civic/R11/review/ref_proto_shots.cjs — кадры макета",
+   "tests/civic/R11/review/ref_geom.cjs — геометрия эталон ↔ ui-kit",
+   "tests/civic/R11/review/ref_triple.py — «эталон / было / стало»"
+  ],
+  "kept_divergences": "REFERENCE_A.md §3 и STATUS.md «Расхождения с эталоном»: вкладки 44, рамка чипов, тёмный «исправлено», вторичный на 72 %, свой набор значков",
+  "questions": [
+   "владельцу: подписи 12 px #7E8A85 (3,6:1) — оставить как в эталоне или 13 px #6B7671 (4,7:1)",
+   "координатору: «исправлено» #639922 (categories_v2.json) и #3B8A2E эталона — свести к одному"
+  ]
  }
 }

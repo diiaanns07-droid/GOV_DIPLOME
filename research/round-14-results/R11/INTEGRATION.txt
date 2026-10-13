@@ -485,3 +485,93 @@ glass_contrast 1366/375 — худший 7,60:1. glass_fallback_check — 3/3 (�
 (--glass-panel/--glass-control → белый при «уменьшить прозрачность» и html.bk-glass-off) — правила модулей вида
 «background-color: var(--glass-control)» тоже становятся непрозрачными, независимо от силы селекторов.
 Открыто — как в §16–§18: значок «войдите» R09 (BirgeUI.loginState), .ri-onevote R06, сводка дня R08 (~140 знаков), R05 плитки.
+
+20. ЭТАЛОН A ВЛАДЕЛЬЦА (13 окт, research/round-14/design/REFERENCE.html, «A · 2ГИС светлый») — ui-kit R11 и правки ролям
+================================================================================
+ui-kit R11 (claude/r14-R11 @ 8832744a и далее): токены и детали эталона один в один. Проверка: макет
+web/civic/ui-kit/prototypes/reference-a.html собран ТОЛЬКО из классов ui-kit и совпадает с эталоном до 0–2 px
+(tests/civic/R11/review/ref_geom.cjs; снимки research/round-14-results/R11/reference/kit-*.jpg). Разметку любой детали
+берите из этого макета копированием — это и есть «минимальный patch» для модулей. Сравнение сборки:
+reference/build-*.jpg («эталон / было R01 69984f0f / стало 69984f0f + ui-kit»): токены уже видны (почти чёрные главные
+кнопки, кнопки карты 14, легенда-строка как в эталоне), но РАСКЛАДКА — у R01 и ролей (ниже).
+
+Соответствие «эталон → ui-kit» (все размеры — в REFERENCE_A.md R11):
+  .search.glass.strong ........ .bk-searchbar.bk-glass.bk-glass--strong (+ .bk-logo, .ic лупы, input, .bk-kbd «/»)
+  .chips .chip(.glass/.on) .... .bk-chip.bk-chip--glass[aria-pressed] (+ .bk-chip__dot цвета категории)
+  .nav.glass .................. .bk-navpill.bk-glass (пункты a|button, выбранный aria-current="page")
+  .me.glass + .ava ............ .bk-me.bk-glass + .bk-ava («ҚАЗ · <b>РУС</b>», аватар 36 лайм)
+  .ctl .solo / .cap ........... .bk-mapbtn.bk-glass--control / .bk-mapctl__group.bk-glass--control (внутри .bk-mapctl)
+  .legend.glass ............... .bk-legend.bk-legend--line.bk-glass.bk-glass--bar (+ .bk-legend__scale, .bk-legend__fixed)
+  .sum.glass.strong ........... .bk-sum.bk-glass.bk-glass--strong (+ .bk-sum__hd, .bk-x.bk-x--plain, .bk-kpis.bk-kpis--3
+                                 > .bk-kpi, .bk-hot > .bk-hot__cnt[data-level] + .bk-hot__name>small, .bk-more)
+  .card.glass.strong .......... .bk-objcard.bk-glass.bk-glass--strong.bk-enter-left (+ .bk-objcard__hd, .bk-tile, __title,
+                                 __sub, .bk-x, .bk-big, .bk-stline > .bk-status + small, .bk-acts > .bk-btn--primary + .bk-btn,
+                                 .bk-tabs[role=tablist], .bk-rows > .bk-row (__ic, __label, __value), .bk-quote, .bk-more)
+  .sheet / .seg / .pc ......... .bk-psheet (+ __hd, .bk-seg, .bk-plist > .bk-pc[aria-current] > .bk-thumb + __body/__title/
+                                 __sub/__foot, .bk-pill(--review|--accepted), .bk-vote[aria-pressed])
+  .pd ......................... .bk-pd (+ __im, __in, __title, .bk-facts, .bk-quote, .bk-acts, __note)
+  .tag ........................ .bk-tag-proj («Проект · 2027», лайм — единственный лайм на карте)
+  .pin(.sel/.dim/.ok) ......... .bk-pin[data-level=1|2|3|4|fixed](.is-sel / .is-dim) > .bk-pin__c (.ic) + .bk-pin__n
+  .p-search / .p-sheet ........ .bk-psearch.bk-glass.bk-glass--strong / .bk-phsheet.bk-glass.bk-glass--strong.bk-glass--sheet
+                                 (+ .bk-handle, .bk-phsheet__hd > .bk-phsheet__title, .bk-hot)
+  .fab ........................ .bk-fab (+ .bk-fab__ic, значок i-plus)
+  статус (правило 3) .......... .bk-status[data-status] (иконка + слово) или BirgeUI.statusIcon(status) — 4 формы
+  строки Linear (правило 5) ... .bk-llist > .bk-lgroup + .bk-lrow (__st, __main, __title, __meta, __cnt, __time; .is-hover),
+                                 скелетон BirgeUI.skelRows(n)
+Иконки новые: i-heart, i-school, i-home (знак в .bk-logo), i-message. Шрифт: добавлен Inter-Medium.woff2 (вес 500 эталона).
+
+20.1 R01 (хром экрана; README «Кто что делает»):
+  a) ОБЯЗАТЕЛЬНО: ui/web_server.py CIVIC_ASSETS — добавить "ui-kit/fonts/Inter-Medium.woff2" рядом с Regular/SemiBold
+     (иначе 404, и всё «500» эталона — навигация, чипы, вкладки, строки — рисуется как 400):
+       -                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-SemiBold.woff2", "ui-kit/fonts/Inter-Bold.woff2",
+       +                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-Medium.woff2", "ui-kit/fonts/Inter-SemiBold.woff2",
+       +                "ui-kit/fonts/Inter-Bold.woff2",
+     Проверено на стенде 69984f0f + ui-kit с этой строкой: файл отдаётся (200, font/woff2), на витрине вес 500 «loaded»;
+     без строки — 404. Витрина browser_check 4/4 PASS, glass_fallback 3/3.
+  b) Шапка-полоса .topbar → нет одной полосы. В таблице GLASS (birge.js) вместо [".topbar", "bk-glass bk-glass--bar"]:
+       поле поиска (обёртка .civic-explore-field)  → "bk-glass bk-glass--strong bk-searchbar"  left 20, top 20, 388 × 52
+       .birge-nav                                   → "bk-glass bk-navpill"                    по центру, top 20, высота 44
+       .birge-lang + аватар (одна обёртка)          → "bk-glass bk-me"                         right 20, top 20, высота 44
+     .topbar сама — прозрачная, без тени (pointer-events: none у пустых мест, auto у детей). Знак Birge — .bk-logo 30 внутри
+     поля поиска слева (знак i-home лаймом на #152C26), «Birge» текстом не нужен (в эталоне его нет).
+  c) Чипы категорий: под поиском, left 20, top 82, промежуток 8; класс "bk-chip bk-chip--glass", выбранный
+     aria-pressed="true" (сплошной почти чёрный, без стекла). Когда открыта карточка/лист — чипы скрыты (эталон «Выбран
+     объект», «Проекты»): карточка поднимается на top 84.
+  d) Убрать постоянную панель справа (#civic-panel как колонка). Слева — ОДНА закрываемая карточка/лист: left 20, ширина 388
+     (лист проектов 412), top 132 при видимых чипах / 84 без них, bottom ≤ 20; класс "bk-glass bk-glass--strong"
+     (+ .bk-enter-left при появлении). Закрытие: × (.bk-x), Esc, нажатие на пустую карту. На главной акимата в этом месте —
+     сводка R08 (.bk-sum), её × скрывает до перезагрузки.
+  e) Кнопки карты: колонка .bk-mapctl справа, right 20, по вертикали по центру, промежуток 10: «где я» 44, капсула +/−
+     (.bk-mapctl__group.bk-glass--control), 3D, слои — радиус 14 (ui-kit). Легенда: left 20, bottom 20 (уже строка).
+  f) Телефон: поиск .bk-psearch (left/right 14, top 54, высота 50, радиус 16); снизу шторка R09 (.bk-phsheet, 360, углы 26)
+     и .bk-fab R09 (left/right 16, bottom 34). Навигации-капсулы и чипов на телефоне в эталоне нет — разделы в меню аватара
+     (как сейчас), язык — «ҚАЗ · РУС» в заголовке шторки.
+  g) Подсказки клавиш (правило 2): .bk-kbd («/» в поле поиска; «Esc» у ×, «Ctrl K» в палитре) — 12 px, рамка 1 px.
+20.2 R07 (значки и карточка объекта; правила 3, 5, 7):
+  a) Значки: .bk-pin[data-level] > .bk-pin__c (иконка категории .ic 18) + .bk-pin__n (число); выбранный .is-sel (44, ореол),
+     остальные .is-dim (35 %), исправленный data-level="fixed" (зелёный #3B8A2E, галочка). Переход 200 мс уже в ui-kit.
+  b) Карточка объекта — разметка из reference-a.html (кадр obj): плитка категории 48 (.bk-tile: фон --c-danger-soft, значок
+     цвета уровня), название 19/600, строка «категория · улица» 14, крупное число 34/600 + «человек сообщили · за 14 дней»,
+     строка статуса (.bk-status data-status + «· служба», справа срок 13), кнопки (главная почти чёрная во всю ширину +
+     вторичная серая), вкладки «Обзор · Обращения · N · История» (.bk-tabs, 14/500, линия 2 px), строки .bk-row (30-плитка,
+     подпись вторичным, значение справа 500), цитата ≤ 2 строк (.bk-quote), «Ещё N обращений» (.bk-more). Убрать «Горячие
+     места ‹» над названием (возврат — × и Esc), «Загружаем обращения…» — скелетон ≤ 150 мс (BirgeUI.skelRows / .bk-skel).
+  c) «Горячие места» (правило 5): .bk-llist с группами по статусу (.bk-lgroup) и строками .bk-lrow; наведение на строку —
+     .is-hover у строки и .is-sel/.is-dim у значка, наведение на значок — .is-hover у строки.
+20.3 R08 (сводка на главной и «Картина дня»): .bk-sum (кадр home): «Сегодня в Астане» 15/600 + × (.bk-x--plain), три числа
+     .bk-kpis--3 (новых / в работе / просрочено — число 22/600, «просрочено» цветом --heat-3), топ-3 горячих места .bk-hot
+     (плашка 34 × 26 цвета уровня, название 14/500, категория 12), «Все горячие места» (.bk-more). «Картина дня» — те же
+     плашки и строки на .bk-glass--strong.
+20.4 R06 + R05 («Проекты и идеи», кадр proj): лист .bk-psheet 412 слева, сегмент «Идеи жителей · N | Проекты акимата · N»,
+     карточки .bk-pc (картинка/3D-превью 84 r12, название 15/600, одна строка 13, статус .bk-pill, «Поддержать» .bk-vote
+     с сердцем и числом прямо в списке); детали .bk-pd 340 справа (right 84, top 132): картинка 150, название 18, три факта
+     .bk-facts (поддержали / срок / оценка), одно предложение, «Поддержать» + «Подробнее», строка-примечание .bk-pd__note
+     «Это опрос для выбора концепции — решение принимает акимат». На карте — объект и метка .bk-tag-proj «Проект · 2027».
+20.5 R09 (телефон и «Обращения»): шторка «Рядом с вами» (.bk-phsheet, кадр phone): ручка, заголовок 19/600 + «ҚАЗ · РУС»,
+     строки .bk-hot (исправленное — data-level="fixed" и «✓»); «Сообщить о проблеме» — .bk-fab (почти чёрная, плитка 26
+     лаймом с плюсом). «Обращения» на ноутбуке — список Linear .bk-llist (группы по статусу, статус меняется кнопкой
+     .bk-lrow__st → BirgeUI.menu со статусами, строка 44); мастер жалобы — те же кнопки 44/12 и плотное стекло.
+20.6 R12, R13 (паспорт по QR, «Вопрос акиму», «Пульс»): каркас карточки эталона — .bk-objcard (шапка с плиткой и ×,
+     крупное число, строка статуса, кнопки, вкладки, строки .bk-row). Тексты не меняются, меняется только оболочка.
+20.7 R10: инструменты R11 для попиксельной проверки — tests/civic/R11/review/ref_frames.cjs (кадры эталона),
+     ref_compare.cjs (кадры сборки 1366/375), ref_triple.py («эталон / было / стало»), ref_geom.cjs (геометрия деталей).
