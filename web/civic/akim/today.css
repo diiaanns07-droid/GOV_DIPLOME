@@ -12,7 +12,7 @@
   width: 100%;
   max-width: 388px;
   padding: 16px 18px;
-  border-radius: var(--r-xl, 18px);
+  border-radius: 18px; /* эталон --r-card; числом, а не токеном: в старом ui-kit --r-xl = 20 */
   color: var(--c-ink);
 }
 .akim-today[hidden] {
@@ -64,7 +64,7 @@
 .akim-today__kpi {
   min-width: 0;
   padding: 10px 12px;
-  border-radius: var(--r-m, 12px);
+  border-radius: 12px;
   background: var(--c-sub, rgba(255, 255, 255, 0.72));
 }
 .akim-today__kpi b {
@@ -105,7 +105,8 @@
   text-decoration: none;
   transition: background-color var(--t-fast, 150ms) var(--ease);
 }
-.akim-today__row:hover {
+.akim-today__row:hover,
+.akim-today__row.is-hover { /* is-hover — наведение на значок этого места на карте (R07) */
   background: var(--c-brand-soft, rgba(18, 26, 23, 0.06));
 }
 .akim-today__row:active {
@@ -118,7 +119,7 @@
   justify-content: center;
   width: 34px;
   height: 26px;
-  border-radius: var(--r-s, 8px);
+  border-radius: 8px;
   font-size: 13px;
   font-weight: var(--fw-num, 700);
   font-variant-numeric: tabular-nums;

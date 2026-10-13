@@ -867,7 +867,7 @@
 .akim-kpi.bk-kpi {
   gap: 0;
   padding: 10px 12px;
-  border-radius: var(--r-m, 12px);
+  border-radius: 12px;
   background: var(--akim-tile);
 }
 .akim-kpi .bk-kpi__value {

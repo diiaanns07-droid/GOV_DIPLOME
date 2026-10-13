@@ -7,7 +7,7 @@
  * подпись 12, строка места 54 с плашкой 34×26 и названием 14/500, «Все горячие места» 14/500), числа и места = ответ
  * /akim/summary (новые, в работе, просрочено, 3 первых горячих места); × и Esc закрывают; строка — событие
  * birge:open-target, наведение — birge:hover-target, «Все горячие места» — birge:open-hot-list; ↑↓/J K по местам;
- * быстрый ответ — без скелета, долгий — скелет через 150 мс; ошибка — строка и «Повторить»; зоны нажатия ≥ 44;
+ * карта → сводка (birge:hover-target from map) подсвечивает строку; быстрый ответ — без скелета, долгий — скелет через 150 мс; ошибка — строка и «Повторить»; зоны нажатия ≥ 44;
  * без прокрутки вбок и без ключей вместо слов. Итог — today_check.json.
  */
 "use strict";
@@ -91,6 +91,17 @@ async function open(browser, { w, h, lang, route }) {
         check("строка: наведение — birge:hover-target, нажатие — birge:open-target (оболочка открывает цель), «Все горячие места» — birge:open-hot-list",
           ev.ev.some((e) => e[0] === "birge:hover-target" && e[2] === true) && ev.ev.some((e) => e[0] === "birge:open-target" && e[1] === api.hot.items[1].target.id)
             && ev.ev.some((e) => e[0] === "birge:open-hot-list") && ev.hash === "", ev);
+        // обратно: наведение на значок карты (событие R07 from: "map") подсвечивает строку сводки
+        const fire = (on) => page.evaluate(([t, on]) => document.dispatchEvent(new CustomEvent("birge:hover-target", { detail: { target: t, on, from: "map" } })), [api.hot.items[2].target, on]);
+        await page.mouse.move(1300, 700); // курсор вне карточки — подсветка только от события карты
+        await fire(true);
+        await page.waitForTimeout(300); // переход фона 150 мс
+        const sync = await page.evaluate(() => ({ lit: Array.from(document.querySelectorAll(".akim-today__row.is-hover")).map((a) => a.getAttribute("data-key")),
+          bg: getComputedStyle(document.querySelector(".akim-today__row.is-hover") || document.body).backgroundColor }));
+        await fire(false);
+        sync.after = await page.$$eval(".akim-today__row.is-hover", (e) => e.length);
+        check("карта → сводка: наведение на значок (birge:hover-target from map) подсвечивает строку места, уход — снимает",
+          JSON.stringify(sync.lit) === JSON.stringify([want[2]]) && sync.bg !== "rgba(0, 0, 0, 0)" && sync.after === 0, sync);
         await page.focus(".akim-today__row >> nth=0");
         await page.keyboard.press("ArrowDown");
         const a1 = await page.evaluate(() => document.activeElement.getAttribute("data-key"));

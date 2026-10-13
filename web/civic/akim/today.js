@@ -8,7 +8,8 @@
  * Данные: GET {apiBase}/akim/summary (тот же ответ, что у «Картины дня» R08: kpi.new_day, kpi.in_progress, kpi.overdue,
  * hot.items[0..2]). Строка места: событие «birge:open-target» (оболочка открывает карточку цели и ведёт карту; не
  * обработано — переход по ссылке mapHref). Наведение и фокус строки: событие «birge:hover-target» {target, on} —
- * карта R07 может подсветить значок (синхронизация список ↔ карта, правило Linear 5). «Все горячие места»:
+ * карта R07 может подсветить значок; обратно — такое же событие от карты (from ≠ "akim-today") подсвечивает строку
+ * (синхронизация список ↔ карта, правило Linear 5). «Все горячие места»:
  * «birge:open-hot-list» (не обработано — раздел #day). Закрыть: opts.onClose(); без него — карточка прячется сама.
  * Клавиатура в карточке: ↑ ↓ (и J K) — по местам, Esc — закрыть. Загрузка: скелет — только если ответ дольше 150 мс.
  */
@@ -268,6 +269,18 @@
     }
     el.addEventListener("keydown", onKey);
 
+    // Наведение на значок карты (R07: «birge:hover-target» {target, on, from: "map"}) подсвечивает строку сводки —
+    // список ↔ карта в обе стороны (правило Linear 5). Свои события (from: "akim-today") пропускаем.
+    function onMapHover(e) {
+      var d = e.detail || {};
+      if (d.from === "akim-today" || !d.target) return;
+      var key = "today:" + d.target.kind + ":" + d.target.id;
+      Array.prototype.forEach.call(el.querySelectorAll(".akim-today__row"), function (a) {
+        a.classList.toggle("is-hover", !!d.on && a.getAttribute("data-key") === key);
+      });
+    }
+    doc.addEventListener("birge:hover-target", onMapHover);
+
     var off = null;
     var onVisible = function () {
       if (doc.visibilityState === "visible" && state.status === "ok") load();
@@ -289,6 +302,7 @@
         if (off) off();
         state.request++;
         el.removeEventListener("keydown", onKey);
+        doc.removeEventListener("birge:hover-target", onMapHover);
         doc.removeEventListener("visibilitychange", onVisible);
         el.textContent = "";
       },
