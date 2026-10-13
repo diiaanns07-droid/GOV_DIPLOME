@@ -22,7 +22,9 @@ const notRun = (name, reason) => { checks.push({ name, status: "NOT_RUN", detail
 // reported as its own FAIL so it neither hides other page errors nor masquerades as an R01 error.
 const R03_RING = /Image "civic-r03-demo-ring" could not be loaded/;
 // Лента работ раунда 13 («К объектам», список) в Birge скрыта; этот тест проверяет именно её — открываем с ?tools=all.
-const TOOLS = "?tools=all";
+// FINAL-4: навигация раунда 12 — реестр работ в постоянной панели и шторке. В эталоне A постоянной панели нет (на телефоне
+// жителя — шторка R09 «Рядом с вами»); хром эталона проверяют r14_*.cjs, а этот тест — прежний вид (?layout=classic).
+const TOOLS = "?tools=all&layout=classic";
 function checkPageErrors(name, errs) {
   const ring = errs.filter((e) => R03_RING.test(e)), other = errs.filter((e) => !R03_RING.test(e));
   check(name, other.length === 0, other);
