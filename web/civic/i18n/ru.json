@@ -114,6 +114,7 @@
  "common.nav.more": "Ещё",
  "common.nav.nearby": "Рядом",
  "common.nav.projects": "Проекты и идеи",
+ "common.nav.projects_short": "Проекты",
  "common.time.hours_ago": {
   "one": "{n} час назад",
   "few": "{n} часа назад",
