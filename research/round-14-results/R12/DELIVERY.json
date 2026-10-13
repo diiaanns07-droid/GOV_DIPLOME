@@ -10,7 +10,7 @@
  "code_sha": "016c93b596f3a77fa74effe062c16e55607eadb5",
  "tested_sha": "016c93b596f3a77fa74effe062c16e55607eadb5",
  "code_sha_note": "11e3325 (паспорт = карточка эталона, вкладки, тесты), 092b1ad (индекс поиска, подписи без двойного «Парк»), bc330d6 (улица рядом в /target и в подписи карточки, patch R01 для индекса). 23084e8 (паспорт на каркасе ui-kit R11 .bk-objcard, статус-иконки, геометрия ± 1 px). 1dd770f (правило Linear 4: «Я тоже» мгновенно, откат при ошибке). 0e37224 (карточка работ ближе к эталону, только стили), 016c93b (подбор подсказок search_index.js для R01). После — только документы.",
- "tested_note": "Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 69984f0 + пути R12 из code_sha + patches/R01_search_index_asset.patch + ui-kit/i18n R11 a903884 (и без них — старый ui-kit сборки); CIVIC_DEMO=1, база init + seed-demo, временный сотрудник; эталон REFERENCE.html — python http.server, вариант A; ничего не коммитилось.",
+ "tested_note": "Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 69984f0 + пути R12 из code_sha + patches/R01_search_index_asset.patch + ui-kit/i18n R11 a903884 и 24fdfd1 (и без них — старый ui-kit сборки); CIVIC_DEMO=1, база init + seed-demo, временный сотрудник; эталон REFERENCE.html — python http.server, вариант A; ничего не коммитилось.",
  "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код 016c93b; этот DELIVERY — следующим коммитом)",
  "take": "git checkout <code_sha> -- web/civic/qr engine/civic_geo web/civic/map/search_index.json web/civic/map/search_index.js web/civic/map/civic-map.css tests/civic/R12",
  "take_note": "На 69984f0 эти пути = R12 7fb739d, checkout приносит только работу по эталону. Плюс patches/R01_search_index_asset.patch (одна строка CIVIC_ASSETS) и предложение контейнера карточки reference/r01_report_card.css — решает R01. Паспорт рассчитан на ui-kit R11 a903884 (.bk-objcard, статус-иконки); со старым ui-kit тоже выглядит по эталону.",
@@ -50,7 +50,7 @@
   {
    "name": "QR и мастер R09 в приложении (R01 69984f0 + R12)",
    "status": "PASS",
-   "result": "35/0/0 (с ui-kit R11 a903884 и со старым ui-kit; ответ R09 на «Я тоже» — по сети, 200)"
+   "result": "35/0/0 (ui-kit R11 a903884 и 24fdfd1, и старый ui-kit сборки; ответ R09 на «Я тоже» — по сети, 200)"
   },
   {
    "name": "QR стенд",
@@ -81,7 +81,7 @@
   {
    "name": "геометрия паспорта против REFERENCE.html (1366)",
    "status": "PASS",
-   "result": "плитка, название, подпись, крестик, число, статус, кнопки, вкладки, строки, цитата — ± 1 px",
+   "result": "плитка, название, подпись, крестик, число, статус, кнопки, вкладки, строки, цитата — ± 1 px (и на ui-kit R11 24fdfd1)",
    "evidence": "reference/passport_geometry.txt"
   },
   {
