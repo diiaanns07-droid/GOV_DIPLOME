@@ -626,6 +626,13 @@
     // справа от листа — её карточка (картинка, 3 цифры, одно предложение, главная и вторая кнопки, «это опрос, решает акимат»).
     // Ноутбук: карточка — отдельная стеклянная панель справа (вне листа оболочки); телефон — раскрывается под строкой списка.
     var wide = function () { return !root.matchMedia || root.matchMedia("(min-width: 761px)").matches; };
+    // Карточка выбранного справа (эталон) — только когда лист узкий (412 слева, патч R01). Лист шире 440 (телефон или
+    // прежний широкий лист раздела по центру) — карточка раскрывается под строкой списка, ничего не перекрывая (R11 §21.4).
+    var sideCard = function () {
+      if (!wide()) return false;
+      var w = rootEl.getBoundingClientRect().width;
+      return w > 0 && w <= 440;
+    };
     var detailHost = null;
     var ORDER = { review: 0, hidden: 0, voting: 1, checking: 2, project: 3, rejected: 4 };
 
@@ -653,7 +660,7 @@
       var list = listOf(state.tab);
       var s = state.sel && list.filter(function (x) { return x.id === state.sel; })[0];
       if (s) return s;
-      if (!wide() && !state.sel) return null;  // телефон: ничего не раскрыто, пока не нажали
+      if (!sideCard() && !state.sel) return null;  // телефон и широкий лист: ничего не раскрыто, пока не нажали
       var first = list.filter(function (x) { return !(akimat && isDecided(x)); })[0] || list[0] || null;
       state.sel = first ? first.id : null;
       return first;
@@ -740,7 +747,7 @@
       var demo = body.querySelector("[data-demo]");
       // Телефон: правило «это опрос, решает акимат» — одной строкой над карточками, видно сразу (R11 SCHEMES §4 п. 3);
       // на ноутбуке оно в карточке выбранного (эталон .pd).
-      if (!wide()) body.insertBefore(h("p", { class: "bk-footnote ri-honest-note", text: tr("idea.honest") }), body.firstChild);
+      if (!sideCard()) body.insertBefore(h("p", { class: "bk-footnote ri-honest-note", text: tr("idea.honest") }), body.firstChild);
       if (demo) body.appendChild(h("p", { class: "bk-footnote ri-demo-note", text: tr("common.tag.demo_hint") }));
       rootEl.appendChild(body);
       if (!akimat) {
@@ -823,7 +830,7 @@
     // ── выбор: строка ↔ карточка ↔ карта ──
     function select(id) {
       if (state.sel === id && !state.selClosed) {
-        if (!wide()) { state.selClosed = true; render(); }  // телефон: повторное нажатие сворачивает
+        if (!sideCard()) { state.selClosed = true; render(); }  // под строкой: повторное нажатие сворачивает
         return;
       }
       state.sel = id;
@@ -851,7 +858,7 @@
     // Карта плавно переходит к выбранному: объект — между листом и карточкой (бесшовно «список ↔ карта», как в 2ГИС).
     function moveMap(x, tries) {
       var m = mapObject(), p = pointOf(x);
-      if (!p || !wide() || !alive) return;
+      if (!p || !sideCard() || !alive) return;
       // Карта поднимается после оболочки: при открытии раздела по ссылке ждём её до ~12 с.
       if (!m && tries < 40) {
         setTimeout(function () { if (state.mapFor === x.id) moveMap(x, tries + 1); }, 300);
@@ -908,7 +915,7 @@
     function placeDetail(sel) {
       if (!sel) { removeDetail(); return; }
       var card = detailCard(sel);
-      if (wide()) {
+      if (sideCard()) {
         if (!detailHost) {
           detailHost = h("div", { class: "ri-pd-host bk-app" });
           detailHost.addEventListener("keydown", onKeys);
@@ -1576,6 +1583,10 @@
     var current = { render: render, focus: function (id) { state.flash = id; focusIdea(id); render(); } };
     mounted = current;
     var offLang = I() && I().onChange ? I().onChange(function () { render(); }) : null;
+    // Телефон ↔ ноутбук (поворот, окно уже/шире): карточка выбранного переезжает справа ↔ под строку.
+    var mq = root.matchMedia ? root.matchMedia("(min-width: 761px)") : null;
+    var onWidth = function () { render(); };
+    if (mq && mq.addEventListener) mq.addEventListener("change", onWidth);
     if (I() && I().ready) I().ready.then(load, load);
     else load();
     return {
@@ -1588,6 +1599,7 @@
         if (live.parentNode) live.parentNode.removeChild(live);
         if (mounted === current) mounted = null;
         if (typeof offLang === "function") offLang();
+        if (mq && mq.removeEventListener) mq.removeEventListener("change", onWidth);
         rootEl.classList.remove("ri");
         rootEl.replaceChildren();
       },

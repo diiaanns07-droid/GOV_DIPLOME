@@ -121,7 +121,7 @@ async function newPage(browser, width, lang, mode, opts) {
 }
 
 // Размеры эталона «Проекты и идеи» (кадр 3 REFERENCE.html): лист, сегмент, карточки списка, капсула ♥, карточка выбранного.
-async function geometry(page, tag, wide) {
+async function geometry(page, tag, wideScreen, wide) {
   const g = await page.evaluate(() => {
     const r = (e) => e && e.getBoundingClientRect();
     const cs = (e) => e && getComputedStyle(e);
@@ -151,9 +151,9 @@ async function geometry(page, tag, wide) {
         text: text && [cs(text).fontSize, cs(text).webkitLineClamp], note: note && cs(note).fontSize },
     };
   });
-  if (wide && g.sheet && g.sheet.w === 412) {
+  if (wideScreen && g.sheet && g.sheet.w === 412) {
     check(`${tag}: лист 412 слева под поиском (20, 84, радиус 18)`, g.sheet.l === 20 && g.sheet.t === 84 && g.sheet.rad === "18px", g.sheet);
-  } else if (wide) {
+  } else if (wideScreen) {
     console.log(`NOT_RUN ${tag}: лист 412 — нет патча R01 (r01_projects_sheet.css), лист ${JSON.stringify(g.sheet)}`);
   }
   check(`${tag}: заголовок листа 19/600, сегмент 13/500`, g.title && g.title.join() === "19px,600" && g.seg && g.seg.join() === "13px,500", { title: g.title, seg: g.seg });
@@ -172,13 +172,14 @@ async function geometry(page, tag, wide) {
 
 async function resident(browser, base, width, lang) {
   const tag = `${width}-${lang} «Проекты и идеи» житель`;
-  const wide = width > 760;
   const page = await newPage(browser, width, lang, "resident");
   await page.goto(base + "#ideas");
   await page.waitForSelector(".ri .ri-pc", { timeout: 30000 });
   await page.waitForTimeout(900);
+  // Карточка выбранного справа — на листе 412 (патч R01); иначе — под строкой списка (R11 §21.4).
+  const wide = width > 760 && await page.evaluate(() => document.querySelector(".ri").getBoundingClientRect().width <= 440);
   verdict(tag + " лист", await measure(page, ".ri, .ri-pd-host"), { primaries: wide ? 1 : 0 });
-  await geometry(page, tag, wide);
+  await geometry(page, tag, width > 760, wide);
   // Поддержать в списке — сразу (оптимистично): число и капсула меняются до ответа сервера (правило 4 эталона).
   await page.route("**/support", async (route) => { await sleep(700); await route.continue(); });
   const n0 = await page.locator(".ri-plist [data-key^=support-] .ri-vote__n").first().innerText();
@@ -234,7 +235,7 @@ async function resident(browser, base, width, lang) {
 
 async function akimat(browser, base, width, lang) {
   const tag = `${width}-${lang} «Проекты и идеи» акимат`;
-  const wide = width > 760;
+  let wide = width > 760;
   const page = await newPage(browser, width, lang, "akimat");
   await page.goto(base);
   await page.evaluate(async (pw) => {
@@ -244,8 +245,9 @@ async function akimat(browser, base, width, lang) {
   await page.reload();
   await page.waitForSelector(".ri .ri-pc", { timeout: 30000 });
   await page.waitForTimeout(900);
+  wide = wide && await page.evaluate(() => document.querySelector(".ri").getBoundingClientRect().width <= 440);
   verdict(tag + " лист", await measure(page, ".ri, .ri-pd-host"), { primaries: wide ? 1 : 0 });
-  await geometry(page, tag, wide);
+  await geometry(page, tag, width > 760, wide);
   // Идея на голосовании → «Проверить» → чек-лист в карточке выбранного.
   await page.locator(".ri-pc[data-idea-status=voting] .ri-pc__open").first().click();
   await page.locator(".ri-pd [data-key=pd-check]").click();

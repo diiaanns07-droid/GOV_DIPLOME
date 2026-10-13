@@ -99,7 +99,6 @@ function contrast(bg, fg) {
 
 async function resident(browser, base, width, lang, full) {
   const tag = `${width}-${lang}`;
-  const wide = width > 760;
   const T = lang === "kk"
     ? { sheet: "Жобалар мен идеялар", support: "Қолдау", supported: "Сіз қолдадыңыз", square: "Сығанақ көшесі маңындағы гүлзар",
       fountain: "Аулада субұрқақ", light: "Ілияс Омаров көшесіне жарық", reason: "Учаскеде су құбыры жоқ",
@@ -118,6 +117,9 @@ async function resident(browser, base, width, lang, full) {
   await page.goto(base + "#ideas");
   await page.waitForSelector(".ri .ri-pc", { timeout: 30000 });
   await page.waitForTimeout(700);
+  // Карточка выбранного справа — только на узком листе 412 (патч R01 r01_projects_sheet.css); без патча и на телефоне —
+  // под строкой списка (R11 §21.4).
+  const wide = width > 760 && await page.evaluate(() => document.querySelector(".ri").getBoundingClientRect().width <= 440);
   const a = await audit(page, ".ri, .ri-pd-host");
   check(`${tag} житель: лист «${T.sheet}», честная строка видна сразу`, a.text.includes(T.sheet) && a.text.includes(T.honest), a.text.slice(0, 300));
   // Правило видно без прокрутки (R11 SCHEMES §4 п. 3): ноутбук — в карточке выбранного, телефон — строкой над списком.
