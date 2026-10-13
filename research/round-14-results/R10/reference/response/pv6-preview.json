@@ -2,10 +2,10 @@
  "sha": "69984f0f",
  "label": "превью pv6: R01 c0270448 + R11 7f0fdb9a + R07 80172f96 + R09 3c3fe2b6 + R08 4b215c77 + R06 849bd33b + R05 2c962ee2 + R12 cc532506 + R13 1b022c73",
  "delay": 900,
- "when": "2026-10-13T13:29:46.504Z",
+ "when": "2026-10-13T14:01:25.761Z",
  "counts": {
-  "PASS": 37,
-  "СМОТРЕТЬ": 1,
+  "PASS": 36,
+  "СМОТРЕТЬ": 2,
   "FAIL": 1
  },
  "rows": [
@@ -18,9 +18,9 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 24,
+    "dom": 23,
     "domWhat": "childList r07-panel",
-    "target": 24,
+    "target": 23,
     "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
@@ -32,9 +32,9 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 17,
+    "dom": 25,
     "domWhat": "childList r07-panel",
-    "target": 17,
+    "target": 25,
     "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
@@ -45,7 +45,7 @@
     {
      "name": "быстро: готово",
      "status": "PASS",
-     "detail": "24 мс"
+     "detail": "23 мс"
     },
     {
      "name": "быстро: скелетон ≤ 150 мс",
@@ -55,7 +55,7 @@
     {
      "name": "медленно (+900 мс): отклик ≤ 150 мс",
      "status": "PASS",
-     "detail": "первое изменение 17 мс, скелетона нет, готово 17 мс"
+     "detail": "первое изменение 25 мс, скелетона нет, готово 25 мс"
     }
    ]
   },
@@ -68,9 +68,9 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 8,
+    "dom": 4,
     "domWhat": "attributes:aria-pressed ",
-    "target": 49,
+    "target": 35,
     "targetWhy": "poll",
     "loading": [],
     "loadWhat": null,
@@ -82,13 +82,13 @@
     "api": [
      {
       "path": "/api/civic/v2/heat",
-      "start": 8,
-      "end": 39
+      "start": 4,
+      "end": 26
      },
      {
       "path": "/api/civic/v2/heat",
-      "start": 8,
-      "end": 49
+      "start": 4,
+      "end": 39
      }
     ]
    },
@@ -97,10 +97,10 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 4,
+    "dom": 5,
     "domWhat": "attributes:aria-pressed ",
-    "target": 925,
-    "targetWhy": "poll",
+    "target": 943,
+    "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
     "rows": {
@@ -111,13 +111,13 @@
     "api": [
      {
       "path": "/api/civic/v2/heat",
-      "start": 3,
+      "start": 4,
       "end": 921
      },
      {
       "path": "/api/civic/v2/heat",
-      "start": 4,
-      "end": 920
+      "start": 5,
+      "end": 921
      }
     ]
    },
@@ -125,7 +125,7 @@
     {
      "name": "быстро: готово",
      "status": "PASS",
-     "detail": "49 мс"
+     "detail": "35 мс"
     },
     {
      "name": "быстро: скелетон ≤ 150 мс",
@@ -135,7 +135,7 @@
     {
      "name": "медленно (+900 мс): отклик ≤ 150 мс",
      "status": "PASS",
-     "detail": "первое изменение 4 мс, скелетона нет, готово 925 мс"
+     "detail": "первое изменение 5 мс, скелетона нет, готово 943 мс"
     },
     {
      "name": "быстро: список не мигает",
@@ -158,14 +158,14 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 15,
+    "dom": 14,
     "domWhat": "attributes:hidden birge-day bk-app bk-glass birge-day--module",
-    "target": 69,
-    "targetWhy": "poll",
+    "target": 227,
+    "targetWhy": "dom",
     "loading": [
      [
-      168,
-      275
+      166,
+      227
      ]
     ],
     "loadWhat": [
@@ -177,8 +177,8 @@
     "api": [
      {
       "path": "/api/civic/v2/akim/summary",
-      "start": 19,
-      "end": 266
+      "start": 17,
+      "end": 213
      }
     ]
    },
@@ -187,14 +187,14 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 11,
+    "dom": 10,
     "domWhat": "attributes:hidden birge-day bk-app bk-glass birge-day--module",
-    "target": 85,
-    "targetWhy": "poll",
+    "target": 1074,
+    "targetWhy": "dom",
     "loading": [
      [
-      167,
-      935
+      169,
+      1074
      ]
     ],
     "loadWhat": [
@@ -206,26 +206,26 @@
     "api": [
      {
       "path": "/api/civic/v2/akim/summary",
-      "start": 14,
-      "end": 925
+      "start": 13,
+      "end": 1061
      }
     ]
    },
    "verdicts": [
     {
      "name": "быстро: готово",
-     "status": "PASS",
-     "detail": "69 мс"
+     "status": "СМОТРЕТЬ",
+     "detail": "227 мс"
     },
     {
      "name": "быстро: скелетон ≤ 150 мс",
-     "status": "PASS",
-     "detail": "168–275 мс · akim__body bk-kpis.akim-kpis bk-skel.akim-skel__num"
+     "status": "СМОТРЕТЬ",
+     "detail": "166–227 мс — мелькнул (мигание) · akim__body bk-kpis.akim-kpis bk-skel.akim-skel__num"
     },
     {
      "name": "медленно (+900 мс): отклик ≤ 150 мс",
      "status": "PASS",
-     "detail": "первое изменение 11 мс, скелетон с 167 мс, готово 85 мс"
+     "detail": "первое изменение 10 мс, скелетон с 169 мс, готово 1074 мс"
     }
    ]
   },
@@ -238,9 +238,9 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 12,
+    "dom": 11,
     "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass birge-day--module",
-    "target": 46,
+    "target": 57,
     "targetWhy": "poll",
     "loading": [],
     "loadWhat": null,
@@ -252,8 +252,8 @@
     "api": [
      {
       "path": "/api/civic/v2/complaints/inbox",
-      "start": 10,
-      "end": 20
+      "start": 9,
+      "end": 19
      }
     ]
    },
@@ -262,13 +262,13 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 12,
+    "dom": 13,
     "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass birge-day--module",
     "target": 925,
     "targetWhy": "dom",
     "loading": [
      [
-      160,
+      161,
       925
      ]
     ],
@@ -286,7 +286,7 @@
      {
       "path": "/api/civic/v2/complaints/inbox",
       "start": 10,
-      "end": 920
+      "end": 921
      }
     ]
    },
@@ -294,7 +294,7 @@
     {
      "name": "быстро: готово",
      "status": "PASS",
-     "detail": "46 мс"
+     "detail": "57 мс"
     },
     {
      "name": "быстро: скелетон ≤ 150 мс",
@@ -304,7 +304,7 @@
     {
      "name": "медленно (+900 мс): отклик ≤ 150 мс",
      "status": "PASS",
-     "detail": "первое изменение 12 мс, скелетон с 160 мс, готово 925 мс"
+     "detail": "первое изменение 13 мс, скелетон с 161 мс, готово 925 мс"
     },
     {
      "name": "быстро: список не мигает",
@@ -327,9 +327,9 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 11,
+    "dom": 18,
     "domWhat": "childList r07-panel",
-    "target": 11,
+    "target": 18,
     "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
@@ -337,28 +337,28 @@
     "api": [
      {
       "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47",
-      "start": 5,
-      "end": 23
-     },
-     {
-      "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47/status",
-      "start": 10,
+      "start": 13,
       "end": 28
      },
      {
+      "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47/status",
+      "start": 17,
+      "end": 31
+     },
+     {
       "path": "/api/civic/v2/complaints/c-demo3a6def043893e13d/status",
-      "start": 133,
-      "end": 143
+      "start": 116,
+      "end": 125
      },
      {
       "path": "/api/civic/v2/heat",
-      "start": 147,
-      "end": 164
+      "start": 127,
+      "end": 146
      },
      {
       "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47",
-      "start": 265,
-      "end": 280
+      "start": 259,
+      "end": 272
      }
     ]
    },
@@ -367,9 +367,9 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 14,
+    "dom": 9,
     "domWhat": "childList r07-panel",
-    "target": 14,
+    "target": 9,
     "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
@@ -377,13 +377,13 @@
     "api": [
      {
       "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47",
-      "start": 6,
-      "end": 929
+      "start": 5,
+      "end": 923
      },
      {
       "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47/status",
-      "start": 13,
-      "end": 928
+      "start": 8,
+      "end": 923
      }
     ]
    },
@@ -391,7 +391,7 @@
     {
      "name": "быстро: готово",
      "status": "PASS",
-     "detail": "11 мс"
+     "detail": "18 мс"
     },
     {
      "name": "быстро: скелетон ≤ 150 мс",
@@ -401,12 +401,12 @@
     {
      "name": "медленно (+900 мс): отклик ≤ 150 мс",
      "status": "PASS",
-     "detail": "первое изменение 14 мс, скелетона нет, готово 14 мс"
+     "detail": "первое изменение 9 мс, скелетона нет, готово 9 мс"
     },
     {
      "name": "оптимистично: результат раньше ответа сервера",
      "status": "PASS",
-     "detail": "результат 14 мс, первый ответ 928 мс · /api/civic/v2/complaints/c-demo4eca27874085ec47 6–929; /api/civic/v2/complaints/c-demo4eca27874085ec47/status 13–928"
+     "detail": "результат 9 мс, первый ответ 923 мс · /api/civic/v2/complaints/c-demo4eca27874085ec47 5–923; /api/civic/v2/complaints/c-demo4eca27874085ec47/status 8–923"
     }
    ]
   },
@@ -419,9 +419,9 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 12,
+    "dom": 10,
     "domWhat": "childList r07-panel",
-    "target": 12,
+    "target": 10,
     "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
@@ -429,13 +429,13 @@
     "api": [
      {
       "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47/metoo",
-      "start": 11,
-      "end": 29
+      "start": 9,
+      "end": 20
      },
      {
       "path": "/api/civic/v2/heat",
-      "start": 36,
-      "end": 57
+      "start": 22,
+      "end": 47
      }
     ]
    },
@@ -444,9 +444,9 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 11,
+    "dom": 10,
     "domWhat": "childList r07-panel",
-    "target": 11,
+    "target": 10,
     "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
@@ -454,8 +454,8 @@
     "api": [
      {
       "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47/metoo",
-      "start": 10,
-      "end": 923
+      "start": 9,
+      "end": 920
      }
     ]
    },
@@ -463,7 +463,7 @@
     {
      "name": "быстро: готово",
      "status": "PASS",
-     "detail": "12 мс"
+     "detail": "10 мс"
     },
     {
      "name": "быстро: скелетон ≤ 150 мс",
@@ -473,12 +473,12 @@
     {
      "name": "медленно (+900 мс): отклик ≤ 150 мс",
      "status": "PASS",
-     "detail": "первое изменение 11 мс, скелетона нет, готово 11 мс"
+     "detail": "первое изменение 10 мс, скелетона нет, готово 10 мс"
     },
     {
      "name": "оптимистично: результат раньше ответа сервера",
      "status": "PASS",
-     "detail": "результат 11 мс, первый ответ 923 мс · /api/civic/v2/complaints/c-demo4eca27874085ec47/metoo 10–923"
+     "detail": "результат 10 мс, первый ответ 920 мс · /api/civic/v2/complaints/c-demo4eca27874085ec47/metoo 9–920"
     }
    ]
   },
@@ -493,17 +493,10 @@
     "preTrue": false,
     "dom": 10,
     "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass birge-day--module",
-    "target": 41,
+    "target": 102,
     "targetWhy": "dom",
-    "loading": [
-     [
-      31,
-      41
-     ]
-    ],
-    "loadWhat": [
-     "bk-plist.ri-plist"
-    ],
+    "loading": [],
+    "loadWhat": null,
     "rows": {
      "before": 0,
      "min": 0,
@@ -513,12 +506,12 @@
      {
       "path": "/api/civic/v2/staff/ideas",
       "start": 12,
-      "end": 30
+      "end": 49
      },
      {
       "path": "/api/civic/v2/proposals",
       "start": 13,
-      "end": 26
+      "end": 46
      }
     ]
    },
@@ -527,14 +520,14 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 11,
+    "dom": 21,
     "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass birge-day--module",
-    "target": 937,
+    "target": 962,
     "targetWhy": "dom",
     "loading": [
      [
-      48,
-      937
+      78,
+      962
      ]
     ],
     "loadWhat": [
@@ -548,13 +541,13 @@
     "api": [
      {
       "path": "/api/civic/v2/staff/ideas",
-      "start": 13,
-      "end": 930
+      "start": 25,
+      "end": 951
      },
      {
       "path": "/api/civic/v2/proposals",
-      "start": 14,
-      "end": 928
+      "start": 26,
+      "end": 947
      }
     ]
    },
@@ -562,17 +555,17 @@
     {
      "name": "быстро: готово",
      "status": "PASS",
-     "detail": "41 мс"
+     "detail": "102 мс"
     },
     {
      "name": "быстро: скелетон ≤ 150 мс",
-     "status": "СМОТРЕТЬ",
-     "detail": "31–41 мс — мелькнул (мигание) · bk-plist.ri-plist"
+     "status": "PASS",
+     "detail": "скелетона нет — сразу содержимое"
     },
     {
      "name": "медленно (+900 мс): отклик ≤ 150 мс",
      "status": "PASS",
-     "detail": "первое изменение 11 мс, скелетон с 48 мс, готово 937 мс"
+     "detail": "первое изменение 21 мс, скелетон с 78 мс, готово 962 мс"
     },
     {
      "name": "быстро: список не мигает",
@@ -595,18 +588,18 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 21,
+    "dom": 10,
     "domWhat": "childList birge-day-root birge-screen-root ri",
-    "target": 21,
+    "target": 10,
     "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
     "rows": null,
     "api": [
      {
-      "path": "/api/civic/v2/ideas/i-demo-32888dcb/support",
-      "start": 23,
-      "end": 34
+      "path": "/api/civic/v2/ideas/i-demo-eecc02f6/support",
+      "start": 10,
+      "end": 21
      }
     ]
    },
@@ -615,18 +608,18 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 8,
+    "dom": 9,
     "domWhat": "childList birge-day-root birge-screen-root ri",
-    "target": 8,
+    "target": 9,
     "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
     "rows": null,
     "api": [
      {
-      "path": "/api/civic/v2/ideas/i-demo-e1fcc9bc/support",
-      "start": 9,
-      "end": 917
+      "path": "/api/civic/v2/ideas/i-demo-cec44e83/support",
+      "start": 10,
+      "end": 919
      }
     ]
    },
@@ -634,7 +627,7 @@
     {
      "name": "быстро: готово",
      "status": "PASS",
-     "detail": "21 мс"
+     "detail": "10 мс"
     },
     {
      "name": "быстро: скелетон ≤ 150 мс",
@@ -644,12 +637,12 @@
     {
      "name": "медленно (+900 мс): отклик ≤ 150 мс",
      "status": "PASS",
-     "detail": "первое изменение 8 мс, скелетона нет, готово 8 мс"
+     "detail": "первое изменение 9 мс, скелетона нет, готово 9 мс"
     },
     {
      "name": "оптимистично: результат раньше ответа сервера",
      "status": "PASS",
-     "detail": "результат 8 мс, первый ответ 917 мс · /api/civic/v2/ideas/i-demo-e1fcc9bc/support 9–917"
+     "detail": "результат 9 мс, первый ответ 919 мс · /api/civic/v2/ideas/i-demo-cec44e83/support 10–919"
     }
    ]
   },
@@ -662,9 +655,9 @@
     "ev": "pointerdown",
     "t0": true,
     "preTrue": false,
-    "dom": 8,
+    "dom": 7,
     "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass",
-    "target": 8,
+    "target": 7,
     "targetWhy": "dom",
     "loading": [],
     "loadWhat": null,
@@ -698,12 +691,12 @@
      {
       "path": "/api/civic/v2/complaints/mine",
       "start": 4,
-      "end": 921
+      "end": 919
      },
      {
       "path": "/api/civic/v2/complaints/changes",
-      "start": 4,
-      "end": 921
+      "start": 5,
+      "end": 920
      }
     ]
    },
@@ -711,7 +704,7 @@
     {
      "name": "быстро: готово",
      "status": "PASS",
-     "detail": "8 мс"
+     "detail": "7 мс"
     },
     {
      "name": "быстро: скелетон ≤ 150 мс",

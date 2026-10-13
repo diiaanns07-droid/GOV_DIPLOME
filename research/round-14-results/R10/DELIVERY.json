@@ -6,7 +6,7 @@
  "restored_from": "— (новые пути tests/e2e/, tests/civic/R10/; в раунде 13 их не было)",
  "code_sha": "тесты R10 ветки claude/r14-R10 (12 окт): шапка FINAL-3 78a59b6, 7988ad7 (R01 INTEGRATION 21.6), «Идеи» и «Вопрос акиму» 1672078 и новее; ACCEPTED.json шаг 6",
  "tested_sha": "марафон: R01 368631aa (круг 7 R10); марафонская сборка 83010621 (круг 6); FINAL-3 со стеклом 61be62e6 принят (ACCEPTANCE_FINAL3 §8)",
- "status": "partial — эталон A «лучше 2ГИС» (13 окт), круг 3: сверка было 2/47 → превью pv3 8/47; сценарий pv3 167/6 FAIL (серый эталона B-075, строка под FAB); правило 4 33/5/1 → 35/2/2; правила Linear 6/11/3 → 17/3/1 (остаток у R01: «/», Ctrl+K, подсказки с 1-й буквы). Сборки R01 по эталону ещё нет. Отчёт reference/README.md.",
+ "status": "partial — эталон A «лучше 2ГИС» (13 окт), круг 5: сверка было 2/47 → превью pv6 8/47; сценарий 167/6 (серый эталона B-075 — вопрос владельцу; строка под FAB); правило 4 32/6/1 → 36/1/2; правила Linear 6/11/3 → 17/3/1; движение 50/50. Остаток — R01 (поиск с 1-й буквы, «/», Ctrl+K, место карточки и листа слева, хром); сборки R01 по эталону ещё нет. Отчёт reference/README.md.",
  "push_status": "OK: ветка claude/r14-R10 в origin; последний SHA — в STATUS.md и итоговом сообщении",
  "environment": "облачный Linux, Python 3.13.16 (+pytest 9.1.1), Node 22.22.0, Playwright 1.56.1 + Chromium headless (программный WebGL), без интернета (подложка OpenFreeMap недоступна)",
  "changed_paths": [
@@ -265,7 +265,8 @@
    "tests/e2e/response_check.cjs — правило 4: 10 действий × быстро / медленно (+900 мс к /api/civic/): отклик, скелетон ≤ 150 мс, оптимистичность, мигание списков",
    "tests/e2e/linear_check.cjs — правила Linear 1, 2, 3, 5, 6 (поиск, клавиши, статус-иконки, списки 44 px и список↔карта, линии 1 px)",
    "tests/e2e/ux_lib.cjs — зона нажатия по фактической протяжённости (несимметричный ::after); ҚАЗ-проверка с неразрывным пробелом",
-   "tests/e2e/preview_overlay.py — превью интеграции: база R01 + файлы ролей, изменённые после даты, проверка чистого наложения, патчи для R01; PREVIEW.json"
+   "tests/e2e/preview_overlay.py — превью интеграции: база R01 + файлы ролей, изменённые после даты, проверка чистого наложения, патчи для R01; PREVIEW.json",
+   "tests/e2e/motion_check.cjs — норма 13 окт: 150–250 мс (±30), до 330 «смотреть»; --norm marathon — старая 200–350"
   ],
   "rounds": [
    {
@@ -341,6 +342,25 @@
      "reference/regress-pv5/",
      "reference/response/pv5-preview.md",
      "reference/linear/pv5-preview.md"
+    ]
+   },
+   {
+    "round": 5,
+    "when": "2026-10-13 16:00 UTC",
+    "build": "превью pv6: R01 c0270448 + R11 7f0fdb9a + R07 80172f96 + R09 3c3fe2b6 + R08 4b215c77 + R06 849bd33b + R05 2c962ee2 + R12 cc532506 + R13 1b022c73",
+    "score": "8/47",
+    "pixels": 66.2,
+    "demo_flow": "167 PASS / 6 FAIL (те же: серый эталона, строка под FAB на телефоне)",
+    "motion": "50 PASS / 0 (150–250 мс)",
+    "rule4": "было 32/6/1 → pv6 36/1/2 (FAIL — подсказки с 1-й буквы R01)",
+    "linear": "17 / 3 / 1",
+    "timing": "ҚАЗ шаг 3 28,9 → 32,3 с (+12 % к «было»), ru шаг 5 +6 % — смотреть R07, R05/R06",
+    "folders": [
+     "reference/pv6-preview/",
+     "reference/regress-pv6/",
+     "reference/motion/",
+     "reference/response/pv6-preview.md",
+     "reference/linear/pv6-preview.md"
     ]
    }
   ],
