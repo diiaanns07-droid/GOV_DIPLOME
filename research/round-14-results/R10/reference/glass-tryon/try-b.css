@@ -1,0 +1,4 @@
+/* R10 примерка B-079 + B-075: плотное стекло 86 % и третичный текст #67726D (~5:1 на белом) */
+#civic-panel.bk-glass { background-color: rgba(255,255,255,.86) !important; }
+:root { --c-text-3: #67726d !important; }
+.r07-panel, .r07-card, #civic-panel { --r07-ink-3: #67726d !important; }
