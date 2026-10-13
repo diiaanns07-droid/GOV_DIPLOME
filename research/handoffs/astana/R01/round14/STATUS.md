@@ -2,7 +2,119 @@
 
 Роль: R01 Интегратор. Ветка R01: **`claude/sharp-dijkstra-0t87gl`** (реестр research/round-14/BRANCHES.md).
 Свои пути: web/index.html, web/style.css, web/map.js, web/interface.js, web/civic/shell/, ui/web_server.py, tests/civic/R01/;
-результаты research/round-14-results/R01/; этот файл. Обновлено: 13 окт, ночь — сборка дизайн-марафона c0270448 (круги 1–11, проверки зелёные; R15 PASS).
+результаты research/round-14-results/R01/; этот файл. Обновлено: 13 окт, вечер — **FINAL-4 (эталон A «лучше 2ГИС»)**, последняя сборка руками Claude; дальше — Codex по разделу «HANDOFF → Codex» ниже.
+
+## Коротко для владельца (13 окт, вечер) — FINAL-4: ЭТАЛОН A «ЛУЧШЕ 2ГИС»
+
+**Код FINAL-4: `925063f1 (код; итоговый SHA — после проверки)`** (ветка `claude/sharp-dijkstra-0t87gl`; более поздние коммиты — только документы).
+Это сборка дизайн-марафона `c0270448` + свежие поставки ролей по эталону (по пинованным SHA, только пути ролей) + новый
+хром оболочки R01 по варианту A. Логика, данные и сценарий демо не менялись.
+
+**Что на экране (ноутбук):** постоянных панелей нет. Сверху слева — поиск со знаком Birge и подсказкой «/»; под ним чипы
+тем (три темы с самыми частыми жалобами за 30 дней + «Все» + «Ещё»); по центру — капсула разделов; справа — «ҚАЗ · РУС»
+и аватар; справа по центру — кнопки карты; слева внизу — строка легенды. Всё остальное — одна карточка слева: на главной
+акимата — сводка R08 «Сегодня в Астане»; «Все горячие места» или чип — список R07; место — карточка R07; закрытие ×, Esc
+(слой за слоем) или нажатием на пустую карту. Подсказки поиска — с первой буквы (горячие места, остановки, дворы, парки,
+улицы, районы). Клавиши: «/», J / K, Esc, **Ctrl+K — палитра команд**. Телефон жителя — шторка R09 «Рядом с вами».
+Запасной прежний вид — адрес `?layout=classic` (сценарий тот же).
+
+**Проверки (облако, без интернета):** идут (13 окт, вечер): браузер R01 по одному — шапка 43/0, волна 2 42/0, B1 16/0, B2 28/0; сценарий R10 — прогон идёт.
+
+**Что не закрыто (честно):** заполняется по итогам проверки.
+
+**Дальше:** Codex продолжает по разделу «HANDOFF → Codex» ниже; R10 — приёмка FINAL-4 (и правка шага 3 своего теста,
+patches/R10_demo_flow_reference.patch); R15 — проверка безопасности FINAL-4; R11 — ключи shell.ref.* / shell.palette.* в
+словари; R08 — 13 px в сводке. Пары «эталон | сборка» — research/round-14-results/R01/design/reference/.
+
+## HANDOFF → Codex (14 окт): как продолжить FINAL-4 с этого места
+
+Это последняя сборка руками Claude. Всё ниже — состояние на `925063f1 (код; итоговый SHA — после проверки)`; не начинать заново, не переносить в main
+(слияние — отдельное задание координатору). Пушить только в `claude/sharp-dijkstra-0t87gl`, без force push.
+
+### 1. Коммиты FINAL-4 (по порядку)
+| Шаг | SHA | Что |
+|---|---|---|
+| 1 | `64132e33` | Поставки ролей по эталону, только пути ролей с пинованных SHA (таблица п. 2) + патчи ролей к R01; P-R11-S41 (R15 S41 → FIXED) |
+| 2 | `09856d14` | Хром эталона A: новые web/civic/shell/birge-ref.js и birge-ref.css; birge.js (обёртка .birge-me, placeRef), shell.js (R07 closable, freeArea слева, overlay rects), shell-text.js (ключи), index.html и CIVIC_ASSETS |
+| 3 | `db65ead5` | Подсказки поиска с первой буквы (explore.js: R07 suggest + индекс R12), «Ещё» в палитре, шторка телефона жителя |
+| 4 | `3de6a77e` | «Перейти к главной кнопке» → сводка; браузерные тесты R01 под эталон (classic проверяется по ?layout=classic) |
+| 5 | `925063f1` | Esc по слоям, ошибка R07 видна слева, правки по шагу 0 приёмки R10 (контраст «таблетки», зоны 44, 13 px) |
+| 6 | `6a56fcce` | Документы: DEMO_SCRIPT, INTEGRATION §26, патч-предложение для R10 |
+| 7 | `925063f1 (код; итоговый SHA — после проверки)` | итог проверки и документы (заполняется) |
+
+### 2. Поставки ролей в FINAL-4 (DELIVERY code_sha; брать только пути роли: `git checkout <sha> -- <пути>`)
+| Роль | SHA | Пути |
+|---|---|---|
+| R05 | `82d47a07` | web/civic/build3d, tests/civic/R05/build3d |
+| R06 | `2f749aeb` | web/civic/ideas, web/civic/proposals, ui/civic_store/ideas.py, tests/civic/R06/round14 |
+| R07 | `913b18a3` | web/civic/heat/heat.js, heat.css, tests/civic/R07/browser (свой новее tests/civic/R07/test_r07_http_ui.py оставлен) |
+| R08 | `d5719635` | web/civic/akim/akim.js/css, today.js/css/html, today-stand.js, web/civic/nearby/nearby.css |
+| R09 | `82056b7b` | ui/civic_feedback, web/civic/feedback, tests/civic/R09 (более поздний чекпойнт 280dab7a без DELIVERY — не брал) |
+| R11 | `2a30d7a2` | web/civic/ui-kit, web/civic/i18n, tests/civic/R11 (+ P-R11-S41 в ui-kit.js от R15) |
+| R12 | `016c93b5` | web/civic/qr, engine/civic_geo, web/civic/map/search_index.json, search_index.js, civic-map.css, tests/civic/R12 |
+| R13 | `0487f2a6` | web/civic/qa, tests/civic/R13/qa |
+| R10 тесты | `656681ee` | tests/e2e, tests/civic/R10 |
+| R15 тесты | `540b4d3c` | tests/civic/R15 |
+| R14 документы | `19715dbe` | docs |
+Применённые патчи ролей к R01: R08 r01_today_r08 (CIVIC_ASSETS today.*, index.html), R12 search_index в CIVIC_ASSETS
+(руками — контекст патча сдвинулся), R11 Inter-Medium, R06 превью -sq и CSS листа «Проекты» (в birge.css), R13 лист
+вопросов слева (birge.css), R05 карточка проекта справа 84 / 132 (birge.css).
+
+### 3. Как устроен хром эталона (файлы R01)
+- `web/index.html`: `<body class="civic-mode" data-birge-layout="ref">`; `birge-ref.css` после birge.css; `birge-ref.js`
+  сразу после birge.js (до shell.js — чтобы shell.js при монтаже R07 уже видел вид). Inline-скриптов нет (CSP 'self').
+- `web/civic/shell/birge-ref.js` (IIFE, ~480 строк, комментарии по-русски):
+  1. Вид: `?layout=classic|ref` → sessionStorage `birge.layout`; по умолчанию ref; classic — выход сразу
+     (`window.BirgeRef = {layout:"classic"}`).
+  2. `leftState()` → `body[data-birge-left]`: report / card / list / summary / none (ноутбук), near (телефон жителя).
+     card — `#birge-heat-root .r07-card` или карточка работ R12 `#civic-map-root .civic-r03-card:not([hidden])`;
+     list — `S.listOpen` (открыт чипом, «Все горячие места», палитрой) или R07 `state().status === "error"`.
+  3. `sync()` по rAF: сводка R08 (`BirgeToday.mount(#birge-today, {apiBase:"/api/civic/v2", onClose})`), шторка R09
+     (`BirgeComplaint.mountNear(#birge-near, {map, limit:3, onOpen, onAll})`), чипы, стекло деталей хрома, клик по карте.
+  4. Чипы `#birge-chips`: `/api/civic/v2/heat?days=30` → сумма `by_category` активных целей, топ-3 без «other», точка —
+     макс. ступень; клик → `openList(cat)` (`heat.setFilters({category})`). Подписи `shell.ref.cat.<id>`.
+  5. Закрытие: `closeLeft(all)` — Esc: один слой; пустая карта / знак Birge: всё. События: document `birge:open-hot-list`
+     (R08) → список; document `birge:hover-target` (R08) → window `birge:target-hover` (R07); window `birge:heat-close` (R07 ×).
+  6. Клавиши: `/`, J/K (`heat.stepHot`), Esc, Ctrl/⌘+K. Палитра `.birge-palette` — команды из шапки, `BirgeShell.moreItems()`,
+     вид, язык, `heat.commands()`, `BirgeComplaintList.commands({api})` (акимат). Всё — textContent.
+  7. Наблюдатели: атрибуты/дети body и поддерево #civic-root (childList + hidden), resize, смена языка.
+  `window.BirgeRef = {layout, state(), openList(cat), closeLeft(all), openPalette(), closePalette(), listOpen}` — для тестов.
+- `web/civic/shell/birge-ref.css`: все правила под `body.civic-mode[data-birge-layout="ref"]`; ноутбук ≥ 761, телефон
+  ≤ 760; размеры — REFERENCE.html вариант A. Зоны нажатия 44 при видимых 30–36 — через прозрачную рамку и
+  `background-clip: padding-box` (проверки R10 меряют кнопку и её фон, псевдоэлементы не видят).
+- `birge.js`: `.birge-me` (язык + аватар) — в classic `display: contents`; `placeRef()` — поиск ≤ 388 (мин. 280),
+  `--birge-nav-left`, иначе compact (разделы в меню аватара, так на 1024); `BirgeShell.moreItems/navTitle` — для палитры;
+  «Перейти к главной кнопке» → первая кнопка сводки.
+- `shell.js`: R07 `closable` в ref; `freeArea()` — панель/сводка/шторка слева дают отступ слева; `birgeOverlayRects()`
+  + чипы/сводка/шторка; `onStreet` с `street.spot` — подпись без «Улица», зум 17.
+- `explore.js`: подсказки с 1 буквы; порядок: город/районы → горячие места R07 → объекты R12 → улицы. `matchIndex()`
+  (лимит 12 / 60, одна строка на одноимённую пару остановок), выбор `spot` → `pinStreet` + `onStreet({spot, bbox ±0,0012°})`.
+- `shell-text.js`: ключи ru/kk shell.ref.*, shell.palette.*, shell.explore.kind.*, shell.explore.chosen_spot, shell.view.spot.
+
+### 4. Как запустить и проверить
+- Запуск как раньше: RUN.txt (run-city.bat → http://127.0.0.1:8611/). Прежний вид: `/?layout=classic`.
+- Стенд разработчика без run-city (Linux): временная база →
+  `python3 -B -m ui.civic_store --db <db> init && … seed-demo --package data/civic/astana/demo_synthetic.json && … seed-r14-demo
+  && … create-editor operator --password-stdin`, затем `CIVIC_DB_PATH=<db> CIVIC_DEMO=1 python3 -B app.py --port 8655`.
+- Все проверки R01: `bash tests/civic/R01/run_checks.sh <out>` (pytest, web_check, node, браузер P0/сценарии/город/
+  пустой реестр/шапка/B1/B2/волна 2). Браузер по одному: `NODE_PATH=$(npm root -g) node tests/civic/R01/browser/r14_shell.cjs <out>`
+  (так же r14_b1, r14_b2, r14_wave2, p0_flow, r12_city). **Запускать по очереди**: 4 браузера параллельно на облачной
+  машине дают ложные FAIL (таймаут мастера R09 в B1, «demo_snapped не загрузился» в шапке) — проверено, по одному зелёные.
+- Сценарий R10: `NODE_PATH=$(npm root -g) node tests/e2e/demo_flow.cjs --root . --out <out>` (~30 мин, 1366/375 × ru/kk).
+  С правкой шага 3: `git apply research/round-14-results/R01/patches/R10_demo_flow_reference.patch` во временной копии
+  tests/e2e (не коммитить в путь R10 без R10).
+- Эталон: REFERENCE.html — ветка claude/round-14-package, research/round-14/design/. R10 `tests/e2e/reference_check.cjs
+  --ref <REFERENCE.html> --root . --out <out>`; R15 `tests/civic/R15/browser/r15_reference.cjs <сборка> <out>`.
+
+### 5. Что осталось (по приоритету)
+(заполняется по итогам проверки; см. INTEGRATION §26.9–26.14)
+
+### 6. Решения по умолчанию (если владелец не скажет иначе)
+1. Вид эталона — по умолчанию; прежний — `?layout=classic` (не удалять до защиты).
+2. Сводка «Сегодня в Астане» закрывается × до перезагрузки вкладки (sessionStorage), а не навсегда.
+3. Esc закрывает по слою (карточка → список → сводка); пустая карта — всё сразу.
+4. 1024 px: разделы в меню аватара (капсула не помещается рядом с поиском 280), как в прежней компактной шапке.
+5. Подписи под числами сводки и тема строки — 13 px и --c-text-2 (приёмка R10 важнее 12 px эталона; R08 перенесёт).
 
 ## Дизайн-марафон (12–14 окт) — R01, ход работы
 
