@@ -1,23 +1,45 @@
 {
  "role": "R08",
- "title": "Картина дня для акима + волны 1–2 + FINAL-3 (чистый дизайн, стекло) + дизайн-марафон (дашборд, «Рядом»)",
+ "title": "Картина дня для акима + волны 1–2 + FINAL-3 + марафон + эталон A «лучше 2ГИС»: сводка «Сегодня в Астане» на главной и «Картина дня» в том же стиле",
  "branch": "claude/r14-R08",
- "base_sha": "R01 claude/sharp-dijkstra-0t87gl @ 65343341 (FINAL-3 со стеклом) — база марафона",
+ "delivery": "7 (13 окт, эталон A, круги 1–2; круг 2 — на ui-kit R11 3890fa74)",
+ "base_sha": "R01 claude/sharp-dijkstra-0t87gl @ 69984f0f (последний коммит R01 на 13 окт) — база задания «эталон A»",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "1969046a",
- "tested_sha": "1969046a",
+ "code_sha": "b87d4758",
+ "tested_sha": "b87d4758",
  "tested_with": {
-  "r01_build": "claude/sharp-dijkstra-0t87gl @ 550f7a93 (марафон, круги 2–3; в нём уже R08 ec73b533 и ui-kit R11 58b28edc) + R08 ui/civic_akim, web/civic/akim, web/civic/nearby @ 1969046a; база: init + seed-demo + seed-r14-demo + create-editor, CIVIC_DEMO=1",
-  "r11_ui_kit_i18n": "claude/r14-R11 @ 7117132b (стекло) — стенд",
+  "r01_build": "claude/sharp-dijkstra-0t87gl @ 69984f0f + ui-kit/i18n R11 3890fa74 + строка ui-kit/fonts/Inter-Medium.woff2 в CIVIC_ASSETS (иначе 404, см. INTEGRATION §11.0) + R08 web/civic/akim, web/civic/nearby @ b87d4758 + git apply r01_today_r08.patch; база init + seed-demo + seed-r14-demo + create-editor, CIVIC_DEMO=1",
+  "r11_ui_kit_i18n": "claude/r14-R11 @ 3890fa74 (reference A) — стенд и сборка; совместимость проверена и со старым ui-kit 7117132b (стенд)",
+  "reference": "research/round-14/design/REFERENCE.html, вариант A (claude/round-14-package), README «Выбор владельца: вариант A + качество Linear»",
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 5e2789e — временная копия для стенда, в git R08 не входит",
   "env": "облачная сессия Claude Code, Linux, Python 3.13, Chromium (Playwright), без интернета (карта — запасной фон)"
  },
- "push_status": "OK — claude/r14-R08 (код 1969046a); DELIVERY, STATUS, CHECKLIST — следующим коммитом поверх",
+ "push_status": "OK — claude/r14-R08: код b87d4758; DELIVERY и STATUS — следующим коммитом поверх (SHA — в итоговом сообщении сессии)",
+ "for_r01_reference_a": {
+  "take": "git checkout origin/claude/r14-R08 -- web/civic/akim/akim.js web/civic/akim/akim.css web/civic/akim/today.js web/civic/akim/today.css web/civic/akim/today.html web/civic/akim/today-stand.js web/civic/nearby/nearby.css; затем git apply research/round-14-results/R08/r01_today_r08.patch (CIVIC_ASSETS += akim/today.*, index.html += today.css и today.js; проверен на 69984f0f)",
+  "mount": "BirgeToday.mount(el, {apiBase, onClose}) в левом слоте главной вида «Акимат», left 20 / top 132 / 388 (телефон — под поиском, left/right 8); слева одна карточка — при открытой карточке объекта сводку прятать; пример — INTEGRATION §11.1 б",
+  "events": "birge:open-target {target, days, from:'akim-today'} (preventDefault — оболочка открывает цель), birge:hover-target {target, on} в обе стороны с картой (from:'map' подсвечивает строку), birge:open-hot-list, birge:today-close",
+  "keys": "7 ключей akim.today.* — research/round-14-results/R08/I18N_TODAY.json для R11; до слияния модуль берёт запасные тексты ru/kk из себя (ключей вместо слов нет)",
+  "api_change": "нет — сводка читает тот же GET /api/civic/v2/akim/summary, что «Картина дня»",
+  "needs_from_r11": "ui-kit/fonts/Inter-Medium.woff2 в CIVIC_ASSETS (новый файл R11 3890fa74)",
+  "reference_items_r08": {
+   "«Сегодня в Астане» 3 числа + топ-3, закрывается": "СДЕЛАНО: web/civic/akim/today.js/css — 388 × 328 (эталон 325), поля 16/18, заголовок 15/600, плитки 22/600 + 12, строки 54 с плашкой 34 × 26, «Все горячие места» 14/500; ×/Esc",
+   "«Картина дня» в том же стиле": "СДЕЛАНО: заголовок 22/600, плитки чисел как в сводке (10/12, 22/600, 12, белая 72 %, радиус 12), карточки 16/18 с линией 1 px, заголовок → содержимое 12, строки мест 54 с плашкой 34 × 26; только кегли шкалы эталона",
+   "правило 3 статус-иконки": "ПРИМЕНЕНО: .bk-status R11 в «Горячих местах» (иконка 12) и «Выбран вариант N»",
+   "правило 4 мгновенный отклик, скелет ≤ 150 мс": "СДЕЛАНО: сводка и «Картина дня» — скелет только если ответ дольше 150 мс",
+   "правило 5 сводка на главной + синхронизация": "СДЕЛАНО у R08: сводка; строки ↔ значки карты событием birge:hover-target в обе стороны (подсветка значка — R07)",
+   "правило 6 линии 1 px, анимации 150–250 мс": "СДЕЛАНО: rgba(18,26,23,.08) / --c-line, переходы 150 мс, появление 200–250 мс",
+   "правило 2 клавиатура": "СДЕЛАНО: ↑↓ / J K по местам сводки и «Горячих мест», Esc закрывает сводку; «/» и Ctrl+K — R01"
+  },
+  "deviations": "1) цифры на плашках — пары ui-kit --heat-N-badge/--heat-N-on (эталон: белые на оранжевом 2,2:1 и на #e24b4a 3,9:1 < 4,5:1); 2) сводка — плотное стекло 86 % по правилу R11 (эталон .sum — 72 %); 3) высота 328 вместо 325 — зона нажатия 44 у «Все горячие места»; 4) ҚАЗ на 375 — подпись плитки в 2 строки (348)",
+  "frames": "research/round-14-results/R08/reference/: today-etalon-vs-stalo.jpg, day-etalon-bylo-stalo.jpg, home-1366-etalon.jpg, object-card-1366-etalon.jpg, home-1366-ru-bylo/-stalo, home-1366-kk-stalo, home-375-kk-stalo, day-1366-ru-bylo/-stalo, day-1366-ru-full-stalo, day-375-ru-bylo, day-375-kk-stalo"
+ },
  "changed_paths": [
   "research/handoffs/astana/R08/round14/STATUS.md",
   "research/round-14-results/R08/",
   "research/round-14/categories_v2.json (копия из claude/round-14-package c86c515 без правок)",
   "tests/civic/R08/demo_server.py",
+  "tests/civic/R08/glass_check.cjs",
   "tests/civic/R08/nearby_check.cjs",
   "tests/civic/R08/r08_helpers.py",
   "tests/civic/R08/services_check.cjs",
@@ -31,6 +53,7 @@
   "tests/civic/R08/test_r08_summary.py",
   "tests/civic/R08/test_r08_text.py",
   "tests/civic/R08/test_r08_wave2.py",
+  "tests/civic/R08/today_check.cjs",
   "tests/civic/R08/ui_check.cjs",
   "tests/civic/R08/wave2_demo.py",
   "ui/civic_akim/__init__.py",
@@ -55,6 +78,10 @@
   "web/civic/akim/services.css",
   "web/civic/akim/services.html",
   "web/civic/akim/services.js",
+  "web/civic/akim/today-stand.js",
+  "web/civic/akim/today.css",
+  "web/civic/akim/today.html",
+  "web/civic/akim/today.js",
   "web/civic/nearby/index.html",
   "web/civic/nearby/nearby.css",
   "web/civic/nearby/nearby.js"
@@ -70,18 +97,18 @@
   "Функции для соседей: routing.service_for / assignee_lookup (R09), decisions.choice_for (R09), nearby.updates_for (R09), workdays (общий календарь с R09)"
  ],
  "tests": {
-  "pytest tests/civic/R08": "233 passed + 2 skipped (+4 test_r08_design: ряды мини-графиков)",
-  "стенд ui_check.cjs (1366/375 × ru/kk)": "165/165 PASS (мини-графики, мини-карта, без плашек, стеклянная полоса, reduced-motion, смена района без мигания; печать 3 листа)",
-  "стенд nearby_check.cjs": "53/53 PASS (+ смена района без мигания)",
-  "стенд services_check.cjs": "26/26 PASS",
-  "сборка: glass_check.cjs": "53/53 PASS (на 1969046a) — стекло R01: худший контраст текста R08 над чёрной картой 4,62:1; «Службы» — непрозрачная форма",
-  "сборка: R01 r14_shell / r14_wave2": "42/0 и 42/0; INFO о ключах R08 нет",
-  "сборка: R10 wave_checks --only W2-4,W2-5,W2-8": "30 PASS / 0 FAIL / 1 NOT_RUN (R09)",
-  "сборка: pytest R08 + R15 akim/nearby + R01 b061 + R13 pulse + R06 pair": "302 passed + 1 skipped",
-  "FPS со стеклом, приёмка марафона": "NOT_RUN — замер и приёмка у R10 (INTEGRATION §10.2)",
-  "сборка 550f7a93 + R08 e37c5f36: shell_wave2_check.cjs": "20/20 PASS (и на f92402da, 1969046a)"
+  "стенд today_check.cjs (1366/375 × ru/kk)": "35/35 PASS и с ui-kit R11 3890fa74, и со старым 7117132b — размеры эталона, числа = /akim/summary, события, карта → сводка, клавиатура, скелет ≤ 150 мс, ошибка kk",
+  "стенд ui_check.cjs": "170/170 PASS (ui-kit R11 3890fa74; новая: кегли только из шкалы эталона; плитки 22/600 + 12; печать 1–3 листа)",
+  "стенд nearby_check.cjs": "53/53 PASS (ui-kit R11 3890fa74)",
+  "стенд services_check.cjs": "26/26 PASS (ui-kit R11 3890fa74)",
+  "сборка: glass_check.cjs": "53/53 PASS — худший контраст текста R08 над чёрной картой 4,58:1 (лист R01 — лёгкое стекло 72 %); «Службы» — непрозрачная форма",
+  "сборка: shell_wave2_check.cjs": "20/20 PASS (вход сотрудника r08akim, CIVIC_DEMO)",
+  "pytest tests/civic/R08": "NOT_RUN в этом задании — Python-код R08 не менялся (последний прогон: марафон, 233 passed + 2 skipped)",
+  "R01 r14_shell / R10 приёмка эталона": "NOT_RUN — у R01/R10 после того, как R01 поставит сводку в оболочку"
  },
  "known_limits": [
+  "Сводку в оболочку ставит R01 (birge.js — его файл): до этого её видно на стенде /civic/akim/today.html и в кадрах «стало», снятых монтированием BirgeToday в сборке R01 (харнесс, позиция эталона left 20 / top 132).",
+  "Шрифт Inter-Medium (вес 500) в сборке R01 69984f0f отдаёт 404, пока его нет в CIVIC_ASSETS; браузер тогда рисует 500 синтетически.",
   "Сроки «Просрочено» — демо-норматив R08 (deadlines.py), в рабочих днях РК 2026; у аварийных категорий — календарные. Переносы рабочих дней постановлением Правительства и точная дата Курбан айта не сверены (как и у R09).",
   "«Нужно решение акима»: у R09 в паспорте пока нет отметки «нужно решение руководителя» и двух вариантов (INTEGRATION §8.2б) — на демо-данных блок показывает 3 ПРИМЕРА (fixtures/decisions_demo.json, «Пример»), среди настоящих обращений пример не подмешивается.",
   "«Пульс района» — простой метод R08 (pulse.py), не модель R13; на 5-недельном демо R07 снегопад даёт тревогу «по городу» — это свойство демо-набора.",
@@ -94,8 +121,33 @@
   "Иллюстрация «тихий день» — своя, линиями 2 px; набора линейных иллюстраций ui-kit пока нет (R11).",
   "Шкала шрифтов на «Картине дня» — 5 размеров по CLEAN_PASS; пункт чек-листа марафона «≤ 3 размера» не выполнен намеренно (вопрос владельцу)."
  ],
- "next_step": "R01: взять 7 файлов из claude/r14-R08 @ 1969046a (INTEGRATION §10.1) — новых ключей и файлов нет. R10: FPS и приёмка марафона (§10.2). R11: ревью design/round2 (§10.3); соседям — §10.4.",
- "delivery": "6.3 (12 окт, дизайн-марафон, круги 1–6)",
+ "next_step": "R01: §11.0–11.1 INTEGRATION — взять 7 файлов из claude/r14-R08 @ b87d4758, git apply r01_today_r08.patch, BirgeToday.mount на главной акимата. R11: I18N_TODAY.json, Inter-Medium в CIVIC_ASSETS. R07: подсветка значка по birge:hover-target. R10: today_check, ui_check. R08 дальше: проверить сводку в оболочке, когда R01 её поставит.",
+ "previous_delivery_6_3_marathon": {
+  "delivery": "6.3 (12 окт, дизайн-марафон, круги 1–6)",
+  "code_sha": "1969046a",
+  "tested_sha": "1969046a",
+  "base_sha": "R01 claude/sharp-dijkstra-0t87gl @ 65343341 (FINAL-3 со стеклом) — база марафона",
+  "tested_with": {
+   "r01_build": "claude/sharp-dijkstra-0t87gl @ 550f7a93 (марафон, круги 2–3; в нём уже R08 ec73b533 и ui-kit R11 58b28edc) + R08 ui/civic_akim, web/civic/akim, web/civic/nearby @ 1969046a; база: init + seed-demo + seed-r14-demo + create-editor, CIVIC_DEMO=1",
+   "r11_ui_kit_i18n": "claude/r14-R11 @ 7117132b (стекло) — стенд",
+   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 5e2789e — временная копия для стенда, в git R08 не входит",
+   "env": "облачная сессия Claude Code, Linux, Python 3.13, Chromium (Playwright), без интернета (карта — запасной фон)"
+  },
+  "push_status": "OK — claude/r14-R08 (код 1969046a); DELIVERY, STATUS, CHECKLIST — следующим коммитом поверх",
+  "tests": {
+   "pytest tests/civic/R08": "233 passed + 2 skipped (+4 test_r08_design: ряды мини-графиков)",
+   "стенд ui_check.cjs (1366/375 × ru/kk)": "165/165 PASS (мини-графики, мини-карта, без плашек, стеклянная полоса, reduced-motion, смена района без мигания; печать 3 листа)",
+   "стенд nearby_check.cjs": "53/53 PASS (+ смена района без мигания)",
+   "стенд services_check.cjs": "26/26 PASS",
+   "сборка: glass_check.cjs": "53/53 PASS (на 1969046a) — стекло R01: худший контраст текста R08 над чёрной картой 4,62:1; «Службы» — непрозрачная форма",
+   "сборка: R01 r14_shell / r14_wave2": "42/0 и 42/0; INFO о ключах R08 нет",
+   "сборка: R10 wave_checks --only W2-4,W2-5,W2-8": "30 PASS / 0 FAIL / 1 NOT_RUN (R09)",
+   "сборка: pytest R08 + R15 akim/nearby + R01 b061 + R13 pulse + R06 pair": "302 passed + 1 skipped",
+   "FPS со стеклом, приёмка марафона": "NOT_RUN — замер и приёмка у R10 (INTEGRATION §10.2)",
+   "сборка 550f7a93 + R08 e37c5f36: shell_wave2_check.cjs": "20/20 PASS (и на f92402da, 1969046a)"
+  },
+  "next_step": "R01: взять 7 файлов из claude/r14-R08 @ 1969046a (INTEGRATION §10.1) — новых ключей и файлов нет. R10: FPS и приёмка марафона (§10.2). R11: ревью design/round2 (§10.3); соседям — §10.4."
+ },
  "for_r01_final3": {
   "take": "claude/r14-R08 @ 04fa206c (path-scoped): web/civic/akim/akim.css; web/civic/nearby/nearby.js, nearby.css, index.html; web/civic/akim/services.js, services.css, services.html; по желанию tests/civic/R08/nearby_check.cjs, glass_check.cjs. akim.js — как 0fac615d (уже в сборке).",
   "replaces": "R08 web/civic/nearby/* и web/civic/akim/services.* из FINAL-2 (9d593d96)",

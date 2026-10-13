@@ -23,9 +23,12 @@ R08 · «Картина дня» — как запустить и что мож�
     --wave2-demo дописывает в демо-жалобы R07 уточнения и ответы жителей в форме R09 (СИНТЕТИКА, только стенд,
     tests/civic/R08/wave2_demo.py). Стенд считает все запросы запросами сотрудника (учебный CSRF), --resident — наоборот;
     выбор акима, правки служб и подписки пишутся во временную папку (--state-dir), не в .runtime проекта.
-  Проверки: NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 149
+  Проверки: NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs        # 170 (13 окт, эталон A)
+            NODE_PATH=$(npm root -g) node tests/civic/R08/today_check.cjs     # 35 — сводка «Сегодня в Астане» (…/civic/akim/today.html)
             NODE_PATH=$(npm root -g) node tests/civic/R08/services_check.cjs  # 26
-            NODE_PATH=$(npm root -g) node tests/civic/R08/nearby_check.cjs    # 44
+            NODE_PATH=$(npm root -g) node tests/civic/R08/nearby_check.cjs    # 53
+  Эталон A: стенд с ui-kit claude/r14-R11 ≥ 3890fa74 (git archive … web/civic/ui-kit web/civic/i18n | tar -x -C <папка>);
+            кадры «эталон / было / стало» — research/round-14-results/R08/reference/.
   В сборке R01 (≥ a96f6e3 + research/round-14-results/R08/r01_wave2_r08.patch, база + create-editor <логин>):
             R08_STAFF_USER=<логин> R08_STAFF_PASS=<пароль> NODE_PATH=$(npm root -g) \
               node tests/civic/R08/shell_wave2_check.cjs http://127.0.0.1:<порт>    # 20
