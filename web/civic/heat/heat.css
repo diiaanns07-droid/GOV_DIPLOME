@@ -228,7 +228,8 @@
 .r07-fixform, .r07-r09staff { padding: 12px var(--r07-gutter) 0; }
 .r07-tp > .r07-r09staff { padding: 14px 0 0; }
 /* Вкладки «Обзор · Обращения · История» (эталон .tabs): 14/500, активная — тёмная с чертой 2 px, линия 1 px от края до края */
-.r07-tabs { display: flex; gap: 18px; margin: 4px calc(-1 * var(--r07-bleed, 0px)) 0; padding: 2px calc(var(--r07-gutter) + var(--r07-bleed, 0px)) 0;
+/* Полоса вкладок — 44 + черта 1 px, как .tabs эталона (было 2 + 44 + 1 = 47: R10 reference_check «card-tabs» Δh 3) */
+.r07-tabs { display: flex; gap: 18px; margin: 4px calc(-1 * var(--r07-bleed, 0px)) 0; padding: 0 calc(var(--r07-gutter) + var(--r07-bleed, 0px)) 0;
   border-bottom: 1px solid var(--r07-line); overflow-x: auto; scrollbar-width: none; }
 .r07-tabs::-webkit-scrollbar { display: none; }
 .r07-tab { position: relative; flex: none; min-height: 44px; padding: 14px 0 10px; border: 0; background: none; color: var(--r07-ink-3); font-size: 14px; font-weight: 500;
@@ -250,9 +251,9 @@
 .r07-row__k { color: var(--r07-ink-2); }
 .r07-row__v { margin-left: auto; color: var(--r07-ink); font-weight: 500; text-align: right; overflow-wrap: anywhere; }
 .r07-row__v a, a.r07-qr { color: var(--r07-link); font-weight: 500; text-decoration: none; }
-/* R11 §21.9 b: ссылка в строке 17 px — зона нажатия 45 px невидимым расширением по высоте строки */
-a.r07-qr { position: relative; }
-a.r07-qr::after { content: ""; position: absolute; inset: -14px 0; }
+/* R11 §21.9 b, R10 B-078: ссылка «Распечатать QR» в строке — сама 44 px по высоте (проверки R10 меряют рамку элемента,
+   невидимое ::after не засчитывают); отрицательные поля сохраняют высоту строки 14 px, как у .r07-link. */
+a.r07-qr { position: relative; display: inline-flex; align-items: center; min-height: 44px; margin: -13px 0; }
 .r07-row__v a:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* Одна цитата в «Обзоре» (эталон .quote + .more): не длиннее 2 строк, «Ещё N обращений» ведёт во вкладку */
 .r07-lead { padding: 12px 0 0; }
@@ -404,6 +405,9 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 .r07-badge[hidden] { display: none; }
 /* Рамка фокуса с клавиатуры — по форме значка (капсула), а не прямоугольник вокруг кружка и плашки */
 .r07-badge { border-radius: 24px; }
+/* Кнопка-маркер не уже 44 px (критерий владельца 12 окт «кнопки ≥ 44 px», R10 compare: исправленное место — кружок 34 без
+   плашки, было 34 × 44). Кружок остаётся 34 по центру кнопки; маркер привязан anchor: "center", поэтому кружок не сдвигается. */
+.r07-badge { min-width: 44px; justify-content: center; }
 .r07-badge:focus-visible { outline-offset: 3px; }
 .r07-badge::after { content: ""; position: absolute; inset: -4px; }
 .r07-badge:hover, .r07-badge--selected, .r07-badge--hot { z-index: 3; }
