@@ -667,6 +667,25 @@ await check("catalog_labels_fit_ru_kk_1366_375", async () => {
   assert(!bad.length, bad.join("; "));
   return { status: "PASS", detail: "подписи 5 карточек помещаются: ru и kk, 1366 / 375 / 360 px" };
 });
+// Эталон 13.10 (правило Linear 2 и «закрытие: ×, Esc, нажатие на пустую карту»): Esc закрывает карточку проекта,
+// фокус возвращается на его метку; нажатие на пустое место карты — тоже закрывает.
+await check("card_closes_by_esc_focus_back_and_by_empty_map", async () => {
+  const p = await openPage({}, "?reset=1&store=local&role=resident&center=71.4008,51.1272&zoom=17.4&pitch=60&bearing=-30");
+  await p.click('.b3d-label[data-id="p-demo-stop-syganak"]');
+  await p.waitForSelector(".b3d-dock[data-state=card]");
+  await p.keyboard.press("Escape");
+  await p.waitForFunction(() => !__b3d.getState().selected, null, { timeout: 5000 }).catch(() => {});
+  const esc = await p.evaluate(() => ({ selected: __b3d.getState().selected, state: document.querySelector(".b3d-dock").getAttribute("data-state"), focus: document.activeElement && document.activeElement.getAttribute("data-id") }));
+  await p.click('.b3d-label[data-id="p-demo-stop-syganak"]');
+  await p.waitForSelector(".b3d-dock[data-state=card]");
+  const empty = await p.evaluate(() => { const c = __map.getCanvas().getBoundingClientRect(); return [c.left + 40, c.top + c.height - 40]; });
+  await p.mouse.click(empty[0], empty[1]);
+  await p.waitForFunction(() => !__b3d.getState().selected, null, { timeout: 5000 }).catch(() => {});
+  const map = await p.evaluate(() => __b3d.getState().selected);
+  await p.context().close();
+  assert(esc.selected === null && esc.state !== "card" && esc.focus === "p-demo-stop-syganak" && map === null, JSON.stringify({ esc, map }));
+  return { status: "PASS", detail: { esc, empty_map_click: "закрыта" } };
+});
 await check("keyboard_tab_enter_escape", async () => {
   const p = await openPage({}, "?reset=1&store=local");
   let found = false;

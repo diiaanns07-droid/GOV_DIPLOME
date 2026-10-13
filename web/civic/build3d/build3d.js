@@ -3177,9 +3177,25 @@
     }
 
     function onKey(e) {
-      if (S.mode !== "placing") return;
       var tag = (e.target && e.target.tagName) || "";
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      // Эталон 13.10 (правило Linear 2): Esc закрывает карточку проекта, фокус — обратно на его метку на карте. Не
+      // трогаем Esc, который уже обработал кто-то другой (меню, диалог хозяина), и когда открыт модальный диалог.
+      if (S.mode !== "placing") {
+        if (e.key !== "Escape" || !S.selected || e.defaultPrevented) return;
+        if (doc.querySelector && doc.querySelector('[role="dialog"][aria-modal="true"]:not([hidden])')) return;
+        var was = S.objects[S.selected];
+        e.preventDefault();
+        select(null);
+        if (was && was.label && was.label.focus && was.label.style.visibility !== "hidden") {
+          try {
+            was.label.focus({ preventScroll: true });
+          } catch (err) {
+            /* метка уже не в документе */
+          }
+        }
+        return;
+      }
       if (e.key === "Escape") {
         e.preventDefault();
         cancel();
