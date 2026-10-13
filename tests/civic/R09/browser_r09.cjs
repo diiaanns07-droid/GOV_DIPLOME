@@ -927,11 +927,13 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   await pageA.waitForSelector(".bc-mine__card");
   const first = await pageA.evaluate(() => ({ changes: document.querySelectorAll(".bc-changes").length,
     line: (document.querySelector(".bc-mine__card .bc-assignee") || {}).textContent || "",
+    due: (document.querySelector(".bc-mine__card .bc-mine__due") || {}).textContent || "",
     primaries: document.querySelectorAll(".bc-panel .bk-btn--primary").length }));
-  check(`${tag}: первый визит — без «Что изменилось»; на карточке «${first.line}»; главной кнопки нет`,
+  // Эталон A (строка статуса карточки .st): срок — справа мелко рядом со статусом, «Передано: служба» — под словом.
+  check(`${tag}: первый визит — без «Что изменилось»; на карточке «${first.line}» и срок «${first.due}»; главной кнопки нет`,
         first.changes === 0 && first.primaries === 0 &&
-        (lang === "kk" ? /^Жауапты: Жарықтандыру қызметі · \d+ жұмыс күні қалды$/.test(first.line)
-                       : /^Передано: Служба освещения · Осталось \d+ рабоч(ий день|их дня|их дней)$/.test(first.line)), JSON.stringify(first));
+        (lang === "kk" ? first.line === "Жауапты: Жарықтандыру қызметі" && /^\d+ жұмыс күні қалды$/.test(first.due)
+                       : first.line === "Передано: Служба освещения" && /^Осталось \d+ рабоч(ий день|их дня|их дней)$/.test(first.due)), JSON.stringify(first));
   await pageA.keyboard.press("Escape");
 
   // Сотрудник: компонент complaint-staff.js в карточке (как встроят R07 и «Обращения» акимата).
