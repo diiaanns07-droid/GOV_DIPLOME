@@ -5,7 +5,7 @@
 Обновлено: 13 октября — **«Дизайн по эталону — лучше 2ГИС»** (вариант A REFERENCE.html + 7 правил Linear).
 Статус: partial — ui-kit по эталону готов и проверен; раскладка экранов — у R01 и ролей (INTEGRATION §20); R11 проверяет
 их ветки кругами по мере поставки.
-Рабочая ветка: claude/r14-R11. Исходный коммит: af77b78. Код ui-kit/i18n — `d5a767dd` (DELIVERY.json `code_sha`).
+Рабочая ветка: claude/r14-R11. Исходный коммит: af77b78. Код ui-kit/i18n — `23bfccda` (DELIVERY.json `code_sha`).
 Назначенные пути: web/civic/ui-kit/, web/civic/i18n/, tests/civic/R11/, research/round-14-results/R11/, этот файл.
 
 ## Коротко для владельца — эталон A (13 октября)
@@ -50,7 +50,7 @@
 8. «Движение 300 мс» в заметке эталона и «150–250 мс» в правиле 6 Linear: взято 250 мс (появление карточки слева).
 
 ## Что дальше (эталон A)
-- R01: ui-kit/i18n `d5a767dd` + INTEGRATION §20.1 и §21 (обязательно — строка Inter-Medium.woff2 в CIVIC_ASSETS; хром эталона).
+- R01: ui-kit/i18n `23bfccda` + INTEGRATION §20.1 и §21 (обязательно — строка Inter-Medium.woff2 в CIVIC_ASSETS; хром эталона).
 - Роли: свои пункты §20.2–§20.6 (разметку брать из `web/civic/ui-kit/prototypes/reference-a.html`).
 - R11: круги проверки по веткам R01 и ролей (кадры `reference/build-*.jpg` пересобираю `ref_compare.cjs` + `ref_triple.py`).
 
