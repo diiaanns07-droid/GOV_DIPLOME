@@ -1,7 +1,7 @@
 {
  "role": "R05",
- "generated_at": "2026-10-13T12:14:29.620Z",
- "tested_sha": "f6c0d214ff5475a0bf37112d6744c5876882dceb",
+ "generated_at": "2026-10-13T12:52:53.534Z",
+ "tested_sha": "e9eac5f31c8288b1de00c373ab53377328b921dc",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
@@ -10,12 +10,12 @@
   "ui_kit_i18n": "из выгрузки --kit <scratch>/r11kit15",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 6.5,
-  "fps_20_objects_swiftshader": 2.8,
+  "fps_0_objects_swiftshader": 5.6,
+  "fps_20_objects_swiftshader": 3.8,
   "gpu_geometries_20_objects": 100
  },
  "summary": {
-  "pass": 56,
+  "pass": 57,
   "fail": 0,
   "not_run": 1
  },
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 2.8 кадр/с (без объектов 6.5)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.8 кадр/с (без объектов 5.6)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -160,6 +160,29 @@
      "focus": "p-demo-stop-syganak"
     },
     "empty_map_click": "закрыта"
+   }
+  },
+  {
+   "id": "highlight_marks_project_without_card",
+   "status": "PASS",
+   "detail": {
+    "a": {
+     "ok": true,
+     "selected": "p-demo-stop-syganak",
+     "highlighted": true,
+     "dock": "hint",
+     "pressed": "true"
+    },
+    "unknown": false,
+    "cleared": {
+     "selected": null,
+     "highlighted": false,
+     "pressed": "false"
+    },
+    "then_label_click": {
+     "dock": "card",
+     "highlighted": false
+    }
    }
   },
   {
@@ -221,7 +244,7 @@
   {
    "id": "r11_21_selected_object_not_under_card_1366_375",
    "status": "PASS",
-   "detail": "1366 px: объект (515, 490) на экране и не под карточкой; 375 px: объект (187, 242) на экране и не под карточкой"
+   "detail": "1366 px: объект (515, 490) на экране и не под карточкой; 375 px: объект (188, 242) на экране и не под карточкой"
   },
   {
    "id": "r11_22_23_demo_header_title_and_3d_label",

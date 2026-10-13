@@ -1,18 +1,22 @@
 {
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
- "delivery": 16,
+ "delivery": 17,
  "for_build": "эталон 13.10 (вариант A): R01 claude/sharp-dijkstra-0t87gl @ 69984f0f (в нём R05 0e27479 — поставка 14)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "4595563",
- "tested_sha": "4595563 (web/civic/build3d; прогон на f6c0d214 — тот же build3d; после 4595563 в ветке — только документы и результаты)",
- "tested_note": "Демо R05 с ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f: browser_check exit 0 Итого: 56 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync exit 0 PASS — ключей build3d 57, общих запасных 34, сравнений 296, расхождений 0, новых для R11 6; движение (motion_check.mjs, порог эталона 150–250 мс) — {\"PASS\": 35}. В сборке R01 69984f0f + R05 4595563: shell smoke exit 0 pass=28 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0; R01 r14_wave2 exit 0 pass=42 fail=0; R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m16_demo (runs/reference_r01_69984f0f_4595563.txt).",
+ "code_sha": "e9eac5f",
+ "tested_sha": "e9eac5f (web/civic/build3d; после него в ветке — только документы и результаты прогонов)",
+ "tested_note": "Демо R05 с ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f: browser_check exit 0 Итого: 57 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync exit 0 PASS — ключей build3d 57, общих запасных 34, сравнений 296, расхождений 0, новых для R11 6; движение (motion_check.mjs, порог эталона 150–250 мс) — {\"PASS\": 35}. В сборке R01 69984f0f + R05 e9eac5f: shell smoke exit 0 pass=28 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0; R01 r14_wave2 exit 0 pass=42 fail=0; R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m17_demo (runs/reference_r01_69984f0f_e9eac5f.txt).",
  "previous_delivery": {
-  "code_sha": "e23d7b6",
-  "delivery_commit": "f6c0d214",
+  "code_sha": "4595563",
+  "delivery_commit": "5e2a5a8a",
   "before": [
+   {
+    "code_sha": "e23d7b6",
+    "delivery_commit": "f6c0d214"
+   },
    {
     "code_sha": "0e27479",
     "delivery_commit": "f75eaa76"
@@ -213,7 +217,7 @@
   },
   "browser_check": {
    "status": "PASS",
-   "detail": "browser_check exit 0 Итого: 56 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json (ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f)"
+   "detail": "browser_check exit 0 Итого: 57 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json (ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f)"
   },
   "browser_checks": {
    "load_auto_falls_back_to_local_store": "PASS",
@@ -238,6 +242,7 @@
    "preview_square_and_tint_for_project_list": "PASS",
    "catalog_labels_fit_ru_kk_1366_375": "PASS",
    "card_closes_by_esc_focus_back_and_by_empty_map": "PASS",
+   "highlight_marks_project_without_card": "PASS",
    "keyboard_tab_enter_escape": "PASS",
    "three_load_error_state": "PASS",
    "api_store_contract_roundtrip": "PASS",
@@ -454,13 +459,13 @@
    "detail": "{\"PASS\": 35} — runs/motion_check.json (порог эталона: правило Linear 6, 150–250 мс ±30)"
   },
   "reference_in_r01": {
-   "build": "R01 69984f0f + R05 4595563",
+   "build": "R01 69984f0f + R05 e9eac5f",
    "app_b2_smoke": "shell smoke exit 0 pass=28 fail=0",
    "r01_r14_b2": "R01 r14_b2 exit 0 pass=28 fail=0",
    "r01_r14_shell": "R01 r14_shell exit 0 pass=42 fail=0",
    "r01_r14_wave2": "R01 r14_wave2 exit 0 pass=42 fail=0",
-   "r10_demo_flow": "R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m16_demo",
-   "report": "runs/reference_r01_69984f0f_4595563.txt"
+   "r10_demo_flow": "R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m17_demo",
+   "report": "runs/reference_r01_69984f0f_e9eac5f.txt"
   }
  },
  "screenshots": {
@@ -550,7 +555,7 @@
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: web/civic/build3d = 4595563 (с data/previews/, в том числе -sq); по желанию — proposed_r01_reference.patch (после снятия правой панели). R06: previewOf(kind).square/.tint для миниатюр списка (одинаковая картинка в списке и на карте). R11: 3 ключа build3d.card.fact_*. R10: reference_check — метка R05 находится по тексту «Проект · 20xx».",
+ "next_step": "R01: web/civic/build3d = e9eac5f (с data/previews/, в том числе -sq); по желанию — proposed_r01_reference.patch (после снятия правой панели). R06: previewOf(kind).square/.tint для миниатюр списка (одинаковая картинка в списке и на карте). R11: 3 ключа build3d.card.fact_*. R10: reference_check — метка R05 находится по тексту «Проект · 20xx».",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -1013,6 +1018,7 @@
    "research/round-14-results/R05/design/ref1, ref4, ref5 — кадры демо (ref4/ref5 — с ui-kit эталона R11)"
   ],
   "divergences": "STATUS.md, раздел «ДИЗАЙН ПО ЭТАЛОНУ»: нет названия/описания/оценки проекта в данных R05 (вид объекта, место, «против» вместо «~45 млн ₸»); вторая кнопка «Против» (логика голосования не меняется); «×» над картинкой; карточку в оболочке рисует R06",
+  "round_7": "handle.highlight(id, {padding}) — отметить проект на карте без карточки модуля (выбор в списке «Проекты и идеи» R06: карта следует за выбором); getState().highlighted; R10 pv2 «tag R05 — НЕТ В СБОРКЕ» — раздел R01 пока закрывает карту, что включить R01/R06 — INTEGRATION.txt",
   "rounds_5_6": "заголовки панели («Что построить?», название объекта при размещении) 19/600 как заголовок листа эталона; скелетон каталога — только если загрузка дольше 150 мс, затем мягко за 150 мс (правило Linear 4)"
  }
 }
