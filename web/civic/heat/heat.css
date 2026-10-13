@@ -71,8 +71,16 @@
 .r07-lhd .r07-reset { margin-left: auto; }
 .r07-lhd .r07-x { align-self: center; }
 .r07-lhd .r07-reset + .r07-x { margin-left: 4px; }
+/* × — всегда в первой строке справа, как × карточки эталона: место под него — поле справа, переносится текст, а не ×
+   (ҚАЗ «Шағымы көп орындар · соңғы 30 күнде» уводил × отдельной строкой ниже, заголовок 60 px вместо 32).
+   Сдвиг −6 / −6 — поля самой .r07-x, как было в потоке; высота строки 32 — как была. */
+.r07-lhd:has(> .r07-x) { position: relative; min-height: 32px; padding-right: 40px; }
+.r07-lhd > .r07-x { position: absolute; top: 0; right: 0; }
 /* opts.closable: "desktop" (R01 §26.12) — на телефоне «Горячие места» в шторке оболочки, × не нужен */
-@media (max-width: 760px) { .r07-lhd .r07-x--desktop { display: none; } }
+@media (max-width: 760px) {
+  .r07-lhd .r07-x--desktop { display: none; }
+  .r07-lhd:has(> .r07-x--desktop) { min-height: 0; padding-right: 0; }
+}
 .r07-filters { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
 .r07-frow { display: flex; align-items: center; gap: 8px; }
 .r07-field {
