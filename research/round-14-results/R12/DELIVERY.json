@@ -7,13 +7,13 @@
  "delivery": 10,
  "for_build": "сборка R01 по эталону A (после 69984f0)",
  "base_sha": "R01 claude/sharp-dijkstra-0t87gl 69984f0 (в ней R12 7fb739d); эталон — claude/round-14-package 766bd2f research/round-14/design/",
- "code_sha": "bc330d6c99344a03e1335d8f0cb7eecdeb6dace9",
- "tested_sha": "bc330d6c99344a03e1335d8f0cb7eecdeb6dace9",
- "code_sha_note": "11e3325 (паспорт = карточка эталона, вкладки, тесты), 092b1ad (индекс поиска, подписи без двойного «Парк»), bc330d6 (улица рядом в /target и в подписи карточки, patch R01 для индекса). После — только документы.",
- "tested_note": "Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 69984f0 + пути R12 из code_sha + patches/R01_search_index_asset.patch; CIVIC_DEMO=1, база init + seed-demo, временный сотрудник; эталон REFERENCE.html — python http.server, вариант A; ничего не коммитилось.",
- "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код bc330d6; этот DELIVERY — следующим коммитом)",
+ "code_sha": "23084e8a9568c2be74635deac7943da26c48aefd",
+ "tested_sha": "23084e8a9568c2be74635deac7943da26c48aefd",
+ "code_sha_note": "11e3325 (паспорт = карточка эталона, вкладки, тесты), 092b1ad (индекс поиска, подписи без двойного «Парк»), bc330d6 (улица рядом в /target и в подписи карточки, patch R01 для индекса). 23084e8 (паспорт на каркасе ui-kit R11 .bk-objcard, статус-иконки, геометрия ± 1 px). После — только документы.",
+ "tested_note": "Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 69984f0 + пути R12 из code_sha + patches/R01_search_index_asset.patch + ui-kit/i18n R11 a903884 (и без них — старый ui-kit сборки); CIVIC_DEMO=1, база init + seed-demo, временный сотрудник; эталон REFERENCE.html — python http.server, вариант A; ничего не коммитилось.",
+ "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код 23084e8; этот DELIVERY — следующим коммитом)",
  "take": "git checkout <code_sha> -- web/civic/qr engine/civic_geo web/civic/map/search_index.json tests/civic/R12",
- "take_note": "На 69984f0 эти пути = R12 7fb739d, checkout приносит только работу по эталону. Плюс patches/R01_search_index_asset.patch (одна строка CIVIC_ASSETS) и предложение контейнера карточки reference/r01_report_card.css — решает R01.",
+ "take_note": "На 69984f0 эти пути = R12 7fb739d, checkout приносит только работу по эталону. Плюс patches/R01_search_index_asset.patch (одна строка CIVIC_ASSETS) и предложение контейнера карточки reference/r01_report_card.css — решает R01. Паспорт рассчитан на ui-kit R11 a903884 (.bk-objcard, статус-иконки); со старым ui-kit тоже выглядит по эталону.",
  "logic_changed": false,
  "logic_note": "Сценарий демо и действия паспорта прежние (ссылка → карточка, «Я тоже» R09, «Сообщить о другом» → мастер R09, «На карту»). «Подробнее» заменено вкладками эталона (обращения R09 грузятся при открытии вкладки, как раньше при раскрытии). Добавлено: поле street в /target (только данные), индекс поиска (статический файл), подписи объектов без двойного слова вида.",
  "items_status": [
@@ -36,7 +36,7 @@
   {
    "name": "QR и мастер R09 в приложении (R01 69984f0 + R12)",
    "status": "PASS",
-   "result": "35/0/0 (вкладки, цитата только из публичных текстов)"
+   "result": "35/0/0 (с ui-kit R11 a903884 и со старым ui-kit)"
   },
   {
    "name": "QR стенд",
@@ -63,6 +63,12 @@
    "name": "клавиатура вкладок, фокус после «Я тоже», обрезанный текст",
    "status": "PASS",
    "result": "←/→ по кругу, Home/End, roving tabindex; фокус на заголовке; обрезки нет (375/1366 ru/kk)"
+  },
+  {
+   "name": "геометрия паспорта против REFERENCE.html (1366)",
+   "status": "PASS",
+   "result": "плитка, название, подпись, крестик, число, статус, кнопки, вкладки, строки, цитата — ± 1 px",
+   "evidence": "reference/passport_geometry.txt"
   }
  ],
  "patches_for_others": [
