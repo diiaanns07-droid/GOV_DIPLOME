@@ -818,6 +818,10 @@
         }
       }
       dock.classList.toggle("bk-glass", glassKnown);
+      // Эталон 13.10, правило 4: текст на стекле — только на плотном стекле 86 % (ui-kit R11 .bk-glass--strong: «всё
+      // с текстом — карточка объекта, лист проектов…»); в панели модуля текст всегда (каталог, размещение, карточка).
+      // R10 B-079 — то же у панели R01. Со старым ui-kit класса нет — остаётся .bk-glass.
+      dock.classList.toggle("bk-glass--strong", glassKnown);
       // Телефон, панель у нижнего края (демо без хозяина) — как шторка: скругление только сверху.
       dock.classList.toggle("bk-glass--sheet", glassKnown && ui.classList.contains("b3d--overlay") && phoneLayout());
     }
