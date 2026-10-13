@@ -5,8 +5,8 @@
  "delivery": "7 (13 окт, эталон A, круги 1–3; круг 3 — на ui-kit R11 a2342cc1, сводка попиксельно)",
  "base_sha": "R01 claude/sharp-dijkstra-0t87gl @ 69984f0f (последний коммит R01 на 13 окт) — база задания «эталон A»",
  "restored_from": "нет — модуль новый в раунде 14 (ui/civic_akim, web/civic/akim созданы с нуля)",
- "code_sha": "9296f5a0",
- "tested_sha": "9296f5a0",
+ "code_sha": "9f7aa61a",
+ "tested_sha": "9f7aa61a (стенд); сборка — 9296f5a0 (после него менялся только скелет сводки today.js/css, проверен на стенде)",
  "tested_with": {
   "r01_build": "claude/sharp-dijkstra-0t87gl @ 69984f0f + ui-kit/i18n R11 a2342cc1 + строка ui-kit/fonts/Inter-Medium.woff2 в CIVIC_ASSETS (иначе 404, см. INTEGRATION §11.0) + R08 web/civic/akim, web/civic/nearby @ 9296f5a0 + git apply r01_today_r08.patch; база init + seed-demo + seed-r14-demo + create-editor, CIVIC_DEMO=1",
   "r11_ui_kit_i18n": "claude/r14-R11 @ a2342cc1 (reference A + граница стекла 1 px + шрифт хрома Inter) — стенд и сборка; совместимость проверена на стенде и с 3890fa74, и со старым 7117132b",
@@ -14,7 +14,7 @@
   "r07_heat": "ui/civic_heat из claude/upbeat-knuth-i0rqaa @ 5e2789e — временная копия для стенда, в git R08 не входит",
   "env": "облачная сессия Claude Code, Linux, Python 3.13, Chromium (Playwright), без интернета (карта — запасной фон)"
  },
- "push_status": "OK — claude/r14-R08: код 9296f5a0; DELIVERY и STATUS — следующим коммитом поверх (SHA — в итоговом сообщении сессии)",
+ "push_status": "OK — claude/r14-R08: код 9f7aa61a; DELIVERY и STATUS — следующим коммитом поверх (SHA — в итоговом сообщении сессии)",
  "for_r01_reference_a": {
   "take": "git checkout origin/claude/r14-R08 -- web/civic/akim/akim.js web/civic/akim/akim.css web/civic/akim/today.js web/civic/akim/today.css web/civic/akim/today.html web/civic/akim/today-stand.js web/civic/nearby/nearby.css; затем git apply research/round-14-results/R08/r01_today_r08.patch (CIVIC_ASSETS += akim/today.*, index.html += today.css и today.js; проверен на 69984f0f)",
   "mount": "BirgeToday.mount(el, {apiBase, onClose}) в левом слоте главной вида «Акимат», left 20 / top 132 / 388 (телефон — под поиском, left/right 8); слева одна карточка — при открытой карточке объекта сводку прятать; пример — INTEGRATION §11.1 б",
@@ -26,7 +26,7 @@
    "«Сегодня в Астане» 3 числа + топ-3, закрывается": "СДЕЛАНО: web/civic/akim/today.js/css — на стенде с ui-kit R11 a2342cc1 карточка 388 × 325 и все 17 строк текста совпадают с эталоном до 0 px (today_ref_compare.cjs); ×/Esc; в сборке 69984f0f — 388 × 323, пока birge.css:522 снимает границу стекла (INTEGRATION §11.0)",
    "«Картина дня» в том же стиле": "СДЕЛАНО: заголовок 22/600, плитки чисел как в сводке (10/12, 22/600, 12, белая 72 %, радиус 12), карточки 16/18 с линией 1 px, заголовок → содержимое 12, строки мест 54 с плашкой 34 × 26; только кегли шкалы эталона",
    "правило 3 статус-иконки": "ПРИМЕНЕНО: .bk-status R11 в «Горячих местах» (иконка 12) и «Выбран вариант N»",
-   "правило 4 мгновенный отклик, скелет ≤ 150 мс": "СДЕЛАНО: сводка и «Картина дня» — скелет только если ответ дольше 150 мс",
+   "правило 4 мгновенный отклик, скелет ≤ 150 мс": "СДЕЛАНО: сводка и «Картина дня» — скелет только если ответ дольше 150 мс; скелет сводки — готовой формы и высоты (325 → 325, без прыжка)",
    "правило 5 сводка на главной + синхронизация": "СДЕЛАНО у R08: сводка; строки ↔ значки карты событием birge:hover-target в обе стороны (подсветка значка — R07)",
    "правило 6 линии 1 px, анимации 150–250 мс": "СДЕЛАНО: rgba(18,26,23,.08) / --c-line, переходы 150 мс, появление 200–250 мс",
    "правило 2 клавиатура": "СДЕЛАНО: ↑↓ / J K по местам сводки и «Горячих мест», Esc закрывает сводку; «/» и Ctrl+K — R01"
@@ -100,7 +100,7 @@
  ],
  "tests": {
   "стенд today_ref_compare.cjs (эталон ↔ стенд, строки текста)": "PASS: 0 px с ui-kit a2342cc1 (карточка 388 × 325, 17 строк); с 3890fa74 — строки ≤ 1 px, карточка 323 (нет границы стекла)",
-  "стенд today_check.cjs (1366/375 × ru/kk)": "35/35 PASS на ui-kit 7117132b, 3890fa74 и a2342cc1 — размеры эталона (325 ± 3), числа = /akim/summary, события, карта → сводка, клавиатура, скелет ≤ 150 мс, ошибка kk",
+  "стенд today_check.cjs (1366/375 × ru/kk)": "35/35 PASS на ui-kit 7117132b и a2342cc1 (код 9f7aa61a; на 3890fa74 — 9296f5a0) — размеры эталона (325 ± 3), числа = /akim/summary, события, карта → сводка, клавиатура, скелет готовой формы ≤ 150 мс без прыжка, ошибка kk",
   "стенд ui_check.cjs": "170/170 PASS (ui-kit a2342cc1 и 3890fa74; кегли только из шкалы эталона; плитки 22/600 + 12; печать 1–3 листа)",
   "стенд nearby_check.cjs": "53/53 PASS (ui-kit a2342cc1)",
   "стенд services_check.cjs": "26/26 PASS (ui-kit a2342cc1)",
@@ -124,7 +124,7 @@
   "Иллюстрация «тихий день» — своя, линиями 2 px; набора линейных иллюстраций ui-kit пока нет (R11).",
   "Шкала шрифтов на «Картине дня» — 5 размеров по CLEAN_PASS; пункт чек-листа марафона «≤ 3 размера» не выполнен намеренно (вопрос владельцу)."
  ],
- "next_step": "R01: §11.0–11.1 INTEGRATION — взять 7 файлов из claude/r14-R08 @ 9296f5a0, git apply r01_today_r08.patch, BirgeToday.mount на главной акимата, убрать border/background/box-shadow из birge.css:522. R07: подсветка значка по birge:hover-target. R10: today_check, today_ref_compare, ui_check. R08 дальше: проверить сводку в оболочке, когда R01 её поставит.",
+ "next_step": "R01: §11.0–11.1 INTEGRATION — взять 7 файлов из claude/r14-R08 @ 9f7aa61a, git apply r01_today_r08.patch, BirgeToday.mount на главной акимата, убрать border/background/box-shadow из birge.css:522. R07: подсветка значка по birge:hover-target. R10: today_check, today_ref_compare, ui_check. R08 дальше: проверить сводку в оболочке, когда R01 её поставит.",
  "previous_delivery_6_3_marathon": {
   "delivery": "6.3 (12 окт, дизайн-марафон, круги 1–6)",
   "code_sha": "1969046a",

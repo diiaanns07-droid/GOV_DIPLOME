@@ -10,7 +10,7 @@ research/round-14-results/R08/. Чужие файлы я не менял. Ниж
 закрывается) и «Картина дня» в том же стиле.
 
 11.0 Что брать (13 окт, круг 2 — на ui-kit R11 3890fa74 «reference A»): claude/r14-R08, код — последний коммит ветки
-    (SHA — в DELIVERY.json, поле code_sha), path-scoped, только мои пути:
+    (SHA — в DELIVERY.json, поле code_sha; на 13 окт ~16:40 — 9f7aa61a), path-scoped, только мои пути:
       git checkout origin/claude/r14-R08 -- web/civic/akim/akim.js web/civic/akim/akim.css \
         web/civic/akim/today.js web/civic/akim/today.css web/civic/akim/today.html web/civic/akim/today-stand.js \
         web/civic/nearby/nearby.css
