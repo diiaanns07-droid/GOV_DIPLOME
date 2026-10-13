@@ -192,10 +192,13 @@ body.civic-mode[data-birge-layout="ref"] :is(#birge-near, #birge-today) .bk-hot_
   body.civic-mode[data-birge-layout="ref"] #birge-near { position: fixed; z-index: 6; left: 0; right: 0; bottom: 0; }
   body.civic-mode[data-birge-layout="ref"]:not([data-birge-left="near"]) #birge-near { display: none; }
   body.civic-mode[data-birge-layout="ref"] #birge-chips { display: none; }
-  /* Шторка жителя «Рядом с вами» (эталон, экран «Житель, телефон»): ҚАЗ · РУС — в самой шторке (R09), в шапке не дублируем;
-     над шторкой из кнопок карты — «где я» и слои (масштаб — двумя пальцами, 3D — в слоях акимата), иначе колонка уходит под шторку. */
+  /* Шторка жителя «Рядом с вами» (эталон, экран «Житель, телефон»): ҚАЗ · РУС — в самой шторке (R09), в шапке не дублируем. */
   body.civic-mode[data-birge-layout="ref"][data-birge-left="near"] #birge-header .birge-lang { display: none; }
-  body.civic-mode[data-birge-layout="ref"][data-birge-left="near"] .map-tools :is(.birge-zoom, #toggle-3d) { display: none; }
+}
+/* Низкий телефон (375 × 667): колонка кнопок карты (72…348) уходила под шторку (верх ~266) — над шторкой «где я», 3D и
+   слои, масштаб — двумя пальцами. На 360 × 800 и 375 × 812 видны все кнопки. */
+@media (max-width: 760px) and (max-height: 720px) {
+  body.civic-mode[data-birge-layout="ref"][data-birge-left="near"] .map-tools .birge-zoom { display: none; }
 }
 
 /* ---------- палитра команд (Ctrl+K) ---------- */

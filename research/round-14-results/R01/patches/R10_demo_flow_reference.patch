@@ -1,13 +1,23 @@
 --- a/tests/e2e/demo_flow.cjs
 +++ b/tests/e2e/demo_flow.cjs
-@@ -604,6 +604,10 @@
+@@ -604,6 +604,12 @@
  
    // 3б. DEMO_SCRIPT шаг 3.3: «Фильтры: Освещение, 30 дней → Сбросить». Пункт категории ищем вне табличек 3D-проектов.
    const allCatRe = new RegExp("^" + esc(T(dict, ["heat.category_all", "heat.filter.all_categories"], lang === "kk" ? "Барлық санаттар" : "Все категории")), "i");
 +  // FINAL-4, эталон A (R01 INTEGRATION §26): на главной акимата слева — сводка «Сегодня в Астане» (R08); «Горячие места»
-+  // открываются из неё («Все горячие места») или чипом «Все» под поиском. Прежний вид (?layout=classic) — список уже в панели.
-+  if (!(await firstVisible(page.getByRole("button", { name: allCatRe }))))
-+    await clickText(page, new RegExp("^" + esc(T(dict, "akim.today.all_hot", lang === "kk" ? "Барлық шағымы көп орындар" : "Все горячие места")) + "$", "i"), { role: "link", wait: 1000 });
++  // открываются из неё («Все горячие места») или чипом «Все» под поиском. Esc закрывает слой (карточка → список → сводка).
++  // Прежний вид (?layout=classic) — список уже в панели, ссылки нет: openHot() ничего не делает.
++  const allHotRe = new RegExp("^" + esc(T(dict, "akim.today.all_hot", lang === "kk" ? "Барлық шағымы көп орындар" : "Все горячие места")) + "$", "i");
++  const openHot = async () => { if (!(await firstVisible(page.getByRole("button", { name: allCatRe })))) await clickText(page, allHotRe, { role: "link", wait: 1000 }); };
++  await openHot();
    const opened = await clickText(page, allCatRe, { wait: 800 });
    const lightRe = new RegExp("^" + esc(T(dict, "cat.lighting", lang === "kk" ? "Жарықтандыру" : "Освещение")) + "$", "i");
    let chip = null;
+@@ -627,6 +633,7 @@
+   const nHot = Math.min(await hotItems.count().catch(() => 0), 3);
+   for (let i = 0; i < nHot; i++) {
+     await page.keyboard.press("Escape"); await sleep(700);
++    await openHot();  // эталон A: Esc без карточки закрывает и сам список
+     const it = hotItems.nth(i);
+     const title = ((await it.innerText().catch(() => "")) || "").replace(/\s+/g, " ").trim().slice(0, 50);
+     if (!(await it.click({ timeout: 3000 }).then(() => true, () => false))) { hot.push({ title, clicked: false }); continue; }

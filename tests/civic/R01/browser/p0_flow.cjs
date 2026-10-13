@@ -62,6 +62,9 @@ async function openPage(browser, base, viewport, extra) {
   page.errs = [];
   page.on("pageerror", (e) => page.errs.push("pageerror: " + e.message));
   page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) page.errs.push(m.type() + ": " + m.text()); });
+  // Поток P0 раунда 11 — реестр работ в постоянной панели. В эталоне A (FINAL-4) панели нет, реестр — под «Горячими
+  // местами» в карточке слева; хром эталона проверяют r14_*.cjs, а этот тест — потоки реестра в прежнем виде.
+  const url = new URL(base); url.searchParams.set("layout", "classic"); base = url.toString();
   await page.goto(base);
   await page.evaluate(() => localStorage.clear());
   await page.goto(base);
