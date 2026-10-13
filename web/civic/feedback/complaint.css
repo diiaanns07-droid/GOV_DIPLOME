@@ -362,6 +362,9 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 /* Телефон: срок под числом, в две строки (у ui-kit колонка срока — одна строка 88 px). */
 @media (max-width: 720px) {
   .bc-inbox .bc-inbox__meta { white-space: normal; min-width: 0; max-width: 92px; line-height: 1.25; }
+  /* Название места и тема на телефоне — целиком, в 2 строки, а не «Хан Шатыр…» (читается человеком 40+). */
+  .bc-inbox .bc-inbox__place, .bc-inbox .bc-inbox__what { white-space: normal; overflow: visible; }
+  .bc-inbox__row { padding: 6px 0; }
   .bc-inbox__detail { padding-left: 12px; }
 }
 /* Запасной вид без ui-kit R11 (стенд, старая сборка): та же строка своими силами. */
