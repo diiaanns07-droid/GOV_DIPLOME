@@ -466,3 +466,10 @@ def test_reference_a_r09():
     cmd = LIST_JS.split("function commands(opts)", 1)[1].split("function mount(root, opts)", 1)[0]
     assert 't("heat.take") + " — " + place' in cmd and 't("heat.mark_fixed") + " — " + place' in cmd and "if (g.demo) return;" in cmd
     assert '"birge:inbox-open"' in LIST_JS and '"birge:inbox-changed"' in LIST_JS and "function takePending()" in LIST_JS
+    # «Рядом с вами» (шторка телефона R07/R01): обращения жителя, ждущие его проверки, — waitingChecks().
+    assert "waitingChecks: waitingChecks," in JS and 'return item.can_verify;' in JS.split("function waitingChecks()", 1)[1].split("return {", 1)[0]
+    # Плотное стекло «Моих обращений» поверх правила оболочки — и запасные виды белые; серый текст — стеклянный (≥ 4,5 : 1).
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    assert "body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-strong, rgba(255, 255, 255, .86));" in css
+    assert "--c-text-2: var(--glass-text-2, #3f4a46); }" in css
+    assert "html.bk-glass-off body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }" in css

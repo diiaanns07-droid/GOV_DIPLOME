@@ -1015,6 +1015,10 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   const pageB = await newPage(browser, base, width, height, lang, { device: devB });
   await pageB.evaluate(() => window.standUi.openMine());
   await pageB.waitForSelector(".bc-wait .bc-verify", { timeout: 8000 });
+  // Эталон A, телефон: строка «✓ … · проверьте» для шторки «Рядом с вами» — те же данные, что «Ждут вашей проверки».
+  const waiting = await pageB.evaluate(async () => (await window.standUi.waitingChecks()).map((x) => [x.code, x.place, x.status]));
+  check(`${tag}: [эталон A] waitingChecks() для «Рядом с вами» — ${waiting.length}`, waiting.length >= 1 &&
+        waiting.every((x) => x[0] && x[1] && x[2] === "reported_fixed"), JSON.stringify(waiting));
   const verifyB = await pageB.evaluate(() => ({ title: document.querySelector(".bc-wait h3").textContent.trim(),
     what: document.querySelector(".bc-wait").textContent,
     buttons: [...document.querySelectorAll(".bc-wait .bc-verify__buttons button")].map((b) => b.textContent.trim()),

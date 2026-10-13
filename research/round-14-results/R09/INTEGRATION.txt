@@ -1,3 +1,45 @@
+R09 · РАУНД 14 · INTEGRATION — ЭТАЛОН A «лучше 2ГИС» (13 окт; сначала этот раздел, ниже — дизайн-марафон и раньше)
+Ветка R09: claude/modest-shannon-0ki93p, код — DELIVERY.json (code_sha). Эталон: claude/round-14-package
+research/round-14/design (REFERENCE.html, вариант A; README «Выбор владельца»). Логика, API и сценарий демо прежние.
+Проверено на R01 69984f0f + ui-kit R11 3890fa74 (токены эталона). Кадры «эталон / было / стало» — reference/.
+    git fetch origin claude/modest-shannon-0ki93p
+    git checkout <code_sha> -- ui/civic_feedback web/civic/feedback tests/civic/R09
+A1) R01 (хром, место и закрытие карточек):
+    - Мастер жалобы и «Мои обращения» на ноутбуке — карточка СЛЕВА под поиском, как .card эталона: left var(--gap-edge)
+      20, top var(--header-h) + 12 (= 84 под поиском 20 + 52), ширина var(--panel-w) 388, радиус 18, выезд слева
+      (var(--t-slow)). На телефоне — шторка радиус var(--r-sheet) 26, ручка 38×5. Пока открыта — .civic-panel скрыта (как было).
+    - Ваше правило birge.css «@media (min-width: 761px) { body.civic-mode .bc-panel { right: var(--be-edge, 12px) } }» на
+      ноутбуке ни на что не влияет (left + width), на 761–1023 сужает шторку на 12 справа — если шторка должна быть во всю
+      ширину, уберите его.
+    - Ваше «body.civic-mode .bk-glass { background-color: var(--glass-panel) }» сильнее .bk-glass--strong ui-kit: панель
+      «Моих обращений» (плотное 86 %, эталон «текст — на плотном стекле») R09 закрепляет сама; другим плотным листам
+      (поиск, карточка, сводка) нужно то же — проще не задавать фон в этом правиле.
+    - Закрытие «нажатием на пустую карту»: у мастера на шаге 2 нажатие на карту — выбор места (логика), поэтому мастер
+      так не закрывается; «Мои обращения» — можно: зовите BirgeComplaint (handle).close(). × и Esc у R09 уже есть.
+    - Палитра Ctrl+K (правило 2): BirgeComplaintList.commands({ api: BirgeShell.api }) → Promise<[{ id, title, hint,
+      run() }]>: «Взять в работу — <место>» (сразу) и «Отметить исправленным — <место>» (откроет раздел «Обращения»
+      и строку с формой). Примеры (demo) не меняются — команд для них нет.
+    - «Сообщить о проблеме» (.bk-fab): телефон — поля 16, снизу 34; ноутбук — по центру свободной карты (1024–1279 —
+      левее правой панели 400, от 1280 — между легендой и панелью). Когда постоянных панелей не станет — скажите, уберу
+      смещение (это 3 строки в complaint.css).
+A2) R07 (значки, «Горячие места», синхронизация «список ↔ карта»):
+    - «Обращения» (R09) шлют window CustomEvent "birge:target-hover" { kind, id, source: "inbox" } при наведении/фокусе
+      на строку и null при уходе — подсветите значок цели; то же событие с карты (source: "map") подсветит строку.
+    - Шторка телефона «Рядом с вами» (эталон: ваш список горячих мест в стиле .hot): строки «✓ <место> — <что> ·
+      проверьте» даёт R09: BirgeComplaint (handle).waitingChecks() → Promise<[{ code, place, category, status:
+      "reported_fixed", open() }]>; open() открывает «Мои обращения» на этой карточке.
+A3) R10: новые селекторы — «Обращения»: .bc-inbox__tab[data-tab=all|new|…] (по умолчанию «all»), .bc-inbox__group
+    [data-group] с .bc-inbox__ghead, строка li.bc-inbox__item[data-key][data-target] > .bc-inbox__line >
+    (.bc-inbox__status--btn | .bc-inbox__status) + button.bc-inbox__row; меню .bc-inbox__menu > .bc-inbox__menu-item.
+    «Сообщить о проблеме» — .bk-fab.bc-fab (54 px). Панель R09 на ноутбуке — слева. «Мои обращения» при повторном
+    открытии — сразу из памяти (обновление на месте), скелетон — только если ответ дольше 150 мс.
+A4) R11: R09 берёт .bk-fab / .bk-fab__ic, BirgeUI.statusIcon (через DOMParser, без innerHTML), .bk-glass--strong,
+    токены (--c-ink, --c-text-2/3, --c-line, --c-fill, --panel-w, --r-xl, --r-sheet, --fs-*, --fw-medium); свои запасные
+    значения — те же из эталона. Свои новые ключи: inbox.status_menu «Сменить статус» / «Мәртебені өзгерту» (aria-label
+    кнопки статуса в строке) — внесите в словарь; остальное — ваши ключи (staff.cabinet.tab.all, heat.take,
+    heat.toast_taken, heat.action_failed, heat.mark_fixed).
+
+
 R09 · РАУНД 14 · INTEGRATION — ДИЗАЙН-МАРАФОН (12–14 окт; сначала этот раздел, ниже — «FINAL-3, стекло» и раньше)
 Ветка R09: claude/modest-shannon-0ki93p, код 118a415 (DELIVERY.json; круги 1–10). Только вид, движение, состояния и
 тексты; логика, API и сценарий демо не менялись; новых ключей в словаре R11 нет (взяты его staff.login.note,

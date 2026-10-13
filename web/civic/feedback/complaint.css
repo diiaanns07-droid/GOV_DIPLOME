@@ -48,7 +48,18 @@ body:has(.r07-card) .bc-fab { display: none; }
    специфичность: если ui-kit без стекла (старая сборка, стенд с kit-fallback) — тот же вид, но непрозрачный белый. */
 /* Эталон A: стекло с текстом — плотное 86 % (.bk-glass--strong). Правило оболочки R01 «body.civic-mode .bk-glass»
    (до эталона) сильнее одного класса ui-kit — здесь возвращаем плотное для своей панели. */
-body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-strong, rgba(255, 255, 255, .86)); }
+body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-strong, rgba(255, 255, 255, .86));
+  /* серый текст — затемнённый стеклянный: #4b5752 на 86 % над оранжевой заливкой карты даёт 4,37 : 1 (< 4,5), --glass-text-2 — 5,3 */
+  --c-text-2: var(--glass-text-2, #3f4a46); }
+/* Запасной вид — как у всего стекла: непрозрачный белый (меньше прозрачности, стекло выключено, нет backdrop-filter). */
+html.bk-glass-off body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
+@media (prefers-reduced-transparency: reduce) {
+  body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
+}
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
+}
+@media print { body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: #fff; } }
 :where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff); border-radius: var(--r-glass, 24px);
                              box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18)); }
 /* Шапка «Закрыть» прилипает: прокрученные карточки под ней размыты тем же стеклом, а не просвечивают текстом. */

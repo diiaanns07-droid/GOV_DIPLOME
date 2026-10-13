@@ -2024,9 +2024,23 @@
     window.addEventListener("online", onOnline);
     if (readOutbox().length) setTimeout(function () { flushOutbox(); }, 0);
 
+    // Эталон A, телефон: в шторке «Рядом с вами» (R07/R01) строка «✓ Двор у ул. Сыганак — Снег убран · проверьте» —
+    // обращения этого жителя, где служба сообщила об устранении и ждут его проверки. → Promise<[{ id, code, place,
+    // category, status, open() }]>; open() — «Мои обращения» с этой карточкой. Те же данные, что «Ждут вашей проверки».
+    function waitingChecks() {
+      return request("GET", "/complaints/mine").then(function (res) {
+        if (!res.ok) return [];
+        return (res.data.items || []).filter(function (item) { return item.can_verify; }).map(function (item) {
+          return { id: item.id, code: item.code, place: targetLabel(item.target), category: categoryLabel(item.category),
+                   status: "reported_fixed", open: function () { openMine(item.code); } };
+        });
+      });
+    }
+
     return {
       open: open, openMine: openMine, close: close, relabel: relabel,
       openComplaint: function (code) { openMine(code); },
+      waitingChecks: waitingChecks,
       changesCount: changesCount,
       flushOutbox: flushOutbox,
       state: function () { return state; },
