@@ -71,6 +71,8 @@
 .r07-lhd .r07-reset { margin-left: auto; }
 .r07-lhd .r07-x { align-self: center; }
 .r07-lhd .r07-reset + .r07-x { margin-left: 4px; }
+/* opts.closable: "desktop" (R01 §26.12) — на телефоне «Горячие места» в шторке оболочки, × не нужен */
+@media (max-width: 760px) { .r07-lhd .r07-x--desktop { display: none; } }
 .r07-filters { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
 .r07-frow { display: flex; align-items: center; gap: 8px; }
 .r07-field {

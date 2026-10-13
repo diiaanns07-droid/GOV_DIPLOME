@@ -1,0 +1,16 @@
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index fde39a8b..33d54aaa 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -506,8 +506,9 @@
+         avoidRects: birgeOverlayRects,
+         // Ссылку #target=… и событие «Картины дня» разбирает оболочка (переключает раздел) — не модуль.
+         hash: false, handleOpenTarget: false,
+-        // Эталон A (birge-ref.js): «Горячие места» — закрываемая карточка слева, × в заголовке (R07 opts.closable).
+-        closable: document.body.dataset.birgeLayout === "ref",
++        // Эталон A (birge-ref.js): «Горячие места» — закрываемая карточка слева, × в заголовке (R07 opts.closable);
++        // "desktop" — × только на ноутбуке, на телефоне список в шторке (R07 INTEGRATION R.13, просьба R01 §26.12).
++        closable: document.body.dataset.birgeLayout === "ref" ? "desktop" : false,
+       });
+       openTargetFromLink();
+     }
