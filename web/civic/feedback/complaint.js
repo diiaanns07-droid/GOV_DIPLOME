@@ -1731,14 +1731,17 @@
     function passportLine(item) {
       var p = item.passport || {};
       if (item.status === "rejected" || (!p.assignee && !p.assignee_id)) return null;
-      var due = item.status === "new" ? deadlineNode(p.deadline) : null;
-      return h("span", { "class": "bk-statusline__note bc-assignee" }, [h("span", {}, t("service.assigned", { service: serviceName(p) })),
-        due ? " · " : null, due]);
+      return h("span", { "class": "bk-statusline__note bc-assignee" }, t("service.assigned", { service: serviceName(p) }));
     }
 
-    // Статус — один раз (R11 CLEAN_PASS, правило 5): точка + слово и одна строка пояснения («Передано: … · осталось …»).
+    // Статус — один раз (R11 CLEAN_PASS, правило 5), как строка статуса карточки эталона (.st): иконка + слово, ниже —
+    // «Передано: служба»; срок ответа — справа мелко («Осталось 3 рабочих дня»).
     function statusLine(item) {
-      return h("div", { "class": "bk-statusline bc-mine__status" }, [statusBadge(displayStatus(item)), passportLine(item)]);
+      var p = item.passport || {};
+      var due = item.status === "new" ? deadlineNode(p.deadline) : null;
+      return h("div", { "class": "bk-statusline bc-mine__status" }, [
+        h("div", { "class": "bc-mine__stline" }, [statusBadge(displayStatus(item)), due ? h("small", { "class": "bc-mine__due" }, due) : null]),
+        passportLine(item)]);
     }
 
     // Задержка — баннер-предупреждение в карточке (R11 §2.2): причина · временная мера · следующее обновление.
@@ -1884,11 +1887,15 @@
         var fresh = state.justVerified === item.id && displayStatus(item) === "verified";
         list.appendChild(h("li", { "class": "bk-card bc-mine__card" + (focused ? " bc-mine__card--focus" : "") + (fresh ? " bc-mine__card--verified-now" : ""),
                                    "data-code": item.code || "", "data-id": item.id }, [
+          // Как карточка эталона A («5 секунд»): плитка категории 48 · название · «место · дата · номер»; ниже — статус
+          // иконкой и словом с ответственным, срок справа; затем число людей и «Подробнее».
           h("div", { "class": "bc-mine__head" }, [
-            h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)])]),
+            h("span", { "class": "bk-tile bc-mine__tile", "aria-hidden": "true" }, icon(c ? c.icon : "dots")),
+            h("div", { "class": "bc-mine__headtext" }, [
+              h("span", { "class": "bc-mine__cat" }, title),
+              h("p", { "class": "bc-meta bc-mine__sub" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
+                item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null])])]),
           statusLine(item),
-          h("p", { "class": "bc-meta" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
-            item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null]),
           item.relation === "metoo" ? h("p", { "class": "bc-meta" }, t("mine.metoo_badge")) : null,
           // Все люди, сообщившие о том же на этом месте (как на шаге «Я тоже»), а не только по этой жалобе.
           h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || reportersOf(item) || 1 })),

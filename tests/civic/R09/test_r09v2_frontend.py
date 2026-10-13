@@ -434,8 +434,10 @@ def test_design_marathon_round9_r10_circle2():
     # Пример под полем «Что сделали» в обеих формах, без placeholder.
     assert STAFF_JS.count('"bc-meta bc-staff__hint"') == 2 and 'placeholder: t("staff.fixed.what_hint")' not in STAFF_JS
     assert STAFF_JS.count('"aria-describedby"') == 2
-    # Одна левая линия текста: значок/точка — колонка 20, текст — от 28.
-    assert ".bc-mine__status .bk-statusline__note { padding-left: 28px;" in css and ".bc-mine__card > .bc-meta { padding-left: 28px; }" in css
+    # Одна левая линия (эталон A, .card): плитка 48 и название рядом; всё ниже шапки — от левого поля карточки;
+    # пояснение статуса — под словом (иконка ui-kit 14 + 8).
+    assert ".bc-mine__status .bk-statusline__note { padding-left: 22px;" in css and ".bc-mine__head { display: flex; align-items: flex-start; gap: 12px; }" in css
+    assert '"bk-tile bc-mine__tile"' in JS and '"bc-meta bc-mine__sub"' in JS and '"bc-mine__due"' in JS
     # Отступы 6/10/14 px в правилах R09 больше не встречаются (кроме смещений точек ленты).
     import re as _re
     # Исключение — «Сообщить о проблеме»: промежуток 10 px взят из эталона A (.fab gap: 10px).

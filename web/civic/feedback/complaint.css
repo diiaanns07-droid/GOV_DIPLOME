@@ -199,20 +199,24 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
 .bc-mine { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 .bc-mine__card { display: flex; flex-direction: column; gap: 8px; }
 .bc-mine__card > .bk-tag { align-self: flex-start; }   /* метка «Пример» — по тексту, не на всю ширину (R11 день 2 №9) */
-.bc-mine__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.bc-mine__cat { display: inline-flex; align-items: center; gap: 8px; font-size: var(--fs-lead, 17px); font-weight: var(--fw-semi, 600); }
+
+
 /* Статус один раз: точка + слово, под ним одна строка «Передано: … · осталось …» (CLEAN_PASS R09 №6). */
 .bc-mine__status { display: grid; gap: 2px; margin: 0; }   /* то же, что .bk-statusline ui-kit — и со старым ui-kit */
 .bc-mine__status > .bk-status { justify-self: start; }   /* старый ui-kit рисует статус «таблеткой» — по слову, не во всю ширину */
-.bc-mine__status .bk-statusline__note { padding-left: 28px; color: var(--c-text-2, #5b6a64); font-size: var(--fs-body, 15px); }
-/* Одна левая линия текста в карточке (R10 круг 2, чек-лист №2): значок категории, точка статуса и «›» у «Подробнее» —
-   в колонке 20 px, весь текст карточки — от 28 px (пояснение статуса по-прежнему под словом, как в ui-kit). */
-.bc-mine__cat > .ic { width: 20px; height: 20px; flex: none; }
-.bc-mine__status > .bk-status { gap: 8px; }
-.bc-mine__status > .bk-status::before { margin-inline: 3px; }   /* статус-иконка ui-kit 14 px → колонка 20 */
-.bc-mine__card > .bc-meta { padding-left: 28px; }
-.bc-mine__card .bc-more > summary { gap: 0; }
-.bc-mine__card .bc-more > summary::before { margin: 0 13px 0 5px; }
+.bc-mine__status .bk-statusline__note { padding-left: 22px; color: var(--c-text-2, #5b6a64); font-size: var(--fs-small, 14px); }
+/* Карточка как у эталона A (.card .hd / .st): плитка 48 и текст рядом; статус, мета и «Подробнее» — от левого поля
+   карточки (одна линия для всего, что ниже шапки, — R10 круг 2). */
+.bc-mine__head { display: flex; align-items: flex-start; gap: 12px; }
+.bc-mine__tile { background: var(--c-fill, rgba(18, 26, 23, .06)); color: var(--c-ink, #121A17); }
+:where(.bc-mine__tile) { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 14px; flex: none; }
+.bc-mine__tile .ic { width: 24px; height: 24px; }
+.bc-mine__headtext { min-width: 0; padding-top: 2px; }
+.bc-mine__cat { display: block; font-size: var(--fs-lead, 16px); font-weight: var(--fw-semi, 600); line-height: 1.3; }
+.bc-mine__sub { margin: 4px 0 0; }
+.bc-mine__stline { display: flex; align-items: baseline; gap: 8px; }
+.bc-mine__due { margin-left: auto; color: var(--c-text-3, #7E8A85); font-size: var(--fs-caption, 13px); text-align: right; }
+.bc-mine__due .bc-deadline--warn, .bc-mine__due .bc-deadline--danger { font-weight: var(--fw-semi, 600); }
 .bc-mine__status .bc-deadline--warn, .bc-mine__status .bc-deadline--danger { font-weight: var(--fw-semi, 600); }
 .bc-more .bk-steps { margin: 4px 0 8px; }
 .bc-overdue { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--c-danger, #b3362e); font-weight: 600; }
