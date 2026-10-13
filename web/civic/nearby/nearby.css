@@ -77,6 +77,12 @@
   border: 0;
   border-radius: var(--r-l);
 }
+/* Эталон A (13 окт): на стеклянном листе — плашка как карточки эталона (белая 72 % + линия 1 px), а не серая заливка 6 %:
+   на лёгком стекле 72 % серая заливка над тёмной картой опускала контраст заголовка до 4,1:1 (glass_check). */
+.bk-glass .nb-banner.bk-banner--warn {
+  background: var(--c-sub, rgba(255, 255, 255, 0.72));
+  box-shadow: inset 0 0 0 1px var(--c-line, rgba(18, 26, 23, 0.08));
+}
 .nb-banner .bk-banner__title {
   font-size: var(--fs-lead);
 }

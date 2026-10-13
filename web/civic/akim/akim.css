@@ -848,15 +848,15 @@
    (радиус 8); «Выбрать» — вторичная кнопка эталона; движение 150–250 мс. Цвета — переменные ui-kit (R11 переносит
    токены эталона), свои — только линии и плитки ниже. ═══════ */
 .akim {
-  --akim-line: rgba(18, 26, 23, 0.08);
-  --akim-tile: rgba(255, 255, 255, 0.72);
-  --akim-fill: rgba(18, 26, 23, 0.06);
+  --akim-line: var(--c-line, rgba(18, 26, 23, 0.08));
+  --akim-tile: var(--c-sub, rgba(255, 255, 255, 0.72));
+  --akim-fill: var(--c-fill, rgba(18, 26, 23, 0.06));
 }
-.akim__title {
-  font-size: 26px;
-  letter-spacing: -0.02em;
+.akim__title { /* шкала эталона 12/13/14/15/16/19/22/34: заголовок раздела — 22 (R11 --fs-h1) */
+  font-size: 22px;
+  letter-spacing: var(--ls-title, -0.01em);
 }
-/* числа — плитки, как «34 новых» в эталоне, но крупнее: это главный экран дня */
+/* числа — плитки сводки «Сегодня в Астане» один в один: поля 10/12, число 22/600, подпись 12; ниже — изменение и график */
 .akim-kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -866,21 +866,21 @@
 }
 .akim-kpi.bk-kpi {
   gap: 0;
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 10px 12px;
+  border-radius: var(--r-m, 12px);
   background: var(--akim-tile);
 }
 .akim-kpi .bk-kpi__value {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 600;
-  line-height: 34px;
-  letter-spacing: -0.02em;
+  line-height: 26px;
+  letter-spacing: var(--ls-num, -0.02em);
 }
 .akim-kpi .bk-kpi__label {
   color: var(--c-text-2);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  line-height: 18px;
+  line-height: 20px;
 }
 .akim-kpi .bk-kpi__delta {
   margin-top: 2px;
@@ -967,10 +967,16 @@
 .akim-hot__item > .ic {
   display: none;
 }
-.akim-hot__sub .bk-status { /* статус — тихо, одной строкой с темой (иконки Linear — когда R11 нарисует) */
+.akim-hot__sub .bk-status { /* статус — тихо, одной строкой с темой; иконка статуса ui-kit R11 (правило 3 Linear) */
+  gap: 5px;
   padding: 0;
   font-size: 12px;
   font-weight: 500;
+}
+.akim-hot__sub .bk-status::before { /* иконка по высоте строки 12 px — как точка статуса эталона к своему тексту */
+  width: 12px;
+  height: 12px;
+  background-size: 12px 12px;
 }
 .akim-districts .akim-bar-btn {
   min-height: 44px;
@@ -1080,12 +1086,7 @@
   .akim__top {
     align-items: stretch;
   }
-  .akim__title-date {
-    display: block;
-  }
-  .akim__title-sep {
-    display: none;
-  }
+  /* заголовок 22 (шкала эталона) помещается в одну строку и на 375 — «Картина дня · 13 окт», как на ноутбуке */
   /* дата и район — каждый во всю ширину: «Барлық аудандар» не обрезается */
   .akim__controls {
     display: grid;

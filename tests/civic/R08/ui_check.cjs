@@ -148,8 +148,8 @@ async function shot(page, name, full) {
                  num: v.fontSize + "/" + v.fontWeight, label: l.fontSize };
       }));
       // Эталон A (13 окт): числа — плитки, как «34 новых» в сводке эталона (фон белый 72 %, радиус 12).
-      check(`${tag}: числа — плитки эталона, число 28/600, подпись 13, одна строка изменения`,
-        kpiStyle.length === 4 && kpiStyle.every((k) => k.deltas === 1 && k.card && k.num === "28px/600" && k.label === "13px"), kpiStyle);
+      check(`${tag}: числа — плитки эталона, число 22/600, подпись 12 (как в сводке «Сегодня в Астане»), одна строка изменения`,
+        kpiStyle.length === 4 && kpiStyle.every((k) => k.deltas === 1 && k.card && k.num === "22px/600" && k.label === "12px"), kpiStyle);
       const more = await page.evaluate(() => {
         const d = document.querySelector(".akim-kpis + .akim-kpi-more, .akim-kpi-more");
         return d ? { open: d.open, summary: d.querySelector("summary").textContent, rows: d.querySelectorAll("li").length } : null;
@@ -176,8 +176,8 @@ async function shot(page, name, full) {
                  print: (document.querySelector(".akim__print") || { className: "" }).className.includes("bk-btn--ghost"),
                  printIcon: !!document.querySelector(".akim__print svg") };
       });
-      check(`${tag}: заголовок 26/600 (эталон), одна строка 13, поля с заливкой, «Распечатать» ghost со значком`,
-        top.title === "26px/600" && top.metas === 1 && top.meta === "13px" && top.fields === 2 && top.print && top.printIcon, top);
+      check(`${tag}: заголовок 22/600 (шкала эталона), одна строка 13, поля с заливкой, «Распечатать» ghost со значком`,
+        top.title === "22px/600" && top.metas === 1 && top.meta === "13px" && top.fields === 2 && top.print && top.printIcon, top);
       // CLEAN_PASS §2: два начертания — 400 и 600.
       const weights = await page.evaluate(() => {
         const set = new Set();
@@ -188,6 +188,16 @@ async function shot(page, name, full) {
         return Array.from(set).sort();
       });
       check(`${tag}: начертания эталона — 400, 500, 600 и 700 (цифры на плашках)`, weights.every((w) => ["400", "500", "600", "700"].includes(w)), weights);
+      // Эталон A: шкала кеглей 12 / 13 / 14 / 15 / 16 / 19 / 22 / 34 (R11 tokens.css) — других размеров текста нет.
+      const sizes = await page.evaluate(() => {
+        const set = new Set();
+        for (const el of document.querySelectorAll("#akim *")) {
+          if (!el.getClientRects().length || el.getBoundingClientRect().width <= 1) continue;
+          if (Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim())) set.add(parseFloat(getComputedStyle(el).fontSize));
+        }
+        return Array.from(set).sort((a, b) => a - b);
+      });
+      check(`${tag}: кегли только из шкалы эталона 12/13/14/15/16/19/22/34`, sizes.every((s) => [12, 13, 14, 15, 16, 19, 22, 34].includes(s)), sizes);
       // П. 14: у объектов полоса из 6 этапов (ui-kit .bk-stages--compact) и подпись «Этап N из 6: …».
       const stages = await page.$$eval(".akim-objects .akim-obj", (rows) => rows.map((r) => {
         const ol = r.querySelector(".bk-stages--compact");

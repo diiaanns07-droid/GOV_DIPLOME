@@ -96,7 +96,9 @@
   function mount(el, options) {
     var opts = Object.assign({ apiBase: "/api/civic/v2", mapHref: "/#target={kind}:{id}&days={days}" }, options || {});
     var state = { status: "loading", data: null, request: 0, skeleton: false };
-    el.classList.add("akim-today", "bk-glass"); // стекло и запасной непрозрачный вид — ui-kit R11
+    // Стекло и запасной непрозрачный вид — ui-kit R11. Плотное 86 % (bk-glass--strong): R11 — «всё с текстом на плотном»;
+    // цвета подписей тогда как в эталоне (#4b5752 / #7e8a85), а не «на шаг темнее» лёгкого стекла.
+    el.classList.add("akim-today", "bk-glass", "bk-glass--strong");
     el.setAttribute("role", "region");
 
     function load() {
