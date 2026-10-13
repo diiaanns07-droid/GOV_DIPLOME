@@ -36,7 +36,8 @@ async function newPage(browser, server, mode, staff) {
 const searchInput = (page) => L.firstVisible(page.locator("input[placeholder*='Улица'], input[placeholder*='Поиск'], input[placeholder*='Найти'], input[type=search]"));
 const options = (page) => page.evaluate((sel) => [...document.querySelectorAll(sel)].filter((e) => { const r = e.getBoundingClientRect(); return r.height > 10 && r.width > 10; }).map((e) => e.innerText.replace(/\s+/g, " ").trim().slice(0, 80)), OPTS);
 const cardOpen = (page) => page.evaluate(() => { const c = document.querySelector(".r07-card"); return !!c && c.getBoundingClientRect().width > 0; });
-const KINDS = [["улица", /\b(ул\.|улица|пр\.|проспект|көшесі|даңғылы|шоссе)/i], ["остановка", /остановк|аялдама/i], ["двор", /двор|ЖК|аула/i],
+// Без \b: в JS граница слова — только латиница, у кириллицы её нет («улица Хантау» не находилась).
+const KINDS = [["улица", /(^|[\s«(])(ул\.|улица|пр\.|проспект|переулок|көшесі|даңғылы|шоссе)/i], ["остановка", /остановк|аялдама/i], ["двор", /двор|ЖК|аула/i],
   ["район", /район|ауданы|^(Нура|Есиль|Алматы|Сарыарка|Байконур|Сарайшык)\b/i], ["горячее место", /\d+\s*(чел|обращ|жалоб|адам)|·\s*\d+$/i]];
 
 (async () => {
@@ -108,15 +109,34 @@ const KINDS = [["улица", /\b(ул\.|улица|пр\.|проспект|кө
         const hs = await page.evaluate(() => [...document.querySelectorAll(".r07-item")].filter((e) => e.getBoundingClientRect().height > 0).map((e) => Math.round(e.getBoundingClientRect().height)));
         const med = hs.slice().sort((a, b) => a - b)[Math.floor(hs.length / 2)];
         add("5", "R07", "«Горячие места» — плотные строки 44 px (40–48)", med >= 40 && med <= 48 ? "PASS" : "FAIL", { median: med, heights: hs.slice(0, 8) });
-        const snap = () => page.evaluate(() => [...document.querySelectorAll(".r07-badge")].map((b) => b.className).join("|"));
-        const s0 = await snap(); await rows.nth(0).hover(); await L.sleep(400); const s1 = await snap();
-        add("5", "R07", "наведение на строку подсвечивает значок на карте", s0 !== s1 ? "PASS" : "FAIL", null);
-        await page.mouse.move(5, 400); await L.sleep(300);
-        const badge = await L.firstVisible(page.locator(".r07-badge:not(.r07-badge--cluster)"));
-        if (badge) { const r0 = await page.evaluate(() => [...document.querySelectorAll(".r07-item")].map((b) => b.className + (b.matches(":hover") ? "h" : "")).join("|"));
-          await badge.hover().catch(() => null); await L.sleep(400);
-          const r1 = await page.evaluate(() => [...document.querySelectorAll(".r07-item")].map((b) => b.className).join("|"));
-          add("5", "R07", "наведение на значок подсвечивает строку списка", r0.replace(/h(\||$)/g, "$1") !== r1 ? "PASS" : "СМОТРЕТЬ", null); }
+        // Список ↔ карта: строка и значок одного места (data-key). Наведение на строку — значок меняет класс/вид, и наоборот.
+        const findPair = () => page.evaluate(() => { const vis = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth; };
+          const rs = [...document.querySelectorAll(".r07-item[data-key]")].filter(vis);
+          for (let i = 0; i < rs.length; i++) { const k = rs[i].dataset.key; const b = [...document.querySelectorAll(".r07-badge")].find((x) => x.dataset.key === k && vis(x)); if (b) return { i, k }; }
+          return { i: -1, n: rs.length }; });
+        let pair = await findPair();
+        if (pair.i < 0) {
+          // При обзоре города значков мест нет: открыть первое место (карта летит к нему) и вернуться к списку — рядом есть значки.
+          await rows.first().click().catch(() => null); await L.sleep(3000);
+          const back = await L.firstVisible(page.locator(".r07-card button").filter({ hasText: /Горячие места/ }).or(page.getByRole("button", { name: /^Назад|Горячие места/ })));
+          if (back) await back.click().catch(() => null); else await page.keyboard.press("Escape");
+          await L.sleep(2000); pair = await findPair();
+        }
+        if (pair.i < 0) add("5", "R07", "наведение на строку подсвечивает значок на карте", "СМОТРЕТЬ", { why: "значков мест из видимых строк нет на карте при этом масштабе", rows: pair.n });
+        else {
+          const bcls = () => page.evaluate((k) => { const b = [...document.querySelectorAll(".r07-badge")].find((x) => x.dataset.key === k); return b ? b.className + "|" + getComputedStyle(b.querySelector(".r07-badge__inner") || b).transform : null; }, pair.k);
+          const icls = () => page.evaluate((k) => { const r = [...document.querySelectorAll(".r07-item")].find((x) => x.dataset.key === k); return r ? r.className + "|" + getComputedStyle(r).backgroundColor : null; }, pair.k);
+          await page.mouse.move(5, 400); await L.sleep(300);
+          const b0 = await bcls(); await rows.nth(pair.i).hover(); await L.sleep(450); const b1 = await bcls();
+          add("5", "R07", "наведение на строку подсвечивает значок на карте", b0 !== b1 ? "PASS" : "FAIL", { key: pair.k });
+          await page.mouse.move(5, 400); await L.sleep(400);
+          const i0 = await icls(); const bb = page.locator(".r07-badge").filter({ has: page.locator(".r07-badge__inner") });
+          const h = await page.evaluate((k) => { const b = [...document.querySelectorAll(".r07-badge")].find((x) => x.dataset.key === k); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }, pair.k);
+          if (h) { await page.mouse.move(h.x, h.y); await L.sleep(450); }
+          const i1 = await icls();
+          add("5", "R07", "наведение на значок подсвечивает строку списка", h && i0 !== i1 ? "PASS" : "FAIL", { key: pair.k });
+          void bb;
+        }
       }
       // 3: статус-иконки в «Горячих местах»
       const hotSt = await page.evaluate(() => document.querySelectorAll(".r07-hot svg.bk-st-ic, .r07-hot .bk-status, .r07-hot [data-status]").length);
@@ -155,12 +175,13 @@ const KINDS = [["улица", /\b(ул\.|улица|пр\.|проспект|кө
         const inbox = await page.evaluate(() => { const s = [...document.querySelectorAll("#birge-screen, .birge-screen, .birge-day")].find((e) => e.getBoundingClientRect().width > 0) || document;
           const rows = [...s.querySelectorAll(".bc-row, .bc-inbox__row, [role=row], li")].filter((e) => { const r = e.getBoundingClientRect(); return r.height >= 30 && r.height <= 140 && /\d/.test(e.innerText); });
           const hs = rows.map((e) => Math.round(e.getBoundingClientRect().height)).sort((a, b) => a - b);
-          const groups = [...s.querySelectorAll(".bc-inbox__group, [class*=group] h3, [class*=group] h4, [role=rowgroup]")].filter((e) => e.getBoundingClientRect().height > 0).map((e) => e.innerText.split("\n")[0].trim().slice(0, 30));
+          const groups = [...new Set([...s.querySelectorAll(".bc-inbox__group, [class*=group] h3, [class*=group] h4, [role=rowgroup]")].filter((e) => e.getBoundingClientRect().height > 0).map((e) => e.innerText.split("\n")[0].trim().slice(0, 30)))];
           const chips = [...s.querySelectorAll(".bc-inbox__tab, [class*=chip], [role=tab]")].filter((e) => e.getBoundingClientRect().height > 0).map((e) => e.innerText.trim().slice(0, 20));
           const st = s.querySelectorAll("svg.bk-st-ic, .bk-status, [data-status]").length;
           return { n: rows.length, median: hs[Math.floor(hs.length / 2)] || null, groups: groups.slice(0, 6), chips: chips.slice(0, 8), st }; });
         add("5", "R09", "«Обращения» — строки 44 px (40–48)", inbox.median && inbox.median >= 40 && inbox.median <= 48 ? "PASS" : "FAIL", { n: inbox.n, median: inbox.median });
-        add("5", "R09", "«Обращения» — группы по статусу", inbox.groups.length >= 2 ? "PASS" : "FAIL", { groups: inbox.groups });
+        // В демо у сотрудника могут быть обращения одного статуса — тогда группа одна; нужна хотя бы шапка группы со статусом.
+        add("5", "R09", "«Обращения» — группы по статусу", inbox.groups.some((g) => /Новые|В работе|Ждут|Просроч|Вернули|Проверено|Жаңа|Орындалуда/.test(g)) ? "PASS" : "FAIL", { groups: inbox.groups });
         add("5", "R09", "«Обращения» — чипы-фильтры сверху", inbox.chips.length >= 2 ? "PASS" : "FAIL", { chips: inbox.chips });
         add("3", "R09", "статус-иконки в «Обращениях»", inbox.st ? "PASS" : "FAIL", { n: inbox.st });
       }
