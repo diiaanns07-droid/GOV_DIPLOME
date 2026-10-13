@@ -920,9 +920,11 @@
             icon("chevron-right"),
           ]
         );
-        // Строка списка ↔ точка на мини-карте: при наведении и фокусе точка крупнее и сверху.
+        // Строка списка ↔ точка на мини-карте: при наведении и фокусе точка крупнее и сверху. То же событие, что у сводки
+        // «Сегодня в Астане» (birge:hover-target), — карта R07 под листом может подсветить значок (правило Linear 5).
         var dotKey = "dot:" + it.target.kind + ":" + it.target.id;
         var mark = function (on) {
+          doc.dispatchEvent(new CustomEvent("birge:hover-target", { detail: { target: it.target, on: on, from: "akim" } }));
           var dot = map && map.querySelector('[data-key="' + dotKey.replace(/"/g, "") + '"]');
           if (!dot) return;
           if (on) {

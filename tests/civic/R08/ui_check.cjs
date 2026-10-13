@@ -630,6 +630,14 @@ async function shot(page, name, full) {
     await page.keyboard.press("k");
     const k3 = await page.evaluate(() => Array.from(document.querySelectorAll(".akim-hot__item")).indexOf(document.activeElement));
     check("быстрый ответ — без скелета (Linear 4); ↓ / J / K по «Горячим местам» (Linear 2)", !sawSkel && k1 === 1 && k2 === 2 && k3 === 1, { sawSkel, k1, k2, k3 });
+    // Правило 5: наведение на место — событие birge:hover-target {target, on, from: "akim"} (карта R07 подсвечивает значок)
+    await page.evaluate(() => { window.__hv = []; document.addEventListener("birge:hover-target", (e) => window.__hv.push([e.detail.target && e.detail.target.id, e.detail.on, e.detail.from])); });
+    await page.mouse.move(5, 5);
+    await page.hover(".akim-hot__item >> nth=0");
+    await page.mouse.move(5, 5);
+    const hv = await page.evaluate(() => ({ ev: window.__hv, id: document.querySelector(".akim-hot__item").getAttribute("data-key") }));
+    check("«Горячие места»: наведение — birge:hover-target on/off (from akim) для карты R07 (Linear 5)",
+      hv.ev.some((e) => e[1] === true && e[2] === "akim") && hv.ev.some((e) => e[1] === false && e[2] === "akim"), hv);
     await ctx.close();
   }
   {
