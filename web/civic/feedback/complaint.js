@@ -424,6 +424,12 @@
   // кружок с галочкой — служба сообщила об устранении, заполненный зелёный с галочкой — проверено жителями.
   // Иконка всегда рядом со словом. Рисует R11 в ui-kit; пока его значков нет — эти (те же 4 состояния, 16 px, линия 1,5).
   function statusIcon(status) {
+    // ui-kit R11 (эталон, 13 окт): BirgeUI.statusIcon → разметка спрайта; собираем её без innerHTML (DOMParser).
+    if (window.BirgeUI && typeof window.BirgeUI.statusIcon === "function" && window.DOMParser) {
+      var doc = new DOMParser().parseFromString(window.BirgeUI.statusIcon(status, 14), "text/html");
+      var node = doc && doc.body && doc.body.firstElementChild;
+      if (node && node.namespaceURI === "http://www.w3.org/2000/svg") return document.importNode(node, true);
+    }
     var kind = { "new": "new", accepted: "progress", in_progress: "progress", reopened: "progress",
                  fixed: "reported", reported_fixed: "reported", verified: "verified" }[status] || "new";
     var ns = "http://www.w3.org/2000/svg";
@@ -624,8 +630,9 @@
     var unpick = null;
 
     // Главная кнопка «Сообщить о проблеме» (одна на экран).
-    els.fab = h("button", { "class": "bk-btn bk-btn--primary bc-fab", type: "button", onclick: function () { open(); } },
-      [h("i", { "class": "bc-fab__mark", "aria-hidden": "true" }, icon("plus")), h("span", { "class": "bc-fab__label" })]);
+    // Эталон A (.fab): компонент .bk-fab ui-kit R11 — почти чёрная кнопка 54 px с «+» в лаймовой плитке.
+    els.fab = h("button", { "class": "bk-fab bc-fab", type: "button", onclick: function () { open(); } },
+      [h("i", { "class": "bk-fab__ic bc-fab__mark", "aria-hidden": "true" }, icon("plus")), h("span", { "class": "bc-fab__label" })]);
     if (opts.fab !== false) root.appendChild(els.fab);
 
     els.panel = h("section", { "class": "bc-panel", role: "dialog", "aria-modal": "false", hidden: true,
@@ -1412,9 +1419,9 @@
 
     // ---------------------------------------------------------------- «Мои обращения»
     function loadMine(focusCode, focusEvent) {
-      var cached = mineCache;
+      var cached = mineCache && mineCache.items.length ? mineCache : null;   // пустой список хранить незачем
       state.mine = cached ? cached.items : null; state.mineError = false; state.changes = cached ? cached.changes : null;
-      state.changesAll = false; state.mineSlow = false;
+      state.changesAll = false; state.mineSlow = false; state.mineStale = false;
       if (focusCode) state.focusCode = focusCode;
       if (focusEvent) { state.focusEvent = focusEvent; state.changesAll = true; }
       render();
@@ -1431,9 +1438,11 @@
           var res = replies[0], changes = replies[1];
           if (!state || state !== owner || state.view !== "mine") return;
           if (!res.ok) {
-            if (cached) return;   // список уже на экране — фоновое обновление его не роняет
+            // Список уже на экране — не убираем его: сверху «Нет связи» с «Повторить», ниже — то, что было.
+            if (cached) { state.mineStale = true; render(); return; }
             state.mineError = true; render(); return;
           }
+          state.mineStale = false;
           state.mine = res.data.items || [];
           state.mineEnter = !cached;   // первые данные — карточки мягко появляются; обновление на месте — без движения
           var fresh = changes && changes.ok ? changes.data : null;
@@ -1745,6 +1754,11 @@
           h("span", { "class": "bc-loading__text" }, t("mine.loading"))]));
         return;
       }
+      if (state.mineStale) {
+        body.appendChild(h("div", { "class": "bk-error bc-stale", role: "alert" }, [
+          h("p", { "class": "bk-error__title" }, t("mine.error.title")),
+          h("button", { "class": "bk-btn", type: "button", onclick: function () { loadMine(); } }, [icon("refresh"), h("span", {}, t("complaint.error.retry"))])]));
+      }
       renderChanges(body);
       renderPending(body);
       if (!state.mine.length && !readOutbox().length) {
@@ -1826,6 +1840,7 @@
       // Стекло (R11 GLASS.md, R09): «Мои обращения» — стеклянная панель/шторка над картой; мастер жалобы — форма,
       // остаётся непрозрачным. Без ui-kit со стеклом — непрозрачный белый (complaint.css, :where).
       panel.classList.toggle("bk-glass", mine);
+      panel.classList.toggle("bk-glass--strong", mine);   // эталон: стекло с текстом — плотное 86 %
       // Под стеклом «Моих обращений» — одна карта, без второй панели (список R07 размытыми пятнами): complaint.css.
       document.documentElement.classList.toggle("bc-mine-open", mine);
       if (!mine && state.reviewing && state.step === 4) panel.setAttribute("data-review", "1");

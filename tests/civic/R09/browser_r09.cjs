@@ -247,10 +247,14 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   // R11 №3: кнопка «Отправить» активна сразу после подсказки модели, без нового нажатия клавиши.
   const sendEnabled = await page.$eval(".bc-send", (b) => !b.disabled);
   check(`${tag}: [R11-3] «Отправить» активна сразу после подсказки /classify`, sendEnabled);
-  // R11 №6: в чипе одна галочка — её рисует ui-kit (::before), своей в тексте нет.
+  // R11 №6: в чипе не больше одной галочки — её рисует ui-kit (::before), своей в тексте нет. Эталон A (13 окт): выбранный
+  // чип — тёмная заливка без галочки (.chip.on), поэтому ::before может быть пустым; выбор виден по заливке.
   const ticks = await page.$eval(".bc-cat-row .bk-chip[aria-pressed='true']", (c) => ({
-    inText: (c.textContent.match(/✓/g) || []).length, before: getComputedStyle(c, "::before").content }));
-  check(`${tag}: [R11-6] одна галочка в чипе категории`, ticks.inText === 0 && /✓/.test(ticks.before), JSON.stringify(ticks));
+    inText: (c.textContent.match(/✓/g) || []).length, before: getComputedStyle(c, "::before").content,
+    bg: getComputedStyle(c).backgroundColor }));
+  const darkFill = /rgb\((\d+), (\d+), (\d+)\)/.test(ticks.bg) && ticks.bg.match(/\d+/g).slice(0, 3).every((v) => +v < 80);
+  check(`${tag}: [R11-6] не больше одной галочки в чипе категории, выбор виден`, ticks.inText === 0 &&
+        (/✓/.test(ticks.before) || darkFill), JSON.stringify(ticks));
   const sizes3 = await uxSizes(page);
   check(`${tag}: [UX] шаг 3 — текст ≥ 13 px, кнопки ≥ 44 px`, sizes3.length === 0, sizes3.join("; "));
   const chip = await page.textContent(".bc-cat-row");
@@ -414,7 +418,7 @@ async function mineStates(browser, base, lang, width, height, tag) {
   });
   check(`${tag}: «Мои обращения» — пусто: «${empty.title}», подсказка и кнопка «Сообщить» (${empty.h} px)`,
         /ничего не отправляли|ештеңе жібермедіңіз/.test(empty.title) && /Сообщить о проблеме|Мәселе туралы хабарлау/.test(empty.text)
-        && empty.h >= 48, JSON.stringify(empty));
+        && empty.h >= 44, JSON.stringify(empty));   // эталон A: кнопки 44 (.btn)
   await shot(page, `${tag}-mine-empty`);
   await page.unroute(MINE);
   await page.route(MINE, (route) => route.abort());
@@ -426,7 +430,7 @@ async function mineStates(browser, base, lang, width, height, tag) {
              role: box.getAttribute("role"), h: Math.round(b.height) };
   });
   check(`${tag}: «Мои обращения» — нет связи: «${error.title}» и «${error.button}» (${error.h} px)`,
-        /Нет связи|байланыс жоқ/.test(error.title) && /Повторить|Қайталау/.test(error.button) && error.role === "alert" && error.h >= 48, JSON.stringify(error));
+        /Нет связи|байланыс жоқ/.test(error.title) && /Повторить|Қайталау/.test(error.button) && error.role === "alert" && error.h >= 44, JSON.stringify(error));
   await shot(page, `${tag}-mine-error`);
   await page.unroute(MINE);
   await page.click(".bc-panel .bk-error button");
@@ -577,8 +581,9 @@ async function phoneLayout(browser, base, hot, lang, tag) {
   const page = await newPage(browser, base, 375, 812, lang);
   const fab = await page.$eval(".bc-fab", (b) => { const r = b.getBoundingClientRect();
     return { w: Math.round(r.width), h: Math.round(r.height), left: Math.round(r.left), text: b.textContent.trim() }; });
-  check(`${tag}: [R11 №7/B1 №8] «Сообщить о проблеме» во всю ширину, одна строка, 56 px`,
-        fab.w >= 340 && fab.left === 16 && fab.h >= 56 && fab.h <= 60, JSON.stringify(fab));
+  // Эталон A (.fab): во всю ширину с полями 16, высота 54.
+  check(`${tag}: [R11 №7/B1 №8, эталон] «Сообщить о проблеме» во всю ширину, одна строка, 54 px`,
+        fab.w >= 340 && fab.left === 16 && fab.h >= 54 && fab.h <= 58, JSON.stringify(fab));
   await page.evaluate(() => { const c = document.createElement("article"); c.className = "r07-card"; c.id = "fake-r07";
     document.body.appendChild(c); });
   const hiddenWithCard = await page.$eval(".bc-fab", (b) => getComputedStyle(b).display === "none");
@@ -1143,6 +1148,12 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
         groupsSeen.every((g) => g.icon && g.rows.length) && (width < 700 || groupsSeen.every((g) => g.rows.every((hgt) => hgt >= 44 && hgt <= 46))),
         JSON.stringify(groupsSeen));
   const key = `${tid}|roads`;
+  const row = await page.$(`.bc-inbox__row[data-key="${key}"]`);
+  const rowText = row ? (await row.textContent()).replace(/\s+/g, " ") : "";
+  check(`${tag}: [§2.5] строка: место · категория · уточнение · людей · срок — «${rowText.slice(0, 90)}»`, !!row &&
+        (lang === "kk" ? /Жолдар · Шұңқыр/.test(rowText) && /1 адам/.test(rowText) && /жұмыс күні қалды/.test(rowText)
+                       : /Дороги · Яма, разбитый асфальт/.test(rowText) && /1 человек/.test(rowText) && /Осталось \d+ рабоч/.test(rowText)), rowText);
+  // (после проверки текста строки: взятое в работу уже «ответили» — строка «Осталось N дней» пропадает, это верно.)
   // Эталон п.4–5: смена статуса прямо из строки, с мгновенным откликом — строка переезжает в «В работе» до ответа
   // сервера (ответ здесь нарочно задержан на 1,5 с), потом статус на сервере тот же.
   await page.click(`.bc-inbox__status--btn[data-key="${key}"]`);
@@ -1161,15 +1172,14 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
   const afterTake = (await staffApi(base, "GET", `/complaints/${made.data.complaint.id}`)).data.complaint.status;
   check(`${tag}: [эталон п.4] после ответа — статус на сервере «в работе», строка там же`, afterTake === "in_progress" &&
         await page.$eval(`.bc-inbox__item[data-key="${key}"]`, (li) => li.closest(".bc-inbox__group").dataset.group) === "in_progress", afterTake);
-  const row = await page.$(`.bc-inbox__row[data-key="${key}"]`);
-  const rowText = row ? (await row.textContent()).replace(/\s+/g, " ") : "";
-  check(`${tag}: [§2.5] строка: место · категория · уточнение · людей · срок — «${rowText.slice(0, 90)}»`, !!row &&
-        (lang === "kk" ? /Жолдар · Шұңқыр/.test(rowText) && /1 адам/.test(rowText) && /жұмыс күні қалды/.test(rowText)
-                       : /Дороги · Яма, разбитый асфальт/.test(rowText) && /1 человек/.test(rowText) && /Осталось \d+ рабоч/.test(rowText)), rowText);
   await page.click(`.bc-inbox__row[data-key="${key}"]`);
   await page.waitForSelector(".bc-inbox__item--open .bc-staff__open-fix", { timeout: 8000 });
   const prim = await page.$$eval(".bc-inbox .bk-btn--primary", (n) => n.map((b) => b.textContent.trim()));
   check(`${tag}: [защита п.4] раскрыта одна группа, одна главная кнопка «${prim[0]}»`, prim.length === 1, prim.join(" | "));
+  // Эталон п.2: команды для палитры Ctrl+K оболочки (R01) — «Отметить исправленным — место» для этой цели.
+  const cmds = await page.evaluate(async () => (await window.BirgeComplaintList.commands()).map((c) => c.id + " " + c.title));
+  check(`${tag}: [эталон п.2] команды палитры Ctrl+K (${cmds.length})`, cmds.some((x) => x.startsWith(`fix:${key} `) &&
+        (lang === "kk" ? /Түзетілді деп белгілеу — /.test(x) : /Отметить исправленным — /.test(x))), cmds.slice(0, 3).join(" | "));
   await page.click(".bc-inbox__map");
   const opened = await page.evaluate(() => window.opened);
   check(`${tag}: «Показать на карте» — та же цель`, opened && opened[1] === tid, JSON.stringify(opened));

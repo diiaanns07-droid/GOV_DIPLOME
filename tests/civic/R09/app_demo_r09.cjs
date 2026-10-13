@@ -127,7 +127,8 @@ async function step6(page, tag, width, lang, staff) {
     const inbox = await page.waitForSelector(".bc-inbox__tab", { timeout: 8000 }).then(() => true, () => false);
     const tabs = inbox ? await page.$$eval(".bc-inbox__tab", (n) => n.map((b) => b.textContent.replace(/\s+/g, " ").trim())) : [];
     const rows = inbox ? await page.$$eval(".bc-inbox__row", (n) => n.length) : 0;
-    check(`${tag}: раздел «Обращения» акимата — экран R09: вкладки и цели (${rows})`, inbox && tabs.length === 5, tabs);
+    // Эталон A, правило 5: фильтры «Все» + 5 вкладок, по умолчанию — все группы по статусу.
+    check(`${tag}: раздел «Обращения» акимата — экран R09: фильтры и цели (${rows})`, inbox && tabs.length === 6 && /^(Все|Барлығы) \d+$/.test(tabs[0]) && rows > 0, tabs);
     await shot(page, `app-${tag}-6-inbox`);
     await page.evaluate(() => window.BirgeShell.setSection("map"));
     await sleep(600);

@@ -71,6 +71,38 @@
     return h("span", { "class": "bc-deadline" + (left <= 1 ? " bc-deadline--warn" : "") }, t("deadline.left", { n: left }));
   }
 
+  // Команды для палитры Ctrl+K оболочки R01 (правило 2 эталона: «сменить статус» из палитры). Только действия, которые
+  // и так есть в строке «Обращений»: «Взять в работу — <место>» (сразу) и «Отметить исправленным — <место>» (открывает
+  // строку с формой «что сделали»). commands({ api }) → Promise<[{ id, title, hint, run() }]>; примеры (demo) не меняются.
+  var pendingOpen = null;   // { key, fix } — какую строку открыть, когда список смонтируют / загрузят
+  function commands(opts) {
+    opts = opts || {};
+    var call = client(opts);
+    var ids = function (g, statuses) {
+      return g.complaints.filter(function (c) { return !c.demo && statuses.indexOf(c.status) >= 0; }).map(function (c) { return c.id; });
+    };
+    return call("GET", "/complaints/inbox").then(function (res) {
+      if (!res.ok) return [];
+      var out = [];
+      (res.data.items || []).forEach(function (g) {
+        if (g.demo) return;
+        var place = C().targetLabel(g.target), hint = C().categoryLabel(g.category) + " · " + t("inbox.people", { n: g.people });
+        var take = ids(g, ["new", "accepted"]), fix = ids(g, ["new", "accepted", "in_progress"]);
+        if (take.length) out.push({ id: "take:" + g.key, title: t("heat.take") + " — " + place, hint: hint, run: function () {
+          return take.reduce(function (chain, id) {
+            return chain.then(function () { return call("POST", "/complaints/" + encodeURIComponent(id) + "/status", { status: "in_progress" }); });
+          }, Promise.resolve()).then(function () { window.dispatchEvent(new CustomEvent("birge:inbox-changed")); });
+        } });
+        if (fix.length) out.push({ id: "fix:" + g.key, title: t("heat.mark_fixed") + " — " + place, hint: hint, run: function () {
+          pendingOpen = { key: g.key, fix: true };
+          if (window.BirgeShell && typeof window.BirgeShell.setSection === "function") window.BirgeShell.setSection("complaints");
+          window.dispatchEvent(new CustomEvent("birge:inbox-open", { detail: pendingOpen }));
+        } });
+      });
+      return out;
+    });
+  }
+
   function mount(root, opts) {
     opts = opts || {};
     var call = client(opts);
@@ -104,6 +136,7 @@
         }
         state.enter = !state.data;   // первые данные — строки мягко появляются; обновление на месте — без движения
         state.data = res.data;
+        takePending();
         render();
       });
     }
@@ -296,6 +329,19 @@
       });
     }
 
+    // Строку попросили открыть из палитры команд (или до того, как список смонтировали).
+    function takePending() {
+      if (!pendingOpen || !state.data) return false;
+      var want = pendingOpen;
+      var found = (state.data.items || []).some(function (g) { return g.key === want.key; });
+      if (!found) return false;
+      pendingOpen = null;
+      state.tab = "all"; state.menu = null; state.open = want.key; state.openFix = !!want.fix;
+      return true;
+    }
+    function onOpenRequest() { if (takePending()) { render(); var what = box.querySelector(".bc-inbox__item--open [name=what_done]"); if (what) what.focus(); } }
+    function onChanged() { load(true); }
+
     function startFix(group) {
       state.menu = null;
       state.open = group.key;
@@ -425,6 +471,8 @@
     box.addEventListener("keydown", onKey);
     document.addEventListener("click", onOutside);
     window.addEventListener("birge:target-hover", onMapHover);
+    window.addEventListener("birge:inbox-open", onOpenRequest);
+    window.addEventListener("birge:inbox-changed", onChanged);
 
     // Язык: оболочка зовёт setLang(lang); словарь R11 грузится асинхронно и потом шлёт "birge:lang" — перерисуем и тогда.
     function onLang() { if (alive) render(); }
@@ -436,10 +484,11 @@
       destroy: function () {
         alive = false; closeStaff(); window.removeEventListener("birge:lang", onLang);
         document.removeEventListener("click", onOutside); window.removeEventListener("birge:target-hover", onMapHover);
+        window.removeEventListener("birge:inbox-open", onOpenRequest); window.removeEventListener("birge:inbox-changed", onChanged);
         if (box.parentNode) box.parentNode.removeChild(box);
       }
     };
   }
 
-  window.BirgeComplaintList = { mount: mount };
+  window.BirgeComplaintList = { mount: mount, commands: commands };
 })();
