@@ -92,7 +92,8 @@ const SC = [
     target: "() => { const b = [...document.querySelectorAll('button')].find((x) => /^90 дней$/.test(x.innerText.trim())); const on = b && (b.getAttribute('aria-pressed') === 'true' || b.getAttribute('aria-checked') === 'true' || b.getAttribute('aria-selected') === 'true' || /(^|\\s)(on|is-on|active|is-active|bk-seg__btn--on|r07-seg__btn--on)(\\s|$)/.test(b.className)); const l = document.querySelector('.r07-list'); return !!on && !!l && window.__R.apiDone(/\\/heat/) && !window.__R.busy(document.querySelector('#civic-panel')); }",
     prep: async (page) => { const b = await btn(page, /^90 дней$/); if (!b) return null; await page.evaluate(() => { const l = document.querySelector(".r07-list"); window.__R.before = l ? l.innerText : ""; }); return clickOf(b); } },
   { id: "day", owner: "R08", name: "«Картина дня» из шапки", mode: "akimat", staff: true, region: "#birge-screen, .birge-screen, .akim",
-    target: "() => { const s = window.__R.screen(); return !!s && s.getBoundingClientRect().width > 0 && /Картина дня/.test(s.innerText) && /\\d/.test(s.innerText) && !window.__R.busy(s); }",
+    // «Готово» — показатели с числами (не шапка с датой «13 окт», которая есть сразу).
+    target: "() => { const s = window.__R.screen(); if (!s || s.getBoundingClientRect().width < 10 || !/Картина дня/.test(s.innerText)) return false; const k = [...s.querySelectorAll('.akim-kpis, .bk-kpis, [class*=kpi]')].find((e) => e.getBoundingClientRect().height > 10); return !!k && /\\d/.test(k.innerText) && !window.__R.busy(s); }",
     prep: async (page) => clickOf(await navBtn(page, /^\s*Картина дня\s*$/)) },
   { id: "complaints", owner: "R09", name: "«Обращения» сотрудника из шапки", mode: "akimat", staff: true, region: "#birge-screen, .birge-screen", rows: "#birge-screen li, #birge-screen [role=row], #birge-screen .bc-row, #birge-screen [class*=row]",
     target: "() => { const s = window.__R.screen(); if (!s || s.getBoundingClientRect().width < 10 || !/Обращения/.test(s.innerText)) return false; const rows = [...s.querySelectorAll('li, [role=row], [class*=row], article')].filter((e) => e.getBoundingClientRect().height >= 36 && /\\d/.test(e.innerText)); return rows.length >= 2 && !window.__R.busy(s); }",
@@ -182,6 +183,11 @@ function verdicts(sc, fast, slow) {
     const ends = slow.api.map((x) => x.end).filter((x) => x > 0), firstEnd = ends.length ? Math.min(...ends) : null;
     add("оптимистично: результат раньше ответа сервера", slow.target === null ? "FAIL" : firstEnd === null || slow.target < firstEnd ? "PASS" : "FAIL",
       `результат ${slow.target ?? "—"} мс, первый ответ ${firstEnd ?? "нет запроса"} мс${slow.api.length ? " · " + slow.api.slice(0, 3).map((x) => `${x.path} ${x.start}–${x.end}`).join("; ") : ""}`);
+  }
+  // «Мигающая перезагрузка»: экран уже был готов, а потом снова сменился скелетоном (загрузка началась позже «готово» + 50 мс).
+  for (const [k, r] of [["быстро", fast], ["медленно", slow]]) if (r.target !== null) {
+    const late = r.loading.filter(([a]) => a > r.target + 50);
+    if (late.length) add(`${k}: готовое не сменяется скелетоном`, "СМОТРЕТЬ", `готово ${r.target} мс, затем загрузка ${late.map(([a, b]) => `${a}–${b ?? "…"}`).join(", ")} мс`);
   }
   for (const [k, r] of [["быстро", fast], ["медленно", slow]]) if (r.rows && r.rows.before !== null) {
     const flick = r.rows.before > 0 && r.rows.min === 0 && (r.rows.after || 0) > 0;
