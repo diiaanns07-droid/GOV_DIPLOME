@@ -412,6 +412,12 @@
   overflow: hidden;
   border-radius: var(--r-xl, 18px);
 }
+/* Плотное стекло эталона (.pd.glass.strong: 86 %, кромка 1 px rgba(255,255,255,.7)). Вес (0,4,1) — выше правила
+   оболочки R01 «body.civic-mode .bk-glass { border: 0; background-color: var(--glass-panel) }» (72 %, без кромки). */
+body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
+  border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.7));
+  background-color: var(--glass-strong, rgba(255, 255, 255, 0.86));
+}
 .ri-pd__im {
   display: block;
   height: 150px;
