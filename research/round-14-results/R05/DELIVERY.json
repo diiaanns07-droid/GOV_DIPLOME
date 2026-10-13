@@ -1,18 +1,22 @@
 {
  "role": "R05",
  "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
- "delivery": 14,
- "for_build": "дизайн-марафон: R01 claude/sharp-dijkstra-0t87gl @ 3d18f280 (в нём R05 78aa2f46 — поставка 13)",
+ "delivery": 15,
+ "for_build": "эталон 13.10 (вариант A): R01 claude/sharp-dijkstra-0t87gl @ 69984f0f (в нём R05 0e27479 — поставка 14)",
  "branch": "claude/r14-R05",
  "base_sha": "7ff639a (claude/round-14-package при старте)",
  "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
- "code_sha": "0e27479",
- "tested_sha": "0e27479 (web/civic/build3d; после него в ветке — только документы и результаты прогонов)",
- "tested_note": "Демо R05 с ui-kit/i18n R11 claude/r14-R11 @ 49d1ee64 (код b39e586d): browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0; движение панели (motion_check.mjs, правила R10) — {\"PASS\": 35}. В сборке R01 3d18f280 + R05 0e27479: shell smoke exit 0 pass=28 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0; R01 r14_wave2 exit 0 pass=42 fail=0; R10 demo_flow (тесты b84d46ff) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m14_demo (runs/marathon_r01_3d18f280_0e27479.txt).",
+ "code_sha": "e23d7b6",
+ "tested_sha": "e23d7b6 (web/civic/build3d = 069bc03, круг 4 эталона; после него в ветке — только проверки, документы и результаты)",
+ "tested_note": "Демо R05 с ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f: browser_check exit 0 Итого: 56 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync exit 0 PASS — ключей build3d 57, общих запасных 34, сравнений 296, расхождений 0, новых для R11 6; движение (motion_check.mjs, порог эталона 150–250 мс) — {\"PASS\": 35}. В сборке R01 69984f0f + R05 e23d7b6: shell smoke exit 0 pass=28 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0; R01 r14_wave2 exit 0 pass=42 fail=0; R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m15_demo (runs/reference_r01_69984f0f_e23d7b6.txt).",
  "previous_delivery": {
-  "code_sha": "78aa2f46",
-  "delivery_commit": "500f9a8a",
+  "code_sha": "0e27479",
+  "delivery_commit": "f75eaa76",
   "before": [
+   {
+    "code_sha": "78aa2f46",
+    "delivery_commit": "500f9a8a"
+   },
    {
     "code_sha": "e3a52f57",
     "delivery_commit": "e092977e"
@@ -97,8 +101,8 @@
   }
  ],
  "owned_paths_only": true,
- "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, web/civic/ui-kit/, ветки R01/R06/R10/R11/R12. Оболочку R01 менять не нужно; API модуля прежний.",
- "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3.13, Chromium (Playwright 1.56.1) headless, WebGL2 SwiftShader без GPU; ui-kit/i18n R11 claude/r14-R11 @ 49d1ee64 (код b39e586d) (--kit для демо; оболочка R01 — со своим ui-kit); оболочка R01 3d18f280; тесты R10 claude/r14-R10 @ b84d46ff; без интернета (подложка — запасной фон)",
+ "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, web/civic/ui-kit/, web/civic/ideas/, web/civic/proposals/, ветки R01/R06/R10/R11/R12. Оболочку менять не обязательно; место карточки справа — proposed_r01_reference.patch (по желанию, после снятия постоянной панели).",
+ "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3.13, Chromium (Playwright 1.56.1) headless, WebGL2 SwiftShader без GPU; ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f (--kit для демо; оболочка R01 — со своим ui-kit); оболочка R01 69984f0f; тесты R10 demo_flow 53d1c070 (= b84d46ff); без интернета (подложка — запасной фон)",
  "ux_review_r11_day3": {
   "source": "claude/r14-R11 @ 52d7c59, research/round-14-results/R11/UX_REVIEW.md, «День 3», пп. 20–26 (и «День 4» — пунктов для R05 нет, кроме правок kk)",
   "table": "research/round-14-results/R05/UX_REVIEW_DAY3.md",
@@ -205,7 +209,7 @@
   },
   "browser_check": {
    "status": "PASS",
-   "detail": "browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json (ui-kit/i18n R11 claude/r14-R11 @ 49d1ee64 (код b39e586d))"
+   "detail": "browser_check exit 0 Итого: 56 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json (ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f)"
   },
   "browser_checks": {
    "load_auto_falls_back_to_local_store": "PASS",
@@ -227,7 +231,9 @@
    "resident_sees_objects_and_votes_no_catalog": "PASS",
    "kk_locale_no_raw_keys_no_i18n_warnings": "PASS",
    "phone_375_touch_layout": "PASS",
+   "preview_square_and_tint_for_project_list": "PASS",
    "catalog_labels_fit_ru_kk_1366_375": "PASS",
+   "card_closes_by_esc_focus_back_and_by_empty_map": "PASS",
    "keyboard_tab_enter_escape": "PASS",
    "three_load_error_state": "PASS",
    "api_store_contract_roundtrip": "PASS",
@@ -326,7 +332,7 @@
   },
   "i18n_sync_r11": {
    "status": "PASS",
-   "detail": "i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0"
+   "detail": "i18n_sync exit 0 PASS — ключей build3d 57, общих запасных 34, сравнений 296, расхождений 0, новых для R11 6 (новые — 3 ключа × ru/kk для R11, i18n_build3d.json)"
   },
   "r06_stands_three_generations": {
    "status": "PASS",
@@ -441,7 +447,16 @@
   },
   "motion_check": {
    "status": "PASS",
-   "detail": "{\"PASS\": 35} — runs/motion_check.json (до круга 9: runs/motion_check_before.json — 30 PASS / 5 СМОТРЕТЬ)"
+   "detail": "{\"PASS\": 35} — runs/motion_check.json (порог эталона: правило Linear 6, 150–250 мс ±30)"
+  },
+  "reference_in_r01": {
+   "build": "R01 69984f0f + R05 e23d7b6",
+   "app_b2_smoke": "shell smoke exit 0 pass=28 fail=0",
+   "r01_r14_b2": "R01 r14_b2 exit 0 pass=28 fail=0",
+   "r01_r14_shell": "R01 r14_shell exit 0 pass=42 fail=0",
+   "r01_r14_wave2": "R01 r14_wave2 exit 0 pass=42 fail=0",
+   "r10_demo_flow": "R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m15_demo",
+   "report": "runs/reference_r01_69984f0f_e23d7b6.txt"
   }
  },
  "screenshots": {
@@ -531,7 +546,7 @@
   "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
   "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
  ],
- "next_step": "R01: web/civic/build3d = 0e27479 (с data/previews/); оболочку не трогать. R10/R11: разбор после марафона (таблички со значками, движение панели); LOCAL-R05-1 — плавность на ноутбуке с GPU.",
+ "next_step": "R01: web/civic/build3d = e23d7b6 (с data/previews/, в том числе -sq); по желанию — proposed_r01_reference.patch (после снятия правой панели). R06: previewOf(kind).square/.tint для миниатюр списка (одинаковая картинка в списке и на карте). R11: 3 ключа build3d.card.fact_*. R10: reference_check — метка R05 находится по тексту «Проект · 20xx».",
  "night_1": {
   "sources_checked": {
    "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
@@ -974,5 +989,26 @@
   "not_checked_in_cloud": "плавность теней и анимаций на ноутбуке с видеокартой (LOCAL-R05-1); облако — программный WebGL",
   "r10_circle3": "R10 53d1c070 (дизайн-марафон, круг 3 на R01 de689c6f): «Проекты и идеи» (R06+R05) — «лучше» FINAL-3 во всех 4 вариантах (1366/375 × ru/kk)",
   "r10_note": "для R10 motion_check: у CSS-анимаций (@keyframes) getTiming().easing по спецификации «linear» — кривая лежит в getKeyframes()[0].easing; без opacity такая ease-out анимация получила бы «СМОТРЕТЬ»"
+ },
+ "reference_13_10": {
+  "source": "claude/round-14-package @ 766bd2f4: research/round-14/design/README.md («Кто что делает»: R06 + R05 — «Проекты и идеи»; правила Linear) и REFERENCE.html (вариант A)",
+  "r05_part": "на карте — объект и метка «Проект · 2027» лаймом; детальная карточка проекта (картинка, 3 цифры, «Поддержать», «это опрос…»); 3D-превью для списка R06",
+  "done": {
+   "label": "метка — лаймовая капсула эталона (.bk-tag-proj: 26 px, 12 px 700, #D7F57C/#2F4A10, тень 0 4 12; без рамки, хвостика и значка); выбранная — кольцо 2 px почти чёрным; зона нажатия 48 px; точка дальнего вида — круг 34 px с белой обводкой 2.5; метка идеи — та же форма, цвета плашки «На проверке»",
+   "own_card": "своя карточка (демо, хранение на устройстве) — .bk-pd эталона: превью модели 150 px (телефон 120), название 18/600, три цифры (.bk-facts), «Поддержать» главной с сердцем (ui-kit эталона), «Против», «Это опрос…» (.bk-pd__note)",
+   "r06_card_image": "над карточкой R06 в панели модуля — превью модели 150 px (ноутбук), «×» поверх, ширина 340, радиус 18; на телефоне без картинки",
+   "previews_for_r06": "data/previews/<вид>-sq.png 84×84 и @2x; handle.previewOf(kind).square и .tint (светлый фон вида)",
+   "close": "Esc закрывает карточку проекта, фокус — на её метку; нажатие на пустую карту — закрывает (правило Linear 2, «закрытие: ×, Esc, пустая карта»)",
+   "tap": "зона нажатия кнопок — по токену --tap ui-kit: 44 px эталона (со старым ui-kit — 48)",
+   "motion": "проверка движения — по правилу Linear 6 (150–250 мс); с ui-kit эталона наведение на метку 150 мс"
+  },
+  "r01_patch": "research/round-14-results/R05/proposed_r01_reference.patch — карточка проекта справа (right 84, top 132, 340), только когда нет видимой .civic-panel; git apply --check на 69984f0f: OK; проверено со скрытой панелью — 942/132/340 (reference/r2_shell_card_*)",
+  "evidence": [
+   "research/round-14-results/R05/reference/ — «эталон / было / стало»: r1_label, r1_card, r1_screen, r1_card_375_kk, r2_shell_card*",
+   "research/round-14-results/R05/reference/etalon/ — эталон варианта A в натуральную величину (1366 «Проекты и идеи», 375 телефон)",
+   "research/round-14-results/R05/design/ref1, ref4, ref5 — кадры демо (ref4/ref5 — с ui-kit эталона R11)"
+  ],
+  "divergences": "STATUS.md, раздел «ДИЗАЙН ПО ЭТАЛОНУ»: нет названия/описания/оценки проекта в данных R05 (вид объекта, место, «против» вместо «~45 млн ₸»); вторая кнопка «Против» (логика голосования не меняется); «×» над картинкой; карточку в оболочке рисует R06",
+  "after_this_delivery": "в ветке после e23d7b6: заголовки панели 19/600 (как заголовок листа эталона) и скелетон каталога только после 150 мс (правило Linear 4) — войдут в следующую поставку после прогона"
  }
 }
