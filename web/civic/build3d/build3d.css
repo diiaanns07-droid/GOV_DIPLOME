@@ -194,14 +194,17 @@
   margin-left: auto;
   flex: 0 0 auto;
 }
+/* Заголовок панели («Что построить?», название объекта при размещении) — как заголовок листа эталона (.sheet .hd b):
+   19 / 600, чуть плотнее по буквам. */
 .b3d-title {
   display: flex;
   align-items: center;
   gap: var(--s-2, 8px);
   margin: 0;
-  font-size: var(--fs-lead, 17px);
-  font-weight: var(--fw-bold, 700);
-  line-height: var(--lh-head, 1.2);
+  font-size: 19px;
+  font-weight: var(--fw-semi, 600);
+  letter-spacing: -0.01em;
+  line-height: var(--lh-head, 1.25);
 }
 .b3d-title .ic {
   color: var(--c-brand, #152c26);
