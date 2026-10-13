@@ -3,8 +3,8 @@
  "title": "Тепловая карта объектов",
  "branch": "claude/r14-R07",
  "delivery": "13 окт — ЭТАЛОН A «лучше 2ГИС» (текущая поставка; подробно — ключ «reference_a»): значки как .pin эталона, карточка «Выбран объект» с вкладками, «Горячие места» как список Linear, синхронизация список ↔ карта, API для поиска / J K / Ctrl+K / «Рядом с вами». Прежние поставки: дизайн-марафон 0bdd91a6 — ключ «marathon», FINAL-3 9899c30c — «final3»",
- "code_sha": "96c8e811",
- "tested_sha": "913b18a3 на сборке R01 69984f0f (облако): R01 B1 16/0, волна 2 42/0, шапка 42/0, P0 63/0/1; R09 демо 75/75; R10 demo_flow 173/0/0, wave_checks 241/0; на превью R01 + R11 7f0fdb9a + R09 3c3fe2b6: R09 hover 7/7, near 18/18, R10 demo_flow 375 «надписи не закрыты» PASS; подробно — reference_a.tests",
+ "code_sha": "fe209c56",
+ "tested_sha": "fe209c56 на сборке R01 a11b7cc8 (FINAL-4) + строка shell.js R.13 + патчи для R10: R10 demo_flow 172/0/0 (1366/375 × ru/kk); на ac0140f9: R10 linear_check 21/21 с патчем, reference_check R07 6/12 (остальное — данные); стенд R07 wave2 38/38, readability 18/18; pytest R07 155/2. Подробно — reference_a.round6",
  "next_step": "R01: взять web/civic/heat/heat.js и heat.css @ code_sha (INTEGRATION.txt §R, R.12–R.13) и одну строку web/civic/shell/shell.js — patches/R01_shell_closable_desktop.patch; R.5 и R.6 R01 уже сделал в FINAL-4. R10: на FINAL-4 шаг 3 demo_flow — патч R01 R10_demo_flow_reference.patch. Владелец: B-075 (серый #7E8A85 эталона). Codex: продолжение — STATUS.md «ДЛЯ CODEX».",
  "base_sha": "d01f76e8 (последний коммит R07 на claude/upbeat-knuth-i0rqaa, наследник claude/round-14-package)",
  "restored_from": null,
@@ -40,7 +40,7 @@
   "6c24825c": "стенд demo.html в чистой палитре (без лайма и бежевой пунктирной кнопки) — только страница стенда",
   "9899c30c": "«↺» на значке 13 px (R10 B-067); вся шкала heat.css — 13/15/17/22"
  },
- "push_status": "OK: claude/r14-R07 (… круг 4 b9e4a619; круг 5: 1a926dcd, aa172494 и коммит с этим файлом)",
+ "push_status": "OK: claude/r14-R07 (… круг 5: 1a926dcd, aa172494, e6f14769; круг 6: 96c8e811, 978cda15, 5ea40079, fe209c56, e5a9ddca, b4a9a7c3 и коммит с этим файлом)",
  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Node 22, Playwright 1.56.1 + Chromium 1194 (программный WebGL); интернет-тайлы закрыты (403) — офлайн-подложка из улиц OSM",
  "note_on_session": "В начале сессии по ошибке выполнялась роль R11; её черновики сохранены в 9cf80fc и 0cf32c5 и удалены из головы ветки (bcb3b6b).",
  "changed_paths": [
@@ -347,7 +347,7 @@
  "reference_a": {
   "delivery": "13 окт, эталон A «лучше 2ГИС» (research/round-14/design/README.md + REFERENCE.html, вариант A) + правила Linear 3–7 по части R07",
   "base": "сборка R01 claude/sharp-dijkstra-0t87gl @ 69984f0f (код c0270448); эталон — ветка claude/round-14-package",
-  "code_sha": "96c8e811",
+  "code_sha": "fe209c56",
   "take": [
    "web/civic/heat/heat.js",
    "web/civic/heat/heat.css",
@@ -367,7 +367,8 @@
    "80172f96": "круг 3b: движение на токенах R11 правила 6 (150–250 мс): въезд карточки 250, перекраска значка 250, тост 250/200, нажатие --t-press",
    "913b18a3": "круг 4: патч R09 R07_target_hover (список ↔ карта с «Обращениями»), тост «Взято в работу» закрывается при форме R09, зона вкладок ±7 px (R11 §22.3 a), подсказка «Приблизьте карту» под списком на телефоне (R10 §10), цвета через токены R11",
    "1a926dcd": "круг 5: зоны нажатия — сами элементы ≥ 44 (кнопка-значок min-width 44, кружок 34 по центру; ссылка «Распечатать QR» 44 в высоту), полоса вкладок 44 + 1 (было 47); кадры reference/round5",
-   "96c8e811": "круг 6 (сборка R01 FINAL-4 ac0140f9): mount-опция closable: \"desktop\" — × «Горячих мест» только на ноутбуке (просьба R01 §26.12), патч строки shell.js для R01; кадры эталон / было / стало; ref6_probe.cjs, triptych.py"
+   "96c8e811": "круг 6 (сборка R01 FINAL-4 ac0140f9): mount-опция closable: \"desktop\" — × «Горячих мест» только на ноутбуке (просьба R01 §26.12), патч строки shell.js для R01; кадры эталон / было / стало; ref6_probe.cjs, triptych.py",
+   "fe209c56": "круг 6: × «Горячих мест» всегда в первой строке справа (ҚАЗ «Шағымы көп орындар · соңғы 30 күнде» уводил × строкой ниже, заголовок 60 → 46 px; РУС без изменений), только CSS"
   },
   "tests": {
    "R09 app_demo_r09 (форма «Отметить исправленным» в карточке)": "75/75",
@@ -410,17 +411,21 @@
   },
   "round6": {
    "session": "13 окт, вечер — та же новая сессия R07",
-   "stand": "R01 FINAL-4 ac0140f9 (claude/sharp-dijkstra-0t87gl; в ней R07 913b18a3, R11 2a30d7a2, тесты R10 656681ee) + R07 heat.js/heat.css из рабочей копии (96c8e811) + patches/R01_shell_closable_desktop.patch; база с засевом как у R10 (init, seed-demo, seed-r14-demo)",
+   "stand": "R01 FINAL-4 ac0140f9, затем голова R01 a11b7cc8 (afb32243: шторка 13 px, район не закрывает список) — в обеих R07 913b18a3, R11 2a30d7a2, тесты R10 656681ee; поверх: R07 heat.js/heat.css из рабочей копии (fe209c56), patches/R01_shell_closable_desktop.patch, патчи для R10 (R01 R10_demo_flow_reference.patch, R07 R10_demo_flow_hot_esc.patch, R07 R10_linear_check_reference.patch) — только во временной копии; база с засевом как у R10 (init, seed-demo, seed-r14-demo)",
    "why": "R01 INTEGRATION §26.12 (× на телефоне не нужен) и проверка R07 на новом хроме эталона A (карточка и список слева)",
    "tests": {
-    "ref6_probe.cjs (1366 и 375, ru)": "1366: список и карточка слева 20 / 84, 388; × «Горячих мест» 44 × 44 виден; 375: × скрыт (с патчем), × карточки есть; без патча × везде, как раньше",
-    "R10 reference_check --screens home,obj,phone": "R07 6/12 совпадают или близки; расхождения — данные, подписи, вид главной на обзоре города, зона × 44 (INTEGRATION R.13); всего 13/37 (R01 3/19, R08 1/1, R09 3/5)",
+    "ref6_probe.cjs (1366 и 375, ru и kk)": "список и карточка слева 20 / 84, 388; × «Горячих мест» 44 × 44 в первой строке (ҚАЗ тоже); на 375 скрыт (closable \"desktop\"), × карточки есть",
+    "R10 reference_check --screens home,obj,phone (ac0140f9)": "R07 6/12 совпадают или близки; остальное — данные, подписи кнопок, вид главной на обзоре города, зона × 44 (INTEGRATION R.13)",
+    "R10 linear_check (ac0140f9)": "без патча 16/3/1 — 3 FAIL и 1 СМОТРЕТЬ у R07 от закрытого списка на главной FINAL-4; с патчем R10_linear_check_reference 21/21",
+    "R10 demo_flow --glass keep (ac0140f9, патч R01 для шага 3б)": "166 PASS / 4 FAIL / 2 NOT_RUN: NOT_RUN — Esc теста закрывал список (FINAL-4 Esc по слоям), FAIL — шторка R09 12 px (R11 .bk-hot__name small)",
+    "R10 demo_flow --glass keep (a11b7cc8 + все патчи, 1366/375 × ru/kk)": "172 PASS / 0 FAIL / 0 NOT_RUN; шаг 3: 43,4 / 44,2 / 29,3 / 27,7 с",
+    "время шага 3 (69984f0f, 1366 ru, одна сессия)": "старый heat.css b9e4a619 — 50,3 с, новый — 44,9 с (круг 5 не замедлил)",
     "pytest tests/civic/R07": "155 passed, 2 skipped",
-    "стенд R07 wave2.js": "38/38",
-    "стенд R07 readability.js": "18/18"
+    "стенд R07 wave2.js (fe209c56)": "38/38",
+    "стенд R07 readability.js (fe209c56)": "18/18"
    },
-   "not_r07": "строка shell.js (closable: \"desktop\") — путь R01, патч готов; R10 demo_flow шаг 3 на FINAL-4 — патч R01 patches/R10_demo_flow_reference.patch (путь R10)",
-   "frames": "reference/round6/ (etalon-bylo-stalo-card-1366-ru.jpg, etalon-bylo-stalo-list-1366-ru.jpg, bylo-stalo-x-375-ru.jpg, r10-reference-check/)"
+   "not_r07": "строка shell.js (closable: \"desktop\") — путь R01, патч готов; патчи для проверок R10 (linear_check, demo_flow шаг 3в) — путь R10; шторка «Рядом с вами» 12 px / #7E8A85 — ui-kit R11 в шторке R09, R01 временно исправил в afb32243; серый эталона — B-075 у владельца",
+   "frames": "reference/round6/ (эталон / было / стало: карточка и список 1366 ru; × на телефоне 375; заголовок ҚАЗ; карточка и список ҚАЗ; r10-reference-check/, r10-linear-check/, r10-demo-flow/)"
   }
  }
 }
