@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-13T10:52:11.255Z",
+ "generated_at": "2026-10-13T11:36:36.385Z",
  "ui_kit_i18n": "выгрузка --kit",
  "checks": [
   {
@@ -19,7 +19,7 @@
     "btn3d": "3D",
     "size": [
      74,
-     48
+     44
     ],
     "tags_in_header": 0
    }
@@ -51,7 +51,7 @@
     },
     "object": {
      "x": 683,
-     "y": 335,
+     "y": 339,
      "under_card": false
     }
    }
@@ -86,7 +86,7 @@
     "btn3d": "3D",
     "size": [
      74,
-     48
+     44
     ],
     "tags_in_header": 0
    }
@@ -118,7 +118,7 @@
     },
     "object": {
      "x": 683,
-     "y": 343,
+     "y": 346,
      "under_card": false
     }
    }
@@ -153,7 +153,7 @@
     "btn3d": "3D",
     "size": [
      74,
-     48
+     44
     ],
     "tags_in_header": 0
    }
@@ -185,7 +185,7 @@
     },
     "object": {
      "x": 187,
-     "y": 230,
+     "y": 242,
      "under_card": false
     }
    }
@@ -208,7 +208,7 @@
    "status": "PASS",
    "detail": {
     "zoom": 17.4,
-    "projects_on_screen": 2,
+    "projects_on_screen": 1,
     "need": 1
    }
   },
@@ -220,7 +220,7 @@
     "btn3d": "3D",
     "size": [
      74,
-     48
+     44
     ],
     "tags_in_header": 0
    }
@@ -251,8 +251,8 @@
      "pill": 26
     },
     "object": {
-     "x": 187,
-     "y": 230,
+     "x": 188,
+     "y": 242,
      "under_card": false
     }
    }

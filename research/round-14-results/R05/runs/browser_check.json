@@ -1,8 +1,8 @@
 {
  "role": "R05",
- "generated_at": "2026-10-13T11:22:11.117Z",
- "tested_sha": "3710355f754ca38ff1e25edadd48fcf8169ffeb9",
- "dirty": true,
+ "generated_at": "2026-10-13T11:35:29.299Z",
+ "tested_sha": "baf9e76090d7bb7bd92f7e61be7e53eca429d3f3",
+ "dirty": false,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
@@ -10,13 +10,13 @@
   "ui_kit_i18n": "из выгрузки --kit <scratch>/r11kit15",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 6.1,
-  "fps_20_objects_swiftshader": 3.1,
+  "fps_0_objects_swiftshader": 6.5,
+  "fps_20_objects_swiftshader": 3.7,
   "gpu_geometries_20_objects": 100
  },
  "summary": {
-  "pass": 52,
-  "fail": 3,
+  "pass": 56,
+  "fail": 0,
   "not_run": 1
  },
  "checks": [
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.1 кадр/с (без объектов 6.1)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.7 кадр/с (без объектов 6.5)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -137,8 +137,8 @@
   },
   {
    "id": "phone_375_touch_layout",
-   "status": "FAIL",
-   "detail": "{\"scroll\":0,\"small\":[\"Солға бұру\",\"Оңға бұру\"],\"cut\":[]}"
+   "status": "PASS",
+   "detail": "нет горизонтальной прокрутки, все кнопки ≥ 44 px (эталон, --tap), текст не обрезан; призрак идёт за центром карты"
   },
   {
    "id": "preview_square_and_tint_for_project_list",
@@ -221,12 +221,25 @@
   {
    "id": "r11_21_selected_object_not_under_card_1366_375",
    "status": "PASS",
-   "detail": "1366 px: объект (515, 490) на экране и не под карточкой; 375 px: объект (187, 242) на экране и не под карточкой"
+   "detail": "1366 px: объект (515, 490) на экране и не под карточкой; 375 px: объект (188, 242) на экране и не под карточкой"
   },
   {
    "id": "r11_22_23_demo_header_title_and_3d_label",
-   "status": "FAIL",
-   "detail": "{\"ru\":{\"title\":\"3D-превью\",\"tag_in_header\":false,\"button_3d_text\":\"3D\",\"button_3d_height\":44},\"kk\":{\"title\":\"3D-көрініс\",\"tag_in_header\":false,\"button_3d_text\":\"3D\",\"button_3d_height\":44}}"
+   "status": "PASS",
+   "detail": {
+    "ru": {
+     "title": "3D-превью",
+     "tag_in_header": false,
+     "button_3d_text": "3D",
+     "button_3d_height": 44
+    },
+    "kk": {
+     "title": "3D-көрініс",
+     "tag_in_header": false,
+     "button_3d_text": "3D",
+     "button_3d_height": 44
+    }
+   }
   },
   {
    "id": "r11_24_resident_hint_ru_kk",
@@ -1165,8 +1178,8 @@
   },
   {
    "id": "controls_48px_all_states_1366_375_ru_kk",
-   "status": "FAIL",
-   "detail": "{\"1366_ru\":[{\"tag\":\"placing\",\"what\":\"rotate-left «Повернуть влево»\",\"w\":202,\"h\":44},{\"tag\":\"placing\",\"what\":\"rotate-right «Повернуть вправо»\",\"w\":212,\"h\":44},{\"tag\":\"placing\",\"what\":\"cancel «Отменить»\",\"w\":147,\"h\":44},{\"tag\":\"placing\",\"what\":\"place «Поставить»\",\"w\":173,\"h\":44},{\"tag\":\"placed+toast\",\"what\":\"undo «Отменить»\",\"w\":101,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"close-card «Закрыть»\",\"w\":44,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"vote-up «Поддержать: 128»\",\"w\":181,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"vote-down «Против: 12»\",\"w\":117,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"delete «Удалить»\",\"w\":117,\"h\":44},{\"tag\":\"pick\",\"what\":\"cancel «Отменить»\",\"w\":160,\"h\":44},{\"tag\":\"light_card\",\"what\":\"close-card «Закрыть»\",\"w\":44,\"h\":44},{\"tag\":\"light_card\",\"what\":\"view3d «Посмотреть в 3D»\",\"w\":74,\"h\":44},{\"tag\":\"light_card\",\"what\":\"vote-up «Поддержать: 64»\",\"w\":181,\"h\":44},{\"tag\":\"light_card\",\"what\":\"vote-down «Против: 5»\",\"w\":117,\"h\":44}],\"1366_kk\":[{\"tag\":\"placing\",\"what\":\"rotate-left «Солға бұру»\",\"w\":181,\"h\":44},{\"tag\":\"placing\",\"what\":\"rotate-right «Оңға бұру»\",\"w\":172,\"h\":44},{\"tag\":\"placing\",\"what\":\"cancel «Болдырмау»\",\"w\":185,\"h\":44},{\"tag\":\"placing\",\"what\":\"place «Орнату»\",\"w\":197,\"h\":44},{\"tag\":\"placed+toast\",\"what\":\"undo «Болдырмау»\",\"w\":114,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"close-card «Жабу»\",\"w\":44,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"vote-up «Қолдау: 128»\",\"w\":154,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"vote-down «Қарсымын: 12»\",\"w\":145,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"delete «Жою»\",\"w\":91,\"h\":44},{\"tag\":\"pick\",\"what\":\"cancel «Болдырмау»\",\"w\":160,\"h\":44},{\"tag\":\"light_card\",\"what\":\"close-card «Жабу»\",\"w\":44,\"h\":44},{\"tag\":\"light_card\",\"what\":\"view3d «3D көріністе қарау»\",\"w\":74,\"h\":44},{\"tag\":\"light_card\",\"what\":\"vote-up «Қолдау: 64»\",\"w\":154,\"h\":44},{\"tag\":\"light_card\",\"what\":\"vote-down «Қарсымын: 5»\",\"w\":145,\"h\":44}],\"375_ru\":[{\"tag\":\"placing\",\"what\":\"rotate-left «Повернуть влево»\",\"w\":44,\"h\":44},{\"tag\":\"placing\",\"what\":\"rotate-right «Повернуть вправо»\",\"w\":44,\"h\":44},{\"tag\":\"placed+toast\",\"what\":\"undo «Отменить»\",\"w\":101,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"close-card «Закрыть»\",\"w\":44,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"vote-up «Поддержать: 128»\",\"w\":216,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"vote-down «Против: 12»\",\"w\":117,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"delete «Удалить»\",\"w\":117,\"h\":44},{\"tag\":\"light_card\",\"what\":\"close-card «Закрыть»\",\"w\":44,\"h\":44},{\"tag\":\"light_card\",\"what\":\"view3d «Посмотреть в 3D»\",\"w\":74,\"h\":44},{\"tag\":\"light_card\",\"what\":\"vote-up «Поддержать: 64»\",\"w\":216,\"h\":44},{\"tag\":\"light_card\",\"what\":\"vote-down «Против: 5»\",\"w\":117,\"h\":44}],\"375_kk\":[{\"tag\":\"placing\",\"what\":\"rotate-left «Солға бұру»\",\"w\":44,\"h\":44},{\"tag\":\"placing\",\"what\":\"rotate-right «Оңға бұру»\",\"w\":44,\"h\":44},{\"tag\":\"placed+toast\",\"what\":\"undo «Болдырмау»\",\"w\":114,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"close-card «Жабу»\",\"w\":44,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"vote-up «Қолдау: 128»\",\"w\":189,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"vote-down «Қарсымын: 12»\",\"w\":145,\"h\":44},{\"tag\":\"card_akimat\",\"what\":\"delete «Жою»\",\"w\":91,\"h\":44},{\"tag\":\"light_card\",\"what\":\"close-card «Жабу»\",\"w\":44,\"h\":44},{\"tag\":\"light_card\",\"what\":\"view3d «3D көріністе қарау»\",\"w\":74,\"h\":44},{\"tag\":\"light_card\",\"what\":\"vote-up «Қолдау: 64»\",\"w\":189,\"h\":44},{\"tag\":\"light_card\",\"what\":\"vote-down «Қарсымын: 5»\",\"w\":145,\"h\":44}]}"
+   "status": "PASS",
+   "detail": "все кнопки R05 ≥ 44 × 44 px (эталон 13.10, --tap): каталог, размещение, тост, карточка акимата, эскиз, подсказка, таблички, лёгкая карточка — 1366/375 × ru/kk"
   },
   {
    "id": "glass_panel_from_ui_kit_1366_375",
@@ -1247,6 +1260,11 @@
    "id": "lighting_outside_nura_without_r12_says_so",
    "status": "PASS",
    "detail": "Освещение пока можно предложить только в районе Нура (маршрутов R12 нет на этом сервере; с R12 — geo_check.mjs)"
+  },
+  {
+   "id": "screenshots_1366_375_pitch_0_60_ru_kk",
+   "status": "PASS",
+   "detail": "1366_ru_p60.png, 375_ru_p60.png, 1366_ru_p0.png, 375_ru_p0.png, 1366_kk_p60.png, 375_kk_p60.png, 1366_kk_p0.png, 375_kk_p0.png, 1366_ru_ghost_stop.png, 1366_ru_lighting_ghost.png"
   },
   {
    "id": "no_page_errors",

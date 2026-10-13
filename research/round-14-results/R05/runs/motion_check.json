@@ -1,6 +1,6 @@
 {
- "kit": "r11kit14",
- "when": "2026-10-12T19:38:55.285Z",
+ "kit": "r11kit15",
+ "when": "2026-10-13T11:38:53.047Z",
  "counts": {
   "PASS": 35
  },
@@ -11,11 +11,11 @@
    "status": "PASS",
    "detail": {
     "anims": [
-     ".bk-btn.b3d-act box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-head translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-hint translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-actions translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".bk-btn.b3d-act box-shadow 150 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-head translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-hint translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-actions translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -27,15 +27,15 @@
   },
   {
    "scope": "1366x768",
-   "name": "каталог → размещение: длительность 200–350 мс (±30)",
+   "name": "каталог → размещение: длительность 150–250 мс (±30, эталон: правило Linear 6)",
    "status": "PASS",
    "detail": {
     "anims": [
-     ".bk-btn.b3d-act box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-head translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-hint translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-actions translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".bk-btn.b3d-act box-shadow 150 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-head translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-hint translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-actions translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -64,10 +64,10 @@
    "status": "PASS",
    "detail": {
     "anims": [
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-head translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-cards translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".bk-meta.b3d-note translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-head translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-cards translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".bk-meta.b3d-note translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -79,14 +79,14 @@
   },
   {
    "scope": "1366x768",
-   "name": "размещение → каталог («Отменить»): длительность 200–350 мс (±30)",
+   "name": "размещение → каталог («Отменить»): длительность 150–250 мс (±30, эталон: правило Linear 6)",
    "status": "PASS",
    "detail": {
     "anims": [
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-head translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-cards translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".bk-meta.b3d-note translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-head translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-cards translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".bk-meta.b3d-note translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -114,8 +114,9 @@
    "status": "PASS",
    "detail": {
     "anims": [
-     ".bk-btn.b3d-vote box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
-     ".b3d-dock.bk-glass opacity,transform 260 мс cubic-bezier(0.22, 1, 0.36, 1)"
+     ".b3d-label__pill.bk-tag-proj box-shadow 150 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".bk-btn.b3d-vote box-shadow 150 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity,transform 200 мс cubic-bezier(0.22, 1, 0.36, 1)"
     ]
    }
   },
@@ -127,12 +128,13 @@
   },
   {
    "scope": "1366x768",
-   "name": "табличка → карточка проекта: длительность 200–350 мс (±30)",
+   "name": "табличка → карточка проекта: длительность 150–250 мс (±30, эталон: правило Linear 6)",
    "status": "PASS",
    "detail": {
     "anims": [
-     ".bk-btn.b3d-vote box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
-     ".b3d-dock.bk-glass opacity,transform 260 мс cubic-bezier(0.22, 1, 0.36, 1)"
+     ".b3d-label__pill.bk-tag-proj box-shadow 150 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".bk-btn.b3d-vote box-shadow 150 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity,transform 200 мс cubic-bezier(0.22, 1, 0.36, 1)"
     ]
    }
   },
@@ -142,6 +144,7 @@
    "status": "PASS",
    "detail": {
     "easing": [
+     "cubic-bezier(0.16, 1, 0.3, 1)",
      "cubic-bezier(0.22, 1, 0.36, 1)"
     ]
    }
@@ -160,8 +163,8 @@
    "status": "PASS",
    "detail": {
     "anims": [
-     ".b3d-label__pill.bk-tag box-shadow 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-label__pill.bk-tag translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".b3d-label__pill.bk-tag-proj box-shadow 150 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-label__pill.bk-tag-proj translate 150 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -173,12 +176,12 @@
   },
   {
    "scope": "1366x768",
-   "name": "наведение на табличку: длительность 200–350 мс (±30)",
+   "name": "наведение на табличку: длительность 150–250 мс (±30, эталон: правило Linear 6)",
    "status": "PASS",
    "detail": {
     "anims": [
-     ".b3d-label__pill.bk-tag box-shadow 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-label__pill.bk-tag translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".b3d-label__pill.bk-tag-proj box-shadow 150 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-label__pill.bk-tag-proj translate 150 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -206,11 +209,11 @@
    "status": "PASS",
    "detail": {
     "anims": [
-     ".bk-btn.b3d-act box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-head translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-hint translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-actions translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".bk-btn.b3d-act box-shadow 150 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-head translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-hint translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-actions translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -222,15 +225,15 @@
   },
   {
    "scope": "375x812",
-   "name": "каталог → размещение: длительность 200–350 мс (±30)",
+   "name": "каталог → размещение: длительность 150–250 мс (±30, эталон: правило Linear 6)",
    "status": "PASS",
    "detail": {
     "anims": [
-     ".bk-btn.b3d-act box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-head translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-hint translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-actions translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".bk-btn.b3d-act box-shadow 150 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-head translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-hint translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-actions translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -259,10 +262,10 @@
    "status": "PASS",
    "detail": {
     "anims": [
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-head translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-cards translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".bk-meta.b3d-note translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-head translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-cards translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".bk-meta.b3d-note translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -274,14 +277,14 @@
   },
   {
    "scope": "375x812",
-   "name": "размещение → каталог («Отменить»): длительность 200–350 мс (±30)",
+   "name": "размещение → каталог («Отменить»): длительность 150–250 мс (±30, эталон: правило Linear 6)",
    "status": "PASS",
    "detail": {
     "anims": [
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-head translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-cards translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".bk-meta.b3d-note translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-head translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-cards translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".bk-meta.b3d-note translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -309,9 +312,10 @@
    "status": "PASS",
    "detail": {
     "anims": [
-     ".bk-btn.b3d-vote box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-pcard translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".b3d-label__pill.bk-tag-proj box-shadow 150 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".bk-btn.b3d-vote box-shadow 150 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-pcard.b3d-pd translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -323,13 +327,14 @@
   },
   {
    "scope": "375x812",
-   "name": "табличка → карточка проекта: длительность 200–350 мс (±30)",
+   "name": "табличка → карточка проекта: длительность 150–250 мс (±30, эталон: правило Linear 6)",
    "status": "PASS",
    "detail": {
     "anims": [
-     ".bk-btn.b3d-vote box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
-     ".b3d-dock.bk-glass opacity 260 мс cubic-bezier(0.16, 1, 0.3, 1)",
-     ".b3d-pcard translate 260 мс cubic-bezier(0.16, 1, 0.3, 1)"
+     ".b3d-label__pill.bk-tag-proj box-shadow 150 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".bk-btn.b3d-vote box-shadow 150 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-pcard.b3d-pd translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
     ]
    }
   },
@@ -339,8 +344,8 @@
    "status": "PASS",
    "detail": {
     "easing": [
-     "cubic-bezier(0.22, 1, 0.36, 1)",
-     "cubic-bezier(0.16, 1, 0.3, 1)"
+     "cubic-bezier(0.16, 1, 0.3, 1)",
+     "cubic-bezier(0.22, 1, 0.36, 1)"
     ]
    }
   },
