@@ -51,7 +51,8 @@ async function open(browser, { w, h, lang, route }) {
       const m = await page.evaluate(() => {
         const card = document.getElementById("today"), r = card.getBoundingClientRect();
         const q = (s) => { const e = card.querySelector(s); if (!e) return null; const c = getComputedStyle(e), b = e.getBoundingClientRect();
-          return { fs: c.fontSize, fw: c.fontWeight, h: Math.round(b.height), w: Math.round(b.width), x: Math.round(b.left - r.left), y: Math.round(b.top - r.top) }; };
+          // от внутреннего края карточки: у стекла ui-kit ≥ a2342cc1 настоящая граница 1 px, как в эталоне
+          return { fs: c.fontSize, fw: c.fontWeight, h: Math.round(b.height), w: Math.round(b.width), x: Math.round(b.left - r.left - card.clientLeft), y: Math.round(b.top - r.top - card.clientTop) }; };
         const tiny = Array.from(card.querySelectorAll("a, button")).filter((e) => e.getClientRects().length).map((e) => { const b = e.getBoundingClientRect(); return [e.className, Math.round(b.width), Math.round(b.height)]; }).filter(([, bw, bh]) => bh < 44);
         return { card: { w: Math.round(r.width), h: Math.round(r.height), radius: getComputedStyle(card).borderTopLeftRadius, glass: card.classList.contains("bk-glass") && card.classList.contains("bk-glass--strong") },
           title: q(".akim-today__h h2"), kpi: q(".akim-today__kpi"), num: q(".akim-today__kpi b"), label: q(".akim-today__kpi span"), row: q(".akim-today__row"), cnt: q(".akim-today__cnt"),
@@ -61,9 +62,9 @@ async function open(browser, { w, h, lang, route }) {
           text: card.innerText, tiny, hscroll: document.documentElement.scrollWidth - innerWidth };
       });
       const kk = lang === "kk";
-      check(`${tag}: карточка как в эталоне — ${w < 500 ? "во всю ширину" : "388"}, радиус 18, плотное стекло ui-kit (bk-glass--strong)`,
+      check(`${tag}: карточка как в эталоне — ${w < 500 ? "во всю ширину" : "388"} × 325 ± 3, радиус 18, плотное стекло ui-kit (bk-glass--strong)`,
         (w < 500 ? m.card.w >= 340 : m.card.w === 388) && m.card.radius === "18px" && m.card.glass
-          && (Math.abs(m.card.h - 325) <= 12 || (w < 500 && kk && m.card.h <= 360)), m.card); // kk на 375: подпись плитки в 2 строки
+          && (Math.abs(m.card.h - 325) <= 3 || (w < 500 && kk && m.card.h <= 360)), m.card); // kk на 375: подпись плитки в 2 строки
       check(`${tag}: заголовок 15/600 «${kk ? "Бүгін Астанада" : "Сегодня в Астане"}», поля 16/18`,
         m.title && m.title.fs === "15px" && m.title.fw === "600" && m.title.x === 18 && m.title.y === 16 && m.text.startsWith(kk ? "Бүгін Астанада" : "Сегодня в Астане"), m.title);
       check(`${tag}: три плитки — число 22/600, подпись 12, плитка 66 высотой (kk на телефоне — может в 2 строки)`,
