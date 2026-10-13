@@ -1118,7 +1118,7 @@
       // Кружок и плашку обновляем на месте, а не пересоздаём: тогда цвет кружка перетекает за 0,8 с (новая жалоба,
       // «исправлено → проверено»), а не меняется скачком (UX_BRIEF: плавное покраснение).
       const dotHtml = svgIcon(icon, 18) + (it.reopened ? '<span class="r07-badge__mark" aria-hidden="true">↺</span>' : "");
-      const countHtml = (district ? '<span class="r07-badge__name">' + esc(label(it.target)) + "\u00a0·\u00a0</span>" : "") + fmtNum(it.count);
+      const countHtml = (district ? '<span class="r07-badge__name">' + esc(label(it.target)) + " · </span>" : "") + fmtNum(it.count);
       let dot = el.querySelector(".r07-badge__dot"), count = el.querySelector(".r07-badge__count");
       if (!dot || !count) {
         el.innerHTML = '<span class="r07-badge__inner"><span class="r07-badge__dot"></span><span class="r07-badge__count"></span></span>';
@@ -1676,9 +1676,9 @@
       metaCats.sort((a, b) => (hottest.has(b.id) ? 1 : 0) - (hottest.has(a.id) ? 1 : 0));
       const dot = (c) => { const it = hottest.get(c); return it ? '<span class="r07-chip__dot" data-level="' + esc(it.level) + '"></span>' : ""; };
       const cats = metaCats.map((c) =>
-        '<button type="button" class="r07-chip" data-cat="' + esc(c.id) + '" aria-pressed="' + (S.filters.category === c.id) + '">' +
-        dot(c.id) + "<span>" + esc(S.lang === "kk" ? c.kk : c.ru) + "</span></button>").join("");
-      const all = '<button type="button" class="r07-chip" data-cat="" aria-pressed="' + (!S.filters.category) + '"><span>' + esc(t("heat.category_all")) + "</span></button>";
+        '<button type="button" class="r07-chip" data-cat="' + esc(c.id) + '" aria-pressed="' + (S.filters.category === c.id) + '"><span class="r07-chip__pill">' +
+        dot(c.id) + "<span>" + esc(S.lang === "kk" ? c.kk : c.ru) + "</span></span></button>").join("");
+      const all = '<button type="button" class="r07-chip" data-cat="" aria-pressed="' + (!S.filters.category) + '"><span class="r07-chip__pill"><span>' + esc(t("heat.category_all")) + "</span></span></button>";
       const periods = ((S.meta && S.meta.periods) || [7, 30, 90]).map((d) =>
         '<button type="button" data-days="' + d + '" aria-pressed="' + (S.filters.days === d) + '">' + esc(t("heat.days", { count: d })) + "</button>").join("");
       // Район — в поиске шапки оболочки (CLEAN_PASS R01 №2, R07 №6); свой список районов — только по opts.districtFilter
@@ -1769,7 +1769,7 @@
         const busy = S.busyKey === key;   // перерисовка во время перелёта
         return '<li><button type="button" class="r07-item' + (busy ? ' r07-item--busy" aria-busy="true' : "") + '" data-key="' + esc(key) + '" data-idx="' + idx + '" tabindex="' + (idx === 0 ? 0 : -1) + '">' +
           statusIcon(st) + '<span class="r07-mini" data-level="' + esc(it.level) + '">' + fmtNum(it.count) + "</span>" +
-          '<span class="r07-item__title">' + esc(label(it.target)) + '</span><span class="r07-item__meta">' + esc(topicName(it)) + "</span>" +
+          '<span class="r07-item__text"><span class="r07-item__title">' + esc(label(it.target)) + '</span><span class="r07-item__meta">' + esc(topicName(it)) + "</span></span>" +
           '<span class="r07-vh">' + esc(" · " + t("heat.people_short", { count: it.count })) + "</span></button></li>";
       };
       const isNew = (it) => it.reopened || !it.status || it.status === "new";
@@ -2106,15 +2106,34 @@
       }
       return out.sort((a, b) => a.rank - b.rank || b.w - a.w).slice(0, Math.max(1, Number(n) || 5)).map((x) => x.v);
     }
+    function openKey(key) {
+      if (findItem(key)) { select(key, true); return; }
+      const p = S.topItems.get(key);
+      if (p) void focusTarget(p.target.kind, p.target.id);
+    }
+    function commands() {
+      const out = [];
+      (S.top || []).slice(0, TOP_N).forEach((it) => {
+        const key = keyOf(it.target);
+        out.push({ id: "heat:open:" + key, group: t("heat.hot_title"), title: label(it.target), hint: t("heat.people_short", { count: it.count }), run: () => openKey(key) });
+      });
+      ((S.meta && S.meta.periods) || [7, 30, 90]).forEach((d) => out.push({ id: "heat:days:" + d, group: t("heat.period"), title: t("heat.days", { count: d }),
+        run: () => { S.filters.days = d; void load("filter"); } }));
+      const it = S.selected && findItem(S.selected);
+      if (it && S.role === "akimat" && it.state === "active" && !examplesOnly(it) && (it.open_ids || []).length) {
+        const act = (a) => () => { const b = panel.querySelector('.r07-card [data-act="' + a + '"]'); if (b) b.click(); };
+        if (it.status !== "in_progress") out.push({ id: "heat:take", group: label(it.target), title: t("heat.take"), run: act("take") });
+        out.push({ id: "heat:fixed", group: label(it.target), title: t("heat.mark_fixed"), run: act("fixed") });
+      }
+      return out;
+    }
     // J / K (Linear): следующее / предыдущее горячее место; без открытой карточки — первое (или последнее)
     function stepHot(d) {
       const keys = (S.top || []).slice(0, TOP_N).map((it) => keyOf(it.target));
       if (!keys.length) return null;
       const i = keys.indexOf(S.selected);
       const next = keys[i < 0 ? (d < 0 ? keys.length - 1 : 0) : Math.max(0, Math.min(keys.length - 1, i + (d < 0 ? -1 : 1)))];
-      if (next === S.selected) return next;
-      if (findItem(next)) select(next, true);
-      else { const p = S.topItems.get(next); if (p) void focusTarget(p.target.kind, p.target.id); }
+      if (next !== S.selected) openKey(next);
       return next;
     }
     function bindPanel() {
@@ -2274,6 +2293,9 @@
       //  close() — закрыть карточку места (×, Esc, нажатие на пустую карту — решает оболочка).
       suggest: (q, n) => suggest(q, n),
       stepHot: (d) => stepHot(d),
+      //  commands() — пункты командной палитры акимата (Ctrl+K, README правило 2): [{ id, group, title, hint, run }] —
+      //    открыть горячее место, период 7 / 30 / 90, «Взять в работу» / «Отметить исправленным» у открытого места.
+      commands: () => commands(),
       close: () => { if (!S.selected) return false; S.selected = null; updateSelectionLayer(); render(); drawBadges(); return true; },
       // Режим выбора места жалобой без класса body.birge-picking (другая оболочка): значки передают щелчок карте.
       setPickMode: (on) => {

@@ -65,13 +65,14 @@ const shot = (page, name) => page.screenshot({ path: path.join(OUT, `${LABEL}-${
         return { objects: bs.filter((b) => b.mode !== "cluster" && b.key.startsWith("object:")).length, clusters: clusters.length,
           members: clusters.reduce((a, c) => a + c.members.length, 0), overlaps,
           clusterHalo: (() => { const c = document.querySelector(".r07-cluster"); return c ? getComputedStyle(c).textShadow : ""; })(),
-          countHalo: (() => { const c = document.querySelector(".r07-badge__count"); return c ? getComputedStyle(c).textShadow + " | " + getComputedStyle(c).boxShadow : ""; })() };
+          // эталон A: число — на белой плашке (фон плашки белый), без обводки текста
+          countHalo: (() => { const c = document.querySelector(".r07-badge__count"); return c ? getComputedStyle(c).backgroundColor : ""; })() };
       });
       const p = [];
       if (r.objects) p.push(`на 13,4 по отдельности видно ${r.objects} объектов (должны быть в кластерах)`);
       if (!r.clusters) p.push("нет ни одного кластера");
       if (r.overlaps) p.push(`значки налезают: ${r.overlaps}`);
-      if (!/255, 255, 255|#fff/i.test(r.countHalo)) p.push("у подписи значка нет белой обводки");
+      if (!/255, 255, 255|#fff/i.test(r.countHalo)) p.push("число значка не на белой плашке: " + r.countHalo);
       check(`semantic-zoom-${tag}`, p, r);
       // кластер: число = сумма людей, цвет = самого высокого уровня; нажатие — приблизить
       const c = await page.evaluate(async () => {
@@ -120,7 +121,8 @@ const shot = (page, name) => page.screenshot({ path: path.join(OUT, `${LABEL}-${
       const f = await page.evaluate(() => {
         const sel = document.querySelector(".r07-badge--selected .r07-badge__inner");
         const other = [...document.querySelectorAll(".r07-badge:not(.r07-badge--selected):not([hidden]) .r07-badge__inner")];
-        return { focusing: window.__map.getContainer().classList.contains("r07-focusing"), scale: sel ? getComputedStyle(sel).transform : "none",
+        const selDot = document.querySelector(".r07-badge--selected .r07-badge__dot");
+        return { focusing: window.__map.getContainer().classList.contains("r07-focusing"), selDot: selDot ? Math.round(selDot.getBoundingClientRect().width) : 0,
           dim: other.map((e) => Number(getComputedStyle(e).opacity)), layer: window.__map.getPaintProperty("r07-seg", "line-opacity") };
       });
       await page.keyboard.press("Escape");
@@ -131,9 +133,9 @@ const shot = (page, name) => page.screenshot({ path: path.join(OUT, `${LABEL}-${
       const p = [];
       if (!f.focusing) p.push("нет режима фокуса при выбранной цели");
       // значок 44 px, выбранный ×1.15 (≈ 51 px) и с тёмным кольцом (FINAL-3)
-      const sc = Number((/matrix\(([\d.]+)/.exec(f.scale) || [])[1] || 1);
-      if (!(sc >= 1.1)) p.push("выбранный значок не крупнее: " + f.scale);
-      if (!f.dim.length || f.dim.some((o) => Math.abs(o - 0.4) > 0.02)) p.push("остальные значки не бледнеют до 40 %: " + f.dim.slice(0, 5).join(","));
+      // эталон A (.pin.sel / .pin.dim): кружок выбранного 44 px (у остальных 34), остальные — 35 %
+      if (!(f.selDot >= 44)) p.push("выбранный значок не 44 px: " + f.selDot);
+      if (!f.dim.length || f.dim.some((o) => Math.abs(o - 0.35) > 0.02)) p.push("остальные значки не бледнеют до 35 %: " + f.dim.slice(0, 5).join(","));
       if (!Array.isArray(f.layer)) p.push("слои карты не бледнеют (нет выражения фокуса)");
       if (after.focusing || after.card || after.dim.some((o) => o < 0.99) || Array.isArray(after.layer)) p.push("Esc не сбросил фокус");
       check(`focus-${tag}`, p.concat(errors), { dimmed: f.dim.length });

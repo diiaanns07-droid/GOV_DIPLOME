@@ -173,7 +173,8 @@ async function colorOnlyCheck(page) {
     // Карточка акимата: контраст «Взять в работу» и «Что пишут жители» (№1, №4)
     await shot(browser, `card-akimat-1366-${lang}`, "desktop", `?lang=${lang}&view=nura`, async (page) => {
       await page.click(".r07-item");
-      await page.waitForSelector(".r07-quotes, .r07-texts .r07-note", { timeout: 6000 });
+      // эталон A: в «Обзоре» — одна цитата (.r07-lead), все — во вкладке «Обращения» (в DOM, скрыта)
+      await page.waitForSelector(".r07-lead, .r07-texts .r07-note", { timeout: 6000 });
     }, async (page) => {
       const out = [];
       const q = await page.evaluate(() => ({ quotes: document.querySelectorAll(".r07-quotes li").length,
@@ -188,7 +189,7 @@ async function colorOnlyCheck(page) {
     });
     await shot(browser, `card-akimat-375-${lang}`, "phone", `?lang=${lang}&view=nura&sheet=full`, async (page) => {
       await page.click(".r07-item");
-      await page.waitForSelector(".r07-quotes, .r07-texts .r07-note", { timeout: 6000 });
+      await page.waitForSelector(".r07-lead, .r07-texts .r07-note", { timeout: 6000 });
     });
     // Житель: мягче, «Я тоже», БЕЗ текстов жителей
     await shot(browser, `card-resident-375-${lang}`, "phone", `?lang=${lang}&role=resident&view=nura&sheet=full`, async (page) => {
