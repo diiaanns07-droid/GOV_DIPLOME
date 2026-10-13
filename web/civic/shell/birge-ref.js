@@ -255,6 +255,10 @@
       if (!civic() || section() !== "map") return;
       const st = body.dataset.birgeLeft;
       if (st !== "card" && st !== "list") return;
+      // Значок R07 (HTML-маркер: район, место) или всплывающая подпись — выбор модуля (район приближает, место
+      // открывает), не «пустая карта»: иначе нажатие на район при открытом списке закрывало список.
+      const target = event.originalEvent && event.originalEvent.target;
+      if (target && target.closest && target.closest(".maplibregl-marker, .maplibregl-popup")) return;
       // Пока выбирают место жалобы (R09) или ставят проект (R05), нажатие на карту — их выбор, не «закрыть».
       if (body.classList.contains("birge-picking") || document.querySelector(".b3d-dock[data-state='placing']")) return;
       const h = heat();

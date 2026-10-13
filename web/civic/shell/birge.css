@@ -137,8 +137,9 @@ body[data-birge-mode="resident"] .birge-b3d-toggle,
    (right 84, top 132, ширина 340), а не внизу по центру; каталог и размещение остаются внизу. Включать, когда справа нет
    постоянной панели (эталон: «Убрать все постоянные панели»). */
 @media (min-width: 1024px) {
-  body:not(:has(.civic-panel:not([hidden]))) .birge-build3d-root:has(.b3d-dock[data-state="card"]) { left: auto; right: 84px; top: 132px; bottom: auto; justify-content: flex-end; }
-  body:not(:has(.civic-panel:not([hidden]))) .birge-build3d-root:has(.b3d-dock[data-state="card"]) > .b3d:not([hidden]) { width: 340px; align-items: stretch; }
+  /* FINAL-4: в виде эталона (body[data-birge-layout="ref"]) панели справа нет никогда — она слева и скрыта стилем, не [hidden]. */
+  body:is([data-birge-layout="ref"], :not(:has(.civic-panel:not([hidden])))) .birge-build3d-root:has(.b3d-dock[data-state="card"]) { left: auto; right: 84px; top: 132px; bottom: auto; justify-content: flex-end; }
+  body:is([data-birge-layout="ref"], :not(:has(.civic-panel:not([hidden])))) .birge-build3d-root:has(.b3d-dock[data-state="card"]) > .b3d:not([hidden]) { width: 340px; align-items: stretch; }
 }
 /* Каталог открыт и в его листе есть «×» R05 (≥ дизайн-марафона) — отдельная «Закрыть» под листом не нужна (R11 11.3). */
 .birge-build3d-root[data-catalog="open"]:has(.b3d-head__close) .birge-b3d-toggle { display: none; }
