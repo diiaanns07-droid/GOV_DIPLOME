@@ -3,6 +3,35 @@
 Роль: R15 Ревью безопасности и защиты данных. Ветка: **`claude/r14-R15`** (от claude/round-14-package @ 4bbf456).
 Свои пути: tests/civic/R15/, research/round-14-results/R15/, этот файл. Чужой код не меняем — patch в INTEGRATION.txt.
 
+## Остановка 13 окт, 16:24 UTC — аккаунт нужен другой роли (что сделано / что дальше)
+Ветка `claude/r14-R15`, последний коммит — этот (см. `git log -1`). Круги каждые 40 минут остановлены (trigger выключен).
+
+**Что сделано (эталон A + Linear, 13 окт, круги 1–8):**
+- Своя часть R15 (в таблице «Кто что делает» R15 нет): безопасность экранов эталона. Эталон REFERENCE.html прочитан —
+  внешних ресурсов нет, шрифт только по имени.
+- Браузерная проба `tests/civic/R15/browser/r15_reference.cjs`: HTML-нагрузка жителя в жалобе (цитата в карточке), идее,
+  вопросе и ответе акима, поиске и адресе; акимат 1366 и житель 375, все разделы и вкладки. На базе R01 69984f0f —
+  16 PASS / 0 FAIL / 2 NOT_RUN; на предпросмотре R01 + модули 9 ролей (круги 2–6) — 17 PASS / 0 FAIL / 1 NOT_RUN
+  (Ctrl+K у R01 ещё нет). Проверка пробы на испорченной копии — 2 FAIL. Снимки-доказательства — `research/round-14-results/R15/reference/`.
+- `tests/civic/R15/test_r15_reference.py`: шрифты Inter R11 пересобраны R15 из Debian fonts-inter 4.0 — sha256 совпали;
+  HTML-помощники ui-kit экранируют данные; S41 (xfail strict). Весь R15 на R01 69984f0f — 259 passed, 2 skipped;
+  на предпросмотре — 260 passed, 1 xfailed.
+- Ревью поставок эталона R05, R06, R07, R08, R09, R11, R12, R13 (круги 1–8) — без находок, кроме **S41 (R11, мелочь)**:
+  `BirgeUI.statusIcon(status, size)` вставляет размер в HTML без проверки; patch `patches/P-R11-S41.diff` (одна строка).
+- Правила для ролей — INTEGRATION.txt «ЭТАЛОН A + КАЧЕСТВО LINEAR» (8 пунктов). SECURITY_REVIEW, DELIVERY.json
+  (`design_reference`), RUN.txt обновлены.
+
+**Что дальше (тому, кто продолжит R15):**
+1. R01 ещё не объявил сборку эталона (голова 69984f0f). Когда объявит — полная проверка на её SHA: `R15_ROOT=<копия>
+   pytest tests/civic/R15`, ролевые тесты (R01 api_v2, R09 security, R13 qa, R06 round14), браузер r14_b1/r14_b2,
+   CSP 8 страниц, проба `node tests/civic/R15/browser/r15_reference.cjs <копия> <папка>` (Ctrl+K должен стать PASS, не
+   NOT_RUN), sha256 qrcode.js, скан секретов → вердикт в DELIVERY.json `design_reference.build_verdict`.
+2. Ctrl+K и поиск с подсказками R01 — ревью по INTEGRATION «ЭТАЛОН A» п. 3–4 (команды из кода, введённое — только фильтр;
+   смена статуса — POST с X-CSRF-Token; маршрут подсказок — без личного).
+3. S41: когда R11 применит P-R11-S41 и тест станет XPASS(strict) — перенести S41 в FIXED (r15_common.py), обновить
+   SECURITY_REVIEW и DELIVERY.json.
+4. Снимок голов веток на остановке — scratchpad сессии (seen_day47); новому агенту — сравнить с BRANCHES.md d6ddd63a.
+
 ## Коротко для владельца (11 окт, день — новая сессия R15)
 - FINAL-кандидат R01 `a2d90dd` перепроверен заново: тесты R15 136 passed, браузер B1 15/15, B2 27/27, CSP PASS;
   PMTiles заново сверен с npm. Новые поставки после FINAL (R06 8102eaf, R13 956e6f7, R03 68350d5) — без новых рисков.
