@@ -1,3 +1,16 @@
+R09 · ЭТАЛОН A «лучше 2ГИС» (13 окт). Код R09: 82056b7 (6e685a5 + правка проверки стенда).
+Дерево: R01 claude/sharp-dijkstra-0t87gl @ 69984f0f + web/civic/ui-kit, web/civic/i18n и tests/civic/R11 из claude/r14-R11 @ a2342cc1
++ пути R09 (побайтно). Облако, Linux, Python 3.13, Node 22, Chromium headless, без интернета; телефона нет — NOT_RUN.
+browser_r09.cjs --r11 <сборка> — ИТОГ: 494/494 PASS (первый прогон параллельно с pytest упал на старте — нагрузка; повтор отдельно)
+browser_r09.cjs (kit-fallback) — ИТОГ: 494/494 PASS
+app_demo_r09.cjs — ИТОГ: 75/75 PASS (6e685a5)
+glass_r09.cjs — ИТОГ: 34/34 PASS (6e685a5; «Мои обращения» — плотное стекло 86 %, запасные виды белые)
+near_r09.cjs (шторка «Рядом с вами» в настоящем приложении) — ИТОГ: 18/18 PASS
+pytest tests/civic/R09/test_r09v2_*.py + R01 + R15 + R11 (тесты R11 из его ветки) + R04 — 1002 passed, 2 skipped
+design_tour_r09.cjs — 120 кадров, 0 ошибок обхода; «эталон / было / стало» — reference/01–08.
+(С тестами R11 из сборки R01 69984f0f — 5 падений test_r11_ui_kit: старые тесты против нового ui-kit R11; с тестами
+ из ветки R11 — 21 passed. Это не R09.)
+
 R09 · дизайн-марафон — круг 10 (R11 INTEGRATION §16.3, §16.4). Код R09: 118a415.
 Дерево: R01 claude/sharp-dijkstra-0t87gl @ d2b5f087 + web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 91df50dc + пути R09
 @ 118a415 (побайтно). app_demo_r09 75/75 · glass_r09 34/34 · стенд --r11 474/474 · стенд kit-fallback 474/474 ·

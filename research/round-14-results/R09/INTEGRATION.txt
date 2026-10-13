@@ -1,9 +1,9 @@
 R09 · РАУНД 14 · INTEGRATION — ЭТАЛОН A «лучше 2ГИС» (13 окт; сначала этот раздел, ниже — дизайн-марафон и раньше)
-Ветка R09: claude/modest-shannon-0ki93p, код — DELIVERY.json (code_sha). Эталон: claude/round-14-package
+Ветка R09: claude/modest-shannon-0ki93p, код 82056b7 (DELIVERY.json). Эталон: claude/round-14-package
 research/round-14/design (REFERENCE.html, вариант A; README «Выбор владельца»). Логика, API и сценарий демо прежние.
-Проверено на R01 69984f0f + ui-kit R11 3890fa74 (токены эталона). Кадры «эталон / было / стало» — reference/.
+Проверено на R01 69984f0f + ui-kit/i18n R11 a2342cc1 (токены эталона). Кадры «эталон / было / стало» — reference/.
     git fetch origin claude/modest-shannon-0ki93p
-    git checkout <code_sha> -- ui/civic_feedback web/civic/feedback tests/civic/R09
+    git checkout 82056b7 -- ui/civic_feedback web/civic/feedback tests/civic/R09
 A1) R01 (хром, место и закрытие карточек):
     - Мастер жалобы и «Мои обращения» на ноутбуке — карточка СЛЕВА под поиском, как .card эталона: left var(--gap-edge)
       20, top var(--header-h) + 12 (= 84 под поиском 20 + 52), ширина var(--panel-w) 388, радиус 18, выезд слева
