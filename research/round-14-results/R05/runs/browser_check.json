@@ -1,7 +1,7 @@
 {
  "role": "R05",
- "generated_at": "2026-10-13T12:52:53.534Z",
- "tested_sha": "e9eac5f31c8288b1de00c373ab53377328b921dc",
+ "generated_at": "2026-10-13T15:23:31.493Z",
+ "tested_sha": "82d47a0703dbc021f96eea320159cd23b5aba42e",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
@@ -10,8 +10,8 @@
   "ui_kit_i18n": "из выгрузки --kit <scratch>/r11kit15",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 5.6,
-  "fps_20_objects_swiftshader": 3.8,
+  "fps_0_objects_swiftshader": 5.9,
+  "fps_20_objects_swiftshader": 2.8,
   "gpu_geometries_20_objects": 100
  },
  "summary": {
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.8 кадр/с (без объектов 5.6)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 2.8 кадр/с (без объектов 5.9)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -1211,23 +1211,23 @@
     "375": {
      "cat": {
       "kit_glass": true,
-      "cls": "b3d-dock bk-glass bk-glass--sheet",
+      "cls": "b3d-dock bk-glass bk-glass--strong bk-glass--sheet",
       "state": "catalog",
       "blur": "blur(24px) saturate(1.8)",
-      "bg_alpha": 0.72,
+      "bg_alpha": 0.86,
       "label_blur": "none"
      },
      "card": {
       "kit_glass": true,
-      "cls": "b3d-dock bk-glass bk-glass--sheet b3d-dock--pd",
+      "cls": "b3d-dock bk-glass bk-glass--strong bk-glass--sheet b3d-dock--pd",
       "state": "card",
       "blur": "blur(24px) saturate(1.8)",
-      "bg_alpha": 0.72,
+      "bg_alpha": 0.86,
       "label_blur": "none"
      },
      "off": {
       "kit_glass": true,
-      "cls": "b3d-dock bk-glass bk-glass--sheet b3d-dock--pd",
+      "cls": "b3d-dock bk-glass bk-glass--strong bk-glass--sheet b3d-dock--pd",
       "state": "card",
       "blur": "none",
       "bg_alpha": 1,
@@ -1237,23 +1237,23 @@
     "1366": {
      "cat": {
       "kit_glass": true,
-      "cls": "b3d-dock bk-glass",
+      "cls": "b3d-dock bk-glass bk-glass--strong",
       "state": "catalog",
       "blur": "blur(24px) saturate(1.8)",
-      "bg_alpha": 0.72,
+      "bg_alpha": 0.86,
       "label_blur": "none"
      },
      "card": {
       "kit_glass": true,
-      "cls": "b3d-dock bk-glass b3d-dock--pd",
+      "cls": "b3d-dock bk-glass bk-glass--strong b3d-dock--pd",
       "state": "card",
       "blur": "blur(24px) saturate(1.8)",
-      "bg_alpha": 0.72,
+      "bg_alpha": 0.86,
       "label_blur": "none"
      },
      "off": {
       "kit_glass": true,
-      "cls": "b3d-dock bk-glass b3d-dock--pd",
+      "cls": "b3d-dock bk-glass bk-glass--strong b3d-dock--pd",
       "state": "card",
       "blur": "none",
       "bg_alpha": 1,

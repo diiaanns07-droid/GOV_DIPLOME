@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-13T12:54:06.196Z",
+ "generated_at": "2026-10-13T15:24:41.762Z",
  "ui_kit_i18n": "выгрузка --kit",
  "checks": [
   {
@@ -184,7 +184,7 @@
      "pill": 26
     },
     "object": {
-     "x": 188,
+     "x": 187,
      "y": 242,
      "under_card": false
     }
