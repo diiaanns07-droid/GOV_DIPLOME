@@ -1,0 +1,29 @@
+--- a/ui/web_server.py	2026-10-13 10:39:01.571971374 +0000
++++ b/ui/web_server.py	2026-10-13 10:39:01.590283232 +0000
+@@ -94,6 +94,8 @@
+                 # Волна 2, R08: «Службы» (Ещё → Службы, акимат) и «Что делают рядом» (раздел #nearby).
+                 "akim/services.html", "akim/services.js", "akim/services.css",
+                 "nearby/index.html", "nearby/nearby.js", "nearby/nearby.css",
++                # Эталон A (13 окт), R08: сводка «Сегодня в Астане» на главной карте акимата и её стенд.
++                "akim/today.js", "akim/today.css", "akim/today.html", "akim/today-stand.js",
+                 "map/demo_snapped.json",  # B2: R12 демо-линии, привязанные к улицам OSM
+                 "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
+                 # Волна 2, R06: «Идеи жителей» (#ideas, #projects) и форма «Работы и отключения» (#works).
+--- a/web/index.html	2026-10-13 10:39:01.573936582 +0000
++++ b/web/index.html	2026-10-13 10:39:01.590537212 +0000
+@@ -24,6 +24,7 @@
+     <link rel="stylesheet" href="/civic/akim/akim.css" />
+     <link rel="stylesheet" href="/civic/akim/services.css" />
+     <link rel="stylesheet" href="/civic/nearby/nearby.css" />
++    <link rel="stylesheet" href="/civic/akim/today.css" />
+     <link rel="stylesheet" href="/civic/qa/qa.css" />
+     <link rel="stylesheet" href="/civic/proposals/proposals.css" />
+     <link rel="stylesheet" href="/civic/ideas/ideas.css" />
+@@ -241,6 +242,7 @@
+     <script defer src="/civic/feedback/complaint-list.js"></script>
+     <script defer src="/civic/qr/report.js"></script>
+     <script defer src="/civic/akim/akim.js"></script>
++    <script defer src="/civic/akim/today.js"></script>
+     <script defer src="/civic/proposals/proposals.js"></script>
+     <script defer src="/civic/build3d/build3d-core.js"></script>
+     <script defer src="/civic/build3d/build3d-models.js"></script>

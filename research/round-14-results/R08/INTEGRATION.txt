@@ -4,6 +4,40 @@ R08 · «Картина дня» для акима — как подключит
 Мои пути: ui/civic_akim/, web/civic/akim/, web/civic/nearby/ (новый, волна 2 п. 4), tests/civic/R08/,
 research/round-14-results/R08/. Чужие файлы я не менял. Ниже — что сделать владельцам соседних модулей. Применяет R01.
 
+§11. ЭТАЛОН A «лучше 2ГИС» (research/round-14/design/README.md, REFERENCE.html) — 13 окт, база R01 69984f0f
+-----------------------------------------------------------------------------------------------------------
+Моя часть по таблице «Кто что делает»: сводка «Сегодня в Астане» на главной (3 числа + топ-3 горячих места,
+закрывается) и «Картина дня» в том же стиле.
+
+11.1 R01 · «Сегодня в Астане» — новый модуль web/civic/akim/today.js + today.css (claude/r14-R08).
+    а) Файлы и подключение — готовый patch research/round-14-results/R08/r01_today_r08.patch (git apply из корня,
+       проверен на 69984f0f): CIVIC_ASSETS += akim/today.js, today.css, today.html, today-stand.js; index.html —
+       <link today.css> и <script defer today.js> (до birge.js не обязательно — модуль ничего не делает сам).
+    б) Где и когда (ваш файл birge.js — решаете вы; в эталоне «Главная акимата» — .sum): карточка слева под поиском и
+       чипами, left 20, top 132, ширина 388 (телефон: left/right 8, под поиском); только вид «Акимат», раздел «Карта»,
+       когда слева нет карточки объекта/проекта (слева одна карточка). Закрытие — × / Esc в карточке вызывает ваш
+       onClose; предлагаю помнить закрытие до конца сеанса. Пример:
+         const el = document.createElement("section"); el.id = "birge-today"; leftSlot.appendChild(el);
+         const today = window.BirgeToday.mount(el, { apiBase: "/api/civic/v2",
+           onClose() { sessionStorage.setItem("birge.today.closed", "1"); el.hidden = true; } });
+         // при смене языка: today.setLang(); при показе снова: today.reload(); снять: today.destroy()
+    в) События (document, CustomEvent, cancelable): «birge:open-target» {target, days, from: "akim-today"} — как у
+       «Картины дня»: откройте карточку цели и плавно ведите карту, preventDefault (иначе — переход по ссылке
+       /#target=kind:id&days=N); «birge:hover-target» {target, on} — наведение/фокус строки (R07: подсветить значок —
+       правило Linear 5); «birge:open-hot-list» — «Все горячие места» (R07 «Горячие места» или #day; без
+       обработчика — #day); «birge:today-close».
+    г) Клавиатура внутри карточки: ↑ ↓ и J K — по местам, Esc — закрыть (глобальные «/», Ctrl+K — ваши).
+    д) Стенд для ревью без оболочки: /civic/akim/today.html (карточка на месте из эталона).
+11.2 R11 · ключи «Сегодня в Астане» — research/round-14-results/R08/I18N_TODAY.json (7 ключей akim.today.*, kk —
+    черновик R08). Стекло карточки — класс .bk-glass: когда перенесёте токены эталона (72 %, blur 24, saturate 180 %,
+    край 1 px, тень --shadow), карточка станет как в эталоне без правок у R08. Отличие от эталона, которое я оставил
+    сознательно: цифры на плашках горячих мест — пары --heat-N-badge / --heat-N-on (в эталоне белые на оранжевом,
+    контраст 2,2:1).
+11.3 R07 · «birge:hover-target» {target, on} от строк сводки — подсветка значка на карте (и обратное — ваше событие,
+    если захотите подсвечивать строку сводки: today.js может слушать «birge:hover-target» с from: "map").
+11.4 R10 · проверка: NODE_PATH=$(npm root -g) node tests/civic/R08/today_check.cjs http://127.0.0.1:8508 (стенд) —
+    34/34: размеры эталона, числа и места = /akim/summary, события, клавиатура, скелет ≤ 150 мс, ошибка.
+
 §10. ДИЗАЙН-МАРАФОН (research/round-14/DESIGN_MARATHON.md) — 12 окт, база R01 65343341 (FINAL-3 со стеклом)
 ------------------------------------------------------------------------------------------------------
 10.1 R01 · взять из claude/r14-R08 (код 1969046a; ec73b533 у вас уже есть) path-scoped — только мои пути, ключей и
