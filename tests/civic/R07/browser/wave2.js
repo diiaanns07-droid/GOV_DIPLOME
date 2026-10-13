@@ -37,10 +37,11 @@ const card = (page) => page.evaluate(() => ({
   due: document.querySelector(".r07-card .r07-statusline__note")?.innerText || null,
   eyebrow: document.querySelector(".r07-eyebrow")?.textContent || "",
   // уточнение: в «О чём сообщают» (тем больше одной) или в строке «Тема · Сообщили …» (одна тема)
-  topics: [...document.querySelectorAll(".r07-topics__sub, .r07-card__topic")].map((x) => x.innerText),
+  // уточнение: в строке «Чаще всего» вкладки «Обзор» или в «О чём сообщают» вкладки «История» (эталон A)
+  topics: [...document.querySelectorAll(".r07-topics__sub, .r07-card__topic-row .r07-row__v")].map((x) => x.textContent),
   legend: [...document.querySelectorAll(".r07-maplegend li")].map((l) => l.dataset.extra || "base"),
   badge: (() => { const b = document.querySelector(".r07-badge--selected"); return b ? { fixed: b.dataset.fixed || null, mark: !!b.querySelector(".r07-badge__mark"),
-    border: getComputedStyle(b.querySelector(".r07-badge__dot")).borderStyle, aria: b.getAttribute("aria-label") } : null; })(),
+    bg: getComputedStyle(b.querySelector(".r07-badge__dot")).backgroundColor, aria: b.getAttribute("aria-label") } : null; })(),
 }));
 
 (async () => {
@@ -71,7 +72,8 @@ const card = (page) => page.evaluate(() => ({
       if (c.statuses !== 1) p.push("статус в карточке не один раз: " + c.statuses);
       if (name === "reported") {
         if (c.status !== "reported_fixed") p.push("статус не «служба сообщила»: " + c.status);
-        if (!c.badge || c.badge.fixed !== "reported" || c.badge.border !== "dashed") p.push("значок без пунктира: " + JSON.stringify(c.badge));
+        // статус-иконка «кружок с галочкой» (эталон A, Linear): белый кружок с зелёной галочкой
+        if (!c.badge || c.badge.fixed !== "reported" || c.badge.bg !== "rgb(255, 255, 255)") p.push("значок «служба сообщила» не белый кружок с галочкой: " + JSON.stringify(c.badge));
         if (!c.legend.includes("reported")) p.push("в легенде нет «сообщили об устранении», хотя такая цель на карте");
         if (!c.notes.some((n) => (lang === "kk" ? /тексеруін күтуде/i : /ждёт проверки/i).test(n))) p.push("нет строки «ждёт проверки»");
         // до проверки жителями — без «На карте зелёным до …» (R10 W2-1, R11 разбор 13 п. 2)
@@ -79,7 +81,7 @@ const card = (page) => page.evaluate(() => ({
       }
       if (name === "verified") {
         if (c.status !== "verified") p.push("статус не «проверено жителями»: " + c.status);
-        if (!c.badge || c.badge.fixed !== "verified" || c.badge.border === "dashed") p.push("значок проверенного с пунктиром");
+        if (!c.badge || c.badge.fixed !== "verified" || c.badge.bg !== "rgb(59, 138, 46)") p.push("значок «проверено» не заполненный зелёный: " + JSON.stringify(c.badge));
         if (!c.notes.some((n) => (lang === "kk" ? /растады/ : /Подтвердил/).test(n))) p.push("нет строки «подтвердили N жителей»");
       }
       if (name === "reopened") {
@@ -103,8 +105,6 @@ const card = (page) => page.evaluate(() => ({
     // серые районы: фильтр «Запахи» → на обзоре города районы без жалоб серые, в легенде «нет свежих данных»
     {
       const { page, errors } = await open(browser, size, lang, "&view=city" + (size === 375 ? "&sheet=peek" : ""));
-      await page.evaluate(() => document.querySelector("[data-cats-toggle]").click());
-      await page.waitForTimeout(300);
       await page.click('[data-cat="smell_air"]');
       await page.waitForTimeout(1500);
       await page.evaluate(() => window.__map.jumpTo({ center: [71.43, 51.135], zoom: 10 }));

@@ -269,7 +269,7 @@ def test_emergency_call_is_the_only_primary_button():
 
 def test_inbox_screen_contract_for_r01():
     """R01 INTEGRATION §11.2: window.BirgeComplaintList.mount(root, opts) -> {destroy, setLang}; вкладки R11 §2.5."""
-    assert "window.BirgeComplaintList = { mount: mount }" in LIST_JS
+    assert "window.BirgeComplaintList = { mount: mount, commands: commands };" in LIST_JS   # + команды палитры Ctrl+K (эталон, правило 2)
     assert all(k in LIST_JS for k in ("destroy:", "setLang:", "opts.api.v2", "opts.openTarget", "opts.titleTag"))
     assert 'var TABS = ["new", "in_progress", "waiting_check", "overdue", "reopened"];' in LIST_JS
     # Главная кнопка — у карточки действий (одна на экран); исключение — «Войти» без входа: карточки действий тогда нет
@@ -297,10 +297,13 @@ def test_clean_pass_r11_r09_items():
     details = JS.split("function detailsBlock(item, open)", 1)[1].split("function historyTitle", 1)[0]
     # Дизайн-марафон: этапы в «Подробнее» — вертикальная лента (точки на линии), вместо полосы и списка истории.
     assert '"bk-details bc-more"' in details and '"bc-updates bc-history bc-timeline"' in details and "nextStage(item)" in details
-    # №7 и правила 2, 4: ни лайма, ни бежевого, ни веса 700 в своих стилях
+    # №7 и правила 2, 4: ни лайма, ни бежевого, ни веса 700 в своих стилях. Эталон A (13 окт): лайм — только плитка «+»
+    # у «Сообщить о проблеме» (.fab i эталона); больше нигде.
     for text in (css, kit):
         low = text.lower()
-        assert not any(c in low for c in ("#d7f57c", "#f1fbd3", "#f7f8f4", "#f1efe6")), "лайм/бежевый"
+        assert low.count("#d7f57c") == (1 if text is css else 0), "лайм только у плитки «+»"
+        assert ":where(.bc-fab__mark) { width: 26px; height: 26px; border-radius: 8px; background: #D7F57C;" in css   # запасной к .bk-fab__ic
+        assert not any(c in low for c in ("#f1fbd3", "#f7f8f4", "#f1efe6")), "лайм/бежевый"
         assert "font-weight: 700" not in text
 
 
@@ -327,7 +330,8 @@ def test_inbox_without_staff_login_asks_to_sign_in():
     assert s["ru"]["proposal.need_staff"] == "Войдите как сотрудник акимата" and s["kk"]["staff.login.submit"] == "Кіру"
     assert s["ru"]["staff.login.note"] == "Учётную запись выдаёт администратор." and s["kk"]["staff.login.note"] == "Тіркелгіні әкімші береді."
     css = (WEB / "complaint.css").read_text(encoding="utf-8")
-    assert re.search(r"\.bc-inbox__title \{[^}]*font-size: var\(--fs-h1, 28px\); font-weight: var\(--fw-semi, 600\)", css)
+    # Эталон A: заголовок листа 19/600 (был 28 по R11 9.3 a — эталон 13 окт важнее).
+    assert re.search(r"\.bc-inbox__title \{[^}]*font-size: var\(--fs-title, 19px\); font-weight: var\(--fw-semi, 600\)", css)
 
 
 def test_glass_only_on_mine_panel():
@@ -340,7 +344,7 @@ def test_glass_only_on_mine_panel():
     assert ':where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff);' in css   # запасной белый
     assert "html.bc-mine-open body.civic-mode .civic-panel,\nhtml.bc-open body.civic-mode .civic-panel { visibility: hidden; }" in css
     assert ".bk-glass .bc-staff__form { background: var(--c-surface, #fff);" in css            # формы сотрудника
-    assert ".bc-inbox .bc-inbox__item.bk-card { background: var(--c-surface, #fff); }" in css  # строки «Обращений»
+    assert ".bc-inbox__list { list-style: none; margin: 0; padding: 4px; background: var(--c-surface, #fff);" in css  # список «Обращений» — непрозрачный
     for media in ("prefers-reduced-transparency: reduce", "@supports not ((-webkit-backdrop-filter", ".bk-glass-off .bc-panel.bk-glass .bc-head"):
         assert media in css
     # Главная кнопка и тосты — не стекло.
@@ -430,11 +434,54 @@ def test_design_marathon_round9_r10_circle2():
     # Пример под полем «Что сделали» в обеих формах, без placeholder.
     assert STAFF_JS.count('"bc-meta bc-staff__hint"') == 2 and 'placeholder: t("staff.fixed.what_hint")' not in STAFF_JS
     assert STAFF_JS.count('"aria-describedby"') == 2
-    # Одна левая линия текста: значок/точка — колонка 20, текст — от 28.
-    assert ".bc-mine__status .bk-statusline__note { padding-left: 28px;" in css and ".bc-mine__card > .bc-meta { padding-left: 28px; }" in css
+    # Одна левая линия (эталон A, .card): плитка 48 и название рядом; всё ниже шапки — от левого поля карточки;
+    # пояснение статуса — под словом (иконка ui-kit 14 + 8).
+    assert ".bc-mine__status .bk-statusline__note { padding-left: 22px;" in css and ".bc-mine__head { display: flex; align-items: flex-start; gap: 12px; }" in css
+    assert '"bk-tile bc-mine__tile"' in JS and '"bc-meta bc-mine__sub"' in JS and '"bc-mine__due"' in JS
     # Отступы 6/10/14 px в правилах R09 больше не встречаются (кроме смещений точек ленты).
     import re as _re
-    off = [m.group(0) for m in _re.finditer(r"(?:padding|gap|column-gap)(?:-[a-z]+)?: [^;]*\b(?:6|10|14)px", css)]
+    # Исключение — «Сообщить о проблеме»: промежуток 10 px взят из эталона A (.fab gap: 10px).
+    off = [m.group(0) for m in _re.finditer(r"(?:padding|gap|column-gap)(?:-[a-z]+)?: [^;]*\b(?:6|10|14)px", re.sub(r":where\([^{]*\{[^}]*\}", "", css.replace("padding: 0 20px; gap: 10px;", "").replace("display: flex; align-items: center; gap: 10px; flex: 1;", "")))]
     assert not off, off
     # R11 16.4: ряд вкладок «Обращений» — .bk-scroll-x с затуханием края ui-kit.
     assert '"bk-chips bk-scroll-x bc-inbox__tabs"' in LIST_JS and "window.BirgeUI.scrollFade(bar)" in LIST_JS
+
+
+def test_reference_a_r09():
+    """Эталон A (13 окт, research/round-14/design): кнопка «Сообщить о проблеме» — .bk-fab ui-kit с лаймовой плиткой;
+    мастер — карточка слева под поиском (--panel-w 388, радиус 18, выезд слева); шторка телефона — радиус 26, ручка 38×5;
+    «Мои обращения» — плотное стекло; статус значком ui-kit (BirgeUI.statusIcon) или своим тем же; «Обращения» как Linear."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    assert 'h("button", { "class": "bk-fab bc-fab"' in JS and '"bk-fab__ic bc-fab__mark"' in JS
+    assert "left: var(--gap-edge, 20px);" in css and "width: var(--panel-w, 388px);" in css and "@keyframes bc-in-left" in css
+    assert "border-radius: var(--r-sheet, 26px) var(--r-sheet, 26px) 0 0;" in css and "width: 38px; height: 5px;" in css
+    assert 'panel.classList.toggle("bk-glass--strong", mine);' in JS
+    assert "window.BirgeUI.statusIcon(status, 14)" in JS and '"text/html"' in JS and ".innerHTML" not in JS.split("function statusIcon", 1)[1].split("function statusBadge", 1)[0]
+    # Linear: группы по статусу, меню статуса в строке, мгновенный отклик, события «список ↔ карта».
+    for needle in ('"bc-inbox__group"', 'bc-inbox__ghead"', '"bk-llist bc-inbox__list"', '"bk-lrow bc-inbox__line"', '"bk-lrow__st bc-inbox__status',
+                   "function statusControl(group)", "function take(group)",
+                   '"birge:target-hover"', 'state.tab === "all"', "function onKey(e)"):
+        assert needle in LIST_JS, needle
+    assert ".bc-inbox__row { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; min-height: var(--tap, 44px);" in css
+    # Мгновенный отклик: скелетон — только через 150 мс; «Мои обращения» из памяти при повторном открытии.
+    assert "}, 150);" in LIST_JS and "}, 150);" in JS and "var mineCache = null;" in JS
+    # Правило 2 (R01 — палитра Ctrl+K, R09 — смена статуса): команды «Взять в работу — место» и «Отметить исправленным — место».
+    cmd = LIST_JS.split("function commands(opts)", 1)[1].split("function mount(root, opts)", 1)[0]
+    assert 't("heat.take") + " — " + place' in cmd and 't("heat.mark_fixed") + " — " + place' in cmd and "if (g.demo) return;" in cmd
+    assert '"birge:inbox-open"' in LIST_JS and '"birge:inbox-changed"' in LIST_JS and "function takePending()" in LIST_JS
+    # «Рядом с вами» (шторка телефона R07/R01): обращения жителя, ждущие его проверки, — waitingChecks().
+    assert "waitingChecks: waitingChecks," in JS and 'return item.can_verify;' in JS.split("function waitingChecks()", 1)[1].split("return {", 1)[0]
+    # Плотное стекло «Моих обращений» поверх правила оболочки — и запасные виды белые; серый текст — стеклянный (≥ 4,5 : 1).
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    assert "body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-strong, rgba(255, 255, 255, .86));" in css
+    assert "--c-text-2: var(--glass-text-2, #3f4a46); }" in css
+    assert "html.bk-glass-off body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }" in css
+    # Шторка «Рядом с вами» (решение R11 §21.2): разметка ui-kit, данные /heat, 3 ближайших, ✓ «проверьте», «Все горячие места».
+    near = JS.split("function mountNear(root, opts)", 1)[1].split("function mount(opts)", 1)[0]
+    for needle in ('"bk-phsheet bk-glass bk-glass--strong bk-glass--sheet bc-near"', 'request("GET", "/heat?days=30&zoom=15")',
+                   't("home.near.title")', 't("home.near.check")', 't("home.near.all_hot")', 't("home.near.empty")', '"bk-hot__cnt"',
+                   'opts.map.on("moveend", onMove)', "BirgeUI.langSwitch(lang, { text: true })"):
+        assert needle in near, needle
+    assert "mountNear: mountNear" in JS
+    s = strings()
+    assert s["ru"]["home.near.title"] == "Рядом с вами" and s["kk"]["home.near.title"] == "Сіздің маңайыңызда"

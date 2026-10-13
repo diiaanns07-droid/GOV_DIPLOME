@@ -872,7 +872,7 @@ async function checkQr(ctx) {
       return { qr: qr.length, qr_px: qr[0] ? Math.round(qr[0].width) : 0, big_text: big, number: /№\s*\d+/.test(text), call_ru: text.includes(callRu.slice(0, 20)),
         call_kk: text.includes(callKk.slice(0, 20)) || kkLine, call_kk_r11: text.includes(callKk.slice(0, 20)),
         domain: /\b[a-z0-9-]+\.[a-z]{2,}\b/i.test(text) || /127\.0\.0\.1|localhost/.test(text), print, counts: /\d+\s*(человек|адам|жалоб|шағым)/i.test(text) };
-    }, [W("ru", "qr.call"), W("kk", "qr.call")]);
+    }, [W("ru", ["qr.sign.call", "qr.call"], "Сообщите о проблеме"), W("kk", ["qr.sign.call", "qr.call"], "Мәселе туралы хабарлаңыз")]);  // марафон R12: уличная табличка «Сообщите о проблеме» (qr.sign.call), раньше — qr.call
     add("W2-6", "лист", "лист для печати: QR ≥ 6 см, крупное название, «Объект № …», призыв на kk и ru, домен, стиль печати; без чисел жалоб",
       st(info.qr > 0 && info.qr_px >= 227 && info.big_text > 0 && info.number && info.call_ru && info.call_kk && info.domain && info.print && !info.counts), { sheet, ...info }, await shotOf(P.page, "1366-ru-W2-6-sheet"));
     add("W2-6", "лист", "скан распечатки телефоном открывает карточку этой остановки; подмена ссылки", "NOT_RUN", "только на устройстве — Codex/владелец (камера телефона); подмена ссылки — R15");

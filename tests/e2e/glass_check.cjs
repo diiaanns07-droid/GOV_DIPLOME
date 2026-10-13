@@ -119,7 +119,7 @@ const SCAN = () => {
     // Надпись открыта целиком (не закрыта кнопкой, другой панелью): сетка 5 × 3 точек в видимой части — везде она сама.
     let open = true;
     for (let i = 0; i < 5 && open; i++) for (let j = 0; j < 3 && open; j++) {
-      const hx = Math.min(Math.max(cl.l + (cl.r - cl.l) * (0.1 + 0.2 * i), 0), innerWidth - 1), hy = Math.min(Math.max(cl.t + (cl.b - cl.t) * (0.2 + 0.3 * j), 0), innerHeight - 1);
+      const hx = Math.min(Math.max(cl.l + (cl.r - cl.l) * (0.04 + 0.23 * i), 0), innerWidth - 1), hy = Math.min(Math.max(cl.t + (cl.b - cl.t) * (0.08 + 0.42 * j), 0), innerHeight - 1);
       const hit = document.elementFromPoint(hx, hy);
       if (!hit || !(hit === e || e.contains(hit) || hit.contains(e))) open = false;
     }
@@ -159,10 +159,15 @@ async function pixelContrast(ctx, png, texts, dpr) {
 }
 
 // Фон под стеклом: слой поверх холста карты внутри .maplibregl-map (панели и шапка — над ним, их стекло размывает его).
-// Строгие (FAIL): карта как есть и насыщенные цвета карты — парк, вода, «много жалоб». Предельные (СМОТРЕТЬ): чёрный и
+// Строгие (FAIL): карта как есть, светлая подложка, пёстрый фон (дизайн-марафон: «светлый и пёстрый фон карты») и насыщенные
+// цвета карты — парк, вода, «много жалоб». Предельные (СМОТРЕТЬ): чёрный и
 // полосы чёрное/белое — так тёмной карта не бывает, но видно запас контраста.
 const BACKGROUNDS = {
   "карта": null,
+  // Светлая подложка (земля, дороги OSM): худший случай для белого и светлого текста на стекле.
+  "светлый": "#f2efe9",
+  // Пёстрый фон карты: парк, вода, дороги, жилые кварталы и цвета жалоб мелкими пятнами (как карта города в 3D/подложке).
+  "пёстрый": "repeating-linear-gradient(30deg,#c8e6c9 0 14px,#a5d6f7 14px 26px,#ffffff 26px 34px,#e0dccf 34px 52px,#fac775 52px 60px,#e24b4a 60px 66px,#2e7d32 66px 80px,#90a4ae 80px 92px),repeating-linear-gradient(120deg,rgba(0,0,0,.25) 0 6px,rgba(255,255,255,0) 6px 40px)",
   "тёмно-зелёный": "#1b5e20",
   "синий": "#0d47a1",
   "красный": "#b71c1c",
@@ -232,7 +237,15 @@ const SOLIDSCAN = () => {
     if (!(r.width > 0 && r.height > 0 && s.display !== "none" && s.visibility !== "hidden")) continue;
     const m = String(s.backgroundColor).match(/rgba?\(([^)]+)\)/), v = m ? m[1].split(/[ ,/]+/).filter(Boolean).map(Number) : [0, 0, 0, 0];
     const f = s.backdropFilter || s.webkitBackdropFilter || "none";
-    out.push({ cls: String(e.className).slice(0, 50), filter: f, alpha: v.length > 3 ? v[3] : 1, solid: (f === "none" || !f) && (v.length > 3 ? v[3] : 1) >= 0.99 });
+    // Плоская кнопка внутри стеклянной полосы (прозрачная, без размытия: «?» в строке легенды) — непрозрачна, если
+    // непрозрачна полоса вокруг.
+    let solid = (f === "none" || !f) && (v.length > 3 ? v[3] : 1) >= 0.99;
+    if (!solid && (f === "none" || !f) && (v.length > 3 ? v[3] : 1) === 0) {
+      const outer = e.parentElement && e.parentElement.closest(".bk-glass, .bk-glass--control");
+      if (outer) { const os = getComputedStyle(outer), m2 = String(os.backgroundColor).match(/rgba?\(([^)]+)\)/), w = m2 ? m2[1].split(/[ ,/]+/).filter(Boolean).map(Number) : [0, 0, 0, 0];
+        solid = (os.backdropFilter === "none" || !os.backdropFilter) && (w.length > 3 ? w[3] : 1) >= 0.99; }
+    }
+    out.push({ cls: String(e.className).slice(0, 50), filter: f, alpha: v.length > 3 ? v[3] : 1, solid });
   }
   return out;
 };
@@ -354,7 +367,12 @@ async function contrastRun(browser, base, size, lang, mode) {
         // Надписи, которые пропали за время замера (плашка погасла, панель закрылась), не считаются.
         const alive = new Set(await page.evaluate(() => [...document.querySelectorAll("[data-r10t]")].filter((e) => {
           const r = e.getBoundingClientRect(); let o = 1; for (let p = e; p && p !== document.documentElement; p = p.parentElement) { const s = getComputedStyle(p); o *= Number(s.opacity); if (s.visibility === "hidden" || s.display === "none") o = 0; }
-          return r.width > 0 && r.height > 0 && o >= 0.98; }).map((e) => Number(e.getAttribute("data-r10t")))));
+          if (!(r.width > 0 && r.height > 0 && o >= 0.98)) return false;
+          // И всё ещё открыта целиком (поверх могло выехать что-то после разметки — главная кнопка, тост).
+          for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++) {
+            const hx = Math.min(Math.max(r.left + r.width * (0.04 + 0.23 * i), 0), innerWidth - 1), hy = Math.min(Math.max(r.top + r.height * (0.08 + 0.42 * j), 0), innerHeight - 1);
+            const hit = document.elementFromPoint(hx, hy); if (!hit || !(hit === e || e.contains(hit) || hit.contains(e))) return false; }
+          return true; }).map((e) => Number(e.getAttribute("data-r10t")))));
         await page.evaluate(() => { const e = document.getElementById("r10-hide"); if (e) e.remove(); });
         const res = await pixelContrast(ctx, png, scan.texts.filter((t) => alive.has(t.n)), 1);
         const fails = res.filter((r) => !r.ok);
@@ -362,12 +380,32 @@ async function contrastRun(browser, base, size, lang, mode) {
         add("G-3", tag, `${sname} · фон «${bname}»${EXTREME.has(bname) ? " (предельный)" : ""}: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)`,
           !res.length ? "NOT_RUN" : fails.length === 0 ? "PASS" : EXTREME.has(bname) ? "СМОТРЕТЬ" : "FAIL",
           { texts: res.length, min: worst[bname].min, fails: fails.slice(0, 5).map((f) => `${f.ratio}:1 «${f.text}» (${f.glass})`) },
-          bname === "полосы" || fails.length ? await page.screenshot({ path: path.join(OUT, `${tag}-${sname.replace(/\s+/g, "_")}-${bname}.jpg`), type: "jpeg", quality: 70 }).then(() => `${tag}-${sname.replace(/\s+/g, "_")}-${bname}.jpg`, () => null) : null);
+          bname === "полосы" || bname === "пёстрый" || fails.length ? await page.screenshot({ path: path.join(OUT, `${tag}-${sname.replace(/\s+/g, "_")}-${bname}.jpg`), type: "jpeg", quality: 70 }).then(() => `${tag}-${sname.replace(/\s+/g, "_")}-${bname}.jpg`, () => null) : null);
       }
       await setBackground(page, null);
       await page.evaluate(() => { const e = document.getElementById("r10-freeze"); if (e) e.remove(); }).catch(() => null);
     }
   } finally { await ctx.close(); }
+}
+
+// Перетаскивание карты мышью (как житель): счётчик кадров в странице, 40 шагов мыши за ~1,6 с по свободной части карты.
+async function dragFps(page) {
+  const at = await page.evaluate(() => { // eslint-disable-next-line no-undef
+    const m = typeof map !== "undefined" && map && map.getCanvas ? map : null; if (!m) return null;
+    const c = m.getCanvas(), r = c.getBoundingClientRect();
+    for (const fx of [0.3, 0.2, 0.45]) { const x = r.left + r.width * fx, y = r.top + r.height * 0.55; if (document.elementFromPoint(x, y) === c) return { x, y }; }
+    return null; });
+  if (!at) return null;
+  await page.evaluate(() => { window.__r10f = []; let last = performance.now(); window.__r10run = true;
+    const loop = (t) => { window.__r10f.push(t - last); last = t; if (window.__r10run) requestAnimationFrame(loop); }; requestAnimationFrame(loop); });
+  const t0 = Date.now();
+  await page.mouse.move(at.x, at.y); await page.mouse.down();
+  for (let i = 1; i <= 40; i++) { await page.mouse.move(at.x + i * 6, at.y + i * 2); await L.sleep(40); }
+  await page.mouse.up();
+  const ms = Date.now() - t0;
+  const d = await page.evaluate(() => { window.__r10run = false; return window.__r10f.slice(1); });
+  const v = d.slice().sort((a, b) => a - b);
+  return { fps: Math.round((d.length * 1000) / ms), p95_ms: Math.round(v[Math.floor(v.length * 0.95)] || 0), over50: v.filter((x) => x > 50).length };
 }
 
 async function fpsRun(browser, base, size, label, glass) {
@@ -377,16 +415,18 @@ async function fpsRun(browser, base, size, label, glass) {
     try {
       await page.goto(base); await settle(page);
       const plain = await page.evaluate(SMOOTH, KHAN).catch((e) => ({ error: String(e.message).slice(0, 120) }));
+      if (plain && !plain.error) plain.drag = await dragFps(page).catch(() => null);
       const p = await L.showPoint(page, KHAN, 17); if (p) await L.tap(page, p.x, p.y); await L.sleep(2500);
       const panel = !!(await L.firstVisible(page.locator(".r07-card")));
       const withPanel = await page.evaluate(SMOOTH, KHAN).catch((e) => ({ error: String(e.message).slice(0, 120) }));
+      if (withPanel && !withPanel.error) withPanel.drag = await dragFps(page).catch(() => null);
       const glassOn = await page.evaluate(() => !document.documentElement.classList.contains("bk-glass-off") && [...document.querySelectorAll("body *")].some((e) => { const f = getComputedStyle(e).backdropFilter; return f && f !== "none"; }));
       runs.push({ plain, panel, withPanel, glassOn });
     } finally { await ctx.close(); }
   }
   // Медиана по повторам (кадры/с).
   const med = (key, k) => { const v = runs.map((r) => r[key] && r[key][k] && r[key][k].fps).filter((x) => x); return v.length ? L.median(v) : null; };
-  return { label, glass, size: size.join("x"), runs, fps: { plain: { pan: med("plain", "pan"), fly: med("plain", "fly") }, withPanel: { pan: med("withPanel", "pan"), fly: med("withPanel", "fly") } },
+  return { label, glass, size: size.join("x"), runs, fps: { plain: { pan: med("plain", "pan"), fly: med("plain", "fly"), drag: med("plain", "drag") }, withPanel: { pan: med("withPanel", "pan"), fly: med("withPanel", "fly"), drag: med("withPanel", "drag") } },
     panel: runs.some((r) => r.panel), glassOn: runs.some((r) => r.glassOn) };
 }
 // Итог по FPS: программный WebGL (обе < 10 к/с) — ИНФО; иначе падение > 20 % → FAIL; < 30 к/с со стеклом при ≥ 30 без него →
@@ -453,7 +493,7 @@ async function fallbackRun(browser, base, size) {
       const off = delivered || args.force ? await fpsRun(browser, server.base, size, sha + " bk-glass-off", "off") : null;
       const b = ctl ? await fpsRun(browser, ctl.base, size, L.buildSha(CONTROL), "keep") : null;
       fps.push(a); if (off) fps.push(off); if (b) fps.push(b);
-      for (const [k, v] of [["pan", "сдвиг"], ["fly", "перелёт"]]) for (const [state, key] of [["без панели", "plain"], ["с панелью", "withPanel"]]) {
+      for (const [k, v] of [["drag", "перетаскивание мышью"], ["pan", "сдвиг"], ["fly", "перелёт"]]) for (const [state, key] of [["без панели", "plain"], ["с панелью", "withPanel"]]) {
         const now = a.fps[key][k];
         const refs = [[off, "без стекла (bk-glass-off)"], [b, b && b.label]].filter(([r]) => r);
         if (!refs.length) add("G-4", size.join("x"), `плавность карты, ${v} ${state}: ${now ?? "?"} к/с (стекла нет — замер для сравнения)`, "INFO", { now, repeats: FPS_REPEAT });

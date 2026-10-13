@@ -133,6 +133,13 @@ body[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
 }
 body[data-birge-mode="resident"] .birge-b3d-toggle,
 .birge-build3d-root:has(.b3d-dock:is([data-state="placing"], [data-state="card"])) .birge-b3d-toggle { display: none; }
+/* R05, эталон 13.10 (вариант A, «Проекты и идеи», .pd): детальная карточка проекта — справа, левее капсулы кнопок карты
+   (right 84, top 132, ширина 340), а не внизу по центру; каталог и размещение остаются внизу. Включать, когда справа нет
+   постоянной панели (эталон: «Убрать все постоянные панели»). */
+@media (min-width: 1024px) {
+  body:not(:has(.civic-panel:not([hidden]))) .birge-build3d-root:has(.b3d-dock[data-state="card"]) { left: auto; right: 84px; top: 132px; bottom: auto; justify-content: flex-end; }
+  body:not(:has(.civic-panel:not([hidden]))) .birge-build3d-root:has(.b3d-dock[data-state="card"]) > .b3d:not([hidden]) { width: 340px; align-items: stretch; }
+}
 /* Каталог открыт и в его листе есть «×» R05 (≥ дизайн-марафона) — отдельная «Закрыть» под листом не нужна (R11 11.3). */
 .birge-build3d-root[data-catalog="open"]:has(.b3d-head__close) .birge-b3d-toggle { display: none; }
 .birge-build3d-root[data-catalog="closed"] .b3d-dock:is([data-state="catalog"], [data-state="loading"], [data-state="error"]) { display: none; }
@@ -890,4 +897,54 @@ body.civic-mode:has(#birge-legend[data-open="true"], #birge-layer-btn[aria-expan
   body.civic-mode #birge-heat-root :is(.r07-error, .r07-empty) { padding-top: 8px; gap: 4px; }
   body.civic-mode #birge-heat-root :is(.r07-error, .r07-empty) .bk-ill { width: 48px; height: 40px; margin-bottom: 0; }
   body.civic-mode #birge-heat-root .r07-error .r07-btn { margin-top: 4px; }
+}
+
+/* Эталон A (13 окт, R13 INTEGRATION §12.1): «Вопрос акиму» — лист слева, как «Проекты и идеи» эталона: ширина 412
+   (--sheet-w), 20 от края, под строкой поиска (84), 20 снизу, радиус 18, плотное стекло 86 % (.glass.strong) с цветами
+   текста .bk-glass--strong. Шапка листа стоит, прокручивается список (правила списка — qa.css). Справа видна карта. Запасной непрозрачный вид не меняется: фон задан переменной --glass-panel,
+   а запасные правила ui-kit ставят белый напрямую. Телефон — шторка от края до края (ниже). */
+@media (min-width: 761px) {
+  body.civic-mode[data-birge-section="questions"] .birge-day.bk-glass {
+    left: 20px; right: auto; top: 84px; bottom: 20px; width: min(var(--sheet-w, 412px), calc(100vw - 40px));
+    padding: 0; border-radius: var(--r-xl, 18px);
+    --glass-panel: var(--glass-strong, rgba(255, 255, 255, 0.86));
+    --c-text-2: #4b5752; --c-text-3: #7e8a85; --c-warn: #754c0f; --c-ok: #2b6110; --c-danger: #9a2e28;
+  }
+  /* шапка и сегменты стоят, прокручивается только список (эталон .psheet — колонка, .list — overflow: auto) */
+  body.civic-mode[data-birge-section="questions"] .birge-day.bk-glass:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
+  body.civic-mode[data-birge-section="questions"] .birge-screen-root { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+  body.civic-mode[data-birge-section="questions"] .birge-screen-root > .qa { max-width: none; }
+}
+/* Телефон: шторка во всю ширину от края до края (эталон, телефон: радиус 26 сверху, поля 18), под капсулой шапки (72);
+   ручки нет — шторка не перетаскивается. Шапка листа так же стоит, прокручивается список. */
+@media (max-width: 760px) {
+  body.civic-mode[data-birge-section="questions"] .birge-day.bk-glass {
+    left: 0; right: 0; bottom: 0; padding: 0;
+    border-radius: var(--r-glass-sheet, 26px) var(--r-glass-sheet, 26px) 0 0;
+    --glass-panel: var(--glass-strong, rgba(255, 255, 255, 0.86));
+    --c-text-2: #4b5752; --c-text-3: #7e8a85; --c-warn: #754c0f; --c-ok: #2b6110; --c-danger: #9a2e28;
+  }
+  body.civic-mode[data-birge-section="questions"] .birge-day.bk-glass:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
+  body.civic-mode[data-birge-section="questions"] .birge-screen-root { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+  body.civic-mode[data-birge-section="questions"] .birge-screen-root > .qa { --qa-px: 18px; --qa-pb: 18px; }
+}
+
+/* R06 → R01 (эталон 13 окт, вариант A): «Проекты и идеи» — лист 412 слева под поиском, справа — карта и карточка
+   выбранного (её ставит модуль R06 сам, body > .ri-pd-host). Добавить в конец web/civic/shell/birge.css.
+   Вес (1,4,1)+ — выше правил листа раздела .birge-day.bk-glass (0,3,1) и «до 1080 по центру» (0,3,1);
+   :not([hidden]) — чтобы display:flex не перебивал скрытие листа. */
+@media (min-width: 761px) {
+  body.civic-mode #birge-screen.birge-day.bk-glass:is([data-screen="projects"], [data-screen="ideas"]):not([hidden]) {
+    left: 20px; right: auto; top: 84px; bottom: 20px; width: 412px;
+    display: flex; flex-direction: column; padding: 0; overflow: hidden;
+    border-radius: var(--r-xl, 18px); background-color: var(--glass-strong, rgba(255, 255, 255, 0.86));
+  }
+}
+@media (max-width: 760px) {
+  body.civic-mode #birge-screen.birge-day.bk-glass:is([data-screen="projects"], [data-screen="ideas"]):not([hidden]) {
+    display: flex; flex-direction: column; padding: 0; overflow: hidden;
+  }
+}
+body.civic-mode #birge-screen:is([data-screen="projects"], [data-screen="ideas"]) > #birge-screen-root {
+  display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0;
 }

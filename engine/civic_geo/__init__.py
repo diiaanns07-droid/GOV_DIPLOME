@@ -91,7 +91,7 @@ def object_number(target_id: str) -> str:
 
 def target_info(target_id: str) -> dict:
     """Карточка цели для QR-паспорта: {target:{kind,id,label_ru,label_kk,object_kind?}, number, point, geometry,
-    approximate}. Неизвестный id — исключение со status 404 (шлюз R01 отвечает 404), неверный — 400."""
+    approximate, street?:{ru,kk}}. Неизвестный id — исключение со status 404 (шлюз R01 отвечает 404), неверный — 400."""
     from .targets import TargetError
 
     kind = target_kind(target_id)
@@ -105,5 +105,28 @@ def target_info(target_id: str) -> dict:
     target = {"kind": kind, "id": target_id, "label_ru": got["label_ru"], "label_kk": got["label_kk"]}
     if got.get("object_kind"):
         target["object_kind"] = got["object_kind"]
-    return {"target": target, "number": object_number(target_id), "point": got.get("point"),
-            "geometry": got["geometry"], "approximate": bool(got.get("approximate"))}
+    out = {"target": target, "number": object_number(target_id), "point": got.get("point"),
+           "geometry": got["geometry"], "approximate": bool(got.get("approximate"))}
+    street = _info_street(kind, got)
+    if street:
+        out["street"] = street
+    return out
+
+
+def _info_street(kind: str, got: dict) -> dict | None:
+    """Улица рядом для подписи карточки (эталон A: «Остановки и транспорт · пр. Туран»): ближайшая улица с названием
+    в 150 м; только если её ещё нет в названии (у светофора, перехода, участка, «Двор — улица» она уже там)."""
+    from . import names
+    from .graph import get_graph
+    from .targets import LABEL_STREET_RADIUS_M, STREET_POINT_KINDS
+
+    if kind == "segment" or got.get("object_kind") in STREET_POINT_KINDS or not got.get("point"):
+        return None
+    # Только проезжие улицы (у парка ближайшая «улица» — лыжероллерная трасса или аллея — подписи не помогает).
+    s_ru = s_kk = None
+    for _, e, _ in get_graph().nearest(got["point"], LABEL_STREET_RADIUS_M, accept=lambda e: bool(e.name) and e.group == "road"):
+        s_ru, s_kk = e.name, e.label_kk()
+        break
+    if not s_ru or s_ru in got["label_ru"] or (s_kk and s_kk in (got.get("label_kk") or "")):
+        return None
+    return {"ru": names.ru_short(s_ru), "kk": s_kk or s_ru}

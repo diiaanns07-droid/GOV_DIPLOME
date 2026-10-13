@@ -55,32 +55,40 @@ async function newPage(browser, width, lang, mode) {
 async function shot(page, name) {
   if (OUT) await page.screenshot({ path: path.join(OUT, name + ".png"), fullPage: false });
 }
-// Видимый текст экрана раздела, ошибки вёрстки: горизонтальная прокрутка, мелкий шрифт, технические слова.
-async function audit(page, sel) {
-  return page.evaluate((sel) => {
-    const root = document.querySelector(sel);
-    const text = root ? root.innerText : "";
+// Видимый текст экрана раздела (лист и карточка выбранного), ошибки вёрстки: горизонтальная прокрутка, мелкий шрифт
+// (эталон 13 окт: подписи под числами, плашки и строка «это опрос» — 12 px, ниже нельзя), технические слова.
+async function audit(page, sel, minPx = 12) {
+  return page.evaluate(([sel, minPx]) => {
+    const roots = Array.from(document.querySelectorAll(sel));
+    const text = roots.map((r) => r.innerText).join("\n");
     const small = [];
-    if (root) {
+    for (const root of roots) {
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       while (walker.nextNode()) {
         const n = walker.currentNode, el = n.parentElement;
         if (!n.textContent.trim() || !el || !el.getClientRects().length) continue;
         const cs = getComputedStyle(el);
         if (cs.visibility === "hidden" || el.closest("[hidden]") || el.closest("details:not([open]) > :not(summary)")) continue;
-        if (parseFloat(cs.fontSize) < 13) small.push(n.textContent.trim().slice(0, 30) + "@" + cs.fontSize);
+        if (parseFloat(cs.fontSize) < minPx) small.push(n.textContent.trim().slice(0, 30) + "@" + cs.fontSize);
       }
     }
-    const primaries = root ? Array.from(root.querySelectorAll(".bk-btn--primary")).filter((b) => b.getClientRects().length).length : 0;
+    const primaries = roots.flatMap((r) => Array.from(r.querySelectorAll(".bk-btn--primary"))).filter((b) => b.getClientRects().length).length;
     return { text, small, primaries, overflow: document.scrollingElement.scrollWidth - innerWidth };
-  }, sel);
+  }, [sel, minPx]);
 }
-const cardOf = (page, title) => page.locator(".ri-card", { hasText: title }).first();
-// Контраст двух цветов CSS «rgb(a)(…)» (WCAG). Фон — непрозрачный цвет кнопки.
+// Карточка списка по названию; выбрать — нажать на название (вся карточка — зона нажатия).
+const cardOf = (page, title) => page.locator(".ri-pc", { hasText: title }).first();
+const pick = async (page, title) => { await cardOf(page, title).locator(".ri-pc__open").click(); await page.waitForSelector(".ri-pd", { timeout: 5000 }); };
+// Контраст двух цветов CSS «rgb(a)(…)» (WCAG). Полупрозрачный фон кладётся на белый (карточка на плотном стекле).
 function contrast(bg, fg) {
+  const rgb = (c) => {
+    const v = (c.match(/[\d.]+/g) || [0, 0, 0]).map(Number);
+    const a = v.length > 3 ? v[3] : 1;
+    return v.slice(0, 3).map((x) => x * a + 255 * (1 - a));
+  };
   const lum = (c) => {
-    const [r, g, b] = (c.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map((v) => {
-      const x = Number(v) / 255;
+    const [r, g, b] = rgb(c).map((v) => {
+      const x = v / 255;
       return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
     });
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
@@ -92,67 +100,107 @@ function contrast(bg, fg) {
 async function resident(browser, base, width, lang, full) {
   const tag = `${width}-${lang}`;
   const T = lang === "kk"
-    ? { title: "Тұрғындар идеялары", support: "Қолдау", supported: "Сіз қолдадыңыз", square: "Сығанақ көшесі маңындағы гүлзар",
-      rejectedTab: "Қабылданбады", projectTab: "Жоба болды", fountain: "Аулада субұрқақ", reason: "Учаскеде су құбыры жоқ",
+    ? { sheet: "Жобалар мен идеялар", support: "Қолдау", supported: "Сіз қолдадыңыз", square: "Сығанақ көшесі маңындағы гүлзар",
+      fountain: "Аулада субұрқақ", light: "Ілияс Омаров көшесіне жарық", reason: "Учаскеде су құбыры жоқ",
       improve: "Жетілдіруге болады", byRes: "Тұрғындар идеясы бойынша", honest: "шешімді әкімдік қабылдайды", newIdea: "Идея ұсыну",
-      pick: "Картадан орын таңдау", review: "Тексерілуде", sent: "Идея жіберілді", privacyWord: "ЖСН" }
-    : { title: "Идеи жителей", support: "Поддержать", supported: "Вы поддержали", square: "Сквер у улицы Сыганак",
-      rejectedTab: "Отклонены", projectTab: "Стали проектами", fountain: "Фонтан во дворе", reason: "нет водопровода",
+      rejectedPill: "Қабылданбады", projectPill: "Жобаға қабылданды", more: "Толығырақ", oneVote: "бір",
+      pick: "Картадан орын таңдау", review: "Тексеруде", sent: "Идея жіберілді", privacyWord: "ЖСН" }
+    : { sheet: "Проекты и идеи", support: "Поддержать", supported: "Вы поддержали", square: "Сквер у улицы Сыганак",
+      fountain: "Фонтан во дворе", light: "Свет на улице Ильяса Омарова", reason: "нет водопровода",
       improve: "Можно доработать", byRes: "По идее жителей", honest: "решение принимает акимат", newIdea: "Предложить идею",
+      rejectedPill: "Отклонена", projectPill: "Принято в проект", more: "Подробнее", oneVote: "один",
       pick: "Выбрать место на карте", review: "На проверке", sent: "Идея отправлена", privacyWord: "ИИН" };
   const page = await newPage(browser, width, lang, "resident");
+  await page.goto(base);
+  await page.waitForTimeout(800);
+  check(`${tag} житель: карта по умолчанию без слоя идей`, await page.evaluate(() => !document.body.dataset.birgeLayer), "layer on");
   await page.goto(base + "#ideas");
-  await page.waitForSelector(".ri .ri-card", { timeout: 30000 });
-  await page.waitForTimeout(400);
-  const a = await audit(page, ".ri");
-  check(`${tag} житель: экран «${T.title}», честная строка всегда видна`, a.text.includes(T.title) && a.text.includes(T.honest), a.text.slice(0, 300));
-  // Правило видно без прокрутки на телефоне (R11 SCHEMES §4 п. 3).
-  check(`${tag} житель: правило видно на первом экране`, await page.evaluate(() => { const r = document.querySelector(".ri-honest").getBoundingClientRect(); return r.bottom <= innerHeight && r.top >= 0; }));
-  check(`${tag} житель: одна главная кнопка «${T.newIdea}»`, a.primaries === 1 && a.text.includes(T.newIdea), a.primaries);
-  check(`${tag} житель: нет прокрутки вбок, текст ≥ 13 px`, a.overflow <= 1 && a.small.length === 0, a.overflow + " " + a.small.join(", "));
+  await page.waitForSelector(".ri .ri-pc", { timeout: 30000 });
+  await page.waitForTimeout(700);
+  // Карточка выбранного справа — только на узком листе 412 (патч R01 r01_projects_sheet.css); без патча и на телефоне —
+  // под строкой списка (R11 §21.4).
+  const wide = width > 760 && await page.evaluate(() => document.querySelector(".ri").getBoundingClientRect().width <= 440);
+  const a = await audit(page, ".ri, .ri-pd-host");
+  check(`${tag} житель: лист «${T.sheet}», честная строка видна сразу`, a.text.includes(T.sheet) && a.text.includes(T.honest), a.text.slice(0, 300));
+  // Правило видно без прокрутки (R11 SCHEMES §4 п. 3): ноутбук — в карточке выбранного, телефон — строкой над списком.
+  check(`${tag} житель: правило на первом экране`, await page.evaluate(() => {
+    const n = document.querySelector(".ri-pd-host .ri-pd__note, .ri-honest-note"); if (!n) return false;
+    const r = n.getBoundingClientRect(); return r.bottom <= innerHeight && r.top >= 0; }));
+  // Одна главная кнопка на экране (эталон): «Поддержать» в карточке выбранного; «Предложить идею» внизу листа — второстепенная.
+  check(`${tag} житель: главная кнопка — одна (${wide ? "«" + T.support + "» в карточке" : "нет, пока ничего не выбрано"}), «${T.newIdea}» внизу листа`,
+    a.primaries === (wide ? 1 : 0) && (await page.locator(".ri-sheet-ft [data-key=new]").innerText()).includes(T.newIdea), a.primaries);
+  check(`${tag} житель: нет прокрутки вбок, текст ≥ 12 px`, a.overflow <= 1 && a.small.length === 0, a.overflow + " " + a.small.join(", "));
   check(`${tag} житель: нет технических слов`, !TECH.some((w) => a.text.includes(w)), TECH.filter((w) => a.text.includes(w)));
   if (lang === "kk") {
     const ru = RU_WORDS.filter((w) => a.text.includes(w));
     check(`${tag} житель: в ҚАЗ нет русских подписей и названий`, ru.length === 0, ru.join(", "));
   }
-  check(`${tag} житель: карта по умолчанию без слоя идей`, await page.evaluate(() => !document.body.dataset.birgeLayer), "layer on");
+  // Эталон: ноутбук — первая карточка выбрана (рамка), справа её карточка, карта ведёт к ней (слой идей включён на время раздела).
+  if (wide) {
+    check(`${tag} житель: выбрана первая карточка — справа её карточка`, await page.evaluate(() => {
+      const sel = document.querySelector(".ri-pc[aria-current=true]"); const pd = document.querySelector(".ri-pd-host .ri-pd");
+      return !!sel && !!pd && pd.getAttribute("data-pd") === sel.getAttribute("data-idea"); }));
+    // Карта и 3D-модуль R05 поднимаются после оболочки — слой включается, когда они готовы (до ~12 с).
+    const layer = await page.waitForFunction(() => document.body.dataset.birgeLayer === "ideas", null, { timeout: 15000 }).then(() => true, () => false);
+    check(`${tag} житель: на карте — слой идей, пока открыт раздел`, layer, "no layer");
+  } else {
+    check(`${tag} житель: телефон — ничего не раскрыто до нажатия`, (await page.locator(".ri-pd").count()) === 0);
+  }
   await shot(page, `w2-ideas-${tag}`);
-  // Поддержка: +1 и обратно, счётчик с сервера.
+  // Поддержка прямо в списке: +1 сразу (оптимистично) и с сервера, капсула нажата; повторно — обратно.
   const card = cardOf(page, T.square);
-  const votes = async () => Number(((await card.locator(".ri-votes").innerText()).match(/\d+/) || [0])[0]);
+  const votes = async () => Number(((await cardOf(page, T.square).locator(".ri-vote__n").innerText()).match(/\d+/) || [0])[0]);
   const before = await votes();
-  await card.locator(".ri-support").click();
-  await page.waitForFunction((t) => Array.from(document.querySelectorAll(".ri-card")).some((c) => c.textContent.includes(t) && c.querySelector(".ri-support[aria-pressed=true]")), T.square);
+  await card.locator("[data-key^=support-]").click();
+  await page.waitForFunction((t) => Array.from(document.querySelectorAll(".ri-pc")).some((c) => c.textContent.includes(t) && c.querySelector(".ri-vote[aria-pressed=true]")), T.square);
+  await page.waitForTimeout(400);
   const after = await votes();
-  check(`${tag} житель: «${T.support}» → ${before + 1}, «${T.supported}»`, after === before + 1 && (await card.innerText()).includes(T.supported), `${before} → ${after}`);
-  // Дизайн-марафон: «Вы поддержали» — тёмная капсула с белым текстом (на стекле ui-kit тоже), контраст ≥ 4.5.
-  // Цвета читаем в странице у текущей кнопки (карточка перерисовывается после ответа — старый узел уже не в документе).
-  const look = await page.waitForFunction((t) => {
-    const c = Array.from(document.querySelectorAll(".ri-card")).find((x) => x.textContent.includes(t));
-    const b = c && c.querySelector(".ri-support[aria-pressed=true]");
-    if (!b || !b.isConnected) return null;
+  const label = await cardOf(page, T.square).locator(".ri-vote").getAttribute("aria-label");
+  check(`${tag} житель: ♥ «${T.support}» в списке → ${before + 1}, «${T.supported}»`, after === before + 1 && label === T.supported, `${before} → ${after}, ${label}`);
+  // Поддержано — светлая капсула с заполненным сердцем (ui-kit R11 .bk-vote[aria-pressed]), число читается (≥ 4.5:1).
+  const look = await page.evaluate((t) => {
+    const c = Array.from(document.querySelectorAll(".ri-pc")).find((x) => x.textContent.includes(t));
+    const b = c && c.querySelector(".ri-vote[aria-pressed=true]");
+    if (!b) return { bg: "", fg: "", heart: "" };
     const cs = getComputedStyle(b);
-    return cs.backgroundColor ? { bg: cs.backgroundColor, fg: cs.color } : null;
-  }, T.square, { timeout: 5000 }).then((h) => h.jsonValue()).catch(() => ({ bg: "", fg: "" }));
-  check(`${tag} житель: «${T.supported}» — тёмная капсула, текст читается (≥ 4.5:1)`, !/rgba\([^)]*,\s*0(\.\d+)?\)/.test(look.bg) && contrast(look.bg, look.fg) >= 4.5, JSON.stringify(look));
-  check(`${tag} житель: правило «один голос» — один раз над списком`, (await page.locator(".ri-onevote").count()) === 1, await page.locator(".ri-onevote").count());
-  await card.locator(".ri-support").click();
-  await page.waitForFunction((t) => Array.from(document.querySelectorAll(".ri-card")).some((c) => c.textContent.includes(t) && c.querySelector(".ri-support[aria-pressed=false]")), T.square);
+    return { bg: cs.backgroundColor, fg: cs.color, heart: getComputedStyle(b.querySelector(".ri-heart path") || b).fill };
+  }, T.square);
+  check(`${tag} житель: «${T.supported}» — сердце заполнено, число читается (≥ 4.5:1)`, look.heart && look.heart !== "none" && contrast(look.bg, look.fg) >= 4.5, JSON.stringify(look));
+  // Карточка выбранного: «Поддержать» / «Вы поддержали» — то же состояние, что в списке.
+  await pick(page, T.square);
+  check(`${tag} житель: в карточке — «${T.supported}»`, (await page.locator(".ri-pd [data-key=pd-support]").innerText()).includes(T.supported));
+  await page.locator(".ri-pd [data-key=pd-more]").click();
+  const more = await page.locator(".ri-pd .ri-pd__more").innerText().catch(() => "");
+  check(`${tag} житель: «${T.more}» — правило «один голос» и чек-лист/3D по месту`, more.toLowerCase().includes(T.oneVote), more);
+  await cardOf(page, T.square).locator("[data-key^=support-]").click();
+  await page.waitForFunction((t) => Array.from(document.querySelectorAll(".ri-pc")).some((c) => c.textContent.includes(t) && c.querySelector(".ri-vote[aria-pressed=false]")), T.square);
+  await page.waitForTimeout(400);
   check(`${tag} житель: повторное нажатие снимает поддержку`, (await votes()) === before, await votes());
-  // Отклонённая — причина и «Можно доработать» видны сразу; проект — «По идее жителей».
-  await page.locator(".ri-tabs button", { hasText: T.rejectedTab }).click();
-  const rej = await cardOf(page, T.fountain).innerText();
+  // Отклонённая — плашка «Отклонена», в карточке причина и «Можно доработать»; проект — «Принято в проект», «По идее жителей».
+  check(`${tag} житель: плашки «${T.rejectedPill}» и «${T.projectPill}» в списке`,
+    (await cardOf(page, T.fountain).locator(".ri-pill").innerText()) === T.rejectedPill && (await cardOf(page, T.light).locator(".ri-pill").innerText()) === T.projectPill);
+  await pick(page, T.fountain);
+  const rej = await page.locator(".ri-pd").innerText();
   check(`${tag} житель: отказ с причиной и «${T.improve}»`, rej.includes(T.reason) && rej.includes(T.improve), rej);
-  await page.locator(".ri-tabs button", { hasText: T.projectTab }).click();
-  const proj = await page.locator(".ri-card").first().innerText();
+  await pick(page, T.light);
+  const proj = await page.locator(".ri-pd").innerText();
   check(`${tag} житель: идея стала проектом — «${T.byRes} · 52»`, proj.includes(T.byRes) && proj.includes("52"), proj);
-  // «Подробнее» — по клавиатуре (details/summary).
-  await page.locator(".ri-card summary").first().focus();
-  await page.keyboard.press("Enter");
-  check(`${tag} житель: «Подробнее» раскрывается клавишей Enter`, await page.evaluate(() => !!document.querySelector(".ri-card details[open]")), "closed");
+  // Клавиатура (правило 2): ↓ — следующая карточка, Esc — карточка выбранного закрывается.
+  await cardOf(page, T.light).locator(".ri-pc__open").focus();
+  const selBefore = await page.evaluate(() => document.querySelector(".ri-pc[aria-current=true]")?.getAttribute("data-idea"));
+  await page.keyboard.press("ArrowDown");
+  const selAfter = await page.evaluate(() => document.querySelector(".ri-pc[aria-current=true]")?.getAttribute("data-idea"));
+  check(`${tag} житель: ↓ выбирает следующую карточку`, selAfter && selAfter !== selBefore, `${selBefore} → ${selAfter}`);
+  await page.keyboard.press("Escape");
+  check(`${tag} житель: Esc закрывает карточку выбранного`, (await page.locator(".ri-pd").count()) === 0);
+  // Вкладка «Проекты акимата»: проекты с ♥ (голос «За») и карточкой.
+  await page.locator("[data-key=tab-projects]").click();
+  await page.waitForSelector(".ri-pc[data-proposal]", { timeout: 5000 });
+  check(`${tag} житель: «Проекты акимата» — карточки проектов`, (await page.locator(".ri-pc[data-proposal]").count()) >= 3);
+  await page.locator("[data-key=tab-ideas]").click();
   if (full) {
     // Мастер: место на карте → название → объект → отправить → своя идея «на проверке».
-    await page.locator(".ri-new .bk-btn--primary").click();
+    await page.locator("[data-key=new]").click();
     await page.locator("[data-key=pick]").click();
     await page.waitForSelector(".ri-pick", { timeout: 10000 });
     await shot(page, `w2-pick-${tag}`);
@@ -182,13 +230,15 @@ async function resident(browser, base, width, lang, full) {
     check(`${tag} мастер: «${T.sent}»`, (await page.locator(".ri-sent").innerText()).includes(T.sent), "no sent");
     await shot(page, `w2-sent-${tag}`);
     await page.locator("[data-key=back-list]").click();
-    await page.waitForSelector(".ri-card", { timeout: 10000 });
-    const first = await page.locator(".ri-card").first().innerText();
-    // Подпись статуса — из словаря сборки (R11 вычитывает kk: «Тексерілуде» → «Тексеруде»), запас — текст теста.
-    const review = await page.evaluate((fallback) => (window.BirgeI18n && window.BirgeI18n.has("idea.status.review")
-      ? window.BirgeI18n.t("idea.status.review") : fallback), T.review);
-    check(`${tag} мастер: своя идея сверху с пометкой «${review}»`, first.includes(review), first);
+    await page.waitForSelector(".ri-pc", { timeout: 10000 });
+    const first = await page.locator(".ri-pc").first().innerText();
+    check(`${tag} мастер: своя идея сверху с плашкой «${T.review}»`, first.includes(T.review) && first.includes(lang === "kk" ? "Аулаға орындықтар" : "Скамейки во дворе"), first);
   }
+  // Закрыли раздел (×) — карта как была: слой идей, включённый на время раздела, выключен.
+  await page.locator(".ri [data-key=close]").click();
+  await page.waitForTimeout(400);
+  check(`${tag} житель: × закрывает лист и карточку, слой идей выключен`, (await page.locator(".ri-pd-host").count()) === 0
+    && await page.evaluate(() => !document.body.dataset.birgeLayer), await page.evaluate(() => document.body.dataset.birgeLayer));
   check(`${tag} житель: нет ошибок JS`, page.errs.length === 0, page.errs.join(" | "));
   await page.context().close();
 }
@@ -197,10 +247,10 @@ async function akimat(browser, base, width, lang) {
   const tag = `${width}-${lang}`;
   const T = lang === "kk"
     ? { open: "Тексеру", publish: "Жариялау", decided: "Шешім қабылданған идеялар", bikes: "велотұрақ", gazebo: "Аулада беседка мен орындықтар",
-      sports: "жасөспірімдерге спорт алаңы", make: "Жобаға айналдыру", reject: "Себебін көрсетіп бас тарту", confirm: "Идеядан бас тарту",
+      sports: "жасөспірімдерге спорт алаңы", make: "Жобаға айналдыру", reject: "Себебін көрсетіп бас тарту", voting: "Дауыс жинау",
       byRes: "Тұрғындар идеясы бойынша · 12", square: "Гүлзар", projects: "Жобалар", works: "Жұмыстар мен өшірулер" }
     : { open: "Проверить", publish: "Опубликовать", decided: "Решённые идеи", bikes: "Велопарковка", gazebo: "Беседка и скамейки во дворе",
-      sports: "Спортплощадка для подростков", make: "Сделать проектом", reject: "Отклонить с причиной", confirm: "Отклонить идею",
+      sports: "Спортплощадка для подростков", make: "Сделать проектом", reject: "Отклонить с причиной", voting: "Сбор голосов",
       byRes: "По идее жителей · 12", square: "Сквер", projects: "Проекты", works: "Работы и отключения" };
   const page = await newPage(browser, width, lang, "akimat");
   await page.goto(base);
@@ -209,8 +259,8 @@ async function akimat(browser, base, width, lang) {
   }, PASSWORD);
   await page.goto(base + "#projects");
   await page.reload();
-  await page.waitForSelector(".ri .ri-card", { timeout: 30000 });
-  await page.waitForTimeout(400);
+  await page.waitForSelector(".ri .ri-pc", { timeout: 30000 });
+  await page.waitForTimeout(500);
   const a = await audit(page, ".ri");
   // Новые (демо «Велопарковка» + идея, которую только что прислал житель) и 3 демо на голосовании — как в API сотрудника.
   const expected = await page.evaluate(async () => {
@@ -218,46 +268,49 @@ async function akimat(browser, base, width, lang) {
     const token = (session.data || session).csrf_token;
     return ((await (await fetch("/api/civic/v2/staff/ideas", { headers: { "X-CSRF-Token": token } })).json()).items || []).length;
   });
-  check(`${tag} акимат: «Идеи на проверке» — все новые и на голосовании (${expected}), без главной кнопки до «${T.open}»`,
-    expected >= 4 && a.primaries === 0 && (await page.locator(".ri-body > .ri-card").count()) === expected, a.text.slice(0, 200));
+  check(`${tag} акимат: «Идеи жителей» — все новые и на голосовании (${expected}), в листе нет главной кнопки`,
+    expected >= 4 && a.primaries === 0 && (await page.locator(".ri-plist > .ri-pc[data-idea]").count()) === expected, a.text.slice(0, 200));
   // Решённые идеи — свёрнуто внизу (R15-S30: их можно скрыть); в демо 2 — отклонённая и ставшая проектом.
   const decided = page.locator(".ri-decided");
   check(`${tag} акимат: «${T.decided} · 2» свёрнуто внизу`, (await decided.count()) === 1 && !(await decided.evaluate((d) => d.open))
     && (await decided.locator("summary").innerText()).includes(T.decided + " · 2"), await decided.count());
-  check(`${tag} акимат: нет прокрутки вбок, текст ≥ 13 px`, a.overflow <= 1 && a.small.length === 0, a.overflow + " " + a.small.join(", "));
-  // Опубликовать новую идею.
-  await cardOf(page, T.bikes).locator("button", { hasText: T.open }).click();
-  const opened = await audit(page, ".ri");
-  check(`${tag} акимат: раскрыта одна идея — одна главная кнопка`, opened.primaries === 1, opened.primaries);
+  check(`${tag} акимат: нет прокрутки вбок, текст ≥ 12 px`, a.overflow <= 1 && a.small.length === 0, a.overflow + " " + a.small.join(", "));
+  // Опубликовать новую идею: выбрать → в карточке «Опубликовать» (одна главная кнопка).
+  await pick(page, T.bikes);
+  const opened = await audit(page, ".ri-pd");
+  check(`${tag} акимат: карточка выбранной идеи — одна главная кнопка`, opened.primaries === 1, opened.primaries);
   await shot(page, `w2-akimat-review-${tag}`);
-  await cardOf(page, T.bikes).locator("button", { hasText: T.publish }).click();
-  await page.waitForFunction((t) => Array.from(document.querySelectorAll(".ri-card")).some((c) => c.textContent.includes(t) && c.querySelector(".bk-status[data-status=accepted]")), T.bikes, { timeout: 10000 });
-  check(`${tag} акимат: «${T.publish}» → идёт голосование`, true);
-  // Идея без объекта → выбрать «Сквер» → «Сделать проектом» → вкладка «Проекты» с «По идее жителей · 12».
-  await cardOf(page, T.gazebo).locator("button", { hasText: T.open }).click();
-  await page.locator(".ri-card--open .bk-chip", { hasText: T.square }).click();
+  await page.locator(".ri-pd [data-key=publish]").click();
+  await page.waitForFunction((t) => Array.from(document.querySelectorAll(".ri-pc")).some((c) => c.textContent.includes(t) && c.getAttribute("data-idea-status") === "voting"), T.bikes, { timeout: 10000 });
+  check(`${tag} акимат: «${T.publish}» → «${T.voting}»`, (await cardOf(page, T.bikes).locator(".ri-pill").innerText()) === T.voting);
+  // Идея без объекта → «Проверить» → «Сквер» → 4 × «да» → «Сделать проектом» → «Проекты акимата», «По идее жителей · 12».
+  await pick(page, T.gazebo);
+  await page.locator(".ri-pd [data-key=pd-check]").click();
+  await page.locator(".ri-pd .bk-chip", { hasText: T.square }).click();
   check(`${tag} акимат: «${T.make}» недоступна, пока не все 4 пункта «да» (подсказка рядом)`,
-    await page.locator(".ri-card--open [data-key=project]").isDisabled() && (await page.locator(".ri-card--open .ri-hint").count()) === 1);
-  for (const k of ["land", "networks", "access", "maintenance"]) await page.locator(`.ri-card--open [data-key=check-${k}-yes]`).click();
+    await page.locator(".ri-pd [data-key=project]").isDisabled() && (await page.locator(".ri-pd .ri-hint").count()) === 1);
+  for (const k of ["land", "networks", "access", "maintenance"]) await page.locator(`.ri-pd [data-key=check-${k}-yes]`).click();
   await shot(page, `w2-akimat-check-${tag}`);
-  await page.locator(".ri-card--open button", { hasText: T.make }).click();
+  await page.locator(".ri-pd button", { hasText: T.make }).click();
   await page.waitForFunction((t) => document.body.innerText.includes(t), T.byRes, { timeout: 15000 });
-  check(`${tag} акимат: «${T.make}» → проект «${T.byRes}»`, true);
+  check(`${tag} акимат: «${T.make}» → проект «${T.byRes}», выбран во вкладке проектов`,
+    (await page.locator("[data-key=tab-projects][aria-selected=true]").count()) === 1 && (await page.locator(".ri-pc[data-proposal][aria-current=true]").innerText()).includes(T.byRes));
   // Название проекта — «вид + улица рядом» (R12 /street-snap, near_street_* — patch R12 из INTEGRATION R06).
-  const made = await page.locator(".r06-card", { hasText: T.byRes }).first().locator(".bk-card__title").innerText();
+  const made = await page.locator(".ri-pc[data-proposal]", { hasText: T.byRes }).first().locator(".ri-pc__title").innerText();
   check(`${tag} акимат: проект из идеи назван «вид + улица рядом»`, made.includes(lang === "kk" ? "Шыңғыс Айтматов" : "Чингиза Айтматова"), made);
   await shot(page, `w2-akimat-projects-${tag}`);
   // Отклонить с причиной (причина обязательна).
-  await page.locator(".ri-tabs button").first().click();
-  await cardOf(page, T.sports).locator("button", { hasText: T.open }).click();
-  await page.locator(".ri-card--open button", { hasText: T.reject }).click();
-  await page.locator(".ri-card--open .ri-reason .bk-btn--danger").click();
-  check(`${tag} акимат: без причины отказ не отправляется`, (await page.locator(".ri-card", { hasText: T.sports }).count()) === 1, "sent without reason");
-  await page.fill(".ri-card--open .ri-reason textarea", lang === "kk" ? "Учаскеде орын жоқ" : "Нет свободного участка");
-  await page.locator(".ri-card--open .ri-reason .bk-btn--danger").click();
-  // Отклонённая идея уходит из списка на проверке в свёрнутые «Решённые идеи» (там её можно скрыть, R15-S30).
-  await page.waitForFunction((t) => !Array.from(document.querySelectorAll(".ri-body > .ri-card")).some((c) => c.textContent.includes(t))
-    && Array.from(document.querySelectorAll(".ri-decided .ri-card")).some((c) => c.textContent.includes(t)), T.sports, { timeout: 10000 });
+  await page.locator("[data-key=tab-ideas]").click();
+  await pick(page, T.sports);
+  await page.locator(".ri-pd [data-key=pd-check]").click();
+  await page.locator(".ri-pd button", { hasText: T.reject }).click();
+  await page.locator(".ri-pd .ri-reason .bk-btn--danger").click();
+  check(`${tag} акимат: без причины отказ не отправляется`, (await page.locator(".ri-plist > .ri-pc", { hasText: T.sports }).count()) === 1, "sent without reason");
+  await page.fill(".ri-pd .ri-reason textarea", lang === "kk" ? "Учаскеде орын жоқ" : "Нет свободного участка");
+  await page.locator(".ri-pd .ri-reason .bk-btn--danger").click();
+  // Отклонённая идея уходит из списка в свёрнутые «Решённые идеи» (там её можно скрыть, R15-S30).
+  await page.waitForFunction((t) => !Array.from(document.querySelectorAll(".ri-plist > .ri-pc")).some((c) => c.textContent.includes(t))
+    && Array.from(document.querySelectorAll(".ri-decided .ri-pc")).some((c) => c.textContent.includes(t)), T.sports, { timeout: 10000 });
   const pub = await (await fetch(base + "api/civic/v2/ideas?status=rejected")).json();
   check(`${tag} акимат: отказ с причиной виден жителям`, (pub.items || []).some((i) => i.reason === (lang === "kk" ? "Учаскеде орын жоқ" : "Нет свободного участка")), JSON.stringify(pub).slice(0, 300));
   check(`${tag} акимат: нет ошибок JS (идеи)`, page.errs.length === 0, page.errs.join(" | "));
@@ -265,7 +318,7 @@ async function akimat(browser, base, width, lang) {
   await page.goto(base + "#works");
   // Ждать записей, а не «.bk-card»: заглушка загрузки ui-kit — тоже .bk-card (скелет), иначе гонка с ответом /works.
   await page.waitForSelector(".rw [data-work]", { timeout: 30000 });
-  const w = await audit(page, ".rw");
+  const w = await audit(page, ".rw", 13);
   check(`${tag} работы: «${T.works}», демо-записи района, одна главная кнопка`, w.text.includes(T.works) && w.primaries === 1 && (await page.locator(".rw [data-work]").count()) >= 4, w.text.slice(0, 200));
   check(`${tag} работы: нет прокрутки вбок, текст ≥ 13 px`, w.overflow <= 1 && w.small.length === 0, w.overflow + " " + w.small.join(", "));
   await page.locator("[data-key=add]").click();

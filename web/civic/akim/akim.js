@@ -289,6 +289,7 @@
       error: null,
       request: 0,
       keep: false, // смена даты/района при показанных числах: прежние приглушены, без скелета
+      skeleton: false, // скелет показан (ответ дольше 150 мс)
     };
     if (state.date && state.date > todayAstana()) state.date = null;
 
@@ -343,6 +344,14 @@
         // заголовком тонкая полоса загрузки, потом новые мягко проявляются (дизайн-марафон, чек-лист п. 7–8).
         state.keep = state.status === "ok" && !!state.data;
         state.status = "loading";
+        // Правило Linear 4: быстрый ответ — без мигания скелетом. Первые 150 мс — пустое тело, потом скелет.
+        state.skeleton = false;
+        setTimeout(function () {
+          if (id === state.request && state.status === "loading" && !state.keep) {
+            state.skeleton = true;
+            render();
+          }
+        }, 150);
         render();
       }
       var q = new URLSearchParams();
@@ -911,9 +920,11 @@
             icon("chevron-right"),
           ]
         );
-        // Строка списка ↔ точка на мини-карте: при наведении и фокусе точка крупнее и сверху.
+        // Строка списка ↔ точка на мини-карте: при наведении и фокусе точка крупнее и сверху. То же событие, что у сводки
+        // «Сегодня в Астане» (birge:hover-target), — карта R07 под листом может подсветить значок (правило Linear 5).
         var dotKey = "dot:" + it.target.kind + ":" + it.target.id;
         var mark = function (on) {
+          doc.dispatchEvent(new CustomEvent("birge:hover-target", { detail: { target: it.target, on: on, from: "akim" } }));
           var dot = map && map.querySelector('[data-key="' + dotKey.replace(/"/g, "") + '"]');
           if (!dot) return;
           if (on) {
@@ -926,6 +937,17 @@
         a.addEventListener("focus", function () { mark(true); });
         a.addEventListener("blur", function () { mark(false); });
         list.appendChild(h("li", null, [a]));
+      });
+      // ↑ ↓ и J K — по местам (правило Linear 2), фокус не уходит из списка.
+      list.addEventListener("keydown", function (e) {
+        var down = e.key === "ArrowDown" || e.key === "j" || e.key === "J";
+        var up = e.key === "ArrowUp" || e.key === "k" || e.key === "K";
+        if (!down && !up) return;
+        var rows = Array.prototype.slice.call(list.querySelectorAll(".akim-hot__item"));
+        var i = rows.indexOf(doc.activeElement);
+        if (i < 0) return;
+        e.preventDefault();
+        rows[(i + (down ? 1 : rows.length - 1)) % rows.length].focus();
       });
       card.appendChild(list);
       return card;
@@ -1230,7 +1252,9 @@
       body.setAttribute("aria-busy", state.status === "loading" ? "true" : "false");
       var pending = state.status === "loading" && state.keep && !!state.data;
       if (pending) renderOk(state.data);
-      else if (state.status === "loading") renderLoading();
+      else if (state.status === "loading") {
+        if (state.skeleton) renderLoading();
+      }
       else if (state.status === "error") renderError();
       else renderOk(state.data);
       if (pending) rootEl.setAttribute("data-pending", "");

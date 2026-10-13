@@ -9,6 +9,8 @@
 """
 from __future__ import annotations
 
+import re
+
 import json
 import threading
 from pathlib import Path
@@ -67,6 +69,14 @@ OBJECT_LABELS = {
     "waste": ("Контейнерная площадка «{n}»", "«{n}» қоқыс алаңы", "Контейнерная площадка", "Қоқыс алаңы"),
 }
 
+# Слово вида уже в названии (OSM часто так пишет): подпись — само название.
+KIND_IN_NAME = {
+    "park": (re.compile(r"парк|сквер|\bсад\b|бульвар|аллея|роща|набережн", re.I), re.compile(r"саябақ|саябағы|гүлзар|\bбақ|бақша|бульвар|аллея", re.I)),
+    "playground": (re.compile(r"площадк", re.I), re.compile(r"алаң", re.I)),
+    "pitch": (re.compile(r"площадк|стадион|корт|\bполе\b", re.I), re.compile(r"алаң|стадион", re.I)),
+    "bus_stop": (re.compile(r"остановк", re.I), re.compile(r"аялдама", re.I)),
+}
+
 
 class TargetError(ValueError):
     status = 400  # шлюз R01: исключение с status/code/message -> этот код ответа
@@ -106,6 +116,12 @@ def object_target(f) -> dict:
     name_ru, name_kk = f.name_ru or f.name_kk, names.kk_case(f.name_kk or f.name_ru)
     if f.kind == "park" and f.raw.get("subkind") == "garden" and name_ru:
         ru, kk = "Сквер «{n}»", "«{n}» гүлзары"
+    # Название уже говорит, что это («Парк Астана», «Астана саябағы», «Сквер Влюблённых») — без второго «Парк»/«саябағы».
+    words = KIND_IN_NAME.get(f.kind)
+    if words and name_ru and words[0].search(name_ru):
+        ru = "{n}"
+    if words and name_kk and words[1].search(name_kk):
+        kk = "{n}"
     return {"kind": "object", "id": f.id, "object_kind": f.kind,
             "label_ru": ru.format(n=name_ru) if name_ru else ru0,
             "label_kk": kk.format(n=name_kk) if name_kk else kk0}

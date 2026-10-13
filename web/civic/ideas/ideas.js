@@ -39,10 +39,7 @@
   }
   var TITLE_MAX = 60;
   var TEXT_MAX = 300;
-  var RESIDENT_TABS = ["voting", "project", "rejected"];
   var STATUS_LOOK = { review: "new", voting: "accepted", checking: "in_progress", project: "fixed", rejected: "rejected", hidden: "rejected" };
-  // Вкладка жителя по статусу (R11 SCHEMES §2.1): «Акимат проверяет» остаётся в «Голосовании», голосование закрыто.
-  var TAB_OF = { voting: "voting", checking: "voting", project: "project", rejected: "rejected" };
 
   // Ключи, которых пока нет в словаре R11 (переданы в INTEGRATION.txt R06, раздел «Ключи волны 2»).
   // Ключи схемы R11 (SCHEMES_R06_R13 §2.7) — их тексты из словаря R11 2b8f72e: в словаре сборки FINAL-2 их ещё нет.
@@ -131,6 +128,11 @@
       "idea.check.ready": "Все четыре — «да»: можно делать проектом",
       "idea.hide_short": "Скрыть",
       "staff.login.note": "Учётную запись выдаёт администратор.",
+      // Эталон 13 окт (REFERENCE.html, вариант A): тексты листа «Проекты и идеи» — переданы R11 (INTEGRATION.txt R06, раздел «Эталон»).
+      "idea.tab.akimat_projects": "Проекты акимата", "idea.sub": "Идея жителей", "idea.sub_project": "Проект акимата",
+      "idea.pill.review": "На проверке", "idea.pill.voting": "Сбор голосов", "idea.pill.checking": "Акимат проверяет",
+      "idea.pill.project": "Принято в проект", "idea.pill.rejected": "Отклонена", "idea.pill.hidden": "Не опубликована",
+      "idea.fact.supported": "поддержали", "idea.fact.year": "срок", "idea.fact.district": "район", "idea.fact.object": "объект", "idea.fact.against": "против", "idea.on_map": "На карте",
     },
     kk: {
       "idea.status.review": "Тексерілуде",
@@ -185,6 +187,10 @@
       "idea.check.ready": "Төртеуі де «иә»: жобаға айналдыруға болады",
       "idea.hide_short": "Жасыру",
       "staff.login.note": "Тіркелгіні әкімші береді.",
+      "idea.tab.akimat_projects": "Әкімдік жобалары", "idea.sub": "Тұрғындар идеясы", "idea.sub_project": "Әкімдік жобасы",
+      "idea.pill.review": "Тексеруде", "idea.pill.voting": "Дауыс жинау", "idea.pill.checking": "Әкімдік тексеруде",
+      "idea.pill.project": "Жобаға қабылданды", "idea.pill.rejected": "Қабылданбады", "idea.pill.hidden": "Жарияланбады",
+      "idea.fact.supported": "қолдады", "idea.fact.year": "мерзімі", "idea.fact.district": "аудан", "idea.fact.object": "нысан", "idea.fact.against": "қарсы", "idea.on_map": "Картада",
     },
   };
 
@@ -471,17 +477,73 @@
     setTimeout(function () { cancel.focus(); }, 0);
   }
 
+  // ── эталон (13 окт): картинки карточек — плоские иллюстрации вида объекта (как в REFERENCE.html, вариант A) ──
+  // Статичная разметка без данных пользователя. Плитка 84 × 84 и картинка карточки 340 × 150 (та же сцена крупнее).
+  var ART = {
+    square: { bg: "#EAF4E0", g: '<g fill="#7FC08D"><circle cx="28" cy="40" r="11"/><circle cx="54" cy="36" r="13"/><circle cx="44" cy="58" r="10"/></g><path d="M8 66h68" stroke="#F4EFE3" stroke-width="6" stroke-linecap="round"/>' },
+    stop: { bg: "#E8F0F6", g: '<rect x="18" y="30" width="48" height="30" rx="4" fill="#fff" stroke="#9FB7C7" stroke-width="2"/><path d="M18 30 42 16 66 30" fill="none" stroke="#9FB7C7" stroke-width="2"/><rect x="26" y="44" width="10" height="16" fill="#F4C76A"/>' },
+    playground: { bg: "#FDF3E3", g: '<path d="M20 62 42 24 64 62" fill="none" stroke="#E0A64B" stroke-width="4" stroke-linejoin="round"/><circle cx="42" cy="22" r="5" fill="#E24B4A"/><path d="M14 64h56" stroke="#D9CBB0" stroke-width="4" stroke-linecap="round"/>' },
+    sports: { bg: "#E9F1E4", g: '<rect x="14" y="24" width="56" height="38" rx="4" fill="#CFE5C2" stroke="#fff" stroke-width="2"/><path d="M42 24v38" stroke="#fff" stroke-width="2"/><circle cx="42" cy="43" r="7" fill="none" stroke="#fff" stroke-width="2"/><circle cx="58" cy="52" r="4" fill="#E24B4A"/>' },
+    lighting: { bg: "#FDF6E0", g: '<circle cx="42" cy="26" r="14" fill="#FCE7A8" opacity=".8"/><path d="M42 70V28M42 28h-9" stroke="#9AA3A0" stroke-width="4" stroke-linecap="round"/><circle cx="33" cy="30" r="5" fill="#F4C76A"/><path d="M22 70h40" stroke="#D9CBB0" stroke-width="4" stroke-linecap="round"/>' },
+    none: { bg: "#EEF0EE", g: '<path d="M36 52h12M38 58h8M42 22a12 12 0 0 0-7 21.8V48h14v-4.2A12 12 0 0 0 42 22Z" fill="none" stroke="#7E8A85" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>' },
+  };
+  // Крупная картинка «Сквера» — как в эталоне (ромб участка с деревьями), остальные — сцена плитки крупнее.
+  var ART_WIDE_SQUARE = '<rect width="340" height="150" fill="#E7F2DD"/><path d="M170 40 300 95 170 140 40 95Z" fill="#D2EAB9"/><g fill="#7FC08D"><circle cx="120" cy="88" r="16"/><circle cx="200" cy="80" r="18"/><circle cx="160" cy="108" r="14"/><circle cx="235" cy="104" r="13"/></g><path d="M80 96h180" stroke="#F4EFE3" stroke-width="7" stroke-linecap="round"/>';
+  function artSvg(kind, wide) {
+    var a = ART[kind] || ART.none;
+    if (wide) {
+      var inner = kind === "square" ? ART_WIDE_SQUARE
+        : '<rect width="340" height="150" fill="' + a.bg + '"/><g transform="translate(105 6) scale(1.65)">' + a.g + "</g>";
+      return '<svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' + inner + "</svg>";
+    }
+    return '<svg viewBox="0 0 84 84" aria-hidden="true" focusable="false"><rect width="84" height="84" fill="' + a.bg + '"/>' + a.g + "</svg>";
+  }
+  // Сердце «Поддержать» — как в эталоне (одна толщина линии с иконками ui-kit); заполненное — поддержано.
+  var HEART = '<svg class="ri-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>';
+  // Картинка объекта: 3D-превью модели R05 (handle.previewOf(kind): square 84 для строки, 240×160 для карточки — тот же
+  // свет и угол, что на карте) на светлой подложке вида; без R05 или без файла — плоский рисунок эталона (artSvg).
+  function preview(kind, wide) {
+    var b = kind && build3d && build3d();
+    var pv = b && typeof b.previewOf === "function" ? b.previewOf(kind) : null;
+    var pic = pv && (wide ? pv : pv.square);
+    var cls = wide ? "bk-pd__im ri-pd__im" : "bk-thumb ri-thumb";
+    if (!pic || !pic.src) return svgEl(artSvg(kind || "none", wide), cls);
+    var box = doc.createElement("span");
+    box.className = cls + " ri-pic3d";
+    box.setAttribute("aria-hidden", "true");
+    if (pv.tint) box.style.backgroundColor = pv.tint;
+    var img = doc.createElement("img");
+    img.alt = "";
+    img.src = pic.src;
+    if (pic.srcset) img.srcset = pic.srcset;
+    img.width = pic.width || (wide ? 240 : 84);
+    img.height = pic.height || (wide ? 160 : 84);
+    img.draggable = false;
+    img.addEventListener("error", function () {
+      if (box.parentNode) box.parentNode.replaceChild(svgEl(artSvg(kind || "none", wide), cls), box);
+    });
+    box.appendChild(img);
+    return box;
+  }
+  function svgEl(markup, cls) {
+    var span = doc.createElement("span");
+    span.className = cls;
+    span.setAttribute("aria-hidden", "true");
+    span.innerHTML = markup;
+    return span;
+  }
+
   // ===================================================================================== экран
   function mount(rootEl, options) {
     var opts = Object.assign({ titleTag: "h2" }, options || {});
     var akimat = opts.section === "projects" || opts.role === "akimat";
     var request = makeRequest(opts);
     var state = {
-      tab: akimat ? "review" : "voting",
-      items: null, counts: {}, projects: null, error: null, view: "list", open: null, busy: false,
+      tab: "ideas", sel: null, selClosed: false, mode: null, more: false,
+      items: null, counts: {}, projects: null, error: null, view: "list", busy: false,
       flash: pendingFocus, step: 1, sent: null,
     };
-    pendingFocus = null;
+    // pendingFocus гасится, когда идея найдена в загруженном списке (load): оболочка может пересоздать экран до ответа.
     var alive = true;
     rootEl.classList.add("ri");
     if (!akimat && loadDraft() && draft.active) state.view = "new";
@@ -494,7 +556,7 @@
       // (R15-S30: личные данные заметили позже, просьба автора).
       var q = akimat ? request("GET", "/staff/ideas?status=review,voting,checking,rejected,project")
         : request("GET", "/ideas?device_id=" + encodeURIComponent(deviceId()));
-      var p = akimat ? request("GET", "/proposals?device_id=" + encodeURIComponent(deviceId())) : Promise.resolve(null);
+      var p = request("GET", "/proposals?device_id=" + encodeURIComponent(deviceId()));
       state.items = null;
       render();
       return Promise.all([q, p.catch(function () { return null; })]).then(function (res) {
@@ -503,7 +565,10 @@
         state.counts = (res[0] && res[0].counts) || {};
         state.appear = true;
         state.projects = res[1] ? res[1].items || [] : [];
-        if (state.flash) focusIdea(state.flash);
+        if (state.flash) {
+          focusIdea(state.flash);
+          if (pendingFocus === state.flash) pendingFocus = null;
+        }
         render();
       }, function (err) {
         if (!alive) return;
@@ -511,13 +576,15 @@
         render();
       });
     }
+    // Нажатие на метку идеи на карте (или «Идея отправлена» → список): идея выбрана, её карточка открыта.
     function focusIdea(id) {
       var item = (state.items || []).filter(function (x) { return x.id === id; })[0];
       if (!item) return;
-      if (akimat) {
-        state.tab = "review";
-        state.open = id;
-      } else if (TAB_OF[item.status]) state.tab = TAB_OF[item.status];
+      state.tab = "ideas";
+      state.sel = id;
+      state.selClosed = false;
+      state.mode = null;
+      state.form = null;
     }
     function replace(item) {
       state.items = (state.items || []).map(function (x) { return x.id === item.id ? item : x; });
@@ -526,78 +593,116 @@
     // ── отрисовка ──
     function render() {
       if (!alive) return;
-      var focusKey = doc.activeElement && rootEl.contains(doc.activeElement) ? doc.activeElement.getAttribute("data-key") : null;
-      rootEl.replaceChildren(h(opts.titleTag, { class: "bk-h1 ri-title", text: tr(akimat ? "common.nav.projects" : "idea.title") }));
-      if (state.view === "new") renderWizard();
-      else if (state.view === "sent") renderSent();
-      else renderList();
+      var focusKey = doc.activeElement && (rootEl.contains(doc.activeElement) || (detailHost && detailHost.contains(doc.activeElement)))
+        ? doc.activeElement.getAttribute("data-key") : null;
+      rootEl.replaceChildren();
+      if (state.view === "new") {
+        rootEl.appendChild(sheetHead());
+        renderWizard();
+        removeDetail();
+      } else if (state.view === "sent") {
+        rootEl.appendChild(sheetHead());
+        renderSent();
+        removeDetail();
+      } else renderSheet();
       if (focusKey) {
-        var again = rootEl.querySelector('[data-key="' + focusKey + '"]');
+        var again = rootEl.querySelector('[data-key="' + focusKey + '"]') || (detailHost && detailHost.querySelector('[data-key="' + focusKey + '"]'));
         if (again) again.focus();
       }
-      if (state.flash && rootEl.querySelector('[data-idea="' + state.flash + '"]')) {
+      // Подсветка идеи с метки на карте — когда список уже загружен (иначе её применит load).
+      if (state.flash && state.items) {
         var card = rootEl.querySelector('[data-idea="' + state.flash + '"]');
-        card.classList.add("ri-card--flash");
-        card.scrollIntoView({ block: "center" });
+        if (card) {
+          card.classList.add("ri-card--flash");
+          card.scrollIntoView({ block: "nearest" });
+        }
         state.flash = null;
       }
     }
 
-    // Правило — всегда видно (R11 SCHEMES §2.1): ⓘ и серый текст (bk-banner чистого дизайна), под ним — «Бюджет участия»
-    // только текстом (без ссылки: это отдельная программа акимата, не подключённый сервис).
-    function honest() {
-      return h("div", { class: "ri-rule" }, [
-        h("div", { class: "bk-banner ri-honest", role: "note" }, [icon("info"), h("p", { class: "bk-banner__title", text: tr("idea.honest") })]),
-        h("p", { class: "bk-meta ri-pb", text: tr("idea.pb_note") }),
-      ]);
-    }
+    // ===================== эталон (REFERENCE.html, вариант A): лист «Проекты и идеи» + карточка выбранного =====================
+    // Лист: заголовок и ×, сегмент «Идеи жителей · N | Проекты акимата · M», карточки как в App Store (картинка 84, название,
+    // одна строка, статус-плашка и капсула ♥ с числом — «Поддержать» прямо в списке). Выбранная карточка — в рамке 2 px,
+    // справа от листа — её карточка (картинка, 3 цифры, одно предложение, главная и вторая кнопки, «это опрос, решает акимат»).
+    // Ноутбук: карточка — отдельная стеклянная панель справа (вне листа оболочки); телефон — раскрывается под строкой списка.
+    var wide = function () { return !root.matchMedia || root.matchMedia("(min-width: 761px)").matches; };
+    // Карточка выбранного справа (эталон) — только когда лист узкий (412 слева, патч R01). Лист шире 440 (телефон или
+    // прежний широкий лист раздела по центру) — карточка раскрывается под строкой списка, ничего не перекрывая (R11 §21.4).
+    var sideCard = function () {
+      if (!wide()) return false;
+      var w = rootEl.getBoundingClientRect().width;
+      return w > 0 && w <= 440;
+    };
+    var detailHost = null;
+    var ORDER = { review: 0, hidden: 0, voting: 1, checking: 2, project: 3, rejected: 4 };
 
-    // Вкладки ui-kit R11 (bk-tabs, role=tablist/tab, стрелки, затухание края на 375). Без BirgeUI.tabs (ui-kit до 12 окт) —
-    // та же разметка, нажатие и стрелки — здесь.
-    function tabs(list) {
-      var row = h("div", { class: "bk-tabs ri-tabs", role: "tablist", "aria-label": tr(akimat ? "common.nav.projects" : "idea.title") });
-      list.forEach(function (t) {
-        var on = state.tab === t.id;
-        row.appendChild(h("button", { type: "button", role: "tab", value: t.id, "aria-selected": String(on), tabindex: on ? "0" : "-1",
-          "data-key": "tab-" + t.id }, [t.label, t.n != null ? h("span", { class: "bk-num", text: " " + t.n }) : null]));
+    function sheetHead() {
+      var close = h("button", { type: "button", class: "bk-x ri-x", "data-key": "close", "aria-label": tr("common.action.close"), title: tr("common.action.close"),
+        onclick: function () {
+          if (state.view !== "list") { closeWizard(); return; }
+          if (typeof opts.close === "function") opts.close();
+          else if (shell()) shell().setSection("map");
+        } }, [icon("close")]);
+      return h("div", { class: "bk-psheet__hd ri-sheet-hd" }, [h(opts.titleTag, { class: "ri-sheet-title", text: tr("common.nav.projects") }), close]);
+    }
+    function ideasShown() {
+      var list = (state.items || []).filter(function (x) { return akimat || x.status !== "hidden" || x.mine; });
+      // свои на проверке — сверху; дальше по ходу решения (стабильная сортировка сохраняет порядок сервера внутри групп)
+      return list.slice().sort(function (a, b) {
+        return (b.mine ? 1 : 0) - (a.mine ? 1 : 0) || (ORDER[a.status] || 0) - (ORDER[b.status] || 0);
       });
-      function choose(id) {
-        if (id && id !== state.tab) {
-          state.tab = id;
-          state.open = null;
-          state.appear = true;
-          render();
-        }
-      }
-      if (root.BirgeUI && typeof root.BirgeUI.tabs === "function") root.BirgeUI.tabs(row, choose);
-      else {
-        row.addEventListener("click", function (e) {
-          var b = e.target.closest && e.target.closest("[role=tab]");
-          if (b) choose(b.value);
-        });
-        row.addEventListener("keydown", function (e) {
-          if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-          var all = Array.prototype.slice.call(row.querySelectorAll("[role=tab]")), i = all.indexOf(doc.activeElement);
-          if (i < 0) return;
-          e.preventDefault();
-          choose(all[(i + (e.key === "ArrowRight" ? 1 : all.length - 1)) % all.length].value);
-        });
-      }
+    }
+    function listOf(tab) {
+      return tab === "projects" ? state.projects || [] : ideasShown();
+    }
+    function selected() {
+      if (state.selClosed) return null;
+      var list = listOf(state.tab);
+      var s = state.sel && list.filter(function (x) { return x.id === state.sel; })[0];
+      if (s) return s;
+      if (!sideCard() && !state.sel) return null;  // телефон и широкий лист: ничего не раскрыто, пока не нажали
+      var first = list.filter(function (x) { return !(akimat && isDecided(x)); })[0] || list[0] || null;
+      state.sel = first ? first.id : null;
+      return first;
+    }
+    function segControl() {
+      var nIdeas = akimat ? ideasShown().filter(function (x) { return !isDecided(x); }).length : ideasShown().length;
+      var row = h("div", { class: "ri-seg", role: "tablist", "aria-label": tr("common.nav.projects") });
+      // Телефон: короткие подписи «Идеи · N | Проекты · M» — длинные казахские не переносятся в узком сегменте.
+      var full = wide();
+      [["ideas", tr(full ? "idea.title" : "common.nav.ideas") + " · " + nIdeas],
+        ["projects", tr(full ? "idea.tab.akimat_projects" : "idea.tab.projects") + " · " + (state.projects || []).length]].forEach(function (t) {
+        var on = state.tab === t[0];
+        row.appendChild(h("button", { type: "button", role: "tab", value: t[0], "aria-selected": String(on), tabindex: on ? "0" : "-1",
+          "data-key": "tab-" + t[0], onclick: function () { chooseTab(t[0]); } }, [t[1]]));
+      });
+      row.addEventListener("keydown", function (e) {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        e.preventDefault();
+        chooseTab(state.tab === "ideas" ? "projects" : "ideas");
+        var b = rootEl.querySelector('[data-key="tab-' + state.tab + '"]');
+        if (b) b.focus();
+      });
       return row;
     }
-
-    function renderList() {
-      if (!akimat) {
-        rootEl.appendChild(honest());
-        rootEl.appendChild(h("div", { class: "bk-actions ri-new" }, [
-          button("bk-btn--primary", tr("idea.new"), "plus", { "data-key": "new", onclick: startWizard })]));
-      }
-      var body = h("div", { class: "ri-body" });
+    function chooseTab(id) {
+      if (id === state.tab) return;
+      state.tab = id;
+      state.sel = null;
+      state.selClosed = false;
+      state.mode = null;
+      state.form = null;
+      state.more = false;
+      state.appear = true;
+      render();
+    }
+    function renderSheet() {
+      rootEl.appendChild(sheetHead());
+      var body = h("div", { class: "bk-plist ri-plist" });
       if (state.error) {
+        removeDetail();
         if (akimat && (state.error.status === 401 || state.error.status === 403)) {
-          // R11 разбор FINAL-3: кнопка входа прямо здесь (иначе вход спрятан в меню аватара)
-          // Одно состояние «войдите» на все разделы (R11 INTEGRATION §9.3 b, §9.5 a): рисунок «пропуск» ui-kit,
-          // подсказка «Учётную запись выдаёт администратор», одна главная «Войти» (старый ui-kit — значок 48).
+          // Одно состояние «войдите» на все разделы (R11 INTEGRATION §9.3 b, §9.5 a): рисунок «пропуск» ui-kit, подсказка, «Войти».
           stateBox(body, "empty", { title: tr("proposal.need_staff"), text: tr("staff.login.note"), illustration: "staff",
             icon: hasIllustrations() ? null : "user", action: { label: tr("staff.login.submit"),
             onClick: function () { if (root.BirgeShell) root.BirgeShell.setSection("map"); if (root.CivicShell && root.CivicShell.openEditor) root.CivicShell.openEditor(); } } });
@@ -608,94 +713,400 @@
         return;
       }
       if (!state.items) {
+        removeDetail();
         skeleton(body);
         rootEl.appendChild(body);
         return;
       }
-      if (akimat) {
-        var review = state.items.filter(function (x) { return x.status === "review" || x.status === "voting" || x.status === "checking"; });
-        var projects = (state.projects || []);
-        rootEl.appendChild(tabs([{ id: "review", label: tr("idea.tab.review"), n: review.length },
-          { id: "projects", label: tr("idea.tab.projects"), n: projects.length }]));
-        if (state.tab === "projects") renderProjects(body, projects);
-        else renderStaffIdeas(body, review);
+      rootEl.appendChild(segControl());
+      var sel = selected();
+      var list = listOf(state.tab);
+      if (state.tab === "projects") {
+        if (!list.length) emptyBox(body, tr("akim.proposals.empty"), null, ["square", "sports"], "list");
+        list.forEach(function (p) { body.appendChild(projectCard(p, sel)); });
       } else {
-        if (!state.items.length) {
-          // Идей нет совсем — без пустых вкладок «0 · 0 · 0»: иллюстрация и подсказка (главная кнопка — выше).
-          emptyBox(body, tr("idea.empty.title"), tr("idea.empty.text"));
-          rootEl.appendChild(body);
-          return;
+        var open = akimat ? list.filter(function (x) { return !isDecided(x); }) : list;
+        if (!list.length) emptyBox(body, tr(akimat ? "idea.empty.review" : "idea.empty.title"), akimat ? null : tr("idea.empty.text"), null, akimat ? "done" : "idea");
+        else if (!open.length) emptyBox(body, tr("idea.empty.review"), null, ["check"], "done");
+        open.forEach(function (x) { body.appendChild(ideaCard(x, sel)); });
+        var decided = akimat ? list.filter(isDecided) : [];
+        if (decided.length) {
+          // Решённые — свёрнуто внизу (R15-S30: их можно скрыть).
+          var box = h("details", { class: "bk-details ri-decided" }, [h("summary", { text: tr("idea.decided") + " · " + decided.length })]);
+          if (state.decidedOpen || decided.some(function (x) { return sel && x.id === sel.id; })) box.open = true;
+          box.addEventListener("toggle", function () { state.decidedOpen = box.open; });
+          decided.forEach(function (x) { box.appendChild(ideaCard(x, sel)); });
+          body.appendChild(box);
         }
-        var counts = {};
-        RESIDENT_TABS.forEach(function (s) { counts[s] = state.items.filter(function (x) { return TAB_OF[x.status] === s; }).length; });
-        rootEl.appendChild(tabs(RESIDENT_TABS.map(function (s) { return { id: s, label: tr("idea.tab." + s), n: counts[s] }; })));
-        var shown = state.items.filter(function (x) {
-          return TAB_OF[x.status] === state.tab || (state.tab === "voting" && x.mine && (x.status === "review" || x.status === "hidden"));
-        });
-        // Правило голоса — один раз над списком (раньше — под каждой «Поддержать»); кнопки ссылаются на него (aria-describedby).
-        if (shown.some(function (x) { return x.status === "voting"; })) {
-          rootEl.appendChild(h("p", { class: "bk-meta ri-onevote", id: "ri-onevote" }, [icon("info"), h("span", { text: tr("proposal.one_vote") })]));
-        }
-        if (!shown.length) {
-          if (state.tab === "project") emptyBox(body, tr("idea.empty.project"), null, ["square", "sports"], "list");
-          else if (state.tab === "rejected") emptyBox(body, tr("idea.empty.rejected"), null, ["check"], "list");
-          else emptyBox(body, tr("idea.empty.title"), tr("idea.empty.text"));
-        }
-        shown.forEach(function (item) { body.appendChild(residentCard(item)); });
       }
-      // Демо-данные в списке — одна серая строка «Пример для показа, не настоящие данные» внизу (R11 §13 D-5).
-      var shownDemo = Array.prototype.some.call(body.querySelectorAll("[data-demo]"), function () { return true; });
-      // Карточки мягко появляются одна за другой (40 мс) — только после загрузки и смены вкладки, не при каждой перерисовке.
       if (state.appear) {
         body.classList.add("ri-body--in");
         Array.prototype.forEach.call(body.children, function (el, i) { el.style.setProperty("--ri-i", String(Math.min(i, 8))); });
         state.appear = false;
       }
+      var demo = body.querySelector("[data-demo]");
+      // Телефон: правило «это опрос, решает акимат» — одной строкой над карточками, видно сразу (R11 SCHEMES §4 п. 3);
+      // на ноутбуке оно в карточке выбранного (эталон .pd).
+      if (!sideCard()) body.insertBefore(h("p", { class: "bk-footnote ri-honest-note", text: tr("idea.honest") }), body.firstChild);
+      if (demo) body.appendChild(h("p", { class: "bk-footnote ri-demo-note", text: tr("common.tag.demo_hint") }));
       rootEl.appendChild(body);
-      if (shownDemo) rootEl.appendChild(h("p", { class: "bk-footnote ri-demo-note", text: tr("common.tag.demo_hint") }));
+      if (!akimat) {
+        rootEl.appendChild(h("div", { class: "ri-sheet-ft" }, [
+          h("button", { type: "button", class: "bk-btn ri-newbtn", "data-key": "new", onclick: startWizard }, [
+            h("span", { class: "ri-newbtn__ic", "aria-hidden": "true" }, [icon("plus")]), h("span", { text: tr("idea.new") })])]));
+      }
+      placeDetail(sel);
+      // Выбор сменился (нажатие, ↑↓, первая карточка после загрузки или смены вкладки) — карта плавно ведёт к объекту.
+      if (sel && state.mapFor !== sel.id) {
+        state.mapFor = sel.id;
+        moveMap(sel, 0);
+      }
     }
 
-    // ── карточка (дизайн-марафон: «как в App Store») ──
-    // Плитка-иллюстрация вида объекта слева, справа — тихая строка «вид · район · Пример», название и одна строка статуса.
-    // Внизу — число голосов (перекатывается при поддержке), «На карте» и капсула «Поддержать» / «Проверить».
-    function tile(item) {
-      var kind = item.object && item.object.kind;
-      return h("span", { class: "ri-tile", "data-kind": kind || "none", "data-idea-status": item.status, "aria-hidden": "true" }, [
-        icon(kind ? KIND_ICON[kind] : "pin"),
-        item.status === "project" ? h("span", { class: "ri-tile__badge" }, [icon("check")]) : null,
-      ]);
+    // ── строка списка (карточка «как в App Store») ──
+    function pill(text, tone) {
+      return h("span", { class: "bk-pill ri-pill" + (PILL_KIT[tone] ? " " + PILL_KIT[tone] : ""), "data-tone": tone, text: text });
     }
-    function metaLine(item) {
+    var PILL_KIT = { warn: "bk-pill--review", ok: "bk-pill--accepted" };
+    var IDEA_TONE = { review: "warn", checking: "warn", voting: "neutral", project: "ok", rejected: "muted", hidden: "muted" };
+    var PROJ_TONE = { proposal: "neutral", approved: "ok", rejected: "muted" };
+    function districtShort(d) {
+      return d ? tr("district." + d) : null;
+    }
+    function joinDot(parts) {
+      return parts.filter(Boolean).join(" · ");
+    }
+    function voteCapsule(n, opts2) {
+      var kids = [svgEl(HEART, "ri-heart-ic"), h("span", { class: "ri-vote__n bk-num" + (opts2.roll ? " ri-roll-" + opts2.roll : ""), text: I() ? I().formatNumber(n) : String(n) })];
+      if (!opts2.onclick) {
+        return h("span", { class: "bk-vote ri-vote ri-vote--static", role: "img", "aria-label": tr("idea.votes", { n: n }) }, kids);
+      }
+      return h("button", { type: "button", class: "bk-vote ri-vote" + (opts2.pop ? " ri-pop" : ""), "aria-pressed": String(!!opts2.pressed), "aria-label": opts2.label,
+        title: opts2.label, "data-key": opts2.key, onclick: opts2.onclick }, kids);
+    }
+    function rowCard(id, attrs, kind, titleText, titleLang, sub, pillEl, capsule, sel) {
+      var on = !!(sel && sel.id === id);
+      var card = h("article", Object.assign({ class: "bk-pc ri-pc", "aria-current": on ? "true" : null, "aria-labelledby": "ri-t-" + id }, attrs), [
+        preview(kind, false),
+        h("div", { class: "bk-pc__body ri-pc__t" }, [
+          h("h3", { class: "bk-pc__title ri-pc__title", id: "ri-t-" + id, lang: titleLang }, [
+            h("button", { type: "button", class: "ri-pc__open", "data-key": "sel-" + id, "aria-expanded": String(on), onclick: function () { select(id); } }, [titleText])]),
+          h("p", { class: "bk-pc__sub ri-pc__sub", text: sub }),
+          h("div", { class: "bk-pc__foot ri-pc__f" }, [pillEl, capsule]),
+        ]),
+      ]);
+      return card;
+    }
+    function ideaCard(item, sel) {
+      var t = textOf(item, "title");
       var kind = item.object && item.object.kind;
-      var parts = [h("span", { text: kind ? tr("proposal.kind." + kind) : tr("idea.kind_none") })];
-      if (item.district) parts.push(h("span", { text: tr("district.name", { name: tr("district." + item.district) }) }));
-      // «Пример» — не на каждой карточке, а одной строкой под списком (R11 INTEGRATION §13 D-5, как в «Рядом» R08).
-      var row = h("p", { class: "ri-meta" }, metaParts(parts));
-      if (item.mine) row.appendChild(h("span", { class: "bk-tag ri-mine", text: tr("idea.mine") }));
+      var capsule = null;
+      var bump = state.bump && state.bump.id === item.id ? state.bump.dir : 0;
+      if (!akimat && item.status === "voting") {
+        capsule = voteCapsule(item.votes || 0, { pressed: item.my_support, label: tr(item.my_support ? "idea.supported" : "idea.support"), key: "support-" + item.id,
+          roll: bump > 0 ? "up" : bump < 0 ? "down" : "", pop: !!bump, onclick: function () { support(item, !item.my_support); } });
+      } else if (item.status !== "review" && item.status !== "hidden") {
+        capsule = voteCapsule(item.votes || 0, {});
+      }
+      var sub = joinDot([item.mine ? tr("idea.mine") : tr("idea.sub"), districtShort(item.district)]);
+      return rowCard(item.id, { "data-idea": item.id, "data-idea-status": item.status, "data-demo": item.demo ? "" : null }, kind, t.text, t.lang, sub,
+        pill(tr("idea.pill." + item.status), IDEA_TONE[item.status] || "neutral"), capsule, sel);
+    }
+    function projTitle(p) {
+      return lang() === "kk" && p.title_kk ? { text: p.title_kk, lang: "kk" } : { text: p.title_ru, lang: "ru" };
+    }
+    function projectCard(p, sel) {
+      var t = projTitle(p);
+      var bump = state.bump && state.bump.id === p.id ? state.bump.dir : 0;
+      var capsule = !akimat && p.voting_open && p.status === "proposal"
+        ? voteCapsule(p.votes_up || 0, { pressed: p.my_vote === 1, label: tr("proposal.vote_up"), key: "vote-" + p.id, roll: bump > 0 ? "up" : bump < 0 ? "down" : "",
+          pop: !!bump, onclick: function () { voteProject(p, 1); } })
+        : voteCapsule(p.votes_up || 0, {});
+      var sub = p.idea ? tr("idea.by_residents", { n: p.idea.votes || 0 }) : joinDot([tr("idea.sub_project"), districtShort(p.district)]);
+      return rowCard(p.id, { "data-proposal": p.id, "data-demo": p.demo ? "" : null }, p.kind, t.text, t.lang, sub,
+        pill(tr("proposal.status." + p.status), PROJ_TONE[p.status] || "neutral"), capsule, sel);
+    }
+
+    // ── выбор: строка ↔ карточка ↔ карта ──
+    function select(id) {
+      if (state.sel === id && !state.selClosed) {
+        if (!sideCard()) { state.selClosed = true; render(); }  // под строкой: повторное нажатие сворачивает
+        return;
+      }
+      state.sel = id;
+      state.selClosed = false;
+      state.mode = null;
+      state.form = null;
+      state.more = false;
+      render();
+    }
+    function closeDetail() {
+      state.selClosed = true;
+      state.mode = null;
+      state.form = null;
+      render();
+      var b = state.sel && rootEl.querySelector('[data-key="sel-' + state.sel + '"]');
+      if (b) b.focus();
+    }
+    function pointOf(x) {
+      var g = x && x.geometry;
+      if (!g || !g.coordinates) return null;
+      if (g.type === "Point") return g.coordinates;
+      var c = g.type === "LineString" ? g.coordinates : g.coordinates[0];
+      return c && c.length ? c[Math.floor(c.length / 2)] : null;
+    }
+    // Карта плавно переходит к выбранному: объект — между листом и карточкой (бесшовно «список ↔ карта», как в 2ГИС).
+    function moveMap(x, tries) {
+      var m = mapObject(), p = pointOf(x);
+      if (!p || !sideCard() || !alive) return;
+      // Карта поднимается после оболочки: при открытии раздела по ссылке ждём её до ~12 с.
+      if (!m && tries < 40) {
+        setTimeout(function () { if (state.mapFor === x.id) moveMap(x, tries + 1); }, 300);
+        return;
+      }
+      sectionLayer(0);
+      if (!m) return;
+      var reduce = root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      try {
+        m.easeTo({ center: p, zoom: Math.max(m.getZoom(), 15.5), duration: reduce ? 0 : 600,
+          padding: { left: 452, right: detailHost && detailHost.isConnected ? 444 : 84, top: 84, bottom: 40 } });
+      } catch (e) { /* карта не готова — без перехода */ }
+    }
+    // На карте — объекты открытой вкладки: «Идеи жителей» (метки «Идея · N», R05 setIdeas) или «Проекты» (метки
+    // «Проект · 2027» лаймом и 3D, слой оболочки R01) — пока открыт раздел; закрыли раздел — карта как была (destroy).
+    // Слой, выбранный жителем самим, не трогаем. Слои регистрируются, когда поднялся R05, — пробуем снова, до ~12 с.
+    function sectionLayer(tries) {
+      if (!alive || state.view !== "list") return;
+      var want = state.tab === "projects" ? "projects" : "ideas";
+      var cur = doc.body.dataset.birgeLayer || "";
+      if (cur === want || (cur && cur !== state.layerMine)) return;
+      var S = shell(), b = build3d();
+      var ready = S && S.setLayer && b && (want === "projects" || typeof b.setIdeas === "function");
+      if (ready) {
+        S.setLayer(want);
+        if (doc.body.dataset.birgeLayer === want) { state.layerMine = want; return; }
+      }
+      if (tries < 40) setTimeout(function () { sectionLayer(tries + 1); }, 300);
+    }
+    // ↑ ↓ / J K — по строкам списка, Enter — открыть, Esc — закрыть карточку (правило 2 эталона).
+    function onKeys(e) {
+      if (state.view !== "list" || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+      var tag = (e.target && e.target.tagName) || "";
+      if (/INPUT|TEXTAREA|SELECT/.test(tag)) return;
+      if (e.key === "Escape" && state.sel && !state.selClosed) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeDetail();
+        return;
+      }
+      var down = e.key === "ArrowDown" || e.key === "j" || e.key === "J", up = e.key === "ArrowUp" || e.key === "k" || e.key === "K";
+      if (!down && !up) return;
+      var ids = Array.prototype.map.call(rootEl.querySelectorAll(".ri-pc"), function (c) { return c.getAttribute("data-idea") || c.getAttribute("data-proposal"); });
+      if (!ids.length) return;
+      e.preventDefault();
+      var i = ids.indexOf(state.sel);
+      var next = ids[i < 0 ? 0 : Math.max(0, Math.min(ids.length - 1, i + (down ? 1 : -1)))];
+      select(next);
+      var b = rootEl.querySelector('[data-key="sel-' + next + '"]');
+      if (b) { b.focus(); b.scrollIntoView({ block: "nearest" }); }
+    }
+    rootEl.addEventListener("keydown", onKeys);
+
+    // ── карточка выбранного (эталон: картинка, 3 цифры, одно предложение, «Поддержать» / «Подробнее», «это опрос…») ──
+    function removeDetail() {
+      if (detailHost && detailHost.parentNode) detailHost.parentNode.removeChild(detailHost);
+    }
+    function placeDetail(sel) {
+      if (!sel) { removeDetail(); return; }
+      var card = detailCard(sel);
+      if (sideCard()) {
+        if (!detailHost) {
+          detailHost = h("div", { class: "ri-pd-host bk-app" });
+          detailHost.addEventListener("keydown", onKeys);
+        }
+        var fresh = !detailHost.isConnected || detailHost.getAttribute("data-for") !== sel.id;
+        detailHost.setAttribute("data-for", sel.id);
+        card.classList.toggle("ri-pd--in", fresh);
+        detailHost.replaceChildren(card);
+        if (!detailHost.isConnected) doc.body.appendChild(detailHost);
+      } else {
+        removeDetail();
+        card.classList.add("ri-pd--inline");
+        var row = rootEl.querySelector('.ri-pc[aria-current="true"]');
+        if (row) row.after(card);
+      }
+    }
+    function fact(value, label) {
+      return h("div", { class: "ri-fact" }, [h("b", { class: "bk-num", text: value }), h("span", { text: label })]);
+    }
+    function detailCard(x) {
+      var isProj = state.tab === "projects";
+      var kind = isProj ? x.kind : x.object && x.object.kind;
+      var t = isProj ? projTitle(x) : textOf(x, "title");
+      var inner = h("div", { class: "bk-pd__in ri-pd__in" }, [h("h3", { class: "bk-pd__title ri-pd__title", id: "ri-pd-t", lang: t.lang, text: t.text })]);
+      var card = h("section", { class: "bk-pd ri-pd bk-glass bk-glass--strong", role: "region", "aria-labelledby": "ri-pd-t",
+        "data-pd": x.id, "data-pd-kind": isProj ? "project" : "idea" }, [
+        preview(kind, true),
+        inner,
+      ]);
+      if (isProj) {
+        inner.appendChild(h("div", { class: "bk-facts ri-facts" }, [
+          fact(I() ? I().formatNumber(x.votes_up || 0) : String(x.votes_up || 0), tr("idea.fact.supported")),
+          fact(I() ? I().formatNumber(x.votes_down || 0) : String(x.votes_down || 0), tr("idea.fact.against")),
+          fact(x.planned_year ? String(x.planned_year) : "—", tr("idea.fact.year"))]));
+        // Одно предложение — как в карточке проекта на карте (proposals.js): статус словом и откуда проект.
+        inner.appendChild(h("p", { class: "bk-quote ri-pd__text", text: joinDot([tr("proposal.status." + x.status), x.idea ? tr("idea.by_residents", { n: x.idea.votes || 0 })
+          : joinDot([tr("proposal.kind." + x.kind), x.district ? tr("district.name", { name: tr("district." + x.district) }) : null])]) }));
+        inner.appendChild(projectActions(x));
+      } else {
+        // Эталон: «поддержали · срок · оценка». Оценки стоимости в данных нет — третья цифра «объект» (STATUS.md, расхождения).
+        var year = x.project && x.project.planned_year;
+        inner.appendChild(h("div", { class: "bk-facts ri-facts" }, [
+          fact(I() ? I().formatNumber(x.votes || 0) : String(x.votes || 0), tr("idea.fact.supported")),
+          year ? fact(String(year), tr("idea.fact.year")) : fact(districtShort(x.district) || "—", tr("idea.fact.district")),
+          fact(kind ? tr("proposal.kind." + kind) : tr("idea.kind_none"), tr("idea.fact.object"))]));
+        var decision = decisionBlock(x);
+        if (decision) inner.appendChild(decision);
+        else {
+          var d = textOf(x, "description");
+          if (d.text) inner.appendChild(h("p", { class: "bk-quote ri-pd__text" + (state.more ? " ri-pd__text--full" : ""), lang: d.lang, text: d.text }));
+        }
+        if (akimat) inner.appendChild(staffActions(x));
+        else inner.appendChild(residentActions(x));
+        if (state.more) inner.appendChild(moreBlock(x));
+      }
+      inner.appendChild(h("p", { class: "bk-pd__note ri-pd__note", text: tr("idea.honest") }));
+      return card;
+    }
+    function residentActions(item) {
+      var row = h("div", { class: "bk-acts ri-pd__acts" });
+      if (item.status === "voting") {
+        var on = !!item.my_support;
+        row.appendChild(button("bk-btn--primary ri-pd__main", tr(on ? "idea.supported" : "idea.support"), on ? "check" : null,
+          { "aria-pressed": String(on), "data-key": "pd-support", onclick: function () { support(item, !item.my_support); } }));
+      } else if (item.status !== "hidden") {
+        row.appendChild(button("bk-btn--primary ri-pd__main", tr("idea.on_map"), "pin", { "data-key": "pd-map", onclick: function () { showOnMap(item, opts); } }));
+      }
+      row.appendChild(button("ri-pd__second", tr(state.more ? "idea.check_close" : "common.action.more"), null,
+        { "aria-expanded": String(!!state.more), "data-key": "pd-more", onclick: function () { state.more = !state.more; render(); } }));
       return row;
     }
-    // Статус идеи — своя точка (одна краска, R11 data-status оставлен для тестов и запасного вида ui-kit).
-    function statusLine(item) {
-      return h("p", { class: "ri-line" }, [h("span", { class: "bk-status", "data-status": STATUS_LOOK[item.status] || "new",
-        "data-idea-status": item.status, text: tr("idea.status." + item.status) })]);
+    function moreBlock(item) {
+      var box = h("div", { class: "ri-pd__more" });
+      if (item.status === "voting") box.appendChild(button("bk-btn--ghost", tr("map.card.on_map"), "pin", { onclick: function () { showOnMap(item, opts); } }));
+      if (item.object && item.object.kind && build3d() && build3d().view3dIdea && item.status !== "hidden") {
+        box.appendChild(button("bk-btn--ghost ri-3d", tr("idea.view3d"), "cube", { onclick: function () { showOnMap(item, opts); build3d().view3dIdea(r05Idea(item)); } }));
+      }
+      if (item.check) box.appendChild(checklistView(item.check));
+      box.appendChild(h("p", { class: "bk-meta", text: tr("proposal.one_vote") }));
+      return box;
     }
-    function titleEl(item) {
-      var t = textOf(item, "title");
-      return h("h3", { class: "bk-card__title ri-title-text", id: "ri-t-" + item.id, lang: t.lang, text: t.text });
+    function staffActions(item) {
+      var wrap = h("div", { class: "ri-pd__staff" });
+      if (item.status === "review" && !(state.form && state.form.mode)) {
+        var form = state.form || (state.form = { id: item.id, check: {}, kind: null, mode: null, reason: "", improve: "" });
+        wrap.appendChild(h("div", { class: "bk-acts ri-pd__acts" }, [
+          button("bk-btn--primary ri-pd__main", tr("ask.staff.publish"), "check", { "data-key": "publish", onclick: function () { decide(item, { action: "publish" }, "idea.published"); } }),
+          button("ri-pd__second", tr("proposal.reject"), null, { "data-key": "pd-reject", onclick: function () { form.mode = "reject"; state.panelIn = item.id; render(); } }),
+        ]));
+        wrap.appendChild(button("bk-btn--ghost ri-hidebtn", tr("idea.hide"), null, { "data-key": "pd-hide", onclick: function () { form.mode = "hide"; state.panelIn = item.id; render(); } }));
+        return wrap;
+      }
+      if ((item.status === "voting" || item.status === "checking") && state.mode !== "check" && !(state.form && state.form.mode)) {
+        wrap.appendChild(h("div", { class: "bk-acts ri-pd__acts" }, [
+          button("bk-btn--primary ri-pd__main", tr("idea.check_open"), "edit", { "data-key": "pd-check", onclick: function () { state.mode = "check"; state.panelIn = item.id; render(); } }),
+          button("ri-pd__second", tr("idea.on_map"), "pin", { onclick: function () { showOnMap(item, opts); } }),
+        ]));
+        return wrap;
+      }
+      if (isDecided(item) && state.mode !== "hide" && !(state.form && state.form.mode)) {
+        wrap.appendChild(h("div", { class: "bk-acts ri-pd__acts" }, [
+          button("ri-pd__second", tr("idea.on_map"), "pin", { onclick: function () { showOnMap(item, opts); } }),
+          button("bk-btn--ghost ri-hidebtn", tr("idea.hide_short"), null, { "data-key": "pd-hide", onclick: function () {
+            state.form = null;
+            state.panelIn = item.id;
+            state.mode = "hide";
+            render();
+          } }),
+        ]));
+        return wrap;
+      }
+      wrap.appendChild(staffPanel(item));
+      return wrap;
     }
-    function head(item) {
-      return h("div", { class: "ri-app" }, [tile(item), h("div", { class: "ri-app__body" }, [metaLine(item), titleEl(item), statusLine(item)])]);
+    function projectActions(p) {
+      var row = h("div", { class: "bk-acts ri-pd__acts" });
+      if (akimat) {
+        if (p.status === "proposal") {
+          row.appendChild(button("bk-btn--primary ri-pd__main", tr("proposal.approve"), "check", { "data-key": "pd-approve", onclick: function (e) { decideProject(p, "approve", e.currentTarget); } }));
+          row.appendChild(button("ri-pd__second", tr("proposal.reject"), null, { "data-key": "pd-reject", onclick: function (e) { decideProject(p, "reject", e.currentTarget); } }));
+        } else {
+          row.appendChild(h("p", { class: "ri-pd__text", text: tr("proposal.status." + p.status) }));
+        }
+      } else if (p.voting_open && p.status === "proposal") {
+        row.appendChild(button("bk-btn--primary ri-pd__main", tr("proposal.vote_up"), "thumb-up",
+          { "aria-pressed": String(p.my_vote === 1), "data-key": "pd-up", onclick: function () { voteProject(p, 1); } }));
+        row.appendChild(button("ri-pd__second", tr("proposal.vote_down"), "thumb-down",
+          { "aria-pressed": String(p.my_vote === -1), "data-key": "pd-down", onclick: function () { voteProject(p, -1); } }));
+      } else {
+        row.appendChild(h("p", { class: "ri-pd__text", text: tr("proposal.voting_closed") }));
+      }
+      return row;
     }
-    // «47 голосов»: число — отдельным элементом, чтобы при поддержке оно «перекатилось» (+1 снизу, −1 сверху).
-    function votesEl(item) {
-      var n = item.votes || 0;
-      var full = tr("idea.votes", { n: n }), num = I() ? I().formatNumber(n) : String(n), at = full.indexOf(num);
-      var bump = state.bump && state.bump.id === item.id ? state.bump.dir : 0;
-      var numEl = h("span", { class: "ri-votes__n bk-num" + (bump > 0 ? " ri-roll-up" : bump < 0 ? " ri-roll-down" : ""), text: num });
-      // Число сверху крупно, слово под ним мелко (как оценки в App Store) — узкая колонка, капсула на телефоне в той же строке.
-      if (at === 0) return h("p", { class: "ri-votes ri-votes--stack" }, [numEl, h("span", { class: "ri-votes__w", text: full.slice(num.length).trim() })]);
-      return h("p", { class: "ri-votes" }, at < 0 ? [full] : [full.slice(0, at), numEl, full.slice(at + num.length)]);
+    // Голос за проект — тот же вызов R06 /proposals/{id}/vote, что у карточки на карте; число меняется сразу (правило 4).
+    function voteProject(p, value) {
+      var P = root.BirgeProposals && root.BirgeProposals.api;
+      if (!P || state.busy) return;
+      state.busy = true;
+      var before = { up: p.votes_up, down: p.votes_down, mine: p.my_vote };
+      var was = p.my_vote || 0;
+      if (was !== value) {
+        if (was === 1) p.votes_up = Math.max(0, (p.votes_up || 0) - 1);
+        if (was === -1) p.votes_down = Math.max(0, (p.votes_down || 0) - 1);
+        if (value === 1) p.votes_up = (p.votes_up || 0) + 1;
+        if (value === -1) p.votes_down = (p.votes_down || 0) + 1;
+        p.my_vote = value;
+        state.bump = { id: p.id, dir: value === 1 ? 1 : 0 };
+        render();
+      }
+      P.vote(p.id, value).then(function (data) {
+        state.busy = false;
+        if (data && data.item) replaceProject(data.item);
+        render();
+        setTimeout(function () { if (state.bump && state.bump.id === p.id) state.bump = null; }, 600);
+        announce(tr(data && data.changed && data.previous ? "proposal.vote_changed" : "proposal.vote_saved"));
+      }, function (err) {
+        state.busy = false;
+        p.votes_up = before.up;
+        p.votes_down = before.down;
+        p.my_vote = before.mine;
+        state.bump = null;
+        render();
+        toast(err.status === 429 ? tr("proposal.vote_limit") : errorText(err, "proposal.vote_error"), { type: "error" });
+      });
     }
+    function decideProject(p, action, btn) {
+      var P = root.BirgeProposals && root.BirgeProposals.api;
+      if (!P || state.busy) return;
+      state.busy = true;
+      if (btn) btn.setAttribute("aria-busy", "true");
+      P.decide(p.id, action).then(function (data) {
+        state.busy = false;
+        if (data && data.item) replaceProject(data.item);
+        toast(tr("proposal.status." + ((data && data.item && data.item.status) || p.status)));
+        render();
+        if (build3d() && build3d().refresh) build3d().refresh();
+      }, function (err) {
+        state.busy = false;
+        if (btn) btn.removeAttribute("aria-busy");
+        toast(errorText(err, "proposal.vote_error"), { type: "error" });
+      });
+    }
+    function replaceProject(item) {
+      state.projects = (state.projects || []).map(function (x) { return x.id === item.id ? item : x; });
+    }
+
+    // ── общие части карточки ──
     // «Подпись: текст» — подпись жирным, текст обычным (раньше вся строка «Можно доработать: …» была жирной).
     function labeled(key, text, cls) {
       var mark = "\u0001", full = tr(key, { text: mark }), at = full.indexOf(mark);
@@ -721,20 +1132,6 @@
       if (item.status === "hidden") return h("p", { class: "ri-decision", text: tr("idea.hidden_note") });
       return null;
     }
-    function details(item) {
-      var d = textOf(item, "description");
-      var kids = [h("summary", { text: tr("common.action.more") })];
-      if (d.text) kids.push(h("p", { class: "ri-text", lang: d.lang, text: d.text }));
-      if (item.object && item.object.kind && build3d() && build3d().view3dIdea && item.status !== "hidden") {
-        // «Лёгкая карточка раньше 3D» (R05): 3D — только по кнопке.
-        kids.push(button("bk-btn--ghost ri-3d", tr("idea.view3d"), "cube", { onclick: function () {
-          showOnMap(item, opts);
-          build3d().view3dIdea(r05Idea(item));
-        } }));
-      }
-      if (item.check) kids.push(checklistView(item.check));
-      return kids.length > 1 ? h("details", { class: "bk-details ri-more" }, kids) : null;
-    }
     function checklistView(check) {
       return h("div", { class: "ri-check" }, [h("p", { class: "ri-check__title", text: tr("idea.check.title") })].concat(
         CHECK_KEYS.map(function (k) {
@@ -742,48 +1139,32 @@
             h("span", { class: "ri-check__answer", "data-answer": check[k], text: tr("idea.check.answer." + check[k]) })]);
         })));
     }
-    function mapButton(item) {
-      // На телефоне — только значок (подпись остаётся для диктора и подсказкой), на ноутбуке — значок и «На карте».
-      return button("bk-btn--ghost ri-mapbtn", tr("map.card.on_map"), "pin",
-        { "data-key": "map-" + item.id, title: tr("map.card.on_map"), onclick: function () { showOnMap(item, opts); } });
-    }
-    function residentCard(item) {
-      var supportBtn = null;
-      if (item.status === "voting") {
-        var on = !!item.my_support, popped = state.bump && state.bump.id === item.id;
-        supportBtn = button("ri-support" + (popped ? " ri-pop" : ""), tr(on ? "idea.supported" : "idea.support"), on ? "check" : "thumb-up",
-          { "aria-pressed": String(on), "data-key": "support-" + item.id, "aria-describedby": "ri-t-" + item.id + " ri-onevote",
-            onclick: function () { support(item, !item.my_support, supportBtn); } });
-      }
-      // Голоса — у идей на голосовании и отклонённых; у проекта они уже в ленте «По идее жителей · N голосов».
-      var counted = item.status !== "review" && item.status !== "hidden" && item.status !== "project";
-      var foot = h("div", { class: "ri-foot" }, [counted ? votesEl(item) : h("span", { class: "ri-foot__space" }),
-        item.status !== "hidden" ? mapButton(item) : null, supportBtn]);
-      return h("article", { class: "bk-card ri-card", "data-idea": item.id, "data-idea-status": item.status, "data-demo": item.demo ? "" : null,
-        "aria-labelledby": "ri-t-" + item.id }, [
-        head(item), decisionBlock(item), foot, details(item),
-      ]);
-    }
-    function support(item, on, btn) {
+    // Поддержать — сразу: капсула и число меняются до ответа сервера (правило 4 эталона), ошибка возвращает как было.
+    function support(item, on) {
       if (state.busy) return;
       state.busy = true;
-      btn.setAttribute("aria-busy", "true");
+      var before = { votes: item.votes || 0, mine: !!item.my_support };
+      item.my_support = on;
+      item.votes = Math.max(0, before.votes + (on ? 1 : -1));
+      state.bump = { id: item.id, dir: on ? 1 : -1 };
+      render();
       request("POST", "/ideas/" + encodeURIComponent(item.id) + "/support", { device_id: deviceId(), on: on }).then(function (data) {
         state.busy = false;
-        var was = item.votes || 0;
-        replace(data.item);
-        // Отклик: капсула чуть «подпрыгивает», число перекатывается на новое значение (один раз, без мигания при перерисовке).
-        state.bump = { id: item.id, dir: (data.item.votes || 0) >= was ? 1 : -1 };
-        render();
+        if (data && data.item) {
+          replace(data.item);
+          render();
+        }
         setTimeout(function () { if (state.bump && state.bump.id === item.id) state.bump = null; }, 600);
-        // Подтверждение — сама капсула («Вы поддержали», галочка) и число; тост внизу экрана не закрывает список.
-        // Для экранного диктора — та же фраза в живой области.
+        // Подтверждение — сама капсула и число; для экранного диктора — та же фраза в живой области.
         announce(tr(on ? "idea.support_saved" : "idea.support_removed"));
       }, function (err) {
         state.busy = false;
-        btn.removeAttribute("aria-busy");
+        item.votes = before.votes;
+        item.my_support = before.mine;
+        state.bump = null;
+        render();
         var retry = err.status === 0 || err.status >= 500;
-        toast(errorText(err), retry ? { type: "error", action: { label: tr("common.action.retry"), onClick: function () { support(item, on, btn); } } } : { type: "error" });
+        toast(errorText(err), retry ? { type: "error", action: { label: tr("common.action.retry"), onClick: function () { support(item, on); } } } : { type: "error" });
         if (err.code === "voting_closed") load();
       });
     }
@@ -798,13 +1179,17 @@
 
     // ── состояния списка: скелетон, пусто ──
     function skeleton(body) {
+      // Скелетон — в форме карточек листа (картинка 84, две строки, плашка и капсула); виден не раньше 150 мс (ideas.css),
+      // быстрый ответ сервера сразу рисует список без мигания (правило 4 эталона).
       body.setAttribute("aria-busy", "true");
+      body.classList.add("ri-plist--skel");
       for (var i = 0; i < 3; i++) {
-        body.appendChild(h("div", { class: "bk-card ri-skelcard", "aria-hidden": "true" }, [
-          h("div", { class: "ri-app" }, [h("span", { class: "bk-skel ri-tile" }), h("div", { class: "ri-app__body" }, [
-            h("span", { class: "bk-skel bk-skel--line", style: "width:40%" }), h("span", { class: "bk-skel bk-skel--title" }),
-            h("span", { class: "bk-skel bk-skel--line", style: "width:30%" })])]),
-          h("div", { class: "ri-foot" }, [h("span", { class: "bk-skel bk-skel--line", style: "width:22%" }), h("span", { class: "bk-skel ri-skel-pill" })]),
+        body.appendChild(h("div", { class: "bk-pc ri-pc ri-skelcard", "aria-hidden": "true" }, [
+          h("span", { class: "bk-skel bk-thumb ri-thumb" }),
+          h("div", { class: "bk-pc__body ri-pc__t" }, [
+            h("span", { class: "bk-skel bk-skel--title", style: "width:78%" }),
+            h("span", { class: "bk-skel bk-skel--line", style: "width:46%" }),
+            h("div", { class: "bk-pc__foot ri-pc__f" }, [h("span", { class: "bk-skel ri-skel-pill" }), h("span", { class: "bk-skel ri-skel-vote" })])]),
         ]));
       }
       body.appendChild(h("p", { class: "bk-sr-only", role: "status", text: tr("common.state.loading") }));
@@ -828,51 +1213,9 @@
       ]));
     }
 
-    // ── акимат: идеи на проверке ──
-    function renderStaffIdeas(body, list) {
-      if (!list.length) emptyBox(body, tr("idea.empty.review"), null, ["check"], "done");  // «Новых идей на проверке нет»
-      list.forEach(function (item) { body.appendChild(staffCard(item)); });
-      var decided = (state.items || []).filter(function (x) { return x.status === "rejected" || x.status === "project"; });
-      if (!decided.length) return;
-      var box = h("details", { class: "bk-details ri-decided" }, [h("summary", { text: tr("idea.decided") + " · " + decided.length })]);
-      if (state.decidedOpen || decided.some(function (x) { return x.id === state.open; })) box.open = true;
-      box.addEventListener("toggle", function () { state.decidedOpen = box.open; });
-      decided.forEach(function (item) { box.appendChild(staffCard(item)); });
-      body.appendChild(box);
-    }
+    // ── акимат: проверка идеи (карточка выбранного) ──
     function isDecided(item) {
       return item.status === "rejected" || item.status === "project";
-    }
-    function staffCard(item) {
-      var open = state.open === item.id;
-      var d = textOf(item, "description");
-      var toggle;
-      if (isDecided(item)) {
-        // Решённую идею проверять нечего — сразу тихая «Скрыть» (R15-S30: личные данные заметили позже, просьба автора).
-        // Короткое «Скрыть» в строке карточки; почему скрывают (личные данные, грубые слова) — в подписи поля причины.
-        toggle = button("bk-btn--ghost ri-hidebtn", tr(open ? "idea.check_close" : "idea.hide_short"), open ? "chevron-down" : null,
-          { "aria-expanded": String(open), "data-key": "open-" + item.id, onclick: function () {
-            state.open = open ? null : item.id;
-            state.panelIn = state.open;
-            state.form = null;
-            render();
-          } });
-      } else {
-        toggle = button("ri-capsule" + (open ? " bk-btn--ghost" : ""), tr(open ? "idea.check_close" : "idea.check_open"), open ? "chevron-down" : "edit",
-          { "aria-expanded": String(open), "data-key": "open-" + item.id, onclick: function () {
-            state.open = open ? null : item.id;
-            state.panelIn = state.open;
-            state.form = null;
-            render();
-          } });
-      }
-      var counted = item.status !== "review" && item.status !== "hidden";
-      var kids = [head(item)];
-      if (d.text) kids.push(h("p", { class: "ri-text", lang: d.lang, text: d.text }));
-      kids.push(h("div", { class: "ri-foot" }, [counted ? votesEl(item) : h("span", { class: "ri-foot__space" }), mapButton(item), toggle]));
-      if (open) kids.push(staffPanel(item));
-      return h("article", { class: "bk-card ri-card" + (open ? " ri-card--open" : ""), "data-idea": item.id, "data-idea-status": item.status,
-        "data-demo": item.demo ? "" : null, "aria-labelledby": "ri-t-" + item.id }, kids);
     }
     // Чек-лист реализуемости: у каждого пункта значок, название и что проверить; «да» — тёмная капсула с галочкой,
     // «нет» — красным, «не знаю» — белая. Сверху — «Да: n из 4» и полоса из четырёх сегментов.
@@ -908,6 +1251,8 @@
       if (isDecided(item)) {
         // R15-S30: уже решённую идею можно скрыть — сразу форма причины (кнопка «Скрыть» — в строке карточки).
         form.mode = "hide";
+      } else if (item.status === "review" && form.mode) {
+        // «Отклонить» или «Скрыть» уже выбраны в строке карточки — ниже только причина.
       } else if (item.status === "review") {
         // Модерация до голосования (R11 SCHEMES §2.3): «Опубликовать» / «Отклонить с причиной»; третья, тихая кнопка —
         // «Скрыть» для личных данных и грубых слов (отклонённая идея видна всем, скрытая — нет).
@@ -968,7 +1313,7 @@
         } }),
         button("bk-btn--ghost", tr("common.action.cancel"), null, { onclick: function () {
           form.mode = null;
-          if (isDecided(item)) state.open = null;  // у решённой идеи, кроме «Скрыть», делать нечего — карточка сворачивается
+          if (isDecided(item)) state.mode = null;  // «Отмена» — назад к кнопкам карточки (у проверки — к чек-листу)
           render();
         } }),
       ]));
@@ -1005,9 +1350,13 @@
           render();
           return;
         }
-        state.open = null;
         state.form = null;
-        if (data.proposal) state.tab = "projects";
+        state.mode = null;
+        if (data.proposal) {
+          // Идея стала проектом: лист переходит на «Проекты акимата», выбран новый проект (его карточка справа).
+          state.tab = "projects";
+          state.sel = data.proposal.id;
+        }
         load();
         if (data.proposal && build3d() && build3d().refresh) build3d().refresh();
       }, function (err) {
@@ -1015,22 +1364,6 @@
         var fields = err.fields || {};
         toast(fields.kind ? tr("idea.project_kind") : fields.geometry ? tr("idea.lighting_note") : errorText(err), { type: "error" });
         if (err.code === "already_decided") load();
-      });
-    }
-
-    // ── акимат: проекты (карточки R06 BirgeProposals: одобрить / отклонить, голоса числами) ──
-    function renderProjects(body, list) {
-      body.classList.add("ri-body--grid");
-      if (!list.length) {
-        stateBox(body, "empty", { title: tr("akim.proposals.empty"), icon: "trees" });
-        return;
-      }
-      list.forEach(function (p) {
-        var cell = h("div", { class: "ri-project", "data-demo": p.demo ? "" : null });
-        body.appendChild(cell);
-        // list: в списке из нескольких карточек «Одобрить» — не главная кнопка (одна главная на экран, CLEAN_PASS).
-        if (root.BirgeProposals && root.BirgeProposals.renderProposal) root.BirgeProposals.renderProposal(cell, p, { role: "akimat", list: true });
-        else cell.appendChild(h("p", { class: "bk-card", text: lang() === "kk" && p.title_kk ? p.title_kk : p.title_ru }));
       });
     }
 
@@ -1244,7 +1577,7 @@
           } }),
           button("", tr("common.nav.ideas"), "list", { "data-key": "back-list", onclick: function () {
             state.view = "list";
-            state.tab = "voting";
+            state.tab = "ideas";
             state.flash = state.sent && state.sent.id;
             load();
           } })]),
@@ -1254,15 +1587,23 @@
     var current = { render: render, focus: function (id) { state.flash = id; focusIdea(id); render(); } };
     mounted = current;
     var offLang = I() && I().onChange ? I().onChange(function () { render(); }) : null;
+    // Телефон ↔ ноутбук (поворот, окно уже/шире): карточка выбранного переезжает справа ↔ под строку.
+    var mq = root.matchMedia ? root.matchMedia("(min-width: 761px)") : null;
+    var onWidth = function () { render(); };
+    if (mq && mq.addEventListener) mq.addEventListener("change", onWidth);
     if (I() && I().ready) I().ready.then(load, load);
     else load();
     return {
       setLang: function () { render(); },
       destroy: function () {
         alive = false;
+        removeDetail();
+        if (state.layerMine && doc.body.dataset.birgeLayer === state.layerMine && shell() && shell().setLayer) shell().setLayer(null);
+        rootEl.removeEventListener("keydown", onKeys);
         if (live.parentNode) live.parentNode.removeChild(live);
         if (mounted === current) mounted = null;
         if (typeof offLang === "function") offLang();
+        if (mq && mq.removeEventListener) mq.removeEventListener("change", onWidth);
         rootEl.classList.remove("ri");
         rootEl.replaceChildren();
       },

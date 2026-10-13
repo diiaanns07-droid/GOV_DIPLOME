@@ -83,9 +83,12 @@ async function centerOn(page, point, zoom = 17) {
     const panel = document.querySelector(".bc-panel");
     const r = panel && !panel.hidden ? panel.getBoundingClientRect() : null;
     const mobile = window.innerWidth < 1024;
-    const right = r && !mobile ? r.left : canvas.right;
+    // Ноутбук: панель R09 — карточка слева (эталон A, с 13 окт), раньше была справа — видимая часть карты по другую сторону.
+    const leftCard = r && !mobile && r.left + r.width / 2 < (canvas.left + canvas.right) / 2;
+    const left = leftCard ? r.right : canvas.left;
+    const right = r && !mobile && !leftCard ? r.left : canvas.right;
     const bottom = r && mobile ? r.top : canvas.bottom;
-    const want = { x: (canvas.left + right) / 2, y: (canvas.top + bottom) / 2 };
+    const want = { x: (left + right) / 2, y: (canvas.top + bottom) / 2 };
     for (let i = 0; i < 3; i++) {
       map.jumpTo({ center: p, zoom });
       const q = map.project(p);
@@ -244,10 +247,14 @@ async function residentPath(browser, base, hot, lang, width, height, tag) {
   // R11 №3: кнопка «Отправить» активна сразу после подсказки модели, без нового нажатия клавиши.
   const sendEnabled = await page.$eval(".bc-send", (b) => !b.disabled);
   check(`${tag}: [R11-3] «Отправить» активна сразу после подсказки /classify`, sendEnabled);
-  // R11 №6: в чипе одна галочка — её рисует ui-kit (::before), своей в тексте нет.
+  // R11 №6: в чипе не больше одной галочки — её рисует ui-kit (::before), своей в тексте нет. Эталон A (13 окт): выбранный
+  // чип — тёмная заливка без галочки (.chip.on), поэтому ::before может быть пустым; выбор виден по заливке.
   const ticks = await page.$eval(".bc-cat-row .bk-chip[aria-pressed='true']", (c) => ({
-    inText: (c.textContent.match(/✓/g) || []).length, before: getComputedStyle(c, "::before").content }));
-  check(`${tag}: [R11-6] одна галочка в чипе категории`, ticks.inText === 0 && /✓/.test(ticks.before), JSON.stringify(ticks));
+    inText: (c.textContent.match(/✓/g) || []).length, before: getComputedStyle(c, "::before").content,
+    bg: getComputedStyle(c).backgroundColor }));
+  const darkFill = /rgb\((\d+), (\d+), (\d+)\)/.test(ticks.bg) && ticks.bg.match(/\d+/g).slice(0, 3).every((v) => +v < 80);
+  check(`${tag}: [R11-6] не больше одной галочки в чипе категории, выбор виден`, ticks.inText === 0 &&
+        (/✓/.test(ticks.before) || darkFill), JSON.stringify(ticks));
   const sizes3 = await uxSizes(page);
   check(`${tag}: [UX] шаг 3 — текст ≥ 13 px, кнопки ≥ 44 px`, sizes3.length === 0, sizes3.join("; "));
   const chip = await page.textContent(".bc-cat-row");
@@ -411,7 +418,7 @@ async function mineStates(browser, base, lang, width, height, tag) {
   });
   check(`${tag}: «Мои обращения» — пусто: «${empty.title}», подсказка и кнопка «Сообщить» (${empty.h} px)`,
         /ничего не отправляли|ештеңе жібермедіңіз/.test(empty.title) && /Сообщить о проблеме|Мәселе туралы хабарлау/.test(empty.text)
-        && empty.h >= 48, JSON.stringify(empty));
+        && empty.h >= 44, JSON.stringify(empty));   // эталон A: кнопки 44 (.btn)
   await shot(page, `${tag}-mine-empty`);
   await page.unroute(MINE);
   await page.route(MINE, (route) => route.abort());
@@ -423,7 +430,7 @@ async function mineStates(browser, base, lang, width, height, tag) {
              role: box.getAttribute("role"), h: Math.round(b.height) };
   });
   check(`${tag}: «Мои обращения» — нет связи: «${error.title}» и «${error.button}» (${error.h} px)`,
-        /Нет связи|байланыс жоқ/.test(error.title) && /Повторить|Қайталау/.test(error.button) && error.role === "alert" && error.h >= 48, JSON.stringify(error));
+        /Нет связи|байланыс жоқ/.test(error.title) && /Повторить|Қайталау/.test(error.button) && error.role === "alert" && error.h >= 44, JSON.stringify(error));
   await shot(page, `${tag}-mine-error`);
   await page.unroute(MINE);
   await page.click(".bc-panel .bk-error button");
@@ -574,8 +581,9 @@ async function phoneLayout(browser, base, hot, lang, tag) {
   const page = await newPage(browser, base, 375, 812, lang);
   const fab = await page.$eval(".bc-fab", (b) => { const r = b.getBoundingClientRect();
     return { w: Math.round(r.width), h: Math.round(r.height), left: Math.round(r.left), text: b.textContent.trim() }; });
-  check(`${tag}: [R11 №7/B1 №8] «Сообщить о проблеме» во всю ширину, одна строка, 56 px`,
-        fab.w >= 340 && fab.left === 16 && fab.h >= 56 && fab.h <= 60, JSON.stringify(fab));
+  // Эталон A (.fab): во всю ширину с полями 16, высота 54.
+  check(`${tag}: [R11 №7/B1 №8, эталон] «Сообщить о проблеме» во всю ширину, одна строка, 54 px`,
+        fab.w >= 340 && fab.left === 16 && fab.h >= 54 && fab.h <= 58, JSON.stringify(fab));
   await page.evaluate(() => { const c = document.createElement("article"); c.className = "r07-card"; c.id = "fake-r07";
     document.body.appendChild(c); });
   const hiddenWithCard = await page.$eval(".bc-fab", (b) => getComputedStyle(b).display === "none");
@@ -919,11 +927,13 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   await pageA.waitForSelector(".bc-mine__card");
   const first = await pageA.evaluate(() => ({ changes: document.querySelectorAll(".bc-changes").length,
     line: (document.querySelector(".bc-mine__card .bc-assignee") || {}).textContent || "",
+    due: (document.querySelector(".bc-mine__card .bc-mine__due") || {}).textContent || "",
     primaries: document.querySelectorAll(".bc-panel .bk-btn--primary").length }));
-  check(`${tag}: первый визит — без «Что изменилось»; на карточке «${first.line}»; главной кнопки нет`,
+  // Эталон A (строка статуса карточки .st): срок — справа мелко рядом со статусом, «Передано: служба» — под словом.
+  check(`${tag}: первый визит — без «Что изменилось»; на карточке «${first.line}» и срок «${first.due}»; главной кнопки нет`,
         first.changes === 0 && first.primaries === 0 &&
-        (lang === "kk" ? /^Жауапты: Жарықтандыру қызметі · \d+ жұмыс күні қалды$/.test(first.line)
-                       : /^Передано: Служба освещения · Осталось \d+ рабоч(ий день|их дня|их дней)$/.test(first.line)), JSON.stringify(first));
+        (lang === "kk" ? first.line === "Жауапты: Жарықтандыру қызметі" && /^\d+ жұмыс күні қалды$/.test(first.due)
+                       : first.line === "Передано: Служба освещения" && /^Осталось \d+ рабоч(ий день|их дня|их дней)$/.test(first.due)), JSON.stringify(first));
   await pageA.keyboard.press("Escape");
 
   // Сотрудник: компонент complaint-staff.js в карточке (как встроят R07 и «Обращения» акимата).
@@ -1007,6 +1017,11 @@ async function centralScene(browser, base, lang, width, height, tag, point) {
   const pageB = await newPage(browser, base, width, height, lang, { device: devB });
   await pageB.evaluate(() => window.standUi.openMine());
   await pageB.waitForSelector(".bc-wait .bc-verify", { timeout: 8000 });
+  // Эталон A, телефон: строка «✓ … · проверьте» для шторки «Рядом с вами» — те же данные, что «Ждут вашей проверки».
+  // (у подписки «Я тоже» своего номера нет — code пустой; open() тогда открывает «Мои обращения» без выделения)
+  const waiting = await pageB.evaluate(async () => (await window.standUi.waitingChecks()).map((x) => [x.id, x.place, x.status, typeof x.open]));
+  check(`${tag}: [эталон A] waitingChecks() для «Рядом с вами» — ${waiting.length}`, waiting.length >= 1 &&
+        waiting.every((x) => x[0] && x[1] && x[2] === "reported_fixed" && x[3] === "function"), JSON.stringify(waiting));
   const verifyB = await pageB.evaluate(() => ({ title: document.querySelector(".bc-wait h3").textContent.trim(),
     what: document.querySelector(".bc-wait").textContent,
     buttons: [...document.querySelectorAll(".bc-wait .bc-verify__buttons button")].map((b) => b.textContent.trim()),
@@ -1130,18 +1145,48 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
   });
   await page.waitForSelector(".bc-inbox__tab", { timeout: 8000 });
   const tabs = await page.$$eval(".bc-inbox__tab", (n) => n.map((b) => ({ id: b.dataset.tab, text: b.textContent.trim(), sel: b.getAttribute("aria-selected") })));
-  check(`${tag}: [§2.5] вкладки ${tabs.map((x) => x.text).join(" · ")}`, tabs.map((x) => x.id).join() === "new,in_progress,waiting_check,overdue,reopened" &&
-        tabs[0].sel === "true" && (lang === "kk" ? /^Жаңа \d+$/.test(tabs[0].text) : /^Новые \d+$/.test(tabs[0].text)), JSON.stringify(tabs));
+  // Эталон A, правило 5 (Linear): фильтры-чипы «Все» + 5 вкладок §2.5; по умолчанию «Все» — группы по статусу.
+  check(`${tag}: [§2.5, эталон п.5] фильтры ${tabs.map((x) => x.text).join(" · ")}`, tabs.map((x) => x.id).join() === "all,new,in_progress,waiting_check,overdue,reopened" &&
+        tabs[0].sel === "true" && (lang === "kk" ? /^Барлығы \d+$/.test(tabs[0].text) : /^Все \d+$/.test(tabs[0].text)), JSON.stringify(tabs));
+  const groupsSeen = await page.$$eval(".bc-inbox__group", (n) => n.map((g) => ({ id: g.dataset.group,
+    head: g.querySelector(".bc-inbox__ghead").textContent.trim(), icon: !!g.querySelector(".bc-inbox__ghead .bc-sicon"),
+    rows: [...g.querySelectorAll(".bc-inbox__row")].map((r) => Math.round(r.getBoundingClientRect().height)) })));
+  check(`${tag}: [эталон п.5] группы по статусу со значком, строки плотные (≤ 44 на ноутбуке)`, groupsSeen.length >= 1 &&
+        groupsSeen.every((g) => g.icon && g.rows.length) && (width < 700 || groupsSeen.every((g) => g.rows.every((hgt) => hgt >= 44 && hgt <= 46))),
+        JSON.stringify(groupsSeen));
   const key = `${tid}|roads`;
   const row = await page.$(`.bc-inbox__row[data-key="${key}"]`);
   const rowText = row ? (await row.textContent()).replace(/\s+/g, " ") : "";
   check(`${tag}: [§2.5] строка: место · категория · уточнение · людей · срок — «${rowText.slice(0, 90)}»`, !!row &&
         (lang === "kk" ? /Жолдар · Шұңқыр/.test(rowText) && /1 адам/.test(rowText) && /жұмыс күні қалды/.test(rowText)
                        : /Дороги · Яма, разбитый асфальт/.test(rowText) && /1 человек/.test(rowText) && /Осталось \d+ рабоч/.test(rowText)), rowText);
+  // (после проверки текста строки: взятое в работу уже «ответили» — строка «Осталось N дней» пропадает, это верно.)
+  // Эталон п.4–5: смена статуса прямо из строки, с мгновенным откликом — строка переезжает в «В работе» до ответа
+  // сервера (ответ здесь нарочно задержан на 1,5 с), потом статус на сервере тот же.
+  await page.click(`.bc-inbox__status--btn[data-key="${key}"]`);
+  await page.waitForSelector(".bc-inbox__menu .bc-inbox__menu-item", { timeout: 3000 });
+  const menuItems = await page.$$eval(".bc-inbox__menu .bc-inbox__menu-item", (n) => n.map((b) => b.textContent.trim()));
+  await page.route("**/complaints/*/status", async (r) => { await new Promise((res) => setTimeout(res, 1500)); await r.continue(); });
+  await page.click(".bc-inbox__menu .bc-inbox__menu-item");
+  const movedNow = await page.waitForFunction((k) => {
+    const li = document.querySelector(`.bc-inbox__item[data-key="${k}"]`);
+    return !!li && li.closest(".bc-inbox__group").dataset.group === "in_progress";
+  }, key, { timeout: 400 }).then(() => true, () => false);
+  check(`${tag}: [эталон п.4–5] «${menuItems[0]}» из строки — сразу в «В работе», до ответа сервера`,
+        menuItems.length === 2 && movedNow && (lang === "kk" ? /Жұмысқа алу/.test(menuItems[0]) : /Взять в работу/.test(menuItems[0])), JSON.stringify(menuItems));
+  await page.waitForTimeout(2200);
+  await page.unroute("**/complaints/*/status");
+  const afterTake = (await staffApi(base, "GET", `/complaints/${made.data.complaint.id}`)).data.complaint.status;
+  check(`${tag}: [эталон п.4] после ответа — статус на сервере «в работе», строка там же`, afterTake === "in_progress" &&
+        await page.$eval(`.bc-inbox__item[data-key="${key}"]`, (li) => li.closest(".bc-inbox__group").dataset.group) === "in_progress", afterTake);
   await page.click(`.bc-inbox__row[data-key="${key}"]`);
   await page.waitForSelector(".bc-inbox__item--open .bc-staff__open-fix", { timeout: 8000 });
   const prim = await page.$$eval(".bc-inbox .bk-btn--primary", (n) => n.map((b) => b.textContent.trim()));
   check(`${tag}: [защита п.4] раскрыта одна группа, одна главная кнопка «${prim[0]}»`, prim.length === 1, prim.join(" | "));
+  // Эталон п.2: команды для палитры Ctrl+K оболочки (R01) — «Отметить исправленным — место» для этой цели.
+  const cmds = await page.evaluate(async () => (await window.BirgeComplaintList.commands()).map((c) => c.id + " " + c.title));
+  check(`${tag}: [эталон п.2] команды палитры Ctrl+K (${cmds.length})`, cmds.some((x) => x.startsWith(`fix:${key} `) &&
+        (lang === "kk" ? /Түзетілді деп белгілеу — /.test(x) : /Отметить исправленным — /.test(x))), cmds.slice(0, 3).join(" | "));
   await page.click(".bc-inbox__map");
   const opened = await page.evaluate(() => window.opened);
   check(`${tag}: «Показать на карте» — та же цель`, opened && opened[1] === tid, JSON.stringify(opened));
@@ -1151,12 +1196,15 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
       const r = n.getBoundingClientRect();
       if (!r.width || getComputedStyle(n).display === "none") return;
       const own = [...n.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim());
-      if (own && parseFloat(getComputedStyle(n).fontSize) < 13) bad.push("text " + n.textContent.trim().slice(0, 24));
-      if (/^(BUTTON|A|INPUT|SELECT)$/.test(n.tagName) && r.height < 44) bad.push("tap " + (n.name || n.textContent.trim().slice(0, 24)) + " " + Math.round(r.height));
+      if (own && parseFloat(getComputedStyle(n).fontSize) < 12) bad.push("text " + n.textContent.trim().slice(0, 24));
+      // Зона нажатия — с ::after (кнопка статуса строки ui-kit .bk-lrow__st: значок 28, зона 44 через inset: -8px).
+      const after = getComputedStyle(n, "::after");
+      const grow = after.content && after.content !== "none" && after.position === "absolute" ? Math.max(0, -parseFloat(after.top) || 0) * 2 : 0;
+      if (/^(BUTTON|A|INPUT|SELECT)$/.test(n.tagName) && r.height + grow < 44) bad.push("tap " + (n.name || n.textContent.trim().slice(0, 24)) + " " + Math.round(r.height + grow));
     });
     return bad;
   });
-  check(`${tag}: [UX] «Обращения» — текст ≥ 13 px, кнопки ≥ 44 px`, sizes.length === 0, sizes.join("; "));
+  check(`${tag}: [UX] «Обращения» — текст ≥ 12 px (эталон: мета 12), кнопки ≥ 44 px (с зоной ::after)`, sizes.length === 0, sizes.join("; "));
   // Вкладки — одним рядом с прокруткой внутри ряда (R11 разбор 5 №4в); страница вбок не прокручивается.
   const tabsRow = await page.$$eval(".bc-inbox__tab", (n) => new Set(n.map((b) => Math.round(b.getBoundingClientRect().top))).size);
   check(`${tag}: [R11 5 №4в] 5 вкладок одним рядом`, tabsRow === 1, String(tabsRow));

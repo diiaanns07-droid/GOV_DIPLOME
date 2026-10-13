@@ -141,11 +141,14 @@ async function openPage(browser, size, lang, storage) {
                    blur: cs.backdropFilter || cs.webkitBackdropFilter, radius: cs.borderTopLeftRadius, headBg: head.backgroundColor,
                    headBlur: head.backdropFilter || head.webkitBackdropFilter, card: cc && cc.backgroundColor, cardLine: cc && cc.boxShadow,
                    text2: cs.getPropertyValue("--c-text-2").trim() }; });
-        check(`${tag}: «Мои обращения» — стекло ui-kit (80 % белого, размытие, радиус)`,
-          st && st.glass && st.step === "mine" && /rgba\(255, 255, 255, 0\.8\)/.test(st.bg) && /blur\(2[0-4]px\)/.test(st.blur || ""), st);
-        // ui-kit R11 (D-7, d2ed919f+): белая карточка с волосяной линией; в ui-kit до марафона — 70 % белого.
+        // Эталон A (13 окт): стекло с текстом — плотное 86 % (.bk-glass--strong); ui-kit до эталона — 80 %.
+        check(`${tag}: «Мои обращения» — плотное стекло ui-kit (86 % белого, размытие, радиус)`,
+          st && st.glass && st.step === "mine" && /rgba\(255, 255, 255, 0\.8(6)?\)/.test(st.bg) && /blur\(2[0-4]px\)/.test(st.blur || ""), st);
+        // ui-kit R11: белая карточка с волосяной линией (D-7) или плашка эталона --c-sub (72 % белого + линия 1 px);
+        // в ui-kit до марафона — 70 % белого.
         check(`${tag}: карточки на стекле — плотная подложка (как .bk-card ui-kit)`, st &&
-          (/^rgb\(255, 255, 255\)$/.test(st.card || "") && /inset/.test(st.cardLine || "") || /rgba\(255, 255, 255, 0\.7\)/.test(st.card || "")),
+          (/^rgb\(255, 255, 255\)$/.test(st.card || "") && /inset/.test(st.cardLine || "") ||
+           /rgba\(255, 255, 255, 0\.72\)/.test(st.card || "") && /inset/.test(st.cardLine || "") || /rgba\(255, 255, 255, 0\.7\)/.test(st.card || "")),
           st && [st.card, st.cardLine]);
         check(`${tag}: шапка «Закрыть» над прокруткой — тем же стеклом (размытие)`, st && /blur/.test(st.headBlur || ""), st && { headBg: st.headBg, headBlur: st.headBlur });
         const under = await page.evaluate(() => { const p = document.querySelector(".civic-panel");
@@ -204,8 +207,9 @@ async function openPage(browser, size, lang, storage) {
       await page.reload({ waitUntil: "domcontentloaded" });
       await page.waitForSelector(".bc-inbox", { timeout: 30000 }).catch(() => null);
       await sleep(2500);
-      const rows = await page.evaluate(() => [...document.querySelectorAll(".bc-inbox__item")].slice(0, 3).map((n) => getComputedStyle(n).backgroundColor));
-      check("1366-ru: «Обращения» — строки непрозрачные белые", rows.length > 0 && rows.every((c) => c === "rgb(255, 255, 255)"),
+      // Эталон A (Linear): строки — в одном белом списке с линиями 1 px; непрозрачный — сам список, строки прозрачны поверх.
+      const rows = await page.evaluate(() => [...document.querySelectorAll(".bc-inbox__list")].slice(0, 3).map((n) => getComputedStyle(n).backgroundColor));
+      check("1366-ru: «Обращения» — список непрозрачный белый", rows.length > 0 && rows.every((c) => c === "rgb(255, 255, 255)"),
         { login, rows });
       if (SHOTS) await page.screenshot({ path: path.join(SHOTS, "glass-1366-ru-inbox.png") });
     } finally { await ctx.close(); }

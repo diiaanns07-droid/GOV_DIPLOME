@@ -7,6 +7,9 @@
 // карте, не сам объект). Освещение — две опоры в 13 м.
 // Итог: web/civic/build3d/data/previews/<вид>.png (240×160) и <вид>@2x.png (480×320) — каталог показывает их без
 // загрузки three.js (лёгкий вид). Пересобирать после изменения моделей; вид детерминирован (seed "preview-<вид>").
+// Квадратные <вид>-sq.png (84×84) и <вид>-sq@2x.png (168×168) — миниатюры списка «Проекты и идеи» эталона 13.10
+// (вариант A, .thumb 84×84; рисует R06, фон — светлый цвет вида из handle.previewOf(kind).tint).
+//   --only sq — только квадратные (прямоугольные не перерисовывать).
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -124,8 +127,13 @@ await page.goto(`http://127.0.0.1:${server.address().port}/__preview.html`);
 await page.waitForFunction(() => window.previewReady === true, null, { timeout: 30000 });
 await mkdir(OUT, { recursive: true });
 const made = [];
+const ONLY = (() => {
+  const i = process.argv.indexOf("--only");
+  return i > 0 ? process.argv[i + 1] : null;
+})();
+const SIZES = [["", 240, 160], ["@2x", 480, 320], ["-sq", 84, 84], ["-sq@2x", 168, 168]].filter(([suffix]) => !ONLY || (ONLY === "sq") === suffix.startsWith("-sq"));
 for (const kind of ["square", "playground", "sports", "stop", "lighting"]) {
-  for (const [suffix, W, H] of [["", 240, 160], ["@2x", 480, 320]]) {
+  for (const [suffix, W, H] of SIZES) {
     const url = await page.evaluate(([k, w, h]) => window.render(k, w, h), [kind, W, H]);
     const name = `${kind}${suffix}.png`;
     await writeFile(path.join(OUT, name), Buffer.from(url.split(",")[1], "base64"));

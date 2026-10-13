@@ -120,6 +120,9 @@ function record(id, ok, detail, status) {
   results.push({ id, status: status || (ok ? "PASS" : "FAIL"), detail });
   console.log(`${status || (ok ? "PASS" : "FAIL")}  ${id}${detail ? "  — " + (typeof detail === "string" ? detail : JSON.stringify(detail)) : ""}`);
 }
+// Зона нажатия кнопок модуля: эталон 13.10 и токен ui-kit R11 --tap — 44 px (было 48 по LOCAL_FINAL № 9: со старым
+// ui-kit кнопки по-прежнему 48 — проходят и так). Метки на карте — своя зона 48 (build3d.css), проверяется отдельно.
+const TAP_MIN = 43.5;
 // --only <regexp> — только эти проверки (отладка; отчёт runs/browser_check.json тогда не пишется).
 const ONLY = (() => {
   const i = process.argv.indexOf("--only");
@@ -610,14 +613,14 @@ await check("kk_locale_no_raw_keys_no_i18n_warnings", async () => {
 await check("phone_375_touch_layout", async () => {
   const p = await openPage({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true }, "?reset=1&lang=kk&store=local&center=71.4013,51.1273&zoom=17.2&pitch=55&bearing=-25");
   const metrics = async () =>
-    p.evaluate(() => ({
+    p.evaluate((TAP_MIN) => ({
       scroll: document.documentElement.scrollWidth - innerWidth,
-      small: [...document.querySelectorAll(".b3d-dock button")].filter((b) => b.getBoundingClientRect().height < 47.5 && b.offsetParent).map((b) => b.textContent),
+      small: [...document.querySelectorAll(".b3d-dock button")].filter((b) => b.getBoundingClientRect().height < TAP_MIN && b.offsetParent).map((b) => b.textContent),
       cut: [...document.querySelectorAll(".b3d-dock .bk-btn, .b3d-card")]
         // .b3d-sr — подпись кнопки-значка только для экранного диктора (↺ ↻ на телефоне), на экране её нет по замыслу
         .filter((b) => b.scrollWidth > b.clientWidth + 1 || [...b.querySelectorAll("span:not(.b3d-sr)")].some((s) => s.scrollWidth > b.clientWidth))
         .map((b) => b.textContent),
-    }));
+    }), TAP_MIN);
   const m1 = await metrics();
   await p.tap(".b3d-card[data-kind=square]");
   const g = (await state(p)).ghost;
@@ -631,7 +634,26 @@ await check("phone_375_touch_layout", async () => {
   await p.context().close();
   for (const m of [m1, m2, m3]) assert(m.scroll <= 0 && m.small.length === 0 && m.cut.length === 0, JSON.stringify(m));
   assert(g.follow === "center", "на телефоне призрак за центром карты: " + g.follow);
-  return { status: "PASS", detail: "нет горизонтальной прокрутки, все кнопки ≥ 48 px, текст не обрезан; призрак идёт за центром карты" };
+  return { status: "PASS", detail: "нет горизонтальной прокрутки, все кнопки ≥ 44 px (эталон, --tap), текст не обрезан; призрак идёт за центром карты" };
+});
+// Эталон 13.10 (вариант A): R06 рисует строку списка «Проекты и идеи» с миниатюрой 84×84 — квадратное превью той же
+// модели и светлый фон вида из handle.previewOf(kind); картинки должны загружаться (1x и 2x) и быть нужного размера.
+await check("preview_square_and_tint_for_project_list", async () => {
+  const p = await openPage({}, "?reset=1&store=local");
+  const r = await p.evaluate(async () => {
+    const out = {};
+    for (const kind of ["square", "playground", "sports", "stop", "lighting"]) {
+      const pv = __b3d.previewOf(kind);
+      const load = (src) => new Promise((ok) => { const im = new Image(); im.onload = () => ok([im.naturalWidth, im.naturalHeight]); im.onerror = () => ok(null); im.src = src; });
+      out[kind] = { tint: pv.tint, square: pv.square && [pv.square.width, pv.square.height], sq1: await load(pv.square.src), sq2: await load(pv.square.srcset.split(", ")[1].split(" ")[0]), wide: await load(pv.src) };
+    }
+    out.unknown = __b3d.previewOf("nope");
+    return out;
+  });
+  await p.context().close();
+  const bad = Object.entries(r).filter(([k, v]) => k !== "unknown" && !(/^#[0-9a-f]{6}$/.test(v.tint) && String(v.square) === "84,84" && String(v.sq1) === "84,84" && String(v.sq2) === "168,168" && String(v.wide) === "240,160"));
+  assert(!bad.length && r.unknown === null, JSON.stringify(r));
+  return { status: "PASS", detail: "5 видов: квадрат 84×84 и 168×168, фон вида, прямоугольник 240×160; неизвестный вид — null" };
 });
 await check("catalog_labels_fit_ru_kk_1366_375", async () => {
   const bad = [];
@@ -647,6 +669,49 @@ await check("catalog_labels_fit_ru_kk_1366_375", async () => {
   }
   assert(!bad.length, bad.join("; "));
   return { status: "PASS", detail: "подписи 5 карточек помещаются: ru и kk, 1366 / 375 / 360 px" };
+});
+// Эталон 13.10 (правило Linear 2 и «закрытие: ×, Esc, нажатие на пустую карту»): Esc закрывает карточку проекта,
+// фокус возвращается на его метку; нажатие на пустое место карты — тоже закрывает.
+await check("card_closes_by_esc_focus_back_and_by_empty_map", async () => {
+  const p = await openPage({}, "?reset=1&store=local&role=resident&center=71.4008,51.1272&zoom=17.4&pitch=60&bearing=-30");
+  await p.click('.b3d-label[data-id="p-demo-stop-syganak"]');
+  await p.waitForSelector(".b3d-dock[data-state=card]");
+  await p.keyboard.press("Escape");
+  await p.waitForFunction(() => !__b3d.getState().selected, null, { timeout: 5000 }).catch(() => {});
+  const esc = await p.evaluate(() => ({ selected: __b3d.getState().selected, state: document.querySelector(".b3d-dock").getAttribute("data-state"), focus: document.activeElement && document.activeElement.getAttribute("data-id") }));
+  await p.click('.b3d-label[data-id="p-demo-stop-syganak"]');
+  await p.waitForSelector(".b3d-dock[data-state=card]");
+  const empty = await p.evaluate(() => { const c = __map.getCanvas().getBoundingClientRect(); return [c.left + 40, c.top + c.height - 40]; });
+  await p.mouse.click(empty[0], empty[1]);
+  await p.waitForFunction(() => !__b3d.getState().selected, null, { timeout: 5000 }).catch(() => {});
+  const map = await p.evaluate(() => __b3d.getState().selected);
+  await p.context().close();
+  assert(esc.selected === null && esc.state !== "card" && esc.focus === "p-demo-stop-syganak" && map === null, JSON.stringify({ esc, map }));
+  return { status: "PASS", detail: { esc, empty_map_click: "закрыта" } };
+});
+// Эталон 13.10 («Проекты и идеи»: карта следует за выбором в списке R06): highlight(id) отмечает проект на карте —
+// табличка с кольцом, — карточку модуля не открывает и onSelect хозяину не шлёт; нажатие по табличке — обычная карточка.
+await check("highlight_marks_project_without_card", async () => {
+  const p = await openPage({}, "?reset=1&store=local&role=resident&center=71.4008,51.1272&zoom=17.4&pitch=60&bearing=-30");
+  const r = await p.evaluate(async () => {
+    const id = "p-demo-stop-syganak";
+    const ok = __b3d.highlight(id, { padding: { top: 132, right: 440, bottom: 20, left: 452 } });
+    await new Promise((res) => setTimeout(res, 700));
+    const lab = document.querySelector(`.b3d-label[data-id="${id}"]`);
+    const s1 = __b3d.getState();
+    const a = { ok, selected: s1.selected, highlighted: s1.highlighted, dock: document.querySelector(".b3d-dock").getAttribute("data-state"), pressed: lab && lab.getAttribute("aria-pressed") };
+    const unknown = __b3d.highlight("nope");
+    __b3d.highlight(null);
+    const s2 = __b3d.getState();
+    return { a, unknown, cleared: { selected: s2.selected, highlighted: s2.highlighted, pressed: lab && lab.getAttribute("aria-pressed") } };
+  });
+  await p.click('.b3d-label[data-id="p-demo-stop-syganak"]');
+  await p.waitForSelector(".b3d-dock[data-state=card]", { timeout: 5000 }).catch(() => {});
+  const card = await p.evaluate(() => ({ dock: document.querySelector(".b3d-dock").getAttribute("data-state"), highlighted: __b3d.getState().highlighted }));
+  await p.context().close();
+  assert(r.a.ok && r.a.selected === "p-demo-stop-syganak" && r.a.highlighted && r.a.dock !== "card" && r.a.pressed === "true" && r.unknown === false &&
+    r.cleared.selected === null && !r.cleared.highlighted && r.cleared.pressed !== "true" && card.dock === "card" && !card.highlighted, JSON.stringify({ r, card }));
+  return { status: "PASS", detail: { ...r, then_label_click: card } };
 });
 await check("keyboard_tab_enter_escape", async () => {
   const p = await openPage({}, "?reset=1&store=local");
@@ -762,7 +827,8 @@ await check("r11_21_model_clickable_pointer_label_40_zone_48", async () => {
   );
   await p.context().close();
   assert(cursor === "pointer" && sel === id, JSON.stringify({ cursor, sel }));
-  assert(sizes.length && sizes.every((z) => z.h >= 40 && z.zoneH >= 48 && z.zoneW >= 48), JSON.stringify(sizes));
+  // Табличка — метка эталона (вариант A, 13.10): 26 px (было ≥ 40 по UX_REVIEW день 3 #21); зона нажатия — по-прежнему ≥ 48.
+  assert(sizes.length && sizes.every((z) => z.h >= 26 && z.zoneH >= 48 && z.zoneW >= 48), JSON.stringify(sizes));
   return { status: "PASS", detail: { cursor_over_model: cursor, opened_by_model_click: sel, label_height_px: sizes[0].h, tap_zone_px: sizes[0].zoneH } };
 });
 await check("r11_21_selected_object_not_under_card_1366_375", async () => {
@@ -801,7 +867,7 @@ await check("r11_22_23_demo_header_title_and_3d_label", async () => {
     await p.context().close();
   }
   assert(res.ru.title === "3D-превью" && res.kk.title === "3D-көрініс" && !res.ru.tag_in_header, JSON.stringify(res));
-  assert(res.ru.button_3d_text === "3D" && res.kk.button_3d_text === "3D" && res.ru.button_3d_height >= 48, JSON.stringify(res));
+  assert(res.ru.button_3d_text === "3D" && res.kk.button_3d_text === "3D" && res.ru.button_3d_height >= TAP_MIN, JSON.stringify(res));
   return { status: "PASS", detail: res };
 });
 await check("r11_24_resident_hint_ru_kk", async () => {
@@ -1449,17 +1515,18 @@ await check("phone_placing_rotate_in_title_row_ghost_visible_375_ru_kk", async (
   return { status: "PASS", detail: out };
 });
 await check("controls_48px_all_states_1366_375_ru_kk", async () => {
-  // LOCAL_FINAL (Codex) п. 9, UX_BRIEF: зона нажатия каждой кнопки R05 — не меньше 48 × 48 px, на ноутбуке тоже:
+  // LOCAL_FINAL (Codex) п. 9, UX_BRIEF: зона нажатия каждой кнопки R05 — не меньше 48 × 48 px, на ноутбуке тоже
+  // (с эталоном 13.10 и ui-kit R11 — 44 × 44, токен --tap; см. TAP_MIN):
   // каталог акимата, размещение, карточка проекта (в лёгком виде — с «3D»), подсказка жителя, эскиз к идее, тост,
   // таблички на карте (зона нажатия — сама кнопка таблички).
   const small = {};
-  const measure = (p, tag) => p.evaluate((tag) => {
+  const measure = (p, tag) => p.evaluate(([tag, TAP_MIN]) => {
     const vis = (n) => { const r = n.getBoundingClientRect(), cs = getComputedStyle(n); return r.width > 0 && r.height > 0 && cs.visibility !== "hidden" && cs.display !== "none" && !n.closest("[hidden]"); };
     return [...document.querySelectorAll(".b3d button, .b3d [role=button], .b3d a[href], .b3d-labels button")].filter(vis).map((n) => {
       const r = n.getBoundingClientRect();
       return { tag, what: (n.dataset.action || n.dataset.kind || n.className.split(" ").slice(-1)[0]) + " «" + (n.getAttribute("aria-label") || n.textContent).trim().slice(0, 24) + "»", w: Math.round(r.width), h: Math.round(r.height) };
-    }).filter((x) => x.w < 47.5 || x.h < 47.5);
-  }, tag);
+    }).filter((x) => x.w < TAP_MIN || x.h < TAP_MIN);
+  }, [tag, TAP_MIN]);
   for (const [w, h, lang] of [[1366, 768, "ru"], [1366, 768, "kk"], [375, 812, "ru"], [375, 812, "kk"]]) {
     const phone = w < 640;
     const vp = Object.assign({ viewport: { width: w, height: h } }, phone ? { hasTouch: true, isMobile: true } : {});
@@ -1490,7 +1557,7 @@ await check("controls_48px_all_states_1366_375_ru_kk", async () => {
     small[`${w}_${lang}`] = bad;
   }
   assert(Object.values(small).every((b) => b.length === 0), JSON.stringify(small));
-  return { status: "PASS", detail: "все кнопки R05 ≥ 48 × 48 px: каталог, размещение, тост, карточка акимата, эскиз, подсказка, таблички, лёгкая карточка — 1366/375 × ru/kk" };
+  return { status: "PASS", detail: "все кнопки R05 ≥ 44 × 44 px (эталон 13.10, --tap): каталог, размещение, тост, карточка акимата, эскиз, подсказка, таблички, лёгкая карточка — 1366/375 × ru/kk" };
 });
 await check("glass_panel_from_ui_kit_1366_375", async () => {
   // GLASS.md R11 (§4, R05): панель модуля (каталог, размещение, карточка, подсказка) — стекло ui-kit .bk-glass, если ui-kit

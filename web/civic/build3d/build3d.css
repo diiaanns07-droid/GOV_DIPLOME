@@ -194,14 +194,17 @@
   margin-left: auto;
   flex: 0 0 auto;
 }
+/* Заголовок панели («Что построить?», название объекта при размещении) — как заголовок листа эталона (.sheet .hd b):
+   19 / 600, чуть плотнее по буквам. */
 .b3d-title {
   display: flex;
   align-items: center;
   gap: var(--s-2, 8px);
   margin: 0;
-  font-size: var(--fs-lead, 17px);
-  font-weight: var(--fw-bold, 700);
-  line-height: var(--lh-head, 1.2);
+  font-size: 19px;
+  font-weight: var(--fw-semi, 600);
+  letter-spacing: -0.01em;
+  line-height: var(--lh-head, 1.25);
 }
 .b3d-title .ic {
   color: var(--c-brand, #152c26);
@@ -290,6 +293,21 @@
 .b3d-card:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+/* Правило Linear 4 (эталон 13.10): скелетон каталога — только если загрузка дольше 150 мс, затем мягко за 150 мс; при
+   быстрой загрузке он не «мигает». «Уменьшить движение» — та же задержка без проявления. */
+.b3d-dock[data-state="loading"] .b3d-cards {
+  animation: b3d-skel-late var(--t-fast, 150ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) 150ms both;
+}
+@keyframes b3d-skel-late {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d-dock[data-state="loading"] .b3d-cards {
+    animation-duration: 1ms;
+  }
 }
 .b3d-card--skel {
   border: 0;
@@ -407,6 +425,210 @@
   box-shadow: inset 0 0 0 1px var(--c-brand, #152c26);
 }
 
+/* Своя карточка проекта — детальная карточка эталона (research/round-14/design/REFERENCE.html, вариант A, .pd):
+   картинка 150 px во всю ширину (превью той же 3D-модели на светлом фоне вида), поля 14/16/16, название 18/600, три цифры
+   на белой подложке (радиус 12), кнопки 44 px радиус 12, строка «это опрос» мелко. Ширина 340 и радиус 18 — на ноутбуке. */
+.b3d-dock.b3d-dock--pd {
+  padding: 0;
+  overflow: hidden;
+}
+/* Телефон: картинка ниже (120 px) — над карточкой остаётся видна сама модель на карте */
+@media (max-width: 760px) {
+  .b3d-pd .b3d-pd__im {
+    height: 120px;
+  }
+}
+@media (min-width: 761px) {
+  .b3d-dock.b3d-dock--pd,
+  .b3d:not(.b3d--overlay) .b3d-dock.b3d-dock--pd[data-state="card"] {
+    width: min(340px, 100%);
+    border-radius: var(--r-card, 18px);
+  }
+}
+@media (min-width: 1024px) {
+  .b3d--overlay:not(.b3d--host-right) .b3d-dock.b3d-dock--pd[data-state="card"] {
+    width: min(340px, calc(100% - 2 * var(--gap-edge, 12px)));
+  }
+}
+/* Карточка R06 в панели модуля (оболочка с сервером): картинка эталона сверху на ноутбуке, «×» — поверх неё; на телефоне
+   картинки нет, «×» — в углу, как раньше. Поля карточки — у .b3d-pd__in. */
+.b3d-dock--r06pd {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.b3d-dock--r06pd > .b3d-head--end {
+  z-index: 1;
+}
+@media (min-width: 761px) {
+  .b3d-dock--r06pd > .b3d-head--end .bk-iconbtn {
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.72);
+  }
+}
+.b3d-pd__in--r06 {
+  gap: var(--s-3, 12px);
+}
+.b3d-pd__im--r06 {
+  flex: 0 0 auto;
+}
+.b3d-pd__im--r06[data-kind="playground"] {
+  background: #fdf3e3;
+}
+.b3d-pd__im--r06[data-kind="sports"] {
+  background: #e4f1e6;
+}
+.b3d-pd__im--r06[data-kind="stop"] {
+  background: #e8f0f6;
+}
+.b3d-pd__im--r06[data-kind="lighting"] {
+  background: #f6f1e4;
+}
+@media (max-width: 760px) {
+  .b3d-pd__im.b3d-pd__im--r06 {
+    display: none;
+  }
+  .b3d-dock.b3d-dock--r06pd {
+    padding-top: var(--s-2, 8px);
+  }
+}
+.b3d-pd {
+  gap: 0;
+}
+/* Ширину даёт панель (340 на ноутбуке, во всю ширину на телефоне), а не .bk-pd ui-kit (340 всегда); отступы между
+   частями — сетка .b3d-pd__in (12), а не поля .bk-facts / .bk-acts. */
+.b3d-pd.bk-pd {
+  width: auto;
+  border-radius: 0;
+}
+.b3d-pd .b3d-pd__facts.bk-facts {
+  margin: 0;
+}
+.b3d-pd .b3d-pd__acts.bk-acts {
+  padding: 0;
+}
+.b3d-pd__im {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  background: #e7f2dd;
+}
+.b3d-pd[data-kind="playground"] .b3d-pd__im {
+  background: #fdf3e3;
+}
+.b3d-pd[data-kind="sports"] .b3d-pd__im {
+  background: #e4f1e6;
+}
+.b3d-pd[data-kind="stop"] .b3d-pd__im {
+  background: #e8f0f6;
+}
+.b3d-pd[data-kind="lighting"] .b3d-pd__im {
+  background: #f6f1e4;
+}
+.b3d-pd .b3d-pd__im img {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain; /* превью модели целиком — у .bk-pd__im ui-kit «cover» для иллюстраций во всю ширину */
+}
+.b3d-pd__im > .ic {
+  width: 48px;
+  height: 48px;
+  color: var(--c-text-2, #4b5752);
+}
+/* «×» поверх картинки: видимый круг на светлом стекле, зона нажатия 48 px (у эталона круг 32 px — меньше нормы 48) */
+.b3d-pd__x {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: var(--tap, 48px);
+  height: var(--tap, 48px);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.72);
+}
+.b3d-pd__in {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+.b3d-pd .b3d-pcard__title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.b3d-pd__sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+  margin-top: -9px; /* у эталона подпись в 3 px под названием */
+}
+.b3d-pd__sub .bk-meta {
+  font-size: 14px;
+  color: var(--c-text-2, #4b5752);
+}
+.b3d-pd__facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.b3d-pd__fact {
+  min-width: 0;
+  padding: 9px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+}
+.b3d-pd__fact b {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.b3d-pd__fact span {
+  font-size: 12px;
+  color: var(--c-text-2, #4b5752);
+}
+.b3d-pd__status {
+  min-height: 0;
+}
+.b3d-pd__acts {
+  flex-wrap: nowrap;
+}
+/* У эталона кнопки 44 px; у нас 48 — зона нажатия всех кнопок модуля (LOCAL_FINAL № 9) */
+.b3d-pd__acts .b3d-vote {
+  min-height: var(--tap, 48px);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.b3d-pd__acts .b3d-vote.bk-btn--primary {
+  flex: 1 1 auto;
+}
+.b3d-pd__acts .b3d-vote:not(.bk-btn--primary) {
+  flex: 0 0 auto;
+  border-color: transparent;
+  background: rgba(18, 26, 23, 0.06);
+  padding-inline: 16px;
+}
+.b3d-pd__acts .b3d-vote.bk-btn--primary[aria-pressed="true"] {
+  border-color: var(--c-ink, #121a17);
+  background: var(--c-ink, #121a17);
+  color: #ffffff;
+  box-shadow: none;
+}
+/* Строка «Это опрос…» — мелко, как в эталоне (12 px), но вторым цветом текста (#4B5752), а не третьим #7E8A85
+   (.bk-pd__note ui-kit): 3,4–3,6 : 1 ниже нормы 4,5 (UX_BRIEF правило 2; R10 regress-pv3 считает такие строки FAIL),
+   а строка важна — «решает акимат». */
+.b3d-pd .b3d-pd__honest {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--c-text-2, #4b5752);
+  margin-top: -4px;
+}
+
 /* ── Состояния: ошибка, нет 3D ── */
 .b3d-message {
   display: flex;
@@ -484,12 +706,13 @@
   display: none;
 }
 .b3d-label {
-  /* Прозрачная зона нажатия ≥ 48 px вокруг видимой таблички (UX_REVIEW день 3 #21). */
+  /* Прозрачная зона нажатия ≥ 48 px вокруг видимой таблички (UX_REVIEW день 3 #21). Табличка — у нижнего края зоны:
+     в эталоне (вариант A) метка стоит прямо над объектом, без хвостика. */
   position: absolute;
   left: 0;
   top: 0;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   min-width: 48px;
   min-height: 48px;
@@ -501,44 +724,39 @@
   pointer-events: auto;
   transition: opacity var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
-.b3d-label__pill {
+/* Метка «Проект · 2027» — один в один с эталоном (research/round-14/design/REFERENCE.html, вариант A, .tag): лайм
+   #D7F57C, текст #2F4A10 12 px 700, высота 26, поля 0 10, капсула, тень 0 4 12; без рамки, хвостика и значка.
+   Лайм в эталоне — только логотип, профиль и метка «Проект». Токены ui-kit, когда R11 их добавит, — с запасными
+   значениями эталона. Зона нажатия вокруг — по-прежнему 48 px (.b3d-label). Селектор с .b3d-labels — сильнее .bk-tag
+   ui-kit при любом порядке подключения стилей. */
+.b3d-labels .b3d-label__pill {
   position: relative;
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
-  padding: 7px 14px;
-  border: 2px solid var(--c-surface, #ffffff);
+  height: 26px;
+  min-height: 26px;
+  padding: 0 10px;
+  border: 0;
   border-radius: var(--r-pill, 999px);
-  box-shadow: var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.08), 0 2px 8px rgba(21, 44, 38, 0.06));
-  font-family: var(--font, "Birge Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif);
-  font-size: var(--fs-body, 15px);
-  font-weight: var(--fw-semi, 600);
-  line-height: 1.4;
+  background: var(--c-lime, #d7f57c);
+  color: var(--c-lime-ink, #2f4a10);
+  box-shadow: 0 4px 12px rgba(16, 24, 20, 0.18);
+  font-family: var(--font, "Inter", "SF Pro Text", -apple-system, "Segoe UI", system-ui, sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
   white-space: nowrap;
   transition:
     translate var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
     box-shadow var(--t-fast, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
     scale var(--t-press, 120ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 }
-/* «Хвостик» вниз — к объекту. */
-.b3d-label__pill::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -7px;
-  width: 10px;
-  height: 10px;
-  background: inherit;
-  border-right: 2px solid var(--c-surface, #ffffff);
-  border-bottom: 2px solid var(--c-surface, #ffffff);
-  transform: translateX(-50%) rotate(45deg);
-}
 /* Наведение (на табличку или на саму модель) — табличка мягко приподнимается с тенью, а не тёмное кольцо:
    кольцо цвета бренда выглядело как выбранный проект. Нажатие — лёгкое сжатие, как кнопки ui-kit. */
 .b3d-label--hover .b3d-label__pill,
 .b3d-label:hover .b3d-label__pill {
   translate: 0 -2px;
-  box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
+  box-shadow: 0 6px 16px rgba(16, 24, 20, 0.24);
 }
 .b3d-label:active .b3d-label__pill {
   scale: var(--press-scale, 0.97);
@@ -558,11 +776,10 @@
 .b3d-label:focus-visible {
   outline: none;
 }
-/* Выбранный проект (дизайн-марафон): как нажатая кнопка ui-kit — сплошной #152c26, белый текст (GLASS.md: «нажатая —
-   сплошная #152c26»; одна акцентная краска). Синее кольцо — только фокус с клавиатуры. */
+/* Выбранный проект: метка остаётся лаймовой (в эталоне выбранный проект на карте — та же лаймовая метка), выбор —
+   кольцо 2 px почти чёрным, как выбранная карточка в списке эталона (.pc.on). Синее кольцо — только фокус с клавиатуры. */
 .b3d-label[aria-pressed="true"] .b3d-label__pill {
-  background: var(--c-ink, #152c26);
-  color: var(--c-on-ink, #ffffff);
+  box-shadow: 0 0 0 2px var(--c-ink, #121a17), 0 4px 12px rgba(16, 24, 20, 0.18);
 }
 .b3d-label:focus-visible .b3d-label__pill {
   outline: 3px solid var(--c-focus, #2f7fd6);
@@ -573,37 +790,39 @@
 .b3d-label__count {
   display: none;
 }
-/* Значок вида перед «Проект · 2027» (дизайн-марафон): сквер, площадка, остановка различимы без чтения, как метки
-   Apple Maps; в сжатой подписи-точке он один. Цвет — текста таблички (на выбранной — белый). */
+/* Значок вида — только в точке дальнего вида; у метки «Проект · 2027» в эталоне значка нет. */
 .b3d-label__icon {
-  display: block;
+  display: none;
   flex: 0 0 auto;
   width: 18px;
   height: 18px;
-  margin-right: 6px;
   color: currentColor;
 }
 /* Точка 32 px со значком вида проекта (UX_SPEC §5: значки на карте ≥ 24 px; R10 B-026). */
+/* Точка дальнего вида — как значок эталона (.pin .c): круг 34 px, белая обводка 2.5 px, тень 0 4 12; цвет проекта —
+   лайм, значок вида — цветом текста метки. */
 .b3d-label--dot .b3d-label__pill {
   justify-content: center;
-  width: 32px;
-  min-height: 32px;
-  height: 32px;
+  width: 34px;
+  min-height: 34px;
+  height: 34px;
   padding: 0;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 24, 20, 0.22);
 }
 .b3d-label--dot .b3d-label__icon {
   display: block;
   width: 18px;
   height: 18px;
   margin-right: 0;
-  color: var(--c-ink, #152c26);
+  color: var(--c-lime-ink, #2f4a10);
 }
 /* Несколько проектов в одной точке — одна метка с числом; нажатие приближает к ним. */
 .b3d-label--cluster .b3d-label__pill {
   width: auto;
-  min-width: 36px;
-  height: 36px;
-  min-height: 36px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
   padding: 0 var(--s-3, 12px); /* сетка 8 pt */
   gap: 4px;
 }
@@ -624,18 +843,21 @@
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
-.b3d-label--dot .b3d-label__pill::after {
-  display: none;
-}
 .b3d-label--hidden {
   opacity: 0;
   pointer-events: none;
 }
-/* Идея жителя (слой «Идеи», POLISH_WAVE_2 п. 7): тёплая метка, отличается от зелёной метки проекта; под ней. */
+/* Идея жителя (слой «Идеи», POLISH_WAVE_2 п. 7): тёплая метка, отличается от лаймовой метки проекта. В панели —
+   плашка; на карте — та же форма, что у метки проекта, цвета плашки «На проверке» эталона. */
 .b3d-tag--idea {
   background: var(--c-warn-soft, #fff4dc);
   color: var(--c-warn, #8a5a12);
   border: 1px solid currentColor;
+}
+.b3d-labels .b3d-label__pill.b3d-tag--idea {
+  border: 0;
+  background: #faeeda;
+  color: #7a520f;
 }
 .b3d-pcard__idea {
   display: flex;

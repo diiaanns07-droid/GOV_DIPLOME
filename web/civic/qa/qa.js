@@ -107,6 +107,11 @@
       "ask.answer.only_kk": "Ответ дан на казахском языке",
       "ask.answer.edited": "изменён {date}",
       "ask.answer.sign": "Аким · {date}",
+      "ask.status.waiting": "Ждёт ответа",
+      "ask.staff.week_caption": "отвечено на этой неделе",
+      "ask.status.answered": "Есть ответ",
+      "ask.answer.more": "Читать полностью",
+      "ask.answer.less": "Свернуть",
       "ask.empty.top_title": "Вопросов без ответа пока нет",
       "ask.empty.new_title": "Вопросов пока нет",
       "ask.sent_hint": "Вопрос опубликуют после проверки. Тогда его увидят и смогут поддержать соседи.",
@@ -188,6 +193,11 @@
       "ask.answer.only_kk": "Жауап қазақ тілінде берілген",
       "ask.answer.edited": "өзгертілді: {date}",
       "ask.answer.sign": "Әкім · {date}",
+      "ask.status.waiting": "Жауап күтуде",
+      "ask.staff.week_caption": "осы аптада жауап берілді",
+      "ask.status.answered": "Жауабы бар",
+      "ask.answer.more": "Толық оқу",
+      "ask.answer.less": "Жасыру",
       "ask.empty.top_title": "Әзірге жауапсыз сұрақ жоқ",
       "ask.empty.new_title": "Әзірге сұрақ жоқ",
       "ask.sent_hint": "Сұрақ тексерілгеннен кейін жарияланады. Сонда оны көршілер көріп, қолдай алады.",
@@ -277,12 +287,23 @@
     });
     return el;
   }
+  // Значков, которых нет в спрайте ui-kit, — путь из эталона (research/round-14/design/REFERENCE.html), та же толщина.
+  // Когда R11 добавит их в icons.svg, строку можно убрать: спрайт главнее.
+  var INLINE = { heart: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" };
   function icon(name) {
-    var svg = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
+    var NS = "http://www.w3.org/2000/svg";
+    var svg = doc.createElementNS(NS, "svg");
     svg.setAttribute("class", "ic");
     svg.setAttribute("aria-hidden", "true");
     svg.setAttribute("focusable", "false");
-    var use = doc.createElementNS("http://www.w3.org/2000/svg", "use");
+    if (INLINE[name]) {
+      svg.setAttribute("viewBox", "0 0 24 24");
+      var path = doc.createElementNS(NS, "path");
+      path.setAttribute("d", INLINE[name]);
+      svg.appendChild(path);
+      return svg;
+    }
+    var use = doc.createElementNS(NS, "use");
     use.setAttribute("href", ICONS + "#i-" + name);
     svg.appendChild(use);
     return svg;
@@ -339,6 +360,7 @@
       busyVote: {},
       alive: true,
       lang: null,
+      openAnswer: {}, // какие ответы акима раскрыты «Читать полностью»
     };
     var box = h("section", { class: "qa", "data-role": state.role });
     rootEl.appendChild(box);
@@ -411,45 +433,78 @@
       box.setAttribute("data-role", state.role);
       box.replaceChildren();
       state.lang = lang();
-      box.appendChild(h(opts.titleTag || "h2", { class: "qa__title", id: "qa-title", tabindex: "-1", "data-focus": "title",
-        text: tr(staff() ? "ask.staff.title" : "ask.title") }));
-      box.appendChild(h("p", { class: "qa__rule" }, [icon("info"), h("span", { text: tr("ask.rule") })]));
+      // Шапка листа как в эталоне (лист «Проекты и идеи»): заголовок 19/600 и круглая «×» справа — закрыть раздел
+      // (то же, что Esc и «Карта»; без оболочки кнопки нет).
+      // Правило «раз в неделю…» — подзаголовок 13 под названием (как «Остановка · …» у карточки эталона).
+      box.appendChild(h("div", { class: "qa__head" }, [
+        h("div", { class: "qa__ttl" }, [
+          h(opts.titleTag || "h2", { class: "qa__title", id: "qa-title", tabindex: "-1", "data-focus": "title",
+            text: tr(staff() ? "ask.staff.title" : "ask.title") }),
+          h("p", { class: "qa__rule", text: tr("ask.rule") }),
+        ]),
+        typeof opts.close === "function" ? h("button", { type: "button", class: "qa__close bk-x", "aria-label": tr("common.action.close"),
+          "data-focus": "close", onclick: function () { opts.close(); } }, [icon("close")]) : null,
+      ]));
       if (!staff() && state.view === "form") box.appendChild(renderForm());
       else if (!staff() && state.view === "sent") box.appendChild(renderSent());
       else {
         if (!staff()) {
           box.appendChild(h("div", { class: "qa__lead" }, [
-            h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "new", onclick: openForm },
-              [icon("plus"), tr("ask.new")]),
+            h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "new", onclick: openForm, text: tr("ask.new") }),
           ]));
         }
         box.appendChild(renderTabs());
         if (staff() && state.tab === "top" && state.status === "ready" && !state.switching && state.data && state.data.week) {
-          box.appendChild(h("p", { class: "qa__week" }, [icon("calendar"),
-            h("span", { text: tr("ask.staff.week", { n: state.data.week.answered || 0 }) })]));
+          // Крупное число карточки эталона (.big «6 | человек сообщили»): «0 / 5 | отвечено на этой неделе».
+          var wk = state.data.week;
+          box.appendChild(h("p", { class: "qa__week bk-big", "aria-label": tr("ask.staff.week", { n: wk.answered || 0 }) }, [
+            h("b", { "aria-hidden": "true", text: num(wk.answered || 0) + " / " + num(wk.limit || 5) }),
+            h("span", { "aria-hidden": "true", text: tr("ask.staff.week_caption") })]));
         }
         box.appendChild(h("div", { class: "qa-panel-body", role: "tabpanel", id: "qa-tabpanel",
           "aria-labelledby": "qa-tab-" + state.tab }, [renderBody()]));
       }
+      fitAnswers();
       if (focusKey) {
         var again = box.querySelector('[data-focus="' + focusKey + '"]');
         if (again) again.focus();
       }
     }
+    // «Читать полностью» — только у цитаты, которая не влезла в 2 строки: это зависит от ширины листа, языка и шрифта,
+    // а не от числа знаков (100 знаков kk на телефоне — уже 3 строки). «Свернуть» — у раскрытой длиннее 2 строк.
+    function fitAnswers() {
+      var items = box.querySelectorAll(".qa-answer");
+      for (var i = 0; i < items.length; i++) {
+        var t = items[i].querySelector(".qa-answer__text");
+        var more = items[i].querySelector(".qa-answer__more");
+        if (!t || !more) continue;
+        var lh = parseFloat(root.getComputedStyle(t).lineHeight) || 20;
+        more.hidden = items[i].classList.contains("qa-answer--open") ? t.scrollHeight <= lh * 2 + 2 : t.scrollHeight <= t.clientHeight + 1;
+      }
+    }
+    var fitTimer = null;
+    function onResize() {
+      if (fitTimer) return;
+      fitTimer = root.setTimeout(function () {
+        fitTimer = null;
+        if (state.alive) fitAnswers();
+      }, 150);
+    }
+    if (typeof root.addEventListener === "function") root.addEventListener("resize", onResize);
 
-    // Вкладки — ui-kit .bk-tabs (чистый дизайн, R11 разбор FINAL-3 №10): текстом, черта под выбранной, число рядом;
-    // стрелки ←/→ и затухание края, если вкладки не помещаются (kk на 375), — BirgeUI.tabs; без ui-kit — то же своё.
+    // Сегменты как в эталоне (лист «Проекты и идеи»: «Идеи жителей · 6 | Проекты акимата · 4»): подложка, выбранный —
+    // белый с тенью, число через «·». Роли tablist/tab и стрелки ←/→ — BirgeUI.tabs (без ui-kit — своё то же).
     function renderTabs() {
       var tabs = staff() ? ["queue", "top", "answered"] : ["top", "new", "answered"];
       var counts = (state.data && state.data.counts) || {};
-      var list = h("div", { class: "bk-tabs qa-tabs", role: "tablist", "aria-label": tr("ask.tabs_label") });
+      var list = h("div", { class: "qa-seg bk-seg qa-tabs", role: "tablist", "aria-label": tr("ask.tabs_label") });
       tabs.forEach(function (id) {
         var count = counts[id];
         list.appendChild(h("button", {
           type: "button", role: "tab", id: "qa-tab-" + id, value: id, "aria-controls": "qa-tabpanel",
           "aria-selected": String(state.tab === id), tabindex: state.tab === id ? "0" : "-1", "data-focus": "tab-" + id,
-        }, [tr(staff() ? "ask.staff." + id : "ask.tab." + id), count != null && state.status === "ready"
-          ? h("span", { class: "bk-num", "aria-hidden": "true", text: num(count) }) : null]));
+        }, [h("span", { class: "qa-seg__label", text: tr(staff() ? "ask.staff." + id : "ask.tab." + id) }),
+          count != null && state.status === "ready" ? h("span", { class: "qa-seg__num", text: " · " + num(count) }) : null]));
       });
       function choose(id) {
         if (!id || state.tab === id) return;
@@ -464,23 +519,9 @@
           var b = e.target.closest ? e.target.closest('[role="tab"]') : null;
           if (b) choose(b.value);
         });
-        list.addEventListener("scroll", function () { edge(list); }, { passive: true });
       }
-      (root.requestAnimationFrame || setTimeout)(function () {
-        var active = list.querySelector('[aria-selected="true"]');
-        if (active && list.scrollWidth > list.clientWidth) {
-          var right = active.offsetLeft + active.offsetWidth - list.clientWidth + 24;
-          if (right > list.scrollLeft) list.scrollLeft = right;
-        }
-        edge(list);
-      });
       return list;
     }
-    function edge(list) {
-      if (list.scrollWidth - list.clientWidth - list.scrollLeft > 2) list.setAttribute("data-more", "true");
-      else list.removeAttribute("data-more");
-    }
-
     function stateBox(kind, title, text, action) {
       var el = h("div", { class: "qa-state" });
       if (root.BirgeUI && typeof root.BirgeUI.state === "function") {
@@ -497,7 +538,7 @@
     function skeleton() {
       var list = h("ul", { class: "qa-list qa-skeleton", "aria-hidden": "true" });
       for (var i = 0; i < 3; i++) {
-        list.appendChild(h("li", { class: "bk-card qa-card" }, [
+        list.appendChild(h("li", { class: "qa-card bk-pc qa-card--skel" }, [
           h("span", { class: "bk-skel bk-skel--line qa-skel--short" }),
           h("span", { class: "bk-skel bk-skel--title" }),
           h("span", { class: "bk-skel bk-skel--line" }),
@@ -585,54 +626,96 @@
       return list;
     }
 
-    function eyebrow(q, extra) {
+    // ---------------------------------------------------------------- карточка (эталон: строка листа «Проекты и идеи»)
+    // Сверху — сам вопрос (15/600), под ним одна строка «Пример · район · когда» (13), ниже — цитата ответа акима
+    // (2 строки, «Читать полностью»), внизу — пилюля статуса слева и капсула «♡ 34» справа (она же «Поддержать»).
+    function meta(q, extra) {
       var parts = [];
-      if (q.demo) parts.push(h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }));
-      // Район и дата — одним текстом: при переносе на 375 разделитель «·» не встаёт в начало строки.
-      parts.push(h("span", { class: "qa-card__place", text: tr("district." + q.district) + (extra ? " · " + extra : "") }));
-      return h("p", { class: "qa-card__eyebrow" }, parts);
+      if (q.demo) parts.push(tr("common.tag.demo"));
+      parts.push(tr("district." + q.district));
+      if (extra) parts.push(extra);
+      return h("p", { class: "qa-card__meta bk-pc__sub", title: q.demo ? tr("common.tag.demo_hint") : null, text: parts.join(" · ") });
     }
     function questionText(q) {
-      return h("p", { class: "qa-card__text", lang: q.lang === "kk" ? "kk" : "ru", text: "«" + q.text + "»" });
+      return h("p", { class: "qa-card__text bk-pc__title", lang: q.lang === "kk" ? "kk" : "ru", text: "«" + q.text + "»" });
     }
-    function answerBlock(q, open) {
+    // Цвета пилюль — как в эталоне: «На проверке» жёлтая (.pill.review), «Есть ответ» зелёная (.pill.ok), «Ждёт ответа» серая.
+    // Перед словом — статус-иконка ui-kit (правило 3 Linear, одна на весь Birge): на проверке — кольцо, ждёт ответа —
+    // половина, есть ответ — закрашенная галочка (путь вопроса: проверка → публикация → ответ).
+    var PILL_UI = { queue: " bk-pill--review", answered: " bk-pill--accepted", waiting: "" };
+    var PILL_ST = { queue: "st-ring", waiting: "st-half", answered: "st-done" };
+    function stIcon(shape) {
+      var NS = "http://www.w3.org/2000/svg";
+      var svg = doc.createElementNS(NS, "svg");
+      svg.setAttribute("class", "qa-st");
+      svg.setAttribute("aria-hidden", "true");
+      svg.setAttribute("focusable", "false");
+      var use = doc.createElementNS(NS, "use");
+      use.setAttribute("href", ICONS + "#" + shape);
+      svg.appendChild(use);
+      return svg;
+    }
+    function pill(kind) {
+      var key = kind === "queue" ? "ask.staff.queue" : kind === "answered" ? "ask.status.answered" : "ask.status.waiting";
+      // значки st-* пришли в спрайт вместе с BirgeUI.statusIcon (ui-kit 3890fa74): на старом ui-kit — без пустого места
+      var withIcon = !!(root.BirgeUI && typeof root.BirgeUI.statusIcon === "function");
+      return h("span", { class: "qa-pill qa-pill--" + kind + " bk-pill" + PILL_UI[kind] }, [withIcon ? stIcon(PILL_ST[kind]) : null, tr(key)]);
+    }
+    function answerBlock(q) {
       var a = q.answer;
       if (!a) return null;
       var l = lang();
-      var text = a[l] || a[l === "kk" ? "ru" : "kk"];
+      var text = a[l] || a[l === "kk" ? "ru" : "kk"] || "";
       var textLangAttr = a[l] ? l : l === "kk" ? "ru" : "kk";
-      // Свёрнутый блок — ui-kit .bk-details (стрелка и отступы общие для всех разделов чистого дизайна); внутри —
-      // карточка-цитата «Ответ акима»: текст, подпись «Аким» и дата (дата правки — если ответ меняли, R15 S39).
-      return h("details", { class: "bk-details qa-answer", open: open ? true : null }, [
-        h("summary", {}, [h("span", { text: tr("ask.answer") + " · " + date(a.answered_at) })]),
-        h("figure", { class: "qa-answer__card" }, [
-          // Ответ только на другом языке — честно говорим об этом (R11 разбор 15 №3)
-          !a[l] && text ? h("p", { class: "qa-answer__lang", text: tr(l === "kk" ? "ask.answer.only_ru" : "ask.answer.only_kk") }) : null,
-          h("blockquote", { class: "qa-answer__text", lang: textLangAttr, text: text || "" }),
-          h("figcaption", { class: "qa-answer__sign" }, [icon("building"), h("span", { text: tr("ask.answer.sign", { date: date(a.answered_at) })
-            + (a.edited_at ? " · " + tr("ask.answer.edited", { date: date(a.edited_at) }) : "") })]),
-        ]),
+      var open = !!state.openAnswer[q.id];
+      // Подпись и дата — в строке над цитатой: «Ответ акима · 9 окт · изменён 12 окт» (R15 S39 — правка видна всем).
+      return h("div", { class: "qa-answer" + (open ? " qa-answer--open" : "") }, [
+        h("p", { class: "qa-answer__sign" }, [icon("building"), h("span", { text: tr("ask.answer") + " · " + date(a.answered_at)
+          + (a.edited_at ? " · " + tr("ask.answer.edited", { date: date(a.edited_at) }) : "") })]),
+        // Ответ только на другом языке — честно говорим об этом (R11 разбор 15 №3)
+        !a[l] && text ? h("p", { class: "qa-answer__lang", text: tr(l === "kk" ? "ask.answer.only_ru" : "ask.answer.only_kk") }) : null,
+        h("blockquote", { class: "qa-answer__text bk-quote", lang: textLangAttr, id: "qa-ans-" + q.id, text: text }),
+        // Кнопка видна, только если цитата правда длиннее 2 строк — это решает fitAnswers() после раскладки.
+        h("button", { type: "button", class: "qa-answer__more bk-more", hidden: true, "aria-expanded": String(open),
+          "aria-controls": "qa-ans-" + q.id, "data-focus": "more-" + q.id, onclick: function () {
+            state.openAnswer[q.id] = !open;
+            render();
+          }, text: tr(open ? "ask.answer.less" : "ask.answer.more") }),
       ]);
+    }
+    // Капсула «♡ 34»: нажатие — «Поддержать» (один голос с устройства); после голоса — «✓ 35», светлая, без нажатия.
+    // Видно только число; «34 голоса» — словами для диктора и поиска по тексту страницы (приёмка R10 W2-9).
+    function votesText(q) {
+      return [h("span", { class: "qa-card__votes", "aria-hidden": "true", text: num(q.votes) }),
+        h("span", { class: "bk-sr-only", text: tr("ask.votes", { n: q.votes }) })];
+    }
+    function voteCapsule(q) {
+      if (q.answer) {
+        return h("span", { class: "qa-votes" }, [icon("users")].concat(votesText(q)));
+      }
+      if (q.my_vote) {
+        return h("span", { class: "qa-card__voted qa-vote qa-vote--done bk-vote" + (state.bump === q.id ? " qa-bump" : ""),
+          role: "status", tabindex: "-1", "data-focus": "vote-" + q.id },
+          [icon("check"), h("span", { class: "bk-sr-only", text: tr("ask.supported") + ", " })].concat(votesText(q)));
+      }
+      var busy = !!state.busyVote[q.id];
+      return h("button", { type: "button", class: "qa-card__vote qa-vote bk-vote", "data-focus": "vote-" + q.id,
+        "aria-label": tr("ask.support") + ", " + tr("ask.votes", { n: q.votes }),
+        "aria-busy": busy ? "true" : null, "aria-disabled": busy ? "true" : null,
+        onclick: function () { vote(q); } }, [icon("heart")].concat(votesText(q)));
+    }
+    // Строка списка — разметка листа эталона (.pc → .bk-pc, тело .bk-pc__body); картинки-превью у вопроса нет.
+    function card(q, parts) {
+      return h("li", { class: "qa-card bk-pc", "data-id": q.id }, [h("div", { class: "qa-card__body bk-pc__body" }, parts)]);
     }
 
     // ---------------------------------------------------------------- житель
     function residentCard(q) {
-      var votes = h("span", { class: "qa-card__votes" + (state.bump === q.id ? " qa-bump" : "") },
-        [icon("users"), h("span", { text: tr("ask.votes", { n: q.votes }) })]);
-      var row = h("div", { class: "qa-card__row" }, [votes]);
-      if (!q.answer) {
-        var busy = !!state.busyVote[q.id];
-        row.appendChild(q.my_vote
-          ? h("span", { class: "qa-card__voted", role: "status" }, [icon("check"), h("span", { text: tr("ask.supported") })])
-          : h("button", { type: "button", class: "bk-btn qa-card__vote", "data-focus": "vote-" + q.id,
-              "aria-busy": busy ? "true" : null, "aria-disabled": busy ? "true" : null,
-              onclick: function () { vote(q); } }, [icon("thumb-up"), tr("ask.support")]));
-      }
-      return h("li", { class: "bk-card qa-card", "data-id": q.id }, [
-        eyebrow(q, q.published_at ? relative(q.published_at) : null),
+      return card(q, [
         questionText(q),
-        row,
-        answerBlock(q, state.tab === "answered"), // во вкладке «С ответом» ответ открыт: за ним туда и приходят
+        meta(q, q.published_at ? relative(q.published_at) : null),
+        answerBlock(q),
+        h("div", { class: "qa-card__foot bk-pc__foot" }, [pill(q.answer ? "answered" : "waiting"), voteCapsule(q)]),
       ]);
     }
 
@@ -740,8 +823,8 @@
         d.error && !d.field ? h("p", { class: "qa-form__error", role: "alert", text: d.error }) : null,
         h("div", { class: "qa-form__actions" }, [
           h("button", { type: "submit", class: "bk-btn bk-btn--primary", "aria-busy": d.busy ? "true" : null,
-            "aria-disabled": d.busy ? "true" : null }, [d.busy ? null : icon("send"), tr("ask.send")]), // при отправке — только крутилка ui-kit
-          h("button", { type: "button", class: "bk-btn bk-btn--ghost", onclick: closeForm, text: tr("common.action.cancel") }),
+            "aria-disabled": d.busy ? "true" : null }, [tr("ask.send")]), // при отправке — только крутилка ui-kit
+          h("button", { type: "button", class: "bk-btn", onclick: closeForm, text: tr("common.action.cancel") }),
         ]),
       ]);
       return form;
@@ -813,40 +896,37 @@
         : q.published_at ? date(q.published_at) : null;
       var warn = [];
       if (q.pii && q.pii.length) {
-        warn.push(h("span", { class: "bk-tag bk-tag--warn" }, [icon("alert"), tr("ask.staff.pii", {
+        warn.push(h("span", { class: "qa-pill qa-pill--warn bk-pill bk-pill--review" }, [icon("alert"), tr("ask.staff.pii", {
           what: q.pii.map(function (k) { return tr("ask.staff.pii." + k); }).join(", ") })]));
       }
-      if (q.rude) warn.push(h("span", { class: "bk-tag bk-tag--warn" }, [icon("alert"), tr("ask.staff.rude")]));
-      var card = h("li", { class: "bk-card qa-card", "data-id": q.id }, [
-        eyebrow(q, when),
-        questionText(q),
-        warn.length ? h("p", { class: "qa-card__warn" }, warn) : null,
-        state.tab !== "queue" ? h("div", { class: "qa-card__row" }, [h("span", { class: "qa-card__votes" },
-          [icon("users"), h("span", { text: tr("ask.votes", { n: q.votes }) })])]) : null,
-        answerBlock(q, state.tab === "answered"),
-      ]);
+      if (q.rude) warn.push(h("span", { class: "qa-pill qa-pill--warn bk-pill bk-pill--review" }, [icon("alert"), tr("ask.staff.rude")]));
       var open = state.open && state.open.id === q.id ? state.open.kind : null;
-      if (open === "reject") card.appendChild(rejectPanel(q));
-      else if (open === "answer") card.appendChild(answerPanel(q));
-      else card.appendChild(staffActions(q));
-      return card;
+      return card(q, [
+        questionText(q),
+        meta(q, when),
+        warn.length ? h("p", { class: "qa-card__warn" }, warn) : null,
+        answerBlock(q),
+        h("div", { class: "qa-card__foot bk-pc__foot" }, [pill(state.tab === "queue" ? "queue" : q.answer ? "answered" : "waiting"),
+          state.tab !== "queue" ? h("span", { class: "qa-votes" }, [icon("users")].concat(votesText(q))) : null]),
+        open === "reject" ? rejectPanel(q) : open === "answer" ? answerPanel(q) : staffActions(q),
+      ]);
     }
 
     function staffActions(q) {
       var row = h("div", { class: "qa-card__actions" });
       if (state.tab === "queue") {
         row.appendChild(h("button", { type: "button", class: "bk-btn", "data-focus": "pub-" + q.id,
-          onclick: function () { act(q, "publish", {}, "ask.staff.done.published"); } }, [icon("check"), tr("ask.staff.publish")]));
+          onclick: function () { act(q, "publish", {}, "ask.staff.done.published"); }, text: tr("ask.staff.publish") }));
         row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "rej-" + q.id,
           onclick: function () { openPanel(q, "reject"); }, text: tr("ask.staff.reject") }));
       } else if (state.tab === "top") {
         row.appendChild(h("button", { type: "button", class: "bk-btn", "data-focus": "ans-" + q.id,
-          onclick: function () { openPanel(q, "answer"); } }, [icon("edit"), tr("ask.staff.answer")]));
+          onclick: function () { openPanel(q, "answer"); }, text: tr("ask.staff.answer") }));
         row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "rej-" + q.id,
           onclick: function () { openPanel(q, "reject"); }, text: tr("ask.staff.reject") }));
       } else {
         row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "ans-" + q.id,
-          onclick: function () { openPanel(q, "answer"); } }, [icon("edit"), tr("ask.staff.edit_answer")]));
+          onclick: function () { openPanel(q, "answer"); }, text: tr("ask.staff.edit_answer") }));
         // Снять отвеченный вопрос можно только по причине «личные данные» (сервер отвечает 409 на другие причины).
         row.appendChild(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "rej-" + q.id,
           onclick: function () { openPanel(q, "reject"); }, text: tr("ask.staff.reject") }));
@@ -894,7 +974,7 @@
         d.error ? h("p", { class: "qa-form__error", role: "alert", text: d.error }) : null,
         h("div", { class: "qa-card__actions" }, [
           h("button", { type: "submit", class: "bk-btn bk-btn--danger", "aria-busy": d.busy ? "true" : null, text: tr("ask.staff.reject_send") }),
-          h("button", { type: "button", class: "bk-btn bk-btn--ghost", onclick: function () { closePanel(q); }, text: tr("common.action.cancel") }),
+          h("button", { type: "button", class: "bk-btn", onclick: function () { closePanel(q); }, text: tr("common.action.cancel") }),
         ]),
       ]);
     }
@@ -924,8 +1004,8 @@
         h("p", { class: "bk-meta", text: tr("ask.staff.answer_hint") }),
         d.error ? h("p", { class: "qa-form__error", role: "alert", text: d.error }) : null,
         h("div", { class: "qa-card__actions" }, [
-          h("button", { type: "submit", class: "bk-btn bk-btn--primary", "aria-busy": d.busy ? "true" : null }, [icon("send"), tr("ask.staff.answer_send")]),
-          h("button", { type: "button", class: "bk-btn bk-btn--ghost", onclick: function () { closePanel(q); }, text: tr("common.action.cancel") }),
+          h("button", { type: "submit", class: "bk-btn bk-btn--primary", "aria-busy": d.busy ? "true" : null, text: tr("ask.staff.answer_send") }),
+          h("button", { type: "button", class: "bk-btn", onclick: function () { closePanel(q); }, text: tr("common.action.cancel") }),
         ]),
       ]);
     }
@@ -988,6 +1068,8 @@
         state.alive = false;
         if (offLang) offLang();
         doc.removeEventListener("birge:mode", onMode);
+        if (typeof root.removeEventListener === "function") root.removeEventListener("resize", onResize);
+        if (fitTimer) root.clearTimeout(fitTimer);
         if (box.parentNode) box.parentNode.removeChild(box);
       },
     };

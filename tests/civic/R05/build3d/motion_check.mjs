@@ -1,6 +1,7 @@
 // R05 · дизайн-марафон · чек-лист п. 7 «Движение» для панели 3D-модуля — по тем же правилам, что R10 motion_check.cjs
 // (claude/r14-R10 b84d46ff): сразу после смены состояния читаем document.getAnimations() — длительность, кривая, свойства;
-// панель должна выезжать (transform/translate), а не только проявляться; 200–350 мс (±30); ease-out; с «уменьшить
+// панель должна выезжать (transform/translate), а не только проявляться; 150–250 мс (±30; эталон 13.10, правило Linear 6;
+// в дизайн-марафоне было 200–350); ease-out; с «уменьшить
 // движение» анимаций нет. Анимация постройки 3D (WebGL, 1,1 с) сюда не попадает — она не CSS и описана в CHECKLIST.md.
 // Отличие от R10: кривую CSS-анимации берём из ключевых кадров (у R10 она читается как «linear» — так по спецификации
 // возвращает getTiming(); R10 пропускает «linear» только вместе с opacity).
@@ -119,13 +120,14 @@ for (const [w, h] of [[1366, 768], [375, 812]]) {
     }
     const main = got.normal.filter((a) => a.duration >= 60);
     const moves = main.some((a) => /transform|translate|scale|slide|up|enter/i.test(a.props + " " + a.name));
-    const durOk = main.every((a) => (a.duration >= 170 && a.duration <= 380) || (a.duration >= 100 && a.duration < 170 && !/transform|translate/.test(a.props)));
+    // Эталон 13.10, правило Linear 6: анимации 150–250 мс (±30 — 120–280); раньше (дизайн-марафон, R10) — 200–350.
+    const durOk = main.every((a) => a.duration >= 120 && a.duration <= 280);
     const easeOk = main.every((a) => EASE_OUT.test(a.easing) || (a.easing === "linear" && /opacity/.test(a.props)));
     const list = main.map((a) => `${a.target} ${a.props || a.name} ${a.duration} мс ${a.easing}`).slice(0, 5);
     add(tag, `${name}: есть движение`, main.length ? "PASS" : "СМОТРЕТЬ", { anims: list });
     if (main.length) {
       add(tag, `${name}: выезжает/приподнимается (transform), а не только проявляется`, moves ? "PASS" : "СМОТРЕТЬ", null);
-      add(tag, `${name}: длительность 200–350 мс (±30)`, durOk ? "PASS" : "FAIL", { anims: list });
+      add(tag, `${name}: длительность 150–250 мс (±30, эталон: правило Linear 6)`, durOk ? "PASS" : "FAIL", { anims: list });
       add(tag, `${name}: кривая ease-out`, easeOk ? "PASS" : "СМОТРЕТЬ", { easing: [...new Set(main.map((a) => a.easing))] });
     }
     const left = got.reduce.filter((a) => a.duration > 20);

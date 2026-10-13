@@ -5,6 +5,7 @@
     python3 -m engine.civic_geo segment LON,LAT LON,LAT [--kind road|foot]   участок улицы по графу
     python3 -m engine.civic_geo bench [N]                        время ответа /targets на N случайных точках
     python3 -m engine.civic_geo build-way-tags | build-data | snap-demo   пересборка данных
+    python3 -m engine.civic_geo search-index [--out FILE]        индекс подсказок поиска (улицы, остановки, дворы) для R01
 """
 from __future__ import annotations
 
@@ -30,6 +31,9 @@ def main(argv=None):
         return m(rest)
     if cmd == "snap-demo":
         from .snap_demo import main as m
+        return m(rest)
+    if cmd == "search-index":
+        from .search_index import main as m
         return m(rest)
     if cmd == "report":
         from .accuracy import format_report, report

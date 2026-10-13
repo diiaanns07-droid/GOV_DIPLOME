@@ -2,13 +2,15 @@
 // Запуск: python -m ui.civic_heat.devserver &   затем
 //   NODE_PATH=$(npm root -g) node tests/civic/R07/browser/shots.js [папка_для_скриншотов]
 // Общие проверки каждого кадра: нет ошибок консоли, нет горизонтальной прокрутки, нет ключей heat.* вместо текста,
-// нет слова «демо» в видимом тексте, зоны нажатия ≥ 48 px (с невидимой каймой ::after), главные кнопки ≥ 4,5:1.
+// нет слова «демо» в видимом тексте, зоны нажатия ≥ 44 px (с невидимой каймой ::after), главные кнопки ≥ 4,5:1.
+// Порог 44 — по эталону A (REFERENCE.html: .btn и .ctl 44 px); R10 требует ≥ 40, R01 на телефоне ≥ 36.
 // Отдельные сценарии — замечания UX_REVIEW R11, день 3 (№ в имени проверки).
 const { chromium } = require("playwright");
 const fs = require("fs");
 const path = require("path");
 
 const BASE = process.env.R07_BASE || "http://127.0.0.1:8617/civic/heat/demo.html";
+const TAP_MIN = 44;
 const API = BASE.replace(/\/civic\/heat\/demo\.html.*$/, "") + "/api/civic/v2";
 const OUT = process.argv[2] || path.join(__dirname, "..", "..", "..", "..", "research", "round-14-results", "R07", "screens");
 fs.mkdirSync(OUT, { recursive: true });
@@ -18,7 +20,7 @@ const results = [];
 
 // Общие замеры страницы (выполняются в браузере)
 async function measure(page) {
-  return page.evaluate(() => {
+  return page.evaluate((TAP_MIN) => {
     const lum = (rgb) => {
       const c = rgb.match(/\d+(\.\d+)?/g).slice(0, 3).map(Number).map((v) => v / 255)
         .map((v) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
@@ -39,7 +41,7 @@ async function measure(page) {
     };
     const buttons = [...document.querySelectorAll("button, select")].filter(visible);
     const small = buttons.map((b) => ({ t: (b.innerText || b.getAttribute("aria-label") || "").trim().slice(0, 30), h: Math.round(hitHeight(b)) }))
-      .filter((b) => b.h < 48);
+      .filter((b) => b.h < TAP_MIN);
     // R11 (ночь 5): видимый размер кнопок и переключателей ≥ 44 px (значки на карте — отдельно: ≥ 24 px + кайма 48)
     const smallVisible = buttons.filter((b) => !b.closest(".r07-badge") && b.getBoundingClientRect().height < 43.5)
       .map((b) => ({ t: (b.innerText || b.getAttribute("aria-label") || "").trim().slice(0, 30), h: Math.round(b.getBoundingClientRect().height) }));
@@ -62,7 +64,7 @@ async function measure(page) {
       legendOnMap: (() => { const l = document.querySelector(".r07-maplegend"); if (!l || !visible(l)) return false; const r = l.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight && r.left >= 0; })(),
       state: window.__heat ? window.__heat.state() : null,
     };
-  });
+  }, TAP_MIN);
 }
 
 async function open(browser, size, query) {
@@ -87,7 +89,7 @@ async function shot(browser, name, size, query, after, check) {
   if (m.hscroll) problems.push("горизонтальная прокрутка");
   if (m.rawKeys.length) problems.push("ключи без перевода: " + m.rawKeys.join(","));
   if (m.demoWord) problems.push("слово «демо» в интерфейсе (№7)");
-  if (m.smallButtons.length) problems.push("зона нажатия < 48 (№6): " + JSON.stringify(m.smallButtons));
+  if (m.smallButtons.length) problems.push("зона нажатия < " + TAP_MIN + " (№6): " + JSON.stringify(m.smallButtons));
   if (m.smallVisible.length) problems.push("видимая высота < 44 (R11): " + JSON.stringify(m.smallVisible));
   if (m.smallDistricts.length) problems.push("значки районов ниже 44 px (R11): " + JSON.stringify(m.smallDistricts));
   const lowContrast = m.primary.filter((b) => b.ratio < 4.5);
@@ -173,7 +175,8 @@ async function colorOnlyCheck(page) {
     // Карточка акимата: контраст «Взять в работу» и «Что пишут жители» (№1, №4)
     await shot(browser, `card-akimat-1366-${lang}`, "desktop", `?lang=${lang}&view=nura`, async (page) => {
       await page.click(".r07-item");
-      await page.waitForSelector(".r07-quotes, .r07-texts .r07-note", { timeout: 6000 });
+      // эталон A: в «Обзоре» — одна цитата (.r07-lead), все — во вкладке «Обращения» (в DOM, скрыта)
+      await page.waitForSelector(".r07-lead, .r07-texts .r07-note", { timeout: 6000 });
     }, async (page) => {
       const out = [];
       const q = await page.evaluate(() => ({ quotes: document.querySelectorAll(".r07-quotes li").length,
@@ -188,7 +191,7 @@ async function colorOnlyCheck(page) {
     });
     await shot(browser, `card-akimat-375-${lang}`, "phone", `?lang=${lang}&view=nura&sheet=full`, async (page) => {
       await page.click(".r07-item");
-      await page.waitForSelector(".r07-quotes, .r07-texts .r07-note", { timeout: 6000 });
+      await page.waitForSelector(".r07-lead, .r07-texts .r07-note", { timeout: 6000 });
     });
     // Житель: мягче, «Я тоже», БЕЗ текстов жителей
     await shot(browser, `card-resident-375-${lang}`, "phone", `?lang=${lang}&role=resident&view=nura&sheet=full`, async (page) => {
@@ -268,7 +271,7 @@ async function colorOnlyCheck(page) {
           await page.waitForSelector(".r07-card", { timeout: 10000 });
           await page.waitForTimeout(700);
         }, async (page) => {
-          const st = await page.evaluate(() => ({ s: window.__heat.state(), text: document.querySelector(".r07-card__reported").innerText }));
+          const st = await page.evaluate(() => ({ s: window.__heat.state(), text: document.querySelector(".r07-big").innerText }));
           const out = [];
           if (st.s.filters.days !== 7) out.push("период не 7 дней: " + st.s.filters.days);
           if (st.s.selected !== top.target.kind + ":" + top.target.id) out.push("открыта не та цель: " + st.s.selected);
@@ -297,7 +300,6 @@ async function colorOnlyCheck(page) {
     await page.waitForTimeout(350);
   });
   await shot(browser, "filter-snow-7days-1366-kk", "desktop", "?lang=kk&view=nura", async (page) => {
-    await page.click("[data-cats-toggle]");
     await page.click('[data-cat="snow_ice"]');
     await page.waitForTimeout(500);
     await page.click('[data-days="7"]');
@@ -512,7 +514,7 @@ async function colorOnlyCheck(page) {
     if (m.hscroll) problems.push("горизонтальная прокрутка");
     if (m.rawKeys.length) problems.push("ключи без перевода: " + m.rawKeys.join(","));
     if (m.demoWord) problems.push("слово «демо» в интерфейсе");
-    if (m.smallButtons.length) problems.push("зона нажатия < 48: " + JSON.stringify(m.smallButtons));
+    if (m.smallButtons.length) problems.push("зона нажатия < " + TAP_MIN + ": " + JSON.stringify(m.smallButtons));
     if (m.smallVisible.length) problems.push("видимая высота < 44 (R11): " + JSON.stringify(m.smallVisible));
     await page.screenshot({ path: path.join(OUT, name + ".jpg"), type: "jpeg", quality: 82 });
     results.push({ name, size, query: "", problems, badges: m.badges, extra });
@@ -853,7 +855,7 @@ async function colorOnlyCheck(page) {
     page.on("request", (r) => { if (r.url().includes("/metoo")) headers.push(r.headers()["x-birge-device"] || ""); });
     await page.evaluate(() => document.dispatchEvent(new CustomEvent("birge:lang", { detail: { lang: "kk" } })));
     await page.waitForTimeout(300);
-    const kk = await page.evaluate(() => window.__heat.state().lang === "kk" && document.querySelector(".r07-h").innerText === "Шағымдар картасы");
+    const kk = await page.evaluate(() => window.__heat.state().lang === "kk" && document.querySelector(".r07-h").innerText === "Шағымы көп орындар");   // эталон A: заголовок списка
     await page.click(".r07-item");
     await page.waitForSelector('[data-act="metoo"]');
     await page.click('[data-act="metoo"]');

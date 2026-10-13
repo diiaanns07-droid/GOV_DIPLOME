@@ -601,7 +601,7 @@ try {
           w = Math.max(w, r.width - (parseFloat(p.left) || 0) - (parseFloat(p.right) || 0));
           h = Math.max(h, r.height - (parseFloat(p.top) || 0) - (parseFloat(p.bottom) || 0));
         }
-        if (Math.min(w, h) < 47.5) out.push({ tag, el: (e.dataset.action || e.className.toString()).slice(0, 40), w: Math.round(w), h: Math.round(h) });
+        if (Math.min(w, h) < 43.5) out.push( /* эталон 13.10, --tap ui-kit R11 — 44 (было 48) */{ tag, el: (e.dataset.action || e.className.toString()).slice(0, 40), w: Math.round(w), h: Math.round(h) });
       }
       return out;
     }, tag)));

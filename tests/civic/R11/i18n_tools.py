@@ -57,6 +57,10 @@ def params(value):
     return set().union(*(set(PARAM_RE.findall(t)) for t in texts(value)))
 
 
+# Формы числа без {n}: само число стоит рядом крупно (эталон A .big: «6 | человек сообщили»), подпись согласуется с ним.
+NUMBER_BESIDE = {"heat.card.people", "heat.card.people_fixed", "passport.people"}
+
+
 def check(ru=None, kk=None):
     """Список проблем словарей (пустой — всё в порядке)."""
     ru = load("ru") if ru is None else ru
@@ -74,7 +78,7 @@ def check(ru=None, kk=None):
                 # ru: one/few/many обязательны; other — по желанию (дробные: «в 7,2 раза»; без неё i18n.js берёт few).
                 if lang == "ru" and not (RU_FORMS <= set(value) <= RU_FORMS | {"other"}):
                     problems.append(f"ru: {key} — формы числа должны быть one/few/many (+ other), есть {sorted(value)}")
-                if not params(value) & {"n", "count"}:
+                if not params(value) & {"n", "count"} and key not in NUMBER_BESIDE:
                     problems.append(f"{lang}: {key} — формы числа без {{n}}")
             elif not isinstance(value, str):
                 problems.append(f"{lang}: {key} — значение должно быть строкой или формами числа")

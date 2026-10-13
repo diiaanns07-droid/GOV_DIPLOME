@@ -58,7 +58,9 @@
     var current = null;
     var photo = null;
     var editing = false;
-    var fixing = false;    // R11 §2.3: «Отметить исправленным» открывает форму в той же карточке (не модальное окно)
+    // R11 §2.3: «Отметить исправленным» открывает форму в той же карточке (не модальное окно); opts.openFix — сразу
+    // с формой (выбрали «Отметить исправленным» в меню статуса строки «Обращений»).
+    var fixing = !!opts.openFix;
     var lastNote = null;
 
     function call(method, path, body) {

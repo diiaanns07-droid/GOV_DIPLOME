@@ -72,8 +72,8 @@
    Числа — без подложки (ui-kit даёт .bk-kpi на стекле белую подложку 70 %; у нас «без карточек», CLEAN_PASS п. 3);
    дата и район — непрозрачные поля, как остальные формы на стекле (белые с тонкой линией). Цвета текста — только
    переменные ui-kit: внутри .bk-glass они сами становятся тёмными. Блоки .bk-card получают подложку от ui-kit. */
-.bk-glass .akim-kpi.bk-kpi {
-  background: transparent;
+.bk-glass .akim-kpi.bk-kpi { /* эталон A: числа — плитки белые 72 % (сводка «Сегодня в Астане») */
+  background: var(--akim-tile, rgba(255, 255, 255, 0.72));
 }
 .bk-glass .akim__field input,
 .bk-glass .akim__field select {
@@ -842,6 +842,232 @@
   stroke-linejoin: round;
 }
 
+/* ═══════ ЭТАЛОН A (13 окт, research/round-14/design/REFERENCE.html): «Картина дня» в стиле сводки «Сегодня в Астане»
+   и карточки эталона. Числа — плитки (белые 72 %, радиус 12); блоки — радиус 16, граница 1 px вместо тени (правило
+   Linear 6); заголовки блоков 15/600; строки 14/500 + 12 серым, линии 1 px rgba(18,26,23,.08); плашки мест 34×26
+   (радиус 8); «Выбрать» — вторичная кнопка эталона; движение 150–250 мс. Цвета — переменные ui-kit (R11 переносит
+   токены эталона), свои — только линии и плитки ниже. ═══════ */
+.akim {
+  --akim-line: var(--c-line, rgba(18, 26, 23, 0.08));
+  --akim-tile: var(--c-sub, rgba(255, 255, 255, 0.72));
+  --akim-fill: var(--c-fill, rgba(18, 26, 23, 0.06));
+}
+.akim__title { /* шкала эталона 12/13/14/15/16/19/22/34: заголовок раздела — 22 (R11 --fs-h1) */
+  font-size: 22px;
+  letter-spacing: var(--ls-title, -0.01em);
+}
+/* числа — плитки сводки «Сегодня в Астане» один в один: поля 10/12, число 22/600, подпись 12; ниже — изменение и график */
+.akim-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 4px;
+  border-bottom: 0;
+}
+.akim-kpi.bk-kpi {
+  gap: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--akim-tile);
+}
+.akim-kpi .bk-kpi__value {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: var(--ls-num, -0.02em);
+}
+.akim-kpi .bk-kpi__label {
+  color: var(--c-text-2);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+}
+.akim-kpi .bk-kpi__delta {
+  margin-top: 2px;
+  font-size: 12px;
+}
+.akim-kpi-more > summary {
+  font-size: 14px;
+  font-weight: 500;
+}
+.akim-kpi-more__list {
+  font-size: 14px;
+}
+/* сводка — 15/1.5 (текст эталона 14–15), главная фраза 600 */
+.akim-summary__text {
+  font-size: 15px;
+  line-height: 1.55;
+}
+/* блоки */
+.akim-card.bk-card {
+  padding: 16px 18px;
+  border: 1px solid var(--akim-line);
+  border-radius: 16px;
+  box-shadow: none;
+}
+.akim .bk-h2 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+.akim-card__head,
+.akim-card > .bk-h2 { /* заголовок → содержимое 12 (зазор сетки карточки), как «Сегодня в Астане» → плитки в эталоне */
+  margin-bottom: 0;
+}
+.akim-card__hint {
+  color: var(--c-text-3);
+  font-size: 12px;
+}
+.akim-grid,
+.akim-col {
+  gap: 12px;
+}
+.akim-decisions,
+.akim-pulse {
+  margin-bottom: 12px;
+}
+/* «Горячие места» — строки как в сводке: плашка 34×26, название 14/500, тема 12; без шеврона (Linear) */
+.akim-hot__list.bk-list {
+  margin: 0;
+  background: transparent;
+}
+.akim-hot__list > li + li {
+  border-top: 1px solid var(--akim-line);
+}
+.akim-hot__item.bk-list__item {
+  gap: 12px;
+  min-height: 54px;
+  margin: 0 -8px;
+  padding: 10px 8px;
+  width: calc(100% + 16px);
+  border-radius: 10px;
+}
+.akim-hot__item.bk-list__item:hover {
+  background: rgba(18, 26, 23, 0.04);
+}
+.akim-hot__item .bk-heat {
+  width: 34px;
+  min-width: 34px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.akim-hot__item .bk-list__title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.akim-hot__sub {
+  color: var(--c-text-3);
+  font-size: 12px;
+}
+.akim-hot__item > .ic {
+  display: none;
+}
+.akim-hot__sub .bk-status { /* статус — тихо, одной строкой с темой; иконка статуса ui-kit R11 (правило 3 Linear) */
+  gap: 5px;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+}
+.akim-hot__sub .bk-status::before { /* иконка по высоте строки 12 px — как точка статуса эталона к своему тексту */
+  width: 12px;
+  height: 12px;
+  background-size: 12px 12px;
+}
+.akim-districts .akim-bar-btn {
+  min-height: 44px;
+}
+.akim-districts .bk-bars {
+  gap: 0;
+}
+/* «Пульс» — строки со значком в плитке 30×30 (как строки карточки эталона) */
+.akim-pulse__item {
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  padding: 10px 0;
+  border-top-color: var(--akim-line);
+}
+.akim-pulse__icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--akim-fill);
+}
+.akim-pulse__title {
+  font-size: 14px;
+  font-weight: 500;
+}
+.akim-pulse__reason {
+  color: var(--c-text-3);
+  font-size: 12px;
+}
+.akim-pulse__map {
+  font-size: 14px;
+  font-weight: 500;
+}
+/* «Нужно решение акима» — линии эталона, «Выбрать» — вторичная кнопка (серая заливка, радиус 12) */
+.akim-decisions__list > .akim-decision + .akim-decision,
+.akim-decision__option + .akim-decision__option {
+  border-top-color: var(--akim-line);
+}
+.akim-decision__problem {
+  font-size: 15px;
+  font-weight: 600;
+}
+.akim-decision__choose.bk-btn--ghost {
+  min-height: 44px; /* кнопка эталона — 44 */
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--akim-fill);
+  color: var(--c-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+.akim-decision__choose.bk-btn--ghost:hover {
+  background: rgba(18, 26, 23, 0.1);
+}
+/* темы и районы — строки 14, полоса 6 */
+.akim-bars .bk-bar__label {
+  font-size: 14px;
+}
+.akim-bars .bk-bar__value {
+  font-size: 13px;
+  font-weight: 600;
+}
+.akim-bars .bk-bar__track {
+  height: 6px;
+  border-radius: 3px;
+}
+.akim-bars .bk-bar__fill {
+  border-radius: 3px;
+  transition-duration: 250ms;
+}
+/* объекты и предложения — строки 14/500 */
+.akim-obj .bk-list__title,
+.akim-proposals .bk-list__title {
+  font-size: 14px;
+  font-weight: 500;
+}
+.akim-obj__list.bk-list,
+.akim-proposals .bk-list {
+  background: transparent;
+}
+.akim-obj__list > li + li,
+.akim-proposals .bk-list > li + li {
+  border-top-color: var(--akim-line);
+}
+/* движение 150–250 мс (правило Linear 6) */
+.akim__body[data-enter] > * {
+  animation-duration: 200ms;
+}
+.akim-spark__line {
+  animation-duration: 250ms;
+}
+
 /* ── узкий экран: всё в одну колонку, числа 2×2 ── */
 @media (max-width: 1023px) {
   .akim-grid {
@@ -861,12 +1087,7 @@
   .akim__top {
     align-items: stretch;
   }
-  .akim__title-date {
-    display: block;
-  }
-  .akim__title-sep {
-    display: none;
-  }
+  /* заголовок 22 (шкала эталона) помещается в одну строку и на 375 — «Картина дня · 13 окт», как на ноутбуке */
   /* дата и район — каждый во всю ширину: «Барлық аудандар» не обрезается */
   .akim__controls {
     display: grid;
@@ -900,9 +1121,12 @@
   .akim__today {
     width: 100%;
   }
-  .akim-kpi {
+  .akim-kpi.bk-kpi {
     min-height: 0;
-    padding: var(--s-3) 0;
+    padding: 10px 12px;
+  }
+  .akim-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* телефон: плитки 2×2 */
   }
   .akim-obj__tags {
     justify-items: start;
@@ -1127,9 +1351,25 @@
   .akim-spark {
     width: 120px;
   }
-  .akim-kpi.bk-kpi { /* числа без карточек и на бумаге (CLEAN_PASS п. 3); рамку печати ui-kit снимаем */
+  .akim-kpi.bk-kpi { /* на бумаге числа без плиток и рамок; рамку печати ui-kit снимаем */
+    padding: 4px 0;
     border: 0;
+    background: none;
     break-inside: avoid;
+  }
+  .akim-card.bk-card {
+    padding: 10px 12px;
+  }
+  /* строки эталона на бумаге плотнее (селекторы той же силы, что у экрана) */
+  .akim-hot__item.bk-list__item {
+    min-height: 0;
+    padding: 2px 8px;
+  }
+  .akim-pulse__item {
+    padding: 4px 0;
+  }
+  .akim-districts .akim-bar-btn {
+    min-height: 0;
   }
   .bk-kpis {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;

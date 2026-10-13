@@ -57,14 +57,16 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   const card = await page.locator(".bq-report").innerText();
   assert.match(card, /Остановка/);
   assert.match(card, /Исатай батыр/);
-  assert.match(card, /Объект № 10\s272\s524\s280/);
-  assert.match(card, /Сообщили 3 человека/);
+  // эталон A: номер — строкой «Номер на табличке» во вкладке «Обзор», число людей — крупно (34) и слова рядом
+  assert.match(card, /Номер на табличке\s*№ 10\s272\s524\s280/);
+  assert.match(card, /\b3\s+человека сообщили · за 30 дней/);
   assert.match(card, /В работе|Новое/);
   assert.match(card, /Пример/, "демо-данные помечены");
   assert.equal(await page.locator(".bk-btn--primary").count(), 1, "одна главная кнопка");
   assert.match(await page.locator(".bk-btn--primary").innerText(), /Я тоже/);
   assert.equal(await page.locator('[data-act="report-other"]').count(), 1);
-  assert.equal(await page.locator("details.bq-more").getAttribute("open"), null, "подробности свёрнуты");
+  assert.equal(await page.locator('.bq-tab[aria-selected="true"]').getAttribute("data-tab"), "overview", "открыта вкладка «Обзор»");
+  assert.equal(await page.locator(".bq-tab").count(), 3, "вкладки «Обзор · Обращения · История»");
   assert.doesNotMatch(card, /qr\.|osm-node|ребр|граф/i, "ни ключей, ни технических слов");
   // GLASS.md R11 §4: на стенде панель не стеклянная — стекло у самой карточки
   assert.equal(await page.locator(".bq-report.bk-glass").count(), 1, "своё стекло вне стеклянной панели");
@@ -76,7 +78,7 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   assert.equal(calls.at(-1).complaint_id, "c-demo-qr-1");
   assert.match(calls.at(-1).device_id, /^[A-Za-z0-9_-]{16,80}$/);
   assert.deepEqual((await page.evaluate(() => window.__events.at(-1))).type, "metoo");
-  await page.waitForFunction(() => /Сообщили 4 человека/.test(document.querySelector(".bq-report").innerText));
+  await page.waitForFunction(() => /\b4\s+человека сообщили/.test(document.querySelector(".bq-report").innerText));
   assert.match(await page.locator(".bk-btn--primary").innerText(), /Сообщить о другом/);
   // одно подтверждение — «Спасибо…» над кнопкой (дизайн-марафон: не два подряд); «Вы отметили…» — при следующем открытии
   const after = await page.locator(".bq-report").innerText();
@@ -91,18 +93,52 @@ test("QR: stop with open complaints — what, number, how many, status, one main
   assert.equal(rep.target.id, STOP);
   assert.equal(rep.target.object_kind, "bus_stop");
   assert.equal(rep.geometry.type, "Point");
-  // «Подробнее» (POLISH_WAVE_2 п. 6: «история, текущие обращения») — грузится только при раскрытии
-  assert.equal(await page.locator(".bq-cases").count(), 0, "до раскрытия обращения не грузятся");
-  await page.click("details.bq-more > summary");
+  // Вкладки (POLISH_WAVE_2 п. 6: «история, текущие обращения») — обращения грузятся только при открытии вкладки
+  assert.equal(await page.locator(".bq-cases").count(), 0, "до открытия вкладки обращения не грузятся");
+  await page.click('.bq-tab[data-tab="cases"]');
   await page.waitForSelector(".bq-cases li");
-  const more = await page.locator("details.bq-more").innerText();
-  assert.match(more, /Обращения здесь[\s\S]*Остановки и транспорт[^\n]*В работе[\s\S]*Освещение[^\n]*Новое/);
-  assert.match(more, /Ответ службы до 15/);
-  assert.match(more, /История[\s\S]*Новое/);
+  const more = await page.locator("#bq-panel").innerText();
+  assert.match(more, /Остановки и транспорт[\s\S]*В работе[\s\S]*Освещение[\s\S]*Новое/);
+  assert.match(more, /до 15/, "срок ответа службы у открытого обращения");
+  await page.click('.bq-tab[data-tab="history"]');
+  await page.waitForSelector(".bq-history li");
+  const hist = await page.locator("#bq-panel").innerText();
+  assert.match(hist, /Новое/);
   assert.equal(await page.locator(".bq-history li").count(), 4, "4 события двух обращений, новые сверху");
-  assert.doesNotMatch(more, /c-demo|osm-node/);
+  assert.doesNotMatch(more + hist, /c-demo|osm-node/);
   assert.deepEqual(errors, []);
   await ctx.close();
+});
+
+test("QR: «Я тоже» answers at once (Linear rule 4) and rolls back honestly when the server fails", { skip: SKIP }, async () => {
+  // медленный сервер: число +1 и «Спасибо» видны раньше ответа (не ждём 1,5 с)
+  await set("delay_metoo_ms=1500");
+  let r = await open("?report=" + STOP);
+  await ready(r.page);
+  const num = async (p) => Number((await p.locator(".bq-big b").innerText()).trim());
+  const n0 = await num(r.page);
+  const t0 = Date.now();
+  await r.page.click('[data-act="metoo"]');
+  await r.page.waitForSelector(".bq-notice--ok", { timeout: 1000 });
+  assert.ok(Date.now() - t0 < 700, "отклик раньше ответа сервера: " + (Date.now() - t0) + " мс");
+  assert.equal(await num(r.page), n0 + 1, "число людей +1 сразу");
+  assert.equal(await r.page.locator('[data-act="metoo"]').count(), 0, "«Я тоже» сменилась сразу");
+  await r.page.waitForTimeout(1800);
+  assert.equal(await num(r.page), n0 + 1, "после ответа сервера число то же (без «мигания»)");
+  await r.ctx.close();
+  await set("delay_metoo_ms=0");
+  // сбой сервера: число и кнопка возвращаются, «Спасибо» сменяется честной ошибкой, отметка устройства снята
+  await set("fail_metoo=1");
+  r = await open("?report=" + STOP);
+  await ready(r.page);
+  const n1 = await num(r.page);
+  await r.page.click('[data-act="metoo"]');
+  await r.page.waitForSelector(".bq-notice--error", { timeout: 5000 });
+  assert.equal(await num(r.page), n1, "откат числа");
+  assert.match(await r.page.locator(".bq-notice--error").innerText(), /Не удалось отправить/);
+  assert.equal(await r.page.locator('[data-act="metoo"]').count(), 1, "«Я тоже» снова доступна");
+  assert.equal(await r.page.evaluate(() => JSON.parse(localStorage.getItem("birge.heat.metoo") || "{}")["object:" + "osm-node-10272524280"]), undefined);
+  await r.ctx.close();
 });
 
 test("QR: object without complaints — no empty block (IA_WAVE2 §0 п. 6), main button «Сообщить о проблеме здесь»; details open the map", { skip: SKIP }, async () => {
@@ -126,8 +162,7 @@ test("QR: fixed object — status «Исправлено», no «Я тоже», 
   assert.match(card, /Исправлено/);
   assert.equal(await page.locator('[data-act="metoo"]').count(), 0);
   assert.match(await page.locator(".bk-btn--primary").innerText(), /Сообщить о проблеме здесь/);
-  await page.click("details.bq-more > summary");
-  assert.match(await page.locator("details.bq-more").innerText(), /Жалобы по дням[\s\S]*О чём сообщают[\s\S]*Дороги/);
+  assert.match(card, /Чаще всего\s*Дороги/, "главная тема — строкой во вкладке «Обзор»");
   await page.click('[data-act="map"]');
   assert.equal((await page.evaluate(() => window.__maps.at(-1))).id, SIGNAL);
   await ctx.close();
@@ -170,14 +205,14 @@ test("QR: Kazakh and phone 375 px — no keys, main button visible without scrol
     const txt = await page.locator(".bq-report").innerText();
     if (lang === "kk") {
       assert.match(txt, /Аялдама/);
-      assert.match(txt, /Нысан № 10\s272\s524\s280/);
+      assert.match(txt, /Тақтайшадағы нөмір\s*№ 10\s272\s524\s280/);
       assert.match(txt, /Мен де/);
-      assert.match(txt, /\d адам хабарлады/);  // первый тест мог уже нажать «Я тоже»
+      assert.match(txt, /\d\s+адам хабарлады/);  // первый тест мог уже нажать «Я тоже»; число крупно отдельно
     }
     assert.doesNotMatch(txt, /qr\.[a-z]/);
     assert.ok((await overflow(page)) <= 0, lang + " " + vp.width);
     const btn = await page.locator(".bk-btn--primary").boundingBox();
-    assert.ok(btn.height >= 48 && btn.y + btn.height <= vp.height, "главная кнопка видна без прокрутки: " + JSON.stringify(btn));
+    assert.ok(btn.height >= 44 && btn.y + btn.height <= vp.height, "главная кнопка (44, эталон A) видна без прокрутки: " + JSON.stringify(btn));
     assert.equal(await page.evaluate(() => document.documentElement.lang), lang, "ссылка не переключила язык");
     await shot(page, `qr-passport-stop-${vp.width}-${lang}`);
     assert.deepEqual(errors, []);

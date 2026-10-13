@@ -176,63 +176,57 @@
     return { text: p.title_ru, lang: "ru" };
   }
 
+  // Карточка проекта — по эталону 13 окт (REFERENCE.html вариант A, .pd): название 18/600, одна тихая строка «вид · район ·
+  // Пример», три цифры (поддержали · против · срок), одно предложение (статус и «По идее жителей»), две кнопки в ряд
+  // («За» / «Против» у жителя, «Одобрить» / «Отклонить» у акимата) и строка «один голос … · это опрос, решает акимат».
+  // Картинку объекта над карточкой ставит R05 (панель 3D); в списке «Проекты и идеи» карточку рисует ideas.js.
+  // Крючки соседей сохранены: .r06-card[data-proposal], .r06-vote__btn[data-value][aria-pressed], .r06-tally, [data-action].
   function proposalHtml(p, opts) {
     var akimat = opts.role === "akimat";
     var id = "r06-p-" + esc(p.id);
     var ttl = title(p);
-    var total = p.votes_up + p.votes_down;
-    var upShare = total ? Math.round((p.votes_up / total) * 100) : 0;
-    var tags =
-      '<span class="bk-tag bk-tag--project">' + esc(p.planned_year ? t("proposal.label", { year: String(p.planned_year) }) : t("common.tag.project")) + "</span>";
-    // «Пример» — в тихой строке района («район Нура · Пример»), а не третьей меткой в ряду: ряд не переносится (дизайн-марафон).
-    // В списке (opts.list) метки у каждой карточки нет — одна строка под списком (R11 INTEGRATION §13 D-5); у карточки,
-    // открытой отдельно (на карте), — рядом с районом (R15 «честная пометка»).
+    var num = function (n) { return esc(I() ? I().formatNumber(n || 0) : String(n || 0)); };
+    // «Пример» — в тихой строке («Сквер · район Нура · Пример»), не отдельной меткой (дизайн-марафон, R15 «честная пометка»).
     var demoTag = p.demo && !opts.list ? '<span class="bk-tag bk-tag--demo" title="' + esc(t("common.tag.demo_hint")) + '">' + esc(t("common.tag.demo")) + "</span>" : "";
-    var place = p.district ? esc(t("district.name", { name: t("district." + p.district) })) : "";
-    var voteBtn = function (value, key, ic, count) {
+    var place = [esc(t("proposal.kind." + p.kind)), p.district ? esc(t("district.name", { name: t("district." + p.district) })) : ""].filter(Boolean).join(" · ");
+    var fact = function (value, key) { return '<div class="r06-fact"><b class="bk-num">' + value + "</b><span>" + esc(known(key)) + "</span></div>"; };
+    var facts = '<div class="bk-facts r06-facts' + (akimat ? " r06-tally" : "") + '" role="group" aria-label="' +
+      esc(t("proposal.votes_aria", { up: p.votes_up, down: p.votes_down })) + '">' +
+      fact(num(p.votes_up), "build3d.card.fact_up") + fact(num(p.votes_down), "build3d.card.fact_down") +
+      fact(p.planned_year ? esc(String(p.planned_year)) : "—", "build3d.card.fact_year") + "</div>";
+    // Одно предложение: статус словом (одна краска, R11 data-status — для запасного вида) и откуда проект.
+    var sentence = '<p class="r06-sentence"><span class="bk-status" data-status="' + (STATUS_LOOK[p.status] || "new") + '" data-r06-status="' +
+      esc(p.status) + '">' + esc(t("proposal.status." + p.status)) + "</span>" +
+      (p.idea ? '<span class="r06-idea"> · ' + esc(t("idea.by_residents", { n: p.idea.votes || 0 })) + "</span>" : "") + "</p>";
+    var voteBtn = function (value, key, ic, main) {
       var pressed = p.my_vote === value;
-      return (
-        '<button class="bk-btn r06-vote__btn" type="button" data-value="' + value + '" aria-pressed="' + pressed + '"' +
-        (p.voting_open ? "" : " disabled") + '><span class="r06-vote__label">' + icon(ic) + "<span>" + esc(t(key)) + '</span></span><span class="bk-btn__count">' +
-        esc(I() ? I().formatNumber(count) : count) + "</span></button>"
-      );
+      return '<button class="bk-btn r06-vote__btn' + (main ? " bk-btn--primary" : "") + '" type="button" data-value="' + value + '" aria-pressed="' + pressed + '"' +
+        (p.voting_open ? "" : " disabled") + ">" + icon(ic) + "<span>" + esc(t(key)) + "</span></button>";
     };
     var note = p.my_vote === 1 ? t("proposal.your_vote_up") : p.my_vote === -1 ? t("proposal.your_vote_down") : t("proposal.one_vote");
     if (!p.voting_open) note = t("proposal.voting_closed");
     var html =
-      '<article class="bk-card r06-card" aria-labelledby="' + id + '" data-proposal="' + esc(p.id) + '">' +
-      // Шапка «как в App Store» (дизайн-марафон): плитка вида объекта, над названием — вид и «Проект · 2027», под ним —
-      // район и «Пример». Без ui-kit (R10 B-006) плитки нет — значков нечем рисовать.
-      '<div class="r06-head">' + (root.BirgeUI ? '<span class="r06-tile" aria-hidden="true">' + icon(KIND_ICON[p.kind] || "flag") + "</span>" : "") +
-      '<div class="r06-head__text"><div class="bk-card__row r06-kicker"><span class="bk-card__eyebrow"><span>' +
-      esc(t("proposal.kind." + p.kind)) + "</span></span>" + tags + "</div>" +
-      '<h3 class="bk-card__title" id="' + id + '" lang="' + ttl.lang + '">' + esc(ttl.text) + "</h3>" +
-      (place || demoTag ? '<p class="bk-meta r06-place">' + place + (place && demoTag ? "\u00a0· " : "") + demoTag + "</p>" : "") +
-      "</div></div>" +
-      // Проект из идеи жителей (волна 2 п. 7): «По идее жителей · 47 голосов» — голоса за идею на момент решения.
-      (p.idea ? '<p class="r06-idea">' + icon("users") + "<span>" + esc(t("idea.by_residents", { n: p.idea.votes || 0 })) + "</span></p>" : "") +
-      '<div class="bk-card__row"><span class="bk-meta">' + esc(t("status.label")) + '</span><span class="bk-status" data-status="' +
-      (STATUS_LOOK[p.status] || "new") + '" data-r06-status="' + esc(p.status) + '">' + esc(t("proposal.status." + p.status)) + "</span></div>" +
-      (akimat
-        ? // Акимат голосует не здесь: голоса — числами (только чтение), одна главная кнопка — «Одобрить»
-          // (UX_REVIEW R11, день 3, п. 16). Текст — тот же, что в «Картине дня» R08 (akim.proposals.votes).
-          '<p class="r06-tally">' + icon("users") + "<span>" + esc(t("akim.proposals.votes", { up: p.votes_up, down: p.votes_down })) + "</span></p>"
-        : '<div class="r06-vote" role="group" aria-label="' + esc(t("proposal.votes_aria", { up: p.votes_up, down: p.votes_down })) + '">' +
-          voteBtn(1, "proposal.vote_up", "thumb-up", p.votes_up) + voteBtn(-1, "proposal.vote_down", "thumb-down", p.votes_down) + "</div>") +
-      '<div class="r06-share" aria-hidden="true"><i class="r06-share__up" style="width:' + upShare + '%"></i><i class="r06-share__down" style="width:' +
-      (total ? 100 - upShare : 0) + '%"></i></div>' +
-      (akimat ? (p.voting_open ? "" : '<p class="bk-meta r06-vote__note">' + esc(t("proposal.voting_closed")) + "</p>")
-        : '<p class="bk-meta r06-vote__note" aria-live="polite">' + esc(note) + "</p>");
-    if (akimat && p.status === "proposal") {
-      // В списке «Проекты» (opts.list) карточек несколько — «Одобрить» там серая капсула, «Отклонить» — тихая красным:
-      // одна главная кнопка на экран (дизайн-марафон). Одна карточка на карте — как была: «Одобрить» главная.
+      '<article class="bk-card r06-card r06-pcard" aria-labelledby="' + id + '" data-proposal="' + esc(p.id) + '">' +
+      '<h3 class="bk-card__title r06-pcard__title" id="' + id + '" lang="' + ttl.lang + '">' + esc(ttl.text) + "</h3>" +
+      (place || demoTag ? '<p class="bk-meta r06-place">' + place + (place && demoTag ? " · " : "") + demoTag + "</p>" : "") +
+      facts + sentence;
+    if (!akimat) {
+      html += '<div class="bk-acts r06-vote" role="group" aria-label="' + esc(t("proposal.votes_aria", { up: p.votes_up, down: p.votes_down })) + '">' +
+        voteBtn(1, "proposal.vote_up", "thumb-up", true) + voteBtn(-1, "proposal.vote_down", "thumb-down", false) + "</div>" +
+        '<p class="bk-meta r06-vote__note" aria-live="polite">' + esc(note) + "</p>";
+    } else if (p.status === "proposal") {
+      // Акимат: «Одобрить» — главная, «Отклонить» — второстепенная рядом (эталон: две кнопки в ряд, одна главная).
+      // В списке из нескольких карточек (opts.list) главной нет — серая капсула и тихая красным.
       var approveCls = opts.list ? "bk-btn r06-capsule" : "bk-btn bk-btn--primary";
-      var rejectCls = opts.list ? "bk-btn bk-btn--ghost r06-reject" : "bk-btn bk-btn--danger";
-      html +=
-        '<div class="bk-actions' + (opts.list ? " r06-actions--list" : "") + '"><button class="' + approveCls + '" type="button" data-action="approve">' + icon("check") +
-        "<span>" + esc(t("proposal.approve")) + '</span></button><button class="' + rejectCls + '" type="button" data-action="reject">' +
-        icon("close") + "<span>" + esc(t("proposal.reject")) + "</span></button></div>";
+      var rejectCls = opts.list ? "bk-btn bk-btn--ghost r06-reject" : "bk-btn r06-second";
+      html += '<div class="bk-acts r06-acts' + (opts.list ? " r06-actions--list" : "") + '"><button class="' + approveCls + '" type="button" data-action="approve">' +
+        icon("check") + "<span>" + esc(t("proposal.approve")) + '</span></button><button class="' + rejectCls + '" type="button" data-action="reject">' +
+        "<span>" + esc(t("proposal.reject")) + "</span></button></div>";
+    } else if (!p.voting_open) {
+      html += '<p class="bk-meta r06-vote__note">' + esc(t("proposal.voting_closed")) + "</p>";
     }
+    // Правило «это опрос, решает акимат» — мелкой строкой внизу (эталон .pd).
+    if (!akimat) html += '<p class="r06-honest">' + esc(t("idea.honest")) + "</p>";
     return html + "</article>";
   }
 
@@ -257,11 +251,24 @@
       }
       toast(t(key), key === "proposal.vote_error" ? { type: "error", action: { label: t("common.action.retry"), onClick: retry } } : { type: "error" });
     }
+    // Голос — сразу (правило 4 эталона): цифры и нажатая кнопка меняются до ответа сервера; ответ ставит точные числа,
+    // ошибка возвращает как было. Повторное нажатие той же кнопки ничего не добавляет (сервер так же).
     function vote(value) {
       if (state.busy || !state.p.voting_open) return;
       state.busy = true;
+      var before = state.p, was = before.my_vote || 0;
+      if (was !== value) {
+        var next = Object.assign({}, before, { my_vote: value });
+        if (was === 1) next.votes_up = Math.max(0, (next.votes_up || 0) - 1);
+        if (was === -1) next.votes_down = Math.max(0, (next.votes_down || 0) - 1);
+        if (value === 1) next.votes_up = (next.votes_up || 0) + 1;
+        else next.votes_down = (next.votes_down || 0) + 1;
+        state.p = next;
+        draw();
+        roll(value);
+      }
       var btn = el.querySelector('.r06-vote__btn[data-value="' + value + '"]');
-      if (btn) btn.setAttribute("aria-busy", "true");
+      if (btn) { btn.setAttribute("aria-busy", "true"); btn.focus(); }
       api.vote(state.p.id, value).then(
         function (data) {
           state.busy = false;
@@ -270,17 +277,20 @@
           toast(t(data.changed && data.previous ? "proposal.vote_changed" : "proposal.vote_saved"));
           var again = el.querySelector('.r06-vote__btn[data-value="' + value + '"]');
           if (again) again.focus(); // фокус остаётся на нажатой кнопке после перерисовки
-          // Отклик (дизайн-марафон): число на нажатой кнопке «перекатывается» — как счётчик «Поддержать» в «Идеях».
-          var count = again && again.querySelector(".bk-btn__count");
-          if (count) count.classList.add("r06-roll");
           if (opts.onChange) opts.onChange(state.p);
         },
         function (err) {
           state.busy = false;
-          if (btn) btn.removeAttribute("aria-busy");
+          state.p = before;
+          draw();
           failed(err, function () { vote(value); });
         }
       );
+    }
+    // Отклик: цифра «за» или «против» перекатывается на новое значение (как ♥ в списке «Проекты и идеи»).
+    function roll(value) {
+      var b = el.querySelectorAll(".r06-fact > b")[value === 1 ? 0 : 1];
+      if (b) b.classList.add("r06-roll");
     }
     function decide(action, btn) {
       if (state.busy) return;
@@ -317,6 +327,10 @@
   // Новый ключ (ночь 10→11 окт), передан R11 в INTEGRATION §5: пока его нет в словаре — текст отсюда, без
   // предупреждений; как только ключ есть в ru.json/kk.json — побеждает словарь.
   var NEW_KEYS = {
+    // Подписи трёх цифр карточки проекта — общие с панелью R05 (i18n_build3d.json R05, переданы R11).
+    "build3d.card.fact_up": { ru: "поддержали", kk: "қолдады" },
+    "build3d.card.fact_down": { ru: "против", kk: "қарсы" },
+    "build3d.card.fact_year": { ru: "срок", kk: "мерзімі" },
     "proposal.vote_limit": {
       // Текст — как в словаре R11 (KK_REVIEW): «адрес» житель поймёт как домашний, лимит же — по сети.
       ru: "С этого устройства или сети уже много голосов за этот проект. Попробуйте завтра.",

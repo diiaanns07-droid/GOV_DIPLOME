@@ -347,7 +347,12 @@
     return id;
   }
 
+  // «Мои обращения» с прошлого открытия (в этой вкладке браузера): при новом открытии список виден сразу и тихо
+  // обновляется (правило 4 эталона — без мигающей перезагрузки). Любое своё действие с обращениями — заново с сервера.
+  var mineCache = null;
+
   function request(method, path, body, timeoutMs, extraHeaders) {
+    if (method !== "GET" && /^\/complaints/.test(path)) mineCache = null;
     var controller = window.AbortController ? new AbortController() : null;
     var timer = controller ? setTimeout(function () { controller.abort(); }, timeoutMs || NET_TIMEOUT_MS) : null;
     var headers = Object.assign({ "Accept": "application/json", "X-Birge-Device": deviceId() }, extraHeaders || {});
@@ -412,6 +417,33 @@
     var use = document.createElementNS("http://www.w3.org/2000/svg", "use");
     use.setAttribute("href", (kit.SPRITE || "/civic/ui-kit/icons.svg") + "#ill-" + name);
     svg.appendChild(use);
+    return svg;
+  }
+
+  // Статус значком, как в Linear (правило качества 3 эталона): пустой кружок — новое, наполовину заполненный — в работе,
+  // кружок с галочкой — служба сообщила об устранении, заполненный зелёный с галочкой — проверено жителями.
+  // Иконка всегда рядом со словом. Рисует R11 в ui-kit; пока его значков нет — эти (те же 4 состояния, 16 px, линия 1,5).
+  function statusIcon(status) {
+    // ui-kit R11 (эталон, 13 окт): BirgeUI.statusIcon → разметка спрайта; собираем её без innerHTML (DOMParser).
+    if (window.BirgeUI && typeof window.BirgeUI.statusIcon === "function" && window.DOMParser) {
+      var doc = new DOMParser().parseFromString(window.BirgeUI.statusIcon(status, 14), "text/html");
+      var node = doc && doc.body && doc.body.firstElementChild;
+      if (node && node.namespaceURI === "http://www.w3.org/2000/svg") return document.importNode(node, true);
+    }
+    var kind = { "new": "new", accepted: "progress", in_progress: "progress", reopened: "progress",
+                 fixed: "reported", reported_fixed: "reported", verified: "verified" }[status] || "new";
+    var ns = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("class", "bc-sicon bc-sicon--" + kind);
+    svg.setAttribute("viewBox", "0 0 16 16"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
+    function el(tag, attrs) {
+      var n = document.createElementNS(ns, tag);
+      Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+      svg.appendChild(n);
+    }
+    el("circle", { cx: "8", cy: "8", r: "6.25", "class": "bc-sicon__ring" });
+    if (kind === "progress") el("path", { d: "M8 3.5a4.5 4.5 0 0 1 0 9Z", "class": "bc-sicon__fill" });
+    if (kind === "reported" || kind === "verified") el("path", { d: "m5.4 8.2 1.8 1.8 3.5-3.7", "class": "bc-sicon__tick" });
     return svg;
   }
 
@@ -541,12 +573,19 @@
       },
       // Телефон, шаги 4–5: место — посередине видимой карты над шторкой (как Apple Maps). Сдвиг через offset —
       // отступы карты (padding) оболочки R01 не трогаем; масштаб не меняем.
-      reveal: function (point, visibleTop, visibleBottom) {
-        if (!point || !map.easeTo) return;
+      // Место — в середину видимой части карты (area: { top, bottom, left, right } в координатах окна); onlyIfHidden —
+      // не двигать, если место и так видно (ноутбук: карта не «плывёт» без нужды, эталон — «никаких рывков карты»).
+      reveal: function (point, area) {
+        if (!point || !map.easeTo || !area) return;
         var box = map.getContainer().getBoundingClientRect();
-        var dy = (visibleTop + visibleBottom) / 2 - (box.top + box.bottom) / 2;
+        if (area.onlyIfHidden && map.project) {
+          var q = map.project(point), x = box.left + q.x, y = box.top + q.y;
+          if (x > area.left + 32 && x < area.right - 32 && y > area.top + 32 && y < area.bottom - 32) return;
+        }
+        var dx = (area.left + area.right) / 2 - (box.left + box.right) / 2;
+        var dy = (area.top + area.bottom) / 2 - (box.top + box.bottom) / 2;
         var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        try { map.easeTo({ center: point, offset: [0, dy], duration: still ? 0 : 450 }); } catch (e) { /* карта ещё грузится */ }
+        try { map.easeTo({ center: point, offset: [dx, dy], duration: still ? 0 : 300 }); } catch (e) { /* карта ещё грузится */ }
       },
       highlight: function (target, geometry, point) {
         var features = [];
@@ -580,6 +619,111 @@
   }
 
   // ------------------------------------------------------------------ мастер
+  // ---------------------------------------------------------------- телефон: шторка «Рядом с вами» (эталон A)
+  // Решение R11 (INTEGRATION §21.2, кадр эталона «Житель, телефон»): на главной телефона — шторка «Рядом с вами»:
+  // ручка, заголовок 19/600 + «ҚАЗ · РУС», 3 ближайших к центру карты горячих места строками .bk-hot (плашка числа
+  // цвета уровня; исправленное службой — «✓» и «… · проверьте»), «Все горячие места». Разметка — R09, данные — те же,
+  // что у карты жалоб R07 (GET /heat, без текстов жалоб), разметка ui-kit R11 (.bk-phsheet, .bk-hot, .bk-more).
+  //   mountNear(root, { map, onOpen(target, anchor), onAll(), limit }) -> { refresh(), setLang(), destroy() }
+  function mountNear(root, opts) {
+    opts = opts || {};
+    var limit = opts.limit || 3;
+    var alive = true, items = null, failed = false, slow = false, moveTimer = null;
+    var sheet = h("section", { "class": "bk-phsheet bk-glass bk-glass--strong bk-glass--sheet bc-near", "aria-labelledby": "bc-near-title" });
+    root.appendChild(sheet);
+
+    function center() {
+      try { var c = opts.map && opts.map.getCenter && opts.map.getCenter(); return c ? [c.lng, c.lat] : null; } catch (e) { return null; }
+    }
+    function far(a, c) { var dx = (a[0] - c[0]) * Math.cos(c[1] * Math.PI / 180), dy = a[1] - c[1]; return dx * dx + dy * dy; }
+    function nearest() {
+      var list = (items || []).filter(function (it) {
+        return it.target && it.target.kind !== "district" && it.count > 0 && it.anchor &&
+               (it.state === "active" || (it.state === "fixed" && it.fixed_kind === "reported"));
+      });
+      var c = center();
+      if (c) list.sort(function (a, b) { return far(a.anchor, c) - far(b.anchor, c); });
+      return list.slice(0, limit);
+    }
+    function topic(it) {
+      var st = it.top_subtopic;
+      if (st) return currentLang() === "kk" ? (st.kk || st.ru) : (st.ru || st.kk);
+      var cats = Object.keys(it.by_category || {});
+      return cats.length ? categoryLabel(cats[0]) : "";
+    }
+    function lower(text) { return text ? text.charAt(0).toLocaleLowerCase() + text.slice(1) : text; }
+    function subline(it) {
+      if (it.state === "fixed") return topic(it) + " · " + t("home.near.check");
+      var word = it.status && it.status !== "new" && hasKey("status." + it.status) ? lower(t("status." + it.status)) : "";
+      return word ? topic(it) + " · " + word : topic(it);
+    }
+    function row(it) {
+      var fixed = it.state === "fixed";
+      var name = targetLabel(it.target);
+      return h("li", { "class": "bc-near__item" }, h("button", {
+        "class": "bk-hot bc-near__row", type: "button", "data-key": it.target.kind + ":" + it.target.id,
+        "aria-label": name + ", " + (fixed ? t("status.reported_fixed") : t("inbox.people", { n: it.count })) + ", " + subline(it),
+        onclick: function () { if (opts.onOpen) opts.onOpen(it.target, it.anchor); } }, [
+        h("span", { "class": "bk-hot__cnt", "data-level": fixed ? "fixed" : String(it.level || 1), "aria-hidden": "true" },
+          fixed ? "✓" : formatNumber(it.count)),
+        h("span", { "class": "bk-hot__name" }, [name, h("small", {}, subline(it))])]));
+    }
+    function render() {
+      if (!alive) return;
+      sheet.innerHTML = "";
+      sheet.appendChild(h("div", { "class": "bk-handle", "aria-hidden": "true" }));
+      var lang = h("div", { "class": "bc-near__lang" });
+      var head = h("header", { "class": "bk-phsheet__hd" }, [h("h2", { "class": "bk-phsheet__title", id: "bc-near-title" }, t("home.near.title")), lang]);
+      sheet.appendChild(head);
+      if (window.BirgeUI && typeof window.BirgeUI.langSwitch === "function") window.BirgeUI.langSwitch(lang, { text: true });
+      else head.removeChild(lang);
+      if (failed) {
+        sheet.appendChild(h("div", { "class": "bc-near__state", role: "alert" }, [h("span", {}, t("mine.error.title")),
+          h("button", { "class": "bk-more", type: "button", onclick: function () { load(); } }, t("complaint.error.retry"))]));
+        return;
+      }
+      if (items === null) {
+        // Скелетон — только если ответ дольше 150 мс (правило 4 эталона).
+        if (slow) sheet.appendChild(h("ul", { "class": "bc-near__list", "aria-hidden": "true" }, [1, 2, 3].map(function () {
+          return h("li", { "class": "bk-hot bc-near__skel" }, [h("span", { "class": "bk-skel bc-near__skel-cnt" }), h("span", { "class": "bk-skel bc-near__skel-line" })]);
+        })));
+        return;
+      }
+      var list = nearest();
+      if (!list.length) sheet.appendChild(h("p", { "class": "bc-near__state" }, t("home.near.empty")));
+      else sheet.appendChild(h("ul", { "class": "bc-near__list" }, list.map(row)));
+      if (opts.onAll) sheet.appendChild(h("button", { "class": "bk-more bc-near__all", type: "button", onclick: function () { opts.onAll(); } },
+        t("home.near.all_hot")));
+    }
+    function load() {
+      failed = false; slow = false;
+      if (items === null) setTimeout(function () { if (alive && items === null && !failed) { slow = true; render(); } }, 150);
+      render();
+      return request("GET", "/heat?days=30&zoom=15").then(function (res) {
+        if (!alive) return;
+        if (!res.ok) { if (items === null) failed = true; render(); return; }
+        items = (res.data && res.data.items) || [];
+        render();
+      });
+    }
+    // Карту подвинули — ближайшие пересчитываются на месте, без запроса (данные те же).
+    function onMove() { clearTimeout(moveTimer); moveTimer = setTimeout(render, 200); }
+    function onLang() { render(); }
+    if (opts.map && opts.map.on) opts.map.on("moveend", onMove);
+    window.addEventListener("birge:lang", onLang);
+    load();
+    return {
+      refresh: load,
+      setLang: function () { render(); },
+      destroy: function () {
+        alive = false; clearTimeout(moveTimer);
+        if (opts.map && opts.map.off) opts.map.off("moveend", onMove);
+        window.removeEventListener("birge:lang", onLang);
+        if (sheet.parentNode) sheet.parentNode.removeChild(sheet);
+      }
+    };
+  }
+
   function mount(opts) {
     opts = opts || {};
     var root = opts.root || document.body;
@@ -591,8 +735,9 @@
     var unpick = null;
 
     // Главная кнопка «Сообщить о проблеме» (одна на экран).
-    els.fab = h("button", { "class": "bk-btn bk-btn--primary bc-fab", type: "button", onclick: function () { open(); } },
-      [icon("plus"), h("span", { "class": "bc-fab__label" })]);
+    // Эталон A (.fab): компонент .bk-fab ui-kit R11 — почти чёрная кнопка 54 px с «+» в лаймовой плитке.
+    els.fab = h("button", { "class": "bk-fab bc-fab", type: "button", onclick: function () { open(); } },
+      [h("i", { "class": "bk-fab__ic bc-fab__mark", "aria-hidden": "true" }, icon("plus")), h("span", { "class": "bc-fab__label" })]);
     if (opts.fab !== false) root.appendChild(els.fab);
 
     els.panel = h("section", { "class": "bc-panel", role: "dialog", "aria-modal": "false", hidden: true,
@@ -1379,21 +1524,36 @@
 
     // ---------------------------------------------------------------- «Мои обращения»
     function loadMine(focusCode, focusEvent) {
-      state.mine = null; state.mineError = false; state.changes = null; state.changesAll = false;
+      var cached = mineCache && mineCache.items.length ? mineCache : null;   // пустой список хранить незачем
+      state.mine = cached ? cached.items : null; state.mineError = false; state.changes = cached ? cached.changes : null;
+      state.changesAll = false; state.mineSlow = false; state.mineStale = false;
       if (focusCode) state.focusCode = focusCode;
       if (focusEvent) { state.focusEvent = focusEvent; state.changesAll = true; }
       render();
+      if (cached) focusCard();
       var owner = state;
+      // Скелетон — только если ответа нет дольше 150 мс (быстрый ответ не мигает серыми полосами).
+      if (!cached) setTimeout(function () {
+        if (state === owner && state.view === "mine" && state.mine === null && !state.mineError) { state.mineSlow = true; render(); }
+      }, 150);
       var seen = storageGet("localStorage", SEEN_KEY);
       Promise.all([request("GET", "/complaints/mine"),
                    seen ? request("GET", "/complaints/changes?since=" + encodeURIComponent(seen)) : Promise.resolve(null)])
         .then(function (replies) {
           var res = replies[0], changes = replies[1];
           if (!state || state !== owner || state.view !== "mine") return;
-          if (!res.ok) { state.mineError = true; render(); return; }
+          if (!res.ok) {
+            // Список уже на экране — не убираем его: сверху «Нет связи» с «Повторить», ниже — то, что было.
+            if (cached) { state.mineStale = true; render(); return; }
+            state.mineError = true; render(); return;
+          }
+          state.mineStale = false;
           state.mine = res.data.items || [];
-          state.mineEnter = true;   // пришли данные — карточки мягко появляются; перерисовка того же списка — без движения
-          state.changes = changes && changes.ok ? changes.data : null;
+          state.mineEnter = !cached;   // первые данные — карточки мягко появляются; обновление на месте — без движения
+          var fresh = changes && changes.ok ? changes.data : null;
+          // «Что изменилось» уже показано в этом открытии — не гасим его, если с прошлого запроса нового нет.
+          state.changes = fresh && (fresh.items || []).length ? fresh : (cached ? cached.changes : fresh);
+          mineCache = { items: state.mine, changes: state.changes };
           // «Что изменилось» — с прошлого визита; первый визит только запоминает момент.
           storageSet("localStorage", SEEN_KEY, new Date().toISOString());
           announceChanges(0);   // житель увидел изменения — значок у «Мои обращения» гаснет
@@ -1571,14 +1731,17 @@
     function passportLine(item) {
       var p = item.passport || {};
       if (item.status === "rejected" || (!p.assignee && !p.assignee_id)) return null;
-      var due = item.status === "new" ? deadlineNode(p.deadline) : null;
-      return h("span", { "class": "bk-statusline__note bc-assignee" }, [h("span", {}, t("service.assigned", { service: serviceName(p) })),
-        due ? " · " : null, due]);
+      return h("span", { "class": "bk-statusline__note bc-assignee" }, t("service.assigned", { service: serviceName(p) }));
     }
 
-    // Статус — один раз (R11 CLEAN_PASS, правило 5): точка + слово и одна строка пояснения («Передано: … · осталось …»).
+    // Статус — один раз (R11 CLEAN_PASS, правило 5), как строка статуса карточки эталона (.st): иконка + слово, ниже —
+    // «Передано: служба»; срок ответа — справа мелко («Осталось 3 рабочих дня»).
     function statusLine(item) {
-      return h("div", { "class": "bk-statusline bc-mine__status" }, [statusBadge(displayStatus(item)), passportLine(item)]);
+      var p = item.passport || {};
+      var due = item.status === "new" ? deadlineNode(p.deadline) : null;
+      return h("div", { "class": "bk-statusline bc-mine__status" }, [
+        h("div", { "class": "bc-mine__stline" }, [statusBadge(displayStatus(item)), due ? h("small", { "class": "bc-mine__due" }, due) : null]),
+        passportLine(item)]);
     }
 
     // Задержка — баннер-предупреждение в карточке (R11 §2.2): причина · временная мера · следующее обновление.
@@ -1686,6 +1849,10 @@
         renderPending(body);
         return;
       }
+      if (state.mine === null && !state.mineSlow) {
+        body.appendChild(h("p", { "class": "bc-sr", role: "status" }, t("mine.loading")));
+        return;
+      }
       if (state.mine === null) {
         // Скелетон повторяет карточку: категория, статус, строка «Передано…», мета (а не серые прямоугольники).
         var skel = function () { return h("div", { "class": "bc-skel-card", "aria-hidden": "true" }, [
@@ -1694,6 +1861,11 @@
         body.appendChild(h("div", { "class": "bc-loading", role: "status" }, [skel(), skel(),
           h("span", { "class": "bc-loading__text" }, t("mine.loading"))]));
         return;
+      }
+      if (state.mineStale) {
+        body.appendChild(h("div", { "class": "bk-error bc-stale", role: "alert" }, [
+          h("p", { "class": "bk-error__title" }, t("mine.error.title")),
+          h("button", { "class": "bk-btn", type: "button", onclick: function () { loadMine(); } }, [icon("refresh"), h("span", {}, t("complaint.error.retry"))])]));
       }
       renderChanges(body);
       renderPending(body);
@@ -1715,11 +1887,15 @@
         var fresh = state.justVerified === item.id && displayStatus(item) === "verified";
         list.appendChild(h("li", { "class": "bk-card bc-mine__card" + (focused ? " bc-mine__card--focus" : "") + (fresh ? " bc-mine__card--verified-now" : ""),
                                    "data-code": item.code || "", "data-id": item.id }, [
+          // Как карточка эталона A («5 секунд»): плитка категории 48 · название · «место · дата · номер»; ниже — статус
+          // иконкой и словом с ответственным, срок справа; затем число людей и «Подробнее».
           h("div", { "class": "bc-mine__head" }, [
-            h("span", { "class": "bc-mine__cat" }, [icon(c ? c.icon : "dots"), h("span", {}, title)])]),
+            h("span", { "class": "bk-tile bc-mine__tile", "aria-hidden": "true" }, icon(c ? c.icon : "dots")),
+            h("div", { "class": "bc-mine__headtext" }, [
+              h("span", { "class": "bc-mine__cat" }, title),
+              h("p", { "class": "bc-meta bc-mine__sub" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
+                item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null])])]),
           statusLine(item),
-          h("p", { "class": "bc-meta" }, [targetLabel(item.target), " · ", formatDate(item.created_at),
-            item.code ? " · " : "", item.code ? h("span", { "class": "bc-nowrap" }, item.code) : null]),
           item.relation === "metoo" ? h("p", { "class": "bc-meta" }, t("mine.metoo_badge")) : null,
           // Все люди, сообщившие о том же на этом месте (как на шаге «Я тоже»), а не только по этой жалобе.
           h("p", { "class": "bc-meta" }, t("mine.reporters", { n: item.place_reporters || reportersOf(item) || 1 })),
@@ -1776,16 +1952,20 @@
       // Стекло (R11 GLASS.md, R09): «Мои обращения» — стеклянная панель/шторка над картой; мастер жалобы — форма,
       // остаётся непрозрачным. Без ui-kit со стеклом — непрозрачный белый (complaint.css, :where).
       panel.classList.toggle("bk-glass", mine);
+      panel.classList.toggle("bk-glass--strong", mine);   // эталон: стекло с текстом — плотное 86 %
       // Под стеклом «Моих обращений» — одна карта, без второй панели (список R07 размытыми пятнами): complaint.css.
       document.documentElement.classList.toggle("bc-mine-open", mine);
       if (!mine && state.reviewing && state.step === 4) panel.setAttribute("data-review", "1");
       else panel.removeAttribute("data-review");
       var canBack = !mine && state.step > 2 && state.step < 5;
-      var head = h("header", { "class": "bc-head" }, [
+      // Закрыть — круглая «×» 32 px на светлой подложке в правом верхнем углу, как у карточки эталона A (.x); зона
+      // нажатия 44, подпись «Закрыть» — для чтения с экрана. «Мои обращения»: заголовок — в той же строке, слева.
+      var closeBtn = h("button", { "class": "bc-close", type: "button", "aria-label": t("complaint.wizard.close"), onclick: close },
+        [h("span", { "class": "bc-x", "aria-hidden": "true" }, icon("close")), h("span", { "class": "bc-close__label" }, t("complaint.wizard.close"))]);
+      var head = h("header", { "class": "bc-head" + (mine ? " bc-head--title" : "") }, [
         canBack ? h("button", { "class": "bk-btn bk-btn--ghost bc-back", type: "button", onclick: back },
           [icon("back"), h("span", {}, t("complaint.wizard.back"))]) : h("span", { "class": "bc-head__spacer" }),
-        h("button", { "class": "bk-btn bk-btn--ghost bc-close", type: "button", "aria-label": t("complaint.wizard.close"),
-                      onclick: close }, [icon("close"), h("span", { "class": "bc-close__label" }, t("complaint.wizard.close"))])]);
+        closeBtn]);
       panel.appendChild(h("div", { "class": "bc-handle", "aria-hidden": "true" }));
       panel.appendChild(head);
       // Успех — без «Шаг 5 из 5»: крупная галочка рисуется (≈ 0,6 с) над заголовком, как в iOS.
@@ -1805,7 +1985,9 @@
         : (state.step === 4 ? (state.reviewing ? t("complaint.review.title") : t("complaint.step4.title", { n: placeCount(state.similar) }))
           : (state.step === 5 && state.result.kind === "metoo" ? t("complaint.step5.metoo_title")
             : (state.step === 5 && state.result.kind === "queued" ? t("complaint.queue.title") : t(titles[state.step]))));
-      panel.appendChild(h("h2", { id: "bc-title", "class": "bc-title", tabindex: "-1" }, title));
+      var heading = h("h2", { id: "bc-title", "class": "bc-title", tabindex: "-1" }, title);
+      if (mine) head.replaceChild(heading, head.firstChild);   // «Мои обращения (1)» и «×» — одна строка, как в эталоне
+      else panel.appendChild(heading);
       var body = h("div", { "class": "bc-body" });
       // Смена шага — мягкий въезд содержимого (240 мс, вперёд справа, назад слева); перерисовка того же шага (язык,
       // подсказка категории) — без движения. prefers-reduced-motion — без анимации (complaint.css).
@@ -1825,14 +2007,17 @@
       else if (state.step === 4) { if (state.reviewing) renderReview(body); else renderSimilar(body); }
       else renderDone(body);
       setPicking(!mine && state.step === 2);
-      // Телефон, шаги 4–5 (шторка по содержимому): выбранное место видно над шторкой — один раз при входе в шаг.
-      if (body.classList.contains("bc-body--enter") && !mine && state.step >= 4 && map.reveal && window.innerWidth < 1024) {
+      // Шаги 4–5: выбранное место видно — телефон: над шторкой (всегда, один раз при входе в шаг); ноутбук: справа от
+      // карточки слева (эталон A), только если место ушло под карточку.
+      if (body.classList.contains("bc-body--enter") && !mine && state.step >= 4 && map.reveal) {
         var where = state.point || (state.target && state.result && state.result.complaint && state.result.complaint.point);
         if (where) requestAnimationFrame(function () {
           if (panel.hidden) return;
-          var top = panel.getBoundingClientRect().top;
+          var r = panel.getBoundingClientRect();
           var header = document.querySelector(".topbar, #birge-header");
-          map.reveal(where, header ? header.getBoundingClientRect().bottom : 0, top);
+          var top = header ? header.getBoundingClientRect().bottom : 0;
+          if (window.innerWidth < 1024) map.reveal(where, { top: top, bottom: r.top, left: 0, right: window.innerWidth });
+          else map.reveal(where, { top: top, bottom: window.innerHeight, left: r.right, right: window.innerWidth - 72, onlyIfHidden: true });
         });
       }
       if (state.lastFocusStep !== panel.getAttribute("data-step")) {
@@ -1956,9 +2141,23 @@
     window.addEventListener("online", onOnline);
     if (readOutbox().length) setTimeout(function () { flushOutbox(); }, 0);
 
+    // Эталон A, телефон: в шторке «Рядом с вами» (R07/R01) строка «✓ Двор у ул. Сыганак — Снег убран · проверьте» —
+    // обращения этого жителя, где служба сообщила об устранении и ждут его проверки. → Promise<[{ id, code, place,
+    // category, status, open() }]>; open() — «Мои обращения» с этой карточкой. Те же данные, что «Ждут вашей проверки».
+    function waitingChecks() {
+      return request("GET", "/complaints/mine").then(function (res) {
+        if (!res.ok) return [];
+        return (res.data.items || []).filter(function (item) { return item.can_verify; }).map(function (item) {
+          return { id: item.id, code: item.code, place: targetLabel(item.target), category: categoryLabel(item.category),
+                   status: "reported_fixed", open: function () { openMine(item.code || undefined); } };
+        });
+      });
+    }
+
     return {
       open: open, openMine: openMine, close: close, relabel: relabel,
       openComplaint: function (code) { openMine(code); },
+      waitingChecks: waitingChecks,
       changesCount: changesCount,
       flushOutbox: flushOutbox,
       state: function () { return state; },
@@ -1991,8 +2190,9 @@
     emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round14-wave2",
     // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
     displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
-    targetLabel: targetLabel, statusBadge: statusBadge, icon: icon, illustration: illustration,
-    categoryIcon: function (id) { var c = category(id); return c ? c.icon : "dots"; }
+    targetLabel: targetLabel, statusBadge: statusBadge, statusIcon: statusIcon, icon: icon, illustration: illustration,
+    categoryIcon: function (id) { var c = category(id); return c ? c.icon : "dots"; },
+    mountNear: mountNear
   };
   // Помощники фото для компонента сотрудника (complaint-staff.js): то же уменьшение и загрузка частями.
   window.BirgeComplaintPhotos = {

@@ -262,6 +262,26 @@
     }
   }
 
+  // Статус-иконка (правило 3 Linear): тот же рисунок, что у .bk-status, для карты, строк и своих разметок.
+  // statusIcon("in_progress", 14) → '<svg class="bk-st-ic" data-status="in_progress" …><use href="…#st-half"/></svg>'
+  var STATUS_SHAPE = { new: "st-ring", reopened: "st-ring", accepted: "st-ring", in_progress: "st-half",
+    reported_fixed: "st-ring-check", fixed: "st-ring-check", verified: "st-done", rejected: "st-reject" };
+  function statusIcon(status, size) {
+    var px = Math.min(64, Math.max(8, Math.round(Number(size)) || 14)), shape = STATUS_SHAPE[status] || "st-ring";  // R15-S41: только число
+    return '<svg class="bk-st-ic" data-status="' + esc(status || "new") + '" width="' + px + '" height="' + px +
+      '" aria-hidden="true" focusable="false"><use href="' + SPRITE + "#" + shape + '"/></svg>';
+  }
+
+  // Скелетон списка «как в Linear» (правило 4: не дольше 150 мс): skelRows(3) → 3 строки .bk-lrow--skel той же высоты 44
+  function skelRows(n) {
+    var html = "", w = [62, 48, 70, 55, 66];
+    for (var i = 0; i < (n || 3); i++) {
+      html += '<div class="bk-lrow bk-lrow--skel" aria-hidden="true"><span class="bk-skel" style="width:14px;height:14px;margin:0 7px;border-radius:50%"></span>' +
+        '<span class="bk-skel" style="width:' + w[i % w.length] + '%"></span><span class="bk-skel" style="width:28px;margin-left:auto"></span></div>';
+    }
+    return html;
+  }
+
   // Одно состояние «войдите как сотрудник» для всех разделов (марафон, INTEGRATION §9.3 b): линейная иллюстрация staff,
   // заголовок, подсказка «Учётную запись выдаёт администратор.» и одна главная кнопка «Войти». loginState(el, onLogin, opts)
   // opts: title / text / label — свои тексты (например, ask.staff.login у «Вопроса акиму»).
@@ -395,6 +415,6 @@
     else if (doc.body) startFade();
   }
 
-  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, loginState: loginState, scrollFade: scrollFade, esc: esc,
+  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, statusIcon: statusIcon, skelRows: skelRows, loginState: loginState, scrollFade: scrollFade, esc: esc,
     seasonOrder: seasonOrder, tabs: tabs, menu: menu, illustration: illustration, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);

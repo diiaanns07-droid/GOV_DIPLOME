@@ -81,7 +81,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "shell/shell-text.js", "shell/birge.js", "shell/birge.css", "shell/basemap-style.js",
                 "ui-kit/tokens.css", "ui-kit/components.css", "ui-kit/ui-kit.js", "ui-kit/icons.svg",
                 "ui-kit/categories_v2.json", "ui-kit/index.html",
-                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-SemiBold.woff2", "ui-kit/fonts/Inter-Bold.woff2",
+                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-Medium.woff2",  # Inter-Medium: эталон A, вес 500 (R11 §20.1 а)
+                "ui-kit/fonts/Inter-SemiBold.woff2", "ui-kit/fonts/Inter-Bold.woff2",
                 "ui-kit/fonts/OFL.txt",
                 "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json",
                 # B1: R07 тепловая карта @ 5a97636, R09 путь жителя v2 @ da295be, R08 «Картина дня» @ 9f1d9c0.
@@ -94,7 +95,10 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 # Волна 2, R08: «Службы» (Ещё → Службы, акимат) и «Что делают рядом» (раздел #nearby).
                 "akim/services.html", "akim/services.js", "akim/services.css",
                 "nearby/index.html", "nearby/nearby.js", "nearby/nearby.css",
+                # Эталон A (13 окт), R08: сводка «Сегодня в Астане» на главной карте акимата и её стенд.
+                "akim/today.js", "akim/today.css", "akim/today.html", "akim/today-stand.js",
                 "map/demo_snapped.json",  # B2: R12 демо-линии, привязанные к улицам OSM
+                "map/search_index.json", "map/search_index.js",  # эталон A, правило Linear 1: R12 улицы и объекты для подсказок поиска
                 "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
                 # Волна 2, R06: «Идеи жителей» (#ideas, #projects) и форма «Работы и отключения» (#works).
                 "ideas/ideas.js", "ideas/ideas.css", "proposals/works.js",
@@ -104,6 +108,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",
                 # Дизайн-марафон, R05 2b33c59: превью объектов для карточек каталога (240×160 и @2x, рендер моделей R05).
                 *(f"build3d/data/previews/{kind}{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
+                  for scale in ("", "@2x")),
+                # Эталон 13 окт (R05 3997d91e → R06): квадратные превью 84 × 84 и @2x для строк списка «Проекты и идеи».
+                *(f"build3d/data/previews/{kind}-sq{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
                   for scale in ("", "@2x")),
                 # B3: запасной фон карты без интернета (web/map.js offlineStyle) — оси улиц OSM со стенда R07 @ 306074b.
                 "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",

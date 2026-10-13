@@ -34,7 +34,9 @@
  *   api                        — клиент оболочки R01 ({v2(method, path, body)}); map — карта или функция map().
  *
  * Handle: start(kind), cancel(), select(id), flyToProposals(), setMode(mode), update({mode, dock, visible}), refresh(),
- *         setVisible(bool), getState(), destroy(); previewOf(kind) → {src, srcset} картинки объекта для каталога.
+ *         setVisible(bool), getState(), destroy(); previewOf(kind) → {src, srcset, width, height, tint, square} картинки
+ *         объекта для каталога, карточки и списка проектов (square — 84×84 для строки списка R06);
+ *         highlight(id, {padding}) — отметить проект на карте без карточки модуля (лист «Проекты и идеи» R06, эталон 13.10).
  * Событие для соседей: document "civic-build3d:tool" {active, kind} — как "civic-editor:tool" у редактора.
  */
 (function (root) {
@@ -101,6 +103,9 @@
       "build3d.near.lamps": "На участке уже отмечены фонари: {n}",
       "build3d.near.source": "по данным OpenStreetMap",
       "build3d.card.yard": "Двор: {name}",
+      "build3d.card.fact_up": "поддержали",
+      "build3d.card.fact_down": "против",
+      "build3d.card.fact_year": "срок",
       "build3d.resident.hint": "Нажмите на проект, чтобы проголосовать",
       "build3d.resident.empty": "Здесь пока нет проектов",
       "build3d.demo.title": "3D-превью",
@@ -157,6 +162,9 @@
       "build3d.near.lamps": "Бұл бөлікте шамдар бұрыннан белгіленген: {n}",
       "build3d.near.source": "OpenStreetMap деректері бойынша",
       "build3d.card.yard": "Аула: {name}",
+      "build3d.card.fact_up": "қолдады",
+      "build3d.card.fact_down": "қарсы",
+      "build3d.card.fact_year": "мерзімі",
       "build3d.resident.hint": "Дауыс беру үшін жобаны басыңыз",
       "build3d.resident.empty": "Мұнда әзірге жоба жоқ",
       "build3d.demo.title": "3D-көрініс",
@@ -187,6 +195,8 @@
       "common.action.done": "Готово",
       "idea.object": "Объект из каталога (по желанию)",
       "idea.honest": "Это опрос для выбора концепции, решение принимает акимат.",
+      "idea.support": "Поддержать",
+      "idea.supported": "Вы поддержали",
       "idea.by_residents": { one: "По идее жителей · {n} голос", few: "По идее жителей · {n} голоса", many: "По идее жителей · {n} голосов" },
       "common.action.close": "Закрыть",
       "common.action.retry": "Повторить",
@@ -223,6 +233,8 @@
       "common.action.done": "Дайын",
       "idea.object": "Каталогтағы нысан (қаласаңыз)",
       "idea.honest": "Бұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды.",
+      "idea.support": "Қолдау",
+      "idea.supported": "Сіз қолдадыңыз",
       "idea.by_residents": "Тұрғындар идеясы бойынша · {n} дауыс",
       "common.action.close": "Жабу",
       "common.action.retry": "Қайталау",
@@ -334,7 +346,7 @@
   var ROTATE_STEP = 15;
   var PLACE_ZOOM = 17.5; // масштаб, на котором модели хорошо видны (UX_REVIEW день 3 #20)
   var VIEW_ZOOM = 17.4; // «показать проекты» — тот же крупный план
-  var DOT_PX = 32; // сжатая подпись-точка: ≥ 24 px (UX_SPEC §5, R10 B-026), зона нажатия — 48 px
+  var DOT_PX = 34; // сжатая подпись-точка: круг 34 px, как значок эталона (вариант A, .pin); зона нажатия — 48 px
   var LAYER_ID = "civic-build3d";
   // «Лёгкая карточка раньше 3D; 3D — по кнопке» (POLISH_WAVE_2): объёмный вид — когда карта наклонена так же, как
   // кнопкой «3D» оболочки R01 (web/interface.js: THREE_D_MIN_PITCH 30, наклон кнопки 52°).
@@ -781,6 +793,18 @@
       });
     }
 
+    // ui-kit с эталоном 13.10 (R11): есть токен лайма --c-lime — значит, и значок i-heart в наборе (та же поставка R11).
+    var refKitKnown = null;
+    function refKit() {
+      if (refKitKnown === null) {
+        try {
+          refKitKnown = !!(root.getComputedStyle && root.getComputedStyle(doc.documentElement).getPropertyValue("--c-lime").trim());
+        } catch (e) {
+          refKitKnown = false;
+        }
+      }
+      return refKitKnown;
+    }
     // Стекло R11 (GLASS.md §4, «R05 — карточка проекта 3D и каталог — bk-glass»): панель модуля — стеклянная, если
     // ui-kit сборки его умеет (есть токен --glass-panel); иначе — прежняя белая панель. Таблички на карте и тосты —
     // без стекла. Запасной непрозрачный вид (нет backdrop-filter, «уменьшить прозрачность», html.bk-glass-off) даёт ui-kit.
@@ -794,11 +818,16 @@
         }
       }
       dock.classList.toggle("bk-glass", glassKnown);
+      // Эталон 13.10, правило 4: текст на стекле — только на плотном стекле 86 % (ui-kit R11 .bk-glass--strong: «всё
+      // с текстом — карточка объекта, лист проектов…»); в панели модуля текст всегда (каталог, размещение, карточка).
+      // R10 B-079 — то же у панели R01. Со старым ui-kit класса нет — остаётся .bk-glass.
+      dock.classList.toggle("bk-glass--strong", glassKnown);
       // Телефон, панель у нижнего края (демо без хозяина) — как шторка: скругление только сверху.
       dock.classList.toggle("bk-glass--sheet", glassKnown && ui.classList.contains("b3d--overlay") && phoneLayout());
     }
     function renderDock() {
       syncGlass();
+      dock.classList.remove("b3d-dock--pd", "b3d-dock--r06pd"); // карточка проекта (эталон) — без полей панели, картинка во всю ширину
       // Эскиз к идее (pickObject) показываем и при выключенном слое «Проекты»: мастер идеи R06 — свой путь, не слой.
       ui.hidden = !S.visible && !pick;
       if (pick) ui.setAttribute("data-b3d-picking", "");
@@ -811,7 +840,7 @@
       if (S.mode === "placing") return S.three === "ready" ? renderPlacing() : renderLoading();
       if (pendingStart && S.three === "loading") return renderLoading();
       if (pick) return renderPickCatalog();
-      if (S.selected && S.objects[S.selected] && o.renderCard) return renderCard(S.objects[S.selected].p);
+      if (S.selected && S.objects[S.selected] && o.renderCard && !S.cardless) return renderCard(S.objects[S.selected].p);
       // Без WebGL2 жители видят проекты и голосуют (лёгкие метки), а поставить объект нельзя — говорим прямо.
       if (o.role === "akimat" && o.dock && S.three === "unsupported") return renderMessage("alert", t("build3d.unsupported_title"), t("build3d.unsupported_text"), false);
       if (!o.dock) {
@@ -863,9 +892,19 @@
 
     // Картинка карточки каталога (дизайн-марафон): превью модели из data/previews (тот же свет и угол, что на карте).
     // Не загрузилась (сборка без data/previews) — прежний значок.
+    // Светлый фон вида под картинкой (эталон 13.10: миниатюры списка и картинка детальной карточки — на цветной подложке).
+    var PREVIEW_TINT = { square: "#e7f2dd", playground: "#fdf3e3", sports: "#e4f1e6", stop: "#e8f0f6", lighting: "#f6f1e4" };
     function previewSrc(kind) {
       var base = o.dataUrl + "previews/" + kind;
-      return { src: base + ".png", srcset: base + ".png 1x, " + base + "@2x.png 2x", width: 240, height: 160 };
+      return {
+        src: base + ".png",
+        srcset: base + ".png 1x, " + base + "@2x.png 2x",
+        width: 240,
+        height: 160,
+        tint: PREVIEW_TINT[kind] || "#eef1ec",
+        // Квадратная миниатюра для строки списка «Проекты и идеи» (эталон, .thumb 84×84).
+        square: { src: base + "-sq.png", srcset: base + "-sq.png 1x, " + base + "-sq@2x.png 2x", width: 84, height: 84 },
+      };
     }
     function cardPic(kind) {
       var k = Core.KINDS[kind];
@@ -1004,6 +1043,10 @@
     }
     function renderR06Card(p) {
       dock.setAttribute("data-state", "card");
+      // Эталон 13.10 (вариант A, детальная карточка .pd): сверху картинка — превью той же 3D-модели на светлом фоне вида
+      // (на ноутбуке; на телефоне скрыта — над карточкой должна быть видна сама модель), под ней карточка R06 и строка
+      // модуля в полях эталона. Содержимое карточки (название, цифры, кнопки) — у R06.
+      dock.classList.add("b3d-dock--pd", "b3d-dock--r06pd");
       var head = el("div", "b3d-head b3d-head--end");
       var close = el("button", "bk-iconbtn", { type: "button", "aria-label": t("common.action.close"), title: t("common.action.close"), "data-action": "close-card" });
       close.appendChild(icon("close", o.iconsUrl));
@@ -1012,8 +1055,17 @@
       });
       head.appendChild(close);
       dock.appendChild(head);
+      var pic = el("div", "b3d-pd__im b3d-pd__im--r06", { "data-kind": p.kind });
+      var pimg = el("img", "", { src: o.dataUrl + "previews/" + p.kind + "@2x.png", alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
+      pimg.addEventListener("error", function () {
+        if (pic.parentNode) pic.parentNode.removeChild(pic);
+      });
+      pic.appendChild(pimg);
+      dock.appendChild(pic);
+      var inner = el("div", "b3d-pd__in b3d-pd__in--r06");
+      dock.appendChild(inner);
       var host = el("div", "b3d-r06");
-      dock.appendChild(host);
+      inner.appendChild(host);
       try {
         root.BirgeProposals.renderProposal(host, toR06Item(p), {
           role: o.role,
@@ -1030,11 +1082,12 @@
       } catch (e) {
         console.error("[build3d] карточка R06", e);
         dock.textContent = "";
+        dock.classList.remove("b3d-dock--r06pd");
         return renderOwnCard(p);
       }
       // Проект по идее жителей: строку даёт карточка R06, если умеет (BirgeProposals.showsIdea), иначе — модуль.
       var fromIdea = !(root.BirgeProposals && root.BirgeProposals.showsIdea) && ideaLine(p);
-      if (fromIdea) dock.appendChild(fromIdea);
+      if (fromIdea) inner.appendChild(fromIdea);
       // Строка модуля под карточкой R06: слева «Рядом: …» и «Двор: …», справа «3D» и у акимата «Удалить».
       // «Удалить» — второстепенное действие (главное — «Одобрить» R06): компактная кнопка в этой строке, а не во всю
       // ширину. Карточка ниже на ряд — на телефоне над ней остаётся место для самого проекта.
@@ -1053,7 +1106,7 @@
         whereRow.classList.add("b3d-row3d");
         whereRow.appendChild(deleteBtn(p));
       }
-      if (whereRow.firstChild) dock.appendChild(whereRow);
+      if (whereRow.firstChild) inner.appendChild(whereRow);
     }
 
     // «Посмотреть в 3D» — второстепенная кнопка лёгкой карточки (главная — голос). Компактная, как кнопка «3D» карты:
@@ -1106,52 +1159,75 @@
       return renderOwnCard(p);
     }
 
+    // Своя карточка проекта (демо, хранение на устройстве; с сервером R06 карточку рисует R06) — как детальная карточка
+    // эталона (research/round-14/design/REFERENCE.html, вариант A, «Проекты и идеи», .pd): сверху картинка (превью той
+    // же 3D-модели), название, три цифры, строка о месте, «Поддержать» главной кнопкой, внизу — «это опрос, решает
+    // акимат». Отличия от эталона (данных нет): вместо названия проекта — вид объекта; вместо «оценка, ₸» — «против»;
+    // вторая кнопка — «Против» (голос против остаётся, логика не меняется), а не «Подробнее».
     function renderOwnCard(p) {
       dock.setAttribute("data-state", "card");
-      var card = el("article", "b3d-pcard", { "aria-labelledby": "b3d-pcard-title" });
-      var head = el("div", "b3d-head");
-      var title = el("h2", "b3d-pcard__title", { id: "b3d-pcard-title" });
-      title.appendChild(icon(Core.KINDS[p.kind].icon, o.iconsUrl));
-      title.appendChild(el("span", "", { text: t(Core.KINDS[p.kind].key) }));
-      head.appendChild(title);
-      var close = el("button", "bk-iconbtn", { type: "button", "aria-label": t("common.action.close"), title: t("common.action.close"), "data-action": "close-card" });
+      dock.classList.add("b3d-dock--pd");
+      var k = Core.KINDS[p.kind];
+      // Классы ui-kit эталона (R11: .bk-pd, __im, __in, __title, .bk-facts, .bk-acts, __note) + свои — запасной вид.
+      var card = el("article", "b3d-pcard b3d-pd bk-pd", { "aria-labelledby": "b3d-pcard-title", "data-kind": p.kind });
+      var im = el("div", "b3d-pd__im bk-pd__im"); // фон — по виду в build3d.css (те же цвета, что previewOf(kind).tint)
+      var img = el("img", "", { src: o.dataUrl + "previews/" + p.kind + "@2x.png", alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
+      img.addEventListener("error", function () {
+        if (img.parentNode) img.parentNode.replaceChild(icon(k.icon, o.iconsUrl), img);
+      });
+      im.appendChild(img);
+      var close = el("button", "bk-iconbtn b3d-pd__x", { type: "button", "aria-label": t("common.action.close"), title: t("common.action.close"), "data-action": "close-card" });
       close.appendChild(icon("close", o.iconsUrl));
       close.addEventListener("click", function () {
         select(null);
       });
-      head.appendChild(close);
-      card.appendChild(head);
-      var tags = el("div", "bk-card__row");
-      tags.appendChild(el("span", "bk-tag bk-tag--project", { text: projectLabel(p) }));
-      if (p.demo) tags.appendChild(el("span", "bk-tag bk-tag--demo", { text: t("common.tag.demo"), title: t("common.tag.demo_hint") }));
-      // Статус словом и цветом (R06: proposal | approved | rejected).
-      var st = p.status === "approved" || p.status === "rejected" ? p.status : "proposal";
-      tags.appendChild(el("span", "bk-status", { "data-status": st === "approved" ? "fixed" : st === "rejected" ? "rejected" : "accepted", text: t("proposal.status." + st) }));
-      card.appendChild(withView3d(tags));
-      var fromIdea = ideaLine(p);
-      if (fromIdea) card.appendChild(fromIdea);
+      im.appendChild(close);
+      card.appendChild(im);
+      var inner = el("div", "b3d-pd__in bk-pd__in");
+      inner.appendChild(el("h2", "b3d-pcard__title bk-pd__title", { id: "b3d-pcard-title", text: t(k.key) }));
+      // Строка под названием: место (двор / улица) и «Пример» — тихо, одной строкой.
+      var sub = el("div", "b3d-pd__sub");
       var where = placeText(p);
-      if (where) card.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
+      if (where) sub.appendChild(el("p", "bk-meta b3d-pcard__where", { text: where }));
       var yard = yardOf(p);
       if (yard) {
         var yardName = t.lang() === "kk" ? yard.label_kk || yard.label_ru : yard.label_ru || yard.label_kk;
-        card.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
+        sub.appendChild(el("p", "bk-meta b3d-pcard__yard", { text: t("build3d.card.yard", { name: yardName }) }));
       }
-      var votes = el("div", "b3d-votes", { role: "group", "aria-label": t("proposal.one_vote") });
+      if (p.demo) sub.appendChild(el("span", "bk-tag bk-tag--demo", { text: t("common.tag.demo"), title: t("common.tag.demo_hint") }));
+      if (sub.firstChild) inner.appendChild(sub);
+      // Три цифры (эталон .facts): поддержали · против · срок.
+      var facts = el("div", "b3d-pd__facts bk-facts");
+      [[formatNum(p.votes_up || 0), "build3d.card.fact_up"], [formatNum(p.votes_down || 0), "build3d.card.fact_down"], [p.year ? String(p.year) : "—", "build3d.card.fact_year"]].forEach(function (f) {
+        var d = el("div", "b3d-pd__fact");
+        d.appendChild(el("b", "", { text: f[0] }));
+        d.appendChild(el("span", "", { text: t(f[1]) }));
+        facts.appendChild(d);
+      });
+      inner.appendChild(facts);
+      // Статус словом (R06: proposal | approved | rejected) и «3D» в лёгком виде — одной строкой.
+      var st = p.status === "approved" || p.status === "rejected" ? p.status : "proposal";
+      var stRow = el("div", "bk-card__row b3d-pd__status");
+      stRow.appendChild(el("span", "bk-status", { "data-status": st === "approved" ? "fixed" : st === "rejected" ? "rejected" : "accepted", text: t("proposal.status." + st) }));
+      inner.appendChild(withView3d(stRow));
+      var fromIdea = ideaLine(p);
+      if (fromIdea) inner.appendChild(fromIdea);
+      var votes = el("div", "b3d-votes b3d-pd__acts bk-acts", { role: "group", "aria-label": t("proposal.one_vote") });
       votes.appendChild(voteBtn(p, 1));
       votes.appendChild(voteBtn(p, -1));
-      card.appendChild(votes);
+      inner.appendChild(votes);
       var note = p.my_vote === 1 ? t("build3d.card.your_vote_up") : p.my_vote === -1 ? t("build3d.card.your_vote_down") : t("proposal.one_vote");
       if (p.voting_open === false) note = t("proposal.voting_closed");
-      // «Удалить» — второстепенное действие акимата: компактной кнопкой справа в строке «Один голос…», как в строке
-      // под карточкой R06, а не красной полосой во всю ширину (карточка ниже на ряд, над ней виден сам проект).
+      // «Удалить» — второстепенное действие акимата: компактной кнопкой справа в строке «Один голос…».
       var noteP = el("p", "bk-meta b3d-pcard__note", { text: note });
       if (o.role === "akimat") {
         var noteRow = el("div", "b3d-row3d b3d-pcard__noterow");
         noteRow.appendChild(noteP);
         noteRow.appendChild(deleteBtn(p));
-        card.appendChild(noteRow);
-      } else card.appendChild(noteP);
+        inner.appendChild(noteRow);
+      } else inner.appendChild(noteP);
+      inner.appendChild(el("p", "b3d-pd__honest bk-pd__note", { text: t("idea.honest") }));
+      card.appendChild(inner);
       dock.appendChild(card);
     }
 
@@ -1162,9 +1238,13 @@
         "aria-pressed": p.my_vote === value ? "true" : "false",
         "data-action": up ? "vote-up" : "vote-down",
       });
-      b.appendChild(icon(up ? "thumb-up" : "thumb-down", o.iconsUrl));
-      b.appendChild(el("span", "", { text: t(up ? "proposal.vote_up" : "proposal.vote_down") }));
-      b.appendChild(el("span", "bk-btn__count", { text: formatNum(up ? p.votes_up : p.votes_down) }));
+      // Как в эталоне: «Поддержать» — главная кнопка (после голоса — «Вы поддержали»), «Против» — второстепенная;
+      // сами числа — в трёх цифрах карточки. Имя кнопки для диктора — с числом голосов.
+      var label = up ? t(p.my_vote === 1 ? "idea.supported" : "idea.support") : t("proposal.vote_down");
+      if (up) b.classList.add("bk-btn--primary");
+      b.appendChild(icon(up ? (refKit() ? "heart" : "thumb-up") : "thumb-down", o.iconsUrl)); // сердце эталона (ui-kit R11 13.10)
+      b.appendChild(el("span", "", { text: label }));
+      b.setAttribute("aria-label", label + ": " + formatNum(up ? p.votes_up : p.votes_down));
       if (S.cardBusy === "vote" + value) b.setAttribute("aria-busy", "true");
       if (p.voting_open === false) b.disabled = true; // проект одобрен или отклонён — голосование закрыто
       b.addEventListener("click", function () {
@@ -1887,7 +1967,8 @@
     function makeLabel(obj) {
       // Кнопка — прозрачная зона нажатия ≥ 48 px; видимая «таблетка» внутри — 40 px (UX_REVIEW день 3 #21).
       var b = el("button", "b3d-label", { type: "button", "data-id": obj.p.id });
-      var pill = el("span", "b3d-label__pill bk-tag bk-tag--project");
+      // Метка эталона — класс ui-kit .bk-tag-proj (R11, эталон 13.10); со старым ui-kit вид даёт build3d.css.
+      var pill = el("span", "b3d-label__pill bk-tag-proj");
       // Значок вида — виден в сжатой подписи-точке; число — у группы рядом стоящих проектов (R10 B-026).
       var ic = icon(Core.KINDS[obj.p.kind].icon, o.iconsUrl);
       ic.setAttribute("class", "ic b3d-label__icon");
@@ -3115,9 +3196,25 @@
     }
 
     function onKey(e) {
-      if (S.mode !== "placing") return;
       var tag = (e.target && e.target.tagName) || "";
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      // Эталон 13.10 (правило Linear 2): Esc закрывает карточку проекта, фокус — обратно на его метку на карте. Не
+      // трогаем Esc, который уже обработал кто-то другой (меню, диалог хозяина), и когда открыт модальный диалог.
+      if (S.mode !== "placing") {
+        if (e.key !== "Escape" || !S.selected || e.defaultPrevented) return;
+        if (doc.querySelector && doc.querySelector('[role="dialog"][aria-modal="true"]:not([hidden])')) return;
+        var was = S.objects[S.selected];
+        e.preventDefault();
+        select(null);
+        if (was && was.label && was.label.focus && was.label.style.visibility !== "hidden") {
+          try {
+            was.label.focus({ preventScroll: true });
+          } catch (err) {
+            /* метка уже не в документе */
+          }
+        }
+        return;
+      }
       if (e.key === "Escape") {
         e.preventDefault();
         cancel();
@@ -3326,10 +3423,8 @@
       );
     }
 
-    function select(id) {
-      if (id && !S.objects[id]) id = null;
-      if (S.mode === "placing" && id) cancel();
-      S.selected = id;
+    // Вид выбранного проекта на карте: табличка «нажата» (кольцо), пунктир границы — цветом выбора.
+    function selectionLook(id) {
       Object.keys(S.objects).forEach(function (k) {
         var obj = S.objects[k];
         updateLabelText(obj);
@@ -3338,6 +3433,13 @@
         });
         if (outline) outline.material.color.set(k === id ? OUTLINE_SELECTED : OUTLINE_COLOR);
       });
+    }
+    function select(id) {
+      if (id && !S.objects[id]) id = null;
+      if (S.mode === "placing" && id) cancel();
+      S.selected = id;
+      S.cardless = false;
+      selectionLook(id);
       render();
       emitSelect(id ? S.objects[id].p : null);
       if (id) {
@@ -3349,6 +3451,25 @@
         keepAboveDock(S.objects[id]);
       }
       repaint();
+    }
+
+    // Эталон 13.10 («Проекты и идеи»: карта следует за выбором в списке R06). Проект отмечен на карте — табличка с кольцом
+    // и пунктир цвета выбора, — но карточка модуля не открывается (детали показывает лист R06) и хозяину не сообщается
+    // (onSelect — только для выбора на самой карте). how.padding {top,right,bottom,left} — камера плавно ставит проект
+    // в свободную часть карты (между листом и деталями); без него камера не двигается. highlight(null) — снять отметку.
+    function highlight(id, how) {
+      how = how || {};
+      if (id && !S.objects[id]) return false;
+      if (S.mode === "placing") return false;
+      S.selected = id || null;
+      S.cardless = !!id;
+      selectionLook(S.selected);
+      render();
+      if (id && how.padding) {
+        map.easeTo({ center: anchorLngLat(S.objects[id].p), padding: how.padding, duration: reducedMotion() ? 0 : 450 });
+      }
+      repaint();
+      return true;
     }
 
     // Прямоугольники панелей хозяина поверх карты (шапка, шторка, колонки, кнопки), видимые сейчас.
@@ -3631,8 +3752,11 @@
       },
       cancel: cancel,
       select: select,
-      // Картинка-превью объекта для карточек каталога (дизайн-марафон): {src, srcset} из data/previews/ (рендер тех же
-      // моделей — tests/civic/R05/build3d/make_previews.mjs, 240×160 и @2x). Без three.js — годится для лёгкого вида.
+      highlight: highlight,
+      // Картинка-превью объекта (дизайн-марафон; эталон 13.10): {src, srcset, width, height, tint, square} из
+      // data/previews/ (рендер тех же моделей — tests/civic/R05/build3d/make_previews.mjs): 240×160 и @2x — каталог и
+      // детальная карточка; square — 84×84 и @2x для строки списка «Проекты и идеи» (R06); tint — светлый фон вида под
+      // картинкой (у PNG прозрачный фон). Без three.js — годится для лёгкого вида.
       previewOf: function (kind) {
         return Core.KINDS[kind] ? previewSrc(kind) : null;
       },
@@ -3682,6 +3806,7 @@
           kind: S.kind,
           storeMode: S.storeMode,
           selected: S.selected,
+          highlighted: !!(S.selected && S.cardless),
           count: Object.keys(S.objects).length,
           ghost: S.ghost
             ? {
