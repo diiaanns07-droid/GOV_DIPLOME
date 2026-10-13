@@ -1527,7 +1527,9 @@
       if (optimistic) {
         const key = keyOf(it.target);
         for (const x of [].concat(S.data ? S.data.items : [], S.top || [])) if (keyOf(x.target) === key) x.status = "in_progress";
-        render(); drawBadges();
+        render();
+        // значки — в следующем кадре: карточка и строка показываются сразу, не дожидаясь перерисовки карты (WebGL)
+        (window.requestAnimationFrame || setTimeout)(() => { if (!S.destroyed) drawBadges(); });
       }
       try {
         // У отдельного обращения 404 (нет в хранилище — пример R07 в общей сборке) или 409/422 (уже в этом статусе)
@@ -2162,16 +2164,26 @@
       if (next !== S.selected) openKey(next);
       return next;
     }
+    // Правило Linear 4 (эталон A, замер R10 response_check «период»): фильтр откликается сразу — выбранный чип или период
+    // до ответа сервера; строки остаются на месте и бледнеют только если ответ дольше 150 мс (без мигания); render() после
+    // ответа всё заменит.
+    function filterNow(btn, group) {
+      if (btn && group) panel.querySelectorAll(group).forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      const days = panel.querySelector(".r07-lhd__days");
+      if (days) days.textContent = keep(t("heat.for_days", { count: S.filters.days }));
+      const hot = panel.querySelector(".r07-hot");
+      if (hot) hot.classList.add("r07-hot--updating");
+    }
     function bindPanel() {
       panel.querySelectorAll("[data-cat]").forEach((b) => b.addEventListener("click", () => {
-        S.filters.category = b.dataset.cat || null; S.selected = null; S.catsOpen = false; void load("filter");
+        S.filters.category = b.dataset.cat || null; S.selected = null; S.catsOpen = false; filterNow(b, "[data-cat]"); void load("filter");
       }));
       panel.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => {
         if (typeof opts.onClose === "function") opts.onClose();
         window.dispatchEvent(new CustomEvent("birge:heat-close"));
       }));
       panel.querySelectorAll("[data-days]").forEach((b) => b.addEventListener("click", () => {
-        S.filters.days = Number(b.dataset.days); void load("filter");
+        S.filters.days = Number(b.dataset.days); filterNow(b, "[data-days]"); void load("filter");
       }));
       const sel = panel.querySelector("[data-district]");
       if (sel) sel.addEventListener("change", () => {

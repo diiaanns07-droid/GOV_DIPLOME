@@ -89,6 +89,8 @@
   transition: background 0.15s var(--r07-ease), color 0.15s var(--r07-ease); }
 .r07-chip:hover .r07-chip__pill { background: var(--r07-fill-hover); }
 .r07-chip[aria-pressed="true"] .r07-chip__pill { background: var(--r07-ink); color: #fff; }
+/* фильтр выбран, данные ещё идут (filterNow): строки на месте, бледнеют только при ответе дольше 150 мс */
+.r07-hot--updating .r07-gh, .r07-hot--updating .r07-list { opacity: 0.55; transition: opacity 0.15s var(--r07-ease) 0.15s; }
 .r07-chip:focus-visible { outline: none; }
 .r07-chip:focus-visible .r07-chip__pill { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 .r07-chip__dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: #FAC775; }
@@ -482,6 +484,7 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
   .r07-root { --r07-press: none; }
   .r07-item:active, .r07-badge:active .r07-badge__inner { transform: none; }
   .r07-item--busy::after { animation: none; border-right-color: var(--r07-brand); opacity: 0.45; }
+  .r07-hot--updating .r07-gh, .r07-hot--updating .r07-list { transition-duration: 0s; }   /* без плавности, задержка 150 мс та же */
 }
 @media (max-width: 760px) {
   /* Поле телефона 16 px (ui-kit --gutter-phone; шторка оболочки даёт 12): тот же край, что у кнопки «Сообщить о проблеме»
