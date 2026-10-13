@@ -1,0 +1,13 @@
+--- a/tests/e2e/demo_flow.cjs
++++ b/tests/e2e/demo_flow.cjs
+@@ -630,7 +630,9 @@
+   // Число пунктов — до первого нажатия: пока открыта карточка, списка на экране нет.
+   const nHot = Math.min(await hotItems.count().catch(() => 0), 3);
+   for (let i = 0; i < nHot; i++) {
+-    await page.keyboard.press("Escape"); await sleep(700);
++    // Esc — закрыть открытую карточку места. В FINAL-4 (R01 §26.4) Esc снимает один слой: карточка → список → сводка, поэтому
++    // при открытом списке без карточки Esc закрыл бы сам список (R07 INTEGRATION R.13).
++    if (await page.locator(".r07-card").filter({ visible: true }).count().catch(() => 0)) { await page.keyboard.press("Escape"); await sleep(700); }
+     const it = hotItems.nth(i);
+     const title = ((await it.innerText().catch(() => "")) || "").replace(/\s+/g, " ").trim().slice(0, 50);
+     if (!(await it.click({ timeout: 3000 }).then(() => true, () => false))) { hot.push({ title, clicked: false }); continue; }
