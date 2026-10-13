@@ -308,7 +308,7 @@
   height: 14px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 2.5; /* правило 6 «одна толщина»: видимая линия ~1,5 px, как у значков 20 (ui-kit .bk-vote .ic) */
   stroke-linejoin: round;
 }
 .ri-vote[aria-pressed="true"] .ri-heart {
@@ -389,6 +389,7 @@
 .ri-newbtn__ic .ic {
   width: 16px;
   height: 16px;
+  stroke-width: 2.25; /* как .bk-fab__ic .ic ui-kit: видимая линия ~1,5 px */
 }
 
 /* ── карточка выбранного (эталон .pd: справа 84, сверху 132, 340; картинка 150; поля 14 16 16) ── */
