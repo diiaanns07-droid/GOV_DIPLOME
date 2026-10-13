@@ -1489,6 +1489,7 @@
   "few": "{n} человека",
   "many": "{n} человек"
  },
+ "inbox.status_menu": "Сменить статус",
  "nearby.title": "Что делают рядом",
  "home.near.title": "Рядом с вами",
  "home.near.all_hot": "Все горячие места",
@@ -1814,6 +1815,7 @@
  "ask.staff.empty.answered_hint": "Ответьте на вопросы из «Топ-5 недели» — ответы увидят все.",
  "ask.staff.empty.to_top": "Открыть топ-5 недели",
  "ask.staff.edit_answer": "Изменить ответ",
+ "ask.staff.week_caption": "отвечено на этой неделе",
  "idea.empty.title": "Идей пока нет",
  "idea.empty.text": "Предложите первую — соседи смогут её поддержать.",
  "idea.empty.project": "Пока ни одна идея не стала проектом",
@@ -1833,6 +1835,7 @@
  "idea.fact.object": "объект",
  "idea.fact.for": "за",
  "idea.fact.against": "против",
+ "idea.on_map": "На карте",
  "qr.form.size": "Размер таблички",
  "qr.form.size_hint": "Печать на листах A4: две таблички A5 или четыре A6 — разрезать по пунктиру.",
  "qr.form.size_a5": "A5 · 148 × 210 мм",
