@@ -58,7 +58,7 @@ def params(value):
 
 
 # Формы числа без {n}: само число стоит рядом крупно (эталон A .big: «6 | человек сообщили»), подпись согласуется с ним.
-NUMBER_BESIDE = {"heat.card.people", "heat.card.people_fixed"}
+NUMBER_BESIDE = {"heat.card.people", "heat.card.people_fixed", "passport.people"}
 
 
 def check(ru=None, kk=None):
