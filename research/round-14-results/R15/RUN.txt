@@ -50,3 +50,11 @@ R15 (раунд 14) — как запустить ревью безопасно�
 Проверить P-R06-2 на ветке R06: git worktree add ../r06 origin/claude/round-14-r06 && cd ../r06 &&
   git show origin/claude/r14-R15:research/round-14-results/R15/patches/P-R06-2.diff | git apply - &&
   python -m pytest tests/civic/R06 -q      # 11 окт: 490 passed, 7 skipped
+
+Эталон A + Linear (13 окт) — браузерная проба экранов эталона (нужны Node 18+ и Playwright с Chromium):
+   NODE_PATH=<папка node_modules с playwright> node tests/civic/R15/browser/r15_reference.cjs <копия сборки R01> <папка отчёта>
+   Сервер сборки поднимается сам на 127.0.0.1 со временной SQLite и синтетическими демо-данными; жители пишут HTML-нагрузку
+   в жалобу, идею, вопрос, поиск и адрес; браузер проходит экраны акимата (1366×768) и жителя (375×812).
+   Итог — <папка отчёта>/result.json и скриншоты; код выхода 1, если хоть один шаг FAIL (нагрузка стала HTML, сработал
+   обработчик, нарушение CSP, у жителя виден текст чужой жалобы); NOT_RUN — экрана ещё нет в сборке (не PASS).
+   Тесты эталона без браузера: R15_ROOT=<копия> python -m pytest tests/civic/R15/test_r15_reference.py -q -rxX
