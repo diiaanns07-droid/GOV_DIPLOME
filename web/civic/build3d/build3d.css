@@ -294,6 +294,21 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+/* Правило Linear 4 (эталон 13.10): скелетон каталога — только если загрузка дольше 150 мс, затем мягко за 150 мс; при
+   быстрой загрузке он не «мигает». «Уменьшить движение» — та же задержка без проявления. */
+.b3d-dock[data-state="loading"] .b3d-cards {
+  animation: b3d-skel-late var(--t-fast, 150ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) 150ms both;
+}
+@keyframes b3d-skel-late {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d-dock[data-state="loading"] .b3d-cards {
+    animation-duration: 1ms;
+  }
+}
 .b3d-card--skel {
   border: 0;
   box-shadow: none;
