@@ -792,6 +792,18 @@
       });
     }
 
+    // ui-kit с эталоном 13.10 (R11): есть токен лайма --c-lime — значит, и значок i-heart в наборе (та же поставка R11).
+    var refKitKnown = null;
+    function refKit() {
+      if (refKitKnown === null) {
+        try {
+          refKitKnown = !!(root.getComputedStyle && root.getComputedStyle(doc.documentElement).getPropertyValue("--c-lime").trim());
+        } catch (e) {
+          refKitKnown = false;
+        }
+      }
+      return refKitKnown;
+    }
     // Стекло R11 (GLASS.md §4, «R05 — карточка проекта 3D и каталог — bk-glass»): панель модуля — стеклянная, если
     // ui-kit сборки его умеет (есть токен --glass-panel); иначе — прежняя белая панель. Таблички на карте и тосты —
     // без стекла. Запасной непрозрачный вид (нет backdrop-filter, «уменьшить прозрачность», html.bk-glass-off) даёт ui-kit.
@@ -1151,8 +1163,9 @@
       dock.setAttribute("data-state", "card");
       dock.classList.add("b3d-dock--pd");
       var k = Core.KINDS[p.kind];
-      var card = el("article", "b3d-pcard b3d-pd", { "aria-labelledby": "b3d-pcard-title", "data-kind": p.kind });
-      var im = el("div", "b3d-pd__im"); // фон — по виду в build3d.css (те же цвета, что previewOf(kind).tint)
+      // Классы ui-kit эталона (R11: .bk-pd, __im, __in, __title, .bk-facts, .bk-acts, __note) + свои — запасной вид.
+      var card = el("article", "b3d-pcard b3d-pd bk-pd", { "aria-labelledby": "b3d-pcard-title", "data-kind": p.kind });
+      var im = el("div", "b3d-pd__im bk-pd__im"); // фон — по виду в build3d.css (те же цвета, что previewOf(kind).tint)
       var img = el("img", "", { src: o.dataUrl + "previews/" + p.kind + "@2x.png", alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
       img.addEventListener("error", function () {
         if (img.parentNode) img.parentNode.replaceChild(icon(k.icon, o.iconsUrl), img);
@@ -1165,8 +1178,8 @@
       });
       im.appendChild(close);
       card.appendChild(im);
-      var inner = el("div", "b3d-pd__in");
-      inner.appendChild(el("h2", "b3d-pcard__title", { id: "b3d-pcard-title", text: t(k.key) }));
+      var inner = el("div", "b3d-pd__in bk-pd__in");
+      inner.appendChild(el("h2", "b3d-pcard__title bk-pd__title", { id: "b3d-pcard-title", text: t(k.key) }));
       // Строка под названием: место (двор / улица) и «Пример» — тихо, одной строкой.
       var sub = el("div", "b3d-pd__sub");
       var where = placeText(p);
@@ -1179,7 +1192,7 @@
       if (p.demo) sub.appendChild(el("span", "bk-tag bk-tag--demo", { text: t("common.tag.demo"), title: t("common.tag.demo_hint") }));
       if (sub.firstChild) inner.appendChild(sub);
       // Три цифры (эталон .facts): поддержали · против · срок.
-      var facts = el("div", "b3d-pd__facts");
+      var facts = el("div", "b3d-pd__facts bk-facts");
       [[formatNum(p.votes_up || 0), "build3d.card.fact_up"], [formatNum(p.votes_down || 0), "build3d.card.fact_down"], [p.year ? String(p.year) : "—", "build3d.card.fact_year"]].forEach(function (f) {
         var d = el("div", "b3d-pd__fact");
         d.appendChild(el("b", "", { text: f[0] }));
@@ -1194,7 +1207,7 @@
       inner.appendChild(withView3d(stRow));
       var fromIdea = ideaLine(p);
       if (fromIdea) inner.appendChild(fromIdea);
-      var votes = el("div", "b3d-votes b3d-pd__acts", { role: "group", "aria-label": t("proposal.one_vote") });
+      var votes = el("div", "b3d-votes b3d-pd__acts bk-acts", { role: "group", "aria-label": t("proposal.one_vote") });
       votes.appendChild(voteBtn(p, 1));
       votes.appendChild(voteBtn(p, -1));
       inner.appendChild(votes);
@@ -1208,7 +1221,7 @@
         noteRow.appendChild(deleteBtn(p));
         inner.appendChild(noteRow);
       } else inner.appendChild(noteP);
-      inner.appendChild(el("p", "b3d-pd__honest", { text: t("idea.honest") }));
+      inner.appendChild(el("p", "b3d-pd__honest bk-pd__note", { text: t("idea.honest") }));
       card.appendChild(inner);
       dock.appendChild(card);
     }
@@ -1224,7 +1237,7 @@
       // сами числа — в трёх цифрах карточки. Имя кнопки для диктора — с числом голосов.
       var label = up ? t(p.my_vote === 1 ? "idea.supported" : "idea.support") : t("proposal.vote_down");
       if (up) b.classList.add("bk-btn--primary");
-      b.appendChild(icon(up ? "thumb-up" : "thumb-down", o.iconsUrl)); // сердечка эталона в ui-kit пока нет
+      b.appendChild(icon(up ? (refKit() ? "heart" : "thumb-up") : "thumb-down", o.iconsUrl)); // сердце эталона (ui-kit R11 13.10)
       b.appendChild(el("span", "", { text: label }));
       b.setAttribute("aria-label", label + ": " + formatNum(up ? p.votes_up : p.votes_down));
       if (S.cardBusy === "vote" + value) b.setAttribute("aria-busy", "true");
@@ -1949,7 +1962,8 @@
     function makeLabel(obj) {
       // Кнопка — прозрачная зона нажатия ≥ 48 px; видимая «таблетка» внутри — 40 px (UX_REVIEW день 3 #21).
       var b = el("button", "b3d-label", { type: "button", "data-id": obj.p.id });
-      var pill = el("span", "b3d-label__pill bk-tag bk-tag--project");
+      // Метка эталона — класс ui-kit .bk-tag-proj (R11, эталон 13.10); со старым ui-kit вид даёт build3d.css.
+      var pill = el("span", "b3d-label__pill bk-tag-proj");
       // Значок вида — виден в сжатой подписи-точке; число — у группы рядом стоящих проектов (R10 B-026).
       var ic = icon(Core.KINDS[obj.p.kind].icon, o.iconsUrl);
       ic.setAttribute("class", "ic b3d-label__icon");

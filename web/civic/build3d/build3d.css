@@ -477,6 +477,18 @@
 .b3d-pd {
   gap: 0;
 }
+/* Ширину даёт панель (340 на ноутбуке, во всю ширину на телефоне), а не .bk-pd ui-kit (340 всегда); отступы между
+   частями — сетка .b3d-pd__in (12), а не поля .bk-facts / .bk-acts. */
+.b3d-pd.bk-pd {
+  width: auto;
+  border-radius: 0;
+}
+.b3d-pd .b3d-pd__facts.bk-facts {
+  margin: 0;
+}
+.b3d-pd .b3d-pd__acts.bk-acts {
+  padding: 0;
+}
 .b3d-pd__im {
   position: relative;
   display: flex;
@@ -497,11 +509,11 @@
 .b3d-pd[data-kind="lighting"] .b3d-pd__im {
   background: #f6f1e4;
 }
-.b3d-pd__im img {
+.b3d-pd .b3d-pd__im img {
   width: auto;
   height: 100%;
   max-width: 100%;
-  object-fit: contain;
+  object-fit: contain; /* превью модели целиком — у .bk-pd__im ui-kit «cover» для иллюстраций во всю ширину */
 }
 .b3d-pd__im > .ic {
   width: 48px;
@@ -589,11 +601,12 @@
   color: #ffffff;
   box-shadow: none;
 }
-/* Строка «Это опрос…» — мелко, как в эталоне, но вторым цветом текста: третий (#7E8A85) на стекле — 3,6 : 1 < 4,5 */
+/* Строка «Это опрос…» — мелко, как в эталоне: 12 px, третий цвет текста ui-kit (R11 REFERENCE_A §3 п. 7: #7E8A85 —
+   только для вторичных подписей); без ui-kit эталона — второй цвет (#4B5752, контраст выше). */
 .b3d-pd .b3d-pd__honest {
   font-size: 12px;
   line-height: 1.4;
-  color: var(--c-text-2, #4b5752);
+  color: var(--c-text-3, #4b5752);
   margin-top: -4px;
 }
 
