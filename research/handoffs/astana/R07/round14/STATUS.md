@@ -1,10 +1,41 @@
 Задача: Раунд 14 · R07 · Тепловая карта объектов — главный экран акимата
 Агент: Claude Code (облачная сессия) · Астана · Birge
-Обновлено: 2026-10-13, вечер (эталон A «лучше 2ГИС», круг 5 — новая сессия; марафон и FINAL-3 — ниже)
-Статус: ready_for_review — эталон A, круги 1–4: код — DELIVERY.json code_sha и ключ «reference_a» (взять
-web/civic/heat/heat.js и heat.css — INTEGRATION.txt §R). Проверено на сборке R01 69984f0f. Марафон (0bdd91a6) — ключ
-«marathon», FINAL-3 (9899c30c) — «final3».
+Обновлено: 2026-10-13, вечер (эталон A «лучше 2ГИС», круги 5–6 — новая сессия; марафон и FINAL-3 — ниже)
+Статус: ready_for_review — эталон A, круги 1–6: код — DELIVERY.json code_sha и ключ «reference_a» (взять
+web/civic/heat/heat.js и heat.css — INTEGRATION.txt §R, R.12–R.13). Проверено на сборке R01 FINAL-4 ac0140f9 (там уже
+R07 913b18a3 — круг 4). Марафон (0bdd91a6) — ключ «marathon», FINAL-3 (9899c30c) — «final3».
 Ветка: claude/r14-R07 (продолжение claude/upbeat-knuth-i0rqaa).
+
+ДЛЯ CODEX — ПРОДОЛЖЕНИЕ (14 окт; читать первым)
+Где что:
+- Код R07 эталона A — web/civic/heat/heat.js, heat.css в голове claude/r14-R07 (SHA — DELIVERY.json code_sha). Сервер R07
+  (ui/civic_heat/) в эталоне A не менялся. Логику и сценарий демо не менять (задание владельца).
+- В сборке R01 FINAL-4 (claude/sharp-dijkstra-0t87gl @ ac0140f9) — R07 913b18a3 (круг 4). Новее в ветке R07: круг 5
+  (зоны нажатия — сами элементы 44 px, полоса вкладок 44 + 1) и круг 6 (closable: "desktop"). R01 берёт heat.js/heat.css
+  с code_sha и одну строку shell.js — patches/R01_shell_closable_desktop.patch (INTEGRATION R.13).
+- Кадры «эталон / было / стало» — research/round-14-results/R07/reference/round1…round6 (README.md там же).
+- Инструменты (Playwright: require("/opt/node-tools/node_modules/playwright") — на ноутбуке заменить на "playwright"):
+  design/tools/ref6_probe.cjs <порт> <папка> — кадры и замеры на сборке (вид ref: список и карточка слева, × по ширине);
+  tap_probe.cjs — рамки значков/QR/вкладок (порт 8614 в коде); triptych.py — склейка «эталон | было | стало».
+Как поднять стенд (как делал круг 6):
+  git worktree add --detach <stand> origin/claude/sharp-dijkstra-0t87gl
+  в <stand>: web/civic/heat/heat.js и heat.css — ссылки (или копии) из рабочей копии ветки R07;
+  база с засевом, как у R10 r10_lib.cjs: python -m ui.civic_store --db <db> init; … seed-demo --package
+  data/civic/astana/demo_synthetic.json; … seed-r14-demo; затем CIVIC_DEMO=1 CIVIC_DB_PATH=<db> python -B app.py --port 8615.
+  Без засева слева видна плашка «Реестр пуст…» — это не ошибка сборки.
+Проверки (порядок — без параллельной нагрузки, замеры времени чувствительны):
+  python -m pytest tests/civic/R07 -q (155/2); python -m ui.civic_heat.devserver, затем node tests/civic/R07/browser/wave2.js
+  (38/38) и readability.js (18/18) — devserver перезапускать перед каждым прогоном; на стенде — R10
+  tests/e2e/reference_check.cjs --ref REFERENCE.html --root <stand> --screens home,obj,phone и demo_flow.cjs --glass keep
+  (на FINAL-4 шаг 3 ждёт «Все категории»: патч R01 patches/R10_demo_flow_reference.patch — путь R10, накладывать только
+  во временной копии). REFERENCE.html — git show origin/claude/round-14-package:research/round-14/design/REFERENCE.html.
+Что осталось (не R07 — ждёт других):
+- R01: взять R07 круги 5–6 (code_sha) и строку shell.js (R.13). Место карточки слева и стекло — R01 уже сделал в FINAL-4.
+- Владелец: серый #7E8A85 эталона (3,58:1) — B-075 у R10; R07 берёт цвет из токена R11 --c-text-3, ответ придёт одной
+  правкой R11.
+- R10: на FINAL-4 повторить reference_check / linear_check (просьба R01 §26.9).
+Что можно R07 дальше (если будет время): повторить ref6_probe и reference_check на новой голове R01; казахские кадры
+круга 6 (ref6_probe снимает ru — поменять birge.lang на kk).
 
 КОРОТКО ДЛЯ ВЛАДЕЛЬЦА — ЭТАЛОН A «лучше 2ГИС» (13 октября)
 - Значки на карте — как в эталоне: кружок 34 px цвета жалоб, белая обводка, иконка, белая плашка с числом. Выбранное место
@@ -43,6 +74,14 @@ web/civic/heat/heat.js и heat.css — INTEGRATION.txt §R). Проверено 
 - Остальные расхождения карточки с эталоном у R10 — от данных (подзаголовок эталона в две строки, другие подписи кнопок)
   и от места карточки (справа — это R01, заплатка R.6).
 Кадры: reference/round5/. Проверки — ниже и DELIVERY.json «reference_a».round5.
+КРУГ 6 (13 окт, вечер — новая сборка R01 FINAL-4 ac0140f9: хром эталона A)
+- В новой сборке карточка места и «Горячие места» стоят слева под поиском, как в эталоне; раскладка карточки совпадает
+  с эталоном (название, число людей, статус и срок, две кнопки в ряд, вкладки, одна цитата, «Ещё N обращений»).
+- По просьбе R01: на телефоне у «Горячих мест» нет × (список там в шторке), на ноутбуке × есть. R01 включает это одной
+  строкой в оболочке (готовый патч).
+- Проверка R10 «сборка против эталона»: у R07 6 из 12 совпадают; остальные расхождения — от данных (подписи кнопок,
+  подзаголовок в одну строку, сноска «Данные — пример») и от вида карты на главной (обзор города с районами).
+Кадры: reference/round6/. Проверки — DELIVERY.json «reference_a».round6.
 
 КРУГ 4 (замечания соседей R09, R10, R11)
 - Наведение на строку раздела «Обращения» (R09) подсвечивает значок места на карте и наоборот — взят патч R09, проверка R09

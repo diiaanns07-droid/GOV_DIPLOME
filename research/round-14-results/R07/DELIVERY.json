@@ -3,9 +3,9 @@
  "title": "Тепловая карта объектов",
  "branch": "claude/r14-R07",
  "delivery": "13 окт — ЭТАЛОН A «лучше 2ГИС» (текущая поставка; подробно — ключ «reference_a»): значки как .pin эталона, карточка «Выбран объект» с вкладками, «Горячие места» как список Linear, синхронизация список ↔ карта, API для поиска / J K / Ctrl+K / «Рядом с вами». Прежние поставки: дизайн-марафон 0bdd91a6 — ключ «marathon», FINAL-3 9899c30c — «final3»",
- "code_sha": "1a926dcd",
+ "code_sha": "96c8e811",
  "tested_sha": "913b18a3 на сборке R01 69984f0f (облако): R01 B1 16/0, волна 2 42/0, шапка 42/0, P0 63/0/1; R09 демо 75/75; R10 demo_flow 173/0/0, wave_checks 241/0; на превью R01 + R11 7f0fdb9a + R09 3c3fe2b6: R09 hover 7/7, near 18/18, R10 demo_flow 375 «надписи не закрыты» PASS; подробно — reference_a.tests",
- "next_step": "R01: взять web/civic/heat/heat.js и heat.css @ 913b18a3 (INTEGRATION.txt §R); поставить карточку/лист R07 слева под поиском (R.6: 20,84, 388, стекло 86 %, отступы карты слева), подключить suggest / stepHot / close / commands (R.5); R09: шторка «Рядом с вами» из heat.nearby(3) (R.9); R10: замер × и чипов — видимая часть ::before (R.10); владелец: вопросы 0–0в в STATUS.md",
+ "next_step": "R01: взять web/civic/heat/heat.js и heat.css @ code_sha (INTEGRATION.txt §R, R.12–R.13) и одну строку web/civic/shell/shell.js — patches/R01_shell_closable_desktop.patch; R.5 и R.6 R01 уже сделал в FINAL-4. R10: на FINAL-4 шаг 3 demo_flow — патч R01 R10_demo_flow_reference.patch. Владелец: B-075 (серый #7E8A85 эталона). Codex: продолжение — STATUS.md «ДЛЯ CODEX».",
  "base_sha": "d01f76e8 (последний коммит R07 на claude/upbeat-knuth-i0rqaa, наследник claude/round-14-package)",
  "restored_from": null,
  "code_commits": {
@@ -347,7 +347,7 @@
  "reference_a": {
   "delivery": "13 окт, эталон A «лучше 2ГИС» (research/round-14/design/README.md + REFERENCE.html, вариант A) + правила Linear 3–7 по части R07",
   "base": "сборка R01 claude/sharp-dijkstra-0t87gl @ 69984f0f (код c0270448); эталон — ветка claude/round-14-package",
-  "code_sha": "913b18a3",
+  "code_sha": "96c8e811",
   "take": [
    "web/civic/heat/heat.js",
    "web/civic/heat/heat.css",
@@ -366,7 +366,8 @@
    "6bc9ad09": "круг 3: правило 4 Linear — чип темы и период выбираются сразу, строки бледнеют только при ответе дольше 150 мс (период при +900 мс: 950 → 5 мс); «Взять в работу» — значки карты в следующем кадре, карточка за 12 мс (было 99–169); кадры round3",
    "80172f96": "круг 3b: движение на токенах R11 правила 6 (150–250 мс): въезд карточки 250, перекраска значка 250, тост 250/200, нажатие --t-press",
    "913b18a3": "круг 4: патч R09 R07_target_hover (список ↔ карта с «Обращениями»), тост «Взято в работу» закрывается при форме R09, зона вкладок ±7 px (R11 §22.3 a), подсказка «Приблизьте карту» под списком на телефоне (R10 §10), цвета через токены R11",
-   "1a926dcd": "круг 5: зоны нажатия — сами элементы ≥ 44 (кнопка-значок min-width 44, кружок 34 по центру; ссылка «Распечатать QR» 44 в высоту), полоса вкладок 44 + 1 (было 47); кадры reference/round5"
+   "1a926dcd": "круг 5: зоны нажатия — сами элементы ≥ 44 (кнопка-значок min-width 44, кружок 34 по центру; ссылка «Распечатать QR» 44 в высоту), полоса вкладок 44 + 1 (было 47); кадры reference/round5",
+   "96c8e811": "круг 6 (сборка R01 FINAL-4 ac0140f9): mount-опция closable: \"desktop\" — × «Горячих мест» только на ноутбуке (просьба R01 §26.12), патч строки shell.js для R01; кадры эталон / было / стало; ref6_probe.cjs, triptych.py"
   },
   "tests": {
    "R09 app_demo_r09 (форма «Отметить исправленным» в карточке)": "75/75",
@@ -393,7 +394,7 @@
    "R11": "INTEGRATION R.7 и R.11: цвета R07 — через --c-ink / --c-text-2 / --c-text-3 / --c-line; вкладки — зона ≥ 44 по ширине; kk heat.group.new = «Жаңа»"
   },
   "unavoidable": "INTEGRATION R.8: «Следующее обновление», «Рядом: школа», «Дорожная служба», «Ответить» — таких данных и действия у R07 нет; значки районов в эталоне не нарисованы",
-  "next_step": "R01 — R.5 и R.6; R09 — R.9; R07 — по новым сборкам R01/R11 (место карточки, токены, statusIcon ui-kit) — повторить reference_check и response_check",
+  "next_step": "R01 — взять heat.js/heat.css @ code_sha (круги 5–6 поверх 913b18a3 в FINAL-4) и строку shell.js (patches/R01_shell_closable_desktop.patch, INTEGRATION R.13); R10 — reference_check/linear_check на FINAL-4; владелец — B-075 (серый эталона)",
   "round5": {
    "session": "13 окт, вечер — новая сессия R07 (прошлая исчерпала лимит), ветка claude/r14-R07",
    "stand": "сборка R01 69984f0f (код c0270448) + ui-kit/i18n R11 7f0fdb9a (голова claude/r14-R11) + R07 heat.js/heat.css из рабочей копии; тесты R10 — голова claude/r14-R10 (tests/e2e)",
@@ -406,6 +407,20 @@
     "R10 demo_flow --glass keep (1366/375 × ru/kk)": "173 PASS / 0 FAIL / 0 NOT_RUN"
    },
    "not_r07": "место карточки слева и стекло 86 % (R01, R.6 и R10 B-079); шрифт Inter-Medium.woff2 — 404 на сервере сборки (R01, R.12); расхождения card-count / кнопок — от данных и подписей (R.12)"
+  },
+  "round6": {
+   "session": "13 окт, вечер — та же новая сессия R07",
+   "stand": "R01 FINAL-4 ac0140f9 (claude/sharp-dijkstra-0t87gl; в ней R07 913b18a3, R11 2a30d7a2, тесты R10 656681ee) + R07 heat.js/heat.css из рабочей копии (96c8e811) + patches/R01_shell_closable_desktop.patch; база с засевом как у R10 (init, seed-demo, seed-r14-demo)",
+   "why": "R01 INTEGRATION §26.12 (× на телефоне не нужен) и проверка R07 на новом хроме эталона A (карточка и список слева)",
+   "tests": {
+    "ref6_probe.cjs (1366 и 375, ru)": "1366: список и карточка слева 20 / 84, 388; × «Горячих мест» 44 × 44 виден; 375: × скрыт (с патчем), × карточки есть; без патча × везде, как раньше",
+    "R10 reference_check --screens home,obj,phone": "R07 6/12 совпадают или близки; расхождения — данные, подписи, вид главной на обзоре города, зона × 44 (INTEGRATION R.13); всего 13/37 (R01 3/19, R08 1/1, R09 3/5)",
+    "pytest tests/civic/R07": "155 passed, 2 skipped",
+    "стенд R07 wave2.js": "38/38",
+    "стенд R07 readability.js": "18/18"
+   },
+   "not_r07": "строка shell.js (closable: \"desktop\") — путь R01, патч готов; R10 demo_flow шаг 3 на FINAL-4 — патч R01 patches/R10_demo_flow_reference.patch (путь R10)",
+   "frames": "reference/round6/ (etalon-bylo-stalo-card-1366-ru.jpg, etalon-bylo-stalo-list-1366-ru.jpg, bylo-stalo-x-375-ru.jpg, r10-reference-check/)"
   }
  }
 }
