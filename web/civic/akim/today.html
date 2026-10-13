@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Сегодня в Астане · Birge</title>
+  <!-- R08 · стенд сводки «Сегодня в Астане» (эталон research/round-14/design/REFERENCE.html, вариант A, «Главная
+       акимата»). В оболочке R01 карточку ставит сама оболочка: BirgeToday.mount(элемент, …) — INTEGRATION.txt §11.
+       Здесь вместо карты — спокойный фон, карточка там же, где в эталоне: слева 20, сверху 132, ширина 388. -->
+  <link rel="stylesheet" href="../ui-kit/tokens.css">
+  <link rel="stylesheet" href="../ui-kit/components.css">
+  <link rel="stylesheet" href="today.css">
+  <style>
+    html, body { margin: 0; height: 100%; }
+    body { background: #f3f1ec; }
+    .stand-slot { position: fixed; left: 20px; top: 132px; width: 388px; }
+    @media (max-width: 760px) { .stand-slot { left: 8px; right: 8px; top: 72px; width: auto; } }
+    .stand-lang { position: fixed; right: 20px; top: 20px; }
+  </style>
+</head>
+<body class="bk-app">
+  <div class="stand-lang bk-seg" role="group" aria-label="Язык">
+    <button type="button" data-lang="kk" lang="kk" aria-pressed="false">ҚАЗ</button>
+    <button type="button" data-lang="ru" lang="ru" aria-pressed="true">РУС</button>
+  </div>
+  <section id="today" class="stand-slot"></section>
+
+  <script src="../i18n/i18n.js"></script>
+  <script src="today.js"></script>
+  <script src="today-stand.js"></script>
+</body>
+</html>
