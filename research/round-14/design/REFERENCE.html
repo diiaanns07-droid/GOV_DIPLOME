@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birge — дизайн-эталон</title>
+<title>Birge — дизайн-эталон, 3 варианта</title>
 <style>
 :root{
   --ink:#121A17; --ink-2:#4B5752; --ink-3:#7E8A85; --line:rgba(18,26,23,.08);
@@ -26,7 +26,7 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
 .switch{display:flex;gap:4px;padding:4px;border-radius:var(--r-pill);background:rgba(18,26,23,.06)}
 .switch button{border:0;background:transparent;font:inherit;font-size:14px;font-weight:500;color:var(--ink-2);padding:8px 14px;border-radius:var(--r-pill);cursor:pointer}
 .switch button[aria-pressed=true]{background:var(--white);color:var(--ink);box-shadow:0 1px 3px rgba(16,24,20,.12)}
-.stage{position:relative;width:100%;aspect-ratio:1366/768;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(16,24,20,.18)}
+.stage{color:var(--ink);position:relative;width:100%;aspect-ratio:1366/768;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(16,24,20,.18)}
 .stage.phone{width:min(100%,375px);aspect-ratio:375/812;border-radius:36px;margin:0 auto}
 .frame{position:absolute;left:0;top:0;width:1366px;height:768px;transform-origin:0 0;display:none}
 .phone .frame{width:375px;height:812px}
@@ -49,10 +49,10 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
 .chips{position:absolute;left:20px;top:82px;display:flex;gap:8px}
 .chip{height:34px;padding:0 13px;border-radius:var(--r-pill);display:flex;align-items:center;gap:7px;font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap}
 .chip .d{width:8px;height:8px;border-radius:50%}
-.chip.on{background:var(--ink);color:#fff;border-color:transparent}
+.chip.on{background:var(--ink);color:var(--on-ink);border-color:transparent}
 .nav{position:absolute;left:50%;top:20px;transform:translateX(-50%);height:44px;border-radius:var(--r-pill);display:flex;align-items:center;padding:4px;gap:2px}
 .nav a{height:36px;display:flex;align-items:center;padding:0 16px;border-radius:var(--r-pill);font-size:14px;font-weight:500;color:var(--ink-2);text-decoration:none}
-.nav a.on{background:var(--ink);color:#fff}
+.nav a.on{background:var(--ink);color:var(--on-ink)}
 .me{position:absolute;right:20px;top:20px;height:44px;border-radius:var(--r-pill);display:flex;align-items:center;gap:10px;padding:0 4px 0 14px;font-size:13px;color:var(--ink-2)}
 .me b{color:var(--ink);font-weight:600}
 .ava{width:36px;height:36px;border-radius:50%;background:var(--lime);color:var(--lime-ink);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
@@ -72,7 +72,7 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
 /* ---------- значки на карте (без стекла) ---------- */
 .pin{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:0;transition:opacity .25s var(--ease)}
 .pin .c{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2.5px solid #fff;box-shadow:0 4px 12px rgba(16,24,20,.22)}
-.pin .n{margin-left:-6px;height:22px;min-width:26px;padding:0 7px 0 10px;border-radius:0 11px 11px 0;background:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;box-shadow:0 2px 6px rgba(16,24,20,.15)}
+.pin .n{margin-left:-6px;height:22px;min-width:26px;padding:0 7px 0 10px;border-radius:0 11px 11px 0;background:#fff;color:#121A17;font-size:13px;font-weight:700;display:flex;align-items:center;box-shadow:0 2px 6px rgba(16,24,20,.15)}
 .pin.dim{opacity:.35}
 .pin.sel .c{width:44px;height:44px;box-shadow:0 0 0 6px rgba(226,75,74,.18),0 6px 16px rgba(16,24,20,.28)}
 .pin.ok .c{background:var(--ok)}
@@ -83,7 +83,7 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
 .tile{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
 .card h2{margin:0;font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
 .card .sub{margin:3px 0 0;font-size:14px;color:var(--ink-2)}
-.x{margin-left:auto;width:32px;height:32px;border-radius:50%;background:rgba(18,26,23,.06);display:flex;align-items:center;justify-content:center;flex:none}
+.x{margin-left:auto;width:32px;height:32px;border-radius:50%;background:var(--sub-bg2);display:flex;align-items:center;justify-content:center;flex:none}
 .big{display:flex;align-items:baseline;gap:8px;padding:16px 18px 0}
 .big b{font-size:34px;font-weight:600;letter-spacing:-.02em}
 .big span{font-size:14px;color:var(--ink-2)}
@@ -92,15 +92,15 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
 .st small{color:var(--ink-3);font-size:13px;margin-left:auto}
 .acts{display:flex;gap:8px;padding:16px 18px 0}
 .btn{height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;padding:0 16px}
-.btn.p{background:var(--ink);color:#fff;flex:1}
-.btn.s{background:rgba(18,26,23,.06);color:var(--ink)}
+.btn.p{background:var(--ink);color:var(--on-ink);flex:1}
+.btn.s{background:var(--sub-bg2);color:var(--ink)}
 .tabs{display:flex;gap:18px;padding:16px 18px 0;border-bottom:1px solid var(--line);margin-top:4px}
 .tabs a{padding-bottom:10px;font-size:14px;font-weight:500;color:var(--ink-3);text-decoration:none}
 .tabs a.on{color:var(--ink);box-shadow:inset 0 -2px 0 var(--ink)}
 .rows{padding:6px 18px 16px}
 .row{display:flex;align-items:center;gap:12px;padding:10px 0;font-size:14px}
 .row+.row{border-top:1px solid var(--line)}
-.row .ic{width:30px;height:30px;border-radius:9px;background:rgba(18,26,23,.05);display:flex;align-items:center;justify-content:center;flex:none}
+.row .ic{width:30px;height:30px;border-radius:9px;background:var(--sub-bg2);display:flex;align-items:center;justify-content:center;flex:none}
 .row span{color:var(--ink-2)}.row b{margin-left:auto;font-weight:500;color:var(--ink)}
 .quote{font-size:14px;line-height:1.45;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .more{font-size:14px;font-weight:500;color:var(--brand);padding:2px 0 0}
@@ -110,7 +110,7 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
 .sum .h{display:flex;align-items:center;justify-content:space-between}
 .sum .h b{font-size:15px;font-weight:600}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 6px}
-.kpi{background:rgba(255,255,255,.7);border-radius:12px;padding:10px 12px}
+.kpi{background:var(--sub-bg);border-radius:12px;padding:10px 12px}
 .kpi b{display:block;font-size:22px;font-weight:600;letter-spacing:-.02em}
 .kpi span{font-size:12px;color:var(--ink-2)}
 .hot{display:flex;align-items:center;gap:12px;padding:10px 0}
@@ -123,11 +123,11 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
 .sheet{position:absolute;left:20px;top:132px;bottom:20px;width:412px;border-radius:var(--r-card);display:flex;flex-direction:column;overflow:hidden}
 .sheet .hd{padding:16px 18px 10px;display:flex;align-items:center;gap:10px}
 .sheet .hd b{font-size:19px;font-weight:600}
-.seg{margin:0 18px 12px;display:flex;padding:3px;border-radius:12px;background:rgba(18,26,23,.06)}
+.seg{margin:0 18px 12px;display:flex;padding:3px;border-radius:12px;background:var(--sub-bg2)}
 .seg span{flex:1;text-align:center;font-size:13px;font-weight:500;padding:7px 0;border-radius:9px;color:var(--ink-2)}
-.seg span.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(16,24,20,.12)}
+.seg span.on{background:var(--seg-on);color:var(--ink);box-shadow:0 1px 3px rgba(16,24,20,.12)}
 .plist{padding:0 12px 12px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
-.pc{display:flex;gap:12px;padding:10px;border-radius:16px;background:rgba(255,255,255,.75)}
+.pc{display:flex;gap:12px;padding:10px;border-radius:16px;background:var(--sub-bg)}
 .pc.on{box-shadow:0 0 0 2px var(--ink)}
 .thumb{width:84px;height:84px;border-radius:12px;flex:none;overflow:hidden}
 .pc .t{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -135,13 +135,13 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
 .pc .t small{font-size:13px;color:var(--ink-2);margin-top:3px}
 .pc .t .f{margin-top:auto;display:flex;align-items:center;justify-content:space-between}
 .pill{font-size:12px;font-weight:600;padding:4px 9px;border-radius:var(--r-pill)}
-.vote{height:32px;padding:0 12px;border-radius:var(--r-pill);background:var(--ink);color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.vote{height:32px;padding:0 12px;border-radius:var(--r-pill);background:var(--ink);color:var(--on-ink);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
 .pd{position:absolute;right:84px;top:132px;width:340px;border-radius:var(--r-card);overflow:hidden}
 .pd .im{height:150px}
 .pd .in{padding:14px 16px 16px}
 .pd h3{margin:0;font-size:18px;font-weight:600}
 .pd .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-.pd .facts div{background:rgba(255,255,255,.7);border-radius:12px;padding:9px 10px}
+.pd .facts div{background:var(--sub-bg);border-radius:12px;padding:9px 10px}
 .pd .facts b{display:block;font-size:16px;font-weight:600}
 .pd .facts span{font-size:12px;color:var(--ink-2)}
 .proj3d{position:absolute;transform:translate(-50%,-100%)}
@@ -150,9 +150,36 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
 /* ---------- телефон ---------- */
 .p-search{position:absolute;left:14px;right:14px;top:54px;height:50px;border-radius:16px;display:flex;align-items:center;gap:10px;padding:0 12px;font-size:15px;color:var(--ink-3)}
 .p-sheet{position:absolute;left:0;right:0;bottom:0;height:360px;border-radius:26px 26px 0 0;padding:8px 16px 0}
-.handle{width:38px;height:5px;border-radius:3px;background:rgba(18,26,23,.18);margin:0 auto 12px}
-.fab{position:absolute;left:16px;right:16px;bottom:34px;height:54px;border-radius:16px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:600;box-shadow:0 10px 24px rgba(16,24,20,.3)}
+.handle{width:38px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 12px}
+.fab{position:absolute;left:16px;right:16px;bottom:34px;height:54px;border-radius:16px;background:var(--ink);color:var(--on-ink);display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:600;box-shadow:0 10px 24px rgba(16,24,20,.3)}
 .fab i{width:26px;height:26px;border-radius:8px;background:var(--lime);display:flex;align-items:center;justify-content:center}
+
+:root{--on-ink:#FFFFFF;--sub-bg:rgba(255,255,255,.72);--sub-bg2:rgba(18,26,23,.06);--seg-on:#FFFFFF;
+  --m-bg:#F3F1EC;--m-water:#D4E6EF;--m-water-edge:#C3DAE6;--m-park:#E1ECD6;--m-b1:#E9E5DD;--m-b2:#DED9CF;--m-b3:#D3CEC3;
+  --m-mark:#E6DCC8;--m-mark-edge:#D8CBB0;--m-case:#DCD6CB;--m-road:#FFFFFF;--m-case2:#E3DED4;--m-road2:#FFFFFF;--m-label:#8A938F}
+/* B — ночное стекло */
+.v-b{--ink:#EEF3F0;--ink-2:#B5C2BC;--ink-3:#8C9A94;--line:rgba(255,255,255,.12);--on-ink:#121A17;
+  --glass:rgba(24,32,29,.62);--glass-strong:rgba(24,32,29,.80);--glass-edge:rgba(255,255,255,.10);
+  --shadow:0 1px 0 rgba(255,255,255,.08) inset,0 14px 36px rgba(0,0,0,.45),0 0 0 .5px rgba(255,255,255,.06);
+  --sub-bg:rgba(255,255,255,.06);--sub-bg2:rgba(255,255,255,.08);--seg-on:rgba(255,255,255,.16);--brand:#D7F57C;
+  --m-bg:#182019;--m-water:#1A2E38;--m-water-edge:#22404E;--m-park:#1F3326;--m-b1:#232C27;--m-b2:#28322C;--m-b3:#2E3A33;
+  --m-mark:#3A3826;--m-mark-edge:#55502F;--m-case:#20281F;--m-road:#36413B;--m-case2:#1E2621;--m-road2:#2D3732;--m-label:#7F938A}
+.v-b .logo{background:#D7F57C}.v-b .logo svg{filter:brightness(0)}
+.v-b .nav a.on,.v-b .chip.on,.v-b .btn.p,.v-b .vote,.v-b .fab{background:#D7F57C;color:#16210C}
+.v-b .fab i{background:#16210C}.v-b .fab i svg{color:#D7F57C!important}
+.v-b .tile{filter:saturate(.9) brightness(.92)}
+/* C — чистая бумага: без стекла, крупная типографика */
+.v-c{--glass:#FFFFFF;--glass-strong:#FFFFFF;--glass-edge:rgba(18,26,23,.06);
+  --shadow:0 1px 2px rgba(16,24,20,.06),0 8px 24px rgba(16,24,20,.08);--sub-bg:#F5F4F0;--sub-bg2:#F1F0EC;
+  --m-bg:#F8F7F4;--m-water:#DCEBF2;--m-park:#E7F0DE;--m-b1:#EFEDE8;--m-b2:#E7E4DE;--m-b3:#DEDAD3;--m-case:#E5E1DA;--m-case2:#ECE8E2}
+.v-c .glass{-webkit-backdrop-filter:none;backdrop-filter:none}
+.v-c .card h2,.v-c .sheet .hd b,.v-c .pd h3{font-family:Georgia,"Times New Roman",serif;font-weight:600;letter-spacing:0}
+.v-c .card h2{font-size:22px}.v-c .big b{font-size:40px;font-weight:500}
+.v-c .nav,.v-c .me,.v-c .chip.glass,.v-c .legend,.v-c .ctl .solo,.v-c .ctl .cap{box-shadow:0 0 0 1px rgba(18,26,23,.08),0 2px 8px rgba(16,24,20,.06)}
+.vswitch{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(18,26,23,.06)}
+.vswitch button{border:0;background:transparent;font:inherit;font-size:14px;font-weight:500;color:var(--ink-2);padding:8px 14px;border-radius:999px;cursor:pointer}
+.vswitch button[aria-pressed=true]{background:#121A17;color:#fff}
+.controls{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
 </style>
 </head>
 <body>
@@ -162,43 +189,43 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
       <h1>Birge — дизайн-эталон</h1>
       <p>UX как в 2ГИС · немного жидкого стекла · спокойная «дорогая» подача. Для ролей раунда 14: делать один в один.</p>
     </div>
-    <div class="switch" role="group" aria-label="Экраны">
+    <div class="controls"><div class="vswitch" role="group" aria-label="Вариант стиля"><button data-v="v-a" aria-pressed="true">A · 2ГИС светлый</button><button data-v="v-b" aria-pressed="false">B · Ночное стекло</button><button data-v="v-c" aria-pressed="false">C · Чистая бумага</button></div><div class="switch" role="group" aria-label="Экраны">
       <button data-f="home" aria-pressed="true">Главная акимата</button>
       <button data-f="obj" aria-pressed="false">Выбран объект</button>
       <button data-f="proj" aria-pressed="false">Проекты и идеи</button>
       <button data-f="phone" aria-pressed="false">Житель, телефон</button>
-    </div>
+    </div></div>
   </div>
 
   <!-- символы: карта и иконки (рисуются один раз) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <symbol id="map" viewBox="0 0 1366 768">
-        <rect width="1366" height="768" fill="#F3F1EC"/>
-        <path d="M0 640 C220 600 380 690 600 650 S980 560 1366 610 L1366 768 L0 768Z" fill="#D4E6EF"/>
-        <path d="M0 640 C220 600 380 690 600 650 S980 560 1366 610" fill="none" stroke="#C3DAE6" stroke-width="2"/>
-        <path d="M760 250 L960 210 L1010 360 L820 420Z" fill="#E1ECD6"/>
-        <path d="M120 300 L300 280 L320 400 L150 420Z" fill="#E1ECD6"/>
-        <g fill="#E9E5DD">
+        <rect width="1366" height="768" style="fill:var(--m-bg)"/>
+        <path d="M0 640 C220 600 380 690 600 650 S980 560 1366 610 L1366 768 L0 768Z" style="fill:var(--m-water)"/>
+        <path d="M0 640 C220 600 380 690 600 650 S980 560 1366 610" fill="none" style="stroke:var(--m-water-edge)" stroke-width="2"/>
+        <path d="M760 250 L960 210 L1010 360 L820 420Z" style="fill:var(--m-park)"/>
+        <path d="M120 300 L300 280 L320 400 L150 420Z" style="fill:var(--m-park)"/>
+        <g style="fill:var(--m-b1)">
           <rect x="60" y="60" width="110" height="70" rx="6"/><rect x="200" y="50" width="90" height="90" rx="6"/><rect x="330" y="70" width="140" height="60" rx="6"/>
           <rect x="520" y="60" width="80" height="120" rx="6"/><rect x="640" y="70" width="120" height="70" rx="6"/><rect x="1040" y="60" width="130" height="80" rx="6"/>
           <rect x="1200" y="70" width="110" height="110" rx="6"/><rect x="60" y="180" width="80" height="80" rx="6"/><rect x="380" y="180" width="100" height="70" rx="6"/>
           <rect x="1060" y="190" width="90" height="90" rx="6"/><rect x="1180" y="220" width="120" height="70" rx="6"/><rect x="400" y="440" width="120" height="80" rx="6"/>
           <rect x="560" y="430" width="90" height="100" rx="6"/><rect x="1080" y="420" width="140" height="80" rx="6"/><rect x="60" y="470" width="120" height="80" rx="6"/>
         </g>
-        <g fill="#DED9CF">
+        <g style="fill:var(--m-b2)">
           <rect x="230" y="190" width="100" height="60" rx="6"/><rect x="540" y="230" width="140" height="80" rx="6"/><rect x="900" y="440" width="120" height="90" rx="6"/>
           <rect x="220" y="460" width="130" height="90" rx="6"/><rect x="700" y="470" width="120" height="70" rx="6"/><rect x="1240" y="410" width="90" height="120" rx="6"/>
         </g>
-        <g fill="#D3CEC3"><rect x="860" y="60" width="120" height="110" rx="6"/><rect x="40" y="330" width="60" height="60" rx="6"/><rect x="690" y="340" width="70" height="70" rx="6"/></g>
-        <circle cx="905" cy="300" r="34" fill="#E6DCC8" stroke="#D8CBB0" stroke-width="2"/>
+        <g style="fill:var(--m-b3)"><rect x="860" y="60" width="120" height="110" rx="6"/><rect x="40" y="330" width="60" height="60" rx="6"/><rect x="690" y="340" width="70" height="70" rx="6"/></g>
+        <circle cx="905" cy="300" r="34" style="fill:var(--m-mark);stroke:var(--m-mark-edge)" stroke-width="2"/>
         <g fill="none" stroke-linecap="round">
-          <g stroke="#DCD6CB" stroke-width="20"><path d="M0 160 H1366"/><path d="M0 420 H1366"/><path d="M500 0 V768"/><path d="M1020 0 V768"/><path d="M-20 720 L1400 20"/></g>
-          <g stroke="#FFFFFF" stroke-width="16"><path d="M0 160 H1366"/><path d="M0 420 H1366"/><path d="M500 0 V768"/><path d="M1020 0 V768"/><path d="M-20 720 L1400 20"/></g>
-          <g stroke="#E3DED4" stroke-width="9"><path d="M190 0 V768"/><path d="M790 0 V420"/><path d="M0 290 H500"/><path d="M1020 300 H1366"/><path d="M500 560 H1020"/></g>
-          <g stroke="#FFFFFF" stroke-width="6"><path d="M190 0 V768"/><path d="M790 0 V420"/><path d="M0 290 H500"/><path d="M1020 300 H1366"/><path d="M500 560 H1020"/></g>
+          <g style="stroke:var(--m-case)" stroke-width="20"><path d="M0 160 H1366"/><path d="M0 420 H1366"/><path d="M500 0 V768"/><path d="M1020 0 V768"/><path d="M-20 720 L1400 20"/></g>
+          <g style="stroke:var(--m-road)" stroke-width="16"><path d="M0 160 H1366"/><path d="M0 420 H1366"/><path d="M500 0 V768"/><path d="M1020 0 V768"/><path d="M-20 720 L1400 20"/></g>
+          <g style="stroke:var(--m-case2)" stroke-width="9"><path d="M190 0 V768"/><path d="M790 0 V420"/><path d="M0 290 H500"/><path d="M1020 300 H1366"/><path d="M500 560 H1020"/></g>
+          <g style="stroke:var(--m-road2)" stroke-width="6"><path d="M190 0 V768"/><path d="M790 0 V420"/><path d="M0 290 H500"/><path d="M1020 300 H1366"/><path d="M500 560 H1020"/></g>
         </g>
-        <g font-family="Inter,Segoe UI,sans-serif" font-size="12" fill="#8A938F">
+        <g font-family="Inter,Segoe UI,sans-serif" font-size="12" style="fill:var(--m-label)">
           <text x="560" y="155">просп. Туран</text><text x="1040" y="415">ул. Сыганак</text><text x="508" y="300" transform="rotate(90 508 300)">ул. Кунаева</text>
           <text x="880" y="250" fill="#9C8B6A" font-weight="600">Хан Шатыр</text><text x="800" y="330" fill="#6E8F5C">Центральный парк</text>
         </g>
@@ -223,7 +250,7 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
     </defs>
   </svg>
 
-  <div class="stage" id="stage">
+  <div class="stage v-a" id="stage">
     <!-- ============ 1. Главная акимата ============ -->
     <section class="frame on" data-f="home" aria-label="Главная акимата">
       <svg class="map"><use href="#map"/></svg>
@@ -328,7 +355,7 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
   </div>
 
   <!-- ============ 4. Телефон ============ -->
-  <div class="stage phone" id="stagePhone" style="display:none">
+  <div class="stage phone v-a" id="stagePhone" style="display:none">
     <section class="frame on" data-f="phone" aria-label="Житель на телефоне">
       <svg class="map" viewBox="760 140 375 812" preserveAspectRatio="xMidYMid slice"><use href="#map"/></svg>
       <div class="pin" style="left:150px;top:250px"><div class="c" style="background:var(--l3);color:#fff"><svg width="18" height="18"><use href="#i-bus"/></svg></div><div class="n">6</div></div>
@@ -368,6 +395,13 @@ body{margin:0;background:#E9EBE6;font-family:var(--font);color:var(--ink);-webki
       if(f==='phone'){st.style.display='none';ph.style.display='block'}else{ph.style.display='none';st.style.display='block';
         st.querySelectorAll('.frame').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-f')===f)})}
       fit();
+    });
+  });
+  document.querySelectorAll('.vswitch button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var v=b.getAttribute('data-v');
+      document.querySelectorAll('.vswitch button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});
+      [st,ph].forEach(function(el){el.classList.remove('v-a','v-b','v-c');el.classList.add(v)});
     });
   });
   window.addEventListener('resize',fit); fit();
