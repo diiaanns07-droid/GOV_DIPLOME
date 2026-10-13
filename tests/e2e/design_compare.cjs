@@ -9,12 +9,16 @@
 const MICRO = /^переход ((?:transform|scale|translate|background-color|background|color|box-shadow|opacity|filter|border-color|outline-color)(?:, )?)+ (1[0-6]\d) мс/;
 // Радиус 18 px — токен ui-kit --r-glass-menu (R11 b39e586d), в книгах до круга 3 считался «вне токенов».
 // «Кнопка закрыта другой» — проверка с круга 6: в сравнении с книгами до неё не считается (нечего сравнивать).
-const keep = (w) => !MICRO.test(w) && !/^радиус 18 px/.test(w) && !/^кнопка «.*» закрыта «/.test(w);
 const fs = require("fs"), path = require("path");
 const { chromium } = require("playwright");
 const L = require("./r10_lib.cjs");
+const { keepRef } = require("./design_norm.cjs");
 
 const args = L.parseArgs(process.argv.slice(2));
+// --norm reference (по умолчанию с 13 окт): то, что рисует эталон A (радиусы, шкала, веса, отступы, 150–250 мс, плашки), —
+// не замечание; --norm marathon — токены марафона 12 окт.
+const REFNORM = String(args.norm || "reference") !== "marathon";
+const keep = (w) => !MICRO.test(w) && !/^радиус 18 px/.test(w) && !/^кнопка «.*» закрыта «/.test(w) && (!REFNORM || keepRef(w));
 const BOOKS = String(args.books || "").split(",").filter(Boolean).map((x) => { const i = x.indexOf("="); return { name: x.slice(0, i), dir: path.resolve(x.slice(i + 1)) }; });
 const OUT = path.resolve(String(args.out || "design-compare"));
 const SHOTS = args.shots ? new Set(String(args.shots).split(",")) : null;
