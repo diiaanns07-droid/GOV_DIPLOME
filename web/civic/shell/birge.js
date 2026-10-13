@@ -972,6 +972,9 @@
     setMode, setSection, registerScreen, registerLayer, setLayer,
     // Для проверок: какие пункты меню видны в этом виде.
     navItems: (mode) => NAV[MODES.includes(mode) ? mode : state.mode].filter((id) => available(id, MODES.includes(mode) ? mode : state.mode)),
+    // Палитра команд (birge-ref.js): разделы «Ещё» этого вида и подпись раздела на языке интерфейса.
+    moreItems: () => moreItems(state.mode),
+    navTitle: (id) => navTitle(id),
     api: { v2, ApiError: BirgeApiError },
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

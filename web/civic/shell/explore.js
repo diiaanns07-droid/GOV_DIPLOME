@@ -211,7 +211,7 @@
         if (destroyed) return;
         const items = (body?.data?.items || body?.items || []).filter((it) => it?.target?.kind && it.target.kind !== "district" && it.target.id);
         places = { state: "ready", items };
-        if (document.activeElement === input && normalize(input.value).length >= 2) refresh();
+        if (document.activeElement === input && normalize(input.value)) refresh();
       }).catch(() => { places = { state: "error", items: [] }; });
     }
     function cityAndDistricts(q) {
@@ -219,14 +219,68 @@
       const city = { kind: "city", name: T("common.search.all_city"), place: "" };
       const ds = features.map((f) => ({ kind: "district", id: f.properties.id, name: districtLabel(f), place: T("heat.kind.district") }));
       if (!n) return [city, ...ds];
-      return [city, ...ds].filter((o) => normalize(o.name).includes(n));
+      // Одна буква — только с начала слова («а» → «Алматы», не «Вся Астана» по букве внутри слова).
+      const hit = n.length < 2 ? (name) => normalize(name).split(" ").some((w) => w.startsWith(n)) : (name) => normalize(name).includes(n);
+      return [city, ...ds].filter((o) => hit(o.name));
     }
+    // Эталон A, правило Linear 1: подсказки с первой буквы. Горячие места — у R07 (heat.suggest: с начала слова, по
+    // числу жалоб); без R07 — свой список /heat, как раньше.
     function matchPlaces(q) {
       const n = normalize(q);
-      if (n.length < 2 || places.state !== "ready") return [];
+      if (!n) return [];
+      const heat = global.CivicShell?.heat;
+      if (typeof heat?.suggest === "function") {
+        try {
+          return (heat.suggest(q, 5) || []).filter((it) => it && it.kind && it.id && it.label).map((it) => ({ kind: "place",
+            target: { kind: it.kind, id: it.id, label_ru: it.label, label_kk: it.label }, name: it.label, level: it.level,
+            place: [it.topic, T("common.people", { n: it.count || 0 })].filter(Boolean).join(" · ") }));
+        } catch (e) { /* R07 не готов — свой список ниже */ }
+      }
+      if (places.state !== "ready") return [];
       return places.items.map((it) => ({ kind: "place", target: it.target, name: placeName(it.target),
         place: T("common.people", { n: it.count || 0 }) }))
         .filter((o) => o.name && normalize(o.name).includes(n)).slice(0, 5);
+    }
+    // Остановки, дворы, парки и площадки (и улицы на первой букве) — индекс R12 web/civic/map/search_index.json
+    // (OpenStreetMap, снимок 06.05.2026). С двух букв улицы — по-прежнему из streets.json (точнее подпись района).
+    let sidx = { state: "idle", index: null };
+    function loadSearchIndex() {
+      const S12 = global.BirgeSearchIndex;
+      if (sidx.state !== "idle" || !S12 || typeof S12.load !== "function") return;
+      sidx = { state: "loading", index: null };
+      S12.load("/civic/map/search_index.json").then((ix) => {
+        if (destroyed) return;
+        sidx = { state: "ready", index: ix };
+        if (document.activeElement === input && normalize(input.value)) refresh();
+      }).catch(() => { sidx = { state: "idle", index: null }; });  // ошибка — следующая попытка при фокусе
+    }
+    const KIND_KEY = { bus_stop: "stop", yard: "yard", park: "park", pitch: "pitch", playground: "playground" };
+    function matchIndex(q, hot) {
+      const n = normalize(q);
+      if (!n || sidx.state !== "ready") return [];
+      const exclude = hot.map((h) => h.target.id);
+      let found = [];
+      // с двух букв улицы отсеиваются ниже — запас, чтобы остановки и дворы не вытеснялись улицами из первых строк R12
+      try { found = sidx.index.query(q, { lang: lang(), limit: n.length < 2 ? 12 : 60, exclude }) || []; } catch (e) { return []; }
+      const districtName = (id) => { const f = features.find((x) => x.properties?.id === id); return f ? T("district.name", { name: districtLabel(f) }) : ""; };
+      const out = [], seen = new Set();
+      for (const r of found) {
+        if (!r || !Array.isArray(r.point)) continue;
+        // Остановка по обе стороны улицы — две точки OSM с одним названием: в подсказках одна строка.
+        const same = r.kind + "|" + normalize(r.label) + "|" + (r.district || "");
+        if (seen.has(same)) continue;
+        seen.add(same);
+        if (r.kind === "street") {
+          if (n.length >= 2 || !Array.isArray(r.bbox) || r.bbox.length !== 4) continue;   // с двух букв — streets.json
+          out.push({ kind: "street", name: r.label, bbox: r.bbox, centre: r.point, district: r.district || null,
+            place: districtName(r.district) || T("shell.explore.place_outside") });
+          continue;
+        }
+        const kindText = KIND_KEY[r.kind] ? T("shell.explore.kind." + KIND_KEY[r.kind]) : "";
+        out.push({ kind: "spot", spot: r.kind, id: r.id, name: r.label, centre: r.point, district: r.district || null,
+          place: [kindText, districtName(r.district)].filter(Boolean).join(" · ") });
+      }
+      return out.slice(0, 6);
     }
 
     // ---- the chosen street is marked by a label at the centre of its OSM extent (the index has no
@@ -267,6 +321,8 @@
         const li = document.createElement("li");
         li.id = PREFIX + "opt-" + i; li.setAttribute("role", "option"); li.setAttribute("aria-selected", "false");
         if (it.kind) li.dataset.kind = it.kind;
+        if (it.level) li.dataset.level = String(it.level);
+        if (it.spot) li.dataset.spot = it.spot;
         const name = document.createElement("span"); name.className = "civic-explore-opt-name"; name.textContent = it.name;
         const place = document.createElement("span"); place.className = "civic-explore-opt-place"; place.textContent = it.place;
         li.append(name, place);
@@ -287,10 +343,11 @@
     function refresh(onFocus) {
       clear.hidden = !input.value;
       const q = input.value.trim();
-      // Пустое поле в фокусе — «Вся Астана» и районы списком; одна буква — ничего (подсказки с двух букв).
+      // Пустое поле в фокусе — «Вся Астана» и районы списком. Эталон A (правило Linear 1): подсказки с первой буквы —
+      // районы, горячие места (R07), остановки, дворы и парки (R12), улицы.
       if (!normalize(q).length) { if (onFocus === true) render(cityAndDistricts("")); else close(); quiet(); return; }
-      if (normalize(q).length < 2) { close(); quiet(); return; }
-      const top = [...cityAndDistricts(q), ...matchPlaces(q)];
+      const hot = matchPlaces(q);
+      const top = [...cityAndDistricts(q), ...hot, ...matchIndex(q, hot)];
       const streets = index.state === "ready" ? matchStreets(index.items, q) : [];
       const matches = [...top, ...streets];
       render(matches);
@@ -315,6 +372,18 @@
         if (phone()) setOpen(false);
         return;
       }
+      if (it.kind === "spot") {  // остановка, двор, парк из индекса R12 — без жалоб: карта к месту и метка (данные OSM)
+        input.value = it.name; clear.hidden = false;
+        close();
+        selected = ""; select.value = ""; paint();
+        say("shell.explore.chosen_spot", "chosen", { name: it.name, place: it.place });
+        pinStreet(it);
+        const d = 0.0012;
+        onStreet?.({ name: it.name, label: it.name, place: it.place, district: it.district, spot: it.spot,
+          bbox: [it.centre[0] - d, it.centre[1] - d * 0.63, it.centre[0] + d, it.centre[1] + d * 0.63] });
+        if (phone()) setOpen(false);
+        return;
+      }
       input.value = it.name; clear.hidden = false;
       close();
       selected = ""; select.value = ""; paint();
@@ -326,7 +395,7 @@
     input.addEventListener("input", refresh);
     // Фокус пустого поля самим человеком — «Вся Астана» и районы списком; после «×» (фокус из кода) — без списка.
     let quietFocus = false;
-    input.addEventListener("focus", () => { loadPlaces(); if (status.dataset.kind !== "chosen") refresh(!quietFocus); quietFocus = false; });
+    input.addEventListener("focus", () => { loadPlaces(); loadSearchIndex(); if (status.dataset.kind !== "chosen") refresh(!quietFocus); quietFocus = false; });
     // Нажатие на уже активное пустое поле тоже показывает «Вся Астана» и районы (после выбора или Esc).
     input.addEventListener("click", () => { if (!input.value.trim() && list.hidden) { loadPlaces(); refresh(true); } });
     input.addEventListener("blur", () => setTimeout(() => { if (document.activeElement !== input) close(); }, 0));
@@ -346,7 +415,8 @@
       if (active >= 0 && options[active]) { choose(options[active]); return; }
       const q = input.value.trim();
       if (!q) { input.focus(); return; }
-      const top = [...cityAndDistricts(q), ...matchPlaces(q)];
+      const hot = matchPlaces(q);
+      const top = [...cityAndDistricts(q), ...hot, ...matchIndex(q, hot)];
       const exactTop = top.filter((m) => normalize(m.name) === normalize(q));
       if (exactTop.length === 1) { choose(exactTop[0]); return; }
       if (index.state === "loading" && !top.length) { say("shell.explore.loading", "loading"); return; }

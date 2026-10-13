@@ -334,11 +334,20 @@
     const out = [];
     const sections = t("shell.palette.sections");
     const seen = new Set();
-    for (const b of document.querySelectorAll("#birge-header .birge-nav > [data-section], .birge-more-menu [data-section]")) {
+    for (const b of document.querySelectorAll("#birge-header .birge-nav > [data-section]")) {
       const id = b.dataset.section;
       if (!id || id === "more" || b.hidden || seen.has(id)) continue;
       seen.add(id);
       out.push({ group: sections, title: (b.textContent || "").trim(), run: () => window.BirgeShell && window.BirgeShell.setSection(id) });
+    }
+    // Разделы из «Ещё» (меню строится при открытии — берём список у оболочки).
+    const B = window.BirgeShell;
+    if (B && typeof B.moreItems === "function" && typeof B.navTitle === "function") {
+      for (const id of B.moreItems() || []) {
+        if (seen.has(id)) continue;
+        seen.add(id);
+        out.push({ group: sections, title: B.navTitle(id), run: () => B.setSection(id) });
+      }
     }
     const view = t("shell.palette.view");
     for (const m of ["akimat", "resident"]) if (m !== mode()) out.push({ group: view, title: t("common.role." + m), run: () => window.BirgeShell && window.BirgeShell.setMode(m) });

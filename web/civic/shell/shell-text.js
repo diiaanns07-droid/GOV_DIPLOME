@@ -182,7 +182,8 @@
       "shell.explore.kind.park": "Парк",
       "shell.explore.kind.pitch": "Спортплощадка",
       "shell.explore.kind.playground": "Детская площадка",
-      "shell.explore.hot_count": "{n} жалоб",
+      "shell.explore.chosen_spot": "Показано: {name} ({place}). Место — по OpenStreetMap, снимок 06.05.2026.",
+      "shell.view.spot": "{name}",
     },
     kk: {
       "shell.brand.tagline": "Қала мен тұрғындар бірге",
@@ -345,7 +346,8 @@
       "shell.explore.kind.park": "Саябақ",
       "shell.explore.kind.pitch": "Спорт алаңы",
       "shell.explore.kind.playground": "Балалар алаңы",
-      "shell.explore.hot_count": "{n} шағым",
+      "shell.explore.chosen_spot": "Көрсетілді: {name} ({place}). Орын — OpenStreetMap бойынша, 06.05.2026 күйі.",
+      "shell.view.spot": "{name}",
     },
   };
 

@@ -87,14 +87,29 @@ body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not
   body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-kbd { display: inline-flex; flex: none; margin-right: 10px; }
   body.civic-mode[data-birge-layout="ref"] .civic-explore-field input:not(:placeholder-shown) ~ .birge-ref-kbd { display: none; }
   body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore .civic-explore-clear {
-    position: static; flex: none; width: 44px; height: 44px; min-height: 44px; border-radius: 12px;
+    position: static; flex: none; width: 44px; height: 44px; min-height: 44px; border-radius: 12px; transform: none;
   }
   body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore-list {
     top: calc(100% + 8px); border-radius: var(--r-l, 16px); background: var(--glass-strong, rgba(255, 255, 255, 0.86));
     -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 12px 32px rgba(16, 24, 20, 0.14), 0 0 0 0.5px rgba(16, 24, 20, 0.1);
   }
+  /* «Показано: …» после выбора — для экранного диктора (role=status), на экране его заменяет сама карта и метка:
+     плашка под поиском закрывала чипы и сводку. Ошибки и «не найдено» видны как прежде. */
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-status[data-kind="chosen"] {
+    position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important;
+    overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; border: 0 !important;
+  }
   html.bk-glass-off body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore-list { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  /* Подсказки (правило Linear 1): горячее место — точка цвета его ступени (как значок на карте), объект R12 — серая. */
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-list [role="option"]:is([data-kind="place"], [data-kind="spot"]) .civic-explore-opt-name::before {
+    content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 50%; vertical-align: middle;
+    background: var(--c-text-3, #7e8a85);
+  }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="1"] .civic-explore-opt-name::before { background: var(--heat-1, #fac775); }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="2"] .civic-explore-opt-name::before { background: var(--heat-2, #ef9f27); }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="3"] .civic-explore-opt-name::before { background: var(--heat-3, #e24b4a); }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="4"] .civic-explore-opt-name::before { background: var(--heat-4, #a32d2d); }
 
   /* ---------- чипы тем под поиском (20 / 82) ---------- */
   body.civic-mode[data-birge-layout="ref"] #birge-chips {
@@ -166,6 +181,10 @@ body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not
   body.civic-mode[data-birge-layout="ref"] #birge-near { position: fixed; z-index: 6; left: 0; right: 0; bottom: 0; }
   body.civic-mode[data-birge-layout="ref"]:not([data-birge-left="near"]) #birge-near { display: none; }
   body.civic-mode[data-birge-layout="ref"] #birge-chips { display: none; }
+  /* Шторка жителя «Рядом с вами» (эталон, экран «Житель, телефон»): ҚАЗ · РУС — в самой шторке (R09), в шапке не дублируем;
+     над шторкой из кнопок карты — «где я» и слои (масштаб — двумя пальцами, 3D — в слоях акимата), иначе колонка уходит под шторку. */
+  body.civic-mode[data-birge-layout="ref"][data-birge-left="near"] #birge-header .birge-lang { display: none; }
+  body.civic-mode[data-birge-layout="ref"][data-birge-left="near"] .map-tools :is(.birge-zoom, #toggle-3d) { display: none; }
 }
 
 /* ---------- палитра команд (Ctrl+K) ---------- */
@@ -175,6 +194,7 @@ body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not
   border-radius: 18px; color: var(--c-ink, #121a17); font-family: var(--font, inherit); }
 .birge-palette__input { height: 52px; padding: 0 14px; border: 0; border-bottom: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
   border-radius: 12px 12px 0 0; background: transparent; color: inherit; font: inherit; font-size: 16px; outline: none; }
+.birge-palette__input:focus, .birge-palette__input:focus-visible { outline: none; box-shadow: none; border-color: var(--c-line, rgba(18, 26, 23, 0.08)); }
 .birge-palette__list { margin: 6px 0 0; padding: 0; list-style: none; overflow-y: auto; }
 .birge-palette__group { padding: 10px 14px 4px; color: var(--c-text-3, #6b7772); font-size: 13px; font-weight: 600; }
 .birge-palette__item { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px;

@@ -1137,10 +1137,11 @@
       onStreet: (street) => {
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: true });
-        const label = () => T("shell.view.street", { name: street.name });
+        // Остановка, двор, парк из индекса R12 (explore.js «spot») — подпись без слова «Улица».
+        const label = () => T(street.spot ? "shell.view.spot" : "shell.view.street", { name: street.name });
         showView(label, "street");
         reportFrame(label, "street");
-        roomy(() => frame(street.bbox, 16));
+        roomy(() => frame(street.bbox, street.spot ? 17 : 16));
       },
       onObjects: () => {
         S.mounted.explore?.reset?.();
