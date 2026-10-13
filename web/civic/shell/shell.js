@@ -437,7 +437,8 @@
     }
     // Плашки и кнопки оболочки поверх карты: значок R07 не встаёт под «Аймақ», кнопки карты, легенду и край шторки
     // (R07 868de08 приближает карту к районам — на 375 «Байқоңыр» уходил под «Аймақ», «Есіл» — под ручку шторки; R11).
-    for (const el of document.querySelectorAll(".civic-explore, .civic-explore-registry, .map-tools, #birge-legend, #civic-panel, #civic-sheet-handle, #map-status")) {
+    // Эталон A: чипы тем, сводка «Сегодня в Астане» (R08) и шторка «Рядом с вами» (R09) — тоже плашки поверх карты.
+    for (const el of document.querySelectorAll(".civic-explore, .civic-explore-registry, .map-tools, #birge-legend, #civic-panel, #civic-sheet-handle, #map-status, #birge-chips, #birge-today, #birge-near")) {
       if (!el.getClientRects().length || getComputedStyle(el).visibility === "hidden") continue;
       const r = el.getBoundingClientRect();
       if (r.width > 0 && r.height > 0) rects.push(r);
@@ -505,6 +506,8 @@
         avoidRects: birgeOverlayRects,
         // Ссылку #target=… и событие «Картины дня» разбирает оболочка (переключает раздел) — не модуль.
         hash: false, handleOpenTarget: false,
+        // Эталон A (birge-ref.js): «Горячие места» — закрываемая карточка слева, × в заголовке (R07 opts.closable).
+        closable: document.body.dataset.birgeLayout === "ref",
       });
       openTargetFromLink();
     }
@@ -976,10 +979,12 @@
     // легенда стала одной строкой, поэтому отступ снизу, а не 420 px слева): Нұра на обзоре города не уходит под неё.
     const legend = innerWidth >= 1024 && shown(document.getElementById("birge-legend"));
     if (legend && legend.top > c.top + c.height / 2) pad.bottom = Math.max(pad.bottom, c.bottom - legend.top + 12);
-    const panel = shown($c("civic-panel"));
-    if (panel) {
+    // Раунд 14: панель справа (UX_SPEC §1); эталон A (birge-ref.css): карточка и сводка «Сегодня» — слева.
+    for (const panel of [shown($c("civic-panel")), shown(document.getElementById("birge-today")), shown(document.getElementById("birge-near"))]) {
+      if (!panel) continue;
       if (mobile) pad.bottom = Math.max(pad.bottom, c.bottom - panel.top + 12);
-      else pad.right = Math.max(pad.right, c.right - panel.left + 20);  // раунд 14: панель справа (UX_SPEC §1)
+      else if (panel.left + panel.width / 2 < c.left + c.width / 2) pad.left = Math.max(pad.left, panel.right - c.left + 20);
+      else pad.right = Math.max(pad.right, c.right - panel.left + 20);
     }
     for (const id of ["civic-editor", "civic-moderation", "civic-scenarios"]) {
       const r = shown($c(id));

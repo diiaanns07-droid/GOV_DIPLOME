@@ -1,0 +1,188 @@
+/*
+ * Birge · эталон A «лучше 2ГИС» (13 окт) — раскладка хрома R01. Всё — под body[data-birge-layout="ref"]
+ * (birge-ref.js; ?layout=classic — прежний вид без этих правил). Размеры — из REFERENCE.html (вариант A) и R11 §20.1:
+ *   ноутбук 1366 × 768: поиск 20 / 20, 388 × 52 (знак 30 слева, «/» справа) · чипы тем 20 / 82 · разделы — капсула по
+ *   центру, 20, высота 44 · «ҚАЗ · РУС» + аватар справа 20 / 20, высота 44 · карточка слева 20 / 84, ширина 388 (сводка
+ *   акимата — 20 / 132) · кнопки карты справа 20, по центру по вертикали · легенда 20 / снизу 20.
+ * Зоны нажатия ≥ 44 px (проверки R10/R01 меряют саму кнопку): видимые 34–36 px рисуются внутренним слоем.
+ * Телефон (≤ 760) — прежняя капсула шапки и шторка; у жителя на главной — шторка «Рядом с вами» R09 (birge-ref.js).
+ */
+
+/* ---------- общее для обоих размеров ---------- */
+body.civic-mode[data-birge-layout="ref"] .birge-ref-logo,
+body.civic-mode[data-birge-layout="ref"] .birge-ref-search-ic,
+body.civic-mode[data-birge-layout="ref"] .birge-ref-kbd { display: none; }
+/* Старый вид: обёртка «язык + аватар» не меняет раскладку шапки (birge.js). */
+body:not([data-birge-layout="ref"]) .birge-me { display: contents; }
+#birge-chips[hidden], #birge-today[hidden], #birge-near[hidden], .birge-palette[hidden] { display: none !important; }
+body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not(.civic-mode) #birge-near { display: none !important; }
+
+@media (min-width: 761px) {
+  /* ---------- шапка: полосы нет — три отдельные детали на стекле ---------- */
+  body.civic-mode[data-birge-layout="ref"] .topbar,
+  body.civic-mode[data-birge-layout="ref"] .topbar.bk-glass {
+    top: 0; left: 0; right: 0; height: 0; padding: 0; overflow: visible;
+    background: transparent; background-image: none; border: 0; border-radius: 0; box-shadow: none;
+    -webkit-backdrop-filter: none; backdrop-filter: none; pointer-events: none;
+  }
+  body.civic-mode[data-birge-layout="ref"] .topbar .brand { display: none; }
+  body.civic-mode[data-birge-layout="ref"] #birge-header { pointer-events: auto; }
+
+  /* Разделы — капсула по центру свободного места между поиском и профилем (--birge-nav-left от birge.js). */
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav {
+    position: fixed; z-index: 41; top: 20px; left: var(--birge-nav-left, 50%); transform: translateX(-50%);
+    height: 44px; padding: 0 4px; gap: 2px; border-radius: var(--r-pill, 999px);
+  }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button {
+    position: relative; isolation: isolate; height: 44px; min-height: 44px; padding: 0 16px; border: 0; border-radius: var(--r-pill, 999px);
+    background: transparent; color: var(--c-text-2, #4b5752); font-size: 14px; font-weight: 500; white-space: nowrap;
+  }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button::before {
+    content: ""; position: absolute; z-index: -1; inset: 4px 0; border-radius: var(--r-pill, 999px); background: transparent;
+    transition: background-color var(--t-fast, 150ms) var(--ease, ease);
+  }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button::after { display: none; }   /* черта .bk-nav */
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button:hover { color: var(--c-ink, #121a17); }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button:hover::before { background: var(--c-fill, rgba(18, 26, 23, 0.06)); }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button[aria-current="page"] { color: var(--c-on-primary, #fff); }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button[aria-current="page"]::before { background: var(--c-primary, #121a17); }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-nav > button:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: -2px; }
+
+  /* «ҚАЗ · РУС» + аватар — капсула справа (эталон .me: 44, поля 0 4 0 14; аватар 36 лайм). */
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-me {
+    position: fixed; z-index: 41; top: 20px; right: 20px; height: 44px; display: flex; align-items: center; gap: 6px;
+    padding: 0 4px 0 10px; border-radius: var(--r-pill, 999px);
+  }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-lang > button { min-height: 44px; height: 44px; font-size: 13px; }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-avatar {
+    position: relative; isolation: isolate; width: 44px; height: 44px; min-height: 44px; border: 0; border-radius: 50%;
+    background: transparent; color: var(--c-lime-ink, #2f4a10); box-shadow: none;
+  }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-avatar::before {
+    content: ""; position: absolute; z-index: -1; inset: 4px; border-radius: 50%; background: var(--c-lime, #d7f57c);
+  }
+  body.civic-mode[data-birge-layout="ref"] #birge-header .birge-avatar .ic { width: 18px; height: 18px; }
+
+  /* ---------- поиск: слева сверху, 388 × 52, плотное стекло, знак Birge и «/» ---------- */
+  body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore { top: 20px; left: 20px; width: var(--be-width, 388px); }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field.bk-searchbar {
+    display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 4px 0 11px; border-radius: var(--r-l, 16px);
+  }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-logo {
+    display: flex; flex: none; align-self: center; align-items: center; justify-content: center; width: 30px; height: 30px;
+    min-width: 30px; min-height: 0; max-height: 30px; padding: 0; border: 0; box-shadow: none;
+    border-radius: 9px; background: var(--c-brand, #152c26); color: var(--c-lime, #d7f57c); cursor: pointer;
+  }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-logo::after { content: ""; position: absolute; inset: -7px; }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-logo { position: relative; }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-logo:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-search-ic { display: flex; flex: none; color: var(--c-text-3, #7e8a85); }
+  body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore-field input {
+    flex: 1; min-width: 0; width: auto; min-height: 44px; height: 44px; padding: 0; border: 0; border-radius: 0;
+    background: transparent; color: var(--c-ink, #121a17); font-size: 15px;
+  }
+  body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore-field input::placeholder { color: var(--c-text-3, #7e8a85); }
+  body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore-field input:focus { outline: none; background: transparent; }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field.bk-searchbar:focus-within { box-shadow: 0 0 0 2px var(--c-focus, #152c26), var(--glass-shadow, 0 12px 32px rgba(16, 24, 20, 0.14)); }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field .birge-ref-kbd { display: inline-flex; flex: none; margin-right: 10px; }
+  body.civic-mode[data-birge-layout="ref"] .civic-explore-field input:not(:placeholder-shown) ~ .birge-ref-kbd { display: none; }
+  body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore .civic-explore-clear {
+    position: static; flex: none; width: 44px; height: 44px; min-height: 44px; border-radius: 12px;
+  }
+  body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore-list {
+    top: calc(100% + 8px); border-radius: var(--r-l, 16px); background: var(--glass-strong, rgba(255, 255, 255, 0.86));
+    -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 12px 32px rgba(16, 24, 20, 0.14), 0 0 0 0.5px rgba(16, 24, 20, 0.1);
+  }
+  html.bk-glass-off body.civic-mode[data-birge-layout="ref"][data-birge-explore="header"] .civic-explore-list { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+  /* ---------- чипы тем под поиском (20 / 82) ---------- */
+  body.civic-mode[data-birge-layout="ref"] #birge-chips {
+    position: fixed; z-index: 30; top: 77px; left: 20px; display: flex; gap: 8px; max-width: calc(100vw - 40px - 64px);
+  }
+  body.civic-mode[data-birge-layout="ref"][data-birge-section]:not([data-birge-section="map"]) #birge-chips { display: none; }
+  body.civic-mode[data-birge-layout="ref"] .birge-chip {
+    display: flex; align-items: center; height: 44px; min-height: 44px; padding: 0; border: 0; background: transparent;
+    font: inherit; font-family: var(--font, inherit); cursor: pointer;
+  }
+  body.civic-mode[data-birge-layout="ref"] .birge-chip__face {
+    display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 13px; border-radius: var(--r-pill, 999px);
+    color: var(--c-ink, #121a17); font-size: 14px; font-weight: 500; white-space: nowrap;
+    background: var(--glass-chrome, rgba(255, 255, 255, 0.72)); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.7));
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 12px 32px rgba(16, 24, 20, 0.14), 0 0 0 0.5px rgba(16, 24, 20, 0.1);
+    transition: background-color var(--t-fast, 150ms) var(--ease, ease), color var(--t-fast, 150ms) var(--ease, ease);
+  }
+  body.civic-mode[data-birge-layout="ref"] .birge-chip[aria-pressed="true"] .birge-chip__face {
+    background: var(--c-primary, #121a17); color: var(--c-on-primary, #fff); border-color: transparent;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+  }
+  body.civic-mode[data-birge-layout="ref"] .birge-chip:focus-visible { outline: none; }
+  body.civic-mode[data-birge-layout="ref"] .birge-chip:focus-visible .birge-chip__face { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
+  body.civic-mode[data-birge-layout="ref"] .birge-chip__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--heat-1, #fac775); }
+  body.civic-mode[data-birge-layout="ref"] .birge-chip__dot[data-level="2"] { background: var(--heat-2, #ef9f27); }
+  body.civic-mode[data-birge-layout="ref"] .birge-chip__dot[data-level="3"] { background: var(--heat-3, #e24b4a); }
+  body.civic-mode[data-birge-layout="ref"] .birge-chip__dot[data-level="4"] { background: var(--heat-4, #a32d2d); }
+  html.bk-glass-off body.civic-mode[data-birge-layout="ref"] .birge-chip:not([aria-pressed="true"]) .birge-chip__face { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+  /* ---------- карточка слева: только когда есть что показать ---------- */
+  body.civic-mode[data-birge-layout="ref"] .civic-panel {
+    left: 20px; right: auto; top: 84px; bottom: auto; width: 388px; height: auto; max-height: calc(100% - 104px); border-radius: 18px;
+  }
+  body.civic-mode[data-birge-layout="ref"] .civic-panel .civic-scroll { flex: 0 1 auto; }
+  body.civic-mode[data-birge-layout="ref"]:is([data-birge-left="none"], [data-birge-left="summary"]) .civic-panel { display: none; }
+  body.civic-mode[data-birge-layout="ref"] .civic-panel .civic-foot { display: none; }
+  /* Плотное стекло 86 % — сильнее общего правила оболочки (.bk-glass → --glass-panel), о чём просили R08 и R09. */
+  body.civic-mode[data-birge-layout="ref"] .bk-glass.bk-glass--strong { background-color: var(--glass-strong, rgba(255, 255, 255, 0.86)); }
+  body.civic-mode[data-birge-layout="ref"] .civic-panel:not([hidden]) { animation: birge-ref-enter-left var(--t-slow, 250ms) var(--ease, cubic-bezier(.22, 1, .36, 1)) both; }
+
+  /* Сводка «Сегодня в Астане» (R08) на главной акимата: 20 / 132, 388. */
+  body.civic-mode[data-birge-layout="ref"] #birge-today {
+    position: fixed; z-index: 6; top: 132px; left: 20px; width: 388px; max-height: calc(100% - 152px); overflow: auto;
+  }
+  body.civic-mode[data-birge-layout="ref"] #birge-today:not([hidden]) { animation: birge-ref-enter-left var(--t-slow, 250ms) var(--ease, cubic-bezier(.22, 1, .36, 1)) both; }
+  body.civic-mode[data-birge-layout="ref"]:not([data-birge-left="summary"]) #birge-today { display: none; }
+
+  /* ---------- кнопки карты: колонка справа, по центру ---------- */
+  body.civic-mode[data-birge-layout="ref"] .map-tools { right: 20px; top: 50%; transform: translateY(-50%); }
+  body.civic-mode[data-birge-layout="ref"][data-civic-drawer="open"] .map-tools { right: 472px; }
+
+  /* ---------- легенда-строка: слева внизу ---------- */
+  body.civic-mode[data-birge-layout="ref"] .birge-legend { left: 20px; bottom: 20px; }
+}
+
+@keyframes birge-ref-enter-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.civic-mode[data-birge-layout="ref"] .civic-panel,
+  body.civic-mode[data-birge-layout="ref"] #birge-today { animation: none !important; }
+}
+
+/* ---------- телефон: шторка «Рядом с вами» (R09) у жителя на главной ---------- */
+@media (max-width: 760px) {
+  body.civic-mode[data-birge-layout="ref"][data-birge-left="near"] .civic-panel { display: none; }
+  body.civic-mode[data-birge-layout="ref"] #birge-near { position: fixed; z-index: 6; left: 0; right: 0; bottom: 0; }
+  body.civic-mode[data-birge-layout="ref"]:not([data-birge-left="near"]) #birge-near { display: none; }
+  body.civic-mode[data-birge-layout="ref"] #birge-chips { display: none; }
+}
+
+/* ---------- палитра команд (Ctrl+K) ---------- */
+.birge-palette { position: fixed; z-index: 90; inset: 0; display: flex; justify-content: center; align-items: flex-start;
+  padding: 12vh 16px 16px; background: rgba(18, 26, 23, 0.18); }
+.birge-palette__box { width: min(560px, 100%); max-height: 70vh; display: flex; flex-direction: column; padding: 8px;
+  border-radius: 18px; color: var(--c-ink, #121a17); font-family: var(--font, inherit); }
+.birge-palette__input { height: 52px; padding: 0 14px; border: 0; border-bottom: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+  border-radius: 12px 12px 0 0; background: transparent; color: inherit; font: inherit; font-size: 16px; outline: none; }
+.birge-palette__list { margin: 6px 0 0; padding: 0; list-style: none; overflow-y: auto; }
+.birge-palette__group { padding: 10px 14px 4px; color: var(--c-text-3, #6b7772); font-size: 13px; font-weight: 600; }
+.birge-palette__item { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px;
+  padding: 0 14px; border-radius: 12px; cursor: pointer; font-size: 15px; }
+.birge-palette__item[aria-selected="true"] { background: var(--c-fill, rgba(18, 26, 23, 0.06)); }
+.birge-palette__title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.birge-palette__hint { flex: none; color: var(--c-text-2, #4b5752); font-size: 13px; }
+.birge-palette__empty { padding: 12px 14px; color: var(--c-text-2, #4b5752); font-size: 15px; }
+.birge-palette__foot { margin: 6px 0 0; padding: 8px 14px 4px; border-top: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+  color: var(--c-text-2, #4b5752); font-size: 13px; }
+html.bk-glass-off .birge-palette__box { background: #fff; }

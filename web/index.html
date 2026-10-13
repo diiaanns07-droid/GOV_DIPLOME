@@ -32,8 +32,10 @@
     <link rel="stylesheet" href="/civic/shell/shell.css" />
     <link rel="stylesheet" href="/civic/qr/report.css" />
     <link rel="stylesheet" href="/civic/shell/birge.css" />
+    <!-- Эталон A «лучше 2ГИС» (13 окт): поиск, чипы, капсулы, одна закрываемая карточка слева; ?layout=classic — прежний вид. -->
+    <link rel="stylesheet" href="/civic/shell/birge-ref.css" />
   </head>
-  <body class="civic-mode">
+  <body class="civic-mode" data-birge-layout="ref">
     <div id="map" aria-label="Интерактивная карта районов Астаны"></div>
     <div class="map-vignette"></div>
     <header class="topbar">
@@ -249,6 +251,7 @@
     <script defer src="/civic/build3d/build3d.js"></script>
     <script defer src="/civic/shell/shell-text.js"></script>
     <script defer src="/civic/shell/birge.js"></script>
+    <script defer src="/civic/shell/birge-ref.js"></script>
     <script defer src="/civic/nearby/nearby.js"></script>
     <script defer src="/civic/qa/qa.js"></script>
     <script defer src="/civic/ideas/ideas.js"></script>

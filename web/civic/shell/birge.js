@@ -253,9 +253,12 @@
     header = el("div", { id: "birge-header", class: "birge-header bk-app" }, [
       // Пункты меню обоих видов; чужие для текущего вида и разделы без модуля скрыты (buildNav).
       el("div", { class: "bk-nav birge-nav", role: "group", "data-group": "section" }),
-      el("div", { class: "bk-langtext birge-lang", role: "group", "data-group": "lang" },
-        ["kk", "ru"].map((l) => el("button", { type: "button", "data-lang": l, "aria-pressed": String(l === lang()) }))),
-      avatar,
+      // «ҚАЗ · РУС» и аватар — одна капсула справа (эталон A, birge-ref.css); в прежнем виде обёртка без своей коробки.
+      el("div", { class: "birge-me" }, [
+        el("div", { class: "bk-langtext birge-lang", role: "group", "data-group": "lang" },
+          ["kk", "ru"].map((l) => el("button", { type: "button", "data-lang": l, "aria-pressed": String(l === lang()) }))),
+        avatar,
+      ]),
     ]);
     actions.prepend(header);
     account = el("div", { id: "birge-account", class: "bk-menu birge-account bk-app", role: "menu", hidden: true });
@@ -600,6 +603,7 @@
     const d = document.body.dataset;
     if (!header || !brand || !document.body.classList.contains("civic-mode")) { d.birgeExplore = "map"; return; }
     const wasCompact = d.birgeHeader === "compact";
+    if (d.birgeLayout === "ref" && innerWidth >= PHONE) { placeRef(box, wasCompact); return; }
     // Замер синхронно, до отрисовки кадра: промежуточная раскладка не мигает.
     if (innerWidth < PHONE) d.birgeHeader = "compact";
     else {
@@ -625,6 +629,36 @@
     const input = box.querySelector(".civic-explore-field input");
     if (input) input.placeholder = t(phone || width < 300 ? "common.search.short" : "common.search.placeholder_clean");
     box.style.setProperty("--be-top", Math.round(bar.top + (bar.height - 48) / 2) + "px");
+  }
+  // Эталон A (birge-ref.js, birge-ref.css), ноутбук: полосы шапки нет. Поиск — 20 / 20, до 388 px; «ҚАЗ · РУС» + аватар —
+  // капсула справа; разделы — капсула по центру экрана, а если не помещается — по центру места между поиском и профилем.
+  // Поиск сужается до 280 px; разделы не помещаются и тогда — в меню аватара (compact), как в прежней шапке.
+  const REF_SEARCH = 388, REF_SEARCH_MIN = 280, REF_EDGE = 20, REF_GAP = 12;
+  function placeRef(box, wasCompact) {
+    const d = document.body.dataset;
+    const nav = header.querySelector(".birge-nav"), me = header.querySelector(".birge-me");
+    delete d.birgeHeader;   // капсула разделов видна — замер её ширины (синхронно, до кадра)
+    const navWidth = nav ? nav.getBoundingClientRect().width : 0;
+    const meLeft = me ? me.getBoundingClientRect().left : innerWidth - REF_EDGE;
+    const room = meLeft - REF_GAP - REF_EDGE - REF_GAP - navWidth;   // ширина, которую можно отдать поиску
+    let width = Math.min(REF_SEARCH, Math.floor(room));
+    if (width < REF_SEARCH_MIN) {
+      d.birgeHeader = "compact";
+      width = Math.max(REF_SEARCH_MIN, Math.min(REF_SEARCH, Math.floor(meLeft - REF_GAP - REF_EDGE)));
+      document.body.style.removeProperty("--birge-nav-left");
+    } else {
+      const from = REF_EDGE + width + REF_GAP, to = meLeft - REF_GAP, centre = innerWidth / 2;
+      const fitsCentre = centre - navWidth / 2 >= from && centre + navWidth / 2 <= to;
+      document.body.style.setProperty("--birge-nav-left", Math.round(fitsCentre ? centre : (from + to) / 2) + "px");
+    }
+    if (wasCompact !== (d.birgeHeader === "compact")) renderAccount();
+    if (!box) { delete d.birgeExplore; return; }
+    d.birgeExplore = "header";
+    box.style.setProperty("--be-left", REF_EDGE + "px");
+    box.style.setProperty("--be-top", REF_EDGE + "px");
+    box.style.setProperty("--be-width", width + "px");
+    const input = box.querySelector(".civic-explore-field input");
+    if (input) input.placeholder = t("common.search.placeholder_clean");
   }
   // Строка о запасном фоне карты (R11 CLEAN_PASS №7) гаснет через 6 с после показа или смены текста.
   function watchMapStatus() {

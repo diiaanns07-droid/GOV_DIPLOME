@@ -79,6 +79,7 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "assistant/assistant.js", "assistant/assistant.css",  # R09 @f895c30 (demo.html not served)
                 # Раунд 14: шапка Birge (R01); ui-kit, шрифт Inter и переводы R11 (поставка claude/r14-R11 @ ba8758b).
                 "shell/shell-text.js", "shell/birge.js", "shell/birge.css", "shell/basemap-style.js",
+                "shell/birge-ref.js", "shell/birge-ref.css",  # эталон A (13 окт): хром экрана и карточка слева, R01
                 "ui-kit/tokens.css", "ui-kit/components.css", "ui-kit/ui-kit.js", "ui-kit/icons.svg",
                 "ui-kit/categories_v2.json", "ui-kit/index.html",
                 "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-Medium.woff2",  # Inter-Medium: эталон A, вес 500 (R11 §20.1 а)
