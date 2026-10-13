@@ -40,6 +40,8 @@ function startStand(port, extra) {
   return new Promise((resolve, reject) => {
     const proc = spawn("python3", [path.join(__dirname, "stand", "serve_r09.py"), "--port", String(port), "--seed", ...extra],
       { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"] });
+    // Прогон упал необработанной ошибкой — стенд не остаётся занимать порт до следующего прогона.
+    process.on("exit", () => { try { proc.kill(); } catch (e) { /* уже остановлен */ } });
     let out = "";
     const timer = setTimeout(() => reject(new Error("stand did not start: " + out)), 90000);
     proc.stdout.on("data", (d) => { out += d; if (out.includes("R09 stand:")) { clearTimeout(timer); resolve(proc); } });

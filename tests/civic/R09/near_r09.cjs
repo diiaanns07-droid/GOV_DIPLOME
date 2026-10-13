@@ -87,7 +87,14 @@ async function variant(browser, base, lang) {
         sub: b.querySelector(".bk-hot__name small").textContent, h: Math.round(b.getBoundingClientRect().height) })),
       all: (document.querySelector(".bc-near__all") || {}).textContent || "",
       sheet: (() => { const r = document.querySelector(".bc-near").getBoundingClientRect(); return { top: Math.round(r.top), h: Math.round(r.height) }; })(),
+      // Геометрия относительно шторки — как .p-sheet эталона A (375 × 812): заголовок 17,+26 · 23 px, первая строка .hot
+      // 17,+55 · 341 × 54 (reference_check R10: p-sheet-title, p-hot).
+      geo: (() => { const sh = document.querySelector(".bc-near").getBoundingClientRect();
+        const rel = (el) => { const r = el.getBoundingClientRect(); return { x: Math.round(r.left - sh.left), y: Math.round(r.top - sh.top), w: Math.round(r.width), h: Math.round(r.height) }; };
+        const row = document.querySelector(".bc-near__row");
+        return { title: rel(document.querySelector(".bc-near .bk-phsheet__title")), row: row ? rel(row) : null }; })(),
     }));
+    console.log(`  ${tag}: геометрия шторки (эталон: заголовок 17,26 h23 · строка 17,55 341×54) — ${JSON.stringify(seen.geo)}`);
     check(`${tag}: заголовок «${seen.title}» и «ҚАЗ · РУС» в шапке шторки`, (lang === "kk" ? /маңайыңызда/ : /Рядом с вами/).test(seen.title) &&
           /ҚАЗ/.test(seen.lang) && /РУС/.test(seen.lang), seen.lang);
     check(`${tag}: 3 ближайших к центру карты места, по расстоянию`, seen.keys.length === Math.min(3, want.length) && seen.keys.join() === want.join(),
