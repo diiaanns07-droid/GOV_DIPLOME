@@ -3,11 +3,13 @@
  * «Главная акимата», «Выбран объект», «Проекты и идеи» (1366×768) и «Житель, телефон» (375×812), ru.
  *   NODE_PATH="$(npm root -g)" node tests/civic/R11/review/ref_compare.cjs http://127.0.0.1:<порт>/ <папка> <метка>
  * Кадры: <папка>/<метка>-home.png, -obj.png, -proj.png, -phone.png. Эталон снимает ref_frames.cjs (1:1, без масштаба).
+ * Ещё: -proj-res.png (раздел жителя «Идеи», 1366); с 4-м аргументом <файл-пароля> — вход operator (пароль не печатается)
+ * и -proj-staff.png, -inbox-staff.png, -questions-staff.png (1366).
  */
 "use strict";
 const path = require("path"), fs = require("fs");
 const { chromium } = require("playwright");
-const [BASE = "http://127.0.0.1:8801/", OUT = "ref", TAG = "build"] = process.argv.slice(2);
+const [BASE = "http://127.0.0.1:8801/", OUT = "ref", TAG = "build", PWFILE] = process.argv.slice(2);
 const ready = (p) => p.waitForFunction(() => window.CivicShell?.heat?.state?.().status === "ready", null, { timeout: 45000 }).catch(() => {});
 
 async function open(browser, w, h, mode) {
@@ -38,6 +40,26 @@ async function open(browser, w, h, mode) {
   ({ ctx, p } = await open(browser, 375, 812, "resident"));
   await p.screenshot({ path: path.join(OUT, `${TAG}-phone.png`) });
   await ctx.close();
+  ({ ctx, p } = await open(browser, 1366, 768, "resident"));
+  await p.evaluate(() => window.BirgeShell.setSection("ideas")); await p.waitForTimeout(3000);  // у жителя раздел «Идеи»
+  await p.screenshot({ path: path.join(OUT, `${TAG}-proj-res.png`) });
+  await ctx.close();
+  if (PWFILE) {
+    const pw = fs.readFileSync(PWFILE, "utf8").trim();
+    ({ ctx, p } = await open(browser, 1366, 768, "akimat"));
+    try {
+      await p.click(".birge-avatar"); await p.waitForTimeout(400);
+      await p.click("text=Для сотрудников"); await p.waitForTimeout(1200);
+      await p.fill("input[name=username]", "operator"); await p.fill("input[name=password]", pw);
+      await p.click("button[type=submit]"); await p.waitForTimeout(2500);
+      await p.keyboard.press("Escape"); await p.waitForTimeout(500);
+    } catch (e) { console.log("вход:", e.message.split("\n")[0]); }
+    for (const sec of ["projects", "inbox", "questions"]) {
+      await p.evaluate((s) => window.BirgeShell.setSection(s), sec); await p.waitForTimeout(3000);
+      await p.screenshot({ path: path.join(OUT, `${TAG}-${sec === "projects" ? "proj" : sec}-staff.png`) });
+    }
+    await ctx.close();
+  }
   await browser.close();
   console.log("кадры:", fs.readdirSync(OUT).filter((f) => f.startsWith(TAG + "-")).join(", "));
 })();
