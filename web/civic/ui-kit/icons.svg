@@ -66,6 +66,10 @@
   <!-- Иллюстрации пустых состояний и ошибок (дизайн-марафон): та же сетка 24×24, линия не утолщается при увеличении
        (vector-effect), рисуются классом .bk-ill (96 px, линия 1,5 px). BirgeUI.state(el, "empty", {illustration: "list"}). -->
   <!-- Статус-иконки (правило 3 Linear, эталон 13 окт): цвет — currentColor, задаёт .bk-st-ic[data-status] -->
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20Z"/></symbol>
+  <symbol id="i-school" viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M5 20V9l7-5 7 5v11"/><path d="M9.5 20v-6h5v6"/></symbol>
+  <symbol id="i-message" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z"/></symbol>
   <symbol id="st-ring" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.9" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
   <symbol id="st-half" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 3.4a3.6 3.6 0 0 1 0 7.2Z" fill="currentColor"/></symbol>
   <symbol id="st-ring-check" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.9" fill="none" stroke="currentColor" stroke-width="2"/><path d="m4.5 7.2 1.7 1.7 3.4-3.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>

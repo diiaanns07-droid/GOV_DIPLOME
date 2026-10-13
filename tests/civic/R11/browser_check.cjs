@@ -8,8 +8,8 @@
  *   - нет горизонтальной прокрутки страницы;
  *   - нет предупреждений [i18n] и ошибок в консоли;
  *   - на экране нет «сырых» ключей вида common.action.close;
- *   - видимые кнопки .bk-btn / .bk-mapbtn / .bk-iconbtn не ниже 48 px;
- *   - видимый основной текст не меньше 14 px (подписи), у .bk-btn ≥ 16 px;
+ *   - видимые кнопки .bk-btn / .bk-mapbtn / .bk-iconbtn не ниже 44 px (эталон A владельца 13 окт: --tap 44);
+ *   - видимый текст не меньше 12 px (шкала эталона 12/13/14/15/16/18/19/22/34), у .bk-btn ≥ 15 px;
  *   - локальный шрифт «Birge Sans» загрузился и содержит казахские буквы.
  * Сервер статики свой (web/ как корень), без зависимостей; сеть наружу не нужна.
  */
@@ -86,13 +86,13 @@ async function check(browser, base, width, height, lang) {
     document.querySelectorAll(".bk-btn,.bk-mapbtn,.bk-iconbtn,.bk-option,.bk-list__item,.bk-tabs > [role=tab],.bk-details > summary").forEach((el) => {
       if (!visible(el)) return;
       const h = el.getBoundingClientRect().height;
-      if (h < 47.5) out.lowButtons.push((el.textContent.trim() || el.getAttribute("aria-label") || el.className) + " " + Math.round(h) + "px");
-      if (el.classList.contains("bk-btn") && parseFloat(getComputedStyle(el).fontSize) < 15) out.small.push(el.textContent.trim()); // чистый дизайн: кнопки ≥ 15 (обычно 17)
+      if (h < 43.5) out.lowButtons.push((el.textContent.trim() || el.getAttribute("aria-label") || el.className) + " " + Math.round(h) + "px");
+      if (el.classList.contains("bk-btn") && parseFloat(getComputedStyle(el).fontSize) < 15) out.small.push(el.textContent.trim()); // эталон A: кнопки 15/600
     });
     document.querySelectorAll("body *").forEach((el) => {
       if (!visible(el) || el.closest("code,figcaption,svg")) return;
       const own = Array.from(el.childNodes).some((c) => c.nodeType === 3 && c.textContent.trim());
-      if (own && parseFloat(getComputedStyle(el).fontSize) < 13) out.tinyText.push(el.className + ": " + el.textContent.trim().slice(0, 30));
+      if (own && parseFloat(getComputedStyle(el).fontSize) < 12) out.tinyText.push(el.className + ": " + el.textContent.trim().slice(0, 30));
     });
     return out;
   });
@@ -100,9 +100,9 @@ async function check(browser, base, width, height, lang) {
   if (r.scroll > 0) problems.push("горизонтальная прокрутка на " + r.scroll + " px");
   if (r.lang !== lang) problems.push("html lang=" + r.lang + ", ожидали " + lang);
   r.keys.forEach((k) => problems.push("ключ вместо текста: " + k));
-  r.lowButtons.forEach((k) => problems.push("кнопка ниже 48 px: " + k));
+  r.lowButtons.forEach((k) => problems.push("кнопка ниже 44 px: " + k));
   r.small.forEach((k) => problems.push("текст кнопки < 15 px: " + k));
-  r.tinyText.forEach((k) => problems.push("текст < 13 px (шкала 13/15/17/22/28): " + k));
+  r.tinyText.forEach((k) => problems.push("текст < 12 px (шкала эталона 12–34): " + k));
   // Чистый дизайн (R01 §21.1–21.2): «·» и «✓» нарисованы, но не входят в имя — кнопки находятся по точному имени
   if (await page.$("#kit-lang")) {
     const kz = await page.getByRole("button", { name: /^ҚАЗ$/ }).count(), ruB = await page.getByRole("button", { name: /^РУС$/ }).count();

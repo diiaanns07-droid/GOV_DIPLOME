@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#f3f1ec" />
+    <title>Birge · макет · эталон A</title>
+    <!-- Макет R11: четыре кадра эталона владельца 13 окт (research/round-14/design/REFERENCE.html, вариант A «2ГИС светлый»),
+         собранные ТОЛЬКО из классов ui-kit — проверка, что ui-kit воспроизводит эталон один в один (R11 REFERENCE_A.md).
+         Кадр: ?f=home (главная акимата) · ?f=obj (выбран объект) · ?f=proj (проекты и идеи) · ?f=phone (житель, 375 × 812).
+         ?solid=1 — запасной непрозрачный вид стекла. Карта — рисунок эталона (символ #map), цвета — токены --map-*.
+         Здесь только раскладка кадра (left/top как в эталоне); вид каждой детали — классы ui-kit, без своих стилей. -->
+    <link rel="stylesheet" href="../tokens.css" />
+    <link rel="stylesheet" href="../components.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #e9ebe6;
+      }
+      .ra-frame {
+        position: relative;
+        width: 1366px;
+        height: 768px;
+        overflow: hidden;
+        background: var(--map-land);
+        color: var(--c-ink);
+        display: none;
+        --m-bg: var(--map-land);
+        --m-water: var(--map-water);
+        --m-water-edge: var(--map-water-edge);
+        --m-park: var(--map-park);
+        --m-b1: var(--map-building-0);
+        --m-b2: var(--map-building-60);
+        --m-b3: var(--map-building-150);
+        --m-mark: var(--map-landmark);
+        --m-mark-edge: var(--map-landmark-edge);
+        --m-case: var(--map-road-case);
+        --m-road: var(--map-road);
+        --m-case2: #e3ded4;
+        --m-road2: var(--map-road);
+        --m-label: var(--map-label);
+      }
+      .ra-frame.is-on {
+        display: block;
+      }
+      .ra-frame--phone {
+        width: 375px;
+        height: 812px;
+      }
+      .ra-map {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .ra-abs {
+        position: absolute;
+      }
+      .ra-at-pin {
+        position: absolute;
+        transform: translate(-50%, -50%);
+      }
+      .ra-center {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .ra-vcenter {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    </style>
+  </head>
+  <body class="bk-app">
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol id="map" viewBox="0 0 1366 768">
+          <rect width="1366" height="768" style="fill: var(--m-bg)" />
+          <path d="M0 640 C220 600 380 690 600 650 S980 560 1366 610 L1366 768 L0 768Z" style="fill: var(--m-water)" />
+          <path d="M0 640 C220 600 380 690 600 650 S980 560 1366 610" fill="none" style="stroke: var(--m-water-edge)" stroke-width="2" />
+          <path d="M760 250 L960 210 L1010 360 L820 420Z" style="fill: var(--m-park)" />
+          <path d="M120 300 L300 280 L320 400 L150 420Z" style="fill: var(--m-park)" />
+          <g style="fill: var(--m-b1)">
+            <rect x="60" y="60" width="110" height="70" rx="6" /><rect x="200" y="50" width="90" height="90" rx="6" /><rect x="330" y="70" width="140" height="60" rx="6" />
+            <rect x="520" y="60" width="80" height="120" rx="6" /><rect x="640" y="70" width="120" height="70" rx="6" /><rect x="1040" y="60" width="130" height="80" rx="6" />
+            <rect x="1200" y="70" width="110" height="110" rx="6" /><rect x="60" y="180" width="80" height="80" rx="6" /><rect x="380" y="180" width="100" height="70" rx="6" />
+            <rect x="1060" y="190" width="90" height="90" rx="6" /><rect x="1180" y="220" width="120" height="70" rx="6" /><rect x="400" y="440" width="120" height="80" rx="6" />
+            <rect x="560" y="430" width="90" height="100" rx="6" /><rect x="1080" y="420" width="140" height="80" rx="6" /><rect x="60" y="470" width="120" height="80" rx="6" />
+          </g>
+          <g style="fill: var(--m-b2)">
+            <rect x="230" y="190" width="100" height="60" rx="6" /><rect x="540" y="230" width="140" height="80" rx="6" /><rect x="900" y="440" width="120" height="90" rx="6" />
+            <rect x="220" y="460" width="130" height="90" rx="6" /><rect x="700" y="470" width="120" height="70" rx="6" /><rect x="1240" y="410" width="90" height="120" rx="6" />
+          </g>
+          <g style="fill: var(--m-b3)"><rect x="860" y="60" width="120" height="110" rx="6" /><rect x="40" y="330" width="60" height="60" rx="6" /><rect x="690" y="340" width="70" height="70" rx="6" /></g>
+          <circle cx="905" cy="300" r="34" style="fill: var(--m-mark); stroke: var(--m-mark-edge)" stroke-width="2" />
+          <g fill="none" stroke-linecap="round">
+            <g style="stroke: var(--m-case)" stroke-width="20"><path d="M0 160 H1366" /><path d="M0 420 H1366" /><path d="M500 0 V768" /><path d="M1020 0 V768" /><path d="M-20 720 L1400 20" /></g>
+            <g style="stroke: var(--m-road)" stroke-width="16"><path d="M0 160 H1366" /><path d="M0 420 H1366" /><path d="M500 0 V768" /><path d="M1020 0 V768" /><path d="M-20 720 L1400 20" /></g>
+            <g style="stroke: var(--m-case2)" stroke-width="9"><path d="M190 0 V768" /><path d="M790 0 V420" /><path d="M0 290 H500" /><path d="M1020 300 H1366" /><path d="M500 560 H1020" /></g>
+            <g style="stroke: var(--m-road2)" stroke-width="6"><path d="M190 0 V768" /><path d="M790 0 V420" /><path d="M0 290 H500" /><path d="M1020 300 H1366" /><path d="M500 560 H1020" /></g>
+          </g>
+          <g font-family="Birge Sans, Inter, sans-serif" font-size="12" style="fill: var(--m-label)">
+            <text x="560" y="155">просп. Туран</text><text x="1040" y="415">ул. Сыганак</text><text x="508" y="300" transform="rotate(90 508 300)">ул. Кунаева</text>
+            <text x="880" y="250" fill="#9C8B6A" font-weight="600">Хан Шатыр</text><text x="800" y="330" fill="#6E8F5C">Центральный парк</text>
+          </g>
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- ============ 1. Главная акимата ============ -->
+    <main class="ra-frame" data-f="home" aria-label="Главная акимата">
+      <svg class="ra-map" aria-hidden="true"><use href="#map" /></svg>
+      <div class="ra-at-pin" style="left: 880px; top: 330px"><span class="bk-pin" data-level="3"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-bus" /></svg></span><span class="bk-pin__n">6</span></span></div>
+      <div class="ra-at-pin" style="left: 620px; top: 200px"><span class="bk-pin" data-level="4"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-trees" /></svg></span><span class="bk-pin__n">11</span></span></div>
+      <div class="ra-at-pin" style="left: 700px; top: 520px"><span class="bk-pin" data-level="2"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-snowflake" /></svg></span><span class="bk-pin__n">8</span></span></div>
+      <div class="ra-at-pin" style="left: 1110px; top: 260px"><span class="bk-pin" data-level="1"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-bulb" /></svg></span><span class="bk-pin__n">2</span></span></div>
+      <div class="ra-at-pin" style="left: 1180px; top: 470px"><span class="bk-pin" data-level="fixed"><span class="bk-pin__c"><svg class="ic" aria-hidden="true" style="stroke-width: 3"><use href="../icons.svg#i-check" /></svg></span></span></div>
+
+      <div class="ra-abs bk-searchbar bk-glass bk-glass--strong" style="left: 20px; top: 20px; width: 388px">
+        <span class="bk-logo"><svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-home" /></svg></span>
+        <svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-search" /></svg>
+        <input type="search" placeholder="Улица, остановка или район" aria-label="Поиск по карте" />
+        <kbd class="bk-kbd">/</kbd>
+      </div>
+      <div class="ra-abs" style="left: 20px; top: 82px; display: flex; gap: 8px">
+        <button class="bk-chip bk-chip--glass" type="button" aria-pressed="true">Все</button>
+        <button class="bk-chip bk-chip--glass" type="button" aria-pressed="false"><span class="bk-chip__dot" style="background: var(--heat-2)"></span>Снег</button>
+        <button class="bk-chip bk-chip--glass" type="button" aria-pressed="false"><span class="bk-chip__dot" style="background: var(--heat-3)"></span>Остановки</button>
+        <button class="bk-chip bk-chip--glass" type="button" aria-pressed="false"><span class="bk-chip__dot" style="background: var(--heat-1)"></span>Освещение</button>
+        <button class="bk-chip bk-chip--glass" type="button" aria-pressed="false">Ещё</button>
+      </div>
+      <nav class="ra-abs ra-center bk-navpill bk-glass" style="top: 20px" aria-label="Разделы">
+        <a href="#" aria-current="page">Карта</a><a href="#">Картина дня</a><a href="#">Обращения</a><a href="#">Проекты</a><a href="#">Ещё</a>
+      </nav>
+      <div class="ra-abs bk-me bk-glass" style="right: 20px; top: 20px"><span>ҚАЗ · <b>РУС</b></span><button class="bk-ava" type="button" aria-label="Профиль">А</button></div>
+
+      <section class="ra-abs bk-sum bk-glass bk-glass--strong" style="left: 20px; top: 132px" aria-label="Сегодня в Астане">
+        <div class="bk-sum__hd"><b>Сегодня в Астане</b><button class="bk-x" type="button" aria-label="Закрыть" style="background: none; width: 18px; height: 18px; color: var(--c-text-3)"><svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-close" /></svg></button></div>
+        <div class="bk-kpis bk-kpis--3">
+          <div class="bk-kpi"><span class="bk-kpi__value">34</span><span class="bk-kpi__label">новых</span></div>
+          <div class="bk-kpi"><span class="bk-kpi__value">12</span><span class="bk-kpi__label">в работе</span></div>
+          <div class="bk-kpi"><span class="bk-kpi__value" style="color: var(--heat-3)">5</span><span class="bk-kpi__label">просрочено</span></div>
+        </div>
+        <div class="bk-hot"><span class="bk-hot__cnt" data-level="4">11</span><p class="bk-hot__name">Двор у ул. Коксенгир<small>Дворы и площадки</small></p></div>
+        <div class="bk-hot"><span class="bk-hot__cnt" data-level="2">8</span><p class="bk-hot__name">Участок ул. Сыганак<small>Снег и гололёд</small></p></div>
+        <div class="bk-hot"><span class="bk-hot__cnt" data-level="3">6</span><p class="bk-hot__name">Остановка «Хан Шатыр»<small>Остановки и транспорт</small></p></div>
+        <a class="bk-more" href="#" style="padding-top: 8px">Все горячие места</a>
+      </section>
+
+      <div class="ra-abs ra-vcenter bk-mapctl" style="right: 20px">
+        <button class="bk-mapbtn bk-glass--control" type="button" aria-label="Где я"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-locate" /></svg></button>
+        <div class="bk-mapctl__group bk-glass--control">
+          <button class="bk-mapbtn" type="button" aria-label="Приблизить"><svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-plus" /></svg></button>
+          <button class="bk-mapbtn" type="button" aria-label="Отдалить"><svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-minus" /></svg></button>
+        </div>
+        <button class="bk-mapbtn bk-glass--control" type="button" aria-pressed="false">3D</button>
+        <button class="bk-mapbtn bk-glass--control" type="button" aria-label="Слои"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-layers" /></svg></button>
+      </div>
+      <div class="ra-abs bk-legend bk-legend--line bk-glass bk-glass--bar" style="left: 20px; bottom: 20px">мало<span class="bk-legend__scale" aria-hidden="true"></span>много<span aria-hidden="true">·</span><span class="bk-legend__fixed">исправлено</span></div>
+    </main>
+
+    <!-- ============ 2. Выбран объект ============ -->
+    <main class="ra-frame" data-f="obj" aria-label="Выбран объект">
+      <svg class="ra-map" aria-hidden="true"><use href="#map" /></svg>
+      <div class="ra-at-pin" style="left: 620px; top: 200px"><span class="bk-pin is-dim" data-level="4"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-trees" /></svg></span><span class="bk-pin__n">11</span></span></div>
+      <div class="ra-at-pin" style="left: 700px; top: 520px"><span class="bk-pin is-dim" data-level="2"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-snowflake" /></svg></span><span class="bk-pin__n">8</span></span></div>
+      <div class="ra-at-pin" style="left: 1110px; top: 260px"><span class="bk-pin is-dim" data-level="1"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-bulb" /></svg></span><span class="bk-pin__n">2</span></span></div>
+      <div class="ra-at-pin" style="left: 880px; top: 330px"><span class="bk-pin is-sel" data-level="3"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-bus" /></svg></span><span class="bk-pin__n">6</span></span></div>
+
+      <div class="ra-abs bk-searchbar bk-glass bk-glass--strong" style="left: 20px; top: 20px; width: 388px">
+        <span class="bk-logo"><svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-home" /></svg></span>
+        <svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-search" /></svg>
+        <input type="search" placeholder="Улица, остановка или район" aria-label="Поиск по карте" />
+        <kbd class="bk-kbd">/</kbd>
+      </div>
+      <nav class="ra-abs ra-center bk-navpill bk-glass" style="top: 20px" aria-label="Разделы">
+        <a href="#" aria-current="page">Карта</a><a href="#">Картина дня</a><a href="#">Обращения</a><a href="#">Проекты</a><a href="#">Ещё</a>
+      </nav>
+      <div class="ra-abs bk-me bk-glass" style="right: 20px; top: 20px"><span>ҚАЗ · <b>РУС</b></span><button class="bk-ava" type="button" aria-label="Профиль">А</button></div>
+
+      <section class="ra-abs bk-objcard bk-glass bk-glass--strong bk-enter-left" style="left: 20px; top: 84px" aria-labelledby="ra-obj-t">
+        <div class="bk-objcard__hd">
+          <span class="bk-tile"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-bus" /></svg></span>
+          <div><h2 class="bk-objcard__title" id="ra-obj-t">Остановка «Хан Шатыр»</h2><p class="bk-objcard__sub">Остановки и транспорт · просп. Туран</p></div>
+          <button class="bk-x" type="button" aria-label="Закрыть"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-close" /></svg></button>
+        </div>
+        <div class="bk-big"><b>6</b><span>человек сообщили · за 14 дней</span></div>
+        <div class="bk-stline"><span class="bk-status" data-status="in_progress">В работе · Дорожная служба</span><small>до 14 окт</small></div>
+        <div class="bk-acts"><button class="bk-btn bk-btn--primary" type="button">Отметить исправленным</button><button class="bk-btn" type="button">Ответить</button></div>
+        <div class="bk-tabs" role="tablist" aria-label="Об объекте">
+          <button role="tab" type="button" aria-selected="true">Обзор</button><button role="tab" type="button" aria-selected="false">Обращения · 6</button><button role="tab" type="button" aria-selected="false">История</button>
+        </div>
+        <div class="bk-rows">
+          <div class="bk-row"><span class="bk-row__ic"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-bulb" /></svg></span><span class="bk-row__label">Чаще всего</span><b class="bk-row__value">Не горит свет</b></div>
+          <div class="bk-row"><span class="bk-row__ic"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-clock" /></svg></span><span class="bk-row__label">Следующее обновление</span><b class="bk-row__value">16 октября</b></div>
+          <div class="bk-row"><span class="bk-row__ic"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-school" /></svg></span><span class="bk-row__label">Рядом</span><b class="bk-row__value">Школа № 12 · 180 м</b></div>
+          <div class="bk-row" style="display: block">
+            <p class="bk-quote">«Третий день не горит свет, вечером страшно ждать автобус с ребёнком. Фонарь у павильона тоже не работает»</p>
+            <a class="bk-more" href="#">Ещё 5 обращений</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="ra-abs ra-vcenter bk-mapctl" style="right: 20px">
+        <button class="bk-mapbtn bk-glass--control" type="button" aria-label="Где я"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-locate" /></svg></button>
+        <div class="bk-mapctl__group bk-glass--control">
+          <button class="bk-mapbtn" type="button" aria-label="Приблизить"><svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-plus" /></svg></button>
+          <button class="bk-mapbtn" type="button" aria-label="Отдалить"><svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-minus" /></svg></button>
+        </div>
+        <button class="bk-mapbtn bk-glass--control" type="button" aria-pressed="false">3D</button>
+        <button class="bk-mapbtn bk-glass--control" type="button" aria-label="Слои"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-layers" /></svg></button>
+      </div>
+    </main>
+
+    <!-- ============ 3. Проекты и идеи ============ -->
+    <main class="ra-frame" data-f="proj" aria-label="Проекты и идеи">
+      <svg class="ra-map" aria-hidden="true"><use href="#map" /></svg>
+      <svg class="ra-abs" style="left: 880px; top: 300px; transform: translate(-50%, -100%)" width="150" height="110" viewBox="0 0 150 110" aria-hidden="true">
+        <path d="M75 40 140 70 75 100 10 70Z" fill="#D9EFC4" stroke="#B8DB95" stroke-width="2" stroke-dasharray="6 5" />
+        <g fill="#7FC08D"><circle cx="48" cy="58" r="11" /><circle cx="96" cy="56" r="12" /><circle cx="70" cy="74" r="10" /><circle cx="108" cy="78" r="9" /></g>
+        <g stroke="#7A6248" stroke-width="3"><path d="M48 69v8M96 68v8M70 84v6M108 87v6" /></g>
+        <path d="M30 70h90" stroke="#F4EFE3" stroke-width="5" stroke-linecap="round" />
+      </svg>
+      <span class="ra-abs bk-tag-proj" style="left: 880px; top: 296px; transform: translate(-50%, -100%)">Проект · 2027</span>
+
+      <div class="ra-abs bk-searchbar bk-glass bk-glass--strong" style="left: 20px; top: 20px; width: 388px">
+        <span class="bk-logo"><svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-home" /></svg></span>
+        <svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-search" /></svg>
+        <input type="search" placeholder="Найти проект или идею" aria-label="Поиск проектов" />
+      </div>
+      <nav class="ra-abs ra-center bk-navpill bk-glass" style="top: 20px" aria-label="Разделы">
+        <a href="#">Карта</a><a href="#">Картина дня</a><a href="#">Обращения</a><a href="#" aria-current="page">Проекты</a><a href="#">Ещё</a>
+      </nav>
+      <div class="ra-abs bk-me bk-glass" style="right: 20px; top: 20px"><span>ҚАЗ · <b>РУС</b></span><button class="bk-ava" type="button" aria-label="Профиль">А</button></div>
+
+      <section class="ra-abs bk-psheet bk-glass bk-glass--strong" style="left: 20px; top: 84px; bottom: 20px" aria-labelledby="ra-proj-t">
+        <div class="bk-psheet__hd"><b id="ra-proj-t">Проекты и идеи</b><button class="bk-x" type="button" aria-label="Закрыть"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-close" /></svg></button></div>
+        <div class="bk-seg" role="group" aria-label="Что показать"><button type="button" aria-pressed="true">Идеи жителей · 6</button><button type="button" aria-pressed="false">Проекты акимата · 4</button></div>
+        <div class="bk-plist">
+          <article class="bk-pc is-on">
+            <span class="bk-thumb"><svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><rect width="84" height="84" fill="#EAF4E0" /><g fill="#7FC08D"><circle cx="28" cy="40" r="11" /><circle cx="54" cy="36" r="13" /><circle cx="44" cy="58" r="10" /></g><path d="M8 66h68" stroke="#F4EFE3" stroke-width="6" stroke-linecap="round" /></svg></span>
+            <div class="bk-pc__body"><p class="bk-pc__title">Сквер у ЖК «Амина»</p><span class="bk-pc__sub">Идея жителей · Нура</span>
+              <div class="bk-pc__foot"><span class="bk-pill bk-pill--review">На проверке</span><button class="bk-vote" type="button" aria-pressed="false" aria-label="Поддержать, 47"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-heart" /></svg>47</button></div>
+            </div>
+          </article>
+          <article class="bk-pc">
+            <span class="bk-thumb"><svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><rect width="84" height="84" fill="#E8F0F6" /><rect x="18" y="30" width="48" height="30" rx="4" fill="#fff" stroke="#9FB7C7" stroke-width="2" /><path d="M18 30 42 16 66 30" fill="none" stroke="#9FB7C7" stroke-width="2" /><rect x="26" y="44" width="10" height="16" fill="#F4C76A" /></svg></span>
+            <div class="bk-pc__body"><p class="bk-pc__title">Павильон на остановке «Хан Шатыр»</p><span class="bk-pc__sub">Идея жителей · 6 жалоб рядом</span>
+              <div class="bk-pc__foot"><span class="bk-pill bk-pill--accepted">Принято в проект</span><button class="bk-vote" type="button" aria-pressed="false" aria-label="Поддержать, 31"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-heart" /></svg>31</button></div>
+            </div>
+          </article>
+          <article class="bk-pc">
+            <span class="bk-thumb"><svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><rect width="84" height="84" fill="#FDF3E3" /><path d="M20 62 42 24 64 62" fill="none" stroke="#E0A64B" stroke-width="4" stroke-linejoin="round" /><circle cx="42" cy="22" r="5" fill="#E24B4A" /><path d="M14 64h56" stroke="#D9CBB0" stroke-width="4" stroke-linecap="round" /></svg></span>
+            <div class="bk-pc__body"><p class="bk-pc__title">Детская площадка во дворе</p><span class="bk-pc__sub">Идея жителей · ул. Коксенгир</span>
+              <div class="bk-pc__foot"><span class="bk-pill">Сбор голосов</span><button class="bk-vote" type="button" aria-pressed="false" aria-label="Поддержать, 19"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-heart" /></svg>19</button></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="ra-abs bk-pd bk-glass bk-glass--strong" style="right: 84px; top: 132px" aria-labelledby="ra-pd-t">
+        <div class="bk-pd__im"><svg width="340" height="150" viewBox="0 0 340 150" aria-hidden="true"><rect width="340" height="150" fill="#E7F2DD" /><path d="M170 40 300 95 170 140 40 95Z" fill="#D2EAB9" /><g fill="#7FC08D"><circle cx="120" cy="88" r="16" /><circle cx="200" cy="80" r="18" /><circle cx="160" cy="108" r="14" /><circle cx="235" cy="104" r="13" /></g><path d="M80 96h180" stroke="#F4EFE3" stroke-width="7" stroke-linecap="round" /></svg></div>
+        <div class="bk-pd__in">
+          <h3 class="bk-pd__title" id="ra-pd-t">Сквер у ЖК «Амина»</h3>
+          <div class="bk-facts"><div><b>47</b><span>поддержали</span></div><div><b>2027</b><span>срок</span></div><div><b>~45 млн ₸</b><span>оценка</span></div></div>
+          <p class="bk-quote" style="color: var(--c-text-2)">Жители предлагают сквер на пустыре между домами: деревья, дорожки и скамейки.</p>
+          <div class="bk-acts"><button class="bk-btn bk-btn--primary" type="button">Поддержать</button><button class="bk-btn" type="button">Подробнее</button></div>
+          <p class="bk-pd__note">Это опрос для выбора концепции — решение принимает акимат.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ 4. Житель, телефон ============ -->
+    <main class="ra-frame ra-frame--phone" data-f="phone" aria-label="Житель на телефоне">
+      <svg class="ra-map" viewBox="760 140 375 812" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#map" /></svg>
+      <div class="ra-at-pin" style="left: 150px; top: 250px"><span class="bk-pin" data-level="3"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-bus" /></svg></span><span class="bk-pin__n">6</span></span></div>
+      <div class="ra-at-pin" style="left: 260px; top: 380px"><span class="bk-pin" data-level="1"><span class="bk-pin__c"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-bulb" /></svg></span><span class="bk-pin__n">2</span></span></div>
+      <div class="ra-abs bk-psearch bk-glass bk-glass--strong" style="left: 14px; right: 14px; top: 54px">
+        <svg class="ic" aria-hidden="true" style="width: 18px; height: 18px"><use href="../icons.svg#i-search" /></svg>Улица, остановка или район
+      </div>
+      <section class="ra-abs bk-phsheet bk-glass bk-glass--strong bk-glass--sheet" style="left: 0; right: 0; bottom: 0" aria-labelledby="ra-near-t">
+        <div class="bk-handle" aria-hidden="true"></div>
+        <div class="bk-phsheet__hd"><h2 class="bk-phsheet__title" id="ra-near-t">Рядом с вами</h2><span class="bk-me" style="height: auto; padding: 0; color: var(--c-text-3)">ҚАЗ · <b>РУС</b></span></div>
+        <div class="bk-hot"><span class="bk-hot__cnt" data-level="3">6</span><p class="bk-hot__name">Остановка «Хан Шатыр»<small>Не горит свет · в работе</small></p></div>
+        <div class="bk-hot"><span class="bk-hot__cnt" data-level="fixed" aria-label="исправлено">✓</span><p class="bk-hot__name">Двор у ул. Сыганак<small>Снег убран · проверьте</small></p></div>
+        <div class="bk-hot"><span class="bk-hot__cnt" data-level="1">2</span><p class="bk-hot__name">Участок ул. Кунаева<small>Освещение</small></p></div>
+      </section>
+      <button class="ra-abs bk-fab" type="button" style="left: 16px; right: 16px; bottom: 34px">
+        <span class="bk-fab__ic"><svg class="ic" aria-hidden="true"><use href="../icons.svg#i-plus" /></svg></span>Сообщить о проблеме
+      </button>
+    </main>
+
+    <script>
+      (function () {
+        var q = new URLSearchParams(location.search);
+        var f = q.get("f") || "home";
+        var frames = document.querySelectorAll(".ra-frame");
+        frames.forEach(function (el) {
+          el.classList.toggle("is-on", el.getAttribute("data-f") === f);
+        });
+        if (q.get("solid") === "1") document.documentElement.classList.add("bk-glass-off");
+      })();
+    </script>
+  </body>
+</html>

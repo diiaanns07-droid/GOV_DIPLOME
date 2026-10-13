@@ -131,7 +131,7 @@
   gap: var(--s-2);
   min-height: var(--tap);
   min-width: var(--tap);
-  padding: var(--s-2) var(--s-4); /* эталон .btn: высота 44, поля 16 */
+  padding: var(--s-2) 15px; /* эталон .btn: высота 44, поля 16 от края (15 + рамка 1) */
   border: 1px solid transparent; /* чистый дизайн: второстепенная кнопка — серая заливка, без рамки */
   border-radius: var(--r-m);
   background: var(--c-fill);
@@ -250,6 +250,7 @@
   color: var(--c-ink);
   box-shadow: var(--shadow-1);
   font: inherit;
+  font-size: var(--fs-caption); /* «3D» — эталон .ctl .b: 13/600 */
   font-weight: var(--fw-bold);
   cursor: pointer;
 }
@@ -344,7 +345,7 @@
 .bk-seg > button {
   position: relative;
   flex: 1;
-  min-height: 34px;
+  min-height: 30px; /* эталон .seg span: 13 px + поля 7 */
   min-width: 48px;
   padding: 0 var(--s-3);
   border: 0;
@@ -359,7 +360,7 @@
 .bk-seg > button::after {
   content: "";
   position: absolute;
-  inset: -5px 0;
+  inset: -7px 0; /* зона нажатия 44 */
 }
 .bk-seg > button[aria-pressed="true"] {
   background: var(--c-surface);
@@ -1720,6 +1721,7 @@ p.bk-banner--warn {
   font-variant-numeric: tabular-nums;
 }
 .bk-kpi__label {
+  line-height: 1.6; /* эталон: подпись 12 в строке 16 px (≈ 19) */
   font-size: var(--fs-xs);
   font-weight: var(--fw-regular);
   color: var(--c-text-2);
@@ -1924,6 +1926,7 @@ p.bk-banner--warn {
 /* Легенда ОДНОЙ строкой: «мало ▬▬▬ много · ✓ исправлено» + «?» с подробностями (числа, «служба сообщила»,
    «нет свежих данных») — подробности в подсказке, не на карте. */
 .bk-legend--line {
+  line-height: var(--lh-ui);
   flex-wrap: nowrap;
   gap: 10px;
   padding: 0 14px;
@@ -2092,6 +2095,7 @@ p.bk-banner--warn {
 
 /* Поиск со знаком слева (эталон .search: 388 × 52, радиус 16, плотное стекло; знак 30, радиус 9; подсказка «/») */
 .bk-searchbar {
+  line-height: var(--lh-ui);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -2142,6 +2146,7 @@ p.bk-banner--warn {
 
 /* Навигация-капсула по центру (эталон .nav: 44, поля 4, пункт 36 × (0 16), 14/500; выбранный — почти чёрный) */
 .bk-navpill {
+  line-height: var(--lh-ui);
   display: flex;
   align-items: center;
   gap: 2px;
@@ -2180,6 +2185,7 @@ p.bk-banner--warn {
 
 /* Язык и профиль справа (эталон .me: 44, поля 0 4 0 14, 13 вторичным; аватар 36 лайм) */
 .bk-me {
+  line-height: var(--lh-ui);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -2212,17 +2218,27 @@ p.bk-banner--warn {
 
 /* Чипы категорий над картой — на лёгком стекле (эталон .chip.glass); выбранный — почти чёрный */
 .bk-chip--glass {
+  border-color: var(--glass-edge);
   background-color: var(--glass-panel);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  box-shadow: inset 0 0 0 1px var(--glass-edge), 0 0 0 0.5px var(--glass-hairline), var(--glass-shadow);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 0 0 0.5px var(--glass-hairline), var(--glass-shadow);
 }
-.bk-chip--glass:hover {
+.bk-chip--glass:not([aria-pressed="true"]):not([aria-checked="true"]):hover {
   background-color: var(--glass-strong);
+}
+/* выбранный — сплошной почти чёрный без стекла и тени (эталон .chip.on) */
+.bk-chip--glass[aria-pressed="true"],
+.bk-chip--glass[aria-checked="true"] {
+  border-color: var(--c-primary);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
 }
 
 /* ── Карточка слева под поиском (эталон .card: 388, радиус 18, плотное стекло; закрывается ×, Esc, картой) ── */
 .bk-objcard {
+  line-height: var(--lh-ui);
   width: var(--panel-w);
   border-radius: var(--r-xl);
   overflow: hidden;
@@ -2298,7 +2314,6 @@ p.bk-banner--warn {
   font-size: var(--fs-num);
   font-weight: var(--fw-semi);
   letter-spacing: var(--ls-num);
-  line-height: 1.1;
 }
 .bk-big span {
   color: var(--c-text-2);
@@ -2330,11 +2345,13 @@ p.bk-banner--warn {
 }
 .bk-objcard .bk-tabs {
   margin: 4px 0 0;
-  padding: 16px 18px 0;
+  padding: 0 18px;
 }
+/* вкладка выглядит как в эталоне (поле 16 сверху — внутри вкладки), а зона нажатия — 44 */
 .bk-objcard .bk-tabs > [role="tab"] {
   min-height: 0;
-  padding-bottom: 10px;
+  padding: 16px 0 8px; /* + линия 2 = 10 под текстом, как в эталоне; вся вкладка 44 */
+  line-height: 18px;
 }
 /* Строки «Обзора» (эталон .rows/.row): 14, поля 10, линия между; плитка 30 радиус 9; значение справа 500 */
 .bk-rows {
@@ -2375,7 +2392,7 @@ p.bk-banner--warn {
 }
 /* Цитата жителя — не больше 2 строк */
 .bk-quote {
-  margin: 0;
+  margin: 1em 0; /* эталон: поля абзаца 14 сверху и снизу */
   color: var(--c-ink);
   font-size: var(--fs-small);
   line-height: var(--lh-text);
@@ -2403,6 +2420,7 @@ p.bk-banner--warn {
 
 /* ── Сводка на главной «Сегодня в Астане» (эталон .sum: 388, поля 16/18; 3 числа и топ-3 горячих места) ── */
 .bk-sum {
+  line-height: var(--lh-ui);
   width: var(--panel-w);
   padding: 16px 18px;
   border-radius: var(--r-xl);
@@ -2471,6 +2489,7 @@ p.bk-banner--warn {
 
 /* ── «Проекты и идеи» (эталон .sheet 412, .seg, .pc как в App Store, .pd детали) ── */
 .bk-psheet {
+  line-height: var(--lh-ui);
   display: flex;
   flex-direction: column;
   width: var(--sheet-w);
@@ -2550,8 +2569,7 @@ p.bk-banner--warn {
   align-items: center;
   justify-content: space-between;
   gap: var(--s-2);
-  margin-top: auto;
-  padding-top: var(--s-2);
+  margin-top: auto; /* эталон .pc .t .f: прижат к низу, без своего поля */
 }
 /* Плашка статуса проекта: 12/600, поля 4/9, капсула (цвет — по смыслу) */
 .bk-pill {
@@ -2606,6 +2624,7 @@ p.bk-banner--warn {
 }
 /* Детали проекта (эталон .pd: 340, картинка 150, 3 цифры, одно предложение, «Поддержать» / «Подробнее») */
 .bk-pd {
+  line-height: var(--lh-ui);
   width: 340px;
   border-radius: var(--r-xl);
   overflow: hidden;
@@ -2646,6 +2665,8 @@ p.bk-banner--warn {
   font-weight: var(--fw-semi);
 }
 .bk-facts span {
+  display: block;
+  line-height: 1.6;
   color: var(--c-text-2);
   font-size: var(--fs-xs);
 }
@@ -2738,6 +2759,7 @@ p.bk-banner--warn {
 
 /* ── Телефон: поиск сверху, шторка «Рядом с вами», «Сообщить о проблеме» внизу ── */
 .bk-psearch {
+  line-height: var(--lh-ui);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -2746,6 +2768,23 @@ p.bk-banner--warn {
   border-radius: var(--r-l);
   color: var(--c-text-3);
   font-size: var(--fs-body);
+}
+/* Шторка телефона «Рядом с вами» (эталон .p-sheet: высота 360, верхние углы 26, поля 8/16) — вместе с .bk-glass--sheet */
+.bk-phsheet {
+  line-height: var(--lh-ui);
+  height: var(--sheet-half);
+  padding: 8px 16px 0;
+}
+.bk-phsheet__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.bk-phsheet__title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semi);
 }
 .bk-handle {
   width: 38px;
@@ -2831,11 +2870,11 @@ p.bk-banner--warn {
   background-image: var(--glass-highlight);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  border: 0;
+  /* эталон .glass: настоящая граница 1 px rgba(255,255,255,.7) — содержимое отступает на 1 px, как в эталоне; размер элемента
+     не меняется (box-sizing: border-box у .bk-app и у сборки) */
+  border: 1px solid var(--glass-edge);
   border-radius: var(--r-glass);
-  /* эталон --shadow + граница 1 px rgba(255,255,255,.7); граница — внутренней тенью, чтобы класс не менял размер */
   box-shadow:
-    inset 0 0 0 1px var(--glass-edge),
     inset 0 1px 0 rgba(255, 255, 255, 0.75),
     0 0 0 0.5px var(--glass-hairline),
     var(--glass-shadow);
@@ -2873,6 +2912,7 @@ p.bk-banner--warn {
 /* нажатая кнопка (3D включено, слой открыт) — сплошной акцент, как раньше */
 .bk-glass--control[aria-pressed="true"],
 .bk-glass--control[aria-expanded="true"] {
+  border-color: transparent;
   background-color: var(--c-primary);
   background-image: none;
   color: #fff;
@@ -2883,6 +2923,24 @@ p.bk-banner--warn {
 }
 .bk-mapctl__group.bk-glass--control > .bk-mapbtn + .bk-mapbtn {
   border-top-color: var(--c-line);
+}
+/* Детали эталона на стекле сохраняют свою форму: поиск 16, капсулы — круглые (класс стекла форму не меняет) */
+.bk-glass.bk-searchbar,
+.bk-glass.bk-psearch {
+  border-radius: var(--r-l);
+}
+.bk-glass.bk-navpill,
+.bk-glass.bk-me {
+  border-radius: var(--r-pill);
+}
+/* поле поиска на стекле — само стекло (без белой подложки полей формы); лупа — серая, как в эталоне */
+.bk-searchbar.bk-glass input {
+  background: transparent;
+  box-shadow: none;
+}
+.bk-searchbar > .ic,
+.bk-glass.bk-psearch {
+  color: var(--c-text-3);
 }
 /* Стекло внутри стекла (меню аватара и «Ещё» в стеклянной шапке): у предка с backdrop-filter свой «корень фона» — вложенное
    стекло размывает только сам предок, а не карту под ним, и текст карты просвечивает резко (R01 INTEGRATION 25.3).
@@ -2922,6 +2980,7 @@ p.bk-banner--warn {
 /* Кнопка-стекло внутри стеклянной строки (например «?» в строке легенды) — без второго слоя стекла и второй тени:
    одна поверхность, кнопка плоская, при наведении — лёгкая заливка */
 .bk-glass .bk-glass--control:not([aria-pressed="true"]):not([aria-expanded="true"]) {
+  border-color: transparent;
   background-color: transparent;
   background-image: none;
   -webkit-backdrop-filter: none;
