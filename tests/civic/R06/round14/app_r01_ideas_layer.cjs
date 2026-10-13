@@ -73,9 +73,10 @@ const freePort = () => new Promise((ok, no) => { const s = net.createServer().on
       check(`${tag} хотя бы одна метка идеи не закрыта кнопками и шторкой`, free >= 0, free);
       if (free >= 0) {
         await page.locator(".b3d-label--idea").nth(free).click();
-        await page.waitForSelector(".ri .ri-card--flash, .ri .ri-card", { timeout: 15000 }).catch(() => null);
-        const opened = await page.evaluate(() => [window.BirgeShell.section, !!document.querySelector(".ri .ri-card")]);
-        check(`${tag} нажатие на метку идеи — раздел «Идеи», карточка открыта`, opened[0] === "ideas" && opened[1], JSON.stringify(opened));
+        await page.waitForSelector(".ri .ri-pc[aria-current=true]", { timeout: 15000 }).catch(() => null);
+        // Эталон 13 окт: идея выбрана в листе (рамка), её карточка открыта (ноутбук — справа, телефон — под строкой).
+        const opened = await page.evaluate(() => [window.BirgeShell.section, !!document.querySelector(".ri .ri-pc[aria-current=true]"), !!document.querySelector(".ri-pd")]);
+        check(`${tag} нажатие на метку идеи — раздел «Идеи», идея выбрана, карточка открыта`, opened[0] === "ideas" && opened[1] && opened[2], JSON.stringify(opened));
       }
       await page.evaluate(() => { window.BirgeShell.setSection("map"); window.BirgeShell.setLayer(null); });
       await page.waitForTimeout(500);

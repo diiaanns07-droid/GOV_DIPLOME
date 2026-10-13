@@ -133,7 +133,7 @@
       "idea.pill.review": "На проверке", "idea.pill.voting": "Сбор голосов", "idea.pill.checking": "Акимат проверяет",
       "idea.pill.project": "Принято в проект", "idea.pill.rejected": "Отклонена", "idea.pill.hidden": "Не опубликована",
       "idea.fact.supported": "поддержали", "idea.fact.year": "срок", "idea.fact.district": "район", "idea.fact.object": "объект",
-      "idea.fact.for": "за", "idea.fact.against": "против",
+      "idea.fact.for": "за", "idea.fact.against": "против", "idea.on_map": "На карте",
     },
     kk: {
       "idea.status.review": "Тексерілуде",
@@ -192,7 +192,7 @@
       "idea.pill.review": "Тексеруде", "idea.pill.voting": "Дауыс жинау", "idea.pill.checking": "Әкімдік тексеруде",
       "idea.pill.project": "Жобаға қабылданды", "idea.pill.rejected": "Қабылданбады", "idea.pill.hidden": "Жарияланбады",
       "idea.fact.supported": "қолдады", "idea.fact.year": "мерзімі", "idea.fact.district": "аудан", "idea.fact.object": "нысан",
-      "idea.fact.for": "жақтайды", "idea.fact.against": "қарсы",
+      "idea.fact.for": "жақтайды", "idea.fact.against": "қарсы", "idea.on_map": "Картада",
     },
   };
 
@@ -520,7 +520,7 @@
       items: null, counts: {}, projects: null, error: null, view: "list", busy: false,
       flash: pendingFocus, step: 1, sent: null,
     };
-    pendingFocus = null;
+    // pendingFocus гасится, когда идея найдена в загруженном списке (load): оболочка может пересоздать экран до ответа.
     var alive = true;
     rootEl.classList.add("ri");
     if (!akimat && loadDraft() && draft.active) state.view = "new";
@@ -542,7 +542,10 @@
         state.counts = (res[0] && res[0].counts) || {};
         state.appear = true;
         state.projects = res[1] ? res[1].items || [] : [];
-        if (state.flash) focusIdea(state.flash);
+        if (state.flash) {
+          focusIdea(state.flash);
+          if (pendingFocus === state.flash) pendingFocus = null;
+        }
         render();
       }, function (err) {
         if (!alive) return;
@@ -583,7 +586,8 @@
         var again = rootEl.querySelector('[data-key="' + focusKey + '"]') || (detailHost && detailHost.querySelector('[data-key="' + focusKey + '"]'));
         if (again) again.focus();
       }
-      if (state.flash) {
+      // Подсветка идеи с метки на карте — когда список уже загружен (иначе её применит load).
+      if (state.flash && state.items) {
         var card = rootEl.querySelector('[data-idea="' + state.flash + '"]');
         if (card) {
           card.classList.add("ri-card--flash");
@@ -718,14 +722,14 @@
       rootEl.appendChild(body);
       if (!akimat) {
         rootEl.appendChild(h("div", { class: "ri-sheet-ft" }, [
-          h("button", { type: "button", class: "bk-btn bk-btn--primary ri-newbtn", "data-key": "new", onclick: startWizard }, [
+          h("button", { type: "button", class: "bk-btn ri-newbtn", "data-key": "new", onclick: startWizard }, [
             h("span", { class: "ri-newbtn__ic", "aria-hidden": "true" }, [icon("plus")]), h("span", { text: tr("idea.new") })])]));
       }
       placeDetail(sel);
       // Выбор сменился (нажатие, ↑↓, первая карточка после загрузки или смены вкладки) — карта плавно ведёт к объекту.
       if (sel && state.mapFor !== sel.id) {
         state.mapFor = sel.id;
-        moveMap(sel);
+        moveMap(sel, 0);
       }
     }
 
@@ -822,19 +826,33 @@
       return c && c.length ? c[Math.floor(c.length / 2)] : null;
     }
     // Карта плавно переходит к выбранному: объект — между листом и карточкой (бесшовно «список ↔ карта», как в 2ГИС).
-    function moveMap(x) {
+    function moveMap(x, tries) {
       var m = mapObject(), p = pointOf(x);
-      if (!m || !p || !wide()) return;
-      // Метки идей на карте — слой «Идеи жителей» (R05), пока открыт раздел; закрыли раздел — карта как была (destroy).
-      if (state.tab === "ideas" && shell() && shell().setLayer && build3d() && build3d().setIdeas && !doc.body.dataset.birgeLayer) {
-        state.layerMine = true;
-        shell().setLayer("ideas");
+      if (!p || !wide() || !alive) return;
+      // Карта поднимается после оболочки: при открытии раздела по ссылке ждём её до ~12 с.
+      if (!m && tries < 40) {
+        setTimeout(function () { if (state.mapFor === x.id) moveMap(x, tries + 1); }, 300);
+        return;
       }
+      if (state.tab === "ideas") ideasLayer(0);
+      if (!m) return;
       var reduce = root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches;
       try {
         m.easeTo({ center: p, zoom: Math.max(m.getZoom(), 15.5), duration: reduce ? 0 : 600,
           padding: { left: 452, right: detailHost && detailHost.isConnected ? 444 : 84, top: 84, bottom: 40 } });
       } catch (e) { /* карта не готова — без перехода */ }
+    }
+    // Метки идей на карте — слой «Идеи жителей» (R05), пока открыт раздел; закрыли раздел — карта как была (destroy).
+    // Слой регистрируется, когда поднялся 3D-модуль R05 (registerLayer ниже) — до этого пробуем снова, до ~12 с.
+    // Включённый жителем другой слой не трогаем.
+    function ideasLayer(tries) {
+      if (!alive || state.view !== "list" || state.tab !== "ideas" || doc.body.dataset.birgeLayer) return;
+      var S = shell();
+      if (S && S.setLayer && build3d() && build3d().setIdeas) {
+        S.setLayer("ideas");
+        if (doc.body.dataset.birgeLayer === "ideas") { state.layerMine = true; return; }
+      }
+      if (tries < 40) setTimeout(function () { ideasLayer(tries + 1); }, 300);
     }
     // ↑ ↓ / J K — по строкам списка, Enter — открыть, Esc — закрыть карточку (правило 2 эталона).
     function onKeys(e) {
@@ -932,7 +950,7 @@
         row.appendChild(button("bk-btn--primary ri-pd__main", tr(on ? "idea.supported" : "idea.support"), on ? "check" : null,
           { "aria-pressed": String(on), "data-key": "pd-support", onclick: function () { support(item, !item.my_support); } }));
       } else if (item.status !== "hidden") {
-        row.appendChild(button("bk-btn--primary ri-pd__main", tr("map.card.on_map"), "pin", { "data-key": "pd-map", onclick: function () { showOnMap(item, opts); } }));
+        row.appendChild(button("bk-btn--primary ri-pd__main", tr("idea.on_map"), "pin", { "data-key": "pd-map", onclick: function () { showOnMap(item, opts); } }));
       }
       row.appendChild(button("ri-pd__second", tr(state.more ? "idea.check_close" : "common.action.more"), null,
         { "aria-expanded": String(!!state.more), "data-key": "pd-more", onclick: function () { state.more = !state.more; render(); } }));
@@ -962,13 +980,13 @@
       if ((item.status === "voting" || item.status === "checking") && state.mode !== "check" && !(state.form && state.form.mode)) {
         wrap.appendChild(h("div", { class: "bk-acts ri-pd__acts" }, [
           button("bk-btn--primary ri-pd__main", tr("idea.check_open"), "edit", { "data-key": "pd-check", onclick: function () { state.mode = "check"; state.panelIn = item.id; render(); } }),
-          button("ri-pd__second", tr("map.card.on_map"), "pin", { onclick: function () { showOnMap(item, opts); } }),
+          button("ri-pd__second", tr("idea.on_map"), "pin", { onclick: function () { showOnMap(item, opts); } }),
         ]));
         return wrap;
       }
       if (isDecided(item) && state.mode !== "hide" && !(state.form && state.form.mode)) {
         wrap.appendChild(h("div", { class: "bk-acts ri-pd__acts" }, [
-          button("ri-pd__second", tr("map.card.on_map"), "pin", { onclick: function () { showOnMap(item, opts); } }),
+          button("ri-pd__second", tr("idea.on_map"), "pin", { onclick: function () { showOnMap(item, opts); } }),
           button("bk-btn--ghost ri-hidebtn", tr("idea.hide_short"), null, { "data-key": "pd-hide", onclick: function () {
             state.form = null;
             state.panelIn = item.id;

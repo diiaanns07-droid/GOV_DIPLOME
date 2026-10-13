@@ -89,7 +89,7 @@
   position: relative;
   flex: 1 1 0;
   min-width: 0;
-  min-height: 0;
+  min-height: 34px; /* + 5 сверху и снизу (::after) — зона нажатия 44, как .bk-seg ui-kit R11 */
   padding: 7px 4px;
   border: 0;
   border-radius: 9px;
@@ -340,7 +340,8 @@
   }
 }
 
-/* Нижняя строка листа у жителя: «Предложить идею» — тёмная, значок на лаймовой плашке (как кнопка телефона в эталоне). */
+/* Нижняя строка листа у жителя: «Предложить идею» — второстепенная (серая заливка эталона .btn.s), значок на лаймовой
+   плашке; главная кнопка экрана — «Поддержать» в карточке выбранного (одна главная, эталон). */
 .ri-sheet-ft {
   flex: none;
   padding: 10px 12px 12px;
@@ -350,9 +351,11 @@
   width: 100%;
   min-height: 44px;
   gap: 10px;
+  border: 0;
   border-radius: var(--r-m, 12px);
-  background: var(--c-primary, #121a17);
-  color: var(--c-on-primary, #fff);
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
+  box-shadow: none;
   font-size: var(--fs-body, 15px);
   font-weight: var(--fw-semi, 600);
 }
@@ -488,7 +491,7 @@
 /* «Скрыть: личные данные…» — тихая строка под кнопками, по левому краю (не третья кнопка). */
 .ri-pd .ri-pd__staff > .ri-hidebtn {
   justify-content: flex-start;
-  min-height: 40px;
+  min-height: 44px;
   margin-top: 4px;
   padding: 0 2px;
   border: 0;
