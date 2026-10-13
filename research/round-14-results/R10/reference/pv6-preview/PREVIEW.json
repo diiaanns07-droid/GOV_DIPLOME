@@ -1,0 +1,330 @@
+{
+ "base": "origin/claude/sharp-dijkstra-0t87gl",
+ "base_sha": "69984f0f",
+ "since": "2026-10-13 03:00",
+ "branches": [
+  {
+   "branch": "origin/claude/r14-R11",
+   "head": "7f0fdb9a",
+   "from": "49d1ee64",
+   "files": [
+    {
+     "file": "web/civic/i18n/kk.json",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/i18n/ru.json",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ui-kit/components.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ui-kit/fonts/Inter-Medium.woff2",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ui-kit/fonts/SOURCE.txt",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ui-kit/icons.svg",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ui-kit/index.html",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ui-kit/prototypes/reference-a.html",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ui-kit/tokens.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ui-kit/ui-kit.js",
+     "clean": true,
+     "applied": true
+    }
+   ]
+  },
+  {
+   "branch": "origin/claude/r14-R07",
+   "head": "80172f96",
+   "from": "10b0fb0b",
+   "files": [
+    {
+     "file": "web/civic/heat/heat.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/heat/heat.js",
+     "clean": true,
+     "applied": true
+    }
+   ]
+  },
+  {
+   "branch": "origin/claude/modest-shannon-0ki93p",
+   "head": "3c3fe2b6",
+   "from": "78842c12",
+   "files": [
+    {
+     "file": "web/civic/feedback/complaint-list.js",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/feedback/complaint-staff.js",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/feedback/complaint-strings.js",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/feedback/complaint.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/feedback/complaint.js",
+     "clean": true,
+     "applied": true
+    }
+   ]
+  },
+  {
+   "branch": "origin/claude/r14-R08",
+   "head": "4b215c77",
+   "from": "b4bcce5b",
+   "files": [
+    {
+     "file": "web/civic/akim/akim.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/akim/akim.js",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/akim/today-stand.js",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/akim/today.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/akim/today.html",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/akim/today.js",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/nearby/nearby.css",
+     "clean": true,
+     "applied": true
+    }
+   ]
+  },
+  {
+   "branch": "origin/claude/r14-R06",
+   "head": "849bd33b",
+   "from": "96ebe5e9",
+   "files": [
+    {
+     "file": "ui/civic_store/ideas.py",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ideas/ideas.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/ideas/ideas.js",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/proposals/proposals.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/proposals/proposals.js",
+     "clean": true,
+     "applied": true
+    }
+   ]
+  },
+  {
+   "branch": "origin/claude/r14-R05",
+   "head": "2c962ee2",
+   "from": "f75eaa76",
+   "files": [
+    {
+     "file": "web/civic/build3d/build3d.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/build3d.js",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/lighting-sq.png",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/lighting-sq@2x.png",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/playground-sq.png",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/playground-sq@2x.png",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/sports-sq.png",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/sports-sq@2x.png",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/square-sq.png",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/square-sq@2x.png",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/stop-sq.png",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/build3d/data/previews/stop-sq@2x.png",
+     "clean": true,
+     "applied": true
+    }
+   ]
+  },
+  {
+   "branch": "origin/claude/tender-brahmagupta-ef5ztl",
+   "head": "cc532506",
+   "from": "dea9a2e7",
+   "files": [
+    {
+     "file": "engine/civic_geo/__init__.py",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "engine/civic_geo/__main__.py",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "engine/civic_geo/search_index.py",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "engine/civic_geo/targets.py",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/map/civic-map.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/map/search_index.js",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/map/search_index.json",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/qr/report.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/qr/report.js",
+     "clean": true,
+     "applied": true
+    }
+   ]
+  },
+  {
+   "branch": "origin/claude/r14-R13",
+   "head": "1b022c73",
+   "from": "c847af26",
+   "files": [
+    {
+     "file": "web/civic/qa/qa.css",
+     "clean": true,
+     "applied": true
+    },
+    {
+     "file": "web/civic/qa/qa.js",
+     "clean": true,
+     "applied": true
+    }
+   ]
+  }
+ ],
+ "patches": [
+  {
+   "patch": "origin/claude/r14-R08:research/round-14-results/R08/r01_today_r08.patch",
+   "applied": true,
+   "log": "Checking patch ui/web_server.py...\nChecking patch web/index.html...\nApplied patch ui/web_server.py cleanly.\nApplied patch web/index.html cleanly."
+  }
+ ]
+}
