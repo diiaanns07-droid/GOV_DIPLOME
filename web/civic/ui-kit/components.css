@@ -1459,7 +1459,7 @@ p.bk-banner--warn {
 .bk-skel {
   display: block;
   border-radius: var(--r-s);
-  background: linear-gradient(90deg, #eceee9 0%, #f6f7f3 50%, #eceee9 100%);
+  background: linear-gradient(90deg, #ebeae5 0%, #f5f4f0 50%, #ebeae5 100%); /* тон бумаги эталона #F3F1EC */
   background-size: 200% 100%;
   animation: bk-shimmer 1.2s linear infinite;
 }
@@ -2824,6 +2824,170 @@ p.bk-banner--warn {
 .bk-fab__ic .ic {
   width: 16px;
   height: 16px;
+}
+
+/* ── Списки как в Linear (правило 5: «Обращения» у R09, «Горячие места» у R07): плотная строка 44, группы по статусу,
+   статус меняется прямо из строки, наведение на строку подсвечивает значок на карте и наоборот (.is-hover ставит модуль).
+   Разметка: <div class="bk-lgroup"> + строки <div class="bk-lrow" tabindex="0"> [кнопка статуса .bk-lrow__st] [.bk-lrow__main:
+   .bk-lrow__title + .bk-lrow__meta] [.bk-lrow__cnt] [.bk-lrow__time]. Разделителей нет — только заливка при наведении. ── */
+.bk-llist {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Заголовок группы: статус-иконка + название + число; липкий, чтобы при прокрутке было видно, в какой группе строка */
+.bk-lgroup {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  margin-top: 8px;
+  padding: 0 12px;
+  border-radius: var(--r-s);
+  background: var(--c-paper);
+  color: var(--c-ink);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-ui);
+}
+.bk-lgroup:first-child {
+  margin-top: 0;
+}
+.bk-lgroup__count {
+  color: var(--c-text-3);
+  font-variant-numeric: tabular-nums;
+}
+.bk-lrow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  padding: 0 12px 0 8px;
+  border-radius: var(--r-s);
+  color: var(--c-ink);
+  font-size: var(--fs-small);
+  line-height: var(--lh-ui);
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease);
+}
+.bk-lrow:hover,
+.bk-lrow.is-hover {
+  background: var(--c-fill);
+}
+.bk-lrow[aria-selected="true"],
+.bk-lrow[aria-current="true"] {
+  background: var(--c-fill-hover);
+}
+/* Кнопка статуса в строке: иконка 14 в квадрате 28 (зона нажатия 44); открывает меню статусов (BirgeUI.menu) */
+.bk-lrow__st {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.bk-lrow__st::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+}
+.bk-lrow__st:hover {
+  background: var(--c-fill-hover);
+}
+.bk-lrow__main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.bk-lrow__title {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: var(--fw-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bk-lrow__meta {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--c-text-3);
+  font-size: var(--fs-caption);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Число жалоб — та же плашка уровня, что в сводке (.bk-hot__cnt), только меньше: 28 × 20 */
+.bk-lrow__cnt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 28px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--heat-3);
+  color: #fff;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-num);
+  font-variant-numeric: tabular-nums;
+}
+.bk-lrow__cnt[data-level="1"] {
+  background: var(--heat-1);
+  color: var(--heat-1-on);
+}
+.bk-lrow__cnt[data-level="2"] {
+  background: var(--heat-2);
+}
+.bk-lrow__cnt[data-level="4"] {
+  background: var(--heat-4);
+}
+.bk-lrow__time {
+  flex: none;
+  min-width: 88px; /* колонка: «20 часов назад» / «20 сағат бұрын» — плашки чисел стоят в одну линию */
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+/* Скелетон строки (правило 4: показывается не дольше 150 мс — дальше данные или пустое состояние) */
+.bk-lrow--skel {
+  cursor: default;
+}
+.bk-lrow--skel:hover {
+  background: none;
+}
+.bk-lrow--skel .bk-skel {
+  height: 10px;
+}
+/* Телефон: название и место — в две строки, строка 52 */
+@media (max-width: 720px) {
+  .bk-lrow {
+    min-height: 52px;
+  }
+  .bk-lrow__main {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1px;
+  }
 }
 
 /* Карточка выезжает слева (эталон «Движение»; правило 6 Linear — 250 мс) */

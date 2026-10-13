@@ -297,6 +297,12 @@
         </div>
       </section>
 
+      <!-- Список как в Linear (правило 5 эталона 13 окт): группы по статусу, статус меняется из строки, строка 44 -->
+      <section class="kit-section">
+        <h2 class="bk-h2" data-i18n="uikit.section.llist"></h2>
+        <div class="bk-llist" id="kit-llist" style="max-width: 640px"></div>
+      </section>
+
       <!-- Карточка цели -->
       <section class="kit-section">
         <h2 class="bk-h2" data-i18n="uikit.section.card"></h2>
@@ -592,6 +598,34 @@
           }).join("");
         }
 
+        // Список «как в Linear»: группы по статусу; кнопка статуса в строке переключает статус (в модулях — меню статусов)
+        var LROWS = null;
+        function renderLlist(stop, street) {
+          var t = I.t;
+          if (!LROWS) LROWS = [
+            { st: "in_progress", lvl: 3, n: 6, h: 2, cat: "transport" },
+            { st: "in_progress", lvl: 2, n: 8, h: 5, cat: "snow_ice", seg: true },
+            { st: "new", lvl: 4, n: 11, h: 1, cat: "lighting", yard: true },
+            { st: "reported_fixed", lvl: 1, n: 2, h: 20, cat: "lighting", seg: true },
+          ];
+          var order = ["new", "in_progress", "reported_fixed", "verified"];
+          var html = "";
+          order.forEach(function (st) {
+            var rows = LROWS.filter(function (r) { return r.st === st; });
+            if (!rows.length) return;
+            html += '<div class="bk-lgroup">' + UI.statusIcon(st) + "<span>" + UI.esc(t("status." + st)) + '</span><span class="bk-lgroup__count">' + rows.length + "</span></div>";
+            rows.forEach(function (r) {
+              var i = LROWS.indexOf(r);
+              var name = r.yard ? t("target.kind.yard", { address: "Сауран, 3" }) : r.seg ? t("target.kind.segment_short", { street: street }) : stop;
+              html += '<div class="bk-lrow" tabindex="0"><button class="bk-lrow__st" type="button" data-i="' + i + '" aria-label="' +
+                UI.esc(t("uikit.demo.status_change") + ": " + t("status." + r.st)) + '">' + UI.statusIcon(r.st) + "</button>" +
+                '<span class="bk-lrow__main"><span class="bk-lrow__title">' + UI.esc(name) + '</span><span class="bk-lrow__meta">' + UI.esc(I.cat(r.cat)) + "</span></span>" +
+                '<span class="bk-lrow__cnt" data-level="' + r.lvl + '">' + r.n + '</span><span class="bk-lrow__time">' + UI.esc(t("common.time.hours_ago", { n: r.h })) + "</span></div>";
+            });
+          });
+          $("kit-llist").innerHTML = html;
+        }
+
         function render() {
           var t = I.t;
           $("kit-cat-chips").innerHTML =
@@ -631,6 +665,7 @@
           $("kit-bars").innerHTML = bars.map(function (b) {
             return '<li class="bk-bar"><span class="bk-bar__label">' + UI.esc(I.cat(b[0])) + '</span><span class="bk-bar__track"><i class="bk-bar__fill" style="width:' + (b[1] / 12) * 100 + '%"></i></span><span class="bk-bar__value">' + b[1] + "</span></li>";
           }).join("");
+          renderLlist(stop, street);
           UI.state($("kit-loading"), "loading");
           UI.state($("kit-empty"), "empty", { title: t("heat.empty.title", { n: 7 }), text: t("heat.empty.hint"), action: { label: t("common.period.days", { n: 30 }) } });
           UI.state($("kit-error"), "error", { action: { onClick: function () { UI.state($("kit-error"), "loading"); } } });
@@ -650,6 +685,13 @@
         $("kit-menu").addEventListener("click", function (e) {
           var b = e.target.closest("[role=menuitemradio]");
           if (b) $("kit-menu").querySelectorAll("[role=menuitemradio]").forEach(function (x) { x.setAttribute("aria-checked", String(x === b)); });
+        });
+        $("kit-llist").addEventListener("click", function (e) {
+          var b = e.target.closest(".bk-lrow__st");
+          if (!b || !LROWS) return;
+          var r = LROWS[+b.getAttribute("data-i")], seq = ["new", "in_progress", "reported_fixed", "verified"];
+          r.st = seq[(seq.indexOf(r.st) + 1) % seq.length];
+          render();
         });
         UI.seg($("kit-period"));
         UI.tabs($("kit-tabs"));
