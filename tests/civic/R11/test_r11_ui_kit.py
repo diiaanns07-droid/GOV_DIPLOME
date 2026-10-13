@@ -90,7 +90,10 @@ def test_icon_sprite_is_well_formed_xml():
 
 def test_icons_are_local_and_symbols_have_viewbox():
     assert "http" not in ICONS.replace("http://www.w3.org/2000/svg", "")
-    assert ICONS.count("<symbol") == ICONS.count('viewBox="0 0 24 24"')
+    # иконки и иллюстрации 24 × 24; статус-иконки (правило 3 Linear) — 14 × 14
+    assert ICONS.count("<symbol") == ICONS.count('viewBox="0 0 24 24"') + ICONS.count('viewBox="0 0 14 14"')
+    for st in ("st-ring", "st-half", "st-ring-check", "st-done"):
+        assert f'id="{st}"' in ICONS, st
 
 
 def test_no_runtime_internet():
@@ -136,25 +139,28 @@ def test_prototype_streets_are_generated_from_graph():
 
 
 def test_touch_targets_and_font_sizes():
-    assert re.search(r"--tap:\s*48px", TOKENS)
-    # Чистый дизайн (владелец, 12 окт): шкала 13/15/17/22/28 — подписи не меньше 13, текст не меньше 15, два веса.
-    sizes = [int(x) for x in re.findall(r"font-size:\s*(\d+)px", COMPONENTS)]
-    assert all(s >= 13 for s in sizes), sizes
-    for name, px in (("caption", 13), ("body", 15), ("lead", 17), ("title", 22), ("h1", 28)):
+    # Эталон владельца 13 окт (REFERENCE.html, вариант A): кнопки и кнопки карты 44; шкала 12/13/14/15/16/18/19/22/34;
+    # веса 400/500/600, 700 — только числа на значках и метка «Проект · 2027».
+    assert re.search(r"--tap:\s*44px", TOKENS)
+    sizes = {int(x) for x in re.findall(r"font-size:\s*(\d+)px", TOKENS + COMPONENTS)}
+    assert sizes <= {12, 13, 14, 15, 16, 18, 19, 22, 34}, sizes
+    for name, px in (("xs", 12), ("caption", 13), ("small", 14), ("body", 15), ("lead", 16), ("title", 19),
+                     ("h1", 22), ("num", 34)):
         assert f"--fs-{name}: {px}px" in TOKENS, name
     weights = set(re.findall(r"font-weight:\s*(\d+)", TOKENS + COMPONENTS))
-    assert weights <= {"400", "600"}, weights
-    assert "--fw-bold: 600" in TOKENS
+    assert weights <= {"400", "500", "600", "700"}, weights
+    assert "--fw-bold: 600" in TOKENS and "--fw-medium: 500" in TOKENS and "--fw-num: 700" in TOKENS
+    for tok, val in (("c-ink", "#121a17"), ("c-text-2", "#4b5752"), ("c-text-3", "#7e8a85"), ("c-primary", "#121a17"),
+                     ("c-brand", "#152c26"), ("c-lime", "#d7f57c"), ("c-lime-ink", "#2f4a10"), ("c-paper", "#f3f1ec")):
+        assert token(tok) == val, tok
 
 
 def test_local_font_files_and_license():
-    for w in ("Regular", "SemiBold"):
+    for w in ("Regular", "Medium", "SemiBold", "Bold"):
         f = KIT / "fonts" / f"Inter-{w}.woff2"
         assert f.exists() and f.read_bytes()[:4] == b"wOF2", f
         assert f.stat().st_size < 120_000
         assert f"fonts/Inter-{w}.woff2" in TOKENS
-    # 700 не подключаем (два веса); файл остаётся, пока он в списке статики шлюза R01
-    assert "Inter-Bold.woff2" not in TOKENS
     assert "SIL OPEN FONT LICENSE" in (KIT / "fonts/OFL.txt").read_text("utf-8")
 
 
@@ -228,17 +234,21 @@ def test_glass_contrast_on_any_map_background():
     tok = lambda name: re.search(r"--" + name + r":\s*([^;]+);", TOKENS).group(1).strip()
     hexrgb = lambda h: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
     alpha = lambda v: float(re.search(r"rgba\(\s*255,\s*255,\s*255,\s*([0-9.]+)\)", v).group(1))
-    a_panel, a_ctrl = alpha(tok("glass-panel")), alpha(tok("glass-control"))
-    assert 0.72 <= a_panel <= 0.80 and 0.55 <= a_ctrl <= 0.65, (a_panel, a_ctrl)  # диапазоны владельца
-    worst_panel = tuple(round(a_panel * 255) for _ in range(3))
-    worst_ctrl = tuple(round(a_ctrl * 255) for _ in range(3))
+    # эталон: лёгкое стекло 72 % (хром), плотное 86 % (всё с текстом), кнопки карты 72 %
+    a_panel, a_strong, a_ctrl = alpha(tok("glass-panel")), alpha(tok("glass-strong")), alpha(tok("glass-control"))
+    assert a_panel == 0.72 and a_strong == 0.86 and a_ctrl == 0.72, (a_panel, a_strong, a_ctrl)
+    worst = lambda a: tuple(round(a * 255) for _ in range(3))
     ink = hexrgb(tok("c-ink"))
-    assert _contrast(ink, worst_ctrl) >= 4.5, _contrast(ink, worst_ctrl)
+    assert _contrast(ink, worst(a_ctrl)) >= 4.5, _contrast(ink, worst(a_ctrl))
+    # лёгкое стекло: ink и затемнённые цвета текста ≥ 4.5 над чёрным
     for name in ("c-ink", "glass-text-2", "glass-danger", "glass-warn", "glass-ok", "glass-info", "glass-demo"):
-        c = _contrast(hexrgb(tok(name)), worst_panel)
+        c = _contrast(hexrgb(tok(name)), worst(a_panel))
         assert c >= 4.5, (name, round(c, 2))
+    # плотное стекло: вторичный текст эталона #4b5752 ≥ 4.5 над чёрным (третичный — только подсказки, как в эталоне)
+    assert _contrast(hexrgb("#4b5752"), worst(a_strong)) >= 4.5
+    assert "--c-text-2: #4b5752" in COMPONENTS[COMPONENTS.index(".bk-glass--strong {"):]
     blur = int(re.search(r"(\d+)px", tok("glass-blur")).group(1))
-    assert 20 <= blur <= 24 and tok("glass-saturate") == "170%"
+    assert blur == 24 and tok("glass-saturate") == "180%"
 
 
 def test_glass_has_opaque_fallbacks_and_scope():

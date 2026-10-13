@@ -1,5 +1,6 @@
 Шрифт Inter 4.0 (The Inter Project Authors, https://github.com/rsms/inter), лицензия SIL OFL 1.1 — текст в OFL.txt.
-Источник файлов: пакет Debian fonts-inter 4.0+ds-1 (/usr/share/fonts/opentype/inter/Inter-{Regular,SemiBold,Bold}.otf)
+Источник файлов: пакет Debian fonts-inter 4.0+ds-1 (/usr/share/fonts/opentype/inter/Inter-{Regular,Medium,SemiBold,Bold}.otf)
+Inter-Medium добавлен 2026-10-13 (вес 500 эталона «вариант A»), тем же способом.
 в облачной сессии R11, 2026-10-11. Изменение (Modified Version по OFL): подмножество символов и формат woff2, имя
 не меняли; в CSS подключается как семейство «Birge Sans» (web/civic/ui-kit/tokens.css).
 

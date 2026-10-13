@@ -131,13 +131,13 @@
   gap: var(--s-2);
   min-height: var(--tap);
   min-width: var(--tap);
-  padding: var(--s-2) var(--s-5); /* сетка 8 pt: высоту даёт min-height 48 */
+  padding: var(--s-2) var(--s-4); /* эталон .btn: высота 44, поля 16 */
   border: 1px solid transparent; /* чистый дизайн: второстепенная кнопка — серая заливка, без рамки */
   border-radius: var(--r-m);
   background: var(--c-fill);
   color: var(--c-ink);
   font: inherit;
-  font-size: var(--fs-lead);
+  font-size: var(--fs-body);
   font-weight: var(--fw-semi);
   line-height: 1.25;
   text-align: center;
@@ -168,16 +168,16 @@
   scale: none;
 }
 .bk-btn--primary {
-  border-color: var(--c-brand);
-  background: var(--c-brand);
-  color: #fff;
+  border-color: var(--c-primary);
+  background: var(--c-primary);
+  color: var(--c-on-primary);
 }
 .bk-btn--primary:hover {
-  border-color: var(--c-brand-hover);
-  background: var(--c-brand-hover);
+  border-color: var(--c-primary-hover);
+  background: var(--c-primary-hover);
 }
 .bk-btn--primary:active {
-  background: var(--c-brand-press);
+  background: var(--c-primary-press);
 }
 .bk-btn--dark {
   border-color: var(--c-ink);
@@ -245,7 +245,7 @@
   height: var(--tap);
   padding: 0;
   border: 0;
-  border-radius: var(--r-m);
+  border-radius: var(--r-tile);
   background: var(--c-surface);
   color: var(--c-ink);
   box-shadow: var(--shadow-1);
@@ -287,42 +287,44 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   flex: none;
-  min-height: 40px;
-  padding: var(--s-2) var(--s-4) var(--s-2) var(--s-3);
+  min-height: 34px;
+  padding: 0 13px; /* эталон .chip */
   border: 1px solid transparent;
   border-radius: var(--r-pill);
   background: var(--c-fill);
   color: var(--c-ink);
   font: inherit;
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semi);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   cursor: pointer;
   transition: background var(--t-fast) var(--ease);
 }
-/* Зона нажатия 48 px при видимой высоте 40 px */
+/* Зона нажатия 44 px при видимой высоте 34 px */
 .bk-chip::after {
   content: "";
   position: absolute;
-  inset: -4px 0;
+  inset: -5px 0;
 }
 .bk-chip:hover {
   background: var(--c-fill-hover);
 }
-/* Выбранный чип — единственный акцент #152c26, белый текст; галочка — не только цвет (для 40+ и дальтоников) */
+/* Выбранный чип — заливка почти чёрным, белый текст (эталон .chip.on); отличие не только цветом — светлый/тёмный фон */
 .bk-chip[aria-pressed="true"],
 .bk-chip[aria-checked="true"] {
-  border-color: var(--c-brand);
-  background: var(--c-brand);
-  color: #fff;
+  border-color: var(--c-primary);
+  background: var(--c-primary);
+  color: var(--c-on-primary);
 }
-.bk-chip[aria-pressed="true"]::before,
-.bk-chip[aria-checked="true"]::before {
-  content: "✓";
-  content: "✓" / ""; /* знак не входит в доступное имя (чтение с экрана, поиск кнопки по имени — R01 §21.7) */
-  font-weight: var(--fw-bold);
+/* Точка цвета категории в чипе (эталон .chip .d) */
+.bk-chip__dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
 }
 .bk-chip--suggest {
   flex: 0 1 auto; /* может сжиматься и переносить строку: */
@@ -334,29 +336,30 @@
 /* Сегментный переключатель: ҚАЗ|РУС, Акимат|Житель, 7|30|90 */
 .bk-seg {
   display: inline-flex;
-  padding: 4px;
-  gap: 2px;
+  padding: 3px;
+  gap: 0;
   border-radius: var(--r-m);
   background: var(--c-fill);
 }
 .bk-seg > button {
   position: relative;
-  min-height: 40px;
+  flex: 1;
+  min-height: 34px;
   min-width: 48px;
   padding: 0 var(--s-3);
   border: 0;
-  border-radius: var(--r-s);
+  border-radius: 9px; /* эталон .seg span */
   background: transparent;
   color: var(--c-text-2);
   font: inherit;
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semi);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
   cursor: pointer;
 }
 .bk-seg > button::after {
   content: "";
   position: absolute;
-  inset: -4px 0;
+  inset: -5px 0;
 }
 .bk-seg > button[aria-pressed="true"] {
   background: var(--c-surface);
@@ -1200,13 +1203,16 @@
 /* Статус обращения: цветная точка + слово, без «таблетки» и без подписи «Статус:» (чистый дизайн: статус
    показывается ОДИН раз; пояснение — одна строка .bk-statusline__note). Цвет точки — из цветов карты жалоб. */
 .bk-status {
-  --dot: var(--c-text-2);
+  /* Статус-иконка + слово (правило 3 Linear, эталон 13 окт): одинаково на карте, в карточке, в списках.
+     ○ новое (красный) · ○ принято (оранжевый) · ◐ в работе · ⊙ с галочкой — служба сообщила об устранении ·
+     ● с белой галочкой — проверено жителями (заполненный зелёный) · ⊘ отклонено. Тот же набор — BirgeUI.statusIcon(). */
+  --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.9' fill='none' stroke='%237e8a85' stroke-width='2'/%3E%3C/svg%3E");
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 0;
   font-size: var(--fs-body);
-  font-weight: var(--fw-semi);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   background: transparent;
   color: var(--c-ink);
@@ -1214,48 +1220,32 @@
 .bk-status::before {
   content: "";
   flex: none;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--dot);
+  width: 14px;
+  height: 14px;
+  background: var(--st-icon) center / 14px 14px no-repeat;
 }
-.bk-status[data-status="new"] {
-  --dot: var(--heat-3);
+.bk-status[data-status="new"],
+.bk-status[data-status="reopened"] {
+  --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.9' fill='none' stroke='%23e24b4a' stroke-width='2'/%3E%3C/svg%3E");
 }
 .bk-status[data-status="accepted"] {
-  --dot: var(--heat-2);
+  --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.9' fill='none' stroke='%23ef9f27' stroke-width='2'/%3E%3C/svg%3E");
 }
 .bk-status[data-status="in_progress"] {
-  --dot: var(--heat-2);
+  --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.9' fill='none' stroke='%23ef9f27' stroke-width='2'/%3E%3Cpath d='M7 3.4a3.6 3.6 0 0 1 0 7.2Z' fill='%23ef9f27'/%3E%3C/svg%3E");
 }
-.bk-status[data-status="fixed"],
+.bk-status[data-status="reported_fixed"],
+.bk-status[data-status="fixed"] {
+  --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.9' fill='none' stroke='%233b8a2e' stroke-width='2'/%3E%3Cpath d='m4.5 7.2 1.7 1.7 3.4-3.6' fill='none' stroke='%233b8a2e' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
 .bk-status[data-status="verified"] {
-  --dot: var(--fixed);
+  --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='7' fill='%233b8a2e'/%3E%3Cpath d='m4.2 7.2 1.9 1.9 3.8-4' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 .bk-status[data-status="rejected"] {
-  --dot: var(--nodata);
+  --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.9' fill='none' stroke='%237e8a85' stroke-width='2'/%3E%3Cpath d='m3.2 10.8 7.6-7.6' stroke='%237e8a85' stroke-width='2'/%3E%3C/svg%3E");
 }
-/* Волна 2, п. 1: «служба сообщила» — пустая точка с пунктиром; «вернули жители» — снова красная */
-.bk-status[data-status="reported_fixed"]::before {
-  background: transparent;
-  border: 2px dashed var(--fixed);
-}
-.bk-status[data-status="reopened"] {
-  --dot: var(--heat-3);
-}
-/* Марафон, п. 12 «вау»: смена статуса — мягко (точка и рамка меняют цвет за 260 мс); «Проверено жителями» — зелёный круг
-   с белой галочкой, который «встаёт» при переходе «исправлено → проверено» (анимация запускается при смене атрибута) */
-.bk-status::before {
-  transition:
-    background-color var(--t-base) var(--ease),
-    border-color var(--t-base) var(--ease);
-}
+/* «Проверено жителями» — иконка «встаёт» при смене статуса (анимация запускается при смене атрибута) */
 .bk-status[data-status="verified"]::before {
-  width: 16px;
-  height: 16px;
-  background: var(--fixed)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E")
-    center / 10px no-repeat;
   animation: bk-status-pop var(--t-slow) var(--ease-out);
 }
 @keyframes bk-status-pop {
@@ -1267,12 +1257,28 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bk-status::before {
-    transition: none;
-  }
   .bk-status[data-status="verified"]::before {
     animation: none;
   }
+}
+/* Та же иконка отдельно (BirgeUI.statusIcon): цвет по статусу */
+.bk-st-ic {
+  flex: none;
+  vertical-align: -2px;
+  color: #7e8a85;
+}
+.bk-st-ic[data-status="new"],
+.bk-st-ic[data-status="reopened"] {
+  color: #e24b4a;
+}
+.bk-st-ic[data-status="accepted"],
+.bk-st-ic[data-status="in_progress"] {
+  color: #ef9f27;
+}
+.bk-st-ic[data-status="reported_fixed"],
+.bk-st-ic[data-status="fixed"],
+.bk-st-ic[data-status="verified"] {
+  color: var(--ok-mark);
 }
 /* Статус + одна строка пояснения: «● В работе» / «Служба ответит до 16 окт» */
 .bk-statusline {
@@ -1284,7 +1290,7 @@
   font-size: var(--fs-lead);
 }
 .bk-statusline__note {
-  padding-left: 18px; /* под словом, а не под точкой */
+  padding-left: 22px; /* под словом, а не под иконкой 14 + зазор 8 */
   color: var(--c-text-2);
   font-size: var(--fs-body);
 }
@@ -1694,21 +1700,29 @@ p.bk-banner--warn {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+.bk-kpis--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+/* Эталон .kpi: плашка --c-sub, радиус 12, поля 10/12; число 22/600, подпись 12 вторичным */
 .bk-kpi {
   display: grid;
-  gap: 2px;
-  padding: var(--s-4) 0;
-  background: transparent; /* чистый дизайн: число и подпись без карточки-рамки, воздух вместо обводки */
+  gap: 0;
+  padding: 10px 12px;
+  border-radius: var(--r-m);
+  background: var(--c-sub);
 }
 .bk-kpi__value {
-  font-size: var(--fs-num);
-  line-height: 1.1;
-  font-weight: var(--fw-bold);
+  font-size: var(--fs-h1);
+  line-height: 1.2;
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--ls-num);
   font-variant-numeric: tabular-nums;
 }
 .bk-kpi__label {
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semi);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+  color: var(--c-text-2);
 }
 /* Изменение: стрелка + слово. data-trend=up|down|flat, data-good=true|false (рост жалоб — плохо) */
 .bk-kpi__delta {
@@ -1879,12 +1893,12 @@ p.bk-banner--warn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--s-3);
+  gap: 10px; /* эталон .ctl */
 }
 .bk-mapctl__group {
   display: flex;
   flex-direction: column;
-  border-radius: var(--r-m);
+  border-radius: var(--r-tile);
   background: var(--c-surface);
   box-shadow: var(--shadow-1);
   overflow: hidden;
@@ -1897,7 +1911,7 @@ p.bk-banner--warn {
   border-top: 1px solid var(--c-line);
 }
 .bk-compass {
-  border-radius: 50%;
+  border-radius: var(--r-tile);
 }
 .bk-compass[hidden] {
   display: none;
@@ -1911,9 +1925,9 @@ p.bk-banner--warn {
    «нет свежих данных») — подробности в подсказке, не на карте. */
 .bk-legend--line {
   flex-wrap: nowrap;
-  gap: var(--s-2);
-  padding: 0 var(--s-2) 0 var(--s-3);
-  min-height: 40px;
+  gap: 10px;
+  padding: 0 14px;
+  min-height: 36px;
   border-radius: var(--r-pill);
   font-size: var(--fs-caption);
   color: var(--c-text-2);
@@ -1921,30 +1935,24 @@ p.bk-banner--warn {
 }
 .bk-legend__scale {
   flex: none;
-  width: 72px;
+  width: 14px;
   height: 8px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, var(--heat-1), var(--heat-2), var(--heat-3), var(--heat-4));
+  margin-right: 51px; /* место под ещё три плашки (тени ниже) */
+  border-radius: 3px;
+  background: var(--heat-1);
+  box-shadow: 17px 0 0 var(--heat-2), 34px 0 0 var(--heat-3), 51px 0 0 var(--heat-4);
 }
+/* «✓ исправлено» — словом цвета «исправлено» (эталон .okk, 600); на стекле — на шаг темнее (текст 13 px, ≥ 4.5:1) */
 .bk-legend__fixed {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: var(--c-ink);
+  color: var(--c-ok);
+  font-weight: var(--fw-semi);
 }
 .bk-legend__fixed::before {
   content: "✓";
   content: "✓" / "";
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--fixed);
-  color: #fff;
-  font-size: 13px;
-  font-weight: var(--fw-semi);
 }
 .bk-legend--line .bk-iconbtn {
   width: 40px;
@@ -1966,7 +1974,7 @@ p.bk-banner--warn {
    не переносятся: строка вкладок прокручивается сама по себе, страница вбок — нет. */
 .bk-tabs {
   display: flex;
-  gap: var(--s-1);
+  gap: 18px; /* эталон .tabs */
   overflow-x: auto;
   scrollbar-width: none;
   border-bottom: 1px solid var(--c-line);
@@ -1994,20 +2002,20 @@ p.bk-banner--warn {
 .bk-tabs > [role="tab"] {
   flex: 0 0 auto;
   min-height: var(--tap);
-  padding: 0 var(--s-2);
+  padding: 0;
   border: 0;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
   background: transparent;
-  color: var(--c-text-2);
+  color: var(--c-text-3);
   font: inherit;
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semi);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   cursor: pointer;
 }
 .bk-tabs > [role="tab"][aria-selected="true"] {
   color: var(--c-ink);
-  border-bottom-color: var(--c-brand);
+  border-bottom-color: var(--c-ink);
 }
 .bk-tabs > [role="tab"]:focus-visible {
   outline: 3px solid var(--c-focus);
@@ -2078,11 +2086,734 @@ p.bk-banner--warn {
   font-weight: var(--fw-bold);
 }
 
+/* ───────────── Эталон владельца 13 окт (REFERENCE.html, вариант A «2ГИС светлый» + качество Linear) ─────────────
+   Компоненты один в один с эталоном; размеры, отступы и цвета — оттуда же (R11 REFERENCE_A.md). Хром экрана (где стоит
+   поиск, навигация, карточка) — у R01; содержимое карточек — у ролей; здесь — сами детали. */
+
+/* Поиск со знаком слева (эталон .search: 388 × 52, радиус 16, плотное стекло; знак 30, радиус 9; подсказка «/») */
+.bk-searchbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 14px 0 12px;
+  border-radius: var(--r-l);
+  color: var(--c-text-3);
+  font-size: var(--fs-body);
+}
+.bk-searchbar input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-body);
+  outline: none;
+}
+.bk-searchbar input::placeholder {
+  color: var(--c-text-3);
+}
+.bk-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--c-brand);
+  color: var(--c-lime);
+}
+/* Подсказка клавиши (правило 2 Linear: «мелко рядом с действием») */
+.bk-kbd {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  color: var(--c-text-3);
+  font: inherit;
+  font-size: var(--fs-xs);
+  line-height: 1;
+}
+
+/* Навигация-капсула по центру (эталон .nav: 44, поля 4, пункт 36 × (0 16), 14/500; выбранный — почти чёрный) */
+.bk-navpill {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 44px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+}
+.bk-navpill > a,
+.bk-navpill > button {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.bk-navpill > a:hover,
+.bk-navpill > button:hover {
+  background: var(--c-fill);
+  color: var(--c-ink);
+}
+.bk-navpill > [aria-current="page"],
+.bk-navpill > .is-on {
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+}
+
+/* Язык и профиль справа (эталон .me: 44, поля 0 4 0 14, 13 вторичным; аватар 36 лайм) */
+.bk-me {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 4px 0 14px;
+  border-radius: var(--r-pill);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-me b {
+  color: var(--c-ink);
+  font-weight: var(--fw-semi);
+}
+.bk-ava {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-lime);
+  color: var(--c-lime-ink);
+  font: inherit;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semi);
+  cursor: pointer;
+}
+
+/* Чипы категорий над картой — на лёгком стекле (эталон .chip.glass); выбранный — почти чёрный */
+.bk-chip--glass {
+  background-color: var(--glass-panel);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset 0 0 0 1px var(--glass-edge), 0 0 0 0.5px var(--glass-hairline), var(--glass-shadow);
+}
+.bk-chip--glass:hover {
+  background-color: var(--glass-strong);
+}
+
+/* ── Карточка слева под поиском (эталон .card: 388, радиус 18, плотное стекло; закрывается ×, Esc, картой) ── */
+.bk-objcard {
+  width: var(--panel-w);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.bk-objcard__hd {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px 18px 0;
+}
+.bk-objcard__title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--ls-title);
+  line-height: var(--lh-head);
+}
+.bk-objcard__sub {
+  margin: 3px 0 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-small);
+}
+/* Плитка категории 48, радиус 14 (фон — мягкий оттенок, значок цветом уровня) */
+.bk-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-tile);
+  background: var(--c-danger-soft);
+  color: var(--heat-4);
+}
+.bk-tile .ic {
+  width: 24px;
+  height: 24px;
+}
+/* Закрыть: круг 32 с серой заливкой (зона нажатия 44) */
+.bk-x {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-fill);
+  color: var(--c-ink);
+  cursor: pointer;
+}
+.bk-x::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+}
+.bk-x .ic {
+  width: 16px;
+  height: 16px;
+}
+/* Крупное число: «6 человек сообщили · за 14 дней» */
+.bk-big {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 16px 18px 0;
+}
+.bk-big b {
+  font-size: var(--fs-num);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--ls-num);
+  line-height: 1.1;
+}
+.bk-big span {
+  color: var(--c-text-2);
+  font-size: var(--fs-small);
+}
+/* Строка статуса: иконка + «В работе · Дорожная служба» + срок справа */
+.bk-stline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 18px 0;
+  font-size: var(--fs-body);
+}
+.bk-stline .bk-status {
+  font-weight: var(--fw-regular);
+}
+.bk-stline small {
+  margin-left: auto;
+  color: var(--c-text-3);
+  font-size: var(--fs-caption);
+}
+.bk-acts {
+  display: flex;
+  gap: var(--s-2);
+  padding: 16px 18px 0;
+}
+.bk-acts > .bk-btn--primary {
+  flex: 1;
+}
+.bk-objcard .bk-tabs {
+  margin: 4px 0 0;
+  padding: 16px 18px 0;
+}
+.bk-objcard .bk-tabs > [role="tab"] {
+  min-height: 0;
+  padding-bottom: 10px;
+}
+/* Строки «Обзора» (эталон .rows/.row): 14, поля 10, линия между; плитка 30 радиус 9; значение справа 500 */
+.bk-rows {
+  padding: 6px 18px 16px;
+}
+.bk-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  font-size: var(--fs-small);
+}
+.bk-row + .bk-row {
+  border-top: 1px solid var(--c-line);
+}
+.bk-row__ic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--c-fill);
+}
+.bk-row__ic .ic {
+  width: 16px;
+  height: 16px;
+}
+.bk-row__label {
+  color: var(--c-text-2);
+}
+.bk-row__value {
+  margin-left: auto;
+  color: var(--c-ink);
+  font-weight: var(--fw-medium);
+  text-align: right;
+}
+/* Цитата жителя — не больше 2 строк */
+.bk-quote {
+  margin: 0;
+  color: var(--c-ink);
+  font-size: var(--fs-small);
+  line-height: var(--lh-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Ссылка-действие «Ещё 5 обращений», «Все горячие места» */
+.bk-more {
+  display: inline-block;
+  padding: 2px 0 0;
+  border: 0;
+  background: none;
+  color: var(--c-brand);
+  font: inherit;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  cursor: pointer;
+}
+.bk-more:hover {
+  text-decoration: underline;
+}
+
+/* ── Сводка на главной «Сегодня в Астане» (эталон .sum: 388, поля 16/18; 3 числа и топ-3 горячих места) ── */
+.bk-sum {
+  width: var(--panel-w);
+  padding: 16px 18px;
+  border-radius: var(--r-xl);
+}
+.bk-sum__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bk-sum__hd b {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+}
+.bk-sum .bk-kpis {
+  margin: 12px 0 6px;
+}
+/* Горячее место строкой (эталон .hot): число в плашке 34 × 26 цвета уровня, название 14/500, категория 12 */
+.bk-hot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+.bk-hot + .bk-hot {
+  border-top: 1px solid var(--c-line);
+}
+.bk-hot__cnt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 26px;
+  border-radius: var(--r-s);
+  background: var(--heat-3);
+  color: #fff;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-num);
+  font-variant-numeric: tabular-nums;
+}
+.bk-hot__cnt[data-level="1"] {
+  background: var(--heat-1);
+  color: var(--heat-1-on);
+}
+.bk-hot__cnt[data-level="2"] {
+  background: var(--heat-2);
+}
+.bk-hot__cnt[data-level="4"] {
+  background: var(--heat-4);
+}
+.bk-hot__cnt[data-level="fixed"] {
+  background: var(--ok-mark);
+}
+.bk-hot__name {
+  margin: 0;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  line-height: 1.3;
+}
+.bk-hot__name small {
+  display: block;
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+}
+
+/* ── «Проекты и идеи» (эталон .sheet 412, .seg, .pc как в App Store, .pd детали) ── */
+.bk-psheet {
+  display: flex;
+  flex-direction: column;
+  width: var(--sheet-w);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.bk-psheet__hd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px 10px;
+}
+.bk-psheet__hd b {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semi);
+}
+.bk-psheet > .bk-seg {
+  display: flex;
+  margin: 0 18px 12px;
+}
+.bk-plist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 12px 12px;
+  overflow: auto;
+}
+.bk-pc {
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  border-radius: var(--r-l);
+  background: var(--c-sub);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow var(--t-fast) var(--ease);
+}
+.bk-pc[aria-current="true"],
+.bk-pc.is-on {
+  box-shadow: 0 0 0 2px var(--c-ink);
+}
+.bk-thumb {
+  flex: none;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--r-m);
+  overflow: hidden;
+  background: var(--c-fill);
+}
+.bk-thumb > img,
+.bk-thumb > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bk-pc__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.bk-pc__title {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-head);
+}
+.bk-pc__sub {
+  margin-top: 3px;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-pc__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  margin-top: auto;
+  padding-top: var(--s-2);
+}
+/* Плашка статуса проекта: 12/600, поля 4/9, капсула (цвет — по смыслу) */
+.bk-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: var(--r-pill);
+  background: var(--c-fill);
+  color: var(--c-text-2);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+}
+.bk-pill--review {
+  background: var(--c-warn-soft);
+  color: var(--c-warn);
+}
+.bk-pill--accepted {
+  background: var(--c-ok-soft);
+  color: var(--c-ok);
+}
+/* «Поддержать» прямо в списке: капсула 32, почти чёрная, сердце + число (зона нажатия 44) */
+.bk-vote {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.bk-vote::after {
+  content: "";
+  position: absolute;
+  inset: -6px 0;
+}
+.bk-vote .ic {
+  width: 14px;
+  height: 14px;
+}
+.bk-vote[aria-pressed="true"] {
+  background: var(--c-fill);
+  color: var(--c-ink);
+}
+/* Детали проекта (эталон .pd: 340, картинка 150, 3 цифры, одно предложение, «Поддержать» / «Подробнее») */
+.bk-pd {
+  width: 340px;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+.bk-pd__im {
+  height: 150px;
+  background: var(--c-fill);
+}
+.bk-pd__im > img,
+.bk-pd__im > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bk-pd__in {
+  padding: 14px 16px 16px;
+}
+.bk-pd__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: var(--fw-semi);
+}
+.bk-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2);
+  margin: 12px 0;
+}
+.bk-facts > div {
+  padding: 9px 10px;
+  border-radius: var(--r-m);
+  background: var(--c-sub);
+}
+.bk-facts b {
+  display: block;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
+}
+.bk-facts span {
+  color: var(--c-text-2);
+  font-size: var(--fs-xs);
+}
+.bk-pd .bk-acts {
+  padding: 12px 0 0;
+}
+.bk-pd__note {
+  margin: 10px 0 0;
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+}
+/* Метка на карте «Проект · 2027» — лайм (единственное место лайма на карте) */
+.bk-tag-proj {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  background: var(--c-lime);
+  color: var(--c-lime-ink);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-num);
+  white-space: nowrap;
+  box-shadow: var(--shadow-tag);
+}
+
+/* ── Значки на карте (без стекла): круг 34, белая обводка 2.5, плашка числа; выбранный 44 с ореолом; остальные 35 % ── */
+.bk-pin {
+  display: inline-flex;
+  align-items: center;
+  transition: opacity var(--t-base) var(--ease);
+}
+.bk-pin__c {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pin);
+  height: var(--pin);
+  border: var(--pin-ring) solid #fff;
+  border-radius: 50%;
+  background: var(--heat-3);
+  color: #fff;
+  box-shadow: var(--shadow-pin);
+  transition: width var(--t-base) var(--ease), height var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
+}
+.bk-pin__c .ic {
+  width: 18px;
+  height: 18px;
+}
+.bk-pin__n {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  min-width: 26px;
+  margin-left: -6px;
+  padding: 0 7px 0 10px;
+  border-radius: 0 11px 11px 0;
+  background: #fff;
+  color: var(--c-ink);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-num);
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 6px rgba(16, 24, 20, 0.15);
+}
+.bk-pin[data-level="1"] .bk-pin__c {
+  background: var(--heat-1);
+  color: var(--heat-1-on);
+}
+.bk-pin[data-level="2"] .bk-pin__c {
+  background: var(--heat-2);
+}
+.bk-pin[data-level="4"] .bk-pin__c {
+  background: var(--heat-4);
+}
+.bk-pin[data-level="fixed"] .bk-pin__c {
+  background: var(--ok-mark);
+}
+.bk-pin.is-dim {
+  opacity: var(--pin-dim);
+}
+.bk-pin.is-sel .bk-pin__c {
+  width: var(--pin-selected);
+  height: var(--pin-selected);
+  box-shadow: var(--shadow-pin-selected);
+}
+.bk-pin.is-sel .bk-pin__c .ic {
+  width: 22px;
+  height: 22px;
+}
+
+/* ── Телефон: поиск сверху, шторка «Рядом с вами», «Сообщить о проблеме» внизу ── */
+.bk-psearch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 12px;
+  border-radius: var(--r-l);
+  color: var(--c-text-3);
+  font-size: var(--fs-body);
+}
+.bk-handle {
+  width: 38px;
+  height: 5px;
+  margin: 0 auto 12px;
+  border-radius: 3px;
+  background: var(--c-line);
+}
+/* Главная кнопка телефона: 54, радиус 16, почти чёрная, значок в лаймовой плитке 26 (радиус 8) */
+.bk-fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: var(--tap-lg);
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--r-l);
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+  font: inherit;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
+  box-shadow: var(--shadow-fab);
+  cursor: pointer;
+}
+.bk-fab__ic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-s);
+  background: var(--c-lime);
+  color: var(--c-lime-ink);
+}
+.bk-fab__ic .ic {
+  width: 16px;
+  height: 16px;
+}
+
+/* Карточка выезжает слева (эталон «Движение»; правило 6 Linear — 250 мс) */
+.bk-enter-left {
+  animation: bk-enter-left var(--t-slow) var(--ease) both;
+}
+@keyframes bk-enter-left {
+  from {
+    opacity: 0;
+    translate: -16px 0;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bk-enter-left {
+    animation: none;
+  }
+}
+
 /* ───────────── Стекло Apple Liquid Glass (GLASS.md) — в конце файла: перекрывает фон компонентов выше ─────────────
-   .bk-glass           — панель с текстом (80 %): шапка-капсула, правая панель, меню, легенда, плашка-тост карты
-   .bk-glass--bar      — шапка: плавающая капсула над картой
-   .bk-glass--sheet    — шторка телефона (верхние углы 28)
-   .bk-glass--control  — мелкая кнопка карты (62 %, капсула/круг): только значок или подпись цветом --c-ink
+   Эталон 13 окт (REFERENCE.html, вариант A): .glass 72 % и .glass.strong 86 %, blur 24 + saturate 180 %.
+   .bk-glass           — лёгкое 72 %: «хром» — чипы, навигация-капсула, профиль, легенда (короткие подписи)
+   .bk-glass--strong   — плотное 86 %: всё с текстом — поиск, карточка объекта, сводка, лист проектов, шторка телефона
+   .bk-glass--bar      — капсула (навигация, профиль, легенда)
+   .bk-glass--sheet    — шторка телефона (верхние углы 26)
+   .bk-glass--control  — кнопка карты 44 × 44, радиус 14 (72 %): только значок или подпись цветом --c-ink
    НЕ для: значков карты (r07-badge и т. п.), форм (поля и мастер жалобы — непрозрачные), тостов (тёмные), карточек
    внутри панели (они — более плотные «подложки», см. ниже). Размеры и положение элемента класс не меняет. */
 .bk-glass,
@@ -2102,11 +2833,23 @@ p.bk-banner--warn {
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   border: 0;
   border-radius: var(--r-glass);
+  /* эталон --shadow + граница 1 px rgba(255,255,255,.7); граница — внутренней тенью, чтобы класс не менял размер */
   box-shadow:
     inset 0 0 0 1px var(--glass-edge),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
     0 0 0 0.5px var(--glass-hairline),
     var(--glass-shadow);
+}
+/* Плотное стекло (эталон .glass.strong): текст — цветами эталона без затемнения (вторичный 5.5:1 и над чёрным) */
+.bk-glass--strong {
+  --c-text-2: #4b5752;
+  --c-text-3: #7e8a85;
+  --c-danger: #9a2e28;
+  --c-warn: #754c0f;
+  --c-ok: #2b6110;
+  --c-info: #1c5597;
+  --c-demo: #455670;
+  background-color: var(--glass-strong);
 }
 .bk-glass--bar {
   border-radius: var(--r-pill);
@@ -2121,7 +2864,7 @@ p.bk-banner--warn {
 .bk-glass--control {
   padding: 0;
   background-color: var(--glass-control);
-  border-radius: var(--r-pill);
+  border-radius: var(--r-tile); /* эталон .ctl .solo: скруглённый квадрат 14, не круг */
   transition: background-color var(--t-fast) var(--ease);
 }
 .bk-glass--control:hover {
@@ -2130,7 +2873,7 @@ p.bk-banner--warn {
 /* нажатая кнопка (3D включено, слой открыт) — сплошной акцент, как раньше */
 .bk-glass--control[aria-pressed="true"],
 .bk-glass--control[aria-expanded="true"] {
-  background-color: var(--c-brand);
+  background-color: var(--c-primary);
   background-image: none;
   color: #fff;
 }
@@ -2139,7 +2882,7 @@ p.bk-banner--warn {
   background: transparent;
 }
 .bk-mapctl__group.bk-glass--control > .bk-mapbtn + .bk-mapbtn {
-  border-top-color: rgba(16, 24, 22, 0.1);
+  border-top-color: var(--c-line);
 }
 /* Стекло внутри стекла (меню аватара и «Ещё» в стеклянной шапке): у предка с backdrop-filter свой «корень фона» — вложенное
    стекло размывает только сам предок, а не карту под ним, и текст карты просвечивает резко (R01 INTEGRATION 25.3).
@@ -2154,12 +2897,12 @@ p.bk-banner--warn {
 .bk-glass .bk-card {
   /* плотная белая карточка с волосяной линией: подложка 70 % почти сливалась со стеклом 80 % на светлой карте и список
      читался сплошным текстом (R13 10.3, марафон круг 4); тени нет — одна тень у самого стекла */
-  background: var(--c-surface);
-  box-shadow: inset 0 0 0 1px rgba(16, 24, 22, 0.08);
+  background: var(--c-sub);
+  box-shadow: inset 0 0 0 1px var(--c-line);
 }
-/* Числа KPI на стекле — без подложки и рамки (CLEAN_PASS: KPI без рамки), крупное число держит иерархию само */
+/* Числа KPI на стекле — белые плашки 72 % без тени (эталон .kpi: --sub-bg, радиус 12) */
 .bk-glass .bk-kpi {
-  background: transparent;
+  background: var(--c-sub);
   box-shadow: none;
 }
 .bk-glass input,

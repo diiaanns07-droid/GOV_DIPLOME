@@ -262,6 +262,16 @@
     }
   }
 
+  // Статус-иконка (правило 3 Linear): тот же рисунок, что у .bk-status, для карты, строк и своих разметок.
+  // statusIcon("in_progress", 14) → '<svg class="bk-st-ic" data-status="in_progress" …><use href="…#st-half"/></svg>'
+  var STATUS_SHAPE = { new: "st-ring", reopened: "st-ring", accepted: "st-ring", in_progress: "st-half",
+    reported_fixed: "st-ring-check", fixed: "st-ring-check", verified: "st-done", rejected: "st-reject" };
+  function statusIcon(status, size) {
+    var px = size || 14, shape = STATUS_SHAPE[status] || "st-ring";
+    return '<svg class="bk-st-ic" data-status="' + esc(status || "new") + '" width="' + px + '" height="' + px +
+      '" aria-hidden="true" focusable="false"><use href="' + SPRITE + "#" + shape + '"/></svg>';
+  }
+
   // Одно состояние «войдите как сотрудник» для всех разделов (марафон, INTEGRATION §9.3 b): линейная иллюстрация staff,
   // заголовок, подсказка «Учётную запись выдаёт администратор.» и одна главная кнопка «Войти». loginState(el, onLogin, opts)
   // opts: title / text / label — свои тексты (например, ask.staff.login у «Вопроса акиму»).
@@ -395,6 +405,6 @@
     else if (doc.body) startFade();
   }
 
-  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, loginState: loginState, scrollFade: scrollFade, esc: esc,
+  root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, statusIcon: statusIcon, loginState: loginState, scrollFade: scrollFade, esc: esc,
     seasonOrder: seasonOrder, tabs: tabs, menu: menu, illustration: illustration, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);
