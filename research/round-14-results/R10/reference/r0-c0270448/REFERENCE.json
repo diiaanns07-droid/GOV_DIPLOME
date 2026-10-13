@@ -5,7 +5,7 @@
   "sha": "69984f0f",
   "label": "R01 c0270448 (было)",
   "before": null,
-  "when": "2026-10-13T10:55:41.771Z"
+  "when": "2026-10-13T12:05:58.593Z"
  },
  "report": {
   "home": {
@@ -1861,7 +1861,7 @@
      "notes": [],
      "geo": 4,
      "absent": false,
-     "pixels": 7,
+     "pixels": 8,
      "was": null
     },
     {
@@ -1891,8 +1891,8 @@
       "cls": ".c"
      },
      "build": {
-      "x": 79,
-      "y": 139,
+      "x": 195,
+      "y": 176,
       "w": 44,
       "h": 44,
       "radius": 50,
@@ -1921,7 +1921,7 @@
      ],
      "geo": 10,
      "absent": false,
-     "pixels": 75,
+     "pixels": 79,
      "was": null
     },
     {
@@ -1981,9 +1981,9 @@
        "size": 13,
        "weight": 600,
        "color": [
-        21,
-        44,
-        38,
+        255,
+        255,
+        255,
         1
        ],
        "family": "Segoe UI"
@@ -1998,11 +1998,11 @@
      "notes": [
       "место/размер: эталон 1300,258 46×252 → 894,84 48×336 (Δx -406, Δy -174, Δw 2, Δh 84)",
       "шрифт Inter → Segoe UI",
-      "цвет текста #121a17 → #152c26"
+      "цвет текста #121a17 → #ffffff"
      ],
      "geo": 406,
      "absent": false,
-     "pixels": 69,
+     "pixels": 61,
      "was": null
     }
    ],
@@ -2627,14 +2627,51 @@
       "all": "47",
       "cls": ".vote"
      },
-     "build": null,
+     "build": {
+      "x": 347,
+      "y": 579,
+      "w": 326,
+      "h": 34,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 17,
+       "weight": 600,
+       "color": [
+        21,
+        44,
+        38,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "47",
+      "all": "47 голосов",
+      "cls": ".ri-votes.ri-votes--stack"
+     },
      "err": null,
-     "status": "НЕТ В СБОРКЕ",
+     "status": "расходится",
      "notes": [
-      "элемента нет"
+      "место/размер: эталон 349,253 60×32 → 347,579 326×34 (Δx -2, Δy 326, Δw 266, Δh 2)",
+      "радиус 999 → 0",
+      "фон #121a17 → #000000/0%",
+      "шрифт 13 → 17 px",
+      "цвет текста #ffffff → #152c26"
      ],
+     "geo": 326,
      "absent": false,
-     "pixels": null,
+     "pixels": 11,
      "was": null
     },
     {

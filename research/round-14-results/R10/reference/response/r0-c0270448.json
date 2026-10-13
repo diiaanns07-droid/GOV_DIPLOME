@@ -1,0 +1,835 @@
+{
+ "sha": "69984f0f",
+ "label": "R01 c0270448 (было)",
+ "delay": 900,
+ "when": "2026-10-13T12:10:55.883Z",
+ "counts": {
+  "PASS": 33,
+  "FAIL": 5,
+  "СМОТРЕТЬ": 1
+ },
+ "rows": [
+  {
+   "id": "card",
+   "owner": "R07",
+   "name": "Карточка места по нажатию на значок",
+   "fast": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 19,
+    "domWhat": "childList r07-panel",
+    "target": 19,
+    "targetWhy": "dom",
+    "loading": [],
+    "loadWhat": null,
+    "rows": null,
+    "api": []
+   },
+   "slow": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 15,
+    "domWhat": "childList r07-panel",
+    "target": 15,
+    "targetWhy": "dom",
+    "loading": [],
+    "loadWhat": null,
+    "rows": null,
+    "api": []
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "PASS",
+     "detail": "19 мс"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "скелетона нет — сразу содержимое"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "PASS",
+     "detail": "первое изменение 15 мс, скелетона нет, готово 15 мс"
+    }
+   ]
+  },
+  {
+   "id": "period",
+   "owner": "R07",
+   "name": "«Горячие места»: период 30 → 90 дней",
+   "fast": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 49,
+    "domWhat": "childList r07-panel",
+    "target": 49,
+    "targetWhy": "dom",
+    "loading": [],
+    "loadWhat": null,
+    "rows": {
+     "before": 7,
+     "min": 7,
+     "after": 7
+    },
+    "api": [
+     {
+      "path": "/api/civic/v2/heat",
+      "start": 4,
+      "end": 24
+     },
+     {
+      "path": "/api/civic/v2/heat",
+      "start": 4,
+      "end": 34
+     }
+    ]
+   },
+   "slow": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 934,
+    "domWhat": "childList r07-panel",
+    "target": 934,
+    "targetWhy": "dom",
+    "loading": [],
+    "loadWhat": null,
+    "rows": {
+     "before": 7,
+     "min": 7,
+     "after": 7
+    },
+    "api": [
+     {
+      "path": "/api/civic/v2/heat",
+      "start": 4,
+      "end": 916
+     },
+     {
+      "path": "/api/civic/v2/heat",
+      "start": 4,
+      "end": 911
+     }
+    ]
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "PASS",
+     "detail": "49 мс"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "скелетона нет — сразу содержимое"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "FAIL",
+     "detail": "первое изменение 934 мс, скелетона нет, готово 934 мс"
+    },
+    {
+     "name": "быстро: список не мигает",
+     "status": "PASS",
+     "detail": "строк до 7, минимум 7, после 7"
+    },
+    {
+     "name": "медленно: список не мигает",
+     "status": "PASS",
+     "detail": "строк до 7, минимум 7, после 7"
+    }
+   ]
+  },
+  {
+   "id": "day",
+   "owner": "R08",
+   "name": "«Картина дня» из шапки",
+   "fast": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 12,
+    "domWhat": "attributes:hidden birge-day bk-app bk-glass birge-day--module",
+    "target": 178,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      69,
+      178
+     ]
+    ],
+    "loadWhat": [
+     "akim__body",
+     "bk-kpis.akim-kpis",
+     "bk-skel.akim-skel__num"
+    ],
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/akim/summary",
+      "start": 14,
+      "end": 170
+     }
+    ]
+   },
+   "slow": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 12,
+    "domWhat": "attributes:hidden birge-day bk-app bk-glass birge-day--module",
+    "target": 939,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      90,
+      939
+     ]
+    ],
+    "loadWhat": [
+     "akim__body",
+     "bk-kpis.akim-kpis",
+     "bk-skel.akim-skel__num"
+    ],
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/akim/summary",
+      "start": 16,
+      "end": 931
+     }
+    ]
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "СМОТРЕТЬ",
+     "detail": "178 мс"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "69–178 мс · akim__body bk-kpis.akim-kpis bk-skel.akim-skel__num"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "PASS",
+     "detail": "первое изменение 12 мс, скелетон с 90 мс, готово 939 мс"
+    }
+   ]
+  },
+  {
+   "id": "complaints",
+   "owner": "R09",
+   "name": "«Обращения» сотрудника из шапки",
+   "fast": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 12,
+    "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass birge-day--module",
+    "target": 38,
+    "targetWhy": "poll",
+    "loading": [],
+    "loadWhat": null,
+    "rows": {
+     "before": 0,
+     "min": 0,
+     "after": 4
+    },
+    "api": [
+     {
+      "path": "/api/civic/v2/complaints/inbox",
+      "start": 9,
+      "end": 20
+     }
+    ]
+   },
+   "slow": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 11,
+    "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass birge-day--module",
+    "target": 923,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      73,
+      923
+     ]
+    ],
+    "loadWhat": [
+     "bc-skel-card",
+     "bk-skel.bc-skel-line",
+     "bk-skel.bc-skel-line"
+    ],
+    "rows": {
+     "before": 0,
+     "min": 0,
+     "after": 4
+    },
+    "api": [
+     {
+      "path": "/api/civic/v2/complaints/inbox",
+      "start": 8,
+      "end": 920
+     }
+    ]
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "PASS",
+     "detail": "38 мс"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "скелетона нет — сразу содержимое"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "PASS",
+     "detail": "первое изменение 11 мс, скелетон с 73 мс, готово 923 мс"
+    },
+    {
+     "name": "быстро: список не мигает",
+     "status": "PASS",
+     "detail": "строк до 0, минимум 0, после 4"
+    },
+    {
+     "name": "медленно: список не мигает",
+     "status": "PASS",
+     "detail": "строк до 0, минимум 0, после 4"
+    }
+   ]
+  },
+  {
+   "id": "take",
+   "owner": "R07+R09",
+   "name": "«Взять в работу» в карточке места (сотрудник)",
+   "fast": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 4,
+    "domWhat": "attributes:aria-busy r07-btn r07-btn--primary",
+    "target": 133,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      4,
+      133
+     ]
+    ],
+    "loadWhat": [
+     "r07-btn.r07-btn--primary"
+    ],
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47/status",
+      "start": 4,
+      "end": 14
+     },
+     {
+      "path": "/api/civic/v2/complaints/c-demo3a6def043893e13d/status",
+      "start": 16,
+      "end": 21
+     },
+     {
+      "path": "/api/civic/v2/heat",
+      "start": 23,
+      "end": 43
+     },
+     {
+      "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47",
+      "start": 128,
+      "end": 142
+     }
+    ]
+   },
+   "slow": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 4,
+    "domWhat": "attributes:aria-busy r07-btn r07-btn--primary",
+    "target": 2872,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      4,
+      2872
+     ]
+    ],
+    "loadWhat": [
+     "r07-btn.r07-btn--primary"
+    ],
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47/status",
+      "start": 4,
+      "end": 912
+     },
+     {
+      "path": "/api/civic/v2/complaints/c-demo3a6def043893e13d/status",
+      "start": 914,
+      "end": 1824
+     },
+     {
+      "path": "/api/civic/v2/heat",
+      "start": 1827,
+      "end": 2744
+     },
+     {
+      "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47",
+      "start": 2864,
+      "end": 3783
+     }
+    ]
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "PASS",
+     "detail": "133 мс"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "4–133 мс — «идёт» на кнопке · r07-btn.r07-btn--primary"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "PASS",
+     "detail": "первое изменение 4 мс, скелетон с 4 мс, готово 2872 мс"
+    },
+    {
+     "name": "оптимистично: результат раньше ответа сервера",
+     "status": "FAIL",
+     "detail": "результат 2872 мс, первый ответ 912 мс · /api/civic/v2/complaints/c-demo4eca27874085ec47/status 4–912; /api/civic/v2/complaints/c-demo3a6def043893e13d/status 914–1824; /api/civic/v2/heat 1827–2744"
+    }
+   ]
+  },
+  {
+   "id": "metoo",
+   "owner": "R07",
+   "name": "«Я тоже» в карточке места (житель)",
+   "fast": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 4,
+    "domWhat": "attributes:aria-busy r07-btn r07-btn--primary r07-btn--lg",
+    "target": 14,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      4,
+      107
+     ]
+    ],
+    "loadWhat": [
+     "r07-btn.r07-btn--primary"
+    ],
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47/metoo",
+      "start": 3,
+      "end": 10
+     },
+     {
+      "path": "/api/civic/v2/heat",
+      "start": 14,
+      "end": 31
+     }
+    ]
+   },
+   "slow": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 4,
+    "domWhat": "attributes:aria-busy r07-btn r07-btn--primary r07-btn--lg",
+    "target": 915,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      4,
+      1930
+     ]
+    ],
+    "loadWhat": [
+     "r07-btn.r07-btn--primary"
+    ],
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/complaints/c-demo4eca27874085ec47/metoo",
+      "start": 3,
+      "end": 912
+     },
+     {
+      "path": "/api/civic/v2/heat",
+      "start": 915,
+      "end": 1838
+     }
+    ]
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "PASS",
+     "detail": "14 мс"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "4–107 мс — «идёт» на кнопке · r07-btn.r07-btn--primary"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "PASS",
+     "detail": "первое изменение 4 мс, скелетон с 4 мс, готово 915 мс"
+    },
+    {
+     "name": "оптимистично: результат раньше ответа сервера",
+     "status": "FAIL",
+     "detail": "результат 915 мс, первый ответ 912 мс · /api/civic/v2/complaints/c-demo4eca27874085ec47/metoo 3–912; /api/civic/v2/heat 915–1838"
+    }
+   ]
+  },
+  {
+   "id": "projects",
+   "owner": "R06",
+   "name": "«Проекты и идеи» сотрудника из шапки",
+   "fast": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 10,
+    "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass birge-day--module",
+    "target": 71,
+    "targetWhy": "poll",
+    "loading": [],
+    "loadWhat": null,
+    "rows": {
+     "before": 0,
+     "min": 0,
+     "after": 3
+    },
+    "api": [
+     {
+      "path": "/api/civic/v2/staff/ideas",
+      "start": 12,
+      "end": 30
+     },
+     {
+      "path": "/api/civic/v2/proposals",
+      "start": 12,
+      "end": 29
+     }
+    ]
+   },
+   "slow": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 9,
+    "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass birge-day--module",
+    "target": 935,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      50,
+      935
+     ]
+    ],
+    "loadWhat": [
+     "ri-body",
+     "bk-card.ri-skelcard",
+     "bk-skel.ri-tile"
+    ],
+    "rows": {
+     "before": 0,
+     "min": 0,
+     "after": 3
+    },
+    "api": [
+     {
+      "path": "/api/civic/v2/staff/ideas",
+      "start": 11,
+      "end": 927
+     },
+     {
+      "path": "/api/civic/v2/proposals",
+      "start": 11,
+      "end": 925
+     }
+    ]
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "PASS",
+     "detail": "71 мс"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "скелетона нет — сразу содержимое"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "PASS",
+     "detail": "первое изменение 9 мс, скелетон с 50 мс, готово 935 мс"
+    },
+    {
+     "name": "быстро: список не мигает",
+     "status": "PASS",
+     "detail": "строк до 0, минимум 0, после 3"
+    },
+    {
+     "name": "медленно: список не мигает",
+     "status": "PASS",
+     "detail": "строк до 0, минимум 0, после 3"
+    }
+   ]
+  },
+  {
+   "id": "vote",
+   "owner": "R06",
+   "name": "«Поддержать» идею (житель)",
+   "fast": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 3,
+    "domWhat": "attributes:aria-busy bk-btn ri-support",
+    "target": 26,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      3,
+      26
+     ]
+    ],
+    "loadWhat": [
+     "bk-btn.ri-support"
+    ],
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/ideas/i-demo-9a3e254a/support",
+      "start": 5,
+      "end": 14
+     }
+    ]
+   },
+   "slow": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 4,
+    "domWhat": "attributes:aria-busy bk-btn ri-support",
+    "target": 925,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      4,
+      925
+     ]
+    ],
+    "loadWhat": [
+     "bk-btn.ri-support"
+    ],
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/ideas/i-demo-09baadb2/support",
+      "start": 6,
+      "end": 915
+     }
+    ]
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "PASS",
+     "detail": "26 мс"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "3–26 мс — «идёт» на кнопке · bk-btn.ri-support"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "PASS",
+     "detail": "первое изменение 4 мс, скелетон с 4 мс, готово 925 мс"
+    },
+    {
+     "name": "оптимистично: результат раньше ответа сервера",
+     "status": "FAIL",
+     "detail": "результат 925 мс, первый ответ 915 мс · /api/civic/v2/ideas/i-demo-09baadb2/support 6–915"
+    }
+   ]
+  },
+  {
+   "id": "mine",
+   "owner": "R09",
+   "name": "«Мои обращения» — повторное открытие",
+   "fast": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 8,
+    "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass",
+    "target": 23,
+    "targetWhy": "dom",
+    "loading": [],
+    "loadWhat": null,
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/complaints/mine",
+      "start": 4,
+      "end": 19
+     },
+     {
+      "path": "/api/civic/v2/complaints/changes",
+      "start": 5,
+      "end": 20
+     }
+    ]
+   },
+   "slow": {
+    "reached": true,
+    "ev": "pointerdown",
+    "t0": true,
+    "preTrue": false,
+    "dom": 11,
+    "domWhat": "attributes:hidden birge-day birge-screen bk-app bk-glass",
+    "target": 932,
+    "targetWhy": "dom",
+    "loading": [
+     [
+      72,
+      932
+     ]
+    ],
+    "loadWhat": [
+     "bc-skel-card",
+     "bk-skel.bc-skel-line",
+     "bk-skel.bc-skel-line"
+    ],
+    "rows": null,
+    "api": [
+     {
+      "path": "/api/civic/v2/complaints/mine",
+      "start": 5,
+      "end": 927
+     },
+     {
+      "path": "/api/civic/v2/complaints/changes",
+      "start": 6,
+      "end": 929
+     }
+    ]
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "PASS",
+     "detail": "23 мс"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "скелетона нет — сразу содержимое"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "PASS",
+     "detail": "первое изменение 11 мс, скелетон с 72 мс, готово 932 мс"
+    }
+   ]
+  },
+  {
+   "id": "search",
+   "owner": "R01",
+   "name": "Поиск: подсказки с первой буквы («Х»)",
+   "fast": {
+    "reached": true,
+    "ev": "beforeinput",
+    "t0": true,
+    "preTrue": false,
+    "dom": 2,
+    "domWhat": "attributes:hidden civic-explore-clear",
+    "target": null,
+    "targetWhy": null,
+    "loading": [],
+    "loadWhat": null,
+    "rows": null,
+    "api": []
+   },
+   "slow": {
+    "reached": true,
+    "ev": "beforeinput",
+    "t0": true,
+    "preTrue": false,
+    "dom": 2,
+    "domWhat": "attributes:hidden civic-explore-clear",
+    "target": null,
+    "targetWhy": null,
+    "loading": [],
+    "loadWhat": null,
+    "rows": null,
+    "api": []
+   },
+   "verdicts": [
+    {
+     "name": "быстро: готово",
+     "status": "FAIL",
+     "detail": "состояние не наступило"
+    },
+    {
+     "name": "быстро: скелетон ≤ 150 мс",
+     "status": "PASS",
+     "detail": "скелетона нет — сразу содержимое"
+    },
+    {
+     "name": "медленно (+900 мс): отклик ≤ 150 мс",
+     "status": "PASS",
+     "detail": "первое изменение 2 мс, скелетона нет, не готово"
+    }
+   ]
+  }
+ ]
+}
