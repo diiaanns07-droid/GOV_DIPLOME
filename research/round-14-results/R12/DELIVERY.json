@@ -7,15 +7,15 @@
  "delivery": 10,
  "for_build": "сборка R01 по эталону A (после 69984f0)",
  "base_sha": "R01 claude/sharp-dijkstra-0t87gl 69984f0 (в ней R12 7fb739d); эталон — claude/round-14-package 766bd2f research/round-14/design/",
- "code_sha": "23084e8a9568c2be74635deac7943da26c48aefd",
- "tested_sha": "23084e8a9568c2be74635deac7943da26c48aefd",
- "code_sha_note": "11e3325 (паспорт = карточка эталона, вкладки, тесты), 092b1ad (индекс поиска, подписи без двойного «Парк»), bc330d6 (улица рядом в /target и в подписи карточки, patch R01 для индекса). 23084e8 (паспорт на каркасе ui-kit R11 .bk-objcard, статус-иконки, геометрия ± 1 px). После — только документы.",
+ "code_sha": "1dd770f64291a534002b911cc687c3c979419dd3",
+ "tested_sha": "1dd770f64291a534002b911cc687c3c979419dd3",
+ "code_sha_note": "11e3325 (паспорт = карточка эталона, вкладки, тесты), 092b1ad (индекс поиска, подписи без двойного «Парк»), bc330d6 (улица рядом в /target и в подписи карточки, patch R01 для индекса). 23084e8 (паспорт на каркасе ui-kit R11 .bk-objcard, статус-иконки, геометрия ± 1 px). 1dd770f (правило Linear 4: «Я тоже» мгновенно, откат при ошибке). После — только документы.",
  "tested_note": "Linux-контейнер Claude Code, Python 3, Node 22, Playwright + Chromium, без интернета (запасной фон карты). Сборка: detached worktree R01 69984f0 + пути R12 из code_sha + patches/R01_search_index_asset.patch + ui-kit/i18n R11 a903884 (и без них — старый ui-kit сборки); CIVIC_DEMO=1, база init + seed-demo, временный сотрудник; эталон REFERENCE.html — python http.server, вариант A; ничего не коммитилось.",
- "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код 23084e8; этот DELIVERY — следующим коммитом)",
+ "push_status": "pushed: origin/claude/tender-brahmagupta-ef5ztl (код 1dd770f; этот DELIVERY — следующим коммитом)",
  "take": "git checkout <code_sha> -- web/civic/qr engine/civic_geo web/civic/map/search_index.json tests/civic/R12",
  "take_note": "На 69984f0 эти пути = R12 7fb739d, checkout приносит только работу по эталону. Плюс patches/R01_search_index_asset.patch (одна строка CIVIC_ASSETS) и предложение контейнера карточки reference/r01_report_card.css — решает R01. Паспорт рассчитан на ui-kit R11 a903884 (.bk-objcard, статус-иконки); со старым ui-kit тоже выглядит по эталону.",
  "logic_changed": false,
- "logic_note": "Сценарий демо и действия паспорта прежние (ссылка → карточка, «Я тоже» R09, «Сообщить о другом» → мастер R09, «На карту»). «Подробнее» заменено вкладками эталона (обращения R09 грузятся при открытии вкладки, как раньше при раскрытии). Добавлено: поле street в /target (только данные), индекс поиска (статический файл), подписи объектов без двойного слова вида.",
+ "logic_note": "Сценарий демо и действия паспорта прежние (ссылка → карточка, «Я тоже» R09, «Сообщить о другом» → мастер R09, «На карту»). «Подробнее» заменено вкладками эталона (обращения R09 грузятся при открытии вкладки, как раньше при раскрытии). Добавлено: поле street в /target (только данные), индекс поиска (статический файл), подписи объектов без двойного слова вида. «Я тоже» — оптимистично (правило Linear 4, владелец экрана): то же действие и те же запросы, отклик до ответа сервера, откат при ошибке.",
  "items_status": [
   {
    "id": "Эталон A · R12",
@@ -30,18 +30,25 @@
    "status": "done (поле и список — R01)",
    "what": "web/civic/map/search_index.json: 1 843 улицы и 679 объектов, ru/kk, точки, рамки, id карточек, районы; CLI search-index; тест свежести",
    "evidence": "tests/civic/R12/test_search_index.py, INTEGRATION E.3"
+  },
+  {
+   "id": "Linear 4 · R12",
+   "title": "Мгновенный отклик паспорта",
+   "status": "done",
+   "what": "«Я тоже» — число +1, «Спасибо» и кнопка сразу; ошибка — откат; скелетон карточки и строк обращений сразу",
+   "evidence": "tests/civic/R12/qr/qr.test.mjs"
   }
  ],
  "tests": [
   {
    "name": "QR и мастер R09 в приложении (R01 69984f0 + R12)",
    "status": "PASS",
-   "result": "35/0/0 (с ui-kit R11 a903884 и со старым ui-kit)"
+   "result": "35/0/0 (с ui-kit R11 a903884 и со старым ui-kit; ответ R09 на «Я тоже» — по сети, 200)"
   },
   {
    "name": "QR стенд",
    "status": "PASS",
-   "result": "6/6 (один прогон под нагрузкой трёх браузеров — 5/1, повтор 6/6 дважды)",
+   "result": "7/7 (+ мгновенный отклик раньше ответа сервера и откат при сбое)",
    "evidence_type": "synthetic"
   },
   {
