@@ -132,8 +132,7 @@
       "idea.tab.akimat_projects": "Проекты акимата", "idea.sub": "Идея жителей", "idea.sub_project": "Проект акимата",
       "idea.pill.review": "На проверке", "idea.pill.voting": "Сбор голосов", "idea.pill.checking": "Акимат проверяет",
       "idea.pill.project": "Принято в проект", "idea.pill.rejected": "Отклонена", "idea.pill.hidden": "Не опубликована",
-      "idea.fact.supported": "поддержали", "idea.fact.year": "срок", "idea.fact.district": "район", "idea.fact.object": "объект",
-      "idea.fact.for": "за", "idea.fact.against": "против", "idea.on_map": "На карте",
+      "idea.fact.supported": "поддержали", "idea.fact.year": "срок", "idea.fact.district": "район", "idea.fact.object": "объект", "idea.fact.against": "против", "idea.on_map": "На карте",
     },
     kk: {
       "idea.status.review": "Тексерілуде",
@@ -191,8 +190,7 @@
       "idea.tab.akimat_projects": "Әкімдік жобалары", "idea.sub": "Тұрғындар идеясы", "idea.sub_project": "Әкімдік жобасы",
       "idea.pill.review": "Тексеруде", "idea.pill.voting": "Дауыс жинау", "idea.pill.checking": "Әкімдік тексеруде",
       "idea.pill.project": "Жобаға қабылданды", "idea.pill.rejected": "Қабылданбады", "idea.pill.hidden": "Жарияланбады",
-      "idea.fact.supported": "қолдады", "idea.fact.year": "мерзімі", "idea.fact.district": "аудан", "idea.fact.object": "нысан",
-      "idea.fact.for": "жақтайды", "idea.fact.against": "қарсы", "idea.on_map": "Картада",
+      "idea.fact.supported": "қолдады", "idea.fact.year": "мерзімі", "idea.fact.district": "аудан", "idea.fact.object": "нысан", "idea.fact.against": "қарсы", "idea.on_map": "Картада",
     },
   };
 
@@ -502,6 +500,31 @@
   }
   // Сердце «Поддержать» — как в эталоне (одна толщина линии с иконками ui-kit); заполненное — поддержано.
   var HEART = '<svg class="ri-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>';
+  // Картинка объекта: 3D-превью модели R05 (handle.previewOf(kind): square 84 для строки, 240×160 для карточки — тот же
+  // свет и угол, что на карте) на светлой подложке вида; без R05 или без файла — плоский рисунок эталона (artSvg).
+  function preview(kind, wide) {
+    var b = kind && build3d && build3d();
+    var pv = b && typeof b.previewOf === "function" ? b.previewOf(kind) : null;
+    var pic = pv && (wide ? pv : pv.square);
+    var cls = wide ? "bk-pd__im ri-pd__im" : "bk-thumb ri-thumb";
+    if (!pic || !pic.src) return svgEl(artSvg(kind || "none", wide), cls);
+    var box = doc.createElement("span");
+    box.className = cls + " ri-pic3d";
+    box.setAttribute("aria-hidden", "true");
+    if (pv.tint) box.style.backgroundColor = pv.tint;
+    var img = doc.createElement("img");
+    img.alt = "";
+    img.src = pic.src;
+    if (pic.srcset) img.srcset = pic.srcset;
+    img.width = pic.width || (wide ? 240 : 84);
+    img.height = pic.height || (wide ? 160 : 84);
+    img.draggable = false;
+    img.addEventListener("error", function () {
+      if (box.parentNode) box.parentNode.replaceChild(svgEl(artSvg(kind || "none", wide), cls), box);
+    });
+    box.appendChild(img);
+    return box;
+  }
   function svgEl(markup, cls) {
     var span = doc.createElement("span");
     span.className = cls;
@@ -757,7 +780,7 @@
     function rowCard(id, attrs, kind, titleText, titleLang, sub, pillEl, capsule, sel) {
       var on = !!(sel && sel.id === id);
       var card = h("article", Object.assign({ class: "bk-pc ri-pc", "aria-current": on ? "true" : null, "aria-labelledby": "ri-t-" + id }, attrs), [
-        svgEl(artSvg(kind || "none"), "bk-thumb ri-thumb"),
+        preview(kind, false),
         h("div", { class: "bk-pc__body ri-pc__t" }, [
           h("h3", { class: "bk-pc__title ri-pc__title", id: "ri-t-" + id, lang: titleLang }, [
             h("button", { type: "button", class: "ri-pc__open", "data-key": "sel-" + id, "aria-expanded": String(on), onclick: function () { select(id); } }, [titleText])]),
@@ -912,16 +935,17 @@
       var inner = h("div", { class: "bk-pd__in ri-pd__in" }, [h("h3", { class: "bk-pd__title ri-pd__title", id: "ri-pd-t", lang: t.lang, text: t.text })]);
       var card = h("section", { class: "bk-pd ri-pd bk-glass bk-glass--strong", role: "region", "aria-labelledby": "ri-pd-t",
         "data-pd": x.id, "data-pd-kind": isProj ? "project" : "idea" }, [
-        svgEl(artSvg(kind || "none", true), "bk-pd__im ri-pd__im"),
+        preview(kind, true),
         inner,
       ]);
       if (isProj) {
         inner.appendChild(h("div", { class: "bk-facts ri-facts" }, [
-          fact(I() ? I().formatNumber(x.votes_up || 0) : String(x.votes_up || 0), tr("idea.fact.for")),
+          fact(I() ? I().formatNumber(x.votes_up || 0) : String(x.votes_up || 0), tr("idea.fact.supported")),
           fact(I() ? I().formatNumber(x.votes_down || 0) : String(x.votes_down || 0), tr("idea.fact.against")),
           fact(x.planned_year ? String(x.planned_year) : "—", tr("idea.fact.year"))]));
-        inner.appendChild(h("p", { class: "ri-pd__text", text: x.idea ? tr("idea.by_residents", { n: x.idea.votes || 0 })
-          : joinDot([tr("proposal.kind." + x.kind), x.district ? tr("district.name", { name: tr("district." + x.district) }) : null]) }));
+        // Одно предложение — как в карточке проекта на карте (proposals.js): статус словом и откуда проект.
+        inner.appendChild(h("p", { class: "bk-quote ri-pd__text", text: joinDot([tr("proposal.status." + x.status), x.idea ? tr("idea.by_residents", { n: x.idea.votes || 0 })
+          : joinDot([tr("proposal.kind." + x.kind), x.district ? tr("district.name", { name: tr("district." + x.district) }) : null])]) }));
         inner.appendChild(projectActions(x));
       } else {
         // Эталон: «поддержали · срок · оценка». Оценки стоимости в данных нет — третья цифра «объект» (STATUS.md, расхождения).

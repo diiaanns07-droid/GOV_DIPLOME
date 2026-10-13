@@ -89,7 +89,7 @@
   position: relative;
   flex: 1 1 0;
   min-width: 0;
-  min-height: 34px; /* + 5 сверху и снизу (::after) — зона нажатия 44, как .bk-seg ui-kit R11 */
+  min-height: 30px; /* трек 36, как в эталоне (.seg span: поля 7, 13 px); + 7 сверху и снизу (::after) — зона нажатия 44 */
   padding: 7px 4px;
   border: 0;
   border-radius: 9px;
@@ -106,7 +106,7 @@
 .ri-seg > button::after {
   content: "";
   position: absolute;
-  inset: -5px 0; /* зона нажатия 44 */
+  inset: -7px 0; /* зона нажатия 44 */
 }
 .ri-seg > button[aria-selected="true"] {
   background: var(--c-surface, #fff);
@@ -165,6 +165,23 @@
   height: 100%;
   stroke: none; /* общее svg { stroke: currentColor } страницы не обводит фигуры рисунка */
   stroke-width: 0;
+}
+/* 3D-превью модели R05 на светлой подложке вида: миниатюра — во весь квадрат, картинка карточки — по центру 150 px. */
+.ri-pic3d {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.ri-pic3d > img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.ri-thumb.ri-pic3d > img {
+  width: 100%;
+  height: 100%;
 }
 .ri-pc__t {
   display: flex;
@@ -240,7 +257,7 @@
   color: var(--c-ok, #27500a);
 }
 .ri-pill[data-tone="muted"] {
-  color: var(--c-text-3, #7e8a85);
+  color: var(--c-text-2, #4b5752); /* эталон — #7E8A85 (3.6:1); здесь ≥ 4.5:1 (UX_BRIEF, STATUS.md) */
 }
 
 /* «Поддержать» прямо в списке (эталон .vote: 32, почти чёрная, сердце 14 + число 13/600; зона нажатия 44).
@@ -508,7 +525,7 @@
 }
 .ri-pd .ri-pd__note {
   margin: 10px 0 0;
-  color: var(--c-text-3, #7e8a85);
+  color: var(--c-text-2, #4b5752); /* эталон — #7E8A85 (3.6:1); здесь ≥ 4.5:1 (UX_BRIEF, STATUS.md) */
   font-size: var(--fs-xs, 12px);
   line-height: 1.4;
 }

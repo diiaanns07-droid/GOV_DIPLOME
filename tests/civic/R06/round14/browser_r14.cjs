@@ -5,7 +5,7 @@
 //
 // Что проверяется (UX_BRIEF + prompts/R06.txt «ГОТОВО, КОГДА»):
 //  - 375×812 и 1366×768, ru и kk: нет горизонтальной прокрутки, нет сырых ключей вида proposal.vote_up,
-//    нет предупреждений [i18n], кнопки голосования ≥ 48 px, полоса из 6 этапов и «Отстаёт на…» видны;
+//    нет предупреждений [i18n], кнопки голосования ≥ 44 px (эталон), полоса из 6 этапов и «Отстаёт на…» видны;
 //  - голос: «За» +1; повтор «За» — счёт тот же; «Против» — голос переходит; перезагрузка — голос на месте;
 //  - акимат: «Одобрить» → статус «Одобрено», голосование закрыто;
 //  - нет связи с API → состояние ошибки с кнопкой «Повторить».
@@ -75,7 +75,7 @@ async function layoutChecks(page, label, warnings) {
           const own = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
           if (!own || !el.offsetParent) return;
           const fs = parseFloat(getComputedStyle(el).fontSize);
-          if (fs < 13) out.push(fs + "px «" + el.textContent.trim().slice(0, 24) + "»");
+          if (fs < 12) out.push(fs + "px «" + el.textContent.trim().slice(0, 24) + "»");  // шкала эталона 13 окт: подписи цифр — 12
         });
         return out;
       })(),
@@ -120,14 +120,14 @@ async function layoutChecks(page, label, warnings) {
   check(label + ": нет предупреждений [i18n]", i18nWarn.length === 0, i18nWarn.slice(0, 3).join(" | "));
   const errors = warnings.filter((w) => w.indexOf("[i18n]") < 0 && !/404/.test(w));
   check(label + ": нет ошибок в консоли (кроме ожидаемого 404 «нет объекта»)", errors.length === 0, errors.slice(0, 3).join(" | "));
-  check(label + ": кнопки «За/Против» ≥ 48 px", m.minVote >= 48, "min=" + m.minVote);
+  check(label + ": кнопки «За/Против» ≥ 44 px (эталон 13 окт: кнопки 44, как .btn и зоны нажатия ui-kit)", m.minVote >= 44, "min=" + m.minVote);
   check(label + ": полоса 6 этапов у каждого объекта", m.stages > 0 && m.stages % 6 === 0, "li=" + m.stages);
   check(label + ": значок «Отстаёт на N…» (цвет + слова)", m.late.length > 0 && /\d/.test(m.late[0]), m.late[0] || "");
   if (buildSet) console.log("NOT_RUN " + label + ": «давно не обновлялось» — набор сборки без сдвига часов");
   else check(label + ": «давно не обновлялось» видно", m.stale.length > 0, String(m.stale.length));
   check(label + ": п.15 — в названиях нет «Демо»/«синтетика»", m.techTitles.length === 0, m.techTitles.join(" | "));
   check(label + ": UX_BRIEF — нет технических слов", m.techWords.length === 0, m.techWords.slice(0, 5).join(", "));
-  check(label + ": UX_BRIEF — текст карточек не мельче 13 px (подписи, CLEAN_PASS §4)", m.small.length === 0, m.small.slice(0, 4).join(" | "));
+  check(label + ": текст карточек не мельче 12 px (шкала эталона 13 окт: подписи цифр 12)", m.small.length === 0, m.small.slice(0, 4).join(" | "));
   check(label + ": UX_BRIEF — контраст текста ≥ 4.5:1 (крупный ≥ 3:1)", m.lowContrast.length === 0, m.lowContrast.slice(0, 4).join(" | "));
   check(label + ": UX_BRIEF — анимации не длиннее 800 мс", m.slowMotion.length === 0, m.slowMotion.slice(0, 3).join(" | "));
   check(label + ": п.17 — «Отстают» только с «Отстаёт на…», «Давно не обновлялись» без него, без повторов",
@@ -167,8 +167,10 @@ async function counts(page, id) {
   return page.evaluate((pid) => {
     const card = document.querySelector('.r06-card[data-proposal="' + pid + '"]');
     const btns = card.querySelectorAll(".r06-vote__btn");
-    const num = (b) => Number(b.querySelector(".bk-btn__count").textContent.replace(/\s/g, ""));
-    return { up: num(btns[0]), down: num(btns[1]), upPressed: btns[0].getAttribute("aria-pressed"), downPressed: btns[1].getAttribute("aria-pressed") };
+    // Эталон 13 окт: голоса — тремя цифрами карточки (поддержали · против · срок), кнопки — «За» / «Против» без чисел.
+    const facts = card.querySelectorAll(".r06-fact > b");
+    const num = (b) => Number(b.textContent.replace(/\s/g, ""));
+    return { up: num(facts[0]), down: num(facts[1]), upPressed: btns[0].getAttribute("aria-pressed"), downPressed: btns[1].getAttribute("aria-pressed") };
   }, id);
 }
 

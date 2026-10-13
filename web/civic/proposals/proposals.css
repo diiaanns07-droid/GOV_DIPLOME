@@ -15,92 +15,149 @@
 .r06-place {
   margin: 0;
 }
-/* Шапка карточки проекта (дизайн-марафон): плитка вида объекта слева, текст справа — как карточки «Идей». */
-.r06-head {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--s-3);
-  align-items: start;
+/* ── Карточка проекта по эталону 13 окт (REFERENCE.html вариант A, .pd): название 18/600, тихая строка, 3 цифры,
+   одно предложение 14, две кнопки 44 в ряд, мелкая строка «это опрос…». Картинку сверху ставит R05 (панель 3D). ── */
+.r06-pcard {
+  display: block;
 }
-.r06-head__text {
-  display: grid;
-  gap: var(--s-1);
-  min-width: 0;
+.r06-pcard > * + * {
+  margin-top: 0;
 }
-.r06-kicker {
-  gap: var(--s-2);
+.r06-card .r06-pcard__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: var(--fw-semi, 600);
+  line-height: 1.25;
 }
-.r06-tile {
-  display: inline-grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  border-radius: var(--r-l);
-  background: linear-gradient(150deg, var(--c-accent-soft) 0%, var(--c-accent) 100%);
-  color: var(--c-ink);
+/* Телефон: в панели 3D R05 картинки нет, «×» панели — в углу над названием; название его не подлезает. */
+@media (max-width: 760px) {
+  .b3d-r06 .r06-pcard__title {
+    padding-right: 44px;
+  }
 }
-.r06-tile > .ic {
-  width: 28px;
-  height: 28px;
-  stroke-width: 1.7;
-}
-.r06-head .bk-card__title {
-  font-size: var(--fs-lead);
-  line-height: 1.3;
+.r06-pcard .r06-place {
+  margin: 3px 0 0;
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-caption, 13px);
 }
 .r06-place > .bk-tag--demo {
   display: inline;
+  padding: 0;
+  background: none;
+  color: inherit;
   font-size: inherit;
+  font-weight: inherit;
 }
-
-/* «За» / «Против»: две крупные кнопки в ряд, на узком экране — тоже в ряд (по 50 %). */
-.r06-vote {
+.r06-facts {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--s-3);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
 }
-.r06-vote__btn {
-  /* Две строки в обеих кнопках одинаково: «иконка + слово» сверху, крупное число снизу.
-     Так «За» и «Против» (и длинные «Жақтаймын» / «Қарсымын») всегда стоят ровно. */
-  display: grid;
-  grid-template-rows: auto auto;
-  justify-items: center;
-  align-content: center;
-  gap: var(--s-1);
-  min-height: 72px;
-  border-width: 2px;
-  text-align: center;
+.r06-fact {
+  min-width: 0;
+  padding: 9px 10px;
+  border-radius: var(--r-m, 12px);
+  background: var(--c-sub, rgba(255, 255, 255, 0.72));
 }
-.r06-vote__label {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s-2);
-  flex-wrap: wrap; /* не влезло — значок над словом, а не слово по слогам */
-  font-size: var(--fs-body); /* 15: «Жақтаймын» со значком помещается в половину карточки на 375 — значки у обеих кнопок слева */
+.r06-fact > b {
+  display: block;
+  font-size: var(--fs-lead, 16px);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
 }
-.r06-vote__btn {
-  padding-inline: var(--s-2);
+.r06-fact > span {
+  display: block;
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-xs, 12px);
+  line-height: 1.3;
 }
-.r06-vote__btn .r06-vote__label {
-  gap: 6px;
+/* На стекле (панель 3D R05) карточка — само содержимое панели: без второй подложки и линии (эталон .pd .in);
+   вес (0,3,0) — выше «плотной подложки» .bk-glass .bk-card ui-kit и .b3d-r06 .bk-card R05. */
+.bk-glass .r06-card.r06-pcard {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
-.r06-vote__btn .bk-btn__count {
-  font-size: var(--fs-title);
-  line-height: 1;
+/* Вне стекла (стенд, карточка на белом) плашки цифр — серые, иначе их не видно. */
+.r06-pcard:not(.bk-glass *) .r06-fact {
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
 }
-/* Выбранный голос виден не только цветом: рамка толще, текст «Вы проголосовали…» под кнопками.
-   Вес (0,6,0) — выше серой кнопки ui-kit на стекле (.bk-glass .bk-btn:not(…)×3 = 0,5,0): карточка живёт в стеклянной
-   панели 3D (R05), и без этого выбранная «За» теряла свою подложку. */
-.r06-card .r06-vote > .bk-btn.r06-vote__btn[data-value="1"][aria-pressed="true"] {
-  border-color: var(--c-brand);
-  background-color: var(--c-brand-soft);
-  box-shadow: inset 0 0 0 2px var(--c-brand);
+.r06-sentence {
+  margin: 0;
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-small, 14px);
+  line-height: 1.45;
 }
-.r06-card .r06-vote > .bk-btn.r06-vote__btn[data-value="-1"][aria-pressed="true"] {
-  border-color: var(--c-danger);
-  background-color: var(--c-danger-soft);
-  box-shadow: inset 0 0 0 2px var(--c-danger);
+.r06-sentence .bk-status {
+  color: var(--c-ink, #121a17);
+  font-size: inherit;
+  font-weight: var(--fw-medium, 500);
+}
+.r06-sentence .r06-idea {
+  display: inline;
+  color: inherit;
+  font-weight: inherit;
+}
+/* «За» / «Против», «Одобрить» / «Отклонить» — в ряд (эталон .acts: 44, радиус 12, 15/600; главная растягивается). */
+.r06-pcard .r06-vote,
+.r06-pcard .r06-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0 0;
+}
+.r06-pcard .r06-vote > .bk-btn,
+.r06-pcard .r06-acts > .bk-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--r-m, 12px);
+  font-size: var(--fs-body, 15px);
+  font-weight: var(--fw-semi, 600);
+  box-shadow: none;
+}
+.r06-pcard .r06-vote > .bk-btn .ic,
+.r06-pcard .r06-acts > .bk-btn .ic {
+  width: 18px;
+  height: 18px;
+}
+/* Вес (0,4,0)+ — выше серой кнопки ui-kit на стекле (.bk-glass .bk-btn:not(…)×3): карточка живёт в стеклянной панели R05. */
+.r06-card.r06-pcard .r06-vote > .bk-btn.bk-btn--primary,
+.r06-card.r06-pcard .r06-acts > .bk-btn.bk-btn--primary {
+  flex-grow: 1.4;
+  background: var(--c-primary, #121a17);
+  color: var(--c-on-primary, #fff);
+}
+.r06-card.r06-pcard .r06-vote > .bk-btn.r06-vote__btn:not(.bk-btn--primary),
+.r06-card.r06-pcard .r06-acts > .bk-btn.r06-second {
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
+}
+/* Свой голос — нажатая кнопка меняет вид не только цветом: «За» светлеет и получает галочку-рамку, «Против» — темнеет;
+   под кнопками — «Ваш голос: за». */
+.r06-card.r06-pcard .r06-vote > .bk-btn.r06-vote__btn[data-value="1"][aria-pressed="true"] {
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
+  box-shadow: inset 0 0 0 2px var(--c-ink, #121a17);
+}
+.r06-card.r06-pcard .r06-vote > .bk-btn.r06-vote__btn[data-value="-1"][aria-pressed="true"] {
+  background: var(--c-primary, #121a17);
+  color: var(--c-on-primary, #fff);
+}
+.r06-pcard .r06-vote__note {
+  margin: 8px 0 0;
+  color: var(--c-text-2, #4b5752);
+  font-size: var(--fs-caption, 13px);
+}
+.r06-honest {
+  margin: 6px 0 0;
+  color: var(--c-text-2, #4b5752); /* эталон — #7E8A85 (3.6:1); здесь ≥ 4.5:1 (UX_BRIEF, STATUS.md) */
+  font-size: var(--fs-xs, 12px);
+  line-height: 1.4;
 }
 .r06-roll {
   display: inline-block;
@@ -127,32 +184,6 @@
 }
 .r06-vote__note {
   margin: 0;
-}
-
-/* Вид акимата: голоса — только чтение, крупными числами (кнопки голосования — у жителя). */
-.r06-tally {
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
-  margin: 0;
-  font-size: var(--fs-lead);
-  font-weight: var(--fw-semi);
-  font-variant-numeric: tabular-nums;
-}
-
-/* Полоса «за/против» — доля голосов, подписи цифрами рядом (цвет не один). */
-.r06-share {
-  display: flex;
-  height: 8px;
-  border-radius: 4px;
-  overflow: hidden;
-  background: var(--c-line);
-}
-.r06-share__up {
-  background: var(--c-brand);
-}
-.r06-share__down {
-  background: var(--c-danger);
 }
 
 .r06-stages {
@@ -208,31 +239,6 @@
   font: 600 16px system-ui, sans-serif;
 }
 
-/* «По идее жителей · 47 голосов» (волна 2 п. 7): проект вырос из идеи жителей. Тёмным — зелёный только «исправлено»
-   (дизайн-марафон, п. 4 чек-листа). */
-.r06-idea {
-  display: flex;
-  gap: var(--s-2);
-  align-items: center;
-  margin: 0;
-  color: var(--c-ink);
-  font-weight: var(--fw-semi);
-}
-
-/* Дизайн-марафон: статус проекта — одна краска. «Одобрен» — тёмная точка (не зелёная: зелёный — «исправлено»),
-   «Предложение» — кольцо, «Отклонён» — серая. data-status ui-kit остаётся для запасного вида. */
-.r06-card .bk-status[data-r06-status] {
-  --dot: var(--c-brand);
-  white-space: normal;
-}
-.r06-card .bk-status[data-r06-status="proposal"]::before {
-  box-sizing: border-box;
-  border: 2px solid var(--c-brand);
-  background: transparent;
-}
-.r06-card .bk-status[data-r06-status="rejected"] {
-  --dot: var(--c-text-3);
-}
 /* Список «Проекты» у акимата: «Одобрить» — серая капсула, «Отклонить» — тихая красным, обе по содержимому. */
 .r06-actions--list {
   justify-content: flex-start;
