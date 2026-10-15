@@ -91,7 +91,9 @@ try {
   await sleep(1200);
 
   // ---- 3. editor draws -> public map input belongs to the editor -> cancel -> selecting works again
-  await page.click("#civic-staff-button");
+  // Оболочка раунда 15: кнопки «Для сотрудников» в шапке нет — кабинет открывается из меню аватара той же функцией.
+  if (await page.locator("#civic-staff-button").isVisible().catch(() => false)) await page.click("#civic-staff-button");
+  else await page.evaluate(() => (window.CivicShell && window.CivicShell.openEditor ? window.CivicShell.openEditor() : document.getElementById("civic-staff-button").click()));
   await page.waitForSelector(fk("login-user"), { timeout: 10000 });
   await page.fill(fk("login-user"), USER);
   await page.fill(fk("login-pass"), PASSWORD);
