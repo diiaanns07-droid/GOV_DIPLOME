@@ -421,6 +421,8 @@
     pause: "M8 5v14M16 5v14",
     play: "M7 5l12 7-12 7z",
     expand: "M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5",
+    // Знак Birge — домик оболочки (R01 birge.css .brand-mark, VISUAL_BRIEF §3 «один знак»; ревью R11 R08-1), без буквы.
+    home: "M5 20V9l7-5 7 5v11M9.5 20v-6h5v6",
   };
   function glyph(name) {
     var svg = doc.createElementNS(SVG, "svg");
@@ -734,7 +736,7 @@
       }),
     };
     head.brand = h("div", { class: "sc-brand" }, [
-      h("span", { class: "sc-mark", "aria-hidden": "true", text: "B" }), h("span", {}, [head.title, head.scope])]);
+      h("span", { class: "sc-mark", "aria-hidden": "true" }, [glyph("home")]), h("span", {}, [head.title, head.scope])]);
     head.seg = h("div", { class: "sc-seg", role: "group" }, head.langs);
     head.full = doc.fullscreenEnabled ? h("button", { type: "button", class: "sc-btn sc-btn--icon sc-full", onclick: toggleFull }, [glyph("expand")]) : null;
     head.back = h("a", { class: "sc-btn sc-back", href: opts.homeHref });

@@ -1324,7 +1324,8 @@
       if (state.boardStatus !== 200 || !sv || !sv.available || !(sv.items || []).length) return null;
       var rows = {};
       (sv.items || []).forEach(function (r) { rows[r.service] = r; });
-      var lag = (sv.lagging || []).filter(function (id) { return rows[id]; }).map(function (id) {
+      // Две самые отстающие службы: третья в две строки мини-карточки не помещалась и обрезалась (ревью R11, B0.12).
+      var lag = (sv.lagging || []).filter(function (id) { return rows[id]; }).slice(0, 2).map(function (id) {
         return serviceName({ id: id, ru: rows[id].ru, kk: rows[id].kk, name_edited: rows[id].name_edited }) + " — " + num(rows[id].overdue || 0);
       });
       var joint = sv.joint && sv.joint.week != null ? sv.joint.week : sv.joint && sv.joint.open;
