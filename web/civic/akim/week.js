@@ -42,6 +42,8 @@
       "week.kpi.verified": "проверено жителями: {n}",
       "week.kpi.in_progress": "В работе на {date}",
       "week.kpi.overdue": "Просрочено на {date}",
+      "week.kpi.overdue_fix": "Не исправлено в срок",
+      "week.kpi.work": "В работе",
       "week.delta.week": ", чем неделей раньше",
       "week.delta.week_before": "",
       "week.delta.ago": ", чем неделю назад",
@@ -106,6 +108,8 @@
       "week.kpi.verified": "тұрғындар тексерді: {n}",
       "week.kpi.in_progress": "{date} жағдайы: орындалуда",
       "week.kpi.overdue": "{date} жағдайы: мерзімі өткен",
+      "week.kpi.overdue_fix": "Мерзімінде түзетілмеген",
+      "week.kpi.work": "Орындалуда",
       "week.delta.week": "",
       "week.delta.week_before": "алдыңғы аптадан ",
       "week.delta.ago": "",
@@ -415,8 +419,8 @@
         kpiTile(tr("week.kpi.new_7d"), k.new.value, deltaText(k.new, "week"), null, "new"),
         kpiTile(tr("week.kpi.fixed_7d"), k.fixed.value, deltaText(k.fixed, "week"),
           k.verification_available ? tr("week.kpi.verified", { n: k.fixed.verified || 0 }) : null, "fixed"),
-        kpiTile(tr("week.kpi.in_progress", { date: asOf }), k.in_progress.value, deltaText(k.in_progress, "ago"), null),
-        kpiTile(tr("week.kpi.overdue", { date: asOf }), k.overdue.value, deltaText(k.overdue, "ago"), null, k.overdue.value ? "late" : null),
+        kpiTile(tr("week.kpi.work"), k.in_progress.value, deltaText(k.in_progress, "ago"), null),
+        kpiTile(tr("week.kpi.overdue_fix"), k.overdue.value, deltaText(k.overdue, "ago"), null, k.overdue.value ? "late" : null),
       ]);
       var parts = [head, kpis];
       if (!k.new.value && !k.fixed.value && !k.in_progress.value && !k.overdue.value) {
