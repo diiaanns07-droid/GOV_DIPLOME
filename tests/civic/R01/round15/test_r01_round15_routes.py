@@ -354,6 +354,7 @@ BAD = [
     ("POST", "/notifications/read", "", {"ids": ["bad id"]}, RESIDENT, "ids"),
     ("POST", "/notifications/read", "", {"all": True}, CTX, "device_id"),
     ("POST", "/route", "", {}, CTX, "text"),
+    ("POST", "/route", "", {"category": "roads", "subtopic": "Яма"}, CTX, "subtopic"),
     ("POST", "/route", "", {"text": "яма", "point": [0, 0]}, CTX, "point"),
     ("POST", "/route", "", {"text": "яма", "category": "potholes"}, CTX, "category"),
     ("POST", "/route", "", {"text": "яма", "lang": "en"}, CTX, "lang"),
@@ -413,6 +414,9 @@ def test_function_arguments_are_parsed_and_filtered(tmp_path):
         "agent.civic_assistant.api": types.SimpleNamespace(ask=ask)})
     assert gateway.handle("POST", "/route", "", {"text": "Яма", "lang": "kk", "extra": 1}, CTX)["status"] == 200
     assert seen["route"] == ("Яма", "kk")
+    # без текста — по категории (R04 умеет): text=None доходит до функции
+    assert gateway.handle("POST", "/route", "", {"category": "roads"}, CTX)["status"] == 200
+    assert seen["route"] == (None, None)
     assert gateway.handle("GET", "/notifications", "since=2026-10-11", None, RESIDENT)["status"] == 200
     assert seen["list"] == (DEVICE, "2026-10-11")
     # устройство: заголовок X-Birge-Device, запасной вариант — device_id в теле

@@ -247,7 +247,7 @@ V2_RATE_LIMITS = {
     "together.initiatives.report": ((60, 5, False), (3600, 20, False)),
     "together.yards.join": ((60, 20, False), (86400, 20, True)),
     "together.yards.leave": ((60, 20, False), (86400, 20, True)),
-    "meetings.register": ((60, 30, False), (86400, 20, True)),
+    "meetings.register": ((60, 20, False), (86400, 20, True)),   # R13 INTEGRATION §2
     "meetings.question": ((60, 3, False), (3600, 20, False), (86400, 30, False)),
     "ml.route": ((60, 60, False),),
     "ml.text_check": ((60, 60, False),),
@@ -1589,7 +1589,15 @@ class CivicV2Gateway:
             target = body.get("target")
             if target is not None and not isinstance(target, (dict, str)):
                 raise V2BadRequest("target", "target: {kind, id} или id цели.")
-            return {"text": _v2_text(body.get("text")), "category": self._category(body.get("category")),
+            # R04 подбирает службы и без текста — по категории и уточнению (R04 INTEGRATION §1).
+            text = _v2_text(body.get("text")) if body.get("text") not in (None, "") else None
+            category = self._category(body.get("category"))
+            subtopic = body.get("subtopic")
+            if subtopic is not None and (not isinstance(subtopic, str) or not re.fullmatch(r"[a-z][a-z0-9_]{0,40}", subtopic)):
+                raise V2BadRequest("subtopic", "subtopic: неизвестное уточнение.")
+            if text is None and category is None:
+                raise V2BadRequest("text", "Нужен текст обращения или категория.")
+            return {"text": text, "category": category, "subtopic": subtopic,
                     "point": _v2_point(body["point"]) if body.get("point") is not None else None,
                     "target": target, "lang": _v2_lang(body.get("lang")), "body": body}
         if key == "ml.reply_draft":
