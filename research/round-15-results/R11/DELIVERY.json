@@ -4,10 +4,10 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "23eab2d2",
- "tested_sha": "23eab2d2",
+ "code_sha": "f6367c83",
+ "tested_sha": "f6367c83",
  "push_status": "OK",
- "updated": "2026-10-16 01:28 Астана",
+ "updated": "2026-10-16 03:50 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -33,7 +33,7 @@
   "review_tool": "tests/civic/R11/review/r15_screens.cjs — разбор сборки раунда 15 одной командой (B1, B2, FINAL-5)"
  },
  "tests": {
-  "pytest tests/civic/R11": "PASS 32/32 (23eab2d2)",
+  "pytest tests/civic/R11": "PASS 32/32 (f6367c83)",
   "node tests/civic/R11 (i18n, lang_order, ui_kit)": "PASS (ea188ed6: i18n, ui_kit)",
   "i18n_tools check": "PASS — 2856 ключей, ru = kk",
   "витрина ui-kit, Chromium (Playwright) 1366/375 × ru/kk": "PASS 4/4 (ea188ed6): прокрутки нет, кнопки ≥ 44 px (кнопка баннера кризиса исправлена с 36), текст ≥ 12 px, шрифт с казахскими буквами",
@@ -45,7 +45,10 @@
   "сценарии ролей с ui-kit и словарём R11 поверх": "R09 joint_r09 102/108 (6 — старые kk-слова в тесте R09), R06 browser_r15 notify+ideas 158/0",
   "r15_screens.cjs на стенде R01 B0.3 adb5fba9 + R11 (102 кадра 1366/1024/375 × ru/kk)": "0 проблем: меню по IA (1366 и 1024, ru и kk), прокрутка 0, сырые ключи 0, непереведённое в ҚАЗ 0, обрезанные подписи 375 ҚАЗ 0, ошибки JS 0",
   "r15_screens.cjs ҚАЗ на стенде B0.3 + R11 с --fs-xs 13 px": "51 кадр 1366/1024/375: проблем 0, обрезанных подписей 0",
-  "r15_screens.cjs на стенде R01 B0.9 49786917 + словарь R11 (102 кадра 1366/1024/375 × ru/kk)": "0 проблем: меню в капсуле (1366, 1024; ru, kk), прокрутка 0, сырые ключи 0, непереведённое 0, обрезанные подписи 0, ошибки JS 0"
+  "r15_screens.cjs на стенде R01 B0.9 49786917 + словарь R11 (102 кадра 1366/1024/375 × ru/kk)": "0 проблем: меню в капсуле (1366, 1024; ru, kk), прокрутка 0, сырые ключи 0, непереведённое 0, обрезанные подписи 0, ошибки JS 0",
+  "стенд B0.12 (R01 0121f7bd), r15_screens.cjs": "102 кадра 1366/1024/375 × ru/kk × житель/акимат — проблем 0 (24 кадра «смотреть глазами» разобраны: REVIEW_R15 круг 12)",
+  "стенд B0.12, r15_scenes.cjs": "50 кадров сцен 7–9 (1366/375 + 1920) — ошибок JS 0",
+  "патчи круга 12": "R17_wrap_names_quotes — git apply --check на 10cce40a, на стенде обрезанных 0; R02_world_kk — demo_world_check ошибок 0; R10_video_subtitles_kk — git apply --check на 7308738d"
  },
  "screens": [
   "research/round-15-results/R11/screens/kit15-1366-kk.jpg",
@@ -56,13 +59,16 @@
   "research/round-15-results/R11/screens/r5-b0-resident-375-kk.jpg",
   "research/round-15-results/R11/screens/r5-glass-1366-ru-after.jpg",
   "research/round-15-results/R11/screens/r5-glass-1366-ru-before.jpg",
-  "research/round-15-results/R11/screens/r5-glass-375-kk-before-after.jpg"
+  "research/round-15-results/R11/screens/r5-glass-375-kk-before-after.jpg",
+  "research/round-15-results/R11/screens/r12-b012-board-1024-kk-before-after.jpg",
+  "research/round-15-results/R11/screens/r12-b012-handoffs-375-kk-before-after.jpg"
  ],
  "known_limits": [
-  "Меню по IA поставил R01 (c2df555a); на B0.3 (adb5fba9) — по IA в капсуле на 1366 и 1024 в обоих языках. Открыто R01-5: «Мои обращения» остаются поверх экрана раздела (патч в INTEGRATION §4).",
-  "Кадры экранов ролей v0 — в основном на оболочке FINAL-4; книга экранов v1 — после B1 (16 окт 14:00).",
-  "Казахские термины раунда 15 — черновик до проверки владельцем (KK_REVIEW_R15.md, 39 строк)."
+  "Меню по IA — у R01 с c2df555a; на B0.12 (0121f7bd) — в капсуле на 1366 и 1024 в обоих языках, R01-5 исправлен (B0.8).",
+  "Открыто у ролей (патчи и точные правки — INTEGRATION §4): R17-4/5/6, R02-1, R16 (поставка с R16-1), R08-1; по желанию R02-2, R08-2.",
+  "Книга экранов v1 — после B1 (16 окт 14:00): кадры сцен на одной сборке, отбор героев H1–H8.",
+  "Казахские термины раунда 15 — черновик до проверки владельцем (KK_REVIEW_R15.md, 42 строки)."
  ],
- "next_step": "Круг 6: AMENDMENTS → соседи → R06 (колокольчик), R09 v2.1, новые кадры; на B1 — проверка меню по IA и §3 (1024 ҚАЗ), сцены 7–9 для DESIGN_BOOK v1.",
+ "next_step": "Круг 13 (04:23): AMENDMENTS → соседи → словарь; на B1 — r15_screens.cjs и r15_scenes.cjs, проверка R17-4/5/6, R02-1, R16-1, затем DESIGN_BOOK v1.",
  "amendments": "П1 «Без ИИ-слопа» (15 окт 17:05) — применена в 2d4f69bc"
 }
