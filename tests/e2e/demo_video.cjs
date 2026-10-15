@@ -114,19 +114,12 @@ function overlayScript() {
       const W = innerWidth, H = innerHeight;
       const top = busy(400, H - 132, W - 96, H - 62) && !busy(540, 128, W - 20, 160);
       sub.classList.toggle("top", top);
+      // Пометка «Демо-запись…»: на стороне, противоположной субтитру (субтитр внизу — пометка справа под шапкой,
+      // наверху — справа внизу), и только если там нет интерфейса (баннер кризиса, кнопки панели); иначе прячем.
+      const bh = badge.offsetHeight || 40, y = top ? H - 60 - bh : 74;
+      const free = !busy(W - 440, y + 2, W - 24, y + bh - 2);
       badge.classList.toggle("low", top);
-      badge.classList.toggle("off", top && busy(W - 440, H - 112, W - 20, H - 62));
-      // Верхнее место пометки занято интерфейсом (баннер кризиса R17 под шапкой) — опустить пометку под него.
-      if (!top) {
-        badge.style.top = "";
-        const r = badge.getBoundingClientRect();
-        let low = 0;
-        for (let x = r.left + 4; x <= r.right - 4; x += 40) for (const y of [r.top + 3, r.bottom - 3]) {
-          const hit = document.elementsFromPoint(x, y).find((n) => !mine(n));
-          if (!mapLike(hit)) low = Math.max(low, hit.getBoundingClientRect().bottom);
-        }
-        if (low > 0 && low < H / 2) badge.style.top = Math.round(low + 8) + "px";
-      }
+      badge.classList.toggle("off", !free);
     }, 250);
   };
   window.__r10v = {
