@@ -47,8 +47,9 @@ const SHOT_Q = 72;
 // Темп пауз: 0,6 — ролик ≤ 5 мин (VISUAL_BRIEF №12) с частью 2; субтитр всё равно держится не меньше времени чтения.
 const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.5)));
 const pause = (ms) => sleep(Math.round(ms * PACE));
-// Часть времени чтения даёт следующий шаг сцены (нажатие, перелёт карты): субтитр висит до следующего — вычитаем ~1,5 с.
-const READ_AHEAD = 2000;
+// Время чтения субтитра идёт вместе с действиями сцены (их субтитр и описывает): say() ждёт только паузу сцены, а следующий
+// субтитр (или quiet) не заменит текущий, пока тот не провисел len / READ_CPS с. Раньше say() ждал чтения целиком минус 2 с
+// и только потом шли нажатия — ролик ҚАЗ был 4:49–4:55 из 5:00, а вычитка R11 удлинила казахский текст на ~80 знаков.
 const READ_CPS = 17;   // знаков в секунду: удобная скорость чтения субтитров (норма 15–17); 17 — запас под 5 мин для ҚАЗ
 const wait = (ms) => sleep(ms);
 const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
@@ -172,18 +173,21 @@ async function recordLang(browser, lang) {
   const cues = [], scenes = [], skipped = [], shots = [];
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message.slice(0, 200)));
-  let open = null, trim = 0;
+  let open = null, trim = 0, readUntil = 0;
   const at = () => (Date.now() - t0) / 1000;
+  // Субтитр на экране не меньше времени чтения (1 с на READ_CPS знаков, кроме --fast): дочитать перед заменой.
+  const readOut = async () => { const w = readUntil - Date.now(); if (w > 0) await sleep(w); };
   const say = async (key, hold = 4200, vars = {}) => {
     let text = sub(key);
     for (const [k, v] of Object.entries(vars)) text = text.replace("{" + k + "}", v);
+    await readOut();
     if (open) { open.end = at(); cues.push(open); }
     open = text ? { start: at(), end: null, text, key } : null;
     await page.evaluate((x) => window.__r10v && window.__r10v.sub(x), text).catch(() => null);
-    // Субтитр должен успеть прочитаться: не меньше 1 с на READ_CPS знаков, кроме --fast.
-    await sleep(Math.max(Math.round(hold * PACE), FAST || !text ? 0 : Math.round(text.length / READ_CPS * 1000) - READ_AHEAD));
+    readUntil = Date.now() + (FAST || !text ? 0 : Math.round(text.length / READ_CPS * 1000));
+    await sleep(Math.round(hold * PACE));
   };
-  const quiet = async () => { if (open) { open.end = at(); cues.push(open); open = null; }
+  const quiet = async () => { await readOut(); if (open) { open.end = at(); cues.push(open); open = null; }
     await page.evaluate(() => window.__r10v && window.__r10v.sub("")).catch(() => null); };
   const title = async (text, ms = 2600) => { await page.evaluate((x) => window.__r10v && window.__r10v.title(x), text).catch(() => null);
     await pause(ms); await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null); };
@@ -249,9 +253,7 @@ async function recordLang(browser, lang) {
     if (PARTS.includes(1)) await part1();
     if (PARTS.includes(2)) await part2();
     await say("final", 6500);
-    // Последний субтитр — без «следующего шага сцены»: дочитать целиком (READ_AHEAD здесь не вычитается).
-    if (!FAST) await sleep(READ_AHEAD);
-    await quiet();
+    await quiet();  // дочитать последний субтитр целиком
     await pause(1200);
   } catch (e) {
     errors.push("сценарий: " + String(e.message || e).slice(0, 300));
