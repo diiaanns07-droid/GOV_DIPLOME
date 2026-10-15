@@ -497,6 +497,7 @@
 
     function render() {
       clearTimeout(state.skelTimer);
+      rootEl.dataset.state = state.status;   // после ответа чипы — одним рядом (analyst.css), ответ выше
       live.setAttribute("aria-busy", state.status === "loading" ? "true" : "false");
       if (state.status === "idle") renderIdle();
       else if (state.status === "error") renderError();
@@ -605,27 +606,35 @@
       }));
   }
 
-  // Экран в оболочке: регистрируется сам (пункт «Ещё» акимата + палитра). Вопрос из палитры задаётся после монтирования.
+  // Экран в оболочке. Вопрос из палитры (commands) задаётся, как только экран смонтирован.
   var handle = null, pending = null;
   function shellMount(container, opts) {
-    handle = mount(container, opts);
-    if (pending) { var q = pending; pending = null; handle.ask(q); }
-    var h = handle;
+    var h = mount(container, opts);
+    handle = h;
+    if (pending) { var q = pending; pending = null; h.ask(q); }
     return { setLang: h.setLang, ask: h.ask, state: h.state,
       destroy: function () { h.destroy(); if (handle === h) handle = null; } };
   }
   function register() {
     var B = root.BirgeShell;
     if (!B || typeof B.registerScreen !== "function") return false;
+    // Раздел уже в таблице SCREENS оболочки (patch R01) — она сама найдёт window.BirgeAnalyst.mount.
+    if (typeof B.navTitle === "function" && (B.moreItems ? B.moreItems() : []).indexOf("analyst") >= 0) return true;
     // Подпись — готовым текстом: titleKey без ключа в словаре R11 оболочка показала бы сам ключ «analyst.title».
     var spec = { id: "analyst", mount: shellMount, modes: ["akimat"],
       title: { ru: KEYS.ru["analyst.title"], kk: KEYS.kk["analyst.title"] } };
     var I = i18n();
     if (I && typeof I.has === "function" && I.has("analyst.title")) spec.titleKey = "analyst.title";
-    return B.registerScreen(spec);
+    var ok = B.registerScreen(spec);
+    // Оболочка разбирает адрес до загрузки этого скрипта: прямая ссылка #analyst открывает экран сама.
+    if (ok && root.location.hash === "#analyst" && B.section !== "analyst" && typeof B.setSection === "function") {
+      B.setSection("analyst", { hash: false });
+    }
+    return ok;
   }
 
-  root.BirgeAnalyst = { mount: mount, commands: commands, version: VERSION, KEYS: KEYS };
+  // mount для оболочки — та же обёртка (палитра знает открытый экран), для стенда и тестов — тоже.
+  root.BirgeAnalyst = { mount: shellMount, commands: commands, version: VERSION, KEYS: KEYS };
   if (!register()) {
     if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", register, { once: true });
     else root.addEventListener("load", register, { once: true });

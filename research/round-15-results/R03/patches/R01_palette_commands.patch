@@ -1,0 +1,16 @@
+diff --git a/web/civic/shell/birge-ref.js b/web/civic/shell/birge-ref.js
+index 751c6f93..5dcac5b1 100644
+--- a/web/civic/shell/birge-ref.js
++++ b/web/civic/shell/birge-ref.js
+@@ -370,6 +370,11 @@
+     if (h && typeof h.commands === "function") {
+       try { for (const c of h.commands() || []) out.push({ group: c.group, title: c.title, hint: c.hint, run: () => { openListIfNeeded(); c.run(); } }); } catch (e) { /* без команд R07 */ }
+     }
++    // R03 раунд 15: «Спросить Birge» — открыть экран аналитика или сразу задать вопрос сцены демо.
++    const A = window.BirgeAnalyst;
++    if (mode() === "akimat" && A && typeof A.commands === "function") {
++      try { for (const c of A.commands() || []) out.push({ group: c.group, title: c.title, hint: c.hint, run: c.run }); } catch (e) { /* без R03 */ }
++    }
+     const L = window.BirgeComplaintList;
+     if (mode() === "akimat" && L && typeof L.commands === "function" && window.BirgeShell) {
+       try {

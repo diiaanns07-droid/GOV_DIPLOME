@@ -164,6 +164,13 @@
   white-space: normal;
 }
 
+/* Есть ответ — подсказки одним рядом с прокруткой: ответ поднимается выше, к первому экрану */
+.ba[data-state="ready"] .ba-chips,
+.ba[data-state="loading"] .ba-chips {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
 /* ── Пусто, ошибка, скелетон ── */
 .ba-empty,
 .ba-error {
