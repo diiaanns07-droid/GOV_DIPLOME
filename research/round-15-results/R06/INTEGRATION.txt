@@ -85,9 +85,10 @@ window.BirgeNotify (web/civic/notify/notify.js, версия notify-r15):
     BirgeNotify.onCount(fn) — число непрочитанных (точка на аватаре, «Уведомления · N» в меню телефона — по желанию R01).
     Открытие «Мои обращения» R09 (html.bc-mine-open) отмечает прочитанными complaint.update (IA §5.7).
 Как открывается изменение: onOpen(link) R01 → BirgeShell.openLink(link) → в оболочке раунда 15 (есть BirgeShell.path)
-  модуль просто ставит адрес «#раздел/путь» (путь модулю раздела передаёт оболочка: opts.path / handle.setPath);
+  модуль просто ставит адрес «#раздел/путь» (путь модулю раздела передаёт оболочка: opts.path / handle.setPath;
+  «#mine/event=…» R09 ловит сам по hashchange);
   в FINAL-4 — setSection(раздел) + событие document "birge:open" {section, path, link}.
-Ссылки событий: R16 «#together/<id>», «#yard/<id>»; R13 «#meetings/<id>[/…]»; R09 «#mine/event=<id>»; R17 «#incident=<id>»;
+Ссылки событий: R16 «#together/<id>», «#yard/<id>»; R13 «#meetings/<id>[/…]»; R09 «#mine/event=<id>»; R17 «#crisis/<id>»;
   R06 «#ideas/<id>» (идея или проект), «#yard/<двор>» (работа рядом с двором), «#nearby/<район>/<id>» (работа по
   подписке «Рядом» R08 — §G). Ссылка не «#…» — в ленте без ссылки.
 

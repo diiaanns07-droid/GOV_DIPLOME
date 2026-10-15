@@ -358,7 +358,22 @@ async function notifyPart(browser) {
         const zero = await page.waitForFunction((sel) => { const b = document.querySelector(sel + " .bk-nav__badge"); return !b || b.hidden; }, bellSel, { timeout: 10000 })
           .then(() => true, () => false);
         check(`${tag}: «Прочитать все» — счётчика нет`, zero);
-        await page.keyboard.press("Escape");
+        // Кризис R17 (если модуль в сборке и событие в ленте): уведомление открывает его карточку — «#crisis/<id>».
+        const crisis = await page.$('.bk-notify .bk-feed__item[data-kind="crisis"]');
+        if (crisis) {
+          const href = await crisis.getAttribute("href");
+          await crisis.click();
+          const opened = await page.waitForFunction(() => document.body.dataset.birgeSection === "crisis", null, { timeout: 10000 })
+            .then(() => true, () => false);
+          check(`${tag}: уведомление о кризисе открыло его карточку (${href})`, opened && /^#crisis\//.test(href || ""), href);
+          await sleep(800);
+          await shot(page, `${tag}-opened-crisis`);
+          await page.goto(base + "/#map", { waitUntil: "domcontentloaded" });
+          await page.waitForSelector(bellSel, { timeout: 20000 });
+        } else {
+          console.log(`NOT_RUN ${tag}: кризис — в ленте нет события R17 (модуля нет в сборке)`);
+          await page.keyboard.press("Escape");
+        }
         // Вид «Акимат»: колокольчика нет (IA §5.7 — только житель).
         await page.evaluate(() => window.BirgeShell && window.BirgeShell.setMode && window.BirgeShell.setMode("akimat"));
         await sleep(600);
