@@ -1,0 +1,35 @@
+{
+  "role": "R09",
+  "round": 15,
+  "delivery": "D0",
+  "branch": "claude/quirky-ptolemy-k3z2mj",
+  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+  "restored_from": "3c3fe2b6 (claude/modest-shannon-0ki93p: чекпойнт 280dab7a + круг 2 эталона A; в FINAL-4 лежит 82056b7b)",
+  "code_sha": "e494026ea5764291e260c97b22ad9e2ef4f8e4eb",
+  "tested_sha": "e494026ea5764291e260c97b22ad9e2ef4f8e4eb",
+  "push_status": "см. STATUS.md (push после коммита DELIVERY)",
+  "changed_paths": [
+    "web/civic/feedback/complaint.css",
+    "web/civic/feedback/complaint.js",
+    "tests/civic/R09/browser_r09.cjs",
+    "tests/civic/R09/hover_r09.cjs",
+    "tests/civic/R09/near_r09.cjs",
+    "tests/civic/R09/test_r09v2_frontend.py"
+  ],
+  "what": "Чекпойнт раунда 14 (решение R09: берём). «×» и «+» — линия 2.25 (одна толщина, правило 6 Linear); все анимации R09 150–250 мс; «Мои обращения» повторно открываются сразу из памяти и для пустого списка; проверка hover_r09.cjs «Обращения» ↔ значки карты. Только CSS/JS экранов R09 — API и данные не менялись.",
+  "how_to_take": "git fetch origin claude/quirky-ptolemy-k3z2mj && git checkout e494026ea5764291e260c97b22ad9e2ef4f8e4eb -- web/civic/feedback tests/civic/R09",
+  "tests": {
+    "pytest tests/civic/R09": "PASS 550 passed (Python 3.13, облако)",
+    "app_demo_r09.cjs (приложение FINAL-4 + пути R09, шаги 1–7, 375/1366 × ru/kk)": "PASS 75/75",
+    "browser_r09.cjs --r11 web (стенд R09, ui-kit FINAL-4)": "PASS 502/502",
+    "hover_r09.cjs (список ↔ карта, патч R07 уже в FINAL-4)": "PASS 7/7",
+    "glass_r09.cjs": "FAIL 30/34 — те же 4 FAIL и на чистом FINAL-4 (не от этой поставки): 1366/1024 «контраст на стекле» и «prefers-reduced-transparency — белая панель»; разбор — в следующей поставке",
+    "near_r09.cjs": "FAIL 3/6 — тест устарел: в FINAL-4 оболочка R01 сама ставит шторку «Рядом с вами», тест кладёт вторую; исправление теста — в следующей поставке"
+  },
+  "screens": [],
+  "known_limits": [
+    "Облако без интернета: подложка карты — упрощённый фон.",
+    "Настоящий телефон — NOT_RUN (нет устройства)."
+  ],
+  "next_step": "Раунд 15: запись v2.1 (services[], handoffs[], route_hint), маршруты handoff/services/part, экран сотрудника и паспорт жителя с двумя службами, seed_world демо-мира."
+}

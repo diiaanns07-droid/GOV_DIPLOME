@@ -1,0 +1,9 @@
+R09 · РАУНД 15 · КАК ПОДКЛЮЧИТЬ К СБОРКЕ
+
+D0 (для FINAL-4.1, R01) — чекпойнт раунда 14 3c3fe2b6, только экраны R09 (CSS/JS), API не менялся
+  git fetch origin claude/quirky-ptolemy-k3z2mj
+  git checkout <code_sha из DELIVERY.json> -- web/civic/feedback tests/civic/R09
+  Теги script/link, CIVIC_ASSETS, маршруты — без изменений (как в FINAL-4).
+
+Дальше (поставки D1+) этот файл дополняется: новые маршруты CONTRACT §7 (complaints/{id}/handoff, /services, /part),
+функции чтения для R16 / R17, seed_world для демо-мира, ключи i18n для R11.

@@ -1,0 +1,25 @@
+R09 · РАУНД 15 · ОБРАЩЕНИЕ ДЛЯ НЕСКОЛЬКИХ СЛУЖБ — ЗАПУСК И ПРОВЕРКА
+Ветка: claude/quirky-ptolemy-k3z2mj (ветка сессии; push в claude/r15-R09 средой запрещён). База — claude/clever-hypatia-q6ts4g.
+Python 3.11+, Node 18+, Chromium (Playwright; в облаке NODE_PATH=$(npm root -g)).
+
+1. ТЕСТЫ (без сети; временные SQLite в tmp_path)
+   python3 -B -m pytest -q tests/civic/R09
+
+2. БРАУЗЕР (по одному; каждый сам поднимает сервер на временной базе)
+   NODE_PATH=$(npm root -g) node tests/civic/R09/app_demo_r09.cjs [--screenshots <папка>]   # приложение, шаги 1–7
+   NODE_PATH=$(npm root -g) node tests/civic/R09/browser_r09.cjs --r11 web                 # стенд R09 с ui-kit сборки
+   NODE_PATH=$(npm root -g) node tests/civic/R09/hover_r09.cjs                             # «Обращения» ↔ карта
+   NODE_PATH=$(npm root -g) node tests/civic/R09/glass_r09.cjs                             # стекло «Моих обращений»
+   NODE_PATH=$(npm root -g) node tests/civic/R09/near_r09.cjs                              # шторка «Рядом с вами»
+
+3. СТЕНД ПРИЛОЖЕНИЯ (COMMON «Как поднять стенд»)
+   mkdir -p /tmp/birge && python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
+   printf 'пароль\nпароль\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
+   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655   → http://127.0.0.1:8655/
+
+ЧТО МОЖЕТ ПОЛЬЗОВАТЕЛЬ (D0 — как в FINAL-4, плюс мелочи чекпойнта)
+   Всё, что в FINAL-4: «Сообщить о проблеме», «Я тоже», «Мои обращения», «Проверено жителями», «Обращения» акимата.
+   D0: значки «×» и «+» одной толщины с остальными; анимации R09 короче (150–250 мс); «Мои обращения» повторно
+   открываются мгновенно, даже если список пуст.
