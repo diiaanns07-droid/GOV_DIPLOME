@@ -93,6 +93,7 @@
       "agencies.detail.empty": "Открытых обращений нет",
       "agencies.detail.inbox": "Открыть в «Обращениях»",
       "agencies.detail.more": "и ещё {n}",
+      "agencies.detail.open_one": "Открыть обращение",
       "agencies.pickups.title": "Вывоз после дел жителей",
       "agencies.pickups.hint": "Акимат поддержал дела жителей — после них нужен вывоз: {n}",
       "agencies.pickups.when": "{date}, с {time}",
@@ -263,6 +264,7 @@
       "agencies.detail.empty": "Ашық өтініш жоқ",
       "agencies.detail.inbox": "«Өтініштерде» ашу",
       "agencies.detail.more": "тағы {n}",
+      "agencies.detail.open_one": "Өтінішті ашу",
       "agencies.pickups.title": "Тұрғындар ісінен кейін қоқыс шығару",
       "agencies.pickups.hint": "Әкімдік тұрғындардың ісін қолдады — кейін қоқыс шығару керек: {n}",
       "agencies.pickups.when": "{date}, {time} бастап",
@@ -1035,7 +1037,9 @@
       }
       var list = h("ul", { class: "ag-items" });
       st.items.slice(0, 8).forEach(function (item) {
-        list.appendChild(h("li", { class: "ag-item" }, [
+        list.appendChild(h("li", { class: "ag-item ag-item--link" }, [h("button", { type: "button", class: "ag-item__btn",
+          "data-complaint": item.id, title: tr("agencies.detail.open_one"),
+          onclick: function () { openComplaint(item.id, r.service); } }, [
           statusIcon(item.part && item.part.status === "done" ? "done" : item.status, 14),
           h("span", { class: "ag-item__code", text: item.code || "" }),
           h("span", { class: "ag-item__title", text: itemTitle(item) }),
@@ -1043,7 +1047,7 @@
           deadlinePill(item.deadline, item.tab),
           h("span", { class: "ag-item__meta", text: fmtDate(item.created_at) }),
           item.demo ? demoTag() : null,
-        ]));
+        ])]));
       });
       box.appendChild(list);
       if (st.items.length > 8) box.appendChild(h("p", { class: "ag-note", text: tr("agencies.detail.more", { n: st.items.length - 8 }) }));
@@ -1072,6 +1076,19 @@
       var path = /^[a-z_]{2,30}$/.test(service || "") && paths ? "service=" + service : "";
       if (typeof opts.openSection === "function") opts.openSection(path ? "inbox/" + path : "inbox");
       else if (shell) shell.setSection("inbox", path ? { path: path } : undefined);
+      setTimeout(function () { doc.dispatchEvent(new CustomEvent("birge:inbox-filter", { detail: detail })); }, 0);
+    }
+
+    // Одна жалоба в «Обращениях» R09: #inbox/<id> (оболочка R01 B0.6 сама кладёт фильтр «одна жалоба» для экрана R09);
+    // старая оболочка — тот же фильтр в sessionStorage и раздел inbox (INTEGRATION R17 §4). Сцена 8: строка табло → карточка.
+    function openComplaint(id, service) {
+      if (!/^c-[A-Za-z0-9_-]{1,80}$/.test(id || "")) return openInboxFor(service, []);
+      var detail = { ids: [id], service: service || null };
+      try { root.sessionStorage.setItem("birge.inbox.filter", JSON.stringify(detail)); } catch (e) { /* без хранилища */ }
+      var shell = root.BirgeShell;
+      var paths = !!(shell && typeof shell.alertSlot === "function");
+      if (typeof opts.openSection === "function") opts.openSection(paths ? "inbox/" + id : "inbox");
+      else if (shell) shell.setSection("inbox", paths ? { path: id } : undefined);
       setTimeout(function () { doc.dispatchEvent(new CustomEvent("birge:inbox-filter", { detail: detail })); }, 0);
     }
 
@@ -1109,7 +1126,7 @@
         return h("li", { class: "ag-lrow" }, [
           statusIcon(item.open ? (item.status === "new" ? "new" : "in_progress") : "fixed", 16),
           h("button", { type: "button", class: "ag-lrow__main ag-linkbtn", "data-complaint": item.id,
-            title: tr("agencies.detail.inbox"), onclick: function () { openInboxFor(item.lead, [item]); } },
+            title: tr("agencies.detail.open_one"), onclick: function () { openComplaint(item.id, item.lead); } },
             [h("span", { class: "ag-lrow__title", text: itemTitle(item) }), h("span", { class: "ag-lrow__sub" }, sub)]),
           h("div", { class: "ag-lrow__end" }, item.parts.map(partChip).concat([deadlinePill(item.deadline, item.tab)])),
         ]);
@@ -1147,10 +1164,11 @@
         if (e.demo) sub.push(demoTag());
         return h("li", { class: "ag-lrow" }, [
           svg("i-forward", "ic"),
-          h("div", { class: "ag-lrow__main" }, [
+          h("button", { type: "button", class: "ag-lrow__main ag-linkbtn", "data-complaint": e.complaint_id,
+            title: tr("agencies.detail.open_one"), onclick: function () { openComplaint(e.complaint_id, e.to); } }, [
             h("span", { class: "ag-lrow__title" }, [serviceName(e.from) + " → " + serviceName(e.to)]),
             e.reason ? h("span", { class: "ag-quote", text: "«" + e.reason + "»" }) : null,
-            h("div", { class: "ag-lrow__sub" }, sub)]),
+            h("span", { class: "ag-lrow__sub" }, sub)]),
           h("div", { class: "ag-lrow__end" }, [deadlinePill(e.deadline, null), h("span", { class: "ag-pill", text: catName(e.category) })]),
         ]);
       }));

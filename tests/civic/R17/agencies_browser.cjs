@@ -280,6 +280,23 @@ const openAgencies = async (page, base, tab) => {
           check(`${tag}: вкладка calendar без прокрутки вбок`, await noSideScroll(page));
           if (w !== 1024) await page.screenshot({ path: `${OUT}/calendar-${tag}.png` });
         }
+        // Сцена 8: строка обращения в раскрытой службе → «Обращения» R09 с этой жалобой (#inbox/<id> или фильтр «одна»).
+        if (w === 1366) {
+          await page.click("[data-tab=board]");
+          await page.waitForSelector(".ag-row", { timeout: 15000 });
+          await page.click(".ag-row");
+          await page.waitForSelector(".ag-detail .ag-item__btn, .ag-detail .ag-note", { timeout: 15000 });
+          const one = await page.$(".ag-detail .ag-item__btn");
+          if (one) {
+            const id = await one.getAttribute("data-complaint");
+            await one.click();
+            await page.waitForTimeout(1500);
+            const where = await page.evaluate(() => ({ hash: location.hash, section: window.BirgeShell && window.BirgeShell.section,
+              filter: (() => { try { return JSON.parse(sessionStorage.getItem("birge.inbox.filter") || "null"); } catch (e) { return null; } })() }));
+            check(`${tag}: строка табло → «Обращения» с этой жалобой`, where.section === "inbox"
+              && (where.hash === "#inbox/" + id || !!(where.filter && where.filter.ids && where.filter.ids[0] === id)), { id, ...where });
+          }
+        }
         check(`${tag}: нет ошибок JS`, page.errs.length === 0, page.errs);
         await ctx.close();
       }
