@@ -41,6 +41,7 @@
 from __future__ import annotations
 
 import importlib
+import inspect
 import logging
 import os
 import sqlite3
@@ -76,6 +77,19 @@ def resident_device(context, params=None, payload=None):
     if not value and isinstance(params, dict):
         value = _single(params, "device_id")
     return value
+
+
+# Виды дел R16 (CONTRACT §5.2) — POST ideas/{id}/to-initiative {kind?} выбирает вид инициативы.
+TOGETHER_KINDS = ("cleanup", "greening", "snow", "repair", "help", "other")
+
+
+def _accepts(fn, name: str) -> bool:
+    """Объявила ли функция соседа параметр name (или **kwargs) — чтобы не падать на старой сигнатуре."""
+    try:
+        params = inspect.signature(fn).parameters
+    except (TypeError, ValueError):
+        return False
+    return name in params or any(p.kind is inspect.Parameter.VAR_KEYWORD for p in params.values())
 
 
 def together_create():
@@ -138,12 +152,15 @@ class CivicV2:
         инвентарём и вывозом. Повтор для той же идеи — та же инициатива (created: false). Нет R16 — 503 module_not_ready.
         """
         payload = payload if isinstance(payload, dict) else {}
-        unknown = sorted(set(payload) - {"starts_at"})
+        unknown = sorted(set(payload) - {"starts_at", "kind"})
         if unknown:
             raise ValidationError({str(unknown[0])[:64]: "Неизвестное поле."})
         starts_at = payload.get("starts_at")
         if starts_at is not None and (not isinstance(starts_at, str) or not 10 <= len(starts_at) <= 40):
             raise ValidationError({"starts_at": "Дата и время ISO 8601, например 2026-10-18T10:00:00+05:00."})
+        kind = payload.get("kind")
+        if kind is not None and kind not in TOGETHER_KINDS:
+            raise ValidationError({"kind": "Вид дела: " + ", ".join(TOGETHER_KINDS) + "."})
         create = together_create()
         if create is None:
             raise V2Error(503, "module_not_ready", "Раздел «Сделаем вместе» (R16) не подключён в этой сборке.")
@@ -160,8 +177,16 @@ class CivicV2:
         # R16 выбирает вид инициативы по объекту идеи; у идеи без объекта — её тема (скамейки, озеленение…).
         if not idea.get("object") and idea.get("topic") not in (None, "other"):
             idea = dict(idea, object={"kind": idea["topic"]})
+        extra = {}
+        if kind is not None:
+            # вид дела выбрал сотрудник: функции R16 с параметром kind — напрямую; без него — через вид объекта идеи
+            # (R16 сам выбирает вид дела по объекту: greening → «Озеленение»; прочие — как решит R16)
+            if _accepts(create, "kind"):
+                extra["kind"] = kind
+            elif kind == "greening":
+                idea = dict(idea, object={"kind": "greening"})
         try:
-            initiative = create(idea, starts_at=starts_at, db_path=str(self.service.db.path), actor="staff")
+            initiative = create(idea, starts_at=starts_at, db_path=str(self.service.db.path), actor="staff", **extra)
         except ValueError as exc:
             raise ValidationError({"idea": str(exc)[:200] or "Идею нельзя превратить в инициативу."}) from None
         except Exception:  # noqa: BLE001 — сбой соседа: идея не меняется

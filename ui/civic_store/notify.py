@@ -439,6 +439,10 @@ class NotificationCenter:
         if until is not None and until_dt is None:
             raise ValidationError({"until": "Время ISO 8601."})
         if not ids and not everything and until_dt is None:
+            if isinstance(payload.get("ids"), list):
+                # {"ids": []} — отмечать нечего: ответ — то, что уже прочитано, без записи в базу
+                read_until, read_ids = self._read_state(device)
+                return {"read_until": read_until, "read_ids": len(read_ids)}
             raise ValidationError({"ids": "Что отметить: ids, all или until."})
         now = utc_now(self.clock)
         newest = None

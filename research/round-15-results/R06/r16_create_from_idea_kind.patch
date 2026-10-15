@@ -1,0 +1,21 @@
+diff -ru a/ui/civic_together/__init__.py b/ui/civic_together/__init__.py
+--- a/ui/civic_together/__init__.py
++++ b/ui/civic_together/__init__.py
+@@ -63,12 +63,14 @@
+     return dict(result, source=source)
+ 
+ 
+-def create_from_idea(idea: dict, *, starts_at: str | None = None, db_path=None, actor: str = "staff") -> dict:
+-    """Идея -> опубликованная инициатива с поддержкой акимата (инвентарь и вывоз). Ошибка данных — ValueError."""
++def create_from_idea(idea: dict, *, starts_at: str | None = None, db_path=None, actor: str = "staff",
++                     kind: str | None = None) -> dict:
++    """Идея -> опубликованная инициатива с поддержкой акимата (инвентарь и вывоз). Ошибка данных — ValueError.
++    kind — вид дела, если его выбрал сотрудник (R06 POST ideas/{id}/to-initiative {kind}); иначе — по объекту идеи."""
+     service = default_service(db_path)
+     if service is None:
+         raise RuntimeError("R16: нет базы (CIVIC_DB_PATH) — инициативу не создать")
+-    return service.create_from_idea(idea, starts_at=starts_at, actor=actor)
++    return service.create_from_idea(idea, starts_at=starts_at, actor=actor, kind=kind)
+ 
+ 
+ def initiatives_summary(district: str | None = None, db_path=None) -> dict:

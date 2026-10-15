@@ -213,6 +213,16 @@ def test_bad_read_requests(stack, no_neighbors, body, field):
     assert result["status"] == 422 and field in result["body"]["error"]["fields"], result
 
 
+def test_empty_ids_is_a_no_op(stack, no_neighbors):
+    """{"ids": []} (пример тела приёмки R10) — отмечать нечего: 200 и то, что уже прочитано, без записи."""
+    svc, v2 = stack
+    ctx = dict(context(), headers={"X-Birge-Device": MAIN_A})
+    result = call(v2, "POST", "/notifications/read", {"ids": []}, ctx=ctx)
+    assert result["status"] == 200 and result["body"]["data"] == {"read_until": None, "read_ids": 0}, result
+    with svc.db.read() as conn:
+        assert conn.execute("SELECT COUNT(*) FROM civic_notify_reads").fetchone()[0] == 0
+
+
 def test_device_is_required_and_cross_site_write_refused(stack, no_neighbors):
     svc, v2 = stack
     result = call(v2, "GET", "/notifications")
@@ -319,6 +329,32 @@ def test_idea_to_initiative_with_r16(stack, staff, no_neighbors, monkeypatch):
     # без входа — нельзя
     anon = call(v2, "POST", f"/ideas/{idea['id']}/to-initiative", {})
     assert anon["status"] == 401
+
+
+def test_idea_to_initiative_kind_chosen_by_staff(stack, staff, no_neighbors, monkeypatch):
+    """{kind, starts_at} (CONTRACT §5.2, пример R10): вид дела R16 передаётся функции R16, если она его принимает;
+    старая сигнатура без kind — «озеленение» через вид объекта идеи, остальное решает R16. Чужой вид — 422."""
+    svc, v2 = stack
+    got = []
+
+    def with_kind(idea, *, starts_at=None, db_path=None, actor="staff", kind=None):
+        got.append(("new", kind, idea.get("object")))
+        return {"id": f"i-r16-{len(got):04d}", "status": "published"}
+
+    def old_signature(idea, *, starts_at=None, db_path=None, actor="staff"):
+        got.append(("old", None, idea.get("object")))
+        return {"id": f"i-r16-{len(got):04d}", "status": "published"}
+    ideas = [new_idea(v2, n, title=t) for n, t in ((1, "Субботник во дворе"), (2, "Посадить деревья у школы"))]
+    for idea in ideas:
+        decide(staff, idea["id"], action="publish")
+    assert staff.call("POST", f"/ideas/{ideas[0]['id']}/to-initiative", {"kind": "party"})["status"] == 422
+    monkeypatch.setattr(v2mod, "together_create", lambda: with_kind)
+    made = staff.call("POST", f"/ideas/{ideas[0]['id']}/to-initiative",
+                      {"kind": "cleanup", "starts_at": "2026-10-17T10:00:00+05:00"})
+    assert made["status"] == 201 and got[-1][:2] == ("new", "cleanup"), made
+    monkeypatch.setattr(v2mod, "together_create", lambda: old_signature)
+    made = staff.call("POST", f"/ideas/{ideas[1]['id']}/to-initiative", {"kind": "greening"})
+    assert made["status"] == 201 and got[-1] == ("old", None, {"kind": "greening"}), made
 
 
 def test_idea_to_initiative_without_r16_or_with_bad_idea(stack, staff, no_neighbors, monkeypatch):
