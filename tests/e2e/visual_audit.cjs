@@ -48,7 +48,15 @@ const SCREENS = [
   { id: "agencies-handoffs", hash: "#agencies/handoffs", mode: "akimat", global: "BirgeAgencies", owner: "R17", api: API("agencies") },
   { id: "agencies-calendar", hash: "#agencies/calendar", alt: "#works-calendar", mode: "akimat", global: "BirgeWorksCalendar", owner: "R12 + R17", api: API("works-(calendar|conflicts)") },
   { id: "crisis-hq", hash: W15.incident ? `#agencies/crisis/${W15.incident}` : null, alt: W15.incident ? `#agencies/crisis=${W15.incident}` : null, mode: "akimat", global: "BirgeAgencies", owner: "R17", api: API("incidents") },
-  { id: "analyst", hash: "#analyst", mode: "akimat", global: "BirgeAnalyst", owner: "R03", api: API("assistant") },
+  // «Спросить Birge» при открытии запросов не шлёт — «нет связи» проверяем на вопросе (act).
+  { id: "analyst", hash: "#analyst", mode: "akimat", global: "BirgeAnalyst", owner: "R03", api: API("assistant"),
+    act: async (page, lang) => {
+      const box = await firstVisible(page.locator("#birge-screen:not([hidden]) input[type=text], #birge-screen:not([hidden]) textarea"));
+      if (!box) return false;
+      await box.fill(lang === "kk" ? "Нұрада 30 күнде қанша шағым түсті?" : "Сколько жалоб в Нуре за 30 дней?").catch(() => null);
+      await box.press("Enter").catch(() => null);
+      return true;
+    } },
   { id: "meetings-staff", hash: "#meetings", mode: "akimat", global: "BirgeMeetings", owner: "R13", api: API("meetings") },
 ];
 // Отдельные страницы (без оболочки): Ситуационный центр и «Картина недели» R08 — только сотрудник.
@@ -238,7 +246,8 @@ async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, 
       await page.evaluate(() => { location.hash = "#map"; }).catch(() => null); await sleep(500);
       await page.evaluate((hh) => { location.hash = hh; }, sc.hash).catch(() => null);
     } else await page.goto(pageUrl).catch(() => null);
-    await sleep(3000);
+    await sleep(sc.act ? 1500 : 3000);
+    if (sc.act) { await sc.act(page, lang).catch(() => null); await sleep(2500); }
     const msg = await page.evaluate((s) => { const r = document.querySelector(s); return r ? (r.innerText || "").trim().replace(/\s+/g, " ").slice(0, 140) : ""; }, SEL).catch(() => "");
     const retry = await firstVisible(page.getByRole("button", { name: retryRe }));
     const shot = path.join(OUT, `${variant}-${sc.id}-offline.jpg`);
