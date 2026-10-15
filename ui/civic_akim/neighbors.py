@@ -43,12 +43,18 @@ log = logging.getLogger("civic_akim")
 # Имена функций у соседей — по порядку. Первое найденное и вызывается (R17/R16/R13 называют сами; новое имя —
 # одна строка здесь). Ответ — тело того же вида, что у маршрута CONTRACT §7 (dict), или список записей.
 FUNCS = {
-    "agencies_board": ("ui.civic_agencies", ("akim_board", "board_for_akim", "agencies_board", "board_summary", "board")),
+    # R17 (claude/sweet-euler-5tiu5b): agencies_week — блок «Ведомства» (3 отстающие, совместные, передачи за неделю,
+    # порядок и числа R17); board_snapshot — табло служб как GET agencies/board; active_incidents — идущие кризисы.
+    "agencies_week": ("ui.civic_agencies", ("agencies_week", "akim_agencies_week")),
+    "agencies_board": ("ui.civic_agencies", ("akim_board", "board_snapshot", "board_for_akim", "agencies_board", "board_summary")),
     "agencies_joint": ("ui.civic_agencies", ("akim_joint", "joint_summary", "list_joint", "joint")),
     "agencies_handoffs": ("ui.civic_agencies", ("akim_handoffs", "list_handoffs", "handoffs")),
     "incidents": ("ui.civic_agencies", ("akim_incidents", "active_incidents", "list_incidents", "incidents")),
     "initiatives": ("ui.civic_together", ("akim_initiatives", "list_initiatives", "initiatives")),
     "yards": ("ui.civic_together", ("akim_yards", "list_yards", "yards")),
+    # R13 (claude/gifted-mayer-p86myv): board_block — ближайшая встреча и открытые поручения со сроком (их порядок);
+    # запасной путь — список встреч §5.7 (функция или GET meetings).
+    "meetings_block": ("ui.civic_meetings", ("board_block", "akim_meetings_block")),
     "meetings": ("ui.civic_meetings", ("akim_meetings", "list_meetings", "meetings")),
     "forecast_week": ("ui.civic_forecast", ("attention_next_week", "forecast_week", "week_forecast", "akim_forecast_week")),
     "forecast_month": ("ui.civic_forecast", ("attention_next_month",)),
@@ -72,8 +78,12 @@ FIXTURE_FILES = {
     "yards": ("together_demo.json", "yards"),
     "meetings": ("meetings_demo.json", "meetings"),
 }
-OWNER = {"agencies_board": "R17", "agencies_joint": "R17", "agencies_handoffs": "R17", "incidents": "R17",
-         "initiatives": "R16", "yards": "R16", "meetings": "R13", "forecast_week": "R13", "forecast_month": "R13"}
+OWNER = {"agencies_week": "R17", "agencies_board": "R17", "agencies_joint": "R17", "agencies_handoffs": "R17",
+         "incidents": "R17", "initiatives": "R16", "yards": "R16", "meetings_block": "R13", "meetings": "R13",
+         "forecast_week": "R13", "forecast_month": "R13"}
+# Модули, чьи функции для соседей читают сервис, созданный шлюзом (R17: api_state.current()). Пока шлюз его не
+# создал (никто ещё не открыл «Ведомства»), функции отвечают пусто — поэтому сервис создаём сами на той же базе.
+NEEDS_SERVICE = {"ui.civic_agencies"}
 
 
 class _Reader(dict):
@@ -178,19 +188,26 @@ class Neighbors:
         return fixtures_env() if self._fixtures is None else bool(self._fixtures)
 
     def _service(self, module_name: str):
-        """Сервис соседа на той же базе (один на процесс). Нет базы или фабрики — None."""
+        """Сервис соседа на той же базе (один на процесс). Нет базы или фабрики — None.
+
+        Сначала default_service(db_path) соседа (R16: общий экземпляр без демо-засева), потом make_service(db_path)."""
         with self._lock:
             if module_name in self._services:
                 return self._services[module_name]
             service = None
             module = _import(module_name)
-            factory = getattr(module, "make_service", None) if module is not None else None
             db_path = self.db_path or default_db_path()
-            if callable(factory) and db_path:
+            for name in ("default_service", "make_service"):
+                factory = getattr(module, name, None) if module is not None else None
+                if not callable(factory) or not db_path:
+                    continue
                 try:
                     service = factory(db_path)
                 except Exception:
-                    log.exception("akim board: сервис %s не запустился", module_name)
+                    log.exception("akim board: сервис %s (%s) не запустился", module_name, name)
+                    service = None
+                if service is not None:
+                    break
             self._services[module_name] = service
             return service
 
@@ -204,6 +221,8 @@ class Neighbors:
         module_name, names = FUNCS[name]
         module = _import(module_name)
         if module is not None:
+            if module_name in NEEDS_SERVICE:
+                self._service(module_name)
             for fn_name in names:
                 fn = getattr(module, fn_name, None)
                 if callable(fn):

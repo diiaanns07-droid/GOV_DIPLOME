@@ -150,7 +150,7 @@ def test_agencies_respects_r17_order_and_ignores_unknown_ids():
         {"service": "road", "open": 9, "overdue": 0, "verified_share": 0.5, "rank": 1},
         {"service": "made_up_service", "open": 50, "overdue": 50},
     ]}
-    a = blocks.agencies(board, "r17", [{"services": [{"service": "water", "status": "done"}, {"service": "road", "status": "in_progress"}]}],
+    a = blocks.agencies(None, "none", board, "r17", [{"services": [{"service": "water", "status": "done"}, {"service": "road", "status": "in_progress"}]}],
                         [{"at": (NOW - timedelta(days=1)).isoformat()}, {"at": (NOW - timedelta(days=9)).isoformat()}], as_of=NOW)
     assert [x["service"]["id"] for x in a["lagging"]] == ["road", "water"]  # порядок R17 (rank)
     assert {x["service"]["id"] for x in a["board"]} == {"water", "road"}   # чужой id не показываем
@@ -163,7 +163,7 @@ def test_agencies_respects_r17_order_and_ignores_unknown_ids():
 def test_agencies_own_order_when_r17_gives_none():
     board = {"services": [{"service": "water", "open": 10, "overdue": 1}, {"service": "road", "open": 4, "overdue": 3},
                           {"service": "lighting", "open": 3, "overdue": 0}]}
-    a = blocks.agencies(board, "r17", as_of=NOW)
+    a = blocks.agencies(None, "none", board, "r17", as_of=NOW)
     assert [x["service"]["id"] for x in a["lagging"]] == ["road", "water"]  # больше просроченных — выше
     assert a["joint"] is None and a["handoffs_week"] is None
 
@@ -324,3 +324,43 @@ def test_without_demo_world_old_fixtures_stay(monkeypatch):
     from ui.civic_akim import sources
     monkeypatch.delenv("CIVIC_DEMO_WORLD", raising=False)
     assert sources.fixture_objects(NOW.date()) and sources.fixture_proposals(NOW.date())
+
+
+def test_crisis_from_r17_public_view_with_progress():
+    """R17 active_incidents: публичная часть без задач, но с progress, zone_label и ссылкой на штаб."""
+    inc = [{"id": "inc-9", "kind": "blizzard", "status": "active", "title_ru": "Буран", "title_kk": "Боран",
+            "zone": {"kind": "district", "district": "nura"}, "zone_label": {"ru": "район Нура", "kk": "Нұра ауданы"},
+            "started_at": (NOW - timedelta(hours=3)).isoformat(),
+            "progress": [{"service": "street_cleaning", "done": 1, "doing": 1, "total": 3}, {"service": "transport", "done": 1, "doing": 0, "total": 1}],
+            "updates": [{"at": (NOW - timedelta(hours=1)).isoformat(), "text_ru": "Жителям", "text_kk": "Тұрғындарға"}],
+            "link": "#agencies/crisis=inc-9", "demo": True}]
+    a = blocks.crisis(inc, "r17", as_of=NOW, district=None, district_names={})["active"]
+    assert (a["tasks_done"], a["tasks_total"]) == (2, 4)
+    assert a["link"] == "#agencies/crisis=inc-9" and a["zone"]["label_kk"] == "Нұра ауданы"
+    assert a["last_update"]["text_kk"] == "Тұрғындарға"
+
+
+def test_agencies_week_from_r17_takes_its_order_and_counts():
+    week = {"lagging": [{"service": "road", "overdue": 5, "open": 15}, {"service": "lighting", "overdue": 3, "open": 7}],
+            "joint": 3, "handoffs": 4, "link": "#agencies", "demo": True}
+    a = blocks.agencies(week, "r17", None, "none", as_of=NOW)
+    assert [x["service"]["id"] for x in a["lagging"]] == ["road", "lighting"]
+    assert (a["joint"], a["handoffs_week"], a["link"], a["board"]) == (3, 4, "#agencies", [])
+    # «сервиса нет» у R17 — это «нет данных», а не нули
+    none = blocks.agencies({"lagging": [], "joint": 0, "handoffs": 0, "empty": True, "source": "none"}, "r17",
+                           {"services": [], "empty": True, "source": "none"}, "r17", as_of=NOW)
+    assert none["available"] is False
+
+
+def test_meetings_from_r13_board_block():
+    block = {"next": {"id": "m-2", "district": "nura", "title_ru": "Встреча", "at": (NOW + timedelta(days=5)).isoformat(),
+                      "registered": 12, "questions_count": {"published": 4, "answered": 1}, "place": {"label_ru": "Школа"}},
+             "orders": [{"id": "o-1", "meeting_id": "m-1", "text_ru": "Свалка", "service": "waste",
+                         "due": (NOW - timedelta(days=1)).date().isoformat(), "status": "in_progress", "overdue": True},
+                        {"id": "o-2", "meeting_id": "m-1", "text_ru": "Свет", "service": "lighting",
+                         "due": (NOW + timedelta(days=3)).date().isoformat(), "status": "todo", "overdue": False}],
+             "counts": {"total": 5, "todo": 1, "in_progress": 1, "done": 3, "overdue": 1}, "link": "#meetings", "demo": True}
+    m = blocks.meetings_from_block(block, "r13", as_of=NOW, district_names={"nura": {"ru": "Нура", "kk": "Нұра"}})
+    assert m["orders"] == {"total": 5, "done": 3, "in_progress": 1, "todo": 1, "overdue": 1, "due_week": 1}
+    assert [o["id"] for o in m["items"]] == ["m-1/o-1", "m-1/o-2"] and m["items"][0]["overdue"] is True
+    assert m["next"]["questions"] == 4 and m["next"]["place_ru"] == "Школа" and m["link"] == "#meetings"

@@ -96,54 +96,76 @@ def _demo(rows) -> bool:
 
 # ---------------------------------------------------------------- ведомства (R17)
 
-def agencies(board, board_src: str, joint=None, handoffs=None, *, as_of: datetime, days: int = 7) -> dict:
-    """Табло служб R17 → «Ведомства»: службы как у R17, три отстающие, совместные, передачи за неделю."""
-    if board is None:
-        return missing(board_src)
-    names = service_names()
-    rows = items_of(board, "services", "board", "rows")
-    services, ranked = [], False
-    for row in rows:
-        sid = row.get("service") or row.get("id") or row.get("service_id")
-        if sid not in routing.SERVICES:  # новых id не придумываем (CONTRACT §3) — чужое не показываем
-            continue
-        share = number(row, "verified_share", "verified_ratio")
-        if share is None:
-            pct = number(row, "verified_pct", "verified_percent")
-            share = pct / 100.0 if pct is not None else None
-        item = {
-            "service": _service_ref(sid, names),
-            "total": number(row, "total", "complaints", "count"),
-            "open": number(row, "open", "open_count", "in_work", "active"),
-            "overdue": number(row, "overdue", "overdue_count", "late"),
-            "median_answer_days": number(row, "median_answer_days", "median_days", "median_response_days"),
-            "verified_share": round(share, 3) if isinstance(share, (int, float)) else None,
-            "returned": number(row, "returned", "reopened", "returned_by_residents", "reopened_by_residents"),
-            "handoffs_in": number(row, "handoffs_in", "received"),
-            "handoffs_out": number(row, "handoffs_out", "passed"),
-            "rank": number(row, "rank", "lag_rank"),
-            "lagging": row.get("lagging") is True,
-        }
-        ranked = ranked or item["rank"] is not None or item["lagging"]
-        services.append(item)
-    if ranked:  # порядок R17 — главный
-        lag = sorted((s for s in services if s["lagging"] or s["rank"] is not None),
-                     key=lambda s: (s["rank"] if s["rank"] is not None else 1e9))
-    else:
-        def lag_key(s):
-            open_, over = s["open"] or 0, s["overdue"] or 0
-            return (-over, -(over / open_ if open_ else 0), -(s["median_answer_days"] or 0), s["service"]["id"])
-        lag = sorted((s for s in services if (s["open"] or 0) > 0 and (s["overdue"] or 0) > 0), key=lag_key)
-    # Табло для большого экрана: службы по нагрузке (открытые), не больше BOARD_SERVICES строк.
-    by_load = sorted(services, key=lambda s: (-(s["open"] or 0), -(s["overdue"] or 0), s["service"]["id"]))
-    joint_n = _joint_count(board, joint)
-    hand_n = _handoffs_count(board, handoffs, as_of)
+def _no_service(answer) -> bool:
+    """Ответ соседа «сервиса нет» (R17: {"empty": True, "source": "none"}) — это «нет данных», а не нули."""
+    return isinstance(answer, dict) and answer.get("source") == "none" and answer.get("empty") is True
+
+
+def _service_row(row: dict, names: dict) -> dict | None:
+    sid = row.get("service") or row.get("id") or row.get("service_id")
+    if sid not in routing.SERVICES:  # новых id не придумываем (CONTRACT §3) — чужое не показываем
+        return None
+    share = number(row, "verified_share", "verified_ratio")
+    if share is None:
+        pct = number(row, "verified_pct", "verified_percent")
+        share = pct / 100.0 if pct is not None else None
     return {
-        "available": True, "days": number(board, "days") or days if isinstance(board, dict) else days,
+        "service": _service_ref(sid, names),
+        "total": number(row, "received", "total", "complaints", "count"),
+        "open": number(row, "open", "open_count", "in_work", "active"),
+        "overdue": number(row, "overdue", "overdue_count", "late"),
+        "median_answer_days": number(row, "median_answer_days", "median_days", "median_response_days"),
+        "verified_share": round(share, 3) if isinstance(share, (int, float)) else None,
+        "returned": number(row, "returned", "reopened", "returned_by_residents", "reopened_by_residents"),
+        "handoffs_in": number(row, "handoffs_in", "received_handoffs"),
+        "handoffs_out": number(row, "handoffs_out", "passed"),
+        "rank": number(row, "rank", "lag_rank"),
+        "lagging": row.get("lagging") is True,
+    }
+
+
+def agencies(week, week_src: str, board, board_src: str, joint=None, handoffs=None, *, as_of: datetime,
+             days: int = 7, board_days: int = 30) -> dict:
+    """«Ведомства» по R17: week — agencies_week (3 отстающие в порядке R17, совместные и передачи за неделю);
+    board — табло служб (board_snapshot / GET agencies/board) для ситуационного центра. Есть хоть что-то — блок есть.
+    Без agencies_week (фикстура, другой сосед) отстающие выбираются правилом выше, совместные и передачи — по спискам."""
+    if _no_service(week):
+        week, week_src = None, "none"
+    if _no_service(board):
+        board, board_src = None, "none"
+    if week is None and board is None:
+        return missing(week_src if week_src == "failed" else board_src)
+    names = service_names()
+    services = [r for r in (_service_row(row, names) for row in items_of(board, "services", "board", "rows")) if r]
+    by_load = sorted(services, key=lambda s: (-(s["open"] or 0), -(s["overdue"] or 0), s["service"]["id"]))
+    if week is not None:
+        lag = [r for r in (_service_row(row, names) for row in items_of(week, "lagging")) if r][:LAGGING_TOP]
+        joint_n = number(week, "joint", "joint_open")
+        hand_n = number(week, "handoffs", "handoffs_week")
+    else:
+        ranked = any(s["rank"] is not None or s["lagging"] for s in services)
+        if ranked:  # порядок R17 — главный
+            lag = sorted((s for s in services if s["lagging"] or s["rank"] is not None),
+                         key=lambda s: (s["rank"] if s["rank"] is not None else 1e9))
+        else:
+            def lag_key(s):
+                open_, over = s["open"] or 0, s["overdue"] or 0
+                return (-over, -(over / open_ if open_ else 0), -(s["median_answer_days"] or 0), s["service"]["id"])
+            lag = sorted((s for s in services if (s["open"] or 0) > 0 and (s["overdue"] or 0) > 0), key=lag_key)
+        lag = lag[:LAGGING_TOP]
+        joint_n = _joint_count(board, joint)
+        hand_n = _handoffs_count(board, handoffs, as_of)
+    demo_rows = items_of(board, "services") + items_of(week, "lagging")
+    return {
+        "available": True, "days": days,
+        "board_days": (number(board, "days") or board_days) if isinstance(board, dict) else None,
         "board": by_load[:BOARD_SERVICES], "services_total": len(services),
-        "lagging": lag[:LAGGING_TOP], "joint": joint_n, "handoffs_week": hand_n,
-        "demo": bool(isinstance(board, dict) and board.get("demo")) or _demo(rows) or board_src == "fixture",
-        "source": board_src,
+        "lagging": lag, "joint": int(joint_n) if joint_n is not None else None,
+        "handoffs_week": int(hand_n) if hand_n is not None else None,
+        "link": (week or {}).get("link") if isinstance(week, dict) else None,
+        "demo": any(isinstance(x, dict) and x.get("demo") is True for x in (week, board)) or _demo(demo_rows)
+        or "fixture" in (week_src, board_src),
+        "source": week_src if week is not None else board_src,
     }
 
 
@@ -209,6 +231,12 @@ def _incident(inc: dict, names: dict, district_names: dict, as_of: datetime) -> 
         row["total"] += 1
         row["done"] += int(t.get("status") in DONE)
         row["doing"] += int(t.get("status") == "doing" or t.get("status") == "in_progress")
+    if not tasks:  # R17 active_incidents: публичная часть без задач, но с прогрессом служб (сколько сделано из скольких)
+        for p in inc.get("progress") or []:
+            sid = p.get("service") if isinstance(p, dict) and p.get("service") in routing.SERVICES else None
+            if sid:
+                by_service[sid] = {"service": _service_ref(sid, names), "total": int(number(p, "total") or 0),
+                                   "done": int(number(p, "done") or 0), "doing": int(number(p, "doing") or 0)}
     updates = sorted((u for u in inc.get("updates") or [] if isinstance(u, dict) and u.get("public") is not False
                       and _time(u.get("at")) is not None and _time(u.get("at")) <= as_of),
                      key=lambda u: _time(u["at"]), reverse=True)
@@ -220,12 +248,16 @@ def _incident(inc: dict, names: dict, district_names: dict, as_of: datetime) -> 
         "title_ru": inc.get("title_ru") or inc.get("title") or inc.get("id"),
         "title_kk": inc.get("title_kk") or inc.get("title_ru") or inc.get("title") or inc.get("id"),
         "zone": {"kind": zone.get("kind"), "districts": [{"id": d, **(district_names.get(d) or {"ru": d, "kk": d})} for d in dists],
-                 "targets": len(zone.get("targets") or []), "approximate": zone.get("kind") == "polygon"},
+                 "targets": len(zone.get("targets") or []), "approximate": zone.get("kind") == "polygon",
+                 "label_ru": (inc.get("zone_label") or {}).get("ru") if isinstance(inc.get("zone_label"), dict) else None,
+                 "label_kk": (inc.get("zone_label") or {}).get("kk") if isinstance(inc.get("zone_label"), dict) else None},
+        # Адрес кризисного штаба R17 («#agencies/crisis=<id>»): из ответа соседа, иначе экран строит его сам.
+        "link": inc.get("link") if isinstance(inc.get("link"), str) and inc["link"].startswith("#") else None,
         # Сколько часов идёт кризис (у закрытого — сколько длился).
         "started_at": _iso(started),
         "hours": int(((closed or as_of) - started).total_seconds() // 3600) if started else None,
         "closed_at": _iso(closed),
-        "tasks_total": len(tasks), "tasks_done": sum(r["done"] for r in by_service.values()),
+        "tasks_total": sum(r["total"] for r in by_service.values()), "tasks_done": sum(r["done"] for r in by_service.values()),
         "tasks_doing": sum(r["doing"] for r in by_service.values()),
         "services": sorted(by_service.values(), key=lambda r: (r["done"] == r["total"], -r["total"], r["service"]["id"])),
         "last_update": ({"at": _iso(_time(updates[0]["at"])), "text_ru": updates[0].get("text_ru"),
@@ -298,9 +330,11 @@ def _initiative(i: dict, members: dict) -> dict:
         "title_kk_missing": not i.get("title_kk"),
         "target": {k: target.get(k) for k in ("kind", "id", "label_ru", "label_kk")} if target.get("id") else None,
         "district": i.get("district"), "starts_at": i.get("starts_at"), "ends_at": i.get("ends_at"),
-        "joined": int(number(i, "joined") or 0),
+        # «Сделано вместе: N» — итог отчёта (R16 report.joined), иначе «Я приду».
+        "joined": int(number(report or {}, "joined") or number(i, "joined") or 0) if i.get("status") == "done"
+        else int(number(i, "joined") or 0),
         "supported": bool(support and support.get("by_akimat")),
-        "done_at": (report or {}).get("at") or (i.get("ends_at") if i.get("status") == "done" else None),
+        "done_at": i.get("done_at") or (report or {}).get("at") or (i.get("ends_at") if i.get("status") == "done" else None),
         "yard_members": members.get(target.get("id")) if target.get("id") else None,
         "demo": i.get("demo") is True,
     }
@@ -399,6 +433,53 @@ def meetings(answer, src: str, *, as_of: datetime, district: str | None, distric
                   "place_kk": (nxt.get("place") or {}).get("label_kk") if isinstance(nxt.get("place"), dict) else None}
                  if nxt else None),
         "demo": _demo(rows) or src == "fixture", "source": src,
+    }
+
+
+def meetings_from_block(block, src: str, *, as_of: datetime, district_names: dict) -> dict:
+    """R13 board_block: {"next", "orders" (открытые, порядок R13), "counts", "link"} → тот же вид, что meetings()."""
+    if not isinstance(block, dict):
+        return missing(src)
+    names = service_names()
+    today = as_of.astimezone(ASTANA_TZ).date()
+    items = []
+    for o in block.get("orders") or []:
+        if not isinstance(o, dict):
+            continue
+        due = _day(o.get("due"))
+        sid = o.get("service") if o.get("service") in routing.SERVICES else None
+        items.append({
+            "id": f"{o.get('meeting_id')}/{o.get('id')}", "text_ru": o.get("text_ru"), "text_kk": o.get("text_kk") or o.get("text_ru"),
+            "service": _service_ref(sid, names) if sid else None, "due": due.isoformat() if due else None,
+            "status": o.get("status") or "todo", "done": o.get("status") in DONE,
+            "overdue": bool(o.get("overdue")) if "overdue" in o else bool(due and due < today and o.get("status") not in DONE),
+            "days_left": (due - today).days if due else None,
+            "link": o.get("link") if isinstance(o.get("link"), dict) else None,
+            "meeting": {"id": o.get("meeting_id"), "title_ru": o.get("meeting_title_ru"),
+                        "title_kk": o.get("meeting_title_kk") or o.get("meeting_title_ru"),
+                        "district": o.get("district"), "at": o.get("meeting_at")},
+            "demo": o.get("demo") is True,
+        })
+    counts = block.get("counts") if isinstance(block.get("counts"), dict) else {}
+    nxt = block.get("next") if isinstance(block.get("next"), dict) else None
+    qc = (nxt or {}).get("questions_count")
+    place = (nxt or {}).get("place") if isinstance((nxt or {}).get("place"), dict) else {}
+    d = (nxt or {}).get("district")
+    return {
+        "available": True, "meetings": None,
+        "orders": {"total": int(number(counts, "total") or 0), "done": int(number(counts, "done") or 0),
+                   "in_progress": int(number(counts, "in_progress") or 0), "todo": int(number(counts, "todo") or 0),
+                   "overdue": int(number(counts, "overdue") or 0),
+                   "due_week": sum(1 for o in items if o["days_left"] is not None and 0 <= o["days_left"] <= 7)},
+        "items": items[:ORDERS_TOP],
+        "next": ({"id": nxt.get("id"), "title_ru": nxt.get("title_ru"), "title_kk": nxt.get("title_kk") or nxt.get("title_ru"),
+                  "district": d, "district_ru": (district_names.get(d) or {}).get("ru"),
+                  "district_kk": (district_names.get(d) or {}).get("kk"), "at": nxt.get("at"),
+                  "registered": int(number(nxt, "registered") or 0),
+                  "questions": int(number(qc, "published") or 0) if isinstance(qc, dict) else len(nxt.get("questions") or []),
+                  "place_ru": place.get("label_ru"), "place_kk": place.get("label_kk")} if nxt else None),
+        "link": block.get("link") if isinstance(block.get("link"), str) else None,
+        "demo": block.get("demo") is True or src == "fixture", "source": src,
     }
 
 

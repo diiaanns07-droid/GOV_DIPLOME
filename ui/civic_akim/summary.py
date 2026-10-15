@@ -764,15 +764,17 @@ class AkimService:
     def neighbor_blocks(self, district, as_of: datetime, kpi: dict | None) -> dict:
         """Блоки соседей на момент as_of (раунд 15). Сосед не готов или упал — блок {"available": False} (blocks.py)."""
         nb, names = self.neighbors, {d_id: {"ru": i["ru"], "kk": i["kk"]} for d_id, i in districts().items()}
-        board, board_src = nb.safe("agencies_board", now=as_of, days=7, district=district)
+        week, week_src = nb.safe("agencies_week", now=as_of, days=7, district=district)
+        board, board_src = nb.safe("agencies_board", now=as_of, days=30, district=district)
         joint = hand = None
-        if board is not None:
+        if week is None and board is not None:  # нет agencies_week R17 — совместные и передачи по спискам
             joint, _ = nb.safe("agencies_joint", now=as_of, days=7, district=district)
             hand, _ = nb.safe("agencies_handoffs", now=as_of, days=7, district=district)
         incidents, inc_src = nb.safe("incidents", now=as_of, district=district)
         inits, init_src = nb.safe("initiatives", now=as_of, district=district)
         yards = nb.safe("yards", now=as_of, district=district)[0] if inits is not None else None
-        meets, meet_src = nb.safe("meetings", now=as_of, district=district)
+        block, block_src = nb.safe("meetings_block", now=as_of, district=district)
+        meets, meet_src = (None, "none") if block is not None else nb.safe("meetings", now=as_of, district=district)
         today = as_of.astimezone(ASTANA_TZ).date()
         fc, fc_src = nb.safe("forecast_week", now=as_of, district=district, k=blocks.FORECAST_TOP, today=today)
         period = "week"
@@ -780,10 +782,11 @@ class AkimService:
             fc, fc_src = nb.safe("forecast_month", now=as_of, district=district, k=blocks.FORECAST_TOP, today=today)
             period = "month"
         return {
-            "agencies": blocks.agencies(board, board_src, joint, hand, as_of=as_of),
+            "agencies": blocks.agencies(week, week_src, board, board_src, joint, hand, as_of=as_of),
             "crisis": blocks.crisis(incidents, inc_src, as_of=as_of, district=district, district_names=names),
             "together": blocks.together(inits, init_src, yards, as_of=as_of, district=district, kpi=kpi),
-            "meetings": blocks.meetings(meets, meet_src, as_of=as_of, district=district, district_names=names),
+            "meetings": (blocks.meetings_from_block(block, block_src, as_of=as_of, district_names=names) if block is not None
+                         else blocks.meetings(meets, meet_src, as_of=as_of, district=district, district_names=names)),
             "forecast": blocks.forecast(fc, fc_src, period),
         }
 
