@@ -147,6 +147,7 @@ async function apiFlow(A, S, staff, timing) {
       r = await call("8", "GET", `${V2}/works-conflicts?district=nura`, null, true);
       const cfs = r.status === 200 ? list(r.body, "conflicts", "items") || [] : null;
       const hit = cfs ? cfs.find((x) => S.conflict && (x.id === S.conflict.id || (Array.isArray(x.works) && S.conflict.works.every((w) => x.works.includes(w))))) : null;
+      S.conflictApi = hit || null;  // для интерфейса: ссылка #works-calendar/<id> и совет R12 (его собственный текст)
       add("API", "8", "«Календарь работ»: конфликт «асфальт раньше сетей — копаем дважды» и совет ru/kk",
         cfs ? ok3(!!hit && hit.kind === "dig_after_surface" && !!hit.advice_ru && !!hit.advice_kk) : r.status === 503 || r.status === 404 ? null : false,
         cfs ? { found: !!hit, n: cfs.length, kind: hit && hit.kind } : st(r), "R12");
@@ -161,6 +162,16 @@ async function apiFlow(A, S, staff, timing) {
     const snow = pulse.find((p) => p.category === (s9.category || "snow_ice") && (p.district === s9.district || (p.districts || []).some((d) => d.district === s9.district)));
     add("API", "9", "«Картина дня»: пульс «Снег в Нуре ×N»", r.status === 200 ? ok3(!!snow) : null,
       r.status === 200 ? { pulse: pulse.slice(0, 3).map((p) => `${p.kind}:${p.category}:${p.district || "-"}:×${p.ratio}`) } : st(r), "R08 + R02");
+    // «Картина дня» 2.0 (R08 раунда 15): у тревоги «Снег» — ссылка штаба R17 (crisis — активный кризис, crisis_new — шаблон).
+    // Признак поставки R08 раунда 15 в сборке — его маршрут akim/board (сотрудник): 404 у модуля → поставки нет → NOT_RUN.
+    const r08 = staff ? await call("9", "GET", `${V2}/akim/board`, null, true) : { status: 0 };
+    const r15day = r08.status === 200;
+    S.pulseCrisis = !!(snow && (snow.crisis || snow.crisis_new));
+    add("API", "9", "«Картина дня»: у тревоги «Снег» ссылка «Открыть кризисный штаб» (R17)",
+      !r15day ? "NOT_RUN" : ok3(S.pulseCrisis),
+      !r15day ? `поставки R08 раунда 15 нет в сборке (akim/board → HTTP ${r08.status})` : { crisis: snow && (snow.crisis || snow.crisis_new) },
+      "R08 + R17");
+    S.r15day = r15day;
     // Штаб открывает акимат: вид сотрудника (публичная карточка жителя задач служб не показывает — так у R17).
     r = await call("9", "GET", `${V2}/incidents/${s9.incident}`, null, !!staff);
     const inc = r.status === 200 ? rec(r.body, "incident") || {} : null;
@@ -351,10 +362,22 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     const f2 = await shot("8-calendar");
     if (o.ok === null) step("8", "«Календарь работ» (вкладка «Ведомств»)", null, o.why, "R12 + R17");
     else {
-      const advice = S.conflict && (lang === "kk" ? S.conflict.advice_kk : S.conflict.advice_ru);
-      step("8", "«Календарь работ» открыт, виден конфликт работ и совет", o.ok && (advice ? await visibleText(new RegExp(esc(advice.slice(0, 24)), "i")) : true),
-        { title: o.title, advice: advice && advice.slice(0, 40) }, "R12", f2);
+      step("8", "«Календарь работ» открыт", o.ok, { title: o.title, chars: o.chars }, "R12", f2);
       if (o.ok) await quality("8c", "R12", f2);
+      // Конфликт сцены (R02 scenes.scene8 → R12 works-conflicts): своя ссылка R12 #works-calendar/<id>, совет — текст R12
+      // из API (не текст мира R02), улица сцены — в строке календаря.
+      const cf = S.conflictApi;
+      if (o.ok && cf) {
+        const advice = lang === "kk" ? cf.advice_kk : cf.advice_ru;
+        const street = (lang === "kk" ? s8.street_kk : s8.street_ru) || "";
+        const streetCore = street.replace(/^(улица|проспект|переулок)\s+/i, "").replace(/\s+(көшесі|даңғылы)$/i, "");
+        await open(`#works-calendar/${cf.id}`, "BirgeWorksCalendar");
+        const f3 = await shot("8-conflict");
+        const seenAdvice = advice ? await visibleText(new RegExp(esc(advice.slice(0, 30)), "i")) : false;
+        const seenStreet = streetCore ? await visibleText(new RegExp(esc(streetCore), "i")) : true;
+        step("8", `конфликт сцены «копаем дважды» (${street || cf.id}) по ссылке #works-calendar/${cf.id}: улица и совет видны`,
+          seenAdvice && seenStreet, { advice: advice && advice.slice(0, 50), street: streetCore, seenAdvice, seenStreet }, "R12", f3);
+      } else if (o.ok) step("8", "конфликт сцены «копаем дважды» в календаре", null, "конфликта сцены нет в ответе works-conflicts (API-часть)", "R12");
     }
     (timing["8"] = timing["8"] || []).push(Date.now() - t8);
   }
@@ -370,16 +393,25 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
       "Открыть кризисный штаб", "Жедел штабты ашу"].map(esc).join("|") + ")", "i");
     const hasBtn = !!(await firstVisible(page.getByRole("button", { name: crisisRe }))) || !!(await firstVisible(page.getByRole("link", { name: crisisRe })));
     const f = await shot("9-day");
-    step("9", "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»", shell && shell.globals.includes("BirgeAgencies") ? hasBtn : null,
-      shell && shell.globals.includes("BirgeAgencies") ? { button: hasBtn } : "модуля BirgeAgencies нет на странице", "R08 + R17", f);
+    const why9 = !(shell && shell.globals.includes("BirgeAgencies")) ? "модуля BirgeAgencies нет на странице"
+      : !S.r15day ? "поставки R08 раунда 15 («Картина дня» 2.0) нет в сборке" : null;
+    step("9", "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»", why9 ? null : hasBtn,
+      why9 || { button: hasBtn }, "R08 + R17", f);
     // Адрес штаба: #agencies/crisis/<id> (R17 191f81e7+), прежний #agencies/crisis=<id>; публичная карточка — #crisis/<id>.
-    let o = await open(`#agencies/crisis/${s9.incident}`, "BirgeAgencies");
-    if (o.ok === false) o = await open(`#agencies/crisis=${s9.incident}`, "BirgeAgencies");
-    if (o.ok === false) o = await open(`#crisis/${s9.incident}`, "BirgeAgencies");
+    // Экран открыт — мало: штаб должен показать именно этот кризис (название из мира), иначе пробуем следующий адрес
+    // (у R17 до 191f81e7 адрес #agencies/crisis/<id> открывает «Табло»).
+    const incTitle = S.inc && (lang === "kk" ? S.inc.title_kk : S.inc.title_ru);
+    let o = null;
+    for (const hh of [`#agencies/crisis/${s9.incident}`, `#agencies/crisis=${s9.incident}`, `#crisis/${s9.incident}`]) {
+      o = await open(hh, "BirgeAgencies");
+      if (o.ok === null) break;
+      if (o.ok && (!incTitle || await visibleText(new RegExp(esc(incTitle), "i")))) { o.addr = hh; break; }
+      o = { ...o, ok: false, addr: hh };
+    }
     const f2 = await shot("9-crisis");
     if (o.ok === null) step("9", "кризисный штаб", null, o.why, "R17");
     else {
-      step("9", `кризис ${s9.incident}: открыт, зона, службы и обновления`, o.ok, { title: o.title, chars: o.chars }, "R17", f2);
+      step("9", `кризис ${s9.incident}: штаб «${incTitle || s9.incident}» открыт по адресу`, o.ok, { addr: o.addr, title: o.title, chars: o.chars }, "R17", f2);
       if (o.ok && S.inc) {
         // VISUAL_BRIEF №5: чипы служб с прогрессом задач — названия служб сцены (по таблице R08) или тексты задач на экране.
         const tasks = (S.inc.tasks || []).map((t) => (lang === "kk" ? t.text_kk : t.text_ru)).filter(Boolean);
@@ -428,14 +460,25 @@ async function showCheck(browser, base, lang, staffAcc) {
     await sleep(600);
     const offered = await page.evaluate((tt) => [...document.querySelectorAll(".birge-palette__item")].some((li) => (li.textContent || "").includes(tt)), title).catch(() => false);
     if (!offered) { add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → сцена ≤ 1 с`, "NOT_RUN", "команды сцены нет в палитре (нет демо-мира или сцены)", "R01"); continue; }
-    const t0 = Date.now();
+    // Время меряет сама страница: от нажатия Enter (keydown, capture) до кадра, где раздел сцены открыт с содержимым
+    // (requestAnimationFrame) — без накладных расходов опроса из теста.
+    await page.evaluate((wantIds) => {
+      const box = window.__r10scene = { t0: null, t1: null, section: null };
+      addEventListener("keydown", (e) => { if (e.key === "Enter" && box.t0 === null) box.t0 = performance.now(); }, { capture: true, once: true });
+      const tick = () => {
+        const B = window.BirgeShell, r = document.querySelector("#birge-screen:not([hidden])");
+        box.section = B && B.section;
+        if (box.t0 !== null && B && wantIds.includes(B.section) && (B.section === "map" || (r && (r.innerText || "").trim().length > 30))) { box.t1 = performance.now(); return; }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, want[n]).catch(() => null);
     await page.keyboard.press("Enter").catch(() => null);
     let ms = null, sec = null;
     for (let i = 0; i < 40; i++) {
-      const st = await page.evaluate(() => { const B = window.BirgeShell; const r = document.querySelector("#birge-screen:not([hidden])");
-        return { section: B && B.section, chars: r ? (r.innerText || "").trim().length : 0 }; }).catch(() => ({}));
-      sec = st.section;
-      if (want[n].includes(st.section) && (st.section === "map" || st.chars > 30)) { ms = Date.now() - t0; break; }
+      const box = await page.evaluate(() => window.__r10scene).catch(() => null);
+      sec = box && box.section;
+      if (box && box.t1 !== null && box.t0 !== null) { ms = Math.round(box.t1 - box.t0); break; }
       await sleep(100);
     }
     const f = path.join(OUT, `show-${lang}-scene${n}.jpg`);
