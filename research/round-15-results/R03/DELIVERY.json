@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "cea6c00247a90a45209bdb2ae87837caf7642d50",
- "tested_sha": "cea6c00247a90a45209bdb2ae87837caf7642d50",
+ "code_sha": "7724787ed892e7c67642357e0d58a49222c2a6cb",
+ "tested_sha": "7724787ed892e7c67642357e0d58a49222c2a6cb",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -75,20 +75,20 @@
   "research/round-15-results/R03/screens/shell_map_375_ru.png"
  ],
  "integration": {
-  "route": "POST /api/civic/v2/assistant/ask → agent.civic_assistant.api.ask (kind=function, staff=True, arguments → {'body': body})",
+  "route": "POST /api/civic/v2/assistant/ask → agent.civic_assistant.api.ask — у R01 уже в шлюзе (dbf25c05: V2_HANDLERS_ROUND15, аргументы question, lang ru|kk|mixed, district, body); ask принимает их все: lang mixed → язык по вопросу, district → район экрана, если в вопросе нет",
   "patches": [
-   "research/round-15-results/R03/patches/R01_assistant_ask.patch (ui/web_server.py: CIVIC_ASSETS, V2_ROUTES, V2_HANDLERS, arguments; web/index.html: link + script)",
+   "research/round-15-results/R03/patches/R01_assistant_ask.patch (снят с R01 dbf25c05: только файлы экрана — ui/web_server.py CIVIC_ASSETS analyst.js/analyst.css; web/index.html link + script после birge-ref.js)",
    "research/round-15-results/R03/patches/R01_palette_commands.patch (web/civic/shell/birge-ref.js: Ctrl+K)"
   ],
   "screen": "window.BirgeAnalyst.mount(root, {api, apiBase, lang, openTarget, openSection, titleTag}); сам вызывает BirgeShell.registerScreen({id:'analyst', modes:['akimat']})",
-  "i18n_for_R11": "research/round-15-results/R03/i18n_analyst.json (56 ключей analyst.* ru/kk)",
-  "menu_for_R11": "Решено R11 (IA_ROUND15 v1.1): акимат → «Ещё» → «Инструменты» → «Спросить Birge» (#analyst, SCREENS.analyst, i-sparkle); palette: BirgeAnalyst.ask(text)",
-  "verified_on": "git worktree этой ветки + patch, стенд COMMON (init, seed-demo, seed-r14-demo, create-editor), Chromium: 401/200/400, #analyst → ответ → «Показать на карте» → карточка R07 с тем же числом; Ctrl+K → вопрос"
+  "i18n_for_R11": "research/round-15-results/R03/i18n_analyst.json (58 ключей analyst.* ru/kk)",
+  "menu_for_R11": "Сделано у R01 dbf25c05 по IA_ROUND15 v1.1 R11: акимат → «Ещё» → «Инструменты» → «Спросить Birge» (#analyst, SCREENS.analyst, i-sparkle); palette: BirgeAnalyst.ask(text)",
+  "verified_on": "15 окт ~12:45 UTC: git worktree ветки R01 dbf25c05 + пути R03 (7724787e) + оба patch, база RUN.txt §3, Chromium: без входа 401, без CSRF 403, пустой вопрос 400, district «Нура» 400, сцены 200 (131/162/5 мс), «Ещё» содержит analyst, #analyst → ответ → «Показать на карте» → карточка R07 с тем же числом 8, ошибок JS нет; тесты R01 round15 + api_v2: 286 passed, 1 skipped"
  },
  "tests": {
   "pytest_R03_round15": {
    "status": "PASS",
-   "passed": 74,
+   "passed": 75,
    "skipped": 1,
    "failed": 0,
    "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
@@ -96,7 +96,7 @@
   },
   "pytest_R03_R09_R01_related": {
    "status": "PASS",
-   "passed": 851,
+   "passed": 852,
    "skipped": 10,
    "xfailed": 1,
    "failed": 0,
@@ -113,7 +113,7 @@
   "browser_shell_integration": {
    "status": "PASS",
    "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_shell_check.cjs <out>",
-   "env": "app.py + patch R01 на копии ветки, CIVIC_DEMO=1, вход operator; 1366 и 375"
+   "env": "app.py ветки R01 dbf25c05 + пути R03 + patch, CIVIC_DEMO=1, вход operator; 1366 и 375; кадры screens/shell_*.png"
   },
   "eval_heldout_set1_first_run": {
    "status": "PASS",
@@ -185,6 +185,14 @@
     "p95": 55,
     "first_conflicts_call": 2200
    }
+  },
+  "pytest_R01_gateway_with_R03": {
+   "status": "PASS",
+   "passed": 286,
+   "skipped": 1,
+   "failed": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R01/round15 tests/civic/R01/test_r01_api_v2.py",
+   "env": "worktree R01 dbf25c05 + пути R03 7724787e + patches R03"
   }
  },
  "screens": [
@@ -210,7 +218,7 @@
   "research/round-15-results/R03/screens/shell_map_375_ru.png"
  ],
  "known_limits": [
-  "Пункта «Спросить Birge» в меню акимата нет, пока R11/R01 не решат место («Ещё» уже 4 пункта); раздел работает по #analyst и из Ctrl+K (patch R01). R11 уже завёл ключ shell.nav.analyst.",
+  "Файлов экрана (analyst.js/css) пока нет в CIVIC_ASSETS и index.html сборки R01 — patch R01_assistant_ask.patch; маршрут и пункт меню у R01 уже есть.",
   "Табло R17 считает по своей демо-фикстуре, «Картина дня» — по демо-набору R07: до единого демо-мира R02 их «просрочено» различаются (17 и 5) — разные наборы; аналитик подписывает источник каждого блока.",
   "Сервис R17 запускается шлюзом лениво: пока его нет, кризис — «штаб не подключён» (честно), табло — запасной расчёт по срокам R08. R01: ui.civic_agencies.configure(db_path=…) в wire().",
   "Первый вопрос о конфликтах работ ~2 с (R12 загружает работы и граф); следующие — миллисекунды.",

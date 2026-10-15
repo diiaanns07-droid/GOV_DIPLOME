@@ -67,11 +67,18 @@
   оболочке (копия + patch R01) снова 1366 и 375 ✓. ARCHITECTURE.md — для диплома и Gton (R14).
   Тесты: R03 74 + 1 skipped; с R09/R01/R03 r14 — 851 passed, 10 skipped, 1 xfailed. Браузер стенда 104/0.
 
+- 12:36–12:47 UTC (7724787e = code_sha DELIVERY): круг по триггеру. AMENDMENTS — только П1. R01 (dbf25c05) сам завёл
+  маршрут assistant.ask (аргументы question, lang ru|kk|mixed, district, body) и пункт «Ещё → Инструменты → Спросить
+  Birge». ask() принимает lang "mixed" (язык по вопросу) и district (район экрана, если в вопросе нет; не для
+  сравнения; understood.district.from = "context"). patch R01_assistant_ask — теперь только CIVIC_ASSETS + index.html.
+  Живая проверка на копии ветки R01 dbf25c05 + мои пути: 401 / 403 / 400 / 200, сцены 131/162/5 мс, меню, «Показать на
+  карте» → карточка R07 с тем же 8; тесты R01 286 passed; R03 75 + 1 skipped; с R09/R01/R03 r14 — 852 passed.
+
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,
   web/civic/qa/qa.js, SCREENS.questions в birge.js). Два модуля с одним именем ломали бы друг друга.
-- Шлюз R01: маршрут POST assistant/ask → agent.civic_assistant.api.ask (kind=function, staff=True); в arguments() нужна
-  строка для ключа assistant.ask (patch — в INTEGRATION.txt). ask принимает и question/lang, и body.
+- Шлюз R01: маршрут POST assistant/ask → agent.civic_assistant.api.ask (kind=function, staff=True) — у R01 уже есть
+  (dbf25c05). ask принимает question/lang/district/body; район из запроса не перекрывает район, названный в вопросе.
 
 ## Следующий шаг (каждый круг, по порядку)
 1. AMENDMENTS.md из ветки пакета (см. вверху) — новые поправки применить первыми.
@@ -80,7 +87,8 @@
    (git worktree + git checkout <их ветка> -- <их пути>; python3 -B -m agent.civic_assistant.analyst.evaluate
    --with-neighbours <db>) и тест tests/civic/R03/round15/test_analyst_neighbours.py.
 3. Ревью R11 (research/round-15-results/R11/REVIEW_R15.md в их ветке): правки по R03 — сразу.
-4. Сборка R01 (B1 16 окт 09:00 UTC, B2 18:00 UTC, FINAL-5 17 окт 13:00 UTC): взял ли R01 patch R03; если в сборке
+4. Сборка R01 (B1 16 окт 09:00 UTC, B2 18:00 UTC, FINAL-5 17 окт 13:00 UTC): взял ли R01 пути R03 и patch файлов
+   экрана (CIVIC_ASSETS + index.html); если в сборке
    что-то не так с «Спросить Birge» — исправить в своих путях, обновить DELIVERY.json (code_sha).
 5. Кадры: tests/civic/R03/round15/analyst_screens.cjs (стенд) и analyst_shell_check.cjs (оболочка с patch).
 6. После 17 окт 23:59 Астаны (18:59 UTC): удалить scheduled task trig_01HDRqCuZR25GqKUWS9wJjpG, финальные DELIVERY/STATUS.
