@@ -5320,6 +5320,7 @@
    "started_at": {
     "ago_hours": 62.0
    },
+   "closed_at": null,
    "status": "active",
    "event": "ev-w15-buran",
    "tasks": [
@@ -5399,6 +5400,9 @@
    "started_at": {
     "ago_days": 16.2
    },
+   "closed_at": {
+    "ago_days": 15.6
+   },
    "status": "closed",
    "event": null,
    "tasks": [
@@ -5454,6 +5458,9 @@
    },
    "started_at": {
     "ago_days": 33.0
+   },
+   "closed_at": {
+    "ago_days": 32.6
    },
    "status": "closed",
    "event": null,

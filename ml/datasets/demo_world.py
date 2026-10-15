@@ -1517,7 +1517,7 @@ def build_incidents(b: WorldBuilder, yards: list[dict]) -> list[dict]:
     return [
         {"id": "inc-w15-buran", "kind": "blizzard", "title_ru": "Буран в Нуре", "title_kk": "Нұрада боран",
          "zone": {"kind": "district", "district": "nura", "targets": [], "geometry": None},
-         "started_at": {"ago_hours": 62.0}, "status": "active", "event": BURAN["id"],
+         "started_at": {"ago_hours": 62.0}, "closed_at": None, "status": "active", "event": BURAN["id"],
          "tasks": [
              {"id": "t-1", "service": "street_cleaning", "text_ru": "Расчистить главные улицы и подходы к школам",
               "text_kk": "Басты көшелер мен мектептерге баратын жолдарды тазалау", "status": "doing"},
@@ -1540,7 +1540,7 @@ def build_incidents(b: WorldBuilder, yards: list[dict]) -> list[dict]:
         {"id": "inc-w15-heat-esil", "kind": "heat_outage", "title_ru": "Авария на теплосети",
          "title_kk": "Жылу желісіндегі апат",
          "zone": {"kind": "targets", "district": "esil", "targets": esil_targets, "geometry": None},
-         "started_at": {"ago_days": 16.2}, "status": "closed", "event": None,
+         "started_at": {"ago_days": 16.2}, "closed_at": {"ago_days": 15.6}, "status": "closed", "event": None,
          "tasks": [{"id": "t-1", "service": "heating", "text_ru": "Найти и устранить порыв",
                     "text_kk": "Жарылған жерді тауып, жөндеу", "status": "done"},
                    {"id": "t-2", "service": "water", "text_ru": "Проверить подвалы на подтопление",
@@ -1554,7 +1554,7 @@ def build_incidents(b: WorldBuilder, yards: list[dict]) -> list[dict]:
         {"id": "inc-w15-water-almaty", "kind": "water_outage", "title_ru": "Прорыв водопровода",
          "title_kk": "Су құбырының жарылуы",
          "zone": {"kind": "district", "district": "almaty", "targets": [], "geometry": None},
-         "started_at": {"ago_days": 33.0}, "status": "closed", "event": None,
+         "started_at": {"ago_days": 33.0}, "closed_at": {"ago_days": 32.6}, "status": "closed", "event": None,
          "tasks": [{"id": "t-1", "service": "water", "text_ru": "Перекрыть и заменить участок трубы",
                     "text_kk": "Құбыр бөлігін жауып, ауыстыру", "status": "done"},
                    {"id": "t-2", "service": "road", "text_ru": "Восстановить покрытие после раскопки",

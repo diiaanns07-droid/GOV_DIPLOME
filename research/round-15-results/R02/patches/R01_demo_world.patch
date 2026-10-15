@@ -1,5 +1,5 @@
 diff --git a/ui/web_server.py b/ui/web_server.py
-index b1292654..1c7beb2c 100644
+index b1292654..2cd379bd 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
 @@ -887,6 +887,8 @@ class CivicV2Gateway:
@@ -32,7 +32,7 @@ index b1292654..1c7beb2c 100644
          if store is not None:
              # R04 (INTEGRATION п. 4): «Я тоже» ищет в том же хранилище R09; модели грузятся в фоне.
              # Без R04 или до подключения /similar отвечает 503 — форма R09 работает без подсказки.
-@@ -1074,6 +1079,53 @@ class CivicV2Gateway:
+@@ -1074,6 +1079,56 @@ class CivicV2Gateway:
              LOGGER.info("civic-demo: R09 synthetic complaints added: %d", made)
          return made
  
@@ -40,7 +40,7 @@ index b1292654..1c7beb2c 100644
 +    # засеваются из ОДНОГО мира data/civic/astana/demo-world/world_v1.json — карта, «Обращения», «Картина дня», табло
 +    # служб и «Мой двор» считают одни записи. Время мира относительное: мир материализуется один раз, один now на всех.
 +    WORLD_SEEDS = (
-+        ("R09", "ui.civic_feedback.v2", "seed_world"),
++        ("R09", "ui.civic_feedback.v2.integration", "seed_world"),
 +        ("R06", "ui.civic_store", "seed_world"),
 +        ("R16", "ui.civic_together", "seed_world"),
 +        ("R17", "ui.civic_agencies", "seed_world"),
@@ -49,8 +49,9 @@ index b1292654..1c7beb2c 100644
 +    )
 +
 +    def _seed_world(self, store):
-+        """Засев демо-мира (идемпотентно: демо-записи возвращаются в исходный вид от нового now). Сбой модуля не мешает
-+        остальным; нет мира — демо как в FINAL-4. -> {роль: отчёт}."""
++        """Засев демо-мира. Демо-записи возвращаются к виду мира от нового now (reset — если модуль его принимает), сбой
++        модуля не мешает остальным; нет мира — демо как в FINAL-4. -> {роль: отчёт}."""
++        import inspect
 +        from datetime import datetime, timezone
 +        try:
 +            io = importlib.import_module("ml.datasets.demo_world_io")
@@ -60,23 +61,25 @@ index b1292654..1c7beb2c 100644
 +            LOGGER.exception("civic-demo-world: мир R02 не загрузился — демо как в FINAL-4")
 +            self.world = False
 +            return self._seed_demo_complaints(store)
++        live = getattr(store, "store", store)   # живое хранилище R09: его seed_world принимает и объект хранилища
 +        report = {}
 +        for role, module, name in self.WORLD_SEEDS:
 +            try:
 +                fn = getattr(self._import(module), name, None)
 +            except Exception:
 +                fn = None
++            target = live if role == "R09" else str(self.db_path)
 +            if not callable(fn) and role == "R09":
-+                # R09 ещё без seed_world — жалобы мира кладёт помощник R02 в то же хранилище (правила R09 seed_demo).
-+                helper = importlib.import_module("ml.datasets.demo_world_seed")
-+                live = getattr(store, "store", store)
-+                fn = lambda _db, records, moment: helper.seed_r09(live, records, moment)  # noqa: E731
++                # R09 без seed_world — жалобы мира кладёт помощник R02 в то же хранилище (правила R09 seed_demo).
++                fn = importlib.import_module("ml.datasets.demo_world_seed").seed_r09
 +            if not callable(fn):
 +                report[role] = "нет seed_world"
 +                continue
 +            try:
-+                result = fn(str(self.db_path), world, now)
-+                report[role] = ", ".join(f"{k} {v}" for k, v in result.items()) if isinstance(result, dict) else str(result)
++                takes_reset = "reset" in inspect.signature(fn).parameters
++                result = fn(target, world, now, reset=True) if takes_reset else fn(target, world, now)
++                report[role] = ", ".join(f"{k} {len(v) if isinstance(v, list) else v}" for k, v in result.items()) \
++                    if isinstance(result, dict) else str(result)
 +            except Exception:
 +                LOGGER.exception("civic-demo-world: засев %s не удался", role)
 +                report[role] = "ошибка"

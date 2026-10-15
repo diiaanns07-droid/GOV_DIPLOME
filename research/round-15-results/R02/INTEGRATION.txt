@@ -18,16 +18,19 @@ R02 · РАУНД 15 · ДЕМО-МИР АСТАНЫ — КАК ПОДКЛЮЧИ
 =====================================================================================================
 §1. R01 — ui/web_server.py (patch: research/round-15-results/R02/patches/R01_demo_world.patch, 88 строк)
 =====================================================================================================
-Что делает patch (проверен на стенде FINAL-4 + мир, 15 окт 17:13 Астаны):
+Что делает patch (91 строка; проверен на стенде FINAL-4 + мир, 15 окт 17:30 Астаны, засев и перезапуск на той же базе):
   - CivicV2Gateway.world = CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1;
   - wire(): в режиме мира карта НЕ получает синтетику R07 (demo_seed) — только хранилище R09 (иначе числа снова
     разъедутся); вместо запасных 3 жалоб «Хан Шатыр» зовётся _seed_world(store);
-  - _seed_world(): materialize(load_world(), now) один раз и по очереди seed_world модулей
-      R09 ui.civic_feedback.v2 · R06 ui.civic_store · R16 ui.civic_together · R17 ui.civic_agencies ·
-      R13 ui.civic_meetings · R07 ui.civic_heat.world
-    сигнатура seed_world(db_path, records, now); сбой одного модуля не мешает остальным; у R09 ещё нет seed_world —
-    жалобы кладёт помощник R02 seed_r09 прямо в живое хранилище R09 (те же правила reset, что у R09 seed_demo);
-  - одна строка в консоли: «civic-demo-world: R09: inserted 743, skipped 0, reset 0; R06: …».
+  - _seed_world(): ОБЯЗАТЕЛЬНО materialize(load_world(), now) один раз — модули не понимают относительное время мира
+    (проверено: seed_world R09 на сыром мире даёт 743 invalid и ноль записей); затем seed_world модулей по очереди:
+      R09 ui.civic_feedback.v2.integration (ему передаётся ЖИВОЕ хранилище R09 — его seed_world это принимает) ·
+      R06 ui.civic_store · R16 ui.civic_together · R17 ui.civic_agencies · R13 ui.civic_meetings · R07 ui.civic_heat.world
+    reset=True — если функция его принимает (по сигнатуре): демо-записи возвращаются к виду мира от нового now, иначе
+    через сутки «сегодня» пусто, а «Субботник в субботу» уже прошёл. Сбой одного модуля не мешает остальным; у R09 без
+    seed_world жалобы кладёт помощник R02 (ml.datasets.demo_world_seed.seed_r09) в то же хранилище;
+  - одна строка в консоли: «civic-demo-world: R09: inserted 743, skipped 0, reset 0; R06: …»; повторный запуск на той
+    же базе — «R09: inserted 0, skipped 0, reset 743».
 Без флага — всё как в FINAL-4. Мира нет или он битый — лог и демо FINAL-4.
 seed_demo() R06 (проекты и этапы для шага 5) не трогаем: проектов (proposals) в мире нет, R06 решает сам.
 
@@ -50,10 +53,15 @@ scene7 (yard-…, инициатива i-w15-01 «Субботник», 14 → 1
 route_hint (у 40 совместных), passport (у части «в работе»; 3 — delay.needs_decision для R08), resolution (reported /
 verified 82 / reopened 7 + шаг истории reopened_by_residents), updates (fixed/reopened/note), metoo_times, event, scene.
 Нет в мире (ставит R09): code (B-0001), due_at (record.due_at — рабочие дни РК), устройства.
-Готовый seed_world: ml/datasets/demo_world_seed.seed_world(db_path, records, now) — reset демо-записей при каждом
-запуске (как seed_demo, R10 B-048/B-049), настоящие записи не трогает, «Я тоже» — устройства demo_device(id, n).
-Можно просто: from ml.datasets.demo_world_seed import seed_world   # в ui/civic_feedback/v2/__init__.py
-Время засева 743 записей — ~1,8 с (SQLite, облако). Тест: tests/civic/R02/round15 (test_seed_r09_same_numbers_as_expected).
+Ваш seed_world (ui/civic_feedback/v2/world_seed.py, ветка @ 2ee80d8c) проверен на мире: на МАТЕРИАЛИЗОВАННОМ мире —
+inserted 743, invalid 0, «Обращения» город {new 21, in_progress 75, waiting_check 436, overdue 1, reopened 7} и Нура
+{12, 30, 139, 0, 1} — РОВНО как EXPECTED.json; повтор с reset=True — reset 743; «Хан Шатыр» — 3 человека по месту.
+На СЫРОМ мире (объекты времени) — invalid 743. Страховка (если кто-то передаст сырой мир) — patch 9 строк:
+    git apply research/round-15-results/R02/patches/R09_world_seed_materialize.patch
+с ним и сырой мир даёт 743 / reset 743 и те же числа. Просьба: при CIVIC_DEMO_WORLD=1 reset=True по умолчанию (patch R01
+передаёт reset=True сам, но другой вызов может не передать).
+Запасной засев без вашего кода: ml/datasets/demo_world_seed.seed_world(db_path, records, now) (те же правила).
+Время засева 743 записей — ~1,8 с (облако; у вас одна транзакция — быстрее).
 Предложение (решает R09): вкладка «Ждут проверки» в мире большая (436 — служба сообщила, жители не голосовали; так и в
 жизни). Показывать в ней ремонты последних 14 дней — как «проверено» на карте 7 дней.
 
@@ -71,8 +79,11 @@ R09 = R17 overdue_answer). Цифры обоих видов на мире — EX
 §4. R07 — карта и «Хроника»
 =====================================================================================================
 В режиме мира demo_records() → [] (у вас уже так в world.py) — карта = хранилище R09.
-Отметки шкалы: incidents (started_at, status) и events (теперь started_at / ended_at, как у кризиса — версия 1.0.1).
-С материализованным миром от R01 ваш mark_from_world читает их без изменений (ISO started_at).
+Отметки шкалы: incidents (started_at, closed_at, status) и events (started_at / ended_at, как у кризиса).
+Стык проверен на вашей ветке @ 5f9dc0ae: seed_world на материализованном мире → 3 отметки (буран, теплосеть, водопровод).
+Две просьбы: 1) читать и world["events"] — там «Первый снег», «Утренний гололёд», «Буран в Нуре», «Начало отопительного
+сезона» (id, kind, title_ru/kk, district, started_at, ended_at) — это аннотации «Хроники» без кризиса R17;
+2) конец закрытого кризиса — поле closed_at (схема 1.1; раньше ваш разбор искал ended_*/closed_* и не находил).
 Если зовёте seed_world с сырым миром — сначала materialize(records, now).
 
 =====================================================================================================

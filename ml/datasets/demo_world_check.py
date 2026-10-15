@@ -508,6 +508,12 @@ def check_rest(rep: Report, world: dict, geo: Geo, ids: dict) -> None:
                 rep.err(where, f"задача неверна: {t}")
         if inc.get("status") == "closed" and not inc.get("result"):
             rep.err(where, "закрытый кризис без итога")
+        if inc.get("status") == "closed":
+            _check_time(rep, where + "/closed_at", inc.get("closed_at"), allow_future=False)
+            if _order_bad(inc.get("started_at"), inc.get("closed_at")):
+                rep.err(where, "кризис закрыт раньше начала")
+        elif inc.get("closed_at") is not None:
+            rep.err(where, "активный кризис с closed_at")
         if inc.get("event") and inc["event"] not in ids.get("events", set()):
             rep.err(where, f"событие {inc['event']} не из events")
     complaints, works = ids.get("complaints", set()), ids.get("works", set())
