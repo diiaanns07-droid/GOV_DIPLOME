@@ -49,7 +49,7 @@ const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.5)));
 const pause = (ms) => sleep(Math.round(ms * PACE));
 // Часть времени чтения даёт следующий шаг сцены (нажатие, перелёт карты): субтитр висит до следующего — вычитаем ~1,5 с.
 const READ_AHEAD = 2000;
-const READ_CPS = 16;   // знаков в секунду: удобная скорость чтения субтитров (норма 15–17)
+const READ_CPS = 17;   // знаков в секунду: удобная скорость чтения субтитров (норма 15–17); 17 — запас под 5 мин для ҚАЗ
 const wait = (ms) => sleep(ms);
 const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
 const dbg = (...xs) => { if (process.env.R10V_DEBUG) log("  ·", ...xs); };
