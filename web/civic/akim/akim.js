@@ -87,6 +87,31 @@
       "akim.decision.forbidden": "Выбрать вариант может только сотрудник акимата",
       "akim.decision.save_error": "Выбор не сохранился — попробуйте ещё раз",
       "akim.empty.yesterday": "Показать вчера",
+      // Раунд 15, «Картина дня» 2.0 (R11 IA_ROUND15 §5.10)
+      "akim.decision.more": "Подробнее",
+      "akim.crisis.open": "Открыть кризисный штаб",
+      "akim.trio.open": "Открыть",
+      "akim.trio.support": "Поддержать",
+      "akim.trio.agencies": "Ведомства",
+      "akim.trio.agencies_num": { one: "совместное обращение за неделю", few: "совместных обращения за неделю", many: "совместных обращений за неделю" },
+      "akim.trio.agencies_lagging": "Больше всего просрочек: {list}",
+      "akim.trio.agencies_handoffs": { one: "{n} передача между службами", few: "{n} передачи между службами", many: "{n} передач между службами" },
+      "akim.trio.agencies_staff": "Табло служб видно сотрудникам акимата: аватар → «Для сотрудников».",
+      "akim.trio.together": "Жители вместе",
+      "akim.trio.together_num": { one: "дело соседей впереди", few: "дела соседей впереди", many: "дел соседей впереди" },
+      "akim.trio.together_people": { one: "{n} сосед придёт", few: "{n} соседа придут", many: "{n} соседей придут" },
+      "akim.trio.together_done": { one: "Сделано вместе: {n} дело", few: "Сделано вместе: {n} дела", many: "Сделано вместе: {n} дел" },
+      "akim.trio.together_none": "Ближайших дел пока нет",
+      "akim.trio.meetings": "Встречи",
+      "akim.trio.meetings_num": { one: "поручение в работе", few: "поручения в работе", many: "поручений в работе" },
+      "akim.trio.meetings_overdue": "Просрочено: {n}",
+      "akim.trio.meetings_done": "Сделано: {n} из {total}",
+      "akim.trio.meetings_next": "Следующая встреча: {date}",
+      "akim.trio.due": "срок {date}",
+      "akim.forecast.week": "Прогноз на неделю",
+      "akim.forecast.month": "Прогноз на месяц",
+      "akim.forecast.badge": "прототип",
+      "akim.forecast.note": "Прототип: модель обучена на синтетической истории, это не настоящая оценка риска.",
     },
     kk: {
       "akim.pulse.spike_new": "{category} · {district}: жаңа",
@@ -102,6 +127,30 @@
       "akim.decision.forbidden": "Нұсқаны тек әкімдік қызметкері таңдай алады",
       "akim.decision.save_error": "Таңдау сақталмады — қайталап көріңіз",
       "akim.empty.yesterday": "Кешегі күнді көрсету",
+      "akim.decision.more": "Толығырақ",
+      "akim.crisis.open": "Дағдарыс штабын ашу",
+      "akim.trio.open": "Ашу",
+      "akim.trio.support": "Қолдау",
+      "akim.trio.agencies": "Ведомстволар",
+      "akim.trio.agencies_num": "апта ішіндегі бірлескен өтініш",
+      "akim.trio.agencies_lagging": "Мерзімі өткені көп: {list}",
+      "akim.trio.agencies_handoffs": "Қызметтер арасында берілгені: {n}",
+      "akim.trio.agencies_staff": "Қызметтер тақтасы әкімдік қызметкерлеріне көрінеді: аватар → «Қызметкерлерге».",
+      "akim.trio.together": "Тұрғындар бірге",
+      "akim.trio.together_num": "алдағы көршілер ісі",
+      "akim.trio.together_people": "{n} көрші келеді",
+      "akim.trio.together_done": "Бірге атқарылды: {n}",
+      "akim.trio.together_none": "Жақын арада іс жоқ",
+      "akim.trio.meetings": "Кездесулер",
+      "akim.trio.meetings_num": "орындалудағы тапсырма",
+      "akim.trio.meetings_overdue": "Мерзімі өткені: {n}",
+      "akim.trio.meetings_done": "Орындалды: {n}/{total}",
+      "akim.trio.meetings_next": "Келесі кездесу: {date}",
+      "akim.trio.due": "мерзімі {date}",
+      "akim.forecast.week": "Апталық болжам",
+      "akim.forecast.month": "Айлық болжам",
+      "akim.forecast.badge": "прототип",
+      "akim.forecast.note": "Прототип: модель синтетикалық тарихта оқытылған, бұл нақты тәуекел бағасы емес.",
     },
   };
   function wave2(key, params) {
@@ -277,6 +326,8 @@
       request: 0,
       keep: false, // смена даты/района при показанных числах: прежние приглушены, без скелета
       skeleton: false, // скелет показан (ответ дольше 150 мс)
+      board: null, // раунд 15: блок «Ведомства» из GET akim/board (только сотрудник; R17 считает, R08 показывает)
+      boardStatus: null, // 200 | 401/403 (нужен вход) | 0 (нет маршрута/связи) | null (ещё не спрашивали)
     };
     if (state.date && state.date > todayAstana()) state.date = null;
 
@@ -388,7 +439,50 @@
             state.keep = false;
             render();
           }
+          if (id === state.request && state.status === "ok") loadBoard(id);
         });
+    }
+
+    // «Ведомства» (раунд 15): табло служб R17 — только сотруднику, поэтому отдельным запросом к akim/board.
+    // Нет входа (401/403) — карточка подсказывает, как войти; нет маршрута или связи — карточки нет. Числа «Картины
+    // дня» от этого не зависят. Прошедший день — табло не спрашиваем (R17 знает только «сейчас»).
+    function loadBoard(id) {
+      if (state.date) {
+        state.board = null;
+        state.boardStatus = null;
+        return;
+      }
+      var q = state.district ? "?district=" + encodeURIComponent(state.district) : "";
+      fetch(opts.apiBase + "/akim/board" + q, { headers: { Accept: "application/json" }, credentials: "same-origin" })
+        .then(function (r) {
+          return r.json().catch(function () { return null; }).then(function (b) { return { status: r.status, body: b }; });
+        })
+        .then(function (res) {
+          if (id !== state.request) return;
+          var services = res.status === 200 && res.body && res.body.services ? res.body.services : null;
+          var status = res.status === 200 ? 200 : res.status === 401 || res.status === 403 ? 403 : 0;
+          if (status === state.boardStatus && JSON.stringify(services) === JSON.stringify(state.board)) return;
+          state.board = services;
+          state.boardStatus = status;
+          keepPlace(render);
+        })
+        .catch(function () {
+          if (id !== state.request || state.boardStatus === 0) return;
+          state.board = null;
+          state.boardStatus = 0;
+          keepPlace(render);
+        });
+    }
+    // Перерисовать, не сдвинув экран и не потеряв фокус (как тихое обновление).
+    function keepPlace(fn) {
+      var key = focusKey();
+      var y = root.scrollY;
+      fn();
+      if (key) {
+        var again = rootEl.querySelector(key);
+        if (again) again.focus({ preventScroll: true });
+      }
+      if (root.scrollY !== y) root.scrollTo(root.scrollX, y);
     }
 
     // Новые данные при тихом обновлении: перерисовываем, только если что-то изменилось (иначе — лишь «Данные на …»),
@@ -742,9 +836,16 @@
             ])
           );
         });
-        // Слева — проблема и что мешает; справа — что нужно и два варианта (на телефоне всё одной колонкой).
+        // Раунд 15 (VISUAL_BRIEF §3): коротко — проблема → вариант → кнопка. Слева проблема одной строкой и где /
+        // сколько просрочено / какая служба; справа два варианта с «Выбрать». «Что мешает», временная мера и «что нужно
+        // от акима» — свёрнуты в «Подробнее» (ничего не потеряно, но на экране нет длинных абзацев).
+        var more = [
+          it.decision_ru ? h("p", { class: "akim-decision__needed", text: tr("akim.decision.needed", { text: it["decision_" + l] || it.decision_ru }) }) : null,
+          it.blocker_ru ? h("p", { class: "akim-decision__blocker", text: tr("akim.decision.blocker", { text: it["blocker_" + l] || it.blocker_ru }) }) : null,
+          it.temp_measure_ru ? h("p", { class: "bk-meta", text: tr("passport.temp_measure", { text: it["temp_measure_" + l] || it.temp_measure_ru }) }) : null,
+        ].filter(Boolean);
         list.appendChild(
-          h("li", { class: "akim-decision", tabindex: "-1", "data-key": "decision:" + it.id }, [
+          h("li", { class: "akim-decision akim-decision--short", tabindex: "-1", "data-key": "decision:" + it.id }, [
             h("div", { class: "akim-decision__info" }, [
               h("p", { class: "akim-decision__problem" }, [h("strong", { text: it["problem_" + l] || it.problem_ru })]),
               h("p", { class: "akim-decision__meta bk-meta" }, [
@@ -752,11 +853,11 @@
                 h("span", { class: "akim-late-days", text: timerText(it.timer) }),
                 " · " + tr("service.assigned", { service: serviceName(it.service) }),
               ]),
-              it.blocker_ru ? h("p", { class: "akim-decision__blocker", text: tr("akim.decision.blocker", { text: it["blocker_" + l] || it.blocker_ru }) }) : null,
-              it.temp_measure_ru ? h("p", { class: "bk-meta", text: tr("passport.temp_measure", { text: it["temp_measure_" + l] || it.temp_measure_ru }) }) : null,
+              more.length
+                ? h("details", { class: "bk-details akim-decision__more" }, [h("summary", { "data-key": "decision-more:" + it.id, text: tr("akim.decision.more") })].concat(more))
+                : null,
             ]),
             h("div", { class: "akim-decision__choice" }, [
-              it.decision_ru ? h("p", { class: "akim-decision__needed", text: tr("akim.decision.needed", { text: it["decision_" + l] || it.decision_ru }) }) : null,
               it.options && it.options.length ? opts2 : h("p", { class: "akim-decision__blocker bk-meta", text: tr("akim.decision.no_options") }),
               status,
             ]),
@@ -807,13 +908,29 @@
             },
           }, [icon("pin", 18), tr("common.action.show_on_map")])
         : null;
+      // Раунд 15: тревога «тема растёт» (снег, ЖКХ) или тревога в районе, где уже идёт кризис, — кнопка штаба R17.
+      // Событие "birge:open-crisis" отменяемое: оболочка или R17 открывают штаб у себя; иначе — переход по ссылке.
+      // Одна главная кнопка (VISUAL_BRIEF §2 п. 3): кнопка штаба — только у первой такой тревоги, у остальных — карта.
+      var firstCrisis = ((d0() && d0().pulse && d0().pulse.items) || []).filter(function (x) { return x.crisis && x.crisis.link; })[0];
+      var crisisBtn = a.crisis && a.crisis.link && firstCrisis === a
+        ? h("a", {
+            class: "bk-btn bk-btn--danger akim-pulse__crisis",
+            href: a.crisis.link,
+            "data-key": "crisis:" + a.kind + ":" + (a.category || "") + ":" + (a.district || ""),
+            onclick: function (e) {
+              var ev = new CustomEvent("birge:open-crisis", { cancelable: true,
+                detail: { incident: a.crisis.incident, kind: a.crisis.kind, district: a.district || null, link: a.crisis.link } });
+              if (!doc.dispatchEvent(ev)) e.preventDefault();
+            },
+          }, [icon("alert", 18), tr("akim.crisis.open")])
+        : null;
       // Значок вида тревоги в мягком круге (дизайн-марафон): рост — график, новое место — метка, «Я тоже» — люди.
       var ic = a.kind === "new_hot" || a.kind === "spike_new" ? "pin" : a.kind === "metoo_growth" ? "users" : "chart";
       return h("li", { class: "akim-pulse__item", "data-kind": a.kind }, [
         h("span", { class: "akim-pulse__icon", "aria-hidden": "true" }, [icon(ic, 18)]),
         h("span", { class: "akim-pulse__title", text: title }),
         h("span", { class: "akim-pulse__reason bk-meta", text: reason }),
-        link,
+        crisisBtn || link,
       ]);
     }
     function d0() {
@@ -1165,6 +1282,100 @@
       return card;
     }
 
+    // ── «Картина дня» 2.0 (раунд 15): соседи — только показ, числа считают R17 / R16 / R13 ──
+    function demoBadge(flag) {
+      return flag && !(d0() && d0().demo && d0().demo.complaints) ? h("span", { class: "bk-tag bk-tag--demo", text: tr("common.demo") }) : null;
+    }
+    function trioCard(id, titleKey, number, numLabel, lines, link, linkKey, demo) {
+      return h("section", { class: "bk-card akim-card akim-mini", "data-block": id, "aria-labelledby": "akim-mini-" + id }, [
+        h("div", { class: "akim-mini__head" }, [h("h2", { class: "bk-h2", id: "akim-mini-" + id, text: tr(titleKey) }), demoBadge(demo)]),
+        number == null ? null : h("p", { class: "akim-mini__num" }, [h("span", { class: "akim-mini__value", text: num(number) }),
+          h("span", { class: "akim-mini__label", text: numLabel })]),
+        h("div", { class: "akim-mini__lines" }, lines.filter(Boolean).slice(0, 2).map(function (t) {
+          return typeof t === "string" ? h("p", { class: "akim-mini__line", text: t }) : t;
+        })),
+        link ? h("a", { class: "bk-btn bk-btn--ghost akim-mini__open", href: link, "data-key": "trio:" + id }, [tr(linkKey || "akim.trio.open"),
+          icon("chevron-right", 18)]) : null,
+      ]);
+    }
+    function agenciesCard() {
+      if (state.date) return null;
+      if (state.boardStatus === 403)
+        return trioCard("agencies", "akim.trio.agencies", null, "", [tr("akim.trio.agencies_staff")], "#agencies");
+      var sv = state.board;
+      if (state.boardStatus !== 200 || !sv || !sv.available || !(sv.items || []).length) return null;
+      var rows = {};
+      (sv.items || []).forEach(function (r) { rows[r.service] = r; });
+      var lag = (sv.lagging || []).filter(function (id) { return rows[id]; }).map(function (id) {
+        return serviceName({ id: id, ru: rows[id].ru, kk: rows[id].kk, name_edited: rows[id].name_edited }) + " — " + num(rows[id].overdue || 0);
+      });
+      var joint = sv.joint && sv.joint.week != null ? sv.joint.week : sv.joint && sv.joint.open;
+      return trioCard("agencies", "akim.trio.agencies", joint, tr("akim.trio.agencies_num", { n: joint || 0 }), [
+        lag.length ? tr("akim.trio.agencies_lagging", { list: lag.join(", ") }) : null,
+        sv.handoffs && sv.handoffs.week != null ? tr("akim.trio.agencies_handoffs", { n: sv.handoffs.week }) : null,
+      ], "#agencies", null, sv.demo);
+    }
+    function shortWhen(iso) {
+      return I() && I().formatDateTime ? I().formatDateTime(iso) : iso;
+    }
+    function togetherCard(d) {
+      var t = d.together;
+      if (!t || !t.available) return null;
+      var c = t.counts || {};
+      var next = (t.top || []).filter(function (x) { return x.status !== "done"; })[0];
+      var nextLine = next ? h("p", { class: "akim-mini__line" }, [h("strong", { lang: next.lang === "kk" ? "kk" : next.lang === "ru" ? "ru" : null, text: next.title }),
+        " · " + shortWhen(next.starts_at) + " · " + tr("akim.trio.together_people", { n: next.joined || 0 })]) : tr("akim.trio.together_none");
+      var doneLine = c.done != null ? tr("akim.trio.together_done", { n: c.done }) : null;
+      // Сцена 7 демо: ближайшее дело ещё без поддержки акимата — главное действие карточки «Поддержать».
+      var support = next && !next.supported;
+      return trioCard("together", "akim.trio.together", c.upcoming != null ? c.upcoming : null, tr("akim.trio.together_num", { n: c.upcoming || 0 }),
+        [nextLine, doneLine], support && next.id ? "#together/" + encodeURIComponent(next.id) : "#together",
+        support ? "akim.trio.support" : null, t.demo);
+    }
+    function meetingsCard(d) {
+      var m = d.meetings;
+      if (!m || !m.available) return null;
+      var c = m.counts || {};
+      var open = (c.todo || 0) + (c.in_progress || 0);
+      var first = (m.orders || [])[0];
+      // Красное — только срок просроченного поручения, не весь текст (правило «Картины дня»: блок целиком не красим).
+      var orderLine = first ? h("p", { class: "akim-mini__line" }, [
+        h("strong", { text: first["text_" + lang()] || first.text_ru }),
+        first.due ? " · " : "",
+        first.due ? h("span", { class: first.overdue ? "akim-late-days" : null,
+          text: tr("akim.trio.due", { date: I() ? I().formatDate(first.due) : first.due }) }) : null,
+      ]) : null;
+      var summary = [c.overdue ? tr("akim.trio.meetings_overdue", { n: c.overdue }) : null,
+        c.total ? tr("akim.trio.meetings_done", { n: c.done || 0, total: c.total }) : null].filter(Boolean).join(" · ");
+      var nextLine = m.next && m.next.at ? tr("akim.trio.meetings_next", { date: shortWhen(m.next.at) }) : null;
+      if (!c.total && !m.next) return null;
+      return trioCard("meetings", "akim.trio.meetings", open, tr("akim.trio.meetings_num", { n: open }),
+        [orderLine || nextLine, summary || nextLine], "#meetings", null, m.demo);
+    }
+    function forecastCard(d) {
+      var f = d.forecast;
+      if (!f || !f.available || !(f.items || []).length) return null;
+      var l = lang();
+      var list = h("ol", { class: "bk-list akim-forecast__list" }, f.items.slice(0, 3).map(function (it, i) {
+        var where = [it.district ? tr("district." + it.district) : null, it["reason_" + l] || it.reason_ru].filter(Boolean).join(" · ");
+        return h("li", { class: "bk-list__item akim-forecast__item" }, [
+          h("span", { class: "akim-forecast__rank", "aria-hidden": "true", text: num(i + 1) }),
+          h("span", { class: "bk-list__main" }, [
+            h("span", { class: "bk-list__title", text: it["label_" + l] || it.label_ru || where }),
+            h("span", { class: "bk-list__sub", text: where }),
+          ]),
+        ]);
+      }));
+      return h("section", { class: "bk-card akim-card akim-forecast", "aria-labelledby": "akim-forecast-title" }, [
+        h("div", { class: "akim-mini__head" }, [
+          h("h2", { class: "bk-h2", id: "akim-forecast-title", text: tr(f.horizon === "week" ? "akim.forecast.week" : "akim.forecast.month") }),
+          h("span", { class: "bk-tag akim-forecast__badge", text: tr("akim.forecast.badge") }),
+        ]),
+        list,
+        h("p", { class: "bk-meta akim-forecast__note", text: f["method_" + l] || f.method_ru || tr("akim.forecast.note") }),
+      ]);
+    }
+
     function renderOk(d) {
       // Нет источника жалоб — не четыре нуля и не отдельный блок-заглушка (CLEAN_PASS §3 R08 п. 6): чисел нет,
       // а сводка ниже прямо говорит «Данные об обращениях пока не подключены».
@@ -1203,6 +1414,12 @@
       // Порядок по схеме R11 (IA_WAVE2 §5): KPI → сводка → «Нужно решение акима» → «Пульс» → прежние блоки.
       if (decisionsEl) body.appendChild(decisionsEl);
       if (pulseEl) body.appendChild(pulseEl);
+      // «Картина дня» 2.0 (R11 IA_ROUND15 §5.10): ниже первого экрана — три одинаковые карточки соседей и прогноз.
+      // День совсем пустой (одно состояние «пусто», CLEAN_PASS) — без них: числа служб без обращений были бы противоречием.
+      var trio = nothing ? [] : [agenciesCard(), togetherCard(d), meetingsCard(d)].filter(Boolean);
+      if (trio.length) body.appendChild(h("div", { class: "akim-trio", "data-count": String(trio.length) }, trio));
+      var forecastEl = nothing ? null : forecastCard(d);
+      if (forecastEl) body.appendChild(forecastEl);
       if (main.length || side.length)
         body.appendChild(
           h("div", { class: "akim-grid" + (main.length && side.length ? "" : " akim-grid--one") }, [
@@ -1330,5 +1547,5 @@
     return handle;
   }
 
-  root.BirgeAkim = { mount: mount, version: "akim-r14-clean" };
+  root.BirgeAkim = { mount: mount, version: "akim-r15-day2" };
 })(window);
