@@ -320,6 +320,10 @@ async function jpegBuffer(page, w, h) {
       // «На карте» в карточке дела: оболочка с setLayer (R01 раунда 15) — слой «Инициативы» и выделенная капсула дела
       // (лист слева остаётся открытым); без setLayer (FINAL-4) — цель «двор» на карте.
       await go(page, "#together/" + SCENE.initiative, '.tg-detail [data-focus="show-map"]');
+      // Лист сбоку (слева, карта видна справа) остаётся открытым; экран по центру и шторка телефона закрываются —
+      // как в модуле (правая граница листа левее 60 % ширины окна). R01 B0.12: «Сделаем вместе» — свой экран 720 px.
+      const side = await page.evaluate(() => { const s = document.getElementById("birge-screen"); const b = s ? s.getBoundingClientRect() : null;
+        return !!b && b.width > 0 && b.right < innerWidth * 0.6; });
       await page.click('[data-focus="show-map"]');
       const shown = await page.waitForFunction((id) => {
         if (document.body.dataset.birgeLayer === "initiatives") return document.querySelector(`.tg-pin--focus[data-id="${id}"]`) ? "layer" : false;
@@ -333,7 +337,8 @@ async function jpegBuffer(page, w, h) {
         const cam = await page.evaluate(() => ({ zoom: typeof map !== "undefined" && map ? Math.round(map.getZoom() * 10) / 10 : null, // eslint-disable-line no-undef
           moving: typeof map !== "undefined" && map ? map.isMoving() : null, section: window.BirgeShell && window.BirgeShell.section, // eslint-disable-line no-undef
           sheet: !!document.querySelector("#birge-screen:not([hidden])") }));
-        check(`${tag} «На карте»: карта у дела (масштаб двора), лист остаётся`, flown && (phone || cam.sheet), cam);
+        check(`${tag} «На карте»: карта у дела (масштаб двора), ${side ? "лист слева остаётся" : "экран закрыт — видна карта"}`,
+          flown && cam.sheet === side, { side, ...cam });
         if (w === 1366 || phone) await shot(page, `${tag}_detail_on_map`);
       }
       // Сделано вместе: карточка с фото «после» (демо-иллюстрация)
