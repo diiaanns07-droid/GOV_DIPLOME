@@ -124,6 +124,14 @@ SERVICES = {
     "parking": {"ru": "Служба парковок", "kk": "Тұрақ қызметі"},
     "akimat": {"ru": "Аппарат акима района", "kk": "Аудан әкімінің аппараты"},
 }
+
+
+def is_service(value) -> bool:
+    """id службы из справочника. Только строка: список или словарь вместо id (запрос, файл мира) — не служба, а не
+    TypeError «unhashable» и 500 (R15-S49)."""
+    return isinstance(value, str) and value in SERVICES
+
+
 # Ключ — категория или «категория/уточнение»; уточнение, которого нет, идёт в службу категории.
 SERVICE_RULES = {
     "roads": "road", "roads/traffic_light_broken": "traffic", "roads/traffic_light_timing": "traffic",
@@ -161,12 +169,38 @@ def deadline(record: dict, now: datetime) -> dict | None:
     return workdays.deadline_info(rec.parse_iso(record.get("due_at")), now, done=answered)
 
 
+# Раунд 15 (CONTRACT §5.1): ведущая служба, выбранная явно — передача, совместное исполнение (части служб), демо-мир.
+# «table» (служба по таблице на момент подачи) явной не считается: такая жалоба следует за таблицей R08, как в FINAL-4.
+EXPLICIT_SERVICE_SOURCES = frozenset({"staff", "handoff", "joint", "world"})
+
+
+def explicit_service(record: dict) -> str | None:
+    """id явной ведущей службы (часть role=lead или service с явным источником) или None — «по таблице»."""
+    for part in record.get("services") or []:
+        if isinstance(part, dict) and part.get("role") == "lead" and is_service(part.get("service")):
+            return part["service"]
+    if record.get("service_source") in EXPLICIT_SERVICE_SOURCES and is_service(record.get("service")):
+        return record["service"]
+    return None
+
+
+def passport_assignee(record: dict, assignee_lookup=None) -> dict:
+    """Кто отвечает (ведущая служба) — то же, что «Передано: …» в паспорте: {assignee_id, assignee, assignee_kk,
+    assignee_custom, assignee_source}. Для R17 и совместного исполнения (joint.py)."""
+    return _assignee(record, assignee_lookup)
+
+
 def _assignee(record: dict, assignee_lookup) -> dict:
-    """Кто отвечает: выбор сотрудника (id из SERVICES) → таблица R08 с правками акимата → таблица R09."""
+    """Кто отвечает: явная ведущая служба (передача, совместное исполнение, демо-мир) → выбор сотрудника (id из
+    SERVICES) → таблица R08 с правками акимата → таблица R09."""
     passport = record.get("passport") or {}
     category, subtopic = record.get("category"), record.get("subtopic")
     sid, names, source = passport.get("assignee_id"), None, None
-    if sid in SERVICES:
+    explicit = explicit_service(record)
+    if explicit:
+        sid = explicit
+        source = "world" if record.get("service_source") == "world" and not passport.get("assignee_id") else "staff"
+    elif is_service(sid):
         source = "staff"
     elif passport.get("assignee"):                        # свободный текст старых записей
         sid, names, source = None, {"ru": passport["assignee"], "name_edited": True}, "staff"
@@ -236,6 +270,8 @@ def history(record: dict) -> list[dict]:
     for update in record.get("updates") or []:
         if update.get("kind") in ("fixed", "reopened", "passport", "note"):
             out.append({"at": update["at"], "kind": update["kind"], "text": update.get("text")})
+        elif update.get("kind") in JOINT_UPDATE_KINDS:
+            out.append(_joint_event(update))
     resolution = record.get("resolution") or {}
     if resolution.get("verified_at"):
         out.append({"at": resolution["verified_at"], "kind": "verified"})
@@ -244,6 +280,23 @@ def history(record: dict) -> list[dict]:
     group = {"created": 0, "status": 1, "verified": 3}
     out.sort(key=lambda e: (e["at"], group.get(e["kind"], 2)))
     return out
+
+
+# Раунд 15: строки ленты о службах (joint_store): «Передано: Водоканал», «Работают 2 службы», «Водоканал — сделано».
+# Без причин передач и ролей сотрудников — их нет в самих строках.
+JOINT_UPDATE_KINDS = ("handoff", "services", "part")
+
+
+def _joint_event(update: dict) -> dict:
+    event = {"at": update["at"], "kind": update["kind"], "text": update.get("text")}
+    if update["kind"] in ("handoff", "part") and is_service(update.get("service")):
+        event["service"] = update["service"]
+    if update["kind"] == "part" and update.get("status"):
+        event["part_status"] = update["status"]
+    if update["kind"] == "services":
+        event["services"] = [sid for sid in update.get("services") or [] if is_service(sid)]
+        event["added"] = [sid for sid in update.get("added") or [] if is_service(sid)]
+    return event
 
 
 # ---------------------------------------------------------------- «что изменилось с вашим участием» (волна 2, п. 10)
@@ -262,6 +315,8 @@ def _events(record: dict) -> list[dict]:
     for update in record.get("updates") or []:
         if update.get("kind") in ("note", "passport"):
             out.append({"at": update["at"], "kind": update["kind"], "text": update.get("text")})
+        elif update.get("kind") in JOINT_UPDATE_KINDS:
+            out.append(_joint_event(update))
     resolution = record.get("resolution") or {}
     if resolution.get("verified_at"):
         out.append({"at": resolution["verified_at"], "kind": "verified"})
@@ -299,6 +354,10 @@ def changes(records: list[dict], since: str | None) -> dict:
 # ---------------------------------------------------------------- акимат: «Обращения» (R11 IA_WAVE2 §2.5)
 INBOX_TABS = ("new", "in_progress", "waiting_check", "overdue", "reopened")
 _TAB_ORDER = ("reopened", "overdue", "waiting_check", "new", "in_progress")   # срочнее — раньше
+# «Ждут проверки» — ремонты, о которых служба сообщила за последние 14 дней (раунд 15, предложение R02): дольше жители
+# уже не проверяют, и вкладка не копит сотни строк (на демо-мире — 436). Проверить ремонт житель может и позже —
+# «Проблема осталась» вернёт жалобу во «Вернули жители». Карта R07 держит «исправлено» 7 дней, «Обращения» — 14.
+WAITING_CHECK_DAYS = 14
 
 
 def inbox_tab(record: dict, now: datetime) -> str | None:
@@ -316,7 +375,9 @@ def inbox_tab(record: dict, now: datetime) -> str | None:
             return "overdue"
         return "new" if status == "new" else "in_progress"
     if status == "fixed" and state == "reported":
-        return "waiting_check"
+        reported = rec.parse_iso((record.get("resolution") or {}).get("reported_at"))
+        if reported is None or now - reported <= timedelta(days=WAITING_CHECK_DAYS):
+            return "waiting_check"
     return None
 
 

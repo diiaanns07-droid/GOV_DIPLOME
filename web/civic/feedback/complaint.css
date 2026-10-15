@@ -51,15 +51,17 @@ body:has(.r07-card) .bc-fab { display: none; }
 body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-strong, rgba(255, 255, 255, .86));
   /* серый текст — затемнённый стеклянный: #4b5752 на 86 % над оранжевой заливкой карты даёт 4,37 : 1 (< 4,5), --glass-text-2 — 5,3 */
   --c-text-2: var(--glass-text-2, #3f4a46); }
-/* Запасной вид — как у всего стекла: непрозрачный белый (меньше прозрачности, стекло выключено, нет backdrop-filter). */
+/* Запасной вид — как у всего стекла: непрозрачный белый (меньше прозрачности, стекло выключено, нет backdrop-filter).
+   html в селекторе: правило оболочки R01 «body.civic-mode[data-birge-layout=ref] .bk-glass.bk-glass--strong» той же силы
+   и подключено позже — без html оно возвращало 86 % и при «уменьшить прозрачность» (glass_r09, 15 окт). */
 html.bk-glass-off body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
 @media (prefers-reduced-transparency: reduce) {
-  body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
+  html body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
 }
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
+  html body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
 }
-@media print { body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: #fff; } }
+@media print { html body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: #fff; } }
 :where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff); border-radius: var(--r-glass, 24px);
                              box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18)); }
 /* Шапка «Закрыть» прилипает: прокрученные карточки под ней размыты тем же стеклом, а не просвечивают текстом. */
@@ -77,6 +79,13 @@ html.bk-glass-off body.civic-mode .bc-panel.bk-glass.bk-glass--strong { backgrou
    одна над другой (дизайн-марафон). После закрытия — как была. */
 html.bc-mine-open body.civic-mode .civic-panel,
 html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
+/* VISUAL_BRIEF §3 (15 окт): на телефоне шторка мастера «Где проблема?» не ложится поверх шторки «Рядом с вами» — пока
+   открыт мастер или «Мои обращения», шторка «Рядом» (R09 mountNear в #birge-near оболочки R01) не видна и не нажимается;
+   закрыли — она на месте, с тем же списком (без нового запроса). */
+html.bc-open .bc-near, html.bc-mine-open .bc-near { visibility: hidden; }
+/* Ноутбук: ряд чипов карты оболочки («Все · Остановки · Дворы …», #birge-chips R01) лежит под карточкой R09 слева — пока
+   открыты «Мои обращения» или мастер, он не виден (тёмный «Все» просвечивал по краю стекла: контраст 1,06, glass_r09). */
+html.bc-mine-open body.civic-mode #birge-chips, html.bc-open body.civic-mode #birge-chips { visibility: hidden; }
 .bk-glass-off .bc-panel.bk-glass .bc-head { background: var(--glass-solid, #fff); -webkit-backdrop-filter: none; backdrop-filter: none; }
 @media print { .bc-panel.bk-glass .bc-head { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; } }
 .bc-handle { display: none; }
@@ -423,11 +432,10 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 
 /* Успех: круг и галочка рисуются линией акцента (зелёный в Birge — только «исправлено»). */
 .bc-success { display: flex; justify-content: center; margin: 8px 0 0; }
-/* Иллюстрация ill-done ui-kit (.bk-ill, 96 / 80 px), линия акцента 2 px: сначала круг, затем галочка (R11 9.3 d).
-   Правило 6 Linear: каждое движение 150–250 мс (--t-base / --t-slow) — круг 250, галочка 200 сразу после него. */
-.bc-success__mark.bk-ill { width: 96px; height: 96px; fill: none; stroke: var(--c-brand, #152c26); stroke-width: .5;
+/* Отметка «отправлено» — 48 px, линия 1,5 как у иконок набора R11 (поправка П1: маленькая монохромная иконка, не рисунок):
+   сначала круг, затем галочка. Правило 6 Linear: каждое движение 150–250 мс (--t-base / --t-slow). */
+.bc-success__mark { width: 48px; height: 48px; fill: none; stroke: var(--c-brand, #152c26); stroke-width: 1.5;
   stroke-linecap: round; stroke-linejoin: round; animation: bc-success-in var(--t-slow, 250ms) var(--ease, cubic-bezier(.22, 1, .36, 1)) backwards; }
-@media (max-width: 1023px) { .bc-success__mark.bk-ill { width: 80px; height: 80px; stroke-width: .6; } }
 .bc-success__mark .bc-success__circle { stroke-dasharray: 54; stroke-dashoffset: 54; transform: rotate(-90deg); transform-origin: 12px 12px;
                       animation: bc-draw var(--t-slow, 250ms) ease-out 80ms forwards; }
 .bc-success__mark .bc-success__tick { stroke-dasharray: 12; stroke-dashoffset: 12; animation: bc-draw var(--t-base, 200ms) ease-out 330ms forwards; }
@@ -481,16 +489,16 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 
 /* «Проверено жителями»: точка статуса этой карточки мягко «откликается» один раз. */
 @keyframes bc-pop { 0% { transform: scale(.4); } 60% { transform: scale(1.4); } 100% { transform: scale(1); } }
-@keyframes bc-glow { from { box-shadow: 0 0 0 0 rgba(99, 153, 34, .5); } to { box-shadow: 0 0 0 12px rgba(99, 153, 34, 0); } }
-/* Правило 6 Linear: 250 мс, как bk-status-pop ui-kit; свечение — следом, тоже 250 мс, круглое (значок 14 — круг). */
+/* П1: без свечения — только короткий «отклик» самой точки статуса. */
+/* Правило 6 Linear: 250 мс, как bk-status-pop ui-kit (значок 14 — круг). */
 .bc-mine__card--verified-now .bc-mine__status .bk-status::before { border-radius: 50%;
-  animation: bc-pop var(--t-slow, 250ms) cubic-bezier(.34, 1.56, .64, 1), bc-glow var(--t-slow, 250ms) ease-out 150ms; }
+  animation: bc-pop var(--t-slow, 250ms) cubic-bezier(.34, 1.56, .64, 1); }
 
-/* Пусто / нет связи / нужен вход: иллюстрация ui-kit .bk-ill (96 / 80 px, стили ui-kit). Старый ui-kit без иллюстраций —
-   крупный линейный значок в мягком круге — как пустые состояния iOS. */
+/* Пусто / нет связи / нужен вход (поправка П1): одна монохромная иконка набора R11 48 px той же толщины линий,
+   без кругов-подложек и рисунков; ниже — короткий текст и одна кнопка. */
 .bc-panel .bk-empty > .ic, .bc-panel .bk-error > .ic, .bc-inbox .bk-empty > .ic, .bc-inbox .bk-error > .ic {
-  box-sizing: border-box; width: 72px; height: 72px; padding: 20px; margin-bottom: 4px; border-radius: 50%;
-  background: var(--c-fill, #eff1f2); color: var(--c-text-2, #5b6a64); stroke-width: 1.6; }
+  width: 48px; height: 48px; margin-bottom: 4px; color: var(--c-text-3, #7E8A85); stroke-width: 1.5; }
+.bc-panel .bk-error > .ic, .bc-inbox .bk-error > .ic { color: var(--c-text-2, #4B5752); }
 
 /* Нажатие даёт отклик — лёгкое сжатие (чек-лист №10). */
 /* Свойство scale, а не transform: своё transform элемента (выезд, сдвиг) не сбивается. */
@@ -567,3 +575,90 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-near__skel { min-height: 46px; }
 .bc-near__skel-cnt { display: block; width: 34px; height: 26px; border-radius: 8px; flex: none; }
 .bc-near__skel-line { display: block; width: 60%; height: 12px; border-radius: 6px; }
+
+/* ---------------------------------------------------------------- раунд 15: обращение для нескольких служб (§5.1)
+   Карточка сотрудника — блок «Службы» над главной кнопкой; «Обращения» — части служб под строкой; житель — строка
+   «Работают 2 службы: …» в статусе карточки. Статус — всегда значок ui-kit + слово (правило 4 VISUAL_BRIEF). */
+.bc-joint { gap: 8px; }
+.bc-joint__parts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.bc-joint__part { display: flex; flex-direction: column; gap: 8px; padding: 8px 12px 12px; border-radius: var(--r-m, 10px);
+                  background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px var(--c-line, rgba(18, 26, 23, .08)); }
+.bc-joint__head { display: flex; align-items: center; gap: 8px; min-height: 28px; flex-wrap: wrap; }
+.bc-joint__name { font-weight: var(--fw-semi, 600); overflow-wrap: anywhere; }
+.bc-joint__role { font-size: var(--fs-caption, 13px); }
+.bc-joint__note { margin: 0; overflow-wrap: anywhere; }
+.bc-joint__seg { display: flex; width: 100%; }
+.bc-joint__seg > button { flex: 1 1 0; min-width: 0; min-height: 36px; padding: 4px 8px; font: inherit;
+                          font-size: var(--fs-small, 14px); line-height: 1.2; white-space: normal; overflow-wrap: anywhere; }
+.bc-joint__seg > button::first-letter { text-transform: uppercase; }   /* «Ждёт · В работе · Сделано»; в фразах — строчные */
+/* Запасной вид без ui-kit — тот же сегмент .bk-seg: серая дорожка, выбранное — белое. */
+:where(.bc-joint__seg) { padding: 3px; border-radius: var(--r-m, 10px); background: var(--c-fill, #eff1f2); }
+:where(.bc-joint__seg > button) { border: 0; border-radius: 7px; background: transparent; color: var(--c-ink, #121A17); cursor: pointer; }
+:where(.bc-joint__seg > button[aria-pressed="true"]) { background: var(--c-surface, #fff); font-weight: 600;
+                                                         box-shadow: 0 1px 2px rgba(16, 24, 20, .12); }
+.bc-joint__seg > button:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 1px; }
+.bc-joint__seg > button:disabled { cursor: default; opacity: .6; }
+.bc-joint__remove { align-self: flex-start; }
+.bc-joint__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.bc-joint__actions .bk-btn { flex: 1 1 200px; min-height: 44px; justify-content: center; }
+.bc-joint__form { padding-top: 0; border-top: 0; }
+.bc-joint__formrow { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.bc-joint__reasons { flex-wrap: wrap; }
+.bc-joint__reasons .bk-chip { min-height: 44px; white-space: normal; text-align: left; }
+.bc-joint__waiting { color: var(--c-warn, #7a520f); }
+.bc-joint__history summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600;
+                             color: var(--c-brand, #152c26); }
+.bc-joint__history summary:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+.bc-joint__hlist { margin: 0; padding: 0 0 0 20px; display: flex; flex-direction: column; gap: 4px; overflow-wrap: anywhere; }
+.bc-joint__hroute { font-weight: 500; }
+/* Подсказка R04 «Похоже, нужны 2 службы» — тихая серая плашка, как баннер ui-kit (bk-banner--warn марафона, П1: без
+   новых цветов), не главная кнопка экрана. */
+.bc-joint-hint { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 12px; border-radius: var(--r-m, 10px);
+                 background: var(--c-fill, #eff1f2); color: var(--c-ink, #121A17); }
+.bc-joint-hint__title .ic { color: var(--c-text-2, #4B5752); }
+.bc-joint-hint__title { display: flex; align-items: flex-start; gap: 8px; margin: 0; font-weight: var(--fw-semi, 600); }
+.bc-joint-hint__title .ic { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+.bc-joint-hint__why { margin: 0 0 0 28px; }
+.bc-joint-hint__actions { display: flex; align-items: center; gap: 16px; margin-left: 28px; flex-wrap: wrap; }
+.bc-joint-hint__actions .bk-btn { min-height: 44px; }
+.bc-staff__field textarea { min-height: 64px; padding: 8px 12px; font: inherit; font-size: 16px; line-height: 1.4; resize: vertical;
+                            border: 1px solid transparent; border-radius: var(--r-m, 10px); background: var(--c-fill, #eff1f2); }
+.bc-staff__field textarea:focus { border-color: var(--c-focus, #2f7fd6); background: var(--c-surface, #fff); }
+.bc-staff__draft { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 44px; }
+.bc-staff__draft .ic { width: 18px; height: 18px; }
+.bc-staff__draft[hidden], .bc-staff__draft-note[hidden] { display: none; }
+.bc-staff__draft-note { margin: 0; }
+/* «Обращения»: части служб совместного обращения под строкой — чипы «значок · служба — статус», меню статуса части. */
+.bc-inbox__parts { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 8px; margin: 0; padding: 0 12px 8px 44px; }
+.bc-inbox__partwrap { position: relative; }
+.bc-inbox__part { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 12px; border: 0;
+                  border-radius: 999px; background: var(--c-fill, rgba(18, 26, 23, .06)); color: var(--c-ink, #121A17);
+                  font: inherit; font-size: var(--fs-caption, 13px); position: relative; }
+button.bc-inbox__part { cursor: pointer; }
+button.bc-inbox__part::after { content: ""; position: absolute; inset: -6px -2px; }   /* зона нажатия 44 */
+button.bc-inbox__part:hover { background: var(--c-fill-hover, rgba(18, 26, 23, .1)); }
+button.bc-inbox__part:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
+.bc-inbox__partmenu { top: 40px; left: 0; }
+.bc-inbox__menu-item[aria-checked="true"] { font-weight: var(--fw-semi, 600); }
+.bc-inbox__filter { margin: 0; }
+.bc-inbox__filter-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+.bc-inbox__filter-chip .ic { width: 16px; height: 16px; }
+@media (max-width: 720px) { .bc-inbox__parts { padding-left: 12px; } }
+/* Житель: «Работают 2 службы:» и по строке на службу (значок + служба — статус) — читается без звонка в акимат. */
+.bc-joint-line { display: flex; flex-direction: column; gap: 2px; }
+.bc-joint-line__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.bc-joint-line__part { display: flex; align-items: flex-start; gap: 8px; color: var(--c-ink, #121A17); }
+.bc-joint-line__part .bk-st-ic, .bc-joint-line__part .bc-sicon { flex: none; margin-top: 3px; }
+.bc-joint-line__text { min-width: 0; overflow-wrap: anywhere; }
+.bc-joint-line__state { color: var(--c-text-2, #4B5752); }
+@media (prefers-reduced-motion: reduce) { .bc-inbox__part, .bc-joint__seg > button { transition: none; } }
+/* Шторка «Рядом с вами»: «исправлено службой» — значок «галочка» набора R11 в плашке (П1: без глифов вне набора). */
+.bc-near .bk-hot__cnt .ic { width: 16px; height: 16px; stroke-width: 2.25; }
+/* Экран успеха: тихая ссылка «Мой двор» (R16) под кнопками — не вторая главная кнопка. */
+.bc-yard-link { display: inline-flex; align-items: center; gap: 8px; align-self: center; min-height: 44px; margin-top: 4px; }
+.bc-yard-link .ic { width: 18px; height: 18px; }
+/* Голосовой ввод (по желанию, п. 7): тихая кнопка под полем текста и строка состояния; нажата — «Остановить». */
+.bc-voice-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; }
+.bc-voice { min-height: 44px; }
+.bc-voice[aria-pressed="true"] { background: var(--c-fill-hover, rgba(18, 26, 23, .1)); font-weight: 600; }
+.bc-voice__status { flex: 1 1 200px; min-width: 0; }

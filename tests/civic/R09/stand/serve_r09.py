@@ -277,6 +277,9 @@ class Handler(BaseHTTPRequestHandler):
         body = self.rfile.read(length) if length else None
         path, query = parts.path, parse_qs(parts.query)
         stand = self.stand
+        if path == "/api/civic/v2/modules":
+            # Как шлюз R01: какие маршруты v2 готовы (экран сотрудника смотрит, есть ли «Черновик ответа» R04).
+            return self._send(200, {"modules": {}})
         if path == "/api/civic/v2/targets" and stand.geo is not None and stand.targets_on:
             return self._real("targets", lambda: stand.geo.targets(
                 float(query["lon"][0]), float(query["lat"][0]), (query.get("category") or [None])[0] or None))

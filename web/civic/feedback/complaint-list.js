@@ -8,6 +8,10 @@
  *   handle = BirgeComplaintList.mount(root, { api: {v2(method, path, body)}, lang, titleTag, openTarget(kind, id) })
  *     -> { destroy(), setLang(lang), refresh() }
  * Оболочка R01 отдаёт opts.api.v2 (CSRF сотрудника внутри); без неё — fetch на /api/civic/v2.
+ *
+ * Раунд 15: у совместного обращения под строкой — части служб («◐ Водоканал · ○ Дорожная служба»), статус части
+ * меняется прямо отсюда (меню «ждёт · в работе · сделано»). Фильтр одной службы — #complaints/service=<id> (ссылка
+ * из «Штаба ведомств» R17) или opts.service. Жалобы демо-мира R02 (world) — рабочие: на них идут сцены 7–9.
  */
 (function () {
   "use strict";
@@ -63,6 +67,48 @@
     };
   }
 
+  // Подпись вкладки. «Просрочено» у R09 — СРОК ПЕРВОГО ОТВЕТА (жалоба «Новое»), у R08/R17 — срок исправления: разные числа,
+  // поэтому и подписи разные (предложение R02 §3): «Ответ просрочен» / «Жауап мерзімі өтті».
+  function tabLabel(id) {
+    if (id === "overdue") { var label = t("inbox.tab.overdue_answer"); if (label) return label; }
+    return t("inbox.tab." + id);
+  }
+
+  // #complaints/service=water — «Обращения» одной службы (R17). Только id из справочника (буквы и _).
+  function serviceFromHash() {
+    var m = /[#/&?]service=([a-z_]{2,30})(?:$|[&/])/.exec(window.location.hash || "");
+    return m ? m[1] : null;
+  }
+  // #complaints/district=nura — «Обращения» района (те же числа, что «Нура · N» на карте и в «Картине дня»).
+  function districtFromHash() {
+    var m = /[#/&?]district=([a-z][a-z0-9_-]{1,39})(?:$|[&/])/.exec(window.location.hash || "");
+    return m ? m[1] : null;
+  }
+  // R17 «Штаб ведомств» → «Открыть в «Обращениях»» (INTEGRATION R17 §4): перед переходом в раздел кладёт
+  // sessionStorage["birge.inbox.filter"] = {service, ids} и шлёт на document событие "birge:inbox-filter" с тем же
+  // detail. Фильтр берём один раз (ключ удаляем): следующий заход в «Обращения» — снова все службы.
+  var FILTER_KEY = "birge.inbox.filter";
+  function cleanFilter(value) {
+    if (!value || typeof value !== "object") return null;
+    var service = typeof value.service === "string" && /^[a-z_]{2,30}$/.test(value.service) ? value.service : null;
+    var ids = (Array.isArray(value.ids) ? value.ids : []).filter(function (id) {
+      return typeof id === "string" && /^[A-Za-z0-9_-]{1,80}$/.test(id);
+    }).slice(0, 200);
+    return service || ids.length ? { service: service, ids: ids } : null;
+  }
+  function takeStoredFilter() {
+    var raw = null;
+    try { raw = window.sessionStorage.getItem(FILTER_KEY); window.sessionStorage.removeItem(FILTER_KEY); } catch (e) { return null; }
+    if (!raw) return null;
+    try { return cleanFilter(JSON.parse(raw)); } catch (e) { return null; }
+  }
+  // Название района: словарь R11 (district.<id>), иначе id как есть.
+  function districtLabel(id) {
+    var key = "district." + id;
+    var label = C().t(key);
+    return label && label !== key ? label : id;
+  }
+
   function deadlineNode(d) {
     if (!d || d.state === "answered") return null;
     if (d.state === "overdue") return h("span", { "class": "bc-deadline bc-deadline--danger" }, t("deadline.overdue", { n: d.overdue_working_days || 1 }));
@@ -75,17 +121,19 @@
   // и так есть в строке «Обращений»: «Взять в работу — <место>» (сразу) и «Отметить исправленным — <место>» (открывает
   // строку с формой «что сделали»). commands({ api }) → Promise<[{ id, title, hint, run() }]>; примеры (demo) не меняются.
   var pendingOpen = null;   // { key, fix } — какую строку открыть, когда список смонтируют / загрузят
+  // Пример, который нельзя менять: синтетика шага 2 демо («Хан Шатыр»). Жалобы демо-мира (world) — рабочие.
+  function readonly(c) { return !!(c && c.demo && !c.world); }
   function commands(opts) {
     opts = opts || {};
     var call = client(opts);
     var ids = function (g, statuses) {
-      return g.complaints.filter(function (c) { return !c.demo && statuses.indexOf(c.status) >= 0; }).map(function (c) { return c.id; });
+      return g.complaints.filter(function (c) { return !readonly(c) && statuses.indexOf(c.status) >= 0; }).map(function (c) { return c.id; });
     };
     return call("GET", "/complaints/inbox").then(function (res) {
       if (!res.ok) return [];
       var out = [];
       (res.data.items || []).forEach(function (g) {
-        if (g.demo) return;
+        if (g.demo && !g.world) return;
         var place = C().targetLabel(g.target), hint = C().categoryLabel(g.category) + " · " + t("inbox.people", { n: g.people });
         var take = ids(g, ["new", "accepted"]), fix = ids(g, ["new", "accepted", "in_progress"]);
         if (take.length) out.push({ id: "take:" + g.key, title: t("heat.take") + " — " + place, hint: hint, run: function () {
@@ -109,7 +157,12 @@
     var box = h("section", { "class": "bc-inbox", "aria-labelledby": "bc-inbox-title" });
     root.appendChild(box);
     // tab: "all" — все группы по статусу (как в Linear); или одна вкладка-фильтр. menu — ключ строки с открытым меню статуса.
-    var state = { data: null, error: false, tab: "all", open: null, openFix: false, menu: null, slow: false, hover: null };
+    var asked = takeStoredFilter();
+    var state = { data: null, error: false, tab: "all", open: null, openFix: false, menu: null, slow: false, hover: null,
+                  service: opts.service || serviceFromHash() || (asked && asked.service) || null,
+                  district: opts.district || districtFromHash(), partMenu: null };
+    // Одно обращение из табло R17 (строка «Совместные») — после загрузки сразу открыть его строку.
+    var askedId = asked && asked.ids.length === 1 ? asked.ids[0] : null;
     var staffHandle = null;
     var alive = true;
 
@@ -127,7 +180,7 @@
         render();
         setTimeout(function () { if (alive && !state.data && !state.error) { state.slow = true; render(); } }, 150);
       }
-      return call("GET", "/complaints/inbox").then(function (res) {
+      return call("GET", inboxPath()).then(function (res) {
         if (!alive) return;
         // 401/403 — не вошёл сотрудник (R11 разбор FINAL-3): это не «нет связи», а «войдите»
         if (!res.ok) {
@@ -137,6 +190,7 @@
         state.enter = !state.data;   // первые данные — строки мягко появляются; обновление на месте — без движения
         state.data = res.data;
         takePending();
+        openAsked();
         render();
       });
     }
@@ -144,6 +198,147 @@
     function title() {
       var tag = opts.titleTag || "h2";
       return h(tag, { "class": "bc-inbox__title", id: "bc-inbox-title" }, t("shell.nav.inbox"));
+    }
+
+    // Фильтр одной службы (R17 «Штаб ведомств» → строка службы): чип «Служба: Водоканал ×» над вкладками.
+    function inboxPath() {
+      var q = [];
+      if (state.service) q.push("service=" + encodeURIComponent(state.service));
+      if (state.district) q.push("district=" + encodeURIComponent(state.district));
+      return "/complaints/inbox" + (q.length ? "?" + q.join("&") : "");
+    }
+    // Чипы фильтров над вкладками: «Служба: Водоканал ×» (R17), «Район: Нура ×» (карта R07, «Картина дня» R08).
+    function serviceFilter() {
+      if (!state.service && !state.district) return null;
+      var chip = function (key, label, clearLabel) {
+        return h("button", { "class": "bk-chip bc-inbox__filter-chip", type: "button", "aria-pressed": "true", "data-filter": key,
+                             "aria-label": clearLabel,
+                             onclick: function () {
+                               state[key] = null;
+                               if (new RegExp(key + "=").test(window.location.hash)) {
+                                 // Раздел оставляем тем же (#inbox оболочки R01 или прежний #complaints), снимаем только фильтр.
+                                 var base = (window.location.hash || "").split("/")[0] || "#complaints";
+                                 try { history.replaceState(null, "", window.location.pathname + window.location.search + base); } catch (e) { /* */ }
+                               }
+                               state.data = null; load();
+                             } },
+          [h("span", {}, label), C().icon ? C().icon("close") : null]);
+      };
+      return h("div", { "class": "bk-chips bc-inbox__filter" }, [
+        state.service ? chip("service", t("inbox.filter.service", { service: t("service." + state.service) || state.service }),
+                             t("inbox.filter.clear")) : null,
+        state.district ? chip("district", t("inbox.filter.district", { district: districtLabel(state.district) }),
+                              t("inbox.filter.clear_district")) : null]);
+    }
+    function onHash() {
+      var sid = serviceFromHash(), did = districtFromHash();
+      if ((sid && sid !== state.service) || (did && did !== state.district)) {
+        state.service = sid || state.service; state.district = did || state.district; state.data = null; load();
+      }
+    }
+    // Фильтр R17 событием (список уже смонтирован): служба — перезагрузить «Обращения» этой службы; одно обращение — открыть.
+    function onFilter(e) {
+      try { window.sessionStorage.removeItem(FILTER_KEY); } catch (err) { /* без хранилища */ }
+      var f = cleanFilter(e && e.detail);
+      if (!f) return;
+      askedId = f.ids.length === 1 ? f.ids[0] : null;
+      if (f.service && f.service !== state.service) { state.service = f.service; state.data = null; load(); return; }
+      if (openAsked()) render();
+    }
+    function openAsked() {
+      if (!askedId || !state.data) return false;
+      var want = askedId, found = null;
+      (state.data.items || []).some(function (g) {
+        if ((g.complaints || []).some(function (c) { return c.id === want; })) { found = g; return true; }
+        return false;
+      });
+      if (!found) return false;
+      askedId = null;
+      state.tab = "all"; state.menu = null; state.open = found.key; state.openFix = false;
+      return true;
+    }
+
+    // Части служб совместного обращения — под строкой: значок статуса · служба; нажатие — меню статуса части.
+    function partsLine(group) {
+      if (!group.joint || !(group.services || []).length) return null;
+      var main = group.complaints[0];
+      var editable = main && !readonly(main) && ["new", "accepted", "in_progress"].indexOf(main.status) >= 0;
+      return h("ul", { "class": "bc-inbox__parts", "aria-label": t("joint.title") }, group.services.map(function (part) {
+        var label = (t("service." + part.service) || part.service) + " — " + t("joint.part." + part.status);
+        var key = group.key + "|" + part.service;
+        var open = state.partMenu === key;
+        var chip = editable
+          ? h("button", { "class": "bc-inbox__part", type: "button", "data-service": part.service, "data-status": part.status,
+                          "aria-haspopup": "menu", "aria-expanded": open ? "true" : "false",
+                          "aria-label": t("joint.part.menu", { service: t("service." + part.service) || part.service }) + ": " + t("joint.part." + part.status),
+                          onclick: function (e) { e.stopPropagation(); state.partMenu = open ? null : key; state.menu = null; render(); } },
+              [partIcon(part.status), h("span", {}, label)])
+          : h("span", { "class": "bc-inbox__part", "data-service": part.service, "data-status": part.status },
+              [partIcon(part.status), h("span", {}, label)]);
+        var menu = null;
+        if (open) {
+          menu = h("div", { "class": "bk-menu bc-inbox__menu bc-inbox__partmenu", role: "menu",
+                            "aria-label": t("joint.part.menu", { service: t("service." + part.service) || part.service }) },
+            ["todo", "in_progress", "done"].map(function (st) {
+              return h("button", { "class": "bk-menu__item bc-inbox__menu-item", type: "button", role: "menuitem",
+                                   "aria-checked": part.status === st ? "true" : "false",
+                                   onclick: function (e) { e.stopPropagation(); setPart(group, part, st); } },
+                [partIcon(st), h("span", {}, t("joint.part." + st))]);
+            }));
+        }
+        return h("li", { "class": "bc-inbox__partwrap" }, [chip, menu]);
+      }));
+    }
+
+    // Карточка сотрудника изменила службы (подсказка R04, совместное исполнение, передача, часть) — строка частей под
+    // строкой обновляется на месте: список не перерисовывается, открытая карточка и её форма не прыгают.
+    function syncParts(group, complaint) {
+      var j = complaint && complaint.joint;
+      if (!j || !j.services) return;
+      group.services = j.services.map(function (p) { return { service: p.service, role: p.role, status: p.status }; });
+      group.joint = group.services.length > 1;
+      if (group.complaints[0] && complaint.status) group.complaints[0].status = complaint.status;
+      var li = box.querySelector('.bc-inbox__item[data-key="' + String(group.key).replace(/"/g, "") + '"]');
+      if (!li) return;
+      var old = li.querySelector(":scope > .bc-inbox__parts");
+      var fresh = partsLine(group);
+      if (old && fresh) li.replaceChild(fresh, old);
+      else if (old) li.removeChild(old);
+      else if (fresh) li.insertBefore(fresh, li.querySelector(":scope > .bc-inbox__detail"));
+    }
+
+    // Статус части из строки: сразу на экране (оптимистично), запрос — следом; ошибка — как было и «Повторить».
+    function setPart(group, part, status) {
+      state.partMenu = null;
+      if (part.status === status) { render(); return; }
+      // «Сделано» — с обязательной строкой «что сделала служба»: открываем карточку с формой заметки этой службы.
+      if (status === "done") {
+        state.open = group.key; state.openPart = part.service; render();
+        var note = box.querySelector(".bc-inbox__item--open [name=part_note]");
+        if (note) note.focus();
+        return;
+      }
+      var before = JSON.stringify(state.data);
+      var was = part.status;
+      part.status = status;
+      state.flash = group.key;
+      render();
+      call("POST", "/complaints/" + encodeURIComponent(group.complaints[0].id) + "/part",
+           { service: part.service, status: status, expected: was }).then(function (r) {
+        if (!alive) return;
+        state.flash = null;
+        if (!r.ok) {
+          state.data = JSON.parse(before); render();
+          notify(t("heat.action_failed"), true, function () {
+            var again = (state.data.items || []).filter(function (g) { return g.key === group.key; })[0];
+            var p2 = again && (again.services || []).filter(function (p) { return p.service === part.service; })[0];
+            if (again && p2) setPart(again, p2, status);
+          });
+          return;
+        }
+        notify(t("joint.part.saved", { service: t("service." + part.service) || part.service, status: t("joint.part." + status) }));
+        load(true);
+      });
     }
 
     // Число у вкладки; ноль скрыт стилем (data-zero) — видно, где есть работа (R11 INTEGRATION 11.6).
@@ -164,7 +359,7 @@
                                       "aria-selected": state.tab === id ? "true" : "false",
                                       "aria-pressed": state.tab === id ? "true" : "false",
                                       onclick: function () { state.tab = id; state.open = null; state.menu = null; closeStaff(); render(); } },
-          [h("span", {}, id === "all" ? t("staff.cabinet.tab.all") : t("inbox.tab." + id)), countBadge(id === "all" ? total : counts[id])]));
+          [h("span", {}, id === "all" ? t("staff.cabinet.tab.all") : tabLabel(id)), countBadge(id === "all" ? total : counts[id])]));
       });
       return bar;
     }
@@ -179,10 +374,11 @@
       return { "new": "new", waiting_check: "reported_fixed" }[tab] || "in_progress";
     }
     function idsWith(group, statuses) {
-      return group.complaints.filter(function (c) { return !c.demo && statuses.indexOf(c.status) >= 0; })
+      return group.complaints.filter(function (c) { return !readonly(c) && statuses.indexOf(c.status) >= 0; })
         .map(function (c) { return c.id; });
     }
     function sicon(status) { return C().statusIcon ? C().statusIcon(status) : null; }
+    function partIcon(status) { return sicon({ todo: "new", in_progress: "in_progress", done: "reported_fixed" }[status] || "new"); }
 
     // Смена статуса прямо из строки (правило 5 эталона, как в Linear): значок статуса — кнопка, меню из того, что можно
     // сделать сейчас: «Взять в работу» (сразу, с мгновенным откликом) и «Отметить исправленным» (форма в строке).
@@ -241,9 +437,12 @@
         C().icon ? C().icon("chevron-right") : null]);
       var li = h("li", { "class": "bc-inbox__item" + (expanded ? " bc-inbox__item--open" : "") +
                                   (state.flash === group.key ? " bc-inbox__item--flash" : ""),
-                         "data-demo": group.demo ? "true" : null, "data-key": group.key, "data-target": (group.target || {}).id || null },
+                         "data-demo": group.demo ? "true" : null, "data-world": group.world ? "true" : null,
+                         "data-key": group.key, "data-target": (group.target || {}).id || null },
         h("div", { "class": "bk-lrow bc-inbox__line" + (state.hover && group.target && state.hover === group.target.id ? " is-hover" : "") },
           [statusControl(group), head]));
+      var partsNode = partsLine(group);
+      if (partsNode) li.appendChild(partsNode);
       if (expanded) {
         var detail = h("div", { "class": "bc-inbox__detail" });
         if (typeof opts.openTarget === "function" && group.target && group.target.id) {
@@ -258,11 +457,12 @@
         var holder = h("div", { "class": "bc-inbox__staff" });
         detail.appendChild(holder);
         li.appendChild(detail);
-        if (main && !main.demo && window.BirgeComplaintStaff) {
+        if (main && !readonly(main) && window.BirgeComplaintStaff) {
           staffHandle = window.BirgeComplaintStaff.mount(holder, { complaintId: main.id, csrf: csrfToken, openFix: state.openFix,
-            onChange: function () { refreshCounts(); } });
-          state.openFix = false;
-        } else if (main && main.demo) {
+            openPart: state.openPart || null,
+            onChange: function (complaint) { syncParts(group, complaint); refreshCounts(); } });
+          state.openFix = false; state.openPart = null;
+        } else if (main && readonly(main)) {
           // Примеры не меняются (как в карточке R07: «Это пример: статус примеров не меняется»).
           holder.appendChild(h("p", { "class": "bc-meta" }, t("heat.example_readonly")));
         }
@@ -369,7 +569,7 @@
 
     // После действия сотрудника обновляем числа во вкладках, не закрывая открытую карточку.
     function refreshCounts() {
-      call("GET", "/complaints/inbox").then(function (res) {
+      call("GET", inboxPath()).then(function (res) {
         if (!alive || !res.ok) return;
         state.data.counts = res.data.counts;
         box.querySelectorAll(".bc-inbox__tab").forEach(function (b) {
@@ -425,6 +625,8 @@
           h("span", { "class": "bc-loading__text" }, t("mine.loading"))]));
         return;
       }
+      var filter = serviceFilter();
+      if (filter) box.appendChild(filter);
       box.appendChild(tabs());
       box.appendChild(h("p", { "class": "bc-inbox__note bc-sr", role: "status" }));
       var items = (state.data.items || []).filter(function (g) { return state.tab === "all" || g.tab === state.tab; });
@@ -439,15 +641,15 @@
         if (!list.length) return;
         var gid = "bc-inbox-g-" + tab;
         groups.appendChild(h("section", { "class": "bc-inbox__group", "data-group": tab, "aria-labelledby": gid }, [
-          h("h3", { "class": "bk-lgroup bc-inbox__ghead", id: gid }, [sicon(tabStatus(tab)), h("span", {}, t("inbox.tab." + tab)),
+          h("h3", { "class": "bk-lgroup bc-inbox__ghead", id: gid }, [sicon(tabStatus(tab)), h("span", {}, tabLabel(tab)),
             h("span", { "class": "bk-lgroup__count bc-inbox__gcount" }, String(list.length))]),
           h("ul", { "class": "bk-llist bc-inbox__list" }, list.map(row))]));
       });
       box.appendChild(groups);
       state.enter = false;
       if (items.some(function (g) { return g.demo; })) box.appendChild(h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint")));
-      if (state.menu) {
-        var first = box.querySelector(".bc-inbox__menu .bc-inbox__menu-item");
+      if (state.menu || state.partMenu) {
+        var first = box.querySelector(".bc-inbox__menu .bc-inbox__menu-item[aria-checked=false], .bc-inbox__menu .bc-inbox__menu-item");
         if (first) first.focus();
       }
     }
@@ -461,6 +663,12 @@
         if (back) back.focus();
         e.preventDefault(); return;
       }
+      if (e.key === "Escape" && state.partMenu) {
+        var service = state.partMenu.split("|").pop(); state.partMenu = null; render();
+        var chip = box.querySelector('.bc-inbox__part[data-service="' + service.replace(/"/g, "") + '"]');
+        if (chip) chip.focus();
+        e.preventDefault(); return;
+      }
       if (!row || e.altKey || e.ctrlKey || e.metaKey) return;
       var down = e.key === "ArrowDown" || e.key === "j" || e.key === "J";
       var up = e.key === "ArrowUp" || e.key === "k" || e.key === "K";
@@ -472,12 +680,15 @@
     }
     function onOutside(e) {
       if (state.menu && !(e.target.closest && e.target.closest(".bc-inbox__status-wrap"))) { state.menu = null; render(); }
+      if (state.partMenu && !(e.target.closest && e.target.closest(".bc-inbox__partwrap"))) { state.partMenu = null; render(); }
     }
     box.addEventListener("keydown", onKey);
     document.addEventListener("click", onOutside);
     window.addEventListener("birge:target-hover", onMapHover);
     window.addEventListener("birge:inbox-open", onOpenRequest);
     window.addEventListener("birge:inbox-changed", onChanged);
+    window.addEventListener("hashchange", onHash);
+    document.addEventListener("birge:inbox-filter", onFilter);
 
     // Язык: оболочка зовёт setLang(lang); словарь R11 грузится асинхронно и потом шлёт "birge:lang" — перерисуем и тогда.
     function onLang() { if (alive) render(); }
@@ -490,6 +701,8 @@
         alive = false; closeStaff(); window.removeEventListener("birge:lang", onLang);
         document.removeEventListener("click", onOutside); window.removeEventListener("birge:target-hover", onMapHover);
         window.removeEventListener("birge:inbox-open", onOpenRequest); window.removeEventListener("birge:inbox-changed", onChanged);
+        window.removeEventListener("hashchange", onHash);
+        document.removeEventListener("birge:inbox-filter", onFilter);
         if (box.parentNode) box.parentNode.removeChild(box);
       }
     };

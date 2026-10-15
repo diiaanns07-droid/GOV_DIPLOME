@@ -12,7 +12,10 @@ from datetime import datetime, timedelta, timezone
 from .. import text as textutil
 from . import categories, workdays
 
-SCHEMA = "civic-complaint-v2"
+# v2.1 (раунд 15, CONTRACT §5.1): + service, services[], handoffs[], route_hint. Записи v2 читаются как есть —
+# пустые части = одна часть ведущей службы (joint.parts), миграция ничего не теряет (migrate_v21).
+SCHEMA = "civic-complaint-v2.1"
+SCHEMA_V2 = "civic-complaint-v2"
 ASTANA_TZ = timezone(timedelta(hours=5))
 # Граница Астаны с запасом (та же, что в v1 ASTANA_BBOX): lon_min, lat_min, lon_max, lat_max.
 ASTANA_BBOX = (70.9, 50.8, 72.0, 51.5)

@@ -405,18 +405,14 @@
     return svg;
   }
 
-  // Линейная иллюстрация пустого состояния / ошибки из ui-kit R11 (символы ill-*: list | map | search | done | offline |
-  // idea | question | staff; 96 px, на телефоне 80). Старый ui-kit без иллюстраций — значок ui-kit (fallback) в круге.
+  // Пустое состояние / ошибка (поправка владельца П1, 15 окт: «без ИИ-слопа»): одна маленькая монохромная иконка набора
+  // R11 (48 px, та же толщина линий) + короткий текст + одна кнопка. Больших рисованных иллюстраций (ill-*) больше нет.
+  // name — прежний вид иллюстрации (offline | list | done | staff …), fallback — иконка набора R11 для него.
+  var STATE_ICON = { offline: "wifi-off", list: "list", done: "check", staff: "user", search: "search", map: "pin",
+                     idea: "bulb", question: "message" };
   function illustration(name, fallback) {
-    var kit = window.BirgeUI;
-    if (!kit || typeof kit.illustration !== "function") return icon(fallback || "list");
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("class", "bk-ill");
-    svg.setAttribute("aria-hidden", "true");
-    svg.setAttribute("focusable", "false");
-    var use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-    use.setAttribute("href", (kit.SPRITE || "/civic/ui-kit/icons.svg") + "#ill-" + name);
-    svg.appendChild(use);
+    var svg = icon(STATE_ICON[name] || fallback || "list");
+    svg.setAttribute("class", "ic ic--48 bc-state-ic");
     return svg;
   }
 
@@ -622,7 +618,7 @@
   // ---------------------------------------------------------------- телефон: шторка «Рядом с вами» (эталон A)
   // Решение R11 (INTEGRATION §21.2, кадр эталона «Житель, телефон»): на главной телефона — шторка «Рядом с вами»:
   // ручка, заголовок 19/600 + «ҚАЗ · РУС», 3 ближайших к центру карты горячих места строками .bk-hot (плашка числа
-  // цвета уровня; исправленное службой — «✓» и «… · проверьте»), «Все горячие места». Разметка — R09, данные — те же,
+  // цвета уровня; исправленное службой — значок «галочка» R11 и «… · проверьте»), «Все горячие места». Разметка — R09, данные — те же,
   // что у карты жалоб R07 (GET /heat, без текстов жалоб), разметка ui-kit R11 (.bk-phsheet, .bk-hot, .bk-more).
   //   mountNear(root, { map, onOpen(target, anchor), onAll(), limit }) -> { refresh(), setLang(), destroy() }
   function mountNear(root, opts) {
@@ -665,7 +661,7 @@
         "aria-label": name + ", " + (fixed ? t("status.reported_fixed") : t("inbox.people", { n: it.count })) + ", " + subline(it),
         onclick: function () { if (opts.onOpen) opts.onOpen(it.target, it.anchor); } }, [
         h("span", { "class": "bk-hot__cnt", "data-level": fixed ? "fixed" : String(it.level || 1), "aria-hidden": "true" },
-          fixed ? "✓" : formatNumber(it.count)),
+          fixed ? icon("check") : formatNumber(it.count)),   // П1: значок набора R11, а не глиф «✓»
         h("span", { "class": "bk-hot__name" }, [name, h("small", {}, subline(it))])]));
     }
     function render() {
@@ -1162,6 +1158,8 @@
       els.textarea.value = state.text;
       els.textarea.setAttribute("placeholder", t("complaint.step3.example", { example: example }));
       field.appendChild(els.textarea);
+      var voice = voiceControl();
+      if (voice) field.appendChild(voice);
       body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step3.privacy")));
       // Срочный случай — сразу под полем, пока житель пишет (а не под категориями, ниже края экрана телефона).
       els.emergencyBox = h("div", { "class": "bc-emergency-box" });
@@ -1178,6 +1176,54 @@
       body.appendChild(els.send);
       updateSendButton();
       if (state.text) scheduleClassify();
+    }
+
+    // По желанию (prompt R09 п. 7): голосовой ввод — распознавание речи самого браузера (Web Speech API), язык — по языку
+    // интерфейса (ru-RU / kk-KZ). Кнопка есть только там, где браузер это умеет; звук на сервер Birge не отправляется —
+    // распознаёт служба браузера (в Chrome — облачная служба Google; подсказка под кнопкой говорит честно). Распознанное
+    // дописывается в поле, житель правит.
+    var voiceSession = null;
+    function stopVoice() { if (voiceSession) { try { voiceSession.stop(); } catch (e) { /* уже остановлено */ } } }
+    function voiceControl() {
+      var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (typeof Recognition !== "function") return null;
+      stopVoice();
+      var label = h("span", {}, t("complaint.voice.start"));
+      var status = h("span", { "class": "bc-meta bc-voice__status", role: "status", "aria-live": "polite" }, t("complaint.voice.note"));
+      var btn = h("button", { "class": "bk-btn bk-btn--ghost bc-voice", type: "button", "aria-pressed": "false" }, [label]);
+      function finish(key) {
+        voiceSession = null;
+        btn.setAttribute("aria-pressed", "false");
+        label.textContent = t("complaint.voice.start");
+        status.textContent = t(key || "complaint.voice.note");
+      }
+      btn.addEventListener("click", function () {
+        if (voiceSession) { stopVoice(); return; }
+        var rec;
+        try { rec = new Recognition(); } catch (e) { finish("complaint.voice.failed"); return; }
+        rec.lang = currentLang() === "kk" ? "kk-KZ" : "ru-RU";
+        rec.interimResults = true;
+        rec.continuous = false;
+        rec.maxAlternatives = 1;
+        var base = els.textarea.value.replace(/\s+$/, "");
+        rec.onresult = function (e) {
+          var said = "";
+          for (var i = 0; i < e.results.length; i++) said += e.results[i][0].transcript;
+          els.textarea.value = ((base ? base + " " : "") + said.trim()).slice(0, 2000);
+          els.textarea.dispatchEvent(new Event("input"));
+        };
+        rec.onerror = function (e) {
+          var denied = e && (e.error === "not-allowed" || e.error === "service-not-allowed");
+          if (voiceSession === rec) finish(denied ? "complaint.voice.denied" : "complaint.voice.failed");
+        };
+        rec.onend = function () { if (voiceSession === rec) finish(null); if (els.textarea) els.textarea.focus(); };
+        voiceSession = rec;
+        btn.setAttribute("aria-pressed", "true");
+        label.textContent = t("complaint.voice.stop");
+        status.textContent = t("complaint.voice.listening");
+        try { rec.start(); } catch (e) { finish("complaint.voice.failed"); }
+      });
+      return h("div", { "class": "bc-voice-row" }, [btn, status]);
     }
 
     // ---------------------------------------------------------------- шаг 4: похожие
@@ -1520,6 +1566,23 @@
         [icon("list"), h("span", {}, t("complaint.step5.mine"))]));
       body.appendChild(h("button", { "class": "bk-btn bk-btn--block", type: "button", onclick: close },
         t("complaint.step5.to_map")));
+      // Раунд 15 (R16 «Мой двор»): тихая ссылка — что ещё происходит во дворе. Только если модуль R16 есть в сборке;
+      // жалоба на двор открывает этот двор, иначе — экран «Мой двор» (двор выбирает R16).
+      var together = window.BirgeTogether;
+      if (together && (typeof together.open === "function" || typeof together.mount === "function")) {
+        var yard = complaint.target && complaint.target.kind === "area" && /^yard-/.test(complaint.target.id || "") ? complaint.target.id : null;
+        body.appendChild(h("button", { "class": "bc-link bc-yard-link", type: "button", onclick: function () {
+          close();
+          // BirgeTogether.open R16 без id двора отвечает false и ничего не открывает — тогда раздел «Мой двор» оболочки
+          // (двор выбирает R16), а без оболочки — адрес #yard, который R16 разбирает сам.
+          if (yard && typeof together.open === "function") {
+            try { if (together.open("yard", yard) !== false) return; } catch (e) { /* адрес ниже */ }
+          }
+          var shell = window.BirgeShell;
+          if (!yard && shell && typeof shell.setSection === "function") { shell.setSection("yard"); return; }
+          window.location.hash = yard ? "#yard/" + yard : "#yard";
+        } }, [icon("home"), h("span", {}, t("complaint.step5.yard"))]));
+      }
     }
 
     // ---------------------------------------------------------------- «Мои обращения»
@@ -1606,6 +1669,7 @@
         } else {
           // «Исправлено» — это когда проверили жители; шаг службы — «Служба сообщила об устранении» (как на карте R07).
           var what = item.kind === "status" ? (item.status === "fixed" ? t("mine.update.fixed") : t("mine.changes.status", { status: t("status." + item.status) }))
+            : item.kind === "handoff" || item.kind === "services" || item.kind === "part" ? historyTitle(item)
             : t(CHANGE_TEXT[item.kind]);
           row = h("button", { "class": "bc-changes__item" + (state.focusEvent === item.id ? " bc-changes__item--focus" : ""),
                               type: "button", "data-event": item.id || "",
@@ -1729,10 +1793,31 @@
     }
 
     // Строка паспорта на карточке (R11 §2.1): «Передано: служба · Осталось N рабочих дней».
+    // Раунд 15: у совместного обращения — «Работают 2 службы: ◉ Водоканал — сделано · ◐ Дорожная служба — в работе»
+    // (статус-иконки ui-kit + слово; ведущая первой). Причины передач житель не видит — их нет в ответе API.
     function passportLine(item) {
       var p = item.passport || {};
-      if (item.status === "rejected" || (!p.assignee && !p.assignee_id)) return null;
+      if (item.status === "rejected") return null;
+      var joint = jointLine(item);
+      if (joint) return joint;
+      if (!p.assignee && !p.assignee_id) return null;
       return h("span", { "class": "bk-statusline__note bc-assignee" }, t("service.assigned", { service: serviceName(p) }));
+    }
+
+    var PART_ICON = { todo: "new", in_progress: "in_progress", done: "reported_fixed" };
+    function partService(sid) { return hasKey("service." + sid) ? t("service." + sid) : sid; }
+    function jointLine(item) {
+      var j = item.joint;
+      if (!j || !j.joint || !(j.services || []).length) return null;
+      return h("div", { "class": "bk-statusline__note bc-joint-line" }, [
+        h("span", { "class": "bc-joint-line__title" }, t("joint.resident.title", { n: j.services.length })),
+        h("ul", { "class": "bc-joint-line__list" }, j.services.map(function (part) {
+          // Служба и её статус — одним текстом: длинное казахское название переносится словами, «— орындалды» не
+          // уезжает отдельной строкой; значок — слева, по первой строке.
+          return h("li", { "class": "bc-joint-line__part", "data-status": part.status }, [statusIcon(PART_ICON[part.status] || "new"),
+            h("span", { "class": "bc-joint-line__text" }, [h("span", { "class": "bc-joint-line__name" }, partService(part.service)),
+              h("span", { "class": "bc-joint-line__state" }, " — " + t("joint.part." + part.status))])]);
+        }))]);
     }
 
     // Статус — один раз (R11 CLEAN_PASS, правило 5), как строка статуса карточки эталона (.st): иконка + слово, ниже —
@@ -1778,7 +1863,7 @@
             h("span", { "class": "bc-timeline__dot", "aria-hidden": "true" }),
             h("div", { "class": "bc-timeline__body" }, [
               h("span", { "class": "bc-timeline__title" }, historyTitle(u)),
-              historyDetail(u) ? h("span", { "class": "bc-timeline__text" }, historyDetail(u)) : null,
+              historyDetail(u, item) ? h("span", { "class": "bc-timeline__text" }, historyDetail(u, item)) : null,
               h("span", { "class": "bc-meta" }, formatDate(u.at))])]);
         }));
         var next = nextStage(item);
@@ -1811,10 +1896,18 @@
       if (u.kind === "created") return t("mine.history.created");
       if (u.kind === "status") return t("status." + u.status);
       if (u.kind === "verified") return t("mine.changes.verified");
+      if (u.kind === "handoff") return t("mine.update.handoff", { service: partService(u.service) });
+      if (u.kind === "services") return t("mine.update.services", { list: (u.services || []).map(partService).join(", ") });
+      if (u.kind === "part") return t("mine.update.part", { service: partService(u.service), status: t("joint.part." + (u.part_status || "in_progress")) });
       return t("mine.update." + u.kind);
     }
-    function historyDetail(u) {
-      if (!u.text || u.kind === "created" || u.kind === "status" || u.kind === "verified") return "";
+    // Передача: «Срок ответа тот же — до 6 нояб» (житель видит, что передача срок не обнулила).
+    function historyDetail(u, item) {
+      if (u.kind === "handoff") {
+        var due = item && item.passport && item.passport.response_due;
+        return due && item.status === "new" ? t("joint.handoff.same_due", { date: formatDate(due) }) : "";
+      }
+      if (!u.text || u.kind === "created" || u.kind === "status" || u.kind === "verified" || u.kind === "services") return "";
       return u.kind === "fixed" ? t("verify.what_done", { text: u.text }) : u.text;
     }
     // Следующий этап на ленте (серым): новое → в работе → служба сообщила → проверено жителями.
@@ -1917,13 +2010,12 @@
     }
 
     // Галочка успеха: круг и «✓» рисуются линией (stroke-dashoffset), цвет — акцент #152c26 (не зелёный: зелёный
-    // в Birge — только «исправлено»). Без движения при prefers-reduced-motion.
-    // Галочка успеха — иллюстрация ill-done ui-kit (те же круг и галочка, класс bk-check-draw), но линиями в самой
-    // разметке: селектор «.bk-check-draw path» не достаёт до содержимого <use> (теневое дерево) — так она рисуется.
+    // в Birge — только «исправлено»). Без движения при prefers-reduced-motion. П1: значок 48 px той же толщины, что
+    // иконки набора R11 — отметка «отправлено», а не картинка.
     function successMark() {
       var ns = "http://www.w3.org/2000/svg";
       var svg = document.createElementNS(ns, "svg");
-      svg.setAttribute("class", "bk-ill bk-check-draw bc-success__mark"); svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("class", "bk-check-draw bc-success__mark"); svg.setAttribute("viewBox", "0 0 24 24");
       svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
       var circle = document.createElementNS(ns, "circle");
       circle.setAttribute("class", "bc-success__circle"); circle.setAttribute("cx", "12"); circle.setAttribute("cy", "12"); circle.setAttribute("r", "8.5");
@@ -2076,6 +2168,7 @@
     function close() {
       // LOCAL_FINAL №2: отложенная подсказка модели не должна сработать после закрытия.
       clearTimeout(classifyTimer);
+      stopVoice();   // голосовой ввод не слушает после закрытия мастера
       classifySeq++;
       setPicking(false);
       if (map.clear) map.clear();
@@ -2188,7 +2281,7 @@
   window.BirgeComplaint = {
     mount: mount, maplibreAdapter: maplibreAdapter, setLang: setLang, lang: currentLang,
     t: t, pluralForm: pluralForm, residentSteps: residentSteps, formatDate: formatDate,
-    emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round14-wave2",
+    emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round15-joint",
     // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
     displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
     targetLabel: targetLabel, statusBadge: statusBadge, statusIcon: statusIcon, icon: icon, illustration: illustration,
