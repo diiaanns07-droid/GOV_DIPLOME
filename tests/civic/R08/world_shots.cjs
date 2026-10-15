@@ -8,7 +8,7 @@
  *   - Ситуационный центр без входа — «Войдите как сотрудник» и одна кнопка;
  *   - после входа: 1920×1080 и 1366×768, ru и kk — без прокрутки, 4 числа = ответ akim/board, все блоки по очереди;
  *     колонка R17 «Ответ просрочен» (правило R09, не срок исправления), «Двор недели» и «идёт сейчас» у начатого дела,
- *     карта районов (контуры OSM, числа = akim/board);
+ *     карта районов (контуры OSM, числа = akim/board); подписи и числа плиток не под мини-графиком;
  *   - «Картина дня» в оболочке Birge: три карточки, «Поддержать» → дело сцены 7, «Открыть кризисный штаб» → идущий штаб;
  *   - «Картина недели»: ru и kk, печать — не больше 2 листов A4.
  * Итог — world_shots.json в папке кадров.
@@ -78,6 +78,17 @@ function pdfPages(file) {
     check(`${tag}: без прокрутки`, fits);
     const kpi = await page.$$eval(".sc-kpi__value", (els) => els.map((e) => e.textContent.replace(/\s/g, "")));
     check(`${tag}: 4 числа = akim/board`, JSON.stringify(kpi) === JSON.stringify(want), { kpi, want });
+    // Длинная подпись (ҚАЗ «Мерзімінде түзетілмеген») не уходит под мини-график, число тоже (R10 аудит B0.9).
+    const sparkHits = await page.evaluate(() => Array.from(document.querySelectorAll(".sc-kpi")).flatMap((t) => {
+      const s = t.querySelector(".sc-spark");
+      if (!s || getComputedStyle(s).display === "none") return [];
+      const sr = s.getBoundingClientRect();
+      return [".sc-kpi__label", ".sc-kpi__value"].filter((sel) => {
+        const r = document.createRange(); r.selectNodeContents(t.querySelector(sel)); const b = r.getBoundingClientRect();
+        return !(b.right <= sr.left || sr.right <= b.left || b.bottom <= sr.top || sr.bottom <= b.top);
+      }).map((sel) => sel + ": " + t.querySelector(sel).textContent.trim());
+    }));
+    check(`${tag}: подписи и числа не под мини-графиком`, sparkHits.length === 0, sparkHits);
     const crisis = await page.textContent(".sc-crisis").catch(() => "");
     check(`${tag}: баннер кризиса из штаба R17`, lang === "ru" ? /Буран/.test(crisis) : /боран/i.test(crisis), crisis.slice(0, 120));
     await shot(page, `world-board-${tag}.jpg`);

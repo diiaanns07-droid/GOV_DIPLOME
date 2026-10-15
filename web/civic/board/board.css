@@ -202,6 +202,9 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-spark path.line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .sc-spark path.area { stroke: none; opacity: 0.18; }
 .sc-spark circle { stroke: var(--sc-bg); stroke-width: 2; vector-effect: non-scaling-stroke; }
+/* длинная подпись не уходит под график: график — справа от числа, как на 4:3 (board.js placeSparks) */
+.sc-kpi[data-spark="low"] .sc-spark { width: 38%; top: calc(var(--sc-pad) + 1.9 * var(--sc-fs-s)); }
+.sc-kpi[data-spark="none"] .sc-spark { display: none; }
 
 /* ── Основная часть ── */
 .sc-main { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--sc-gap); min-height: 0; }
