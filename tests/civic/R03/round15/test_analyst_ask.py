@@ -54,6 +54,28 @@ def test_body_form_from_gateway():
     assert answer["lang"] == "kk" and answer["intents"] == ["lagging_services"]
 
 
+def test_gateway_round15_arguments_district_and_mixed():
+    """Шлюз R01 (раунд 15) зовёт ask(question, lang, district, body, principal, context); lang бывает «mixed»."""
+    core.configure(**F.full_config())
+    q = "Где больше всего жалоб на снег за неделю?"
+    a = api.ask(question=q, lang="mixed", district="nura", body={"question": q, "district": "nura"},
+                principal=F.STAFF, context={"headers": {}})
+    assert a["lang"] == "ru" and a["understood"]["district"] == {"id": "nura", "ru": "Нура", "kk": "Нұра",
+                                                                   "from": "context"}
+    hot = block(a, "hot_spots")
+    assert [n["value"] for n in hot["numbers"]] == [13, 3]           # те же места Нуры, что в сцене
+    assert next(c for c in a["calls"] if c["fn"] == "heat")["args"]["district"] == "nura"
+    # Район из вопроса главнее района экрана; сравнение районов район экрана не сужает.
+    esil = api.ask("Где в Есиле больше всего жалоб на снег?", None, F.STAFF, district="nura")
+    assert esil["understood"]["district"]["id"] == "esil" and "from" not in esil["understood"]["district"]
+    compare = api.ask("Сравни районы по жалобам", "ru", F.STAFF, district="nura")
+    assert "district" not in compare["understood"]
+    assert [i["district"] for i in block(compare, "district_compare")["items"]] == ["nura", "baikonur", "esil"]
+    assert api.ask("Какие службы отстают?", "ru", F.STAFF, district="")["understood"].get("district") is None
+    with pytest.raises(ValueError):
+        api.ask(q, "ru", F.STAFF, district="moscow")
+
+
 def test_rate_limit_per_staff():
     core.configure(**F.full_config(rate=(2, 60.0)))
     api.ask("Какие службы отстают?", "ru", F.STAFF)

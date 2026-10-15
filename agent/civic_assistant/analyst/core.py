@@ -19,7 +19,7 @@ from . import blocks as B
 from . import intents as I
 from . import llm as L
 from . import sources as S
-from .texts import both, category_name, district_name, service_name
+from .texts import DISTRICTS, both, category_name, district_name, service_name
 
 SCHEMA = "birge-analyst-answer-v1"
 RATE = (30, 60.0)  # вопросов на сотрудника за минуту: защита модулей и (если включена) платной модели
@@ -153,11 +153,13 @@ def _clarify_block() -> dict:
             "facts": []}
 
 
-def _understood(parsed) -> dict:
+def _understood(parsed, district_from_context=False) -> dict:
     out = {"days": parsed.days, "days_given": parsed.days_given}
     if parsed.district:
         out["district"] = {"id": parsed.district, "ru": district_name(parsed.district, "ru"),
                            "kk": district_name(parsed.district, "kk")}
+        if district_from_context:
+            out["district"]["from"] = "context"
     if len(parsed.districts) > 1:
         out["districts"] = [{"id": d, "ru": district_name(d, "ru"), "kk": district_name(d, "kk")}
                             for d in parsed.districts]
@@ -200,15 +202,27 @@ def _who(principal) -> str:
     return str(getattr(principal, "username", None) or "staff")
 
 
-def ask(question=None, lang=None, principal=None, context=None, body=None, *, now=None, provider=_AUTO) -> dict:
-    """Главная функция роли R03 для маршрута POST /api/civic/v2/assistant/ask."""
+def ask(question=None, lang=None, principal=None, context=None, body=None, district=None, *, now=None,
+        provider=_AUTO) -> dict:
+    """Главная функция роли R03 для маршрута POST /api/civic/v2/assistant/ask.
+
+    lang — язык интерфейса (ru, kk; mixed или пусто — по вопросу). district — район, открытый у сотрудника: он
+    подставляется, только если в вопросе своего района нет и это не сравнение районов (виден в «Как понят вопрос»).
+    """
     if isinstance(body, dict):
         question = question if question is not None else body.get("question")
         lang = lang if lang is not None else body.get("lang")
+        district = district if district is not None else body.get("district")
     _check_principal(principal)
     text = I.normalize_question(question)
+    if lang == "mixed":
+        lang = None
     if lang not in (None, "", "ru", "kk"):
-        raise ValueError("lang: ru или kk.")
+        raise ValueError("lang: ru, kk или mixed.")
+    if district in ("",):
+        district = None
+    if district is not None and district not in DISTRICTS:
+        raise ValueError("district: неизвестный район.")
     with _CONFIG_LOCK:
         cfg = dict(_CONFIG)
     limiter = _LIMITER
@@ -218,6 +232,9 @@ def ask(question=None, lang=None, principal=None, context=None, body=None, *, no
     clock = cfg.get("clock")
     moment = now or (clock() if callable(clock) else datetime.now(timezone.utc))
     parsed = I.parse(text)
+    district_from_context = bool(district and not parsed.districts and "district_compare" not in parsed.intents)
+    if district_from_context:
+        parsed.district, parsed.districts = district, [district]
     answer_lang = I.answer_language(parsed.question_lang, lang or None, text)
     ctx = _Ctx(parsed, _Sources(cfg), B.now_astana(moment))
 
@@ -264,7 +281,7 @@ def ask(question=None, lang=None, principal=None, context=None, body=None, *, no
         "question_lang": parsed.question_lang,
         "lang": answer_lang,
         "intents": [b["kind"] for b in built],
-        "understood": _understood(parsed),
+        "understood": _understood(parsed, district_from_context),
         "headline": first["title"],
         "lead": lead,
         "numbers": first["numbers"][:3],

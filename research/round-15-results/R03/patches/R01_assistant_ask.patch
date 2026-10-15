@@ -1,62 +1,35 @@
 diff --git a/ui/web_server.py b/ui/web_server.py
-index b1292654..24366e49 100644
+index fa722d12..496250ef 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
-@@ -118,7 +118,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+@@ -119,7 +119,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                  # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
                  "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
                  # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
 -                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
 +                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
-+                # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (раздел #analyst) и его стенд.
-+                "assistant/analyst.js", "assistant/analyst.css", "assistant/analyst-demo.html")
++                # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (раздел #analyst; стенд analyst-demo.html не отдаём).
++                "assistant/analyst.js", "assistant/analyst.css")
  # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
  CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
                ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
-@@ -742,6 +744,8 @@ V2_ROUTES = (
-     ("POST", ("questions", "{id}", "publish"), "qa.publish"),
-     ("POST", ("questions", "{id}", "reject"), "qa.reject"),
-     ("POST", ("questions", "{id}", "answer"), "qa.answer"),
-+    # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (CONTRACT §7), только сотрудник.
-+    ("POST", ("assistant", "ask"), "assistant.ask"),
- )
- # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
- V2_HANDLERS = {
-@@ -797,6 +801,8 @@ V2_HANDLERS = {
-     # Модерация: сессия R02 + CSRF проверяет и шлюз (staff=True, R15-S34), и сам сервис — защита в глубину.
-     **{key: V2Handler("R13", ("ui.civic_qa",), "make_service", kind="service", staff=True) for key in (
-         "qa.publish", "qa.reject", "qa.answer")},
-+    # R03: ask(question, lang, principal) — тело проверяет сам модуль (ValueError -> 400, 429 — свой лимит).
-+    "assistant.ask": V2Handler("R03", ("agent.civic_assistant.api",), "ask", staff=True),
- }
- 
- 
-@@ -1148,7 +1154,7 @@ class CivicV2Gateway:
-                     raise V2BadRequest("subtopic", "subtopic: неизвестное уточнение.")
-                 args["subtopic"] = subtopic
-             return args
--        if key in ("akim.routing.update", "nearby.subscribe"):  # R08: тело проверяет сам модуль (ValueError -> 400)
-+        if key in ("akim.routing.update", "nearby.subscribe", "assistant.ask"):  # тело проверяет модуль (ValueError -> 400)
-             return {"body": body}
-         if key == "akim.decision":
-             return {"decision_id": params["id"], "body": body}
 diff --git a/web/index.html b/web/index.html
-index 78455458..fccb33f4 100644
+index 78455458..5c4e7aa8 100644
 --- a/web/index.html
 +++ b/web/index.html
-@@ -26,6 +26,7 @@
-     <link rel="stylesheet" href="/civic/nearby/nearby.css" />
-     <link rel="stylesheet" href="/civic/akim/today.css" />
-     <link rel="stylesheet" href="/civic/qa/qa.css" />
+@@ -18,6 +18,7 @@
+     <link rel="stylesheet" href="/civic/feedback/feedback.css" />
+     <link rel="stylesheet" href="/civic/scenarios/scenarios.css" />
+     <link rel="stylesheet" href="/civic/assistant/assistant.css" />
 +    <link rel="stylesheet" href="/civic/assistant/analyst.css" />
-     <link rel="stylesheet" href="/civic/proposals/proposals.css" />
-     <link rel="stylesheet" href="/civic/ideas/ideas.css" />
-     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
-@@ -254,6 +255,7 @@
+     <!-- B1: модули раунда 14 — тепловая карта (R07), путь жителя v2 (R09), «Картина дня» (R08). -->
+     <link rel="stylesheet" href="/civic/heat/heat.css" />
+     <link rel="stylesheet" href="/civic/feedback/complaint.css" />
+@@ -252,6 +253,7 @@
+     <script defer src="/civic/shell/shell-text.js"></script>
+     <script defer src="/civic/shell/birge.js"></script>
      <script defer src="/civic/shell/birge-ref.js"></script>
++    <script defer src="/civic/assistant/analyst.js"></script>
      <script defer src="/civic/nearby/nearby.js"></script>
      <script defer src="/civic/qa/qa.js"></script>
-+    <script defer src="/civic/assistant/analyst.js"></script>
      <script defer src="/civic/ideas/ideas.js"></script>
-     <script defer src="/civic/proposals/works.js"></script>
-     <script defer src="/civic/akim/services.js"></script>

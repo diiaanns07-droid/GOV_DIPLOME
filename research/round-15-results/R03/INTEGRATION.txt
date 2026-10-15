@@ -5,25 +5,30 @@ SHA кода и проверок — research/round-15-results/R03/DELIVERY.json
 ====================================================================================================
 0. КОРОТКО ДЛЯ R01 (5 минут)
 ====================================================================================================
+Маршрут POST /api/civic/v2/assistant/ask у R01 уже есть (V2_HANDLERS_ROUND15, аргументы question, lang, district, body),
+пункт меню «Ещё → Инструменты → Спросить Birge» (SCREENS.analyst) — тоже. Осталось:
 1) git checkout <code_sha из DELIVERY.json> -- agent/civic_assistant/ web/civic/assistant/
-2) git apply research/round-15-results/R03/patches/R01_assistant_ask.patch     (ui/web_server.py + web/index.html)
+2) git apply research/round-15-results/R03/patches/R01_assistant_ask.patch     (только файлы экрана: CIVIC_ASSETS + index.html)
 3) по желанию: git apply research/round-15-results/R03/patches/R01_palette_commands.patch   (Ctrl+K, web/civic/shell/birge-ref.js)
-4) Проверка: python3 -B -m pytest -q tests/civic/R03/round15 → 62 passed (+ ваши R01/R09 тесты: 566 passed на моей ветке).
-   Вручную: вход сотрудника → адрес /#analyst → «Где в Нуре больше всего жалоб на снег за неделю и какие службы отстают?»
-   → карточка 15 · 6 → «Показать на карте» → карточка R07 «Участок ул. Е-308 · 8 человек сообщили» (то же 8, что в ответе).
+4) Проверка: python3 -B -m pytest -q tests/civic/R03/round15 → 75 passed, 1 skipped (нет R17 в сборке).
+   Вручную: вход сотрудника → «Ещё» → «Спросить Birge» (или /#analyst) → «Где в Нуре больше всего жалоб на снег за неделю
+   и какие службы отстают?» → карточка 15 · 6 → «Показать на карте» → карточка R07 «Участок ул. Е-308 · 8 человек
+   сообщили» (то же 8, что в ответе).
 
-Оба patch проверены на копии ветки (git worktree) с базой из COMMON («Как поднять стенд»):
-   без входа → 401 unauthenticated; сотрудник + CSRF → 200 за 117 мс; пустой вопрос → 400 bad_request;
-   GET /api/civic/v2/modules → "assistant.ask": {role R03, function ask, status ready};
-   браузер 1366 и 375: #analyst открывает экран, ответ, «Показать на карте» → карта и карточка цели R07;
-   Ctrl+K → «службы отстают» → Enter → экран аналитика с ответом. Кадры: screens/shell_*.png, screens/palette_1366_ru.png.
+Проверено 15 окт ~12:45 UTC на копии ветки R01 dbf25c05 (git worktree) + мои пути + оба patch, база из RUN.txt §3:
+   tests/civic/R01/round15 + test_r01_api_v2.py → 286 passed, 1 skipped; tests/civic/R03/round15 → 75 passed, 1 skipped;
+   без входа → 401; без CSRF → 403; пустой вопрос → 400 {field: question}; district «Нура» → 400 {field: district};
+   сотрудник + CSRF → 200: сцены 131 / 162 / 5 мс (первый вызов греет кэши R07/R08); lang "mixed" + district "nura" →
+   ответ по Нуре с пометкой understood.district.from = "context"; GET /modules → "assistant.ask": ready;
+   браузер 1366 и 375: «Ещё» содержит analyst, #analyst открывает экран, ответ, «Показать на карте» → карта и карточка
+   R07 с тем же числом 8, ошибок JS нет. Кадры: screens/shell_*.png (эта сборка), screens/palette_1366_ru.png.
 Замечание к COMMON: create-editor требует пароль от 12 знаков — «пароль» из инструкции не проходит (я брал 12+).
 
 ====================================================================================================
 1. ЧТО В ПОСТАВКЕ (только мои пути, CONTRACT §2)
 ====================================================================================================
 agent/civic_assistant/analyst/        новый подпакет: ИИ-аналитик акима
-    core.py       ask(question, lang, principal, context, body) — точка входа маршрута; configure(); reset()
+    core.py       ask(question, lang, principal, context, body, district) — точка входа маршрута; configure(); reset()
     intents.py    разбор вопроса без сети: ru / kk / вперемешку, 11 намерений, район, тема, период, служба, флаги безопасности
     sources.py    вызовы соседей в процессе + журнал вызовов (CallLog); «модуля нет» → not_ready, не ошибка
     blocks.py     блоки ответа ru/kk, собранные кодом: числа, строки, список мест/служб, действия map.focus / open
@@ -38,16 +43,17 @@ tests/civic/R03/round15/              тесты (pytest), стенд-серве
 research/round-15-results/R03/        DELIVERY.json, RUN.txt, это INTEGRATION.txt, patches/, screens/, i18n_analyst.json
 
 ====================================================================================================
-2. ШЛЮЗ R01 — patches/R01_assistant_ask.patch (ui/web_server.py, web/index.html)
+2. ШЛЮЗ R01 — patches/R01_assistant_ask.patch (ui/web_server.py, web/index.html; снят с R01 dbf25c05)
 ====================================================================================================
-- CIVIC_ASSETS: "assistant/analyst.js", "assistant/analyst.css", "assistant/analyst-demo.html" (без этого /civic/assistant/
-  analyst.js отдаёт 404 application/json, и браузер отказывается выполнять скрипт).
-- V2_ROUTES:   ("POST", ("assistant", "ask"), "assistant.ask")
-- V2_HANDLERS: "assistant.ask": V2Handler("R03", ("agent.civic_assistant.api",), "ask", staff=True)
-- arguments(): ключ "assistant.ask" — в ту же строку, что R08: return {"body": body}  (тело проверяет модуль).
-  Без этой строки arguments() вернёт {} и вопрос не дойдёт до функции (ответ 400 «question: нужен текст вопроса»).
-- index.html: <link rel="stylesheet" href="/civic/assistant/analyst.css" /> после qa.css;
-              <script defer src="/civic/assistant/analyst.js"></script> после qa.js (нужен BirgeShell уже загруженным).
+Маршрут, обработчик и аргументы R01 уже сделал сам (V2_ROUTES_ROUND15, V2_HANDLERS_ROUND15 "assistant.ask",
+_arguments_round15: question из body.question или body.text, lang ru|kk|mixed, district по V2_DISTRICT, body). Функция
+ask их принимает: lang "mixed" или пусто — язык ответа по вопросу; district — район экрана сотрудника, подставляется,
+только если в вопросе своего района нет и это не сравнение районов (в ответе understood.district.from = "context").
+Patch теперь только про файлы экрана:
+- CIVIC_ASSETS: "assistant/analyst.js", "assistant/analyst.css" (без этого /civic/assistant/analyst.js отдаёт 404
+  application/json, и браузер отказывается выполнять скрипт). Стенд analyst-demo.html в сборке не отдаём (как demo R09).
+- index.html: <link rel="stylesheet" href="/civic/assistant/analyst.css" /> после assistant.css;
+              <script defer src="/civic/assistant/analyst.js"></script> после birge-ref.js (BirgeShell уже загружен).
 - Ошибки функции → ответы шлюза как обычно: ValueError → 400, PermissionError → 403, исключение со status=429 → 429
   (TooManyQuestions: 30 вопросов в минуту на сотрудника — защита модулей и платной модели).
 - wire(): ничего делать не нужно — аналитик берёт R07 default_service() и R08 default_service(), которые wire() уже
@@ -56,40 +62,32 @@ research/round-15-results/R03/        DELIVERY.json, RUN.txt, это INTEGRATION
 ====================================================================================================
 3. МЕСТО В МЕНЮ — решение R11 (схема IA раунда 15) и R01
 ====================================================================================================
-Экран регистрируется сам: BirgeShell.registerScreen({id: "analyst", modes: ["akimat"], title: {ru, kk}}).
-Проблема: «Ещё» у акимата уже 4 пункта (questions, works, qr, services), а moreItems() режет до 4 → пункта «Спросить Birge»
-в меню нет (раздел работает по адресу #analyst и из палитры Ctrl+K). Варианты для R11 (по умолчанию я ничего не меняю):
-  А) акимат: «Ещё» → заменить редкий пункт «QR-таблички» на «Спросить Birge» (QR — ссылка на лист печати);
-  Б) поднять лимит «Ещё» до 5 в birge.js (moreItems … .slice(0, 5));
-  В) кнопка «Спросить Birge» в шапке «Картины дня» R08: BirgeShell.setSection("analyst") (аким спрашивает там, где смотрит);
-  Г) SCREENS в birge.js: analyst: { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "analyst.title" } }
-     — тогда прямая ссылка #analyst работает с первого кадра (сейчас модуль сам переключает раздел после загрузки).
-Моя рекомендация: В (главный сценарий: аким в «Картине дня» видит пульс «Снег ×3» и спрашивает) + палитра Ctrl+K.
+Сделано у R01 (dbf25c05, схема R11 IA_ROUND15 v1.1): акимат → «Ещё» → группа «Инструменты» → «Спросить Birge»
+(#analyst; SCREENS.analyst = { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
+значок i-sparkle). Проверено в браузере: moreItems() акимата = questions, analyst, qr, works, services; прямая ссылка
+#analyst открывает экран с первого кадра. Экран R03 сам регистрируется (registerScreen), только если раздела нет в
+SCREENS оболочки (стенд, старая сборка) — дубля не будет.
 
 Палитра Ctrl+K — patches/R01_palette_commands.patch (birge-ref.js, gatherCommands): группа «Спросить Birge» —
 «Спросить Birge» (открыть экран) и три вопроса сцен демо (снег в Нуре, службы, буран). Проверено в браузере.
 IA R11 §7.10 «Спросить Birge: <набранный текст>», если ничего не нашлось: BirgeAnalyst.ask(text) — откроет раздел
 #analyst и сразу задаст вопрос (экран ещё не смонтирован — вопрос подождёт монтирования).
 
-РЕШЕНИЕ R11 (IA_ROUND15 v1.1, 15 окт 17:35 Астаны): акимат → «Ещё» → группа «Инструменты» → «Спросить Birge» (#analyst,
-SCREENS.analyst = { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
-значок i-sparkle). Это и есть место экрана; patch меню — у R11 (patches/R01_menu_ia15.patch). Экран R03 сам
-регистрируется, только если раздела нет в SCREENS оболочки — дубля не будет.
-
 ====================================================================================================
 4. ТЕКСТЫ — R11 (web/civic/i18n/ru.json, kk.json)
 ====================================================================================================
-56 ключей analyst.* (ru + kk) — research/round-15-results/R03/i18n_analyst.json. Пока ключей нет в словаре, модуль берёт
+58 ключей analyst.* (ru + kk) — research/round-15-results/R03/i18n_analyst.json. Пока ключей нет в словаре, модуль берёт
 запасной текст из KEYS (как shell-text.js у R01); есть ключ в BirgeI18n — берётся словарь. Ключ с формами числа:
 analyst.calls (ru {one, few, many}; kk одна форма). Казахские фразы — на проверку R11 / владельцу.
 Тексты ответа (заголовки блоков, строки) собирает сервер (agent/civic_assistant/analyst/blocks.py) сразу на ru и kk —
 экран переключает ҚАЗ / РУС без нового запроса.
 
 ====================================================================================================
-5. ФОРМАТ ОТВЕТА POST /api/civic/v2/assistant/ask {question, lang?: "ru"|"kk"} → 200
+5. ФОРМАТ ОТВЕТА POST /api/civic/v2/assistant/ask {question, lang?: "ru"|"kk"|"mixed", district?} → 200
 ====================================================================================================
 { "schema": "birge-analyst-answer-v1", "question", "question_lang": "ru|kk|mixed", "lang": "ru|kk",
-  "intents": ["hot_spots", "lagging_services"], "understood": {district{id,ru,kk}, category{…}, service{…}, days},
+  "intents": ["hot_spots", "lagging_services"], "understood": {district{id,ru,kk,from?:"context"}, category{…},
+  service{…}, days},
   "headline": {ru, kk}, "lead": {ru, kk}, "numbers": [первые числа первого блока],
   "blocks": [{ "id", "kind", "status": "ok|empty|not_ready|error", "title": {ru,kk},
                "numbers": [{value, text, label{ru,kk}, fact, tone}], "lines": {ru:[…], kk:[…]},
