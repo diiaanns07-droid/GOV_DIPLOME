@@ -106,7 +106,8 @@ def test_materialize_rules():
     now = datetime(2026, 10, 16, 12, 0, tzinfo=ASTANA)          # пятница
     rec = {"a": {"ago_hours": 30.5}, "b": {"in_days": 2}, "c": {"day": -12}, "d": {"season": {"month": 5, "day": 4}},
            "e": {"next_weekday": {"weekday": 5, "hour": 10, "minute": 0}}, "f": "2026-01-01T00:00:00+05:00",
-           "g": [{"ago_days": 1}], "h": {"ago_hours": 1, "x": 2}}
+           "g": [{"ago_days": 1}], "h": {"ago_hours": 1, "x": 2},
+           "i": {"day_at": {"day": -12, "hour": 18, "minute": 30}}}
     out = wio.materialize(rec, now)
     assert out["a"] == "2026-10-15T05:30:00+05:00"
     assert out["b"] == "2026-10-18T12:00:00+05:00"
@@ -115,6 +116,7 @@ def test_materialize_rules():
     assert out["e"] == "2026-10-17T10:00:00+05:00"                # завтра суббота, через 22 ч
     assert out["f"] == rec["f"] and out["g"] == ["2026-10-15T12:00:00+05:00"]
     assert out["h"] == rec["h"]                                   # не объект времени — не трогаем
+    assert out["i"] == "2026-10-04T18:30:00+05:00"                # встреча вечером, а не «12,3 суток назад» в 04:48
     assert rec["a"] == {"ago_hours": 30.5}                        # исходник не изменён
     assert wio.materialize(out, now) == out                       # повторно — то же
 

@@ -47,7 +47,7 @@ GRAPH_MANIFEST = ROOT / "engine" / "civic_scenarios" / "graphs" / "MANIFEST.json
 NURA_REAL_CSV = ROOT / "data" / "civic" / "astana" / "nura-real" / "records.csv"
 
 SEED = 15
-SCHEMA_VERSION = "1.0.1"
+SCHEMA_VERSION = "1.1"
 WINDOW_DAYS = 60
 MODEL_VERSION = "demo-world-v1"
 # Опорный момент для EXPECTED.json (сборка B1 R01 — 16 окт 14:00; берём полдень того же дня).
@@ -1447,10 +1447,11 @@ def build_initiatives(b: WorldBuilder, yards: list[dict], ideas: list[dict], sce
          {"next_weekday": {"weekday": 5, "hour": 13, "minute": 0}}, ["перчатки", "мешки для мусора", "грабли"],
          "published", 14, None, None, None),
         ("greening", by_id[scene7_yard], "Посадим деревья у подъездов", "Сажаем саженцы вдоль дорожки, "
-         "нужны лопаты и вода.", "ru", {"ago_days": 26.0}, {"ago_days": 25.85}, ["лопаты", "вёдра"], "done", 15,
+         "нужны лопаты и вода.", "ru", {"day_at": {"day": -26, "hour": 10, "minute": 0}},
+         {"day_at": {"day": -26, "hour": 13, "minute": 0}}, ["лопаты", "вёдра"], "done", 15,
          {"by_akimat": True, "inventory": True, "pickup_service": "waste", "note": "Саженцы, лопаты и вывоз мусора"},
          {"text": "Посадили 6 саженцев и покрасили скамейки — сделано вместе: 15 соседей", "photo_ids": [],
-          "at": {"ago_days": 25.8}}, None),
+          "at": {"day_at": {"day": -26, "hour": 15, "minute": 0}}}, None),
         ("snow", nura[0], "Расчистим двор после бурана", "Аулада қар көп, балалар мектепке әрең шығады. Ертең "
          "таңертең бірге тазалайық!", "kk", {"in_hours": 19.0}, {"in_hours": 22.0}, ["күрек", "қолғап"], "published", 9,
          {"by_akimat": True, "inventory": True, "pickup_service": "street_cleaning", "note": "Лопаты и вывоз снега"},
@@ -1465,17 +1466,23 @@ def build_initiatives(b: WorldBuilder, yards: list[dict], ideas: list[dict], sce
          {"by_akimat": True, "inventory": True, "pickup_service": None, "note": "Краска для лавочек"}, None,
          idea_paint["id"]),
         ("greening", yard_of("saryarka", 0), "Посадка деревьев во дворе", "Отырғызу күні: 12 көшет, барлығы келіңіздер!",
-         "kk", {"ago_days": 31.0}, {"ago_days": 30.85}, ["күрек", "шелек"], "done", 22,
+         "kk", {"day_at": {"day": -31, "hour": 10, "minute": 0}}, {"day_at": {"day": -31, "hour": 13, "minute": 0}},
+         ["күрек", "шелек"], "done", 22,
          {"by_akimat": True, "inventory": True, "pickup_service": "waste", "note": "Саженцы от службы озеленения"},
-         {"text": "Отырғызылды 12 көшет — бірге жасадық: 22 көрші", "photo_ids": [], "at": {"ago_days": 30.8}}, None),
+         {"text": "Отырғызылды 12 көшет — бірге жасадық: 22 көрші", "photo_ids": [],
+          "at": {"day_at": {"day": -31, "hour": 15, "minute": 0}}}, None),
         ("cleanup", yard_of("almaty", 0), "Уборка двора к холодам", "Уберём листья и мусор перед снегом.", "ru",
-         {"ago_days": 18.0}, {"ago_days": 17.88}, ["перчатки", "мешки"], "done", 11,
+         {"day_at": {"day": -18, "hour": 11, "minute": 0}}, {"day_at": {"day": -18, "hour": 14, "minute": 0}},
+         ["перчатки", "мешки"], "done", 11,
          {"by_akimat": True, "inventory": True, "pickup_service": "waste", "note": "Мешки и вывоз в 14:00"},
-         {"text": "Убрали двор и вывезли 30 мешков листьев", "photo_ids": [], "at": {"ago_days": 17.8}}, None),
+         {"text": "Убрали двор и вывезли 30 мешков листьев", "photo_ids": [],
+          "at": {"day_at": {"day": -18, "hour": 15, "minute": 0}}}, None),
         ("other", nura[2 % len(nura)], "Зальём каток во дворе", "Как только будет мороз, зальём каток для детей.", "ru",
-         {"in_days": 12.0}, {"in_days": 12.2}, ["шланг", "лопаты"], "on_review", 1, None, None, None),
-        ("cleanup", yard_of("baikonur", 0), "Субботник у школы", "Перенесли из-за дождя.", "ru", {"ago_days": 5.0},
-         {"ago_days": 4.9}, ["перчатки"], "cancelled", 8, None, None, None),
+         {"day_at": {"day": 12, "hour": 19, "minute": 0}}, {"day_at": {"day": 12, "hour": 21, "minute": 0}},
+         ["шланг", "лопаты"], "on_review", 1, None, None, None),
+        ("cleanup", yard_of("baikonur", 0), "Субботник у школы", "Перенесли из-за дождя.", "ru",
+         {"day_at": {"day": -5, "hour": 10, "minute": 0}}, {"day_at": {"day": -5, "hour": 12, "minute": 0}},
+         ["перчатки"], "cancelled", 8, None, None, None),
         ("greening", yard_of("saraishyk", 0), "Клумбы у подъездов", "Кіреберістердің алдына гүл отырғызамыз.", "kk",
          {"next_weekday": {"weekday": 5, "hour": 11, "minute": 0}},
          {"next_weekday": {"weekday": 5, "hour": 13, "minute": 0}}, ["көшет", "қолғап"], "published", 5,
@@ -1622,21 +1629,27 @@ def build_meetings_questions(b: WorldBuilder, yards: list[dict], works: list[dic
     q_of = lambda m: [q["id"] for q in questions if q["meeting"] == m]  # noqa: E731
     meetings = [
         {"id": "m-w15-1", "district": "nura", "title_ru": "Встреча акима района с жителями Нуры",
-         "title_kk": "Аудан әкімінің Нұра тұрғындарымен кездесуі", "at": {"ago_days": 12.3},
+         "title_kk": "Аудан әкімінің Нұра тұрғындарымен кездесуі", "at": {"day_at": {"day": -12, "hour": 18, "minute": 30}},
          "place": {"kind": "area", "id": nura_yards[0]["id"], "label_ru": nura_yards[0]["label_ru"],
-                   "label_kk": nura_yards[0]["label_kk"]},
-         "registered": 54, "questions": q_of("m-w15-1"), "orders": orders, "demo": True},
+                   "label_kk": nura_yards[0]["label_kk"]}, "point": list(nura_yards[0]["point"]),
+         "registered": 54, "questions": q_of("m-w15-1"), "orders": orders,
+         "result": {"text_ru": "Обсудили дворы, освещение и дороги после раскопок. Службам даны 4 поручения со сроками — "
+                               "статус каждого виден здесь.",
+                    "text_kk": "Аулаларды, жарықты және қазудан кейінгі жолдарды талқыладық. Қызметтерге мерзімі бар "
+                               "4 тапсырма берілді — әрқайсысының мәртебесі осында көрінеді.",
+                    "at": {"day_at": {"day": -12, "hour": 21, "minute": 0}}},
+         "demo": True},
         {"id": "m-w15-2", "district": "nura", "title_ru": "Встреча акима района: зима во дворах",
          "title_kk": "Аудан әкімімен кездесу: аулалардағы қыс",
          "at": {"next_weekday": {"weekday": 3, "hour": 18, "minute": 30}},
          "place": {"kind": "area", "id": nura_yards[1]["id"], "label_ru": nura_yards[1]["label_ru"],
-                   "label_kk": nura_yards[1]["label_kk"]},
-         "registered": 31, "questions": q_of("m-w15-2"), "orders": [], "demo": True},
+                   "label_kk": nura_yards[1]["label_kk"]}, "point": list(nura_yards[1]["point"]),
+         "registered": 31, "questions": q_of("m-w15-2"), "orders": [], "result": None, "demo": True},
         {"id": "m-w15-3", "district": "esil", "title_ru": "Встреча акима района с жителями Есиля",
-         "title_kk": "Аудан әкімінің Есіл тұрғындарымен кездесуі", "at": {"in_days": 9.3},
+         "title_kk": "Аудан әкімінің Есіл тұрғындарымен кездесуі", "at": {"day_at": {"day": 9, "hour": 18, "minute": 0}},
          "place": {"kind": "area", "id": esil_yards[0]["id"], "label_ru": esil_yards[0]["label_ru"],
-                   "label_kk": esil_yards[0]["label_kk"]},
-         "registered": 12, "questions": q_of("m-w15-3"), "orders": [], "demo": True},
+                   "label_kk": esil_yards[0]["label_kk"]}, "point": list(esil_yards[0]["point"]),
+         "registered": 12, "questions": q_of("m-w15-3"), "orders": [], "result": None, "demo": True},
     ]
     return meetings, questions
 

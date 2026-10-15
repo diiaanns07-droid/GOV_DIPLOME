@@ -11,6 +11,7 @@
     {"day": n}                                                        -> дата YYYY-MM-DD (сегодня по Астане + n)
     {"season": {"month": m, "day": d}}                               -> дата в следующем строительном сезоне
     {"next_weekday": {"weekday": 5, "hour": 10, "minute": 0}}         -> ближайшая суббота 10:00 (не раньше чем через 12 ч)
+    {"day_at": {"day": -12, "hour": 18, "minute": 30}}                -> мгновение: сегодня − 12 дней в 18:30 по Астане
 Строки и числа не трогаются, поэтому materialize можно звать повторно.
 """
 
@@ -77,6 +78,10 @@ def is_reltime(value) -> bool:
         return (isinstance(inner, dict) and set(inner) == {"weekday", "hour", "minute"}
                 and all(isinstance(inner[k], int) and not isinstance(inner[k], bool) for k in inner)
                 and 0 <= inner["weekday"] <= 6 and 0 <= inner["hour"] <= 23 and 0 <= inner["minute"] <= 59)
+    if key == "day_at":
+        return (isinstance(inner, dict) and set(inner) == {"day", "hour", "minute"}
+                and all(isinstance(inner[k], int) and not isinstance(inner[k], bool) for k in inner)
+                and 0 <= inner["hour"] <= 23 and 0 <= inner["minute"] <= 59)
     return False
 
 
@@ -121,6 +126,9 @@ def resolve(value, now: datetime | None = None):
         return (now.date() + timedelta(days=int(inner))).isoformat()
     if key == "next_weekday":
         return iso(next_weekday(inner["weekday"], inner["hour"], inner["minute"], now))
+    if key == "day_at":
+        day = now.date() + timedelta(days=inner["day"])
+        return iso(datetime(day.year, day.month, day.day, inner["hour"], inner["minute"], tzinfo=ASTANA_TZ))
     return season_date(inner["month"], inner["day"], now).isoformat()
 
 

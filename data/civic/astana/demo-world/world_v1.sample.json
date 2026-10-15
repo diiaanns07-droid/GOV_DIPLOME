@@ -1,6 +1,6 @@
 {
  "schema": "birge-demo-world-v1",
- "schema_version": "1.0.1",
+ "schema_version": "1.1",
  "seed": 15,
  "synthetic": true,
  "demo": true,
@@ -4902,10 +4902,18 @@
    ],
    "district": "nura",
    "starts_at": {
-    "ago_days": 26.0
+    "day_at": {
+     "day": -26,
+     "hour": 10,
+     "minute": 0
+    }
    },
    "ends_at": {
-    "ago_days": 25.85
+    "day_at": {
+     "day": -26,
+     "hour": 13,
+     "minute": 0
+    }
    },
    "bring": [
     "лопаты",
@@ -4923,7 +4931,11 @@
     "text": "Посадили 6 саженцев и покрасили скамейки — сделано вместе: 15 соседей",
     "photo_ids": [],
     "at": {
-     "ago_days": 25.8
+     "day_at": {
+      "day": -26,
+      "hour": 15,
+      "minute": 0
+     }
     }
    },
    "from_idea": null,
@@ -5066,10 +5078,18 @@
    ],
    "district": "saryarka",
    "starts_at": {
-    "ago_days": 31.0
+    "day_at": {
+     "day": -31,
+     "hour": 10,
+     "minute": 0
+    }
    },
    "ends_at": {
-    "ago_days": 30.85
+    "day_at": {
+     "day": -31,
+     "hour": 13,
+     "minute": 0
+    }
    },
    "bring": [
     "күрек",
@@ -5087,7 +5107,11 @@
     "text": "Отырғызылды 12 көшет — бірге жасадық: 22 көрші",
     "photo_ids": [],
     "at": {
-     "ago_days": 30.8
+     "day_at": {
+      "day": -31,
+      "hour": 15,
+      "minute": 0
+     }
     }
    },
    "from_idea": null,
@@ -5111,10 +5135,18 @@
    ],
    "district": "almaty",
    "starts_at": {
-    "ago_days": 18.0
+    "day_at": {
+     "day": -18,
+     "hour": 11,
+     "minute": 0
+    }
    },
    "ends_at": {
-    "ago_days": 17.88
+    "day_at": {
+     "day": -18,
+     "hour": 14,
+     "minute": 0
+    }
    },
    "bring": [
     "перчатки",
@@ -5132,7 +5164,11 @@
     "text": "Убрали двор и вывезли 30 мешков листьев",
     "photo_ids": [],
     "at": {
-     "ago_days": 17.8
+     "day_at": {
+      "day": -18,
+      "hour": 15,
+      "minute": 0
+     }
     }
    },
    "from_idea": null,
@@ -5156,10 +5192,18 @@
    ],
    "district": "nura",
    "starts_at": {
-    "in_days": 12.0
+    "day_at": {
+     "day": 12,
+     "hour": 19,
+     "minute": 0
+    }
    },
    "ends_at": {
-    "in_days": 12.2
+    "day_at": {
+     "day": 12,
+     "hour": 21,
+     "minute": 0
+    }
    },
    "bring": [
     "шланг",
@@ -5190,10 +5234,18 @@
    ],
    "district": "baikonur",
    "starts_at": {
-    "ago_days": 5.0
+    "day_at": {
+     "day": -5,
+     "hour": 10,
+     "minute": 0
+    }
    },
    "ends_at": {
-    "ago_days": 4.9
+    "day_at": {
+     "day": -5,
+     "hour": 12,
+     "minute": 0
+    }
    },
    "bring": [
     "перчатки"
@@ -5445,7 +5497,11 @@
    "title_ru": "Встреча акима района с жителями Нуры",
    "title_kk": "Аудан әкімінің Нұра тұрғындарымен кездесуі",
    "at": {
-    "ago_days": 12.3
+    "day_at": {
+     "day": -12,
+     "hour": 18,
+     "minute": 30
+    }
    },
    "place": {
     "kind": "area",
@@ -5453,6 +5509,10 @@
     "label_ru": "Двор: BI City Tokyo",
     "label_kk": "Аула: BI City Tokyo"
    },
+   "point": [
+    71.40147,
+    51.136596
+   ],
    "registered": 54,
    "questions": [
     "q-w15-05",
@@ -5516,6 +5576,17 @@
      }
     }
    ],
+   "result": {
+    "text_ru": "Обсудили дворы, освещение и дороги после раскопок. Службам даны 4 поручения со сроками — статус каждого виден здесь.",
+    "text_kk": "Аулаларды, жарықты және қазудан кейінгі жолдарды талқыладық. Қызметтерге мерзімі бар 4 тапсырма берілді — әрқайсысының мәртебесі осында көрінеді.",
+    "at": {
+     "day_at": {
+      "day": -12,
+      "hour": 21,
+      "minute": 0
+     }
+    }
+   },
    "demo": true
   },
   {
@@ -5536,6 +5607,10 @@
     "label_ru": "Двор — улица 206",
     "label_kk": "Аула — 206 көшесі"
    },
+   "point": [
+    71.292022,
+    51.131669
+   ],
    "registered": 31,
    "questions": [
     "q-w15-01",
@@ -5544,6 +5619,7 @@
     "q-w15-04"
    ],
    "orders": [],
+   "result": null,
    "demo": true
   },
   {
@@ -5552,7 +5628,11 @@
    "title_ru": "Встреча акима района с жителями Есиля",
    "title_kk": "Аудан әкімінің Есіл тұрғындарымен кездесуі",
    "at": {
-    "in_days": 9.3
+    "day_at": {
+     "day": 9,
+     "hour": 18,
+     "minute": 0
+    }
    },
    "place": {
     "kind": "area",
@@ -5560,12 +5640,17 @@
     "label_ru": "Двор: Бұқар Жырау De Luxe",
     "label_kk": "Аула: Бұқар Жырау De Luxe"
    },
+   "point": [
+    71.434542,
+    51.09812
+   ],
    "registered": 12,
    "questions": [
     "q-w15-07",
     "q-w15-08"
    ],
    "orders": [],
+   "result": null,
    "demo": true
   }
  ],

@@ -91,7 +91,7 @@ def _hours(value) -> float | None:
         return float(inner) * 24
     if key == "in_days":
         return -float(inner) * 24
-    return None  # дата, сезон, «ближайшая суббота» — сравниваются отдельно
+    return None  # дата, сезон, «ближайшая суббота», «день + время» — сравниваются отдельно
 
 
 def _order_bad(start, end) -> bool:
@@ -104,6 +104,9 @@ def _order_bad(start, end) -> bool:
         return (e["weekday"], e["hour"], e["minute"]) < (s["weekday"], s["hour"], s["minute"])
     if wio.is_reltime(start) and "next_weekday" in start and b is not None:
         return b >= 0  # начало — в будущем, конец уже прошёл
+    if wio.is_reltime(start) and wio.is_reltime(end) and "day_at" in start and "day_at" in end:
+        s, e = start["day_at"], end["day_at"]
+        return (e["day"], e["hour"], e["minute"]) < (s["day"], s["hour"], s["minute"])
     return False
 
 
@@ -116,7 +119,8 @@ def _check_time(rep: Report, where: str, value, *, allow_future: bool = True, al
         rep.err(where, "здесь нужно мгновение, а не дата")
     if key in ("ago_hours", "ago_days") and next(iter(value.values())) < 0:
         rep.err(where, "«назад» не может быть отрицательным")
-    if not allow_future and key in ("in_hours", "in_days", "next_weekday"):
+    if not allow_future and (key in ("in_hours", "in_days", "next_weekday")
+                             or (key == "day_at" and value["day_at"]["day"] > 0)):
         rep.err(where, "время в будущем там, где событие уже было")
 
 
