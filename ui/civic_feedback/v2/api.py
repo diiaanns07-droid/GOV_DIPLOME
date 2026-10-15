@@ -35,6 +35,7 @@ handle(...) возвращает None для чужих путей — шлюз 
   POST /complaints/{id}/services         «Совместное исполнение» {services: [{service, role: lead|partner}], reason?}
   POST /complaints/{id}/part             статус части службы {service, status: todo|in_progress|done, note?, expected?}
   GET  /complaints/inbox?service=water   «Обращения» одной службы (ссылка из «Штаба ведомств» R17)
+  GET  /complaints/inbox?district=nura   «Обращения» района (сверка с картой R07 и «Картиной дня» R08)
 """
 
 from __future__ import annotations
@@ -441,7 +442,12 @@ class ComplaintsV2Service:
         service = params.get("service") or None
         if service is not None and service not in lifecycle.SERVICES:
             raise ApiError(422, "invalid", "Неизвестная служба.", {"service": ",".join(lifecycle.SERVICES)})
+        district = params.get("district") or None
+        if district is not None and not rec.DISTRICT.match(district):
+            raise ApiError(422, "invalid", "Неверный район.", {"district": "id района"})
         records = self.store.list(status=list(rec.OPEN_STATUSES) + ["fixed"])
+        if district is not None:  # «Обращения» района — те же числа, что «Нура · N» на карте R07 и в «Картине дня» R08
+            records = [r for r in records if r.get("district") == district]
         lookup = self.store.assignee_lookup
         parts_of = {r["id"]: joint.parts(r, lookup) for r in records}
         if service is not None:   # «Обращения» одной службы (R17 «Штаб ведомств» → строка службы)
@@ -461,6 +467,7 @@ class ComplaintsV2Service:
             group["world"] = any(item["world"] for item in group["complaints"])
         data["tab"] = tab
         data["service"] = service
+        data["district"] = district
         return _ok(200, data)
 
     # ------------------------------------------------------------ «Это разные проблемы» (п. 9, R04 + R09)

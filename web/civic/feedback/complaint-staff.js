@@ -347,11 +347,12 @@
         }));
       var tools = [];
       if (editable && isOpen() && part.role !== "lead" && j.joint) {
-        tools.push(h("button", { "class": "bc-link bc-joint__remove", type: "button", onclick: function () {
+        tools.push(h("button", { "class": "bc-link bc-joint__remove", type: "button",
+                                 "aria-label": t("joint.remove", { service: serviceLabel(part.service) }), onclick: function () {
           var rest = j.services.filter(function (p) { return p.service !== part.service; })
             .map(function (p) { return { service: p.service, role: p.role }; });
           setServices(rest);
-        } }, t("joint.remove", { service: serviceLabel(part.service) })));
+        } }, t("joint.remove_short")));
       }
       var li = h("li", { "class": "bc-joint__part", "data-service": part.service, "data-status": part.status }, [
         h("div", { "class": "bc-joint__head" }, [partIcon(part.status),

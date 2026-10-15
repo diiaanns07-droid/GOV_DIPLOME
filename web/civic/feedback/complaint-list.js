@@ -72,6 +72,17 @@
     var m = /[#/&?]service=([a-z_]{2,30})(?:$|[&/])/.exec(window.location.hash || "");
     return m ? m[1] : null;
   }
+  // #complaints/district=nura — «Обращения» района (те же числа, что «Нура · N» на карте и в «Картине дня»).
+  function districtFromHash() {
+    var m = /[#/&?]district=([a-z][a-z0-9_-]{1,39})(?:$|[&/])/.exec(window.location.hash || "");
+    return m ? m[1] : null;
+  }
+  // Название района: словарь R11 (district.<id>), иначе id как есть.
+  function districtLabel(id) {
+    var key = "district." + id;
+    var label = C().t(key);
+    return label && label !== key ? label : id;
+  }
 
   function deadlineNode(d) {
     if (!d || d.state === "answered") return null;
@@ -122,7 +133,7 @@
     root.appendChild(box);
     // tab: "all" — все группы по статусу (как в Linear); или одна вкладка-фильтр. menu — ключ строки с открытым меню статуса.
     var state = { data: null, error: false, tab: "all", open: null, openFix: false, menu: null, slow: false, hover: null,
-                  service: opts.service || serviceFromHash(), partMenu: null };
+                  service: opts.service || serviceFromHash(), district: opts.district || districtFromHash(), partMenu: null };
     var staffHandle = null;
     var alive = true;
 
@@ -160,25 +171,38 @@
     }
 
     // Фильтр одной службы (R17 «Штаб ведомств» → строка службы): чип «Служба: Водоканал ×» над вкладками.
-    function inboxPath() { return "/complaints/inbox" + (state.service ? "?service=" + encodeURIComponent(state.service) : ""); }
+    function inboxPath() {
+      var q = [];
+      if (state.service) q.push("service=" + encodeURIComponent(state.service));
+      if (state.district) q.push("district=" + encodeURIComponent(state.district));
+      return "/complaints/inbox" + (q.length ? "?" + q.join("&") : "");
+    }
+    // Чипы фильтров над вкладками: «Служба: Водоканал ×» (R17), «Район: Нура ×» (карта R07, «Картина дня» R08).
     function serviceFilter() {
-      if (!state.service) return null;
+      if (!state.service && !state.district) return null;
+      var chip = function (key, label, clearLabel) {
+        return h("button", { "class": "bk-chip bc-inbox__filter-chip", type: "button", "aria-pressed": "true", "data-filter": key,
+                             "aria-label": clearLabel,
+                             onclick: function () {
+                               state[key] = null;
+                               if (new RegExp(key + "=").test(window.location.hash)) {
+                                 try { history.replaceState(null, "", window.location.pathname + window.location.search + "#complaints"); } catch (e) { /* */ }
+                               }
+                               state.data = null; load();
+                             } },
+          [h("span", {}, label), C().icon ? C().icon("close") : null]);
+      };
       return h("div", { "class": "bk-chips bc-inbox__filter" }, [
-        h("button", { "class": "bk-chip bc-inbox__filter-chip", type: "button", "aria-pressed": "true",
-                      "aria-label": t("inbox.filter.clear"),
-                      onclick: function () {
-                        state.service = null;
-                        if (/service=/.test(window.location.hash)) {
-                          try { history.replaceState(null, "", window.location.pathname + window.location.search + "#complaints"); } catch (e) { /* */ }
-                        }
-                        state.data = null; load();
-                      } },
-          [h("span", {}, t("inbox.filter.service", { service: t("service." + state.service) || state.service })),
-           C().icon ? C().icon("close") : null])]);
+        state.service ? chip("service", t("inbox.filter.service", { service: t("service." + state.service) || state.service }),
+                             t("inbox.filter.clear")) : null,
+        state.district ? chip("district", t("inbox.filter.district", { district: districtLabel(state.district) }),
+                              t("inbox.filter.clear_district")) : null]);
     }
     function onHash() {
-      var sid = serviceFromHash();
-      if (sid && sid !== state.service) { state.service = sid; state.data = null; load(); }
+      var sid = serviceFromHash(), did = districtFromHash();
+      if ((sid && sid !== state.service) || (did && did !== state.district)) {
+        state.service = sid || state.service; state.district = did || state.district; state.data = null; load();
+      }
     }
 
     // Части служб совместного обращения — под строкой: значок статуса · служба; нажатие — меню статуса части.

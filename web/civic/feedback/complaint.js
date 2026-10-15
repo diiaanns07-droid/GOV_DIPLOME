@@ -1745,9 +1745,11 @@
       return h("div", { "class": "bk-statusline__note bc-joint-line" }, [
         h("span", { "class": "bc-joint-line__title" }, t("joint.resident.title", { n: j.services.length })),
         h("ul", { "class": "bc-joint-line__list" }, j.services.map(function (part) {
+          // Служба и её статус — одним текстом: длинное казахское название переносится словами, «— орындалды» не
+          // уезжает отдельной строкой; значок — слева, по первой строке.
           return h("li", { "class": "bc-joint-line__part", "data-status": part.status }, [statusIcon(PART_ICON[part.status] || "new"),
-            h("span", { "class": "bc-joint-line__name" }, partService(part.service)),
-            h("span", { "class": "bc-joint-line__state" }, " — " + t("joint.part." + part.status))]);
+            h("span", { "class": "bc-joint-line__text" }, [h("span", { "class": "bc-joint-line__name" }, partService(part.service)),
+              h("span", { "class": "bc-joint-line__state" }, " — " + t("joint.part." + part.status))])]);
         }))]);
     }
 

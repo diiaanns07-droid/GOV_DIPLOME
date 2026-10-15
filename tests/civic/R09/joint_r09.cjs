@@ -139,7 +139,8 @@ async function variant(browser, base, width, height, lang, staff) {
     check(`${tag}: часть Дорожной службы «в работе» — прямо из строки «Обращений»`, roadNow === "in_progress", { roadNow, chips });
     await shot(page, `joint-${tag}-4-row-parts`);
     // Передача на другом обращении: «Гололёд на тротуаре у школы» (Есиль) → Дорожная служба, причина — чип.
-    const other = page.locator(".bc-inbox__item", { hasText: lang === "kk" ? "Шамамен орны" : "Примерное место" }).first();
+    // Вторая строка — «Гололёд на тротуаре у школы» без выбранной цели: «примерное место» (ячейка cell-…).
+    const other = page.locator('.bc-inbox__item[data-target^="cell-"]').first();
     if (await other.count()) {
       await other.locator(".bc-inbox__row").click();
       await page.waitForSelector(".bc-inbox__item--open .bc-joint__open-handoff", { timeout: 8000 });

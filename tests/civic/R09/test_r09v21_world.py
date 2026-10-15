@@ -45,15 +45,17 @@ def test_times_are_relative_to_seeding_and_deadline_is_computed(tmp_path, world)
     store = ComplaintStore(db, clock=lambda: NOW)
     try:
         pit = store.get(world_id("w-c-pit"))
-        assert pit["created_at"] == rec.iso(NOW - timedelta(days=2, hours=3))
+        assert pit["created_at"] == rec.iso(NOW - timedelta(hours=51))
         assert pit["due_at"] == rec.due_at(pit["created_at"], "roads")          # срок — кодом, рабочие дни РК
         assert pit["metoo"] == 6 and rec.reporters(pit) == 7
         times = store.metoo_times([pit["id"]])[pit["id"]]
         assert len(times) == 6 and all(pit["created_at"] <= t <= rec.iso(NOW) for t in times)
         assert pit["route_hint"]["services"] == ["water", "road"] and pit["route_hint"]["joint"] is True
         assert joint.lead_service(pit) == "road" and pit["services"] == []
-        assert pit["world"] == {"id": "w-c-pit", "scene": "pit_after_digging"}
-        assert scene_complaint(store, "pit_after_digging")["id"] == pit["id"]
+        assert pit["world"] == {"id": "w-c-pit", "scene": "scene8", "event": None} and pit["scene"] == "scene8"
+        assert scene_complaint(store, "scene8")["id"] == pit["id"]
+        # «Я тоже» мира — устройства по формуле R02 (SCHEMA §2.3), времена — из metoo_times.
+        assert [t for t in times] == [rec.iso(NOW - timedelta(hours=h)) for h in (50, 40, 30, 20, 10, 2)]
     finally:
         store.close()
 
@@ -69,6 +71,10 @@ def test_joint_parts_handoffs_and_resolutions_from_world(tmp_path, world):
         assert jr["status"] == "in_progress" and jr["services"][0]["note"] == "Трубу заменили"
         assert jr["handoffs"][0]["from"] == "road" and jr["handoffs"][0]["at"] == rec.iso(NOW - timedelta(days=7))
         assert [h["status"] for h in jr["status_history"]] == ["new", "accepted", "in_progress"]
+        assert jr["passport"]["assignee_id"] == "water" and jr["passport"]["fix_eta"] == (NOW.date() + timedelta(days=6)).isoformat()
+        assert jr["passport"]["delay"]["needs_decision"] is True and len(jr["passport"]["delay"]["options"]) == 2
+        assert jr["passport"]["delay"]["reason"] == "Асфальтовый завод закрыт до весны"
+        assert jr["updates"] == [{"at": rec.iso(NOW - timedelta(days=3)), "kind": "note", "text": "Водоканал заменил трубу"}]
         verified = store.get(world_id("w-c-verified"))
         assert verified["status"] == "fixed" and verified["resolution"]["state"] == "verified"
         assert lifecycle.heat_state(verified, NOW) is None                      # проверено 9 дней назад — остыло
@@ -105,7 +111,7 @@ def test_reset_returns_world_to_initial_state_after_rehearsal(tmp_path, world):
     try:
         fresh = store.get(cid)
         assert fresh["services"] == [] and fresh["handoffs"] == [] and fresh["metoo"] == 6
-        assert fresh["created_at"] == rec.iso(later - timedelta(days=2, hours=3))   # снова «свежая» к показу
+        assert fresh["created_at"] == rec.iso(later - timedelta(hours=51))          # снова «свежая» к показу
         assert store.metoo_times([cid])[cid] and len(store.metoo_times([cid])[cid]) == 6
     finally:
         store.close()
@@ -202,5 +208,59 @@ def test_world_complaints_appear_in_staff_inbox_and_counts_match(tmp_path, world
         assert open_ids == expected and len(open_ids) == 4                        # исправленное и проверенное — нет
         joint_rows = [g for g in data["items"] if g["joint"]]
         assert len(joint_rows) == 1 and [s["service"] for s in joint_rows[0]["services"]] == ["water", "road"]
+    finally:
+        store.close()
+
+
+def test_inbox_district_filter(tmp_path, world):
+    db = tmp_path / "w.sqlite3"
+    seed_world(db, world, now=NOW)
+    store = ComplaintStore(db, clock=lambda: NOW)
+    try:
+        service = ComplaintsV2Service(store)
+
+        class Staff:
+            is_staff = True
+            username, role = "operator1", "editor"
+
+            def check_csrf(self, value):
+                return True
+        ctx = {"host_allowed": True, "is_same_origin": True}
+        nura = service.handle("GET", "/api/civic/v2/complaints/inbox?district=nura", None, None, Staff(), ctx)["body"]["data"]
+        esil = service.handle("GET", "/api/civic/v2/complaints/inbox?district=esil", None, None, Staff(), ctx)["body"]["data"]
+        assert nura["district"] == "nura" and sum(nura["counts"].values()) == 3 and sum(esil["counts"].values()) == 1
+        bad = service.handle("GET", "/api/civic/v2/complaints/inbox?district=Nura!", None, None, Staff(), ctx)
+        assert bad["status"] == 422
+    finally:
+        store.close()
+
+
+# Мир R02 в сборке (data/civic/astana/demo-world/, или CIVIC_DEMO_WORLD_PATH): числа «Обращений» = EXPECTED.json R02.
+# В ветке R09 файлов мира нет (это пути R02) — тогда проверка пропускается; в сборке R01 она идёт.
+def _r02_world():
+    import os
+    root = Path(__file__).resolve().parents[3] / "data" / "civic" / "astana" / "demo-world"
+    world = Path(os.environ.get("CIVIC_DEMO_WORLD_PATH") or root / "world_v1.json")
+    expected = world.with_name("EXPECTED.json")
+    if not world.exists() or not expected.exists():
+        pytest.skip("мира R02 нет в этом дереве (data/civic/astana/demo-world/ — пути R02)")
+    return json.loads(world.read_text(encoding="utf-8")), json.loads(expected.read_text(encoding="utf-8"))
+
+
+def test_r02_world_counts_match_expected(tmp_path):
+    world, expected = _r02_world()
+    now = rec.parse_iso(expected["now"])
+    report = seed_world(tmp_path / "r02.sqlite3", world, now=now)
+    assert report["invalid"] == [] and report["inserted"] == len(world["complaints"])
+    store = ComplaintStore(tmp_path / "r02.sqlite3", clock=lambda: now)
+    try:
+        records = store.list(status=list(rec.OPEN_STATUSES) + ["fixed"])
+        assert lifecycle.inbox(records, now)["counts"] == expected["inbox"]["city"]
+        nura = lifecycle.inbox([r for r in records if r.get("district") == "nura"], now)
+        assert nura["counts"] == expected["inbox"]["nura"] and len(nura["items"]) == expected["inbox"]["nura_groups"]
+        scene8 = expected.get("scenes", {}).get("scene8") or world.get("scenes", {}).get("scene8") or {}
+        if scene8.get("complaint"):
+            pit = store.get(scene8["complaint"])
+            assert pit is not None and pit["route_hint"] and len(pit["route_hint"]["services"]) == 2
     finally:
         store.close()

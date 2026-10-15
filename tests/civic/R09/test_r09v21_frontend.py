@@ -37,7 +37,7 @@ def test_reason_chips_and_part_statuses_match_server():
 def test_routes_used_by_screens():
     for action in ("handoff", "services", "part"):
         assert f'"/{action}"' in STAFF_JS
-    assert '"/part"' in LIST_JS and "?service=" in LIST_JS
+    assert '"/part"' in LIST_JS and '"service=" + encodeURIComponent' in LIST_JS and '"district=" + encodeURIComponent' in LIST_JS
     assert 'rawCall("/route"' in STAFF_JS and 'rawCall("/reply-draft"' in STAFF_JS
 
 

@@ -344,7 +344,8 @@
       "joint.add.service": "Добавить службу",
       "joint.add.send": "Добавить",
       "joint.add.done": "Подключена: {service}",
-      "joint.remove": "Убрать «{service}»",
+      "joint.remove": "Убрать «{service}» из обращения",
+      "joint.remove_short": "Убрать",
       "joint.history.title": "Передачи",
       "joint.history.item": "{from} → {to}",
       "joint.by.operator": "оператор",
@@ -364,7 +365,11 @@
       "mine.changes.services": "Работают службы: {list}",
       "mine.changes.part": "{service} — {status}",
       "inbox.filter.service": "Служба: {service}",
-      "inbox.filter.clear": "Показать все службы"
+      "inbox.filter.clear": "Показать все службы",
+      "inbox.filter.district": "Район: {district}",
+      "inbox.filter.clear_district": "Показать все районы",
+      "district.nura": "Нура", "district.esil": "Есиль", "district.almaty": "Алматы",
+      "district.saryarka": "Сарыарка", "district.baikonur": "Байконур", "district.saraishyk": "Сарайшык"
     },
     kk: {
       "complaint.start.button": "Мәселе туралы хабарлау",
@@ -699,7 +704,8 @@
       "joint.add.service": "Қызмет қосу",
       "joint.add.send": "Қосу",
       "joint.add.done": "Қосылды: {service}",
-      "joint.remove": "«{service}» алып тастау",
+      "joint.remove": "«{service}» өтініштен алып тастау",
+      "joint.remove_short": "Алып тастау",
       "joint.history.title": "Берулер",
       "joint.history.item": "{from} → {to}",
       "joint.by.operator": "оператор",
@@ -719,7 +725,11 @@
       "mine.changes.services": "Жұмыс істейтін қызметтер: {list}",
       "mine.changes.part": "{service} — {status}",
       "inbox.filter.service": "Қызмет: {service}",
-      "inbox.filter.clear": "Барлық қызметті көрсету"
+      "inbox.filter.clear": "Барлық қызметті көрсету",
+      "inbox.filter.district": "Аудан: {district}",
+      "inbox.filter.clear_district": "Барлық ауданды көрсету",
+      "district.nura": "Нұра", "district.esil": "Есіл", "district.almaty": "Алматы",
+      "district.saryarka": "Сарыарқа", "district.baikonur": "Байқоңыр", "district.saraishyk": "Сарайшық"
     }
   };
 })();

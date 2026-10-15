@@ -583,7 +583,8 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-joint__role { font-size: var(--fs-caption, 13px); }
 .bc-joint__note { margin: 0; overflow-wrap: anywhere; }
 .bc-joint__seg { display: flex; width: 100%; }
-.bc-joint__seg > button { flex: 1 1 0; min-height: 36px; font: inherit; font-size: var(--fs-small, 14px); }
+.bc-joint__seg > button { flex: 1 1 0; min-width: 0; min-height: 36px; padding: 4px 8px; font: inherit;
+                          font-size: var(--fs-small, 14px); line-height: 1.2; white-space: normal; overflow-wrap: anywhere; }
 .bc-joint__seg > button::first-letter { text-transform: uppercase; }   /* «Ждёт · В работе · Сделано»; в фразах — строчные */
 /* Запасной вид без ui-kit — тот же сегмент .bk-seg: серая дорожка, выбранное — белое. */
 :where(.bc-joint__seg) { padding: 3px; border-radius: var(--r-m, 10px); background: var(--c-fill, #eff1f2); }
@@ -641,8 +642,9 @@ button.bc-inbox__part:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6)
 /* Житель: «Работают 2 службы:» и по строке на службу (значок + служба — статус) — читается без звонка в акимат. */
 .bc-joint-line { display: flex; flex-direction: column; gap: 2px; }
 .bc-joint-line__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.bc-joint-line__part { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; color: var(--c-ink, #121A17); }
-.bc-joint-line__part .bk-st-ic, .bc-joint-line__part .bc-sicon { flex: none; }
+.bc-joint-line__part { display: flex; align-items: flex-start; gap: 8px; color: var(--c-ink, #121A17); }
+.bc-joint-line__part .bk-st-ic, .bc-joint-line__part .bc-sicon { flex: none; margin-top: 3px; }
+.bc-joint-line__text { min-width: 0; overflow-wrap: anywhere; }
 .bc-joint-line__state { color: var(--c-text-2, #4B5752); }
 @media (prefers-reduced-motion: reduce) { .bc-inbox__part, .bc-joint__seg > button { transition: none; } }
 /* Шторка «Рядом с вами»: «исправлено службой» — значок «галочка» набора R11 в плашке (П1: без глифов вне набора). */
