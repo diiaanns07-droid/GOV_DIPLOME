@@ -1,0 +1,48 @@
+{
+  "_note": "Стенд и тесты R08 (в сборку не подмешивается). Кризис в формате CONTRACT §5.5 (R17). Синтетика, demo: true. Время — относительно «сейчас».",
+  "incidents": [
+    {
+      "id": "inc-demo-blizzard",
+      "kind": "blizzard",
+      "title_ru": "Буран в Нуре",
+      "title_kk": "Нұрадағы боран",
+      "zone": {"kind": "district", "district": "nura", "targets": [], "geometry": null},
+      "started_at__ago_hours": 30,
+      "status": "active",
+      "tasks": [
+        {"id": "t-1", "service": "street_cleaning", "text_ru": "Расчистить основные улицы и остановки", "text_kk": "Негізгі көшелер мен аялдамаларды қардан тазарту", "status": "doing"},
+        {"id": "t-2", "service": "street_cleaning", "text_ru": "Вывезти снег с перекрёстков", "text_kk": "Қиылыстардан қарды шығару", "status": "todo"},
+        {"id": "t-3", "service": "transport", "text_ru": "Добавить автобусы на маршрутах Нуры", "text_kk": "Нұра бағыттарына автобус қосу", "status": "done"},
+        {"id": "t-4", "service": "heating", "text_ru": "Дежурные бригады теплосети на местах", "text_kk": "Жылу желісінің кезекші бригадалары орнында", "status": "doing"},
+        {"id": "t-5", "service": "emergency", "text_ru": "Открыть пункты обогрева в школах", "text_kk": "Мектептерде жылыну пункттерін ашу", "status": "done"},
+        {"id": "t-6", "service": "power", "text_ru": "Проверить линии электропередачи", "text_kk": "Электр беру желілерін тексеру", "status": "done"}
+      ],
+      "updates": [
+        {"at__ago_hours": 2, "text_ru": "Основные улицы Нуры расчищены, дворы — до 18:00", "text_kk": "Нұраның негізгі көшелері тазартылды, аулалар — 18:00-ге дейін", "public": true},
+        {"at__ago_hours": 6, "text_ru": "Служебная заметка штаба: две машины на ремонте", "text_kk": "Штабтың қызметтік жазбасы: екі көлік жөндеуде", "public": false},
+        {"at__ago_hours": 11, "text_ru": "Автобусы ходят с задержкой до 15 минут", "text_kk": "Автобустар 15 минутқа дейін кешігіп жүреді", "public": true}
+      ],
+      "result": null,
+      "demo": true
+    },
+    {
+      "id": "inc-demo-water",
+      "kind": "water_outage",
+      "title_ru": "Прорыв водопровода в Есиле",
+      "title_kk": "Есілдегі су құбырының жарылуы",
+      "zone": {"kind": "district", "district": "esil", "targets": [], "geometry": null},
+      "started_at__ago_days": 5,
+      "status": "closed",
+      "closed_at__ago_days": 4,
+      "tasks": [
+        {"id": "t-1", "service": "water", "text_ru": "Заменить участок трубы", "text_kk": "Құбыр бөлігін ауыстыру", "status": "done"},
+        {"id": "t-2", "service": "road", "text_ru": "Восстановить асфальт", "text_kk": "Асфальтты қалпына келтіру", "status": "done"}
+      ],
+      "updates": [
+        {"at__ago_days": 4, "text_ru": "Вода подана во все дома", "text_kk": "Барлық үйлерге су берілді", "public": true}
+      ],
+      "result": {"text_ru": "Трубу заменили за 19 часов, асфальт восстановлен", "text_kk": "Құбыр 19 сағатта ауыстырылды, асфальт қалпына келтірілді"},
+      "demo": true
+    }
+  ]
+}

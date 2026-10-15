@@ -18,10 +18,22 @@
 6. Тесты и кадры 1920 / 1366 / 1024 / 375 × ru / kk.
 
 ## Сделано
-- (старт) роль занята, ветка сессии переставлена на основу раунда.
+- (старт) роль занята, ветка сессии переставлена на основу раунда. Код R08 в основе = d5719635 (восстанавливать нечего).
+- Круг 1 (бэкенд): ui/civic_akim/neighbors.py (чтение R17/R16/R13: функция → сервис make_service по маршруту §7 →
+  фикстура только на стенде), blocks.py (ведомства, кризис, жители вместе, встречи, прогноз), situation.py
+  (GET akim/board), weekly.py (GET akim/week), api.py (маршруты, только сотрудник: 401 staff_only без staff=True).
+  «Картина дня» (summary) получила блоки соседей + ссылку «кризисный штаб» у тревог пульса. Фикстуры §5:
+  fixtures/agencies_demo.json, incidents_demo.json, together_demo.json, meetings_demo.json.
+  pytest tests/civic/R08: 263 passed, 1 skipped (старые тесты не сломаны).
+- INTEGRATION.txt (черновик): строки V2_ROUTES/V2_HANDLERS для R01 (staff_view=True!), db_path в wire().
 
 ## Дальше
-- Прочитать IDEA, CONTRACT, VISUAL_BRIEF, передачу r14-R08; начать с akim/board.
+- web/civic/board/ (Ситуационный центр, тёмный), тесты нового бэкенда, «Картина дня» 2.0 во фронтенде,
+  печать «Картина недели», стенд tests/civic/R08/demo_server.py --board.
+
+## Продолжение после лимита
+- Scheduled task «R08 r15 — продолжение роли» (trig_01WZKCoebxSoXom3futWgUTE, каждый час в :26 UTC) — удалить после
+  17 окт 23:59 Астаны (18:59 UTC).
 
 ## Вопросы владельцу
 - (нет)

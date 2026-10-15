@@ -5,7 +5,10 @@
 темы и районы (ровно как тепловая карта R07), объекты с отставанием и устаревшие, новые
 предложения и голоса (R06), текстовая сводка ru/kk по шаблону (text.py, без LLM, офлайн).
 HTTP: api.handle_get → GET /api/civic/v2/akim/summary. Подключение — research/round-14-results/R08/INTEGRATION.txt.
+Раунд 15: «Картина дня» 2.0 (блоки соседей R17 / R16 / R13 — blocks.py, neighbors.py), «Ситуационный центр»
+board() → GET akim/board, «Картина недели» week() → GET akim/week (только сотрудник). Подключение —
+research/round-15-results/R08/INTEGRATION.txt.
 """
-from .summary import AkimError, AkimService, configure, default_service, summary
+from .summary import AkimError, AkimService, board, configure, default_service, summary, week
 
-__all__ = ["AkimError", "AkimService", "configure", "default_service", "summary"]
+__all__ = ["AkimError", "AkimService", "board", "configure", "default_service", "summary", "week"]

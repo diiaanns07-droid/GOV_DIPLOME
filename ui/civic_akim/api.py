@@ -12,6 +12,11 @@
         handle_put(path, body, staff=True, actor=…) — только для сотрудника; кто сотрудник и CSRF — решает шлюз R01.
     POST /api/civic/v2/akim/decisions/<id>  {"option": 1|2}   «Выбрать» вариант в «Нужно решение акима»:
         handle_post(path, body, staff=True, actor=…) — тоже только сотрудник.
+Раунд 15 — только сотрудник (шлюз R01: V2Handler kind="raw", staff_view=True → сюда приходит staff=True;
+без сессии сотрудника — 401 staff_only):
+    GET /api/civic/v2/akim/board?district=nura      «Ситуационный центр» (situation.py): KPI, пульс, места, службы R17,
+                                                    кризис R17, жители вместе R16, поручения и прогноз R13
+    GET /api/civic/v2/akim/week?date=2026-10-15&district=nura   «Картина недели» (weekly.py): 7 дней до date
 Раздел жителя «Рядом» (nearby.py, публично, без личных данных):
     GET  /api/civic/v2/nearby?district=nura&tab=now|done|planned|outages
     GET  /api/civic/v2/nearby/subscriptions?device_id=…        мои подписки
@@ -39,9 +44,21 @@ def _one(query: dict, name: str):
     return v
 
 
-def handle_get(path: str, query: dict | None = None, service=None) -> tuple[int, dict]:
+# Маршруты только для сотрудника: табло служб и кризисный штаб R17 — внутренние данные акимата (CONTRACT §7).
+STAFF_ONLY = (PREFIX + "/akim/board", PREFIX + "/akim/week")
+
+
+def handle_get(path: str, query: dict | None = None, service=None, staff: bool | None = None) -> tuple[int, dict]:
+    """staff — шлюз R01 проверил сессию сотрудника (staff_view): передаёт staff=True только тогда."""
     svc = service or default_service()
     try:
+        if path in STAFF_ONLY and staff is not True:
+            return 401, {"error": "staff_only",
+                         "message": "Ситуационный центр и «Картина недели» открываются после входа сотрудника акимата"}
+        if path == PREFIX + "/akim/board":
+            return 200, svc.board(district=_one(query, "district"))
+        if path == PREFIX + "/akim/week":
+            return 200, svc.week(date=_one(query, "date"), district=_one(query, "district"))
         if path == PREFIX + "/akim/summary":
             return 200, svc.summary(date=_one(query, "date"), district=_one(query, "district"))
         if path == PREFIX + "/akim/routing":
@@ -113,7 +130,8 @@ def handle_post(path: str, body, *, staff: bool = False, actor: str | None = Non
 
 
 # ---------------------------------------------------------------- для шлюза R01 (V2Handler kind="function")
-# Чтение — raw: handle_get (akim/summary, akim/routing, nearby, nearby/subscriptions, nearby/updates).
+# Чтение — raw: handle_get (akim/summary, akim/routing, nearby, nearby/subscriptions, nearby/updates);
+# akim/board и akim/week — raw со staff_view=True (только сотрудник, см. STAFF_ONLY).
 # Запись — функции ниже: шлюз R01 сам проверяет сотрудника и CSRF (staff=True в V2Handler) и передаёт principal;
 # ошибки ввода — ValueError с полями status/code/field (шлюз отвечает 400/404/429), см. INTEGRATION.txt §8.
 

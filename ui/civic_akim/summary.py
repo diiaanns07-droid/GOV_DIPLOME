@@ -30,7 +30,7 @@ import threading
 import time
 from datetime import date as Date, datetime, timedelta, timezone
 
-from . import deadlines, decisions, pulse, routing, sources, text
+from . import blocks, deadlines, decisions, neighbors, pulse, routing, sources, text
 
 ASTANA_TZ = timezone(timedelta(hours=5))
 WEEK = timedelta(days=7)
@@ -54,6 +54,8 @@ YES = {"yes", "fixed", "confirmed", "verified"}
 NO = {"no", "not_fixed", "still_there", "reopened"}
 PCT_MIN_BASE = 10       # с какой базы показывать изменение в процентах
 CACHE_TTL_S = 30.0
+# Блоки соседей (раунд 15, blocks.py): ведомства и кризис — R17, жители вместе — R16 (+ R09), встречи и прогноз — R13.
+NEIGHBOR_BLOCKS = ("agencies", "crisis", "together", "meetings", "forecast")
 
 _AUTO = object()        # «подключить соседа автоматически»
 
@@ -326,12 +328,17 @@ def districts() -> dict:
 # ---------------------------------------------------------------- сервис
 
 class AkimService:
-    def __init__(self, *, heat=_AUTO, records=_AUTO, objects=_AUTO, proposals=_AUTO, clock=None, demo_build=False):
+    def __init__(self, *, heat=_AUTO, records=_AUTO, objects=_AUTO, proposals=_AUTO, clock=None, demo_build=False,
+                 db_path=None, neighbor_sources=None, fixtures=None, neighbors_=None):
         """heat — HeatService R07 (False — без карты); records — функция since → записи v2;
         objects / proposals — функции (district, today) → список (CONTRACT §7, R06).
         demo_build — демо-сборка R01 (CIVIC_DEMO=1): пример «Нужно решение акима» виден, пока настоящих нет (R10 B-061).
-        По умолчанию всё подключается само (sources.py)."""
+        Раунд 15 — соседи «Картины дня» 2.0 и ситуационного центра (neighbors.py): db_path — база шлюза (для сервисов
+        R17/R16/R13), neighbor_sources — явные функции соседей {"agencies_board": fn, …} (имена — neighbors.FUNCS),
+        fixtures — фикстуры R08 (стенд, тесты).
+        По умолчанию всё подключается само (sources.py, neighbors.py)."""
         self.demo_build = bool(demo_build)
+        self.neighbors = neighbors_ or neighbors.Neighbors(sources=neighbor_sources, db_path=db_path, fixtures=fixtures)
         self.heat = sources.heat_service() if heat is _AUTO else (heat or None)
         self.engine = sources.heat_engine() if self.heat is not None else None
         self.source_names = {}
@@ -425,6 +432,12 @@ class AkimService:
         overdue_list = self._overdue_part(scoped, as_of, labels)
         decisions_part = self._decisions_part(scoped, district, as_of, labels)
         pulse_part = self._pulse_part(scoped, as_of, items_now, items_prev)
+        # Раунд 15 («Картина дня» 2.0): блоки соседей R17 / R16 / R13 — только «сегодня»: у соседей нет истории «на дату».
+        if is_today:
+            nb = self.neighbor_blocks(district, as_of, kpi)
+            blocks.crisis_links(pulse_part.get("items") or [], nb["crisis"])
+        else:
+            nb = {name: blocks.past_date() for name in NEIGHBOR_BLOCKS}
 
         d_info = districts().get(district) if district else None
         result = {
@@ -441,6 +454,7 @@ class AkimService:
             "pulse": pulse_part,
             "objects": objects,
             "proposals": proposals,
+            **nb,
             "deadlines": dict(deadlines.DEADLINE_DAYS),
             "deadline_units": {c: deadlines.unit(c) for c in deadlines.DEADLINE_DAYS},
             "heat_days": HEAT_DAYS,
@@ -453,6 +467,8 @@ class AkimService:
                 "objects": objects.get("demo", False),
                 "proposals": proposals.get("demo", False),
                 "decisions": decisions_part.get("demo", False),
+                # Прогноз R13 — всегда прототип на синтетике: у блока своя пометка «прототип», в «данные — пример» не идёт.
+                **{name: bool(nb[name].get("demo")) for name in NEIGHBOR_BLOCKS if name != "forecast"},
             },
             "stats": {"records": len(all_records), "skipped_invalid": skipped,
                       "duplicates": len(all_records) - len(recs), "in_scope": len(scoped)},
@@ -744,6 +760,42 @@ class AkimService:
         self.invalidate()
         return {"id": item_id, "chosen": record}
 
+    def neighbor_blocks(self, district, as_of: datetime, kpi: dict | None) -> dict:
+        """Блоки соседей на момент as_of (раунд 15). Сосед не готов или упал — блок {"available": False} (blocks.py)."""
+        nb, names = self.neighbors, {d_id: {"ru": i["ru"], "kk": i["kk"]} for d_id, i in districts().items()}
+        board, board_src = nb.safe("agencies_board", now=as_of, days=7, district=district)
+        joint = hand = None
+        if board is not None:
+            joint, _ = nb.safe("agencies_joint", now=as_of, days=7, district=district)
+            hand, _ = nb.safe("agencies_handoffs", now=as_of, days=7, district=district)
+        incidents, inc_src = nb.safe("incidents", now=as_of, district=district)
+        inits, init_src = nb.safe("initiatives", now=as_of, district=district)
+        yards = nb.safe("yards", now=as_of, district=district)[0] if inits is not None else None
+        meets, meet_src = nb.safe("meetings", now=as_of, district=district)
+        today = as_of.astimezone(ASTANA_TZ).date()
+        fc, fc_src = nb.safe("forecast_week", now=as_of, district=district, k=blocks.FORECAST_TOP, today=today)
+        period = "week"
+        if fc is None:
+            fc, fc_src = nb.safe("forecast_month", now=as_of, district=district, k=blocks.FORECAST_TOP, today=today)
+            period = "month"
+        return {
+            "agencies": blocks.agencies(board, board_src, joint, hand, as_of=as_of),
+            "crisis": blocks.crisis(incidents, inc_src, as_of=as_of, district=district, district_names=names),
+            "together": blocks.together(inits, init_src, yards, as_of=as_of, district=district, kpi=kpi),
+            "meetings": blocks.meetings(meets, meet_src, as_of=as_of, district=district, district_names=names),
+            "forecast": blocks.forecast(fc, fc_src, period),
+        }
+
+    def board(self, district=None, now: datetime | None = None) -> dict:
+        """«Ситуационный центр» (GET akim/board) — situation.py."""
+        from . import situation  # локально: situation импортирует summary
+        return situation.build(self, district=district, now=now or self._clock())
+
+    def week(self, date=None, district=None, now: datetime | None = None) -> dict:
+        """«Картина недели» (GET akim/week?date) — weekly.py."""
+        from . import weekly
+        return weekly.build(self, date=date, district=district, now=now or self._clock())
+
     def _pulse_part(self, recs: list[dict], as_of: datetime, items_now, items_prev) -> dict:
         """«Пульс» (волна 2 п. 8): метод — pulse.py."""
         if self._records is None or items_now is None:
@@ -825,3 +877,13 @@ def configure(**kwargs) -> AkimService:
 def summary(date=None, district=None, now: datetime | None = None) -> dict:
     """Функция для соседей и сервера: картина дня на дату (по умолчанию сегодня) и район (None — весь город)."""
     return default_service().summary(date=date, district=district, now=now)
+
+
+def board(district=None, now: datetime | None = None) -> dict:
+    """«Ситуационный центр» (раунд 15) — для соседей (R03 «ИИ-аналитик», R10): то же, что GET akim/board."""
+    return default_service().board(district=district, now=now)
+
+
+def week(date=None, district=None, now: datetime | None = None) -> dict:
+    """«Картина недели» (раунд 15): то же, что GET akim/week?date."""
+    return default_service().week(date=date, district=district, now=now)

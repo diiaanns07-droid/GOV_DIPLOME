@@ -1,0 +1,45 @@
+R08 · раунд 15 · INTEGRATION (черновик первого круга, будет дополняться; актуальная версия — в ветке R08,
+найти: python3 research/round-15/tools/find_branches.py --role R08)
+
+§1. R01 — маршруты API v2 (ui/web_server.py). ВАЖНО: akim/board и akim/week — ТОЛЬКО СОТРУДНИК (CONTRACT §7).
+    Шлюз для kind="raw" сотрудника не проверяет; поэтому — staff_view=True: шлюз передаёт staff=True после проверки
+    сессии R02 (без CSRF, это GET), а модуль R08 без staff=True отвечает 401 {"error": "staff_only"}.
+    Если зарегистрировать без staff_view — экран всегда будет «войдите как сотрудник» (а не дыра).
+
+    V2_ROUTES (рядом с ("GET", ("akim", "summary"), "akim.summary")):
+        ("GET", ("akim", "board"), "akim.board"),
+        ("GET", ("akim", "week"), "akim.week"),
+    V2_HANDLERS:
+        **{key: V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff_view=True)
+           for key in ("akim.board", "akim.week")},
+
+§2. R01 — wire(): база шлюза для соседей (R08 читает R17/R16/R13 их функциями, а если функции нет —
+    их сервисом make_service(db_path) по маршруту CONTRACT §7, от имени сотрудника, только GET):
+        kwargs = {"demo_build": True} if self.demo else {}
+        kwargs["db_path"] = str(self.db_path) if self.db_path else None     # ← новая строка
+        akim.configure(**kwargs)
+    (Без строки R08 берёт CIVIC_DB_PATH, затем .runtime/civic.sqlite3.)
+
+§3. Флаги
+    CIVIC_DEMO_WORLD=1 — фикстуры R08 не подмешиваются никогда (числа только из модулей).
+    BIRGE_AKIM_FIXTURES=1 — фикстуры соседей R08 (стенд и тесты; в сборку НЕ ставить).
+
+§4. Что R08 читает у соседей (функции — по порядку имён; можно любое из списка, или только make_service + маршрут §7):
+    R17 ui.civic_agencies: akim_board | board_for_akim | agencies_board | board_summary | board  (days, district)
+                           → тело как GET agencies/board: {"services": [{"service": "<id §3>", "open", "overdue",
+                             "median_answer_days", "verified_share" (0..1), "returned", "handoffs_in", "handoffs_out",
+                             "rank"?}], "demo"?};
+                           akim_joint | joint_summary | list_joint | joint → список совместных (§5.1) или {"open": n};
+                           akim_handoffs | list_handoffs | handoffs → список передач {"at", "from", "to", …};
+                           akim_incidents | active_incidents | list_incidents | incidents → список кризисов §5.5.
+    R16 ui.civic_together: akim_initiatives | list_initiatives | initiatives → список §5.2 (без устройств);
+                           akim_yards | list_yards | yards → список §5.3.
+    R13 ui.civic_meetings: akim_meetings | list_meetings | meetings → список §5.7 (с orders).
+    R13 ui.civic_forecast: attention_next_week | forecast_week | week_forecast (district, k, today) → как
+                           attention_next_month раунда 14; нет — R08 показывает прогноз на месяц с пометкой.
+    Функции вызываются только с теми параметрами, что принимают (days, district, status, db_path, now, k, today).
+    Нет модуля / упал — блок скрыт («пока нет данных»), «Картина дня» и ситуационный центр работают.
+
+§5. R17 — «просрочено» у служб. На одном экране число «Просрочено» (R08, сроки ui/civic_akim/deadlines.py) и
+    просроченные по службам (R17). Чтобы не было противоречия, предлагаю R17 считать просрочку тем же
+    ui.civic_akim.deadlines.due(category, created_at) (или отдать в табло поле overdue_rule, чтобы подписать различие).

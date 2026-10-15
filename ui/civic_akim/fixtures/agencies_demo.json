@@ -1,0 +1,37 @@
+{
+  "_note": "Стенд и тесты R08 (не попадает в сборку: фикстуры включаются только BIRGE_AKIM_FIXTURES=1, при CIVIC_DEMO_WORLD=1 — никогда). Табло служб в виде, который R08 ждёт от R17 (GET agencies/board, agencies/joint, agencies/handoffs). Все числа — синтетика, demo: true. Время — относительно «сейчас»: поле__ago_hours / __ago_days.",
+  "board": {
+    "days": 7,
+    "demo": true,
+    "services": [
+      {"service": "street_cleaning", "total": 58, "open": 46, "overdue": 9, "median_answer_days": 1.5, "verified_share": 0.34, "returned": 3, "handoffs_in": 1, "handoffs_out": 2},
+      {"service": "road", "total": 41, "open": 31, "overdue": 6, "median_answer_days": 2.5, "verified_share": 0.41, "returned": 2, "handoffs_in": 3, "handoffs_out": 4},
+      {"service": "water", "total": 22, "open": 14, "overdue": 4, "median_answer_days": 3.0, "verified_share": 0.29, "returned": 1, "handoffs_in": 4, "handoffs_out": 1},
+      {"service": "housing", "total": 19, "open": 12, "overdue": 3, "median_answer_days": 2.0, "verified_share": 0.38, "returned": 1, "handoffs_in": 0, "handoffs_out": 1},
+      {"service": "transport", "total": 24, "open": 15, "overdue": 2, "median_answer_days": 1.0, "verified_share": 0.52, "returned": 0, "handoffs_in": 0, "handoffs_out": 0},
+      {"service": "lighting", "total": 17, "open": 9, "overdue": 1, "median_answer_days": 1.0, "verified_share": 0.61, "returned": 0, "handoffs_in": 1, "handoffs_out": 0},
+      {"service": "waste", "total": 15, "open": 8, "overdue": 1, "median_answer_days": 1.5, "verified_share": 0.47, "returned": 1, "handoffs_in": 0, "handoffs_out": 0},
+      {"service": "heating", "total": 9, "open": 6, "overdue": 0, "median_answer_days": 0.5, "verified_share": 0.5, "returned": 0, "handoffs_in": 0, "handoffs_out": 0},
+      {"service": "traffic", "total": 11, "open": 5, "overdue": 0, "median_answer_days": 2.0, "verified_share": 0.45, "returned": 0, "handoffs_in": 1, "handoffs_out": 0},
+      {"service": "landscaping", "total": 8, "open": 4, "overdue": 0, "median_answer_days": 2.5, "verified_share": 0.5, "returned": 0, "handoffs_in": 0, "handoffs_out": 0}
+    ]
+  },
+  "joint": [
+    {"complaint_id": "c-demo-joint-1", "services": [{"service": "water", "role": "lead", "status": "done"}, {"service": "road", "role": "partner", "status": "in_progress"}], "demo": true},
+    {"complaint_id": "c-demo-joint-2", "services": [{"service": "road", "role": "lead", "status": "in_progress"}, {"service": "traffic", "role": "partner", "status": "todo"}], "demo": true},
+    {"complaint_id": "c-demo-joint-3", "services": [{"service": "street_cleaning", "role": "lead", "status": "in_progress"}, {"service": "transport", "role": "partner", "status": "done"}], "demo": true},
+    {"complaint_id": "c-demo-joint-4", "services": [{"service": "housing", "role": "lead", "status": "in_progress"}, {"service": "heating", "role": "partner", "status": "in_progress"}], "demo": true},
+    {"complaint_id": "c-demo-joint-5", "services": [{"service": "water", "role": "lead", "status": "in_progress"}, {"service": "landscaping", "role": "partner", "status": "todo"}], "demo": true}
+  ],
+  "handoffs": [
+    {"at__ago_hours": 5, "from": "road", "to": "water", "reason": "Сначала нужна замена трубы", "by_role": "operator", "demo": true},
+    {"at__ago_hours": 19, "from": "street_cleaning", "to": "housing", "reason": "Двор обслуживает управляющая компания", "by_role": "operator", "demo": true},
+    {"at__ago_hours": 30, "from": "road", "to": "traffic", "reason": "Нужна разметка, не ремонт", "by_role": "operator", "demo": true},
+    {"at__ago_days": 2, "from": "water", "to": "road", "reason": "Трубу заменили, нужен асфальт", "by_role": "operator", "demo": true},
+    {"at__ago_days": 3, "from": "road", "to": "water", "reason": "Под ямой течёт вода", "by_role": "operator", "demo": true},
+    {"at__ago_days": 4, "from": "street_cleaning", "to": "transport", "reason": "Остановку чистит перевозчик", "by_role": "operator", "demo": true},
+    {"at__ago_days": 5, "from": "housing", "to": "heating", "reason": "Нет тепла во всём доме", "by_role": "operator", "demo": true},
+    {"at__ago_days": 6, "from": "landscaping", "to": "water", "reason": "Подтопление из колодца", "by_role": "operator", "demo": true},
+    {"at__ago_days": 9, "from": "road", "to": "lighting", "reason": "Не горят фонари на участке", "by_role": "operator", "demo": true}
+  ]
+}

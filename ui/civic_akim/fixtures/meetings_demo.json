@@ -1,0 +1,35 @@
+{
+  "_note": "Стенд и тесты R08 (в сборку не подмешивается). Встречи акима района с жителями (CONTRACT §5.7, R13) с поручениями. Ведущий — «аким района» без имени. Синтетика, demo: true. Время — относительно «сейчас».",
+  "meetings": [
+    {
+      "id": "m-demo-nura-1", "district": "nura",
+      "title_ru": "Встреча акима района Нура с жителями", "title_kk": "Нұра ауданы әкімінің тұрғындармен кездесуі",
+      "at__ago_days": 9, "place": {"kind": "object", "id": "osm-node-demo-school", "label_ru": "Школа-лицей, актовый зал", "label_kk": "Мектеп-лицей, мәжіліс залы"},
+      "registered": 54, "questions": ["q-demo-1", "q-demo-2", "q-demo-3"],
+      "orders": [
+        {"id": "o-1", "text_ru": "Установить освещение во дворах у ул. Сыганак", "text_kk": "Сығанақ көшесі маңындағы аулаларға жарық орнату", "service": "lighting", "due__in_days": 6, "status": "in_progress", "link": null},
+        {"id": "o-2", "text_ru": "Убрать стихийную свалку за домами по ул. Е-308", "text_kk": "Е-308 көшесі бойындағы үйлердің артындағы стихиялық қоқыс үйіндісін шығару", "service": "waste", "due__ago_days": 2, "status": "in_progress", "link": null},
+        {"id": "o-3", "text_ru": "Нанести разметку у школы", "text_kk": "Мектеп жанына жол таңбасын салу", "service": "traffic", "due__ago_days": 1, "status": "done", "link": null},
+        {"id": "o-4", "text_ru": "Проверить отопление в домах на ул. Сыганак", "text_kk": "Сығанақ көшесіндегі үйлердің жылуын тексеру", "service": "heating", "due__in_days": 2, "status": "todo", "link": null}
+      ],
+      "demo": true
+    },
+    {
+      "id": "m-demo-nura-2", "district": "nura",
+      "title_ru": "Встреча акима района Нура с жителями", "title_kk": "Нұра ауданы әкімінің тұрғындармен кездесуі",
+      "at__in_days": 6, "place": {"kind": "object", "id": "osm-node-demo-center", "label_ru": "Дом культуры, малый зал", "label_kk": "Мәдениет үйі, кіші зал"},
+      "registered": 31, "questions": ["q-demo-4", "q-demo-5"], "orders": [], "demo": true
+    },
+    {
+      "id": "m-demo-esil-1", "district": "esil",
+      "title_ru": "Встреча акима района Есиль с жителями", "title_kk": "Есіл ауданы әкімінің тұрғындармен кездесуі",
+      "at__ago_days": 16, "place": {"kind": "object", "id": "osm-node-demo-esil", "label_ru": "Библиотека, читальный зал", "label_kk": "Кітапхана, оқу залы"},
+      "registered": 40, "questions": ["q-demo-6"],
+      "orders": [
+        {"id": "o-1", "text_ru": "Отремонтировать дорогу во дворе ЖК «Юг-1»", "text_kk": "«Юг-1» ТК ауласындағы жолды жөндеу", "service": "road", "due__ago_days": 6, "status": "done", "link": null},
+        {"id": "o-2", "text_ru": "Добавить урны на остановках", "text_kk": "Аялдамаларға қоқыс жәшіктерін қосу", "service": "waste", "due__in_days": 12, "status": "in_progress", "link": null}
+      ],
+      "demo": true
+    }
+  ]
+}

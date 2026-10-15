@@ -1,0 +1,72 @@
+{
+  "_note": "Стенд и тесты R08 (в сборку не подмешивается). Инициативы (CONTRACT §5.2) и дворы (§5.3) в виде, который R08 ждёт от R16. Дворы — настоящие дворы OSM Нуры (R12), всё остальное — синтетика, demo: true. Время — относительно «сейчас».",
+  "initiatives": [
+    {
+      "id": "i-demo-tandau-cleanup", "kind": "cleanup",
+      "title": "Субботник во дворе", "title_ru": "Субботник во дворе", "title_kk": "Аулада сенбілік", "lang": "ru",
+      "target": {"kind": "area", "id": "yard-1461758835", "label_ru": "Двор ЖК «Tandau»", "label_kk": "«Tandau» ТК ауласы"},
+      "point": [71.405262, 51.122119], "district": "nura",
+      "starts_at__ago_days": 2, "ends_at__ago_days": 2,
+      "bring": ["перчатки", "мешки"], "status": "done", "joined": 15,
+      "support": {"by_akimat": true, "inventory": true, "pickup_service": "waste", "note": "Мешки и вывоз в 14:00"},
+      "report": {"text": "Убрали двор и посадили 6 саженцев", "photo_ids": ["p-demo-1"], "at__ago_days": 2},
+      "from_idea": null, "demo": true
+    },
+    {
+      "id": "i-demo-ecopark-saturday", "kind": "cleanup",
+      "title": "Субботник в субботу, 10:00", "title_ru": "Субботник в субботу, 10:00", "title_kk": "Сенбіде сенбілік, 10:00", "lang": "ru",
+      "target": {"kind": "area", "id": "yard-1424189376", "label_ru": "Двор ЖК «Eco Park»", "label_kk": "«Eco Park» ТК ауласы"},
+      "point": [71.391418, 51.127606], "district": "nura",
+      "starts_at__in_days": 2, "ends_at__in_days": 2,
+      "bring": ["перчатки", "грабли"], "status": "published", "joined": 14,
+      "support": {"by_akimat": true, "inventory": true, "pickup_service": "waste", "note": "Мешки и вывоз"},
+      "report": null, "from_idea": null, "demo": true
+    },
+    {
+      "id": "i-demo-almatau-snow", "kind": "snow",
+      "title": "Расчистим снег у подъездов", "title_ru": "Расчистим снег у подъездов", "title_kk": "Подъезд алдындағы қарды тазалаймыз", "lang": "ru",
+      "target": {"kind": "area", "id": "yard-1549054977", "label_ru": "Двор ЖК «Алматау»", "label_kk": "«Алматау» ТК ауласы"},
+      "point": [71.411307, 51.124238], "district": "nura",
+      "starts_at__in_days": 1, "ends_at__in_days": 1,
+      "bring": ["лопаты"], "status": "published", "joined": 9,
+      "support": null, "report": null, "from_idea": null, "demo": true
+    },
+    {
+      "id": "i-demo-greening", "kind": "greening",
+      "title": "Посадим деревья у школы", "title_ru": "Посадим деревья у школы", "title_kk": "Мектеп жанына ағаш отырғызамыз", "lang": "ru",
+      "target": {"kind": "area", "id": "yard-1453849421", "label_ru": "Двор ЖК «GreenLine.Headliner»", "label_kk": "«GreenLine.Headliner» ТК ауласы"},
+      "point": [71.398492, 51.132112], "district": "nura",
+      "starts_at__ago_days": 5, "ends_at__ago_days": 5,
+      "bring": ["лопаты", "вёдра"], "status": "done", "joined": 22,
+      "support": {"by_akimat": true, "inventory": true, "pickup_service": null, "note": "Саженцы от службы озеленения"},
+      "report": {"text": "Посадили 12 деревьев", "photo_ids": ["p-demo-2"], "at__ago_days": 5},
+      "from_idea": "idea-demo-trees", "demo": true
+    },
+    {
+      "id": "i-demo-help", "kind": "help",
+      "title": "Поможем пожилым соседям с продуктами", "title_ru": "Поможем пожилым соседям с продуктами", "title_kk": "Қарт көршілерге азық-түлік жеткізуге көмектесеміз", "lang": "ru",
+      "target": {"kind": "area", "id": "yard-1549054977", "label_ru": "Двор ЖК «Алматау»", "label_kk": "«Алматау» ТК ауласы"},
+      "point": [71.411307, 51.124238], "district": "nura",
+      "starts_at__in_days": 4, "ends_at__in_days": 4,
+      "bring": [], "status": "on_review", "joined": 0,
+      "support": null, "report": null, "from_idea": null, "demo": true
+    },
+    {
+      "id": "i-demo-benches-old", "kind": "repair",
+      "title": "Покрасим лавочки", "title_ru": "Покрасим лавочки", "title_kk": "Орындықтарды бояймыз", "lang": "ru",
+      "target": {"kind": "area", "id": "yard-1461758835", "label_ru": "Двор ЖК «Tandau»", "label_kk": "«Tandau» ТК ауласы"},
+      "point": [71.405262, 51.122119], "district": "nura",
+      "starts_at__ago_days": 20, "ends_at__ago_days": 20,
+      "bring": ["кисти"], "status": "done", "joined": 8,
+      "support": null,
+      "report": {"text": "Покрасили 10 лавочек", "photo_ids": [], "at__ago_days": 20},
+      "from_idea": null, "demo": true
+    }
+  ],
+  "yards": [
+    {"id": "yard-1461758835", "label_ru": "Двор ЖК «Tandau»", "label_kk": "«Tandau» ТК ауласы", "district": "nura", "members": 37, "captain": null, "demo": true},
+    {"id": "yard-1424189376", "label_ru": "Двор ЖК «Eco Park»", "label_kk": "«Eco Park» ТК ауласы", "district": "nura", "members": 52, "captain": null, "demo": true},
+    {"id": "yard-1549054977", "label_ru": "Двор ЖК «Алматау»", "label_kk": "«Алматау» ТК ауласы", "district": "nura", "members": 24, "captain": null, "demo": true},
+    {"id": "yard-1453849421", "label_ru": "Двор ЖК «GreenLine.Headliner»", "label_kk": "«GreenLine.Headliner» ТК ауласы", "district": "nura", "members": 41, "captain": null, "demo": true}
+  ]
+}
