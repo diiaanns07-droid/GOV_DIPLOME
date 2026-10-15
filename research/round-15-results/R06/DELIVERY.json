@@ -62,7 +62,7 @@
       "passed": 727,
       "failed": 0,
       "skipped": 2,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2",
+      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)",
       "note": "включая засев настоящего мира R02 (55 записей) и миграцию на базе FINAL-4"
     },
     {
@@ -71,16 +71,15 @@
       "passed": 365,
       "failed": 0,
       "skipped": 1,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2"
+      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)"
     },
     {
       "name": "pytest tests/civic/R16 на дереве «как B1» (идея → инициатива не ломает R16)",
       "status": "PASS",
-      "passed": 52,
+      "passed": 59,
       "failed": 0,
       "skipped": 0,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd",
-      "note": "на дереве R01 197ad600 + R06 7f6636cd (код R06 для R16 с тех пор не менялся)"
+      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)"
     },
     {
       "name": "приёмка API R10 tests/civic/R10/api_v2.py на дереве «как B1» — строки R06",
@@ -95,7 +94,7 @@
       "status": "PASS",
       "passed": 273,
       "failed": 0,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2",
+      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)",
       "note": "+ на каждом экране R06 и в панели ленты — нет текста мельче --fs-xs (13 px в ui-kit R11 r7)"
     },
     {
@@ -120,16 +119,16 @@
       "status": "PASS",
       "passed": 284,
       "failed": 0,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2",
-      "sha": "66c697c2dbd31a7314a2e45b2cd7ea43721a5a9b"
+      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)",
+      "sha": "c7c8fbe8847cb994db3c43faaf503f2335b6f9d7"
     },
     {
       "name": "регресс FINAL-4 R06: tests/civic/R06/round14/app_r01_wave2.cjs",
       "status": "PASS",
       "passed": 130,
       "failed": 0,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2",
-      "sha": "66c697c2dbd31a7314a2e45b2cd7ea43721a5a9b"
+      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)",
+      "sha": "c7c8fbe8847cb994db3c43faaf503f2335b6f9d7"
     },
     {
       "name": "соседи на дереве «как B1»: pytest tests/civic/R02 R10 R15",
@@ -144,7 +143,7 @@
     },
     {
       "name": "стык ленты с настоящими модулями R09/R13/R16/R17 (neighbors_check.py)",
-      "sha": "c7c8fbe8 на сборке R01 0121f7bd (B0.12) с демо-миром",
+      "sha": "c7c8fbe8 на сборке R01 aad86127 (B0.13) с демо-миром",
       "status": "PASS",
       "note": "источники R06/R09/R16/R17/R13 ok; житель двора сцены 7 с подпиской на Нуру — 14 новых: работы рядом с двором 2 (≤ 800 м, как вкладка «Работы» R16), работы района 5, кризис R17 3, новости двора R16 4; нет id устройств; ссылки внутренние"
     },
@@ -200,6 +199,5 @@
     "Кадры — облако: подложка упрощённая; настоящий вид — LOCAL-12."
   ],
   "next_step": "R01 B1: взять пути R06 из code_sha и 3 строки ленты (INTEGRATION.txt). R06 дальше по кругам: сборка B1 глазами (колокольчик, лента, работы рядом в «Моём дворе» R16), патчи R08/R16, ключи R11, находки R10/R15.",
-  "screens_note": "кадры — облако, дерево «как B1» (R01 197ad600 B0.4 + R06 7f6636cd), 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6)",
-  "code_note": "после 66c697c2 в коде R06 изменился только радиус «рядом с двором» в ленте (notify.py, 500 → 800 м); браузер и регресс FINAL-4 — на 66c697c2 (интерфейс тот же)"
+  "screens_note": "кадры — облако, дерево «как B1» (R01 197ad600 B0.4 + R06 7f6636cd), 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6)"
 }
