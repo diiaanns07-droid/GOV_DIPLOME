@@ -153,3 +153,8 @@ R13 (claude/gifted-mayer-p86myv @ 315d01bd): R13-1 вместо «Проект �
   «N-көрініс» («сахна» — подмостки), «Горячее место» — «Шағымы көп орын» (как «Шағымы көп орындар» везде).
   Где тексты shell-text.js и словаря расходятся (10 ключей, напр. common.account.menu, shell.layers.none) — главнее
   словарь, как и было; править shell-text.js не нужно.
+
+Круг 3, часть 2 (15 окт, 17:35) — П1 по коду: R06 (claude/eloquent-einstein-wvuyje @ e41701cf) и R16
+  (claude/youthful-johnson-6nz5mp @ 9e9bc0e2) уже показывают вид значком (KIND_ICON) — по П1. Значки i-bench и i-sprout
+  теперь есть в спрайте ui-kit R11 (у R06 ICON_FALLBACK можно не трогать — сработает сам). R16 (мелочь): KIND_ICON
+  cleanup "trash" → "broom", repair "edit" → "wrench", greening "trees" → "sprout" — точнее по смыслу, значки в спрайте.
