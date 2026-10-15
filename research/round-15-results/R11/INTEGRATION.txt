@@ -293,3 +293,17 @@ R06 (claude/eloquent-einstein-wvuyje @ c2604ea2) — 22:01: browser_r15 --only n
   ui-kit R11: :lang(kk) .bk-feed__title — до 4 строк (казахское сказуемое в конце заголовка уведомления больше не
     съедается многоточием); тест R11 test_feed_title_keeps_kazakh_predicate.
   R06-3 web/civic/ideas/ideas.js: STATUS_LOOK project: "fixed" → "accepted" (зелёный только «исправлено», VISUAL_BRIEF §4.4).
+
+Круг 6, словарь (22:10) — AMENDMENTS: только П1. 2838 ключей, ru = kk, i18n_tools check PASS.
+  - R08: роль ведёт ветка claude/laughing-euler-iv3on3 (вторая сессия claude/inspiring-johnson-j7wksj остановилась,
+    c5152c37). Синхронизация R11 переведена на неё: +~150 ключей board.* / akim.trio.* / akim.pulse.* / akim.forecast.* /
+    week.*. Казахский: «Дағдарыс» → «Төтенше жағдай» / «Жедел штаб» (board.crisis.*, board.slide.crisis, *.crisis.open),
+    «Бірге атқарылды» → «Бірге жасалды» (как у R16), board.slide.services «Ведомстволар», «жылу картасы» → «шағымдар
+    картасы» (week.heat_note; ru — «Как карта жалоб»), «берілгені» → «жіберілгені», «тақтасы» → «таблосы».
+    Не взяты в словарь фрагменты фраз с пустой половиной (week.delta.week / week.delta.ago / board.delta.vs_week и их
+    *_before: порядок слов ru и kk разный) — модуль R08 берёт свои.
+  - R16: together.list.*, together.done_num; R17: agencies.kpi.overdue_answer / overdue_fix, agencies.col.fix(_hint —
+    «Күн қорытындысы», не «Күн суреті»), agencies.sort.fix; R12: wcal.stage.*; R13: meet.staff.link_pick_*.
+  - R12 (просьба поставки 8): qr.form.updated, qr.form.gone; в qr.form.ids_hint пример номера — osm-node-14140558124
+    (прежний светофор выбыл из свежего снимка OSM).
+  R02 (мелочь, данные мира kk): в тексте решения «Учаске бұзылып жатыр…» — «Көше бөлігі бұзылып жатыр…» (KK_REVIEW № 28).
