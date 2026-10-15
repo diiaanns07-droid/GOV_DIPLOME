@@ -13,6 +13,13 @@ from .api import geo_status, objects_near, segment_between, street_snap, yard_at
 from .targets import targets  # noqa: F401  (шлюз R01: targets(lon, lat, category=None))
 
 
+def seed_world(db_path=None, records=None, now=None) -> dict:
+    """Демо-мир R02 (CONTRACT §11): R01 зовёт с уже материализованным миром и одним now на все модули.
+    R12 записей не хранит — запоминает работы и задуманные конфликты для «Календаря работ» (works_calendar)."""
+    from .works_calendar import remember_world
+    return remember_world(records, now)
+
+
 def target_geometry(target: dict) -> dict | None:
     """Форма и подпись цели по её id: объект OSM, ребро графа, двор или ячейка. None — цель неизвестна."""
     from . import geo

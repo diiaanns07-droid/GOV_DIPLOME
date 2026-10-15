@@ -6,6 +6,8 @@
     python3 -m engine.civic_geo bench [N]                        время ответа /targets на N случайных точках
     python3 -m engine.civic_geo build-way-tags | build-data | snap-demo   пересборка данных
     python3 -m engine.civic_geo search-index [--out FILE]        индекс подсказок поиска (улицы, остановки, дворы) для R01
+    python3 -m engine.civic_geo build-works-fixture [--out FILE] фикстура «Календаря работ» (синтетика на улицах OSM)
+    python3 -m engine.civic_geo works [--from 2026-09 --to 2027-09 --district nura]   календарь и конфликты в консоли
 """
 from __future__ import annotations
 
@@ -35,6 +37,25 @@ def main(argv=None):
     if cmd == "search-index":
         from .search_index import main as m
         return m(rest)
+    if cmd == "build-works-fixture":
+        from .build_works_fixture import main as m
+        return m(rest)
+    if cmd == "works":
+        from .works_calendar import build_calendar, load_fixture, load_works, parse_filters, parse_period, today_astana
+        ap = argparse.ArgumentParser(prog="works")
+        ap.add_argument("--from", dest="date_from")
+        ap.add_argument("--to", dest="date_to")
+        ap.add_argument("--district")
+        ap.add_argument("--fixture", action="store_true", help="только фикстура R12 (без R06)")
+        a = ap.parse_args(rest)
+        today = today_astana()
+        start, end = parse_period({"from": a.date_from, "to": a.date_to}, today)
+        records = load_fixture(today) if a.fixture else load_works(today)[0]
+        cal = build_calendar(records, start, end, parse_filters({"district": a.district}), today)
+        for c in cal["conflicts"]:
+            print(f"{c['severity']:6s} {c['kind']:22s} {c['street_ru'] or '—'}: {', '.join(c['works'])}\n       {c['advice_ru']}")
+        print(json.dumps(cal["counts"], ensure_ascii=False), f"{cal['generated_ms']} мс")
+        return 0
     if cmd == "report":
         from .accuracy import format_report, report
         ap = argparse.ArgumentParser(prog="report")

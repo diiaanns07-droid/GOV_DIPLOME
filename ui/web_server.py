@@ -118,6 +118,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
                 "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
+                # R12 раунд 15: «Календарь работ» (экран акимата и слой «Конфликты работ»).
+                "works-calendar/works-calendar.js", "works-calendar/works-calendar.css",
                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
                 "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
                 # R13 раунд 15: «Вопросы и встречи» (раздел #meetings; вкладка «Вопросы» — qa.js выше).

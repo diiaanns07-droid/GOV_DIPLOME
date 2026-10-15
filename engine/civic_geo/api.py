@@ -6,10 +6,13 @@
     GET /api/civic/v2/objects-near?lon=..&lat=..            -> near_response(query)   (редактор: точка -> объект OSM)
     GET /api/civic/v2/yard?lon=..&lat=..                    -> yard_response(query)   (редактор: двор выбором полигона)
     GET /api/civic/v2/geo/status                            -> status_response()
+    GET /api/civic/v2/works-calendar?from&to&district&street&service   (раунд 15, сотрудник) -> works_calendar
+    GET /api/civic/v2/works-conflicts?from&to&district&service         (раунд 15, сотрудник) -> works_calendar
 
 Каждая функция получает разобранный query (как parse_qs: {"lon": ["71.4"]} или просто {"lon": "71.4"})
 и возвращает (код, словарь для JSON). Исключений наружу не бросает: ошибки — 400/503 с понятным текстом.
 Первый вызов загружает граф (~2 с); R01 может вызвать warm_up() при старте сервера.
+Календарь и конфликты работ — только сотруднику: проверяет шлюз R01 (V2Handler staff=True) до вызова handle.
 """
 from __future__ import annotations
 
@@ -180,10 +183,33 @@ ROUTES = {
 }
 
 
-def handle(path: str, query: dict):
-    """Один вход для R01: path без префикса /api/civic/v2 ("/targets", ...). (код, тело) или None — не наш путь."""
+def _works_calendar(query: dict, staff=None):
+    from .works_calendar import calendar_response  # граф и работы грузятся только когда календарь открыли
+    return calendar_response(query, staff=staff)
+
+
+def _works_conflicts(query: dict, staff=None):
+    from .works_calendar import conflicts_response
+    return conflicts_response(query, staff=staff)
+
+
+# Раунд 15: календарь и конфликты работ — только сотрудник (проверяет шлюз R01: staff=True у маршрута).
+STAFF_ROUTES = {
+    "/works-calendar": _works_calendar,
+    "/works-conflicts": _works_conflicts,
+}
+
+
+def handle(path: str, query: dict, staff=None):
+    """Один вход для R01: path без префикса /api/civic/v2 ("/targets", ...). (код, тело) или None — не наш путь.
+
+    Маршруты календаря работ — для сотрудника: его проверяет шлюз R01 до вызова (staff=True у V2Handler); явное
+    staff=False — 401 и здесь. Открытым маршрутам (/targets, /target, …) параметр не нужен."""
     if path == "/geo/status":
         return status_response()
+    fn = STAFF_ROUTES.get(path)
+    if fn:
+        return fn(query, staff=staff)
     fn = ROUTES.get(path)
     return fn(query) if fn else None
 
