@@ -20,9 +20,19 @@
   чистые функции, метод в шапке), geo.py (районы и дворы OSM для зоны), fixture.py (синтетика §5.1 до R09),
   sources.py (R01 configure → R09 → фикстура), store.py (таблицы agency_* кризисного штаба). Сервиса HTTP ещё нет.
 
+- Checkpoint 2 (17:55): crisis.py, service.py (make_service(db).handle — 11 маршрутов §7), demo.py (пример кризиса
+  + seed_world), __init__.py (updates, board_snapshot, agencies_week, active_incidents, incident_marks,
+  service_profiles, crisis_link). pytest tests/civic/R17 — 39 PASS.
+- Checkpoint 3 (19:00): экран web/civic/agencies/ (agencies.js, agencies.css, crisis-layer.js, index.html):
+  Табло (20 служб на одном экране 1366×768 — проверено кадром), Совместные, Передачи, Кризис (карточка, чипы служб
+  с прогрессом, задачи, обновления ҚАЗ/РУС, закрытие, форма нового кризиса из шаблона, зона район/дворы);
+  слой карты «Кризис» (registerLayer, зона дышит, под значками R07), баннер и карточка жителю зоны.
+  Патч для R01 (маршруты, ассеты, теги): research/round-15-results/R17/patches/R01_agencies_routes_assets.patch —
+  на стенде наложен локально, в ветку НЕ коммитится (чужие пути).
+
 ## Следующий шаг
-- crisis.py (шаблоны, зона, модерация), service.py (make_service(db).handle), __init__.py (updates, seed_world,
-  функции для R08/R03/R07/R12), тесты tests/civic/R17/, затем экран web/civic/agencies/.
+- Браузерный тест tests/civic/R17/agencies_browser.cjs (1366/1024/375 × ru/kk, поток кризиса, баннер жителя),
+  тест шлюза R01 с патчем, INTEGRATION.txt, RUN.txt, DELIVERY.json, кадры в research/round-15-results/R17/screens/.
 
 ## Вопросы владельцу
 - (пока нет)

@@ -194,6 +194,10 @@ class AgencyService:
         if _is_staff(principal):
             body["templates"] = crisis.templates_view()
             body["districts"] = [{"id": d, **geo.DISTRICT_NAMES[d]} for d in geo.DISTRICTS]
+            # Дворы R12 для зоны «отдельные дворы» (без контуров: форма — в GET incidents/{id}).
+            body["yards"] = sorted(({"id": y["id"], "label_ru": y["label_ru"], "label_kk": y["label_kk"],
+                                     "district": y["district"]} for y in geo.yards().values() if y["district"]),
+                                   key=lambda y: (y["district"], y["label_ru"], y["id"]))
         return _reply(200, body)
 
     def board(self, q: dict) -> dict:
@@ -275,6 +279,8 @@ class AgencyService:
     def resident_updates(self, q: dict, context) -> dict:
         """Обновления кризисов для зоны жителя: район/двор из запроса + двор R16 и подписки R08 по устройству."""
         since = q.get("since") or None
+        if since is not None and parse_iso(since) is None and parse_iso(since.replace(" ", "+")) is not None:
+            since = since.replace(" ", "+")   # «+05:00» без кодирования в адресе приходит пробелом
         if since is not None and parse_iso(since) is None:
             raise ApiError(400, "bad_request", "since: дата и время ISO 8601.", "since")
         districts, yards = set(), set()

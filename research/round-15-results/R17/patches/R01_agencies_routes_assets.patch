@@ -1,0 +1,70 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index b1292654..44d8ddc3 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -118,7 +118,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
+                 "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
+                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
+-                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
++                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
++                # R17 раунд 15: «Штаб ведомств» (раздел #agencies, акимат), слой карты «Кризис» и баннер жителям зоны.
++                "agencies/agencies.js", "agencies/agencies.css", "agencies/crisis-layer.js", "agencies/index.html")
+ # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+ CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
+@@ -742,6 +744,19 @@ V2_ROUTES = (
+     ("POST", ("questions", "{id}", "publish"), "qa.publish"),
+     ("POST", ("questions", "{id}", "reject"), "qa.reject"),
+     ("POST", ("questions", "{id}", "answer"), "qa.answer"),
++    # R17 раунд 15: «Штаб ведомств» и кризисный штаб (ui.civic_agencies, kind="service"). Точные пути — раньше {id}:
++    # incidents/updates стоит выше incidents/{id}, иначе «updates» примется за id кризиса.
++    ("GET", ("agencies",), "agencies.list"),
++    ("GET", ("agencies", "board"), "agencies.board"),
++    ("GET", ("agencies", "joint"), "agencies.joint"),
++    ("GET", ("agencies", "handoffs"), "agencies.handoffs"),
++    ("GET", ("incidents",), "incidents.list"),
++    ("POST", ("incidents",), "incidents.create"),
++    ("GET", ("incidents", "updates"), "incidents.updates"),
++    ("GET", ("incidents", "{id}"), "incidents.get"),
++    ("POST", ("incidents", "{id}", "task"), "incidents.task"),
++    ("POST", ("incidents", "{id}", "update"), "incidents.update"),
++    ("POST", ("incidents", "{id}", "close"), "incidents.close"),
+ )
+ # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
+ V2_HANDLERS = {
+@@ -797,6 +812,13 @@ V2_HANDLERS = {
+     # Модерация: сессия R02 + CSRF проверяет и шлюз (staff=True, R15-S34), и сам сервис — защита в глубину.
+     **{key: V2Handler("R13", ("ui.civic_qa",), "make_service", kind="service", staff=True) for key in (
+         "qa.publish", "qa.reject", "qa.answer")},
++    # R17: чтение — сервис сам различает жителя и сотрудника (табло, совместные, передачи — только сессия R02, как
++    # «Обращения» R09: без CSRF в GET); запись в кризисный штаб — сессия + CSRF проверяют и шлюз, и сервис (R15-S34).
++    **{key: V2Handler("R17", ("ui.civic_agencies",), "make_service", kind="service") for key in (
++        "agencies.list", "agencies.board", "agencies.joint", "agencies.handoffs", "incidents.list", "incidents.get",
++        "incidents.updates")},
++    **{key: V2Handler("R17", ("ui.civic_agencies",), "make_service", kind="service", staff=True) for key in (
++        "incidents.create", "incidents.task", "incidents.update", "incidents.close")},
+ }
+ 
+ 
+diff --git a/web/index.html b/web/index.html
+index 78455458..23be12de 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -26,6 +26,7 @@
+     <link rel="stylesheet" href="/civic/nearby/nearby.css" />
+     <link rel="stylesheet" href="/civic/akim/today.css" />
+     <link rel="stylesheet" href="/civic/qa/qa.css" />
++    <link rel="stylesheet" href="/civic/agencies/agencies.css" />
+     <link rel="stylesheet" href="/civic/proposals/proposals.css" />
+     <link rel="stylesheet" href="/civic/ideas/ideas.css" />
+     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+@@ -257,6 +258,8 @@
+     <script defer src="/civic/ideas/ideas.js"></script>
+     <script defer src="/civic/proposals/works.js"></script>
+     <script defer src="/civic/akim/services.js"></script>
++    <script defer src="/civic/agencies/agencies.js"></script>
++    <script defer src="/civic/agencies/crisis-layer.js"></script>
+     <script defer src="/civic/map/search_index.js"></script>
+     <script defer src="/civic/shell/explore.js"></script>
+     <script defer src="/civic/shell/shell.js"></script>
