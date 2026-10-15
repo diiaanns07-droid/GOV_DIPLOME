@@ -1138,6 +1138,13 @@ WHY = {
 }
 
 
+# Параллельные улицы Нуры для «параллельных перекрытий» (рёбра графа R12, OSM): ул. Айтеке Би и ул. Култегин.
+PARALLEL_A = ["osm-w885800304-16", "osm-w885800304-15", "osm-w885800304-14", "osm-w885800304-13",
+              "osm-w885800304-12", "osm-w885800304-11", "osm-w885800304-10", "osm-w885800304-9"]
+PARALLEL_B = ["osm-w1081404300-1", "osm-w916153714-4", "osm-w916153714-3", "osm-w916153714-2",
+              "osm-w916153714-1", "osm-w916153714-0"]
+
+
 class Works:
     def __init__(self, b: WorldBuilder):
         self.b = b
@@ -1221,6 +1228,7 @@ class Works:
                             "Сначала заменить трубу (апрель), потом класть асфальт (май) — не копать новый асфальт.",
                             "Алдымен құбырды ауыстыру (сәуір), содан кейін асфальт төсеу (мамыр) — жаңа асфальтты қазбау.")
         scene8["works"] = [surface["id"], dig["id"]]
+        scene8["surface_work"], scene8["dig_work"] = surface["id"], dig["id"]   # R12: openConflict(<id раскопки>)
         scene8["conflict"] = cf8["id"]
         # Ещё два «асфальт раньше сетей»: Есиль (асфальт положили 20 дней назад, раскопка через 15 дней) и Сарыарка.
         run = street_run(b.inputs, "esil", min_edges=5, max_edges=6, rank=0, exclude_ways=self.used_ways)
@@ -1235,16 +1243,17 @@ class Works:
                      {"season": {"month": 6, "day": 20}}, "planned")
         d = self.add("saryarka", run[:3], "gas", "dig", {"season": {"month": 8, "day": 10}},
                      {"season": {"month": 8, "day": 28}}, "planned")
-        self.conflict("dig_after_surface", [a, d], run[:3], "medium",
+        self.conflict("dig_after_surface", [a, d], run[:3], "high",
                       "Поменять очерёдность: газопровод в мае, асфальт после него.",
                       "Кезекті ауыстыру: газ құбыры мамырда, асфальт одан кейін.")
-        # Два перекрытия соседних участков одной улицы в одни дни (Нура) — «параллельные перекрытия».
-        run = street_run(b.inputs, "nura", min_edges=6, max_edges=6, rank=0, exclude_ways=self.used_ways)
-        c1 = self.add("nura", run[:3], "road", "closure", {"day": 5}, {"day": 9}, "planned")
-        c2 = self.add("nura", run[3:], "traffic", "closure", {"day": 7}, {"day": 11}, "planned")
-        self.conflict("parallel_closures", [c1, c2], run, "medium",
-                      "Развести перекрытия по датам: сначала один участок, потом второй — иначе объезда нет.",
-                      "Жабуларды күн бойынша бөлу: алдымен бір учаске, сосын екіншісі — әйтпесе айналма жол жоқ.")
+        # «Параллельные перекрытия» (R12): две РАЗНЫЕ параллельные улицы одного коридора закрыты в одни дни — объезда
+        # нет. Пара улиц Нуры — та же, на которой R12 проверял свой поиск (фикстура R12 w-demo-r12-05/06): Айтеке Би и
+        # Култегин, настоящие рёбра графа OSM; даты — свои.
+        c1 = self.add("nura", PARALLEL_A, "road", "closure", {"day": 5}, {"day": 9}, "planned")
+        c2 = self.add("nura", PARALLEL_B, "traffic", "closure", {"day": 7}, {"day": 11}, "planned")
+        self.conflict("parallel_closures", [c1, c2], PARALLEL_A + PARALLEL_B, "medium",
+                      "Не перекрывайте параллельные улицы одновременно: разнесите перекрытия по датам, чтобы остался объезд.",
+                      "Қатар көшелерді бір уақытта жаппаңыз: айналма жол қалуы үшін жабуларды әр күнге бөліңіз.")
         # Свет и благоустройство на одних участках одновременно (Алматы) — «одно и то же место дважды».
         run = street_run(b.inputs, "almaty", min_edges=4, max_edges=5, rank=0, exclude_ways=self.used_ways)
         l1 = self.add("almaty", run, "lighting", "lighting", {"day": -6}, {"day": 12}, "in_progress")

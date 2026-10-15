@@ -90,14 +90,20 @@ zone_ru/kk, why. Работы следующего сезона (асфальт 
 §6. R12 — календарь работ и конфликты
 =====================================================================================================
 Ваш engine/civic_geo/works_calendar.load_world() читает файл мира сам и ждёт starts_on строкой — в мире там
-{"day": -30} / {"season": {...}}. Минимальная правка (до цикла по работам):
-    from ml.datasets.demo_world_io import load_world as _r02_load, materialize
-    data = materialize(_r02_load(path), datetime.combine(today, time(12), tzinfo=ASTANA))   # даты от «сегодня»
-planned_conflicts (5) — что ваш поиск должен найти на тех же участках: cf-w15-01 dig_after_surface (сцена 8, Нура,
-асфальт 4–22 мая, сети 6–31 июля), cf-w15-02 dig_after_surface (Есиль: асфальт положили 20 дней назад, теплотрасса
-через 15 дней), cf-w15-03 dig_after_surface (Сарыарка, июнь → август), cf-w15-04 parallel_closures (Нура, соседние
-участки одной улицы в одни дни), cf-w15-05 same_segment_overlap (Алматы, свет и благоустройство). Участки — рёбра
-вашего графа (проверено demo_world_check).
+{"day": -30} / {"season": {...}}. Готовый patch (7 строк, проверен на вашей ветке @ 8ecfbd37):
+    git apply research/round-15-results/R02/patches/R12_works_calendar_world.patch
+С ним календарь на мире (CIVIC_DEMO=1, CIVIC_DEMO_WORLD=1, R06 без works_v2): источник world, 43 записи, и ваш
+find_conflicts находит РОВНО 5 задуманных конфликтов с теми же видами и важностью, без лишних:
+  dig_after_surface high: w-w15-002 + w-w15-003 (сцена 8, Нура, ул. Баян Сулу: асфальт 4–22 мая, водопровод 6–31 июля),
+                          w-w15-004 + w-w15-005 (Есиль: асфальт положили 20 дней назад, теплотрасса через 15 дней),
+                          w-w15-006 + w-w15-007 (Сарыарка: асфальт в июне, газопровод в августе);
+  parallel_closures medium: w-w15-008 + w-w15-009 (Нура, ул. Айтеке Би и ул. Култегин — та же пара улиц, что в вашей
+                          фикстуре w-demo-r12-05/06; даты свои: через 5–9 и 7–11 дней);
+  same_segment_overlap medium: w-w15-010 + w-w15-011 (Алматы: освещение и благоустройство).
+Тест стыка: tests/civic/R02/round15 test_r12_finds_planned_conflicts (в ветке R02 пропускается, на вашем коде — PASS).
+Сцена 8 для палитры: scenes.scene8.dig_work = w-w15-003 (раскопка «в июле») → BirgeWorksCalendar.openConflict("w-w15-003");
+scenes.scene8.surface_work = w-w15-002. Когда R06 засеет работы мира своей seed_world, календарь возьмёт их у R06
+(ISO-даты) и patch уже не нужен — но он безопасен (materialize идемпотентна).
 
 =====================================================================================================
 §7. R13 — встречи и вопросы (ключи meetings, questions)
@@ -128,11 +134,10 @@ services / handoffs / resolution. Для сверки: EXPECTED.json → service
 =====================================================================================================
 §10. R10 — сверка чисел (tests/civic/R10/consistency.py)
 =====================================================================================================
-- world_numbers(): created_at в мире — объект {"ago_hours": h}, а не ISO и не ago_days. Сейчас parse_time(dict) → None
-  и все жалобы района считаются «за 30 дней» (B2 даст 267 вместо 154). Правка:
-      from ml.datasets.demo_world_io import load_world, materialize
-      data = materialize(load_world(path), self.now)
-  тогда created_at — ISO, остальной код без изменений.
+- world_numbers(): created_at в мире — объект {"ago_hours": h}, а не ISO и не ago_days. Без правки parse_time(dict) → None
+  и все жалобы района считаются «за 30 дней» (B2 даст 267 вместо 154). Готовый patch (проверен на вашей ветке @ c4c4bffe):
+      git apply research/round-15-results/R02/patches/R10_consistency_world.patch
+  с ним world_numbers() на мире: {"complaints_30": 154, "metoo_30": 78} — как в EXPECTED.json.
 - Ожидания на мире (опорный момент 16 окт 12:00 Астаны, EXPECTED.json): Нура B «Я тоже» 30 дн. 78, жалоб 30 дн. 154;
   A1 94 = 94; A2 74 = 74 = 74; C — см. §3 (два определения). E — двор сцены 7: scenes.scene7.yard (yard-1454082640,
   «Двор: BI City Tokyo», 5 жалоб). A1/A2 сходятся и через 30 ч без перезапуска стенда: «вернули жители» в мире только

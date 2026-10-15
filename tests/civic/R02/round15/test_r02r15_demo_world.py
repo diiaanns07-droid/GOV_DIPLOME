@@ -236,3 +236,15 @@ def test_expected_file_is_current(world):
     fresh = exp.expected(world, datetime.fromisoformat(have["now"]))
     assert have == json.loads(json.dumps(fresh, ensure_ascii=False)), \
         "EXPECTED.json устарел: python3 -m ml.datasets.demo_world_expected"
+
+
+# ---------------------------------------------------------------- совместимость с соседями (в сборке R01)
+def test_r12_finds_planned_conflicts(world):
+    """Поиск конфликтов R12 (engine/civic_geo/works.py, раунд 15) на работах мира находит ровно задуманные конфликты.
+    В ветке R02 кода R12 нет — тест пропускается; в сборке R01 с поставкой R12 — проверяет стык."""
+    works_mod = pytest.importorskip("engine.civic_geo.works")
+    works = [w for w in wio.materialize(world["works"], NOW) if w.get("type") == "work"]
+    found = works_mod.find_conflicts(works_mod.bind_all(works))
+    got = {(c["kind"], tuple(sorted(c["works"]))) for c in found}
+    want = {(c["kind"], tuple(sorted(c["works"]))) for c in world["planned_conflicts"]}
+    assert want <= got, sorted(want - got)
