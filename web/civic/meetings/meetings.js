@@ -120,6 +120,11 @@
       "meet.staff.link_pick": "Обращения района",
       "meet.staff.link_pick_none": "— выберите обращение —",
       "meet.staff.link_pick_empty": "Открытых обращений в районе нет — укажите номер записи",
+      "meet.staff.link_pick_project": "Проекты и объекты района",
+      "meet.staff.link_pick_work": "Работы района",
+      "meet.staff.link_pick_any": "— выберите из списка —",
+      "meet.staff.link_pick_list_empty": "В районе нет записей — укажите номер записи",
+      "meet.staff.pick_object": "объект",
       "meet.staff.reporters": { one: "{n} житель", few: "{n} жителя", many: "{n} жителей" },
       "meet.staff.link_id": "Номер записи",
       "meet.staff.link_edit": "Связать",
@@ -245,6 +250,11 @@
       "meet.staff.link_pick": "Ауданның өтініштері",
       "meet.staff.link_pick_none": "— өтінішті таңдаңыз —",
       "meet.staff.link_pick_empty": "Ауданда ашық өтініш жоқ — жазба нөмірін көрсетіңіз",
+      "meet.staff.link_pick_project": "Ауданның жобалары мен нысандары",
+      "meet.staff.link_pick_work": "Ауданның жұмыстары",
+      "meet.staff.link_pick_any": "— тізімнен таңдаңыз —",
+      "meet.staff.link_pick_list_empty": "Ауданда жазба жоқ — жазба нөмірін көрсетіңіз",
+      "meet.staff.pick_object": "нысан",
       "meet.staff.reporters": "{n} тұрғын",
       "meet.staff.link_id": "Жазба нөмірі",
       "meet.staff.link_edit": "Байланыстыру",
@@ -520,7 +530,7 @@
       draft: null,                // сотрудник: черновик новой встречи
       rejectFor: null, reject: { reason: null, busy: false },
       busy: {}, alive: true, lang: lang(), listReq: 0, cardReq: 0, skeletonTimer: null, showSkeleton: false, shown: "",
-      bump: false, places: [], complaints: {},
+      bump: false, places: [], complaints: {}, linkLists: {},
     };
     let askHandle = null;
     const box = h("section", { class: "mt", "data-role": state.role });
@@ -960,6 +970,39 @@
       el.value = box.items.some((c) => c.id === value) ? value : "";
       return field(tr("meet.staff.link_pick"), el);
     }
+    // Проекты и работы района для связи (R11 R13-1: сотрудник выбирает по названию, а не вводит номер).
+    // Проект — проекты района (GET /proposals) и объекты с этапами (GET /objects) R06; работа — «Работы и отключения»
+    // (GET /works, сотрудник). Нет маршрута или ошибка — остаётся ввод номера.
+    const itemsOf = (data) => ((data && (data.items || (data.data && data.data.items))) || []).filter((x) => x && x.id);
+    const titleOf = (x) => (lang() === "kk" ? x.title_kk || x.title_ru || x.title : x.title_ru || x.title || x.title_kk) || "";
+    function loadLinkList(kind, district) {
+      const key = kind + ":" + district;
+      if (!district || state.linkLists[key]) return;
+      state.linkLists[key] = { loading: true, items: [] };
+      const q = "?district=" + encodeURIComponent(district);
+      const asks = kind === "project"
+        ? [call("GET", "/proposals" + q).then((d) => itemsOf(d).map((x) => ({ id: x.id, x, tag: "" })), () => []),
+          call("GET", "/objects" + q).then((d) => itemsOf(d).map((x) => ({ id: x.id, x, tag: tr("meet.staff.pick_object") })), () => [])]
+        : [call("GET", "/works" + q).then((d) => itemsOf(d).map((x) => ({ id: x.id, x, tag: "" })), () => [])];
+      Promise.all(asks).then((parts) => {
+        const seen = {};
+        const items = [].concat(...parts).filter((it) => titleOf(it.x) && !seen[it.id] && (seen[it.id] = true)).slice(0, 40);
+        state.linkLists[key] = { loading: false, items };
+        if (state.alive) render();
+      });
+    }
+    function linkPicker(kind, district, value, onPick, name) {
+      if (kind === "complaint") return complaintPicker(district, value, onPick, name);
+      loadLinkList(kind, district);
+      const box = state.linkLists[kind + ":" + district] || { loading: true, items: [] };
+      if (box.loading) return null;
+      if (!box.items.length) return h("p", { class: "bk-field__hint mt-pick-empty", text: tr("meet.staff.link_pick_list_empty") });
+      const el = h("select", { id: "mt-f-" + name, name, class: "mt-select", "data-focus": "f-" + name, onchange: (e) => onPick(e.target.value) },
+        [h("option", { value: "", text: tr("meet.staff.link_pick_any") })].concat(box.items.map((it) =>
+          h("option", { value: it.id, text: [titleOf(it.x), it.tag].filter(Boolean).join(" · ") }))));
+      el.value = box.items.some((it) => it.id === value) ? value : "";
+      return field(tr(kind === "project" ? "meet.staff.link_pick_project" : "meet.staff.link_pick_work"), el);
+    }
 
     function newDraft() {
       const district = state.district || "nura";
@@ -1359,17 +1402,16 @@
       ]);
     }
     function linkChip(o) {
-      // Житель видит, с чем связано поручение и где это (подпись цели обращения R09 и его статус); номер записи — только
-      // акимату. Есть цель — «На карте».
+      // С чем связано поручение и где это: подпись цели обращения R09 и его статус, название проекта или работы R06.
+      // Номер записи на экране не пишем (R11 R13-1) — акимату он в подсказке. Есть цель — «На карте».
       const l = o.link;
       const place = pick(l, "label");
-      let label = place ? tr("meet.link." + l.kind) + ": " + place : staff() ? tr("meet.link." + l.kind) : tr("meet.linked." + l.kind);
+      let label = place ? tr("meet.link." + l.kind) + ": " + place : tr("meet.linked." + l.kind);
       if (l.status && I() && I().has && I().has("status." + l.status)) label += " · " + tr("status." + l.status);
-      if (staff()) label += " · " + l.id;
       const canMap = l.target && l.target.kind && l.target.id && typeof opts.openTarget === "function";
       return h("span", { class: "mt-linkline" }, [
-        h("span", { class: "mt-linkchip" }, [icon(l.kind === "complaint" ? "message" : l.kind === "work" ? "calendar" : "cube"),
-          h("span", { text: label })]),
+        h("span", { class: "mt-linkchip", title: staff() ? tr("meet.staff.link_id") + ": " + l.id : null },
+          [icon(l.kind === "complaint" ? "message" : l.kind === "work" ? "calendar" : "cube"), h("span", { text: label })]),
         canMap ? h("button", { type: "button", class: "mt-link", "data-focus": "lmap-" + o.id,
           onclick: () => opts.openTarget(l.target.kind, l.target.id) }, [tr("meet.on_map")]) : null,
       ]);
@@ -1470,7 +1512,7 @@
             ["project", tr("meet.link.project")]], (v) => { d.linkKind = v; render(); })),
           field(tr("meet.staff.link_id"), input("link_id", d.linkId, (v) => { d.linkId = v; }, { maxlength: "96", autocomplete: "off", spellcheck: "false" }), { error: err("link") }),
         ]),
-        d.linkKind === "complaint" ? complaintPicker(m.district, d.linkId, (v) => { d.linkId = v; render(); }, "link_pick") : null,
+        linkPicker(d.linkKind, m.district, d.linkId, (v) => { d.linkId = v; render(); }, "link_pick"),
         d.error && !d.field ? h("p", { class: "bk-field__error", role: "alert", text: d.error }) : null,
         h("div", { class: "mt-actions" }, [
           h("button", { type: "submit", class: "bk-btn bk-btn--primary", disabled: d.busy ? true : null, "data-focus": "order-save", text: tr("meet.staff.save_order") }),
@@ -1496,7 +1538,7 @@
         tools.appendChild(h("form", { class: "mt-linkform", novalidate: true, onsubmit: (e) => { e.preventDefault(); saveLink(m, o); } }, [
           select("order_link_kind", l.kind, [["complaint", tr("meet.link.complaint")], ["work", tr("meet.link.work")], ["project", tr("meet.link.project")]],
             (v) => { l.kind = v; render(); }),
-          l.kind === "complaint" ? complaintPicker(m.district, l.id, (v) => { l.id = v; render(); }, "order_link_pick") : null,
+          linkPicker(l.kind, m.district, l.id, (v) => { l.id = v; render(); }, "order_link_pick"),
           input("order_link_id", l.id, (v) => { l.id = v; }, { maxlength: "96", "aria-label": tr("meet.staff.link_id"), placeholder: tr("meet.staff.link_none"),
             autocomplete: "off", spellcheck: "false" }),
           h("button", { type: "submit", class: "bk-btn", disabled: l.busy ? true : null, "data-focus": "link-save", text: tr("meet.staff.link_save") }),

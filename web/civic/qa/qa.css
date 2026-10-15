@@ -12,7 +12,8 @@
 .qa {
   --qa-ink: var(--c-ink, #121a17);
   --qa-ink-2: var(--c-text-2, #4b5752);
-  --qa-ink-3: var(--c-text-3, #7e8a85);
+  --qa-ink-3: #5f6b66;  /* R10 B-118: #7E8A85 токена — 3,58:1; текст третьего уровня — не светлее 4,5:1 */
+  --fs-xs: 13px;
   --qa-line: var(--c-line, rgba(18, 26, 23, 0.08));
   --qa-sub: var(--c-sub, rgba(255, 255, 255, 0.72));
   --qa-sub-2: var(--c-fill, rgba(18, 26, 23, 0.06));
@@ -71,8 +72,8 @@
   display: grid;
   flex: none;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   margin-left: auto;
   padding: 0;
   border: 0;
@@ -145,7 +146,7 @@
   position: relative;
   flex: 1 1 0;
   min-width: 0;
-  min-height: 32px;
+  min-height: 44px;
   padding: 6px;
   border: 0;
   border-radius: 9px;
@@ -254,7 +255,7 @@
   border-radius: 999px;
   background: var(--qa-sub-2);
   color: var(--qa-ink-2);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   line-height: 1.35;
   white-space: nowrap;
@@ -291,7 +292,7 @@
   flex: none;
   align-items: center;
   gap: 6px;
-  height: 32px;
+  height: 44px;
   padding: 0 12px;
   border: 0;
   border-radius: 999px;

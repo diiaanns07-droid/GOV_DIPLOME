@@ -625,3 +625,77 @@ def test_author_feed_tells_what_happened_to_general_question(svc, clock):
     assert "личные данные" in next(e["title_ru"] for e in events if e["sub"] == "rejected")
     assert svc.updates(DEV_B, None) == []                                   # чужое устройство ничего не видит
     assert svc.updates(DEV_A, events[0]["at"]) == []                        # since отсекает показанное
+
+
+class _FakeR06:
+    """Публичные функции R06 (ui.civic_store.v2), как их видит R13: get_proposal / get_object / nearby_items."""
+
+    class NotFound(Exception):
+        pass
+
+    def __init__(self):
+        self.calls = []
+
+    def get_proposal(self, pid):
+        self.calls.append(("proposal", pid))
+        if pid == "pr-demo-1":
+            return {"item": {"id": pid, "title_ru": "Детская площадка у школы № 64", "title_kk": "№ 64 мектеп жанындағы балалар алаңы"}}
+        raise self.NotFound(pid)
+
+    def get_object(self, oid):
+        self.calls.append(("object", oid))
+        if oid == "demo-r02-sidewalk-delay":
+            return {"item": {"id": oid, "title": "Ремонт тротуара"}}
+        raise self.NotFound(oid)
+
+    def nearby_items(self, district=None):
+        self.calls.append(("works", district))
+        return [{"id": "w-demo-1", "type": "work", "title_ru": "Замена труб теплосети", "title_kk": None}]
+
+
+def test_project_and_work_links_show_names_not_ids(demo, monkeypatch):
+    # R11 R13-1: вместо «Проект · p-demo-123» — название связанного объекта из публичных функций R06.
+    import ui.civic_meetings.service as service_module
+    fake = _FakeR06()
+    monkeypatch.setattr(service_module, "_r06", lambda: fake)
+    for order_id, link in (("o-demo-n3", {"kind": "project", "id": "pr-demo-1"}),
+                           ("o-demo-n4", {"kind": "project", "id": "demo-r02-sidewalk-delay"}),
+                           ("o-demo-n5", {"kind": "work", "id": "w-demo-1"}),
+                           ("o-demo-n2", {"kind": "work", "id": "w-missing-1"})):
+        status, saved = staff(demo, "POST", "/meetings/m-demo-nura-past/order", {"order_id": order_id, "link": link})
+        assert status == 200
+        if link["id"] == "pr-demo-1":  # ответ на сохранение уже с названием — экран показывает его без перечитывания
+            assert saved["order"]["link"]["label_ru"] == "Детская площадка у школы № 64"
+    fake.calls.clear()
+    _s, body = call(demo, "GET", "/meetings/m-demo-nura-past")
+    links = {o["id"]: o["link"] for o in body["meeting"]["orders"]}
+    assert links["o-demo-n3"] == {"kind": "project", "id": "pr-demo-1", "label_ru": "Детская площадка у школы № 64",
+                                  "label_kk": "№ 64 мектеп жанындағы балалар алаңы", "source": "proposal"}
+    assert links["o-demo-n4"]["label_ru"] == links["o-demo-n4"]["label_kk"] == "Ремонт тротуара"
+    assert links["o-demo-n4"]["source"] == "object"
+    assert links["o-demo-n5"]["label_ru"] == "Замена труб теплосети" and links["o-demo-n5"]["label_kk"] == "Замена труб теплосети"
+    assert links["o-demo-n2"] == {"kind": "work", "id": "w-missing-1"}       # нет записи — только вид и номер
+    assert sum(1 for c in fake.calls if c[0] == "works") == 1                # список работ — один раз на карточку
+
+
+def test_links_survive_r06_absent_or_broken(demo, monkeypatch):
+    import ui.civic_meetings.service as service_module
+
+    class Broken:
+        def __getattr__(self, name):
+            def boom(*a, **k):
+                raise RuntimeError("R06 упал")
+            return boom
+
+    staff(demo, "POST", "/meetings/m-demo-nura-past/order", {"order_id": "o-demo-n3", "link": {"kind": "project", "id": "pr-x-1"}})
+    for module in (None, Broken()):
+        monkeypatch.setattr(service_module, "_r06", lambda module=module: module)
+        status, body = call(demo, "GET", "/meetings/m-demo-nura-past")
+        assert status == 200
+        link = next(o["link"] for o in body["meeting"]["orders"] if o["id"] == "o-demo-n3")
+        assert link == {"kind": "project", "id": "pr-x-1"}
+    # настоящий R06 без связи с базой (V2Error 503 module_not_ready) — тоже без подписи и без ошибки
+    monkeypatch.undo()
+    status, body = call(demo, "GET", "/meetings/m-demo-nura-past")
+    assert status == 200 and next(o["link"] for o in body["meeting"]["orders"] if o["id"] == "o-demo-n3") == {
+        "kind": "project", "id": "pr-x-1"}

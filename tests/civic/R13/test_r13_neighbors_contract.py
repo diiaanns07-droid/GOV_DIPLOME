@@ -33,6 +33,8 @@ def test_r08_week_forecast_names_and_fields():
         for item in body["items"]:
             assert {"target", "district", "level", "main_category", "reason_ru", "reason_kk"} <= set(item)
             assert {"kind", "id", "label_ru", "label_kk"} <= set(item["target"])
+            # R08 @ eca77d34 (blocks.forecast) берёт причину из reasons[0] — та же строка, что reason_ru / reason_kk
+            assert item["reasons"][0]["ru"] == item["reason_ru"] and item["reasons"][0]["kk"] == item["reason_kk"]
 
 
 def test_r08_board_block_by_db_path(tmp_path):
