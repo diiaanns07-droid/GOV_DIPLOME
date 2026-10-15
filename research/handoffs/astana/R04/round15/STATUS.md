@@ -7,6 +7,16 @@
 Прошлая передача: claude/r14-R04 (в FINAL-4 — 8e2b2ae; в базе новее — правка R15-S26 profanity, восстанавливать нечего)
 Продолжение: scheduled task trig_01M5zb65s5mTuk6bSDHfWwyq (раз в час, :25) в эту сессию — удалить после 17 окт 23:59 Астаны.
 
+**Каждый круг: сначала читать AMENDMENTS.md из ветки пакета**
+(`git fetch origin claude/clever-hypatia-q6ts4g && git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md`;
+где поправка расходится с промптом, COMMON или VISUAL_BRIEF — права поправка).
+
+## Поправки владельца (применено)
+- П1 (15 окт 17:05, «Без ИИ-слопа»), прочитано 15 окт 17:40 @ 2d329b2c. У R04 нет экрана, кадров и слайдов: все выходы —
+  текст. Применено: правило 4 (без эмодзи, пиктограмм и украшений в текстах интерфейса) — тест
+  tests/civic/R04/round15/test_r04_amendment_p1.py по всем текстам route / reply_draft / moderate / similar_initiatives
+  и шаблонам; правила 1–2, 7 (никаких нарисованных картинок) — тест «в путях R04 нет изображений». Кадров R04 не сдаёт.
+
 ## Статус: D1 готова (поставка для B1) — все 5 задач промпта сделаны, ждём R01 (маршруты шлюза)
 
 Поставка: research/round-15-results/R04/DELIVERY.json (code_sha 44f0c8f4). Подключение — INTEGRATION.txt, запуск — RUN.txt,
@@ -28,7 +38,7 @@
    IBAN, e-mail (и «собака»), квартира, ники/t.me; 0 ложных на 65 099 строках; p95 0.08 мс.
 4. similar_initiatives() — ui/civic_ml_api/initiatives.py: ru/kk виды дел + n-граммы, 800 м, окно days; источники:
    records / set_initiative_source / store R16 (только чтение).
-5. Тесты tests/civic/R04/round15: 75 passed (+ раунд 14: 337 passed, 3 skipped). Стенд FINAL-4 + patch шлюза:
+5. Тесты tests/civic/R04/round15: 79 passed (+ раунд 14: 337 passed, 3 skipped). Стенд FINAL-4 + patch шлюза:
    http_check_r04.py 14/14.
 
 ## Соседи (проверено 15 окт 17:00 по их веткам)
@@ -57,4 +67,5 @@
 
 ## SHA
 - claim 469fe1e3 · CP1 64e19fc4 (набор фраз) · CP2 54b93e07 (route) · CP3 4242870f · CP4 7be7e71b (moderate) ·
-  CP5 250ea4a9 (similar_initiatives) · CP6 3898d618 (reply_draft) · CP7 44f0c8f4 (patch R01, http check) = code_sha D1.
+  CP5 250ea4a9 (similar_initiatives) · CP6 3898d618 (reply_draft) · CP7 44f0c8f4 (patch R01, http check) · CP8 fef4bd06 (лифт по таблице R08) ·
+  CP9 49725fbc (кто копал рядом — календарь работ R06) · D1 — следующий коммит (DELIVERY, П1).

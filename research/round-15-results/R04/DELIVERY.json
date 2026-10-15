@@ -1,0 +1,156 @@
+{
+ "role": "R04",
+ "round": 15,
+ "delivery": "D1 (для B1 R01, 16 окт 14:00)",
+ "branch": "claude/gifted-maxwell-i66wwi",
+ "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
+ "restored_from": null,
+ "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
+ "code_sha": "49725fbccf2b002ca5dda4408da44701634d90e8",
+ "tested_sha": "49725fbccf2b002ca5dda4408da44701634d90e8",
+ "push_status": "OK",
+ "changed_paths": [
+  "ml/civic_replies/__init__.py",
+  "ml/civic_replies/guard.py",
+  "ml/civic_replies/templates.py",
+  "tests/civic/R04/round15/http_check_r04.py",
+  "tests/civic/R04/round15/route_cases.json",
+  "tests/civic/R04/round15/test_r04_moderate.py",
+  "tests/civic/R04/round15/test_r04_replies.py",
+  "tests/civic/R04/round15/test_r04_route.py",
+  "tests/civic/R04/round15/test_r04_similar_initiatives.py",
+  "ui/civic_ml_api/__init__.py",
+  "ui/civic_ml_api/__main__.py",
+  "ui/civic_ml_api/initiatives.py",
+  "ui/civic_ml_api/moderation.py",
+  "ui/civic_ml_api/replies.py",
+  "ui/civic_ml_api/route_eval.py",
+  "ui/civic_ml_api/routing.py",
+  "ui/civic_ml_api/similar_search.py"
+ ],
+ "doc_paths": [
+  "research/handoffs/astana/R04/round15/STATUS.md",
+  "research/round-15-results/R04/INTEGRATION.txt",
+  "research/round-15-results/R04/RESULTS.md",
+  "research/round-15-results/R04/RUN.txt",
+  "research/round-15-results/R04/patches/r01_web_server_r04_routes.patch"
+ ],
+ "functions": {
+  "route": "ui.civic_ml_api.route(text?, category?, subtopic?, point?, body?) -> POST /api/civic/v2/route (все)",
+  "reply_draft": "ui.civic_ml_api.reply_draft(complaint_id?|code?|text?|record?, status?, lang?, body?) -> POST /api/civic/v2/reply-draft (сотрудник)",
+  "moderate": "ui.civic_ml_api.moderate(text, lang?, body?) -> POST /api/civic/v2/moderate (все, предпросмотр); в процессе — R16, R13, R17",
+  "similar_initiatives": "ui.civic_ml_api.similar_initiatives(text, point, days, records=?) -> R16",
+  "route_hint": "ui.civic_ml_api.route_hint(route(...)) -> поле route_hint R09 (CONTRACT §5.1)",
+  "moderation_record": "ui.civic_ml_api.moderation_record(moderate(...)) -> поле moderation записи соседа"
+ },
+ "gateway_patch": "research/round-15-results/R04/patches/r01_web_server_r04_routes.patch (V2_ROUTES, V2_HANDLERS, arguments(), V2_RATE_LIMITS) — git apply --check OK на e91acb69",
+ "tests": {
+  "R04_round15_pytest": {
+   "status": "PASS",
+   "passed": 79,
+   "failed": 0,
+   "cmd": "pytest -q tests/civic/R04/round15"
+  },
+  "R04_round14_pytest": {
+   "status": "PASS",
+   "passed": 337,
+   "failed": 0,
+   "skipped": 3,
+   "cmd": "pytest -q tests/civic/R04/round14"
+  },
+  "full_pytest": {
+   "status": "PASS_WITH_PREEXISTING_FAILS",
+   "passed": 3674,
+   "failed": 2,
+   "skipped": 23,
+   "xfailed": 1,
+   "sha": "fef4bd06",
+   "note": "2 падения R10 test_r10_accuracy::test_map_accuracy[c24-R12] и [c28-R07] — так же падают на чистой базе e91acb69 в этой облачной среде (проверено отдельно), к R04 не относятся. Код после fef4bd06 менял только routing.py (works evidence) — R04 77/77."
+  },
+  "stand_http_check": {
+   "status": "PASS",
+   "passed": 14,
+   "failed": 0,
+   "sha": "49725fbccf2b002ca5dda4408da44701634d90e8",
+   "env": "облако, FINAL-4 + patch R01 из этой поставки, демо-база (seed-demo + seed-r14-demo), редактор operator",
+   "cmd": "python3 -B tests/civic/R04/round15/http_check_r04.py"
+  },
+  "route_quality": {
+   "set": "tests/civic/R04/round15/route_cases.json — 208 фраз (ru 148, kk 50, mixed 10; совместных 92); test 94 зафиксирован до правил (64e19fc4)",
+   "test": {
+    "n": 94,
+    "set_acc": 1.0,
+    "lead_acc": 1.0,
+    "joint_precision": 1.0,
+    "joint_recall": 1.0,
+    "joint_f1": 1.0,
+    "runs_logged": 3
+   },
+   "dev": {
+    "n": 114,
+    "set_acc": 1.0,
+    "joint_f1": 1.0
+   },
+   "honesty": "Фразы и правила — один автор (R04): 1.0 значит «правила выполняют соглашения», не точность на живых обращениях.",
+   "independent_R02_v1_in_v2_first_run": {
+    "n": 2725,
+    "joint_fired": 38,
+    "joint_false": 0,
+    "category_consistent_service": 0.868,
+    "dig_family_recall": "38/80 (до правок по этому прогону; после — 79/80, уже виденный)"
+   },
+   "R02_probe_v2_seen": {
+    "n": 300,
+    "joint_fired": 4,
+    "joint_false": 0,
+    "category_consistent_service": 0.783
+   },
+   "R02_synth_v3_seen": {
+    "n": 4260,
+    "joint_fired": 108,
+    "joint_outside_dig_families": 1,
+    "category_consistent_service": 0.908
+   },
+   "R02_demo_world_0c0a8636": {
+    "n": 743,
+    "lead_same_as_world_service": 719,
+    "scene8": "c-w1500010 -> water + road (совпадает с route_hint мира)"
+   },
+   "speed_ms": {
+    "p50": 0.15,
+    "p95": 0.45,
+    "target": "< 30"
+   }
+  },
+  "moderate_quality": {
+   "false_pii_on_65099_strings": 0,
+   "sources": "R02 корпуса 7 285, словари R11 3 297, строки data/civic/astana 54 517",
+   "speed_ms": {
+    "p50": 0.035,
+    "p95": 0.08,
+    "max": 0.25,
+    "target": "< 5"
+   }
+  }
+ },
+ "screens": [],
+ "screens_note": "Своего экрана у R04 нет (пути только ml/ и ui/civic_ml_api). Подсказку «Нужны 2 службы» и черновик показывает экран R09, предпросмотр модерации — формы R16/R13; кадры — у них после подключения.",
+ "known_limits": [
+  "Маршруты /route, /reply-draft, /moderate появятся в сборке только после patch R01 (INTEGRATION п. 1); без строки в arguments() функции получат пустые аргументы (400).",
+  "route(): правила и словари написаны вручную; на живых обращениях точность ниже, чем 1.0 набора (независимая оценка — R02 v1_in_v2: 0.868 согласие с категорией). Опечатки («батаоеи», «мсуорка») не ловятся.",
+  "Кто копал, если в тексте не сказано и рядом нет раскопки в календаре R06, — по умолчанию Водоканал с пометкой «уточните, чьи работы» и score 0.6.",
+  "Лифт / подъезд / крыша — по таблице R08 (сейчас «Служба ЖКХ»), а не «Управляющая компания дома»: так согласовано с демо-миром R02 и паспортом R09.",
+  "R17 сейчас блокирует только phone/iin/email/rude и не берёт text_public — номера карт, IBAN, квартиры пройдут в обновления кризиса без правки R17 (INTEGRATION п. 3).",
+  "Черновик ответа: текст сотрудника (следующий шаг, что сделано) вставляется как есть — на другом языке выдаётся предупреждение, перевода нет.",
+  "Казахские тексты черновиков и объяснений — вычитка R11 не сделана (INTEGRATION п. 5).",
+  "Языковая модель для черновика выключена (в облаке нет сети); охрана чисел проверена на тестовой функции."
+ ],
+ "next_step": "Проверять соседей каждый круг: R01 взял patch? R09 зовёт route(point)/reply_draft? R17 поправил проверку pii? R02 — совместные из текстов, где route() видит 2 службы. После B1 — прогнать tests/civic/R04 и http_check_r04.py на сборке, обновить tested_sha.",
+ "amendments": {
+  "P1": {
+   "read_at": "2026-10-15T17:40+05:00",
+   "package_sha": "2d329b2c",
+   "applied": "У R04 нет экрана, кадров и слайдов — выходы только текстовые. Правило 4 (без эмодзи и украшений) и правила 1–2, 7 (без картинок) закреплены тестом test_r04_amendment_p1.py (2/2)."
+  }
+ }
+}
