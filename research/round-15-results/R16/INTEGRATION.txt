@@ -6,18 +6,19 @@ R06 (лента, идея → дело), R08/R03 (сводка), R17 (вывоз
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
 1. R01 · ПОДКЛЮЧЕНИЕ К СБОРКЕ (одна правка, готовый patch)
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
-B1 — ветка R01 claude/brave-fermi-nhzetj. B0.2 (514008b6, 12e99fba) уже взял R16 e475fae9: 15 маршрутов, файлы, теги.
+B1 — ветка R01 claude/brave-fermi-nhzetj. B0.2 (514008b6, 12e99fba) взял R16 e475fae9: 15 маршрутов, файлы, теги;
+  B0.5 (a6a9ef08, 2a03e5b5) — R16 db7da7de и свой прогрев R03 / R16 после засева мира.
   Для B1 нужно: (1) код R16 из DELIVERY.json code_sha (ветка claude/youthful-johnson-6nz5mp: ui/civic_together/,
-  web/civic/together/, tests/civic/R16/ — в e475fae9 ещё не было путей оболочки, S51, прогрева, компонентов R11);
-  (2) остаток правок R01 — research/round-15-results/R16/R01_together_b1.patch (git apply --check OK на adb5fba9):
-    а) main(): рядом с warm_up R12 — фоновый ui.civic_together.warm_up(db_path) (R10 B-124: первый «Мой двор» после
-       старта 2,6 с → 0,03–0,09 с; seed_world и make_service демо запускают прогрев и сами);
-    б) web/civic/shell/birge.css — «Сделаем вместе» листом слева 412 px поверх карты (IA R11 §5.2 «Житель, лист», как
-       «Проекты и идеи» и «Вопросы и встречи»; «Мой двор» — лист по центру). Не нужно — не брать этот кусок
+  web/civic/together/, tests/civic/R16/ — после db7da7de: «На карте» в карточке дела, akim_initiatives / akim_yards
+  для R08, круглые часы в демо, conftest, ленивый вход);
+  (2) остаток правок R01 — research/round-15-results/R16/R01_together_b1.patch (git apply --check OK на 7208a580):
+    только web/civic/shell/birge.css — «Сделаем вместе» листом слева 412 px поверх карты (IA R11 §5.2 «Житель, лист»,
+       как «Проекты и идеи» и «Вопросы и встречи»; «Мой двор» — лист по центру). Не нужно — не брать patch
        (или r01_together_apply.py --no-sheet): модуль раскладывается по своей ширине (@container) в любом листе.
+    Прогрев «Мой двор» (R10 B-124) в patch больше нет: у R01 с B0.5 свой — после засева мира (второй не нужен).
   Если patch уже не ложится — то же по якорям, повтор ничего не дублирует (правки, которые R01 уже сделал своими
-  словами, пропускаются): python3 research/round-15-results/R16/r01_together_apply.py .
-  Проверено на adb5fba9 + patch + код R16 этой поставки: tests/civic/R01 + tests/civic/R16 — 421 passed, 1 skipped;
+  словами, пропускаются; на 7208a580 скрипт меняет только birge.css): python3 research/round-15-results/R16/r01_together_apply.py .
+  Проверено на adb5fba9 + patch + код R16 db7da7de: tests/civic/R01 + tests/civic/R16 — 421 passed, 1 skipped;
   r15_ia R01 «Сцена 7» ждёт #yard или #yard/yard-1454082640 — модуль оставляет #yard/<двор> (путь оболочки).
 Пакет / FINAL-4 (без маршрутов раунда 15) — прежний полный patch:
   git apply research/round-15-results/R16/R01_together_routes.patch        # проверено: git apply --check на e91acb6
@@ -96,7 +97,9 @@ configure(records=…) после каждого теста R16 (просьба 
 Ленивая загрузка (R10 B-113, первый значок карты дольше 3 с со всеми модулями): together-text.js + together.js можно
 подключать после первого кадра карты (requestIdleCallback) или при первом открытии #yard / #together — модуль сам
 регистрирует разделы и слой при загрузке и открывает отложенный адрес (pendingRoute оболочки, #yard/<двор>,
-#together/<дело>); слой «Инициативы» и BirgeTogether.open появляются вместе с ним.
+#together/<дело>); слой «Инициативы» и BirgeTogether.open появляются вместе с ним. Проверка — страница без двух
+скриптов, через 3 с их вставка: NODE_PATH=$(npm root -g) node tests/civic/R16/browser/r16_lazy.cjs <адрес сборки>
+(дело, двор, список — 3/3 PASS на сборке «как B1»; оболочка FINAL-4 без путей тоже 3/3, адрес там ведёт модуль).
 Палитра Ctrl+K (R01, режим показа): «Сцена 7 · Двор вместе» → BirgeTogether.open("yard", scenes.yard) или
 BirgeTogether.open("initiative", scenes.initiative) или setSection("yard", {path}) — переход без перезагрузки, Esc закрывает
 один слой; адрес — #yard/<двор> (r15_ia R01 его принимает). На тёплом сервере из вида акимата — 0,41–0,51 с.
@@ -137,10 +140,12 @@ R04: moderate() и similar_initiatives(title, point, 30, records=…, kind=…) 
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
 3. R11 · СЛОВАРЬ И UI-KIT
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
-  • 243 строковых ключа together.* ru/kk — research/round-15-results/R16/i18n_together.json (ru = kk); новый в круге 3 —
-    together.done_num. Добавлены R11 в b3502428 (были новыми в круге 2 — 10): together.after_none, together.pick.on_map, together.pick.on_map_hint,
-    together.pick.not_found_map, together.pii.iban, together.pii.apartment, together.pii.contact, together.pii.other,
-    together.staff.waiting («Ждут поддержки» / «Қолдау күтуде»), together.staff.going («Идут» / «Жүріп жатыр»).
+  • 248 строковых ключей together.* ru/kk — research/round-15-results/R16/i18n_together.json (ru = kk). Словарь R11
+    442b617b (2840 ключей) совпадает с ними слово в слово; нет одного нового — together.range_days (круг 4: дело на
+    несколько дней — «сб, 10:00 — вс, 13:00»; ru «{day}, {from} — {day2}, {to}», kk так же). До синхронизации — запасной
+    текст модуля. Ранее добавлены R11: together.done_num, together.list.when / done_chip / none_soon / none_done,
+    together.after_none, together.pick.on_map / on_map_hint / not_found_map, together.pii.*, together.staff.waiting /
+    going.
     Массивы together.wd, together.months, together.bring.* остаются в web/civic/together/together-text.js.
   • Термины KK_REVIEW R11 взяты и в запасные тексты: «Мен барамын / Сіз барасыз / Бара алмаймын», тост «Готово: …» /
     «Дайын: …» без «!»; «аула жетекшісі»; «Бірге жасайық»; «Әкімдік қолдады»; «Бірге жасалды»; «сенбілік».

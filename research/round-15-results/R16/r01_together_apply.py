@@ -2,9 +2,9 @@
 
     python3 research/round-15-results/R16/r01_together_apply.py [корень сборки]      # по умолчанию — текущая папка
 
-Что делает (то же, что patch): 3 маршрута [доп.] R16 (GET together/yards; POST together/yards/{id}/captain;
+Что делает: 3 маршрута [доп.] R16 (GET together/yards; POST together/yards/{id}/captain;
 POST together/yards/{id}/moderate — сотрудник) + V2_HANDLERS + лимит «старшего»; прогрев «Мой двор» в фоне при старте
-(рядом с warm_up R12, R10 B-124); CIVIC_ASSETS together/*;
+(рядом с warm_up R12, R10 B-124; у R01 с B0.5 — свой, после засева мира: шаг пропускается); CIVIC_ASSETS together/*;
 index.html — together.css и два script; в тест R01 test_r01_round15_routes.py — 3 строки таблицы [доп.].
 Повторный запуск ничего не дублирует. Файлы R16 (ui/civic_together/, web/civic/together/) — из ветки роли.
     «Сделаем вместе» — лист слева 412 px поверх карты, как «Проекты и идеи» и «Вопросы и встречи» (IA R11 §5.2
@@ -22,14 +22,15 @@ SHEET = "--no-sheet" not in sys.argv   # «Сделаем вместе» — л�
 
 
 def edit(rel: str, steps: list[tuple]) -> None:
-    """steps: (якорь, вставка, «after» | «instead»[, признак]). Уже есть признак (по умолчанию — первая строка вставки)
-    — шаг пропускается: R01 мог взять ту же правку своими словами (B0.2 взял маршруты, файлы и теги R16)."""
+    """steps: (якорь, вставка, «after» | «instead»[, признак или кортеж признаков]). Есть любой признак (по умолчанию —
+    первая строка вставки) — шаг пропускается: R01 мог взять ту же правку своими словами (B0.2 взял маршруты, файлы
+    и теги R16, B0.5 — прогрев после засева мира)."""
     path = ROOT / rel
     text = path.read_text(encoding="utf-8")
     for step in steps:
         anchor, insert, mode = step[:3]
         marker = step[3] if len(step) > 3 else insert.strip().splitlines()[0].strip()
-        if marker in text:
+        if any(m in text for m in ((marker,) if isinstance(marker, str) else marker)):
             continue
         if text.count(anchor) != 1:
             raise SystemExit(f"{rel}: якорь не найден или не один: {anchor[:70]!r}")
@@ -65,7 +66,9 @@ edit("ui/web_server.py", [
      '            together, together_db = importlib.import_module("ui.civic_together"), server.civic_v2.db_path\n'
      '            threading.Thread(target=lambda: together.warm_up(together_db), daemon=True).start()\n'
      '        except Exception:  # R16 не сдан — «Мой двор» посчитается при первом открытии\n'
-     '            LOGGER.info("civic-v2: R16 warm-up skipped")\n', "after"),
+     '            LOGGER.info("civic-v2: R16 warm-up skipped")\n', "after",
+     # R01 B0.5 (2a03e5b5) прогревает R03 и R16 сам — после засева мира; второй прогрев не нужен.
+     ("# R16 (R10 B-124)", '"ui.civic_together", (server.civic_v2.db_path,)')),
 ])
 edit("web/index.html", [
     ('    <link rel="stylesheet" href="/civic/meetings/meetings.css" />\n',

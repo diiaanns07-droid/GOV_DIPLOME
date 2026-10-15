@@ -1,25 +1,8 @@
-diff --git a/ui/web_server.py b/ui/web_server.py
-index 4ef82930..8be4abb5 100644
---- a/ui/web_server.py
-+++ b/ui/web_server.py
-@@ -2529,6 +2529,12 @@ def main():
-             threading.Thread(target=importlib.import_module("engine.civic_geo.api").warm_up, daemon=True).start()
-         except Exception:  # R12 не сдан или сломан — /targets ответит 503, приложение работает
-             LOGGER.info("civic-v2: R12 warm-up skipped")
-+        # R16 (R10 B-124): «Мой двор» — соседи двора сцены демо (форма R12, индексы карты R07) прогреваются в фоне.
-+        try:
-+            together, together_db = importlib.import_module("ui.civic_together"), server.civic_v2.db_path
-+            threading.Thread(target=lambda: together.warm_up(together_db), daemon=True).start()
-+        except Exception:  # R16 не сдан — «Мой двор» посчитается при первом открытии
-+            LOGGER.info("civic-v2: R16 warm-up skipped")
-     except OSError as exc:
-         if getattr(exc, "winerror", None) == 10048 or getattr(exc, "errno", None) in (48, 98, 10048):
-             parser.exit(1, "Порт занят. Закройте прежнее приложение или задайте другой PORT.\n")
 diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
-index d127ee06..ca0916a8 100644
+index 4467d272..404e2b6d 100644
 --- a/web/civic/shell/birge.css
 +++ b/web/civic/shell/birge.css
-@@ -997,3 +997,14 @@ body.civic-mode:not([data-birge-section="map"]) .birge-alert { display: none; }
+@@ -1002,3 +1002,14 @@ body.civic-mode:not([data-birge-section="map"]) .birge-alert { display: none; }
    .birge-alert { top: 68px; left: 8px; right: 8px; width: auto; transform: none; }
  }
  
