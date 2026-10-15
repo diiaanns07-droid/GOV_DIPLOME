@@ -266,3 +266,12 @@ R01 (B0 claude/brave-fermi-nhzetj @ c9069723; стенд с ui-kit и слова
     (.bc-inbox__place { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     при max-width: 480px): «Брусиловского көшесінің бөлігі» сейчас обрезается.
   R17-3 (круг 2) подтверждён замером: 1366 ҚАЗ — «Бағдаршам және жол таңбасы қызметі» обрезана в колонке службы.
+
+Круг 5, полнота словаря (21:51) — tests/civic/R11/tools/missing_keys.py по веткам ролей: словарь 2661 ключ, ru = kk.
+  +107: R08 «Картина дня» 2.0 и «Картина недели» (akim.r15.*, akim.week.*, akim.crisis.open …), R07 heat.replay.* и
+  heat.cluster.fixed_*, R05 build3d.ba.* / build3d.time.*. Вне словаря остаются только по задумке: массивы
+  (together.bring.*, together.wd, together.months, akim.week.weekdays, akim.week.months, board.weekday — модули берут
+  свои), joint.and (пробелы по краям — см. R09-1), виды событий R06 ("complaint.update" … — это id, не тексты),
+  shell.palette.scene + номер (ключи scene7–9 есть).
+  Казахский: «Картина недели» — «Апта қорытындысы» (пара к «Күн қорытындысы»); «передач между службами» —
+  «жіберу»; «Табло служб» — «Қызметтер таблосы»; «шторка» было | станет — «жүгірткі»; «Сделано» — «Жасалды».
