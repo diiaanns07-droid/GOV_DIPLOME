@@ -133,3 +133,24 @@ def test_warm_up_never_raises(monkeypatch):
     svc._compute = boom
     monkeypatch.setattr(heat_service, "_default", svc)
     civic_heat.warm_up("лишний аргумент от R01")           # R01 может передать аргументы, как R16 (db_path)
+
+
+def test_records_read_once_per_generation():
+    """Патч R08 (R07_records_per_generation): «Картина дня» после записи строит ~15 карт с одним моментом — записи R09
+    читаются из базы один раз на поколение и момент; новое поколение (invalidate) или другой момент — чтение заново."""
+    records = demo_seed.demo_records(NOW)
+    reads = []
+
+    def source(since):
+        reads.append(since)
+        return [r for r in records if engine.parse_time(r["created_at"]) >= since]
+
+    svc = HeatService(source=source, resolver=TargetResolver(graph_path=None, use_r12=False), clock=lambda: NOW)
+    since = NOW - timedelta(days=97)
+    first = svc.records(since)
+    assert svc.records(since) is first and len(reads) == 1
+    svc.records(since - timedelta(days=1))
+    assert len(reads) == 2
+    svc.invalidate()
+    svc.records(since)
+    assert len(reads) == 3
