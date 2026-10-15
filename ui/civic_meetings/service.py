@@ -587,18 +587,19 @@ class MeetingService:
         since_dt = parse_iso(since) if since else None
         since_iso = iso(since_dt) if since_dt else None
         now = self.store.now()
-        questions = self.qa.store.device_meeting_questions(device) if self.qa is not None else []
+        all_questions = self.qa.store.device_questions(device) if self.qa is not None else []
+        questions = [q for q in all_questions if q["meeting_id"]]
+        events: list[dict] = self._own_question_events([q for q in all_questions if not q["meeting_id"]], since_iso, now)
         ids = sorted(set(self.store.meetings_of_device(device)) | {q["meeting_id"] for q in questions})
         if not ids:
-            return []
+            events.sort(key=lambda e: (e["at"], e["id"]), reverse=True)
+            return events[:limit]
         meetings = {}
         for mid in ids:
             try:
                 meetings[mid] = self.store.get_meeting(mid)
             except LookupError:
                 continue
-        events: list[dict] = []
-
         def add(event_id, at, kind, meeting, title_ru, title_kk, anchor=None, sub=None):
             if since_iso and at <= since_iso:
                 return
@@ -651,6 +652,36 @@ class MeetingService:
                     sub="answer")
         events.sort(key=lambda e: (e["at"], e["id"]), reverse=True)
         return events[:limit]
+
+    REJECT_RU = {"personal_data": "в нём личные данные", "rude": "в нём грубые слова",
+                 "not_question": "это жалоба — её отправляют через «Сообщить о проблеме»",
+                 "duplicate": "такой вопрос уже есть", "other": "не подошёл по правилам"}
+    REJECT_KK = {"personal_data": "онда жеке деректер бар", "rude": "онда дөрекі сөздер бар",
+                 "not_question": "бұл — шағым, оны «Мәселе туралы хабарлау» арқылы жібереді",
+                 "duplicate": "мұндай сұрақ бұрыннан бар", "other": "ережеге сай келмеді"}
+
+    def _own_question_events(self, questions: list[dict], since_iso: str | None, now: datetime) -> list[dict]:
+        """Общие вопросы «Вопроса акиму» самого автора: опубликован, аким ответил, не опубликован (с причиной).
+        Раунд 14, вопрос владельцу 2: автор не видел, что стало с его вопросом, — теперь видит в ленте R06."""
+        out = []
+        now_iso = iso(now)
+        for q in questions:
+            for at, sub, ru, kk in (
+                (q.get("published_at"), "question", "Ваш вопрос акиму опубликован — его могут поддержать соседи",
+                 "Әкімге қойған сұрағыңыз жарияланды — көршілер оны қолдай алады"),
+                (q.get("answered_at"), "answer", "Аким ответил на ваш вопрос", "Әкім сұрағыңызға жауап берді"),
+                (q.get("rejected_at") if q.get("status") == "rejected" else None, "rejected",
+                 "Вопрос не опубликован: " + self.REJECT_RU.get(q.get("reject_reason"), self.REJECT_RU["other"]),
+                 "Сұрақ жарияланбады: " + self.REJECT_KK.get(q.get("reject_reason"), self.REJECT_KK["other"])),
+            ):
+                if not at or at > now_iso or (since_iso and at <= since_iso):
+                    continue
+                if sub == "question" and q.get("status") != "published":
+                    continue
+                out.append({"id": f"qa-{q['id']}-{sub}", "at": at, "module": "R13", "kind": "meeting.result", "sub": sub,
+                            "target": {"kind": "question", "id": q["id"]}, "title_ru": ru, "title_kk": kk,
+                            "link": "#meetings/questions", "demo": False})
+        return out
 
     # ------------------------------------------------------------------ «Картина дня» R08, аналитик R03
     def board_block(self, *, district: str | None = None, limit: int = 5) -> dict:

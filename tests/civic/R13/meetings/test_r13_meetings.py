@@ -603,3 +603,23 @@ def test_complaint_link_shows_place_and_status_from_r09_public_view(tmp_path, cl
     _s, again = call(service, "GET", "/meetings/m-demo-nura-past")
     bare = next(o["link"] for o in again["meeting"]["orders"] if o["id"] == "o-demo-n4")
     assert bare == {"kind": "complaint", "id": "c-missing-1"}
+
+
+def test_author_feed_tells_what_happened_to_general_question(svc, clock):
+    # Раунд 14, вопрос владельцу 2: автор «Вопроса акиму» не видел судьбу вопроса — теперь видит в ленте R06.
+    def ask_general(text):
+        reply = svc.qa.handle("POST", P + "/questions", "", {"text": text, "district": "nura", "device_id": DEV_A}, None, CTX)
+        return reply["body"]["question"]["id"]
+    good, bad = ask_general("Когда починят свет во дворе у школы?"), ask_general("Позвоните мне насчёт двора, пожалуйста")
+    clock.now = NOW + timedelta(hours=1)
+    svc.qa.handle("POST", f"{P}/questions/{good}/publish", "", {}, Staff(), STAFF_CTX)
+    svc.qa.handle("POST", f"{P}/questions/{bad}/reject", "", {"reason": "personal_data"}, Staff(), STAFF_CTX)
+    clock.now = NOW + timedelta(hours=2)
+    svc.qa.handle("POST", f"{P}/questions/{good}/answer", "", {"answer_ru": "Освещение поставят до конца месяца."}, Staff(), STAFF_CTX)
+    clock.now = NOW + timedelta(hours=3)
+    events = svc.updates(DEV_A, None)
+    assert sorted(e["sub"] for e in events) == ["answer", "question", "rejected"]
+    assert all(e["link"] == "#meetings/questions" and e["module"] == "R13" and e["title_kk"] for e in events)
+    assert "личные данные" in next(e["title_ru"] for e in events if e["sub"] == "rejected")
+    assert svc.updates(DEV_B, None) == []                                   # чужое устройство ничего не видит
+    assert svc.updates(DEV_A, events[0]["at"]) == []                        # since отсекает показанное

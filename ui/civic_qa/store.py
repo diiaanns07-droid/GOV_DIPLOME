@@ -379,10 +379,14 @@ class QuestionStore:
 
     def device_meeting_questions(self, device_id: str) -> list[dict]:
         """Вопросы этого устройства к встречам (для ленты: «вопрос опубликован», «на встрече ответили»)."""
+        return [q for q in self.device_questions(device_id) if q["meeting_id"]]
+
+    def device_questions(self, device_id: str) -> list[dict]:
+        """Все вопросы этого устройства (к встречам и общие) — только для ленты самого автора."""
         dev = self.device_hash(device_id)
         with self._read() as conn:
-            rows = conn.execute("SELECT id, meeting_id, status, published_at, answered_at, text, text_public "
-                                "FROM qa_questions WHERE device_hash = ? AND meeting_id IS NOT NULL", (dev,))
+            rows = conn.execute("SELECT id, meeting_id, status, published_at, answered_at, rejected_at, reject_reason "
+                                "FROM qa_questions WHERE device_hash = ?", (dev,))
             return [dict(r) for r in rows.fetchall()]
 
     def voted(self, question_ids: list[str], device_id: str | None) -> set[str]:

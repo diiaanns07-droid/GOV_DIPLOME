@@ -75,6 +75,8 @@ updates(device_id, since_iso=None, db_path=None, limit=50) -> [событие]  
           "target": {"kind": "area|object|meeting", "id": "…", "meeting_id": "m-…"}, "title_ru", "title_kk",
           "link": "#meetings/<m-id>[/<o-id|q-id>]", "demo": bool}
 Кому: только устройствам, которые нажали «Приду» или задали вопрос к этой встрече. id стабильны (можно хранить «прочитано»).
+Плюс автору ОБЩЕГО вопроса «Вопроса акиму»: sub question (опубликован), answer (аким ответил), rejected (не опубликован,
+причина словами); target {"kind": "question", "id": "q-…"}, link "#meetings/questions".
 HTTP-вариант: GET /api/civic/v2/meetings/updates?since=ISO (заголовок X-Birge-Device).
 
 =====================================================================================================================
