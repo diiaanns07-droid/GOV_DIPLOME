@@ -1,0 +1,40 @@
+{
+ "base": "http://127.0.0.1:8660",
+ "at": "2026-10-15T17:41:07.467Z",
+ "pass": 4,
+ "fail": 0,
+ "report": [
+  {
+   "page": "/civic/board/index.html",
+   "size": "1366x768",
+   "lang": "kk",
+   "small": [],
+   "tiny": [],
+   "clipped": []
+  },
+  {
+   "page": "/civic/board/index.html",
+   "size": "1920x1080",
+   "lang": "ru",
+   "small": [],
+   "tiny": [],
+   "clipped": []
+  },
+  {
+   "page": "/civic/akim/week.html",
+   "size": "1366x900",
+   "lang": "kk",
+   "small": [],
+   "tiny": [],
+   "clipped": []
+  },
+  {
+   "page": "/civic/akim/week.html",
+   "size": "375x812",
+   "lang": "ru",
+   "small": [],
+   "tiny": [],
+   "clipped": []
+  }
+ ]
+}
