@@ -286,6 +286,14 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     (timing["7"] = timing["7"] || []).push(Date.now() - t7);
   }
 
+  // --- сцены 8–9 ведёт акимат после входа сотрудника (DEMO_SCRIPT: вход перед шагом 5) — сессия на весь контекст.
+  if (staffAcc && staffAcc.user) {
+    const r = await ctx.request.post(base + "api/civic/v1/session/login", { data: { username: staffAcc.user, password: staffAcc.pass },
+      headers: { Origin: base.replace(/\/$/, "") } }).catch(() => null);
+    step("8", "вход сотрудника для сцен 8–9", r ? r.ok() : false, { status: r && r.status() }, "R01");
+    await page.reload(); await sleep(2500);
+  }
+
   // --- сцена 8: акимат «Ведомства» → табло → календарь работ (конфликт)
   const s8 = S && S.raw.scene8;
   if (s8) {
@@ -330,6 +338,14 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     if (o.ok === null) step("9", "кризисный штаб", null, o.why, "R17");
     else {
       step("9", `кризис ${s9.incident}: открыт, зона, службы и обновления`, o.ok, { title: o.title, chars: o.chars }, "R17", f2);
+      if (o.ok && S.inc) {
+        // VISUAL_BRIEF №5: чипы служб с прогрессом задач — названия служб сцены (по таблице R08) или тексты задач на экране.
+        const tasks = (S.inc.tasks || []).map((t) => (lang === "kk" ? t.text_kk : t.text_ru)).filter(Boolean);
+        const seen = [];
+        for (const t of tasks) if (await visibleText(new RegExp(esc(t.slice(0, 28)), "i"))) seen.push(t.slice(0, 28));
+        step("9", `в штабе видны задачи служб (${tasks.length} в демо-мире)`, tasks.length ? seen.length >= Math.min(3, tasks.length) : null,
+          { seen: seen.length, of: tasks.length }, "R17");
+      }
       if (o.ok) await quality("9", "R17", f2);
     }
     (timing["9"] = timing["9"] || []).push(Date.now() - t9);
