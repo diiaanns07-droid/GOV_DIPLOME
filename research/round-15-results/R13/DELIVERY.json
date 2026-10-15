@@ -137,6 +137,16 @@
   "r06_feed_contract": {
    "status": "PASS",
    "note": "R06 notify.py @ c2604ea2: updates(device, since, db_path=…, limit=…), LINK_RE и KINDS принимают события R13"
+  },
+  "r15_meetings_tests": {
+   "status": "PASS",
+   "passed": 27,
+   "total": 27,
+   "note": "tests/civic/R15/round15/test_r15_round15_meetings.py R15 @ 19748bff на коде R13 этой поставки"
+  },
+  "demo_world_on_r01_build": {
+   "status": "PASS",
+   "note": "сборка R01 c9069723, CIVIC_DEMO_WORLD=1: оболочка засевает R13 (m-w15-1/2/3), прошедшая встреча — итог и 4 поручения, связь с обращением мира R09 («Двор: BI City Tokyo · Исправлено»); 1366-ru и 375-kk без ошибок JS"
   }
  },
  "screens": [
