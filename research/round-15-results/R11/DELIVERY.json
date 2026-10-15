@@ -4,10 +4,10 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "f6367c83",
- "tested_sha": "f6367c83",
+ "code_sha": "4b8f0d62",
+ "tested_sha": "4b8f0d62",
  "push_status": "OK",
- "updated": "2026-10-16 03:50 Астана",
+ "updated": "2026-10-16 04:02 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -33,9 +33,9 @@
   "review_tool": "tests/civic/R11/review/r15_screens.cjs — разбор сборки раунда 15 одной командой (B1, B2, FINAL-5)"
  },
  "tests": {
-  "pytest tests/civic/R11": "PASS 32/32 (f6367c83)",
+  "pytest tests/civic/R11": "PASS 32/32 (4b8f0d62)",
   "node tests/civic/R11 (i18n, lang_order, ui_kit)": "PASS (ea188ed6: i18n, ui_kit)",
-  "i18n_tools check": "PASS — 2856 ключей, ru = kk",
+  "i18n_tools check": "PASS — 2860 ключей, ru = kk",
   "витрина ui-kit, Chromium (Playwright) 1366/375 × ru/kk": "PASS 4/4 (ea188ed6): прокрутки нет, кнопки ≥ 44 px (кнопка баннера кризиса исправлена с 36), текст ≥ 12 px, шрифт с казахскими буквами",
   "R01 с патчем меню (стенд, ветка R01 0b76f9ed)": "pytest tests/civic/R01 198 passed / 1 skipped; browser r14_wave2 43/0; browser r14_shell 43/0",
   "R03 с патчем терминов": "pytest tests/civic/R03 273 passed, 9 skipped, 1 xfailed",
@@ -48,7 +48,8 @@
   "r15_screens.cjs на стенде R01 B0.9 49786917 + словарь R11 (102 кадра 1366/1024/375 × ru/kk)": "0 проблем: меню в капсуле (1366, 1024; ru, kk), прокрутка 0, сырые ключи 0, непереведённое 0, обрезанные подписи 0, ошибки JS 0",
   "стенд B0.12 (R01 0121f7bd), r15_screens.cjs": "102 кадра 1366/1024/375 × ru/kk × житель/акимат — проблем 0 (24 кадра «смотреть глазами» разобраны: REVIEW_R15 круг 12)",
   "стенд B0.12, r15_scenes.cjs": "50 кадров сцен 7–9 (1366/375 + 1920) — ошибок JS 0",
-  "патчи круга 12": "R17_wrap_names_quotes — git apply --check на 10cce40a, на стенде обрезанных 0; R02_world_kk — demo_world_check ошибок 0; R10_video_subtitles_kk — git apply --check на 7308738d"
+  "патчи круга 12": "R17_wrap_names_quotes — git apply --check на 10cce40a, на стенде обрезанных 0; R02_world_kk — demo_world_check ошибок 0; R10_video_subtitles_kk — git apply --check на 7308738d; R16_font_scale — git apply --check на 3cc802b9 и B0.12",
+  "стенд B0.12, r15_fonts.cjs": "размеры шрифта по экранам: 10 из 15 (1366) ≤ 3; «Мой двор» R16 5 → 3 с patches/R16_font_scale.patch (проверено файлом на стенде, ru и ҚАЗ)"
  },
  "screens": [
   "research/round-15-results/R11/screens/kit15-1366-kk.jpg",
@@ -61,13 +62,14 @@
   "research/round-15-results/R11/screens/r5-glass-1366-ru-before.jpg",
   "research/round-15-results/R11/screens/r5-glass-375-kk-before-after.jpg",
   "research/round-15-results/R11/screens/r12-b012-board-1024-kk-before-after.jpg",
-  "research/round-15-results/R11/screens/r12-b012-handoffs-375-kk-before-after.jpg"
+  "research/round-15-results/R11/screens/r12-b012-handoffs-375-kk-before-after.jpg",
+  "research/round-15-results/R11/screens/r12-b012-yard-1366-kk-fonts.jpg"
  ],
  "known_limits": [
   "Меню по IA — у R01 с c2df555a; на B0.12 (0121f7bd) — в капсуле на 1366 и 1024 в обоих языках, R01-5 исправлен (B0.8).",
-  "Открыто у ролей (патчи и точные правки — INTEGRATION §4): R17-4/5/6, R02-1, R16 (поставка с R16-1), R08-1; по желанию R02-2, R08-2.",
+  "Открыто у ролей (патчи и точные правки — INTEGRATION §4): R17-4/5/6, R02-1, R16 (поставка с R16-1, R16_font_scale), R08-1; по желанию R02-2, R08-2.",
   "Книга экранов v1 — после B1 (16 окт 14:00): кадры сцен на одной сборке, отбор героев H1–H8.",
-  "Казахские термины раунда 15 — черновик до проверки владельцем (KK_REVIEW_R15.md, 42 строки)."
+  "Казахские термины раунда 15 — черновик до проверки владельцем (KK_REVIEW_R15.md, 43 строки)."
  ],
  "next_step": "Круг 13 (04:23): AMENDMENTS → соседи → словарь; на B1 — r15_screens.cjs и r15_scenes.cjs, проверка R17-4/5/6, R02-1, R16-1, затем DESIGN_BOOK v1.",
  "amendments": "П1 «Без ИИ-слопа» (15 окт 17:05) — применена в 2d4f69bc"
