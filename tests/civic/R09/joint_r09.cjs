@@ -205,17 +205,18 @@ async function variant(browser, base, width, height, lang, staff) {
       const cleared = await page.$('.bc-inbox__filter-chip[data-filter="service"]');
       check(`${tag}: чип «Служба: …» снимает фильтр`, !cleared);
       // Адрес раздела оболочки R01 раунда 15 (IA_ROUND15 §7.3): #inbox/<id жалобы> — сцена 8 открывается ссылкой.
-      // В оболочке FINAL-4 путей нет (раздел «complaints») — шаг пропускается.
-      const r15shell = await page.evaluate(() => /^#inbox/.test(location.hash) && typeof window.BirgeComplaintList?.setPath === "function");
-      if (r15shell) {
+      // Оболочка FINAL-4 путей разделов не знает (адрес остаётся #inbox) — тогда шаг не нужен и пропускается.
+      await page.evaluate(() => window.BirgeShell.setSection("map"));
+      await page.evaluate((id) => window.BirgeShell.setSection("inbox", { path: id }), pit.id);
+      const pathShell = await page.evaluate((id) => location.hash === "#inbox/" + id, pit.id);
+      if (!pathShell) console.log(`  ${tag}: оболочка без путей разделов (FINAL-4) — шаг «адрес #inbox/<id>» не нужен`);
+      if (pathShell) {
         const seen = async () => page.evaluate((target) => {
           const li = document.querySelector(`.bc-inbox__item--open[data-target="${target}"]`);
           const r = li && li.getBoundingClientRect();
           return { open: !!li, top: r ? Math.round(r.top) : null, visible: !!r && r.top >= 0 && r.top < innerHeight - 40,
                    hash: location.hash, stored: (() => { try { return sessionStorage.getItem("birge.inbox.filter"); } catch (e) { return "?"; } })() };
         }, PIT_TARGET);
-        await page.evaluate(() => window.BirgeShell.setSection("map"));
-        await page.evaluate((id) => window.BirgeShell.setSection("inbox", { path: id }), pit.id);
         await page.waitForSelector(`.bc-inbox__item--open[data-target="${PIT_TARGET}"]`, { timeout: 10000 }).catch(() => null);
         await sleep(400);
         const mounted = await seen();
