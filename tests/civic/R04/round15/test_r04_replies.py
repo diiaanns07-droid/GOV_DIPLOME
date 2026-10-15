@@ -80,6 +80,16 @@ def test_joint_parts_and_handoff_keep_deadline():
     assert "внутренняя причина" not in res["draft_ru"] + res["draft_kk"]
 
 
+def test_joint_where_no_service_started_yet():
+    rec = dict(REC, status="accepted", services=[{"service": "heating", "role": "lead", "status": "new"},
+                                                 {"service": "greenery", "role": "partner", "status": "new"}])
+    res = reply_draft(record=rec, now=NOW)
+    assert res["template"] == "joint_queued"
+    assert "передали двум службам: Теплосеть и Служба озеленения. Каждая отвечает за свою часть." in res["draft_ru"]
+    assert "екі қызметке берілді: Жылу желісі және Көгалдандыру қызметі" in res["draft_kk"]
+    assert "ждёт очереди" not in res["draft_ru"]
+
+
 def test_fixed_rejected_duplicate():
     rec = dict(REC, status="fixed", resolution={"what_done": "Заасфальтировали яму"})
     res = reply_draft(record=rec, now=NOW)

@@ -303,6 +303,14 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
                        " және ".join([", ".join(p["name_kk"] for p in parts[:-1]), parts[-1]["name_kk"]])))
             used.append("services")
             template = "new_joint"
+        elif len(parts) >= 2 and all(pt.get("status") in ("new", "todo", None) for pt in parts):
+            say("joint_queued", code=(code_ru, code_kk), about=(about_ru, about_kk),
+                n_dat={2: "двум", 3: "трём"}.get(len(parts), str(len(parts))),
+                n_kk=_KK_NUMBERS.get(len(parts), str(len(parts))),
+                names=(" и ".join([", ".join(p["name_ru"] for p in parts[:-1]), parts[-1]["name_ru"]]),
+                       " және ".join([", ".join(p["name_kk"] for p in parts[:-1]), parts[-1]["name_kk"]])))
+            used.append("services")
+            template = "joint_queued"
         elif len(parts) >= 2:
             words_ru = ", ".join(f"{p['name_ru']} — {T.PART_STATUS.get(p['status'], T.PART_STATUS['new'])[0]}"
                                  for p in parts)
