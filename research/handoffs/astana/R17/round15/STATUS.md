@@ -47,8 +47,11 @@
   Тесты: pytest tests/civic/R17 — 42 PASS; браузер tests/civic/R17/agencies_browser.cjs — 104/104 PASS
   (1366/1024/375 × ru/kk, поток кризиса, житель зоны, reduced motion). Кадры: research/round-15-results/R17/screens/ (27).
 
+- Поставка D1 для B1: research/round-15-results/R17/DELIVERY.json — code_sha 7530089671bc5976236bff5c52edd54b97faa1a8,
+  RUN.txt, INTEGRATION.txt (patch R01: patches/R01_agencies_routes_assets.patch, ложится на e91acb69).
+
 ## Следующий шаг
-- DELIVERY.json + RUN.txt (code_sha = checkpoint 4), push. Затем круг по соседям: R09 v2.1 (функции чтения, фильтр
+- Ждать B1 (16 окт 14:00); до неё — круги по соседям ниже. Затем круг по соседям: R09 v2.1 (функции чтения, фильтр
   «Обращений» по службе), R01 (наложил ли patch), R11 (ключи, меню), R16 (имя функции дворов устройства), R04
   (moderate), R08/R13 (кнопка «Открыть кризисный штаб»). Проверять на каждом круге.
 

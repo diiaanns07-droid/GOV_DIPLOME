@@ -1,0 +1,136 @@
+{
+  "role": "R17",
+  "title": "Бірге: ведомства вместе — штаб ведомств и кризисный штаб",
+  "branch": "claude/sweet-euler-5tiu5b",
+  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+  "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15); поправка П1 (2d329b2c) применена в коде",
+  "restored_from": null,
+  "code_sha": "7530089671bc5976236bff5c52edd54b97faa1a8",
+  "tested_sha": "7530089671bc5976236bff5c52edd54b97faa1a8",
+  "push_status": "OK (origin/claude/sweet-euler-5tiu5b)",
+  "changed_paths": [
+    "ui/civic_agencies/",
+    "web/civic/agencies/",
+    "tests/civic/R17/",
+    "research/round-15-results/R17/",
+    "research/handoffs/astana/R17/round15/STATUS.md"
+  ],
+  "foreign_paths_patch": {
+    "file": "research/round-15-results/R17/patches/R01_agencies_routes_assets.patch",
+    "touches": [
+      "ui/web_server.py (CIVIC_ASSETS, V2_ROUTES, V2_HANDLERS)",
+      "web/index.html (link + 2 script)"
+    ],
+    "applies_to": "e91acb69 (git apply --check OK)",
+    "owner": "R01"
+  },
+  "api": {
+    "module": "ui.civic_agencies",
+    "factory": "make_service(db_path)",
+    "kind": "service",
+    "routes": [
+      "GET agencies",
+      "GET agencies/board?days&district&service",
+      "GET agencies/joint?days&district",
+      "GET agencies/handoffs?days&district",
+      "GET incidents?status&district",
+      "GET incidents/{id}",
+      "GET incidents/updates?since&district&yard",
+      "POST incidents",
+      "POST incidents/{id}/task",
+      "POST incidents/{id}/update",
+      "POST incidents/{id}/close"
+    ],
+    "neighbor_functions": {
+      "R06": "updates(device, since)",
+      "R08": "board(days, district), agencies_week(days, district, lagging), active_incidents(district), crisis_link(district, kind)",
+      "R03": "board(days, district), list_incidents(status, district)",
+      "R07": "incident_marks(start, end)",
+      "R12": "service_profiles()",
+      "R01": "configure(records=fn), seed_world(db_path, world, now)"
+    },
+    "screen": "window.BirgeAgencies.mount(root, {apiBase}) · registerScreen id=agencies (akimat) · registerLayer id=crisis · BirgeAgencies.openCrisis({incident}|{template, district})"
+  },
+  "method": {
+    "unit": "обращение (жалоба); дубли (duplicate_of) не считаются нигде — как в «Обращениях» R09",
+    "parts": "часть службы = services[] (§5.1); у записи без services[] одна часть: ведущая служба, статус = статус жалобы",
+    "open": "у службы открытая часть сейчас (не done и не rejected), любой давности",
+    "overdue": "из открытых — вкладка R09 «Просрочено» (lifecycle.inbox_tab): срок ответа прошёл без ответа или прошла обещанная дата обновления; передача срок не обнуляет",
+    "deadline_bar": "открытые части по состоянию срока ответа R09: overdue | today | ok | answered; длина полосы — open / max open",
+    "period": "received, median_answer_days, fixed, verified, returned, joint — обращения, поданные за days дней; передачи — по времени передачи",
+    "median_answer_days": "медиана рабочих дней РК (календарь R09 holidays_kz.json) от подачи до первого ответа (первый статус, кроме new); только ведущая служба",
+    "verified_share": "verified / fixed (resolution.state = verified); нет fixed — null, а не 0 %",
+    "returned": "ведущая служба; у обращения был возврат жителями (reopen_count > 0 или state reopened)",
+    "loops": "передачи по кругу: служба получает обращение обратно после того, как сама его передала",
+    "people": "людей и сотрудников не оцениваем — только службы (IDEA §4)",
+    "check_vs_R02": "world_v1 @ R02 d8af32a0, now из EXPECTED.json: совпадает с EXPECTED.services по всем 20 службам, кроме open у совместной (по части службы; разница 1 у water) и overdue (нужен due_at от засева R09)"
+  },
+  "tests": {
+    "pytest tests/civic/R17": {
+      "status": "PASS",
+      "passed": 42,
+      "failed": 0,
+      "covers": "расчёт табло (нет данных, одна служба, передачи по кругу, дубли, район, период, рабочие дни), профили (id R08=R09, контраст цветов ≥ 4,5:1, значки ui-kit), права (сессия, CSRF, Origin, Host), публичная часть без задач, поток кризиса, ПДн в обновлении → 422, зона без полигона, лента жителя, seed_world формата R02, сброс демо, имена функций для R03/R12"
+    },
+    "browser tests/civic/R17/agencies_browser.cjs": {
+      "status": "PASS",
+      "passed": 104,
+      "failed": 0,
+      "env": "облако, Chromium Playwright, свой сервер CIVIC_DEMO=1 с patch R01, без интернета (упрощённый фон карты)",
+      "covers": "1366/1024/375 × ru/kk: 20 служб на одном экране 1366, KPI = API, вкладки, раскрытие службы, нет прокрутки вбок и сырых ключей; сцена 9: задача, обновление ҚАЗ+РУС, новый кризис, закрытие, слой карты; житель зоны: баннер и карточка без задач, Esc; без входа; reduced motion"
+    },
+    "gateway R01 (через patch)": {
+      "status": "PASS",
+      "detail": "GET /api/civic/v2/modules — 11 маршрутов R17 ready (стенд и браузерный тест)"
+    },
+    "scene 8 (табло) с демо-миром R02 через R09": {
+      "status": "NOT_RUN",
+      "reason": "R09 ещё не поставил v2.1 и seed_world (на 15 окт 17:30); на мире R02 расчёт сверен скриптом с EXPECTED.json (см. method.check_vs_R02)"
+    },
+    "real basemap frames": {
+      "status": "NOT_RUN",
+      "reason": "в облаке нет интернета: подложка — упрощённый фон (П1 п. 6), кадры с картой — LOCAL-12"
+    }
+  },
+  "screens": [
+    "research/round-15-results/R17/screens/board-1024-kk.png",
+    "research/round-15-results/R17/screens/board-1024-ru.png",
+    "research/round-15-results/R17/screens/board-1366-kk.png",
+    "research/round-15-results/R17/screens/board-1366-ru.png",
+    "research/round-15-results/R17/screens/board-375-kk.png",
+    "research/round-15-results/R17/screens/board-375-ru.png",
+    "research/round-15-results/R17/screens/board-open-1366-ru.png",
+    "research/round-15-results/R17/screens/board-open-375-kk.png",
+    "research/round-15-results/R17/screens/crisis-1024-ru.png",
+    "research/round-15-results/R17/screens/crisis-1366-kk.png",
+    "research/round-15-results/R17/screens/crisis-1366-ru.png",
+    "research/round-15-results/R17/screens/crisis-375-kk.png",
+    "research/round-15-results/R17/screens/crisis-form-1366-ru.png",
+    "research/round-15-results/R17/screens/crisis-map-1366-ru.png",
+    "research/round-15-results/R17/screens/empty-handoffs-1366-ru.png",
+    "research/round-15-results/R17/screens/handoffs-1366-kk.png",
+    "research/round-15-results/R17/screens/handoffs-1366-ru.png",
+    "research/round-15-results/R17/screens/handoffs-375-kk.png",
+    "research/round-15-results/R17/screens/joint-1366-kk.png",
+    "research/round-15-results/R17/screens/joint-1366-ru.png",
+    "research/round-15-results/R17/screens/joint-375-kk.png",
+    "research/round-15-results/R17/screens/login-1366-ru.png",
+    "research/round-15-results/R17/screens/resident-banner-1366-ru.png",
+    "research/round-15-results/R17/screens/resident-banner-375-kk.png",
+    "research/round-15-results/R17/screens/resident-card-1366-kk.png",
+    "research/round-15-results/R17/screens/resident-card-1366-ru.png",
+    "research/round-15-results/R17/screens/resident-card-375-kk.png"
+  ],
+  "amendments": {
+    "P1": "применена: пустые состояния — монохромная иконка ui-kit 48 px + текст + одна кнопка; значки служб монохромные; декоративных картинок нет; «вау» — пульс зоны кризиса и данные"
+  },
+  "known_limits": [
+    "До R09 v2.1 демо-сборка (CIVIC_DEMO=1 без CIVIC_DEMO_WORLD) считает табло по синтетической фикстуре R17 — у заголовка «Пример»; числа совпадут с «Обращениями», когда R09 поставит части служб или R01 включит демо-мир.",
+    "Фильтр «Обращений» по службе — на стороне R09 (sessionStorage birge.inbox.filter / событие birge:inbox-filter).",
+    "Двор жителя для ленты и баннера — функция R16 (имя ищется по 4 вариантам); без R16 — подписка R08 на район или центр карты в зоне.",
+    "Казахские тексты экрана и шаблонов кризисов — черновик R17, нужна вычитка R11.",
+    "Для heating/power/gas/animals/traffic/emergency нет точных значков в наборе ui-kit — взяты ближайшие (просьба к R11).",
+    "sla_fix_days в профиле службы — настройка прототипа (sla_fix_source: default), не норматив."
+  ],
+  "next_step": "Круг по соседям: R09 v2.1 (функции чтения, фильтр по службе) → прогнать сверку табло на базе R09 с демо-миром; R01 — применить patch и вызвать seed_world при CIVIC_DEMO_WORLD=1; R11 — ключи и меню; R08/R13 — кнопка «Открыть кризисный штаб» (crisis_link); R16 — имя функции дворов устройства."
+}
