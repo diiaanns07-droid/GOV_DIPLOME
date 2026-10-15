@@ -39,8 +39,11 @@ const SHOT_Q = 72;
 
 // pause — паузы для зрителя (в --fast короче); ожидания ответа интерфейса — wait (всегда полные, иначе шаги не проходят).
 // --pace — множитель пауз для зрителя (0,7 по умолчанию: часть 1 ≈ 3 мин, весь ролик ≤ 5 мин); --fast — 0,35.
-const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.7)));
+// Темп пауз: 0,6 — ролик ≤ 5 мин (VISUAL_BRIEF №12) с частью 2; субтитр всё равно держится не меньше времени чтения.
+const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.6)));
 const pause = (ms) => sleep(Math.round(ms * PACE));
+// Часть времени чтения даёт следующий шаг сцены (нажатие, перелёт карты): субтитр висит до следующего — вычитаем ~1,5 с.
+const READ_AHEAD = 1500;
 const wait = (ms) => sleep(ms);
 const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
 const dbg = (...xs) => { if (process.env.R10V_DEBUG) log("  ·", ...xs); };
@@ -160,7 +163,8 @@ async function recordLang(browser, lang) {
     if (open) { open.end = at(); cues.push(open); }
     open = text ? { start: at(), end: null, text, key } : null;
     await page.evaluate((x) => window.__r10v && window.__r10v.sub(x), text).catch(() => null);
-    await pause(hold);
+    // Субтитр должен успеть прочитаться: не меньше 1 с на 15 знаков (норма субтитров ~15–17 зн/с), кроме --fast.
+    await sleep(Math.max(Math.round(hold * PACE), FAST || !text ? 0 : Math.round(text.length / 15 * 1000) - READ_AHEAD));
   };
   const quiet = async () => { if (open) { open.end = at(); cues.push(open); open = null; }
     await page.evaluate(() => window.__r10v && window.__r10v.sub("")).catch(() => null); };
