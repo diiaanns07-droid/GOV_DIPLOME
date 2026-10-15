@@ -1,0 +1,144 @@
+{
+  "role": "R08",
+  "round": 15,
+  "branch": "claude/inspiring-johnson-j7wksj",
+  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+  "restored_from": null,
+  "restored_note": "код R08 в основе = поставка раунда 14 d5719635 (FINAL-4) — восстанавливать нечего",
+  "code_sha": "144d73febb516e2dc8907b289c9c48b0e56fc888",
+  "tested_sha": "144d73febb516e2dc8907b289c9c48b0e56fc888",
+  "push_status": "OK (origin/claude/inspiring-johnson-j7wksj)",
+  "amendments_applied": [
+    "П1 «Без ИИ-слопа» (15 окт 17:05)"
+  ],
+  "what": {
+    "akim/board": "Ситуационный центр: GET /api/civic/v2/akim/board (только сотрудник) + web/civic/board/ (тёмная, 1920/1366 без прокрутки, смена блоков 15 с, ҚАЗ/РУС)",
+    "akim/week": "Картина недели: GET /api/civic/v2/akim/week?date&district (только сотрудник) + web/civic/akim/week.html (печать A4, 2 листа, ru/kk)",
+    "day_2_0": "«Картина дня» 2.0: Ведомства (R17) · Жители вместе (R16+R09) · Встречи (R13) · Прогноз (R13, прототип); «Нужно решение акима» проблема → вариант → кнопка; «Открыть кризисный штаб» у тревоги пульса",
+    "demo_world": "CIVIC_DEMO_WORLD=1 — фикстуры R08 (объекты, предложения, «Рядом», пример решений, соседи) не подмешиваются"
+  },
+  "changed_paths": [
+    "tests/civic/R08/board_check.cjs",
+    "tests/civic/R08/demo_server.py",
+    "tests/civic/R08/r15_shots.cjs",
+    "tests/civic/R08/test_r08_board.py",
+    "tests/civic/R08/ui_check.cjs",
+    "ui/civic_akim/__init__.py",
+    "ui/civic_akim/api.py",
+    "ui/civic_akim/blocks.py",
+    "ui/civic_akim/fixtures/agencies_demo.json",
+    "ui/civic_akim/fixtures/incidents_demo.json",
+    "ui/civic_akim/fixtures/meetings_demo.json",
+    "ui/civic_akim/fixtures/together_demo.json",
+    "ui/civic_akim/nearby.py",
+    "ui/civic_akim/neighbors.py",
+    "ui/civic_akim/situation.py",
+    "ui/civic_akim/sources.py",
+    "ui/civic_akim/summary.py",
+    "ui/civic_akim/weekly.py",
+    "web/civic/akim/akim.css",
+    "web/civic/akim/akim.js",
+    "web/civic/akim/services.css",
+    "web/civic/akim/services.js",
+    "web/civic/akim/week.css",
+    "web/civic/akim/week.html",
+    "web/civic/akim/week.js",
+    "web/civic/board/board.css",
+    "web/civic/board/board.js",
+    "web/civic/board/index.html",
+    "web/civic/nearby/nearby.css",
+    "web/civic/nearby/nearby.js"
+  ],
+  "tests": {
+    "pytest tests/civic/R08": {
+      "status": "PASS",
+      "passed": 294,
+      "failed": 0,
+      "skipped": 1,
+      "env": "облако Claude Code, Linux, Python 3.13"
+    },
+    "tests/civic/R08/test_r08_board.py": {
+      "status": "PASS",
+      "passed": 31,
+      "failed": 0
+    },
+    "board_check.cjs (ситуационный центр)": {
+      "status": "PASS",
+      "passed": 57,
+      "failed": 0,
+      "env": "Chromium (Playwright 1.56), стенд demo_server.py --wave2-demo, соседи — фикстуры R08"
+    },
+    "r15_shots.cjs (Картина дня 2.0, Картина недели)": {
+      "status": "PASS",
+      "passed": 28,
+      "failed": 0
+    },
+    "ui_check.cjs (Картина дня, регресс)": {
+      "status": "SAME_AS_BASE",
+      "passed": 144,
+      "failed": 20,
+      "note": "те же 20 FAIL на основе FINAL-4 e91acb6 (проверено тем же скриптом на копии основы): старые проверки CLEAN_PASS (шрифт 28/600, подпись 15, два начертания), отменённые эталоном A 13 окт — не регресс раунда 15"
+    },
+    "соседи на их ветках (R17 61558bd3, R16 aef7b79f, R13 0f387db4)": {
+      "status": "PASS",
+      "note": "модули соседей из их веток во временной папке + та же база: все 5 блоков available, ссылка штаба только у тревоги про снег"
+    },
+    "сборка R01 с маршрутами akim/board, akim/week": {
+      "status": "NOT_RUN",
+      "reason": "R01 ещё не добавил строки V2_ROUTES/V2_HANDLERS (INTEGRATION §1)"
+    },
+    "демо-мир R02 (CIVIC_DEMO_WORLD=1) сверка чисел с R07/R09": {
+      "status": "NOT_RUN",
+      "reason": "world_v1.json и seed_world соседей ещё в работе; флаг и отключение фикстур покрыты тестами"
+    }
+  },
+  "screens": [
+    "research/round-15-results/R08/screens/board-1366-kk-agencies.jpg",
+    "research/round-15-results/R08/screens/board-1366-kk-crisis.jpg",
+    "research/round-15-results/R08/screens/board-1366-kk-forecast.jpg",
+    "research/round-15-results/R08/screens/board-1366-kk-meetings.jpg",
+    "research/round-15-results/R08/screens/board-1366-kk-no-neighbours.jpg",
+    "research/round-15-results/R08/screens/board-1366-kk-together.jpg",
+    "research/round-15-results/R08/screens/board-1366-ru-agencies.jpg",
+    "research/round-15-results/R08/screens/board-1366-ru-crisis.jpg",
+    "research/round-15-results/R08/screens/board-1366-ru-forecast.jpg",
+    "research/round-15-results/R08/screens/board-1366-ru-meetings.jpg",
+    "research/round-15-results/R08/screens/board-1366-ru-together.jpg",
+    "research/round-15-results/R08/screens/board-1920-kk-agencies.jpg",
+    "research/round-15-results/R08/screens/board-1920-kk-crisis.jpg",
+    "research/round-15-results/R08/screens/board-1920-kk-forecast.jpg",
+    "research/round-15-results/R08/screens/board-1920-kk-meetings.jpg",
+    "research/round-15-results/R08/screens/board-1920-kk-together.jpg",
+    "research/round-15-results/R08/screens/board-1920-ru-agencies.jpg",
+    "research/round-15-results/R08/screens/board-1920-ru-crisis.jpg",
+    "research/round-15-results/R08/screens/board-1920-ru-forecast.jpg",
+    "research/round-15-results/R08/screens/board-1920-ru-meetings.jpg",
+    "research/round-15-results/R08/screens/board-1920-ru-together.jpg",
+    "research/round-15-results/R08/screens/board_check.json",
+    "research/round-15-results/R08/screens/day-1024-kk-first.jpg",
+    "research/round-15-results/R08/screens/day-1024-kk-r15.jpg",
+    "research/round-15-results/R08/screens/day-1024-ru-first.jpg",
+    "research/round-15-results/R08/screens/day-1024-ru-r15.jpg",
+    "research/round-15-results/R08/screens/day-1366-kk-first.jpg",
+    "research/round-15-results/R08/screens/day-1366-kk-r15.jpg",
+    "research/round-15-results/R08/screens/day-1366-ru-first.jpg",
+    "research/round-15-results/R08/screens/day-1366-ru-r15.jpg",
+    "research/round-15-results/R08/screens/day-375-kk-first.jpg",
+    "research/round-15-results/R08/screens/day-375-kk-r15.jpg",
+    "research/round-15-results/R08/screens/day-375-ru-first.jpg",
+    "research/round-15-results/R08/screens/day-375-ru-r15.jpg",
+    "research/round-15-results/R08/screens/r15_shots.json",
+    "research/round-15-results/R08/screens/week-1366-kk.jpg",
+    "research/round-15-results/R08/screens/week-1366-ru.jpg",
+    "research/round-15-results/R08/screens/week-a4-kk.pdf",
+    "research/round-15-results/R08/screens/week-a4-ru.pdf"
+  ],
+  "known_limits": [
+    "Прогноз на неделю: у R13 пока только прогноз на месяц — экран пишет «Прогноз на месяц» с меткой «Прототип»",
+    "Без строки staff_view=True у R01 ситуационный центр и неделя отвечают 401 («Войдите как сотрудник»)",
+    "Табло служб R17 считает просрочку по правилу R09 «нет ответа в срок» — столбец так и подписан; KPI «Просрочено» — «не исправлено в срок» (сроки R08)",
+    "Кадры — облачный стенд: карта районов на ситуационном центре — контуры OSM (данные), подложки карты нет и не нужно",
+    "ui_check.cjs: 20 устаревших проверок CLEAN_PASS (до эталона A) не переписаны — те же FAIL на основе"
+  ],
+  "next_step": "Проверить свои блоки в сборке R01 B1 (16 окт 14:00); сверка чисел демо-мира R02 с R07/R09/R17; прогноз на неделю, когда R13 даст функцию; переписать устаревшие проверки ui_check под эталон A"
+}
