@@ -128,8 +128,8 @@ async function main() {
     await page.keyboard.press("Enter");
     await page.waitForTimeout(400);
     n = await nav(page);
-    check("Сцена 9: «Ведомства» #agencies/crisis/inc-w15-buran (screen title «Штаб ведомств»)", n.section === "agencies"
-      && n.hash === "#agencies/crisis/inc-w15-buran" && JSON.stringify(n.pressed) === '["agencies"]'
+    check("Сцена 9: «Ведомства» #agencies/crisis=inc-w15-buran (адрес R17; screen title «Штаб ведомств»)", n.section === "agencies"
+      && n.hash === "#agencies/crisis=inc-w15-buran" && JSON.stringify(n.pressed) === '["agencies"]'
       && await page.evaluate(() => document.getElementById("birge-screen-title").textContent === "Штаб ведомств"), n);
     // «Ещё» opened on a screen and closed by Esc: the screen stays
     await page.click("#birge-header .birge-nav [data-section=more]");

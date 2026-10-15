@@ -123,9 +123,10 @@
 
   // ------------------------------------------------------------------ состояние
   const state = { mode: null, section: "map", path: "", dayHandle: null, screenHandle: null, extra: [], layers: [], layer: null };
-  // Внутренний путь раздела (IA_ROUND15 §7.3): #<раздел>/<путь> — #yard/yard-123, #together/i-7, #agencies/calendar.
-  // Путь — id записей и вкладок (латиница, цифры, «-_.:/»), до 80 знаков; иначе — без пути.
-  const PATH_RE = /^[A-Za-z0-9][A-Za-z0-9_.:\/-]{0,79}$/;
+  // Внутренний путь раздела (IA_ROUND15 §7.3): #<раздел>/<путь> — #yard/yard-123, #together/i-7, #agencies/calendar,
+  // глубокие ссылки R17 #agencies/crisis=<id>&district=nura. Путь — id записей, вкладок и простые параметры (латиница,
+  // цифры, «-_.:/=&,%»), до 120 знаков; иначе — без пути.
+  const PATH_RE = /^[A-Za-z0-9][A-Za-z0-9_.:\/=&,%-]{0,119}$/;
   const cleanPath = (path) => (typeof path === "string" && PATH_RE.test(path) ? path : "");
   // ?screens=all — все разделы, и раунда 15 тоже (разбор R11/R10); ?screens=r14 — все разделы раунда 14 без новых
   // (регресс меню FINAL-4, tests/civic/R01/browser/r14_wave2.cjs).

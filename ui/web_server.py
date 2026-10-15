@@ -252,6 +252,10 @@ V2_RATE_LIMITS = {
     "ml.route": ((60, 60, False),),
     "ml.text_check": ((60, 60, False),),
     "notifications.read": ((60, 60, False),),
+    # Опрос «что нового» жителем (R17 INTEGRATION §1 з): не чаще раза в секунду в среднем.
+    "together.updates": ((60, 60, False),),
+    "incidents.updates": ((60, 60, False),),
+    "meetings.updates": ((60, 60, False),),
 }
 
 
@@ -1211,6 +1215,15 @@ class CivicV2Gateway:
                         akim.configure()
         except Exception:
             LOGGER.exception("API v2: «Картина дня» (R08) не настроилась")
+        if store is not None:
+            # Раунд 15 (R17 INTEGRATION §1 д): табло служб считает по тем же записям R09, что карта и «Обращения»,
+            # без второго экземпляра хранилища.
+            try:
+                agencies = self._import("ui.civic_agencies")
+                if agencies is not None and callable(getattr(agencies, "configure", None)):
+                    agencies.configure(records=lambda: store.list())
+            except Exception:
+                LOGGER.exception("API v2: «Штаб ведомств» (R17) не связался с жалобами R09")
         if store is not None and hasattr(store, "target_lookup"):
             # R15-S04/S12: цель новой жалобы проверяется по карте R12 (существует, рядом с точкой, подписи из OSM).
             try:

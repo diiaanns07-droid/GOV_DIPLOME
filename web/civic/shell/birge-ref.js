@@ -386,7 +386,10 @@
       B.setSection(has("inbox", "akimat") ? "inbox" : "map", { path: sc.complaint });
     } else if (n === 9 && sc.incident) {
       B.setMode("akimat");
-      if (has("agencies", "akimat")) B.setSection("agencies", { path: "crisis/" + sc.incident });
+      const A = window.BirgeAgencies;
+      // R17 (INTEGRATION §1 ж): кризис открывает сам штаб — openCrisis({incident}); адрес — #agencies/crisis=<id>.
+      if (A && typeof A.openCrisis === "function") A.openCrisis({ incident: sc.incident });
+      else if (has("agencies", "akimat")) B.setSection("agencies", { path: "crisis=" + sc.incident });
       else if (has("crisis", "akimat")) B.setSection("crisis", { path: sc.incident });
       else B.setSection("day");
     }
@@ -421,10 +424,13 @@
         seen.add(id);
         out.push({ group: sections, title: B.navTitle(id), run: () => B.setSection(id) });
       }
-      // «Ведомства» R17: вкладки «Календарь работ» и «Кризисный штаб» — сразу по адресу #agencies/<вкладка>.
+      // «Ведомства» R17: «Кризисный штаб» — сразу на вкладку кризиса (BirgeAgencies.openCrisis, адрес #agencies/crisis).
+      // «Календарь работ» — раздел R12 (works-calendar) уже в списке выше, когда его модуль в сборке.
       if (seen.has("agencies")) {
-        out.push({ group: sections, title: t("shell.palette.calendar"), run: () => B.setSection("agencies", { path: "calendar" }) });
-        out.push({ group: sections, title: t("shell.palette.crisis"), run: () => B.setSection("agencies", { path: "crisis" }) });
+        out.push({ group: sections, title: t("shell.palette.crisis"), run: () => {
+          const A = window.BirgeAgencies;
+          if (A && typeof A.openCrisis === "function") A.openCrisis({}); else B.setSection("agencies", { path: "crisis" });
+        } });
       }
     }
     if (!(B && B.show)) out.push(...scenes);
