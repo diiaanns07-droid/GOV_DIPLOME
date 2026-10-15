@@ -233,6 +233,18 @@
    "passed": 86,
    "failed": 0,
    "env": "копия R01 c6d62440 (B0.6) + тесты/код R03 cb24034d; со всеми соседями (R17, R16, R13, R12): тест настоящих соседей — в отдельном процессе; порядок R17 → R03 и R03 → R13/R16/R17 — тесты R03 зелёные"
+  },
+  "pytest_full_civic_R01_head": {
+   "status": "PASS (R03)",
+   "passed": 4764,
+   "failed": 7,
+   "failed_R03": 0,
+   "skipped": 23,
+   "xfailed": 1,
+   "xpassed": 10,
+   "cmd": "python3 -B -m pytest -q tests/civic",
+   "env": "копия R01 c6d62440 + пути R03 6d26604a, 15 окт 18:48 UTC",
+   "note": "падают только чужие: R02 генератор мира, R12 conflict ids мира, R15 ×4 XPASS(strict) по исправленным S43/S51, R17 test_neighbor_functions_with_service; со старыми тестами R03 (c6574a39) было 10, из них 2 у R03 и 1 у R07 (тест R07 ломал сервис R17, оставленный тестом R03 — теперь тот идёт в отдельном процессе)"
   }
  },
  "screens": [
