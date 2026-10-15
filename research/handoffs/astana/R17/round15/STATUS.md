@@ -5,6 +5,12 @@
 Начато: 2026-10-15 16:25 по Астане (11:25 UTC)
 База: origin/claude/clever-hypatia-q6ts4g @ e91acb6 (код FINAL-4 a4937462 + пакет раунда 15)
 
+## Каждый круг
+- Каждый круг: сначала читать AMENDMENTS.md из ветки пакета:
+  `git fetch origin claude/clever-hypatia-q6ts4g && git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md`
+  (координатор дописывает туда поправки; где поправка расходится с промптом или VISUAL_BRIEF — права поправка).
+- Прочитанные поправки: П1 (15 окт 17:05, «Без ИИ-слопа») — применена 15 окт ~17:25, см. «Сделано».
+
 ## План
 1. ui/civic_agencies/: профили служб поверх id R08, таблицы кризисов (миграция в той же SQLite), make_service(db_path), updates(device, since), seed_world (фикстура §5.5 до R02).
 2. Табло служб GET agencies/board?days&district (данные R09 по §5.1, до поставки — фикстура).
@@ -16,23 +22,35 @@
 ## Сделано
 - Ветка занята, STATUS создан. Продолжение: задача по расписанию trig_0145naAMrgFxY3FPM88AsvHp (каждый час в :25 UTC,
   в эту же сессию) — удалить после 17 окт 23:59 по Астане (18:59 UTC).
-- Checkpoint 1 (17:25): ui/civic_agencies/ — profiles.py (20 служб, §5.4), board.py (табло, совместные, передачи —
+- Checkpoint 1 (16:36, 30449d15): ui/civic_agencies/ — profiles.py (20 служб, §5.4), board.py (табло, совместные, передачи —
   чистые функции, метод в шапке), geo.py (районы и дворы OSM для зоны), fixture.py (синтетика §5.1 до R09),
   sources.py (R01 configure → R09 → фикстура), store.py (таблицы agency_* кризисного штаба). Сервиса HTTP ещё нет.
 
-- Checkpoint 2 (17:55): crisis.py, service.py (make_service(db).handle — 11 маршрутов §7), demo.py (пример кризиса
+- Checkpoint 2 (16:41, 61558bd3): crisis.py, service.py (make_service(db).handle — 11 маршрутов §7), demo.py (пример кризиса
   + seed_world), __init__.py (updates, board_snapshot, agencies_week, active_incidents, incident_marks,
   service_profiles, crisis_link). pytest tests/civic/R17 — 39 PASS.
-- Checkpoint 3 (19:00): экран web/civic/agencies/ (agencies.js, agencies.css, crisis-layer.js, index.html):
+- Checkpoint 3 (17:00, e5b834f9): экран web/civic/agencies/ (agencies.js, agencies.css, crisis-layer.js, index.html):
   Табло (20 служб на одном экране 1366×768 — проверено кадром), Совместные, Передачи, Кризис (карточка, чипы служб
   с прогрессом, задачи, обновления ҚАЗ/РУС, закрытие, форма нового кризиса из шаблона, зона район/дворы);
   слой карты «Кризис» (registerLayer, зона дышит, под значками R07), баннер и карточка жителю зоны.
   Патч для R01 (маршруты, ассеты, теги): research/round-15-results/R17/patches/R01_agencies_routes_assets.patch —
   на стенде наложен локально, в ветку НЕ коммитится (чужие пути).
 
+- Checkpoint 4 (~17:30): поправка П1 «Без ИИ-слопа» применена — пустые состояния: одна монохромная иконка ui-kit 48 px
+  + текст + одна кнопка (вместо линейных иллюстраций ill-*); значки служб в табло монохромные (цвет — только у
+  просрочки и сроков); пульс зоны кризиса оставлен (П1 п. 5 называет его «вау от данных»). Подмодуль расчёта
+  переименован board.py → metrics.py: R03 ищет функцию ui.civic_agencies.board(days, district) — теперь это функция;
+  добавлены board() и list_incidents() для R03. seed_world понимает формат демо-мира R02 (время объектами
+  {"ago_hours": …}, повторяющиеся id задач, закрытые без closed_at) и сбрасывает демо-кризисы при каждом запуске.
+  Сверка с EXPECTED.json R02 (world_v1 @ d8af32a0): по 20 службам совпадает, кроме open у совместной (считаю по части
+  службы) и overdue (нужен due_at от засева R09) — объяснено в INTEGRATION §5.
+  Тесты: pytest tests/civic/R17 — 42 PASS; браузер tests/civic/R17/agencies_browser.cjs — 104/104 PASS
+  (1366/1024/375 × ru/kk, поток кризиса, житель зоны, reduced motion). Кадры: research/round-15-results/R17/screens/ (27).
+
 ## Следующий шаг
-- Браузерный тест tests/civic/R17/agencies_browser.cjs (1366/1024/375 × ru/kk, поток кризиса, баннер жителя),
-  тест шлюза R01 с патчем, INTEGRATION.txt, RUN.txt, DELIVERY.json, кадры в research/round-15-results/R17/screens/.
+- DELIVERY.json + RUN.txt (code_sha = checkpoint 4), push. Затем круг по соседям: R09 v2.1 (функции чтения, фильтр
+  «Обращений» по службе), R01 (наложил ли patch), R11 (ключи, меню), R16 (имя функции дворов устройства), R04
+  (moderate), R08/R13 (кнопка «Открыть кризисный штаб»). Проверять на каждом круге.
 
 ## Вопросы владельцу
 - (пока нет)

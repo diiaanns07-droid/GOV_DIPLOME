@@ -67,8 +67,15 @@ def demo_incidents(now: datetime) -> list[dict]:
     return [blizzard, heat]
 
 
-def _insert(store: AgencyStore, spec: dict, *, demo: bool = True) -> bool:
+def _insert(store: AgencyStore, spec: dict, *, demo: bool = True) -> str:
+    """-> inserted | reset | skipped. Демо-запись с тем же id возвращается в исходное состояние (SCHEMA R02 §4:
+    после репетиции «Буран» снова идёт, задачи и обновления — как в мире); настоящие записи не трогаем никогда."""
     zone, district = crisis.parse_zone({k: v for k, v in spec["zone"].items() if k != "geometry"})
+    reset = False
+    if spec.get("id") and demo:
+        reset = store.drop_demo(spec["id"])
+        if not reset and store.exists(spec["id"]):
+            return "skipped"
     tasks = [t for t in spec.get("tasks") or [] if t.get("service") in profiles.PROFILES]
     updates = list(spec.get("updates") or [])
     if spec.get("status") == "closed" and spec.get("result"):
@@ -80,23 +87,41 @@ def _insert(store: AgencyStore, spec: dict, *, demo: bool = True) -> bool:
         tasks=tasks, by_role="demo", started_at=spec.get("started_at"), demo=demo, seed_key=spec.get("seed_key"),
         incident_id=spec.get("id"), status=spec.get("status", "active"), closed_at=spec.get("closed_at"),
         result=spec.get("result"), updates=updates)
-    return created
+    if not created:
+        return "skipped"
+    return "reset" if reset else "inserted"
 
 
 def seed_demo_incidents(store: AgencyStore, now: datetime | None = None) -> dict:
     """Пример кризисов для демо-сборки без демо-мира (CIVIC_DEMO=1, CIVIC_DEMO_WORLD не 1). Идемпотентно."""
     now = (now or store.now()).astimezone(ASTANA).replace(microsecond=0)
-    report = {"inserted": 0, "skipped": 0}
+    report = {"inserted": 0, "skipped": 0, "reset": 0}
     for spec in demo_incidents(now):
         try:
-            created = _insert(store, spec)
+            outcome = _insert(store, spec)
         except crisis.InputError:
-            created = False
-        report["inserted" if created else "skipped"] += 1
+            outcome = "skipped"
+        report[outcome] += 1
     return report
 
 
 # ---------------------------------------------------------------------- демо-мир R02 (CONTRACT §11)
+_INSTANT = {"ago_hours": -3600.0, "in_hours": 3600.0, "ago_days": -86400.0, "in_days": 86400.0}
+
+
+def resolve_time(value, now: datetime) -> str | None:
+    """Время демо-мира → ISO по Астане. Строка ISO — как есть; объект {"ago_hours": 30.5} | {"in_hours": h} |
+    {"ago_days": d} | {"in_days": d} — от момента засева (как ml.datasets.demo_world_io.materialize R02)."""
+    if isinstance(value, str):
+        moment = parse_iso(value)
+        return iso(moment) if moment else None
+    if isinstance(value, dict) and len(value) == 1:
+        key, amount = next(iter(value.items()))
+        if key in _INSTANT and isinstance(amount, (int, float)) and not isinstance(amount, bool):
+            return iso(now + timedelta(seconds=_INSTANT[key] * float(amount)))
+    return None
+
+
 def _when(base: datetime, item: dict, prefix: str = "") -> str | None:
     """ISO-время из абсолютного поля или из относительных ago_days / ago_hours / in_days (+ prefix для вложенных)."""
     absolute = item.get(prefix + "at") if prefix else None
@@ -121,21 +146,22 @@ def from_world(item: dict, now: datetime) -> dict:
     """Кризис демо-мира (§5.5 + относительное время) → запись для store.create. Ошибка формата — ValueError."""
     if item.get("kind") not in crisis.TEMPLATES:
         raise ValueError("kind")
-    started = item.get("started_at") if parse_iso(item.get("started_at")) else None
-    started = iso(parse_iso(started)) if started else _when(now, item, "started_") or _when(now, item) or iso(now)
-    closed = item.get("closed_at") if parse_iso(item.get("closed_at")) else None
-    closed = iso(parse_iso(closed)) if closed else _when(now, item, "closed_")
+    started = (resolve_time(item.get("started_at"), now) or _when(now, item, "started_") or _when(now, item)
+               or iso(now))
+    closed = resolve_time(item.get("closed_at"), now) or _when(now, item, "closed_")
     status = item.get("status") if item.get("status") in ("active", "closed") else ("closed" if closed else "active")
-    if status == "closed" and not closed:
-        closed = iso(now)
     updates = []
     for i, u in enumerate(item.get("updates") or []):
         if not isinstance(u, dict):
             continue
-        at = (iso(parse_iso(u["at"])) if parse_iso(u.get("at")) else _when(now, u)) or started
+        at = resolve_time(u.get("at"), now) or _when(now, u) or started
         updates.append({"id": u.get("id") or f"{item['id'].replace('inc-', 'u-')}-{i}"[:48], "at": at,
                         "public": u.get("public", True) is not False, "text_ru": u.get("text_ru"),
                         "text_kk": u.get("text_kk")})
+    if status == "closed" and not closed:
+        # В мире у закрытого кризиса нет closed_at: закрыт после последнего обновления (не «сейчас» — иначе хроника
+        # R07 показала бы старую аварию идущей до сегодняшнего дня).
+        closed = max([u["at"] for u in updates] + [started], key=lambda v: parse_iso(v))
     # id задач демо-мира («t-1» у каждого кризиса) не берём: id задачи общий для базы — его даёт хранилище.
     tasks = [{"id": None, "service": t.get("service"), "text_ru": t.get("text_ru") or t.get("text_kk") or "",
               "text_kk": t.get("text_kk") or t.get("text_ru") or "",
@@ -156,12 +182,12 @@ def seed_world(db_path, records, now: datetime | None = None) -> dict:
     """
     store = AgencyStore(db_path)
     now = (now or datetime.now(timezone.utc)).astimezone(ASTANA).replace(microsecond=0)
-    report = {"inserted": 0, "skipped": 0}
+    report = {"inserted": 0, "skipped": 0, "reset": 0}
     for item in _world_incidents(records):
         try:
             spec = from_world(item, now)
-            created = _insert(store, spec, demo=item.get("demo", True) is not False)
+            outcome = _insert(store, spec, demo=item.get("demo", True) is not False)
         except (ValueError, KeyError, TypeError, crisis.InputError):
-            created = False
-        report["inserted" if created else "skipped"] += 1
+            outcome = "skipped"
+        report[outcome] += 1
     return report

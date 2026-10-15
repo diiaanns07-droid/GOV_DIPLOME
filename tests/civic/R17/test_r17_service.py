@@ -227,28 +227,81 @@ def test_neighbor_functions_with_service(service):
     assert {m["id"] for m in marks} == {"inc-demo-blizzard-nura", "inc-demo-heat-saryarka"}
 
 
+def test_names_neighbors_look_for(service):
+    """R03 (agent/civic_assistant/analyst/sources.py) ищет board / list_incidents, R12 — service_profiles.
+
+    ui.civic_agencies.board — функция (подмодуль расчёта называется metrics), иначе сосед нашёл бы модуль.
+    """
+    import inspect
+    assert inspect.isfunction(agencies.board) and inspect.isfunction(agencies.list_incidents)
+    body = agencies.board(days=30, district="nura")
+    assert len(body["services"]) == 20
+    assert {"service", "open", "overdue", "median_answer_days", "verified_share"} <= set(body["services"][0])
+    listed = agencies.list_incidents(status="active")
+    assert [i["id"] for i in listed["items"]] == ["inc-demo-blizzard-nura"]
+    assert "tasks" not in listed["items"][0] and listed["items"][0]["progress"]
+    assert {p["id"] for p in agencies.service_profiles()} == set(agencies._profiles.SERVICE_IDS)
+
+
 # ---------------------------------------------------------------- засев
-def test_demo_seed_and_seed_world_are_idempotent(tmp_path, clock):
+def test_demo_seed_is_idempotent_and_resets_rehearsal(tmp_path, clock):
     db = str(tmp_path / "w.sqlite3")
     store = AgencyStore(db, clock=clock)
-    assert demo.seed_demo_incidents(store) == {"inserted": 2, "skipped": 0}
-    assert demo.seed_demo_incidents(store) == {"inserted": 0, "skipped": 2}
-    world = {"incidents": [
-        {"id": "inc-world-blizzard", "kind": "blizzard", "title_ru": "Буран в Нуре", "title_kk": "Нұрадағы боран",
-         "zone": {"kind": "district", "district": "nura"}, "started_ago_days": 12, "closed_ago_days": 9,
-         "status": "closed", "tasks": [{"id": "t-1", "service": "street_cleaning", "text_ru": "Чистить",
-                                        "text_kk": "Тазалау", "status": "done"}],
-         "updates": [{"ago_days": 11, "text_ru": "Работаем", "text_kk": "Жұмыс істеп жатырмыз", "public": True}],
-         "result": {"text_ru": "Убрали", "text_kk": "Тазаланды"}, "demo": True},
-        {"id": "inc-world-heat", "kind": "heat_outage", "zone": {"kind": "district", "district": "esil"},
-         "ago_hours": 3, "tasks": [{"id": "t-1", "service": "heating", "text_ru": "Найти порыв", "text_kk": "Жарылысты табу"}]},
-        {"id": "inc-world-bad", "kind": "meteor", "zone": {"kind": "district", "district": "nura"}},
-    ]}
-    assert agencies.seed_world(db, world, now=clock.now) == {"inserted": 2, "skipped": 1}
-    assert agencies.seed_world(db, world, now=clock.now) == {"inserted": 0, "skipped": 3}
-    stored = store.get("inc-world-blizzard")
-    started = datetime.fromisoformat(stored["started_at"])
-    assert abs((clock.now - started) - timedelta(days=12)) < timedelta(seconds=2)
-    assert stored["status"] == "closed" and stored["demo"] is True
-    assert stored["updates"][0]["kind"] == "closed"
-    assert store.get("inc-world-heat")["status"] == "active"
+    assert demo.seed_demo_incidents(store) == {"inserted": 2, "skipped": 0, "reset": 0}
+    # Репетиция: кризис закрыли — следующий запуск сервера возвращает пример в исходное состояние (SCHEMA R02 §4).
+    store.close("inc-demo-blizzard-nura", result_ru="Готово", result_kk="Дайын", by_role="editor")
+    assert demo.seed_demo_incidents(store) == {"inserted": 0, "skipped": 0, "reset": 2}
+    assert store.get("inc-demo-blizzard-nura")["status"] == "active"
+
+
+# Формат демо-мира R02 (data/civic/astana/demo-world/SCHEMA.md §1, §2.8): время — объектами, id задач повторяются,
+# у закрытого кризиса нет closed_at. Записи — как в world_v1.json @ R02 d8af32a0 (сокращённо).
+WORLD = {"incidents": [
+    {"id": "inc-w15-buran", "kind": "blizzard", "title_ru": "Буран в Нуре", "title_kk": "Нұрада боран",
+     "zone": {"kind": "district", "district": "nura", "targets": [], "geometry": None},
+     "started_at": {"ago_hours": 62.0}, "status": "active", "event": "ev-w15-buran",
+     "tasks": [{"id": "t-1", "service": "street_cleaning", "text_ru": "Расчистить главные улицы",
+                "text_kk": "Басты көшелерді тазалау", "status": "doing"},
+               {"id": "t-2", "service": "akimat", "text_ru": "Пункт обогрева", "text_kk": "Жылыну пункті",
+                "status": "done"}],
+     "updates": [{"at": {"ago_hours": 61.0}, "public": True, "text_ru": "Штаб открыт.", "text_kk": "Штаб ашылды."},
+                 {"at": {"ago_hours": 6.0}, "public": True, "text_ru": "Автобусы по зимнему графику.",
+                  "text_kk": "Автобустар қысқы кестемен."}],
+     "result": None, "demo": True},
+    {"id": "inc-w15-water-almaty", "kind": "water_outage", "title_ru": "Прорыв водопровода",
+     "title_kk": "Су құбырының жарылуы", "zone": {"kind": "district", "district": "almaty", "targets": [], "geometry": None},
+     "started_at": {"ago_days": 33.0}, "status": "closed", "event": None,
+     "tasks": [{"id": "t-1", "service": "water", "text_ru": "Заменить трубу", "text_kk": "Құбырды ауыстыру", "status": "done"}],
+     "updates": [{"at": {"ago_days": 32.9}, "public": True, "text_ru": "Подвоз воды у школы.", "text_kk": "Су мектеп жанында."}],
+     "result": {"text_ru": "Воду дали вечером.", "text_kk": "Су кешке берілді."}, "demo": True},
+    {"id": "inc-w15-bad", "kind": "meteor", "zone": {"kind": "district", "district": "nura"}, "demo": True},
+]}
+
+
+def test_seed_world_r02_format(tmp_path, clock):
+    db = str(tmp_path / "w.sqlite3")
+    assert agencies.seed_world(db, WORLD, now=clock.now) == {"inserted": 2, "skipped": 1, "reset": 0}
+    assert agencies.seed_world(db, WORLD, now=clock.now) == {"inserted": 0, "skipped": 1, "reset": 2}
+    store = AgencyStore(db, clock=clock)
+    buran = store.get("inc-w15-buran")
+    started = datetime.fromisoformat(buran["started_at"])
+    assert abs((clock.now - started) - timedelta(hours=62)) < timedelta(seconds=2)
+    assert buran["status"] == "active" and [t["status"] for t in buran["tasks"]] == ["doing", "done"]
+    assert all(t["id"].startswith("t-") and t["id"] != "t-1" for t in buran["tasks"])   # свои id задач
+    water = store.get("inc-w15-water-almaty")
+    assert water["status"] == "closed" and water["result"]["text_kk"] == "Су кешке берілді."
+    closed = datetime.fromisoformat(water["closed_at"])
+    assert abs((clock.now - closed) - timedelta(days=32.9)) < timedelta(seconds=2)   # не «сейчас»
+    # Список мира целиком (load_world()) и просто список записей — одно и то же.
+    assert agencies.seed_world(db, WORLD["incidents"], now=clock.now)["skipped"] == 1
+
+
+def test_seed_world_never_touches_real_incident(tmp_path, clock):
+    db = str(tmp_path / "w.sqlite3")
+    store = AgencyStore(db, clock=clock)
+    store.create(kind="blizzard", title_ru="Настоящий", title_kk="Нақты", zone={"kind": "district", "district": "nura",
+                 "targets": [], "geometry": None}, district="nura", tasks=[], by_role="editor",
+                 incident_id="inc-w15-buran", demo=False)
+    report = agencies.seed_world(db, WORLD, now=clock.now)
+    assert report["skipped"] == 2 and report["reset"] == 0
+    assert store.get("inc-w15-buran")["title_ru"] == "Настоящий"

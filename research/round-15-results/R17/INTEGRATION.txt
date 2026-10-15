@@ -1,0 +1,141 @@
+R17 · «Бірге: ведомства вместе» — штаб ведомств и кризисный штаб · INTEGRATION (раунд 15)
+
+Ветка: claude/sweet-euler-5tiu5b (ветка сессии; claude/r15-R17 средой не разрешена). Код R17 — только мои пути:
+ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы (ui/web_server.py, web/index.html) я НЕ коммитил —
+для них ниже готовый patch.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+1. R01 · шлюз API v2, ассеты, теги — ОДИН patch
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  git apply research/round-15-results/R17/patches/R01_agencies_routes_assets.patch     (база — FINAL-4 / пакет e91acb6)
+
+  Что в нём (если patch не ляжет на вашу сборку — те же строки руками):
+  а) CIVIC_ASSETS: "agencies/agencies.js", "agencies/agencies.css", "agencies/crisis-layer.js", "agencies/index.html".
+  б) V2_ROUTES — точные пути РАНЬШЕ шаблона {id} (иначе «updates» примется за id кризиса):
+       ("GET", ("agencies",), "agencies.list"),
+       ("GET", ("agencies", "board"), "agencies.board"),
+       ("GET", ("agencies", "joint"), "agencies.joint"),
+       ("GET", ("agencies", "handoffs"), "agencies.handoffs"),
+       ("GET", ("incidents",), "incidents.list"),
+       ("POST", ("incidents",), "incidents.create"),
+       ("GET", ("incidents", "updates"), "incidents.updates"),
+       ("GET", ("incidents", "{id}"), "incidents.get"),
+       ("POST", ("incidents", "{id}", "task"), "incidents.task"),
+       ("POST", ("incidents", "{id}", "update"), "incidents.update"),
+       ("POST", ("incidents", "{id}", "close"), "incidents.close"),
+  в) V2_HANDLERS: kind="service", модуль ui.civic_agencies, фабрика make_service(db_path):
+       чтение (agencies.*, incidents.list/get/updates) — БЕЗ staff=True: сервис сам отличает жителя и сотрудника
+       (табло/совместные/передачи — 401/403 без сессии R02; GET без CSRF, как «Обращения» R09);
+       запись (incidents.create/task/update/close) — staff=True: сессию + CSRF проверяют и шлюз, и сервис (R15-S34).
+  г) web/index.html: <link rel="stylesheet" href="/civic/agencies/agencies.css" /> рядом с qa.css;
+       <script defer src="/civic/agencies/agencies.js"></script> и
+       <script defer src="/civic/agencies/crisis-layer.js"></script> — ПОСЛЕ birge.js (registerScreen/registerLayer).
+  Проверено на стенде с этим patch: GET /api/civic/v2/modules — все 11 строк R17 «ready».
+
+  д) wire() (по желанию, лучше сделать): те же записи R09, что у шлюза, без второго экземпляра хранилища:
+       import ui.civic_agencies as agencies
+       agencies.configure(records=lambda: store.list())       # store — хранилище R09 из resolve("complaints.list")
+     Без этого R17 сам открывает ComplaintStore(db_path) R09 на той же SQLite (только чтение list()).
+  е) Демо-мир (CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1): ui.civic_agencies.seed_world(db_path, world, now) — с тем же now,
+     что у всех модулей (SCHEMA R02 §1). Берёт только world["incidents"]; демо-кризисы с тем же id при каждом запуске
+     возвращаются в исходное состояние (SCHEMA R02 §4), настоящие (demo != true) не трогает. Без CIVIC_DEMO_WORLD при
+     CIVIC_DEMO=1 R17 сам кладёт 2 примера («Буран в Нуре» идёт, «Авария теплосети» закрыта) и считает табло по
+     своей фикстуре §5.1 (до поставки R09 v2.1) — на экране метка «Пример».
+  ж) Палитра Ctrl+K / режим показа: «Сцена 9 · Буран» → BirgeAgencies.openCrisis({incident: "inc-w15-buran"})
+     (демо-мир) или window.location.hash = "#agencies/crisis=inc-w15-buran"; «Сцена 8 · табло» → BirgeShell.setSection("agencies").
+  з) Лимит частоты (по желанию): "incidents.updates": ((60, 60, False),) — житель опрашивает раз в минуту.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+2. R11 · меню (IA_ROUND15) и словарь
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Экран регистрируется сам: BirgeShell.registerScreen({id: "agencies", mount, modes: ["akimat"], title: {ru, kk}}),
+  а если в словаре есть shell.nav.agencies — titleKey "shell.nav.agencies". Сейчас пункт попадает в «Ещё» акимата.
+  Слой карты: BirgeShell.registerLayer({id: "crisis", …}); подпись — shell.layers.crisis, если ключ есть.
+  Просьба: ключи shell.nav.agencies («Штаб ведомств» / «Ведомстволар штабы»), shell.layers.crisis («Кризис» /
+  «Төтенше жағдай») и все ключи agencies.* / crisis.* / crisis.map.* из запасных словарей:
+    web/civic/agencies/agencies.js — объект KEYS (ru и kk, ~150 ключей);
+    web/civic/agencies/crisis-layer.js — объект TEXT (ключи crisis.map.<имя>).
+  Казахский — мой черновик, нужна вычитка (особенно: «Жіберулер» для «Передачи», «Бірлескен» для «Совместные»,
+  «Төтенше жағдай» для «Кризис», тексты шаблонов кризисов в ui/civic_agencies/crisis.py TEMPLATES).
+  Значки: в icons.svg нет пламени, молнии, газа, лапы, светофора, сирены — службы heating/power/gas/animals/traffic/
+  emergency пока с ближайшими (home, bulb, wind, alert, alert, shield). Если добавите i-flame, i-bolt, i-gas, i-paw,
+  i-traffic-light, i-siren — поменяю PROFILES в ui/civic_agencies/profiles.py (одна строка на службу).
+  Цвета служб — 7 цветов по виду службы (KIND_COLORS), контраст ≥ 4,5:1 на белом, без цветов тепловой карты и
+  без зелёного; если захотите — перенесите их в tokens.css как --svc-<kind>, я переключу на var().
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+3. Функции R17 для соседей (в том же процессе; сервиса нет — пустой ответ, не ошибка; CONTRACT §7)
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  import ui.civic_agencies as agencies
+  R06  agencies.updates(device, since=None) → [событие §5.8]: module "R17", kind "incident.update", target {district},
+       title_ru/kk «Буран в Нуре: <текст>», link "#incident=<id>" (открывает карточку кризиса на карте жителя).
+       Зона жителя — двор R16 («Я живу здесь») или подписка R08 «Рядом» на район. Неизвестно, где живёт, — [].
+  R08  agencies.board(days=30, district=None) / board_snapshot(…) → то же, что GET agencies/board (services[20], totals).
+       agencies.agencies_week(days=7, district=None, lagging=3) → {lagging: [{service, overdue, open}×3], joint,
+       handoffs, loops, open, overdue, demo, source, link: "#agencies"} — блок «Ведомства» «Картины дня».
+       agencies.active_incidents(district=None) → идущие кризисы (публичная часть + progress по службам, link).
+       agencies.crisis_link(district, kind="blizzard") → "#agencies/crisis=<id>" (идёт кризис района) или
+       "#agencies/crisis=new&template=blizzard&district=nura" — для кнопки «Открыть кризисный штаб» у тревоги пульса.
+       В JS то же: BirgeAgencies.openCrisis({incident}) | BirgeAgencies.openCrisis({template: "blizzard", district: "nura"}).
+  R03  agencies.board(days, district) и agencies.list_incidents(status="active", district=None) → {items: [...]}
+       (имена совпадают с BOARD_FUNCS / INCIDENT_FUNCS в agent/civic_assistant/analyst/sources.py @ 6c7777e2).
+       Поле verified_share — доля 0…1 (не проценты); median_answer_days — рабочие дни или null.
+  R07  agencies.incident_marks(start=None, end=None) → [{id, kind, title_ru, title_kk, started_at, closed_at, district,
+       status, demo}] — отметки «Буран 12 окт» на шкале хроники.
+  R12  agencies.service_profiles() → [профиль §5.4 ×20] (цвет, значок, сроки, названия R08) — уже ищется в
+       engine/civic_geo/works_calendar.py @ dfe2724d (_profiles: "service_profiles").
+  R13  кнопка в пульсе: поле ссылки = agencies.crisis_link(district).
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+4. R09 · «Обращения» с фильтром по службе (клик по строке табло → «Открыть в «Обращениях»»)
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Перед переходом в раздел inbox R17 кладёт фильтр и шлёт событие (подхватите любое):
+    sessionStorage["birge.inbox.filter"] = {"service": "water", "ids": ["c-…", …]}
+    document.dispatchEvent(new CustomEvent("birge:inbox-filter", {detail: {service, ids}}))
+  Чтение данных: R17 берёт записи у R09 так (первое доступное): configure(records) от R01 → функция модуля
+  ui.civic_feedback.v2.agencies (имена records_for_agencies | agency_records | records_for_board | list_for_agencies,
+  аргумент db_path или без аргументов) → ComplaintStore(db_path).list(). Нужны поля §5.1: service, services[{service,
+  role, status, updated_at}], handoffs[{at, from, to, reason, by_role}], status, status_history, due_at, resolution.
+  Признак «R09 v2.1 поставлен» для R17 — маршрут "/complaints/{id}/handoff" в integration.ROUTES: тогда демо-сборка
+  перестаёт брать фикстуру R17 и считает по базе R09.
+  Статус части: done | in_progress | accepted | new | rejected (fixed читаю как done).
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+5. R02 / R10 · сверка чисел табло с демо-миром
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Метод — DELIVERY.json "method" и шапка ui/civic_agencies/metrics.py. На world_v1.json @ R02 d8af32a0 при now из
+  EXPECTED.json мой расчёт совпал с EXPECTED.services по всем 20 службам (joint, handoffs_in, open), кроме двух
+  осознанных мест:
+    • open у совместной: считаю по ЧАСТИ службы (Водоканал свою часть сделал → у него не «открыто»), EXPECTED — по
+      статусу всей жалобы (у обеих). Разница — 1 обращение (water). Просьба R02: в demo_world_expected.services_numbers
+      брать статус части (p["status"] not in ("done","rejected")), чтобы сверка R10 была один в один;
+    • overdue: правило R09 (вкладка «Просрочено»: срок прошёл без ответа или прошла обещанная дата обновления);
+      due_at ставит R09 при засеве — в сыром мире его нет, поэтому сверять на базе R09 после seed_world.
+  Единица — обращение, не место (как «Картина дня» R08); «Обращения» R09 группируют по месту — в ответе табло есть
+  places (сколько мест у открытых) для подписи «N обращений · M мест».
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+6. R04 · модерация обновлений кризиса
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  R17 зовёт ui.civic_ml_api.moderate(text, lang) → {text_public, flags}; flags — список строк или {имя: bool}.
+  Публичное обновление с флагом phone|iin|email|pii|personal_data → 422 «Уберите телефон, ИИН или e-mail»;
+  rude|profanity|obscene → 422 «Уберите грубые слова» (текст пишет сотрудник — не маскируем, а просим исправить).
+  Нет функции — свои правила личных данных (как R13) + ui.civic_ml_api.profanity.moderation.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+7. R16 · двор жителя для ленты и баннера
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  R17 ищет в ui.civic_together функцию (по порядку) yards_of_device | device_yards | my_yards | yards_for_device:
+  (device_id) → [yard-id | {"id": yard-id}] — дворы, где житель нажал «Я живу здесь». Только id, без состава.
+  Если назовёте иначе — напишите в своём INTEGRATION, добавлю имя.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+8. R15 · что проверить у R17
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Права: табло/совместные/передачи — только сессия сотрудника; запись — сессия + CSRF + Origin (тест
+  tests/civic/R17/test_r17_service.py::test_writes_need_staff_csrf_and_same_origin). Житель видит только публичную
+  часть кризиса: без задач, без заметок «Только штабу», без пометок модерации, без журнала. Журнал штаба хранит РОЛЬ
+  (operator/editor/admin), не логин. Устройства жителей R17 не хранит вовсе. Зона — район/дворы/цели карты;
+  полигон «от руки» → 422. Тексты ≤ 600, задач ≤ 30, обновлений ≤ 200 на кризис.
+
+LOCAL-задач нет: всё работает без сети (форма зоны — из data/astana_districts.geojson и yards.json R12, OSM, ODbL).

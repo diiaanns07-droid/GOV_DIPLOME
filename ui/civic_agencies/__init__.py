@@ -10,7 +10,9 @@
 
 Функции для соседей в том же процессе (только чтение; сервиса нет — пустой ответ, а не ошибка, CONTRACT §7):
   updates(device, since)        R06: события ленты «Что нового» (§5.8) — обновления кризисов зоны жителя;
-  board_snapshot(days, district) R08 / R03: табло служб (числа считает этот модуль, R08 только показывает);
+  board(days, district)         R03 / R08: табло служб (то же, что GET agencies/board; числа считает этот модуль);
+  board_snapshot(days, district) то же (прежнее имя);
+  list_incidents(status, district) R03: кризисы {"items": [публичная часть]};
   agencies_week(days, district)  R08 «Картина дня» → «Ведомства»: 3 отстающие службы, совместные, передачи;
   active_incidents(district)     R08 ситуационный центр, R13 пульс: идущие кризисы (публичная часть);
   incident_marks(start, end)     R07 хроника: отметки «Буран 12 окт» на шкале;
@@ -23,14 +25,14 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from . import api_state, board as _calc, crisis as _crisis, profiles as _profiles, sources as _sources
+from . import api_state, crisis as _crisis, metrics as _calc, profiles as _profiles, sources as _sources
 from .demo import seed_world
 from .service import AgencyService, make_service, resident_feed, device_places
 from .store import AgencyStore, iso as _iso, parse_iso as _parse_iso
 
 __all__ = [
-    "AgencyService", "AgencyStore", "make_service", "seed_world", "configure", "updates", "board_snapshot",
-    "agencies_week", "active_incidents", "incident_marks", "service_profiles", "crisis_link",
+    "AgencyService", "AgencyStore", "make_service", "seed_world", "configure", "updates", "board", "board_snapshot",
+    "agencies_week", "active_incidents", "list_incidents", "incident_marks", "service_profiles", "crisis_link",
 ]
 
 
@@ -87,6 +89,29 @@ def board_snapshot(days: int = 30, district: str | None = None) -> dict:
     body = _calc.board(records, now, days=days, district=district, lookup=_sources.r08_lookup())
     body["source"] = source
     return body
+
+
+def board(days: int = 30, district: str | None = None) -> dict:
+    """Табло служб для соседей (R03 «ИИ-аналитик» ищет функцию с этим именем): как GET agencies/board."""
+    return board_snapshot(days=days, district=district)
+
+
+def list_incidents(status: str = "active", district: str | None = None) -> dict:
+    """Кризисы для соседей (R03): {"items": [публичная часть]} — без внутренних задач служб."""
+    service = _service()
+    if service is None:
+        return {"items": [], "empty": True}
+    try:
+        rows = service.store.list(status=status if status in ("active", "closed") else None, district=district)
+    except Exception:  # noqa: BLE001
+        return {"items": [], "empty": True}
+    items = []
+    for row in rows:
+        view = _crisis.public_view(row)
+        view["progress"] = _crisis.progress(row)
+        view["link"] = "#agencies/crisis=" + row["id"]
+        items.append(view)
+    return {"items": items, "status": status, "district": district}
 
 
 def agencies_week(days: int = 7, district: str | None = None, lagging: int = 3) -> dict:

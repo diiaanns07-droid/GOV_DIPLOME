@@ -1,4 +1,4 @@
-"""R17 · расчёт табло служб, совместных обращений и журнала передач (ui/civic_agencies/board.py).
+"""R17 · расчёт табло служб, совместных обращений и журнала передач (ui/civic_agencies/metrics.py).
 
 Крайние случаи из prompt R17 п. 6: нет данных, одна служба, передачи по кругу; плюс дубли, район, срок не
 обнуляется передачей, медиана в рабочих днях, доля «проверено жителями» без исправленных — null, а не 0 %.
@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from ui.civic_agencies import board as calc
+from ui.civic_agencies import metrics as calc
 from ui.civic_agencies import fixture, profiles
 
 NOW = datetime(2026, 10, 15, 12, 0, tzinfo=calc.ASTANA)   # четверг

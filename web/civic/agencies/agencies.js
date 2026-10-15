@@ -168,6 +168,7 @@
       "crisis.layer": "Кризис",
       "crisis.remove": "Убрать",
       "agencies.returned_pill": "вернули жители",
+      "agencies.widen": "Показать за 90 дней по всем районам",
       "common.demo": "Пример",
       "common.state.loading": "Загружаем…",
       "common.state.error_title": "Не получилось загрузить",
@@ -318,6 +319,7 @@
       "crisis.layer": "Төтенше жағдай",
       "crisis.remove": "Алып тастау",
       "agencies.returned_pill": "тұрғындар қайтарды",
+      "agencies.widen": "Барлық аудандар бойынша 90 күнді көрсету",
       "common.demo": "Мысал",
       "common.state.loading": "Жүктеліп жатыр…",
       "common.state.error_title": "Жүктеу мүмкін болмады",
@@ -437,34 +439,56 @@
   function demoTag() { return h("span", { class: "ag-demo" }, [tr("common.demo")]); }
 
   // ------------------------------------------------------------------ сеть
+  // Клиент API v2. Запись сотрудника — с X-CSRF-Token: из оболочки (CivicShell.csrfToken) или, если её токена ещё
+  // нет (сотрудник не открывал редактор), из GET /api/civic/v1/session — как R08 «Службы». Клиент оболочки
+  // (opts.api.v2) не берём: он шлёт токен только из CivicShell и на свежей вкладке отправил бы запись без него.
   function makeClient(opts) {
-    var shellApi = opts.api && typeof opts.api.v2 === "function" ? opts.api.v2 : null;
+    var cached = null;
     function csrf() {
       try {
         var cs = root.CivicShell;
-        return cs && typeof cs.csrfToken === "function" ? cs.csrfToken() : null;
-      } catch (e) { return null; }
+        var token = cs && typeof cs.csrfToken === "function" ? cs.csrfToken() : null;
+        if (token) return Promise.resolve(token);
+      } catch (e) { /* оболочки нет */ }
+      if (cached) return Promise.resolve(cached);
+      return fetch("/api/civic/v1/session", { credentials: "same-origin", headers: { Accept: "application/json" } })
+        .then(function (r) { return r.json(); })
+        .then(function (b) {
+          var d = b && b.data && typeof b.data === "object" ? b.data : b || {};
+          cached = d.authenticated && typeof d.csrf_token === "string" ? d.csrf_token : null;
+          return cached;
+        }, function () { return null; });
     }
-    return function request(method, path, body) {
-      if (shellApi) {
-        return shellApi(method, path, body).catch(function (err) {
-          throw { status: err && err.status || 0, error: err && err.error || "network", message: err && err.message, field: err && err.field };
-        });
-      }
+    function send(method, path, body, token) {
       var headers = { Accept: "application/json" };
       if (body !== undefined) headers["Content-Type"] = "application/json";
-      var token = csrf();
-      if (token && method !== "GET") headers["X-CSRF-Token"] = token;
+      if (token) headers["X-CSRF-Token"] = token;
       return fetch(opts.apiBase + path, { method: method, headers: headers, credentials: "same-origin",
         body: body !== undefined ? JSON.stringify(body) : undefined })
         .then(function (r) {
           return r.text().then(function (text) {
             var data = null;
             try { data = text ? JSON.parse(text) : null; } catch (e) { data = null; }
-            if (!r.ok) throw { status: r.status, error: (data && data.error) || "error", message: data && data.message, field: data && data.field, current: data && data.current };
+            if (!r.ok) {
+              throw { status: r.status, error: (data && data.error) || "error", message: data && data.message,
+                field: data && data.field, current: data && data.current };
+            }
             return data;
           });
         }, function () { throw { status: 0, error: "network" }; });
+    }
+    return function request(method, path, body) {
+      if (method === "GET") return send(method, path, body, null);
+      return csrf().then(function (token) {
+        return send(method, path, body, token).catch(function (err) {
+          // Токен устарел (сессию обновили в другой вкладке) — один повтор со свежим.
+          if (err && err.error === "csrf_failed" && cached) {
+            cached = null;
+            return csrf().then(function (fresh) { return send(method, path, body, fresh); });
+          }
+          throw err;
+        });
+      });
     };
   }
 
@@ -495,10 +519,13 @@
       h("p", { class: "bk-error__title", text: notReady ? tr("agencies.not_ready") : tr("common.state.network_title") }),
       h("button", { class: "bk-btn", type: "button", onclick: retry, text: tr("common.action.retry") })]));
   }
-  function emptyState(box, title, text, action, illustration) {
+  // Пусто (поправка П1, правило 2): одна маленькая монохромная иконка набора ui-kit (48 px) + короткий текст + одна
+  // кнопка. Без больших иллюстраций и «сценок».
+  function emptyState(box, title, text, action, iconName) {
     var UI = root.BirgeUI;
-    if (UI && UI.state) return UI.state(box, "empty", { title: title, text: text, action: action, illustration: illustration || "list" });
-    box.replaceChildren(h("div", { class: "bk-empty", role: "status" }, [
+    if (UI && UI.state) return UI.state(box, "empty", { title: title, text: text, action: action, icon: iconName || "list" });
+    var ic = svg("i-" + (iconName || "list"), "ic ic--48");
+    box.replaceChildren(h("div", { class: "bk-empty", role: "status" }, [ic,
       h("p", { class: "bk-empty__title", text: title }), text ? h("p", { class: "bk-empty__text", text: text }) : null,
       action ? h("button", { class: "bk-btn bk-btn--primary", type: "button", onclick: action.onClick, text: action.label }) : null]));
   }
@@ -684,9 +711,11 @@
       if (i && i.has && i.has("service." + id)) return i.t("service." + id);
       return (p && (p[lang()] || p.ru)) || id;
     }
+    // Значок службы — монохромный, набор ui-kit (П1: цвет только у важного — просрочки и сроков). Цвет вида службы
+    // из профиля §5.4 остаётся для полос календаря работ R12.
     function serviceBadge(id) {
       var p = profileMap()[id] || {};
-      return h("span", { class: "ag-svc__ic", style: { "--ag-color": p.color || "var(--c-demo)" } }, [svg("i-" + (p.icon || "dots"))]);
+      return h("span", { class: "ag-svc__ic" }, [svg("i-" + (p.icon || "dots"))]);
     }
 
     // ---------------------------------------------------------------- табло
@@ -889,6 +918,12 @@
       setTimeout(function () { doc.dispatchEvent(new CustomEvent("birge:inbox-filter", { detail: detail })); }, 0);
     }
 
+    // Пусто из-за узкого фильтра — одна кнопка «шире» (П1: иконка + текст + одна кнопка).
+    function widenAction() {
+      if (S.days === 90 && !S.district) return null;
+      return { label: tr("agencies.widen"), onClick: function () { S.days = 90; S.district = ""; remember(); refresh(); } };
+    }
+
     // ---------------------------------------------------------------- совместные
     function partChip(p) {
       var prof = profileMap()[p.service] || {};
@@ -906,7 +941,7 @@
       var head = h("p", { class: "ag-note", text: tr("agencies.joint.hint") });
       if (!items.length) {
         var box = h("div", { class: "ag-empty" });
-        emptyState(box, tr("agencies.joint.empty"), tr("agencies.joint.empty_text"));
+        emptyState(box, tr("agencies.joint.empty"), tr("agencies.joint.empty_text"), widenAction(), "users");
         return bodyBox.replaceChildren(head, box, noteLine(data));
       }
       var list = h("ul", { class: "ag-list", "aria-label": tr("agencies.joint.title") }, items.map(function (item) {
@@ -938,7 +973,7 @@
         data.loops ? h("span", { class: "ag-pill ag-pill--loop", title: tr("agencies.loop_hint"), text: tr("agencies.handoffs.loops", { n: data.loops }) }) : null]);
       if (!items.length) {
         var box = h("div", { class: "ag-empty" });
-        emptyState(box, tr("agencies.handoffs.empty"), tr("agencies.handoffs.empty_text"));
+        emptyState(box, tr("agencies.handoffs.empty"), tr("agencies.handoffs.empty_text"), widenAction(), "forward");
         return bodyBox.replaceChildren(hint, box, noteLine(data));
       }
       var pairs = h("div", { class: "ag-pairs", "aria-label": tr("agencies.handoffs.pairs") }, (data.pairs || []).slice(0, 5).map(function (p) {
@@ -983,7 +1018,7 @@
         onclick: function () { openForm(null, null); } }, [svg("i-plus"), tr("crisis.new")]);
       if (!active.length) {
         var box = h("div", { class: "ag-empty" });
-        emptyState(box, tr("crisis.none"), tr("crisis.none_text"), { label: tr("crisis.new"), onClick: function () { openForm(null, null); } }, "done");
+        emptyState(box, tr("crisis.none"), tr("crisis.none_text"), { label: tr("crisis.new"), onClick: function () { openForm(null, null); } }, "check");
         parts.push(box);
       } else {
         if (active.length > 1) {
@@ -1175,7 +1210,10 @@
             c.closing = false;
             c.result = null;
             toast(tr("crisis.closed_ok"), "ok");
-            loadIncidents(inc.id);
+            // Закрытый уходит в «Прошедшие»; на месте карточки — следующий идущий кризис или «Сейчас кризисов нет».
+            S.crisis.id = null;
+            loadIncidents();
+            if (root.BirgeCrisisLayer && root.BirgeCrisisLayer.refresh) root.BirgeCrisisLayer.refresh();
           }, function (err) {
             ok.disabled = false;
             c.resultError = err || {};

@@ -13,7 +13,7 @@ from __future__ import annotations
 import random
 from datetime import datetime, timedelta
 
-from . import board as calc
+from . import metrics as calc
 from . import geo, profiles
 
 # (категория, уточнение | None, вес) — все 20 служб справочника получают хотя бы несколько обращений.

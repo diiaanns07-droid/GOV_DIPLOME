@@ -299,6 +299,21 @@ class AgencyStore:
             self._journal(conn, now, iid, "incident.create", by_role, {"kind": kind, "tasks": len(tasks)})
             return self._load(conn, iid), True
 
+    def exists(self, incident_id: str) -> bool:
+        with self._read() as conn:
+            return conn.execute("SELECT 1 FROM agency_incidents WHERE id = ?", (incident_id,)).fetchone() is not None
+
+    def drop_demo(self, incident_id: str) -> bool:
+        """Удалить ДЕМО-кризис со всеми задачами и обновлениями (перед повторным засевом). Настоящий — не трогает."""
+        with self._tx() as conn:
+            row = conn.execute("SELECT demo FROM agency_incidents WHERE id = ?", (incident_id,)).fetchone()
+            if row is None or not row["demo"]:
+                return False
+            for table in ("agency_incident_tasks", "agency_incident_updates", "agency_journal"):
+                conn.execute(f"DELETE FROM {table} WHERE incident_id = ?", (incident_id,))
+            conn.execute("DELETE FROM agency_incidents WHERE id = ?", (incident_id,))
+            return True
+
     def _active(self, conn, incident_id: str) -> dict:
         row = conn.execute("SELECT status, demo FROM agency_incidents WHERE id = ?", (incident_id,)).fetchone()
         if row is None:

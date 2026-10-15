@@ -1,0 +1,575 @@
+{
+ "base": "http://127.0.0.1:46013",
+ "total": 104,
+ "failed": 0,
+ "checks": [
+  {
+   "name": "шлюз: 11 маршрутов R17 подключены",
+   "status": "PASS",
+   "detail": [
+    "agencies.list:ready",
+    "agencies.board:ready",
+    "agencies.joint:ready",
+    "agencies.handoffs:ready",
+    "incidents.list:ready",
+    "incidents.create:ready",
+    "incidents.updates:ready",
+    "incidents.get:ready",
+    "incidents.task:ready",
+    "incidents.update:ready",
+    "incidents.close:ready"
+   ]
+  },
+  {
+   "name": "без входа: просьба войти, табло не показано",
+   "status": "PASS",
+   "detail": "Штаб ведомств\nТабло\nСовместные\nПередачи\nКризис\n7 дн.\n30 дн.\n90 дн.\nВсе районы\nАлматы\nБайконур\nЕсиль\nНура\nСарайшык\nСарыар"
+  },
+  {
+   "name": "без входа: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "1366-ru: все 20 служб на одном экране без прокрутки",
+   "status": "PASS",
+   "detail": {
+    "rows": 20,
+    "lastBottom": 748,
+    "inner": 768,
+    "kpiOpen": "63"
+   }
+  },
+  {
+   "name": "1366-ru: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "63",
+    63
+   ]
+  },
+  {
+   "name": "1366-ru: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "1366-kk: все 20 служб на одном экране без прокрутки",
+   "status": "PASS",
+   "detail": {
+    "rows": 20,
+    "lastBottom": 748,
+    "inner": 768,
+    "kpiOpen": "63"
+   }
+  },
+  {
+   "name": "1366-kk: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "63",
+    63
+   ]
+  },
+  {
+   "name": "1366-kk: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "1024-ru: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "63",
+    63
+   ]
+  },
+  {
+   "name": "1024-ru: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "1024-kk: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "63",
+    63
+   ]
+  },
+  {
+   "name": "1024-kk: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "375-ru: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "63",
+    63
+   ]
+  },
+  {
+   "name": "375-ru: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "375-kk: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "63",
+    63
+   ]
+  },
+  {
+   "name": "375-kk: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "кризис: идёт пример «Буран в Нуре»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "кризис: задача сменила статус (оптимистично и на сервере)",
+   "status": "PASS",
+   "detail": [
+    "done",
+    "done",
+    "todo",
+    "doing"
+   ]
+  },
+  {
+   "name": "кризис: обновление ҚАЗ+РУС появилось в ленте",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "кризис: без казахского текста — ошибка у поля, не отправлено",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "кризис: создан из шаблона «Прорыв водопровода» с задачами служб",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "кризис: закрыт с итогом, в списке «Прошедшие»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "карта: слой «Кризис» включён и нарисован",
+   "status": "PASS",
+   "detail": {
+    "layer": "crisis",
+    "drawn": true
+   }
+  },
+  {
+   "name": "кризис: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: житель зоны видит кризис и обновления",
+   "status": "PASS",
+   "detail": "Нұрадағы боран\nАймақ: Нұра ауданы\n15 қазан, 12:17 бастап\nМысал\n\nҚЫЗМЕТТЕРДІҢ ЖАҢАРТУЛАРЫ\n\n15 қазан, 17:18\n\nМектепке бара"
+  },
+  {
+   "name": "375-kk: жителю не видны внутренние задачи и заметки штаба",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: карточка на казахском",
+   "status": "PASS",
+   "detail": "Нұрадағы боран\nАймақ: Нұра ауданы\n15 қазан, 12:17 бастап\nМысал\n\nҚЫЗМЕТТЕРДІҢ ЖАҢ"
+  },
+  {
+   "name": "375-kk: Esc закрывает карточку",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: житель — нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: житель зоны видит кризис и обновления",
+   "status": "PASS",
+   "detail": "Буран в Нуре\nЗона: район Нура\nс 15 окт, 12:17\nПример\n\nОБНОВЛЕНИЯ СЛУЖБ\n\n15 окт, 17:18\n\nДороги к школам расчищены, автобу"
+  },
+  {
+   "name": "375-ru: жителю не видны внутренние задачи и заметки штаба",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: Esc закрывает карточку",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: житель — нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: житель зоны видит кризис и обновления",
+   "status": "PASS",
+   "detail": "Буран в Нуре\nЗона: район Нура\nс 15 окт, 12:17\nПример\n\nОБНОВЛЕНИЯ СЛУЖБ\n\n15 окт, 17:18\n\nДороги к школам расчищены, автобу"
+  },
+  {
+   "name": "1366-ru: жителю не видны внутренние задачи и заметки штаба",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: Esc закрывает карточку",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: житель — нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: житель зоны видит кризис и обновления",
+   "status": "PASS",
+   "detail": "Нұрадағы боран\nАймақ: Нұра ауданы\n15 қазан, 12:17 бастап\nМысал\n\nҚЫЗМЕТТЕРДІҢ ЖАҢАРТУЛАРЫ\n\n15 қазан, 17:18\n\nМектепке бара"
+  },
+  {
+   "name": "1366-kk: жителю не видны внутренние задачи и заметки штаба",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: карточка на казахском",
+   "status": "PASS",
+   "detail": "Нұрадағы боран\nАймақ: Нұра ауданы\n15 қазан, 12:17 бастап\nМысал\n\nҚЫЗМЕТТЕРДІҢ ЖАҢ"
+  },
+  {
+   "name": "1366-kk: Esc закрывает карточку",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: житель — нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "reduced motion: значок кризиса без пульса",
+   "status": "PASS",
+   "detail": "none"
+  }
+ ]
+}

@@ -2,7 +2,7 @@
 
 Маршруты (префикс /api/civic/v2; CONTRACT §7):
   GET  /agencies                         все: профили 20 служб (§5.4) с названиями R08; сотруднику — ещё шаблоны кризисов
-  GET  /agencies/board?days&district&service   сотрудник: табло служб (board.py); service= — открытые обращения службы
+  GET  /agencies/board?days&district&service   сотрудник: табло служб (metrics.py); service= — открытые обращения службы
   GET  /agencies/joint?days&district     сотрудник: совместные обращения (две и более служб)
   GET  /agencies/handoffs?days&district  сотрудник: журнал передач, пары «откуда → куда», передачи по кругу
   GET  /incidents?status&district        все: кризисы (жителю — публичная часть, сотруднику — с задачами)
@@ -24,7 +24,7 @@ from datetime import datetime, timedelta, timezone
 import re
 from urllib.parse import parse_qs
 
-from . import board as calc
+from . import metrics as calc
 from . import crisis, geo, profiles, sources
 from .store import AgencyStore, Conflict, NotFound, iso, parse_iso
 
@@ -381,7 +381,7 @@ class AgencyService:
                                                           with_geometry=True)})
 
 
-# Метод расчёта табло — коротко для ответа API и DELIVERY (подробно — шапка board.py).
+# Метод расчёта табло — коротко для ответа API и DELIVERY (подробно — шапка metrics.py).
 METHOD = {
     "unit": "обращение (жалоба), дубли не считаются",
     "open": "открытая часть службы сейчас (не done, не rejected), любой давности",

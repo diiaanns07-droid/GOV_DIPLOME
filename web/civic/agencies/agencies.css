@@ -20,7 +20,7 @@
 .ag *::after {
   box-sizing: border-box;
 }
-.ag .ic {
+.ag .ic:not(.ic--48) {
   width: 16px;
   height: 16px;
   flex: none;
@@ -270,12 +270,12 @@
   width: 20px;
   height: 20px;
   border-radius: 6px;
-  background: var(--ag-color, var(--c-demo));
-  color: #fff;
+  background: var(--c-fill);
+  color: var(--c-text-2);
 }
 .ag-svc__ic .ic {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 .ag-svc__name {
   min-width: 0;
@@ -874,6 +874,22 @@
 .ag-history > li:last-child {
   border-bottom: 0;
 }
+/* Списки-сетки: одна колонка не шире экрана (иначе строка без пробелов растягивает её на 375 px) */
+.ag-history,
+.ag-list,
+.ag-feed,
+.ag-tasks,
+.ag-items,
+.ag-yards {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ag-history .ag-quote {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+.ag-history .ag-note {
+  min-width: 0;
+}
 .ag-empty {
   padding: var(--s-6) var(--s-4);
   border: 1px dashed var(--c-line-strong);
@@ -1038,6 +1054,27 @@
   .ag-lrow__end {
     grid-column: 2;
     justify-content: flex-start;
+  }
+  /* Длинные названия служб переносятся, а не уходят за край (375 × kk) */
+  .ag-pairs .ag-part,
+  .ag-lrow__end .ag-part {
+    white-space: normal;
+  }
+  .ag-task {
+    flex-wrap: wrap;
+    row-gap: 0;
+    padding: 4px;
+  }
+  .ag-task__text {
+    flex-basis: calc(100% - 48px);
+  }
+  .ag-task__svc {
+    flex-basis: 100%;
+    padding-left: 40px;
+    white-space: normal;
+  }
+  .ag-svcchip {
+    white-space: normal;
   }
 }
 .ag-mobile-meta {
