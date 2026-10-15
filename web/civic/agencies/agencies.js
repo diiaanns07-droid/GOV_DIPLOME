@@ -592,6 +592,16 @@
   // Путь раздела оболочки (IA_ROUND15 §7.3, #agencies/<путь>): board | joint | handoffs | calendar | crisis |
   // crisis/<id кризиса> | crisis/new[/<шаблон>[/<район>]]. Неизвестный путь — null (вкладка из памяти).
   function parsePath(path) {
+    // Прежний вид ссылки (R08 «Картина дня»): crisis=<id> и crisis=new&template=<шаблон>&district=<район>.
+    var prev = /^crisis=([^&/]+)(.*)$/.exec(String(path || ""));
+    if (prev) {
+      var params = {};
+      (prev[2] || "").replace(/[&?]([a-z_]+)=([^&]*)/g, function (w, k, v) { params[k] = decodeURIComponent(v); });
+      if (prev[1] === "new") return { tab: "crisis", create: { template: params.template || null,
+        district: DISTRICTS.indexOf(params.district) >= 0 ? params.district : null } };
+      var prevId = decodeURIComponent(prev[1]);
+      return INC_RE.test(prevId) ? { tab: "crisis", incident: prevId } : { tab: "crisis" };
+    }
     var parts = String(path || "").split("/").filter(Boolean);
     if (TABS.indexOf(parts[0]) < 0) return null;
     if (parts[0] === "calendar" && !calendarModule()) return { tab: "board" };

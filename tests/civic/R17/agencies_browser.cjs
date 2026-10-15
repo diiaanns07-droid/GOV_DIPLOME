@@ -65,9 +65,15 @@ async function setup(page, { lang, mode, tab }) {
     if (I) I.setLang(lang);
   }, { lang, mode, tab });
 }
-const noSideScroll = (page) => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1
-  && [...document.querySelectorAll(".ag *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1
-    || e.closest(".bk-tabs, .ag-yards, .ag-scroll")));
+// Прокрутки вбок нет: страница не шире окна, и в экране R17 ничто не вылезает за край — кроме содержимого блоков
+// с собственной прокруткой (вкладки, список дворов, шкала «Календаря работ» R12 .wcal-tl с overflow-x: auto).
+const noSideScroll = (page) => page.evaluate(() => {
+  const clipped = (e) => { for (let n = e.parentElement; n && !n.classList.contains("ag"); n = n.parentElement) {
+    if (/^(auto|scroll)$/.test(getComputedStyle(n).overflowX)) return true; } return false; };   // hidden — не прощаем
+  return document.documentElement.scrollWidth <= innerWidth + 1
+    && [...document.querySelectorAll(".ag *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1
+      || e.closest(".bk-tabs, .ag-yards, .ag-scroll") || clipped(e));
+});
 // Как проверка R10 (tests/e2e/ux_lib.cjs uiScreen): текст мельче 13 px и зоны нажатия < 40 px — внутри экрана R17.
 // Строки табло — role="row" (не кнопки): 26 px на компьютере по замыслу (R10 B-110: «строки не трогать»).
 const uxProbe = (page) => page.evaluate(() => {
@@ -258,6 +264,22 @@ const openAgencies = async (page, base, tab) => {
           check(`${tag}: вкладка ${tab}: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1`, uxTab.tinyN === 0 && uxTab.smallN === 0 && uxTab.lowN === 0, uxTab);
           await page.screenshot({ path: `${OUT}/${tab}-${tag}.png` });
         }
+        // «Календарь работ» (R12 embedded, IA_ROUND15 §5.4) — если модуль R12 в сборке: открылся и не просит войти.
+        if (await page.$("[data-tab=calendar]")) {
+          await page.click("[data-tab=calendar]");
+          await page.waitForSelector("[data-calendar] *, .ag-empty", { timeout: 20000 }).catch(() => null);
+          await page.waitForTimeout(2500);
+          const cal = await page.evaluate(() => {
+            const box = document.querySelector("[data-calendar]");
+            const text = box ? box.innerText : "";
+            return { mounted: !!box, chars: text.length, login: /Войдите|Кіріңіз|staff_required/i.test(text),
+              mains: [...document.querySelectorAll(".ag .bk-btn--primary")].filter((b) => b.offsetParent).map((b) => b.innerText.trim()) };
+          });
+          check(`${tag}: вкладка «Календарь работ» открылась без просьбы войти`, cal.mounted && !cal.login, cal);
+          check(`${tag}: в календаре одна главная кнопка (R10 B-115)`, cal.mains.length <= 1, cal.mains);
+          check(`${tag}: вкладка calendar без прокрутки вбок`, await noSideScroll(page));
+          if (w !== 1024) await page.screenshot({ path: `${OUT}/calendar-${tag}.png` });
+        }
         check(`${tag}: нет ошибок JS`, page.errs.length === 0, page.errs);
         await ctx.close();
       }
@@ -320,6 +342,12 @@ const openAgencies = async (page, base, tab) => {
       check("карта: слой «Кризис» включён и нарисован", layer.layer === "crisis" && layer.drawn, layer);
       check("карта: зона кризиса под слоями тепловой карты R07 (цвета мест не тонут)", layer.underHeat, layer);
       await page.screenshot({ path: `${OUT}/crisis-map-1366-ru.png` });
+      // Прежний вид ссылки (R08 «Картина дня»): #agencies/crisis=<id> — тот же кризис, а не табло.
+      await page.evaluate(() => { location.hash = "#agencies/crisis=inc-demo-blizzard-nura"; });
+      await page.waitForFunction(() => /Буран в Нуре/.test((document.querySelector(".ag-crisis") || {}).innerText || ""), null, { timeout: 15000 })
+        .catch(() => null);
+      check("ссылка вида R08 #agencies/crisis=<id> открывает кризис", /Буран в Нуре/.test(await page.evaluate(() =>
+        (document.querySelector(".ag-crisis") || {}).innerText || "")));
       check("кризис: нет ошибок JS", page.errs.length === 0, page.errs);
       await ctx.close();
     }
