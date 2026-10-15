@@ -3358,5 +3358,6 @@
  "week.kpi.work": "В работе",
  "handoff.reason.joint": "Совместное исполнение",
  "handoff.reason.passport": "Выбор службы в паспорте",
- "akim.kpi.fixed_7d": "Исправлено за 7 дней"
+ "akim.kpi.fixed_7d": "Исправлено за 7 дней",
+ "agencies.detail.open_one": "Открыть обращение"
 }

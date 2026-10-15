@@ -1271,5 +1271,6 @@
  "week.kpi.work": "R08 · web/civic/akim/week.js",
  "handoff.reason.joint": "R09 · web/civic/feedback/complaint-strings.js",
  "handoff.reason.passport": "R09 · web/civic/feedback/complaint-strings.js",
- "akim.kpi.fixed_7d": "R08 · web/civic/akim/akim.js"
+ "akim.kpi.fixed_7d": "R08 · web/civic/akim/akim.js",
+ "agencies.detail.open_one": "R17 · web/civic/agencies/agencies.js"
 }
