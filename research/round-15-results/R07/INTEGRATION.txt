@@ -154,9 +154,9 @@ web/civic/heat/heat.js — этих ключей в словаре R11 ещё н
   свежего снимка LOCAL-10, если узел там есть: osm-node-13355349235 — точка raw/crossings.json.gz (2026-10-12),
   сдвиг 2,32 м, source «osm-objects/crossings»; светофор osm-node-13389177523 — та же точка, source
   «osm-objects/traffic_signals»; в _meta — osm_objects_snapshot. Проверка R10 «объекты R07 = точки OSM» пока сверяет
-  такие цели со снимком пешеходной сети и даст FAIL 2,32 м — патч в 1 строку: patches/R10_accuracy_fresh_snapshot.patch
-  (пешеходная сеть — только для source osm-walking/…; git apply --check на R10 3e63952d — OK; с ним все 7 проверок
-  R07 в accuracy.py — PASS на ветке R07).
+  такие цели со снимком пешеходной сети и давала FAIL 2,32 м — патч в 1 строку: patches/R10_accuracy_fresh_snapshot.patch
+  (пешеходная сеть — только для source osm-walking/…). R10 ПРИНЯЛ патч (2d70ca6d): с accuracy.py R10 ce52465c все
+  7 проверок R07 — PASS на ветке R07.
 - B-116 (Хроника по-казахски): название панели R07 берётся из словаря R11 (replay.title), в модуле — запасное, то же,
   что у R11 сейчас: «Қала шежіресі». Один термин выбирает R11; R07 ничего не переименовывает.
 - B-113 (первый значок > 3 с): хроника подключается лениво — web/civic/replay/replay-attach.js (§1.2а): до первого
