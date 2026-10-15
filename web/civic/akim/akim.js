@@ -86,6 +86,31 @@
       "akim.decision.no_options": "Варианты не предложены — служба должна их подготовить",
       "akim.decision.forbidden": "Выбрать вариант может только сотрудник акимата",
       "akim.decision.save_error": "Выбор не сохранился — попробуйте ещё раз",
+      // Раунд 15, «Картина дня» 2.0 (R11 IA_ROUND15 §5.10)
+      "akim.crisis.open": "Открыть кризисный штаб",
+      "akim.decision.more": "Подробнее",
+      "akim.r15.open": "Открыть",
+      "akim.r15.agencies.title": "Ведомства",
+      "akim.r15.agencies.number": { one: "совместное обращение за неделю", few: "совместных обращения за неделю", many: "совместных обращений за неделю" },
+      "akim.r15.agencies.lagging": "Отстают: {list}",
+      "akim.r15.agencies.no_lagging": "Отстающих служб нет",
+      "akim.r15.agencies.handoffs": "Передач между службами за неделю: {n}",
+      "akim.r15.together.title": "Жители вместе",
+      "akim.r15.together.number": { one: "дело жителей на этой неделе", few: "дела жителей на этой неделе", many: "дел жителей на этой неделе" },
+      "akim.r15.together.split": "Сделано: {done} ({people}) · впереди: {soon}",
+      "akim.r15.together.people": { one: "{n} сосед", few: "{n} соседа", many: "{n} соседей" },
+      "akim.r15.together.verified": { one: "Жители подтвердили {n} исправление за неделю", few: "Жители подтвердили {n} исправления за неделю", many: "Жители подтвердили {n} исправлений за неделю" },
+      "akim.r15.together.yard": "Двор недели: {name}",
+      "akim.r15.meetings.title": "Встречи",
+      "akim.r15.meetings.number": { one: "поручение встреч в работе", few: "поручения встреч в работе", many: "поручений встреч в работе" },
+      "akim.r15.meetings.overdue": "Просрочено: {n} — «{text}»",
+      "akim.r15.meetings.no_overdue": "Просроченных поручений нет · выполнено {done} из {total}",
+      "akim.r15.meetings.next": "Следующая встреча: {place} · {date}",
+      "akim.r15.forecast.title": "Прогноз на неделю",
+      "akim.r15.forecast.title_month": "Прогноз на месяц",
+      "akim.r15.forecast.badge": "Прототип",
+      "akim.r15.forecast.hint": "Где вероятнее рост жалоб. Модель обучена на синтетике — не реальная оценка риска",
+      "akim.r15.board": "Ситуационный центр",
     },
     kk: {
       "akim.pulse.spike_new": "{category} · {district}: жаңа",
@@ -100,6 +125,30 @@
       "akim.decision.no_options": "Нұсқалар ұсынылмаған — оларды қызмет дайындауы керек",
       "akim.decision.forbidden": "Нұсқаны тек әкімдік қызметкері таңдай алады",
       "akim.decision.save_error": "Таңдау сақталмады — қайталап көріңіз",
+      "akim.crisis.open": "Жедел штабты ашу",
+      "akim.decision.more": "Толығырақ",
+      "akim.r15.open": "Ашу",
+      "akim.r15.agencies.title": "Ведомстволар",
+      "akim.r15.agencies.number": "аптадағы бірлескен өтініш",
+      "akim.r15.agencies.lagging": "Артта қалып жатыр: {list}",
+      "akim.r15.agencies.no_lagging": "Артта қалып жатқан қызмет жоқ",
+      "akim.r15.agencies.handoffs": "Аптада қызметтер арасында берілгені: {n}",
+      "akim.r15.together.title": "Тұрғындар бірге",
+      "akim.r15.together.number": "осы аптадағы тұрғындар ісі",
+      "akim.r15.together.split": "Атқарылды: {done} ({people}) · алда: {soon}",
+      "akim.r15.together.people": "{n} көрші",
+      "akim.r15.together.verified": "Тұрғындар аптада {n} түзетуді растады",
+      "akim.r15.together.yard": "Апта ауласы: {name}",
+      "akim.r15.meetings.title": "Кездесулер",
+      "akim.r15.meetings.number": "жұмыстағы кездесу тапсырмасы",
+      "akim.r15.meetings.overdue": "Мерзімі өткен: {n} — «{text}»",
+      "akim.r15.meetings.no_overdue": "Мерзімі өткен тапсырма жоқ · {total} ішінен {done} орындалды",
+      "akim.r15.meetings.next": "Келесі кездесу: {place} · {date}",
+      "akim.r15.forecast.title": "Апталық болжам",
+      "akim.r15.forecast.title_month": "Айлық болжам",
+      "akim.r15.forecast.badge": "Прототип",
+      "akim.r15.forecast.hint": "Шағым көбеюі ықтимал орындар. Модель синтетикада оқытылған — нақты тәуекел бағасы емес",
+      "akim.r15.board": "Жағдаяттық орталық",
     },
   };
   function wave2(key, params) {
@@ -755,9 +804,15 @@
             ])
           );
         });
-        // Слева — проблема и что мешает; справа — что нужно и два варианта (на телефоне всё одной колонкой).
+        // Раунд 15 (VISUAL_BRIEF §3): коротко — проблема → вариант → кнопка. Что мешает, временная мера и что нужно
+        // от акима — в «Подробнее» (свёрнуто), чтобы не было длинных абзацев.
+        var more = [
+          it.decision_ru ? h("p", { class: "akim-decision__needed", text: tr("akim.decision.needed", { text: it["decision_" + l] || it.decision_ru }) }) : null,
+          it.blocker_ru ? h("p", { class: "akim-decision__blocker", text: tr("akim.decision.blocker", { text: it["blocker_" + l] || it.blocker_ru }) }) : null,
+          it.temp_measure_ru ? h("p", { class: "bk-meta", text: tr("passport.temp_measure", { text: it["temp_measure_" + l] || it.temp_measure_ru }) }) : null,
+        ].filter(Boolean);
         list.appendChild(
-          h("li", { class: "akim-decision", tabindex: "-1", "data-key": "decision:" + it.id }, [
+          h("li", { class: "akim-decision akim-decision--compact", tabindex: "-1", "data-key": "decision:" + it.id }, [
             h("div", { class: "akim-decision__info" }, [
               h("p", { class: "akim-decision__problem" }, [h("strong", { text: it["problem_" + l] || it.problem_ru })]),
               h("p", { class: "akim-decision__meta bk-meta" }, [
@@ -765,13 +820,11 @@
                 h("span", { class: "akim-late-days", text: timerText(it.timer) }),
                 " · " + tr("service.assigned", { service: serviceName(it.service) }),
               ]),
-              it.blocker_ru ? h("p", { class: "akim-decision__blocker", text: tr("akim.decision.blocker", { text: it["blocker_" + l] || it.blocker_ru }) }) : null,
-              it.temp_measure_ru ? h("p", { class: "bk-meta", text: tr("passport.temp_measure", { text: it["temp_measure_" + l] || it.temp_measure_ru }) }) : null,
             ]),
             h("div", { class: "akim-decision__choice" }, [
-              it.decision_ru ? h("p", { class: "akim-decision__needed", text: tr("akim.decision.needed", { text: it["decision_" + l] || it.decision_ru }) }) : null,
               it.options && it.options.length ? opts2 : h("p", { class: "akim-decision__blocker bk-meta", text: tr("akim.decision.no_options") }),
               status,
+              more.length ? h("details", { class: "bk-details akim-decision__more" }, [h("summary", { text: tr("akim.decision.more") })].concat(more)) : null,
             ]),
           ])
         );
@@ -809,6 +862,22 @@
         title = tr("akim.pulse.metoo_growth", { place: place, n: a.value });
         reason = tr("akim.pulse.reason.metoo", { n: a.prev || 0 });
       }
+      // Раунд 15: у тревоги по теме идущего кризиса (R17) — «Открыть кризисный штаб»; кризиса нет, но тема кризисная
+      // (снег) — та же кнопка ведёт в штаб с шаблоном. Событие "birge:open-crisis" — оболочка может открыть у себя.
+      var crisisBtn = null;
+      if (a.crisis || a.crisis_new) {
+        var cHref = a.crisis ? (a.crisis.link ? "/" + a.crisis.link : "/#agencies/crisis=" + encodeURIComponent(a.crisis.id))
+          : "/#agencies/crisis=new&template=" + encodeURIComponent(a.crisis_new.kind || "other") + "&district=" + encodeURIComponent(a.crisis_new.district || "");
+        crisisBtn = h("a", {
+          class: "bk-btn bk-btn--primary akim-pulse__crisis",
+          href: cHref,
+          "data-key": "pulse-crisis:" + (a.category || "") + ":" + (a.district || ""),
+          onclick: function (e) {
+            var ev = new CustomEvent("birge:open-crisis", { cancelable: true, detail: { id: a.crisis ? a.crisis.id : null, template: a.crisis_new || null, from: "akim-pulse" } });
+            if (!doc.dispatchEvent(ev)) e.preventDefault();
+          },
+        }, [icon("alert", 18), tr("akim.crisis.open")]);
+      }
       var link = a.target
         ? h("a", {
             class: "akim-pulse__map",
@@ -821,12 +890,12 @@
           }, [icon("pin", 18), tr("common.action.show_on_map")])
         : null;
       // Значок вида тревоги в мягком круге (дизайн-марафон): рост — график, новое место — метка, «Я тоже» — люди.
-      var ic = a.kind === "new_hot" || a.kind === "spike_new" ? "pin" : a.kind === "metoo_growth" ? "users" : "chart";
-      return h("li", { class: "akim-pulse__item", "data-kind": a.kind }, [
+      var ic = a.kind === "new_hot" || a.kind === "spike_new" ? "pin" : a.kind === "metoo" || a.kind === "metoo_growth" ? "users" : "chart";
+      return h("li", { class: "akim-pulse__item" + (crisisBtn ? " has-crisis" : ""), "data-kind": a.kind }, [
         h("span", { class: "akim-pulse__icon", "aria-hidden": "true" }, [icon(ic, 18)]),
         h("span", { class: "akim-pulse__title", text: title }),
         h("span", { class: "akim-pulse__reason bk-meta", text: reason }),
-        link,
+        crisisBtn ? h("span", { class: "akim-pulse__actions" }, [crisisBtn, link]) : link,
       ]);
     }
     function d0() {
@@ -855,6 +924,93 @@
         );
       }
       return card;
+    }
+
+    // ── раунд 15: «Ведомства» · «Жители вместе» · «Встречи» — одной строкой три одинаковые карточки (R11 IA_ROUND15
+    // §5.10): заголовок, одно крупное число, 2 строки и «Открыть» → раздел. Соседа нет — карточки нет.
+    function sectionHref(link, fallback) {
+      var h0 = link && link.charAt(0) === "#" ? link : fallback;
+      return "/" + h0;
+    }
+    function r15Card(id, titleKey, value, numberKey, lines, href, demo) {
+      return h("article", { class: "bk-card akim-card akim-r15-card", "data-block": id }, [
+        h("div", { class: "akim-r15-card__head" }, [
+          h("h2", { class: "bk-h2", text: tr(titleKey) }),
+          demo ? h("span", { class: "bk-tag bk-tag--demo akim-r15-card__demo", text: tr("common.demo") }) : null,
+        ]),
+        h("p", { class: "akim-r15-card__value" }, [
+          h("span", { class: "akim-r15-card__num", text: value == null ? "—" : num(value) }),
+          h("span", { class: "akim-r15-card__label", text: tr(numberKey, { n: value || 0 }) }),
+        ]),
+        h("ul", { class: "akim-r15-card__lines" }, lines.filter(Boolean).slice(0, 2).map(function (t) {
+          return h("li", { text: t });
+        })),
+        h("a", { class: "bk-btn bk-btn--ghost akim-r15-card__open", href: href, "data-key": "r15-open:" + id }, [tr("akim.r15.open"), icon("chevron-right", 18)]),
+      ]);
+    }
+    function renderR15Cards(d) {
+      var cards = [];
+      var g = d.agencies;
+      if (g && g.available) {
+        var lag = (g.lagging || []).map(function (x) {
+          return serviceName(x.service) + (x.overdue ? " (" + num(x.overdue) + ")" : "");
+        });
+        cards.push(r15Card("agencies", "akim.r15.agencies.title", g.joint, "akim.r15.agencies.number", [
+          lag.length ? tr("akim.r15.agencies.lagging", { list: lag.join(", ") }) : tr("akim.r15.agencies.no_lagging"),
+          g.handoffs_week != null ? tr("akim.r15.agencies.handoffs", { n: g.handoffs_week }) : null,
+        ], sectionHref(g.link, "#agencies"), g.demo));
+      }
+      var t = d.together;
+      if (t && t.available) {
+        var people = tr("akim.r15.together.people", { n: t.people_done || 0 });
+        var star = t.yard_of_week;
+        var second = t.verified && t.verified.available && t.verified.value != null ? tr("akim.r15.together.verified", { n: t.verified.value })
+          : star && star.target ? tr("akim.r15.together.yard", { name: label(star.target, "label") }) : null;
+        cards.push(r15Card("together", "akim.r15.together.title", (t.done_week || 0) + (t.upcoming || 0), "akim.r15.together.number", [
+          tr("akim.r15.together.split", { done: t.done_week || 0, people: people, soon: t.upcoming || 0 }),
+          second,
+        ], sectionHref(t.link, "#together"), t.demo));
+      }
+      var m = d.meetings;
+      if (m && m.available && (m.orders || m.next)) {
+        var o = m.orders || {};
+        var late = (m.items || []).filter(function (x) { return x.overdue; })[0];
+        var nx = m.next;
+        cards.push(r15Card("meetings", "akim.r15.meetings.title", (o.total || 0) - (o.done || 0), "akim.r15.meetings.number", [
+          late ? tr("akim.r15.meetings.overdue", { n: o.overdue || 1, text: late["text_" + lang()] || late.text_ru })
+            : tr("akim.r15.meetings.no_overdue", { done: o.done || 0, total: o.total || 0 }),
+          nx ? tr("akim.r15.meetings.next", { place: nx.district ? tr("district." + nx.district) : "", date: I().formatDateTime(nx.at) }) : null,
+        ], sectionHref(m.link, "#meetings"), m.demo));
+      }
+      if (!cards.length) return null;
+      return h("section", { class: "akim-r15", "data-count": String(cards.length), "aria-label": tr("akim.r15.board") }, cards);
+    }
+    // «Прогноз на неделю» (R13, прототип на синтетике — метка «Прототип» и пояснение всегда видны).
+    function renderForecast(d) {
+      var f = d.forecast;
+      if (!f || !f.available || !(f.items || []).length) return null;
+      var list = h("ol", { class: "bk-list akim-forecast__list" });
+      f.items.forEach(function (it) {
+        var name = it.target ? label(it.target, "label") : (it.category ? I().cat(it.category) : "");
+        var row = h("li", { class: "akim-forecast__row" }, [
+          h("span", { class: "akim-forecast__level", "data-level": it.level || "low", "aria-hidden": "true" }),
+          h("span", { class: "bk-list__main" }, [
+            h("span", { class: "bk-list__title", text: name }),
+            h("span", { class: "bk-list__sub", text: [it.category ? I().cat(it.category) : null, it.district ? tr("district." + it.district) : null,
+              it["reason_" + lang()] || it.reason_ru].filter(Boolean).join(" · ") }),
+          ]),
+          it.level ? h("span", { class: "akim-forecast__risk bk-meta", text: tr("forecast.level." + it.level) }) : null,
+        ]);
+        list.appendChild(row);
+      });
+      return h("section", { class: "bk-card akim-card akim-forecast", "aria-labelledby": "akim-forecast-title" }, [
+        h("div", { class: "akim-card__head" }, [
+          h("h2", { class: "bk-h2", id: "akim-forecast-title", text: tr(f.period === "month" ? "akim.r15.forecast.title_month" : "akim.r15.forecast.title") }),
+          h("span", { class: "bk-tag akim-proto", text: tr("akim.r15.forecast.badge") }),
+          h("p", { class: "akim-card__hint bk-meta", text: tr("akim.r15.forecast.hint") }),
+        ]),
+        list,
+      ]);
     }
 
     function cardHead(titleKey, hintKey, extra) {
@@ -1192,7 +1348,7 @@
       // На телефоне колонки «растворяются» (display: contents), порядок задаёт CSS order.
       var main = [renderHot(d), renderObjects(d)].filter(Boolean);
       var side = [renderTopics(d), renderDistricts(d), renderProposals(d)].filter(Boolean);
-      var nothing = d.empty && !decisionsEl && !pulseEl && !main.length && !side.length;
+      var nothing = d.empty && !decisionsEl && !pulseEl && !main.length && !side.length && !renderR15Cards(d) && !renderForecast(d);
       if (nothing)
         body.appendChild(
           h("div", { class: "bk-empty akim-empty", role: "status" }, [
@@ -1209,9 +1365,14 @@
             summaryText(d),
           ])
         );
-      // Порядок по схеме R11 (IA_WAVE2 §5): KPI → сводка → «Нужно решение акима» → «Пульс» → прежние блоки.
+      // Порядок по схеме R11 (IA_WAVE2 §5 и IA_ROUND15 §5.10): KPI → сводка → «Нужно решение акима» → «Пульс» →
+      // три карточки раунда 15 («Ведомства» · «Жители вместе» · «Встречи») → «Прогноз на неделю» → прежние блоки.
       if (decisionsEl) body.appendChild(decisionsEl);
       if (pulseEl) body.appendChild(pulseEl);
+      var r15 = renderR15Cards(d);
+      if (r15) body.appendChild(r15);
+      var forecastEl = renderForecast(d);
+      if (forecastEl) body.appendChild(forecastEl);
       if (main.length || side.length)
         body.appendChild(
           h("div", { class: "akim-grid" + (main.length && side.length ? "" : " akim-grid--one") }, [
@@ -1339,5 +1500,5 @@
     return handle;
   }
 
-  root.BirgeAkim = { mount: mount, version: "akim-r14-clean" };
+  root.BirgeAkim = { mount: mount, version: "akim-r15" };
 })(window);

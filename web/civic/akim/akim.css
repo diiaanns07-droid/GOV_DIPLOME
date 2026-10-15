@@ -1386,3 +1386,204 @@
     print-color-adjust: exact;
   }
 }
+
+/* ───────────── Раунд 15: «Картина дня» 2.0 (R11 IA_ROUND15 §5.10, VISUAL_BRIEF §3) ───────────── */
+
+/* «Нужно решение акима» — коротко: проблема → вариант → кнопка; подробности свёрнуты. */
+.akim-decision--compact {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+.akim-decision__more {
+  margin-top: 2px;
+}
+.akim-decision__more > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--c-text-2);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.akim-decision__more > p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--c-text-2);
+}
+.akim-decision__more > .akim-decision__needed {
+  color: var(--c-ink);
+}
+
+/* «Пульс»: у тревоги кризиса — главная кнопка «Открыть кризисный штаб», «Показать на карте» — тихая рядом. */
+.akim-pulse__actions {
+  grid-area: map;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px 8px;
+}
+.akim-pulse__crisis.bk-btn {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.akim-pulse__item.has-crisis .akim-pulse__icon {
+  background: var(--c-danger-soft);
+  color: var(--c-danger);
+}
+
+/* Три одинаковые карточки в строку: «Ведомства» · «Жители вместе» · «Встречи». */
+.akim-r15 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.akim-r15[data-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.akim-r15[data-count="1"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.akim-r15-card.bk-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.akim-r15-card__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.akim-r15-card__head .bk-h2 {
+  margin: 0;
+}
+.akim-r15-card__value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+}
+.akim-r15-card__num {
+  font-size: 34px; /* шкала эталона: крупное число карточки */
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.akim-r15-card__label {
+  font-size: 13px;
+  color: var(--c-text-2);
+  line-height: 1.25;
+}
+.akim-r15-card__lines {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--c-text-2);
+}
+.akim-r15-card__open.bk-btn {
+  align-self: flex-start;
+  margin-top: auto;
+  min-height: 44px;
+  padding: 0 12px 0 14px;
+  border-radius: 12px;
+  background: var(--akim-fill);
+  color: var(--c-ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.akim-r15-card__open.bk-btn:hover {
+  background: rgba(18, 26, 23, 0.1);
+}
+
+/* «Прогноз на неделю» — прототип: метка и пояснение всегда видны. */
+.akim-forecast {
+  margin-bottom: 12px;
+}
+.akim-proto.bk-tag {
+  background: var(--c-demo-soft);
+  color: var(--c-demo);
+}
+.akim-forecast__list.bk-list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  background: transparent;
+}
+.akim-forecast__row {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 8px 0;
+}
+.akim-forecast__list > li + li {
+  border-top: 1px solid var(--akim-line);
+}
+.akim-forecast__row .bk-list__title {
+  font-size: 14px;
+  font-weight: 500;
+}
+.akim-forecast__row .bk-list__sub {
+  font-size: 12px;
+  color: var(--c-text-3);
+}
+.akim-forecast__level {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--heat-1);
+}
+.akim-forecast__level[data-level="medium"] {
+  background: var(--heat-2);
+}
+.akim-forecast__level[data-level="high"] {
+  background: var(--heat-3);
+}
+.akim-forecast__risk {
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+@media (max-width: 1023px) {
+  .akim-r15,
+  .akim-r15[data-count="2"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .akim-decision--compact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .akim-pulse__actions {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}
+@media print {
+  .akim-r15 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  .akim-r15-card__open,
+  .akim-pulse__crisis,
+  .akim-decision__more > summary {
+    display: none !important;
+  }
+  .akim-r15-card,
+  .akim-forecast__row {
+    break-inside: avoid;
+  }
+}

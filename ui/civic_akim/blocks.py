@@ -310,7 +310,8 @@ def crisis_links(pulse_items: list[dict], crisis_part: dict) -> None:
             return not alarm_districts or not zone or bool(zone & set(alarm_districts))
         match = next((a for a in active if related(a)), None)
         if match:
-            alarm["crisis"] = {"id": match["id"], "title_ru": match["title_ru"], "title_kk": match["title_kk"]}
+            alarm["crisis"] = {"id": match["id"], "title_ru": match["title_ru"], "title_kk": match["title_kk"],
+                               "link": match.get("link")}
         elif alarm.get("category") in CRISIS_KIND:
             alarm["crisis_new"] = {"kind": CRISIS_KIND[alarm["category"]],
                                    "district": alarm.get("district") or (alarm_districts[0] if alarm_districts else None)}
