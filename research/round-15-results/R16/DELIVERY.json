@@ -1,0 +1,168 @@
+{
+ "role": "R16",
+ "title": "Бірге: жители вместе — «Мой двор» и «Сделаем вместе»",
+ "branch": "claude/youthful-johnson-6nz5mp",
+ "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g: FINAL-4 a4937462 + пакет раунда 15)",
+ "restored_from": null,
+ "code_sha": "e475fae93850273f45a59514643954e78b8e6bdd",
+ "tested_sha": "e475fae93850273f45a59514643954e78b8e6bdd",
+ "push_status": "OK (origin/claude/youthful-johnson-6nz5mp)",
+ "amendments_applied": [
+  "П1 «Без ИИ-слопа» (15 окт 17:05): без иллюстраций, значки R11 ≤ 48 px, фото «после» — только настоящие"
+ ],
+ "changed_paths": [
+  "ui/civic_together/",
+  "web/civic/together/",
+  "tests/civic/R16/",
+  "research/round-15-results/R16/",
+  "research/handoffs/astana/R16/round15/STATUS.md"
+ ],
+ "integration": {
+  "r01_patch": "research/round-15-results/R16/R01_together_routes.patch (git apply --check OK на e91acb6)",
+  "routes": "15 под /api/civic/v2/together/* (12 из CONTRACT §7 + 3 доп.: GET yards, POST yards/{id}/captain, POST yards/{id}/moderate)",
+  "module": "ui.civic_together · make_service (kind=service)",
+  "assets": [
+   "together/together.js",
+   "together/together-text.js",
+   "together/together.css"
+  ],
+  "screens": "registerScreen yard, together; registerLayer initiatives (выключен по умолчанию)",
+  "demo_world": "seed_world(db_path, records, now=None) — yards, initiatives; повтор = сброс демо к виду мира от нового now",
+  "for_neighbors": "updates (R06), create_from_idea (R06), initiatives_summary (R08/R03), pickups (R17)",
+  "i18n": "research/round-15-results/R16/i18n_together.json — 233 ключа ru/kk для R11"
+ },
+ "tests": {
+  "pytest_r16": {
+   "status": "PASS",
+   "passed": 52,
+   "failed": 0,
+   "skipped": 0,
+   "env": "python3 3.13 + numpy 2.5.3, pytest из uv (PYTHONPATH)",
+   "files": [
+    "tests/civic/R16/test_r16_together.py",
+    "tests/civic/R16/test_r16_gateway.py"
+   ]
+  },
+  "browser_r16": {
+   "status": "PASS",
+   "passed": 222,
+   "failed": 0,
+   "sizes": [
+    "1366x768",
+    "1024x768",
+    "375x812"
+   ],
+   "langs": [
+    "ru",
+    "kk"
+   ],
+   "script": "tests/civic/R16/browser/r16_browser.cjs",
+   "stand": "tests/civic/R16/stand.py (маршруты в памяти) на базе FINAL-4 + R16",
+   "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон"
+  },
+  "scene7": {
+   "status": "PASS",
+   "runs": [
+    "1366-ru",
+    "1366-kk",
+    "375-ru",
+    "375-kk"
+   ],
+   "steps": 9,
+   "script": "tests/civic/R16/browser/r16_scene7.cjs",
+   "result": "14 → 15, «Поддержано акиматом», «Сделано вместе: 15 соседей», слой карты"
+  },
+  "r02_world_seed": {
+   "status": "PASS",
+   "inserted": 42,
+   "reset_on_repeat": 42,
+   "world": "world_v1.json @ R02 7128b6ba"
+  },
+  "r04_compat": {
+   "status": "PASS (чтение кода и форматов)",
+   "branch": "claude/gifted-maxwell-i66wwi @ b9f828cc"
+  },
+  "r01_shell_paths": {
+   "status": "NOT_RUN",
+   "reason": "оболочка R01 с путями #раздел/путь ещё в работе (claude/brave-fermi-nhzetj); модуль подстраивается следующим кругом"
+  }
+ },
+ "screens": [
+  "research/round-15-results/R16/screens/1024-kk_list.jpg",
+  "research/round-15-results/R16/screens/1024-kk_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1024-ru_detail_joined.jpg",
+  "research/round-15-results/R16/screens/1024-ru_list.jpg",
+  "research/round-15-results/R16/screens/1024-ru_staff_queue.jpg",
+  "research/round-15-results/R16/screens/1024-ru_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1366-kk_detail_joined.jpg",
+  "research/round-15-results/R16/screens/1366-kk_list.jpg",
+  "research/round-15-results/R16/screens/1366-kk_staff_queue.jpg",
+  "research/round-15-results/R16/screens/1366-kk_wizard_4_review_privacy.jpg",
+  "research/round-15-results/R16/screens/1366-kk_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1366-ru_detail.jpg",
+  "research/round-15-results/R16/screens/1366-ru_detail_done.jpg",
+  "research/round-15-results/R16/screens/1366-ru_detail_joined.jpg",
+  "research/round-15-results/R16/screens/1366-ru_detail_offline_toast.jpg",
+  "research/round-15-results/R16/screens/1366-ru_list.jpg",
+  "research/round-15-results/R16/screens/1366-ru_staff_login.jpg",
+  "research/round-15-results/R16/screens/1366-ru_staff_queue.jpg",
+  "research/round-15-results/R16/screens/1366-ru_staff_report_form.jpg",
+  "research/round-15-results/R16/screens/1366-ru_staff_support_form.jpg",
+  "research/round-15-results/R16/screens/1366-ru_state_empty_yard.jpg",
+  "research/round-15-results/R16/screens/1366-ru_state_error.jpg",
+  "research/round-15-results/R16/screens/1366-ru_state_loading.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_1_what.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_2_where.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_3_bring.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_4_review.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_4_review_privacy.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_5_sent.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_initiatives.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_member.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_picker.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_problems.jpg",
+  "research/round-15-results/R16/screens/375-kk_detail_joined.jpg",
+  "research/round-15-results/R16/screens/375-kk_list.jpg",
+  "research/round-15-results/R16/screens/375-kk_staff_queue.jpg",
+  "research/round-15-results/R16/screens/375-kk_state_error.jpg",
+  "research/round-15-results/R16/screens/375-kk_wizard_2_where.jpg",
+  "research/round-15-results/R16/screens/375-kk_yard_overview.jpg",
+  "research/round-15-results/R16/screens/375-ru_detail_joined.jpg",
+  "research/round-15-results/R16/screens/375-ru_list.jpg",
+  "research/round-15-results/R16/screens/375-ru_staff_queue.jpg",
+  "research/round-15-results/R16/screens/375-ru_state_empty_yard.jpg",
+  "research/round-15-results/R16/screens/375-ru_wizard_2_where.jpg",
+  "research/round-15-results/R16/screens/375-ru_wizard_4_review_privacy.jpg",
+  "research/round-15-results/R16/screens/375-ru_yard_overview.jpg",
+  "research/round-15-results/R16/screens/375-ru_yard_picker.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_6_done_resident.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_7_yard_feed.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_8_map_layer.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_1_yard.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_2_initiative.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_4_supported.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_5_done_staff.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_6_done_resident.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_7_yard_feed.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_8_map_layer.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_6_done_resident.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_7_yard_feed.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_8_map_layer.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_6_done_resident.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_7_yard_feed.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_8_map_layer.jpg"
+ ],
+ "known_limits": [
+  "В облаке подложка OpenFreeMap не грузится — кадры с упрощённым фоном; настоящий вид — LOCAL-12.",
+  "Фото «после» в демо нет (П1): на показе — настоящее фото с телефона кнопкой «Отметить сделанным».",
+  "Число «проблем» двора — места тепловой карты R07 (двор и ≤ 60 м), а не жалобы с target = двор (EXPECTED R02 yards.by_yard) — правило в INTEGRATION.",
+  "Время действий акимата в облачном Chromium 3–4 с — программная отрисовка WebGL карты; API отвечает за 4–20 мс.",
+  "Без 3 доп. маршрутов в сборке: выбор двора без списка дворов, без «старшего по двору»."
+ ],
+ "next_step": "Подстройка под оболочку R01 (opts.section/path, setPath, navigate) и IA_ROUND15 R11 (вкладки акимата, «Выбрать на карте», капсулы «дата · число»); проверка на ветке R01."
+}
