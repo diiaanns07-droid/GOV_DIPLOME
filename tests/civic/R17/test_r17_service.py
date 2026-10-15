@@ -140,12 +140,70 @@ def test_crisis_lifecycle(service, clock):
 @pytest.mark.parametrize("text,code", [
     ("Звоните +7 701 123 45 67", "personal_data"),
     ("Пишите на test@example.com", "personal_data"),
-    ("ИИН 900101300123 проверен", "personal_data"),
+    ("ИИН 900101300126 проверен", "personal_data"),        # верная контрольная цифра РК (как проверяет R04)
+    ("ИИН 900101 300 126 — заявитель", "personal_data"),   # с пробелами (R15 S46 у соседа)
+    ("Звоните 8 (7172) 55-12-34", "personal_data"),
+    # виды R04 раунда 15 (patch R04 r17_crisis_pii.patch) — и в запасных правилах R17 без R04
+    ("Помощь — на карту 4400 4300 1234 5678", "personal_data"),
+    ("Сбор на счёт KZ86 125K ZT50 0410 0100", "personal_data"),
+    ("Нет тепла: ул. Кенесары 40, кв. 12", "personal_data"),
+    ("Вопросы — в t.me/nura_help или @nura_help", "personal_data"),
 ])
-def test_public_update_with_personal_data_is_rejected(service, text, code):
+def test_public_update_with_personal_data_is_rejected(service, monkeypatch, text, code):
+    import sys
+    monkeypatch.setitem(sys.modules, "ui.civic_ml_api", None)          # без R04 — запасные правила R17
     reply = call(service, "POST", "/incidents/inc-demo-blizzard-nura/update",
                  {"text_ru": text, "text_kk": "Қызметтер жұмыс істеп жатыр"}, Staff())
     assert reply["status"] == 422 and reply["body"]["error"] == code
+
+
+@pytest.mark.parametrize("text", [
+    "Автобусы маршрутов 10 12 14 16 18 21 24 ходят по зимнему графику.",
+    "Пункт обогрева в школе № 54, площадь 200 кв. м, с 08:00 до 22:00.",
+    "Квартал 5 и микрорайон 7 расчищены, техника на улице Кенесары.",
+])
+def test_ordinary_update_with_numbers_is_published(service, monkeypatch, text):
+    """Ложных срабатываний нет: номера маршрутов, школ, площадь и кварталы — не личные данные."""
+    import sys
+    monkeypatch.setitem(sys.modules, "ui.civic_ml_api", None)
+    reply = call(service, "POST", "/incidents/inc-demo-blizzard-nura/update",
+                 {"text_ru": text, "text_kk": "Қызметтер жұмыс істеп жатыр"}, Staff())
+    assert reply["status"] == 200, reply
+
+
+@pytest.mark.parametrize("flag,status", [
+    ({"kind": "card", "group": "pii", "count": 1, "luhn_ok": 0}, 200),     # «маршруты 10 12 14 16 18 21 24» у R04
+    ({"kind": "card", "group": "pii", "count": 1, "luhn_ok": 1}, 422),     # настоящая карта
+    ({"kind": "card", "group": "pii", "count": 1}, 422),                   # старый R04 без проверки — блок, как раньше
+    ({"kind": "iin", "group": "pii", "count": 1, "checksum_ok": 0}, 200),  # 12 цифр, но не ИИН
+    ({"kind": "iin", "group": "pii", "count": 1, "checksum_ok": 1}, 422),
+])
+def test_r04_card_and_iin_need_a_real_checksum(service, monkeypatch, flag, status):
+    """Обновление в буран не блокируется списком номеров: R04 сам говорит, прошла ли цепочка Луна / контрольную цифру."""
+    import sys
+    import types
+    fake = types.ModuleType("ui.civic_ml_api")
+    fake.moderate = lambda text=None, lang=None, body=None, **_: {
+        "text_public": "***", "clean": False, "action": "review", "pii": True, "rude": False, "flags": [flag]}
+    monkeypatch.setitem(sys.modules, "ui.civic_ml_api", fake)
+    reply = call(service, "POST", "/incidents/inc-demo-blizzard-nura/update",
+                 {"text_ru": "Автобусы маршрутов 10 12 14 16 18 21 24 ходят", "text_kk": "Автобустар жүріп тұр"}, Staff())
+    assert reply["status"] == status, reply
+
+
+@pytest.mark.parametrize("kind,group", [("card", "finance"), ("iban", "finance"), ("apartment", "address"),
+                                        ("contact", "social")])
+def test_r04_pii_kinds_block_even_with_another_group(service, monkeypatch, kind, group):
+    """R04 INTEGRATION п. 3: card/iban/apartment/contact — личные данные, даже если группа у R04 названа иначе."""
+    import sys
+    import types
+    fake = types.ModuleType("ui.civic_ml_api")
+    fake.moderate = lambda text=None, lang=None, body=None, **_: {
+        "text_public": "***", "clean": False, "action": "review", "flags": [{"kind": kind, "group": group, "count": 1}]}
+    monkeypatch.setitem(sys.modules, "ui.civic_ml_api", fake)
+    reply = call(service, "POST", "/incidents/inc-demo-blizzard-nura/update",
+                 {"text_ru": "Текст с находкой", "text_kk": "Табылған мәтін"}, Staff())
+    assert reply["status"] == 422 and reply["body"]["error"] == "personal_data"
 
 
 def test_r04_round15_flags_kind_and_group(service, monkeypatch):
@@ -238,7 +296,24 @@ def test_neighbor_functions_never_raise_without_service(monkeypatch):
     assert len(agencies.service_profiles()) == 20
 
 
-def test_neighbor_functions_with_service(service):
+def test_make_service_once_then_module_functions_and_reset(tmp_path):
+    """Контракт для соседей: make_service(db) один раз (как шлюз; R03/R08 зовут без сохранения результата) — дальше
+    функции модуля читают эту базу; api_state.reset() — для conftest соседей после тестов со своим шлюзом."""
+    import gc
+
+    agencies.make_service(str(tmp_path / "gw.sqlite3"), demo=False)     # результат не сохраняем — как R03
+    gc.collect()
+    assert api_state.current() is not None
+    assert agencies.list_incidents()["items"] == [] and "empty" not in agencies.list_incidents()   # база шлюза, не «нет R17»
+    api_state.reset()
+    assert api_state.current() is None
+    assert agencies.agencies_week()["lagging"] == [] and agencies.list_incidents().get("empty") is True
+
+
+def test_neighbor_functions_with_service(service, monkeypatch):
+    # Табло — по демо-фикстуре R17 (в сборке с R09 v2.1 демо без мира читает пустую базу R09 — тест не об источнике).
+    from ui.civic_agencies import sources
+    monkeypatch.setattr(sources, "r09_supports_parts", lambda: False)
     week = agencies.agencies_week()
     assert len(week["lagging"]) == 3 and week["source"] == "fixture" and week["demo"] is True
     active = agencies.active_incidents("nura")

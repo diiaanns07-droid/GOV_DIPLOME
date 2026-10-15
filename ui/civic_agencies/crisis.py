@@ -80,11 +80,23 @@ TEMPLATES = {
 }
 
 # Подсказка модератору «похоже на личные данные» (как R13 ui.civic_qa): в публичных обновлениях их быть не должно.
+# Запасные правила на случай, когда R04 moderate() нет в сборке; виды — как у R04 (phone, iin, email, card, iban,
+# apartment, contact), чтобы проверка одинаково строгая с ним и без него.
 PII_PATTERNS = (
-    ("phone", re.compile(r"(?<![\d+])(?:(?:\+\s*)?[78][\s(-]*)?7(?:[\s().-]{0,2}\d){9}(?!\d)")),
-    ("iin", re.compile(r"(?<!\d)(?:\d[\s-]?){11}\d(?!\d)")),
+    # Телефон РК: [+7 / 8] и номер из 10 цифр на 7, первая группа «7xx» («+7 701 123 45 67», «87011234567»,
+    # «+7 (7172) 55-12-34»); список «маршруты 7 10 12 14 16 18» телефоном не считается.
+    ("phone", re.compile(r"(?<![\d+])(?:(?:\+\s*)?[78][\s(-]*)?7\d{2}(?:[\s().-]{0,2}\d){7}(?!\d)")),
+    # ИИН/БИН — 12 цифр (слитно или группами от 3 цифр) с верной контрольной цифрой РК, как у R04 (_iin_ok ниже).
+    ("iin", re.compile(r"(?<!\d)\d(?:[\s-]?\d){11}(?!\d)")),
     ("email", re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")),
+    # Карта — 16 цифр слитно или группами по 4 (+ до 3 цифр); «маршруты 10 12 14 16 18 21 24» картой не считается.
+    ("card", re.compile(r"(?<!\d)\d{4}(?:[\s-]?\d{4}){3}(?:[\s-]?\d{1,3})?(?!\d)")),
+    ("iban", re.compile(r"\bKZ\d{2}(?:\s?[0-9A-Z]){16}\b", re.IGNORECASE)),             # IBAN Казахстана: 20 знаков
+    ("apartment", re.compile(r"(?<!\w)(?:кв\.?|квартир[аеуы]?|пәтер(?:і)?)\s*№?\s*\d{1,4}(?!\d)", re.IGNORECASE)),
+    ("contact", re.compile(r"(?:\b(?:t|wa)\.me/|\binstagram\.com/|(?<![\w.])@[A-Za-z][\w.]{3,})", re.IGNORECASE)),
 )
+# Всё, что считаем личными данными в публичном тексте: виды R04 и их группа «pii» (patch R04 r17_crisis_pii.patch).
+PII_FLAGS = frozenset({"phone", "iin", "email", "pii", "personal_data", "card", "iban", "apartment", "contact"})
 
 
 class InputError(ValueError):
@@ -122,8 +134,33 @@ def clean_text(value, *, field: str, low: int = TEXT_MIN, high: int = TEXT_MAX, 
     return text
 
 
+def _iin_ok(raw: str) -> bool:
+    """12 цифр — ИИН/БИН, если группы не короче 3 цифр и контрольная цифра верна (веса 1–11, при остатке 10 —
+    3–11, 1, 2; снова 10 — номер недействителен). Список «10 12 14 16 18 21» или случайные 12 цифр — не ИИН."""
+    if any(len(group) < 3 for group in re.split(r"[\s-]+", raw.strip()) if group):
+        return False
+    digits = [int(ch) for ch in raw if ch.isdigit()]
+    if len(digits) != 12:
+        return False
+    rest = sum(w * d for w, d in zip(range(1, 12), digits)) % 11
+    if rest == 10:
+        rest = sum(w * d for w, d in zip((3, 4, 5, 6, 7, 8, 9, 10, 11, 1, 2), digits)) % 11
+        if rest == 10:
+            return False
+    return rest == digits[11]
+
+
 def pii_kinds(text: str | None) -> list[str]:
-    return [kind for kind, rx in PII_PATTERNS if rx.search(text or "")]
+    text = text or ""
+    found = []
+    for kind, rx in PII_PATTERNS:
+        if kind == "iin":
+            hit = any(_iin_ok(m.group(0)) for m in rx.finditer(text))
+        else:
+            hit = bool(rx.search(text))
+        if hit:
+            found.append(kind)
+    return found
 
 
 def moderate(text: str | None, lang: str) -> dict:
@@ -149,11 +186,20 @@ def moderate(text: str | None, lang: str) -> dict:
             elif isinstance(raw, (list, tuple)):
                 for f in raw:
                     if isinstance(f, dict):
+                        # R04 считает картой любую цепочку из 13–19 цифр, ИИН — из 12, и сам говорит, сколько из них
+                        # настоящие (luhn_ok / checksum_ok). 0 — это «маршруты 10 12 14 16 18 21 24», а не карта:
+                        # обновление в буран не блокируем. Поля нет (старый R04) — считаем находкой, как раньше.
+                        if (f.get("kind") == "card" and f.get("luhn_ok") == 0) or \
+                                (f.get("kind") == "iin" and f.get("checksum_ok") == 0):
+                            continue
                         flags.extend(str(f[k]) for k in ("kind", "group") if f.get(k))
                     elif f:
                         flags.append(str(f))
             if isinstance(result, dict):
-                flags.extend(name for name in ("pii", "rude") if result.get(name) is True)
+                flags.extend(name for name in ("rude",) if result.get(name) is True)
+                # Общий признак pii — только когда подробного списка нет (иначе он повторяет отброшенные выше цепочки).
+                if result.get("pii") is True and not isinstance(raw, (list, tuple)):
+                    flags.append("pii")
             by = "r04"
         except Exception:  # noqa: BLE001 — модель R04 упала: свои правила ниже
             flags, by = [], "rules"
@@ -177,9 +223,9 @@ def check_public_texts(texts: dict) -> dict:
         result = moderate(text, lang)
         report[lang] = result
         flags = set(result["flags"])
-        if flags & {"phone", "iin", "email", "pii", "personal_data"}:
-            raise InputError("text_" + lang, "Уберите из текста телефон, ИИН или e-mail: обновление видят все жители зоны.",
-                             code="personal_data")
+        if flags & PII_FLAGS:
+            raise InputError("text_" + lang, "Уберите из текста телефон, ИИН, e-mail, номер карты или счёта, квартиру и "
+                                             "личные контакты: обновление видят все жители зоны.", code="personal_data")
         if flags & {"rude", "profanity", "obscene"}:
             raise InputError("text_" + lang, "Уберите грубые слова: обновление видят все жители зоны.", code="rude")
     return report
