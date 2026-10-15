@@ -130,3 +130,25 @@ def test_p1_no_ai_slop():
     assert "gradient" not in sc and "backdrop-filter" not in re.search(r"\n\.bk-sc-tile \{(.*?)\n\}", css, re.S).group(1)
     assert "bk-yard__ill" not in css and "bk-yard__ill" not in SHOWCASE, "рисунок в шапке двора"
     assert "ill-kind-" not in SHOWCASE and '<svg class="bk-done__photo"' not in SHOWCASE, "нарисованное «фото» или сценка в витрине"
+
+
+def test_module_inside_glass_sheet_has_veil_not_paper():
+    """Обзор R11 круг 5: модуль .bk-app внутри стеклянного листа — без бежевой бумаги («лист в листе»), но с белой
+    вуалью 50 %: на тёмной карте под стеклом 72 % текст на серых плашках держит ≥ 4.5 : 1 (замер B0: 5.95, без вуали 4.15)."""
+    css = re.sub(r"/\*.*?\*/", "", COMPONENTS, flags=re.S)
+    rule = re.search(r"\n\.bk-glass \.bk-app:not\(\.bk-glass\) \{([^}]*)\}", css)
+    assert rule, "нет правила для модуля внутри стекла"
+    assert "background: rgba(255, 255, 255, 0.5)" in rule.group(1)
+    assert "c-paper" not in rule.group(1)
+    dark = re.search(r"\n\.bk-dark \.bk-glass \.bk-app:not\(\.bk-glass\) \{([^}]*)\}", css)
+    assert dark and "transparent" in dark.group(1), "в тёмном ситуационном центре вуали нет"
+    # бумага у самого .bk-app остаётся (страницы без стекла) — эталон не трогаем
+    assert re.search(r"\n\.bk-app \{[^}]*background: var\(--c-paper\)", css)
+
+
+def test_tabs_fit_four_kk_tabs_on_phone():
+    """Обзор R11 круг 5: на телефоне промежуток вкладок 14 px — «Шолу · Мәселелер · Бастамалар · Жұмыстар» в строке 375."""
+    css = re.sub(r"/\*.*?\*/", "", COMPONENTS, flags=re.S)
+    phone = re.findall(r"@media \(max-width: 480px\) \{(.*?)\n\}", css, re.S)
+    assert any(re.search(r"\.bk-tabs \{\s*gap: 14px;", block) for block in phone)
+    assert re.search(r"\n\.bk-tabs \{[^}]*gap: 18px;", css), "на ноутбуке — как эталон .tabs (18)"
