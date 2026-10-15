@@ -34,14 +34,14 @@ R02 · РАУНД 15 · ДЕМО-МИР — КОМАНДЫ ЗАПУСКА И П�
 4. Засев жалоб мира без сервера (R09 / отладка)
      python3 -c "from ml.datasets.demo_world_seed import seed_world; print(seed_world('/tmp/birge/c.sqlite3'))"
 
-6. LOCAL-14 · живые тексты людей (ноутбук владельца; тексты в Git не попадают никогда)
+5. LOCAL-14 · живые тексты людей (ноутбук владельца; тексты в Git не попадают никогда)
      python -m ml.labeling.import_form private/form.csv          # → private/form_<дата>.jsonl + .review.txt
      (открыть .review.txt, вычеркнуть то, что похоже на личные данные; обезличивание — регулярные выражения)
      web/labeling/index.html — двойной щелчок, разметка 300 текстов без мыши (~2 ч), Ctrl+S — экспорт JSONL
      python -m ml.labeling.agreement private/labels_A.jsonl private/labels_B.jsonl   # согласие разметчиков (kappa)
    Дальше — оценка модели по RUN.txt R03 (результаты без текстов — в ветку R03). В демо-мир живые тексты не идут.
 
-5. Где что
+6. Где что
      data/civic/astana/demo-world/  SCHEMA.md · DATASHEET.md · world_v1.json · world_v1.sample.json · EXPECTED.json
      ml/datasets/                   demo_world.py · demo_world_io.py · demo_world_check.py · demo_world_expected.py ·
                                     demo_world_seed.py
