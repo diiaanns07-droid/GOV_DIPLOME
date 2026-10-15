@@ -445,6 +445,11 @@
     if (h && typeof h.commands === "function") {
       try { for (const c of h.commands() || []) out.push({ group: c.group, title: c.title, hint: c.hint, run: () => { openListIfNeeded(); c.run(); } }); } catch (e) { /* без команд R07 */ }
     }
+    // R03 раунд 15 (patches/R01_palette_commands.patch): «Спросить Birge» — открыть экран аналитика или сразу задать вопрос.
+    const A = window.BirgeAnalyst;
+    if (mode() === "akimat" && A && typeof A.commands === "function") {
+      try { for (const c of A.commands() || []) out.push({ group: c.group, title: c.title, hint: c.hint, run: c.run }); } catch (e) { /* без R03 */ }
+    }
     const L = window.BirgeComplaintList;
     if (mode() === "akimat" && L && typeof L.commands === "function" && window.BirgeShell) {
       try {
