@@ -116,7 +116,7 @@
       "board.calm.title": "Сегодня спокойно",
       "board.calm.text": "Соседние блоки появятся, когда у служб, жителей и встреч будут данные",
       "board.login.title": "Ситуационный центр — для сотрудников акимата",
-      "board.login.text": "Войдите тем же логином, что и в «Для сотрудников» на главной.",
+      "board.login.text": "Войдите как сотрудник — тем же логином, что «Для сотрудников» на главной.",
       "board.login.user": "Логин",
       "board.login.password": "Пароль",
       "board.login.submit": "Войти",
@@ -126,10 +126,16 @@
       "board.error.text": "Повторим сами через 30 секунд.",
       "board.to_map": "На карту",
       "board.to_day": "Картина дня",
+      "board.back": "В Birge",
+      "board.fullscreen": "На весь экран",
+      "board.fullscreen_exit": "Выйти из полноэкранного режима",
+      "board.login.staff": "Войдите как сотрудник",
+      "board.agencies.no_answer": "Нет ответа в срок",
+      "board.agencies.period": "за {n} дней",
       "board.weekday": ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"],
     },
     kk: {
-      "board.title": "Ситуациялық орталық",
+      "board.title": "Жағдаяттық орталық",
       "board.city": "Астана",
       "board.scope.city": "бүкіл қала",
       "board.scope.district": "{name} ауданы",
@@ -149,8 +155,8 @@
       "board.pulse.title_district": "Аудан пульсі",
       "board.pulse.calm": "Күрт өсу жоқ — күн тыныш өтіп жатыр",
       "board.crisis.label": "Дағдарыс",
-      "board.crisis.open": "Дағдарыс штабын ашу",
-      "board.crisis.create": "Дағдарыс штабы",
+      "board.crisis.open": "Жедел штабты ашу",
+      "board.crisis.create": "Жедел штаб",
       "board.crisis.short": "Штаб",
       "board.crisis.hours": "{n} сағат жүріп жатыр",
       "board.crisis.tasks": "қызмет тапсырмалары: {total} ішінен {done}",
@@ -160,7 +166,7 @@
       "board.crisis.tasks_label": "қызмет тапсырмасы орындалды",
       "board.crisis.closed": "Жабылды: {title}",
       "board.decisions": "Әкімнің шешімі керек: {n} мәселе",
-      "board.stage.crisis": "Дағдарыс штабы",
+      "board.stage.crisis": "Жедел штаб",
       "board.stage.agencies": "Ведомстволар бірге",
       "board.stage.together": "Тұрғындар бірге",
       "board.stage.meetings": "Тұрғындармен кездесулер",
@@ -205,8 +211,8 @@
       "board.forecast.hint": "Шағым көбеюі ықтимал орындар — нақты тәуекел бағасы емес",
       "board.calm.title": "Бүгін тыныш",
       "board.calm.text": "Қызметтер, тұрғындар және кездесулер бойынша деректер болғанда көрші блоктар шығады",
-      "board.login.title": "Ситуациялық орталық — әкімдік қызметкерлеріне арналған",
-      "board.login.text": "Басты беттегі «Қызметкерлерге» бөліміндегі логинмен кіріңіз.",
+      "board.login.title": "Жағдаяттық орталық — әкімдік қызметкерлеріне арналған",
+      "board.login.text": "Қызметкер ретінде кіріңіз — басты беттегі «Қызметкерлерге» бөліміндегі логинмен.",
       "board.login.user": "Логин",
       "board.login.password": "Құпиясөз",
       "board.login.submit": "Кіру",
@@ -216,6 +222,12 @@
       "board.error.text": "30 секундтан кейін өзіміз қайталаймыз.",
       "board.to_map": "Картаға",
       "board.to_day": "Күн қорытындысы",
+      "board.back": "Birge-ге оралу",
+      "board.fullscreen": "Толық экран",
+      "board.fullscreen_exit": "Толық экраннан шығу",
+      "board.login.staff": "Қызметкер ретінде кіріңіз",
+      "board.agencies.no_answer": "Мерзімінде жауап жоқ",
+      "board.agencies.period": "{n} күнде",
       "board.weekday": ["жексенбі", "дүйсенбі", "сейсенбі", "сәрсенбі", "бейсенбі", "жұма", "сенбі"],
     },
   };
@@ -376,8 +388,9 @@
       pinned: STAGE_IDS.indexOf(params.get("block")) >= 0 ? params.get("block") : null,
       rotate: params.get("rotate") !== "0" && options.rotate !== false,
       // Кризисный штаб R17: событие "birge:open-crisis" (отменяемое — оболочка откроет у себя), иначе ссылка.
-      crisisHref: options.crisisHref || "/#agencies?incident={id}",
-      crisisNewHref: options.crisisNewHref || "/#agencies?new={kind}&district={district}",
+      crisisHref: options.crisisHref || "/#agencies/crisis={id}",
+      crisisNewHref: options.crisisNewHref || "/#agencies/crisis=new&template={kind}&district={district}",
+      backHref: options.backHref || "/",
       mapHref: options.mapHref || "/#target={kind}:{id}&days={days}",
     };
     var state = {
@@ -551,9 +564,15 @@
 
     // ── клавиатура: ← → — блоки, пробел — пауза ──
     function onKey(e) {
-      if (state.status !== "ok" || e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
       var tag = (e.target && e.target.tagName) || "";
       if (/^(INPUT|TEXTAREA|SELECT)$/.test(tag)) return;
+      if (e.key === "Escape" && !doc.fullscreenElement) {
+        e.preventDefault();
+        if (!goBackNow()) root.location.href = opts.backHref;
+        return;
+      }
+      if (state.status !== "ok") return;
       if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
         e.preventDefault();
         step(e.key === "ArrowRight" ? 1 : -1);
@@ -563,9 +582,34 @@
       }
     }
     doc.addEventListener("keydown", onKey);
+    function goBackNow() {
+      var ev = { prevented: false, preventDefault: function () { this.prevented = true; } };
+      goBack(ev);
+      return ev.prevented;
+    }
     function togglePause() {
       state.paused = !state.paused;
       renderStageNav();
+    }
+
+    // «На весь экран» (Fullscreen API) и «← В Birge» (R11 IA_ROUND15 §5.9). Esc: в полноэкранном режиме браузер сам
+    // выходит из него; иначе — назад в Birge (туда, откуда пришли, или на главную).
+    function toggleFullscreen() {
+      if (doc.fullscreenElement) doc.exitFullscreen && doc.exitFullscreen();
+      else doc.documentElement.requestFullscreen && doc.documentElement.requestFullscreen().catch(function () {});
+    }
+    function onFullscreen() {
+      renderHead();
+      setTimeout(fitAll, 200);
+    }
+    doc.addEventListener("fullscreenchange", onFullscreen);
+    function goBack(e) {
+      var ref = doc.referrer || "";
+      var same = ref && ref.indexOf(root.location.origin + "/") === 0 && ref.indexOf("/civic/board") < 0;
+      if (same && root.history.length > 1) {
+        if (e) e.preventDefault();
+        root.history.back();
+      }
     }
 
     // ───────────── отрисовка ─────────────
@@ -654,16 +698,28 @@
       clockEls.date = h("span", { class: "sc-clock__date" });
       clockEls.lastMinute = null;
       var clock = h("div", { class: "sc-clock", "aria-live": "off" }, [clockEls.time, clockEls.date]);
+      var full = !!doc.fullscreenElement;
+      var fsBtn = doc.documentElement.requestFullscreen ? h("button", {
+        type: "button", class: "sc-icon-btn", "aria-pressed": String(full),
+        "aria-label": tr(full ? "board.fullscreen_exit" : "board.fullscreen"), title: tr(full ? "board.fullscreen_exit" : "board.fullscreen"),
+        onclick: toggleFullscreen,
+      }, [h("span", { class: "sc-fs-ic", "data-on": full ? "" : null, "aria-hidden": "true" })]) : null;
+      var back = h("a", { class: "sc-back", href: opts.backHref, onclick: goBack }, [icon("back"), tr("board.back")]);
       head.appendChild(brand);
       head.appendChild(mid);
-      head.appendChild(h("div", { class: "sc-head__end" }, [seg, clock]));
+      head.appendChild(h("div", { class: "sc-head__end" }, [seg, fsBtn, back, clock]));
       updateClock();
       doc.title = tr("board.title") + " · Birge";
     }
 
     // ── полоса кризиса (идёт кризис — видна всегда, не только в ленте) ──
+    // Адрес штаба R17: из данных («#agencies/crisis=<id>»), иначе по шаблону; кризиса нет — форма с шаблоном.
     function crisisLink(c) {
+      if (c.link && c.link.charAt(0) === "#") return "/" + c.link;
       return interpolate(opts.crisisHref, { id: encodeURIComponent(c.id) });
+    }
+    function crisisNewLink(n) {
+      return interpolate(opts.crisisNewHref, { kind: encodeURIComponent(n.kind || "other"), district: encodeURIComponent(n.district || "") });
     }
     function openCrisis(e, c) {
       var ev = new CustomEvent("birge:open-crisis", { cancelable: true, detail: { id: c.id, from: "board" } });
@@ -843,7 +899,8 @@
       items.forEach(function (a) {
         var t = pulseTexts(a);
         var ic = a.kind === "new_hot" || a.kind === "spike_new" ? "pin" : a.kind === "metoo" ? "users" : "chart";
-        var pill = a.crisis ? h("span", { class: "sc-pulse__crisis", "aria-hidden": "true" }, [icon("alert"), tr("board.crisis.short"), icon("chevron-right")]) : null;
+        var target = a.crisis || a.crisis_new || null;
+        var pill = target ? h("span", { class: "sc-pulse__crisis", "aria-hidden": "true" }, [icon("alert"), tr("board.crisis.short"), icon("chevron-right")]) : null;
         var parts = [
           h("span", { class: "sc-pulse__icon", "aria-hidden": "true" }, [icon(ic)]),
           h("span", { class: "sc-pulse__text" }, [
@@ -852,10 +909,11 @@
           ]),
         ];
         // Тревога по теме идущего кризиса — вся строка ведёт в кризисный штаб (кнопка «Открыть кризисный штаб», R17).
-        if (a.crisis) {
+        if (target) {
           list.appendChild(h("li", { class: "sc-pulse__item has-crisis", "data-kind": a.kind }, [
-            h("a", { class: "sc-pulse__link", href: crisisLink(a.crisis), "aria-label": t[0] + ". " + tr("board.crisis.open") + ": " + label(a.crisis, "title"),
-              onclick: function (e) { openCrisis(e, a.crisis); } }, parts),
+            h("a", { class: "sc-pulse__link", href: a.crisis ? crisisLink(a.crisis) : crisisNewLink(a.crisis_new),
+              "aria-label": t[0] + ". " + tr("board.crisis.open") + (a.crisis ? ": " + label(a.crisis, "title") : ""),
+              onclick: function (e) { if (a.crisis) openCrisis(e, a.crisis); } }, parts),
           ]));
           return;
         }
@@ -1016,7 +1074,7 @@
           h("thead", null, [h("tr", null, [
             h("th", { scope: "col", text: tr("board.agencies.service") }),
             h("th", { scope: "col", class: "sc-num", text: tr("board.agencies.open") }),
-            h("th", { scope: "col", class: "sc-num", text: tr("board.agencies.overdue") }),
+            h("th", { scope: "col", class: "sc-num", text: tr("board.agencies.no_answer") }),
             h("th", { scope: "col", class: "sc-num", text: tr("board.agencies.median") }),
             h("th", { scope: "col", class: "sc-num", text: tr("board.agencies.verified") }),
           ])]),
@@ -1041,6 +1099,7 @@
             g.handoffs_week != null ? bigStat(g.handoffs_week, tr("board.agencies.handoffs", { n: g.handoffs_week })) : null,
           ]),
           table,
+          g.board_days ? h("p", { class: "sc-hint sc-table-note", text: tr("board.agencies.period", { n: g.board_days }) }) : null,
         ]);
       },
       together: function (t) {
@@ -1172,7 +1231,7 @@
         h("label", { class: "sc-field", for: "sc-pass" }, [h("span", { text: tr("board.login.password") }), pass]),
         err,
         btn,
-        h("a", { class: "sc-link", href: "/", text: tr("board.to_map") }),
+        h("a", { class: "sc-link", href: opts.backHref, onclick: goBack }, ["← " + tr("board.back")]),
       ]);
       form.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -1253,6 +1312,7 @@
           clearInterval(timers[k]);
         });
         doc.removeEventListener("keydown", onKey);
+        doc.removeEventListener("fullscreenchange", onFullscreen);
         root.removeEventListener("resize", onResize);
         doc.removeEventListener("visibilitychange", onVisible);
         state.request++;
