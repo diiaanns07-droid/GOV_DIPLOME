@@ -453,8 +453,27 @@ async function recordLang(browser, lang) {
       works: !!window.BirgeWorksCalendar, replay: !!(window.BirgeReplay && window.BirgeReplay.open) })).catch(() => ({}));
     const mods = await fetch(srv.base + "api/civic/v2/modules").then((r) => r.json()).then((j) => j.modules || {}).catch(() => ({}));
     const ready = (re) => Object.entries(mods).some(([k, v]) => re.test(k) && v.status === "ready");
+    // Сцена 8, житель: жалоба сцены на 2 службы. Состояние готовит API (как в DEMO_SCRIPT делает сотрудник): совместное
+    // исполнение «Водоканал + Дорожная служба», часть «Водоканал — сделано»; житель этой вкладки — «Я тоже» → в «Моих
+    // обращениях» строка служб (R09 joint.resident). Нет маршрута R09 раунда 15 — сцена пропускается с причиной.
+    let joint = false;
+    if (W15.complaint8 && srv.staff && srv.staff.user) {
+      const A = L.api(srv.base);
+      if ((await A.login(srv.staff.user, srv.staff.pass)).ok) {
+        const c8 = `/api/civic/v2/complaints/${W15.complaint8}`;
+        const r1 = await A.call("POST", `${c8}/services`, { services: [{ service: "water", role: "lead" }, { service: "road", role: "partner" }] }, true);
+        const r2 = r1.status === 200 ? await A.call("POST", `${c8}/part`, { service: "water", status: "done",
+          note: lang === "kk" ? "Құбыр ауыстырылды" : "Трубу заменили" }, true) : r1;
+        const dev = r2.status === 200 ? await page.evaluate(() => { try { let d = localStorage.getItem("birge.device");
+          if (!d || !/^[A-Za-z0-9_-]{16,80}$/.test(d)) { d = "d-r10video-" + Date.now().toString(36); localStorage.setItem("birge.device", d); }
+          return d; } catch (e) { return null; } }).catch(() => null) : null;
+        const r3 = dev ? await A.call("POST", `${c8}/metoo`, { device_id: dev }, false, dev) : { status: 0 };
+        joint = [200, 201, 409].includes(r3.status);
+      }
+    }
     const plan = [
       { id: "scene7-yard", ok: has.together && ready(/together/) && W15.yard, owner: "R16", why: "«Мой двор» (BirgeTogether R16)" },
+      { id: "scene8-joint", ok: joint, owner: "R09", why: "паспорт жителя «2 службы» (R09 совместное исполнение)" },
       { id: "scene8-board", ok: has.agencies && ready(/agenc/), owner: "R17", why: "«Штаб ведомств» (BirgeAgencies R17)" },
       { id: "scene8-works", ok: has.works && ready(/works.(calendar|conflicts)|conflict/), owner: "R12", why: "«Календарь работ» (BirgeWorksCalendar R12)" },
       { id: "scene9-crisis", ok: has.agencies && ready(/incident/) && W15.incident, owner: "R17", why: "кризисный штаб (BirgeAgencies R17)" },
@@ -485,17 +504,28 @@ async function recordLang(browser, lang) {
       done(s);
       await toMap();
     }
-    // --- сцена 8: «Штаб ведомств» (табло) и «Календарь работ»
-    if (plan[1].ok || plan[2].ok) await setMode("akimat");
+    // --- сцена 8, житель: «Мои обращения» → «2 службы: Водоканал — сделано · Дорожная служба — в работе»
     if (plan[1].ok) {
+      const s = scene("scene8-joint");
+      await setMode("resident");
+      await go("#mine", 2600);
+      await say("agencies", 5200);
+      const seen = await page.evaluate(() => [...document.querySelectorAll(".bc-joint-line")].some((e) => e.getClientRects().length)).catch(() => false);
+      await shot("8-joint");
+      done(s, seen, seen ? null : "строки служб нет на карточке");
+      await toMap();
+    }
+    // --- сцена 8: «Штаб ведомств» (табло) и «Календарь работ»
+    if (plan[2].ok || plan[3].ok) await setMode("akimat");
+    if (plan[2].ok) {
       const s = scene("scene8-board");
       await go("#agencies/board");
-      await say("board", 5200);  // «agencies» (2 службы у обращения) — когда в сборке будет экран R09 «Принять: 2 службы»
+      await say("board", 5200);
       await page.mouse.move(W / 2, H / 2); await page.mouse.wheel(0, 260); await pause(1200);
       await shot("8-board");
       done(s);
     }
-    if (plan[2].ok) {
+    if (plan[3].ok) {
       const s = scene("scene8-works");
       await go("#agencies/calendar");
       await say("works", 5200);
@@ -503,7 +533,7 @@ async function recordLang(browser, lang) {
       done(s);
     }
     // --- сцена 9: кризисный штаб и «Хроника города»
-    if (plan[3].ok) {
+    if (plan[4].ok) {
       const s = scene("scene9-crisis");
       await setMode("akimat");
       await go(`#agencies/crisis=${W15.incident}`, 2800);
@@ -512,7 +542,7 @@ async function recordLang(browser, lang) {
       done(s);
       await toMap();
     }
-    if (plan[4].ok) {
+    if (plan[5].ok) {
       const s = scene("scene9-replay");
       await page.evaluate(() => { const m = typeof map !== "undefined" ? map : null; if (m) m.flyTo({ center: [71.40, 51.13], zoom: 11.6, duration: 1200 }); }).catch(() => null);
       await wait(1500);
@@ -533,7 +563,8 @@ async function recordLang(browser, lang) {
     try {
       const w = JSON.parse(fs.readFileSync(path.join(ROOT, "data/civic/astana/demo-world/world_v1.json"), "utf8"));
       const sc = w.scenes || {};
-      return { yard: (sc.scene7 || {}).yard, initiative: (sc.scene7 || {}).initiative, incident: (sc.scene9 || {}).incident };
+      return { yard: (sc.scene7 || {}).yard, initiative: (sc.scene7 || {}).initiative, complaint8: (sc.scene8 || {}).complaint,
+        incident: (sc.scene9 || {}).incident };
     } catch (e) { return {}; }
   }
 

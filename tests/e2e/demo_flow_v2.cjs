@@ -121,6 +121,7 @@ async function apiFlow(A, S, staff, timing) {
       r = await call("8", "POST", `${V2}/complaints/${s8.complaint}/services`,
         { services: [{ service: "water", role: "lead" }, { service: "road", role: "partner" }] }, true);
       jointSet = [200, 201].includes(r.status);
+      S.jointSet = jointSet;  // для интерфейса: житель видит строку служб в «Моих обращениях»
       add("API", "8", "сотрудник: совместное исполнение — 2 службы у обращения", r.status === 503 || r.status === 404 ? "NOT_RUN" : ok3(jointSet),
         { status: r.status, err: r.body && r.body.error }, "R09");
       r = await call("8", "POST", `${V2}/complaints/${s8.complaint}/part`, { service: "water", status: "done", note: "Трубу заменили" }, true);
@@ -291,6 +292,33 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
         { pressed }, "R16", f2);
     }
     (timing["7"] = timing["7"] || []).push(Date.now() - t7);
+  }
+
+  // --- сцена 8 (житель): «Я тоже» на жалобе сцены → «Мои обращения»: «2 службы: Водоканал — сделано · Дорожная служба —
+  // в работе» (IDEA §3, R09 joint.resident). Совместное исполнение задал сотрудник в API-части (S.jointSet).
+  const s8r = S && S.raw.scene8;
+  if (s8r && !S.jointSet) step("8", "житель: «Мои обращения» — две службы и статус каждой", null, "совместное исполнение не задано (маршрута R09 раунда 15 нет в сборке)", "R09");
+  else if (s8r) {
+    await setMode("resident");
+    const dev = await page.evaluate(() => { try { let d = localStorage.getItem("birge.device");
+      if (!d || !/^[A-Za-z0-9_-]{16,80}$/.test(d)) { d = "d-r10ui-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); localStorage.setItem("birge.device", d); }
+      return d; } catch (e) { return null; } }).catch(() => null);
+    const me = dev ? await ctx.request.post(base + `api/civic/v2/complaints/${s8r.complaint}/metoo`, { data: { device_id: dev },
+      headers: { "X-Birge-Device": dev, Origin: base.replace(/\/$/, "") } }).catch(() => null) : null;
+    await page.evaluate(() => { location.hash = "#mine"; }).catch(() => null); await sleep(2800);
+    const names = ["service.water", "service.road"].map((k) => T(dict, k, null)).filter(Boolean);
+    const jl = await page.evaluate((nm) => {
+      const vis = (e) => !!(e && e.getClientRects().length && getComputedStyle(e).visibility !== "hidden");
+      const e = [...document.querySelectorAll(".bc-joint-line")].find(vis);
+      if (e) return { text: e.innerText.trim().replace(/\s+/g, " ").slice(0, 160), parts: [...e.querySelectorAll("[data-status]")].map((x) => x.getAttribute("data-status")) };
+      const t = document.body.innerText;
+      return nm.length >= 2 && nm.every((x) => t.includes(x)) ? { text: nm.join(" · "), parts: nm.map(() => "?") } : null;
+    }, names).catch(() => null);
+    const f = await shot("8-mine-joint");
+    step("8", "житель: «Мои обращения» — две службы и статус каждой (совместное исполнение)", jl ? jl.parts.length >= 2 && jl.parts.includes("done") : false,
+      { metoo: me && me.status(), line: jl }, "R09", f);
+    if (jl) await quality("8m", "R09", f);
+    await page.evaluate(() => { location.hash = "#map"; }).catch(() => null); await sleep(800);
   }
 
   // --- сцены 8–9 ведёт акимат после входа сотрудника (DEMO_SCRIPT: вход перед шагом 5) — сессия на весь контекст.

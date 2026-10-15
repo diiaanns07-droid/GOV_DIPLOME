@@ -167,8 +167,26 @@ async function apiFlow(A, staffInfo) {
   const m = await A.call("GET", "/api/civic/v2/modules");
   const modules = (A.data(m) || {}).modules || {};
   const notReady = Object.entries(modules).filter(([, v]) => v.status !== "ready").map(([k, v]) => `${k}:${v.role}:${v.status}`);
-  add("API", "0", "шлюз v2: все маршруты ready", m.status === 200 && notReady.length === 0 ? "PASS" : "FAIL",
-    m.status === 200 ? { not_ready: notReady } : { status: m.status });
+  // Раунд 15: часть 1 — регресс FINAL-4. Маршруты FINAL-4 (74, все ready — tests/civic/R10/fixtures/final4_v2_modules.json)
+  // обязаны быть ready; новые маршруты §7 до прихода модуля отвечают 503 module_not_ready (CONTRACT §7) — их принимает
+  // tests/civic/R10/api_v2.py, а сцены 7–9 — demo_flow_v2.cjs (на FINAL-5 там NOT_RUN = 0).
+  let f4 = null;
+  try { f4 = JSON.parse(fs.readFileSync(path.join(__dirname, "../civic/R10/fixtures/final4_v2_modules.json"), "utf8")).modules; } catch (e) { f4 = null; }
+  if (!f4) {
+    add("API", "0", "шлюз v2: все маршруты ready", m.status === 200 && notReady.length === 0 ? "PASS" : "FAIL",
+      m.status === 200 ? { not_ready: notReady } : { status: m.status });
+  } else {
+    const oldBad = notReady.filter((x) => x.split(":")[0] in f4);
+    const gone = Object.keys(f4).filter((k) => !(k in modules));
+    add("API", "0", "шлюз v2: маршруты FINAL-4 на месте и ready", m.status === 200 && oldBad.length === 0 && gone.length === 0 ? "PASS" : "FAIL",
+      m.status === 200 ? { not_ready: oldBad, missing: gone.slice(0, 8) } : { status: m.status });
+    const newBad = notReady.filter((x) => !(x.split(":")[0] in f4));
+    if (newBad.length) {
+      const byRole = {};
+      for (const x of newBad) { const [, role, st] = x.split(":"); byRole[`${role} ${st}`] = (byRole[`${role} ${st}`] || 0) + 1; }
+      add("API", "0", "шлюз v2: новые маршруты раунда 15 ready", "NOT_RUN", `модулей ещё нет в сборке (503 по CONTRACT §7): ${JSON.stringify(byRole)}`);
+    } else add("API", "0", "шлюз v2: новые маршруты раунда 15 ready", "PASS", { routes: Object.keys(modules).length - Object.keys(f4).length });
+  }
   ctx.modules = modules;
 
   // 0б. Шаг 2 DEMO_SCRIPT на ЧИСТОЙ базе (как run-city.bat): ведущий пишет «Аялдамада жарық жоқ, вечером на остановке
