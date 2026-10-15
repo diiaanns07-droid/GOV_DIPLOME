@@ -3,7 +3,7 @@ R09 · РАУНД 15 · ОБРАЩЕНИЕ ДЛЯ НЕСКОЛЬКИХ СЛУЖ�
 Python 3.11+, Node 18+, Chromium (Playwright; в облаке NODE_PATH=$(npm root -g)). Браузерные проверки — по одной.
 
 1. ТЕСТЫ (без сети; временные SQLite)
-   python3 -B -m pytest -q tests/civic/R09                       # 588 passed, 1 skipped (мир R02 — пути R02, см. 4)
+   python3 -B -m pytest -q tests/civic/R09                       # 589 passed, 1 skipped (мир R02 — пути R02, см. 4)
    новое раунда 15: test_r09v21_joint.py (запись v2.1, передачи, части, срок через праздники, маршруты, сцена 8 по HTTP),
                     test_r09v21_world.py (seed_world, reset, «Хан Шатыр», лента R06, фильтр района, мир R02 vs EXPECTED),
                     test_r09v21_frontend.py (ключи ru/kk, причины = сервер, поправка П1 — без рисунков, свечения и эмодзи)
