@@ -9,6 +9,9 @@
   --tg-gap: var(--s-4);
   /* Раскладка — по ширине экрана модуля, а не окна (@container tg ниже): лист по центру, лист слева 412 px, телефон. */
   container: tg / inline-size;
+  /* Мельче 13 px текста нет (решение владельца 12 окт, R10 B-112; R11 ea188ed6 поднял --fs-xs до 13 px) — и на сборке
+     со старым ui-kit, где --fs-xs ещё 12 px. */
+  --fs-xs: 13px;
   max-width: 960px;
   margin: 0 auto;
   padding-top: var(--s-2);
@@ -131,6 +134,29 @@ button:where(.bk-join:focus-visible) { outline: 3px solid var(--c-focus); outlin
 :where(.bk-done--nophoto) { grid-template-columns: minmax(0, 1fr); }
 :where(.bk-done__note) { margin: 4px 0 0; color: var(--c-text-3); font-size: var(--fs-xs); }
 
+/* ── зоны нажатия и контраст (приёмка R10, B-114 на B0.9) ──
+   Аудит R10 (tests/e2e/visual_audit.cjs) меряет рамку кнопки, зону ::after ui-kit (32 px + 6 px сверху и снизу) он не
+   считает. У «Я приду» в карточке и у сегментов («Скоро · Сделано», «Все дела города · Мой двор», «Сколько часов») рамка —
+   44 px, видимая «таблетка» R11 — прежняя, место в строке то же (поля −6 / −7 px). Нажатие ловит вся рамка.
+   «Я приду»: фон — у самой кнопки (контраст белого текста считается по нему), закрашена только середина 32 px:
+   прозрачная рамка 6 px сверху и снизу и background-clip; скругление 16 / 22 px даёт внутри ровную «таблетку» 16 px. */
+.tg button.bk-join { height: 44px; margin-top: -6px; margin-bottom: -6px; border: solid transparent; border-width: 6px 0;
+  border-radius: 16px / 22px; background-clip: padding-box; }
+.tg button.bk-join::after { content: none; }
+.tg .bk-seg > button { position: relative; min-height: 44px; margin-top: -7px; margin-bottom: -7px; isolation: isolate; }
+.tg .bk-seg > button::before { content: ""; position: absolute; inset: 7px 0; z-index: -1; border-radius: 9px;
+  transition: background-color var(--t-fast) var(--ease); }
+.tg .bk-seg > button::after { content: none; }
+.tg .bk-seg > button[aria-pressed="true"] { background: transparent; box-shadow: none; }
+.tg .bk-seg > button[aria-pressed="true"]::before { background: var(--c-surface); box-shadow: var(--shadow-1); }
+.tg .bk-seg > button:focus-visible { outline: none; }
+.tg .bk-seg > button:focus-visible::before { outline: 3px solid var(--c-focus); outline-offset: 1px; }
+/* Текст, который читают, — вторичным цветом (≥ 4,5 : 1): даты ленты, подписи её групп, строка о фото «после», числа
+   у вкладок; третичный #7e8a85 давал 3,54 : 1 на листе. Неактивная вкладка — тоже вторичным (как в ui-kit R11 06a939db). */
+.tg .bk-feed__meta, .tg .bk-feed__group, .tg .bk-done__note, .tg .bk-tabs .bk-num { color: var(--c-text-2); }
+.tg .bk-tabs > [role="tab"] { color: var(--c-text-2); }
+.tg .bk-tabs > [role="tab"][aria-selected="true"] { color: var(--c-ink); }
+
 /* ── скелетон, пусто, ошибка, «нет данных» ── */
 .tg-skel { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--tg-gap); margin-top: var(--s-4); }
 .tg-skel-card { display: grid; gap: var(--s-2); padding: var(--s-3); border: 1px solid var(--c-line); border-radius: var(--r-xl); }
@@ -247,7 +273,7 @@ button:where(.bk-join:focus-visible) { outline: 3px solid var(--c-focus); outlin
 .tg-listhead { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: flex-end; justify-content: space-between; }
 .tg-listhead > div { min-width: 0; flex: 1 1 320px; }
 .tg-filters { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); margin: var(--s-4) 0 var(--s-3); }
-.tg-filter .bk-num { margin-left: 6px; color: var(--c-text-3); font-variant-numeric: tabular-nums; }
+.tg-filter .bk-num { margin-left: 6px; color: var(--c-text-2); font-variant-numeric: tabular-nums; }
 .tg-mine { margin-top: var(--s-2); }
 .tg-status {
   display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--r-s); flex: none;
