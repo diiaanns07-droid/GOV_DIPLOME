@@ -129,6 +129,10 @@
   color: var(--c-text-2);
   font-size: var(--fs-caption);
 }
+.ag-demo.ag-demo--bar {
+  display: none;             /* на компьютере «Пример» — у заголовка */
+  align-self: center;
+}
 .ag-demo {
   display: inline-flex;
   align-items: center;
@@ -215,6 +219,16 @@
 }
 .ag-table--fix {
   --ag-cols: minmax(166px, 1.6fr) 58px minmax(108px, 1.1fr) 72px 66px minmax(88px, 0.9fr) 72px 82px 56px;
+}
+/* 1366 и шире: название службы целиком в одну строку и на ҚАЗ («Бағдаршам және жол таңбасы қызметі» — 253 px), R11 R17-3.
+   Уже 1240 (1024): прежняя сетка без прокрутки вбок, длинное название переносится на вторую строку по пробелу. */
+@media (min-width: 1240px) {
+  .ag {
+    --ag-cols: minmax(284px, 2.4fr) 64px minmax(110px, 1fr) 76px minmax(90px, 0.8fr) 72px 82px 56px;
+  }
+  .ag-table--fix {
+    --ag-cols: minmax(284px, 2.4fr) 58px minmax(96px, 0.9fr) 72px 66px minmax(80px, 0.7fr) 72px 82px 56px;
+  }
 }
 .ag-thead,
 .ag-row {
@@ -320,6 +334,17 @@
   font-weight: var(--fw-medium);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* Уже 1240 (1024): длинное название — во вторую строку по пробелу (R11 R17-3); на 1366 — в одну. */
+@media (min-width: 761px) and (max-width: 1239px) {
+  .ag-svc__name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 1.15;
+    white-space: normal;
+    overflow-wrap: normal;
+  }
 }
 .ag-svc__extra {
   padding: 0 6px;
@@ -543,6 +568,15 @@
 .ag-pill--ok {
   background: var(--c-ok-soft);
   color: var(--c-ok);
+}
+/* «Жителям зоны» — сообщение, а не исход: синий/нейтральный (зелёный в продукте — только «исправлено», R11 R17-4) */
+.ag-pill--info {
+  background: var(--c-info-soft, #e8f0fb);
+  color: var(--c-info, #1f5fa8);
+}
+/* Задача кризиса «не начата» — серый круг, а не красный «новое» жалобы (R11 R17-5) */
+.ag .bk-st-ic[data-status="todo"] {
+  color: var(--c-text-3);
 }
 .ag-pill--loop {
   background: var(--c-warn-soft);
@@ -1168,8 +1202,11 @@
     flex: 1 1 auto;
     max-width: none;
   }
-  .ag-demo--head {
-    order: 3;
+  .ag-demo.ag-demo--head {
+    display: none;           /* на телефоне «Пример» — в строке периода (.ag-demo--bar), R11 R17-12 */
+  }
+  .ag-demo.ag-demo--bar {
+    display: inline-flex;
   }
   .ag-row {
     grid-template-columns: minmax(0, 1fr) auto;
