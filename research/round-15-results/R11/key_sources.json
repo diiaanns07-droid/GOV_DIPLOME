@@ -1276,5 +1276,6 @@
  "ask.status.waiting": "R13 · web/civic/qa/qa.js",
  "ask.status.answered": "R13 · web/civic/qa/qa.js",
  "ask.answer.more": "R13 · web/civic/qa/qa.js",
- "ask.answer.less": "R13 · web/civic/qa/qa.js"
+ "ask.answer.less": "R13 · web/civic/qa/qa.js",
+ "agencies.col.deadline_hint": "R17 · web/civic/agencies/agencies.js"
 }
