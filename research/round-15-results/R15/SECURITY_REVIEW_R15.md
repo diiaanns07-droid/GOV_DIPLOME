@@ -39,6 +39,7 @@
 Промежуточная сборка R01 B0.4 (197ad600, 15 окт 22:30): tests/civic/R15 512 passed / 0 failed (6 xfail — исправления
 владельцев ещё не взяты), браузер 8 PASS / 0 FAIL / 1 NOT_RUN, эталон раунда 14 18 / 0 / 0 — `browser/B04_SHAS.txt`.
 Сборка R01 B0.6 (c6d62440, 15 окт 23:30): tests/civic/R15 **556 passed / 0 failed**, все находки — регрессионные тесты.
+Сборка R01 B0.9 (a6907e9c, 16 окт 00:30, в ней тесты R15 @ a5291311): снова **556 passed / 0 failed**.
 Код ролей — их ветки на 15 окт ~17:00 (SHA — `DELIVERY.json` → `tested_sha`, `browser/OVERLAY_SHAS.txt`).
 
 ## Находки
