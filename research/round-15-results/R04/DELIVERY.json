@@ -1,13 +1,13 @@
 {
  "role": "R04",
  "round": 15,
- "delivery": "D1.1 (для B1 R01, 16 окт 14:00)",
+ "delivery": "D1.2 (для B1 R01, 16 окт 14:00)",
  "branch": "claude/gifted-maxwell-i66wwi",
  "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
  "restored_from": null,
  "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
- "code_sha": "0e903c1b9e1d603de0c5e47c3ce1d5a87134855b",
- "tested_sha": "0e903c1b9e1d603de0c5e47c3ce1d5a87134855b",
+ "code_sha": "de64a81bbc6cf74b8865733dfb786629cd06fa53",
+ "tested_sha": "de64a81bbc6cf74b8865733dfb786629cd06fa53",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_replies/__init__.py",
@@ -52,7 +52,8 @@
    "status": "PASS",
    "passed": 80,
    "failed": 0,
-   "cmd": "pytest -q tests/civic/R04/round15"
+   "cmd": "pytest -q tests/civic/R04/round15",
+   "sha": "de64a81bbc6cf74b8865733dfb786629cd06fa53"
   },
   "R04_round14_pytest": {
    "status": "PASS",
@@ -152,6 +153,19 @@
    "failed": 0,
    "sha": "0e903c1b9e1d603de0c5e47c3ce1d5a87134855b",
    "files": "tests/civic/R01/test_r01_api_v2.py, tests/civic/R09/test_r09v2_neighbours.py, tests/civic/R15/test_r15_profanity.py, tests/civic/R09/stand/serve_r09.py"
+  },
+  "neighbours_with_r04_ml_api": {
+   "status": "PASS",
+   "how": "ветка соседа + ui/civic_ml_api и ml/civic_replies R04 (временная копия), их pytest",
+   "results": {
+    "R16": "40/40",
+    "R13": "166/166",
+    "R17": "39/39",
+    "R09": "578/578"
+   },
+   "heads": "R16@aef7b79f R13@65ca0b2f R17@e5b834f9 R09@2ee80d8c",
+   "sha": "de64a81bbc6cf74b8865733dfb786629cd06fa53",
+   "found_and_fixed": "R16 test_personal_data_is_flagged_and_masked_for_public ждал вид iin для 12 цифр с неверной контрольной цифрой — теперь iin (+ checksum_ok)."
   }
  },
  "screens": [],

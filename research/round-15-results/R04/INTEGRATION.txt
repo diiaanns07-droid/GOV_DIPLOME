@@ -67,11 +67,14 @@ duplicate_of (+ код исходной жалобы). Текст жителя �
     from ui.civic_ml_api import moderate, moderation_record
     m = moderate(text, lang)        # lang: ru | kk | mixed | None
     m["text_public"]                # публиковать ЭТО (мат — «б*****», личные данные — «***»)
-    m["flags"]                      # [{"kind": "phone"|"iin"|"id_number"|"card"|"iban"|"email"|"apartment"|"contact"|"rude", …}]
+    m["flags"]                      # [{"kind": "phone"|"iin"|"card"|"iban"|"email"|"apartment"|"contact"|"rude", …}]
+                                    # iin: любые 12 цифр, checksum_ok — сколько с верной контрольной цифрой РК;
+                                    # card: 13–19 цифр, luhn_ok — сколько проходят проверку Луна
     m["clean"] / m["action"]        # True / "publish" — ничего не нашли; иначе "review" (сотрудник смотрит оригинал)
     m["pii"], m["rude"]             # есть ли личные данные / грубые слова
     rec["moderation"] = moderation_record(m)   # {"rude", "pii", "kinds", "count", "version"} — без текста и без находок
 Скорость: < 0.3 мс на текст (тест p95 < 5 мс). Ложных «личных данных» 0 на 7 285 текстах R02 и словарях R11.
+• Проверено 15 окт 18:05 (их ветка + ML-API R04, их pytest): R16 40/40, R13 166/166, R17 39/39, R09 578/578.
 • R16 (ui/civic_together/moderation.py): совместимо — берёт text_public и flags[].kind. similar_initiatives —
   см. п. 4.
 • R13 (ui/civic_qa/service.py moderate_text): совместимо (text_public, flags[].kind).
@@ -79,8 +82,8 @@ duplicate_of (+ код исходной жалобы). Текст жителя �
   email/rude, а text_public не использует. Тогда «card», «iban», «id_number», «apartment», «contact» пройдут в
   публичный текст как есть. Минимальная правка R17 (patch-текст):
       -        if flags & {"phone", "iin", "email", "pii", "personal_data"}:
-      +        if flags & {"phone", "iin", "email", "pii", "personal_data", "card", "iban", "id_number", "apartment",
-      +                    "contact"} or result.get("pii"):
+      +        if flags & {"phone", "iin", "email", "pii", "personal_data", "card", "iban", "apartment", "contact"} \
+      +                or result.get("pii"):
   (в moderate() R17 результат R04 — переменная result; достаточно `or result.get("pii")`, если R17 передаёт его дальше).
 
 ======================================================================================================================

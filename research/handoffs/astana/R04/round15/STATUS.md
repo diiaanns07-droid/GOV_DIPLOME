@@ -17,9 +17,9 @@
   tests/civic/R04/round15/test_r04_amendment_p1.py по всем текстам route / reply_draft / moderate / similar_initiatives
   и шаблонам; правила 1–2, 7 (никаких нарисованных картинок) — тест «в путях R04 нет изображений». Кадров R04 не сдаёт.
 
-## Статус: D1 готова (поставка для B1) — все 5 задач промпта сделаны, ждём R01 (маршруты шлюза)
+## Статус: D1.2 готова (поставка для B1) — все 5 задач промпта сделаны, ждём R01 (маршруты шлюза)
 
-Поставка: research/round-15-results/R04/DELIVERY.json (code_sha 44f0c8f4). Подключение — INTEGRATION.txt, запуск — RUN.txt,
+Поставка: research/round-15-results/R04/DELIVERY.json (code_sha de64a81b). Подключение — INTEGRATION.txt, запуск — RUN.txt,
 числа — RESULTS.md.
 
 ## Сделано (15 окт, 16:25–17:15)
@@ -41,7 +41,7 @@
 5. Тесты tests/civic/R04/round15: 79 passed (+ раунд 14: 337 passed, 3 skipped). Стенд FINAL-4 + patch шлюза:
    http_check_r04.py 14/14.
 
-## Соседи (проверено 15 окт 17:00 по их веткам)
+## Соседи (проверено 15 окт 17:00 по их веткам; 18:05 — их pytest с ML-API R04: R16@aef7b79f R13@65ca0b2f R17@e5b834f9 R09@2ee80d8c— R16 40/40, R13 166/166, R17 39/39, R09 578/578)
 - R16 (claude/youthful-johnson-6nz5mp): уже зовёт moderate(text, lang) и similar_initiatives(title, point, 30) —
   форматы совпадают.
 - R13 (claude/gifted-mayer-p86myv): moderate_text -> moderate(text, lang) — совместимо.
