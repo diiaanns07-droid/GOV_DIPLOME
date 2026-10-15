@@ -1,0 +1,349 @@
+{
+ "schema": "birge-landmarks-v2",
+ "purpose": "Ориентиры Астаны — один источник центров и названий ru/kk для подписей на карте (R01 basemap-style.js) и поиска (перелёт к настоящему зданию подложки). Моделей нет: здания — из подложки (поправка П1).",
+ "evidence_type": "real (OSM): координаты выведены из снимка пешеходной сети, контуры зданий — LOCAL-13",
+ "generated_by": "data/civic/astana/landmarks/tools/derive_landmarks.py",
+ "source": {
+  "path": "data/civic/astana/osm-walking/overpass.json.gz",
+  "sha256": "93cbef9d4bf041b9d2157cdbdd80d603de9e4117b992fbc61a64e84e42ad8a46",
+  "osm_base": "2026-05-06T03:25:00Z",
+  "license": "ODbL-1.0",
+  "attribution": "© OpenStreetMap contributors"
+ },
+ "landmarks": [
+  {
+   "id": "baiterek",
+   "name": {
+    "ru": "Байтерек",
+    "kk": "Бәйтерек"
+   },
+   "kind": {
+    "ru": "монумент",
+    "kk": "монумент"
+   },
+   "aliases": [
+    "Монумент Байтерек",
+    "Baiterek",
+    "Bayterek"
+   ],
+   "lat": 51.1282763,
+   "lon": 71.4305148,
+   "district": "esil",
+   "radius_m": 30,
+   "camera": {
+    "zoom": 16.6,
+    "pitch": 52,
+    "bearing": -76
+   },
+   "osm_object": null,
+   "coords": {
+    "method": "ring",
+    "osm": [
+     {
+      "type": "way",
+      "id": 258818019,
+      "role": "кольцо площади вокруг монумента"
+     },
+     {
+      "type": "way",
+      "id": 258818051,
+      "role": "внешнее кольцо (проверка)"
+     },
+     {
+      "type": "node",
+      "id": 2389116250,
+      "role": "вход main у основания"
+     },
+     {
+      "type": "node",
+      "id": 2389116244,
+      "role": "вход exit у основания"
+     }
+    ],
+    "ring_radius_m": 42.0,
+    "ring_spread_m": 0.4,
+    "outer_ring_offset_m": 0.6,
+    "entrances_offset_m": [
+     5.7,
+     7.4
+    ],
+    "check": "LOCAL-13"
+   }
+  },
+  {
+   "id": "khan-shatyr",
+   "name": {
+    "ru": "Хан Шатыр",
+    "kk": "Хан Шатыр"
+   },
+   "kind": {
+    "ru": "торговый центр",
+    "kk": "сауда орталығы"
+   },
+   "aliases": [
+    "ТРЦ Хан Шатыр",
+    "Khan Shatyr"
+   ],
+   "lat": 51.1324485,
+   "lon": 71.4038131,
+   "district": "nura",
+   "radius_m": 60,
+   "camera": {
+    "zoom": 15.9,
+    "pitch": 52,
+    "bearing": -76
+   },
+   "osm_object": null,
+   "coords": {
+    "method": "ellipse",
+    "osm": [
+     {
+      "type": "way",
+      "id": 164938029,
+      "role": "кольцевой проезд вокруг шатра"
+     },
+     {
+      "type": "node",
+      "id": 13294095201,
+      "role": "вход в шатёр (проверка радиуса)"
+     }
+    ],
+    "ring_semi_axes_m": [
+     159.3,
+     142.5
+    ],
+    "ring_axis_deg": 13.3,
+    "door_offset_m": 95.2,
+    "check": "LOCAL-13"
+   }
+  },
+  {
+   "id": "akorda",
+   "name": {
+    "ru": "Акорда",
+    "kk": "Ақорда"
+   },
+   "kind": {
+    "ru": "резиденция Президента",
+    "kk": "Президент резиденциясы"
+   },
+   "aliases": [
+    "Ак Орда",
+    "Ақ Орда",
+    "Akorda",
+    "Ak Orda"
+   ],
+   "lat": 51.1257772,
+   "lon": 71.4464221,
+   "district": "esil",
+   "radius_m": 50,
+   "camera": {
+    "zoom": 16.3,
+    "pitch": 52,
+    "bearing": -76
+   },
+   "osm_object": null,
+   "coords": {
+    "method": "hole",
+    "osm": [
+     {
+      "type": "way",
+      "id": 329669144,
+      "role": "северный сад (ось)"
+     },
+     {
+      "type": "way",
+      "id": 329669208,
+      "role": "южный сад (ось)"
+     }
+    ],
+    "hole": {
+     "area_m2": 9805,
+     "ray_min_m": 38.2,
+     "ray_max_m": 75.4,
+     "open_rays": 0
+    },
+    "axis_deg": 14.1,
+    "offset_from_axis_m": 2.0,
+    "check": "LOCAL-13"
+   }
+  },
+  {
+   "id": "hazrat-sultan",
+   "name": {
+    "ru": "Мечеть Хазрет Султан",
+    "kk": "Әзірет Сұлтан мешіті"
+   },
+   "kind": {
+    "ru": "мечеть",
+    "kk": "мешіт"
+   },
+   "aliases": [
+    "Хазрет Султан",
+    "Хазрат Султан",
+    "Әзірет Сұлтан",
+    "Hazrat Sultan"
+   ],
+   "lat": 51.125604,
+   "lon": 71.4724025,
+   "district": "saraishyk",
+   "radius_m": 60,
+   "camera": {
+    "zoom": 16.0,
+    "pitch": 52,
+    "bearing": -45
+   },
+   "osm_object": null,
+   "coords": {
+    "method": "hole",
+    "osm": [
+     {
+      "type": "way",
+      "id": 1373014142,
+      "role": "дорожки вокруг двора мечети"
+     }
+    ],
+    "hole": {
+     "area_m2": 25094,
+     "ray_min_m": 62.9,
+     "ray_max_m": 117.2,
+     "open_rays": 0
+    },
+    "check": "LOCAL-13"
+   }
+  },
+  {
+   "id": "palace-peace",
+   "name": {
+    "ru": "Дворец мира и согласия",
+    "kk": "Бейбітшілік және келісім сарайы"
+   },
+   "kind": {
+    "ru": "дворец (пирамида)",
+    "kk": "сарай (пирамида)"
+   },
+   "aliases": [
+    "Пирамида",
+    "Palace of Peace and Reconciliation",
+    "Pyramid"
+   ],
+   "lat": 51.1231163,
+   "lon": 71.4635865,
+   "district": "saraishyk",
+   "radius_m": 40,
+   "camera": {
+    "zoom": 16.5,
+    "pitch": 52,
+    "bearing": -76
+   },
+   "osm_object": {
+    "type": "node",
+    "id": 5009488810
+   },
+   "coords": {
+    "method": "named_node",
+    "osm": [
+     {
+      "type": "node",
+      "id": 5009488810,
+      "role": "узел с именем «Дворец мира и согласия»"
+     }
+    ],
+    "hole_center_offset_m": 4.6,
+    "hole": {
+     "area_m2": 11871,
+     "ray_min_m": 46.6,
+     "ray_max_m": 81.0,
+     "open_rays": 0
+    },
+    "check": "LOCAL-13"
+   }
+  },
+  {
+   "id": "nur-alem",
+   "name": {
+    "ru": "Нур Алем",
+    "kk": "Нұр Әлем"
+   },
+   "kind": {
+    "ru": "павильон ЭКСПО",
+    "kk": "ЭКСПО павильоны"
+   },
+   "aliases": [
+    "ЭКСПО",
+    "Экспо",
+    "EXPO",
+    "Nur Alem"
+   ],
+   "lat": 51.0892746,
+   "lon": 71.4160875,
+   "district": "esil",
+   "radius_m": 45,
+   "camera": {
+    "zoom": 16.1,
+    "pitch": 52,
+    "bearing": -20
+   },
+   "osm_object": null,
+   "coords": {
+    "method": "circles",
+    "osm": [
+     {
+      "type": "way",
+      "id": 455013941,
+      "role": "кольцо площади ЭКСПО"
+     },
+     {
+      "type": "way",
+      "id": 455013942,
+      "role": "кольцо площади ЭКСПО"
+     },
+     {
+      "type": "way",
+      "id": 455013943,
+      "role": "кольцо площади ЭКСПО"
+     },
+     {
+      "type": "way",
+      "id": 1461824179,
+      "role": "кольцо площади ЭКСПО"
+     },
+     {
+      "type": "way",
+      "id": 1461824180,
+      "role": "кольцо площади ЭКСПО"
+     }
+    ],
+    "fits": [
+     {
+      "way": 455013941,
+      "radius_m": 120.7,
+      "rms_m": 0.5
+     },
+     {
+      "way": 455013942,
+      "radius_m": 177.3,
+      "rms_m": 0.8
+     },
+     {
+      "way": 455013943,
+      "radius_m": 193.3,
+      "rms_m": 0.8
+     },
+     {
+      "way": 1461824179,
+      "radius_m": 173.5,
+      "rms_m": 0.7
+     },
+     {
+      "way": 1461824180,
+      "radius_m": 197.4,
+      "rms_m": 0.9
+     }
+    ],
+    "centers_spread_m": 1.1,
+    "check": "LOCAL-13"
+   }
+  }
+ ]
+}

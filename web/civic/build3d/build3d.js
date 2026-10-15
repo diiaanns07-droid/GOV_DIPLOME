@@ -21,7 +21,7 @@
  *   dataUrl    — папка data/ модуля ("/civic/build3d/data/");
  *   streets    — свой источник улиц {nearest(lngLat, maxM, name?), section(a, b)} (например, R12 /targets);
  *   year       — год на табличке (2027);  autoZoom — приблизить карту, если она дальше 15.5 (true);
- *   buildMs    — длительность анимации постройки (1100 мс);
+ *   buildMs    — длительность анимации постройки (760 мс; раунд 15 — «по частям 600–800 мс»);
  *   onToolChange(active, kind) — модуль взял/отдал щелчки по карте (R01: map.setInteractionEnabled);
  *   onSelect(proposal|null)    — выбрано предложение (R06 может показать свою карточку);
  *   onCatalogClose()           — хозяин сворачивает каталог сам: в листе каталога — «×» (дизайн-марафон, R11 11.3);
@@ -109,6 +109,14 @@
       "build3d.resident.hint": "Нажмите на проект, чтобы проголосовать",
       "build3d.resident.empty": "Здесь пока нет проектов",
       "build3d.demo.title": "3D-превью",
+      // Раунд 15: «Было / станет» — шторка по превью в карточке проекта; «День / Ночь» — для освещения.
+      "build3d.ba.before": "Было",
+      "build3d.ba.after": "Станет",
+      "build3d.ba.label": "Было и станет: передвиньте шторку",
+      "build3d.ba.value": "Слева было, справа станет: шторка {n} %",
+      "build3d.time.label": "Время суток",
+      "build3d.time.day": "День",
+      "build3d.time.night": "Ночь",
     },
     kk: {
       "build3d.loading": "3D жүктеліп жатыр…",
@@ -168,6 +176,13 @@
       "build3d.resident.hint": "Дауыс беру үшін жобаны басыңыз",
       "build3d.resident.empty": "Мұнда әзірге жоба жоқ",
       "build3d.demo.title": "3D-көрініс",
+      "build3d.ba.before": "Бұрын",
+      "build3d.ba.after": "Кейін",
+      "build3d.ba.label": "Бұрын және кейін: шторканы жылжытыңыз",
+      "build3d.ba.value": "Сол жақта бұрын, оң жақта кейін: шторка {n} %",
+      "build3d.time.label": "Тәулік уақыты",
+      "build3d.time.day": "Күндіз",
+      "build3d.time.night": "Түнде",
     },
   };
 
@@ -341,7 +356,9 @@
     });
   }
 
-  var BUILD_MS = 1100; // анимация постройки (волна частей ~0.55 с каждая)
+  // Постройка «по частям» за 760 мс (раунд 15: 600–800 мс; было 1,1 с): плиты и газон сразу, части вырастают волной
+  // от центра к краям, каждая ~0,38 с с плавным замедлением. «Уменьшить движение» — сразу готовый вид (без анимации).
+  var BUILD_MS = 760;
   var REMOVE_MS = 320;
   var ROTATE_STEP = 15;
   var PLACE_ZOOM = 17.5; // масштаб, на котором модели хорошо видны (UX_REVIEW день 3 #20)
@@ -893,7 +910,8 @@
     // Картинка карточки каталога (дизайн-марафон): превью модели из data/previews (тот же свет и угол, что на карте).
     // Не загрузилась (сборка без data/previews) — прежний значок.
     // Светлый фон вида под картинкой (эталон 13.10: миниатюры списка и картинка детальной карточки — на цветной подложке).
-    var PREVIEW_TINT = { square: "#e7f2dd", playground: "#fdf3e3", sports: "#e4f1e6", stop: "#e8f0f6", lighting: "#f6f1e4" };
+    // «Белый макет» (поправка П1): один спокойный фон для всех видов — цвет только у самого проекта (плита акцента).
+    var PREVIEW_TINT = { square: "#f1f2ee", playground: "#f1f2ee", sports: "#f1f2ee", stop: "#f1f2ee", lighting: "#f1f2ee" };
     function previewSrc(kind) {
       var base = o.dataUrl + "previews/" + kind;
       return {
@@ -1056,12 +1074,23 @@
       head.appendChild(close);
       dock.appendChild(head);
       var pic = el("div", "b3d-pd__im b3d-pd__im--r06", { "data-kind": p.kind });
-      var pimg = el("img", "", { src: o.dataUrl + "previews/" + p.kind + "@2x.png", alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
-      pimg.addEventListener("error", function () {
-        if (pic.parentNode) pic.parentNode.removeChild(pic);
-      });
-      pic.appendChild(pimg);
+      var plainPic = function () {
+        var pimg = el("img", "", { src: o.dataUrl + "previews/" + p.kind + "@2x.png", alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
+        pimg.addEventListener("error", function () {
+          if (pic.parentNode) pic.parentNode.removeChild(pic);
+        });
+        return pimg;
+      };
+      // Раунд 15: шторка «Было / станет» по превью; у освещения под ней — «День / Ночь».
+      var fig = beforeAfter(p, plainPic);
+      pic.appendChild(fig);
+      pic.classList.toggle("b3d-pd__im--night", ba.night && p.kind === "lighting");
       dock.appendChild(pic);
+      var timeRow = dayNight(p, fig);
+      if (timeRow) {
+        timeRow.classList.add("b3d-time--r06");
+        dock.appendChild(timeRow);
+      }
       var inner = el("div", "b3d-pd__in b3d-pd__in--r06");
       dock.appendChild(inner);
       var host = el("div", "b3d-r06");
@@ -1154,6 +1183,146 @@
       return del;
     }
 
+
+    // ───────────── «Было / станет» и «День / Ночь» в карточке проекта (раунд 15) ─────────────
+    // Шторка по превью: слева — «было» (то же место без проекта, тем же «белым макетом»), справа — «станет» (сам проект
+    // с каймой акцента бренда). Картинки — data/previews/<вид>-before@2x.png и <вид>@2x.png одной рамкой кадра
+    // (tests/civic/R05/round15/make_before_after.mjs): шторка совпадает пиксель в пиксель. Освещение — с улицей; у него
+    // ещё «День / Ночь»: ночью тёмно-серые объёмы и тёплые конусы света (было — тёмная улица).
+    // Ручка — 44 px, роль slider: ← → (Shift — шаг 20), Home / End; мышь и палец — перетаскивание по всей картинке.
+    // Нет картинки «было» (сборка без новых превью) — обычное превью без шторки.
+    var ba = { pos: 50, night: false };
+    function baSrc(kind, which, night) {
+      var base = o.dataUrl + "previews/";
+      if (kind === "lighting") return base + "lighting-" + (night ? "night-" : "") + which + "@2x.png";
+      return base + kind + (which === "before" ? "-before" : "") + "@2x.png";
+    }
+    function beforeAfter(p, fallback) {
+      var kind = p.kind;
+      var fig = el("figure", "b3d-ba", { "data-kind": kind });
+      var after = el("img", "b3d-ba__img", { src: baSrc(kind, "after", ba.night && kind === "lighting"), alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
+      var clip = el("div", "b3d-ba__before", { "aria-hidden": "true" });
+      var before = el("img", "b3d-ba__img", { src: baSrc(kind, "before", ba.night && kind === "lighting"), alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
+      clip.appendChild(before);
+      var tagB = el("span", "b3d-ba__tag b3d-ba__tag--before", { text: t("build3d.ba.before"), "aria-hidden": "true" });
+      var tagA = el("span", "b3d-ba__tag b3d-ba__tag--after", { text: t("build3d.ba.after"), "aria-hidden": "true" });
+      var line = el("span", "b3d-ba__line", { "aria-hidden": "true" });
+      var handle = el("button", "b3d-ba__handle", {
+        type: "button",
+        role: "slider",
+        "aria-label": t("build3d.ba.label"),
+        "aria-valuemin": "0",
+        "aria-valuemax": "100",
+        "data-action": "before-after",
+      });
+      handle.appendChild(icon("back", o.iconsUrl));
+      handle.appendChild(icon("forward", o.iconsUrl));
+      fig.appendChild(after);
+      fig.appendChild(clip);
+      fig.appendChild(tagB);
+      fig.appendChild(tagA);
+      fig.appendChild(line);
+      fig.appendChild(handle);
+      // Картинка не загрузилась (сборка без новых превью) — прежнее превью без шторки и подписей; нет и его — fallback сам
+      // покажет значок вида (своя карточка) или уберёт поле картинки (карточка R06).
+      var fell = false;
+      var fallBack = function () {
+        if (fell || !fig.parentNode) return;
+        fell = true;
+        fig.parentNode.classList.remove("b3d-pd__im--night");
+        fig.parentNode.replaceChild(fallback(), fig);
+      };
+      before.addEventListener("error", fallBack);
+      after.addEventListener("error", fallBack);
+      function set(v) {
+        v = Math.max(0, Math.min(100, Math.round(v)));
+        ba.pos = v;
+        fig.style.setProperty("--pos", v + "%");
+        handle.setAttribute("aria-valuenow", String(v));
+        handle.setAttribute("aria-valuetext", t("build3d.ba.value", { n: v }));
+        fig.classList.toggle("b3d-ba--before-only", v >= 96);
+        fig.classList.toggle("b3d-ba--after-only", v <= 4);
+      }
+      set(ba.pos);
+      handle.addEventListener("keydown", function (e) {
+        var step = e.shiftKey ? 20 : 5;
+        var v = null;
+        if (e.key === "ArrowLeft" || e.key === "ArrowDown") v = ba.pos - step;
+        else if (e.key === "ArrowRight" || e.key === "ArrowUp") v = ba.pos + step;
+        else if (e.key === "PageDown") v = ba.pos - 20;
+        else if (e.key === "PageUp") v = ba.pos + 20;
+        else if (e.key === "Home") v = 0;
+        else if (e.key === "End") v = 100;
+        if (v === null) return;
+        e.preventDefault();
+        e.stopPropagation(); // стрелки — шторке, а не карте
+        set(v);
+      });
+      // Перетаскивание: нажать в любом месте картинки — шторка туда; тянуть — следом. Вертикальная прокрутка карточки
+      // пальцем остаётся (touch-action: pan-y в CSS).
+      var drag = null;
+      function at(ev) {
+        var r = fig.getBoundingClientRect();
+        return r.width ? ((ev.clientX - r.left) / r.width) * 100 : ba.pos;
+      }
+      fig.addEventListener("pointerdown", function (ev) {
+        if (ev.button !== 0) return;
+        drag = ev.pointerId;
+        try {
+          fig.setPointerCapture(ev.pointerId);
+        } catch (e) {
+          /* старый браузер */
+        }
+        fig.classList.add("b3d-ba--drag");
+        set(at(ev));
+        ev.preventDefault();
+      });
+      fig.addEventListener("pointermove", function (ev) {
+        if (drag !== ev.pointerId) return;
+        set(at(ev));
+      });
+      var stop = function (ev) {
+        if (drag !== ev.pointerId) return;
+        drag = null;
+        fig.classList.remove("b3d-ba--drag");
+      };
+      fig.addEventListener("pointerup", stop);
+      fig.addEventListener("pointercancel", stop);
+      fig._setNight = function (night) {
+        after.src = baSrc(kind, "after", night);
+        before.src = baSrc(kind, "before", night);
+        fig.classList.toggle("b3d-ba--night", night);
+        if (fig.parentNode && fig.parentNode.classList) fig.parentNode.classList.toggle("b3d-pd__im--night", night);
+      };
+      fig.classList.toggle("b3d-ba--night", ba.night && kind === "lighting");
+      return fig;
+    }
+    // «День / Ночь» — только у освещения: сегменты ui-kit (bk-seg), под картинкой. Ночные картинки грузим заранее,
+    // как только переключатель показан, — смена без мигания.
+    function dayNight(p, fig) {
+      if (p.kind !== "lighting") return null;
+      ["before", "after"].forEach(function (w) {
+        var im = new root.Image();
+        im.src = baSrc("lighting", w, true);
+      });
+      var row = el("div", "b3d-time");
+      var seg = el("div", "bk-seg b3d-time__seg", { role: "group", "aria-label": t("build3d.time.label") });
+      [["day", false], ["night", true]].forEach(function (d) {
+        var b = el("button", "", { type: "button", "aria-pressed": ba.night === d[1] ? "true" : "false", "data-time": d[0], text: t("build3d.time." + d[0]) });
+        b.addEventListener("click", function () {
+          if (ba.night === d[1]) return;
+          ba.night = d[1];
+          seg.querySelectorAll("button").forEach(function (x) {
+            x.setAttribute("aria-pressed", x === b ? "true" : "false");
+          });
+          if (fig && fig._setNight) fig._setNight(ba.night);
+        });
+        seg.appendChild(b);
+      });
+      row.appendChild(seg);
+      return row;
+    }
+
     function renderCard(p) {
       if (useR06Card()) return renderR06Card(p);
       return renderOwnCard(p);
@@ -1170,12 +1339,18 @@
       var k = Core.KINDS[p.kind];
       // Классы ui-kit эталона (R11: .bk-pd, __im, __in, __title, .bk-facts, .bk-acts, __note) + свои — запасной вид.
       var card = el("article", "b3d-pcard b3d-pd bk-pd", { "aria-labelledby": "b3d-pcard-title", "data-kind": p.kind });
-      var im = el("div", "b3d-pd__im bk-pd__im"); // фон — по виду в build3d.css (те же цвета, что previewOf(kind).tint)
-      var img = el("img", "", { src: o.dataUrl + "previews/" + p.kind + "@2x.png", alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
-      img.addEventListener("error", function () {
-        if (img.parentNode) img.parentNode.replaceChild(icon(k.icon, o.iconsUrl), img);
-      });
-      im.appendChild(img);
+      var im = el("div", "b3d-pd__im bk-pd__im"); // фон — один спокойный «белого макета» (build3d.css)
+      var plainImg = function () {
+        var img = el("img", "", { src: o.dataUrl + "previews/" + p.kind + "@2x.png", alt: "", width: "240", height: "160", decoding: "async", draggable: "false" });
+        img.addEventListener("error", function () {
+          if (img.parentNode) img.parentNode.replaceChild(icon(k.icon, o.iconsUrl), img);
+        });
+        return img;
+      };
+      // Раунд 15: шторка «Было / станет» по превью (без картинки «было» — прежнее превью).
+      var fig = beforeAfter(p, plainImg);
+      im.appendChild(fig);
+      im.classList.toggle("b3d-pd__im--night", ba.night && p.kind === "lighting");
       var close = el("button", "bk-iconbtn b3d-pd__x", { type: "button", "aria-label": t("common.action.close"), title: t("common.action.close"), "data-action": "close-card" });
       close.appendChild(icon("close", o.iconsUrl));
       close.addEventListener("click", function () {
@@ -1184,6 +1359,8 @@
       im.appendChild(close);
       card.appendChild(im);
       var inner = el("div", "b3d-pd__in bk-pd__in");
+      var timeRow = dayNight(p, fig);
+      if (timeRow) inner.appendChild(timeRow);
       inner.appendChild(el("h2", "b3d-pcard__title bk-pd__title", { id: "b3d-pcard-title", text: t(k.key) }));
       // Строка под названием: место (двор / улица) и «Пример» — тихо, одной строкой.
       var sub = el("div", "b3d-pd__sub");
@@ -1800,8 +1977,8 @@
       }
       return {
         solid: withReveal(new THREE.MeshLambertMaterial({ vertexColors: true })),
-        // Стекло остановки, сетки, струя фонтана — с мягким бликом (Phong), остальное матовое.
-        glass: withReveal(new THREE.MeshPhongMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, shininess: 48, specular: 0x4a4a4a })),
+        // Стекло остановки, сетки, струя фонтана — матовое полупрозрачное, без блика («белый макет», поправка П1).
+        glass: withReveal(new THREE.MeshLambertMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide })),
         glow: withReveal(new THREE.MeshBasicMaterial({ vertexColors: true })),
         decal: new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 }),
         outline: new THREE.MeshBasicMaterial({ color: OUTLINE_COLOR }),
