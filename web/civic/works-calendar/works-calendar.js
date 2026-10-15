@@ -30,7 +30,7 @@
   const MIN_MONTH_W = 46;     // уже — месяц не читается: лента прокручивается вбок (телефон — 60)
   const SKELETON_DELAY = 150; // скелетон не раньше 150 мс (COMMON «Качество»)
   const MAP_SRC = "birge-r12-wc";
-  const MAP_LAYERS = ["birge-r12-wc-casing", "birge-r12-wc-line", "birge-r12-wc-focus"];
+  const MAP_LAYERS = ["birge-r12-wc-casing", "birge-r12-wc-line"];  // П1: без слоя свечения — белая обводка и линия
   const DANGER = "#b3362e";   // = --c-danger ui-kit: красный только у конфликта
   const PHONE = 761;
 
@@ -70,7 +70,8 @@
       "wcal.empty.text": "Выберите другой район, службу или период.",
       "wcal.empty.reset": "Сбросить фильтры",
       "wcal.staff.title": "Календарь работ — для сотрудников",
-      "wcal.staff.text": "Войдите как сотрудник акимата: аватар → «Для сотрудников».",
+      "wcal.staff.text": "Войдите как сотрудник акимата — календарь откроется сам.",
+      "wcal.staff.login": "Войти",
       "wcal.not_ready.title": "Календарь работ ещё не подключён",
       "wcal.not_ready.text": "В этой сборке нет модуля календаря. Остальные разделы работают.",
       "wcal.street_none": "Место не указано",
@@ -86,6 +87,7 @@
       "wcal.work.length": "участок {m} м",
       "wcal.work.context": "Показана как вторая сторона конфликта",
       "wcal.work.open": "Открыть запись",
+      "wcal.add": "Добавить работу",
       "wcal.work.delayed": "срок перенесён",
       "wcal.status.planned": "Запланировано",
       "wcal.status.in_progress": "Идут работы",
@@ -141,7 +143,8 @@
       "wcal.empty.text": "Басқа аудан, қызмет немесе кезең таңдаңыз.",
       "wcal.empty.reset": "Сүзгілерді тазарту",
       "wcal.staff.title": "Жұмыстар күнтізбесі — қызметкерлерге арналған",
-      "wcal.staff.text": "Әкімдік қызметкері ретінде кіріңіз: аватар → «Қызметкерлерге».",
+      "wcal.staff.text": "Әкімдік қызметкері ретінде кіріңіз — күнтізбе өзі ашылады.",
+      "wcal.staff.login": "Кіру",
       "wcal.not_ready.title": "Жұмыстар күнтізбесі әлі қосылмаған",
       "wcal.not_ready.text": "Бұл жинақта күнтізбе модулі жоқ. Басқа бөлімдер жұмыс істейді.",
       "wcal.street_none": "Орны көрсетілмеген",
@@ -157,6 +160,7 @@
       "wcal.work.length": "учаске {m} м",
       "wcal.work.context": "Қайшылықтың екінші жағы ретінде көрсетілген",
       "wcal.work.open": "Жазбаны ашу",
+      "wcal.add": "Жұмыс қосу",
       "wcal.work.delayed": "мерзімі ауыстырылды",
       "wcal.status.planned": "Жоспарланған",
       "wcal.status.in_progress": "Жұмыс жүріп жатыр",
@@ -441,6 +445,7 @@
         if (!data || !Array.isArray(data.works) || !Array.isArray(data.rows)) throw Object.assign(new Error("bad"), { status: 500 });
         state.data = data;
         state.status = "ready";
+        state.animateLink = true;
         shared.data = data;
         shared.at = Date.now();
         const wanted = takeWanted(data);
@@ -452,6 +457,7 @@
         state.status = failKind(err);
         state.error = err;
         render();
+        if (state.status === "staff") watchLogin();
       });
     }
 
@@ -473,7 +479,9 @@
       if (d && d.demo && state.status === "ready") {
         titleBox.append(h("p", { class: "wcal-demo" }, [h("span", { class: "wcal-demo__tag", text: tr("common.tag.demo") }), tr("wcal.demo_note")]));
       }
-      return h("header", { class: "wcal-head" }, [titleBox, controls()]);
+      // Фильтры нужны, когда есть данные или «пусто» (можно сменить район); при «войдите», «не подключён», ошибке — нет.
+      const withControls = state.status === "ready" || (state.status === "loading" && state.data);
+      return h("header", { class: "wcal-head" }, [titleBox, withControls ? controls() : null]);
     }
 
     function controls() {
@@ -502,9 +510,10 @@
         h("button", { type: "button", class: "wcal-iconbtn", "aria-label": tr("wcal.period.next"), title: tr("wcal.period.next"),
           onclick: () => { state.shift += 3; load(); } }, [icon("forward")]),
       ]);
+      // Поля — компонент ui-kit R11 (.bk-field): тот же вид, что в формах сотрудника.
       return h("div", { class: "wcal-controls" }, [
-        h("label", { class: "wcal-field" }, [h("span", { class: "wcal-field__label", text: tr("wcal.filter.district") }), district]),
-        h("label", { class: "wcal-field" }, [h("span", { class: "wcal-field__label", text: tr("wcal.filter.service") }), service]),
+        h("label", { class: "bk-field wcal-field" }, [h("span", { class: "bk-field__label wcal-field__label", text: tr("wcal.filter.district") }), district]),
+        h("label", { class: "bk-field wcal-field" }, [h("span", { class: "bk-field__label wcal-field__label", text: tr("wcal.filter.service") }), service]),
         nav,
       ]);
     }
@@ -590,7 +599,13 @@
       inner.style.width = labelWidth() + trackW + "px";
       inner.style.setProperty("--wcal-label-w", labelWidth() + "px");
       // Шапка месяцев
-      const head = h("div", { class: "wcal-tl__head" }, [h("div", { class: "wcal-tl__corner" })]);
+      // Угол над названиями улиц: «Добавить работу» — форма R06 «Работы и отключения» (служба, вид, участок улицы
+      // через R12). Тихая кнопка: главная на экране — «Показать на карте». Нет экрана R06 — угол пустой.
+      const shell = root.BirgeShell;
+      const add = shell && root.BirgeWorks && typeof shell.setSection === "function"
+        ? h("button", { type: "button", class: "wcal-add", onclick: () => shell.setSection("works") }, [icon("plus"), tr("wcal.add")])
+        : null;
+      const head = h("div", { class: "wcal-tl__head" }, [h("div", { class: "wcal-tl__corner" }, [add])]);
       const monthsBox = h("div", { class: "wcal-tl__months", style: "width:" + trackW + "px" });
       months.forEach((key, i) => {
         const y = +key.slice(0, 4), m = +key.slice(5, 7) - 1;
@@ -620,6 +635,8 @@
       let top = 0;
       const sel = d.conflicts.find((c) => c.id === state.selected);
       const selWorks = new Set(sel ? sel.works : []);
+      // Справа от этих полос — связь «копаем дважды» с чипом: подпись вида там не ставим (её говорит карточка).
+      const linkStarts = new Set(d.conflicts.filter((c) => c.kind === "dig_after_surface").map((c) => c.first || c.works[0]));
       for (const r of rows) {
         const height = r.lanes * LANE_H + ROW_PAD * 2 - 6;
         const street = r.row.street_ru ? (lang() === "kk" ? r.row.street_kk || r.row.street_ru : r.row.street_ru) : tr("wcal.street_none");
@@ -658,7 +675,7 @@
             title: (lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru) + " · " + fmtRange(w.starts_on, w.ends_on),
             onclick: (e) => openPopover(w, e.currentTarget) }, [inside ? h("span", { class: "wcal-bar__text", text: inside }) : null]);
           track.append(bar);
-          if (!inside && x1 + 150 < trackW) {
+          if (!inside && x1 + 150 < trackW && !linkStarts.has(w.id)) {
             track.append(h("span", { class: "wcal-bar__out", style: `left:${x0 + width + 6}px;top:${y + 4}px`, "aria-hidden": "true", text: kindText }));
           }
         }
@@ -713,10 +730,11 @@
         const on = c.id === state.selected;
         const cls = "wcal-link" + (on ? " is-sel" : "") + (state.selected && !on ? " is-dim" : "");
         if (c.kind === "dig_after_surface") {
-          // От конца асфальта к началу раскопки: дуга над полосами.
-          const x0 = a.x1, x1 = b.x0, y0 = a.y - 12, y1 = b.y - 12;
-          const lift = Math.min(26, 10 + Math.abs(x1 - x0) / 12);
-          add("path", { class: cls, d: `M${x0},${y0} C${x0 + (x1 - x0) * 0.25},${Math.min(y0, y1) - lift} ${x0 + (x1 - x0) * 0.75},${Math.min(y0, y1) - lift} ${x1},${y1}` });
+          // От конца асфальта к началу раскопки — на уровне полос (промежуток времени между ними); разные дорожки —
+          // плавная S-кривая. Внутри строки: не уходит под липкую шапку месяцев.
+          const x0 = a.x1 + 2, x1 = Math.max(a.x1 + 6, b.x0 - 2), y0 = a.y, y1 = b.y, mx = (x0 + x1) / 2;
+          const d = y0 === y1 ? `M${x0},${y0} L${x1},${y1}` : `M${x0},${y0} C${mx},${y0} ${mx},${y1} ${x1},${y1}`;
+          add("path", { class: cls + (on && state.animateLink ? " wcal-link--draw" : ""), pathLength: 1, d });
           add("circle", { class: cls + " wcal-link__end", cx: x0, cy: y0, r: 3.5 });
           add("circle", { class: cls + " wcal-link__end", cx: x1, cy: y1, r: 3.5 });
         } else {
@@ -741,7 +759,7 @@
         const a = geom.get(c.first || c.works[0]), b = geom.get(c.second || c.works[1]);
         if (!a || !b) continue;
         let cx, cy;
-        if (c.kind === "dig_after_surface") { cx = (a.x1 + b.x0) / 2; cy = Math.min(a.y, b.y) - 12 - Math.min(26, 10 + Math.abs(b.x0 - a.x1) / 12) * 0.75; }
+        if (c.kind === "dig_after_surface") { cx = (a.x1 + b.x0) / 2; cy = (a.y + b.y) / 2; }
         else { const x0 = Math.max(a.x0, b.x0), x1 = Math.min(a.x1, b.x1); cx = (x0 + Math.max(x0, x1)) / 2; cy = Math.min(a.y, b.y) - 15; }
         const on = c.id === state.selected;
         out.push(h("button", { type: "button", class: "wcal-cchip wcal-cchip--" + c.severity + (on ? " is-sel" : ""), "data-conflict": c.id,
@@ -814,6 +832,7 @@
 
     function select(id, scrollTo) {
       state.selected = id;
+      state.animateLink = true;
       render();
       if (scrollTo) {
         const chip = rootEl.querySelector(`.wcal-cchip[data-conflict="${CSS.escape(id)}"]`);
@@ -840,17 +859,36 @@
         empty: ["wcal.empty.title", "wcal.empty.text", "calendar", "reset"],
       };
       const [t1, t2, ic, act] = map[kind];
-      const btn = act === "retry"
+      const shellApi = root.CivicShell;
+      const login = kind === "staff" && shellApi && typeof shellApi.openEditor === "function"
+        ? h("button", { type: "button", class: "bk-btn bk-btn--primary", onclick: () => { watchLogin(); shellApi.openEditor(); } }, [icon("user"), tr("wcal.staff.login")])
+        : null;
+      // П1, правило 2: иконка + короткий текст + одна кнопка. Пусто без фильтров — «Добавить работу» (форма R06).
+      const sh = root.BirgeShell;
+      const filtered = state.filters.district || state.filters.service || state.shift;
+      const btn = login || (act === "retry"
         ? h("button", { type: "button", class: "bk-btn bk-btn--primary", onclick: load }, [icon("refresh"), tr("common.action.retry")])
-        : act === "reset" && (state.filters.district || state.filters.service || state.shift)
+        : act === "reset" && filtered
           ? h("button", { type: "button", class: "bk-btn", onclick: () => { state.filters = { district: "", service: "" }; state.shift = 0; load(); } }, [tr("wcal.empty.reset")])
-          : null;
+          : act === "reset" && sh && root.BirgeWorks && typeof sh.setSection === "function"
+            ? h("button", { type: "button", class: "bk-btn", onclick: () => sh.setSection("works") }, [icon("plus"), tr("wcal.add")])
+            : null);
       return h("div", { class: "wcal-state wcal-state--" + kind, role: kind === "error" || kind === "network" ? "alert" : "status" }, [
         h("span", { class: "wcal-state__ic", "aria-hidden": "true" }, [icon(ic)]),
         h("h3", { class: "wcal-state__title", text: tr(t1) }),
         h("p", { class: "wcal-state__text", text: tr(t2) }),
         btn,
       ]);
+    }
+    // После входа сотрудника (кабинет оболочки) — календарь загружается сам, без перезагрузки страницы.
+    let loginTimer = 0;
+    function watchLogin() {
+      clearInterval(loginTimer);
+      loginTimer = setInterval(() => {
+        const sh = root.CivicShell;
+        if (state.destroyed || state.status !== "staff") { clearInterval(loginTimer); return; }
+        if (sh && typeof sh.csrfToken === "function" && sh.csrfToken()) { clearInterval(loginTimer); load(); }
+      }, 1000);
     }
     function skeleton() {
       const rows = [];
@@ -884,6 +922,7 @@
         if (tl && !active) { tl.scrollLeft = keep.left; tl.scrollTop = keep.top; }
       }
       if (active) restoreFocus(active);
+      if (state.status === "ready") state.animateLink = false;
     }
     function readyParts(stale) {
       const d = state.data;
@@ -938,6 +977,7 @@
       destroy() {
         state.destroyed = true;
         clearTimeout(skeletonTimer);
+        clearInterval(loginTimer);
         cancelAnimationFrame(rafId);
         if (ro) ro.disconnect();
         rootEl.removeEventListener("keydown", onKey);
@@ -1012,9 +1052,6 @@
         paint: { "line-color": ["case", ["==", ["get", "work"], 1], ["get", "color"], DANGER],
           "line-opacity": ["case", ["==", ["get", "focus"], 1], 1, 0.75],
           "line-width": ["interpolate", ["linear"], ["zoom"], 11, ["case", ["==", ["get", "focus"], 1], 3.5, 2.2], 16, ["case", ["==", ["get", "focus"], 1], 8, 5]] } }, before);
-      m.addLayer({ id: MAP_LAYERS[2], type: "line", source: MAP_SRC, filter: ["==", ["get", "focus"], 1], layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": DANGER, "line-opacity": 0.22, "line-blur": 6,
-          "line-width": ["interpolate", ["linear"], ["zoom"], 11, 10, 16, 28] } }, MAP_LAYERS[0]);
       if (!clickBound) {
         clickBound = (e) => {
           const f = e.features && e.features[0];

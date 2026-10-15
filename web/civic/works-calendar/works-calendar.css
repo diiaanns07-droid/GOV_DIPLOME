@@ -7,6 +7,9 @@
   font-size: var(--fs-small, 14px); line-height: var(--lh-ui, 1.21);
 }
 .wcal * { box-sizing: border-box; }
+/* .bk-app ui-kit даёт фон бумаги — экран лежит на стекле листа раздела, свой фон не нужен */
+.wcal.bk-app { background: transparent; }
+.wcal-mapcard.bk-app, .wcal-toast.bk-app { background: var(--glass-strong, rgba(255, 255, 255, .94)); }
 .wcal .ic { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; }
 
 /* ---------- шапка ---------- */
@@ -24,19 +27,15 @@
   white-space: nowrap; }
 
 .wcal-controls { display: flex; align-items: flex-end; gap: var(--s-2, 8px); flex-wrap: wrap; }
-.wcal-field { display: grid; gap: 4px; }
+.wcal-field { display: grid; gap: 4px; margin: 0; }
 .wcal-field__label { font-size: var(--fs-xs, 12px); color: var(--c-text-3, #7e8a85); }
-.wcal-select {
-  height: var(--tap, 44px); min-width: 156px; max-width: 240px; padding: 0 34px 0 12px; border: 1px solid var(--c-line-strong, rgba(18, 26, 23, .16));
-  border-radius: var(--r-m, 12px); background-color: var(--c-surface, #fff); color: var(--c-ink, #121a17);
-  font: inherit; font-size: var(--fs-small, 14px); cursor: pointer; appearance: none; -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%234b5752' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 12px center;
-  transition: border-color var(--t-fast, 150ms) var(--ease, ease-out);
-}
-.wcal-select:hover { border-color: rgba(18, 26, 23, .28); }
-.wcal-shift { display: inline-flex; align-items: center; height: var(--tap, 44px); border: 1px solid var(--c-line-strong, rgba(18, 26, 23, .16));
-  border-radius: var(--r-m, 12px); background: var(--c-surface, #fff); overflow: hidden; }
+/* Вид поля — ui-kit (.bk-field select: заливка, без рамки, родная стрелка); здесь только размер в шапке. */
+.wcal .wcal-select { width: auto; min-width: 156px; max-width: 240px; min-height: var(--tap, 44px); padding: 0 12px;
+  border: 1px solid transparent; border-radius: var(--r-m, 12px); background: var(--c-fill, rgba(18, 26, 23, .06));
+  color: var(--c-ink, #121a17); font: inherit; font-size: var(--fs-small, 14px); cursor: pointer; }
+.wcal .wcal-select:hover { background: var(--c-fill-hover, rgba(18, 26, 23, .1)); }
+.wcal-shift { display: inline-flex; align-items: center; height: var(--tap, 44px); border-radius: var(--r-m, 12px);
+  background: var(--c-fill, rgba(18, 26, 23, .06)); overflow: hidden; }
 .wcal-iconbtn { display: inline-grid; place-items: center; min-width: var(--tap, 44px); height: var(--tap, 44px); padding: 0; border: 0;
   background: transparent; color: var(--c-ink, #121a17); font: inherit; font-size: var(--fs-caption, 13px); cursor: pointer;
   transition: background-color var(--t-fast, 150ms) var(--ease, ease-out); }
@@ -45,7 +44,7 @@
 .wcal-iconbtn--text { padding: 0 10px; font-weight: var(--fw-medium, 500); }
 .wcal-shift__label { padding: 0 10px; font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500); color: var(--c-text-2, #4b5752);
   white-space: nowrap; font-variant-numeric: tabular-nums; }
-.wcal-shift > .wcal-iconbtn + .wcal-iconbtn { border-left: 1px solid var(--c-line, rgba(18, 26, 23, .08)); }
+.wcal-shift .wcal-iconbtn:hover:not(:disabled) { background: var(--c-fill, rgba(18, 26, 23, .06)); }
 .wcal :is(button, select, [tabindex]):focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 
 /* ---------- карточка выбранного конфликта ---------- */
@@ -56,9 +55,10 @@
 }
 .wcal-focus > .wcal-focus__facts, .wcal-focus > .wcal-focus__advice { grid-column: 1 / -1; }
 .wcal-focus--high { box-shadow: inset 4px 0 0 var(--c-danger, #b3362e); border-color: rgba(179, 54, 46, .22); }
-.wcal-focus--calm { grid-template-columns: auto 1fr; align-items: center; box-shadow: inset 4px 0 0 var(--ok-mark, #3b8a2e); }
-.wcal-calm-ic { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--c-ok-soft, #eaf3de);
-  color: var(--c-ok, #27500a); }
+/* «Нет конфликтов» — спокойная нейтральная плашка (П1: без декора; зелёный — только «исправлено»). */
+.wcal-focus--calm { grid-template-columns: auto 1fr; align-items: center; box-shadow: none; }
+.wcal-calm-ic { display: grid; place-items: center; color: var(--c-text-2, #4b5752); }
+.wcal-calm-ic .ic { width: 24px; height: 24px; }
 .wcal-focus__main { min-width: 0; }
 .wcal-focus__top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .wcal-sev { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; flex: none;
@@ -141,11 +141,11 @@
 .wcal-bar:active { scale: var(--press-scale, .97); }
 .wcal-bar__text { position: relative; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .wcal-bar--done { opacity: .55; }
-.wcal-bar--approx { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--wcal-c, #5b6577) 14%, #fff) 0 6px, #fff 6px 12px);
-  color: var(--c-ink, #121a17); box-shadow: inset 0 0 0 1.5px var(--wcal-c, #5b6577); }
+.wcal-bar--approx { background: var(--c-surface, #fff); color: var(--c-ink, #121a17); box-shadow: none;
+  outline: 1.5px dashed var(--wcal-c, #5b6577); outline-offset: -1.5px; }
 .wcal-bar--context { opacity: .72; }
 .wcal-bar--conflict { box-shadow: 0 1px 2px rgba(16, 24, 20, .14), 0 0 0 1.5px rgba(179, 54, 46, .55); }
-.wcal-bar.is-sel { z-index: 2; opacity: 1; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--c-danger, #b3362e), 0 4px 12px rgba(179, 54, 46, .25); }
+.wcal-bar.is-sel { z-index: 2; opacity: 1; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--c-danger, #b3362e); }
 .wcal-bar.is-dim { opacity: .45; }
 .wcal-bar.is-dim:hover, .wcal-bar.is-dim:focus-visible { opacity: .8; }
 .wcal-bar__out { position: absolute; z-index: 1; font-size: var(--fs-xs, 12px); color: var(--c-text-2, #4b5752); white-space: nowrap; pointer-events: none; }
@@ -159,6 +159,18 @@
 .wcal-link__band { fill: rgba(179, 54, 46, .07); stroke-width: 1.5; stroke-dasharray: 4 3; }
 .wcal-link__band.is-sel { fill: rgba(179, 54, 46, .12); }
 .wcal-link__tie { stroke-width: 1.5; stroke-dasharray: 3 3; }
+/* «Мелочь вау»: связь выбранного конфликта прорисовывается от асфальта к раскопке (600 мс). */
+@media (prefers-reduced-motion: no-preference) {
+  .wcal-link--draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: wcal-draw 600ms var(--ease, ease-out) 80ms forwards; }
+}
+@keyframes wcal-draw { to { stroke-dashoffset: 0; } }
+.wcal-tl__corner { display: flex; align-items: center; padding-left: 6px; }
+.wcal-add { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; margin: 0; border: 0; border-radius: var(--r-s, 8px);
+  background: transparent; color: var(--c-ink, #121a17); font: inherit; font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500);
+  cursor: pointer; position: relative; white-space: nowrap; }
+.wcal-add::before { content: ""; position: absolute; inset: -6px 0; }
+.wcal-add:hover { background: var(--c-fill, rgba(18, 26, 23, .06)); }
+.wcal-add .ic { width: 16px; height: 16px; }
 
 .wcal-cchip { position: absolute; z-index: 4; transform: translate(-50%, -50%); display: inline-flex; align-items: center; height: 22px;
   padding: 0 9px; margin: 0; border: 1.5px solid var(--c-danger, #b3362e); border-radius: var(--r-pill, 999px); background: #fff;
@@ -203,23 +215,22 @@
 
 /* ---------- состояния ---------- */
 .wcal-state { display: grid; justify-items: center; gap: 8px; padding: 48px 16px; text-align: center; }
-.wcal-state__ic { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 4px; border-radius: 50%;
-  background: var(--c-fill, rgba(18, 26, 23, .06)); color: var(--c-text-2, #4b5752); }
-.wcal-state__ic .ic { width: 26px; height: 26px; }
-.wcal-state--error .wcal-state__ic, .wcal-state--network .wcal-state__ic { background: var(--c-danger-soft, #fcebeb); color: var(--c-danger, #b3362e); }
+/* П1, правило 2: одна маленькая монохромная иконка набора R11 + короткий текст + одна кнопка. */
+.wcal-state__ic { display: grid; place-items: center; margin-bottom: 4px; color: var(--c-text-2, #4b5752); }
+.wcal-state__ic .ic { width: 32px; height: 32px; stroke-width: 1.5; }
+.wcal-state--error .wcal-state__ic, .wcal-state--network .wcal-state__ic { color: var(--c-danger, #b3362e); }
 .wcal-state__title { margin: 0; font-size: var(--fs-title, 19px); font-weight: var(--fw-semi, 600); }
 .wcal-state__text { margin: 0; max-width: 46ch; font-size: var(--fs-body, 15px); line-height: var(--lh-text, 1.45); color: var(--c-text-2, #4b5752); }
 .wcal-state .bk-btn { margin-top: 8px; gap: 8px; }
 
 .wcal-skel__box { display: grid; gap: 10px; }
-.wcal-skel { display: block; height: 20px; border-radius: 8px;
-  background: linear-gradient(90deg, var(--c-fill, rgba(18, 26, 23, .06)) 25%, rgba(18, 26, 23, .1) 37%, var(--c-fill, rgba(18, 26, 23, .06)) 63%);
-  background-size: 400% 100%; animation: wcal-shimmer 1.3s ease infinite; }
+.wcal-skel { display: block; height: 20px; border-radius: 8px; background: var(--c-fill, rgba(18, 26, 23, .06));
+  animation: wcal-breathe 1.4s var(--ease-in-out, ease-in-out) infinite alternate; }
 .wcal-skel--focus { height: 132px; border-radius: var(--r-xl, 18px); }
 .wcal-skel__row { display: flex; align-items: center; gap: 12px; height: 46px; }
 .wcal-skel--label { width: 150px; flex: none; }
 .wcal-skel--bar { height: 24px; }
-@keyframes wcal-shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@keyframes wcal-breathe { from { opacity: 1; } to { opacity: .55; } }
 .wcal .is-stale { opacity: .6; transition: opacity var(--t-fast, 150ms) var(--ease, ease-out); }
 
 /* ---------- карточка на карте и подсказка слоя ---------- */
@@ -251,14 +262,14 @@
 
 /* ---------- 1024 и телефон ---------- */
 @media (max-width: 1180px) {
-  .wcal-select { min-width: 140px; }
+  .wcal .wcal-select { min-width: 140px; }
 }
 @media (max-width: 760px) {
   .wcal-head { flex-direction: column; }
   .wcal-head__title { flex: none; }
   .wcal-controls { width: 100%; }
   .wcal-field { flex: 1 1 140px; }
-  .wcal-select { width: 100%; max-width: none; min-width: 0; }
+  .wcal .wcal-select { width: 100%; max-width: none; min-width: 0; font-size: 16px; }
   .wcal-focus { grid-template-columns: minmax(0, 1fr); padding: 14px 14px 14px 18px; }
   .wcal-focus__street { margin-left: 0; white-space: normal; }
   .wcal-focus__facts { display: grid; gap: 6px; }

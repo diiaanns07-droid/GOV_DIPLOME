@@ -116,6 +116,46 @@ async function openCalendar(page, lang) {
         await ctx.close();
       }
     }
+    // Все состояния экрана (подмена ответа шлюза): сотрудник не вошёл, модуль не подключён, нет связи, пусто, скелетон.
+    if (!args["no-states"]) {
+      const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+      const page = await ctx.newPage();
+      page.on("pageerror", (e) => errors.push(`states: ${e.message}`));
+      await page.goto(URL + "/", { waitUntil: "domcontentloaded" });
+      await page.waitForFunction(() => window.BirgeShell && window.BirgeWorksCalendar, null, { timeout: 20000 });
+      const cases = [
+        ["staff", { status: 401, body: { error: { code: "staff_required", message: "…" } } }, ".wcal-state--staff"],
+        ["not_ready", { status: 503, body: { error: "module_not_ready", module: "engine.civic_geo.api", role: "R12" } }, ".wcal-state--not_ready"],
+        ["network", "abort", ".wcal-state--network"],
+        ["error", { status: 500, body: { error: "internal" } }, ".wcal-state--error"],
+        ["empty", { status: 200, body: { period: { from: "2026-09-01", to: "2027-09-30", today: "2026-10-15" }, months: [], rows: [], works: [],
+          conflicts: [], services: [], kinds: [], counts: { works: 0, conflicts: 0, high: 0 }, demo: false } }, ".wcal-state--empty"],
+      ];
+      for (const [name, reply, sel] of cases) {
+        await page.unroute("**/api/civic/v2/works-calendar**").catch(() => {});
+        await page.route("**/api/civic/v2/works-calendar**", (route) => (reply === "abort" ? route.abort("internetdisconnected")
+          : route.fulfill({ status: reply.status, contentType: "application/json", body: JSON.stringify(reply.body) })));
+        await page.evaluate(() => { window.BirgeShell.setSection("map"); window.BirgeShell.setSection("works-calendar"); });
+        const ok = await page.waitForSelector(".wcal " + sel, { timeout: 8000 }).then(() => true, () => false);
+        const text = ok ? await page.$eval(".wcal " + sel, (el) => el.textContent.trim().slice(0, 80)) : "";
+        check(`состояние «${name}»`, ok, text);
+        if (name === "staff") {
+          const login = await page.$eval(".wcal .wcal-state--staff .bk-btn", (b) => b.textContent.trim()).catch(() => "");
+          check("«для сотрудников» — кнопка «Войти»", /Войти|Кіру/.test(login), login);
+        }
+        if (OUT) await page.screenshot({ path: path.join(OUT, `state_${name}_1366_ru.png`) });
+      }
+      // Скелетон: ответ задерживается на 1,5 с — скелетон виден (не раньше 150 мс), потом экран.
+      await page.unroute("**/api/civic/v2/works-calendar**").catch(() => {});
+      await page.route("**/api/civic/v2/works-calendar**", async (route) => { await new Promise((r) => setTimeout(r, 1500)); route.continue(); });
+      await page.evaluate(() => { window.BirgeShell.setSection("map"); window.BirgeShell.setSection("works-calendar"); });
+      const early = await page.evaluate(() => !!document.querySelector(".wcal .wcal-skel__box"));
+      await page.waitForTimeout(400);
+      const skel = await page.evaluate(() => !!document.querySelector(".wcal .wcal-skel__box"));
+      check("скелетон не раньше 150 мс, затем виден", !early && skel, `сразу ${early}, через 400 мс ${skel}`);
+      if (OUT) await page.screenshot({ path: path.join(OUT, "state_loading_1366_ru.png") });
+      await ctx.close();
+    }
   } finally {
     await browser.close();
   }
