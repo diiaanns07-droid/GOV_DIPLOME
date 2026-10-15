@@ -250,3 +250,21 @@ def test_r12_finds_planned_conflicts(world):
     got = {(c["kind"], tuple(sorted(c["works"]))) for c in found}
     want = {(c["kind"], tuple(sorted(c["works"]))) for c in world["planned_conflicts"]}
     assert want <= got, sorted(want - got)
+
+
+def test_r04_route_agrees_with_world_services(world):
+    """Подсказка ИИ R04 route() по тексту жалобы называет те же службы, что в мире (совместная — обе, в том же
+    порядке; одиночная — ту же ведущую): на экране подсказка и карточка не спорят (сцена 8). Без route() — пропуск."""
+    ml_api = pytest.importorskip("ui.civic_ml_api")
+    route = getattr(ml_api, "route", None)
+    if not callable(route):
+        pytest.skip("route() R04 ещё не в сборке")
+    bad = []
+    for c in world["complaints"]:
+        r = route(text=c["text"], category=c["category"], subtopic=c.get("subtopic"))
+        got = [s["service"] for s in r.get("services", [])]
+        hint = c.get("route_hint") or {}
+        want = [p["service"] for p in c.get("services") or []] or (hint["services"] if hint.get("joint") else [c["service"]])
+        if bool(r.get("joint")) != (len(want) > 1) or got[:len(want)] != want:
+            bad.append((c["id"], c["text"][:60], want, got))
+    assert not bad, bad[:5]

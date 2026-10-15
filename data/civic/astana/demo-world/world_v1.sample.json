@@ -13,7 +13,7 @@
   "engine/civic_scenarios/graphs/MANIFEST.json": "9b44a045e09d41721580e2c45871523dcfeee617f5aca0e086cab983002ee4b1"
  },
  "counts": {
-  "yards": 25,
+  "yards": 24,
   "complaints": 25,
   "works": 15,
   "planned_conflicts": 5,
@@ -969,7 +969,7 @@
    "created_at": {
     "ago_hours": 1439.51
    },
-   "text": "Люди, помогите. Тротуарда плитка разбита, адамдар сүрінеді. Примите меры.",
+   "text": "Теплосеть тротуарды қазып, плитканы орнына қоймады.",
    "lang": "mixed",
    "category": "sidewalks",
    "subtopic": "broken_sidewalk",
@@ -1087,96 +1087,6 @@
      "to": "heating",
      "reason": "Плитку разобрали при ремонте теплотрассы — сначала Теплосеть закрывает работы",
      "by_role": "operator"
-    }
-   ]
-  },
-  {
-   "id": "c-w1500012",
-   "schema": "civic-complaint-v2",
-   "created_at": {
-    "ago_hours": 1438.34
-   },
-   "text": "Ночью носятся на мотоциклах с громкой музыкой, жесть.",
-   "lang": "ru",
-   "category": "noise_safety",
-   "subtopic": "noise_night",
-   "category_source": "resident",
-   "model": {
-    "label": "noise_safety",
-    "score": 0.63,
-    "version": "demo-world-v1",
-    "needs_review": true
-   },
-   "point": [
-    71.416773,
-    51.132911
-   ],
-   "target": {
-    "kind": "segment",
-    "id": "osm-w688297557-6",
-    "label_ru": "Участок: улица Кунаева",
-    "label_kk": "Қонаев көшесінің бөлігі"
-   },
-   "district": "esil",
-   "status": "fixed",
-   "status_history": [
-    {
-     "at": {
-      "ago_hours": 1438.34
-     },
-     "status": "new"
-    },
-    {
-     "at": {
-      "ago_hours": 1432.62
-     },
-     "status": "accepted"
-    },
-    {
-     "at": {
-      "ago_hours": 1425.2
-     },
-     "status": "in_progress"
-    },
-    {
-     "at": {
-      "ago_hours": 1311.7
-     },
-     "status": "fixed"
-    }
-   ],
-   "metoo": 0,
-   "metoo_times": [],
-   "duplicate_of": null,
-   "demo": true,
-   "service": "police",
-   "resolution": {
-    "round": 1,
-    "state": "verified",
-    "reported_at": {
-     "ago_hours": 1311.7
-    },
-    "what_done": "Усилили патрулирование",
-    "by": "service",
-    "photos_after": [],
-    "votes": {
-     "yes": 1,
-     "no": 0,
-     "cant": 0
-    },
-    "verified_at": {
-     "ago_hours": 1269.88
-    },
-    "reopened_at": null,
-    "reopen_count": 0
-   },
-   "updates": [
-    {
-     "at": {
-      "ago_hours": 1311.7
-     },
-     "kind": "fixed",
-     "text": "Усилили патрулирование"
     }
    ]
   },
@@ -1307,7 +1217,7 @@
     },
     {
      "at": {
-      "ago_hours": 1349.01
+      "ago_hours": 1359.5
      },
      "status": "rejected"
     }
@@ -1320,7 +1230,7 @@
    "updates": [
     {
      "at": {
-      "ago_hours": 1349.01
+      "ago_hours": 1359.5
      },
      "kind": "note",
      "text": "Новая парковка — не ремонт: предложение передано в программу благоустройства двора."
@@ -1402,7 +1312,7 @@
      "cant": 0
     },
     "verified_at": {
-     "ago_hours": 1350.38
+     "ago_hours": 1315.53
     },
     "reopened_at": null,
     "reopen_count": 0
@@ -1418,12 +1328,101 @@
    ]
   },
   {
+   "id": "c-w1500025",
+   "schema": "civic-complaint-v2",
+   "created_at": {
+    "ago_hours": 1419.0
+   },
+   "text": "Кешке аудан түтінге оранады, дышать нечем. Сделайте что-нибудь!",
+   "lang": "mixed",
+   "category": "smell_air",
+   "subtopic": "smoke_fire",
+   "category_source": "resident",
+   "model": {
+    "label": "smell_air",
+    "score": 0.67,
+    "version": "demo-world-v1",
+    "needs_review": true
+   },
+   "point": [
+    71.281841,
+    51.13143
+   ],
+   "target": {
+    "kind": "area",
+    "id": "cell-131-244",
+    "label_ru": "Примерное место — улица Газиза Байтасова",
+    "label_kk": "Шамамен орны — Газиза Байтасова көшесі",
+    "approximate": true
+   },
+   "district": "nura",
+   "status": "fixed",
+   "status_history": [
+    {
+     "at": {
+      "ago_hours": 1419.0
+     },
+     "status": "new"
+    },
+    {
+     "at": {
+      "ago_hours": 1418.5
+     },
+     "status": "accepted"
+    },
+    {
+     "at": {
+      "ago_hours": 1415.86
+     },
+     "status": "in_progress"
+    },
+    {
+     "at": {
+      "ago_hours": 1391.46
+     },
+     "status": "fixed"
+    }
+   ],
+   "metoo": 0,
+   "metoo_times": [],
+   "duplicate_of": null,
+   "demo": true,
+   "service": "emergency",
+   "resolution": {
+    "round": 1,
+    "state": "reported",
+    "reported_at": {
+     "ago_hours": 1391.46
+    },
+    "what_done": "Источник дыма установлен, нарушителю выдано предписание",
+    "by": "service",
+    "photos_after": [],
+    "votes": {
+     "yes": 0,
+     "no": 0,
+     "cant": 0
+    },
+    "verified_at": null,
+    "reopened_at": null,
+    "reopen_count": 0
+   },
+   "updates": [
+    {
+     "at": {
+      "ago_hours": 1391.46
+     },
+     "kind": "fixed",
+     "text": "Источник дыма установлен, нарушителю выдано предписание"
+    }
+   ]
+  },
+  {
    "id": "c-w1500043",
    "schema": "civic-complaint-v2",
    "created_at": {
     "ago_hours": 1385.29
    },
-   "text": "Произошёл прорыв трубы, вода бьёт из-под земли. Прошу срочно направить аварийную службу.",
+   "text": "Прорвало трубу под дорогой, вода идёт по асфальту, асфальт провалился.",
    "lang": "ru",
    "category": "utilities",
    "subtopic": "no_water",
@@ -1474,7 +1473,7 @@
    "service": "water",
    "resolution": {
     "round": 1,
-    "state": "verified",
+    "state": "reported",
     "reported_at": {
      "ago_hours": 1372.92
     },
@@ -1482,13 +1481,11 @@
     "by": "service",
     "photos_after": [],
     "votes": {
-     "yes": 1,
+     "yes": 0,
      "no": 0,
      "cant": 0
     },
-    "verified_at": {
-     "ago_hours": 1331.22
-    },
+    "verified_at": null,
     "reopened_at": null,
     "reopen_count": 0
    },
@@ -1529,69 +1526,59 @@
     "source": "rules",
     "model_version": null
    },
-   "handoffs": [
-    {
-     "at": {
-      "ago_hours": 1376.12
-     },
-     "from": "road",
-     "to": "water",
-     "reason": "Порыв на трубе под дорогой: сначала ремонт трубы, потом покрытие",
-     "by_role": "operator"
-    }
-   ]
+   "handoffs": []
   },
   {
-   "id": "c-w1500048",
+   "id": "c-w1500045",
    "schema": "civic-complaint-v2",
    "created_at": {
-    "ago_hours": 1366.6
+    "ago_hours": 1370.95
    },
-   "text": "Мына мәселе бойынша жүгініп отырмын. Қазу жұмыстарынан кейін Түркістан көшесінде асфальт қалпына келтірілмеді бір аптадан бері.",
-   "lang": "kk",
+   "text": "После раскопок трубы на дороге яма, асфальт не положили.",
+   "lang": "ru",
    "category": "roads",
    "subtopic": "pothole",
-   "category_source": "model",
+   "category_source": "resident",
    "model": {
     "label": "roads",
-    "score": 0.8,
+    "score": 0.62,
     "version": "demo-world-v1",
-    "needs_review": false
+    "needs_review": true
    },
    "point": [
-    71.43273,
-    51.128892
+    71.499453,
+    51.151029
    ],
    "target": {
     "kind": "segment",
-    "id": "osm-w449379702-0",
-    "label_ru": "Участок: улица Туркестан",
-    "label_kk": "Түркістан көшесінің бөлігі"
+    "id": "osm-w479410569-4",
+    "label_ru": "Участок: улица Габита Мусрепова",
+    "label_kk": "Габита Мусрепова көшесінің бөлігі"
    },
-   "district": "esil",
+   "district": "almaty",
    "status": "fixed",
    "status_history": [
     {
      "at": {
-      "ago_hours": 1366.6
+      "ago_hours": 1370.95
      },
      "status": "new"
     },
     {
      "at": {
-      "ago_hours": 1346.14
+      "ago_hours": 1324.06
      },
      "status": "accepted"
     },
     {
      "at": {
-      "ago_hours": 1319.97
+      "ago_hours": 1270.48
      },
      "status": "in_progress"
     },
     {
      "at": {
-      "ago_hours": 986.47
+      "ago_hours": 1115.25
      },
      "status": "fixed"
     }
@@ -1599,7 +1586,7 @@
    "metoo": 1,
    "metoo_times": [
     {
-     "ago_hours": 1365.19
+     "ago_hours": 1343.95
     }
    ],
    "duplicate_of": null,
@@ -1609,7 +1596,7 @@
     "round": 1,
     "state": "reported",
     "reported_at": {
-     "ago_hours": 986.47
+     "ago_hours": 1115.25
     },
     "what_done": "Восстановили асфальт после раскопок",
     "by": "service",
@@ -1626,7 +1613,7 @@
    "updates": [
     {
      "at": {
-      "ago_hours": 986.47
+      "ago_hours": 1115.25
      },
      "kind": "fixed",
      "text": "Восстановили асфальт после раскопок"
@@ -1639,7 +1626,7 @@
      "status": "done",
      "note": "Трубу заменили",
      "updated_at": {
-      "ago_hours": 986.47
+      "ago_hours": 1115.25
      }
     },
     {
@@ -1647,7 +1634,7 @@
      "role": "partner",
      "status": "done",
      "updated_at": {
-      "ago_hours": 986.47
+      "ago_hours": 1115.25
      }
     }
    ],
@@ -1663,11 +1650,11 @@
    "handoffs": [
     {
      "at": {
-      "ago_hours": 1346.14
+      "ago_hours": 1324.06
      },
      "from": "road",
      "to": "water",
-     "reason": "Сначала Водоканал закрывает работы на трубе, затем дорожники восстанавливают асфальт",
+     "reason": "Яма после работ Водоканала: сначала он закрывает работы на трубе, затем дорожники восстанавливают асфальт",
      "by_role": "operator"
     }
    ]
@@ -1734,7 +1721,7 @@
    "service": "road",
    "resolution": {
     "round": 1,
-    "state": "verified",
+    "state": "reported",
     "reported_at": {
      "ago_hours": 1205.73
     },
@@ -1742,13 +1729,11 @@
     "by": "service",
     "photos_after": [],
     "votes": {
-     "yes": 1,
+     "yes": 0,
      "no": 0,
      "cant": 0
     },
-    "verified_at": {
-     "ago_hours": 1197.71
-    },
+    "verified_at": null,
     "reopened_at": null,
     "reopen_count": 0
    },
@@ -1800,13 +1785,13 @@
     },
     {
      "at": {
-      "ago_hours": 1088.6
+      "ago_hours": 1068.63
      },
      "status": "accepted"
     },
     {
      "at": {
-      "ago_hours": 1084.63
+      "ago_hours": 1066.77
      },
      "status": "in_progress"
     }
@@ -1818,126 +1803,81 @@
    "service": "parking"
   },
   {
-   "id": "c-w1500329",
+   "id": "c-w1500270",
    "schema": "civic-complaint-v2",
    "created_at": {
-    "ago_hours": 739.34
+    "ago_hours": 870.46
    },
-   "text": "Опять двадцать пять. Во дворе нет мест, ставят в два ряда и перекрывают выезд. Примите меры.",
-   "lang": "ru",
-   "category": "parking",
-   "subtopic": "yard_cars",
-   "category_source": "model",
-   "model": {
-    "label": "parking",
-    "score": 0.72,
-    "version": "demo-world-v1",
-    "needs_review": false
-   },
-   "point": [
-    71.293034,
-    51.131652
-   ],
-   "target": {
-    "kind": "area",
-    "id": "yard-1531186326",
-    "label_ru": "Двор — улица 206",
-    "label_kk": "Аула — 206 көшесі"
-   },
-   "district": "nura",
-   "status": "accepted",
-   "status_history": [
-    {
-     "at": {
-      "ago_hours": 739.34
-     },
-     "status": "new"
-    },
-    {
-     "at": {
-      "ago_hours": 153.37
-     },
-     "status": "accepted"
-    }
-   ],
-   "metoo": 0,
-   "metoo_times": [],
-   "duplicate_of": null,
-   "demo": true,
-   "service": "parking"
-  },
-  {
-   "id": "c-w1500334",
-   "schema": "civic-complaint-v2",
-   "created_at": {
-    "ago_hours": 725.19
-   },
-   "text": "Қураған ағаш алаңның үстіне еңкейіп тұр.",
+   "text": "Ағайын, көмектесіңіздер. Аула қараңғы, бірде-бір шам жоқ. Рақмет.",
    "lang": "kk",
-   "category": "yards",
-   "subtopic": "trees_lawn",
+   "category": "lighting",
+   "subtopic": "dark_yard",
    "category_source": "resident",
    "model": null,
    "point": [
-    71.427157,
-    51.106254
+    71.397163,
+    51.210276
    ],
    "target": {
     "kind": "area",
-    "id": "yard-1461292495",
-    "label_ru": "Двор: Sensata Park",
-    "label_kk": "Аула: Sensata Park"
+    "id": "yard-1071933356",
+    "label_ru": "Двор — улица Сугир Алиулы",
+    "label_kk": "Аула — Сугир Алиулы көшесі"
    },
-   "district": "esil",
+   "district": "baikonur",
    "status": "in_progress",
    "status_history": [
     {
      "at": {
-      "ago_hours": 725.19
+      "ago_hours": 870.46
      },
      "status": "new"
     },
     {
      "at": {
-      "ago_hours": 359.11
+      "ago_hours": 854.16
      },
      "status": "accepted"
     },
     {
      "at": {
-      "ago_hours": 281.38
+      "ago_hours": 852.68
      },
      "status": "in_progress"
     }
    ],
-   "metoo": 0,
-   "metoo_times": [],
+   "metoo": 1,
+   "metoo_times": [
+    {
+     "ago_hours": 868.31
+    }
+   ],
    "duplicate_of": null,
    "demo": true,
-   "service": "greenery",
+   "service": "lighting",
    "passport": {
-    "assignee_id": "greenery",
+    "assignee_id": "lighting",
     "next_step": null,
     "fix_eta": null,
     "delay": {
-     "problem_ru": "Площадку нужно менять целиком, ремонт не помогает.",
-     "problem_kk": "Алаңды толық ауыстыру керек, жөндеу көмектеспейді.",
-     "blocker_ru": "Замена площадки не заложена в план этого года.",
-     "blocker_kk": "Алаңды ауыстыру биылғы жоспарға енгізілмеген.",
+     "problem_ru": "Опоры освещения во дворе ничьи — не на балансе ни одной службы.",
+     "problem_kk": "Аладағы жарық тіректері ешкімнің балансында жоқ.",
+     "blocker_ru": "Без решения, кто содержит опоры, служба не может их чинить.",
+     "blocker_kk": "Тіректерді кім ұстайтыны шешілмейінше, қызмет оларды жөндей алмайды.",
      "options": [
       {
-       "ru": "Перенести деньги из резерва района — замена в этом году.",
-       "kk": "Аудан резервінен қаражат аудару — биыл ауыстыру."
+       "ru": "Принять опоры на баланс района.",
+       "kk": "Тіректерді аудан балансына алу."
       },
       {
-       "ru": "Включить в план следующего года, сейчас — закрыть опасные элементы.",
-       "kk": "Келесі жылдың жоспарына енгізу, қазір — қауіпті бөліктерін жабу."
+       "ru": "Передать опоры объединению собственников дома.",
+       "kk": "Тіректерді үй иелерінің бірлестігіне беру."
       }
      ],
-     "decision_ru": "Выбрать: резерв сейчас или план следующего года.",
-     "decision_kk": "Таңдау: қазір резерв немесе келесі жылдың жоспары.",
-     "temp_measure_ru": "Опасные качели сняты.",
-     "temp_measure_kk": "Қауіпті әткеншек алынды.",
+     "decision_ru": "Кто будет содержать освещение двора.",
+     "decision_kk": "Аула жарығын кім ұстайды.",
+     "temp_measure_ru": "Поставлен временный прожектор.",
+     "temp_measure_kk": "Уақытша прожектор қойылды.",
      "reason_code": "needs_decision",
      "needs_decision": true,
      "next_update_at": {
@@ -1945,67 +1885,68 @@
      }
     },
     "updated_at": {
-     "ago_hours": 605.19
+     "ago_hours": 750.46
     }
    }
   },
   {
-   "id": "c-w1500374",
+   "id": "c-w1500366",
    "schema": "civic-complaint-v2",
    "created_at": {
-    "ago_hours": 601.66
+    "ago_hours": 623.0
    },
-   "text": "Жаңбырдан кейін жолда су тұрып қалды, нөсер кәрізі бітеліп қалған.",
-   "lang": "kk",
-   "category": "roads",
-   "subtopic": null,
+   "text": "Опять двадцать пять. На остановке «Московская» не горит фонарь, ждём автобус в темноте. Сколько можно?",
+   "lang": "ru",
+   "category": "lighting",
+   "subtopic": "lamp_off",
    "category_source": "resident",
    "model": {
-    "label": "roads",
+    "label": "lighting",
     "score": 0.96,
     "version": "demo-world-v1",
     "needs_review": false
    },
    "point": [
-    71.463084,
-    51.109063
+    71.406226,
+    51.181278
    ],
    "target": {
-    "kind": "segment",
-    "id": "osm-w1076785068-1",
-    "label_ru": "Участок: проспект Аль-Фараби",
-    "label_kk": "Аль-Фараби даңғылының бөлігі"
+    "kind": "object",
+    "id": "osm-node-5207940223",
+    "label_ru": "Остановка «Московская»",
+    "label_kk": "«Московская» аялдамасы",
+    "object_kind": "bus_stop"
    },
-   "district": "saraishyk",
+   "district": "saryarka",
    "status": "in_progress",
    "status_history": [
     {
      "at": {
-      "ago_hours": 601.66
+      "ago_hours": 623.0
      },
      "status": "new"
     },
     {
      "at": {
-      "ago_hours": 591.89
+      "ago_hours": 601.84
      },
      "status": "accepted"
     },
     {
      "at": {
-      "ago_hours": 527.87
+      "ago_hours": 573.27
      },
      "status": "in_progress"
     },
     {
      "at": {
-      "ago_hours": 272.49
+      "ago_hours": 538.15
      },
      "status": "fixed"
     },
     {
      "at": {
-      "ago_hours": 253.33
+      "ago_hours": 522.46
      },
      "status": "in_progress",
      "reopened_by_residents": true
@@ -2015,14 +1956,14 @@
    "metoo_times": [],
    "duplicate_of": null,
    "demo": true,
-   "service": "road",
+   "service": "lighting",
    "resolution": {
     "round": 1,
     "state": "reopened",
     "reported_at": {
-     "ago_hours": 272.49
+     "ago_hours": 538.15
     },
-    "what_done": "Прочистили ливнёвку",
+    "what_done": "Заменили лампу на остановке",
     "by": "service",
     "photos_after": [],
     "votes": {
@@ -2032,21 +1973,21 @@
     },
     "verified_at": null,
     "reopened_at": {
-     "ago_hours": 253.33
+     "ago_hours": 522.46
     },
     "reopen_count": 1
    },
    "updates": [
     {
      "at": {
-      "ago_hours": 272.49
+      "ago_hours": 538.15
      },
      "kind": "fixed",
-     "text": "Прочистили ливнёвку"
+     "text": "Заменили лампу на остановке"
     },
     {
      "at": {
-      "ago_hours": 253.33
+      "ago_hours": 522.46
      },
      "kind": "reopened",
      "text": null
@@ -2054,51 +1995,97 @@
    ]
   },
   {
-   "id": "c-w1500606",
+   "id": "c-w1500446",
    "schema": "civic-complaint-v2",
    "created_at": {
-    "ago_hours": 196.2
+    "ago_hours": 424.83
    },
-   "text": "Тұрақ ұйымдастыруды сұраймыз, орын жетпейді.",
+   "text": "Көліктер тура көгалға тұрады.",
    "lang": "kk",
    "category": "parking",
-   "subtopic": "no_spaces",
-   "category_source": "model",
+   "subtopic": "yard_cars",
+   "category_source": "resident",
    "model": {
     "label": "parking",
-    "score": 0.66,
+    "score": 0.64,
     "version": "demo-world-v1",
     "needs_review": true
    },
    "point": [
-    71.455652,
-    51.147908
+    71.397521,
+    51.101812
    ],
    "target": {
     "kind": "area",
-    "id": "yard-1104998691",
-    "label_ru": "Двор: Энергетик",
-    "label_kk": "Аула: Энергетик"
+    "id": "yard-1460088069",
+    "label_ru": "Двор: Научный",
+    "label_kk": "Аула: Научный"
    },
-   "district": "almaty",
+   "district": "nura",
+   "status": "accepted",
+   "status_history": [
+    {
+     "at": {
+      "ago_hours": 424.83
+     },
+     "status": "new"
+    },
+    {
+     "at": {
+      "ago_hours": 87.4
+     },
+     "status": "accepted"
+    }
+   ],
+   "metoo": 0,
+   "metoo_times": [],
+   "duplicate_of": null,
+   "demo": true,
+   "service": "parking"
+  },
+  {
+   "id": "c-w1500634",
+   "schema": "civic-complaint-v2",
+   "created_at": {
+    "ago_hours": 139.29
+   },
+   "text": "Такси паркуются на остановке «Дворец Тилеп кобыз», автобус не может подъехать.",
+   "lang": "ru",
+   "category": "parking",
+   "subtopic": "sidewalk_parking",
+   "category_source": "resident",
+   "model": {
+    "label": "parking",
+    "score": 0.94,
+    "version": "demo-world-v1",
+    "needs_review": false
+   },
+   "point": [
+    71.424578,
+    51.114072
+   ],
+   "target": {
+    "kind": "object",
+    "id": "osm-node-13412540723",
+    "label_ru": "Остановка «Дворец Тилеп кобыз»",
+    "label_kk": "«Дворец Тилеп кобыз» аялдамасы",
+    "object_kind": "bus_stop"
+   },
+   "district": "esil",
    "status": "new",
    "status_history": [
     {
      "at": {
-      "ago_hours": 196.2
+      "ago_hours": 139.29
      },
      "status": "new"
     }
    ],
-   "metoo": 1,
-   "metoo_times": [
-    {
-     "ago_hours": 193.67
-    }
-   ],
+   "metoo": 0,
+   "metoo_times": [],
    "duplicate_of": null,
    "demo": true,
-   "service": "parking"
+   "service": "police"
   },
   {
    "id": "c-w1500645",
@@ -2106,26 +2093,26 @@
    "created_at": {
     "ago_hours": 100.95
    },
-   "text": "Шыңғыс Айтматов көшесінде көше шамдары жанбайды бірнеше күннен бері, кешке қараңғы.",
-   "lang": "kk",
+   "text": "Прошу восстановить уличное освещение на Айтеке Би: освещение отсутствует с понедельника.",
+   "lang": "ru",
    "category": "lighting",
    "subtopic": "lamp_off",
-   "category_source": "model",
+   "category_source": "resident",
    "model": {
     "label": "lighting",
-    "score": 0.77,
+    "score": 0.9,
     "version": "demo-world-v1",
     "needs_review": false
    },
    "point": [
-    71.359539,
-    51.125982
+    71.374874,
+    51.130908
    ],
    "target": {
     "kind": "segment",
-    "id": "osm-w620065947-9",
-    "label_ru": "Участок: улица Чингиза Айтматова",
-    "label_kk": "Шыңғыс Айтматов көшесінің бөлігі"
+    "id": "osm-w1077918635-0",
+    "label_ru": "Участок: улица Айтеке Би",
+    "label_kk": "Әйтеке Би көшесінің бөлігі"
    },
    "district": "nura",
    "status": "in_progress",
@@ -2138,13 +2125,13 @@
     },
     {
      "at": {
-      "ago_hours": 58.69
+      "ago_hours": 75.24
      },
      "status": "accepted"
     },
     {
      "at": {
-      "ago_hours": 53.95
+      "ago_hours": 56.05
      },
      "status": "in_progress"
     }
@@ -2161,29 +2148,29 @@
    "created_at": {
     "ago_hours": 68.83
    },
-   "text": "Прошу организовать уборку снега на улице Ахмета Байтурсынова: проезжая часть не очищена третий день.",
-   "lang": "ru",
+   "text": "Сәлеметсіз бе! Жұмекен Нәжімеденов көшесінде қар тазаланбаған үш күннен бері, көліктер тайғанайды. Рақмет.",
+   "lang": "kk",
    "category": "snow_ice",
    "subtopic": "snow_not_cleared",
-   "category_source": "resident",
+   "category_source": "model",
    "model": {
     "label": "snow_ice",
-    "score": 0.9,
+    "score": 0.95,
     "version": "demo-world-v1",
     "needs_review": false
    },
    "point": [
-    71.491096,
-    51.121286
+    71.500953,
+    51.114839
    ],
    "target": {
     "kind": "segment",
-    "id": "osm-w1459366233-6",
-    "label_ru": "Участок: улица Ахмета Байтурсынова",
-    "label_kk": "Ахмет Байтұрсынұлы көшесінің бөлігі"
+    "id": "osm-w1080184798-0",
+    "label_ru": "Участок: улица Жумекена Нажимеденова",
+    "label_kk": "Жұмекен Нәжімеденов көшесінің бөлігі"
    },
    "district": "saraishyk",
-   "status": "fixed",
+   "status": "in_progress",
    "status_history": [
     {
      "at": {
@@ -2193,68 +2180,62 @@
     },
     {
      "at": {
-      "ago_hours": 59.91
+      "ago_hours": 65.81
      },
      "status": "accepted"
     },
     {
      "at": {
-      "ago_hours": 50.26
+      "ago_hours": 58.65
      },
      "status": "in_progress"
-    },
-    {
-     "at": {
-      "ago_hours": 22.07
-     },
-     "status": "fixed"
     }
    ],
    "metoo": 2,
    "metoo_times": [
     {
-     "ago_hours": 68.22
+     "ago_hours": 61.4
     },
     {
-     "ago_hours": 66.43
+     "ago_hours": 48.88
     }
    ],
    "duplicate_of": null,
    "demo": true,
    "service": "street_cleaning",
    "event": "ev-w15-buran",
-   "resolution": {
-    "round": 1,
-    "state": "verified",
-    "reported_at": {
-     "ago_hours": 22.07
+   "passport": {
+    "assignee_id": "street_cleaning",
+    "next_step": "Расчистка по графику",
+    "fix_eta": {
+     "day": 8
     },
-    "what_done": "Расчистили проезжую часть",
-    "by": "service",
-    "photos_after": [],
-    "votes": {
-     "yes": 3,
-     "no": 0,
-     "cant": 0
-    },
-    "verified_at": {
-     "ago_hours": 10.82
-    },
-    "reopened_at": null,
-    "reopen_count": 0
-   },
-   "updates": [
-    {
-     "at": {
-      "ago_hours": 22.07
-     },
-     "kind": "fixed",
-     "text": "Расчистили проезжую часть"
+    "updated_at": {
+     "ago_hours": 58.65
     }
-   ]
+   }
   }
  ],
  "yards": [
+  {
+   "id": "yard-1071604719",
+   "osm": "osm-way-1071604719",
+   "label_ru": "Двор — улица Садыка Мухаметжанова",
+   "label_kk": "Аула — Садыка Мухаметжанова көшесі",
+   "district": "saryarka",
+   "point": [
+    71.396231,
+    51.189636
+   ],
+   "members": 116,
+   "captain": {
+    "display_name": "Марат",
+    "since": {
+     "ago_days": 13
+    }
+   },
+   "demo": true
+  },
   {
    "id": "yard-1071604725",
    "osm": "osm-way-1071604725",
@@ -2265,13 +2246,22 @@
     71.380808,
     51.185039
    ],
-   "members": 51,
-   "captain": {
-    "display_name": "Марат",
-    "since": {
-     "ago_days": 13
-    }
-   },
+   "members": 54,
+   "captain": null,
+   "demo": true
+  },
+  {
+   "id": "yard-1071933347",
+   "osm": "osm-way-1071933347",
+   "label_ru": "Двор — улица Сарыкум",
+   "label_kk": "Аула — Сарыкум көшесі",
+   "district": "baikonur",
+   "point": [
+    71.41821,
+    51.198008
+   ],
+   "members": 70,
+   "captain": null,
    "demo": true
   },
   {
@@ -2284,69 +2274,41 @@
     71.39939,
     51.208891
    ],
-   "members": 92,
-   "captain": null,
-   "demo": true
-  },
-  {
-   "id": "yard-1071934260",
-   "osm": "osm-way-1071934260",
-   "label_ru": "Двор — улица Улытау",
-   "label_kk": "Аула — Улытау көшесі",
-   "district": "saryarka",
-   "point": [
-    71.3438,
-    51.193115
-   ],
-   "members": 79,
-   "captain": null,
-   "demo": true
-  },
-  {
-   "id": "yard-1222028654",
-   "osm": "osm-way-1222028654",
-   "label_ru": "Двор: Акбулак-3",
-   "label_kk": "Аула: Ақбұлак-3",
-   "district": "almaty",
-   "point": [
-    71.4516,
-    51.140623
-   ],
-   "members": 127,
-   "captain": null,
-   "demo": true
-  },
-  {
-   "id": "yard-1252120832",
-   "osm": "osm-way-1252120832",
-   "label_ru": "Двор — улица Жанкент",
-   "label_kk": "Аула — Жанкент көшесі",
-   "district": "almaty",
-   "point": [
-    71.480899,
-    51.132073
-   ],
-   "members": 56,
-   "captain": null,
-   "demo": true
-  },
-  {
-   "id": "yard-1252120834",
-   "osm": "osm-way-1252120834",
-   "label_ru": "Двор — улица Аксу-Аюлы",
-   "label_kk": "Аула — Аксу-Аюлы көшесі",
-   "district": "almaty",
-   "point": [
-    71.483646,
-    51.13268
-   ],
-   "members": 61,
+   "members": 113,
    "captain": {
     "display_name": "Тимур",
     "since": {
      "ago_days": 34
     }
    },
+   "demo": true
+  },
+  {
+   "id": "yard-1159981866",
+   "osm": "osm-way-1159981866",
+   "label_ru": "Двор: 1-й микрорайон",
+   "label_kk": "Аула: 1-ші шағын аудан",
+   "district": "almaty",
+   "point": [
+    71.461384,
+    51.148826
+   ],
+   "members": 115,
+   "captain": null,
+   "demo": true
+  },
+  {
+   "id": "yard-1252120836",
+   "osm": "osm-way-1252120836",
+   "label_ru": "Двор — переулок Жанаозен",
+   "label_kk": "Аула — Жанаозен тұйық көшесі",
+   "district": "almaty",
+   "point": [
+    71.486153,
+    51.131245
+   ],
+   "members": 50,
+   "captain": null,
    "demo": true
   },
   {
@@ -2359,21 +2321,7 @@
     71.383983,
     51.122476
    ],
-   "members": 152,
-   "captain": null,
-   "demo": true
-  },
-  {
-   "id": "yard-1424189370",
-   "osm": "osm-way-1424189370",
-   "label_ru": "Двор: Sultan Beibarys",
-   "label_kk": "Аула: Sultan Beibarys",
-   "district": "nura",
-   "point": [
-    71.383132,
-    51.128698
-   ],
-   "members": 77,
+   "members": 136,
    "captain": null,
    "demo": true
   },
@@ -2411,44 +2359,68 @@
    "demo": true
   },
   {
-   "id": "yard-1455752634",
-   "osm": "osm-way-1455752634",
-   "label_ru": "Двор: Sat City",
-   "label_kk": "Аула: Sat City",
+   "id": "yard-1460088061",
+   "osm": "osm-way-1460088061",
+   "label_ru": "Двор: Alau",
+   "label_kk": "Аула: Alau",
    "district": "nura",
    "point": [
-    71.37906,
-    51.134165
+    71.405065,
+    51.100997
    ],
-   "members": 127,
+   "members": 64,
+   "captain": {
+    "display_name": "Ботагоз",
+    "since": {
+     "ago_days": 35
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "yard-1460088066",
+   "osm": "osm-way-1460088066",
+   "label_ru": "Двор: Galamat Towers",
+   "label_kk": "Аула: Galamat Towers",
+   "district": "nura",
+   "point": [
+    71.404558,
+    51.099683
+   ],
+   "members": 57,
+   "captain": {
+    "display_name": "Тимур",
+    "since": {
+     "ago_days": 46
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "yard-1460088069",
+   "osm": "osm-way-1460088069",
+   "label_ru": "Двор: Научный",
+   "label_kk": "Аула: Научный",
+   "district": "nura",
+   "point": [
+    71.397462,
+    51.102341
+   ],
+   "members": 59,
    "captain": null,
    "demo": true
   },
   {
-   "id": "yard-1457450135",
-   "osm": "osm-way-1457450135",
-   "label_ru": "Двор: BI Village Deluxe-3",
-   "label_kk": "Аула: BI Village Deluxe-3",
+   "id": "yard-1504302822",
+   "osm": "osm-way-1504302822",
+   "label_ru": "Двор — улица Табигат",
+   "label_kk": "Аула — Табигат көшесі",
    "district": "esil",
    "point": [
-    71.436766,
-    51.082474
+    71.428034,
+    51.059106
    ],
-   "members": 71,
-   "captain": null,
-   "demo": true
-  },
-  {
-   "id": "yard-1457450141",
-   "osm": "osm-way-1457450141",
-   "label_ru": "Двор: Only Moon",
-   "label_kk": "Аула: Only Moon",
-   "district": "esil",
-   "point": [
-    71.426894,
-    51.087652
-   ],
-   "members": 62,
+   "members": 133,
    "captain": null,
    "demo": true
   },
@@ -2462,26 +2434,7 @@
     71.282499,
     51.13151
    ],
-   "members": 75,
-   "captain": {
-    "display_name": "Ботагоз",
-    "since": {
-     "ago_days": 35
-    }
-   },
-   "demo": true
-  },
-  {
-   "id": "yard-1531186304",
-   "osm": "osm-way-1531186304",
-   "label_ru": "Двор — улица Туякберды Шамелова",
-   "label_kk": "Аула — Туякберды Шамелова көшесі",
-   "district": "nura",
-   "point": [
-    71.279814,
-    51.134525
-   ],
-   "members": 66,
+   "members": 55,
    "captain": null,
    "demo": true
   },
@@ -2495,26 +2448,7 @@
     71.273037,
     51.135089
    ],
-   "members": 60,
-   "captain": {
-    "display_name": "Тимур",
-    "since": {
-     "ago_days": 46
-    }
-   },
-   "demo": true
-  },
-  {
-   "id": "yard-1531186315",
-   "osm": "osm-way-1531186315",
-   "label_ru": "Двор — улица Е-616",
-   "label_kk": "Аула — Е-616 көшесі",
-   "district": "nura",
-   "point": [
-    71.277596,
-    51.133475
-   ],
-   "members": 54,
+   "members": 70,
    "captain": null,
    "demo": true
   },
@@ -2533,6 +2467,20 @@
    "demo": true
   },
   {
+   "id": "yard-1531186329",
+   "osm": "osm-way-1531186329",
+   "label_ru": "Двор — улица 208",
+   "label_kk": "Аула — 208 көшесі",
+   "district": "nura",
+   "point": [
+    71.290995,
+    51.133831
+   ],
+   "members": 55,
+   "captain": null,
+   "demo": true
+  },
+  {
    "id": "yard-1531186335",
    "osm": "osm-way-1531186335",
    "label_ru": "Двор — улица Турмагамбета Изтилеулы",
@@ -2547,16 +2495,30 @@
    "demo": true
   },
   {
-   "id": "yard-1531186345",
-   "osm": "osm-way-1531186345",
-   "label_ru": "Двор — улица Е-647",
-   "label_kk": "Аула — Е-647 көшесі",
+   "id": "yard-1531186341",
+   "osm": "osm-way-1531186341",
+   "label_ru": "Двор — улица Е-584",
+   "label_kk": "Аула — Е-584 көшесі",
    "district": "nura",
    "point": [
-    71.296672,
-    51.13626
+    71.270774,
+    51.130186
    ],
-   "members": 67,
+   "members": 72,
+   "captain": null,
+   "demo": true
+  },
+  {
+   "id": "yard-1531186350",
+   "osm": "osm-way-1531186350",
+   "label_ru": "Двор — улица Е-649",
+   "label_kk": "Аула — Е-649 көшесі",
+   "district": "nura",
+   "point": [
+    71.299292,
+    51.133643
+   ],
+   "members": 71,
    "captain": {
     "display_name": "Данияр",
     "since": {
@@ -2566,30 +2528,16 @@
    "demo": true
   },
   {
-   "id": "yard-1531186357",
-   "osm": "osm-way-1531186357",
-   "label_ru": "Двор — улица Аширбека Сыгай",
-   "label_kk": "Аула — Аширбека Сыгай көшесі",
-   "district": "nura",
-   "point": [
-    71.293644,
-    51.135297
-   ],
-   "members": 55,
-   "captain": null,
-   "demo": true
-  },
-  {
-   "id": "yard-1531189657",
-   "osm": "osm-way-1531189657",
-   "label_ru": "Двор — улица Узакбая Караманова",
-   "label_kk": "Аула — Узакбая Караманова көшесі",
+   "id": "yard-1531189665",
+   "osm": "osm-way-1531189665",
+   "label_ru": "Двор — улица Рахманкула Бердибая",
+   "label_kk": "Аула — Рахманқұл Бердібай көшесі",
    "district": "saraishyk",
    "point": [
-    71.501536,
-    51.107403
+    71.491578,
+    51.108351
    ],
-   "members": 46,
+   "members": 65,
    "captain": null,
    "demo": true
   },
@@ -2608,6 +2556,20 @@
    "demo": true
   },
   {
+   "id": "yard-257962279",
+   "osm": "osm-way-257962279",
+   "label_ru": "Двор: микрорайон Жагалау",
+   "label_kk": "Аула: Жағалау шағын ауданы",
+   "district": "nura",
+   "point": [
+    71.365731,
+    51.134814
+   ],
+   "members": 96,
+   "captain": null,
+   "demo": true
+  },
+  {
    "id": "yard-577076055",
    "osm": "osm-way-577076055",
    "label_ru": "Двор: ЖК Статус",
@@ -2617,21 +2579,7 @@
     71.393387,
     51.14045
    ],
-   "members": 30,
-   "captain": null,
-   "demo": true
-  },
-  {
-   "id": "yard-629395434",
-   "osm": "osm-way-629395434",
-   "label_ru": "Двор: ЖК \"Альбион\"",
-   "label_kk": "Аула: ЖК \"Альбион\"",
-   "district": "nura",
-   "point": [
-    71.384969,
-    51.149178
-   ],
-   "members": 66,
+   "members": 35,
    "captain": null,
    "demo": true
   }
@@ -4405,15 +4353,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.501536,
-     51.107403
+     71.491578,
+     51.108351
     ]
    },
    "target": {
     "kind": "area",
-    "id": "yard-1531189657",
-    "label_ru": "Двор — улица Узакбая Караманова",
-    "label_kk": "Аула — Узакбая Караманова көшесі"
+    "id": "yard-1531189665",
+    "label_ru": "Двор — улица Рахманкула Бердибая",
+    "label_kk": "Аула — Рахманқұл Бердібай көшесі"
    },
    "object": null,
    "title_ru": "Клумбы у подъездов",
@@ -4438,15 +4386,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.383983,
-     51.122476
+     71.270774,
+     51.130186
     ]
    },
    "target": {
     "kind": "area",
-    "id": "yard-1424189336",
-    "label_ru": "Двор: Respublika",
-    "label_kk": "Аула: Respublika"
+    "id": "yard-1531186341",
+    "label_ru": "Двор — улица Е-584",
+    "label_kk": "Аула — Е-584 көшесі"
    },
    "object": {
     "kind": "sports"
@@ -4473,15 +4421,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.37906,
-     51.134165
+     71.393387,
+     51.14045
     ]
    },
    "target": {
     "kind": "area",
-    "id": "yard-1455752634",
-    "label_ru": "Двор: Sat City",
-    "label_kk": "Аула: Sat City"
+    "id": "yard-577076055",
+    "label_ru": "Двор: ЖК Статус",
+    "label_kk": "Аула: ЖК Статус"
    },
    "object": {
     "kind": "lighting"
@@ -4541,15 +4489,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.296672,
-     51.13626
+     71.299292,
+     51.133643
     ]
    },
    "target": {
     "kind": "area",
-    "id": "yard-1531186345",
-    "label_ru": "Двор — улица Е-647",
-    "label_kk": "Аула — Е-647 көшесі"
+    "id": "yard-1531186350",
+    "label_ru": "Двор — улица Е-649",
+    "label_kk": "Аула — Е-649 көшесі"
    },
    "object": {
     "kind": "square"
@@ -4618,15 +4566,15 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.39939,
-     51.208891
+     71.41821,
+     51.198008
     ]
    },
    "target": {
     "kind": "area",
-    "id": "yard-1071933359",
-    "label_ru": "Двор — улица Аксу-Жабагалы",
-    "label_kk": "Аула — Аксу-Жабагалы көшесі"
+    "id": "yard-1071933347",
+    "label_ru": "Двор — улица Сарыкум",
+    "label_kk": "Аула — Сарыкум көшесі"
    },
    "object": {
     "kind": "lighting"
@@ -4656,19 +4604,19 @@
    "id": "idea-w15-08",
    "status": "rejected",
    "votes": 12,
-   "district": "almaty",
+   "district": "saryarka",
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.4516,
-     51.140623
+     71.380808,
+     51.185039
     ]
    },
    "target": {
     "kind": "area",
-    "id": "yard-1222028654",
-    "label_ru": "Двор: Акбулак-3",
-    "label_kk": "Аула: Ақбұлак-3"
+    "id": "yard-1071604725",
+    "label_ru": "Двор — улица Куляш Байсеитовой",
+    "label_kk": "Аула — Куляш Байсеитовой көшесі"
    },
    "object": null,
    "title_ru": "Платная парковка во дворе",
@@ -4700,19 +4648,19 @@
    "id": "idea-w15-09",
    "status": "rejected",
    "votes": 21,
-   "district": "almaty",
+   "district": "baikonur",
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.483646,
-     51.13268
+     71.39939,
+     51.208891
     ]
    },
    "target": {
     "kind": "area",
-    "id": "yard-1252120834",
-    "label_ru": "Двор — улица Аксу-Аюлы",
-    "label_kk": "Аула — Аксу-Аюлы көшесі"
+    "id": "yard-1071933359",
+    "label_ru": "Двор — улица Аксу-Жабагалы",
+    "label_kk": "Аула — Аксу-Жабагалы көшесі"
    },
    "object": null,
    "title_ru": "Каток с искусственным льдом",
@@ -4744,19 +4692,19 @@
    "id": "idea-w15-10",
    "status": "review",
    "votes": 0,
-   "district": "saryarka",
+   "district": "esil",
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.3438,
-     51.193115
+     71.428034,
+     51.059106
     ]
    },
    "target": {
     "kind": "area",
-    "id": "yard-1071934260",
-    "label_ru": "Двор — улица Улытау",
-    "label_kk": "Аула — Улытау көшесі"
+    "id": "yard-1504302822",
+    "label_ru": "Двор — улица Табигат",
+    "label_kk": "Аула — Табигат көшесі"
    },
    "object": null,
    "title_ru": "Велопарковка у подъезда",
@@ -4777,19 +4725,19 @@
    "id": "idea-w15-11",
    "status": "review",
    "votes": 0,
-   "district": "esil",
+   "district": "almaty",
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.436766,
-     51.082474
+     71.486153,
+     51.131245
     ]
    },
    "target": {
     "kind": "area",
-    "id": "yard-1457450135",
-    "label_ru": "Двор: BI Village Deluxe-3",
-    "label_kk": "Аула: BI Village Deluxe-3"
+    "id": "yard-1252120836",
+    "label_ru": "Двор — переулок Жанаозен",
+    "label_kk": "Аула — Жанаозен тұйық көшесі"
    },
    "object": null,
    "title_ru": "Пандус у подъезда",
@@ -5068,13 +5016,13 @@
    "lang": "kk",
    "target": {
     "kind": "area",
-    "id": "yard-1071604725",
-    "label_ru": "Двор — улица Куляш Байсеитовой",
-    "label_kk": "Аула — Куляш Байсеитовой көшесі"
+    "id": "yard-1071604719",
+    "label_ru": "Двор — улица Садыка Мухаметжанова",
+    "label_kk": "Аула — Садыка Мухаметжанова көшесі"
    },
    "point": [
-    71.380808,
-    51.185039
+    71.396231,
+    51.189636
    ],
    "district": "saryarka",
    "starts_at": {
@@ -5125,13 +5073,13 @@
    "lang": "ru",
    "target": {
     "kind": "area",
-    "id": "yard-1252120832",
-    "label_ru": "Двор — улица Жанкент",
-    "label_kk": "Аула — Жанкент көшесі"
+    "id": "yard-1159981866",
+    "label_ru": "Двор: 1-й микрорайон",
+    "label_kk": "Аула: 1-ші шағын аудан"
    },
    "point": [
-    71.480899,
-    51.132073
+    71.461384,
+    51.148826
    ],
    "district": "almaty",
    "starts_at": {
@@ -5182,13 +5130,13 @@
    "lang": "ru",
    "target": {
     "kind": "area",
-    "id": "yard-577076055",
-    "label_ru": "Двор: ЖК Статус",
-    "label_kk": "Аула: ЖК Статус"
+    "id": "yard-1460088069",
+    "label_ru": "Двор: Научный",
+    "label_kk": "Аула: Научный"
    },
    "point": [
-    71.393387,
-    51.14045
+    71.397462,
+    51.102341
    ],
    "district": "nura",
    "starts_at": {
@@ -5224,13 +5172,13 @@
    "lang": "ru",
    "target": {
     "kind": "area",
-    "id": "yard-1071933359",
-    "label_ru": "Двор — улица Аксу-Жабагалы",
-    "label_kk": "Аула — Аксу-Жабагалы көшесі"
+    "id": "yard-1071933347",
+    "label_ru": "Двор — улица Сарыкум",
+    "label_kk": "Аула — Сарыкум көшесі"
    },
    "point": [
-    71.39939,
-    51.208891
+    71.41821,
+    51.198008
    ],
    "district": "baikonur",
    "starts_at": {
@@ -5265,13 +5213,13 @@
    "lang": "kk",
    "target": {
     "kind": "area",
-    "id": "yard-1531189657",
-    "label_ru": "Двор — улица Узакбая Караманова",
-    "label_kk": "Аула — Узакбая Караманова көшесі"
+    "id": "yard-1531189665",
+    "label_ru": "Двор — улица Рахманкула Бердибая",
+    "label_kk": "Аула — Рахманқұл Бердібай көшесі"
    },
    "point": [
-    71.501536,
-    51.107403
+    71.491578,
+    51.108351
    ],
    "district": "saraishyk",
    "starts_at": {
@@ -5392,8 +5340,7 @@
     "district": "esil",
     "targets": [
      "yard-1531192452",
-     "yard-1457450141",
-     "yard-1457450135"
+     "yard-1504302822"
     ],
     "geometry": null
    },

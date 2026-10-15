@@ -90,7 +90,8 @@ FAMILIES = {
                   "board": ("schedule", "stop", 0.8), "skips_stop": ("route", "stop", 1),
                   "stop_moved": ("route", "stop", 0.4)},
     "lighting": {"lamps_off": ("lamp_off", "road", 4), "dark_yard": ("dark_yard", "yard", 3), "flicker": ("blinking", "road", 1),
-                 "day_burning": (None, "road", 0.6), "park_dark": ("lamp_off", "park", 1), "stop_dark": ("lamp_off", "stop", 1)},
+                 "day_burning": (None, "road", 0.6), "park_dark": ("lamp_off", "park", 1), "stop_dark": ("lamp_off", "stop", 1),
+                 "pole": ("wire_down", "road", 0.6)},
     "yards": {"playground": ("playground", "playground", 4), "benches": ("benches", "yard", 2), "trees": ("trees_lawn", "yard", 1.5),
               "dry_tree": ("trees_lawn", "yard", 1), "lawn": ("trees_lawn", "yard", 1), "improvement": (None, "yard", 1)},
     "waste": {"bins_full": ("bins_full", "waste", 4), "urns_full": ("bins_full", "park", 1), "illegal_dump": ("dump", "yard", 1.5),
@@ -126,14 +127,51 @@ SERVICE_PACE = {
     "police": ((1, 24), (4, 48), (1, 7), 0.08), "animals": ((2, 24), (6, 48), (2, 8), 0.10),
     "parking": ((4, 40), (12, 96), (3, 14), 0.12), "akimat": ((4, 48), (24, 120), (6, 20), 0.12),
 }
-# Совместные проблемы (CONTRACT §5.1): семейство -> (ведущая, участвующая, причина передачи ru)
+# Совместные проблемы (CONTRACT §5.1): семейство -> (ведущая, участвующая, причина передачи ru).
+# Службы — как у подсказки ИИ R04 route() (проверено на ветке R04 @ b9f828cc): иначе в карточке две службы, а подсказка
+# ИИ называет одну (сцена 8). «После раскопок» и «газон после теплотрассы» — всегда совместные: route() видит в таких
+# текстах две службы всегда.
 JOINT = {
-    "after_digging": ("water", "road", "Сначала Водоканал закрывает работы на трубе, затем дорожники восстанавливают асфальт"),
-    "pipe_burst": ("water", "road", "Порыв на трубе под дорогой: сначала ремонт трубы, потом покрытие"),
+    "after_digging": ("water", "road", "Яма после работ Водоканала: сначала он закрывает работы на трубе, затем дорожники "
+                                       "восстанавливают асфальт"),
+    "pipe_burst": ("water", "road", "Порыв трубы под дорогой: сначала ремонт трубы, потом покрытие"),
     "tiles": ("heating", "road", "Плитку разобрали при ремонте теплотрассы — сначала Теплосеть закрывает работы"),
-    "sewer": ("water", "housing", "Засор в наружной сети — Водоканал, во дворе — управляющая компания"),
-    "trees": ("greenery", "landscaping", "Деревья — озеленение, восстановление газона — благоустройство"),
-    "construction": ("waste", "akimat", "Вывоз строительного мусора, а нарушителя установит аппарат акима"),
+    "lawn": ("heating", "greenery", "Газон разрыт при ремонте теплотрассы: сначала Теплосеть закрывает работы, потом посадка"),
+    "pole": ("power", "lighting", "Упавшая опора с проводами: сначала Электросети обесточивают и убирают провода"),
+}
+ALWAYS_JOINT = {"after_digging", "lawn"}
+# Тексты совместных жалоб: каждый проверен route() R04 — «две службы», те же, что в JOINT (тест стыка в round15).
+JOINT_TEXTS = {
+    "after_digging": {
+        "ru": ("После раскопок водопровода на улице не восстановили асфальт, осталась яма.",
+               "Водоканал раскопал дорогу и оставил яму, асфальт не восстановили.",
+               "После раскопок трубы на дороге яма, асфальт не положили.",
+               "Раскопали дорогу и ушли, яма."),
+        "kk": ("Су құбырын қазғаннан кейін асфальт қалпына келтірілмеді, шұңқыр қалды.",
+               "Су арнасы жолды қазып, шұңқыр қалдырды, асфальт жоқ.",
+               "Жолды қазып тастап кетті, шұңқыр қалды, асфальт жоқ."),
+        "mixed": ("Су құбырын қазғаннан кейін асфальт не восстановили, яма огромная.",)},
+    "pipe_burst": {
+        "ru": ("Прорвало трубу под дорогой, вода идёт по асфальту, асфальт провалился.",
+               "После прорыва трубы дорогу размыло, асфальт провалился."),
+        "kk": ("Құбыр жарылып, жолға су ағып жатыр, асфальт опырылды.",
+               "Құбыр жарылып, жолға су ағып жатыр, асфальт опырылды, жүру мүмкін емес."),
+        "mixed": ("Құбыр жарылып, жолға су ағып жатыр, асфальт опырылды.",)},
+    "tiles": {
+        "ru": ("Теплосеть раскопала тротуар и не уложила плитку обратно.",
+               "После раскопок теплосети тротуар разрыт, плитку так и не положили.",
+               "После ремонта теплотрассы тротуар разбит, плитка разбросана, ходим по грязи."),
+        "kk": ("Жылу трассасын жөндегеннен кейін тротуар плиткасы қайта төселмеді.",),
+        "mixed": ("Теплосеть тротуарды қазып, плитканы орнына қоймады.",)},
+    "lawn": {
+        "ru": ("После ремонта теплотрассы во дворе не восстановили газон, вместо газона грязь.",
+               "После ремонта теплотрассы не восстановили газон"),
+        "kk": ("Жылу трассасын жөндегеннен кейін көгал қалпына келтірілмеді.",),
+        "mixed": ("Теплосеть аулада көгалды қазып тастады, қалпына келтірмеді.",)},
+    "pole": {
+        "ru": ("Упал столб освещения, провода лежат на земле.", "Столб упал, провода на земле, фонари не горят."),
+        "kk": ("Жарық бағанасы құлап, сымдар жерде жатыр.",),
+        "mixed": ("Столб құлап жатыр, сымдар жерде.",)},
 }
 JOINT_SHARE = 0.055
 
@@ -742,20 +780,27 @@ class WorldBuilder:
                     c["updates"].append({"at": ago_h(reopened_at), "kind": "reopened", "text": None})
 
     def joint_parts(self) -> None:
-        """~5 % жалоб — две службы (CONTRACT §5.1): части, передача с причиной, подсказка маршрута."""
+        """~5 % жалоб — две службы (CONTRACT §5.1): части, передача с причиной, подсказка маршрута. Текст совместной
+        жалобы — из JOINT_TEXTS (его route() R04 читает как «две службы»): карточка и подсказка ИИ не спорят."""
         rnd = self.rnd
         cands = [t for t in self.threads if t.family in JOINT and not t.scene and t.complaints and not t.rejected]
         cands.sort(key=lambda t: t.key)
+        always = [t for t in cands if t.family in ALWAYS_JOINT]
+        optional = [t for t in cands if t.family not in ALWAYS_JOINT]
+        rnd.shuffle(optional)
         want = int(JOINT_SHARE * len(self.complaints))
-        rnd.shuffle(cands)
         made = 0
-        for t in cands:
-            if made >= want:
-                break
+        for t in always + optional:
+            if made >= want and t.family not in ALWAYS_JOINT:
+                continue
             lead, partner, reason = JOINT[t.family]
             t.joint = (lead, partner)
             for c in t.complaints:
-                self._make_joint(c, lead, partner, reason, handoff_from=t.service if t.service != lead else partner)
+                texts = JOINT_TEXTS[t.family]
+                lang = c["lang"] if texts.get(c["lang"]) else "ru"
+                c["text"], c["lang"] = rnd.choice(texts[lang]), lang
+                # передача — только если жалоба сначала ушла не в ту службу (служба по категории ≠ ведущая)
+                self._make_joint(c, lead, partner, reason, handoff_from=t.service if t.service != lead else None)
                 made += 1
 
     def _make_joint(self, c: dict, lead: str, partner: str, reason: str, handoff_from: str) -> None:
@@ -787,7 +832,7 @@ class WorldBuilder:
             if part["note"] is None:
                 del part["note"]
         c["route_hint"] = {"services": [lead, partner], "joint": True, "source": "rules", "model_version": None}
-        if len(hist) >= 2 and handoff_from != lead:
+        if len(hist) >= 2 and handoff_from and handoff_from != lead:
             c["handoffs"] = [{"at": hist[1]["at"], "from": handoff_from, "to": lead, "reason": reason,
                               "by_role": "operator"}]
         else:

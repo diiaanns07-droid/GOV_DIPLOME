@@ -98,17 +98,23 @@ def inbox_numbers(records: list[dict], now: datetime) -> dict:
 
 
 def services_numbers(records: list[dict], now: datetime) -> dict:
-    """Простое табло служб для сверки с R17: обращения (вся жалоба — ведущей службе; совместная — обеим), открытые,
-    просроченные (новое и срок ответа прошёл, как у R09), исправлено, проверено жителями, вернули жители."""
+    """Простое табло служб для сверки с R17: обращения (вся жалоба — ведущей службе; совместная — обеим), открытые
+    (у совместной — по части службы, как R17), просроченные (новое и срок ответа прошёл, как у R09), исправлено,
+    проверено жителями, вернули жители."""
     from ui.civic_feedback.v2 import record as rec
     board = defaultdict(lambda: Counter())
     for r in records:
-        sids = [p["service"] for p in r.get("services") or []] or [r["service"]]
-        for sid in sids:
+        parts = r.get("services") or [{"service": r["service"], "status": None}]
+        for part in parts:
+            sid = part["service"]
             b = board[sid]
             b["complaints"] += 1
             b["people"] += 1 + int(r.get("metoo") or 0)
-            b["open"] += r["status"] in rec.OPEN_STATUSES
+            # «Открыто у службы»: у совместной — по её части (сделала свою часть — не открыто), как табло R17.
+            if part.get("status") is None:
+                b["open"] += r["status"] in rec.OPEN_STATUSES
+            else:
+                b["open"] += r["status"] in rec.OPEN_STATUSES and part["status"] not in ("done", "rejected")
             b["overdue"] += rec.is_overdue(r, now)
             b["fixed"] += r["status"] == "fixed"
             state = (r.get("resolution") or {}).get("state")
