@@ -4,8 +4,8 @@
  "branch": "claude/laughing-euler-iv3on3",
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": "origin/claude/r14-R08 4b215c77 (только браузерные проверки tests/civic/R08/*.cjs; код R08 в FINAL-4 = d5719635 совпадает)",
- "code_sha": "73facfb66ca507a970aadb51e50d26ccbdfbf9bd",
- "tested_sha": "73facfb66ca507a970aadb51e50d26ccbdfbf9bd",
+ "code_sha": "062f899ad8e308bef0fc301ff09be71f8062ef52",
+ "tested_sha": "062f899ad8e308bef0fc301ff09be71f8062ef52",
  "push_status": "OK (origin/claude/laughing-euler-iv3on3)",
  "summary": "Ситуационный центр (страница /civic/board/, тёмная, 1920/1366 без прокрутки, смена блоков 15 с) + GET akim/board; «Картина дня» 2.0 (решения коротко, кнопка кризисного штаба, три карточки соседей, прогноз); «Картина недели» (GET akim/week, окно 7 × 24 ч как в «Картине дня», + A4 ru/kk); соседи R17/R16/R13 — только чтение их функций и открытых маршрутов; поправка П1 применена; на демо-мире R02 числа всех экранов сходятся (world_check 18/18, world_shots 82/82); в блоке «Районы» — карта районов (контуры OSM, цвет — уровень карты R07).",
  "changed_paths": [
@@ -39,7 +39,8 @@
   "ui/civic_akim/decisions.py",
   "tests/civic/R08/test_r08_world.py",
   "tests/civic/R08/world_check.py",
-  "tests/civic/R08/world_shots.cjs"
+  "tests/civic/R08/world_shots.cjs",
+  "tests/civic/R08/fit_scan.cjs"
  ],
  "integration": {
   "r01_patch": "research/round-15-results/R08/r01_routes_r08.patch",
@@ -76,7 +77,8 @@
   "glass_check.cjs / shell_check.cjs": "NOT_RUN: проверки оболочки R14 — ждут B1 R01 (меню «Ещё → Ситуационный центр» и Ctrl+K)",
   "R15 тесты про R08 (practical-fermi, на интеграционной сборке)": "PASS 137, skipped 3, xpassed 1 (S42 — шлюз R01, не R08)",
   "R10 consistency.py (zen-wozniak, на интеграционной сборке, демо-мир)": "PASS 15 / FAIL 1: C5 PASS (окно недели = «Картина дня»); C4 — проверка R10 читает подпись R08 по ключу akim.kpi.overdue, а экран показывает akim.kpi.overdue_hint «Не исправлено в срок» (INTEGRATION §14)",
-  "R10 test_r10_api_v2.py": "PASS 11"
+  "R10 test_r10_api_v2.py": "PASS 11",
+  "fit_scan.cjs (VISUAL_BRIEF §4 на сборке: ≥ 13 px, ≥ 44 px, без обрезки)": "PASS 4 / FAIL 0 — табло 1366 kk, 1920 ru; лист недели 1366 kk, 375 ru"
  },
  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Chromium/Playwright 1.56, без интернета (подложка карты — упрощённый фон)",
  "screens": [
