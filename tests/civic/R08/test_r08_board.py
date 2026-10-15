@@ -136,6 +136,25 @@ def test_board_and_week_are_staff_only():
     assert api.handle_get("/api/civic/v2/akim/summary", {}, service=s)[0] == 200
 
 
+def test_gateway_passes_staff_flag_to_board_and_week():
+    """Сборка R01: akim/board и akim/week — raw-обработчик handle_get со staff_view=True (INTEGRATION §1).
+
+    Шлюз передаёт raw-обработчику staff=True только для staff_view; без него (даже со staff=True — проверка
+    сессии и CSRF шлюзом) R08 отвечает 401 staff_only и экран всегда показывает вход. В ветке R08 маршрутов шлюза
+    нет — тест пропускается; в сборке он ловит регистрацию без staff_view.
+    """
+    ws = pytest.importorskip("ui.web_server")
+    handlers = getattr(ws, "V2_HANDLERS", {})
+    missing = [key for key in ("akim.board", "akim.week") if key not in handlers]
+    if missing:
+        pytest.skip("шлюз ещё не подключил " + ", ".join(missing))
+    for key in ("akim.board", "akim.week"):
+        handler = handlers[key]
+        assert handler.kind == "raw" and handler.function == "handle_get" and "ui.civic_akim.api" in handler.modules
+        assert getattr(handler, "staff_view", False) is True, (
+            f"{key}: добавьте staff_view=True (INTEGRATION R08 §1) — иначе сотрудник видит 401 staff_only")
+
+
 def test_board_bad_district_is_400():
     s = svc(some_records(), sources=dict(NONE))
     status, body = api.handle_get("/api/civic/v2/akim/board", {"district": ["mars"]}, service=s, staff=True)

@@ -16,7 +16,8 @@
 
 Отдаёт только файлы из web/civic/ (без листинга папок) и API R08: GET /akim/summary, GET/PUT /akim/routing,
 POST /akim/decisions/<id>, GET /nearby, GET/POST /nearby/subscriptions, GET /nearby/updates. Стенд — локальный: все запросы считаются запросами сотрудника (--resident — наоборот),
-GET /api/civic/v1/session отдаёт учебный CSRF-токен. Выбор акима и правки служб пишутся во временную папку
+GET /api/civic/v1/session отдаёт учебный CSRF-токен (конверт R02 {ok, data}); GET akim/board и akim/week без него — 403
+csrf_failed, как в сборке R01. Выбор акима и правки служб пишутся во временную папку
 (--state-dir), а не в .runtime проекта.
 Данные: тепловая карта R07 (ui.civic_heat) с её демо-набором жалоб (все demo: true), объекты и
 предложения — фикстуры ui/civic_akim/fixtures (demo). В общей сборке маршрут подключает R01.
@@ -39,6 +40,8 @@ from ui.civic_akim import decisions as akim_decisions, nearby as akim_nearby, ro
 from ui.civic_akim.api import PREFIX, handle_get, handle_post, handle_put  # noqa: E402
 
 STAND_CSRF = "r08-stand-csrf"
+# Чтение только для сотрудника: шлюз R01 требует сессию R02 + X-CSRF-Token (V2Handler staff=True), стенд — так же.
+STAFF_GET = (PREFIX + "/akim/board", PREFIX + "/akim/week")
 
 WEB_CIVIC = (ROOT / "web" / "civic").resolve()
 TYPES = {".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml",
@@ -70,7 +73,11 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return
         if path.startswith(PREFIX + "/"):
-            status, body = handle_get(path, parse_qs(url.query), staff=self.server.staff)
+            if path in STAFF_GET and self.server.staff and self.headers.get("X-CSRF-Token") != STAND_CSRF:
+                # Как шлюз R01 (V2Handler staff=True): сессия сотрудника проверяется вместе с CSRF и на чтении.
+                status, body = 403, {"error": "csrf_failed", "message": "Неверный CSRF-токен: обновите сессию (GET /session)."}
+            else:
+                status, body = handle_get(path, parse_qs(url.query), staff=self.server.staff)
             self.send(status, json.dumps(body, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
             return
         if path.startswith("/civic/"):
@@ -89,7 +96,8 @@ class Handler(BaseHTTPRequestHandler):
                 self.send(200, target.read_bytes(), ctype)
                 return
         if path == "/api/civic/v1/session":
-            body = {"authenticated": self.server.staff, "csrf_token": STAND_CSRF if self.server.staff else None}
+            body = {"ok": True, "data": {"authenticated": self.server.staff,  # конверт R02 (ui.civic_store)
+                                         "csrf_token": STAND_CSRF if self.server.staff else None}}
             self.send(200, json.dumps(body).encode("utf-8"), "application/json; charset=utf-8")
             return
         self.send(404, "Не найдено".encode("utf-8"), "text/plain; charset=utf-8")

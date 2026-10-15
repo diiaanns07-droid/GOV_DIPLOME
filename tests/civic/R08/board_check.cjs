@@ -182,6 +182,26 @@ async function open(browser, { width, height, lang, query, reduced, route, clock
     await ctx.close();
   }
 
+  // ── 3б. CSRF сотрудника: шлюз R01 (V2Handler staff=True) проверяет токен и на чтении ──
+  {
+    const seen = [];
+    let first = true;
+    const stale = async (route) => {
+      seen.push(route.request().headers()["x-csrf-token"] || null);
+      if (first) { // старый токен: шлюз отвечает 403 csrf_failed — экран берёт свежий и повторяет один раз
+        first = false;
+        return route.fulfill({ status: 403, json: { error: "csrf_failed", message: "Неверный CSRF-токен" } });
+      }
+      return route.continue();
+    };
+    const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru", route: stale });
+    await page.waitForSelector('#board[data-state="ok"]', { timeout: 15000 }).catch(() => {});
+    const st = await page.evaluate(() => document.getElementById("board").getAttribute("data-state"));
+    check("CSRF: запрос табло несёт X-CSRF-Token; отказ csrf_failed — один повтор со свежим токеном, данные на экране",
+      st === "ok" && seen.length === 2 && seen.every(Boolean), { st, seen });
+    await ctx.close();
+  }
+
   // ── 4. Без соседей (R17/R16/R13 нет): спокойный блок по П1 ──
   {
     const empty = async (route) => {

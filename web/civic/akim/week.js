@@ -2,7 +2,7 @@
  * Birge · «Картина недели» (R08, раунд 15): отчёт для совещания — экран и печать A4, ҚАЗ / РУС.
  *
  * Страница — /civic/akim/week.html (data-autostart). Данные — GET {apiBase}/akim/week?date=YYYY-MM-DD&district=<id>
- * (ui/civic_akim/weekly.py, только сотрудник; 401 → «Войдите как сотрудник»). Все числа считает сервер: неделя —
+ * (ui/civic_akim/weekly.py, только сотрудник, запрос несёт X-CSRF-Token; 401 → «Войдите как сотрудник»). Все числа считает сервер: неделя —
  * 7 календарных дней, последний — date; по дням столбики = «поступило за неделю»; «в работе» и «просрочено» — на
  * конец недели (как «Картина дня» этого дня); темы, районы, места — тепловая карта R07 за 7 дней. Блоки служб (R17),
  * жителей (R16) и встреч (R13) — только у недели, которая заканчивается сегодня (у соседей нет истории «на дату»).
@@ -289,29 +289,64 @@
       var s = q.toString();
       root.history.replaceState(root.history.state, "", root.location.pathname + (s ? "?" + s : ""));
     }
-    function load() {
+    // CSRF сотрудника: сборка R01 проверяет сессию R02 с токеном и на чтении (V2Handler staff=True) — токен из
+    // оболочки или GET /api/civic/v1/session; отказ csrf_failed — один повтор со свежим токеном.
+    var csrfToken = null;
+    function csrf(fresh) {
+      try {
+        var shell = root.CivicShell && typeof root.CivicShell.csrfToken === "function" ? root.CivicShell.csrfToken() : null;
+        if (shell && !fresh) return Promise.resolve(shell);
+      } catch (e) {
+        /* оболочки нет — страница открыта отдельно */
+      }
+      if (csrfToken && !fresh) return Promise.resolve(csrfToken);
+      return fetch(options.sessionUrl || "/api/civic/v1/session", { credentials: "same-origin", cache: "no-store", headers: { Accept: "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (b) {
+          var d = b && b.data && typeof b.data === "object" ? b.data : b || {};
+          csrfToken = d.authenticated && typeof d.csrf_token === "string" ? d.csrf_token : null;
+          return csrfToken;
+        })
+        .catch(function () { return null; });
+    }
+    function load(retried) {
+      retried = retried === true;
+      var again = false;
       var id = ++state.request;
       state.status = "loading";
       render();
       var q = new URLSearchParams();
       if (state.date) q.set("date", state.date);
       if (state.district) q.set("district", state.district);
-      fetch(apiBase + "/akim/week" + (q.toString() ? "?" + q : ""), { headers: { Accept: "application/json" }, credentials: "same-origin", cache: "no-store" })
+      csrf(retried)
+        .then(function (token) {
+          var headers = { Accept: "application/json" };
+          if (token) headers["X-CSRF-Token"] = token;
+          return fetch(apiBase + "/akim/week" + (q.toString() ? "?" + q : ""), { headers: headers, credentials: "same-origin", cache: "no-store" });
+        })
         .then(function (r) {
           return r.json().catch(function () { return null; }).then(function (b) { return { ok: r.ok, status: r.status, body: b }; });
         })
         .then(function (res) {
           if (id !== state.request) return;
+          var e = res.body && res.body.error;
           if (res.ok && res.body && res.body.totals) {
             state.status = "ok";
             state.data = res.body;
-          } else state.status = res.status === 401 || res.status === 403 ? "login" : "error";
+          } else if (res.status === 403 && !retried && (e === "csrf_failed" || (e && e.code === "csrf_failed"))) {
+            again = true; // токен сессии сменился — ещё раз со свежим
+          } else {
+            if (res.status === 401 || res.status === 403) csrfToken = null;
+            state.status = res.status === 401 || res.status === 403 ? "login" : "error";
+          }
         })
         .catch(function () {
           if (id === state.request) state.status = "error";
         })
         .then(function () {
-          if (id === state.request) render();
+          if (id !== state.request) return;
+          if (again) load(true);
+          else render();
         });
     }
 

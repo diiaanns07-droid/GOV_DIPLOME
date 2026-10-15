@@ -7,7 +7,7 @@
  * titleKey: "board.title"}). Своё окно: BirgeBoard.mount(элемент, {apiBase}).
  *
  * Данные — GET {apiBase}/akim/board?district=<id> (ui/civic_akim/situation.py). Только сотрудник: ответ 401 —
- * экран входа прямо здесь (тот же вход R02, что «Для сотрудников» на главной). Все числа считает сервер — те же,
+ * экран входа прямо здесь (тот же вход R02, что «Для сотрудников» на главной); запрос несёт X-CSRF-Token сотрудника. Все числа считает сервер — те же,
  * что в «Картине дня» и на карте R07; блоки соседей (службы и кризис R17, жители R16, встречи и прогноз R13) — как есть.
  *
  * Экран: шапка (знак, название, район, «Пример», «Нужно решение акима», ҚАЗ · РУС, часы Астаны) · полоса кризиса,
@@ -395,6 +395,7 @@
     var opts = {
       apiBase: options.apiBase || rootEl.getAttribute("data-api") || "/api/civic/v2",
       loginUrl: options.loginUrl || "/api/civic/v1/session/login",
+      sessionUrl: options.sessionUrl || "/api/civic/v1/session",
       district: DISTRICT_IDS.indexOf(params.get("district")) >= 0 ? params.get("district") : options.district || null,
       pinned: STAGE_IDS.indexOf(params.get("block")) >= 0 ? params.get("block") : null,
       rotate: params.get("rotate") !== "0" && options.rotate !== false,
@@ -422,8 +423,39 @@
     rootEl.appendChild(foot);
 
     // ── загрузка ──
-    function load(silent) {
+    // CSRF сотрудника: сборка R01 проверяет сессию R02 вместе с токеном и на чтении (V2Handler staff=True), поэтому
+    // GET /akim/board идёт с X-CSRF-Token — из оболочки (CivicShell.csrfToken), из ответа входа или GET /session.
+    // Отказ csrf_failed (токен сменился) — один повтор со свежим токеном; 401 / 403 — форма входа.
+    var csrfToken = null;
+    function csrf(fresh) {
+      try {
+        var shell = root.CivicShell && typeof root.CivicShell.csrfToken === "function" ? root.CivicShell.csrfToken() : null;
+        if (shell && !fresh) return Promise.resolve(shell);
+      } catch (e) {
+        /* оболочки нет — страница открыта отдельно */
+      }
+      if (csrfToken && !fresh) return Promise.resolve(csrfToken);
+      return fetch(opts.sessionUrl, { credentials: "same-origin", cache: "no-store", headers: { Accept: "application/json" } })
+        .then(function (r) {
+          return r.ok ? r.json() : null;
+        })
+        .then(function (b) {
+          var d = b && b.data && typeof b.data === "object" ? b.data : b || {};
+          csrfToken = d.authenticated && typeof d.csrf_token === "string" ? d.csrf_token : null;
+          return csrfToken;
+        })
+        .catch(function () {
+          return null;
+        });
+    }
+    function csrfFailed(body) {
+      var e = body && body.error;
+      return e === "csrf_failed" || !!(e && typeof e === "object" && e.code === "csrf_failed");
+    }
+    function load(silent, retried) {
       silent = silent === true && !!state.data;
+      retried = retried === true;
+      var again = false;
       var id = ++state.request;
       clearTimeout(timers.retry);
       if (!silent) {
@@ -441,12 +473,17 @@
       var timer = setTimeout(function () {
         if (ctrl) ctrl.abort();
       }, TIMEOUT_MS);
-      return fetch(opts.apiBase + "/akim/board" + (q.toString() ? "?" + q : ""), {
-        headers: { Accept: "application/json" },
-        credentials: "same-origin",
-        cache: "no-store",
-        signal: ctrl ? ctrl.signal : undefined,
-      })
+      return csrf(retried)
+        .then(function (token) {
+          var headers = { Accept: "application/json" };
+          if (token) headers["X-CSRF-Token"] = token;
+          return fetch(opts.apiBase + "/akim/board" + (q.toString() ? "?" + q : ""), {
+            headers: headers,
+            credentials: "same-origin",
+            cache: "no-store",
+            signal: ctrl ? ctrl.signal : undefined,
+          });
+        })
         .then(function (r) {
           return r.json().catch(function () {
             return null;
@@ -464,7 +501,10 @@
             state.loadedAt = Date.now();
             if (first) chooseStage(true);
             else keepStage();
+          } else if (res.status === 403 && csrfFailed(res.body) && !retried) {
+            again = true; // токен сессии сменился — ещё раз со свежим
           } else if (res.status === 401 || res.status === 403) {
+            csrfToken = null;
             state.status = "login";
             state.data = null;
           } else if (state.data) {
@@ -485,6 +525,7 @@
         .then(function () {
           clearTimeout(timer);
           if (id !== state.request) return;
+          if (again) return load(silent, true);
           render();
           schedule();
         });
@@ -1267,6 +1308,8 @@
           })
           .then(function (res) {
             if (res.ok && res.body && res.body.ok !== false) {
+              var d = res.body.data && typeof res.body.data === "object" ? res.body.data : res.body;
+              csrfToken = typeof d.csrf_token === "string" ? d.csrf_token : null;
               state.status = "loading";
               render();
               load();
