@@ -4,10 +4,10 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "ffe79b1a",
- "tested_sha": "ffe79b1a",
+ "code_sha": "201ba4f6",
+ "tested_sha": "201ba4f6",
  "push_status": "OK",
- "updated": "2026-10-15 21:51 Астана",
+ "updated": "2026-10-15 22:06 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -33,16 +33,17 @@
   "review_tool": "tests/civic/R11/review/r15_screens.cjs — разбор сборки раунда 15 одной командой (B1, B2, FINAL-5)"
  },
  "tests": {
-  "pytest tests/civic/R11": "PASS 30/30 (ffe79b1a)",
-  "node tests/civic/R11 (i18n, lang_order, ui_kit)": "PASS 3/3 (80999c89)",
-  "i18n_tools check": "PASS — 2661 ключ, ru = kk (ffe79b1a)",
+  "pytest tests/civic/R11": "PASS 31/31 (201ba4f6)",
+  "node tests/civic/R11 (i18n, lang_order, ui_kit)": "PASS (201ba4f6: i18n, ui_kit)",
+  "i18n_tools check": "PASS — 2661 ключ, ru = kk (201ba4f6)",
   "витрина ui-kit, Chromium (Playwright) 1366/375 × ru/kk": "PASS: ошибок консоли 0, горизонтальной прокрутки на 375 нет; обрезка текста — только подписи узких полос календаря на 375 (по задумке: полное имя в aria-label/title)",
   "R01 с патчем меню (стенд, ветка R01 0b76f9ed)": "pytest tests/civic/R01 198 passed / 1 skipped; browser r14_wave2 43/0; browser r14_shell 43/0",
   "R03 с патчем терминов": "pytest tests/civic/R03 273 passed, 9 skipped, 1 xfailed",
   "pytest tests/civic (полный набор)": "прогон запущен на b3502428 (словарь дополнялся во время прогона, b4a2694e): 3473 passed, 2 failed, 23 skipped, 1 xfailed — оба падения test_r10_accuracy c24-R12, c28-R07 есть и на чистой базе e91acb69, не R11; на 80999c89 повторно: tests/civic/R11 + tests/civic/R15/test_r15_marathon.py 41/41",
   "контраст текста модулей внутри стекла (стенд R01 B0 c9069723 + ui-kit R11, «Штаб ведомств» 4 вкладки × 1366/375 × ru/kk, тёмная карта под стеклом)": "0 провалов, худший 5.95 : 1 (порог 4.5)",
   "missing_keys по веткам ролей (R16, R17, R12, R13, R08, R07, R03, R06, R09, R01, R05)": "вне словаря только массивы и id событий по задумке",
-  "r15_screens.cjs на стенде B0 c9069723 + R11 (68 кадров 1366/375 × ru/kk)": "прокрутка 0, сырые ключи 0, непереведённые подписи ҚАЗ 0, обрезанные подписи 375 ҚАЗ 0, ошибки JS 0; меню: «Штаб ведомств» в капсуле (R01-1)"
+  "r15_screens.cjs на стенде B0 c9069723 + R11 (68 кадров 1366/375 × ru/kk)": "прокрутка 0, сырые ключи 0, непереведённые подписи ҚАЗ 0, обрезанные подписи 375 ҚАЗ 0, ошибки JS 0; меню: «Штаб ведомств» в капсуле (R01-1)",
+  "сценарии ролей с ui-kit и словарём R11 поверх": "R09 joint_r09 102/108 (6 — старые kk-слова в тесте R09), R06 browser_r15 notify+ideas 158/0"
  },
  "screens": [
   "research/round-15-results/R11/screens/kit15-1366-kk.jpg",
