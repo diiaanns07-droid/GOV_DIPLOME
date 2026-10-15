@@ -34,6 +34,9 @@ from ui.civic_ml_api import categories as C
 LOGGER = logging.getLogger(__name__)
 
 MAX_TEXT = 5000
+# Моделям — только начало текста: смысл жалобы в первых фразах, а обезличивание v1 (ml/civic_classifier/text.py,
+# шаблон e-mail) на длинном слове без пробелов работает квадратично: 5 000 букв — 0.25–0.35 с на запрос, 1 000 — 9 мс.
+MODEL_TEXT = 1000
 MIN_LETTERS = 3
 KW_VERSION = "civic-kw12-r03"
 V1_HEURISTIC_VERSION = "civic-clf-heuristic-fallback-v1"
@@ -251,7 +254,7 @@ def classify(text) -> dict:
     """Подсказка категории. text — строка (шлюз R01 уже проверил: непустая, ≤ 5000 символов)."""
     if not isinstance(text, str):
         raise ValueError("text: нужна строка с текстом обращения.")
-    text = text.strip()[:MAX_TEXT]
+    text = text.strip()[:MAX_TEXT][:MODEL_TEXT]
     version = CHAIN.version()
     if letters(text) < MIN_LETTERS:
         return _empty(version)  # «...», «123», пусто: модель не применяем

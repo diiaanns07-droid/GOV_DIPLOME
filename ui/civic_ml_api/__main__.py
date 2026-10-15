@@ -4,6 +4,9 @@
     python -m ui.civic_ml_api classify "Во дворе не горят фонари" "Аялдамада қар тазаланбаған"
     python -m ui.civic_ml_api similar "Не убран снег на остановке" --lon 71.42 --lat 51.09 --demo
     python -m ui.civic_ml_api profanity "Опять эта блядская яма" "Аулада жарық жоқ"   # п. 8: что увидят публично
+    python -m ui.civic_ml_api route "Яма после раскопок водоканала" [--category roads --subtopic pothole]   # раунд 15
+    python -m ui.civic_ml_api route-eval --split dev|test|all [--errors]   # набор tests/civic/R04/round15/route_cases.json
+    python -m ui.civic_ml_api moderate "Субботник, звоните 8 701 123 45 67"   # что увидят все + находки для сотрудника
 
 --demo: вместо хранилища R09 — 5 000 синтетических обращений (demo) вокруг точки; без --demo similar
 отвечает 503 source_not_connected (хранилище подключает сервер R01).
@@ -34,7 +37,34 @@ def main(argv=None) -> int:
     s.add_argument("--demo", action="store_true", help="синтетические обращения вокруг точки")
     p = sub.add_parser("profanity", help="фильтр мата: текст со звёздочками и пометка для акимата")
     p.add_argument("texts", nargs="+")
+    r = sub.add_parser("route", help="какие службы нужны обращению")
+    r.add_argument("texts", nargs="*")
+    r.add_argument("--category")
+    r.add_argument("--subtopic")
+    e = sub.add_parser("route-eval", help="точность route() на наборе фраз")
+    e.add_argument("--split", default="dev", choices=("dev", "test", "all"))
+    e.add_argument("--errors", action="store_true")
+    m = sub.add_parser("moderate", help="модерация текста сообщества")
+    m.add_argument("texts", nargs="+")
     args = ap.parse_args(argv)
+
+    if args.cmd == "route":
+        for text in args.texts or [None]:
+            print(json.dumps(api.route(text=text, category=args.category, subtopic=args.subtopic), ensure_ascii=False))
+        return 0
+    if args.cmd == "route-eval":
+        from ui.civic_ml_api.route_eval import evaluate, load_cases
+        res = evaluate(load_cases(), args.split)
+        errors = res.pop("errors")
+        print(json.dumps(res, ensure_ascii=False, indent=1))
+        if args.errors:
+            for row in errors:
+                print(json.dumps(row, ensure_ascii=False))
+        return 0
+    if args.cmd == "moderate":
+        for text in args.texts:
+            print(json.dumps(api.moderate(text), ensure_ascii=False))
+        return 0
 
     if args.cmd == "status":
         print(json.dumps(api.status(), ensure_ascii=False, indent=1))

@@ -264,6 +264,12 @@ def set_complaint_source(fn_or_source, clock=None) -> None:
             _source["src"] = FunctionSource(fn_or_source, clock)
 
 
+def complaint_store():
+    """Подключённое хранилище жалоб R09 (connect_store) или None — для черновика ответа (раунд 15, reply_draft)."""
+    src = _source.get("src")
+    return getattr(src, "store", None) if src is not None else None
+
+
 def source_kind() -> str | None:
     src = _source.get("src")
     return getattr(src, "kind", "custom") if src is not None else None
