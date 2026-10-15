@@ -115,3 +115,16 @@ ui/web_server.py (R01 460fd683), V2_HANDLERS — у двух маршрутов 
 Иначе R08 («шлюз проверил сессию — передаёт staff=True») отвечает вошедшему сотруднику 401 staff_only и Ситуационный центр
 /civic/board/ не открывается никогда. Проверено R10 на превью R01 460fd683 + R08 8513e115: сотрудник 200, без входа 401,
 api_v2 116 PASS / 0 FAIL. Не передавать staff=True всем raw: engine.civic_geo.api.handle (R12) его не принимает → 500.
+
+=====================================================================================================
+§8. R01 · список к B1 (16 окт 14:00 Астаны) — что проверит приёмка R10 (bash tests/e2e/acceptance_r15.sh)
+=====================================================================================================
+Уже сделано у R01 (по превью R10): маршруты §7 46/46 (d987a112), raw-сотрудник 401 без входа (B-102), засев мира с
+materialize (B-106, 460fd683), staff=True модулям (B-108, 5529d819). Осталось для «можно показывать»:
+  1. tests/civic/R10 и tests/e2e — из DELIVERY R10 (иначе pytest: 2 FAIL accuracy из-за снимка LOCAL-10, §0).
+  2. Экраны в web/index.html: R17 (agencies.js/css, crisis-layer.js — их patch), R16 (BirgeTogether — когда сдаст),
+     R12 (BirgeWorksCalendar — patch R12), R07 «Хроника» (replay.js/css + BirgeReplay.attach у кнопок карты),
+     R08 Ситуационный центр (/civic/board/ — статика, ссылка в «Ещё» акимата), R03 (BirgeAnalyst), R13 (BirgeMeetings).
+  3. Подписи «Просрочено» (B-104) — R11 + R08 + R09: без этого C4 FAIL и вердикт «нет» на FINAL-5.
+  4. Демо: run-city с CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 — так R10 и принимает (demo_flow --world, consistency, сцены).
+R10 возьмёт BUILD.json (find_branches.py --build) и через ~1 ч после сборки положит ACCEPTANCE_B1.md с вердиктом.
