@@ -223,8 +223,25 @@
     }));
     const r = button.getBoundingClientRect(), box = header.getBoundingClientRect();
     menu.hidden = false;
-    // Под своей кнопкой, но не шире шапки: правый край меню — не правее края капсулы (марафон: меню 260 px).
-    menu.style.setProperty("--more-left", Math.round(Math.max(0, Math.min(r.left - box.left, box.width - menu.offsetWidth))) + "px");
+    const nav = header.querySelector(".birge-nav");
+    if (nav && getComputedStyle(nav).position === "fixed") {
+      // Эталон A, ноутбук: капсула разделов «плавает» (position: fixed), у самой шапки коробки нет (0 × 0 справа вверху).
+      // Меню считаем от экрана: под кнопкой «Ещё», правый край — не правее капсулы и не за краем окна. Раньше оно
+      // считалось от пустой шапки и вставало в правый верхний угол — поверх «ҚАЗ · РУС» и «Распечатать» «Картины дня»
+      // (VISUAL_BRIEF раунда 15 §3).
+      const cap = nav.getBoundingClientRect(), w = menu.offsetWidth;
+      const left = Math.max(8, Math.min(r.left, cap.right - w, innerWidth - w - 8));
+      menu.dataset.place = "fixed";
+      menu.style.setProperty("--more-left", Math.round(left) + "px");
+      menu.style.setProperty("--more-top", Math.round(cap.bottom + 8) + "px");
+      menu.style.transformOrigin = left < r.left - 1 ? "top right" : "top left";   // меню «растёт» из кнопки
+    } else {
+      // Прежняя шапка-полоса: под своей кнопкой, но не шире шапки (марафон: меню 260 px).
+      delete menu.dataset.place;
+      menu.style.removeProperty("--more-top");
+      menu.style.transformOrigin = "";
+      menu.style.setProperty("--more-left", Math.round(Math.max(0, Math.min(r.left - box.left, box.width - menu.offsetWidth))) + "px");
+    }
     button.setAttribute("aria-expanded", "true");
     menu.querySelector("[role=menuitem]")?.focus();
   }
@@ -306,6 +323,9 @@
       if (!accountMenu && item) { account.hidden = true; avatar.setAttribute("aria-expanded", "false"); }
     });
     document.addEventListener("keydown", (event) => { if (event.key === "Escape" && moreOpen()) closeMore(true); });
+    // Окно изменило размер — капсула разделов сдвинулась (или ушла в меню аватара): открытое «Ещё» закрываем, а не
+    // оставляем висеть на прежнем месте.
+    window.addEventListener("resize", () => { if (moreOpen()) closeMore(); });
     document.addEventListener("click", (event) => {
       if (moreOpen() && !event.target.closest?.(".birge-more-menu, [data-section=more]")) closeMore();
     });
@@ -607,7 +627,7 @@
     const d = document.body.dataset;
     if (!header || !brand || !document.body.classList.contains("civic-mode")) { d.birgeExplore = "map"; return; }
     const wasCompact = d.birgeHeader === "compact";
-    if (d.birgeLayout === "ref" && innerWidth >= PHONE) { placeRef(box, wasCompact); return; }
+    if (d.birgeLayout === "ref") { if (innerWidth >= PHONE) placeRef(box, wasCompact); else placeRefPhone(box, wasCompact); return; }
     // Замер синхронно, до отрисовки кадра: промежуточная раскладка не мигает.
     if (innerWidth < PHONE) d.birgeHeader = "compact";
     else {
@@ -642,15 +662,24 @@
     const d = document.body.dataset;
     const nav = header.querySelector(".birge-nav"), me = header.querySelector(".birge-me");
     delete d.birgeHeader;   // капсула разделов видна — замер её ширины (синхронно, до кадра)
-    const navWidth = nav ? nav.getBoundingClientRect().width : 0;
+    delete d.birgeNav;
     const meLeft = me ? me.getBoundingClientRect().left : innerWidth - REF_EDGE;
-    const room = meLeft - REF_GAP - REF_EDGE - REF_GAP - navWidth;   // ширина, которую можно отдать поиску
+    const roomFor = () => meLeft - REF_GAP - REF_EDGE - REF_GAP - (nav ? nav.getBoundingClientRect().width : 0);  // ширина поиску
+    let room = roomFor();
+    // Не помещается с полями кнопок 16 — пробуем поля 12 (VISUAL_BRIEF раунда 15 §3, 1024 px): так на 1024 РУС и на
+    // 1100 ҚАЗ разделы остаются в капсуле, а не уходят в меню аватара. Не помещается и так — меню аватара, как раньше.
+    if (room < REF_SEARCH_MIN && nav) {
+      d.birgeNav = "tight";
+      room = roomFor();
+      if (room < REF_SEARCH_MIN) delete d.birgeNav;
+    }
     let width = Math.min(REF_SEARCH, Math.floor(room));
     if (width < REF_SEARCH_MIN) {
       d.birgeHeader = "compact";
       width = Math.max(REF_SEARCH_MIN, Math.min(REF_SEARCH, Math.floor(meLeft - REF_GAP - REF_EDGE)));
       document.body.style.removeProperty("--birge-nav-left");
     } else {
+      const navWidth = nav ? nav.getBoundingClientRect().width : 0;
       const from = REF_EDGE + width + REF_GAP, to = meLeft - REF_GAP, centre = innerWidth / 2;
       const fitsCentre = centre - navWidth / 2 >= from && centre + navWidth / 2 <= to;
       document.body.style.setProperty("--birge-nav-left", Math.round(fitsCentre ? centre : (from + to) / 2) + "px");
@@ -661,8 +690,43 @@
     box.style.setProperty("--be-left", REF_EDGE + "px");
     box.style.setProperty("--be-top", REF_EDGE + "px");
     box.style.setProperty("--be-width", width + "px");
-    const input = box.querySelector(".civic-explore-field input");
-    if (input) input.placeholder = t("common.search.placeholder_clean");
+    fitPlaceholder(box.querySelector(".civic-explore-field input"));
+  }
+  // Подсказка поля — длинная «Улица, остановка или район», если помещается целиком; иначе «Поиск / Іздеу»
+  // (обрезанная «Улица, остановка или рай…» на 1024 РУС выглядела ошибкой). Ширину текста меряем шрифтом поля.
+  const LONG_HINT_MIN = 220;   // без canvas: уже 220 px длинная подсказка не помещается
+  let measureCtx = null;
+  function fitPlaceholder(input) {
+    if (!input) return;
+    const long = t("common.search.placeholder_clean");
+    let fits = input.clientWidth >= LONG_HINT_MIN;
+    try {
+      measureCtx = measureCtx || document.createElement("canvas").getContext("2d");
+      const cs = getComputedStyle(input);
+      measureCtx.font = cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+      fits = measureCtx.measureText(long).width <= input.clientWidth - 4;
+    } catch (e) { /* без canvas — по ширине поля */ }
+    input.placeholder = fits ? long : t("common.search.short");
+  }
+  // Эталон A, телефон (экран «Житель, телефон», VISUAL_BRIEF раунда 15 §3): сверху одно поле поиска во всю ширину —
+  // 8 от краёв и сверху, как прежняя капсула шапки (кнопки карты и легенда остаются на своих местах). В поле слева —
+  // знак Birge (тот же домик, что на ноутбуке), справа — «ҚАЗ · РУС» (пока их нет в шторке R09) и аватар: они стоят
+  // поверх правого края поля (birge-ref.css), поле оставляет под них место (--birge-me-w). Разделы — в меню аватара.
+  const PHONE_EDGE = 8;
+  function placeRefPhone(box, wasCompact) {
+    const d = document.body.dataset;
+    d.birgeHeader = "compact";
+    delete d.birgeNav;
+    document.body.style.removeProperty("--birge-nav-left");
+    if (!wasCompact) renderAccount();
+    if (!box) { delete d.birgeExplore; return; }
+    d.birgeExplore = "header";
+    const me = header.querySelector(".birge-me");
+    box.style.setProperty("--be-left", PHONE_EDGE + "px");
+    box.style.setProperty("--be-top", PHONE_EDGE + "px");
+    box.style.setProperty("--be-width", Math.round(innerWidth - 2 * PHONE_EDGE) + "px");
+    box.style.setProperty("--birge-me-w", (me ? Math.ceil(me.getBoundingClientRect().width) : 44) + "px");
+    fitPlaceholder(box.querySelector(".civic-explore-field input"));
   }
   // Строка о запасном фоне карты (R11 CLEAN_PASS №7) гаснет через 6 с после показа или смены текста.
   function watchMapStatus() {
@@ -755,7 +819,15 @@
     const again = () => requestAnimationFrame(placeHeader);
     window.addEventListener("resize", again);
     document.addEventListener("civic:mode", again);
-    if (typeof ResizeObserver === "function" && header) new ResizeObserver(again).observe(header);
+    // Шрифт Inter догрузился — ширина разделов и подсказки поиска другая (fitPlaceholder, капсула разделов).
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(again, () => {});
+    if (typeof ResizeObserver === "function" && header) {
+      const ro = new ResizeObserver(again);
+      ro.observe(header);
+      // Телефон, эталон: «ҚАЗ · РУС» прячутся, пока видна шторка R09, — место в поле поиска меняется (placeRefPhone).
+      const me = header.querySelector(".birge-me");
+      if (me) ro.observe(me);
+    }
     // Панель монтирует shell.js, когда готова карта: ловим её появление (и пересоздание при смене режима).
     const root = document.getElementById("civic-root") || document.body;
     const isExplore = (n) => n.nodeType === 1 && (n.classList?.contains("civic-explore") || n.querySelector?.(".civic-explore"));

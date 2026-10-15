@@ -12,6 +12,12 @@
 .civic-mode .brand { min-width: 0; gap: 8px; flex: 0 0 auto; }
 .civic-mode .brand-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--c-brand, #152c26); color: #fff; }
 .civic-mode .brand-mark svg { width: 20px; height: 20px; }
+/* Раунд 15 (VISUAL_BRIEF §3): один знак Birge везде — домик ui-kit (#i-home, эталон #i-logo) лаймом на тёмном, как в поле
+   поиска эталона. Прежний знак-«здания» (web/app.js icons.city) остаётся только «Учебной модели» и «Школам» (не civic-mode). */
+body.civic-mode .brand-mark svg { display: none; }
+body.civic-mode .brand-mark {
+  background: var(--c-brand, #152c26) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D7F57C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 20V9l7-5 7 5v11'/%3E%3Cpath d='M9.5 20v-6h5v6'/%3E%3C/svg%3E") center / 20px no-repeat;
+}
 .civic-mode .brand-title { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
 .civic-mode .brand-sub { display: none !important; }
 .civic-mode #birge-header { display: flex; align-items: center; gap: var(--s-4, 16px); height: 100%; }

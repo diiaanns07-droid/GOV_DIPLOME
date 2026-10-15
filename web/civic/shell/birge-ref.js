@@ -69,6 +69,10 @@
     // Карточка работ R12 (нажатие на работу на карте) и старые окна раунда 13 — тоже в панели.
     return !!document.querySelector("#civic-map-root .civic-r03-card:not([hidden]), #civic-feedback-box:not([hidden]), #civic-assistant-box:not([hidden])");
   }
+  const r09SheetOpen = () => {
+    const c = document.documentElement.classList;
+    return c.contains("bc-open") || c.contains("bc-mine-open");
+  };
   function leftState() {
     if (!civic() || section() !== "map") return "none";
     if (body.classList.contains("birge-report-open")) return "report";
@@ -78,7 +82,9 @@
     const h = heat();
     try { if (h && h.state && h.state().status === "error") return "list"; } catch (e) { /* R07 ещё не готов */ }
     if (desktop() && mode() === "akimat" && !S.todayClosed && window.BirgeToday) return "summary";
-    if (!desktop() && mode() === "resident" && window.BirgeComplaint && typeof window.BirgeComplaint.mountNear === "function") return "near";
+    // Шторка «Рядом с вами» — пока не открыт мастер жалобы или «Мои обращения» R09 (html.bc-open / bc-mine-open): у них
+    // своя шторка снизу, две шторки друг на друге не нужны (VISUAL_BRIEF раунда 15 §3, 375).
+    if (!desktop() && mode() === "resident" && !r09SheetOpen() && window.BirgeComplaint && typeof window.BirgeComplaint.mountNear === "function") return "near";
     return "none";
   }
   function sync() {
@@ -160,13 +166,14 @@
 
   // ------------------------------------------------------------------ стекло деталей хрома (ui-kit R11 §20.1 b)
   // Ноутбук: шапки-полосы нет — стекло у поиска (плотное 86 %), капсулы разделов и «ҚАЗ · РУС + аватар».
-  // Телефон: прежняя капсула шапки (стекло на ней), внутри — без своего стекла (стекло в стекле не размывает фон).
+  // Телефон (раунд 15, эталон «Житель, телефон»): полосы шапки тоже нет — стекло только у поля поиска во всю ширину;
+  // «ҚАЗ · РУС» и аватар стоят в самом поле, без своего стекла (стекло в стекле не размывает фон).
   function syncGlass() {
     const on = desktop();
-    const set = (node, classes) => { if (node) for (const c of classes) node.classList.toggle(c, on); };
+    const set = (node, classes, value = on) => { if (node) for (const c of classes) node.classList.toggle(c, value); };
     set(document.querySelector("#birge-header .birge-nav"), ["bk-glass", "bk-navpill"]);
     set(document.querySelector("#birge-header .birge-me"), ["bk-glass", "bk-me"]);
-    set(document.querySelector(".civic-explore-field"), ["bk-glass", "bk-glass--strong", "bk-searchbar"]);
+    set(document.querySelector(".civic-explore-field"), ["bk-glass", "bk-glass--strong", "bk-searchbar"], true);
     // Карточка слева — плотное стекло 86 % (эталон: «текст — на плотном стекле»).
     set(document.getElementById("civic-panel"), ["bk-glass--strong"]);
     decorateSearch();
@@ -475,6 +482,8 @@
   if (typeof MutationObserver === "function") {
     new MutationObserver(() => { watchRoot(); queue(); }).observe(body, { attributes: true, childList: true,
       attributeFilter: ["class", "data-birge-section", "data-birge-mode"] });
+    // Мастер жалобы и «Мои обращения» R09 отмечают себя классом на <html> (bc-open, bc-mine-open) — шторка жителя прячется.
+    new MutationObserver(queue).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
   }
   watchRoot();
   queue();
