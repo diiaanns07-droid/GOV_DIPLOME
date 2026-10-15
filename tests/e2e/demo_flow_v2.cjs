@@ -505,8 +505,16 @@ async function showCheck(browser, base, lang, staffAcc) {
     const f = path.join(OUT, `show-${lang}-scene${n}.jpg`);
     await sleep(800);
     await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+    // Медленно — запросы API этой сцены по Resource Timing браузера (от нажатия Enter): где теряется время — сервер (wait) или
+    // очередь браузера (queue), B-124.
+    const rt = ms !== null && ms > 1000 ? await page.evaluate(() => {
+      const t0 = window.__r10scene && window.__r10scene.t0;
+      return performance.getEntriesByType("resource").filter((e) => /\/api\//.test(e.name) && t0 !== null && e.startTime >= t0 - 5).map((e) => ({
+        n: e.name.replace(location.origin, "").slice(0, 60), start: Math.round(e.startTime - t0), dur: Math.round(e.duration),
+        queue: Math.round(e.requestStart - e.fetchStart), wait: Math.round(e.responseStart - e.requestStart) })).slice(0, 8);
+    }).catch(() => null) : undefined;
     add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → раздел ${want[n][0]} ≤ 1 с`, ms === null ? "FAIL" : ms <= 1000 ? "PASS" : "FAIL",
-      { ms, section: sec, network_idle_before: idle }, "R01", path.basename(f));
+      { ms, section: sec, network_idle_before: idle, ...(rt ? { rt } : {}) }, "R01", path.basename(f));
   }
   await ctx.close();
 }
