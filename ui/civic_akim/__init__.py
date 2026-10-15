@@ -5,7 +5,8 @@
 темы и районы (ровно как тепловая карта R07), объекты с отставанием и устаревшие, новые
 предложения и голоса (R06), текстовая сводка ru/kk по шаблону (text.py, без LLM, офлайн).
 HTTP: api.handle_get → GET /api/civic/v2/akim/summary. Подключение — research/round-14-results/R08/INTEGRATION.txt.
+Прогрев (раунд 15, просьба R01): warm_up() — в фоне при старте, после связки модулей и засева мира.
 """
-from .summary import AkimError, AkimService, configure, default_service, summary
+from .summary import AkimError, AkimService, configure, default_service, summary, warm_up
 
-__all__ = ["AkimError", "AkimService", "configure", "default_service", "summary"]
+__all__ = ["AkimError", "AkimService", "configure", "default_service", "summary", "warm_up"]

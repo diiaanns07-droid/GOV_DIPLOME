@@ -25,10 +25,12 @@
 from __future__ import annotations
 
 import json
+import logging
 import math
 import threading
 import time
 from datetime import date as Date, datetime, timedelta, timezone
+from functools import lru_cache
 
 from . import deadlines, decisions, neighbors, pulse, routing, sources, text
 
@@ -73,8 +75,15 @@ def parse_time(value) -> datetime | None:
         return value if value.tzinfo else value.replace(tzinfo=ASTANA_TZ)
     if not value:
         return None
+    return _parse_iso(str(value))
+
+
+@lru_cache(maxsize=65536)
+def _parse_iso(text: str) -> datetime | None:
+    """Строка времени → datetime один раз: сводка разбирает одни и те же отметки десятки тысяч раз за расчёт
+    (на демо-мире — 57 тыс. вызовов, R01: холодный ответ akim/summary до 1,2 с). datetime неизменяем — делить можно."""
     try:
-        dt = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
     except ValueError:
         return None
     return dt if dt.tzinfo else dt.replace(tzinfo=ASTANA_TZ)
@@ -88,14 +97,28 @@ def astana_today(now: datetime) -> Date:
     return now.astimezone(ASTANA_TZ).date()
 
 
+# Разобранная история статусов — один раз на запись, пока у записи тот же список истории той же длины (R09 дописывает
+# шаги в конец или заменяет список). Ссылка на запись в памятке не даёт id() достаться другой записи. Список из памятки
+# только читают (status_at, fixed_moment, kpi_series…) — не менять.
+_HIST_MEMO: dict = {}
+_HIST_MEMO_MAX = 8192
+
+
 def _history(record: dict) -> list[tuple[datetime, str]]:
+    raw = record.get("status_history")
+    memo = _HIST_MEMO.get(id(record))
+    if memo is not None and memo[0] is record and memo[1] is raw and memo[2] == len(raw or ()):
+        return memo[3]
     out = []
-    for h in record.get("status_history") or []:
+    for h in raw or []:
         if isinstance(h, dict):
             t = parse_time(h.get("at"))
             if t is not None and h.get("status"):
                 out.append((t, str(h["status"])))
     out.sort(key=lambda x: x[0])
+    if len(_HIST_MEMO) >= _HIST_MEMO_MAX:
+        _HIST_MEMO.clear()
+    _HIST_MEMO[id(record)] = (record, raw, len(raw or ()), out)
     return out
 
 
@@ -867,3 +890,23 @@ def configure(**kwargs) -> AkimService:
 def summary(date=None, district=None, now: datetime | None = None) -> dict:
     """Функция для соседей и сервера: картина дня на дату (по умолчанию сегодня) и район (None — весь город)."""
     return default_service().summary(date=date, district=district, now=now)
+
+
+WARM_DISTRICTS = (None, "nura")   # весь город («Картина дня», «Сегодня в Астане», табло) и Нура (сцена 9, кризис)
+
+
+def warm_up(*_args, districts_=WARM_DISTRICTS) -> dict:
+    """R01: при старте сервера в фоне, после связки модулей и засева мира (как warm_up R07 / R16; аргументы цикла R01 —
+    любые, не нужны). Первый расчёт «Картины дня» загружает записи карты R07, словари и соседей (~2 с на демо-мире);
+    после прогрева первый аким ждёт только пересчёт минуты (~0,2 с). Ошибка не мешает серверу — раздел посчитает всё
+    при первом открытии. Возвращает время расчётов (мс) для строки в консоли."""
+    out: dict = {}
+    for district in districts_:
+        started = time.perf_counter()
+        try:
+            default_service().summary(district=district)
+        except Exception:  # прогрев не должен ронять старт
+            logging.getLogger("civic_akim").info("akim warm-up %s failed", district or "city", exc_info=True)
+            continue
+        out[district or "city"] = round((time.perf_counter() - started) * 1000)
+    return out

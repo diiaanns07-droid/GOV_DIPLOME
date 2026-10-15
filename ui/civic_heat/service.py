@@ -65,6 +65,7 @@ class HeatService:
         if db_path:
             world.remember_db(db_path)
         self._replay = None
+        self._rec_memo = None       # (поколение, since) → записи: расчёты одного поколения читают базу один раз
 
     # ---------- данные ----------
     def _records(self, since: datetime):
@@ -74,13 +75,19 @@ class HeatService:
 
                 self._demo_records = demo_seed.demo_records(now=self._clock())
             return self._demo_records
+        key = (self._generation, since)
+        memo = self._rec_memo
+        if memo is not None and memo[0] == key:
+            return memo[1]
         if callable(self._source):
             recs = list(self._source(since))
         elif hasattr(self._source, "list"):
             recs = list(self._source.list(since=since))
         else:
             raise TypeError("source должен быть функцией или объектом с методом list()")
-        return self._with_metoo_times(recs)
+        recs = self._with_metoo_times(recs)
+        self._rec_memo = (key, recs)
+        return recs
 
     def _with_metoo_times(self, recs: list) -> list:
         """Добавляет к записям с «Я тоже» поле metoo_times (если R09 дал функцию). Записи источника не меняем."""

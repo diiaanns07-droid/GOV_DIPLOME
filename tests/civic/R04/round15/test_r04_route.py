@@ -198,6 +198,11 @@ def test_nearby_dig_work_names_the_network(monkeypatch):
         assert services(res) == ["water", "road"] and res["evidence"] is None
         # Без точки — как раньше.
         assert route(text="Раскопали дорогу и так и бросили")["evidence"] is None
+        # Раскопка в той же точке (стенд B0.12 показывал «…, 0 м») — «здесь же», без метров.
+        works[0]["distance_m"] = 0
+        res = route(text="Раскопали дорогу и так и бросили", point=[71.43, 51.12])
+        assert res["why_ru"].startswith("Здесь же шли раскопки: Теплосеть") and " 0 м" not in res["why_ru"]
+        assert res["why_kk"].startswith("Осы жерде қазба жұмыстары жүрді: Жылу желісі") and " 0 м" not in res["why_kk"]
     finally:
         R.set_works_source(None)
 

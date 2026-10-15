@@ -787,10 +787,13 @@ def route(text=None, category=None, subtopic=None, point=None, body=None, **_ign
         why_ru, why_kk = (s.format(a=x, b=y) for s, x, y in zip(_JOINT_WHY[key], (a_ru, a_kk), (b_ru, b_kk)))
         if work is not None:
             period_ru, period_kk = _period_words(work)
-            why_ru = (f"Рядом шли раскопки: {a_ru}" + (f", {period_ru}" if period_ru else "") + f", {work['distance_m']} м. "
-                      f"{a_ru} — засыпка и сети, {b_ru} — покрытие.")
-            why_kk = (f"Жақын жерде қазба жұмыстары жүрді: {a_kk}" + (f", {period_kk}" if period_kk else "")
-                      + f", {work['distance_m']} м. {a_kk} — көму мен желі, {b_kk} — жабын.")
+            # Раскопка в той же точке (стенд B0.12: «…, 0 м») — «здесь же», без метров.
+            here = work["distance_m"] < 15
+            dist_ru = "" if here else f", {work['distance_m']} м"
+            why_ru = (("Здесь же шли раскопки: " if here else "Рядом шли раскопки: ") + a_ru
+                      + (f", {period_ru}" if period_ru else "") + f"{dist_ru}. {a_ru} — засыпка и сети, {b_ru} — покрытие.")
+            why_kk = (("Осы жерде қазба жұмыстары жүрді: " if here else "Жақын жерде қазба жұмыстары жүрді: ") + a_kk
+                      + (f", {period_kk}" if period_kk else "") + f"{dist_ru}. {a_kk} — көму мен желі, {b_kk} — жабын.")
         role_why = _ROLE_WHY.get(joint.rule) or _ROLE_WHY["two_problems"]
         lead_score = 0.6 if joint.default_network else joint.score
         def part_why(name: str, role_text: str) -> str:
