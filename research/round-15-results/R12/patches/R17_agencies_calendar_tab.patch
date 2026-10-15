@@ -1,0 +1,110 @@
+--- a/web/civic/agencies/agencies.js
++++ b/web/civic/agencies/agencies.js
+@@ -31,6 +31,7 @@
+       "agencies.tab.board": "Табло",
+       "agencies.tab.joint": "Совместные",
+       "agencies.tab.handoffs": "Передачи",
++      "agencies.tab.calendar": "Календарь работ",
+       "agencies.tab.crisis": "Кризис",
+       "agencies.period": "Период",
+       "agencies.period.days": "{n} дн.",
+@@ -182,6 +183,7 @@
+       "agencies.tab.board": "Табло",
+       "agencies.tab.joint": "Бірлескен",
+       "agencies.tab.handoffs": "Жіберулер",
++      "agencies.tab.calendar": "Жұмыстар күнтізбесі",
+       "agencies.tab.crisis": "Төтенше жағдай",
+       "agencies.period": "Кезең",
+       "agencies.period.days": "{n} күн",
+@@ -538,6 +540,11 @@
+   var mounted = null;     // текущий экземпляр (для openCrisis)
+   var pending = null;     // глубокая ссылка, которую ещё не открыли
+ 
++  // Вкладки «Ведомств» (схема R11 §5.4). «Календарь работ» — модуль R12 (BirgeWorksCalendar), только если он в сборке.
++  function tabIds() {
++    return ["board", "joint", "handoffs"].concat(root.BirgeWorksCalendar ? ["calendar"] : [], ["crisis"]);
++  }
++
+   function mount(rootEl, options) {
+     var opts = { apiBase: "/api/civic/v2", titleTag: "h2" };
+     Object.keys(options || {}).forEach(function (k) { if (options[k] != null) opts[k] = options[k]; });
+@@ -550,7 +557,7 @@
+     };
+     try {
+       var saved = JSON.parse(root.sessionStorage.getItem("birge.agencies") || "{}");
+-      if (["board", "joint", "handoffs", "crisis"].indexOf(saved.tab) >= 0) S.tab = saved.tab;
++      if (tabIds().indexOf(saved.tab) >= 0) S.tab = saved.tab;
+       if (PERIODS.indexOf(saved.days) >= 0) S.days = saved.days;
+       if (DISTRICTS.indexOf(saved.district) >= 0) S.district = saved.district;
+     } catch (e) { /* приватный режим: умолчания */ }
+@@ -598,6 +605,7 @@
+         if (S.tab === "board") load("board", "/agencies/board" + query());
+         else if (S.tab === "joint") load("joint", "/agencies/joint" + query());
+         else if (S.tab === "handoffs") load("handoffs", "/agencies/handoffs" + query());
++        else if (S.tab === "calendar") { if (calendar && calendar.handle.reload) calendar.handle.reload(); }
+         else loadIncidents();
+       });
+       render();
+@@ -626,7 +634,7 @@
+     // ---------------------------------------------------------------- шапка
+     function renderHead() {
+       var tabs = h("div", { class: "bk-tabs", role: "tablist", "aria-label": tr("agencies.title") },
+-        ["board", "joint", "handoffs", "crisis"].map(function (id) {
++        tabIds().map(function (id) {
+           var count = null;
+           if (id === "crisis" && S.incidents) {
+             var n = (S.incidents.items || []).filter(function (x) { return x.status === "active"; }).length;
+@@ -641,12 +649,12 @@
+       });
+       tabs.addEventListener("keydown", function (e) {
+         if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+-        var ids = ["board", "joint", "handoffs", "crisis"], i = ids.indexOf(S.tab);
++        var ids = tabIds(), i = ids.indexOf(S.tab);
+         e.preventDefault();
+         setTab(ids[(i + (e.key === "ArrowRight" ? 1 : ids.length - 1)) % ids.length], true);
+       });
+       var filters = h("div", { class: "ag-filters" });
+-      if (S.tab !== "crisis") {
++      if (S.tab !== "crisis" && S.tab !== "calendar") {  // у календаря R12 свои фильтры: район, служба, период
+         var seg = h("div", { class: "ag-seg", role: "group", "aria-label": tr("agencies.period") }, PERIODS.map(function (d) {
+           return h("button", { type: "button", value: String(d), "aria-pressed": String(S.days === d), text: tr("agencies.period.days", { n: d }) });
+         }));
+@@ -1390,13 +1398,30 @@
+     }
+ 
+     // ---------------------------------------------------------------- отрисовка
++    // «Календарь работ» R12 внутри вкладки: монтируется один раз (сам грузит и перерисовывает), снимается при уходе.
++    var calendar = null;
++    function renderCalendar() {
++      if (calendar && bodyBox.contains(calendar.el)) return;
++      dropCalendar();
++      var panel = h("div", { class: "ag-calendar" });
++      bodyBox.replaceChildren(panel);
++      calendar = { el: panel, handle: root.BirgeWorksCalendar.mount(panel, { embedded: true, api: opts.api,
++        apiBase: opts.apiBase, map: opts.map, openTarget: opts.openTarget, close: opts.close }) || {} };
++    }
++    function dropCalendar() {
++      if (!calendar) return;
++      try { if (calendar.handle.destroy) calendar.handle.destroy(); } catch (e) { /* модуль R12 не ломает экран */ }
++      calendar = null;
++    }
+     function render() {
+       if (!S.alive) return;
+       renderHead();
+       rootEl.setAttribute("data-tab", S.tab);
++      if (S.tab !== "calendar") dropCalendar();
+       if (S.tab === "board") renderBoard();
+       else if (S.tab === "joint") renderJoint();
+       else if (S.tab === "handoffs") renderHandoffs();
++      else if (S.tab === "calendar" && root.BirgeWorksCalendar) renderCalendar();
+       else renderCrisis();
+     }
+     function relang() {
+@@ -1411,6 +1436,7 @@
+       setLang: relang,
+       destroy: function () {
+         S.alive = false;
++        dropCalendar();
+         if (typeof off === "function") off();
+         if (mounted === handle) mounted = null;
+         rootEl.classList.remove("ag");

@@ -1,14 +1,14 @@
 {
  "role": "R12",
  "round": 15,
- "delivery": 3,
+ "delivery": 4,
  "title": "Единый календарь работ и «копаем один раз»",
  "branch": "claude/great-newton-8k3474",
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "9090eb8d924923536f62edd48ad5f2a9049b0a52",
- "tested_sha": "9090eb8d924923536f62edd48ad5f2a9049b0a52",
+ "code_sha": "3ac2af66a1ae532684337a9bce6a2a36f2140b32",
+ "tested_sha": "3ac2af66a1ae532684337a9bce6a2a36f2140b32",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/works_fixture.json",
@@ -37,7 +37,8 @@
   ],
   "shell": "registerScreen works-calendar (akimat) + registerLayer works-conflicts (off by default) — модуль сам",
   "i18n_keys": "research/round-15-results/R12/i18n_keys.json (69 ключей wcal.*, kk — черновик)",
-  "neighbours": "R01 856b3027 (шлюз, оболочка — проверено браузером), R06 works_v2 (1f76738a), R02 мир 4afd9bf9 (5/5 planned_conflicts, id cf-w15-*), R17 service_profiles (75300896, цвета полос), R08/R17 conflicts_summary()"
+  "neighbours": "R01 856b3027 (шлюз, оболочка — проверено браузером), R06 works_v2 (1f76738a), R02 мир 4afd9bf9 (5/5 planned_conflicts, id cf-w15-*), R17 service_profiles (75300896, цвета полос), R08/R17 conflicts_summary()",
+  "R17_patch": "research/round-15-results/R12/patches/R17_agencies_calendar_tab.patch — вкладка «Календарь работ» в «Ведомствах» (к R17 75300896)"
  },
  "tests": {
   "pytest_R12_all": {
@@ -84,6 +85,12 @@
   "r02_world": {
    "status": "PASS",
    "note": "мир R02 4afd9bf9: найдены все 5 planned_conflicts, 0 лишних; id cf-w15-01…05; 39 работ на улице, 4 отключения не входят"
+  },
+  "browser_embedded_r17": {
+   "status": "PASS",
+   "passed": 2,
+   "failed": 0,
+   "how": "стенд R01 856b3027 + R17 75300896 + patch R17: вкладка без заголовка R12, главная «Добавить работу», 5 конфликтов, снятие при смене вкладки"
   }
  },
  "screens": {
@@ -113,6 +120,9 @@
    "state_error_1366_ru.png",
    "state_empty_1366_ru.png",
    "state_loading_1366_ru.png"
+  ],
+  "embedded": [
+   "embedded_r17_tab_1366_ru.png"
   ]
  },
  "known_limits": [
