@@ -90,7 +90,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 # B1: R07 тепловая карта @ 5a97636, R09 путь жителя v2 @ da295be, R08 «Картина дня» @ 9f1d9c0.
                 "heat/heat.js", "heat/heat.css",
                 # R07 раунд 15: «Хроника города» (BirgeReplay — полоса внизу карты, чип «▶ Хроника» в строке легенды).
-                "replay/replay.js", "replay/replay.css",
+                # Страница грузит лёгкий вход replay-attach.js; replay.js — при первом открытии (R07 §1.2а, R10 B-113).
+                "replay/replay-attach.js", "replay/replay.js", "replay/replay.css",
                 "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
                 "feedback/complaint.css",
                 # Волна 2 (R09): действия сотрудника по обращению и экран акимата «Обращения» (#complaints).
@@ -1431,7 +1432,12 @@ class CivicV2Gateway:
                     # R09 (R02 INTEGRATION §1): его seed_world берёт и живое хранилище — то же, что у карты и «Обращений»
                     # (без второго соединения с базой); нет хранилища — путь к базе, как у всех.
                     target = (self._r09_store() or db_path) if role == "R09" else db_path
-                    calls.append((name, lambda fn=fn, target=target: fn(target, world, now=now)))
+                    kwargs = {"now": now}
+                    if self._takes(fn, "reset"):
+                        # Повторный засев (перезапуск на той же базе): демо-записи — к виду мира от нового now, как у
+                        # R09/R13/R16/R17 по умолчанию (R10 B-048, R02 SCHEMA §4); у R06 по умолчанию reset=False.
+                        kwargs["reset"] = True
+                    calls.append((name, lambda fn=fn, target=target, kwargs=kwargs: fn(target, world, **kwargs)))
             if role == "R09" and not calls:
                 # У R09 ещё нет seed_world — жалобы мира кладёт помощник R02 в живое хранилище R09 (те же правила reset,
                 # что у seed_demo R09; R02 INTEGRATION §1–2). Появится seed_world у R09 — возьмётся он.
@@ -1448,10 +1454,10 @@ class CivicV2Gateway:
                 got = report["roles"].setdefault(role, {"inserted": 0, "skipped": 0})
                 if "error" in got:
                     continue
-                for field in ("inserted", "skipped"):
+                for field in ("inserted", "skipped", "reset"):  # reset — демо-запись вернули к виду мира (R02 §4)
                     value = (result or {}).get(field) if isinstance(result, dict) else None
-                    if isinstance(value, int) and not isinstance(value, bool):
-                        got[field] += value
+                    if isinstance(value, int) and not isinstance(value, bool) and (value or field != "reset"):
+                        got[field] = got.get(field, 0) + value
         self.world_report = report
         return report
 
@@ -1481,8 +1487,10 @@ class CivicV2Gateway:
             if "error" in got:
                 parts.append(f"{role} ошибка ({got['error']})")
             else:
-                total = got["inserted"] + got["skipped"]
-                parts.append(f"{role} {total}" + (f" (новых {got['inserted']})" if got["skipped"] else ""))
+                # Перезапуск на той же базе: модули вернули демо-записи к виду мира (reset) — это тоже записи мира,
+                # иначе строка «R09 0» выглядит как «мир не загрузился» (R02 R01_world_reset.patch).
+                total = got["inserted"] + got["skipped"] + got.get("reset", 0)
+                parts.append(f"{role} {total}" + (f" (новых {got['inserted']})" if total != got["inserted"] else ""))
         return "civic-world: " + (", ".join(parts) if parts else "ни у одного модуля нет seed_world")
 
     def scenes(self):

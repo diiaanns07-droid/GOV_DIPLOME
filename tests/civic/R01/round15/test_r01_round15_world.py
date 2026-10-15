@@ -84,6 +84,35 @@ def test_a_failing_module_does_not_stop_the_others(tmp_path):
     assert CivicV2Gateway.world_line(report) == "civic-world: R09 ошибка (RuntimeError), R16 3"
 
 
+def test_seeders_with_reset_get_reset_true(tmp_path):
+    """R02 R01_world_reset.patch: повторный засев возвращает демо-записи к виду мира — seed_world с параметром reset
+    получает reset=True (у R06 по умолчанию False), без параметра — зовётся как прежде."""
+    seen = {}
+
+    def with_reset(db_path, records, now=None, *, reset=False):
+        seen["R06"] = reset
+        return {"inserted": 0, "skipped": 0, "reset": 55}
+
+    def without_reset(db_path, records, now=None):
+        seen["R16"] = "called"
+        return {"inserted": 42, "skipped": 0}
+
+    modules = {"ui.civic_store": types.SimpleNamespace(seed_world=with_reset),
+               "ui.civic_together": types.SimpleNamespace(seed_world=without_reset)}
+    gateway = CivicV2Gateway(modules=modules, db_path=tmp_path / "c.sqlite3", demo=True, demo_world=True)
+    report = gateway.seed_world(now=NOW, world=WORLD)
+    assert seen == {"R06": True, "R16": "called"}
+    assert CivicV2Gateway.world_line(report) == "civic-world: R06 55 (новых 0), R16 42"
+
+
+def test_world_line_counts_reset_records_on_restart():
+    """Перезапуск на той же базе: модули возвращают демо-записи к виду мира (reset) — строка не «R09 0»."""
+    report = {"error": None, "roles": {"R09": {"inserted": 0, "skipped": 0, "reset": 743},
+                                       "R13": {"inserted": 0, "skipped": 0, "reset": 24},
+                                       "R12": {"inserted": 0, "skipped": 39}}}
+    assert CivicV2Gateway.world_line(report) == "civic-world: R09 743 (новых 0), R13 24 (новых 0), R12 39 (новых 0)"
+
+
 def test_broken_world_file_is_reported_not_fatal(tmp_path, monkeypatch):
     bad = tmp_path / "world.json"
     bad.write_text("{not json", encoding="utf-8")
@@ -182,5 +211,5 @@ def test_r09_without_seed_world_gets_the_r02_helper_into_its_live_store(tmp_path
     gateway = CivicV2Gateway(modules=modules, db_path=tmp_path / "c.sqlite3", demo=True, demo_world=True)
     report = gateway.seed_world(now=NOW, world=WORLD)
     assert seen == [(live, WORLD, NOW)]
-    assert report["roles"]["R09"] == {"inserted": 743, "skipped": 0}
-    assert CivicV2Gateway.world_line(report) == "civic-world: R09 743"
+    assert report["roles"]["R09"] == {"inserted": 743, "skipped": 0, "reset": 2}
+    assert CivicV2Gateway.world_line(report) == "civic-world: R09 745 (новых 743)"
