@@ -119,7 +119,12 @@ BirgeTogether.open("initiative", scenes.initiative) или setSection("yard", {p
   R08/R03  tg.initiatives_summary(district=None) -> {upcoming, joined_upcoming, supported, done, neighbors_done,
        on_review, next:[…]} — числа считает код («Жители вместе» в Ситуационном центре и «Картине дня»).
        R03 уже ищет её первой (sources.py INITIATIVE_FUNCS) — наблюдение R15 «not_ready» снято. В ответе только
-       опубликованное и «сделано» (next — публичные названия); очередь «на проверке» — только числом on_review.
+       опубликованное и «сделано»; очередь «на проверке» — только числом on_review. next (до 3 ближайших дел) — с круга 5
+       в том же виде, что GET together/initiatives/{id}: kind, title, status, starts_at, ends_at, joined, district,
+       target {kind, id, label_ru, label_kk} (настоящий вид цели, было всегда «area»), support {by_akimat, inventory,
+       pickup_service, note, at}, demo — R08 neighbors._r16_details второй запрос на дело делать не обязан; прежние
+       поля те же. Проверено на R01 7208a580: tests/civic/R08 + R16 — 360 passed; tests/civic/R03 — 296 passed,
+       1 FAIL test_real_neighbours_if_present («Какие службы отстают?», числа R17) — тот же и с кодом R16 из сборки.
   R17  tg.pickups(district=None) -> [{initiative_id, service:"waste", title, point, district, target, starts_at,
        ends_at, note, supported_at}] — задача оператору вывоза после «Поддержать: мешки и вывоз».
   R08  tg.akim_initiatives(district=None) -> {"items": [...]} — для «Картины дня» / «Картины недели» (ui/civic_akim

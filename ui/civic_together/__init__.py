@@ -101,11 +101,18 @@ def initiatives_summary(district: str | None = None, db_path=None) -> dict:
             "done": len(done), "neighbors_done": sum(int((r.get("report") or {}).get("joined_final") or r.get("joined")
                                                          or 0) for r in done),
             "on_review": store.count(statuses=("on_review",), district=district),
-            "next": [{"id": r["id"], "title": r.get("title_public") or r["title"], "starts_at": r["starts_at"],
-                      "joined": int(r.get("joined") or 0), "district": r.get("district"),
-                      "target": {"kind": "area", "id": r["target_id"]} if r.get("target_id") else None,
-                      "demo": bool(r.get("demo"))} for r in upcoming[:3]],
+            "next": [_summary_row(service, r) for r in upcoming[:3]],
             "demo": bool(upcoming or done) and all(r.get("demo") for r in upcoming + done)}
+
+
+def _summary_row(service, row: dict) -> dict:
+    """Ближайшее дело сводки — то же публичное представление, что GET together/initiatives: вид, время конца, поддержка
+    акимата, место с подписью и настоящим видом цели (R08 «Поддержать» не ведёт к уже поддержанному делу без второго
+    запроса). Без устройств и авторов; поля прежней сводки (id, title, starts_at, joined, district, target, demo) — те же."""
+    view = service._public(row)
+    for key in ("my_join", "mine"):
+        view.pop(key, None)
+    return view
 
 
 def akim_initiatives(district: str | None = None, db_path=None) -> dict | None:

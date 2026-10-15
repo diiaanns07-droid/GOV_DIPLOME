@@ -444,6 +444,22 @@ def test_summary_numbers_are_counted_by_code(svc):
     assert s["joined_upcoming"] == 14 + 9 + 6 + 5 and s["neighbors_done"] == 11 + 15
 
 
+def test_summary_next_rows_are_the_public_view(svc):
+    """R08 «Картина дня» и R03 берут ближайшие дела из сводки: вид, конец, поддержка и подпись места — как в GET
+    together/initiatives/{id}, без устройств, авторов и полей «моё»."""
+    s = initiatives_summary("nura")
+    assert 0 < len(s["next"]) <= 3
+    for row in s["next"]:
+        card = call(svc, "GET", "/initiatives/" + row["id"])["body"]
+        card = card.get("initiative", card)
+        for key in ("id", "kind", "title", "status", "starts_at", "ends_at", "joined", "district", "target", "support",
+                    "demo"):
+            assert row[key] == card[key], key
+        assert row["status"] == "published" and row["target"]["label_ru"]
+        assert not {"my_join", "mine", "author_hash", "device", "hide_reason"} & set(row)
+    assert s["next"][0]["starts_at"] <= s["next"][-1]["starts_at"]
+
+
 # --------------------------------------------------------------------------- похожие, идея -> инициатива
 def test_similar_nearby_same_kind(svc):
     q = "similar=1&lon=71.3972&lat=51.1349&kind=cleanup&title=Субботник"
