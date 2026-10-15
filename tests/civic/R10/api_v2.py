@@ -29,6 +29,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from stand import Stand  # noqa: E402
@@ -487,7 +488,8 @@ class ApiCheck:
     def query(self, route):
         values = {"since": _iso(-7), "from": _date(-30), "to": _date(60), "from_week": _date(-7),
                   "today": _date(0)}
-        return route.query.format(**values) if route.query else ""
+        # Значения — в кодировке адреса: «+» пояса в since без неё сервер читает как пробел (ошибка теста R10 в B-105).
+        return route.query.format(**{k: quote(v, safe="") for k, v in values.items()}) if route.query else ""
 
     def url(self, route, ids=None):
         q = self.query(route)
