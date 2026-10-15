@@ -35,6 +35,7 @@ import re
 import threading
 import time
 from dataclasses import dataclass
+from datetime import date, datetime, timedelta, timezone
 
 from ml.civic_dedup.normalize import letters, normalize
 from ui.civic_ml_api import categories as C
@@ -623,6 +624,70 @@ def _classify(text: str) -> dict | None:
         return None
 
 
+# ---------------------------------------------------------------- календарь работ: кто копал рядом
+NETWORK_SERVICES = ("water", "heating", "power", "gas")
+WORKS_RADIUS_M = 150.0
+WORKS_DAYS_BACK = 180
+_works_source = None      # set_works_source(fn): fn(point, radius_m) -> [работа §5.6 + distance_m]
+
+
+def set_works_source(fn) -> None:
+    """Подключить свой источник работ (R01, тесты). None — по умолчанию R06 ui.civic_store.v2.works_near."""
+    global _works_source
+    _works_source = fn
+
+
+def _works_near(point: list[float]) -> list[dict]:
+    """Работы служб рядом с точкой: R06 works_near (CONTRACT §5.6) — только чтение; нет модуля или базы — []."""
+    try:
+        if _works_source is not None:
+            items = _works_source(point, WORKS_RADIUS_M)
+        else:
+            from ui.civic_store.v2 import works_near
+            reply = works_near(point=point, radius_m=WORKS_RADIUS_M, include_outages=False, include_done=True)
+            items = reply.get("items") if isinstance(reply, dict) else reply
+        return [w for w in items or [] if isinstance(w, dict)]
+    except Exception:  # noqa: BLE001 — календарь работ не обязателен: остаётся правило по тексту
+        return []
+
+
+def dig_work_near(point: list[float] | None, prefer: str | None = None, now: datetime | None = None) -> dict | None:
+    """Раскопка сетей рядом (вид dig, служба сетей, началась не раньше 180 дней назад и не позже чем через неделю).
+    prefer — служба, названная в тексте: её работа важнее. Ближайшая из подходящих."""
+    if point is None:
+        return None
+    today = (now or datetime.now(timezone(timedelta(hours=5)))).date()
+    found = []
+    for work in _works_near(point):
+        if work.get("kind") != "dig" or work.get("service") not in NETWORK_SERVICES:
+            continue
+        try:
+            start = date.fromisoformat(str(work.get("starts_on"))[:10]) if work.get("starts_on") else None
+        except ValueError:
+            start = None
+        if start is not None and not (today - timedelta(days=WORKS_DAYS_BACK) <= start <= today + timedelta(days=7)):
+            continue
+        dist = work.get("distance_m")
+        dist = float(dist) if isinstance(dist, (int, float)) and not isinstance(dist, bool) else WORKS_RADIUS_M
+        found.append((work.get("service") != prefer, dist, work))
+    if not found:
+        return None
+    found.sort(key=lambda row: (row[0], row[1]))
+    work = found[0][2]
+    return {"id": work.get("id"), "service": work.get("service"), "kind": "dig", "starts_on": work.get("starts_on"),
+            "ends_on": work.get("ends_on"), "distance_m": round(found[0][1]), "source": work.get("source")}
+
+
+def _period_words(work: dict) -> tuple[str, str]:
+    from ml.civic_replies import date_words
+    a, b = date_words(work.get("starts_on")), date_words(work.get("ends_on"))
+    if a and b:
+        return f"{a[0]} – {b[0]}", f"{a[1]} – {b[1]}"
+    if a:
+        return f"с {a[0]}", f"{a[1]} бастап"
+    return "", ""
+
+
 def _model_version(used_model: dict | None) -> str:
     if used_model and used_model.get("model_version"):
         return f"{VERSION}+{used_model['model_version']}"
@@ -644,7 +709,7 @@ def route(text=None, category=None, subtopic=None, point=None, body=None, **_ign
     text = _text(text)
     category = _category(category)
     subtopic = _subtopic(category, subtopic)
-    _point(point)  # точка пока только проверяется: календарь работ R12 (кто копал рядом) — следующий шаг
+    point = _point(point)
     if not category and letters(text) < 3:
         raise ValueError("Нужен текст обращения (от 3 букв) или категория.")
 
@@ -698,6 +763,14 @@ def route(text=None, category=None, subtopic=None, point=None, body=None, **_ign
 
     # Покрытие для раскопа берём из категории только если её выбрал житель или сотрудник (не догадка модели).
     joint = joint_rule(norm, base if category_source == "given" else None) if norm and not thanks else None
+    # Раскоп или течь + точка: календарь работ R06 подскажет, чья раскопка рядом («кто копал» вместо догадки).
+    work = None
+    if joint is not None and joint.rule in ("dig_after_works", "burst_pit") and point is not None:
+        work = dig_work_near(point, prefer=None if joint.default_network else joint.lead)
+        if work is not None and (joint.default_network or work["service"] == joint.lead):
+            joint = Joint(joint.rule, work["service"], joint.partner, 0.85)
+        else:
+            work = None
     names = service_names()
 
     def nm(sid: str) -> tuple[str, str]:
@@ -709,6 +782,12 @@ def route(text=None, category=None, subtopic=None, point=None, body=None, **_ign
         (a_ru, a_kk), (b_ru, b_kk) = nm(joint.lead), nm(joint.partner)
         key = "dig_unknown" if joint.default_network else joint.rule
         why_ru, why_kk = (s.format(a=x, b=y) for s, x, y in zip(_JOINT_WHY[key], (a_ru, a_kk), (b_ru, b_kk)))
+        if work is not None:
+            period_ru, period_kk = _period_words(work)
+            why_ru = (f"Рядом шли раскопки: {a_ru}" + (f", {period_ru}" if period_ru else "") + f", {work['distance_m']} м. "
+                      f"{a_ru} — засыпка и сети, {b_ru} — покрытие.")
+            why_kk = (f"Жақын жерде қазба жұмыстары жүрді: {a_kk}" + (f", {period_kk}" if period_kk else "")
+                      + f", {work['distance_m']} м. {a_kk} — көму мен желі, {b_kk} — жабын.")
         role_why = _ROLE_WHY.get(joint.rule) or _ROLE_WHY["two_problems"]
         lead_score = 0.6 if joint.default_network else joint.score
         services = [
@@ -757,6 +836,7 @@ def route(text=None, category=None, subtopic=None, point=None, body=None, **_ign
         "category": category, "subtopic": subtopic, "category_source": category_source,
         "source": source,
         "model_version": _model_version(model if category_source == "model" else None),
+        "evidence": {"work": work} if work is not None else None,
         "ms": round((time.perf_counter() - started) * 1000, 2),
     }
 

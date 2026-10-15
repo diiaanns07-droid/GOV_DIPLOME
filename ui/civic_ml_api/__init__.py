@@ -29,13 +29,13 @@ from ui.civic_ml_api.errors import MLServiceUnavailable
 from ui.civic_ml_api.initiatives import set_initiative_source, similar_initiatives
 from ui.civic_ml_api.moderation import moderate, moderation_record, public_text
 from ui.civic_ml_api.replies import reply_draft
-from ui.civic_ml_api.routing import route, route_hint
+from ui.civic_ml_api.routing import route, route_hint, set_works_source
 from ui.civic_ml_api.similar_search import (connect_store, feedback_stats, records_source, set_complaint_source,
                                             similar, source_kind, warm_cache)
 
 __all__ = ["MLServiceUnavailable", "classify", "connect_store", "moderate", "moderation_record", "public_text",
            "records_source", "reply_draft", "reset", "route", "route_hint", "set_complaint_source",
-           "set_initiative_source", "similar",
+           "set_initiative_source", "set_works_source", "similar",
            "similar_initiatives", "status", "warm_cache", "warmup"]
 
 

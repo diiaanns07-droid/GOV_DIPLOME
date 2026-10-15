@@ -29,7 +29,7 @@ tests/civic/R04/round15/http_check_r04.py (modules ready; route 200/400; moderat
   POST /route {text?, category?, subtopic?, point?}
     -> {services:[{service, role: lead|partner, score, name_ru, name_kk, why_ru, why_kk}], joint, summary_ru,
         summary_kk, why_ru, why_kk, rule, category, subtopic, category_source: given|rules|model, source: rules|model,
-        model_version, ms}
+        model_version, evidence: {work} | null, ms}
   POST /moderate {text, lang?}
     -> {text_public, clean, action: publish|review, flags:[{kind, group: pii|rude, count, label_ru, label_kk}], rude,
         pii, hint_ru, hint_kk, version, ms}     (оригинала текста в ответе нет)
@@ -55,6 +55,11 @@ passport.fix_eta (только если есть — иначе «сообщим
 duplicate_of (+ код исходной жалобы). Текст жителя в черновик не попадает.
 Сцена 8: route(text="Яма после раскопок водоканала") -> water (lead) + road (partner), summary «Нужны 2 службы:
 Водоканал и Дорожная служба» (тест test_scene8_two_services).
+Передавайте и точку жалобы: route(text, category, subtopic, point=rec["point"]). Если в тексте раскоп или течь, а рядом
+(150 м) в календаре работ R06 есть раскопка сетей (ui.civic_store.v2.works_near, вид dig, начата не раньше 180 дней
+назад), route() назовёт её службу вместо догадки «водопровод» и напишет: «Рядом шли раскопки: Теплосеть, 1 сентября –
+20 сентября, 60 м. …»; запись работы — в ответе evidence.work {id, service, starts_on, ends_on, distance_m}.
+Нет R06 или базы — правило по тексту, без ошибки. Свой источник — ui.civic_ml_api.set_works_source(fn).
 
 ======================================================================================================================
 3. R16 / R13 / R17 — МОДЕРАЦИЯ ТЕКСТОВ СООБЩЕСТВА (уже вызывают — сверено с их ветками 15 окт 17:00)

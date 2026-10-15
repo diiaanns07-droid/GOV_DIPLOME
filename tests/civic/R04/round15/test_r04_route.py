@@ -172,3 +172,38 @@ def test_speed_route_under_30ms():
         times.append((time.perf_counter() - t0) * 1000)
     times.sort()
     assert times[int(0.95 * (len(times) - 1))] < 30, times[-5:]
+
+
+# ---------------------------------------------------------------- календарь работ R06: кто копал рядом
+def test_nearby_dig_work_names_the_network(monkeypatch):
+    from datetime import date, timedelta as td
+    today = date.today()
+    works = [{"id": "w-1", "service": "heating", "kind": "dig", "starts_on": (today - td(days=40)).isoformat(),
+              "ends_on": (today - td(days=20)).isoformat(), "distance_m": 60, "source": "demo"},
+             {"id": "w-2", "service": "road", "kind": "surface", "starts_on": today.isoformat(), "distance_m": 10},
+             {"id": "w-3", "service": "water", "kind": "dig", "starts_on": (today + td(days=200)).isoformat(),
+              "distance_m": 5}]                                   # плановая раскопка далеко в будущем — не она
+    R.set_works_source(lambda point, radius: works)
+    try:
+        res = route(text="Раскопали дорогу и так и бросили", point=[71.43, 51.12])
+        assert services(res) == ["heating", "road"]
+        assert res["evidence"]["work"]["id"] == "w-1" and res["why_ru"].startswith("Рядом шли раскопки: Теплосеть")
+        assert res["why_kk"].startswith("Жақын жерде қазба жұмыстары жүрді: Жылу желісі")
+        # Служба названа в тексте — чужая раскопка рядом её не меняет.
+        res = route(text="Водоканал раскопал дорогу", point=[71.43, 51.12])
+        assert services(res) == ["water", "road"] and res["evidence"] is None
+        # Без точки — как раньше.
+        assert route(text="Раскопали дорогу и так и бросили")["evidence"] is None
+    finally:
+        R.set_works_source(None)
+
+
+def test_works_source_failure_is_harmless():
+    def broken(point, radius):
+        raise RuntimeError("нет базы")
+
+    R.set_works_source(broken)
+    try:
+        assert services(route(text="Раскопали дорогу и так и бросили", point=[71.43, 51.12])) == ["water", "road"]
+    finally:
+        R.set_works_source(None)
