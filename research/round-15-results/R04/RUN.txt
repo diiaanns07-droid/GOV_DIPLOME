@@ -19,12 +19,13 @@ R04 · РАУНД 15 · КАК ЗАПУСТИТЬ И ПРОВЕРИТЬ
    python3 -B -c "from ui.civic_ml_api import reply_draft; print(reply_draft(text='Не горит фонарь', status='new', lang='kk')['text'])"
 
 2) Тесты R04 (без сети, ~1 с):
-   python3 -m pytest -q tests/civic/R04/round15        # 75 тестов: route, moderate, reply_draft, similar_initiatives
+   python3 -m pytest -q tests/civic/R04/round15        # 80 тестов: route, moderate, reply_draft, similar_initiatives
    python3 -m pytest -q tests/civic/R04/round14        # раунд 14: classify, similar, мат, «Это разные проблемы»
    (в облаке: /root/.local/bin/pytest с PYTHONPATH на системные пакеты — см. DELIVERY.json tests)
 
-3) Стенд с маршрутами /route, /moderate, /reply-draft (нужен patch R01 из INTEGRATION.txt п. 1, пока R01 не взял его):
-   git apply research/round-15-results/R04/patches/r01_web_server_r04_routes.patch     # временно, в своей копии
+3) Стенд с маршрутами /route, /moderate, /reply-draft. В ветке R01 (claude/brave-fermi-nhzetj @ 2bd5bb5e и новее)
+   маршруты уже есть — patch не нужен. На базе FINAL-4 без R01 — временно:
+   git apply research/round-15-results/R04/patches/r01_web_server_r04_routes.patch     # только в своей копии
    mkdir -p /tmp/birge
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
@@ -32,7 +33,7 @@ R04 · РАУНД 15 · КАК ЗАПУСТИТЬ И ПРОВЕРИТЬ
    printf 'parol-r04-test\nparol-r04-test\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
    CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655 &
    python3 -B tests/civic/R04/round15/http_check_r04.py   # 14 проверок: 200 / 400 / 403 / 404, вход сотрудника, CSRF
-   (потом: git checkout -- ui/web_server.py — это путь R01)
+   (если применяли patch: git checkout -- ui/web_server.py — это путь R01)
 
    Руками (curl):
    curl -s -X POST http://127.0.0.1:8655/api/civic/v2/route -H 'Content-Type: application/json' \
