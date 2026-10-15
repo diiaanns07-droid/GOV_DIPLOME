@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "fe8180fcf94e2345ede6bf88081d5c8c1e356fb1",
- "tested_sha": "fe8180fcf94e2345ede6bf88081d5c8c1e356fb1",
+ "code_sha": "7e25acf39e7c7b3f0ee93e00d83973482ec1ec9d",
+ "tested_sha": "7e25acf39e7c7b3f0ee93e00d83973482ec1ec9d",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -89,7 +89,7 @@
  "tests": {
   "pytest_R03_round15": {
    "status": "PASS",
-   "passed": 81,
+   "passed": 83,
    "skipped": 1,
    "failed": 0,
    "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
@@ -97,7 +97,7 @@
   },
   "pytest_R03_R09_R01_related": {
    "status": "PASS",
-   "passed": 857,
+   "passed": 860,
    "skipped": 10,
    "xfailed": 1,
    "failed": 0,
@@ -258,6 +258,7 @@
   "R15_S44": "исправлено cae2e270: любой флаг безопасности → модель не зовётся (offline_reason question_has_instructions)",
   "R10_B107": "исправлено 89359acf: warm_up() + patches/R01_warm_up.patch; скелетон с видимой надписью «Считаем по данным…»",
   "R10_B120": "исправлено 89359acf: чипы 44 px (видимая зона), кнопка «Спросить» 44 × 44 на 375; пустой экран — 3 размера шрифта",
-  "R15_R16_initiatives_name": "уже не актуально с 650d5ef6: первым идёт ui.civic_together.initiatives_summary (только published/done)"
+  "R15_R16_initiatives_name": "уже не актуально с 650d5ef6: первым идёт ui.civic_together.initiatives_summary (только published/done)",
+  "R11_kk_terms": "сверено с R11 b3502428: ответы по-казахски — «Жедел штаб», «төтенше жағдай»; запасной analyst.empty_text (kk) = словарь R11; 58 ключей analyst.* в словаре R11 совпадают"
  }
 }
