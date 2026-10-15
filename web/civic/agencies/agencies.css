@@ -42,6 +42,7 @@
 }
 .ag-head .bk-tabs {
   flex: 1 1 auto;
+  gap: 14px;
   min-width: 0;
   margin: 0;
   border-bottom: 0;
@@ -62,9 +63,9 @@
   background: var(--c-fill);
 }
 .ag-seg > button {
-  min-width: 44px;
+  min-width: 40px;
   min-height: 32px;
-  padding: 0 10px;
+  padding: 0 8px;
   border: 0;
   border-radius: 10px;
   background: transparent;
@@ -135,10 +136,35 @@
   font-weight: var(--fw-semi);
 }
 
+/* ───── KPI и фильтры одной строкой; подсказка списков и фильтры ───── */
+.ag-kpirow {
+  display: flex;
+  align-items: stretch;
+  gap: var(--s-2);
+}
+.ag-kpirow > .ag-kpis {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.ag-filters--bar {
+  flex: none;
+  margin-left: 0;
+}
+.ag-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+.ag-toolbar > .ag-note {
+  margin: 0;
+}
+
 /* ───── KPI ───── */
 .ag-kpis {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--s-2);
 }
 .ag-kpi {
@@ -924,6 +950,94 @@
   display: none;
 }
 
+/* Точка-пульс у вкладки «Кризис», пока кризис идёт (IA_ROUND15 §5.4); раз в 2 с, без движения при reduce */
+.ag-tabdot {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--c-danger);
+  vertical-align: 1px;
+}
+.ag-tabdot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--c-danger);
+  border-radius: 50%;
+  opacity: 0;
+  animation: ag-pulse 2s var(--ease-out) infinite;
+}
+.ag-actions--end {
+  justify-content: flex-end;
+}
+.ag-calendar {
+  min-height: 240px;
+}
+.ag-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 16px;
+}
+.ag-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 32px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: var(--r-s);
+  background: transparent;
+  color: var(--c-brand);
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.ag-link:hover {
+  background: var(--c-brand-soft);
+}
+.ag-link--quiet {
+  gap: 4px;
+  min-height: 28px;
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+}
+.ag-link--quiet .ic {
+  width: 12px;
+  height: 12px;
+}
+.ag-linkbtn {
+  min-height: 40px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: var(--r-s);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.ag-linkbtn:hover {
+  background: var(--c-fill);
+}
+.ag-templates--center {
+  justify-content: center;
+  margin: 4px 0 8px;
+}
+.ag-pub .ag-card--public {
+  max-width: 720px;
+}
+.ag-pub .ag-body {
+  display: grid;
+  gap: var(--s-3);
+}
+
 @keyframes ag-in {
   from {
     opacity: 0;
@@ -985,8 +1099,11 @@
   .ag-kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .ag-kpi:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
+  .ag-kpirow {
+    flex-direction: column;
+  }
+  .ag-filters--bar {
+    flex-wrap: wrap;
   }
   .ag-thead {
     display: none;
@@ -1090,7 +1207,8 @@
   .ag-upd {
     animation: none;
   }
-  .ag-card__badge[data-live]::after {
+  .ag-card__badge[data-live]::after,
+  .ag-tabdot::after {
     animation: none;
     opacity: 0.4;
     transform: none;
@@ -1136,8 +1254,43 @@
 .ag-banner__main {
   display: flex;
   flex: 1 1 auto;
-  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   min-width: 0;
+}
+.ag-banner__line {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ag-banner__line strong {
+  font-weight: var(--fw-semi);
+}
+.ag-banner__dot {
+  position: relative;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin: 0 4px 0 6px;
+  border-radius: 50%;
+  background: var(--c-danger);
+}
+.ag-banner__dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--c-danger);
+  border-radius: 50%;
+  opacity: 0;
+  animation: ag-pulse 2s var(--ease-out) infinite;
+}
+/* В слоте оболочки (BirgeShell.alertSlot, R01 §7.9) место и ширину задаёт контейнер #birge-alert */
+.ag-banner.ag-banner--slot {
+  position: static;
+  width: 100%;
+  transform: none;
+  animation: none;
 }
 .ag-banner__title {
   overflow: hidden;
@@ -1229,7 +1382,7 @@
 }
 @media (max-width: 760px) {
   /* Телефон: слева от колонки кнопок карты (они справа, 44 px + поля), подпись «Подробнее» — только стрелкой */
-  .ag-banner {
+  .ag-banner:not(.ag-banner--slot) {
     top: calc(68px + env(safe-area-inset-top));
     left: 8px;
     right: 64px;
@@ -1254,5 +1407,9 @@
   .ag-banner,
   .ag-public {
     animation: none;
+  }
+  .ag-banner__dot::after {
+    animation: none;
+    opacity: 0.4;
   }
 }

@@ -41,15 +41,30 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
      возвращаются в исходное состояние (SCHEMA R02 §4), настоящие (demo != true) не трогает. Без CIVIC_DEMO_WORLD при
      CIVIC_DEMO=1 R17 сам кладёт 2 примера («Буран в Нуре» идёт, «Авария теплосети» закрыта) и считает табло по
      своей фикстуре §5.1 (до поставки R09 v2.1) — на экране метка «Пример».
-  ж) Палитра Ctrl+K / режим показа: «Сцена 9 · Буран» → BirgeAgencies.openCrisis({incident: "inc-w15-buran"})
-     (демо-мир) или window.location.hash = "#agencies/crisis=inc-w15-buran"; «Сцена 8 · табло» → BirgeShell.setSection("agencies").
+  ж) Палитра Ctrl+K / режим показа (уже так в birge.js R01 @ 4dd0c8e6): «Сцена 9» → setSection("agencies",
+     {path: "crisis/inc-w15-buran"}); «Сцена 8 · табло» → setSection("agencies") (или path "board").
   з) Лимит частоты (по желанию): "incidents.updates": ((60, 60, False),) — житель опрашивает раз в минуту.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 2. R11 · меню (IA_ROUND15) и словарь
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
-  Экран регистрируется сам: BirgeShell.registerScreen({id: "agencies", mount, modes: ["akimat"], title: {ru, kk}}),
-  а если в словаре есть shell.nav.agencies — titleKey "shell.nav.agencies". Сейчас пункт попадает в «Ещё» акимата.
+  Оболочка раунда 15 (R01 @ 4dd0c8e6, IA_ROUND15) сама знает разделы agencies и crisis → window.BirgeAgencies — R17
+  тогда НЕ регистрируется (признак: BirgeShell.alertSlot), чтобы не перебить подпись «Ведомства». На старой оболочке
+  (FINAL-4) — registerScreen({id: "agencies", modes: ["akimat"]}) и пункт в «Ещё».
+  Что R17 поддерживает из IA_ROUND15 (проверено на ветке R01 @ 4dd0c8e6 c моим модулем — 104/104 PASS):
+    • путь раздела: #agencies/<board|joint|handoffs|calendar|crisis>, #agencies/crisis/<id>,
+      #agencies/crisis/new/<шаблон>/<район>; handle.setPath(path) без перемонтажа; при смене вкладки — opts.navigate;
+    • раздел crisis (#crisis/<id>): mount(root, {section: "crisis", path}) — публичная карточка (без задач служб);
+      сотруднику ещё «Открыть в штабе»; без id — идущие кризисы;
+    • вкладка «Календарь работ»: BirgeWorksCalendar.mount(panel, {map, apiBase, api, embedded: true, openTarget}) —
+      вкладка видна, только если модуль R12 загружен; главная кнопка — «Добавить работу» → #works (R06);
+    • у «Кризиса» точка-пульс, пока кризис идёт; «Кто за что отвечает» → #services (R08) внизу табло;
+    • баннер жителю — в BirgeShell.alertSlot() (§7.9), одна строка, точка-пульс 2 с, «Подробнее» → #crisis/<id>,
+      «Скрыть» — до конца сессии; без слота — свой контейнер и своя карточка.
+  Отступления от IA_ROUND15 (осознанно):
+    • строки табло 26 px, а не 44 px: иначе 20 служб не помещаются на одном экране 1366 (критерий «готово» R17);
+      на телефоне строка — две линии ≥ 44 px;
+    • период — «7 · 30 · 90 дней» (у IA — 7 · 30): 90 дней показывают редкие службы и передачи по кругу.
   Слой карты: BirgeShell.registerLayer({id: "crisis", …}); подпись — shell.layers.crisis, если ключ есть.
   Просьба: ключи shell.nav.agencies («Штаб ведомств» / «Ведомстволар штабы»), shell.layers.crisis («Кризис» /
   «Төтенше жағдай») и все ключи agencies.* / crisis.* / crisis.map.* из запасных словарей:
@@ -68,14 +83,14 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
   import ui.civic_agencies as agencies
   R06  agencies.updates(device, since=None) → [событие §5.8]: module "R17", kind "incident.update", target {district},
-       title_ru/kk «Буран в Нуре: <текст>», link "#incident=<id>" (открывает карточку кризиса на карте жителя).
+       title_ru/kk «Буран в Нуре: <текст>», link "#crisis/<id>" (публичная карточка, IA_ROUND15 §5.12).
        Зона жителя — двор R16 («Я живу здесь») или подписка R08 «Рядом» на район. Неизвестно, где живёт, — [].
   R08  agencies.board(days=30, district=None) / board_snapshot(…) → то же, что GET agencies/board (services[20], totals).
        agencies.agencies_week(days=7, district=None, lagging=3) → {lagging: [{service, overdue, open}×3], joint,
        handoffs, loops, open, overdue, demo, source, link: "#agencies"} — блок «Ведомства» «Картины дня».
        agencies.active_incidents(district=None) → идущие кризисы (публичная часть + progress по службам, link).
-       agencies.crisis_link(district, kind="blizzard") → "#agencies/crisis=<id>" (идёт кризис района) или
-       "#agencies/crisis=new&template=blizzard&district=nura" — для кнопки «Открыть кризисный штаб» у тревоги пульса.
+       agencies.crisis_link(district, kind="blizzard") → "#agencies/crisis/<id>" (идёт кризис района) или
+       "#agencies/crisis/new/blizzard/nura" — для кнопки «Открыть кризисный штаб» у тревоги пульса.
        В JS то же: BirgeAgencies.openCrisis({incident}) | BirgeAgencies.openCrisis({template: "blizzard", district: "nura"}).
   R03  agencies.board(days, district) и agencies.list_incidents(status="active", district=None) → {items: [...]}
        (имена совпадают с BOARD_FUNCS / INCIDENT_FUNCS в agent/civic_assistant/analyst/sources.py @ 6c7777e2).
@@ -139,3 +154,16 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
   полигон «от руки» → 422. Тексты ≤ 600, задач ≤ 30, обновлений ≤ 200 на кризис.
 
 LOCAL-задач нет: всё работает без сети (форма зоны — из data/astana_districts.geojson и yards.json R12, OSM, ODbL).
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+9. Наблюдения на стыках соседей (проверено 15 окт ~18:30 на ветке R01 @ 4dd0c8e6 + R12 @ 2c5d10db)
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  • R01 + R12: GET /api/civic/v2/works-calendar с сессией и CSRF проходит проверку шлюза (staff=True), но «сырой»
+    обработчик R12 отвечает 401 staff_required — шлюз не передаёт ему признак сотрудника (staff передаётся только для
+    staff_view). Нужно одно из двух: шлюз зовёт handle(..., staff=True) после своей проверки, или R12 доверяет шлюзу.
+    Из-за этого вкладка «Календарь работ» (и раздел works-calendar) показывает «Войдите как сотрудник».
+  • R12: клиент календаря на свежей вкладке берёт CSRF только из CivicShell.csrfToken() — его нет, пока сотрудник не
+    открывал редактор; R17 передаёт во вкладку свой клиент (токен из GET /api/civic/v1/session), раздел works-calendar
+    вне «Ведомств» этого не получит.
+  • R01: слот баннера (#birge-alert) на 1366 по вертикали совпадает со строкой чипов категорий (top 76 px) и может
+    закрыть «Ещё» у чипов; на 375 во всю ширину перекрывает кнопку «Моё место» справа — проверьте на кадрах.

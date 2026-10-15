@@ -7,7 +7,9 @@
  *   BirgeAgencies.openCrisis({ incident } | { template, district }) — кнопка «Открыть кризисный штаб» (R08, R13)
  *
  * В оболочке R01 экран встаёт сам: BirgeShell.registerScreen({id: "agencies", mount, modes: ["akimat"], …});
- * место в меню решает R11. Глубокие ссылки: #agencies/crisis=<id> и #agencies/crisis=new&template=blizzard&district=nura.
+ * место в меню решает R11 (IA_ROUND15 §5.4: «Ведомства»). Путь раздела (оболочка R01 раунда 15, handle.setPath):
+ * #agencies/<board|joint|handoffs|calendar|crisis>, #agencies/crisis/<id>, #agencies/crisis/new/<шаблон>/<район>;
+ * раздел «crisis» (#crisis/<id>) — публичная карточка кризиса (тот же модуль, opts.section = "crisis").
  * Данные — только API v2 (ui.civic_agencies): числа считает сервер, экран их показывает. Тексты — словарь R11
  * (ключи agencies.* и crisis.*); пока ключей нет — запасные строки ниже (список — INTEGRATION.txt R17).
  * Без библиотек; разметка через createElement (тексты служб и жителей не попадают в innerHTML).
@@ -32,6 +34,15 @@
       "agencies.tab.joint": "Совместные",
       "agencies.tab.handoffs": "Передачи",
       "agencies.tab.crisis": "Кризис",
+      "agencies.tab.calendar": "Календарь работ",
+      "agencies.calendar.add": "Добавить работу",
+      "agencies.calendar.missing": "Календарь работ ещё не подключён в этой сборке",
+      "agencies.services_link": "Кто за что отвечает",
+      "crisis.chronicle": "Хроника недели",
+      "crisis.open_hq": "Открыть в штабе",
+      "crisis.public.services": "Работают службы",
+      "crisis.public.updates": "Обновления служб",
+      "crisis.public.show": "Показать зону на карте",
       "agencies.period": "Период",
       "agencies.period.days": "{n} дн.",
       "agencies.district.all": "Все районы",
@@ -125,14 +136,14 @@
       "crisis.update.internal": "Только штабу",
       "crisis.update.ru": "Текст на русском",
       "crisis.update.kk": "Текст на казахском",
-      "crisis.update.send": "Отправить жителям",
+      "crisis.update.send": "Отправить обновление жителям",
       "crisis.update.save_note": "Сохранить заметку",
       "crisis.update.sent": "Обновление отправлено жителям зоны",
       "crisis.update.noted": "Заметка сохранена",
       "crisis.update.template": "Подставить текст шаблона",
       "crisis.update.empty": "Обновлений пока нет",
       "crisis.show_map": "Показать на карте",
-      "crisis.close": "Закрыть кризис",
+      "crisis.close": "Закрыть с итогом",
       "crisis.close.title": "Итог для жителей",
       "crisis.close.ru": "Итог на русском",
       "crisis.close.kk": "Итог на казахском",
@@ -141,7 +152,7 @@
       "crisis.result": "Итог",
       "crisis.none": "Сейчас кризисов нет",
       "crisis.none_text": "Когда случится буран, авария или прорыв, откройте штаб: зона, задачи служб, обновления жителям.",
-      "crisis.new": "Новый кризис",
+      "crisis.new": "Открыть кризисный штаб",
       "crisis.new.title": "Новый кризисный штаб",
       "crisis.new.kind": "Что случилось",
       "crisis.new.zone": "Зона",
@@ -182,7 +193,16 @@
       "agencies.tab.board": "Табло",
       "agencies.tab.joint": "Бірлескен",
       "agencies.tab.handoffs": "Жіберулер",
-      "agencies.tab.crisis": "Төтенше жағдай",
+      "agencies.tab.crisis": "Жедел штаб",
+      "agencies.tab.calendar": "Жұмыстар күнтізбесі",
+      "agencies.calendar.add": "Жұмыс қосу",
+      "agencies.calendar.missing": "Жұмыстар күнтізбесі бұл жинақта әлі қосылмаған",
+      "agencies.services_link": "Кім неге жауапты",
+      "crisis.chronicle": "Апта шежіресі",
+      "crisis.open_hq": "Штабта ашу",
+      "crisis.public.services": "Жұмыс істеп жатқан қызметтер",
+      "crisis.public.updates": "Қызметтердің жаңартулары",
+      "crisis.public.show": "Аймақты картадан көрсету",
       "agencies.period": "Кезең",
       "agencies.period.days": "{n} күн",
       "agencies.district.all": "Барлық аудандар",
@@ -256,7 +276,7 @@
       "agencies.empty_board": "Әзірге өтініш жоқ",
       "agencies.empty_board_text": "Тұрғындар мәселе туралы хабарлай бастағанда табло толады.",
       "agencies.staff_only": "Ведомстволар штабы — әкімдік қызметкерлеріне арналған",
-      "crisis.title": "Төтенше жағдай штабы",
+      "crisis.title": "Жедел штаб",
       "crisis.active": "Жүріп жатыр",
       "crisis.closed": "Аяқталды",
       "crisis.started": "{time} бастап",
@@ -276,14 +296,14 @@
       "crisis.update.internal": "Тек штабқа",
       "crisis.update.ru": "Орысша мәтін",
       "crisis.update.kk": "Қазақша мәтін",
-      "crisis.update.send": "Тұрғындарға жіберу",
+      "crisis.update.send": "Тұрғындарға жаңарту жіберу",
       "crisis.update.save_note": "Жазбаны сақтау",
       "crisis.update.sent": "Жаңарту аймақ тұрғындарына жіберілді",
       "crisis.update.noted": "Жазба сақталды",
       "crisis.update.template": "Үлгі мәтінін қою",
       "crisis.update.empty": "Әзірге жаңарту жоқ",
       "crisis.show_map": "Картадан көрсету",
-      "crisis.close": "Төтенше жағдайды жабу",
+      "crisis.close": "Қорытындымен жабу",
       "crisis.close.title": "Тұрғындарға қорытынды",
       "crisis.close.ru": "Орысша қорытынды",
       "crisis.close.kk": "Қазақша қорытынды",
@@ -292,8 +312,8 @@
       "crisis.result": "Қорытынды",
       "crisis.none": "Қазір төтенше жағдай жоқ",
       "crisis.none_text": "Боран, апат немесе құбыр жарылса, штабты ашыңыз: аймақ, қызметтердің тапсырмалары, тұрғындарға жаңартулар.",
-      "crisis.new": "Жаңа төтенше жағдай",
-      "crisis.new.title": "Жаңа төтенше жағдай штабы",
+      "crisis.new": "Жедел штабты ашу",
+      "crisis.new.title": "Жаңа жедел штаб",
       "crisis.new.kind": "Не болды",
       "crisis.new.zone": "Аймақ",
       "crisis.new.zone.district": "Аудан",
@@ -439,18 +459,20 @@
   function demoTag() { return h("span", { class: "ag-demo" }, [tr("common.demo")]); }
 
   // ------------------------------------------------------------------ сеть
-  // Клиент API v2. Запись сотрудника — с X-CSRF-Token: из оболочки (CivicShell.csrfToken) или, если её токена ещё
-  // нет (сотрудник не открывал редактор), из GET /api/civic/v1/session — как R08 «Службы». Клиент оболочки
-  // (opts.api.v2) не берём: он шлёт токен только из CivicShell и на свежей вкладке отправил бы запись без него.
+  // Клиент API v2. X-CSRF-Token сотрудника — во ВСЕХ запросах (шлюз R01 раунда 15 требует его и для чтения табло,
+  // CONTRACT §7 «сотрудник = сессия + CSRF»): из оболочки (CivicShell.csrfToken) или, если её токена ещё нет (сотрудник
+  // не открывал редактор), один раз из GET /api/civic/v1/session — как R08 «Службы». Житель без сессии — без токена.
+  // Клиент оболочки (opts.api.v2) не берём: он шлёт токен только из CivicShell и на свежей вкладке ушёл бы без него.
   function makeClient(opts) {
-    var cached = null;
-    function csrf() {
+    var cached = null, asked = false;
+    function csrf(force) {
       try {
         var cs = root.CivicShell;
         var token = cs && typeof cs.csrfToken === "function" ? cs.csrfToken() : null;
         if (token) return Promise.resolve(token);
       } catch (e) { /* оболочки нет */ }
-      if (cached) return Promise.resolve(cached);
+      if (cached || (asked && !force)) return Promise.resolve(cached);
+      asked = true;
       return fetch("/api/civic/v1/session", { credentials: "same-origin", headers: { Accept: "application/json" } })
         .then(function (r) { return r.json(); })
         .then(function (b) {
@@ -478,13 +500,15 @@
         }, function () { throw { status: 0, error: "network" }; });
     }
     return function request(method, path, body) {
-      if (method === "GET") return send(method, path, body, null);
       return csrf().then(function (token) {
         return send(method, path, body, token).catch(function (err) {
-          // Токен устарел (сессию обновили в другой вкладке) — один повтор со свежим.
-          if (err && err.error === "csrf_failed" && cached) {
+          // Токен устарел или вход случился после первого запроса — один повтор со свежим.
+          if (err && (err.error === "csrf_failed" || err.status === 401 || err.status === 403) && !err.retried) {
             cached = null;
-            return csrf().then(function (fresh) { return send(method, path, body, fresh); });
+            return csrf(true).then(function (fresh) {
+              if (!fresh) throw err;
+              return send(method, path, body, fresh).catch(function (again) { again.retried = true; throw again; });
+            });
           }
           throw err;
         });
@@ -537,25 +561,65 @@
   // ------------------------------------------------------------------ экран
   var mounted = null;     // текущий экземпляр (для openCrisis)
   var pending = null;     // глубокая ссылка, которую ещё не открыли
+  // Вкладки «Ведомств» (IA_ROUND15 §5.4): «Календарь работ» — модуль R12 внутри экрана R17, если он есть в сборке.
+  var TABS = ["board", "joint", "handoffs", "calendar", "crisis"];
+  var INC_RE = /^inc-[a-z0-9-]{4,40}$/;
+  function calendarModule() {
+    var m = root.BirgeWorksCalendar;
+    return m && typeof m.mount === "function" ? m : null;
+  }
+  function tabsAvailable() { return TABS.filter(function (t) { return t !== "calendar" || calendarModule(); }); }
+  // Путь раздела оболочки (IA_ROUND15 §7.3, #agencies/<путь>): board | joint | handoffs | calendar | crisis |
+  // crisis/<id кризиса> | crisis/new[/<шаблон>[/<район>]]. Неизвестный путь — null (вкладка из памяти).
+  function parsePath(path) {
+    var parts = String(path || "").split("/").filter(Boolean);
+    if (TABS.indexOf(parts[0]) < 0) return null;
+    if (parts[0] === "calendar" && !calendarModule()) return { tab: "board" };
+    if (parts[0] !== "crisis") return { tab: parts[0] };
+    if (parts[1] === "new") return { tab: "crisis", create: { template: parts[2] || null, district: DISTRICTS.indexOf(parts[3]) >= 0 ? parts[3] : null } };
+    if (INC_RE.test(parts[1] || "")) return { tab: "crisis", incident: parts[1] };
+    return { tab: "crisis" };
+  }
 
   function mount(rootEl, options) {
     var opts = { apiBase: "/api/civic/v2", titleTag: "h2" };
     Object.keys(options || {}).forEach(function (k) { if (options[k] != null) opts[k] = options[k]; });
+    // Раздел «crisis» (#crisis/<id>) — публичная карточка кризиса для жителя и сотрудника (IA_ROUND15 §3, §5.12).
+    if (opts.section === "crisis") return mountPublic(rootEl, opts);
     var request = makeClient(opts);
     var S = {
       tab: "board", days: 30, district: "", sort: { key: "overdue", dir: -1 },
       meta: null, board: null, joint: null, handoffs: null, incidents: null, detail: {},
-      open: null, openItems: {}, crisis: { id: null, form: null, closing: false, composer: { ru: "", kk: "", public: true } },
+      open: null, openItems: {}, calendar: null, crisis: { id: null, form: null, closing: false, composer: { ru: "", kk: "", public: true } },
       loading: {}, slow: {}, error: {}, seq: 0, alive: true, lang: lang(),
     };
     try {
       var saved = JSON.parse(root.sessionStorage.getItem("birge.agencies") || "{}");
-      if (["board", "joint", "handoffs", "crisis"].indexOf(saved.tab) >= 0) S.tab = saved.tab;
+      if (tabsAvailable().indexOf(saved.tab) >= 0) S.tab = saved.tab;
       if (PERIODS.indexOf(saved.days) >= 0) S.days = saved.days;
       if (DISTRICTS.indexOf(saved.district) >= 0) S.district = saved.district;
     } catch (e) { /* приватный режим: умолчания */ }
     function remember() {
       try { root.sessionStorage.setItem("birge.agencies", JSON.stringify({ tab: S.tab, days: S.days, district: S.district })); } catch (e) { /* нет хранилища */ }
+    }
+
+    var startPath = parsePath(opts.path);
+    var createOnStart = null;
+    if (startPath) {
+      S.tab = startPath.tab;
+      if (startPath.incident) S.crisis.id = startPath.incident;
+      if (startPath.create) createOnStart = startPath.create;
+    }
+    // Адрес раздела следует за вкладкой (#agencies/joint): оболочка R01 раунда 15 даёт navigate(path).
+    function navigate(path) {
+      if (typeof opts.navigate !== "function") return;
+      S.navigating = path;
+      try { opts.navigate(path); } catch (e) { /* оболочка без путей — адрес не меняем */ }
+      S.navigating = null;
+    }
+    function currentPath() {
+      if (S.tab !== "crisis") return S.tab;
+      return S.crisis.id ? "crisis/" + S.crisis.id : "crisis";
     }
 
     rootEl.classList.add("ag", "bk-app");
@@ -598,6 +662,7 @@
         if (S.tab === "board") load("board", "/agencies/board" + query());
         else if (S.tab === "joint") load("joint", "/agencies/joint" + query());
         else if (S.tab === "handoffs") load("handoffs", "/agencies/handoffs" + query());
+        else if (S.tab === "calendar") { if (S.calendar && S.calendar.handle && S.calendar.handle.reload) S.calendar.handle.reload(); }
         else loadIncidents();
       });
       render();
@@ -626,14 +691,14 @@
     // ---------------------------------------------------------------- шапка
     function renderHead() {
       var tabs = h("div", { class: "bk-tabs", role: "tablist", "aria-label": tr("agencies.title") },
-        ["board", "joint", "handoffs", "crisis"].map(function (id) {
-          var count = null;
-          if (id === "crisis" && S.incidents) {
-            var n = (S.incidents.items || []).filter(function (x) { return x.status === "active"; }).length;
-            if (n) count = h("span", { class: "bk-num", text: String(n) });
+        tabsAvailable().map(function (id) {
+          var live = null;
+          // «У «Кризиса» точка-пульс, пока кризис активен» (IA_ROUND15 §5.4); для чтения с экрана — слово «идёт».
+          if (id === "crisis" && activeCount() > 0) {
+            live = h("span", { class: "ag-tabdot", "data-live": "" }, [h("span", { class: "bk-sr-only", text: " · " + tr("crisis.active") })]);
           }
           return h("button", { type: "button", role: "tab", value: id, "aria-selected": String(S.tab === id), "data-tab": id,
-            tabindex: S.tab === id ? "0" : "-1" }, [tr("agencies.tab." + id), count]);
+            tabindex: S.tab === id ? "0" : "-1" }, [tr("agencies.tab." + id), live]);
         }));
       tabs.addEventListener("click", function (e) {
         var b = e.target.closest('[role="tab"]');
@@ -641,48 +706,57 @@
       });
       tabs.addEventListener("keydown", function (e) {
         if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-        var ids = ["board", "joint", "handoffs", "crisis"], i = ids.indexOf(S.tab);
+        var ids = tabsAvailable(), i = ids.indexOf(S.tab);
         e.preventDefault();
         setTab(ids[(i + (e.key === "ArrowRight" ? 1 : ids.length - 1)) % ids.length], true);
       });
+      // В шапке — только заголовок и вкладки (длинные казахские подписи не переносят строку); период и район — в строке
+      // KPI табло или в строке подсказки списков (filtersBar), «Обновить» — в строке «Обновлено» под ними.
       var filters = h("div", { class: "ag-filters" });
-      if (S.tab !== "crisis") {
-        var seg = h("div", { class: "ag-seg", role: "group", "aria-label": tr("agencies.period") }, PERIODS.map(function (d) {
-          return h("button", { type: "button", value: String(d), "aria-pressed": String(S.days === d), text: tr("agencies.period.days", { n: d }) });
-        }));
-        seg.addEventListener("click", function (e) {
-          var b = e.target.closest("button");
-          if (!b || Number(b.value) === S.days) return;
-          S.days = Number(b.value);
-          remember();
-          refresh();
-        });
-        var select = h("select", { class: "ag-select", "aria-label": tr("agencies.district.all") },
-          [h("option", { value: "", text: tr("agencies.district.all") })].concat(DISTRICTS.map(function (d) {
-            return h("option", { value: d, text: districtName(d) });
-          })));
-        select.value = S.district;
-        select.addEventListener("change", function () {
-          S.district = select.value;
-          remember();
-          refresh();
-        });
-        filters.append(seg, select);
+      if (S.tab === "crisis") {
+        filters.appendChild(h("button", { type: "button", class: "ag-iconbtn", "aria-label": tr("agencies.refresh"),
+          title: tr("agencies.refresh"), onclick: refresh }, [svg("i-refresh")]));
       }
-      var again = h("button", { type: "button", class: "ag-iconbtn", "aria-label": tr("agencies.refresh"), title: tr("agencies.refresh"),
-        onclick: refresh }, [svg("i-refresh")]);
-      filters.appendChild(again);
       var title = h(opts.titleTag === "h1" ? "h1" : "h2", { class: "ag-title", text: tr("agencies.title") });
       // «Пример» — на виду, рядом с заголовком, если числа вкладки синтетические (COMMON «Честность»).
-      var current = S.tab === "crisis" ? null : S[S.tab];
+      var current = S.tab === "crisis" || S.tab === "calendar" ? null : S[S.tab];
       var demo = current && (current.source === "fixture" || current.demo) ? h("span", { class: "ag-demo ag-demo--head",
         title: current.source === "fixture" ? tr("agencies.demo_note") : null }, [tr("common.demo")]) : null;
       headBox.replaceChildren.apply(headBox, [title, demo, tabs, filters].filter(Boolean));
+    }
+    // Период 7 · 30 · 90 дней и район — для табло, совместных и передач.
+    function filtersBar() {
+      var seg = h("div", { class: "ag-seg", role: "group", "aria-label": tr("agencies.period") }, PERIODS.map(function (d) {
+        return h("button", { type: "button", value: String(d), "aria-pressed": String(S.days === d), text: tr("agencies.period.days", { n: d }) });
+      }));
+      seg.addEventListener("click", function (e) {
+        var b = e.target.closest("button");
+        if (!b || Number(b.value) === S.days) return;
+        S.days = Number(b.value);
+        remember();
+        refresh();
+      });
+      var select = h("select", { class: "ag-select", "aria-label": tr("agencies.district.all") },
+        [h("option", { value: "", text: tr("agencies.district.all") })].concat(DISTRICTS.map(function (d) {
+          return h("option", { value: d, text: districtName(d) });
+        })));
+      select.value = S.district;
+      select.addEventListener("change", function () {
+        S.district = select.value;
+        remember();
+        refresh();
+      });
+      return h("div", { class: "ag-filters ag-filters--bar" }, [seg, select]);
+    }
+    function activeCount() {
+      if (S.activeHint != null && !S.incidents) return S.activeHint;
+      return ((S.incidents && S.incidents.items) || []).filter(function (x) { return x.status === "active"; }).length;
     }
     function setTab(id, focus) {
       S.tab = id;
       S.open = null;
       remember();
+      navigate(currentPath());
       refresh();
       if (focus) {
         var b = headBox.querySelector('[data-tab="' + id + '"]');
@@ -695,8 +769,11 @@
       var bits = [];
       if (data.source === "fixture") bits.push(h("span", { text: tr("agencies.demo_note") }));
       else if (data.source === "r09") bits.push(h("span", { text: tr("agencies.source.r09") }));
-      if (data.generated_at) bits.push(h("span", { text: tr("agencies.updated", { time: fmtTime(data.generated_at) }) }));
-      return h("p", { class: "ag-note" }, bits);
+      if (data.generated_at) {
+        bits.push(h("button", { type: "button", class: "ag-link ag-link--quiet", "data-action": "refresh", onclick: refresh,
+          title: tr("agencies.refresh") }, [svg("i-refresh"), tr("agencies.updated", { time: fmtTime(data.generated_at) })]));
+      }
+      return h("div", { class: "ag-note" }, bits);
     }
     function profileMap() {
       var map = {};
@@ -749,7 +826,7 @@
         kpi(totals.open, tr("agencies.kpi.open")),
         kpi(totals.overdue, tr("agencies.kpi.overdue"), totals.overdue > 0),
         kpi(totals.joint, tr("agencies.kpi.joint")),
-        kpi(totals.handoffs, tr("agencies.kpi.handoffs")),
+        // Передачи — во вкладке «Передачи» и в столбце табло: четыре плитки шире, казахские подписи не режутся.
         kpi(totals.verified_share == null ? "—" : pct(totals.verified_share), tr("agencies.kpi.verified")),
       ]);
       var table = h("div", { class: "ag-table", role: "table", "aria-label": tr("agencies.tab.board") });
@@ -788,7 +865,12 @@
       var legend = h("p", { class: "ag-note ag-legend", "aria-hidden": "true" }, ["overdue", "today", "ok", "answered"].map(function (k) {
         return h("span", { class: "ag-legend__item" }, [h("span", { class: "ag-legend__sw ag-bar__" + k }), tr("agencies.deadline." + k)]);
       }));
-      var parts = [kpis, sortbar, table, legend, noteLine(data)];
+      var services = h("button", { type: "button", class: "ag-link", "data-action": "services", onclick: function () {
+        if (typeof opts.openSection === "function") opts.openSection("services");
+        else if (root.BirgeShell) root.BirgeShell.setSection("services");
+      } }, [tr("agencies.services_link"), svg("i-chevron-right")]);
+      var parts = [h("div", { class: "ag-kpirow" }, [kpis, filtersBar()]), sortbar, table,
+        h("div", { class: "ag-foot" }, [legend, services]), noteLine(data)];
       if (data.empty) parts.splice(1, 0, h("p", { class: "ag-note", text: tr("agencies.empty_board_text") }));
       bodyBox.replaceChildren.apply(bodyBox, parts.filter(Boolean));
     }
@@ -938,7 +1020,7 @@
       if (S.error.joint) return errorState(bodyBox, S.error.joint, refresh);
       if (!data) return bodyBox.replaceChildren(S.slow.joint ? boardSkeleton() : h("div", { "aria-busy": "true" }));
       var items = data.items || [];
-      var head = h("p", { class: "ag-note", text: tr("agencies.joint.hint") });
+      var head = h("div", { class: "ag-toolbar" }, [h("p", { class: "ag-note", text: tr("agencies.joint.hint") }), filtersBar()]);
       if (!items.length) {
         var box = h("div", { class: "ag-empty" });
         emptyState(box, tr("agencies.joint.empty"), tr("agencies.joint.empty_text"), widenAction(), "users");
@@ -951,7 +1033,9 @@
         if (item.demo) sub.push(demoTag());
         return h("li", { class: "ag-lrow" }, [
           statusIcon(item.open ? (item.status === "new" ? "new" : "in_progress") : "fixed", 16),
-          h("div", { class: "ag-lrow__main" }, [h("span", { class: "ag-lrow__title", text: itemTitle(item) }), h("div", { class: "ag-lrow__sub" }, sub)]),
+          h("button", { type: "button", class: "ag-lrow__main ag-linkbtn", "data-complaint": item.id,
+            title: tr("agencies.detail.inbox"), onclick: function () { openInboxFor(item.lead, [item]); } },
+            [h("span", { class: "ag-lrow__title", text: itemTitle(item) }), h("span", { class: "ag-lrow__sub" }, sub)]),
           h("div", { class: "ag-lrow__end" }, item.parts.map(partChip).concat([deadlinePill(item.deadline, item.tab)])),
         ]);
       }));
@@ -969,8 +1053,9 @@
       if (S.error.handoffs) return errorState(bodyBox, S.error.handoffs, refresh);
       if (!data) return bodyBox.replaceChildren(S.slow.handoffs ? boardSkeleton() : h("div", { "aria-busy": "true" }));
       var items = data.items || [];
-      var hint = h("p", { class: "ag-note" }, [h("span", { text: tr("agencies.handoffs.hint") }),
-        data.loops ? h("span", { class: "ag-pill ag-pill--loop", title: tr("agencies.loop_hint"), text: tr("agencies.handoffs.loops", { n: data.loops }) }) : null]);
+      var hint = h("div", { class: "ag-toolbar" }, [h("p", { class: "ag-note" }, [h("span", { text: tr("agencies.handoffs.hint") }),
+        data.loops ? h("span", { class: "ag-pill ag-pill--loop", title: tr("agencies.loop_hint"), text: tr("agencies.handoffs.loops", { n: data.loops }) }) : null]),
+        filtersBar()]);
       if (!items.length) {
         var box = h("div", { class: "ag-empty" });
         emptyState(box, tr("agencies.handoffs.empty"), tr("agencies.handoffs.empty_text"), widenAction(), "forward");
@@ -1018,13 +1103,23 @@
         onclick: function () { openForm(null, null); } }, [svg("i-plus"), tr("crisis.new")]);
       if (!active.length) {
         var box = h("div", { class: "ag-empty" });
-        emptyState(box, tr("crisis.none"), tr("crisis.none_text"), { label: tr("crisis.new"), onClick: function () { openForm(null, null); } }, "check");
+        S.crisis.pick = S.crisis.pick || "blizzard";
+        emptyState(box, tr("crisis.none"), tr("crisis.none_text"), null, "check");
+        var picks = h("div", { class: "ag-templates ag-templates--center", role: "radiogroup", "aria-label": tr("crisis.new.kind") },
+          ["blizzard", "heat_outage", "water_outage"].map(function (kind) {
+            return h("button", { type: "button", class: "bk-chip", role: "radio", "aria-checked": String(S.crisis.pick === kind), "data-kind": kind,
+              onclick: function () { S.crisis.pick = kind; render(); } }, [svg("i-" + KIND_ICONS[kind]), tr("crisis.kind." + kind)]);
+          }));
+        var open = h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-action": "new-crisis",
+          onclick: function () { openForm(S.crisis.pick, null); } }, [tr("crisis.new")]);
+        var inner = box.querySelector(".bk-empty") || box;
+        inner.append(picks, open);
         parts.push(box);
       } else {
         if (active.length > 1) {
           parts.push(h("div", { class: "ag-chips", role: "group" }, active.map(function (inc) {
             return h("button", { type: "button", class: "bk-chip", "aria-pressed": String(S.crisis.id === inc.id),
-              onclick: function () { S.crisis.id = inc.id; loadIncident(inc.id); render(); } }, [pick(inc, "title")]);
+              onclick: function () { S.crisis.id = inc.id; navigate("crisis/" + inc.id); loadIncident(inc.id); render(); } }, [pick(inc, "title")]);
           })));
         }
         var current = S.detail[S.crisis.id] || active.filter(function (x) { return x.id === S.crisis.id; })[0] || active[0];
@@ -1071,6 +1166,8 @@
       if (full.status === "active" && S.meta) left.appendChild(addTaskForm(full));
       var actions = h("div", { class: "ag-actions" }, [
         h("button", { type: "button", class: "bk-btn", "data-action": "show-map", onclick: function () { showOnMap(full); } }, [svg("i-pin"), tr("crisis.show_map")]),
+        chronicleAvailable() ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-action": "chronicle",
+          onclick: function () { openChronicle(full); } }, [svg("i-clock"), tr("crisis.chronicle")]) : null,
         full.status === "active" ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-action": "close-crisis",
           onclick: function () { S.crisis.closing = !S.crisis.closing; render(); } }, [tr("crisis.close")]) : null,
       ]);
@@ -1368,6 +1465,8 @@
       request("POST", "/incidents", body).then(function (d) {
         S.crisis.form = null;
         S.detail[d.incident.id] = d.incident;
+        S.crisis.id = d.incident.id;
+        navigate("crisis/" + d.incident.id);
         toast(tr("crisis.new.created"), "ok");
         loadIncidents(d.incident.id);
         if (root.BirgeCrisisLayer && root.BirgeCrisisLayer.refresh) root.BirgeCrisisLayer.refresh();
@@ -1383,6 +1482,20 @@
         render();
       });
     }
+    function chronicleAvailable() {
+      var shell = root.BirgeShell;
+      return !!((shell && typeof shell.openReplay === "function") || root.BirgeReplay);
+    }
+    function openChronicle(inc) {
+      var shell = root.BirgeShell;
+      var opts7 = { days: 7, district: inc.zone && inc.zone.district || null, from: inc.started_at };
+      if (shell && typeof shell.openReplay === "function") { shell.openReplay(opts7); return; }
+      if (shell) shell.setSection("map");
+      setTimeout(function () {
+        var chip = doc.querySelector(".birge-replay-chip");
+        if (chip) chip.click();
+      }, 50);
+    }
     function showOnMap(inc) {
       var layer = root.BirgeCrisisLayer;
       if (layer && layer.focus) layer.focus(inc.id);
@@ -1390,27 +1503,84 @@
     }
 
     // ---------------------------------------------------------------- отрисовка
+    // ---------------------------------------------------------------- «Календарь работ» (модуль R12 внутри вкладки)
+    // IA_ROUND15 §5.4: BirgeWorksCalendar.mount(panel, {map, apiBase, embedded: true, openTarget}); главная кнопка
+    // вкладки — «Добавить работу» → раздел «Работы и отключения» R06 (#works). Модуль монтируется один раз за показ.
+    function dropCalendar() {
+      if (!S.calendar) return;
+      try { if (S.calendar.handle && S.calendar.handle.destroy) S.calendar.handle.destroy(); } catch (e) { /* модуль R12 */ }
+      S.calendar = null;
+    }
+    function renderCalendar() {
+      var mod = calendarModule();
+      if (!mod) {
+        var box = h("div", { class: "ag-empty" });
+        emptyState(box, tr("agencies.calendar.missing"), null, null, "calendar");
+        return bodyBox.replaceChildren(box);
+      }
+      if (S.calendar && bodyBox.contains(S.calendar.panel)) return;
+      dropCalendar();
+      var panel = h("div", { class: "ag-calendar", "data-calendar": "" });
+      var add = h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-action": "add-work", onclick: function () {
+        if (typeof opts.openSection === "function") opts.openSection("works");
+        else if (root.BirgeShell) root.BirgeShell.setSection("works");
+      } }, [svg("i-plus"), tr("agencies.calendar.add")]);
+      bodyBox.replaceChildren(h("div", { class: "ag-actions ag-actions--end" }, [add]), panel);
+      try {
+        // Клиент R17 вместо клиента оболочки: он сам достаёт CSRF сотрудника из сессии (шлюз R01 требует его и в GET
+        // календаря), ошибки — {status, error, message}, как ждёт R12 (err.status).
+        var calendarApi = { v2: request, ApiError: (opts.api && opts.api.ApiError) || Error };
+        S.calendar = { panel: panel, handle: mod.mount(panel, { apiBase: opts.apiBase, api: calendarApi, map: opts.map, embedded: true,
+          openTarget: opts.openTarget, close: opts.close, lang: lang(), t: opts.t }) || {} };
+      } catch (e) {
+        if (root.console) root.console.error("agencies calendar", e);
+        S.calendar = null;
+        errorState(panel, { status: 503 }, function () { S.calendar = null; render(); });
+      }
+    }
+
     function render() {
       if (!S.alive) return;
       renderHead();
       rootEl.setAttribute("data-tab", S.tab);
+      if (S.tab !== "calendar") dropCalendar();
       if (S.tab === "board") renderBoard();
       else if (S.tab === "joint") renderJoint();
       else if (S.tab === "handoffs") renderHandoffs();
+      else if (S.tab === "calendar") renderCalendar();
       else renderCrisis();
     }
     function relang() {
       if (S.lang === lang()) return;
       S.lang = lang();
+      if (S.calendar && S.calendar.handle && S.calendar.handle.setLang) {
+        try { S.calendar.handle.setLang(S.lang); } catch (e) { /* модуль R12 */ }
+      }
       render();
+    }
+    // Тот же раздел, другой путь (оболочка зовёт setPath без перемонтажа): вкладка, кризис или форма нового.
+    function setPath(path) {
+      if (S.navigating != null && S.navigating === path) return;
+      var next = parsePath(path);
+      if (!next) return;
+      if (next.create) { openForm(next.create.template, next.create.district); return; }
+      var sameTab = next.tab === S.tab, sameIncident = !next.incident || next.incident === S.crisis.id;
+      if (sameTab && sameIncident) return;
+      S.tab = next.tab;
+      S.open = null;
+      if (next.incident) { S.crisis.id = next.incident; S.crisis.form = null; }
+      remember();
+      refresh();
     }
     var off = null;
     if (I() && typeof I().onChange === "function") off = I().onChange(relang);
 
     var handle = {
       setLang: relang,
+      setPath: setPath,
       destroy: function () {
         S.alive = false;
+        dropCalendar();
         if (typeof off === "function") off();
         if (mounted === handle) mounted = null;
         rootEl.classList.remove("ag");
@@ -1419,8 +1589,12 @@
       openCrisis: function (target) {
         S.tab = "crisis";
         remember();
-        if (target && target.incident) { S.crisis.id = target.incident; S.crisis.form = null; loadMeta().then(function () { loadIncidents(target.incident); }); }
-        else openForm(target && target.template, target && target.district);
+        if (target && target.incident) {
+          S.crisis.id = target.incident;
+          S.crisis.form = null;
+          navigate("crisis/" + target.incident);
+          loadMeta().then(function () { loadIncidents(target.incident); });
+        } else openForm(target && target.template, target && target.district);
         render();
       },
       state: S,
@@ -1430,39 +1604,189 @@
       var p = pending;
       pending = null;
       handle.openCrisis(p);
+    } else if (createOnStart) {
+      openForm(createOnStart.template, createOnStart.district);
     } else {
       refresh();
     }
-    if (S.tab === "crisis" && !S.incidents) loadMeta().then(function () { loadIncidents(); });
+    if (S.tab === "crisis" && !S.incidents) loadMeta().then(function () { loadIncidents(S.crisis.id); });
+    // Точка-пульс у вкладки «Кризис» видна сразу, даже если открыта другая вкладка (лёгкий запрос публичного списка).
+    if (S.tab !== "crisis") {
+      request("GET", "/incidents?status=active").then(function (d) {
+        S.activeHint = ((d && d.items) || []).length;
+        if (S.alive) renderHead();
+      }, function () { /* без точки */ });
+    }
     return handle;
   }
 
+  // ------------------------------------------------------------------ публичная карточка кризиса (раздел «crisis»)
+  // #crisis/<id> — баннер жителю, уведомление R06, Ctrl+K (IA_ROUND15 §3, §5.12). Только публичная часть: без задач
+  // служб, заметок штаба и журнала. Без id — идущие кризисы списком. Сотруднику — ещё «Открыть в штабе».
+  function mountPublic(rootEl, opts) {
+    var request = makeClient(opts);
+    var P = { alive: true, id: null, data: null, list: null, names: {}, error: null, lang: lang(), slow: false };
+    rootEl.classList.add("ag", "ag-pub", "bk-app");
+    rootEl.setAttribute("data-agencies-public", "");
+    var box = h("div", { class: "ag-body", "aria-live": "polite" });
+    rootEl.replaceChildren(box);
+    function svcName(id) {
+      var i = I();
+      if (i && i.has && i.has("service." + id)) return i.t("service." + id);
+      var n = P.names[id];
+      return (n && (n[lang()] || n.ru)) || id;
+    }
+    function load(path) {
+      var first = String(path || "").split("/").filter(Boolean)[0] || "";
+      P.id = INC_RE.test(first) ? first : null;
+      P.data = null;
+      P.list = null;
+      P.error = null;
+      P.slow = false;
+      var timer = setTimeout(function () { if (P.alive && !P.data && !P.list && !P.error) { P.slow = true; render(); } }, SKELETON_DELAY);
+      var names = request("GET", "/agencies").then(function (d) {
+        ((d && d.services) || []).forEach(function (svc) { P.names[svc.id] = svc; });
+      }, function () { /* названия — из словаря R11 */ });
+      var main = P.id
+        ? request("GET", "/incidents/" + encodeURIComponent(P.id)).then(function (d) { P.data = d.incident; })
+        : request("GET", "/incidents?status=active").then(function (d) { P.list = (d && d.items) || []; });
+      Promise.all([names, main.catch(function (err) { P.error = err || { status: 0 }; })]).then(function () {
+        clearTimeout(timer);
+        if (P.alive) render();
+      });
+      render();
+    }
+    function zoneLabel(inc) {
+      var label = inc.zone_label || {};
+      return label[lang()] || label.ru || districtName(inc.zone && inc.zone.district);
+    }
+    function card(inc) {
+      var active = inc.status === "active";
+      var sub = [h("span", { text: tr("crisis.zone", { zone: zoneLabel(inc) }) }),
+        h("span", { text: tr("crisis.started", { time: fmtWhen(inc.started_at) }) }),
+        active ? null : h("span", { text: tr("crisis.closed") }), inc.demo ? demoTag() : null];
+      var parts = [h("div", { class: "ag-card__head" }, [
+        h("span", { class: "ag-card__badge", "data-live": active ? "" : null }, [svg("i-" + (KIND_ICONS[inc.kind] || "alert"))]),
+        h("div", null, [h("h3", { class: "ag-card__title", text: pick(inc, "title") }), h("div", { class: "ag-card__sub" }, sub)])])];
+      if ((inc.services || []).length) {
+        parts.push(h("p", { class: "ag-upd__text" }, [h("strong", { text: tr("crisis.public.services") + ": " }),
+          inc.services.map(svcName).join(" · ")]));
+      }
+      if (inc.result) parts.push(h("p", { class: "ag-upd__text" }, [h("strong", { text: tr("crisis.result") + ": " }), pick(inc.result, "text")]));
+      var updates = (inc.updates || []).filter(function (u) { return u.public !== false; });
+      parts.push(h("p", { class: "ag-section-title", text: tr("crisis.public.updates") }));
+      parts.push(updates.length ? h("ul", { class: "ag-feed" }, updates.map(function (u) {
+        return h("li", { class: "ag-upd" }, [h("div", { class: "ag-upd__meta" }, [h("span", { text: fmtWhen(u.at) }),
+          u.kind === "closed" ? h("span", { class: "ag-pill", text: tr("crisis.result") }) : null]),
+          h("p", { class: "ag-upd__text", text: pick(u, "text") })]);
+      })) : h("p", { class: "ag-note", text: tr("crisis.update.empty") }));
+      var actions = [h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-action": "show-zone", onclick: function () {
+        if (root.BirgeCrisisLayer && root.BirgeCrisisLayer.focus) root.BirgeCrisisLayer.focus(inc.id);
+        else if (typeof opts.openSection === "function") opts.openSection("map");
+      } }, [svg("i-pin"), tr("crisis.public.show")])];
+      if (opts.role === "akimat") {
+        actions.push(h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-action": "open-hq", onclick: function () {
+          if (typeof opts.openSection === "function") opts.openSection("agencies", "crisis/" + inc.id);
+          else openCrisis({ incident: inc.id });
+        } }, [tr("crisis.open_hq")]));
+      }
+      parts.push(h("div", { class: "ag-actions" }, actions));
+      return h("section", { class: "ag-card ag-card--public", "data-incident": inc.id, "aria-label": pick(inc, "title") }, parts);
+    }
+    function render() {
+      if (!P.alive) return;
+      if (P.error) {
+        if (P.error.status === 404) {
+          var nf = h("div", { class: "ag-empty" });
+          emptyState(nf, tr("crisis.none"), null, null, "check");
+          return box.replaceChildren(nf);
+        }
+        return errorState(box, P.error, function () { load(P.id || ""); });
+      }
+      if (P.id && !P.data || !P.id && !P.list) {
+        return box.replaceChildren(P.slow ? h("div", { class: "ag-card", "aria-busy": "true" }, [h("span", { class: "bk-skel bk-skel--title" }),
+          h("span", { class: "bk-skel bk-skel--line" })]) : h("div", { "aria-busy": "true" }));
+      }
+      if (P.data) return box.replaceChildren(card(P.data));
+      if (!P.list.length) {
+        var empty = h("div", { class: "ag-empty" });
+        emptyState(empty, tr("crisis.none"), null, null, "check");
+        return box.replaceChildren(empty);
+      }
+      box.replaceChildren.apply(box, P.list.map(card));
+    }
+    function relang() {
+      if (P.lang === lang()) return;
+      P.lang = lang();
+      render();
+    }
+    var off = I() && typeof I().onChange === "function" ? I().onChange(relang) : null;
+    load(opts.path);
+    return {
+      setLang: relang,
+      setPath: function (path) { load(path); },
+      destroy: function () {
+        P.alive = false;
+        if (typeof off === "function") off();
+        rootEl.classList.remove("ag", "ag-pub");
+        rootEl.removeAttribute("data-agencies-public");
+      },
+    };
+  }
+
   // ------------------------------------------------------------------ вход из других разделов
+  function crisisPath(target) {
+    if (target && target.incident) return "crisis/" + target.incident;
+    var path = "crisis/new";
+    if (target && target.template) path += "/" + target.template + (target.district ? "/" + target.district : "");
+    return path;
+  }
   function openCrisis(target) {
+    target = target || {};
     if (mounted) {
-      mounted.openCrisis(target || {});
+      mounted.openCrisis(target);
       return;
     }
-    pending = target || {};
-    if (root.BirgeShell && typeof root.BirgeShell.setSection === "function") root.BirgeShell.setSection("agencies");
+    pending = target;
+    var shell = root.BirgeShell;
+    if (shell && typeof shell.setSection === "function") shell.setSection("agencies", { path: crisisPath(target) });
   }
-  // #agencies/crisis=<id> · #agencies/crisis=new&template=…&district=… (кнопки R08, R13; ссылка из crisis_link()).
+  // Глубокая ссылка на кризис для оболочки БЕЗ путей разделов (FINAL-4): #agencies/crisis/<id>,
+  // #agencies/crisis/new/<шаблон>/<район> и прежний вид #agencies/crisis=<id>. Оболочка R01 раунда 15 ведёт такие
+  // адреса сама (раздел agencies + путь) — тогда здесь ничего не делаем.
   function fromHash() {
-    var m = /^#agencies\/crisis=([^&]+)(.*)$/.exec(root.location.hash || "");
-    if (!m) return false;
-    var params = {};
-    (m[2] || "").replace(/[&?]([a-z_]+)=([^&]*)/g, function (w, k, v) { params[k] = decodeURIComponent(v); });
-    var target = m[1] === "new" ? { template: params.template, district: params.district } : { incident: decodeURIComponent(m[1]) };
-    // Оболочка сама сбросит неизвестный адрес на карту — открываем раздел после неё.
-    setTimeout(function () { openCrisis(target); }, 0);
+    var hash = root.location.hash || "";
+    var target = null;
+    var m = /^#agencies\/(crisis(?:\/[A-Za-z0-9_-]+){0,3})$/.exec(hash);
+    if (m) {
+      var parsed = parsePath(m[1]);
+      if (parsed && parsed.incident) target = { incident: parsed.incident };
+      else if (parsed && parsed.create) target = parsed.create;
+    }
+    var old = /^#agencies\/crisis=([^&]+)(.*)$/.exec(hash);
+    if (!target && old) {
+      var params = {};
+      (old[2] || "").replace(/[&?]([a-z_]+)=([^&]*)/g, function (w, k, v) { params[k] = decodeURIComponent(v); });
+      target = old[1] === "new" ? { template: params.template, district: params.district } : { incident: decodeURIComponent(old[1]) };
+    }
+    if (!target) return false;
+    // Старая оболочка сбросит неизвестный адрес на карту — открываем раздел после неё; новая уже открыла раздел.
+    setTimeout(function () {
+      var shell = root.BirgeShell;
+      if (shell && shell.section === "agencies" && mounted) return;
+      openCrisis(target);
+    }, 0);
     return true;
   }
 
-  root.BirgeAgencies = { mount: mount, openCrisis: openCrisis, version: "r15-1" };
+  root.BirgeAgencies = { mount: mount, openCrisis: openCrisis, version: "r15-2" };
 
   function register() {
     var shell = root.BirgeShell;
     if (!shell || typeof shell.registerScreen !== "function") return false;
+    // Оболочка раунда 15 (R01, IA_ROUND15) сама знает разделы agencies и crisis (SCREENS → window.BirgeAgencies) и их
+    // подписи из словаря R11 — своя регистрация перебила бы название пункта меню. Признак такой оболочки — alertSlot.
+    if (typeof shell.alertSlot === "function") return true;
     var spec = { id: "agencies", mount: mount, modes: ["akimat"], title: { ru: KEYS.ru["agencies.title"], kk: KEYS.kk["agencies.title"] } };
     if (I() && I().has && I().has("shell.nav.agencies")) spec.titleKey = "shell.nav.agencies";
     return shell.registerScreen(spec);
