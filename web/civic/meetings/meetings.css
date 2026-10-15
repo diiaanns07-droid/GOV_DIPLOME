@@ -157,64 +157,89 @@
   min-height: 32px;
 }
 
-/* ── плитка даты: день недели · число · месяц (лист календаря) ── */
-.mt-date {
-  display: inline-flex;
-  flex: none;
+/* ── карточка встречи: компонент ui-kit R11 .bk-meet (раунд 15) ──
+   Запасные правила для сборки со старым ui-kit — с нулевой специфичностью (:where), поэтому настоящий .bk-meet из
+   components.css R11 главнее, а здесь только то, чего у него нет (строка «Ближайшая встреча», подсказка, «Не смогу»). */
+:where(.mt .bk-meet) {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--mt-line);
+  border-radius: var(--r-xl, 18px);
+  background: var(--c-surface, #fff);
+}
+:where(.mt .bk-meet__date) {
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 64px;
-  border: 1px solid var(--mt-line);
+  width: 64px;
+  height: 68px;
   border-radius: var(--r-m, 12px);
-  background: var(--c-surface, #fff);
-  line-height: 1.1;
+  background: var(--mt-fill);
 }
-.mt-date__wd,
-.mt-date__m {
-  color: var(--mt-ink-2);
-  font-size: 13px;
-  font-weight: 500;
-}
-.mt-date__d {
-  font-size: 19px;
+:where(.mt .bk-meet__date b) {
+  font-size: 22px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  line-height: 1.1;
 }
-.mt-date--sm {
-  width: 48px;
-  height: 56px;
+:where(.mt .bk-meet__date span) {
+  color: var(--mt-ink-2);
+  font-size: 12px;
 }
-
-/* ── ближайшая встреча (главное у жителя) ── */
+:where(.mt .bk-meet[data-state="past"] .bk-meet__date) {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--c-line-strong, rgba(18, 26, 23, 0.16));
+}
+:where(.mt .bk-meet__main) {
+  min-width: 0;
+}
+:where(.mt .bk-meet__title) {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+:where(.mt .bk-meet__meta) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 4px 0 0;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+}
+:where(.mt .bk-meet__meta > span) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+:where(.mt .bk-meet__cta) {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 8px 12px;
+}
+/* свои уточнения R13 (и при ui-kit R11) */
 .mt-hero {
-  display: grid;
-  gap: 12px;
-  padding: 16px;
-  border: 1px solid var(--mt-line);
-  border-radius: var(--r-l, 16px);
-  background: var(--c-surface, #fff);
   animation: mt-enter 220ms var(--mt-ease) both;
 }
-.mt-hero__top,
-.mt-dhead {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
+.mt .bk-meet {
+  align-items: start;
 }
-.mt-hero__main,
-.mt-dhead__main {
-  display: grid;
-  flex: 1;
-  gap: 4px;
-  min-width: 0;
+.mt-date--sm {
+  width: 48px !important;
+  height: 52px !important;
 }
 .mt-eyebrow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 8px;
+  margin-bottom: 2px;
   color: var(--mt-ink-2);
   font-size: 13px;
   font-weight: 500;
@@ -225,28 +250,15 @@
 .mt-eyebrow__when {
   color: var(--mt-ink);
 }
-.mt-hero__title,
-.mt-dhead__title {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.3;
-}
 .mt-dhead__title:focus {
   outline: none;
 }
-.mt-meta,
-.mt-place {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  color: var(--mt-ink-2);
-  font-size: 13px;
-}
-.mt-meta .ic,
-.mt-place .ic {
+.mt-meta .ic {
   width: 14px;
   height: 14px;
-  margin-top: 2px;
+}
+.mt-place {
+  flex-wrap: wrap;
 }
 .mt-place__label {
   min-width: 0;
@@ -278,12 +290,6 @@
   outline: 3px solid var(--c-focus, #152c26);
   outline-offset: 2px;
 }
-.mt-hero__act {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 12px;
-}
 .mt-going {
   min-height: 44px;
   gap: 8px;
@@ -299,19 +305,21 @@
 .mt-going[disabled] {
   cursor: default;
 }
-.mt-going__sep {
-  opacity: 0.6;
-}
 .mt-count {
   display: inline-block;
   min-width: 2ch;
-  text-align: left;
+}
+:where(.mt .bk-btn__count) {
+  margin-left: 2px;
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
 }
 /* «Мелочь вау» экрана: число «Приду» мягко подпрыгивает (+1) — без движения при prefers-reduced-motion */
 .mt-count--bump {
   animation: mt-bump 420ms var(--mt-ease);
 }
 .mt-hint {
+  grid-column: 1 / -1;
   color: var(--mt-ink-3);
   font-size: 13px;
 }
@@ -616,32 +624,47 @@
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
-.mt-orders {
+/* ── поручения: компонент ui-kit R11 .bk-orders / .bk-order; запасные правила — :where (нулевая специфичность) ── */
+:where(.mt .bk-orders) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:where(.mt .bk-order) {
   display: grid;
-}
-.mt-order {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px 0;
-  border-top: 1px solid var(--mt-line);
-  transition: background-color 400ms var(--mt-ease);
-}
-.mt-order:first-child {
-  border-top: 0;
-}
-.mt-st-ic {
-  margin-top: 2px;
-}
-.mt-order__main {
-  display: grid;
-  flex: 1;
-  gap: 4px;
-  min-width: 0;
-}
-.mt-order__text {
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 2px 10px;
+  padding: 10px 8px;
   font-size: 15px;
   line-height: 1.4;
+}
+:where(.mt .bk-order + .bk-order) {
+  border-top: 1px solid var(--mt-line);
+}
+:where(.mt .bk-order > .bk-st-ic) {
+  margin-top: 3px;
+}
+:where(.mt .bk-order__due) {
+  color: var(--mt-ink-3);
+  font-size: 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+:where(.mt .bk-order__due[data-late="true"]) {
+  color: var(--mt-danger);
+  font-weight: 600;
+}
+:where(.mt .bk-order__meta) {
+  grid-column: 2 / -1;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+}
+/* свои уточнения R13 */
+.mt-order {
+  transition: background-color 400ms var(--mt-ease);
+}
+.mt-order__text {
   overflow-wrap: anywhere;
 }
 .mt-order.is-done .mt-order__text {
@@ -652,23 +675,27 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 2px 6px;
-  color: var(--mt-ink-2);
-  font-size: 13px;
 }
 .mt-order__st {
   color: var(--mt-ink);
   font-weight: 500;
 }
-.mt-order.is-overdue .mt-order__due {
-  color: var(--mt-danger);
-}
 .mt-dot {
   color: var(--mt-ink-3);
+}
+.mt-linkline,
+.mt-order__tools {
+  grid-column: 2 / -1;
+}
+.mt-linkline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
 }
 .mt-linkchip {
   display: inline-flex;
   align-items: center;
-  justify-self: start;
   gap: 6px;
   padding: 2px 8px;
   border-radius: 999px;
@@ -677,12 +704,6 @@
   font-size: 12px;
   font-weight: 500;
   overflow-wrap: anywhere;
-}
-.mt-linkline {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 8px;
 }
 .mt-linkchip .ic {
   width: 12px;
@@ -785,6 +806,14 @@
 @media (max-width: 760px) {
   .mt {
     --mt-px: 16px;
+  }
+  /* срок — под текстом поручения, текст получает всю ширину (как .bk-order R11 на телефоне) */
+  :where(.mt .bk-order) {
+    grid-template-columns: 16px minmax(0, 1fr);
+  }
+  :where(.mt .bk-order__due) {
+    grid-column: 2;
+    text-align: left;
   }
   .mt-grid2 {
     grid-template-columns: minmax(0, 1fr);

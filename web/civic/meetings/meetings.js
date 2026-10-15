@@ -83,7 +83,7 @@
       "meet.result_lang_kk": "Итоги опубликованы на казахском языке",
       "meet.answered": "Ответы на встрече",
       "meet.answer_sign": "Аким района · {date}",
-      "meet.due": "срок {date}",
+      "meet.due": "до {date}",
       "meet.overdue": "просрочено",
       "meet.status.todo": "Не начато",
       "meet.status.in_progress": "В работе",
@@ -203,7 +203,7 @@
       "meet.result_lang_kk": "Қорытынды қазақ тілінде жарияланған",
       "meet.answered": "Кездесудегі жауаптар",
       "meet.answer_sign": "Аудан әкімі · {date}",
-      "meet.due": "мерзімі {date}",
+      "meet.due": "мерзімі: {date}",
       "meet.overdue": "мерзімі өтті",
       "meet.status.todo": "Басталмады",
       "meet.status.in_progress": "Орындалуда",
@@ -431,8 +431,10 @@
     return svg;
   }
   // Статус поручения — статус-иконка ui-kit + слово (VISUAL_BRIEF правило 4: цвет никогда не один).
-  const ORDER_SHAPE = { todo: "st-ring", in_progress: "st-half", done: "st-done" };
-  const ORDER_TONE = { todo: "todo", in_progress: "in_progress", done: "verified" };
+  // Как в ui-kit R11 (.bk-orders): «выполнено» — кольцо с галочкой (сообщил акимат); заливка «проверено жителями» — только
+  // для проверки жителями. Просроченное — красное кольцо.
+  const ORDER_SHAPE = { todo: "st-ring", in_progress: "st-half", done: "st-ring-check" };
+  const ORDER_TONE = { todo: "todo", in_progress: "in_progress", done: "fixed" };
   function statusIcon(order) {
     const svg = icon(ORDER_SHAPE[order.status] || "st-ring", "bk-st-ic mt-st-ic");
     svg.setAttribute("data-status", order.overdue ? "new" : ORDER_TONE[order.status] || "todo");
@@ -1024,21 +1026,23 @@
     }
 
     // Плитка даты: день недели, число, месяц (как лист календаря) — узнаётся с первого взгляда.
+    // Дата — блок ui-kit R11 .bk-meet__date (число и месяц); день недели — в строке времени рядом.
     function dateTile(iso, small) {
       const p = astana(iso);
       if (!p) return null;
-      const l = lang();
-      return h("span", { class: "mt-date" + (small ? " mt-date--sm" : ""), "aria-hidden": "true" }, [
-        h("span", { class: "mt-date__wd", text: WEEKDAYS_SHORT[l][p.wd] }),
-        h("b", { class: "mt-date__d", text: String(p.d) }),
-        h("span", { class: "mt-date__m", text: MONTHS[l][p.m] }),
+      return h("div", { class: "bk-meet__date mt-date" + (small ? " mt-date--sm" : ""), "aria-hidden": "true" }, [
+        h("b", { text: String(p.d) }),
+        h("span", { text: MONTHS[lang()][p.m] }),
       ]);
     }
-    function placeLine(m) {
+    function whenSpan(m) {
+      return h("span", null, [icon("clock"), h("span", { text: dateLong(m.at) + ", " + time(m.at) + "–" + time(m.ends_at) })]);
+    }
+    function placeSpan(m) {
       if (!m.place) return null;
       const label = pick(m.place, "label");
       const canMap = m.place.kind && m.place.id && typeof opts.openTarget === "function";
-      return h("p", { class: "mt-place" }, [icon("pin"), h("span", { class: "mt-place__label", text: label }),
+      return h("span", { class: "mt-place" }, [icon("pin"), h("span", { class: "mt-place__label", text: label }),
         canMap ? h("button", { type: "button", class: "mt-link", "data-focus": "map-" + m.id,
           onclick: () => opts.openTarget(m.place.kind, m.place.id) }, [tr("meet.on_map")]) : null]);
     }
@@ -1082,29 +1086,27 @@
       return h("div", { class: "mt-filter" }, [h("label", { class: "mt-filter__label", text: tr("meet.district_label") }), select]);
     }
     // Ближайшая встреча крупно (IA §5.3): дата, место «На карте», «Приду · 54» — главная кнопка жителя.
+    // Ближайшая встреча крупно (IA §5.3) — карточка ui-kit R11 .bk-meet: дата, название, время, место «На карте», ведущий;
+    // «Приду · 54» — главная кнопка жителя (число — .bk-btn__count).
     function renderHero(m, full) {
       const going = !!m.my_registration;
       const open = m.phase === "upcoming";
-      const count = h("span", { class: "mt-count" + (state.bump ? " mt-count--bump" : ""), text: num(m.registered || 0) });
+      const count = h("span", { class: "bk-btn__count mt-count" + (state.bump ? " mt-count--bump" : ""), text: num(m.registered || 0) });
       const button = h("button", { type: "button", class: "bk-btn mt-going" + (going ? " is-on" : " bk-btn--primary"),
         "aria-pressed": String(going), "data-focus": "going", disabled: !open || state.busy.register ? true : null,
         "aria-describedby": "mt-going-hint", onclick: () => register(m) },
-      [going ? icon("check") : null, h("span", { text: tr(going ? "meet.going_done" : "meet.going") }),
-        h("span", { class: "mt-going__sep", "aria-hidden": "true", text: "·" }), count]);
+      [going ? icon("check") : null, h("span", { text: tr(going ? "meet.going_done" : "meet.going") }), count]);
       button.setAttribute("aria-label", tr(going ? "meet.going_done" : "meet.going") + ". " + tr("meet.going_count", { n: m.registered || 0 }));
-      const article = h("article", { class: "mt-hero bk-card", "aria-labelledby": "mt-hero-title", "data-anchor": m.id }, [
-        h("div", { class: "mt-hero__top" }, [
-          dateTile(m.at),
-          h("div", { class: "mt-hero__main" }, [
-            h("p", { class: "mt-eyebrow" }, [h("span", { text: tr("meet.next") }), whenWords(m.at) ? h("span", { class: "mt-eyebrow__when", text: " · " + whenWords(m.at) }) : null,
-              m.demo ? demoTag() : null]),
-            h("h3", { class: "mt-hero__title", id: "mt-hero-title", text: pick(m, "title") }),
-            h("p", { class: "mt-meta" }, [icon("clock"), h("span", { text: dateLong(m.at) + ", " + time(m.at) + "–" + time(m.ends_at) })]),
-            placeLine(m),
-            h("p", { class: "mt-meta mt-host" }, [icon("user"), h("span", { text: tr("meet.host") })]),
-          ]),
+      const article = h("article", { class: "bk-meet mt-hero", "data-state": open ? "upcoming" : "past",
+        "aria-labelledby": "mt-hero-title", "data-anchor": m.id }, [
+        dateTile(m.at),
+        h("div", { class: "bk-meet__main" }, [
+          h("p", { class: "mt-eyebrow" }, [h("span", { text: tr("meet.next") }), whenWords(m.at) ? h("span", { class: "mt-eyebrow__when", text: " · " + whenWords(m.at) }) : null,
+            m.demo ? demoTag() : null]),
+          h("h3", { class: "bk-meet__title mt-hero__title", id: "mt-hero-title", text: pick(m, "title") }),
+          h("p", { class: "bk-meet__meta mt-meta" }, [whenSpan(m), placeSpan(m), h("span", null, [icon("user"), h("span", { text: tr("meet.host") })])]),
         ]),
-        h("div", { class: "mt-hero__act" }, [
+        h("div", { class: "bk-meet__cta" }, [
           button,
           going && open ? h("button", { type: "button", class: "mt-link mt-notgoing", "data-focus": "notgoing", onclick: () => register(m),
             text: tr("meet.not_going") }) : null,
@@ -1241,14 +1243,13 @@
       return wrap;
     }
     function detailHeader(m) {
-      return h("header", { class: "mt-dhead" }, [
+      return h("header", { class: "bk-meet mt-dhead", "data-state": m.phase === "upcoming" ? "upcoming" : "past" }, [
         dateTile(m.at),
-        h("div", { class: "mt-dhead__main" }, [
+        h("div", { class: "bk-meet__main" }, [
           h("p", { class: "mt-eyebrow" }, [phaseTag(m), m.demo ? demoTag() : null]),
-          h("h3", { class: "mt-dhead__title mt-focus-target", tabindex: "-1", text: pick(m, "title") }),
-          h("p", { class: "mt-meta" }, [icon("clock"), h("span", { text: dateLong(m.at) + ", " + time(m.at) + "–" + time(m.ends_at) })]),
-          placeLine(m),
-          h("p", { class: "mt-meta mt-host" }, [icon("user"), h("span", { text: tr("meet.host") + " · " + districtName(m.district) })]),
+          h("h3", { class: "bk-meet__title mt-dhead__title mt-focus-target", tabindex: "-1", text: pick(m, "title") }),
+          h("p", { class: "bk-meet__meta mt-meta" }, [whenSpan(m), placeSpan(m),
+            h("span", null, [icon("user"), h("span", { text: tr("meet.host") + " · " + districtName(m.district) })])]),
         ]),
       ]);
     }
@@ -1277,7 +1278,7 @@
         sec.appendChild(h("p", { class: "mt-empty-line", text: m.phase === "upcoming" ? tr("meet.orders_soon") : tr("meet.orders_empty") }));
         return sec;
       }
-      sec.appendChild(h("ul", { class: "mt-orders" }, m.orders.map((o) => orderRow(m, o, editable))));
+      sec.appendChild(h("ol", { class: "bk-orders mt-orders" }, m.orders.map((o) => orderRow(m, o, editable))));
       return sec;
     }
     function serviceName(o) {
@@ -1285,36 +1286,36 @@
       const names = o.service_name || (state.services || {})[o.service];
       return names ? (lang() === "kk" ? names.kk || names.ru : names.ru) : o.service;
     }
+    // Строка поручения — ui-kit R11 .bk-order: статус-иконка · текст · срок справа (красный, если просрочен) · ниже
+    // статус словом, служба (VISUAL_BRIEF правило 4: цвет никогда не один), связь, у акимата — смена статуса.
     function orderRow(m, o, editable) {
       const text = pick(o, "text");
-      const statusWord = h("span", { class: "mt-order__st", text: tr("meet.status." + o.status) });
-      const meta = h("p", { class: "mt-order__meta" }, [
-        statusWord,
+      const meta = h("span", { class: "bk-order__meta mt-order__meta" }, [
+        h("span", { class: "mt-order__st", text: tr("meet.status." + o.status) }),
         h("span", { class: "mt-dot", "aria-hidden": "true", text: "·" }),
         h("span", { text: serviceName(o) }),
-        h("span", { class: "mt-dot", "aria-hidden": "true", text: "·" }),
-        h("span", { class: "mt-order__due", text: tr("meet.due", { date: dateShort(o.due) }) }),
         o.overdue ? h("span", { class: "bk-tag bk-tag--danger", text: tr("meet.overdue") }) : null,
         o.demo && !m.demo ? demoTag() : null,  // у демо-встречи «Пример» уже стоит в шапке — без повтора в каждой строке
       ]);
-      const li = h("li", { class: "mt-order" + (o.overdue ? " is-overdue" : "") + (o.status === "done" ? " is-done" : ""), "data-anchor": o.id }, [
+      return h("li", { class: "bk-order mt-order" + (o.overdue ? " is-overdue" : "") + (o.status === "done" ? " is-done" : ""), "data-anchor": o.id }, [
         statusIcon(o),
-        h("div", { class: "mt-order__main" }, [h("p", { class: "mt-order__text", lang: textLang(text), text }), meta,
-          o.link ? linkChip(o) : null,
-          editable ? orderTools(m, o) : null]),
+        h("span", { class: "bk-order__text mt-order__text", lang: textLang(text), text }),
+        h("time", { class: "bk-order__due mt-order__due", datetime: o.due, "data-late": String(!!o.overdue), text: tr("meet.due", { date: dateShort(o.due) }) }),
+        meta,
+        o.link ? linkChip(o) : null,
+        editable ? orderTools(m, o) : null,
       ]);
-      return li;
     }
     function linkChip(o) {
       // Житель видит, с чем связано поручение и где это (подпись цели обращения R09 и его статус); номер записи — только
       // акимату. Есть цель — «На карте».
       const l = o.link;
       const place = pick(l, "label");
-      let label = place ? tr("meet.link." + l.kind) + ": " + place : tr("meet.linked." + l.kind);
+      let label = place ? tr("meet.link." + l.kind) + ": " + place : staff() ? tr("meet.link." + l.kind) : tr("meet.linked." + l.kind);
       if (l.status && I() && I().has && I().has("status." + l.status)) label += " · " + tr("status." + l.status);
       if (staff()) label += " · " + l.id;
       const canMap = l.target && l.target.kind && l.target.id && typeof opts.openTarget === "function";
-      return h("p", { class: "mt-linkline" }, [
+      return h("span", { class: "mt-linkline" }, [
         h("span", { class: "mt-linkchip" }, [icon(l.kind === "complaint" ? "message" : l.kind === "work" ? "calendar" : "cube"),
           h("span", { text: label })]),
         canMap ? h("button", { type: "button", class: "mt-link", "data-focus": "lmap-" + o.id,
