@@ -10,6 +10,10 @@
 
     python tests/civic/R08/demo_server.py --wave2-demo   # + уточнения и проверка жителями в демо-жалобах (синтетика)
 
+Раунд 15: «Ситуационный центр» — /civic/board/ (GET /akim/board), «Картина недели» — GET /akim/week. Соседи R17/R16/R13
+на стенде — фикстуры R08 (ui/civic_akim/fixtures, demo: true), если их модулей нет; --no-neighbors — как без соседей.
+--resident: board/week отвечают 401, страница показывает вход; учебный вход стенда — operator / пароль.
+
 Отдаёт только файлы из web/civic/ (без листинга папок) и API R08: GET /akim/summary, GET/PUT /akim/routing,
 POST /akim/decisions/<id>, GET /nearby, GET/POST /nearby/subscriptions, GET /nearby/updates. Стенд — локальный: все запросы считаются запросами сотрудника (--resident — наоборот),
 GET /api/civic/v1/session отдаёт учебный CSRF-токен. Выбор акима и правки служб пишутся во временную папку
@@ -66,7 +70,7 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return
         if path.startswith(PREFIX + "/"):
-            status, body = handle_get(path, parse_qs(url.query))
+            status, body = handle_get(path, parse_qs(url.query), staff=self.server.staff)
             self.send(status, json.dumps(body, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
             return
         if path.startswith("/civic/"):
@@ -109,6 +113,15 @@ class Handler(BaseHTTPRequestHandler):
         self.send(status, json.dumps(body, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
 
     def do_POST(self):
+        if urlsplit(self.path).path == "/api/civic/v1/session/login":  # учебный вход стенда (board.js, --resident)
+            body = self._body() or {}
+            ok = body.get("username") == "operator" and body.get("password") == "пароль"
+            if ok:
+                self.server.staff = True
+            reply = {"ok": True, "data": {"authenticated": True, "csrf_token": STAND_CSRF}} if ok else \
+                {"ok": False, "error": {"code": "invalid_credentials", "message": "Неверный логин или пароль"}}
+            self.send(200 if ok else 401, json.dumps(reply, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+            return
         self._write(handle_post)
 
     def do_PUT(self):
@@ -145,7 +158,12 @@ def main(argv=None):
                     help="дописать в демо-жалобы R07 уточнения и проверку жителями (синтетика, tests/civic/R08/wave2_demo.py)")
     ap.add_argument("--resident", action="store_true", help="запросы — как от жителя (POST/PUT ответят 403)")
     ap.add_argument("--state-dir", help="куда писать выбор акима и правки служб (по умолчанию — временная папка)")
+    ap.add_argument("--no-neighbors", action="store_true",
+                    help="без фикстур соседей R17/R16/R13: блоки ведомств, кризиса, жителей и встреч — «нет модуля»")
     args = ap.parse_args(argv)
+    import os
+    if not args.no_neighbors:
+        os.environ.setdefault("BIRGE_AKIM_FIXTURES", "1")  # фикстуры соседей — только стенд и тесты
     httpd = ThreadingHTTPServer((args.host, args.port), Handler)
     httpd.verbose = args.verbose
     httpd.staff = not args.resident
@@ -179,6 +197,7 @@ def main(argv=None):
     for warning in stand_warnings(httpd.kit_dir):
         print("ВНИМАНИЕ: " + warning, flush=True)
     print(f"Картина дня: http://{args.host}:{args.port}/civic/akim/", flush=True)
+    print(f"Ситуационный центр: http://{args.host}:{args.port}/civic/board/", flush=True)
     print(f"Службы: http://{args.host}:{args.port}/civic/akim/services.html · Рядом: http://{args.host}:{args.port}/civic/nearby/",
           flush=True)
     try:

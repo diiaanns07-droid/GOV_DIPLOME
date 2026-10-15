@@ -39,6 +39,9 @@ FORECAST_TOP = 5
 DONE = {"done", "closed", "completed", "fixed"}
 # Тема всплеска пульса → вид кризиса R17 (кнопка «Открыть кризисный штаб» с шаблоном, если кризиса ещё нет).
 CRISIS_KIND = {"snow_ice": "blizzard"}
+# Вид кризиса R17 (CONTRACT §5.5) → темы жалоб, тревоги по которым ведут в этот штаб. «other» — по району, любая тема.
+CRISIS_TOPICS = {"blizzard": {"snow_ice"}, "heat_outage": {"utilities"}, "water_outage": {"utilities"},
+                 "flood": {"utilities", "roads"}}
 
 
 def _time(value) -> datetime | None:
@@ -265,8 +268,15 @@ def crisis_links(pulse_items: list[dict], crisis_part: dict) -> None:
     for alarm in pulse_items:
         alarm_districts = [alarm["district"]] if alarm.get("district") else \
             [row["district"] for row in alarm.get("districts") or []]
-        match = next((a for a in active if not alarm_districts
-                      or {d["id"] for d in a["zone"]["districts"]} & set(alarm_districts)), None)
+
+        def related(a):
+            # Та же тема (буран ↔ «Снег и гололёд») и тот же район: «Дороги» в Нуре не ведут в штаб бурана.
+            topics = CRISIS_TOPICS.get(a.get("kind"))
+            if topics is not None and alarm.get("category") not in topics:
+                return False
+            zone = {d["id"] for d in a["zone"]["districts"]}
+            return not alarm_districts or not zone or bool(zone & set(alarm_districts))
+        match = next((a for a in active if related(a)), None)
         if match:
             alarm["crisis"] = {"id": match["id"], "title_ru": match["title_ru"], "title_kk": match["title_kk"]}
         elif alarm.get("category") in CRISIS_KIND:

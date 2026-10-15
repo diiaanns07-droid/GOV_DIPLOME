@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru" class="sc-root">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Ситуационный центр · Birge</title>
+  <!-- R08 · «Ситуационный центр» акимата (раунд 15): большой экран 1920×1080 и 1366×768 без прокрутки.
+       Тёмная тема — только здесь (VISUAL_BRIEF §2 п. 8). Данные: GET /api/civic/v2/akim/board (только сотрудник).
+       Адрес: /civic/board/  ·  ?district=nura — район  ·  ?block=agencies — закрепить блок  ·  ?rotate=0 — без смены
+       блоков  ·  ?lang=kk — язык. Подключение и ключи словаря — research/round-15-results/R08/INTEGRATION.txt. -->
+  <link rel="stylesheet" href="../ui-kit/tokens.css">
+  <link rel="stylesheet" href="../ui-kit/components.css">
+  <link rel="stylesheet" href="board.css">
+</head>
+<body class="sc-body">
+  <main id="board" class="sc" data-state="loading" data-api="/api/civic/v2" aria-busy="true">
+    <p class="sc-boot">Ситуационный центр · Birge</p>
+  </main>
+  <noscript><p class="sc-boot">Для ситуационного центра нужен включённый JavaScript.</p></noscript>
+  <script src="../i18n/i18n.js"></script>
+  <script src="board.js" data-autostart="board"></script>
+</body>
+</html>
