@@ -47,12 +47,13 @@ def test_hot_spots_equal_heat_map():
 
 
 def test_lagging_services_equal_source_totals():
-    """Табло R17 есть — его итог; нет — «Просрочено» «Картины дня» R08 (запасной расчёт)."""
+    """Табло R17 есть — его итог по сроку исправления (overdue_fix; без R08 — overdue); нет — «Просрочено» R08."""
     a = api.ask(SCENE[1], "ru", F.STAFF)
     lag = block(a, "lagging_services")
     if lag["source"]["role"] == "R17":
-        board = __import__("ui.civic_agencies", fromlist=["_"]).board_snapshot(30, None)
-        assert lag["numbers"][1]["value"] == board["totals"]["overdue"]
+        totals = __import__("ui.civic_agencies", fromlist=["_"]).board_snapshot(30, None)["totals"]
+        late = totals["overdue_fix"] if totals.get("overdue_fix") is not None else totals["overdue"]
+        assert lag["numbers"][1]["value"] == late
     else:
         assert lag["numbers"][1]["value"] == akim_mod.summary()["overdue"]["count"]
 

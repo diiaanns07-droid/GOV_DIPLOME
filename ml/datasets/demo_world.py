@@ -1498,12 +1498,14 @@ def build_initiatives(b: WorldBuilder, yards: list[dict], ideas: list[dict], sce
          {"text": "Посадили 6 саженцев и покрасили скамейки — сделано вместе: 15 соседей", "photo_ids": [],
           "at": {"day_at": {"day": -26, "hour": 15, "minute": 0}}}, None),
         ("snow", nura[0], "Расчистим двор после бурана", "Аулада қар көп, балалар мектепке әрең шығады. Ертең "
-         "таңертең бірге тазалайық!", "kk", {"in_hours": 19.0}, {"in_hours": 22.0}, ["күрек", "қолғап"], "published", 9,
+         "таңертең бірге тазалайық!", "kk", {"day_at": {"day": 1, "hour": 9, "minute": 0}},
+         {"day_at": {"day": 1, "hour": 12, "minute": 0}}, ["күрек", "қолғап"], "published", 9,
          {"by_akimat": True, "inventory": True, "pickup_service": "street_cleaning", "note": "Лопаты и вывоз снега"},
          None, None),
         ("help", nura[1 % len(nura)], "Поможем пожилым соседям в буран", "Пока метёт, принесём продукты и лекарства "
-         "соседям старше 70 лет. Пишите в группу двора, кому нужна помощь.", "ru", {"ago_hours": 30.0},
-         {"in_hours": 30.0}, ["тёплая одежда"], "published", 6, None, None, None),
+         "соседям старше 70 лет. Пишите в группу двора, кому нужна помощь.", "ru",
+         {"day_at": {"day": -1, "hour": 10, "minute": 0}}, {"day_at": {"day": 1, "hour": 20, "minute": 0}},
+         ["тёплая одежда"], "published", 6, None, None, None),
         ("repair", yard_of("esil", 0), "Покрасим лавочки и беседку", "Краску обещал акимат, кисти — свои.", "ru",
          {"next_weekday": {"weekday": 6, "hour": 11, "minute": 0}}, {"next_weekday": {"weekday": 6, "hour": 14,
                                                                                          "minute": 0}},

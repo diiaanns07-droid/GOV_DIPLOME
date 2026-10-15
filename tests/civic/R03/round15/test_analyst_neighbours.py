@@ -5,7 +5,11 @@
 """
 from __future__ import annotations
 
+import json
 import os
+from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -19,6 +23,9 @@ def clean():
     core.reset()
     yield
     core.reset()
+
+
+ROOT = Path(__file__).resolve().parents[4]
 
 
 def ask(question, **cfg):
@@ -96,35 +103,65 @@ def _real(module):
         pytest.skip(f"NOT_RUN: модуля {module} нет в этой ветке (появится в сборке R01)")
 
 
-def _late_total(totals):
-    """Итог табло R17, который аналитик называет «просрочено»: срок исправления R08, без R08 — срок ответа."""
-    return totals["overdue_fix"] if totals.get("overdue_fix") is not None else totals["overdue"]
+# Проверка с настоящими модулями соседей — в отдельном процессе Python: make_service() соседей регистрирует сервисы в их
+# модулях (R17 api_state, R16 _services, R13 _SERVICES); в общем прогоне pytest сборки R01 эти сервисы на временной базе
+# достались бы тестам R13 / R16 / R17, которые идут после R03 (R01 BUILD_LOG: «порядок тестов»).
+_REAL_CHECK = r"""
+import json, sys
+from agent.civic_assistant import api
+from agent.civic_assistant.analyst import core
+agencies = __import__("ui.civic_agencies", fromlist=["_"])
+together = __import__("ui.civic_together", fromlist=["_"])
+meetings = __import__("ui.civic_meetings", fromlist=["_"])
+calendar = __import__("engine.civic_geo.works_calendar", fromlist=["_"])
+akim = __import__("ui.civic_akim", fromlist=["_"])
+db = sys.argv[1]
+agencies.make_service(db)
+together.make_service(db)
+meetings.make_service(db)
+core.configure(provider=None, rate=(1000, 60.0))
+staff = {"username": "operator", "role": "editor"}
+board = agencies.board_snapshot(30, None)
+totals = board.get("totals") or {}
+# Итог табло, который аналитик называет «просрочено»: срок исправления R08, без R08 — срок ответа; табло без записей
+# (в тесте нет связки R01 с жалобами R09) — аналитик честно считает по срокам «Картины дня» R08.
+late = totals.get("overdue_fix") if totals.get("overdue_fix") is not None else totals.get("overdue")
+expect = {
+    "Какие службы отстают?": ("lagging_services", akim.summary()["overdue"]["count"] if board.get("empty") else late, 1),
+    "Где копаем дважды?": ("work_conflicts", calendar.conflicts_summary(None)["conflicts"], 0),
+    "Какие инициативы жителей?": ("initiatives", together.initiatives_summary(None)["upcoming"], 0),
+    "Что поручили на встречах с жителями?": ("meeting_orders", meetings.board_block(district=None)["counts"]["total"], 0),
+}
+rows = []
+for question, (kind, value, index) in expect.items():
+    b = next(x for x in api.ask(question, "ru", staff)["blocks"] if x["kind"] == kind)
+    got = b["numbers"][index]["value"] if b["status"] == "ok" and len(b["numbers"]) > index else None
+    rows.append({"q": question, "kind": kind, "status": b["status"], "role": b["source"]["role"], "value": value,
+                 "got": got, "lines": b["lines"]["ru"][:2]})
+crisis = next(x for x in api.ask("Что с бураном?", "ru", staff)["blocks"] if x["kind"] == "crisis")
+print(json.dumps({"rows": rows, "board_empty": bool(board.get("empty")), "crisis_role": crisis["source"]["role"]},
+                 ensure_ascii=False))
+"""
 
 
-def test_real_neighbours_if_present(tmp_path, monkeypatch):
+def test_real_neighbours_if_present(tmp_path):
     agencies, together, meetings = _real("ui.civic_agencies"), _real("ui.civic_together"), _real("ui.civic_meetings")
     calendar = _real("engine.civic_geo.works_calendar")
     if not all(hasattr(m, n) for m, n in ((agencies, "board_snapshot"), (agencies, "active_incidents"),
                                           (together, "initiatives_summary"), (meetings, "board_block"),
                                           (calendar, "conflicts_summary"))):
         pytest.skip("NOT_RUN: функции соседей «для R03» ещё не в сборке")
-    monkeypatch.setenv("CIVIC_DEMO", "1")
-    monkeypatch.delenv("CIVIC_DEMO_WORLD", raising=False)
-    db = str(tmp_path / "civic.sqlite3")
-    agencies.make_service(db)
-    together.make_service(db)
-    meetings.make_service(db)
-    core.configure(provider=None, rate=(1000, 60.0))
-    expect = {
-        "Какие службы отстают?": ("lagging_services", _late_total(agencies.board_snapshot(30, None)["totals"]), 1),
-        "Где копаем дважды?": ("work_conflicts", calendar.conflicts_summary(None)["conflicts"], 0),
-        "Какие инициативы жителей?": ("initiatives", together.initiatives_summary(None)["upcoming"], 0),
-        "Что поручили на встречах с жителями?": ("meeting_orders", meetings.board_block(district=None)["counts"]["total"], 0),
-    }
-    for question, (kind, value, index) in expect.items():
-        b = block(api.ask(question, "ru", F.STAFF), kind)
-        assert b["status"] in ("ok", "empty"), (question, b["status"], b["lines"]["ru"])
-        if b["status"] == "ok":
-            assert b["numbers"][index]["value"] == value, (question, b["numbers"])
-    crisis = block(api.ask("Что с бураном?", "ru", F.STAFF), "crisis")
-    assert crisis["source"]["role"] == "R17" or os.environ.get("CIVIC_DEMO_WORLD") == "1"
+    env = dict(os.environ, CIVIC_DEMO="1")
+    env.pop("CIVIC_DEMO_WORLD", None)
+    env.pop("CIVIC_DB_PATH", None)
+    proc = subprocess.run([sys.executable, "-B", "-c", _REAL_CHECK, str(tmp_path / "civic.sqlite3")], cwd=ROOT,
+                          env=env, capture_output=True, text=True, timeout=240)
+    assert proc.returncode == 0, proc.stderr[-3000:]
+    data = json.loads(proc.stdout.strip().splitlines()[-1])
+    for row in data["rows"]:
+        assert row["status"] in ("ok", "empty"), row
+        if row["kind"] == "lagging_services":
+            assert row["role"] == ("R08" if data["board_empty"] else "R17"), row
+        if row["status"] == "ok":
+            assert row["got"] == row["value"], row
+    assert data["crisis_role"] == "R17"

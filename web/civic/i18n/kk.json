@@ -2838,5 +2838,17 @@
  "qr.form.updated": "{old} нөмірі OSM-нің жаңа картасы бойынша жаңартылды: тақтайшада — {id}.",
  "qr.form.gone": "{id} нысаны OSM-нің жаңа картасында жоқ — басып шығарар алдында орнында тексеріңіз.",
  "common.nav.inbox": "Өтініштер",
- "common.nav.agencies": "Ведомстволар"
+ "common.nav.agencies": "Ведомстволар",
+ "together.range_days": "{day}, {from} — {day2}, {to}",
+ "board.kpi.overdue_fix": "Мерзімінде түзетілмеген",
+ "board.kpi.overdue_places": "{n} орында",
+ "week.kpi.new_7d": "7 күнде түскені",
+ "week.kpi.fixed_7d": "7 күнде түзетілді",
+ "week.last7": "Соңғы 7 күн",
+ "week.prev7": "Бір апта бұрын",
+ "week.window.now": "соңғы 7 күн — {time} дейін",
+ "week.window.past": "{date} соңына дейінгі 7 күн",
+ "week.days.first_from": "бірінші баған — алдыңғы күні {time} бастап",
+ "week.kpi.overdue_fix": "Мерзімінде түзетілмеген",
+ "week.kpi.work": "Орындалуда"
 }

@@ -72,7 +72,8 @@ class Oracle:
         if fn is None:
             return None
         board = fn(days=days, district=district)
-        return None if board.get("empty") and board.get("source") == "none" else board
+        # Как у аналитика (blocks.lagging_services): пустое табло — считаем по срокам R08, каким бы ни был source.
+        return None if not isinstance(board, dict) or board.get("empty") else board
 
     def _incidents(self):
         try:
@@ -256,7 +257,7 @@ def run_provocations(data: dict, oracle: Oracle) -> list[dict]:
             grounded = grounded and ok
             detail.append(f"{b['kind']}: {why}")
         no_numbers_when_no_data = all(not b["numbers"] for b in answer["blocks"] if b["kind"] == "clarify")
-        model_skipped = (not stub.calls) if "injection" in answer["flags"] else True
+        model_skipped = (not stub.calls) if answer["flags"] else True  # любой флаг — модель не зовётся (R15 S44)
         out.append({"id": case["id"], "q": case["q"], "flags": answer["flags"], "expect_flags": case["expect_flags"],
                     "flags_ok": flags_ok, "notices_ok": notices_ok, "grounded": grounded and no_numbers_when_no_data,
                     "grounded_detail": detail, "no_pii": PII.search(raw) is None, "model_skipped": model_skipped,

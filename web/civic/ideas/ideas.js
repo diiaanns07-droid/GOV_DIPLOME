@@ -40,7 +40,6 @@
   }
   var TITLE_MAX = 60;
   var TEXT_MAX = 300;
-  var STATUS_LOOK = { review: "new", voting: "accepted", checking: "in_progress", project: "fixed", rejected: "rejected", hidden: "rejected" };
 
   // Ключи, которых пока нет в словаре R11 (переданы в INTEGRATION.txt R06, раздел «Ключи волны 2»).
   // Ключи схемы R11 (SCHEMES_R06_R13 §2.7) — их тексты из словаря R11 2b8f72e: в словаре сборки FINAL-2 их ещё нет.
@@ -804,8 +803,10 @@
       return h("span", { class: "bk-pill ri-pill" + (PILL_KIT[tone] ? " " + PILL_KIT[tone] : ""), "data-tone": tone, text: text });
     }
     var PILL_KIT = { warn: "bk-pill--review", ok: "bk-pill--accepted" };
-    var IDEA_TONE = { review: "warn", checking: "warn", voting: "neutral", project: "ok", rejected: "muted", hidden: "muted" };
-    var PROJ_TONE = { proposal: "neutral", approved: "ok", rejected: "muted" };
+    // Зелёный в Birge — только «исправлено» (VISUAL_BRIEF раунда 15, правило 4; ревью R11 R06-3): «Принято в проект» и
+    // «Одобрен» — спокойные серые плашки, решение видно по слову; янтарь — «ждёт проверки».
+    var IDEA_TONE = { review: "warn", checking: "warn", voting: "neutral", project: "neutral", rejected: "muted", hidden: "muted" };
+    var PROJ_TONE = { proposal: "neutral", approved: "neutral", rejected: "muted" };
     function districtShort(d) {
       return d ? tr("district." + d) : null;
     }

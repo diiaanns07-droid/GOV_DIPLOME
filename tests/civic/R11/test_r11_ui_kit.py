@@ -144,7 +144,8 @@ def test_touch_targets_and_font_sizes():
     assert re.search(r"--tap:\s*44px", TOKENS)
     sizes = {int(x) for x in re.findall(r"font-size:\s*(\d+)px", TOKENS + COMPONENTS)}
     assert sizes <= {12, 13, 14, 15, 16, 18, 19, 22, 34}, sizes
-    for name, px in (("xs", 12), ("caption", 13), ("small", 14), ("body", 15), ("lead", 16), ("title", 19),
+    # --fs-xs 13, не 12 (раунд 15, приёмка R10 B-112: мельче 13 px текста нет — CLEAN_PASS §4, решение владельца 12 окт)
+    for name, px in (("xs", 13), ("caption", 13), ("small", 14), ("body", 15), ("lead", 16), ("title", 19),
                      ("h1", 22), ("num", 34)):
         assert f"--fs-{name}: {px}px" in TOKENS, name
     weights = set(re.findall(r"font-weight:\s*(\d+)", TOKENS + COMPONENTS))
