@@ -1,0 +1,17 @@
+R11 · раунд 15 · RUN — как проверить поставку
+
+1. Витрина ui-kit (компоненты раунда 15 — раздел «Раунд 15» внизу страницы):
+     python3 -m http.server 8791 --directory web/civic
+     → http://127.0.0.1:8791/ui-kit/index.html          (?lang=kk — сразу казахский; ҚАЗ · РУС в шапке витрины)
+   В стенде Birge та же витрина: http://127.0.0.1:8655/civic/ui-kit/index.html
+   Что можно сделать: нажать «Я приду» (+1 с подпрыгиванием, «Вы идёте»), ▶ хроники (ползунок идёт по дням), вкладки.
+
+2. Тесты R11 (без сети):
+     python3 -m pytest -q tests/civic/R11                 # словари, токены, значки, компоненты раунда 15
+     node tests/civic/R11/i18n.test.cjs && node tests/civic/R11/i18n_lang_order.test.cjs && node tests/civic/R11/ui_kit.test.cjs
+     python3 tests/civic/R11/i18n_tools.py check          # словари ru = kk, без технических слов и пустых переводов
+
+3. Ключи ролей в словарь (по их INTEGRATION):
+     python3 tests/civic/R11/i18n_tools.py add <файл.json>   # формат — в начале i18n_tools.py; пометки ⚑ → research/round-15-results/R11/kk_notes.json
+
+4. Схема меню — research/round-15-results/R11/IA_ROUND15.md (ставит R01 в web/civic/shell/birge.js, §7).

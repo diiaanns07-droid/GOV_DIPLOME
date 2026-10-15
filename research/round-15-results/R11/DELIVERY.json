@@ -1,0 +1,45 @@
+{
+ "role": "R11",
+ "round": 15,
+ "branch": "claude/gracious-mendel-eopem6",
+ "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
+ "restored_from": null,
+ "code_sha": "6724cc9d",
+ "tested_sha": "6724cc9d",
+ "push_status": "OK (см. git log ветки; этот файл пушится следующим коммитом)",
+ "updated": "2026-10-15 16:59 Астана",
+ "changed_paths": [
+  "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
+  "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
+  "web/civic/ui-kit/icons.svg (+14 значков, +18 линейных иллюстраций)",
+  "web/civic/ui-kit/index.html (витрина: раздел «Раунд 15», ru/kk)",
+  "web/civic/i18n/ru.json, kk.json (+22 ключа меню и оболочки раунда 15)",
+  "tests/civic/R11/i18n_tools.py (пометки и источники ключей — в research/round-15-results/R11/)",
+  "tests/civic/R11/test_r11_ui_kit_r15.py (новый)",
+  "research/round-15-results/R11/ (IA_ROUND15.md, INTEGRATION.txt, RUN.txt, DELIVERY.json, kk_notes.json, key_sources.json, screens/)"
+ ],
+ "deliverables": {
+  "IA_ROUND15": "research/round-15-results/R11/IA_ROUND15.md — меню жителя и акимата, «Ещё» группами, экраны (главное, одна главная кнопка, чего нет, слой), хроника — чип легенды, ситуационный центр — страница, запасные места FINAL-4; опубликован 15 окт ~16:37 Астаны (08bde777)",
+  "ui_kit_r15": "компоненты: .bk-yard, .bk-feed, .bk-join, .bk-support, .bk-init, .bk-done, .bk-svcs/.bk-svc, .bk-deadline, .bk-board, .bk-handoffs, .bk-wcal, .bk-conflict, .bk-advice, .bk-crisis, .bk-crisis-hd, .bk-svcchip, .bk-zone, .bk-replay, .bk-range, .bk-meet, .bk-orders, .bk-bell, .bk-notify, .bk-answer, .bk-sc (+ .bk-dark)",
+  "dictionary": "ru = kk (проверка i18n_tools check PASS); +22 ключа shell.nav.* / shell.more.group.* / shell.bell.* / shell.replay.* / shell.board.* / shell.alert.*"
+ },
+ "tests": {
+  "pytest tests/civic/R11": "PASS 27/27",
+  "node tests/civic/R11 (i18n, lang_order, ui_kit)": "PASS 3/3",
+  "i18n_tools check": "PASS",
+  "витрина ui-kit, Chromium (Playwright) 1366/375 × ru/kk": "PASS: ошибок консоли 0, горизонтальной прокрутки на 375 нет; обрезка текста — только подписи узких полос календаря на 375 (по задумке: полное имя в aria-label/title)",
+  "pytest tests/civic (полный набор FINAL-4 + изменения R11)": "NOT_RUN на момент записи — идёт прогон, итог допишу в STATUS"
+ },
+ "screens": [
+  "research/round-15-results/R11/screens/kit15-1366-ru.jpg",
+  "research/round-15-results/R11/screens/kit15-1366-kk.jpg",
+  "research/round-15-results/R11/screens/kit15-375-ru.jpg",
+  "research/round-15-results/R11/screens/kit15-375-kk.jpg"
+ ],
+ "known_limits": [
+  "Меню по IA ставит R01 (web/civic/shell/birge.js — путь R01); до этого в сборке меню FINAL-4.",
+  "Кадры витрины без карты; кадры экранов ролей — по мере их поставок (круги разбора).",
+  "Казахские термины раунда 15 — черновик до проверки владельцем (KK_REVIEW_R15.md)."
+ ],
+ "next_step": "Ключи ролей из их INTEGRATION в ru/kk; KK_REVIEW_R15.md; круг 1 разбора экранов (R03 уже выложил кадры); патчи R01 по VISUAL_BRIEF §3."
+}
