@@ -7,6 +7,8 @@ POST together/yards/{id}/moderate — сотрудник) + V2_HANDLERS + лим
 (рядом с warm_up R12, R10 B-124); CIVIC_ASSETS together/*;
 index.html — together.css и два script; в тест R01 test_r01_round15_routes.py — 3 строки таблицы [доп.].
 Повторный запуск ничего не дублирует. Файлы R16 (ui/civic_together/, web/civic/together/) — из ветки роли.
+    «Сделаем вместе» — лист слева 412 px поверх карты, как «Проекты и идеи» и «Вопросы и встречи» (IA R11 §5.2
+    «Житель, лист»; web/civic/shell/birge.css). Не нужен — --no-sheet: модуль раскладывается по своей ширине и так.
 """
 
 from __future__ import annotations
@@ -14,7 +16,9 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 
-ROOT = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
+ROOT = Path(ARGS[0] if ARGS else ".").resolve()
+SHEET = "--no-sheet" not in sys.argv   # «Сделаем вместе» — лист слева 412 px (IA R11 §5.2, эталон A); --no-sheet — без него
 
 
 def edit(rel: str, steps: list[tuple[str, str, str]]) -> None:
@@ -76,3 +80,23 @@ if test.exists():
         ('    ("POST", "together/initiatives/{id}/support"), ("POST", "together/initiatives/{id}/moderate"),\n',
          '    ("POST", "together/yards/{id}/moderate"),\n', "after"),
     ])
+
+SHEET_CSS = """
+/* R16 → R01 (IA R11 §5.2 «Житель, лист», эталон A): «Сделаем вместе» — лист слева 412 px под поиском, справа видна карта
+   (капсулы слоя «Инициативы»). Модуль R16 раскладывается по своей ширине (@container tg), прокручивается весь лист;
+   «Мой двор» остаётся листом по центру. Телефон — шторка, как у остальных разделов (правило не нужно). */
+@media (min-width: 761px) {
+  body.civic-mode[data-birge-section="together"] .birge-day.bk-glass {
+    left: 20px; right: auto; top: 84px; bottom: 20px; width: min(var(--sheet-w, 412px), calc(100vw - 40px));
+    padding: 18px; border-radius: var(--r-xl, 18px);
+    --glass-panel: var(--glass-strong, rgba(255, 255, 255, 0.86));
+    --c-text-2: #4b5752; --c-text-3: #7e8a85; --c-warn: #754c0f; --c-ok: #2b6110; --c-danger: #9a2e28;
+  }
+}
+"""
+if SHEET:
+    css = ROOT / "web/civic/shell/birge.css"
+    text = css.read_text(encoding="utf-8")
+    if 'data-birge-section="together"] .birge-day.bk-glass' not in text:
+        css.write_text(text.rstrip("\n") + "\n" + SHEET_CSS, encoding="utf-8")
+    print("ok web/civic/shell/birge.css (лист слева)")

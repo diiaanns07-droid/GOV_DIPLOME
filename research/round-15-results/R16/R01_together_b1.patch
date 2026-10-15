@@ -79,6 +79,25 @@ index 2abab5b6..d3c0e00b 100644
      except OSError as exc:
          if getattr(exc, "winerror", None) == 10048 or getattr(exc, "errno", None) in (48, 98, 10048):
              parser.exit(1, "Порт занят. Закройте прежнее приложение или задайте другой PORT.\n")
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index 48123f1e..f0753945 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -984,3 +984,14 @@ body.civic-mode:not([data-birge-section="map"]) .birge-alert { display: none; }
+   .birge-alert { top: 68px; left: 8px; right: 8px; width: auto; transform: none; }
+ }
+ 
++/* R16 → R01 (IA R11 §5.2 «Житель, лист», эталон A): «Сделаем вместе» — лист слева 412 px под поиском, справа видна карта
++   (капсулы слоя «Инициативы»). Модуль R16 раскладывается по своей ширине (@container tg), прокручивается весь лист;
++   «Мой двор» остаётся листом по центру. Телефон — шторка, как у остальных разделов (правило не нужно). */
++@media (min-width: 761px) {
++  body.civic-mode[data-birge-section="together"] .birge-day.bk-glass {
++    left: 20px; right: auto; top: 84px; bottom: 20px; width: min(var(--sheet-w, 412px), calc(100vw - 40px));
++    padding: 18px; border-radius: var(--r-xl, 18px);
++    --glass-panel: var(--glass-strong, rgba(255, 255, 255, 0.86));
++    --c-text-2: #4b5752; --c-text-3: #7e8a85; --c-warn: #754c0f; --c-ok: #2b6110; --c-danger: #9a2e28;
++  }
++}
 diff --git a/web/index.html b/web/index.html
 index ea3ab8ef..34d0df67 100644
 --- a/web/index.html

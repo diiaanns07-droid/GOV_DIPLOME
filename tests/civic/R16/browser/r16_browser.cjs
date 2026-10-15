@@ -60,7 +60,7 @@ async function textHealth(page) {
     if (!host) return { raw: ["нет .tg"], clipped: [] };
     const raw = (host.innerText.match(/\btogether\.[a-z_.]+/g) || []).slice(0, 5);
     const clipped = [];
-    host.querySelectorAll("button, .tg-card__title, .tg-row__title, .bk-kpi__label, .tg-status, .tg-support, .bk-chip, .tg-title").forEach((el) => {
+    host.querySelectorAll("button, .tg-card__title, .tg-row__title, .tg-kpi__label, .tg-status, .tg-support, .bk-chip, .tg-title").forEach((el) => {
       if (!el.offsetParent) return;
       const style = getComputedStyle(el);
       if (style.overflow === "hidden" && el.scrollWidth > el.clientWidth + 2) clipped.push(el.textContent.trim().slice(0, 40));
@@ -178,7 +178,7 @@ async function jpegBuffer(page, w, h) {
       await page.waitForTimeout(400);
       const head = await page.evaluate(() => ({
         title: document.querySelector(".tg-yardhead .tg-title")?.textContent,
-        kpis: [...document.querySelectorAll(".tg-kpi .bk-kpi__value")].map((n) => n.textContent),
+        kpis: [...document.querySelectorAll(".tg-kpi .tg-kpi__value")].map((n) => n.textContent),
         tabs: document.querySelectorAll(".tg-tabs [role=tab]").length,
         demo: !!document.querySelector(".tg-yardhead .tg-demo"),
         feed: document.querySelectorAll(".tg-feed li").length,
@@ -197,7 +197,7 @@ async function jpegBuffer(page, w, h) {
       const membersBefore = Number(head.kpis[0].replace(/\s/g, ""));
       await page.click('[data-focus="join-yard"]');
       await page.waitForSelector(".tg-member", { timeout: 10000 });
-      const members = Number(await page.$eval(".tg-kpi .bk-kpi__value", (n) => n.textContent.replace(/\s/g, "")));
+      const members = Number(await page.$eval(".tg-kpi .tg-kpi__value", (n) => n.textContent.replace(/\s/g, "")));
       check(`${tag} двор: «Я живу здесь» → число соседей +1, кнопка «Предложить дело»`, members === membersBefore + 1 &&
         !!(await page.$('[data-focus="propose"]')), { membersBefore, members });
       if (w === 1366 || phone) await shot(page, `${tag}_yard_member`);
@@ -297,6 +297,7 @@ async function jpegBuffer(page, w, h) {
       await page.unroute("**/api/civic/v2/together/initiatives/*/join");
       // Сделано вместе: карточка с фото «после» (демо-иллюстрация)
       await go(page, "#together", ".tg-card");
+      await page.click('[data-focus="when-done"]');   // чипы «Скоро · Сделано» (IA §5.2)
       await page.click('[data-focus="open-i-demo-benches"]');
       await page.waitForSelector(".tg-report__big", { timeout: 10000 });
       // П1: у демо-дела нет фото — строка «Фото появится после дела», а не нарисованная картинка.

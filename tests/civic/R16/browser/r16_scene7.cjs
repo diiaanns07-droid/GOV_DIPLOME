@@ -36,7 +36,7 @@ async function timed(fn) { const t0 = Date.now(); const r = await fn(); return [
   await page.goto(BASE + "/?scene=7#yard/" + YARD, { waitUntil: "load" });
   let [, ms] = await timed(() => page.waitForSelector(".tg-yardhead", { timeout: 20000 }));
   await page.waitForTimeout(500);
-  const yard = await page.evaluate(() => ({ kpis: [...document.querySelectorAll(".tg-kpi .bk-kpi__value")].map((n) => n.textContent),
+  const yard = await page.evaluate(() => ({ kpis: [...document.querySelectorAll(".tg-kpi .tg-kpi__value")].map((n) => n.textContent),
     problems: document.querySelectorAll(".tg-overview .tg-row").length, next: document.querySelector(".tg-overview .tg-card__title")?.textContent }));
   step("1. «Мой двор»: 3 числа, проблемы двора, ближайшее дело", yard.kpis.length === 3 && yard.problems >= 1 && !!yard.next, ms, yard);
   await page.screenshot({ path: path.join(OUT, `${tag}_1_yard.png`) });

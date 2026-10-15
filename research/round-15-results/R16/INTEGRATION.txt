@@ -12,13 +12,16 @@ B1 — ветка R01 claude/brave-fermi-nhzetj (12 маршрутов together/
   python3 research/round-15-results/R16/r01_together_apply.py .
   + файлы роли: ui/civic_together/, web/civic/together/, tests/civic/R16/ (ветка claude/youthful-johnson-6nz5mp).
   Что в нём: 3 маршрута [доп.] (GET together/yards; POST together/yards/{id}/captain; POST together/yards/{id}/moderate —
-  staff=True) + V2_HANDLERS + лимит «старшего» 10/ч; CIVIC_ASSETS together/*; index.html — together.css после
+  staff=True) + V2_HANDLERS + лимит «старшего» 10/ч; web/civic/shell/birge.css — «Сделаем вместе» листом слева 412 px
+  поверх карты (IA R11 §5.2 «Житель, лист», как «Проекты и идеи» и «Вопросы и встречи»; «Мой двор» — лист по центру;
+  не нужно — убрать этот кусок patch или r01_together_apply.py --no-sheet: модуль раскладывается по своей ширине
+  (@container) и в любом листе); CIVIC_ASSETS together/*; index.html — together.css после
   meetings.css, together-text.js и together.js после forecast-week.js; в main() рядом с warm_up R12 — фоновый
   ui.civic_together.warm_up(db_path) (R10 B-124: первый «Мой двор» после старта 2,6 с → 0,03–0,09 с); в тест R01
   test_r01_round15_routes.py — 3 строки [доп.] таблицы и yards/{id}/moderate в STAFF_ROUTES. Лимиты together.* у R01
   свои — оставлены как есть.
-  Проверено на c9069723 + patch + ui-kit/i18n R11 (b3502428): tests/civic/R01 + tests/civic/R16 — 418 passed, 1 skipped;
-  браузер R16 в оболочке R01 с путями (#yard/<двор>, #together/<дело>) — см. §5.
+  Проверено на c9069723 + patch + ui-kit/i18n R11 (b3502428): tests/civic/R01 + tests/civic/R16 — 419 passed, 1 skipped;
+  браузер R16 в оболочке R01 с путями (#yard/<двор>, #together/<дело>) и листом слева — см. §5.
   Без 3 [доп.] модуль тоже работает: спрашивает GET /modules и прячет список дворов и «старшего по двору» (без 404).
 Пакет / FINAL-4 (без маршрутов раунда 15) — прежний полный patch:
   git apply research/round-15-results/R16/R01_together_routes.patch        # проверено: git apply --check на e91acb6
@@ -116,8 +119,8 @@ R04: moderate() и similar_initiatives(title, point, 30, records=…, kind=…) 
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
 3. R11 · СЛОВАРЬ И UI-KIT
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
-  • 242 строковых ключа together.* ru/kk — research/round-15-results/R16/i18n_together.json (ru = kk). Новые в круге 2
-    (в словаре R11 b6f039c4 их ещё нет — 10): together.after_none, together.pick.on_map, together.pick.on_map_hint,
+  • 243 строковых ключа together.* ru/kk — research/round-15-results/R16/i18n_together.json (ru = kk); новый в круге 3 —
+    together.done_num. Добавлены R11 в b3502428 (были новыми в круге 2 — 10): together.after_none, together.pick.on_map, together.pick.on_map_hint,
     together.pick.not_found_map, together.pii.iban, together.pii.apartment, together.pii.contact, together.pii.other,
     together.staff.waiting («Ждут поддержки» / «Қолдау күтуде»), together.staff.going («Идут» / «Жүріп жатыр»).
     Массивы together.wd, together.months, together.bring.* остаются в web/civic/together/together-text.js.
@@ -127,8 +130,17 @@ R04: moderate() и similar_initiatives(title, point, 30, records=…, kind=…) 
     другое i-dots; пока в спрайте сборки нет новых — прежние (trash, trees, edit): модуль читает icons.svg и выбирает сам.
   • Вкладки акимата — IA §5.2: «На проверке · Ждут поддержки · Идут · Сделано» (+ отчёты жителей и «старшие» на проверке
     внутри «На проверке»). Слой карты — капсула «значок · дата · число», «сделано» — галочка и число; под значками R07.
-  • Классы ui-kit раунда 15 (.bk-yard, .bk-init, .bk-join, .bk-done--nophoto) — модуль пока на своих tg-* поверх токенов
-    (проверено и на ui-kit FINAL-4, и на ui-kit R11); переход — когда классы будут в сборке B1 (не ломая FINAL-4).
+  • Список «Сделаем вместе» — колонка 720 px (IA §5), чипы «Все дела города · Мой двор» (если двор отмечен) и «Скоро ·
+    Сделано» с числами; «Рядом» не сделан: в облаке и на показе нет надёжного места жителя (геолокация), «Мой двор» его
+    заменяет. Раскладка модуля — по ширине его экрана (container queries): ≤ 900 px — обзор двора в одну колонку,
+    ≤ 600 px — лист слева и телефон.
+  • Компоненты ui-kit раунда 15 — в модуле (круг 3, как в витрине R11 «Раунд 15»): шапка двора .bk-yard (плитки чисел
+    «проблемы» и «дела соседей» — кнопки во всю плитку, открывают вкладку), лента .bk-feed, список .bk-pc + .bk-thumb--kind
+    + .bk-join (число .bk-join__n, .is-bump на +1) + .bk-support, карточка дела .bk-init (__kind, __title, __facts,
+    __bring, .bk-support--block с __note, __cta — липкая строка «Я приду» вне статьи: у .bk-init overflow: hidden), итог
+    .bk-done / .bk-done--nophoto, пустые состояния — ill-* 48 px (map, together, staff, done, list). Для сборки без них
+    (FINAL-4) в together.css — копия правил R11 b3502428 со специфичностью 0 (:where): правила ui-kit всегда главнее.
+    Новый ключ together.done_num («соседей — сделано вместе» под крупным числом).
 
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
 4. R02 · ДЕМО-МИР (что R16 ждёт в world_v1.json)
@@ -150,6 +162,7 @@ R04: moderate() и similar_initiatives(title, point, 30, records=…, kind=…) 
   • Находки соседей (круг 2): R15 S51 (GET страницы двора писал строку в tg_yards, ячейки вне Астаны) — закрыто
     patch R15 P-R16-S51 + тест test_r15_s51_…; R10 B-124 (двор 3,3–3,6 с на холодную) — закрыто прогревом
     (seed_world и make_service демо запускают его сами, R01 — строкой в main()): холодный GET 2,57 с → 0,03–0,09 с,
-    тёплый 10–25 мс; повтор R10: demo_flow_v2 «Ctrl+K Сцена 7 ≤ 1 с». R10 B-114 (зоны нажатия) — следующий круг.
+    тёплый 10–25 мс; повтор R10: demo_flow_v2 «Ctrl+K Сцена 7 ≤ 1 с». R10 B-114 (зоны нажатия) — закрыто в круге 3:
+    заголовок карточки — кнопка 45 px (растянутая на всю карточку), вкладки ≥ 44 px, «На карте» / «Страница двора» — 44 px.
   • LOCAL (по желанию): настоящее фото «после» для показа сцены 7 — снять на телефон двор после уборки (без людей
     крупным планом) и загрузить кнопкой «Отметить сделанным» → «Добавить фото». В Git фото не класть.

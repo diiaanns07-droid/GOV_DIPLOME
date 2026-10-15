@@ -18,7 +18,7 @@ const out = process.argv[3] || "research/round-15-results/R16/screens";
   console.log("yard rows", rows.length);
   if (rows.length) { await rows[0].click(); await page.waitForSelector(".tg-yardhead", { timeout: 10000 }); await page.waitForTimeout(600); }
   await page.screenshot({ path: out + "/smoke_yard_page_1366_ru.png" });
-  console.log("kpis", await page.$$eval(".tg-kpi .bk-kpi__value", (n) => n.map((x) => x.textContent)));
+  console.log("kpis", await page.$$eval(".tg-kpi .tg-kpi__value", (n) => n.map((x) => x.textContent)));
   await page.goto(base + "/#together", { waitUntil: "load" });
   await page.waitForSelector(".tg-card", { timeout: 15000 });
   await page.waitForTimeout(600);

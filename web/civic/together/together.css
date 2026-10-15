@@ -7,6 +7,8 @@
 
 .tg {
   --tg-gap: var(--s-4);
+  /* Раскладка — по ширине экрана модуля, а не окна (@container tg ниже): лист по центру, лист слева 412 px, телефон. */
+  container: tg / inline-size;
   max-width: 960px;
   margin: 0 auto;
   padding-top: var(--s-2);
@@ -15,18 +17,22 @@
   font-size: var(--fs-body);
   line-height: var(--lh-text);
 }
+/* «Сделаем вместе» — колонка экрана-списка 720 px (IA R11 §5); «Мой двор» шире — обзор в две колонки. */
+.tg[data-view="initiatives"] { max-width: 720px; }
+.tg[data-view="initiatives"] .tg-grid { grid-template-columns: minmax(0, 1fr); }
 .tg :focus-visible { outline: 3px solid var(--c-focus); outline-offset: 2px; }
 /* Сброс полей без веса селектора: .tg-h3 и другие классы задают свои отступы. */
 :where(.tg) :where(h2, h3, p, dl, figure) { margin: 0; }
-.tg button { font: inherit; }
-.tg-title {
+/* Без веса селектора: классы ui-kit (.bk-join, .bk-btn) задают свой шрифт и должны быть главнее. */
+:where(.tg) button { font: inherit; }
+/* Заголовок экрана: у шапки двора и карточки дела размер задают компоненты ui-kit (.bk-yard__title, .bk-init__title). */
+:where(.tg-title) {
   font-size: var(--fs-h1);
   line-height: var(--lh-head);
   font-weight: var(--fw-semi);
   letter-spacing: var(--ls-title);
-  outline: none;
-  overflow-wrap: anywhere;
 }
+.tg-title { outline: none; overflow-wrap: anywhere; }
 .tg-title:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 4px; border-radius: 6px; }
 .tg-lead { margin-top: var(--s-1); color: var(--c-text-2); max-width: 60ch; }
 .tg-h3 {
@@ -44,6 +50,87 @@
 .tg-demo { font-size: var(--fs-caption); }
 .tg .bk-banner { display: flex; align-items: flex-start; gap: var(--s-2); }
 
+/* ── компоненты ui-kit R11 раунда 15 — запасная копия (специфичность 0) ──
+   «Мой двор» (.bk-yard, .bk-feed), список дел (.bk-pc + .bk-thumb--kind + .bk-join, .bk-support), карточка дела (.bk-init)
+   и итог (.bk-done) — классы ui-kit R11 (components.css, раздел «Раунд 15»). В сборке с ними главнее правила ui-kit (вес
+   больше нуля; у кнопки .bk-join копия — «button:where(…)», 0,0,1: сильнее общего сброса кнопок); в сборке без них
+   (FINAL-4) экран выглядит так же по этой копии. Источник: web/civic/ui-kit/components.css
+   R11 b3502428 — при смене компонентов копию обновить (research/round-15-results/R16/INTEGRATION.txt §3). */
+:where(.bk-yard) { position: relative; display: grid; gap: 10px; padding: var(--pad-card); border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface); color: var(--c-ink); line-height: var(--lh-ui); overflow: hidden; }
+:where(.bk-yard__eyebrow) { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--c-text-2); font-size: var(--fs-caption); }
+:where(.bk-yard__title) { margin: 0; font-size: var(--fs-h1); font-weight: var(--fw-semi); line-height: var(--lh-head); letter-spacing: var(--ls-title); }
+:where(.bk-yard__stats) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 4px 0 0; }
+:where(.bk-yard__stat) { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 2px; min-width: 0; padding: 10px 12px; border-radius: var(--r-m); background: var(--c-fill); }
+:where(.bk-yard__stat dd) { margin: 0; font-size: var(--fs-h1); font-weight: var(--fw-semi); font-variant-numeric: tabular-nums; letter-spacing: var(--ls-num); line-height: 1.1; }
+:where(.bk-yard__stat dt) { color: var(--c-text-2); font-size: var(--fs-xs); line-height: 1.3; overflow-wrap: anywhere; }
+:where(.bk-yard__captain), :where(.bk-yard__member) { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--c-text-2); font-size: var(--fs-caption); }
+:where(.bk-yard__captain .ic), :where(.bk-yard__member .ic) { width: 16px; height: 16px; }
+:where(.bk-yard__actions) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 4px; }
+@media (max-width: 480px) {
+  :where(.bk-yard) {padding: 16px; }
+  :where(.bk-yard__title) {font-size: var(--fs-title); }
+  :where(.bk-yard__stat) {padding: 8px 10px; }
+}
+:where(.bk-feed) { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+:where(.bk-feed > li + li) { border-top: 1px solid var(--c-line); }
+:where(.bk-feed__group) { margin: 0; padding: 12px 8px 4px; color: var(--c-text-3); font-size: var(--fs-caption); font-weight: var(--fw-medium); }
+:where(.bk-feed__item) { position: relative; display: flex; align-items: flex-start; gap: 12px; min-height: var(--tap); padding: 10px 24px 10px 8px; border-radius: var(--r-s); color: var(--c-ink); text-decoration: none; line-height: var(--lh-ui); }
+:where(a.bk-feed__item), :where(button.bk-feed__item) { width: 100%; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer; transition: background-color var(--t-fast) var(--ease); }
+:where(a.bk-feed__item:hover), :where(button.bk-feed__item:hover) { background: var(--c-fill); }
+:where(.bk-feed__ic) { display: grid; flex: none; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--c-fill); color: var(--c-ink); }
+:where(.bk-feed__ic .ic) { width: 18px; height: 18px; }
+:where(.bk-feed__item[data-kind="crisis"] .bk-feed__ic) { background: var(--c-danger-soft); color: var(--c-danger); }
+:where(.bk-feed__main) { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+:where(.bk-feed__title) { display: -webkit-box; overflow: hidden; font-size: var(--fs-small); font-weight: var(--fw-medium); line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+@media (max-width: 480px) {
+  :where(.bk-feed__title) {-webkit-line-clamp: 3; }
+}
+:where(.bk-feed__meta) { color: var(--c-text-3); font-size: var(--fs-xs); }
+:where(.bk-feed__item[data-unread="true"])::after { content: ""; position: absolute; top: 18px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--c-danger); }
+:where(.bk-thumb--kind) { display: grid; place-items: center; background: var(--c-fill); color: var(--c-text-2); }
+.tg .bk-thumb > svg.ic { width: 28px; height: 28px; }
+:where(.bk-pc__foot--wrap), :where(.bk-pc__foot:has(> .bk-join)) { flex-wrap: wrap; row-gap: 8px; }
+button:where(.bk-pc__foot > .bk-join) { margin-left: auto; }
+button:where(.bk-join) { position: relative; display: inline-flex; flex: none; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 0; border-radius: var(--r-pill); background: var(--c-primary); color: var(--c-on-primary); font: inherit; font-size: var(--fs-caption); font-weight: var(--fw-semi); white-space: nowrap; cursor: pointer; transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
+button:where(.bk-join)::after { content: ""; position: absolute; inset: -6px 0; }
+:where(.bk-join .ic) { width: 16px; height: 16px; }
+button:where(.bk-join[aria-pressed="true"]) { background: var(--c-fill); color: var(--c-ink); }
+button:where(.bk-join:focus-visible) { outline: 3px solid var(--c-focus); outline-offset: 2px; }
+:where(.bk-join__n) { display: inline-block; font-variant-numeric: tabular-nums; }
+:where(.bk-join__n.is-bump), :where(.bk-btn__count.is-bump), :where(.bk-bump) { animation: bk-bump var(--t-slow) var(--ease-out); }
+@keyframes bk-bump {40% { transform: translateY(-3px) scale(1.15); } }
+:where(.bk-support) { display: inline-flex; align-items: center; gap: 6px; min-width: 0; padding: 4px 10px 4px 8px; border-radius: var(--r-pill); background: var(--c-info-soft); color: var(--c-info); font-size: var(--fs-xs); font-weight: var(--fw-semi); white-space: nowrap; }
+:where(.bk-support .ic) { width: 14px; height: 14px; }
+:where(.bk-support--block) { display: grid; grid-template-columns: 20px minmax(0, 1fr); align-items: start; gap: 2px 10px; padding: 10px 12px; border-radius: var(--r-m); font-size: var(--fs-small); white-space: normal; }
+:where(.bk-support--block .ic) { width: 18px; height: 18px; margin-top: 1px; }
+:where(.bk-support__note) { grid-column: 2; color: var(--c-text-2); font-size: var(--fs-caption); font-weight: var(--fw-regular); }
+:where(.bk-init) { display: flex; flex-direction: column; border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface); color: var(--c-ink); line-height: var(--lh-ui); overflow: hidden; }
+:where(.bk-init__media) { position: relative; display: grid; place-items: center; height: 168px; background: var(--c-accent-soft); }
+:where(.bk-init__media > img) { width: 100%; height: 100%; object-fit: cover; }
+:where(.bk-init__media > .bk-tag) { position: absolute; top: 12px; left: 12px; }
+:where(.bk-init__body) { display: grid; gap: 12px; padding: 16px var(--pad-card) var(--pad-card); }
+:where(.bk-init__kind) { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--c-text-2); font-size: var(--fs-caption); font-weight: var(--fw-medium); }
+:where(.bk-init__kind-ic) { display: grid; flex: none; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--c-fill); color: var(--c-ink); }
+:where(.bk-init__kind .bk-tag) { margin-left: auto; }
+:where(.bk-init__title) { margin: 0; font-size: var(--fs-title); font-weight: var(--fw-semi); line-height: var(--lh-head); letter-spacing: var(--ls-title); }
+:where(.bk-init__facts) { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: var(--fs-small); }
+:where(.bk-init__facts > li) { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+:where(.bk-init__facts .ic) { width: 18px; height: 18px; color: var(--c-text-2); }
+:where(.bk-init__bring) { display: flex; flex-wrap: wrap; gap: 6px; }
+:where(.bk-init__cta) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+:where(.bk-init__count) { color: var(--c-text-2); font-size: var(--fs-caption); }
+@media (max-width: 480px) {
+  :where(.bk-init__media) {height: 140px; }
+  :where(.bk-init__cta > .bk-btn--primary) {flex: 1 1 100%; }
+}
+:where(.bk-done) { display: grid; grid-template-columns: 84px minmax(0, 1fr); align-items: center; gap: 2px 12px; padding: 12px; border-radius: var(--r-l); background: var(--c-fill); line-height: var(--lh-ui); }
+:where(.bk-done__photo) { grid-row: span 2; width: 84px; height: 84px; border-radius: var(--r-m); object-fit: cover; background: var(--c-fill-hover); }
+:where(.bk-done__num) { margin: 0; color: var(--c-text-2); font-size: var(--fs-caption); }
+:where(.bk-done__num b) { display: block; color: var(--c-ink); font-size: var(--fs-h1); font-weight: var(--fw-semi); font-variant-numeric: tabular-nums; }
+:where(.bk-done__text) { margin: 0; color: var(--c-text-2); font-size: var(--fs-caption); }
+:where(.bk-done--nophoto) { grid-template-columns: minmax(0, 1fr); }
+:where(.bk-done__note) { margin: 4px 0 0; color: var(--c-text-3); font-size: var(--fs-xs); }
+
 /* ── скелетон, пусто, ошибка, «нет данных» ── */
 .tg-skel { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--tg-gap); margin-top: var(--s-4); }
 .tg-skel-card { display: grid; gap: var(--s-2); padding: var(--s-3); border: 1px solid var(--c-line); border-radius: var(--r-xl); }
@@ -54,6 +141,9 @@
   background: var(--c-fill); color: var(--c-text-2);
 }
 .tg-empty__ic .ic, .tg-sent__ic .ic { width: 24px; height: 24px; }
+.tg .tg-ill { display: block; width: 48px; height: 48px; flex: none; fill: none; stroke: var(--c-text-3); stroke-width: 1.75;
+  stroke-linecap: round; stroke-linejoin: round; }
+.tg-empty .tg-ill { margin: 0 auto var(--s-2); }
 .tg-error .ic--48 { width: 48px; height: 48px; }
 .tg-nodata {
   display: flex; gap: var(--s-3); align-items: flex-start;
@@ -97,21 +187,20 @@
 .tg-yardrow__go { color: var(--c-text-3); flex: none; }
 
 /* ── страница двора ── */
-.tg-yardhead {
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); align-items: end;
-  padding: var(--s-5) var(--s-6); border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface);
-}
-.tg-yardhead__text { display: grid; gap: var(--s-3); min-width: 0; }
-.tg-yardhead__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); color: var(--c-text-2); font-size: var(--fs-small); }
-.tg-yardhead__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
-.tg-captain { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-small); color: var(--c-text-2); }
-.tg-member { display: inline-flex; align-items: center; gap: var(--s-1); color: var(--c-text-2); font-size: var(--fs-small); }
+/* Шапка двора — .bk-yard ui-kit: название, 3 числа, действие (П1: без рисунка). */
+.tg-yardhead__meta { flex-wrap: wrap; }
 .tg-member .ic { color: var(--c-ink); }
-.tg-kpis { max-width: 520px; }
-.tg-kpi { background: var(--c-fill); text-align: left; }
-.tg-kpi--btn { border: 0; cursor: pointer; color: inherit; transition: background var(--t-fast) var(--ease); }
-.tg-kpi--btn:hover { background: var(--c-fill-hover); }
+.tg-kpis { max-width: 560px; }
+/* Число — как dd у .bk-yard__stat, подпись — как dt (плитка — кнопка, поэтому span). */
+.tg-kpi__value { font-size: var(--fs-h1); font-weight: var(--fw-semi); font-variant-numeric: tabular-nums; letter-spacing: var(--ls-num); line-height: 1.1; }
+.tg-kpi__label { color: var(--c-text-2); font-size: var(--fs-xs); line-height: 1.3; overflow-wrap: anywhere; }
+/* Плитка-кнопка: подложку задаём сами — сброс кнопок ui-kit сильнее, чем плитка .bk-yard__stat. */
+.tg .tg-kpi--btn { width: 100%; border: 0; background: var(--c-fill); color: inherit; text-align: left; cursor: pointer;
+  transition: background var(--t-fast) var(--ease); }
+.tg .tg-kpi--btn:hover { background: var(--c-fill-hover); }
 .tg-tabs { margin-top: var(--s-5); }
+/* R10 B-114: вкладка не уже 44 px (короткое «Шолу» на казахском). */
+.tg-tabs [role="tab"] { min-width: 44px; justify-content: center; }
 .tg-panel { padding-top: var(--s-1); }
 .tg-overview { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: var(--s-6); }
 .tg-overview .tg-h3:first-child { margin-top: var(--s-2); }
@@ -150,29 +239,15 @@
 .tg-level .ic { width: 18px; height: 18px; }
 
 /* ── лента двора ── */
-.tg-feed { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.tg-feed__row {
-  display: flex; gap: var(--s-3); align-items: flex-start; width: 100%; padding: var(--s-2) var(--s-1);
-  border: 0; background: transparent; color: inherit; text-align: left; border-radius: var(--r-s);
-}
-button.tg-feed__row { cursor: pointer; }
-button.tg-feed__row:hover { background: var(--c-brand-soft); }
-.tg-feed__ic {
-  display: inline-grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%;
-  background: var(--c-fill); color: var(--c-text-2);
-}
+/* Лента двора — .bk-feed ui-kit; свои только цвета значков: «исправлено» — зелёный, поддержка акимата — синий. */
 .tg-feed__ic[data-kind="problem.fixed"] { background: var(--c-ok-soft); color: var(--c-ok); }
 .tg-feed__ic[data-kind="initiative.supported"] { background: var(--c-info-soft); color: var(--c-info); }
-.tg-feed__ic[data-kind="initiative.done"] { background: var(--c-ok-soft); color: var(--c-ok); }
-.tg-feed__ic .ic { width: 16px; height: 16px; }
-.tg-feed__main { display: grid; gap: 2px; min-width: 0; flex: 1; }
-.tg-feed__text { font-size: var(--fs-small); overflow-wrap: anywhere; }
-.tg-feed__when { font-size: var(--fs-xs); color: var(--c-text-3); }
 
 /* ── список дел ── */
 .tg-listhead { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: flex-end; justify-content: space-between; }
 .tg-listhead > div { min-width: 0; flex: 1 1 320px; }
-.tg-filter { margin-top: var(--s-4); }
+.tg-filters { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); margin: var(--s-4) 0 var(--s-3); }
+.tg-filter .bk-num { margin-left: 6px; color: var(--c-text-3); font-variant-numeric: tabular-nums; }
 .tg-mine { margin-top: var(--s-2); }
 .tg-status {
   display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--r-s); flex: none;
@@ -181,43 +256,27 @@ button.tg-feed__row:hover { background: var(--c-brand-soft); }
 .tg-status[data-status="on_review"] { background: var(--c-warn-soft); color: var(--c-warn); }
 .tg-status[data-status="done"] { background: var(--c-ok-soft); color: var(--c-ok); }
 .tg-status[data-status="hidden"], .tg-status[data-status="cancelled"] { background: var(--c-danger-soft); color: var(--c-danger); }
-.tg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--tg-gap); }
+.tg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--s-3); }
 
-/* ── карточка дела «как в App Store» ── */
-.tg-card {
-  position: relative; display: flex; flex-direction: column; min-width: 0; overflow: hidden;
-  border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface);
-  transition: box-shadow var(--t-base) var(--ease), translate var(--t-base) var(--ease);
-}
-.tg-card:hover { box-shadow: var(--shadow-2); translate: 0 -2px; }
-.tg-card:focus-within { box-shadow: var(--shadow-2); }
-.tg-card--preview:hover { box-shadow: none; translate: none; }
-.tg-card__body { display: grid; gap: var(--s-2); padding: var(--s-4); }
-.tg-card__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
-/* Настоящее фото «после» (загружено жителем или акиматом) — сверху карточки; нарисованных обложек нет (П1). */
-.tg-card__photo { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; background: var(--c-paper); }
-/* Значок вида дела: иконка R11 в плитке 32 px + слово (цвет никогда не один). */
-.tg-kindbadge { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--c-text-2);
-  font-size: var(--fs-caption); font-weight: var(--fw-semi); }
-.tg-kindbadge__ic { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-s);
-  background: var(--c-fill); color: var(--c-ink); }
-.tg-kindbadge__ic .ic { width: 18px; height: 18px; }
-.tg-kindbadge--big .tg-kindbadge__ic { width: 40px; height: 40px; border-radius: var(--r-m); }
-.tg-kindbadge--big .tg-kindbadge__ic .ic { width: 22px; height: 22px; }
-.tg-kindbadge--big { font-size: var(--fs-small); }
-.tg-card__eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); color: var(--c-text-2); font-size: var(--fs-caption); font-weight: var(--fw-medium); }
-.tg-card__title { font-size: var(--fs-title); line-height: var(--lh-head); font-weight: var(--fw-semi); letter-spacing: var(--ls-title); }
-/* Вся карточка нажимается (растянутая ссылка), «Я приду» — поверх. */
+/* ── карточка дела «как в App Store» — .bk-pc эталона (ui-kit) ── */
+.tg-card { position: relative; min-width: 0; transition: box-shadow var(--t-fast) var(--ease); }
+.tg-card:hover { box-shadow: 0 0 0 1px var(--c-line-strong); }
+.tg-card:focus-within { box-shadow: 0 0 0 2px var(--c-ink); }
+.tg-card--preview { cursor: default; }
+.tg-card--preview:hover { box-shadow: none; }
+.tg-card__body { gap: 6px; }
+/* Вся карточка нажимается (растянутая ссылка); у самой кнопки-заголовка зона ≥ 44 px (R10 B-114), строка не растёт. */
 .tg-card__open {
-  padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere;
+  display: block; width: 100%; padding: 13px 0; margin: -13px 0; border: 0; background: none; color: inherit; font: inherit;
+  text-align: left; cursor: pointer; overflow-wrap: anywhere;
 }
 .tg-card__open::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
 .tg-card__open:focus-visible { outline: none; }
 .tg-card__open:focus-visible::after { outline: 3px solid var(--c-focus); outline-offset: -3px; }
-.tg-card__meta { display: flex; align-items: center; gap: var(--s-1); color: var(--c-text-2); font-size: var(--fs-small); overflow-wrap: anywhere; }
-.tg-card__meta .ic { width: 16px; height: 16px; flex: none; }
-.tg-card__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin-top: var(--s-1); }
-.tg-card__foot .tg-join { position: relative; z-index: 1; margin-left: auto; }
+.tg-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 0; overflow-wrap: anywhere; }
+.tg-card__foot { margin-top: var(--s-2); gap: var(--s-2); }
+.tg-card__foot .tg-join { z-index: 1; }
+.tg-card__kind { color: var(--c-text-2); font-size: var(--fs-caption); }
 
 /* ── счётчик «Я приду» ── */
 .tg-count { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: var(--c-text-2); font-size: var(--fs-small); }
@@ -242,39 +301,24 @@ button.tg-feed__row:hover { background: var(--c-brand-soft); }
 .tg-count--done { color: var(--c-ok); font-weight: var(--fw-semi); }
 .tg-count--done .ic { color: var(--c-ok); }
 
-.tg-support {
-  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--r-pill);
-  background: var(--c-info-soft); color: var(--c-info); font-size: var(--fs-caption); font-weight: var(--fw-semi);
-}
-.tg-support .ic { width: 16px; height: 16px; }
-.tg-support__what { font-weight: var(--fw-regular); }
-.tg-join--on { background: var(--c-fill); color: var(--c-ink); }
-.tg-join--on .ic { color: var(--c-ink); }
+/* Плашка «Поддержано акиматом» — .bk-support ui-kit (синяя: зелёный только «исправлено»). */
+.tg-join--big.tg-join--on { background: var(--c-fill); color: var(--c-ink); }
+.tg-join--big.tg-join--on .ic { color: var(--c-ink); }
 
 /* ── карточка дела (экран) ── */
+/* ── карточка дела (экран) — .bk-init ui-kit, итог — .bk-done ── */
 .tg-detail { max-width: 720px; margin: 0 auto; padding-bottom: var(--s-2); }
-.tg-detail__head { display: grid; gap: var(--s-3); margin-bottom: var(--s-3); }
-.tg-afterline { display: flex; align-items: center; gap: var(--s-2); color: var(--c-text-2); font-size: var(--fs-small); }
+.tg-init .bk-init__kind { flex-wrap: wrap; }
+.tg-init .bk-init__kind .tg-status { margin-left: 2px; }
+.tg-afterline { display: flex; align-items: center; gap: var(--s-2); margin: 0; color: var(--c-text-2); font-size: var(--fs-small); }
 .tg-afterline .ic { width: 18px; height: 18px; }
-.tg-report__label { margin: 0; }
-.tg-detail__text { margin: var(--s-2) 0 var(--s-4); white-space: pre-line; overflow-wrap: anywhere; }
-.tg-facts { display: grid; gap: 0; margin: 0; border-top: 1px solid var(--c-line); }
-.tg-fact { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: var(--s-3); padding: var(--s-3) 0; border-bottom: 1px solid var(--c-line); }
-.tg-fact dt { display: flex; align-items: center; gap: var(--s-2); color: var(--c-text-2); font-size: var(--fs-small); }
-.tg-fact dt .ic { width: 18px; height: 18px; }
-.tg-fact dd { margin: 0; display: grid; gap: var(--s-1); overflow-wrap: anywhere; }
-.tg-fact__links { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-left: calc(-1 * var(--s-3)); }
-.tg-link { min-height: 36px; font-size: var(--fs-small); }
-.tg-chip-static { cursor: default; }
-.tg-chip-static:hover { background: var(--c-fill); }
-.tg-supportbox { display: grid; gap: var(--s-2); justify-items: start; margin-top: var(--s-4); padding: var(--s-3) var(--s-4);
-  border-radius: var(--r-m); background: var(--c-info-soft); }
-.tg-supportbox .tg-support { padding: 0; background: none; }
-.tg-supportbox__note { color: var(--c-ink); }
-.tg-report, .tg-after { margin-top: var(--s-5); display: grid; gap: var(--s-3); }
-.tg-report__big { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-title); font-weight: var(--fw-semi); color: var(--c-ok); }
-.tg-report__big .ic { width: 22px; height: 22px; }
-.tg-report__text { white-space: pre-line; }
+.tg-detail__text { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+.tg-facts > li > span { overflow-wrap: anywhere; }
+/* «На карте», «Страница двора» — тихие кнопки, зона нажатия ≥ 44 px (R10 B-114). */
+.tg-link { min-height: 44px; padding-inline: 10px; font-size: var(--fs-small); }
+.tg-bring { align-items: center; }
+.tg-bring__label { color: var(--c-text-2); font-size: var(--fs-small); margin-right: 2px; }
+.tg-report__text { white-space: pre-line; overflow-wrap: anywhere; }
 .tg-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s-3); }
 .tg-photo { margin: 0; display: grid; gap: var(--s-1); }
 .tg-photo img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--r-m); border: 1px solid var(--c-line); background: var(--c-paper); }
@@ -286,7 +330,8 @@ button.tg-feed__row:hover { background: var(--c-brand-soft); }
   margin: var(--s-5) calc(-1 * var(--s-2)) 0; padding: var(--s-3) var(--s-4);
   border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface); box-shadow: var(--shadow-2);
 }
-.tg-actionbar .tg-join { margin-left: auto; min-width: 160px; }
+.tg-actionbar .tg-join--big { min-width: 180px; }
+.tg-actionbar .tg-unjoin { margin-left: auto; }
 .tg-banner { margin: var(--s-2) 0; }
 
 /* ── мастер ── */
@@ -360,31 +405,39 @@ button.tg-staffrow__title:hover { text-decoration: underline; }
 .tg-pin .ic { width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: var(--c-ink); color: #fff; }
 .tg-pin--done .ic { background: var(--ok-mark); }
 
-/* ── ноутбук 1024 и телефон ── */
-@media (max-width: 900px) {
+/* ── узкий экран — по ширине самого экрана модуля: ≤ 900 — обзор двора в одну колонку; ≤ 600 — лист слева 412 px
+   и телефон (колонка списка 720 px на ноутбуке — ещё широкая) ── */
+@container tg (max-width: 900px) {
   .tg-overview { grid-template-columns: minmax(0, 1fr); gap: 0; }
 }
-@media (max-width: 760px) {
-  .tg { --tg-gap: var(--s-3); }
-  .tg-title { font-size: var(--fs-title); }
+@container tg (max-width: 600px) {
+  .tg-skel { gap: var(--s-3); }
+  :where(.tg-title) { font-size: var(--fs-title); }
   .tg-hero { padding: var(--s-4); grid-template-columns: minmax(0, 1fr); }
-  .tg-pickbar { top: 72px; }
-  .tg-yardhead { padding: var(--s-4); }
+  .tg .tg-ill { width: 40px; height: 40px; }
   .tg-kinds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tg-fact { grid-template-columns: minmax(0, 1fr); gap: var(--s-1); }
   .tg-grid, .tg-skel { grid-template-columns: minmax(0, 1fr); }
-  .tg-actionbar { bottom: calc(-1 * var(--s-4)); margin-inline: calc(-1 * var(--s-4)); gap: var(--s-2) var(--s-3);
-    padding: var(--s-3); border-radius: var(--r-xl) var(--r-xl) 0 0; }
-  /* Телефон: счётчик и «Я приду» — одна строка; «Не смогу прийти» — тихая ссылка под кнопкой. */
-  .tg-actionbar .tg-join { flex: 1 1 auto; min-width: 0; }
-  .tg-actionbar .tg-unjoin { flex: 1 1 100%; min-height: 36px; justify-content: flex-end; padding-block: 0; }
+  /* «Я приду» — во всю ширину (ui-kit .bk-init__cta); ниже в одну строку — число и тихое «Не смогу прийти». */
+  .tg-actionbar { gap: var(--s-2) var(--s-3); padding: var(--s-3); }
+  .tg-actionbar .tg-join--big { flex: 1 1 100%; min-width: 0; }
+  .tg-actionbar .tg-count--lg { font-size: var(--fs-small); }
+  .tg-actionbar .tg-unjoin { min-height: 44px; padding-inline: 6px; font-size: var(--fs-small); }
   .tg-listhead > .bk-btn { width: 100%; }
   .tg-wnav > .bk-btn { flex: 1 1 auto; }
   .tg-row__golabel { display: none; }
+  /* Строка акимата: число «придут» — под названием, иначе название и время сжимаются в узкую колонку. */
+  .tg-staffrow__head { flex-wrap: wrap; }
+  .tg-staffrow__head > .tg-row__main { flex: 1 1 0; min-width: 0; }
+  .tg-staffrow__head > .tg-count { flex: 1 1 100%; padding-left: 46px; }
+}
+/* Телефон: лист оболочки — шторка во всю ширину; строка «Я приду» прижата к её низу и краям. */
+@media (max-width: 760px) {
+  .tg-pickbar { top: 72px; }
+  .tg-actionbar { bottom: calc(-1 * var(--s-4)); margin-inline: calc(-1 * var(--s-4)); border-radius: var(--r-xl) var(--r-xl) 0 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tg-card, .tg-card:hover { transition: none; translate: none; }
+  .tg-card, .tg-card:hover { transition: none; }
   .tg-count__n, .tg-count__n--in, .tg-count__n--out { animation: none !important; transition: none; translate: none; opacity: 1; }
   .tg-count__n--out { display: none; }
   .tg-count.tg-pop > .ic { animation: none; }
