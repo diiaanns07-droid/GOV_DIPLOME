@@ -37,6 +37,16 @@
    "detail": 44
   },
   {
+   "name": "1366-ru список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
    "name": "«Приду» → число +1, кнопка нажата",
    "status": "PASS",
    "detail": {
@@ -103,6 +113,16 @@
    "detail": null
   },
   {
+   "name": "1366-ru прошедшая встреча: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru прошедшая встреча: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
    "name": "Esc — назад к списку встреч, раздел не закрыт",
    "status": "PASS",
    "detail": null
@@ -116,6 +136,16 @@
     "close": false,
     "rule": true
    }
+  },
+  {
+   "name": "1366-ru вкладка «Вопросы»: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru вкладка «Вопросы»: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
   },
   {
    "name": "«На карте» → карта с целью встречи",
@@ -206,7 +236,22 @@
    "detail": null
   },
   {
-   "name": "связь с проектом сохранена",
+   "name": "связь с проектом: название из списка района",
+   "status": "PASS",
+   "detail": "Проект: Спортплощадка в микрорайоне Жагалау"
+  },
+  {
+   "name": "номер записи — только в подсказке",
+   "status": "PASS",
+   "detail": "Номер записи: p-a2df50c024b2"
+  },
+  {
+   "name": "1366-ru встреча (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru встреча (акимат): текст не меньше 13 px",
    "status": "PASS",
    "detail": null
   },
@@ -259,6 +304,16 @@
    "name": "1366-kk «Приду» не ниже 44 px",
    "status": "PASS",
    "detail": 44
+  },
+  {
+   "name": "1366-kk список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
   },
   {
    "name": "1366-kk нет ошибок JS",
@@ -346,6 +401,16 @@
    "detail": 44
   },
   {
+   "name": "1024-ru список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
    "name": "1024-ru нет ошибок JS",
    "status": "PASS",
    "detail": []
@@ -429,6 +494,16 @@
    "name": "1024-kk «Приду» не ниже 44 px",
    "status": "PASS",
    "detail": 44
+  },
+  {
+   "name": "1024-kk список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
   },
   {
    "name": "1024-kk нет ошибок JS",
@@ -516,6 +591,16 @@
    "detail": 44
   },
   {
+   "name": "375-ru список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
    "name": "375-ru нет ошибок JS",
    "status": "PASS",
    "detail": []
@@ -599,6 +684,16 @@
    "name": "375-kk «Приду» не ниже 44 px",
    "status": "PASS",
    "detail": 44
+  },
+  {
+   "name": "375-kk список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
   },
   {
    "name": "375-kk нет ошибок JS",

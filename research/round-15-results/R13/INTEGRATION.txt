@@ -77,7 +77,11 @@ updates(device_id, since_iso=None, db_path=None, limit=50) -> [событие]  
 Кому: только устройствам, которые нажали «Приду» или задали вопрос к этой встрече. id стабильны (можно хранить «прочитано»).
 Плюс автору ОБЩЕГО вопроса «Вопроса акиму»: sub question (опубликован), answer (аким ответил), rejected (не опубликован,
 причина словами); target {"kind": "question", "id": "q-…"}, link "#meetings/questions".
-HTTP-вариант: GET /api/civic/v2/meetings/updates?since=ISO (заголовок X-Birge-Device).
+HTTP-вариант: GET /api/civic/v2/meetings/updates?since=ISO (заголовок X-Birge-Device). Без устройства — 200 и пустая
+лента (маршрут «для всех», R10 B-105, eeacc26d); испорченный device_id или since — 400.
+Что R13 читает у R06 (только чтение, публичные функции ui.civic_store.v2; нет связи с базой — подписи просто нет):
+  get_proposal(id) и get_object(id) — название проекта в связи поручения «Проект: …»; nearby_items() — название работы
+  «Работа: …». Экран сотрудника берёт списки для выбора: GET proposals?district, objects?district, works?district (R06).
 
 =====================================================================================================================
 §6. R08 — «Картина дня» 2.0 и Ситуационный центр (IA_ROUND15 §5.10)
@@ -90,14 +94,18 @@ a) Карточка «Встречи» в ряду «Ведомства · Жи�
      "demo": bool}   — нет модуля / ошибка -> None (блок скрыт или «пока нет данных»).
 b) «Прогноз на неделю» (метка «прототип»):
    from ui.civic_forecast import week_block
-   week_block(district=None, k=5) -> {"title_ru", "title_kk", "period": {from, to}, "label": "prototype",
-     "evidence_type": "synthetic", "items": [{rank, target{kind,id,label_ru,label_kk}, district, point, risk, level,
-     reason_ru, reason_kk, reason_source, weather_ru?, weather_kk?}], "method": {text_ru, text_kk, backtest{…}}, "note_ru", "note_kk"}
+   week_block(district=None, k=5, now=None) = week_forecast = forecast_week -> {"horizon": "week", "title_ru", "title_kk",
+     "period": {from, to}, "month", "label": "prototype", "evidence_type": "synthetic", "items": [{rank,
+     target{kind,id,label_ru,label_kk}, district, point, risk, level, main_category, reason_ru, reason_kk, reason_source,
+     reasons: [{key, ru, kk}] (та же причина списком — так её читает blocks.forecast R08 @ eca77d34), weather_ru?, weather_kk?}],
+     "season_ru", "season_kk", "method": {text_ru, text_kk, backtest{…}}, "method_ru", "method_kk", "note_ru", "note_kk"}
+   Просьба R08 §4.2 (week_forecast(district, k, now), horizon, method_ru/kk) — выполнена; проверено их neighbors + blocks
+   (ветка claude/inspiring-johnson-j7wksj @ eca77d34) поверх модулей R13: прогноз source r13, 5 пунктов с причиной;
+   встречи source r13. «period» — словарь {from, to}: экран R08 сравнивает period с "month" — для недели верно.
    Готовый блок (по желанию, вместо своей разметки): <script src="/civic/meetings/forecast-week.js"></script>,
    BirgeForecastWeek.mount(container, {api, openTarget}) или BirgeForecastWeek.render(container, week, {openTarget}).
 c) Пульс: метод пульса — R08 (ml/civic_forecast/pulse_check.py R13 — только проверка «не случайно ли», раунд 14).
-   Кнопка «Открыть кризисный штаб» у тревоги — ссылка R17 (#agencies/crisis или #crisis/<inc-id>); если R08 нужно поле в
-   ответе пульса от R13 — напишите в STATUS R08, добавлю.
+   Кнопка «Открыть кризисный штаб» у тревоги — у R08 уже есть (ссылка R17 agencies.crisis_link); от R13 поле не нужно.
 
 =====================================================================================================================
 §7. R02 — демо-мир (CONTRACT §11)
@@ -115,7 +123,8 @@ ui.civic_qa (только вопросы). Идемпотентно (посто�
 повтор — 0 новых. При каждом запуске демо-записи возвращаются к виду мира от нового now (поручения сотрудника, отметки
 «Приду» устройств и снятые вопросы не трогаются) — тест test_demo_reset_on_restart_keeps_real_records.
 Схема 1.1 R02 (day_at, итог и точка встреч) — поддержана; reset в отчёте = сколько демо-записей вернулось к виду мира.
-ПРОСЬБЫ К R02 (schema 1.1) — 1) и 2) выполнены R02 в 1.1, осталось 3):
+Мир R02 @ ac75f3a8: 3 встречи, 17 вопросов (9 общих) → 24 записи, повтор — reset 24; вкладки «Вопроса акиму» 8 / 6 / 2.
+ПРОСЬБЫ К R02 (schema 1.1) — все три выполнены R02 (1, 2 — в 1.1; 3 — 9 общих вопросов в ac75f3a8):
   1) meetings[].time «18:30» (или at {"next_weekday": …} и для прошедших): сейчас m-w15-1 начинается в случайное время суток
      (ago_days 12.3 → 08:48), m-w15-3 — в 23:12. Я уже понимаю поле time (время по Астане поверх дня из at).
   2) meetings[].result {text_ru, text_kk, at: {"ago_days": 12}} у прошедшей m-w15-1 — без него в карточке нет «Итогов встречи».
@@ -141,6 +150,11 @@ meet.staff.* (форма встречи, поручение, итог, пров�
 (как в витрине R11), заливка «проверено жителями» не используется.
 Поправка П1 (AMENDMENTS.md): пустые состояния — значок R11 48 px через BirgeUI.state({icon}); картинок-сценок, эмодзи и
 нарисованных мест нет; зелёный — только «выполнено».
+Новые ключи круга 3 (R11 R13-1 — выбор проекта и работы из списка района): meet.staff.link_pick_project,
+meet.staff.link_pick_work, meet.staff.link_pick_any, meet.staff.link_pick_list_empty, meet.staff.pick_object.
+R13-1 — сделано: связь поручения «Проект: <название>» / «Работа: <название>»; номер записи на экране не пишется (подсказка
+сотруднику). R10 B-118 — сделано в разделе: зоны 44 px, текст ≥ 13 px (в корне .mt --fs-xs: 13px), третий цвет текста
+#5f6b66 (5,5:1; токен --c-text-3 #7E8A85 — 3,58:1 — просьба к R11 поднять его в ui-kit, тогда моя замена не нужна).
 
 =====================================================================================================================
 §9. R15 — что проверить (CONTRACT §10)
