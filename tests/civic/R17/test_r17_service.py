@@ -202,7 +202,7 @@ def test_updates_feed_for_r06_uses_device_places(service, monkeypatch):
     assert events and {e["module"] for e in events} == {"R17"}
     for e in events:
         assert set(e) >= {"id", "at", "module", "kind", "target", "title_ru", "title_kk", "link"}
-        assert e["kind"] == "incident.update" and e["link"].startswith("#incident=inc-")
+        assert e["kind"] == "incident.update" and e["link"].startswith("#crisis/inc-")
     monkeypatch.setattr(agencies, "device_places", lambda device: (set(), set()))
     assert agencies.updates("device-12345678", None) == []
 
@@ -213,7 +213,7 @@ def test_neighbor_functions_never_raise_without_service(monkeypatch):
     assert agencies.active_incidents() == [] and agencies.incident_marks() == []
     assert agencies.board_snapshot()["empty"] is True
     assert agencies.agencies_week()["lagging"] == []
-    assert agencies.crisis_link("nura") == "#agencies/crisis=new&template=blizzard&district=nura"
+    assert agencies.crisis_link("nura") == "#agencies/crisis/new/blizzard/nura"
     assert len(agencies.service_profiles()) == 20
 
 
@@ -222,7 +222,7 @@ def test_neighbor_functions_with_service(service):
     assert len(week["lagging"]) == 3 and week["source"] == "fixture" and week["demo"] is True
     active = agencies.active_incidents("nura")
     assert [i["id"] for i in active] == ["inc-demo-blizzard-nura"] and "tasks" not in active[0]
-    assert agencies.crisis_link("nura") == "#agencies/crisis=inc-demo-blizzard-nura"
+    assert agencies.crisis_link("nura") == "#agencies/crisis/inc-demo-blizzard-nura"
     marks = agencies.incident_marks()
     assert {m["id"] for m in marks} == {"inc-demo-blizzard-nura", "inc-demo-heat-saryarka"}
 

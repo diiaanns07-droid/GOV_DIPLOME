@@ -10,10 +10,12 @@
  * Зона мягко «дышит» (прозрачность заливки 0.08 ↔ 0.2, 2.4 с); prefers-reduced-motion — без движения.
  * Слои ставятся ПОД значки тепловой карты R07: жалобы остаются главными.
  *
- * Баннер жителю (вид «Житель», раздел «Карта»): идущий кризис, если (а) сервер знает, что зона — его (двор R16 или
- * подписка R08 на район: GET incidents/updates с X-Birge-Device), или (б) житель сейчас смотрит на зону (центр карты
- * в её границах, масштаб ≥ 11). «Подробнее» — карточка с обновлениями ҚАЗ/РУС; × скрывает баннер этого кризиса.
- * Ссылка #incident=<id> (лента уведомлений R06) открывает ту же карточку.
+ * Баннер жителю (вид «Житель», раздел «Карта»; IA_ROUND15 §5.12): идущий кризис, если (а) сервер знает, что зона — его
+ * (двор R16 или подписка R08 на район: GET incidents/updates с X-Birge-Device), или (б) житель сейчас смотрит на зону
+ * (центр карты в её границах, масштаб ≥ 11). Одна строка «Буран в Нуре: <последнее обновление>», точка-пульс раз в 2 с,
+ * «Подробнее» → раздел #crisis/<id> (публичная карточка, BirgeAgencies.mount section "crisis"); оболочка без раздела —
+ * своя карточка. «Скрыть» — до конца сессии. Место — BirgeShell.alertSlot() (R01, §7.9), иначе свой контейнер.
+ * Ссылка #incident=<id> (прежний вид) открывает ту же карточку.
  */
 (function (root) {
   "use strict";
@@ -260,29 +262,55 @@
     var d = doc.body && doc.body.dataset;
     return !!d && d.birgeMode === "resident" && (d.birgeSection || "map") === "map";
   }
+  function bannerHost() {
+    var shell = root.BirgeShell;
+    if (shell && typeof shell.alertSlot === "function") {
+      try { return { el: shell.alertSlot(), slot: true }; } catch (e) { /* оболочка без слота */ }
+    }
+    return { el: doc.body, slot: false };
+  }
+  // «Подробнее»: раздел оболочки #crisis/<id> (R01 раунда 15); если такого раздела нет — своя карточка поверх карты.
+  function openPublic(id) {
+    var shell = root.BirgeShell;
+    if (shell && typeof shell.setSection === "function") {
+      try { shell.setSection("crisis", { path: id }); } catch (e) { /* старая оболочка */ }
+      if (shell.section === "crisis") return;
+    }
+    openCard(id);
+  }
   function renderBanner() {
     var inc = isResidentMap() ? state.incidents.filter(relevant)[0] : null;
     var key = inc ? inc.id + "|" + lang() + "|" + ((inc.updates || [])[0] || {}).id : "";
     if (!inc) {
-      if (state.banner) state.banner.hidden = true;
+      if (state.banner) {
+        state.banner.hidden = true;
+        if (state.banner.parentNode && state.banner.parentNode.id === "birge-alert") state.banner.remove();
+      }
       state.lastKey = "";
       return;
     }
-    if (key === state.lastKey && state.banner && !state.banner.hidden) return;
+    if (key === state.lastKey && state.banner && !state.banner.hidden && state.banner.isConnected) return;
     state.lastKey = key;
     var last = (inc.updates || [])[0];
-    var banner = state.banner || h("div", { class: "ag-banner bk-glass bk-glass--strong bk-app", role: "status", "aria-live": "polite" });
+    var host = bannerHost();
+    var banner = state.banner || h("div", { class: "ag-banner bk-glass bk-glass--strong bk-app" });
+    banner.classList.toggle("ag-banner--slot", host.slot);
+    if (!host.slot) { banner.setAttribute("role", "status"); banner.setAttribute("aria-live", "polite"); }
     state.banner = banner;
-    if (!banner.parentNode) doc.body.appendChild(banner);
+    if (banner.parentNode !== host.el) {
+      if (host.slot) host.el.replaceChildren(banner);   // в слоте — один баннер за раз
+      else host.el.appendChild(banner);
+    }
     banner.hidden = false;
     // Весь баннер — одна кнопка «Подробнее» (на телефоне подпись кнопки не помещается — остаётся стрелка), × — скрыть.
     banner.replaceChildren(
       h("button", { type: "button", class: "ag-banner__open", "aria-label": pick(inc, "title") + " — " + tr("more"),
-        onclick: function () { openCard(inc.id); } }, [
-        h("span", { class: "ag-banner__ic" }, [svg("i-alert")]),
+        onclick: function () { openPublic(inc.id); } }, [
+        h("span", { class: "ag-banner__dot", "aria-hidden": "true" }),
         h("span", { class: "ag-banner__main" }, [
-          h("span", { class: "ag-banner__title" }, [pick(inc, "title"), inc.demo ? " · " + tr("demo") : ""]),
-          last ? h("span", { class: "ag-banner__text", text: fmtTime(last.at) + " · " + pick(last, "text") }) : null]),
+          h("span", { class: "ag-banner__line" }, [h("strong", { text: pick(inc, "title") + (last ? ": " : "") }),
+            last ? pick(last, "text") : ""]),
+          inc.demo ? h("span", { class: "ag-demo", text: tr("demo") }) : null]),
         h("span", { class: "ag-banner__more" }, [h("span", { class: "ag-banner__more-text", text: tr("more") }), svg("i-chevron-right")])]),
       h("button", { type: "button", class: "ag-banner__close", "aria-label": tr("close"), title: tr("close"),
         onclick: function () { hide(inc.id); banner.hidden = true; } }, [svg("i-close")]));
@@ -327,9 +355,17 @@
   doc.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && state.card && !state.card.hidden) closeCard();
   });
+  // #crisis/<id> ведёт оболочка R01 раунда 15 (раздел «crisis»); старая оболочка его не знает — тогда своя карточка.
+  // #incident=<id> — прежний вид ссылки (уведомления до 15 окт).
   function fromHash() {
-    var m = /^#incident=(inc-[a-z0-9-]{4,40})$/.exec(root.location.hash || "");
-    if (m) openCard(m[1]);
+    var hash = root.location.hash || "";
+    var m = /^#incident=(inc-[a-z0-9-]{4,40})$/.exec(hash) || /^#crisis\/(inc-[a-z0-9-]{4,40})$/.exec(hash);
+    if (!m) return;
+    setTimeout(function () {
+      var shell = root.BirgeShell;
+      if (shell && shell.section === "crisis") return;
+      openCard(m[1]);
+    }, 0);
   }
 
   // ------------------------------------------------------------------ запуск

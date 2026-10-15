@@ -64,7 +64,9 @@ def test_world_sizes_and_shares(world):
     assert 30 <= len(world["works"]) <= 60
     assert 3 <= len(world["planned_conflicts"]) <= 5
     assert 10 <= len(world["ideas"]) <= 15 and 8 <= len(world["initiatives"]) <= 12
-    assert 20 <= len(world["yards"]) <= 40 and len(world["meetings"]) == 3 and len(world["questions"]) == 10
+    assert 20 <= len(world["yards"]) <= 40 and len(world["meetings"]) == 3 and 10 <= len(world["questions"]) <= 20
+    general = [q for q in world["questions"] if not q["meeting"] and q["status"] == "published"]
+    assert 6 <= len(general) <= 8 and sum(1 for q in general if q["answer_ru"]) == 2      # просьба R13
     langs = {c["lang"] for c in cs}
     assert langs == {"ru", "kk", "mixed"}
 

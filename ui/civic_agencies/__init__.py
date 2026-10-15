@@ -74,7 +74,7 @@ def updates(device, since=None) -> list[dict]:
         prefix_kk = "Жағдай аяқталды" if item["kind"] == "closed" else item["title_kk"]
         out.append({"id": "incident." + item["id"], "at": item["at"], "module": "R17", "kind": "incident.update",
                     "target": zone, "title_ru": f"{prefix_ru}: {item['text_ru']}",
-                    "title_kk": f"{prefix_kk}: {item['text_kk']}", "link": "#incident=" + item["incident_id"],
+                    "title_kk": f"{prefix_kk}: {item['text_kk']}", "link": "#crisis/" + item["incident_id"],
                     "demo": bool(item.get("demo"))})
     return out
 
@@ -109,7 +109,7 @@ def list_incidents(status: str = "active", district: str | None = None) -> dict:
     for row in rows:
         view = _crisis.public_view(row)
         view["progress"] = _crisis.progress(row)
-        view["link"] = "#agencies/crisis=" + row["id"]
+        view["link"] = "#agencies/crisis/" + row["id"]
         items.append(view)
     return {"items": items, "status": status, "district": district}
 
@@ -141,7 +141,7 @@ def active_incidents(district: str | None = None) -> list[dict]:
     for row in rows:
         view = _crisis.public_view(row)
         view["progress"] = _crisis.progress(row)   # чипы служб: сколько задач сделано (без текстов задач)
-        view["link"] = "#agencies/crisis=" + row["id"]
+        view["link"] = "#agencies/crisis/" + row["id"]
         out.append(view)
     return out
 
@@ -171,9 +171,10 @@ def service_profiles() -> list[dict]:
 
 
 def crisis_link(district: str | None = None, kind: str = "blizzard") -> str:
-    """Адрес кнопки «Открыть кризисный штаб»: идущий кризис района — его карточка; нет — форма с шаблоном."""
+    """Адрес кнопки «Открыть кризисный штаб» (путь оболочки R01, IA_ROUND15 §7.3): идущий кризис района —
+    #agencies/crisis/<id>; нет — форма с шаблоном #agencies/crisis/new/<вид>/<район>."""
     for incident in active_incidents(district):
         if incident["kind"] == kind or kind is None:
-            return "#agencies/crisis=" + incident["id"]
-    tail = f"&district={district}" if district else ""
-    return f"#agencies/crisis=new&template={kind}{tail}"
+            return "#agencies/crisis/" + incident["id"]
+    tail = f"/{district}" if district else ""
+    return f"#agencies/crisis/new/{kind or 'blizzard'}{tail}"

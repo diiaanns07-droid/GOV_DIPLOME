@@ -115,7 +115,13 @@ const openAgencies = async (page, base, tab) => {
       const ctx = await browser.newContext();
       const page = await newPage(ctx);
       await login(page, base);
-      const body = await page.evaluate(async () => (await fetch("/api/civic/v2/agencies/board?days=30")).json());
+      // Шлюз R01 раунда 15: «сотрудник» = сессия + CSRF и для чтения — токен из GET /api/civic/v1/session.
+      const body = await page.evaluate(async () => {
+        const sess = await (await fetch("/api/civic/v1/session", { credentials: "same-origin" })).json();
+        const d = sess && sess.data ? sess.data : sess;
+        return (await fetch("/api/civic/v2/agencies/board?days=30", { credentials: "same-origin",
+          headers: { "X-CSRF-Token": d.csrf_token || "" } })).json();
+      });
       await ctx.close();
       return body;
     })();
@@ -230,15 +236,24 @@ const openAgencies = async (page, base, tab) => {
       await page.waitForTimeout(600);
       await page.screenshot({ path: `${OUT}/resident-banner-${tag}.png` });
       await page.click(".ag-banner__open");
-      await page.waitForSelector(".ag-public:not([hidden])");
-      await page.waitForTimeout(400);
-      const card = await page.innerText(".ag-public");
-      check(`${tag}: житель зоны видит кризис и обновления`, /(Буран|боран)/i.test(card) && (await page.$$(".ag-public .ag-upd")).length >= 2, card.slice(0, 120));
+      // Оболочка R01 раунда 15 открывает раздел #crisis/<id> (публичная карточка BirgeAgencies, section "crisis");
+      // оболочка без такого раздела — запасная карточка R17 поверх карты (.ag-public).
+      const CARD = ".ag-public:not([hidden]), [data-agencies-public] .ag-card--public";
+      await page.waitForSelector(CARD, { timeout: 20000 });
+      await page.waitForTimeout(500);
+      const inShell = !!(await page.$("[data-agencies-public] .ag-card--public"));
+      const card = await page.innerText(inShell ? "[data-agencies-public]" : ".ag-public");
+      check(`${tag}: «Подробнее» → ${inShell ? "раздел #crisis/<id> оболочки" : "карточка поверх карты"}`, true,
+        inShell ? await page.evaluate(() => location.hash) : null);
+      const updates = (await page.$$((inShell ? "[data-agencies-public]" : ".ag-public") + " .ag-upd")).length;
+      check(`${tag}: житель зоны видит кризис и обновления`, /(Буран|боран)/i.test(card) && updates >= 2, { updates, card: card.slice(0, 80) });
       check(`${tag}: жителю не видны внутренние задачи и заметки штаба`, !/Расчистить главные|Негізгі көшелерді|бригады переведены|бригадасы/.test(card));
       if (lang === "kk") check(`${tag}: карточка на казахском`, /Аймақ|бастап/.test(card), card.slice(0, 80));
       await page.screenshot({ path: `${OUT}/resident-card-${tag}.png` });
-      await page.keyboard.press("Escape");
-      check(`${tag}: Esc закрывает карточку`, !!(await page.$(".ag-public[hidden]")));
+      if (!inShell) {
+        await page.keyboard.press("Escape");
+        check(`${tag}: Esc закрывает карточку`, !!(await page.$(".ag-public[hidden]")));
+      }
       check(`${tag}: житель — нет ошибок JS`, page.errs.length === 0, page.errs);
       await ctx.close();
     }
