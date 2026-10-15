@@ -53,6 +53,20 @@ def test_phones(text, public):
     assert kinds(res) == {"phone": 1} and res["action"] == "review" and res["pii"] is True
 
 
+@pytest.mark.parametrize("text, public, kind", [
+    ("Тел.87011234567 — Айгуль", "Тел.*** — Айгуль", "phone"),       # R15-S48: подпись вплотную через точку
+    ("тел:87011234567", "тел:***", "phone"),
+    ("моб-8 701 123 45 67", "моб-***", "phone"),                      # подпись через дефис — номер целиком
+    ("ИИН-900101300126", "ИИН-***", "iin"),
+    ("ИИН.900101300126", "ИИН.***", "iin"),
+    ("8.701.123.45.67 после шести", "*** после шести", "phone"),      # мобильный через точки
+    ("８７０１１２３４５６７", "***", "phone"),                          # полноширинные цифры
+])
+def test_r15_s48_glued_dotted_fullwidth(text, public, kind):
+    res = moderate(text)
+    assert res["text_public"] == public and kinds(res) == {kind: 1}
+
+
 def test_iin_with_checksum_and_other_long_numbers():
     iin = synthetic_iin("95010130012")
     res = moderate(f"Мой ИИН {iin}, помогите")
@@ -99,6 +113,7 @@ def test_rude_words_masked_like_gateway_and_combined_with_pii():
     "programme 2025-2029 (2025-2026 tranche)",
     "Посадили 6 саженцев, пришли 15 соседей, 2 мешка мусора",
     "дома 15 17 18 по улице Кенесары",
+    "Встреча 12.10.2026 в 10.00, т.е. после работы",                  # R15-S48: даты с точками — не телефон
     "Позор, бездельники, когда отремонтируете? Безобразие!",
     "",
 ])

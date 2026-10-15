@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import re
 import time
+import unicodedata
 
 from ui.civic_ml_api import profanity
 
@@ -59,6 +60,12 @@ _PII_ORDER = ("iin", "card", "iban", "phone", "email", "apartment", "contact", "
 # Перед номером не может стоять буква, цифра, дефис, «/», «.», «#»: «osm-node-7127598060», «cand-r12-13-07-2026» —
 # идентификаторы, а не телефоны (ложные срабатывания на data/civic/astana).
 _DIGIT_RUN = re.compile(r"(?<![\w+\-/.#])\+?\d(?:[ \t\-()\xa0]{0,3}\d)+(?![\w\-/])")
+# R15-S48: подпись вплотную к номеру через точку или дефис («Тел.87011234567», «ИИН-900101300126») — номер ищем
+# после подписи отдельно (сам _DIGIT_RUN после «.» и «-» не начинается: это защита от id «osm-node-7127598060»).
+_LABELED_RUN = re.compile(r"(?<![\w])(?:тел|т|моб|сот|ватсап|whatsapp|tel|phone|иин|жсн|бин|iin)[.\-:]\s*"
+                          r"(\+?\d(?:[ \t\-()\xa0]{0,3}\d)+)(?![\w\-/])", re.IGNORECASE)
+# R15-S48: мобильный через точки «8.701.123.45.67» — дата «12.10.2026» сюда не подходит (2-2-4, а не 1-3-3-2-2).
+_DOTTED_PHONE = re.compile(r"(?<![\w.])(?:\+?7|8)\.\d{3}\.\d{3}\.\d{2}\.\d{2}(?![\w.])")
 _THOUSANDS = re.compile(r"^\d{1,3}(?:[ \xa0]\d{3})+$")
 _LOCAL_PHONE = re.compile(r"^\d{2,3}-\d{2}-\d{2}$")    # городской — только с дефисами: «дома 15 17 18» не телефон
 _EMAIL = re.compile(r"(?<![\w.+-])[A-Za-z0-9][A-Za-z0-9._%+-]{0,63}@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}(?![\w-])")
@@ -102,9 +109,14 @@ def luhn_ok(digits: str) -> bool:
     return total % 10 == 0
 
 
+def ascii_digits(raw: str) -> str:
+    """Цифры строки как ASCII: полноширинные «８７０…» и другие десятичные цифры Юникода — тоже (R15-S48)."""
+    return "".join(str(unicodedata.decimal(ch)) for ch in raw if unicodedata.decimal(ch, None) is not None)
+
+
 def _classify_run(raw: str) -> str | None:
-    """Вид цепочки цифр: phone | iin | id_number | card | None (обычное число)."""
-    digits = re.sub(r"\D", "", raw)
+    """Вид цепочки цифр: phone | iin | card | None (обычное число)."""
+    digits = ascii_digits(raw)
     n = len(digits)
     # Скобка — только после кода страны или восьмёрки («+7 (701)», «8 (7172)»), а «2025-2029 (2025-2026» — годы.
     if "(" in raw and len(re.sub(r"\D", "", raw.split("(", 1)[0])) > 2:
@@ -143,6 +155,13 @@ def _pii_spans(text: str) -> list[tuple[int, int, str]]:
         add(m.start(), m.end(), "email")
     for m in _IBAN.finditer(text):
         add(m.start(), m.end(), "iban")
+    # Сначала номер после подписи и номер через точки: «моб-8 701 123 45 67» целиком, а не «8» + остаток.
+    for m in _LABELED_RUN.finditer(text):
+        kind = _classify_run(m.group(1))
+        if kind:
+            add(m.start(1), m.end(1), kind)
+    for m in _DOTTED_PHONE.finditer(text):
+        add(m.start(), m.end(), "phone")
     for m in _DIGIT_RUN.finditer(text):
         raw = m.group()
         # Скобка в конце цепочки («(8 701 …)») — не часть номера.
@@ -221,7 +240,7 @@ def moderate(text=None, lang=None, body=None, **_ignored) -> dict:
     valid: dict[str, int] = {}
     for a, b, kind in pii:
         counts[kind] = counts.get(kind, 0) + 1
-        digits = re.sub(r"\D", "", text[a:b])
+        digits = ascii_digits(text[a:b])
         if (kind == "iin" and iin_checksum_ok(digits)) or (kind == "card" and luhn_ok(digits)):
             valid[kind] = valid.get(kind, 0) + 1
     kinds = [k for k in _PII_ORDER if k in counts]
