@@ -379,7 +379,8 @@
       var off = 0;
       parts.forEach(function (part) {
         var g = part.geo;
-        if (!part.ownColors) g.computeVertexNormals(); // не индексированная геометрия → нормали граней
+        // не индексированная геометрия → нормали граней; look.keepNormals — нормали уже посчитаны (гладкий шатёр ориентира)
+        if (!part.ownColors && !(part.look && part.look.keepNormals)) g.computeVertexNormals();
         if (part.look && (part.look.round || part.look.cone)) roundNormals(g, part.look);
         var pa = g.attributes.position,
           na = g.attributes.normal,
@@ -974,7 +975,8 @@
       return out;
     }
 
-    return { build: build, palette: P, rng: rng, shadowShape: shadowShape, shadowMesh: shadowMesh, lights: lights, SUN: SUN };
+    // Builder — для условных моделей ориентиров (build3d-landmarks.js, раунд 15): тот же сборщик, свет и тени.
+    return { build: build, palette: P, rng: rng, shadowShape: shadowShape, shadowMesh: shadowMesh, lights: lights, SUN: SUN, Builder: Builder };
   }
 
   return { create: create };

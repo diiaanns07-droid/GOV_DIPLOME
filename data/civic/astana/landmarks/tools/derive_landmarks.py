@@ -315,7 +315,8 @@ def build(snap: Snapshot) -> dict:
         "name": {"ru": "Ак Орда", "kk": "Ақорда"},
         "lat": round(c[0], 7), "lon": round(c[1], 7), "rotation_deg": axis,
         "height_m": 80, "size_m": {"length": 116, "depth": 46},
-        "mask_m": {"shape": "rect", "w": 124, "d": 70},
+        # w — вдоль оси бульвара (x модели), d — поперёк: здание вытянуто поперёк оси, фасад — на восток.
+        "mask_m": {"shape": "rect", "w": 72, "d": 128},
         "coords": {
             "method": "hole",
             "osm": [{"type": "way", "id": 329669144, "role": "северный сад (ось)"},
@@ -334,7 +335,7 @@ def build(snap: Snapshot) -> dict:
         "name": {"ru": "Дворец мира и согласия", "kk": "Бейбітшілік және келісім сарайы"},
         "lat": round(c[0], 7), "lon": round(c[1], 7), "rotation_deg": axis,
         "height_m": 62, "size_m": {"base": 62},
-        "mask_m": {"shape": "rect", "w": 70, "d": 70},
+        "mask_m": {"shape": "rect", "w": 76, "d": 76},
         "coords": {
             "method": "named_node",
             "osm": [{"type": "node", "id": 5009488810, "role": "узел с именем «Дворец мира и согласия»"}],
