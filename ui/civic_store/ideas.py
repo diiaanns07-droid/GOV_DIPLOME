@@ -177,6 +177,8 @@ class IdeaRepository:
             "can_improve_ru": (texts.get("can_improve_ru") or can_improve) if can_improve else "",
             "can_improve_kk": (texts.get("can_improve_kk") or can_improve) if can_improve else "",
             "project": project, "votes_at_decision": row["votes_at_decision"],
+            # Раунд 15: идея стала инициативой жителей R16 («Сделайте вместе — поддержим инвентарём»).
+            "initiative": {"id": row["initiative_id"], "at": row["initiative_at"]} if row["initiative_id"] else None,
             "demo": bool(row["demo"]), "created_at": row["created_at"], "published_at": row["published_at"],
             "decided_at": row["decided_at"],
         }

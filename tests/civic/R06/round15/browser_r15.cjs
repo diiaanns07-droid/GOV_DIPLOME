@@ -180,10 +180,17 @@ async function ideasPart(browser) {
       const topics = await page.$$eval(".ri-pc[data-idea]", (els) => els.map((e) => e.getAttribute("data-topic")));
       check(`${tag}: у каждой идеи есть вид (тема)`, topics.length >= 4 && topics.every(Boolean), topics.join(","));
       check(`${tag}: «Беседка и скамейки» — иллюстрация «скамейки»`, topics.includes("benches"), topics.join(","));
-      const art = await page.$$eval(".ri-pc .ri-thumb", (els) => els.map((e) => ({ line: !!e.querySelector("svg.ri-art"), img: !!e.querySelector("img") })));
-      check(`${tag}: картинки — линейные иллюстрации или 3D-превью`, art.length && art.every((a) => a.line || a.img), JSON.stringify(art));
-      const greyBulb = await page.$$eval(".ri-pc .ri-thumb svg", (els) => els.some((e) => (e.innerHTML || "").includes("#7E8A85")));
-      check(`${tag}: серой лампочки больше нет`, !greyBulb);
+      // П1 (поправка владельца 15 окт): у карточки — маленький значок вида (≤ 48 px), без рисунков, рендеров и <img>.
+      const tiles = await page.$$eval(".ri-pc", (els) => els.map((e) => {
+        const t = e.querySelector(".ri-kind"), r = t && t.getBoundingClientRect();
+        return { kind: t && t.getAttribute("data-kind"), w: r ? Math.round(r.width) : 0, h: r ? Math.round(r.height) : 0,
+          icon: !!(t && t.querySelector("svg.ic use")), img: !!e.querySelector("img"), bigSvg: [...e.querySelectorAll("svg")].some((s) => s.getBoundingClientRect().width > 48) };
+      }));
+      check(`${tag}: у каждой карточки — значок вида ≤ 48 px из набора иконок`, tiles.length && tiles.every((x) => x.icon && x.w <= 48 && x.h <= 48), JSON.stringify(tiles));
+      check(`${tag}: ни картинок, ни больших рисунков в списке (П1)`, tiles.every((x) => !x.img && !x.bigSvg), JSON.stringify(tiles));
+      check(`${tag}: значок по виду — «скамейки» у беседки`, tiles.some((x) => x.kind === "benches"), JSON.stringify(tiles.map((x) => x.kind)));
+      const pdBig = await page.$$eval(".ri-pd img, .ri-pd svg", (els) => els.filter((e) => e.getBoundingClientRect().width > 48).length);
+      check(`${tag}: в карточке выбранного нет больших картинок (П1)`, pdBig === 0, pdBig);
       check(`${tag}: житель может поддержать (капсула-кнопка)`, !!(await page.$("button.ri-vote")));
       await shot(page, `${tag}-resident`);
       check(`${tag}: житель — без ошибок JS`, !page.errs.length, page.errs.join(" | "));

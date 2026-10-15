@@ -26,7 +26,8 @@
   var DEVICE_KEY = "birge.device_id"; // тот же id устройства, что у голосов за проекты (proposals.js)
   var DRAFT_KEY = "birge.idea.draft";
   var KINDS = ["square", "playground", "sports", "stop", "lighting"];
-  var KIND_ICON = { square: "trees", playground: "playground", sports: "ball", stop: "bus", lighting: "bulb" };
+  var KIND_ICON = { square: "trees", playground: "playground", sports: "ball", stop: "bus", lighting: "bulb",
+    benches: "bench", greening: "sprout", other: "pin" };   // + темы идей раунда 15 (значки R11 i-bench, i-sprout)
   var CHECK_KEYS = ["land", "networks", "access", "maintenance"];
   var CHECK_ICON = { land: "pin", networks: "droplet", access: "walk", maintenance: "building" };
   var ANSWERS = ["yes", "no", "unknown"];
@@ -482,69 +483,32 @@
     setTimeout(function () { cancel.focus(); }, 0);
   }
 
-  // ── раунд 15 (VISUAL_BRIEF §3): линейные иллюстрации по виду вместо серой лампочки ──
-  // Восемь сцен одного набора: одна краска линии, одна толщина (2,25 px, не масштабируется — ideas.css .ri-art),
-  // светлая плитка по виду и одно мягкое пятно цвета. Вид — объект из каталога 3D или тема идеи (сервер: topic по
-  // словам названия), иначе «идея жителей» — булавка с сердцем. Статичная разметка, данных пользователя в ней нет.
-  // R11 может заменить их символами ui-kit (#ill-obj-<вид>) — достаточно поменять ART ниже.
-  var ART = {
-    square: { bg: "#EAF4E0", fill: "#CFE6C4", a: '<circle cx="56" cy="32" r="12"/>',
-      g: '<path d="M10 66h64"/><circle cx="30" cy="38" r="10"/><path d="M30 48v18"/><circle cx="56" cy="32" r="12"/><path d="M56 44v22"/><path d="M37 56h12M37 60h12M39 60v6M47 60v6"/>' },
-    playground: { bg: "#FDF1DD", fill: "#F9DFB0", a: '<circle cx="22" cy="24" r="7"/>',
-      g: '<path d="M10 68h64"/><circle cx="22" cy="24" r="7"/><path d="M52 68V34M62 68V34M52 42h10M52 50h10M52 58h10M47 34h20"/><path d="M47 34c-7 4-11 20-27 34"/>' },
-    sports: { bg: "#E7F1E3", fill: "#CDE3C3", a: '<rect x="12" y="30" width="60" height="34" rx="4"/>',
-      g: '<rect x="12" y="30" width="60" height="34" rx="4"/><path d="M42 30v34"/><circle cx="42" cy="47" r="7"/><path d="M12 41h7v12h-7M72 41h-7v12h7"/><circle cx="64" cy="18" r="6"/><path d="M58 18h12M64 12c2.4 4 2.4 8 0 12"/>' },
-    stop: { bg: "#E6EEF5", fill: "#CBDDEB", a: '<rect x="22" y="34" width="28" height="18" rx="2"/>',
-      g: '<path d="M8 68h68"/><path d="M14 30h44l-4-6H18Z"/><path d="M18 30v38M54 30v38"/><rect x="22" y="34" width="28" height="18" rx="2"/><path d="M26 60h20"/><path d="M68 68V30"/><circle cx="68" cy="24" r="6"/>' },
-    lighting: { bg: "#FDF5DC", fill: "#FBE7A1", a: '<path d="M52 21 44 62h26L62 21Z"/>',
-      g: '<path d="M22 68h52"/><path d="M36 68V22c0-5 3-8 8-8h8"/><path d="M50 14h14l-2 6H52Z"/><ellipse cx="57" cy="63" rx="13" ry="3"/>' },
-    benches: { bg: "#F4EEE5", fill: "#E6D8C2", a: '<rect x="18" y="33" width="48" height="12" rx="2"/>',
-      g: '<path d="M8 66h68"/><path d="M18 36h48M18 42h48M22 36v14M62 36v14"/><path d="M14 50h56M20 50v16M64 50v16"/>' },
-    greening: { bg: "#E5F3E8", fill: "#BFE3C9", a: '<path d="M42 50c-10 0-16-6-16-14 10 0 16 6 16 14ZM42 42c0-10 6-16 16-16 0 10-6 16-16 16Z"/>',
-      g: '<path d="M10 68h64"/><path d="M24 68c6-8 30-8 36 0"/><path d="M42 64V36"/><path d="M42 50c-10 0-16-6-16-14 10 0 16 6 16 14ZM42 42c0-10 6-16 16-16 0 10-6 16-16 16Z"/>' },
-    other: { bg: "#EDF1EF", fill: "#D5E2DC", a: '<path d="M42 70s-18-17-18-31a18 18 0 0 1 36 0c0 14-18 31-18 31Z"/>',
-      g: '<path d="M42 70s-18-17-18-31a18 18 0 0 1 36 0c0 14-18 31-18 31Z"/><path d="M42 46s-8-5-8-10.5a4.5 4.5 0 0 1 8-2.8 4.5 4.5 0 0 1 8 2.8C50 41 42 46 42 46Z"/><path d="M30 76h24"/>' },
-  };
-  ART.none = ART.other;
-  var ART_INK = "#22302B";
-  function artSvg(kind, wide) {
-    var a = ART[kind] || ART.other;
-    var scene = '<g fill="' + a.fill + '" stroke="none">' + a.a + '</g><g fill="none" stroke="' + ART_INK + '" stroke-width="' + (wide ? 3 : 2.25) +
-      '" stroke-linecap="round" stroke-linejoin="round">' + a.g + "</g>";
-    if (wide) {
-      return '<svg class="ri-art" viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="340" height="150" fill="' + a.bg +
-        '"/><g transform="translate(105 6) scale(1.65)">' + scene + "</g></svg>";
-    }
-    return '<svg class="ri-art" viewBox="0 0 84 84" aria-hidden="true" focusable="false"><rect width="84" height="84" fill="' + a.bg + '"/>' + scene + "</svg>";
+  // ── П1 (поправка владельца 15 окт, «Без ИИ-слопа»): у идеи и проекта — маленький монохромный значок вида объекта
+  // (набор R11, одна толщина линии) на спокойной плитке 48 px вместо серой лампочки, сцен и 3D-рендеров. Сам объект в 3D
+  // виден на карте (слои «Проекты» и «Идеи жителей»), больших картинок в списке и карточке нет.
+  // Значков i-bench и i-sprout нет в ui-kit FINAL-4: пока спрайт без них — запасной значок того же набора.
+  var ICON_FALLBACK = { bench: "users", sprout: "trees" };
+  var spriteIds = null;
+  (function loadSpriteIds() {
+    var sprite = root.BirgeUI && root.BirgeUI.SPRITE;
+    if (!sprite || !root.fetch) return;
+    root.fetch(sprite, { credentials: "same-origin" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (text) {
+      var ids = {};
+      String(text || "").replace(/id="(i-[a-z0-9-]+)"/g, function (_, id) { ids[id] = true; return _; });
+      spriteIds = ids;
+    }, function () { /* без спрайта — значки запасные */ });
+  })();
+  function kindIconName(kind) {
+    var name = KIND_ICON[kind] || KIND_ICON.other;
+    if (ICON_FALLBACK[name] && (!spriteIds || !spriteIds["i-" + name])) return ICON_FALLBACK[name];
+    return name;
+  }
+  function kindTile(kind) {
+    return h("span", { class: "ri-tile ri-kind", "data-kind": KIND_ICON[kind] ? kind : "other", "aria-hidden": "true" },
+      [icon(kindIconName(kind))]);
   }
   // Сердце «Поддержать» — как в эталоне (одна толщина линии с иконками ui-kit); заполненное — поддержано.
   var HEART = '<svg class="ri-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>';
-  // Картинка объекта: 3D-превью модели R05 (handle.previewOf(kind): square 84 для строки, 240×160 для карточки — тот же
-  // свет и угол, что на карте) на светлой подложке вида — когда у идеи/проекта есть объект каталога 3D; иначе (и без
-  // R05) — линейная иллюстрация по виду или теме (artSvg). topic — тема идеи без объекта (скамейки, озеленение…).
-  function preview(kind, wide, topic) {
-    var b = kind && build3d && build3d();
-    var pv = b && typeof b.previewOf === "function" ? b.previewOf(kind) : null;
-    var pic = pv && (wide ? pv : pv.square);
-    var cls = wide ? "bk-pd__im ri-pd__im" : "bk-thumb ri-thumb";
-    if (!pic || !pic.src) return svgEl(artSvg(kind || topic || "other", wide), cls);
-    var box = doc.createElement("span");
-    box.className = cls + " ri-pic3d";
-    box.setAttribute("aria-hidden", "true");
-    if (pv.tint) box.style.backgroundColor = pv.tint;
-    var img = doc.createElement("img");
-    img.alt = "";
-    img.src = pic.src;
-    if (pic.srcset) img.srcset = pic.srcset;
-    img.width = pic.width || (wide ? 240 : 84);
-    img.height = pic.height || (wide ? 160 : 84);
-    img.draggable = false;
-    img.addEventListener("error", function () {
-      if (box.parentNode) box.parentNode.replaceChild(svgEl(artSvg(kind || topic || "other", wide), cls), box);
-    });
-    box.appendChild(img);
-    return box;
-  }
   function svgEl(markup, cls) {
     var span = doc.createElement("span");
     span.className = cls;
@@ -825,7 +789,7 @@
     function rowCard(id, attrs, kind, titleText, titleLang, sub, pillEl, capsule, sel, topic) {
       var on = !!(sel && sel.id === id);
       var card = h("article", Object.assign({ class: "bk-pc ri-pc", "aria-current": on ? "true" : null, "aria-labelledby": "ri-t-" + id }, attrs), [
-        preview(kind, false, topic),
+        kindTile(topic || kind),
         h("div", { class: "bk-pc__body ri-pc__t" }, [
           h("h3", { class: "bk-pc__title ri-pc__title", id: "ri-t-" + id, lang: titleLang }, [
             h("button", { type: "button", class: "ri-pc__open", "data-key": "sel-" + id, "aria-expanded": String(on), onclick: function () { select(id); } }, [titleText])]),
@@ -983,11 +947,9 @@
       var kind = isProj ? x.kind : x.object && x.object.kind;
       var t = isProj ? projTitle(x) : textOf(x, "title");
       var inner = h("div", { class: "bk-pd__in ri-pd__in" }, [h("h3", { class: "bk-pd__title ri-pd__title", id: "ri-pd-t", lang: t.lang, text: t.text })]);
+      // П1: без большой картинки — название, три цифры, одно предложение и действие; значок вида — в строке списка.
       var card = h("section", { class: "bk-pd ri-pd bk-glass bk-glass--strong", role: "region", "aria-labelledby": "ri-pd-t",
-        "data-pd": x.id, "data-pd-kind": isProj ? "project" : "idea" }, [
-        preview(kind, true, isProj ? null : x.topic),
-        inner,
-      ]);
+        "data-pd": x.id, "data-pd-kind": isProj ? "project" : "idea" }, [inner]);
       if (isProj) {
         inner.appendChild(h("div", { class: "bk-facts ri-facts" }, [
           fact(I() ? I().formatNumber(x.votes_up || 0) : String(x.votes_up || 0), tr("idea.fact.supported")),
@@ -1237,15 +1199,13 @@
     }
     // Пусто: иллюстрация из линий ui-kit (три плитки видов объектов), заголовок и одна строка подсказки.
     function emptyBox(body, title, text, kinds, ill) {
+      // П1: одна маленькая монохромная иконка (≤ 48 px) + заголовок + строка подсказки, без сценок.
       var art;
       if (hasIllustrations()) {
-        // Рисунок из линий ui-kit R11 (тот же, что у других разделов) — единый вид пустых состояний.
-        art = h("span", { class: "ri-empty__ill", "aria-hidden": "true" });
+        art = h("span", { class: "ri-empty__ill", "aria-hidden": "true" });  // значок R11, размер ограничен в ideas.css
         art.innerHTML = root.BirgeUI.illustration(ill || "idea");
       } else {
-        art = h("div", { class: "ri-empty__art", "aria-hidden": "true" }, (kinds || ["square", "playground", "lighting"]).map(function (k) {
-          return h("span", { class: "ri-tile", "data-kind": k }, [icon(KIND_ICON[k] || k)]);
-        }));
+        art = h("span", { class: "ri-tile", "aria-hidden": "true" }, [icon(KIND_ICON[(kinds || [])[0]] || "pin")]);
       }
       body.appendChild(h("div", { class: "ri-empty", role: "status" }, [
         art,
@@ -1451,8 +1411,8 @@
           ]));
           primary = button("bk-btn--primary", tr("common.action.next"), "forward", { "data-key": "next", onclick: function () { go(2); } });
         } else {
-          // Иллюстрация «булавка на карте» из линий ui-kit и одна строка, что делать.
-          content.appendChild(h("div", { class: "ri-pickart", "aria-hidden": "true" }, [h("span", { class: "ri-pickart__pin" }, [icon("pin")])]));
+          // П1: маленький значок набора R11 (≤ 48 px) и одна строка, что делать; кнопка ниже — одна.
+          content.appendChild(h("span", { class: "ri-tile", "aria-hidden": "true" }, [icon("pin")]));
           content.appendChild(h("p", { class: "ri-lead", text: tr("idea.place_hint") }));
           primary = button("bk-btn--primary", tr("idea.place_pick"), "pin", { "data-key": "pick", onclick: pick });
         }
