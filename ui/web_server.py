@@ -1778,7 +1778,8 @@ class CivicV2Gateway:
                        else "Эта часть ещё не подключена в сборке.")
             return v2_error(503, reason, message, module=module, role=handler.role)
         principal, staff_checked = None, False
-        if key in V2_HANDLERS_ROUND15:
+        # Раунд 15 и любой raw-маршрут сотрудника (R15 S42: raw-функция principal не получает и сама сотрудника не проверит).
+        if key in V2_HANDLERS_ROUND15 or (handler.kind == "raw" and handler.staff):
             # Раунд 15: сначала вход сотрудника (сессия R02 + CSRF; R08 board/week и R12 календарь — raw-обработчики,
             # сами сотрудника не проверяют), потом форма параметров адреса — аноним не узнаёт ничего о параметрах.
             if handler.staff:
