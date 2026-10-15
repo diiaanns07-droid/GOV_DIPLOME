@@ -68,6 +68,13 @@ research/round-15-results/R03/        DELIVERY.json, RUN.txt, это INTEGRATION
 
 Палитра Ctrl+K — patches/R01_palette_commands.patch (birge-ref.js, gatherCommands): группа «Спросить Birge» —
 «Спросить Birge» (открыть экран) и три вопроса сцен демо (снег в Нуре, службы, буран). Проверено в браузере.
+IA R11 §7.10 «Спросить Birge: <набранный текст>», если ничего не нашлось: BirgeAnalyst.ask(text) — откроет раздел
+#analyst и сразу задаст вопрос (экран ещё не смонтирован — вопрос подождёт монтирования).
+
+РЕШЕНИЕ R11 (IA_ROUND15 v1.1, 15 окт 17:35 Астаны): акимат → «Ещё» → группа «Инструменты» → «Спросить Birge» (#analyst,
+SCREENS.analyst = { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
+значок i-sparkle). Это и есть место экрана; patch меню — у R11 (patches/R01_menu_ia15.patch). Экран R03 сам
+регистрируется, только если раздела нет в SCREENS оболочки — дубля не будет.
 
 ====================================================================================================
 4. ТЕКСТЫ — R11 (web/civic/i18n/ru.json, kk.json)

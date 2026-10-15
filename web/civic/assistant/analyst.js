@@ -680,8 +680,21 @@
     return ok;
   }
 
+  // Палитра Ctrl+K (IA R11 §7.10): «Спросить Birge: <набранный текст>» — открыть экран и сразу задать вопрос.
+  function askFromAnywhere(question) {
+    var q = String(question || "").replace(/\s+/g, " ").trim().slice(0, MAX_QUESTION);
+    if (handle) {
+      if (root.BirgeShell && root.BirgeShell.section !== "analyst" && root.BirgeShell.setSection) root.BirgeShell.setSection("analyst");
+      if (q) handle.ask(q);
+      return true;
+    }
+    pending = q || null;
+    if (root.BirgeShell && typeof root.BirgeShell.setSection === "function") { root.BirgeShell.setSection("analyst"); return true; }
+    return false;
+  }
+
   // mount для оболочки — та же обёртка (палитра знает открытый экран), для стенда и тестов — тоже.
-  root.BirgeAnalyst = { mount: shellMount, commands: commands, version: VERSION, KEYS: KEYS };
+  root.BirgeAnalyst = { mount: shellMount, commands: commands, ask: askFromAnywhere, version: VERSION, KEYS: KEYS };
   if (!register()) {
     if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", register, { once: true });
     else root.addEventListener("load", register, { once: true });
