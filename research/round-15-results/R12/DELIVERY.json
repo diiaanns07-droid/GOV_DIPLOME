@@ -1,14 +1,14 @@
 {
  "role": "R12",
  "round": 15,
- "delivery": 7,
+ "delivery": 8,
  "title": "Единый календарь работ и «копаем один раз»",
  "branch": "claude/great-newton-8k3474",
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "b549f69627995a643a890850e919a0eb3c965033",
- "tested_sha": "b549f69627995a643a890850e919a0eb3c965033",
+ "code_sha": "d4e968ce352d681ba4a380f118e5063266ad23e1",
+ "tested_sha": "d4e968ce352d681ba4a380f118e5063266ad23e1",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/SOURCE.json",
@@ -46,13 +46,13 @@
   ],
   "shell": "registerScreen works-calendar (akimat) + registerLayer works-conflicts (off by default) — модуль сам",
   "i18n_keys": "research/round-15-results/R12/i18n_keys.json (77 ключей wcal.*, kk — черновик; новые: wcal.stage.*, wcal.add, wcal.staff.login, wcal.work.source, wcal.real.*)",
-  "neighbours": "R01 B0 74fb8c6d (R12 1c8d171d в сборке — проверено браузером с миром R02), R06 works_v2 (1f76738a), R02 мир a7251430 (5/5 planned_conflicts, id cf-w15-*), R17 service_profiles (75300896, цвета полос), R08/R17 conflicts_summary()",
-  "R17_patch": "research/round-15-results/R12/patches/R17_agencies_calendar_tab.patch — вкладка «Календарь работ» в «Ведомствах» (к R17 75300896)"
+  "neighbours": "R01 B0 74fb8c6d и B0.2 29b4ae9d (R12 1c8d171d в сборке), R06 c2604ea2 (works_v2 + seed_world мира), R02 мир a7251430 (5/5 planned_conflicts, scene8 = cf-w15-01), R17 191f81e7 (вкладка, цвета служб), R03 analyst (conflicts_summary), R08/R17 conflicts_summary()",
+  "R17_patch": "не нужен: R17 сам сделал вкладку «Календарь работ» в «Ведомствах» (191f81e7, в R01 B0.2) — проверено браузером; файл patches/R17_agencies_calendar_tab.patch оставлен как история"
  },
  "tests": {
   "pytest_R12_all": {
    "status": "PASS",
-   "passed": 98,
+   "passed": 100,
    "failed": 0,
    "skipped": 1,
    "skip_reason": "test_demo_world_planned_conflicts_are_found — мира R02 нет в ветке R12 (проверен на копии мира R02: PASS)",
@@ -60,10 +60,10 @@
   },
   "pytest_works": {
    "status": "PASS",
-   "passed": 44,
+   "passed": 46,
    "failed": 0,
    "skipped": 1,
-   "covers": "≤ 5 м от рёбер OSM; три вида конфликтов + вариант same_street; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API (шлюз R01 проверяет сотрудника, staff=False → 401, 400 на параметры); участок в узле без нулевого ребра; мир R02: даты day/season, отключения не работы, id planned_conflicts, seed_world; стадия конфликта на сегодня (асфальт впереди / уже уложен / раскопка идёт / прошло) — совет и порядок, id не зависит от даты"
+   "covers": "≤ 5 м от рёбер OSM; три вида конфликтов + вариант same_street; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API (шлюз R01 проверяет сотрудника, staff=False → 401, 400 на параметры); участок в узле без нулевого ребра; мир R02: даты day/season, отключения не работы, id planned_conflicts, seed_world; стадия конфликта на сегодня (асфальт впереди / уже уложен / раскопка идёт / прошло) — совет и порядок, id не зависит от даты; конфликт сцены 8 мира (scene_conflict только в режиме мира); conflicts_summary — числа и совет"
   },
   "pytest_neighbours_using_civic_geo": {
    "status": "PASS",
@@ -87,7 +87,7 @@
   },
   "r06_join": {
    "status": "PASS",
-   "note": "ветка R06 1f76738a: works_v2() → календарь source r06+fixture"
+   "note": "R06 c2604ea2: seed_world кладёт работы мира в своё хранилище с теми же id (w-w15-…) и участками; works_v2() → календарь source r06, planned ids мира сохраняются"
   },
   "real_works_LOCAL5": {
    "status": "NOT_RUN",
@@ -102,7 +102,7 @@
    "status": "PASS",
    "passed": 2,
    "failed": 0,
-   "how": "стенд R01 856b3027 + R17 75300896 + patch R17: вкладка без заголовка R12, главная «Добавить работу», 5 конфликтов, снятие при смене вкладки"
+   "how": "R01 29b4ae9d (B0.2: R17 191f81e7 — вкладка «Календарь работ» в «Ведомствах» сделана самим R17) + R06 c2604ea2 + R12 этой поставки, мир R02: вкладка без своего заголовка, главная «Добавить работу» (форма R06), снятие при смене вкладки; patch R17 от R12 больше не нужен"
   },
   "pytest_fresh_snapshot_B103": {
    "status": "PASS",
@@ -125,6 +125,16 @@
    "warnings": 1,
    "how": "ml/datasets/demo_world_check.py R02 (a7251430) --no-heat на мире R02 a7251430 и данных карты 11a5d0ff",
    "warning": "complaints/c-w1500643: узел osm-node-3530788994 в свежем OSM — перекрёсток без светофора; подпись «Перекрёсток пр. Жумабаева и пр. Рахимжана Кошкарбаева» вместо «Светофор на перекрёстке …» (INTEGRATION §10)"
+  },
+  "browser_b02_r06_world": {
+   "status": "PASS",
+   "passed": 35,
+   "failed": 0,
+   "how": "R01 29b4ae9d + R06 c2604ea2 (мир засевает R06: «civic-world: … R06 55 … R12 39») + R12, 1366 × ru/kk без состояний: работы из works_v2 R06 (source r06, 39), id конфликтов мира cf-w15-01…05 сохранены, календарь открывается на сцене 8 (cf-w15-01), вкладка «Ведомств»"
+  },
+  "r03_analyst": {
+   "status": "PASS",
+   "note": "R03 (в R01 29b4ae9d) «Где копаем дважды?» → 5 конфликтов, 3 серьёзных, совет первого конфликта из conflicts_summary (стадия «асфальт уже уложен»)"
   }
  },
  "screens": {

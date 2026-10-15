@@ -99,7 +99,8 @@ tests/civic/R12/test_works.py        pytest 42; tests/civic/R12/works/works_cale
   белый/тёмный текст по контрасту (≥ 4.5:1). Красный в календаре — только у конфликта (у вас красного нет — спасибо).
 Для «Штаба ведомств»: engine.civic_geo.works_calendar.conflicts_summary(district=None) → {conflicts, high, top[3],
   period, demo, source} — те же числа, что в календаре (вызов в процессе, права проверяет ваш маршрут).
-Вкладка «Календарь работ» в «Ведомствах» (схема R11 §5.4) — готовый patch для вашего web/civic/agencies/agencies.js:
+Вкладка «Календарь работ» в «Ведомствах» (схема R11 §5.4) — СДЕЛАНА R17 в 191f81e7 (в R01 B0.2), проверена браузером;
+  patch ниже — история (больше не нужен). Был готовый patch для вашего web/civic/agencies/agencies.js:
     git apply research/round-15-results/R12/patches/R17_agencies_calendar_tab.patch   (к ветке R17 75300896)
   Что делает: вкладки «Табло · Совместные · Передачи · Календарь работ · Кризис» (tabIds(): вкладка есть, только если
   в сборке есть BirgeWorksCalendar); на вкладке — BirgeWorksCalendar.mount(panel, {embedded: true, api, apiBase, map,
@@ -203,3 +204,13 @@ R10: хуки те же; новая проверка в tests/civic/R12/works/wo
   staff с поставки 3 (9090eb8d) — предупреждение B-108 «TypeError → 500» к R12 больше не относится.
 R11: новые ключи wcal.stage.surface_done / now / past («асфальт уже уложен» / «асфальт төселіп қойды» и т. д.) —
   research/round-15-results/R12/i18n_keys.json (77 ключей, kk — черновик).
+Поставка 8 (R01 B0.2 29b4ae9d + R06 c2604ea2 + мир R02):
+  - Сцена 8 по DEMO_SCRIPT R01 (шаг 4 «Календарь работ … асфальт в мае, сети в июле»): мир называет конфликт сцены
+    (scenes.scene8.conflict = cf-w15-01). Только при CIVIC_DEMO_WORLD=1 ответ works-calendar несёт scene_conflict, и экран
+    открывается на нём — из меню, из Ctrl+K «Календарь работ» и во вкладке «Ведомств»; порядок списка — по срочности
+    (cf-w15-02 — «1 из 5», сцена 8 — «2 из 5»). Без мира — первый по срочности, как раньше.
+  - R06: мир засевает R06 (работы с теми же id w-w15-… и участками) — календарь читает works_v2() (source r06), id
+    конфликтов мира сохраняются. Проверено: 35/0 в браузере.
+  - R17: вкладка «Календарь работ» в «Ведомствах» уже у вас (191f81e7) — patch R12 не нужен; проверка вкладки PASS.
+  - R03 / R08 / R17: conflicts_summary() → top[i] теперь с stage, advice_ru, advice_kk («Спросить Birge» на стенде отвечает
+    советом первого конфликта).
