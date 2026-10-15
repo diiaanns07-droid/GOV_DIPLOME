@@ -11,12 +11,17 @@ SHA кода и проверок — research/round-15-results/R03/DELIVERY.json
    Что изменилось после c6574a39: тесты R03 не зависят от порядка в полном прогоне (BUILD_LOG B0.6), оракул оценки,
    казахский термин «көше бөлігі». Маршрут, файлы экрана, меню, палитра, прогрев — у R01 уже есть.
 2) Проверка: python3 -B -m pytest -q tests/civic/R03/round15 → в сборке R01 со всеми соседями 86 passed (проверено на
-   копии c6d62440); на ветке R03 — 85 passed, 1 skipped (нет R17 и R16). Порядок: R17 → R03 и R03 → R13 / R16 / R17 —
+   копии c6d62440); на ветке R03 — 92 passed, 1 skipped (нет R17 и R16). Порядок: R17 → R03 и R03 → R13 / R16 / R17 —
    тесты R03 зелёные (падает только собственный тест R17 test_neighbor_functions_with_service — и без R03).
    Вручную: вход сотрудника → «Ещё» → «Спросить Birge» → «Где в Нуре больше всего жалоб на снег за неделю и какие службы
    отстают?» → карточка с числами → «Показать на карте» → карточка R07 с тем же числом, что в ответе.
 
 Что нового после 7724787e (для приёмки R10 / R15):
+- Вопросы проверки скорости R10 (perf_check.cjs): «Сколько обращений проверено жителями за месяц?» раньше получал
+  подсказки «что я умею» — новое намерение resident_checks: итоги табло R17 за период (fixed, verified, verified_share,
+  returned) и строки служб «подтверждено N из M»; на мире R02 279 / 49 / 18 % / 5 — как GET agencies/board.
+  «Какая служба больше всего просрочила?» — один блок служб (раньше ещё «горячие места» и «Просрочено»).
+  Казахские фразы нового блока («Тұрғындар тексергені», «тұрғындар растады», «Тұрғындар қайтарды») — на проверку R11.
 - R15 S44 (низкий): вопрос с любым флагом безопасности («придумай», «покажи телефоны», «удали», инструкции) модели
   не отправляется — ответ кода с пометкой. Тесты R15 test_instruction_questions_never_reach_the_model: оба случая S44 —
   XPASS (xfail можно снять).
@@ -44,7 +49,7 @@ SHA кода и проверок — research/round-15-results/R03/DELIVERY.json
 ====================================================================================================
 agent/civic_assistant/analyst/        новый подпакет: ИИ-аналитик акима
     core.py       ask(question, lang, principal, context, body, district) — точка входа маршрута; configure(); reset()
-    intents.py    разбор вопроса без сети: ru / kk / вперемешку, 11 намерений, район, тема, период, служба, флаги безопасности
+    intents.py    разбор вопроса без сети: ru / kk / вперемешку, 12 намерений, район, тема, период, служба, флаги безопасности
     sources.py    вызовы соседей в процессе + журнал вызовов (CallLog); «модуля нет» → not_ready, не ошибка
     blocks.py     блоки ответа ru/kk, собранные кодом: числа, строки, список мест/служб, действия map.focus / open
     llm.py        необязательная языковая модель (OpenAI-совместимый API из окружения), числа из её текста вычёркиваются
@@ -120,8 +125,9 @@ analyst.calls (ru {one, few, many}; kk одна форма). Казахские 
   "facts": [...], "calls": [{role, module, fn, args, status: ok|empty|not_ready|error, ms, demo?}],
   "mode": "offline|llm", "offline": bool, "offline_reason": "no_key|question_has_instructions|llm_timeout|…|null",
   "model": null|"…", "demo": bool, "generated_at", "ms" }
-Намерения: hot_spots, category_growth, district_compare, overdue, lagging_services, crisis, work_conflicts, initiatives,
-meeting_orders, forecast, day_summary (+ clarify — подсказки, если вопрос не про данные).
+Намерения: hot_spots, category_growth, district_compare, overdue, lagging_services, resident_checks (проверено
+жителями: итоги табло R17 fixed / verified / returned), crisis, work_conflicts, initiatives, meeting_orders, forecast,
+day_summary (+ clarify — подсказки, если вопрос не про данные).
 Действие map.focus — только цели тепловой карты (object | segment | area); экран вызывает opts.openTarget(kind, id, days)
 оболочки (→ #target=…). Действие open — раздел; кнопка видна, только если раздел есть в меню (navItems / moreItems).
 Имена разделов соседей, на которые ведёт «Открыть …» (если назовёте иначе — поправлю SECTION_ALIASES в analyst.js):
