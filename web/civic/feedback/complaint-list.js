@@ -391,7 +391,8 @@
         C().icon ? C().icon("chevron-right") : null]);
       var li = h("li", { "class": "bc-inbox__item" + (expanded ? " bc-inbox__item--open" : "") +
                                   (state.flash === group.key ? " bc-inbox__item--flash" : ""),
-                         "data-demo": group.demo ? "true" : null, "data-key": group.key, "data-target": (group.target || {}).id || null },
+                         "data-demo": group.demo ? "true" : null, "data-world": group.world ? "true" : null,
+                         "data-key": group.key, "data-target": (group.target || {}).id || null },
         h("div", { "class": "bk-lrow bc-inbox__line" + (state.hover && group.target && state.hover === group.target.id ? " is-hover" : "") },
           [statusControl(group), head]));
       var partsNode = partsLine(group);

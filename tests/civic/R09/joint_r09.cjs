@@ -155,7 +155,8 @@ async function variant(browser, base, width, height, lang, staff) {
     await shot(page, `joint-${tag}-4-row-parts`);
     // Передача на другом обращении → Дорожная служба (если уже у неё — Служба благоустройства), причина — чип.
     // Вторая строка — любое другое «Новое» обращение (фикстура: «Гололёд на тротуаре у школы», примерное место).
-    const other = page.locator(`.bc-inbox__group[data-group="new"] .bc-inbox__item:not([data-target="${PIT_TARGET}"])`).first();
+    // Только строки демо-мира (data-world): примеры шага 2 «Хан Шатыр» — только просмотр, карточки действий у них нет.
+    const other = page.locator(`.bc-inbox__group[data-group="new"] .bc-inbox__item[data-world="true"]:not([data-target="${PIT_TARGET}"])`).first();
     if (await other.count()) {
       await other.locator(".bc-inbox__row").click();
       await page.waitForSelector(".bc-inbox__item--open .bc-joint__open-handoff", { timeout: 8000 });
