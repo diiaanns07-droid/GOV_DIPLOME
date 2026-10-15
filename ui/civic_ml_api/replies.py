@@ -95,9 +95,10 @@ def reply_draft(complaint_id=None, text=None, status=None, lang=None, *, code=No
         record = dict(record)
         if not record.get("services") and not (record.get("passport") or {}).get("assignee_id") \
                 and not record.get("service"):
+            moved = [h["to"] for h in record.get("handoffs") or [] if isinstance(h, dict) and h.get("to")]
             hint = (record.get("route_hint") or {}).get("services")
-            record["service"] = hint[0] if hint else table_service(record.get("category") or "other",
-                                                                   record.get("subtopic"))[0]
+            record["service"] = moved[-1] if moved else hint[0] if hint else table_service(
+                record.get("category") or "other", record.get("subtopic"))[0]
         lang = lang or (record.get("lang") if record.get("lang") in ("ru", "kk") else None)
         result = _draft(record, status=status or None, lang=lang, names=names, now=now,
                         working_days=_working_days(), original_code=original_code)

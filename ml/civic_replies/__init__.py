@@ -50,6 +50,17 @@ def date_words(value) -> tuple[str, str] | None:
     return f"{local.day} {T.MONTHS_RU[local.month - 1]}{year}", f"{local.day} {T.MONTHS_KK[local.month - 1]}{year_kk}"
 
 
+def _due_state(due, now: datetime) -> str | None:
+    """ok | today | overdue по датам — когда календаря R09 (workdays.deadline_info) нет."""
+    moment = _parse(due)
+    if moment is None:
+        return None
+    now = now if now.tzinfo else now.replace(tzinfo=ASTANA_TZ)
+    if now > moment:
+        return "overdue"
+    return "today" if moment.astimezone(ASTANA_TZ).date() == now.astimezone(ASTANA_TZ).date() else "ok"
+
+
 def working_days_words(n: int) -> tuple[str, str]:
     """«в течение 3 рабочих дней» — родительный падеж: 1, 21, 31 — «рабочего дня», остальное — «рабочих дней»."""
     ru = f"{n} рабочего дня" if n % 10 == 1 and n % 100 != 11 else f"{n} рабочих дней"
@@ -96,22 +107,26 @@ def facts_from_record(record: dict, *, names: dict, now: datetime, working_days=
         if isinstance(part, dict) and part.get("service"):
             parts.append({"service": part["service"], "role": part.get("role") or "partner",
                           "status": part.get("status") or "new"})
+    handoffs = [h for h in record.get("handoffs") or [] if isinstance(h, dict) and h.get("to")]
+    # Ведущая: выбор сотрудника, служба записи, части; иначе — куда передали последней передачей, потом подсказка R04.
     lead = (passport.get("assignee_id") or record.get("service")
-            or (parts[0]["service"] if parts else None) or (record.get("route_hint") or {}).get("services", [None])[0])
+            or (parts[0]["service"] if parts else None) or (handoffs[-1]["to"] if handoffs else None)
+            or (record.get("route_hint") or {}).get("services", [None])[0])
     if not parts and lead:
         parts = [{"service": lead, "role": "lead", "status": record.get("status") or "new"}]
     for part in parts:
         item = names.get(part["service"]) or {}
         part["name_ru"], part["name_kk"] = item.get("ru") or part["service"], item.get("kk") or part["service"]
     due = record.get("due_at")
-    days_left = None
+    days_left = state = None
     if due and callable(working_days):
         try:
             info = working_days(_parse(due), now, done=False) or {}
-            days_left = info.get("working_days_left")
+            days_left, state = info.get("working_days_left"), info.get("state")
         except Exception:  # noqa: BLE001 — календарь R09 недоступен: срок только датой
-            days_left = None
-    handoffs = [h for h in record.get("handoffs") or [] if isinstance(h, dict) and h.get("to")]
+            days_left = state = None
+    if due and state not in ("ok", "today", "overdue"):
+        state = _due_state(due, now)
     delay = passport.get("delay") or {}
     resolution = record.get("resolution") or {}
     return {
@@ -119,7 +134,7 @@ def facts_from_record(record: dict, *, names: dict, now: datetime, working_days=
         "category": record.get("category"), "subtopic": record.get("subtopic"),
         "status": record.get("status"),
         "services": parts,
-        "response_due": due, "response_days_left": days_left,
+        "response_due": due, "response_days_left": days_left, "response_state": state,
         "fix_eta": passport.get("fix_eta"),
         "next_step": _clean_line(passport.get("next_step")),
         "delay_reason": _clean_line(delay.get("reason")),
@@ -138,7 +153,7 @@ def facts_from_record(record: dict, *, names: dict, now: datetime, working_days=
 # не трогаем никогда.
 MAX_LEN = 320
 _SOFT_DROP = ("thanks", "next_update", "temp_measure", "rejected_again", "hello", "no_eta")
-_HARD_DROP = ("handoff", "due")
+_HARD_DROP = ("handoff", "handoff_only", "handoff_due", "due", "overdue")
 _MIN_STAFF = 40                    # короче текст сотрудника не режем: смысл шага теряется
 
 
@@ -227,6 +242,9 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
     service_ru = ", ".join(p["name_ru"] for p in parts) or "служба по таблице акимата"
     service_kk = ", ".join(p["name_kk"] for p in parts) or "әкімдік кестесі бойынша қызмет"
     due = date_words(facts.get("response_due"))
+    due_state = facts.get("response_state") or (_due_state(facts["response_due"], now) if due else None)
+    # Срок ответа прошёл, а ответа ещё нет: прошедшую дату как срок не пишем (житель прочёл бы её как обещание).
+    overdue = bool(due) and due_state == "overdue"
     used, warnings, needs_input = [], [], []
     # Предложения по порядку вывода: {"key", "text", "render"?, "body_len"?} — render(n) пересобирает предложение
     # с текстом сотрудника не длиннее n знаков (бюджет длины, _fit).
@@ -332,9 +350,17 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
             say("in_progress", code=(code_ru, code_kk), about=(about_ru, about_kk), service=(service_ru, service_kk))
             used.append("services")
             template = "in_progress"
-        if facts.get("handoff_to") and due:
+        if facts.get("handoff_to"):
             to = names.get(facts["handoff_to"]) or {}
-            say("handoff", to=(to.get("ru") or facts["handoff_to"], to.get("kk") or facts["handoff_to"]), due=due)
+            to_pair = (to.get("ru") or facts["handoff_to"], to.get("kk") or facts["handoff_to"])
+            # Служба, куда передали, уже названа выше («…передали в службу: Водоканал») — не повторяем её.
+            named = facts["handoff_to"] in {p["service"] for p in parts}
+            if due and not overdue and named:
+                say("handoff_due", due=due)
+            elif due and not overdue:
+                say("handoff", to=to_pair, due=due)
+            elif not named:
+                say("handoff_only", to=to_pair)
             used.append("handoff")
         if facts.get("next_step"):
             say("next_step", staff="next_step", next_step=staff_texts["next_step"])
@@ -350,7 +376,11 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
             if nxt:
                 say("next_update", next_update=nxt)
             used.append("delay")
-        if status == "new" and due and not facts.get("handoff_to"):
+        if status == "new" and overdue:
+            say("overdue", due=due)
+            used.append("response_due")
+            warnings.append(f"Срок ответа прошёл ({due[0]}): в черновике — извинение за задержку, новых дат нет.")
+        elif status == "new" and due and not facts.get("handoff_to"):
             left = facts.get("response_days_left")
             if isinstance(left, int) and left > 0:
                 say("due", days=working_days_words(left), due=due)

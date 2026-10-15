@@ -80,6 +80,33 @@ def test_joint_parts_and_handoff_keep_deadline():
     assert "внутренняя причина" not in res["draft_ru"] + res["draft_kk"]
 
 
+def test_overdue_deadline_is_not_promised():
+    """Стенд B0.12 (16 окт): у жалобы «новая» со сроком 14 октября черновик писал «Срок ответа — 14 октября»."""
+    late = datetime(2026, 10, 30, 12, 0, tzinfo=TZ)                  # срок REC — 29 октября
+    res = reply_draft(record=REC, now=late)
+    assert "Срок ответа (29 октября) уже прошёл — извините за задержку." in res["draft_ru"]
+    assert "Жауап мерзімі (29 қазан) өтіп кетті" in res["draft_kk"]
+    assert "Срок ответа — 29" not in res["draft_ru"] and "до 29 октября" not in res["draft_ru"]
+    assert any("Срок ответа прошёл" in w for w in res["warnings"])
+    rec = dict(REC, service="water", handoffs=[{"at": "2026-10-15T11:00:00+05:00", "from": "road", "to": "water",
+                                                "reason": "x"}])
+    res = reply_draft(record=rec, now=late)
+    assert "не меняется" not in res["draft_ru"] and "уже прошёл" in res["draft_ru"]
+    on_time = reply_draft(record=REC, now=NOW)
+    assert "до 29 октября" in on_time["draft_ru"] and "прошёл" not in on_time["draft_ru"]
+
+
+def test_handoff_names_the_service_once():
+    """R09 после передачи ставит service = новая служба: «передали в службу: Водоканал» второй раз не повторяем."""
+    handoffs = [{"at": "2026-10-15T11:00:00+05:00", "from": "road", "to": "water", "reason": "x"}]
+    for rec in (dict(REC, service="water", handoffs=handoffs), dict(REC, handoffs=handoffs)):   # без service — тоже
+        res = reply_draft(record=rec, now=NOW)
+        assert res["draft_ru"].count("Водоканал") == 1, res["draft_ru"]
+        assert res["draft_kk"].count("Сумен жабдықтау қызметі") == 1, res["draft_kk"]
+        assert "Срок ответа не меняется — до 29 октября." in res["draft_ru"]
+        assert "Дорожная служба" not in res["draft_ru"]                  # не служба по таблице, а куда передали
+
+
 def test_joint_where_no_service_started_yet():
     rec = dict(REC, status="accepted", services=[{"service": "heating", "role": "lead", "status": "new"},
                                                  {"service": "greenery", "role": "partner", "status": "new"}])
