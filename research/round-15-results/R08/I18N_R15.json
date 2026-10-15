@@ -1,7 +1,16 @@
 {
  "_meta": {
   "about": "R08 раунд 15: новые ключи словаря для R11 (web/civic/i18n/ru.json, kk.json). Запасной текст — в модулях; как только ключ есть в словаре R11, модуль берёт словарь. Казахские фразы — на вычитку (KK_REVIEW).",
-  "source": "web/civic/board/board.js FALLBACK, web/civic/akim/week.js FALLBACK, web/civic/akim/akim.js WAVE2_KEYS"
+  "source": "web/civic/board/board.js FALLBACK, web/civic/akim/week.js FALLBACK, web/civic/akim/akim.js WAVE2_KEYS",
+  "module_only": [
+   "board.delta.vs_week",
+   "board.delta.vs_week_before",
+   "week.delta.week",
+   "week.delta.week_before",
+   "week.delta.ago",
+   "week.delta.ago_before"
+  ],
+  "module_only_note": "Фрагменты фраз с пустой половиной (порядок слов ru и kk разный): R11 в словарь не берёт (INTEGRATION R11, круг 6), модуль берёт свои запасные строки."
  },
  "ru": {
   "board.title": "Ситуационный центр",

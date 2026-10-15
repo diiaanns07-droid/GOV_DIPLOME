@@ -1,40 +1,78 @@
 {
- "base": "http://127.0.0.1:8660",
- "at": "2026-10-15T17:41:07.467Z",
- "pass": 4,
+ "base": "http://127.0.0.1:8670",
+ "at": "2026-10-15T21:45:11.473Z",
+ "pass": 7,
  "fail": 0,
  "report": [
   {
    "page": "/civic/board/index.html",
+   "root": "body",
    "size": "1366x768",
    "lang": "kk",
    "small": [],
    "tiny": [],
-   "clipped": []
+   "clipped": [],
+   "low": []
   },
   {
    "page": "/civic/board/index.html",
+   "root": "body",
    "size": "1920x1080",
    "lang": "ru",
    "small": [],
    "tiny": [],
-   "clipped": []
+   "clipped": [],
+   "low": []
   },
   {
    "page": "/civic/akim/week.html",
+   "root": "body",
    "size": "1366x900",
    "lang": "kk",
    "small": [],
    "tiny": [],
-   "clipped": []
+   "clipped": [],
+   "low": []
   },
   {
    "page": "/civic/akim/week.html",
+   "root": "body",
    "size": "375x812",
    "lang": "ru",
    "small": [],
    "tiny": [],
-   "clipped": []
+   "clipped": [],
+   "low": []
+  },
+  {
+   "page": "/#day",
+   "root": "#birge-day-root",
+   "size": "1366x900",
+   "lang": "ru",
+   "small": [],
+   "tiny": [],
+   "clipped": [],
+   "low": []
+  },
+  {
+   "page": "/#day",
+   "root": "#birge-day-root",
+   "size": "375x812",
+   "lang": "kk",
+   "small": [],
+   "tiny": [],
+   "clipped": [],
+   "low": []
+  },
+  {
+   "page": "/",
+   "root": "#birge-today",
+   "size": "1366x768",
+   "lang": "kk",
+   "small": [],
+   "tiny": [],
+   "clipped": [],
+   "low": []
   }
  ]
 }

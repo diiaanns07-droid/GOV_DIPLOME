@@ -70,7 +70,7 @@ def _sentences(w: dict, lang: str) -> list[str]:
                 line += f", из них жители подтвердили {text.fmt_num(k['fixed']['verified'])}"
             out.append(line + ".")
         out.append(f"На {w['week']['as_of_label_ru']} в работе {text.fmt_num(k['in_progress']['value'])}, "
-                   f"просрочено {text.fmt_num(k['overdue']['value'])}.")
+                   f"не исправлено в срок {text.fmt_num(k['overdue']['value'])}.")   # слова плитки (R10 B-104)
     else:
         place = f" {d['kk']} ауданында" if d else ""
         if n == 0:
@@ -84,7 +84,7 @@ def _sentences(w: dict, lang: str) -> list[str]:
                 line += f", оның ішінде тұрғындар растағаны: {text.fmt_num(k['fixed']['verified'])}"
             out.append(line + ".")
         out.append(f"{w['week']['as_of_label_kk']} жағдайы бойынша жұмыста: {text.fmt_num(k['in_progress']['value'])}, "
-                   f"мерзімі өткені: {text.fmt_num(k['overdue']['value'])}.")
+                   f"мерзімінде түзетілмегені: {text.fmt_num(k['overdue']['value'])}.")
     main = w.get("_summary")
     if main is not None:
         sentence = text._main_ru(main) if lang == "ru" else text._main_kk(main)

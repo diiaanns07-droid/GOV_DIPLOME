@@ -840,7 +840,8 @@
   font-size: 22px;
   letter-spacing: var(--ls-title, -0.01em);
 }
-/* числа — плитки сводки «Сегодня в Астане» один в один: поля 10/12, число 22/600, подпись 12; ниже — изменение и график */
+/* числа — плитки сводки «Сегодня в Астане»: поля 10/12, число 22/600, подпись 13 (--fs-xs: мельче 13 px текста нет —
+   решение владельца 12 окт, R10 B-112; эталон раунда 14 — 12); ниже — изменение и график */
 .akim-kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -862,13 +863,13 @@
 }
 .akim-kpi .bk-kpi__label {
   color: var(--c-text-2);
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px);
   font-weight: 400;
   line-height: 20px;
 }
 .akim-kpi .bk-kpi__delta {
   margin-top: 2px;
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px);
 }
 .akim-kpi-more > summary {
   font-size: 14px;
@@ -900,8 +901,8 @@
   margin-bottom: 0;
 }
 .akim-card__hint {
-  color: var(--c-text-3);
-  font-size: 12px;
+  color: var(--c-text-2);
+  font-size: var(--fs-xs, 13px);
 }
 .akim-grid,
 .akim-col {
@@ -946,8 +947,8 @@
   line-height: 1.3;
 }
 .akim-hot__sub {
-  color: var(--c-text-3);
-  font-size: 12px;
+  color: var(--c-text-2);
+  font-size: var(--fs-xs, 13px);
 }
 .akim-hot__item > .ic {
   display: none;
@@ -955,7 +956,7 @@
 .akim-hot__sub .bk-status { /* статус — тихо, одной строкой с темой; иконка статуса ui-kit R11 (правило 3 Linear) */
   gap: 5px;
   padding: 0;
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px);
   font-weight: 500;
 }
 .akim-hot__sub .bk-status::before { /* иконка по высоте строки 12 px — как точка статуса эталона к своему тексту */
@@ -986,8 +987,8 @@
   font-weight: 500;
 }
 .akim-pulse__reason {
-  color: var(--c-text-3);
-  font-size: 12px;
+  color: var(--c-text-2);
+  font-size: var(--fs-xs, 13px);
 }
 .akim-pulse__map {
   font-size: 14px;
@@ -1454,7 +1455,7 @@
 }
 .akim-mini__label {
   color: var(--c-text-2);
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px);
 }
 .akim-mini__lines {
   display: grid;
@@ -1518,12 +1519,12 @@
   font-weight: 500;
 }
 .akim-forecast__item .bk-list__sub {
-  color: var(--c-text-3);
-  font-size: 12px;
+  color: var(--c-text-2);
+  font-size: var(--fs-xs, 13px);
 }
 .akim-forecast__note {
   margin: 8px 0 0;
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px);
 }
 @media (max-width: 1023px) {
   .akim-trio,

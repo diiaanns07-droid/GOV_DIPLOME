@@ -78,9 +78,9 @@
 .akim-today__kpi[data-kind="overdue"] b { /* красный текста ui-kit: 6,0:1 на белом (R10 B-109; #e24b4a — 3,9:1) */
   color: var(--c-danger, #b3362e);
 }
-.akim-today__kpi span { /* подпись переносится, а не обрезается (kk «мерзімі өткен» на 375) */
+.akim-today__kpi span { /* подпись переносится, а не обрезается (kk «мерзімі өткен» на 375); 13 px — пол владельца (R10 B-112) */
   color: var(--c-text-2);
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px);
   overflow-wrap: anywhere;
 }
 .akim-today__hot {
@@ -141,8 +141,8 @@
 }
 .akim-today__place small {
   overflow: hidden;
-  color: var(--c-text-3);
-  font-size: 12px;
+  color: var(--c-text-2);
+  font-size: var(--fs-xs, 13px);
   line-height: 1.3; /* в эталоне тема — внутри строки названия и наследует её 1,3 */
   white-space: nowrap;
   text-overflow: ellipsis;

@@ -428,8 +428,8 @@ async function shot(page, name, full) {
   empty.kpi.verification_available = false;
   Object.assign(empty.objects, { late: [], stale: [], late_count: 0, stale_count: 0 });
   Object.assign(empty.proposals, { top: [], new_count: 0, open_count: 0 });
-  empty.text = { ru: "Сегодня новых обращений нет. Просроченных обращений нет. Объектов с отставанием нет.",
-                 kk: "Бүгін жаңа өтініш жоқ. Мерзімі өткен өтініш жоқ. Кестеден қалып жатқан нысан жоқ." };
+  empty.text = { ru: "Сегодня новых обращений нет. Сроки исправления не нарушены. Объектов с отставанием нет.",
+                 kk: "Бүгін жаңа өтініш жоқ. Мерзімінде түзетілмеген өтініш жоқ. Кестеден қалып жатқан нысан жоқ." };
   empty.text_parts = { ru: [{ role: "new", text: "Сегодня новых обращений нет." }], kk: [{ role: "new", text: "Бүгін жаңа өтініш жоқ." }] };
   {
     // CLEAN_PASS §3 R08 п. 6: пустые блоки не показываем; ниже чисел пусто всё — одно состояние «пусто» ui-kit.
