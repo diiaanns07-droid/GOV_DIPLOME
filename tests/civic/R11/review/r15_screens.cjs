@@ -119,7 +119,8 @@ function navProblem(mode, lang, nav) {
   });
   await probe.close();
   for (const [w, h, dpr] of SIZES) for (const lang of LANGS) for (const mode of ["resident", "akimat"]) {
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: dpr });
+    // язык браузера как у жителя: поле даты «Картины дня» — 16.10.2026, а не 10/16/2026 (en-US облака)
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: dpr, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
     await ctx.addInitScript(([m, l]) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", l); localStorage.setItem("birge.i18n.lang", l); } catch (e) { /* приватный режим */ } }, [mode, lang]);
     const page = await ctx.newPage();
     const errors = []; page.on("pageerror", (e) => errors.push(String(e).slice(0, 160)));

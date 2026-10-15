@@ -1,0 +1,38 @@
+--- a/web/civic/agencies/agencies.css
++++ b/web/civic/agencies/agencies.css
+@@ -315,11 +315,13 @@
+   height: 14px;
+ }
+ .ag-svc__name {
++  display: -webkit-box;
+   min-width: 0;
+   overflow: hidden;
+   font-weight: var(--fw-medium);
+-  text-overflow: ellipsis;
+-  white-space: nowrap;
++  line-height: 1.25;
++  -webkit-box-orient: vertical;
++  -webkit-line-clamp: 2;   /* длинное имя службы (ҚАЗ, 1024) — в две строки, а не многоточием (R11, R17-5) */
+ }
+ .ag-svc__extra {
+   padding: 0 6px;
+@@ -645,6 +647,19 @@
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
++/* телефон: заголовок строки, причина передачи и итог штаба — целиком, а не первые 40 знаков (R11, R17-6) */
++@media (max-width: 760px) {
++  .ag-lrow__title,
++  .ag-quote {
++    display: -webkit-box;
++    white-space: normal;
++    -webkit-box-orient: vertical;
++    -webkit-line-clamp: 2;
++  }
++  .ag-quote {
++    -webkit-line-clamp: 3;
++  }
++}
+ 
+ /* ───── кризисный штаб ───── */
+ .ag-crisis {
