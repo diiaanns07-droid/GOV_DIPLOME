@@ -1,7 +1,8 @@
 // R01 round 14, wave 2 (POLISH_WAVE_2, «Защита интерфейса от перегруза»): the menu per view and section screens.
 //   - by default the map and the header look as in FINAL-candidate 8e67c65: only items whose module is in the build;
-//   - ?screens=all shows the full menu: resident «Карта · Мои обращения · Рядом · Идеи · Ещё»,
-//     akimat «Карта · Картина дня · Обращения · Проекты и идеи · Ещё» (≤ 5 items), rare sections in «Ещё»;
+//   - ?screens=r14 shows the full menu of round 14 (FINAL-4 fallback of the round-15 IA, R11 IA_ROUND15 §2–§3: no
+//     round-15 modules): resident «Карта · Мои обращения · Рядом · Идеи · Ещё», akimat «Карта · Картина дня · Обращения ·
+//     Проекты и идеи · Ещё» (≤ 5 items), rare sections in «Ещё» (round-15 menu: tests/civic/R01/browser/r15_ia.cjs);
 //   - a section is its own screen (#nearby, #ideas, #more, …), not a layer over the map; back returns to the map;
 //   - a role module plugs in by window global or BirgeShell.registerScreen and gets api/lang/role; destroy on leave;
 //   - extra map layers: one switch, at most one active, nothing on the map until a module registers a layer;
@@ -204,10 +205,10 @@ async function main() {
     check("no page errors (default build)", page.errs.length === 0, page.errs);
     await ctx.close();
 
-    // ---------------------------------------------------------------- ?screens=all: the full menu of wave 2
+    // ---------------------------------------------------------------- ?screens=r14: the full menu of wave 2
     ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
     page = await newPage(ctx);
-    await page.goto(base + "?screens=all");
+    await page.goto(base + "?screens=r14");
     await ready(page);
     n = await nav(page);
     check("akimat menu (wave 2): Карта · Картина дня · Обращения · Проекты и идеи · Ещё",
@@ -219,9 +220,10 @@ async function main() {
     const akimatMenu = await page.evaluate(() => { const m = document.querySelector("#birge-header .birge-more-menu");
       return { role: m?.getAttribute("role"), shown: !!m && !m.hidden, items: [...(m?.querySelectorAll("[role=menuitem]") || [])].map((i) => i.textContent),
         expanded: document.querySelector("#birge-header .birge-nav [data-section=more]").getAttribute("aria-expanded") }; });
-    check("akimat «Ещё» is a small menu (role=menu, ≤ 4): Вопросы жителей · Работы и отключения · QR-таблички · Службы",
+    // Порядок — схема R11 раунда 15 (IA_ROUND15 §3): «С жителями» (вопросы), затем «Инструменты» (QR, работы, службы).
+    check("akimat «Ещё» is a small menu (role=menu, ≤ 4): Вопросы жителей · QR-таблички · Работы и отключения · Службы",
       akimatMenu.role === "menu" && akimatMenu.shown && akimatMenu.expanded === "true"
-      && JSON.stringify(akimatMenu.items) === '["Вопросы жителей","Работы и отключения","QR-таблички","Службы"]', akimatMenu);
+      && JSON.stringify(akimatMenu.items) === '["Вопросы жителей","QR-таблички","Работы и отключения","Службы"]', akimatMenu);
     await page.keyboard.press("Escape");
     await page.waitForTimeout(150);
     check("1366 akimat: header with 5 items fits, no horizontal scroll", n.out === 0 && n.scrollW <= 1366, n);
@@ -252,7 +254,7 @@ async function main() {
       const has = { nearby: ["BirgeNearby"], ideas: ["BirgeIdeas"] };
       return Object.keys(has).find((id) => !has[id].some((g) => typeof window[g]?.mount === "function")) || null; });
     if (soonId) {
-      await page.goto(base + "?screens=all#" + soonId);
+      await page.goto(base + "?screens=r14#" + soonId);
       await page.waitForFunction(() => window.BirgeShell && document.getElementById("birge-screen") && !document.getElementById("birge-screen").hidden, null, { timeout: 15000 }).catch(() => {});
       await page.waitForTimeout(300);
       sc = await screenState(page);
@@ -316,10 +318,10 @@ async function main() {
     await page.screenshot({ path: path.join(OUT, "w2_1366_akimat_menu_kk.png") });
     await page.click("#birge-header [data-lang=ru]");
     await page.waitForTimeout(300);
-    check("no page errors (?screens=all)", page.errs.length === 0, page.errs);
+    check("no page errors (?screens=r14)", page.errs.length === 0, page.errs);
     await ctx.close();
 
-    // ---------------------------------------------------------------- a role module plugs in (no ?screens=all)
+    // ---------------------------------------------------------------- a role module plugs in (no ?screens=r14)
     ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
     page = await newPage(ctx);
     await page.goto(base);
@@ -352,13 +354,11 @@ async function main() {
     await page.click("#birge-header .birge-nav [data-section=more]");
     await page.waitForTimeout(200);
     const akimatMore = await page.evaluate(() => [...document.querySelectorAll("#birge-header .birge-more-menu [role=menuitem]")].map((a) => [a.textContent, a.getAttribute("href")]));
-    // В полной сборке (с FINAL-3: R13 «Вопросы жителей», R06 «Работы и отключения», R12 QR, R08 «Службы») «Ещё» акимата
-    // уже занято четырьмя разделами ролей — пятая ссылка не влезает по правилу «Ещё» ≤ 4 (IA_WAVE2 §1).
-    const moreFull = akimatMore.length === 4 && !akimatMore.some(([label]) => label === "Листы QR для остановок");
-    if (moreFull) console.log("NOT_RUN registered link in akimat «Ещё»: menu already holds 4 role sections — cap ≤ 4 checked instead");
-    check("akimat «Ещё» appears with a registered role link (QR sheets) and lists it (or is full: ≤ 4); «Рядом» stays a resident section",
-      n.ids.includes("more") && !n.ids.includes("nearby") && akimatMore.length <= 4
-      && (moreFull || akimatMore.some(([label, href]) => label === "Листы QR для остановок" && href === "/civic/qr/")), { ids: n.ids, akimatMore });
+    // Раунд 15 (IA_ROUND15 §1 п. 2): «Ещё» — до 7 пунктов; раздел роли вне схемы R11 — в конец последней группы.
+    check("akimat «Ещё» appears with a registered role link (QR sheets) at the end (≤ 7); «Рядом» stays a resident section",
+      n.ids.includes("more") && !n.ids.includes("nearby") && akimatMore.length <= 7
+      && akimatMore.length > 0 && akimatMore[akimatMore.length - 1][0] === "Листы QR для остановок"
+      && akimatMore[akimatMore.length - 1][1] === "/civic/qr/", { ids: n.ids, akimatMore });
     await page.keyboard.press("Escape");
 
     // ---------------------------------------------------------------- one extra map layer at a time
@@ -405,7 +405,7 @@ async function main() {
     await ready(page);
     n = await nav(page);
     check("link #target=…: language stays ҚАЗ, map section", n.lang === "kk" && n.section === "map", n);
-    await page.goto(base + "?screens=all#nearby");
+    await page.goto(base + "?screens=r14#nearby");
     await ready(page);
     n = await nav(page); sc = await screenState(page);
     check("375: link #nearby opens the section screen inside the window, language ҚАЗ", n.lang === "kk" && sc.shown && sc.screen === "nearby" && n.scrollW <= 375, { n, sc });

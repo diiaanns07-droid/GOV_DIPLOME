@@ -2,7 +2,7 @@
 # R01: all build checks in one go, from the repository root:  bash tests/civic/R01/run_checks.sh [out_dir]
 # Python suites, the HTTP web_check, Node suites of the pinned planner and role modules, and the
 # browser smokes: round-11 P0 and scenarios, round-12 city navigation incl. an empty registry,
-# round-14 Birge header (ҚАЗ/РУС, «Акимат / Житель», «Картина дня»)
+# round-14 Birge header (ҚАЗ/РУС, «Акимат / Житель», «Картина дня»), round-15 IA / scenes / show mode
 # (each starts its own server on a free port with a temporary database).
 # Prints PASS/FAIL per step and exits non-zero if any step failed. Writes nothing into the repo.
 set -uo pipefail
@@ -37,6 +37,8 @@ if node -e "require('playwright')" >/dev/null 2>&1; then
     step "browser r14 B1 demo path" node tests/civic/R01/browser/r14_b1.cjs "$OUT/r14_b1"
     step "browser r14 B2 demo path" node tests/civic/R01/browser/r14_b2.cjs "$OUT/r14_b2"
     step "browser r14 wave 2 menu and screens" node tests/civic/R01/browser/r14_wave2.cjs "$OUT/r14_wave2"
+    # Раунд 15: меню и экраны по IA_ROUND15 R11, #раздел/путь, Esc, пустое состояние П1, сцены демо-мира, ?show=1.
+    step "browser r15 IA, scenes and show mode" node tests/civic/R01/browser/r15_ia.cjs "$OUT/r15_ia"
 else
     echo "NOT_RUN browser smokes (playwright not installed)"
 fi

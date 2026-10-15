@@ -1,0 +1,256 @@
+// R01 round 15: the menu and screens of R11 IA_ROUND15 (research/round-15-results/R11/IA_ROUND15.md §2–§3, §7),
+// the show mode (?show=1) and the demo scenes in Ctrl+K — on the real app, round-15 modules simulated by ?screens=all
+// and BirgeShell.registerScreen (the role modules are not needed for the shell contract).
+//   - akimat: «Карта · Картина дня · Обращения · Ведомства · Ещё», «Ещё» in two labelled groups (≤ 7);
+//     resident: «Карта · Мои обращения · Мой двор · Идеи · Ещё»; sections with a parent have no item (#nearby → «Мой двор»);
+//   - #section/path: the module gets opts.path, opts.navigate, opts.map, opts.setLayer; a new path → setPath, no remount;
+//   - Esc on a screen → map; Esc that closes «Ещё» stays on the screen;
+//   - empty state: one small icon (≤ 48 px), text and one button (amendment P1), no large illustration;
+//   - demo world (CIVIC_DEMO_WORLD=1): Ctrl+K «Сцена 7 / 8 / 9» open the yard / complaint / crisis by world ids;
+//   - ?show=1: no service plates, larger text at 1024, scenes first in Ctrl+K.
+// Usage: node tests/civic/R01/browser/r15_ia.cjs <out_dir>
+"use strict";
+const { chromium } = require("playwright");
+const { spawn, execSync } = require("child_process");
+const net = require("net"), fs = require("fs"), path = require("path"), os = require("os");
+
+const REPO = path.resolve(__dirname, "../../../..");
+const OUT = path.resolve(process.argv[2] || "r15-ia-out");
+const NOISE = /openfreemap|Failed to load resource|GL Driver|style diff|swiftshader|GroupMarkerNotSet|\[i18n\] неизвестный ключ/i;
+const checks = [];
+const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null });
+  console.log((ok ? "PASS " : "FAIL ") + name + (detail !== undefined && detail !== null ? " — " + JSON.stringify(detail).slice(0, 400) : "")); };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
+
+// Мир для сцен: только блок scenes (модули seed_world в этой проверке не нужны — нужны id для палитры).
+const WORLD = { schema: "birge-demo-world-v1", schema_version: "1.0", synthetic: true, complaints: [], works: [],
+  scenes: { scene7: { yard: "yard-1454082640", initiative: "i-w15-01" }, scene8: { complaint: "c-w1500010" },
+            scene9: { incident: "inc-w15-buran", district: "nura" } } };
+
+async function startServer(port, dir) {
+  const db = path.join(dir, "civic.sqlite3"), world = path.join(dir, "world.json");
+  fs.writeFileSync(world, JSON.stringify(WORLD));
+  const env = { ...process.env, CIVIC_DB_PATH: db, CIVIC_DEMO: "1", CIVIC_DEMO_WORLD: "1", CIVIC_DEMO_WORLD_PATH: world,
+    PYTHONDONTWRITEBYTECODE: "1" };
+  const run = (args) => execSync(`python3 -B -m ui.civic_store --db "${db}" ${args}`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
+  run("init");
+  run("seed-demo --package data/civic/astana/demo_synthetic.json");
+  const srv = spawn("python3", ["-B", "app.py", "--host", "127.0.0.1", "--port", String(port)], { cwd: REPO, env, stdio: ["ignore", "pipe", "pipe"] });
+  srv.log = ""; srv.stdout.on("data", (d) => (srv.log += d)); srv.stderr.on("data", (d) => (srv.log += d));
+  for (let i = 0; i < 100; i++) { try { if ((await fetch(`http://127.0.0.1:${port}/api/health`)).ok) return srv; } catch {} await sleep(200); }
+  throw new Error("server did not start: " + srv.log.slice(-1500));
+}
+const ready = (page) => page.waitForFunction(() => window.CivicShell?.mode === "civic" && window.BirgeShell && typeof mapReady !== "undefined" && mapReady
+  && document.querySelector("#birge-header"), null, { timeout: 40000 }).then(() => page.waitForTimeout(800));
+async function open(browser, url, w, h, mode) {
+  const mobile = w < 761;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile });
+  await ctx.addInitScript((m) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", "ru"); } catch (e) { /* без хранилища */ } }, mode);
+  const page = await ctx.newPage();
+  page.errs = [];
+  page.on("pageerror", (e) => page.errs.push("pageerror: " + e.message));
+  page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) page.errs.push(m.type() + ": " + m.text()); });
+  await page.goto(url);
+  await ready(page);
+  return { ctx, page };
+}
+const nav = (page) => page.evaluate(() => {
+  const vis = (e) => e.getClientRects().length && getComputedStyle(e).display !== "none" && getComputedStyle(e).visibility !== "hidden";
+  const items = [...document.querySelectorAll("#birge-header .birge-nav > button")].filter(vis);
+  return { ids: items.map((b) => b.dataset.section || b.dataset.action), labels: items.map((b) => b.textContent.trim()),
+    pressed: items.filter((b) => b.getAttribute("aria-current") === "page").map((b) => b.dataset.section || b.dataset.action),
+    section: document.body.dataset.birgeSection, mode: document.body.dataset.birgeMode, hash: location.hash,
+    out: [...document.querySelectorAll("#birge-header button")].filter(vis).map((b) => b.getBoundingClientRect()).filter((r) => r.right > innerWidth + 0.5).length };
+});
+const moreMenu = (page) => page.evaluate(() => {
+  const m = document.querySelector("#birge-header .birge-more-menu");
+  return { shown: !!m && !m.hidden, items: [...(m?.querySelectorAll("[role=menuitem]") || [])].map((i) => i.textContent.trim()),
+    labels: [...(m?.querySelectorAll(".birge-more-label") || [])].map((l) => l.textContent.trim()),
+    box: m && !m.hidden ? m.getBoundingClientRect().toJSON() : null,
+    button: document.querySelector("#birge-header .birge-nav [data-section=more]").getBoundingClientRect().toJSON() };
+});
+const palette = async (page) => {
+  await page.keyboard.press("Control+k");
+  await page.waitForFunction(() => document.querySelectorAll(".birge-palette__item").length > 3, null, { timeout: 8000 }).catch(() => null);
+  await page.waitForTimeout(400);
+  return page.evaluate(() => [...document.querySelectorAll(".birge-palette__list > li")].map((li) => li.textContent.trim()));
+};
+
+async function main() {
+  fs.mkdirSync(OUT, { recursive: true });
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r01-r15-ia-"));
+  const port = await freePort();
+  const srv = await startServer(port, tmp);
+  const base = `http://127.0.0.1:${port}/`;
+  const browser = await chromium.launch();
+  try {
+    // ------------------------------------------------------------ akimat, all round-15 sections (?screens=all)
+    let { ctx, page } = await open(browser, base + "?screens=all", 1366, 768, "akimat");
+    let n = await nav(page);
+    check("akimat menu: Карта · Картина дня · Обращения · Ведомства · Ещё (IA_ROUND15 §3)",
+      JSON.stringify(n.ids) === '["map","day","inbox","agencies","more"]'
+      && JSON.stringify(n.labels) === '["Карта","Картина дня","Обращения","Ведомства","Ещё"]' && n.out === 0, n);
+    await page.click("#birge-header .birge-nav [data-section=more]");
+    await page.waitForTimeout(250);
+    let more = await moreMenu(page);
+    check("akimat «Ещё»: two labelled groups — С жителями (Проекты и идеи · Сделаем вместе · Вопросы и встречи), Инструменты (Спросить Birge · QR-таблички); ≤ 7; works/services under «Ведомства»",
+      more.shown && JSON.stringify(more.labels) === '["С жителями","Инструменты"]'
+      && JSON.stringify(more.items) === '["Проекты и идеи","Сделаем вместе","Вопросы и встречи","Спросить Birge","QR-таблички"]', more);
+    check("«Ещё» opens under its button, right edge not past the capsule (VISUAL_BRIEF §3)",
+      !!more.box && more.box.top >= more.button.bottom && more.box.top <= more.button.bottom + 16
+      && more.box.right <= more.button.right + 6 && more.box.left <= more.button.left, { box: more.box, button: more.button });
+    await page.screenshot({ path: path.join(OUT, "ia_1366_akimat_more.png") });
+    await page.keyboard.press("Escape");
+    // palette: sections without menu items, «Календарь работ», «Кризисный штаб», scenes of the demo world
+    const items = await palette(page);
+    check("Ctrl+K: «Ведомства», «Календарь работ», «Кризисный штаб», «Работы и отключения», «Службы» and scenes 7–9",
+      ["Ведомства", "Календарь работ", "Кризисный штаб", "Работы и отключения", "Службы", "Сцена 7 · Двор вместе",
+        "Сцена 8 · Ведомства вместе", "Сцена 9 · Буран"].every((t) => items.includes(t)), items);
+    // Scene 8 → «Обращения» with the complaint id in the address (R09 opens it by opts.path)
+    await page.fill(".birge-palette__input", "Сцена 8");
+    await page.waitForTimeout(150);
+    const t0 = Date.now();
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => document.body.dataset.birgeSection === "inbox", null, { timeout: 3000 }).catch(() => null);
+    const sceneMs = Date.now() - t0;
+    n = await nav(page);
+    check("Сцена 8: akimat «Обращения» with #inbox/c-w1500010, ≤ 1 s", n.mode === "akimat" && n.section === "inbox"
+      && n.hash === "#inbox/c-w1500010" && sceneMs <= 1000, { n, sceneMs });
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+    n = await nav(page);
+    check("Esc on a section screen returns to the map", n.section === "map" && n.hash === "", n);
+    // Scene 9 → «Ведомства», crisis tab of the world incident
+    await palette(page);
+    await page.fill(".birge-palette__input", "Сцена 9");
+    await page.waitForTimeout(150);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(400);
+    n = await nav(page);
+    check("Сцена 9: «Ведомства» #agencies/crisis/inc-w15-buran (screen title «Штаб ведомств»)", n.section === "agencies"
+      && n.hash === "#agencies/crisis/inc-w15-buran" && JSON.stringify(n.pressed) === '["agencies"]'
+      && await page.evaluate(() => document.getElementById("birge-screen-title").textContent === "Штаб ведомств"), n);
+    // «Ещё» opened on a screen and closed by Esc: the screen stays
+    await page.click("#birge-header .birge-nav [data-section=more]");
+    await page.waitForTimeout(200);
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(250);
+    n = await nav(page);
+    more = await moreMenu(page);
+    check("Esc that closes «Ещё» keeps the screen (no jump to the map)", !more.shown && n.section === "agencies", { n, more: more.shown });
+    // Empty state (module not in the build): small icon + text + one button, no large illustration (amendment P1)
+    const empty = await page.evaluate(() => {
+      const box = document.querySelector("#birge-screen .birge-day-empty");
+      const ic = box?.querySelector(".birge-state-ic"), r = ic?.getBoundingClientRect();
+      return { box: !!box, icon: r ? [Math.round(r.width), Math.round(r.height)] : null, ill: !!box?.querySelector(".bk-ill"),
+        buttons: box ? box.querySelectorAll("button").length : 0, text: box?.innerText.slice(0, 120) };
+    });
+    check("empty state: one small icon ≤ 48 px, text and one button; no large illustration (P1 rule 2)",
+      empty.box && !!empty.icon && empty.icon[0] <= 48 && empty.icon[1] <= 48 && !empty.ill && empty.buttons === 1, empty);
+    await page.screenshot({ path: path.join(OUT, "ia_1366_scene9_soon.png") });
+    check("no page errors (akimat)", page.errs.length === 0, page.errs);
+    await ctx.close();
+
+    // ------------------------------------------------------------ resident: «Мой двор», parent highlight, path routing
+    ({ ctx, page } = await open(browser, base + "?screens=all", 1366, 768, "resident"));
+    n = await nav(page);
+    check("resident menu: Карта · Мои обращения · Мой двор · Идеи · Ещё (IA_ROUND15 §2)",
+      JSON.stringify(n.ids) === '["map","mine","yard","ideas","more"]'
+      && JSON.stringify(n.labels) === '["Карта","Мои обращения","Мой двор","Идеи","Ещё"]', n);
+    await page.click("#birge-header .birge-nav [data-section=more]");
+    await page.waitForTimeout(200);
+    more = await moreMenu(page);
+    check("resident «Ещё»: Сделаем вместе · Вопросы и встречи (no labels ≤ 4; «Вопрос акиму» inside «Вопросы и встречи»)",
+      more.shown && JSON.stringify(more.items) === '["Сделаем вместе","Вопросы и встречи"]' && more.labels.length === 0, more);
+    await page.keyboard.press("Escape");
+    await page.evaluate(() => { location.hash = "#nearby"; });
+    await page.waitForTimeout(400);
+    n = await nav(page);
+    check("#nearby still opens (no menu item): «Мой двор» is the highlighted parent", n.section === "nearby" && JSON.stringify(n.pressed) === '["yard"]', n);
+    // A module for «yard» registers: path in the address, navigate → setPath without remount
+    await page.evaluate(() => {
+      window.__yard = { mounts: 0, paths: [] };
+      window.BirgeShell.registerScreen({ id: "yard", mount(root, opts) {
+        window.__yard.mounts++;
+        window.__yard.opts = { path: opts.path, section: opts.section, map: !!opts.map && typeof opts.map.getZoom === "function",
+          navigate: typeof opts.navigate === "function", setLayer: typeof opts.setLayer === "function" };
+        window.__yard.navigate = opts.navigate;
+        root.textContent = "Двор " + opts.path;
+        return { setPath(p) { window.__yard.paths.push(p); root.textContent = "Двор " + p; }, destroy() { window.__yard.destroyed = true; } };
+      } });
+      location.hash = "#yard/yard-1454082640";
+    });
+    await page.waitForTimeout(400);
+    let yard = await page.evaluate(() => ({ ...window.__yard, navigate: undefined, hash: location.hash }));
+    check("#yard/yard-1454082640: module mounted once with opts.path, opts.section, opts.map, opts.navigate, opts.setLayer",
+      yard.mounts === 1 && yard.opts.path === "yard-1454082640" && yard.opts.section === "yard" && yard.opts.map && yard.opts.navigate && yard.opts.setLayer, yard);
+    await page.evaluate(() => window.__yard.navigate("yard-777"));
+    await page.waitForTimeout(300);
+    yard = await page.evaluate(() => ({ ...window.__yard, navigate: undefined, hash: location.hash }));
+    check("opts.navigate(path): address #yard/yard-777, setPath called, no remount", yard.hash === "#yard/yard-777"
+      && yard.mounts === 1 && JSON.stringify(yard.paths) === '["yard-777"]', yard);
+    await page.goBack();
+    await page.waitForTimeout(300);
+    yard = await page.evaluate(() => ({ ...window.__yard, navigate: undefined, hash: location.hash }));
+    check("browser Back: previous path (setPath yard-1454082640), still one mount", yard.hash === "#yard/yard-1454082640"
+      && yard.mounts === 1 && yard.paths[yard.paths.length - 1] === "yard-1454082640", yard);
+    check("no page errors (resident)", page.errs.length === 0, page.errs);
+    await ctx.close();
+
+    // ------------------------------------------------------------ show mode at 1024, scene 7 first in Ctrl+K
+    ({ ctx, page } = await open(browser, base + "?show=1&screens=all", 1024, 768, "akimat"));
+    const show = await page.evaluate(() => ({ flag: document.documentElement.dataset.birgeShow,
+      body: getComputedStyle(document.documentElement).getPropertyValue("--fs-body").trim(),
+      status: (() => { const s = document.getElementById("map-status"); return s ? getComputedStyle(s).display : "absent"; })(),
+      api: window.BirgeShell.show }));
+    check("?show=1: flag on <html>, text one step larger at 1024 (--fs-body 16 px), map service plate hidden",
+      show.flag === "1" && show.api === true && show.body === "16px" && (show.status === "none" || show.status === "absent"), show);
+    const showItems = await palette(page);
+    const firstItem = showItems.find((t) => !/^(Сцены демо)$/.test(t));
+    check("show mode: scenes are the first commands in Ctrl+K", showItems[0] === "Сцены демо" && firstItem === "Сцена 7 · Двор вместе", showItems.slice(0, 5));
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(500);
+    n = await nav(page);
+    check("Сцена 7: resident view, «Мой двор» #yard/yard-1454082640", n.mode === "resident" && n.section === "yard" && n.hash === "#yard/yard-1454082640", n);
+    await page.screenshot({ path: path.join(OUT, "ia_1024_show_scene7.png") });
+    // Without the R16 module the scene does not open an empty screen: the yard is shown on the map (#target=area:…).
+    await page.goto(base + "?show=1");
+    await ready(page);
+    await palette(page);
+    await page.fill(".birge-palette__input", "Сцена 7");
+    await page.waitForTimeout(150);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(500);
+    n = await nav(page);
+    check("Сцена 7 without «Мой двор» in the build: the yard on the map (#target=area:yard-1454082640), not an empty screen",
+      n.mode === "resident" && n.section === "map" && n.hash === "#target=area:yard-1454082640", n);
+    await page.goto(base + "?show=0");
+    await ready(page);
+    check("?show=0 turns the show mode off", await page.evaluate(() => !document.documentElement.dataset.birgeShow), null);
+    check("no page errors (show mode)", page.errs.length === 0, page.errs);
+    await ctx.close();
+
+    // ------------------------------------------------------------ phone: alert slot under the search field
+    ({ ctx, page } = await open(browser, base, 375, 812, "resident"));
+    const alert = await page.evaluate(() => {
+      const slot = window.BirgeShell.alertSlot();
+      const p = document.createElement("p"); p.textContent = "Буран в Нуре: службы работают"; slot.replaceChildren(p);
+      const r = slot.getBoundingClientRect(), f = document.querySelector(".civic-explore-field").getBoundingClientRect();
+      return { top: Math.round(r.top), left: Math.round(r.left), right: Math.round(r.right), fieldBottom: Math.round(f.bottom) };
+    });
+    check("phone: alertSlot() is under the search field, full width with 8 px edges", alert.top >= alert.fieldBottom
+      && alert.top <= alert.fieldBottom + 16 && alert.left === 8 && alert.right === 367, alert);
+    check("no page errors (phone)", page.errs.length === 0, page.errs);
+    await ctx.close();
+  } finally {
+    await browser.close();
+    srv.kill();
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+  const summary = { pass: checks.filter((c) => c.status === "PASS").length, fail: checks.filter((c) => c.status === "FAIL").length };
+  fs.writeFileSync(path.join(OUT, "r15_ia.json"), JSON.stringify({ summary, checks }, null, 1));
+  console.log(JSON.stringify(summary));
+  process.exit(summary.fail ? 1 : 0);
+}
+main().catch((e) => { console.error(e); process.exit(2); });

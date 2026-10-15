@@ -416,7 +416,8 @@
     if (B && typeof B.moreItems === "function" && typeof B.navTitle === "function") {
       const rest = typeof B.sections === "function" ? B.sections() : [];
       for (const id of [...(B.moreItems() || []), ...rest]) {
-        if (seen.has(id) || id === "more") continue;
+        // Публичная карточка кризиса — у акимата это вкладка «Ведомств» (команда «Кризисный штаб» ниже), без дубля.
+        if (seen.has(id) || id === "more" || (id === "crisis" && rest.includes("agencies"))) continue;
         seen.add(id);
         out.push({ group: sections, title: B.navTitle(id), run: () => B.setSection(id) });
       }
@@ -452,7 +453,8 @@
   function renderPalette(query) {
     const list = S.palette.querySelector(".birge-palette__list");
     const q = norm(query);
-    const found = (S.paletteAll || []).filter((c) => !q || norm(c.title + " " + (c.group || "") + " " + (c.hint || "")).includes(q)).slice(0, 14);
+    // До 40 строк (список прокручивается): в раунде 15 одних разделов больше 14.
+    const found = (S.paletteAll || []).filter((c) => !q || norm(c.title + " " + (c.group || "") + " " + (c.hint || "")).includes(q)).slice(0, 40);
     paletteItems = found;
     paletteActive = 0;
     const rows = [];

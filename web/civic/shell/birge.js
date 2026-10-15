@@ -51,13 +51,13 @@
     qr: { global: ["BirgeQr"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.qr" } },
     services: { global: ["BirgeServices"], modes: ["akimat"], owner: "R08", key: { akimat: "shell.nav.services" } },
     // Раунд 15 (IA_ROUND15 §7.5). Один модуль может вести несколько разделов — различает их по opts.section.
-    yard: { global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.yard", akimat: "shell.nav.yard" } },
-    together: { global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.together", akimat: "shell.nav.together" } },
-    meetings: { global: ["BirgeMeetings"], modes: ["resident", "akimat"], owner: "R13", key: { resident: "shell.nav.meetings", akimat: "shell.nav.meetings" } },
-    agencies: { global: ["BirgeAgencies"], modes: ["akimat"], owner: "R17", key: { akimat: "shell.nav.agencies" }, titleKey: "shell.nav.agencies_title" },
-    crisis: { global: ["BirgeAgencies"], modes: ["resident", "akimat"], owner: "R17", key: { resident: "shell.nav.crisis", akimat: "shell.nav.crisis" } },
-    analyst: { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
-    "works-calendar": { global: ["BirgeWorksCalendar"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.works_calendar" } },
+    yard: { r15: true, global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.yard", akimat: "shell.nav.yard" } },
+    together: { r15: true, global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.together", akimat: "shell.nav.together" } },
+    meetings: { r15: true, global: ["BirgeMeetings"], modes: ["resident", "akimat"], owner: "R13", key: { resident: "shell.nav.meetings", akimat: "shell.nav.meetings" } },
+    agencies: { r15: true, global: ["BirgeAgencies"], modes: ["akimat"], owner: "R17", key: { akimat: "shell.nav.agencies" }, titleKey: "shell.nav.agencies_title" },
+    crisis: { r15: true, global: ["BirgeAgencies"], modes: ["resident", "akimat"], owner: "R17", key: { resident: "shell.nav.crisis", akimat: "shell.nav.crisis" } },
+    analyst: { r15: true, global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
+    "works-calendar": { r15: true, global: ["BirgeWorksCalendar"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.works_calendar" } },
   };
   const SECTIONS = ["map", "day", ...Object.keys(SCREENS)];
   // Прежние адреса волны 2 (до схемы R11) ведут в те же разделы.
@@ -127,7 +127,10 @@
   // Путь — id записей и вкладок (латиница, цифры, «-_.:/»), до 80 знаков; иначе — без пути.
   const PATH_RE = /^[A-Za-z0-9][A-Za-z0-9_.:\/-]{0,79}$/;
   const cleanPath = (path) => (typeof path === "string" && PATH_RE.test(path) ? path : "");
-  const screensAll = () => /[?&]screens=all(&|$)/.test(location.search);
+  // ?screens=all — все разделы, и раунда 15 тоже (разбор R11/R10); ?screens=r14 — все разделы раунда 14 без новых
+  // (регресс меню FINAL-4, tests/civic/R01/browser/r14_wave2.cjs).
+  const screensParam = () => (/[?&]screens=(all|r14)(?:&|$)/.exec(location.search) || [])[1] || null;
+  const screensAll = (id) => { const p = screensParam(); return p === "all" || (p === "r14" && !SCREENS[id]?.r15); };
 
   function savedMode() {
     try { const v = localStorage.getItem(MODE_KEY); return MODES.includes(v) ? v : null; } catch (e) { return null; }
@@ -193,8 +196,9 @@
     if (id === "mine") return mode === "resident";
     if (id === "day") return mode === "akimat";
     if (id === "more") return moreItems(mode).length > 0;
+    if (!SCREENS[id] && !state.extra.find((x) => x.id === id)) return false;   // «board» и др.: только когда роль зарегистрировала
     if (!screenModes(id).includes(mode)) return false;
-    return screensAll() || !!screenModule(id) || !!state.extra.find((x) => x.id === id && x.href);
+    return screensAll(id) || !!screenModule(id) || !!state.extra.find((x) => x.id === id && x.href);
   }
   // Пункты капсулы этого вида: слот-массив даёт первый доступный раздел (IA_ROUND15 §7.1); раздел без модуля — пропуск.
   // «Ещё» здесь всегда (пустое «Ещё» прячут buildNav и navItems: available("more") сам зовёт navOf).
@@ -503,7 +507,8 @@
         b.textContent = navTitle(b.dataset.section);
         // «Ещё» подсвечен и на экранах, открытых из него.
         const current = (b.dataset.section === state.section && !(mineOpen && b.dataset.section === "map"))
-          || (b.dataset.section === "more" && moreItems(state.mode).includes(state.section));
+          || (b.dataset.section === "more" && moreItems(state.mode).includes(state.section))
+          || (PARENT[state.section] === b.dataset.section && available(b.dataset.section, state.mode));  // «Рядом» → «Мой двор»
         b.setAttribute("aria-pressed", String(current));
         if (current) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
       }
