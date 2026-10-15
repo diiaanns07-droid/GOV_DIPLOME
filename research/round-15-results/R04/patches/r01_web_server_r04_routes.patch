@@ -1,0 +1,43 @@
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -224,6 +224,10 @@
+     "proposals.vote": ((86400, 20, True),),
+     "classify": ((60, 60, False),),
+     "similar": ((60, 60, False),),
++    # R04 раунд 15: службы для обращения и предпросмотр модерации — как classify; черновик — сотрудник.
++    "route": ((60, 60, False),),
++    "moderate": ((60, 120, False),),
++    "reply_draft": ((60, 60, False),),
+     "nearby.subscribe": ((60, 20, False), (86400, 200, False)),  # R08: подписка жителя на район/карточку
+     # R06 волна 2: новая идея жителя (модуль ещё держит ≤ 5 в час и ≤ 3 на проверке с устройства) и поддержка идеи
+     # (как голос за проект: ≤ 20 новых в сутки на одну идею с адреса, R15 S08).
+@@ -660,6 +664,10 @@
+     ("GET", ("modules",), "modules"),
+     ("POST", ("classify",), "classify"),
+     ("POST", ("similar",), "similar"),
++    # R04 раунд 15 (CONTRACT §7): службы для обращения, черновик ответа жителю (сотрудник), модерация текста.
++    ("POST", ("route",), "route"),
++    ("POST", ("reply-draft",), "reply_draft"),
++    ("POST", ("moderate",), "moderate"),
+     ("GET", ("targets",), "targets"),
+     # R09 жалобы v2 (ui.civic_feedback.v2.integration.ROUTES @ da295be). Порядок важен: точные пути раньше {id}.
+     ("GET", ("categories",), "complaints.categories"),
+@@ -747,6 +755,9 @@
+ V2_HANDLERS = {
+     "classify": V2Handler("R04", ("ui.civic_ml_api",), "classify"),
+     "similar": V2Handler("R04", ("ui.civic_ml_api",), "similar"),
++    "route": V2Handler("R04", ("ui.civic_ml_api",), "route"),
++    "reply_draft": V2Handler("R04", ("ui.civic_ml_api",), "reply_draft", staff=True),
++    "moderate": V2Handler("R04", ("ui.civic_ml_api",), "moderate"),
+     "targets": V2Handler("R12", ("engine.civic_geo",), "targets"),
+     **{key: V2Handler("R09", ("ui.civic_feedback.v2.integration",), "make_service", kind="service") for key in (
+         "complaints.categories", "complaints.list", "complaints.create", "complaints.mine", "complaints.events",
+@@ -1150,6 +1161,8 @@
+             return args
+         if key in ("akim.routing.update", "nearby.subscribe"):  # R08: тело проверяет сам модуль (ValueError -> 400)
+             return {"body": body}
++        if key in ("route", "reply_draft", "moderate"):  # R04 раунд 15: тело проверяет сам модуль (ValueError -> 400)
++            return {"body": body}
+         if key == "akim.decision":
+             return {"decision_id": params["id"], "body": body}
+         district = q.get("district") or None
