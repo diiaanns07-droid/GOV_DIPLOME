@@ -21,6 +21,9 @@ import sys
 from pathlib import Path
 
 HARD_API_AREAS = ("доступ", "журнал")
+# Проверки качества вида (VISUAL_BRIEF §4): шрифт, зоны нажатия, контраст, термины — показ не ломают, идут в «смотреть»
+# со ссылкой на BUGS. Функциональные шаги, русские подписи на ҚАЗ, ключи перевода на экране и числа — блокируют.
+QUALITY = re.compile(r"шрифт|зоны нажатия|контраст|мелкого текста|термин словаря", re.I)
 
 
 def load(path: Path):
@@ -111,8 +114,12 @@ def main() -> int:
         lines.append(f"| Часть 1 (шаги 1–7 FINAL-4) | PASS {c['PASS']} · FAIL {c['FAIL']} · NOT_RUN {c['NOT_RUN']} "
                      f"(база FINAL-4: 172 / 0 / 0) |")
         if c["FAIL"]:
-            bad = [r for r in e2e["results"] if r["status"] == "FAIL"]
-            reasons.append("часть 1: " + "; ".join(f"{r['layer']} {r['step']} {r['name'][:60]}" for r in bad[:4]))
+            bad = [r for r in e2e["results"] if r["status"] == "FAIL" and not QUALITY.search(r["name"])]
+            soft = [r for r in e2e["results"] if r["status"] == "FAIL" and QUALITY.search(r["name"])]
+            if bad:
+                reasons.append("часть 1: " + "; ".join(f"{r['layer']} {r['step']} {r['name'][:60]}" for r in bad[:4]))
+            if soft:
+                watch.append("часть 1, качество вида: " + "; ".join(f"{r['layer']} {r['step']} {r['name'][:50]}" for r in soft[:4]))
         now_t, base_t = e2e_timing(e2e), e2e_timing(base)
         for layer, t in now_t.items():
             b = base_t.get(layer)
@@ -129,9 +136,13 @@ def main() -> int:
     if v2:
         c = v2["counts"]
         lines.append(f"| Сцены 7–9 «Бірге» | PASS {c['PASS']} · FAIL {c['FAIL']} · NOT_RUN {c['NOT_RUN']} |")
-        bad = [r for r in v2["results"] if r["status"] == "FAIL"]
+        bad = [r for r in v2["results"] if r["status"] == "FAIL" and not QUALITY.search(r["name"])]
+        soft = [r for r in v2["results"] if r["status"] == "FAIL" and QUALITY.search(r["name"])]
         if bad:
             reasons.append("сцены 7–9: " + "; ".join(f"{r['layer']} {r['step']} {r['name'][:60]}" for r in bad[:4]))
+        if soft:
+            owners = sorted({r.get("owner") or "?" for r in soft})
+            watch.append(f"сцены 7–9, качество вида: {len(soft)} FAIL (шрифт / зоны / контраст / термины) у {', '.join(owners)} — BUGS")
         if final and c["NOT_RUN"]:
             nr = [r for r in v2["results"] if r["status"] == "NOT_RUN"]
             reasons.append("сцены 7–9 на FINAL-5 не проверены: " + "; ".join(f"{r['step']} {r['name'][:50]}" for r in nr[:4]))
@@ -153,6 +164,30 @@ def main() -> int:
             lines.append(f"| Первый значок карты, мс | {', '.join(f'{k} {v}' for k, v in badge[:8])} |")
             if worst > 3000:
                 watch.append(f"первый значок карты {worst} мс > 3 с")
+
+    # Производительность (perf_check): значок, «Хроника», «Спросить Birge».
+    perf = load(out / "perf" / "PERF.json")
+    if perf:
+        rows = perf.get("rows") or perf.get("results") or []
+        for r in rows:
+            name, st = r.get("name", ""), r.get("status")
+            if st == "FAIL" and re.search(r"доигрывает", name):
+                reasons.append(f"«Хроника»: {name}")
+            elif st == "FAIL":
+                watch.append(f"производительность: {name} — {json.dumps(r.get('detail') or r.get('value'), ensure_ascii=False)[:100]}")
+        lines.append("| Производительность | " + "; ".join(f"{r.get('status')} {r.get('name', '')[:40]}" for r in rows[:5]) + " |")
+    # Аудит новых экранов (visual_audit).
+    aud = load(out / "audit" / "AUDIT.json")
+    if aud:
+        ac = aud.get("counts") or {}
+        lines.append(f"| Аудит экранов (VISUAL_BRIEF §4, П1) | PASS {ac.get('PASS')} · WARN {ac.get('WARN')} · FAIL {ac.get('FAIL')} · "
+                     f"NOT_RUN {ac.get('NOT_RUN')} |")
+        p1 = [r for r in aud.get("rows", []) if r.get("status") == "FAIL" and r.get("check", "").startswith("П1")]
+        if p1:
+            reasons.append("П1 «Без ИИ-слопа»: " + "; ".join(f"{r['screen']} ({r['owner']})" for r in p1[:4]))
+        if ac.get("FAIL"):
+            owners = sorted({r.get("owner") for r in aud.get("rows", []) if r.get("status") == "FAIL"})
+            watch.append(f"аудит экранов: FAIL {ac.get('FAIL')} у {', '.join(o for o in owners if o)} — BUGS")
 
     # Эталон A: «не хуже FINAL-4» — число совпавших / близких элементов и доля совпавших пикселей.
     ref = load(out / "ref" / "TOTALS.json")
