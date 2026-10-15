@@ -10,7 +10,7 @@ SHA кода и проверок — research/round-15-results/R03/DELIVERY.json
 1) git checkout <code_sha из DELIVERY.json> -- agent/civic_assistant/ web/civic/assistant/
 2) git apply research/round-15-results/R03/patches/R01_warm_up.patch   (ui/web_server.py main(): прогрев в фоне, R10 B-107)
    Файлы экрана (R01_assistant_ask.patch) и палитра (R01_palette_commands.patch) у R01 уже применены (c97aa5f5).
-3) Проверка: python3 -B -m pytest -q tests/civic/R03/round15 → 83 passed, 1 skipped (тест со всеми настоящими
+3) Проверка: python3 -B -m pytest -q tests/civic/R03/round15 → 85 passed, 1 skipped (тест со всеми настоящими
    соседями сразу: на ветке R03 нет R17, в B0 нет R16; в копии B0 c9069723 — 81 passed, 1 skipped до правки терминов).
    Вручную: вход сотрудника → «Ещё» → «Спросить Birge» → «Где в Нуре больше всего жалоб на снег за неделю и какие службы
    отстают?» → карточка с числами → «Показать на карте» → карточка R07 с тем же числом, что в ответе.
@@ -25,6 +25,10 @@ SHA кода и проверок — research/round-15-results/R03/DELIVERY.json
 - R10 B-120: чипы-подсказки 44 px в высоту (видимая зона, не только ::after ui-kit), кнопка «Спросить» на телефоне
   44 × 44; на пустом экране 3 размера шрифта (22/15/14, на 375 — 19/15/14). Браузер стенда: 124 PASS / 0 FAIL.
 - Мир R02: вложенные кавычки по правилам — «Двор ЖК „BI City Tokyo“» вместо «Двор ЖК «BI City Tokyo»».
+- R17 e7ade08f (два срока на табло): «Какие службы отстают?» считает по overdue_fix — сроку исправления R08; на мире
+  35 = «Просрочено» «Картины дня» = итог R17 overdue_fix. Просрочка первого ответа (overdue R09, 5) — отдельной строкой
+  «Срок первого ответа жителю прошёл у 5 обращений (вкладка «Ответ просрочен»)». Без R08 (overdue_fix = null) —
+  overdue с подписью «ответ просрочен». Раньше было бы «5 просрочено» и «35 просрочено» в двух ответах (как B-104).
 
 Проверено 15 окт ~16:35 UTC на копии ветки R01 c9069723 (git worktree) + пути R03 + R01_warm_up.patch, мир R02
 (CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, «civic-world: R09 743, R17 3, R13 17, R12 39»): «Ещё» содержит analyst, #analyst

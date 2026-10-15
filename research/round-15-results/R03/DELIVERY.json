@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "7e25acf39e7c7b3f0ee93e00d83973482ec1ec9d",
- "tested_sha": "7e25acf39e7c7b3f0ee93e00d83973482ec1ec9d",
+ "code_sha": "c6574a391af1c76393d497115191fbf1178a2007",
+ "tested_sha": "c6574a391af1c76393d497115191fbf1178a2007",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -89,7 +89,7 @@
  "tests": {
   "pytest_R03_round15": {
    "status": "PASS",
-   "passed": 83,
+   "passed": 85,
    "skipped": 1,
    "failed": 0,
    "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
@@ -97,7 +97,7 @@
   },
   "pytest_R03_R09_R01_related": {
    "status": "PASS",
-   "passed": 860,
+   "passed": 862,
    "skipped": 10,
    "xfailed": 1,
    "failed": 0,
@@ -213,6 +213,20 @@
    ],
    "limit_ms": 3000,
    "env": "R01 c9069723 + мир R02; вопрос «Сколько жалоб в Нуре за 30 дней?» сразу после строки «civic-v2: ready»; без прогрева 3421 мс — первый вызов R07 heat (геометрия), второй вопрос 828 мс — первый вызов R08"
+  },
+  "eval_b0_build_with_r17_two_deadlines": {
+   "status": "PASS",
+   "set1": {
+    "n": 50,
+    "facts_pct": 100.0,
+    "intent_exact_pct": 100.0
+   },
+   "set2": {
+    "n": 30,
+    "facts_pct": 100.0
+   },
+   "provocations_safe": "10/10",
+   "env": "R01 c9069723 (B0) + R03 c6574a39 + R17 ui/civic_agencies e7ade08f + база мира R02, --with-neighbours, CIVIC_DEMO=1; R16 в B0 нет; 15 окт 16:49 UTC"
   }
  },
  "screens": [
@@ -259,6 +273,7 @@
   "R10_B107": "исправлено 89359acf: warm_up() + patches/R01_warm_up.patch; скелетон с видимой надписью «Считаем по данным…»",
   "R10_B120": "исправлено 89359acf: чипы 44 px (видимая зона), кнопка «Спросить» 44 × 44 на 375; пустой экран — 3 размера шрифта",
   "R15_R16_initiatives_name": "уже не актуально с 650d5ef6: первым идёт ui.civic_together.initiatives_summary (только published/done)",
-  "R11_kk_terms": "сверено с R11 b3502428: ответы по-казахски — «Жедел штаб», «төтенше жағдай»; запасной analyst.empty_text (kk) = словарь R11; 58 ключей analyst.* в словаре R11 совпадают"
+  "R11_kk_terms": "сверено с R11 b3502428: ответы по-казахски — «Жедел штаб», «төтенше жағдай»; запасной analyst.empty_text (kk) = словарь R11; 58 ключей analyst.* в словаре R11 совпадают",
+  "R17_two_deadlines": "c6574a39: «Какие службы отстают?» — по overdue_fix (срок исправления R08): на мире 35 = «Просрочено» R08 = итог R17; просрочка ответа R09 (5) — отдельной строкой «Срок первого ответа жителю прошёл…»; без R08 — «ответ просрочен». Иначе 5 и 35 под одним словом (как B-104)"
  }
 }
