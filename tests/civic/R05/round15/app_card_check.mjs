@@ -98,6 +98,18 @@ await check("card_slider_1366_ru", async () => {
 for (const [w, h, lang, kind] of [[1366, 768, "kk", "square"], [375, 812, "ru", "stop"], [375, 812, "kk", "sports"]]) {
   await check(`card_slider_${w}_${lang}_${kind}`, async () => {
     const { page } = await openCard({ width: w, height: h }, lang, kind);
+    if (w < 761) {
+      // Телефон: картинки нет (кнопки карты и сам проект видны — правило раунда 14), шторку открывает кнопка.
+      const closed = await page.evaluate(() => {
+        const im = document.querySelector(".b3d-pd__im--r06"), btn = document.querySelector(".b3d-ba-toggle"), t3 = document.querySelector("#toggle-3d");
+        const r = t3 && t3.getBoundingClientRect(), hit = r && document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        return { picture: im ? getComputedStyle(im).display : null, btn: btn ? [btn.textContent, btn.getAttribute("aria-expanded"), Math.round(btn.getBoundingClientRect().height)] : null, map3dFree: !t3 || (!!hit && t3.contains(hit)) };
+      });
+      assert(closed.picture === "none" && closed.btn && closed.btn[1] === "false" && closed.btn[2] >= 44, "телефон, по умолчанию: " + JSON.stringify(closed));
+      assert(closed.map3dFree, "карточка закрывает кнопку «3D» карты");
+      await page.click(".b3d-ba-toggle");
+      await page.waitForTimeout(300);
+    }
     const s = await slider(page);
     assert(s && Math.abs(s.w / s.h - 1.5) < 0.02, "шторка: " + JSON.stringify(s));
     if (w < 761) assert(s.h === 120, "телефон: высота картинки " + s.h);
@@ -111,6 +123,7 @@ for (const [w, h, lang, kind] of [[1366, 768, "kk", "square"], [375, 812, "ru", 
 for (const [w, h, lang] of [[1366, 768, "ru"], [375, 812, "kk"]]) {
   await check(`lighting_day_night_${w}_${lang}`, async () => {
     const { page } = await openCard({ width: w, height: h }, lang, "lighting");
+    if (w < 761) { await page.click(".b3d-ba-toggle"); await page.waitForTimeout(300); }
     const s0 = await slider(page);
     assert(s0.imgs.includes("lighting-after@2x.png") && s0.imgs.includes("lighting-before@2x.png"), "день: " + s0.imgs);
     const btns = await page.evaluate(() => [...document.querySelectorAll(".b3d-time button")].map((b) => [b.dataset.time, b.textContent, b.getAttribute("aria-pressed"), Math.round(b.getBoundingClientRect().height)]));
@@ -129,6 +142,24 @@ for (const [w, h, lang] of [[1366, 768, "ru"], [375, 812, "kk"]]) {
     return { buttons: btns.map((b) => b[1]), night: s1.imgs };
   });
 }
+
+await check("host_api_previewOf_before_after_and_beforeAfter_element", async () => {
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+  const page = await ctx.newPage();
+  await page.goto(URL0 + "/?lang=ru");
+  await page.waitForFunction(() => window.CivicShell?.build3d?.previewOf, null, { timeout: 60000 });
+  const r = await page.evaluate(() => {
+    const b = window.CivicShell.build3d;
+    const pv = b.previewOf("square");
+    const el = b.beforeAfter && b.beforeAfter("playground");
+    if (el) document.body.appendChild(el);
+    return { before: pv.before && pv.before.src, after: pv.after && pv.after.src, el: el ? el.className : null, handle: !!(el && el.querySelector('[role="slider"]')), unknown: b.beforeAfter ? b.beforeAfter("tower") : "нет API" };
+  });
+  await ctx.close();
+  assert(/square-before@2x\.png$/.test(r.before) && /square@2x\.png$/.test(r.after), "previewOf: " + JSON.stringify(r));
+  assert(r.el === "b3d-ba" && r.handle && r.unknown === null, "beforeAfter(kind): " + JSON.stringify(r));
+  return r;
+});
 
 await check("before_image_missing_falls_back_to_preview", async () => {
   const { page } = await openCard({ width: 1366, height: 768 }, "ru", "playground", {}, "**/previews/*-before@2x.png");

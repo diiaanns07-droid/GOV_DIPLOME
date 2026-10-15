@@ -1,7 +1,7 @@
 {
- "at": "2026-10-15T12:42:52.917Z",
+ "at": "2026-10-15T13:12:14.871Z",
  "url": "http://127.0.0.1:8655",
- "code_head": "138b6008",
+ "code_head": "aeac52d9",
  "env": "облако: Chromium headless + SwiftShader, упрощённый фон карты",
  "results": [
   {
@@ -85,6 +85,17 @@
      "lighting-night-after@2x.png",
      "lighting-night-before@2x.png"
     ]
+   }
+  },
+  {
+   "id": "host_api_previewOf_before_after_and_beforeAfter_element",
+   "status": "PASS",
+   "detail": {
+    "before": "/civic/build3d/data/previews/square-before@2x.png",
+    "after": "/civic/build3d/data/previews/square@2x.png",
+    "el": "b3d-ba",
+    "handle": true,
+    "unknown": null
    }
   },
   {

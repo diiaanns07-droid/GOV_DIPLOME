@@ -473,9 +473,13 @@
   flex: 0 0 auto;
 }
 @media (max-width: 760px) {
-  /* Телефон: картинка ниже (120 px), но есть — шторка «Было / станет» объясняет проект без слов (раунд 15;
-     в раунде 14 картинка была скрыта, над карточкой — сам проект на карте: его по-прежнему ставит keepAboveDock). */
+  /* Телефон: картинки карточки R06 нет (над карточкой — сам проект на карте и кнопки карты, раунд 14); шторку
+     «Было / станет» открывает кнопка в нижней строке карточки (b3d-dock--ba-open) — тогда картинка 120 px. */
   .b3d-pd__im.b3d-pd__im--r06 {
+    display: none;
+  }
+  .b3d-dock--ba-open .b3d-pd__im.b3d-pd__im--r06 {
+    display: flex;
     height: 120px;
   }
   .b3d-dock.b3d-dock--r06pd {
@@ -1055,7 +1059,25 @@
 }
 @media (max-width: 760px) {
   .b3d-time--r06 {
+    display: none;
     padding-top: var(--s-2, 8px);
+  }
+  .b3d-dock--ba-open .b3d-time--r06 {
+    display: flex;
+  }
+}
+/* Кнопка «Было / станет» — только на телефоне (на ноутбуке шторка видна всегда). */
+.b3d-ba-toggle {
+  display: none;
+}
+@media (max-width: 760px) {
+  .b3d-ba-toggle {
+    display: inline-flex;
+    flex: none;
+    min-height: var(--tap, 44px);
+  }
+  .b3d-ba-toggle[aria-expanded="true"] {
+    background: var(--c-fill, #eef0ec);
   }
 }
 @media (prefers-reduced-motion: reduce) {
