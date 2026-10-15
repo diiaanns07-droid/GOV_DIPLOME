@@ -452,43 +452,63 @@ class MeetingStore:
             return [dict(r) for r in conn.execute(sql, args).fetchall()]
 
     # ------------------------------------------------------------------ засев
-    def seed(self, meetings: list[dict], orders: list[dict]) -> tuple[int, int]:
-        """Демо-набор: вставка по постоянным id; повтор ничего не дублирует и не трогает правки сотрудника."""
+    def seed(self, meetings: list[dict], orders: list[dict], *, reset: bool = True) -> tuple[int, int]:
+        """Демо-набор по постоянным id. -> (вставлено, уже было).
+
+        reset=True (так зовут засев при каждом запуске с CIVIC_DEMO=1): демо-записи (demo=1) с теми же id возвращаются к
+        исходному виду с временем от ЭТОГО запуска — иначе через день «ближайшая встреча» уезжает в прошлое, а после
+        репетиции поручения остаются «выполненными» (опыт R09 seed_demo, R10 B-048). Не трогаем: настоящие записи
+        (demo=0), поручения, которые добавил сотрудник, и отметки «Приду» устройств.
+        """
         inserted = skipped = 0
         with self._tx() as conn:
             for m in meetings:
                 place = m.get("place") or {}
                 point = m.get("point") or (None, None)
+                values = (m["district"], m["title_ru"], m.get("title_kk"), m["at"], int(m.get("duration_min") or 90),
+                          place.get("kind"), place.get("id"), place.get("label_ru"), place.get("label_kk"), point[0],
+                          point[1], m.get("status") or "scheduled", int(m.get("base_registered") or 0), m.get("result_ru"),
+                          m.get("result_kk"), m.get("result_at"))
                 cur = conn.execute(
                     "INSERT OR IGNORE INTO mt_meetings (id, district, title_ru, title_kk, at, duration_min, place_kind, "
                     "place_id, place_label_ru, place_label_kk, lon, lat, status, base_registered, result_ru, "
                     "result_kk, result_at, created_at, updated_at, demo) "
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    (m["id"], m["district"], m["title_ru"], m.get("title_kk"), m["at"], int(m.get("duration_min") or 90),
-                     place.get("kind"), place.get("id"), place.get("label_ru"), place.get("label_kk"), point[0],
-                     point[1], m.get("status") or "scheduled", int(m.get("base_registered") or 0), m.get("result_ru"),
-                     m.get("result_kk"), m.get("result_at"), m["created_at"], m["created_at"],
-                     int(bool(m.get("demo", True)))))
+                    (m["id"], *values, m["created_at"], m["created_at"], int(bool(m.get("demo", True)))))
                 inserted += cur.rowcount
-                skipped += 1 - cur.rowcount
+                if not cur.rowcount:
+                    skipped += 1
+                    if reset:
+                        conn.execute(
+                            "UPDATE mt_meetings SET district = ?, title_ru = ?, title_kk = ?, at = ?, duration_min = ?, "
+                            "place_kind = ?, place_id = ?, place_label_ru = ?, place_label_kk = ?, lon = ?, lat = ?, "
+                            "status = ?, base_registered = ?, result_ru = ?, result_kk = ?, result_at = ?, created_at = ?, "
+                            "updated_at = ? WHERE id = ? AND demo = 1", (*values, m["created_at"], m["created_at"], m["id"]))
             for position, o in enumerate(orders, start=1):
                 link = o.get("link") or {}
+                values = (o["meeting_id"], int(o.get("position") or position), o["text_ru"], o.get("text_kk"),
+                          o["service"], o["due"], o["status"], link.get("kind"), link.get("id"), o["created_at"],
+                          o.get("updated_at") or o["created_at"], o.get("done_at"))
                 cur = conn.execute(
                     "INSERT OR IGNORE INTO mt_orders (id, meeting_id, position, text_ru, text_kk, service, due, status, "
                     "link_kind, link_id, created_at, updated_at, done_at, demo) "
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    (o["id"], o["meeting_id"], int(o.get("position") or position), o["text_ru"], o.get("text_kk"),
-                     o["service"], o["due"], o["status"], link.get("kind"), link.get("id"), o["created_at"],
-                     o.get("updated_at") or o["created_at"], o.get("done_at"), int(bool(o.get("demo", True)))))
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (o["id"], *values, int(bool(o.get("demo", True)))))
                 if cur.rowcount:
                     inserted += 1
-                    conn.execute("INSERT INTO mt_order_log (order_id, meeting_id, at, action, from_status, to_status, "
-                                 "by_role) VALUES (?, ?, ?, 'created', NULL, 'todo', 'staff')",
-                                 (o["id"], o["meeting_id"], o["created_at"]))
-                    if o["status"] != "todo":
-                        conn.execute("INSERT INTO mt_order_log (order_id, meeting_id, at, action, from_status, "
-                                     "to_status, by_role) VALUES (?, ?, ?, 'status', 'todo', ?, 'staff')",
-                                     (o["id"], o["meeting_id"], o.get("updated_at") or o["created_at"], o["status"]))
+                elif reset and conn.execute("SELECT demo FROM mt_orders WHERE id = ?", (o["id"],)).fetchone()[0]:
+                    skipped += 1
+                    conn.execute("UPDATE mt_orders SET meeting_id = ?, position = ?, text_ru = ?, text_kk = ?, service = ?, "
+                                 "due = ?, status = ?, link_kind = ?, link_id = ?, created_at = ?, updated_at = ?, done_at = ? "
+                                 "WHERE id = ? AND demo = 1", (*values, o["id"]))
+                    conn.execute("DELETE FROM mt_order_log WHERE order_id = ?", (o["id"],))  # журнал — заново, ниже
                 else:
                     skipped += 1
+                    continue
+                conn.execute("INSERT INTO mt_order_log (order_id, meeting_id, at, action, from_status, to_status, "
+                             "by_role) VALUES (?, ?, ?, 'created', NULL, 'todo', 'staff')",
+                             (o["id"], o["meeting_id"], o["created_at"]))
+                if o["status"] != "todo":
+                    conn.execute("INSERT INTO mt_order_log (order_id, meeting_id, at, action, from_status, "
+                                 "to_status, by_role) VALUES (?, ?, ?, 'status', 'todo', ?, 'staff')",
+                                 (o["id"], o["meeting_id"], o.get("updated_at") or o["created_at"], o["status"]))
         return inserted, skipped

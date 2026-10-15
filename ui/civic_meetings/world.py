@@ -5,11 +5,14 @@ records — весь мир (dict из data/civic/astana/demo-world/world_v1.jso
   questions — вопросы: с meeting / meeting_id — к встрече, без — общие вопросы «Вопроса акиму».
 Повторный засев ничего не дублирует (постоянные id) и не трогает правки сотрудника.
 
-Время в мире R02 относительное (CONTRACT §11: ago_days, ago_hours, in_days). Понимаем и абсолютное ISO:
-  встреча:   at | in_days / in_hours / ago_days / ago_hours [+ time «18:30» по Астане];
+Время в мире R02 относительное (SCHEMA.md R02 §1: {"ago_days": d}, {"in_days": d}, {"day": n}, {"next_weekday": {…}}).
+R01 передаёт уже материализованный мир (ISO); сырой мир переводим сами — ml.datasets.demo_world_io.materialize (R02),
+а без него — своим разбором тех же форм. Понимаем и плоские поля:
+  встреча:   at (ISO | объект времени) | in_days / in_hours / ago_days / ago_hours [+ time «18:30» по Астане];
   итог:      result {text_ru, text_kk, at | ago_days | ago_hours} или result_ru / result_kk;
   поручение: due «ГГГГ-ММ-ДД» | due_in_days (от сегодня) | due_days_after (от дня встречи); status todo|in_progress|done;
-  вопрос:    ago_days / ago_hours (публикация), votes | base_votes, answer_ru / answer_kk (+ answered_ago_days).
+  вопрос:    published_at / created_at (ISO | объект времени) | ago_days / ago_hours, votes | base_votes,
+             answer_ru / answer_kk, answered_at, meeting | meeting_id.
 Неизвестные поля пропускаем; запись без обязательного поля — skipped (засев не падает).
 """
 
@@ -36,13 +39,39 @@ def _num(value, default=0.0) -> float:
         return default
 
 
+def _reltime(value, now: datetime) -> datetime | None:
+    """Объект времени мира R02 (SCHEMA §1) -> момент UTC: ago_/in_ hours|days, next_weekday. Иначе None."""
+    if not isinstance(value, dict) or len(value) != 1:
+        return None
+    (key, inner), = value.items()
+    units = {"ago_hours": -3600, "in_hours": 3600, "ago_days": -86400, "in_days": 86400}
+    if key in units and isinstance(inner, (int, float)) and not isinstance(inner, bool):
+        return now + timedelta(seconds=float(inner) * units[key])
+    if key == "next_weekday" and isinstance(inner, dict):
+        try:
+            local = now.astimezone(ASTANA)
+            day = local.replace(hour=int(inner["hour"]), minute=int(inner["minute"]), second=0, microsecond=0)
+            day += timedelta(days=(int(inner["weekday"]) - local.weekday()) % 7)
+            while day - local < timedelta(hours=12):  # как у R02: не раньше чем через 12 часов
+                day += timedelta(days=7)
+            return day.astimezone(timezone.utc)
+        except (KeyError, TypeError, ValueError):
+            return None
+    return None
+
+
+def _when(value, now: datetime) -> datetime | None:
+    """ISO-строка или объект времени мира -> момент UTC."""
+    if isinstance(value, str):
+        return parse_iso(value)
+    return _reltime(value, now)
+
+
 def _moment(rec: dict, now: datetime, *, prefix: str = "") -> datetime | None:
-    """Момент из записи: ISO (prefix+at) или относительное время (prefix+in_days/…); time — время суток по Астане."""
-    absolute = rec.get(prefix + "at")
-    if isinstance(absolute, str):
-        moment = parse_iso(absolute)
-        if moment is not None:
-            return moment
+    """Момент из записи: ISO или объект времени (prefix+at) или плоское относительное время (prefix+in_days/…)."""
+    absolute = _when(rec.get(prefix + "at"), now)
+    if absolute is not None:
+        return absolute
     delta, found = timedelta(0), False
     for key, sign, unit in (("in_days", 1, "days"), ("in_hours", 1, "hours"), ("ago_days", -1, "days"),
                             ("ago_hours", -1, "hours"), ("in_minutes", 1, "minutes"), ("ago_minutes", -1, "minutes")):
@@ -60,10 +89,21 @@ def _moment(rec: dict, now: datetime, *, prefix: str = "") -> datetime | None:
     return moment
 
 
+def _with_time(moment: datetime | None, clock) -> datetime | None:
+    """«18:30» — время суток встречи по Астане поверх дня из мира (у относительного «через 9,3 дня» время случайное)."""
+    if moment is None or not isinstance(clock, str) or not TIME_RE.match(clock.strip()):
+        return moment
+    hour, minute = (int(x) for x in TIME_RE.match(clock.strip()).groups())
+    local = moment.astimezone(ASTANA).replace(hour=min(hour, 23), minute=min(minute, 59), second=0, microsecond=0)
+    return local.astimezone(timezone.utc)
+
+
 def _due(order: dict, now: datetime, meeting_at: datetime) -> str | None:
     due = order.get("due")
     if isinstance(due, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", due):
         return due
+    if isinstance(due, dict) and isinstance(due.get("day"), int) and not isinstance(due.get("day"), bool):  # {"day": n}
+        return (now.astimezone(ASTANA) + timedelta(days=due["day"])).date().isoformat()
     if order.get("due_in_days") is not None:
         return (now.astimezone(ASTANA) + timedelta(days=_num(order["due_in_days"]))).date().isoformat()
     if order.get("due_days_after") is not None:
@@ -101,7 +141,7 @@ def meeting_rows(world, now: datetime) -> tuple[list[dict], list[dict], int]:
             skipped += 1
             continue
         mid = rec.get("id")
-        start = _moment(rec, now)
+        start = _with_time(_moment(rec, now), rec.get("time") or rec.get("local_time"))
         district = rec.get("district")
         title_ru = rec.get("title_ru") or rec.get("title")
         if not (isinstance(mid, str) and ID_RE.match(mid) and start and district in DISTRICTS and title_ru):
@@ -171,7 +211,8 @@ def question_rows(world, now: datetime, meetings: dict[str, dict]) -> tuple[list
                 and 10 <= len(text) <= 300 and district in DISTRICTS):
             skipped += 1
             continue
-        published = _moment(rec, now) or now - timedelta(days=1)
+        published = (_when(rec.get("published_at"), now) or _moment(rec, now) or _when(rec.get("created_at"), now)
+                     or now - timedelta(days=1))
         status = rec.get("status") if rec.get("status") in ("pending", "published", "rejected") else "published"
         if status == "rejected":  # отклонённые в демо не нужны: их никто не видит
             skipped += 1
@@ -181,7 +222,7 @@ def question_rows(world, now: datetime, meetings: dict[str, dict]) -> tuple[list
         answer_ru, answer_kk = rec.get("answer_ru"), rec.get("answer_kk")
         answered = None
         if answer_ru or answer_kk:
-            answered = _moment(rec, now, prefix="answered_") or (
+            answered = _when(rec.get("answered_at"), now) or _moment(rec, now, prefix="answered_") or (
                 parse_iso(meeting["at"]) + timedelta(hours=2) if meeting else published + timedelta(days=2))
             answered = min(answered, now)
         rows.append({
@@ -205,6 +246,12 @@ def seed_world(db_path, records, now=None) -> dict:
     from .store import MeetingStore
 
     now = now.astimezone(timezone.utc) if isinstance(now, datetime) else datetime.now(timezone.utc)
+    if isinstance(records, dict):
+        try:  # сырой мир (тест, ручной запуск) — перевести времена так же, как R01 (SCHEMA §4); материализованный не меняется
+            from ml.datasets.demo_world_io import materialize  # noqa: WPS433 — модуль R02 может отсутствовать
+            records = materialize({k: records[k] for k in ("meetings", "questions") if k in records}, now)
+        except Exception:
+            pass  # без R02 — свой разбор тех же форм (_reltime, _due)
     store = MeetingStore(db_path)
     meetings, orders, skipped = meeting_rows(records, now)
     inserted, already = store.seed(meetings, orders)
@@ -218,5 +265,5 @@ def seed_world(db_path, records, now=None) -> dict:
             except LookupError:
                 pass
     questions, q_skipped = question_rows(records, now, by_id)
-    made = QuestionStore(db_path).seed(questions) if questions else 0
+    made = QuestionStore(db_path).seed(questions, refresh=True) if questions else 0
     return {"inserted": inserted + made, "skipped": skipped + already + q_skipped + (len(questions) - made)}

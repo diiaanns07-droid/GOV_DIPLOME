@@ -272,11 +272,23 @@ class QuestionStore:
                           question_id))
         return self.get(question_id)
 
-    def seed(self, rows: list[dict]) -> int:
-        """Демо-набор (demo=1): вставка по постоянным id, повтор ничего не дублирует и не возвращает снятое."""
+    def seed(self, rows: list[dict], *, refresh: bool = False) -> int:
+        """Демо-набор (demo=1): вставка по постоянным id, повтор ничего не дублирует и не возвращает снятое.
+
+        refresh=True (встречи раунда 15): у уже засеянных демо-вопросов обновить время, голоса-основу, ответ и встречу —
+        от момента этого запуска (иначе вопросы «ближайшей» встречи стареют вместе с ней). Статус не трогаем: снятый
+        сотрудником вопрос (личные данные) не возвращается (R15 S20)."""
         made = 0
         with self._tx() as conn:
             for r in rows:
+                if refresh:
+                    conn.execute(
+                        "UPDATE qa_questions SET created_at = ?, published_at = CASE WHEN status = 'published' THEN ? "
+                        "ELSE published_at END, base_votes = ?, answer_ru = ?, answer_kk = ?, answered_at = ?, "
+                        "meeting_id = ?, votes_close_at = ? WHERE id = ? AND demo = 1",
+                        (r["created_at"], r.get("published_at") or r["created_at"], int(r.get("base_votes") or 0),
+                         r.get("answer_ru"), r.get("answer_kk"), r.get("answered_at"), r.get("meeting_id"),
+                         r.get("votes_close_at"), r["id"]))
                 cur = conn.execute(
                     "INSERT OR IGNORE INTO qa_questions (id, text, lang, district, status, created_at, published_at, "
                     "base_votes, answer_ru, answer_kk, answered_at, demo, meeting_id, votes_close_at) "

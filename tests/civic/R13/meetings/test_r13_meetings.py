@@ -518,3 +518,71 @@ def test_unknown_routes_and_methods(svc):
     assert call(svc, "GET", "/meetings", query="when=soon")[0] == 400
     assert call(svc, "GET", "/meetings", query="district=mars")[0] == 400
     assert svc.handle("GET", P + "/questions", "", None, None, CTX) is None  # чужой адрес — не наш
+
+
+# ---------------------------------------------------------------- мир R02 «как в файле» и сброс демо при запуске
+RAW_WORLD = {  # формы времени SCHEMA.md R02 §1 (до materialize)
+    "meetings": [
+        {"id": "m-w15-1", "district": "nura", "title_ru": "Встреча акима района с жителями Нуры", "title_kk": "Кездесу",
+         "at": {"ago_days": 12.3}, "time": "18:00", "place": {"kind": "area", "id": "yard-1454082640", "label_ru": "Двор: BI City Tokyo"},
+         "registered": 54, "questions": ["q-w15-05"],
+         "orders": [{"id": "o-1", "text_ru": "Отремонтировать детскую площадку", "service": "landscaping", "due": {"day": -10},
+                     "status": "done", "link": {"kind": "complaint", "id": "c-w1500008"}},
+                    {"id": "o-2", "text_ru": "Восстановить освещение улицы", "service": "lighting", "due": {"day": 5},
+                     "status": "in_progress"}], "demo": True},
+        {"id": "m-w15-2", "district": "nura", "title_ru": "Встреча акима района: зима во дворах",
+         "at": {"next_weekday": {"weekday": 3, "hour": 18, "minute": 30}}, "place": {"kind": "area", "id": "yard-1531186326",
+         "label_ru": "Двор — улица 206"}, "registered": 31, "questions": ["q-w15-01"], "orders": [], "demo": True},
+    ],
+    "questions": [
+        {"id": "q-w15-01", "district": "nura", "lang": "ru", "text": "Когда во дворах Нуры будут убирать снег быстрее?",
+         "status": "published", "created_at": {"ago_days": 1.6}, "published_at": {"ago_days": 1.5}, "base_votes": 46,
+         "answer_ru": None, "answer_kk": None, "answered_at": None, "meeting": "m-w15-2", "demo": True},
+        {"id": "q-w15-05", "district": "nura", "lang": "ru", "text": "Когда отремонтируют детскую площадку во дворе?",
+         "status": "published", "created_at": {"ago_days": 14}, "published_at": {"ago_days": 13.9}, "base_votes": 22,
+         "answer_ru": "Ремонт включён в поручения встречи.", "answered_at": {"ago_days": 12.2}, "meeting": "m-w15-1", "demo": True},
+    ],
+}
+
+
+def test_seed_world_reads_raw_r02_time_forms(tmp_path, clock):
+    path = str(tmp_path / "raw.sqlite3")
+    report = seed_world(path, RAW_WORLD, now=NOW)
+    assert report == {"inserted": 2 + 2 + 2, "skipped": 0}
+    service = make_service(path, clock=clock, demo=False)
+    _s, body = call(service, "GET", "/meetings")
+    by_id = {m["id"]: m for m in body["items"]}
+    # weekday 3 у R02 — четверг; сегодняшний вечер ближе 12 часов -> следующий четверг 18:30
+    assert by_id["m-w15-2"]["phase"] == "upcoming" and by_id["m-w15-2"]["at"] == "2026-10-22T13:30:00Z"
+    assert by_id["m-w15-1"]["phase"] == "held" and by_id["m-w15-1"]["at"].endswith("T13:00:00Z")      # 18:00 по Астане
+    _s, past = call(service, "GET", "/meetings/m-w15-1")
+    orders = past["meeting"]["orders"]
+    assert [o["due"] for o in orders] == ["2026-10-05", "2026-10-20"]
+    assert past["meeting"]["questions"][0]["answer"]["ru"].startswith("Ремонт")
+    _s, nxt = call(service, "GET", "/meetings/m-w15-2")
+    assert [(q["id"], q["votes"]) for q in nxt["meeting"]["questions"]] == [("q-w15-01", 46)]
+
+
+def test_demo_reset_on_restart_keeps_real_records(tmp_path):
+    path = str(tmp_path / "reset.sqlite3")
+    first = Clock(NOW)
+    svc = make_service(path, clock=first, demo=True)
+    # репетиция: житель нажал «Приду», сотрудник закрыл демо-поручение, добавил своё и снял демо-вопрос
+    call(svc, "POST", "/meetings/m-demo-nura-next/register", {"device_id": DEV_A})
+    staff(svc, "POST", "/meetings/m-demo-nura-past/order", {"order_id": "o-demo-n2", "status": "done"})
+    _s, own = staff(svc, "POST", "/meetings/m-demo-nura-past/order", {"text_ru": "Своё поручение сотрудника",
+                                                                      "service": "road", "due": "2026-11-20"})
+    assert svc.qa.handle("POST", f"{P}/questions/q-demo-m02/reject", "", {"reason": "personal_data"}, Staff(), STAFF_CTX)["status"] == 200
+    # через 5 дней сервер запускают снова
+    later = Clock(NOW + timedelta(days=5))
+    svc2 = make_service(path, clock=later, demo=True)
+    _s, body = call(svc2, "GET", "/meetings", query="device_id=" + DEV_A)
+    nxt = next(m for m in body["items"] if m["id"] == "m-demo-nura-next")
+    assert nxt["phase"] == "upcoming" and nxt["at"] > (NOW + timedelta(days=5)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    assert nxt["my_registration"] is True and nxt["registered"] == 55      # отметка устройства сохранилась
+    _s, past = call(svc2, "GET", "/meetings/m-demo-nura-past")
+    orders = {o["id"]: o for o in past["meeting"]["orders"]}
+    assert orders["o-demo-n2"]["status"] == "todo"                          # демо-поручение вернулось к исходному
+    assert own["order"]["id"] in orders                                       # поручение сотрудника не тронуто
+    _s, card = call(svc2, "GET", "/meetings/m-demo-nura-next")
+    assert "q-demo-m02" not in [q["id"] for q in card["meeting"]["questions"]]  # снятый вопрос не вернулся (R15 S20)

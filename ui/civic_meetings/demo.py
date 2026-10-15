@@ -155,7 +155,7 @@ def seed(service, now: datetime | None = None) -> dict:
     meetings, orders, questions = records(now)
     inserted, skipped = service.store.seed(meetings, orders)
     if service.qa is not None:
-        made = service.qa.store.seed(questions)
+        made = service.qa.store.seed(questions, refresh=True)
         inserted += made
         skipped += len(questions) - made
     return {"inserted": inserted, "skipped": skipped}
