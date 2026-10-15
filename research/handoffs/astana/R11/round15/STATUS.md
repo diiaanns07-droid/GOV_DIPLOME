@@ -6,6 +6,10 @@
 База: origin/claude/clever-hypatia-q6ts4g @ e91acb69 (код FINAL-4 a4937462 + пакет раунда 15)
 restored_from: — (роль начата с нуля; прошлая передача — claude/r14-R11)
 
+**Каждый круг: сначала читать AMENDMENTS.md из ветки пакета** — `git fetch origin claude/clever-hypatia-q6ts4g &&
+git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md`. Где поправка расходится с промптом,
+COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочитано: П1 (15 окт 17:05, «Без ИИ-слопа») — применяю.
+
 ## План (по research/round-15/prompts/R11.txt)
 1. До 17:53 по Астане — research/round-15-results/R11/IA_ROUND15.md (меню жителя и акимата, экраны, Хроника, Ситуационный центр) → push.
 2. ui-kit: компоненты новых экранов (двор, инициатива, служба, передачи, календарь работ, конфликт, кризис, хроника, ситуационный центр, встреча) + пример в web/civic/ui-kit/index.html.

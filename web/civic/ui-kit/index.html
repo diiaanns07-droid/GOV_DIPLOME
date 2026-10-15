@@ -175,6 +175,21 @@
         border-radius: var(--r-xl);
         background: linear-gradient(135deg, #e9e5dd, #dfe9d5 60%, #d4e6ef);
       }
+      .kit-r15__kinds {
+        gap: var(--s-4);
+      }
+      .kit-r15__kind {
+        display: grid;
+        justify-items: center;
+        gap: 6px;
+        margin: 0;
+        font-size: var(--fs-xs);
+        text-align: center;
+      }
+      .kit-r15__kind .bk-thumb {
+        width: 56px;
+        height: 56px;
+      }
       .kit-r15__dark {
         border-radius: var(--r-xl);
         overflow: hidden;
@@ -596,7 +611,6 @@
         <h3 class="kit-r15__h"><code>.bk-yard</code> · <code>.bk-feed</code> — «Мой двор» (R16)</h3>
         <div class="kit-r15__col">
           <header class="bk-yard">
-            <svg class="bk-yard__ill" aria-hidden="true"><use href="icons.svg#ill-yard"></use></svg>
             <p class="bk-yard__eyebrow"><span data-s15="nura"></span><span class="bk-tag bk-tag--demo" data-s15="demo"></span></p>
             <h2 class="bk-yard__title" data-s15="yard"></h2>
             <dl class="bk-yard__stats">
@@ -633,13 +647,13 @@
         <h3 class="kit-r15__h"><code>.bk-pc</code> + <code>.bk-join</code> · <code>.bk-support</code> — «Сделаем вместе», список (R16)</h3>
         <div class="kit-r15__col bk-plist kit-r15__plist">
           <article class="bk-pc">
-            <div class="bk-thumb bk-thumb--ill"><svg class="bk-ill" aria-hidden="true"><use href="icons.svg#ill-kind-cleanup"></use></svg></div>
+            <div class="bk-thumb bk-thumb--kind"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-broom"></use></svg></div>
             <div class="bk-pc__body"><h4 class="bk-pc__title" data-s15="i1.title"></h4><p class="bk-pc__sub" data-s15="i1.sub"></p>
               <div class="bk-pc__foot"><span class="bk-support"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-building"></use></svg><span data-s15="support"></span></span>
                 <button class="bk-join kit-r15-join" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-users"></use></svg><span data-s15="join"></span> <span class="bk-join__n">14</span></button></div></div>
           </article>
           <article class="bk-pc">
-            <div class="bk-thumb bk-thumb--ill"><svg class="bk-ill" aria-hidden="true"><use href="icons.svg#ill-kind-greening"></use></svg></div>
+            <div class="bk-thumb bk-thumb--kind"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-sprout"></use></svg></div>
             <div class="bk-pc__body"><h4 class="bk-pc__title" data-s15="i2.title"></h4><p class="bk-pc__sub" data-s15="i2.sub"></p>
               <div class="bk-pc__foot"><span></span>
                 <button class="bk-join kit-r15-join" type="button" aria-pressed="true"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-check"></use></svg><span data-s15="joined"></span> <span class="bk-join__n">8</span></button></div></div>
@@ -649,8 +663,8 @@
         <h3 class="kit-r15__h" id="kit-r15-init"><code>.bk-init</code> · <code>.bk-done</code> — карточка инициативы и итог (R16)</h3>
         <div class="kit-grid">
           <article class="bk-init">
-            <div class="bk-init__media"><svg class="bk-ill" aria-hidden="true"><use href="icons.svg#ill-kind-cleanup"></use></svg><span class="bk-tag bk-tag--demo" data-s15="demo"></span></div>
             <div class="bk-init__body">
+              <p class="bk-init__kind"><span class="bk-init__kind-ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-broom"></use></svg></span><span data-s15="kind.cleanup"></span><span class="bk-tag bk-tag--demo" data-s15="demo"></span></p>
               <h4 class="bk-init__title" data-s15="i1.title"></h4>
               <ul class="bk-init__facts">
                 <li><svg class="ic" aria-hidden="true"><use href="icons.svg#i-calendar"></use></svg><span data-s15="i1.when"></span></li>
@@ -662,10 +676,10 @@
                 <button class="bk-btn bk-btn--ghost" type="button" data-s15="cant"></button></div>
             </div>
           </article>
-          <div class="bk-done">
-            <svg class="bk-done__photo" viewBox="0 0 84 84" role="img" aria-label="Фото «после»"><rect width="84" height="84" fill="#e1ecd6"/><path d="M0 62h84v22H0z" fill="#d4e6b8"/><circle cx="24" cy="44" r="10" fill="#9ccc72"/><circle cx="58" cy="40" r="13" fill="#86bf5c"/><path d="M24 54v10M58 53v11" stroke="#6b5a3e" stroke-width="3"/></svg>
+          <div class="bk-done bk-done--nophoto">
             <p class="bk-done__num"><b>15</b><span data-s15="done.label"></span></p>
             <p class="bk-done__text" data-s15="done.text"></p>
+            <p class="bk-done__note" data-s15="done.note"></p>
           </div>
         </div>
 
@@ -827,8 +841,9 @@
           </div>
         </div>
 
-        <h3 class="kit-r15__h">Иллюстрации раунда 15 — пустые состояния, виды идей (R06), виды дел (R16)</h3>
-        <div class="kit-grid kit-ills" id="kit-r15-ills"></div>
+        <h3 class="kit-r15__h">Значки видов (R06 идеи, R16 дела) и пустых состояний — П1: малые, один цвет, без сценок</h3>
+        <div class="kit-row kit-r15__kinds" id="kit-r15-kinds"></div>
+        <div class="kit-row kit-r15__kinds" id="kit-r15-ills"></div>
       </section>
     </main>
 
@@ -1030,7 +1045,10 @@
             "i2.title": "Посадим 6 саженцев", "i2.sub": "Вс, 11:00 · Сквер у школы № 64",
             "i1.when": "Суббота, 18 окт, 10:00–12:00", "bring.1": "перчатки", "bring.2": "мешки", "bring.3": "грабли",
             "support.note": "Мешки и вывоз мусора в 14:00", cant: "Не смогу",
-            "done.label": "соседей — сделано вместе", "done.text": "Убрали двор и посадили 6 саженцев",
+            "done.label": "соседей — сделано вместе", "done.text": "Убрали двор и посадили 6 саженцев", "done.note": "Фото появится после дела",
+            "kind.cleanup": "Субботник",
+            kinds: { trees: "Сквер", playground: "Площадка", ball: "Спорт", bus: "Остановка", bulb: "Освещение", bench: "Скамейки", sprout: "Озеленение",
+              broom: "Уборка", snowflake: "Снег", wrench: "Ремонт", heart: "Помощь соседям" },
             "svcs.title": "Работают 2 службы — срок ответа один", "svc.water": "Водоканал", "svc.road": "Дорожная служба", "svc.clean": "Уборка улиц",
             "svc.light": "Освещение улиц", "svc.heat": "Теплоснабжение",
             "role.lead": "ведущая", "role.partner": "участвует", "st.done": "сделано", "st.progress": "в работе", "st.todo": "не начато",
@@ -1070,7 +1088,10 @@
             "i2.title": "6 көшет отырғызамыз", "i2.sub": "Жс, 11:00 · № 64 мектеп жанындағы гүлзар",
             "i1.when": "Сенбі, 18 қазан, 10:00–12:00", "bring.1": "қолғап", "bring.2": "қап", "bring.3": "тырма",
             "support.note": "Қаптар және қоқысты 14:00-де шығару", cant: "Бара алмаймын",
-            "done.label": "көрші — бірге жасалды", "done.text": "Ауланы тазалап, 6 көшет отырғыздық",
+            "done.label": "көрші — бірге жасалды", "done.text": "Ауланы тазалап, 6 көшет отырғыздық", "done.note": "Іс біткен соң фото пайда болады",
+            "kind.cleanup": "Сенбілік",
+            kinds: { trees: "Гүлзар", playground: "Алаң", ball: "Спорт", bus: "Аялдама", bulb: "Жарықтандыру", bench: "Орындықтар", sprout: "Көгалдандыру",
+              broom: "Тазалау", snowflake: "Қар", wrench: "Жөндеу", heart: "Көршілерге көмек" },
             "svcs.title": "2 қызмет жұмыс істеп жатыр — жауап мерзімі біреу", "svc.water": "Су арнасы", "svc.road": "Жол қызметі", "svc.clean": "Көше тазалау",
             "svc.light": "Көше жарығы", "svc.heat": "Жылумен жабдықтау",
             "role.lead": "жетекші", "role.partner": "қатысады", "st.done": "орындалды", "st.progress": "жұмыста", "st.todo": "басталмады",
@@ -1100,8 +1121,8 @@
         var BOARD = [["svc.clean", "#4b5d7a", "trash", 31, 0, "1,2", 0.3, "ok", "72 %", 0], ["svc.road", "#5b6770", "road", 18, 5, "3,1", 1, "late", "51 %", 2],
           ["svc.water", "#1f5fa8", "droplet", 12, 3, "2,5", 0.85, "soon", "64 %", 1], ["svc.light", "#7a520f", "bulb", 9, 1, "2,0", 0.6, "ok", "80 %", 0],
           ["svc.heat", "#b3362e", "wind", 4, 0, "1,8", 0.2, "ok", "—", 0]];
-        var ILLS = ["yard", "together", "meeting", "calendar", "bell", "chart", "handoff", "kind-square", "kind-playground", "kind-sport", "kind-stop",
-          "kind-lighting", "kind-benches", "kind-greening", "kind-cleanup", "kind-snow", "kind-repair", "kind-help"];
+        var ILLS = ["together", "calendar", "bell", "chart", "handoff"];
+        var KINDS = ["trees", "playground", "ball", "bus", "bulb", "bench", "sprout", "broom", "snowflake", "wrench", "heart"];
         var lang = function () { return I && I.getLang ? I.getLang() : "ru"; };
         var s = function (k) { var d = S[lang()] || S.ru; return d[k] != null ? d[k] : S.ru[k]; };
         function render() {
@@ -1116,7 +1137,12 @@
               '<td data-col="median">' + r[5] + '</td><td data-col="deadline"><span class="bk-deadline" data-state="' + r[7] + '" style="--p:' + r[6] + '"><span class="bk-deadline__track"></span></span></td>' +
               '<td data-col="verified">' + r[8] + '</td><td data-col="returned">' + (r[9] || '<span class="bk-board__zero">0</span>') + "</td></tr>";
           }).join("");
-          document.getElementById("kit-r15-ills").innerHTML = ILLS.map(function (n) { return "<figure>" + UI.illustration(n) + "<figcaption><code>ill-" + n + "</code></figcaption></figure>"; }).join("");
+          // П1: вид объекта / дела — значок набора на спокойном фоне (как .bk-thumb--kind), подпись — данные, не украшение
+          document.getElementById("kit-r15-kinds").innerHTML = KINDS.map(function (n) {
+            return '<figure class="kit-r15__kind"><span class="bk-thumb bk-thumb--kind">' + UI.icon(n) + "</span><figcaption>" + UI.esc(s("kinds")[n]) +
+              "<br><code>i-" + n + "</code></figcaption></figure>";
+          }).join("");
+          document.getElementById("kit-r15-ills").innerHTML = ILLS.map(function (n) { return '<figure class="kit-r15__kind">' + UI.illustration(n) + "<figcaption><code>ill-" + n + "</code></figcaption></figure>"; }).join("");
         }
         function wire() {
           document.querySelectorAll(".kit-r15-join").forEach(function (b) {

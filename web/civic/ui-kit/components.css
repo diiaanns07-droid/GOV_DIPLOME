@@ -3061,13 +3061,15 @@ p.bk-banner--warn {
 /* ───────────── Раунд 15 «Бірге — вместе»: компоненты новых экранов (R11, IA_ROUND15 §5) ─────────────
    Только новые классы — классы эталона A выше не меняются. Разметка каждого компонента — в комментарии над ним и в
    витрине ui-kit/index.html, раздел «Раунд 15». Цвета — только токены; зелёный — только «исправлено» и части служб «сделано».
+   Поправка владельца П1 «Без ИИ-слопа» (AMENDMENTS.md, 15 окт): картинка — только если несёт данные или действие;
+   никаких нарисованных зданий, сценок и «фото»; вид объекта или дела — значок набора R11; фото — только настоящее;
+   без декоративных градиентов, свечения и бликов.
    Владельцы экранов: «Мой двор» и «Сделаем вместе» — R16; «Ведомства» и кризис — R17; календарь работ — R12;
    встречи — R13; хроника — R07; ситуационный центр — R08 (тёмные токены .bk-dark — tokens.css); уведомления — R06;
    «Спросить Birge» — R03; паспорт с несколькими службами — R09. */
 
 /* ── «Мой двор»: шапка с названием, 3 числа и действие (R16) ──
-   <header class="bk-yard">
-     <svg class="bk-yard__ill" aria-hidden="true"><use href="…/icons.svg#ill-yard"/></svg>
+   <header class="bk-yard">   (без рисунка — П1: главное название и три числа)
      <p class="bk-yard__eyebrow">Нура · <span class="bk-tag bk-tag--demo">Пример</span></p>
      <h2 class="bk-yard__title">Двор у ул. Коксенгир</h2>
      <dl class="bk-yard__stats">
@@ -3089,32 +3091,16 @@ p.bk-banner--warn {
   line-height: var(--lh-ui);
   overflow: hidden;
 }
-.bk-yard__ill {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 88px;
-  height: 88px;
-  fill: none;
-  stroke: var(--c-text-3);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.6;
-  pointer-events: none;
-}
 .bk-yard__eyebrow {
   display: flex;
   align-items: center;
   gap: 8px;
   margin: 0;
-  padding-right: 96px;
   color: var(--c-text-2);
   font-size: var(--fs-caption);
 }
 .bk-yard__title {
   margin: 0;
-  padding-right: 96px; /* место под иллюстрацию; длинный казахский адрес переносится, а не уходит под неё */
   font-size: var(--fs-h1);
   font-weight: var(--fw-semi);
   line-height: var(--lh-head);
@@ -3174,14 +3160,6 @@ p.bk-banner--warn {
 @media (max-width: 480px) {
   .bk-yard {
     padding: 16px;
-  }
-  .bk-yard__ill {
-    width: 64px;
-    height: 64px;
-  }
-  .bk-yard__title,
-  .bk-yard__eyebrow {
-    padding-right: 72px;
   }
   .bk-yard__title {
     font-size: var(--fs-title);
@@ -3301,21 +3279,24 @@ button.bk-feed__item:hover {
 
 /* ── Инициатива в списке: та же карточка .bk-pc эталона (App Store) + «Я приду» и плашка поддержки (R16) ──
    <article class="bk-pc">
-     <div class="bk-thumb bk-thumb--ill"><svg class="bk-ill">#ill-kind-cleanup</svg></div>  (или <img> фото)
+     <div class="bk-thumb bk-thumb--kind"><svg class="ic">#i-broom</svg></div>  (или <img> настоящее фото)
      <div class="bk-pc__body"><h3 class="bk-pc__title">Субботник во дворе</h3>
        <p class="bk-pc__sub">Сб, 10:00 · Двор у ул. Коксенгир</p>
        <div class="bk-pc__foot"><span class="bk-support"><svg class="ic">#i-building</svg>Поддержано акиматом</span>
          <button class="bk-join" aria-pressed="false"><svg class="ic">#i-users</svg>Я приду <span class="bk-join__n">14</span></button></div></div>
    </article> */
-.bk-thumb--ill {
+/* Вид объекта или дела без фото (П1): маленький значок набора R11 на спокойном фоне — без рисунков и сценок.
+   Значки видов: сквер i-trees, площадка i-playground, спорт i-ball, остановка i-bus, освещение i-bulb, скамейки i-bench,
+   озеленение i-sprout; дела: уборка i-broom, снег i-snowflake, ремонт i-wrench, помощь соседям i-heart, другое i-dots. */
+.bk-thumb--kind {
   display: grid;
   place-items: center;
-  background: var(--c-accent-soft);
+  background: var(--c-fill);
+  color: var(--c-text-2);
 }
-.bk-thumb--ill > svg.bk-ill {
-  width: 60%;
-  height: 60%;
-  stroke: var(--c-brand);
+.bk-thumb > svg.ic {
+  width: 28px;
+  height: 28px;
 }
 /* Подвал карточки инициативы: плашка поддержки и «Я приду» не помещаются в строку на 375 — кнопка уходит вниз вправо
    (карточки проектов эталона с .bk-vote не меняются) */
@@ -3420,9 +3401,10 @@ button.bk-feed__item:hover {
 
 /* ── Карточка инициативы (R16): картинка, что / когда / где, что взять, «Я приду», поддержка, итог ──
    <article class="bk-init">
-     <div class="bk-init__media"><img alt=""> или <svg class="bk-ill">#ill-kind-cleanup</svg>
-       <span class="bk-tag bk-tag--demo">Пример</span></div>
+     <div class="bk-init__media"><img alt="…"></div>   (только настоящее фото жителей; нет фото — блока нет, П1)
      <div class="bk-init__body">
+       <p class="bk-init__kind"><span class="bk-init__kind-ic"><svg class="ic">#i-broom</svg></span>Субботник
+         <span class="bk-tag bk-tag--demo">Пример</span></p>
        <h2 class="bk-init__title">Субботник во дворе</h2>
        <ul class="bk-init__facts"><li><svg class="ic">#i-calendar</svg>Суббота, 18 окт, 10:00–12:00</li>
          <li><svg class="ic">#i-pin</svg>Двор у ул. Коксенгир <button class="bk-link">На карте</button></li></ul>
@@ -3432,7 +3414,8 @@ button.bk-feed__item:hover {
          <span class="bk-init__count">Придут 14 соседей</span></div>
      </div>
    </article>
-   После — блок .bk-done «Сделано вместе: 15 соседей» с фото «после». */
+   После — блок .bk-done «Сделано вместе: 15 соседей»: с настоящим фото «после» или .bk-done--nophoto со строкой
+   «Фото появится после дела» (в демо-мире фото нет). */
 .bk-init {
   display: flex;
   flex-direction: column;
@@ -3455,11 +3438,6 @@ button.bk-feed__item:hover {
   height: 100%;
   object-fit: cover;
 }
-.bk-init__media > .bk-ill {
-  width: 96px;
-  height: 96px;
-  stroke: var(--c-brand);
-}
 .bk-init__media > .bk-tag {
   position: absolute;
   top: 12px;
@@ -3469,6 +3447,29 @@ button.bk-feed__item:hover {
   display: grid;
   gap: 12px;
   padding: 16px var(--pad-card) var(--pad-card);
+}
+/* Вид дела строкой: значок 20 в плитке 32 + слово («Субботник») и метка «Пример» */
+.bk-init__kind {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+.bk-init__kind-ic {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--c-fill);
+  color: var(--c-ink);
+}
+.bk-init__kind .bk-tag {
+  margin-left: auto;
 }
 .bk-init__title {
   margin: 0;
@@ -3520,9 +3521,13 @@ button.bk-feed__item:hover {
   }
 }
 
-/* ── «Сделано вместе: 15 соседей» — итог инициативы с фото «после» (R16) ──
+/* ── «Сделано вместе: 15 соседей» — итог инициативы (R16) ──
+   С настоящим фото «после»:
    <div class="bk-done"><img class="bk-done__photo" alt="Двор после субботника">
-     <p class="bk-done__num"><b>15</b> соседей</p><p class="bk-done__text">Убрали двор и посадили 6 саженцев</p></div> */
+     <p class="bk-done__num"><b>15</b> соседей — сделано вместе</p><p class="bk-done__text">Убрали двор и посадили 6 саженцев</p></div>
+   Без фото (демо-мир, П1 — фото только настоящие):
+   <div class="bk-done bk-done--nophoto"><p class="bk-done__num"><b>15</b> соседей — сделано вместе</p>
+     <p class="bk-done__text">Убрали двор…</p><p class="bk-done__note">Фото появится после дела</p></div> */
 .bk-done {
   display: grid;
   grid-template-columns: 84px minmax(0, 1fr);
@@ -3557,6 +3562,14 @@ button.bk-feed__item:hover {
   margin: 0;
   color: var(--c-text-2);
   font-size: var(--fs-caption);
+}
+.bk-done--nophoto {
+  grid-template-columns: minmax(0, 1fr);
+}
+.bk-done__note {
+  margin: 4px 0 0;
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
 }
 
 /* ── Строка службы: статус-иконка + служба + слово статуса + полоса срока (R09 паспорт, R17 «Совместные») ──
@@ -4716,7 +4729,7 @@ button.bk-conflict::after {
   min-height: 100vh;
   min-height: 100dvh;
   padding: var(--sc-gap);
-  background: radial-gradient(120% 80% at 20% 0%, #16211d 0%, var(--c-paper) 60%);
+  background: var(--c-paper); /* ровный тёмный фон — без градиентов «для красоты» (П1) */
   color: var(--c-ink);
   font-family: var(--font);
   line-height: var(--lh-ui);
@@ -4757,12 +4770,9 @@ button.bk-conflict::after {
   min-width: 0;
   min-height: 0;
   padding: var(--sc-pad);
-  border: 1px solid var(--glass-edge);
+  border: 1px solid var(--c-line-strong);
   border-radius: 22px;
-  background: var(--glass-panel);
-  box-shadow: var(--glass-shadow);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  background: var(--c-surface); /* плотная плитка: стекло — только на хроме эталона A (П1) */
   overflow: hidden;
 }
 .bk-sc-tile__label {
@@ -4788,8 +4798,7 @@ button.bk-conflict::after {
   font-size: var(--sc-fs-label);
 }
 .bk-sc-tile[data-alert="true"] {
-  border-color: rgba(255, 122, 112, 0.5);
-  box-shadow: 0 0 0 1px rgba(255, 122, 112, 0.25), var(--glass-shadow);
+  border-color: var(--c-danger); /* кризис — цветом рамки и точкой-пульсом, без свечения (П1) */
 }
 /* Смена блоков каждые 15 с — мягкое появление; при «уменьшить движение» — сразу */
 .bk-sc-tile.is-enter {
@@ -5059,13 +5068,14 @@ button.bk-conflict::after {
 }
 
 /* Иллюстрация пустого состояния / ошибки — линейная, спокойная, 96 px (на телефоне 80) */
+/* П1 «Без ИИ-слопа»: ill-* — малые монохромные значки (≤ 48 px), линия как у иконок (видимая ~1,7 px у значков 20) */
 .bk-ill {
-  width: 96px;
-  height: 96px;
+  width: 48px;
+  height: 48px;
   flex: none;
   fill: none;
   stroke: var(--c-text-3);
-  stroke-width: 1.5;
+  stroke-width: 1.75;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -5078,8 +5088,8 @@ button.bk-conflict::after {
 }
 @media (max-width: 1023px) {
   .bk-ill {
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
   }
 }
 

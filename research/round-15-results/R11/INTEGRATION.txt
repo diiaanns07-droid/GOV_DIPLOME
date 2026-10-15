@@ -36,15 +36,20 @@ tokens.css, components.css, icons.svg, ui-kit.js, ru.json, kk.json (CIVIC_ASSETS
 §2. Роли — какие классы ui-kit брать для своего экрана (разметка — комментарий над классом в components.css,
     живой пример — /civic/ui-kit/index.html, раздел «Раунд 15»; правила экранов — IA_ROUND15 §5)
 ======================================================================================================================
-R16 «Мой двор»: .bk-yard (+ __eyebrow, __title, __stats/__stat с dt/dd, __captain, __actions, __ill с #ill-yard),
-    вкладки .bk-tabs, лента .bk-feed (+ .bk-feed__group «Новые / Раньше»), пусто — BirgeUI.state(el, "empty",
-    {illustration: "yard", …}).
-R16 «Сделаем вместе»: список — .bk-pc эталона + .bk-thumb.bk-thumb--ill (иллюстрации #ill-kind-cleanup, -snow, -repair,
-    -help, -greening) + .bk-support + .bk-join (aria-pressed; число .bk-join__n, класс .is-bump на +1); карточка —
-    .bk-init (+ __media, __title, __facts, __bring, __cta, __count), .bk-support--block с .bk-support__note, главная —
-    .bk-btn.bk-btn--primary.bk-btn--lg со счётчиком .bk-btn__count; итог — .bk-done (фото «после», «Сделано вместе»).
+ПОПРАВКА П1 (AMENDMENTS.md, 15 окт 17:05) — для всех: никаких рисунков, сценок и нарисованных «фото»; вид объекта/дела —
+    значок набора R11; пустое состояние — BirgeUI.state(el, "empty", {illustration: <имя>, title, text, action}) — значок
+    48 px (40 на телефоне), один цвет; фото «после» — только настоящее. ill-kind-*, ill-yard, ill-meeting удалены из
+    спрайта; остались ill-list, map, search, done, offline, idea, question, staff, together, calendar, bell, chart, handoff.
+R16 «Мой двор»: .bk-yard (+ __eyebrow, __title, __stats/__stat с dt/dd, __captain, __actions) — без рисунка (П1);
+    вкладки .bk-tabs, лента .bk-feed (+ .bk-feed__group «Новые / Раньше»), пусто — illustration "map" («Выбрать на карте»).
+R16 «Сделаем вместе»: список — .bk-pc эталона + .bk-thumb.bk-thumb--kind со значком вида (уборка #i-broom, снег
+    #i-snowflake, ремонт #i-wrench, помощь #i-heart, озеленение #i-sprout, другое #i-dots) или настоящее фото +
+    .bk-support + .bk-join (aria-pressed; число .bk-join__n, класс .is-bump на +1); карточка — .bk-init (+ __kind со
+    значком и словом вида, __title, __facts, __bring, __cta, __count; __media — только настоящее фото), .bk-support--block
+    с .bk-support__note, главная — .bk-btn.bk-btn--primary.bk-btn--lg со счётчиком .bk-btn__count; итог — .bk-done
+    (настоящее фото) или .bk-done.bk-done--nophoto с .bk-done__note «Фото появится после дела»; пусто — "together".
 R13 «Вопросы и встречи»: .bk-meet (+ __date, __main, __title, __meta, __cta), поручения .bk-orders/.bk-order
-    (BirgeUI.statusIcon(status) + текст + .bk-order__due[data-late] + .bk-order__meta); пусто — illustration "meeting".
+    (BirgeUI.statusIcon(status) + текст + .bk-order__due[data-late] + .bk-order__meta); пусто — illustration "question".
 R17 «Ведомства»: табло — <table class="bk-board"> (сортировка: кнопка в <th>, aria-sort; .bk-board__svc с .bk-board__ic
     цвета службы; просрочка — .bk-board__late; ноль — .bk-board__zero; полоса срока — .bk-deadline); передачи —
     .bk-handoffs/.bk-handoff (#i-handoff); кризис — .bk-crisis-hd, чипы .bk-svcchips/.bk-svcchip (--p — доля сделанных
@@ -63,13 +68,14 @@ R07 «Хроника»: .bk-replay (+ .bk-glass .bk-glass--strong), .bk-replay__
     __scrub с input.bk-range (--p — доля), __ticks/__tick (--at, подпись события), .bk-replay__opts (сегменты .bk-seg
     7 / 30 дней и 1× / 2×), .bk-x — закрыть.
 R06 «Уведомления»: .bk-bell (кнопку ставит R01, §1.7), панель .bk-notify (+ __hd, __title, __readall «Прочитать все»,
-    __list) с лентой .bk-feed (data-unread="true"); пусто — illustration "bell". «Проекты и идеи»: иллюстрации видов
-    #ill-kind-square, -playground, -sport, -stop, -lighting, -benches, -greening в .bk-thumb.bk-thumb--ill (вместо серой
-    лампочки) и в .bk-pd__im.
+    __list) с лентой .bk-feed (data-unread="true"); пусто — illustration "bell". «Проекты и идеи» (П1): идея без фото —
+    .bk-thumb.bk-thumb--kind со значком вида: сквер #i-trees, площадка #i-playground, спорт #i-ball, остановка #i-bus,
+    освещение #i-bulb, скамейки #i-bench, озеленение #i-sprout (вместо серой лампочки; больших рисунков нет).
 R03 «Спросить Birge»: .bk-answer (+ __q, __nums/__num с b, __text, __acts), «Как получен ответ» — .bk-details, метка
     «офлайн-режим» — .bk-tag. Модуль — window.BirgeAnalyst (BirgeAsk занят «Вопросом акиму» R13).
 R08 «Ситуационный центр»: на <html> страницы /civic/board/ — class="bk-dark"; разметка .bk-sc (+ __top, __title, __spacer,
-    __clock, __dots, __grid), плитки .bk-sc-tile (--span, --rows; data-alert="true" — кризис), числа .bk-sc-num
+    __clock, __dots, __grid), плитки .bk-sc-tile (П1: ровный фон, без градиентов, стекла и свечения; --span, --rows;
+    data-alert="true" — кризис: красная рамка + .bk-live-dot), числа .bk-sc-num
     (--danger), подписи .bk-sc-tile__label, .bk-sc-delta; смена блоков — класс .is-enter. Подключить
     /civic/ui-kit/tokens.css и components.css (тёмные токены — только внутри .bk-dark, основной продукт светлый).
 

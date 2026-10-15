@@ -16,8 +16,8 @@ SHOWCASE = (KIT / "index.html").read_text("utf-8")
 R15_CLASSES = {
     "двор (R16)": ["bk-yard", "bk-yard__title", "bk-yard__stats", "bk-yard__stat", "bk-yard__captain", "bk-yard__actions"],
     "лента (R16, R06, R17)": ["bk-feed", "bk-feed__item", "bk-feed__ic", "bk-feed__title", "bk-feed__meta", "bk-feed__group"],
-    "инициатива (R16)": ["bk-join", "bk-join__n", "bk-support", "bk-support--block", "bk-init", "bk-init__media", "bk-init__cta",
-                         "bk-done", "bk-thumb--ill", "bk-pc__foot--wrap"],
+    "инициатива (R16)": ["bk-join", "bk-join__n", "bk-support", "bk-support--block", "bk-init", "bk-init__media", "bk-init__kind",
+                         "bk-init__cta", "bk-done", "bk-done--nophoto", "bk-done__note", "bk-thumb--kind", "bk-pc__foot--wrap"],
     "службы (R09, R17)": ["bk-svcs", "bk-svc", "bk-svc__name", "bk-svc__st", "bk-deadline", "bk-deadline__track"],
     "табло (R17)": ["bk-board", "bk-board--dense", "bk-board__svc", "bk-board__ic", "bk-board__late"],
     "передачи (R17, R09)": ["bk-handoffs", "bk-handoff", "bk-handoff__route", "bk-handoff__why"],
@@ -34,8 +34,9 @@ R15_CLASSES = {
 }
 R15_ICONS = ["bell", "play", "pause", "monitor", "sparkle", "handoff", "shovel", "cone", "broom", "sprout", "wrench", "expand",
              "megaphone", "bench"]
-R15_ILLS = ["yard", "together", "meeting", "calendar", "bell", "chart", "handoff", "kind-square", "kind-playground", "kind-sport",
-            "kind-stop", "kind-lighting", "kind-benches", "kind-greening", "kind-cleanup", "kind-snow", "kind-repair", "kind-help"]
+R15_ILLS = ["together", "calendar", "bell", "chart", "handoff"]
+# П1 (AMENDMENTS.md, 15 окт): сценки убраны — вид объекта или дела показывается значком i-*
+R15_KIND_ICONS = ["trees", "playground", "ball", "bus", "bulb", "bench", "sprout", "broom", "snowflake", "wrench", "heart"]
 
 
 def r15_section():
@@ -52,7 +53,7 @@ def test_r15_classes_exist_and_are_shown():
         for cls in classes:
             if not re.search(r"\." + re.escape(cls) + r"(?![a-z0-9_-])", css):
                 missing.append(f"{group}: .{cls}")
-            if cls not in SHOWCASE and cls not in ("bk-board--dense", "bk-pc__foot--wrap", "bk-thumb--ill"):
+            if cls not in SHOWCASE and cls not in ("bk-board--dense", "bk-pc__foot--wrap", "bk-init__media"):
                 not_shown.append(f"{group}: .{cls}")
     assert not missing, missing
     assert not not_shown, f"нет примера в витрине: {not_shown}"
@@ -111,3 +112,21 @@ def test_r15_tap_targets():
     assert re.search(r"\.bk-join::after \{\s*content: \"\";\s*position: absolute;\s*inset: -6px 0;", css)  # 32 + 12
     assert re.search(r"button\.bk-conflict::after \{\s*content: \"\";\s*position: absolute;\s*inset: -8px 0;", css)  # 28 + 16
     assert re.search(r"\.bk-replay__play \{[^}]*width: var\(--tap\)", css)
+
+
+def test_p1_no_ai_slop():
+    """Поправка владельца П1 «Без ИИ-слопа»: малые монохромные значки, без сценок, рисунков и декоративных градиентов."""
+    ids = set(re.findall(r'<symbol id="([a-z0-9-]+)"', ICONS))
+    banned = [i for i in ids if i.startswith("ill-kind-") or i in ("ill-yard", "ill-meeting")]
+    assert not banned, f"сценки в спрайте: {banned}"
+    for name in R15_KIND_ICONS:
+        assert "i-" + name in ids, name
+    rule = re.search(r"\n\.bk-ill \{(.*?)\n\}", COMPONENTS, re.S).group(1)
+    size = int(re.search(r"width: (\d+)px", rule).group(1))
+    assert size <= 48, f".bk-ill {size} px > 48"
+    css = r15_section()
+    assert "radial-gradient" not in css, "декоративный градиент в компонентах раунда 15"
+    sc = re.search(r"\n\.bk-sc \{(.*?)\n\}", css, re.S).group(1)
+    assert "gradient" not in sc and "backdrop-filter" not in re.search(r"\n\.bk-sc-tile \{(.*?)\n\}", css, re.S).group(1)
+    assert "bk-yard__ill" not in css and "bk-yard__ill" not in SHOWCASE, "рисунок в шапке двора"
+    assert "ill-kind-" not in SHOWCASE and '<svg class="bk-done__photo"' not in SHOWCASE, "нарисованное «фото» или сценка в витрине"
