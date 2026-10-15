@@ -14,9 +14,11 @@
     "R03": "a85e4765 (claude/modest-mccarthy-lrl98u)",
     "R16": "aef7b79f (claude/youthful-johnson-6nz5mp)",
     "R04": "7be7e71b (claude/gifted-maxwell-i66wwi)",
-    "R02": "0c0a8636 (claude/affectionate-shannon-jm6ws5)"
+    "R02": "0c0a8636 (claude/affectionate-shannon-jm6ws5)",
+    "R07": "5f9dc0ae (claude/birge-r07-round-15-zjp4ob)",
+    "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt"
   },
-  "push_status": "OK (checkpoint 4)",
+  "push_status": "OK (checkpoint 5)",
   "changed_paths": [
     "tests/civic/R15/r15_common.py",
     "tests/civic/R15/round15/",
@@ -59,7 +61,22 @@
       "failed": 0,
       "note": "tests/civic/R01 api_v2 + gateway + hardening на пакете с patch"
     },
-    "browser": "NOT_RUN: новых экранов ролей в сборке ещё нет (B1 — 16 окт 14:00)",
+    "browser": {
+      "script": "tests/civic/R15/browser/r15_round15.cjs + r15_stand.py",
+      "tree": "наложение веток ролей на пакет",
+      "PASS": 5,
+      "FAIL": 0,
+      "NOT_RUN": 2,
+      "steps": {
+        "akimat-1366 agencies crisis": "PASS",
+        "akimat-1366 meetings card": "PASS",
+        "akimat-1366 analyst question": "PASS",
+        "akimat-1366 situation-center board": "PASS",
+        "resident-375 meetings card": "PASS",
+        "akimat-1366 works-calendar": "NOT_RUN: R06 не принимает HTML в работах (422)",
+        "resident-375 together": "NOT_RUN: у R16 нет экрана web/civic/together"
+      }
+    },
     "R16_aef7b79f_together": {
       "passed": 28,
       "failed": 0,
@@ -86,6 +103,16 @@
       "passed": 413,
       "skipped": 1,
       "note": "tests/civic/R04 целиком с patch"
+    },
+    "R07_5f9dc0ae_replay": {
+      "passed": 12,
+      "failed": 0
+    },
+    "pages_csp_overlay": {
+      "passed": 12,
+      "failed": 0,
+      "not_run": 1,
+      "note": "шлюз ещё не отдаёт новых страниц (CIVIC_ASSETS R01)"
     }
   },
   "findings": {
@@ -134,11 +161,17 @@
     }
   },
   "high_open": 0,
-  "screens": [],
+  "screens": [
+    "research/round-15-results/R15/browser/akimat_1366_agencies_crisis.png",
+    "research/round-15-results/R15/browser/akimat_1366_analyst_question.png",
+    "research/round-15-results/R15/browser/akimat_1366_situation_center_board.png",
+    "research/round-15-results/R15/browser/resident_375_meetings_card.png"
+  ],
   "known_limits": [
-    "R16, R06 (лента), R04 (moderate), R09 (передачи), R12, R08, R07 раунда 15 ещё не поставили код — их тесты NOT_RUN",
-    "браузерная проба HTML-нагрузки в новых экранах — после B1",
+    "R06 лента уведомлений и R09 передачи раунда 15 ещё не поставлены — их тесты NOT_RUN",
+    "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
+    "у R16 ещё нет экрана — его HTML-вывод не проверен в браузере",
     "проверка в облаке без интернета; подложка карты — упрощённый фон"
   ],
-  "next_step": "тесты R16/R09/R06/R04 по коду их веток, браузерная проба r15_round15.cjs, круг ревью каждые 2–3 часа, B1 16 окт 14:00"
+  "next_step": "круг 2 (~19:00): свежие головы ролей, R06 лента, R09 передачи, экран R16; B1 16 окт 14:00 — полный прогон на сборке"
 }

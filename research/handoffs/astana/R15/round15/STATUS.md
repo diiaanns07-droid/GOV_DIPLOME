@@ -60,10 +60,22 @@
   с данными (только textContent/createElement), board/index.html без inline-скриптов.
 - Открыто: S42 низ., S43 низ., S44 низ., S45 низ., S46 ср., S47 ср., S48 ср. Высоких — 0.
 
+## Checkpoint 5 (15 окт 17:25 Астана)
+- Поправка П1 пакета (AMENDMENTS.md, «без ИИ-слопа») прочитана и слита в ветку: на R15 не влияет (экранов у R15 нет).
+  AMENDMENTS.md читать в начале каждого круга.
+- R07 heat/replay (5f9dc0ae): 12/12 — период > квартала, шаг не «день», мусор -> 400 сразу; обычный ответ ~0,6 с.
+- Браузерная проба раунда 15: tests/civic/R15/browser/r15_round15.cjs + r15_stand.py (стенд: настоящий ui.web_server
+  + маршруты CONTRACT §7 в памяти) на наложении веток R16 R17 R13 R03 R04 R07 R08 R12 R02 R06 (SHA —
+  research/round-15-results/R15/browser/OVERLAY_SHAS.txt): PASS 5 (кризис R17, встреча R13 1366 и 375, аналитик R03,
+  Ситуационный центр R08), FAIL 0, NOT_RUN 2 (календарь R12 — R06 не принимает HTML в работах; у R16 нет экрана).
+  Нарушений CSP нет. Кадры — research/round-15-results/R15/browser/.
+- test_r15_round15_pages.py: новые HTML без on…=/javascript:/внешних ресурсов, JS без eval/new Function — 12/12.
+- Наблюдение (не безопасность, для R03/R16): R03 sources.together_initiatives ищет list_initiatives/initiatives в
+  ui.civic_together, а R16 отдаёт initiatives_summary -> блок «Инициативы жителей» у аналитика «not_ready».
+
 ## Следующий шаг
-- R06 лента уведомлений (ещё нет), R09 передачи (ещё нет), R07 heat/replay (проверить пределы периода).
-- Браузерная проба r15_round15.cjs: HTML-нагрузка через сервисы R16/R17/R13 в экраны (стенд из веток или B1).
-- Круг 2 — ~19:00.
+- Круг 2 (~19:00): find_branches.py, AMENDMENTS.md, свежие головы R16 R17 R09 R13 R06 R03 R04 R12 R08; R06 лента,
+  R09 передачи, экран R16 — тесты и проба; повторная проверка S43–S48 у владельцев.
 
 ## Вопросы владельцу
 - (пока нет)
