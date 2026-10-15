@@ -168,8 +168,9 @@ def test_updates_only_for_own_device_with_internal_links(meet):
     assert not leaks(mine, device_needles(DEVICES[16:18]) + [STAFF_LOGIN])
     status, route = meet.resident("GET", "/meetings/updates", device=DEVICES[17])
     assert status == 200 and route["items"] == []
-    status, _b = meet.anon("GET", "/meetings/updates")
-    assert status == 400, "лента без устройства не должна отдавать события"
+    status, body = meet.anon("GET", "/meetings/updates")
+    # Без устройства — отказ (400) или пустая лента (200, R10 B-105: маршрут «для всех»), но не чужие события.
+    assert status == 400 or (status == 200 and not body.get("items")), (status, body)
 
 
 def test_unknown_meeting_id_is_404(meet):

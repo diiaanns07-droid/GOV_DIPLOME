@@ -291,8 +291,8 @@ def test_updates_only_for_own_device(tg):
         assert re.fullmatch(r"#[a-z-]+(/[A-Za-z0-9._:-]+)*", event["link"]), event
         assert "join" not in event["kind"] and "member" not in event["kind"], event
     assert not leaks([author, member], device_needles(DEVICES[39:42] + (AUTHOR,)) + [STAFF_LOGIN])
-    status, _b = tg.anon("GET", "/together/updates")
-    assert status == 400, "лента без устройства"
+    status, body = tg.anon("GET", "/together/updates")
+    assert status == 400 or (status == 200 and not data(body).get("items")), (status, body)   # без устройства — ничего
 
 
 @pytest.mark.parametrize("change", [{"target": {"kind": "area", "id": "yard-999999999999"}},
