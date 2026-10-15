@@ -67,7 +67,10 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 - 22:50 B0.4 (`f4f55ba2`, `8b1e5f0c`): R06 2daa408a — «Уведомления»: колокольчик R06 в капсуле справа (житель, ноутбук),
   на телефоне — первый пункт меню аватара «Уведомления · N» и точка на аватаре; r15_ia 38/0. DEMO_SCRIPT v2 — шаги 1–9
   РУС и ҚАЗ, BUILD_LOG B0…B0.4.
-- 00:40 (16 окт) B0.7 (`9f27ec3e`, `57170575`): R02 eaed8f4f (мир пересобран на объектах R12), R03 82b1999d, R05 6d45fa3b
+- 00:00 (16 окт) B0.8 (`d653a0f3`): R02 0152ef19 (круглые часы у дел — просьба R01), R03 cb24034d, R05 4af0ef5f, R06 e80d4f46,
+  R10 4272ee4b, R11 ea188ed6 (контраст неактивных вкладок — просьба R01), тесты R15 a5291311 (S42–S51 FIXED). pytest R01/R02/
+  R03/R06/R11/R15 — 2343/0, r15_ia 40/0. Поправок новых нет (только П1).
+- 23:40 (15 окт) B0.7 (`9f27ec3e`, `57170575`): R02 eaed8f4f (мир пересобран на объектах R12), R03 82b1999d, R05 6d45fa3b
   (+ R01_delta_b03.patch), R06 7f6636cd, R07 9b1084d9, R08 062f899a, R10 3b2bb63f, R11 442b617b, R12 3d4c1afb, R17 5650c869,
   тесты R15 15324ff6; R11 R01-5 — экран раздела закрывает «Мои обращения». pytest ролей 3239/3 (порядок R03/R17),
   r15_ia 40/0. **Флаг мира по умолчанию — пока нет**: часть 1 без мира 174/0/0, с миром 170/2/2 (B-109 R08).
@@ -87,22 +90,22 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 ## Роли → ветки → поставки (для истории)
 | Роль | Ветка раунда 15 | Поставка (DELIVERY code_sha) | Взято в сборку |
 |---|---|---|---|
-| R02 | claude/affectionate-shannon-jm6ws5 | c002aa85 (мир 1.1) | B0: 907bfc9d · B0.2: c002aa85 |
-| R03 | claude/modest-mccarthy-lrl98u | c6574a39 («Спросить Birge», warm_up) | B0: 7724787e · B0.5: c6574a39 + прогрев |
+| R02 | claude/affectionate-shannon-jm6ws5 | 0152ef19 (мир 1.1, круглые часы) | B0: 907bfc9d · B0.2: c002aa85 · B0.3: c68b179f · B0.7: eaed8f4f · B0.8: 0152ef19 |
+| R03 | claude/modest-mccarthy-lrl98u | cb24034d («Спросить Birge») | B0: 7724787e · B0.5: c6574a39 · B0.7: 82b1999d · B0.8: cb24034d |
 | R04 | claude/gifted-maxwell-i66wwi | 0affd9d0 (D1.5) | B0: c5383235 · B0.3: 0affd9d0 |
-| R05 | claude/bold-cray-dopshy | b1e7fcf6 («Настоящий город», белый макет) | B0.2: 645d6008 · B0.3: 0050c4ce · B0.5: b1e7fcf6 |
-| R06 | claude/eloquent-einstein-wvuyje | 2daa408a («Уведомления») | B0.4: 2daa408a |
-| R07 | claude/birge-r07-round-15-zjp4ob | fcfd9256 («Хроника», лёгкий вход) | B0.2: 52dee9a4 · B0.3: fcfd9256 |
-| R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 0e6e57a5 | B0: 6cd8f2be · B0.3: ca8326cb · B0.5: 0e6e57a5 (из первой ветки целиком) |
-| R09 | claude/quirky-ptolemy-k3z2mj | D0 e494026e | FINAL-4.1: e494026e |
-| R10 | claude/zen-wozniak-69d41q | 46face57 (приёмка) | B0: 95de8b99 · B0.3: 46face57 |
-| R11 | claude/gracious-mendel-eopem6 | 201ba4f6 (ui-kit r15, словарь 2554) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 |
-| R12 | claude/great-newton-8k3474 | 721d6d49 (календарь работ, QR) | B0: 1c8d171d · B0.3: d4e968ce · B0.5: 721d6d49 |
+| R05 | claude/bold-cray-dopshy | 4af0ef5f (D1.3, белый макет) | B0.2: 645d6008 · B0.3: 0050c4ce · B0.5: b1e7fcf6 · B0.7: 6d45fa3b · B0.8: 4af0ef5f |
+| R06 | claude/eloquent-einstein-wvuyje | e80d4f46 («Уведомления») | B0.4: 2daa408a · B0.7: 7f6636cd · B0.8: e80d4f46 |
+| R07 | claude/birge-r07-round-15-zjp4ob | 9b1084d9 («Хроника») | B0.2: 52dee9a4 · B0.3: fcfd9256 · B0.7: 9b1084d9 |
+| R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 062f899a | B0: 6cd8f2be · B0.3: ca8326cb · B0.5: 0e6e57a5 · B0.7: 062f899a (из первой ветки целиком) |
+| R09 | claude/quirky-ptolemy-k3z2mj | d9ca175c (D1: v2.1, совместное исполнение) | FINAL-4.1: e494026e · B0.6: d9ca175c |
+| R10 | claude/zen-wozniak-69d41q | 4272ee4b (приёмка) | B0: 95de8b99 · B0.3: 46face57 · B0.7: 3b2bb63f · B0.8: 4272ee4b |
+| R11 | claude/gracious-mendel-eopem6 | ea188ed6 (ui-kit r15, словарь) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 · B0.7: 442b617b · B0.8: ea188ed6 |
+| R12 | claude/great-newton-8k3474 | 3d4c1afb (календарь работ, QR) | B0: 1c8d171d · B0.3: d4e968ce · B0.5: 721d6d49 · B0.7: 3d4c1afb |
 | R13 | claude/gifted-mayer-p86myv | 8a7b9468 (встречи, прогноз) | B0: 74903b7a · B0.5: 8a7b9468 |
 | R14 | (не начата на 18:40) | — | — |
-| R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf (tests/civic/R15) |
+| R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf · B0.5: 19748bff · B0.7: 15324ff6 · B0.8: a5291311 |
 | R16 | claude/youthful-johnson-6nz5mp | db7da7de («Мой двор», «Сделаем вместе») | B0.2: e475fae9 · B0.5: db7da7de |
-| R17 | claude/sweet-euler-5tiu5b | d75e3cd9 (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 |
+| R17 | claude/sweet-euler-5tiu5b | 5650c869 (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 |
 
 ## Просьбы соседям
 - **R08 (вторая сессия claude/inspiring-johnson-j7wksj)**: роль R08 по COMMON ведёт claude/laughing-euler-iv3on3 (заявка на
