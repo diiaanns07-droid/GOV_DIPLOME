@@ -69,6 +69,12 @@ NUMBER_IN_GROUPS = [
     ("переводите " + " ".join(CARD[i:i + 4] for i in range(0, 16, 4)), " ".join(CARD[i:i + 4] for i in range(0, 16, 4))),
     ("тел 8 70 71 72 73 74", "70 71 72 73 74"),
 ]
+# S52: возрастающие группы, цифры которых дают номер Казахстана (код оператора 7xx или города 71xx/72xx), — телефон и
+# без подписи; «маршруты 10 12 14 16 18 21 24», «7 10 12 14 16 18» и «подъезды 1 … 12» — не номер (это R04 проверяет сам).
+S52_RISING = [
+    ("8 70 71 72 73 74 — звоните", "70 71 72 73 74"),
+    ("70 71 72 73 74 вечером", "70 71 72 73 74"),
+]
 
 
 @pytest.mark.parametrize("text,secret", MUST_MASK, ids=[t for t, _s in MUST_MASK])
@@ -89,11 +95,18 @@ def test_label_glued_dotted_and_fullwidth_numbers(moderate, text, secret):
 @pytest.mark.parametrize("text,secret", NUMBER_IN_GROUPS, ids=[t for t, _s in NUMBER_IN_GROUPS])
 def test_number_written_in_short_groups_is_still_masked(moderate, text, secret):
     """T-R04-01/02: «перечень чисел» R04 (маршруты, подъезды) не прячет номер, записанный парами, четвёрками, с «+»
-    или после подписи. Единственный обход — номер, чьи цифры сами идут по возрастанию (≈ 0,01 % номеров, наблюдение
-    INTEGRATION R15 круг 10) — проверка человеком."""
+    или после подписи. Номер, чьи цифры сами идут по возрастанию, — тест S52 ниже."""
     result = moderate(text)
     assert secret not in result["text_public"], result["text_public"]
     assert result["flags"], result
+
+
+@pytest.mark.parametrize("text,secret", [pytest.param(t, s, marks=xmarks("S52")) for t, s in S52_RISING],
+                         ids=[t for t, _s in S52_RISING])
+def test_rising_groups_that_spell_a_phone_are_masked(moderate, text, secret):
+    """S52: номер, цифры которого сами идут по возрастанию («8 70 71 72 73 74»), — не «перечень чисел», а телефон."""
+    result = moderate(text)
+    assert secret not in result["text_public"], result["text_public"]
 
 
 @pytest.mark.parametrize("text", RUDE)
