@@ -9,21 +9,21 @@
   "code_sha": "см. git log ветки: последний коммит R15 (код R15 — только tests/civic/R15/)",
   "tested_sha": {
     "package": "e91acb69",
-    "R17": "72676e3d",
+    "R17": "2388a11b",
     "R13": "98485ce5",
-    "R03": "93816c28",
-    "R16": "c5836427",
-    "R04": "b9f828cc",
+    "R03": "8820fc67",
+    "R16": "fbd9e247",
+    "R04": "d8448d48",
     "R02": "0c0a8636 (claude/affectionate-shannon-jm6ws5)",
-    "R07": "5f9dc0ae (claude/birge-r07-round-15-zjp4ob)",
+    "R07": "090f9a6e",
     "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
-    "R09": "ace74398",
-    "R01": "6d998e9b",
+    "R09": "97342bdf",
+    "R01": "c9069723 (B0 в работе)",
     "R08": "5d9b4138 (claude/laughing-euler-iv3on3)",
     "R06": "2b31dbe1",
     "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt"
   },
-  "push_status": "OK (checkpoint 8)",
+  "push_status": "OK (круг 3)",
   "changed_paths": [
     "tests/civic/R15/r15_common.py",
     "tests/civic/R15/round15/",
@@ -189,13 +189,27 @@
     "R06_2b31dbe1_notify": {
       "passed": 3,
       "failed": 0
+    },
+    "R01_B0_c9069723_all_R15": {
+      "passed": 449,
+      "skipped_not_run": 86,
+      "xfailed": 10,
+      "xpassed": 1,
+      "failed": 0,
+      "note": "ветка R01 как сборка B0 (без R16, свежих R06/R09)"
+    },
+    "browser_R01_B0": {
+      "PASS": 5,
+      "FAIL": 0,
+      "NOT_RUN": 4,
+      "not_run": "R16 нет в B0 (3 шага), календарь работ — R06 не принимает HTML"
     }
   },
   "findings": {
     "S42": {
       "owner": "R01",
       "level": "низкий",
-      "status": "частично исправлено R01 d987a112 (маршруты раунда 15)",
+      "status": "исправлено в ветке владельца: R01 28893ffc (PENDING до сборки B1)",
       "patch": "patches/P-R01-S42.diff"
     },
     "S43": {
@@ -232,13 +246,13 @@
     "S48": {
       "owner": "R04",
       "level": "средний",
-      "status": "open",
+      "status": "исправлено в ветке владельца: R04 d8448d48 (PENDING до сборки B1)",
       "patch": "patches/P-R04-S48.diff"
     },
     "S49": {
       "owner": "R09",
       "level": "низкий",
-      "status": "open",
+      "status": "исправлено в ветке владельца: R09 dd93ba11 (PENDING до сборки B1)",
       "patch": "patches/P-R09-S49.diff"
     },
     "S50": {
