@@ -67,6 +67,9 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 - 22:50 B0.4 (`f4f55ba2`, `8b1e5f0c`): R06 2daa408a — «Уведомления»: колокольчик R06 в капсуле справа (житель, ноутбук),
   на телефоне — первый пункт меню аватара «Уведомления · N» и точка на аватаре; r15_ia 38/0. DEMO_SCRIPT v2 — шаги 1–9
   РУС и ҚАЗ, BUILD_LOG B0…B0.4.
+- 01:30 (16 окт) B0.10 (`c140c3ee`): R03 90fd9824, R04 be7dcd1a, R05 e30167fe, R06 66c697c2, R09 0e0e8306 (сам читает путь
+  #inbox/<id> — мост оболочки больше не нужен), R11 ffdb30c2 (ҚАЗ «Аулам» — 1024 ҚАЗ житель снова в капсуле с колокольчиком),
+  R17 0add52ac. pytest этих ролей + R01 — 2746/0, r15_ia 40/0.
 - 00:30 (16 окт) B0.9 (`a6907e9c`): R17 29176133. **Полный run_checks — всё зелёное: pytest 4941/0, все узловые и
   браузерные наборы PASS** (первый раз в раунде 15). Скрипт «было | стало» r15_pairs.cjs (`9b86ec41`).
 - 00:00 (16 окт) B0.8 (`d653a0f3`): R02 0152ef19 (круглые часы у дел — просьба R01), R03 cb24034d, R05 4af0ef5f, R06 e80d4f46,
@@ -93,21 +96,21 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 | Роль | Ветка раунда 15 | Поставка (DELIVERY code_sha) | Взято в сборку |
 |---|---|---|---|
 | R02 | claude/affectionate-shannon-jm6ws5 | 0152ef19 (мир 1.1, круглые часы) | B0: 907bfc9d · B0.2: c002aa85 · B0.3: c68b179f · B0.7: eaed8f4f · B0.8: 0152ef19 |
-| R03 | claude/modest-mccarthy-lrl98u | cb24034d («Спросить Birge») | B0: 7724787e · B0.5: c6574a39 · B0.7: 82b1999d · B0.8: cb24034d |
-| R04 | claude/gifted-maxwell-i66wwi | 0affd9d0 (D1.5) | B0: c5383235 · B0.3: 0affd9d0 |
-| R05 | claude/bold-cray-dopshy | 4af0ef5f (D1.3, белый макет) | B0.2: 645d6008 · B0.3: 0050c4ce · B0.5: b1e7fcf6 · B0.7: 6d45fa3b · B0.8: 4af0ef5f |
-| R06 | claude/eloquent-einstein-wvuyje | e80d4f46 («Уведомления») | B0.4: 2daa408a · B0.7: 7f6636cd · B0.8: e80d4f46 |
+| R03 | claude/modest-mccarthy-lrl98u | 90fd9824 («Спросить Birge») | B0: 7724787e · B0.5: c6574a39 · B0.7: 82b1999d · B0.8: cb24034d · B0.10: 90fd9824 |
+| R04 | claude/gifted-maxwell-i66wwi | be7dcd1a (route, moderate) | B0: c5383235 · B0.3: 0affd9d0 · B0.10: be7dcd1a |
+| R05 | claude/bold-cray-dopshy | e30167fe (D1.4, белый макет) | B0.2: 645d6008 · B0.3: 0050c4ce · B0.5: b1e7fcf6 · B0.7: 6d45fa3b · B0.8: 4af0ef5f · B0.10: e30167fe |
+| R06 | claude/eloquent-einstein-wvuyje | 66c697c2 («Уведомления») | B0.4: 2daa408a · B0.7: 7f6636cd · B0.8: e80d4f46 · B0.10: 66c697c2 |
 | R07 | claude/birge-r07-round-15-zjp4ob | 9b1084d9 («Хроника») | B0.2: 52dee9a4 · B0.3: fcfd9256 · B0.7: 9b1084d9 |
 | R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 062f899a | B0: 6cd8f2be · B0.3: ca8326cb · B0.5: 0e6e57a5 · B0.7: 062f899a (из первой ветки целиком) |
-| R09 | claude/quirky-ptolemy-k3z2mj | d9ca175c (D1: v2.1, совместное исполнение) | FINAL-4.1: e494026e · B0.6: d9ca175c |
+| R09 | claude/quirky-ptolemy-k3z2mj | 0e0e8306 (v2.1, путь #inbox/<id>) | FINAL-4.1: e494026e · B0.6: d9ca175c · B0.10: 0e0e8306 |
 | R10 | claude/zen-wozniak-69d41q | 4272ee4b (приёмка) | B0: 95de8b99 · B0.3: 46face57 · B0.7: 3b2bb63f · B0.8: 4272ee4b |
-| R11 | claude/gracious-mendel-eopem6 | ea188ed6 (ui-kit r15, словарь) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 · B0.7: 442b617b · B0.8: ea188ed6 |
+| R11 | claude/gracious-mendel-eopem6 | ffdb30c2 (ui-kit r15, словарь) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 · B0.7: 442b617b · B0.8: ea188ed6 · B0.10: ffdb30c2 |
 | R12 | claude/great-newton-8k3474 | 3d4c1afb (календарь работ, QR) | B0: 1c8d171d · B0.3: d4e968ce · B0.5: 721d6d49 · B0.7: 3d4c1afb |
 | R13 | claude/gifted-mayer-p86myv | 8a7b9468 (встречи, прогноз) | B0: 74903b7a · B0.5: 8a7b9468 |
 | R14 | (не начата на 18:40) | — | — |
 | R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf · B0.5: 19748bff · B0.7: 15324ff6 · B0.8: a5291311 |
 | R16 | claude/youthful-johnson-6nz5mp | db7da7de («Мой двор», «Сделаем вместе») | B0.2: e475fae9 · B0.5: db7da7de |
-| R17 | claude/sweet-euler-5tiu5b | 29176133 (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 · B0.9: 29176133 |
+| R17 | claude/sweet-euler-5tiu5b | 0add52ac (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 · B0.9: 29176133 · B0.10: 0add52ac |
 
 ## Просьбы соседям
 - **R08 (вторая сессия claude/inspiring-johnson-j7wksj)**: роль R08 по COMMON ведёт claude/laughing-euler-iv3on3 (заявка на
