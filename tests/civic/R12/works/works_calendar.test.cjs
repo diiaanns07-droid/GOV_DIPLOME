@@ -68,6 +68,13 @@ async function openCalendar(page, lang) {
         check(`${w} ${lang}: вход сотрудника`, status === 200, "HTTP " + status);
         await page.reload({ waitUntil: "domcontentloaded" });
         await openCalendar(page, lang);
+        // Демо-мир R02 (CIVIC_DEMO_WORLD=1): сцена 8 — его конфликт cf-w15-01 (ул. Баян Сулу), первым в списке может стоять
+        // более срочный; без мира — фикстура R12, сцена 8 первая (ул. Сыганак).
+        const world = await page.evaluate(() => !!document.querySelector('.wcal-cchip[data-conflict="cf-w15-01"]'));
+        if (world) {
+          await page.click('.wcal-cchip[data-conflict="cf-w15-01"]');
+          await page.waitForSelector('.wcal-focus[data-conflict="cf-w15-01"]', { timeout: 5000 });
+        }
         const info = await page.evaluate(() => ({
           title: document.querySelector(".wcal-title")?.textContent,
           chips: [...document.querySelectorAll(".wcal-cchip")].map((c) => c.textContent),
@@ -81,8 +88,33 @@ async function openCalendar(page, lang) {
         check(`${w} ${lang}: заголовок`, info.title && (lang === "kk" ? /күнтізбесі/.test(info.title) : /Календарь работ/.test(info.title)), info.title);
         check(`${w} ${lang}: 5 связей конфликтов`, info.chips.length === 5, info.chips.join(", "));
         check(`${w} ${lang}: чип «копаем дважды»`, info.chips.includes(lang === "kk" ? "екі рет қазу" : "копаем дважды"));
-        check(`${w} ${lang}: сцена 8 — ул. Сыганак, совет`, /Сыганак|Сығанақ/.test(info.street) &&
+        const sceneStreet = world ? /Баян Сулу|Баян Сұлу/ : /Сыганак|Сығанақ/;
+        check(`${w} ${lang}: сцена 8 — ${world ? "мир R02, ул. Баян Сулу" : "ул. Сыганак"}, совет`, sceneStreet.test(info.street) &&
           (lang === "kk" ? /Алдымен желілерді ауыстырыңыз/.test(info.advice) : /Сначала замените сети, потом кладите асфальт/.test(info.advice)), info.street);
+        // Чип конфликта стоит в своей дорожке над полосами: не закрывает ни одной полосы (короткий асфальт, узкий промежуток).
+        const covered = await page.evaluate(() => {
+          const bars = [...document.querySelectorAll(".wcal-bar")].map((b) => b.getBoundingClientRect());
+          const out = [];
+          for (const c of document.querySelectorAll(".wcal-cchip")) {
+            const r = c.getBoundingClientRect();
+            if (bars.some((b) => r.left < b.right - 1 && r.right > b.left + 1 && r.top < b.bottom - 1 && r.bottom > b.top + 1)) out.push(c.dataset.conflict);
+          }
+          return out;
+        });
+        check(`${w} ${lang}: чипы конфликтов не закрывают полосы`, covered.length === 0, covered.join(", "));
+        if (world) {
+          // Асфальт уже уложен (пр. Кабанбай Батыра, cf-w15-02): совет беречь покрытие, а не «перенести асфальт».
+          await page.click('.wcal-cchip[data-conflict="cf-w15-02"]');
+          await page.waitForSelector('.wcal-focus[data-conflict="cf-w15-02"]', { timeout: 5000 });
+          const done = await page.evaluate(() => ({
+            stage: document.querySelector(".wcal-focus .wcal-chip--stage")?.textContent || "",
+            advice: document.querySelector(".wcal-focus__advice")?.textContent || "",
+          }));
+          check(`${w} ${lang}: «асфальт уже уложен» — совет беречь покрытие`, (lang === "kk" ? /төселіп қойды/ : /уже уложен/).test(done.stage) &&
+            !/Перенесите асфальт|Асфальт төсеуді қазудан кейінге/.test(done.advice) && (lang === "kk" ? /тесу әдісімен/ : /прокол/).test(done.advice), done.stage);
+          await page.click('.wcal-cchip[data-conflict="cf-w15-01"]');
+          await page.waitForSelector('.wcal-focus[data-conflict="cf-w15-01"]', { timeout: 5000 });
+        }
         check(`${w} ${lang}: полосы работ`, info.bars >= 15, String(info.bars));
         check(`${w} ${lang}: нет горизонтальной прокрутки страницы`, info.pageScrollX <= 0, String(info.pageScrollX));
         check(`${w} ${lang}: нет ключей вместо текста`, !info.keysShown);

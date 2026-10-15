@@ -418,7 +418,7 @@ def build_calendar(records: list[dict], date_from: date, date_to: date, filters:
     bound = bind_all(records, g)
     district = filters.get("district")
     in_district = [w for w in bound if district is None or w.district == district]
-    conflicts_all = find_conflicts(in_district, g)
+    conflicts_all = find_conflicts(in_district, g, today)
     planned = planned_ids()
     if planned:
         for c in conflicts_all:

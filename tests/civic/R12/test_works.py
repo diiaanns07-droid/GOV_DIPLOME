@@ -172,6 +172,43 @@ def test_dig_after_surface_threshold_18_months(real):
     assert outside == []
 
 
+def test_advice_follows_what_is_already_done(real):
+    """Совет на «сегодня»: асфальт ещё впереди — поменять порядок; уже уложен — беречь его; раскопка идёт; всё прошло."""
+    end, dig = date(2026, 9, 25), date(2026, 10, 30)  # как пр. Кабанбай Батыра в демо-мире R02: асфальт в сентябре
+    works = W.bind_all(_pair(end, dig), real)
+    stages = {}
+    for today in (date(2026, 9, 1), date(2026, 10, 15), date(2026, 11, 3), date(2026, 12, 1)):
+        (c,) = W.find_conflicts(works, real, today)
+        stages[c["stage"]] = c
+    assert set(stages) == {"planned", "surface_done", "now", "past"}
+    assert len({c["id"] for c in stages.values()}) == 1, "id конфликта не зависит от даты"
+    assert stages["planned"]["advice_ru"].startswith("Сначала замените сети, потом кладите асфальт.")
+    done = stages["surface_done"]
+    assert done["advice_ru"].startswith("Новый асфальт уже уложен") and "Перенесите асфальт" not in done["advice_ru"]
+    assert "прокол" in done["advice_ru"] and "тесу әдісімен" in done["advice_kk"]
+    assert stages["now"]["advice_ru"].startswith("Раскопка уже идёт по новому асфальту")
+    assert stages["past"]["advice_ru"].startswith("Новый асфальт вскрыли через 35 дней после укладки")
+    for c in stages.values():
+        assert "₸" not in c["advice_ru"] and "тенге" not in c["advice_ru"].lower() and "None" not in c["advice_kk"]
+    # без today — как раньше: всё впереди
+    assert W.find_conflicts(works, real)[0]["stage"] == "planned"
+
+
+def test_past_conflicts_go_last_with_advice_for_next_time(real):
+    past = _pair(date(2025, 5, 20), date(2025, 7, 1))
+    soon = [dict(w, id=w["id"] + "2", segments=["osm-w1179911016-15", "osm-w1179911016-16"]) for w in
+            _pair(date(2026, 11, 20), date(2027, 1, 10))]
+    cs = W.find_conflicts(W.bind_all(past + soon, real), real, date(2026, 10, 15))
+    assert [c["stage"] for c in cs] == ["planned", "past"], "прошедший — в конце, даже если он важнее"
+    a = {"id": "a", "kind": "closure", "service": "road", "street": "улица Сыганак", "from": [71.381544, 51.130024],
+         "to": [71.377997, 51.130475], "starts_on": "2026-08-01", "ends_on": "2026-08-20"}
+    b = {"id": "b", "kind": "closure", "service": "traffic", "street": "улица Сыганак", "from": [71.377997, 51.130475],
+         "to": [71.372275, 51.131209], "starts_on": "2026-08-10", "ends_on": "2026-08-25"}
+    (c,) = W.find_conflicts(W.bind_all([a, b], real), real, date(2026, 10, 15))
+    assert c["stage"] == "past" and c["advice_ru"].startswith("Это уже прошло. В следующий раз: не перекрывайте")
+    assert c["advice_kk"].startswith("Бұл өтіп кетті. Келесі жолы: ")
+
+
 def test_networks_first_then_asphalt_is_not_a_conflict(cal):
     ids = {w for c in cal["conflicts"] for w in c["works"]}
     assert "w-demo-r12-11" not in ids and "w-demo-r12-12" not in ids
