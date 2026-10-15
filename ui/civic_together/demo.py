@@ -5,6 +5,7 @@ CONTRACT §5.2–5.3: 8 дворов (настоящие дворы OSM из R12
 9 инициатив (синтетика, demo: true — на экране «Пример»). Тексты придуманы, без имён, телефонов и организаций; номер
 +7 700 000 00 00 у инициативы на проверке — заведомо несуществующий, он показывает пометку модерации R04.
 Число соседей и «Я приду» у демо-записей — числом (base_members, base_joined), без выдуманных устройств (R15 S20).
+Фото «после» у демо-записей нет (поправка П1: фото — только настоящие фото жителей); экран пишет «Фото появится после дела».
 
 Время — относительно момента засева: демо всегда «свежее» в день показа. Сцена 7 демо v2 (IDEA §3):
 двор GreenLine.Asyl Mura (Нура) → «Субботник во дворе» в ближайшую субботу, 10:00 → «Я приду» 14 → 15 →
@@ -82,9 +83,7 @@ def rows(now: datetime) -> tuple[list[dict], list[dict]]:
                     support={"by_akimat": True, "inventory": True, "pickup_service": None,
                              "note": "Краска и кисти от акимата", "at": iso(now - 13 * D)},
                     report={"text": "Покрасили 8 лавочек и 4 урны, убрали старые объявления со столбов.",
-                            "joined": 11, "status": "published", "by_role": "staff", "at": iso(benches_done),
-                            "photos": [{"id": "p-demo-benches", "src": "/civic/together/img/after-benches.svg",
-                                        "width": 960, "height": 640}]},
+                            "joined": 11, "status": "published", "by_role": "staff", "at": iso(benches_done)},
                     done=benches_done),
         _initiative("i-demo-review-flowers", "greening", "yard-1454082638", "ru", "Сделаем клумбу у подъезда",
                     "Разобьём клумбу у второго подъезда: вскопаем землю и посадим луковицы тюльпанов до заморозков.",
@@ -110,9 +109,7 @@ def rows(now: datetime) -> tuple[list[dict], list[dict]]:
                     support={"by_akimat": True, "inventory": True, "pickup_service": "waste",
                              "note": "Мешки и вывоз в 14:00", "at": iso(now - 23 * D)},
                     report={"text": "Убрали двор и посадили 6 саженцев.", "joined": 15, "status": "published",
-                            "by_role": "staff", "at": iso(trees_done),
-                            "photos": [{"id": "p-demo-trees", "src": "/civic/together/img/after-trees.svg",
-                                        "width": 960, "height": 640}]},
+                            "by_role": "staff", "at": iso(trees_done)},
                     done=trees_done),
         _initiative("i-demo-review-phone", "cleanup", "yard-1531938764", "ru", "Субботник у школы",
                     "Приглашаю всех на уборку у школы. Вопросы — по телефону +7 700 000 00 00.",
@@ -195,9 +192,9 @@ def world_part(records: dict, now: datetime) -> tuple[list[dict], list[dict]]:
         report = raw.get("report")
         if isinstance(report, dict) and report.get("text"):
             at = _moment(report, "at", now) or times["done_at"] or iso(now - 1 * D)
-            photos = [p for p in report.get("photos") or [] if isinstance(p, dict) and p.get("id") and p.get("src")]
+            # Фото демо-мира не берём (поправка П1): фото «после» — только настоящие, загруженные людьми.
             item["report"] = {"text": report["text"], "joined": report.get("joined") or item.get("joined"),
-                              "status": "published", "by_role": "staff", "at": at, "photos": photos}
+                              "status": "published", "by_role": "staff", "at": at}
             if item["status"] == "done" and not item.get("done_at"):
                 item["done_at"] = at
         item["demo"] = True

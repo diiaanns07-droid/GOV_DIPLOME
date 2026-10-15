@@ -5,6 +5,11 @@
 Начато: 2026-10-15 16:23 Астаны (11:23 UTC)
 База: origin/claude/clever-hypatia-q6ts4g @ e91acb6 (код FINAL-4 a4937462 + пакет раунда 15)
 
+**Каждый круг: сначала читать AMENDMENTS.md из ветки пакета** —
+`git fetch origin claude/clever-hypatia-q6ts4g && git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md`
+(координатор дописывает туда новые поправки; где поправка расходится с промптом или VISUAL_BRIEF — права поправка).
+Применено: П1 (15 окт 17:05, «Без ИИ-слопа»).
+
 ## План (prompts/R16.txt, по порядку)
 1. ui/civic_together/ — свои таблицы и миграция в той же SQLite, make_service(db_path).handle(...), лимиты, модерация, updates(), seed_world().
 2. «Мой двор» — GET together/yards/{id}, «Я живу здесь» / «Больше не живу».
@@ -22,9 +27,18 @@
   initiatives_summary для R08/R03; «Мой двор» читает R12 (двор), R07 (проблемы — те же цели, что на карте), R06 (идеи,
   работы) — нет соседа → блок «пока нет данных». Тесты tests/civic/R16/test_r16_together.py — 40 PASS.
 
+- Checkpoint 2 (17:35 Астаны): экраны web/civic/together/ (together.js, together-text.js, together.css): «Мой двор»
+  (выбор двора, шапка с 3 числами, вкладки «Обзор · Проблемы · Инициативы · Работы», лента двора), «Сделаем вместе»
+  (карточки дел, «Я приду» со счётчиком 14 → 15, «Поддержано акиматом»), мастер 3 шага + «Это увидят все» + «похожее
+  рядом», акимат (очередь, «Поддержать», «Отметить сделанным» с фото), слой карты «Инициативы», registerScreen
+  (#yard, #together), ссылки «#together/i-…», «#yard/yard-…». Поправка П1 применена: без рисунков, значки R11,
+  демо без «фото после» (строка «Фото появится после дела»). Стенд tests/civic/R16/stand.py (маршруты в памяти),
+  браузер tests/civic/R16/browser/r16_browser.cjs — 1366 РУС 37/37 PASS.
+
 ## Дальше
-- web/civic/together/: экраны «Мой двор» и «Сделаем вместе», мастер инициативы, акимат (очередь, «Поддержать», отчёт).
-- Слой карты «Инициативы», registerScreen; INTEGRATION.txt для R01 (маршруты, CIVIC_ASSETS), ключи i18n для R11.
+- Прогон r16_browser.cjs на 1366/1024/375 × ru/kk, кадры в research/round-15-results/R16/screens/.
+- INTEGRATION.txt (маршруты для R01, CIVIC_ASSETS, теги, ключи i18n для R11), RUN.txt, DELIVERY.json.
+- Сцена 7 скриптом на чистой базе (r16_scene7.cjs), seed_world по образцу R02, когда он выйдет.
 
 ## Вопросы владельцу
 - (пока нет)

@@ -342,23 +342,22 @@ class TogetherService:
 
     # ------------------------------------------------------------------ виды записи
     def _photos_view(self, item: dict, *, full: bool) -> list[dict]:
-        """Фото «после»: демо — статический файл (src); загруженные — data URL (миниатюра в списке, фото в карточке)."""
+        """Фото «после» — data URL загруженного фото (миниатюра в списке, само фото в карточке дела)."""
         if not item.get("photos"):
             return []
         out = []
         blobs = {p["id"]: p for p in self.store.photo_data(item["id"], thumbs=not full)}
         for photo in item["photos"]:
-            view = {"id": photo["id"], "width": photo.get("width"), "height": photo.get("height"),
-                    "demo": bool(photo.get("demo"))}
+            # Поправка П1: фото «после» — только настоящие (загруженные). Статические картинки демо (src) из прежних
+            # баз не показываем — нарисованное «фото» выдавало бы себя за настоящее.
             if photo.get("src"):
-                view["src"] = photo["src"]
-            else:
-                blob = blobs.get(photo["id"]) or {}
-                url = data_url(blob.get("mime"), blob.get("data")) if full else \
-                    data_url(blob.get("thumb_mime"), blob.get("thumb"))
-                if url:
-                    view["data_url"] = url
-            out.append(view)
+                continue
+            blob = blobs.get(photo["id"]) or {}
+            url = data_url(blob.get("mime"), blob.get("data")) if full else \
+                data_url(blob.get("thumb_mime"), blob.get("thumb"))
+            if url:
+                out.append({"id": photo["id"], "width": photo.get("width"), "height": photo.get("height"),
+                            "data_url": url, "demo": bool(photo.get("demo"))})
         return out
 
     def _public(self, item: dict, *, my_join=False, mine=False, full=False) -> dict:
@@ -394,9 +393,13 @@ class TogetherService:
         view = self._public(item, full=full)
         report = item.get("report")
         mod = item.get("moderation") or {}
+        flags = mod.get("flags") or []
+        if not mod.get("source"):
+            # Запись без проверки при создании (демо-набор, демо-мир, старая база) — пометки считаем при чтении.
+            flags = moderation.local_check(item["title"] + "\n" + (item.get("text") or ""))["flags"]
         view.update({
             "original": {"title": item["title"], "text": item.get("text") or ""},
-            "flags": mod.get("flags") or [], "moderation_source": mod.get("source"),
+            "flags": flags, "moderation_source": mod.get("source"),
             "hide_reason": item.get("hide_reason"), "created_at": item.get("created_at"),
             "report_status": report.get("status") if report else None,
             "report_draft": ({"text": report.get("text"), "flags": (moderation.local_check(report.get("text") or "")
