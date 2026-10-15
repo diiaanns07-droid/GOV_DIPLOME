@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "90fd9824b4630f7ec1ef8c88d307340ae9cbb268",
- "tested_sha": "90fd9824b4630f7ec1ef8c88d307340ae9cbb268",
+ "code_sha": "2fa90bfe7a5aab567b0703567cf096d99e635482",
+ "tested_sha": "2fa90bfe7a5aab567b0703567cf096d99e635482",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -89,7 +89,7 @@
  "tests": {
   "pytest_R03_round15": {
    "status": "PASS",
-   "passed": 92,
+   "passed": 94,
    "skipped": 1,
    "failed": 0,
    "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
@@ -245,6 +245,11 @@
    "cmd": "python3 -B -m pytest -q tests/civic",
    "env": "копия R01 c6d62440 + пути R03 6d26604a, 15 окт 18:48 UTC",
    "note": "падают только чужие: R02 генератор мира, R12 conflict ids мира, R15 ×4 XPASS(strict) по исправленным S43/S51, R17 test_neighbor_functions_with_service; со старыми тестами R03 (c6574a39) было 10, из них 2 у R03 и 1 у R07 (тест R07 ломал сервис R17, оставленный тестом R03 — теперь тот идёт в отдельном процессе)"
+  },
+  "robustness_fuzz": {
+   "status": "PASS",
+   "in_suite": "test_analyst_fuzz.py: 150 вопросов из слов ru/kk + 150 строк Юникода",
+   "local_long_run": "600 вопросов (соседи пропадают/ломаются, модель-заглушка с числами) и 3000 строк Юникода — 0 исключений, числа ⊆ факты, нет «None»/«{»/«nan»"
   }
  },
  "screens": [
