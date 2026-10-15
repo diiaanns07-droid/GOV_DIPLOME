@@ -517,7 +517,7 @@
       var first = blocks[0];
       // Разметка ui-kit R11 «Спросить Birge»: .bk-answer (+ __q, __nums, __text, __acts), .bk-details, .bk-tag.
       var q = el("p", { className: "bk-answer__q ba-q" }, [
-        el("span", { className: "ba-q__text", text: "«" + a.question + "»" }),
+        el("span", { className: "ba-q__text", text: "«" + String(a.question).replace(/«/g, "„").replace(/»/g, "“") + "»" }),
         el("span", { className: "ba-q__src", text: " · " + (first ? pick(first.source && first.source.name, state.lang) : "") }),
         a.demo ? el("span", { className: "ba-demo", title: t("analyst.demo_hint"), text: " · " + t("analyst.demo") }) : null,
       ]);

@@ -1,5 +1,6 @@
 const { chromium } = require("playwright");
 const OUT = process.argv[2];
+const BASE = process.argv[3] || "http://127.0.0.1:8655";   // адрес стенда сборки (RUN.txt §3)
 (async () => {
   const b = await chromium.launch();
   const out = [];
@@ -7,13 +8,13 @@ const OUT = process.argv[2];
     const p = await b.newPage({ viewport: { width: w, height: h } });
     const errors = [];
     p.on("pageerror", (e) => errors.push(String(e)));
-    await p.goto("http://127.0.0.1:8655/");
+    await p.goto(BASE + "/");
     await p.evaluate(async () => {
       await fetch("/api/civic/v1/session/login", { method: "POST", credentials: "same-origin",
         headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: "operator", password: "demo-password-2026" }) });
       localStorage.setItem("birge.mode", "akimat");
     });
-    await p.goto("http://127.0.0.1:8655/?r=" + w + "#analyst");   // новый адрес — настоящая перезагрузка, сессия видна оболочке
+    await p.goto(BASE + "/?r=" + w + "#analyst");   // новый адрес — настоящая перезагрузка, сессия видна оболочке
     await p.waitForTimeout(2500);
     const reg = await p.evaluate(() => ({ more: window.BirgeShell && window.BirgeShell.moreItems(), section: window.BirgeShell && window.BirgeShell.section,
       mounted: !!document.querySelector(".ba"), title: document.querySelector("#birge-screen-title") && document.querySelector("#birge-screen-title").textContent }));
