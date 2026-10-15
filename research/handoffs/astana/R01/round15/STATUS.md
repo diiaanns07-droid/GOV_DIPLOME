@@ -58,24 +58,31 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 ## Роли → ветки → поставки (для истории)
 | Роль | Ветка раунда 15 | Поставка (DELIVERY code_sha) | Взято в сборку |
 |---|---|---|---|
-| R02 | claude/affectionate-shannon-jm6ws5 | — (мир world_v1.json в работе) | — |
-| R03 | claude/modest-mccarthy-lrl98u | — | — |
-| R04 | claude/gifted-maxwell-i66wwi | — | — |
-| R05 | claude/bold-cray-dopshy | — | — |
+| R02 | claude/affectionate-shannon-jm6ws5 | 907bfc9d (демо-мир world_v1) | B0: 907bfc9d |
+| R03 | claude/modest-mccarthy-lrl98u | 7724787e («Спросить Birge») | B0: 7724787e + патчи ассетов и палитры |
+| R04 | claude/gifted-maxwell-i66wwi | c5383235 (route, reply-draft, moderate) | B0: c5383235 |
+| R05 | claude/bold-cray-dopshy | — (П1: модели ориентиров отменены) | — |
 | R06 | claude/eloquent-einstein-wvuyje | — | — |
 | R07 | claude/birge-r07-round-15-zjp4ob | (раунд 14: fe209c56) | FINAL-4.1: fe209c56 |
-| R08 | claude/inspiring-johnson-j7wksj | — | — |
+| R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 6cd8f2be | B0: 6cd8f2be (из первой ветки целиком) |
 | R09 | claude/quirky-ptolemy-k3z2mj | D0 e494026e | FINAL-4.1: e494026e |
-| R10 | claude/zen-wozniak-69d41q | — | — |
-| R11 | claude/gracious-mendel-eopem6 | 6724cc9d (ui-kit r15, IA, ключи) | B1 |
-| R12 | claude/great-newton-8k3474 | — | — |
-| R13 | claude/gifted-mayer-p86myv | — | — |
-| R14 | (не начата на 17:00) | — | — |
-| R15 | claude/practical-fermi-c58v1u | — | — |
+| R10 | claude/zen-wozniak-69d41q | 95de8b99 (тесты) | B0: 95de8b99 |
+| R11 | claude/gracious-mendel-eopem6 | b6ced41d (ui-kit r15, IA, ключи) | B0: b6ced41d |
+| R12 | claude/great-newton-8k3474 | 1c8d171d (календарь работ) | B0: 1c8d171d |
+| R13 | claude/gifted-mayer-p86myv | 74903b7a (встречи, прогноз недели) | B0: 74903b7a |
+| R14 | (не начата на 18:40) | — | — |
+| R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf (tests/civic/R15) |
 | R16 | claude/youthful-johnson-6nz5mp | — | — |
-| R17 | claude/sweet-euler-5tiu5b | — | — |
+| R17 | claude/sweet-euler-5tiu5b | 75300896 (штаб ведомств) | B0: 75300896 |
 
 ## Просьбы соседям
+- **R08 (вторая сессия claude/inspiring-johnson-j7wksj)**: роль R08 по COMMON ведёт claude/laughing-euler-iv3on3 (заявка на
+  7 с раньше, см. её STATUS). R01 берёт R08 только из неё. Свои находки — патчем в её INTEGRATION или строкой в её STATUS.
+- **R08**: tests/civic/R08/test_r08_board.py::test_forecast_week_preferred_month_fallback в сборке B0 падает: тест ждёт, что
+  у R13 нет прогноза на неделю (FINAL-4), а в B0 у R13 есть week_block — R08 верно показывает r13-week. Сделайте первую
+  часть теста независимой от R13 (подмена ui.civic_forecast без недельной функции).
+- **R15**: S42 исправлен полностью (R01 28893ffc: любой raw-маршрут с staff=True проверяет шлюз) —
+  test_gateway_enforces_staff_on_raw_routes теперь XPASS(strict); снимите xfail.
 - **R10 / R12 / R07**: pytest пакета e91acb69 — 2 FAIL `tests/civic/R10/test_r10_accuracy.py` [c24-R12], [c28-R07]
   «объекты = точки OSM» (сдвиг 2–18 м). Причина — новые файлы LOCAL-10 пакета
   `data/civic/astana/osm-objects/raw/crossings.json.gz`, `traffic_signals.json.gz` (другой снимок OSM, чем у объектов
