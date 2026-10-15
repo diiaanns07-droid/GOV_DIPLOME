@@ -3058,6 +3058,1809 @@ p.bk-banner--warn {
   }
 }
 
+/* ───────────── Раунд 15 «Бірге — вместе»: компоненты новых экранов (R11, IA_ROUND15 §5) ─────────────
+   Только новые классы — классы эталона A выше не меняются. Разметка каждого компонента — в комментарии над ним и в
+   витрине ui-kit/index.html, раздел «Раунд 15». Цвета — только токены; зелёный — только «исправлено» и части служб «сделано».
+   Поправка владельца П1 «Без ИИ-слопа» (AMENDMENTS.md, 15 окт): картинка — только если несёт данные или действие;
+   никаких нарисованных зданий, сценок и «фото»; вид объекта или дела — значок набора R11; фото — только настоящее;
+   без декоративных градиентов, свечения и бликов.
+   Владельцы экранов: «Мой двор» и «Сделаем вместе» — R16; «Ведомства» и кризис — R17; календарь работ — R12;
+   встречи — R13; хроника — R07; ситуационный центр — R08 (тёмные токены .bk-dark — tokens.css); уведомления — R06;
+   «Спросить Birge» — R03; паспорт с несколькими службами — R09. */
+
+/* ── «Мой двор»: шапка с названием, 3 числа и действие (R16) ──
+   <header class="bk-yard">   (без рисунка — П1: главное название и три числа)
+     <p class="bk-yard__eyebrow">Нура · <span class="bk-tag bk-tag--demo">Пример</span></p>
+     <h2 class="bk-yard__title">Двор у ул. Коксенгир</h2>
+     <dl class="bk-yard__stats">
+       <div class="bk-yard__stat"><dt>соседей в Birge</dt><dd>37</dd></div> … ×3
+     </dl>
+     <p class="bk-yard__captain"><svg class="ic">#i-user</svg>Старший по двору: Айгуль</p>
+     <div class="bk-yard__actions"><button class="bk-btn bk-btn--primary">Я живу здесь</button></div>
+   </header>
+   Затем — вкладки .bk-tabs «Обзор · Проблемы · Инициативы · Работы» и лента .bk-feed. */
+.bk-yard {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: var(--pad-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  line-height: var(--lh-ui);
+  overflow: hidden;
+}
+.bk-yard__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-yard__title {
+  margin: 0;
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-head);
+  letter-spacing: var(--ls-title);
+}
+.bk-yard__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 4px 0 0;
+}
+.bk-yard__stat {
+  display: flex;
+  flex-direction: column-reverse; /* число сверху, подпись под ним; в разметке — сначала dt (порядок для диктора) */
+  justify-content: flex-end;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: var(--r-m);
+  background: var(--c-fill);
+}
+.bk-yard__stat dd {
+  margin: 0;
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ls-num);
+  line-height: 1.1;
+}
+.bk-yard__stat dt {
+  color: var(--c-text-2);
+  font-size: var(--fs-xs);
+  line-height: 1.3;
+  overflow-wrap: anywhere; /* «Birge-дегі көршілер» в две строки, а не за край */
+}
+.bk-yard__captain,
+.bk-yard__member {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-yard__captain .ic,
+.bk-yard__member .ic {
+  width: 16px;
+  height: 16px;
+}
+.bk-yard__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+@media (max-width: 480px) {
+  .bk-yard {
+    padding: 16px;
+  }
+  .bk-yard__title {
+    font-size: var(--fs-title);
+  }
+  .bk-yard__stat {
+    padding: 8px 10px;
+  }
+}
+
+/* ── Лента событий: двор, уведомления, обновления кризиса (R16, R06, R17) ──
+   <p class="bk-feed__group">Новые</p>
+   <ol class="bk-feed">
+     <li><a class="bk-feed__item" href="#together/i-7" data-kind="initiative" data-unread="true">
+       <span class="bk-feed__ic"><svg class="ic">#i-heart</svg></span>
+       <span class="bk-feed__main"><span class="bk-feed__title">Соседка создала «Субботник в субботу, 10:00»</span>
+         <span class="bk-feed__meta">2 ч назад · Двор у ул. Коксенгир</span></span></a></li>
+   </ol>
+   data-kind: yard | initiative | meeting | complaint | work | crisis (только кризис — красным). Строка — ссылка или кнопка
+   (открывает конкретное изменение); data-unread="true" — точка «не прочитано» справа (не только цвет: и в имени ссылки). */
+.bk-feed {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bk-feed > li + li {
+  border-top: 1px solid var(--c-line);
+}
+.bk-feed__group {
+  margin: 0;
+  padding: 12px 8px 4px;
+  color: var(--c-text-3);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+.bk-feed__item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: var(--tap);
+  padding: 10px 24px 10px 8px;
+  border-radius: var(--r-s);
+  color: var(--c-ink);
+  text-decoration: none;
+  line-height: var(--lh-ui);
+}
+a.bk-feed__item,
+button.bk-feed__item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease);
+}
+a.bk-feed__item:hover,
+button.bk-feed__item:hover {
+  background: var(--c-fill);
+}
+.bk-feed__ic {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--c-fill);
+  color: var(--c-ink);
+}
+.bk-feed__ic .ic {
+  width: 18px;
+  height: 18px;
+}
+.bk-feed__item[data-kind="crisis"] .bk-feed__ic {
+  background: var(--c-danger-soft);
+  color: var(--c-danger);
+}
+.bk-feed__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.bk-feed__title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-medium);
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+/* Телефон: строка уже — заголовок до 3 строк, чтобы казахский текст не обрывался многоточием */
+@media (max-width: 480px) {
+  .bk-feed__title {
+    -webkit-line-clamp: 3;
+  }
+}
+.bk-feed__meta {
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+}
+.bk-feed__item[data-unread="true"]::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-danger);
+}
+
+/* ── Инициатива в списке: та же карточка .bk-pc эталона (App Store) + «Я приду» и плашка поддержки (R16) ──
+   <article class="bk-pc">
+     <div class="bk-thumb bk-thumb--kind"><svg class="ic">#i-broom</svg></div>  (или <img> настоящее фото)
+     <div class="bk-pc__body"><h3 class="bk-pc__title">Субботник во дворе</h3>
+       <p class="bk-pc__sub">Сб, 10:00 · Двор у ул. Коксенгир</p>
+       <div class="bk-pc__foot"><span class="bk-support"><svg class="ic">#i-building</svg>Поддержано акиматом</span>
+         <button class="bk-join" aria-pressed="false"><svg class="ic">#i-users</svg>Я приду <span class="bk-join__n">14</span></button></div></div>
+   </article> */
+/* Вид объекта или дела без фото (П1): маленький значок набора R11 на спокойном фоне — без рисунков и сценок.
+   Значки видов: сквер i-trees, площадка i-playground, спорт i-ball, остановка i-bus, освещение i-bulb, скамейки i-bench,
+   озеленение i-sprout; дела: уборка i-broom, снег i-snowflake, ремонт i-wrench, помощь соседям i-heart, другое i-dots. */
+.bk-thumb--kind {
+  display: grid;
+  place-items: center;
+  background: var(--c-fill);
+  color: var(--c-text-2);
+}
+.bk-thumb > svg.ic {
+  width: 28px;
+  height: 28px;
+}
+/* Подвал карточки инициативы: плашка поддержки и «Я приду» не помещаются в строку на 375 — кнопка уходит вниз вправо
+   (карточки проектов эталона с .bk-vote не меняются) */
+.bk-pc__foot--wrap,
+.bk-pc__foot:has(> .bk-join) {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+.bk-pc__foot > .bk-join {
+  margin-left: auto;
+}
+.bk-join {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.bk-join::after {
+  content: "";
+  position: absolute;
+  inset: -6px 0; /* зона нажатия 44 */
+}
+.bk-join .ic {
+  width: 16px;
+  height: 16px;
+}
+.bk-join[aria-pressed="true"] {
+  background: var(--c-fill);
+  color: var(--c-ink);
+}
+.bk-join:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+}
+.bk-join__n {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+/* Счётчик «подпрыгивает» на +1 (модуль ставит .is-bump на 250 мс): «одна мелочь вау» экрана, VISUAL_BRIEF §4.12 */
+.bk-join__n.is-bump,
+.bk-btn__count.is-bump,
+.bk-bump {
+  animation: bk-bump var(--t-slow) var(--ease-out);
+}
+@keyframes bk-bump {
+  40% {
+    transform: translateY(-3px) scale(1.15);
+  }
+}
+.bk-support {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 4px 10px 4px 8px;
+  border-radius: var(--r-pill);
+  background: var(--c-info-soft);
+  color: var(--c-info);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+}
+.bk-support .ic {
+  width: 14px;
+  height: 14px;
+}
+/* Плашка поддержки в карточке: строка «Поддержано акиматом» + пояснение «Мешки и вывоз в 14:00» */
+.bk-support--block {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: 2px 10px;
+  padding: 10px 12px;
+  border-radius: var(--r-m);
+  font-size: var(--fs-small);
+  white-space: normal;
+}
+.bk-support--block .ic {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+}
+.bk-support__note {
+  grid-column: 2;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-regular);
+}
+
+/* ── Карточка инициативы (R16): картинка, что / когда / где, что взять, «Я приду», поддержка, итог ──
+   <article class="bk-init">
+     <div class="bk-init__media"><img alt="…"></div>   (только настоящее фото жителей; нет фото — блока нет, П1)
+     <div class="bk-init__body">
+       <p class="bk-init__kind"><span class="bk-init__kind-ic"><svg class="ic">#i-broom</svg></span>Субботник
+         <span class="bk-tag bk-tag--demo">Пример</span></p>
+       <h2 class="bk-init__title">Субботник во дворе</h2>
+       <ul class="bk-init__facts"><li><svg class="ic">#i-calendar</svg>Суббота, 18 окт, 10:00–12:00</li>
+         <li><svg class="ic">#i-pin</svg>Двор у ул. Коксенгир <button class="bk-link">На карте</button></li></ul>
+       <div class="bk-init__bring"><span class="bk-tag">перчатки</span><span class="bk-tag">мешки</span></div>
+       <div class="bk-support bk-support--block">…</div>
+       <div class="bk-init__cta"><button class="bk-btn bk-btn--primary bk-btn--lg">Я приду <span class="bk-btn__count">14</span></button>
+         <span class="bk-init__count">Придут 14 соседей</span></div>
+     </div>
+   </article>
+   После — блок .bk-done «Сделано вместе: 15 соседей»: с настоящим фото «после» или .bk-done--nophoto со строкой
+   «Фото появится после дела» (в демо-мире фото нет). */
+.bk-init {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  line-height: var(--lh-ui);
+  overflow: hidden;
+}
+.bk-init__media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 168px;
+  background: var(--c-accent-soft);
+}
+.bk-init__media > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bk-init__media > .bk-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+.bk-init__body {
+  display: grid;
+  gap: 12px;
+  padding: 16px var(--pad-card) var(--pad-card);
+}
+/* Вид дела строкой: значок 20 в плитке 32 + слово («Субботник») и метка «Пример» */
+.bk-init__kind {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+}
+.bk-init__kind-ic {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--c-fill);
+  color: var(--c-ink);
+}
+.bk-init__kind .bk-tag {
+  margin-left: auto;
+}
+.bk-init__title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-head);
+  letter-spacing: var(--ls-title);
+}
+.bk-init__facts {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-small);
+}
+.bk-init__facts > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+.bk-init__facts .ic {
+  width: 18px;
+  height: 18px;
+  color: var(--c-text-2);
+}
+.bk-init__bring {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.bk-init__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.bk-init__count {
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+@media (max-width: 480px) {
+  .bk-init__media {
+    height: 140px;
+  }
+  .bk-init__cta > .bk-btn--primary {
+    flex: 1 1 100%;
+  }
+}
+
+/* ── «Сделано вместе: 15 соседей» — итог инициативы (R16) ──
+   С настоящим фото «после»:
+   <div class="bk-done"><img class="bk-done__photo" alt="Двор после субботника">
+     <p class="bk-done__num"><b>15</b> соседей — сделано вместе</p><p class="bk-done__text">Убрали двор и посадили 6 саженцев</p></div>
+   Без фото (демо-мир, П1 — фото только настоящие):
+   <div class="bk-done bk-done--nophoto"><p class="bk-done__num"><b>15</b> соседей — сделано вместе</p>
+     <p class="bk-done__text">Убрали двор…</p><p class="bk-done__note">Фото появится после дела</p></div> */
+.bk-done {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 12px;
+  padding: 12px;
+  border-radius: var(--r-l);
+  background: var(--c-fill);
+  line-height: var(--lh-ui);
+}
+.bk-done__photo {
+  grid-row: span 2;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--r-m);
+  object-fit: cover;
+  background: var(--c-fill-hover);
+}
+.bk-done__num {
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-done__num b {
+  display: block;
+  color: var(--c-ink);
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+}
+.bk-done__text {
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-done--nophoto {
+  grid-template-columns: minmax(0, 1fr);
+}
+.bk-done__note {
+  margin: 4px 0 0;
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+}
+
+/* ── Строка службы: статус-иконка + служба + слово статуса + полоса срока (R09 паспорт, R17 «Совместные») ──
+   <ul class="bk-svcs">
+     <li class="bk-svc"><svg class="bk-st-ic" data-status="reported_fixed">…</svg>   (BirgeUI.statusIcon)
+       <span class="bk-svc__name">Водоканал<span class="bk-svc__role">ведущая</span></span>
+       <span class="bk-svc__st">сделано</span>
+       <span class="bk-deadline bk-svc__bar" data-state="done" style="--p:.4">…</span></li>
+   </ul>
+   Часть службы: todo → иконка без data-status (серый круг), in_progress → "in_progress", done → "reported_fixed". */
+.bk-svcs {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bk-svc {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 10px;
+  min-height: 40px;
+  padding: 6px 8px;
+  border-radius: var(--r-s);
+  color: var(--c-ink);
+  font-size: var(--fs-small);
+  line-height: var(--lh-ui);
+}
+.bk-svc__name {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: var(--fw-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bk-svc__role {
+  margin-left: 6px;
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+}
+.bk-svc__st {
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+  text-align: right;
+  white-space: nowrap;
+}
+.bk-svc__bar {
+  grid-column: 2 / -1;
+}
+
+/* ── Полоса срока: доля прошедшего времени до срока + слова (R17 табло, R09 части, R13 поручения) ──
+   <span class="bk-deadline" data-state="ok|soon|late|done" style="--p:.6">
+     <span class="bk-deadline__track"></span><span class="bk-deadline__text">осталось 2 дня</span></span>
+   Цвет никогда не один: рядом всегда слова («осталось 2 дня», «просрочено на 3 дня», «в срок»). */
+.bk-deadline {
+  --p: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.bk-deadline__track {
+  position: relative;
+  flex: 1 1 64px;
+  min-width: 48px;
+  max-width: 160px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--c-fill-hover);
+  overflow: hidden;
+}
+.bk-deadline__track::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--p) * 100%);
+  max-width: 100%;
+  border-radius: inherit;
+  background: var(--c-text-2);
+  transition: width var(--t-base) var(--ease);
+}
+.bk-deadline[data-state="soon"] .bk-deadline__track::before {
+  background: var(--heat-2);
+}
+.bk-deadline[data-state="late"] {
+  color: var(--c-danger);
+  font-weight: var(--fw-semi);
+}
+.bk-deadline[data-state="late"] .bk-deadline__track::before {
+  width: 100%;
+  background: var(--c-danger);
+}
+.bk-deadline[data-state="done"] .bk-deadline__track::before {
+  background: var(--ok-mark);
+}
+
+/* ── Табло служб (R17): таблица как в Linear — 20 служб на одном экране 1366 ──
+   <table class="bk-board"><thead><tr><th scope="col"><button aria-sort="none">Служба</button></th>
+     <th scope="col" data-col="open">Открыто</th> <th data-col="late">Просрочено</th> <th data-col="median">Ответ, дн.</th>
+     <th data-col="deadline">Срок</th> <th data-col="verified">Проверено жителями</th> <th data-col="returned">Вернули</th></tr></thead>
+   <tbody><tr tabindex="0"><td><span class="bk-board__svc"><span class="bk-board__ic" style="--svc:#1f5fa8"><svg class="ic">…</svg></span>Водоканал</span></td>
+     <td>12</td><td><span class="bk-board__late">3</span></td><td>2,5</td><td><span class="bk-deadline" …></span></td><td>64 %</td><td>1</td></tr></tbody></table>
+   Сортировка — кнопка в заголовке, aria-sort на <th>: ascending | descending | none. Плотность: .bk-board--dense (28 px). */
+.bk-board {
+  --row-h: 32px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--c-ink);
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--lh-ui);
+}
+.bk-board--dense {
+  --row-h: 28px;
+}
+.bk-board th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 32px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--c-line-strong);
+  background: var(--c-paper);
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  text-align: right;
+  white-space: nowrap;
+}
+.bk-board th > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.bk-board th[aria-sort="ascending"] > button::after {
+  content: "↑";
+}
+.bk-board th[aria-sort="descending"] > button::after {
+  content: "↓";
+}
+.bk-board th[aria-sort="ascending"],
+.bk-board th[aria-sort="descending"] {
+  color: var(--c-ink);
+}
+.bk-board td {
+  height: var(--row-h);
+  padding: 0 10px;
+  border-bottom: 1px solid var(--c-line);
+  text-align: right;
+  white-space: nowrap;
+}
+.bk-board th:first-child,
+.bk-board td:first-child {
+  padding-left: 8px;
+  text-align: left;
+}
+.bk-board tbody tr {
+  cursor: pointer;
+}
+.bk-board tbody tr:hover td,
+.bk-board tbody tr.is-hover td {
+  background: var(--c-fill);
+}
+.bk-board tbody tr:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: -3px;
+}
+.bk-board__svc {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 260px;
+  overflow: hidden;
+  font-weight: var(--fw-medium);
+  text-overflow: ellipsis;
+}
+.bk-board__ic {
+  --svc: var(--c-text-2);
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--svc);
+  color: #fff;
+}
+.bk-board__ic .ic {
+  width: 14px;
+  height: 14px;
+}
+.bk-board__late {
+  color: var(--c-danger);
+  font-weight: var(--fw-semi);
+}
+.bk-board__zero {
+  color: var(--c-text-3);
+}
+.bk-board td .bk-deadline {
+  justify-content: flex-end;
+  width: 100%;
+}
+@media (pointer: coarse) {
+  .bk-board td {
+    height: max(var(--row-h), var(--tap));
+  }
+}
+/* Телефон: только служба, открыто, просрочено и «проверено жителями» — остальное в карточке службы */
+@media (max-width: 720px) {
+  .bk-board [data-col="median"],
+  .bk-board [data-col="deadline"],
+  .bk-board [data-col="returned"] {
+    display: none;
+  }
+  /* длинное казахское название службы переносится на вторую строку, а не обрезается */
+  .bk-board td:first-child {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    white-space: normal;
+  }
+  .bk-board__svc {
+    max-width: none;
+    line-height: 1.25;
+  }
+}
+
+/* ── Журнал передач (R17 «Передачи», R09 «Подробнее» в паспорте) ──
+   <ol class="bk-handoffs"><li class="bk-handoff">
+     <span class="bk-handoff__ic"><svg class="ic">#i-handoff</svg></span>
+     <span class="bk-handoff__route">Дорожная служба <svg class="ic">#i-forward</svg> Водоканал</span>
+     <time class="bk-handoff__time">12 окт, 10:40</time>
+     <span class="bk-handoff__why">Сначала нужна замена трубы · оператор</span></li></ol>
+   Кто передал — только роль («оператор», «служба»), без имён. Срок жителю при передаче не меняется — так и пишем. */
+.bk-handoffs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bk-handoff {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 2px 10px;
+  padding: 10px 8px;
+  color: var(--c-ink);
+  font-size: var(--fs-small);
+  line-height: var(--lh-ui);
+}
+.bk-handoff + .bk-handoff {
+  border-top: 1px solid var(--c-line);
+}
+.bk-handoff__ic {
+  display: grid;
+  grid-row: span 2;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--c-fill);
+}
+.bk-handoff__ic .ic {
+  width: 16px;
+  height: 16px;
+}
+.bk-handoff__route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  min-width: 0;
+  font-weight: var(--fw-medium);
+}
+.bk-handoff__route .ic {
+  width: 14px;
+  height: 14px;
+  color: var(--c-text-3);
+}
+.bk-handoff__time {
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+.bk-handoff__why {
+  grid-column: 2 / -1;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+
+/* ── Календарь работ — лента по месяцам (R12): строки улиц, полосы работ цвета службы, связь конфликта ──
+   <div class="bk-wcal" style="--months:6" role="table">
+     <div class="bk-wcal__corner">Улица</div>
+     <div class="bk-wcal__months"><span>май</span><span>июн</span>…</div>
+     <div class="bk-wcal__name">ул. Сыганак</div>
+     <div class="bk-wcal__track">
+       <button class="bk-wcal__bar" data-kind="surface" data-conflict="true" style="--from:.02;--to:.16;--svc:#5b6770">Асфальт</button>
+       <span class="bk-wcal__link" style="--from:.16;--to:.36"></span>
+       <button class="bk-wcal__bar" data-kind="dig" data-conflict="true" style="--from:.36;--to:.5;--svc:#1f5fa8">Сети</button>
+     </div> …
+     <span class="bk-wcal__today" style="--at:.42">сегодня</span>
+   </div>
+   --from / --to — доля от начала до конца периода (0…1), считает модуль. На узкой полосе подпись обрезается — полное
+   название и даты модуль кладёт в aria-label и title полосы. Вид работы различим не только цветом:
+   раскопка — косая штриховка, перекрытие — контур, асфальт и благоустройство — заливка. Цвет службы — профиль R17;
+   подпись на полосе белая, поэтому цвет службы должен держать 4,5:1 с белым (иначе подпись — снаружи полосы). */
+.bk-wcal {
+  --name-w: 168px;
+  --row-h: 36px;
+  --months: 6;
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--name-w) minmax(0, 1fr);
+  color: var(--c-ink);
+  font-size: var(--fs-small);
+  line-height: var(--lh-ui);
+}
+.bk-wcal__corner,
+.bk-wcal__months {
+  height: 28px;
+  border-bottom: 1px solid var(--c-line-strong);
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+}
+.bk-wcal__corner {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 6px;
+}
+.bk-wcal__months {
+  display: grid;
+  grid-template-columns: repeat(var(--months), minmax(0, 1fr));
+  align-items: end;
+}
+.bk-wcal__months > span {
+  padding: 0 0 6px 6px;
+  border-left: 1px solid var(--c-line);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.bk-wcal__name {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: var(--row-h);
+  padding-right: 12px;
+  border-bottom: 1px solid var(--c-line);
+  overflow: hidden;
+  font-weight: var(--fw-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bk-wcal__track {
+  position: relative;
+  min-height: var(--row-h);
+  border-bottom: 1px solid var(--c-line);
+  /* вертикальные линии месяцев */
+  background-image: linear-gradient(to right, var(--c-line) 1px, transparent 1px);
+  background-size: calc(100% / var(--months)) 100%;
+}
+.bk-wcal__bar {
+  --svc: var(--c-text-2);
+  position: absolute;
+  top: 7px;
+  left: calc(var(--from, 0) * 100%);
+  width: max(8px, calc((var(--to, 0) - var(--from, 0)) * 100%));
+  height: calc(var(--row-h) - 14px);
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background-color: var(--svc);
+  color: #fff;
+  font: inherit;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  line-height: calc(var(--row-h) - 14px);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: box-shadow var(--t-fast) var(--ease);
+}
+.bk-wcal__bar[data-kind="dig"] {
+  background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0 4px, transparent 4px 9px);
+}
+.bk-wcal__bar[data-kind="closure"] {
+  background-color: var(--c-surface);
+  box-shadow: inset 0 0 0 2px var(--svc);
+  color: var(--c-ink);
+}
+.bk-wcal__bar[data-conflict="true"] {
+  box-shadow: 0 0 0 2px var(--c-surface), 0 0 0 4px var(--c-danger);
+}
+.bk-wcal__bar[data-kind="closure"][data-conflict="true"] {
+  box-shadow: inset 0 0 0 2px var(--svc), 0 0 0 2px var(--c-surface), 0 0 0 4px var(--c-danger);
+}
+.bk-wcal__bar:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 3px;
+}
+/* Связь конфликта: красный пунктир от конца одной работы до начала другой на том же участке */
+.bk-wcal__link {
+  position: absolute;
+  top: calc(50% - 1px);
+  left: calc(var(--from, 0) * 100%);
+  width: calc((var(--to, 0) - var(--from, 0)) * 100%);
+  border-top: 2px dashed var(--c-danger);
+  pointer-events: none;
+}
+.bk-wcal__link::before,
+.bk-wcal__link::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-danger);
+}
+.bk-wcal__link::before {
+  left: -4px;
+}
+.bk-wcal__link::after {
+  right: -4px;
+}
+/* Сегодня: вертикаль от шапки месяцев вниз, подпись — тёмная плашка поверх шапки
+   <span class="bk-wcal__today" style="--at:.42"><span>сегодня</span></span> */
+.bk-wcal__today {
+  position: absolute;
+  top: 28px;
+  bottom: 0;
+  left: calc(var(--name-w) + (100% - var(--name-w)) * var(--at, 0));
+  width: 0;
+  border-left: 2px solid var(--c-ink);
+  pointer-events: none;
+}
+.bk-wcal__today > span {
+  position: absolute;
+  bottom: 100%;
+  left: -1px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--c-ink);
+  color: var(--c-surface);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semi);
+  line-height: 1.2;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+@media (max-width: 720px) {
+  .bk-wcal {
+    --name-w: 112px;
+    --row-h: var(--tap);
+  }
+}
+
+/* ── Чип конфликта «копаем дважды» и совет (R12, R17) ──
+   <button class="bk-conflict" data-severity="high"><svg class="ic">#i-alert</svg>Копаем дважды</button>
+   <div class="bk-advice"><svg class="ic">#i-info</svg><div><p class="bk-advice__title">Сначала сети, потом асфальт</p>
+     <p class="bk-advice__text">Замену трубы на ул. Сыганак поставить до укладки асфальта — участок не вскроют повторно.</p></div></div> */
+.bk-conflict {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px 0 8px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--c-danger-soft);
+  color: var(--c-danger);
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+}
+button.bk-conflict {
+  cursor: pointer;
+}
+button.bk-conflict::after {
+  content: "";
+  position: absolute;
+  inset: -8px 0;
+}
+.bk-conflict .ic {
+  width: 16px;
+  height: 16px;
+}
+.bk-conflict[data-severity="medium"] {
+  background: var(--c-warn-soft);
+  color: var(--c-warn);
+}
+.bk-advice {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--r-m);
+  background: var(--c-fill);
+  color: var(--c-ink);
+  font-size: var(--fs-small);
+  line-height: var(--lh-text);
+}
+.bk-advice > .ic {
+  margin-top: 1px;
+}
+.bk-advice__title {
+  margin: 0;
+  font-weight: var(--fw-semi);
+}
+.bk-advice__text {
+  margin: 2px 0 0;
+  color: var(--c-text-2);
+}
+
+/* ── Кризис: баннер жителям зоны, шапка штаба, чипы служб с прогрессом, легенда зоны (R17) ──
+   Баннер (на карте — вместе с .bk-glass .bk-glass--strong; место — BirgeShell.alertSlot, IA_ROUND15 §5.12):
+   <div class="bk-crisis" role="status"><span class="bk-crisis__dot" aria-hidden="true"></span>
+     <p class="bk-crisis__text"><b>Буран в Нуре</b> · службы работают</p>
+     <button class="bk-btn bk-btn--ghost">Подробнее</button><button class="bk-x" aria-label="Скрыть">…</button></div> */
+.bk-crisis {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 560px;
+  min-height: var(--tap);
+  padding: 4px 4px 4px 14px;
+  border-radius: var(--r-pill);
+  color: var(--c-ink);
+  font-size: var(--fs-small);
+  line-height: var(--lh-ui);
+}
+.bk-crisis:not(.bk-glass) {
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-2);
+}
+.bk-crisis__dot,
+.bk-live-dot {
+  display: inline-block; /* и в строке текста (подпись плитки), и во flex-ряду */
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c-danger);
+  animation: bk-crisis-pulse 2s var(--ease-out) infinite;
+}
+@keyframes bk-crisis-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(179, 54, 46, 0.45);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 8px rgba(179, 54, 46, 0);
+  }
+}
+.bk-crisis__text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bk-crisis__text b {
+  font-weight: var(--fw-semi);
+}
+.bk-crisis > .bk-btn {
+  flex: none;
+  min-height: 36px;
+}
+@media (max-width: 760px) {
+  .bk-crisis {
+    max-width: none;
+    border-radius: var(--r-l);
+  }
+  .bk-crisis__text {
+    display: -webkit-box;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* «Нұрадағы боран · қызметтер жұмыс істеп жатыр» — целиком */
+  }
+  .bk-crisis > .bk-btn {
+    padding: 0 10px;
+  }
+}
+/* Шапка кризиса в штабе: название, «Пример», с какого времени, статус словом
+   <header class="bk-crisis-hd"><span class="bk-crisis-hd__ic"><svg class="ic">#i-snowflake</svg></span>
+     <div><h2 class="bk-crisis-hd__title">Буран · Нура</h2><p class="bk-crisis-hd__meta"><span class="bk-live-dot"></span>Идёт с 12 окт, 06:30</p></div></header> */
+.bk-crisis-hd {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  line-height: var(--lh-ui);
+}
+.bk-crisis-hd__ic {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-tile);
+  background: var(--c-danger-soft);
+  color: var(--c-danger);
+}
+.bk-crisis-hd__title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-head);
+}
+.bk-crisis-hd__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-crisis-hd[data-status="closed"] .bk-crisis-hd__ic {
+  background: var(--c-fill);
+  color: var(--c-text-2);
+}
+.bk-crisis-hd[data-status="closed"] .bk-live-dot {
+  display: none;
+}
+/* Чип службы с прогрессом задач: кольцо = доля сделанных задач + «3 из 5» словами
+   <span class="bk-svcchip" style="--p:.6"><span class="bk-svcchip__ring" aria-hidden="true"></span>Уборка улиц
+     <span class="bk-svcchip__n">3 из 5</span></span> */
+.bk-svcchips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bk-svcchip {
+  --p: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 12px 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--c-fill);
+  color: var(--c-ink);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+.bk-svcchip__ring {
+  position: relative;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: conic-gradient(var(--c-ink) calc(var(--p) * 360deg), var(--c-fill-hover) 0);
+}
+.bk-svcchip__ring::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--c-surface);
+}
+.bk-svcchip[data-done="true"] .bk-svcchip__ring {
+  background: var(--ok-mark);
+}
+.bk-svcchip__n {
+  color: var(--c-text-2);
+  font-weight: var(--fw-regular);
+  font-variant-numeric: tabular-nums;
+}
+/* Легенда зоны кризиса на карте: образец заливки + подпись; полигон «от руки» — пунктир и «примерная зона»
+   <span class="bk-zone" data-approx="false"><span class="bk-zone__swatch"></span>Зона: район Нура</span> */
+.bk-zone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-zone__swatch {
+  flex: none;
+  width: 18px;
+  height: 12px;
+  border: 2px solid var(--zone-line);
+  border-radius: 3px;
+  background: var(--zone-fill);
+}
+.bk-zone[data-approx="true"] .bk-zone__swatch {
+  border-style: dashed;
+}
+
+/* ── Хроника города (R07): панель внизу по центру, ▶ / ❚❚, крупная дата, ползунок с отметками событий ──
+   <div class="bk-replay bk-glass bk-glass--strong" role="group" aria-label="Хроника города">
+     <button class="bk-replay__play" aria-label="Смотреть"><svg class="ic">#i-play</svg></button>
+     <p class="bk-replay__date"><b>12 окт</b><span>вторник</span></p>
+     <div class="bk-replay__scrub"><input class="bk-range" type="range" min="0" max="6" style="--p:.33" aria-label="День">
+       <div class="bk-replay__ticks"><span class="bk-replay__tick" style="--at:.5">Буран</span></div></div>
+     <div class="bk-seg">7 дней | 30 дней</div> <div class="bk-seg">1× | 2×</div>
+     <button class="bk-x" aria-label="Закрыть хронику">…</button></div> */
+.bk-replay {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 12px;
+  width: min(720px, calc(100% - 40px));
+  padding: 8px 8px 8px 10px;
+  border-radius: var(--r-xl);
+  color: var(--c-ink);
+  line-height: var(--lh-ui);
+}
+.bk-replay:not(.bk-glass) {
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-2);
+}
+.bk-replay__play {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+  cursor: pointer;
+}
+.bk-replay__play .ic {
+  fill: currentColor; /* ▶ и ❚❚ — залитые, так их узнают с первого взгляда */
+}
+.bk-replay__play:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+}
+.bk-replay__date {
+  display: flex;
+  flex-direction: column;
+  min-width: 96px;
+  margin: 0;
+}
+.bk-replay__date b {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ls-title);
+  line-height: 1.15;
+}
+.bk-replay__date span {
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+}
+.bk-replay__scrub {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-width: 0;
+  height: var(--tap);
+  padding-bottom: 6px;
+}
+.bk-replay__ticks {
+  position: absolute;
+  inset: 0 9px;
+  pointer-events: none;
+}
+.bk-replay__tick {
+  position: absolute;
+  top: 0;
+  left: calc(var(--at, 0) * 100%);
+  transform: translateX(-50%);
+  color: var(--c-danger);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semi);
+  white-space: nowrap;
+}
+.bk-replay__tick::after {
+  content: "";
+  position: absolute;
+  top: 17px;
+  left: 50%;
+  width: 2px;
+  height: 8px;
+  border-radius: 1px;
+  background: currentColor;
+  transform: translateX(-50%);
+}
+.bk-replay .bk-seg {
+  flex: none;
+}
+.bk-replay__opts {
+  display: contents; /* на ноутбуке сегменты стоят в общей строке; на телефоне — отдельной строкой */
+}
+@media (max-width: 760px) {
+  .bk-replay {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "play date close"
+      "scrub scrub scrub"
+      "opts opts opts";
+    width: 100%;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+  }
+  .bk-replay__play {
+    grid-area: play;
+  }
+  .bk-replay__date {
+    grid-area: date;
+  }
+  .bk-replay__scrub {
+    grid-area: scrub;
+  }
+  .bk-replay > .bk-x {
+    grid-area: close;
+  }
+  .bk-replay__opts {
+    display: flex;
+    grid-area: opts;
+    justify-content: space-between;
+    gap: 8px;
+  }
+}
+/* Ползунок (хроника, «было / станет» R05): дорожка 4 px, заполнение по --p, ручка 18 px с зоной 44 */
+.bk-range {
+  --p: 0;
+  width: 100%;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.bk-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--c-ink) calc(var(--p) * 100%), var(--c-fill-hover) 0);
+}
+.bk-range::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--c-ink) calc(var(--p) * 100%), var(--c-fill-hover) 0);
+}
+.bk-range::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  border: 2px solid var(--c-ink);
+  border-radius: 50%;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.bk-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--c-ink);
+  border-radius: 50%;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-1);
+}
+.bk-range:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 2px;
+  border-radius: var(--r-s);
+}
+
+/* ── Встреча с акимом и поручения (R13) ──
+   <article class="bk-meet"><div class="bk-meet__date"><b>24</b><span>окт</span></div>
+     <div class="bk-meet__main"><h3 class="bk-meet__title">Встреча акима района с жителями</h3>
+       <p class="bk-meet__meta"><span><svg class="ic">#i-clock</svg>18:30</span><span><svg class="ic">#i-pin</svg>Школа № 64</span></p></div>
+     <div class="bk-meet__cta"><button class="bk-btn bk-btn--primary">Приду <span class="bk-btn__count">54</span></button></div></article>
+   <ol class="bk-orders"><li class="bk-order"><svg class="bk-st-ic" data-status="in_progress">…</svg>
+     <span class="bk-order__text">Поставить освещение во дворе у ул. Сыганак</span><time class="bk-order__due" data-late="false">до 15 ноя</time>
+     <span class="bk-order__meta">Горсвет · связано с обращением</span></li></ol>
+   Ведущий — «аким района», без имени. */
+.bk-meet {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 16px var(--pad-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  line-height: var(--lh-ui);
+}
+.bk-meet__date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 68px;
+  border-radius: var(--r-m);
+  background: var(--c-fill);
+}
+.bk-meet__date b {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.bk-meet__date span {
+  color: var(--c-text-2);
+  font-size: var(--fs-xs);
+}
+.bk-meet[data-state="past"] .bk-meet__date {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--c-line-strong);
+}
+.bk-meet__main {
+  min-width: 0;
+}
+.bk-meet__title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-head);
+}
+.bk-meet__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 4px 0 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-meet__meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.bk-meet__meta .ic {
+  width: 16px;
+  height: 16px;
+}
+.bk-meet__cta {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 8px 12px;
+}
+.bk-orders {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.bk-order {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 2px 10px;
+  padding: 10px 8px;
+  color: var(--c-ink);
+  font-size: var(--fs-small);
+  line-height: 1.4;
+}
+.bk-order + .bk-order {
+  border-top: 1px solid var(--c-line);
+}
+.bk-order > .bk-st-ic {
+  margin-top: 3px;
+}
+.bk-order__due {
+  color: var(--c-text-3);
+  font-size: var(--fs-xs);
+  text-align: right;
+  white-space: nowrap;
+}
+.bk-order__due[data-late="true"] {
+  color: var(--c-danger);
+  font-weight: var(--fw-semi);
+}
+.bk-order__meta {
+  grid-column: 2 / -1;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+/* Телефон: срок — под текстом поручения, текст получает всю ширину («15 қарашаға дейін» не сжимает строку) */
+@media (max-width: 480px) {
+  .bk-order {
+    grid-template-columns: 16px minmax(0, 1fr);
+  }
+  .bk-order__due {
+    grid-row: 2;
+    grid-column: 2;
+    text-align: left;
+  }
+  .bk-order__meta {
+    grid-row: 3;
+  }
+}
+
+/* ── Колокольчик и лента уведомлений (R06; кнопку ставит R01 в капсулу справа, IA_ROUND15 §5.7) ──
+   <button class="bk-iconbtn bk-bell" aria-haspopup="dialog" aria-label="Уведомления, 3 новых">
+     <svg class="ic">#i-bell</svg><span class="bk-nav__badge" aria-hidden="true">3</span></button>
+   <section class="bk-notify bk-glass bk-glass--strong" role="dialog" aria-label="Уведомления">
+     <header class="bk-notify__hd"><h2 class="bk-notify__title">Уведомления</h2>
+       <button class="bk-notify__readall">Прочитать все</button></header>
+     <div class="bk-notify__list"><p class="bk-feed__group">Новые</p><ol class="bk-feed">…</ol></div></section> */
+.bk-bell {
+  position: relative;
+}
+.bk-bell .bk-nav__badge {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  margin: 0;
+}
+.bk-notify {
+  display: flex;
+  flex-direction: column;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(70vh, 560px);
+  border-radius: var(--r-xl);
+  color: var(--c-ink);
+  line-height: var(--lh-ui);
+  overflow: hidden;
+}
+.bk-notify:not(.bk-glass) {
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-3);
+}
+.bk-notify__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 8px 4px 16px;
+}
+.bk-notify__title {
+  margin: 0;
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
+}
+/* «Прочитать все» — тихая текстовая кнопка в одну строку (не главная); подпись — глагол, без aria-label поверх неё */
+.bk-notify__readall {
+  flex: none;
+  min-height: 36px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--r-s);
+  background: transparent;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.bk-notify__readall:hover {
+  background: var(--c-fill);
+  color: var(--c-ink);
+}
+.bk-notify__readall:focus-visible {
+  outline: 3px solid var(--c-focus);
+  outline-offset: 1px;
+}
+.bk-notify__list {
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 8px 8px;
+}
+@media (max-width: 760px) {
+  .bk-notify {
+    width: 100%;
+    max-height: 88vh;
+    border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+  }
+}
+
+/* ── Ответ «Спросить Birge» (R03): крупные числа, 2–4 строки, «Показать на карте», «Как получен ответ» свёрнуто ──
+   <article class="bk-answer"><p class="bk-answer__q">Где больше всего жалоб на снег?</p>
+     <div class="bk-answer__nums"><p class="bk-answer__num"><b>142</b>жалобы на снег за неделю</p>…</div>
+     <p class="bk-answer__text">Больше всего — в Нуре: 61 жалоба, в 3 раза больше прошлой недели.</p>
+     <div class="bk-answer__acts"><button class="bk-btn">Показать на карте</button><span class="bk-tag">офлайн-режим</span></div>
+     <details class="bk-details"><summary>Как получен ответ</summary>…</details></article>
+   Числа считает код (функции модулей), языковая модель только формулирует текст. */
+.bk-answer {
+  display: grid;
+  gap: 12px;
+  padding: var(--pad-card);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xl);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  line-height: var(--lh-ui);
+}
+.bk-answer__q {
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-answer__nums {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+}
+.bk-answer__num {
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
+}
+.bk-answer__num b {
+  display: block;
+  color: var(--c-ink);
+  font-size: var(--fs-num);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ls-num);
+  line-height: 1.05;
+}
+.bk-answer__text {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-text);
+}
+.bk-answer__acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+/* ── Ситуационный центр (R08): только на странице /civic/board/ с классом .bk-dark на <html> (tokens.css) ──
+   <main class="bk-sc"><header class="bk-sc__top"><h1 class="bk-sc__title">Ситуационный центр · Астана</h1>
+     <span class="bk-tag bk-tag--demo">Пример</span><span class="bk-sc__spacer"></span><time class="bk-sc__clock">14:05</time>
+     <button class="bk-btn">На весь экран</button><a class="bk-btn" href="/#day">В Birge</a></header>
+     <section class="bk-sc__grid">
+       <article class="bk-sc-tile" style="--span:3"><p class="bk-sc-tile__label">Новые за сутки</p>
+         <p class="bk-sc-num">35</p><p class="bk-sc-delta">+12 к вчера</p></article> …</section></main>
+   Сетка 12 колонок; --span — ширина плитки, --rows — высота. Без прокрутки на 1920×1080 и 1366×768. */
+.bk-sc {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--sc-gap);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: var(--sc-gap);
+  background: var(--c-paper); /* ровный тёмный фон — без градиентов «для красоты» (П1) */
+  color: var(--c-ink);
+  font-family: var(--font);
+  line-height: var(--lh-ui);
+}
+.bk-sc__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+.bk-sc__title {
+  margin: 0;
+  font-size: var(--sc-fs-title);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--ls-title);
+}
+.bk-sc__spacer {
+  flex: 1;
+}
+.bk-sc__clock {
+  font-size: var(--sc-fs-title);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+.bk-sc__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: var(--sc-gap);
+  min-height: 0;
+}
+.bk-sc-tile {
+  display: flex;
+  flex-direction: column;
+  grid-column: span var(--span, 4);
+  grid-row: span var(--rows, 1);
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--sc-pad);
+  border: 1px solid var(--c-line-strong);
+  border-radius: 22px;
+  background: var(--c-surface); /* плотная плитка: стекло — только на хроме эталона A (П1) */
+  overflow: hidden;
+}
+.bk-sc-tile__label {
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--sc-fs-label);
+  font-weight: var(--fw-medium);
+}
+.bk-sc-num {
+  margin: 0;
+  font-size: var(--sc-fs-num);
+  font-weight: var(--fw-semi);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ls-num);
+  line-height: 1;
+}
+.bk-sc-num--danger {
+  color: var(--c-danger);
+}
+.bk-sc-delta {
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--sc-fs-label);
+}
+.bk-sc-tile[data-alert="true"] {
+  border-color: var(--c-danger); /* кризис — цветом рамки и точкой-пульсом, без свечения (П1) */
+}
+/* Смена блоков каждые 15 с — мягкое появление; при «уменьшить движение» — сразу */
+.bk-sc-tile.is-enter {
+  animation: bk-sc-in 400ms var(--ease-out);
+}
+@keyframes bk-sc-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+/* Точки автопрокрутки блоков: текущая длиннее; при паузе — значок паузы словом рядом (модуль) */
+.bk-sc__dots {
+  display: flex;
+  gap: 6px;
+}
+.bk-sc__dots > i {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--c-line-strong);
+  transition: width var(--t-base) var(--ease);
+}
+.bk-sc__dots > i[aria-current="true"] {
+  width: 24px;
+  background: var(--c-ink);
+}
+@media (max-width: 1100px) {
+  .bk-sc-tile {
+    grid-column: span 6;
+  }
+  .bk-sc-tile[data-wide="true"] {
+    grid-column: 1 / -1;
+  }
+}
+/* Стекло внутри тёмной страницы: тексты — светлые варианты (плотное стекло эталона задаёт тёмные) */
+.bk-dark .bk-glass,
+.bk-dark .bk-glass--strong {
+  --c-text-2: var(--glass-text-2);
+  --c-text-3: #8f9b96;
+  --c-danger: var(--glass-danger);
+  --c-warn: var(--glass-warn);
+  --c-ok: var(--glass-ok);
+  --c-info: var(--glass-info);
+  --c-demo: var(--glass-demo);
+}
+
+/* Меньше движения: без подпрыгивания счётчиков, пульса кризиса и появления плиток */
+@media (prefers-reduced-motion: reduce) {
+  .bk-join__n.is-bump,
+  .bk-btn__count.is-bump,
+  .bk-bump,
+  .bk-sc-tile.is-enter {
+    animation: none;
+  }
+  .bk-crisis__dot,
+  .bk-live-dot {
+    animation: none;
+    box-shadow: 0 0 0 3px rgba(179, 54, 46, 0.25);
+  }
+}
+
 /* ───────────── Стекло Apple Liquid Glass (GLASS.md) — в конце файла: перекрывает фон компонентов выше ─────────────
    Эталон 13 окт (REFERENCE.html, вариант A): .glass 72 % и .glass.strong 86 %, blur 24 + saturate 180 %.
    .bk-glass           — лёгкое 72 %: «хром» — чипы, навигация-капсула, профиль, легенда (короткие подписи)
@@ -3265,13 +5068,14 @@ p.bk-banner--warn {
 }
 
 /* Иллюстрация пустого состояния / ошибки — линейная, спокойная, 96 px (на телефоне 80) */
+/* П1 «Без ИИ-слопа»: ill-* — малые монохромные значки (≤ 48 px), линия как у иконок (видимая ~1,7 px у значков 20) */
 .bk-ill {
-  width: 96px;
-  height: 96px;
+  width: 48px;
+  height: 48px;
   flex: none;
   fill: none;
   stroke: var(--c-text-3);
-  stroke-width: 1.5;
+  stroke-width: 1.75;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -3284,8 +5088,8 @@ p.bk-banner--warn {
 }
 @media (max-width: 1023px) {
   .bk-ill {
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
   }
 }
 

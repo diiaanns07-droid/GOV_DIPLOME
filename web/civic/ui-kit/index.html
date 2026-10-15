@@ -140,6 +140,63 @@
         --sheet-half: 272px;
         --sheet-peek: 120px;
       }
+      /* Витрина раунда 15 */
+      .kit-r15__h {
+        margin: var(--s-4) 0 0;
+        font-size: var(--fs-body);
+        font-weight: var(--fw-semi);
+      }
+      .kit-r15__col {
+        display: grid;
+        gap: var(--s-3);
+        max-width: 720px;
+      }
+      .kit-r15__plist {
+        padding: 0;
+        overflow: visible;
+      }
+      .kit-r15__scroll {
+        max-width: 100%;
+        overflow-x: auto;
+        padding: var(--s-2) 0;
+      }
+      .kit-r15__wcal {
+        min-width: 720px;
+        padding-top: 22px;
+      }
+      .kit-r15__advice {
+        max-width: 460px;
+      }
+      .kit-r15__map {
+        display: grid;
+        place-items: center;
+        min-height: 140px;
+        padding: var(--s-6) 0;
+        border-radius: var(--r-xl);
+        background: linear-gradient(135deg, #e9e5dd, #dfe9d5 60%, #d4e6ef);
+      }
+      .kit-r15__kinds {
+        gap: var(--s-4);
+      }
+      .kit-r15__kind {
+        display: grid;
+        justify-items: center;
+        gap: 6px;
+        margin: 0;
+        font-size: var(--fs-xs);
+        text-align: center;
+      }
+      .kit-r15__kind .bk-thumb {
+        width: 56px;
+        height: 56px;
+      }
+      .kit-r15__dark {
+        border-radius: var(--r-xl);
+        overflow: hidden;
+      }
+      .kit-r15__sc {
+        min-height: 0;
+      }
     </style>
   </head>
   <body class="bk-app">
@@ -545,6 +602,249 @@
           </div>
         </div>
       </section>
+      <!-- ═══════════ Раунд 15 «Бірге — вместе»: компоненты новых экранов (R11, IA_ROUND15 §5) ═══════════
+           Тексты примеров — образцы данных на ru / kk (словарь витрины r15 ниже), подписи интерфейса экраны берут из словаря R11. -->
+      <section class="kit-section kit-r15" id="kit-r15" aria-labelledby="kit-r15-title">
+        <h2 class="bk-h2" id="kit-r15-title" data-s15="section"></h2>
+        <p class="bk-lead" data-s15="intro"></p>
+
+        <h3 class="kit-r15__h"><code>.bk-yard</code> · <code>.bk-feed</code> — «Мой двор» (R16)</h3>
+        <div class="kit-r15__col">
+          <header class="bk-yard">
+            <p class="bk-yard__eyebrow"><span data-s15="nura"></span><span class="bk-tag bk-tag--demo" data-s15="demo"></span></p>
+            <h2 class="bk-yard__title" data-s15="yard"></h2>
+            <dl class="bk-yard__stats">
+              <div class="bk-yard__stat"><dt data-s15="yard.neighbors"></dt><dd>37</dd></div>
+              <div class="bk-yard__stat"><dt data-s15="yard.problems"></dt><dd>4</dd></div>
+              <div class="bk-yard__stat"><dt data-s15="yard.initiatives"></dt><dd>2</dd></div>
+            </dl>
+            <p class="bk-yard__captain"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-user"></use></svg><span data-s15="yard.captain"></span></p>
+            <div class="bk-yard__actions"><button class="bk-btn bk-btn--primary" type="button" data-s15="yard.join"></button></div>
+          </header>
+          <div class="bk-tabs" role="tablist" id="kit-r15-tabs">
+            <button role="tab" type="button" aria-selected="true" data-s15="tab.overview"></button>
+            <button role="tab" type="button" aria-selected="false" data-s15="tab.problems"></button>
+            <button role="tab" type="button" aria-selected="false" data-s15="tab.initiatives"></button>
+            <button role="tab" type="button" aria-selected="false" data-s15="tab.works"></button>
+          </div>
+          <p class="bk-feed__group" data-s15="feed.new"></p>
+          <ol class="bk-feed">
+            <li><a class="bk-feed__item" href="#kit-r15-init" data-kind="initiative" data-unread="true">
+              <span class="bk-feed__ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-heart"></use></svg></span>
+              <span class="bk-feed__main"><span class="bk-feed__title" data-s15="feed.1"></span><span class="bk-feed__meta" data-s15="feed.1.meta"></span></span></a></li>
+            <li><a class="bk-feed__item" href="#kit-r15" data-kind="crisis" data-unread="true">
+              <span class="bk-feed__ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-snowflake"></use></svg></span>
+              <span class="bk-feed__main"><span class="bk-feed__title" data-s15="feed.3"></span><span class="bk-feed__meta" data-s15="feed.3.meta"></span></span></a></li>
+          </ol>
+          <p class="bk-feed__group" data-s15="feed.old"></p>
+          <ol class="bk-feed">
+            <li><a class="bk-feed__item" href="#kit-r15" data-kind="complaint">
+              <span class="bk-feed__ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-check"></use></svg></span>
+              <span class="bk-feed__main"><span class="bk-feed__title" data-s15="feed.2"></span><span class="bk-feed__meta" data-s15="feed.2.meta"></span></span></a></li>
+          </ol>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-pc</code> + <code>.bk-join</code> · <code>.bk-support</code> — «Сделаем вместе», список (R16)</h3>
+        <div class="kit-r15__col bk-plist kit-r15__plist">
+          <article class="bk-pc">
+            <div class="bk-thumb bk-thumb--kind"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-broom"></use></svg></div>
+            <div class="bk-pc__body"><h4 class="bk-pc__title" data-s15="i1.title"></h4><p class="bk-pc__sub" data-s15="i1.sub"></p>
+              <div class="bk-pc__foot"><span class="bk-support"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-building"></use></svg><span data-s15="support"></span></span>
+                <button class="bk-join kit-r15-join" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-users"></use></svg><span data-s15="join"></span> <span class="bk-join__n">14</span></button></div></div>
+          </article>
+          <article class="bk-pc">
+            <div class="bk-thumb bk-thumb--kind"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-sprout"></use></svg></div>
+            <div class="bk-pc__body"><h4 class="bk-pc__title" data-s15="i2.title"></h4><p class="bk-pc__sub" data-s15="i2.sub"></p>
+              <div class="bk-pc__foot"><span></span>
+                <button class="bk-join kit-r15-join" type="button" aria-pressed="true"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-check"></use></svg><span data-s15="joined"></span> <span class="bk-join__n">8</span></button></div></div>
+          </article>
+        </div>
+
+        <h3 class="kit-r15__h" id="kit-r15-init"><code>.bk-init</code> · <code>.bk-done</code> — карточка инициативы и итог (R16)</h3>
+        <div class="kit-grid">
+          <article class="bk-init">
+            <div class="bk-init__body">
+              <p class="bk-init__kind"><span class="bk-init__kind-ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-broom"></use></svg></span><span data-s15="kind.cleanup"></span><span class="bk-tag bk-tag--demo" data-s15="demo"></span></p>
+              <h4 class="bk-init__title" data-s15="i1.title"></h4>
+              <ul class="bk-init__facts">
+                <li><svg class="ic" aria-hidden="true"><use href="icons.svg#i-calendar"></use></svg><span data-s15="i1.when"></span></li>
+                <li><svg class="ic" aria-hidden="true"><use href="icons.svg#i-pin"></use></svg><span data-s15="yard"></span></li>
+              </ul>
+              <div class="bk-init__bring"><span class="bk-tag" data-s15="bring.1"></span><span class="bk-tag" data-s15="bring.2"></span><span class="bk-tag" data-s15="bring.3"></span></div>
+              <div class="bk-support bk-support--block"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-building"></use></svg><span data-s15="support"></span><span class="bk-support__note" data-s15="support.note"></span></div>
+              <div class="bk-init__cta"><button class="bk-btn bk-btn--primary bk-btn--lg" type="button" id="kit-r15-go"><span data-s15="join"></span> <span class="bk-btn__count">14</span></button>
+                <button class="bk-btn bk-btn--ghost" type="button" data-s15="cant"></button></div>
+            </div>
+          </article>
+          <div class="bk-done bk-done--nophoto">
+            <p class="bk-done__num"><b>15</b><span data-s15="done.label"></span></p>
+            <p class="bk-done__text" data-s15="done.text"></p>
+            <p class="bk-done__note" data-s15="done.note"></p>
+          </div>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-svcs</code> · <code>.bk-deadline</code> — паспорт с несколькими службами (R09)</h3>
+        <div class="kit-r15__col">
+          <p class="bk-meta" data-s15="svcs.title"></p>
+          <ul class="bk-svcs">
+            <li class="bk-svc"><svg class="bk-st-ic" data-status="reported_fixed" width="14" height="14" aria-hidden="true"><use href="icons.svg#st-ring-check"></use></svg>
+              <span class="bk-svc__name"><span data-s15="svc.water"></span><span class="bk-svc__role" data-s15="role.lead"></span></span><span class="bk-svc__st" data-s15="st.done"></span>
+              <span class="bk-deadline bk-svc__bar" data-state="done" style="--p: 0.45"><span class="bk-deadline__track"></span><span data-s15="dl.ok"></span></span></li>
+            <li class="bk-svc"><svg class="bk-st-ic" data-status="in_progress" width="14" height="14" aria-hidden="true"><use href="icons.svg#st-half"></use></svg>
+              <span class="bk-svc__name"><span data-s15="svc.road"></span><span class="bk-svc__role" data-s15="role.partner"></span></span><span class="bk-svc__st" data-s15="st.progress"></span>
+              <span class="bk-deadline bk-svc__bar" data-state="soon" style="--p: 0.8"><span class="bk-deadline__track"></span><span data-s15="dl.soon"></span></span></li>
+            <li class="bk-svc"><svg class="bk-st-ic" width="14" height="14" aria-hidden="true"><use href="icons.svg#st-ring"></use></svg>
+              <span class="bk-svc__name"><span data-s15="svc.clean"></span><span class="bk-svc__role" data-s15="role.partner"></span></span><span class="bk-svc__st" data-s15="st.todo"></span>
+              <span class="bk-deadline bk-svc__bar" data-state="late" style="--p: 1"><span class="bk-deadline__track"></span><span data-s15="dl.late"></span></span></li>
+          </ul>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-board</code> — табло служб (R17)</h3>
+        <div class="kit-r15__scroll">
+          <table class="bk-board">
+            <thead><tr>
+              <th scope="col" aria-sort="none"><button type="button" data-s15="b.svc"></button></th>
+              <th scope="col" data-col="open"><button type="button" data-s15="b.open"></button></th>
+              <th scope="col" data-col="late" aria-sort="descending"><button type="button" data-s15="b.late"></button></th>
+              <th scope="col" data-col="median"><button type="button" data-s15="b.median"></button></th>
+              <th scope="col" data-col="deadline" data-s15="b.deadline"></th>
+              <th scope="col" data-col="verified"><button type="button" data-s15="b.verified"></button></th>
+              <th scope="col" data-col="returned"><button type="button" data-s15="b.returned"></button></th>
+            </tr></thead>
+            <tbody id="kit-r15-board"></tbody>
+          </table>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-handoffs</code> — журнал передач (R17, R09)</h3>
+        <div class="kit-r15__col">
+          <ol class="bk-handoffs">
+            <li class="bk-handoff"><span class="bk-handoff__ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-handoff"></use></svg></span>
+              <span class="bk-handoff__route"><span data-s15="svc.road"></span><svg class="ic" aria-hidden="true"><use href="icons.svg#i-forward"></use></svg><span data-s15="svc.water"></span></span>
+              <time class="bk-handoff__time" data-s15="h1.time"></time><span class="bk-handoff__why" data-s15="h1.why"></span></li>
+            <li class="bk-handoff"><span class="bk-handoff__ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-handoff"></use></svg></span>
+              <span class="bk-handoff__route"><span data-s15="svc.clean"></span><svg class="ic" aria-hidden="true"><use href="icons.svg#i-forward"></use></svg><span data-s15="svc.road"></span></span>
+              <time class="bk-handoff__time" data-s15="h2.time"></time><span class="bk-handoff__why" data-s15="h2.why"></span></li>
+          </ol>
+          <p class="bk-meta" data-s15="h.note"></p>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-wcal</code> · <code>.bk-conflict</code> · <code>.bk-advice</code> — календарь работ (R12)</h3>
+        <div class="kit-r15__scroll">
+          <div class="bk-wcal kit-r15__wcal" style="--months: 6">
+            <div class="bk-wcal__corner" data-s15="w.street"></div>
+            <div class="bk-wcal__months" id="kit-r15-months"></div>
+            <div class="bk-wcal__name" data-s15="w.s1"></div>
+            <div class="bk-wcal__track">
+              <button class="bk-wcal__bar" type="button" data-kind="surface" data-conflict="true" style="--from: 0.02; --to: 0.2; --svc: #5b6770" data-s15="w.asphalt"></button>
+              <span class="bk-wcal__link" style="--from: 0.2; --to: 0.36"></span>
+              <button class="bk-wcal__bar" type="button" data-kind="dig" data-conflict="true" style="--from: 0.36; --to: 0.52; --svc: #1f5fa8" data-s15="w.pipes"></button>
+            </div>
+            <div class="bk-wcal__name" data-s15="w.s2"></div>
+            <div class="bk-wcal__track"><button class="bk-wcal__bar" type="button" data-kind="closure" style="--from: 0.5; --to: 0.62; --svc: #7a520f" data-s15="w.closure"></button></div>
+            <div class="bk-wcal__name" data-s15="w.s3"></div>
+            <div class="bk-wcal__track"><button class="bk-wcal__bar" type="button" data-kind="lighting" style="--from: 0.18; --to: 0.4; --svc: #4b5d7a" data-s15="w.light"></button></div>
+            <div class="bk-wcal__name" data-s15="w.s4"></div>
+            <div class="bk-wcal__track"><button class="bk-wcal__bar" type="button" data-kind="landscape" style="--from: 0.68; --to: 0.96; --svc: #27500a" data-s15="w.green"></button></div>
+            <span class="bk-wcal__today" style="--at: 0.42"><span data-s15="w.today"></span></span>
+          </div>
+        </div>
+        <div class="kit-row kit-row--top">
+          <button class="bk-conflict" type="button" data-severity="high"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-alert"></use></svg><span data-s15="w.twice"></span></button>
+          <span class="bk-conflict" data-severity="medium"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-cone"></use></svg><span data-s15="w.parallel"></span></span>
+          <div class="bk-advice kit-r15__advice"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-info"></use></svg><div><p class="bk-advice__title" data-s15="w.advice.title"></p><p class="bk-advice__text" data-s15="w.advice.text"></p></div></div>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-crisis</code> · <code>.bk-crisis-hd</code> · <code>.bk-svcchip</code> · <code>.bk-zone</code> — кризис (R17)</h3>
+        <div class="kit-r15__col">
+          <div class="bk-crisis" role="status"><span class="bk-crisis__dot" aria-hidden="true"></span>
+            <p class="bk-crisis__text"><b data-s15="c.title"></b> · <span data-s15="c.line"></span></p>
+            <button class="bk-btn bk-btn--ghost" type="button" data-s15="more"></button>
+            <button class="bk-x bk-x--plain" type="button" data-s15-label="hide"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-close"></use></svg></button></div>
+          <header class="bk-crisis-hd"><span class="bk-crisis-hd__ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-snowflake"></use></svg></span>
+            <div><h4 class="bk-crisis-hd__title" data-s15="c.hd"></h4><p class="bk-crisis-hd__meta"><span class="bk-live-dot" aria-hidden="true"></span><span data-s15="c.since"></span></p></div>
+            <span class="bk-tag bk-tag--demo" data-s15="demo"></span></header>
+          <div class="bk-svcchips">
+            <span class="bk-svcchip" style="--p: 0.6"><span class="bk-svcchip__ring" aria-hidden="true"></span><span data-s15="svc.clean"></span><span class="bk-svcchip__n" data-s15="c.p1"></span></span>
+            <span class="bk-svcchip" style="--p: 1" data-done="true"><span class="bk-svcchip__ring" aria-hidden="true"></span><span data-s15="svc.road"></span><span class="bk-svcchip__n" data-s15="c.p2"></span></span>
+            <span class="bk-svcchip" style="--p: 0.33"><span class="bk-svcchip__ring" aria-hidden="true"></span><span data-s15="svc.heat"></span><span class="bk-svcchip__n" data-s15="c.p3"></span></span>
+          </div>
+          <div class="kit-row"><span class="bk-zone"><span class="bk-zone__swatch"></span><span data-s15="c.zone"></span></span>
+            <span class="bk-zone" data-approx="true"><span class="bk-zone__swatch"></span><span data-s15="c.zone2"></span><span class="bk-tag bk-tag--approx" data-s15="approx"></span></span></div>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-replay</code> · <code>.bk-range</code> — хроника города (R07)</h3>
+        <div class="kit-r15__map">
+          <div class="bk-replay bk-glass bk-glass--strong" role="group" data-s15-label="replay">
+            <button class="bk-replay__play" type="button" id="kit-r15-play" data-s15-label="play"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-play"></use></svg></button>
+            <p class="bk-replay__date"><b data-s15="r.date"></b><span data-s15="r.day"></span></p>
+            <div class="bk-replay__scrub"><input class="bk-range" id="kit-r15-range" type="range" min="0" max="6" value="2" style="--p: 0.333" data-s15-label="r.slider">
+              <div class="bk-replay__ticks"><span class="bk-replay__tick" style="--at: 0.5" data-s15="r.tick"></span></div></div>
+            <div class="bk-replay__opts">
+              <div class="bk-seg" role="group"><button type="button" aria-pressed="true" data-s15="r.7"></button><button type="button" aria-pressed="false" data-s15="r.30"></button></div>
+              <div class="bk-seg" role="group"><button type="button" aria-pressed="true">1×</button><button type="button" aria-pressed="false">2×</button></div>
+            </div>
+            <button class="bk-x bk-x--plain" type="button" data-s15-label="r.close"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-close"></use></svg></button>
+          </div>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-meet</code> · <code>.bk-orders</code> — встреча с акимом и поручения (R13)</h3>
+        <div class="kit-r15__col">
+          <article class="bk-meet"><div class="bk-meet__date"><b>24</b><span data-s15="m.mon"></span></div>
+            <div class="bk-meet__main"><h4 class="bk-meet__title" data-s15="m.title"></h4>
+              <p class="bk-meet__meta"><span><svg class="ic" aria-hidden="true"><use href="icons.svg#i-clock"></use></svg>18:30</span><span><svg class="ic" aria-hidden="true"><use href="icons.svg#i-pin"></use></svg><span data-s15="m.place"></span></span></p></div>
+            <div class="bk-meet__cta"><button class="bk-btn bk-btn--primary" type="button"><span data-s15="m.go"></span> <span class="bk-btn__count">54</span></button>
+              <button class="bk-btn" type="button" data-s15="m.ask"></button></div></article>
+          <p class="bk-section-title" data-s15="m.orders"></p>
+          <ol class="bk-orders">
+            <li class="bk-order"><svg class="bk-st-ic" data-status="in_progress" width="14" height="14" aria-hidden="true"><use href="icons.svg#st-half"></use></svg>
+              <span data-s15="o1"></span><time class="bk-order__due" data-s15="o1.due"></time><span class="bk-order__meta" data-s15="o1.meta"></span></li>
+            <li class="bk-order"><svg class="bk-st-ic" data-status="new" width="14" height="14" aria-hidden="true"><use href="icons.svg#st-ring"></use></svg>
+              <span data-s15="o2"></span><time class="bk-order__due" data-late="true" data-s15="o2.due"></time><span class="bk-order__meta" data-s15="o2.meta"></span></li>
+            <li class="bk-order"><svg class="bk-st-ic" data-status="reported_fixed" width="14" height="14" aria-hidden="true"><use href="icons.svg#st-ring-check"></use></svg>
+              <span data-s15="o3"></span><time class="bk-order__due" data-s15="o3.due"></time><span class="bk-order__meta" data-s15="o3.meta"></span></li>
+          </ol>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-bell</code> · <code>.bk-notify</code> — уведомления (R06)</h3>
+        <div class="kit-row kit-row--top">
+          <button class="bk-iconbtn bk-bell" type="button" data-s15-label="n.bell"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-bell"></use></svg><span class="bk-nav__badge" aria-hidden="true">3</span></button>
+          <section class="bk-notify" aria-labelledby="kit-r15-n-title">
+            <header class="bk-notify__hd"><h4 class="bk-notify__title" id="kit-r15-n-title" data-s15="n.title"></h4><button class="bk-notify__readall" type="button" data-s15="n.readall"></button></header>
+            <div class="bk-notify__list"><p class="bk-feed__group" data-s15="feed.new"></p>
+              <ol class="bk-feed"><li><a class="bk-feed__item" href="#kit-r15" data-kind="initiative" data-unread="true"><span class="bk-feed__ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-heart"></use></svg></span>
+                <span class="bk-feed__main"><span class="bk-feed__title" data-s15="feed.1"></span><span class="bk-feed__meta" data-s15="feed.1.meta"></span></span></a></li>
+                <li><a class="bk-feed__item" href="#kit-r15" data-kind="meeting"><span class="bk-feed__ic"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-message"></use></svg></span>
+                <span class="bk-feed__main"><span class="bk-feed__title" data-s15="feed.4"></span><span class="bk-feed__meta" data-s15="feed.4.meta"></span></span></a></li></ol></div>
+          </section>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-answer</code> — «Спросить Birge» (R03)</h3>
+        <div class="kit-r15__col">
+          <article class="bk-answer"><p class="bk-answer__q" data-s15="a.q"></p>
+            <div class="bk-answer__nums"><p class="bk-answer__num"><b>142</b><span data-s15="a.n1"></span></p><p class="bk-answer__num"><b>61</b><span data-s15="a.n2"></span></p><p class="bk-answer__num"><b>43 %</b><span data-s15="a.n3"></span></p></div>
+            <p class="bk-answer__text" data-s15="a.text"></p>
+            <div class="bk-answer__acts"><button class="bk-btn" type="button"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-pin"></use></svg><span data-s15="a.map"></span></button><span class="bk-tag" data-s15="a.offline"></span></div>
+            <details class="bk-details"><summary data-s15="a.how"></summary><p class="bk-meta" data-s15="a.src"></p></details></article>
+        </div>
+
+        <h3 class="kit-r15__h"><code>.bk-dark</code> · <code>.bk-sc</code> — ситуационный центр (R08, только на своей странице)</h3>
+        <div class="bk-dark kit-r15__dark">
+          <div class="bk-sc kit-r15__sc">
+            <header class="bk-sc__top"><h4 class="bk-sc__title" data-s15="sc.title"></h4><span class="bk-tag bk-tag--demo" data-s15="demo"></span><span class="bk-sc__spacer"></span>
+              <span class="bk-sc__dots" aria-hidden="true"><i aria-current="true"></i><i></i><i></i></span><time class="bk-sc__clock">14:05</time></header>
+            <div class="bk-sc__grid">
+              <article class="bk-sc-tile" style="--span: 3"><p class="bk-sc-tile__label" data-s15="sc.new"></p><p class="bk-sc-num">35</p><p class="bk-sc-delta" data-s15="sc.new.d"></p></article>
+              <article class="bk-sc-tile" style="--span: 3"><p class="bk-sc-tile__label" data-s15="sc.late"></p><p class="bk-sc-num bk-sc-num--danger">7</p><p class="bk-sc-delta" data-s15="sc.late.d"></p></article>
+              <article class="bk-sc-tile" style="--span: 3"><p class="bk-sc-tile__label" data-s15="sc.verified"></p><p class="bk-sc-num">64 %</p><p class="bk-sc-delta" data-s15="sc.verified.d"></p></article>
+              <article class="bk-sc-tile" style="--span: 3" data-alert="true"><p class="bk-sc-tile__label"><span class="bk-live-dot" aria-hidden="true"></span> <span data-s15="sc.crisis"></span></p><p class="bk-sc-tile__label" data-s15="c.hd"></p><p class="bk-sc-delta" data-s15="c.p1"></p></article>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="kit-r15__h">Значки видов (R06 идеи, R16 дела) и пустых состояний — П1: малые, один цвет, без сценок</h3>
+        <div class="kit-row kit-r15__kinds" id="kit-r15-kinds"></div>
+        <div class="kit-row kit-r15__kinds" id="kit-r15-ills"></div>
+      </section>
     </main>
 
     <script src="../i18n/i18n.js"></script>
@@ -558,7 +858,8 @@
         var ICONS = ("road snowflake walk bus bulb trees trash droplet wind shield parking dots search close back forward " +
           "chevron-right chevron-down plus minus locate layers filter pin check alert info refresh user users thumb-up " +
           "thumb-down calendar clock cube rotate-left rotate-right globe menu chart list edit building wifi-off send copy " +
-          "print playground ball phone camera compass heart school home message").split(" ");
+          "print playground ball phone camera compass heart school home message " +
+          "bell play pause monitor sparkle handoff shovel cone broom sprout wrench expand megaphone bench paw traffic radiator zap flame").split(" ");
         var COLORS = ["--c-ink", "--c-text-2", "--c-paper", "--c-brand", "--c-accent", "--c-focus", "--c-danger", "--c-warn",
           "--c-info", "--c-ok", "--c-demo", "--heat-1", "--heat-2", "--heat-3", "--heat-4", "--fixed", "--heat-3-badge", "--fixed-badge"];
         var STAGES = ["planned", "design", "procurement", "construction", "acceptance", "operating"];
@@ -722,6 +1023,159 @@
           render();
         });
         I.onChange(render);
+      })();
+    </script>
+    <script>
+      // Витрина раунда 15: образцы данных ru / kk (не ключи продукта — подписи экранов берут из словаря R11) и немного жизни:
+      // «Я приду» +1 с подпрыгиванием, ▶ хроники, ползунок.
+      (function () {
+        var I = window.BirgeI18n, UI = window.BirgeUI;
+        var S = {
+          ru: {
+            section: "Раунд 15: экраны «Бірге»", intro: "Новые компоненты для двора, инициатив, служб, кризиса, хроники, встреч и ситуационного центра. Только новые классы — эталон A не меняется.",
+            nura: "Нура", demo: "Пример", yard: "Двор у ул. Коксенгир", "yard.neighbors": "соседей в Birge", "yard.problems": "проблем", "yard.initiatives": "инициатив",
+            "yard.captain": "Старший по двору: Айгуль", "yard.join": "Я живу здесь",
+            "tab.overview": "Обзор", "tab.problems": "Проблемы", "tab.initiatives": "Инициативы", "tab.works": "Работы",
+            "feed.new": "Новые", "feed.old": "Раньше",
+            "feed.1": "Соседка предложила «Субботник в субботу, 10:00»", "feed.1.meta": "2 ч назад · Двор у ул. Коксенгир",
+            "feed.2": "«Не убран снег у подъезда» — служба сообщила об устранении", "feed.2.meta": "вчера",
+            "feed.3": "Буран в Нуре: службы работают, обновление в 14:00", "feed.3.meta": "сегодня, 14:05",
+            "feed.4": "Встреча с акимом района: поручения опубликованы", "feed.4.meta": "3 дня назад",
+            "i1.title": "Субботник во дворе", "i1.sub": "Сб, 10:00 · Двор у ул. Коксенгир", support: "Поддержано акиматом", join: "Я приду", joined: "Вы идёте",
+            "i2.title": "Посадим 6 саженцев", "i2.sub": "Вс, 11:00 · Сквер у школы № 64",
+            "i1.when": "Суббота, 18 окт, 10:00–12:00", "bring.1": "перчатки", "bring.2": "мешки", "bring.3": "грабли",
+            "support.note": "Мешки и вывоз мусора в 14:00", cant: "Не смогу",
+            "done.label": "соседей — сделано вместе", "done.text": "Убрали двор и посадили 6 саженцев", "done.note": "Фото появится после дела",
+            "kind.cleanup": "Субботник",
+            kinds: { trees: "Сквер", playground: "Площадка", ball: "Спорт", bus: "Остановка", bulb: "Освещение", bench: "Скамейки", sprout: "Озеленение",
+              broom: "Уборка", snowflake: "Снег", wrench: "Ремонт", heart: "Помощь соседям" },
+            "svcs.title": "Работают 2 службы — срок ответа один", "svc.water": "Водоканал", "svc.road": "Дорожная служба", "svc.clean": "Уборка улиц",
+            "svc.light": "Освещение улиц", "svc.heat": "Теплоснабжение",
+            "role.lead": "ведущая", "role.partner": "участвует", "st.done": "сделано", "st.progress": "в работе", "st.todo": "не начато",
+            "dl.ok": "в срок", "dl.soon": "осталось 2 дня", "dl.late": "просрочено на 3 дня",
+            "b.svc": "Служба", "b.open": "Открыто", "b.late": "Просрочено", "b.median": "Ответ, дн.", "b.deadline": "Срок", "b.verified": "Проверено жителями", "b.returned": "Вернули",
+            "h1.time": "12 окт, 10:40", "h1.why": "Сначала нужна замена трубы · оператор", "h2.time": "11 окт, 17:15", "h2.why": "Под снегом яма — нужен ремонт покрытия · служба",
+            "h.note": "Срок ответа жителю при передаче не меняется.",
+            "w.street": "Улица", months: ["май", "июн", "июл", "авг", "сен", "окт"], "w.s1": "ул. Сыганак", "w.s2": "ул. Кунаева", "w.s3": "пр. Туран", "w.s4": "ул. Акмешит",
+            "w.asphalt": "Асфальт", "w.pipes": "Замена труб", "w.closure": "Перекрытие", "w.light": "Освещение", "w.green": "Благоустройство", "w.today": "сегодня",
+            "w.twice": "Копаем дважды", "w.parallel": "Две улицы перекрыты сразу",
+            "w.advice.title": "Сначала сети, потом асфальт", "w.advice.text": "Замену трубы на ул. Сыганак поставить до укладки асфальта — участок не придётся вскрывать повторно.",
+            "c.title": "Буран в Нуре", "c.line": "службы работают", more: "Подробнее", hide: "Скрыть", "c.hd": "Буран · Нура", "c.since": "Идёт с 12 окт, 06:30",
+            "c.p1": "3 из 5", "c.p2": "2 из 2", "c.p3": "1 из 3", "c.zone": "Зона: район Нура", "c.zone2": "Зона у ТЭЦ", approx: "Примерное место",
+            replay: "Хроника города", play: "Смотреть", "r.date": "12 окт", "r.day": "вторник", "r.slider": "День хроники", "r.tick": "Буран", "r.7": "7 дней", "r.30": "30 дней", "r.close": "Закрыть хронику",
+            "m.mon": "окт", "m.title": "Встреча акима района с жителями", "m.place": "Школа № 64", "m.go": "Приду", "m.ask": "Задать вопрос", "m.orders": "Поручения после встречи",
+            o1: "Поставить освещение во дворе у ул. Сыганак", "o1.due": "до 15 ноя", "o1.meta": "Освещение улиц · связано с обращением",
+            o2: "Убрать стихийную свалку у гаражей", "o2.due": "просрочено на 2 дня", "o2.meta": "Вывоз мусора",
+            o3: "Отремонтировать лавочки во дворе", "o3.due": "сделано 10 окт", "o3.meta": "Благоустройство",
+            "n.bell": "Уведомления, 3 новых", "n.title": "Уведомления", "n.readall": "Прочитать все",
+            "a.q": "Где больше всего жалоб на снег за неделю?", "a.n1": "жалобы на снег за 7 дней", "a.n2": "в Нуре", "a.n3": "решено в срок",
+            "a.text": "Больше всего — в Нуре: 61 жалоба, втрое больше прошлой недели. Чаще всего — дворы у ул. Сыганак и Коксенгир.",
+            "a.map": "Показать на карте", "a.offline": "офлайн-режим", "a.how": "Как получен ответ", "a.src": "Тепловая карта и обращения за 7 дней. Числа посчитал код, текст — по шаблону.",
+            "sc.title": "Ситуационный центр · Астана", "sc.new": "Новые за сутки", "sc.new.d": "+12 к вчера", "sc.late": "Просрочено", "sc.late.d": "у 3 служб",
+            "sc.verified": "Проверено жителями", "sc.verified.d": "за неделю", "sc.crisis": "Кризисный штаб"
+          },
+          kk: {
+            section: "15-раунд: «Бірге» экрандары", intro: "Аула, бастамалар, қызметтер, дағдарыс, хроника, кездесулер және жағдаяттық орталық үшін жаңа компоненттер. Тек жаңа кластар — A эталоны өзгермейді.",
+            nura: "Нұра", demo: "Үлгі", yard: "Көксеңгір көшесіндегі аула", "yard.neighbors": "Birge-дегі көршілер", "yard.problems": "мәселе", "yard.initiatives": "бастама",
+            "yard.captain": "Аула старшысы: Айгүл", "yard.join": "Мен осында тұрамын",
+            "tab.overview": "Шолу", "tab.problems": "Мәселелер", "tab.initiatives": "Бастамалар", "tab.works": "Жұмыстар",
+            "feed.new": "Жаңа", "feed.old": "Бұрын",
+            "feed.1": "Көрші «Сенбілік, сенбі 10:00» бастамасын ұсынды", "feed.1.meta": "2 сағат бұрын · Көксеңгір көшесіндегі аула",
+            "feed.2": "«Кіреберіс алдындағы қар тазаланбаған» — қызмет түзетілгенін хабарлады", "feed.2.meta": "кеше",
+            "feed.3": "Нұрадағы боран: қызметтер жұмыс істеп жатыр, 14:00-дегі жаңарту", "feed.3.meta": "бүгін, 14:05",
+            "feed.4": "Аудан әкімімен кездесу: тапсырмалар жарияланды", "feed.4.meta": "3 күн бұрын",
+            "i1.title": "Ауладағы сенбілік", "i1.sub": "Сб, 10:00 · Көксеңгір көшесіндегі аула", support: "Әкімдік қолдады", join: "Мен барамын", joined: "Сіз барасыз",
+            "i2.title": "6 көшет отырғызамыз", "i2.sub": "Жс, 11:00 · № 64 мектеп жанындағы гүлзар",
+            "i1.when": "Сенбі, 18 қазан, 10:00–12:00", "bring.1": "қолғап", "bring.2": "қап", "bring.3": "тырма",
+            "support.note": "Қаптар және қоқысты 14:00-де шығару", cant: "Бара алмаймын",
+            "done.label": "көрші — бірге жасалды", "done.text": "Ауланы тазалап, 6 көшет отырғыздық", "done.note": "Іс біткен соң фото пайда болады",
+            "kind.cleanup": "Сенбілік",
+            kinds: { trees: "Гүлзар", playground: "Алаң", ball: "Спорт", bus: "Аялдама", bulb: "Жарықтандыру", bench: "Орындықтар", sprout: "Көгалдандыру",
+              broom: "Тазалау", snowflake: "Қар", wrench: "Жөндеу", heart: "Көршілерге көмек" },
+            "svcs.title": "2 қызмет жұмыс істеп жатыр — жауап мерзімі біреу", "svc.water": "Су арнасы", "svc.road": "Жол қызметі", "svc.clean": "Көше тазалау",
+            "svc.light": "Көше жарығы", "svc.heat": "Жылумен жабдықтау",
+            "role.lead": "жетекші", "role.partner": "қатысады", "st.done": "орындалды", "st.progress": "жұмыста", "st.todo": "басталмады",
+            "dl.ok": "мерзімінде", "dl.soon": "2 күн қалды", "dl.late": "3 күнге кешікті",
+            "b.svc": "Қызмет", "b.open": "Ашық", "b.late": "Мерзімі өткен", "b.median": "Жауап, күн", "b.deadline": "Мерзім", "b.verified": "Тұрғындар тексерді", "b.returned": "Қайтарылды",
+            "h1.time": "12 қаз, 10:40", "h1.why": "Алдымен құбырды ауыстыру керек · оператор", "h2.time": "11 қаз, 17:15", "h2.why": "Қар астында шұңқыр — жабынды жөндеу керек · қызмет",
+            "h.note": "Басқа қызметке бергенде тұрғынға жауап мерзімі өзгермейді.",
+            "w.street": "Көше", months: ["мам", "мау", "шіл", "там", "қыр", "қаз"], "w.s1": "Сығанақ к.", "w.s2": "Қонаев к.", "w.s3": "Тұран д.", "w.s4": "Ақмешіт к.",
+            "w.asphalt": "Асфальт", "w.pipes": "Құбыр ауыстыру", "w.closure": "Жабылу", "w.light": "Жарықтандыру", "w.green": "Абаттандыру", "w.today": "бүгін",
+            "w.twice": "Екі рет қазамыз", "w.parallel": "Екі көше бірден жабық",
+            "w.advice.title": "Алдымен желілер, содан кейін асфальт", "w.advice.text": "Сығанақ көшесіндегі құбырды асфальт төсемес бұрын ауыстырыңыз — учаскені қайта қазудың қажеті болмайды.",
+            "c.title": "Нұрадағы боран", "c.line": "қызметтер жұмыс істеп жатыр", more: "Толығырақ", hide: "Жасыру", "c.hd": "Боран · Нұра", "c.since": "12 қазан, 06:30-дан бері",
+            "c.p1": "5-тен 3", "c.p2": "2-ден 2", "c.p3": "3-тен 1", "c.zone": "Аймақ: Нұра ауданы", "c.zone2": "ЖЭО маңындағы аймақ", approx: "Шамамен көрсетілген орын",
+            replay: "Қала хроникасы", play: "Көру", "r.date": "12 қаз", "r.day": "сейсенбі", "r.slider": "Хроника күні", "r.tick": "Боран", "r.7": "7 күн", "r.30": "30 күн", "r.close": "Хрониканы жабу",
+            "m.mon": "қаз", "m.title": "Аудан әкімінің тұрғындармен кездесуі", "m.place": "№ 64 мектеп", "m.go": "Барамын", "m.ask": "Сұрақ қою", "m.orders": "Кездесуден кейінгі тапсырмалар",
+            o1: "Сығанақ көшесіндегі аулаға жарық орнату", "o1.due": "15 қарашаға дейін", "o1.meta": "Көше жарығы · өтінішпен байланысты",
+            o2: "Гараждар жанындағы рұқсатсыз қоқыс үйіндісін шығару", "o2.due": "2 күнге кешікті", "o2.meta": "Қоқыс шығару",
+            o3: "Ауладағы орындықтарды жөндеу", "o3.due": "10 қазанда орындалды", "o3.meta": "Абаттандыру",
+            "n.bell": "Хабарламалар, 3 жаңа", "n.title": "Хабарламалар", "n.readall": "Барлығын оқу",
+            "a.q": "Апта бойы қар туралы шағым қай жерде көп?", "a.n1": "7 күндегі қар туралы шағым", "a.n2": "Нұрада", "a.n3": "мерзімінде шешілді",
+            "a.text": "Ең көбі — Нұрада: 61 шағым, өткен аптадан үш есе көп. Көбінесе — Сығанақ және Көксеңгір көшелеріндегі аулалар.",
+            "a.map": "Картадан көрсету", "a.offline": "офлайн режим", "a.how": "Жауап қалай алынды", "a.src": "7 күндегі жылу картасы мен өтініштер. Сандарды код есептеді, мәтін — үлгі бойынша.",
+            "sc.title": "Жағдаяттық орталық · Астана", "sc.new": "Тәулік ішінде жаңа", "sc.new.d": "кешегіден +12", "sc.late": "Мерзімі өткен", "sc.late.d": "3 қызметте",
+            "sc.verified": "Тұрғындар тексерді", "sc.verified.d": "апта ішінде", "sc.crisis": "Жедел штаб"
+          }
+        };
+        var BOARD = [["svc.clean", "#4b5d7a", "trash", 31, 0, "1,2", 0.3, "ok", "72 %", 0], ["svc.road", "#5b6770", "road", 18, 5, "3,1", 1, "late", "51 %", 2],
+          ["svc.water", "#1f5fa8", "droplet", 12, 3, "2,5", 0.85, "soon", "64 %", 1], ["svc.light", "#7a520f", "bulb", 9, 1, "2,0", 0.6, "ok", "80 %", 0],
+          ["svc.heat", "#b3362e", "wind", 4, 0, "1,8", 0.2, "ok", "—", 0]];
+        var ILLS = ["together", "calendar", "bell", "chart", "handoff"];
+        var KINDS = ["trees", "playground", "ball", "bus", "bulb", "bench", "sprout", "broom", "snowflake", "wrench", "heart"];
+        var lang = function () { return I && I.getLang ? I.getLang() : "ru"; };
+        var s = function (k) { var d = S[lang()] || S.ru; return d[k] != null ? d[k] : S.ru[k]; };
+        function render() {
+          var box = document.getElementById("kit-r15");
+          if (!box) return;
+          box.querySelectorAll("[data-s15]").forEach(function (n) { n.textContent = s(n.getAttribute("data-s15")); });
+          box.querySelectorAll("[data-s15-label]").forEach(function (n) { var v = s(n.getAttribute("data-s15-label")); n.setAttribute("aria-label", v); n.title = v; });
+          document.getElementById("kit-r15-months").innerHTML = s("months").map(function (m) { return "<span>" + UI.esc(m) + "</span>"; }).join("");
+          document.getElementById("kit-r15-board").innerHTML = BOARD.map(function (r) {
+            return '<tr tabindex="0"><td><span class="bk-board__svc"><span class="bk-board__ic" style="--svc:' + r[1] + '">' + UI.icon(r[2]) + "</span>" + UI.esc(s(r[0])) + "</span></td>" +
+              '<td data-col="open">' + r[3] + '</td><td data-col="late">' + (r[4] ? '<span class="bk-board__late">' + r[4] + "</span>" : '<span class="bk-board__zero">0</span>') + "</td>" +
+              '<td data-col="median">' + r[5] + '</td><td data-col="deadline"><span class="bk-deadline" data-state="' + r[7] + '" style="--p:' + r[6] + '"><span class="bk-deadline__track"></span></span></td>' +
+              '<td data-col="verified">' + r[8] + '</td><td data-col="returned">' + (r[9] || '<span class="bk-board__zero">0</span>') + "</td></tr>";
+          }).join("");
+          // П1: вид объекта / дела — значок набора на спокойном фоне (как .bk-thumb--kind), подпись — данные, не украшение
+          document.getElementById("kit-r15-kinds").innerHTML = KINDS.map(function (n) {
+            return '<figure class="kit-r15__kind"><span class="bk-thumb bk-thumb--kind">' + UI.icon(n) + "</span><figcaption>" + UI.esc(s("kinds")[n]) +
+              "<br><code>i-" + n + "</code></figcaption></figure>";
+          }).join("");
+          document.getElementById("kit-r15-ills").innerHTML = ILLS.map(function (n) { return '<figure class="kit-r15__kind">' + UI.illustration(n) + "<figcaption><code>ill-" + n + "</code></figcaption></figure>"; }).join("");
+        }
+        function wire() {
+          document.querySelectorAll(".kit-r15-join").forEach(function (b) {
+            b.addEventListener("click", function () {
+              var on = b.getAttribute("aria-pressed") !== "true", n = b.querySelector(".bk-join__n");
+              b.setAttribute("aria-pressed", String(on));
+              b.querySelector("[data-s15]").setAttribute("data-s15", on ? "joined" : "join");
+              b.querySelector("use").setAttribute("href", "icons.svg#i-" + (on ? "check" : "users"));
+              n.textContent = String(Number(n.textContent) + (on ? 1 : -1));
+              n.classList.remove("is-bump"); void n.offsetWidth; n.classList.add("is-bump");
+              render();
+            });
+          });
+          var go = document.getElementById("kit-r15-go");
+          go.addEventListener("click", function () {
+            var c = go.querySelector(".bk-btn__count");
+            c.textContent = String(Number(c.textContent) + 1);
+            c.classList.remove("is-bump"); void c.offsetWidth; c.classList.add("is-bump");
+          });
+          var range = document.getElementById("kit-r15-range"), play = document.getElementById("kit-r15-play"), timer = null;
+          var sync = function () { range.style.setProperty("--p", String(range.value / range.max)); };
+          range.addEventListener("input", sync);
+          play.addEventListener("click", function () {
+            if (timer) { clearInterval(timer); timer = null; play.querySelector("use").setAttribute("href", "icons.svg#i-play"); return; }
+            play.querySelector("use").setAttribute("href", "icons.svg#i-pause");
+            timer = setInterval(function () { range.value = (Number(range.value) + 1) % (Number(range.max) + 1); sync(); }, 700);
+          });
+          if (UI.tabs) UI.tabs(document.getElementById("kit-r15-tabs"));
+          document.querySelectorAll("#kit-r15 .bk-seg").forEach(function (g) { if (UI.seg) UI.seg(g); });
+        }
+        wire();
+        render();
+        if (I) { if (I.ready && I.ready.then) I.ready.then(render); I.onChange(render); }
       })();
     </script>
   </body>
