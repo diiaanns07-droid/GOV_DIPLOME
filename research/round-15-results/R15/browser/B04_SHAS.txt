@@ -1,0 +1,4 @@
+R01 claude/brave-fermi-nhzetj 197ad600 (B0.4 в ветке R01: BUILD_LOG — B0…B0.4; BUILD.json — FINAL-4.1)
+R15 tests @ 19748bff+ (этот круг)
+запуск: NODE_PATH=$(npm root -g) node tests/civic/R15/browser/r15_round15.cjs <дерево R01> <out>; r15_reference.cjs — так же
+итог: r15_round15 8 PASS / 0 FAIL / 1 NOT_RUN; r15_reference 18 / 0 / 0; pytest tests/civic/R15 — 512 passed, 6 xfailed, 6 xpassed, 32 NOT_RUN

@@ -9,16 +9,16 @@
  "code_sha": "см. git log ветки: последний коммит R15 (код R15 — только tests/civic/R15/)",
  "tested_sha": {
   "package": "e91acb69",
-  "R17": "e7ade08f",
+  "R17": "4132ad57",
   "R13": "eeacc26d",
   "R03": "cae2e270",
-  "R16": "fbd9e247",
+  "R16": "6bdf8c3c",
   "R04": "f20775ab",
   "R02": "ac75f3a8 (claude/affectionate-shannon-jm6ws5)",
   "R07": "7ce9aee7",
   "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
-  "R09": "dfaee97e (только тест голоса)",
-  "R01": "c9069723 (B0)",
+  "R09": "80a35084",
+  "R01": "197ad600 (B0.4 в ветке R01)",
   "R08": "5d9b4138 (claude/laughing-euler-iv3on3)",
   "R06": "c2604ea2",
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
@@ -237,6 +237,39 @@
    "R17_e7ade08f_agencies": "32 passed + 3 xfailed (S43 открыта)",
    "R13_eeacc26d_meetings": "27 passed",
    "R06_c2604ea2_notify_with_R13": "3 passed (наложение ui/civic_meetings + ui/civic_qa R13)"
+  },
+  "R01_197ad600_B04_all_R15": {
+   "passed": 512,
+   "failed": 0,
+   "xfailed": 6,
+   "xpassed": 6,
+   "skipped_not_run": 32,
+   "open_in_build": [
+    "S43",
+    "S44",
+    "S51"
+   ],
+   "fixed_in_build": [
+    "S42",
+    "S48"
+   ],
+   "note": "NOT_RUN — передачи R09 (в сборке поставка R09 e494026e без маршрутов handoff/services)"
+  },
+  "browser_B04": {
+   "PASS": 8,
+   "FAIL": 0,
+   "NOT_RUN": 1,
+   "reference_r14": "18/0/0",
+   "files": [
+    "browser/r15_round15_b04.json",
+    "browser/r15_reference_b04.json",
+    "browser/B04_SHAS.txt"
+   ]
+  },
+  "round7_heads": {
+   "R16_6bdf8c3c_together": "36 passed + S51 XPASS(strict); tests/civic/R16 56 passed",
+   "R17_4132ad57_agencies": "32 passed + S43 XPASS(strict) ×3",
+   "R09_80a35084_handoffs": "30 passed + 2 XPASS (S49)"
   }
  },
  "findings": {
@@ -249,7 +282,7 @@
   "S43": {
    "owner": "R17",
    "level": "низкий",
-   "status": "open",
+   "status": "исправлено в ветке владельца: R17 13589572 (PENDING до сборки B1)",
    "patch": "patches/P-R17-S43.diff"
   },
   "S44": {
@@ -302,7 +335,7 @@
   "S51": {
    "owner": "R16",
    "level": "средний",
-   "status": "open",
+   "status": "исправлено в ветке владельца: R16 3d0a4c36 (PENDING до сборки B1)",
    "patch": "patches/P-R16-S51.diff",
    "what": "анонимный GET together/yards/cell-<любые числа> записывает двор в базу и кэш без предела; ячейка вне Астаны — 200; такие дворы — в публичном списке «Выбрать двор»"
   }
@@ -315,11 +348,14 @@
   "research/round-15-results/R15/browser/resident_375_meetings_card.png",
   "research/round-15-results/R15/browser/resident_375_together_initiatives.png",
   "research/round-15-results/R15/browser/resident_375_together_my_yard.png",
-  "research/round-15-results/R15/browser/akimat_1366_together_staff_tools.png"
+  "research/round-15-results/R15/browser/akimat_1366_together_staff_tools.png",
+  "browser/b04_akimat_1366_situation_center_board.png",
+  "browser/b04_resident_375_together_my_yard.png",
+  "browser/b04_akimat_1366_agencies_crisis.png"
  ],
  "known_limits": [
   "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
   "проверка в облаке без интернета; подложка карты — упрощённый фон"
  ],
- "next_step": "круг 7 (~22:30 Астаны): S51 у R16, S43 у R17; новые поставки. B1 16 окт 14:00 — полный прогон на сборке, PENDING (S42, S44, S48, S49) -> FIXED"
+ "next_step": "круг 8 (~23:30 Астаны): новые поставки; B1 16 окт 14:00 — полный прогон на сборке, PENDING (S42, S43, S44, S48, S49, S51) -> FIXED"
 }
