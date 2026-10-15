@@ -1,0 +1,802 @@
+/*
+ * Birge · «Вопросы и встречи» (R13, раунд 15) — по эталону A (research/round-14/design/, лист «Проекты и идеи») и
+ * VISUAL_BRIEF раунда 15: Inter 400/500/600, не больше трёх размеров текста (19 / 15 / 13), сетка 8, линии 1 px
+ * rgba(18,26,23,.08), одна акцентная кнопка, зелёный — только «выполнено». Значения — токенами ui-kit R11, запасные —
+ * цифры эталона. Лист раздела — стекло оболочки R01 (#birge-screen): у корня .mt своего фона нет; формы — непрозрачные.
+ * Шапка и сегменты стоят, прокручивается тело (.mt-body) — как «Вопрос акиму».
+ */
+.mt {
+  --mt-ink: var(--c-ink, #121a17);
+  --mt-ink-2: var(--c-text-2, #4b5752);
+  --mt-ink-3: var(--c-text-3, #6b7772);
+  --mt-line: var(--c-line, rgba(18, 26, 23, 0.08));
+  --mt-sub: var(--c-sub, rgba(255, 255, 255, 0.72));
+  --mt-fill: var(--c-fill, rgba(18, 26, 23, 0.06));
+  --mt-ok: var(--ok-mark, #3b8a2e);
+  --mt-ok-ink: var(--c-ok, #27500a);
+  --mt-ok-bg: var(--c-ok-soft, #eaf3de);
+  --mt-danger: var(--c-danger, #9a2e28);
+  --mt-accent: var(--c-primary, #121a17);
+  --mt-ease: var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+  --mt-px: 18px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  max-width: 720px;
+  min-height: 0;
+  margin: 0 auto;
+  color: var(--mt-ink);
+  font-family: "Inter", "SF Pro Text", -apple-system, "Segoe UI", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.mt *,
+.mt *::before,
+.mt *::after {
+  box-sizing: border-box;
+}
+.mt p,
+.mt h3,
+.mt ul,
+.mt ol,
+.mt blockquote {
+  margin: 0;
+}
+.mt ul,
+.mt ol {
+  padding: 0;
+  list-style: none;
+}
+.mt .ic {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── шапка листа: «Вопросы и встречи» 19/600 и круглая «×» (эталон .ph) ── */
+.mt__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px var(--mt-px) 0;
+}
+.mt__ttl {
+  flex: 1;
+  min-width: 0;
+}
+.mt__title {
+  margin: 0;
+  padding: 4px 0;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.mt__title:focus {
+  outline: none;
+}
+.mt__title:focus-visible,
+.mt-focus-target:focus-visible {
+  outline: 3px solid var(--c-focus, #152c26);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.mt__close {
+  flex: none;
+}
+.mt-seg {
+  display: flex;
+  margin: 12px var(--mt-px) 0;
+}
+.mt-seg > button {
+  flex: 1;
+  min-height: 36px;
+}
+.mt-seg > button[aria-selected="true"] {
+  background: var(--c-surface, #fff);
+  box-shadow: var(--shadow-1, 0 1px 3px rgba(18, 26, 23, 0.12));
+  color: var(--mt-ink);
+}
+
+/* ── прокручиваемое тело ── */
+.mt-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 12px var(--mt-px) 24px;
+  scroll-padding-top: 12px;
+}
+.mt-list-view,
+.mt-detail {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+}
+.mt-askhost {
+  margin: 0 calc(-1 * var(--mt-px));
+}
+.mt-askhost > .qa {
+  max-width: none;
+  padding-top: 4px;
+}
+
+/* ── фильтр района (тихий: подпись + select) ── */
+.mt-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+}
+.mt-select {
+  min-height: 36px;
+  max-width: 100%;
+  padding: 6px 30px 6px 10px;
+  border: 1px solid var(--mt-line);
+  border-radius: var(--r-m, 10px);
+  background: var(--c-surface, #fff) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%234b5752' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 8px center / 14px no-repeat;
+  color: var(--mt-ink);
+  font: inherit;
+  font-size: 13px;
+  appearance: none;
+  cursor: pointer;
+}
+.mt-select:focus-visible,
+.mt input:focus-visible,
+.mt textarea:focus-visible {
+  outline: 3px solid var(--c-focus, #152c26);
+  outline-offset: 1px;
+}
+.mt-select--sm {
+  min-height: 32px;
+}
+
+/* ── плитка даты: день недели · число · месяц (лист календаря) ── */
+.mt-date {
+  display: inline-flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 64px;
+  border: 1px solid var(--mt-line);
+  border-radius: var(--r-m, 12px);
+  background: var(--c-surface, #fff);
+  line-height: 1.1;
+}
+.mt-date__wd,
+.mt-date__m {
+  color: var(--mt-ink-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+.mt-date__d {
+  font-size: 19px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.mt-date--sm {
+  width: 48px;
+  height: 56px;
+}
+
+/* ── ближайшая встреча (главное у жителя) ── */
+.mt-hero {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--mt-line);
+  border-radius: var(--r-l, 16px);
+  background: var(--c-surface, #fff);
+  animation: mt-enter 220ms var(--mt-ease) both;
+}
+.mt-hero__top,
+.mt-dhead {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.mt-hero__main,
+.mt-dhead__main {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+.mt-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+.mt-eyebrow:empty {
+  display: none;
+}
+.mt-eyebrow__when {
+  color: var(--mt-ink);
+}
+.mt-hero__title,
+.mt-dhead__title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.mt-dhead__title:focus {
+  outline: none;
+}
+.mt-meta,
+.mt-place {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+}
+.mt-meta .ic,
+.mt-place .ic {
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+}
+.mt-place__label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.mt-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  margin: -7px 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mt-ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.mt-link:hover {
+  background: var(--mt-fill);
+}
+.mt-link:focus-visible,
+.mt-row:focus-visible {
+  outline: 3px solid var(--c-focus, #152c26);
+  outline-offset: 2px;
+}
+.mt-hero__act {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.mt-going {
+  min-height: 44px;
+  gap: 8px;
+  padding-inline: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.mt-going.is-on {
+  border: 1px solid var(--mt-line);
+  background: var(--mt-ok-bg);
+  color: var(--mt-ok-ink);
+}
+.mt-going[disabled] {
+  cursor: default;
+}
+.mt-going__sep {
+  opacity: 0.6;
+}
+.mt-count {
+  display: inline-block;
+  min-width: 2ch;
+  text-align: left;
+}
+/* «Мелочь вау» экрана: число «Приду» мягко подпрыгивает (+1) — без движения при prefers-reduced-motion */
+.mt-count--bump {
+  animation: mt-bump 420ms var(--mt-ease);
+}
+.mt-hint {
+  color: var(--mt-ink-3);
+  font-size: 13px;
+}
+.mt-hero--loading .mt-going {
+  opacity: 0.85;
+}
+
+/* ── секции ── */
+.mt-sec {
+  display: grid;
+  gap: 8px;
+}
+.mt-sec__hd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+.mt-sec__title {
+  font-size: 15px;
+  font-weight: 600;
+}
+.mt-sec__count {
+  color: var(--mt-ink-2);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.mt-sec__hint,
+.mt-empty-line {
+  color: var(--mt-ink-2);
+  font-size: 13px;
+}
+
+/* ── вопросы к встрече ── */
+.mt-qlist {
+  display: grid;
+  gap: 8px;
+}
+.mt-q {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--r-l, 14px);
+  background: var(--mt-sub);
+  box-shadow: inset 0 0 0 1px var(--mt-line);
+  transition: box-shadow 200ms var(--mt-ease);
+}
+.mt-q__text {
+  font-size: 15px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.mt-q__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.mt-q__votes {
+  color: var(--mt-ink-2);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.mt-vote {
+  min-width: 64px;
+  justify-content: center;
+}
+.mt-vote[disabled] {
+  opacity: 0.55;
+  cursor: default;
+}
+.mt-q--pending {
+  background: var(--c-surface, #fff);
+}
+.mt-flags {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--mt-danger);
+  font-size: 13px;
+}
+.mt-flags .ic {
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+}
+.mt-answer {
+  margin: 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--mt-ink);
+  border-radius: 0 10px 10px 0;
+  background: var(--c-surface, #fff);
+  font-size: 13px;
+}
+.mt-answer p {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.mt-answer__sign {
+  margin-top: 4px;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+}
+.mt-askbtn {
+  justify-self: start;
+  gap: 6px;
+  min-height: 44px;
+}
+/* Формы — непрозрачные (GLASS.md): белый блок с линией */
+.mt-ask,
+.mt-form {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--mt-line);
+  border-radius: var(--r-l, 14px);
+  background: var(--c-surface, #fff);
+}
+.mt-ask textarea,
+.mt-form textarea,
+.mt-form input,
+.mt-linkform input {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--c-line-strong, rgba(18, 26, 23, 0.16));
+  border-radius: var(--r-m, 10px);
+  background: var(--c-surface, #fff);
+  color: var(--mt-ink);
+  font: inherit;
+  font-size: 15px;
+}
+.mt-ask textarea,
+.mt-form textarea {
+  resize: vertical;
+  line-height: 1.4;
+}
+.mt-ask__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mt-ask__count {
+  flex: none;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.mt-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.mt-grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.mt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.mt-actions > .bk-btn {
+  min-height: 44px;
+}
+.mt-actions--sm > .bk-btn {
+  min-height: 36px;
+}
+.mt-sent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--r-l, 14px);
+  background: var(--mt-ok-bg);
+  color: var(--mt-ok-ink);
+  animation: mt-enter 220ms var(--mt-ease) both;
+}
+.mt-sent:focus {
+  outline: none;
+}
+.mt-sent__ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--mt-ok);
+  color: #fff;
+}
+.mt-sent__title {
+  font-weight: 600;
+}
+.mt-sent__text {
+  font-size: 13px;
+}
+
+/* ── список встреч ── */
+.mt-rows {
+  display: grid;
+  gap: 8px;
+}
+.mt-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 72px;
+  padding: 8px 12px 8px 8px;
+  border: 0;
+  border-radius: var(--r-l, 14px);
+  background: var(--mt-sub);
+  box-shadow: inset 0 0 0 1px var(--mt-line);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 150ms var(--mt-ease), background-color 150ms var(--mt-ease);
+}
+.mt-row:hover {
+  box-shadow: inset 0 0 0 1px var(--c-line-strong, rgba(18, 26, 23, 0.18));
+}
+.mt-row__main {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+.mt-row__title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.mt-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+}
+.mt-row__orders {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 13px;
+}
+.mt-row__progress {
+  color: var(--mt-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.mt-row__chev {
+  color: var(--mt-ink-3);
+}
+.mt-bar {
+  position: relative;
+  display: inline-block;
+  width: 72px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--mt-fill);
+}
+.mt-bar--wide {
+  width: 100%;
+}
+.mt-bar__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 3px;
+  background: var(--mt-ok);
+  transition: width 600ms var(--mt-ease);
+}
+.mt-phase {
+  font-size: 12px;
+}
+.mt-phase--cancelled {
+  color: var(--mt-danger);
+}
+.mt-demo {
+  font-size: 12px;
+}
+
+/* ── встреча: шапка, итог, поручения ── */
+.mt-back {
+  justify-self: start;
+  margin: -4px 0 -4px -6px;
+}
+.mt-back .ic {
+  width: 16px;
+  height: 16px;
+}
+.mt-result__text {
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.mt-orders {
+  display: grid;
+}
+.mt-order {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--mt-line);
+  transition: background-color 400ms var(--mt-ease);
+}
+.mt-order:first-child {
+  border-top: 0;
+}
+.mt-st-ic {
+  margin-top: 2px;
+}
+.mt-order__main {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+.mt-order__text {
+  font-size: 15px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.mt-order.is-done .mt-order__text {
+  color: var(--mt-ink-2);
+}
+.mt-order__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+}
+.mt-order__st {
+  color: var(--mt-ink);
+  font-weight: 500;
+}
+.mt-order.is-overdue .mt-order__due {
+  color: var(--mt-danger);
+}
+.mt-dot {
+  color: var(--mt-ink-3);
+}
+.mt-linkchip {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--mt-fill);
+  color: var(--mt-ink-2);
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.mt-linkchip .ic {
+  width: 12px;
+  height: 12px;
+}
+.mt-order__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.mt-linkform,
+.mt-rejectform {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+  width: 100%;
+}
+.mt-linkform input {
+  flex: 1 1 140px;
+  width: auto;
+}
+.mt-staffmeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  color: var(--mt-ink-2);
+  font-size: 13px;
+}
+.mt-lead {
+  display: flex;
+}
+.mt-lead > .bk-btn {
+  gap: 6px;
+  min-height: 44px;
+}
+.mt-login {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+/* Ссылка из ленты уведомлений: строка встречи / поручения / вопроса подсвечивается на мгновение */
+.mt-flash {
+  animation: mt-flash 1600ms var(--mt-ease);
+}
+
+/* ── загрузка (скелетон не раньше 150 мс), состояния ── */
+.mt-wait {
+  display: grid;
+  gap: 12px;
+  min-height: 120px;
+}
+.mt-skel {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+}
+.mt-skel__tile {
+  flex: none;
+  width: 56px;
+  height: 64px;
+  border-radius: 12px;
+}
+.mt-skel__lines {
+  display: grid;
+  flex: 1;
+  gap: 8px;
+  align-content: start;
+}
+.mt-skel--short {
+  width: 40%;
+}
+.mt-state {
+  padding: 8px 0;
+}
+
+@keyframes mt-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes mt-bump {
+  40% {
+    transform: scale(1.35);
+  }
+}
+@keyframes mt-flash {
+  0%,
+  40% {
+    box-shadow: inset 0 0 0 2px var(--mt-ink);
+    background-color: var(--mt-ok-bg);
+  }
+}
+
+/* Телефон: те же блоки, поля 16; формы — колонкой */
+@media (max-width: 760px) {
+  .mt {
+    --mt-px: 16px;
+  }
+  .mt-grid2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mt-going {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mt-hero,
+  .mt-sent,
+  .mt-count--bump,
+  .mt-flash {
+    animation: none;
+  }
+  .mt-bar__fill,
+  .mt-row,
+  .mt-q,
+  .mt-order {
+    transition: none;
+  }
+}
