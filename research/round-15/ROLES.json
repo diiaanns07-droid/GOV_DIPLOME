@@ -1,0 +1,249 @@
+{
+  "round": 15,
+  "product": "Birge",
+  "theme": "Бірге — вместе: жители вместе, ведомства вместе, визуал",
+  "package_branch": "claude/clever-hypatia-q6ts4g",
+  "base_build": "FINAL-4",
+  "base_sha": "a4937462",
+  "days": 2,
+  "launch_order": [
+    "R11",
+    "R01",
+    "R02",
+    "R16",
+    "R17",
+    "R09",
+    "R12",
+    "R07",
+    "R08",
+    "R05",
+    "R13",
+    "R06",
+    "R04",
+    "R03",
+    "R10",
+    "R15",
+    "R14"
+  ],
+  "roles": [
+    {
+      "id": "R01",
+      "title": "Интегратор и оболочка",
+      "wave": 1,
+      "paths": [
+        "web/index.html",
+        "web/style.css",
+        "web/map.js",
+        "web/interface.js",
+        "web/civic/shell/",
+        "ui/web_server.py",
+        "run.bat",
+        "run.sh",
+        "run-city.bat",
+        "tests/civic/R01/"
+      ],
+      "restore_from": "claude/sharp-dijkstra-0t87gl@a4937462"
+    },
+    {
+      "id": "R02",
+      "title": "Демо-мир и данные",
+      "wave": 1,
+      "paths": [
+        "ml/datasets/",
+        "ml/labeling/",
+        "web/labeling/",
+        "data/civic/astana/demo-world/",
+        "tests/civic/R02/"
+      ],
+      "restore_from": "claude/r14-R02@f62cc93"
+    },
+    {
+      "id": "R03",
+      "title": "ИИ-аналитик акима",
+      "wave": 2,
+      "paths": [
+        "agent/civic_assistant/",
+        "web/civic/assistant/",
+        "ml/civic_classifier_v2/ (оценка)",
+        "tests/civic/R03/"
+      ],
+      "restore_from": "claude/r14-R03@0164d64"
+    },
+    {
+      "id": "R04",
+      "title": "ИИ: службы, ответы, модерация",
+      "wave": 2,
+      "paths": [
+        "ml/civic_dedup/",
+        "ml/civic_replies/",
+        "ui/civic_ml_api/",
+        "tests/civic/R04/"
+      ],
+      "restore_from": "claude/r14-R04@8e2b2ae"
+    },
+    {
+      "id": "R05",
+      "title": "3D-Астана",
+      "wave": 2,
+      "paths": [
+        "web/civic/build3d/",
+        "web/vendor/three/",
+        "data/civic/astana/landmarks/",
+        "tests/civic/R05/"
+      ],
+      "restore_from": "claude/r14-R05@82d47a07"
+    },
+    {
+      "id": "R06",
+      "title": "Проекты для всех, работы v2, уведомления",
+      "wave": 2,
+      "paths": [
+        "ui/civic_store/",
+        "web/civic/proposals/",
+        "web/civic/ideas/",
+        "web/civic/notify/",
+        "tests/civic/R06/"
+      ],
+      "restore_from": "claude/r14-R06@2f749aeb"
+    },
+    {
+      "id": "R07",
+      "title": "Живая карта и «Хроника города»",
+      "wave": 2,
+      "paths": [
+        "ui/civic_heat/",
+        "web/civic/heat/",
+        "web/civic/replay/",
+        "tests/civic/R07/"
+      ],
+      "restore_from": "claude/r14-R07@fe209c56"
+    },
+    {
+      "id": "R08",
+      "title": "Картина дня 2.0 и Ситуационный центр",
+      "wave": 2,
+      "paths": [
+        "ui/civic_akim/",
+        "web/civic/akim/",
+        "web/civic/nearby/",
+        "web/civic/board/",
+        "tests/civic/R08/"
+      ],
+      "restore_from": "claude/r14-R08@d5719635"
+    },
+    {
+      "id": "R09",
+      "title": "Обращение для нескольких служб",
+      "wave": 2,
+      "paths": [
+        "ui/civic_feedback/",
+        "web/civic/feedback/",
+        "tests/civic/R09/"
+      ],
+      "restore_from": "claude/modest-shannon-0ki93p@82056b7b"
+    },
+    {
+      "id": "R10",
+      "title": "Приёмка и демо-ролик",
+      "wave": 3,
+      "paths": [
+        "tests/civic/R10/",
+        "tests/e2e/"
+      ],
+      "restore_from": "claude/r14-R10@656681ee"
+    },
+    {
+      "id": "R11",
+      "title": "UX, схема меню, ui-kit, ҚАЗ",
+      "wave": 1,
+      "paths": [
+        "web/civic/ui-kit/",
+        "web/civic/i18n/",
+        "tests/civic/R11/"
+      ],
+      "restore_from": "claude/r14-R11@2a30d7a2"
+    },
+    {
+      "id": "R12",
+      "title": "Календарь работ и «копаем один раз»",
+      "wave": 2,
+      "paths": [
+        "engine/civic_geo/",
+        "data/civic/astana/geo/",
+        "web/civic/map/",
+        "web/civic/editor/",
+        "web/civic/qr/",
+        "web/civic/works-calendar/",
+        "tests/civic/R12/"
+      ],
+      "restore_from": "claude/tender-brahmagupta-ef5ztl@016c93b5"
+    },
+    {
+      "id": "R13",
+      "title": "Встречи с акимом, вопросы, прогноз",
+      "wave": 2,
+      "paths": [
+        "ml/civic_forecast/",
+        "ui/civic_forecast/",
+        "ui/civic_qa/",
+        "web/civic/qa/",
+        "ui/civic_meetings/",
+        "web/civic/meetings/",
+        "tests/civic/R13/"
+      ],
+      "restore_from": "claude/r14-R13@0487f2a6"
+    },
+    {
+      "id": "R14",
+      "title": "Диплом, Gton, документы",
+      "wave": 3,
+      "paths": [
+        "docs/birge/",
+        "docs/diploma/",
+        "docs/gton/"
+      ],
+      "restore_from": "claude/r14-R14@19715dbe"
+    },
+    {
+      "id": "R15",
+      "title": "Безопасность и приватность",
+      "wave": 3,
+      "paths": [
+        "tests/civic/R15/"
+      ],
+      "restore_from": "claude/r14-R15@540b4d3c"
+    },
+    {
+      "id": "R16",
+      "title": "Бірге: жители (двор, инициативы)",
+      "wave": 2,
+      "paths": [
+        "ui/civic_together/",
+        "web/civic/together/",
+        "tests/civic/R16/"
+      ],
+      "restore_from": null
+    },
+    {
+      "id": "R17",
+      "title": "Бірге: ведомства (штаб, кризис)",
+      "wave": 2,
+      "paths": [
+        "ui/civic_agencies/",
+        "web/civic/agencies/",
+        "tests/civic/R17/"
+      ],
+      "restore_from": null
+    }
+  ],
+  "local": [
+    "LOCAL-12 сборки на Windows и кадры с картой",
+    "LOCAL-13 ориентиры OSM для 3D",
+    "LOCAL-14 тексты людей для оценки",
+    "LOCAL-15 юзабилити-тест SUS",
+    "LOCAL-16 демо-ролик с картой",
+    "LOCAL-17 проверка ИИ-аналитика с LLM",
+    "LOCAL-18 презентация Gton на gh-pages"
+  ],
+  "coordinator": "сессия Claude, подготовившая пакет (ветка claude/clever-hypatia-q6ts4g) или владелец"
+}
