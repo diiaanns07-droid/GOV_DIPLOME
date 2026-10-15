@@ -489,6 +489,10 @@ body.civic-mode .civic-explore #map-status:not(.hidden) {
   transition: opacity var(--t-slow, 340ms) var(--ease, ease-out), visibility var(--t-slow, 340ms) var(--ease, ease-out);  /* R11 15.4 */
 }
 body.civic-mode .civic-explore #map-status[data-faded="1"] { opacity: 0; visibility: hidden; pointer-events: none; }
+/* Ревью R11 R01-2: тост не ложится на нижние панели — пока открыт каталог / постановка / карточка проекта R05 или мастер
+   и «Мои обращения» R09, его нет (он и так гаснет через 6 с и повторится при следующей загрузке карты). */
+html:is(.bc-open, .bc-mine-open) body.civic-mode .civic-explore #map-status,
+body.civic-mode:has(.birge-build3d-root .b3d-dock:is([data-state="catalog"], [data-state="placing"], [data-state="card"])) .civic-explore #map-status { visibility: hidden; }
 @media (max-width: 760px) {
   /* Телефон: внизу карты — шторка, над ней — центр карты (туда камера ставит выбранное место); строка — под легендой. */
   /* Левее столбика кнопок карты (48 + 15 + 12 px): строка не закрывает «+ | −» (R10 FINAL-3, 375). */

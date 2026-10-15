@@ -2552,6 +2552,14 @@ def main():
     world_line = server.civic_v2.world_line(server.civic_v2.world_report or server.civic_v2.seed_world())
     if world_line:
         print(world_line, flush=True)
+    # Прогрев в фоне после связки и засева мира (холодный старт, R10 B-107 / B-124): первый вопрос «Спросить Birge» (R03)
+    # и первый «Мой двор» (R16) — без ожидания 2–4 с. Модуля нет или он сломан — раздел посчитает всё при первом открытии.
+    for role, module, warm_args in (("R03", "agent.civic_assistant.api", ()), ("R16", "ui.civic_together", (server.civic_v2.db_path,))):
+        try:
+            warm = getattr(importlib.import_module(module), "warm_up")
+            threading.Thread(target=warm, args=warm_args, daemon=True, name=f"civic-warm-{role}").start()
+        except Exception:
+            LOGGER.info("civic-v2: %s warm-up skipped", role)
     ready_v2 = sorted({item["role"] for item in server.civic_v2.modules().values() if item["status"] == "ready"})
     print("civic-v2: ready " + (", ".join(ready_v2) if ready_v2 else "none yet"), flush=True)
     cls = server.civic.classifier_status

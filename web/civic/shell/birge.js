@@ -886,7 +886,8 @@
     ["#birge-locate, #toggle-3d, #birge-layer-btn, #birge-compass, .map-tools .bk-mapctl__group", "bk-glass--control"],  // №3
     [".birge-legend-line", "bk-glass bk-glass--bar"],             // №4 строка легенды
     ["#civic-panel", "bk-glass"],                                 // №5 панель / шторка
-    ["#birge-day, #birge-screen", "bk-glass"],                    // №6 лист раздела
+    // №6 лист раздела — плотное стекло 86 % (R11 GLASS: лист с текстом; ревью R11 R01-4: на тёмной карте текст читается).
+    ["#birge-day, #birge-screen", "bk-glass bk-glass--strong"],
     ["#map-status", "bk-glass bk-glass--bar"],                    // №7 плашка о запасном фоне
     [".civic-explore-registry", "bk-glass bk-glass--bar"],        // «Реестр пуст…» — строка над картой, не плашка раунда 13
   ];
