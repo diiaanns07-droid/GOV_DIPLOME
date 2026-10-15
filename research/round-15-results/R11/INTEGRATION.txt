@@ -1,0 +1,83 @@
+R11 · раунд 15 · INTEGRATION — как подключить и что взять ролям
+Ветка: claude/gracious-mendel-eopem6 (ветка сессии R11). База: claude/clever-hypatia-q6ts4g @ e91acb69 (FINAL-4 a4937462).
+Пути R11: web/civic/ui-kit/, web/civic/i18n/, tests/civic/R11/. Новых файлов для сборки нет: всё в уже подключённых
+tokens.css, components.css, icons.svg, ui-kit.js, ru.json, kk.json (CIVIC_ASSETS и теги <link>/<script> не меняются).
+
+======================================================================================================================
+§1. R01 — меню по схеме IA_ROUND15 (research/round-15-results/R11/IA_ROUND15.md, §7 — точный список)
+======================================================================================================================
+1.1 NAV со слотами-запасом: житель ["map","mine",["yard","nearby"],"ideas","more"], акимат ["map","day","inbox",
+    ["agencies","projects"],"more"] — в слоте берётся первый доступный раздел.
+1.2 «Ещё» — явный порядок и группы (вместо .slice(0, 4)): MORE и MORE_GROUPS из IA §7.2; PARENT — разделы без пункта,
+    пока доступен «родитель» (nearby→yard, questions→meetings, works/services/works-calendar→agencies).
+1.3 Адрес #<раздел>/<путь>: opts.path при монтировании, handle.setPath?.(path) без перемонтажа, opts.navigate(path).
+1.4 screenOptions: + map (currentMapObject()), path, navigate, setLayer.
+1.5 SCREENS: yard, together, meetings, agencies, crisis, analyst, works-calendar (IA §7.5); board — registerScreen с href
+    "/civic/board/", когда страница R08 в сборке.
+1.6 MENU_ICONS: yard home, together heart, meetings message, agencies building, analyst sparkle, board monitor, crisis alert,
+    works-calendar calendar, notifications bell (значки уже в icons.svg этой поставки).
+1.7 Колокольчик (только «Житель», только если есть window.BirgeNotify): кнопка в .birge-me перед аватаром —
+      <button type="button" class="bk-iconbtn bk-bell birge-bell" data-action="notifications" aria-haspopup="dialog">
+        <svg class="ic" aria-hidden="true"><use href="/civic/ui-kit/icons.svg#i-bell"></use></svg>
+        <span class="bk-nav__badge" aria-hidden="true" hidden></span></button>
+    имя кнопки — t("shell.bell.label") или t("shell.bell.new", {n}); телефон — первый пункт меню аватара
+    «Уведомления · N» (t("shell.nav.notifications")) и точка на аватаре (.bk-avatar[data-badge]).
+1.8 Хроника: чип в конце .birge-legend-line —
+      <button type="button" class="bk-chip bk-chip--glass birge-replay-chip"><svg class="ic" aria-hidden="true">
+        <use href="/civic/ui-kit/icons.svg#i-play"></use></svg><span>{t("shell.nav.replay")}</span></button>
+    title — t("shell.replay.hint"); по нажатию — BirgeReplay.mount(контейнер, {map, apiBase, days: 7, onClose}).
+1.9 BirgeShell.alertSlot() — контейнер под капсулой разделов (телефон — под поиском) для баннера кризиса R17 (.bk-crisis).
+1.10 Палитра Ctrl+K — команды IA §7.10, подписи — ключи shell.nav.* этой поставки.
+Ключи меню уже в словаре (22 шт.): shell.nav.yard, .together, .meetings, .agencies, .agencies_title, .works_calendar,
+.crisis, .analyst, .board, .replay, .replay_title, .notifications; shell.more.group.residents / .tools; shell.bell.label /
+.new / .empty; shell.replay.hint; shell.board.fullscreen / .back; shell.alert.more / .hide.
+
+======================================================================================================================
+§2. Роли — какие классы ui-kit брать для своего экрана (разметка — комментарий над классом в components.css,
+    живой пример — /civic/ui-kit/index.html, раздел «Раунд 15»; правила экранов — IA_ROUND15 §5)
+======================================================================================================================
+R16 «Мой двор»: .bk-yard (+ __eyebrow, __title, __stats/__stat с dt/dd, __captain, __actions, __ill с #ill-yard),
+    вкладки .bk-tabs, лента .bk-feed (+ .bk-feed__group «Новые / Раньше»), пусто — BirgeUI.state(el, "empty",
+    {illustration: "yard", …}).
+R16 «Сделаем вместе»: список — .bk-pc эталона + .bk-thumb.bk-thumb--ill (иллюстрации #ill-kind-cleanup, -snow, -repair,
+    -help, -greening) + .bk-support + .bk-join (aria-pressed; число .bk-join__n, класс .is-bump на +1); карточка —
+    .bk-init (+ __media, __title, __facts, __bring, __cta, __count), .bk-support--block с .bk-support__note, главная —
+    .bk-btn.bk-btn--primary.bk-btn--lg со счётчиком .bk-btn__count; итог — .bk-done (фото «после», «Сделано вместе»).
+R13 «Вопросы и встречи»: .bk-meet (+ __date, __main, __title, __meta, __cta), поручения .bk-orders/.bk-order
+    (BirgeUI.statusIcon(status) + текст + .bk-order__due[data-late] + .bk-order__meta); пусто — illustration "meeting".
+R17 «Ведомства»: табло — <table class="bk-board"> (сортировка: кнопка в <th>, aria-sort; .bk-board__svc с .bk-board__ic
+    цвета службы; просрочка — .bk-board__late; ноль — .bk-board__zero; полоса срока — .bk-deadline); передачи —
+    .bk-handoffs/.bk-handoff (#i-handoff); кризис — .bk-crisis-hd, чипы .bk-svcchips/.bk-svcchip (--p — доля сделанных
+    задач, «3 из 5» словами), легенда .bk-zone (data-approx="true" — пунктир + .bk-tag--approx), обновления — .bk-feed
+    data-kind="crisis"; баннер жителям — .bk-crisis (на карте вместе с .bk-glass .bk-glass--strong); цвета зоны на карте —
+    var(--zone-fill), var(--zone-line). Пусто: illustration "chart" (табло), "handoff" (передачи).
+R12 «Календарь работ»: .bk-wcal (--months), .bk-wcal__months, __name, __track, __bar (data-kind dig|surface|closure|
+    landscape|lighting, data-conflict, --from/--to/--svc; полное название и даты — в aria-label/title полосы), связь
+    конфликта .bk-wcal__link, «сегодня» .bk-wcal__today > span; чип .bk-conflict (data-severity high|medium), совет
+    .bk-advice; значки видов работ: #i-shovel (раскопка), #i-cone (перекрытие), #i-road (асфальт), #i-trees, #i-bulb.
+    Пусто: illustration "calendar". Встроенный режим во вкладке R17: embedded: true — без своего h2.
+R09 паспорт и «Обращения»: строка служб .bk-svcs/.bk-svc (BirgeUI.statusIcon: todo — без статуса (серый круг),
+    in_progress — "in_progress", done — "reported_fixed"), .bk-svc__role «ведущая / участвует», полоса срока
+    .bk-deadline.bk-svc__bar; история передач — .bk-handoffs внутри <details class="bk-details">.
+R07 «Хроника»: .bk-replay (+ .bk-glass .bk-glass--strong), .bk-replay__play (#i-play / #i-pause), __date (b + span дня),
+    __scrub с input.bk-range (--p — доля), __ticks/__tick (--at, подпись события), .bk-replay__opts (сегменты .bk-seg
+    7 / 30 дней и 1× / 2×), .bk-x — закрыть.
+R06 «Уведомления»: .bk-bell (кнопку ставит R01, §1.7), панель .bk-notify (+ __hd, __title, __readall «Прочитать все»,
+    __list) с лентой .bk-feed (data-unread="true"); пусто — illustration "bell". «Проекты и идеи»: иллюстрации видов
+    #ill-kind-square, -playground, -sport, -stop, -lighting, -benches, -greening в .bk-thumb.bk-thumb--ill (вместо серой
+    лампочки) и в .bk-pd__im.
+R03 «Спросить Birge»: .bk-answer (+ __q, __nums/__num с b, __text, __acts), «Как получен ответ» — .bk-details, метка
+    «офлайн-режим» — .bk-tag. Модуль — window.BirgeAnalyst (BirgeAsk занят «Вопросом акиму» R13).
+R08 «Ситуационный центр»: на <html> страницы /civic/board/ — class="bk-dark"; разметка .bk-sc (+ __top, __title, __spacer,
+    __clock, __dots, __grid), плитки .bk-sc-tile (--span, --rows; data-alert="true" — кризис), числа .bk-sc-num
+    (--danger), подписи .bk-sc-tile__label, .bk-sc-delta; смена блоков — класс .is-enter. Подключить
+    /civic/ui-kit/tokens.css и components.css (тёмные токены — только внутри .bk-dark, основной продукт светлый).
+
+Общее: тексты — ключи словаря R11 (запасной текст в модуле); новые ключи присылайте в своём INTEGRATION в формате
+  {"ключ": {"ru": "…", "kk": "…", "where": "R16 · карточка инициативы"}} — R11 вносит их кругами
+  (tests/civic/R11/i18n_tools.py add). Числа и даты — BirgeI18n.formatNumber / formatDate / formatRelative.
+
+======================================================================================================================
+§3. LOCAL-задачи R11
+======================================================================================================================
+Нет. Кадры с настоящей подложкой карты для «книги экранов» — LOCAL_TASKS пакета (снимает LOCAL на ноутбуке).

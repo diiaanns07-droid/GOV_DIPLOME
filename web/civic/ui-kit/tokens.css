@@ -237,6 +237,79 @@
   --z-toast: 60;
 }
 
+/* ── Раунд 15 (R11, IA_ROUND15) ── */
+:root {
+  /* Зона кризиса на карте (R17): заливка и контур; «примерная зона» — пунктир (components.css .bk-zone) */
+  --zone-fill: rgba(179, 54, 46, 0.14);
+  --zone-line: #b3362e;
+  /* Ситуационный центр (R08, большой экран 1920 / 1366): размеры растут с шириной, читается с 3 м */
+  --sc-gap: clamp(12px, 1.25vw, 24px);
+  --sc-pad: clamp(16px, 1.5vw, 28px);
+  --sc-fs-title: clamp(22px, 1.6vw, 34px);
+  --sc-fs-label: clamp(14px, 0.95vw, 18px);
+  --sc-fs-num: clamp(40px, 3.6vw, 72px);
+}
+
+/* Тёмные токены — ТОЛЬКО ситуационный центр (страница R08 /civic/board/, класс .bk-dark на <html>).
+   Основной продукт остаётся светлым (решение владельца 13 окт, VISUAL_BRIEF §2.8). Компоненты ui-kit берут цвета
+   из этих переменных, поэтому внутри .bk-dark они сами становятся тёмными. Контраст текста на --c-paper:
+   ink 16:1, вторичный 9:1, третичный 5:1; цвета тепловой карты те же (яркие на тёмном). */
+.bk-dark {
+  color-scheme: dark;
+  --c-ink: #eef3f0;
+  --c-text-2: #aebbb5;
+  --c-text-3: #8a9792;
+  --c-line: rgba(255, 255, 255, 0.08);
+  --c-line-strong: rgba(255, 255, 255, 0.16);
+  --c-paper: #0b100e;
+  --c-surface: #131b18;
+  --c-fill: rgba(255, 255, 255, 0.06);
+  --c-fill-hover: rgba(255, 255, 255, 0.1);
+  --c-sub: rgba(255, 255, 255, 0.05);
+  --c-overlay: rgba(0, 0, 0, 0.5);
+  --c-primary: #eef3f0;
+  --c-on-primary: #0b100e;
+  --c-primary-hover: #ffffff;
+  --c-primary-press: #d5ddd9;
+  --c-brand: #cfe0d8;
+  --c-brand-soft: rgba(255, 255, 255, 0.06);
+  --c-accent: #1d2723;
+  --c-accent-soft: #18211e;
+  --c-focus: #7fb3ff;
+  --c-danger: #ff8a80;
+  --c-danger-soft: rgba(255, 138, 128, 0.14);
+  --c-warn: #ffcf7a;
+  --c-warn-soft: rgba(255, 207, 122, 0.14);
+  --c-info: #9cc3ff;
+  --c-info-soft: rgba(156, 195, 255, 0.14);
+  --c-ok: #a6dc7a;
+  --c-ok-soft: rgba(166, 220, 122, 0.14);
+  --c-demo: #c2cde0;
+  --c-demo-soft: rgba(194, 205, 224, 0.14);
+  --ok-mark: #7cc45a;
+  --glass-panel: rgba(19, 27, 24, 0.72);
+  --glass-strong: rgba(19, 27, 24, 0.86);
+  --glass-control: rgba(19, 27, 24, 0.72);
+  --glass-control-hover: rgba(30, 40, 36, 0.86);
+  --glass-solid: #131b18;
+  --glass-edge: rgba(255, 255, 255, 0.08);
+  --glass-hairline: rgba(0, 0, 0, 0.5);
+  --glass-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+  --glass-text-2: #b8c4bf;
+  --glass-danger: #ff8a80;
+  --glass-warn: #ffcf7a;
+  --glass-ok: #a6dc7a;
+  --glass-info: #9cc3ff;
+  --glass-demo: #c2cde0;
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-2: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 0.5px rgba(255, 255, 255, 0.06);
+  --shadow-3: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 0 0.5px rgba(255, 255, 255, 0.06);
+  --zone-fill: rgba(255, 138, 128, 0.18);
+  --zone-line: #ff8a80;
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+
 /* Меньше движения по настройке системы: анимации почти мгновенные, пульс выключен в components.css */
 @media (prefers-reduced-motion: reduce) {
   :root {
