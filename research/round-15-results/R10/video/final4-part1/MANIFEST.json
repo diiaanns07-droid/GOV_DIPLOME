@@ -1,0 +1,152 @@
+{
+ "what": "Демо-ролик Birge, сценарий v2 (IDEA §3): часть 1 — шаги 1–7 DEMO_SCRIPT R01, часть 2 — сцены 7–9 «Бірге»",
+ "build": {
+  "root": "FINAL-4 (ветка пакета e91acb69 = код a4937462)",
+  "sha": "e91acb69"
+ },
+ "size": "1366x768",
+ "parts": [
+  1
+ ],
+ "fast": false,
+ "glass": "keep",
+ "basemap": "упрощённая подложка — облако без интернета (подписано в кадре)",
+ "world": false,
+ "subtitles": "tests/e2e/fixtures/video_subtitles.json (черновик R10)",
+ "machine": {
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+  "cores": 4,
+  "mem_gb": 16,
+  "platform": "linux 6.18.44-fc-v114",
+  "node": "v22.22.0"
+ },
+ "when": "2026-10-15T12:27:29.587Z",
+ "runs": [
+  {
+   "lang": "kk",
+   "mp4": "birge-demo-kk.mp4",
+   "vtt": "birge-demo-kk.vtt",
+   "srt": "birge-demo-kk.srt",
+   "duration_s": 220,
+   "trim_s": 4,
+   "pace": 0.8,
+   "bytes": 17752886,
+   "mp4_bytes": 6084428,
+   "scenes": [
+    {
+     "id": "intro",
+     "start": 4.372,
+     "end": 14.876,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "complaint",
+     "start": 14.876,
+     "end": 54.07,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "heat",
+     "start": 54.07,
+     "end": 76.485,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "day",
+     "start": 76.485,
+     "end": 91.384,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "project",
+     "start": 91.384,
+     "end": 168.277,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "fixed",
+     "start": 168.277,
+     "end": 215.443,
+     "ok": true,
+     "notes": []
+    }
+   ],
+   "skipped": [],
+   "cues": 13,
+   "shots": [],
+   "page_errors": [],
+   "seeds": [
+    "seed-demo",
+    "seed-r14-demo"
+   ]
+  },
+  {
+   "lang": "ru",
+   "mp4": "birge-demo-ru.mp4",
+   "vtt": "birge-demo-ru.vtt",
+   "srt": "birge-demo-ru.srt",
+   "duration_s": 228,
+   "trim_s": 3.9,
+   "pace": 0.8,
+   "bytes": 18479611,
+   "mp4_bytes": 6010367,
+   "scenes": [
+    {
+     "id": "intro",
+     "start": 4.328,
+     "end": 17.175,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "complaint",
+     "start": 17.175,
+     "end": 59.658,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "heat",
+     "start": 59.659,
+     "end": 82.739,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "day",
+     "start": 82.74,
+     "end": 97.449,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "project",
+     "start": 97.449,
+     "end": 178.058,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "fixed",
+     "start": 178.058,
+     "end": 222.663,
+     "ok": true,
+     "notes": []
+    }
+   ],
+   "skipped": [],
+   "cues": 13,
+   "shots": [],
+   "page_errors": [],
+   "seeds": [
+    "seed-demo",
+    "seed-r14-demo"
+   ]
+  }
+ ]
+}

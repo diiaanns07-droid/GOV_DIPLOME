@@ -2,7 +2,7 @@
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/demo_video.cjs --root <папка сборки> --out <папка>
 //        [--langs kk,ru] [--parts 1,2] [--world] [--basemap simplified|real] [--glass keep|off|auto]
-//        [--subtitles <json>] [--pace 0.8] [--fast] [--no-mp4]
+//        [--subtitles <json>] [--pace 0.7] [--fast] [--no-mp4]
 //
 // Что получается в <out> (на каждый язык):
 //   birge-demo-<lang>.webm — запись Playwright (как есть);  birge-demo-<lang>.mp4 — H.264 для заявки (если есть ffmpeg);
@@ -38,8 +38,8 @@ const PLACE = [71.4148, 51.1131];               // место сквера (ка
 const SHOT_Q = 72;
 
 // pause — паузы для зрителя (в --fast короче); ожидания ответа интерфейса — wait (всегда полные, иначе шаги не проходят).
-// --pace — множитель пауз для зрителя (0,8 по умолчанию: часть 1 ≈ 3 мин); --fast — 0,35.
-const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.8)));
+// --pace — множитель пауз для зрителя (0,7 по умолчанию: часть 1 ≈ 3 мин, весь ролик ≤ 5 мин); --fast — 0,35.
+const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.7)));
 const pause = (ms) => sleep(Math.round(ms * PACE));
 const wait = (ms) => sleep(ms);
 const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
@@ -331,9 +331,9 @@ async function recordLang(browser, lang) {
       await say("s4", 2400);
       await shot("4-day");
       await page.mouse.move(W / 2, H / 2);
-      for (let i = 0; i < 4; i++) { await page.mouse.wheel(0, 260); await pause(900); }
-      await pause(1200);
-      for (let i = 0; i < 4; i++) { await page.mouse.wheel(0, -260); await pause(250); }
+      for (let i = 0; i < 3; i++) { await page.mouse.wheel(0, 300); await pause(900); }
+      await pause(900);
+      for (let i = 0; i < 3; i++) { await page.mouse.wheel(0, -300); await pause(200); }
       const mapRe = exact(word("common.nav.map", "Карта", "Карта"));
       if (!(await header(mapRe, 1500))) await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null);
     }
@@ -347,8 +347,9 @@ async function recordLang(browser, lang) {
         const user = await firstVisible(page.locator("input[autocomplete=username], input[name=username]"));
         const pass = await firstVisible(page.locator("input[type=password]"));
         if (user && pass) {
-          await press(user, 200); await page.keyboard.type(srv.staff.user, { delay: FAST ? 3 : 30 });
-          await press(pass, 200); await page.keyboard.type(srv.staff.pass, { delay: FAST ? 2 : 12 });
+          // Вход без посимвольного набора: пароль не «печатается» в кадре, сцена короче.
+          await press(user, 150); await user.fill(srv.staff.user).catch(() => null);
+          await press(pass, 150); await pass.fill(srv.staff.pass).catch(() => null);
           await page.keyboard.press("Enter"); await wait(2400);
           login = !!(await button(/^(Выйти|Шығу)$/i));
           dbg("5: вход сотрудника", login);
@@ -382,11 +383,10 @@ async function recordLang(browser, lang) {
       const pt = await L.showPoint(page, PLACE, 17);
       if (pt) { const x = pt.onCanvas ? pt.x : pt.near ? pt.near.x : pt.x, y = pt.onCanvas ? pt.y : pt.near ? pt.near.y : pt.y;
         await moveTo(x, y); await pause(300); await page.mouse.click(x, y); await wait(1400); }
-      await pressText(exact(word("proposal.rotate_right", "Повернуть вправо", "Оңға бұру")), 600);
       placed = await pressText(exact(word("proposal.place", "Поставить", "Орнату")), 3800);
       await shot("5-placed");
       const view3d = new RegExp("^(3D|" + esc(word("common.map.view3d", "Объёмный вид", "Көлемді көрініс")) + ")$", "i");
-      if (await pressText(view3d, 3200)) { await shot("5-3d"); await pressText(view3d, 900); }
+      if (await pressText(view3d, 2400)) { await shot("5-3d"); await pressText(view3d, 800); }
       // Житель голосует «За» по табличке проекта.
       await setMode("resident");
       await say("s5b", 600);
