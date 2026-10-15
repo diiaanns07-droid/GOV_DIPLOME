@@ -1,14 +1,14 @@
 {
  "role": "R05",
  "round": 15,
- "delivery": "D1.4 (к сборке B1 16 окт 14:00)",
+ "delivery": "D1.5 (к сборке B1 16 окт 14:00)",
  "branch": "claude/bold-cray-dopshy",
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "base_code": "FINAL-4 a493746234022664db5f7c9d33c0868082f6f346",
  "restored_from": null,
  "restored_note": "web/civic/build3d в FINAL-4 = поставка R05 раунда 14 (82d47a07) — восстанавливать нечего",
- "code_sha": "4af0ef5f311c3f17de7d33408281332433fc19f5",
- "tested_sha": "4af0ef5f311c3f17de7d33408281332433fc19f5",
+ "code_sha": "e30167fe46311265a6aa0ca812cb1255e98b1b14",
+ "tested_sha": "e30167fe46311265a6aa0ca812cb1255e98b1b14",
  "push_status": "OK",
  "amendments": [
   "П1 «Без ИИ-слопа» (15 окт 17:05) — принята: модели ориентиров удалены (061a575c), коммит a3749eaa НЕ брать"
@@ -18,11 +18,11 @@
   "data/civic/astana/landmarks/"
  ],
  "r01_patches": [
-  "research/round-15-results/R05/patches/R01_delta_b03.patch (новое: label, names, #birge-today в avoid)",
-  "research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch (уже в сборке R01 с B0.2 — не накладывать второй раз)",
-  "research/round-15-results/R05/patches/R01_web_server_assets.patch (уже в сборке R01 с B0.2 — не накладывать второй раз)"
+  "research/round-15-results/R05/patches/R01_delta_b03.patch (в сборке R01 с B0.7, 57170575 — не накладывать второй раз)",
+  "research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch (в сборке R01 с B0.2)",
+  "research/round-15-results/R05/patches/R01_web_server_assets.patch (в сборке R01 с B0.2)"
  ],
- "r01_patches_base": "дельта: сделана на claude/brave-fermi-nhzetj @ adb5fba9 (B0.3), git apply --check OK и на df6c9c2f (B0.6); полные — на c9069723 (в сборке R01 с B0.2, 12e99fba)",
+ "r01_patches_base": "все патчи R05 уже в сборке R01 (B0.2 — полные, B0.7 — дельта); для D1.5 патчей нет — только web/civic/build3d/build3d.css",
  "changed_paths": [
   "web/civic/build3d/build3d.js",
   "web/civic/build3d/build3d.css",
@@ -43,19 +43,21 @@
   "Постройка проекта — по частям за 760 мс (было 1 100), «уменьшить движение» — сразу",
   "D1.2: патчи R01 пересобраны на голове R01 c9069723; подпись ориентира на карте — label из landmarks.json («Нур Алем · ЭКСПО», как было у R01); «что на карте» после выбора ориентира переключается с ҚАЗ/РУС; проверка приёмки R01 (grep baiterek|khan.shatyr|nur.alem|akorda) находит только данные landmarks.json — держит тест; README данных ориентиров переписан под v2 (без моделей); тест логики патча подложки без подложки (test_basemap_patch)",
   "D1.3: проект, только что поставленный акиматом, открывается по любому своему id — временному (пока R06 сохраняет) и серверному; выбор, сделанный во время сохранения, переходит на id сервера; getState().pending — сколько проектов ещё сохраняются (на B0.3 выбор по первому id не открывал карточку — smoke «до исправления» 28/1); тост «Проект поставлен · Отменить» не уходит под карточки хозяина («Сегодня в Астане»): сдвиг вправо за панель из opts.avoid или чужой элемент поверх; дельта для R01: подпись ориентира из label, names для ҚАЗ/РУС, #birge-today в avoid",
-  "D1.4: запасные строки модуля сверены со словарём R11 (R11 внесла ключи раунда 15 и вычитала kk у build3d.ba.label / ba.value) — расхождений нет; тест test_i18n_sync держит это для всех ключей build3d.*, которые уже есть в словаре"
+  "D1.4: запасные строки модуля сверены со словарём R11 (R11 внесла ключи раунда 15 и вычитала kk у build3d.ba.label / ba.value) — расхождений нет; тест test_i18n_sync держит это для всех ключей build3d.*, которые уже есть в словаре",
+  "D1.5: «×» карточки проекта (R06 в панели модуля) — в светлом круге на любой ширине: на телефоне шторка «Было / станет» открывается под ним, и ночью тёмный «×» на тёмной картинке был не виден (кадр card_night_375_kk на сборке R01 B0.8); проверка в app_card_check"
  ],
  "tests": {
   "node": "PASS 54/54 (test_landmarks 5, test_white_model 5, test_basemap_patch 4, test_i18n_sync 2, r14 test_models + test_core 38)",
   "r14_shell_smoke": "30 PASS / 0 FAIL на R01 adb5fba9 (B0.3) и на R01 df6c9c2f (B0.6) + R05 6d45fa3b + дельта (новые: placed_project_selectable_by_temp_id_after_save, place_toast_text_not_under_host_panels); на D1.2 b1e7fcf6 — 28/1 (гонка id воспроизведена); runs/r14_app_smoke_on_b03.json, r14_app_smoke_on_b06.json, r14_app_smoke_on_b03_before_fix.json",
-  "app_card_check": "10 PASS / 0 FAIL / 0 NOT_RUN на B0.3 (6d45fa3b) и на B0.6 (4af0ef5f); runs/app_card_check_on_b03.json, app_card_check_on_b06.json",
+  "app_card_check": "10 PASS / 0 FAIL / 0 NOT_RUN на B0.8 с build3d.css D1.5 (новая проверка: «×» над ночной картинкой в светлом круге; на старом CSS фон «×» rgba(0,0,0,0)) — runs/app_card_check_on_b08_d15.json; и на B0.3, B0.6",
   "app_landmarks_search": "7 PASS / 0 FAIL / 1 NOT_RUN (вид здания-ориентира — LOCAL-12; логика патча — test_basemap_patch) на B0.3 и на B0.6; runs/app_landmarks_search_on_b03.json, app_landmarks_search_on_b06.json",
   "r14_browser_check_demo": "56 PASS / 0 FAIL / 1 NOT_RUN (плавность на GPU — LOCAL) на коде 6d45fa3b; runs/r14_browser_check_on_b03.json",
   "r01_r15_ia": "(D1.2) 20/5 с патчами R05 и без них на R01 c9069723 — те же 5 падений меню R01; runs/r01_r15_ia_with_r05_patches.json",
   "perf_fps": "SwiftShader (облако, без GPU): вращение 4,2 к/с с 5 проектами в 3D против 4,9 к/с без них; наклон 8,3 к/с; на плоской карте three.js и данные 3D не грузятся (0 запросов); ноутбук — LOCAL-12; runs/perf_fps.json (отрисовка 3D с тех пор не менялась)",
-  "i18n_sync_r11": "0 расхождений запасных строк build3d.* со словарём R11 06a939db (на 6d45fa3b было 2 — kk ba.label / ba.value)"
+  "i18n_sync_r11": "0 расхождений запасных строк build3d.* со словарём R11 06a939db (на 6d45fa3b было 2 — kk ba.label / ba.value)",
+  "in_r01_build_b08": "сборка R01 B0.8 7f78b1ca как есть (R05 4af0ef5f + дельта уже в ней, накладывались только тесты R05): Node 54/54 (test_basemap_patch — «патч R05 уже в файле»), smoke 3D 30/30, карточка 10/0/0, поиск 7/0/1 — runs/*_on_b08.json"
  },
- "environment": "облако: Chromium headless + SwiftShader (программная графика); стенды — сборки R01 adb5fba9 (B0.3) и df6c9c2f (B0.6) + R05 6d45fa3b + дельта, демо-мир; упрощённый фон карты (OpenFreeMap недоступен)",
+ "environment": "облако: Chromium headless + SwiftShader (программная графика); стенды — сборки R01 adb5fba9 (B0.3), df6c9c2f (B0.6), 7f78b1ca (B0.8, как есть); упрощённый фон карты (OpenFreeMap недоступен)",
  "screens": [
   "research/round-15-results/R05/screens/card_ba_1366_ru.png",
   "research/round-15-results/R05/screens/card_ba_1366_kk_square.png",
@@ -82,7 +84,7 @@
   "Картинки «было» — схема места без проекта (пустой участок / тротуар / улица без фонарей), а не снимок настоящего места",
   "FPS в облаке — программная графика; на ноутбуке с видеокартой — LOCAL-12"
  ],
- "next_step": "R01 (B1): взять web/civic/build3d/ и data/civic/astana/landmarks/ на code_sha + patches/R01_delta_b03.patch (INTEGRATION «КОРОТКО ДЛЯ R01», §6); R11: 8 ключей build3d.ba.* / build3d.time.* (INTEGRATION §4); LOCAL-12/13 на ноутбуке",
- "replaces": "D1.3 6d45fa3b: + запасные kk-строки шторки = словарь R11 (ba.label / ba.value, «жүгірткі»); тест test_i18n_sync. D1.3 — выбор только что поставленного проекта по любому id, тост не под карточками хозяина, дельта-патч для R01",
- "screens_note": "кадры — настоящий интерфейс на стенде R01 c9069723 + R05 D1.2 (вид R05 с тех пор не менялся; на B0.3/B0.6 облачная плашка R01 «Карта улиц не загрузилась» после смены языка/слоя снова видна 6 с и закрывала бы карточку — кадры с неё не брал)"
+ "next_step": "R01 (B1): взять web/civic/build3d/ на code_sha (после B0.8 изменился только build3d.css); R10: B-126 закрыт, заметка о «tag» — INTEGRATION §7; LOCAL-12/13 на ноутбуке",
+ "replaces": "D1.4 4af0ef5f (в сборке R01 с B0.8, вместе с дельтой R05 с B0.7): + «×» карточки проекта в светлом круге и на телефоне (ночью тёмная картинка шторки прятала тёмный «×»)",
+ "screens_note": "кадры — настоящий интерфейс на сборке R01 B0.8 7f78b1ca (карточка — с build3d.css D1.5); облачная плашка R01 «Карта улиц не загрузилась» в B0.8 над нижними панелями не показывается"
 }
