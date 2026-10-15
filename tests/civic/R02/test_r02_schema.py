@@ -18,6 +18,9 @@ EXPECTED_TABLES = {
     # R06 раунд 14, миграция 9 (идеи жителей и «Работы и отключения»; R01 FINAL-3 шаг 4)
     "civic_ideas", "civic_idea_votes", "civic_idea_history", "civic_nearby_items", "civic_nearby_history",
 }
+# Таблицы, которые добавляют миграции раунда 15 (их может не быть в ветке, где этой миграции ещё нет):
+# R06 миграция 10 — что житель прочитал в ленте уведомлений (research/round-15-results/R06/INTEGRATION.txt C.1).
+ROUND15_TABLES = {"civic_notify_reads"}
 
 
 def tables(path):
@@ -29,7 +32,8 @@ def tables(path):
 def test_empty_database_in_tmp_dir_reads_as_empty(tmp_path):
     database = Database(tmp_path / "civic.sqlite3")
     assert database.migrate() == list(range(1, SCHEMA_VERSION + 1))
-    assert tables(database.path) == EXPECTED_TABLES
+    have = tables(database.path)
+    assert EXPECTED_TABLES <= have and have - EXPECTED_TABLES <= ROUND15_TABLES, sorted(have ^ EXPECTED_TABLES)
     with database.read() as conn:
         assert conn.execute("SELECT COUNT(*) FROM civic_objects").fetchone()[0] == 0
         assert conn.execute("SELECT COUNT(*) FROM civic_public_objects").fetchone()[0] == 0

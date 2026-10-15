@@ -1,0 +1,935 @@
+{
+ "schema": "birge-demo-world-expected-v1",
+ "world_schema": "birge-demo-world-v1",
+ "world_version": "1.1",
+ "now": "2026-10-16T12:00:00+05:00",
+ "note_ru": "Числа посчитаны кодом модулей (R07 карта, R08 «Картина дня», R09 «Обращения») на записях мира. Табло служб и «Мой двор» — простые правила R02 для сверки, пока модулей R16/R17 нет.",
+ "heat": {
+  "available": true,
+  "districts_7d": {
+   "nura": {
+    "people": 83,
+    "targets": 29,
+    "level": 4,
+    "state": "active",
+    "fixed_targets": 31,
+    "verified_targets": 5
+   },
+   "saraishyk": {
+    "people": 18,
+    "targets": 10,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 8,
+    "verified_targets": 1
+   },
+   "saryarka": {
+    "people": 16,
+    "targets": 8,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 12,
+    "verified_targets": 5
+   },
+   "esil": {
+    "people": 15,
+    "targets": 10,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 13,
+    "verified_targets": 3
+   },
+   "almaty": {
+    "people": 9,
+    "targets": 5,
+    "level": 1,
+    "state": "active",
+    "fixed_targets": 12,
+    "verified_targets": 3
+   },
+   "baikonur": {
+    "people": 9,
+    "targets": 7,
+    "level": 1,
+    "state": "active",
+    "fixed_targets": 8,
+    "verified_targets": 0
+   }
+  },
+  "districts_14d": {
+   "nura": {
+    "people": 91,
+    "targets": 31,
+    "level": 4,
+    "state": "active",
+    "fixed_targets": 31,
+    "verified_targets": 5
+   },
+   "saraishyk": {
+    "people": 28,
+    "targets": 15,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 7,
+    "verified_targets": 1
+   },
+   "esil": {
+    "people": 24,
+    "targets": 14,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 13,
+    "verified_targets": 3
+   },
+   "saryarka": {
+    "people": 19,
+    "targets": 9,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 12,
+    "verified_targets": 5
+   },
+   "almaty": {
+    "people": 17,
+    "targets": 11,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 11,
+    "verified_targets": 2
+   },
+   "baikonur": {
+    "people": 11,
+    "targets": 8,
+    "level": 1,
+    "state": "active",
+    "fixed_targets": 8,
+    "verified_targets": 0
+   }
+  },
+  "districts_30d": {
+   "nura": {
+    "people": 96,
+    "targets": 32,
+    "level": 4,
+    "state": "active",
+    "fixed_targets": 31,
+    "verified_targets": 5
+   },
+   "saraishyk": {
+    "people": 30,
+    "targets": 16,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 7,
+    "verified_targets": 1
+   },
+   "esil": {
+    "people": 33,
+    "targets": 18,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 13,
+    "verified_targets": 3
+   },
+   "saryarka": {
+    "people": 20,
+    "targets": 10,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 12,
+    "verified_targets": 5
+   },
+   "almaty": {
+    "people": 17,
+    "targets": 11,
+    "level": 2,
+    "state": "active",
+    "fixed_targets": 11,
+    "verified_targets": 2
+   },
+   "baikonur": {
+    "people": 12,
+    "targets": 9,
+    "level": 1,
+    "state": "active",
+    "fixed_targets": 8,
+    "verified_targets": 0
+   }
+  },
+  "stats_14d": {
+   "complaints": 743,
+   "skipped_invalid": 0,
+   "duplicates_skipped": 0,
+   "unresolved_targets": 0,
+   "approximate_targets": 4,
+   "fixed_reported": 66,
+   "fixed_verified": 16,
+   "reopened": 2
+  },
+  "top5_14d": [
+   {
+    "target": "osm-node-4109037549",
+    "label_ru": "Остановка «Хан Шатыр»",
+    "people": 12,
+    "district": "nura"
+   },
+   {
+    "target": "yard-1454082640",
+    "label_ru": "Двор ЖК «BI City Tokyo»",
+    "people": 7,
+    "district": "nura"
+   },
+   {
+    "target": "yard-1531186341",
+    "label_ru": "Двор у ул. Е-584",
+    "people": 7,
+    "district": "nura"
+   },
+   {
+    "target": "osm-node-13915790157",
+    "label_ru": "Остановка «Жилой комплекс Зелёный Квартал»",
+    "people": 6,
+    "district": "nura"
+   },
+   {
+    "target": "yard-1159981866",
+    "label_ru": "Двор ЖК «1-й микрорайон»",
+    "people": 6,
+    "district": "almaty"
+   }
+  ]
+ },
+ "akim": {
+  "available": true,
+  "city": {
+   "new_day": 13,
+   "new_week": 126,
+   "in_progress": 104,
+   "overdue": 35,
+   "fixed_week": 106,
+   "fixed_week_verified": 16,
+   "decisions": [
+    "c-w1500270",
+    "c-w1500327",
+    "c-w1500417"
+   ],
+   "decisions_source": "complaints",
+   "overdue_items": 35,
+   "pulse": [
+    {
+     "kind": "spike_city",
+     "category": "snow_ice",
+     "district": null,
+     "value": 86,
+     "base": 21.5,
+     "ratio": 4.0,
+     "text_ru": "«Снег и гололёд» — всплеск в 4 районах (Нура — 60, Есиль — 10, Сарайшык — 8 и ещё 1): 86 сообщений за 7 дней, в 4 раза больше обычного."
+    },
+    {
+     "kind": "spike",
+     "category": "transport",
+     "district": "nura",
+     "value": 23,
+     "base": 3.5,
+     "ratio": 6.6,
+     "text_ru": "«Остановки и транспорт» в районе Нура: 23 сообщения за 7 дней — в 6,6 раза больше обычного (в среднем 4 в неделю за 4 недели)."
+    },
+    {
+     "kind": "spike",
+     "category": "lighting",
+     "district": "nura",
+     "value": 8,
+     "base": 1.5,
+     "ratio": 5.3,
+     "text_ru": "«Освещение» в районе Нура: 8 сообщений за 7 дней — в 5,3 раза больше обычного (в среднем 1,5 в неделю за 4 недели)."
+    },
+    {
+     "kind": "new_hot",
+     "category": "transport",
+     "district": "nura",
+     "value": 12,
+     "base": null,
+     "ratio": null,
+     "text_ru": "Новое горячее место: Остановка «Хан Шатыр» — 12 человек за 7 дней, неделю назад его на карте не было."
+    },
+    {
+     "kind": "metoo",
+     "category": "transport",
+     "district": "nura",
+     "value": 8,
+     "base": null,
+     "ratio": null,
+     "text_ru": "Чаще жмут «Я тоже»: Остановка «Хан Шатыр» — +8 за неделю (неделей раньше — 0)."
+    }
+   ]
+  },
+  "nura": {
+   "new_day": 6,
+   "new_week": 66,
+   "in_progress": 43,
+   "overdue": 5,
+   "fixed_week": 45,
+   "fixed_week_verified": 7,
+   "decisions": [
+    "c-w1500327",
+    "c-w1500417"
+   ],
+   "decisions_source": "complaints",
+   "overdue_items": 5,
+   "pulse": [
+    {
+     "kind": "spike",
+     "category": "snow_ice",
+     "district": "nura",
+     "value": 60,
+     "base": 12.5,
+     "ratio": 4.8,
+     "text_ru": "«Снег и гололёд» в районе Нура: 60 сообщений за 7 дней — в 4,8 раза больше обычного (в среднем 12 в неделю за 4 недели)."
+    },
+    {
+     "kind": "spike",
+     "category": "transport",
+     "district": "nura",
+     "value": 23,
+     "base": 3.5,
+     "ratio": 6.6,
+     "text_ru": "«Остановки и транспорт» в районе Нура: 23 сообщения за 7 дней — в 6,6 раза больше обычного (в среднем 4 в неделю за 4 недели)."
+    },
+    {
+     "kind": "spike",
+     "category": "lighting",
+     "district": "nura",
+     "value": 8,
+     "base": 1.5,
+     "ratio": 5.3,
+     "text_ru": "«Освещение» в районе Нура: 8 сообщений за 7 дней — в 5,3 раза больше обычного (в среднем 1,5 в неделю за 4 недели)."
+    },
+    {
+     "kind": "new_hot",
+     "category": "transport",
+     "district": "nura",
+     "value": 12,
+     "base": null,
+     "ratio": null,
+     "text_ru": "Новое горячее место: Остановка «Хан Шатыр» — 12 человек за 7 дней, неделю назад его на карте не было."
+    },
+    {
+     "kind": "metoo",
+     "category": "transport",
+     "district": "nura",
+     "value": 8,
+     "base": null,
+     "ratio": null,
+     "text_ru": "Чаще жмут «Я тоже»: Остановка «Хан Шатыр» — +8 за неделю (неделей раньше — 0)."
+    }
+   ]
+  }
+ },
+ "inbox": {
+  "available": true,
+  "city": {
+   "new": 19,
+   "in_progress": 62,
+   "waiting_check": 424,
+   "overdue": 5,
+   "reopened": 5
+  },
+  "nura": {
+   "new": 8,
+   "in_progress": 19,
+   "waiting_check": 131,
+   "overdue": 2,
+   "reopened": 0
+  },
+  "nura_groups": 160,
+  "complaints_total": 743,
+  "complaints_by_district": {
+   "saryarka": 81,
+   "esil": 134,
+   "nura": 267,
+   "baikonur": 85,
+   "almaty": 90,
+   "saraishyk": 86
+  }
+ },
+ "services": {
+  "available": true,
+  "rule": "Простое табло служб для сверки с R17: обращения (вся жалоба — ведущей службе; совместная — обеим), открытые",
+  "by_service": {
+   "akimat": {
+    "complaints": 24,
+    "fixed": 14,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 1,
+    "overdue": 0,
+    "people": 37,
+    "reopened": 0,
+    "verified": 2
+   },
+   "animals": {
+    "complaints": 11,
+    "fixed": 10,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 1,
+    "overdue": 0,
+    "people": 19,
+    "reopened": 1,
+    "verified": 1
+   },
+   "ecology": {
+    "complaints": 17,
+    "fixed": 16,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 1,
+    "overdue": 0,
+    "people": 20,
+    "reopened": 0,
+    "verified": 1
+   },
+   "emergency": {
+    "complaints": 8,
+    "fixed": 8,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 0,
+    "overdue": 0,
+    "people": 12,
+    "reopened": 0,
+    "verified": 1
+   },
+   "greenery": {
+    "complaints": 23,
+    "fixed": 18,
+    "handoffs_in": 0,
+    "joint": 6,
+    "open": 5,
+    "overdue": 0,
+    "people": 39,
+    "reopened": 0,
+    "verified": 1
+   },
+   "heating": {
+    "complaints": 34,
+    "fixed": 25,
+    "handoffs_in": 19,
+    "joint": 20,
+    "open": 7,
+    "overdue": 1,
+    "people": 49,
+    "reopened": 1,
+    "verified": 4
+   },
+   "housing": {
+    "complaints": 1,
+    "fixed": 0,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 1,
+    "overdue": 0,
+    "people": 3,
+    "reopened": 0,
+    "verified": 0
+   },
+   "landscaping": {
+    "complaints": 47,
+    "fixed": 39,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 8,
+    "overdue": 0,
+    "people": 67,
+    "reopened": 0,
+    "verified": 7
+   },
+   "lighting": {
+    "complaints": 54,
+    "fixed": 48,
+    "handoffs_in": 0,
+    "joint": 2,
+    "open": 6,
+    "overdue": 0,
+    "people": 88,
+    "reopened": 1,
+    "verified": 4
+   },
+   "parking": {
+    "complaints": 33,
+    "fixed": 19,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 10,
+    "overdue": 0,
+    "people": 50,
+    "reopened": 0,
+    "verified": 7
+   },
+   "police": {
+    "complaints": 53,
+    "fixed": 49,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 4,
+    "overdue": 0,
+    "people": 70,
+    "reopened": 0,
+    "verified": 6
+   },
+   "power": {
+    "complaints": 8,
+    "fixed": 8,
+    "handoffs_in": 0,
+    "joint": 2,
+    "open": 0,
+    "overdue": 0,
+    "people": 14,
+    "reopened": 0,
+    "verified": 0
+   },
+   "road": {
+    "complaints": 143,
+    "fixed": 120,
+    "handoffs_in": 0,
+    "joint": 32,
+    "open": 23,
+    "overdue": 0,
+    "people": 218,
+    "reopened": 1,
+    "verified": 17
+   },
+   "street_cleaning": {
+    "complaints": 117,
+    "fixed": 76,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 41,
+    "overdue": 3,
+    "people": 200,
+    "reopened": 1,
+    "verified": 21
+   },
+   "traffic": {
+    "complaints": 17,
+    "fixed": 17,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 0,
+    "overdue": 0,
+    "people": 25,
+    "reopened": 0,
+    "verified": 1
+   },
+   "transport": {
+    "complaints": 71,
+    "fixed": 49,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 22,
+    "overdue": 0,
+    "people": 127,
+    "reopened": 0,
+    "verified": 7
+   },
+   "utilities": {
+    "complaints": 8,
+    "fixed": 8,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 0,
+    "overdue": 0,
+    "people": 14,
+    "reopened": 0,
+    "verified": 0
+   },
+   "waste": {
+    "complaints": 68,
+    "fixed": 62,
+    "handoffs_in": 0,
+    "joint": 0,
+    "open": 6,
+    "overdue": 1,
+    "people": 106,
+    "reopened": 1,
+    "verified": 10
+   },
+   "water": {
+    "complaints": 46,
+    "fixed": 44,
+    "handoffs_in": 12,
+    "joint": 18,
+    "open": 1,
+    "overdue": 0,
+    "people": 73,
+    "reopened": 0,
+    "verified": 6
+   }
+  }
+ },
+ "yards": {
+  "available": true,
+  "by_yard": {
+   "yard-1454082640": {
+    "complaints_60d": 5,
+    "complaints_14d": 4,
+    "people_14d": 10,
+    "open": 2,
+    "initiatives": [
+     "i-w15-01",
+     "i-w15-02"
+    ],
+    "ideas": [],
+    "members": 37
+   },
+   "yard-1531186326": {
+    "complaints_60d": 19,
+    "complaints_14d": 5,
+    "people_14d": 5,
+    "open": 3,
+    "initiatives": [
+     "i-w15-03"
+    ],
+    "ideas": [],
+    "members": 50
+   },
+   "yard-1531186335": {
+    "complaints_60d": 9,
+    "complaints_14d": 3,
+    "people_14d": 4,
+    "open": 0,
+    "initiatives": [
+     "i-w15-04"
+    ],
+    "ideas": [
+     "idea-w15-12"
+    ],
+    "members": 59
+   },
+   "yard-1460088069": {
+    "complaints_60d": 4,
+    "complaints_14d": 2,
+    "people_14d": 2,
+    "open": 3,
+    "initiatives": [
+     "i-w15-08"
+    ],
+    "ideas": [],
+    "members": 59
+   },
+   "yard-1531186341": {
+    "complaints_60d": 4,
+    "complaints_14d": 4,
+    "people_14d": 7,
+    "open": 4,
+    "initiatives": [],
+    "ideas": [
+     "idea-w15-02"
+    ],
+    "members": 72
+   },
+   "yard-1531186300": {
+    "complaints_60d": 3,
+    "complaints_14d": 1,
+    "people_14d": 3,
+    "open": 1,
+    "initiatives": [],
+    "ideas": [],
+    "members": 55
+   },
+   "yard-1531186310": {
+    "complaints_60d": 3,
+    "complaints_14d": 1,
+    "people_14d": 1,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 70
+   },
+   "yard-577076055": {
+    "complaints_60d": 3,
+    "complaints_14d": 0,
+    "people_14d": 0,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [
+     "idea-w15-03"
+    ],
+    "members": 35
+   },
+   "yard-1424189336": {
+    "complaints_60d": 2,
+    "complaints_14d": 1,
+    "people_14d": 3,
+    "open": 1,
+    "initiatives": [],
+    "ideas": [],
+    "members": 136
+   },
+   "yard-1454510529": {
+    "complaints_60d": 2,
+    "complaints_14d": 1,
+    "people_14d": 1,
+    "open": 1,
+    "initiatives": [],
+    "ideas": [],
+    "members": 85
+   },
+   "yard-1460088061": {
+    "complaints_60d": 2,
+    "complaints_14d": 1,
+    "people_14d": 1,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 64
+   },
+   "yard-1460088066": {
+    "complaints_60d": 2,
+    "complaints_14d": 2,
+    "people_14d": 2,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 57
+   },
+   "yard-1531186329": {
+    "complaints_60d": 2,
+    "complaints_14d": 1,
+    "people_14d": 1,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 55
+   },
+   "yard-1531186350": {
+    "complaints_60d": 2,
+    "complaints_14d": 0,
+    "people_14d": 0,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [
+     "idea-w15-05"
+    ],
+    "members": 71
+   },
+   "yard-257962279": {
+    "complaints_60d": 2,
+    "complaints_14d": 0,
+    "people_14d": 0,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 96
+   },
+   "yard-1026285033": {
+    "complaints_60d": 1,
+    "complaints_14d": 0,
+    "people_14d": 0,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 82
+   },
+   "yard-1531192452": {
+    "complaints_60d": 6,
+    "complaints_14d": 1,
+    "people_14d": 1,
+    "open": 1,
+    "initiatives": [
+     "i-w15-05"
+    ],
+    "ideas": [
+     "idea-w15-04",
+     "idea-w15-06"
+    ],
+    "members": 51
+   },
+   "yard-1159981866": {
+    "complaints_60d": 8,
+    "complaints_14d": 5,
+    "people_14d": 8,
+    "open": 4,
+    "initiatives": [
+     "i-w15-07"
+    ],
+    "ideas": [],
+    "members": 115
+   },
+   "yard-1071604719": {
+    "complaints_60d": 5,
+    "complaints_14d": 3,
+    "people_14d": 5,
+    "open": 0,
+    "initiatives": [
+     "i-w15-06"
+    ],
+    "ideas": [],
+    "members": 116
+   },
+   "yard-1071933347": {
+    "complaints_60d": 5,
+    "complaints_14d": 2,
+    "people_14d": 4,
+    "open": 1,
+    "initiatives": [
+     "i-w15-09"
+    ],
+    "ideas": [
+     "idea-w15-07"
+    ],
+    "members": 70
+   },
+   "yard-1531189665": {
+    "complaints_60d": 3,
+    "complaints_14d": 2,
+    "people_14d": 2,
+    "open": 1,
+    "initiatives": [
+     "i-w15-10"
+    ],
+    "ideas": [
+     "idea-w15-01"
+    ],
+    "members": 65
+   },
+   "yard-1222028654": {
+    "complaints_60d": 6,
+    "complaints_14d": 4,
+    "people_14d": 5,
+    "open": 1,
+    "initiatives": [],
+    "ideas": [],
+    "members": 97
+   },
+   "yard-1071604725": {
+    "complaints_60d": 5,
+    "complaints_14d": 0,
+    "people_14d": 0,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [
+     "idea-w15-08"
+    ],
+    "members": 54
+   },
+   "yard-1252120832": {
+    "complaints_60d": 5,
+    "complaints_14d": 2,
+    "people_14d": 2,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 65
+   },
+   "yard-1071604726": {
+    "complaints_60d": 4,
+    "complaints_14d": 0,
+    "people_14d": 0,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 145
+   },
+   "yard-1071933359": {
+    "complaints_60d": 4,
+    "complaints_14d": 1,
+    "people_14d": 1,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [
+     "idea-w15-09"
+    ],
+    "members": 113
+   },
+   "yard-1104998691": {
+    "complaints_60d": 4,
+    "complaints_14d": 0,
+    "people_14d": 0,
+    "open": 1,
+    "initiatives": [],
+    "ideas": [],
+    "members": 123
+   },
+   "yard-1168876409": {
+    "complaints_60d": 4,
+    "complaints_14d": 2,
+    "people_14d": 2,
+    "open": 1,
+    "initiatives": [],
+    "ideas": [],
+    "members": 118
+   },
+   "yard-1504302822": {
+    "complaints_60d": 4,
+    "complaints_14d": 3,
+    "people_14d": 6,
+    "open": 2,
+    "initiatives": [],
+    "ideas": [
+     "idea-w15-10"
+    ],
+    "members": 133
+   },
+   "yard-1071604723": {
+    "complaints_60d": 3,
+    "complaints_14d": 0,
+    "people_14d": 0,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 109
+   },
+   "yard-1071933358": {
+    "complaints_60d": 3,
+    "complaints_14d": 0,
+    "people_14d": 0,
+    "open": 0,
+    "initiatives": [],
+    "ideas": [],
+    "members": 73
+   },
+   "yard-1252120836": {
+    "complaints_60d": 3,
+    "complaints_14d": 1,
+    "people_14d": 1,
+    "open": 1,
+    "initiatives": [],
+    "ideas": [
+     "idea-w15-11"
+    ],
+    "members": 50
+   }
+  }
+ },
+ "scenes": {
+  "step2": {
+   "lighting_people_14d": 3,
+   "stop_people_14d": 12
+  },
+  "scene9": {
+   "buran_complaints": 57,
+   "buran_complaints_nura": 37,
+   "buran_people_nura": 70
+  },
+  "scene7": {
+   "yard": "yard-1454082640",
+   "complaints": 5
+  }
+ },
+ "nura_check": {
+  "map_people_14d": 91,
+  "map_targets_14d": 31,
+  "day_new_week": 66,
+  "day_in_progress": 43,
+  "day_overdue": 5,
+  "inbox_counts": {
+   "new": 8,
+   "in_progress": 19,
+   "waiting_check": 131,
+   "overdue": 2,
+   "reopened": 0
+  },
+  "complaints_total": 267
+ }
+}
