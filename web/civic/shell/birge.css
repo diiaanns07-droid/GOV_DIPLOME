@@ -563,6 +563,11 @@ body.civic-mode .map-tools .bk-glass--control, body.civic-mode .civic-explore #m
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   box-shadow: inset 0 0 0 1px var(--glass-edge), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 0 0.5px var(--glass-hairline), var(--glass-shadow);
 }
+/* Плотное стекло 86 % (ui-kit .bk-glass--strong: лист раздела, шторка, хроника, панель уведомлений, баннер) — и на телефоне.
+   Правило выше сильнее класса ui-kit, а 86 % ref-раскладки (birge-ref.css) стоит только ≥ 761 px: на 375 лист был 72 %, и
+   вторичный текст над тёмной картой — 3,8 : 1 (R08 INTEGRATION §16, glass_check). Через переменную — запасные белые виды
+   (нет размытия, «уменьшить прозрачность», ?glass=off) задают фон напрямую и остаются белыми. */
+body.civic-mode .bk-glass.bk-glass--strong { --glass-panel: var(--glass-strong, rgba(255, 255, 255, 0.86)); }
 body.civic-mode .bk-glass--control, body.civic-mode .map-tools .bk-glass--control { background-color: var(--glass-control); border-radius: var(--r-pill, 999px); }
 body.civic-mode .map-tools .bk-glass--control:hover { background-color: var(--glass-control-hover); }
 body.civic-mode .map-tools .bk-glass--control:is([aria-pressed="true"], [aria-expanded="true"], .active),
