@@ -458,12 +458,17 @@ class ComplaintsV2Service:
         # демо мир возвращается в исходное состояние). Прочие примеры (demo_seed «Хан Шатыр») — только просмотр.
         worlds = {r["id"] for r in records if r.get("world")}
         for group in data["items"]:
+            for item in group["complaints"]:
+                item["world"] = item["id"] in worlds
+            # Пример (demo без мира) — только просмотр: в группе он идёт после рабочих жалоб (сортировка устойчивая —
+            # внутри прежний порядок), чтобы карточка и части служб строки были у той, с которой сотрудник работает, —
+            # как у быстрых действий строки. Иначе цель «Хан Шатыр» в мире R02 открывалась на примере без действий.
+            group["complaints"].sort(key=lambda c: bool(c["demo"]) and not c["world"])
             top = parts_of.get(group["complaints"][0]["id"]) if group["complaints"] else None
             group["services"] = [{"service": p["service"], "role": p["role"], "status": p["status"]} for p in top or []]
             group["joint"] = len(group["services"]) > 1
             for item in group["complaints"]:
                 item["lead"] = (parts_of.get(item["id"]) or [{}])[0].get("service")
-                item["world"] = item["id"] in worlds
             group["world"] = any(item["world"] for item in group["complaints"])
         data["tab"] = tab
         data["service"] = service

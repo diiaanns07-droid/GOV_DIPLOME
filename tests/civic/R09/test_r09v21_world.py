@@ -149,6 +149,38 @@ def test_khan_shatyr_demo_stays_with_world(tmp_path, world):
         store.close()
 
 
+
+def test_example_goes_after_world_complaints_in_its_inbox_group(tmp_path, world):
+    """Цель «Хан Шатыр»: пример шага 2 (demo без мира — только просмотр) и жалоба мира в одной группе «Обращений»:
+    первой идёт жалоба мира — карточка и части служб строки открываются на ней (как быстрые действия строки)."""
+    import copy
+    from ui.civic_feedback.v2.demo_seed import KHAN_SHATYR, KHAN_SHATYR_POINT
+    stop = copy.deepcopy(next(c for c in world["complaints"] if c["id"] == "w-c-esil"))
+    stop.update({"id": "w-c-khan-bus", "text": "Автобус не приходит по 40 минут", "category": "transport",
+                 "subtopic": None, "target": dict(KHAN_SHATYR), "point": list(KHAN_SHATYR_POINT), "district": "nura",
+                 "metoo": 0, "metoo_times": [], "service": "transport"})
+    sample = {**world, "complaints": [stop]}
+    db = tmp_path / "w.sqlite3"
+    store = ComplaintStore(db, clock=lambda: NOW)
+    try:
+        seed_world(store, sample, now=NOW)
+        seed_demo(store)                       # шлюз сеет примеры при запуске — порядок любой
+        service = ComplaintsV2Service(store)
+
+        class Staff:
+            is_staff, username, role = True, "operator1", "editor"
+
+            def check_csrf(self, value):
+                return True
+
+        reply = service.handle("GET", "/api/civic/v2/complaints/inbox", None, None, Staff(),
+                               {"headers": {"X-CSRF-Token": "t"}, "host_allowed": True, "is_same_origin": True})
+        group = next(g for g in reply["body"]["data"]["items"] if g["key"] == "osm-node-4109037549|transport")
+        assert [(c["demo"], c["world"]) for c in group["complaints"]] == [(True, True), (True, False)]
+        assert group["world"] is True and group["services"][0]["service"] == "transport"
+    finally:
+        store.close()
+
 def test_seed_world_notifies_listeners_once(tmp_path, world):
     store = ComplaintStore(tmp_path / "w.sqlite3", clock=lambda: NOW)
     seen = []
