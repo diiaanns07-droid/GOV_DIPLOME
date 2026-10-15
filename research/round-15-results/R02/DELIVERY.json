@@ -5,8 +5,8 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "907bfc9d6dd8daa2f6d0adddfe4bbb58fa5ee6e1",
-  "tested_sha": "907bfc9d6dd8daa2f6d0adddfe4bbb58fa5ee6e1",
+  "code_sha": "c002aa8581e79920498fefb717b7bbdcef02c633",
+  "tested_sha": "c002aa8581e79920498fefb717b7bbdcef02c633",
   "push_status": "OK",
   "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
   "world": {
@@ -14,7 +14,7 @@
     "schema": "birge-demo-world-v1",
     "schema_version": "1.1",
     "seed": 15,
-    "sha256": "53ff7be3339a7c723a3048af31015fd4693a352fb0eed240c751d0925756782d",
+    "sha256": "c4a42501b49bab717b3d7f5a90a8123c4343f8cc119a2935f33741bc92701bc3",
     "counts": {
       "complaints": 743,
       "people_with_metoo": 1171,
@@ -26,7 +26,7 @@
       "initiatives": 10,
       "incidents": 3,
       "meetings": 3,
-      "questions": 10,
+      "questions": 17,
       "events": 4
     },
     "nura_share": 0.36,
@@ -157,6 +157,21 @@
       "status": "PASS",
       "agree": 743,
       "of": 743
+    },
+    "стык с R13: seed_world на мире (ветка R13 @ 2a89f178)": {
+      "status": "PASS",
+      "inserted": 24,
+      "repeat_reset": 24,
+      "qa_tabs": {
+        "top": 6,
+        "new": 8,
+        "answered": 2
+      }
+    },
+    "стык с R16: seed_world на мире (ветка R16 @ c5836427)": {
+      "status": "PASS",
+      "inserted": 42,
+      "repeat_next_day_reset": 42
     }
   },
   "consistency_table": {
