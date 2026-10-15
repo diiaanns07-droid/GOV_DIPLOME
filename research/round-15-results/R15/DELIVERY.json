@@ -12,9 +12,11 @@
     "R17": "61558bd3 (claude/sweet-euler-5tiu5b)",
     "R13": "ded8c258 (claude/gifted-mayer-p86myv)",
     "R03": "a85e4765 (claude/modest-mccarthy-lrl98u)",
-    "R16": "aef7b79f (claude/youthful-johnson-6nz5mp)"
+    "R16": "aef7b79f (claude/youthful-johnson-6nz5mp)",
+    "R04": "7be7e71b (claude/gifted-maxwell-i66wwi)",
+    "R02": "0c0a8636 (claude/affectionate-shannon-jm6ws5)"
   },
-  "push_status": "OK (checkpoint 3)",
+  "push_status": "OK (checkpoint 4)",
   "changed_paths": [
     "tests/civic/R15/r15_common.py",
     "tests/civic/R15/round15/",
@@ -67,12 +69,29 @@
         "S46",
         "S47"
       ]
+    },
+    "R04_7be7e71b_moderate": {
+      "passed": 45,
+      "failed": 0,
+      "xfailed": 5,
+      "open": [
+        "S48"
+      ]
+    },
+    "R02_0c0a8636_world": {
+      "passed": 4,
+      "failed": 0
+    },
+    "R04_with_P-R04-S48": {
+      "passed": 413,
+      "skipped": 1,
+      "note": "tests/civic/R04 целиком с patch"
     }
   },
   "findings": {
     "S42": {
       "owner": "R01",
-      "level": "средний",
+      "level": "низкий",
       "status": "open",
       "patch": "patches/P-R01-S42.diff"
     },
@@ -98,13 +117,20 @@
       "owner": "R16/R04",
       "level": "средний",
       "status": "open",
-      "patch": "patches/P-R16-S45-S47.diff"
+      "patch": "patches/P-R16-S45-S47.diff",
+      "note": "в сборке с R04 moderate закрывается (проверено наложением); patch — для запасного пути R16"
     },
     "S47": {
       "owner": "R16",
       "level": "средний",
       "status": "open",
       "patch": "patches/P-R16-S45-S47.diff"
+    },
+    "S48": {
+      "owner": "R04",
+      "level": "средний",
+      "status": "open",
+      "patch": "patches/P-R04-S48.diff"
     }
   },
   "high_open": 0,

@@ -2,8 +2,8 @@
 
 1. Каждый маршрут «сотрудник» из CONTRACT §7, который R01 добавил в V2_ROUTES, помечен staff=True: шлюз проверяет
    сессию R02 + CSRF и для «сервисов» (R15-S34 раунда 14), и для raw.
-2. raw-маршрут с staff=True шлюз действительно закрывает (S42): у raw-функции нет principal, проверить сама она не может
-   (R12 works-calendar/works-conflicts, R08 akim/board и akim/week по CONTRACT §7 — raw и «сотрудник»).
+2. raw-маршрут с staff=True шлюз действительно закрывает (S42): у raw-функции нет principal. R12 и R08 обошли это сами
+   (staff_view=True + 401 в модуле без staff=True) — S42 остаётся защитой в глубину для будущих raw-маршрутов.
 3. Запись жителя из CONTRACT §7 — в V2_RATE_LIMITS; «Я приду», «Я живу здесь», «Приду» — ещё и суточный предел на одну
    цель с адреса (S08: новый device_id = новый «житель»).
 4. Через настоящий HTTP: маршрут сотрудника без сессии -> 401/403 (модуля нет — 503, тогда NOT_RUN по маршруту).
@@ -85,7 +85,11 @@ def test_contract_staff_route_is_marked_staff(ws, method, pattern):
     if key is None:
         not_run(f"R01 ещё не добавил {_name(method, pattern)} в V2_ROUTES")
     assert handler is not None, f"{key}: маршрут без обработчика"
-    assert handler.staff, f"{_name(method, pattern)} ({key}, {handler.kind}): нет staff=True — шлюз не проверит сотрудника"
+    # raw-маршрут сотрудника R12/R08 объявлен staff_view=True: шлюз передаёт staff=True только после проверки сессии,
+    # без него модуль сам отвечает 401 (INTEGRATION R12/R08). Что ответ действительно 401 — HTTP-тест ниже.
+    raw_guarded = handler.kind == "raw" and getattr(handler, "staff_view", False)
+    assert handler.staff or raw_guarded, (
+        f"{_name(method, pattern)} ({key}, {handler.kind}): нет staff=True (или staff_view у raw) — шлюз не проверит сотрудника")
 
 
 @pytest.mark.parametrize("method,pattern,per_target", CONTRACT_RESIDENT_WRITES,
