@@ -28,15 +28,70 @@ A.3 Прежние функции FINAL-4 не менялись: nearby_items(di
     kind, segments, street_ru, street_kk — старое поле source по-прежнему служба-источник отключения).
 
 =====================================================================================================
-B. МАРШРУТЫ API v2 (CONTRACT §7) — для R01 (V2_ROUTES / V2_HANDLERS / arguments)
+B. R01: МАРШРУТЫ API v2, ФАЙЛЫ И ТЕГИ — ОДИН ПАТЧ
 =====================================================================================================
-Будут в поставке (имена функций — по CONTRACT §7):
-    GET  notifications?since          ui.civic_store.v2 · list_notifications(since=None, device_id=None, context=None)
-    POST notifications/read           ui.civic_store.v2 · read_notifications(body, device_id=None, context=None)
-    POST ideas/{id}/to-initiative     ui.civic_store.v2 · idea_to_initiative(idea_id, body, context=None, principal=None)
-                                      (staff=True)
-Житель — заголовок X-Birge-Device (шлюз отдаёт заголовки в context["headers"] в нижнем регистре; функция читает их
-сама). Патч разбора параметров для CivicV2Gateway.arguments — в разделе B.1 (добавлю вместе с кодом).
+Патч: research/round-15-results/R06/r01_round15_r06.patch (git apply -p1, к FINAL-4 / ветке пакета применяется чисто):
+  ui/web_server.py
+    - V2_ROUTES: GET notifications · POST notifications/read · POST ideas/{id}/to-initiative;
+    - V2_HANDLERS: "notifications.list" → ui.civic_store.v2.list_notifications; "notifications.read" → read_notifications;
+      "ideas.to_initiative" → idea_to_initiative (staff=True);
+    - CivicV2Gateway.arguments: since / device_id для notifications.list, body для read, idea_id + body для to-initiative;
+    - V2_RATE_LIMITS: notifications.list и .read — 60 в минуту с адреса;
+    - CIVIC_ASSETS: "notify/notify.js", "notify/notify.css".
+  web/index.html: <link …/civic/notify/notify.css> после ideas.css, <script defer …/civic/notify/notify.js> после works.js.
+Функции (вид "function"; ответ — сам JSON, ошибка — V2Error со status/code/message/fields):
+    list_notifications(since=None, device_id=None, ideas_device=None, context=None)
+      -> {"items": [{id, at, module, kind, target, title_ru, title_kk, link, demo, read}], "unread", "read_until", "now",
+          "sources": {"R06": "ok", "R09"|"R16"|"R17"|"R13": "ok|absent|error"}, "truncated"}
+    read_notifications(body, device_id=None, context=None)    body: {ids: [...]} | {all: true} | {until: ISO}
+    idea_to_initiative(idea_id, body, context=None, principal=None) -> (201, {item, initiative, created})
+Житель — заголовок X-Birge-Device (шлюз отдаёт заголовки в context["headers"] в нижнем регистре; функция читает сама);
+свои события R06 (идеи, голоса) — по X-Birge-Ideas-Device (id голосов R06 «birge.device_id»; шлёт notify.js).
+Проверка «как в сборке»: bash tests/civic/R06/round15/tree_with_r01_patch.sh <папка>; затем
+    NODE_PATH="$(npm root -g)" PYTHON=python3 node tests/civic/R06/round15/browser_r15.cjs <папка> <кадры>
+
+=====================================================================================================
+D. ЛЕНТА «УВЕДОМЛЕНИЯ» — ОБОЛОЧКА R01 (IA_ROUND15 R11 §5.7, §7.7)
+=====================================================================================================
+window.BirgeNotify (web/civic/notify/notify.js):
+    BirgeNotify.attach(button, {apiBase, onOpen(link)}) — кнопка-колокольчик R01 в «.birge-me» между «ҚАЗ · РУС» и
+      аватаром, только вид «Житель»: <button class="bk-iconbtn bk-bell birge-bell" data-action="notifications">.
+      Модуль ставит значок (i-bell), счётчик .bk-nav__badge (1–9, «9+»), aria-label, открывает панель .bk-notify под кнопкой
+      (360 px, плотное стекло), Esc закрывает и возвращает фокус, нажатие вне панели — закрывает.
+      onOpen(link) — если оболочка сама понимает «#раздел/путь» (IA §7.3): модуль отдаёт ей ссылку события. Без onOpen —
+      BirgeShell.openLink(link), если он есть; иначе setSection(раздел) + событие document "birge:open"
+      {section, path, link} (так «Идеи» R06 открывают конкретную идею; другим модулям — то же событие).
+    BirgeNotify.mount(root, opts) — экран «Уведомления»: модуль сам регистрирует его registerScreen({id:"notifications",
+      modes:["resident"], titleKey:"shell.nav.notifications"}) — пункт «Ещё» и адрес #notifications (телефон: пункт меню
+      аватара «Уведомления · N» → setSection("notifications")).
+    BirgeNotify.onCount(fn) — число непрочитанных: точка на аватаре (.bk-avatar[data-badge]) и «Уведомления · N» на телефоне.
+    Пока кнопки R01 нет, модуль ставит свою в «.birge-me» (data-owner="R06"; ноутбук, вид «Житель»); появилась кнопка
+      R01 (data-action="notifications" без data-owner) — модуль работает с ней. Отключить свою: window.BIRGE_NOTIFY_AUTO = false.
+    Открытие «Мои обращения» R09 (html.bc-mine-open) отмечает прочитанными complaint.update (IA §5.7).
+Ссылки событий соседей (как в их ветках 15 окт): R16 «#together/<id>», R13 «#meetings/<id>[/…]», R09 «#mine/event=<id>»,
+R17 «#incident=<id>», R06 «#ideas/<id>», «#nearby/<id>», «#together/<id>». Ссылка не «#…» — в ленте без ссылки.
+
+=====================================================================================================
+E. «ИДЕЯ → ИНИЦИАТИВА» (R16) И ДАННЫЕ ДЛЯ СОСЕДЕЙ
+=====================================================================================================
+POST ideas/{id}/to-initiative (сотрудник) вызывает ui.civic_together.create_from_idea(idea, starts_at=…, db_path=…,
+actor="staff") R16 (их ветка 15 окт). idea — DTO идеи R06 (+ поле topic: тема по объекту или словам названия —
+square|playground|sports|stop|lighting|benches|greening|other; у идеи без объекта R06 кладёт object={"kind": topic}, чтобы
+R16 выбрал вид дела). Идея получает initiative {id, at} (видно всем в GET ideas/{id}); повтор — та же инициатива.
+Нет R16 — 503 module_not_ready; в GET staff/ideas capabilities.to_initiative=false (кнопку прячем).
+Просьба к R16 (по желанию): читать idea["topic"], если object нет.
+Лента: events R06 — idea.update (автору: опубликована / проверяет / стала проектом / отклонена / не опубликована / снова
+на голосовании / «сделаем вместе»; поддержавшему — только итог), project.update (проголосовавшему: одобрен / отклонён),
+work.near (работы и отключения: в районе подписки «Рядом» R08 и ≤ 500 м от двора «Я живу здесь» R16).
+Соседи R16, R13: updates(device, since, db_path=…, limit=…); R09: updates(device, since, db=…); R17: updates(device, since).
+Дворы устройства R06 ищет как R17: функции ui.civic_together yards_of_device | device_yards | my_yards | yards_for_device,
+иначе default_service(db_path).store.my_yards(device); точка двора — engine.civic_geo.target_geometry (R12).
+
+=====================================================================================================
+F. КЛЮЧИ СЛОВАРЯ ДЛЯ R11 (запасной текст — в модулях; файл research/round-15-results/R06/I18N_R15_R06.json)
+=====================================================================================================
+notify.* (лента), works.form.* / works.kind_v2.* / works.kind_v2_short.* (форма работ v2), idea.public.* (просмотр без
+входа). shell.nav.notifications, shell.bell.* — ключи R11 (IA §8); модуль использует их, запасной текст — свой.
 
 =====================================================================================================
 C. ЧУЖИЕ ТЕСТЫ, КОТОРЫЕ МЕНЯЕТ МИГРАЦИЯ 10

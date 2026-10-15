@@ -486,8 +486,11 @@
   // ── П1 (поправка владельца 15 окт, «Без ИИ-слопа»): у идеи и проекта — маленький монохромный значок вида объекта
   // (набор R11, одна толщина линии) на спокойной плитке 48 px вместо серой лампочки, сцен и 3D-рендеров. Сам объект в 3D
   // виден на карте (слои «Проекты» и «Идеи жителей»), больших картинок в списке и карточке нет.
-  // Значков i-bench и i-sprout нет в ui-kit FINAL-4: пока спрайт без них — запасной значок того же набора.
-  var ICON_FALLBACK = { bench: "users", sprout: "trees" };
+  // Значков i-bench и i-sprout нет в ui-kit FINAL-4: пока спрайт без них — тот же рисунок R11 встроенным SVG.
+  var INLINE_ICON = {
+    bench: '<path d="M4 8.5h16M4 13h16"/><path d="M6 13v6.5M18 13v6.5M7 8.5V13M17 8.5V13"/>',
+    sprout: '<path d="M12 20.5v-8"/><path d="M12 13C12 9 9.2 6.5 4.5 6.5c0 4 2.8 6.5 7.5 6.5Z"/><path d="M12 10.5c0-3.6 2.6-6 7.5-6 0 3.6-2.6 6-7.5 6Z"/>',
+  };
   var spriteIds = null;
   (function loadSpriteIds() {
     var sprite = root.BirgeUI && root.BirgeUI.SPRITE;
@@ -498,14 +501,18 @@
       spriteIds = ids;
     }, function () { /* без спрайта — значки запасные */ });
   })();
-  function kindIconName(kind) {
+  function kindIcon(kind) {
     var name = KIND_ICON[kind] || KIND_ICON.other;
-    if (ICON_FALLBACK[name] && (!spriteIds || !spriteIds["i-" + name])) return ICON_FALLBACK[name];
-    return name;
+    if (INLINE_ICON[name] && !(spriteIds && spriteIds["i-" + name])) {
+      var box = doc.createElement("span");
+      box.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + INLINE_ICON[name] + "</svg>";
+      return box.firstChild;
+    }
+    return icon(name);
   }
   function kindTile(kind) {
     return h("span", { class: "ri-tile ri-kind", "data-kind": KIND_ICON[kind] ? kind : "other", "aria-hidden": "true" },
-      [icon(kindIconName(kind))]);
+      [kindIcon(kind)]);
   }
   // Сердце «Поддержать» — как в эталоне (одна толщина линии с иконками ui-kit); заполненное — поддержано.
   var HEART = '<svg class="ri-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>';
@@ -533,6 +540,10 @@
     // pendingFocus гасится, когда идея найдена в загруженном списке (load): оболочка может пересоздать экран до ответа.
     var alive = true;
     rootEl.classList.add("ri");
+    // Адрес «#ideas/<id>» или «#projects/<id>» (оболочка раунда 15, ссылка из ленты) — открыть эту идею или проект.
+    var deep = /^#(?:ideas|projects)\/([A-Za-z0-9._:-]{1,64})$/.exec(root.location ? root.location.hash : "");
+    if (deep && !pendingFocus) pendingFocus = deep[1];
+    if (pendingFocus) state.flash = pendingFocus;
     if (!akimat && loadDraft() && draft.active) state.view = "new";
     if (state.view === "new") state.step = draft.step || 1;
 
@@ -576,8 +587,10 @@
     // Нажатие на метку идеи на карте (или «Идея отправлена» → список): идея выбрана, её карточка открыта.
     function focusIdea(id) {
       var item = (state.items || []).filter(function (x) { return x.id === id; })[0];
-      if (!item) return;
-      state.tab = "ideas";
+      // Раунд 15: ссылка из ленты уведомлений может вести и на проект («Проект, за который вы голосовали, одобрен»).
+      var project = !item && (state.projects || []).filter(function (x) { return x.id === id; })[0];
+      if (!item && !project) return;
+      state.tab = item ? "ideas" : "projects";
       state.sel = id;
       state.selClosed = false;
       state.mode = null;
@@ -1669,6 +1682,25 @@
   if (doc.readyState === "complete") registerLayer();
   else root.addEventListener("load", registerLayer);
 
+  // Раунд 15: открыть идею или проект по ссылке («#ideas/<id>») — лента уведомлений R06 (событие birge:open от
+  // BirgeNotify, пока оболочка не понимает адреса «#раздел/путь») и BirgeIdeas.open(id) для соседей.
+  function openItem(id) {
+    var S = shell();
+    if (!id || !S) return;
+    var section = S.mode === "akimat" ? "projects" : "ideas";
+    if (mounted && S.section === section) {
+      mounted.focus(id);
+      return;
+    }
+    pendingFocus = id;
+    S.setSection(section);
+  }
+  doc.addEventListener("birge:open", function (e) {
+    var d = e.detail || {};
+    if ((d.section === "ideas" || d.section === "projects") && /^[A-Za-z0-9._:-]{1,64}$/.test(d.path || "")) openItem(d.path);
+  });
+
   // Карточка проекта R06 сама пишет «По идее жителей · N голосов» (proposals.js) — R05 свою строку не добавляет.
-  root.BirgeIdeas = { mount: mount, version: "ideas-r14-w2", KEYS: KEYS, cancelPick: function () { if (picker) picker.finish(false); } };
+  root.BirgeIdeas = { mount: mount, open: openItem, version: "ideas-r15", KEYS: KEYS,
+    cancelPick: function () { if (picker) picker.finish(false); } };
 })(typeof self !== "undefined" ? self : this);

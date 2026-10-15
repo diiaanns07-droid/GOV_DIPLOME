@@ -51,9 +51,19 @@ restored_from: — (роль начата с нуля; прошлая перед
   картинок нет; в мастере идеи — значок вместо «карты с булавкой»; галочка «отправлено» 48 px; значки пустых состояний
   ≤ 48 px. Иллюстрации #ill-kind-* R11 для R06 не нужны. Проверки: browser_r15 --only ideas 68/0 (в т. ч. «нет картинок
   > 48 px»), design_audit R06 (обновлён под П1) 284/284, app_r01_wave2 130/130, pytest R06 692 passed / 2 skipped.
-- В работе (задача 3, бэкенд написан, тестов ещё нет): ui/civic_store/notify.py — лента из updates() R09/R16/R17/R13
-  (все четыре уже есть в их ветках) + свои события R06; маршруты GET /notifications, POST /notifications/read;
-  POST /ideas/{id}/to-initiative → ui.civic_together.create_from_idea (R16).
+- 20:45 **Задача 3 сделана — лента «Что нового для меня»:** ui/civic_store/notify.py — сборщик updates() R09, R16, R17,
+  R13 (все четыре уже есть в их ветках; модуля нет — «absent», ошибка — «error», лента живёт) + свои события R06:
+  idea.update (автору и поддержавшим), project.update (проголосовавшим), work.near (подписка «Рядом» R08 на район и
+  ≤ 500 м от двора R16); прочитанное — civic_notify_reads (хэш устройства). Из событий соседей — только поля §5.8,
+  ссылки — только «#…». Маршруты GET /notifications, POST /notifications/read; патч для R01 —
+  research/round-15-results/R06/r01_round15_r06.patch (маршруты, CIVIC_ASSETS, теги). Интерфейс web/civic/notify/:
+  колокольчик (BirgeNotify.attach по IA R11 §7.7; пока кнопки R01 нет — своя в капсуле, только «Житель»), панель
+  .bk-notify + лента .bk-feed (классы ui-kit R11, запасной вид для старого ui-kit), экран #notifications (телефон, «Ещё»),
+  все состояния; нажатие открывает конкретное изменение (идея — её карточка в «Идеях»).
+- **Задача 4 (часть 1):** POST /ideas/{id}/to-initiative → R16 create_from_idea; у идеи initiative {id, at};
+  capabilities.to_initiative для кнопки. Кнопку в карточке — следующий шаг.
+- Проверки: pytest R06 709 passed / 2 skipped (round15: 57 — работы v2, лента, идея → инициатива, просмотр без входа);
+  browser_r15 на дереве «HEAD + патч R01» --only ideas,notify 107 PASS / 0 FAIL (1366 ru/kk, 375 ru/kk, пусто).
 
 ## Дальше
 - Задача 3: лента уведомлений; задача 4: идея → инициатива; задача 5: seed_world.

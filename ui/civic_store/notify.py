@@ -378,9 +378,13 @@ class NotificationCenter:
             return None, set()
         return row["read_until"], set(_loads(row["read_ids_json"]) or [])
 
-    def mark_read(self, device_id, payload) -> dict:
-        """{all: true} — всё прочитано (до «сейчас»); {ids: [...]} — отдельные события; {until: ISO} — до момента."""
+    def mark_read(self, device_id, payload, ideas_device=None) -> dict:
+        """{all: true} — прочитано всё, что сейчас в ленте; {ids: [...]} — отдельные события; {until: ISO} — до момента.
+
+        «Всё» — до самого нового события ленты, даже если его время впереди часов сервера (демо со временем «через
+        час», расхождение часов модулей): иначе «Прочитать все» оставляло бы счётчик."""
         device = self._device(device_id)
+        ideas_device = ideas_device if isinstance(ideas_device, str) and DEVICE_RE.match(ideas_device) else None
         payload = payload if isinstance(payload, dict) else {}
         unknown = sorted(set(payload) - {"ids", "all", "until", "device_id"})
         if unknown:
@@ -398,6 +402,10 @@ class NotificationCenter:
         if not ids and not everything and until_dt is None:
             raise ValidationError({"ids": "Что отметить: ids, all или until."})
         now = utc_now(self.clock)
+        newest = None
+        if everything:
+            events, _sources = self._events(device, ideas_device)
+            newest = events[0]["at"] if events else None
         with self.db.write() as conn:
             dev = self._hash(conn, device)
             row = conn.execute("SELECT read_until, read_ids_json FROM civic_notify_reads WHERE device_hash = ?",
@@ -406,6 +414,8 @@ class NotificationCenter:
             read_ids = list(_loads(row["read_ids_json"]) or []) if row else []
             if everything or until_dt is not None:
                 mark = iso(now if everything else min(until_dt, now))
+                if everything and newest and newest > mark:
+                    mark = newest
                 if read_until is None or mark > read_until:
                     read_until = mark
                 read_ids = []

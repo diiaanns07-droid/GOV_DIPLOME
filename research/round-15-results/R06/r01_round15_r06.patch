@@ -1,0 +1,87 @@
+diff -ru a/ui/web_server.py b/ui/web_server.py
+--- a/ui/web_server.py	2026-10-15 12:29:12.841484685 +0000
++++ b/ui/web_server.py	2026-10-15 12:32:47.904339056 +0000
+@@ -118,7 +118,9 @@
+                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
+                 "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
+                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
+-                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
++                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
++                # R06 раунд 15: лента «Что нового для меня» — колокольчик и экран «Уведомления» (#notifications).
++                "notify/notify.js", "notify/notify.css")
+ # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+ CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
+@@ -238,6 +240,10 @@
+     # за один вопрос с адреса, R15 S08). Сервис R13 сам держит ≤ 3 вопросов на проверке и ≤ 5 в сутки на устройство.
+     "qa.create": ((60, 3, False), (3600, 20, False), (86400, 30, False)),  # R15-S38: сутки — очередь модерации
+     "qa.vote": ((60, 30, False), (86400, 20, True)),
++    # R06 раунд 15: лента «Что нового для меня» — колокольчик опрашивает раз в минуту, вкладок может быть несколько;
++    # «прочитано» — по нажатию. Модуль держит свой кэш на 5 с (соседи не опрашиваются чаще).
++    "notifications.list": ((60, 60, False),),
++    "notifications.read": ((60, 60, False),),
+ }
+ 
+ 
+@@ -728,6 +734,10 @@
+     ("POST", ("ideas", "{id}", "support"), "ideas.support"),
+     ("POST", ("ideas", "{id}", "decide"), "ideas.decide"),
+     ("GET", ("staff", "ideas"), "ideas.staff"),
++    # R06 раунд 15 (CONTRACT §7): лента уведомлений жителя и «идея → инициатива» R16. Точный путь read — раньше {id}.
++    ("GET", ("notifications",), "notifications.list"),
++    ("POST", ("notifications", "read"), "notifications.read"),
++    ("POST", ("ideas", "{id}", "to-initiative"), "ideas.to_initiative"),
+     ("GET", ("works",), "works.list"),
+     ("POST", ("works",), "works.create"),
+     ("POST", ("works", "{id}"), "works.update"),
+@@ -790,6 +800,10 @@
+     "works.create": V2Handler("R06", ("ui.civic_store.v2",), "create_work", staff=True),
+     "works.update": V2Handler("R06", ("ui.civic_store.v2",), "update_work", staff=True),
+     "works.remove": V2Handler("R06", ("ui.civic_store.v2",), "remove_work", staff=True),
++    # R06 раунд 15: житель — X-Birge-Device (функция читает заголовки из context сама); to-initiative — сотрудник.
++    "notifications.list": V2Handler("R06", ("ui.civic_store.v2",), "list_notifications"),
++    "notifications.read": V2Handler("R06", ("ui.civic_store.v2",), "read_notifications"),
++    "ideas.to_initiative": V2Handler("R06", ("ui.civic_store.v2",), "idea_to_initiative", staff=True),
+     "forecast": V2Handler("R13", ("ui.civic_forecast",), "forecast_response"),
+     # R13 «Вопрос акиму»: сервис на той же SQLite (таблицы qa_*); сотрудника, CSRF и Origin проверяет сам (как R09).
+     **{key: V2Handler("R13", ("ui.civic_qa",), "make_service", kind="service") for key in (
+@@ -1222,6 +1236,20 @@
+             return {"idea_id": params["id"], "body": body}
+         if key == "works.list":
+             return {"district": district}
++        # R06 раунд 15: since проверяет модуль (ISO 8601; «+05:00» без кодирования в адресе приходит пробелом — модуль
++        # возвращает плюс); id устройства — из заголовка X-Birge-Device в context, запасной — device_id в адресе.
++        if key == "notifications.list":
++            since = q.get("since") or None
++            if since is not None and len(since) > 40:
++                raise V2BadRequest("since", "since: время ISO 8601.")
++            device = q.get("device_id") or None
++            if device is not None and not V2_DEVICE_ID.match(device):
++                raise V2BadRequest("device_id", "device_id: строка 8–128 символов.")
++            return {"since": since, "device_id": device}
++        if key == "notifications.read":
++            return {"body": body}
++        if key == "ideas.to_initiative":
++            return {"idea_id": params["id"], "body": body}
+         if key in ("works.update", "works.remove"):
+             return {"work_id": params["id"], "body": body}
+         return {}
+diff -ru a/web/index.html b/web/index.html
+--- a/web/index.html	2026-10-15 12:29:12.843234052 +0000
++++ b/web/index.html	2026-10-15 12:29:12.878129358 +0000
+@@ -28,6 +28,7 @@
+     <link rel="stylesheet" href="/civic/qa/qa.css" />
+     <link rel="stylesheet" href="/civic/proposals/proposals.css" />
+     <link rel="stylesheet" href="/civic/ideas/ideas.css" />
++    <link rel="stylesheet" href="/civic/notify/notify.css" />
+     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+     <link rel="stylesheet" href="/civic/shell/shell.css" />
+     <link rel="stylesheet" href="/civic/qr/report.css" />
+@@ -256,6 +257,7 @@
+     <script defer src="/civic/qa/qa.js"></script>
+     <script defer src="/civic/ideas/ideas.js"></script>
+     <script defer src="/civic/proposals/works.js"></script>
++    <script defer src="/civic/notify/notify.js"></script>
+     <script defer src="/civic/akim/services.js"></script>
+     <script defer src="/civic/map/search_index.js"></script>
+     <script defer src="/civic/shell/explore.js"></script>

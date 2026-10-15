@@ -184,7 +184,7 @@ async function ideasPart(browser) {
       const tiles = await page.$$eval(".ri-pc", (els) => els.map((e) => {
         const t = e.querySelector(".ri-kind"), r = t && t.getBoundingClientRect();
         return { kind: t && t.getAttribute("data-kind"), w: r ? Math.round(r.width) : 0, h: r ? Math.round(r.height) : 0,
-          icon: !!(t && t.querySelector("svg.ic use")), img: !!e.querySelector("img"), bigSvg: [...e.querySelectorAll("svg")].some((s) => s.getBoundingClientRect().width > 48) };
+          icon: !!(t && t.querySelector("svg.ic")), img: !!e.querySelector("img"), bigSvg: [...e.querySelectorAll("svg")].some((s) => s.getBoundingClientRect().width > 48) };
       }));
       check(`${tag}: у каждой карточки — значок вида ≤ 48 px из набора иконок`, tiles.length && tiles.every((x) => x.icon && x.w <= 48 && x.h <= 48), JSON.stringify(tiles));
       check(`${tag}: ни картинок, ни больших рисунков в списке (П1)`, tiles.every((x) => !x.img && !x.bigSvg), JSON.stringify(tiles));
@@ -238,11 +238,165 @@ async function ideasPart(browser) {
   }
 }
 
+// ------------------------------------------------------------------------------------------------ уведомления
+// Нужен патч R01 (маршруты /notifications): дерево — tree_with_r01_patch.sh. Без маршрутов часть — NOT_RUN.
+async function api(base, method, path, body, auth) {
+  const headers = { Accept: "application/json" };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  if (auth) { headers.Cookie = auth.cookie; headers["X-CSRF-Token"] = auth.csrf; headers.Origin = base; }
+  const r = await fetch(base + path, { method, headers, body: body !== undefined ? JSON.stringify(body) : undefined });
+  const text = await r.text();
+  let json = null;
+  try { json = JSON.parse(text); } catch (e) { json = null; }
+  if (json && json.ok === true && "data" in json) json = json.data;
+  return { status: r.status, json, headers: r.headers };
+}
+async function staffAuth(base) {
+  const r = await fetch(base + "/api/civic/v1/session/login", { method: "POST", headers: { "Content-Type": "application/json", Origin: base },
+    body: JSON.stringify({ username: "checker", password: PASSWORD }) });
+  const cookie = (r.headers.get("set-cookie") || "").split(";")[0];
+  const json = await r.json();
+  return { cookie, csrf: (json.data || json).csrf_token };
+}
+async function notifyPart(browser) {
+  const { srv, base } = await fresh();
+  try {
+    const probe = await api(base, "GET", "/api/civic/v2/notifications?device_id=d-probeprobeprobeprobe1");
+    if (probe.status === 404) {
+      console.log("NOT_RUN уведомления: в дереве нет маршрутов /notifications (нужен патч R01 r01_round15_r06.patch)");
+      return;
+    }
+    const MAIN = "d-" + "A".repeat(24), IDEAS = "dev-" + "a".repeat(32);
+    const auth = await staffAuth(base);
+    // Житель A: своя идея (опубликована), голос за проект (одобрен), подписка «Рядом» на Нуру (работы рядом).
+    const idea = await api(base, "POST", "/api/civic/v2/ideas", { title: "Скамейки у подъезда", description: "Пожилым негде присесть.",
+      geometry: { type: "Point", coordinates: [71.3665, 51.1375] }, device_id: IDEAS, lang: "ru" });
+    check("уведомления: идея жителя создана", idea.status === 201, JSON.stringify(idea.json).slice(0, 200));
+    const ideaId = idea.json && idea.json.item && idea.json.item.id;
+    const pub = await api(base, "POST", `/api/civic/v2/ideas/${ideaId}/decide`, { action: "publish" }, auth);
+    check("уведомления: сотрудник опубликовал идею", pub.status === 200, pub.status);
+    const projects = await api(base, "GET", "/api/civic/v2/proposals");
+    const project = projects.json.items.find((x) => x.status === "proposal");
+    await api(base, "POST", `/api/civic/v2/proposals/${project.id}/vote`, { value: 1, device_id: IDEAS });
+    const approve = await api(base, "POST", `/api/civic/v2/proposals/${project.id}/approve`, {}, auth);
+    check("уведомления: проект одобрен", approve.status === 200, approve.status);
+    const sub = await api(base, "POST", "/api/civic/v2/nearby/subscriptions", { device_id: MAIN, scope: "district", id: "nura" });
+    check("уведомления: подписка «Рядом» на Нуру", sub.status === 200, JSON.stringify(sub.json).slice(0, 200));
+    const feed = await (await fetch(base + "/api/civic/v2/notifications", { headers: { "X-Birge-Device": MAIN, "X-Birge-Ideas-Device": IDEAS } })).json();
+    const kinds = new Set((feed.items || []).map((e) => e.kind));
+    check("уведомления API: идея, проект и работы рядом", kinds.has("idea.update") && kinds.has("project.update") && kinds.has("work.near"),
+      JSON.stringify(feed).slice(0, 400));
+    check("уведомления API: в ответе нет id устройств", !JSON.stringify(feed).includes(MAIN) && !JSON.stringify(feed).includes(IDEAS));
+    check("уведомления API: ссылки — только внутренние адреса", (feed.items || []).every((e) => e.link === null || /^#[a-z]/.test(e.link)));
+    check("уведомления API: есть непрочитанные", feed.unread >= 3, feed.unread);
+
+    for (const lang of ["ru", "kk"]) {
+      const tag = `notify-1366-${lang}`;
+      const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+      await ctx.addInitScript(([l, main, ideas]) => {
+        try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l);
+          localStorage.setItem("birge.device", main); localStorage.setItem("birge.device_id", ideas); } catch (e) {}
+      }, [lang, MAIN, IDEAS]);
+      const page = await ctx.newPage();
+      page.errs = [];
+      page.on("pageerror", (e) => page.errs.push(e.message));
+      // Сколько непрочитанных сейчас (прогон ru мог отметить всё прочитанным).
+      const now = await (await fetch(base + "/api/civic/v2/notifications", { headers: { "X-Birge-Device": MAIN, "X-Birge-Ideas-Device": IDEAS } })).json();
+      const unread0 = now.unread;
+      await page.goto(base + "/", { waitUntil: "domcontentloaded" });
+      const bellSel = '[data-action="notifications"]';
+      const hasBell = await page.waitForSelector(bellSel, { timeout: 20000 }).then(() => true, () => false);
+      check(`${tag}: колокольчик в капсуле справа (вид «Житель»)`, hasBell);
+      if (!hasBell) { await shot(page, `${tag}-no-bell`); await ctx.close(); continue; }
+      if (unread0) await page.waitForFunction((sel) => { const b = document.querySelector(sel + " .bk-nav__badge"); return b && !b.hidden && b.textContent; }, bellSel, { timeout: 15000 }).catch(() => {});
+      else await sleep(1500);
+      const badge = await page.$eval(bellSel + " .bk-nav__badge", (e) => (e.hidden ? "" : e.textContent)).catch(() => "");
+      check(`${tag}: счётчик непрочитанных на колокольчике (нет новых — нет числа)`,
+        badge === (unread0 > 9 ? "9+" : unread0 ? String(unread0) : ""), `${badge} vs ${unread0}`);
+      const size = await page.$eval(bellSel, (e) => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; });
+      check(`${tag}: кнопка-колокольчик ≥ 44 px`, size[0] >= 44 && size[1] >= 44, size);
+      await page.click(bellSel);
+      await page.waitForSelector(".bk-notify .bk-feed__item", { timeout: 10000 });
+      const panel = await page.evaluate(() => {
+        const p = document.querySelector(".bk-notify"), r = p.getBoundingClientRect();
+        return { w: Math.round(r.width), groups: [...p.querySelectorAll(".bk-feed__group")].map((g) => g.textContent),
+          items: p.querySelectorAll(".bk-feed__item").length, unread: p.querySelectorAll('.bk-feed__item[data-unread="true"]').length,
+          big: [...p.querySelectorAll("svg, img")].filter((x) => x.getBoundingClientRect().width > 48).length, text: p.innerText };
+      });
+      check(`${tag}: панель 360, группы «Новые»/«Раньше», строки ленты`, panel.w <= 360 && panel.groups.length >= 1 && panel.items >= 3
+        && panel.unread === unread0, JSON.stringify(panel).slice(0, 300));
+      check(`${tag}: в панели нет картинок > 48 px (П1)`, panel.big === 0, panel.big);
+      check(`${tag}: в панели нет технических слов`, !TECH.some((w) => panel.text.includes(w)), panel.text.slice(0, 300));
+      if (lang === "kk") check(`${tag}: подписи по-казахски`, /Хабарламалар/.test(panel.text) && /Жаңа|Бұрынғы/.test(panel.text)
+        && !/Новые|Раньше|Прочитать/.test(panel.text), panel.text.slice(0, 200));
+      await shot(page, `${tag}-panel`);
+      await page.keyboard.press("Escape");
+      const closed = await page.evaluate((sel) => !document.querySelector(".bk-notify") && document.activeElement === document.querySelector(sel), bellSel);
+      check(`${tag}: Esc закрывает панель, фокус — на колокольчике`, closed);
+      if (lang === "ru") {
+        // Нажатие на уведомление об идее открывает её карточку в «Идеях» и отмечает прочитанным.
+        await page.click(bellSel);
+        await page.waitForSelector(".bk-notify .bk-feed__item");
+        await page.click('.bk-notify .bk-feed__item[data-kind="idea"]');
+        const opened = await page.waitForFunction((id) => {
+          const c = document.querySelector('.ri-pc[aria-current="true"]');
+          return document.body.dataset.birgeSection === "ideas" && c && c.getAttribute("data-idea") === id;
+        }, ideaId, { timeout: 15000 }).then(() => true, () => false);
+        check(`${tag}: уведомление открыло конкретную идею (не главную)`, opened);
+        await shot(page, `${tag}-opened-idea`);
+        await page.waitForFunction((args) => { const b = document.querySelector(args[0] + " .bk-nav__badge"); return b && (b.hidden ? 0 : Number(b.textContent)) === args[1] - 1; },
+          [bellSel, unread0], { timeout: 10000 }).then(() => check(`${tag}: счётчик −1 после открытия`, true), () => check(`${tag}: счётчик −1 после открытия`, false));
+        await page.click(bellSel);
+        await page.waitForSelector(".bk-notify__readall:not([hidden])");
+        await page.click(".bk-notify__readall");
+        const zero = await page.waitForFunction((sel) => { const b = document.querySelector(sel + " .bk-nav__badge"); return !b || b.hidden; }, bellSel, { timeout: 10000 })
+          .then(() => true, () => false);
+        check(`${tag}: «Прочитать все» — счётчика нет`, zero);
+        await page.keyboard.press("Escape");
+        // Вид «Акимат»: колокольчика нет (IA §5.7 — только житель).
+        await page.evaluate(() => window.BirgeShell && window.BirgeShell.setMode && window.BirgeShell.setMode("akimat"));
+        await sleep(600);
+        const inAkimat = await page.$$eval(bellSel, (els) => els.filter((e) => e.offsetParent !== null).length);
+        check(`${tag}: в виде «Акимат» колокольчика нет`, inAkimat === 0, inAkimat);
+      }
+      check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
+      await ctx.close();
+    }
+    // Телефон: экран «Уведомления» (#notifications) — лента и пустое состояние.
+    for (const [lang, main, ideas, empty] of [["ru", MAIN, IDEAS, false], ["kk", MAIN, IDEAS, false], ["ru", "d-" + "Z".repeat(24), null, true]]) {
+      const tag = `notify-375-${lang}${empty ? "-empty" : ""}`;
+      const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+      await ctx.addInitScript(([l, m, i]) => {
+        try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); localStorage.setItem("birge.device", m);
+          if (i) localStorage.setItem("birge.device_id", i); } catch (e) {}
+      }, [lang, main, ideas]);
+      const page = await ctx.newPage();
+      page.errs = [];
+      page.on("pageerror", (e) => page.errs.push(e.message));
+      await page.goto(base + "/#notifications", { waitUntil: "domcontentloaded" });
+      const ok = await page.waitForSelector(empty ? ".rn .rn-empty" : ".rn .bk-feed__item", { timeout: 20000 }).then(() => true, () => false);
+      check(`${tag}: экран «Уведомления» ${empty ? "— пусто: значок, текст" : "— лента"}`, ok);
+      if (ok && empty) {
+        const ic = await page.$eval(".rn-empty__ic", (e) => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; });
+        check(`${tag}: значок пустого состояния ≤ 48 px (П1)`, ic[0] <= 48 && ic[1] <= 48, ic);
+      }
+      const au = await textAudit(page, "#birge-screen");
+      check(`${tag}: без технических слов и прокрутки вбок`, !au.missing && !au.tech.length && !au.overflow, JSON.stringify({ tech: au.tech, overflow: au.overflow }));
+      await shot(page, tag);
+      check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
+      await ctx.close();
+    }
+  } finally {
+    srv.kill();
+  }
+}
+
 (async () => {
   const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
   try {
     if (!ONLY || ONLY.includes("works")) await worksPart(browser);
     if (!ONLY || ONLY.includes("ideas")) await ideasPart(browser);
+    if (!ONLY || ONLY.includes("notify")) await notifyPart(browser);
   } catch (e) {
     check("прогон без исключений", false, e.stack || e);
   } finally {

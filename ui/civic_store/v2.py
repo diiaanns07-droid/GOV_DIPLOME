@@ -442,7 +442,8 @@ class CivicV2:
         denied = self._resident_write(context)
         if denied:
             return denied
-        return ok(self.notify.mark_read(resident_device(context, params, payload), payload))
+        return ok(self.notify.mark_read(resident_device(context, params, payload), payload,
+                                        header(context, IDEAS_DEVICE_HEADER)))
 
     def _to_initiative(self, context, params, payload, idea_id):
         principal, denied = self.service.require_staff(context, unsafe=True)
@@ -763,7 +764,7 @@ def read_notifications(body=None, device_id=None, context=None):
         raise V2Error(403, "cross_origin", "Запрос с чужого сайта отклонён.")
     body = body if isinstance(body, dict) else {}
     device = device_id or header(context, DEVICE_HEADER) or body.get("device_id")
-    return _run(_v2().notify.mark_read, device, body)
+    return _run(_v2().notify.mark_read, device, body, header(context, IDEAS_DEVICE_HEADER))
 
 
 def idea_to_initiative(idea_id, body=None, context=None, principal=None):
