@@ -30,7 +30,24 @@
   var ASTANA_MS = 5 * 3600 * 1000;
   // Плитка-иллюстрация записи — значок ui-kit по виду работ / что отключат (дизайн-марафон).
   var KIND_ICON = { roadworks: "road", construction: "building", landscaping: "trees", lighting: "bulb", event: "calendar", other: "dots" };
-  var UTILITY_ICON = { water: "droplet", heating: "droplet", power: "bulb", gas: "alert", road_closure: "road" };
+  // Что отключат (R11, раунд 15): вода — капля, тепло — радиатор, свет — молния, газ — пламя. Старый спрайт ui-kit
+  // (FINAL-4) этих значков не знает — тогда прежние (капля, лампочка, знак внимания), пока не прочитан спрайт — тоже они.
+  var UTILITY_ICON = { water: "droplet", heating: "radiator", power: "zap", gas: "flame", road_closure: "road" };
+  var ICON_FALLBACK = { radiator: "droplet", zap: "bulb", flame: "alert" };
+  var spriteIds = null;
+  (function loadSpriteIds() {
+    var sprite = root.BirgeUI && root.BirgeUI.SPRITE;
+    if (!sprite || !root.fetch) return;
+    root.fetch(sprite, { credentials: "same-origin" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (text) {
+      var ids = {};
+      String(text || "").replace(/id="(i-[a-z0-9-]+)"/g, function (all, id) { ids[id] = true; return all; });
+      spriteIds = ids;
+    }, function () { /* нет спрайта — прежние значки */ });
+  })();
+  function utilityIcon(utility) {
+    var name = UTILITY_ICON[utility] || "alert";
+    return ICON_FALLBACK[name] && !(spriteIds && spriteIds["i-" + name]) ? ICON_FALLBACK[name] : name;
+  }
   // Работа v2: вид для календаря R12 и его значок; вид раунда 14 (подпись в «Рядом» R08) выводит сервер.
   var KINDS_V2 = ["dig", "surface", "closure", "landscape", "lighting", "other"];
   var KIND_V2_ICON = { dig: "droplet", surface: "road", closure: "alert", landscape: "trees", lighting: "bulb", other: "dots" };
@@ -127,7 +144,7 @@
       "works.form.edit_title": "Жазбаны өзгерту",
       "works.form.type": "Бұл не",
       "works.form.type_work": "Жұмыс",
-      "works.form.type_outage": "Өшіру немесе жол жабу",
+      "works.form.type_outage": "Өшіру немесе жолды жабу",
       "works.form.status": "Кезеңі",
       "works.form.kind": "Жұмыс түрі",
       "works.form.utility": "Не өшіріледі",
@@ -147,11 +164,11 @@
       "works.form.bad_date": "Күнін тексеріңіз",
       "works.form.stale": "Жазбаны басқа қызметкер өзгертті — тізім жаңартылды",
       "works.form.remove": "Жою",
-      "works.form.remove_confirm": "Нақты жою",
+      "works.form.remove_confirm": "Иә, жою",
       "works.form.removed": "Жазба жойылды",
       "works.form.empty": "Бұл ауданда әзірге жұмыс пен өшіру жоқ",
       "works.form.district": "Аудан",
-      "works.form.until": "мерзімі: {date}",
+      "works.form.until": "{date} дейін",
       "works.form.error": "Сақтау мүмкін болмады. Байланысты тексеріп, қайталаңыз.",
       "staff.login.note": "Тіркелгіні әкімші береді.",
       "works.form.service": "Қызмет",
@@ -169,21 +186,21 @@
       "works.kind_v2_short.lighting": "Жарықтандыру",
       "works.kind_v2_short.other": "Басқа",
       "works.form.starts_on": "Жұмыстың басталуы",
-      "works.form.section": "Көше учаскесі",
-      "works.form.section_hint": "Учаскелер бойынша «Жұмыс күнтізбесі» жаңа асфальттан кейін көшені қайта қазу жоспарын көреді.",
-      "works.form.section_none": "Учаске таңдалмаған — жазба картада сызықсыз болады",
+      "works.form.section": "Көше бөлігі",
+      "works.form.section_hint": "Бөліктер бойынша «Жұмыстар күнтізбесі» жаңа асфальттан кейін көшені қайта қазу жоспарын көреді.",
+      "works.form.section_none": "Бөлік таңдалмаған — жазба картада сызықсыз болады",
       "works.form.section_pick": "Картадан белгілеу",
-      "works.form.section_change": "Учаскені өзгерту",
-      "works.form.section_clear": "Учаскені алып тастау",
-      "works.form.section_start": "Картадан көше учаскесінің басын басыңыз",
-      "works.form.section_end": "Енді учаскенің соңын басыңыз",
-      "works.form.section_wait": "Көше бойынша учаске құрылып жатыр…",
+      "works.form.section_change": "Бөлікті өзгерту",
+      "works.form.section_clear": "Бөлікті алып тастау",
+      "works.form.section_start": "Картадан көше бөлігінің басын басыңыз",
+      "works.form.section_end": "Енді бөліктің соңын басыңыз",
+      "works.form.section_wait": "Көше бойынша бөлік құрылып жатыр…",
       "works.form.section_ready": "{street} · {m} м. «Дайын» батырмасын басыңыз немесе қайта таңдаңыз",
       "works.form.section_value": "{street} · {m} м",
-      "works.form.section_unnamed": "Көше учаскесі",
-      "works.form.section_failed": "Учаске құрылмады: {text}",
-      "works.form.section_unavailable": "Көше картасы қазір қолжетімсіз — жазбаны учаскесіз сақтаңыз.",
-      "works.form.section_kept": "Учаске сақталды (көше картасы бойынша)",
+      "works.form.section_unnamed": "Көше бөлігі",
+      "works.form.section_failed": "Бөлік құрылмады: {text}",
+      "works.form.section_unavailable": "Көше картасы қазір қолжетімсіз — жазбаны бөліксіз сақтаңыз.",
+      "works.form.section_kept": "Бөлік сақталды (көше картасы бойынша)",
       "works.form.bad_order": "Аяқталуы басталуынан ерте болмауы керек",
     },
   };
@@ -535,7 +552,7 @@
     // Строка записи (дизайн-марафон): плитка вида работ, тихая строка «вид · Пример», название, срок одной строкой.
     // Сдвинутый срок — «до / после»: плановый зачёркнут → новый, метка «срок перенесён». «Изменить» — капсула, «Удалить» — тихая.
     function tileOf(item) {
-      var ic = item.type === "outage" ? UTILITY_ICON[item.utility] || "alert"
+      var ic = item.type === "outage" ? utilityIcon(item.utility)
         : KIND_V2_ICON[item.kind] || KIND_ICON[item.work_kind] || "dots";
       return h("span", { class: "ri-tile", "aria-hidden": "true" }, [icon(ic)]);
     }
