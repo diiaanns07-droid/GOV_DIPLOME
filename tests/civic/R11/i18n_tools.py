@@ -65,7 +65,11 @@ def params(value):
 
 
 # Формы числа без {n}: само число стоит рядом крупно (эталон A .big: «6 | человек сообщили»), подпись согласуется с ним.
-NUMBER_BESIDE = {"heat.card.people", "heat.card.people_fixed", "passport.people"}
+NUMBER_BESIDE = {"heat.card.people", "heat.card.people_fixed", "passport.people",
+                 # раунд 15: подписи под крупным числом — шапка двора R16 и плитки ситуационного центра R08
+                 "together.kpi.members", "together.kpi.problems", "together.kpi.initiatives",
+                 "board.agencies.joint", "board.agencies.handoffs", "board.together.stat_done", "board.together.stat_people",
+                 "board.together.stat_upcoming", "board.together.stat_verified", "board.meetings.stat_overdue"}
 
 
 def check(ru=None, kk=None):
