@@ -308,7 +308,10 @@ async function jpegBuffer(page, w, h) {
         // Перелёт к делу (программная отрисовка WebGL в облаке медленная — ждём, пока камера встанет).
         const flown = await page.waitForFunction(() => typeof map !== "undefined" && map && !map.isMoving() && map.getZoom() >= 15, // eslint-disable-line no-undef
           null, { timeout: 10000 }).then(() => true, () => false);
-        check(`${tag} «На карте»: карта у дела (масштаб двора), лист остаётся`, flown && (phone || await page.$eval("#birge-screen", (n) => !n.hidden)));
+        const cam = await page.evaluate(() => ({ zoom: typeof map !== "undefined" && map ? Math.round(map.getZoom() * 10) / 10 : null, // eslint-disable-line no-undef
+          moving: typeof map !== "undefined" && map ? map.isMoving() : null, section: window.BirgeShell && window.BirgeShell.section, // eslint-disable-line no-undef
+          sheet: !!document.querySelector("#birge-screen:not([hidden])") }));
+        check(`${tag} «На карте»: карта у дела (масштаб двора), лист остаётся`, flown && (phone || cam.sheet), cam);
         if (w === 1366 || phone) await shot(page, `${tag}_detail_on_map`);
       }
       // Сделано вместе: карточка с фото «после» (демо-иллюстрация)

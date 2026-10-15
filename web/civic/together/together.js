@@ -1953,9 +1953,42 @@
     o.setLayer("initiatives");
     var view = { center: item.point, zoom: Math.max(mapObj.getZoom ? mapObj.getZoom() : 0, 16) };
     if (side) view.padding = { left: Math.round(box.right) + 16, top: 0, right: 0, bottom: 0 };
-    try {
-      if (reducedMotion()) mapObj.jumpTo(view); else mapObj.flyTo(Object.assign({ duration: 900, essential: true }, view));
-    } catch (e) { try { mapObj.jumpTo({ center: item.point, zoom: 16 }); } catch (e2) { /* карта снята */ } }
+    function fly() {
+      try {
+        if (reducedMotion()) mapObj.jumpTo(view); else mapObj.flyTo(Object.assign({ duration: 900, essential: true }, view));
+      } catch (e) { try { mapObj.jumpTo({ center: item.point, zoom: 16 }); } catch (e2) { /* карта снята */ } }
+    }
+    // Страница только открылась (ссылка #together/<дело>): карта ещё делает первые программные шаги — обзор города,
+    // наклон, подгонка оболочки, «главные места» тепловой карты R07 — и увела бы камеру от дела. Ждём, пока карта 1 с не
+    // двигается (не дольше 6 с), потом летим. 5 с после перелёта: программный сдвиг увёл далеко — ещё раз (≤ 2), отложенно
+    // (не изнутри события карты); житель сам тянет карту (у события есть originalEvent) — не вмешиваемся.
+    var started = Date.now(), quiet = null, retries = 0, guardUntil = 0;
+    function far() {
+      var c = mapObj.getCenter();
+      return mapObj.getZoom() < 14 || Math.abs(c.lng - item.point[0]) > 0.02 || Math.abs(c.lat - item.point[1]) > 0.02;
+    }
+    function guard(ev) {
+      if ((ev && ev.originalEvent) || Date.now() > guardUntil || focusId !== item.id || retries >= 2) {
+        mapObj.off("moveend", guard);
+        return;
+      }
+      if (far()) { retries++; setTimeout(fly, 60); }
+    }
+    function go() {
+      mapObj.off("movestart", wait);
+      clearTimeout(quiet);
+      if (focusId !== item.id) return;
+      guardUntil = Date.now() + 5000;
+      mapObj.on("moveend", guard);
+      fly();
+    }
+    function wait() {
+      clearTimeout(quiet);
+      quiet = setTimeout(go, Date.now() - started > 6000 ? 0 : 1000);
+    }
+    var young = root.performance && typeof root.performance.now === "function" && root.performance.now() < 12000;
+    if (young && typeof mapObj.on === "function") { mapObj.on("movestart", wait); wait(); }
+    else go();
     markFocus();
   }
   function markFocus() {
