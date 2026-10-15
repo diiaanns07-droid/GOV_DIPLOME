@@ -395,12 +395,22 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     // Ключ R11 board.crisis.open («Открыть кризисный штаб» / «Жедел штабты ашу»).
     const crisisRe = new RegExp("^(" + [T(dict, ["board.crisis.open", "akim.pulse.open_crisis"], lang === "kk" ? "Жедел штабты ашу" : "Открыть кризисный штаб"),
       "Открыть кризисный штаб", "Жедел штабты ашу"].map(esc).join("|") + ")", "i");
-    const hasBtn = !!(await firstVisible(page.getByRole("button", { name: crisisRe }))) || !!(await firstVisible(page.getByRole("link", { name: crisisRe })));
+    // Кнопку ищем по классу R08 (.akim-pulse__crisis) или по названию; подпись сверяем со словарём R11 отдельно —
+    // термин «Жедел штаб» / «кризисный штаб» должен быть один во всех экранах.
+    const byName = (await firstVisible(page.getByRole("button", { name: crisisRe }))) || (await firstVisible(page.getByRole("link", { name: crisisRe })));
+    const byClass = await firstVisible(page.locator(".akim-pulse__crisis"));
+    const btn = byName || byClass;
+    const btnText = btn ? ((await btn.innerText().catch(() => "")) || "").trim() : null;
     const f = await shot("9-day");
     const why9 = !(shell && shell.globals.includes("BirgeAgencies")) ? "модуля BirgeAgencies нет на странице"
       : !S.r15day ? "поставки R08 раунда 15 («Картина дня» 2.0) нет в сборке" : null;
-    step("9", "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»", why9 ? null : hasBtn,
-      why9 || { button: hasBtn }, "R08 + R17", f);
+    step("9", "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»", why9 ? null : !!btn,
+      why9 || { button: !!btn, text: btnText }, "R08 + R17", f);
+    if (!why9 && btn) {
+      const term = T(dict, ["board.crisis.open"], null);
+      step("9", "подпись кнопки штаба — термин словаря R11 (board.crisis.open)", term ? crisisRe.test(btnText) : null,
+        term ? { shown: btnText, r11: term } : "в словаре R11 нет board.crisis.open", "R08 + R11");
+    }
     // Адрес штаба: #agencies/crisis/<id> (R17 191f81e7+), прежний #agencies/crisis=<id>; публичная карточка — #crisis/<id>.
     // Экран открыт — мало: штаб должен показать именно этот кризис (название из мира), иначе пробуем следующий адрес
     // (у R17 до 191f81e7 адрес #agencies/crisis/<id> открывает «Табло»).
