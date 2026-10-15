@@ -722,14 +722,15 @@ class AkimService:
             if timer["state"] != "overdue":
                 continue
             target = r.get("target") if isinstance(r.get("target"), dict) else {}
-            label = labels.get(target.get("id"))
+            on_map = labels.get(target.get("id"))
+            label = on_map or decisions.own_label(target)
             service = routing.service_for(r.get("category"), r.get("subtopic"))
             rows.append({"id": r.get("id"), "category": r.get("category"), "district": self._district_of(r),
                          "subtopic": decisions._subtopic(r.get("category"), r.get("subtopic")),
                          "place_ru": (label or {}).get("ru"), "place_kk": (label or {}).get("kk"),
                          # Ссылка на карту — только если место есть на карте (у него есть подпись цели).
                          "target": {"kind": target.get("kind"), "id": target.get("id")} if target.get("id") else None,
-                         "on_map": bool(label),
+                         "on_map": bool(on_map),
                          "people": 1 + int(r.get("metoo") or 0), "timer": timer,
                          "service": {k: service[k] for k in ("id", "ru", "kk", "name_edited")},
                          "demo": bool(r.get("demo"))})

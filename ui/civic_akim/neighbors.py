@@ -28,6 +28,7 @@ import os
 import threading
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import quote
 
 from . import routing, text
 
@@ -518,7 +519,7 @@ def _initiative_row(r: dict) -> dict:
             "place_ru": target.get("label_ru"), "place_kk": target.get("label_kk") or target.get("label_ru"),
             "target": {"kind": target.get("kind") or "area", "id": target.get("id")} if target.get("id") else None,
             **_district_label(r.get("district")),
-            "starts_at": r.get("starts_at"), "joined": max(0, int(r.get("joined") or 0)),
+            "starts_at": r.get("starts_at"), "ends_at": r.get("ends_at"), "joined": max(0, int(r.get("joined") or 0)),
             "supported": bool(support.get("by_akimat") or r.get("supported")),
             "support_note": support.get("note") if support.get("by_akimat") else None,
             "report": bool(r.get("report")), "demo": bool(r.get("demo"))}
@@ -541,6 +542,59 @@ def _r16_summary(data: dict, *, district) -> dict:
                          if star and star.get("label_ru") else None),
         "demo": bool(data.get("demo")),
     }
+
+
+def _r16_get(module, settings: Settings, route: str):
+    try:
+        return _service_get(module, settings, route)
+    except _Unavailable:
+        return None
+    except Exception:
+        log.exception("R08: R16 %s ответил ошибкой", route)
+        return None
+
+
+def _r16_details(settings: Settings, out: dict) -> dict:
+    """initiatives_summary() R16 отдаёт ближайшие дела без поддержки акимата, времени конца и подписи места. Их берём
+    из карточки дела R16 (GET together/initiatives/{id} — то же, что видит любой житель): без этого «Поддержать»
+    в «Картине дня» вело бы к уже поддержанному делу. «Двор недели» (VISUAL_BRIEF §1 п. 4), если R16 его не дал, —
+    двор ближайшего дела, куда записалось больше всего соседей; подпись и число соседей — со страницы двора R16
+    (GET together/yards/{id}). Нет сервиса или базы — блок как был. Числа R16 не пересчитываются."""
+    top = out.get("top") or []
+    try:
+        module = _import(R16_MODULE)
+    except Exception:
+        return out
+    if not top or module is None or not callable(getattr(module, "make_service", None)):
+        return out
+    rows = []
+    for row in top:
+        d = _r16_get(module, settings, "together/initiatives/" + quote(str(row.get("id") or ""), safe=""))
+        d = d.get("initiative", d) if isinstance(d, dict) else None
+        if isinstance(d, dict) and d.get("id") == row.get("id") and d.get("status") in SHOWN_INITIATIVE:
+            full = _initiative_row(d)
+            row = {**row, **{k: full[k] for k in ("kind", "lang", "status", "place_ru", "place_kk", "target",
+                                                   "ends_at", "supported", "support_note", "report")}}
+        rows.append(row)
+    out["top"] = rows
+    if out.get("yard_of_week") is None:
+        star = max((r for r in rows if r.get("status") == "published" and r.get("place_ru")
+                    and str((r.get("target") or {}).get("id") or "").startswith("yard-")),
+                   key=lambda r: (r.get("joined") or 0, str(r.get("id"))), default=None)
+        if star and star.get("joined"):
+            yard_id = star["target"]["id"]
+            y = _r16_get(module, settings, "together/yards/" + quote(yard_id, safe=""))
+            y = y.get("yard") if isinstance(y, dict) and isinstance(y.get("yard"), dict) else {}
+            if y.get("id") != yard_id:
+                y = {}
+            out["yard_of_week"] = {
+                "id": yard_id, "label_ru": y.get("label_ru") or star["place_ru"],
+                "label_kk": y.get("label_kk") or star.get("place_kk") or star["place_ru"],
+                **_district_label(y.get("district") or star.get("district")),
+                "members": y["members"] if isinstance(y.get("members"), int) else None,
+                "initiative": star,
+            }
+    return out
 
 
 def normalize_together(body, *, days: int, district, now: datetime) -> dict:
@@ -621,6 +675,8 @@ def together(settings: Settings, *, days: int = 7, district=None, now: datetime,
                                 lambda fx: normalize_together(fx["together"], days=days, district=district, now=now), now)
         return out or _empty(exc.reason, top=[], yard_of_week=None, counts={})
     out = normalize_together(body, days=days, district=district, now=now)
+    if how == "function" and out.get("available"):
+        out = _r16_details(settings, out)
     out.update(source=("r16" if how == "function" else "r16-service") if out.get("available") else "none", days=days)
     return out
 

@@ -95,7 +95,7 @@
       "akim.trio.support": "Поддержать",
       "akim.trio.agencies": "Ведомства",
       "akim.trio.agencies_num": { one: "совместное обращение за неделю", few: "совместных обращения за неделю", many: "совместных обращений за неделю" },
-      "akim.trio.agencies_lagging": "Больше всего просрочек: {list}",
+      "akim.trio.agencies_lagging": "Больше всего просроченных ответов: {list}",
       "akim.trio.agencies_handoffs": { one: "{n} передача между службами", few: "{n} передачи между службами", many: "{n} передач между службами" },
       "akim.trio.agencies_staff": "Табло служб видно сотрудникам акимата: аватар → «Для сотрудников».",
       "akim.trio.together": "Жители вместе",
@@ -103,6 +103,7 @@
       "akim.trio.together_people": { one: "{n} сосед придёт", few: "{n} соседа придут", many: "{n} соседей придут" },
       "akim.trio.together_done": { one: "Сделано вместе: {n} дело", few: "Сделано вместе: {n} дела", many: "Сделано вместе: {n} дел" },
       "akim.trio.together_none": "Ближайших дел пока нет",
+      "akim.trio.together_now": "идёт сейчас",
       "akim.trio.meetings": "Встречи",
       "akim.trio.meetings_num": { one: "поручение в работе", few: "поручения в работе", many: "поручений в работе" },
       "akim.trio.meetings_overdue": "Просрочено: {n}",
@@ -135,7 +136,7 @@
       "akim.trio.support": "Қолдау",
       "akim.trio.agencies": "Ведомстволар",
       "akim.trio.agencies_num": "апта ішіндегі бірлескен өтініш",
-      "akim.trio.agencies_lagging": "Мерзімі өткені көп: {list}",
+      "akim.trio.agencies_lagging": "Жауап мерзімі өткені көп: {list}",
       "akim.trio.agencies_handoffs": "Қызметтер арасында берілгені: {n}",
       "akim.trio.agencies_staff": "Қызметтер тақтасы әкімдік қызметкерлеріне көрінеді: аватар → «Қызметкерлерге».",
       "akim.trio.together": "Тұрғындар бірге",
@@ -143,6 +144,7 @@
       "akim.trio.together_people": "{n} көрші келеді",
       "akim.trio.together_done": "Бірге атқарылды: {n}",
       "akim.trio.together_none": "Жақын арада іс жоқ",
+      "akim.trio.together_now": "қазір өтіп жатыр",
       "akim.trio.meetings": "Кездесулер",
       "akim.trio.meetings_num": "орындалудағы тапсырма",
       "akim.trio.meetings_overdue": "Мерзімі өткені: {n}",
@@ -1325,12 +1327,18 @@
       var t = d.together;
       if (!t || !t.available) return null;
       var c = t.counts || {};
-      var next = (t.top || []).filter(function (x) { return x.status !== "done"; })[0];
+      var now = Date.now();
+      function started(x) { var s = Date.parse(x.starts_at || ""); return isFinite(s) && s <= now; }
+      // Показываем дело, которое ещё можно поддержать: ближайшее не начатое без поддержки акимата (сцена 7 —
+      // «Субботник в субботу»), иначе ближайшее не начатое, иначе идущее сейчас.
+      var open = (t.top || []).filter(function (x) { return x.status !== "done"; });
+      var ahead = open.filter(function (x) { return !started(x); });
+      var next = ahead.filter(function (x) { return !x.supported; })[0] || ahead[0] || open[0];
       var nextLine = next ? h("p", { class: "akim-mini__line" }, [h("strong", { lang: next.lang === "kk" ? "kk" : next.lang === "ru" ? "ru" : null, text: next.title }),
-        " · " + shortWhen(next.starts_at) + " · " + tr("akim.trio.together_people", { n: next.joined || 0 })]) : tr("akim.trio.together_none");
+        " · " + (started(next) ? tr("akim.trio.together_now") : shortWhen(next.starts_at)) + " · " + tr("akim.trio.together_people", { n: next.joined || 0 })]) : tr("akim.trio.together_none");
       var doneLine = c.done != null ? tr("akim.trio.together_done", { n: c.done }) : null;
       // Сцена 7 демо: ближайшее дело ещё без поддержки акимата — главное действие карточки «Поддержать».
-      var support = next && !next.supported;
+      var support = next && !next.supported && !started(next);
       return trioCard("together", "akim.trio.together", c.upcoming != null ? c.upcoming : null, tr("akim.trio.together_num", { n: c.upcoming || 0 }),
         [nextLine, doneLine], support && next.id ? "#together/" + encodeURIComponent(next.id) : "#together",
         support ? "akim.trio.support" : null, t.demo);

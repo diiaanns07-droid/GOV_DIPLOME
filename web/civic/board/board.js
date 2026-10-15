@@ -80,12 +80,12 @@
       "board.slide.of": "{i} из {n}",
       "board.services.name": "Служба",
       "board.services.open": "Открыто",
-      "board.services.overdue": "Просрочено",
+      "board.services.overdue": "Ответ просрочен",
       "board.services.median": "Ответ, дн.",
       "board.services.verified": "Проверено жителями",
       "board.services.joint": "Совместных обращений: {n}",
       "board.services.handoffs": "Передач между службами за неделю: {n}",
-      "board.services.lagging": "Красная точка — больше всего просрочек",
+      "board.services.lagging": "Красная точка — больше всего просроченных ответов",
       "board.decisions.option": "Вариант {n}: {text}",
       "board.decisions.overdue": { one: "просрочено на {n} день", few: "просрочено на {n} дня", many: "просрочено на {n} дней" },
       "board.decisions.where": "Выбрать вариант — в «Картине дня»",
@@ -99,6 +99,7 @@
       "board.together.people": { one: "{n} сосед", few: "{n} соседа", many: "{n} соседей" },
       "board.together.when": "{date}",
       "board.together.done_tag": "Сделано",
+      "board.together.now": "идёт сейчас",
       "board.meetings.done": "Сделано",
       "board.meetings.in_work": "В работе",
       "board.meetings.overdue": "Просрочено",
@@ -172,12 +173,12 @@
       "board.slide.of": "{i}/{n}",
       "board.services.name": "Қызмет",
       "board.services.open": "Ашық",
-      "board.services.overdue": "Мерзімі өткен",
+      "board.services.overdue": "Жауап мерзімі өткен",
       "board.services.median": "Жауап, күн",
       "board.services.verified": "Тұрғындар тексерді",
       "board.services.joint": "Бірлескен өтініштер: {n}",
       "board.services.handoffs": "Апта ішінде басқа қызметке берілгені: {n}",
-      "board.services.lagging": "Қызыл нүкте — мерзімі өткені ең көп",
+      "board.services.lagging": "Қызыл нүкте — жауап мерзімі өткені ең көп",
       "board.decisions.option": "{n}-нұсқа: {text}",
       "board.decisions.overdue": "мерзімі {n} күнге өтті",
       "board.decisions.where": "Нұсқаны «Күн қорытындысында» таңдаңыз",
@@ -191,6 +192,7 @@
       "board.together.people": "{n} көрші",
       "board.together.when": "{date}",
       "board.together.done_tag": "Атқарылды",
+      "board.together.now": "қазір өтіп жатыр",
       "board.meetings.done": "Орындалды",
       "board.meetings.in_work": "Орындалуда",
       "board.meetings.overdue": "Мерзімі өткен",
@@ -842,8 +844,16 @@
         ]);
       })), h("p", { class: "sc-note sc-note--muted", text: tr("board.decisions.where") })];
     }
+    function togetherWhen(it, now) {
+      var s = Date.parse(it.starts_at || ""), e = Date.parse(it.ends_at || "");
+      if (!isFinite(s)) return null;
+      // Начатое и не законченное дело — «идёт сейчас», а не вчерашняя дата.
+      if (s <= now && (!isFinite(e) || e > now)) return tr("board.together.now");
+      return dayTime(it.starts_at);
+    }
     function slideTogether(d) {
       var t = d.together, c = t.counts || {};
+      var now = Date.parse(d.generated_at || "") || Date.now();
       var stats = [stat(c.done || 0, tr("board.together.done"), "ok", "tg-done"),
         c.neighbors_done != null ? stat(c.neighbors_done, tr("board.together.neighbors"), null, "tg-neighbors")
           : stat(c.joined_upcoming || 0, tr("board.together.joined"), null, "tg-joined")];
@@ -857,7 +867,7 @@
           y.members != null ? tr("board.together.members", { n: y.members }) : null].filter(Boolean).join(" · ") }),
       ]) : null;
       var rows = h("ol", { class: "sc-rows", "data-fit": "0" }, (t.top || []).slice(0, 3).map(function (it) {
-        var when = it.status === "done" ? tr("board.together.done_tag") : shortDate(it.starts_at);
+        var when = it.status === "done" ? tr("board.together.done_tag") : togetherWhen(it, now);
         return h("li", { class: "sc-row" }, [
           h("span", { class: "sc-pin", "data-level": "0", "aria-hidden": "true" }, [icon(it.status === "done" ? "check" : "users")]),
           h("div", { class: "sc-row__main" }, [

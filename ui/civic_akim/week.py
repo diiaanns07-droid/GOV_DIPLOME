@@ -104,7 +104,8 @@ def _sentences(w: dict, lang: str) -> list[str]:
         rows = {it["service"]: it for it in sv["items"]}
         parts = [f"{rows[s][lang]} — {text.fmt_num(rows[s]['overdue'] or 0)}" for s in sv["lagging"] if s in rows]
         if parts:
-            out.append(("Больше всего просрочек у служб: " if lang == "ru" else "Мерзімі өткен өтініштер ең көп қызметтер: ")
+            # R17 «просрочено» — правило R09 (нет ответа в срок), не срок исправления из числа «Просрочено» выше.
+            out.append(("Больше всего просроченных ответов у служб: " if lang == "ru" else "Жауап мерзімі өткені ең көп қызметтер: ")
                        + "; ".join(parts) + ".")
     tg = w["together"]
     if tg.get("available") and (tg.get("counts") or {}).get("done"):
