@@ -123,7 +123,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
                 "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
                 # R13 раунд 15: «Вопросы и встречи» (раздел #meetings; вкладка «Вопросы» — qa.js выше).
-                "meetings/meetings.js", "meetings/meetings.css", "meetings/forecast-week.js")  # + блок «Прогноз на неделю» для R08
+                "meetings/meetings.js", "meetings/meetings.css", "meetings/forecast-week.js",  # + блок «Прогноз на неделю» для R08
+                # R17 раунд 15: «Штаб ведомств» и кризисный штаб (раздел #agencies, слой «Кризис», стенд index.html).
+                "agencies/agencies.js", "agencies/agencies.css", "agencies/crisis-layer.js", "agencies/index.html")
 # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Штаб ведомств · Birge</title>
+  <!-- R17 · «Штаб ведомств» (раунд 15). Отдельная страница для проверки без оболочки; в Birge раздел живёт в оболочке
+       R01 (#agencies, BirgeAgencies.mount). Нужен вход сотрудника (сессия того же сервера). -->
+  <link rel="stylesheet" href="../ui-kit/tokens.css">
+  <link rel="stylesheet" href="../ui-kit/components.css">
+  <link rel="stylesheet" href="agencies.css">
+  <style>
+    body { margin: 0; background: var(--c-paper); font-family: var(--font, "Birge Sans", system-ui, sans-serif); }
+    .ag-page { max-width: 1320px; margin: 0 auto; padding: 16px; }
+    @media (max-width: 760px) { .ag-page { padding: 12px 14px; } }
+  </style>
+</head>
+<body class="bk-app">
+  <header class="bk-header">
+    <div class="bk-header__brand">
+      <span class="bk-header__mark" aria-hidden="true">B</span>
+      <span class="bk-header__brand-text" data-i18n="common.app_name">Birge</span>
+    </div>
+    <div class="bk-header__end">
+      <div id="ag-lang"></div>
+    </div>
+  </header>
+
+  <main class="ag-page"><div id="agencies"></div></main>
+
+  <noscript><p>Для этой страницы нужен включённый JavaScript.</p></noscript>
+
+  <script src="../i18n/i18n.js"></script>
+  <script src="../ui-kit/ui-kit.js"></script>
+  <script src="agencies.js"></script>
+  <script>
+    (function () {
+      if (window.BirgeUI && BirgeUI.langSwitch) BirgeUI.langSwitch(document.getElementById("ag-lang"), { text: true });
+      var start = function () { BirgeAgencies.mount(document.getElementById("agencies"), { apiBase: "/api/civic/v2", titleTag: "h1" }); };
+      if (window.BirgeI18n && BirgeI18n.ready) BirgeI18n.ready.then(start, start); else start();
+    })();
+  </script>
+</body>
+</html>
