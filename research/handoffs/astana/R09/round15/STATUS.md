@@ -8,6 +8,11 @@
 Основа: origin/claude/clever-hypatia-q6ts4g @ e91acb69 (код FINAL-4 a4937462 + пакет round-15).
 Push в claude/r15-R09 запрещён средой сессии — работаю в ветке сессии claude/quirky-ptolemy-k3z2mj.
 
+**Каждый круг: сначала читать AMENDMENTS.md из ветки пакета**
+(`git fetch origin claude/clever-hypatia-q6ts4g && git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md`)
+— координатор дописывает туда поправки; где поправка расходится с промптом или VISUAL_BRIEF — права поправка.
+Прочитано: П1 (15 окт 17:05, «Без ИИ-слопа»).
+
 ## План (prompts/R09.txt, по порядку)
 1. Запись жалобы v2.1 (CONTRACT §5.1): services[], handoffs[], route_hint; миграция без потери данных; срок не обнуляется передачей.
 2. Маршруты complaints/{id}/handoff · /services · /part (сотрудник, сессия + CSRF); функции чтения для R17 и R16 без ПДн.

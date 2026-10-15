@@ -11,6 +11,11 @@
  *     -> { refresh(), destroy() }
  *   BirgeComplaintStaff.fixForm(container, { complaintIds, csrf, onDone, onCancel }) — форма для карточки цели R07.
  * Тексты — словарь R11 (fix.*, passport.*, broadcast.*, service.*), запасной — complaint-strings.js.
+ *
+ * Раунд 15 (CONTRACT §5.1) — блок «Службы» над главной кнопкой: подсказка R04 «Похоже, нужны 2 службы» (принять
+ * одним нажатием), части служб со статусом (ждёт · в работе · сделано), «Передать в другую службу» (причина — чипы +
+ * строка; срок ответа жителю не начинается заново), «Совместное исполнение» (добавить службу), передачи свёрнуты в
+ * «Передачи». «Черновик ответа» (R04 POST /reply-draft) заполняет «Обновление для всех» — сотрудник правит и отправляет.
  */
 (function () {
   "use strict";
@@ -48,6 +53,28 @@
     return C().formatDate(day + "T12:00:00+05:00");
   }
 
+  // Статус части службы → значок ui-kit: ждёт — пустой круг, в работе — половина, сделано — круг с галочкой
+  // (как «служба сообщила»; зелёная заливка — только «проверено жителями»).
+  var PART_ICON = { todo: "new", in_progress: "in_progress", done: "reported_fixed" };
+  var PART_STATUSES = ["todo", "in_progress", "done"];
+  var REASONS = ["other_service", "first_other_work", "not_our_zone", "wrong_category"];
+  function partIcon(status) { return C().statusIcon ? C().statusIcon(PART_ICON[status] || "new") : null; }
+  function joinNames(ids) {
+    var names = ids.map(function (sid) { return serviceLabel(sid, sid); });
+    if (names.length < 2) return names.join("");
+    return names.slice(0, -1).join(", ") + t("joint.and") + names[names.length - 1];
+  }
+
+  // Маршруты-функции R04 (POST /route, /reply-draft) отвечают голым JSON шлюза v2 (без конверта ok/data).
+  function rawCall(path, body, csrf) {
+    return fetch(API + path, { method: "POST", credentials: "same-origin",
+      headers: { "Content-Type": "application/json", "Accept": "application/json", "X-CSRF-Token": csrf || "" },
+      body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return null; }).then(function (j) {
+        return { ok: r.ok && !!j && !j.error, status: r.status, body: j };
+      }); }, function () { return { ok: false, status: 0 }; });
+  }
+
   function mount(container, opts) {
     opts = opts || {};
     var id = opts.complaintId;
@@ -62,6 +89,8 @@
     // с формой (выбрали «Отметить исправленным» в меню статуса строки «Обращений»).
     var fixing = !!opts.openFix;
     var lastNote = null;
+    // Блок «Службы» (раунд 15): какая форма открыта, скрыта ли подсказка R04, подсказка, полученная по запросу.
+    var jointUi = { form: null, hintHidden: false, hint: null, hintAsked: false, noteFor: null, draft: "idle" };
 
     function call(method, path, body) {
       return fetch(API + path, { method: method, credentials: "same-origin",
@@ -226,6 +255,264 @@
       return form;
     }
 
+    // ---------------------------------------------------------------- раунд 15: несколько служб (CONTRACT §5.1)
+    function jointInfo() { return current && current.joint && current.joint.services ? current.joint : null; }
+
+    function jointDone(res, message) {
+      if (!res || !res.ok) {
+        note((res && res.error && res.error.message) || t("complaint.error.send"), true);
+        render();
+        return false;
+      }
+      current = res.data.complaint;
+      jointUi.form = null; jointUi.noteFor = null;
+      if (typeof opts.onChange === "function") opts.onChange(current);
+      lastNote = { text: message || t("fix.will_see", { n: res.data.notified || 0 }), error: false };
+      render();
+      return true;
+    }
+
+    function setPart(service, status, text) {
+      var part = (jointInfo().services || []).filter(function (p) { return p.service === service; })[0] || {};
+      var body = { service: service, status: status, expected: part.status };
+      if (text !== undefined) body.note = text;
+      return call("POST", "/complaints/" + id + "/part", body).then(function (res) {
+        jointDone(res, t("joint.part.saved", { service: serviceLabel(service), status: t("joint.part." + status) }));
+      });
+    }
+
+    function setServices(list, message) {
+      var lead = jointInfo().lead;
+      return call("POST", "/complaints/" + id + "/services", { services: list, expected_lead: lead }).then(function (res) {
+        jointDone(res, message);
+      });
+    }
+
+    // Подсказка R04: из записи (route_hint при подаче) или один запрос POST /route по тексту жалобы.
+    function routeHint() {
+      var j = jointInfo();
+      if (j.route_hint && j.route_hint.services) return j.route_hint;
+      if (!jointUi.hintAsked && current.text) {
+        jointUi.hintAsked = true;
+        rawCall("/route", { text: current.text, category: current.category, subtopic: current.subtopic || null,
+                            point: current.point || null }, csrf()).then(function (res) {
+          var b = res.ok && res.body;
+          var ids = b && (b.services || []).map(function (x) { return typeof x === "string" ? x : x && x.service; })
+            .filter(function (x) { return x && hasService(x); });
+          if (ids && ids.length > 1) {
+            var first = (b.services || [])[0] || {};
+            jointUi.hint = { services: ids.slice(0, 3), joint: true, why_ru: first.why_ru, why_kk: first.why_kk };
+            if (root.isConnected && current) render();
+          }
+        });
+      }
+      return jointUi.hint;
+    }
+
+    function hasService(sid) { return services().some(function (s) { return s.id === sid; }) || !!t("service." + sid); }
+
+    function hintBanner(j) {
+      var hint = routeHint();
+      if (!hint || jointUi.hintHidden || !isOpen() || (hint.services || []).length < 2) return null;
+      var now = (j.services || []).map(function (p) { return p.service; });
+      var same = hint.services.length === now.length && hint.services.every(function (sid) { return now.indexOf(sid) >= 0; });
+      if (same || hint.accepted_at) return null;
+      var why = C().lang && C().lang() === "kk" ? (hint.why_kk || hint.why_ru) : hint.why_ru;
+      return h("div", { "class": "bk-banner bc-joint-hint", role: "note" }, [
+        h("p", { "class": "bc-joint-hint__title" }, [C().icon ? C().icon("users") : null,
+          h("span", {}, t("joint.hint.title", { n: hint.services.length, list: joinNames(hint.services) }))]),
+        why ? h("p", { "class": "bc-meta bc-joint-hint__why" }, why) : null,
+        h("div", { "class": "bc-joint-hint__actions" }, [
+          h("button", { "class": "bk-btn bc-joint-hint__accept", type: "button", onclick: function () {
+            setServices(hint.services.map(function (sid, i) { return { service: sid, role: i === 0 ? "lead" : "partner" }; }),
+                        t("joint.hint.accepted", { list: joinNames(hint.services) }));
+          } }, t("joint.hint.accept")),
+          h("button", { "class": "bc-link", type: "button", onclick: function () { jointUi.hintHidden = true; render(); } },
+            t("joint.hint.dismiss"))])]);
+    }
+
+    // Строка части: значок статуса · служба (ведущая — пометкой) · сегменты «ждёт · в работе · сделано».
+    function partRow(part, j) {
+      var editable = current.status !== "rejected";
+      var seg = h("div", { "class": "bk-seg bc-joint__seg", role: "group",
+                           "aria-label": t("joint.part.menu", { service: serviceLabel(part.service) }) },
+        PART_STATUSES.map(function (st) {
+          return h("button", { "class": "bk-seg__btn bc-joint__segbtn", type: "button", "data-status": st,
+                               "aria-pressed": part.status === st ? "true" : "false", disabled: editable ? null : true,
+                               onclick: function () {
+                                 if (part.status === st) return;
+                                 if (st === "done") { jointUi.noteFor = part.service; render(); focusNote(); return; }
+                                 setPart(part.service, st);
+                               } }, t("joint.part." + st));
+        }));
+      var tools = [];
+      if (editable && isOpen() && part.role !== "lead" && j.joint) {
+        tools.push(h("button", { "class": "bc-link bc-joint__remove", type: "button", onclick: function () {
+          var rest = j.services.filter(function (p) { return p.service !== part.service; })
+            .map(function (p) { return { service: p.service, role: p.role }; });
+          setServices(rest);
+        } }, t("joint.remove", { service: serviceLabel(part.service) })));
+      }
+      var li = h("li", { "class": "bc-joint__part", "data-service": part.service, "data-status": part.status }, [
+        h("div", { "class": "bc-joint__head" }, [partIcon(part.status),
+          h("span", { "class": "bc-joint__name" }, serviceLabel(part.service)),
+          j.joint ? h("span", { "class": "bk-tag bc-joint__role" }, t("joint.role." + part.role)) : null]),
+        part.note ? h("p", { "class": "bc-meta bc-joint__note" }, "«" + part.note + "»") : null,
+        seg].concat(tools));
+      if (jointUi.noteFor === part.service) {
+        var input = h("input", { name: "part_note", maxlength: "120", value: part.note || "",
+                                 "aria-describedby": "bc-part-hint-" + uid });
+        li.appendChild(h("form", { "class": "bc-staff__form bc-joint__noteform", onsubmit: function (e) {
+          e.preventDefault(); setPart(part.service, "done", input.value.trim());
+        } }, [field(t("joint.part.note"), input, t("joint.part.note_hint"), "bc-part-hint-" + uid),
+              h("div", { "class": "bc-joint__formrow" }, [
+                h("button", { "class": "bk-btn", type: "submit" }, t("common.action.save")),
+                h("button", { "class": "bc-link", type: "button", onclick: function () { jointUi.noteFor = null; render(); } },
+                  t("common.action.cancel"))])]));
+      }
+      return li;
+    }
+    function focusNote() { var f = root.querySelector("[name=part_note]"); if (f) f.focus(); }
+
+    function serviceSelect(name, exclude, label) {
+      var select = h("select", { name: name, required: true }, [h("option", { value: "" }, label)]);
+      services().forEach(function (s) {
+        if (exclude.indexOf(s.id) >= 0) return;
+        select.appendChild(h("option", { value: s.id }, serviceLabel(s.id, s.ru)));
+      });
+      return select;
+    }
+
+    // «Передать в другую службу»: кому (подсказка R04 — первой), причина — чипы и строка, «оставить участником».
+    function handoffForm(j) {
+      var now = j.services.map(function (p) { return p.service; });
+      var select = serviceSelect("to", [j.lead], t("joint.handoff.need_to"));
+      var hint = routeHint();
+      if (hint && hint.services) {
+        var suggested = hint.services.filter(function (sid) { return sid !== j.lead; })[0];
+        if (suggested) select.value = suggested;
+      }
+      var chosen = { code: null };
+      var chips = h("div", { "class": "bk-chips bc-joint__reasons", role: "group", "aria-label": t("joint.handoff.reason") },
+        REASONS.map(function (code) {
+          return h("button", { "class": "bk-chip", type: "button", "data-reason": code, "aria-pressed": "false",
+                               onclick: function (e) {
+                                 chosen.code = chosen.code === code ? null : code;
+                                 chips.querySelectorAll(".bk-chip").forEach(function (c) {
+                                   c.setAttribute("aria-pressed", c.getAttribute("data-reason") === chosen.code ? "true" : "false");
+                                 });
+                                 e.currentTarget.focus();
+                               } }, t("handoff.reason." + code));
+        }));
+      var text = h("input", { name: "reason", maxlength: "160" });
+      var keep = h("input", { type: "checkbox", name: "keep" });
+      var error = h("p", { "class": "bc-staff__fix-error", role: "alert", hidden: true });
+      var form = h("form", { "class": "bc-staff__form bc-joint__form bc-joint__handoff", onsubmit: function (e) {
+        e.preventDefault();
+        var fail = function (msg) { error.textContent = msg; error.hidden = false; };
+        if (!select.value) { fail(t("joint.handoff.need_to")); select.focus(); return; }
+        var reason = text.value.trim();
+        if (!chosen.code && reason.length < 3) { fail(t("joint.handoff.need_reason")); text.focus(); return; }
+        error.hidden = true;
+        var to = select.value;
+        call("POST", "/complaints/" + id + "/handoff", { to: to, reason: reason || null, reason_code: chosen.code,
+                                                        keep: keep.checked, expected_lead: j.lead })
+          .then(function (res) { jointDone(res, t("joint.handoff.done", { service: serviceLabel(to) })); });
+      } }, [
+        field(t("joint.handoff.to"), select),
+        h("p", { "class": "bc-label" }, t("joint.handoff.reason")), chips,
+        field(t("joint.handoff.reason_text"), text),
+        h("label", { "class": "bc-staff__check" }, [keep, h("span", {}, t("joint.handoff.keep", { service: serviceLabel(j.lead) }))]),
+        error,
+        h("div", { "class": "bc-joint__formrow" }, [
+          h("button", { "class": "bk-btn", type: "submit" }, t("joint.handoff.send")),
+          h("button", { "class": "bc-link", type: "button", onclick: function () { jointUi.form = null; render(); } },
+            t("common.action.cancel"))])]);
+      if (now.length >= 3) keep.disabled = true;   // больше трёх служб на обращение не бывает
+      return form;
+    }
+
+    function addForm(j) {
+      var now = j.services.map(function (p) { return p.service; });
+      var select = serviceSelect("service", now, t("joint.add.service"));
+      return h("form", { "class": "bc-staff__form bc-joint__form bc-joint__add", onsubmit: function (e) {
+        e.preventDefault();
+        if (!select.value) { select.focus(); return; }
+        var sid = select.value;
+        var list = j.services.map(function (p) { return { service: p.service, role: p.role }; })
+          .concat([{ service: sid, role: "partner" }]);
+        setServices(list, t("joint.add.done", { service: serviceLabel(sid) }));
+      } }, [field(t("joint.add.service"), select),
+            h("div", { "class": "bc-joint__formrow" }, [
+              h("button", { "class": "bk-btn", type: "submit" }, t("joint.add.send")),
+              h("button", { "class": "bc-link", type: "button", onclick: function () { jointUi.form = null; render(); } },
+                t("common.action.cancel"))])]);
+    }
+
+    // Передачи — свёрнуты: когда, откуда → куда, причина и роль (не имя) сотрудника.
+    function handoffHistory(j) {
+      if (!j.handoffs || !j.handoffs.length) return null;
+      var more = h("details", { "class": "bk-details bc-joint__history" },
+        [h("summary", {}, t("joint.history.title") + " · " + j.handoffs.length)]);
+      more.appendChild(h("ol", { "class": "bc-joint__hlist" }, j.handoffs.slice().reverse().map(function (x) {
+        return h("li", {}, [
+          h("span", { "class": "bc-joint__hroute" }, t("joint.history.item", { from: serviceLabel(x.from, "—"), to: serviceLabel(x.to) })),
+          x.reason ? h("span", { "class": "bc-joint__hreason" }, " · «" + x.reason + "»") : null,
+          h("span", { "class": "bc-meta" }, " · " + C().formatDate(x.at) + (x.by_role ? " · " + t("joint.by." + x.by_role) : ""))]);
+      })));
+      return more;
+    }
+
+    function jointBlock() {
+      var j = jointInfo();
+      if (!j || !(j.services || []).length) return null;
+      var box = h("section", { "class": "bc-staff__form bc-joint", "aria-label": t("joint.title") }, [
+        h("p", { "class": "bc-label" }, t("joint.title"))]);
+      var hint = hintBanner(j);
+      if (hint) box.appendChild(hint);
+      box.appendChild(h("ul", { "class": "bc-joint__parts" }, j.services.map(function (p) { return partRow(p, j); })));
+      if (isOpen()) {
+        if (jointUi.form === "handoff") box.appendChild(handoffForm(j));
+        else if (jointUi.form === "add") box.appendChild(addForm(j));
+        else {
+          box.appendChild(h("div", { "class": "bc-joint__actions" }, [
+            h("button", { "class": "bk-btn bc-joint__open-handoff", type: "button",
+                          onclick: function () { jointUi.form = "handoff"; render(); var f = root.querySelector("[name=to]"); if (f) f.focus(); } },
+              [C().icon ? C().icon("forward") : null, h("span", {}, t("joint.handoff.open"))]),
+            j.services.length < 3 ? h("button", { "class": "bk-btn bc-joint__open-add", type: "button",
+                          onclick: function () { jointUi.form = "add"; render(); var f = root.querySelector("[name=service]"); if (f) f.focus(); } },
+              [C().icon ? C().icon("plus") : null, h("span", {}, t("joint.add.open"))]) : null]));
+        }
+      }
+      var history = handoffHistory(j);
+      if (history) box.appendChild(history);
+      return box;
+    }
+
+    // Совместная жалоба: «исправлено» — только когда все остальные службы отметили свою часть (правило 1 R09).
+    function waitingOthers() {
+      var j = jointInfo();
+      if (!j || !j.joint) return [];
+      return j.services.filter(function (p) { return p.role !== "lead" && p.status !== "done"; }).map(function (p) { return p.service; });
+    }
+
+    // «Черновик ответа» (R04 POST /reply-draft): факты — из записи R09 кодом; сотрудник правит перед отправкой.
+    function draftReply(area, hintBox) {
+      jointUi.draft = "loading";
+      hintBox.textContent = t("reply.draft.loading");
+      hintBox.hidden = false;
+      var lang = C().lang ? C().lang() : "ru";
+      return rawCall("/reply-draft", { complaint_id: id, status: current.status, lang: lang }, csrf()).then(function (res) {
+        var b = res.ok && res.body;
+        var text = b && (b.text || b.draft || (lang === "kk" ? b.text_kk : b.text_ru) || b.reply);
+        if (!text) { jointUi.draft = "unavailable"; hintBox.textContent = t("reply.draft.unavailable"); return; }
+        jointUi.draft = "idle";
+        area.value = String(text).slice(0, 320);
+        hintBox.textContent = t("reply.draft.hint");
+        area.focus();
+      });
+    }
+
     function render() {
       root.innerHTML = "";
       if (!current) { root.appendChild(h("p", { "class": "bc-meta" }, t("mine.loading"))); return; }
@@ -252,19 +539,27 @@
         yes: (r.votes || {}).yes || 0, no: (r.votes || {}).no || 0, cant: (r.votes || {}).cant || 0 })));
       var willSee = t("fix.will_see", { n: current.subscribers || current.reporters || 1 });
 
+      // 0) Раунд 15: «Службы» — кто исполняет, подсказка R04, передача и совместное исполнение.
+      var jb = jointBlock();
+      if (jb) root.appendChild(jb);
+      var others = waitingOthers();
+
       // 1) «Отметить исправленным» → форма «Сообщить жителям об устранении» — главное действие карточки.
       //    opts.fix === false — в карточке цели R07: там своя кнопка «Отметить исправленным» (открывает fixForm).
+      //    Совместная жалоба: пока другие службы не отметили свою часть — кнопка недоступна, видно, кого ждём.
       if (opts.fix !== false && isOpen() && !fixing) {
         root.appendChild(h("div", { "class": "bc-staff__form" }, [
           h("button", { "class": "bk-btn bk-btn--primary bk-btn--block bc-staff__open-fix", type: "button",
+                        disabled: others.length ? true : null, "aria-describedby": others.length ? "bc-wait-" + uid : null,
                         onclick: function () {
                           fixing = true; render();
                           var what = root.querySelector("[name=what_done]");
                           if (what) what.focus();
                         } }, t("heat.mark_fixed")),
-          h("p", { "class": "bc-meta" }, willSee)]));
+          others.length ? h("p", { "class": "bc-meta bc-joint__waiting", id: "bc-wait-" + uid },
+                            t("joint.waiting", { list: joinNames(others) })) : h("p", { "class": "bc-meta" }, willSee)]));
       }
-      if (opts.fix !== false && isOpen() && fixing) {
+      if (opts.fix !== false && isOpen() && fixing && !others.length) {
         var preview = h("ul", { "class": "bc-thumbs bc-thumbs--small" });
         var input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp", "class": "bc-photo-input" });
         input.addEventListener("change", function () {
@@ -302,8 +597,13 @@
       root.appendChild(passport);
 
       // 3) Одно обновление всем «Я тоже» (п. 3): число людей видно до отправки.
+      var area = h("textarea", { name: "text", maxlength: "320", rows: "2", required: true, placeholder: t("broadcast.placeholder") });
+      var draftNote = h("p", { "class": "bc-meta bc-staff__draft-note", role: "status", hidden: true });
+      var draft = jointUi.draft === "unavailable" ? null : h("button", { "class": "bc-link bc-staff__draft", type: "button",
+        onclick: function () { draftReply(area, draftNote).then(function () { if (jointUi.draft === "unavailable" && draft) draft.hidden = true; }); } },
+        [C().icon ? C().icon("message") : null, h("span", {}, t("reply.draft"))]);
       var update = h("form", { "class": "bc-staff__form bc-staff__broadcast", onsubmit: function (e) { e.preventDefault(); postUpdate(update); } }, [
-        field(t("broadcast.title"), h("input", { name: "text", maxlength: "320", required: true, placeholder: t("broadcast.placeholder") })),
+        field(t("broadcast.title"), area), draft, draftNote,
         h("button", { "class": "bk-btn bk-btn--block", type: "submit" }, t("broadcast.send")),
         h("p", { "class": "bc-meta" }, willSee)]);
       root.appendChild(update);

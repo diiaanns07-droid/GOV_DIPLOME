@@ -1,9 +1,79 @@
-R09 · РАУНД 15 · КАК ПОДКЛЮЧИТЬ К СБОРКЕ
+R09 · РАУНД 15 · КАК ПОДКЛЮЧИТЬ К СБОРКЕ (обращение для нескольких служб, передачи, демо-мир)
 
-D0 (для FINAL-4.1, R01) — чекпойнт раунда 14 3c3fe2b6, только экраны R09 (CSS/JS), API не менялся
-  git fetch origin claude/quirky-ptolemy-k3z2mj
-  git checkout <code_sha из DELIVERY.json> -- web/civic/feedback tests/civic/R09
-  Теги script/link, CIVIC_ASSETS, маршруты — без изменений (как в FINAL-4).
+Ветка: claude/quirky-ptolemy-k3z2mj. Пути R09: ui/civic_feedback/, web/civic/feedback/, tests/civic/R09/.
+Взять поставку: git fetch origin claude/quirky-ptolemy-k3z2mj
+                git checkout <code_sha из DELIVERY.json> -- ui/civic_feedback web/civic/feedback tests/civic/R09
 
-Дальше (поставки D1+) этот файл дополняется: новые маршруты CONTRACT §7 (complaints/{id}/handoff, /services, /part),
-функции чтения для R16 / R17, seed_world для демо-мира, ключи i18n для R11.
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+A. R01 — ШЛЮЗ (ui/web_server.py)
+A1. Три маршрута CONTRACT §7 → V2_ROUTES / V2_HANDLERS: research/round-15-results/R09/R01_v2_routes_r09.patch
+    (git apply --check проходит на FINAL-4). Ключи: complaints.handoff, complaints.services, complaints.part;
+    сервис R09 (kind="service") и staff=True — сессию и CSRF проверяют и шлюз, и R09.
+      POST /api/civic/v2/complaints/{id}/handoff   {to, reason | reason_code, keep?, expected_lead?}
+      POST /api/civic/v2/complaints/{id}/services  {services: [{service, role: lead|partner}], reason?, expected_lead?}
+      POST /api/civic/v2/complaints/{id}/part      {service, status: todo|in_progress|done, note?, expected?}
+    Ответ (как у /status): {"ok": true, "data": {"complaint": <карточка сотрудника>, "notified": N}}.
+    Ошибки: 403 forbidden / csrf_failed, 404 not_found, 409 conflict (обращение закрыто, уже передали, «Не все службы
+    закончили» с fields.waiting), 422 invalid (служба, причина, роли).
+    Без патча эти адреса отвечают 404 шлюза (а не 503) — экран сотрудника R09 тогда прячет кнопки передачи.
+A2. GET /complaints/inbox?service=<id> — уже существующий маршрут, новый параметр (фильтр «Обращения» одной службы;
+    ссылка из «Штаба ведомств» R17: #complaints/service=<id>). Шлюз пропускает query как есть.
+A3. Демо-мир (CONTRACT §11, CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1):
+      from ui.civic_feedback.v2.integration import seed_world
+      report = seed_world(db_path, world_dict, reset=True)   # {"inserted", "skipped", "reset", "invalid", "total"}
+    · можно передать вместо db_path сервис R09 (resolve("complaints.list").__self__) или его store — тогда подписчики
+      хранилища (кэш карты R07) получат одно событие {"type": "world_seeded"} и карта пересчитается сразу;
+      с путём — вызывать ДО первого запроса /heat (или сбросить кэш R07 после);
+    · reset=True — рекомендую при каждом запуске демо-сборки: записи мира возвращаются в исходное состояние со временем от
+      этого запуска (репетиция не «съедает» сцену 8; настоящие жалобы не трогаются никогда); reset=False — только добавить;
+    · в консоль: «civic-world: R09 <inserted+reset>»; invalid — список причин (запись мира не прошла проверку R09);
+    · demo_seed.seed_demo (две жалобы «Хан Шатыр», шаг 2 демо) вызывается как раньше — мир его не заменяет.
+A4. Подсказка R04: make_service(db_path) сам берёт ui.civic_ml_api.route (если R04 поставил) и сохраняет route_hint в новой
+    жалобе. Ничего подключать не нужно. Без R04 подсказки нет, всё работает.
+A5. Шторка «Рядом с вами» и мастер жалобы на телефоне (VISUAL_BRIEF §3) — см. раздел D (правка в CSS R09; оболочке
+    достаточно html.bc-open, который R09 ставит сам).
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+B. ФУНКЦИИ ЧТЕНИЯ ДЛЯ СОСЕДЕЙ (в процессе, только чтение, без текстов жителей, точек и устройств)
+   from ui.civic_feedback.v2 import integration as r09
+   Первый аргумент — путь к SQLite (CIVIC_DB_PATH), хранилище/сервис R09 или None (хранилище шлюза этого процесса).
+   Модуля нет (ImportError) — у соседа блок «пока нет данных», не ошибка.
+
+B1. R17 «Штаб ведомств»
+    r09.service_parts(db, since=None, until=None, days=30, district=None) -> [
+      {complaint_id, code, created_at, category, subtopic, district, status, due_at, answered_at, deadline_state,
+       overdue, lead, joint, services: [{service, role: lead|partner, status: todo|in_progress|done, updated_at}],
+       handoffs (число), resolution (reported|verified|reopened|withdrawn|None), reopen_count, reporters, demo}]
+      · answered_at — первый шаг после «new» (для медианы ответа в рабочих днях: workdays.working_days_between);
+      · у жалобы одной службы services = одна часть ведущей службы (статус по статусу жалобы).
+    r09.handoffs(db, since=None, until=None, days=30, district=None) -> [
+      {complaint_id, code, at, from, to, reason, reason_code, by_role, category, district, status, demo}] — новые сверху.
+      reason — только для сотрудника (экран штаба — сотрудник). by_role — роль (operator | admin), не имя.
+    Ссылка «Обращения службы»: #complaints/service=<id> (экран R09 откроет вкладку с фильтром) — см. C4.
+B2. R16 «Мой двор»
+    r09.yard_complaints(db, "yard-123", days=60, targets=[id целей R12 во дворе], polygon=<GeoJSON Polygon двора>) ->
+      {yard, days, items: [{id, category, subtopic, status, created_at, target, reporters, resolution, heat_state,
+       services, demo}], counts: {open, fixed, verified, total, people}}
+B3. R06 лента уведомлений (CONTRACT §5.8)
+    r09.updates(device_id, since=None, db=None) -> [{id: "r09.<id>", at, module: "R09", kind: "complaint.update",
+      target, title_ru, title_kk, link: "#mine/event=<id>", complaint_id, code, event}]
+      device_id — как X-Birge-Device. event: status | verified | reopened | note | passport | handoff | services | part.
+B4. Сцены (R01 режим показа, R10): ui.civic_feedback.v2.world_seed.scene_complaint(db, "<scene>") — запись мира с полем
+    world.scene (из scenes R02), например жалоба «яма после раскопок» для сцены 8.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+C. ЗАПИСЬ v2.1 (CONTRACT §5.1) — что видят соседи в store.list() и в API
+C1. Поля: service (ведущая), service_source (table | staff | handoff | joint | world), services[], handoffs[], route_hint,
+    schema "civic-complaint-v2.1". Старые записи дополняются один раз при открытии базы (только добавление полей).
+C2. service_source "table" — служба по таблице R08/R09 на момент подачи; в паспорте и частях она по-прежнему следует за
+    таблицей R08 (правка акимата видна сразу, как в FINAL-4). Явная (передача, совместное, демо-мир) — таблица не меняет.
+C3. Карточка сотрудника: complaint.service и complaint.joint = {lead, joint, services[{…, names}], waiting, handoffs, route_hint}.
+    Житель (автор и «Я тоже»): complaint.joint = {joint, services[{service, role, status, updated_at, note?}],
+    handoffs[{at, from, to}]} — без причин передач и ролей. Чужой житель и карта — то же без заметок служб.
+C4. «Обращения»: группа получила services [{service, role, status}] (самой срочной жалобы) и joint; жалоба в группе — lead.
+C5. События хранилища: передача/части — type "update" (как паспорт), смена статуса из-за частей — ещё "status".
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+D. ИНТЕРФЕЙС (web/civic/feedback/) — заполняется по мере поставок D1+: ключи i18n для R11, кадры, правка шторок.
+
+E. LOCAL — нет (всё работает офлайн).

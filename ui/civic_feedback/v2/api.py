@@ -448,12 +448,17 @@ class ComplaintsV2Service:
             records = [r for r in records if any(p["service"] == service for p in parts_of[r["id"]])]
         data = lifecycle.inbox(records, self.store._now(), tab)
         # Раунд 15: у группы — службы самой срочной жалобы (ведущая первой) и признак совместного исполнения.
+        # world — жалоба демо-мира R02: с ней работают сцены 7–9 (действия сотрудника доступны; при следующем запуске
+        # демо мир возвращается в исходное состояние). Прочие примеры (demo_seed «Хан Шатыр») — только просмотр.
+        worlds = {r["id"] for r in records if r.get("world")}
         for group in data["items"]:
             top = parts_of.get(group["complaints"][0]["id"]) if group["complaints"] else None
             group["services"] = [{"service": p["service"], "role": p["role"], "status": p["status"]} for p in top or []]
             group["joint"] = len(group["services"]) > 1
             for item in group["complaints"]:
                 item["lead"] = (parts_of.get(item["id"]) or [{}])[0].get("service")
+                item["world"] = item["id"] in worlds
+            group["world"] = any(item["world"] for item in group["complaints"])
         data["tab"] = tab
         data["service"] = service
         return _ok(200, data)

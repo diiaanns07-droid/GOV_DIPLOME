@@ -56,18 +56,29 @@ async function variant(browser, base, lang) {
   try {
     await page.goto(base + "?lang=" + lang, { waitUntil: "domcontentloaded" });
     await shellReady(page);
-    // Как оболочка R01 поставит шторку: внизу, во всю ширину, высота 360 (эталон .p-sheet); шторка карты R07 — скрыта.
-    await page.evaluate((stop) => {
+    // FINAL-4: шторку ставит сама оболочка R01 (#birge-near, birge-ref.js syncNear → mountNear). Проверяем её — настоящую;
+    // если оболочка старая и шторки нет — кладём так, как она её ставит: внизу, во всю ширину (эталон .p-sheet).
+    const own = await page.waitForSelector("#birge-near .bc-near .bc-near__row", { timeout: 8000 }).then(() => true, () => false);
+    await page.evaluate(([stop, own]) => {
+      window.nearLog = [];
+      map.jumpTo({ center: stop, zoom: 15 });
+      if (own) {
+        // Нажатия оболочки (focusTarget R07 / список «Горячие места») — записываем, не меняя её поведения.
+        const heat = window.CivicShell && window.CivicShell.heat;
+        if (heat && heat.focusTarget) { const f = heat.focusTarget.bind(heat); heat.focusTarget = (k, i) => { window.nearLog.push(["open", k, i]); return f(k, i); }; }
+        document.addEventListener("click", (e) => { if (e.target.closest && e.target.closest(".bc-near__all")) window.nearLog.push(["all"]); }, true);
+        return;
+      }
       document.querySelectorAll(".civic-panel").forEach((p) => { p.style.visibility = "hidden"; });
       const host = document.createElement("div");
       host.id = "near-host";
       host.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:20";
       document.body.appendChild(host);
-      window.nearLog = [];
-      map.jumpTo({ center: stop, zoom: 15 });
       window.nearCtl = window.BirgeComplaint.mountNear(host, { map,
         onOpen: (target) => window.nearLog.push(["open", target.kind, target.id]), onAll: () => window.nearLog.push(["all"]) });
-    }, STOP);
+    }, [STOP, own]);
+    check(`${tag}: шторку «Рядом с вами» ставит оболочка (одна шторка на экране)`, own &&
+          await page.evaluate(() => document.querySelectorAll(".bc-near").length === 1));
     await page.waitForSelector(".bc-near .bc-near__row", { timeout: 10000 });
     await sleep(500);
     const want = await page.evaluate(async (stop) => {
@@ -83,6 +94,7 @@ async function variant(browser, base, lang) {
       lang: (document.querySelector(".bc-near__lang") || {}).textContent || "",
       keys: [...document.querySelectorAll(".bc-near__row")].map((b) => b.dataset.key),
       rows: [...document.querySelectorAll(".bc-near__row")].map((b) => ({ cnt: b.querySelector(".bk-hot__cnt").textContent.trim(),
+        icon: !!b.querySelector(".bk-hot__cnt svg"),
         level: b.querySelector(".bk-hot__cnt").dataset.level, name: b.querySelector(".bk-hot__name").firstChild.textContent,
         sub: b.querySelector(".bk-hot__name small").textContent, h: Math.round(b.getBoundingClientRect().height) })),
       all: (document.querySelector(".bc-near__all") || {}).textContent || "",
@@ -99,8 +111,9 @@ async function variant(browser, base, lang) {
           /ҚАЗ/.test(seen.lang) && /РУС/.test(seen.lang), seen.lang);
     check(`${tag}: 3 ближайших к центру карты места, по расстоянию`, seen.keys.length === Math.min(3, want.length) && seen.keys.join() === want.join(),
           { seen: seen.keys, want });
-    check(`${tag}: строка — плашка числа цвета уровня (или ✓) · название · «тема · статус», 44+ px`, seen.rows.length > 0 &&
-          seen.rows.every((r) => (/^\d+$/.test(r.cnt) && /^[1-4]$/.test(r.level) || r.cnt === "✓" && r.level === "fixed") && r.name && r.sub && r.h >= 44),
+    // П1: у исправленного службой — значок «галочка» набора R11 в плашке, не глиф «✓».
+    check(`${tag}: строка — плашка числа цвета уровня (или значок «галочка») · название · «тема · статус», 44+ px`, seen.rows.length > 0 &&
+          seen.rows.every((r) => (/^\d+$/.test(r.cnt) && /^[1-4]$/.test(r.level) || r.cnt === "" && r.icon && r.level === "fixed") && r.name && r.sub && r.h >= 44),
           seen.rows);
     check(`${tag}: шторка внизу, высота эталона (360; по-казахски — по содержимому), «${seen.all}»`, seen.sheet.h >= 340 && seen.sheet.h <= (lang === "kk" ? 480 : 400) &&
           seen.sheet.top + seen.sheet.h <= 813 && (lang === "kk" ? /Барлық/ : /Все горячие места/).test(seen.all), seen.sheet);
@@ -111,10 +124,17 @@ async function variant(browser, base, lang) {
     check(`${tag}: «Сообщить о проблеме» не закрывает строки и «Все горячие места»`, covered.length === 0, covered);
     if (SHOTS) await page.screenshot({ path: path.join(SHOTS, `near-${tag}.png`) });
     await page.click(".bc-near__row");
-    await page.click(".bc-near__all");
+    await sleep(400);
+    // Оболочка по нажатию открыла карточку места R07 — шторка спряталась; закрыть карточку, вернуться к шторке.
+    await page.evaluate(() => { const h = window.CivicShell && window.CivicShell.heat; if (h && h.close) h.close(); });
+    await page.waitForSelector(".bc-near .bc-near__all", { state: "visible", timeout: 5000 }).catch(() => null);
+    await page.click(".bc-near__all").catch(() => null);
     const log = await page.evaluate(() => window.nearLog);
     check(`${tag}: нажатие на строку — onOpen(цель), «Все горячие места» — onAll`, log.length === 2 && log[0][0] === "open" &&
           log[0][1] + ":" + log[0][2] === seen.keys[0] && log[1][0] === "all", log);
+    // «Все горячие места» открыли список R07 — закрываем, шторка снова на экране.
+    await page.keyboard.press("Escape");   // оболочка: Esc закрывает список «Горячие места» (closeLeft) — снова шторка
+    await page.waitForSelector(".bc-near .bc-near__lang button", { state: "visible", timeout: 5000 }).catch(() => null);
     // Карту увели на другой конец города — ближайшие пересчитываются на месте (без нового запроса).
     let calls = 0;
     page.on("request", (r) => { if (/\/api\/civic\/v2\/heat\?days=30&zoom=15/.test(r.url())) calls += 1; });
@@ -124,11 +144,38 @@ async function variant(browser, base, lang) {
     check(`${tag}: сдвиг карты — другие ближайшие, без запроса`, moved.length > 0 && moved.join() !== seen.keys.join() && calls === 0, { moved, calls });
     // Язык из шапки шторки.
     const other = lang === "kk" ? "ru" : "kk";
-    await page.click(`.bc-near__lang button[value="${other}"]`).catch(() => null);
+    const cover = await page.evaluate((v) => { const b = document.querySelector(`.bc-near__lang button[value="${v}"]`);
+      if (!b) return "нет кнопки"; const r = b.getBoundingClientRect(); const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return el === b || b.contains(el) ? "ok" : (el ? (el.id || el.className || el.tagName).toString().slice(0, 80) : "пусто") + " " + JSON.stringify([r.left, r.top, r.width, r.height]); }, other);
+    await page.click(`.bc-near__lang button[value="${other}"]`, { timeout: 5000 }).catch((e) => console.log("  клик языка: " + cover + " · " + String(e.message).slice(0, 120)));
+    // Обратно на язык варианта — следующая проверка (мастер) идёт на нём.
     await page.waitForFunction((want) => (want === "kk" ? /маңайыңызда/ : /Рядом с вами/).test(document.querySelector(".bc-near .bk-phsheet__title").textContent),
       other, { timeout: 5000 }).catch(() => null);
     const t2 = await page.textContent(".bc-near .bk-phsheet__title");
     check(`${tag}: «ҚАЗ · РУС» в шторке меняет язык — «${t2.trim()}»`, (other === "kk" ? /маңайыңызда/ : /Рядом с вами/).test(t2), t2);
+    // VISUAL_BRIEF §3: открыли мастер «Сообщить о проблеме» — шторка «Рядом» скрыта (одна шторка), закрыли — снова видна.
+    await page.evaluate(() => { const h = window.CivicShell && window.CivicShell.heat; if (h && h.close) h.close(); });
+    await sleep(300);
+    const fab = await page.$(".bc-fab:not([hidden])");
+    if (fab) {
+      await fab.click();
+      await page.waitForSelector(".bc-panel[data-step='2']", { timeout: 8000 }).catch(() => null);
+      await sleep(300);
+      const during = await page.evaluate(() => { const n = document.querySelector(".bc-near");
+        const r = n && n.getBoundingClientRect(); const shown = !!n && getComputedStyle(n).visibility !== "hidden" && r.height > 0;
+        const sheets = [...document.querySelectorAll(".bc-panel, .bc-near")].filter((x) => getComputedStyle(x).visibility !== "hidden" &&
+          !x.hidden && x.getBoundingClientRect().height > 0).length;
+        return { shown, sheets }; });
+      if (SHOTS) await page.screenshot({ path: path.join(SHOTS, `near-${tag}-wizard.png`) });
+      await page.keyboard.press("Escape");
+      await page.waitForFunction(() => !document.documentElement.classList.contains("bc-open"), null, { timeout: 5000 }).catch(() => null);
+      await sleep(300);
+      const after = await page.evaluate(() => { const n = document.querySelector(".bc-near"); return !!n && getComputedStyle(n).visibility !== "hidden"; });
+      check(`${tag}: мастер открыт — шторка «Рядом» скрыта (на экране одна шторка), закрыли — снова видна`,
+            !during.shown && during.sheets === 1 && after, { during, after });
+    } else {
+      check(`${tag}: кнопка «Сообщить о проблеме» на экране`, false);
+    }
     check(`${tag}: нет ошибок консоли`, page.problems.length === 0, page.problems);
   } finally { await ctx.close(); }
 }

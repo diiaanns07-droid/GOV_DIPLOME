@@ -58,7 +58,9 @@ def test_every_key_used_in_code_exists():
     used = set(re.findall(r'\bt\("([a-z0-9_.]+)"', JS + STAFF_JS + LIST_JS))
     # t("status." + x) и т. п. — составные ключи; каждый вариант проверяется ниже.
     dynamic_prefixes = {"status.", "complaint.example.", "cat.", "emergency.service.", "service.", "subtopic.",
-                        "mine.passport.next_default.", "mine.update.", "inbox.tab.", "nearby.tab."}
+                        "mine.passport.next_default.", "mine.update.", "inbox.tab.", "nearby.tab.",
+                        # раунд 15: части служб, роли, причины передач (варианты — test_r09v21_frontend.py)
+                        "handoff.reason.", "joint.by.", "joint.part.", "joint.role."}
     missing = sorted(k for k in used if k not in data["ru"] and k not in dynamic_prefixes)
     assert not missing, missing
     # Ключи, собираемые в коде из частей: status.<статус>, complaint.example.<категория>
@@ -239,7 +241,8 @@ def test_staff_component_has_one_primary_and_required_what_done():
     assert STAFF_JS.count("bk-btn--primary") == 3
     assert "window.BirgeComplaintStaff = { mount: mount, fixForm: fixForm };" in STAFF_JS
     assert "if (opts.fix !== false && isOpen() && !fixing) {" in STAFF_JS
-    assert "if (opts.fix !== false && isOpen() && fixing) {" in STAFF_JS
+    # Раунд 15: у совместной жалобы форма «исправлено» — только когда другие службы закончили свою часть.
+    assert "if (opts.fix !== false && isOpen() && fixing && !others.length) {" in STAFF_JS
     assert re.search(r'name: "what_done", maxlength: String\(WHAT_DONE_MAX\), required: true', STAFF_JS)
     assert "var WHAT_DONE_MAX = 120;" in STAFF_JS                     # R11 §2.3: одна строка ≤ 120 знаков
     assert "staff.fixed.need_what" in STAFF_JS
@@ -376,7 +379,8 @@ def test_design_marathon_round7_r11_edits():
     """Марафон, круг 7 — правки R11 для R09 (INTEGRATION 9.3 d/e, 10.3, 11.6, 12.2, D-1, D-5, D-7)."""
     css = (WEB / "complaint.css").read_text(encoding="utf-8")
     # 10.3: «нет связи» — иллюстрация offline ui-kit (запасной — значок), общая фраза, ⟳ в «Повторить» у обоих экранов.
-    assert 'function illustration(name, fallback)' in JS and '"#ill-" + name' in JS and "illustration: illustration," in JS
+    # Поправка владельца П1 (15 окт): вместо рисунков ill-* — значок набора R11 48 px той же толщины линий.
+    assert 'function illustration(name, fallback)' in JS and '"ic ic--48 bc-state-ic"' in JS and "illustration: illustration," in JS
     assert 'illustration("offline", "wifi-off")' in JS and 'art("offline", "wifi-off")' in LIST_JS
     assert JS.count('t("common.state.network_text")') == 1 and LIST_JS.count('t("common.state.network_text")') == 1
     assert 't("mine.error.hint")' not in JS + LIST_JS
@@ -386,7 +390,7 @@ def test_design_marathon_round7_r11_edits():
     assert s["kk"]["common.state.network_text"] == "Интернетті тексеріп, қайталап көріңіз."
     # 9.3 d: галочка успеха — геометрия ill-done (круг r 8.5, «✓» m8.2 12.3…) с классами bk-ill bk-check-draw, рисуется.
     mark = JS.split("function successMark()", 1)[1].split("// ----", 1)[0]
-    assert '"bk-ill bk-check-draw bc-success__mark"' in mark and '"m8.2 12.3 2.6 2.6 5-5.4"' in mark and '"8.5"' in mark
+    assert '"bk-check-draw bc-success__mark"' in mark and '"m8.2 12.3 2.6 2.6 5-5.4"' in mark and '"8.5"' in mark
     assert ".bc-success__mark .bc-success__tick { stroke-dasharray: 12;" in css
     # 9.3 e: под прилипшей «Далее» чип в фокусе виден.
     assert "scroll-padding-bottom: 80px;" in css
@@ -433,7 +437,8 @@ def test_design_marathon_round9_r10_circle2():
     assert "function dedupeKind(label)" in JS and "if (label) label = dedupeKind(label);" in JS
     # Пример под полем «Что сделали» в обеих формах, без placeholder.
     assert STAFF_JS.count('"bc-meta bc-staff__hint"') == 2 and 'placeholder: t("staff.fixed.what_hint")' not in STAFF_JS
-    assert STAFF_JS.count('"aria-describedby"') == 2
+    # Подсказки полей — через aria-describedby (не placeholder): «что сделали» ×2, заметка части службы, «кого ждём» (р. 15).
+    assert STAFF_JS.count('"aria-describedby"') == 4
     # Одна левая линия (эталон A, .card): плитка 48 и название рядом; всё ниже шапки — от левого поля карточки;
     # пояснение статуса — под словом (иконка ui-kit 14 + 8).
     assert ".bc-mine__status .bk-statusline__note { padding-left: 22px;" in css and ".bc-mine__head { display: flex; align-items: flex-start; gap: 12px; }" in css
@@ -467,7 +472,7 @@ def test_reference_a_r09():
     assert "}, 150);" in LIST_JS and "}, 150);" in JS and "var mineCache = null;" in JS
     # Правило 2 (R01 — палитра Ctrl+K, R09 — смена статуса): команды «Взять в работу — место» и «Отметить исправленным — место».
     cmd = LIST_JS.split("function commands(opts)", 1)[1].split("function mount(root, opts)", 1)[0]
-    assert 't("heat.take") + " — " + place' in cmd and 't("heat.mark_fixed") + " — " + place' in cmd and "if (g.demo) return;" in cmd
+    assert 't("heat.take") + " — " + place' in cmd and 't("heat.mark_fixed") + " — " + place' in cmd and "if (g.demo && !g.world) return;" in cmd
     assert '"birge:inbox-open"' in LIST_JS and '"birge:inbox-changed"' in LIST_JS and "function takePending()" in LIST_JS
     # «Рядом с вами» (шторка телефона R07/R01): обращения жителя, ждущие его проверки, — waitingChecks().
     assert "waitingChecks: waitingChecks," in JS and 'return item.can_verify;' in JS.split("function waitingChecks()", 1)[1].split("return {", 1)[0]
