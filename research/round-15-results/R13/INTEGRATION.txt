@@ -1,0 +1,140 @@
+R13 · раунд 15 · INTEGRATION — «Вопросы и встречи», прогноз на неделю
+Ветка роли: claude/gifted-mayer-p86myv (ветка сессии). Точный SHA поставки — DELIVERY.json (code_sha).
+Владельцы путей: R13 — ml/civic_forecast/, ui/civic_forecast/, ui/civic_qa/, web/civic/qa/, ui/civic_meetings/,
+web/civic/meetings/, tests/civic/R13/. Всё, что ниже помечено «R01 / R06 / R08 / R11», — правка чужого пути: готовый patch
+или точный вызов; применяет владелец пути (CONTRACT §2).
+
+=====================================================================================================================
+§1. Что поставлено
+=====================================================================================================================
+ui/civic_meetings/        сервис встреч на той же SQLite (таблицы mt_*; миграция — CREATE IF NOT EXISTS + mt_meta.schema_version):
+                          make_service(db_path) по CONTRACT §7, updates(device, since) для ленты R06, board_block() для R08/R03,
+                          seed_world(db_path, records, now=None) для демо-мира R02, свой демо-набор (3 встречи «Пример»).
+ui/civic_qa/              «Вопрос акиму»: вопрос к встрече = вопрос с meeting_id (та же модерация, голоса, ответ); голосование
+                          закрывается к началу встречи; фильтр R04 moderate() до публикации (нет R04 — свои проверки телефона,
+                          ИИН, почты + мат R04 profanity); при CIVIC_DEMO_WORLD=1 свой демо-набор не подмешивается.
+ui/civic_forecast/        week_block(district=None, k=5, today=None) — «Прогноз на неделю: где вероятнее рост жалоб» (3–5
+                          территорий, причина одной строкой, «прототип», «Как считаем» с числами backtest раунда 14);
+                          GET /forecast теперь несёт поле week (прежние поля не менялись).
+web/civic/meetings/       meetings.js + meetings.css — экран «Вопросы и встречи» (window.BirgeMeetings, IA_ROUND15 §5.3);
+                          forecast-week.js — готовый блок «Прогноз на неделю» для R08 (window.BirgeForecastWeek).
+web/civic/qa/qa.js        опция embedded: true — вкладка «Вопросы» внутри «Вопросов и встреч» (без своего заголовка и «×»).
+tests/civic/R13/          meetings/ (сервис 55, шлюз 3, браузер meetings_browser.cjs), test_r13_forecast_week.py (10).
+
+=====================================================================================================================
+§2. R01 — маршруты шлюза (CONTRACT §7). Patch: research/round-15-results/R13/patches/r01_meetings_routes.patch
+=====================================================================================================================
+git apply research/round-15-results/R13/patches/r01_meetings_routes.patch   (проверен: git apply --check на e91acb69)
+Если R01 уже вписал строки §7 сам — сверить имена ключей; модуль и функция те же: ui.civic_meetings · make_service, kind="service".
+
+  ("GET",  ("meetings",),                     "meetings.list")      все
+  ("POST", ("meetings",),                     "meetings.create")    сотрудник (staff=True; с "id" в теле — правка/отмена)
+  ("GET",  ("meetings", "updates"),           "meetings.updates")   житель (X-Birge-Device) — ТОЧНЫЙ путь раньше {id}
+  ("GET",  ("meetings", "{id}"),              "meetings.get")       все (сотруднику — ещё вопросы на проверке)
+  ("POST", ("meetings", "{id}", "order"),     "meetings.order")     сотрудник: новое поручение или {order_id, status|due|link|text}
+  ("POST", ("meetings", "{id}", "result"),    "meetings.result")    сотрудник: итог ru/kk
+  ("POST", ("meetings", "{id}", "register"),  "meetings.register")  житель: {going: true|false}
+  ("POST", ("meetings", "{id}", "question"),  "meetings.question")  житель: {text, lang?, request_id?}
+Лимиты шлюза (V2_RATE_LIMITS, по образцу R15): "meetings.register": ((60, 20, False), (86400, 20, True)),
+  "meetings.question": ((60, 3, False), (3600, 20, False), (86400, 30, False)). Свои лимиты модуля: ≤ 30 «Приду» в сутки на
+  устройство, ≤ 3 вопроса к одной встрече, ≤ 3 вопроса на проверке и ≤ 5 в сутки на устройство (общие с «Вопросом акиму»).
+Голос за вопрос встречи — прежний маршрут qa.vote (POST /questions/{id}/vote); проверка — прежние qa.publish/qa.reject.
+Тест через настоящий шлюз: tests/civic/R13/meetings/test_r13_meetings_gateway.py (накладывает patch на копию, если строк нет).
+
+=====================================================================================================================
+§3. R01 — файлы, теги, лист слева. Patch: research/round-15-results/R13/patches/r01_meetings_assets_sheet.patch
+=====================================================================================================================
+- ui/web_server.py CIVIC_ASSETS: "meetings/meetings.js", "meetings/meetings.css", "meetings/forecast-week.js".
+- web/index.html: <link rel="stylesheet" href="/civic/meetings/meetings.css" /> после qa.css;
+  <script defer src="/civic/meetings/meetings.js"></script> и forecast-week.js — после qa.js (BirgeAsk нужен вкладке «Вопросы»).
+- web/civic/shell/birge.css: «Вопросы и встречи» — тот же лист слева 412 / шторка телефона, что «Вопрос акиму»:
+  селекторы [data-birge-section="questions"] → :is([data-birge-section="questions"], [data-birge-section="meetings"]) и
+  .birge-screen-root > .mt { flex: 1; max-width: none; width: 100%; }. Без patch экран тот же, но на общем листе по центру.
+
+=====================================================================================================================
+§4. R01 — оболочка (IA_ROUND15 R11 §7)
+=====================================================================================================================
+- SCREENS: meetings: { global: ["BirgeMeetings"], modes: ["resident", "akimat"], owner: "R13",
+  key: { resident: "shell.nav.meetings", akimat: "shell.nav.meetings" } }; MENU_ICONS meetings: "message";
+  PARENT.questions = "meetings" (у «Вопроса акиму» нет своего пункта, пока есть «Вопросы и встречи»).
+- Путь внутри раздела (§7.3): #meetings, #meetings/<m-id>, #meetings/<m-id>/<o-id|q-id> (ссылки ленты R06), #meetings/questions.
+  Модуль принимает opts.path, opts.navigate(path), handle.setPath(path). Без них (оболочка FINAL-4) модуль сам читает
+  #meetings/<путь> при открытии и не трогает адрес дальше.
+- Пока строки SCREENS нет, модуль регистрируется сам: BirgeShell.registerScreen({id: "meetings", mount, modes}) (подпись —
+  ключ shell.nav.meetings, если он есть в словаре, иначе свой текст ru/kk) и открывает раздел, если адрес #meetings….
+- Esc: модуль закрывает свои слои (форма → встреча → список) и вызывает preventDefault; дальше — оболочка, как в FINAL-4.
+- «На карте» — opts.openTarget(kind, id) (цель места встречи; демо — дворы R12 yard-…). Новых слоёв карты нет.
+
+=====================================================================================================================
+§5. R06 — лента «Что нового для меня» (CONTRACT §5.8)
+=====================================================================================================================
+from ui.civic_meetings import updates
+updates(device_id, since_iso=None, db_path=None, limit=50) -> [событие]   # модуль не готов / ошибка -> []
+  db_path не нужен, если шлюз уже создал сервис (берётся он); иначе — путь базы или env CIVIC_DB_PATH.
+Событие: {"id": "mt-…", "at": ISO, "module": "R13", "kind": "meeting.result", "sub": "result|order|question|answer|reminder",
+          "target": {"kind": "area|object|meeting", "id": "…", "meeting_id": "m-…"}, "title_ru", "title_kk",
+          "link": "#meetings/<m-id>[/<o-id|q-id>]", "demo": bool}
+Кому: только устройствам, которые нажали «Приду» или задали вопрос к этой встрече. id стабильны (можно хранить «прочитано»).
+HTTP-вариант: GET /api/civic/v2/meetings/updates?since=ISO (заголовок X-Birge-Device).
+
+=====================================================================================================================
+§6. R08 — «Картина дня» 2.0 и Ситуационный центр (IA_ROUND15 §5.10)
+=====================================================================================================================
+a) Карточка «Встречи» в ряду «Ведомства · Жители вместе · Встречи»:
+   from ui.civic_meetings import board_block
+   board_block(db_path=None, district=None, limit=5) -> {"card": {title_ru, title_kk, value, value_ru, value_kk,
+     lines: [{ru, kk}, {ru, kk}], link: "#meetings", action_ru, action_kk}, "next": {встреча}|null,
+     "orders": [открытые поручения: просроченные первыми, затем по сроку], "counts": {total, todo, in_progress, done, overdue},
+     "demo": bool}   — нет модуля / ошибка -> None (блок скрыт или «пока нет данных»).
+b) «Прогноз на неделю» (метка «прототип»):
+   from ui.civic_forecast import week_block
+   week_block(district=None, k=5) -> {"title_ru", "title_kk", "period": {from, to}, "label": "prototype",
+     "evidence_type": "synthetic", "items": [{rank, target{kind,id,label_ru,label_kk}, district, point, risk, level,
+     reason_ru, reason_kk, reason_source, weather_ru?, weather_kk?}], "method": {text_ru, text_kk, backtest{…}}, "note_ru", "note_kk"}
+   Готовый блок (по желанию, вместо своей разметки): <script src="/civic/meetings/forecast-week.js"></script>,
+   BirgeForecastWeek.mount(container, {api, openTarget}) или BirgeForecastWeek.render(container, week, {openTarget}).
+c) Пульс: метод пульса — R08 (ml/civic_forecast/pulse_check.py R13 — только проверка «не случайно ли», раунд 14).
+   Кнопка «Открыть кризисный штаб» у тревоги — ссылка R17 (#agencies/crisis или #crisis/<inc-id>); если R08 нужно поле в
+   ответе пульса от R13 — напишите в STATUS R08, добавлю.
+
+=====================================================================================================================
+§7. R02 — демо-мир (CONTRACT §11)
+=====================================================================================================================
+seed_world(db_path, records, now=None) -> {"inserted", "skipped"} — ui.civic_meetings (встречи, поручения, вопросы) и
+ui.civic_qa (только вопросы). Идемпотентно (постоянные id). records — весь world_v1.json (dict) или список встреч.
+Понимаю (подробно — docstring ui/civic_meetings/world.py):
+  meetings[]: id, district, title_ru, title_kk, at | in_days/in_hours/ago_days/ago_hours [+ time «18:30»], duration_min,
+              place {kind, id, label_ru, label_kk} (+ point), registered, status ("cancelled"),
+              result {text_ru, text_kk, at | ago_days} | result_ru/result_kk,
+              orders[] {id, text_ru, text_kk, service (CONTRACT §3), due | due_in_days | due_days_after, status, link{kind, id}}
+  questions[]: id (q-…), meeting_id | meeting, text, lang, district, votes, ago_days/ago_hours, status, answer_ru/answer_kk.
+Короткие id поручений мира («o-1») становятся «o-<id встречи без m->-1» (уникальность в базе).
+
+=====================================================================================================================
+§8. R11 — ключи словаря (запасные тексты — в meetings.js KEYS, ru и kk)
+=====================================================================================================================
+Новые ключи экрана: meet.* (≈ 120): meet.title, meet.tab.meetings, meet.tab.questions, meet.next, meet.host, meet.going,
+meet.going_done, meet.not_going, meet.going_hint, meet.questions, meet.questions_hint, meet.ask*, meet.orders*,
+meet.result*, meet.status.todo|in_progress|done, meet.link.complaint|work|project, meet.empty_*, meet.error.*,
+meet.staff.* (форма встречи, поручение, итог, проверка вопросов). Список с текстами: meetings.js, объект KEYS (ru и kk).
+Названия служб — ваши service.<id>; районы — district.<id>; причины отказа — ask.staff.reason.*; «Пример» — common.tag.demo.
+Спорные казахские слова для KK_REVIEW: «Тапсырмалар» (поручения), «Барамын» (Приду), «Аудан әкімі өткізеді» (ведёт аким района),
+«Болдырылмады» (отменена), «мерзімі өтті» (просрочено).
+Блок прогноза (forecast-week.js) — свои ru/kk внутри файла (8 строк), ключи по желанию: forecast.week.*.
+
+=====================================================================================================================
+§9. R15 — что проверить (CONTRACT §10)
+=====================================================================================================================
+- «Приду» — только число: в базе (mt_registrations) — хэш устройства с солью mt_meta.device_salt; наружу — registered и
+  my_registration (только для своего устройства). Время отметки и устройства не отдаются.
+- Вопросы к встрече — на проверку (pending) до публикации сотрудником; фильтр R04 moderate(): жителям — text_public
+  («***» вместо телефона, ИИН, почты), сотруднику — исходный текст и пометки pii / rude. Голосование закрыто после начала.
+- Сотрудник: сессия R02 + X-CSRF-Token + свой Origin — проверяет и шлюз (staff=True), и модуль. Логин сотрудника
+  (created_by, mt_order_log.by_user) наружу не отдаётся; в журнале поручений публично — только роль.
+- Ведущий — «аким района» без имени: имени нет ни в базе, ни в ответах. Тест: test_public_answers_have_no_devices_logins….
+
+=====================================================================================================================
+§10. R03 — ИИ-аналитик: факты «поручения встреч»
+=====================================================================================================================
+board_block(district=...) — counts (всего, выполнено, в работе, просрочено), next (ближайшая встреча), orders (открытые с
+сроком и службой). Числа — из базы; формулировки ответа — ваш код.

@@ -637,7 +637,40 @@ class MeetingService:
         open_orders.sort(key=lambda v: (not v["overdue"], v["due"], v["id"]))
         demo = any(v["demo"] for v in views) or bool(nxt and nxt["demo"])
         return {"next": nxt, "orders": open_orders[:limit], "counts": counts, "district": district,
-                "link": "#meetings", "demo": demo, "module": "R13", "as_of": iso(now)}
+                "card": _board_card(nxt, counts), "link": "#meetings", "demo": demo, "module": "R13", "as_of": iso(now)}
+
+
+RU_MONTHS = ("янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек")
+KK_MONTHS = ("қаң", "ақп", "нау", "сәу", "мам", "мау", "шіл", "там", "қыр", "қаз", "қар", "жел")
+
+
+def _plural_ru(n: int, one: str, few: str, many: str) -> str:
+    if n % 10 == 1 and n % 100 != 11:
+        return one
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return few
+    return many
+
+
+def _board_card(nxt: dict | None, counts: dict) -> dict:
+    """Карточка «Встречи» для ряда «Ведомства · Жители вместе · Встречи» «Картины дня» (IA_ROUND15 §5.10):
+    заголовок, одно крупное число (поручения в работе), две строки, «Открыть» → #meetings. Числа — из базы, тексты — код."""
+    open_n = counts["todo"] + counts["in_progress"]
+    lines = [{"ru": f"Выполнено {counts['done']} из {counts['total']}"
+                    + (f" · просрочено {counts['overdue']}" if counts["overdue"] else ""),
+              "kk": f"{counts['total']} тапсырманың {counts['done']} орындалды"
+                    + (f" · мерзімі өткені — {counts['overdue']}" if counts["overdue"] else "")}]
+    if nxt:
+        start = parse_iso(nxt["at"]).astimezone(ASTANA)
+        when = f"{start.day} {{m}}, {start:%H:%M}"
+        lines.append({"ru": "Ближайшая встреча: " + when.format(m=RU_MONTHS[start.month - 1]) + f" · «Приду» {nxt['registered']}",
+                      "kk": "Жақын кездесу: " + when.format(m=KK_MONTHS[start.month - 1]) + f" · «Барамын» {nxt['registered']}"})
+    else:
+        lines.append({"ru": "Ближайших встреч пока нет", "kk": "Жақын арада кездесу жоқ"})
+    return {"title_ru": "Встречи с жителями", "title_kk": "Тұрғындармен кездесулер", "value": open_n,
+            "value_ru": _plural_ru(open_n, "поручение в работе", "поручения в работе", "поручений в работе"),
+            "value_kk": "тапсырма орындалуда", "lines": lines, "link": "#meetings",
+            "action_ru": "Открыть", "action_kk": "Ашу"}
 
 
 def _short(text: str, limit: int = 70) -> str:

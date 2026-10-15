@@ -8,7 +8,7 @@ diff -ru a/ui/web_server.py b/ui/web_server.py
 -                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
 +                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
 +                # R13 раунд 15: «Вопросы и встречи» (раздел #meetings; вкладка «Вопросы» — qa.js выше).
-+                "meetings/meetings.js", "meetings/meetings.css")
++                "meetings/meetings.js", "meetings/meetings.css", "meetings/forecast-week.js")  # + блок «Прогноз на неделю» для R08
  # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
  CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
                ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
@@ -64,11 +64,12 @@ diff -ru a/web/index.html b/web/index.html
      <link rel="stylesheet" href="/civic/proposals/proposals.css" />
      <link rel="stylesheet" href="/civic/ideas/ideas.css" />
      <link rel="stylesheet" href="/civic/build3d/build3d.css" />
-@@ -254,6 +255,7 @@
+@@ -254,6 +255,8 @@
      <script defer src="/civic/shell/birge-ref.js"></script>
      <script defer src="/civic/nearby/nearby.js"></script>
      <script defer src="/civic/qa/qa.js"></script>
 +    <script defer src="/civic/meetings/meetings.js"></script>
++    <script defer src="/civic/meetings/forecast-week.js"></script>
      <script defer src="/civic/ideas/ideas.js"></script>
      <script defer src="/civic/proposals/works.js"></script>
      <script defer src="/civic/akim/services.js"></script>

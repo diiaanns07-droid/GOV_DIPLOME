@@ -91,6 +91,9 @@
       "meet.link.complaint": "Обращение",
       "meet.link.work": "Работа",
       "meet.link.project": "Проект",
+      "meet.linked.complaint": "Связано с обращением жителей",
+      "meet.linked.work": "Связано с работой службы",
+      "meet.linked.project": "Связано с проектом акимата",
       "meet.back": "Все встречи",
       "meet.empty_title": "Ближайших встреч пока нет",
       "meet.empty_text": "Когда акимат назначит встречу, она появится здесь. А пока можно задать вопрос акиму.",
@@ -208,6 +211,9 @@
       "meet.link.complaint": "Өтініш",
       "meet.link.work": "Жұмыс",
       "meet.link.project": "Жоба",
+      "meet.linked.complaint": "Тұрғындар өтінішімен байланысты",
+      "meet.linked.work": "Қызмет жұмысымен байланысты",
+      "meet.linked.project": "Әкімдік жобасымен байланысты",
       "meet.back": "Барлық кездесулер",
       "meet.empty_title": "Жақын арада кездесу жоқ",
       "meet.empty_text": "Әкімдік кездесу белгілегенде, ол осында шығады. Әзірге әкімге сұрақ қоюға болады.",
@@ -620,6 +626,8 @@
         state.services = (data && data.services) || state.services;
         state.cardStatus = state.card ? "ready" : "error";
         render();
+        // Открыли встречу, а фокус потерялся вместе с прежней разметкой — ставим его на заголовок встречи.
+        if (!quiet && (doc.activeElement === doc.body || !doc.activeElement)) focusTitle();
         scrollToAnchor();
       }, (err) => {
         if (!state.alive || req !== state.cardReq) return;
@@ -1163,7 +1171,8 @@
     function answerQuote(q) {
       const text = lang() === "kk" ? q.answer.kk || q.answer.ru : q.answer.ru || q.answer.kk;
       if (!text) return null;
-      return h("blockquote", { class: "mt-answer bk-quote" }, [h("p", { lang: textLang(text), text }),
+      // Без .bk-quote: его обрезка в 2 строки прячет подпись «Аким района · дата»; ответы на встрече короткие.
+      return h("blockquote", { class: "mt-answer" }, [h("p", { lang: textLang(text), text }),
         h("footer", { class: "mt-answer__sign", text: tr("meet.answer_sign", { date: dateShort(q.answer.answered_at) }) })]);
     }
     // Строка встречи в списке: плитка даты, название, район, поручения «выполнено 4 из 5» полосой.
@@ -1282,7 +1291,7 @@
         h("span", { class: "mt-dot", "aria-hidden": "true", text: "·" }),
         h("span", { class: "mt-order__due", text: tr("meet.due", { date: dateShort(o.due) }) }),
         o.overdue ? h("span", { class: "bk-tag bk-tag--danger", text: tr("meet.overdue") }) : null,
-        o.demo ? demoTag() : null,
+        o.demo && !m.demo ? demoTag() : null,  // у демо-встречи «Пример» уже стоит в шапке — без повтора в каждой строке
       ]);
       const li = h("li", { class: "mt-order" + (o.overdue ? " is-overdue" : "") + (o.status === "done" ? " is-done" : ""), "data-anchor": o.id }, [
         statusIcon(o),
@@ -1293,7 +1302,8 @@
       return li;
     }
     function linkChip(o) {
-      const label = tr("meet.link." + o.link.kind) + " · " + o.link.id;
+      // Житель видит, с чем связано поручение; номер записи нужен только акимату.
+      const label = staff() ? tr("meet.link." + o.link.kind) + " · " + o.link.id : tr("meet.linked." + o.link.kind);
       return h("p", { class: "mt-linkchip" }, [icon(o.link.kind === "complaint" ? "message" : o.link.kind === "work" ? "calendar" : "cube"),
         h("span", { text: label })]);
     }
@@ -1554,8 +1564,13 @@
 
     // ---------------------------------------------------------------- клавиатура, язык, вид
     // Esc закрывает один слой (как в FINAL-4): форму → встречу → (дальше — оболочка закрывает раздел).
+    // Слушаем документ: после перерисовки фокус может оказаться на body (нажатая строка заменена новой разметкой).
     function onKey(e) {
-      if (e.key !== "Escape" || e.defaultPrevented) return;
+      if (e.key !== "Escape" || e.defaultPrevented || !box.isConnected || !box.getClientRects().length) return;
+      const target = e.target;
+      const inside = target && target.nodeType === 1 && box.contains(target);
+      if (!inside && target !== doc.body && target !== doc.documentElement) return;  // фокус в другом модуле
+      if (doc.querySelector("#birge-account:not([hidden]), .birge-more-menu:not([hidden]), .birge-palette:not([hidden])")) return;
       let handled = true;
       if (state.linkFor) state.linkFor = null;
       else if (state.rejectFor) state.rejectFor = null;
@@ -1566,7 +1581,7 @@
       else handled = false;
       if (handled) { e.preventDefault(); e.stopPropagation(); render(); }
     }
-    box.addEventListener("keydown", onKey);
+    doc.addEventListener("keydown", onKey);
     function relang() { if (state.lang !== lang()) render(); }
     const offLang = I() && typeof I().onChange === "function" ? I().onChange(relang) : null;
     function onMode(e) {
@@ -1604,7 +1619,7 @@
         clearTimeout(state.skeletonTimer);
         if (offLang) offLang();
         doc.removeEventListener("birge:mode", onMode);
-        box.removeEventListener("keydown", onKey);
+        doc.removeEventListener("keydown", onKey);
         if (askHandle) { try { askHandle.destroy(); } catch (e) { /* ничего */ } askHandle = null; }
         if (box.parentNode) box.parentNode.removeChild(box);
       },
