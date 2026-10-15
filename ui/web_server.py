@@ -1200,10 +1200,15 @@ class CivicV2Gateway:
             if akim is not None and hasattr(akim, "configure"):
                 # Демо-сборка: пример «Нужно решение акима» не пропадает после жалобы репетиции (R10 B-061).
                 kwargs = {"demo_build": True} if self.demo else {}
+                # Раунд 15 (R08 INTEGRATION §1.2): та же SQLite (чтение сервисов R17/R16/R13) и флаг демо-мира.
+                extra = {"db_path": str(self.db_path) if self.db_path else None, "demo_world": self.demo_world}
                 try:
-                    akim.configure(**kwargs)
-                except TypeError:  # R08 без demo_build — как раньше
-                    akim.configure()
+                    akim.configure(**kwargs, **extra)
+                except TypeError:  # R08 раунда 14 без новых параметров — как раньше
+                    try:
+                        akim.configure(**kwargs)
+                    except TypeError:  # R08 без demo_build — как раньше
+                        akim.configure()
         except Exception:
             LOGGER.exception("API v2: «Картина дня» (R08) не настроилась")
         if store is not None and hasattr(store, "target_lookup"):
@@ -1651,13 +1656,16 @@ class CivicV2Gateway:
                 raise V2BadRequest("to", f"to: период не длиннее {V2_PERIOD_MAX_DAYS} дней.")
 
     # --- вызов ------------------------------------------------------------------
-    def _staff(self, context):
-        """(principal_dict, None) или (None, ответ-ошибка) — сессия сотрудника R02 (как в v1)."""
+    def _staff(self, context, unsafe=True):
+        """(principal_dict, None) или (None, ответ-ошибка) — сессия сотрудника R02 (как в v1).
+
+        unsafe=True — ещё и CSRF (изменение данных). Раунд 15: чтение сотрудника (GET табло, календаря, ситуационного
+        центра) — только сессия: GET ничего не меняет, а отдельные страницы (R08 /civic/board/) живут без оболочки."""
         store = self.store_gateway.service("store") if self.store_gateway is not None else None
         if store is None or not hasattr(store, "require_staff"):
             return None, v2_error(503, "module_not_ready", "Вход сотрудника пока не подключён.",
                                   module="ui.civic_store", role="R06")
-        principal, denied = store.require_staff(context, unsafe=True)
+        principal, denied = store.require_staff(context, unsafe=unsafe)
         if denied:
             error = (denied.get("body") or {}).get("error") or {}
             return None, v2_error(denied.get("status", 403), error.get("code", "forbidden"),
@@ -1741,7 +1749,7 @@ class CivicV2Gateway:
             # Раунд 15: сначала вход сотрудника (сессия R02 + CSRF; R08 board/week и R12 календарь — raw-обработчики,
             # сами сотрудника не проверяют), потом форма параметров адреса — аноним не узнаёт ничего о параметрах.
             if handler.staff:
-                principal, denied = self._staff(context)
+                principal, denied = self._staff(context, unsafe=method != "GET")
                 if denied:
                     return denied
                 staff_checked = True
@@ -1751,7 +1759,9 @@ class CivicV2Gateway:
                 except V2BadRequest as exc:
                     return v2_error(400, "bad_request", exc.message, field=exc.field)
         if handler.kind == "raw":
-            staff = self._is_staff(context) if handler.staff_view else None
+            # Сотрудник проверен шлюзом (staff=True, раунд 15: R08 board/week, R12 календарь) — модуль узнаёт об этом
+            # флагом staff=True (R08 INTEGRATION §1.1); staff_view — открытый маршрут, где сотрудник видит больше (R07).
+            staff = True if staff_checked else (self._is_staff(context) if handler.staff_view else None)
             return self._raw(fn, key, rel_path if handler.strip_prefix else CIVIC_V2_PREFIX + rel_path, query, module,
                              handler, staff=staff)
         if handler.kind == "service":
@@ -1819,6 +1829,16 @@ class CivicV2Gateway:
         return None
 
     @staticmethod
+    def _takes(fn, name):
+        """Объявила ли функция именованный параметр name (или **kwargs) — старые обработчики ролей не ломаются."""
+        import inspect  # локально: нужен только здесь
+        try:
+            params = inspect.signature(fn).parameters
+        except (TypeError, ValueError):
+            return False
+        return name in params or any(p.kind is inspect.Parameter.VAR_KEYWORD for p in params.values())
+
+    @staticmethod
     def _raw(fn, key, path, query, module, handler, staff=None):
         """R07/R08/R12: fn(path, parse_qs(query)) -> (status, body) | None; роль сама проверяет параметры.
 
@@ -1827,7 +1847,7 @@ class CivicV2Gateway:
         """
         try:
             parsed_query = parse_qs(query or "", keep_blank_values=True)
-            reply = fn(path, parsed_query, staff=True) if staff else fn(path, parsed_query)
+            reply = fn(path, parsed_query, staff=True) if staff and CivicV2Gateway._takes(fn, "staff") else fn(path, parsed_query)
             if reply is None:
                 return v2_error(404, "not_found", "Адрес API не найден.")
             status, body = reply

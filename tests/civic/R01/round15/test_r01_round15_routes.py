@@ -188,7 +188,7 @@ def test_modules_route_lists_round15_routes_as_not_ready():
                                 "status": "module_not_ready"}
 
 
-# --- сотрудник ---------------------------------------------------------------------------------------------------
+# --- сотрудник: чтение — сессия, изменение — сессия + CSRF -------------------------------------------------------
 
 class StaffStore:
     """Сессия R02 для шлюза: сотрудник — cookie "s", для изменения (unsafe) ещё и X-CSRF-Token (как require_staff R02)."""
@@ -261,17 +261,20 @@ def gateway_with_modules(tmp_path, rate_limits=None):
 
 
 @pytest.mark.parametrize("method,path", sorted(STAFF_ROUTES))
-def test_staff_route_needs_session_then_csrf(tmp_path, method, path):
+def test_staff_route_needs_session_and_csrf_for_changes(tmp_path, method, path):
     gateway, recorder, _store = gateway_with_modules(tmp_path)
     url, query, body = sample(method, path)
     anonymous = gateway.handle(method, url, query, body, RESIDENT)
     assert anonymous["status"] == 401 and anonymous["body"]["error"] == "unauthenticated"
-    no_csrf = gateway.handle(method, url, query, body, STAFF_NO_CSRF)
-    assert no_csrf["status"] == 403 and no_csrf["body"]["error"] == "csrf_failed"
     assert recorder.calls == [], "модуль вызван без входа сотрудника"
+    no_csrf = gateway.handle(method, url, query, body, STAFF_NO_CSRF)
+    if method == "GET":   # чтение сотрудника — сессии достаточно (страница R08 /civic/board/ живёт без оболочки)
+        assert no_csrf["status"] == 200 and len(recorder.calls) == 1
+    else:                 # изменение — ещё и CSRF
+        assert no_csrf["status"] == 403 and no_csrf["body"]["error"] == "csrf_failed" and recorder.calls == []
     signed_in = gateway.handle(method, url, query, body, STAFF)
     assert signed_in["status"] == 200, signed_in
-    assert len(recorder.calls) == 1
+    assert len(recorder.calls) == (2 if method == "GET" else 1)
 
 
 def test_staff_check_comes_before_the_parameter_check(tmp_path):
@@ -298,6 +301,20 @@ def test_raw_handlers_get_their_paths(tmp_path):
     gateway.handle("GET", "/heat/replay", "step=day", None, CTX)
     gateway.handle("GET", "/akim/board", "", None, STAFF)
     assert [c[1] for c in recorder.calls] == ["/works-calendar", "/api/civic/v2/heat/replay", "/api/civic/v2/akim/board"]
+
+
+def test_raw_staff_route_tells_the_module_staff_true_only_if_it_takes_it(tmp_path):
+    """R08 INTEGRATION §1.1: board/week — модуль ждёт staff=True от шлюза; R12 handle(path, query) без staff не ломается."""
+    seen = []
+    store = StaffStore()
+    stub = types.SimpleNamespace(service=lambda name: store if name == "store" else None)
+    gateway = CivicV2Gateway(store_gateway=stub, rate_limits=None, modules={
+        "ui.civic_akim.api": types.SimpleNamespace(handle_get=lambda path, query, staff=False: seen.append(("R08", staff)) or (200, {})),
+        "engine.civic_geo.api": types.SimpleNamespace(handle=lambda path, query: seen.append(("R12", None)) or (200, {}))})
+    assert gateway.handle("GET", "/akim/board", "", None, STAFF_NO_CSRF)["status"] == 200
+    assert gateway.handle("GET", "/works-calendar", "", None, STAFF)["status"] == 200
+    assert seen == [("R08", True), ("R12", None)]
+    assert gateway.handle("GET", "/akim/week", "", None, CTX)["status"] == 401 and len(seen) == 2
 
 
 def test_service_gets_principal_and_full_path(tmp_path):

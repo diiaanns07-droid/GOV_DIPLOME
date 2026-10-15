@@ -1054,6 +1054,12 @@
     return { section, path: cut < 0 ? "" : cleanPath(raw.slice(cut + 1)), routed: true };
   }
   function setSection(section, options) {
+    // «раздел/путь» одной строкой — как адрес (setSection("meetings/questions"), openSection("agencies/calendar")).
+    if (typeof section === "string" && section.includes("/") && options?.path === undefined) {
+      const cut = section.indexOf("/");
+      options = { ...options, path: section.slice(cut + 1) };
+      section = section.slice(0, cut);
+    }
     section = ROUTE_ALIAS[section] || section;  // прежние имена (#complaints, #ask) — и из кода ролей
     if (!SECTIONS.includes(section)) section = "map";
     state.path = section === "map" || section === "day" ? "" : cleanPath(options?.path);
