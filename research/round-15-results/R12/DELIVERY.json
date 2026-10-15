@@ -7,8 +7,8 @@
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "94e9a13583216e6d3b79198904923543baad7c6f",
- "tested_sha": "94e9a13583216e6d3b79198904923543baad7c6f",
+ "code_sha": "c40f14777937692cb203ff583353882bf16845fb",
+ "tested_sha": "c40f14777937692cb203ff583353882bf16845fb",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/SOURCE.json",
@@ -45,7 +45,7 @@
    "works-calendar/works-calendar.css"
   ],
   "shell": "registerScreen works-calendar (akimat) + registerLayer works-conflicts (off by default) — модуль сам",
-  "i18n_keys": "research/round-15-results/R12/i18n_keys.json (77 ключей wcal.*, kk — черновик; новые: wcal.stage.*, wcal.add, wcal.staff.login, wcal.work.source, wcal.real.*)",
+  "i18n_keys": "research/round-15-results/R12/i18n_keys.json (77 ключей wcal.*): 74 уже в словаре R11 c3c376e7, kk совпадает (термин «бөлік»); ждут R11 три ключа wcal.stage.*",
   "neighbours": "R01 B0 74fb8c6d и B0.2 29b4ae9d (R12 1c8d171d в сборке), R06 c2604ea2 (works_v2 + seed_world мира), R02 мир a7251430 (5/5 planned_conflicts, scene8 = cf-w15-01), R17 191f81e7 (вкладка, цвета служб), R03 analyst (conflicts_summary), R08/R17 conflicts_summary()",
   "R17_patch": "не нужен: R17 сам сделал вкладку «Календарь работ» в «Ведомствах» (191f81e7, в R01 B0.2) — проверено браузером; файл patches/R17_agencies_calendar_tab.patch оставлен как история"
  },
@@ -66,10 +66,12 @@
    "covers": "≤ 5 м от рёбер OSM; три вида конфликтов + вариант same_street; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API (шлюз R01 проверяет сотрудника, staff=False → 401, 400 на параметры); участок в узле без нулевого ребра; мир R02: даты day/season, отключения не работы, id planned_conflicts, seed_world; стадия конфликта на сегодня (асфальт впереди / уже уложен / раскопка идёт / прошло) — совет и порядок, id не зависит от даты; конфликт сцены 8 мира (scene_conflict только в режиме мира); conflicts_summary — числа и совет"
   },
   "pytest_neighbours_using_civic_geo": {
-   "status": "PASS",
-   "passed": 153,
-   "failed": 0,
-   "files": "R09 test_r09v2_neighbours/security + R01 test_r01_api_v2 (в пакете)"
+   "status": "PASS (1 FAIL не R12)",
+   "passed": 630,
+   "failed": 1,
+   "skipped": 8,
+   "files": "R09 test_r09v2_neighbours/security, R01 test_r01_api_v2/integrated_routes, R07, R05, R10 (версии пакета) на коде R12 этой поставки",
+   "failed_note": "tests/civic/R10/test_r10_accuracy.py [c28-R07]: цель R07 osm-node-13355349235 стоит по старому снимку (2,3 м) — B-103 для R07; в новой версии проверки R10 (b4be0c66) это справка; [c24-R12] теперь PASS (было FAIL на пакете). tests/civic/R07 test_citywide_under_300ms… на занятой машине плавает (211–315 мс), без стендов — PASS."
   },
   "browser_app": {
    "status": "PASS",
