@@ -1,5 +1,7 @@
 /* Birge · «Календарь работ» (R12, раунд 15). Только токены ui-kit R11 (web/civic/ui-kit/tokens.css); запасные значения
-   в var(…, x) — для страницы стенда без ui-kit. Красный — только конфликт; зелёный — только «нет конфликтов». */
+   в var(…, x) — для страницы стенда без ui-kit. Красный — только конфликт; зелёный — только «нет конфликтов».
+   Три размера шрифта (VISUAL_BRIEF §4 п. 3): 14 — подписи и строки (как вкладки ui-kit у R17), 15 — текст и кнопки,
+   19 — заголовки; на вкладке «Ведомств» весь экран — 14/15/19. Зоны нажатия — 44 px (п. 10). */
 
 .wcal {
   position: relative; display: flex; flex-direction: column; gap: var(--s-4, 16px);
@@ -15,20 +17,20 @@
 /* ---------- шапка ---------- */
 .wcal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4, 16px); flex-wrap: wrap; }
 .wcal-head__title { min-width: 0; flex: 1 1 360px; }
-.wcal-title { margin: 0; font-size: var(--fs-h1, 22px); font-weight: var(--fw-semi, 600); line-height: var(--lh-head, 1.25);
+.wcal-title { margin: 0; font-size: var(--fs-title, 19px); font-weight: var(--fw-semi, 600); line-height: var(--lh-head, 1.25);
   letter-spacing: var(--ls-title, -0.01em); }
 .wcal-meta { margin: 6px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; font-size: var(--fs-small, 14px);
   color: var(--c-text-2, #4b5752); font-variant-numeric: tabular-nums; }
 .wcal-meta__bad { color: var(--c-danger, #b3362e); font-weight: var(--fw-medium, 500); }
 .wcal-dot { color: var(--c-text-3, #7e8a85); }
-.wcal-demo { margin: 8px 0 0; display: flex; align-items: center; gap: 8px; font-size: var(--fs-caption, 13px); color: var(--c-text-2, #4b5752); }
+.wcal-demo { margin: 8px 0 0; display: flex; align-items: center; gap: 8px; font-size: var(--fs-small, 14px); color: var(--c-text-2, #4b5752); }
 .wcal-demo__tag { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: var(--r-pill, 999px);
-  background: var(--c-demo-soft, #edf1f7); color: var(--c-demo, #4b5d7a); font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500);
+  background: var(--c-demo-soft, #edf1f7); color: var(--c-demo, #4b5d7a); font-size: var(--fs-small, 14px); font-weight: var(--fw-medium, 500);
   white-space: nowrap; }
 
 .wcal-real { margin-top: 4px; }
 .wcal-real__tag { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: var(--r-pill, 999px);
-  background: var(--c-info-soft, #e8f0fb); color: var(--c-info, #1f5fa8); font-size: var(--fs-caption, 13px);
+  background: var(--c-info-soft, #e8f0fb); color: var(--c-info, #1f5fa8); font-size: var(--fs-small, 14px);
   font-weight: var(--fw-medium, 500); white-space: nowrap; }
 .wcal-pop__src { color: var(--c-info, #1f5fa8); text-decoration: underline; text-underline-offset: 2px; word-break: break-all; }
 .wcal-controls { display: flex; align-items: flex-end; gap: var(--s-2, 8px); flex-wrap: wrap; }
@@ -36,7 +38,7 @@
 .wcal-head--embedded .wcal-meta { margin-top: 0; }
 .wcal-addmain { gap: 6px; min-height: var(--tap, 44px); }
 .wcal-field { display: grid; gap: 4px; margin: 0; }
-.wcal-field__label { font-size: var(--fs-caption, 13px); color: var(--c-text-2, #4b5752); }
+.wcal-field__label { font-size: var(--fs-small, 14px); color: var(--c-text-2, #4b5752); }
 /* Вид поля — ui-kit (.bk-field select: заливка, без рамки, родная стрелка); здесь только размер в шапке. */
 .wcal .wcal-select { width: auto; min-width: 156px; max-width: 240px; min-height: var(--tap, 44px); padding: 0 12px;
   border: 1px solid transparent; border-radius: var(--r-m, 12px); background: var(--c-fill, rgba(18, 26, 23, .06));
@@ -45,12 +47,12 @@
 .wcal-shift { display: inline-flex; align-items: center; height: var(--tap, 44px); border-radius: var(--r-m, 12px);
   background: var(--c-fill, rgba(18, 26, 23, .06)); overflow: hidden; }
 .wcal-iconbtn { display: inline-grid; place-items: center; min-width: var(--tap, 44px); height: var(--tap, 44px); padding: 0; border: 0;
-  background: transparent; color: var(--c-ink, #121a17); font: inherit; font-size: var(--fs-caption, 13px); cursor: pointer;
+  background: transparent; color: var(--c-ink, #121a17); font: inherit; font-size: var(--fs-small, 14px); cursor: pointer;
   transition: background-color var(--t-fast, 150ms) var(--ease, ease-out); }
 .wcal-iconbtn:hover:not(:disabled) { background: var(--c-fill, rgba(18, 26, 23, .06)); }
 .wcal-iconbtn:disabled { color: var(--c-text-3, #7e8a85); cursor: default; }
 .wcal-iconbtn--text { padding: 0 10px; font-weight: var(--fw-medium, 500); }
-.wcal-shift__label { padding: 0 10px; font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500); color: var(--c-text-2, #4b5752);
+.wcal-shift__label { padding: 0 10px; font-size: var(--fs-small, 14px); font-weight: var(--fw-medium, 500); color: var(--c-text-2, #4b5752);
   white-space: nowrap; font-variant-numeric: tabular-nums; }
 .wcal-shift .wcal-iconbtn:hover:not(:disabled) { background: var(--c-fill, rgba(18, 26, 23, .06)); }
 .wcal :is(button, select, [tabindex]):focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
@@ -76,7 +78,7 @@
 .wcal-focus__title { margin: 0; font-size: var(--fs-title, 19px); font-weight: var(--fw-semi, 600); line-height: var(--lh-head, 1.25);
   letter-spacing: var(--ls-title, -0.01em); }
 .wcal-chip { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: var(--r-pill, 999px);
-  font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500); white-space: nowrap; }
+  font-size: var(--fs-small, 14px); font-weight: var(--fw-medium, 500); white-space: nowrap; }
 .wcal-chip--high { background: var(--c-danger-soft, #fcebeb); color: var(--c-danger, #b3362e); }
 .wcal-chip--medium { background: var(--c-warn-soft, #faeeda); color: var(--c-warn, #7a520f); }
 /* стадия конфликта на сегодня («асфальт уже уложен», «идёт сейчас», «уже прошло») — нейтрально, без цвета тревоги */
@@ -86,19 +88,19 @@
 .wcal-focus__street .ic { width: 16px; height: 16px; color: var(--c-text-3, #7e8a85); }
 .wcal-focus__facts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .wcal-wpill { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 10px; border-radius: 10px;
-  background: var(--c-fill, rgba(18, 26, 23, .06)); font-size: var(--fs-caption, 13px); font-variant-numeric: tabular-nums; }
+  background: var(--c-fill, rgba(18, 26, 23, .06)); font-size: var(--fs-small, 14px); font-variant-numeric: tabular-nums; }
 .wcal-wpill__kind { font-weight: var(--fw-semi, 600); }
 .wcal-wpill__svc { color: var(--c-text-2, #4b5752); }
 .wcal-wpill__svc::after { content: "·"; margin-left: 6px; color: var(--c-text-3, #7e8a85); }
 .wcal-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex: none; }
 .wcal-focus__arrow { display: inline-flex; align-items: center; gap: 4px; color: var(--c-danger, #b3362e);
-  font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500); white-space: nowrap; }
+  font-size: var(--fs-small, 14px); font-weight: var(--fw-medium, 500); white-space: nowrap; }
 .wcal-focus__arrow .ic { width: 16px; height: 16px; }
 .wcal-focus__advice { margin: 0; font-size: var(--fs-body, 15px); line-height: var(--lh-text, 1.45); color: var(--c-text-2, #4b5752); }
 .wcal-focus__actions { display: flex; align-items: center; gap: var(--s-3, 12px); }
 .wcal-mapbtn { gap: 8px; white-space: nowrap; }
 .wcal-mapbtn .ic { width: 18px; height: 18px; }
-.wcal-focus__nav { display: flex; align-items: center; gap: 2px; font-size: var(--fs-caption, 13px); color: var(--c-text-2, #4b5752);
+.wcal-focus__nav { display: flex; align-items: center; gap: 2px; font-size: var(--fs-small, 14px); color: var(--c-text-2, #4b5752);
   font-variant-numeric: tabular-nums; }
 .wcal-focus__nav .wcal-iconbtn { border-radius: var(--r-m, 12px); }
 .wcal-focus__count { min-width: 52px; text-align: center; }
@@ -116,13 +118,13 @@
   border-right: 1px solid var(--c-line, rgba(18, 26, 23, .08)); }
 .wcal-tl__months { position: relative; height: 48px; flex: none; }
 .wcal-month { position: absolute; top: 0; height: 48px; display: flex; align-items: flex-start; padding: 6px 0 0 7px; overflow: hidden;
-  border-left: 1px solid var(--c-line, rgba(18, 26, 23, .08)); font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500);
+  border-left: 1px solid var(--c-line, rgba(18, 26, 23, .08)); font-size: var(--fs-small, 14px); font-weight: var(--fw-medium, 500);
   color: var(--c-text-2, #4b5752); white-space: nowrap; }
 .wcal-month--year { color: var(--c-ink, #121a17); font-weight: var(--fw-semi, 600); border-left-color: var(--c-line-strong, rgba(18, 26, 23, .16)); }
-.wcal-year { position: absolute; bottom: 5px; z-index: 1; padding-left: 7px; font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500);
+.wcal-year { position: absolute; bottom: 5px; z-index: 1; padding-left: 7px; font-size: var(--fs-small, 14px); font-weight: var(--fw-medium, 500);
   color: var(--c-text-2, #4b5752); pointer-events: none; }
 .wcal-today-tag { position: absolute; bottom: 4px; z-index: 2; transform: translateX(-50%); height: 20px; padding: 0 7px; border-radius: var(--r-pill, 999px);
-  background: var(--c-info, #1f5fa8); color: #fff; font-size: var(--fs-caption, 13px); font-weight: var(--fw-semi, 600); line-height: 20px;
+  background: var(--c-info, #1f5fa8); color: #fff; font-size: var(--fs-small, 14px); font-weight: var(--fw-semi, 600); line-height: 20px;
   white-space: nowrap; }  /* белый на --c-info — 6,5:1 (на --c-focus было 4,1:1, R10 B-111) */
 .wcal-tl__body { position: relative; }
 .wcal-grid { position: absolute; top: 0; bottom: 0; pointer-events: none; z-index: 0; }
@@ -140,17 +142,19 @@
 /* Высокая строка (с дорожкой чипов или в две дорожки): длинное название (kk «… даңғылы», «… көшесі») — в две строки. */
 .wcal-row--tall .wcal-row__street { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
   line-clamp: 2; line-height: 1.2; overflow-wrap: anywhere; }
-.wcal-row__meta { font-size: var(--fs-caption, 13px); color: var(--c-text-2, #4b5752); white-space: nowrap; }
+.wcal-row__meta { font-size: var(--fs-small, 14px); color: var(--c-text-2, #4b5752); white-space: nowrap; }
 .wcal-row__bad { color: var(--c-danger, #b3362e); font-weight: var(--fw-medium, 500); }
 .wcal-row__track { position: relative; flex: none; z-index: 1; }
 
 .wcal-bar {
-  position: absolute; display: block; height: 40px; padding: 0; margin: 0; border: 0; background: transparent; font: inherit;
+  position: absolute; display: block; height: 44px; padding: 0; margin: 0; border: 0; background: transparent; font: inherit;
   text-align: left; cursor: pointer;
-}  /* кнопка — зона нажатия 40 px (R10 B-111: ≥ 40, цель 44); видимая полоса 24 px — .wcal-bar__fill */
+}  /* кнопка — зона нажатия 44 px (VISUAL_BRIEF §4 п. 10; HIT в works-calendar.js); видимая полоса 24 px — .wcal-bar__fill */
+/* Заливка — над прозрачными зонами соседних дорожек (зоны 44 px при шаге дорожек 30 px заходят друг на друга):
+   нажатие на видимую полосу, и на её край тоже, всегда открывает её саму. */
 .wcal-bar__fill {
-  position: absolute; top: 8px; display: flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 6px;
-  background: var(--wcal-c, #5b6577); color: var(--wcal-on, #fff); font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500);
+  position: absolute; z-index: 1; top: 10px; display: flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 6px;
+  background: var(--wcal-c, #5b6577); color: var(--wcal-on, #fff); font-size: var(--fs-small, 14px); font-weight: var(--fw-medium, 500);
   overflow: hidden; box-shadow: 0 1px 2px rgba(16, 24, 20, .14);
   transition: opacity var(--t-fast, 150ms) var(--ease, ease-out), box-shadow var(--t-fast, 150ms) var(--ease, ease-out), scale var(--t-press, 100ms) var(--ease, ease-out);
 }
@@ -164,11 +168,10 @@
   outline: 1.5px dashed var(--wcal-c, #5b6577); outline-offset: -1.5px; }
 .wcal-bar--context .wcal-bar__fill { opacity: .72; }
 .wcal-bar--conflict .wcal-bar__fill { box-shadow: 0 1px 2px rgba(16, 24, 20, .14), 0 0 0 1.5px rgba(179, 54, 46, .55); }
-.wcal-bar.is-sel { z-index: 2; }
-.wcal-bar.is-sel .wcal-bar__fill { opacity: 1; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--c-danger, #b3362e); }
+.wcal-bar.is-sel .wcal-bar__fill { z-index: 2; opacity: 1; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--c-danger, #b3362e); }
 .wcal-bar.is-dim .wcal-bar__fill { opacity: .45; }
 .wcal-bar.is-dim:hover .wcal-bar__fill, .wcal-bar.is-dim:focus-visible .wcal-bar__fill { opacity: .8; }
-.wcal-bar__out { position: absolute; z-index: 1; font-size: var(--fs-caption, 13px); color: var(--c-text-2, #4b5752); white-space: nowrap; pointer-events: none; }
+.wcal-bar__out { position: absolute; z-index: 1; font-size: var(--fs-small, 14px); color: var(--c-text-2, #4b5752); white-space: nowrap; pointer-events: none; }
 
 .wcal-links { position: absolute; top: 0; z-index: 2; overflow: visible; pointer-events: none; }
 .wcal-link { fill: none; stroke: var(--c-danger, #b3362e); stroke-width: 2; stroke-linecap: round; opacity: .9;
@@ -187,16 +190,16 @@
 }
 @keyframes wcal-draw { to { stroke-dashoffset: 0; } }
 .wcal-tl__corner { display: flex; align-items: center; padding-left: 6px; }
-.wcal-add { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 10px; margin: 0; border: 0; border-radius: var(--r-s, 8px);
-  background: transparent; color: var(--c-ink, #121a17); font: inherit; font-size: var(--fs-caption, 13px); font-weight: var(--fw-medium, 500);
+.wcal-add { display: inline-flex; align-items: center; gap: 6px; height: var(--tap, 44px); padding: 0 10px; margin: 0; border: 0; border-radius: var(--r-s, 8px);
+  background: transparent; color: var(--c-ink, #121a17); font: inherit; font-size: var(--fs-small, 14px); font-weight: var(--fw-medium, 500);
   cursor: pointer; position: relative; white-space: nowrap; }
 .wcal-add:hover { background: var(--c-fill, rgba(18, 26, 23, .06)); }
 .wcal-add .ic { width: 16px; height: 16px; }
 
-.wcal-cchip { position: absolute; z-index: 4; transform: translate(-50%, -50%); display: inline-flex; align-items: center; height: 40px;
-  padding: 0; margin: 0; border: 0; background: transparent; font: inherit; cursor: pointer; }  /* зона нажатия 40 px (R10 B-111) */
+.wcal-cchip { position: absolute; z-index: 4; transform: translate(-50%, -50%); display: inline-flex; align-items: center; height: 44px;
+  padding: 0; margin: 0; border: 0; background: transparent; font: inherit; cursor: pointer; }  /* зона нажатия 44 px (п. 10) */
 .wcal-cchip__pill { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border: 1.5px solid var(--c-danger, #b3362e);
-  border-radius: var(--r-pill, 999px); background: #fff; color: var(--c-danger, #b3362e); font-size: var(--fs-caption, 13px);
+  border-radius: var(--r-pill, 999px); background: #fff; color: var(--c-danger, #b3362e); font-size: var(--fs-small, 14px);
   font-weight: var(--fw-semi, 600); white-space: nowrap; box-shadow: 0 2px 6px rgba(16, 24, 20, .14);
   transition: background-color var(--t-fast, 150ms) var(--ease, ease-out), color var(--t-fast, 150ms) var(--ease, ease-out); }
 .wcal-cchip--medium:not(.is-sel) .wcal-cchip__pill { border-color: rgba(179, 54, 46, .7); }
@@ -221,7 +224,7 @@
   border-radius: var(--r-glass-sheet, 26px) var(--r-glass-sheet, 26px) var(--r-xl, 18px) var(--r-xl, 18px); }
 .wcal-pop__hd { display: flex; align-items: flex-start; gap: 8px; }
 .wcal-pop__title { margin: 0; flex: 1; font-size: var(--fs-body, 15px); font-weight: var(--fw-semi, 600); line-height: 1.3; }
-.wcal-pop__note { margin: 0; font-size: var(--fs-caption, 13px); color: var(--c-text-2, #4b5752); }
+.wcal-pop__note { margin: 0; font-size: var(--fs-small, 14px); color: var(--c-text-2, #4b5752); }
 .wcal-pop__rows { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; font-size: var(--fs-small, 14px); }
 .wcal-pop__rows dt { color: var(--c-text-2, #4b5752); }
 .wcal-pop__rows dd { margin: 0; min-width: 0; }
@@ -231,7 +234,7 @@
 .wcal-pop__acts { display: flex; flex-wrap: wrap; gap: 8px; }
 .wcal-pop__acts:empty { display: none; }
 .wcal-pop__map, .wcal-pop__open { gap: 8px; text-decoration: none; }
-.wcal-x { display: inline-grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; flex: none;
+.wcal-x { display: inline-grid; place-items: center; width: var(--tap, 44px); height: var(--tap, 44px); padding: 0; border: 0; border-radius: 50%; flex: none;
   background: var(--c-fill, rgba(18, 26, 23, .06)); color: var(--c-ink, #121a17); cursor: pointer; position: relative; }
 .wcal-x:hover { background: var(--c-fill-hover, rgba(18, 26, 23, .1)); }
 .wcal-x .ic { width: 16px; height: 16px; }
@@ -273,10 +276,10 @@
 .wcal-mapcard__hd { display: flex; align-items: center; gap: 10px; }
 .wcal-mapcard__title { margin: 0; flex: 1; font-size: var(--fs-title, 19px); font-weight: var(--fw-semi, 600); line-height: 1.25; }
 .wcal-mapcard__street { margin: 0; font-size: var(--fs-body, 15px); font-weight: var(--fw-medium, 500); }
-.wcal-mapcard__works { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: var(--fs-caption, 13px); }
+.wcal-mapcard__works { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: var(--fs-small, 14px); }
 .wcal-mapcard__work { display: flex; align-items: center; gap: 8px; }
 .wcal-mapcard__advice { margin: 0; font-size: var(--fs-small, 14px); line-height: var(--lh-text, 1.45); color: var(--c-text-2, #4b5752); }
-.wcal-mapcard__where { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: var(--fs-caption, 13px); color: var(--c-text-2, #4b5752); }
+.wcal-mapcard__where { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: var(--fs-small, 14px); color: var(--c-text-2, #4b5752); }
 .wcal-mapcard__back { justify-self: start; gap: 8px; }
 .wcal-mapcard :focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 .wcal-toast { position: fixed; z-index: 60; left: 50%; bottom: 28px; transform: translateX(-50%); max-width: calc(100vw - 32px); padding: 10px 16px;

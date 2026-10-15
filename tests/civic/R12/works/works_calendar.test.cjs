@@ -105,41 +105,63 @@ async function openCalendar(page, lang) {
           return out;
         });
         check(`${w} ${lang}: чипы конфликтов не закрывают полосы`, covered.length === 0, covered.join(", "));
-        // R10 B-111 (решение владельца 12 окт): текст ≥ 13 px; кнопки и ссылки ≥ 40 × 40 px (цель 44) — как ux_lib R10.
+        // VISUAL_BRIEF §4 (как visual_audit R10): текст ≥ 13 px и не больше 3 размеров на экране (п. 3); кнопки и ссылки
+        // ≥ 44 × 44 px (п. 10; R10 B-111 — пол 40). Размеры — видимый текст в окне, как считает R10.
         const ux = await page.evaluate(() => {
           const root = document.querySelector(".wcal");
           const vis = (e) => { const r = e.getBoundingClientRect(), st = getComputedStyle(e);
             return r.width > 0 && r.height > 0 && st.visibility !== "hidden" && st.display !== "none"; };
-          const tiny = [], small = [];
+          const tiny = [], small = [], sizes = new Map();
           for (const el of root.querySelectorAll("*")) {
             const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
-            if (own.length < 2 || !vis(el)) continue;
+            if (!own || !vis(el)) continue;
             const fs = parseFloat(getComputedStyle(el).fontSize);
-            if (fs < 13) tiny.push(fs + "px «" + own.slice(0, 20) + "»");
+            if (own.length >= 2 && fs < 13) tiny.push(fs + "px «" + own.slice(0, 20) + "»");
+            const r = el.getBoundingClientRect();
+            if (r.bottom > 0 && r.top < innerHeight && !el.closest("svg")) {
+              const k = Math.round(fs * 2) / 2;
+              if (!sizes.has(k)) sizes.set(k, own.slice(0, 18));
+            }
           }
           for (const el of root.querySelectorAll("button, a[href], [role=button], select")) {
             if (!vis(el)) continue;
             const r = el.getBoundingClientRect();
-            if (r.height < 40 || r.width < 40) small.push(Math.round(r.width) + "×" + Math.round(r.height) + " «" + (el.innerText || el.getAttribute("aria-label") || "").trim().slice(0, 18) + "»");
+            if (r.height < 44 || r.width < 44) small.push(Math.round(r.width) + "×" + Math.round(r.height) + " «" + (el.innerText || el.getAttribute("aria-label") || "").trim().slice(0, 18) + "»");
           }
-          return { tiny: tiny.slice(0, 6), tinyN: tiny.length, small: small.slice(0, 6), smallN: small.length };
+          return { tiny: tiny.slice(0, 6), tinyN: tiny.length, small: small.slice(0, 6), smallN: small.length,
+            sizes: [...sizes.entries()].sort((a, b) => a[0] - b[0]) };
         });
-        // Ревью: зона нажатия соседней полосы не накрывает видимую полосу — нажатие на полосу открывает её саму.
-        const steal = await page.evaluate(() => {
-          const out = [];
-          for (const f of document.querySelectorAll(".wcal-bar__fill")) {
-            const r = f.getBoundingClientRect();
-            if (r.width < 2 || r.right < 0 || r.left > innerWidth || r.bottom < 0 || r.top > innerHeight) continue;
-            const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-            const own = f.closest(".wcal-bar");
-            const got = hit && hit.closest(".wcal-bar");
-            if (got && got !== own) out.push(own.dataset.work + "→" + got.dataset.work);
+        // Ревью: зона нажатия соседней полосы не накрывает видимую полосу — нажатие на полосу (в середине и у верхнего
+        // и нижнего края: зоны 44 px соседних дорожек заходят друг на друга) открывает её саму.
+        // Ленту прокручиваем до конца: полосы ниже первого экрана проверяются тоже.
+        const steal = await page.evaluate(async () => {
+          const out = new Set();
+          const tl = document.querySelector(".wcal-tl");
+          const top0 = tl.scrollTop;
+          tl.style.scrollBehavior = "auto";
+          for (let pass = 0; pass < 12; pass++) {
+            for (const f of document.querySelectorAll(".wcal-bar__fill")) {
+              const r = f.getBoundingClientRect();
+              if (r.width < 2 || r.right < 0 || r.left > innerWidth || r.bottom < 0 || r.top > innerHeight) continue;
+              const own = f.closest(".wcal-bar");
+              for (const y of [r.top + 2, r.top + r.height / 2, r.bottom - 2]) {
+                const hit = document.elementFromPoint(r.left + r.width / 2, y);
+                const got = hit && hit.closest(".wcal-bar");
+                if (got && got !== own) { out.add(own.dataset.work + "→" + got.dataset.work); break; }
+              }
+            }
+            if (tl.scrollTop + tl.clientHeight >= tl.scrollHeight - 1) break;
+            tl.scrollTop += Math.max(100, tl.clientHeight - 60);
+            await new Promise((res) => setTimeout(res, 80));
           }
-          return out;
+          tl.scrollTop = top0;
+          tl.style.scrollBehavior = "";
+          return [...out];
         });
         check(`${w} ${lang}: нажатие на полосу — сама полоса (зоны соседей не накрывают)`, steal.length === 0, steal.slice(0, 4).join(", "));
         check(`${w} ${lang}: шрифт ≥ 13 px`, ux.tinyN === 0, ux.tiny.join("; "));
-        check(`${w} ${lang}: зоны нажатия ≥ 40 px`, ux.smallN === 0, ux.small.join("; "));
+        check(`${w} ${lang}: зоны нажатия ≥ 44 px`, ux.smallN === 0, ux.small.join("; "));
+        check(`${w} ${lang}: не больше 3 размеров шрифта`, ux.sizes.length <= 3, JSON.stringify(ux.sizes));
         if (world) {
           // Асфальт уже уложен (пр. Кабанбай Батыра, cf-w15-02): совет беречь покрытие, а не «перенести асфальт».
           await page.click('.wcal-cchip[data-conflict="cf-w15-02"]');
@@ -216,6 +238,22 @@ async function openCalendar(page, lang) {
           chips: document.querySelectorAll(".ag-calendar .wcal-cchip").length }));
         check("вкладка «Календарь работ» в «Ведомствах»: без своего заголовка, главная — «Добавить работу»",
           !emb.h2 && emb.main.length === 1 && /Добавить работу|Жұмыс қосу/.test(emb.main[0]) && emb.chips >= 5, JSON.stringify(emb));
+        // VISUAL_BRIEF §4 п. 3 на всём экране вкладки (шапка R17 + календарь), как visual_audit R10: не больше 3 размеров.
+        const tabSizes = await page.evaluate(() => {
+          const root = document.querySelector("#birge-screen:not([hidden])") || document.querySelector("[data-agencies]");
+          const sizes = new Map();
+          for (const el of root.querySelectorAll("*")) {
+            const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+            const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+            if (!own || r.width <= 1 || r.height <= 1 || cs.visibility === "hidden" || cs.display === "none" || r.bottom <= 0
+              || r.top >= innerHeight || el.closest("svg, .bk-sr-only, .sr-only, .visually-hidden")) continue;
+            const k = Math.round(parseFloat(cs.fontSize) * 2) / 2;
+            const who = el.closest(".wcal") ? "R12" : "R17";
+            sizes.set(k, (sizes.get(k) || new Set()).add(who));
+          }
+          return [...sizes.entries()].sort((a, b) => a[0] - b[0]).map(([k, v]) => k + " " + [...v].join("+"));
+        });
+        check("вкладка в «Ведомствах»: на экране не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)", tabSizes.length <= 3, tabSizes.join(", "));
         if (OUT) await page.screenshot({ path: path.join(OUT, "embedded_r17_tab_1366_ru.png") });
         await page.click('[role="tab"][data-tab="board"]');
         await page.waitForTimeout(300);
