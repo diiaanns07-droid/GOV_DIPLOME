@@ -6,7 +6,7 @@
  *
  * Проверяет чек-лист UX_BRIEF / UX_SPEC §8 на 1366×768 и 375×812, ru и kk:
  *  нет горизонтальной прокрутки и обрезанного текста, нет ключей перевода и технических слов,
- *  шрифт ≥ 14 px, зоны нажатия ≥ 48 px, 4 числа и сводка видны без прокрутки на ноутбуке,
+ *  шрифт ≥ 12 px (шкала эталона A; раунд 15 — проверки CLEAN_PASS обновлены под эталон), зоны нажатия ≥ 48 px, 4 числа и сводка видны без прокрутки на ноутбуке,
  *  состояния (загрузка, нет связи, ошибка сервера, пусто, карта жалоб не отвечает, неверная дата),
  *  клик по горячему месту → событие для карты, фильтр района и даты в адресе, смена языка без запроса,
  *  клавиатура (Tab до кнопки печати, видна рамка фокуса), вид для печати (PDF A4).
@@ -67,7 +67,8 @@ async function layoutProblems(page) {
       const box = el.getBoundingClientRect();
       if (box.width <= 1 && box.height <= 1) continue; // только для экранного диктора — на экране не видно
       const hasText = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
-      if (hasText && parseFloat(cs.fontSize) < 13) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
+      // Эталон A (13 окт): шкала 12/13/14/15/16/19/22/34 — мельче 12 px нет (раньше CLEAN_PASS требовал 13).
+      if (hasText && parseFloat(cs.fontSize) < 12) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
       if (hasText && el.scrollWidth > el.clientWidth + 1 && cs.overflow !== "visible" && el.clientWidth > 0)
         out.clipped.push(el.className + ":" + el.textContent.trim().slice(0, 30));
     }
@@ -114,7 +115,7 @@ async function shot(page, name, full) {
       check(`${tag}: нет ключей перевода на экране`, !KEYLIKE.test(text), (text.match(KEYLIKE) || [])[0]);
       check(`${tag}: нет технических слов`, !TECH.test(text), (text.match(TECH) || [])[0]);
       check(`${tag}: нет предупреждений [i18n] и ошибок JS`, logs.length === 0, logs);
-      check(`${tag}: шрифт не меньше 13 px (шкала R11: 13/15/17/22/28)`, lp.small.length === 0, lp.small.slice(0, 5));
+      check(`${tag}: шрифт не меньше 12 px (шкала эталона A: 12/13/14/15/16/19/22/34)`, lp.small.length === 0, lp.small.slice(0, 5));
       check(`${tag}: текст не обрезан`, lp.clipped.length === 0, lp.clipped.slice(0, 5));
       check(`${tag}: зоны нажатия не меньше 44 px`, lp.tiny.length === 0, lp.tiny.slice(0, 5));
       const nums = await page.$$eval(".akim-kpi .bk-kpi__value", (els) => els.map((e) => e.textContent));
@@ -139,23 +140,23 @@ async function shot(page, name, full) {
       });
       check(`${tag}: «${lang === "kk" ? "Деректер — үлгі" : "Данные — пример"}» — одна строка внизу, меток «Пример» нет (CLEAN_PASS п. 1)`,
         demo.tags === 0 && demo.footnotes === 1 && demo.note.startsWith(lang === "kk" ? "Деректер — үлгі" : "Данные — пример") && demo.bottom && demo.size === 13, demo);
-      // CLEAN_PASS п. 3: плитки без карточек — число 28/600, подпись 15 и ОДНА строка изменения на любой ширине;
-      // остальное («за 7 дней», «ждут ответа», «дольше всех», «служба сообщила…») — в «Подробнее».
+      // Эталон A (13 окт, раунд 14 FINAL-4): четыре числа — белые плитки, как в сводке «Сегодня в Астане»: число 22/600,
+      // подпись 12 и ОДНА строка изменения на любой ширине; остальное — в «Подробнее» (CLEAN_PASS п. 3 заменён эталоном).
       const kpiStyle = await page.$$eval(".akim-kpi", (cards) => cards.map((c) => {
         const cs = getComputedStyle(c), v = getComputedStyle(c.querySelector(".bk-kpi__value")), l = getComputedStyle(c.querySelector(".bk-kpi__label"));
         return { deltas: Array.from(c.querySelectorAll(".bk-kpi__delta")).filter((d) => d.getClientRects().length > 0).length,
                  card: cs.boxShadow !== "none" || parseFloat(cs.borderTopWidth) > 0 || !/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor),
                  num: v.fontSize + "/" + v.fontWeight, label: l.fontSize };
       }));
-      check(`${tag}: плитки без карточек, число 28/600, подпись 15, одна строка изменения (CLEAN_PASS п. 3)`,
-        kpiStyle.length === 4 && kpiStyle.every((k) => k.deltas === 1 && !k.card && k.num === "28px/600" && k.label === "15px"), kpiStyle);
+      check(`${tag}: плитки эталона A — белая плитка, число 22/600, подпись 12, одна строка изменения`,
+        kpiStyle.length === 4 && kpiStyle.every((k) => k.deltas === 1 && k.card && k.num === "22px/600" && k.label === "12px"), kpiStyle);
       const more = await page.evaluate(() => {
         const d = document.querySelector(".akim-kpis + .akim-kpi-more, .akim-kpi-more");
         return d ? { open: d.open, summary: d.querySelector("summary").textContent, rows: d.querySelectorAll("li").length } : null;
       });
       check(`${tag}: остальное о числах — в «${lang === "kk" ? "Толығырақ" : "Подробнее"}» (закрыто)`,
         !!more && !more.open && more.summary === (lang === "kk" ? "Толығырақ" : "Подробнее") && more.rows >= 3, more);
-      // CLEAN_PASS п. 4: сводка — абзац 17 без плашки, жирная (600) только главная фраза.
+      // Сводка — абзац 15 (шкала эталона A; CLEAN_PASS п. 4 было 17) без плашки, жирная (600) только главная фраза.
       const sum = await page.evaluate(() => {
         const sec = document.querySelector(".akim-summary"), p = document.querySelector(".akim-summary__text");
         const cs = getComputedStyle(sec);
@@ -164,9 +165,10 @@ async function shot(page, name, full) {
                  bold: Array.from(p.querySelectorAll("*")).filter((e) => parseInt(getComputedStyle(e).fontWeight, 10) >= 600).map((e) => e.className),
                  mainWeight: (document.querySelector(".akim-summary__main") && getComputedStyle(document.querySelector(".akim-summary__main")).fontWeight) || "" };
       });
-      check(`${tag}: сводка — абзац 17 px без плашки, жирная только главная фраза (CLEAN_PASS п. 4)`,
-        sum.size === "17px" && !sum.plaque && sum.mainWeight === "600" && sum.bold.length === 1, sum);
-      // CLEAN_PASS п. 1–2: заголовок 28/600, одна серая строка 13; поля даты и района — с заливкой; «Распечатать» — ghost.
+      check(`${tag}: сводка — абзац 15 px без плашки, жирная только главная фраза`,
+        sum.size === "15px" && !sum.plaque && sum.mainWeight === "600" && sum.bold.length === 1, sum);
+      // Заголовок 22/600 (эталон A; CLEAN_PASS было 28), одна серая строка 13; поля даты и района — с заливкой;
+      // «Распечатать» — ghost со значком.
       const top = await page.evaluate(() => {
         const t = document.querySelector(".akim__title"), cs = getComputedStyle(t);
         return { title: cs.fontSize + "/" + cs.fontWeight, metas: document.querySelectorAll(".akim__meta").length,
@@ -175,9 +177,9 @@ async function shot(page, name, full) {
                  print: (document.querySelector(".akim__print") || { className: "" }).className.includes("bk-btn--ghost"),
                  printIcon: !!document.querySelector(".akim__print svg") };
       });
-      check(`${tag}: заголовок 28/600, одна строка 13, поля с заливкой, «Распечатать» ghost со значком (CLEAN_PASS п. 1–2)`,
-        top.title === "28px/600" && top.metas === 1 && top.meta === "13px" && top.fields === 2 && top.print && top.printIcon, top);
-      // CLEAN_PASS §2: два начертания — 400 и 600.
+      check(`${tag}: заголовок 22/600, одна строка 13, поля с заливкой, «Распечатать» ghost со значком`,
+        top.title === "22px/600" && top.metas === 1 && top.meta === "13px" && top.fields === 2 && top.print && top.printIcon, top);
+      // Эталон A: начертания 400 / 500 / 600; 700 — только числа на плашках мест (CLEAN_PASS §2 было «400 и 600»).
       const weights = await page.evaluate(() => {
         const set = new Set();
         for (const el of document.querySelectorAll("#akim *")) {
@@ -186,7 +188,7 @@ async function shot(page, name, full) {
         }
         return Array.from(set).sort();
       });
-      check(`${tag}: два начертания — 400 и 600 (CLEAN_PASS §2)`, weights.every((w) => w === "400" || w === "600"), weights);
+      check(`${tag}: начертания эталона A — 400, 500, 600 (700 — числа на плашках)`, weights.every((w) => ["400", "500", "600", "700"].includes(w)), weights);
       // П. 14: у объектов полоса из 6 этапов (ui-kit .bk-stages--compact) и подпись «Этап N из 6: …».
       const stages = await page.$$eval(".akim-objects .akim-obj", (rows) => rows.map((r) => {
         const ol = r.querySelector(".bk-stages--compact");
