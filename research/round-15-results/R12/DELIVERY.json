@@ -1,32 +1,35 @@
 {
  "role": "R12",
  "round": 15,
- "delivery": 2,
+ "delivery": 3,
  "title": "Единый календарь работ и «копаем один раз»",
  "branch": "claude/great-newton-8k3474",
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "6b0831140278ef0a853a1815e52f5416a4bc7b76",
- "tested_sha": "6b0831140278ef0a853a1815e52f5416a4bc7b76",
+ "code_sha": "9090eb8d924923536f62edd48ad5f2a9049b0a52",
+ "tested_sha": "9090eb8d924923536f62edd48ad5f2a9049b0a52",
  "push_status": "OK",
  "changed_paths": [
+  "data/civic/astana/geo/works_fixture.json",
+  "engine/civic_geo/__init__.py",
+  "engine/civic_geo/__main__.py",
+  "engine/civic_geo/api.py",
+  "engine/civic_geo/build_works_fixture.py",
+  "engine/civic_geo/names.py",
+  "engine/civic_geo/segment.py",
   "engine/civic_geo/works.py",
   "engine/civic_geo/works_calendar.py",
-  "engine/civic_geo/build_works_fixture.py",
-  "engine/civic_geo/api.py",
-  "engine/civic_geo/__main__.py",
-  "data/civic/astana/geo/works_fixture.json",
-  "web/civic/works-calendar/works-calendar.js",
-  "web/civic/works-calendar/works-calendar.css",
   "tests/civic/R12/test_works.py",
-  "tests/civic/R12/works/works_calendar.test.cjs"
+  "tests/civic/R12/works/works_calendar.test.cjs",
+  "web/civic/works-calendar/works-calendar.css",
+  "web/civic/works-calendar/works-calendar.js"
  ],
  "integration": {
-  "R01_patch": "research/round-15-results/R12/patches/R01_works_calendar.patch (applies to e91acb69 and R01 0b76f9ed)",
+  "R01_patch": "research/round-15-results/R12/patches/R01_works_calendar_assets.patch — только ассеты (маршруты уже у R01 d987a112, staff=True на шлюзе); применяется к R01 856b3027",
   "routes": [
-   "GET works-calendar (raw, strip_prefix, staff_view)",
-   "GET works-conflicts (raw, strip_prefix, staff_view)"
+   "GET works-calendar (R01: raw, strip_prefix, staff=True, query rules)",
+   "GET works-conflicts (то же)"
   ],
   "assets": [
    "works-calendar/works-calendar.js",
@@ -34,32 +37,35 @@
   ],
   "shell": "registerScreen works-calendar (akimat) + registerLayer works-conflicts (off by default) — модуль сам",
   "i18n_keys": "research/round-15-results/R12/i18n_keys.json (69 ключей wcal.*, kk — черновик)",
-  "neighbours": "R06 works_v2 (проверено стыком с 1f76738a), R17 профили служб (если есть), R08/R17 conflicts_summary()"
+  "neighbours": "R01 856b3027 (шлюз, оболочка — проверено браузером), R06 works_v2 (1f76738a), R02 мир 4afd9bf9 (5/5 planned_conflicts, id cf-w15-*), R17 service_profiles (75300896, цвета полос), R08/R17 conflicts_summary()"
  },
  "tests": {
   "pytest_R12_all": {
    "status": "PASS",
-   "passed": 83,
+   "passed": 87,
    "failed": 0,
+   "skipped": 1,
+   "skip_reason": "test_demo_world_planned_conflicts_are_found — мира R02 нет в ветке R12 (проверен на копии мира R02: PASS)",
    "env": "cloud, Python 3, real OSM graph"
   },
   "pytest_works": {
    "status": "PASS",
-   "passed": 35,
+   "passed": 39,
    "failed": 0,
-   "covers": "линия ≤ 5 м от рёбер OSM; три вида конфликтов на синтетике; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API 401/400/200"
+   "skipped": 1,
+   "covers": "≤ 5 м от рёбер OSM; три вида конфликтов + вариант same_street; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API (шлюз R01 проверяет сотрудника, staff=False → 401, 400 на параметры); участок в узле без нулевого ребра; мир R02: даты day/season, отключения не работы, id planned_conflicts, seed_world"
   },
   "pytest_neighbours_using_civic_geo": {
    "status": "PASS",
-   "passed": 236,
+   "passed": 153,
    "failed": 0,
-   "files": "tests/civic/R12 + R09 test_r09v2_neighbours/security + R01 test_r01_api_v2 + R10 accuracy"
+   "files": "R09 test_r09v2_neighbours/security + R01 test_r01_api_v2 (в пакете)"
   },
   "browser_app": {
    "status": "PASS",
    "passed": 86,
    "failed": 0,
-   "how": "app.py + patch R01 (лаунчер стенда), CIVIC_DEMO=1, вход сотрудника, 1366/1024/375 × ru/kk + состояния: для сотрудников (кнопка «Войти»), не подключён, нет связи, ошибка, пусто, скелетон ≥ 150 мс",
+   "how": "сборка R01 856b3027 + пути R12 (worktree) + профили R17 75300896, CIVIC_DEMO=1, вход сотрудника через шлюз R01, 1366/1024/375 × ru/kk + все состояния",
    "result_file": "research/round-15-results/R12/browser_works_calendar.json"
   },
   "perf_60_works": {
@@ -74,6 +80,10 @@
   "real_works_LOCAL5": {
    "status": "NOT_RUN",
    "reason": "data/civic/astana/nura-real/records.csv нет ни в одной ветке origin (15 окт)"
+  },
+  "r02_world": {
+   "status": "PASS",
+   "note": "мир R02 4afd9bf9: найдены все 5 planned_conflicts, 0 лишних; id cf-w15-01…05; 39 работ на улице, 4 отключения не входят"
   }
  },
  "screens": {
@@ -95,7 +105,7 @@
    "map_375_ru.png",
    "map_375_kk.png"
   ],
-  "note": "Облако без интернета: подложка OpenFreeMap не грузится, карта — упрощённый фон (кадры с настоящей картой — LOCAL-12).",
+  "note": "Кадры — сборка R01 856b3027 + R12 9090eb8d + профили R17 (цвета служб). Облако без интернета: подложка OpenFreeMap не грузится, карта — упрощённый фон (настоящий вид — LOCAL-12).",
   "states": [
    "state_staff_1366_ru.png",
    "state_not_ready_1366_ru.png",
@@ -109,9 +119,9 @@
   "Работы в демо — синтетика фикстуры R12 (15 работ, Нура), пока у R06 нет работ v2 с участками и нет демо-мира R02; помечены «Пример».",
   "Реальные работы Нуры (LOCAL-5) не привязаны: файла records.csv нет.",
   "Работа без участка (только точка) — «примерное место», в конфликтах не участвует (честно, без уверенной линии).",
-  "Профили служб R17 ещё не поставлены — цвета служб запасные R12.",
   "kk-тексты — черновик R12 (на проверку R11 и владельцу).",
-  "Пункт 4: служба, вид и участок при создании работы — в форме R06 «Работы и отключения» (их путь, ветка 1aff1f47; участок — R12 /street-segment). Объекты v1 редактора R12 в календарь не входят: схема v1 у R06 не хранит службу (и это капитальные объекты с этапами, не работы служб). Из календаря — «Добавить работу» → форма R06."
+  "Пункт 4: служба, вид и участок при создании работы — в форме R06 «Работы и отключения» (их путь, ветка 1aff1f47; участок — R12 /street-segment). Объекты v1 редактора R12 в календарь не входят: схема v1 у R06 не хранит службу (и это капитальные объекты с этапами, не работы служб). Из календаря — «Добавить работу» → форма R06.",
+  "R02 ожидает cf-w15-03 medium, R12 по правилу даёт high (раскопка по тем же рёбрам, что новый асфальт) — предложено R02 в INTEGRATION §3."
  ],
  "next_step": "Круги: AMENDMENTS → соседи (R01 patch, R02 world works, R06 seed_world, R17 профили, R11 ключи); импорт LOCAL-5 при появлении файла; визуал по VISUAL_BRIEF + П1.",
  "amendments": {

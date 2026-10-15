@@ -24,15 +24,17 @@ R12 · раунд 15 · «Календарь работ» и «копаем од
                                                               # период, фильтры, детерминизм, 60 работ < 300 мс, API 401/400
    python3 -m pytest -q tests/civic/R12                      # всё R12 (регресс QR-паспорта, целей, поиска, точности)
 
-3. СТЕНД В ОБЛАКЕ (настоящее приложение; маршруты — patch R01 из INTEGRATION.txt §1)
+3. СТЕНД В ОБЛАКЕ (настоящее приложение — сборка R01 с путями R12; INTEGRATION.txt §1)
    mkdir -p /tmp/birge
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
    printf 'Kokterek-Nura-71-Stand\nKokterek-Nura-71-Stand\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 \
        create-editor operator --password-stdin          # пароль ≥ 12 знаков и без логина в нём
-   git apply research/round-15-results/R12/patches/R01_works_calendar.patch   # если в сборке R01 его ещё нет
+   # сборка R01 (маршруты works-calendar уже в его ветке); ассеты R12, если их ещё нет в сборке:
+   git apply research/round-15-results/R12/patches/R01_works_calendar_assets.patch
    CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655
+   # демо-мир R02: + CIVIC_DEMO_WORLD=1 (R01 засевает мир; календарь берёт id конфликтов мира, сцена 8 = cf-w15-01)
    → http://127.0.0.1:8655/ → аватар → «Для сотрудников» (operator) → «Ещё» → «Календарь работ».
    Браузерная проверка (по одной, COMMON):
    NODE_PATH=$(npm root -g) node tests/civic/R12/works/works_calendar.test.cjs --url http://127.0.0.1:8655 \

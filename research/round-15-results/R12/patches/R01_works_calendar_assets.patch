@@ -1,6 +1,8 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index ec1cac00..6acad62d 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
-@@ -117,6 +117,8 @@
+@@ -118,6 +118,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                  "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
                  # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
                  "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
@@ -9,27 +11,8 @@
                  # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
                  "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
  # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
-@@ -707,6 +709,9 @@
-     ("GET", ("yard",), "geo.yard"),
-     ("GET", ("geo", "status"), "geo.status"),
-     ("GET", ("target",), "geo.target"),  # R12 волна 2 п. 6: QR-паспорт — что за объект по id
-+    # R12 раунд 15: «Календарь работ» и «копаем один раз» — только сотрудник (staff_view: шлюз передаёт staff=True).
-+    ("GET", ("works-calendar",), "geo.works_calendar"),
-+    ("GET", ("works-conflicts",), "geo.works_conflicts"),
-     ("GET", ("proposals",), "proposals.list"),
-     ("POST", ("proposals",), "proposals.create"),
-     # R06 @ 7031afa: точные пути (summary, lagging) — раньше шаблонов с {id}.
-@@ -765,6 +770,10 @@
-     "nearby.subscribe": V2Handler("R08", ("ui.civic_akim.api",), "nearby_subscribe"),
-     **{key: V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True)
-        for key in ("geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status", "geo.target")},
-+    # R12 раунд 15: календарь и конфликты работ. staff_view=True — шлюз проверяет сессию R02 и передаёт staff=True;
-+    # без сессии модуль отвечает 401 staff_required (данные служб — только сотруднику, CONTRACT §7).
-+    **{key: V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True, staff_view=True)
-+       for key in ("geo.works_calendar", "geo.works_conflicts")},
-     "proposals.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_proposals"),
-     "proposals.create": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "create_proposal", staff=True),
-     "proposals.vote": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "vote_proposal"),
+diff --git a/web/index.html b/web/index.html
+index 78455458..e362dd50 100644
 --- a/web/index.html
 +++ b/web/index.html
 @@ -31,6 +31,7 @@
