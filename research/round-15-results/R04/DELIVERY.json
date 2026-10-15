@@ -1,13 +1,13 @@
 {
  "role": "R04",
  "round": 15,
- "delivery": "D1.4 (для B1 R01, 16 окт 14:00)",
+ "delivery": "D1.5 (для B1 R01, 16 окт 14:00)",
  "branch": "claude/gifted-maxwell-i66wwi",
  "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
  "restored_from": null,
  "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
- "code_sha": "2ee5d48dfcb3760ae2bd45c485e17d8813a234bc",
- "tested_sha": "2ee5d48dfcb3760ae2bd45c485e17d8813a234bc",
+ "code_sha": "0affd9d01611b2ff44539eb106d04fda11827cfa",
+ "tested_sha": "0affd9d01611b2ff44539eb106d04fda11827cfa",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_replies/__init__.py",
@@ -50,10 +50,10 @@
  "tests": {
   "R04_round15_pytest": {
    "status": "PASS",
-   "passed": 89,
+   "passed": 90,
    "failed": 0,
    "cmd": "pytest -q tests/civic/R04/round15",
-   "sha": "2ee5d48dfcb3760ae2bd45c485e17d8813a234bc"
+   "sha": "0affd9d01611b2ff44539eb106d04fda11827cfa"
   },
   "R04_round14_pytest": {
    "status": "PASS",
@@ -174,6 +174,13 @@
    "sha": "c53832352dcf64147905978cccd967d7aea044a9",
    "env": "ветка R01 claude/brave-fermi-nhzetj @ 2bd5bb5e + ui/civic_ml_api и ml/civic_replies R04, демо-база, operator",
    "cmd": "R04_STAND=http://127.0.0.1:8656 python3 -B tests/civic/R04/round15/http_check_r04.py"
+  },
+  "demo_world_R02": {
+   "status": "PASS",
+   "world": "R02 world_v1.json schema 1.1 @ 811f6c78 (743 жалобы, 40 совместных)",
+   "route_vs_world_services": "742/743 (единственная разница — жалоба сцены 8: совместное исполнение по сценарию ещё не принято, route_hint мира = water + road, как у R04)",
+   "reply_draft_all_world_records": "743 × ru/kk через хранилище R09 (claude/quirky-ptolemy-k3z2mj @ 97342bdf, seed_world): ошибок 0, длина ≤ 273 (поле 320), p50 0.13 мс",
+   "sha": "0affd9d01611b2ff44539eb106d04fda11827cfa"
   }
  },
  "screens": [],
