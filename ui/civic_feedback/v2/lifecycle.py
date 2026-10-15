@@ -161,12 +161,38 @@ def deadline(record: dict, now: datetime) -> dict | None:
     return workdays.deadline_info(rec.parse_iso(record.get("due_at")), now, done=answered)
 
 
+# Раунд 15 (CONTRACT §5.1): ведущая служба, выбранная явно — передача, совместное исполнение (части служб), демо-мир.
+# «table» (служба по таблице на момент подачи) явной не считается: такая жалоба следует за таблицей R08, как в FINAL-4.
+EXPLICIT_SERVICE_SOURCES = frozenset({"staff", "handoff", "joint", "world"})
+
+
+def explicit_service(record: dict) -> str | None:
+    """id явной ведущей службы (часть role=lead или service с явным источником) или None — «по таблице»."""
+    for part in record.get("services") or []:
+        if isinstance(part, dict) and part.get("role") == "lead" and part.get("service") in SERVICES:
+            return part["service"]
+    if record.get("service_source") in EXPLICIT_SERVICE_SOURCES and record.get("service") in SERVICES:
+        return record["service"]
+    return None
+
+
+def passport_assignee(record: dict, assignee_lookup=None) -> dict:
+    """Кто отвечает (ведущая служба) — то же, что «Передано: …» в паспорте: {assignee_id, assignee, assignee_kk,
+    assignee_custom, assignee_source}. Для R17 и совместного исполнения (joint.py)."""
+    return _assignee(record, assignee_lookup)
+
+
 def _assignee(record: dict, assignee_lookup) -> dict:
-    """Кто отвечает: выбор сотрудника (id из SERVICES) → таблица R08 с правками акимата → таблица R09."""
+    """Кто отвечает: явная ведущая служба (передача, совместное исполнение, демо-мир) → выбор сотрудника (id из
+    SERVICES) → таблица R08 с правками акимата → таблица R09."""
     passport = record.get("passport") or {}
     category, subtopic = record.get("category"), record.get("subtopic")
     sid, names, source = passport.get("assignee_id"), None, None
-    if sid in SERVICES:
+    explicit = explicit_service(record)
+    if explicit:
+        sid = explicit
+        source = "world" if record.get("service_source") == "world" and not passport.get("assignee_id") else "staff"
+    elif sid in SERVICES:
         source = "staff"
     elif passport.get("assignee"):                        # свободный текст старых записей
         sid, names, source = None, {"ru": passport["assignee"], "name_edited": True}, "staff"
@@ -236,6 +262,8 @@ def history(record: dict) -> list[dict]:
     for update in record.get("updates") or []:
         if update.get("kind") in ("fixed", "reopened", "passport", "note"):
             out.append({"at": update["at"], "kind": update["kind"], "text": update.get("text")})
+        elif update.get("kind") in JOINT_UPDATE_KINDS:
+            out.append(_joint_event(update))
     resolution = record.get("resolution") or {}
     if resolution.get("verified_at"):
         out.append({"at": resolution["verified_at"], "kind": "verified"})
@@ -244,6 +272,23 @@ def history(record: dict) -> list[dict]:
     group = {"created": 0, "status": 1, "verified": 3}
     out.sort(key=lambda e: (e["at"], group.get(e["kind"], 2)))
     return out
+
+
+# Раунд 15: строки ленты о службах (joint_store): «Передано: Водоканал», «Работают 2 службы», «Водоканал — сделано».
+# Без причин передач и ролей сотрудников — их нет в самих строках.
+JOINT_UPDATE_KINDS = ("handoff", "services", "part")
+
+
+def _joint_event(update: dict) -> dict:
+    event = {"at": update["at"], "kind": update["kind"], "text": update.get("text")}
+    if update["kind"] in ("handoff", "part") and update.get("service") in SERVICES:
+        event["service"] = update["service"]
+    if update["kind"] == "part" and update.get("status"):
+        event["part_status"] = update["status"]
+    if update["kind"] == "services":
+        event["services"] = [sid for sid in update.get("services") or [] if sid in SERVICES]
+        event["added"] = [sid for sid in update.get("added") or [] if sid in SERVICES]
+    return event
 
 
 # ---------------------------------------------------------------- «что изменилось с вашим участием» (волна 2, п. 10)
@@ -262,6 +307,8 @@ def _events(record: dict) -> list[dict]:
     for update in record.get("updates") or []:
         if update.get("kind") in ("note", "passport"):
             out.append({"at": update["at"], "kind": update["kind"], "text": update.get("text")})
+        elif update.get("kind") in JOINT_UPDATE_KINDS:
+            out.append(_joint_event(update))
     resolution = record.get("resolution") or {}
     if resolution.get("verified_at"):
         out.append({"at": resolution["verified_at"], "kind": "verified"})

@@ -22,10 +22,12 @@ from pathlib import Path
 from typing import Callable
 
 from . import categories
+from . import joint
 from . import lifecycle
 from . import photos as photos_mod
 from . import record as rec
 from . import separate as sep
+from .joint_store import JointMixin
 from .record import RecordError
 
 SCHEMA_SQL = """
@@ -130,7 +132,7 @@ class Conflict(RecordError):
     pass
 
 
-class ComplaintStore(sep.SeparateMixin):
+class ComplaintStore(sep.SeparateMixin, JointMixin):
     # «Это разные проблемы» (separate, merged, текст «Я тоже») — separate.py (R04 + R09, волна мелочей п. 9).
     """Потокобезопасно: одно соединение под RLock (как FeedbackService v1)."""
 
@@ -164,6 +166,8 @@ class ComplaintStore(sep.SeparateMixin):
             # Волна 2 (R11 IA_WAVE2 §2.1): «Отписаться» — голос остаётся, обновления и «Мои обращения» — нет.
             if "muted" not in columns:
                 self._db.execute("ALTER TABLE complaint_metoo_v2 ADD COLUMN muted INTEGER NOT NULL DEFAULT 0")
+        # Раунд 15: записи v2 → v2.1 (service, services, handoffs, route_hint) — один раз на базу, без потерь.
+        self.migrate_v21()
         # decision_lookup(complaint_id) -> {option, at} | None — выбор акима (R08 decisions.choice_for).
         self.decision_lookup = None
         # nearby_lookup(device_id, since) -> [карточки «Рядом»] — подписки R08 для «Что изменилось».
@@ -171,6 +175,9 @@ class ComplaintStore(sep.SeparateMixin):
         # assignee_lookup(category, subtopic) — таблица R08 (подключает R01): лучше routing.service_for
         # ({"id","ru","kk","name_edited"}), можно и routing.assignee_lookup (строка). None — таблица R09.
         self.assignee_lookup = None
+        # route_lookup(text=, category=, subtopic=, point=) — R04 ui.civic_ml_api.route (раунд 15): подсказка
+        # «Похоже, нужны 2 службы» сохраняется в route_hint при подаче. None — подсказки нет, всё работает.
+        self.route_lookup = None
 
     def close(self) -> None:
         with self._lock:
@@ -199,7 +206,9 @@ class ComplaintStore(sep.SeparateMixin):
             self._db.execute("COMMIT")
 
     def _save(self, db, record: dict, *, device_hash=None, request_id=None, legacy_v1_id=None) -> None:
-        """Вставить или обновить запись: JSON + индексные колонки одним оператором."""
+        """Вставить или обновить запись: JSON + индексные колонки одним оператором.
+        Раунд 15: каждая сохраняемая запись — v2.1 (joint.upgrade только добавляет недостающие поля)."""
+        joint.upgrade(record)
         created = rec.parse_iso(record["created_at"])
         values = (record["id"], record["code"], created.timestamp(), record["point"][0], record["point"][1],
                   record["category"], record["status"], record["target"]["kind"], record["target"]["id"],
@@ -260,6 +269,16 @@ class ComplaintStore(sep.SeparateMixin):
                 except Exception:  # чужой подписчик не ломает приём жалобы
                     pass
 
+    def _route_hint(self, text, category, subtopic, point) -> dict | None:
+        """Подсказка R04 route() для новой жалобы или None (R04 нет, модель не готова, ошибка — жалоба важнее)."""
+        if self.route_lookup is None:
+            return None
+        try:
+            found = self.route_lookup(text=text, category=category, subtopic=subtopic, point=point)
+        except Exception:  # noqa: BLE001 — подсказка не причина не принять жалобу
+            return None
+        return joint.parse_route_hint(found)
+
     def subscribe(self, listener: Callable[[dict], None]) -> Callable[[], None]:
         """Подписка на события created / metoo / status / duplicate. Возвращает функцию отписки."""
         self._listeners.append(listener)
@@ -304,6 +323,10 @@ class ComplaintStore(sep.SeparateMixin):
         urgent = lifecycle.emergency(category, subtopic, text)
         if urgent is not None:
             urgent["banner_shown"] = payload.get("emergency_shown") is True
+        # Раунд 15 (CONTRACT §5.1): ведущая служба по таблице R08/R09 на момент подачи (следует за таблицей, пока
+        # сотрудник не передаст) и подсказка R04 «нужны 2 службы» — вызов в процессе, без R04 подсказки просто нет.
+        lead = joint.lead_service({"category": category, "subtopic": subtopic}, self.assignee_lookup)
+        hint = self._route_hint(text, category, subtopic, point)
         now = self._now()
         created_at = rec.iso(now)
         with self._tx() as db:
@@ -331,6 +354,7 @@ class ComplaintStore(sep.SeparateMixin):
                 "status_history": [{"at": created_at, "status": "new"}],
                 "metoo": 0, "duplicate_of": None, "demo": bool(demo),
                 "due_at": rec.due_at(created_at, category),
+                "service": lead, "service_source": "table", "services": [], "handoffs": [], "route_hint": hint,
                 "schema": rec.SCHEMA,
             }
             flag = rec.moderation(record.get("text"))   # п. 8 (R04): акимат видит оригинал с пометкой
@@ -396,30 +420,41 @@ class ComplaintStore(sep.SeparateMixin):
                 raise RecordError("Такой переход статуса недоступен.",
                                   {"status": f"из «{record['status']}» можно: "
                                              + ", ".join(sorted(rec.TRANSITIONS[record['status']]))})
-            entry = {"at": now, "status": status}
-            if actor:
-                entry["by"] = str(actor)[:80]
-            if isinstance(note, str) and note.strip():
-                entry["note"] = note.strip()[:500]
-            if status == "fixed":
-                after = self._photo_ids(db, record["id"], "after", photos)
-                record["resolution"] = lifecycle.new_resolution(record.get("resolution"), now, what_done, actor, after)
-                # R15-S24: кто нажал «Я тоже» до этой минуты, может проверить ремонт; кто после — нет. Порядок вставки
-                # (rowid) точнее времени: «Я тоже» и «исправлено» могут прийти в одну секунду.
-                record["resolution"]["metoo_upto"] = db.execute(
-                    "SELECT COALESCE(MAX(rowid), 0) FROM complaint_metoo_v2").fetchone()[0]
-                db.execute("UPDATE complaint_photos_v2 SET round = ? WHERE complaint_id = ? AND kind = 'after' "
-                           "AND round IS NULL", (record["resolution"]["round"], record["id"]))
-                self._add_update(record, now, "fixed", what_done)
-            elif record["status"] == "fixed" and record.get("resolution"):
-                # Служба сама вернула в работу (не жители): раунд проверки закрыт без итога.
-                record["resolution"]["state"] = "withdrawn"
-            record["status"] = status
-            record["status_history"].append(entry)
+            # Раунд 15: у совместной жалобы статус ведущей части следует за статусом жалобы; «исправлено» — только
+            # когда остальные службы закончили (joint_store.JointMixin._lead_follows_status).
+            what_done = self._lead_follows_status(record, status, now, what_done)
+            self._apply_status(db, record, status, now, actor=actor, note=note, what_done=what_done, photos=photos)
             self._save(db, record)
             event = self._event(db, "status", record, now)
         self._emit([event])
         return record
+
+    def _apply_status(self, db, record: dict, status: str, now: str, *, actor=None, note=None, what_done=None,
+                      photos=None, extra: dict | None = None) -> None:
+        """Один шаг статуса внутри транзакции: история, раунд «служба сообщила об устранении», фото «после».
+        Общий для set_status и частей служб (совместное исполнение: «исправлено», когда все части сделаны)."""
+        entry = {"at": now, "status": status}
+        if actor:
+            entry["by"] = str(actor)[:80]
+        if isinstance(note, str) and note.strip():
+            entry["note"] = note.strip()[:500]
+        if extra:
+            entry.update(extra)
+        if status == "fixed":
+            after = self._photo_ids(db, record["id"], "after", photos)
+            record["resolution"] = lifecycle.new_resolution(record.get("resolution"), now, what_done, actor, after)
+            # R15-S24: кто нажал «Я тоже» до этой минуты, может проверить ремонт; кто после — нет. Порядок вставки
+            # (rowid) точнее времени: «Я тоже» и «исправлено» могут прийти в одну секунду.
+            record["resolution"]["metoo_upto"] = db.execute(
+                "SELECT COALESCE(MAX(rowid), 0) FROM complaint_metoo_v2").fetchone()[0]
+            db.execute("UPDATE complaint_photos_v2 SET round = ? WHERE complaint_id = ? AND kind = 'after' "
+                       "AND round IS NULL", (record["resolution"]["round"], record["id"]))
+            self._add_update(record, now, "fixed", what_done)
+        elif record["status"] == "fixed" and record.get("resolution"):
+            # Служба сама вернула в работу (не жители): раунд проверки закрыт без итога.
+            record["resolution"]["state"] = "withdrawn"
+        record["status"] = status
+        record["status_history"].append(entry)
 
     # ------------------------------------------------------------ жители проверяют ремонт (волна 2, п. 1)
     def _participant(self, db, record: dict, device: str) -> str | None:
@@ -538,6 +573,7 @@ class ComplaintStore(sep.SeparateMixin):
                 record["status"] = "in_progress"
                 record["status_history"].append({"at": now, "status": "in_progress", "reopened_by_residents": True})
                 self._add_update(record, now, "reopened", None)
+                self._lead_reopened(record, now)   # совместная жалоба: ведущая служба снова «в работе»
                 events += ["reopened", "status"]
             self._save(db, record)
             emitted = [self._event(db, kind, record, now) for kind in events]
@@ -550,7 +586,8 @@ class ComplaintStore(sep.SeparateMixin):
         """Одна лента обновлений на жалобу: её видят автор и все «Я тоже» (одно действие — всем)."""
         record.setdefault("updates", []).append({"at": at, "kind": kind, "text": text})
 
-    def update_passport(self, complaint_id: str, fields: dict, *, actor: str | None = None) -> tuple[dict, int]:
+    def update_passport(self, complaint_id: str, fields: dict, *, actor: str | None = None,
+                        role: str | None = None) -> tuple[dict, int]:
         """Сотрудник заполняет паспорт (R11 IA_WAVE2 §2.3 — 3 поля): service (id службы из lifecycle.SERVICES,
         пусто = по таблице R08/R09), next_step, fix_eta (YYYY-MM-DD или пусто = «пока не определено»); при задержке
         ещё delay_reason, temp_measure, next_update_at (YYYY-MM-DD). -> (запись, сколько человек увидят обновление)."""
@@ -583,6 +620,7 @@ class ComplaintStore(sep.SeparateMixin):
             record = self._load(db, complaint_id)
             if record is None:
                 raise NotFound("Обращение не найдено.", {"id": complaint_id})
+            lead_before = joint.lead_service(record, self.assignee_lookup)
             passport = dict(record.get("passport") or {})
             for name in ("next_step", "fix_eta"):
                 if name in fields:
@@ -604,6 +642,9 @@ class ComplaintStore(sep.SeparateMixin):
             if actor:
                 passport["by"] = str(actor)[:80]
             record["passport"] = passport
+            if "service" in fields:
+                # Раунд 15: выбор службы в паспорте — та же передача (части служб и журнал передач для R17).
+                self._passport_service(record, clean["service"], lead_before, now, role)
             summary = clean.get("next_step") or clean.get("delay_reason")
             self._add_update(record, now, "passport", summary)
             self._save(db, record)
@@ -937,6 +978,24 @@ class ComplaintStore(sep.SeparateMixin):
         return [r for r in self.list(status="new") if rec.is_overdue(r, now)]
 
     # ------------------------------------------------------------ импорт (миграция, демо)
+    def migrate_v21(self, *, force: bool = False) -> dict:
+        """Записи v2 → v2.1 в этой базе: только добавляются поля CONTRACT §5.1 (joint.upgrade), ничего не удаляется.
+        Один раз на базу (отметка в complaint_meta_v2); повтор — ничего не делает. -> {"upgraded", "total"}."""
+        with self._tx() as db:
+            mark = db.execute("SELECT value FROM complaint_meta_v2 WHERE key = 'migrated_v21'").fetchone()
+            if mark and not force:
+                return {"upgraded": 0, "total": None, "at": mark[0]}
+            upgraded = total = 0
+            for row in db.execute("SELECT record_json FROM complaints_v2").fetchall():
+                total += 1
+                record = json.loads(row[0])
+                if joint.upgrade(record):
+                    self._save(db, record)
+                    upgraded += 1
+            db.execute("INSERT OR REPLACE INTO complaint_meta_v2 (key, value) VALUES ('migrated_v21', ?)",
+                       (rec.iso(self._now()),))
+        return {"upgraded": upgraded, "total": total}
+
     def reset_demo_record(self, record: dict, metoo_devices: list[tuple[str, str]] | None = None) -> str:
         """Демо-запись (demo: true) — в исходное состояние при каждом запуске демо-сборки (R10 B-048, B-049):
         статус «Новое», исходные синтетические «Я тоже», время — от текущего запуска. После репетиции (исправлено,

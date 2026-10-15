@@ -30,6 +30,11 @@ handle(...) возвращает None для чужих путей — шлюз 
   POST /complaints/{id}/separate         «Это разные проблемы»: id дубля (c-…) или «Я тоже» (mt-…) (сотрудник, R04)
   GET  /complaints/inbox?tab=            акимат: цели с открытыми обращениями по вкладкам (new, in_progress,
                                          waiting_check, overdue, reopened) — экран «Обращения» (#complaints)
+Раунд 15 (CONTRACT §5.1, §7) — обращение для нескольких служб, только сотрудник (сессия R02 + CSRF):
+  POST /complaints/{id}/handoff          «Передать в другую службу» {to, reason | reason_code, keep?, expected_lead?}
+  POST /complaints/{id}/services         «Совместное исполнение» {services: [{service, role: lead|partner}], reason?}
+  POST /complaints/{id}/part             статус части службы {service, status: todo|in_progress|done, note?, expected?}
+  GET  /complaints/inbox?service=water   «Обращения» одной службы (ссылка из «Штаба ведомств» R17)
 """
 
 from __future__ import annotations
@@ -44,7 +49,7 @@ from urllib.parse import parse_qs, unquote, urlsplit
 import base64
 import binascii
 
-from . import categories, lifecycle
+from . import categories, joint, lifecycle
 from . import record as rec
 from .record import RecordError
 from .store import ComplaintStore, Conflict, LimitError, NotFound
@@ -97,6 +102,13 @@ def _actor(principal) -> str | None:
     if isinstance(principal, dict):
         return principal.get("username") or principal.get("name")
     return getattr(principal, "username", None)
+
+
+def _role(principal) -> str | None:
+    """Роль сотрудника для журнала передач (CONTRACT §10: «кто — роль, а не имя»)."""
+    if isinstance(principal, dict):
+        return principal.get("role")
+    return getattr(principal, "role", None)
 
 
 class ComplaintsV2Service:
@@ -163,7 +175,8 @@ class ComplaintsV2Service:
             action = {"metoo": self._metoo, "status": self._status, "duplicate": self._duplicate,
                       "verify": self._verify, "passport": self._passport, "update": self._update,
                       "unduplicate": self._unduplicate, "photos": self._photo_start,
-                      "unsubscribe": self._unsubscribe, "separate": self._separate}.get(parts[2])
+                      "unsubscribe": self._unsubscribe, "separate": self._separate,
+                      "handoff": self._handoff, "services": self._services, "part": self._part}.get(parts[2])
             if action:
                 return need(("POST",), action, parts[1])
         if len(parts) == 4 and parts[2] == "photos":
@@ -238,11 +251,14 @@ class ComplaintsV2Service:
 
     # ------------------------------------------------------------ проекции волн 1–2
     def _public(self, record):
-        """Карта и чужие жители: + уточнение, состояние проверки ремонта и heat_state для R07 (без текстов и имён)."""
+        """Карта и чужие жители: + уточнение, состояние проверки ремонта и heat_state для R07 (без текстов и имён).
+        Раунд 15: какие службы работают и «Передано: …» — без заметок служб и причин передач."""
         view = rec.public_view(record)
         view["subtopic"] = record.get("subtopic")
         view["resolution"] = lifecycle.public_resolution(record)
         view["heat_state"] = lifecycle.heat_state(record, self.store._now())
+        view["service"] = joint.lead_service(record, self.store.assignee_lookup)
+        view["joint"] = joint.resident_parts(record, self.store.assignee_lookup)
         return view
 
     def _resident(self, record, relation, device):
@@ -257,6 +273,10 @@ class ComplaintsV2Service:
         else:
             view["steps"] = rec.resident_steps(record)
         view["relation"] = relation
+        # Раунд 15: «Работают 2 службы: Водоканал — сделано · Дорожная служба — в работе»; автор и «Я тоже» видят и
+        # заметки служб («Трубу заменили»), как «что сделали». Причины передач и роли сотрудников — нет.
+        view["service"] = joint.lead_service(record, self.store.assignee_lookup)
+        view["joint"] = joint.resident_parts(record, self.store.assignee_lookup, participant=True)
         view["resolution"] = lifecycle.participant_resolution(record)
         view["passport"] = lifecycle.passport_view(record, self.store._now(), self.store.assignee_lookup)
         view["passport"].pop("decision_choice", None)   # выбор акима — служебное (R15-S28: кто выбрал — не наружу)
@@ -279,6 +299,9 @@ class ComplaintsV2Service:
         # «Увидят N человек» до действия (R11 §2.3: fix.will_see) — автор и «Я тоже» без «Отписаться».
         view["subscribers"] = self.store.subscribers(record["id"])
         view["inbox_tab"] = lifecycle.inbox_tab(record, now)
+        # Раунд 15: ведущая служба (как в паспорте) и части служб, передачи с причинами, подсказка R04.
+        view["service"] = joint.lead_service(record, self.store.assignee_lookup)
+        view["joint"] = joint.staff_parts(record, self.store.assignee_lookup)
         return view
 
     # ------------------------------------------------------------ обработчики
@@ -415,9 +438,24 @@ class ComplaintsV2Service:
         tab = params.get("tab") or None
         if tab is not None and tab not in lifecycle.INBOX_TABS:
             raise ApiError(422, "invalid", "Неизвестная вкладка.", {"tab": ",".join(lifecycle.INBOX_TABS)})
+        service = params.get("service") or None
+        if service is not None and service not in lifecycle.SERVICES:
+            raise ApiError(422, "invalid", "Неизвестная служба.", {"service": ",".join(lifecycle.SERVICES)})
         records = self.store.list(status=list(rec.OPEN_STATUSES) + ["fixed"])
+        lookup = self.store.assignee_lookup
+        parts_of = {r["id"]: joint.parts(r, lookup) for r in records}
+        if service is not None:   # «Обращения» одной службы (R17 «Штаб ведомств» → строка службы)
+            records = [r for r in records if any(p["service"] == service for p in parts_of[r["id"]])]
         data = lifecycle.inbox(records, self.store._now(), tab)
+        # Раунд 15: у группы — службы самой срочной жалобы (ведущая первой) и признак совместного исполнения.
+        for group in data["items"]:
+            top = parts_of.get(group["complaints"][0]["id"]) if group["complaints"] else None
+            group["services"] = [{"service": p["service"], "role": p["role"], "status": p["status"]} for p in top or []]
+            group["joint"] = len(group["services"]) > 1
+            for item in group["complaints"]:
+                item["lead"] = (parts_of.get(item["id"]) or [{}])[0].get("service")
         data["tab"] = tab
+        data["service"] = service
         return _ok(200, data)
 
     # ------------------------------------------------------------ «Это разные проблемы» (п. 9, R04 + R09)
@@ -450,7 +488,36 @@ class ComplaintsV2Service:
 
     def _passport(self, complaint_id, *, params, body, principal, context):
         self._require_staff(principal, context)
-        record, notified = self.store.update_passport(complaint_id, self._json(body), actor=_actor(principal))
+        record, notified = self.store.update_passport(complaint_id, self._json(body), actor=_actor(principal),
+                                                      role=_role(principal))
+        return _ok(200, {"complaint": self._staff(record), "notified": notified})
+
+    # ------------------------------------------------------------ раунд 15: несколько служб (CONTRACT §5.1, §7)
+    def _handoff(self, complaint_id, *, params, body, principal, context):
+        self._require_staff(principal, context)
+        data = self._json(body)
+        record, notified = self.store.handoff(
+            complaint_id, data.get("to"), data.get("reason"), reason_code=data.get("reason_code"),
+            keep=data.get("keep") is True, expected_lead=data.get("expected_lead"),
+            actor=_actor(principal), role=_role(principal))
+        return _ok(200, {"complaint": self._staff(record), "notified": notified})
+
+    def _services(self, complaint_id, *, params, body, principal, context):
+        self._require_staff(principal, context)
+        data = self._json(body)
+        record, notified = self.store.set_services(
+            complaint_id, data.get("services"), reason=data.get("reason"), expected_lead=data.get("expected_lead"),
+            actor=_actor(principal), role=_role(principal))
+        return _ok(200, {"complaint": self._staff(record), "notified": notified})
+
+    def _part(self, complaint_id, *, params, body, principal, context):
+        self._require_staff(principal, context)
+        data = self._json(body)
+        if not isinstance(data.get("service"), str):
+            raise ApiError(422, "invalid", "Укажите службу.", {"service": "id службы"})
+        record, notified = self.store.set_part(
+            complaint_id, data["service"], data.get("status"), data.get("note"), expected=data.get("expected"),
+            actor=_actor(principal), role=_role(principal))
         return _ok(200, {"complaint": self._staff(record), "notified": notified})
 
     def _update(self, complaint_id, *, params, body, principal, context):
