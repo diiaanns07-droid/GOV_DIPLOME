@@ -196,15 +196,16 @@ class HeatService:
         на давние жалобы, исправленные недавно. Одно правило для /heat и «Хроники» (replay.py)."""
         return timedelta(days=max(days, self.config.fixed_days + days) + REPAIR_LOOKBACK_DAYS)
 
-    def _compute(self, *, now, days, category, district, bbox, records=None):
-        """records — для «Хроники» (replay.py): записи, «отмотанные» к моменту now; иначе — из источника."""
+    def _compute(self, *, now, days, category, district, bbox, records=None, resolver=None):
+        """records — для «Хроники» (replay.py): записи, «отмотанные» к моменту now; иначе — из источника.
+        resolver — для «Хроники»: тот же резолвер с памятью на все кадры одного ответа (replay.MemoResolver)."""
         if records is None:
             records = self._records(now - self.window(days))
         # Чистое демо (свой стенд, source=None): примеры R07 — сами жалобы, действия с ними работают. С живым источником
         # (оболочка R01: жалобы R09 + примеры R07 при CIVIC_DEMO=1) у примеров R07 кнопок нет — их нет в R09 (B-037).
         examples_ok = self.is_demo if self._examples_actionable is None else self._examples_actionable
         actionable = None if examples_ok else (lambda c: not engine.is_r07_example(c))
-        return engine.compute(records, now=now, days=days, config=self.config, resolver=self.resolver,
+        return engine.compute(records, now=now, days=days, config=self.config, resolver=resolver or self.resolver,
                               category=category, district=district, bbox=bbox, actionable=actionable)
 
     # ---------- для «Картины дня» (R08) и карточки ----------

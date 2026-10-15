@@ -26,6 +26,9 @@ API
 
 ТЕСТЫ
   python -m pytest tests/civic/R07 -q                                     # 203 passed, 1 skipped (мир R02 — в сборке)
+  R07_PERF=1 python -m pytest tests/civic/R07/test_r07_replay.py -k under_one_second -q
+                                                                          # строгий замер: город за 30 дней < 1 с (отдельный
+                                                                          # прогон; в общем pytest порог относительный)
   python -m ui.civic_heat.devserver --world &                             # затем
   NODE_PATH=$(npm root -g) node tests/civic/R07/browser/replay.cjs        # 16/16 (+ лёгкий вход), кадры → research/round-15-results/R07/screens/
   python -m ui.civic_heat.devserver --port 8619 & R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html \
