@@ -1,72 +1,8 @@
-diff --git a/tests/civic/R01/round15/test_r01_round15_routes.py b/tests/civic/R01/round15/test_r01_round15_routes.py
-index 48a0b7d5..cc753593 100644
---- a/tests/civic/R01/round15/test_r01_round15_routes.py
-+++ b/tests/civic/R01/round15/test_r01_round15_routes.py
-@@ -43,6 +43,10 @@ CONTRACT = [
-     ("GET", "together/yards/{id}", "R16", "ui.civic_together", "make_service"),
-     ("POST", "together/yards/{id}/join", "R16", "ui.civic_together", "make_service"),
-     ("POST", "together/yards/{id}/leave", "R16", "ui.civic_together", "make_service"),
-+    # R16 [доп.] (INTEGRATION R16 §1): выбор двора, «старший по двору» и его проверка акиматом.
-+    ("GET", "together/yards", "R16", "ui.civic_together", "make_service"),
-+    ("POST", "together/yards/{id}/captain", "R16", "ui.civic_together", "make_service"),
-+    ("POST", "together/yards/{id}/moderate", "R16", "ui.civic_together", "make_service"),
-     ("GET", "together/updates", "R16", "ui.civic_together", "make_service"),
-     ("GET", "agencies", "R17", "ui.civic_agencies", "make_service"),
-     ("GET", "agencies/board", "R17", "ui.civic_agencies", "make_service"),
-@@ -82,6 +86,7 @@ CONTRACT = [
- # «Кто может» из §7: сотрудник (сессия + CSRF).
- STAFF_ROUTES = {
-     ("POST", "together/initiatives/{id}/support"), ("POST", "together/initiatives/{id}/moderate"),
-+    ("POST", "together/yards/{id}/moderate"),
-     ("GET", "agencies/board"), ("GET", "agencies/joint"), ("GET", "agencies/handoffs"),
-     ("POST", "incidents"), ("POST", "incidents/{id}/task"), ("POST", "incidents/{id}/update"),
-     ("POST", "incidents/{id}/close"),
 diff --git a/ui/web_server.py b/ui/web_server.py
-index 2abab5b6..d3c0e00b 100644
+index 4ef82930..8be4abb5 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
-@@ -124,6 +124,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
-                 "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
-                 # R13 раунд 15: «Вопросы и встречи» (раздел #meetings; вкладка «Вопросы» — qa.js выше).
-                 "meetings/meetings.js", "meetings/meetings.css", "meetings/forecast-week.js",  # + блок «Прогноз на неделю» для R08
-+                # R16 раунд 15: «Мой двор» (#yard) и «Сделаем вместе» (#together), слой «Инициативы».
-+                "together/together.js", "together/together-text.js", "together/together.css",
-                 # R17 раунд 15: «Штаб ведомств» и кризисный штаб (раздел #agencies, слой «Кризис», стенд index.html).
-                 "agencies/agencies.js", "agencies/agencies.css", "agencies/crisis-layer.js", "agencies/index.html",
-                 # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (раздел #analyst; стенд analyst-demo.html не отдаём).
-@@ -259,6 +261,7 @@ V2_RATE_LIMITS = {
-     "together.initiatives.report": ((60, 5, False), (3600, 20, False)),
-     "together.yards.join": ((60, 20, False), (86400, 20, True)),
-     "together.yards.leave": ((60, 20, False), (86400, 20, True)),
-+    "together.yards.captain": ((3600, 10, False),),   # R16: имя старшего — редко
-     "meetings.register": ((60, 20, False), (86400, 20, True)),   # R13 INTEGRATION §2
-     "meetings.question": ((60, 3, False), (3600, 20, False), (86400, 30, False)),
-     "ml.route": ((60, 60, False),),
-@@ -789,9 +792,12 @@ V2_ROUTES_ROUND15 = (
-     ("POST", ("together", "initiatives", "{id}", "support"), "together.initiatives.support"),
-     ("POST", ("together", "initiatives", "{id}", "moderate"), "together.initiatives.moderate"),
-     ("POST", ("together", "initiatives", "{id}", "report"), "together.initiatives.report"),
-+    ("GET", ("together", "yards"), "together.yards.list"),   # R16 [доп.]: выбор двора — дворы, где уже есть соседи
-     ("GET", ("together", "yards", "{id}"), "together.yards.get"),
-     ("POST", ("together", "yards", "{id}", "join"), "together.yards.join"),
-     ("POST", ("together", "yards", "{id}", "leave"), "together.yards.leave"),
-+    ("POST", ("together", "yards", "{id}", "captain"), "together.yards.captain"),     # R16 [доп.]: «старший по двору»
-+    ("POST", ("together", "yards", "{id}", "moderate"), "together.yards.moderate"),   # R16 [доп.]: имя старшего — акимат
-     ("GET", ("together", "updates"), "together.updates"),
-     # R17 «Штаб ведомств» и кризисный штаб (ui.civic_agencies, сервис)
-     ("GET", ("agencies",), "agencies.list"),
-@@ -917,6 +923,10 @@ V2_HANDLERS_ROUND15 = {
-     "together.yards.get": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
-     "together.yards.join": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
-     "together.yards.leave": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
-+    "together.yards.list": V2Handler("R16", _TOGETHER, "make_service", kind="service", query={"district": "district"}),
-+    # «Старший по двору»: сосед предлагает только имя (на проверку); снять / опубликовать имя — сотрудник.
-+    "together.yards.captain": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
-+    "together.yards.moderate": V2Handler("R16", _TOGETHER, "make_service", kind="service", staff=True),
-     "together.updates": V2Handler("R16", _TOGETHER, "make_service", kind="service", query={"since": "when"}),
-     "agencies.list": V2Handler("R17", _AGENCIES, "make_service", kind="service"),
-     "agencies.board": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True, query={
-@@ -2491,6 +2501,12 @@ def main():
+@@ -2529,6 +2529,12 @@ def main():
              threading.Thread(target=importlib.import_module("engine.civic_geo.api").warm_up, daemon=True).start()
          except Exception:  # R12 не сдан или сломан — /targets ответит 503, приложение работает
              LOGGER.info("civic-v2: R12 warm-up skipped")
@@ -80,10 +16,10 @@ index 2abab5b6..d3c0e00b 100644
          if getattr(exc, "winerror", None) == 10048 or getattr(exc, "errno", None) in (48, 98, 10048):
              parser.exit(1, "Порт занят. Закройте прежнее приложение или задайте другой PORT.\n")
 diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
-index 48123f1e..f0753945 100644
+index d127ee06..ca0916a8 100644
 --- a/web/civic/shell/birge.css
 +++ b/web/civic/shell/birge.css
-@@ -984,3 +984,14 @@ body.civic-mode:not([data-birge-section="map"]) .birge-alert { display: none; }
+@@ -997,3 +997,14 @@ body.civic-mode:not([data-birge-section="map"]) .birge-alert { display: none; }
    .birge-alert { top: 68px; left: 8px; right: 8px; width: auto; transform: none; }
  }
  
@@ -98,24 +34,3 @@ index 48123f1e..f0753945 100644
 +    --c-text-2: #4b5752; --c-text-3: #7e8a85; --c-warn: #754c0f; --c-ok: #2b6110; --c-danger: #9a2e28;
 +  }
 +}
-diff --git a/web/index.html b/web/index.html
-index ea3ab8ef..34d0df67 100644
---- a/web/index.html
-+++ b/web/index.html
-@@ -27,6 +27,7 @@
-     <link rel="stylesheet" href="/civic/akim/today.css" />
-     <link rel="stylesheet" href="/civic/qa/qa.css" />
-     <link rel="stylesheet" href="/civic/meetings/meetings.css" />
-+    <link rel="stylesheet" href="/civic/together/together.css" />
-     <link rel="stylesheet" href="/civic/agencies/agencies.css" />
-     <link rel="stylesheet" href="/civic/assistant/analyst.css" />
-     <link rel="stylesheet" href="/civic/proposals/proposals.css" />
-@@ -260,6 +261,8 @@
-     <script defer src="/civic/qa/qa.js"></script>
-     <script defer src="/civic/meetings/meetings.js"></script>
-     <script defer src="/civic/meetings/forecast-week.js"></script>
-+    <script defer src="/civic/together/together-text.js"></script>
-+    <script defer src="/civic/together/together.js"></script>
-     <script defer src="/civic/agencies/agencies.js"></script>
-     <script defer src="/civic/agencies/crisis-layer.js"></script>
-     <script defer src="/civic/assistant/analyst.js"></script>

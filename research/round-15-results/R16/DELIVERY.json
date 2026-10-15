@@ -4,8 +4,8 @@
  "branch": "claude/youthful-johnson-6nz5mp",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g: FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "3d0a4c36644c18c5d2a4d128968d68e9fd7f2fb1",
- "tested_sha": "3d0a4c36644c18c5d2a4d128968d68e9fd7f2fb1",
+ "code_sha": "db7da7def02672e3eed482b8c3ba3aafbd3895bd",
+ "tested_sha": "db7da7def02672e3eed482b8c3ba3aafbd3895bd",
  "push_status": "OK (origin/claude/youthful-johnson-6nz5mp)",
  "amendments_applied": [
   "П1 «Без ИИ-слопа» (15 окт 17:05): без иллюстраций, значки R11 ≤ 48 px, фото «после» — только настоящие"
@@ -18,7 +18,7 @@
   "research/handoffs/astana/R16/round15/STATUS.md"
  ],
  "integration": {
-  "r01_patch": "research/round-15-results/R16/R01_together_b1.patch (сборка R01 claude/brave-fermi-nhzetj: git apply --check OK на c9069723); по якорям — r01_together_apply.py; для пакета/FINAL-4 — R01_together_routes.patch (e91acb6)",
+  "r01_patch": "research/round-15-results/R16/R01_together_b1.patch — остаток для R01 после B0.2 (прогрев в main(), лист слева для «Сделаем вместе»): git apply --check OK на adb5fba9; по якорям — r01_together_apply.py (пропускает то, что R01 уже сделал); пакет/FINAL-4 — R01_together_routes.patch (e91acb6)",
   "routes": "15 под /api/civic/v2/together/* (12 из CONTRACT §7 + 3 доп.: GET yards, POST yards/{id}/captain, POST yards/{id}/moderate)",
   "module": "ui.civic_together · make_service (kind=service)",
   "assets": [
@@ -29,8 +29,9 @@
   "screens": "registerScreen yard, together; registerLayer initiatives (выключен по умолчанию)",
   "demo_world": "seed_world(db_path, records, now=None) — yards, initiatives; повтор = сброс демо к виду мира от нового now",
   "for_neighbors": "updates (R06), create_from_idea (R06), initiatives_summary (R08/R03), pickups (R17)",
-  "i18n": "research/round-15-results/R16/i18n_together.json — 242 строковых ключа ru/kk; словарь R11 b3502428 содержит все",
-  "warm_up": "ui.civic_together.warm_up(db_path) — R01 в фоне при старте (строка в main() в patch); seed_world и make_service демо запускают сами"
+  "i18n": "research/round-15-results/R16/i18n_together.json — 247 строковых ключей ru/kk; новые в круге 3: together.done_num, together.list.when, together.list.done_chip, together.list.none_soon, together.list.none_done",
+  "warm_up": "ui.civic_together.warm_up(db_path) — R01 в фоне при старте (строка в main() в patch); seed_world и make_service демо запускают сами",
+  "sheet": "«Сделаем вместе» — лист слева 412 px (IA R11 §5.2, эталон A); --no-sheet — лист по центру; модуль раскладывается по своей ширине (@container)"
  },
  "tests": {
   "pytest_r16": {
@@ -58,9 +59,12 @@
     "kk"
    ],
    "script": "tests/civic/R16/browser/r16_browser.cjs",
-   "stand": "tests/civic/R16/stand.py (маршруты в памяти) на базе FINAL-4 + R16",
-   "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон",
-   "note": "246/246 на стенде FINAL-4 (fbd9e247) и 246/246 на сборке «как B1» (R01 cc510c9d + patch + ui-kit R11); после checkpoint 5 (только сервер и тексты) — 1366-ru 41/41"
+   "runs": {
+    "final4_stand_3d0a4c36+": "246/246 (компоненты R11, до последних правок вида)",
+    "b1_like_stand": "246/246 (R01 c9069723 + patch + ui-kit R11, до последних правок вида)",
+    "db7da7de": "1366-ru и 375-kk — 41/41 на обеих сборках; 1366-ru и 1024-kk в листе слева — 41/41; полный прогон — следующий шаг"
+   },
+   "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон"
   },
   "scene7": {
    "status": "PASS",
@@ -79,7 +83,7 @@
      "1366-ru",
      "375-kk"
     ],
-    "stand": "R01 cc510c9d + patch + R16, CIVIC_DEMO_WORLD=1 (двор yard-1454082640, дело i-w15-01)"
+    "stand": "R01 c9069723 + patch (лист слева) + R16 db7da7de, CIVIC_DEMO_WORLD=1 (двор yard-1454082640, дело i-w15-01)"
    }
   },
   "r02_world_seed": {
@@ -98,10 +102,10 @@
   },
   "pytest_r01_with_patch": {
    "status": "PASS",
-   "passed": 418,
+   "passed": 421,
    "failed": 0,
    "skipped": 1,
-   "what": "tests/civic/R01 + tests/civic/R16 на R01 c9069723 + R01_together_b1.patch + файлы R16 + ui-kit/i18n R11 b3502428"
+   "what": "tests/civic/R01 + tests/civic/R16 на R01 adb5fba9 + R01_together_b1.patch + код R16 db7da7de"
   },
   "perf_yard_cold": {
    "status": "PASS",
@@ -115,6 +119,15 @@
     25
    ],
    "what": "первый GET together/yards/<двор> сразу после старта сервера (R10 B-124)"
+  },
+  "scene7_open_time": {
+   "status": "PASS",
+   "ms_warm": [
+    406,
+    505
+   ],
+   "first_after_restart_ms": 1085,
+   "what": "как Ctrl+K «Сцена 7» R01: из вида акимата setMode(resident) + setSection(yard, path) → шапка двора"
   }
  },
  "screens": [
@@ -194,13 +207,12 @@
   "Время действий акимата в облачном Chromium 3–4 с — программная отрисовка WebGL карты; API отвечает за 4–20 мс.",
   "Без 3 доп. маршрутов в сборке модуль спрашивает /modules и прячет список дворов и «старшего по двору» (без 404)."
  ],
- "next_step": "Компоненты ui-kit R11 раунда 15 (.bk-yard, .bk-feed, .bk-pc/.bk-join, .bk-init, .bk-done) с запасными правилами для FINAL-4 и зоны нажатия B-114; снова браузер на обеих сборках; поставка к B1 (16 окт 14:00 Астаны).",
+ "next_step": "Полный браузерный прогон на обеих сборках с db7da7de, свежие кадры в screens/ (сборка «как B1»), поставка к B1 (16 окт 14:00 Астаны).",
  "findings_closed": [
   "R15 S45, S46, S47 (checkpoint 3)",
   "R15 S51 (checkpoint 5)",
-  "R10 B-124 (checkpoint 5)"
+  "R10 B-124 (checkpoint 5)",
+  "R10 B-114 (checkpoint 6)"
  ],
- "findings_open": [
-  "R10 B-114 зоны нажатия ≥ 44 px (заголовок карточки, вкладка «Шолу») — следующий круг вместе с компонентами ui-kit R11"
- ]
+ "findings_open": []
 }

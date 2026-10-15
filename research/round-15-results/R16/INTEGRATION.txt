@@ -6,23 +6,19 @@ R06 (лента, идея → дело), R08/R03 (сводка), R17 (вывоз
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
 1. R01 · ПОДКЛЮЧЕНИЕ К СБОРКЕ (одна правка, готовый patch)
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
-B1 — ветка R01 claude/brave-fermi-nhzetj (12 маршрутов together/* из CONTRACT §7 уже есть, файлов R16 ещё нет):
-  git apply research/round-15-results/R16/R01_together_b1.patch            # проверено: git apply --check на c9069723
-  если patch уже не ложится (файлы R01 меняются быстро) — то же самое по якорям, повтор ничего не дублирует:
-  python3 research/round-15-results/R16/r01_together_apply.py .
-  + файлы роли: ui/civic_together/, web/civic/together/, tests/civic/R16/ (ветка claude/youthful-johnson-6nz5mp).
-  Что в нём: 3 маршрута [доп.] (GET together/yards; POST together/yards/{id}/captain; POST together/yards/{id}/moderate —
-  staff=True) + V2_HANDLERS + лимит «старшего» 10/ч; web/civic/shell/birge.css — «Сделаем вместе» листом слева 412 px
-  поверх карты (IA R11 §5.2 «Житель, лист», как «Проекты и идеи» и «Вопросы и встречи»; «Мой двор» — лист по центру;
-  не нужно — убрать этот кусок patch или r01_together_apply.py --no-sheet: модуль раскладывается по своей ширине
-  (@container) и в любом листе); CIVIC_ASSETS together/*; index.html — together.css после
-  meetings.css, together-text.js и together.js после forecast-week.js; в main() рядом с warm_up R12 — фоновый
-  ui.civic_together.warm_up(db_path) (R10 B-124: первый «Мой двор» после старта 2,6 с → 0,03–0,09 с); в тест R01
-  test_r01_round15_routes.py — 3 строки [доп.] таблицы и yards/{id}/moderate в STAFF_ROUTES. Лимиты together.* у R01
-  свои — оставлены как есть.
-  Проверено на c9069723 + patch + ui-kit/i18n R11 (b3502428): tests/civic/R01 + tests/civic/R16 — 419 passed, 1 skipped;
-  браузер R16 в оболочке R01 с путями (#yard/<двор>, #together/<дело>) и листом слева — см. §5.
-  Без 3 [доп.] модуль тоже работает: спрашивает GET /modules и прячет список дворов и «старшего по двору» (без 404).
+B1 — ветка R01 claude/brave-fermi-nhzetj. B0.2 (514008b6, 12e99fba) уже взял R16 e475fae9: 15 маршрутов, файлы, теги.
+  Для B1 нужно: (1) код R16 из DELIVERY.json code_sha (ветка claude/youthful-johnson-6nz5mp: ui/civic_together/,
+  web/civic/together/, tests/civic/R16/ — в e475fae9 ещё не было путей оболочки, S51, прогрева, компонентов R11);
+  (2) остаток правок R01 — research/round-15-results/R16/R01_together_b1.patch (git apply --check OK на adb5fba9):
+    а) main(): рядом с warm_up R12 — фоновый ui.civic_together.warm_up(db_path) (R10 B-124: первый «Мой двор» после
+       старта 2,6 с → 0,03–0,09 с; seed_world и make_service демо запускают прогрев и сами);
+    б) web/civic/shell/birge.css — «Сделаем вместе» листом слева 412 px поверх карты (IA R11 §5.2 «Житель, лист», как
+       «Проекты и идеи» и «Вопросы и встречи»; «Мой двор» — лист по центру). Не нужно — не брать этот кусок
+       (или r01_together_apply.py --no-sheet): модуль раскладывается по своей ширине (@container) в любом листе.
+  Если patch уже не ложится — то же по якорям, повтор ничего не дублирует (правки, которые R01 уже сделал своими
+  словами, пропускаются): python3 research/round-15-results/R16/r01_together_apply.py .
+  Проверено на adb5fba9 + patch + код R16 этой поставки: tests/civic/R01 + tests/civic/R16 — 421 passed, 1 skipped;
+  r15_ia R01 «Сцена 7» ждёт #yard или #yard/yard-1454082640 — модуль оставляет #yard/<двор> (путь оболочки).
 Пакет / FINAL-4 (без маршрутов раунда 15) — прежний полный patch:
   git apply research/round-15-results/R16/R01_together_routes.patch        # проверено: git apply --check на e91acb6
 Что в нём (ui/web_server.py + web/index.html):
