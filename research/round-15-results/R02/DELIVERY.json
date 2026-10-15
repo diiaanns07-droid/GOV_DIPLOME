@@ -5,8 +5,8 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "eaed8f4ff961efcf89cabf08cfb48d6fb1fb2fbb",
-  "tested_sha": "eaed8f4ff961efcf89cabf08cfb48d6fb1fb2fbb",
+  "code_sha": "0152ef19bb6c8a0599b0e1e1bc53daeb3ebac6b1",
+  "tested_sha": "0152ef19bb6c8a0599b0e1e1bc53daeb3ebac6b1",
   "push_status": "OK",
   "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
   "world": {
@@ -14,7 +14,7 @@
     "schema": "birge-demo-world-v1",
     "schema_version": "1.1",
     "seed": 15,
-    "sha256": "efaaa553263d7b38a0eee3a8de0fc9d53deda9ca0ba8befb159f8e6ac8e48ca9",
+    "sha256": "c93fb80cbdf6630d5e7088fd19921ce794e0139ddd5817ee17a0c767bbd6a146",
     "counts": {
       "complaints": 743,
       "people_with_metoo": 1171,
@@ -32,7 +32,7 @@
     "nura_share": 0.36,
     "verified_share": 0.125,
     "joint_share": 0.054,
-    "r12_map_data": "objects.json 247c24a8 (карта R12 d4e968ce / f8157a68: светофоры и переходы из свежего снимка OSM LOCAL-10)"
+    "r12_map_data": "objects.json 247c24a8 (карта R12 d4e968ce / f8157a68 / 3d4c1afb — R12 закрепил его до B1)"
   },
   "changed_paths": [
     "ml/datasets/demo_world.py",
@@ -247,6 +247,12 @@
       "matched": 14,
       "of": 14,
       "restart": "14/14"
+    },
+    "дерево поставок к B1 (16 окт ~00:00 Астаны): R01 c6d62440 + R12 3d4c1afb, R07 9b1084d9, R08 062f899a, R09 d9ca175c, R06 7f6636cd, R13 8a7b9468, R16 db7da7de, R17 5650c869, R04 0affd9d0": {
+      "status": "PASS",
+      "pytest": "R02 + R09 test_r09v21_world + R12 test_works + R07 test_r07_replay — 455 passed, 1 skipped",
+      "demo_world --check": "OK (sha256 c93fb80c…)",
+      "stand": "14/14; табло R17 19/19; сцены 2/7/8/9; «Просрочено» R08 = R17, R09 = R17"
     }
   },
   "consistency_table": {
@@ -403,6 +409,16 @@
           "handoffs_30d": "14",
           "scenes": "2, 7, 8, 9 — на месте",
           "overdue": "R08 = R17 overdue_fix (35 / 5 / 11 / 3); R09 = R17 overdue_answer (5 / 2 / 2 / 0)"
+        },
+        {
+          "build": "дерево поставок к B1 (16 окт ~00:00 Астаны): R01 c6d62440 + R04, R06 7f6636cd, R07 9b1084d9, R08 062f899a, R09 d9ca175c, R12 3d4c1afb, R13, R16, R17 5650c869 + мир 0152ef19",
+          "stand_vs_world": "14/14",
+          "r17_board_open_by_service": "19/19",
+          "joint_30d": "18 / 8",
+          "handoffs_30d": "14",
+          "scenes": "2, 7, 8, 9 — на месте",
+          "overdue": "R08 = R17 overdue_fix (35 / 5 / 11 / 3); R09 = R17 overdue_answer (5 / 2 / 2 / 0)",
+          "initiatives": "время дел — круглые часы (R16: 10:00–13:00, 9:00–12:00, 11:00–14:00 …)"
         }
       ],
       "nura_same_on_all_screens": "карта 7/14/30 дн. 83/91/96 = люди открытых жалоб R09 83/96 = районы «Картины дня» 83 — на всех сборках"
