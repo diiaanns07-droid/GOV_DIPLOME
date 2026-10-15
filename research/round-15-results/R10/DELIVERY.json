@@ -4,43 +4,49 @@
   "branch": "claude/zen-wozniak-69d41q",
   "base_sha": "e91acb69",
   "restored_from": "claude/r14-R10@656681ee (tests/e2e и tests/civic/R10 в FINAL-4 те же) + research/round-14-results/R01/patches/R10_demo_flow_reference.patch",
-  "code_sha": "95de8b99",
-  "tested_sha": "a4937462 (FINAL-4, ветка пакета e91acb69)",
+  "code_sha": "0be24b4c",
+  "tested_sha": "a4937462 (FINAL-4), bd3800d8 (FINAL-4.1), ветка R01 c97aa5f5 («B0»), превью pvC (B0 + R07 cbfea106, R08 eca77d34, R09 6a26ae5c, R16 c5836427, R17 191f81e7)",
   "push_status": "OK (checkpoint)",
-  "status": "partial — инструменты раунда 15 готовы, сборок R01 раунда 15 ещё нет",
+  "status": "partial — инструменты раунда 15 готовы и проверены на B0 и превью; официальной сборки B1 ещё нет",
   "changed_paths": [
+    "research/handoffs/astana/R10/round15/STATUS.md",
+    "research/round-15-results/R10/",
+    "tests/civic/R10/accuracy.py",
+    "tests/civic/R10/api_v2.py",
+    "tests/civic/R10/consistency.py",
+    "tests/civic/R10/fixtures/final4_v2_modules.json",
+    "tests/civic/R10/stand.py",
+    "tests/civic/R10/test_r10_api_v2.py",
+    "tests/e2e/acceptance_r15.sh",
     "tests/e2e/demo_flow.cjs",
     "tests/e2e/demo_flow_v2.cjs",
     "tests/e2e/demo_video.cjs",
     "tests/e2e/fixtures/video_subtitles.json",
+    "tests/e2e/map_baseline.cjs",
+    "tests/e2e/perf_check.cjs",
+    "tests/e2e/preview_overlay.py",
     "tests/e2e/r10_lib.cjs",
+    "tests/e2e/reference_check.cjs",
+    "tests/e2e/save_run.py",
+    "tests/e2e/summary_r15.py",
     "tests/e2e/ux_lib.cjs",
-    "tests/civic/R10/accuracy.py",
-    "tests/civic/R10/stand.py",
-    "tests/civic/R10/api_v2.py",
-    "tests/civic/R10/test_r10_api_v2.py",
-    "tests/civic/R10/consistency.py",
-    "tests/civic/R10/fixtures/final4_v2_modules.json",
-    "research/round-15-results/R10/",
-    "research/handoffs/astana/R10/round15/STATUS.md"
+    "tests/e2e/visual_audit.cjs"
   ],
   "tests": {
-    "demo_flow FINAL-4 (1366/375 × ru/kk)": "PASS 172 / FAIL 0 / NOT_RUN 0",
-    "pytest tests/civic/R10 (пакет e91acb69)": "45 passed / 5 skipped",
-    "api_v2 FINAL-4": "PASS 2 / FAIL 0 / NOT_RUN 46 (маршрутов раунда 15 ещё нет; прежние 74 на месте)",
-    "consistency FINAL-4": "PASS 0 / FAIL 3 / NOT_RUN 4 (B-101: известное расхождение демо-наборов до демо-мира)",
-    "demo_flow_v2 (сцены 7–9)": "NOT_RUN — модулей R16/R17/R12/R07 и демо-мира в сборке ещё нет",
-    "demo_video": "пробная запись части 1 на FINAL-4 (ҚАЗ, --fast): 6 сцен из 6, 159 с; полная запись ҚАЗ и РУС — следующий шаг",
-    "api_v2 R01 d987a112": "PASS 59 / FAIL 0 / NOT_RUN 9 (все 46 маршрутов §7 на месте)",
-    "consistency превью мира": "A1 90=90, B 94=94, B2 154=154 при materialize; без него B-106"
+    "demo_flow FINAL-4 (1366/375 × ru/kk)": "PASS 172 / FAIL 0 / NOT_RUN 0 (база)",
+    "demo_flow FINAL-4.1 bd3800d8": "PASS 173 / FAIL 0 / NOT_RUN 0, время не хуже FINAL-4",
+    "B0 c97aa5f5 (acceptance_r15.sh)": "pytest 50 passed; API 114/1/7; числа 10/1/2; часть 1 168/3/0 (B-109 + уточнённая проверка маршрутов); сцены 7–9 111/63/21; значок 1,96–2,86 с; эталон 14/47 (проекты не открылись — исправлено)",
+    "превью pvC": "API 146/1/0 (FAIL — B-105); числа 12/1/1 (C3 35=35, E 7=7, FAIL — C4/B-104); сцены 7–9 253/70/0 — функционально всё PASS (паспорт «2 службы», конфликт, штаб, Ctrl+K сцены 18–60 мс), FAIL — шрифт/зоны/контраст (B-110…B-114); значок 3,14 с (B-113); «Спросить Birge» первый ответ 4,2 с (B-107)",
+    "pytest tests/civic/R10": "50 passed на B0 c97aa5f5"
   },
   "screens": [
-    "research/round-15-results/R10/final4-a4937462/e2e/*.jpg (1366/375 × ru/kk, база FINAL-4)"
+    "research/round-15-results/R10/b0-c97aa5f5/ (отчёты и кадры дефектов)",
+    "research/round-15-results/R10/final4-a4937462/e2e/*.jpg (база FINAL-4)"
   ],
-  "show_verdict": "нет данных — сборок раунда 15 ещё нет (на FINAL-4 часть 1: можно показывать, как в раунде 14)",
+  "show_verdict": "нет данных по B1 (официальная сборка — FINAL-4.1: часть 1 можно показывать); на B0 c97aa5f5 — «нет» (ожидаемо: модули R16/R07/R09 не взяты, B-104, B-109)",
   "known_limits": [
     "облако без интернета: подложка карты — упрощённый фон; FPS и плавность — программный WebGL (мерить на ноутбуке)",
     "казахский проверяется на полноту, не на качество (KK_REVIEW R11); субтитры ролика ҚАЗ — черновик R10"
   ],
-  "next_step": "сборка R01 с маршрутами §7 и демо-миром → api_v2, consistency, demo_flow_v2, demo_flow, ролик; BUGS.md"
+  "next_step": "B1 (16 окт 09:00 UTC): acceptance_r15.sh → ACCEPTANCE_B1, BUGS, П1-просмотр; ролик части 2 на превью pvC; повтор на B2, FINAL-5"
 }
