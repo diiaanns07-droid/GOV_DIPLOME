@@ -190,11 +190,19 @@ def test_crisis_tasks_by_service_and_pulse_link(monkeypatch):
     assert c["link"] == "/#agencies/inc-7"
     items = [{"kind": "spike", "category": "snow_ice", "district": "nura"},
              {"kind": "spike", "category": "utilities", "district": "esil"},
-             {"kind": "new_hot", "category": "roads", "district": "nura"}]
+             {"kind": "new_hot", "category": "roads", "district": "nura"},
+             {"kind": "spike", "category": "roads", "district": "nura"},      # в буран растут и «Дороги» — тот же штаб
+             {"kind": "spike_city", "category": "waste", "district": None},   # мусор по городу — кнопки штаба нет
+             {"kind": "spike", "category": "lighting", "district": "esil"},   # не кризисная тема, кризиса нет
+             {"kind": "spike_city", "category": "snow_ice", "district": None}]
     neighbors.pulse_links(items, b["crisis"])
     assert items[0]["crisis"] == {"link": "/#agencies/inc-7", "incident": "inc-7", "kind": "blizzard"}
-    assert items[1]["crisis"]["link"] == "/#agencies/new?kind=other&district=esil" and items[1]["crisis"]["incident"] is None
+    assert items[1]["crisis"] == {"link": "/#agencies/new?kind=heat_outage&district=esil", "incident": None,
+                                  "kind": "heat_outage"}
     assert "crisis" not in items[2]                          # тревога об одном месте ведёт на карту, не в штаб
+    assert items[3]["crisis"]["incident"] == "inc-7"
+    assert "crisis" not in items[4] and "crisis" not in items[5]
+    assert items[6]["crisis"]["incident"] == "inc-7"         # снег по городу — к идущему бурану
 
 
 def test_crisis_own_link_from_r17(monkeypatch):

@@ -50,8 +50,9 @@ R13_FORECAST_MODULE = "ui.civic_forecast"
 R13_WEEK_FUNCS = ("week_forecast", "forecast_week", "attention_next_week")
 
 # Вид кризиса R17 по теме тревоги пульса: «Открыть кризисный штаб» → шаблон этого вида (CONTRACT §5.5).
-CRISIS_KIND = {"snow_ice": "blizzard", "utilities/no_heating": "heat_outage", "utilities/no_water": "water_outage",
-               "utilities/sewage": "flood"}
+# Только темы, которые бывают кризисом города; у тревоги нет уточнения, поэтому ЖКХ → «авария теплосети»
+# (шаблон в штабе R17 можно сменить на «прорыв водопровода»).
+CRISIS_KIND = {"snow_ice": "blizzard", "utilities": "heat_outage"}
 TOPIC_ALARMS = ("spike", "spike_new", "spike_city")   # тревоги «тема растёт» — у них кнопка штаба
 SHOWN_INITIATIVE = ("published", "done")             # CONTRACT §10: на проверке и скрытые не показываем никогда
 ORDER_STATUSES = ("todo", "in_progress", "done")
@@ -438,18 +439,30 @@ def incidents(settings: Settings, *, district=None, now: datetime, all_demo=Fals
 def pulse_links(items: list[dict], crisis: dict) -> None:
     """Кнопка «Открыть кризисный штаб» у тревог «тема растёт» (R08 промпт п. 3; R13 п. 4 — поле ссылки в пульсе).
 
-    Есть активный кризис в районе тревоги (или по всему городу) — ссылка на него; нет — на создание кризиса из шаблона
-    R17 по теме тревоги. Тревоги об одном месте (new_hot, metoo) ведут на карту, как раньше.
+    Правило (одна главная кнопка — только там, где она нужна):
+    - в районе тревоги идёт кризис (любой: в буран растут и «Дороги») — ссылка на этот штаб;
+    - тревога по городу — на активный кризис того же вида (снег → буран);
+    - кризиса нет, а тема бывает кризисом (CRISIS_KIND) — на создание кризиса из шаблона R17 для этого района;
+    - иначе кнопки нет. Тревоги об одном месте (new_hot, metoo) ведут на карту, как раньше.
     """
     active = (crisis.get("active") or []) if crisis.get("available") else []
     for a in items:
         if a.get("kind") not in TOPIC_ALARMS:
             continue
-        kind = CRISIS_KIND.get(a.get("category") or "", "other")
-        match = next((c for c in active if a.get("district") in (None, c["zone"]["district"])
-                      or c["zone"]["district"] is None), None)
-        a["crisis"] = {"link": crisis_link(match, kind=kind, district=a.get("district")),
-                       "incident": match["id"] if match else None, "kind": kind}
+        kind = CRISIS_KIND.get(a.get("category") or "")
+        district = a.get("district")
+        match = None
+        for c in active:
+            zone = c["zone"]["district"]
+            same_place = district is not None and zone == district
+            same_kind = kind is not None and c["kind"] == kind and (district is None or zone is None)
+            if same_place or same_kind:
+                match = c
+                break
+        if match is not None:
+            a["crisis"] = {"link": crisis_link(match), "incident": match["id"], "kind": match["kind"]}
+        elif kind is not None:
+            a["crisis"] = {"link": crisis_link(None, kind=kind, district=district), "incident": None, "kind": kind}
 
 
 # ---------------------------------------------------------------- R16: жители вместе
