@@ -307,3 +307,13 @@ R06 (claude/eloquent-einstein-wvuyje @ c2604ea2) — 22:01: browser_r15 --only n
   - R12 (просьба поставки 8): qr.form.updated, qr.form.gone; в qr.form.ids_hint пример номера — osm-node-14140558124
     (прежний светофор выбыл из свежего снимка OSM).
   R02 (мелочь, данные мира kk): в тексте решения «Учаске бұзылып жатыр…» — «Көше бөлігі бұзылып жатыр…» (KK_REVIEW № 28).
+
+Круг 6, сборка R01 B0.3 (adb5fba9) — 22:27: r15_screens.cjs, 102 кадра (1366/1024/375 × ru/kk), 0 проблем; меню по IA в
+  капсуле на 1366 и 1024 в обоих языках — R01-1 закрыт. Дефекты VISUAL_BRIEF §3 с участием R11 закрыты все.
+  R01-5 web/civic/shell/birge.js, setSection(), перед render(): одна панель за раз — экран раздела закрывает «Мои обращения»:
+      if (section !== "map") { try { window.CivicShell?.closeComplaint?.(); } catch (e) { /* R09 не ломает оболочку */ } }
+    и web/civic/shell/shell.js, window.CivicShell рядом с openMine():
+      closeComplaint() { S.mounted.complaint?.close?.(); },
+    (ui R09 уже отдаёт close — web/civic/feedback/complaint.js, строка «open: open, openMine: openMine, close: close»).
+    Проверка: житель 1366 — «Мои обращения», затем «Мой двор»: листа «Мои обращения» нет; 375 — то же через меню аватара.
+  R01-6 (сделано словарём): common.nav.inbox / common.nav.agencies — подписи скрытых кнопок разделов в виде «Житель».

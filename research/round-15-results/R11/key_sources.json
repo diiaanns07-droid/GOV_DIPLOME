@@ -1254,5 +1254,7 @@
  "week.state.not_ready": "R08 · web/civic/akim/week.js",
  "week.nodata": "R08 · web/civic/akim/week.js",
  "qr.form.updated": "R12 · web/civic/qr/print.js (INTEGRATION R12, поставка 8)",
- "qr.form.gone": "R12 · web/civic/qr/print.js (INTEGRATION R12, поставка 8)"
+ "qr.form.gone": "R12 · web/civic/qr/print.js (INTEGRATION R12, поставка 8)",
+ "common.nav.inbox": "R01 · web/civic/shell/birge.js (подпись скрытой кнопки раздела в виде «Житель»; в DOM был сам ключ)",
+ "common.nav.agencies": "R01 · web/civic/shell/birge.js (подпись скрытой кнопки раздела в виде «Житель»; в DOM был сам ключ)"
 }
