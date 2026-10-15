@@ -1,0 +1,26 @@
+diff --git a/ui/civic_feedback/v2/joint.py b/ui/civic_feedback/v2/joint.py
+index a7fd4ef4..fd112739 100644
+--- a/ui/civic_feedback/v2/joint.py
++++ b/ui/civic_feedback/v2/joint.py
+@@ -104,7 +104,7 @@ def parse_services(value) -> list[dict]:
+         sid = item.get("service") if isinstance(item, dict) else item
+         role = item.get("role", "lead" if index == 0 else "partner") if isinstance(item, dict) else \
+             ("lead" if index == 0 else "partner")
+-        if sid not in lifecycle.SERVICES:
++        if not isinstance(sid, str) or sid not in lifecycle.SERVICES:   # R15-S49: список -> TypeError -> 500
+             raise JointError("Неизвестная служба.", {f"services[{index}].service": ", ".join(lifecycle.SERVICES)})
+         if role not in PART_ROLES:
+             raise JointError("Роль службы: ведущая или участвует.", {f"services[{index}].role": "lead | partner"})
+diff --git a/ui/civic_feedback/v2/joint_store.py b/ui/civic_feedback/v2/joint_store.py
+index 8dd09875..f09d57e8 100644
+--- a/ui/civic_feedback/v2/joint_store.py
++++ b/ui/civic_feedback/v2/joint_store.py
+@@ -144,7 +144,7 @@ class JointMixin:
+         to — id службы; reason — строка или чип reason_code; keep — прежняя ведущая остаётся участником.
+         Если to уже участвует — она становится ведущей со своим статусом части."""
+         from .store import Conflict
+-        if to not in lifecycle.SERVICES:
++        if not isinstance(to, str) or to not in lifecycle.SERVICES:   # R15-S49: список -> TypeError -> 500
+             raise joint.JointError("Неизвестная служба.", {"to": ", ".join(lifecycle.SERVICES)})
+         text, code = joint.clean_reason(reason, reason_code)
+         now = rec.iso(self._now())

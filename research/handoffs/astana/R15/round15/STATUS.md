@@ -73,9 +73,15 @@
 - Наблюдение (не безопасность, для R03/R16): R03 sources.together_initiatives ищет list_initiatives/initiatives в
   ui.civic_together, а R16 отдаёт initiatives_summary -> блок «Инициативы жителей» у аналитика «not_ready».
 
+## Checkpoint 6 (15 окт 17:40 Астана)
+- R09 v2.1 (ebe69436): test_r15_round15_handoffs.py — 30 passed + 2 xfailed: S49 низкий (список в service/to -> 500),
+  patch P-R09-S49.diff (tests/civic/R09 578 passed). Причины передач — только сотруднику, срок не обнуляется.
+- Наложение 11 веток ролей (+R09): весь tests/civic/R15 — 467 passed, 19 xfailed, 0 регрессий раунда 14.
+- S46 -> PENDING (нестрогий): в сборке с R04 moderate закрывается.
+- Открыто: S42 S43 S44 S45 S49 (низкие), S46 S47 S48 (средние). Высоких — 0.
+
 ## Следующий шаг
-- Круг 2 (~19:00): find_branches.py, AMENDMENTS.md, свежие головы R16 R17 R09 R13 R06 R03 R04 R12 R08; R06 лента,
-  R09 передачи, экран R16 — тесты и проба; повторная проверка S43–S48 у владельцев.
+- R06 лента (тест по CONTRACT), черновик SECURITY_REVIEW_R15.md, круг 2 (~19:00) с AMENDMENTS.md.
 
 ## Вопросы владельцу
 - (пока нет)

@@ -16,9 +16,10 @@
     "R04": "7be7e71b (claude/gifted-maxwell-i66wwi)",
     "R02": "0c0a8636 (claude/affectionate-shannon-jm6ws5)",
     "R07": "5f9dc0ae (claude/birge-r07-round-15-zjp4ob)",
-    "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt"
+    "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
+    "R09": "ebe69436 (claude/quirky-ptolemy-k3z2mj)"
   },
-  "push_status": "OK (checkpoint 5)",
+  "push_status": "OK (checkpoint 6)",
   "changed_paths": [
     "tests/civic/R15/r15_common.py",
     "tests/civic/R15/round15/",
@@ -113,6 +114,25 @@
       "failed": 0,
       "not_run": 1,
       "note": "шлюз ещё не отдаёт новых страниц (CIVIC_ASSETS R01)"
+    },
+    "R09_ebe69436_handoffs": {
+      "passed": 30,
+      "failed": 0,
+      "xfailed": 2,
+      "open": [
+        "S49"
+      ]
+    },
+    "R09_with_P-R09-S49": {
+      "passed": 578,
+      "note": "tests/civic/R09 целиком с patch"
+    },
+    "overlay_all_R15": {
+      "passed": 467,
+      "xfailed": 19,
+      "skipped_not_run": 54,
+      "failed": 0,
+      "note": "наложение 11 веток ролей; 0 регрессий находок раунда 14; S46 XPASS (закрыт R04)"
     }
   },
   "findings": {
@@ -143,7 +163,7 @@
     "S46": {
       "owner": "R16/R04",
       "level": "средний",
-      "status": "open",
+      "status": "pending (закрывается в сборке с R04 moderate)",
       "patch": "patches/P-R16-S45-S47.diff",
       "note": "в сборке с R04 moderate закрывается (проверено наложением); patch — для запасного пути R16"
     },
@@ -158,6 +178,12 @@
       "level": "средний",
       "status": "open",
       "patch": "patches/P-R04-S48.diff"
+    },
+    "S49": {
+      "owner": "R09",
+      "level": "низкий",
+      "status": "open",
+      "patch": "patches/P-R09-S49.diff"
     }
   },
   "high_open": 0,
