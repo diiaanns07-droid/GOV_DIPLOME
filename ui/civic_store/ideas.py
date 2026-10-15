@@ -177,8 +177,10 @@ class IdeaRepository:
             "can_improve_ru": (texts.get("can_improve_ru") or can_improve) if can_improve else "",
             "can_improve_kk": (texts.get("can_improve_kk") or can_improve) if can_improve else "",
             "project": project, "votes_at_decision": row["votes_at_decision"],
-            # Раунд 15: идея стала инициативой жителей R16 («Сделайте вместе — поддержим инвентарём»).
+            # Раунд 15: идея стала инициативой жителей R16 («Сделайте вместе — поддержим инвентарём»);
+            # self_doable — жители могут сделать сами (демо-мир R02 §2.6): подсказка сотруднику «Сделать инициативой».
             "initiative": {"id": row["initiative_id"], "at": row["initiative_at"]} if row["initiative_id"] else None,
+            "self_doable": texts.get("self_doable") is True,
             "demo": bool(row["demo"]), "created_at": row["created_at"], "published_at": row["published_at"],
             "decided_at": row["decided_at"],
         }

@@ -121,6 +121,13 @@
       // Раунд 15, задача 1: просмотр без входа (вид «Акимат») — I18N_R15_R06.json для R11
       "idea.public.staff_hint": "Проверять и публиковать идеи может сотрудник акимата после входа.",
       "idea.public.vote_residents": "Голосуют жители — в виде «Житель». Решение принимает акимат.",
+      "idea.together.line": "Сделайте вместе — поддержим инвентарём",
+      "idea.together.open": "Открыть дело",
+      "idea.together.make": "Сделать инициативой",
+      "idea.together.hint": "Жители могут сделать это сами — акимат поддержит инвентарём и вывозом.",
+      "idea.together.can": "Если жители могут сделать это сами — сделайте инициативой, акимат поддержит инвентарём.",
+      "idea.together.done": "Инициатива создана — её видно в «Сделаем вместе»",
+      "idea.together.error": "Не получилось создать инициативу. Повторите позже.",
       "idea.empty.text": "Предложите первую — соседи смогут её поддержать.",
       "idea.empty.project": "Пока ни одна идея не стала проектом",
       "idea.empty.rejected": "Отклонённых идей нет",
@@ -182,6 +189,13 @@
       "idea.empty.title": "Әзірге идея жоқ",
       "idea.public.staff_hint": "Идеяларды әкімдік қызметкері кіргеннен кейін тексеріп, жариялай алады.",
       "idea.public.vote_residents": "Тұрғындар дауыс береді — «Тұрғын» көрінісінде. Шешімді әкімдік қабылдайды.",
+      "idea.together.line": "Бірге жасаңыз — құрал-жабдықпен қолдаймыз",
+      "idea.together.open": "Істі ашу",
+      "idea.together.make": "Бастамаға айналдыру",
+      "idea.together.hint": "Тұрғындар мұны өздері жасай алады — әкімдік құрал-жабдықпен және қоқыс шығарумен қолдайды.",
+      "idea.together.can": "Тұрғындар өздері жасай алса — бастамаға айналдырыңыз, әкімдік құрал-жабдықпен қолдайды.",
+      "idea.together.done": "Бастама құрылды — ол «Бірге жасайық» бөлімінде көрінеді",
+      "idea.together.error": "Бастаманы құру мүмкін болмады. Кейінірек қайталаңыз.",
       "idea.empty.text": "Біріншісін ұсыныңыз — көршілеріңіз қолдай алады.",
       "idea.empty.project": "Әзірге бірде-бір идея жобаға айналмады",
       "idea.empty.rejected": "Қабылданбаған идея жоқ",
@@ -315,7 +329,7 @@
     var staffGet = function (method, path) { return method === "GET" && /^\/(staff\/|works(\?|$))/.test(path); };
     // Все запросы сотрудника (чтение очереди, решения по идеям, записи «Рядом») — напрямую с токеном: не зависят от того,
     // успела ли оболочка узнать сессию после перезагрузки страницы.
-    var staffPath = function (path) { return /^\/(staff\/|works(\/|\?|$))/.test(path) || /^\/ideas\/[^/]+\/decide$/.test(path); };
+    var staffPath = function (path) { return /^\/(staff\/|works(\/|\?|$))/.test(path) || /^\/ideas\/[^/]+\/(decide|to-initiative)$/.test(path); };
     // Токен сотрудника: у оболочки (CivicShell) — когда она уже узнала сессию; иначе (экран открыт сразу после
     // перезагрузки) — из GET /api/civic/v1/session, как у карточек R06 (proposals.js).
     var token = null;
@@ -561,6 +575,7 @@
         if (!alive) return;
         state.items = (res[0] && res[0].items) || [];
         state.counts = (res[0] && res[0].counts) || {};
+        state.caps = (res[0] && res[0].capabilities) || {};   // раунд 15: to_initiative — есть ли R16 в сборке
         state.appear = true;
         state.projects = res[1] ? res[1].items || [] : [];
         if (state.flash) {
@@ -985,6 +1000,8 @@
           var d = textOf(x, "description");
           if (d.text) inner.appendChild(h("p", { class: "bk-quote ri-pd__text" + (state.more ? " ri-pd__text--full" : ""), lang: d.lang, text: d.text }));
         }
+        var together = togetherLine(x);
+        if (together) inner.appendChild(together);
         if (akimat) inner.appendChild(staffActions(x));
         else inner.appendChild(residentActions(x));
         if (state.more) inner.appendChild(moreBlock(x));
@@ -1128,6 +1145,51 @@
       var mark = "\u0001", full = tr(key, { text: mark }), at = full.indexOf(mark);
       if (at < 0) return h("p", { class: cls, text: tr(key, { text: text }) });
       return h("p", { class: cls }, [h("strong", { text: full.slice(0, at).replace(/\s+$/, "") }), " " + text + full.slice(at + 1)]);
+    }
+    // ── раунд 15: идея → дело жителей (R16 «Сделаем вместе»; IA R11 §5.5) ──
+    // Строка «Сделайте вместе — поддержим инвентарём» со ссылкой на дело — у идеи, ставшей инициативой; у сотрудника —
+    // тихая «Сделать инициативой» для опубликованной идеи (главная кнопка карточки остаётся «Проверить»).
+    // Нет R16 в сборке (ни экрана, ни capabilities.to_initiative) — ни строки, ни кнопки.
+    function togetherAvailable() {
+      return !!(root.BirgeTogether || (state.caps && state.caps.to_initiative));
+    }
+    function togetherLine(item) {
+      if (item.initiative && item.initiative.id && togetherAvailable()) {
+        return h("p", { class: "ri-together", "data-key": "together-line" }, [
+          h("span", { class: "ri-together__ic", "aria-hidden": "true" }, [icon("heart")]),
+          h("span", { class: "ri-together__text", text: tr("idea.together.line") }),
+          h("a", { class: "ri-together__link", href: "#together/" + item.initiative.id, "data-key": "together-open",
+            onclick: function (e) { e.preventDefault(); openTogether(item.initiative.id); } }, [tr("idea.together.open")])]);
+      }
+      if (akimat && state.caps && state.caps.to_initiative && !item.initiative
+          && (item.status === "voting" || item.status === "checking" || item.status === "rejected")) {
+        return h("div", { class: "ri-together ri-together--staff" }, [
+          h("p", { class: "ri-together__text", text: tr(item.self_doable ? "idea.together.hint" : "idea.together.can") }),
+          button("bk-btn--ghost ri-together__make", tr("idea.together.make"), "heart",
+            { "data-key": "together-make", onclick: function () { makeTogether(item); } })]);
+      }
+      return null;
+    }
+    function openTogether(id) {
+      var S = shell();
+      if (S && typeof S.openLink === "function") { S.openLink("#together/" + id); return; }
+      if (S && S.setSection) S.setSection("together");
+      doc.dispatchEvent(new CustomEvent("birge:open", { detail: { section: "together", path: id, link: "#together/" + id } }));
+    }
+    function makeTogether(item) {
+      if (state.busy) return;
+      state.busy = true;
+      request("POST", "/ideas/" + encodeURIComponent(item.id) + "/to-initiative", {}).then(function (data) {
+        state.busy = false;
+        if (data && data.item) replace(data.item);
+        toast(tr("idea.together.done"));
+        render();
+      }, function (err) {
+        state.busy = false;
+        if (err.status === 503) state.caps = { to_initiative: false };
+        toast(tr("idea.together.error"), { type: "error" });
+        render();
+      });
     }
     function decisionBlock(item) {
       if (item.status === "rejected") {

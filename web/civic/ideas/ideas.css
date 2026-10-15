@@ -1453,3 +1453,47 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
   flex: 1 1 200px;
   margin: 0;
 }
+
+/* Раунд 15: идея → дело жителей (R16). Строка с маленьким значком, текстом и ссылкой; у сотрудника — подсказка и тихая кнопка. */
+.ri-together {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.ri-together__ic {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+}
+.ri-together__ic .ic {
+  width: 16px;
+  height: 16px;
+}
+.ri-together__text {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+.ri-together__link {
+  color: var(--c-ink, #121a17);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.ri-together--staff {
+  flex-direction: column;
+  align-items: stretch;
+}
+.ri-together--staff .ri-together__text {
+  margin: 0;
+  color: var(--c-text-2, #4b5752);
+}
