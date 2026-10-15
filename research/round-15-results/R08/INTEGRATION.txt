@@ -2,6 +2,9 @@ R08 · раунд 15 · «Картина дня» 2.0, Ситуационный 
 Ветка: claude/laughing-euler-iv3on3 (ветка сессии R08). Версия 2 — 15 окт ~18:00 по Астане. Код — см. DELIVERY.json code_sha.
 
 ═══ 0. КОРОТКО ═══
+ДВЕ ВЕТКИ R08: роль по гонке при старте ведут две сессии (эта — claude/laughing-euler-iv3on3, заявка на 7 с
+раньше; вторая — claude/inspiring-johnson-j7wksj). Адреса API и страниц одинаковы, проводка R01 подходит к обеим.
+В сборку брать R08 из ОДНОЙ ветки целиком — модули разные, а имена части файлов совпадают (STATUS R08).
 R01 — применить r01_routes_r08.patch (2 маршрута staff_view, 6 файлов в CIVIC_ASSETS) и пункт «Ещё → Ситуационный центр».
 R11 — 170 ключей ru/kk: I18N_R15.json (board.*, week.*, akim.trio.*, akim.forecast.*, akim.crisis.open, …).
 R17 / R16 / R13 — уже подключены их настоящие функции (§2–4); две маленькие просьбы — §3.2, §4.2.
@@ -15,6 +18,8 @@ operator — табло, «Картина недели», три карточк�
     V2_HANDLERS: akim.board, akim.week → V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff_view=True)
     ВАЖНО: staff_view=True. Только тогда шлюз проверяет сессию сотрудника и передаёт handle_get(..., staff=True).
     Без него модуль честно отвечает 403 forbidden всем (защита по умолчанию, R15).
+    Сделано у R01 (brave-fermi @ dbf25c05): маршруты с staff=True — шлюз сам не пускает без сессии сотрудника и
+    передаёт модулю staff=True; так даже строже, R08 согласен. Осталось: CIVIC_ASSETS (6 файлов ниже) и меню §1.2.
     CIVIC_ASSETS: "board/index.html", "board/board.js", "board/board.css", "akim/week.html", "akim/week.js", "akim/week.css".
     Адрес страницы — /civic/board/index.html (каталоги сервер не отдаёт; можно добавить псевдоним "/civic/board/").
 1.2 Меню (R11 IA_ROUND15 §3, §5.9): «Ещё» акимата → группа «Инструменты» → «Ситуационный центр», значок i-monitor:
