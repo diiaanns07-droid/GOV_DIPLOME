@@ -2835,5 +2835,16 @@
  "wcal.real.tag": "Настоящие",
  "wcal.real.coverage": "работ из открытых источников: {n} · на участке улицы {exact} · примерно {approx}",
  "analyst.empty_action": "Главное за сегодня",
- "analyst.empty_question": "Что сегодня главное?"
+ "analyst.empty_question": "Что сегодня главное?",
+ "crisis.map.layer": "Кризис",
+ "crisis.map.more": "Подробнее",
+ "crisis.map.close": "Скрыть",
+ "crisis.map.zone": "Зона: {zone}",
+ "crisis.map.updates": "Обновления служб",
+ "crisis.map.none": "Пока без обновлений",
+ "crisis.map.show": "Показать зону",
+ "crisis.map.demo": "Пример",
+ "crisis.map.since": "с {time}",
+ "crisis.map.closed": "Кризис закрыт",
+ "shell.layers.crisis": "Кризис"
 }

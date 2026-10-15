@@ -820,5 +820,16 @@
  "wcal.real.tag": "R12 · web/civic/works-calendar/works-calendar.js",
  "wcal.real.coverage": "R12 · web/civic/works-calendar/works-calendar.js",
  "analyst.empty_action": "R03 · web/civic/assistant/analyst.js",
- "analyst.empty_question": "R03 · web/civic/assistant/analyst.js"
+ "analyst.empty_question": "R03 · web/civic/assistant/analyst.js",
+ "crisis.map.layer": "R17 · web/civic/agencies/crisis-layer.js",
+ "crisis.map.more": "R17 · web/civic/agencies/crisis-layer.js",
+ "crisis.map.close": "R17 · web/civic/agencies/crisis-layer.js",
+ "crisis.map.zone": "R17 · web/civic/agencies/crisis-layer.js",
+ "crisis.map.updates": "R17 · web/civic/agencies/crisis-layer.js",
+ "crisis.map.none": "R17 · web/civic/agencies/crisis-layer.js",
+ "crisis.map.show": "R17 · web/civic/agencies/crisis-layer.js",
+ "crisis.map.demo": "R17 · web/civic/agencies/crisis-layer.js",
+ "crisis.map.since": "R17 · web/civic/agencies/crisis-layer.js",
+ "crisis.map.closed": "R17 · web/civic/agencies/crisis-layer.js",
+ "shell.layers.crisis": "R17 · web/civic/agencies/crisis-layer.js (titleKey слоя; просьба R17 INTEGRATION §2)"
 }

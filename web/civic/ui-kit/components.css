@@ -2034,6 +2034,10 @@ p.bk-banner--warn {
   .bk-tabs .bk-num {
     display: none;
   }
+  /* четыре kk-вкладки («Шолу · Мәселелер · Бастамалар · Жұмыстар», двор R16) — целиком в строке 375 (обзор R11, раунд 15) */
+  .bk-tabs {
+    gap: 14px;
+  }
 }
 
 /* <details class="bk-details"><summary>Толығырақ</summary>…</details> — карточка не растёт (IA_WAVE2 §0.4) */
@@ -4966,6 +4970,12 @@ button.bk-conflict::after {
   background-image: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+}
+/* Модуль роли внутри листа-стекла (#birge-screen оболочки): своя подложка .bk-app — бумага — давала «лист в листе»,
+   бежевый прямоугольник в белом стекле (кадры R16 «Мой двор», R17 «Штаб ведомств»; обзор R11, раунд 15; VISUAL_BRIEF §4.5).
+   Содержимое лежит прямо на стекле, как «Картина дня»; карточки и KPI получают белую подложку правилами ниже. */
+.bk-glass .bk-app:not(.bk-glass) {
+  background: transparent;
 }
 /* Внутри стекла: карточки — более плотная белая подложка без тени; поля форм — непрозрачные */
 .bk-glass .bk-card {
