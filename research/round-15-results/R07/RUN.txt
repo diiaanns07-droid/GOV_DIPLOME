@@ -21,16 +21,20 @@ API
 
 СБОРКА R01 (как в COMMON, «Как поднять стенд»), демо-мир:
   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8655
-  → http://127.0.0.1:8655/?replay=7   (после подключения replay.js по INTEGRATION.txt §1.2–1.3)
+  → http://127.0.0.1:8655/?replay=7   (после подключения хроники по INTEGRATION.txt §1.2–1.3: лёгкий вход
+     replay-attach.js или replay.js + replay.css целиком)
 
 ТЕСТЫ
   python -m pytest tests/civic/R07 -q                                     # 203 passed, 1 skipped (мир R02 — в сборке)
   python -m ui.civic_heat.devserver --world &                             # затем
-  NODE_PATH=$(npm root -g) node tests/civic/R07/browser/replay.cjs        # 15/15, кадры → research/round-15-results/R07/screens/
+  NODE_PATH=$(npm root -g) node tests/civic/R07/browser/replay.cjs        # 16/16 (+ лёгкий вход), кадры → research/round-15-results/R07/screens/
   python -m ui.civic_heat.devserver --port 8619 & R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html \
     NODE_PATH=$(npm root -g) node tests/civic/R07/browser/wave2.js <папка>  # регресс волны 2: 38/38
   python -m ui.civic_heat.devserver --world city1000 --port 8618 &
   NODE_PATH=$(npm root -g) node tests/civic/R07/browser/replay_fps.cjs http://127.0.0.1:8618   # плавность (fps_cloud.json)
+  R07_SHELL=http://127.0.0.1:8655/ NODE_PATH=$(npm root -g) node tests/civic/R07/browser/first_badge_shell.cjs 5
+                                                                          # первый значок в сборке R01 (first_badge_cloud.json)
+  python -m ui.civic_heat.build_fixtures --street-targets                 # светофор и переход демо — по свежему снимку LOCAL-10
 
 ИНТЕГРАЦИЯ С СОСЕДЯМИ (проверено во временной сборке, см. INTEGRATION.txt §2):
   мир R02 (08bb57a1) → R09.seed_world (eed6393f) → R17.seed_world (72676e3d) → R07: отметка «Буран в Нуре» со ссылкой

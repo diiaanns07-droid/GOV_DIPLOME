@@ -1,0 +1,15 @@
+--- a/web/civic/shell/birge-ref.css
++++ b/web/civic/shell/birge-ref.css
+@@ -251,3 +251,12 @@
+ .birge-palette__foot { margin: 6px 0 0; padding: 8px 14px 4px; border-top: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+   color: var(--c-text-2, #4b5752); font-size: 13px; }
+ html.bk-glass-off .birge-palette__box { background: #fff; }
++
++/* R07 «Хроника города» (INTEGRATION §3б): пока открыта хроника (body.birge-replay-open), карта показывает прошлый день —
++   «Сегодня в Астане» и шторка «Рядом с вами» с сегодняшними числами прячутся (рядом с хроникой они путают), строка
++   состояния карты — над полосой хроники. Закрыли хронику — всё на прежних местах. */
++body.civic-mode.birge-replay-open #birge-today,
++body.civic-mode.birge-replay-open #birge-near { display: none !important; }
++@media (min-width: 761px) {
++  body.civic-mode.birge-replay-open .civic-explore #map-status:not(.hidden) { bottom: 184px; }
++}
