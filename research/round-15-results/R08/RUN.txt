@@ -15,15 +15,20 @@ R08 · раунд 15 · как запустить и что теперь мож�
   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
   printf 'пароль-не-короче-12\nпароль-не-короче-12\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655
-  → вход сотрудника: аватар → «Для сотрудников» → operator; потом «Ещё → Ситуационный центр» (/civic/board/index.html).
+  → вход сотрудника: аватар → «Для сотрудников» → operator; потом «Ещё → Ситуационный центр» (/civic/board/).
   Демо-мир: CIVIC_DEMO_WORLD=1 — фикстуры R08 выключаются, числа только из модулей соседей.
 
-ДЕМО-МИР R02: СВЕРКА ЧИСЕЛ (сборка R01 + модули соседей + R08; так проверено 15 окт, см. DELIVERY.json tests)
+ДЕМО-МИР R02: СВЕРКА ЧИСЕЛ (сборка R01 B0.10 d893d9b2 + R08; так проверено 16 окт, см. DELIVERY.json tests)
   CIVIC_DB_PATH=/tmp/birge/world.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8660   # (init + operator — как выше)
   CIVIC_STAND_PASSWORD=<пароль operator> python3 tests/civic/R08/world_check.py --base http://127.0.0.1:8660 \
-      --expected data/civic/astana/demo-world/EXPECTED.json                         # 18/18 → world_check.json
+      --expected data/civic/astana/demo-world/EXPECTED.json                         # 19/19 → world_check.json
   CIVIC_STAND_PASSWORD=<пароль operator> NODE_PATH=$(npm root -g) node tests/civic/R08/world_shots.cjs http://127.0.0.1:8660
-                                                                                    # 78/78 → screens/world/
+                                                                                    # 82/82 → screens/world/
+  CIVIC_STAND_PASSWORD=<пароль operator> NODE_PATH=$(npm root -g) node tests/civic/R08/board_entry_check.cjs http://127.0.0.1:8660
+      # вход в табло из оболочки: «Ещё», Ctrl+K, #board, «← В Birge», Esc — 13/13 с патчем оболочки (B0.10 без него 10/2)
+  CIVIC_STAND_PASSWORD=<пароль operator> NODE_PATH=$(npm root -g) node tests/civic/R08/fit_scan.cjs http://127.0.0.1:8660
+      # ≥ 13 px, ≥ 44 px, контраст ≥ 4,5:1, без обрезки: табло, лист недели, «Картина дня», «Сегодня в Астане» — 7/7
+  NODE_PATH=$(npm root -g) node tests/civic/R08/shell_check.cjs http://127.0.0.1:8660          # 28/28 («Картина дня» в оболочке)
   Сверяется: «Картина дня» = Ситуационный центр (числа, районы) = карта R07 (7 дней) = табло R17 (службы, «поступило»),
   кризис и кнопка штаба, «Жители вместе» и «двор недели» = R16, «Встречи» = R13, «Картина недели», «Нужно решение акима»
   = EXPECTED.json R02, сцена 7 («Поддержать» → «Субботник во дворе»). Пароль — только в переменной окружения.
@@ -36,7 +41,7 @@ R08 · раунд 15 · как запустить и что теперь мож�
   Аким в «Картине дня»: коротко «проблема → вариант → Выбрать» (с адресом места), у тревоги «Снег…» — «Открыть
   кризисный штаб», три карточки «Ведомства · Жители вместе · Встречи» с переходом в разделы («Поддержать» — ближайшее
   дело без поддержки акимата, сцена 7), прогноз на неделю (прототип R13).
-  Акимат на совещании: «Картина недели» — 2 листа A4 на русском или казахском, «Эта / Прошлая неделя», район.
+  Акимат на совещании: «Картина недели» — 2 листа A4 на русском или казахском, «Последние 7 дней / Неделей раньше», район.
 
 ПРОВЕРКИ
   python3 -m pytest -q tests/civic/R08                                         # 300 passed, 1 skipped
