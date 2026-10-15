@@ -54,6 +54,8 @@ def main() -> int:
     ap.add_argument("out")
     ap.add_argument("--base", default="research/round-15-results/R10/final4-a4937462/e2e")
     ap.add_argument("--final", action="store_true", help="сборка FINAL-5: сцены 7–9 без NOT_RUN")
+    ap.add_argument("--ref-before", default="research/round-15-results/R10/final4-a4937462/ref",
+                    help="прогон эталона FINAL-4 (TOTALS.json) — база «не хуже»")
     a = ap.parse_args()
     out = Path(a.out)
     ch = chain(out)
@@ -149,10 +151,20 @@ def main() -> int:
             if worst > 3000:
                 watch.append(f"первый значок карты {worst} мс > 3 с")
 
-    # Эталон
+    # Эталон A: «не хуже FINAL-4» — число совпавших / близких элементов и доля совпавших пикселей.
     ref = load(out / "ref" / "TOTALS.json")
     if ref:
-        lines.append(f"| Эталон A (47 элементов) | {json.dumps(ref, ensure_ascii=False)[:160]} |")
+        sc = ref.get("score") or {}
+        was = (load(Path(a.ref_before) / "TOTALS.json") or {}).get("score") or {}
+        not_open = [k for k, v in ((load(out / "ref" / "REFERENCE.json") or {}).get("report") or {}).items()
+                    if isinstance(v, dict) and not v.get("reached")]
+        lines.append(f"| Эталон A (47 элементов) | совпадает/близко {sc.get('ok')} из {sc.get('total')}, пиксели {sc.get('pixels')} % "
+                     f"(FINAL-4: {was.get('ok', '?')} из {was.get('total', '?')}, {was.get('pixels', '?')} %)"
+                     + (f"; не открылось: {', '.join(not_open)}" if not_open else "") + " |")
+        if was and isinstance(sc.get("ok"), int) and isinstance(was.get("ok"), int) and sc["ok"] < was["ok"]:
+            watch.append(f"эталон A хуже FINAL-4: {sc['ok']} из {sc.get('total')} против {was['ok']} "
+                         f"(по ролям {json.dumps(sc.get('roles'), ensure_ascii=False)})"
+                         + (f"; состояние не открылось: {', '.join(not_open)}" if not_open else ""))
 
     # Ролик
     vid = load(out / "video" / "MANIFEST.json")
