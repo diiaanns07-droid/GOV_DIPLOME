@@ -156,9 +156,11 @@ def load_items(district: str | None, now: datetime, *, objects=None, nearby_fn=N
             names["nearby"] = "r06"
         except sources.R06NotReady:
             fn = None
-    if not fn:
+    if not fn and not sources.demo_world():  # демо-мир R02: пример R08 не подмешиваем
         items += fixture_items(now)
         names["nearby"] = "example"
+    elif not fn:
+        names["nearby"] = "none"
     if objects is None:
         objects, names["objects"] = sources.default_objects()
     else:

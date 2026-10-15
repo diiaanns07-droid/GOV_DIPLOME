@@ -740,7 +740,8 @@ class AkimService:
         items = decisions.build(recs, as_of, status_at=status_at, parse_time=parse_time, labels=labels)
         demo = False
         all_demo = self.source_names.get("complaints") == "r07-demo" or (bool(recs) and all(r.get("demo") is True for r in recs))
-        if not items and (all_demo or self.demo_build):
+        # Демо-мир R02 (CIVIC_DEMO_WORLD=1): примера R08 нет — «Нужно решение» только из жалоб демо-мира (паспорт R09).
+        if not items and (all_demo or self.demo_build) and not neighbors.demo_world():
             example = [r for r in decisions.fixture_records(as_of.date())
                        if district is None or r.get("district") == district]
             items = decisions.build(example, as_of, status_at=status_at, parse_time=parse_time)

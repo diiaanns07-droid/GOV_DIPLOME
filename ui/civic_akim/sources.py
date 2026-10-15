@@ -7,6 +7,8 @@
     предложения и голоса . R06 ui.civic_store.v2.list_proposals(district=, status="proposal"); иначе —
                            fixtures/proposals_demo.json (demo).
 
+Демо-мир R02 (CIVIC_DEMO_WORLD=1, раунд 15): фикстуры R08 не подмешиваются никогда — нет модуля или базы → пусто.
+
 Главное правило: числа «Картины дня» обязаны совпадать с картой. Поэтому жалобы берутся
 у того же HeatService, который отвечает на /heat, а не из отдельного запроса к базе.
 R01 может подключить всё явно: ui.civic_akim.configure(heat=..., records=..., objects=..., proposals=...).
@@ -14,6 +16,7 @@ R01 может подключить всё явно: ui.civic_akim.configure(hea
 from __future__ import annotations
 
 import json
+import os
 import re
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -138,7 +141,14 @@ def _shift(value, days: int):
     return (datetime.fromisoformat(text) + timedelta(days=days)).isoformat(timespec="seconds")
 
 
+def demo_world() -> bool:
+    """CIVIC_DEMO_WORLD=1: один демо-мир R02 — числа только из модулей, фикстуры R08 не подмешиваются."""
+    return os.environ.get("CIVIC_DEMO_WORLD") == "1"
+
+
 def fixture_objects(today: date) -> list[dict]:
+    if demo_world():
+        return []
     raw = json.loads(OBJECTS_FIXTURE.read_text("utf-8"))
     days = _shift_days(raw.get("_meta", {}), today)
     out = []
@@ -151,6 +161,8 @@ def fixture_objects(today: date) -> list[dict]:
 
 
 def fixture_proposals(today: date) -> list[dict]:
+    if demo_world():
+        return []
     raw = json.loads(PROPOSALS_FIXTURE.read_text("utf-8"))
     days = _shift_days(raw.get("_meta", {}), today)
     out = []
