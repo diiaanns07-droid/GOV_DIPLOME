@@ -17,8 +17,9 @@ R06 · раунд 15 · как подключить к сборке (поста�
    и после <script defer src="/civic/proposals/works.js"></script>:
        <script defer src="/civic/notify/notify.js"></script>
    Ровно это делает tests/civic/R06/round15/tree_r01_build.sh (проверка «как B1»: ветка R01 + пути R06 + эти 3 строки).
-4. Колокольчик: пока у оболочки нет своей кнопки, notify.js сам ставит её в «.birge-me» (вид «Житель», ≥ 761 px).
-   Захотите свою — §D (BirgeNotify.attach). На телефоне — экран «Уведомления» в «Ещё» (registerScreen модуля).
+4. Колокольчик: notify.js сам ставит кнопку в «.birge-me» (вид «Житель», ≥ 761 px). В B0.4 (8b1e5f0c) R01 уже
+   подключил: SCREENS.notifications (BirgeNotify), без пункта «Ещё», телефон — первый пункт меню аватара
+   «Уведомления · N» и точка на аватаре по BirgeNotify.onCount — проверено браузером R06 на 197ad600.
 5. seed_world R06 — ui.civic_store.seed_world (как вы уже зовёте в wire()): «civic-world: … R06 55 …».
 Проверено на дереве R01 29b4ae9d (B0.2) + R06: см. DELIVERY.json → tests.
 
@@ -56,8 +57,11 @@ B. МАРШРУТЫ API v2 R06 (CONTRACT §7) — в B0 уже есть
     POST ideas/{id}/to-initiative   сотрудник idea_to_initiative(idea_id, body, context=None, principal=None) -> (201, …)
 Ответ ленты: {"items": [{id, at, module, kind, target, title_ru, title_kk, link, demo, read}], "unread", "read_until",
   "now", "sources": {"R06": "ok", "R09"|"R16"|"R17"|"R13": "ok|absent|error"}, "truncated"}.
-read: {ids: [...]} | {all: true} | {until: ISO}; {ids: []} — ничего не отмечать (200). id событий — по правилу CIVIC_ID
-  шлюза (до 96 знаков; длинный id соседа укорачивается стабильно).
+read: {ids: [...]} | {all: true} | {until: ISO} (можно {until, ids} вместе); {ids: []} — ничего не отмечать (200).
+  {all: true} — «прочитано до» = сейчас, события «впереди часов сервера» — по id (граница в будущее не уезжает);
+  кнопка «Прочитать все» шлёт {until: now показанной ленты, ids: показанные события впереди} — пришедшее позже остаётся
+  новым; прежние отметки по id сохраняются. id событий — по правилу CIVIC_ID шлюза (до 96 знаков; длинный id соседа
+  укорачивается стабильно).
 to-initiative: {kind?: cleanup|greening|snow|repair|help|other, starts_at?: ISO}; повтор — то же дело (created: false);
   нет R16 — 503 module_not_ready.
 Житель — X-Birge-Device (шлюз отдаёт заголовки в context["headers"] в нижнем регистре); свои события R06 (идеи, голоса) —
