@@ -85,7 +85,18 @@ function screenMetrics(page, sel) {
       if (r.height < 44 || r.width < 44) small.push({ h: Math.round(r.height), w: Math.round(r.width),
         t: (box.innerText || e.getAttribute("aria-label") || e.getAttribute("title") || "").trim().replace(/\s+/g, " ").slice(0, 24) });
     }
-    return { sizes: [...sizes.entries()].sort((a, b) => a[0] - b[0]), small };
+    // Вкладка за краем полосы (полоса прокручивается вбок): видна «Төтенше жа…» — подпись выглядит обрезанной.
+    const tabsCut = [];
+    for (const t of root.querySelectorAll("[role=tab]")) {
+      if (!vis(t)) continue;
+      const r = t.getBoundingClientRect();
+      let edge = { left: 0, right: innerWidth };
+      for (let n = t.parentElement; n && n !== document.body; n = n.parentElement) {
+        if (/(auto|scroll|hidden|clip)/.test(getComputedStyle(n).overflowX)) { const pr = n.getBoundingClientRect(); edge = { left: pr.left, right: pr.right }; break; }
+      }
+      if (r.right > edge.right + 1 || r.left < edge.left - 1) tabsCut.push((t.innerText || "").trim().slice(0, 24));
+    }
+    return { sizes: [...sizes.entries()].sort((a, b) => a[0] - b[0]), small, tabsCut };
   }, sel);
 }
 
@@ -199,6 +210,7 @@ async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, 
   }
   add(sc.id, own, variant, "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)", q.lowContrastN ? "FAIL" : "PASS", { n: q.lowContrastN, ex: (q.lowContrast || []).slice(0, 3) });
   if (lang === "kk") add(sc.id, own, variant, "казахский не обрезан и не перекрыт", q.cutN || q.clippedN ? "FAIL" : "PASS", { cut: q.cut.slice(0, 3), clipped: q.clipped.slice(0, 3) });
+  if (m && m.tabsCut.length) add(sc.id, own, variant, "вкладки целиком (полоса вкладок не режет подпись краем)", "WARN", { cut: m.tabsCut });
   const fc = await focusCheck(page, SEL);
   add(sc.id, own, variant, "видимый фокус с клавиатуры (п. 10)", fc === null ? "NOT_RUN" : fc.ring ? "PASS" : "FAIL", fc || "Tab не дошёл до элементов экрана");
   // Состояние «нет связи» (п. 8) — один размер на язык (1366): запросы модуля оборваны → понятный текст и «Повторить»,
