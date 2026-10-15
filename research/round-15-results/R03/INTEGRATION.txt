@@ -9,6 +9,7 @@ SHA кода и проверок — research/round-15-results/R03/DELIVERY.json
 палитра. К сборке B1 — свежий code_sha из DELIVERY.json и один новый patch:
 1) git checkout <code_sha из DELIVERY.json> -- agent/civic_assistant/ web/civic/assistant/
 2) git apply research/round-15-results/R03/patches/R01_warm_up.patch   (ui/web_server.py main(): прогрев в фоне, R10 B-107)
+   Снят с R01 197ad600; с patch R16 R01_together_b1.patch (его прогрев — после R12, другой кусок) — в любом порядке.
    Файлы экрана (R01_assistant_ask.patch) и палитра (R01_palette_commands.patch) у R01 уже применены (c97aa5f5).
 3) Проверка: python3 -B -m pytest -q tests/civic/R03/round15 → 85 passed, 1 skipped (тест со всеми настоящими
    соседями сразу: на ветке R03 нет R17, в B0 нет R16; в копии B0 c9069723 — 81 passed, 1 skipped до правки терминов).

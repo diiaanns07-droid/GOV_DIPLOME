@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "c6574a391af1c76393d497115191fbf1178a2007",
- "tested_sha": "c6574a391af1c76393d497115191fbf1178a2007",
+ "code_sha": "82b1999d2d8c6096ac11099b58d0d80194de53a1",
+ "tested_sha": "82b1999d2d8c6096ac11099b58d0d80194de53a1",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -77,7 +77,7 @@
  "integration": {
   "route": "POST /api/civic/v2/assistant/ask → agent.civic_assistant.api.ask — в шлюзе R01 (V2_HANDLERS_ROUND15, аргументы question, lang ru|kk|mixed, district, body); в сборке B0 (R01 c97aa5f5) уже R03 7724787e",
   "patches": [
-   "research/round-15-results/R03/patches/R01_warm_up.patch (НОВЫЙ к B1: ui/web_server.py main() — прогрев agent.civic_assistant.api.warm_up в фоне после wire() и засева мира, R10 B-107)",
+   "research/round-15-results/R03/patches/R01_warm_up.patch (НОВЫЙ к B1, снят с R01 197ad600: ui/web_server.py main() — прогрев agent.civic_assistant.api.warm_up в фоне после wire() и засева мира, R10 B-107; совместим с R16 R01_together_b1.patch в любом порядке)",
    "research/round-15-results/R03/patches/R01_assistant_ask.patch (уже применён R01 в c97aa5f5: CIVIC_ASSETS analyst.js/analyst.css; web/index.html link + script)",
    "research/round-15-results/R03/patches/R01_palette_commands.patch (уже применён R01 в c97aa5f5: Ctrl+K)"
   ],
@@ -273,7 +273,8 @@
   "R10_B107": "исправлено 89359acf: warm_up() + patches/R01_warm_up.patch; скелетон с видимой надписью «Считаем по данным…»",
   "R10_B120": "исправлено 89359acf: чипы 44 px (видимая зона), кнопка «Спросить» 44 × 44 на 375; пустой экран — 3 размера шрифта",
   "R15_R16_initiatives_name": "уже не актуально с 650d5ef6: первым идёт ui.civic_together.initiatives_summary (только published/done)",
-  "R11_kk_terms": "сверено с R11 b3502428: ответы по-казахски — «Жедел штаб», «төтенше жағдай»; запасной analyst.empty_text (kk) = словарь R11; 58 ключей analyst.* в словаре R11 совпадают",
-  "R17_two_deadlines": "c6574a39: «Какие службы отстают?» — по overdue_fix (срок исправления R08): на мире 35 = «Просрочено» R08 = итог R17; просрочка ответа R09 (5) — отдельной строкой «Срок первого ответа жителю прошёл…»; без R08 — «ответ просрочен». Иначе 5 и 35 под одним словом (как B-104)"
+  "R11_kk_terms": "сверено с R11 f8ce804c: 58 ключей analyst.* совпадают; ответы — «Жедел штаб», «төтенше жағдай», «көше бөлігі» (KK_REVIEW_R15 №22, 22а, 28)",
+  "R17_two_deadlines": "c6574a39: «Какие службы отстают?» — по overdue_fix (срок исправления R08): на мире 35 = «Просрочено» R08 = итог R17; просрочка ответа R09 (5) — отдельной строкой «Срок первого ответа жителю прошёл…»; без R08 — «ответ просрочен». Иначе 5 и 35 под одним словом (как B-104)",
+  "R10_pvE": "R10 pvE (R01 c9069723 + роли 16:22 UTC): F1–F4 PASS (96 = карта, 83 = карта, 5 = «Картина дня», kk 96); время первого ответа 4,4 с — в превью ещё нет R01_warm_up.patch (B-107 закроется с B1)"
  }
 }
