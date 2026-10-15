@@ -109,6 +109,8 @@
   R01 просил снять xfail S42 — сделано.
 - Ветка R01 как B0: tests/civic/R15 449 passed / 10 xfailed / 1 xpassed / 0 failed; браузер 5 PASS / 0 FAIL / 4 NOT_RUN.
 - Открыто: S43 (R17), S44 (R03) — низкие.
+- Новый фронтенд: R06 notify.js, R07 replay.js — innerHTML только для иконок/разметки из констант, данные через esc(),
+  имена иконок — по таблицам; R16 together.js, R17 agencies.js, R13 meetings.js — без innerHTML. Чисто.
 
 ## Следующий шаг
 - Круг 4 (~19:30): применили ли R17/R03; головы ролей; B1 — 16 окт 14:00 (find_branches.py --build) — полный прогон,
