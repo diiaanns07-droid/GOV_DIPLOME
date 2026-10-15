@@ -1869,6 +1869,7 @@
   function stopPick() {
     if (!picking) return;
     try { picking.map.off("click", picking.onClick); } catch (e) { /* карта снята */ }
+    if (picking.box) picking.box.removeEventListener("click", picking.onMarker, true);
     doc.removeEventListener("keydown", picking.onKey, true);
     if (picking.bar.parentNode) picking.bar.parentNode.removeChild(picking.bar);
     if (picking.canvas) picking.canvas.style.cursor = "";
@@ -1893,9 +1894,22 @@
       }, function () { text.textContent = t("together.error.text"); });
     }
     function onKey(ev) { if (ev.key === "Escape") { stopPick(); ev.preventDefault(); ev.stopPropagation(); } }
+    // Значки других слоёв (тепловая карта R07, капсулы дел) — HTML-метки над картой и ловят нажатие сами: во дворе
+    // с проблемой его середину закрывает значок. В режиме выбора нажатие по значку — тоже выбор этого места.
+    var box = mapObj.getContainer ? mapObj.getContainer() : null;
+    function onMarker(ev) {
+      var hit = ev.target && ev.target.closest ? ev.target.closest(".maplibregl-marker") : null;
+      if (!hit || !box || typeof mapObj.unproject !== "function") return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      var r = box.getBoundingClientRect(), m = hit.getBoundingClientRect();
+      var x = ev.detail ? ev.clientX : m.left + m.width / 2, y = ev.detail ? ev.clientY : m.top + m.height / 2;   // Enter — середина значка
+      onClick({ lngLat: mapObj.unproject([x - r.left, y - r.top]) });
+    }
     mapObj.on("click", onClick);
+    if (box) box.addEventListener("click", onMarker, true);
     doc.addEventListener("keydown", onKey, true);
-    picking = { map: mapObj, onClick: onClick, onKey: onKey, bar: bar, canvas: canvas };
+    picking = { map: mapObj, onClick: onClick, onKey: onKey, onMarker: onMarker, box: box, bar: bar, canvas: canvas };
   }
 
   // ------------------------------------------------------------------ слой карты «Инициативы»

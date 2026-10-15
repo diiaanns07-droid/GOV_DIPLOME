@@ -151,21 +151,34 @@ async function jpegBuffer(page, w, h) {
           const j = await res.json();
           const pt = (j.yard || {}).point;
           if (!pt || typeof map === "undefined" || !map) return null;   // eslint-disable-line no-undef
-          map.jumpTo({ center: pt, zoom: 17 });                         // eslint-disable-line no-undef
-          await new Promise((r) => setTimeout(r, 400));
+          // Карта может ещё двигаться (первые движения камеры, медленный облачный WebGL): ждём покоя и проверяем центр.
+          const settle = () => new Promise((r) => {
+            if (!map.isMoving()) setTimeout(r, 300);                    // eslint-disable-line no-undef
+            else map.once("idle", () => setTimeout(r, 200));            // eslint-disable-line no-undef
+          });
+          for (let i = 0; i < 4; i++) {
+            map.jumpTo({ center: pt, zoom: 17 });                       // eslint-disable-line no-undef
+            await settle();
+            const c = map.getCenter();                                  // eslint-disable-line no-undef
+            if (Math.abs(c.lng - pt[0]) < 0.0005 && Math.abs(c.lat - pt[1]) < 0.0005 && !map.isMoving()) break; // eslint-disable-line no-undef
+          }
           const xy = map.project(pt);                                   // eslint-disable-line no-undef
           const box = map.getCanvas().getBoundingClientRect();          // eslint-disable-line no-undef
-          // Точка двора, не закрытая значками тепловой карты: ищем рядом свободное место на холсте.
+          // Середина двора: холст карты или значок другого слоя над ним (значок R07 у двора с проблемой) — в режиме выбора
+          // нажатие по значку тоже выбирает место. Закрыто листом или строкой-подсказкой — ищем рядом.
           for (const [dx, dy] of [[0, 0], [14, 0], [-14, 0], [0, 14], [0, -14], [20, 20], [-20, -20]]) {
-            const x = box.left + xy.x + dx, y = box.top + xy.y + dy;
-            if (document.elementFromPoint(x, y) === map.getCanvas()) return { x, y }; // eslint-disable-line no-undef
+            const x = box.left + xy.x + dx, y = box.top + xy.y + dy, el = document.elementFromPoint(x, y);
+            if (el === map.getCanvas() || (el && el.closest(".maplibregl-marker"))) return { x, y, on: el.className.baseVal === undefined ? String(el.className).split(" ")[0] : "svg" }; // eslint-disable-line no-undef
           }
           return null;
         }, SCENE.yard);
         if (spot) {
           await page.mouse.click(spot.x, spot.y);
-          const opened = await page.waitForSelector(`.tg-yardhead`, { timeout: 15000 }).then(() => true, () => false);
-          check(`${tag} выбор на карте: нажатие во дворе открывает «Мой двор»`, opened && !(await page.$(".tg-pickbar")));
+          const opened = await page.waitForSelector(`.tg-yardhead`, { timeout: 20000 }).then(() => true, () => false);
+          const after = await page.evaluate(() => ({ pickbar: !!document.querySelector(".tg-pickbar"), hash: location.hash,
+            toast: (document.querySelector(".bk-toast") || {}).textContent || null,
+            center: typeof map !== "undefined" && map ? map.getCenter() : null }));   // eslint-disable-line no-undef
+          check(`${tag} выбор на карте: нажатие во дворе открывает «Мой двор»`, opened && !after.pickbar, { opened, spot, ...after });
         } else {
           check(`${tag} выбор на карте: двор сцены 7 виден на карте`, false, "нет точки двора или она закрыта");
         }
