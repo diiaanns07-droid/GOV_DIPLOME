@@ -471,8 +471,12 @@ async function showCheck(browser, base, lang, staffAcc) {
     const input = await firstVisible(page.locator(".birge-palette__input"));
     if (!input || !title) { add(`UI show-${lang}`, String(n), `Ctrl+K «Сцена ${n}» → сцена ≤ 1 с`, "NOT_RUN", input ? "нет ключа shell.palette.scene" + n : "палитры Ctrl+K нет", "R01"); continue; }
     await input.fill(title.split("·")[0].trim()).catch(() => null);
-    await sleep(600);
-    const offered = await page.evaluate((tt) => [...document.querySelectorAll(".birge-palette__item")].some((li) => (li.textContent || "").includes(tt)), title).catch(() => false);
+    // Палитра дорисовывает команды, когда догрузит сцены (GET demo/scenes) — ждём до 4 с, а не один взгляд.
+    let offered = false;
+    for (let i = 0; i < 20 && !offered; i++) {
+      await sleep(200);
+      offered = await page.evaluate((tt) => [...document.querySelectorAll(".birge-palette__item")].some((li) => (li.textContent || "").includes(tt)), title).catch(() => false);
+    }
     if (!offered) { add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → сцена ≤ 1 с`, "NOT_RUN", "команды сцены нет в палитре (нет демо-мира или сцены)", "R01"); continue; }
     // Время меряет сама страница: от нажатия Enter (keydown, capture) до кадра, где раздел сцены открыт с содержимым
     // (requestAnimationFrame) — без накладных расходов опроса из теста.
