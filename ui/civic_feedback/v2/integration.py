@@ -187,8 +187,9 @@ def updates(device, since=None, db=None) -> list[dict]:
     return feed_events(records, since)
 
 
-def seed_world(db_path, records, now=None, *, reset: bool = False) -> dict:
+def seed_world(db_path, records, now=None, *, reset: bool = True) -> dict:
     """Демо-мир R02 (CONTRACT §11): жалобы, «Я тоже», статусы, части служб и передачи — в хранилище R09.
-    Идемпотентно. -> {"inserted", "skipped", ...}. Подробно — world_seed.py."""
+    Идемпотентно; reset=True (по умолчанию) — демо-записи мира к виду мира от нового now. -> {"inserted", "skipped",
+    "reset", "invalid", "total"}. Подробно — world_seed.py."""
     from .world_seed import seed_world as seed
     return seed(db_path, records, now=now, reset=reset)

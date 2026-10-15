@@ -67,6 +67,13 @@
     };
   }
 
+  // Подпись вкладки. «Просрочено» у R09 — СРОК ПЕРВОГО ОТВЕТА (жалоба «Новое»), у R08/R17 — срок исправления: разные числа,
+  // поэтому и подписи разные (предложение R02 §3): «Ответ просрочен» / «Жауап мерзімі өтті».
+  function tabLabel(id) {
+    if (id === "overdue") { var label = t("inbox.tab.overdue_answer"); if (label) return label; }
+    return t("inbox.tab." + id);
+  }
+
   // #complaints/service=water — «Обращения» одной службы (R17). Только id из справочника (буквы и _).
   function serviceFromHash() {
     var m = /[#/&?]service=([a-z_]{2,30})(?:$|[&/])/.exec(window.location.hash || "");
@@ -299,7 +306,7 @@
                                       "aria-selected": state.tab === id ? "true" : "false",
                                       "aria-pressed": state.tab === id ? "true" : "false",
                                       onclick: function () { state.tab = id; state.open = null; state.menu = null; closeStaff(); render(); } },
-          [h("span", {}, id === "all" ? t("staff.cabinet.tab.all") : t("inbox.tab." + id)), countBadge(id === "all" ? total : counts[id])]));
+          [h("span", {}, id === "all" ? t("staff.cabinet.tab.all") : tabLabel(id)), countBadge(id === "all" ? total : counts[id])]));
       });
       return bar;
     }
@@ -579,7 +586,7 @@
         if (!list.length) return;
         var gid = "bc-inbox-g-" + tab;
         groups.appendChild(h("section", { "class": "bc-inbox__group", "data-group": tab, "aria-labelledby": gid }, [
-          h("h3", { "class": "bk-lgroup bc-inbox__ghead", id: gid }, [sicon(tabStatus(tab)), h("span", {}, t("inbox.tab." + tab)),
+          h("h3", { "class": "bk-lgroup bc-inbox__ghead", id: gid }, [sicon(tabStatus(tab)), h("span", {}, tabLabel(tab)),
             h("span", { "class": "bk-lgroup__count bc-inbox__gcount" }, String(list.length))]),
           h("ul", { "class": "bk-llist bc-inbox__list" }, list.map(row))]));
       });

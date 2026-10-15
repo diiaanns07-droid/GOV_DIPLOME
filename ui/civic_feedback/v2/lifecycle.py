@@ -346,6 +346,10 @@ def changes(records: list[dict], since: str | None) -> dict:
 # ---------------------------------------------------------------- акимат: «Обращения» (R11 IA_WAVE2 §2.5)
 INBOX_TABS = ("new", "in_progress", "waiting_check", "overdue", "reopened")
 _TAB_ORDER = ("reopened", "overdue", "waiting_check", "new", "in_progress")   # срочнее — раньше
+# «Ждут проверки» — ремонты, о которых служба сообщила за последние 14 дней (раунд 15, предложение R02): дольше жители
+# уже не проверяют, и вкладка не копит сотни строк (на демо-мире — 436). Проверить ремонт житель может и позже —
+# «Проблема осталась» вернёт жалобу во «Вернули жители». Карта R07 держит «исправлено» 7 дней, «Обращения» — 14.
+WAITING_CHECK_DAYS = 14
 
 
 def inbox_tab(record: dict, now: datetime) -> str | None:
@@ -363,7 +367,9 @@ def inbox_tab(record: dict, now: datetime) -> str | None:
             return "overdue"
         return "new" if status == "new" else "in_progress"
     if status == "fixed" and state == "reported":
-        return "waiting_check"
+        reported = rec.parse_iso((record.get("resolution") or {}).get("reported_at"))
+        if reported is None or now - reported <= timedelta(days=WAITING_CHECK_DAYS):
+            return "waiting_check"
     return None
 
 

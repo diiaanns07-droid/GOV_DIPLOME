@@ -368,9 +368,11 @@ def build_record(raw: dict, now: datetime) -> tuple[dict, list[tuple[str, str]]]
     return record, metoo
 
 
-def seed_world(db_path, records, now=None, *, reset: bool = False) -> dict:
+def seed_world(db_path, records, now=None, *, reset: bool = True) -> dict:
     """Засеять жалобы мира. db_path — путь к SQLite, ComplaintStore или сервис R09 (его store).
-    -> {"inserted", "skipped", "reset", "invalid": [причины], "total"}. Идемпотентно (см. модуль)."""
+    -> {"inserted", "skipped", "reset", "invalid": [причины], "total"}. Идемпотентно (см. модуль).
+    reset=True по умолчанию (просьба R02, как seed_demo FINAL-4): демо-записи мира — к виду мира от нового now при каждом
+    запуске (иначе через сутки «сегодня» пусто); reset=False — только добавить недостающие. Настоящие жалобы — никогда."""
     from .store import ComplaintStore
     store = db_path if isinstance(db_path, ComplaintStore) else getattr(db_path, "store", None)
     own = None
