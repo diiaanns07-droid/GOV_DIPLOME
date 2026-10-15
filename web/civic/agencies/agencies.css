@@ -1186,7 +1186,9 @@
     flex-direction: column;
   }
   .ag-filters--bar {
+    flex: 1 1 100%;    /* во всю ширину строки: лишнее переносится вниз, а не уходит вбок */
     flex-wrap: wrap;
+    min-width: 0;
   }
   .ag-thead {
     display: none;

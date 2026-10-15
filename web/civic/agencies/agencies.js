@@ -810,7 +810,8 @@
         refresh();
       });
       // «Пример» на телефоне — рядом с периодом (R11 R17-12); на компьютере он у заголовка (.ag-demo--head).
-      var current = S.tab === "crisis" || S.tab === "calendar" ? null : S[S.tab];
+      // Только у табло: в «Совместных» и «Передачах» плашка «Пример» есть у каждой строки.
+      var current = S.tab === "board" ? S.board : null;
       var demo = current && (current.source === "fixture" || current.demo)
         ? h("span", { class: "ag-demo ag-demo--bar", title: current.source === "fixture" ? tr("agencies.demo_note") : null }, [tr("common.demo")])
         : null;
