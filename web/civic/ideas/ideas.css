@@ -1399,6 +1399,24 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
   gap: var(--s-3) var(--s-4);
   align-items: start;
 }
+/* Раунд 15: «Участок улицы» (работа v2) — строка с улицей и длиной, кнопки «Отметить на карте» / «Убрать». */
+.rw-section__value {
+  margin: 0 0 var(--s-2);
+  font-weight: 500;
+  color: var(--c-ink);
+}
+.rw-section__value--none {
+  font-weight: 400;
+  color: var(--c-text-2);
+}
+.rw-section__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.rw-section.bk-field--error .rw-section__value {
+  color: var(--c-danger, #B42318);
+}
 @media (min-width: 761px) {
   .rw-grid,
   .rw-why {
