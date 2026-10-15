@@ -25,6 +25,13 @@ function step(name, ok, ms, info) {
   console.log(`${ok ? "PASS" : "FAIL"} ${name} · ${ms} мс${ok ? "" : "  " + String(JSON.stringify(info)).slice(0, 200)}`);
 }
 async function timed(fn) { const t0 = Date.now(); const r = await fn(); return [r, Date.now() - t0]; }
+// Кадр — когда карта за листом прорисована (лист слева оставляет карту видимой): значки карты есть или прошло 8 с.
+// Время шагов сцены считается до этого ожидания — оно только для кадра.
+async function shotWhenMapReady(pg, file) {
+  await pg.waitForFunction(() => document.querySelectorAll(".maplibregl-marker").length > 0, null, { timeout: 8000 }).catch(() => null);
+  await pg.waitForTimeout(300);
+  await pg.screenshot({ path: file });
+}
 
 (async () => {
   const browser = await chromium.launch();
@@ -39,12 +46,12 @@ async function timed(fn) { const t0 = Date.now(); const r = await fn(); return [
   const yard = await page.evaluate(() => ({ kpis: [...document.querySelectorAll(".tg-kpi .tg-kpi__value")].map((n) => n.textContent),
     problems: document.querySelectorAll(".tg-overview .tg-row").length, next: document.querySelector(".tg-overview .tg-card__title")?.textContent }));
   step("1. «Мой двор»: 3 числа, проблемы двора, ближайшее дело", yard.kpis.length === 3 && yard.problems >= 1 && !!yard.next, ms, yard);
-  await page.screenshot({ path: path.join(OUT, `${tag}_1_yard.png`) });
+  await shotWhenMapReady(page, path.join(OUT, `${tag}_1_yard.png`));
 
   [, ms] = await timed(async () => { await page.click(`[data-focus="open-${ITEM}"]`); await page.waitForSelector(".tg-actionbar"); });
   const before = await page.$eval(".tg-actionbar .tg-count", (n) => n.dataset.n);
   step("2. дело «Субботник во дворе»: 14 соседей придут", before === "14", ms, before);
-  await page.screenshot({ path: path.join(OUT, `${tag}_2_initiative.png`) });
+  await shotWhenMapReady(page, path.join(OUT, `${tag}_2_initiative.png`));
 
   [, ms] = await timed(async () => {
     await page.click(".tg-actionbar .tg-join");
@@ -52,7 +59,7 @@ async function timed(fn) { const t0 = Date.now(); const r = await fn(); return [
   });
   await page.waitForTimeout(450);
   step("3. «Я приду»: 14 → 15", true, ms);
-  await page.screenshot({ path: path.join(OUT, `${tag}_3_joined.png`) });
+  await shotWhenMapReady(page, path.join(OUT, `${tag}_3_joined.png`));
 
   // Акимат: вход, «Поддержать: мешки и вывоз», «Отметить сделанным».
   const sctx = await browser.newContext({ viewport: { width: W, height: H } });
@@ -76,7 +83,7 @@ async function timed(fn) { const t0 = Date.now(); const r = await fn(); return [
   });
   await sp.waitForTimeout(400);
   step("4. акимат «Поддержать: мешки и вывоз» → «Поддержано акиматом»", true, ms);
-  await sp.screenshot({ path: path.join(OUT, `${tag}_4_supported.png`) });
+  await shotWhenMapReady(sp, path.join(OUT, `${tag}_4_supported.png`));
   [, ms] = await timed(async () => {
     await sp.click(`[data-focus="done-${ITEM}"]`);
     await sp.waitForSelector(".tg-form textarea");
@@ -86,7 +93,7 @@ async function timed(fn) { const t0 = Date.now(); const r = await fn(); return [
   });
   const doneText = await sp.$eval(".tg-detail .tg-report__big", (n) => n.textContent);
   step("5. акимат «Отметить сделанным» → «Сделано вместе: 15»", /15/.test(doneText), ms, doneText);
-  await sp.screenshot({ path: path.join(OUT, `${tag}_5_done_staff.png`) });
+  await shotWhenMapReady(sp, path.join(OUT, `${tag}_5_done_staff.png`));
   await sctx.close();
 
   // Житель: «Сделано вместе», лента двора, слой карты.
@@ -96,13 +103,13 @@ async function timed(fn) { const t0 = Date.now(); const r = await fn(); return [
     support: !!document.querySelector(".tg-supportbox"), bar: !!document.querySelector(".tg-actionbar") }));
   step("6. житель: «Сделано вместе: 15 соседей», плашка акимата, запись закрыта", /15/.test(resident.done || "") &&
     resident.support && !resident.bar, ms, resident);
-  await page.screenshot({ path: path.join(OUT, `${tag}_6_done_resident.png`) });
+  await shotWhenMapReady(page, path.join(OUT, `${tag}_6_done_resident.png`));
   await page.goto(BASE + "/?n=4#yard/" + YARD, { waitUntil: "load" });
   await page.waitForSelector(".tg-feed", { timeout: 20000 });
   await page.waitForTimeout(400);
   const feed = await page.$$eval(".tg-feed__text", (n) => n.map((x) => x.textContent));
   step("7. лента двора: «Сделано вместе» и «Акимат поддержал»", feed.some((t) => /15/.test(t)) && feed.length >= 2, 0, feed.slice(0, 3));
-  await page.screenshot({ path: path.join(OUT, `${tag}_7_yard_feed.png`) });
+  await shotWhenMapReady(page, path.join(OUT, `${tag}_7_yard_feed.png`));
   await page.evaluate(() => { window.BirgeShell.setSection("map"); });
   await page.waitForTimeout(800);
   [, ms] = await timed(async () => {
@@ -113,7 +120,7 @@ async function timed(fn) { const t0 = Date.now(); const r = await fn(); return [
   step("8. слой карты «Инициативы» (выключен по умолчанию, включается переключателем): дело двора — «сделано»",
     pins.some((l) => /15/.test(l)), ms, pins.slice(0, 3));
   await page.waitForTimeout(600);
-  await page.screenshot({ path: path.join(OUT, `${tag}_8_map_layer.png`) });
+  await shotWhenMapReady(page, path.join(OUT, `${tag}_8_map_layer.png`));
   step("нет ошибок JS", errs.length === 0, 0, errs.slice(0, 3));
   await browser.close();
   fs.writeFileSync(path.join(OUT, `${tag}.json`), JSON.stringify({ base: BASE, lang: LANG, size: `${W}x${H}`,

@@ -60,9 +60,8 @@
    ],
    "script": "tests/civic/R16/browser/r16_browser.cjs",
    "runs": {
-    "final4_stand_3d0a4c36+": "246/246 (компоненты R11, до последних правок вида)",
-    "b1_like_stand": "246/246 (R01 c9069723 + patch + ui-kit R11, до последних правок вида)",
-    "db7da7de": "1366-ru и 375-kk — 41/41 на обеих сборках; 1366-ru и 1024-kk в листе слева — 41/41; полный прогон — следующий шаг"
+    "final4_stand_db7da7de": "246/246 (стенд FINAL-4 + маршруты R16 в памяти; запасная копия компонентов R11)",
+    "b1_like_stand_db7da7de": "246/246 (R01 c9069723 + R01_together_b1.patch с листом слева + ui-kit/i18n R11 b3502428)"
    },
    "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон"
   },
@@ -76,15 +75,8 @@
    ],
    "steps": 9,
    "script": "tests/civic/R16/browser/r16_scene7.cjs",
-   "result": "14 → 15, «Поддержано акиматом», «Сделано вместе: 15 соседей», слой карты",
-   "b1_like_world": {
-    "status": "PASS",
-    "runs": [
-     "1366-ru",
-     "375-kk"
-    ],
-    "stand": "R01 c9069723 + patch (лист слева) + R16 db7da7de, CIVIC_DEMO_WORLD=1 (двор yard-1454082640, дело i-w15-01)"
-   }
+   "stand": "сборка «как B1», демо-мир R02 (CIVIC_DEMO_WORLD=1, двор yard-1454082640, дело i-w15-01), лист слева",
+   "result": "14 → 15, «Поддержано акиматом: инвентарь · вывоз мусора», «15 соседей — сделано вместе», слой карты"
   },
   "r02_world_seed": {
    "status": "PASS",
@@ -128,20 +120,36 @@
    ],
    "first_after_restart_ms": 1085,
    "what": "как Ctrl+K «Сцена 7» R01: из вида акимата setMode(resident) + setSection(yard, path) → шапка двора"
+  },
+  "r10_ui_audit": {
+   "status": "PASS",
+   "tool": "tests/e2e/ux_lib.cjs uiAudit (ветка R10 claude/zen-wozniak-69d41q)",
+   "views": "«Мой двор», список, карточка дела × 1366/375 × ru/kk (демо-мир)",
+   "result": "зоны нажатия ≥ 44 px — 0 замечаний, контраст — 0, сырые ключи — 0; шрифт 12 px только у подписей по токену R11 --fs-xs (B-112 — у R11)"
+  },
+  "r11_screen_review": {
+   "status": "PASS",
+   "tool": "tests/civic/R11/review/r15_screens.cjs --quick (ветка R11)",
+   "result": "12 кадров R16 (yard, together житель/акимат × 1366/375 × ru/kk) — прокрутка, обрезка, ключи, русские подписи в ҚАЗ — чисто; 2 замечания сборки — подпись меню акимата R17, не R16"
   }
  },
  "screens": [
+  "research/round-15-results/R16/screens/1024-kk_detail_joined.jpg",
   "research/round-15-results/R16/screens/1024-kk_list.jpg",
+  "research/round-15-results/R16/screens/1024-kk_staff_queue.jpg",
   "research/round-15-results/R16/screens/1024-kk_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1024-kk_yard_picker.jpg",
   "research/round-15-results/R16/screens/1024-ru_detail_joined.jpg",
   "research/round-15-results/R16/screens/1024-ru_list.jpg",
   "research/round-15-results/R16/screens/1024-ru_staff_queue.jpg",
   "research/round-15-results/R16/screens/1024-ru_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1024-ru_yard_picker.jpg",
   "research/round-15-results/R16/screens/1366-kk_detail_joined.jpg",
   "research/round-15-results/R16/screens/1366-kk_list.jpg",
   "research/round-15-results/R16/screens/1366-kk_staff_queue.jpg",
-  "research/round-15-results/R16/screens/1366-kk_wizard_4_review_privacy.jpg",
+  "research/round-15-results/R16/screens/1366-kk_yard_member.jpg",
   "research/round-15-results/R16/screens/1366-kk_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1366-kk_yard_picker.jpg",
   "research/round-15-results/R16/screens/1366-ru_detail.jpg",
   "research/round-15-results/R16/screens/1366-ru_detail_done.jpg",
   "research/round-15-results/R16/screens/1366-ru_detail_joined.jpg",
@@ -163,23 +171,35 @@
   "research/round-15-results/R16/screens/1366-ru_yard_initiatives.jpg",
   "research/round-15-results/R16/screens/1366-ru_yard_member.jpg",
   "research/round-15-results/R16/screens/1366-ru_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_pick_map.jpg",
   "research/round-15-results/R16/screens/1366-ru_yard_picker.jpg",
   "research/round-15-results/R16/screens/1366-ru_yard_problems.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_works.jpg",
+  "research/round-15-results/R16/screens/375-kk_detail_done.jpg",
   "research/round-15-results/R16/screens/375-kk_detail_joined.jpg",
   "research/round-15-results/R16/screens/375-kk_list.jpg",
   "research/round-15-results/R16/screens/375-kk_staff_queue.jpg",
-  "research/round-15-results/R16/screens/375-kk_state_error.jpg",
+  "research/round-15-results/R16/screens/375-kk_state_empty_yard.jpg",
   "research/round-15-results/R16/screens/375-kk_wizard_2_where.jpg",
+  "research/round-15-results/R16/screens/375-kk_wizard_4_review_privacy.jpg",
+  "research/round-15-results/R16/screens/375-kk_yard_member.jpg",
   "research/round-15-results/R16/screens/375-kk_yard_overview.jpg",
+  "research/round-15-results/R16/screens/375-kk_yard_picker.jpg",
+  "research/round-15-results/R16/screens/375-ru_detail_done.jpg",
   "research/round-15-results/R16/screens/375-ru_detail_joined.jpg",
   "research/round-15-results/R16/screens/375-ru_list.jpg",
   "research/round-15-results/R16/screens/375-ru_staff_queue.jpg",
   "research/round-15-results/R16/screens/375-ru_state_empty_yard.jpg",
   "research/round-15-results/R16/screens/375-ru_wizard_2_where.jpg",
   "research/round-15-results/R16/screens/375-ru_wizard_4_review_privacy.jpg",
+  "research/round-15-results/R16/screens/375-ru_yard_member.jpg",
   "research/round-15-results/R16/screens/375-ru_yard_overview.jpg",
   "research/round-15-results/R16/screens/375-ru_yard_picker.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_1_yard.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_2_initiative.jpg",
   "research/round-15-results/R16/screens/scene7_1366-kk_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_4_supported.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_5_done_staff.jpg",
   "research/round-15-results/R16/screens/scene7_1366-kk_6_done_resident.jpg",
   "research/round-15-results/R16/screens/scene7_1366-kk_7_yard_feed.jpg",
   "research/round-15-results/R16/screens/scene7_1366-kk_8_map_layer.jpg",
@@ -191,11 +211,19 @@
   "research/round-15-results/R16/screens/scene7_1366-ru_6_done_resident.jpg",
   "research/round-15-results/R16/screens/scene7_1366-ru_7_yard_feed.jpg",
   "research/round-15-results/R16/screens/scene7_1366-ru_8_map_layer.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_1_yard.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_2_initiative.jpg",
   "research/round-15-results/R16/screens/scene7_375-kk_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_4_supported.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_5_done_staff.jpg",
   "research/round-15-results/R16/screens/scene7_375-kk_6_done_resident.jpg",
   "research/round-15-results/R16/screens/scene7_375-kk_7_yard_feed.jpg",
   "research/round-15-results/R16/screens/scene7_375-kk_8_map_layer.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_1_yard.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_2_initiative.jpg",
   "research/round-15-results/R16/screens/scene7_375-ru_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_4_supported.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_5_done_staff.jpg",
   "research/round-15-results/R16/screens/scene7_375-ru_6_done_resident.jpg",
   "research/round-15-results/R16/screens/scene7_375-ru_7_yard_feed.jpg",
   "research/round-15-results/R16/screens/scene7_375-ru_8_map_layer.jpg"
@@ -207,12 +235,13 @@
   "Время действий акимата в облачном Chromium 3–4 с — программная отрисовка WebGL карты; API отвечает за 4–20 мс.",
   "Без 3 доп. маршрутов в сборке модуль спрашивает /modules и прячет список дворов и «старшего по двору» (без 404)."
  ],
- "next_step": "Полный браузерный прогон на обеих сборках с db7da7de, свежие кадры в screens/ (сборка «как B1»), поставка к B1 (16 окт 14:00 Астаны).",
+ "next_step": "Ждать B1 (16 окт 14:00 Астаны): R01 берёт код по code_sha и R01_together_b1.patch; затем проверить сцену 7 и экраны R16 на их сборке; новые замечания R10/R11/R15 — кругами.",
  "findings_closed": [
   "R15 S45, S46, S47 (checkpoint 3)",
   "R15 S51 (checkpoint 5)",
   "R10 B-124 (checkpoint 5)",
   "R10 B-114 (checkpoint 6)"
  ],
- "findings_open": []
+ "findings_open": [],
+ "screens_note": "Кадры — настоящий интерфейс на сборке «как B1» (оболочка R01, ui-kit R11, лист слева) в облаке без подложки OpenFreeMap; сцена 7 — на демо-мире R02."
 }
