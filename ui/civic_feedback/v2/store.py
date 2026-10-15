@@ -595,7 +595,7 @@ class ComplaintStore(sep.SeparateMixin, JointMixin):
             raise RecordError("Пустой запрос.")
         clean = {}
         service = fields.get("service")
-        if service not in (None, "") and service not in lifecycle.SERVICES:
+        if service not in (None, "") and not lifecycle.is_service(service):
             raise RecordError("Неизвестная служба.", {"service": ",".join(lifecycle.SERVICES)})
         clean["service"] = service or None
         for name in ("next_step", "delay_reason", "temp_measure", "decision", "option_1", "option_2"):

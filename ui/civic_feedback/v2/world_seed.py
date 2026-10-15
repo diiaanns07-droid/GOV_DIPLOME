@@ -171,7 +171,7 @@ def _parts(item: dict, created: datetime, now: datetime) -> tuple[list[dict], li
     """services[] и handoffs[] мира → v2.1 (справочник служб, статусы частей new|accepted → todo)."""
     parts, seen = [], set()
     for index, part in enumerate(item.get("services") or []):
-        if not isinstance(part, dict) or part.get("service") not in lifecycle.SERVICES or part["service"] in seen:
+        if not isinstance(part, dict) or not lifecycle.is_service(part.get("service")) or part["service"] in seen:
             continue
         seen.add(part["service"])
         clean = {"service": part["service"],
@@ -189,12 +189,12 @@ def _parts(item: dict, created: datetime, now: datetime) -> tuple[list[dict], li
     parts.sort(key=lambda p: p["role"] != "lead")
     handoffs = []
     for entry in item.get("handoffs") or []:
-        if not isinstance(entry, dict) or entry.get("to") not in lifecycle.SERVICES:
+        if not isinstance(entry, dict) or not lifecycle.is_service(entry.get("to")):
             continue
         reason = entry.get("reason") if isinstance(entry.get("reason"), str) and entry["reason"].strip() else None
         code = entry.get("reason_code") if entry.get("reason_code") in joint.HANDOFF_REASONS else None
         clean = {"at": rec.iso(max(_at(entry.get("at"), now, created), created)),
-                 "from": entry.get("from") if entry.get("from") in lifecycle.SERVICES else None, "to": entry["to"],
+                 "from": entry.get("from") if lifecycle.is_service(entry.get("from")) else None, "to": entry["to"],
                  "reason": " ".join((reason or (joint.HANDOFF_REASONS[code]["ru"] if code else
                                                 joint.HANDOFF_REASONS["other_service"]["ru"])).split())[:joint.REASON_MAX],
                  "by_role": entry.get("by_role") if entry.get("by_role") in ("operator", "admin") else "operator"}
@@ -216,7 +216,7 @@ def _passport(item: dict, now: datetime) -> dict | None:
     if not isinstance(given, dict):
         return None
     passport = {}
-    if given.get("assignee_id") in lifecycle.SERVICES:
+    if lifecycle.is_service(given.get("assignee_id")):
         passport["assignee_id"] = given["assignee_id"]
     if _text(given.get("next_step")):
         passport["next_step"] = _text(given["next_step"])
@@ -306,7 +306,7 @@ def build_record(raw: dict, now: datetime) -> tuple[dict, list[tuple[str, str]]]
     history = _history(item, status, created, now)
     status = history[-1]["status"]
     parts, handoffs = _parts(item, created, now)
-    lead = parts[0]["service"] if parts else (item.get("service") if item.get("service") in lifecycle.SERVICES
+    lead = parts[0]["service"] if parts else (item.get("service") if lifecycle.is_service(item.get("service"))
                                               else lifecycle.default_service(category, subtopic))
     district = item.get("district") if isinstance(item.get("district"), str) and rec.DISTRICT.match(item["district"]) \
         else None

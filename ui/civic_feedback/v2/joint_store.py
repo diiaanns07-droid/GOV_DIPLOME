@@ -144,7 +144,7 @@ class JointMixin:
         to — id службы; reason — строка или чип reason_code; keep — прежняя ведущая остаётся участником.
         Если to уже участвует — она становится ведущей со своим статусом части."""
         from .store import Conflict
-        if to not in lifecycle.SERVICES:
+        if not lifecycle.is_service(to):   # R15-S49: список вместо строки — 422, не 500
             raise joint.JointError("Неизвестная служба.", {"to": ", ".join(lifecycle.SERVICES)})
         text, code = joint.clean_reason(reason, reason_code)
         now = rec.iso(self._now())

@@ -418,3 +418,24 @@ def test_scene8_over_http(store):
     assert reply["data"]["items"] == []
     status, reply = call(service, "GET", f"{P}/inbox?service=secret", None, Staff(), STAFF_CTX)
     assert status == 422
+
+
+def test_r15_s49_wrong_types_give_422_not_500(store):
+    """R15-S49: список или словарь вместо id службы / кода причины — понятная 422, а не TypeError и 500."""
+    service = ComplaintsV2Service(store)
+    record = pit(store)
+    for action, body in (("services", {"services": [{"service": ["road"], "role": "lead"}]}),
+                         ("services", {"services": [{"service": {"id": "road"}, "role": "lead"}]}),
+                         ("handoff", {"to": ["water"], "reason": "Нужна другая служба"}),
+                         ("handoff", {"to": "water", "reason_code": ["other_service"]}),
+                         ("handoff", {"to": "water", "reason": ["список"]}),
+                         ("part", {"service": "road", "status": ["done"]}),
+                         ("passport", {"service": ["water"]})):
+        status, reply = call(service, "POST", f"{P}/{record['id']}/{action}", body, Staff(), STAFF_CTX)
+        assert status == 422 and reply["error"]["code"] == "invalid", (action, body, status, reply)
+    status, reply = call(service, "GET", f"{P}/inbox?service=%5B%22road%22%5D", None, Staff(), STAFF_CTX)
+    assert status == 422
+    assert store.get(record["id"])["handoffs"] == []
+    assert joint.parse_route_hint({"services": [["water"], {"service": ["road"]}, "road"]}) == \
+        {"services": ["road"], "joint": False, "source": "rules", "model_version": None}
+    assert lifecycle.is_service("water") and not lifecycle.is_service(["water"]) and not lifecycle.is_service(None)

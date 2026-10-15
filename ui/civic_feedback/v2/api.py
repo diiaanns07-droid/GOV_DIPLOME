@@ -440,7 +440,7 @@ class ComplaintsV2Service:
         if tab is not None and tab not in lifecycle.INBOX_TABS:
             raise ApiError(422, "invalid", "Неизвестная вкладка.", {"tab": ",".join(lifecycle.INBOX_TABS)})
         service = params.get("service") or None
-        if service is not None and service not in lifecycle.SERVICES:
+        if service is not None and not lifecycle.is_service(service):
             raise ApiError(422, "invalid", "Неизвестная служба.", {"service": ",".join(lifecycle.SERVICES)})
         district = params.get("district") or None
         if district is not None and not rec.DISTRICT.match(district):

@@ -124,6 +124,14 @@ SERVICES = {
     "parking": {"ru": "Служба парковок", "kk": "Тұрақ қызметі"},
     "akimat": {"ru": "Аппарат акима района", "kk": "Аудан әкімінің аппараты"},
 }
+
+
+def is_service(value) -> bool:
+    """id службы из справочника. Только строка: список или словарь вместо id (запрос, файл мира) — не служба, а не
+    TypeError «unhashable» и 500 (R15-S49)."""
+    return isinstance(value, str) and value in SERVICES
+
+
 # Ключ — категория или «категория/уточнение»; уточнение, которого нет, идёт в службу категории.
 SERVICE_RULES = {
     "roads": "road", "roads/traffic_light_broken": "traffic", "roads/traffic_light_timing": "traffic",
@@ -169,9 +177,9 @@ EXPLICIT_SERVICE_SOURCES = frozenset({"staff", "handoff", "joint", "world"})
 def explicit_service(record: dict) -> str | None:
     """id явной ведущей службы (часть role=lead или service с явным источником) или None — «по таблице»."""
     for part in record.get("services") or []:
-        if isinstance(part, dict) and part.get("role") == "lead" and part.get("service") in SERVICES:
+        if isinstance(part, dict) and part.get("role") == "lead" and is_service(part.get("service")):
             return part["service"]
-    if record.get("service_source") in EXPLICIT_SERVICE_SOURCES and record.get("service") in SERVICES:
+    if record.get("service_source") in EXPLICIT_SERVICE_SOURCES and is_service(record.get("service")):
         return record["service"]
     return None
 
@@ -192,7 +200,7 @@ def _assignee(record: dict, assignee_lookup) -> dict:
     if explicit:
         sid = explicit
         source = "world" if record.get("service_source") == "world" and not passport.get("assignee_id") else "staff"
-    elif sid in SERVICES:
+    elif is_service(sid):
         source = "staff"
     elif passport.get("assignee"):                        # свободный текст старых записей
         sid, names, source = None, {"ru": passport["assignee"], "name_edited": True}, "staff"
@@ -281,13 +289,13 @@ JOINT_UPDATE_KINDS = ("handoff", "services", "part")
 
 def _joint_event(update: dict) -> dict:
     event = {"at": update["at"], "kind": update["kind"], "text": update.get("text")}
-    if update["kind"] in ("handoff", "part") and update.get("service") in SERVICES:
+    if update["kind"] in ("handoff", "part") and is_service(update.get("service")):
         event["service"] = update["service"]
     if update["kind"] == "part" and update.get("status"):
         event["part_status"] = update["status"]
     if update["kind"] == "services":
-        event["services"] = [sid for sid in update.get("services") or [] if sid in SERVICES]
-        event["added"] = [sid for sid in update.get("added") or [] if sid in SERVICES]
+        event["services"] = [sid for sid in update.get("services") or [] if is_service(sid)]
+        event["added"] = [sid for sid in update.get("added") or [] if is_service(sid)]
     return event
 
 

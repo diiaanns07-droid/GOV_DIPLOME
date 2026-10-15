@@ -81,7 +81,7 @@ def clean_note(value) -> str | None:
 
 def clean_reason(reason, code=None) -> tuple[str, str | None]:
     """(текст, код). Нужна причина: чип (код) или строка от 3 символов; чип без строки — его подпись."""
-    if code is not None and code not in HANDOFF_REASONS and code not in SYSTEM_REASONS:
+    if code is not None and (not isinstance(code, str) or (code not in HANDOFF_REASONS and code not in SYSTEM_REASONS)):
         raise JointError("Неизвестная причина передачи.", {"reason_code": ", ".join(HANDOFF_REASONS)})
     text = " ".join(reason.split())[:REASON_MAX] if isinstance(reason, str) else ""
     if reason is not None and not isinstance(reason, str):
@@ -104,7 +104,7 @@ def parse_services(value) -> list[dict]:
         sid = item.get("service") if isinstance(item, dict) else item
         role = item.get("role", "lead" if index == 0 else "partner") if isinstance(item, dict) else \
             ("lead" if index == 0 else "partner")
-        if sid not in lifecycle.SERVICES:
+        if not lifecycle.is_service(sid):   # R15-S49: список вместо строки — 422, не 500
             raise JointError("Неизвестная служба.", {f"services[{index}].service": ", ".join(lifecycle.SERVICES)})
         if role not in PART_ROLES:
             raise JointError("Роль службы: ведущая или участвует.", {f"services[{index}].role": "lead | partner"})
@@ -126,7 +126,7 @@ def parse_route_hint(value) -> dict | None:
     ids, why_ru, why_kk = [], None, None
     for item in value.get("services") or []:
         sid = item.get("service") if isinstance(item, dict) else item
-        if sid in lifecycle.SERVICES and sid not in ids:
+        if lifecycle.is_service(sid) and sid not in ids:
             ids.append(sid)
             if isinstance(item, dict) and why_ru is None:
                 why_ru = item.get("why_ru") if isinstance(item.get("why_ru"), str) else None
@@ -160,12 +160,12 @@ def upgrade(record: dict) -> bool:
     service — явная служба записи, иначе выбор сотрудника в паспорте, иначе таблица R09 (source «table» — такая
     служба в паспорте и частях по-прежнему следует за таблицей R08, как в FINAL-4)."""
     changed = False
-    if record.get("service") not in lifecycle.SERVICES:
+    if not lifecycle.is_service(record.get("service")):
         chosen = (record.get("passport") or {}).get("assignee_id")
         explicit = lifecycle.explicit_service(record)
         if explicit:
             record["service"] = explicit
-        elif chosen in lifecycle.SERVICES:
+        elif lifecycle.is_service(chosen):
             record["service"] = chosen
             record.setdefault("service_source", "staff")
         else:
@@ -189,7 +189,7 @@ def lead_service(record: dict, assignee_lookup=None) -> str:
     """id ведущей службы: явная → выбор сотрудника в паспорте → таблица R08 → таблица R09 (как паспорт FINAL-4).
     Служба старой записи задана свободным текстом (без id) — служба по таблице R09."""
     sid = lifecycle.passport_assignee(record, assignee_lookup)["assignee_id"]
-    if sid in lifecycle.SERVICES:
+    if lifecycle.is_service(sid):
         return sid
     return lifecycle.default_service(record.get("category"), record.get("subtopic"))
 
@@ -273,7 +273,7 @@ def resident_parts(record: dict, assignee_lookup=None, *, participant: bool = Fa
             view["note"] = p["note"]
         services.append(view)
     handoffs = [{"at": h.get("at"), "from": h.get("from"), "to": h.get("to")}
-                for h in record.get("handoffs") or [] if h.get("to") in lifecycle.SERVICES]
+                for h in record.get("handoffs") or [] if isinstance(h, dict) and lifecycle.is_service(h.get("to"))]
     return {"joint": len(services) > 1, "services": services, "handoffs": handoffs}
 
 
