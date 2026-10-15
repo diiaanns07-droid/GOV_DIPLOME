@@ -62,7 +62,7 @@
     "R01": "для голого FINAL-4 — patches/R01_demo_world.patch; для ветки R01 (B0 и дальше) — patches/R01_world_reset.patch: строка civic-world считает reset (перезапуск показывал «R09 0, R17 0, R13 0»), reset=True тем seed_world, у кого есть параметр (R06)",
     "R09": "seed_world(db_path, world, now) в сборке R01 пишет в ту же базу — экраны видят 743 сразу; «Ждут проверки» 14 дней принято; EXPECTED.json пересчитан кодом R09 97342bdf с inbox.waiting_check_days=14 — их test_r02_world_counts_match_expected PASS",
     "others": "R07 §4, R06 §5, R12 §6 (materialize в load_world), R13 §7, R16 §8, R17 §9, R10 §10 (materialize в world_numbers)",
-    "R12": "patches/R12_works_calendar_world.patch — календарь читает мир, находит ровно 5 задуманных конфликтов; scenes.scene8.dig_work для openConflict",
+    "R12": "patches/R12_works_calendar_world.patch — календарь читает мир, находит ровно 5 задуманных конфликтов; scenes.scene8.dig_work для openConflict; замечание: латинские буквы в нескольких названиях OSM («Шaкaрима» и др.) — поиск по кириллице их не находит (INTEGRATION §6)",
     "R10": "patches/R10_consistency_world.patch — world_numbers через materialize (154 жалобы / 78 «Я тоже» за 30 дней)",
     "R04": "совместные жалобы — тексты, которые route() читает как те же две службы; 743/743 (INTEGRATION §10a)",
     "R17": "EXPECTED services: «открыто» у совместной — по части службы, как табло R17",
@@ -215,6 +215,16 @@
       "skipped": 0,
       "failed": 0,
       "note": "test_r02_world_counts_match_expected больше не пропускается"
+    },
+    "стык R04 route() на поставке R04 0affd9d0 (ветка @ 70080261): test_r04_route_agrees_with_world_services": {
+      "status": "PASS",
+      "agree": "743/743 с учётом route_hint",
+      "note": "R04 считает 742/743: c-w1500010 (сцена 8) до «принять совместное» — так задумано"
+    },
+    "модерация R04 e796acd1 по всем текстам мира": {
+      "status": "PASS",
+      "texts": 4277,
+      "findings": 0
     }
   },
   "consistency_table": {
