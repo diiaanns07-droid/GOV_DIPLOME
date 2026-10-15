@@ -114,6 +114,11 @@ world_seed.explain_hint берёт объяснение у store.route_lookup (R
   Для общих словарей R11 — patches/r11_pii_labels.patch (web/civic/i18n/ru.json, kk.json; на R11 @ d94a2983: apply
   OK, tests/civic/R11 31/31). Подписи: номер карты / карта нөмірі, номер счёта / шот нөмірі, номер квартиры /
   пәтер нөмірі, контакт в мессенджере / мессенджердегі байланыс.
+• R17 — ЗАКРЫТО 16 окт 00:30: R17 D8 (29176133) сам блокирует card / iban / apartment / contact (и группу pii), а
+  карту с luhn_ok == 0 и ИИН с checksum_ok == 0 пропускает — их пример «маршруты 10 12 14 16 18 21 24». R04 исправил
+  это у себя (be7dcd1a, r04-moderate-2): перечень коротких чисел больше не карта / телефон / ИИН; цифры по одной и
+  номер после подписи («тел», «ИИН», «карта») по-прежнему скрываются. Тесты R17 с ML-API R04 be7dcd1a — 274/274.
+  Ниже — прежнее описание и patch (для истории, применять не нужно).
 • R17 (ui/civic_agencies/crisis.py check_public_texts): ВНИМАНИЕ — R17 смотрит только flags и блокирует phone/iin/
   email/rude, а text_public не использует. Тогда «card», «iban», «apartment», «contact» пройдут в публичный текст
   как есть. Готовый patch: research/round-15-results/R04/patches/r17_crisis_pii.patch (на R17 @ 72676e3d:
