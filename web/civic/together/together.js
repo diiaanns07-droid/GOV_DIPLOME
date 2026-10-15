@@ -130,6 +130,12 @@
   function whenLabel(item) {
     if (!item || !item.starts_at) return "";
     if (item.ends_at && parts(item.ends_at)) {
+      var a = parts(item.starts_at), b = parts(item.ends_at);
+      // Дело на несколько дней — с датой и у конца («пт, 16 окт, 16:00 — вс, 18 окт, 04:00»), а не «16:00–04:00».
+      if (a && b && dayKey(a) !== dayKey(b)) {
+        return t("together.range_days", { day: dayLabel(item.starts_at), from: timeLabel(item.starts_at),
+          day2: dayLabel(item.ends_at), to: timeLabel(item.ends_at) });
+      }
       return t("together.range", { day: dayLabel(item.starts_at), from: timeLabel(item.starts_at), to: timeLabel(item.ends_at) });
     }
     return t("together.at", { day: dayLabel(item.starts_at), time: timeLabel(item.starts_at) });

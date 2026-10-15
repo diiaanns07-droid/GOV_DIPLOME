@@ -148,6 +148,7 @@
   "together.tomorrow": "Завтра",
   "together.at": "{day}, {time}",
   "together.range": "{day}, {from}–{to}",
+  "together.range_days": "{day}, {from} — {day2}, {to}",
   "together.empty.title": "Пока нет дел",
   "together.empty.text": "Предложите первое дело для двора — соседи присоединятся, акимат поддержит.",
   "together.empty.city": "В городе пока нет дел соседей. Предложите первое.",
@@ -401,6 +402,7 @@
   "together.tomorrow": "Ертең",
   "together.at": "{day}, {time}",
   "together.range": "{day}, {from}–{to}",
+  "together.range_days": "{day}, {from} — {day2}, {to}",
   "together.empty.title": "Әзірге іс жоқ",
   "together.empty.text": "Аулаға алғашқы істі ұсыныңыз — көршілер қосылады, әкімдік қолдайды.",
   "together.empty.city": "Қалада әзірге көршілер ісі жоқ. Алғашқысын ұсыныңыз.",
@@ -535,6 +537,7 @@
   "together.feed.kind.problem.fixed": "Түзетілді"
  },
  "_new_round15_circle3": [
+  "together.range_days",
   "together.list.when",
   "together.list.done_chip",
   "together.list.none_soon",

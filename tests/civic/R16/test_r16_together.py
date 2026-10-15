@@ -650,3 +650,21 @@ def test_akim_functions_for_r08_public_items_review_only_counted(svc):
     yards = akim_yards(db_path=svc.store.db_path)["yards"]
     assert yards[0]["id"] == SCENE["yard"] and yards[0]["members"] == 37
     assert all(set(y) == {"id", "label_ru", "label_kk", "district", "members", "initiatives", "demo"} for y in yards)
+
+
+def test_r01_demo_times_round_hours_and_multi_day(tmp_path):
+    """Просьба R01 (R02/R16): время дел в демо — круглые часы, а не минуты от момента засева; дело на несколько дней
+    остаётся многодневным (экран показывает дату и у конца)."""
+    db = tmp_path / "h.sqlite3"
+    base = {"kind": "cleanup", "target": {"kind": "area", "id": "yard-1454082638"}, "point": [71.397, 51.1348],
+            "district": "nura", "status": "published", "joined": 3}
+    world = {"initiatives": [dict(base, id="i-h-1", title="Вечером уберём площадку",
+                                  starts_at={"in_hours": 19.0}, ends_at={"in_hours": 22.0}),
+                             dict(base, id="i-h-2", title="Неделя чистого двора",
+                                  starts_at={"ago_hours": 30.0}, ends_at={"in_hours": 30.0})]}
+    now = datetime(2026, 10, 15, 21, 14, tzinfo=ASTANA)
+    seed_world(db, world, now=now)
+    svc = make_service(db, demo=False)
+    one, two = svc.store.get("i-h-1"), svc.store.get("i-h-2")
+    assert (one["starts_at"], one["ends_at"]) == ("2026-10-16T16:00:00+05:00", "2026-10-16T19:00:00+05:00")
+    assert (two["starts_at"], two["ends_at"]) == ("2026-10-14T15:00:00+05:00", "2026-10-17T03:00:00+05:00")

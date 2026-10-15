@@ -70,7 +70,7 @@ def rows(now: datetime) -> tuple[list[dict], list[dict]]:
     saturday = next_weekday(now, 5, 10)
     sunday = next_weekday(now, 6, 11)
     snow_day = (now + 3 * D).replace(hour=9, minute=0, second=0, microsecond=0)
-    benches_done = (now - 9 * D).replace(hour=13, minute=10, second=0, microsecond=0)
+    benches_done = (now - 9 * D).replace(hour=13, minute=0, second=0, microsecond=0)
     trees_done = (now - 20 * D).replace(hour=14, minute=0, second=0, microsecond=0)
     items = [
         # Сцена 7: опубликована два дня назад, 14 соседей «Я приду», поддержки акимата ещё нет.
@@ -179,6 +179,15 @@ def _materialize(records: dict, now: datetime) -> dict:
         return records
 
 
+def _round_hour(value: str | None) -> str | None:
+    """Время дела в демо — круглые часы: «17:00–20:00», а не «17:14–20:14» от минуты засева (просьба R01 к R02/R16).
+    Мир R02 задаёт часть дел относительными часами (in_hours / ago_hours); округляем до ближайшего часа."""
+    moment = parse_iso(value) if value else None
+    if moment is None:
+        return value
+    return iso((moment + H / 2).replace(minute=0, second=0, microsecond=0))
+
+
 def world_part(records: dict, now: datetime) -> tuple[list[dict], list[dict]]:
     """Дворы и инициативы из world_v1.json (R02) в формате seed(): только своя часть, время — от момента засева."""
     now = now.astimezone(ASTANA)
@@ -212,6 +221,9 @@ def world_part(records: dict, now: datetime) -> tuple[list[dict], list[dict]]:
         times["starts_at"] = times["starts_at"] or iso(next_weekday(now, 5, 10))
         if times["ends_at"] is None:
             times["ends_at"] = iso(parse_iso(times["starts_at"]) + 3 * H)
+        times["starts_at"], times["ends_at"] = _round_hour(times["starts_at"]), _round_hour(times["ends_at"])
+        if parse_iso(times["ends_at"]) <= parse_iso(times["starts_at"]):
+            times["ends_at"] = iso(parse_iso(times["starts_at"]) + H)
         if item["status"] in ("published", "done") and times["published_at"] is None:
             times["published_at"] = times["created_at"]
         item.update(times)
