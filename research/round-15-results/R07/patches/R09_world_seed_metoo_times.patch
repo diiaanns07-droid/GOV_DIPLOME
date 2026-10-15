@@ -1,0 +1,22 @@
+diff --git a/ui/civic_feedback/v2/world_seed.py b/ui/civic_feedback/v2/world_seed.py
+index 09f6daab..facd9977 100644
+--- a/ui/civic_feedback/v2/world_seed.py
++++ b/ui/civic_feedback/v2/world_seed.py
+@@ -247,10 +247,15 @@ def build_record(item: dict, now: datetime) -> tuple[dict, list[tuple[str, str]]
+         record["moderation"] = flag
+     # «Я тоже»: список времён из мира или число — равномерно между подачей и «сейчас» (детерминированно).
+     metoo = []
+-    times = item.get("metoo_ago")
++    # Мир R02 (SCHEMA §2.3): metoo_times — время каждого «Я тоже» (после materialize — ISO, иначе {"ago_hours"});
++    # прежний вид metoo_ago — тоже. Без них — равномерно между подачей и «сейчас».
++    times = item.get("metoo_times") if isinstance(item.get("metoo_times"), list) and item.get("metoo_times") else item.get("metoo_ago")
+     if isinstance(times, list) and times:
+         for n, entry in enumerate(times[:MAX_METOO], start=1):
+-            moment = _moment(entry if isinstance(entry, dict) else {"ago_hours": entry}, now, created)
++            if isinstance(entry, str):
++                moment = min(rec.parse_iso(entry) or created, now)
++            else:
++                moment = _moment(entry if isinstance(entry, dict) else {"ago_hours": entry}, now, created)
+             metoo.append((_device(cid, n), rec.iso(max(moment, created))))
+     else:
+         count = item.get("metoo")

@@ -147,6 +147,8 @@
       // Раунд 15: «Хроника города» — панель показывает горячие места выбранного дня (web/civic/replay)
       "heat.replay.list_note": "Хроника: так карта выглядела в этот день",
       "heat.replay.list_empty": "В этот день жалоб на карте не было",
+      "heat.replay.command": "Хроника города: неделя за 10 секунд",
+      "heat.replay.command_month": "Хроника города: месяц",
       "heat.reopened_note": "Проблема осталась — снова в работе · вернули жители",
       "heat.reported_wait": "Ждёт проверки жителями",
       "heat.verified_note": { one: "Подтвердил {count} житель", few: "Подтвердили {count} жителя", many: "Подтвердили {count} жителей" },
@@ -268,6 +270,8 @@
       "heat.reopened_mark": "тұрғындар қайтарды",
       "heat.replay.list_note": "Шежіре: карта осы күні осындай болды",
       "heat.replay.list_empty": "Бұл күні картада шағым болған жоқ",
+      "heat.replay.command": "Қала шежіресі: бір апта 10 секундта",
+      "heat.replay.command_month": "Қала шежіресі: бір ай",
       "heat.reopened_note": "Мәселе қалды — қайта жұмыста · тұрғындар қайтарды",
       "heat.reported_wait": "Тұрғындардың тексеруін күтуде",
       "heat.verified_note": { other: "{count} тұрғын растады" },
@@ -2424,6 +2428,11 @@
       });
       ((S.meta && S.meta.periods) || [7, 30, 90]).forEach((d) => out.push({ id: "heat:days:" + d, group: t("heat.period"), title: t("heat.days", { count: d }),
         run: () => { S.filters.days = d; void load("filter"); } }));
+      // «Хроника города» (раунд 15, web/civic/replay): неделя или месяц на этой же карте
+      if (window.BirgeReplay && typeof window.BirgeReplay.open === "function" && map) {
+        [[7, "heat.replay.command"], [30, "heat.replay.command_month"]].forEach(([d, key]) => out.push({ id: "heat:replay:" + d, group: t("heat.title"),
+          title: t(key), run: () => window.BirgeReplay.open({ map, heat: handle, days: d }) }));
+      }
       const it = S.selected && findItem(S.selected);
       if (it && S.role === "akimat" && it.state === "active" && !examplesOnly(it) && (it.open_ids || []).length) {
         const act = (a) => () => { const b = panel.querySelector('.r07-card [data-act="' + a + '"]'); if (b) b.click(); };

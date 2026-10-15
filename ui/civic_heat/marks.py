@@ -4,9 +4,10 @@
 (свои отметки из world.seed_world). Сами отметки R07 не придумывает. Модуля R17 нет или он упал — шкала
 без его отметок, а не ошибка (CONTRACT §7: вызовы соседей — чтением и с запасным вариантом).
 
-Как читается R17 (первое, что найдётся): функция list_incidents(db_path) или incidents(db_path) → список
-кризисов §5.5; иначе сервис make_service(db_path).handle("GET", "/api/civic/v2/incidents", …) — его публичная часть.
-Ответ R17 кэшируется на 30 с.
+Как читается R17 (первое, что найдётся): incident_marks(start, end) — его функция для хроники ({id, kind, title_ru,
+title_kk, started_at, closed_at, district, status, demo}); иначе list_incidents(status="all") → {"items": [публичная часть]};
+иначе сервис make_service(db_path).handle("GET", "/api/civic/v2/incidents", …). Ответ R17 кэшируется на 30 с.
+Кризис о событии мира (тот же район и время, связь event) — ссылка отметки события, а не вторая отметка (world.same_story).
 """
 from __future__ import annotations
 
@@ -51,9 +52,9 @@ def _call(fn, db_path):
     return fn(db_path)
 
 
-def r17_incidents(db_path: str | None) -> list[dict]:
+def r17_incidents(db_path: str | None, since=None, until=None) -> list[dict]:
     """Кризисы R17 (CONTRACT §5.5). Нет модуля / функции / базы — []."""
-    key = db_path or ""
+    key = (db_path or "", since.isoformat() if since else "", until.isoformat() if until else "")
     with _lock:
         hit = _r17_cache.get(key)
         if hit and time.monotonic() - hit[0] < R17_TTL_S:
@@ -68,9 +69,12 @@ def r17_incidents(db_path: str | None) -> list[dict]:
         mod = None
     if mod is not None:
         try:
-            fn = next((getattr(mod, n) for n in ("list_incidents", "incidents") if callable(getattr(mod, n, None))), None)
-            if fn is not None:
-                found = _items(_call(fn, db_path))
+            if callable(getattr(mod, "incident_marks", None)):
+                found = _items(mod.incident_marks(since, until))
+            elif callable(getattr(mod, "list_incidents", None)):
+                fn = mod.list_incidents
+                params = inspect.signature(fn).parameters
+                found = _items(fn(status="all") if "status" in params else _call(fn, db_path))
             elif db_path and callable(getattr(mod, "make_service", None)):
                 with _lock:
                     svc = _r17_services.get(db_path)
@@ -107,13 +111,28 @@ def collect(svc, since: datetime, until: datetime, *, district: str | None = Non
     by_id: dict[str, dict] = {}
     for m in world.stored_marks(path):
         by_id[m["id"]] = m
-    for inc in r17_incidents(path):
+    for inc in r17_incidents(path, since, until):
         m = world.mark_from_world(inc, until, source="incident")
-        if m:
-            old = by_id.get(m["id"])
-            if old and old.get("scene"):
-                m["scene"] = old["scene"]
+        if not m:
+            continue
+        m["event"] = inc.get("event") if isinstance(inc.get("event"), str) else None
+        m["incident"] = m["id"]
+        # Тот же кризис, что засеян из мира (id совпал), — свежие данные R17 вместо копии, номер сцены сохраняем
+        old = by_id.get(m["id"])
+        if old is not None:
+            m["scene"] = old.get("scene")
             by_id[m["id"]] = m
+            continue
+        # Кризис о событии мира (связь event / тот же район и время) — ссылка отметки события, а не вторая отметка
+        story = next((x for x in by_id.values() if x.get("incident") == m["id"] and x.get("id") != m["id"]), None) or \
+            next((x for x in by_id.values() if x.get("source") != "incident" and x.get("id") != m["id"]
+                  and x.get("incident") is None and world.same_story(x, m)), None)
+        if story is not None:
+            story["incident"] = m["id"]
+            if m.get("status") == "active":
+                story["status"] = "active"
+            continue
+        by_id[m["id"]] = m
     out = []
     for m in by_id.values():
         st, en = parse_time(m.get("started_at")), parse_time(m.get("ended_at"))

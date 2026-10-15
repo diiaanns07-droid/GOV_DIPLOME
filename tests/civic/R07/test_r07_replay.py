@@ -193,12 +193,37 @@ def test_blizzard_reddens_nura_then_cools():
     nura = [next(it for it in f["districts"] if it["target"]["id"] == "nura") for f in frames]
     people = [f["totals"]["people"] for f in frames]
     peak = max(range(len(people)), key=people.__getitem__)
-    start_h, end_h = world_fixture.BLIZZARD["started_ago_hours"], world_fixture.BLIZZARD["ended_ago_hours"]
+    start_h, end_h = world_fixture.BLIZZARD_HOURS
     blizzard_days = {(NOW - timedelta(hours=x)).date().isoformat() for x in range(end_h, start_h + 1, 6)}
     assert frames[peak]["date"] in blizzard_days
     assert nura[peak]["level"] > nura[0]["level"]                       # Нура краснеет в буран
     assert people[-1] < people[peak] / 2                                # после чистки город остывает
     assert frames[-1]["totals"]["fixed"] > frames[peak]["totals"]["fixed"]   # места зеленеют
+
+
+def test_world_time_objects_schema_r02():
+    """Время мира R02 (SCHEMA §1): объекты относительного времени → ISO от момента засева; ISO-строки не трогаются."""
+    raw = {"a": {"ago_hours": 30}, "b": [{"at": {"day": -2}}], "c": "2026-10-01T00:00:00+05:00",
+           "d": {"day_at": {"day": -1, "hour": 18, "minute": 30}}, "e": {"in_days": 1}, "f": {"note": "не время"}}
+    out = world.materialize(raw, NOW)
+    assert out == {"a": "2026-10-14T10:00:00+05:00", "b": [{"at": "2026-10-13"}], "c": "2026-10-01T00:00:00+05:00",
+                   "d": "2026-10-14T18:30:00+05:00", "e": "2026-10-16T16:00:00+05:00", "f": {"note": "не время"}}
+    assert world.materialize(out, NOW) == out                          # второй раз — без изменений
+
+
+def test_world_event_and_its_crisis_are_one_mark():
+    """Событие мира «Буран в Нуре» (events) и кризисный штаб о нём (incidents, event) — одна отметка шкалы."""
+    marks_ = world.world_marks(world_fixture.build_world(), NOW)
+    assert len(marks_) == 1
+    m = marks_[0]
+    assert m["id"] == "ev-r07-buran" and m["title_ru"] == "Буран в Нуре" and m["title_kk"] == "Нұрада боран"
+    assert m["incident"] == "inc-r07-blizzard-nura" and m["scene"] == "9" and m["kind"] == "blizzard" and m["status"] == "closed"
+    # без связи event — тот же район, время и вид тоже склеивают; другой район — отдельная отметка
+    w = world_fixture.build_world()
+    w["incidents"][0].pop("event")
+    assert [x["id"] for x in world.world_marks(w, NOW)] == ["ev-r07-buran"]
+    w["incidents"][0]["zone"] = {"kind": "district", "district": "esil"}
+    assert sorted(x["id"] for x in world.world_marks(w, NOW)) == ["ev-r07-buran", "inc-r07-blizzard-nura"]
 
 
 def test_blizzard_mark_from_world_and_scene_id(tmp_path):
@@ -209,9 +234,10 @@ def test_blizzard_mark_from_world_and_scene_id(tmp_path):
     ev = svc.replay(last=14)["events"]
     assert len(ev) == 1
     e = ev[0]
-    assert e["title_ru"] == "Буран" and e["title_kk"] == "Боран" and e["kind"] == "blizzard" and e["scene"] == "9"
-    assert e["district"] == "nura" and e["district_ru"] == "Нура" and e["demo"] is True
-    assert e["start"] == (NOW - timedelta(hours=world_fixture.BLIZZARD["started_ago_hours"])).date().isoformat()
+    assert e["title_ru"] == "Буран в Нуре" and e["title_kk"] == "Нұрада боран" and e["kind"] == "blizzard" and e["scene"] == "9"
+    assert e["district"] == "nura" and e["district_ru"] == "Нура" and e["demo"] is True and e["incident"] == "inc-r07-blizzard-nura"
+    assert e["start"] == (NOW - timedelta(hours=world_fixture.BLIZZARD_HOURS[0])).date().isoformat()
+    assert e["end"] == (NOW - timedelta(hours=world_fixture.BLIZZARD_HOURS[1])).date().isoformat()
     assert svc.replay(last=2)["events"] == []          # буран был раньше — в 2 последних днях отметки нет
 
 
@@ -222,31 +248,63 @@ def test_seed_world_is_idempotent_and_keeps_first_time(tmp_path):
     first = world.stored_marks(str(db))
     assert world.seed_world(db, w, NOW + timedelta(days=2)) == {"inserted": 0, "skipped": 1}
     assert world.stored_marks(str(db)) == first          # перезапуск сервера не сдвигает «Буран»
+    # R01 передаёт уже материализованный мир (SCHEMA R02 §4) — тот же результат
+    db2 = tmp_path / "w2.sqlite3"
+    world.seed_world(db2, world.materialize(w, NOW), NOW)
+    assert world.stored_marks(str(db2)) == first
 
 
-def test_r17_incidents_win_over_world_copy(tmp_path, monkeypatch):
-    db = tmp_path / "w.sqlite3"
-    world.seed_world(db, world_fixture.build_world(), NOW)
+def _fake_r17(monkeypatch, incidents, *, api="incident_marks"):
     fake = types.ModuleType("ui.civic_agencies")
     seen = {}
-
-    def list_incidents(db_path):
-        seen["db"] = db_path
-        return [{"id": "inc-r07-blizzard-nura", "kind": "blizzard", "title_ru": "Буран в Нуре", "title_kk": "Нұрадағы боран",
-                 "zone": {"kind": "district", "district": "nura"}, "started_at": h(7 * 24), "status": "active", "demo": True},
-                {"id": "inc-x", "kind": "heat_outage", "title_ru": "Авария теплосети", "title_kk": "Жылу желісіндегі апат",
-                 "zone": {"kind": "district", "district": "esil"}, "started_at": h(2 * 24), "status": "active", "demo": True}]
-
-    fake.list_incidents = list_incidents
+    if api == "incident_marks":
+        def incident_marks(start=None, end=None):
+            seen["range"] = (start, end)
+            return incidents
+        fake.incident_marks = incident_marks
+    else:
+        def list_incidents(status="active", district=None):
+            seen["status"] = status
+            return {"items": incidents}
+        fake.list_incidents = list_incidents
     monkeypatch.setitem(sys.modules, "ui.civic_agencies", fake)
     marks._r17_cache.clear()
+    return seen
+
+
+@pytest.mark.parametrize("api", ["incident_marks", "list_incidents"])
+def test_r17_crisis_joins_world_event_and_new_crisis_is_own_mark(tmp_path, monkeypatch, api):
+    db = tmp_path / "w.sqlite3"
+    world.seed_world(db, world_fixture.build_world(), NOW)
+    seen = _fake_r17(monkeypatch, [
+        # тот же кризис, что засеян из мира (R17 incident_marks: без поля event) — склеивается с событием «Буран в Нуре»
+        {"id": "inc-r07-blizzard-nura", "kind": "blizzard", "title_ru": "Буран", "title_kk": "Боран", "district": "nura",
+         "started_at": h(6 * 24 + 2), "closed_at": None, "status": "active", "demo": True},
+        # новый кризис, открытый на показе, — своя отметка
+        {"id": "inc-x", "kind": "heat_outage", "title_ru": "Авария теплосети", "title_kk": "Жылу желісіндегі апат",
+         "zone": {"kind": "district", "district": "esil"}, "started_at": h(2 * 24), "status": "active", "demo": True}], api=api)
     svc = svc_for(world_records(), db_path=db)
     ev = svc.replay(last=14)["events"]
-    assert seen["db"] == str(db)
-    assert [e["id"] for e in ev] == ["inc-r07-blizzard-nura", "inc-x"]
-    assert ev[0]["title_ru"] == "Буран в Нуре" and ev[0]["source"] == "incident" and ev[0]["scene"] == "9"
+    if api == "incident_marks":
+        assert seen["range"][0] is not None and seen["range"][1] is not None
+    else:
+        assert seen["status"] == "all"
+    assert [e["id"] for e in ev] == ["ev-r07-buran", "inc-x"]
+    assert ev[0]["incident"] == "inc-r07-blizzard-nura" and ev[0]["status"] == "active" and ev[0]["scene"] == "9"
+    assert ev[1]["source"] == "incident" and ev[1]["incident"] == "inc-x" and ev[1]["district"] == "esil"
     assert [e["id"] for e in svc.replay(last=14, district="esil")["events"]] == ["inc-x"]
     marks._r17_cache.clear()
+
+
+def test_real_world_file_when_present():
+    """В сборке с демо-миром R02 (data/civic/astana/demo-world/world_v1.json): отметка бурана для сцены 9 есть."""
+    w = world.load_world()
+    if w is None:
+        pytest.skip("world_v1.json R02 нет в этой ветке — проверяется в сборке R01")
+    marks_ = world.world_marks(w, NOW)
+    assert marks_, "в мире нет событий для шкалы хроники"
+    assert any(m["kind"] in ("blizzard", "snow") and m["scene"] == "9" for m in marks_)
+    assert all(m["demo"] for m in marks_)
 
 
 def test_r17_failure_does_not_break_replay(monkeypatch):

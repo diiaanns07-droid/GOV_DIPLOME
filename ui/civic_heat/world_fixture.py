@@ -1,36 +1,38 @@
-"""Мини-мир R07 — фикстура в духе демо-мира R02 (CONTRACT §11), пока world_v1.json не готов. ВСЁ синтетическое.
+"""Мини-мир R07 — фикстура в формате демо-мира R02 (SCHEMA birge-demo-world-v1 1.1). ВСЁ синтетическое.
 
     python -m ui.civic_heat.world_fixture            # сводка
     python -m ui.civic_heat.world_fixture --write    # fixtures/world_r07_mini.json
 
-Зачем: тесты «Хроники» и стенд R07 (devserver --world) — неделя бурана в Нуре (6–3 дня назад): снег копится три дня, город краснеет,
-службы чистят, места зеленеют и остывают. Время — относительно засева (ago_hours), как в мире R02.
+Зачем: тесты «Хроники» и стенд R07 (devserver --world) без файла R02 — неделя бурана в Нуре (6–3 дня назад): снег
+копится три дня, город краснеет, службы чистят, места зеленеют и остывают. Формат — как world_v1.json R02:
+время — объекты относительного времени ({"ago_hours": 30.5}, SCHEMA §1), жалоба — запись R09 (§2.3: created_at,
+status_history[].at, metoo_times, resolution), событие мира «Буран в Нуре» (events, §2.1), кризисный штаб о нём
+(incidents, §2.8: event, closed_at), сцена 9 (scenes). Настоящий мир R02 читается тем же кодом (world.materialize).
 Цели — настоящие объекты OSM из fixtures/targets_demo.json (те же, что у демо-набора R07).
-
-Формат жалобы мира (наше понимание SCHEMA R02; при расхождении правится только to_records):
-    {"id", "ago_hours", "category", "text", "lang", "point", "target", "district", "status",
-     "status_history": [{"status", "ago_hours"}], "metoo_ago_hours": [..], "resolution": {"state", "reported_ago_hours",
-     "verified_ago_hours" | "reopened_ago_hours", "votes"} | null, "demo": true}
 """
 from __future__ import annotations
 
 import argparse
 import json
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 from . import demo_seed
-from .engine import ASTANA_TZ, iso
+from .engine import ASTANA_TZ
+from .world import materialize
 
 HERE = Path(__file__).resolve().parent
 OUT_PATH = HERE / "fixtures" / "world_r07_mini.json"
 SEED = 15
+BLIZZARD_HOURS = (6 * 24 + 6, 3 * 24 + 4)   # буран: начался и кончился (часов назад)
+EVENT = {"id": "ev-r07-buran", "kind": "blizzard", "title_ru": "Буран в Нуре", "title_kk": "Нұрада боран", "district": "nura",
+         "started_at": {"ago_hours": BLIZZARD_HOURS[0]}, "ended_at": {"ago_hours": BLIZZARD_HOURS[1]}, "demo": True}
 BLIZZARD = {"id": "inc-r07-blizzard-nura", "kind": "blizzard", "title_ru": "Буран", "title_kk": "Боран",
             "zone": {"kind": "district", "district": "nura", "targets": [], "geometry": None},
-            "started_ago_hours": 6 * 24 + 6, "ended_ago_hours": 3 * 24 + 4, "status": "closed",
+            "started_at": {"ago_hours": BLIZZARD_HOURS[0] - 4}, "status": "closed", "closed_at": {"ago_hours": BLIZZARD_HOURS[1] - 20},
             "tasks": [], "updates": [], "result": {"text_ru": "Дороги и дворы расчищены", "text_kk": "Жолдар мен аулалар тазартылды"},
-            "demo": True}
+            "event": EVENT["id"], "demo": True}
 TEXTS = {
     "snow_ice": [("Дорогу замело, машины буксуют", "ru"), ("Жол қарға толды, көлік өтпейді", "kk"),
                  ("Во дворе сугробы по колено, не выйти", "ru"), ("Аялдамада қар тазартылмаған", "kk")],
@@ -47,8 +49,39 @@ ROLE_CATEGORY = {"snow": "snow_ice", "city_snow": "snow_ice", "roads": "roads", 
                  "city_crossroads": "roads", "city_zebra": "roads"}
 
 
-def _point(t: dict, rnd: random.Random) -> list[float]:
-    return demo_seed._point_on(t["geometry"], rnd)
+def _h(x: float) -> dict:
+    return {"ago_hours": round(float(x), 2)}
+
+
+def _complaint(cid: str, ago_h: float, category: str, text: str, lang: str, point, target: dict, district,
+               rnd: random.Random, *, fixed_after_h=None, verify=None, metoo=0, event=None) -> dict:
+    """Жалоба в формате мира R02 (§2.3): история статусов, «Я тоже», раунд ремонта — время-объекты от засева."""
+    hist = [{"at": _h(ago_h), "status": "new"}]
+    status, res = "new", None
+    if fixed_after_h is not None and ago_h - fixed_after_h > 0.5:
+        acc = ago_h - min(6.0, fixed_after_h * 0.3)
+        fixed_h = ago_h - fixed_after_h
+        hist += [{"at": _h(acc), "status": "accepted"}, {"at": _h((acc + fixed_h) / 2), "status": "in_progress"},
+                 {"at": _h(fixed_h), "status": "fixed"}]
+        status = "fixed"
+        res = {"round": 1, "state": "reported", "reported_at": _h(fixed_h), "votes": {"yes": 0, "no": 0, "cant": 0},
+               "verified_at": None, "reopened_at": None, "photos_after": []}
+        if verify == "yes" and fixed_h > 6:
+            res.update(state="verified", verified_at=_h(fixed_h - 5), votes={"yes": 1, "no": 0, "cant": 0})
+        elif verify == "no" and fixed_h > 8:
+            res.update(state="reopened", reopened_at=_h(fixed_h - 7), votes={"yes": 0, "no": 1, "cant": 0})
+            hist.append({"at": _h(fixed_h - 7), "status": "in_progress", "reopened_by_residents": True})
+            status = "in_progress"
+    elif ago_h > 30 and rnd.random() < 0.5:
+        hist.append({"at": _h(ago_h - 20), "status": "accepted"})
+        status = "accepted"
+    me = sorted((round(ago_h - rnd.uniform(0.2, min(ago_h - 0.1, 30)), 2) for _ in range(metoo)), reverse=True)
+    me = [m for m in me if m > 0]
+    return {"id": cid, "schema": "civic-complaint-v2", "created_at": _h(ago_h), "text": text, "lang": lang,
+            "category": category, "subtopic": None, "category_source": "resident", "model": None,
+            "point": point, "target": target, "district": district, "status": status, "status_history": hist,
+            "metoo": len(me), "metoo_times": [_h(m) for m in me], "duplicate_of": None, "demo": True,
+            "resolution": res, "event": event}
 
 
 def build_world(seed: int = SEED) -> dict:
@@ -58,43 +91,14 @@ def build_world(seed: int = SEED) -> dict:
     targets = demo_seed.load_targets()
     ids = sorted(targets)
     complaints = []
-    n = 0
 
-    def add(tid, ago_h, category, *, fixed_after_h=None, verify=None, metoo=0):
-        nonlocal n
+    def add(tid, ago_h, category, **kw):
         t = targets[tid]
-        n += 1
         text, lang = rnd.choice(TEXTS.get(category) or TEXTS["other"])
-        hist = [{"status": "new", "ago_hours": round(ago_h, 2)}]
-        status = "new"
-        res = None
-        if fixed_after_h is not None and ago_h - fixed_after_h > 0.5:
-            acc = ago_h - min(6.0, fixed_after_h * 0.3)
-            hist.append({"status": "accepted", "ago_hours": round(acc, 2)})
-            fixed_h = ago_h - fixed_after_h
-            work = (acc + fixed_h) / 2
-            hist.append({"status": "in_progress", "ago_hours": round(work, 2)})
-            hist.append({"status": "fixed", "ago_hours": round(fixed_h, 2)})
-            status = "fixed"
-            res = {"state": "reported", "reported_ago_hours": round(fixed_h, 2), "votes": {"yes": 0, "no": 0, "cant": 0}}
-            if verify == "yes" and fixed_h > 6:
-                res.update(state="verified", verified_ago_hours=round(fixed_h - 5, 2), votes={"yes": 1, "no": 0, "cant": 0})
-            elif verify == "no" and fixed_h > 8:
-                res.update(state="reopened", reopened_ago_hours=round(fixed_h - 7, 2), votes={"yes": 0, "no": 1, "cant": 0})
-                hist.append({"status": "in_progress", "ago_hours": round(fixed_h - 7, 2), "reopened_by_residents": True})
-                status = "in_progress"
-        elif ago_h > 30 and rnd.random() < 0.5:
-            hist.append({"status": "accepted", "ago_hours": round(ago_h - 20, 2)})
-            status = "accepted"
-        me = sorted((round(ago_h - rnd.uniform(0.2, min(ago_h - 0.1, 30)), 2) for _ in range(metoo)), reverse=True)
-        complaints.append({
-            "id": f"c-w07-{n:04d}", "ago_hours": round(ago_h, 2), "category": category, "text": text, "lang": lang,
-            "point": _point(t, rnd), "target": {"kind": t["kind"], "id": tid}, "district": t.get("district"),
-            "status": status, "status_history": hist, "metoo_ago_hours": [m for m in me if m > 0], "resolution": res,
-            "demo": True,
-        })
+        complaints.append(_complaint(f"c-w07{len(complaints) + 1:04d}", ago_h, category, text, lang, _point(t, rnd),
+                                     {"kind": t["kind"], "id": tid}, t.get("district"), rnd, **kw))
 
-    # Фон: 40 дней, по 0–3 жалобы в день на разные цели; старое чинят за 2–6 дней, часть проверяют жители.
+    # Фон: 40 дней, по 1–4 жалобы в день на разные цели; старое чинят за 2–6 дней, часть проверяют жители.
     for day in range(40, 0, -1):
         for _ in range(rnd.randint(1, 4)):
             tid = rnd.choice(ids)
@@ -105,8 +109,8 @@ def build_world(seed: int = SEED) -> dict:
             fix = rnd.uniform(40, 140) if day > 3 and rnd.random() < 0.75 else None
             add(tid, ago, cat, fixed_after_h=fix, verify=rnd.choice(["yes", "yes", None]), metoo=rnd.choice([0, 0, 1, 2]))
     # Буран в Нуре: 3 дня, снег на улицах, во дворах и на остановках Нуры (и меньше — в других районах).
-    start_h, end_h = BLIZZARD["started_ago_hours"], BLIZZARD["ended_ago_hours"]
-    nura = [tid for tid in ids if targets[tid].get("district") == "nura" and targets[tid]["kind"] in ("segment", "area", "object")]
+    start_h, end_h = BLIZZARD_HOURS
+    nura = [tid for tid in ids if targets[tid].get("district") == "nura"]
     other = [tid for tid in ids if targets[tid].get("district") != "nura"]
     for i in range(70):
         tid = nura[i % len(nura)] if i < 56 else rnd.choice(other)
@@ -114,15 +118,17 @@ def build_world(seed: int = SEED) -> dict:
         # Чистка — через 1–3 дня после бурана; несколько мест жители «вернули» (снег остался).
         fix_at = rnd.uniform(end_h - 70, end_h - 18)
         verify = "no" if i in (5, 23) else rnd.choice(["yes", "yes", None])
-        add(tid, ago, "snow_ice", fixed_after_h=ago - fix_at, verify=verify, metoo=rnd.choice([0, 1, 2, 3]))
+        add(tid, ago, "snow_ice", fixed_after_h=ago - fix_at, verify=verify, metoo=rnd.choice([0, 1, 2, 3]),
+            event=EVENT["id"] if targets[tid].get("district") == "nura" else None)
     # Сегодня и вчера — свежие жалобы (карта «сегодня» не пустая).
     for _ in range(12):
         tid = rnd.choice(ids)
         add(tid, rnd.uniform(1, 40), ROLE_CATEGORY.get(targets[tid]["role"], "other"), metoo=rnd.choice([0, 1]))
     return {
-        "version": "r07-mini-1", "demo": True, "note": "Синтетика R07 для тестов и стенда (не мир R02).",
-        "complaints": complaints, "incidents": [dict(BLIZZARD)],
-        "scenes": {"scene9": {"incident": BLIZZARD["id"], "replay": {"last": 7}}},
+        "schema": "birge-demo-world-v1", "schema_version": "1.1", "seed": seed, "synthetic": True,
+        "note": "Мини-мир R07 для тестов и стенда (не мир R02).",
+        "events": [dict(EVENT)], "complaints": complaints, "incidents": [dict(BLIZZARD)],
+        "scenes": {"scene9": {"incident": BLIZZARD["id"], "event": EVENT["id"], "district": "nura"}},
     }
 
 
@@ -141,54 +147,30 @@ def city_world(n_targets: int = 1000, n_complaints: int = 2500, seed: int = 7) -
             cells.setdefault(geo.cell_id_for(pt), (pt, d))
     ids = sorted(cells)
     nura = [c for c in ids if cells[c][1] == "nura"]
-    start_h, end_h = BLIZZARD["started_ago_hours"], BLIZZARD["ended_ago_hours"]
+    start_h, end_h = BLIZZARD_HOURS
     complaints = []
     for i in range(n_complaints):
-        blizzard = i % 4 == 0 and nura
+        blizzard = bool(i % 4 == 0 and nura)
         cid = rnd.choice(nura) if blizzard else rnd.choice(ids)
         pt, d = cells[cid]
         ago = rnd.uniform(end_h, start_h) if blizzard else rnd.uniform(1, 40 * 24)
-        hist = [{"status": "new", "ago_hours": round(ago, 2)}]
-        status, res = "new", None
         fix = (ago - rnd.uniform(end_h - 70, end_h - 18)) if blizzard else (rnd.uniform(40, 140) if ago > 72 and rnd.random() < 0.75 else None)
-        if fix is not None and ago - fix > 0.5:
-            hist += [{"status": "accepted", "ago_hours": round(ago - 2, 2)}, {"status": "fixed", "ago_hours": round(ago - fix, 2)}]
-            status = "fixed"
-            res = {"state": "reported", "reported_ago_hours": round(ago - fix, 2), "votes": {"yes": 0, "no": 0, "cant": 0}}
-        complaints.append({"id": f"c-city-{i:05d}", "ago_hours": round(ago, 2), "category": "snow_ice" if blizzard else rnd.choice(["roads", "yards", "transport", "lighting"]),
-                           "text": "Пример", "lang": "ru", "point": pt, "target": {"kind": "area", "id": cid}, "district": d,
-                           "status": status, "status_history": hist, "metoo_ago_hours": [], "resolution": res, "demo": True})
-    return {"version": "r07-city-1", "demo": True, "note": "Синтетика R07 для замера плавности (не мир R02).",
-            "complaints": complaints, "incidents": [dict(BLIZZARD)], "scenes": {"scene9": {"incident": BLIZZARD["id"]}}}
+        complaints.append(_complaint(f"c-city{i:05d}", ago, "snow_ice" if blizzard else rnd.choice(["roads", "yards", "transport", "lighting"]),
+                                     "Пример", "ru", pt, {"kind": "area", "id": cid}, d, rnd, fixed_after_h=fix,
+                                     event=EVENT["id"] if blizzard else None))
+    return {"schema": "birge-demo-world-v1", "schema_version": "1.1", "synthetic": True,
+            "note": "Синтетика R07 для замера плавности (не мир R02).", "events": [dict(EVENT)],
+            "complaints": complaints, "incidents": [dict(BLIZZARD)], "scenes": {"scene9": {"incident": BLIZZARD["id"], "event": EVENT["id"]}}}
 
 
-def _at(now: datetime, hours) -> str:
-    return iso(now - timedelta(hours=float(hours)))
+def _point(t: dict, rnd: random.Random) -> list[float]:
+    return demo_seed._point_on(t["geometry"], rnd)
 
 
 def to_records(world: dict, now: datetime | None = None) -> list[dict]:
-    """Жалобы мира → записи v2 (как их сохранил бы R09.seed_world), время — от now."""
+    """Жалобы мира → записи v2 с абсолютным временем от now (как их сохранил бы R09.seed_world)."""
     now = (now or datetime.now(timezone.utc)).astimezone(ASTANA_TZ)
-    out = []
-    for c in world.get("complaints") or []:
-        created = _at(now, c["ago_hours"])
-        r = {k: c[k] for k in ("id", "category", "text", "lang", "point", "target", "district", "status", "demo") if k in c}
-        r["created_at"] = created
-        r["status_history"] = [{"at": _at(now, h["ago_hours"]), **{k: v for k, v in h.items() if k != "ago_hours"}}
-                               for h in c.get("status_history") or []]
-        times = [_at(now, h) for h in c.get("metoo_ago_hours") or []]
-        r["metoo"] = len(times)
-        r["metoo_times"] = sorted(times)
-        r["duplicate_of"] = None
-        res = c.get("resolution")
-        if res:
-            r["resolution"] = {"round": 1, "state": res["state"], "votes": dict(res.get("votes") or {}),
-                               "reported_at": _at(now, res["reported_ago_hours"]),
-                               "verified_at": _at(now, res["verified_ago_hours"]) if res.get("verified_ago_hours") is not None else None,
-                               "reopened_at": _at(now, res["reopened_ago_hours"]) if res.get("reopened_ago_hours") is not None else None}
-        r["schema"] = "complaint.v2"
-        out.append(r)
-    return out
+    return [dict(materialize(c, now)) for c in world.get("complaints") or []]
 
 
 def main(argv=None):
@@ -197,7 +179,7 @@ def main(argv=None):
     args = ap.parse_args(argv)
     world = build_world()
     recs = to_records(world)
-    print(f"жалоб {len(recs)}, людей {sum(1 + r['metoo'] for r in recs)}, буран — {world['incidents'][0]['title_ru']}")
+    print(f"жалоб {len(recs)}, людей {sum(1 + r['metoo'] for r in recs)}, событие — {world['events'][0]['title_ru']}")
     if args.write:
         OUT_PATH.write_text(json.dumps(world, ensure_ascii=False, indent=1) + "\n", "utf-8")
         print("записано", OUT_PATH)

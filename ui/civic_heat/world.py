@@ -4,12 +4,13 @@
 из базы R09 (её засевает R09.seed_world из того же world_v1.json), поэтому числа на карте = «Обращения».
 Без флага — как в FINAL-4: к жалобам R09 добавляется синтетический набор R07 (demo_seed.demo_records).
 
-Что R07 берёт из мира сам — seed_world(db_path, records, now): только отметки для шкалы «Хроники»
-(кризисы `incidents` и события `scenes`) с абсолютным временем от момента засева, в своей таблице
-heat_replay_marks_v1 той же SQLite. Жалобы R07 не засевает и в чужие таблицы не пишет.
-Главный источник отметок — кризисы R17 (ui.civic_agencies, см. marks.py); своя копия нужна, чтобы шкала
-показывала «Буран», даже если модуля R17 в сборке нет. Время мира относительное (ago_days / ago_hours / in_days),
-поэтому засев запоминает момент: повторный запуск сервера ничего не дублирует и не сдвигает даты.
+Что R07 берёт из мира сам — seed_world(db_path, records, now): только отметки для шкалы «Хроники» — события мира
+(`events`, SCHEMA R02 §2.1: «Буран в Нуре»), к ним — кризисы (`incidents`, §2.8, связь полем `event`) и номера сцен
+(`scenes`), с абсолютным временем от момента засева, в своей таблице heat_replay_marks_v1 той же SQLite.
+Жалобы R07 не засевает и в чужие таблицы не пишет. Кризисы во время работы — у R17 (marks.py: incident_marks);
+своя копия нужна, чтобы шкала показывала «Буран», даже если модуля R17 в сборке нет. Время мира — относительное
+(SCHEMA R02 §1: {"ago_hours": 70}, {"day_at": …}) или уже ISO (R01 передаёт материализованный мир); засев запоминает
+момент: повторный запуск сервера ничего не дублирует и не сдвигает даты.
 """
 from __future__ import annotations
 
@@ -27,7 +28,8 @@ ROOT = Path(__file__).resolve().parents[2]
 WORLD_PATH = ROOT / "data" / "civic" / "astana" / "demo-world" / "world_v1.json"
 DEFAULT_RUNTIME_DB = ROOT / ".runtime" / "civic.sqlite3"   # то же, что ui/web_server.resolve_db_path(None)
 TABLE = "heat_replay_marks_v1"
-MARK_KINDS = ("blizzard", "heat_outage", "water_outage", "flood", "other")
+# Виды отметок: кризисы R17 (§5.5) и события мира R02 (§2.1: blizzard | snow | ice | season)
+MARK_KINDS = ("blizzard", "snow", "ice", "season", "heat_outage", "water_outage", "flood", "other")
 _ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$")
 
 _lock = threading.Lock()
@@ -65,10 +67,49 @@ def db_path() -> str | None:
 
 # ---------------------------------------------------------------- разбор мира (терпимо: SCHEMA R02 ещё уточняется)
 
+def time_of(value, now: datetime) -> datetime | None:
+    """Мгновение мира: ISO-строка или объект относительного времени SCHEMA R02 §1 ({"ago_hours"}, {"ago_days"},
+    {"in_hours"}, {"in_days"}, {"ago_minutes"}, {"day"}, {"day_at": {"day", "hour", "minute"}}). Иначе — None."""
+    if isinstance(value, (str, datetime)):
+        return parse_time(value)
+    if not isinstance(value, dict):
+        return None
+    num = lambda k: float(value[k]) if isinstance(value.get(k), (int, float)) and not isinstance(value.get(k), bool) else 0.0  # noqa: E731
+    if any(k in value for k in ("ago_hours", "ago_days", "ago_minutes", "in_hours", "in_days")):
+        return now - timedelta(days=num("ago_days") - num("in_days"), hours=num("ago_hours") - num("in_hours"), minutes=num("ago_minutes"))
+    local = now.astimezone(ASTANA_TZ)
+    if isinstance(value.get("day_at"), dict):
+        d = value["day_at"]
+        day = local.date() + timedelta(days=int(d.get("day") or 0))
+        return datetime(day.year, day.month, day.day, int(d.get("hour") or 0), int(d.get("minute") or 0), tzinfo=ASTANA_TZ)
+    if isinstance(value.get("day"), (int, float)) and not isinstance(value.get("day"), bool):
+        day = local.date() + timedelta(days=int(value["day"]))
+        return datetime(day.year, day.month, day.day, tzinfo=ASTANA_TZ)
+    return None
+
+
+_REL_KEYS = {"ago_hours", "ago_days", "ago_minutes", "in_hours", "in_days", "day", "day_at"}
+
+
+def materialize(obj, now: datetime):
+    """Копия записи мира, где объекты относительного времени (SCHEMA R02 §1) заменены строками: мгновение — ISO по Астане,
+    {"day": N} — дата ГГГГ-ММ-ДД. Уже абсолютные строки не трогаются (можно звать дважды). То же делает помощник R02
+    ml.datasets.demo_world_io.materialize; здесь — без зависимости от него (стенд и тесты R07)."""
+    if isinstance(obj, list):
+        return [materialize(x, now) for x in obj]
+    if not isinstance(obj, dict):
+        return obj
+    if obj and set(obj) <= _REL_KEYS:
+        t = time_of(obj, now)
+        if t is not None:
+            return t.date().isoformat() if set(obj) == {"day"} else iso(t)
+    return {k: materialize(v, now) for k, v in obj.items()}
+
+
 def _relative(value: dict, now: datetime, prefixes: tuple[str, ...]) -> datetime | None:
-    """Время записи мира: ISO (<p>_at) или относительно засева (<p>_ago_days / _ago_hours / _in_days / _in_hours)."""
+    """Время записи мира: <p>_at (ISO или объект SCHEMA R02 §1) или старые ключи <p>_ago_days / _ago_hours / _in_days."""
     for p in prefixes:
-        at = parse_time(value.get(p + "_at")) if p else None
+        at = time_of(value.get(p + "_at"), now) if p else None
         if at is not None:
             return at
         base = (p + "_") if p else ""
@@ -140,19 +181,56 @@ def _scene_refs(scenes) -> dict[str, str]:
     return out
 
 
+# Отметка события и кризис о нём — одно и то же на шкале («Буран в Нуре» и кризисный штаб «Буран»)
+_KIND_FAMILY = {"blizzard": "snow", "snow": "snow", "ice": "snow"}
+
+
+def same_story(event: dict, inc: dict) -> bool:
+    """Кризис — ответ на событие мира: связь полем event (SCHEMA R02 §2.8) или тот же район, пересечение по времени
+    и родственный вид (буран / снег / гололёд). Тогда на шкале одна отметка, кризис — её ссылка."""
+    if inc.get("event") and inc.get("event") == event.get("id"):
+        return True
+    if inc.get("event"):
+        return False
+    fam = lambda k: _KIND_FAMILY.get(k, k)  # noqa: E731
+    if fam(event.get("kind")) != fam(inc.get("kind")) or (event.get("district") and inc.get("district") and event["district"] != inc["district"]):
+        return False
+    e0, e1 = parse_time(event.get("started_at")), parse_time(event.get("ended_at"))
+    i0, i1 = parse_time(inc.get("started_at")), parse_time(inc.get("ended_at"))
+    if e0 is None or i0 is None:
+        return False
+    return i0 <= (e1 or i0) and e0 <= (i1 or e0 + timedelta(days=365))
+
+
 def world_marks(world, now: datetime) -> list[dict]:
-    """Все отметки шкалы из мира: кризисы (incidents) и события сцен с названием и временем."""
+    """Все отметки шкалы из мира: события (events, §2.1), кризисы (incidents, §2.8) — кризис о событии
+    становится ссылкой отметки события (incident), а не второй отметкой; номера сцен (scenes)."""
     if isinstance(world, list):
-        world = {"incidents": [x for x in world if isinstance(x, dict) and str(x.get("id", "")).startswith("inc-")]}
+        world = {"incidents": [x for x in world if isinstance(x, dict) and str(x.get("id", "")).startswith("inc-")],
+                 "events": [x for x in world if isinstance(x, dict) and str(x.get("id", "")).startswith("ev-")]}
     if not isinstance(world, dict):
         return []
     refs = _scene_refs(world.get("scenes"))
     marks: dict[str, dict] = {}
-    for inc in world.get("incidents") or []:
-        m = mark_from_world(inc, now)
+    for ev in world.get("events") or []:
+        m = mark_from_world(ev, now)
         if m:
             m["scene"] = refs.get(m["id"])
+            m["incident"] = None
             marks[m["id"]] = m
+    for inc in world.get("incidents") or []:
+        m = mark_from_world(inc, now)
+        if not m:
+            continue
+        m["event"] = inc.get("event") if isinstance(inc.get("event"), str) else None
+        story = next((x for x in marks.values() if x.get("incident") is None and same_story(x, m)), None)
+        if story is not None:
+            story["incident"] = m["id"]
+            story["scene"] = story["scene"] or refs.get(m["id"])
+            continue
+        m["scene"] = refs.get(m["id"])
+        m["incident"] = m["id"]
+        marks[m["id"]] = m
     scenes = world.get("scenes")
     events = scenes if isinstance(scenes, list) else list(scenes.values()) if isinstance(scenes, dict) else []
     for ev in events:
@@ -160,6 +238,7 @@ def world_marks(world, now: datetime) -> list[dict]:
             m = mark_from_world(ev, now, source="scene")
             if m:
                 m["scene"] = str(ev.get("scene") or ev.get("number") or refs.get(m["id"]) or "") or None
+                m["incident"] = None
                 marks[m["id"]] = m
     return sorted(marks.values(), key=lambda m: m["started_at"])
 

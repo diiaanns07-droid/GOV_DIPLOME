@@ -1,0 +1,240 @@
+{
+ "base": "http://127.0.0.1:8617/civic/heat/demo.html",
+ "at": "2026-10-15T12:50:26.347Z",
+ "pass": 15,
+ "fail": 0,
+ "results": [
+  {
+   "name": "open-1366-ru",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "day": "9 октября",
+    "ticks": 7,
+    "marks": [
+     "Буран в Нуре"
+    ],
+    "people": "Сообщил 51 человек",
+    "fixed": "7 мест исправлено",
+    "demo": true,
+    "focus": "rp-open",
+    "inside": true,
+    "replaying": true,
+    "buttons": [
+     [
+      "rp-chip",
+      70,
+      34
+     ],
+     [
+      "rp-chip",
+      80,
+      34
+     ],
+     [
+      "rp-speed",
+      44,
+      44
+     ],
+     [
+      "rp-play",
+      134,
+      44
+     ],
+     [
+      "rp-x",
+      44,
+      44
+     ]
+    ],
+    "emoji": false
+   }
+  },
+  {
+   "name": "keys-1366-ru",
+   "pass": true,
+   "problems": []
+  },
+  {
+   "name": "week-10-20s-1366",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "played_s": 13.4,
+    "stats": {
+     "frames": 268,
+     "avg_ms": 49.9,
+     "fps": 20.1,
+     "p95_ms": 100.1,
+     "worst_ms": 133.4,
+     "heat": {
+      "tween_ms_per_frame": 0.25,
+      "day_switch_ms": 8.3,
+      "day_switches": 11,
+      "targets": 6
+     }
+    }
+   }
+  },
+  {
+   "name": "esc-today-no-flash-1366",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "min_badges": 6,
+    "live": 6
+   }
+  },
+  {
+   "name": "console-1366-ru",
+   "pass": true,
+   "problems": []
+  },
+  {
+   "name": "frames-1366-ru",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "peak_day": "2026-10-12",
+    "people": [
+     51,
+     106,
+     168,
+     222,
+     162,
+     79,
+     52
+    ]
+   }
+  },
+  {
+   "name": "frames-1366-kk",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "peak_day": "2026-10-12",
+    "people": [
+     51,
+     106,
+     168,
+     222,
+     162,
+     79,
+     52
+    ]
+   }
+  },
+  {
+   "name": "frames-1024-ru",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "peak_day": "2026-10-12",
+    "people": [
+     51,
+     106,
+     168,
+     222,
+     162,
+     79,
+     52
+    ]
+   }
+  },
+  {
+   "name": "frames-1024-kk",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "peak_day": "2026-10-12",
+    "people": [
+     51,
+     106,
+     168,
+     222,
+     162,
+     79,
+     52
+    ]
+   }
+  },
+  {
+   "name": "frames-375-ru",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "peak_day": "2026-10-12",
+    "people": [
+     51,
+     106,
+     168,
+     222,
+     162,
+     79,
+     52
+    ]
+   }
+  },
+  {
+   "name": "frames-375-kk",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "peak_day": "2026-10-12",
+    "people": [
+     51,
+     106,
+     168,
+     222,
+     162,
+     79,
+     52
+    ]
+   }
+  },
+  {
+   "name": "state-error-500",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "text": "Не удалось загрузить хроникуПроверьте связь и нажмите «Повторить».Повторить",
+    "buttons": 1,
+    "replay": false,
+    "icon": 22
+   }
+  },
+  {
+   "name": "state-not-ready-503",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "text": "Хроника ещё не подключена к серверу",
+    "buttons": 0,
+    "replay": false,
+    "icon": 22
+   }
+  },
+  {
+   "name": "state-empty",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "text": "За эти дни жалоб нетПопробуйте 30 дней30 дней",
+    "buttons": 1,
+    "replay": false,
+    "icon": 22
+   }
+  },
+  {
+   "name": "reduced-motion-steps",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "tween_ms_per_frame": 0,
+    "day_switch_ms": 11.9,
+    "day_switches": 2,
+    "targets": 6
+   }
+  }
+ ]
+}

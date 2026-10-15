@@ -1,0 +1,111 @@
+R07 · раунд 15 · INTEGRATION — «Хроника города», один источник в демо-мире, тепловая карта
+Ветка: claude/birge-r07-round-15-zjp4ob (SHA — в DELIVERY.json, code_sha). Пути R07: ui/civic_heat/, web/civic/heat/,
+web/civic/replay/, tests/civic/R07/. Чужие файлы не менялись — правки соседям ниже патчами.
+
+================================================================================================================
+1. R01 — подключение (что уже есть в claude/brave-fermi-nhzetj и чего не хватает)
+================================================================================================================
+1.1 Маршрут GET /api/civic/v2/heat/replay — у R01 УЖЕ есть ("heat.replay", V2Handler R07 ui.civic_heat.api.handle_get,
+    kind="raw"). Модуль сам проверяет и параметры, которых нет в правилах шлюза: last (1…92), days (окно карты 1…365),
+    format (compact | full). Можно дописать в query правила: "last": "days", "days": "days", "format": "word".
+    Ответ: {generated_at, params{from,to,step,days,category,district,format}, legend, targets{"kind:id": {target,
+    geometry, anchor, district, approximate, cat}}, frames[{date, at, totals{people, active, hot, fixed, verified,
+    reopened, districts_active}, items | changed+removed, districts | districts_changed+districts_removed}],
+    events[{id, kind, title_ru, title_kk, district, district_ru, district_kk, start, end, started_at, ended_at,
+    status, source world|incident|scene, incident, scene, demo}], demo, district_zoom_max, compute_ms}.
+    Ошибка параметра — 400 {error: bad_request, field}. Сбой — 500 без падения сервера.
+
+1.2 Статика (CIVIC_ASSETS / web/index.html), ПОСЛЕ heat.js:
+      <link rel="stylesheet" href="/civic/replay/replay.css">
+      <script src="/civic/replay/replay.js"></script>
+    В список ассетов шлюза (ui/web_server.py, рядом с "heat/heat.js", "heat/heat.css"): "replay/replay.js",
+    "replay/replay.css".
+
+1.3 Где открывается (место — схема R11 IA_ROUND15; по умолчанию — кнопка у кнопок карты). Один вызов после монтажа R07:
+      window.BirgeReplay.attach({ map: currentMap(), heat: S.mounted.heat, tools: document.querySelector(".map-tools") });
+    attach: кнопка 44 px «Хроника города · Неделя за 10 секунд» в колонке кнопок карты (класс .rp-open; при открытой
+    хронике тёмная), адрес ?replay=7|30 (&autoplay=0) — открыть сразу (сцена 9, ролик R10), событие
+    document.dispatchEvent(new CustomEvent("birge:replay-open", {detail: {days: 7}})).
+    Ctrl+K: heat.commands() уже отдаёт «Хроника города: неделя за 10 секунд» и «… месяц» (id heat:replay:7 / :30).
+    Программно: BirgeReplay.open({ map, heat, days: 7, autoplay: true, container? }) → ручка {play, pause, seek,
+    setPeriod, setLang, close, destroy, state(), stats()}; BirgeReplay.active — открытая хроника.
+
+1.4 Полоса хроники — внизу карты, по центру свободной части. Оболочка задаёт отступы от своих панелей на .rp-host
+    (контейнер open() — карта, или opts.container):
+      .rp-host { --rp-left: 408px; }   /* открыта карточка слева 388 + поля 20 */
+    Пока хроника открыта, у body класс birge-replay-open. Предлагаемый CSS оболочки (R01 решает):
+      body.birge-replay-open #birge-legend { display: none; }            /* легенда-строка под полосой */
+      @media (max-width: 760px) { body.birge-replay-open #civic-panel { transform: translateY(calc(100% - 64px)); } }
+    Значки карты сами обходят полосу (heat.js учитывает .rp-bar в раскладке).
+
+1.5 Демо-мир (CONTRACT §11): R01 уже зовёт ui.civic_heat.world.seed_world(db_path, world, now) — R07 берёт из мира
+    только отметки шкалы: events (§2.1) + incidents (§2.8, связь event) + scenes; хранит в своей таблице
+    heat_replay_marks_v1 той же базы (идемпотентно, время первого засева не сдвигается). Жалобы R07 не сеет: карта
+    берёт их у R09. demo_seed.demo_records() при CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 возвращает [] — даже если шлюз
+    подмешивает синтетику R07, в демо-мире её нет (один источник; тест test_gateway_wire_in_world_mode_uses_only_r09).
+    Необязательно: heat.configure(source=…, metoo_times=…, db_path=self.db_path) — тогда отметки ищутся в базе
+    шлюза и без seed_world (без него — путь из seed_world, CIVIC_DB_PATH или .runtime/civic.sqlite3).
+
+1.6 Поправка П1: пустое состояние и ошибка тепловой карты теперь — значок R11 ≤ 48 px + текст + ОДНА кнопка
+    (с фильтром — «Сбросить фильтры», без — «Показать 30 дней»). Рисунков 96×80 больше нет.
+
+================================================================================================================
+2. R09 — время «Я тоже» из мира (патч patches/R09_world_seed_metoo_times.patch)
+================================================================================================================
+ui/civic_feedback/v2/world_seed.py читает «Я тоже» из metoo_ago, а мир R02 (SCHEMA §2.3) пишет metoo_times
+(после materialize — ISO-строки). Сейчас время каждого «Я тоже» раскладывается равномерно «от подачи до сейчас» —
+и карта, «Картина дня», хроника расходятся с EXPECTED.json R02 (Нура за 7 дней: 79 человек / 39 мест вместо 74 / 35).
+Патч берёт metoo_times (ISO или {"ago_hours"}), прежний metoo_ago тоже. Проверено во временной сборке
+(R02 08bb57a1 + R09 eed6393f + R17 72676e3d + R07): с патчем R09 и окном R07 (п. 4) числа районов карты за 7 / 14 /
+30 дней = EXPECTED.json R02 во всех 6 районах (0 расхождений), без патча — 9 районов расходятся.
+
+================================================================================================================
+3. R17 — отметки кризисов
+================================================================================================================
+Хроника читает ui.civic_agencies.incident_marks(start, end) (запасной путь — list_incidents(status="all"), затем
+make_service(db).handle GET incidents). Кризис о событии мира (тот же район и время, вид «буран / снег») — ссылка
+отметки события («Буран в Нуре», incident: inc-w15-buran), а не вторая отметка; новый кризис, открытый на показе, —
+своя отметка. Просьба (необязательно): добавить в incident_marks поле "event" (связь SCHEMA §2.8) — склейка будет
+точной без сравнения района и времени.
+
+================================================================================================================
+4. Окно выборки /heat (поведение R07 изменилось — для R08 и R10)
+================================================================================================================
+/heat и хроника берут у источника жалобы, поданные не раньше now − (max(days, days + 7) + 60) дней
+(HeatService.window). Раньше было now − (days + 7): место, где давнюю жалобу исправили на днях, теряло зелёный
+«исправлено», а старая открытая жалоба со свежим «Я тоже» — свежие голоса. Числа «Картины дня» R08 берут записи
+у того же сервиса (records()) — тесты R08 263/0 после правки.
+
+================================================================================================================
+5. R11 — тексты (ключи для ru.json / kk.json; запасные — в модулях) и иконки
+================================================================================================================
+web/civic/replay/replay.js (BirgeReplay.messages):
+  replay.title «Хроника города» / «Қала шежіресі»; replay.open; replay.open_hint «Неделя за 10 секунд» /
+  «Бір апта 10 секундта»; replay.close; replay.play «Смотреть» / «Көру»; replay.pause; replay.again «Сначала» /
+  «Басынан»; replay.speed; replay.period; replay.days (плюрал); replay.today «сегодня» / «бүгін»; replay.people
+  «Сообщили {n} человек» / «{n} адам хабарлады»; replay.fixed «{n} мест исправлено» / «{n} орын жөнделді»;
+  replay.slider; replay.loading; replay.error; replay.error_hint; replay.retry; replay.not_ready; replay.no_map;
+  replay.empty; replay.empty_hint; replay.demo «Пример» / «Үлгі»; replay.keys; replay.event_in; replay.sr_day.
+web/civic/heat/heat.js: heat.replay.list_note «Хроника: так карта выглядела в этот день» / «Шежіре: карта осы күні
+  осындай болды»; heat.replay.list_empty; heat.replay.command; heat.replay.command_month.
+Казахский — проверка R11 / владельца (особенно «Қала шежіресі», «Бір апта 10 секундта»).
+Иконки: из спрайта ui-kit берутся close, snowflake, droplet, alert, clock, refresh. Просьба R11 (П1 «один набор»):
+  добавить i-play (треугольник) и i-pause (две полосы) в icons.svg — сейчас они свои в replay.js (заливка, без
+  градиентов), заменю на спрайт, как только появятся.
+
+================================================================================================================
+6. R10 — проверки
+================================================================================================================
+- Сцена 9: ?replay=7 (или кнопка у кнопок карты / Ctrl+K) → неделя за 10,5–14 с при 1×, дата крупно, «Буран в Нуре»
+  на шкале и у даты, числа «Сообщили N · M мест исправлено» с сервера; Esc — карта «сегодня» без мигания.
+- Пустое состояние карты: одна кнопка (П1) — старая проверка «две кнопки» больше не верна.
+- BirgeReplay.active.stats() — плавность последнего воспроизведения (fps, p95, код хроники: tween_ms_per_frame,
+  day_switch_ms).
+
+================================================================================================================
+7. LOCAL (ноутбук владельца, Codex) — замер 60 к/с при 1 000 целей
+================================================================================================================
+В облаке карта рисуется программным WebGL: сама карта при перелёте — 11–12 к/с, поэтому 60 к/с здесь не измерить.
+На ноутбуке: python -m ui.civic_heat.devserver --world city1000 --port 8618, затем
+  NODE_PATH=<глобальные модули npm> node tests/civic/R07/browser/replay_fps.cjs http://127.0.0.1:8618
+— напечатает fps, p95 и время смены дня; записать в research/round-15-results/LOCAL/R07_fps.json (ветка R07 или R01).

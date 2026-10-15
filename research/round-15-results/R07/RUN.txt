@@ -1,0 +1,37 @@
+R07 · раунд 15 · RUN — «Хроника города», один источник в демо-мире, тепловая карта
+
+ЧТО ТЕПЕРЬ МОЖЕТ ПОЛЬЗОВАТЕЛЬ
+- Акимат и житель: кнопка «Хроника» у кнопок карты (или Ctrl+K «Хроника города», или адрес ?replay=7) — неделя
+  тепловой карты за ~10 секунд: крупная дата, «Сообщили N человек · M мест исправлено», шкала дней с графиком жалоб
+  и полосой «Буран в Нуре», значки краснеют, растут, остывают и зеленеют. ▶ / ❚❚, 1× / 2×, 7 / 30 дней, перемотка
+  мышью по шкале, Пробел, ← →, Home / End, Esc. Закрыли — карта «сегодня», без мигания. На телефоне — неделя, упрощённо.
+- Демо-мир (CIVIC_DEMO=1, CIVIC_DEMO_WORLD=1): карта считает только жалобы базы R09 — числа у цели и по районам = «Обращения».
+
+СТЕНД R07 (без оболочки R01, офлайн-подложка)
+  python -m ui.civic_heat.devserver --world                  # мини-мир R07: буран в Нуре 6–3 дня назад
+  → http://127.0.0.1:8617/civic/heat/demo.html?view=city      # кнопка «Хроника» у кнопок карты
+  → http://127.0.0.1:8617/civic/heat/demo.html?view=city&replay=7   # сразу неделя (сцена 9); &autoplay=0 — на паузе
+  python -m ui.civic_heat.devserver --world city1000 --port 8618    # 1 000 целей — замер плавности
+  python -m ui.civic_heat.devserver                          # прежний демо-набор R07 (FINAL-4)
+
+API
+  curl "http://127.0.0.1:8617/api/civic/v2/heat/replay?last=7"            # неделя, компактно
+  curl "http://127.0.0.1:8617/api/civic/v2/heat/replay?last=30&format=full"   # месяц, каждый кадр в виде /heat
+  curl "http://127.0.0.1:8617/api/civic/v2/heat/replay?from=2026-10-09&to=2026-10-15&category=snow_ice&district=nura"
+
+СБОРКА R01 (как в COMMON, «Как поднять стенд»), демо-мир:
+  CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8655
+  → http://127.0.0.1:8655/?replay=7   (после подключения replay.js по INTEGRATION.txt §1.2–1.3)
+
+ТЕСТЫ
+  python -m pytest tests/civic/R07 -q                                     # 203 passed, 1 skipped (мир R02 — в сборке)
+  python -m ui.civic_heat.devserver --world &                             # затем
+  NODE_PATH=$(npm root -g) node tests/civic/R07/browser/replay.cjs        # 15/15, кадры → research/round-15-results/R07/screens/
+  python -m ui.civic_heat.devserver --port 8619 & R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html \
+    NODE_PATH=$(npm root -g) node tests/civic/R07/browser/wave2.js <папка>  # регресс волны 2: 38/38
+  python -m ui.civic_heat.devserver --world city1000 --port 8618 &
+  NODE_PATH=$(npm root -g) node tests/civic/R07/browser/replay_fps.cjs http://127.0.0.1:8618   # плавность (fps_cloud.json)
+
+ИНТЕГРАЦИЯ С СОСЕДЯМИ (проверено во временной сборке, см. INTEGRATION.txt §2):
+  мир R02 (08bb57a1) → R09.seed_world (eed6393f) → R17.seed_world (72676e3d) → R07: отметка «Буран в Нуре» со ссылкой
+  на кризис inc-w15-buran и сценой 9; числа районов карты = EXPECTED.json R02 (с патчем R09 metoo_times).

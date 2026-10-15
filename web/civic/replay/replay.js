@@ -237,7 +237,13 @@
       const x = ymd(d && d.date);
       return x ? WEEKDAYS[S.lang][x.wd] : "";
     }
-    const districtName = (ev) => (S.lang === "kk" ? ev.district_kk || ev.district_ru : ev.district_ru) || "";
+    // Район у отметки — только если его ещё нет в названии («Буран в Нуре» уже о Нуре; «Буран · Нура» — нет)
+    const districtName = (ev) => {
+      const d = (S.lang === "kk" ? ev.district_kk || ev.district_ru : ev.district_ru) || "";
+      const title = ((S.lang === "kk" ? ev.title_kk || ev.title_ru : ev.title_ru) || "").toLocaleLowerCase();
+      const stem = d.toLocaleLowerCase().slice(0, Math.max(3, d.length - 1));
+      return d && !title.includes(stem) ? d : "";
+    };
     const eventTitle = (ev) => (S.lang === "kk" ? ev.title_kk || ev.title_ru : ev.title_ru) || "";
 
     // ----- разметка -----
@@ -343,7 +349,8 @@
         // неделя — каждый день; месяц — первый день и раз в неделю от сегодня назад (не ближе 4 дней к краям)
         const showLabel = n <= 8 || i === 0 || i === tail || ((tail - i) % 7 === 0 && i >= 4);
         const text = isToday(i) ? t("replay.today") : n <= 8 && i ? String(ymd(S.days[i].date).d) : shortDate(S.days[i]);
-        out.push('<i class="rp-tick' + (showLabel ? " rp-tick--label" : "") + '" style="left:' + ((tail ? i / tail : 0) * 100).toFixed(2) + '%">' +
+        // день перед «сегодня» — без подписи на узкой шкале (телефон): «14» налезало на «сегодня»
+        out.push('<i class="rp-tick' + (showLabel ? " rp-tick--label" : "") + (i === tail - 1 ? " rp-tick--prev" : "") + '" style="left:' + ((tail ? i / tail : 0) * 100).toFixed(2) + '%">' +
           (showLabel ? "<span>" + esc(text) + "</span>" : "") + "</i>");
       }
       return '<div class="rp-ticks" aria-hidden="true">' + out.join("") + "</div>";
@@ -646,7 +653,8 @@
       destroy: () => { if (!closed) { closed = true; pause(); if (S.began && heat) heat.replay.end({ ms: 0 }); S.began = false; } if (!S.destroyed) destroyDom(); },
       // Для проверок (R10, тесты R07): состояние и замер плавности последнего воспроизведения
       state: () => ({ status: S.status, period: S.period, index: S.index, days: S.days.map((d) => d.date), playing: S.playing,
-        ended: S.ended, speed: S.speed, events: ((S.body && S.body.events) || []).map((e) => e.id) }),
+        ended: S.ended, speed: S.speed, events: ((S.body && S.body.events) || []).map((e) => e.id),
+        people: S.days.map((d) => Number(d.totals.people) || 0), fixed: S.days.map((d) => Number(d.totals.fixed) || 0) }),
       stats: () => {
         const sm = S.fps.samples.slice().sort((a, b) => a - b);
         const avg = sm.length ? sm.reduce((a, b) => a + b, 0) / sm.length : 0;

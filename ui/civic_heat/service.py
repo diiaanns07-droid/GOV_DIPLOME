@@ -17,6 +17,10 @@ from .targets import TargetResolver
 
 CACHE_TTL_S = 60.0
 CACHE_MAX = 64
+# Сколько дней назад могла быть подана жалоба, которую исправили только сейчас (раунд 15, сверка с демо-миром R02):
+# источник R09 отдаёт жалобы по дате подачи, и без запаса место, где давнюю жалобу исправили на днях, теряло зелёный
+# цвет «исправлено», а старая открытая жалоба со свежим «Я тоже» — свои свежие голоса.
+REPAIR_LOOKBACK_DAYS = 60
 
 
 class HeatError(ValueError):
@@ -187,10 +191,15 @@ class HeatService:
             self._cache[key] = (time.monotonic(), result)
         return result
 
+    def window(self, days: int) -> timedelta:
+        """С какого момента (now − window) брать жалобы для расчёта за days дней: период + «исправлено» 7 дней + запас
+        на давние жалобы, исправленные недавно. Одно правило для /heat и «Хроники» (replay.py)."""
+        return timedelta(days=max(days, self.config.fixed_days + days) + REPAIR_LOOKBACK_DAYS)
+
     def _compute(self, *, now, days, category, district, bbox, records=None):
         """records — для «Хроники» (replay.py): записи, «отмотанные» к моменту now; иначе — из источника."""
         if records is None:
-            records = self._records(now - timedelta(days=max(days, self.config.fixed_days + days)))
+            records = self._records(now - self.window(days))
         # Чистое демо (свой стенд, source=None): примеры R07 — сами жалобы, действия с ними работают. С живым источником
         # (оболочка R01: жалобы R09 + примеры R07 при CIVIC_DEMO=1) у примеров R07 кнопок нет — их нет в R09 (B-037).
         examples_ok = self.is_demo if self._examples_actionable is None else self._examples_actionable

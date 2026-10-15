@@ -1,0 +1,45 @@
+{
+ "base": "http://127.0.0.1:8618",
+ "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+ "runs": [
+  {
+   "label": "город (районы)",
+   "played_s": 13.2,
+   "map_ease_fps": 12.7,
+   "replay_fps": 55.1,
+   "p95_ms": 16.8,
+   "worst_ms": 183.4,
+   "tween_ms_per_frame": 0,
+   "day_switch_ms": 8.9,
+   "mode": "districts",
+   "items": 6,
+   "errors": []
+  },
+  {
+   "label": "места, масштаб 12,6",
+   "played_s": 13.5,
+   "map_ease_fps": 6.3,
+   "replay_fps": 15.4,
+   "p95_ms": 166.7,
+   "worst_ms": 266.6,
+   "tween_ms_per_frame": 0.88,
+   "day_switch_ms": 51.1,
+   "mode": "targets",
+   "items": 1006,
+   "errors": []
+  },
+  {
+   "label": "места, масштаб 14",
+   "played_s": 13.4,
+   "map_ease_fps": 7.6,
+   "replay_fps": 17.4,
+   "p95_ms": 116.8,
+   "worst_ms": 183.3,
+   "tween_ms_per_frame": 0.44,
+   "day_switch_ms": 42.6,
+   "mode": "targets",
+   "items": 1006,
+   "errors": []
+  }
+ ]
+}

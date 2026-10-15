@@ -303,7 +303,7 @@ class Replay:
     def _frames_for(self, p: dict, gen: int) -> list:
         svc, now = self.svc, p["now"]
         today = now.astimezone(ASTANA_TZ).date()
-        span = timedelta(days=max(p["days"], svc.config.fixed_days + p["days"]))
+        span = svc.window(p["days"])   # то же окно выборки, что у /heat
         need, out = [], {}
         with self._lock:
             for d in _days(p["start"], p["end"]):
@@ -330,7 +330,7 @@ class Replay:
         today = now.astimezone(ASTANA_TZ).date()
         first = day_moment(need[0], now)
         # Один запрос к источнику на все кадры (с запасом на самый ранний); дальше — фильтр как у источника:
-        # R09 отдаёт жалобы, созданные не раньше since (= момент − период − 7 дней), демо-набор — все.
+        # R09 отдаёт жалобы, созданные не раньше since (= момент − HeatService.window), демо-набор — все.
         records = svc.records(first - span)
         # Порядок записей — как у источника: при равных весе и числе порядок мест в ответе тот же, что у /heat.
         rows = []
