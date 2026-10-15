@@ -4,7 +4,7 @@
   "branch": "claude/zen-wozniak-69d41q",
   "base_sha": "e91acb69",
   "restored_from": "claude/r14-R10@656681ee (tests/e2e и tests/civic/R10 в FINAL-4 те же) + research/round-14-results/R01/patches/R10_demo_flow_reference.patch",
-  "code_sha": "6a18f6a1",
+  "code_sha": "95de8b99",
   "tested_sha": "a4937462 (FINAL-4, ветка пакета e91acb69)",
   "push_status": "OK (checkpoint)",
   "status": "partial — инструменты раунда 15 готовы, сборок R01 раунда 15 ещё нет",
@@ -30,7 +30,9 @@
     "api_v2 FINAL-4": "PASS 2 / FAIL 0 / NOT_RUN 46 (маршрутов раунда 15 ещё нет; прежние 74 на месте)",
     "consistency FINAL-4": "PASS 0 / FAIL 3 / NOT_RUN 4 (B-101: известное расхождение демо-наборов до демо-мира)",
     "demo_flow_v2 (сцены 7–9)": "NOT_RUN — модулей R16/R17/R12/R07 и демо-мира в сборке ещё нет",
-    "demo_video": "пробная запись части 1 на FINAL-4 (ҚАЗ, --fast): 6 сцен из 6, 159 с; полная запись ҚАЗ и РУС — следующий шаг"
+    "demo_video": "пробная запись части 1 на FINAL-4 (ҚАЗ, --fast): 6 сцен из 6, 159 с; полная запись ҚАЗ и РУС — следующий шаг",
+    "api_v2 R01 d987a112": "PASS 59 / FAIL 0 / NOT_RUN 9 (все 46 маршрутов §7 на месте)",
+    "consistency превью мира": "A1 90=90, B 94=94, B2 154=154 при materialize; без него B-106"
   },
   "screens": [
     "research/round-15-results/R10/final4-a4937462/e2e/*.jpg (1366/375 × ru/kk, база FINAL-4)"
