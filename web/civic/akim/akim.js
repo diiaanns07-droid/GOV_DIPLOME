@@ -106,6 +106,7 @@
       "akim.trio.together_now": "идёт сейчас",
       "akim.pulse.title_city": "Пульс города",
       "akim.kpi.overdue_hint": "Не исправлено в срок",
+      "akim.kpi.fixed_7d": "Исправлено за 7 дней",
       "akim.trio.meetings": "Встречи",
       "akim.trio.meetings_num": { one: "поручение в работе", few: "поручения в работе", many: "поручений в работе" },
       "akim.trio.meetings_overdue": "Просрочено: {n}",
@@ -149,6 +150,7 @@
       "akim.trio.together_now": "қазір өтіп жатыр",
       "akim.pulse.title_city": "Қала пульсі",
       "akim.kpi.overdue_hint": "Мерзімінде түзетілмеген",
+      "akim.kpi.fixed_7d": "7 күнде түзетілді",
       "akim.trio.meetings": "Кездесулер",
       "akim.trio.meetings_num": "орындалудағы тапсырма",
       "akim.trio.meetings_overdue": "Мерзімі өткені: {n}",
@@ -715,7 +717,8 @@
         // «Не исправлено в срок» (срок исправления), а не «Просрочено»: у табло R17 и «Обращений» R09 «просрочено» —
         // срок ответа и другое число; одно слово — одно число (CONTRACT §0, R10 B-104 / consistency C4).
         kpiCard("overdue", k.overdue, "akim.kpi.overdue_hint", false),
-        kpiCard("fixed", k.fixed_week, "akim.kpi.fixed_week", true),
+        // Окно — последние 7 × 24 ч (как «За 7 дней» ниже и «Исправлено за 7 дней» Ситуационного центра), не «за неделю».
+        kpiCard("fixed", k.fixed_week, "akim.kpi.fixed_7d", true),
       ]);
     }
     // Остальное о числах — в «Подробнее» под плитками (CLEAN_PASS §3 R08 п. 3): за 7 дней, ждут ответа, самое давнее

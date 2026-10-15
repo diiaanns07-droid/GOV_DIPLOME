@@ -5,7 +5,8 @@
  *   NODE_PATH=$(npm root -g) node tests/civic/R08/week_check.cjs [base_url] [папка_кадров]
  *
  * Проверяет: лист открывается на ru и kk, нет ключей перевода и технических слов, 4 числа = ответ akim/week, 7 дней
- * на графике (будущие дни идущей недели — пустые), «Эта / Прошлая неделя» меняет неделю и адрес, печать — 1–2 листа A4
+ * на графике (будущие дни идущей недели — пустые), «Последние 7 дней / Неделей раньше» меняет неделю и адрес, нажата
+ * кнопка своего окна (с датой из «Картины дня» — ни одна), печать — 1–2 листа A4
  * (ru, kk, прошлая неделя), 403 — «для сотрудников» и «← Картина дня», нет связи — «Повторить», на телефоне без
  * горизонтальной прокрутки, в «Картине дня» есть ссылка «Картина недели» с районом. Итог — week_check.json.
  */
@@ -29,6 +30,13 @@ const KEYLIKE = /\b(week|akim|common|district|status|service)\.[a-z_]+(\.[a-z_0-
 function pdfPages(file) {
   return (fs.readFileSync(file).toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;
 }
+const todayAstana = () => new Date(Date.now() + 5 * 3600 * 1000).toISOString().slice(0, 10);
+function shiftDay(iso, days) {
+  const d = new Date(iso + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+const pressed = (page) => page.$$eval(".wk-weeks button", (els) => els.map((e) => e.getAttribute("aria-pressed")));
 
 async function open(browser, opts = {}) {
   const ctx = await browser.newContext({ viewport: opts.viewport || { width: 1366, height: 900 } });
@@ -77,10 +85,26 @@ async function open(browser, opts = {}) {
     await page.waitForFunction(() => /date=/.test(location.search) && document.querySelector(".wk").getAttribute("data-state") === "ok", null, { timeout: 15000 });
     const title = await page.textContent(".wk-title");
     check("«Прошлая неделя»: другая неделя и дата в адресе", !title.includes(api.week.label_ru) || !api.week.current, title);
+    check("«Неделей раньше»: нажата она, а не «Последние 7 дней»", JSON.stringify(await pressed(page)) === "[\"false\",\"true\"]",
+      await pressed(page));
     await page.emulateMedia({ media: "print" });
     const pdf = path.join(OUT, "week-ru-past.pdf");
     await page.pdf({ path: pdf, format: "A4", printBackground: true });
     check("прошлая неделя: печать — 1–2 листа A4", pdfPages(pdf) <= 2, pdfPages(pdf));
+    await ctx.close();
+  }
+  {
+    // Из «Картины дня» с другим днём (week.html?date=…): окно — 7 дней до этого дня, ни одна кнопка не нажата;
+    // «Последние 7 дней» возвращает к сегодняшнему окну и убирает дату из адреса.
+    const day = shiftDay(todayAstana(), -3);
+    const { ctx, page } = await open(browser, { query: "?date=" + day });
+    await page.waitForSelector(".wk[data-state='ok']", { timeout: 20000 });
+    check("дата из «Картины дня»: ни «Последние 7 дней», ни «Неделей раньше» не нажаты",
+      JSON.stringify(await pressed(page)) === "[\"false\",\"false\"]", { day, pressed: await pressed(page) });
+    await page.click(".wk-weeks button:nth-child(1)");
+    await page.waitForFunction(() => !/date=/.test(location.search) && document.querySelector(".wk").getAttribute("data-state") === "ok", null, { timeout: 15000 });
+    check("«Последние 7 дней»: нажата, дата ушла из адреса", JSON.stringify(await pressed(page)) === "[\"true\",\"false\"]",
+      await pressed(page));
     await ctx.close();
   }
   for (const [name, route, re, sel] of [

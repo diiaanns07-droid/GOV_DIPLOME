@@ -226,6 +226,7 @@
   "akim.trio.together_now": "идёт сейчас",
   "akim.pulse.title_city": "Пульс города",
   "akim.kpi.overdue_hint": "Не исправлено в срок",
+  "akim.kpi.fixed_7d": "Исправлено за 7 дней",
   "akim.trio.meetings": "Встречи",
   "akim.trio.meetings_num": {
    "one": "поручение в работе",
@@ -421,6 +422,7 @@
   "akim.trio.together_now": "қазір өтіп жатыр",
   "akim.pulse.title_city": "Қала пульсі",
   "akim.kpi.overdue_hint": "Мерзімінде түзетілмеген",
+  "akim.kpi.fixed_7d": "7 күнде түзетілді",
   "akim.trio.meetings": "Кездесулер",
   "akim.trio.meetings_num": "орындалудағы тапсырма",
   "akim.trio.meetings_overdue": "Мерзімі өткені: {n}",
