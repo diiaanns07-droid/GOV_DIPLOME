@@ -1,5 +1,5 @@
 {
- "_note": "Ключи экрана «Спросить Birge» (R03 r15) для web/civic/i18n/ru.json и kk.json (R11). Источник — KEYS в web/civic/assistant/analyst.js; формы числа ru — {one,few,many}. С ревью R11 круг 1: analyst.calls — источники, status.not_ready — «пока нет данных».",
+ "_note": "Ключи экрана «Спросить Birge» (R03 r15) для web/civic/i18n/ru.json и kk.json (R11). Источник — KEYS в web/civic/assistant/analyst.js; формы числа ru — {one,few,many}. Круг 2: + analyst.empty_action, analyst.empty_question (пустое состояние по П1: значок + текст + одна кнопка).",
  "ru": {
   "analyst.title": "Спросить Birge",
   "analyst.subtitle": "Вопрос словами — ответ с числами из данных Birge",
@@ -10,6 +10,8 @@
   "analyst.chips_label": "Примеры вопросов",
   "analyst.empty_title": "Спросите о городе",
   "analyst.empty_text": "Горячие места, службы, кризис, работы, инициативы — ответ с числами за секунду.",
+  "analyst.empty_action": "Главное за сегодня",
+  "analyst.empty_question": "Что сегодня главное?",
   "analyst.loading": "Считаем по данным…",
   "analyst.offline": "Офлайн-режим",
   "analyst.offline_hint": "Ответ собран кодом по данным Birge, без языковой модели",
@@ -72,6 +74,8 @@
   "analyst.chips_label": "Сұрақ үлгілері",
   "analyst.empty_title": "Қала туралы сұраңыз",
   "analyst.empty_text": "Шағымы көп орындар, қызметтер, дағдарыс, жұмыстар, бастамалар — сандармен жауап бір секундта.",
+  "analyst.empty_action": "Бүгінгі басты жаңалық",
+  "analyst.empty_question": "Бүгін не басты?",
   "analyst.loading": "Деректер бойынша есептеп жатырмыз…",
   "analyst.offline": "Офлайн режим",
   "analyst.offline_hint": "Жауапты код Birge деректері бойынша құрады, тілдік модельсіз",

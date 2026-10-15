@@ -38,6 +38,8 @@
       "analyst.chips_label": "Примеры вопросов",
       "analyst.empty_title": "Спросите о городе",
       "analyst.empty_text": "Горячие места, службы, кризис, работы, инициативы — ответ с числами за секунду.",
+      "analyst.empty_action": "Главное за сегодня",
+      "analyst.empty_question": "Что сегодня главное?",
       "analyst.loading": "Считаем по данным…",
       "analyst.offline": "Офлайн-режим",
       "analyst.offline_hint": "Ответ собран кодом по данным Birge, без языковой модели",
@@ -96,6 +98,8 @@
       "analyst.chips_label": "Сұрақ үлгілері",
       "analyst.empty_title": "Қала туралы сұраңыз",
       "analyst.empty_text": "Шағымы көп орындар, қызметтер, дағдарыс, жұмыстар, бастамалар — сандармен жауап бір секундта.",
+      "analyst.empty_action": "Бүгінгі басты жаңалық",
+      "analyst.empty_question": "Бүгін не басты?",
       "analyst.loading": "Деректер бойынша есептеп жатырмыз…",
       "analyst.offline": "Офлайн режим",
       "analyst.offline_hint": "Жауапты код Birge деректері бойынша құрады, тілдік модельсіз",
@@ -301,22 +305,16 @@
     function syncClear() { clearBtn.hidden = !input.value; }
 
     // -------------------------------------------------------------- состояния
-    // Линейная иллюстрация ui-kit (icons.svg #ill-…), как в пустых состояниях оболочки (R11 R03-6).
-    function illustration(name) {
-      var NS = "http://www.w3.org/2000/svg", svg = doc.createElementNS(NS, "svg"), use = doc.createElementNS(NS, "use");
-      svg.setAttribute("class", "bk-ill");
-      svg.setAttribute("aria-hidden", "true");
-      svg.setAttribute("focusable", "false");
-      use.setAttribute("href", ((root.BirgeUI && root.BirgeUI.SPRITE) || ICONS) + "#ill-" + name);
-      svg.append(use);
-      return svg;
-    }
-
+    // Пустое состояние по поправке владельца П1: один маленький монохромный значок набора R11 (48 px),
+    // короткий текст и одна кнопка. Никаких иллюстраций «для красоты».
     function renderIdle() {
+      var start = el("button", { type: "button", className: "bk-btn", text: t("analyst.empty_action") });
+      start.addEventListener("click", function () { input.value = t("analyst.empty_question"); syncClear(); submit(); });
       live.replaceChildren(el("div", { className: "bk-empty ba-empty" }, [
-        illustration("question"),
+        icon("message", "ic--48"),
         el("p", { className: "bk-empty__title", text: t("analyst.empty_title") }),
         el("p", { className: "bk-empty__text", text: t("analyst.empty_text") }),
+        start,
       ]));
     }
 
@@ -334,8 +332,7 @@
       var kind = e.status === 0 ? "network" : e.status === 401 || e.status === 403 ? "login"
         : e.status === 429 ? "rate" : e.status === 503 ? "not_ready" : "server";
       var box = el("div", { className: "bk-error ba-error", role: "alert" }, [
-        kind === "network" ? illustration("offline")
-          : el("div", { className: "ba-error__ic", "aria-hidden": "true" }, [icon(kind === "login" ? "user" : "alert")]),
+        icon(kind === "network" ? "wifi-off" : kind === "login" ? "user" : "alert", "ic--48"),
         el("p", { className: "bk-error__title", text: t("analyst.error." + kind + "_title") }),
         el("p", { className: "bk-error__text", text: t("analyst.error." + kind + "_text") }),
       ]);

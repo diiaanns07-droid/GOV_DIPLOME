@@ -7,6 +7,16 @@
    "detail": null
   },
   {
+   "name": "idle: no clear button in empty field 1366_ru",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "idle: one small icon, one button (P1) 1366_ru",
+   "ok": true,
+   "detail": null
+  },
+  {
    "name": "scene1 numbers 1366_ru",
    "ok": true,
    "detail": "15 | 6"
@@ -68,6 +78,16 @@
   },
   {
    "name": "idle chips 1366_kk",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "idle: no clear button in empty field 1366_kk",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "idle: one small icon, one button (P1) 1366_kk",
    "ok": true,
    "detail": null
   },
@@ -137,6 +157,16 @@
    "detail": null
   },
   {
+   "name": "idle: no clear button in empty field 1024_ru",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "idle: one small icon, one button (P1) 1024_ru",
+   "ok": true,
+   "detail": null
+  },
+  {
    "name": "scene1 numbers 1024_ru",
    "ok": true,
    "detail": "15 | 6"
@@ -198,6 +228,16 @@
   },
   {
    "name": "idle chips 1024_kk",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "idle: no clear button in empty field 1024_kk",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "idle: one small icon, one button (P1) 1024_kk",
    "ok": true,
    "detail": null
   },
@@ -267,6 +307,16 @@
    "detail": null
   },
   {
+   "name": "idle: no clear button in empty field 375_ru",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "idle: one small icon, one button (P1) 375_ru",
+   "ok": true,
+   "detail": null
+  },
+  {
    "name": "scene1 numbers 375_ru",
    "ok": true,
    "detail": "15 | 6"
@@ -328,6 +378,16 @@
   },
   {
    "name": "idle chips 375_kk",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "idle: no clear button in empty field 375_kk",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "idle: one small icon, one button (P1) 375_kk",
    "ok": true,
    "detail": null
   },

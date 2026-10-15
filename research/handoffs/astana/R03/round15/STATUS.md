@@ -6,6 +6,12 @@
 База: origin/claude/clever-hypatia-q6ts4g @ e91acb6 (код FINAL-4 a4937462 + пакет раунда 15)
 Автопилот: работаю сам до 17 окт 23:59 Астаны. Push в claude/r15-R03 запрещён средой — ветка сессии выше.
 
+**Каждый круг: сначала читать AMENDMENTS.md из ветки пакета** (поправки владельца и координатора; где расходятся с
+промптом или VISUAL_BRIEF — права поправка):
+    git fetch origin claude/clever-hypatia-q6ts4g
+    git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md
+Прочитано: П1 (15 окт 17:05 Астаны, «Без ИИ-слопа») — применено 15 окт ~12:40 UTC.
+
 ## План
 1. agent/civic_assistant/api.py · ask(question, lang, principal) по CONTRACT §7: офлайн-намерения ru/kk/смешанные →
    вызовы модулей в процессе (R07 heat, R08 summary/pulse, R17 board, R12 conflicts, R16, R13) с запасным «модуля нет» →
@@ -39,6 +45,14 @@
   факты 86,7 % (93,3 % без бага оракула). После общих правок — 100 % на обоих, провокации 10/10. Задержка p95 ≤ 51 мс.
   Тесты: R03 round15 65 passed; вместе с R09/R01/R03 r14 — 842 passed, 9 skipped (нет torch), 1 xfailed.
 - 12:12 UTC: DELIVERY.json (code_sha 10f90adc), RUN.txt — поставка готова к B1.
+
+- ~12:40 UTC: ПОПРАВКА П1 «Без ИИ-слопа» применена к экрану R03: пустое состояние и ошибки — один значок набора
+  R11 48 px (ic--48, один цвет) + короткий текст + одна кнопка («Главное за сегодня» → «Что сегодня главное?»);
+  иллюстрации ill-* убраны; декоративных картинок на экране нет (крупные числа, точки уровня = цвет + число — это данные).
+- ~12:40 UTC: ревью R11 круг 1 применено (62e1c63a): термины словаря, короткие чипы, источники названиями.
+- ~12:40 UTC: подключение соседей по их функциям «для R03»: R17 board_snapshot / active_incidents (progress вместо задач),
+  R12 conflicts_summary, R16 initiatives_summary, R13 board_block; «Открыть …» вызывает BirgeAgencies.openCrisis /
+  BirgeWorksCalendar.openConflict. Проверка на их настоящем коде — следующий шаг.
 
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,

@@ -16,6 +16,10 @@
   font-size: var(--fs-body);
   line-height: var(--lh-text);
 }
+/* Атрибут hidden сильнее display компонентов (× в пустом поле, пустые «Недавние вопросы») */
+.ba [hidden] {
+  display: none !important;
+}
 .ba :focus-visible {
   outline: 3px solid var(--c-focus);
   outline-offset: 2px;
@@ -178,26 +182,10 @@
   border: 1px dashed var(--c-line-strong);
   border-radius: var(--r-xl);
 }
-.ba-empty__ic,
-.ba-error__ic {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  margin-bottom: var(--s-1);
-  border-radius: 50%;
-  background: var(--c-fill);
-  color: var(--c-text-2);
-}
-.ba-error__ic {
-  background: var(--c-danger-soft);
-  color: var(--c-danger);
-}
-.ba-empty__ic .ic,
-.ba-error__ic .ic {
-  width: 26px;
-  height: 26px;
+/* П1: значок 48 px одного цвета, без кругов и иллюстраций */
+.ba-empty .ic--48,
+.ba-error .ic--48 {
+  color: var(--c-text-3);
 }
 .ba-skel {
   gap: var(--s-3);

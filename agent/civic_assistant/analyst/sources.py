@@ -237,16 +237,19 @@ def services_from_deadlines(heat, *, district: str | None, now: datetime | None 
 # Пока модуля нет, find_function вернёт None → not_ready. Когда сосед сдаст работу под другим именем,
 # достаточно добавить имя в кортеж (или R01 подключит источник через configure).
 
+# Первое имя в каждом кортеже — функция, которую сосед сделал для R03 (его __init__.py, раунд 15):
+#   R17 board_snapshot(days, district), active_incidents(district); R12 conflicts_summary(district);
+#   R16 initiatives_summary(district); R13 board_block(district=…). Остальные имена — запас по CONTRACT §7.
 AGENCIES_MODULES = ("ui.civic_agencies", "ui.civic_agencies.board", "ui.civic_agencies.service", "ui.civic_agencies.api")
-BOARD_FUNCS = ("board", "agencies_board", "board_summary", "service_board", "get_board")
-INCIDENT_FUNCS = ("list_incidents", "incidents", "active_incidents", "public_incidents", "get_incidents")
+BOARD_FUNCS = ("board_snapshot", "board", "agencies_board", "board_summary", "service_board", "get_board")
+INCIDENT_FUNCS = ("active_incidents", "list_incidents", "incidents", "public_incidents", "get_incidents")
 GEO_MODULES = ("engine.civic_geo.works_calendar", "engine.civic_geo.works", "engine.civic_geo.calendar",
                "engine.civic_geo")
-CONFLICT_FUNCS = ("works_conflicts", "list_conflicts", "conflicts", "find_conflicts")
+CONFLICT_FUNCS = ("conflicts_summary", "works_conflicts", "list_conflicts", "conflicts", "find_conflicts")
 TOGETHER_MODULES = ("ui.civic_together", "ui.civic_together.service", "ui.civic_together.store")
-INITIATIVE_FUNCS = ("list_initiatives", "initiatives", "public_initiatives", "get_initiatives")
+INITIATIVE_FUNCS = ("initiatives_summary", "list_initiatives", "initiatives", "public_initiatives", "get_initiatives")
 MEETINGS_MODULES = ("ui.civic_meetings", "ui.civic_meetings.service", "ui.civic_meetings.store")
-MEETING_FUNCS = ("list_meetings", "meetings", "public_meetings", "get_meetings")
+MEETING_FUNCS = ("board_block", "list_meetings", "meetings", "public_meetings", "get_meetings")
 
 
 def neighbour(modules, funcs):
@@ -255,7 +258,13 @@ def neighbour(modules, funcs):
         modname, _name, fn = find_function(modules, funcs)
         if fn is None:
             raise NotReady(modules[0])
-        return unwrap(call_flexible(fn, **kwargs))
+        answer = unwrap(call_flexible(fn, **kwargs))
+        # Сосед есть, но не связан с базой: None (R13 board_block), {"status": "no_data"} (R16),
+        # {"source": "none", "empty": True} (R17 board_snapshot) — это «пока нет данных», а не ноль.
+        if answer is None or (isinstance(answer, dict) and (answer.get("status") == "no_data"
+                                                            or answer.get("source") == "none")):
+            raise NotReady(modname or modules[0])
+        return answer
     call.modules = modules
     return call
 

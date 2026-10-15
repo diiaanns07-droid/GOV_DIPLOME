@@ -58,8 +58,13 @@ class Block:
             action["days"] = days
         self.actions.append(action)
 
-    def open(self, section: str, ru: str, kk: str) -> None:
-        self.actions.append({"kind": "open", "section": section, "label": both(ru, kk)})
+    def open(self, section: str, ru: str, kk: str, opener: dict | None = None) -> None:
+        """«Открыть …»: раздел оболочки; opener — функция экрана соседа, которая откроет нужную запись
+        (BirgeAgencies.openCrisis, BirgeWorksCalendar.openConflict). Экран R03 вызывает только известные имена."""
+        action = {"kind": "open", "section": section, "label": both(ru, kk)}
+        if opener:
+            action["opener"] = opener
+        self.actions.append(action)
 
     def to_dict(self) -> dict:
         return {"id": self.kind, "kind": self.kind, "status": self.status, "title": self.title,
@@ -395,13 +400,14 @@ def _board_rows(board) -> list[dict]:
             sid = sid.get("id")
         if not isinstance(sid, str):
             continue
+        share = r.get("verified_share")  # R17: доля 0…1 (или None — исправленных ещё не было)
         out.append({"service": sid,
                     "open": _int(r.get("open") if r.get("open") is not None else r.get("in_work")),
                     "overdue": _int(r.get("overdue") if r.get("overdue") is not None else r.get("late")),
                     "median_days": r.get("median_answer_days") if r.get("median_answer_days") is not None
                     else r.get("median_days"),
                     "verified_pct": r.get("verified_pct") if r.get("verified_pct") is not None
-                    else r.get("verified_share_pct"),
+                    else (round(float(share) * 100) if isinstance(share, (int, float)) and share <= 1 else share),
                     "demo": bool(r.get("demo"))})
     return out
 
@@ -417,10 +423,11 @@ def lagging_services(ctx) -> Block:
     p, b = ctx.parsed, Block("lagging_services", "R17")
     where = _where(p)
     b.title = both(f"Какие службы отстают {where['ru']}", f"Қай қызметтер артта қалып жатыр: {where['kk']}")
-    status, board = ctx.call("R17", "ui.civic_agencies", "board", ctx.src.agencies_board,
-                             {"days": 30, "district": p.district})
-    rows = _board_rows(board) if status == "ok" else []
-    if status == "ok" and rows:
+    # Табло R17 считает за 30 дней (как его экран); период из вопроса — если аким его назвал.
+    status, board = ctx.call("R17", "ui.civic_agencies", "board_snapshot", ctx.src.agencies_board,
+                             {"days": p.days if p.days_given else 30, "district": p.district})
+    rows = _board_rows(board) if status == "ok" and not (isinstance(board, dict) and board.get("empty")) else []
+    if rows:
         b.demo = any(r["demo"] for r in rows) or bool(isinstance(board, dict) and board.get("demo"))
         source_note = None
     else:
@@ -436,7 +443,9 @@ def lagging_services(ctx) -> Block:
                            "Қызметтер таблосы әлі қосылмаған — «Күн қорытындысы» мерзімдері бойынша есептелді.")
     if p.service:
         rows = [r for r in rows if r["service"] == p.service] or rows
-    lagging = [r for r in rows if r["overdue"] > 0]
+    rows = [r for r in rows if r["open"] or r["overdue"]] or rows  # табло R17 отдаёт все 20 служб, и с нулями
+    lagging = sorted((r for r in rows if r["overdue"] > 0),
+                     key=lambda r: (-r["overdue"], -r["open"], r["service"]))
     total_overdue = sum(r["overdue"] for r in rows)
     if not rows:
         b.status = "empty"
@@ -490,10 +499,30 @@ def _incident_rows(answer) -> list[dict]:
     return [r for r in S.items_of(answer, "incidents") if isinstance(r, dict)]
 
 
+def _incident_rows(answer) -> list[dict]:
+    return [r for r in S.items_of(answer, "incidents") if isinstance(r, dict)]
+
+
+def _incident_progress(inc: dict) -> tuple[int, int, list[str], list[str]]:
+    """(сделано задач, всего, службы, службы с незаконченными задачами) — из progress R17 или из задач §5.5."""
+    progress = [r for r in inc.get("progress") or [] if isinstance(r, dict)]
+    if progress:
+        done = sum(_int(r.get("done")) for r in progress)
+        total = sum(_int(r.get("total")) for r in progress)
+        services = [r["service"] for r in progress if isinstance(r.get("service"), str)]
+        working = [r["service"] for r in progress if isinstance(r.get("service"), str) and _int(r.get("done")) < _int(r.get("total"))]
+        return done, total, services, working
+    tasks = [t for t in inc.get("tasks") or [] if isinstance(t, dict)]
+    services = list(dict.fromkeys(t["service"] for t in tasks if isinstance(t.get("service"), str)))
+    working = list(dict.fromkeys(t["service"] for t in tasks if isinstance(t.get("service"), str) and t.get("status") != "done"))
+    return sum(1 for t in tasks if t.get("status") == "done"), len(tasks), services, working
+
+
 def crisis(ctx) -> Block:
     p, b = ctx.parsed, Block("crisis", "R17")
     b.title = both("Кризисный штаб", "Дағдарыс штабы")
-    status, answer = ctx.call("R17", "ui.civic_agencies", "incidents", ctx.src.agencies_incidents, {"status": "active"})
+    status, answer = ctx.call("R17", "ui.civic_agencies", "active_incidents", ctx.src.agencies_incidents,
+                              {"status": "active", "district": None})
     incidents = [r for r in _incident_rows(answer) if r.get("status", "active") == "active"] if status == "ok" else []
     if p.district:
         incidents = [r for r in incidents if ((r.get("zone") or {}).get("district") in (None, p.district))] or incidents
@@ -502,38 +531,46 @@ def crisis(ctx) -> Block:
         b.demo = bool(inc.get("demo"))
         title = both(str(inc.get("title_ru") or "Кризис"), str(inc.get("title_kk") or inc.get("title_ru") or "Дағдарыс"))
         zone_d = (inc.get("zone") or {}).get("district")
+        zone_label = inc.get("zone_label") if isinstance(inc.get("zone_label"), dict) else None
         b.title = both(f"Кризисный штаб: {title['ru']}", f"Дағдарыс штабы: {title['kk']}")
-        tasks = [t for t in inc.get("tasks") or [] if isinstance(t, dict)]
-        done = sum(1 for t in tasks if t.get("status") == "done")
-        services = sorted({t.get("service") for t in tasks if isinstance(t.get("service"), str)})
+        done, total, services, working = _incident_progress(inc)
         updates = [u for u in inc.get("updates") or [] if isinstance(u, dict) and u.get("public", True)]
-        b.number(done, f"задач выполнено из {fmt_num(len(tasks))}", f"тапсырма орындалды ({fmt_num(len(tasks))} ішінен)",
-                 "ui.civic_agencies.incidents", tone="neutral")
+        b.number(done, f"задач выполнено из {fmt_num(total)}", f"тапсырма орындалды ({fmt_num(total)} ішінен)",
+                 "ui.civic_agencies.active_incidents", tone="neutral")
         b.number(len(services), plural_ru(len(services), "служба в штабе", "службы в штабе", "служб в штабе"),
-                 "штабтағы қызмет", "ui.civic_agencies.incidents")
-        zone_ru = f"район {district_name(zone_d, 'ru')}" if zone_d else "зона на карте"
-        zone_kk = f"{district_name(zone_d, 'kk')} ауданы" if zone_d else "картадағы аймақ"
-        b.line(f"«{title['ru']}» — штаб открыт, {zone_ru}. Выполнено {fmt_num(done)} из {fmt_num(len(tasks))} задач служб.",
-               f"«{title['kk']}» — штаб ашық, {zone_kk}. Қызметтердің {fmt_num(len(tasks))} тапсырмасының "
+                 "штабтағы қызмет", "ui.civic_agencies.active_incidents")
+        if zone_label:
+            zone_ru, zone_kk = str(zone_label.get("ru") or ""), str(zone_label.get("kk") or "")
+        else:
+            zone_ru = f"район {district_name(zone_d, 'ru')}" if zone_d else "зона на карте"
+            zone_kk = f"{district_name(zone_d, 'kk')} ауданы" if zone_d else "картадағы аймақ"
+        b.line(f"«{title['ru']}» — штаб открыт, {zone_ru}. Выполнено {fmt_num(done)} из {fmt_num(total)} задач служб.",
+               f"«{title['kk']}» — штаб ашық, {zone_kk}. Қызметтердің {fmt_num(total)} тапсырмасының "
                f"{fmt_num(done)} орындалды.")
-        todo = [t for t in tasks if t.get("status") != "done"]
-        if todo:
-            names_ru = ", ".join(dict.fromkeys(service_name(t.get("service"), "ru") for t in todo if t.get("service")))
-            names_kk = ", ".join(dict.fromkeys(service_name(t.get("service"), "kk") for t in todo if t.get("service")))
-            if names_ru:
-                b.line(f"Ещё работают: {names_ru}.", f"Әлі жұмыс істеп жатыр: {names_kk}.")
+        if working:
+            b.line("Ещё работают: " + ", ".join(service_name(sv, "ru") for sv in working) + ".",
+                   "Әлі жұмыс істеп жатыр: " + ", ".join(service_name(sv, "kk") for sv in working) + ".")
         if updates:
             b.line(f"Жителям зоны отправлено обновлений: {fmt_num(len(updates))}.",
                    f"Аймақ тұрғындарына жіберілген жаңарту: {fmt_num(len(updates))}.")
-            b.fact(len(updates), "обновлений жителям", "тұрғындарға жаңарту", "ui.civic_agencies.incidents")
-        for t in tasks[:MAX_ITEMS]:
-            b.items.append({"label": both(service_name(t.get("service"), "ru") or "", service_name(t.get("service"), "kk") or ""),
-                            "value": None, "status": t.get("status"),
-                            "value_text": both(str(t.get("text_ru") or ""), str(t.get("text_kk") or t.get("text_ru") or ""))})
+            b.fact(len(updates), "обновлений жителям", "тұрғындарға жаңарту", "ui.civic_agencies.active_incidents")
+        progress = {r.get("service"): r for r in inc.get("progress") or [] if isinstance(r, dict)}
+        for sv in services[:MAX_ITEMS]:
+            row = progress.get(sv) or {}
+            if row:
+                text = both(f"сделано {fmt_num(_int(row.get('done')))} из {fmt_num(_int(row.get('total')))}",
+                            f"{fmt_num(_int(row.get('total')))} ішінен {fmt_num(_int(row.get('done')))} орындалды")
+            else:
+                text = both("в штабе", "штабта")
+            b.items.append({"label": both(service_name(sv, "ru") or "", service_name(sv, "kk") or ""),
+                            "value": _int(row.get("done")) if row else None, "value_text": text, "service": sv})
         for target in ((inc.get("zone") or {}).get("targets") or [])[:1]:
-            tgt = target if isinstance(target, dict) else {"kind": "area", "id": str(target)}
-            b.focus(tgt, 7)
-        b.open("crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу")
+            if isinstance(target, dict):
+                b.focus(target, 7)
+            elif isinstance(target, str) and target.startswith(("yard-", "cell-")):
+                b.focus({"kind": "area", "id": target}, 7)
+        b.open("crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу",
+               opener={"global": "BirgeAgencies", "fn": "openCrisis", "arg": {"incident": str(inc.get("id") or "")}})
         return b
     # Штаба нет (или R17 ещё не подключён): честно говорим и показываем пульс «Картины дня» по снегу.
     b.role = "R08"
@@ -571,7 +608,13 @@ def crisis(ctx) -> Block:
                         "value": int(d.get("value") or 0), "district": d.get("district"),
                         "value_text": both(f"{fmt_num(d.get('value') or 0)} сообщ.", f"{fmt_num(d.get('value') or 0)} хабарлама")})
     b.focus(spike.get("target"), 7)
-    b.open("day", "Открыть «Картину дня»", "«Күн қорытындысын» ашу")
+    if status == "ok":
+        # Штаб подключён, но открыт не был: кнопка ведёт к форме нового штаба с шаблоном «Буран» (R17 crisis_link).
+        b.open("crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу",
+               opener={"global": "BirgeAgencies", "fn": "openCrisis",
+                       "arg": {"template": "blizzard" if category == "snow_ice" else "other", "district": p.district}})
+    else:
+        b.open("day", "Открыть «Картину дня»", "«Күн қорытындысын» ашу")
     return b
 
 
@@ -581,32 +624,50 @@ def work_conflicts(ctx) -> Block:
     p, b = ctx.parsed, Block("work_conflicts", "R12")
     where = _where(p)
     b.title = both(f"Конфликты работ «копаем дважды» {where['ru']}", f"Жұмыстар қайшылығы «екі рет қазу»: {where['kk']}")
-    status, answer = ctx.call("R12", "engine.civic_geo", "works_conflicts", ctx.src.works_conflicts,
+    status, answer = ctx.call("R12", "engine.civic_geo", "conflicts_summary", ctx.src.works_conflicts,
                               {"district": p.district})
     if status != "ok":
         return _not_ready(b, status, "Календарь работ", "Жұмыстар күнтізбесі")
-    rows = [r for r in S.items_of(answer, "conflicts") if isinstance(r, dict)]
-    b.demo = any(r.get("demo") for r in rows) or bool(isinstance(answer, dict) and answer.get("demo"))
-    if not rows:
+    if isinstance(answer, dict) and isinstance(answer.get("conflicts"), int):
+        # R12 conflicts_summary: числа «Календаря работ» и первые конфликты.
+        total, high = _int(answer.get("conflicts")), _int(answer.get("high"))
+        rows = [r for r in answer.get("top") or [] if isinstance(r, dict)]
+        b.demo = bool(answer.get("demo"))
+    else:
+        rows = [r for r in S.items_of(answer, "conflicts") if isinstance(r, dict)]
+        total, high = len(rows), sum(1 for r in rows if r.get("severity") == "high")
+        b.demo = any(r.get("demo") for r in rows) or bool(isinstance(answer, dict) and answer.get("demo"))
+    if not total:
         b.status = "empty"
         b.line(f"Конфликтов работ {where['ru']} не найдено.", f"{where['kk'].capitalize()} жұмыстар қайшылығы табылмады.")
         return b
-    high = sum(1 for r in rows if r.get("severity") == "high")
-    b.number(len(rows), plural_ru(len(rows), "конфликт работ", "конфликта работ", "конфликтов работ"),
+    b.number(total, plural_ru(total, "конфликт работ", "конфликта работ", "конфликтов работ"),
              "жұмыстар қайшылығы", "works_conflicts", tone="up")
     b.number(high, "серьёзных", "маңызды", "works_conflicts")
-    first = rows[0]
-    if first.get("advice_ru"):
-        b.line(str(first["advice_ru"]), str(first.get("advice_kk") or first["advice_ru"]))
     kinds = {"dig_after_surface": both("раскопка после нового асфальта", "жаңа асфальттан кейін қазу"),
              "parallel_closures": both("соседние улицы перекрыты одновременно", "көрші көшелер бір мезгілде жабылған"),
              "same_segment_overlap": both("работы на одном участке в одни дни", "бір учаскедегі жұмыстар бір күндерде")}
+    first = rows[0] if rows else {}
+    if first.get("advice_ru"):
+        b.line(str(first["advice_ru"]), str(first.get("advice_kk") or first["advice_ru"]))
+    elif first.get("title_ru"):
+        street_ru, street_kk = first.get("street_ru"), first.get("street_kk")
+        b.line(f"Самый важный: {first['title_ru']}" + (f" — {street_ru}" if street_ru else "") + ".",
+               f"Ең маңыздысы: {first.get('title_kk') or first['title_ru']}" + (f" — {street_kk}" if street_kk else "") + ".")
     for r in rows[:MAX_ITEMS]:
-        label = kinds.get(r.get("kind"), both(str(r.get("kind") or ""), str(r.get("kind") or "")))
-        b.items.append({"label": label, "value": None, "severity": r.get("severity"), "id": r.get("id"),
-                        "value_text": both("серьёзный" if r.get("severity") == "high" else "средний",
-                                           "маңызды" if r.get("severity") == "high" else "орташа")})
-    b.open("works-calendar", "Открыть «Календарь работ»", "«Жұмыстар күнтізбесін» ашу")
+        label = both(str(r["title_ru"]), str(r.get("title_kk") or r["title_ru"])) if r.get("title_ru") \
+            else kinds.get(r.get("kind"), both(str(r.get("kind") or ""), str(r.get("kind") or "")))
+        sub = both(str(r.get("street_ru") or ""), str(r.get("street_kk") or r.get("street_ru") or "")) \
+            if r.get("street_ru") else None
+        item = {"label": label, "value": None, "severity": r.get("severity"), "id": r.get("id"),
+                "value_text": both("серьёзный" if r.get("severity") == "high" else "средний",
+                                   "маңызды" if r.get("severity") == "high" else "орташа")}
+        if sub:
+            item["sub"] = sub
+        b.items.append(item)
+    b.open("works-calendar", "Открыть «Календарь работ»", "«Жұмыстар күнтізбесін» ашу",
+           opener={"global": "BirgeWorksCalendar", "fn": "openConflict", "arg": str(first.get("id") or "")}
+           if first.get("id") else None)
     return b
 
 
@@ -616,35 +677,51 @@ def initiatives(ctx) -> Block:
     p, b = ctx.parsed, Block("initiatives", "R16")
     where = _where(p)
     b.title = both(f"Инициативы жителей {where['ru']}", f"Тұрғындар бастамалары: {where['kk']}")
-    status, answer = ctx.call("R16", "ui.civic_together", "initiatives", ctx.src.together_initiatives,
+    status, answer = ctx.call("R16", "ui.civic_together", "initiatives_summary", ctx.src.together_initiatives,
                               {"district": p.district, "status": "published"})
     if status != "ok":
         return _not_ready(b, status, "Сделаем вместе", "Бірге жасайық")
-    rows = [r for r in S.items_of(answer, "initiatives") if isinstance(r, dict)
-            and r.get("status", "published") in ("published", "done")]
-    if p.district:
-        rows = [r for r in rows if r.get("district") in (None, p.district)]
-    b.demo = any(r.get("demo") for r in rows)
-    if not rows:
+    if isinstance(answer, dict) and "upcoming" in answer:
+        # R16 initiatives_summary: ближайшие дела, сколько соседей придёт, поддержка акимата, сделано вместе.
+        upcoming, joined = _int(answer.get("upcoming")), _int(answer.get("joined_upcoming"))
+        supported, done = _int(answer.get("supported")), _int(answer.get("done"))
+        neighbors_done = _int(answer.get("neighbors_done"))
+        rows = [r for r in answer.get("next") or [] if isinstance(r, dict)]
+        b.demo = bool(answer.get("demo"))
+    else:
+        all_rows = [r for r in S.items_of(answer, "initiatives") if isinstance(r, dict)]
+        if p.district:
+            all_rows = [r for r in all_rows if r.get("district") in (None, p.district)]
+        rows = [r for r in all_rows if r.get("status", "published") == "published"]
+        done_rows = [r for r in all_rows if r.get("status") == "done"]
+        upcoming, joined = len(rows), sum(_int(r.get("joined")) for r in rows)
+        supported = sum(1 for r in rows if (r.get("support") or {}).get("by_akimat"))
+        done, neighbors_done = len(done_rows), sum(_int(r.get("joined")) for r in done_rows)
+        rows = sorted(rows, key=lambda r: -_int(r.get("joined")))
+        b.demo = any(r.get("demo") for r in all_rows)
+    if not upcoming and not done:
         b.status = "empty"
         b.line(f"Опубликованных инициатив {where['ru']} пока нет.", f"{where['kk'].capitalize()} жарияланған бастама әзірге жоқ.")
         return b
-    joined = sum(_int(r.get("joined")) for r in rows)
-    supported = sum(1 for r in rows if (r.get("support") or {}).get("by_akimat"))
-    done = sum(1 for r in rows if r.get("status") == "done")
-    b.number(len(rows), plural_ru(len(rows), "инициатива", "инициативы", "инициатив"), "бастама", "initiatives")
-    b.number(joined, plural_ru(joined, "житель придёт", "жителя придут", "жителей придут"), "тұрғын келеді", "initiatives",
-             tone="up")
-    b.line(f"Поддержано акиматом: {fmt_num(supported)}. Уже сделано вместе: {fmt_num(done)}.",
-           f"Әкімдік қолдады: {fmt_num(supported)}. Бірге жасалды: {fmt_num(done)}.")
-    rows.sort(key=lambda r: -_int(r.get("joined")))
+    b.number(upcoming, plural_ru(upcoming, "инициатива впереди", "инициативы впереди", "инициатив впереди"),
+             "алдағы бастама", "initiatives")
+    b.number(joined, plural_ru(joined, "житель придёт", "жителя придут", "жителей придут"), "тұрғын келеді",
+             "initiatives", tone="up")
+    if done:
+        b.number(done, plural_ru(done, "сделана вместе", "сделаны вместе", "сделано вместе"), "бірге жасалды",
+                 "initiatives")
+    b.line(f"Поддержано акиматом: {fmt_num(supported)}. Уже сделано вместе: {fmt_num(done)}"
+           + (f", пришли {count_ru(neighbors_done, 'сосед', 'соседа', 'соседей')}." if neighbors_done else "."),
+           f"Әкімдік қолдады: {fmt_num(supported)}. Бірге жасалды: {fmt_num(done)}"
+           + (f", {fmt_num(neighbors_done)} көрші келді." if neighbors_done else "."))
     for r in rows[:MAX_ITEMS]:
         n = _int(r.get("joined"))
         target = r.get("target") if isinstance(r.get("target"), dict) else None
-        b.items.append({"label": both(str(r.get("title") or ""), str(r.get("title_kk") or r.get("title") or "")),
-                        "value": n, "value_text": both(f"придут {fmt_num(n)}", f"{fmt_num(n)} адам келеді"),
+        title = str(r.get("title") or "")
+        b.items.append({"label": both(title, str(r.get("title_kk") or title)), "value": n,
+                        "value_text": both(f"придут {fmt_num(n)}", f"{fmt_num(n)} адам келеді"),
                         "status": r.get("status"), "target": target})
-    first_target = rows[0].get("target") if isinstance(rows[0].get("target"), dict) else None
+    first_target = rows[0].get("target") if rows and isinstance(rows[0].get("target"), dict) else None
     if first_target and first_target.get("kind") in ("object", "segment", "area"):
         b.focus(first_target)
     b.open("together", "Открыть «Сделаем вместе»", "«Бірге жасайық» ашу")
@@ -656,28 +733,38 @@ def initiatives(ctx) -> Block:
 def meeting_orders(ctx) -> Block:
     p, b = ctx.parsed, Block("meeting_orders", "R13")
     where = _where(p)
-    b.title = both(f"Поручения после встреч с жителями {where['ru']}", f"Тұрғындармен кездесулерден кейінгі тапсырмалар: {where['kk']}")
-    status, answer = ctx.call("R13", "ui.civic_meetings", "meetings", ctx.src.meetings_list, {"district": p.district})
+    b.title = both(f"Поручения после встреч с жителями {where['ru']}",
+                   f"Тұрғындармен кездесулерден кейінгі тапсырмалар: {where['kk']}")
+    status, answer = ctx.call("R13", "ui.civic_meetings", "board_block", ctx.src.meetings_list, {"district": p.district})
     if status != "ok":
         return _not_ready(b, status, "Встречи с акимом", "Әкіммен кездесулер")
-    meetings = [m for m in S.items_of(answer, "meetings") if isinstance(m, dict)]
-    if p.district:
-        meetings = [m for m in meetings if m.get("district") in (None, p.district)]
-    orders = [o for m in meetings for o in (m.get("orders") or []) if isinstance(o, dict)]
-    b.demo = any(m.get("demo") for m in meetings)
-    if not orders:
-        b.status = "empty"
-        b.line(f"Поручений по итогам встреч {where['ru']} пока нет.", f"{where['kk'].capitalize()} кездесулер бойынша тапсырма әзірге жоқ.")
-        return b
     today = ctx.now.date().isoformat()
-    done = sum(1 for o in orders if o.get("status") == "done")
-    late = [o for o in orders if o.get("status") != "done" and isinstance(o.get("due"), str) and o["due"][:10] < today]
-    b.number(len(orders), plural_ru(len(orders), "поручение", "поручения", "поручений"), "тапсырма", "meetings")
+    if isinstance(answer, dict) and isinstance(answer.get("counts"), dict):
+        # R13 board_block: счётчики всех поручений и открытые (сначала просроченные).
+        counts = answer["counts"]
+        total, done, late_n = _int(counts.get("total")), _int(counts.get("done")), _int(counts.get("overdue"))
+        shown = [o for o in answer.get("orders") or [] if isinstance(o, dict)]
+        b.demo = bool(answer.get("demo"))
+    else:
+        meetings = [m for m in S.items_of(answer, "meetings") if isinstance(m, dict)]
+        if p.district:
+            meetings = [m for m in meetings if m.get("district") in (None, p.district)]
+        orders = [o for m in meetings for o in (m.get("orders") or []) if isinstance(o, dict)]
+        late = [o for o in orders if o.get("status") != "done" and isinstance(o.get("due"), str) and o["due"][:10] < today]
+        total, done, late_n = len(orders), sum(1 for o in orders if o.get("status") == "done"), len(late)
+        shown = late + [o for o in orders if o not in late and o.get("status") != "done"]
+        b.demo = any(m.get("demo") for m in meetings)
+    if not total:
+        b.status = "empty"
+        b.line(f"Поручений по итогам встреч {where['ru']} пока нет.",
+               f"{where['kk'].capitalize()} кездесулер бойынша тапсырма әзірге жоқ.")
+        return b
+    b.number(total, plural_ru(total, "поручение", "поручения", "поручений"), "тапсырма", "meetings")
     b.number(done, "выполнено", "орындалды", "meetings", tone="neutral")
-    b.number(len(late), "просрочено", "мерзімі өткен", "meetings", tone="up" if late else "neutral")
-    b.line(f"Выполнено {fmt_num(done)} из {fmt_num(len(orders))}; просрочено {fmt_num(len(late))}.",
-           f"{fmt_num(len(orders))} тапсырманың {fmt_num(done)} орындалды; мерзімі өткені — {fmt_num(len(late))}.")
-    for o in (late + [o for o in orders if o not in late])[:MAX_ITEMS]:
+    b.number(late_n, "просрочено", "мерзімі өткен", "meetings", tone="up" if late_n else "neutral")
+    b.line(f"Выполнено {fmt_num(done)} из {fmt_num(total)}; просрочено {fmt_num(late_n)}.",
+           f"{fmt_num(total)} тапсырманың {fmt_num(done)} орындалды; мерзімі өткені — {fmt_num(late_n)}.")
+    for o in shown[:MAX_ITEMS]:
         b.items.append({"label": both(str(o.get("text_ru") or ""), str(o.get("text_kk") or o.get("text_ru") or "")),
                         "value": None, "status": o.get("status"), "due": o.get("due"),
                         "sub": both(service_name(o.get("service"), "ru") or "", service_name(o.get("service"), "kk") or "")})

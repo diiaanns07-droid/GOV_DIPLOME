@@ -103,7 +103,7 @@ def test_scene_blizzard_without_r17_uses_pulse_honestly():
     assert "не подключён" in crisis["note"]["ru"]
     assert crisis["lines"]["ru"][0].startswith("«Снег и гололёд»")
     statuses = {c["fn"]: c["status"] for c in a["calls"]}
-    assert statuses["incidents"] == "not_ready" and statuses["summary"] == "ok"
+    assert statuses["active_incidents"] == "not_ready" and statuses["summary"] == "ok"
 
 
 def test_lagging_services_fallback_matches_deadlines_without_r17():
@@ -136,7 +136,8 @@ def test_growth_district_compare_overdue_conflicts_initiatives_meetings():
     assert conflicts["lines"]["ru"][0].startswith("Сначала сети")
 
     inits = block(ask("Какие инициативы жителей в Нуре?"), "initiatives")
-    assert [n["value"] for n in inits["numbers"]] == [2, 24]       # скрытая инициатива не считается
+    # впереди 1 (15 придут), сделана 1; скрытая инициатива не считается
+    assert [n["value"] for n in inits["numbers"]] == [1, 15, 1]
     assert all("author_device" not in json.dumps(i) for i in inits["items"])
 
     orders = block(ask("Что поручили на встречах с жителями?"), "meeting_orders")
@@ -264,6 +265,6 @@ def test_answer_is_json_and_has_call_log():
     a = ask("Где в Нуре больше всего жалоб на снег за неделю и какие службы отстают?")
     json.dumps(a, ensure_ascii=False)
     fns = [c["fn"] for c in a["calls"]]
-    assert "heat" in fns and "board" in fns
+    assert "heat" in fns and "board_snapshot" in fns
     assert all({"role", "module", "fn", "status", "ms"} <= set(c) for c in a["calls"])
     assert a["facts"] and all(f["role"] for f in a["facts"])

@@ -54,6 +54,10 @@ async function waitAnswer(page) {
         const tag = `${w}_${lang}`;
         if (w === 1366 || w === 375) await page.screenshot({ path: path.join(OUT, `analyst_idle_${tag}.png`) });
         check(`idle chips ${tag}`, (await page.locator(".ba-chip:visible").count()) >= 4);
+        check(`idle: no clear button in empty field ${tag}`, !(await page.locator(".ba-clear").isVisible()));
+        check(`idle: one small icon, one button (P1) ${tag}`,
+          (await page.locator(".ba-empty .ic--48").count()) === 1 && (await page.locator(".ba-empty .bk-btn").count()) === 1 &&
+          (await page.locator(".ba-empty .bk-ill").count()) === 0);
         for (let i = 0; i < SCENE[lang].length; i++) {
           await page.fill("#ba-input", SCENE[lang][i]);
           await page.press("#ba-input", "Enter");
