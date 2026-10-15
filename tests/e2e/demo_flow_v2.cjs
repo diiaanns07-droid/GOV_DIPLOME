@@ -460,6 +460,9 @@ async function showCheck(browser, base, lang, staffAcc) {
   await page.goto(base + "?show=1");
   await page.waitForFunction(() => document.readyState === "complete" && document.body.innerText.length > 50, null, { timeout: 40000 }).catch(() => null);
   await sleep(3000);
+  // Сцены ведущий открывает в загруженной странице: ждём затишья сети (карта догрузила heat/meta и значки, до 15 с) — иначе
+  // время перехода меряет гонку с загрузкой карты, а не сам переход (B-124: свежая страница 1,6–1,9 с, тёплая — 28 мс).
+  const idle = await page.waitForLoadState("networkidle", { timeout: 15000 }).then(() => true, () => false);
   const show = await page.evaluate(() => document.documentElement.dataset.birgeShow === "1").catch(() => false);
   add(`UI show-${lang}`, "S", "режим показа ?show=1 включён (html[data-birge-show])", show ? "PASS" : "NOT_RUN", show ? null : "нет режима показа в сборке", "R01");
   const want = { 7: ["yard", "map"], 8: ["inbox"], 9: ["agencies", "crisis", "day"] };
@@ -503,7 +506,7 @@ async function showCheck(browser, base, lang, staffAcc) {
     await sleep(800);
     await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
     add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → раздел ${want[n][0]} ≤ 1 с`, ms === null ? "FAIL" : ms <= 1000 ? "PASS" : "FAIL",
-      { ms, section: sec }, "R01", path.basename(f));
+      { ms, section: sec, network_idle_before: idle }, "R01", path.basename(f));
   }
   await ctx.close();
 }

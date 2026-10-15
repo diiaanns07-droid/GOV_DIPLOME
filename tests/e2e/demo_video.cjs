@@ -405,25 +405,51 @@ async function recordLang(browser, lang) {
       await flyTo(PLACE, 17, 1800);
       dbg("5: вид «Сквер»", await pressText(kindRe, 1200));
       const pt = await L.showPoint(page, PLACE, 17);
+      dbg("5: точка на карте", !!pt);
       if (pt) { const x = pt.onCanvas ? pt.x : pt.near ? pt.near.x : pt.x, y = pt.onCanvas ? pt.y : pt.near ? pt.near.y : pt.y;
         await moveTo(x, y); await pause(300); await page.mouse.click(x, y); await wait(1400); }
+      dbg("5: место выбрано");
       placed = await pressText(exact(word("proposal.place", "Поставить", "Орнату")), 3800);
+      dbg("5: «Поставить»", placed);
       await shot("5-placed");
       const view3d = new RegExp("^(3D|" + esc(word("common.map.view3d", "Объёмный вид", "Көлемді көрініс")) + ")$", "i");
       if (await pressText(view3d, 2400)) { await shot("5-3d"); await pressText(view3d, 800); }
+      dbg("5: 3D показан и выключен");
       // Житель голосует «За» по табличке проекта.
       await setMode("resident");
+      dbg("5: режим «Житель»");
       await say("s5b", 600);
       const p2 = await L.showPoint(page, PLACE, 17);
+      dbg("5: точка проекта у жителя", !!p2);
       const projRe = new RegExp("^" + esc(kindName) + ":.*2027", "i");
-      const labels = page.getByRole("button", { name: projRe });
-      let best = null, bestD = Infinity;
-      for (let i = 0; i < Math.min(await labels.count().catch(() => 0), 30); i++) {
-        const it = labels.nth(i); if (!(await it.isVisible().catch(() => false))) continue;
-        const b = await it.boundingBox().catch(() => null); if (!b || !p2) continue;
-        const d = Math.hypot(b.x + b.width / 2 - p2.x, b.y + b.height / 2 - p2.y); if (d < bestD) { best = it; bestD = d; }
+      // Табличка проекта ближе всего к месту — одним проходом в странице: цикл getByRole(name).nth(i) на большой странице
+      // пересчитывает имена всех кнопок на каждом шаге (в пробе шага 5 — десятки секунд).
+      const spot = p2 ? await page.evaluate(([src, px, py]) => {
+        const rx = new RegExp(src, "i");
+        let bestPt = null, bestDist = Infinity;
+        for (const el of document.querySelectorAll("button, [role=button]")) {
+          const name = (el.getAttribute("aria-label") || el.textContent || "").trim().replace(/\s+/g, " ");
+          if (!rx.test(name)) continue;
+          const b = el.getBoundingClientRect();
+          if (b.width < 2 || b.height < 2 || b.bottom < 0 || b.top > innerHeight) continue;
+          const d = Math.hypot(b.x + b.width / 2 - px, b.y + b.height / 2 - py);
+          if (d < bestDist) { bestPt = { x: b.x + b.width / 2, y: b.y + b.height / 2 }; bestDist = d; }
+        }
+        return bestPt;
+      }, [projRe.source, p2.x, p2.y]).catch(() => null) : null;
+      let best = null;
+      if (!spot) {  // запасной путь — по роли и имени, как раньше (медленно, но находит табличку без aria-label)
+        const labels = page.getByRole("button", { name: projRe });
+        let bestD = Infinity;
+        for (let i = 0; i < Math.min(await labels.count().catch(() => 0), 30); i++) {
+          const it = labels.nth(i); if (!(await it.isVisible().catch(() => false))) continue;
+          const b = await it.boundingBox().catch(() => null); if (!b || !p2) continue;
+          const d = Math.hypot(b.x + b.width / 2 - p2.x, b.y + b.height / 2 - p2.y); if (d < bestD) { best = it; bestD = d; }
+        }
       }
-      if (best) { await press(best, 1600);
+      dbg("5: табличка проекта найдена", spot ? "в странице" : !!best);
+      if (spot) { await moveTo(spot.x, spot.y); await pause(180); await page.mouse.click(spot.x, spot.y); await sleep(1600); }
+      if (spot || best) { if (best) await press(best, 1600);
         await pressText(new RegExp("^" + esc(word("proposal.vote_up", "За", "Жақтаймын")) + "(\\s|:|\\d|$)", "i"), 2200);
         await shot("5-vote"); await page.keyboard.press("Escape").catch(() => null); await pause(600); }
     }
