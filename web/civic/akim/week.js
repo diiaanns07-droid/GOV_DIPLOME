@@ -32,6 +32,8 @@
       "week.current": "неделя идёт — данные по {date}",
       "week.kpi.new": "Поступило обращений",
       "week.kpi.fixed": "Исправлено за неделю",
+      "week.kpi.new_since": "Поступило с {date}",
+      "week.kpi.fixed_since": "Исправлено с {date}",
       "week.kpi.verified": "проверено жителями: {n}",
       "week.kpi.in_progress": "В работе на {date}",
       "week.kpi.overdue": "Просрочено на {date}",
@@ -89,6 +91,8 @@
       "week.current": "апта жүріп жатыр — {date} дейінгі деректер",
       "week.kpi.new": "Түскен өтініштер",
       "week.kpi.fixed": "Апта ішінде түзетілді",
+      "week.kpi.new_since": "{date} бастап түскені",
+      "week.kpi.fixed_since": "{date} бастап түзетілгені",
       "week.kpi.verified": "тұрғындар тексерді: {n}",
       "week.kpi.in_progress": "{date} жағдайы: орындалуда",
       "week.kpi.overdue": "{date} жағдайы: мерзімі өткен",
@@ -382,8 +386,10 @@
         demoAll ? h("span", { class: "bk-tag bk-tag--demo", text: tr("common.demo") }) : null,
       ]);
       var kpis = h("section", { class: "wk-kpis" }, [
-        kpiTile(tr("week.kpi.new"), k.new.value, deltaText(k.new, "week"), null, "new"),
-        kpiTile(tr("week.kpi.fixed"), k.fixed.value, deltaText(k.fixed, "week"),
+        // Идущая неделя — «с понедельника» явно: в «Картине дня» «Исправлено за неделю» — это последние 7 дней, и числа
+        // разные (R10 consistency C5); подпись говорит, за какие дни число.
+        kpiTile(w.current ? tr("week.kpi.new_since", { date: fmtDate(w.start) }) : tr("week.kpi.new"), k.new.value, deltaText(k.new, "week"), null, "new"),
+        kpiTile(w.current ? tr("week.kpi.fixed_since", { date: fmtDate(w.start) }) : tr("week.kpi.fixed"), k.fixed.value, deltaText(k.fixed, "week"),
           k.verification_available ? tr("week.kpi.verified", { n: k.fixed.verified || 0 }) : null, "fixed"),
         kpiTile(tr("week.kpi.in_progress", { date: asOf }), k.in_progress.value, deltaText(k.in_progress, "ago"), null),
         kpiTile(tr("week.kpi.overdue", { date: asOf }), k.overdue.value, deltaText(k.overdue, "ago"), null, k.overdue.value ? "late" : null),

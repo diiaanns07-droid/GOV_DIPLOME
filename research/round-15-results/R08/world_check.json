@@ -1,6 +1,6 @@
 {
  "base": "http://127.0.0.1:8660",
- "at": "2026-10-15T16:50:48+00:00",
+ "at": "2026-10-15T17:07:14+00:00",
  "pass": 18,
  "fail": 0,
  "not_run": 0,
@@ -40,14 +40,14 @@
    "status": "PASS",
    "detail": {
     "day": {
-     "new_day": 29,
+     "new_day": 30,
      "new_week": 126,
      "in_progress": 104,
      "overdue": 35,
      "fixed_week": 106
     },
     "board": {
-     "new_day": 29,
+     "new_day": 30,
      "new_week": 126,
      "in_progress": 104,
      "overdue": 35,
@@ -61,14 +61,14 @@
    "status": "PASS",
    "detail": {
     "day": {
-     "new_day": 12,
+     "new_day": 13,
      "new_week": 66,
      "in_progress": 43,
      "overdue": 5,
      "fixed_week": 45
     },
     "board": {
-     "new_day": 12,
+     "new_day": 13,
      "new_week": 66,
      "in_progress": 43,
      "overdue": 5,
