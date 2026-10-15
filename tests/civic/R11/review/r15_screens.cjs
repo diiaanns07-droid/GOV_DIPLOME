@@ -14,6 +14,7 @@
  *   ru_in_kk (только ҚАЗ) русские подписи элементов интерфейса: кнопки, вкладки, заголовки, подписи полей, чипы, шапки
  *            таблиц (содержимое обращений и примеров — по-русски можно, оно не проверяется);
  *   nav      пункты капсулы меню против IA_ROUND15 §2–3 (на 1366 и 1024; на телефоне меню — в аватаре).
+ *   main     тёмные кнопки от 40 px на первом экране — две и больше «смотреть глазами» (VISUAL_BRIEF §4 п. 3).
  * Итог: <OUT>/r15_screens.json и строки «ПРОБЛЕМА …» в выводе; код выхода 1, если есть scroll/keys/nav или cut на 375 kk.
  */
 "use strict";
@@ -85,6 +86,12 @@ async function audit(page, lang, w, ruOnly) {
     }
     out.cut = [...new Set(out.cut)].slice(0, 12); out.cut_rows = [...new Set(out.cut_rows)].slice(0, 12); out.keys = [...new Set(out.keys)].slice(0, 12); out.ru_in_kk = [...new Set(out.ru_in_kk)].slice(0, 12);
     out.nav = [...document.querySelectorAll("#birge-header .birge-nav > button")].filter(vis).map((b) => b.textContent.trim());
+    // VISUAL_BRIEF §4 п. 3 «одна главная кнопка»: тёмные кнопки от 40 px на первом экране (без шапки и знака). Пилюли счёта
+    // эталона A (32 px, зона 44 — ::after) сюда не попадают; две и больше — смотреть глазами.
+    out.main = [...document.querySelectorAll("button, a.bk-btn, a[role=button]")].filter((e) => vis(e) && !e.closest("#birge-header, .bk-logo, [aria-hidden=true]")
+      && !e.matches(".bk-logo, [aria-pressed=true], [aria-selected=true]")).filter((e) => { const r = e.getBoundingClientRect(); if (r.height < 40 || r.bottom < 0 || r.top > innerHeight) return false;
+      const m = (getComputedStyle(e).backgroundColor.match(/[\d.]+/g) || []).map(Number); return m.length >= 3 && m[0] < 40 && m[1] < 45 && m[2] < 45 && (m[3] === undefined || m[3] > 0.5); })
+      .map((e) => (e.textContent.trim().replace(/\s+/g, " ") || e.getAttribute("aria-label") || e.className.toString()).slice(0, 30));
     out.header = document.body.dataset.birgeHeader || "inline";
     out.section = window.BirgeShell && BirgeShell.section;
     out.title = (document.querySelector("#birge-screen:not([hidden]) #birge-screen-title, #birge-day:not([hidden]) #birge-day-title") || {}).textContent || "";
@@ -154,9 +161,10 @@ function navProblem(mode, lang, nav) {
   fs.writeFileSync(path.join(OUT, "r15_screens.json"), JSON.stringify(report, null, 1));
   const frames = Object.keys(report.frames).length;
   for (const p of report.problems) console.log("ПРОБЛЕМА " + p);
-  const soft = Object.entries(report.frames).filter(([, a]) => a.cut.length || a.cut_rows.length || a.ru_in_kk.length);
+  const soft = Object.entries(report.frames).filter(([, a]) => a.cut.length || a.cut_rows.length || a.ru_in_kk.length || (a.main || []).length > 1);
   for (const [tag, a] of soft) console.log(`смотреть ${tag}:` + (a.cut.length ? ` обрезано [${a.cut.join(" | ")}]` : "")
-    + (a.cut_rows.length ? ` строки с многоточием [${a.cut_rows.slice(0, 4).join(" | ")}]` : "") + (a.ru_in_kk.length ? ` русские подписи [${a.ru_in_kk.join(" | ")}]` : ""));
+    + (a.cut_rows.length ? ` строки с многоточием [${a.cut_rows.slice(0, 4).join(" | ")}]` : "") + (a.ru_in_kk.length ? ` русские подписи [${a.ru_in_kk.join(" | ")}]` : "")
+    + ((a.main || []).length > 1 ? ` главных кнопок ${a.main.length} [${a.main.join(" | ")}]` : ""));
   console.log(`кадров ${frames}, проблем ${report.problems.length}; кадров «смотреть глазами»: ${soft.length}`);
   process.exit(report.problems.length ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(2); });

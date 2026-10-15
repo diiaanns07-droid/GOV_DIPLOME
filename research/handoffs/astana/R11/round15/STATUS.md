@@ -124,6 +124,7 @@ COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочита
 - 04:23–04:35 — **круг 13** (по триггеру): AMENDMENTS — только П1. B0.13 (aad86127) со словарём R11 поверх: 68 кадров, 0 проблем.
   R17 сделал R17-4/R17-5, R16 применил патч шрифтов; R17-6 — новый патч к 98985c50; R08-1 — `patches/R08_board_mark.patch`
   (знак-дом вместо «B», проверен на стенде). Словарь 2861 (+1 R17).
+  R13-3 — «♡» у вопросов тёмная 44 px, как «Приду» (`patches/R13_vote_32px.patch`); в r15_screens.cjs — отметка «главных кнопок».
 
 ## Соседи (find_branches.py, 15 окт 16:30)
 R01 claude/brave-fermi-nhzetj · R02 claude/affectionate-shannon-jm6ws5 · R03 claude/modest-mccarthy-lrl98u ·
