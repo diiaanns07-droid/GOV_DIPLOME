@@ -1123,8 +1123,11 @@
       if (e.status === "error") return h("section", { class: "tg-detail" }, [backButton(), errorState(e.error, function () { load(key, path, true); })]);
       var item = e.data.initiative;
       var upcoming = item.status === "published" && !isPast(item);
-      var mapLink = typeof opts.openTarget === "function" && item.target ? h("button", { type: "button", class: "bk-btn bk-btn--ghost tg-link",
-        onclick: function () { opts.openTarget(item.target.kind, item.target.id); } }, [t("together.show_map")]) : null;
+      var canFly = typeof opts.setLayer === "function" && !!item.point && item.status !== "on_review" && item.status !== "hidden";
+      var mapLink = canFly || (typeof opts.openTarget === "function" && item.target) ? h("button", { type: "button",
+        class: "bk-btn bk-btn--ghost tg-link", "data-focus": "show-map", onclick: function () {
+          if (canFly) showInitiativeOnMap(item, opts); else opts.openTarget(item.target.kind, item.target.id);
+        } }, [t("together.show_map")]) : null;
       var yardLink = item.target && item.target.id ? h("button", { type: "button", class: "bk-btn bk-btn--ghost tg-link",
         onclick: function () { openYard(item.target.id); } }, [icon("home"), t("together.open_yard")]) : null;
       var facts = h("ul", { class: "bk-init__facts tg-facts" }, [
@@ -1873,7 +1876,7 @@
   // Капсулы не наползают: на мелком масштабе видна важная (ближайшее дело, больше соседей), остальные — при приближении.
   var layerState = { markers: [], token: 0, map: null, onMove: null };
   function showLayer(map) {
-    hideLayer();
+    clearLayer();
     var token = ++layerState.token;
     if (!map || !root.maplibregl || typeof root.maplibregl.Marker !== "function") return;
     request("/api/civic/v2", "GET", "/together/initiatives?limit=60").then(function (data) {
@@ -1884,7 +1887,7 @@
         if (item.status === "published" && isPast(item)) return;
         var n = done ? (item.report && item.report.joined || item.joined) : item.joined;
         // Капсула ui-kit «дата · число» со значком вида (IA R11 §5.2); «сделано» — галочка и число соседей.
-        var el = h("button", { type: "button", class: "tg-pin" + (done ? " tg-pin--done" : ""), "data-kind": item.kind,
+        var el = h("button", { type: "button", class: "tg-pin" + (done ? " tg-pin--done" : ""), "data-kind": item.kind, "data-id": item.id,
           "aria-label": item.title + " · " + (done ? t("together.done_count", { n: n }) : whenLabel(item) + " · " + t("together.count", { n: n })),
           title: item.title }, [icon(done ? "check" : kindIcon(item.kind)),
           done ? null : h("span", { class: "tg-pin__date", text: shortDate(item.starts_at) }),
@@ -1902,6 +1905,7 @@
       layerState.onMove = function () { declutter(map); };
       map.on("moveend", layerState.onMove);
       declutter(map);
+      markFocus();
     }, function () {
       toast(t("together.error.text"), "error");
     });
@@ -1909,6 +1913,8 @@
   function declutter(map) {
     var placed = [];
     layerState.markers.slice().sort(function (a, b) {
+      var fa = a.getElement().dataset.id === focusId ? 0 : 1, fb = b.getElement().dataset.id === focusId ? 0 : 1;
+      if (fa !== fb) return fa - fb;   // дело, которое показали кнопкой «На карте», — всегда видно
       for (var i = 0; i < 3; i++) if (a.tgRank[i] !== b.tgRank[i]) return a.tgRank[i] - b.tgRank[i];
       return 0;
     }).forEach(function (marker) {
@@ -1923,7 +1929,43 @@
       if (!hit) placed.push(box);
     });
   }
+  // «На карте» в карточке дела (IA R11 §1 п. 6: дополнительный слой включает только эта кнопка): слой «Инициативы»,
+  // перелёт к делу, его капсула выделена. Лист слева (карта видна справа) остаётся открытым; лист по центру и телефон
+  // закрываются — видна карта. Нет карты или setLayer у оболочки (FINAL-4) — как раньше, цель «двор» на карте (openTarget).
+  var focusId = null;
+  function showInitiativeOnMap(item, o) {
+    var mapObj = o.map || mapObject();
+    if (!mapObj || typeof mapObj.flyTo !== "function") {
+      if (typeof o.openTarget === "function" && item.target) o.openTarget(item.target.kind, item.target.id);
+      return;
+    }
+    focusId = item.id;
+    var sheet = doc.getElementById("birge-screen");
+    var box = sheet ? sheet.getBoundingClientRect() : null;
+    var side = !!box && box.width > 0 && box.right < root.innerWidth * 0.6;
+    if (!side && typeof o.close === "function") o.close();
+    o.setLayer("initiatives");
+    var view = { center: item.point, zoom: Math.max(mapObj.getZoom ? mapObj.getZoom() : 0, 16) };
+    if (side) view.padding = { left: Math.round(box.right) + 16, top: 0, right: 0, bottom: 0 };
+    try {
+      if (reducedMotion()) mapObj.jumpTo(view); else mapObj.flyTo(Object.assign({ duration: 900, essential: true }, view));
+    } catch (e) { try { mapObj.jumpTo({ center: item.point, zoom: 16 }); } catch (e2) { /* карта снята */ } }
+    markFocus();
+  }
+  function markFocus() {
+    layerState.markers.forEach(function (m) {
+      var el = m.getElement();
+      var on = !!focusId && el.dataset.id === focusId;
+      el.classList.toggle("tg-pin--focus", on);
+      if (on) { el.style.visibility = ""; el.removeAttribute("aria-hidden"); el.tabIndex = 0; }
+    });
+  }
+  // Оболочка выключила слой — выделение дела снимается; showLayer чистит старые капсулы через clearLayer (выделение живёт).
   function hideLayer() {
+    focusId = null;
+    clearLayer();
+  }
+  function clearLayer() {
     layerState.token++;
     if (layerState.map && layerState.onMove) { try { layerState.map.off("moveend", layerState.onMove); } catch (e) { /* карта снята */ } }
     layerState.map = null;
