@@ -81,6 +81,8 @@
       "idea.hidden_note": "Идея не прошла проверку: в ней личные данные, грубые слова или реклама.",
       "idea.mine": "Ваша идея",
       "idea.kind_none": "Идея",
+      "idea.topic.benches": "Скамейки",
+      "idea.topic.greening": "Озеленение",
       "idea.place": "Где это нужно?",
       "idea.place_pick": "Выбрать место на карте",
       "idea.place_change": "Изменить место",
@@ -151,6 +153,8 @@
       "idea.hidden_note": "Идея тексеруден өтпеді: онда жеке деректер, дөрекі сөздер немесе жарнама бар.",
       "idea.mine": "Сіздің идеяңыз",
       "idea.kind_none": "Идея",
+      "idea.topic.benches": "Орындықтар",
+      "idea.topic.greening": "Көгалдандыру",
       "idea.place": "Бұл қай жерге керек?",
       "idea.place_pick": "Картадан орын таңдау",
       "idea.place_change": "Орынды өзгерту",
@@ -554,8 +558,10 @@
     // pendingFocus гасится, когда идея найдена в загруженном списке (load): оболочка может пересоздать экран до ответа.
     var alive = true;
     rootEl.classList.add("ri");
-    // Адрес «#ideas/<id>» или «#projects/<id>» (оболочка раунда 15, ссылка из ленты) — открыть эту идею или проект.
-    var deep = /^#(?:ideas|projects)\/([A-Za-z0-9._:-]{1,64})$/.exec(root.location ? root.location.hash : "");
+    // Адрес «#ideas/<id>» или «#projects/<id>» (ссылка из ленты) — открыть эту идею или проект. Оболочка раунда 15
+    // передаёт путь в opts.path (и потом в handle.setPath), FINAL-4 — нет: тогда читаем адрес сами.
+    var deep = ITEM_ID.test(opts.path || "") ? [null, opts.path]
+      : /^#(?:ideas|projects)\/([A-Za-z0-9._:-]{1,64})$/.exec(root.location ? root.location.hash : "");
     if (deep && !pendingFocus) pendingFocus = deep[1];
     if (pendingFocus) state.flash = pendingFocus;
     if (!akimat && loadDraft() && draft.active) state.view = "new";
@@ -967,6 +973,11 @@
         if (row) row.after(card);
       }
     }
+    // «Объект» в трёх цифрах идеи: вид из каталога, иначе тема по словам идеи (сервер, topic_of) — «Скамейки», «Сквер».
+    function objectName(kind) {
+      if (kind === "benches" || kind === "greening") return tr("idea.topic." + kind);
+      return kind && kind !== "other" ? tr("proposal.kind." + kind) : tr("idea.kind_none");
+    }
     function fact(value, label) {
       return h("div", { class: "ri-fact" }, [h("b", { class: "bk-num", text: value }), h("span", { text: label })]);
     }
@@ -993,7 +1004,7 @@
         inner.appendChild(h("div", { class: "bk-facts ri-facts" }, [
           fact(I() ? I().formatNumber(x.votes || 0) : String(x.votes || 0), tr("idea.fact.supported")),
           year ? fact(String(year), tr("idea.fact.year")) : fact(districtShort(x.district) || "—", tr("idea.fact.district")),
-          fact(kind ? tr("proposal.kind." + kind) : tr("idea.kind_none"), tr("idea.fact.object"))]));
+          fact(objectName(kind || x.topic), tr("idea.fact.object"))]));
         var decision = decisionBlock(x);
         if (decision) inner.appendChild(decision);
         else {
@@ -1170,9 +1181,14 @@
       }
       return null;
     }
+    // Открыть дело R16: его BirgeTogether.open("initiative", id) (палитра R01, лента R06 — тот же вход); иначе адрес
+    // «#together/<id>» (оболочка раунда 15 и R16 понимают его сами) или раздел + событие birge:open (FINAL-4).
     function openTogether(id) {
+      var T = root.BirgeTogether;
+      if (T && typeof T.open === "function" && T.open("initiative", id) !== false) return;
       var S = shell();
       if (S && typeof S.openLink === "function") { S.openLink("#together/" + id); return; }
+      if (S && "path" in S) { root.location.hash = "#together/" + id; return; }
       if (S && S.setSection) S.setSection("together");
       doc.dispatchEvent(new CustomEvent("birge:open", { detail: { section: "together", path: id, link: "#together/" + id } }));
     }
@@ -1671,6 +1687,8 @@
     else load();
     return {
       setLang: function () { render(); },
+      // Оболочка раунда 15: тот же раздел, другой путь («#ideas/<id>» из ленты, назад/вперёд) — без перемонтажа.
+      setPath: function (path) { if (ITEM_ID.test(path || "")) current.focus(path); },
       destroy: function () {
         alive = false;
         removeDetail();
@@ -1686,6 +1704,7 @@
     };
   }
 
+  var ITEM_ID = /^[A-Za-z0-9._:-]{1,64}$/;   // id идеи или проекта в адресе «#ideas/<id>»
   var mounted = null;     // открытый экран (для нажатия на метку идеи на карте)
   var pendingFocus = null; // id идеи, которую открыть, когда экран смонтируется
 
@@ -1759,7 +1778,7 @@
   }
   doc.addEventListener("birge:open", function (e) {
     var d = e.detail || {};
-    if ((d.section === "ideas" || d.section === "projects") && /^[A-Za-z0-9._:-]{1,64}$/.test(d.path || "")) openItem(d.path);
+    if ((d.section === "ideas" || d.section === "projects") && ITEM_ID.test(d.path || "")) openItem(d.path);
   });
 
   // Карточка проекта R06 сама пишет «По идее жителей · N голосов» (proposals.js) — R05 свою строку не добавляет.

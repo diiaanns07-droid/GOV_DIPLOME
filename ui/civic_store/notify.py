@@ -37,7 +37,11 @@ LOGGER = logging.getLogger("ui.civic_store.notify")
 DEVICE_RE = re.compile(r"^[A-Za-z0-9._:-]{8,128}\Z")      # как V2_DEVICE_ID шлюза R01
 LINK_RE = re.compile(r"^#[a-z][a-z0-9-]{0,30}(?:[/=][A-Za-z0-9._:=&/+-]{1,200})?\Z")
 KIND_RE = re.compile(r"^[a-z]{2,20}\.[a-z_]{2,30}\Z")
-ID_RE = re.compile(r"^[A-Za-z0-9._:-]{1,120}\Z")
+ID_RE = re.compile(r"^[A-Za-z0-9._:-]{1,200}\Z")      # id соседа; в ленте — event_id()
+# id события в ленте — по правилу CIVIC_ID шлюза R01 (POST notifications/read проверяет им каждый id): до 96 знаков.
+EVENT_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")
+# путь адреса оболочки (IA_ROUND15 §7.3, PATH_RE R01) для частей ссылки «#раздел/путь»
+SAFE_PATH_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,95}\Z")
 KINDS = ("yard.news", "initiative.update", "incident.update", "meeting.result", "complaint.update", "work.near",
          "idea.update", "project.update")
 # Соседи: роль, модули-кандидаты (первый найденный), функция. Имена — из INTEGRATION соседей раунда 15.
@@ -85,6 +89,15 @@ def _text(value, limit=TITLE_MAX):
     return text[:limit] if text else None
 
 
+def event_id(module: str, raw_id: str) -> str:
+    """«<роль>:<id соседа>»; длиннее 96 знаков — начало id + 16 знаков его sha256 (тот же id при каждом запросе)."""
+    full = f"{module}:{raw_id}"
+    if EVENT_ID_RE.match(full):
+        return full
+    digest = hashlib.sha256(raw_id.encode("utf-8")).hexdigest()[:16]
+    return f"{module}:{raw_id[:96 - len(module) - 18]}.{digest}"
+
+
 def normalize(event, module: str):
     """Событие соседа → строго поля §5.8 (или None, если оно неполное). Лишнее (устройства, тексты) отбрасывается."""
     if not isinstance(event, dict):
@@ -104,7 +117,7 @@ def normalize(event, module: str):
         target = {"kind": target["kind"], "id": target["id"]}
     else:
         target = None
-    return {"id": f"{module}:{raw_id}", "at": iso(at), "module": module, "kind": kind, "target": target,
+    return {"id": event_id(module, raw_id), "at": iso(at), "module": module, "kind": kind, "target": target,
             "title_ru": title_ru or title_kk, "title_kk": title_kk or title_ru,
             "link": link if isinstance(link, str) and LINK_RE.match(link) else None,
             "demo": bool(event.get("demo"))}
@@ -126,6 +139,20 @@ def _call(fn, device, since, db_path):
     result = fn(device, since, **kwargs)
     items = result.get("items") if isinstance(result, dict) else result
     return list(items or [])[:MAX_PER_MODULE]
+
+
+def _work_link(yard, item) -> str:
+    """Куда ведёт «работа рядом» (IA_ROUND15 §2: работы рядом — вкладка «Работы» двора R16).
+
+    Рядом с двором — «#yard/<id двора>» (R16 открывает двор, его «Работы» — из works_near R06); по подписке «Рядом» R08 —
+    «#nearby/<район>/<id записи>» (R08 по пути открывает район и эту запись; без поддержки пути — ленту района).
+    """
+    if yard and isinstance(yard, str) and SAFE_PATH_RE.match(yard):
+        return "#yard/" + yard
+    district = item.get("district")
+    if isinstance(district, str) and re.match(r"^[a-z]{2,20}\Z", district) and SAFE_PATH_RE.match(item["id"]):
+        return f"#nearby/{district}/{item['id']}"
+    return "#nearby"
 
 
 class NotificationCenter:
@@ -173,7 +200,10 @@ class NotificationCenter:
         sources = {"R06": "ok"}
         events = []
         try:
-            events.extend(self.own_events(device, ideas_device or device))
+            for event in self.own_events(device, ideas_device or device):
+                # свои id — по тому же правилу, что у соседей (CIVIC_ID шлюза, до 96 знаков)
+                event["id"] = event["id"] if EVENT_ID_RE.match(event["id"]) else event_id("R06", event["id"][4:])
+                events.append(event)
         except Exception:  # noqa: BLE001 — своя часть тоже не роняет ленту соседей
             LOGGER.exception("notify: события R06 не собраны")
             sources["R06"] = "error"
@@ -299,7 +329,7 @@ class NotificationCenter:
         return out
 
     def _places(self, device):
-        """(районы подписки R08, работы подписки R08, точки дворов R16) этого устройства; соседа нет — пусто."""
+        """(районы подписки R08, работы подписки R08, [(id двора, точка)] R16) этого устройства; соседа нет — пусто."""
         districts, items, points = set(), set(), []
         try:
             nearby = self._import("ui.civic_akim.nearby")
@@ -313,7 +343,7 @@ class NotificationCenter:
         for yard in self._yards(device):
             point = _yard_point(self._import, yard)
             if point is not None:
-                points.append(point)
+                points.append((yard, point))
         return districts, items, points
 
     def _yards(self, device) -> list[str]:
@@ -356,8 +386,8 @@ class NotificationCenter:
                 continue
             if item["type"] == "outage" and (_parse_time(item.get("end")) or now) < now:
                 continue
-            near_yard = any((works_v2.distance_to_geometry_m(p, item.get("geometry")) or 1e9) <= YARD_RADIUS_M
-                            for p in points)
+            near_yard = next((yard for yard, p in points
+                              if (works_v2.distance_to_geometry_m(p, item.get("geometry")) or 1e9) <= YARD_RADIUS_M), None)
             by_district = item.get("district") in districts and updated >= fresh_district \
                 and per_district.get(item.get("district"), 0) < DISTRICT_MAX
             if not (near_yard or item["id"] in subscribed or by_district):
@@ -371,7 +401,7 @@ class NotificationCenter:
             out.append({"id": f"R06:work.{item['id']}.{digest}", "at": iso(updated), "module": "R06",
                         "kind": "work.near", "target": {"kind": "work", "id": item["id"]},
                         "title_ru": _text(f"{where_ru}: {ru}"), "title_kk": _text(f"{where_kk}: {kk}"),
-                        "link": "#nearby/" + item["id"], "demo": bool(item.get("demo"))})
+                        "link": _work_link(near_yard, item), "demo": bool(item.get("demo"))})
         return out
 
     # --- прочитано ----------------------------------------------------------------------------------------------
@@ -484,4 +514,4 @@ def _yard_point(importer, yard_id):
     return None
 
 
-__all__ = ["DEVICE_RE", "KINDS", "LINK_RE", "NEIGHBORS", "NotificationCenter", "normalize"]
+__all__ = ["DEVICE_RE", "EVENT_ID_RE", "KINDS", "LINK_RE", "NEIGHBORS", "NotificationCenter", "event_id", "normalize"]

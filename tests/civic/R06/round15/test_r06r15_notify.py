@@ -242,11 +242,24 @@ def test_work_near_by_district_subscription_and_yard(stack, staff, monkeypatch):
     together = types.SimpleNamespace(yards_of_device=lambda d: ["yard-7"] if d == MAIN_B else [])
     v2.notify = center_with(v2, {"ui.civic_akim.nearby": akim, "engine.civic_geo": yard_geo, "ui.civic_together": together})
     a = [e for e in v2.notify.collect(MAIN_A)["items"] if e["kind"] == "work.near"]
-    assert len(a) == 1 and a[0]["title_ru"] == "В вашем районе: Замена водопровода" and a[0]["link"] == "#nearby/" + wid
+    # по подписке R08 — район и эта запись в «Рядом»; рядом с двором — двор R16 (его вкладка «Работы», IA §2)
+    assert len(a) == 1 and a[0]["title_ru"] == "В вашем районе: Замена водопровода" and a[0]["link"] == f"#nearby/nura/{wid}"
     b = [e for e in v2.notify.collect(MAIN_B)["items"] if e["kind"] == "work.near"]
     assert len(b) == 1 and b[0]["title_ru"].startswith("Рядом с вашим двором") and b[0]["title_kk"].startswith("Аулаңыздың")
+    assert b[0]["link"] == "#yard/yard-7"
     c = [e for e in v2.notify.collect("resident-main-cccccccccccc")["items"] if e["kind"] == "work.near"]
     assert c == []                                                         # без двора и подписки — не шумим
+
+
+def test_event_ids_fit_gateway_rule():
+    """POST notifications/read у шлюза R01 проверяет каждый id правилом CIVIC_ID (до 96 знаков, первый — буква/цифра)."""
+    from ui.civic_store.notify import EVENT_ID_RE, event_id, normalize
+    long_id = "yard.news." + "yard-astana-nura-0012." * 5 + "2026-10-15T10:00:00"
+    a = normalize({"id": long_id, "at": "2026-10-11T08:00:00+05:00", "kind": "yard.news", "title_ru": "Новость двора"}, "R16")
+    b = normalize({"id": long_id, "at": "2026-10-11T08:00:00+05:00", "kind": "yard.news", "title_ru": "Новость двора"}, "R16")
+    assert EVENT_ID_RE.match(a["id"]) and len(a["id"]) <= 96 and a["id"] == b["id"]          # тот же id при каждом запросе
+    assert a["id"].startswith("R16:yard.news.") and event_id("R16", long_id + "x") != a["id"]
+    assert event_id("R09", "B-0001.verified.20261011T2303") == "R09:B-0001.verified.20261011T2303"   # короткий — как есть
 
 
 # --- функции для шлюза R01 -------------------------------------------------------------------------------------

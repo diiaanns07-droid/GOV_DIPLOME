@@ -279,17 +279,30 @@
     if (typeof openHook === "function") { openHook(link); return; }
     var S = root.BirgeShell;
     if (S && typeof S.openLink === "function") { S.openLink(link); return; }
-    var m = /^#([a-z][a-z0-9-]*)(?:[\/=](.*))?$/.exec(link);
+    var m = /^#([a-z][a-z0-9-]*)(?:([\/=])(.*))?$/.exec(link);
     if (!m) return;
-    var section = m[1], path = m[2] || "";
-    // Оболочка FINAL-4 знает только «#раздел»: открываем раздел и сообщаем модулю, что показать (событие birge:open);
-    // «#incident=…», «#target=…» и прочие адреса карты понимает сама карта — их ставим как есть.
-    if (S && typeof S.setSection === "function" && /^[a-z][a-z0-9-]*$/.test(section) && link.charAt(section.length + 1) !== "=") {
-      try { S.setSection(section); } catch (e) { location.hash = link; }
+    var section = m[1], sep = m[2] || "", path = m[3] || "";
+    // Оболочка раунда 15 (IA_ROUND15 §7.3, у неё есть BirgeShell.path) сама разбирает «#раздел/путь» и передаёт путь
+    // модулю (opts.path / handle.setPath); «#mine/event=…» (R09), «#incident=…» (R17) и адреса карты понимают их модули
+    // по hashchange. Значит, достаточно поставить адрес.
+    if (!S || "path" in S || sep === "=" || section === "mine" || typeof S.setSection !== "function") {
+      setHash(link);
+      return;
+    }
+    // Оболочка FINAL-4 знает только «#раздел»: открываем раздел и сообщаем модулю, что показать (событие birge:open).
+    try { S.setSection(section); } catch (e) { setHash(link); return; }
+    if (path && (section === "yard" || section === "together") && root.BirgeTogether && typeof root.BirgeTogether.open === "function") {
+      root.BirgeTogether.open(section === "yard" || /^(yard|cell)-/.test(path) ? "yard" : "initiative", path);
+    }
+    doc.dispatchEvent(new CustomEvent("birge:open", { detail: { section: section, path: path, link: link } }));
+  }
+  // Тот же адрес ещё раз (житель второй раз нажал то же уведомление) — hashchange сам не придёт: шлём его.
+  function setHash(link) {
+    if (location.hash === link) {
+      try { root.dispatchEvent(new HashChangeEvent("hashchange")); } catch (e) { /* старый браузер: адрес уже стоит */ }
     } else {
       location.hash = link;
     }
-    doc.dispatchEvent(new CustomEvent("birge:open", { detail: { section: section, path: path, link: link } }));
   }
 
   // ------------------------------------------------------------------ лента (панель и экран)

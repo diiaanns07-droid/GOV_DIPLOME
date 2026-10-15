@@ -1,7 +1,7 @@
 // R06 раунд 15 в браузере: «Работы и отключения» v2 (служба, вид, участок улицы по карте R12), «Проекты и идеи» без
 // входа и с картинками по виду, лента уведомлений «Что нового для меня».
 //
-//   NODE_PATH="$(npm root -g)" PYTHON=python3 node tests/civic/R06/round15/browser_r15.cjs [дерево] [папка-кадров] [--only works,ideas,notify]
+//   NODE_PATH="$(npm root -g)" PYTHON=python3 node tests/civic/R06/round15/browser_r15.cjs [дерево] [папка-кадров] [--only works,ideas,notify,together]
 //
 // Сервер — app.py дерева с CIVIC_DEMO=1 на временной базе (как run-city.bat) + сотрудник для проверки; на каждую часть —
 // свежий сервер. В облаке подложка OpenFreeMap не грузится: карта рисует упрощённый фон — это нормально.
@@ -86,8 +86,12 @@ async function waitMap(page) {
 async function worksPart(browser) {
   const { srv, base } = await fresh();
   try {
-    for (const [width, lang] of [[1366, "ru"], [1366, "kk"], [375, "ru"]]) {
+    // Своё название у каждого прогона с участком: сервер один, записи копятся.
+    const TITLES = { "1366-ru": "Замена водопровода", "1366-kk": "Су құбырын ауыстыру", "1024-ru": "Ремонт водопровода",
+      "1024-kk": "Су құбырын жөндеу" };
+    for (const [width, lang] of [[1366, "ru"], [1366, "kk"], [1024, "ru"], [1024, "kk"], [375, "ru"], [375, "kk"]]) {
       const tag = `works-${width}-${lang}`;
+      const mine = TITLES[`${width}-${lang}`];
       const page = await newPage(browser, width, lang, "akimat");
       await page.goto(base + "/", { waitUntil: "domcontentloaded" });
       await login(page);
@@ -110,9 +114,9 @@ async function worksPart(browser) {
       const svc = await page.$eval("#rw-service", (e) => e.value);
       check(`${tag}: раскопка → служба по умолчанию «Водоканал»`, svc === "water", svc);
       await shot(page, `${tag}-form`);
-      if (width === 375) { await page.close(); continue; }
+      if (!mine) { await page.close(); continue; }
       // Участок по карте: два нажатия на улицу Ильяса Омарова (Нура) → линия R12 → «Готово».
-      await page.fill("#rw-title", lang === "kk" ? "Су құбырын ауыстыру" : "Замена водопровода");
+      await page.fill("#rw-title", mine);
       await page.fill("#rw-start", "2026-11-02");
       await page.fill("#rw-planned_end", "2026-11-20");
       for (const k of ["problem", "reason", "result", "inconvenience"]) await page.fill(`#rw-why-${k}`, "Тест " + k);
@@ -147,7 +151,6 @@ async function worksPart(browser) {
         const r = await fetch("/api/civic/v2/works?district=nura", { headers: { "X-CSRF-Token": tok } });
         return r.json();
       });
-      const mine = lang === "kk" ? "Су құбырын ауыстыру" : "Замена водопровода";
       const items = (saved.items || []).filter((x) => x.kind === "dig" && x.segments && x.segments.length &&
         (x.title_ru === mine || x.title_kk === mine));
       check(`${tag}: сервер сохранил участок рёбрами OSM`, items.length === 1 && items[0].segments.every((e) => /^osm-w\d+-\d+$/.test(e)),
@@ -170,7 +173,7 @@ async function worksPart(browser) {
 async function ideasPart(browser) {
   const { srv, base } = await fresh();
   try {
-    for (const [width, lang] of [[1366, "ru"], [1366, "kk"], [375, "ru"], [375, "kk"]]) {
+    for (const [width, lang] of [[1366, "ru"], [1366, "kk"], [1024, "ru"], [1024, "kk"], [375, "ru"], [375, "kk"]]) {
       const tag = `ideas-${width}-${lang}`;
       // 1. Житель: идеи с иллюстрациями по виду, без серой лампочки.
       const page = await newPage(browser, width, lang, "resident");
@@ -290,9 +293,11 @@ async function notifyPart(browser) {
     check("уведомления API: ссылки — только внутренние адреса", (feed.items || []).every((e) => e.link === null || /^#[a-z]/.test(e.link)));
     check("уведомления API: есть непрочитанные", feed.unread >= 3, feed.unread);
 
-    for (const lang of ["ru", "kk"]) {
-      const tag = `notify-1366-${lang}`;
-      const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+    // Ноутбук 1366 и 1024: колокольчик в капсуле справа. Последний прогон (1366 ru) открывает уведомление и «Прочитать все».
+    for (const [width, lang] of [[1366, "kk"], [1024, "ru"], [1024, "kk"], [1366, "ru"]]) {
+      const tag = `notify-${width}-${lang}`;
+      const flow = width === 1366 && lang === "ru";
+      const ctx = await browser.newContext({ viewport: { width, height: 768 }, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
       await ctx.addInitScript(([l, main, ideas]) => {
         try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l);
           localStorage.setItem("birge.device", main); localStorage.setItem("birge.device_id", ideas); } catch (e) {}
@@ -317,6 +322,7 @@ async function notifyPart(browser) {
       check(`${tag}: кнопка-колокольчик ≥ 44 px`, size[0] >= 44 && size[1] >= 44, size);
       await page.click(bellSel);
       await page.waitForSelector(".bk-notify .bk-feed__item", { timeout: 10000 });
+      await sleep(400);   // появление панели (200 мс) закончилось — кадр без полупрозрачности
       const panel = await page.evaluate(() => {
         const p = document.querySelector(".bk-notify"), r = p.getBoundingClientRect();
         return { w: Math.round(r.width), groups: [...p.querySelectorAll(".bk-feed__group")].map((g) => g.textContent),
@@ -333,7 +339,7 @@ async function notifyPart(browser) {
       await page.keyboard.press("Escape");
       const closed = await page.evaluate((sel) => !document.querySelector(".bk-notify") && document.activeElement === document.querySelector(sel), bellSel);
       check(`${tag}: Esc закрывает панель, фокус — на колокольчике`, closed);
-      if (lang === "ru") {
+      if (flow) {
         // Нажатие на уведомление об идее открывает её карточку в «Идеях» и отмечает прочитанным.
         await page.click(bellSel);
         await page.waitForSelector(".bk-notify .bk-feed__item");
@@ -391,12 +397,93 @@ async function notifyPart(browser) {
   }
 }
 
+// ------------------------------------------------------------------------------------------------ идея → инициатива (R16)
+// Нужен модуль R16 ui/civic_together в дереве (neighbors_tree.sh или сборка R01 с R16), иначе — NOT_RUN. Экран R16 в
+// дереве может не быть подключён: у жителя — заглушка BirgeTogether {open, mount}, проверяется вызов open("initiative", id).
+async function togetherPart(browser) {
+  if (!fs.existsSync(path.join(ROOT, "ui", "civic_together"))) {
+    console.log("NOT_RUN идея → инициатива: в дереве нет модуля R16 ui/civic_together");
+    return;
+  }
+  const { srv, base } = await fresh();
+  try {
+    let made = null;
+    for (const [width, lang] of [[1366, "ru"], [375, "kk"]]) {
+      const tag = `together-${width}-${lang}`;
+      const page = await newPage(browser, width, lang, "akimat");
+      await page.goto(base + "/", { waitUntil: "domcontentloaded" });
+      await login(page);
+      await page.goto(base + "/#map", { waitUntil: "domcontentloaded" });
+      await page.waitForFunction(() => document.body.dataset.birgeSection === "map", null, { timeout: 10000 }).catch(() => {});
+      await page.goto(base + "/#projects", { waitUntil: "domcontentloaded" });
+      await page.waitForSelector(".ri-pc[data-idea-status=voting]", { timeout: 20000 });
+      const id = made || await page.$eval(".ri-pc[data-idea-status=voting]", (e) => e.getAttribute("data-idea"));
+      await page.evaluate((x) => window.BirgeIdeas.open(x), id);
+      if (!made) {
+        const btn = await page.waitForSelector(`[data-pd="${id}"] [data-key=together-make]`, { timeout: 10000 }).then(() => true, () => false);
+        check(`${tag}: у опубликованной идеи — тихая «Сделать инициативой» (R16 в сборке)`, btn);
+        const primary = await page.$$eval(`[data-pd="${id}"] .bk-btn--primary`, (els) => els.length);
+        check(`${tag}: главная кнопка карточки одна`, primary <= 1, primary);
+        await shot(page, `${tag}-staff-make`);
+        await page.click(`[data-pd="${id}"] [data-key=together-make]`);
+        made = id;
+      }
+      const line = await page.waitForSelector(`[data-pd="${id}"] [data-key=together-line]`, { timeout: 10000 }).then(() => true, () => false);
+      check(`${tag}: после — строка «Сделайте вместе» со ссылкой на дело`, line);
+      const href = line ? await page.$eval(`[data-pd="${id}"] [data-key=together-open]`, (e) => e.getAttribute("href")) : "";
+      check(`${tag}: ссылка — #together/<id дела>`, /^#together\/[A-Za-z0-9._:-]+$/.test(href), href);
+      check(`${tag}: кнопки «Сделать инициативой» больше нет`, !(await page.$(`[data-pd="${id}"] [data-key=together-make]`)));
+      await shot(page, `${tag}-staff-done`);
+      check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
+      await page.close();
+    }
+    // Повтор с сервера — то же дело (без второго), жителю — строка и переход в дело R16.
+    const auth = await staffAuth(base);
+    const again = await api(base, "POST", `/api/civic/v2/ideas/${made}/to-initiative`, {}, auth);
+    const first = await api(base, "GET", `/api/civic/v2/ideas`);
+    const item = (first.json.items || []).find((x) => x.id === made) || {};
+    check("идея → инициатива: повтор не создаёт второе дело", again.status === 201 && again.json && again.json.created === false
+      && again.json.initiative && item.initiative && again.json.initiative.id === item.initiative.id, JSON.stringify(again.json).slice(0, 300));
+    for (const lang of ["ru", "kk"]) {
+      const tag = `together-375-resident-${lang}`;
+      const page = await newPage(browser, 375, lang, "resident");
+      await page.addInitScript(() => {
+        window.BirgeTogether = { version: "stub", open: (kind, id) => { window.__opened = [kind, id]; return true; },
+          mount: (el) => { el.textContent = "R16"; return {}; } };
+      });
+      await page.goto(base + "/#ideas/" + made, { waitUntil: "domcontentloaded" });
+      const ok = await page.waitForSelector(`[data-pd="${made}"] [data-key=together-line]`, { timeout: 20000 }).then(() => true, () => false);
+      check(`${tag}: житель видит «Сделайте вместе — поддержим инвентарём»`, ok);
+      const text = ok ? await page.$eval(`[data-pd="${made}"] [data-key=together-line]`, (e) => e.innerText) : "";
+      check(`${tag}: подпись на языке интерфейса`, lang === "kk" ? /Бірге жасаңыз/.test(text) : /Сделайте вместе/.test(text), text);
+      await shot(page, tag);
+      if (ok) {
+        await page.click(`[data-pd="${made}"] [data-key=together-open]`);
+        const opened = await page.evaluate(() => window.__opened || null);
+        check(`${tag}: «Открыть дело» → BirgeTogether.open("initiative", id)`, opened && opened[0] === "initiative" && opened[1] === item.initiative.id, JSON.stringify(opened));
+      }
+      check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
+      await page.close();
+    }
+    // Без экрана R16 (нет BirgeTogether) — у жителя строки нет: нечего открывать.
+    const bare = await newPage(browser, 1366, "ru", "resident");
+    await bare.goto(base + "/#ideas/" + made, { waitUntil: "domcontentloaded" });
+    await bare.waitForSelector(`[data-pd="${made}"]`, { timeout: 20000 }).catch(() => {});
+    const hasLine = !!(await bare.$(`[data-pd="${made}"] [data-key=together-line]`));
+    check("житель без экрана R16: строки «Сделайте вместе» нет", !hasLine || await bare.evaluate(() => !!window.BirgeTogether));
+    await bare.close();
+  } finally {
+    srv.kill();
+  }
+}
+
 (async () => {
   const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
   try {
     if (!ONLY || ONLY.includes("works")) await worksPart(browser);
     if (!ONLY || ONLY.includes("ideas")) await ideasPart(browser);
     if (!ONLY || ONLY.includes("notify")) await notifyPart(browser);
+    if (!ONLY || ONLY.includes("together")) await togetherPart(browser);
   } catch (e) {
     check("прогон без исключений", false, e.stack || e);
   } finally {
