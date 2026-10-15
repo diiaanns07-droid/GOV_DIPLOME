@@ -227,7 +227,10 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
       const ru = await page.evaluate(() => { const r = document.querySelector("#birge-screen:not([hidden])"); return r ? r.innerText : ""; })
         // Границы слова — по буквам Юникода: \b в JS кириллицу не видит.
         .then((t) => (t.match(/(?<!\p{L})(Мой двор|Сделаем вместе|Я приду|Поддержать|Ведомства|Табло|Совместные|Передачи|Календарь работ|Кризис|Проверено жителями|Соседи|Пример)(?!\p{L})/gu) || []));
-      step(s, "ҚАЗ: на экране нет русских подписей раздела", ru.length === 0, { ru: [...new Set(ru)].slice(0, 6) }, owner);
+      // Слово, которое и в казахском словаре R11 такое же («Табло»), — не русское.
+      const kkSame = new Set(Object.values(dict || {}).filter((v) => typeof v === "string"));
+      const ruOnly = [...new Set(ru)].filter((w) => !kkSame.has(w));
+      step(s, "ҚАЗ: на экране нет русских подписей раздела", ruOnly.length === 0, { ru: ruOnly.slice(0, 6) }, owner);
     }
   };
   const visibleText = async (re) => !!(await firstVisible(page.getByText(re)));
