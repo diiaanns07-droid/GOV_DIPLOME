@@ -186,7 +186,17 @@
    "detail": null
   },
   {
+   "name": "выбор обращения района подставил номер записи",
+   "status": "PASS",
+   "detail": "c-demo4eca27874085ec47"
+  },
+  {
    "name": "поручение добавлено",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "у нового поручения видно место обращения",
    "status": "PASS",
    "detail": null
   },

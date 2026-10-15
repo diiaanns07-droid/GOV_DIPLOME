@@ -5,13 +5,14 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "путь R13 в FINAL-4 = поставка 6 раунда 14 (0487f2a6), восстанавливать нечего",
- "code_sha": "acddf5d6b453388f049b7e93450bae92ddef849b",
- "tested_sha": "acddf5d6b453388f049b7e93450bae92ddef849b",
+ "code_sha": "e61c2bfecdfc04de36b7808b505e5f8492ac48cf",
+ "tested_sha": "e61c2bfecdfc04de36b7808b505e5f8492ac48cf",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_forecast/targets.py",
   "research/handoffs/astana/R13/round15/STATUS.md",
   "research/round-15-results/R13/DELIVERY.json",
+  "research/round-15-results/R13/DEMO.md",
   "research/round-15-results/R13/INTEGRATION.txt",
   "research/round-15-results/R13/RUN.txt",
   "research/round-15-results/R13/make_delivery.py",
@@ -86,11 +87,18 @@
   },
   "browser_meetings": {
    "status": "PASS",
-   "passed": 125,
-   "total": 125,
+   "passed": 75,
+   "total": 75,
    "command": "tests/civic/R13/meetings/meetings_browser.cjs --full (BIRGE_URL стенда)",
-   "sha": "1ff8c2daf727e08637d75c96d8e3e210391ef954",
-   "env": "облако: FINAL-4 e91acb69 + патчи R13 для R01 (маршруты, ассеты, лист слева), CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)"
+   "sha": null,
+   "env": "облако: FINAL-4 e91acb69 + патчи R13 для R01 (маршруты, ассеты, лист слева), CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
+   "full_run": {
+    "status": "PASS",
+    "passed": 127,
+    "total": 127,
+    "sha": "2a89f178",
+    "note": "--full (1366/1024/375 × ru/kk, все состояния) на 2a89f178; e61c2bfe отличается только секцией «Скоро» и DEMO.md — на нём быстрый прогон 1366/375 × ru/kk 75/75; кадры screens/ — с полного прогона"
+   }
   },
   "r08_contract_on_r08_branch": {
    "status": "PASS",
@@ -99,6 +107,24 @@
   "seed_world_on_r02_world": {
    "status": "PASS",
    "note": "world_v1.json R02 @ 0c0a8636: 17 записей, повтор 0"
+  },
+  "browser_qa_round14": {
+   "status": "PASS",
+   "passed": 95,
+   "total": 95,
+   "command": "tests/civic/R13/qa/qa_browser.cjs",
+   "sha": "1ff8c2da",
+   "note": "«Вопрос акиму» после embedded и П1; файлы qa с тех пор не менялись"
+  },
+  "r01_gateway_d987a112": {
+   "status": "PASS",
+   "passed": 3,
+   "total": 3,
+   "note": "test_r13_meetings_gateway.py на web_server.py R01 @ d987a112"
+  },
+  "r06_feed_contract": {
+   "status": "PASS",
+   "note": "R06 notify.py @ e41701cf: вызов updates(device, since, db_path, limit), LINK_RE и KINDS принимают события R13"
   }
  },
  "screens": [
