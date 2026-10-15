@@ -1,13 +1,13 @@
 {
  "role": "R04",
  "round": 15,
- "delivery": "D1.7 (для B1 R01, 16 окт 14:00)",
+ "delivery": "D1.8 (для B1 R01, 16 окт 14:00)",
  "branch": "claude/gifted-maxwell-i66wwi",
  "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
  "restored_from": null,
  "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
- "code_sha": "0d4bb1b63e49ec98b512b99201d1664de0c63245",
- "tested_sha": "0d4bb1b63e49ec98b512b99201d1664de0c63245",
+ "code_sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
+ "tested_sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_replies/__init__.py",
@@ -50,10 +50,10 @@
  "tests": {
   "R04_round15_pytest": {
    "status": "PASS",
-   "passed": 108,
+   "passed": 110,
    "failed": 0,
    "cmd": "pytest -q tests/civic/R04/round15",
-   "sha": "0d4bb1b63e49ec98b512b99201d1664de0c63245"
+   "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5"
   },
   "R04_round14_pytest": {
    "status": "PASS",
@@ -89,7 +89,7 @@
     "joint_precision": 1.0,
     "joint_recall": 1.0,
     "joint_f1": 1.0,
-    "runs_logged": 4
+    "runs_logged": 5
    },
    "dev": {
     "n": 114,
@@ -145,17 +145,17 @@
   },
   "R04_all_pytest": {
    "status": "PASS",
-   "passed": 458,
+   "passed": 460,
    "failed": 0,
    "skipped": 1,
    "cmd": "pytest -q tests/civic/R04",
-   "sha": "0d4bb1b63e49ec98b512b99201d1664de0c63245"
+   "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5"
   },
   "neighbours_using_ml_api": {
    "status": "PASS",
    "passed": 143,
    "failed": 0,
-   "sha": "be7dcd1a429cd0b11c5e9a90c8bf9fa9bd53375b",
+   "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
    "files": "tests/civic/R01/test_r01_api_v2.py, tests/civic/R09/test_r09v2_neighbours.py, tests/civic/R15/test_r15_profanity.py, tests/civic/R09/stand/serve_r09.py"
   },
   "neighbours_with_r04_ml_api": {
@@ -165,7 +165,9 @@
     "R17": "275/275",
     "R16": "58/58",
     "R13": "176/176",
-    "R15": "69/69 (test_r15_round15_moderate.py, test_r15_profanity.py — в том числе их новый test_number_written_in_short_groups_is_still_masked)"
+    "R15": "69/69 (test_r15_round15_moderate.py, test_r15_profanity.py — в том числе их новый test_number_written_in_short_groups_is_still_masked)",
+    "R09": "594 passed / 1 skipped (@abb38712, код ed24c452)",
+    "R01_build_tests_R01_R04": "823 passed / 2 skipped (@d282aa18, код ed24c452)"
    },
    "heads": "R17@10cce40a R16@0433fab9 R13@ece97f53 R15@5c07f8f0",
    "sha": "0d4bb1b63e49ec98b512b99201d1664de0c63245",
@@ -182,9 +184,18 @@
   "demo_world_R02": {
    "status": "PASS",
    "world": "R02 world_v1.json schema 1.1 @ 811f6c78 (743 жалобы, 40 совместных)",
-   "route_vs_world_services": "742/743 (единственная разница — жалоба сцены 8: совместное исполнение по сценарию ещё не принято, route_hint мира = water + road, как у R04)",
-   "reply_draft_all_world_records": "743 × ru/kk через хранилище R09 (claude/quirky-ptolemy-k3z2mj @ 97342bdf, seed_world): ошибок 0, длина ≤ 273 (поле 320), p50 0.13 мс",
-   "sha": "0affd9d01611b2ff44539eb106d04fda11827cfa"
+   "route_vs_world_services": "мир 0152ef19: совместных 41/41, лишних «2 служб» 0 из 702, ведущая = служба мира 742/743 (сцена 8 — до «Принять»)",
+   "reply_draft_all_world_records": "743 × ru/kk через хранилище R09 (@abb38712, мир 0152ef19): ошибок 0, длина ≤ 271 (поле 320); повтор службы 0 (было 7), прошедшая дата как срок 0 (было 5; просроченных «новых» 5), с передачей 31 — код ed24c452",
+   "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5"
+  },
+  "stand_http_check_r01_build": {
+   "status": "PASS",
+   "passed": 14,
+   "failed": 0,
+   "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
+   "env": "облако, сборка R01 B0.12 (0121f7bd: R04 0d4bb1b6 + R09 af69e9a5) с CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, демо-база (init, seed-demo, seed-r14-demo), редактор operator; ui/civic_ml_api и ml/civic_replies заменены на ed24c452",
+   "cmd": "python3 -B tests/civic/R04/round15/http_check_r04.py",
+   "note": "на чистой B0.12 (код R04 0d4bb1b6) — тоже 14/14, но черновик B-0642 обещал прошедший срок; сцена 8 в базе стенда — route_hint с объяснением (41 из 41 совместных): «Здесь же шли раскопки: Водоканал, 16 сентября – 7 октября. …»"
   }
  },
  "screens": [],
@@ -231,6 +242,11 @@
    "status": "fixed",
    "sha": "0d4bb1b63e49ec98b512b99201d1664de0c63245",
    "note": "R15 (5c07f8f0, наблюдение, не находка): номер, цифры которого сами растут парами («8 70 71 72 73 74» = 8 707 172 73 74), правило перечня пропускало. Теперь растущий перечень с цифрами номера Казахстана — телефон; tests/civic/R04/round15/test_r04_moderate.py (3 новых случая)."
+  },
+  "stand_B012_drafts": {
+   "status": "fixed",
+   "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
+   "note": "Найдено R04 на стенде B0.12: просроченная «новая» жалоба — черновик обещал прошедший срок; после передачи служба повторялась дважды; без service ведущей была служба по таблице, а не куда передали; «…, 0 м» в объяснении сцены 8."
   }
  }
 }
