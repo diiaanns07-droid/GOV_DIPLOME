@@ -556,7 +556,13 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
       q = await offered();
       step("1", "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)", q, { under: pt.under });
       if (!q && pt.near) { await tap(page, pt.near.x, pt.near.y); q = await offered(); }  // обход для демо: нажать рядом
-    } else if (pt) { await tap(page, pt.x, pt.y); q = await offered(); }
+    } else if (pt) {
+      // Значка над остановкой в этот момент нет (раскладка значков зависит от данных и масштаба) — проверку перехвата
+      // нажатия честно пропускаем с причиной, а место выбираем нажатием прямо по карте.
+      add(`UI ${tag}`, "1", "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)", "NOT_RUN",
+        "значка над остановкой в этот момент нет — нажатие прямо по карте");
+      await tap(page, pt.x, pt.y); q = await offered();
+    }
     step("1", `после нажатия на карту в форме предложена остановка «${st.name}»`, q, { point: pt, names }, await shot("1-target"));
     if (q) picked = await clickText(form, nameRe, { wait: 1500 });
     else {
