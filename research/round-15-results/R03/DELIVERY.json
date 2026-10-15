@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "c7bcf2746857bf7b623a73997c222a3fc3f99554",
- "tested_sha": "c7bcf2746857bf7b623a73997c222a3fc3f99554",
+ "code_sha": "5d33bdc9fe839b5c8b509f220ed1d444c1878cab",
+ "tested_sha": "5d33bdc9fe839b5c8b509f220ed1d444c1878cab",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -81,7 +81,7 @@
   ],
   "screen": "window.BirgeAnalyst.mount(root, {api, apiBase, lang, openTarget, openSection, titleTag}); сам вызывает BirgeShell.registerScreen({id:'analyst', modes:['akimat']})",
   "i18n_for_R11": "research/round-15-results/R03/i18n_analyst.json (56 ключей analyst.* ru/kk)",
-  "menu_for_R11": "«Ещё» акимата уже 4 пункта — раздел доступен по #analyst и Ctrl+K; варианты места — INTEGRATION.txt §3",
+  "menu_for_R11": "Решено R11 (IA_ROUND15 v1.1): акимат → «Ещё» → «Инструменты» → «Спросить Birge» (#analyst, SCREENS.analyst, i-sparkle); palette: BirgeAnalyst.ask(text)",
   "verified_on": "git worktree этой ветки + patch, стенд COMMON (init, seed-demo, seed-r14-demo, create-editor), Chromium: 401/200/400, #analyst → ответ → «Показать на карте» → карточка R07 с тем же числом; Ctrl+K → вопрос"
  },
  "tests": {
@@ -225,6 +225,6 @@
   "applied": "пустое состояние и ошибки — значок R11 48 px + текст + одна кнопка; иллюстраций ill-* нет; декоративных картинок нет"
  },
  "review": {
-  "R11_round1": "применено: patches/R03_dictionary_terms.patch (R11) + R03-3, R03-4, R03-6 (по П1), R03-7; R03-8 — после адреса #раздел/путь у R01"
+  "R11_round1": "применено: patches/R03_dictionary_terms.patch (R11) + R03-3, R03-4, R03-6 (по П1), R03-7; карточка — ui-kit .bk-answer (IA §5.6), «Спросить» — главная кнопка; R03-8 — после адреса #раздел/путь у R01"
  }
 }
