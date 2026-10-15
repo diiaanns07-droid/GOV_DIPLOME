@@ -111,3 +111,33 @@ def r08_lookup():
         return service_for
     except Exception:  # noqa: BLE001
         return None
+
+
+def pickups(db_path: str | None, district: str | None = None) -> list[dict]:
+    """Задачи оператору вывоза после дел жителей, которые поддержал акимат (IDEA §2A: «задача оператору вывоза — R17»).
+
+    Источник — R16 ui.civic_together.pickups(district, db_path) → [{initiative_id, service, title, point, district,
+    target, starts_at, ends_at, note, supported_at, demo}] — только публичное (без жителей и устройств). Нет R16 — [].
+    """
+    try:
+        from ui.civic_together import pickups as r16_pickups  # type: ignore
+    except Exception:  # noqa: BLE001 — R16 нет в сборке
+        return []
+    try:
+        rows = r16_pickups(district=district, db_path=db_path)
+    except TypeError:
+        try:
+            rows = r16_pickups(district)
+        except Exception:  # noqa: BLE001
+            LOGGER.info("agencies: R16 pickups не прочитались", exc_info=True)
+            return []
+    except Exception:  # noqa: BLE001
+        LOGGER.info("agencies: R16 pickups не прочитались", exc_info=True)
+        return []
+    out = []
+    for row in rows or []:
+        if not isinstance(row, dict) or not isinstance(row.get("service"), str):
+            continue
+        out.append({k: row.get(k) for k in ("initiative_id", "service", "title", "district", "target", "starts_at",
+                                              "ends_at", "note", "demo")})
+    return out

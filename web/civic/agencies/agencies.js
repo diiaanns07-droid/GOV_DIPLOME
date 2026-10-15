@@ -51,10 +51,17 @@
       "agencies.source.r09": "Числа — из «Обращений»",
       "agencies.updated": "Обновлено {time}",
       "agencies.kpi.open": "открыто",
-      "agencies.kpi.overdue": "просрочено",
+      "agencies.kpi.overdue": "ответ просрочен",
       "agencies.kpi.joint": "совместных",
       "agencies.kpi.handoffs": "передач",
       "agencies.kpi.verified": "проверено жителями",
+      "agencies.kpi.overdue_answer": "ответ просрочен",
+      "agencies.kpi.overdue_fix": "не исправлено в срок",
+      "agencies.col.fix": "Срок испр.",
+      "agencies.col.fix_hint": "Не исправлено в срок — норматив «Картины дня» (подано → исправлено)",
+      "agencies.row.label_v2": "{name}: открыто {open}, ответ просрочен {overdue}, не исправлено в срок {fix}",
+      "agencies.part.todo": "ждёт",
+      "agencies.sort.fix": "по сроку исправления",
       "agencies.col.service": "Служба",
       "agencies.col.open": "Открыто",
       "agencies.col.deadline": "Срок ответа",
@@ -72,7 +79,7 @@
       "agencies.overdue_n": "{n} просроч.",
       "agencies.total": "Всего",
       "agencies.sort": "Сортировка",
-      "agencies.sort.overdue": "по просрочке",
+      "agencies.sort.overdue": "по просроченному ответу",
       "agencies.sort.open": "по открытым",
       "agencies.sort.answer": "по времени ответа",
       "agencies.sort.verified": "по доле проверенных",
@@ -81,11 +88,14 @@
       "agencies.deadline.today": "срок сегодня",
       "agencies.deadline.ok": "в срок",
       "agencies.deadline.answered": "ответ дан",
-      "agencies.row.label": "{name}: открыто {open}, просрочено {overdue}",
+      "agencies.row.label": "{name}: открыто {open}, ответ просрочен {overdue}",
       "agencies.detail.title": "Открытые обращения: {name}",
       "agencies.detail.empty": "Открытых обращений нет",
       "agencies.detail.inbox": "Открыть в «Обращениях»",
       "agencies.detail.more": "и ещё {n}",
+      "agencies.pickups.title": "Вывоз после дел жителей",
+      "agencies.pickups.hint": "Акимат поддержал дела жителей — после них нужен вывоз: {n}",
+      "agencies.pickups.when": "{date}, с {time}",
       "agencies.joint.title": "Совместные обращения",
       "agencies.joint.hint": "Одно обращение — несколько служб, у каждой своя часть. Срок ответа жителю общий.",
       "agencies.joint.empty": "Совместных обращений пока нет",
@@ -136,14 +146,14 @@
       "crisis.update.internal": "Только штабу",
       "crisis.update.ru": "Текст на русском",
       "crisis.update.kk": "Текст на казахском",
-      "crisis.update.send": "Отправить обновление жителям",
+      "crisis.update.send": "Отправить жителям",
       "crisis.update.save_note": "Сохранить заметку",
       "crisis.update.sent": "Обновление отправлено жителям зоны",
       "crisis.update.noted": "Заметка сохранена",
       "crisis.update.template": "Подставить текст шаблона",
       "crisis.update.empty": "Обновлений пока нет",
       "crisis.show_map": "Показать на карте",
-      "crisis.close": "Закрыть с итогом",
+      "crisis.close": "Закрыть кризис",
       "crisis.close.title": "Итог для жителей",
       "crisis.close.ru": "Итог на русском",
       "crisis.close.kk": "Итог на казахском",
@@ -152,7 +162,7 @@
       "crisis.result": "Итог",
       "crisis.none": "Сейчас кризисов нет",
       "crisis.none_text": "Когда случится буран, авария или прорыв, откройте штаб: зона, задачи служб, обновления жителям.",
-      "crisis.new": "Открыть кризисный штаб",
+      "crisis.new": "Новый кризис",
       "crisis.new.title": "Новый кризисный штаб",
       "crisis.new.kind": "Что случилось",
       "crisis.new.zone": "Зона",
@@ -193,7 +203,7 @@
       "agencies.tab.board": "Табло",
       "agencies.tab.joint": "Бірлескен",
       "agencies.tab.handoffs": "Жіберулер",
-      "agencies.tab.crisis": "Жедел штаб",
+      "agencies.tab.crisis": "Төтенше жағдай",
       "agencies.tab.calendar": "Жұмыстар күнтізбесі",
       "agencies.calendar.add": "Жұмыс қосу",
       "agencies.calendar.missing": "Жұмыстар күнтізбесі бұл жинақта әлі қосылмаған",
@@ -207,14 +217,21 @@
       "agencies.period.days": "{n} күн",
       "agencies.district.all": "Барлық аудандар",
       "agencies.refresh": "Жаңарту",
-      "agencies.demo_note": "Мысал: демо-әлемге дейінгі синтетикалық өтініштер",
+      "agencies.demo_note": "Үлгі: демо-әлемге дейінгі синтетикалық өтініштер",
       "agencies.source.r09": "Сандар — «Өтініштерден»",
       "agencies.updated": "Жаңартылды {time}",
       "agencies.kpi.open": "ашық",
-      "agencies.kpi.overdue": "мерзімі өткен",
+      "agencies.kpi.overdue": "жауап мерзімі өтті",
       "agencies.kpi.joint": "бірлескен",
       "agencies.kpi.handoffs": "жіберу",
       "agencies.kpi.verified": "тұрғындар тексерді",
+      "agencies.kpi.overdue_answer": "жауап мерзімі өтті",
+      "agencies.kpi.overdue_fix": "мерзімінде түзетілмеген",
+      "agencies.col.fix": "Түзету мерзімі",
+      "agencies.col.fix_hint": "Мерзімінде түзетілмеген — «Күн суретінің» нормативі (берілді → түзетілді)",
+      "agencies.row.label_v2": "{name}: ашық {open}, жауап мерзімі өтті {overdue}, мерзімінде түзетілмеген {fix}",
+      "agencies.part.todo": "күтуде",
+      "agencies.sort.fix": "түзету мерзімі бойынша",
       "agencies.col.service": "Қызмет",
       "agencies.col.open": "Ашық",
       "agencies.col.deadline": "Жауап мерзімі",
@@ -232,7 +249,7 @@
       "agencies.overdue_n": "{n} мерзімі өткен",
       "agencies.total": "Барлығы",
       "agencies.sort": "Сұрыптау",
-      "agencies.sort.overdue": "мерзімі өткені бойынша",
+      "agencies.sort.overdue": "жауап мерзімі өткені бойынша",
       "agencies.sort.open": "ашығы бойынша",
       "agencies.sort.answer": "жауап уақыты бойынша",
       "agencies.sort.verified": "тексерілген үлесі бойынша",
@@ -241,11 +258,14 @@
       "agencies.deadline.today": "мерзімі бүгін",
       "agencies.deadline.ok": "мерзімінде",
       "agencies.deadline.answered": "жауап берілді",
-      "agencies.row.label": "{name}: ашық {open}, мерзімі өткен {overdue}",
+      "agencies.row.label": "{name}: ашық {open}, жауап мерзімі өтті {overdue}",
       "agencies.detail.title": "Ашық өтініштер: {name}",
       "agencies.detail.empty": "Ашық өтініш жоқ",
       "agencies.detail.inbox": "«Өтініштерде» ашу",
       "agencies.detail.more": "тағы {n}",
+      "agencies.pickups.title": "Тұрғындар ісінен кейін қоқыс шығару",
+      "agencies.pickups.hint": "Әкімдік тұрғындардың ісін қолдады — кейін қоқыс шығару керек: {n}",
+      "agencies.pickups.when": "{date}, {time} бастап",
       "agencies.joint.title": "Бірлескен өтініштер",
       "agencies.joint.hint": "Бір өтініш — бірнеше қызмет, әрқайсысының өз бөлігі бар. Тұрғынға жауап мерзімі ортақ.",
       "agencies.joint.empty": "Әзірге бірлескен өтініш жоқ",
@@ -296,14 +316,14 @@
       "crisis.update.internal": "Тек штабқа",
       "crisis.update.ru": "Орысша мәтін",
       "crisis.update.kk": "Қазақша мәтін",
-      "crisis.update.send": "Тұрғындарға жаңарту жіберу",
+      "crisis.update.send": "Тұрғындарға жіберу",
       "crisis.update.save_note": "Жазбаны сақтау",
       "crisis.update.sent": "Жаңарту аймақ тұрғындарына жіберілді",
       "crisis.update.noted": "Жазба сақталды",
       "crisis.update.template": "Үлгі мәтінін қою",
       "crisis.update.empty": "Әзірге жаңарту жоқ",
       "crisis.show_map": "Картадан көрсету",
-      "crisis.close": "Қорытындымен жабу",
+      "crisis.close": "Төтенше жағдайды жабу",
       "crisis.close.title": "Тұрғындарға қорытынды",
       "crisis.close.ru": "Орысша қорытынды",
       "crisis.close.kk": "Қазақша қорытынды",
@@ -312,7 +332,7 @@
       "crisis.result": "Қорытынды",
       "crisis.none": "Қазір төтенше жағдай жоқ",
       "crisis.none_text": "Боран, апат немесе құбыр жарылса, штабты ашыңыз: аймақ, қызметтердің тапсырмалары, тұрғындарға жаңартулар.",
-      "crisis.new": "Жедел штабты ашу",
+      "crisis.new": "Жаңа төтенше жағдай",
       "crisis.new.title": "Жаңа жедел штаб",
       "crisis.new.kind": "Не болды",
       "crisis.new.zone": "Аймақ",
@@ -340,7 +360,7 @@
       "crisis.remove": "Алып тастау",
       "agencies.returned_pill": "тұрғындар қайтарды",
       "agencies.widen": "Барлық аудандар бойынша 90 күнді көрсету",
-      "common.demo": "Мысал",
+      "common.demo": "Үлгі",
       "common.state.loading": "Жүктеліп жатыр…",
       "common.state.error_title": "Жүктеу мүмкін болмады",
       "common.state.network_title": "Сервермен байланыс жоқ",
@@ -572,6 +592,16 @@
   // Путь раздела оболочки (IA_ROUND15 §7.3, #agencies/<путь>): board | joint | handoffs | calendar | crisis |
   // crisis/<id кризиса> | crisis/new[/<шаблон>[/<район>]]. Неизвестный путь — null (вкладка из памяти).
   function parsePath(path) {
+    // Прежний вид ссылки (R08 «Картина дня»): crisis=<id> и crisis=new&template=<шаблон>&district=<район>.
+    var prev = /^crisis=([^&/]+)(.*)$/.exec(String(path || ""));
+    if (prev) {
+      var params = {};
+      (prev[2] || "").replace(/[&?]([a-z_]+)=([^&]*)/g, function (w, k, v) { params[k] = decodeURIComponent(v); });
+      if (prev[1] === "new") return { tab: "crisis", create: { template: params.template || null,
+        district: DISTRICTS.indexOf(params.district) >= 0 ? params.district : null } };
+      var prevId = decodeURIComponent(prev[1]);
+      return INC_RE.test(prevId) ? { tab: "crisis", incident: prevId } : { tab: "crisis" };
+    }
     var parts = String(path || "").split("/").filter(Boolean);
     if (TABS.indexOf(parts[0]) < 0) return null;
     if (parts[0] === "calendar" && !calendarModule()) return { tab: "board" };
@@ -804,6 +834,7 @@
       returned: function (r) { return [r.returned, r.open]; },
       handoffs: function (r) { return [r.handoffs_in + r.handoffs_out, r.handoffs_in]; },
       joint: function (r) { return [r.joint, r.open]; },
+      fix: function (r) { return [r.overdue_fix || 0, r.open]; },
     };
     function sortedRows(rows) {
       var key = S.sort.key, dir = S.sort.dir;
@@ -824,16 +855,22 @@
       var totals = data.totals || {};
       var kpis = h("div", { class: "ag-kpis" }, [
         kpi(totals.open, tr("agencies.kpi.open")),
-        kpi(totals.overdue, tr("agencies.kpi.overdue"), totals.overdue > 0),
+        // Два разных «просрочено» (R02 INTEGRATION §3, R10 B-104): срок первого ответа R09 и срок исправления R08.
+        kpi(totals.overdue, tr("agencies.kpi.overdue_answer"), totals.overdue > 0),
+        totals.overdue_fix == null ? null : kpi(totals.overdue_fix, tr("agencies.kpi.overdue_fix"), totals.overdue_fix > 0),
         kpi(totals.joint, tr("agencies.kpi.joint")),
-        // Передачи — во вкладке «Передачи» и в столбце табло: четыре плитки шире, казахские подписи не режутся.
-        kpi(totals.verified_share == null ? "—" : pct(totals.verified_share), tr("agencies.kpi.verified")),
+        // Передачи и «проверено жителями» — в столбцах табло (по службам) и во вкладке «Передачи»: четыре плитки шире,
+        // подписи двух «просрочено» и казахские слова не режутся (трёхзначные числа демо-мира на 1366).
+        totals.overdue_fix == null ? kpi(totals.verified_share == null ? "—" : pct(totals.verified_share), tr("agencies.kpi.verified")) : null,
       ]);
       var table = h("div", { class: "ag-table", role: "table", "aria-label": tr("agencies.tab.board") });
+      var hasFix = totals.overdue_fix != null;
       var cols = [["name", "agencies.col.service"], ["open", "agencies.col.open"], ["overdue", "agencies.col.deadline"],
+        hasFix ? ["fix", "agencies.col.fix", "agencies.col.fix_hint"] : null,
         ["answer", "agencies.col.answer", "agencies.col.answer_hint"], ["verified", "agencies.col.verified", "agencies.col.verified_hint"],
         ["returned", "agencies.col.returned", "agencies.col.returned_hint"], ["handoffs", "agencies.col.handoffs", "agencies.col.handoffs_hint"],
-        ["joint", "agencies.col.joint", "agencies.col.joint_hint"]];
+        ["joint", "agencies.col.joint", "agencies.col.joint_hint"]].filter(Boolean);
+      if (hasFix) table.classList.add("ag-table--fix");
       var head = h("div", { class: "ag-thead", role: "row" }, cols.map(function (c) {
         var active = S.sort.key === c[0];
         var b = h("button", { type: "button", class: "ag-th", role: "columnheader", "data-sort": c[0], title: c[2] ? tr(c[2]) : null,
@@ -853,7 +890,7 @@
         if (S.open === r.service) table.appendChild(detailBox(r));
       });
       var sortbar = h("label", { class: "ag-sortbar" }, [tr("agencies.sort")]);
-      var sortSelect = h("select", { class: "ag-select" }, ["overdue", "open", "answer", "verified", "name"].map(function (k) {
+      var sortSelect = h("select", { class: "ag-select" }, ["overdue", hasFix ? "fix" : null, "open", "answer", "verified", "name"].filter(Boolean).map(function (k) {
         return h("option", { value: k, text: tr("agencies.sort." + k) });
       }));
       sortSelect.value = S.sort.key in SORTS || S.sort.key === "name" ? S.sort.key : "overdue";
@@ -902,12 +939,20 @@
     function boardRow(r, maxOpen) {
       var name = serviceName(r.service);
       var quiet = !r.open && !r.received;
-      var row = h("button", { type: "button", class: "ag-row" + (quiet ? " ag-row--quiet" : ""), role: "row", "data-service": r.service,
+      var hasFix = r.overdue_fix != null;
+      // Строка — role="row" с фокусом (Enter/пробел раскрывают), а не <button role="row">: у кнопки не может быть
+      // роли строки (ARIA in HTML). Высота 26 px на компьютере — плотная таблица (20 служб на экране 1366, R10 B-110:
+      // «строки не трогать»); на телефоне строка в две линии, выше 44 px.
+      var row = h("div", { class: "ag-row" + (quiet ? " ag-row--quiet" : ""), role: "row", tabindex: "0", "data-service": r.service,
         "aria-expanded": String(S.open === r.service),
-        "aria-label": tr("agencies.row.label", { name: name, open: r.open, overdue: r.overdue }) }, [
-        h("span", { class: "ag-svc", role: "cell" }, [serviceBadge(r.service), h("span", { class: "ag-svc__name", text: name })]),
+        "aria-label": hasFix ? tr("agencies.row.label_v2", { name: name, open: r.open, overdue: r.overdue, fix: r.overdue_fix })
+          : tr("agencies.row.label", { name: name, open: r.open, overdue: r.overdue }) }, [
+        h("span", { class: "ag-svc", role: "cell" }, [serviceBadge(r.service), h("span", { class: "ag-svc__name", text: name }),
+          pickupsMark(r.service)]),
         h("span", { class: "ag-num" + (r.open ? "" : " ag-num--zero"), role: "cell", "data-col": "open", text: num(r.open) }),
         deadlineBar(r, maxOpen),
+        hasFix ? h("span", { class: "ag-num" + (r.overdue_fix ? " ag-num--alert" : " ag-num--zero"), role: "cell", "data-col": "fix",
+          title: tr("agencies.col.fix_hint"), text: num(r.overdue_fix) }) : null,
         h("span", { class: "ag-num" + (r.median_answer_days == null ? " ag-num--zero" : ""), role: "cell", "data-col": "answer",
           text: r.median_answer_days == null ? "—" : tr("agencies.days_short", { n: r.median_answer_days }) }),
         h("span", { class: "ag-share", role: "cell", "data-col": "verified" }, [
@@ -920,23 +965,35 @@
           h("span", { "data-zero": r.handoffs_out ? null : "", text: "↑" + num(r.handoffs_out) })]),
         h("span", { class: "ag-num" + (r.joint ? "" : " ag-num--zero"), role: "cell", "data-col": "joint", text: num(r.joint) }),
         h("span", { class: "ag-mobile-meta" }, [
-          h("span", { text: tr("agencies.kpi.overdue") + ": " + num(r.overdue) }),
+          h("span", { text: tr("agencies.kpi.overdue_answer") + ": " + num(r.overdue) }),
+          hasFix ? h("span", { text: tr("agencies.kpi.overdue_fix") + ": " + num(r.overdue_fix) }) : null,
           h("span", { text: tr("agencies.col.answer") + ": " + (r.median_answer_days == null ? "—" : tr("agencies.days_short", { n: r.median_answer_days })) }),
           h("span", { text: tr("agencies.col.verified") + ": " + pct(r.verified_share) })]),
       ]);
-      row.addEventListener("click", function () {
+      function toggle() {
         S.open = S.open === r.service ? null : r.service;
         if (S.open && !S.openItems[r.service]) loadServiceItems(r.service);
         render();
         var again = bodyBox.querySelector('[data-service="' + r.service + '"]');
         if (again) again.focus();
+      }
+      row.addEventListener("click", toggle);
+      row.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); toggle(); }
       });
       return row;
+    }
+    // Задачи вывоза после дел жителей, поддержанных акиматом (R16 pickups): сколько — в строке службы, что — в раскрытой.
+    function pickupsMark(service) {
+      var n = ((S.board && S.board.pickups) || {})[service] || 0;
+      if (!n) return null;
+      return h("span", { class: "ag-pill ag-svc__extra", title: tr("agencies.pickups.hint", { n: n }),
+        "aria-label": tr("agencies.pickups.hint", { n: n }) }, [svg("i-calendar"), num(n)]);
     }
     function loadServiceItems(service) {
       S.openItems[service] = { loading: true };
       request("GET", "/agencies/board" + query() + "&service=" + encodeURIComponent(service)).then(function (d) {
-        S.openItems[service] = { items: d.items || [] };
+        S.openItems[service] = { items: d.items || [], pickups: d.pickup_items || [] };
       }, function (err) {
         S.openItems[service] = { error: err || { status: 0 } };
       }).then(function () { if (S.alive) render(); });
@@ -973,6 +1030,7 @@
       }
       if (!st.items.length) {
         box.appendChild(h("p", { class: "ag-note", text: tr("agencies.detail.empty") }));
+        appendPickups(box, st.pickups);
         return box;
       }
       var list = h("ul", { class: "ag-items" });
@@ -989,14 +1047,31 @@
       });
       box.appendChild(list);
       if (st.items.length > 8) box.appendChild(h("p", { class: "ag-note", text: tr("agencies.detail.more", { n: st.items.length - 8 }) }));
+      appendPickups(box, st.pickups);
       return box;
     }
-    // «Обращения» R09 с фильтром по службе: событие для экрана R09 + раздел inbox (подключение — INTEGRATION R17 §4).
+    function appendPickups(box, items) {
+      if (!items || !items.length) return;
+      box.appendChild(h("p", { class: "ag-detail__title ag-detail__sub", text: tr("agencies.pickups.title") }));
+      box.appendChild(h("ul", { class: "ag-items", "data-list": "pickups" }, items.slice(0, 8).map(function (item) {
+        return h("li", { class: "ag-item" }, [
+          svg("i-calendar"),
+          h("span", { class: "ag-item__title", text: [item.title, item.note].filter(Boolean).join(" · ") }),
+          h("span", { class: "ag-item__meta", text: item.starts_at ? tr("agencies.pickups.when", { date: fmtDate(item.starts_at), time: fmtTime(item.starts_at) }) : "" }),
+          item.demo ? demoTag() : null,
+        ]);
+      })));
+    }
+    // «Обращения» R09 одной службы: адрес #inbox/service=<id> (R09 v2.1 читает service= из адреса и ставит чип
+    // «Служба: …»); оболочка без путей разделов (FINAL-4) — раздел inbox + событие (INTEGRATION R17 §4).
     function openInboxFor(service, items) {
       var detail = { service: service, ids: (items || []).map(function (x) { return x.id; }) };
       try { root.sessionStorage.setItem("birge.inbox.filter", JSON.stringify(detail)); } catch (e) { /* без хранилища */ }
-      if (typeof opts.openSection === "function") opts.openSection("inbox");
-      else if (root.BirgeShell) root.BirgeShell.setSection("inbox");
+      var shell = root.BirgeShell;
+      var paths = !!(shell && typeof shell.alertSlot === "function");   // оболочка раунда 15: «#раздел/путь»
+      var path = /^[a-z_]{2,30}$/.test(service || "") && paths ? "service=" + service : "";
+      if (typeof opts.openSection === "function") opts.openSection(path ? "inbox/" + path : "inbox");
+      else if (shell) shell.setSection("inbox", path ? { path: path } : undefined);
       setTimeout(function () { doc.dispatchEvent(new CustomEvent("birge:inbox-filter", { detail: detail })); }, 0);
     }
 
@@ -1525,7 +1600,9 @@
         if (typeof opts.openSection === "function") opts.openSection("works");
         else if (root.BirgeShell) root.BirgeShell.setSection("works");
       } }, [svg("i-plus"), tr("agencies.calendar.add")]);
-      bodyBox.replaceChildren(h("div", { class: "ag-actions ag-actions--end" }, [add]), panel);
+      // R12 в режиме embedded сам рисует главную «Добавить работу» в строке фильтров (.wcal-addmain) — тогда своя
+      // прячется (CSS :has), одна главная кнопка на экран (R10 B-115). Старый R12 без неё — видна эта.
+      bodyBox.replaceChildren(h("div", { class: "ag-actions ag-actions--end", "data-calendar-actions": "" }, [add]), panel);
       try {
         // Клиент R17 вместо клиента оболочки: он сам достаёт CSRF сотрудника из сессии (шлюз R01 требует его и в GET
         // календаря), ошибки — {status, error, message}, как ждёт R12 (err.status).

@@ -12,6 +12,10 @@
   overdue   — из них просроченные по правилу R09 (lifecycle.inbox_tab = "overdue": срок ответа прошёл,
               а ответа нет, или прошла обещанная дата обновления); срок не обнуляется передачей;
   deadline  — те же открытые части по состоянию срока ответа R09: overdue | today | ok | answered;
+  overdue_fix — открытые части, у которых прошёл СРОК ИСПРАВЛЕНИЯ R08 («Картина дня»: ui.civic_akim.deadlines.due —
+              подано → исправлено, рабочие дни РК, у аварийных категорий календарные; демо-норматив R08).
+              В итогах — обращения со статусом new/accepted/in_progress и прошедшим сроком, как kpi.overdue R08.
+              Это ДРУГОЕ число, чем overdue (срок первого ответа R09) — R02 INTEGRATION §3; итог overdue_answer = overdue.
   places    — сколько разных мест (целей) у открытых частей.
 За период (обращения, поданные за последние days дней; передачи — по времени передачи):
   received            — обращений с частью этой службы;
@@ -72,6 +76,27 @@ def _workdays():
         return workdays
     except Exception:  # noqa: BLE001
         return None
+
+
+def _deadlines():
+    """Сроки исправления R08 (ui.civic_akim.deadlines) — нет R08 в сборке: overdue_fix = None (не 0)."""
+    try:
+        from ui.civic_akim import deadlines  # type: ignore
+        return deadlines if callable(getattr(deadlines, "due", None)) else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def fix_overdue(record: dict, now: datetime, deadlines=None) -> bool:
+    """Открытое обращение, срок исправления R08 прошёл (то же правило, что kpi.overdue «Картины дня»)."""
+    deadlines = deadlines or _deadlines()
+    created = parse_iso(record.get("created_at"))
+    if deadlines is None or created is None or record.get("status") not in OPEN_COMPLAINT:
+        return False
+    try:
+        return now > deadlines.due(record.get("category"), created)
+    except Exception:  # noqa: BLE001 — неизвестная категория у R08 считается «Другое»; сбой — не просрочка
+        return False
 
 
 def working_days(start: datetime, end: datetime) -> int:
@@ -236,14 +261,15 @@ def _share(part: int, whole: int) -> float | None:
 def board(records, now: datetime, *, days: int = 30, district: str | None = None, lookup=None) -> dict:
     """Табло всех 20 служб (порядок — справочник CONTRACT §3). См. МЕТОД РАСЧЁТА в шапке файла."""
     since = now - timedelta(days=days)
-    rows = {sid: {"service": sid, "open": 0, "overdue": 0, "deadline": {s: 0 for s in DEADLINE_STATES},
+    fix_rules = _deadlines()
+    rows = {sid: {"service": sid, "open": 0, "overdue": 0, "overdue_fix": 0, "deadline": {s: 0 for s in DEADLINE_STATES},
                   "places": 0, "received": 0, "answered": 0, "median_answer_days": None, "fixed": 0,
                   "verified": 0, "verified_share": None, "returned": 0, "joint": 0,
                   "handoffs_in": 0, "handoffs_out": 0} for sid in profiles.SERVICE_IDS}
     places = {sid: set() for sid in rows}
     answer_days = {sid: [] for sid in rows}
-    totals = {"open": 0, "overdue": 0, "received": 0, "joint": 0, "handoffs": 0, "loops": 0, "fixed": 0,
-              "verified": 0, "returned": 0}
+    totals = {"open": 0, "overdue": 0, "overdue_fix": 0, "received": 0, "joint": 0, "handoffs": 0, "loops": 0,
+              "fixed": 0, "verified": 0, "returned": 0}
     demo_only, any_record = True, False
     for record in _usable(records, district):
         any_record = True
@@ -260,6 +286,7 @@ def board(records, now: datetime, *, days: int = 30, district: str | None = None
         verified = resolution.get("state") == "verified"
         returned = int(resolution.get("reopen_count") or 0) > 0 or resolution.get("state") == "reopened"
         joint = len(parts) >= 2
+        late_fix = fix_overdue(record, now, fix_rules)
         open_any = False
         for part in parts:
             row = rows[part["service"]]
@@ -267,6 +294,7 @@ def board(records, now: datetime, *, days: int = 30, district: str | None = None
                 open_any = True
                 row["open"] += 1
                 places[part["service"]].add(target)
+                row["overdue_fix"] += 1 if late_fix else 0
                 if tab == "overdue":
                     row["overdue"] += 1
                     row["deadline"]["overdue"] += 1
@@ -289,6 +317,7 @@ def board(records, now: datetime, *, days: int = 30, district: str | None = None
                 first = answered_at(record)
                 if first is not None and created is not None and first >= created:
                     answer_days[part["service"]].append(working_days(created, first))
+        totals["overdue_fix"] += 1 if late_fix else 0
         if open_any:
             totals["open"] += 1
             if tab == "overdue":
@@ -317,6 +346,11 @@ def board(records, now: datetime, *, days: int = 30, district: str | None = None
         row["median_answer_days"] = round(float(median(sample)), 1) if sample else None
         row["verified_share"] = _share(row["verified"], row["fixed"])
     totals["verified_share"] = _share(totals["verified"], totals["fixed"])
+    totals["overdue_answer"] = totals["overdue"]   # явное имя для сверки R10 (C2: «Обращения» R09 = табло R17)
+    if fix_rules is None:                          # нет R08 — числа нет, а не «0 просрочено»
+        totals["overdue_fix"] = None
+        for row in rows.values():
+            row["overdue_fix"] = None
     return {"generated_at": iso(now), "days": days, "district": district, "since": iso(since),
             "services": [rows[sid] for sid in profiles.SERVICE_IDS], "totals": totals,
             "demo": bool(any_record and demo_only), "empty": not any_record}

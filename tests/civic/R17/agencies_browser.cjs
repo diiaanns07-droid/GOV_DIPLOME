@@ -65,9 +65,75 @@ async function setup(page, { lang, mode, tab }) {
     if (I) I.setLang(lang);
   }, { lang, mode, tab });
 }
-const noSideScroll = (page) => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1
-  && [...document.querySelectorAll(".ag *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1
-    || e.closest(".bk-tabs, .ag-yards, .ag-scroll")));
+// Прокрутки вбок нет: страница не шире окна, и в экране R17 ничто не вылезает за край — кроме содержимого блоков
+// с собственной прокруткой (вкладки, список дворов, шкала «Календаря работ» R12 .wcal-tl с overflow-x: auto).
+const noSideScroll = (page) => page.evaluate(() => {
+  const clipped = (e) => { for (let n = e.parentElement; n && !n.classList.contains("ag"); n = n.parentElement) {
+    if (/^(auto|scroll)$/.test(getComputedStyle(n).overflowX)) return true; } return false; };   // hidden — не прощаем
+  return document.documentElement.scrollWidth <= innerWidth + 1
+    && [...document.querySelectorAll(".ag *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1
+      || e.closest(".bk-tabs, .ag-yards, .ag-scroll") || clipped(e));
+});
+// Как проверка R10 (tests/e2e/ux_lib.cjs uiScreen): текст мельче 13 px и зоны нажатия < 40 px — внутри экрана R17.
+// Строки табло — role="row" (не кнопки): 26 px на компьютере по замыслу (R10 B-110: «строки не трогать»).
+const uxProbe = (page) => page.evaluate(() => {
+  // Текст только для диктора (.bk-sr-only R11: 1×1 px, clip) человек не видит — не оцениваем (как R10).
+  const srOnly = (e) => { const r = e.getBoundingClientRect(); if (r.width <= 1 || r.height <= 1) return true;
+    for (let n = e; n && n.nodeType === 1; n = n.parentElement) {
+      if (n.classList && (n.classList.contains("bk-sr-only") || n.classList.contains("sr-only"))) return true;
+      const cs = getComputedStyle(n);
+      if (cs.clip === "rect(0px, 0px, 0px, 0px)" || /inset\(50%\)/.test(cs.clipPath || "")) return true;
+    }
+    return false; };
+  const vis = (e) => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && s.opacity !== "0"
+      && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth && !srOnly(e); };
+  const roots = [...document.querySelectorAll(".ag, .ag-banner, .ag-public")];
+  const inside = (e) => roots.some((r) => r.contains(e)) && !e.closest(".wcal, [data-calendar]");
+  const tiny = [];
+  for (const el of document.querySelectorAll(".ag *, .ag-banner *, .ag-public *")) {
+    if (!inside(el) || !vis(el) || el.children.length || !el.textContent.trim() || el.closest("svg")) continue;
+    const fs = parseFloat(getComputedStyle(el).fontSize);
+    if (fs && fs < 13) tiny.push(`${fs}px «${el.textContent.trim().slice(0, 24)}»`);
+  }
+  const small = [...document.querySelectorAll("button, a[href], [role=button], input, select, summary, textarea")]
+    .filter((e) => inside(e) && vis(e))
+    .map((e) => { const box = (/^(checkbox|radio)$/.test(e.type) && e.closest("label")) || e; const r = box.getBoundingClientRect();
+      return { h: Math.round(r.height), w: Math.round(r.width), t: (box.innerText || e.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 24) }; })
+    .filter((t) => t.h < 40 || t.w < 40);
+  // Контраст ≥ 4,5:1 (крупный ≥ 24 px или ≥ 18,66 px полужирный — 3:1), фон — первый непрозрачный слой вверх (как R10).
+  const rgba = (c) => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const v = m[1].split(/[ ,\/]+/).filter(Boolean).map(Number);
+    return [v[0], v[1], v[2], v.length > 3 ? v[3] : 1]; };
+  const lum = (c) => { const f = (x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+    return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+  const over = (top, bot) => { const a = top[3]; return [0, 1, 2].map((i) => top[i] * a + bot[i] * (1 - a)).concat(1); };
+  const bgOf = (e) => {
+    const layers = [];
+    for (let n = e; n && n.nodeType === 1; n = n.parentElement) {
+      const cs = getComputedStyle(n);
+      if (Number(cs.opacity) < 0.99 || (cs.backgroundImage && cs.backgroundImage !== "none")) return null;
+      const c = rgba(cs.backgroundColor);
+      if (c && c[3] > 0) { layers.push(c); if (c[3] >= 0.99) break; }
+      if (n === document.documentElement && (!c || c[3] < 0.99)) layers.push([255, 255, 255, 1]);
+    }
+    if (!layers.length) return null;
+    let col = layers[layers.length - 1]; if (col[3] < 0.99) col = over(col, [255, 255, 255, 1]);
+    for (let i = layers.length - 2; i >= 0; i--) col = over(layers[i], col);
+    return col;
+  };
+  const low = [];
+  for (const el of document.querySelectorAll(".ag *, .ag-banner *, .ag-public *")) {
+    const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+    if (own.length < 2 || !inside(el) || !vis(el) || el.closest("svg, [disabled], [aria-disabled=true]")) continue;
+    const cs = getComputedStyle(el), fg = rgba(cs.color), bg = bgOf(el);
+    if (!fg || !bg) continue;
+    const f = fg[3] < 0.99 ? over(fg, bg) : fg;
+    const L1 = lum(f), L2 = lum(bg), ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+    const fs = parseFloat(cs.fontSize), need = fs >= 24 || (Number(cs.fontWeight) >= 700 && fs >= 18.66) ? 3 : 4.5;
+    if (ratio < need) low.push(`${ratio.toFixed(2)}:1 «${own.slice(0, 24)}»`);
+  }
+  return { tiny: tiny.slice(0, 6), tinyN: tiny.length, small: small.slice(0, 6), smallN: small.length, low: low.slice(0, 6), lowN: low.length };
+});
 const rawKeys = (page) => page.evaluate(() => [...document.querySelectorAll(".ag, .ag-banner, .ag-public")]
   .map((e) => e.innerText).join("\n").match(/\b(agencies|crisis|common|shell)\.[a-z_.]+/g) || []);
 const openAgencies = async (page, base, tab) => {
@@ -116,12 +182,22 @@ const openAgencies = async (page, base, tab) => {
       const page = await newPage(ctx);
       await login(page, base);
       // Шлюз R01 раунда 15: «сотрудник» = сессия + CSRF и для чтения — токен из GET /api/civic/v1/session.
-      const body = await page.evaluate(async () => {
+      // R16 в сборке: сотрудник «Поддержал» дело жителей вывозом мусора (тот же маршрут, что кнопка R16) →
+      // задача оператору вывоза на табло R17.
+      const r16 = (modules.modules || {})["together.initiatives.support"];
+      const body = await page.evaluate(async (withR16) => {
         const sess = await (await fetch("/api/civic/v1/session", { credentials: "same-origin" })).json();
         const d = sess && sess.data ? sess.data : sess;
-        return (await fetch("/api/civic/v2/agencies/board?days=30", { credentials: "same-origin",
-          headers: { "X-CSRF-Token": d.csrf_token || "" } })).json();
-      });
+        const headers = { "X-CSRF-Token": d.csrf_token || "" };
+        if (withR16) {
+          const list = await (await fetch("/api/civic/v2/together/initiatives?status=published", { credentials: "same-origin", headers })).json();
+          const item = ((list && list.items) || []).filter((x) => !(x.support && x.support.by_akimat))[0];
+          if (item) await fetch(`/api/civic/v2/together/initiatives/${encodeURIComponent(item.id)}/support`, { method: "POST",
+            credentials: "same-origin", headers: { ...headers, "Content-Type": "application/json" },
+            body: JSON.stringify({ inventory: true, pickup_service: "waste", note: "Мешки и вывоз к 14:00" }) });
+        }
+        return (await fetch("/api/civic/v2/agencies/board?days=30", { credentials: "same-origin", headers })).json();
+      }, !!(r16 && r16.status === "ready"));
       await ctx.close();
       return body;
     })();
@@ -137,7 +213,10 @@ const openAgencies = async (page, base, tab) => {
           const rows = [...document.querySelectorAll(".ag-row")];
           const last = rows[rows.length - 1];
           const kpi = document.querySelector(".ag-kpi__value");
-          return { rows: rows.length, lastBottom: last ? last.getBoundingClientRect().bottom : 0, inner: innerHeight,
+          // Видимая часть — до края прокручиваемой панели оболочки (а не окна): строка под краем листа не видна.
+          let sc = last; while (sc && sc !== document.body) { const o = getComputedStyle(sc).overflowY; if (o === "auto" || o === "scroll") break; sc = sc.parentElement; }
+          const edge = sc && sc !== document.body ? Math.min(innerHeight, sc.getBoundingClientRect().top + sc.clientHeight) : innerHeight;
+          return { rows: rows.length, lastBottom: last ? last.getBoundingClientRect().bottom : 0, inner: Math.round(edge),
             kpiOpen: kpi ? kpi.textContent.replace(/\s/g, "") : null };
         });
         check(`${tag}: 20 служб в табло`, info.rows === 20, info.rows);
@@ -145,19 +224,61 @@ const openAgencies = async (page, base, tab) => {
         check(`${tag}: KPI «открыто» = API`, info.kpiOpen === String(apiBoard.totals.open), [info.kpiOpen, apiBoard.totals.open]);
         check(`${tag}: нет прокрутки вбок`, await noSideScroll(page));
         check(`${tag}: нет непереведённых ключей`, (await rawKeys(page)).length === 0, await rawKeys(page));
+        const ux = await uxProbe(page);
+        check(`${tag}: шрифт ≥ 13 px`, ux.tinyN === 0, ux.tiny);
+        check(`${tag}: зоны нажатия ≥ 40 px`, ux.smallN === 0, ux.small);
+        check(`${tag}: контраст текста ≥ 4,5:1`, ux.lowN === 0, ux.low);
+        if (apiBoard.totals && apiBoard.totals.overdue_fix != null) {
+          const two = await page.evaluate(() => [...document.querySelectorAll(".ag-kpi__label")].map((e) => e.textContent));
+          check(`${tag}: два «просрочено» — разные подписи (ответ R09 и исправление R08)`, two.length === 4 && new Set(two).size === 4, two);
+          const cutKpi = await page.evaluate(() => [...document.querySelectorAll(".ag-kpi__label")]
+            .filter((e) => e.scrollHeight > e.clientHeight + 1 || e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent));
+          check(`${tag}: подписи плиток не обрезаны`, cutKpi.length === 0, cutKpi);
+        }
         await page.screenshot({ path: `${OUT}/board-${tag}.png` });
         // раскрыть самую загруженную службу
         await page.click(".ag-row");
         await page.waitForSelector(".ag-detail .ag-item, .ag-detail .ag-note", { timeout: 15000 });
         check(`${tag}: строка службы раскрывается списком обращений`, !!(await page.$(".ag-detail")));
         if (w !== 1024) await page.screenshot({ path: `${OUT}/board-open-${tag}.png` });
+        // Вывоз после дел жителей (R16 pickups): отметка в строке службы и список в раскрытой строке.
+        const pick = Object.entries(apiBoard.pickups || {}).filter(([, n]) => n > 0)[0];
+        if (!pick) {
+          if (w === 1366 && lang === "ru") checks.push({ name: "вывоз после дел жителей (R16)", status: "NOT_RUN", detail: "R16 нет в сборке — pickups пусто" });
+        } else if (w !== 1024) {
+          const mark = await page.$(`.ag-row[data-service="${pick[0]}"] .ag-svc__extra`);
+          check(`${tag}: у службы ${pick[0]} отметка вывоза (${pick[1]})`, !!mark && (await mark.innerText()).trim() === String(pick[1]));
+          await page.click(`.ag-row[data-service="${pick[0]}"]`);
+          await page.waitForSelector('[data-list="pickups"] .ag-item', { timeout: 15000 });
+          check(`${tag}: раскрытая строка — «Вывоз после дел жителей»`, (await page.$$('[data-list="pickups"] .ag-item')).length === pick[1]);
+          check(`${tag}: вывоз без прокрутки вбок`, await noSideScroll(page));
+          await page.screenshot({ path: `${OUT}/board-pickups-${tag}.png` });
+        }
         for (const tab of ["joint", "handoffs", "crisis"]) {
           await page.click(`[data-tab=${tab}]`);
           await page.waitForSelector(tab === "crisis" ? ".ag-crisis, .ag-empty" : ".ag-list, .ag-empty", { timeout: 20000 });
           await page.waitForTimeout(500);
           check(`${tag}: вкладка ${tab} без прокрутки вбок`, await noSideScroll(page));
           check(`${tag}: вкладка ${tab} без непереведённых ключей`, (await rawKeys(page)).length === 0, await rawKeys(page));
+          const uxTab = await uxProbe(page);
+          check(`${tag}: вкладка ${tab}: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1`, uxTab.tinyN === 0 && uxTab.smallN === 0 && uxTab.lowN === 0, uxTab);
           await page.screenshot({ path: `${OUT}/${tab}-${tag}.png` });
+        }
+        // «Календарь работ» (R12 embedded, IA_ROUND15 §5.4) — если модуль R12 в сборке: открылся и не просит войти.
+        if (await page.$("[data-tab=calendar]")) {
+          await page.click("[data-tab=calendar]");
+          await page.waitForSelector("[data-calendar] *, .ag-empty", { timeout: 20000 }).catch(() => null);
+          await page.waitForTimeout(2500);
+          const cal = await page.evaluate(() => {
+            const box = document.querySelector("[data-calendar]");
+            const text = box ? box.innerText : "";
+            return { mounted: !!box, chars: text.length, login: /Войдите|Кіріңіз|staff_required/i.test(text),
+              mains: [...document.querySelectorAll(".ag .bk-btn--primary")].filter((b) => b.offsetParent).map((b) => b.innerText.trim()) };
+          });
+          check(`${tag}: вкладка «Календарь работ» открылась без просьбы войти`, cal.mounted && !cal.login, cal);
+          check(`${tag}: в календаре одна главная кнопка (R10 B-115)`, cal.mains.length <= 1, cal.mains);
+          check(`${tag}: вкладка calendar без прокрутки вбок`, await noSideScroll(page));
+          if (w !== 1024) await page.screenshot({ path: `${OUT}/calendar-${tag}.png` });
         }
         check(`${tag}: нет ошибок JS`, page.errs.length === 0, page.errs);
         await ctx.close();
@@ -210,11 +331,23 @@ const openAgencies = async (page, base, tab) => {
       await page.waitForSelector("[data-action=show-map]");
       await page.click("[data-action=show-map]");
       await page.waitForTimeout(3000);
-      const layer = await page.evaluate(() => ({ layer: window.BirgeShell && window.BirgeShell.layer,
+      const layer = await page.evaluate(() => {
         // eslint-disable-next-line no-undef
-        drawn: typeof map !== "undefined" && !!map.getLayer && !!map.getLayer("r17-crisis-fill") }));
+        const m = typeof map !== "undefined" ? map : null;
+        const ids = m && m.getStyle && m.getStyle() ? m.getStyle().layers.map((l) => l.id) : [];
+        const heat = ids.findIndex((id) => /^r07-/.test(id)), fill = ids.indexOf("r17-crisis-fill");
+        return { layer: window.BirgeShell && window.BirgeShell.layer, drawn: fill >= 0, fill, firstR07: heat,
+          underHeat: heat < 0 || (fill >= 0 && fill < heat) };
+      });
       check("карта: слой «Кризис» включён и нарисован", layer.layer === "crisis" && layer.drawn, layer);
+      check("карта: зона кризиса под слоями тепловой карты R07 (цвета мест не тонут)", layer.underHeat, layer);
       await page.screenshot({ path: `${OUT}/crisis-map-1366-ru.png` });
+      // Прежний вид ссылки (R08 «Картина дня»): #agencies/crisis=<id> — тот же кризис, а не табло.
+      await page.evaluate(() => { location.hash = "#agencies/crisis=inc-demo-blizzard-nura"; });
+      await page.waitForFunction(() => /Буран в Нуре/.test((document.querySelector(".ag-crisis") || {}).innerText || ""), null, { timeout: 15000 })
+        .catch(() => null);
+      check("ссылка вида R08 #agencies/crisis=<id> открывает кризис", /Буран в Нуре/.test(await page.evaluate(() =>
+        (document.querySelector(".ag-crisis") || {}).innerText || "")));
       check("кризис: нет ошибок JS", page.errs.length === 0, page.errs);
       await ctx.close();
     }
@@ -275,8 +408,9 @@ const openAgencies = async (page, base, tab) => {
     await browser.close();
     if (srv) srv.kill();
     const failed = checks.filter((c) => c.status === "FAIL").length;
-    fs.writeFileSync(path.join(OUT, "browser_checks.json"), JSON.stringify({ base: base, total: checks.length, failed, checks }, null, 1));
-    console.log(`\n${checks.length - failed}/${checks.length} PASS`);
+    const notRun = checks.filter((c) => c.status === "NOT_RUN").length;
+    fs.writeFileSync(path.join(OUT, "browser_checks.json"), JSON.stringify({ base: base, total: checks.length, failed, not_run: notRun, checks }, null, 1));
+    console.log(`\n${checks.length - failed - notRun}/${checks.length - notRun} PASS` + (notRun ? ` · NOT_RUN ${notRun}` : ""));
     process.exit(failed ? 1 : 0);
   }
 })();

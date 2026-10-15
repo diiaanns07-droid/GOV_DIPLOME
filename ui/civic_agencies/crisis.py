@@ -127,8 +127,11 @@ def pii_kinds(text: str | None) -> list[str]:
 
 
 def moderate(text: str | None, lang: str) -> dict:
-    """Проверка текста до публикации (CONTRACT §10): R04 moderate(text, lang) → {text_public, flags}; без R04 —
-    свои правила личных данных + фильтр грубых слов R04 (profanity), если он есть. -> {"flags": [...], "by": ...}."""
+    """Проверка текста до публикации (CONTRACT §10): R04 moderate(text, lang) → {text_public, clean, action, pii, rude,
+    flags: [{kind, group, …}]} (раунд 15; раньше — flags списком строк или {имя: bool}); без R04 — свои правила личных
+    данных + фильтр грубых слов R04 (profanity), если он есть. -> {"flags": [...], "by": ...}.
+    Флаг — и вид находки (phone, iin, email, contact, rude…), и её группа (pii, rude): «contact» группы pii — тоже
+    личные данные."""
     if not text:
         return {"flags": [], "by": "none"}
     flags: list[str] = []
@@ -144,7 +147,13 @@ def moderate(text: str | None, lang: str) -> dict:
             if isinstance(raw, dict):
                 flags = [str(k) for k, v in raw.items() if v]
             elif isinstance(raw, (list, tuple)):
-                flags = [str(f.get("kind") if isinstance(f, dict) else f) for f in raw]
+                for f in raw:
+                    if isinstance(f, dict):
+                        flags.extend(str(f[k]) for k in ("kind", "group") if f.get(k))
+                    elif f:
+                        flags.append(str(f))
+            if isinstance(result, dict):
+                flags.extend(name for name in ("pii", "rude") if result.get(name) is True)
             by = "r04"
         except Exception:  # noqa: BLE001 — модель R04 упала: свои правила ниже
             flags, by = [], "rules"
@@ -222,7 +231,8 @@ def parse_tasks(raw) -> list[dict]:
         raise InputError("tasks", "Задачи — список.")
     out = []
     for i, item in enumerate(raw):
-        if not isinstance(item, dict) or item.get("service") not in profiles.PROFILES:
+        # R15-S43: список/словарь вместо строки — 422, а не TypeError (unhashable) → 500.
+        if not isinstance(item, dict) or not isinstance(item.get("service"), str) or item["service"] not in profiles.PROFILES:
             raise InputError(f"tasks[{i}].service", "Выберите службу из справочника.")
         ru = clean_text(item.get("text_ru"), field=f"tasks[{i}].text_ru", high=200, required=False)
         kk = clean_text(item.get("text_kk"), field=f"tasks[{i}].text_kk", high=200, required=False)
@@ -279,7 +289,8 @@ def public_view(incident: dict, *, with_geometry: bool = False) -> dict:
     zone = {k: v for k, v in incident["zone"].items() if k in ("kind", "district", "targets", "labels")}
     view = {
         "id": incident["id"], "kind": incident["kind"], "title_ru": incident["title_ru"], "title_kk": incident["title_kk"],
-        "zone": zone, "zone_label": zone_label(incident["zone"]), "status": incident["status"],
+        "zone": zone, "zone_label": zone_label(incident["zone"]), "district": zone.get("district"),
+        "status": incident["status"],
         "started_at": incident["started_at"], "closed_at": incident.get("closed_at"), "result": incident.get("result"),
         "services": services_of(incident),
         "updates": [{"id": u["id"], "at": u["at"], "kind": u["kind"], "text_ru": u["text_ru"], "text_kk": u["text_kk"]}

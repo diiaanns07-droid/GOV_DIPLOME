@@ -33,7 +33,7 @@
     ru: { layer: "Кризис", more: "Подробнее", close: "Скрыть", zone: "Зона: {zone}", updates: "Обновления служб",
       none: "Пока без обновлений", show: "Показать зону", demo: "Пример", since: "с {time}", closed: "Кризис закрыт" },
     kk: { layer: "Төтенше жағдай", more: "Толығырақ", close: "Жасыру", zone: "Аймақ: {zone}", updates: "Қызметтердің жаңартулары",
-      none: "Әзірге жаңарту жоқ", show: "Аймақты көрсету", demo: "Мысал", since: "{time} бастап", closed: "Төтенше жағдай аяқталды" },
+      none: "Әзірге жаңарту жоқ", show: "Аймақты көрсету", demo: "Үлгі", since: "{time} бастап", closed: "Төтенше жағдай аяқталды" },
   };
 
   var state = { incidents: [], details: {}, on: false, map: null, pulse: null, timer: null, banner: null, card: null,
@@ -43,6 +43,8 @@
   function lang() { var i = I(); return i && i.getLang && i.getLang() === "kk" ? "kk" : "ru"; }
   function tr(key, params) {
     var i = I(), full = "crisis.map." + key;
+    // «Пример» — общий термин словаря R11 (common.demo: «Пример» / «Үлгі»), как у шапки штаба и других экранов.
+    if (key === "demo" && i && i.has && i.has("common.demo")) return i.t("common.demo");
     var text = i && i.has && i.has(full) ? i.t(full, params) : (TEXT[lang()] || TEXT.ru)[key] || key;
     return String(text).replace(/\{(\w+)\}/g, function (w, n) { return params && params[n] != null ? String(params[n]) : w; });
   }
@@ -146,7 +148,9 @@
   }
   function beforeId(m) {
     var layers = (m.getStyle() && m.getStyle().layers) || [];
-    var heat = layers.filter(function (l) { return /^r07-heat/.test(l.id); })[0];
+    // Под слоями тепловой карты R07 (id слоёв — r07-district-fill, r07-seg, …; r07-heat — это id источника): заливка
+    // зоны не ложится поверх цветов мест (R07 INTEGRATION §3а, patches/R17_crisis_layer_under_heat.patch).
+    var heat = layers.filter(function (l) { return /^r07-/.test(l.id); })[0];
     if (heat) return heat.id;
     var sym = layers.filter(function (l) { return l.type === "symbol"; })[0];
     return sym ? sym.id : undefined;

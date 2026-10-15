@@ -203,7 +203,7 @@ class AgencyService:
     def board(self, q: dict) -> dict:
         days, district = self._days(q), self._district(q)
         service = q.get("service") or None
-        if service is not None and service not in profiles.PROFILES:
+        if service is not None and (not isinstance(service, str) or service not in profiles.PROFILES):
             raise ApiError(400, "bad_request", "Неизвестная служба.", "service")
         now = self._now()
         records, source = self._records(now)
@@ -212,9 +212,16 @@ class AgencyService:
         body["source"] = source
         body["profiles"] = profiles.all_profiles()
         body["method"] = METHOD
+        # Вывоз после дел жителей, поддержанных акиматом (R16) — задачи службы (обычно «Оператор вывоза мусора»).
+        tasks = sources.pickups(self.store.db_path, district)
+        counts: dict[str, int] = {}
+        for task in tasks:
+            counts[task["service"]] = counts.get(task["service"], 0) + 1
+        body["pickups"] = counts
         if service is not None:
             body["service"] = service
             body["items"] = self._service_items(records, now, service, district, lookup)
+            body["pickup_items"] = [t for t in tasks if t["service"] == service]
         return _reply(200, body)
 
     @staticmethod
@@ -232,6 +239,7 @@ class AgencyService:
                           "created_at": record.get("created_at"), "status": record.get("status"),
                           "part": part, "joint": len(parts) >= 2, "tab": calc.inbox_tab(record, now),
                           "deadline": calc.deadline_state(record, now),
+                          "overdue_fix": calc.fix_overdue(record, now),
                           "target": {k: target.get(k) for k in ("kind", "id", "label_ru", "label_kk", "approximate")
                                      if k in target},
                           "demo": bool(record.get("demo"))})
@@ -305,7 +313,7 @@ class AgencyService:
     # ------------------------------------------------------------------ кризисы: запись (сотрудник)
     def create_incident(self, body: dict, principal) -> dict:
         kind = body.get("kind")
-        if kind not in crisis.TEMPLATES:
+        if not isinstance(kind, str) or kind not in crisis.TEMPLATES:  # R15-S43: не строка → 422, а не 500
             raise crisis.InputError("kind", "Выберите вид кризиса.")
         tpl = crisis.TEMPLATES[kind]
         title_ru = crisis.clean_text(body.get("title_ru"), field="title_ru", high=crisis.TITLE_MAX, required=False)
@@ -343,7 +351,7 @@ class AgencyService:
             incident = self.store.set_task(incident_id, task_id, status=status, by_role=_role(principal),
                                            expected=expected)
         else:
-            if body.get("service") not in profiles.PROFILES:
+            if not isinstance(body.get("service"), str) or body["service"] not in profiles.PROFILES:  # R15-S43
                 raise crisis.InputError("service", "Выберите службу из справочника.")
             ru = crisis.clean_text(body.get("text_ru"), field="text_ru", high=200, required=False)
             kk = crisis.clean_text(body.get("text_kk"), field="text_kk", high=200, required=False)
@@ -386,7 +394,10 @@ METHOD = {
     "unit": "обращение (жалоба), дубли не считаются",
     "open": "открытая часть службы сейчас (не done, не rejected), любой давности",
     "overdue": "открытая часть, обращение во вкладке R09 «Просрочено» (срок ответа прошёл без ответа или прошла "
-               "обещанная дата обновления); передача срок не обнуляет",
+               "обещанная дата обновления); передача срок не обнуляет; в итогах то же — overdue_answer",
+    "overdue_fix": "открытая часть, срок ИСПРАВЛЕНИЯ R08 прошёл (ui.civic_akim.deadlines.due, демо-норматив R08); "
+                   "в итогах — обращения new/accepted/in_progress с прошедшим сроком, как kpi.overdue «Картины дня»; "
+                   "нет R08 — null",
     "period": "received, median_answer_days, fixed, verified, returned, joint — обращения, поданные за days дней; "
               "передачи — по времени передачи",
     "median_answer_days": "медиана рабочих дней РК (календарь R09) от подачи до первого ответа; только ведущая служба",
@@ -446,14 +457,22 @@ def resident_feed(store: AgencyStore, districts: set, yards: set, since: str | N
 
 
 def make_service(db_path, *, clock=None, demo: bool | None = None) -> AgencyService:
-    """Сервис на базе шлюза. demo=None — по CIVIC_DEMO=1: тогда засевается пример кризиса (если нет демо-мира R02)."""
+    """Сервис на базе шлюза. demo=None — по CIVIC_DEMO=1: тогда засевается пример кризиса (если нет демо-мира R02).
+
+    Один сервис на базу в процессе: шлюз R01 и соседи (R08 neighbors.py зовёт make_service, если шлюз ещё не создал
+    сервис) получают тот же экземпляр. Иначе второй вызов заново засеял бы демо-кризисы и стёр правки оператора
+    посреди показа. Свои часы (clock) — только в тестах: тогда всегда новый сервис.
+    """
     import os
+    from . import api_state
+    current = api_state.current()
+    if clock is None and current is not None and current.store.db_path == str(db_path):
+        return current
     store = AgencyStore(db_path, clock=clock) if clock else AgencyStore(db_path)
     demo_flag = (os.environ.get("CIVIC_DEMO") == "1") if demo is None else bool(demo)
     service = AgencyService(store, demo=demo_flag)
     if demo_flag and os.environ.get("CIVIC_DEMO_WORLD") != "1":
         from .demo import seed_demo_incidents
         seed_demo_incidents(store)
-    from . import api_state
     api_state.register(service)
     return service
