@@ -54,6 +54,10 @@
   R12 conflicts_summary, R16 initiatives_summary, R13 board_block; «Открыть …» вызывает BirgeAgencies.openCrisis /
   BirgeWorksCalendar.openConflict. Проверка на их настоящем коде — следующий шаг.
 
+- ~13:05 UTC (650d5ef6 = code_sha DELIVERY): соседи проверены на их настоящем коде (временная копия: R17 e5b834f9,
+  R12 8ecfbd37, R16 aef7b79f, R13 455b8950, CIVIC_DEMO=1): оценка 100 % фактов на обоих наборах, провокации 10/10.
+  Тесты: 71 passed + 1 skipped (с соседями — 72 passed); с R09/R01/R03 r14 — 848 passed, 10 skipped, 1 xfailed.
+
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,
   web/civic/qa/qa.js, SCREENS.questions в birge.js). Два модуля с одним именем ломали бы друг друга.

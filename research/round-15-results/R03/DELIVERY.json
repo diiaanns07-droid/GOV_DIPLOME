@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "10f90adc79b4b418194f56af7a612f088db4dea7",
- "tested_sha": "10f90adc79b4b418194f56af7a612f088db4dea7",
+ "code_sha": "650d5ef611db3bd731180347d3a507a5b72b0504",
+ "tested_sha": "650d5ef611db3bd731180347d3a507a5b72b0504",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -28,6 +28,7 @@
   "tests/civic/R03/round15/test_analyst_ask.py",
   "tests/civic/R03/round15/test_analyst_eval_sets.py",
   "tests/civic/R03/round15/test_analyst_intents.py",
+  "tests/civic/R03/round15/test_analyst_neighbours.py",
   "tests/civic/R03/round15/test_analyst_real_modules.py",
   "web/civic/assistant/analyst-demo.html",
   "web/civic/assistant/analyst.css",
@@ -35,12 +36,16 @@
  ],
  "results_paths": [
   "research/handoffs/astana/R03/round15/STATUS.md",
+  "research/round-15-results/R03/DELIVERY.json",
   "research/round-15-results/R03/INTEGRATION.txt",
+  "research/round-15-results/R03/RUN.txt",
   "research/round-15-results/R03/i18n_analyst.json",
   "research/round-15-results/R03/patches/R01_assistant_ask.patch",
   "research/round-15-results/R03/patches/R01_palette_commands.patch",
   "research/round-15-results/R03/results/ASSISTANT_EVAL.md",
   "research/round-15-results/R03/results/assistant_eval_eval_set_after_fix.json",
+  "research/round-15-results/R03/results/assistant_eval_eval_set_holdout2_with_neighbours.json",
+  "research/round-15-results/R03/results/assistant_eval_eval_set_with_neighbours.json",
   "research/round-15-results/R03/results/assistant_eval_heldout_run1.json",
   "research/round-15-results/R03/results/assistant_eval_holdout2_after_fix.json",
   "research/round-15-results/R03/results/assistant_eval_holdout2_run1.json",
@@ -80,25 +85,27 @@
  "tests": {
   "pytest_R03_round15": {
    "status": "PASS",
-   "passed": 65,
+   "passed": 71,
+   "skipped": 1,
    "failed": 0,
-   "cmd": "python3 -B -m pytest -q tests/civic/R03/round15"
+   "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
+   "note": "skipped — тест с настоящими соседями: их модулей нет в ветке R03; с их кодом (временная копия) — 72 passed"
   },
   "pytest_R03_R09_R01_related": {
    "status": "PASS",
-   "passed": 842,
-   "skipped": 9,
+   "passed": 848,
+   "skipped": 10,
    "xfailed": 1,
    "failed": 0,
    "cmd": "python3 -B -m pytest -q tests/civic/R03/round15 tests/civic/R09 tests/civic/R01/test_r01_round13.py tests/civic/R01/test_r01_gateway_hardening.py tests/civic/R03/round14",
-   "note": "skipped — нет torch в облаке (классификатор r14); xfail — известное ограничение словаря r14"
+   "note": "skipped — нет torch (классификатор r14) и нет соседей раунда 15; xfail — известное ограничение словаря r14"
   },
   "browser_stand_checks": {
    "status": "PASS",
-   "passed": 92,
+   "passed": 104,
    "failed": 0,
    "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_screens.cjs --url http://127.0.0.1:8670",
-   "env": "Chromium (Playwright), стенд analyst_devserver.py, 1366/1024/375 × ru/kk"
+   "env": "Chromium (Playwright), стенд analyst_devserver.py, 1366/1024/375 × ru/kk, проверки П1"
   },
   "browser_shell_integration": {
    "status": "PASS",
@@ -152,6 +159,27 @@
   "classifier_v2_human_eval": {
    "status": "NOT_RUN",
    "reason": "размеченных текстов людей (LOCAL-14) в облаке нет; см. RUN.txt §6"
+  },
+  "eval_with_round15_neighbours": {
+   "status": "PASS",
+   "set1": {
+    "n": 50,
+    "facts_pct": 100.0
+   },
+   "set2": {
+    "n": 30,
+    "facts_pct": 100.0
+   },
+   "provocations_safe": "10/10",
+   "env": "временная копия: R17 e5b834f9, R12 8ecfbd37, R16 aef7b79f, R13 455b8950, CIVIC_DEMO=1, --with-neighbours",
+   "latency_ms": {
+    "p50_range": [
+     0.7,
+     2.8
+    ],
+    "p95": 55,
+    "first_conflicts_call": 2200
+   }
   }
  },
  "screens": [
@@ -177,11 +205,22 @@
   "research/round-15-results/R03/screens/shell_map_375_ru.png"
  ],
  "known_limits": [
-  "Модулей раунда 15 R17 (штаб ведомств), R12 (конфликты работ), R16 (инициативы), R13 (встречи) в сборке ещё нет: их блоки — честное «пока нет данных»; «отстающие службы» — запасной расчёт по срокам «Картины дня», «буран» — пульс R08 с пометкой «штаб не подключён». Подхватятся сами, если функции названы как в INTEGRATION §6.",
-  "Пункта «Спросить Birge» в меню акимата нет, пока R11 не решит место («Ещё» уже 4 пункта); раздел работает по #analyst и из Ctrl+K (patch R01).",
-  "Режим с языковой моделью проверен только заглушкой (без сети): порядок блоков, вычёркивание чисел, не JSON, тайм-аут 8 с. Живой вызов — LOCAL-17.",
-  "Правила разбора вопроса — без модели: новые формулировки дают 87–93 % верных фактов с первого раза (ASSISTANT_EVAL.md); худший случай — подсказки или верные числа на соседний вопрос, выдуманных чисел нет.",
-  "Казахские фразы ответа — на проверку R11 / владельцу (i18n_analyst.json, blocks.py)."
+  "Пункта «Спросить Birge» в меню акимата нет, пока R11/R01 не решат место («Ещё» уже 4 пункта); раздел работает по #analyst и из Ctrl+K (patch R01). R11 уже завёл ключ shell.nav.analyst.",
+  "Табло R17 считает по своей демо-фикстуре, «Картина дня» — по демо-набору R07: до единого демо-мира R02 их «просрочено» различаются (17 и 5) — разные наборы; аналитик подписывает источник каждого блока.",
+  "Сервис R17 запускается шлюзом лениво: пока его нет, кризис — «штаб не подключён» (честно), табло — запасной расчёт по срокам R08. R01: ui.civic_agencies.configure(db_path=…) в wire().",
+  "Первый вопрос о конфликтах работ ~2 с (R12 загружает работы и граф); следующие — миллисекунды.",
+  "Режим с языковой моделью проверен только заглушкой (без сети). Живой вызов — LOCAL-17.",
+  "Новые формулировки: 87–93 % верных фактов с первого раза (ASSISTANT_EVAL.md); худший случай — подсказки или верные числа на соседний вопрос, выдуманных чисел нет.",
+  "Казахские фразы ответа — сверены R11 (круг 1); новые фразы блоков соседей — на следующий круг R11."
  ],
- "next_step": "Каждый круг: find_branches.py — подключить функции R17/R12/R16/R13, когда появятся (sources.py), повторить оценку; LOCAL-14 eval_human.py; помощь R01 при сборке B1 (16 окт 09:00 UTC)."
+ "next_step": "Каждый круг: AMENDMENTS.md → find_branches.py → новые версии соседей (повторить --with-neighbours) → ревью R11 → LOCAL-14 eval_human.py; помощь R01 при B1 (16 окт 09:00 UTC).",
+ "amendments": {
+  "read": [
+   "П1 «Без ИИ-слопа» (15 окт 17:05 Астаны)"
+  ],
+  "applied": "пустое состояние и ошибки — значок R11 48 px + текст + одна кнопка; иллюстраций ill-* нет; декоративных картинок нет"
+ },
+ "review": {
+  "R11_round1": "применено: patches/R03_dictionary_terms.patch (R11) + R03-3, R03-4, R03-6 (по П1), R03-7; R03-8 — после адреса #раздел/путь у R01"
+ }
 }

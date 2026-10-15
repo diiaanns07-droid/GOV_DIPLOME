@@ -104,26 +104,35 @@ meeting_orders, forecast, day_summary (+ clarify — подсказки, есл�
 ====================================================================================================
 6. СОСЕДИ — какие функции читает аналитик (CONTRACT §7, только чтение, запасной вариант «модуля нет»)
 ====================================================================================================
-R07  ui.civic_heat.default_service(): heat(days, district, category), districts(days, category), records(None)   [есть]
-R08  ui.civic_akim.summary(district=…) — темы, районы, просрочки, пульс, KPI, text_parts; ui.civic_akim.routing (службы),
-     deadlines.timer, summary.status_at / parse_time — для запасного «табло служб», пока нет R17                  [есть]
-R13  ui.civic_forecast.forecast_response(month, district, k)                                                       [есть]
-R17  ui.civic_agencies — функции board(days, district) и list_incidents(status) (имена по порядку:
-     board | agencies_board | board_summary | service_board | get_board;
-     list_incidents | incidents | active_incidents | public_incidents | get_incidents).
-     board → {"services": [{"service": "<id §3>", "open", "overdue", "median_answer_days"?, "verified_pct"?, "demo"}]}
-     (принимаю и {items|rows|board: […]}, и id службы в "id"/"service_id"); кризисы — записи §5.5 списком или {items}.
-     Пока R17 нет: «отстающие службы» считаются по срокам «Картины дня» (сумма просрочек = R08 overdue.count, тест),
-     «буран» — пульс R08 с честной подписью «Кризисный штаб пока не подключён».
-R12  engine.civic_geo(.works_calendar | .works | .calendar): works_conflicts(district=…) → конфликты §5.6 списком или {items}.
-R16  ui.civic_together: list_initiatives(district=…, status="published") → инициативы §5.2 (author_device не нужен и не
-     показывается; скрытые не считаются).
-R13  ui.civic_meetings: list_meetings(district=…) → встречи §5.7 с orders.
-Функция может вернуть данные, {ok, data}, (status, body) или поднять исключение со status=503 / code=module_not_ready —
-всё это понимается (sources.unwrap). Если ваша функция называется иначе — допишите имя в кортеж в
-agent/civic_assistant/analyst/sources.py (это мой путь — напишите в STATUS, поправлю на следующем круге) или R01 передаст
-источник явно: configure_analyst(agencies_board=fn, agencies_incidents=fn, works_conflicts=fn, together_initiatives=fn,
-meetings_list=fn).
+Раунд 14 (есть в FINAL-4):
+  R07  ui.civic_heat.default_service(): heat(days, district, category), districts(days, category), records(None)
+  R08  ui.civic_akim.summary(district=…) — темы, районы, просрочки, пульс, KPI, text_parts; routing / deadlines /
+       summary.status_at, parse_time — для запасного «табло служб», пока сервис R17 не запущен
+  R13  ui.civic_forecast.forecast_response(month, district, k)
+Раунд 15 — функции, которые соседи сделали «для R03» (проверено на их коде 15 окт ~13:00 UTC, CIVIC_DEMO=1):
+  R17  ui.civic_agencies.board_snapshot(days, district)  @ e5b834f9 → services[] (20 служб) + totals
+       ui.civic_agencies.active_incidents(district)       → публичный вид кризиса: progress по службам, zone_label, link
+       «Обращений просрочено» = totals.overdue (не сумма строк: совместное обращение — в двух строках).
+       Пока шлюз не запустил сервис R17 (api_state.current() is None), кризисы считаются «штаб не подключён»
+       (иначе [] читался бы как «кризиса нет»). R01: запускайте сервис R17 в wire() — ui.civic_agencies.configure(
+       records=…, db_path=…) (как просит R17), тогда «Что с бураном?» сразу отвечает штабом.
+  R12  engine.civic_geo.works_calendar.conflicts_summary(district) @ 8ecfbd37 → {conflicts, high, top[], source}
+       source "none" (нет ни одной работы) — честное «в календаре пока нет работ». Первый вызов ~2 с (R12 грузит
+       работы и граф улиц) — R01 может прогреть его при старте; дальше — миллисекунды.
+  R16  ui.civic_together.initiatives_summary(district) @ aef7b79f → {upcoming, joined_upcoming, supported, done,
+       neighbors_done, next[]}; {"status": "no_data"} — сервис не связан с базой → «пока нет данных».
+  R13  ui.civic_meetings.board_block(district=…)       @ 455b8950 → {counts{total,done,todo,in_progress,overdue},
+       orders[], next}; None — сервиса нет → «пока нет данных».
+Кнопка «Открыть …» вызывает экран соседа на нужной записи (только эти имена, белый список в analyst.js):
+  BirgeAgencies.openCrisis({incident: id}) или ({template: "blizzard", district}) — R17;
+  BirgeWorksCalendar.openConflict(id) — R12. Нет функции — откроется раздел (agencies, works-calendar, together, meetings).
+Прежние имена (board, list_incidents, works_conflicts, list_initiatives, list_meetings) остались запасными; любое
+другое имя — допишите в кортеж agent/civic_assistant/analyst/sources.py или R01 передаст источник явно:
+configure_analyst(agencies_board=fn, agencies_incidents=fn, works_conflicts=fn, together_initiatives=fn, meetings_list=fn)
+(подменённый источник вызывается так же, как настоящий: лишние параметры отбрасываются, None/no_data → «нет данных»).
+Проверка в сборке: python3 -B -m pytest -q tests/civic/R03/round15/test_analyst_neighbours.py (тест с настоящими
+соседями запускается, когда их модули в сборке) и
+python3 -B -m agent.civic_assistant.analyst.evaluate --with-neighbours /tmp/r03eval.sqlite3 --tag build
 
 ====================================================================================================
 7. БЕЗОПАСНОСТЬ И ПРИВАТНОСТЬ (для R15)
