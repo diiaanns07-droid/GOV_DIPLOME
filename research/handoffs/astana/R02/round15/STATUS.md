@@ -28,13 +28,13 @@ restored_from: — (роль начата с нуля, прежней ветки
 
 ## План (по research/round-15/prompts/R02.txt)
 1. [x] Инвентаризация → research/round-15-results/R02/INVENTORY.md
-2. [x] SCHEMA.md + world_v1.sample.json — push 15 окт ~16:50 Астаны (схема 1.0.1: события started_at/ended_at)
+2. [x] SCHEMA.md + world_v1.sample.json — push 15 окт ~16:50 Астаны (схема 1.0.1)
 3. [x] Генератор ml/datasets/demo_world.py (seed 15, без сети) → world_v1.json (743 жалобы, Нура 36 %)
-4. [x] demo_world_check.py (0 ошибок), EXPECTED.json (числа кодом R07/R08/R09), 24 теста tests/civic/R02/round15
-5. [ ] DATASHEET.md
-6. [~] Соседи: INTEGRATION.txt (patch R01 проверен на стенде: 14/14 чисел совпали), заметки R07/R09/R10/R12/R13/R16/R17
-7. [ ] LOCAL-14: проверить инструкции import_form.py
-8. [ ] DELIVERY.json, RUN.txt; кадры стенда в режиме мира (карта «Нура · N», «Обращения», «Картина дня»)
+4. [x] demo_world_check.py (0 ошибок), EXPECTED.json (числа кодом R07/R08/R09), тесты 25 + все R02 361 passed
+5. [x] DATASHEET.md
+6. [x] INTEGRATION.txt (patch R01 проверен на стенде: 14/14), DELIVERY.json, RUN.txt
+7. [~] Соседи на каждом круге: seed_world R09/R06/R16/R17/R13/R07, правки R12/R10 (materialize), «Просрочено» R08/R09
+8. [ ] LOCAL-14: проверить инструкции import_form.py (раунд 14) — актуальны ли
 
 ## Сделано
 - 11:25 UTC — роль занята, ветка сессии подтянута к пакету (fast-forward до e91acb69).
@@ -45,11 +45,15 @@ restored_from: — (роль начата с нуля, прежней ветки
 - 12:10 UTC — тест tests/civic/R02/test_r02_schema.py принимает таблицу R06 civic_notify_reads (миграция 10; проверено и
   на коде R06); patch R01 для CIVIC_DEMO_WORLD=1 (research/round-15-results/R02/patches/R01_demo_world.patch) проверен
   на стенде: числа стенда = числам мира 14/14 (stand_numbers_world.json); INTEGRATION.txt.
+- 12:15 UTC — финальная калибровка мира (пульс рассказывает буран, 3 «решения акима», A1/A2 R10 сходятся),
+  DATASHEET.md, RUN.txt; поправка П1 применена; влит пакет 2d329b2c; DELIVERY.json (code_sha 4b67f69b).
 
 ## Дальше
-- DATASHEET.md, RUN.txt, DELIVERY.json; кадры стенда в режиме мира (1366, ru/kk).
-- На каждом круге: find_branches.py → проверить seed_world соседей (R09, R06, R16, R17, R13, R07) и R12/R10 на мире;
-  поля по запросам — в SCHEMA и генератор (версия схемы).
+- Каждый круг: AMENDMENTS.md → find_branches.py → у соседей: seed_world на мире (R09, R06, R16, R17, R13, R07),
+  R12 works_calendar.load_world и R10 consistency.world_numbers через materialize; ответы на просьбы о полях.
+- К B1 (16 окт 14:00 Астаны): стенд R02 с ветками соседей (локально, без коммита чужих путей) → обновить
+  consistency_table в DELIVERY.json.
+- LOCAL-14: перечитать ml/labeling/import_form.py и RUN раунда 14.
 
 ## Вопросы владельцу
 - (пока нет)
