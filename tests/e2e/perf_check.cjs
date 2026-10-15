@@ -35,11 +35,20 @@ async function firstBadge(browser, base, [w, h]) {
   for (let i = 0; i < REPEAT; i++) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
     await ctx.addInitScript(() => { try { localStorage.setItem("birge.mode", "akimat"); } catch (e) { /* без хранилища */ } });
+    // Момент записывает сама страница (как map_baseline): опрос из теста ждал бы конца длинных задач загрузки и
+    // прибавлял к времени 0,3–0,6 с, которых пользователь не видит.
+    await ctx.addInitScript(() => {
+      const vis = (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0 && b.bottom > 0 && b.top < innerHeight && b.right > 0 && b.left < innerWidth; };
+      const tick = () => {
+        try { if ([...document.querySelectorAll(".maplibregl-marker")].some((e) => vis(e) && /\d/.test(e.innerText))) { window.__r10fb = Math.round(performance.now()); return; } } catch (e) { /* страница строится */ }
+        if (performance.now() < 30000) setTimeout(tick, 40);
+      };
+      tick();
+    });
     const page = await ctx.newPage();
     await page.goto(base, { waitUntil: "commit" });
-    const t = await page.waitForFunction(() => [...document.querySelectorAll(".maplibregl-marker")]
-      .some((e) => e.getBoundingClientRect().width > 0 && /\d/.test(e.innerText)), null, { timeout: 30000, polling: 50 })
-      .then(() => page.evaluate(() => Math.round(performance.now())), () => null);
+    const t = await page.waitForFunction(() => typeof window.__r10fb === "number", null, { timeout: 30000, polling: 100 })
+      .then(() => page.evaluate(() => window.__r10fb), () => null);
     times.push(t);
     await ctx.close();
   }
