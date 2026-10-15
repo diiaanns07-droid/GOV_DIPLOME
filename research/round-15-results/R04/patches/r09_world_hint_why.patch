@@ -1,0 +1,81 @@
+diff --git a/tests/civic/R09/test_r09_world_hint_why.py b/tests/civic/R09/test_r09_world_hint_why.py
+new file mode 100644
+index 00000000..54ddf9c5
+--- /dev/null
++++ b/tests/civic/R09/test_r09_world_hint_why.py
+@@ -0,0 +1,37 @@
++"""Подсказка мира R02 «нужны 2 службы» получает объяснение R04 при засеве (patch R04 r09_world_hint_why.patch)."""
++
++from ui.civic_feedback.v2 import world_seed as ws
++
++
++def _record():
++    return {"text": "Раскопали дорогу и так и бросили", "category": "roads", "subtopic": "pothole",
++            "point": [71.43, 51.12],
++            "route_hint": {"services": ["water", "road"], "joint": True, "source": "rules", "model_version": None}}
++
++
++def test_world_hint_gets_r04_explanation():
++    rec = _record()
++
++    def route(**kw):
++        assert kw["text"] and kw["category"] == "roads" and kw["point"] == [71.43, 51.12]
++        return {"services": [{"service": "water", "role": "lead"}, {"service": "road", "role": "partner"}],
++                "joint": True, "why_ru": "Раскопки без восстановления покрытия.",
++                "why_kk": "Қалпына келтірілмеген қазба."}
++
++    assert ws.explain_hint(rec, route)
++    assert rec["route_hint"]["why_ru"] == "Раскопки без восстановления покрытия."
++    assert rec["route_hint"]["why_kk"] == "Қалпына келтірілмеген қазба."
++    assert rec["route_hint"]["services"] == ["water", "road"]
++
++
++def test_world_hint_unchanged_without_r04_or_when_it_disagrees():
++    def other(**kw):
++        return {"services": [{"service": "road"}], "joint": False, "why_ru": "Яма на дороге."}
++
++    def down(**kw):
++        raise RuntimeError("R04 недоступен")
++
++    for lookup in (None, other, down):
++        rec = _record()
++        assert not ws.explain_hint(rec, lookup)
++        assert "why_ru" not in rec["route_hint"]
+diff --git a/ui/civic_feedback/v2/world_seed.py b/ui/civic_feedback/v2/world_seed.py
+index d4fd293e..17985055 100644
+--- a/ui/civic_feedback/v2/world_seed.py
++++ b/ui/civic_feedback/v2/world_seed.py
+@@ -368,6 +368,25 @@ def build_record(raw: dict, now: datetime) -> tuple[dict, list[tuple[str, str]]]
+     return record, metoo
+ 
+ 
++def explain_hint(record: dict, route_lookup) -> bool:
++    """Подсказка мира R02 «нужны 2 службы» приходит без объяснения — карточка показала бы только заголовок. Объяснение
++    берём у R04 route() (store.route_lookup), только если R04 предлагает те же службы. -> дописано ли объяснение."""
++    hint = record.get("route_hint")
++    if not callable(route_lookup) or not hint or not hint.get("joint") or hint.get("why_ru"):
++        return False
++    try:
++        found = joint.parse_route_hint(route_lookup(text=record["text"], category=record["category"],
++                                                    subtopic=record.get("subtopic"), point=record.get("point")))
++    except Exception:  # noqa: BLE001 — объяснение не обязательно, засев важнее
++        return False
++    if not found or not found.get("why_ru") or set(found["services"]) != set(hint["services"]):
++        return False
++    hint["why_ru"] = found["why_ru"]
++    if found.get("why_kk"):
++        hint["why_kk"] = found["why_kk"]
++    return True
++
++
+ def seed_world(db_path, records, now=None, *, reset: bool = True) -> dict:
+     """Засеять жалобы мира. db_path — путь к SQLite, ComplaintStore или сервис R09 (его store).
+     -> {"inserted", "skipped", "reset", "invalid": [причины], "total"}. Идемпотентно (см. модуль).
+@@ -387,6 +406,7 @@ def seed_world(db_path, records, now=None, *, reset: bool = True) -> dict:
+         for item in items:
+             try:
+                 built.append(build_record(item, moment))
++                explain_hint(built[-1][0], getattr(store, "route_lookup", None))
+             except (WorldError, TypeError, ValueError) as exc:
+                 report["invalid"].append(str(exc)[:200])
+         # Одна транзакция на весь мир: 700–900 записей за доли секунды, а не по fsync на запись.

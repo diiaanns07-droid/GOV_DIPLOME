@@ -206,7 +206,8 @@
  "patches_for_neighbours": {
   "R17": "research/round-15-results/R04/patches/r17_crisis_pii.patch — блокировать card/iban/apartment/contact в публичных обновлениях кризиса (R17 @ 72676e3d: apply OK, их тесты 42/42)",
   "R13": "research/round-15-results/R04/patches/r13_pii_labels.patch — подписи card/iban/apartment/contact ru/kk (qa.js — иначе сотрудник видит сырую строку ask.staff.pii.card), все семь видов в _staff_view, шаблон ИИН не берёт кусок номера карты, запасной шаблон карты (R13 @ 97d6ccdf: apply OK, tests/civic/R13 176/176)",
-  "R11": "research/round-15-results/R04/patches/r11_pii_labels.patch — те же подписи в web/civic/i18n/ru.json, kk.json (R11 @ d94a2983: apply OK, tests/civic/R11 31/31)"
+  "R11": "research/round-15-results/R04/patches/r11_pii_labels.patch — те же подписи в web/civic/i18n/ru.json, kk.json (R11 @ d94a2983: apply OK, tests/civic/R11 31/31)",
+  "R09": "research/round-15-results/R04/patches/r09_world_hint_why.patch — подсказка мира R02 «нужны 2 службы» без объяснения (41 совместная, в том числе сцена 8): при засеве объяснение из R04 route(), если службы те же (R09 @ 80a35084: apply OK, tests/civic/R09 589 passed / 1 skipped + 2 теста patch'а; 41/41 с объяснением)"
  },
  "r15_findings": {
   "S48": {
