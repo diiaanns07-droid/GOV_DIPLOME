@@ -7,8 +7,8 @@
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "6c42e2a9b034a22776524231d1f56cecd0920a2f",
- "tested_sha": "6c42e2a9b034a22776524231d1f56cecd0920a2f",
+ "code_sha": "f8157a68416adbf12ab0bb9c1e9b8e21d78dfb9d",
+ "tested_sha": "f8157a68416adbf12ab0bb9c1e9b8e21d78dfb9d",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/SOURCE.json",
