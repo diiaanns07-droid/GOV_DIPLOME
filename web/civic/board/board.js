@@ -55,6 +55,7 @@
       "board.kpi.reported": "служба сообщила об устранении",
       "board.kpi.overdue_hint": "не исправлено в срок",
       "board.delta.vs_week": ", чем неделю назад",
+      "board.delta.vs_week_before": "",
       "board.pulse.title": "Пульс",
       "board.hot.meta": "за 7 дней · человек",
       "board.crisis.title": "Кризис: {title} · {zone}",
@@ -142,7 +143,8 @@
       "board.kpi.verified": "тұрғындар тексерді: {n}",
       "board.kpi.reported": "қызмет түзетілгенін хабарлады",
       "board.kpi.overdue_hint": "мерзімінде түзетілмеген",
-      "board.delta.vs_week": " — бір апта бұрынғымен салыстырғанда",
+      "board.delta.vs_week": "",
+      "board.delta.vs_week_before": "бір апта бұрынғыдан ",
       "board.pulse.title": "Пульс",
       "board.hot.meta": "соңғы 7 күн · адам саны",
       "board.crisis.title": "Дағдарыс: {title} · {zone}",
@@ -290,8 +292,12 @@
   function tr(key, params) {
     var B = I();
     if (B && B.has && B.has(key)) return B.t(key, params);
-    var l = lang();
-    var v = (FALLBACK[l] && FALLBACK[l][key]) || (SHARED[l] && SHARED[l][key]) || FALLBACK.ru[key] || SHARED.ru[key];
+    var l = lang(), v;
+    // Пустая строка — тоже перевод (в kk «чем неделю назад» стоит перед числом, после — ничего).
+    [FALLBACK[l], SHARED[l], FALLBACK.ru, SHARED.ru].some(function (d) {
+      if (d && Object.prototype.hasOwnProperty.call(d, key)) { v = d[key]; return true; }
+      return false;
+    });
     if (v == null) return key;
     if (typeof v === "object") {
       var n = params && params.n != null ? params.n : 0;
@@ -409,13 +415,15 @@
   }
 
   // Подгонка под высоту блока (большой экран без прокрутки): из списков [data-fit] убираем последние строки целиком,
-  // пока блок не помещается, — никаких строк, обрезанных посередине. Минимум одна строка остаётся.
+  // пока блок не помещается, — никаких строк, обрезанных посередине. Остаётся хотя бы одна строка; data-fit="0" —
+  // второстепенный список, его можно убрать совсем (например, инициативы под «Двором недели» на 1366).
   function fit(box) {
     if (!box || narrow()) return;
     var lists = box.querySelectorAll("[data-fit]");
     for (var i = lists.length - 1; i >= 0; i--) {
-      var list = lists[i];
-      while (list.children.length > 1 && box.scrollHeight > box.clientHeight + 1) list.removeChild(list.lastElementChild);
+      var list = lists[i], min = list.getAttribute("data-fit") === "0" ? 0 : 1;
+      while (list.children.length > min && box.scrollHeight > box.clientHeight + 1) list.removeChild(list.lastElementChild);
+      if (!list.children.length && list.parentNode) list.parentNode.removeChild(list);
     }
   }
 
@@ -472,12 +480,22 @@
     var probe = tr("akim.delta.ratio", { n: 2 });
     return probe.indexOf(num(2)) >= 0 ? probe.replace(num(2), num(n)) : tr("akim.delta.ratio", { n: n });
   }
+  // Для строк «Темы» и «Районы»: только изменение, без «чем неделю назад» (оно в подписи блока).
+  function deltaShort(ch) {
+    if (!ch || ch.trend === "flat" || ch.trend == null) return tr("akim.delta.same");
+    if (ch.mode === "new") return tr("akim.delta.new");
+    if (ch.mode === "ratio") return ratioText(ch.ratio);
+    var v = ch.mode === "pct" ? (I() && I().formatPercent ? I().formatPercent(ch.pct) : num(ch.pct) + " %") : num(ch.abs);
+    return tr(ch.trend === "up" ? "akim.delta.more" : "akim.delta.less", { v: v });
+  }
   function deltaText(ch) {
     if (!ch || ch.trend === "flat" || ch.trend == null) return tr("akim.delta.same");
     if (ch.mode === "new") return tr("akim.delta.new");
-    if (ch.mode === "ratio") return ratioText(ch.ratio) + tr("board.delta.vs_week");
+    // ru: «больше на 25 %, чем неделю назад»; kk: «бір апта бұрынғыдан 25 % артық» (сравнение — перед числом).
+    var before = tr("board.delta.vs_week_before"), after = tr("board.delta.vs_week");
+    if (ch.mode === "ratio") return before + ratioText(ch.ratio) + after;
     var v = ch.mode === "pct" ? (I() && I().formatPercent ? I().formatPercent(ch.pct) : num(ch.pct) + " %") : num(ch.abs);
-    return tr(ch.trend === "up" ? "akim.delta.more" : "akim.delta.less", { v: v }) + tr("board.delta.vs_week");
+    return before + tr(ch.trend === "up" ? "akim.delta.more" : "akim.delta.less", { v: v }) + after;
   }
 
   // ───────────── модуль ─────────────
@@ -812,7 +830,7 @@
             h("p", { class: "sc-row__sub", text: sub }),
             opt.length ? h("p", { class: "sc-row__sub", text: opt.join(" · ") }) : null,
           ]),
-          it.demo ? h("span", { class: "sc-row__end", text: tr("common.demo") }) : null,
+          demoTag(it.demo),
         ]);
       })), h("p", { class: "sc-note sc-note--muted", text: tr("board.decisions.where") })];
     }
@@ -828,7 +846,7 @@
           y.initiative ? tr("board.together.people", { n: y.initiative.joined }) : null,
           y.members != null ? tr("board.together.members", { n: y.members }) : null].filter(Boolean).join(" · ") }),
       ]) : null;
-      var rows = h("ol", { class: "sc-rows", "data-fit": "" }, (t.top || []).slice(0, 3).map(function (it) {
+      var rows = h("ol", { class: "sc-rows", "data-fit": "0" }, (t.top || []).slice(0, 3).map(function (it) {
         var when = it.status === "done" ? tr("board.together.done_tag") : shortDate(it.starts_at);
         return h("li", { class: "sc-row" }, [
           h("span", { class: "sc-pin", "data-level": "0", "aria-hidden": "true" }, [icon(it.status === "done" ? "check" : "users")]),
@@ -856,7 +874,7 @@
             h("p", { class: "sc-row__title", text: pick(o, "text") }),
             h("p", { class: "sc-row__sub", text: [lang() === "kk" ? o.kk : o.ru, o.due ? tr("board.meetings.due", { date: shortDate(o.due) }) : null].filter(Boolean).join(" · ") }),
           ]),
-          o.demo ? h("span", { class: "sc-row__end", text: tr("common.demo") }) : null,
+          demoTag(o.demo),
         ]);
       }));
       var next = m.next ? h("p", { class: "sc-note", text: tr("board.meetings.next", { date: dayTime(m.next.at), title: pick(m.next, "title") }) +
@@ -886,7 +904,7 @@
             h("span", { class: "sc-bar__track" }, [h("span", { class: "sc-bar__fill " + mod, style: "transform: scaleX(" + ((r.value || 0) / max).toFixed(3) + ")" })]),
             h("span", { class: "sc-bar__num", text: num(r.value || 0) }),
           ]),
-          h("span", { class: "sc-trow__num", "data-trend": r.trend, text: r.trend === "flat" ? tr("akim.delta.same") : deltaText(r).replace(tr("board.delta.vs_week"), "") }),
+          h("span", { class: "sc-trow__num", "data-trend": r.trend, text: r.trend === "flat" ? tr("akim.delta.same") : deltaShort(r) }),
         ]);
       }));
     }
@@ -938,15 +956,30 @@
       }) : []);
       renderTabs();
     }
+    // Сегменты обновляются на месте (тот же набор блоков) — фокус клавиатуры на сегменте не теряется.
     function renderTabs() {
       var ids = slideIds();
       parts.tabs.setAttribute("aria-label", tr("board.title"));
-      parts.tabs.replaceChildren.apply(parts.tabs, ids.map(function (id, i) {
-        var title = SLIDES[id].title(state.data);
-        return h("button", { type: "button", class: "sc-tab", role: "tab", "aria-selected": String(i === state.slide),
-          "data-past": String(i < state.slide), "aria-controls": "sc-slide-host", tabindex: i === state.slide ? "0" : "-1",
-          "aria-label": title, title: title, onclick: function () { go(i, true); } }, [h("span", { class: "sc-tab__bar", "aria-hidden": "true" })]);
-      }));
+      var same = parts.tabs.children.length === ids.length && ids.every(function (id, i) {
+        return parts.tabs.children[i].getAttribute("data-id") === id;
+      });
+      if (!same) {
+        parts.tabs.replaceChildren.apply(parts.tabs, ids.map(function (id, i) {
+          return h("button", { type: "button", class: "sc-tab", role: "tab", "data-id": id, "aria-controls": "sc-slide-host",
+            onclick: function () { go(i, true); } }, [h("span", { class: "sc-tab__bar", "aria-hidden": "true" })]);
+        }));
+      }
+      ids.forEach(function (id, i) {
+        var b = parts.tabs.children[i], title = SLIDES[id].title(state.data);
+        b.setAttribute("aria-selected", String(i === state.slide));
+        b.setAttribute("data-past", String(i < state.slide));
+        b.setAttribute("tabindex", i === state.slide ? "0" : "-1");
+        b.setAttribute("aria-label", title);
+        b.title = title;
+        // Полоса текущего блока начинается заново: снять и вернуть анимацию.
+        var bar = b.firstChild;
+        if (i === state.slide && bar) { bar.style.animation = "none"; void bar.offsetWidth; bar.style.animation = ""; }
+      });
     }
 
     // ── низ: пауза, подсказка клавиш, «обновлено», весь экран — тоже постоянные ──

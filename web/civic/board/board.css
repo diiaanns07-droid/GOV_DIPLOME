@@ -244,7 +244,7 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-row__sub { margin: 0.1em 0 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sc-row__end { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; text-align: right; }
 .sc-row--line { grid-template-columns: auto minmax(0, 1fr) minmax(0, max-content); }
-.sc-row--line .sc-row__end { overflow: hidden; text-overflow: ellipsis; max-width: 18em; }
+.sc-row--line .sc-row__end { overflow: hidden; text-overflow: ellipsis; max-width: 13em; }
 .sc-pin {
   display: grid; place-items: center; min-width: max(36px, 4.6vh); height: max(36px, 4.6vh); padding: 0 0.35em;
   border-radius: 999px; font-weight: 700; font-size: var(--sc-fs-s); border: 2px solid rgba(255, 255, 255, 0.85);
@@ -266,9 +266,12 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-slide__body > * { flex: none; } /* строки не сжимаются: лишние строки убирает подгонка (board.js fit) */
 
 .sc-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: var(--sc-gap); }
-.sc-stat { padding: 0.6em 0.9em; border-radius: calc(var(--sc-r) * 0.8); background: var(--sc-fill); border: 1px solid var(--sc-line); min-width: 0; }
-.sc-stat__value { margin: 0; font-size: var(--sc-fs-xl); font-weight: 600; line-height: 1.05; }
-.sc-stat__label { margin: 0.15em 0 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Плитка числа в блоке: число и подпись в строку — ниже, чем в KPI, но то же крупное число (читается с 3 м). */
+.sc-stat { display: flex; align-items: center; gap: 0.5em; padding: 0.35em 0.8em; border-radius: calc(var(--sc-r) * 0.8);
+  background: var(--sc-fill); border: 1px solid var(--sc-line); min-width: 0; }
+.sc-stat__value { margin: 0; font-size: var(--sc-fs-xl); font-weight: 600; line-height: 1; flex: none; }
+.sc-stat__label { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); line-height: 1.2; min-width: 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .sc-stat--ok .sc-stat__value { color: var(--sc-ok); }
 .sc-stat--danger .sc-stat__value { color: var(--sc-danger); }
 
@@ -380,7 +383,21 @@ body.sc-page.sc-idle { cursor: none; }
   .sc-pause, .sc-full, .sc-foot__keys { display: none; }
   .sc-trow { grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr) minmax(0, 1.6fr); }
   .sc-trow > :nth-child(4), .sc-trow > :nth-child(5) { display: none; }
-  .sc-crisis { flex-wrap: wrap; }
+  /* Телефон: не обрезать, а переносить — экран прокручивается */
+  .sc-crisis { flex-direction: column; align-items: stretch; gap: 10px; }
+  .sc-crisis__text { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .sc-crisis__title, .sc-crisis__meta { white-space: normal; }
+  .sc-crisis .sc-btn { width: 100%; }
+  .sc-crisis__mark { display: none; }
+  .sc-kpi__label, .sc-kpi__delta, .sc-kpi__note { white-space: normal; }
+  .sc-stat { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .sc-stat__label { -webkit-line-clamp: 3; }
+  .sc-row--line { grid-template-columns: auto minmax(0, 1fr); }
+  .sc-row--line .sc-row__end { grid-column: 2; max-width: none; text-align: left; white-space: normal; }
+  .sc-row__title, .sc-row__sub, .sc-trow__name, .sc-alarm__reason { white-space: normal; }
+  .sc-alarm__row { flex-wrap: wrap; }
+  .sc-tag { white-space: normal; }
+  .sc-chip { white-space: normal; max-width: 100%; }
   .sc-state { position: static; min-height: 70vh; }
 }
 .sc-all { display: none; }

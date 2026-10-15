@@ -206,10 +206,21 @@ def _shift(node, delta: timedelta):
 
 
 def fixture(now: datetime) -> dict:
-    """Фикстура, «прожившая» до сейчас: все даты сдвинуты на (now − anchor)."""
+    """Фикстура, «прожившая» до сейчас.
+
+    Оперативное (кризис, табло) сдвигается точно на (now − anchor): «начался 5 ч назад» в любое время дня.
+    Запланированное (встречи, инициативы) — на целые дни: встреча остаётся в 18:30, субботник — в 10:00.
+    """
     raw = json.loads(FIXTURE.read_text("utf-8"))
     anchor = datetime.fromisoformat(raw["_meta"]["anchor"])
-    return _shift({k: v for k, v in raw.items() if k != "_meta"}, now - anchor)
+    exact = now - anchor
+    local_now, local_anchor = now.astimezone(ASTANA_TZ), anchor.astimezone(ASTANA_TZ)
+    days = timedelta(days=(local_now.date() - local_anchor.date()).days)
+    out = {}
+    for key, value in raw.items():
+        if key != "_meta":
+            out[key] = _shift(value, days if key in ("together", "meetings") else exact)
+    return out
 
 
 # ---------------------------------------------------------------- общие мелочи
