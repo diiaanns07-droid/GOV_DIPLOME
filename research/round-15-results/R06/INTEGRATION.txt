@@ -1,0 +1,53 @@
+R06 · раунд 15 · как подключить (черновик, обновляется на каждом checkpoint)
+Ветка роли: claude/eloquent-einstein-wvuyje (STATUS: research/handoffs/astana/R06/round15/STATUS.md)
+
+=====================================================================================================
+A. ФУНКЦИИ ДЛЯ СОСЕДЕЙ (вызов в процессе, только чтение; нет связи с хранилищем — V2Error 503 module_not_ready)
+=====================================================================================================
+Модуль: ui.civic_store.v2. Связь с базой: шлюз R01 вызывает bind(store_service) как в FINAL-4; если сосед спросил
+раньше, модуль сам открывает ту же базу по CIVIC_DB_PATH.
+
+A.1 Работа v2 для R12 (календарь работ и конфликты, CONTRACT §5.6)
+    works_v2(date_from=None, date_to=None, district=None, street=None, service=None, include_outages=False)
+    -> {"items": [WORK], "count": n, "today": "ГГГГ-ММ-ДД", "module": "R06", "kinds": [...], "services": [...]}
+    WORK = {id, type: work|outage, service, kind: dig|surface|closure|landscape|lighting|other, segments: ["osm-w…-n"],
+            starts_on, ends_on (ГГГГ-ММ-ДД), source: real|demo, status (у работы), utility (у отключения), district,
+            title_ru, title_kk, street_ru, street_kk, zone_ru, zone_kk, planned_end, forecast_end, delayed,
+            geometry (точка или линия участка из графа OSM), updated_at, demo, link: "#works/<id>"}
+    - date_from/date_to: работа идёт хотя бы один день периода; street — часть названия улицы участка (ru/kk).
+    - Перекрытие проезда (отключение road_closure) входит с kind=closure; отключения воды/тепла/света/газа — только
+      с include_outages=True (это не работы на улице).
+    - ends_on = прогноз окончания, если срок сдвинут, иначе плановый срок.
+    Ошибки ввода — V2Error 400 (district, from/to, service).
+
+A.2 Работы рядом с двором для R16 («Мой двор» → «Работы»)
+    works_near(point=[lon, lat], radius_m=500, include_outages=True, include_done=False) (или lon=…, lat=…)
+    -> {"items": [WORK + distance_m], "count", "radius_m", "module": "R06"}; ближние первыми; без места не входят.
+
+A.3 Прежние функции FINAL-4 не менялись: nearby_items(district) для R08 (формат ITEM тот же; добавлены поля service,
+    kind, segments, street_ru, street_kk — старое поле source по-прежнему служба-источник отключения).
+
+=====================================================================================================
+B. МАРШРУТЫ API v2 (CONTRACT §7) — для R01 (V2_ROUTES / V2_HANDLERS / arguments)
+=====================================================================================================
+Будут в поставке (имена функций — по CONTRACT §7):
+    GET  notifications?since          ui.civic_store.v2 · list_notifications(since=None, device_id=None, context=None)
+    POST notifications/read           ui.civic_store.v2 · read_notifications(body, device_id=None, context=None)
+    POST ideas/{id}/to-initiative     ui.civic_store.v2 · idea_to_initiative(idea_id, body, context=None, principal=None)
+                                      (staff=True)
+Житель — заголовок X-Birge-Device (шлюз отдаёт заголовки в context["headers"] в нижнем регистре; функция читает их
+сама). Патч разбора параметров для CivicV2Gateway.arguments — в разделе B.1 (добавлю вместе с кодом).
+
+=====================================================================================================
+C. ЧУЖИЕ ТЕСТЫ, КОТОРЫЕ МЕНЯЕТ МИГРАЦИЯ 10
+=====================================================================================================
+C.1 R02 tests/civic/R02/test_r02_schema.py — миграция 10 R06 добавила таблицу civic_notify_reads (что житель прочитал в
+    ленте). Одна строка в EXPECTED_TABLES:
+--- a/tests/civic/R02/test_r02_schema.py
++++ b/tests/civic/R02/test_r02_schema.py
+@@
+     # R06 раунд 14, миграция 9 (идеи жителей и «Работы и отключения»; R01 FINAL-3 шаг 4)
+     "civic_ideas", "civic_idea_votes", "civic_idea_history", "civic_nearby_items", "civic_nearby_history",
++    # R06 раунд 15, миграция 10: что житель прочитал в ленте уведомлений (хэш устройства)
++    "civic_notify_reads",
+ }

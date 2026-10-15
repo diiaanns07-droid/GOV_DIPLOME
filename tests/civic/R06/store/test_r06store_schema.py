@@ -17,6 +17,8 @@ EXPECTED_TABLES = {
     "civic_votes", "civic_v2_settings",
     # R06 раунд 14, миграция 9 (волна 2): идеи жителей и «Что делают рядом».
     "civic_ideas", "civic_idea_votes", "civic_idea_history", "civic_nearby_items", "civic_nearby_history",
+    # R06 раунд 15, миграция 10: что житель прочитал в ленте уведомлений (хэш устройства).
+    "civic_notify_reads",
 }
 
 

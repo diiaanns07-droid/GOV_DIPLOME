@@ -398,6 +398,50 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
         """CREATE TRIGGER civic_nearby_history_no_delete BEFORE DELETE ON civic_nearby_history
            BEGIN SELECT RAISE(ABORT, 'civic_nearby_history is append-only'); END""",
     )),
+    # Раунд 15 (R06): работа v2 (CONTRACT §5.6), лента уведомлений (§5.8), идея → инициатива R16 (§7), демо-мир (§11).
+    # Только новые колонки, одна новая таблица и заполнение новых колонок у старых записей: прежние колонки,
+    # тексты и история не меняются, поэтому старые клиенты (R08 «Рядом», форма FINAL-4) читают то же, что раньше.
+    (10, "round 15 works v2, notifications, idea to initiative, demo world keys", (
+        # Служба (id из таблицы служб R08/R09, CONTRACT §3) и вид работы v2 для календаря R12.
+        "ALTER TABLE civic_nearby_items ADD COLUMN service TEXT",
+        """ALTER TABLE civic_nearby_items ADD COLUMN kind TEXT
+           CHECK (kind IS NULL OR kind IN ('dig', 'surface', 'closure', 'landscape', 'lighting', 'other'))""",
+        # Участки улиц — рёбра графа OSM R12 (["osm-w123-4", …]); place_json — откуда они взялись:
+        # {"from": [lon, lat], "to": [lon, lat], "street_ru", "street_kk", "length_m", "by": "street|editor|world"}.
+        "ALTER TABLE civic_nearby_items ADD COLUMN segments_json TEXT",
+        "ALTER TABLE civic_nearby_items ADD COLUMN place_json TEXT",
+        # Ключ записи демо-мира R02 (world_v1.json): повторный засев ничего не дублирует.
+        "ALTER TABLE civic_nearby_items ADD COLUMN world_key TEXT",
+        """CREATE UNIQUE INDEX civic_nearby_items_world ON civic_nearby_items(world_key)
+           WHERE world_key IS NOT NULL""",
+        # Старые записи: служба — источник отключения или вид работы; вид v2 — из вида раунда 14.
+        # Отключения воды, тепла, света и газа — не работы на улице: вид v2 у них пустой (в календарь R12 не идут).
+        """UPDATE civic_nearby_items SET
+               service = COALESCE(source, CASE work_kind WHEN 'lighting' THEN 'lighting'
+                                                         WHEN 'landscaping' THEN 'landscaping'
+                                                         WHEN 'roadworks' THEN 'road' END),
+               kind = CASE WHEN type = 'outage' AND utility = 'road_closure' THEN 'closure'
+                           WHEN type = 'outage' THEN NULL
+                           WHEN work_kind = 'roadworks' THEN 'surface'
+                           WHEN work_kind = 'landscaping' THEN 'landscape'
+                           WHEN work_kind = 'lighting' THEN 'lighting'
+                           ELSE 'other' END""",
+        # Что житель уже прочитал в ленте «Что нового для меня»: всё до read_until и отдельные id после него.
+        # Хранится только хэш устройства (та же соль базы, что у голосов), без адреса и времени визитов.
+        """CREATE TABLE civic_notify_reads (
+            device_hash TEXT PRIMARY KEY CHECK (length(device_hash) = 64),
+            read_until TEXT,
+            read_ids_json TEXT NOT NULL DEFAULT '[]',
+            updated_at TEXT NOT NULL
+        )""",
+        # Идея, которую жители сделают сами: инициатива R16 («Сделайте вместе — поддержим инвентарём»).
+        "ALTER TABLE civic_ideas ADD COLUMN initiative_id TEXT",
+        "ALTER TABLE civic_ideas ADD COLUMN initiative_at TEXT",
+        "ALTER TABLE civic_ideas ADD COLUMN world_key TEXT",
+        "CREATE UNIQUE INDEX civic_ideas_world ON civic_ideas(world_key) WHERE world_key IS NOT NULL",
+        "ALTER TABLE civic_proposals ADD COLUMN world_key TEXT",
+        "CREATE UNIQUE INDEX civic_proposals_world ON civic_proposals(world_key) WHERE world_key IS NOT NULL",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 

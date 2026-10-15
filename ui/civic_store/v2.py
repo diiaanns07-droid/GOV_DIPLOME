@@ -37,7 +37,9 @@
 from __future__ import annotations
 
 import logging
+import os
 import sqlite3
+import threading
 from urllib.parse import unquote
 
 from .db import StorageError
@@ -352,17 +354,40 @@ class V2Error(Exception):
 
 
 _BOUND: CivicV2 | None = None
+_BIND_LOCK = threading.Lock()
 
 
 def bind(service) -> CivicV2:
     """Связать модуль с CivicService шлюза. Повторный вызов с тем же сервисом ничего не меняет."""
     global _BOUND
-    if _BOUND is None or _BOUND.service is not service:
-        _BOUND = CivicV2(service)
-    return _BOUND
+    with _BIND_LOCK:
+        if _BOUND is None or _BOUND.service is not service:
+            _BOUND = CivicV2(service)
+        return _BOUND
+
+
+def _bind_from_env() -> None:
+    """Раунд 15: соседи (R12 календарь, R16 двор, R08) могут спросить работы раньше, чем шлюз R01 создал хранилище
+    (оно создаётся при первом запросе v1). Тогда связываемся сами с той же базой CIVIC_DB_PATH; шлюз потом
+    вызовет bind(своё хранилище) — это ничего не ломает (та же база, те же сессии в ней)."""
+    path = os.environ.get("CIVIC_DB_PATH")
+    if not path:
+        return
+    try:
+        from .service import CivicService
+        service = CivicService(path)
+    except Exception:  # noqa: BLE001 — нет файла, чужая схема: соседи получат 503 и покажут «пока нет данных»
+        LOGGER.exception("civic v2: не удалось открыть CIVIC_DB_PATH для соседей")
+        return
+    with _BIND_LOCK:
+        global _BOUND
+        if _BOUND is None:
+            _BOUND = CivicV2(service)
 
 
 def _v2() -> CivicV2:
+    if _BOUND is None:
+        _bind_from_env()
     if _BOUND is None:
         raise V2Error(503, "module_not_ready", "R06 не связан с хранилищем: шлюз должен вызвать bind(service).")
     return _BOUND
@@ -563,3 +588,28 @@ def update_work(work_id, body, context=None, principal=None):
 
 def remove_work(work_id, body=None, context=None, principal=None):
     return _run(_v2().nearby.remove, _actor(context), work_id, body or {})
+
+
+# --- раунд 15: работа v2 для соседей (CONTRACT §5.6, §7 «Вызовы между модулями») ----------------------------------
+
+def works_v2(date_from=None, date_to=None, district=None, street=None, service=None, include_outages=False):
+    """Для R12 (GET works-calendar, works-conflicts): работы служб в формате §5.6.
+
+    {"items": [{id, type, service, kind, segments, starts_on, ends_on, source: real|demo, status, title_ru/kk,
+    street_ru/kk, district, planned_end, forecast_end, delayed, geometry, updated_at, demo, link}], "count", "today"}.
+    Перекрытия проезда (отключение road_closure) входят с видом closure; отключения воды/тепла — только с
+    include_outages=True. Нет связи с хранилищем — V2Error 503 module_not_ready (R12: «пока нет данных»).
+    """
+    return _run(_v2().nearby.works_v2, date_from=date_from, date_to=date_to, district=district, street=street,
+                service=service, include_outages=bool(include_outages))
+
+
+def works_near(point=None, radius_m=None, include_outages=True, include_done=False, lon=None, lat=None):
+    """Для R16 «Мой двор» → «Работы»: работы и отключения ближе radius_m (по умолчанию 500 м) к точке двора.
+
+    point — [lon, lat] (или lon=…, lat=…). Ответ — как works_v2 + distance_m у каждой записи; без места — не входят.
+    """
+    if point is None and lon is not None and lat is not None:
+        point = [lon, lat]
+    return _run(_v2().nearby.works_near, point, radius_m=radius_m, include_outages=bool(include_outages),
+                include_done=bool(include_done))
