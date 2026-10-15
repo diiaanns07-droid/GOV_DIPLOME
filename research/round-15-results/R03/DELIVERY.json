@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "7724787ed892e7c67642357e0d58a49222c2a6cb",
- "tested_sha": "7724787ed892e7c67642357e0d58a49222c2a6cb",
+ "code_sha": "fe8180fcf94e2345ede6bf88081d5c8c1e356fb1",
+ "tested_sha": "fe8180fcf94e2345ede6bf88081d5c8c1e356fb1",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -75,28 +75,29 @@
   "research/round-15-results/R03/screens/shell_map_375_ru.png"
  ],
  "integration": {
-  "route": "POST /api/civic/v2/assistant/ask → agent.civic_assistant.api.ask — у R01 уже в шлюзе (dbf25c05: V2_HANDLERS_ROUND15, аргументы question, lang ru|kk|mixed, district, body); ask принимает их все: lang mixed → язык по вопросу, district → район экрана, если в вопросе нет",
+  "route": "POST /api/civic/v2/assistant/ask → agent.civic_assistant.api.ask — в шлюзе R01 (V2_HANDLERS_ROUND15, аргументы question, lang ru|kk|mixed, district, body); в сборке B0 (R01 c97aa5f5) уже R03 7724787e",
   "patches": [
-   "research/round-15-results/R03/patches/R01_assistant_ask.patch (снят с R01 dbf25c05: только файлы экрана — ui/web_server.py CIVIC_ASSETS analyst.js/analyst.css; web/index.html link + script после birge-ref.js)",
-   "research/round-15-results/R03/patches/R01_palette_commands.patch (web/civic/shell/birge-ref.js: Ctrl+K)"
+   "research/round-15-results/R03/patches/R01_warm_up.patch (НОВЫЙ к B1: ui/web_server.py main() — прогрев agent.civic_assistant.api.warm_up в фоне после wire() и засева мира, R10 B-107)",
+   "research/round-15-results/R03/patches/R01_assistant_ask.patch (уже применён R01 в c97aa5f5: CIVIC_ASSETS analyst.js/analyst.css; web/index.html link + script)",
+   "research/round-15-results/R03/patches/R01_palette_commands.patch (уже применён R01 в c97aa5f5: Ctrl+K)"
   ],
   "screen": "window.BirgeAnalyst.mount(root, {api, apiBase, lang, openTarget, openSection, titleTag}); сам вызывает BirgeShell.registerScreen({id:'analyst', modes:['akimat']})",
   "i18n_for_R11": "research/round-15-results/R03/i18n_analyst.json (58 ключей analyst.* ru/kk)",
-  "menu_for_R11": "Сделано у R01 dbf25c05 по IA_ROUND15 v1.1 R11: акимат → «Ещё» → «Инструменты» → «Спросить Birge» (#analyst, SCREENS.analyst, i-sparkle); palette: BirgeAnalyst.ask(text)",
-  "verified_on": "15 окт ~12:45 UTC: git worktree ветки R01 dbf25c05 + пути R03 (7724787e) + оба patch, база RUN.txt §3, Chromium: без входа 401, без CSRF 403, пустой вопрос 400, district «Нура» 400, сцены 200 (131/162/5 мс), «Ещё» содержит analyst, #analyst → ответ → «Показать на карте» → карточка R07 с тем же числом 8, ошибок JS нет; тесты R01 round15 + api_v2: 286 passed, 1 skipped"
+  "menu_for_R11": "Сделано у R01 по IA_ROUND15 v1.1 R11: акимат → «Ещё» → «Инструменты» → «Спросить Birge» (#analyst, SCREENS.analyst, i-sparkle); palette: BirgeAnalyst.ask(text)",
+  "verified_on": "15 окт ~16:50 UTC: git worktree ветки R01 c9069723 (B0) + пути R03 + R01_warm_up.patch, мир R02 (CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1; civic-world: R09 743, R17 3, R13 17, R12 39): первый вопрос сразу после «civic-v2: ready» 0,66–1,2 с (без прогрева 3,4 с); Chromium 1366 и 375: «Ещё» содержит analyst, ответ 40 · 15, первое место «Двор ЖК „BI City Tokyo“» 7 → «Показать на карте» → карточка R07 «7 человек сообщили», ошибок JS нет; tests/civic/R03/round15 в этой копии: 81 passed, 1 skipped. Раньше (12:45 UTC, R01 dbf25c05): 401/403/400/200, тесты R01 round15 + api_v2 — 286 passed, 1 skipped"
  },
  "tests": {
   "pytest_R03_round15": {
    "status": "PASS",
-   "passed": 75,
+   "passed": 81,
    "skipped": 1,
    "failed": 0,
    "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
-   "note": "skipped — тест с настоящими соседями: их модулей нет в ветке R03; с их кодом (временная копия) — проходит"
+   "note": "skipped — тест со всеми настоящими соседями сразу: на ветке R03 нет R17, в B0 нет R16; с их кодом (временная копия) — проходит"
   },
   "pytest_R03_R09_R01_related": {
    "status": "PASS",
-   "passed": 852,
+   "passed": 857,
    "skipped": 10,
    "xfailed": 1,
    "failed": 0,
@@ -105,15 +106,15 @@
   },
   "browser_stand_checks": {
    "status": "PASS",
-   "passed": 104,
+   "passed": 124,
    "failed": 0,
    "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_screens.cjs --url http://127.0.0.1:8670",
-   "env": "Chromium (Playwright), стенд analyst_devserver.py, 1366/1024/375 × ru/kk, проверки П1"
+   "env": "Chromium (Playwright), стенд analyst_devserver.py, 1366/1024/375 × ru/kk, проверки П1 и метрики аудита R10 (≤ 3 размеров шрифта на пустом экране, зоны нажатия ≥ 44 px, видимая надпись скелетона)"
   },
   "browser_shell_integration": {
    "status": "PASS",
-   "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_shell_check.cjs <out>",
-   "env": "app.py ветки R01 dbf25c05 + пути R03 + patch, CIVIC_DEMO=1, вход operator; 1366 и 375; кадры screens/shell_*.png"
+   "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_shell_check.cjs <out> http://127.0.0.1:8656",
+   "env": "app.py ветки R01 c9069723 (B0) + пути R03 fe8180fc + R01_warm_up.patch, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 (мир R02), вход operator; 1366 и 375; кадры screens/shell_*.png"
   },
   "eval_heldout_set1_first_run": {
    "status": "PASS",
@@ -193,6 +194,25 @@
    "failed": 0,
    "cmd": "python3 -B -m pytest -q tests/civic/R01/round15 tests/civic/R01/test_r01_api_v2.py",
    "env": "worktree R01 dbf25c05 + пути R03 7724787e + patches R03"
+  },
+  "pytest_R15_assistant_security": {
+   "status": "PASS",
+   "passed": 15,
+   "xpassed_strict": 2,
+   "failed": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R15/round15/test_r15_round15_assistant.py",
+   "env": "копия R01 dbf25c05 + пути R03 (S44) + тесты R15 bb194454: 2 случая S44 — XPASS(strict), т. е. исправлено; R15 снимет xfail"
+  },
+  "cold_start_first_question": {
+   "status": "PASS",
+   "before_ms": 3428,
+   "after_ms": [
+    661,
+    708,
+    1218
+   ],
+   "limit_ms": 3000,
+   "env": "R01 c9069723 + мир R02; вопрос «Сколько жалоб в Нуре за 30 дней?» сразу после строки «civic-v2: ready»; без прогрева 3421 мс — первый вызов R07 heat (геометрия), второй вопрос 828 мс — первый вызов R08"
   }
  },
  "screens": [
@@ -218,7 +238,7 @@
   "research/round-15-results/R03/screens/shell_map_375_ru.png"
  ],
  "known_limits": [
-  "Файлов экрана (analyst.js/css) пока нет в CIVIC_ASSETS и index.html сборки R01 — patch R01_assistant_ask.patch; маршрут и пункт меню у R01 уже есть.",
+  "В сборке B0 (R01 c97aa5f5) — R03 7724787e: без S44, прогрева, 44-px чипов и кавычек; к B1 — code_sha этой поставки и patches/R01_warm_up.patch.",
   "Табло R17 считает по своей демо-фикстуре, «Картина дня» — по демо-набору R07: до единого демо-мира R02 их «просрочено» различаются (17 и 5) — разные наборы; аналитик подписывает источник каждого блока.",
   "Сервис R17 запускается шлюзом лениво: пока его нет, кризис — «штаб не подключён» (честно), табло — запасной расчёт по срокам R08. R01: ui.civic_agencies.configure(db_path=…) в wire().",
   "Первый вопрос о конфликтах работ ~2 с (R12 загружает работы и граф); следующие — миллисекунды.",
@@ -226,7 +246,7 @@
   "Новые формулировки: 87–93 % верных фактов с первого раза (ASSISTANT_EVAL.md); худший случай — подсказки или верные числа на соседний вопрос, выдуманных чисел нет.",
   "Казахские фразы ответа — сверены R11 (круг 1); новые фразы блоков соседей — на следующий круг R11."
  ],
- "next_step": "Каждый круг: AMENDMENTS.md → find_branches.py → новые версии соседей (повторить --with-neighbours) → ревью R11 → LOCAL-14 eval_human.py; помощь R01 при B1 (16 окт 09:00 UTC).",
+ "next_step": "B1 (16 окт 09:00 UTC): R01 берёт code_sha и patches/R01_warm_up.patch; после сборки — проверить «Спросить Birge» в B1 (оболочка, мир R02, холодный старт). Каждый круг: AMENDMENTS.md → find_branches.py → баги R10 / находки R15 / ревью R11 по R03.",
  "amendments": {
   "read": [
    "П1 «Без ИИ-слопа» (15 окт 17:05 Астаны)"
@@ -234,6 +254,10 @@
   "applied": "пустое состояние и ошибки — значок R11 48 px + текст + одна кнопка; иллюстраций ill-* нет; декоративных картинок нет"
  },
  "review": {
-  "R11_round1": "применено: patches/R03_dictionary_terms.patch (R11) + R03-3, R03-4, R03-6 (по П1), R03-7; карточка — ui-kit .bk-answer (IA §5.6), «Спросить» — главная кнопка; R03-8 — после адреса #раздел/путь у R01"
+  "R11_round1": "применено: patches/R03_dictionary_terms.patch (R11) + R03-3, R03-4, R03-6 (по П1), R03-7; карточка — ui-kit .bk-answer (IA §5.6), «Спросить» — главная кнопка; R03-8 — после адреса #раздел/путь у R01",
+  "R15_S44": "исправлено cae2e270: любой флаг безопасности → модель не зовётся (offline_reason question_has_instructions)",
+  "R10_B107": "исправлено 89359acf: warm_up() + patches/R01_warm_up.patch; скелетон с видимой надписью «Считаем по данным…»",
+  "R10_B120": "исправлено 89359acf: чипы 44 px (видимая зона), кнопка «Спросить» 44 × 44 на 375; пустой экран — 3 размера шрифта",
+  "R15_R16_initiatives_name": "уже не актуально с 650d5ef6: первым идёт ui.civic_together.initiatives_summary (только published/done)"
  }
 }

@@ -74,6 +74,18 @@
   Живая проверка на копии ветки R01 dbf25c05 + мои пути: 401 / 403 / 400 / 200, сцены 131/162/5 мс, меню, «Показать на
   карте» → карточка R07 с тем же 8; тесты R01 286 passed; R03 75 + 1 skipped; с R09/R01/R03 r14 — 852 passed.
 
+- 12:50–16:21 UTC: перерыв — у владельца кончился лимит (сессию перезапускали); 3 срабатывания триггера прочитаны.
+- 16:21–17:00 UTC (код fe8180fc = code_sha DELIVERY): AMENDMENTS — только П1. R01 взял R03 7724787e в B0 (c97aa5f5:
+  файлы экрана, палитра). Замечания соседей:
+  · R15 S44 (низкий): «придумай» / «покажи телефоны» уходили модели → любой флаг безопасности = офлайн (cae2e270);
+    тесты R15 по S44 — XPASS(strict). Наблюдение R15 про имя функции R16 устарело (с 650d5ef6 — initiatives_summary).
+  · R10 B-107 (первый ответ 4,3 с): разовая загрузка карты R07 (3,4 с) и «Картины дня» R08 (0,8 с) → warm_up() и
+    patches/R01_warm_up.patch (фон после засева мира). Копия B0 c9069723 + мир R02: 0,66–1,2 с сразу после «ready».
+    Скелетон теперь с видимой надписью «Считаем по данным…».
+  · R10 B-120 (чипы 34 px): чипы 44 px, «Спросить» 44 × 44 на 375; пустой экран — 3 размера шрифта (аудит R10 — WARN).
+  · Мир R02: «Двор ЖК «BI City Tokyo»» → «Двор ЖК „BI City Tokyo“» (texts.quoted).
+  Тесты: R03 81 + 1 skipped; с R09/R01/R03 r14 — 857 passed; браузер стенда 124/0; оболочка B0 + мир — 1366 и 375 ✓.
+
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,
   web/civic/qa/qa.js, SCREENS.questions в birge.js). Два модуля с одним именем ломали бы друг друга.
@@ -87,8 +99,8 @@
    (git worktree + git checkout <их ветка> -- <их пути>; python3 -B -m agent.civic_assistant.analyst.evaluate
    --with-neighbours <db>) и тест tests/civic/R03/round15/test_analyst_neighbours.py.
 3. Ревью R11 (research/round-15-results/R11/REVIEW_R15.md в их ветке): правки по R03 — сразу.
-4. Сборка R01 (B1 16 окт 09:00 UTC, B2 18:00 UTC, FINAL-5 17 окт 13:00 UTC): взял ли R01 пути R03 и patch файлов
-   экрана (CIVIC_ASSETS + index.html); если в сборке
+4. Сборка R01 (B1 16 окт 09:00 UTC, B2 18:00 UTC, FINAL-5 17 окт 13:00 UTC): взял ли R01 code_sha R03 и
+   patches/R01_warm_up.patch (файлы экрана и палитра уже в B0); если в сборке
    что-то не так с «Спросить Birge» — исправить в своих путях, обновить DELIVERY.json (code_sha).
 5. Кадры: tests/civic/R03/round15/analyst_screens.cjs (стенд) и analyst_shell_check.cjs (оболочка с patch).
 6. После 17 окт 23:59 Астаны (18:59 UTC): удалить scheduled task trig_01HDRqCuZR25GqKUWS9wJjpG, финальные DELIVERY/STATUS.
