@@ -141,13 +141,14 @@
     // Раунд 15 (IA_ROUND15 §7.6): значки — из icons.svg ui-kit R11 (новые sparkle, monitor, bell — с его поставки r15).
     yard: "home", together: "heart", meetings: "message", agencies: "building", analyst: "sparkle", board: "monitor",
     crisis: "alert", "works-calendar": "calendar", notifications: "bell" };
-  // Линейная иллюстрация ui-kit (icons.svg #ill-…) для пустых состояний листа (чек-лист №8, №12) — без innerHTML.
-  function illustration(name) {
+  // Пустое состояние экрана (поправка П1 «Без ИИ-слопа», правило 2): одна маленькая монохромная иконка набора R11
+  // (40 px, линия как у иконок меню) + короткий текст + одна кнопка. Больших иллюстраций нет. Без innerHTML.
+  function stateIcon(name) {
     const sprite = window.BirgeUI && window.BirgeUI.SPRITE;
     if (!sprite) return null;
     const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"), use = document.createElementNS(NS, "use");
-    svg.setAttribute("class", "bk-ill"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
-    use.setAttribute("href", sprite + "#ill-" + name);
+    svg.setAttribute("class", "ic birge-state-ic"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("focusable", "false");
+    use.setAttribute("href", sprite + "#i-" + name);
     svg.append(use);
     return svg;
   }
@@ -570,7 +571,7 @@
   function emptyDay(kind) {
     // Состояния по UX_BRIEF правило 7: «пока пусто» с подсказкой или ошибка с действием — не белый экран.
     const box = el("div", { class: kind === "error" ? "bk-error birge-day-empty" : "bk-empty birge-day-empty" }, [
-      illustration(kind === "error" ? "offline" : "list"),
+      stateIcon(kind === "error" ? "wifi-off" : "clock"),
       el("h2", { class: "bk-empty__title", text: t(kind === "error" ? "shell.day.error_title" : "shell.day.soon_title") }),
       el("p", { class: "bk-empty__text", text: t(kind === "error" ? "shell.day.error_text" : "shell.day.soon_text") }),
     ]);
@@ -615,7 +616,7 @@
   }
   function emptyScreen(kind) {
     const box = el("div", { class: kind === "error" ? "bk-error birge-day-empty" : "bk-empty birge-day-empty" }, [
-      illustration(kind === "error" ? "offline" : "list"),
+      stateIcon(kind === "error" ? "wifi-off" : "clock"),
       el("h2", { class: "bk-empty__title", text: t(kind === "error" ? "shell.screen.error_title" : "shell.screen.soon_title") }),
       el("p", { class: "bk-empty__text", text: t(kind === "error" ? "shell.screen.error_text" : "shell.screen.soon_text") }),
     ]);
