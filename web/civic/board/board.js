@@ -62,7 +62,7 @@
       "board.crisis.updated": "обновлено {time}",
       "board.crisis.more": { one: "и ещё {n} кризис", few: "и ещё {n} кризиса", many: "и ещё {n} кризисов" },
       "board.crisis.open": "Открыть кризисный штаб",
-      "board.crisis.in_hq": "в кризисном штабе",
+      "board.crisis.in_hq": "в штабе",
       "board.crisis.zone_city": "весь город",
       "board.crisis.tasks": "Задачи служб",
       "board.crisis.since": "с {time}",
@@ -100,6 +100,9 @@
       "board.together.when": "{date}",
       "board.together.done_tag": "Сделано",
       "board.together.now": "идёт сейчас",
+      "board.together.going": "придут: {n}",
+      "board.together.taking": "участвуют: {n}",
+      "board.together.took": "участвовали: {n}",
       "board.meetings.done": "Сделано",
       "board.meetings.in_work": "В работе",
       "board.meetings.overdue": "Просрочено",
@@ -155,7 +158,7 @@
       "board.crisis.updated": "жаңартылды: {time}",
       "board.crisis.more": "тағы {n} дағдарыс",
       "board.crisis.open": "Дағдарыс штабын ашу",
-      "board.crisis.in_hq": "дағдарыс штабында",
+      "board.crisis.in_hq": "штабта",
       "board.crisis.zone_city": "бүкіл қала",
       "board.crisis.tasks": "Қызметтердің тапсырмалары",
       "board.crisis.since": "{time} бастап",
@@ -193,6 +196,9 @@
       "board.together.when": "{date}",
       "board.together.done_tag": "Атқарылды",
       "board.together.now": "қазір өтіп жатыр",
+      "board.together.going": "барады: {n}",
+      "board.together.taking": "қатысып жатыр: {n}",
+      "board.together.took": "қатысты: {n}",
       "board.meetings.done": "Орындалды",
       "board.meetings.in_work": "Орындалуда",
       "board.meetings.overdue": "Мерзімі өткен",
@@ -680,7 +686,7 @@
       if (a.kind === "spike") return [tr("akim.pulse.spike", { category: cat, district: dist, k: num(a.k) }), tr("akim.pulse.reason.spike", { n: a.value, base: num(base) })];
       if (a.kind === "spike_new") return [tr("akim.pulse.spike_new", { category: cat, district: dist }), tr("akim.pulse.reason.spike_new", { n: a.value })];
       if (a.kind === "spike_city") {
-        var names = (a.districts || []).slice(0, 3).map(function (x) { return districtName(x.district) + " — " + num(x.value); });
+        var names = (a.districts || []).slice(0, a.crisis && a.crisis.incident ? 2 : 3).map(function (x) { return districtName(x.district) + " — " + num(x.value); });
         return [tr("akim.pulse.spike_city", { category: cat, n: (a.districts || []).length, k: num(a.k) }), tr("akim.pulse.reason.city", { list: names.join(", ") })];
       }
       if (a.kind === "new_hot") return [tr("akim.pulse.new_hot", { place: place }), tr("akim.pulse.reason.new_hot", { n: a.value })];
@@ -844,11 +850,24 @@
         ]);
       })), h("p", { class: "sc-note sc-note--muted", text: tr("board.decisions.where") })];
     }
-    function togetherWhen(it, now) {
+    function started(it, now) {
       var s = Date.parse(it.starts_at || ""), e = Date.parse(it.ends_at || "");
-      if (!isFinite(s)) return null;
+      return isFinite(s) && s <= now && (!isFinite(e) || e > now);
+    }
+    // «придут» — до начала, «участвуют» — идёт, «участвовали» — сделано (R16 считает «Я приду»).
+    function togetherPeople(it, now) {
+      var key = it.status === "done" ? "board.together.took" : started(it, now) ? "board.together.taking" : "board.together.going";
+      return tr(key, { n: num(it.joined || 0) });
+    }
+    // «Двор: BI City Tokyo» → «BI City Tokyo»: в плитке уже написано «Двор недели».
+    function yardName(label) {
+      var short = String(label || "").replace(/^(двор|аула)(\s*[:—–-]\s*|\s+)/i, "");
+      return short || label || "";
+    }
+    function togetherWhen(it, now) {
+      if (!isFinite(Date.parse(it.starts_at || ""))) return null;
       // Начатое и не законченное дело — «идёт сейчас», а не вчерашняя дата.
-      if (s <= now && (!isFinite(e) || e > now)) return tr("board.together.now");
+      if (started(it, now)) return tr("board.together.now");
       return dayTime(it.starts_at);
     }
     function slideTogether(d) {
@@ -861,18 +880,20 @@
       var y = t.yard_of_week;
       var yard = y ? h("div", { class: "sc-yard" }, [
         h("span", { class: "sc-yard__icon", "aria-hidden": "true" }, [icon("home")]),
-        h("p", { class: "sc-yard__title", text: tr("board.together.yard") + ": " + (pick(y, "label") || "") }),
+        h("p", { class: "sc-yard__title", text: tr("board.together.yard") + ": " + yardName(pick(y, "label")) }),
         h("p", { class: "sc-yard__meta", text: [y.initiative ? y.initiative.title : null,
-          y.initiative ? tr("board.together.people", { n: y.initiative.joined }) : null,
+          y.initiative ? togetherPeople(y.initiative, now) : null,
           y.members != null ? tr("board.together.members", { n: y.members }) : null].filter(Boolean).join(" · ") }),
       ]) : null;
-      var rows = h("ol", { class: "sc-rows", "data-fit": "0" }, (t.top || []).slice(0, 3).map(function (it) {
+      // Дело «двора недели» уже в плитке — в списке его не повторяем.
+      var list = (t.top || []).filter(function (it) { return !(y && y.initiative && y.initiative.id === it.id); });
+      var rows = h("ol", { class: "sc-rows", "data-fit": "0" }, list.slice(0, 3).map(function (it) {
         var when = it.status === "done" ? tr("board.together.done_tag") : togetherWhen(it, now);
         return h("li", { class: "sc-row" }, [
           h("span", { class: "sc-pin", "data-level": "0", "aria-hidden": "true" }, [icon(it.status === "done" ? "check" : "users")]),
           h("div", { class: "sc-row__main" }, [
             h("p", { class: "sc-row__title", lang: it.lang === "kk" ? "kk" : it.lang === "ru" ? "ru" : null, text: it.title }),
-            h("p", { class: "sc-row__sub", text: [pick(it, "place"), when, tr("board.together.people", { n: it.joined })].filter(Boolean).join(" · ") }),
+            h("p", { class: "sc-row__sub", text: [pick(it, "place"), when, togetherPeople(it, now)].filter(Boolean).join(" · ") }),
           ]),
           it.supported ? h("span", { class: "sc-tag", text: tr("board.together.supported") }) : null,
         ]);
