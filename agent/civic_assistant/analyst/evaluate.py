@@ -151,9 +151,11 @@ class Oracle:
         if intent == "lagging_services":
             board = self._board(d, days if gold.get("days") else 30)
             if board is not None:
-                rows = [r for r in board["services"] if r.get("open") or r.get("overdue")]
-                exp = [sum(1 for r in rows if r.get("overdue")), int(board["totals"]["overdue"])]
-                return nums[:2] == exp, f"табло R17: ожидалось {exp}, в ответе {nums[:2]}"
+                # Срок исправления R08 (overdue_fix), если табло его знает; без R08 — срок ответа R09 (overdue).
+                key = "overdue" if any(r.get("overdue_fix") is None for r in board["services"]) else "overdue_fix"
+                rows = [r for r in board["services"] if r.get("open") or r.get(key)]
+                exp = [sum(1 for r in rows if r.get(key)), int(board["totals"][key])]
+                return nums[:2] == exp, f"табло R17 ({key}): ожидалось {exp}, в ответе {nums[:2]}"
             exp_total = int((self.summary(d).get("overdue") or {}).get("count") or 0)
             rows = S.services_from_deadlines(self.heat, district=d)["items"]
             exp = [sum(1 for r in rows if r["overdue"] > 0), exp_total]

@@ -32,13 +32,16 @@ def block(answer, kind):
 
 
 def test_r17_board_snapshot_totals_are_complaints_not_rows():
+    """Отставание — по сроку исправления R08 (overdue_fix): итог R17 4, а не 2 + 3 по строкам (совместное — одно)."""
     a = ask("Какие службы отстают?", agencies_board=F.r17_board_snapshot)
     lag = block(a, "lagging_services")
     assert lag["source"]["role"] == "R17"
-    assert [n["value"] for n in lag["numbers"]] == [3, 8]       # 3 службы с просрочками; 8 обращений — итог R17, не 4+3+2
-    assert [i["service"] for i in lag["items"]] == ["utilities", "water", "road"]
-    assert lag["items"][0]["verified_pct"] == 50
-    assert "Медиана ответа этой службы — 4 дн." in lag["lines"]["ru"]
+    assert [n["value"] for n in lag["numbers"]] == [2, 4]
+    assert [i["service"] for i in lag["items"]] == ["water", "utilities"]
+    assert lag["items"][1]["verified_pct"] == 50
+    assert "Медиана ответа этой службы — 2,5 дн." in lag["lines"]["ru"]
+    # Срок ответа жителю — другое число и другое имя (вкладка «Ответ просрочен»), итог R17 8.
+    assert "Срок первого ответа жителю прошёл у 8 обращений (вкладка «Ответ просрочен»)." in lag["lines"]["ru"]
 
 
 def test_r17_active_incidents_progress_and_openers():
@@ -93,6 +96,11 @@ def _real(module):
         pytest.skip(f"NOT_RUN: модуля {module} нет в этой ветке (появится в сборке R01)")
 
 
+def _late_total(totals):
+    """Итог табло R17, который аналитик называет «просрочено»: срок исправления R08, без R08 — срок ответа."""
+    return totals["overdue_fix"] if totals.get("overdue_fix") is not None else totals["overdue"]
+
+
 def test_real_neighbours_if_present(tmp_path, monkeypatch):
     agencies, together, meetings = _real("ui.civic_agencies"), _real("ui.civic_together"), _real("ui.civic_meetings")
     calendar = _real("engine.civic_geo.works_calendar")
@@ -108,7 +116,7 @@ def test_real_neighbours_if_present(tmp_path, monkeypatch):
     meetings.make_service(db)
     core.configure(provider=None, rate=(1000, 60.0))
     expect = {
-        "Какие службы отстают?": ("lagging_services", agencies.board_snapshot(30, None)["totals"]["overdue"], 1),
+        "Какие службы отстают?": ("lagging_services", _late_total(agencies.board_snapshot(30, None)["totals"]), 1),
         "Где копаем дважды?": ("work_conflicts", calendar.conflicts_summary(None)["conflicts"], 0),
         "Какие инициативы жителей?": ("initiatives", together.initiatives_summary(None)["upcoming"], 0),
         "Что поручили на встречах с жителями?": ("meeting_orders", meetings.board_block(district=None)["counts"]["total"], 0),

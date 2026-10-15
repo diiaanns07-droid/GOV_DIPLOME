@@ -98,8 +98,11 @@ def test_scene_snow_in_nura_and_lagging_services():
     assert "Е-308" in hot["lines"]["ru"][0] and "8" in hot["lines"]["ru"][0]
     lag = block(a, "lagging_services")
     assert lag["source"]["role"] == "R17"
-    assert [n["value"] for n in lag["numbers"]] == [2, 6]          # 2 службы с просрочками, 4 + 2 обращения
+    # Отставание — по сроку исправления R08 (overdue_fix табло R17): 2 службы, 3 + 1 обращение — как «Просрочено»
+    # «Картины дня»; срок ответа жителю (4 + 2) — отдельной строкой со своим именем.
+    assert [n["value"] for n in lag["numbers"]] == [2, 4]
     assert lag["items"][0]["service"] == "street_cleaning"
+    assert any("Срок первого ответа жителю прошёл у 6 обращений" in line for line in lag["lines"]["ru"])
     # Главная кнопка — «Показать на карте» первого места; вторая — «Открыть» раздел.
     assert a["actions"][0] == {"kind": "map.focus", "target": hot["items"][0]["target"], "days": 7,
                                "label": {"ru": "Показать на карте", "kk": "Картадан көрсету"}}
@@ -126,6 +129,37 @@ def test_scene_blizzard_without_r17_uses_pulse_honestly():
     assert crisis["lines"]["ru"][0].startswith("«Снег и гололёд»")
     statuses = {c["fn"]: c["status"] for c in a["calls"]}
     assert statuses["active_incidents"] == "not_ready" and statuses["summary"] == "ok"
+
+
+def test_board_without_r08_counts_answer_deadline_under_its_own_name():
+    """Табло R17 без R08 (overdue_fix = null): считаем срок ответа и подписываем «ответ просрочен», не «просрочено»."""
+    a = ask("Какие службы отстают?", agencies_board=F.board_without_r08)
+    lag = block(a, "lagging_services")
+    assert [n["value"] for n in lag["numbers"]] == [2, 6]
+    assert lag["numbers"][1]["label"]["ru"] == "обращений: ответ просрочен"
+    assert lag["lines"]["ru"][0].startswith("Больше всего просроченных ответов — ")
+    assert lag["items"][0]["value_text"]["ru"] == "ответ просрочен: 4 из 21"
+    assert not any("Срок первого ответа" in line for line in lag["lines"]["ru"])
+
+
+def test_overdue_without_place_names_the_topic_and_zero_median_reads_same_day():
+    """Мир R02: у просрочки нет места на карте — называем тему, а не выдаём её за место; медиана 0 — «в тот же день»."""
+    def summary_no_place(district=None):
+        data = F.summary_fixture(district)
+        data["overdue"]["items"][0].update(place_ru=None, place_kk=None, on_map=False)
+        return data
+
+    def board_same_day(**_kw):
+        board = F.board_fixture()
+        board["services"][0]["median_answer_days"] = 0
+        return board
+
+    over = block(ask("Сколько обращений просрочено?", akim_summary=summary_no_place), "overdue")
+    assert over["lines"]["ru"][0].startswith("Дольше всех ждёт жалоба на тему «Дороги")
+    assert "тақырыбындағы шағым" in over["lines"]["kk"][0]
+    assert over["actions"][0]["kind"] == "open"             # без места — без «Показать на карте» для него
+    lag = block(ask("Какие службы отстают?", agencies_board=board_same_day), "lagging_services")
+    assert "Обычно эта служба отвечает в тот же день." in lag["lines"]["ru"]
 
 
 def test_lagging_services_fallback_matches_deadlines_without_r17():
