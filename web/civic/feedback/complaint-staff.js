@@ -488,7 +488,7 @@
           box.appendChild(h("div", { "class": "bc-joint__actions" }, [
             h("button", { "class": "bk-btn bc-joint__open-handoff", type: "button",
                           onclick: function () { jointUi.form = "handoff"; render(); var f = root.querySelector("[name=to]"); if (f) f.focus(); } },
-              [C().icon ? C().icon("forward") : null, h("span", {}, t("joint.handoff.open"))]),
+              [C().icon ? C().icon("handoff") : null, h("span", {}, t("joint.handoff.open"))]),   // значок R11 раунда 15
             j.services.length < 3 ? h("button", { "class": "bk-btn bc-joint__open-add", type: "button",
                           onclick: function () { jointUi.form = "add"; render(); var f = root.querySelector("[name=service]"); if (f) f.focus(); } },
               [C().icon ? C().icon("plus") : null, h("span", {}, t("joint.add.open"))]) : null]));

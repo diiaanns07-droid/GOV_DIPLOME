@@ -1158,6 +1158,8 @@
       els.textarea.value = state.text;
       els.textarea.setAttribute("placeholder", t("complaint.step3.example", { example: example }));
       field.appendChild(els.textarea);
+      var voice = voiceControl();
+      if (voice) field.appendChild(voice);
       body.appendChild(h("p", { "class": "bc-meta" }, t("complaint.step3.privacy")));
       // Срочный случай — сразу под полем, пока житель пишет (а не под категориями, ниже края экрана телефона).
       els.emergencyBox = h("div", { "class": "bc-emergency-box" });
@@ -1174,6 +1176,54 @@
       body.appendChild(els.send);
       updateSendButton();
       if (state.text) scheduleClassify();
+    }
+
+    // По желанию (prompt R09 п. 7): голосовой ввод — распознавание речи самого браузера (Web Speech API), язык — по языку
+    // интерфейса (ru-RU / kk-KZ). Кнопка есть только там, где браузер это умеет; звук на сервер Birge не отправляется —
+    // распознаёт служба браузера (в Chrome — облачная служба Google; подсказка под кнопкой говорит честно). Распознанное
+    // дописывается в поле, житель правит.
+    var voiceSession = null;
+    function stopVoice() { if (voiceSession) { try { voiceSession.stop(); } catch (e) { /* уже остановлено */ } } }
+    function voiceControl() {
+      var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (typeof Recognition !== "function") return null;
+      stopVoice();
+      var label = h("span", {}, t("complaint.voice.start"));
+      var status = h("span", { "class": "bc-meta bc-voice__status", role: "status", "aria-live": "polite" }, t("complaint.voice.note"));
+      var btn = h("button", { "class": "bk-btn bk-btn--ghost bc-voice", type: "button", "aria-pressed": "false" }, [label]);
+      function finish(key) {
+        voiceSession = null;
+        btn.setAttribute("aria-pressed", "false");
+        label.textContent = t("complaint.voice.start");
+        status.textContent = t(key || "complaint.voice.note");
+      }
+      btn.addEventListener("click", function () {
+        if (voiceSession) { stopVoice(); return; }
+        var rec;
+        try { rec = new Recognition(); } catch (e) { finish("complaint.voice.failed"); return; }
+        rec.lang = currentLang() === "kk" ? "kk-KZ" : "ru-RU";
+        rec.interimResults = true;
+        rec.continuous = false;
+        rec.maxAlternatives = 1;
+        var base = els.textarea.value.replace(/\s+$/, "");
+        rec.onresult = function (e) {
+          var said = "";
+          for (var i = 0; i < e.results.length; i++) said += e.results[i][0].transcript;
+          els.textarea.value = ((base ? base + " " : "") + said.trim()).slice(0, 2000);
+          els.textarea.dispatchEvent(new Event("input"));
+        };
+        rec.onerror = function (e) {
+          var denied = e && (e.error === "not-allowed" || e.error === "service-not-allowed");
+          if (voiceSession === rec) finish(denied ? "complaint.voice.denied" : "complaint.voice.failed");
+        };
+        rec.onend = function () { if (voiceSession === rec) finish(null); if (els.textarea) els.textarea.focus(); };
+        voiceSession = rec;
+        btn.setAttribute("aria-pressed", "true");
+        label.textContent = t("complaint.voice.stop");
+        status.textContent = t("complaint.voice.listening");
+        try { rec.start(); } catch (e) { finish("complaint.voice.failed"); }
+      });
+      return h("div", { "class": "bc-voice-row" }, [btn, status]);
     }
 
     // ---------------------------------------------------------------- шаг 4: похожие
@@ -2112,6 +2162,7 @@
     function close() {
       // LOCAL_FINAL №2: отложенная подсказка модели не должна сработать после закрытия.
       clearTimeout(classifyTimer);
+      stopVoice();   // голосовой ввод не слушает после закрытия мастера
       classifySeq++;
       setPicking(false);
       if (map.clear) map.clear();

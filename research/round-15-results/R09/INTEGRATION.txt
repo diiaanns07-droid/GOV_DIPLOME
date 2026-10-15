@@ -50,6 +50,11 @@ B1. R17 «Штаб ведомств»
       {complaint_id, code, at, from, to, reason, reason_code, by_role, category, district, status, demo}] — новые сверху.
       reason — только для сотрудника (экран штаба — сотрудник). by_role — роль (operator | admin), не имя.
     Ссылка «Обращения службы»: #complaints/service=<id> (экран R09 откроет вкладку с фильтром) — см. C4.
+B1a. R17 ui/civic_agencies/sources.py ищет ui.civic_feedback.v2.agencies.<records_for_agencies | agency_records> — ЕСТЬ:
+    records_for_agencies(db_path) -> записи v2.1 для табло: id, code, created_at, category, subtopic, district, status,
+    status_history [{at, status}], due_at, answered_at, duplicate_of, demo, metoo, reporters, target (подписи), service и
+    services (ведущая и части — как в «Обращениях»), joint, handoffs [{at, from, to, reason, reason_code, by_role}],
+    passport {assignee_id}, resolution (state, голоса, даты), route_hint, event, scene. Нет текста, точки, фото, устройств.
 B2. R16 «Мой двор»
     r09.yard_complaints(db, "yard-123", days=60, targets=[id целей R12 во дворе], polygon=<GeoJSON Polygon двора>) ->
       {yard, days, items: [{id, category, subtopic, status, created_at, target, reporters, resolution, heat_state,
@@ -102,9 +107,17 @@ D4. VISUAL_BRIEF §3 (телефон): пока открыт мастер или
     #birge-chips R01 скрыт, пока открыта карточка R09 слева (просвечивал по краю стекла).
     Просьба R01 (по желанию): считать html.bc-mine-open / html.bc-open «карточкой слева» в birge-ref.js leftState() —
     тогда правила R09 для #birge-chips и .civic-panel станут не нужны.
+D4a. Голосовой ввод (prompt R09 п. 7, по желанию): шаг «Опишите проблему» — тихая кнопка «Сказать голосом» под полем,
+    только если в браузере есть SpeechRecognition / webkitSpeechRecognition; язык ru-RU / kk-KZ по языку интерфейса;
+    распознанное дописывается в поле (подсказка категории — как при наборе); отказ в микрофоне — понятный текст;
+    закрытие мастера останавливает распознавание. Звук на сервер Birge не уходит; распознаёт служба браузера (в Chrome —
+    облачная служба Google) — подпись под кнопкой говорит это честно. Проверка — tests/civic/R09/voice_r09.cjs (заглушка
+    распознавания; настоящий микрофон — LOCAL). Просьба R11: иконка «микрофон» (i-mic) в набор — тогда кнопка получит
+    значок; сейчас кнопка текстовая (П1: значки только из набора R11).
 D5. R11 — новые ключи (запасной текст — в complaint-strings.js, ru и kk): research/round-15-results/R09/i18n_r09_round15.json
-    (57 ключей: joint.*, handoff.reason.*, reply.draft*, mine.update/changes.handoff|services|part, inbox.filter.*,
-    inbox.tab.overdue_answer, complaint.step5.yard). Подписи причин передачи = ui/civic_feedback/v2/joint.py HANDOFF_REASONS
+    (joint.*, handoff.reason.*, reply.draft*, mine.update/changes.handoff|services|part, inbox.filter.*,
+    inbox.tab.overdue_answer, complaint.step5.yard, complaint.voice.*). Кнопка «Передать в другую службу» — значок
+    handoff набора R11 раунда 15 (в ui-kit FINAL-4 его нет — там кнопка без значка). Подписи причин передачи = ui/civic_feedback/v2/joint.py HANDOFF_REASONS
     (тест test_r09v21_frontend сверяет). Просьба R11: в tokens.css при prefers-reduced-transparency отдавать сплошной
     цвет и для --glass-strong (сейчас только --glass-panel / --glass-control).
 
@@ -122,6 +135,10 @@ F2. R02: (1) «Ждут проверки» — 14 дней (WAITING_CHECK_DAYS �
     Патч R09_world_seed_materialize.patch не нужен: seed_world понимает сырой мир сам (743 / 0 invalid).
 F3. R17: табло — service_parts(db, days=…) и handoffs(db, days=…) (раздел B1); ответ просрочен — answered_at,
     deadline_state/overdue (срок первого ответа); срок исправления считайте своим правилом (просьба R02 §3).
+F3a. R11 + R10 (consistency C4 «подписи просрочено различаются»): вкладка R09 берёт ключ inbox.tab.overdue_answer
+    («Ответ просрочен» / «Жауап мерзімі өтті»), а если его нет в словаре — inbox.tab.overdue. Просьба R11: в ru.json /
+    kk.json поставить inbox.tab.overdue = «Ответ просрочен» / «Жауап мерзімі өтті» (или добавить inbox.tab.overdue_answer)
+    — тогда и проверка R10 по ключу inbox.tab.overdue увидит разные подписи с akim.kpi.overdue («Просрочено»).
 F4. R16: «Мой двор» может брать проблемы двора у R09 — yard_complaints(db, yard, targets, polygon) (раздел B2), числа те
     же, что в «Обращениях».
 

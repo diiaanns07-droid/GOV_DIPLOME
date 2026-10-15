@@ -981,10 +981,12 @@ class ComplaintStore(sep.SeparateMixin, JointMixin):
     def migrate_v21(self, *, force: bool = False) -> dict:
         """Записи v2 → v2.1 в этой базе: только добавляются поля CONTRACT §5.1 (joint.upgrade), ничего не удаляется.
         Один раз на базу (отметка в complaint_meta_v2); повтор — ничего не делает. -> {"upgraded", "total"}."""
+        # Отметку смотрим без пишущей транзакции: хранилище открывают и соседи (R16/R17) — лишняя блокировка базы ни к чему.
+        with self._lock:
+            mark = self._db.execute("SELECT value FROM complaint_meta_v2 WHERE key = 'migrated_v21'").fetchone()
+        if mark and not force:
+            return {"upgraded": 0, "total": None, "at": mark[0]}
         with self._tx() as db:
-            mark = db.execute("SELECT value FROM complaint_meta_v2 WHERE key = 'migrated_v21'").fetchone()
-            if mark and not force:
-                return {"upgraded": 0, "total": None, "at": mark[0]}
             upgraded = total = 0
             for row in db.execute("SELECT record_json FROM complaints_v2").fetchall():
                 total += 1

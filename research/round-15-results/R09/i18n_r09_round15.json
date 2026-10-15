@@ -64,7 +64,19 @@
   "inbox.filter.district": "Район: {district}",
   "inbox.tab.overdue_answer": "Ответ просрочен",
   "complaint.step5.yard": "Что ещё во дворе — «Мой двор»",
-  "inbox.filter.clear_district": "Показать все районы"
+  "complaint.voice.start": "Сказать голосом",
+  "complaint.voice.stop": "Остановить",
+  "complaint.voice.listening": "Говорите — текст появится в поле",
+  "complaint.voice.note": "Речь распознаёт служба вашего браузера; на сервер Birge звук не уходит",
+  "complaint.voice.denied": "Нет доступа к микрофону — разрешите его в браузере или напишите текстом",
+  "complaint.voice.failed": "Не получилось распознать — напишите текстом",
+  "inbox.filter.clear_district": "Показать все районы",
+  "district.nura": "Нура",
+  "district.esil": "Есиль",
+  "district.almaty": "Алматы",
+  "district.saryarka": "Сарыарка",
+  "district.baikonur": "Байконур",
+  "district.saraishyk": "Сарайшык"
  },
  "kk": {
   "joint.title": "Қызметтер",
@@ -123,6 +135,18 @@
   "inbox.filter.district": "Аудан: {district}",
   "inbox.tab.overdue_answer": "Жауап мерзімі өтті",
   "complaint.step5.yard": "Аулада тағы не бар — «Менің аулам»",
-  "inbox.filter.clear_district": "Барлық ауданды көрсету"
+  "complaint.voice.start": "Дауыспен айту",
+  "complaint.voice.stop": "Тоқтату",
+  "complaint.voice.listening": "Сөйлеңіз — мәтін өріске жазылады",
+  "complaint.voice.note": "Сөзді браузеріңіздің қызметі таниды; дыбыс Birge серверіне жіберілмейді",
+  "complaint.voice.denied": "Микрофонға рұқсат жоқ — браузерде рұқсат беріңіз немесе мәтінмен жазыңыз",
+  "complaint.voice.failed": "Тану мүмкін болмады — мәтінмен жазыңыз",
+  "inbox.filter.clear_district": "Барлық ауданды көрсету",
+  "district.nura": "Нұра",
+  "district.esil": "Есіл",
+  "district.almaty": "Алматы",
+  "district.saryarka": "Сарыарқа",
+  "district.baikonur": "Байқоңыр",
+  "district.saraishyk": "Сарайшық"
  }
 }

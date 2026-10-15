@@ -657,3 +657,8 @@ button.bc-inbox__part:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6)
 /* Экран успеха: тихая ссылка «Мой двор» (R16) под кнопками — не вторая главная кнопка. */
 .bc-yard-link { display: inline-flex; align-items: center; gap: 8px; align-self: center; min-height: 44px; margin-top: 4px; }
 .bc-yard-link .ic { width: 18px; height: 18px; }
+/* Голосовой ввод (по желанию, п. 7): тихая кнопка под полем текста и строка состояния; нажата — «Остановить». */
+.bc-voice-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; }
+.bc-voice { min-height: 44px; }
+.bc-voice[aria-pressed="true"] { background: var(--c-fill-hover, rgba(18, 26, 23, .1)); font-weight: 600; }
+.bc-voice__status { flex: 1 1 200px; min-width: 0; }
