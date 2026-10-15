@@ -3,7 +3,7 @@ R09 · РАУНД 15 · ОБРАЩЕНИЕ ДЛЯ НЕСКОЛЬКИХ СЛУЖ�
 Python 3.11+, Node 18+, Chromium (Playwright; в облаке NODE_PATH=$(npm root -g)). Браузерные проверки — по одной.
 
 1. ТЕСТЫ (без сети; временные SQLite)
-   python3 -B -m pytest -q tests/civic/R09                       # 583 passed, 1 skipped (мир R02 — пути R02, см. 4)
+   python3 -B -m pytest -q tests/civic/R09                       # 587 passed, 1 skipped (мир R02 — пути R02, см. 4)
    новое раунда 15: test_r09v21_joint.py (запись v2.1, передачи, части, срок через праздники, маршруты, сцена 8 по HTTP),
                     test_r09v21_world.py (seed_world, reset, «Хан Шатыр», лента R06, фильтр района, мир R02 vs EXPECTED),
                     test_r09v21_frontend.py (ключи ru/kk, причины = сервер, поправка П1 — без рисунков, свечения и эмодзи)
@@ -14,6 +14,11 @@ Python 3.11+, Node 18+, Chromium (Playwright; в облаке NODE_PATH=$(npm ro
        сделано» → «исправлено» ждёт Дорожную службу → её часть из строки → передача с причиной → житель видит
        «Работают 2 службы: … — сделано · … — в работе»; 1366 / 1024 / 375 × ru / kk. Нужны маршруты R01 (в ветке R01 есть;
        для дерева FINAL-4 — git apply research/round-15-results/R09/R01_v2_routes_r09.patch).
+   NODE_PATH=$(npm root -g) node tests/civic/R09/route_r09.cjs [--root <сборка>]
+       подсказка R04 по запросу из карточки (жалоба без route_hint): в сборке с R04 (ветка R01) — настоящий POST /route →
+       «Похоже, нужны 2 службы» → «Принять» → подсказка сохранена (asked_at, accepted_at); без R04 (FINAL-4) — ни
+       запроса /route, ни подсказки; 1366-ru и 375-kk
+   NODE_PATH=$(npm root -g) node tests/civic/R09/voice_r09.cjs            # голосовой ввод (заглушка распознавания)
    NODE_PATH=$(npm root -g) node tests/civic/R09/app_demo_r09.cjs          # часть 1 демо: шаги 1–7, 375/1366 × ru/kk
    NODE_PATH=$(npm root -g) node tests/civic/R09/browser_r09.cjs --r11 web # стенд R09 с ui-kit сборки
    NODE_PATH=$(npm root -g) node tests/civic/R09/glass_r09.cjs             # стекло «Моих обращений», запасной белый вид

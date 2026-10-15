@@ -81,6 +81,29 @@
       return /reply/.test(key) && list[key] && list[key].status === "ready";
     });
   }
+  // Маршрут R04 POST /route (ключ ml.route шлюза R01) готов — карточка может сама спросить «какие службы нужны».
+  function routeReady(list) {
+    return Object.keys(list || {}).some(function (key) {
+      return /(^|\.)route$/.test(key) && list[key] && list[key].status === "ready";
+    });
+  }
+  // Ответ R04 route() → подсказка в форме route_hint записи: {services: [id, …] (ведущая первой), joint, source,
+  // model_version, why_ru, why_kk}. Одна служба или мусор — null (баннер «2 службы» не нужен).
+  function hintFromRoute(body) {
+    var list = body && Array.isArray(body.services) ? body.services.slice() : [];
+    list.sort(function (a, b) { return (a && a.role === "lead" ? 0 : 1) - (b && b.role === "lead" ? 0 : 1); });
+    var ids = [];
+    list.forEach(function (item) {
+      var sid = item && typeof item === "object" ? item.service : item;
+      if (typeof sid === "string" && /^[a-z_]{2,30}$/.test(sid) && ids.indexOf(sid) < 0 && ids.length < 3) ids.push(sid);
+    });
+    if (ids.length < 2 || body.joint === false) return null;
+    var first = list[0] && typeof list[0] === "object" ? list[0] : {};
+    var text = function (v) { return typeof v === "string" && v.trim() ? v : null; };
+    return { services: ids, joint: true, source: body.source === "model" ? "model" : "rules",
+             model_version: text(body.model_version), why_ru: text(body.why_ru) || text(first.why_ru),
+             why_kk: text(body.why_kk) || text(first.why_kk) };
+  }
 
   // Маршруты-функции R04 (POST /reply-draft) отвечают голым JSON шлюза v2 (без конверта ok/data).
   function rawCall(path, body, csrf) {
@@ -107,7 +130,8 @@
     var fixing = !!opts.openFix;
     var lastNote = null;
     // Блок «Службы» (раунд 15): какая форма открыта, скрыта ли подсказка R04, подсказка, полученная по запросу.
-    var jointUi = { form: null, hintHidden: false, noteFor: opts.openPart || null, draft: "idle" };
+    // asked — подсказка, которую карточка спросила у R04 сама (null — ещё не спрашивали, false — нет или не нужна).
+    var jointUi = { form: null, hintHidden: false, noteFor: opts.openPart || null, draft: "idle", asked: null };
 
     function call(method, path, body) {
       return fetch(API + path, { method: method, credentials: "same-origin",
@@ -298,19 +322,42 @@
       });
     }
 
-    function setServices(list, message) {
+    // offered — подсказка R04, спрошенная карточкой: сервер сохранит её в route_hint вместе с «принята».
+    function setServices(list, message, offered) {
       var lead = jointInfo().lead;
-      return call("POST", "/complaints/" + id + "/services", { services: list, expected_lead: lead }).then(function (res) {
+      var body = { services: list, expected_lead: lead };
+      if (offered) body.route_hint = offered;
+      return call("POST", "/complaints/" + id + "/services", body).then(function (res) {
         jointDone(res, message);
       });
     }
 
-    // Подсказка R04 «нужны 2 службы» — из записи: сервер R09 зовёт route() R04 в процессе при подаче (route_hint) и
-    // берёт её из демо-мира R02. Отдельного запроса POST /route с экрана нет: пока маршрута нет в сборке, он давал бы
-    // 404 в консоли (приёмка R10 считает такие ошибки).
+    // Подсказка R04 «нужны 2 службы»: сначала из записи — сервер R09 зовёт route() R04 в процессе при подаче
+    // (route_hint), у демо-мира она из R02. Если в записи её нет (жалобу подали до подключения R04), карточка один раз
+    // спрашивает POST /route сама — только когда шлюз объявил маршрут готовым (GET /modules): без R04 в сборке нет ни
+    // запроса, ни 404 в консоли (приёмка R10 считает такие ошибки).
     function routeHint() {
       var j = jointInfo();
-      return j.route_hint && j.route_hint.services ? j.route_hint : null;
+      if (j.route_hint && j.route_hint.services) return j.route_hint;
+      return jointUi.asked && jointUi.asked.services ? jointUi.asked : null;
+    }
+    function askRoute(j) {
+      if (jointUi.asked !== null || j.route_hint || j.joint || !isOpen() || !current || !current.text) return;
+      jointUi.asked = false;
+      var askedFor = id;
+      modules().then(function (list) {
+        if (!routeReady(list)) return null;
+        var body = { text: String(current.text).slice(0, 2000), category: current.category || null };
+        if (current.subtopic) body.subtopic = current.subtopic;
+        if (Array.isArray(current.point) && current.point.length === 2) body.point = current.point;
+        return rawCall("/route", body, csrf());
+      }).then(function (res) {
+        if (!res || !res.ok || askedFor !== id || !current) return;
+        var hint = hintFromRoute(res.body);
+        if (!hint) return;
+        jointUi.asked = hint;
+        render();
+      });
     }
 
     function hintBanner(j) {
@@ -327,7 +374,7 @@
         h("div", { "class": "bc-joint-hint__actions" }, [
           h("button", { "class": "bk-btn bc-joint-hint__accept", type: "button", onclick: function () {
             setServices(hint.services.map(function (sid, i) { return { service: sid, role: i === 0 ? "lead" : "partner" }; }),
-                        t("joint.hint.accepted", { list: joinNames(hint.services) }));
+                        t("joint.hint.accepted", { list: joinNames(hint.services) }), hint === jointUi.asked ? hint : null);
           } }, t("joint.hint.accept")),
           h("button", { "class": "bc-link", type: "button", onclick: function () { jointUi.hintHidden = true; render(); } },
             t("joint.hint.dismiss"))])]);
@@ -478,6 +525,7 @@
       if (!j || !(j.services || []).length) return null;
       var box = h("section", { "class": "bc-staff__form bc-joint", "aria-label": t("joint.title") }, [
         h("p", { "class": "bc-label" }, t("joint.title"))]);
+      askRoute(j);
       var hint = hintBanner(j);
       if (hint) box.appendChild(hint);
       box.appendChild(h("ul", { "class": "bc-joint__parts" }, j.services.map(function (p) { return partRow(p, j); })));

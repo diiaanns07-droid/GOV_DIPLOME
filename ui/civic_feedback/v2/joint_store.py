@@ -186,10 +186,12 @@ class JointMixin:
 
     # ------------------------------------------------------------ совместное исполнение
     def set_services(self, complaint_id: str, services, *, reason=None, expected_lead: str | None = None,
-                     actor: str | None = None, role: str | None = None) -> tuple[dict, int]:
+                     offered_hint=None, actor: str | None = None, role: str | None = None) -> tuple[dict, int]:
         """«Совместное исполнение»: полный список служб [{service, role}] (1–3, одна lead). Части, которые остаются,
         сохраняют статус и заметку; новые — «ждёт». Смена ведущей — тоже передача (handoffs[], причина «Совместное
-        исполнение», если не указана). Подсказка R04 принята — route_hint.accepted_at (для оценки качества R04)."""
+        исполнение», если не указана). Подсказка R04 принята — route_hint.accepted_at (для оценки качества R04).
+        offered_hint — подсказка, которую карточка запросила у R04 сама (в записи route_hint нет): сохраняется в
+        route_hint; подсказку из записи она не заменяет."""
         from .store import Conflict
         wanted = joint.parse_services(services)
         now = rec.iso(self._now())
@@ -220,6 +222,12 @@ class JointMixin:
                     entry["reason_code"] = code
                 record.setdefault("handoffs", []).append(entry)
             hint = record.get("route_hint")
+            if not isinstance(hint, dict) and offered_hint is not None:
+                hint = joint.parse_route_hint(offered_hint)
+                if hint is not None:
+                    hint.pop("accepted_at", None)        # «принята» ставит сервер, не экран
+                    hint["asked_at"] = now               # запрошена из карточки, а не при подаче
+                    record["route_hint"] = hint
             if isinstance(hint, dict) and set(hint.get("services") or []) == set(new_ids):
                 hint["accepted_at"] = now
             self._write_parts(record, new_items, "joint" if len(new_items) > 1 else "staff")

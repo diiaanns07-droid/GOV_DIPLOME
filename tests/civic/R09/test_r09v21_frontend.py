@@ -38,8 +38,11 @@ def test_routes_used_by_screens():
     for action in ("handoff", "services", "part"):
         assert f'"/{action}"' in STAFF_JS
     assert '"/part"' in LIST_JS and '"service=" + encodeURIComponent' in LIST_JS and '"district=" + encodeURIComponent' in LIST_JS
-    # Подсказка R04 — из route_hint записи (без запроса с экрана: 404 до подключения); черновик — только если готов.
-    assert '"/route"' not in STAFF_JS and 'rawCall("/reply-draft"' in STAFF_JS and 'API + "/modules"' in STAFF_JS
+    # Подсказка R04 — из route_hint записи; нет её — карточка спрашивает POST /route сама, но только когда шлюз объявил
+    # маршрут готовым (GET /modules): без R04 в сборке ни запроса, ни 404. Черновик — так же, только если готов.
+    assert 'rawCall("/route"' in STAFF_JS and "if (!routeReady(list)) return null;" in STAFF_JS
+    assert 'rawCall("/reply-draft"' in STAFF_JS and 'API + "/modules"' in STAFF_JS
+    assert "body.route_hint = offered" in STAFF_JS          # принятая подсказка с экрана сохраняется сервером
 
 
 

@@ -313,6 +313,43 @@ def test_route_hint_saved_at_creation_and_failure_is_harmless(store):
     assert pit(store, DEV_B)["route_hint"] is None                         # мусор — подсказки нет
 
 
+
+def test_hint_asked_by_card_is_saved_on_accept(store):
+    """Жалоба подана до подключения R04 (route_hint нет): карточка сама спросила POST /route, сотрудник «Принять» —
+    подсказка сохраняется в route_hint с asked_at и accepted_at; подсказку из записи она не заменяет; мусор — без 500."""
+    service = ComplaintsV2Service(store)
+    record = pit(store)
+    assert record["route_hint"] is None
+    offered = {"services": ["water", "road"], "joint": True, "source": "rules", "model_version": "r04-route-1",
+               "why_ru": "Раскопки сетей: Водоканал — засыпка, Дорожная служба — покрытие.", "accepted_at": "2020-01-01"}
+    both = [{"service": "water", "role": "lead"}, {"service": "road", "role": "partner"}]
+    status, reply = call(service, "POST", f"{P}/{record['id']}/services", {"services": both, "route_hint": offered},
+                         Staff(), STAFF_CTX)
+    assert status == 200
+    hint = store.get(record["id"])["route_hint"]
+    now = rec.iso(store._now())
+    assert hint["services"] == ["water", "road"] and hint["source"] == "rules" and hint["model_version"] == "r04-route-1"
+    assert hint["asked_at"] == now and hint["accepted_at"] == now           # «принята» ставит сервер, не экран
+    assert reply["data"]["complaint"]["joint"]["route_hint"]["accepted_at"] == now
+    # В записи подсказка уже есть — предложенная с экрана её не заменяет.
+    store.route_lookup = lambda **kw: {"services": ["water", "road"], "joint": True, "source": "model"}
+    other = pit(store, DEV_B)
+    status, _ = call(service, "POST", f"{P}/{other['id']}/services",
+                     {"services": [{"service": "road", "role": "lead"}, {"service": "lighting", "role": "partner"}],
+                      "route_hint": {"services": ["road", "lighting"], "joint": True}}, Staff(), STAFF_CTX)
+    assert status == 200
+    kept = store.get(other["id"])["route_hint"]
+    assert kept["services"] == ["water", "road"] and kept["source"] == "model" and "accepted_at" not in kept
+    # Мусор вместо подсказки: службы меняются, route_hint не появляется, ошибки нет.
+    store.route_lookup = None
+    for i, junk in enumerate((["water", "road"], "water", {"services": [{"service": "secret"}]}, {"services": "water,road"})):
+        fresh = pit(store, f"dev-junk{i:012d}")
+        assert fresh["services"] == []                                    # новая жалоба, не склейка с прежней
+        status, reply = call(service, "POST", f"{P}/{fresh['id']}/services", {"services": both, "route_hint": junk},
+                             Staff(), STAFF_CTX)
+        assert status == 200, (junk, reply)
+        assert store.get(fresh["id"])["route_hint"] is None
+
 # ---------------------------------------------------------------- чтение для R17 и R16 (без персональных данных)
 def test_service_parts_and_handoffs_log_for_r17(store, clock):
     first = pit(store)

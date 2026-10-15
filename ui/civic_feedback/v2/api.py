@@ -517,9 +517,11 @@ class ComplaintsV2Service:
     def _services(self, complaint_id, *, params, body, principal, context):
         self._require_staff(principal, context)
         data = self._json(body)
+        # route_hint — подсказка R04, которую карточка запросила сама (POST /route), когда в записи её нет (жалоба подана
+        # до подключения R04): запоминаем вместе с «принята» для оценки качества R04. Мусор parse_route_hint отбросит.
         record, notified = self.store.set_services(
             complaint_id, data.get("services"), reason=data.get("reason"), expected_lead=data.get("expected_lead"),
-            actor=_actor(principal), role=_role(principal))
+            offered_hint=data.get("route_hint"), actor=_actor(principal), role=_role(principal))
         return _ok(200, {"complaint": self._staff(record), "notified": notified})
 
     def _part(self, complaint_id, *, params, body, principal, context):
