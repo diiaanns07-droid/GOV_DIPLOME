@@ -91,15 +91,28 @@ def test_step2_matches_r09_demo_seed(world):
 
 
 # ---------------------------------------------------------------- воспроизводимость
-def test_generator_reproducible_and_matches_file(world, monkeypatch):
+@pytest.fixture(scope="module")
+def generated():
+    return gen.dump(gen.build_world(gen.SEED))
+
+
+def test_generator_is_deterministic_without_network(generated, monkeypatch):
     def no_network(*args, **kwargs):
         raise AssertionError("генератор не должен ходить в сеть")
     monkeypatch.setattr(socket, "socket", no_network)
-    text1 = gen.dump(gen.build_world(gen.SEED))
-    text2 = gen.dump(gen.build_world(gen.SEED))
-    assert text1 == text2
+    assert gen.dump(gen.build_world(gen.SEED)) == generated
+
+
+def test_world_file_matches_generator(world, generated):
+    """Файл мира = вывод генератора на тех же входных данных. Мир собирается на данных карты R12, которые войдут в
+    сборку R01 (объекты, дворы — пути R12); в дереве с другими файлами R12 генератор честно даст другой мир — тогда
+    сверка с файлом пропускается (её делает сборка), а проверка мира (test_world_passes_check) идёт как обычно."""
+    have_inputs, now_inputs = world.get("inputs") or {}, gen.input_hashes()
+    other = sorted(k for k in set(have_inputs) | set(now_inputs) if have_inputs.get(k) != now_inputs.get(k))
+    if other:
+        pytest.skip("мир собран на других входных данных: " + ", ".join(other))
     have = wio.WORLD_PATH.read_text(encoding="utf-8")
-    assert hashlib.sha256(text1.encode()).hexdigest() == hashlib.sha256(have.encode()).hexdigest(), \
+    assert hashlib.sha256(generated.encode()).hexdigest() == hashlib.sha256(have.encode()).hexdigest(), \
         "world_v1.json устарел: python3 -m ml.datasets.demo_world"
 
 
@@ -148,9 +161,22 @@ def test_load_world_errors(tmp_path):
 # ---------------------------------------------------------------- проверка ловит ошибки
 def _broken(sample, mutate):
     w = copy.deepcopy(sample)
+    w["inputs"] = gen.input_hashes()      # строгая сверка целей, как в дереве с теми же данными R12, что у мира
     mutate(w)
     rep = check.check_world(w, geo=True, now=NOW, heat=False)
     return " | ".join(rep.errors)
+
+
+def test_checker_softens_unknown_targets_only_for_other_r12_data(sample):
+    """Мир собран на других файлах карты R12 (в дереве старый или новый objects.json) — неизвестная цель становится
+    предупреждением с причиной; на тех же данных — ошибкой."""
+    w = copy.deepcopy(sample)
+    w["inputs"] = {**gen.input_hashes(), "data/civic/astana/geo/objects.json": "0" * 64}
+    w["complaints"][0]["target"]["id"] = "osm-node-1"
+    rep = check.check_world(w, geo=True, now=NOW, heat=False)
+    assert not any("неизвестна карте" in e for e in rep.errors)
+    assert any("в этом дереве: osm-node-1" in x for x in rep.warnings)
+    assert any(x.startswith("inputs: мир собран на других данных карты R12") for x in rep.warnings)
 
 
 @pytest.mark.parametrize("mutate, needle", [

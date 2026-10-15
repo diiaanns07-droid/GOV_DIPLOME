@@ -1713,6 +1713,11 @@ def build_meetings_questions(b: WorldBuilder, yards: list[dict], works: list[dic
 
 
 # ---------------------------------------------------------------- сборка мира
+def input_hashes() -> dict:
+    """sha256 входных файлов чужих путей (категории, дворы и объекты R12, граф): другой файл — другой мир."""
+    return {str(p.relative_to(ROOT)): _sha(p) for p in (CATEGORIES_JSON, YARDS_JSON, OBJECTS_JSON, GRAPH_MANIFEST)}
+
+
 def build_world(seed: int = SEED) -> dict:
     b = WorldBuilder(seed)
     scenes = Scenes(b)
@@ -1746,7 +1751,7 @@ def build_world(seed: int = SEED) -> dict:
         "generator": "ml/datasets/demo_world.py",
         "note_ru": "Синтетический демо-мир Birge: все записи придуманы (demo: true, «Пример»). Настоящие — только "
                    "цели OpenStreetMap (ODbL, © OpenStreetMap contributors). Время — относительно засева.",
-        "inputs": {str(p.relative_to(ROOT)): _sha(p) for p in (CATEGORIES_JSON, YARDS_JSON, OBJECTS_JSON, GRAPH_MANIFEST)},
+        "inputs": input_hashes(),
         "counts": {},
         "districts": [{"id": d, "ru": DISTRICT_NAMES[d][0], "kk": DISTRICT_NAMES[d][1]} for d in DISTRICTS],
         "services": [{"id": sid, "ru": names["ru"], "kk": names["kk"]}
@@ -1904,6 +1909,13 @@ def main(argv: list[str] | None = None) -> int:
         have = path.read_text(encoding="utf-8") if path.exists() else ""
         same = hashlib.sha256(have.encode()).hexdigest() == hashlib.sha256(text.encode()).hexdigest()
         print(("OK: " if same else "РАЗЛИЧАЕТСЯ: ") + f"{path} sha256 {hashlib.sha256(text.encode()).hexdigest()}")
+        if not same and have:
+            had = (json.loads(have).get("inputs") or {})
+            other = sorted(k for k, v in world["inputs"].items() if had.get(k) != v)
+            if other:   # другие файлы карты R12 и т. п. — мир честно другой; сверка — в дереве с теми же входными
+                print("  входные файлы не те, на которых собран мир: " + ", ".join(other) + " — сверка файла здесь "
+                      "невозможна (код 2); проверка мира — python3 -m ml.datasets.demo_world_check")
+                return 2
         return 0 if same else 1
     args.out.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
