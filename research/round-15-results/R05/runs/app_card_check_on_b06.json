@@ -1,8 +1,8 @@
 {
- "at": "2026-10-15T18:13:35.162Z",
+ "at": "2026-10-15T18:34:41.209Z",
  "url": "http://127.0.0.1:8658",
  "code_head": "df6c9c2f",
- "stand": "R01 claude/brave-fermi-nhzetj @ df6c9c2f (B0.6, в ней R05 b1e7fcf6) + R05 6d45fa3b + patches/R01_delta_b03.patch",
+ "stand": "R01 claude/brave-fermi-nhzetj @ df6c9c2f (B0.6) + R05 4af0ef5f + patches/R01_delta_b03.patch",
  "env": "облако: Chromium headless + SwiftShader, упрощённый фон карты",
  "results": [
   {

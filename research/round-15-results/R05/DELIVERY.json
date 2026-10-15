@@ -1,14 +1,14 @@
 {
  "role": "R05",
  "round": 15,
- "delivery": "D1.3 (к сборке B1 16 окт 14:00)",
+ "delivery": "D1.4 (к сборке B1 16 окт 14:00)",
  "branch": "claude/bold-cray-dopshy",
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "base_code": "FINAL-4 a493746234022664db5f7c9d33c0868082f6f346",
  "restored_from": null,
  "restored_note": "web/civic/build3d в FINAL-4 = поставка R05 раунда 14 (82d47a07) — восстанавливать нечего",
- "code_sha": "6d45fa3b890947aa86b0b94e4df3ee3fd7921329",
- "tested_sha": "6d45fa3b890947aa86b0b94e4df3ee3fd7921329",
+ "code_sha": "4af0ef5f311c3f17de7d33408281332433fc19f5",
+ "tested_sha": "4af0ef5f311c3f17de7d33408281332433fc19f5",
  "push_status": "OK",
  "amendments": [
   "П1 «Без ИИ-слопа» (15 окт 17:05) — принята: модели ориентиров удалены (061a575c), коммит a3749eaa НЕ брать"
@@ -42,16 +42,18 @@
   "Карточка проекта (своя и R06): шторка «Было / станет» по превью (ручка 44 px, role=slider, ← → / Shift / Home / End, перетаскивание; нет картинки — прежнее превью); у освещения «День / Ночь» (ночью тёмно-серые объёмы и тёплые конусы света); телефон: карточка R06 компактная, как в раунде 14 (кнопки карты свободны), шторку открывает кнопка «Было / станет»; API для R06: build3d.beforeAfter(kind), previewOf(kind).before/.after",
   "Постройка проекта — по частям за 760 мс (было 1 100), «уменьшить движение» — сразу",
   "D1.2: патчи R01 пересобраны на голове R01 c9069723; подпись ориентира на карте — label из landmarks.json («Нур Алем · ЭКСПО», как было у R01); «что на карте» после выбора ориентира переключается с ҚАЗ/РУС; проверка приёмки R01 (grep baiterek|khan.shatyr|nur.alem|akorda) находит только данные landmarks.json — держит тест; README данных ориентиров переписан под v2 (без моделей); тест логики патча подложки без подложки (test_basemap_patch)",
-  "D1.3: проект, только что поставленный акиматом, открывается по любому своему id — временному (пока R06 сохраняет) и серверному; выбор, сделанный во время сохранения, переходит на id сервера; getState().pending — сколько проектов ещё сохраняются (на B0.3 выбор по первому id не открывал карточку — smoke «до исправления» 28/1); тост «Проект поставлен · Отменить» не уходит под карточки хозяина («Сегодня в Астане»): сдвиг вправо за панель из opts.avoid или чужой элемент поверх; дельта для R01: подпись ориентира из label, names для ҚАЗ/РУС, #birge-today в avoid"
+  "D1.3: проект, только что поставленный акиматом, открывается по любому своему id — временному (пока R06 сохраняет) и серверному; выбор, сделанный во время сохранения, переходит на id сервера; getState().pending — сколько проектов ещё сохраняются (на B0.3 выбор по первому id не открывал карточку — smoke «до исправления» 28/1); тост «Проект поставлен · Отменить» не уходит под карточки хозяина («Сегодня в Астане»): сдвиг вправо за панель из opts.avoid или чужой элемент поверх; дельта для R01: подпись ориентира из label, names для ҚАЗ/РУС, #birge-today в avoid",
+  "D1.4: запасные строки модуля сверены со словарём R11 (R11 внесла ключи раунда 15 и вычитала kk у build3d.ba.label / ba.value) — расхождений нет; тест test_i18n_sync держит это для всех ключей build3d.*, которые уже есть в словаре"
  ],
  "tests": {
-  "node": "PASS 52/52 (test_landmarks 5, test_white_model 5, test_basemap_patch 4 — в трёх состояниях файла R01, r14 test_models + test_core 38)",
+  "node": "PASS 54/54 (test_landmarks 5, test_white_model 5, test_basemap_patch 4, test_i18n_sync 2, r14 test_models + test_core 38)",
   "r14_shell_smoke": "30 PASS / 0 FAIL на R01 adb5fba9 (B0.3) и на R01 df6c9c2f (B0.6) + R05 6d45fa3b + дельта (новые: placed_project_selectable_by_temp_id_after_save, place_toast_text_not_under_host_panels); на D1.2 b1e7fcf6 — 28/1 (гонка id воспроизведена); runs/r14_app_smoke_on_b03.json, r14_app_smoke_on_b06.json, r14_app_smoke_on_b03_before_fix.json",
-  "app_card_check": "10 PASS / 0 FAIL / 0 NOT_RUN на B0.3 и на B0.6; runs/app_card_check_on_b03.json, app_card_check_on_b06.json",
+  "app_card_check": "10 PASS / 0 FAIL / 0 NOT_RUN на B0.3 (6d45fa3b) и на B0.6 (4af0ef5f); runs/app_card_check_on_b03.json, app_card_check_on_b06.json",
   "app_landmarks_search": "7 PASS / 0 FAIL / 1 NOT_RUN (вид здания-ориентира — LOCAL-12; логика патча — test_basemap_patch) на B0.3 и на B0.6; runs/app_landmarks_search_on_b03.json, app_landmarks_search_on_b06.json",
   "r14_browser_check_demo": "56 PASS / 0 FAIL / 1 NOT_RUN (плавность на GPU — LOCAL) на коде 6d45fa3b; runs/r14_browser_check_on_b03.json",
   "r01_r15_ia": "(D1.2) 20/5 с патчами R05 и без них на R01 c9069723 — те же 5 падений меню R01; runs/r01_r15_ia_with_r05_patches.json",
-  "perf_fps": "SwiftShader (облако, без GPU): вращение 4,2 к/с с 5 проектами в 3D против 4,9 к/с без них; наклон 8,3 к/с; на плоской карте three.js и данные 3D не грузятся (0 запросов); ноутбук — LOCAL-12; runs/perf_fps.json (отрисовка 3D с тех пор не менялась)"
+  "perf_fps": "SwiftShader (облако, без GPU): вращение 4,2 к/с с 5 проектами в 3D против 4,9 к/с без них; наклон 8,3 к/с; на плоской карте three.js и данные 3D не грузятся (0 запросов); ноутбук — LOCAL-12; runs/perf_fps.json (отрисовка 3D с тех пор не менялась)",
+  "i18n_sync_r11": "0 расхождений запасных строк build3d.* со словарём R11 06a939db (на 6d45fa3b было 2 — kk ba.label / ba.value)"
  },
  "environment": "облако: Chromium headless + SwiftShader (программная графика); стенды — сборки R01 adb5fba9 (B0.3) и df6c9c2f (B0.6) + R05 6d45fa3b + дельта, демо-мир; упрощённый фон карты (OpenFreeMap недоступен)",
  "screens": [
@@ -81,6 +83,6 @@
   "FPS в облаке — программная графика; на ноутбуке с видеокартой — LOCAL-12"
  ],
  "next_step": "R01 (B1): взять web/civic/build3d/ и data/civic/astana/landmarks/ на code_sha + patches/R01_delta_b03.patch (INTEGRATION «КОРОТКО ДЛЯ R01», §6); R11: 8 ключей build3d.ba.* / build3d.time.* (INTEGRATION §4); LOCAL-12/13 на ноутбуке",
- "replaces": "D1.2 b1e7fcf6 (у R01 с B0.5): исправлен выбор только что поставленного проекта (временный id → id сервера), тост «Проект поставлен» не уходит под карточки хозяина; дельта-патч для R01 вместо полных (полные — в сборке с B0.2)",
+ "replaces": "D1.3 6d45fa3b: + запасные kk-строки шторки = словарь R11 (ba.label / ba.value, «жүгірткі»); тест test_i18n_sync. D1.3 — выбор только что поставленного проекта по любому id, тост не под карточками хозяина, дельта-патч для R01",
  "screens_note": "кадры — настоящий интерфейс на стенде R01 c9069723 + R05 D1.2 (вид R05 с тех пор не менялся; на B0.3/B0.6 облачная плашка R01 «Карта улиц не загрузилась» после смены языка/слоя снова видна 6 с и закрывала бы карточку — кадры с неё не брал)"
 }
