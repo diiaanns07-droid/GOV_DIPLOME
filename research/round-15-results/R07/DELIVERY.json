@@ -4,25 +4,25 @@
   "branch": "claude/birge-r07-round-15-zjp4ob",
   "base_sha": "2d329b2cceeb07edbcb4f98ae8fdb3bb37ec1499",
   "restored_from": "fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.css, heat.js, ui/civic_heat/devserver.py, tests/civic/R07/test_r07_devserver.py",
-  "code_sha": "9b1084d96210f225af954408b38159af674f3d47",
-  "tested_sha": "9b1084d96210f225af954408b38159af674f3d47",
+  "code_sha": "c6c7f94e567a80c65cac1511ce331e59f6320273",
+  "tested_sha": "c6c7f94e567a80c65cac1511ce331e59f6320273",
   "push_status": "OK",
   "changed_paths": [
     "ui/civic_heat/world.py (новый): демо-мир — world_mode, seed_world (отметки шкалы: events + incidents + scenes, своя таблица heat_replay_marks_v1; повторный засев с новым now двигает отметки вместе с миром — patch R02), materialize/time_of (время SCHEMA R02 §1)",
     "ui/civic_heat/replay.py (новый): GET heat/replay — as_of + тот же расчёт /heat на каждый день, компактные кадры, кэш прошлых дней, фоновый досчёт месяца",
     "ui/civic_heat/marks.py (новый): отметки шкалы — свои (мир) + R17 incident_marks; кризис о событии склеивается с событием",
     "ui/civic_heat/world_fixture.py (новый): мини-мир R07 в формате R02 v1.1 и city_world (1 000 целей)",
-    "ui/civic_heat/service.py: replay(), window() (+60 дней к выборке /heat), db_path, meta.replay/meta.world",
+    "ui/civic_heat/service.py: replay(), window() (+60 дней к выборке /heat), db_path, meta.replay/meta.world; общий расчёт районов и мест с ожиданием идущего (R10 B-124), warm_up() для прогрева R01",
     "ui/civic_heat/api.py, __init__.py, engine.py (разбор ISO с памятью), demo_seed.py ([] в демо-мире), devserver.py (--world, --world city1000)",
     "ui/civic_heat/build_fixtures.py + fixtures/targets_demo.json: светофор и переход демо — по свежему снимку LOCAL-10 (R10 B-103: переход сдвинут на 2,32 м)",
     "web/civic/heat/heat.js: replay.begin/frame/end (перетекание цвета и веса через feature-state, счёт чисел, угасание), CivicHeat.current, Ctrl+K «Хроника», кластеры (люди открытых мест, «✓ N мест»), скрытые значки вне DOM, П1 — пустое состояние/ошибка: значок R11 ≤ 48 px + одна кнопка",
     "web/civic/heat/heat.css, demo.html (стенд: кнопка «Хроника», ?replay=7, лёгкий вход хроники, если подключён replay-attach.js)",
     "web/civic/replay/replay.js, replay.css (новые): BirgeReplay.mount/open/attach; ▶ / ❚❚ из спрайта R11, когда они в нём есть",
     "web/civic/replay/replay-attach.js (новый): лёгкий вход хроники — кнопка, ?replay, событие и Ctrl+K сразу, replay.js/css при первом открытии (R10 B-113)",
-    "tests/civic/R07/test_r07_replay.py (26 + 1 skip), test_r07_wave2.py (цели по самому свежему снимку), browser/replay.cjs (16 проверок), replay_fps.cjs, first_badge_shell.cjs, browser/shots.js (П1), readability.js (кластер)"
+    "tests/civic/R07/test_r07_replay.py (26 + 1 skip), test_r07_wave2.py (цели по самому свежему снимку), browser/replay.cjs (16 проверок), replay_fps.cjs, first_badge_shell.cjs, browser/shots.js (П1), readability.js (кластер); test_r07_heat_load.py (B-124: один расчёт на два вида, одновременные запросы, warm_up)"
   ],
   "tests": {
-    "pytest tests/civic/R07": "PASS 203 passed, 1 skipped на ветке R07 (мира R02 нет в ветке); на R01 197ad600 + пути R07 — 204 passed (мир R02 есть)",
+    "pytest tests/civic/R07": "PASS 209 passed, 1 skipped на ветке R07 (мира R02 нет в ветке); R08 + R01 — 461 passed, 2 skipped",
     "pytest tests/civic/R08": "PASS 263 passed, 1 skipped",
     "pytest tests/civic/R01": "PASS 198 passed, 1 skipped",
     "browser tests/civic/R07/browser/replay.cjs": "PASS 16/16 (стенд R07 --world, Chromium headless; lazy-entry-1366: до открытия replay.js/css не грузятся, кнопка, birge:replay-open сразу после закрытия, ?replay=7&autoplay=0)",
@@ -35,7 +35,8 @@
     "R10 accuracy.py (ce52465c, патч R07 принят R10 в 2d70ca6d) на ветке R07": "PASS 7/7 проверок R07 (объекты R07 = точки OSM — по своему снимку цели)",
     "pytest R17 + R01 + R07 одним процессом (R01 197ad600 + пути R07)": "PASS 611 passed, 1 skipped — тесты R07 не зависят от порядка (просьбы R01, INTEGRATION §1.7)",
     "полный pytest tests/civic на R01 197ad600 + пути R07 (как общий прогон сборки R01)": "4455 passed, 9 failed, 55 skipped, 6 xfailed за 8:52 — в R07 падений нет; 9 чужих: R02 test_generator_reproducible (мир после objects R12), R12 test_planned_conflict_ids_from_world (кэш прошлого мира — просьба R01 к R12), R15 ×6 XPASS(strict) (S42/S48 исправлены — снять xfail), R17 test_neighbor_functions_with_service (изоляция фикстуры)",
-    "хроника в настоящей интеграции R01 (B0.8 7f78b1ca — пути R07 = ветка R07; мир R02 на объектах R12; свой стенд)": "PASS 1366/375 × ru/kk: чип «▶ Хроника» (44 px) открывает неделю (ev-w15-heating, ev-w15-buran), у даты «Буран в Нуре» / «Нұрада боран», «Пример» / «Үлгі», «Сообщили 158 человек»; левая карточка (1366) и шторка (375) убраны, полосу ничто не закрывает; Esc — всё на месте; консоль чистая. tests/civic/R07 на этой голове — 204 passed"
+    "хроника в настоящей интеграции R01 (B0.8 7f78b1ca — пути R07 = ветка R07; мир R02 на объектах R12; свой стенд)": "PASS 1366/375 × ru/kk: чип «▶ Хроника» (44 px) открывает неделю (ev-w15-heating, ev-w15-buran), у даты «Буран в Нуре» / «Нұрада боран», «Пример» / «Үлгі», «Сообщили 158 человек»; левая карточка (1366) и шторка (375) убраны, полосу ничто не закрывает; Esc — всё на месте; консоль чистая. tests/civic/R07 на этой голове — 204 passed",
+    "первая загрузка карты (R10 B-124), R01 7f78b1ca + демо-мир, 3 холодных старта": "запросы карты при загрузке 92–275 мс → 45–106 мс (общий расчёт R07) → 8–31 мс (+ прогрев, patch R01_warm_up_heat); первый значок медиана 1 675 → 1 540 → 1 440 мс — heat_load_cloud.json"
   },
   "screens": {
     "replay 1366/1024/375 × ru/kk × start/buran/after": "research/round-15-results/R07/screens/replay_*.png (18 кадров, стенд R07, упрощённый фон — без интернета подложки нет)",
@@ -46,6 +47,7 @@
   "known_limits": [
     "60 к/с при 1 000 целей не измерено: в облаке программный WebGL (сама карта 6–13 к/с); замер на ноутбуке — LOCAL",
     "Капсула разделов и «ҚАЗ · РУС» R01 ещё не в birgeOverlayRects — значок района у верхнего края может уйти под капсулу; patch R01_overlay_rects_header_capsules.patch открыт (INTEGRATION, СОСТОЯНИЕ)",
+    "Прогрев карты при старте включает R01 (patch R01_warm_up_heat.patch — одна строка в цикле прогрева R03/R16); без него первая страница считает карту сама, но один раз на районы и места",
     "Отмотка в прошлое не знает времени пометки дубля и голосов «не могу проверить» — на цвет и число не влияет"
   ],
   "next_step": "Сборка R01 B1 (16 окт 14:00 Астаны): хроника через чип «▶ Хроника» и лёгкий вход, часть 1 (R10 demo_flow), значки поверх слоёв, числа = «Обращения»; кадры с настоящей картой — LOCAL-12"
