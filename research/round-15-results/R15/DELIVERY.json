@@ -157,6 +157,12 @@
       "NOT_RUN": 2,
       "FAIL": 0,
       "note": "с P-R01-S42-raw-staff + P-R08-board-csrf; без них Ситуационный центр — NOT_RUN (401/403)"
+    },
+    "browser_r14_reference_on_R01_79468aab": {
+      "PASS": 18,
+      "FAIL": 0,
+      "NOT_RUN": 0,
+      "note": "r15_reference.cjs раунда 14 (поиск, Ctrl+K, карточки, идеи, вопросы) на новой оболочке R01; Ctrl+K теперь PASS"
     }
   },
   "findings": {
