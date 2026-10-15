@@ -224,7 +224,7 @@ def week_block(district=None, k=5, today=None, now=None) -> dict:
 
     -> {"title_ru", "title_kk", "period": {from, to}, "month", "label": "prototype", "evidence_type": "synthetic",
         "demo": true, "items": [{rank, target, district, point, risk, level, main_category, reason_ru, reason_kk,
-        reason_source, weather_ru?, weather_kk?}], "method": {...}, "note_ru", "note_kk"}
+        reason_source, reasons: [{key, ru, kk}], weather_ru?, weather_kk?}], "method": {...}, "note_ru", "note_kk"}
     Причина: первая по весу из истории жалоб (synthetic); погода — отдельной короткой строкой, если есть (real).
     """
     if isinstance(k, bool) or not isinstance(k, int):
@@ -250,7 +250,9 @@ def week_block(district=None, k=5, today=None, now=None) -> dict:
         row = {"rank": rank, "target": item["target"], "district": item["district"], "point": item.get("point"),
                "risk": item["risk"], "level": item["level"], "main_category": item.get("main_category"),
                "reason_ru": main["ru"] if main else None, "reason_kk": main["kk"] if main else None,
-               "reason_source": ("history" if main and main["key"] not in WEATHER_KEYS else "weather") if main else None}
+               "reason_source": ("history" if main and main["key"] not in WEATHER_KEYS else "weather") if main else None,
+               # та же причина списком — так её читает «Картина дня» R08 (blocks.forecast: reasons[0].ru / .kk)
+               "reasons": [{"key": main["key"], "ru": main["ru"], "kk": main["kk"]}] if main else []}
         if weather and main is not weather[0]:
             row["weather_ru"], row["weather_kk"] = weather[0]["ru"], weather[0]["kk"]
         items.append(row)

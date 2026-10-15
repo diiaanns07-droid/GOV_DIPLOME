@@ -26,6 +26,34 @@ const check = (name, ok, detail) => {
   console.log((ok ? "PASS " : "FAIL ") + name + (detail != null ? " — " + JSON.stringify(detail).slice(0, 240) : ""));
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// R10 B-118 (VISUAL_BRIEF §4 п. 10, шкала 13/15/17): в разделе каждая кнопка, поле, вкладка — не меньше 44 × 44 px
+// (ссылка-текст — 44 в высоту), каждый видимый текст — не меньше 13 px. Скрытое для глаза (bk-sr-only) не считаем.
+async function sizeAudit(page, label) {
+  const res = await page.evaluate(() => {
+    const root = document.querySelector(".mt");
+    if (!root) return { small: ["нет .mt"], tiny: [] };
+    const seen = (el) => { const r = el.getBoundingClientRect(); return r.width > 2 && r.height > 2 && getComputedStyle(el).visibility !== "hidden"; };
+    const name = (el) => (el.getAttribute("data-focus") || el.className || el.tagName).toString().split(" ")[0];
+    const small = [];
+    root.querySelectorAll("button, select, input:not([type=hidden]), textarea, a[href], [role=tab]").forEach((el) => {
+      if (!seen(el)) return;
+      const r = el.getBoundingClientRect();
+      const textLink = el.classList.contains("mt-link");
+      if (r.height < 43.5 || (!textLink && r.width < 43.5)) small.push(name(el) + " " + Math.round(r.width) + "×" + Math.round(r.height));
+    });
+    const tiny = [];
+    const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    while (walk.nextNode()) {
+      const el = walk.currentNode.parentElement;
+      if (!walk.currentNode.textContent.trim() || !el || !seen(el) || el.closest(".bk-sr-only, .sr-only")) continue;
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if (fs < 12.5) tiny.push(name(el) + " " + fs + "px");
+    }
+    return { small: [...new Set(small)], tiny: [...new Set(tiny)] };
+  });
+  check(`${label}: зоны нажатия не меньше 44 px`, res.small.length === 0, res.small.slice(0, 6).join("; ") || null);
+  check(`${label}: текст не меньше 13 px`, res.tiny.length === 0, res.tiny.slice(0, 6).join("; ") || null);
+}
 const shots = [];
 
 async function context(browser, w, h, lang, mode, reduce) {
@@ -80,6 +108,7 @@ async function residentFlow(browser, w, h, lang) {
   const btn = await page.$(".mt-going");
   const box = btn ? await btn.boundingBox() : null;
   check(`${tag} «Приду» не ниже 44 px`, !!box && box.height >= 44, box && Math.round(box.height));
+  await sizeAudit(page, `${tag} список`);
   await shot(page, `${tag}-r-list`);
 
   if (w === 1366 && lang === "ru") {
@@ -133,6 +162,7 @@ async function residentFlow(browser, w, h, lang) {
     check("просроченное поручение помечено", /просрочено/.test(detail));
     check("связь поручения с обращением видна", !!(await page.$(".mt-linkchip")));
     check("ответы на встрече — цитатой", !!(await page.$(".mt-answer")));
+    await sizeAudit(page, `${tag} прошедшая встреча`);
     await shot(page, `${tag}-r-past`);
     await page.keyboard.press("Escape");
     await page.waitForSelector(".mt-hero", { timeout: 15000 }).catch(() => null);
@@ -148,6 +178,7 @@ async function residentFlow(browser, w, h, lang) {
         close: !!document.querySelector(".mt-askhost .qa__close"), rule: !!document.querySelector(".mt-askhost .qa__rule") };
     });
     check("вкладка «Вопросы»: «Вопрос акиму» внутри, без второго заголовка и «×»", embedded.has && embedded.titleHidden && !embedded.close && embedded.rule, embedded);
+    await sizeAudit(page, `${tag} вкладка «Вопросы»`);
     await shot(page, `${tag}-r-questions`);
     await page.click('.mt-seg [role=tab][value="meetings"]');
     await page.waitForSelector(".mt-hero", { timeout: 15000 }).catch(() => null);
@@ -263,11 +294,23 @@ async function staffFlow(browser, w, h, lang) {
     if (await page.$(LINK)) {
       await page.click(LINK);
       await page.selectOption('.mt-linkform [name="order_link_kind"]', "project");
-      await page.fill('.mt-linkform [name="order_link_id"]', "p-demo-123");
+      // R11 R13-1: проект выбирают по названию (проекты и объекты района R06); номер на экране не пишется — он в подсказке
+      await page.waitForSelector('.mt-linkform [name="order_link_pick"], .mt-linkform .mt-pick-empty', { timeout: 15000 }).catch(() => null);
+      const ppick = await page.$('.mt-linkform [name="order_link_pick"]');
+      const opt = ppick ? await ppick.evaluate((el) => el.options[1] && { value: el.options[1].value, text: el.options[1].text }) : null;
+      if (opt) await page.selectOption('.mt-linkform [name="order_link_pick"]', opt.value);
+      else await page.fill('.mt-linkform [name="order_link_id"]', "p-demo-123");
+      const want = opt ? { id: opt.value, title: opt.text.split(" · ")[0] } : { id: "p-demo-123", title: null };
       await page.click(".mt-linkform button[type=submit]");
       await sleep(1200);
-      check("связь с проектом сохранена", /Проект · p-demo-123/.test(await page.innerText(".mt-orders")));
+      const chip = await page.$(".mt-order:last-child .mt-linkchip");
+      const chipText = chip ? await chip.innerText() : "";
+      const chipTitle = (chip && (await chip.getAttribute("title"))) || "";
+      check(want.title ? "связь с проектом: название из списка района" : "связь с проектом без названия: «Связано с проектом акимата»",
+        want.title ? chipText.includes("Проект: " + want.title) : /Связано с проектом акимата/.test(chipText), chipText);
+      check("номер записи — только в подсказке", !chipText.includes(want.id) && chipTitle.includes(want.id), chipTitle);
     } else check("связь с проектом", false, "нет кнопки «Связать»");
+    await sizeAudit(page, `${tag} встреча (акимат)`);
     await shot(page, `${tag}-a-detail`);
     // Итог: изменить и сохранить
     await page.click('.mt-sec [data-focus="res-edit"]');

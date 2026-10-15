@@ -126,6 +126,68 @@ def service_names() -> dict:
         return {}
 
 
+def _r06():
+    """R06 (ui.civic_store.v2): проекты, объекты, работы — только чтение для подписей связей. Нет модуля — None."""
+    try:
+        from ui.civic_store import v2  # noqa: WPS433 — сосед; в тестах подменяется
+    except Exception:
+        return None
+    return v2
+
+
+def _title_pair(item: dict) -> tuple[str | None, str | None]:
+    ru = next((v.strip() for v in (item.get("title_ru"), item.get("title"), item.get("title_kk"))
+               if isinstance(v, str) and v.strip()), None)
+    kk = item.get("title_kk") if isinstance(item.get("title_kk"), str) and item["title_kk"].strip() else ru
+    return ru, (kk.strip() if kk else None)
+
+
+def _r06_label(kind: str, oid: str, cache: dict) -> dict | None:
+    """Название связанного проекта или работы из публичных функций R06 (то, что и так видно жителю).
+
+    «Проект» — проект района (get_proposal: в него превращаются идеи жителей) или объект с этапами (get_object).
+    «Работа» — запись «Работы и отключения» (nearby_items — публичный формат «Рядом», без служебных полей).
+    R06 не связан с базой (V2Error 503), записи нет (404) или упал — None: остаётся «Связано с проектом акимата»."""
+    r06 = cache.get("r06", 0)
+    if r06 == 0:
+        r06 = cache["r06"] = _r06()
+    if r06 is None:
+        return None
+    if kind == "project":
+        for name, source in (("get_proposal", "proposal"), ("get_object", "object")):
+            fn = getattr(r06, name, None)
+            if not callable(fn):
+                continue
+            try:
+                data = fn(oid)
+            except Exception:
+                continue
+            item = data.get("item") if isinstance(data, dict) else None
+            if isinstance(item, dict) and item.get("id") == oid:
+                ru, kk = _title_pair(item)
+                if ru:
+                    return {"label_ru": ru, "label_kk": kk, "source": source}
+        return None
+    if kind == "work":
+        if "works" not in cache:
+            works = {}
+            fn = getattr(r06, "nearby_items", None)
+            try:
+                rows = fn() if callable(fn) else None
+            except Exception:
+                rows = None
+            rows = rows.get("items") if isinstance(rows, dict) else rows
+            if isinstance(rows, list):
+                works = {str(r["id"]): r for r in rows if isinstance(r, dict) and r.get("id")}
+            cache["works"] = works
+        item = cache["works"].get(oid)
+        if item:
+            ru, kk = _title_pair(item)
+            if ru:
+                return {"label_ru": ru, "label_kk": kk, "source": "work"}
+    return None
+
+
 class MeetingService:
     """Сервис встреч. qa — сервис «Вопроса акиму» (та же база): вопросы к встрече живут там."""
 
@@ -356,10 +418,18 @@ class MeetingService:
         return self._complaints or None
 
     def _link_details(self, orders: list[dict]) -> None:
-        """У поручения, связанного с обращением, — что это и где: подпись цели, статус, цель для «На карте».
+        """Подпись связи поручения: что это и где — вместо номера записи (R11 R13-1).
 
-        Берём публичный вид R09 (GET /complaints/{id}): без текста жителя и без исполнителей. Нет R09 или записи —
-        остаётся только {kind, id}, как раньше."""
+        Обращение — публичный вид R09 (GET /complaints/{id}): подпись цели, статус, цель для «На карте»; без текста
+        жителя и без исполнителей. Проект и работа — названия из публичных функций R06 (_r06_label). Нет модуля или
+        записи — остаётся только {kind, id}, как раньше."""
+        others = [o for o in orders if o.get("link") and o["link"]["kind"] != "complaint"]
+        if others:
+            cache: dict = {}
+            for order in others:
+                info = _r06_label(order["link"]["kind"], order["link"]["id"], cache)
+                if info:
+                    order["link"].update(info)
         linked = [o for o in orders if o.get("link") and o["link"]["kind"] == "complaint"]
         if not linked:
             return
@@ -552,14 +622,20 @@ class MeetingService:
             row = self.store.add_order(mid, fields, _actor(principal))
             if status != "todo":
                 row = self.store.update_order(mid, row["id"], {"status": status}, _actor(principal))
-            return _reply(201, {"order": self._order_view(row, today, names)})
+            return _reply(201, {"order": self._linked_view(row, today, names)})
         if not isinstance(oid, str) or not ORDER_ID_RE.match(oid):
             raise LookupError(oid)
         fields = self._order_fields(body, partial=True, meeting_at=meeting["at"])
         if not fields:
             raise ApiError(422, "invalid", "Нечего менять: передайте статус, срок, связь или текст.", "order_id")
         row = self.store.update_order(mid, oid, fields, _actor(principal))
-        return _reply(200, {"order": self._order_view(row, today, names)})
+        return _reply(200, {"order": self._linked_view(row, today, names)})
+
+    def _linked_view(self, row: dict, today, names) -> dict:
+        """Ответ на сохранение поручения — с той же подписью связи, что в карточке (экран не перечитывает карточку)."""
+        view = self._order_view(row, today, names)
+        self._link_details([view])
+        return view
 
     def result(self, mid: str, body: dict, principal) -> dict:
         texts = {lang: _clean(body.get("result_" + lang), field="result_" + lang, low=RESULT_MIN, high=RESULT_MAX,
@@ -571,11 +647,13 @@ class MeetingService:
 
     # ------------------------------------------------------------------ лента уведомлений (R06)
     def updates_route(self, q: dict, context) -> dict:
-        device = self._device({}, context, q)
+        # Маршрут «для всех» (CONTRACT §7): без устройства — пустая лента, как у R16 и R17 (R10 B-105);
+        # 400 — только для испорченного device_id или since.
+        device = self._device({}, context, q, required=False)
         since = q.get("since") or None
         if since is not None and parse_iso(since) is None:
             raise ApiError(400, "bad_request", "since: время ISO 8601.", "since")
-        items = self.updates(device, since)
+        items = self.updates(device, since) if device else []
         return _reply(200, {"items": items, "since": since, "now": iso(self.store.now())})
 
     def updates(self, device: str, since: str | None = None, *, limit: int = 50) -> list[dict]:
