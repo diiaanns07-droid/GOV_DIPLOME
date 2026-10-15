@@ -4,8 +4,8 @@
  "branch": "claude/laughing-euler-iv3on3",
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": "origin/claude/r14-R08 4b215c77 (только браузерные проверки tests/civic/R08/*.cjs; код R08 в FINAL-4 = d5719635 совпадает)",
- "code_sha": "0e0623bf83ab874f061a32b13b992f2c78148f32",
- "tested_sha": "0e0623bf83ab874f061a32b13b992f2c78148f32",
+ "code_sha": "3dbb4fb1959c603feaa79d303ca36d1d16dfe2db",
+ "tested_sha": "3dbb4fb1959c603feaa79d303ca36d1d16dfe2db",
  "push_status": "OK (origin/claude/laughing-euler-iv3on3)",
  "summary": "Ситуационный центр (страница /civic/board/, тёмная, 1920/1366 без прокрутки, смена блоков 15 с) + GET akim/board; «Картина дня» 2.0 (решения коротко, кнопка кризисного штаба, три карточки соседей, прогноз; подписи «Не исправлено в срок», «Исправлено за 7 дней» и в плитках, и в сводке текстом; текст не мельче 13 px); «Картина недели» (GET akim/week, окно 7 × 24 ч как в «Картине дня», + A4 ru/kk); соседи R17/R16/R13 — только чтение их функций и открытых маршрутов; поправка П1 применена; на демо-мире R02 и сборке R01 B0.10 числа всех экранов сходятся (world_check 19/19, world_shots 86/86, R10 consistency 16/0/0); в блоке «Районы» — карта районов (контуры OSM, цвет — уровень карты R07).",
  "changed_paths": [
@@ -46,7 +46,9 @@
   "tests/civic/R08/board_entry_check.cjs",
   "tests/civic/R08/shell_check.cjs",
   "tests/civic/R08/test_r08_text.py",
-  "tests/civic/R08/test_r08_summary.py"
+  "tests/civic/R08/test_r08_summary.py",
+  "ui/civic_akim/__init__.py",
+  "tests/civic/R08/test_r08_warm.py"
  ],
  "integration": {
   "r01_patch": "research/round-15-results/R08/r01_routes_r08.patch",
@@ -70,10 +72,12 @@
    "R13": "board_block, week_block (прогноз на неделю; нет — attention_next_month)"
   },
   "districts_outlines": "карта блока «Районы» читает /civic/build3d/data/astana-districts.json (файл сборки R05/R01, контуры OSM, ODbL); нет файла — блок полосами",
-  "r01_shell_patch": "research/round-15-results/R08/patches/R01_shell_href_sections.patch"
+  "r01_shell_patch": "research/round-15-results/R08/patches/R01_shell_href_sections.patch",
+  "warm_up": "ui.civic_akim.warm_up() — в цикл прогрева R01 после засева мира: (\"R08\", \"ui.civic_akim\", ()); медленный случай — первый ответ после записи, патч R07 patches/R07_records_per_generation.patch (INTEGRATION §18)",
+  "r07_patch": "research/round-15-results/R08/patches/R07_records_per_generation.patch"
  },
  "tests": {
-  "pytest tests/civic/R08": "PASS 301, skipped 1",
+  "pytest tests/civic/R08": "PASS 306, skipped 1 (+ test_r08_warm.py: прогрев, памятки дают те же числа)",
   "board_check.cjs (Ситуационный центр, стенд R08)": "PASS 88 / FAIL 0",
   "week_check.cjs (Картина недели, стенд R08)": "PASS 21 / FAIL 0 (+ нажата кнопка своего окна; с датой из «Картины дня» — ни одна)",
   "ui_check.cjs (Картина дня 2.0, стенд R08)": "PASS 171 / FAIL 0",
@@ -87,7 +91,8 @@
   "R10 test_r10_api_v2.py": "PASS 11",
   "fit_scan.cjs (VISUAL_BRIEF §4 на сборке: ≥ 13 px, ≥ 44 px, без обрезки)": "PASS 7 / FAIL 0 — табло 1366 kk, 1920 ru; лист недели 1366 kk, 375 ru; «Картина дня» 1366 ru, 375 kk; «Сегодня в Астане» 1366 kk; теперь и контраст ≥ 4,5:1",
   "board_entry_check.cjs (вход в табло из оболочки R01)": "B0.10 как есть: PASS 10 / FAIL 2 / NOT_RUN 1 — Ctrl+K и #board открывают «Раздел не удалось открыть» (оболочка R01); с патчем patches/R01_shell_href_sections.patch — PASS 13 / 0",
-  "R10 visual_audit (B0.9) — предупреждения по R08": "сделано (INTEGRATION §17): board-page 1366-kk подпись под графиком → графики ряда справа от чисел; week-page 4 размера шрифта → 13/15/22"
+  "R10 visual_audit (B0.9) — предупреждения по R08": "сделано (INTEGRATION §17): board-page 1366-kk подпись под графиком → графики ряда справа от чисел; week-page 4 размера шрифта → 13/15/22",
+  "скорость akim/summary (сборка R01 B0.11 + R08, демо-мир)": "первый запрос через 12 с после старта 37–64 мс (прогрев R03/R08); поминутный пересчёт 253 → 174 мс (памятки R08); после записи (сброс карты R07) город 430–560 мс, с патчем R07 245–315 мс"
  },
  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Chromium/Playwright 1.56, без интернета (подложка карты — упрощённый фон)",
  "screens": [
