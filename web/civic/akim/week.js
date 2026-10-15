@@ -57,6 +57,7 @@
       "week.together.upcoming": "Впереди дел: {n} · записались: {m}",
       "week.meetings": "Поручения встреч с жителями",
       "week.meetings.counts": "Сделано {done} из {total} · просрочено {overdue}",
+      "week.meetings.counts_ok": "Сделано {done} из {total}",
       "week.meetings.due": "срок {date}",
       "week.decisions": "Нужно решение акима",
       "week.decisions.overdue": "просрочено на {n} дн.",
@@ -113,6 +114,7 @@
       "week.together.upcoming": "Алдағы істер: {n} · жазылғандар: {m}",
       "week.meetings": "Тұрғындармен кездесу тапсырмалары",
       "week.meetings.counts": "Орындалды {done}/{total} · мерзімі өткені {overdue}",
+      "week.meetings.counts_ok": "Орындалды {done}/{total}",
       "week.meetings.due": "мерзімі {date}",
       "week.decisions": "Әкімнің шешімі керек",
       "week.decisions.overdue": "мерзімі {n} күнге өтті",
@@ -438,7 +440,7 @@
         if (mt && mt.available && (mt.counts || {}).total) {
           var mc = mt.counts;
           nb.push(h("div", { class: "wk-card" }, [h("h3", { class: "wk-h3", text: tr("week.meetings") }), list(
-            [[tr("week.meetings.counts", { done: mc.done || 0, total: mc.total, overdue: mc.overdue || 0 })]].concat(
+            [[tr(mc.overdue ? "week.meetings.counts" : "week.meetings.counts_ok", { done: mc.done || 0, total: mc.total, overdue: mc.overdue || 0 })]].concat(
               (mt.orders || []).slice(0, 2).map(function (o) {
                 return [h("span", { class: "wk-list__main", text: pick(o, "text") }),
                   h("span", { class: "wk-list__sub" + (o.overdue ? " wk-late" : ""), text: o.due ? tr("week.meetings.due", { date: fmtDate(o.due) }) : "" })];
