@@ -89,6 +89,11 @@ def main() -> None:
                             "note": "test_r13_meetings_gateway.py на ui/web_server.py R01 @ c9069723 (8 маршрутов meetings.*)"},
             "r06_feed_contract": {"status": "PASS", "note": "R06 notify.py @ c2604ea2: updates(device, since, db_path=…, limit=…), "
                                   "LINK_RE и KINDS принимают события R13"},
+            "r06_feed_e2e_on_r01_build": {"status": "PASS", "note": "сборка R01 197ad600 (B0.4, BirgeNotify R06), демо-мир: вопрос к "
+                                          "m-w15-2 → публикация сотрудником → «Уведомления»: «Ваш вопрос к встрече опубликован» "
+                                          "(sources R13 ok) → нажатие открывает #meetings/m-w15-2/q-… с прокруткой к вопросу"},
+            "r08_contract_first_branch": {"status": "PASS", "note": "R08 claude/laughing-euler-iv3on3 @ b8838abe (её берёт R01 в B0.3): "
+                                          "neighbors.forecast — r13-week, 5 пунктов с причиной; neighbors.meetings — r13, counts"},
             "r15_meetings_tests": {"status": "PASS", "passed": 27, "total": 27,
                                    "note": "tests/civic/R15/round15/test_r15_round15_meetings.py R15 @ 19748bff на коде R13 этой поставки"},
             "demo_world_on_r01_build": {"status": "PASS", "note": "сборка R01 c9069723, CIVIC_DEMO_WORLD=1: оболочка засевает R13 "
