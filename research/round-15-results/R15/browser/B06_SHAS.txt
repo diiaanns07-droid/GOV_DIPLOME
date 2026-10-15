@@ -1,0 +1,5 @@
+R01 claude/brave-fermi-nhzetj c6d62440 (B0.6 в ветке R01: R09 D1 d9ca175c, R17 d75e3cd9, R16 db7da7de, R03 warm_up; BUILD.json — FINAL-4.1)
+R15 tests — каталог круга 8 (все S01–S51 FIXED)
+pytest tests/civic/R15: 556 passed / 0 failed / 0 xfail / 0 NOT_RUN
+браузер r15_round15: 8 PASS / 0 FAIL / 1 NOT_RUN (works-calendar: R06 не принимает HTML); эталон r15_reference: 18 / 0 / 0
+экран сотрудника R09 D1 (передачи, части служб): разбор кода — строки только textContent (h()), ссылок из данных нет

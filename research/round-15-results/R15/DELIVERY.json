@@ -9,22 +9,22 @@
  "code_sha": "см. git log ветки: последний коммит R15 (код R15 — только tests/civic/R15/)",
  "tested_sha": {
   "package": "e91acb69",
-  "R17": "4132ad57",
+  "R17": "54cc7e48",
   "R13": "a702d487",
   "R03": "e4bb9f6d",
-  "R16": "6bdf8c3c",
+  "R16": "0433fab9",
   "R04": "f20775ab",
-  "R02": "ac75f3a8 (claude/affectionate-shannon-jm6ws5)",
-  "R07": "7e35dc4a (разбор)",
+  "R02": "8b9e3e81 (claude/affectionate-shannon-jm6ws5)",
+  "R07": "bda4d9c9",
   "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
   "R09": "80a35084",
-  "R01": "197ad600 (B0.4 в ветке R01)",
-  "R08": "b8838abe (claude/laughing-euler-iv3on3, разбор)",
-  "R06": "98e154af (разбор)",
+  "R01": "c6d62440 (B0.6 в ветке R01)",
+  "R08": "3cf71e94 (claude/laughing-euler-iv3on3, разбор)",
+  "R06": "ec3c5b97",
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
-  "R11": "f8ce804c (разбор)",
-  "R12": "99000a8d (разбор)",
-  "R05": "c98493b7 (разбор)"
+  "R11": "06a939db (разбор)",
+  "R12": "de492a1b (разбор)",
+  "R05": "ec3ec959 (разбор)"
  },
  "push_status": "OK (круг 3)",
  "changed_paths": [
@@ -274,25 +274,57 @@
    "R09_80a35084_handoffs": "30 passed + 2 XPASS (S49)",
    "R03_e4bb9f6d_assistant": "15 passed + 2 XPASS (S44)",
    "R13_a702d487_meetings": "27 passed"
+  },
+  "R01_c6d62440_B06_all_R15": {
+   "passed": 556,
+   "failed": 0,
+   "xfailed": 0,
+   "xpassed": 0,
+   "skipped_not_run": 0,
+   "note": "каталог круга 8: все находки S01–S51 — FIXED; до переноса — 542 passed + 14 XPASS"
+  },
+  "package_own_branch_round8": {
+   "passed": 264,
+   "failed": 1,
+   "skipped_not_run": 278,
+   "note": "голый пакет FINAL-4.1: S42 FAIL ожидаемо (исправление шлюза R01 28893ffc только в сборке R01)"
+  },
+  "round8_heads": {
+   "R02_8b9e3e81_world": "4 passed",
+   "R07_bda4d9c9_replay": "12 passed",
+   "R16_0433fab9_together": "37 passed",
+   "R17_54cc7e48_agencies": "35 passed",
+   "R06_ec3c5b97_notify": "2 passed + 1 NOT_RUN (нет R13 в ветке R06)"
+  },
+  "browser_B06": {
+   "PASS": 8,
+   "FAIL": 0,
+   "NOT_RUN": 1,
+   "reference_r14": "18/0/0",
+   "files": [
+    "browser/r15_round15_b06.json",
+    "browser/r15_reference_b06.json",
+    "browser/B06_SHAS.txt"
+   ]
   }
  },
  "findings": {
   "S42": {
    "owner": "R01",
    "level": "низкий",
-   "status": "исправлено в ветке владельца: R01 28893ffc (PENDING до сборки B1)",
+   "status": "исправлено: R01 28893ffc; в сборке R01 B0.6 c6d62440 (кандидат B1) — FIXED, регрессия",
    "patch": "patches/P-R01-S42.diff"
   },
   "S43": {
    "owner": "R17",
    "level": "низкий",
-   "status": "исправлено в ветке владельца: R17 13589572 (PENDING до сборки B1)",
+   "status": "исправлено: R17 13589572 (в сборке d75e3cd9); в сборке R01 B0.6 c6d62440 (кандидат B1) — FIXED, регрессия",
    "patch": "patches/P-R17-S43.diff"
   },
   "S44": {
    "owner": "R03",
    "level": "низкий",
-   "status": "исправлено в ветке владельца: R03 cae2e270 (PENDING до сборки B1)",
+   "status": "исправлено: R03 cae2e270; в сборке R01 B0.6 c6d62440 (кандидат B1) — FIXED, регрессия",
    "patch": "patches/P-R03-S44.diff"
   },
   "S45": {
@@ -317,13 +349,13 @@
   "S48": {
    "owner": "R04",
    "level": "средний",
-   "status": "исправлено в ветке владельца: R04 d8448d48 (PENDING до сборки B1)",
+   "status": "исправлено: R04 d8448d48 (в сборке 0affd9d0); в сборке R01 B0.6 c6d62440 (кандидат B1) — FIXED, регрессия",
    "patch": "patches/P-R04-S48.diff"
   },
   "S49": {
    "owner": "R09",
    "level": "низкий",
-   "status": "исправлено в ветке владельца: R09 dd93ba11 (PENDING до сборки B1)",
+   "status": "исправлено: R09 dd93ba11 (в сборке D1 d9ca175c); в сборке R01 B0.6 c6d62440 (кандидат B1) — FIXED, регрессия",
    "patch": "patches/P-R09-S49.diff"
   },
   "S50": {
@@ -339,7 +371,7 @@
   "S51": {
    "owner": "R16",
    "level": "средний",
-   "status": "исправлено в ветке владельца: R16 3d0a4c36 (PENDING до сборки B1)",
+   "status": "исправлено: R16 3d0a4c36 (в сборке db7da7de); в сборке R01 B0.6 c6d62440 (кандидат B1) — FIXED, регрессия",
    "patch": "patches/P-R16-S51.diff",
    "what": "анонимный GET together/yards/cell-<любые числа> записывает двор в базу и кэш без предела; ячейка вне Астаны — 200; такие дворы — в публичном списке «Выбрать двор»"
   }
@@ -361,5 +393,5 @@
   "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
   "проверка в облаке без интернета; подложка карты — упрощённый фон"
  ],
- "next_step": "круг 8 (~23:30 Астаны): новые поставки; B1 16 окт 14:00 — полный прогон на сборке, PENDING (S42, S43, S44, S48, S49, S51) -> FIXED"
+ "next_step": "круг 9 (~00:30 Астаны): новые поставки; B1 16 окт 14:00 — полный прогон на сборке (ожидание: 556 passed / 0 failed), браузер, эталон; затем B2 23:00 и FINAL-5 17 окт 18:00 — финальный SECURITY_REVIEW_R15"
 }
