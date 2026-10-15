@@ -204,6 +204,37 @@ async function variant(browser, base, width, height, lang, staff) {
         .catch(() => null);
       const cleared = await page.$('.bc-inbox__filter-chip[data-filter="service"]');
       check(`${tag}: чип «Служба: …» снимает фильтр`, !cleared);
+      // Адрес раздела оболочки R01 раунда 15 (IA_ROUND15 §7.3): #inbox/<id жалобы> — сцена 8 открывается ссылкой.
+      // В оболочке FINAL-4 путей нет (раздел «complaints») — шаг пропускается.
+      const r15shell = await page.evaluate(() => /^#inbox/.test(location.hash) && typeof window.BirgeComplaintList?.setPath === "function");
+      if (r15shell) {
+        const seen = async () => page.evaluate((target) => {
+          const li = document.querySelector(`.bc-inbox__item--open[data-target="${target}"]`);
+          const r = li && li.getBoundingClientRect();
+          return { open: !!li, top: r ? Math.round(r.top) : null, visible: !!r && r.top >= 0 && r.top < innerHeight - 40,
+                   hash: location.hash, stored: (() => { try { return sessionStorage.getItem("birge.inbox.filter"); } catch (e) { return "?"; } })() };
+        }, PIT_TARGET);
+        await page.evaluate(() => window.BirgeShell.setSection("map"));
+        await page.evaluate((id) => window.BirgeShell.setSection("inbox", { path: id }), pit.id);
+        await page.waitForSelector(`.bc-inbox__item--open[data-target="${PIT_TARGET}"]`, { timeout: 10000 }).catch(() => null);
+        await sleep(400);
+        const mounted = await seen();
+        check(`${tag}: адрес #inbox/<id> — экран открыт на яме, строка в видимой части, без фильтра в sessionStorage`,
+              mounted.open && mounted.visible && mounted.stored === null && mounted.hash === "#inbox/" + pit.id, mounted);
+        await shot(page, `joint-${tag}-6c-path`);
+        // Тот же раздел, другой путь — оболочка зовёт handle.setPath без перемонтажа: другая строка, потом снова яма.
+        const otherRow = page.locator(".bc-inbox__item:not(.bc-inbox__item--open) .bc-inbox__row").first();
+        await otherRow.click();
+        await sleep(400);
+        const closed = !(await seen()).open;
+        await page.evaluate(() => window.BirgeShell.setSection("inbox", { path: "" }));
+        await page.evaluate((id) => window.BirgeShell.setSection("inbox", { path: id }), pit.id);
+        await page.waitForSelector(`.bc-inbox__item--open[data-target="${PIT_TARGET}"]`, { timeout: 8000 }).catch(() => null);
+        await sleep(400);
+        const again = await seen();
+        check(`${tag}: смена пути без перемонтажа (setPath) — открыта другая строка, путь ямы снова открывает яму`,
+              closed && again.open && again.visible, { closed, again });
+      }
     }
     // Житель: «Я тоже» на той же яме → в «Моих обращениях» — две службы со статусами.
     const device = "r09joint" + Math.random().toString(36).slice(2, 14);

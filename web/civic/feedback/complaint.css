@@ -354,6 +354,8 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 /* Группы и строки — компонент Linear ui-kit R11 (.bk-lgroup, .bk-llist, .bk-lrow: 44, без разделителей, заливка при
    наведении). Список — на белой подложке: лист раздела R01 стеклянный, а строки читаются при любом фоне карты. */
 .bc-inbox__ghead { margin: 0; }
+/* Открыто по пути #inbox/<id> или из табло R17 — строка прокручивается под липкий заголовок группы (36 px), не за него. */
+.bc-inbox__item { scroll-margin-top: 48px; }
 .bc-inbox__group[data-group="overdue"] .bc-inbox__ghead, .bc-inbox__group[data-group="reopened"] .bc-inbox__ghead { color: var(--c-danger, #B3362E); }
 .bc-inbox__list { list-style: none; margin: 0; padding: 4px; background: var(--c-surface, #fff); border-radius: var(--r-m, 12px);
                   box-shadow: inset 0 0 0 1px var(--c-line, rgba(18, 26, 23, .08)); }

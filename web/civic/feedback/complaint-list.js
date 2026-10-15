@@ -102,6 +102,17 @@
     if (!raw) return null;
     try { return cleanFilter(JSON.parse(raw)); } catch (e) { return null; }
   }
+  // Путь раздела оболочки R01 (IA_ROUND15 §7.3, opts.path и handle.setPath): #inbox/<id жалобы> — открыть это обращение
+  // (сцена 8 — #inbox/c-w1500010); #inbox/service=water, #inbox/district=nura — «Обращения» службы или района.
+  function parsePath(path) {
+    var p = typeof path === "string" ? path.replace(/^\/+|\/+$/g, "") : "";
+    if (/^c-[A-Za-z0-9_-]{1,80}$/.test(p)) return { id: p };
+    var m = /^service=([a-z_]{2,30})$/.exec(p);
+    if (m) return { service: m[1] };
+    m = /^district=([a-z][a-z0-9_-]{1,39})$/.exec(p);
+    return m ? { district: m[1] } : null;
+  }
+  var live = null;   // смонтированный экран — для BirgeComplaintList.setPath (по нему оболочка видит, что путь понятен)
   // Название района: словарь R11 (district.<id>), иначе id как есть.
   function districtLabel(id) {
     var key = "district." + id;
@@ -158,11 +169,14 @@
     root.appendChild(box);
     // tab: "all" — все группы по статусу (как в Linear); или одна вкладка-фильтр. menu — ключ строки с открытым меню статуса.
     var asked = takeStoredFilter();
+    var fromPath = parsePath(opts.path) || {};
     var state = { data: null, error: false, tab: "all", open: null, openFix: false, menu: null, slow: false, hover: null,
-                  service: opts.service || serviceFromHash() || (asked && asked.service) || null,
-                  district: opts.district || districtFromHash(), partMenu: null };
-    // Одно обращение из табло R17 (строка «Совместные») — после загрузки сразу открыть его строку.
-    var askedId = asked && asked.ids.length === 1 ? asked.ids[0] : null;
+                  service: opts.service || serviceFromHash() || fromPath.service || (asked && asked.service) || null,
+                  district: opts.district || districtFromHash() || fromPath.district || null, partMenu: null };
+    // Одно обращение — из пути оболочки (#inbox/c-…) или из табло R17 (строка «Совместные»): после загрузки сразу
+    // открыть его строку и прокрутить к ней (scrollOpen).
+    var askedId = fromPath.id || (asked && asked.ids.length === 1 ? asked.ids[0] : null);
+    var scrollOpen = false;
     var staffHandle = null;
     var alive = true;
 
@@ -255,7 +269,18 @@
       if (!found) return false;
       askedId = null;
       state.tab = "all"; state.menu = null; state.open = found.key; state.openFix = false;
+      scrollOpen = true;
       return true;
+    }
+    // Оболочка R01 сменила путь раздела без перемонтажа (handle.setPath): обращение — открыть, служба/район — фильтр.
+    function setPath(path) {
+      var p = parsePath(path);
+      if (!p) return;
+      if (p.id) { askedId = p.id; if (openAsked()) render(); return; }
+      if ((p.service && p.service !== state.service) || (p.district && p.district !== state.district)) {
+        state.service = p.service || state.service; state.district = p.district || state.district;
+        state.data = null; load();
+      }
     }
 
     // Части служб совместного обращения — под строкой: значок статуса · служба; нажатие — меню статуса части.
@@ -647,6 +672,11 @@
       });
       box.appendChild(groups);
       state.enter = false;
+      if (scrollOpen) {   // открыто по пути или из табло R17 — строка в видимой части экрана, а не ниже края
+        scrollOpen = false;
+        var opened = box.querySelector(".bc-inbox__item--open");
+        if (opened && opened.scrollIntoView) opened.scrollIntoView({ block: "start" });
+      }
       if (items.some(function (g) { return g.demo; })) box.appendChild(h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint")));
       if (state.menu || state.partMenu) {
         var first = box.querySelector(".bc-inbox__menu .bc-inbox__menu-item[aria-checked=false], .bc-inbox__menu .bc-inbox__menu-item");
@@ -694,11 +724,13 @@
     function onLang() { if (alive) render(); }
     window.addEventListener("birge:lang", onLang);
     load();
-    return {
+    var handle = {
       refresh: function () { return load(true); },
       setLang: function () { render(); },
+      setPath: setPath,
       destroy: function () {
         alive = false; closeStaff(); window.removeEventListener("birge:lang", onLang);
+        if (live === handle) live = null;
         document.removeEventListener("click", onOutside); window.removeEventListener("birge:target-hover", onMapHover);
         window.removeEventListener("birge:inbox-open", onOpenRequest); window.removeEventListener("birge:inbox-changed", onChanged);
         window.removeEventListener("hashchange", onHash);
@@ -706,7 +738,10 @@
         if (box.parentNode) box.parentNode.removeChild(box);
       }
     };
+    live = handle;
+    return handle;
   }
 
-  window.BirgeComplaintList = { mount: mount, commands: commands };
+  window.BirgeComplaintList = { mount: mount, commands: commands,
+                                setPath: function (path) { if (live) live.setPath(path); } };
 })();

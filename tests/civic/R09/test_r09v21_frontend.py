@@ -53,6 +53,14 @@ def test_r17_agencies_filter_handoff():
     assert "sessionStorage.removeItem(FILTER_KEY)" in LIST_JS                              # фильтр берётся один раз
 
 
+
+def test_shell_path_contract_r01():
+    # Оболочка R01 (IA_ROUND15 §7.3): opts.path при монтаже и handle.setPath без перемонтажа; по module.setPath она видит,
+    # что экран понимает путь, и не кладёт фильтр в sessionStorage. Открытая строка прокручивается в видимую часть.
+    assert "parsePath(opts.path)" in LIST_JS and "setPath: setPath," in LIST_JS
+    assert "setPath: function (path) { if (live) live.setPath(path); }" in LIST_JS
+    assert 'opened.scrollIntoView({ block: "start" })' in LIST_JS
+
 def test_yard_link_opens_section_when_no_yard_id():
     # BirgeTogether.open R16 без id двора отвечает false — тогда раздел «Мой двор» оболочки, а не тихое «ничего».
     assert 'if (together.open("yard", yard) !== false) return;' in JS
