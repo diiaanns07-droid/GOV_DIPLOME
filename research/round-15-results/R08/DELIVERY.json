@@ -5,15 +5,15 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "restored_from": null,
   "restored_note": "код R08 в основе = поставка раунда 14 d5719635 (FINAL-4) — восстанавливать нечего",
-  "code_sha": "58bec6f572cb05c36d3015c99af00bcf3d655d05",
-  "tested_sha": "58bec6f572cb05c36d3015c99af00bcf3d655d05",
+  "code_sha": "d333a82351a99fc71edf3535c29703ec4c08ae13",
+  "tested_sha": "d333a82351a99fc71edf3535c29703ec4c08ae13",
   "push_status": "OK (origin/claude/inspiring-johnson-j7wksj)",
   "amendments_applied": [
     "П1 «Без ИИ-слопа» (15 окт 17:05)"
   ],
   "what": {
     "akim/board": "Ситуационный центр: GET /api/civic/v2/akim/board (только сотрудник) + web/civic/board/ (тёмная, 1920/1366 без прокрутки, смена блоков 15 с, ҚАЗ/РУС)",
-    "akim/week": "Картина недели: GET /api/civic/v2/akim/week?date&district (только сотрудник) + web/civic/akim/week.html (печать A4, 2 листа, ru/kk)",
+    "akim/week": "Картина недели: GET /api/civic/v2/akim/week?date&district (только сотрудник) + web/civic/akim/week.html; окно = «за 7 дней» Картины дня (сегодня — 7 суток до текущего часа, прошлая дата — 7 календарных дней); печать A4, 2 листа, ru/kk",
     "day_2_0": "«Картина дня» 2.0: Ведомства (R17) · Жители вместе (R16+R09) · Встречи (R13) · Прогноз (R13, прототип); «Нужно решение акима» проблема → вариант → кнопка; «Открыть кризисный штаб» у тревоги пульса",
     "demo_world": "CIVIC_DEMO_WORLD=1 — фикстуры R08 (объекты, предложения, «Рядом», пример решений, соседи) не подмешиваются"
   },
@@ -23,10 +23,12 @@
     "tests/civic/R08/demo_server.py",
     "tests/civic/R08/r15_shots.cjs",
     "tests/civic/R08/test_r08_board.py",
+    "tests/civic/R08/test_r08_wave2.py",
     "tests/civic/R08/ui_check.cjs",
     "ui/civic_akim/__init__.py",
     "ui/civic_akim/api.py",
     "ui/civic_akim/blocks.py",
+    "ui/civic_akim/decisions.py",
     "ui/civic_akim/fixtures/agencies_demo.json",
     "ui/civic_akim/fixtures/incidents_demo.json",
     "ui/civic_akim/fixtures/meetings_demo.json",
@@ -53,7 +55,7 @@
   "tests": {
     "pytest tests/civic/R08": {
       "status": "PASS",
-      "passed": 294,
+      "passed": 297,
       "failed": 0,
       "skipped": 2,
       "env": "облако Claude Code, Linux, Python 3.13",
@@ -61,7 +63,7 @@
     },
     "tests/civic/R08/test_r08_board.py": {
       "status": "PASS",
-      "passed": 31,
+      "passed": 33,
       "failed": 0,
       "skipped": 1
     },
@@ -86,18 +88,21 @@
       "status": "PASS",
       "note": "модули соседей из их веток во временной папке + та же база: все 5 блоков available, ссылка штаба только у тревоги про снег"
     },
-    "демо-мир R02 (CIVIC_DEMO_WORLD=1) сверка чисел с R07/R09": {
-      "status": "NOT_RUN",
-      "reason": "world_v1.json и seed_world соседей ещё в работе; флаг и отключение фикстур покрыты тестами"
-    },
-    "сборка R01 (ветка claude/brave-fermi-nhzetj @ 460fd683 + пути R08)": {
+    "сборка R01 (ветка claude/brave-fermi-nhzetj @ 460fd683 + пути R08 + мир R02)": {
       "status": "PASS с патчем INTEGRATION §1–§3",
       "passed": 8,
       "failed": 0,
       "check": "tests/civic/R08/build_check.cjs + curl: аноним 401, сотрудник без токена 403 csrf_failed, district=Bad! 400, сотрудник с токеном 200 (board, week)",
       "without_patch": "как есть у R01: сотрудник с верным токеном получает 401 staff_only (нет staff_view=True), /civic/board/index.html и /civic/akim/week.html — 404 (нет CIVIC_ASSETS)",
-      "env": "облако, app.py --port 8655, CIVIC_DEMO=1, база seed-demo + seed-r14-demo во временной папке; соседей R17/R16 раунда 15 в ветке R01 нет — на табло только лента «Прогноз» (R13 основы)",
+      "env": "облако, app.py --port 8656, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, мир R02 a7251430 (засев R09 743) во временной папке; соседей R17/R16/R13 раунда 15 в ветке R01 нет — их блоки скрыты (module_not_ready)",
       "patch": "research/round-15-results/R08/patches/R01-web_server-board-week.patch"
+    },
+    "демо-мир R02: сверка чисел (stand_numbers.py R02) и день = табло = неделя": {
+      "status": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "note": "14 из 14 «same» (карта R07, «Картина дня» R08, «Обращения» и список R09); «Картина дня» = ситуационный центр = «Картина недели»: город 126/106/104/35, Нура 66/45/43/5; фикстуры R08 не подмешиваются",
+      "file": "research/round-15-results/R08/screens/world_stand_numbers.json"
     }
   },
   "screens": [
@@ -143,13 +148,15 @@
     "research/round-15-results/R08/screens/week-1366-kk.jpg",
     "research/round-15-results/R08/screens/week-1366-ru.jpg",
     "research/round-15-results/R08/screens/week-a4-kk.pdf",
-    "research/round-15-results/R08/screens/week-a4-ru.pdf"
+    "research/round-15-results/R08/screens/week-a4-ru.pdf",
+    "research/round-15-results/R08/screens/world_stand_numbers.json"
   ],
   "known_limits": [
     "Прогноз на неделю: у R13 пока только прогноз на месяц — экран пишет «Прогноз на месяц» с меткой «Прототип»",
     "Сборка R01 @ 460fd683: у akim.board / akim.week нет staff_view=True — сотрудник видит 401; нет CIVIC_ASSETS страниц — 404. Патч — INTEGRATION §1–§3 (patches/R01-web_server-board-week.patch)",
     "Табло служб R17 считает просрочку по правилу R09 «нет ответа в срок» — столбец так и подписан; KPI «Просрочено» — «не исправлено в срок» (сроки R08)",
-    "Кадры — облачный стенд: карта районов на ситуационном центре — контуры OSM (данные), подложки карты нет и не нужно"
+    "Демо-мир R02: у c-w1500417 (speed_bump) паспорт «нужно решение» скопирован с c-w1500327 (ямы) — два одинаковых текста проблемы; R08 различает их местом и районом, просьба R02 — INTEGRATION §8",
+    "Кадры — облачный стенд и сборка R01 в облаке: карта районов на ситуационном центре — контуры OSM (данные), подложки карты нет и не нужно"
   ],
-  "next_step": "R01 берёт патч §1–§3 в B1 (16 окт 14:00) — проверить табло в B1 build_check.cjs; сверка чисел демо-мира R02 с R07/R09/R17; прогноз на неделю, когда R13 даст функцию"
+  "next_step": "R01 берёт патч §1–§3 в B1 (16 окт 14:00) — build_check.cjs на B1; соседи R17/R16/R13 в сборке — блоки «Ведомства», «Кризис», «Жители вместе», «Встречи» на мире; прогноз на неделю, когда R13 даст функцию"
 }
