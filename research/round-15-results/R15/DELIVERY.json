@@ -17,9 +17,10 @@
     "R02": "0c0a8636 (claude/affectionate-shannon-jm6ws5)",
     "R07": "5f9dc0ae (claude/birge-r07-round-15-zjp4ob)",
     "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
-    "R09": "ebe69436 (claude/quirky-ptolemy-k3z2mj)"
+    "R09": "ebe69436 (claude/quirky-ptolemy-k3z2mj)",
+    "R01": "79468aab (claude/brave-fermi-nhzetj)"
   },
-  "push_status": "OK (checkpoint 6)",
+  "push_status": "OK (checkpoint 7)",
   "changed_paths": [
     "tests/civic/R15/r15_common.py",
     "tests/civic/R15/round15/",
@@ -133,13 +134,36 @@
       "skipped_not_run": 54,
       "failed": 0,
       "note": "наложение 11 веток ролей; 0 регрессий находок раунда 14; S46 XPASS (закрыт R04)"
+    },
+    "R01_79468aab_gateway": {
+      "passed": 39,
+      "xfailed": 2,
+      "skipped_not_run": 15,
+      "open": [
+        "S42",
+        "S50"
+      ]
+    },
+    "near_B1_overlay_all_R15": {
+      "passed": 519,
+      "xfailed": 19,
+      "xpassed": 2,
+      "skipped_not_run": 5,
+      "failed": 0,
+      "note": "шлюз R01 79468aab + 11 веток ролей"
+    },
+    "browser_near_B1": {
+      "PASS": 5,
+      "NOT_RUN": 2,
+      "FAIL": 0,
+      "note": "с P-R01-S42-raw-staff + P-R08-board-csrf; без них Ситуационный центр — NOT_RUN (401/403)"
     }
   },
   "findings": {
     "S42": {
       "owner": "R01",
       "level": "низкий",
-      "status": "open",
+      "status": "частично исправлено R01 d987a112 (маршруты раунда 15)",
       "patch": "patches/P-R01-S42.diff"
     },
     "S43": {
@@ -184,6 +208,16 @@
       "level": "низкий",
       "status": "open",
       "patch": "patches/P-R09-S49.diff"
+    },
+    "S50": {
+      "owner": "R01/R08",
+      "level": "средний (доступность)",
+      "status": "open",
+      "patch": [
+        "patches/P-R01-S42-raw-staff.diff",
+        "patches/P-R08-board-csrf.diff"
+      ],
+      "note": "Ситуационный центр и «Картина недели» — 401/403 сотруднику в шлюзе R01; B1"
     }
   },
   "high_open": 0,

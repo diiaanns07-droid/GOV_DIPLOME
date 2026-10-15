@@ -1,0 +1,15 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index ec1cac00..80bd730d 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -1720,6 +1720,10 @@ class CivicV2Gateway:
+                     return v2_error(400, "bad_request", exc.message, field=exc.field)
+         if handler.kind == "raw":
+             staff = self._is_staff(context) if handler.staff_view else None
++            if staff_checked:
++                # R15-S42: сотрудника уже проверил шлюз (выше) — raw-функция R08 akim/board, akim/week и R12 календаря
++                # узнаёт об этом из staff=True; без него они отвечают 401 и вошедшему сотруднику.
++                staff = True
+             return self._raw(fn, key, rel_path if handler.strip_prefix else CIVIC_V2_PREFIX + rel_path, query, module,
+                              handler, staff=staff)
+         if handler.kind == "service":

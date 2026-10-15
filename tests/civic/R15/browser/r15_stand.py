@@ -96,10 +96,10 @@ def extend_gateway(ws) -> list:
         ws.V2_HANDLERS[key] = handler
     original = ws.CivicV2Gateway.arguments
 
-    def arguments(self, key, params, query, body):
+    def arguments(self, key, params, query, body, *rest, **extra):   # R01 раунда 15 добавил параметр context
         if key in BODY_KEYS:
             return {"body": body if isinstance(body, dict) else {}}
-        return original(self, key, params, query, body)
+        return original(self, key, params, query, body, *rest, **extra)
 
     ws.CivicV2Gateway.arguments = arguments
     return [f"{m} {'/'.join(p)}" for m, p, _k, _h in added]

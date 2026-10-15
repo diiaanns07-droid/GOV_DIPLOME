@@ -1,0 +1,45 @@
+diff --git a/web/civic/board/board.js b/web/civic/board/board.js
+index 0bab4e84..1a427c47 100644
+--- a/web/civic/board/board.js
++++ b/web/civic/board/board.js
+@@ -411,6 +411,18 @@
+     rootEl.appendChild(foot);
+ 
+     // ── загрузка ──
++    // Токен CSRF вошедшего сотрудника (только в памяти страницы, как в оболочке R01); не вошёл — null.
++    function sessionToken() {
++      return fetch("/api/civic/v1/session", { headers: { Accept: "application/json" }, credentials: "same-origin",
++        cache: "no-store" })
++        .then(function (r) { return r.ok ? r.json() : null; })
++        .then(function (b) {
++          var d = b && b.data;
++          return d && d.authenticated && typeof d.csrf_token === "string" ? d.csrf_token : null;
++        })
++        .catch(function () { return null; });
++    }
++
+     function load(silent) {
+       silent = silent === true && !!state.data;
+       var id = ++state.request;
+@@ -430,11 +442,16 @@
+       var timer = setTimeout(function () {
+         if (ctrl) ctrl.abort();
+       }, TIMEOUT_MS);
+-      return fetch(opts.apiBase + "/akim/board" + (q.toString() ? "?" + q : ""), {
+-        headers: { Accept: "application/json" },
+-        credentials: "same-origin",
+-        cache: "no-store",
+-        signal: ctrl ? ctrl.signal : undefined,
++      // R15: шлюз R01 требует X-CSRF-Token и в чтении сотрудника (INTEGRATION R01 §1.2) — токен из GET /session.
++      return sessionToken().then(function (token) {
++        var headers = { Accept: "application/json" };
++        if (token) headers["X-CSRF-Token"] = token;
++        return fetch(opts.apiBase + "/akim/board" + (q.toString() ? "?" + q : ""), {
++          headers: headers,
++          credentials: "same-origin",
++          cache: "no-store",
++          signal: ctrl ? ctrl.signal : undefined,
++        });
+       })
+         .then(function (r) {
+           return r.json().catch(function () {

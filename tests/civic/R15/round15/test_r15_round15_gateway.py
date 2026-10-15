@@ -13,6 +13,8 @@
 
 from __future__ import annotations
 
+import types
+
 import pytest
 
 from r15_common import live_server, need_module, request, xfail
@@ -154,6 +156,51 @@ def test_real_raw_staff_routes_are_closed(ws):
         if calls or reply["status"] == 200:
             opened.append(f"{method} {path} ({key}) -> {reply['status']}")
     assert not opened, "raw-маршрут сотрудника открыт без сессии:\n" + "\n".join(opened)
+
+
+class _StaffStore:
+    """Сессия R02 для шлюза без базы: context["r15_staff"] — вошёл; CSRF — заголовок x-csrf-token = "t"."""
+
+    @staticmethod
+    def require_staff(context, unsafe):
+        if not context.get("r15_staff"):
+            return None, {"status": 401, "body": {"error": {"code": "unauthenticated", "message": "Войдите"}}}
+        if unsafe and (context.get("headers") or {}).get("x-csrf-token") != "t":
+            return None, {"status": 403, "body": {"error": {"code": "csrf_failed", "message": "CSRF"}}}
+        return types.SimpleNamespace(username="r15", role="editor", is_staff=True), None
+
+    def resolve_principal(self, context):
+        return self.require_staff(context, False)[0]
+
+
+@xfail("S50")
+def test_raw_staff_route_reaches_module_for_signed_in_staff(ws, tmp_path):
+    """S50: raw-маршрут сотрудника (R08 akim/board и akim/week, R12 календарь) — вошедший сотрудник доходит до модуля и
+    модуль узнаёт об этом (staff=True); аноним — 401, модуль не вызван. Иначе Ситуационный центр — 401 всем."""
+    raw_staff = [(m, p, k) for m, p, k in ws.V2_ROUTES
+                 if ws.V2_HANDLERS.get(k) is not None and ws.V2_HANDLERS[k].kind == "raw" and ws.V2_HANDLERS[k].staff]
+    if not raw_staff:
+        not_run("в таблице шлюза нет raw-маршрутов с staff=True")
+    store = _StaffStore()
+    broken = []
+    for method, pattern, key in raw_staff:
+        handler, seen = ws.V2_HANDLERS[key], []
+
+        def fn(path, query, staff=None, _seen=seen):
+            _seen.append(staff)
+            return (200, {"r15": True}) if staff is True else (401, {"error": "staff_only"})
+
+        fake = type("FakeRaw", (), {handler.function: staticmethod(fn)})
+        gateway = ws.CivicV2Gateway(store_gateway=types.SimpleNamespace(service=lambda n: store if n == "store" else None,
+                                                                        db_path=tmp_path / "c.sqlite3"),
+                                    modules={name: fake for name in handler.modules}, rate_limits=None)
+        path = _concrete(pattern)
+        base = {"headers": {}, "cookies": {}, "client_ip": "127.0.0.1", "host_allowed": True, "is_same_origin": True}
+        anon = gateway.handle(method, path, "", None, dict(base))
+        staff = gateway.handle(method, path, "", None, dict(base, r15_staff=True, headers={"x-csrf-token": "t"}))
+        if anon["status"] not in (401, 403) or seen[:1] not in ([], [True]) or staff["status"] != 200:
+            broken.append(f"{method} {path} ({key}): аноним {anon['status']}, сотрудник {staff['status']}, staff={seen}")
+    assert not broken, "\n".join(broken)
 
 
 @pytest.fixture()
