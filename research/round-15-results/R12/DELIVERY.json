@@ -103,7 +103,7 @@
   },
   "r02_world": {
    "status": "PASS",
-   "note": "мир R02 4afd9bf9: найдены все 5 planned_conflicts, 0 лишних; id cf-w15-01…05; 39 работ на улице, 4 отключения не входят"
+   "note": "мир R02 eaed8f4f, пересобранный на objects.json R12 (sha256 247c24a8…): 39 работ, найдены все 5 planned_conflicts, 0 лишних; scenes.scene8 = cf-w15-01"
   },
   "browser_embedded_r17": {
    "status": "PASS",
@@ -129,9 +129,8 @@
   "r02_world_on_new_geo": {
    "status": "PASS",
    "errors": 0,
-   "warnings": 1,
-   "how": "ml/datasets/demo_world_check.py R02 (a7251430) --no-heat на мире R02 a7251430 и данных карты 11a5d0ff",
-   "warning": "complaints/c-w1500643: узел osm-node-3530788994 в свежем OSM — перекрёсток без светофора; подпись «Перекрёсток пр. Жумабаева и пр. Рахимжана Кошкарбаева» вместо «Светофор на перекрёстке …» (INTEGRATION §10)"
+   "warnings": 0,
+   "how": "ml/datasets/demo_world_check.py R02 (8b9e3e81) --no-heat на мире eaed8f4f и данных карты R12 этой поставки (предупреждение c-w1500643 ушло — мир пересобран)"
   },
   "browser_b02_r06_world": {
    "status": "PASS",
