@@ -129,10 +129,14 @@ async function apiFlow(A, S, staff, timing) {
     }
     r = await call("8", "GET", `${V2}/complaints/${s8.complaint}`, null, false, dev);
     const c = r.status === 200 ? rec(r.body, "complaint") || {} : null;
-    const parts = c && Array.isArray(c.services) ? c.services : [];
+    // §5.1 — services[] у записи; публичный вид R09 отдаёт жителю те же части в joint.services (без причин передач и
+    // ролей сотрудников). Принимаем обе формы, форму пишем в отчёт.
+    const shape = c && Array.isArray(c.services) && c.services.length ? "services"
+      : c && c.joint && Array.isArray(c.joint.services) ? "joint.services" : null;
+    const parts = shape === "services" ? c.services : shape ? c.joint.services : [];
     // Без совместного исполнения (маршрута R09 нет) паспорт с двумя службами проверять не на чем — NOT_RUN.
     add("API", "8", "у жителя паспорт с двумя службами и их статусами", c && (jointSet || parts.length) ? ok3(parts.length >= 2 && parts.every((x) => x.service && x.status)) : null,
-      c ? (jointSet || parts.length ? { services: parts.map((x) => `${x.service}:${x.status}`) } : "совместное исполнение не задано (маршрут R09 не ответил)") : st(r), "R09");
+      c ? (jointSet || parts.length ? { services: parts.map((x) => `${x.service}:${x.status}`), shape } : "совместное исполнение не задано (маршрут R09 не ответил)") : st(r), "R09");
     if (staff) {
       r = await call("8", "GET", `${V2}/agencies/board?days=30`, null, true);
       const rows = r.status === 200 ? list(r.body, "rows", "services") : null;
@@ -362,8 +366,13 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
 // крупные живые числа (читается с 3 м), контраст ≥ 4,5:1, «Пример» на синтетике, «На весь экран» и «← В Birge».
 async function boardCheck(browser, base, lang, staffAcc) {
   const dict = L.loadDict(ROOT, lang);
-  const head = await fetch(base + "civic/board/").then((r) => r.status).catch(() => 0);
-  if (head !== 200) { add("UI board", "9", `Ситуационный центр /civic/board/ (${lang})`, "NOT_RUN", `страницы нет (HTTP ${head})`, "R08"); return; }
+  // Адрес страницы — /civic/board/index.html (каталожного индекса у шлюза нет); короткий /civic/board/ — если R01 добавил.
+  let page_url = null, head = 0;
+  for (const u of ["civic/board/", "civic/board/index.html"]) {
+    head = await fetch(base + u).then((r) => r.status).catch(() => 0);
+    if (head === 200) { page_url = u; break; }
+  }
+  if (!page_url) { add("UI board", "9", `Ситуационный центр /civic/board/ (${lang})`, "NOT_RUN", `страницы нет (HTTP ${head})`, "R08"); return; }
   for (const [w, h] of [[1920, 1080], [1366, 768]]) {
     const tag = `${w}-${lang}`;
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
@@ -375,7 +384,7 @@ async function boardCheck(browser, base, lang, staffAcc) {
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(e.message.slice(0, 160)));
-    await page.goto(base + `civic/board/?lang=${lang}&rotate=0`);
+    await page.goto(base + `${page_url}?lang=${lang}&rotate=0`);
     await sleep(3500);
     const m = await page.evaluate(() => {
       const root = document.documentElement, body = document.body;
