@@ -4,8 +4,8 @@
   "branch": "claude/birge-r07-round-15-zjp4ob",
   "base_sha": "2d329b2cceeb07edbcb4f98ae8fdb3bb37ec1499",
   "restored_from": "fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.css, heat.js, ui/civic_heat/devserver.py, tests/civic/R07/test_r07_devserver.py",
-  "code_sha": "c6c7f94e567a80c65cac1511ce331e59f6320273",
-  "tested_sha": "c6c7f94e567a80c65cac1511ce331e59f6320273",
+  "code_sha": "3d7cb28b6df5530596c11d5910bf560f31eb314a",
+  "tested_sha": "3d7cb28b6df5530596c11d5910bf560f31eb314a",
   "push_status": "OK",
   "changed_paths": [
     "ui/civic_heat/world.py (новый): демо-мир — world_mode, seed_world (отметки шкалы: events + incidents + scenes, своя таблица heat_replay_marks_v1; повторный засев с новым now двигает отметки вместе с миром — patch R02), materialize/time_of (время SCHEMA R02 §1)",
@@ -22,7 +22,7 @@
     "tests/civic/R07/test_r07_replay.py (26 + 1 skip), test_r07_wave2.py (цели по самому свежему снимку), browser/replay.cjs (16 проверок), replay_fps.cjs, first_badge_shell.cjs, browser/shots.js (П1), readability.js (кластер); test_r07_heat_load.py (B-124: один расчёт на два вида, одновременные запросы, warm_up)"
   ],
   "tests": {
-    "pytest tests/civic/R07": "PASS 209 passed, 1 skipped на ветке R07 (мира R02 нет в ветке); R08 + R01 — 461 passed, 2 skipped",
+    "pytest tests/civic/R07": "PASS 210 passed, 1 skipped на ветке R07 (мира R02 нет в ветке); R08 — 263 passed, 1 skipped",
     "pytest tests/civic/R08": "PASS 263 passed, 1 skipped",
     "pytest tests/civic/R01": "PASS 198 passed, 1 skipped",
     "browser tests/civic/R07/browser/replay.cjs": "PASS 16/16 (стенд R07 --world, Chromium headless; lazy-entry-1366: до открытия replay.js/css не грузятся, кнопка, birge:replay-open сразу после закрытия, ?replay=7&autoplay=0)",
@@ -46,8 +46,6 @@
   },
   "known_limits": [
     "60 к/с при 1 000 целей не измерено: в облаке программный WebGL (сама карта 6–13 к/с); замер на ноутбуке — LOCAL",
-    "Капсула разделов и «ҚАЗ · РУС» R01 ещё не в birgeOverlayRects — значок района у верхнего края может уйти под капсулу; patch R01_overlay_rects_header_capsules.patch открыт (INTEGRATION, СОСТОЯНИЕ)",
-    "Прогрев карты при старте включает R01 (patch R01_warm_up_heat.patch — одна строка в цикле прогрева R03/R16); без него первая страница считает карту сама, но один раз на районы и места",
     "Отмотка в прошлое не знает времени пометки дубля и голосов «не могу проверить» — на цвет и число не влияет"
   ],
   "next_step": "Сборка R01 B1 (16 окт 14:00 Астаны): хроника через чип «▶ Хроника» и лёгкий вход, часть 1 (R10 demo_flow), значки поверх слоёв, числа = «Обращения»; кадры с настоящей картой — LOCAL-12"
