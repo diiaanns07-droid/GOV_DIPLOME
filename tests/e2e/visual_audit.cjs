@@ -69,7 +69,8 @@ function screenMetrics(page, sel) {
     const root = document.querySelector(s);
     if (!root) return null;
     const vis = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
-      return r.width > 0 && r.height > 0 && cs.visibility !== "hidden" && cs.display !== "none" && r.bottom > 0 && r.top < innerHeight; };
+      return r.width > 1 && r.height > 1 && cs.visibility !== "hidden" && cs.display !== "none" && r.bottom > 0 && r.top < innerHeight
+        && !e.closest(".bk-sr-only, .sr-only, .visually-hidden"); };
     const sizes = new Map();
     for (const el of root.querySelectorAll("*")) {
       const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();

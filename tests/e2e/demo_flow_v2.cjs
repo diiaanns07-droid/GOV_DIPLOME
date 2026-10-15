@@ -298,9 +298,12 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
       const pressed = await clickBtn(goRe);
       const after = await page.evaluate(() => (document.querySelector("#birge-screen:not([hidden])") || document.body).innerText);
       const f2 = await shot("7-join");
+      // Счётчик R16: «14 соседей придут» → «15 соседей придут» (kk «15 көрші келеді»). Ищем число рядом со словом
+      // «сосед/көрші», а не любое «15» (сегодня 15 окт — дата на карточке тоже «15»).
+      const cnt = (txt) => { const m = /(?<!\d)(\d{1,4})(?!\d)\s*(?:сосед\p{L}*\s+прид|көрші\s+(?:келеді|барады))/iu.exec(txt || ""); return m ? Number(m[1]) : null; };
+      const n0 = cnt(before), n1 = cnt(after);
       step("7", `карточка инициативы → «Я приду» → счётчик ${s7.joined_before} → ${s7.joined_after}`,
-        pressed ? new RegExp(`\\b${s7.joined_after}\\b`).test(after) && !new RegExp(`\\b${s7.joined_after}\\b`).test(before.replace(/\d{4}/g, "")) : false,
-        { pressed }, "R16", f2);
+        pressed ? n0 === s7.joined_before && n1 === s7.joined_after : false, { pressed, before: n0, after: n1 }, "R16", f2);
     }
     (timing["7"] = timing["7"] || []).push(Date.now() - t7);
   }
