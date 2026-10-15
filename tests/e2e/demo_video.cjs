@@ -585,7 +585,8 @@ async function recordLang(browser, lang) {
       await wait(1500);
       await say("replay", 600);
       const ended = await page.evaluate(async () => {
-        const rp = window.BirgeReplay.open({ map: typeof map !== "undefined" ? map : null, heat: window.CivicShell && window.CivicShell.heat, days: 7, autoplay: true });
+        // Лёгкий вход R07 (replay-attach.js): open() возвращает Promise ручки; полная хроника — ручку сразу.
+        const rp = await Promise.resolve(window.BirgeReplay.open({ map: typeof map !== "undefined" ? map : null, heat: window.CivicShell && window.CivicShell.heat, days: 7, autoplay: true }));
         for (let i = 0; i < 150; i++) { await new Promise((ok) => setTimeout(ok, 200)); const st = rp.state && rp.state(); if (st && (st.ended || st.status === "error")) return !!st.ended; }
         return false;
       }).catch(() => false);

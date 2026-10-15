@@ -104,7 +104,8 @@ async function resident(browser, base, width, lang, full) {
       fountain: "Аулада субұрқақ", light: "Ілияс Омаров көшесіне жарық", reason: "Учаскеде су құбыры жоқ",
       improve: "Жетілдіруге болады", byRes: "Тұрғындар идеясы бойынша", honest: "шешімді әкімдік қабылдайды", newIdea: "Идея ұсыну",
       rejectedPill: "Қабылданбады", projectPill: "Жобаға қабылданды", more: "Толығырақ", oneVote: "бір",
-      pick: "Картадан орын таңдау", review: "Тексеруде", sent: "Идея жіберілді", privacyWord: "ЖСН" }
+      // «На проверке» — «Тексерілуде» (словарь R11, KK_REVIEW №38); старый словарь сборки мог дать «Тексеруде»
+      pick: "Картадан орын таңдау", review: "Тексерілуде", reviewAlt: "Тексеруде", sent: "Идея жіберілді", privacyWord: "ЖСН" }
     : { sheet: "Проекты и идеи", support: "Поддержать", supported: "Вы поддержали", square: "Сквер у улицы Сыганак",
       fountain: "Фонтан во дворе", light: "Свет на улице Ильяса Омарова", reason: "нет водопровода",
       improve: "Можно доработать", byRes: "По идее жителей", honest: "решение принимает акимат", newIdea: "Предложить идею",
@@ -232,7 +233,8 @@ async function resident(browser, base, width, lang, full) {
     await page.locator("[data-key=back-list]").click();
     await page.waitForSelector(".ri-pc", { timeout: 10000 });
     const first = await page.locator(".ri-pc").first().innerText();
-    check(`${tag} мастер: своя идея сверху с плашкой «${T.review}»`, first.includes(T.review) && first.includes(lang === "kk" ? "Аулаға орындықтар" : "Скамейки во дворе"), first);
+    check(`${tag} мастер: своя идея сверху с плашкой «${T.review}»`, (first.includes(T.review) || (T.reviewAlt && first.includes(T.reviewAlt)))
+      && first.includes(lang === "kk" ? "Аулаға орындықтар" : "Скамейки во дворе"), first);
   }
   // Закрыли раздел (×) — карта как была: слой идей, включённый на время раздела, выключен.
   await page.locator(".ri [data-key=close]").click();

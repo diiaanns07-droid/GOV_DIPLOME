@@ -341,29 +341,38 @@ def test_forecast_week_preferred_month_fallback(monkeypatch):
 # ---------------------------------------------------------------- «Картина недели»
 
 def test_week_bounds_and_comparison():
+    """Неделя — 7 × 24 ч до конца выбранного дня (прошедшая дата) — как «за неделю» в «Картине дня» (R10 C5 / B-122)."""
     recs = [rec(i, at=datetime(2026, 10, 5, 9, tzinfo=TZ) + timedelta(days=i % 7, hours=i % 5)) for i in range(21)]
     recs += [rec(50 + i, at=datetime(2026, 9, 28, 12, tzinfo=TZ) + timedelta(days=i)) for i in range(7)]
     recs += [rec(90, at=datetime(2026, 10, 6, 9, tzinfo=TZ), history=[(1, "accepted"), (2, "fixed")])]
-    status, w = get(WEEK, svc(recs=recs), {"date": "2026-10-08"})
+    service = svc(recs=recs)
+    status, w = get(WEEK, service, {"date": "2026-10-08"})
     assert status == 200
-    assert (w["week"]["start"], w["week"]["end"], w["week"]["current"]) == ("2026-10-05", "2026-10-11", False)
-    assert w["week"]["as_of"].startswith("2026-10-11T23:59:59")
-    assert w["kpi"]["new"]["value"] == 22 and w["kpi"]["new"]["prev"] == 7 and sum(w["kpi"]["new"]["series"]) == 22
-    # База неделей раньше < 10 — разница в штуках («на 15 больше»), как во всей «Картине дня» (summary.change).
-    assert (w["kpi"]["new"]["mode"], w["kpi"]["new"]["abs"]) == ("abs", 15)
-    assert w["kpi"]["fixed"]["value"] == 1
-    assert w["text"]["ru"][0].startswith("5–11") and "поступило 22 обращения — на 15 больше" in w["text"]["ru"][0]
+    assert (w["week"]["start"], w["week"]["end"], w["week"]["current"]) == ("2026-10-02", "2026-10-08", False)
+    assert w["week"]["as_of"].startswith("2026-10-08T23:59:59") and w["week"]["first_from"] is None
+    assert w["kpi"]["new"]["value"] == 16 and w["kpi"]["new"]["prev"] == 4 and sum(w["kpi"]["new"]["series"]) == 16
+    # База неделей раньше < 10 — разница в штуках («на 12 больше»), как во всей «Картине дня» (summary.change).
+    assert (w["kpi"]["new"]["mode"], w["kpi"]["new"]["abs"]) == ("abs", 12)
+    assert w["kpi"]["fixed"]["value"] == 1 and w["kpi"]["fixed"]["series"] == [0, 0, 0, 0, 0, 0, 1]
+    day = service.summary(date="2026-10-08", now=NOW)["kpi"]
+    assert w["kpi"]["new"]["value"] == day["new_week"]["value"] and w["kpi"]["fixed"]["value"] == day["fixed_week"]["value"]
+    assert w["text"]["ru"][0].startswith("2–8") and "поступило 16 обращений — на 12 больше" in w["text"]["ru"][0]
     assert "өтініш түсті" in w["text"]["kk"][0]
 
 
-def test_current_week_counts_to_now_and_future_days_are_null():
-    status, w = get(WEEK, svc())
-    assert status == 200 and w["week"]["current"] is True and w["week"]["start"] == "2026-10-12"   # NOW — понедельник
-    assert w["kpi"]["new"]["series"][1:] == [None] * 6
-    # Текст идущей недели — за прошедшие дни (в понедельник — один день), а не «12–18 окт».
-    assert w["week"]["label_ru"].startswith("12–18") and not w["week"]["so_far_label_ru"].startswith("12–18")
-    assert w["text"]["ru"][0].startswith(w["week"]["so_far_label_ru"])
-    assert w["week"]["days_counted"] == 1
+def test_current_week_is_last_7x24h_and_equals_day():
+    """Сегодня: окно (сейчас − 7 дней, сейчас] — числа = «Картина дня»; начало окна вчерашнего часа — в первом столбике."""
+    service = svc()
+    status, w = get(WEEK, service)
+    assert status == 200 and w["week"]["current"] is True
+    assert (w["week"]["start"], w["week"]["end"]) == ("2026-10-06", "2026-10-12")      # NOW — понедельник 12 окт, 10:00
+    assert w["week"]["first_from"].startswith("2026-10-05T10:00") and w["week"]["days_counted"] == 7
+    day = service.summary(now=NOW)["kpi"]
+    assert w["kpi"]["new"]["value"] == day["new_week"]["value"] == sum(w["kpi"]["new"]["series"])
+    assert w["kpi"]["fixed"]["value"] == day["fixed_week"]["value"] == sum(w["kpi"]["fixed"]["series"])
+    assert w["kpi"]["fixed"]["verified"] == day["fixed_week"]["verified"]
+    assert None not in w["kpi"]["new"]["series"]
+    assert w["text"]["ru"][0].startswith(w["week"]["label_ru"])
 
 
 @pytest.mark.parametrize("query,field", [({"date": "2026-10-13"}, "date"), ({"date": "вчера"}, "date"),
@@ -385,7 +394,9 @@ def test_week_neighbor_sentences_only_for_current_week(monkeypatch):
 
 def test_week_module_direct_call():
     w = week.build(svc(), date="2026-10-12")
-    assert w["week"]["label_ru"] == "12–18 окт" and w["week"]["label_kk"] == "12–18 қазан"
+    assert w["week"]["label_ru"] == "6–12 окт" and w["week"]["label_kk"] == "6–12 қазан"
+    w = week.build(svc(), date="2026-10-02")
+    assert w["week"]["label_ru"] == "26 сен – 2 окт"
 
 
 # ---------------------------------------------------------------- настоящие форматы соседей (раунд 15)

@@ -42,7 +42,7 @@
     ru: {
       "shell.nav.notifications": "Уведомления",
       "shell.bell.label": "Уведомления",
-      "shell.bell.new": "Уведомления, новых: {n}",
+      "shell.bell.new": { one: "{n} новое", few: "{n} новых", many: "{n} новых" },
       "shell.bell.empty": "Новых уведомлений нет",
       "notify.title": "Уведомления",
       "notify.read_all": "Прочитать все",
@@ -73,7 +73,7 @@
     kk: {
       "shell.nav.notifications": "Хабарламалар",
       "shell.bell.label": "Хабарламалар",
-      "shell.bell.new": "Хабарламалар, жаңа: {n}",
+      "shell.bell.new": "{n} жаңа",
       "shell.bell.empty": "Жаңа хабарлама жоқ",
       "notify.title": "Хабарламалар",
       "notify.read_all": "Бәрін оқыдым",
@@ -87,14 +87,14 @@
       "notify.loading": "Хабарламалар жүктелуде",
       "notify.close": "Жабу",
       "notify.unread": "Жаңа",
-      "notify.demo": "Мысал",
+      "notify.demo": "Үлгі",
       "notify.ago.now": "жаңа ғана",
       "notify.ago.min": "{n} мин бұрын",
       "notify.ago.hour": "{n} сағ бұрын",
       "notify.ago.day": "{n} күн бұрын",
       "notify.source.yard": "Менің аулам",
       "notify.source.together": "Бірге жасайық",
-      "notify.source.crisis": "Дағдарыс",
+      "notify.source.crisis": "Төтенше жағдай",
       "notify.source.meetings": "Әкіммен кездесулер",
       "notify.source.complaints": "Менің өтініштерім",
       "notify.source.works": "Маңайдағы жұмыстар",
@@ -106,10 +106,16 @@
   // ------------------------------------------------------------------ тексты, разметка
   function I() { return root.BirgeI18n || null; }
   function lang() { return I() && typeof I().getLang === "function" && I().getLang() === "kk" ? "kk" : "ru"; }
+  function pluralRu(n) {
+    var a = Math.abs(Number(n) || 0), m10 = a % 10, m100 = a % 100;
+    if (m10 === 1 && m100 !== 11) return "one";
+    return m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "few" : "many";
+  }
   function tr(key, params) {
     var i18n = I(), l = lang();
     if (i18n && typeof i18n.has === "function" && i18n.has(key)) return i18n.t(key, params);
     var v = KEYS[l][key] != null ? KEYS[l][key] : KEYS.ru[key] != null ? KEYS.ru[key] : key;
+    if (v && typeof v === "object") v = v[pluralRu(params && params.n)] || v.many;   // формы числа — как словарь R11
     return String(v).replace(/\{(\w+)\}/g, function (w, n) { return params && params[n] != null ? String(params[n]) : w; });
   }
   function h(tag, attrs, children) {
@@ -392,9 +398,21 @@
       },
     };
   }
+  // «Прочитать все» — ровно то, что житель видит: до времени этой ленты (now ответа) и события «впереди часов» из неё
+  // по id. Пришедшее после последнего обновления ленты останется новым (а не «прочитается» молча).
+  function readAll() {
+    var data = state.data;
+    if (!data || !data.now) return markRead({ all: true });
+    var ahead = (data.items || []).filter(function (e) { return !e.read && e.at > data.now; })
+      .map(function (e) { return e.id; }).slice(0, 200);
+    (data.items || []).forEach(function (e) { e.read = true; });   // сразу: точки гаснут, счётчик — 0 (правило 4 эталона)
+    data.unread = 0;
+    emit();
+    return markRead(ahead.length ? { until: data.now, ids: ahead } : { until: data.now });
+  }
   function readAllButton() {
     return h("button", { type: "button", class: "bk-notify__readall", "data-key": "notify-read-all",
-      hidden: unread() ? null : true, onclick: function () { markRead({ all: true }); } }, [tr("notify.read_all")]);
+      hidden: unread() ? null : true, onclick: function () { readAll(); } }, [tr("notify.read_all")]);
   }
 
   // ------------------------------------------------------------------ колокольчик и панель
@@ -409,7 +427,8 @@
     }
     badge.textContent = n > 9 ? "9+" : String(n);
     badge.hidden = !n;
-    var label = n ? tr("shell.bell.new", { n: n }) : tr("shell.bell.label");
+    // «Уведомления, 3 новых» (словарь R11: shell.bell.new — только число и слово, формы числа для ru)
+    var label = n ? tr("shell.bell.label") + ", " + tr("shell.bell.new", { n: n }) : tr("shell.bell.label");
     b.setAttribute("aria-label", label);
     b.title = n ? label : tr("shell.bell.empty");
     if (bell.panel) {

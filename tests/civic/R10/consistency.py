@@ -301,7 +301,10 @@ class Consistency:
             self.compare(name5,
                          [("«Картина дня» R08 (7 × 24 ч)", "R08", {"fixed": dfix.get("value"), "verified": dfix.get("verified")}),
                           ("«Картина недели» R08 (дни недели)", "R08", {"fixed": wfix.get("value"), "verified": wfix.get("verified")})])
-            self.checks[-1]["blocking"] = False
+            rec = self.checks[-1]
+            rec["blocking"] = False
+            if rec["status"] == "FAIL":
+                self.c5_labels(rec, wdata)
         else:
             self.checks.append({"name": name5, "status": "NOT_RUN", "values": {"week": week.status if week is not None else None},
                                 "owners": ["R08"], "note": "нет «Картины недели» или её итогов в ответе akim/week", "optional": True})
@@ -354,6 +357,43 @@ class Consistency:
                 return found[0] if lang == "ru" or len(found) < 2 else found[1]
         return None
 
+    def c5_labels(self, rec, wdata):
+        """C5 при разных числах: окна разные, но подписаны — не противоречие (R08 INTEGRATION §13). R08 147259eb: идущая
+        неделя «Картины недели» подписана «Исправлено с 12 окт» (week.current + so_far_label) → PASS. Подпись дня «за неделю»
+        вместо «за 7 дней» — только совет в примечании (Ситуационный центр уже пишет «за 7 дней»)."""
+        w = (wdata or {}).get("week") or {}
+        week_labeled = bool(w.get("current") and (w.get("so_far_label_ru") or w.get("so_far_label_kk")))
+        labels, vague = {}, []
+        for lang, seven in (("ru", r"7\s*(дн|×)"), ("kk", r"7\s*күн")):
+            try:
+                d = json.loads((self.s.root / "web" / "civic" / "i18n" / f"{lang}.json").read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                d = {}
+            day = self.screen_label(lang, d, ["akim.kpi.fixed_week"], "web/civic/akim/akim.js")
+            labels[lang] = {"«Картина дня»": day, "«Картина недели»": w.get(f"so_far_label_{lang}")}
+            if not (isinstance(day, str) and re.search(seven, day, re.I)):
+                vague.append(f"{lang}: «{day}»")
+        rec["values"]["подписи"] = labels
+        if week_labeled:
+            # R08 INTEGRATION §13: идущая неделя подписана «с <дата>» — окна разные и названы, это не противоречие чисел.
+            rec["status"] = "PASS"
+            rec["note"] = "окна разные и подписаны: «Картина недели» — с понедельника (so_far_label), «Картина дня» — 7 × 24 ч"
+            if vague:
+                rec["note"] += ("; совет R08/R11: в «Картине дня» — «Исправлено за 7 дней», как на Ситуационном центре "
+                                "(board.kpi.fixed), сейчас " + ", ".join(vague))
+        else:
+            rec["note"] = "окна разные и не подписаны (B-122)"
+        print(f"  C5 подписи: {rec['status']} — {rec['note']}")
+
+    def ui_keys(self, js, pattern, default):
+        """Какой ключ подписи берёт экран: первый захват pattern в исходнике экрана сборки; не нашли — default."""
+        try:
+            text = (self.s.root / js).read_text(encoding="utf-8")
+        except OSError:
+            return default
+        m = re.search(pattern, text)
+        return [m.group(1)] if m else default
+
     def labels_check(self, fix_value, answer_value, r17_value=None):
         """Разные числа «просрочено» — разные подписи (ru и kk), как их показывают экраны:
         «Картина дня» R08 (срок исправления) против вкладки «Обращений» R09 и итога табло R17 (срок ответа)."""
@@ -362,6 +402,11 @@ class Consistency:
                                 "values": {"R08": fix_value, "R09": answer_value, "R17": r17_value}, "owners": ["R08", "R09", "R17", "R11"],
                                 "note": "числа совпадают или одного нет — различать нечего"})
             return
+        # Ключ подписи — тот, которым экран рисует плитку (R17 d75e3cd9: tr("agencies.kpi.overdue_answer") у числа срока
+        # ответа; раньше — agencies.kpi.overdue). Старый ключ в словаре R11 может остаться со старым текстом — его не читаем.
+        r08_keys = self.ui_keys("web/civic/akim/akim.js", r'kpiCard\(\s*"overdue"\s*,\s*[\w.]+\s*,\s*"([\w.]+)"', ["akim.kpi.overdue"])
+        r17_keys = self.ui_keys("web/civic/agencies/agencies.js", r'kpi\(\s*totals\.overdue\s*,\s*tr\("([\w.]+)"',
+                                ["agencies.kpi.overdue_answer", "agencies.kpi.overdue"])
         same, labels = [], {}
         for lang in ("ru", "kk"):
             path = self.s.root / "web" / "civic" / "i18n" / f"{lang}.json"
@@ -369,10 +414,10 @@ class Consistency:
                 d = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, ValueError):
                 continue
-            a = self.screen_label(lang, d, ["akim.kpi.overdue"], "web/civic/akim/akim.js")
+            a = self.screen_label(lang, d, r08_keys, "web/civic/akim/akim.js")
             others = {"«Обращения» R09": (answer_value, self.screen_label(lang, d, ["inbox.tab.overdue_answer", "inbox.tab.overdue"],
                                                                           "web/civic/feedback/complaint-strings.js")),
-                      "табло R17": (r17_value, self.screen_label(lang, d, ["agencies.kpi.overdue"], "web/civic/agencies/agencies.js"))}
+                      "табло R17": (r17_value, self.screen_label(lang, d, r17_keys, "web/civic/agencies/agencies.js"))}
             labels[lang] = {"«Картина дня» R08": a, **{k: v[1] for k, v in others.items()}}
             for name, (num, b) in others.items():
                 if isinstance(num, int) and num != fix_value and isinstance(a, str) and isinstance(b, str) \

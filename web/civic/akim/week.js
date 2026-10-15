@@ -32,11 +32,18 @@
       "week.current": "неделя идёт — данные по {date}",
       "week.kpi.new": "Поступило обращений",
       "week.kpi.fixed": "Исправлено за неделю",
-      "week.kpi.new_since": "Поступило с {date}",
-      "week.kpi.fixed_since": "Исправлено с {date}",
+      "week.kpi.new_7d": "Поступило за 7 дней",
+      "week.kpi.fixed_7d": "Исправлено за 7 дней",
+      "week.last7": "Последние 7 дней",
+      "week.prev7": "Неделей раньше",
+      "week.window.now": "последние 7 дней — до {time}",
+      "week.window.past": "7 дней до конца {date}",
+      "week.days.first_from": "первый столбик — с {time} накануне",
       "week.kpi.verified": "проверено жителями: {n}",
       "week.kpi.in_progress": "В работе на {date}",
       "week.kpi.overdue": "Просрочено на {date}",
+      "week.kpi.overdue_fix": "Не исправлено в срок",
+      "week.kpi.work": "В работе",
       "week.delta.week": ", чем неделей раньше",
       "week.delta.week_before": "",
       "week.delta.ago": ", чем неделю назад",
@@ -47,7 +54,7 @@
       "week.days.new": "поступило",
       "week.days.fixed": "исправлено",
       "week.summary": "Коротко",
-      "week.heat_note": "Как тепловая карта за 7 дней на {date}: сколько человек сообщили о нерешённом",
+      "week.heat_note": "Как карта жалоб за 7 дней на {date}: сколько человек сообщили о нерешённом",
       "week.neighbors": "Службы и жители — состояние на {date}",
       "week.agencies": "Ведомства",
       "week.agencies.lagging": "Больше всего просроченных ответов: {list}",
@@ -91,11 +98,18 @@
       "week.current": "апта жүріп жатыр — {date} дейінгі деректер",
       "week.kpi.new": "Түскен өтініштер",
       "week.kpi.fixed": "Апта ішінде түзетілді",
-      "week.kpi.new_since": "{date} бастап түскені",
-      "week.kpi.fixed_since": "{date} бастап түзетілгені",
+      "week.kpi.new_7d": "7 күнде түскені",
+      "week.kpi.fixed_7d": "7 күнде түзетілді",
+      "week.last7": "Соңғы 7 күн",
+      "week.prev7": "Бір апта бұрын",
+      "week.window.now": "соңғы 7 күн — {time} дейін",
+      "week.window.past": "{date} соңына дейінгі 7 күн",
+      "week.days.first_from": "бірінші баған — алдыңғы күні {time} бастап",
       "week.kpi.verified": "тұрғындар тексерді: {n}",
       "week.kpi.in_progress": "{date} жағдайы: орындалуда",
       "week.kpi.overdue": "{date} жағдайы: мерзімі өткен",
+      "week.kpi.overdue_fix": "Мерзімінде түзетілмеген",
+      "week.kpi.work": "Орындалуда",
       "week.delta.week": "",
       "week.delta.week_before": "алдыңғы аптадан ",
       "week.delta.ago": "",
@@ -106,14 +120,14 @@
       "week.days.new": "түсті",
       "week.days.fixed": "түзетілді",
       "week.summary": "Қысқаша",
-      "week.heat_note": "{date} жағдайы бойынша соңғы 7 күндегі жылу картасы: шешілмеген мәселе туралы хабарлаған адам саны",
+      "week.heat_note": "{date} жағдайы бойынша соңғы 7 күндегі шағымдар картасы сияқты: шешілмеген мәселе туралы хабарлаған адам саны",
       "week.neighbors": "Қызметтер мен тұрғындар — {date} жағдайы",
       "week.agencies": "Ведомстволар",
       "week.agencies.lagging": "Жауап мерзімі өткені көп: {list}",
       "week.agencies.joint": "Бірлескен өтініштер: {n}",
-      "week.agencies.handoffs": "Қызметтер арасында берілгені: {n}",
+      "week.agencies.handoffs": "Қызметтер арасында жіберілгені: {n}",
       "week.together": "Тұрғындар бірге",
-      "week.together.done": "Бірге атқарылды: {n}",
+      "week.together.done": "Бірге жасалды: {n}",
       "week.together.neighbors": "Қатысқан көршілер: {n}",
       "week.together.upcoming": "Алдағы істер: {n} · жазылғандар: {m}",
       "week.meetings": "Тұрғындармен кездесу тапсырмалары",
@@ -204,6 +218,18 @@
     return obj[base + "_" + lang()] || obj[base + "_ru"] || obj[base + "_kk"] || "";
   }
   function fmtDate(iso) { return I() && I().formatDate ? I().formatDate(iso) : iso; }
+  // «10:00» по Астане из ISO-времени (смещение +05:00 уже в строке ответа).
+  function clockOf(iso) {
+    var t = Date.parse(iso || "");
+    if (!isFinite(t)) return "";
+    var d = new Date(t + ASTANA_OFFSET_MS);
+    return (d.getUTCHours() < 10 ? "0" : "") + d.getUTCHours() + ":" + (d.getUTCMinutes() < 10 ? "0" : "") + d.getUTCMinutes();
+  }
+  // «пт 9»: день недели по настоящей дате — окно «7 дней» начинается с любого дня.
+  function dayName(startIso, i) {
+    var d = new Date(new Date(startIso + "T12:00:00Z").getTime() + i * 86400000);
+    return DAYS[lang() === "kk" ? "kk" : "ru"][(d.getUTCDay() + 6) % 7] + " " + d.getUTCDate();
+  }
   function fmtDateTime(iso) { return I() && I().formatDateTime ? I().formatDateTime(iso) : iso; }
 
   function h(tag, attrs, children) {
@@ -286,8 +312,8 @@
     function renderBar() {
       var isPrev = !!state.date;
       var seg = h("div", { class: "bk-seg wk-weeks", role: "group" }, [
-        h("button", { type: "button", "aria-pressed": String(!isPrev), text: tr("week.this"), onclick: function () { setDate(null); } }),
-        h("button", { type: "button", "aria-pressed": String(isPrev), text: tr("week.prev"),
+        h("button", { type: "button", "aria-pressed": String(!isPrev), text: tr("week.last7"), onclick: function () { setDate(null); } }),
+        h("button", { type: "button", "aria-pressed": String(isPrev), text: tr("week.prev7"),
           onclick: function () { setDate(shiftDay(todayAstana(), -7)); } }),
       ]);
       var select = h("select", { class: "bk-select wk-select", "aria-label": tr("week.district"),
@@ -324,12 +350,12 @@
       var max = Math.max.apply(null, news.concat(fixed).map(function (v) { return v || 0; }).concat([1]));
       var W = 700, H = 124, top = 20, bottom = 22, col = W / 7, bw = 28;
       var chart = svg("svg", { class: "wk-chart", viewBox: "0 0 " + W + " " + H, role: "img",
-        "aria-label": tr("week.days.title") + ": " + news.map(function (v, i) { return DAYS[lang() === "kk" ? "kk" : "ru"][i] + " " + (v == null ? "—" : v); }).join(", ") });
+        "aria-label": tr("week.days.title") + ": " + news.map(function (v, i) { return dayName(week.start, i) + " " + (v == null ? "—" : v); }).join(", ") });
       var startDay = new Date(week.start + "T12:00:00Z");
       for (var i = 0; i < 7; i++) {
         var x = i * col + col / 2, base = H - bottom;
         var d = new Date(startDay.getTime() + i * 86400000);
-        var label = DAYS[lang() === "kk" ? "kk" : "ru"][i] + " " + d.getUTCDate();
+        var label = dayName(week.start, i);
         var t = svg("text", { x: x, y: H - 6, class: "wk-chart__day", "text-anchor": "middle" });
         t.textContent = label;
         chart.appendChild(t);
@@ -352,6 +378,8 @@
       var legend = h("p", { class: "wk-legend" }, [
         h("span", { class: "wk-legend__key wk-legend__key--new", "aria-hidden": "true" }), tr("week.days.new"),
         h("span", { class: "wk-legend__key wk-legend__key--fixed", "aria-hidden": "true" }), tr("week.days.fixed"),
+        // Окно 7 × 24 ч начинается накануне первого дня: эти часы — в первом столбике (сумма столбиков = числу недели).
+        week.first_from ? h("span", { class: "wk-legend__note", text: " · " + tr("week.days.first_from", { time: clockOf(week.first_from) }) }) : null,
       ]);
       return [chart, legend];
     }
@@ -380,19 +408,19 @@
         h("div", { class: "wk-head__main" }, [
           h("p", { class: "wk-brand" }, [h("span", { class: "wk-brand__mark", "aria-hidden": "true", text: "B" }), "Birge"]),
           h("h1", { class: "wk-title", text: tr("week.title") + " · " + (w["label_" + l] || w.label_ru) + " " + year }),
-          h("p", { class: "wk-meta", text: [scope, w.current ? tr("week.current", { date: asOf }) : null,
+          // Окно — 7 × 24 ч, как «за неделю» в «Картине дня» и «за 7 дней» на карте и Ситуационном центре (R10 C5).
+          h("p", { class: "wk-meta", text: [scope, w.current ? tr("week.window.now", { time: clockOf(w.as_of) }) : tr("week.window.past", { date: asOf }),
             tr("week.generated", { date: fmtDateTime(d.generated_at) })].filter(Boolean).join(" · ") }),
         ]),
         demoAll ? h("span", { class: "bk-tag bk-tag--demo", text: tr("common.demo") }) : null,
       ]);
       var kpis = h("section", { class: "wk-kpis" }, [
-        // Идущая неделя — «с понедельника» явно: в «Картине дня» «Исправлено за неделю» — это последние 7 дней, и числа
-        // разные (R10 consistency C5); подпись говорит, за какие дни число.
-        kpiTile(w.current ? tr("week.kpi.new_since", { date: fmtDate(w.start) }) : tr("week.kpi.new"), k.new.value, deltaText(k.new, "week"), null, "new"),
-        kpiTile(w.current ? tr("week.kpi.fixed_since", { date: fmtDate(w.start) }) : tr("week.kpi.fixed"), k.fixed.value, deltaText(k.fixed, "week"),
+        // Числа недели = числа «Картины дня» на этот момент (окно 7 × 24 ч) — одна подпись «за 7 дней» везде.
+        kpiTile(tr("week.kpi.new_7d"), k.new.value, deltaText(k.new, "week"), null, "new"),
+        kpiTile(tr("week.kpi.fixed_7d"), k.fixed.value, deltaText(k.fixed, "week"),
           k.verification_available ? tr("week.kpi.verified", { n: k.fixed.verified || 0 }) : null, "fixed"),
-        kpiTile(tr("week.kpi.in_progress", { date: asOf }), k.in_progress.value, deltaText(k.in_progress, "ago"), null),
-        kpiTile(tr("week.kpi.overdue", { date: asOf }), k.overdue.value, deltaText(k.overdue, "ago"), null, k.overdue.value ? "late" : null),
+        kpiTile(tr("week.kpi.work"), k.in_progress.value, deltaText(k.in_progress, "ago"), null),
+        kpiTile(tr("week.kpi.overdue_fix"), k.overdue.value, deltaText(k.overdue, "ago"), null, k.overdue.value ? "late" : null),
       ]);
       var parts = [head, kpis];
       if (!k.new.value && !k.fixed.value && !k.in_progress.value && !k.overdue.value) {

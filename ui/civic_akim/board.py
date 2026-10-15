@@ -39,6 +39,7 @@ def _kpi(s: dict) -> dict:
     keep = ("value", "prev", "abs", "pct", "ratio", "trend", "mode", "series")
     out = {name: {f: (k.get(name) or {}).get(f) for f in keep} for name in ("new_day", "in_progress", "overdue", "fixed_week")}
     out["in_progress"]["waiting"] = (k.get("in_progress") or {}).get("waiting")
+    out["overdue"]["places"] = (s.get("overdue") or {}).get("places")   # в скольких местах (как «Просрочено — дольше всех»)
     fw = k.get("fixed_week") or {}
     out["fixed_week"].update(verified=fw.get("verified"), awaiting=fw.get("awaiting"),
                              reopened_by_residents=fw.get("reopened_by_residents"))

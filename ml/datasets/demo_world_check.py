@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -186,8 +187,9 @@ def check_ids(rep: Report, world: dict) -> dict[str, set]:
 class Geo:
     """Цели и рёбра — у карты R12 (только чтение). Без карты (--no-geo) проверяется лишь вид id."""
 
-    def __init__(self, enabled: bool):
+    def __init__(self, enabled: bool, other_data: str | None = None):
         self.enabled = enabled
+        self.other_data = other_data   # мир собран на других данных R12, чем в этом дереве (строка-описание) или None
         self._cache: dict = {}
         self.graph = None
         if enabled:
@@ -218,7 +220,10 @@ def check_target(rep: Report, geo: Geo, where: str, target, *, kinds=("object", 
         return
     found = geo.target(kind, tid)
     if not found:
-        rep.err(where, f"цель неизвестна карте R12: {tid}")
+        if geo.other_data:   # в этом дереве объекты R12 другие: мир верен для своих данных — сверка там (сборка R01)
+            rep.warn(where, f"цель неизвестна карте R12 в этом дереве: {tid} ({geo.other_data})")
+        else:
+            rep.err(where, f"цель неизвестна карте R12: {tid}")
         return
     if geo.enabled and isinstance(found, dict) and target.get("label_ru") and found.get("label_ru") != target["label_ru"]:
         rep.warn(where, f"подпись цели отличается от карты R12: {target['label_ru']!r} ≠ {found.get('label_ru')!r}")
@@ -565,6 +570,22 @@ def check_scenes(rep: Report, world: dict, ids: dict) -> None:
                     rep.err(f"scenes/{name}/{key}", f"ссылка {ref} не найдена в мире")
 
 
+R12_DATA = ("data/civic/astana/geo/objects.json", "data/civic/astana/geo/yards.json")
+
+
+def other_r12_data(world: dict) -> str | None:
+    """Мир собран на других файлах карты R12, чем лежат в этом дереве? Описание для отчёта или None."""
+    inputs = world.get("inputs") or {}
+    changed = []
+    for rel in R12_DATA:
+        want = inputs.get(rel)
+        path = wio.ROOT / rel
+        have = hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+        if want and have != want:
+            changed.append(f"{rel}: мир {want[:8]}, здесь {(have or 'нет файла')[:8]}")
+    return ("мир собран на других данных карты R12 — " + "; ".join(changed)) if changed else None
+
+
 def check_world(world: dict, *, geo: bool = True, now: datetime | None = None, heat: bool = True) -> Report:
     rep = Report()
     if world.get("schema") != wio.SCHEMA_ID:
@@ -581,7 +602,10 @@ def check_world(world: dict, *, geo: bool = True, now: datetime | None = None, h
             rep.err("counts", f"{key}: заявлено {n}, на деле {len(world[key])}")
     cats = json.loads((wio.ROOT / "research" / "round-14" / "categories_v2.json").read_text("utf-8"))
     categories = {c["id"]: {s["id"] for s in c.get("subtopics", [])} for c in cats["categories"]}
-    g = Geo(geo)
+    other = other_r12_data(world)
+    if geo and other:
+        rep.warn("inputs", other)
+    g = Geo(geo, other)
     ids = check_ids(rep, world)
     check_complaints(rep, world, g, categories)
     check_works(rep, world, g)

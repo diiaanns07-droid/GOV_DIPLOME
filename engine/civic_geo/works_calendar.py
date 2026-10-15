@@ -200,8 +200,11 @@ def remember_world(records, now=None) -> dict:
         return {"inserted": 0, "skipped": 0, "note": "нет мира"}
     today = (now.astimezone(ASTANA_TZ).date() if isinstance(now, datetime) else None) or today_astana()
     works = load_world(today, raw_world=records)
-    planned = {(c.get("kind"), tuple(sorted(c.get("works") or []))): c.get("id")
-               for c in records.get("planned_conflicts") or [] if isinstance(c, dict) and c.get("id")}
+    items = records.get("planned_conflicts")
+    planned = {(c.get("kind"), tuple(sorted(c["works"]))): c.get("id")
+               for c in (items if isinstance(items, list) else [])
+               if isinstance(c, dict) and c.get("id") and isinstance(c.get("works"), list)
+               and all(isinstance(w, str) for w in c["works"])}
     _WORLD.clear()
     _WORLD.update({"works": works, "planned": planned, "scene": _scene_of(records), "today": today.isoformat()})
     return {"inserted": 0, "skipped": len(works), "planned_conflicts": len(planned),
@@ -209,8 +212,9 @@ def remember_world(records, now=None) -> dict:
 
 
 def _scene_of(world) -> str | None:
-    """Конфликт сцены 8 мира R02 (scenes.scene8.conflict) или None."""
-    scene = ((world or {}).get("scenes") or {}).get("scene8") if isinstance(world, dict) else None
+    """Конфликт сцены 8 мира R02 (scenes.scene8.conflict) или None — при любом другом виде данных."""
+    scenes = world.get("scenes") if isinstance(world, dict) else None
+    scene = scenes.get("scene8") if isinstance(scenes, dict) else None
     cid = scene.get("conflict") if isinstance(scene, dict) else None
     return cid if isinstance(cid, str) and cid else None
 
@@ -236,13 +240,17 @@ def planned_ids(path=WORLD_PATH) -> dict:
     if _planned_cache.get("stamp") != stamp:
         try:
             data = json.loads(path.read_text("utf-8"))
-            items = data.get("planned_conflicts") or []
-        except (OSError, ValueError, AttributeError):
-            data, items = None, []
-        _planned_cache["stamp"] = stamp
-        _planned_cache["scene"] = _scene_of(data)
-        _planned_cache["ids"] = {(c.get("kind"), tuple(sorted(c.get("works") or []))): c.get("id")
-                                 for c in items if isinstance(c, dict) and c.get("id")}
+        except (OSError, ValueError):
+            data = None
+        items = data.get("planned_conflicts") if isinstance(data, dict) else None
+        ids = {}
+        for c in items if isinstance(items, list) else []:
+            works = c.get("works") if isinstance(c, dict) else None
+            if isinstance(works, list) and c.get("id") and all(isinstance(w, str) for w in works):
+                ids[(c.get("kind"), tuple(sorted(works)))] = c.get("id")
+        # Кэш — одной записью: сбой на середине не оставляет «stamp без ids».
+        _planned_cache.clear()
+        _planned_cache.update({"stamp": stamp, "scene": _scene_of(data), "ids": ids})
     return _planned_cache["ids"]
 
 

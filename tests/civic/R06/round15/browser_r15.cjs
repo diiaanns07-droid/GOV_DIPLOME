@@ -358,7 +358,24 @@ async function notifyPart(browser) {
         const zero = await page.waitForFunction((sel) => { const b = document.querySelector(sel + " .bk-nav__badge"); return !b || b.hidden; }, bellSel, { timeout: 10000 })
           .then(() => true, () => false);
         check(`${tag}: «Прочитать все» — счётчика нет`, zero);
-        await page.keyboard.press("Escape");
+        // Кризис R17 (если модуль в сборке и событие в ленте): уведомление открывает его карточку — «#crisis/<id>».
+        await sleep(800);   // «Прочитать все» перерисовывает ленту дважды (сразу и по ответу сервера)
+        const crisisSel = '.bk-notify .bk-feed__item[data-kind="crisis"]';
+        const crisis = await page.$(crisisSel);
+        if (crisis) {
+          const href = await page.getAttribute(crisisSel, "href");
+          await page.click(crisisSel);
+          const opened = await page.waitForFunction(() => document.body.dataset.birgeSection === "crisis", null, { timeout: 10000 })
+            .then(() => true, () => false);
+          check(`${tag}: уведомление о кризисе открыло его карточку (${href})`, opened && /^#crisis\//.test(href || ""), href);
+          await sleep(800);
+          await shot(page, `${tag}-opened-crisis`);
+          await page.goto(base + "/#map", { waitUntil: "domcontentloaded" });
+          await page.waitForSelector(bellSel, { timeout: 20000 });
+        } else {
+          console.log(`NOT_RUN ${tag}: кризис — в ленте нет события R17 (модуля нет в сборке)`);
+          await page.keyboard.press("Escape");
+        }
         // Вид «Акимат»: колокольчика нет (IA §5.7 — только житель).
         await page.evaluate(() => window.BirgeShell && window.BirgeShell.setMode && window.BirgeShell.setMode("akimat"));
         await sleep(600);
@@ -368,6 +385,14 @@ async function notifyPart(browser) {
       check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
       await ctx.close();
     }
+    // Новое событие после «Прочитать все» (вторая идея жителя опубликована) — на телефоне будет что считать.
+    const idea2 = await api(base, "POST", "/api/civic/v2/ideas", { title: "Урны у остановки", description: "Мусор летит на дорогу.",
+      geometry: { type: "Point", coordinates: [71.3671, 51.1371] }, device_id: IDEAS, lang: "ru" });
+    const pub2 = idea2.status === 201
+      ? await api(base, "POST", `/api/civic/v2/ideas/${idea2.json.item.id}/decide`, { action: "publish" }, auth) : null;
+    check("уведомления: вторая идея жителя опубликована (новое событие после «Прочитать все»)", idea2.status === 201 && pub2 && pub2.status === 200,
+      JSON.stringify(idea2.json).slice(0, 200));
+    await sleep(5500);   // сборщик ленты кэширует ответ на 5 с — следующий житель увидит новое
     // Телефон: экран «Уведомления» (#notifications) — лента и пустое состояние.
     for (const [lang, main, ideas, empty] of [["ru", MAIN, IDEAS, false], ["kk", MAIN, IDEAS, false], ["ru", "d-" + "Z".repeat(24), null, true]]) {
       const tag = `notify-375-${lang}${empty ? "-empty" : ""}`;
@@ -389,6 +414,28 @@ async function notifyPart(browser) {
       const au = await textAudit(page, "#birge-screen");
       check(`${tag}: без технических слов и прокрутки вбок`, !au.missing && !au.tech.length && !au.overflow, JSON.stringify({ tech: au.tech, overflow: au.overflow }));
       await shot(page, tag);
+      if (!empty && lang === "ru") {
+        // Оболочка раунда 15 (R01 B0.4): на телефоне колокольчика нет — первый пункт меню аватара «Уведомления · N» и точка
+        // на аватаре; число — из BirgeNotify.onCount. Оболочка без этого пункта (FINAL-4) — NOT_RUN.
+        const want = (await (await fetch(base + "/api/civic/v2/notifications", { headers: { "X-Birge-Device": MAIN, "X-Birge-Ideas-Device": IDEAS } })).json()).unread;
+        await page.goto(base + "/#map", { waitUntil: "domcontentloaded" });
+        await page.waitForFunction(() => document.body.dataset.birgeSection === "map", null, { timeout: 10000 }).catch(() => {});
+        await sleep(1500);
+        const dot = await page.$eval(".birge-avatar", (e) => e.hasAttribute("data-badge")).catch(() => null);
+        await page.click(".birge-avatar").catch(() => {});
+        const item = await page.waitForSelector('.bk-menu__item[data-section="notifications"]', { timeout: 4000 }).then((x) => x, () => null);
+        if (!item) {
+          console.log(`NOT_RUN ${tag}: в меню аватара нет пункта «Уведомления» (оболочка без IA §5.7)`);
+        } else {
+          const badge = await item.$eval(".bk-nav__badge", (e) => e.textContent).catch(() => "");
+          check(`${tag}: меню аватара — «Уведомления · ${want}» и точка на аватаре`, want > 0 && badge === (want > 9 ? "9+" : String(want)) && dot === true,
+            JSON.stringify({ want, badge, dot }));
+          await shot(page, `${tag}-avatar-menu`);
+          await item.click();
+          const opened = await page.waitForSelector(".rn .bk-feed__item", { timeout: 10000 }).then(() => true, () => false);
+          check(`${tag}: пункт меню аватара открывает ленту`, opened && (await page.evaluate(() => document.body.dataset.birgeSection)) === "notifications");
+        }
+      }
       check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
       await ctx.close();
     }
@@ -444,28 +491,44 @@ async function togetherPart(browser) {
     const item = (first.json.items || []).find((x) => x.id === made) || {};
     check("идея → инициатива: повтор не создаёт второе дело", again.status === 201 && again.json && again.json.created === false
       && again.json.initiative && item.initiative && again.json.initiative.id === item.initiative.id, JSON.stringify(again.json).slice(0, 300));
+    // Экран R16 в сборке (web/civic/together) — «Открыть дело» ведёт в настоящий раздел «Сделаем вместе»;
+    // нет — заглушка BirgeTogether проверяет вызов open("initiative", id).
+    const realR16 = fs.existsSync(path.join(ROOT, "web", "civic", "together", "together.js"))
+      && fs.readFileSync(path.join(ROOT, "web", "index.html"), "utf8").includes("/civic/together/together.js");
     for (const lang of ["ru", "kk"]) {
       const tag = `together-375-resident-${lang}`;
       const page = await newPage(browser, 375, lang, "resident");
-      await page.addInitScript(() => {
-        window.BirgeTogether = { version: "stub", open: (kind, id) => { window.__opened = [kind, id]; return true; },
-          mount: (el) => { el.textContent = "R16"; return {}; } };
-      });
+      if (!realR16) {
+        await page.addInitScript(() => {
+          window.BirgeTogether = { version: "stub", open: (kind, id) => { window.__opened = [kind, id]; return true; },
+            mount: (el) => { el.textContent = "R16"; return {}; } };
+        });
+      }
       await page.goto(base + "/#ideas/" + made, { waitUntil: "domcontentloaded" });
       const ok = await page.waitForSelector(`[data-pd="${made}"] [data-key=together-line]`, { timeout: 20000 }).then(() => true, () => false);
       check(`${tag}: житель видит «Сделайте вместе — поддержим инвентарём»`, ok);
       const text = ok ? await page.$eval(`[data-pd="${made}"] [data-key=together-line]`, (e) => e.innerText) : "";
       check(`${tag}: подпись на языке интерфейса`, lang === "kk" ? /Бірге жасаңыз/.test(text) : /Сделайте вместе/.test(text), text);
       await shot(page, tag);
-      if (ok) {
+      if (ok && !realR16) {
         await page.click(`[data-pd="${made}"] [data-key=together-open]`);
         const opened = await page.evaluate(() => window.__opened || null);
         check(`${tag}: «Открыть дело» → BirgeTogether.open("initiative", id)`, opened && opened[0] === "initiative" && opened[1] === item.initiative.id, JSON.stringify(opened));
+      } else if (ok) {
+        await page.click(`[data-pd="${made}"] [data-key=together-open]`);
+        const inTogether = await page.waitForFunction(() => document.body.dataset.birgeSection === "together", null, { timeout: 10000 })
+          .then(() => true, () => false);
+        check(`${tag}: «Открыть дело» → раздел «Сделаем вместе» R16`, inTogether);
+        await sleep(1200);
+        const shown = await page.evaluate(() => (document.querySelector("#birge-screen") || document.body).innerText);
+        const titles = [item.title_ru, item.title_kk, item.title].filter(Boolean);
+        check(`${tag}: R16 показывает это дело (название идеи)`, titles.some((t) => shown.includes(t)), titles.join(" / ") + " — " + shown.slice(0, 300));
+        await shot(page, `${tag}-r16`);
       }
       check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
       await page.close();
     }
-    // Без экрана R16 (нет BirgeTogether) — у жителя строки нет: нечего открывать.
+    // Без экрана R16 (нет BirgeTogether) — у жителя строки нет: нечего открывать (в сборке с R16 — проверка про то же).
     const bare = await newPage(browser, 1366, "ru", "resident");
     await bare.goto(base + "/#ideas/" + made, { waitUntil: "domcontentloaded" });
     await bare.waitForSelector(`[data-pd="${made}"]`, { timeout: 20000 }).catch(() => {});

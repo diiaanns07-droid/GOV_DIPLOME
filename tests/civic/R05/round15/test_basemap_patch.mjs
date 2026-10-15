@@ -2,7 +2,8 @@
 // В облаке нет 3D-зданий (OpenFreeMap недоступен), поэтому вид проверяет LOCAL-12, а здесь — логика патча:
 // центры, радиусы и подписи ориентиров берутся из landmarks.json; ориентир — «белый макет» (светлее соседей, без
 // отдельной краски); без файла — запасные центры R01 и никаких ошибок.
-// Файл R01 берётся из рабочей копии: если патч уже применён (сборка R01) — как есть, иначе патч накладывается на копию.
+// Файл R01 берётся из рабочей копии: если патч уже применён (сборка R01) — как есть, иначе недостающее (весь патч или
+// дельта D1.2) накладывается на копию.
 // Запуск: node --test tests/civic/R05/round15/test_basemap_patch.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -15,19 +16,23 @@ import vm from "node:vm";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 const FILE = "web/civic/shell/basemap-style.js";
-const PATCH = path.join(ROOT, "research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch");
+// Полный патч (D1/D1.1; в сборке R01 с B0.2) и дельта к сборке R01 B0.3 adb5fba9 (подпись из label, names, avoid).
+const PATCH_FULL = path.join(ROOT, "research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch");
+const PATCH_D12 = path.join(ROOT, "research/round-15-results/R05/patches/R01_delta_b03.patch");
 const DATA = JSON.parse(readFileSync(path.join(ROOT, "web/civic/build3d/data/landmarks.json"), "utf8"));
 const byId = Object.fromEntries(DATA.landmarks.map((l) => [l.id, l]));
 
+// Файл R01 из рабочей копии + то, чего в нём ещё нет: весь патч (FINAL-4) или только дельта D1.2 (сборки R01 B0.2–B0.3).
 function patchedSource() {
   const src = readFileSync(path.join(ROOT, FILE), "utf8");
-  if (src.includes("applyLandmarksFile")) return { src, how: "патч уже в файле" };
+  if (src.includes("f.label || f.name")) return { src, how: "патч R05 уже в файле" };
+  const patch = src.includes("applyLandmarksFile") ? PATCH_D12 : PATCH_FULL;
   const dir = mkdtempSync(path.join(os.tmpdir(), "r05-basemap-"));
   try {
     mkdirSync(path.join(dir, path.dirname(FILE)), { recursive: true });
     copyFileSync(path.join(ROOT, FILE), path.join(dir, FILE));
-    execFileSync("git", ["apply", "--include=" + FILE, PATCH], { cwd: dir, stdio: "pipe" });
-    return { src: readFileSync(path.join(dir, FILE), "utf8"), how: "патч наложен на копию" };
+    execFileSync("git", ["apply", "--include=" + FILE, patch], { cwd: dir, stdio: "pipe" });
+    return { src: readFileSync(path.join(dir, FILE), "utf8"), how: patch === PATCH_D12 ? "дельта D1.2 наложена на копию" : "весь патч наложен на копию" };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 const PATCHED = patchedSource();

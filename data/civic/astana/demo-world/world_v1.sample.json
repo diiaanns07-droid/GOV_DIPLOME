@@ -9,7 +9,7 @@
  "inputs": {
   "research/round-14/categories_v2.json": "2b0255e1b83bbe182f16346acd5be5a42252744eb3ccc9696ee00eab634d80a7",
   "data/civic/astana/geo/yards.json": "a3ef73296671bdcb1eeeb8dcee1d172c94fb957cec72cc3c0538c6522bc3018d",
-  "data/civic/astana/geo/objects.json": "0c2306611c8dd6f60746fa4960c5b6cc318975dc08801d27adcc45a28a540464",
+  "data/civic/astana/geo/objects.json": "247c24a8d38f061c1a5c9d20d452a43814f7e47796ae9312073e20e4995a257f",
   "engine/civic_scenarios/graphs/MANIFEST.json": "9b44a045e09d41721580e2c45871523dcfeee617f5aca0e086cab983002ee4b1"
  },
  "counts": {

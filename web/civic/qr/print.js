@@ -280,31 +280,34 @@
       }
       // R10 B-103: узла нет в свежем снимке OSM (retired). Есть замена рядом (replaced_by) — табличка на неё (жалобы по
       // QR идут к живому объекту), сотрудник видит, что номер обновлён; замены нет — табличка старая, но с предупреждением.
+      // Сообщения этой загрузки копятся отдельно и попадают на экран, только если загрузку не сменила новая.
+      var notes = [];
       function fresh(row) {
         var b = row.body;
         if (row.status !== 200 || !b || !b.retired) return Promise.resolve(row);
         if (!b.replaced_by) {
-          S.messages.push({ kind: "warn", text: tx("qr.form.gone", { id: row.id }) });
+          notes.push({ kind: "warn", text: tx("qr.form.gone", { id: row.id }) });
           return Promise.resolve(row);
         }
-        var updated = { kind: "info", text: tx("qr.form.updated", { old: row.id, id: b.replaced_by }) };
-        if (parsed.ids.indexOf(b.replaced_by) >= 0) {  // замена уже в списке — одна табличка
-          S.messages.push(updated);
-          return Promise.resolve({ id: row.id, status: 0, skip: true });
-        }
         return fetchTarget(b.replaced_by).then(function (got) {
-          if (got.status !== 200 || !got.body || !got.body.target) return row;
-          S.messages.push(updated);
+          // Замену не удалось получить (нет связи, 5xx) — не печатаем устаревшую табличку молча: это сбой связи.
+          if (got.status !== 200 || !got.body || !got.body.target) return { id: row.id, status: got.status === 404 ? 404 : 0, body: null };
+          notes.push({ kind: "info", text: tx("qr.form.updated", { old: row.id, id: b.replaced_by }) });
           return got;
         });
       }
       return Promise.all(parsed.ids.map(function (id) { return fetchTarget(id).then(fresh); })).then(function (rows) {
         if (my !== S.seq) return false;
-        S.messages = S.messages.filter(function (m) { return m.text !== tx("qr.form.loading"); });
-        var offline = false;
+        S.messages = S.messages.filter(function (m) { return m.text !== tx("qr.form.loading"); }).concat(notes);
+        var offline = false, seen = {};
         rows.forEach(function (row) {
-          if (row.skip) return;
-          if (row.status === 200 && row.body && row.body.target) S.signs.push(row.body);
+          if (row.status === 200 && row.body && row.body.target) {
+            // Одна табличка на объект: замена могла совпасть с другим номером списка или с заменой другого номера.
+            var key = row.body.target.id;
+            if (seen[key]) return;
+            seen[key] = true;
+            S.signs.push(row.body);
+          }
           else if (row.status === 404 || row.status === 400) S.messages.push({ kind: "error", text: tx("qr.form.not_found", { id: row.id }) });
           else offline = true;
         });

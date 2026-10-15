@@ -71,7 +71,9 @@ NUMBER_BESIDE = {"heat.card.people", "heat.card.people_fixed", "passport.people"
                  "board.agencies.joint", "board.agencies.handoffs", "board.together.stat_done", "board.together.stat_people",
                  "board.together.stat_upcoming", "board.together.stat_verified", "board.meetings.stat_overdue",
                  # «Картина дня» 2.0 R08: блоки «Ведомства», «Жители вместе», «Встречи» — число крупно, подпись рядом
-                 "akim.r15.agencies.number", "akim.r15.together.number", "akim.r15.meetings.number"}
+                 "akim.r15.agencies.number", "akim.r15.together.number", "akim.r15.meetings.number",
+                 # R08 (ведущая ветка claude/laughing-euler-iv3on3) — те же блоки под именами akim.trio.*; R16 — «Сделано вместе»
+                 "akim.trio.agencies_num", "akim.trio.together_num", "akim.trio.meetings_num", "together.done_num"}
 
 
 def check(ru=None, kk=None):

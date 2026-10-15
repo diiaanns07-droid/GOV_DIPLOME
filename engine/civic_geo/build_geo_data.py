@@ -164,28 +164,29 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
     street_points=False — без перекрёстков и подписей (быстро, для тестов без графа)."""
     boundary = CityBoundary(geofence_path)
     sources: list[dict] = []
-    elements: list[tuple[dict, str]] = []
+    elements: list[tuple[dict, str, bool]] = []  # (элемент OSM, имя файла для поля src, из снимка пешеходной сети?)
     raw_dir = Path(raw_dir)
     raw_files = sorted([p for p in raw_dir.glob("*.json*") if p.is_file()]) if raw_dir.is_dir() else []
     for p in raw_files:
         sources.append(_file_entry(p))
-        elements.extend((el, p.name) for el in _load_elements(p))
+        elements.extend((el, p.name, False) for el in _load_elements(p))
     # Порядок важен (R10 B-103): сначала raw/ — свежий снимок (LOCAL-10, 12.10.2026: traffic_signals, crossings), потом
     # снимок пешеходной сети 06.05.2026. Дубли по id отбрасываются: узел из обоих снимков берёт СВЕЖИЕ координаты и теги.
     walking_name = None
     if walking_raw is not None and Path(walking_raw).is_file():
-        walking_name = Path(walking_raw).name
+        walking_name = Path(walking_raw).name  # поле src у его объектов (по нему R10 сверяет точку со снимком)
         sources.append(_file_entry(Path(walking_raw)) | {"use": "узлы на линиях дорог: остановки, светофоры, переходы "
                                                                 "(светофоры и переходы — только если их нет в raw/)"})
         for el in _load_elements(Path(walking_raw)):
             if el.get("type") == "node" and el.get("tags") and classify(el["tags"]) in WALKING_KINDS:
-                elements.append((el, walking_name))
+                elements.append((el, walking_name, True))
 
     objects: dict[str, dict] = {}
     yards: dict[str, dict] = {}
     skipped = {"outside_city": 0, "no_geometry": 0, "duplicate": 0}
     other = {}
-    for el, src in elements:
+    from_walking: set[str] = set()  # id объектов из снимка пешеходной сети — по происхождению, а не по имени файла
+    for el, src, walking in elements:
         tags = el.get("tags") or {}
         kind = classify(tags)
         if kind is None:
@@ -243,6 +244,8 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
             item["polygon"] = polygon
         item["src"] = src
         objects[oid] = item
+        if walking:
+            from_walking.add(oid)
 
     # Одна остановка часто нарисована дважды: узел highway=bus_stop и платформа рядом с тем же именем.
     stops = sorted((o for o in objects.values() if o["kind"] == "bus_stop"), key=lambda o: o["id"])
@@ -256,9 +259,9 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
 
     # B-103: светофор/переход только из старого снимка, когда свежий снимок этого вида есть, — выбывший (см. REPLACED_M).
     retired: dict[str, dict] = {}
-    if walking_name:
-        fresh_kinds = {o["kind"] for o in objects.values() if o["kind"] in STREET_POINT_KINDS and o["src"] != walking_name}
-        for oid in [oid for oid, o in objects.items() if o["kind"] in fresh_kinds and o["src"] == walking_name]:
+    if from_walking:
+        fresh_kinds = {o["kind"] for oid, o in objects.items() if o["kind"] in STREET_POINT_KINDS and oid not in from_walking}
+        for oid in [oid for oid, o in objects.items() if o["kind"] in fresh_kinds and oid in from_walking]:
             retired[oid] = objects.pop(oid)
 
     street_counts = {}
@@ -322,6 +325,8 @@ def write(result: dict, out_dir: Path, raw_dir: Path) -> dict:
                "count": len(result["objects"]), "items": result["objects"]}
     if result.get("retired"):
         objects["retired_note"] = (
+            # Текст не меняю после поставки 6: по sha256 objects.json демо-мир R02 сверяет, на каких данных он собран.
+            # Точное правило (по явной ссылке выбывший id остаётся целью) — engine/civic_geo/README.md, п. 5.
             "R10 B-103: светофоры и переходы — из свежего снимка OSM (raw/, LOCAL-10). retired — узлы старого снимка "
             "пешеходной сети, которых в свежем нет: не цели для новых жалоб и не в поиске рядом, только чтобы старые "
             "ссылки по id (демо-мир, QR) находились; replaced_by — свежий узел того же вида не дальше "

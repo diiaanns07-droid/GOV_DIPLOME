@@ -10,6 +10,8 @@
 #   e2e      tests/e2e/demo_flow.cjs --world                      — часть 1 (шаги 1–7 FINAL-4), 1366/375 × ru/kk
 #   v2       tests/e2e/demo_flow_v2.cjs                           — сцены 7–9 «Бірге», 1366/1024/375 × ru/kk
 #   map      tests/e2e/map_baseline.cjs --repeat 3                — первый значок, загрузка, API
+#   perf     tests/e2e/perf_check.cjs --repeat 5                  — первый значок, «Хроника», «Спросить Birge»
+#   audit    tests/e2e/visual_audit.cjs (1366, 375 × ru/kk)       — новые экраны по VISUAL_BRIEF §4 и П1 (без --quick)
 #   ref      tests/e2e/reference_check.cjs --before <FINAL-4>     — эталон A: не хуже FINAL-4 (если есть прогон FINAL-4)
 #   video    tests/e2e/demo_video.cjs --world (только с --video)  — ролик ҚАЗ и РУС
 # Затем python3 tests/e2e/summary_r15.py <отчёт> → ACCEPTANCE.md и VERDICT.json («можно показывать: да / нет» с причинами).
@@ -36,6 +38,10 @@ else
   step v2 node tests/e2e/demo_flow_v2.cjs --root "$W" --out "$O/v2"
 fi
 step map node tests/e2e/map_baseline.cjs --root "$W" --out "$O/map" --repeat 3 --world
+step perf node tests/e2e/perf_check.cjs --root "$W" --out "$O/perf" --repeat 5
+if [ "$QUICK" = 0 ]; then
+  step audit node tests/e2e/visual_audit.cjs --root "$W" --out "$O/audit" --label "$L" --sizes 1366x768,375x812
+fi
 if [ "$QUICK" = 0 ] && [ -n "$REF_HTML" ] && [ -f "$REF_HTML" ]; then
   if [ -d "$REF_BEFORE" ]; then
     step ref node tests/e2e/reference_check.cjs --ref "$REF_HTML" --root "$W" --out "$O/ref" --label "$L" --before "$REF_BEFORE" --world

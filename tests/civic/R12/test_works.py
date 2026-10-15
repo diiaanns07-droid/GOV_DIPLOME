@@ -22,6 +22,21 @@ TODAY = date(2026, 10, 15)          # anchor фикстуры
 PERIOD = (date(2026, 7, 1), date(2027, 12, 31))
 
 
+@pytest.fixture(autouse=True)
+def isolated_world_state():
+    """Каждый тест — с чистым состоянием мира R12 (R01 B0.5: после tests/civic/R07 в одном процессе мир R02, засеянный
+    соседями через engine.civic_geo.seed_world, переименовывал конфликты фикстуры). Состояние до теста возвращается."""
+    from engine.civic_geo import works_calendar as WC
+    saved_world, saved_cache = dict(WC._WORLD), dict(WC._planned_cache)
+    WC._WORLD.clear()
+    WC._planned_cache.clear()
+    yield
+    WC._WORLD.clear()
+    WC._WORLD.update(saved_world)
+    WC._planned_cache.clear()
+    WC._planned_cache.update(saved_cache)
+
+
 @pytest.fixture(scope="module")
 def real():
     return get_graph()
@@ -548,3 +563,30 @@ def test_conflicts_summary_for_neighbours_has_numbers_and_advice(real, monkeypat
     assert top["advice_ru"] and top["advice_kk"] and top["stage"] in ("planned", "surface_done", "now")
     assert set(top) >= {"id", "kind", "severity", "title_ru", "street_ru", "when_from", "works"}
     assert len(got["top"]) <= 3
+
+
+def test_world_with_unexpected_shapes_does_not_break_the_calendar(real, tmp_path, monkeypatch):
+    """Ревью: scenes списком, planned_conflicts с мусором — календарь работает, сцены нет, кэш не ломается."""
+    from engine.civic_geo import works_calendar as WC
+    p = tmp_path / "world_v1.json"
+    p.write_text(json.dumps({"scenes": [{"id": "scene8"}], "planned_conflicts": [1, {"id": "x", "works": "w"},
+                                                                                     {"id": "cf-1", "kind": "k", "works": ["b", "a"]}]}), "utf-8")
+    monkeypatch.setattr(WC, "WORLD_PATH", p)
+    monkeypatch.setattr(WC.planned_ids, "__defaults__", (p,))
+    monkeypatch.setattr(WC.scene_conflict, "__defaults__", (p,))
+    WC._planned_cache.clear()
+    try:
+        assert WC.planned_ids() == {("k", ("a", "b")): "cf-1"}
+        assert WC.planned_ids() == {("k", ("a", "b")): "cf-1"}, "второй вызов — из кэша, без KeyError"
+        assert WC.scene_conflict() is None
+        assert WC.remember_world({"scenes": "x", "planned_conflicts": {"a": 1}, "works": []})["planned_conflicts"] == 0
+    finally:
+        WC._WORLD.clear()
+        WC._planned_cache.clear()
+
+
+def test_gap_words_round_half_up_like_the_screen():
+    """Ревью: 76 дней = 2,5 месяца — «через 3 месяца» и в совете, и на экране (Math.round)."""
+    assert W.gap_words(76)[0] == "через 3 месяца" and W.gap_words(380)[0] == "через 13 месяцев"
+    assert W.gap_words(61)[0] == "через 2 месяца" and W.gap_words(45)[0] == "через полтора месяца"
+

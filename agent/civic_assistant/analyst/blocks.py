@@ -712,7 +712,7 @@ def work_conflicts(ctx) -> Block:
     b.number(high, "серьёзных", "маңызды", "works_conflicts")
     kinds = {"dig_after_surface": both("раскопка после нового асфальта", "жаңа асфальттан кейін қазу"),
              "parallel_closures": both("соседние улицы перекрыты одновременно", "көрші көшелер бір мезгілде жабылған"),
-             "same_segment_overlap": both("работы на одном участке в одни дни", "бір учаскедегі жұмыстар бір күндерде")}
+             "same_segment_overlap": both("работы на одном участке в одни дни", "бір көше бөлігіндегі жұмыстар бір күндерде")}
     first = rows[0] if rows else {}
     if first.get("advice_ru"):
         b.line(str(first["advice_ru"]), str(first.get("advice_kk") or first["advice_ru"]))

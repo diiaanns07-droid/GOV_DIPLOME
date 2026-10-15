@@ -51,7 +51,14 @@ async function typeAndPick(page, text) {
   await page.waitForSelector('.civic-explore-list [role="option"][data-kind="landmark"]', { timeout: 15000 });
   return page.evaluate(() => [...document.querySelectorAll('.civic-explore-list [role="option"]')].map((li) => ({ kind: li.dataset.kind, name: li.querySelector(".civic-explore-opt-name")?.textContent, place: li.querySelector(".civic-explore-opt-place")?.textContent })));
 }
-async function shot(page, name) { await mkdir(SHOTS, { recursive: true }); await page.screenshot({ path: path.join(SHOTS, name + ".png") }); }
+// Кадр — после того как оболочка R01 сама погасит плашку «Карта улиц не загрузилась» (только облако, гаснет через 6 с):
+// иначе она закрывает низ карточки и каталога. Ничего не прячем — ждём настоящий вид.
+async function shot(page, name) {
+  await page.waitForFunction(() => { const s = document.getElementById("map-status");
+    return !s || s.classList.contains("hidden") || s.dataset.faded === "1"; }, null, { timeout: 9000 }).catch(() => {});
+  await page.waitForTimeout(450);
+  await mkdir(SHOTS, { recursive: true }); await page.screenshot({ path: path.join(SHOTS, name + ".png") });
+}
 // Где на экране центр ориентира и где центр свободной части карты (как считает оболочка).
 const cameraState = (page, id) => page.evaluate((l) => {
   const p = map.project([l.lon, l.lat]);

@@ -33,6 +33,31 @@ CACHE_REPLIES_MAX = 16      # готовых ответов
 REPLY_TTL_S = 60.0
 
 
+_MISS = object()
+
+
+class MemoResolver:
+    """Резолвер целей с памятью на один ответ хроники: в каждом из 7–30 кадров те же цели, а разрешение ячейки
+    (сетка R07 / R09 по точке жалобы) и места стоит дороже самого расчёта кадра. Ключ — ровно то, что читает
+    TargetResolver.resolve: вид, id, флаг approximate, подписи из записи и точка. Остальное — как у обёрнутого."""
+
+    def __init__(self, inner):
+        self._inner = inner
+        self._memo: dict = {}
+
+    def resolve(self, target, point=None):
+        t = target or {}
+        key = (t.get("kind"), t.get("id"), bool(t.get("approximate")), t.get("label_ru"), t.get("label_kk"),
+               tuple(point) if isinstance(point, list) else point)
+        hit = self._memo.get(key, _MISS)
+        if hit is _MISS:
+            hit = self._memo[key] = self._inner.resolve(target, point)
+        return hit
+
+    def __getattr__(self, name):
+        return getattr(self._inner, name)
+
+
 class ReplayError(ValueError):
     def __init__(self, field: str, message: str):
         super().__init__(message)
@@ -340,6 +365,7 @@ class Replay:
                 if cr is not None:
                     rows.append((cr, last_event(r) or cr, r))
         filter_since = not svc.is_demo
+        resolver = MemoResolver(svc.resolver)   # цели одни и те же во всех кадрах — каждую разрешаем один раз
         for d in need:
             t = day_moment(d, now)
             lo = t - span
@@ -350,7 +376,8 @@ class Replay:
                 a = r if last <= t else as_of(r, t)
                 if a is not None:
                     recs.append(a)
-            computed = svc._compute(now=t, days=p["days"], category=p["category"], district=p["district"], bbox=None, records=recs)
+            computed = svc._compute(now=t, days=p["days"], category=p["category"], district=p["district"], bbox=None, records=recs,
+                                    resolver=resolver)
             items = computed["items"]
             dists = engine.districts_summary(items, svc.config, district=p["district"])
             out[d] = (t, items, dists)

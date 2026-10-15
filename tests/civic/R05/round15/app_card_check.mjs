@@ -55,7 +55,14 @@ const slider = (page) => page.evaluate(() => {
     tags: [...f.querySelectorAll(".b3d-ba__tag")].map((t) => [t.textContent, getComputedStyle(t).opacity]), imgs, night: f.classList.contains("b3d-ba--night"),
     before_bg: getComputedStyle(f.querySelector(".b3d-ba__before")).backgroundColor };
 });
-async function shot(page, name) { await mkdir(SHOTS, { recursive: true }); await page.screenshot({ path: path.join(SHOTS, name + ".png") }); }
+// Кадр — после того как оболочка R01 сама погасит плашку «Карта улиц не загрузилась» (только облако, гаснет через 6 с):
+// иначе она закрывает низ карточки и каталога. Ничего не прячем — ждём настоящий вид.
+async function shot(page, name) {
+  await page.waitForFunction(() => { const s = document.getElementById("map-status");
+    return !s || s.classList.contains("hidden") || s.dataset.faded === "1"; }, null, { timeout: 9000 }).catch(() => {});
+  await page.waitForTimeout(450);
+  await mkdir(SHOTS, { recursive: true }); await page.screenshot({ path: path.join(SHOTS, name + ".png") });
+}
 
 await check("card_slider_1366_ru", async () => {
   const { page } = await openCard({ width: 1366, height: 768 }, "ru", "playground");

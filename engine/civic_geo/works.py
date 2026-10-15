@@ -155,7 +155,7 @@ def gap_words(days: int) -> tuple[str, str]:
     months = days / 30.4
     if 1.25 <= months < 1.75:  # 45–53 дня: «полтора месяца», а не «1 месяц» (то же правило у экрана, gapWords)
         return "через полтора месяца", "бір жарым айдан кейін"
-    n = max(1, round(months))
+    n = max(1, int(months + 0.5))  # как Math.round у экрана (2,5 → 3), а не «к чётному» round()
     return f"через {n} {ru_plural(n, 'месяц', 'месяца', 'месяцев')}", f"{n} айдан кейін"
 
 
