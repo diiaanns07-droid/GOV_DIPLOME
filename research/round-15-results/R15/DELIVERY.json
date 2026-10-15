@@ -9,19 +9,20 @@
  "code_sha": "см. git log ветки: последний коммит R15 (код R15 — только tests/civic/R15/)",
  "tested_sha": {
   "package": "e91acb69",
-  "R17": "2388a11b",
-  "R13": "98485ce5",
-  "R03": "8820fc67",
+  "R17": "e7ade08f",
+  "R13": "eeacc26d",
+  "R03": "cae2e270",
   "R16": "fbd9e247",
   "R04": "f20775ab",
   "R02": "ac75f3a8 (claude/affectionate-shannon-jm6ws5)",
   "R07": "7ce9aee7",
   "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
-  "R09": "97342bdf",
+  "R09": "dfaee97e (только тест голоса)",
   "R01": "c9069723 (B0)",
   "R08": "5d9b4138 (claude/laughing-euler-iv3on3)",
-  "R06": "6f886297",
-  "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt"
+  "R06": "c2604ea2",
+  "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
+  "R11": "b3502428"
  },
  "push_status": "OK (круг 3)",
  "changed_paths": [
@@ -229,6 +230,13 @@
    "R07_7ce9aee7_replay": "12 passed",
    "R04_f20775ab_moderate": "45 passed + 5 xpassed (S48 PENDING)",
    "R06_6f886297_notify": "3 passed"
+  },
+  "round6_heads": {
+   "R03_cae2e270_assistant": "15 passed + 2 XPASS (S44 исправлен)",
+   "R03_cae2e270_own": "tests/civic/R03 289 passed, 10 skipped, 1 xfailed",
+   "R17_e7ade08f_agencies": "32 passed + 3 xfailed (S43 открыта)",
+   "R13_eeacc26d_meetings": "27 passed",
+   "R06_c2604ea2_notify_with_R13": "3 passed (наложение ui/civic_meetings + ui/civic_qa R13)"
   }
  },
  "findings": {
@@ -247,7 +255,7 @@
   "S44": {
    "owner": "R03",
    "level": "низкий",
-   "status": "open",
+   "status": "исправлено в ветке владельца: R03 cae2e270 (PENDING до сборки B1)",
    "patch": "patches/P-R03-S44.diff"
   },
   "S45": {
@@ -313,5 +321,5 @@
   "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
   "проверка в облаке без интернета; подложка карты — упрощённый фон"
  ],
- "next_step": "круг 6 (~21:30 Астаны): S51 у R16, S43 у R17, S44 у R03; новые [доп.] маршруты в B1; B1 16 окт 14:00 — полный прогон на сборке, PENDING (S42, S48, S49) -> FIXED"
+ "next_step": "круг 7 (~22:30 Астаны): S51 у R16, S43 у R17; новые поставки. B1 16 окт 14:00 — полный прогон на сборке, PENDING (S42, S44, S48, S49) -> FIXED"
 }
