@@ -116,6 +116,17 @@ function overlayScript() {
       sub.classList.toggle("top", top);
       badge.classList.toggle("low", top);
       badge.classList.toggle("off", top && busy(W - 440, H - 112, W - 20, H - 62));
+      // Верхнее место пометки занято интерфейсом (баннер кризиса R17 под шапкой) — опустить пометку под него.
+      if (!top) {
+        badge.style.top = "";
+        const r = badge.getBoundingClientRect();
+        let low = 0;
+        for (let x = r.left + 4; x <= r.right - 4; x += 40) for (const y of [r.top + 3, r.bottom - 3]) {
+          const hit = document.elementsFromPoint(x, y).find((n) => !mine(n));
+          if (!mapLike(hit)) low = Math.max(low, hit.getBoundingClientRect().bottom);
+        }
+        if (low > 0 && low < H / 2) badge.style.top = Math.round(low + 8) + "px";
+      }
     }, 250);
   };
   window.__r10v = {
@@ -538,10 +549,21 @@ async function recordLang(browser, lang) {
     if (plan[4].ok) {
       const s = scene("scene9-crisis");
       await setMode("akimat");
-      await go(`#agencies/crisis=${W15.incident}`, 2800);
+      // Адрес штаба: #agencies/crisis/<id> (R17 191f81e7+; внутри уже открытых «Ведомств» прежний вид crisis=<id>
+      // вкладку не переключает), прежний #agencies/crisis=<id>, публичная карточка #crisis/<id>. В кадр — только когда
+      // на экране название этого кризиса.
+      const title = W15.incTitle && (lang === "kk" ? W15.incTitle.kk : W15.incTitle.ru);
+      const shown = async () => !title || page.evaluate((tt) => (document.querySelector("#birge-screen:not([hidden])") || document.body).innerText.includes(tt), title).catch(() => false);
+      let opened = false;
+      const tries = [`#agencies/crisis/${W15.incident}`, `#agencies/crisis=${W15.incident}`, `#crisis/${W15.incident}`];
+      for (let i = 0; i < tries.length && !opened; i++) {
+        if (i) await toMap();   // повтор — с карты: экран смонтируется заново и прочтёт адрес
+        await go(tries[i], 2800);
+        opened = await shown();
+      }
       await say("crisis", 5200);
       await shot("9-crisis");
-      done(s);
+      done(s, opened, opened ? null : "штаб кризиса не открылся по адресам R17");
       await toMap();
     }
     if (plan[5].ok) {
@@ -565,8 +587,9 @@ async function recordLang(browser, lang) {
     try {
       const w = JSON.parse(fs.readFileSync(path.join(ROOT, "data/civic/astana/demo-world/world_v1.json"), "utf8"));
       const sc = w.scenes || {};
+      const inc = (w.incidents || []).find((x) => x.id === (sc.scene9 || {}).incident);
       return { yard: (sc.scene7 || {}).yard, initiative: (sc.scene7 || {}).initiative, complaint8: (sc.scene8 || {}).complaint,
-        incident: (sc.scene9 || {}).incident };
+        incident: (sc.scene9 || {}).incident, incTitle: inc ? { ru: inc.title_ru, kk: inc.title_kk } : null };
     } catch (e) { return {}; }
   }
 
