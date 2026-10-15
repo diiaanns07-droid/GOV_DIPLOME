@@ -114,6 +114,7 @@
       "build3d.ba.after": "Станет",
       "build3d.ba.label": "Было и станет: передвиньте шторку",
       "build3d.ba.value": "Слева было, справа станет: шторка {n} %",
+      "build3d.ba.toggle": "Было / станет",
       "build3d.time.label": "Время суток",
       "build3d.time.day": "День",
       "build3d.time.night": "Ночь",
@@ -180,6 +181,7 @@
       "build3d.ba.after": "Кейін",
       "build3d.ba.label": "Бұрын және кейін: шторканы жылжытыңыз",
       "build3d.ba.value": "Сол жақта бұрын, оң жақта кейін: шторка {n} %",
+      "build3d.ba.toggle": "Бұрын / кейін",
       "build3d.time.label": "Тәулік уақыты",
       "build3d.time.day": "Күндіз",
       "build3d.time.night": "Түнде",
@@ -922,6 +924,9 @@
         tint: PREVIEW_TINT[kind] || "#eef1ec",
         // Квадратная миниатюра для строки списка «Проекты и идеи» (эталон, .thumb 84×84).
         square: { src: base + "-sq.png", srcset: base + "-sq.png 1x, " + base + "-sq@2x.png 2x", width: 84, height: 84 },
+        // Раунд 15: «было» и «станет» для шторки (480 × 320, одна рамка кадра) — те же, что в карточке проекта.
+        before: { src: baSrc(kind, "before", false), width: 480, height: 320 },
+        after: { src: baSrc(kind, "after", false), width: 480, height: 320 },
       };
     }
     function cardPic(kind) {
@@ -1131,6 +1136,18 @@
       }
       if (info.firstChild) whereRow.appendChild(info);
       withView3d(whereRow);
+      // Телефон: картинка карточки R06 скрыта (над карточкой видна сама модель и кнопки карты — правило раунда 14),
+      // шторку «Было / станет» открывает эта кнопка (CSS показывает её только на телефоне); повторное нажатие — свернуть.
+      var baBtn = el("button", "bk-btn bk-btn--ghost b3d-ba-toggle", { type: "button", "aria-expanded": ba.phoneOpen ? "true" : "false", "data-action": "ba-toggle", text: t("build3d.ba.toggle") });
+      baBtn.addEventListener("click", function () {
+        ba.phoneOpen = !ba.phoneOpen;
+        dock.classList.toggle("b3d-dock--ba-open", ba.phoneOpen);
+        baBtn.setAttribute("aria-expanded", ba.phoneOpen ? "true" : "false");
+        fitDock(); // карточка стала выше или ниже — пересчитать её место над шторкой хозяина
+      });
+      dock.classList.toggle("b3d-dock--ba-open", ba.phoneOpen);
+      whereRow.classList.add("b3d-row3d");
+      whereRow.appendChild(baBtn);
       if (o.role === "akimat") {
         whereRow.classList.add("b3d-row3d");
         whereRow.appendChild(deleteBtn(p));
@@ -1191,7 +1208,7 @@
     // ещё «День / Ночь»: ночью тёмно-серые объёмы и тёплые конусы света (было — тёмная улица).
     // Ручка — 44 px, роль slider: ← → (Shift — шаг 20), Home / End; мышь и палец — перетаскивание по всей картинке.
     // Нет картинки «было» (сборка без новых превью) — обычное превью без шторки.
-    var ba = { pos: 50, night: false };
+    var ba = { pos: 50, night: false, phoneOpen: false };
     function baSrc(kind, which, night) {
       var base = o.dataUrl + "previews/";
       if (kind === "lighting") return base + "lighting-" + (night ? "night-" : "") + which + "@2x.png";
@@ -1244,6 +1261,8 @@
         fig.classList.toggle("b3d-ba--after-only", v <= 4);
       }
       set(ba.pos);
+      // Без вводной анимации шторки: движение интерфейса — 150–250 мс (VISUAL_BRIEF, правило 5), а намёк «двигается»
+      // дают ручка со стрелками ← → и подписи «Было» / «Станет».
       handle.addEventListener("keydown", function (e) {
         var step = e.shiftKey ? 20 : 5;
         var v = null;
@@ -3936,6 +3955,15 @@
       // картинкой (у PNG прозрачный фон). Без three.js — годится для лёгкого вида.
       previewOf: function (kind) {
         return Core.KINDS[kind] ? previewSrc(kind) : null;
+      },
+      // Раунд 15: шторка «Было / станет» для карточки хозяина (идея R06 с объектом из каталога и т. п.): готовый элемент
+      // figure.b3d-ba (стили — build3d.css), ручка 44 px, клавиши и перетаскивание. Нет картинки — обычное превью.
+      beforeAfter: function (kind) {
+        if (!Core.KINDS[kind]) return null;
+        return beforeAfter({ kind: kind }, function () {
+          var img = el("img", "", { src: previewSrc(kind).src, srcset: previewSrc(kind).srcset, alt: "", width: "240", height: "160", decoding: "async" });
+          return img;
+        });
       },
       flyToProposals: flyToProposals,
       setMode: setMode,
