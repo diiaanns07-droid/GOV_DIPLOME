@@ -34,6 +34,18 @@ def test_reason_chips_and_part_statuses_match_server():
         assert 'done: "reported_fixed"' in code and "verified" not in re.search(r"PART_ICON = \{[^}]+\}|todo: \"new\", in_progress: \"in_progress\", done: \"reported_fixed\"", code).group(0)
 
 
+
+def test_reason_labels_match_server_in_both_languages():
+    # Подписи причин (чипы и системные «Совместное исполнение», «Выбор службы в паспорте») = joint.py сервера: история
+    # передач показывает подпись кода на языке экрана, когда сервер хранит его русскую подпись (reasonText).
+    labels = {**joint.HANDOFF_REASONS, **joint.SYSTEM_REASONS}
+    both = strings()
+    for lang in ("ru", "kk"):
+        table = both[lang]
+        for code, names in labels.items():
+            assert table["handoff.reason." + code] == names[lang], (lang, code)
+    assert 'x.reason === ru' in STAFF_JS and '"handoff.reason." + code' in STAFF_JS
+
 def test_routes_used_by_screens():
     for action in ("handoff", "services", "part"):
         assert f'"/{action}"' in STAFF_JS

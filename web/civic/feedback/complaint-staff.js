@@ -506,6 +506,18 @@
                 t("common.action.cancel"))])]);
     }
 
+    // Причина передачи на языке экрана: сервер для чипа без своего текста хранит русскую подпись кода (одна для журналов
+    // R17) — тогда показываем подпись кода (handoff.reason.<code>); свой текст сотрудника — как написан.
+    function reasonText(x) {
+      var code = x.reason_code;
+      var ru = code ? ((window.BirgeComplaintStrings || {}).ru || {})["handoff.reason." + code] : null;
+      if (code && (!x.reason || x.reason === ru)) {
+        var label = t("handoff.reason." + code);
+        if (label) return label;
+      }
+      return x.reason;
+    }
+
     // Передачи — свёрнуты: когда, откуда → куда, причина и роль (не имя) сотрудника.
     function handoffHistory(j) {
       if (!j.handoffs || !j.handoffs.length) return null;
@@ -514,7 +526,7 @@
       more.appendChild(h("ol", { "class": "bc-joint__hlist" }, j.handoffs.slice().reverse().map(function (x) {
         return h("li", {}, [
           h("span", { "class": "bc-joint__hroute" }, t("joint.history.item", { from: serviceLabel(x.from, "—"), to: serviceLabel(x.to) })),
-          x.reason ? h("span", { "class": "bc-joint__hreason" }, " · «" + x.reason + "»") : null,
+          x.reason ? h("span", { "class": "bc-joint__hreason" }, " · «" + reasonText(x) + "»") : null,
           h("span", { "class": "bc-meta" }, " · " + C().formatDate(x.at) + (x.by_role ? " · " + t("joint.by." + x.by_role) : ""))]);
       })));
       return more;

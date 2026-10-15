@@ -40,7 +40,7 @@ const SAY = {
         handoff: "Передано: Дорожная служба", note: "Трубу заменили" },
   kk: { hint: "2 қызмет керек сияқты: Сумен жабдықтау қызметі және Жол қызметі", water: "Сумен жабдықтау қызметі",
         road: "Жол қызметі", done: "орындалды", work: "орындалуда", resident: "2 қызмет жұмыс істейді:",
-        waiting: "Алдымен өз бөлігін белгілейді", handoff: "Берілді: Жол қызметі", note: "Құбыр ауыстырылды" },
+        waiting: "Алдымен өз бөлігін белгілейді", handoff: "Жіберілді: Жол қызметі", note: "Құбыр ауыстырылды" },
 };
 const results = [];
 const check = (name, ok, detail) => { results.push({ name, ok: !!ok });
@@ -166,13 +166,15 @@ async function variant(browser, base, width, height, lang, staff) {
       await page.click('.bc-inbox__item--open .bc-joint__reasons [data-reason="not_our_zone"]');
       await shot(page, `joint-${tag}-5-handoff-form`);
       await page.click(".bc-inbox__item--open .bc-joint__handoff button[type=submit]");
-      const want = to === "road" ? say.handoff : (lang === "kk" ? "Берілді: Абаттандыру қызметі" : "Передано: Служба благоустройства");
+      const want = to === "road" ? say.handoff : (lang === "kk" ? "Жіберілді: Абаттандыру қызметі" : "Передано: Служба благоустройства");
+      // Причина-чип в истории — на языке экрана (сервер хранит русскую подпись кода для журналов R17).
+      const reason = lang === "kk" ? "Біздің жауапкершілік аймағы емес" : "Не наша зона ответственности";
       await page.waitForFunction((w) => { const n = document.querySelector(".bc-inbox__item--open .bc-staff__note");
         return n && n.textContent.includes(w); }, want, { timeout: 8000 }).catch(() => null);
       const note = clean(await page.textContent(".bc-inbox__item--open .bc-staff__note").catch(() => ""));
       const hist = clean(await page.textContent(".bc-inbox__item--open .bc-joint__history").catch(() => ""));
-      check(`${tag}: «Передать в другую службу» → «${want}…», в «Передачах» — причина и роль`, note.includes(want) &&
-            /→/.test(hist), { note, hist: hist.slice(0, 160) });
+      check(`${tag}: «Передать в другую службу» → «${want}…», в «Передачах» — причина «${reason}» и роль`, note.includes(want) &&
+            /→/.test(hist) && hist.includes(reason), { note, hist: hist.slice(0, 160) });
       await shot(page, `joint-${tag}-6-handoff-done`);
     } else {
       check(`${tag}: вторая строка для передачи найдена`, false);
