@@ -13,6 +13,7 @@
     create_from_idea(idea, starts_at=None)  — R06: POST ideas/{id}/to-initiative («Сделайте вместе — поддержим»)
     initiatives_summary(district=None)      — R08/R03: сколько дел, сколько соседей пришло (числа — код)
     pickups(district=None)                  — R17: вывоз мусора после дел, которые поддержал акимат (служба waste)
+    akim_initiatives / akim_yards(district) — R08: дела (публичные, «на проверке» — только числом) и дворы (числа)
     configure(problems=…, ideas=…, works=…) — R01/тесты: подменить источник блока «Мой двор»
     warm_up(db_path=None)                   — R01: при старте в фоне (как warm_up R12) — «Мой двор» без секунд ожидания
 
@@ -32,8 +33,8 @@ from .store import TogetherStore
 
 SCENE = _demo.SCENE
 
-__all__ = ["SCENE", "TogetherService", "TogetherStore", "configure", "create_from_idea", "default_service",
-           "initiatives_summary", "make_service", "pickups", "seed_world", "updates", "warm_up"]
+__all__ = ["SCENE", "TogetherService", "TogetherStore", "akim_initiatives", "akim_yards", "configure", "create_from_idea",
+           "default_service", "initiatives_summary", "make_service", "pickups", "seed_world", "updates", "warm_up"]
 
 
 def updates(device_id, since=None, db_path=None, limit: int = 50) -> list[dict]:
@@ -100,11 +101,43 @@ def initiatives_summary(district: str | None = None, db_path=None) -> dict:
             "done": len(done), "neighbors_done": sum(int((r.get("report") or {}).get("joined_final") or r.get("joined")
                                                          or 0) for r in done),
             "on_review": store.count(statuses=("on_review",), district=district),
-            "next": [{"id": r["id"], "title": r.get("title_public") or r["title"], "starts_at": r["starts_at"],
-                      "joined": int(r.get("joined") or 0), "district": r.get("district"),
-                      "target": {"kind": "area", "id": r["target_id"]} if r.get("target_id") else None,
-                      "demo": bool(r.get("demo"))} for r in upcoming[:3]],
+            "next": [_summary_row(service, r) for r in upcoming[:3]],
             "demo": bool(upcoming or done) and all(r.get("demo") for r in upcoming + done)}
+
+
+def _summary_row(service, row: dict) -> dict:
+    """Ближайшее дело сводки — то же публичное представление, что GET together/initiatives: вид, время конца, поддержка
+    акимата, место с подписью и настоящим видом цели (R08 «Поддержать» не ведёт к уже поддержанному делу без второго
+    запроса). Без устройств и авторов; поля прежней сводки (id, title, starts_at, joined, district, target, demo) — те же."""
+    view = service._public(row)
+    for key in ("my_join", "mine"):
+        view.pop(key, None)
+    return view
+
+
+def akim_initiatives(district: str | None = None, db_path=None) -> dict | None:
+    """Для «Картины дня» / «Картины недели» R08 (ui/civic_akim/neighbors.py FUNCS «initiatives»): опубликованные и сделанные
+    дела — в том же виде, что GET together/initiatives (публичные названия, без устройств и авторов); дела «на проверке» —
+    только id, вид, район и статус (текст ещё не проверен — его нет). Нет базы — None («пока нет данных» у R08)."""
+    service = default_service(db_path)
+    if service is None:
+        return None
+    store = service.store
+    items = [service._public(r) for r in store.list(statuses=("published", "done"), district=district, limit=200)]
+    items += [{"id": r["id"], "kind": r["kind"], "status": "on_review", "district": r.get("district"),
+               "demo": bool(r.get("demo"))} for r in store.list(statuses=("on_review",), district=district, limit=200)]
+    return {"items": items}
+
+
+def akim_yards(district: str | None = None, db_path=None) -> dict | None:
+    """Для R08 (FUNCS «yards»): дворы, где есть соседи или дела, — только числа (соседей в Birge, дел), без людей."""
+    service = default_service(db_path)
+    if service is None:
+        return None
+    return {"yards": [{"id": y["id"], "label_ru": y.get("label_ru"), "label_kk": y.get("label_kk"),
+                       "district": y.get("district"), "members": int(y.get("members") or 0),
+                       "initiatives": int(y.get("initiatives") or 0), "demo": bool(y.get("demo"))}
+                      for y in service.store.yards(district=district, limit=200)]}
 
 
 def pickups(district: str | None = None, db_path=None) -> list[dict]:

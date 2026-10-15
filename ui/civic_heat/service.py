@@ -7,6 +7,7 @@ invalidate() (его должен дёргать R09 после create / metoo /
 """
 from __future__ import annotations
 
+import logging
 import threading
 import time
 from datetime import datetime, timedelta, timezone
@@ -17,6 +18,9 @@ from .targets import TargetResolver
 
 CACHE_TTL_S = 60.0
 CACHE_MAX = 64
+# Общий расчёт мест (районы и места страницы, прогрев) живёт 5 минут: данные меняются только событиями R09 — их сбрасывает
+# invalidate(), а вес за 5 минут меняется на тысячные доли (полураспад 14 дней). Ответы /heat — по-прежнему по минуте.
+BASE_TTL_S = 300.0
 # Сколько дней назад могла быть подана жалоба, которую исправили только сейчас (раунд 15, сверка с демо-миром R02):
 # источник R09 отдаёт жалобы по дате подачи, и без запаса место, где давнюю жалобу исправили на днях, теряло зелёный
 # цвет «исправлено», а старая открытая жалоба со свежим «Я тоже» — свои свежие голоса.
@@ -53,6 +57,8 @@ class HeatService:
         self._demo_records = None
         self._lock = threading.Lock()
         self._cache: dict = {}
+        self._base: dict = {}        # общий расчёт мест для районов и мест (см. _base_compute)
+        self._inflight: dict = {}    # ключ → Event: этот расчёт уже идёт в другом потоке
         self._generation = 0
         self.last_compute_ms = 0.0
         self.db_path = str(db_path) if db_path else None
@@ -113,6 +119,7 @@ class HeatService:
         with self._lock:
             self._generation += 1
             self._cache.clear()
+            self._base.clear()
 
     # ---------- проверка параметров ----------
     def _params(self, *, bbox=None, days=None, category=None, district=None, zoom=None):
@@ -167,8 +174,8 @@ class HeatService:
             if hit and time.monotonic() - hit[0] < CACHE_TTL_S:
                 return hit[1]
         started = time.perf_counter()
-        computed = self._compute(now=now, days=days, category=category, district=district,
-                                 bbox=None if mode == "districts" else bbox)
+        computed = self._base_compute(now=now, days=days, category=category, district=district,
+                                      bbox=None if mode == "districts" else bbox)
         items = computed["items"]
         if mode == "districts":
             items = engine.districts_summary(items, self.config, district=district)
@@ -190,6 +197,46 @@ class HeatService:
                 self._cache.clear()
             self._cache[key] = (time.monotonic(), result)
         return result
+
+    def _base_compute(self, *, now, days, category, district, bbox) -> dict:
+        """Один расчёт мест на (данные, период, фильтры, 5 минут) для обоих видов /heat. Страница при загрузке спрашивает
+        районы (zoom 0) и места для списка (zoom 14) одновременно — раньше одно и то же считалось дважды и параллельно,
+        а под общей нагрузкой сервера (сотни запросов страницы, прогревы модулей) каждый ответ шёл 1,6–2 с (R10 B-124).
+        Второй одновременный запрос ждёт первый, а не считает рядом. Результат не меняют: районы строятся в новых объектах."""
+        key = (self._generation, days, category, district, bbox, int(now.timestamp() // BASE_TTL_S))
+        with self._lock:
+            hit = self._base.get(key)
+            if hit and time.monotonic() - hit[0] < BASE_TTL_S:
+                return hit[1]
+            flight = self._inflight.get(key)
+            owner = flight is None
+            if owner:
+                flight = self._inflight[key] = threading.Event()
+        if not owner:
+            flight.wait(timeout=60)
+            with self._lock:
+                hit = self._base.get(key)
+            if hit:
+                return hit[1]
+            # тот расчёт упал — считаем сами (ошибку покажет этот запрос)
+            return self._compute(now=now, days=days, category=category, district=district, bbox=bbox)
+        try:
+            computed = self._compute(now=now, days=days, category=category, district=district, bbox=bbox)
+            with self._lock:
+                if len(self._base) >= CACHE_MAX:
+                    self._base.clear()
+                self._base[key] = (time.monotonic(), computed)
+            return computed
+        finally:
+            with self._lock:
+                self._inflight.pop(key, None)
+            flight.set()
+
+    def warm_up(self) -> None:
+        """Прогрев после связки и засева мира: резолвер целей (OSM, R12) и карта за период по умолчанию — районы и места
+        одним расчётом, чтобы первая страница не считала их под нагрузкой загрузки (R10 B-124)."""
+        self.heat(days=DEFAULT_DAYS, zoom=0)
+        self.heat(days=DEFAULT_DAYS, zoom=DISTRICT_ZOOM_MAX + 2)
 
     def window(self, days: int) -> timedelta:
         """С какого момента (now − window) брать жалобы для расчёта за days дней: период + «исправлено» 7 дней + запас
@@ -291,6 +338,15 @@ def configure(source=None, **kwargs) -> HeatService:
 def invalidate() -> None:
     if _default is not None:
         _default.invalidate()
+
+
+def warm_up(*_args) -> None:
+    """Для R01 — тем же циклом, что прогрев R03 / R16 после связки и засева мира, в фоновом потоке (R10 B-124): резолвер
+    целей и первая карта за 30 дней посчитаны до первой страницы. Сбой — только в лог: карта посчитает при первом запросе."""
+    try:
+        default_service().warm_up()
+    except Exception:
+        logging.getLogger("civic_heat").exception("civic_heat: прогрев не удался — карта посчитает всё при первом запросе")
 
 
 def _feedback_source():

@@ -45,6 +45,10 @@ def test_how_we_count_uses_round14_backtest_numbers():
                               "history": RESULTS["meta"]["months"], "territories": RESULTS["meta"]["targets"]}
     assert f"{round(gbm['10'] * 100)} %" in method["text_ru"] and "осенью" in method["text_ru"]
     assert "прототип" in method["text_ru"] and "прототип" in method["text_kk"]
+    # почему 10 жалоб выше 19: порядок — по вероятности «≥ порога в следующем месяце», а не по числу сейчас
+    threshold = RESULTS["meta"]["threshold"]
+    assert f"будет {threshold} и больше, а не по их числу сейчас" in method["text_ru"]
+    assert f"келесі айда {threshold} және одан көп шағым болу ықтималдығымен" in method["text_kk"]
     winter = week_block(today=date(2027, 1, 10))["method"]
     assert winter["backtest"]["season"] == "зима" and "зимой" in winter["text_ru"] and "қыс" in winter["text_kk"]
 

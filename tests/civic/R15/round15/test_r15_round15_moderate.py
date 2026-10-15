@@ -57,6 +57,18 @@ S48_BYPASS = [
     ("８７０１１２３４５６７", "８７０１１２３４５６７"),
 ]
 RUDE = ["Сука, опять яма у подъезда", "cyka блин", "xуй", "бл@ть", "б л я т ь"]
+# R04 r04-moderate-2 (раунд 15, круг 10): перечень коротких чисел («маршруты 10 12 14 16») — не номер. Граница правила:
+# номер парами, четвёрками, с «+» и после подписи — по-прежнему номер.
+_PAIRS = lambda s: " ".join(s[i:i + 2] for i in range(0, len(s), 2))  # noqa: E731
+NUMBER_IN_GROUPS = [
+    ("звоните 87 01 12 34 56 7", "87 01 12 34 56 7"),
+    ("+7 70 11 23 45 67", "70 11 23 45 67"),
+    ("70 11 23 45 67 вечером", "70 11 23 45 67"),
+    ("вот " + _PAIRS(IIN), _PAIRS(IIN)),
+    ("переводите " + _PAIRS(CARD), _PAIRS(CARD)),
+    ("переводите " + " ".join(CARD[i:i + 4] for i in range(0, 16, 4)), " ".join(CARD[i:i + 4] for i in range(0, 16, 4))),
+    ("тел 8 70 71 72 73 74", "70 71 72 73 74"),
+]
 
 
 @pytest.mark.parametrize("text,secret", MUST_MASK, ids=[t for t, _s in MUST_MASK])
@@ -72,6 +84,16 @@ def test_personal_data_is_masked(moderate, text, secret):
 def test_label_glued_dotted_and_fullwidth_numbers(moderate, text, secret):
     """S48: «Тел.8701…», «ИИН-…» (подпись вплотную), «8.701.123.45.67», полноширинные цифры — тоже скрыты."""
     assert secret not in moderate(text)["text_public"]
+
+
+@pytest.mark.parametrize("text,secret", NUMBER_IN_GROUPS, ids=[t for t, _s in NUMBER_IN_GROUPS])
+def test_number_written_in_short_groups_is_still_masked(moderate, text, secret):
+    """T-R04-01/02: «перечень чисел» R04 (маршруты, подъезды) не прячет номер, записанный парами, четвёрками, с «+»
+    или после подписи. Единственный обход — номер, чьи цифры сами идут по возрастанию (≈ 0,01 % номеров, наблюдение
+    INTEGRATION R15 круг 10) — проверка человеком."""
+    result = moderate(text)
+    assert secret not in result["text_public"], result["text_public"]
+    assert result["flags"], result
 
 
 @pytest.mark.parametrize("text", RUDE)

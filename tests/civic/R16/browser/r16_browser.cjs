@@ -295,6 +295,25 @@ async function jpegBuffer(page, w, h) {
       check(`${tag} «Я приду» без связи: число вернулось, тост ошибки`, reverted.n === before && reverted.toast.length > 0, reverted);
       if (w === 1366 || phone) await shot(page, `${tag}_detail_offline_toast`);
       await page.unroute("**/api/civic/v2/together/initiatives/*/join");
+      // «На карте» в карточке дела: оболочка с setLayer (R01 раунда 15) — слой «Инициативы» и выделенная капсула дела
+      // (лист слева остаётся открытым); без setLayer (FINAL-4) — цель «двор» на карте.
+      await go(page, "#together/" + SCENE.initiative, '.tg-detail [data-focus="show-map"]');
+      await page.click('[data-focus="show-map"]');
+      const shown = await page.waitForFunction((id) => {
+        if (document.body.dataset.birgeLayer === "initiatives") return document.querySelector(`.tg-pin--focus[data-id="${id}"]`) ? "layer" : false;
+        return /#target=/.test(location.hash) ? "target" : false;
+      }, SCENE.initiative, { timeout: 15000 }).then((x) => x.jsonValue(), () => null);
+      check(`${tag} «На карте» в карточке дела: ${shown === "layer" ? "слой «Инициативы», капсула дела выделена" : "цель на карте"}`, !!shown, shown);
+      if (shown === "layer") {
+        // Перелёт к делу (программная отрисовка WebGL в облаке медленная — ждём, пока камера встанет).
+        const flown = await page.waitForFunction(() => typeof map !== "undefined" && map && !map.isMoving() && map.getZoom() >= 15, // eslint-disable-line no-undef
+          null, { timeout: 10000 }).then(() => true, () => false);
+        const cam = await page.evaluate(() => ({ zoom: typeof map !== "undefined" && map ? Math.round(map.getZoom() * 10) / 10 : null, // eslint-disable-line no-undef
+          moving: typeof map !== "undefined" && map ? map.isMoving() : null, section: window.BirgeShell && window.BirgeShell.section, // eslint-disable-line no-undef
+          sheet: !!document.querySelector("#birge-screen:not([hidden])") }));
+        check(`${tag} «На карте»: карта у дела (масштаб двора), лист остаётся`, flown && (phone || cam.sheet), cam);
+        if (w === 1366 || phone) await shot(page, `${tag}_detail_on_map`);
+      }
       // Сделано вместе: карточка с фото «после» (демо-иллюстрация)
       await go(page, "#together", ".tg-card");
       await page.click('[data-focus="when-done"]');   // чипы «Скоро · Сделано» (IA §5.2)

@@ -404,6 +404,10 @@ button.tg-staffrow__title:hover { text-decoration: underline; }
 .tg-pin:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 2px; }
 .tg-pin .ic { width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: var(--c-ink); color: #fff; }
 .tg-pin--done .ic { background: var(--ok-mark); }
+/* Капсула дела, которое показали кнопкой «На карте»: тёмная, поверх соседних (не цветом одним — и обводкой). */
+.tg-pin--focus { z-index: 3; background: var(--c-ink); color: #fff; border-color: var(--c-ink); box-shadow: var(--shadow-2); }
+.tg-pin--focus .tg-pin__date { color: rgba(255, 255, 255, 0.78); }
+.tg-pin--focus .ic { background: #fff; color: var(--c-ink); }
 
 /* ── узкий экран — по ширине самого экрана модуля: ≤ 900 — обзор двора в одну колонку; ≤ 600 — лист слева 412 px
    и телефон (колонка списка 720 px на ноутбуке — ещё широкая) ── */

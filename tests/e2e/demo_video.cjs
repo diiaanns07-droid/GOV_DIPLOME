@@ -2,7 +2,7 @@
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/demo_video.cjs --root <папка сборки> --out <папка>
 //        [--langs kk,ru] [--parts 1,2] [--world] [--basemap simplified|real] [--glass keep|off|auto]
-//        [--subtitles <json>] [--pace 0.5] [--fast] [--no-mp4] [--skip project|none]
+//        [--subtitles <json>] [--pace 0.5] [--fast] [--no-mp4] [--skip project|none] [--cursor-steps 10]
 //
 // Что получается в <out> (на каждый язык):
 //   birge-demo-<lang>.webm — запись Playwright (как есть);  birge-demo-<lang>.mp4 — H.264 для заявки (если есть ffmpeg);
@@ -30,9 +30,11 @@ const LANGS = String(args.langs || "kk,ru").split(",");
 const PARTS = String(args.parts || "1,2").split(",").map(Number);
 const [W, H] = String(args.size || "1366x768").split("x").map(Number);
 const FAST = !!args.fast;                       // паузы ×0,35 — пробный прогон, не для показа
-// Сцены, которые не снимаем: по умолчанию «project» (шаг 5, проект в 3D) — пока 3D не «белый макет» R05 (AMENDMENTS П1,
-// правило 3), и так ролик с частью 2 укладывается в 5 мин. Вернуть: --skip none.
-const SKIP = new Set(String(args.skip === undefined ? "project" : args.skip).split(",").filter((x) => x && x !== "none" && x !== "true"));
+const STEPS = Math.max(4, Math.min(30, Number(args["cursor-steps"] || 10)));  // шаги движения курсора к кнопке
+let stepsNow = STEPS;
+// Сцены, которые не снимаем (--skip project,…). С 15 окт шаг 5 (проект в 3D) снимается по умолчанию: R05 сдал «белый
+// макет» (AMENDMENTS П1, правило 3), а с курсором 10 / 6 шагов ролик с частью 2 — 4:49 ҚАЗ / 4:44 РУС (ветка R01 B0.9).
+const SKIP = new Set(String(args.skip === undefined ? "none" : args.skip).split(",").filter((x) => x && x !== "none" && x !== "true"));
 const BASEMAP = args.basemap === "real" ? "real" : "simplified";
 const GLASS = args.glass === "auto" ? null : String(args.glass || "keep");
 const SUBS = JSON.parse(fs.readFileSync(path.resolve(args.subtitles || path.join(__dirname, "fixtures/video_subtitles.json")), "utf8"));
@@ -187,7 +189,9 @@ async function recordLang(browser, lang) {
     await page.screenshot({ path: f, type: "jpeg", quality: SHOT_Q }).catch(() => null); shots.push(path.basename(f)); };
 
   // Плавный курсор: к центру элемента за ~0,5 с, затем нажатие.
-  const moveTo = async (x, y, steps = 18) => { await page.mouse.move(x, y, { steps: FAST ? 4 : steps }); };
+  // Шаги курсора: каждый шаг ждёт кадра страницы; на 3D-карте в облаке (программный WebGL) кадр ~0,4 с, и 18 шагов
+  // съедали секунды на каждое нажатие (шаг 5 — 64 с). 10 шагов — движение ещё видно; в 3D-сцене — 6.
+  const moveTo = async (x, y, steps = stepsNow) => { await page.mouse.move(x, y, { steps: FAST ? 4 : steps }); };
   const press = async (loc, after = 900) => {
     if (!loc) return false;
     await loc.scrollIntoViewIfNeeded({ timeout: 2000 }).catch(() => null);
@@ -364,7 +368,7 @@ async function recordLang(browser, lang) {
     let login = preLogin;
     const doProject = !SKIP.has("project");
     if (!doProject) skipped.push({ scene: "project", owner: "R05",
-      why: "шаг 5 (проект в 3D) не снимался: 3D ещё не «белый макет» (AMENDMENTS П1, правило 3); вернуть — --skip none" });
+      why: "шаг 5 (проект в 3D) не снимался: --skip project" });
     if (doProject) s = scene("project");
     if (doProject && !login && srv.staff && srv.staff.user) {
       if (await header(textRe(lang === "kk" ? "Қызметкерлерге" : "Для сотрудников"), 1600)) {
@@ -383,6 +387,7 @@ async function recordLang(browser, lang) {
       }
     }
     let placed = false;
+    if (doProject) stepsNow = Math.min(6, STEPS);  // 3D-сцена: кадры дорогие — короче движения курсора
     if (doProject && login) {
       await say("s5", 600);
       const catalogTitle = word("proposal.catalog.title", "Что построить?", "Не салайық?");
@@ -405,28 +410,55 @@ async function recordLang(browser, lang) {
       await flyTo(PLACE, 17, 1800);
       dbg("5: вид «Сквер»", await pressText(kindRe, 1200));
       const pt = await L.showPoint(page, PLACE, 17);
+      dbg("5: точка на карте", !!pt);
       if (pt) { const x = pt.onCanvas ? pt.x : pt.near ? pt.near.x : pt.x, y = pt.onCanvas ? pt.y : pt.near ? pt.near.y : pt.y;
         await moveTo(x, y); await pause(300); await page.mouse.click(x, y); await wait(1400); }
+      dbg("5: место выбрано");
       placed = await pressText(exact(word("proposal.place", "Поставить", "Орнату")), 3800);
+      dbg("5: «Поставить»", placed);
       await shot("5-placed");
       const view3d = new RegExp("^(3D|" + esc(word("common.map.view3d", "Объёмный вид", "Көлемді көрініс")) + ")$", "i");
       if (await pressText(view3d, 2400)) { await shot("5-3d"); await pressText(view3d, 800); }
+      dbg("5: 3D показан и выключен");
       // Житель голосует «За» по табличке проекта.
       await setMode("resident");
+      dbg("5: режим «Житель»");
       await say("s5b", 600);
       const p2 = await L.showPoint(page, PLACE, 17);
+      dbg("5: точка проекта у жителя", !!p2);
       const projRe = new RegExp("^" + esc(kindName) + ":.*2027", "i");
-      const labels = page.getByRole("button", { name: projRe });
-      let best = null, bestD = Infinity;
-      for (let i = 0; i < Math.min(await labels.count().catch(() => 0), 30); i++) {
-        const it = labels.nth(i); if (!(await it.isVisible().catch(() => false))) continue;
-        const b = await it.boundingBox().catch(() => null); if (!b || !p2) continue;
-        const d = Math.hypot(b.x + b.width / 2 - p2.x, b.y + b.height / 2 - p2.y); if (d < bestD) { best = it; bestD = d; }
+      // Табличка проекта ближе всего к месту — одним проходом в странице: цикл getByRole(name).nth(i) на большой странице
+      // пересчитывает имена всех кнопок на каждом шаге (в пробе шага 5 — десятки секунд).
+      const spot = p2 ? await page.evaluate(([src, px, py]) => {
+        const rx = new RegExp(src, "i");
+        let bestPt = null, bestDist = Infinity;
+        for (const el of document.querySelectorAll("button, [role=button]")) {
+          const name = (el.getAttribute("aria-label") || el.textContent || "").trim().replace(/\s+/g, " ");
+          if (!rx.test(name)) continue;
+          const b = el.getBoundingClientRect();
+          if (b.width < 2 || b.height < 2 || b.bottom < 0 || b.top > innerHeight) continue;
+          const d = Math.hypot(b.x + b.width / 2 - px, b.y + b.height / 2 - py);
+          if (d < bestDist) { bestPt = { x: b.x + b.width / 2, y: b.y + b.height / 2 }; bestDist = d; }
+        }
+        return bestPt;
+      }, [projRe.source, p2.x, p2.y]).catch(() => null) : null;
+      let best = null;
+      if (!spot) {  // запасной путь — по роли и имени, как раньше (медленно, но находит табличку без aria-label)
+        const labels = page.getByRole("button", { name: projRe });
+        let bestD = Infinity;
+        for (let i = 0; i < Math.min(await labels.count().catch(() => 0), 30); i++) {
+          const it = labels.nth(i); if (!(await it.isVisible().catch(() => false))) continue;
+          const b = await it.boundingBox().catch(() => null); if (!b || !p2) continue;
+          const d = Math.hypot(b.x + b.width / 2 - p2.x, b.y + b.height / 2 - p2.y); if (d < bestD) { best = it; bestD = d; }
+        }
       }
-      if (best) { await press(best, 1600);
+      dbg("5: табличка проекта найдена", spot ? "в странице" : !!best);
+      if (spot) { await moveTo(spot.x, spot.y); await pause(180); await page.mouse.click(spot.x, spot.y); await sleep(1600); }
+      if (spot || best) { if (best) await press(best, 1600);
         await pressText(new RegExp("^" + esc(word("proposal.vote_up", "За", "Жақтаймын")) + "(\\s|:|\\d|$)", "i"), 2200);
         await shot("5-vote"); await page.keyboard.press("Escape").catch(() => null); await pause(600); }
     }
+    stepsNow = STEPS;
     if (doProject) done(s, login && placed, !login ? "вход сотрудника не удался" : placed ? null : "проект не поставлен");
 
     // Шаги 6–7: служба → «Взять в работу» → «Отметить исправленным» → сообщение жителям; житель «Да, исправлено».

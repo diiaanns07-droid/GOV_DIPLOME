@@ -15,7 +15,7 @@ from urllib.parse import quote
 
 import pytest
 
-from ui.civic_together import create_from_idea, initiatives_summary, pickups, seed_world, updates
+from ui.civic_together import akim_initiatives, akim_yards, create_from_idea, initiatives_summary, pickups, seed_world, updates
 from ui.civic_together import neighbors
 from ui.civic_together.demo import SCENE, next_weekday, rows as demo_rows
 from ui.civic_together.service import make_service
@@ -444,6 +444,22 @@ def test_summary_numbers_are_counted_by_code(svc):
     assert s["joined_upcoming"] == 14 + 9 + 6 + 5 and s["neighbors_done"] == 11 + 15
 
 
+def test_summary_next_rows_are_the_public_view(svc):
+    """R08 «Картина дня» и R03 берут ближайшие дела из сводки: вид, конец, поддержка и подпись места — как в GET
+    together/initiatives/{id}, без устройств, авторов и полей «моё»."""
+    s = initiatives_summary("nura")
+    assert 0 < len(s["next"]) <= 3
+    for row in s["next"]:
+        card = call(svc, "GET", "/initiatives/" + row["id"])["body"]
+        card = card.get("initiative", card)
+        for key in ("id", "kind", "title", "status", "starts_at", "ends_at", "joined", "district", "target", "support",
+                    "demo"):
+            assert row[key] == card[key], key
+        assert row["status"] == "published" and row["target"]["label_ru"]
+        assert not {"my_join", "mine", "author_hash", "device", "hide_reason"} & set(row)
+    assert s["next"][0]["starts_at"] <= s["next"][-1]["starts_at"]
+
+
 # --------------------------------------------------------------------------- похожие, идея -> инициатива
 def test_similar_nearby_same_kind(svc):
     q = "similar=1&lon=71.3972&lat=51.1349&kind=cleanup&title=Субботник"
@@ -634,3 +650,37 @@ def test_r10_b124_warm_up_reads_scene_yard_first_and_writes_nothing(svc, monkeyp
     monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
     monkeypatch.setenv("CIVIC_TOGETHER_WARM", "0")
     assert service_module.start_warm_up(svc) is False
+
+
+def test_akim_functions_for_r08_public_items_review_only_counted(svc):
+    """R08 «Картина дня» (FUNCS initiatives / yards): публичные дела как в GET together/initiatives; «на проверке» — без
+    названия и текста; дворы — только числа, без людей и устройств."""
+    created = call(svc, "POST", "/initiatives", new_body(title="Тайное дело 8 701 123 45 67"), context=ctx(DEV_A))["body"]
+    data = akim_initiatives(db_path=svc.store.db_path)
+    statuses = {i["status"] for i in data["items"]}
+    assert {"published", "done", "on_review"} <= statuses
+    review = [i for i in data["items"] if i["status"] == "on_review"]
+    assert any(i["id"] == created["initiative"]["id"] for i in review)
+    assert all(set(i) <= {"id", "kind", "status", "district", "demo"} for i in review)
+    assert "701" not in dump(data) and not HEX64.search(dump(data))
+    yards = akim_yards(db_path=svc.store.db_path)["yards"]
+    assert yards[0]["id"] == SCENE["yard"] and yards[0]["members"] == 37
+    assert all(set(y) == {"id", "label_ru", "label_kk", "district", "members", "initiatives", "demo"} for y in yards)
+
+
+def test_r01_demo_times_round_hours_and_multi_day(tmp_path):
+    """Просьба R01 (R02/R16): время дел в демо — круглые часы, а не минуты от момента засева; дело на несколько дней
+    остаётся многодневным (экран показывает дату и у конца)."""
+    db = tmp_path / "h.sqlite3"
+    base = {"kind": "cleanup", "target": {"kind": "area", "id": "yard-1454082638"}, "point": [71.397, 51.1348],
+            "district": "nura", "status": "published", "joined": 3}
+    world = {"initiatives": [dict(base, id="i-h-1", title="Вечером уберём площадку",
+                                  starts_at={"in_hours": 19.0}, ends_at={"in_hours": 22.0}),
+                             dict(base, id="i-h-2", title="Неделя чистого двора",
+                                  starts_at={"ago_hours": 30.0}, ends_at={"in_hours": 30.0})]}
+    now = datetime(2026, 10, 15, 21, 14, tzinfo=ASTANA)
+    seed_world(db, world, now=now)
+    svc = make_service(db, demo=False)
+    one, two = svc.store.get("i-h-1"), svc.store.get("i-h-2")
+    assert (one["starts_at"], one["ends_at"]) == ("2026-10-16T16:00:00+05:00", "2026-10-16T19:00:00+05:00")
+    assert (two["starts_at"], two["ends_at"]) == ("2026-10-14T15:00:00+05:00", "2026-10-17T03:00:00+05:00")

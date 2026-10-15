@@ -2853,5 +2853,6 @@
  "week.kpi.work": "Орындалуда",
  "handoff.reason.joint": "Бірлескен орындау",
  "handoff.reason.passport": "Паспортта қызмет таңдалды",
- "akim.kpi.fixed_7d": "7 күнде түзетілді"
+ "akim.kpi.fixed_7d": "7 күнде түзетілді",
+ "agencies.detail.open_one": "Өтінішті ашу"
 }

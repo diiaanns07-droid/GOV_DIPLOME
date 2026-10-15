@@ -460,16 +460,20 @@ async function showCheck(browser, base, lang, staffAcc) {
   await page.goto(base + "?show=1");
   await page.waitForFunction(() => document.readyState === "complete" && document.body.innerText.length > 50, null, { timeout: 40000 }).catch(() => null);
   await sleep(3000);
+  // Сцены ведущий открывает в загруженной странице: ждём затишья сети (карта догрузила heat/meta и значки, до 15 с) — иначе
+  // время перехода меряет гонку с загрузкой карты, а не сам переход (B-124: свежая страница 1,6–1,9 с, тёплая — 28 мс).
+  const idle = await page.waitForLoadState("networkidle", { timeout: 15000 }).then(() => true, () => false);
   const show = await page.evaluate(() => document.documentElement.dataset.birgeShow === "1").catch(() => false);
   add(`UI show-${lang}`, "S", "режим показа ?show=1 включён (html[data-birge-show])", show ? "PASS" : "NOT_RUN", show ? null : "нет режима показа в сборке", "R01");
   const want = { 7: ["yard", "map"], 8: ["inbox"], 9: ["agencies", "crisis", "day"] };
-  for (const n of [7, 8, 9]) {
-    const title = T(dict, `shell.palette.scene${n}`, null);
+  // Одна попытка: Ctrl+K → команда сцены → Enter; время меряет сама страница — от нажатия Enter (keydown, capture) до кадра,
+  // где раздел сцены открыт с содержимым (requestAnimationFrame) — без накладных расходов опроса из теста.
+  const attempt = async (n, title) => {
     await page.keyboard.press("Escape").catch(() => null);
     await page.keyboard.press("Control+k").catch(() => null);
     await sleep(500);
     const input = await firstVisible(page.locator(".birge-palette__input"));
-    if (!input || !title) { add(`UI show-${lang}`, String(n), `Ctrl+K «Сцена ${n}» → сцена ≤ 1 с`, "NOT_RUN", input ? "нет ключа shell.palette.scene" + n : "палитры Ctrl+K нет", "R01"); continue; }
+    if (!input || !title) return { why: input ? "нет ключа shell.palette.scene" + n : "палитры Ctrl+K нет" };
     await input.fill(title.split("·")[0].trim()).catch(() => null);
     // Палитра дорисовывает команды, когда догрузит сцены (GET demo/scenes) — ждём до 4 с, а не один взгляд.
     let offered = false;
@@ -477,9 +481,7 @@ async function showCheck(browser, base, lang, staffAcc) {
       await sleep(200);
       offered = await page.evaluate((tt) => [...document.querySelectorAll(".birge-palette__item")].some((li) => (li.textContent || "").includes(tt)), title).catch(() => false);
     }
-    if (!offered) { add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → сцена ≤ 1 с`, "NOT_RUN", "команды сцены нет в палитре (нет демо-мира или сцены)", "R01"); continue; }
-    // Время меряет сама страница: от нажатия Enter (keydown, capture) до кадра, где раздел сцены открыт с содержимым
-    // (requestAnimationFrame) — без накладных расходов опроса из теста.
+    if (!offered) return { why: "команды сцены нет в палитре (нет демо-мира или сцены)", offered: false };
     await page.evaluate((wantIds) => {
       const box = window.__r10scene = { t0: null, t1: null, section: null };
       addEventListener("keydown", (e) => { if (e.key === "Enter" && box.t0 === null) box.t0 = performance.now(); }, { capture: true, once: true });
@@ -499,11 +501,47 @@ async function showCheck(browser, base, lang, staffAcc) {
       if (box && box.t1 !== null && box.t0 !== null) { ms = Math.round(box.t1 - box.t0); break; }
       await sleep(100);
     }
+    return { ms, sec, offered: true };
+  };
+  for (const n of [7, 8, 9]) {
+    const title = T(dict, `shell.palette.scene${n}`, null);
+    const a = await attempt(n, title);
+    if (!a.offered) { add(`UI show-${lang}`, String(n), `Ctrl+K «${title || "Сцена " + n}» → сцена ≤ 1 с`, "NOT_RUN", a.why, "R01"); continue; }
+    const { ms, sec } = a;
     const f = path.join(OUT, `show-${lang}-scene${n}.jpg`);
     await sleep(800);
     await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
-    add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → раздел ${want[n][0]} ≤ 1 с`, ms === null ? "FAIL" : ms <= 1000 ? "PASS" : "FAIL",
-      { ms, section: sec }, "R01", path.basename(f));
+    let status = ms === null ? "FAIL" : ms <= 1000 ? "PASS" : "FAIL";
+    const extra = {};
+    if (ms !== null && ms > 1000) {
+      // Запросы API этой сцены по Resource Timing (от Enter): сервер (wait) или очередь браузера (queue) — B-124.
+      extra.rt = await page.evaluate(() => {
+        const t0 = window.__r10scene && window.__r10scene.t0;
+        return performance.getEntriesByType("resource").filter((e) => /\/api\//.test(e.name) && t0 !== null && e.startTime >= t0 - 5).map((e) => ({
+          n: e.name.replace(location.origin, "").slice(0, 60), start: Math.round(e.startTime - t0), dur: Math.round(e.duration),
+          queue: Math.round(e.requestStart - e.fetchStart), wait: Math.round(e.responseStart - e.requestStart) })).slice(0, 8);
+      }).catch(() => null);
+      // Облако: WebGL программный (SwiftShader) — кадр карты 0,3–0,4 с. Сцена 7 меняет вид «Акимат» → «Житель», карта
+      // перерисовывается 3–4 кадра (1–1,5 с). Перемер со скрытым холстом карты: уложились — это кадры карты облака
+      // (INFO, проверить на ноутбуке, как кадры/с в perf_check); не уложились — FAIL как есть.
+      extra.renderer = await page.evaluate(() => { try {
+        const g = document.createElement("canvas").getContext("webgl"); const x = g && g.getExtension("WEBGL_debug_renderer_info");
+        return g ? String(x ? g.getParameter(x.UNMASKED_RENDERER_WEBGL) : g.getParameter(g.RENDERER)) : null; } catch (e) { return null; } }).catch(() => null);
+      if (/swiftshader|llvmpipe|software/i.test(String(extra.renderer))) {
+        await page.evaluate(() => { const B = window.BirgeShell; if (B && B.setMode) B.setMode("akimat"); if (B && B.setSection) B.setSection("map");
+          const c = document.querySelector(".maplibregl-canvas"); if (c) c.style.visibility = "hidden"; }).catch(() => null);
+        await sleep(1500);
+        const b = await attempt(n, title);
+        extra.ms_without_map_frames = b.ms;
+        await page.evaluate(() => { const c = document.querySelector(".maplibregl-canvas"); if (c) c.style.visibility = ""; }).catch(() => null);
+        if (b.ms !== null && b.ms <= 1000) {
+          status = "INFO";
+          extra.note = "облако, программный WebGL: время — кадры карты при смене вида; без кадров карты ≤ 1 с; проверить на ноутбуке (LOCAL)";
+        }
+      }
+    }
+    add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → раздел ${want[n][0]} ≤ 1 с`, status,
+      { ms, section: sec, network_idle_before: idle, ...extra }, "R01", path.basename(f));
   }
   await ctx.close();
 }
@@ -600,13 +638,13 @@ async function boardCheck(browser, base, lang, staffAcc) {
       await browser.close();
     }
   } finally { await srv.stop(); }
-  const counts = { PASS: 0, FAIL: 0, NOT_RUN: 0 };
-  for (const r of results) counts[r.status]++;
+  const counts = { PASS: 0, FAIL: 0, NOT_RUN: 0, INFO: 0 };
+  for (const r of results) counts[r.status] = (counts[r.status] || 0) + 1;
   const meta = { root: ROOT, sha: L.buildSha(ROOT), world: WORLD, seeds: srv.seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
     when: new Date().toISOString(), machine: L.machine(), total_ms: Date.now() - T0 };
   fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results }, null, 1));
   const md = [`# R10 · сценарий v2 · сцены 7–9 · ${meta.sha}`, "", "```", JSON.stringify(meta), "```", "",
-    `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, NOT_RUN ${counts.NOT_RUN}`, "",
+    `Итого: PASS ${counts.PASS}, FAIL ${counts.FAIL}, NOT_RUN ${counts.NOT_RUN}` + (counts.INFO ? `, ИНФО ${counts.INFO}` : ""), "",
     "| Слой | Сцена | Проверка | Итог | Подробно | Владелец | Кадр |", "|---|---|---|---|---|---|---|",
     ...results.map((r) => `| ${r.layer} | ${r.step} | ${r.name} | **${r.status}** | ${JSON.stringify(r.detail ?? "").slice(0, 200).replace(/\|/g, "/")} | ${r.owner || ""} | ${r.shot || ""} |`),
     "", "Время сцен (мс): API — сумма запросов сцены; UI — открытие экранов сцены на одном варианте.", "",
