@@ -1214,7 +1214,8 @@ class CivicV2Gateway:
                     store.target_lookup = geo.target_geometry
             except Exception:
                 LOGGER.exception("API v2: проверка цели жалобы по карте R12 не подключилась")
-        if store is not None and self.demo:
+        if store is not None and self.demo and not self.demo_world:
+            # Демо-мир (раунд 15): жалобы шага 2 («Хан Шатыр», те же id c-demo…) кладёт засев мира — seed_world().
             self._seed_demo_complaints(store)
         if store is not None:
             # R04 (INTEGRATION п. 4): «Я тоже» ищет в том же хранилище R09; модели грузятся в фоне.
@@ -1305,12 +1306,15 @@ class CivicV2Gateway:
     # функции), потом работы и идеи R06, дворы и инициативы R16, кризисы R17, встречи и вопросы R13, остальные.
     # Одна и та же функция в пакете и подмодуле зовётся один раз.
     DEMO_WORLD_SEEDERS = (
-        ("R09", "ui.civic_feedback.v2.integration"), ("R09", "ui.civic_feedback.v2"),
-        ("R06", "ui.civic_store.v2"),
-        ("R16", "ui.civic_together"),
-        ("R17", "ui.civic_agencies"),
-        ("R13", "ui.civic_meetings"), ("R13", "ui.civic_qa"),
-        ("R12", "engine.civic_geo"), ("R07", "ui.civic_heat"), ("R08", "ui.civic_akim"), ("R04", "ui.civic_ml_api"),
+        ("R09", ("ui.civic_feedback.v2.integration", "ui.civic_feedback.v2")),
+        ("R06", ("ui.civic_store.v2", "ui.civic_store")),
+        ("R16", ("ui.civic_together",)),
+        ("R17", ("ui.civic_agencies",)),
+        ("R13", ("ui.civic_meetings", "ui.civic_qa")),
+        ("R12", ("engine.civic_geo",)),
+        ("R07", ("ui.civic_heat.world", "ui.civic_heat")),
+        ("R08", ("ui.civic_akim",)),
+        ("R04", ("ui.civic_ml_api",)),
     )
     WORLD_FILE = ROOT / "data" / "civic" / "astana" / "demo-world" / "world_v1.json"
     ASTANA_TZ = timezone(timedelta(hours=5))
@@ -1342,6 +1346,11 @@ class CivicV2Gateway:
         report = {"now": now.isoformat(timespec="seconds"), "roles": {}, "scenes": {}, "error": None}
         try:
             world = world if world is not None else self.load_world()
+            # Мир материализуется ОДИН раз (R02 INTEGRATION §1): модули получают абсолютные ISO-времена от одного now;
+            # materialize идемпотентна — модуль, который зовёт её сам, ничего не испортит.
+            io = self._import_quiet("ml.datasets.demo_world_io")
+            if io is not None and callable(getattr(io, "materialize", None)):
+                world = io.materialize(world, now)
         except Exception as exc:
             LOGGER.exception("civic-world: файл демо-мира не прочитан")
             report["error"] = str(exc)[:200]
@@ -1350,32 +1359,55 @@ class CivicV2Gateway:
         report["scenes"] = world.get("scenes") if isinstance(world.get("scenes"), dict) else {}
         db_path = str(self.db_path) if self.db_path is not None else None
         seen = set()
-        for role, name in self.DEMO_WORLD_SEEDERS:
-            try:
-                module = self._import(name)
-            except Exception:
-                LOGGER.exception("civic-world: модуль %s (%s) не загрузился", name, role)
-                report["roles"].setdefault(role, {"error": "module_failed"})
-                continue
-            fn = getattr(module, "seed_world", None) if module is not None else None
-            if not callable(fn) or fn in seen:
-                continue
-            seen.add(fn)
-            try:
-                result = fn(db_path, world, now=now)
-            except Exception as exc:
-                LOGGER.exception("civic-world: seed_world %s (%s) упал", name, role)
-                report["roles"][role] = {"error": type(exc).__name__}
-                continue
-            got = report["roles"].setdefault(role, {"inserted": 0, "skipped": 0})
-            if "error" in got:
-                continue
-            for field in ("inserted", "skipped"):
-                value = (result or {}).get(field) if isinstance(result, dict) else None
-                if isinstance(value, int) and not isinstance(value, bool):
-                    got[field] += value
+        for role, names in self.DEMO_WORLD_SEEDERS:
+            calls = []
+            for name in names:
+                try:
+                    module = self._import(name)
+                except Exception:
+                    LOGGER.exception("civic-world: модуль %s (%s) не загрузился", name, role)
+                    report["roles"].setdefault(role, {"error": "module_failed"})
+                    continue
+                fn = getattr(module, "seed_world", None) if module is not None else None
+                if callable(fn) and fn not in seen:
+                    seen.add(fn)
+                    calls.append((name, lambda fn=fn: fn(db_path, world, now=now)))
+            if role == "R09" and not calls:
+                # У R09 ещё нет seed_world — жалобы мира кладёт помощник R02 в живое хранилище R09 (те же правила reset,
+                # что у seed_demo R09; R02 INTEGRATION §1–2). Появится seed_world у R09 — возьмётся он.
+                helper, live = self._import_quiet("ml.datasets.demo_world_seed"), self._r09_store()
+                if helper is not None and callable(getattr(helper, "seed_r09", None)) and live is not None:
+                    calls.append(("ml.datasets.demo_world_seed", lambda: helper.seed_r09(live, world, now)))
+            for name, call in calls:
+                try:
+                    result = call()
+                except Exception as exc:
+                    LOGGER.exception("civic-world: seed_world %s (%s) упал", name, role)
+                    report["roles"][role] = {"error": type(exc).__name__}
+                    continue
+                got = report["roles"].setdefault(role, {"inserted": 0, "skipped": 0})
+                if "error" in got:
+                    continue
+                for field in ("inserted", "skipped"):
+                    value = (result or {}).get(field) if isinstance(result, dict) else None
+                    if isinstance(value, int) and not isinstance(value, bool):
+                        got[field] += value
         self.world_report = report
         return report
+
+    def _import_quiet(self, name):
+        """Модуль или None (нет модуля или он не загрузился — без исключения; сбой — в журнал)."""
+        try:
+            return self._import(name)
+        except Exception:
+            LOGGER.exception("civic-world: модуль %s не загрузился", name)
+            return None
+
+    def _r09_store(self):
+        """Живое хранилище жалоб R09 (то же, что у карты и «Обращений») или None."""
+        fn, _reason, _module = self.resolve("complaints.list")
+        store = getattr(getattr(fn, "__self__", None), "store", None)
+        return getattr(store, "store", store)
 
     @staticmethod
     def world_line(report):

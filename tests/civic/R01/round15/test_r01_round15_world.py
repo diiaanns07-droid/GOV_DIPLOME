@@ -135,3 +135,46 @@ def test_world_map_takes_complaints_from_r09_only(tmp_path, monkeypatch):
     # FINAL-4: синтетика R07 (районы, «Нура · 81»); мир: только записи R09 (здесь — демо «Хан Шатыр» шага 2)
     assert sum(i.get("count", 0) for i in classic) > 20
     assert sum(i.get("count", 0) for i in world) <= 5, json.dumps(world, ensure_ascii=False)[:500]
+
+
+def test_world_is_materialized_once_with_the_r02_helper(tmp_path):
+    """R02 INTEGRATION §1: мир материализуется один раз (абсолютные времена от одного now) и уходит модулям."""
+    calls, made = [], []
+
+    def materialize(world, now):
+        made.append(now)
+        return dict(world, materialized=now.isoformat())
+
+    modules = {"ml.datasets.demo_world_io": types.SimpleNamespace(materialize=materialize),
+               "ui.civic_together": types.SimpleNamespace(seed_world=seeder(calls, "R16", {"inserted": 2, "skipped": 0})),
+               "ui.civic_agencies": types.SimpleNamespace(seed_world=seeder(calls, "R17", {"inserted": 3, "skipped": 0}))}
+    gateway = CivicV2Gateway(modules=modules, db_path=tmp_path / "c.sqlite3", demo=True, demo_world=True)
+    report = gateway.seed_world(now=NOW, world=WORLD)
+    assert made == [NOW]
+    assert [c[2]["materialized"] for c in calls] == [NOW.isoformat()] * 2
+    assert report["scenes"] == WORLD["scenes"]
+
+
+def test_r09_without_seed_world_gets_the_r02_helper_into_its_live_store(tmp_path):
+    """Пока у R09 нет seed_world, жалобы мира кладёт помощник R02 seed_r09 в то же хранилище R09, что у карты."""
+    seen = []
+    live = object()
+
+    class Service:
+        def __init__(self):
+            self.store = types.SimpleNamespace(store=live)
+
+        def handle(self, *args):
+            return {"status": 200, "headers": {}, "body": {"ok": True, "data": {}}}
+
+    def seed_r09(store, records, now):
+        seen.append((store, records, now))
+        return {"inserted": 743, "skipped": 0, "reset": 2}
+
+    modules = {"ui.civic_feedback.v2.integration": types.SimpleNamespace(make_service=lambda db: Service()),
+               "ml.datasets.demo_world_seed": types.SimpleNamespace(seed_r09=seed_r09)}
+    gateway = CivicV2Gateway(modules=modules, db_path=tmp_path / "c.sqlite3", demo=True, demo_world=True)
+    report = gateway.seed_world(now=NOW, world=WORLD)
+    assert seen == [(live, WORLD, NOW)]
+    assert report["roles"]["R09"] == {"inserted": 743, "skipped": 0}
+    assert CivicV2Gateway.world_line(report) == "civic-world: R09 743"
