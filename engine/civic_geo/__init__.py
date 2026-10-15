@@ -32,13 +32,18 @@ def target_geometry(target: dict) -> dict | None:
         return None
     objects, yards, cells = get_layers()
     if kind == "object" or tid.startswith("osm-node-") or tid.startswith("osm-way-") or tid.startswith("osm-relation-"):
-        f = objects.by_id.get(tid)
+        f = objects.find(tid)  # и выбывший узел старого снимка OSM: старые ссылки находятся (R10 B-103)
         if f is None:
             return None
         t = object_target(f)
         g = {"type": "Polygon", "coordinates": f.polygon} if f.polygon else {"type": "Point", "coordinates": geo.round_coord(f.point)}
-        return {"geometry": g, "point": geo.round_coord(f.point), "label_ru": t["label_ru"], "label_kk": t["label_kk"],
-                "object_kind": f.kind, "approximate": False}
+        out = {"geometry": g, "point": geo.round_coord(f.point), "label_ru": t["label_ru"], "label_kk": t["label_kk"],
+               "object_kind": f.kind, "approximate": False}
+        if f.raw.get("retired"):
+            out["retired"] = True
+            if f.raw.get("replaced_by"):
+                out["replaced_by"] = f.raw["replaced_by"]
+        return out
     if tid.startswith("yard-"):
         f = yards.by_id.get(tid)
         if f is None:
@@ -114,6 +119,10 @@ def target_info(target_id: str) -> dict:
         target["object_kind"] = got["object_kind"]
     out = {"target": target, "number": object_number(target_id), "point": got.get("point"),
            "geometry": got["geometry"], "approximate": bool(got.get("approximate"))}
+    if got.get("retired"):  # узла нет в свежем снимке OSM; replaced_by — свежий узел того же вида рядом (B-103)
+        out["retired"] = True
+        if got.get("replaced_by"):
+            out["replaced_by"] = got["replaced_by"]
     street = _info_street(kind, got)
     if street:
         out["street"] = street

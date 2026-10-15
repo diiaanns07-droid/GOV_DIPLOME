@@ -1,6 +1,6 @@
 {
  "schema": "r12-geo-source-v1",
- "built_at": "2026-10-12T03:57:19Z",
+ "built_at": "2026-10-15T12:59:21Z",
  "builder": "engine/civic_geo/build_geo_data.py",
  "raw_dir": "/home/user/GOV_DIPLOME/data/civic/astana/osm-objects/raw",
  "raw_dir_present": true,
@@ -9,6 +9,11 @@
    "path": "data/civic/astana/osm-objects/raw/bus_stops.json.gz",
    "sha256": "5548c998f798f65242787037a3ec6a4ead5d9e21f13a35d58bb4bbd6f21ed5a5",
    "bytes": 25227
+  },
+  {
+   "path": "data/civic/astana/osm-objects/raw/crossings.json.gz",
+   "sha256": "85a4479ba04581609f7d76dc96cc3ea8be964dc538f0fe7633b027346fc4f2ea",
+   "bytes": 55864
   },
   {
    "path": "data/civic/astana/osm-objects/raw/gardens.json.gz",
@@ -61,6 +66,11 @@
    "bytes": 3116
   },
   {
+   "path": "data/civic/astana/osm-objects/raw/traffic_signals.json.gz",
+   "sha256": "1602aff6ce0a76401ae27b8df460c911d7d3daa76574d67b27953cca9d1464b4",
+   "bytes": 13490
+  },
+  {
    "path": "data/civic/astana/osm-objects/raw/waste_disposal.json.gz",
    "sha256": "a3de1ec62d8cc6de377c8e05167b8882370a1e1356a1c1e6bd2bcb1dc997c133",
    "bytes": 4261
@@ -69,30 +79,39 @@
    "path": "data/civic/astana/osm-walking/overpass.json.gz",
    "sha256": "93cbef9d4bf041b9d2157cdbdd80d603de9e4117b992fbc61a64e84e42ad8a46",
    "bytes": 2974580,
-   "use": "узлы на линиях дорог: остановки, светофоры, переходы"
+   "use": "узлы на линиях дорог: остановки, светофоры, переходы (светофоры и переходы — только если их нет в raw/)"
   }
  ],
  "counts": {
   "bus_stop": 940,
-  "crossing": 3053,
-  "intersection": 2388,
+  "crossing": 3761,
+  "intersection": 2409,
   "park": 177,
   "pitch": 696,
   "playground": 334,
-  "traffic_signal": 767,
+  "traffic_signal": 870,
   "waste": 136,
   "yard": 537
  },
+ "retired": {
+  "counts": {
+   "crossing": 271,
+   "traffic_signal": 127
+  },
+  "replaced": 369,
+  "replaced_m": 30.0,
+  "rule": "светофор/переход из старого снимка пешеходной сети, которого нет в свежем raw/: не цель, id находится (R10 B-103)"
+ },
  "street_points": {
-  "intersections": 2388,
-  "intersections_on_signal_nodes": 234,
-  "off_street_dropped": 1
+  "intersections": 2409,
+  "intersections_on_signal_nodes": 213,
+  "off_street_dropped": 23
  },
  "intersection_rule": "узел графа: ≥ 3 рёбра проезжей части и ≥ 2 названия; узлы той же пары улиц ближе 60 м — один перекрёсток",
  "skipped": {
-  "outside_city": 175,
+  "outside_city": 244,
   "no_geometry": 13,
-  "duplicate": 697
+  "duplicate": 4078
  },
  "not_used_tags": {
   "street_lamp": 217,
