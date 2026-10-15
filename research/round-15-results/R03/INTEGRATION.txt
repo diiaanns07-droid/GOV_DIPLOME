@@ -131,7 +131,10 @@ day_summary (+ clarify — подсказки, если вопрос не про
 Действие map.focus — только цели тепловой карты (object | segment | area); экран вызывает opts.openTarget(kind, id, days)
 оболочки (→ #target=…). Действие open — раздел; кнопка видна, только если раздел есть в меню (navItems / moreItems).
 Имена разделов соседей, на которые ведёт «Открыть …» (если назовёте иначе — поправлю SECTION_ALIASES в analyst.js):
-  agencies → "agencies" | "services";  crisis → "crisis" | "agencies";  works-calendar → "works-calendar" | "works";
+  agencies → "agencies" | "services";  crisis → "crisis" | "agencies";
+  works-calendar → "agencies/calendar" (вкладка «Ведомств», IA R11 §7.3, openSection(id, path)) | "works-calendar" | "works";
+  кнопка «Открыть «Календарь работ»» сначала зовёт BirgeWorksCalendar.openConflict(id) R12 (откроет сам конфликт,
+  #works-calendar/<id> — как сцена 8 в DEMO_SCRIPT R01), нет функции — вкладка «Ведомств» (проверено в оболочке B0);
   together → "together" | "initiatives";  meetings → "meetings" | "questions";  day → "day";  inbox → "inbox".
 
 ====================================================================================================

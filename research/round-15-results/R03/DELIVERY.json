@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "2fa90bfe7a5aab567b0703567cf096d99e635482",
- "tested_sha": "2fa90bfe7a5aab567b0703567cf096d99e635482",
+ "code_sha": "084f1168b8def9072d4fe8e1db8b9ee5d9893e68",
+ "tested_sha": "084f1168b8def9072d4fe8e1db8b9ee5d9893e68",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -106,7 +106,7 @@
   },
   "browser_stand_checks": {
    "status": "PASS",
-   "passed": 124,
+   "passed": 126,
    "failed": 0,
    "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_screens.cjs --url http://127.0.0.1:8670",
    "env": "Chromium (Playwright), стенд analyst_devserver.py, 1366/1024/375 × ru/kk, проверки П1 и метрики аудита R10 (≤ 3 размеров шрифта на пустом экране, зоны нажатия ≥ 44 px, видимая надпись скелетона)"
@@ -291,7 +291,7 @@
   "applied": "пустое состояние и ошибки — значок R11 48 px + текст + одна кнопка; иллюстраций ill-* нет; декоративных картинок нет"
  },
  "review": {
-  "R11_round1": "применено: patches/R03_dictionary_terms.patch (R11) + R03-3, R03-4, R03-6 (по П1), R03-7; карточка — ui-kit .bk-answer (IA §5.6), «Спросить» — главная кнопка; R03-8 — после адреса #раздел/путь у R01",
+  "R11_round1": "применено: patches/R03_dictionary_terms.patch (R11) + R03-3, R03-4, R03-6 (по П1), R03-7; карточка — ui-kit .bk-answer (IA §5.6), «Спросить» — главная кнопка; R03-8 — после адреса #раздел/путь у R01; R03-8 сделано 084f1168: «Календарь работ» без функции R12 → вкладка «Ведомств» #agencies/calendar",
   "R15_S44": "исправлено cae2e270: любой флаг безопасности → модель не зовётся (offline_reason question_has_instructions)",
   "R10_B107": "исправлено 89359acf: warm_up() + patches/R01_warm_up.patch; скелетон с видимой надписью «Считаем по данным…»",
   "R10_B120": "исправлено 89359acf: чипы 44 px (видимая зона), кнопка «Спросить» 44 × 44 на 375; пустой экран — 3 размера шрифта",
