@@ -7,8 +7,8 @@
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "c40f14777937692cb203ff583353882bf16845fb",
- "tested_sha": "c40f14777937692cb203ff583353882bf16845fb",
+ "code_sha": "038fc932204d1bf8c0bfcdfb20e434daa5261856",
+ "tested_sha": "038fc932204d1bf8c0bfcdfb20e434daa5261856",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/SOURCE.json",
@@ -28,9 +28,13 @@
   "engine/civic_geo/works.py",
   "engine/civic_geo/works_calendar.py",
   "tests/civic/R12/fixtures/real_works_TEST.csv",
+  "tests/civic/R12/qr/app_qr_acceptance.mjs",
+  "tests/civic/R12/qr/qr.test.mjs",
+  "tests/civic/R12/qr/qr_stand.py",
   "tests/civic/R12/test_fresh_snapshot.py",
   "tests/civic/R12/test_works.py",
   "tests/civic/R12/works/works_calendar.test.cjs",
+  "web/civic/qr/print.js",
   "web/civic/works-calendar/works-calendar.css",
   "web/civic/works-calendar/works-calendar.js"
  ],
@@ -136,6 +140,18 @@
   "r03_analyst": {
    "status": "PASS",
    "note": "R03 (в R01 29b4ae9d) «Где копаем дважды?» → 5 конфликтов, 3 серьёзных, совет первого конфликта из conflicts_summary (стадия «асфальт уже уложен»)"
+  },
+  "qr_node": {
+   "status": "PASS",
+   "passed": 7,
+   "failed": 0,
+   "how": "node --test tests/civic/R12/qr/qr.test.mjs (стенд qr_stand.py, настоящий engine/civic_geo): паспорт, «Я тоже», ҚАЗ/375, лист печати; retired-номер печатается на свежую замену с пометкой"
+  },
+  "qr_app": {
+   "status": "PASS",
+   "passed": 35,
+   "failed": 0,
+   "how": "tests/civic/R12/qr/app_qr_acceptance.mjs на R01 B0.2 29b4ae9d + R06 c2604ea2 + R12, мир R02: скан → паспорт → «Я тоже» (R09) → мастер, ҚАЗ 375, подменённая ссылка, лист печати под CSP R01 с настоящим генератором LOCAL-11, ссылка «Распечатать QR» в карточке R07"
   }
  },
  "screens": {
