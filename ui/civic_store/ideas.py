@@ -59,6 +59,32 @@ _PERSONAL = (re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+", re.UNICODE), re.compile
 PERSONAL_HINT = "Не пишите телефон, e-mail или ИИН: идею увидят все жители."
 SUPPORTS_PER_MINUTE = 30
 SUPPORTS_PER_IDEA_PER_DAY = 20      # как VOTES_PER_TARGET_PER_DAY у проектов (R15 S08)
+# Раунд 15 (VISUAL_BRIEF §3): тема идеи — для линейной иллюстрации вместо серой лампочки и для ленты/двора R16.
+# Объект из каталога 3D — сам вид; без объекта — по словам названия и описания (ru и kk), иначе «другое».
+# Это только картинка: тема не меняет ни статус, ни решение акимата.
+TOPICS = ("square", "playground", "sports", "stop", "lighting", "benches", "greening", "other")
+_TOPIC_WORDS = (  # порядок важен: «спортплощадка» — спорт, а не детская площадка
+    ("stop", ("остановк", "павильон", "аялдама")),
+    ("lighting", ("освещ", "фонар", "темно", "жарық", "шам", "қараңғы")),
+    ("sports", ("спорт", "футбол", "баскетбол", "тренаж", "воркаут", "волейбол")),
+    ("playground", ("детск", "площадк", "качел", "балалар", "әткеншек")),
+    ("benches", ("скамейк", "лавочк", "беседк", "орындық", "отыратын")),
+    ("greening", ("дерев", "озелен", "газон", "клумб", "сажен", "ағаш", "көгал", "гүл")),
+    ("square", ("сквер", "парк", "аллея", "фонтан", "гүлзар", "саябақ", "субұрқақ")),
+)
+
+
+def topic_of(texts: dict, obj) -> str:
+    """Тема идеи: вид объекта 3D, иначе тема по словам названия, затем описания («Фонтан во дворе… детям» — сквер)."""
+    if isinstance(obj, dict) and obj.get("kind") in TOPICS:
+        return obj["kind"]
+    for prefix in ("title_", "description_"):
+        words = " ".join(str(v) for k, v in (texts or {}).items()
+                         if isinstance(v, str) and k.startswith(prefix)).casefold()
+        for topic, stems in _TOPIC_WORDS:
+            if any(stem in words for stem in stems):
+                return topic
+    return "other"
 
 
 class IdeaClosed(Conflict):
@@ -139,6 +165,7 @@ class IdeaRepository:
             "description_kk": texts.get("description_kk") or texts.get("description_" + lang) or "",
             "geometry": _loads(row["geometry_json"]), "district": row["district"],
             "object": _loads(row["object_json"]) if row["object_json"] else None,
+            "topic": topic_of(texts, _loads(row["object_json"]) if row["object_json"] else None),
             "votes": votes, "votes_up": votes,  # votes_up — имя поля у R05 (метка «Идея · 47»)
             "my_support": supported, "mine": mine, "voting_open": row["status"] == "voting",
             # Чек-лист реализуемости публичен после решения (IA_WAVE2 §8: «чек-лист после проверки»).
@@ -522,4 +549,4 @@ def _inside_city(geometry) -> bool:
 
 
 __all__ = ["ACTIONS", "CHECK_ANSWERS", "CHECK_KEYS", "DISTRICT_NAMES", "IdeaClosed", "IdeaRepository",
-           "PUBLIC_STATUSES", "STATUSES"]
+           "PUBLIC_STATUSES", "STATUSES", "TOPICS", "topic_of"]

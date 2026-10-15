@@ -166,10 +166,76 @@ async function worksPart(browser) {
   }
 }
 
+// ------------------------------------------------------------------------------------------------ проекты и идеи
+async function ideasPart(browser) {
+  const { srv, base } = await fresh();
+  try {
+    for (const [width, lang] of [[1366, "ru"], [1366, "kk"], [375, "ru"], [375, "kk"]]) {
+      const tag = `ideas-${width}-${lang}`;
+      // 1. Житель: идеи с иллюстрациями по виду, без серой лампочки.
+      const page = await newPage(browser, width, lang, "resident");
+      await page.goto(base + "/#ideas", { waitUntil: "domcontentloaded" });
+      await page.waitForSelector(".ri-pc[data-idea]", { timeout: 20000 });
+      await sleep(400);
+      const topics = await page.$$eval(".ri-pc[data-idea]", (els) => els.map((e) => e.getAttribute("data-topic")));
+      check(`${tag}: у каждой идеи есть вид (тема)`, topics.length >= 4 && topics.every(Boolean), topics.join(","));
+      check(`${tag}: «Беседка и скамейки» — иллюстрация «скамейки»`, topics.includes("benches"), topics.join(","));
+      const art = await page.$$eval(".ri-pc .ri-thumb", (els) => els.map((e) => ({ line: !!e.querySelector("svg.ri-art"), img: !!e.querySelector("img") })));
+      check(`${tag}: картинки — линейные иллюстрации или 3D-превью`, art.length && art.every((a) => a.line || a.img), JSON.stringify(art));
+      const greyBulb = await page.$$eval(".ri-pc .ri-thumb svg", (els) => els.some((e) => (e.innerHTML || "").includes("#7E8A85")));
+      check(`${tag}: серой лампочки больше нет`, !greyBulb);
+      check(`${tag}: житель может поддержать (капсула-кнопка)`, !!(await page.$("button.ri-vote")));
+      await shot(page, `${tag}-resident`);
+      check(`${tag}: житель — без ошибок JS`, !page.errs.length, page.errs.join(" | "));
+      await page.close();
+      // 2. Акимат без входа: те же идеи и проекты, только просмотр, тихая «Войти».
+      const pub = await newPage(browser, width, lang, "akimat");
+      await pub.goto(base + "/#projects", { waitUntil: "domcontentloaded" });
+      await pub.waitForSelector(".ri-pc[data-idea], .bk-empty, .bk-error", { timeout: 20000 });
+      await sleep(400);
+      const pubIdeas = await pub.$$eval(".ri-pc[data-idea]", (els) => els.length);
+      check(`${tag}: акимат без входа видит идеи (не «Войдите»)`, pubIdeas >= 4, pubIdeas);
+      check(`${tag}: без входа — нет голосования и решений`, !(await pub.$("button.ri-vote")) && !(await pub.$("[data-key=pd-check], [data-key=publish]")));
+      check(`${tag}: без входа — тихая «Войти» внизу`, !!(await pub.$(".ri-sheet-ft--public [data-key=login]")));
+      check(`${tag}: без входа — нет «Предложить идею»`, !(await pub.$("[data-key=new]")));
+      await pub.click("[data-key=tab-projects]");
+      await sleep(300);
+      const pubProjects = await pub.$$eval(".ri-pc[data-proposal]", (els) => els.length);
+      check(`${tag}: акимат без входа видит проекты`, pubProjects >= 5, pubProjects);
+      const au = await textAudit(pub, "#birge-screen");
+      check(`${tag}: без технических слов и прокрутки вбок`, !au.missing && !au.tech.length && !au.overflow, JSON.stringify({ tech: au.tech, overflow: au.overflow }));
+      await shot(pub, `${tag}-akimat-public`);
+      check(`${tag}: просмотр — без ошибок JS`, !pub.errs.length, pub.errs.join(" | "));
+      // 3. После входа — очередь проверки и решения, как в FINAL-4.
+      await login(pub);
+      // Два перехода по хешу подряд склеиваются (обработчик читает уже второй хеш) — ждём карту между ними.
+      await pub.goto(base + "/#map", { waitUntil: "domcontentloaded" });
+      await pub.waitForFunction(() => document.body.dataset.birgeSection === "map", null, { timeout: 10000 });
+      await pub.goto(base + "/#projects", { waitUntil: "domcontentloaded" });
+      const staffOk = await pub.waitForSelector(".ri-pc[data-idea]", { timeout: 20000 }).then(() => true, () => false);
+      if (!staffOk) {
+        await shot(pub, `${tag}-akimat-staff-timeout`);
+        const txt = await pub.evaluate(() => (document.querySelector("#birge-screen") || document.body).innerText.slice(0, 400));
+        check(`${tag}: после входа открылся список сотрудника`, false, txt);
+        await pub.close();
+        continue;
+      }
+      await sleep(400);
+      const review = await pub.$$eval(".ri-pc[data-idea-status=review]", (els) => els.length);
+      check(`${tag}: после входа видна идея «на проверке» (очередь сотрудника)`, review >= 1, review);
+      check(`${tag}: после входа нет подсказки «Войти»`, !(await pub.$(".ri-sheet-ft--public")));
+      await pub.close();
+    }
+  } finally {
+    srv.kill();
+  }
+}
+
 (async () => {
   const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
   try {
     if (!ONLY || ONLY.includes("works")) await worksPart(browser);
+    if (!ONLY || ONLY.includes("ideas")) await ideasPart(browser);
   } catch (e) {
     check("прогон без исключений", false, e.stack || e);
   } finally {

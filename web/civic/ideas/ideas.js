@@ -117,6 +117,9 @@
       "idea.field_required": "Заполните это поле",
       // Дизайн-марафон (12–14 окт): пустые вкладки, пояснения чек-листа, прогресс — I18N_DESIGN_R06.json для R11.
       "idea.empty.title": "Идей пока нет",
+      // Раунд 15, задача 1: просмотр без входа (вид «Акимат») — I18N_R15_R06.json для R11
+      "idea.public.staff_hint": "Проверять и публиковать идеи может сотрудник акимата после входа.",
+      "idea.public.vote_residents": "Голосуют жители — в виде «Житель». Решение принимает акимат.",
       "idea.empty.text": "Предложите первую — соседи смогут её поддержать.",
       "idea.empty.project": "Пока ни одна идея не стала проектом",
       "idea.empty.rejected": "Отклонённых идей нет",
@@ -176,6 +179,8 @@
       "idea.project_link": "Жоба: {title}",
       "idea.field_required": "Бұл өрісті толтырыңыз",
       "idea.empty.title": "Әзірге идея жоқ",
+      "idea.public.staff_hint": "Идеяларды әкімдік қызметкері кіргеннен кейін тексеріп, жариялай алады.",
+      "idea.public.vote_residents": "Тұрғындар дауыс береді — «Тұрғын» көрінісінде. Шешімді әкімдік қабылдайды.",
       "idea.empty.text": "Біріншісін ұсыныңыз — көршілеріңіз қолдай алады.",
       "idea.empty.project": "Әзірге бірде-бір идея жобаға айналмады",
       "idea.empty.rejected": "Қабылданбаған идея жоқ",
@@ -477,37 +482,52 @@
     setTimeout(function () { cancel.focus(); }, 0);
   }
 
-  // ── эталон (13 окт): картинки карточек — плоские иллюстрации вида объекта (как в REFERENCE.html, вариант A) ──
-  // Статичная разметка без данных пользователя. Плитка 84 × 84 и картинка карточки 340 × 150 (та же сцена крупнее).
+  // ── раунд 15 (VISUAL_BRIEF §3): линейные иллюстрации по виду вместо серой лампочки ──
+  // Восемь сцен одного набора: одна краска линии, одна толщина (2,25 px, не масштабируется — ideas.css .ri-art),
+  // светлая плитка по виду и одно мягкое пятно цвета. Вид — объект из каталога 3D или тема идеи (сервер: topic по
+  // словам названия), иначе «идея жителей» — булавка с сердцем. Статичная разметка, данных пользователя в ней нет.
+  // R11 может заменить их символами ui-kit (#ill-obj-<вид>) — достаточно поменять ART ниже.
   var ART = {
-    square: { bg: "#EAF4E0", g: '<g fill="#7FC08D"><circle cx="28" cy="40" r="11"/><circle cx="54" cy="36" r="13"/><circle cx="44" cy="58" r="10"/></g><path d="M8 66h68" stroke="#F4EFE3" stroke-width="6" stroke-linecap="round"/>' },
-    stop: { bg: "#E8F0F6", g: '<rect x="18" y="30" width="48" height="30" rx="4" fill="#fff" stroke="#9FB7C7" stroke-width="2"/><path d="M18 30 42 16 66 30" fill="none" stroke="#9FB7C7" stroke-width="2"/><rect x="26" y="44" width="10" height="16" fill="#F4C76A"/>' },
-    playground: { bg: "#FDF3E3", g: '<path d="M20 62 42 24 64 62" fill="none" stroke="#E0A64B" stroke-width="4" stroke-linejoin="round"/><circle cx="42" cy="22" r="5" fill="#E24B4A"/><path d="M14 64h56" stroke="#D9CBB0" stroke-width="4" stroke-linecap="round"/>' },
-    sports: { bg: "#E9F1E4", g: '<rect x="14" y="24" width="56" height="38" rx="4" fill="#CFE5C2" stroke="#fff" stroke-width="2"/><path d="M42 24v38" stroke="#fff" stroke-width="2"/><circle cx="42" cy="43" r="7" fill="none" stroke="#fff" stroke-width="2"/><circle cx="58" cy="52" r="4" fill="#E24B4A"/>' },
-    lighting: { bg: "#FDF6E0", g: '<circle cx="42" cy="26" r="14" fill="#FCE7A8" opacity=".8"/><path d="M42 70V28M42 28h-9" stroke="#9AA3A0" stroke-width="4" stroke-linecap="round"/><circle cx="33" cy="30" r="5" fill="#F4C76A"/><path d="M22 70h40" stroke="#D9CBB0" stroke-width="4" stroke-linecap="round"/>' },
-    none: { bg: "#EEF0EE", g: '<path d="M36 52h12M38 58h8M42 22a12 12 0 0 0-7 21.8V48h14v-4.2A12 12 0 0 0 42 22Z" fill="none" stroke="#7E8A85" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>' },
+    square: { bg: "#EAF4E0", fill: "#CFE6C4", a: '<circle cx="56" cy="32" r="12"/>',
+      g: '<path d="M10 66h64"/><circle cx="30" cy="38" r="10"/><path d="M30 48v18"/><circle cx="56" cy="32" r="12"/><path d="M56 44v22"/><path d="M37 56h12M37 60h12M39 60v6M47 60v6"/>' },
+    playground: { bg: "#FDF1DD", fill: "#F9DFB0", a: '<circle cx="22" cy="24" r="7"/>',
+      g: '<path d="M10 68h64"/><circle cx="22" cy="24" r="7"/><path d="M52 68V34M62 68V34M52 42h10M52 50h10M52 58h10M47 34h20"/><path d="M47 34c-7 4-11 20-27 34"/>' },
+    sports: { bg: "#E7F1E3", fill: "#CDE3C3", a: '<rect x="12" y="30" width="60" height="34" rx="4"/>',
+      g: '<rect x="12" y="30" width="60" height="34" rx="4"/><path d="M42 30v34"/><circle cx="42" cy="47" r="7"/><path d="M12 41h7v12h-7M72 41h-7v12h7"/><circle cx="64" cy="18" r="6"/><path d="M58 18h12M64 12c2.4 4 2.4 8 0 12"/>' },
+    stop: { bg: "#E6EEF5", fill: "#CBDDEB", a: '<rect x="22" y="34" width="28" height="18" rx="2"/>',
+      g: '<path d="M8 68h68"/><path d="M14 30h44l-4-6H18Z"/><path d="M18 30v38M54 30v38"/><rect x="22" y="34" width="28" height="18" rx="2"/><path d="M26 60h20"/><path d="M68 68V30"/><circle cx="68" cy="24" r="6"/>' },
+    lighting: { bg: "#FDF5DC", fill: "#FBE7A1", a: '<path d="M52 21 44 62h26L62 21Z"/>',
+      g: '<path d="M22 68h52"/><path d="M36 68V22c0-5 3-8 8-8h8"/><path d="M50 14h14l-2 6H52Z"/><ellipse cx="57" cy="63" rx="13" ry="3"/>' },
+    benches: { bg: "#F4EEE5", fill: "#E6D8C2", a: '<rect x="18" y="33" width="48" height="12" rx="2"/>',
+      g: '<path d="M8 66h68"/><path d="M18 36h48M18 42h48M22 36v14M62 36v14"/><path d="M14 50h56M20 50v16M64 50v16"/>' },
+    greening: { bg: "#E5F3E8", fill: "#BFE3C9", a: '<path d="M42 50c-10 0-16-6-16-14 10 0 16 6 16 14ZM42 42c0-10 6-16 16-16 0 10-6 16-16 16Z"/>',
+      g: '<path d="M10 68h64"/><path d="M24 68c6-8 30-8 36 0"/><path d="M42 64V36"/><path d="M42 50c-10 0-16-6-16-14 10 0 16 6 16 14ZM42 42c0-10 6-16 16-16 0 10-6 16-16 16Z"/>' },
+    other: { bg: "#EDF1EF", fill: "#D5E2DC", a: '<path d="M42 70s-18-17-18-31a18 18 0 0 1 36 0c0 14-18 31-18 31Z"/>',
+      g: '<path d="M42 70s-18-17-18-31a18 18 0 0 1 36 0c0 14-18 31-18 31Z"/><path d="M42 46s-8-5-8-10.5a4.5 4.5 0 0 1 8-2.8 4.5 4.5 0 0 1 8 2.8C50 41 42 46 42 46Z"/><path d="M30 76h24"/>' },
   };
-  // Крупная картинка «Сквера» — как в эталоне (ромб участка с деревьями), остальные — сцена плитки крупнее.
-  var ART_WIDE_SQUARE = '<rect width="340" height="150" fill="#E7F2DD"/><path d="M170 40 300 95 170 140 40 95Z" fill="#D2EAB9"/><g fill="#7FC08D"><circle cx="120" cy="88" r="16"/><circle cx="200" cy="80" r="18"/><circle cx="160" cy="108" r="14"/><circle cx="235" cy="104" r="13"/></g><path d="M80 96h180" stroke="#F4EFE3" stroke-width="7" stroke-linecap="round"/>';
+  ART.none = ART.other;
+  var ART_INK = "#22302B";
   function artSvg(kind, wide) {
-    var a = ART[kind] || ART.none;
+    var a = ART[kind] || ART.other;
+    var scene = '<g fill="' + a.fill + '" stroke="none">' + a.a + '</g><g fill="none" stroke="' + ART_INK + '" stroke-width="' + (wide ? 3 : 2.25) +
+      '" stroke-linecap="round" stroke-linejoin="round">' + a.g + "</g>";
     if (wide) {
-      var inner = kind === "square" ? ART_WIDE_SQUARE
-        : '<rect width="340" height="150" fill="' + a.bg + '"/><g transform="translate(105 6) scale(1.65)">' + a.g + "</g>";
-      return '<svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' + inner + "</svg>";
+      return '<svg class="ri-art" viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect width="340" height="150" fill="' + a.bg +
+        '"/><g transform="translate(105 6) scale(1.65)">' + scene + "</g></svg>";
     }
-    return '<svg viewBox="0 0 84 84" aria-hidden="true" focusable="false"><rect width="84" height="84" fill="' + a.bg + '"/>' + a.g + "</svg>";
+    return '<svg class="ri-art" viewBox="0 0 84 84" aria-hidden="true" focusable="false"><rect width="84" height="84" fill="' + a.bg + '"/>' + scene + "</svg>";
   }
   // Сердце «Поддержать» — как в эталоне (одна толщина линии с иконками ui-kit); заполненное — поддержано.
   var HEART = '<svg class="ri-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>';
   // Картинка объекта: 3D-превью модели R05 (handle.previewOf(kind): square 84 для строки, 240×160 для карточки — тот же
-  // свет и угол, что на карте) на светлой подложке вида; без R05 или без файла — плоский рисунок эталона (artSvg).
-  function preview(kind, wide) {
+  // свет и угол, что на карте) на светлой подложке вида — когда у идеи/проекта есть объект каталога 3D; иначе (и без
+  // R05) — линейная иллюстрация по виду или теме (artSvg). topic — тема идеи без объекта (скамейки, озеленение…).
+  function preview(kind, wide, topic) {
     var b = kind && build3d && build3d();
     var pv = b && typeof b.previewOf === "function" ? b.previewOf(kind) : null;
     var pic = pv && (wide ? pv : pv.square);
     var cls = wide ? "bk-pd__im ri-pd__im" : "bk-thumb ri-thumb";
-    if (!pic || !pic.src) return svgEl(artSvg(kind || "none", wide), cls);
+    if (!pic || !pic.src) return svgEl(artSvg(kind || topic || "other", wide), cls);
     var box = doc.createElement("span");
     box.className = cls + " ri-pic3d";
     box.setAttribute("aria-hidden", "true");
@@ -520,7 +540,7 @@
     img.height = pic.height || (wide ? 160 : 84);
     img.draggable = false;
     img.addEventListener("error", function () {
-      if (box.parentNode) box.parentNode.replaceChild(svgEl(artSvg(kind || "none", wide), cls), box);
+      if (box.parentNode) box.parentNode.replaceChild(svgEl(artSvg(kind || topic || "other", wide), cls), box);
     });
     box.appendChild(img);
     return box;
@@ -536,7 +556,10 @@
   // ===================================================================================== экран
   function mount(rootEl, options) {
     var opts = Object.assign({ titleTag: "h2" }, options || {});
+    // akimat — интерфейс сотрудника (очередь проверки, решения). Раунд 15, задача 1: без входа акимат видит те же
+    // проекты и идеи, что житель, — только просмотр (readOnly: без голосов и решений), и тихую кнопку «Войти».
     var akimat = opts.section === "projects" || opts.role === "akimat";
+    var readOnly = false;
     var request = makeRequest(opts);
     var state = {
       tab: "ideas", sel: null, selClosed: false, mode: null, more: false,
@@ -572,9 +595,19 @@
         render();
       }, function (err) {
         if (!alive) return;
+        if (akimat && (err.status === 401 || err.status === 403)) {
+          akimat = false;   // сессии нет — открытый список жителя, только просмотр
+          readOnly = true;
+          load();
+          return;
+        }
         state.error = err;
         render();
       });
+    }
+    function staffLogin() {
+      if (root.BirgeShell) root.BirgeShell.setSection("map");
+      if (root.CivicShell && root.CivicShell.openEditor) root.CivicShell.openEditor();
     }
     // Нажатие на метку идеи на карте (или «Идея отправлена» → список): идея выбрана, её карточка открыта.
     function focusIdea(id) {
@@ -726,7 +759,7 @@
         list.forEach(function (p) { body.appendChild(projectCard(p, sel)); });
       } else {
         var open = akimat ? list.filter(function (x) { return !isDecided(x); }) : list;
-        if (!list.length) emptyBox(body, tr(akimat ? "idea.empty.review" : "idea.empty.title"), akimat ? null : tr("idea.empty.text"), null, akimat ? "done" : "idea");
+        if (!list.length) emptyBox(body, tr(akimat ? "idea.empty.review" : "idea.empty.title"), akimat || readOnly ? null : tr("idea.empty.text"), null, akimat ? "done" : "idea");
         else if (!open.length) emptyBox(body, tr("idea.empty.review"), null, ["check"], "done");
         open.forEach(function (x) { body.appendChild(ideaCard(x, sel)); });
         var decided = akimat ? list.filter(isDecided) : [];
@@ -750,10 +783,15 @@
       if (!sideCard()) body.insertBefore(h("p", { class: "bk-footnote ri-honest-note", text: tr("idea.honest") }), body.firstChild);
       if (demo) body.appendChild(h("p", { class: "bk-footnote ri-demo-note", text: tr("common.tag.demo_hint") }));
       rootEl.appendChild(body);
-      if (!akimat) {
+      if (!akimat && !readOnly) {
         rootEl.appendChild(h("div", { class: "ri-sheet-ft" }, [
           h("button", { type: "button", class: "bk-btn ri-newbtn", "data-key": "new", onclick: startWizard }, [
             h("span", { class: "ri-newbtn__ic", "aria-hidden": "true" }, [icon("plus")]), h("span", { text: tr("idea.new") })])]));
+      } else if (readOnly) {
+        // Просмотр без входа: подсказка одной строкой и тихая «Войти» (главного действия здесь нет — это витрина).
+        rootEl.appendChild(h("div", { class: "ri-sheet-ft ri-sheet-ft--public" }, [
+          h("p", { class: "bk-footnote ri-public-note", text: tr("idea.public.staff_hint") }),
+          button("bk-btn--ghost ri-loginbtn", tr("staff.login.submit"), "user", { "data-key": "login", onclick: staffLogin })]));
       }
       placeDetail(sel);
       // Выбор сменился (нажатие, ↑↓, первая карточка после загрузки или смены вкладки) — карта плавно ведёт к объекту.
@@ -784,10 +822,10 @@
       return h("button", { type: "button", class: "bk-vote ri-vote" + (opts2.pop ? " ri-pop" : ""), "aria-pressed": String(!!opts2.pressed), "aria-label": opts2.label,
         title: opts2.label, "data-key": opts2.key, onclick: opts2.onclick }, kids);
     }
-    function rowCard(id, attrs, kind, titleText, titleLang, sub, pillEl, capsule, sel) {
+    function rowCard(id, attrs, kind, titleText, titleLang, sub, pillEl, capsule, sel, topic) {
       var on = !!(sel && sel.id === id);
       var card = h("article", Object.assign({ class: "bk-pc ri-pc", "aria-current": on ? "true" : null, "aria-labelledby": "ri-t-" + id }, attrs), [
-        preview(kind, false),
+        preview(kind, false, topic),
         h("div", { class: "bk-pc__body ri-pc__t" }, [
           h("h3", { class: "bk-pc__title ri-pc__title", id: "ri-t-" + id, lang: titleLang }, [
             h("button", { type: "button", class: "ri-pc__open", "data-key": "sel-" + id, "aria-expanded": String(on), onclick: function () { select(id); } }, [titleText])]),
@@ -802,15 +840,16 @@
       var kind = item.object && item.object.kind;
       var capsule = null;
       var bump = state.bump && state.bump.id === item.id ? state.bump.dir : 0;
-      if (!akimat && item.status === "voting") {
+      if (!akimat && !readOnly && item.status === "voting") {
         capsule = voteCapsule(item.votes || 0, { pressed: item.my_support, label: tr(item.my_support ? "idea.supported" : "idea.support"), key: "support-" + item.id,
           roll: bump > 0 ? "up" : bump < 0 ? "down" : "", pop: !!bump, onclick: function () { support(item, !item.my_support); } });
       } else if (item.status !== "review" && item.status !== "hidden") {
         capsule = voteCapsule(item.votes || 0, {});
       }
       var sub = joinDot([item.mine ? tr("idea.mine") : tr("idea.sub"), districtShort(item.district)]);
-      return rowCard(item.id, { "data-idea": item.id, "data-idea-status": item.status, "data-demo": item.demo ? "" : null }, kind, t.text, t.lang, sub,
-        pill(tr("idea.pill." + item.status), IDEA_TONE[item.status] || "neutral"), capsule, sel);
+      return rowCard(item.id, { "data-idea": item.id, "data-idea-status": item.status, "data-demo": item.demo ? "" : null,
+        "data-topic": item.topic || null }, kind, t.text, t.lang, sub,
+        pill(tr("idea.pill." + item.status), IDEA_TONE[item.status] || "neutral"), capsule, sel, item.topic);
     }
     function projTitle(p) {
       return lang() === "kk" && p.title_kk ? { text: p.title_kk, lang: "kk" } : { text: p.title_ru, lang: "ru" };
@@ -818,7 +857,7 @@
     function projectCard(p, sel) {
       var t = projTitle(p);
       var bump = state.bump && state.bump.id === p.id ? state.bump.dir : 0;
-      var capsule = !akimat && p.voting_open && p.status === "proposal"
+      var capsule = !akimat && !readOnly && p.voting_open && p.status === "proposal"
         ? voteCapsule(p.votes_up || 0, { pressed: p.my_vote === 1, label: tr("proposal.vote_up"), key: "vote-" + p.id, roll: bump > 0 ? "up" : bump < 0 ? "down" : "",
           pop: !!bump, onclick: function () { voteProject(p, 1); } })
         : voteCapsule(p.votes_up || 0, {});
@@ -946,7 +985,7 @@
       var inner = h("div", { class: "bk-pd__in ri-pd__in" }, [h("h3", { class: "bk-pd__title ri-pd__title", id: "ri-pd-t", lang: t.lang, text: t.text })]);
       var card = h("section", { class: "bk-pd ri-pd bk-glass bk-glass--strong", role: "region", "aria-labelledby": "ri-pd-t",
         "data-pd": x.id, "data-pd-kind": isProj ? "project" : "idea" }, [
-        preview(kind, true),
+        preview(kind, true, isProj ? null : x.topic),
         inner,
       ]);
       if (isProj) {
@@ -980,7 +1019,7 @@
     }
     function residentActions(item) {
       var row = h("div", { class: "bk-acts ri-pd__acts" });
-      if (item.status === "voting") {
+      if (item.status === "voting" && !readOnly) {
         var on = !!item.my_support;
         row.appendChild(button("bk-btn--primary ri-pd__main", tr(on ? "idea.supported" : "idea.support"), on ? "check" : null,
           { "aria-pressed": String(on), "data-key": "pd-support", onclick: function () { support(item, !item.my_support); } }));
@@ -1043,6 +1082,8 @@
         } else {
           row.appendChild(h("p", { class: "ri-pd__text", text: tr("proposal.status." + p.status) }));
         }
+      } else if (p.voting_open && p.status === "proposal" && readOnly) {
+        row.appendChild(h("p", { class: "ri-pd__text", text: tr("idea.public.vote_residents") }));
       } else if (p.voting_open && p.status === "proposal") {
         row.appendChild(button("bk-btn--primary ri-pd__main", tr("proposal.vote_up"), "thumb-up",
           { "aria-pressed": String(p.my_vote === 1), "data-key": "pd-up", onclick: function () { voteProject(p, 1); } }));

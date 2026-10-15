@@ -690,9 +690,13 @@
           render();
         }));
         grid.appendChild(select("service", "works.form.service", services, f.service, function (v) { f.service = v; f.serviceTouched = true; }));
-        grid.appendChild(input("start", "works.form.starts_on", "date", f.starts_on, function (v) { f.starts_on = v; }));
-        grid.appendChild(input("planned_end", "works.form.planned_end", "date", f.planned_end, function (v) { f.planned_end = v; }));
-        grid.appendChild(input("forecast_end", "works.form.forecast_end", "date", f.forecast_end, function (v) { f.forecast_end = v; }));
+        // Три даты — одной строкой на ноутбуке (начало → срок по плану → новый срок): сроки рядом, как в FINAL-4.
+        var dates = h("div", { class: "rw-grid rw-dates" });
+        dates.appendChild(input("start", "works.form.starts_on", "date", f.starts_on, function (v) { f.starts_on = v; }));
+        dates.appendChild(input("planned_end", "works.form.planned_end", "date", f.planned_end, function (v) { f.planned_end = v; }));
+        dates.appendChild(input("forecast_end", "works.form.forecast_end", "date", f.forecast_end, function (v) { f.forecast_end = v; }));
+        form.appendChild(grid);
+        grid = dates;
       } else {
         grid.appendChild(select("utility", "works.form.utility", UTILITIES.map(function (u) { return { value: u, label: tr("nearby.utility." + u) }; }),
           f.utility, function (v) { f.utility = v; render(); }));

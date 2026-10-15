@@ -1422,6 +1422,9 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
   .rw-why {
     grid-template-columns: 1fr 1fr;
   }
+  .rw-grid.rw-dates {
+    grid-template-columns: 1fr 1fr 1fr; /* раунд 15: начало · срок по плану · новый срок — одной строкой */
+  }
   /* Подпись, поле и ошибка соседних полей — на общих линиях, даже если одна подпись в две строки
      («Новый срок, если сдвинулся (по желанию)»): subgrid; без него — как раньше. */
   @supports (grid-template-rows: subgrid) {
@@ -1506,4 +1509,30 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
     animation: none;
     stroke-dashoffset: 0;
   }
+}
+
+/* ── Раунд 15 (R06, задача 1) ── */
+/* Линейные иллюстрации по виду: одна толщина линии при любом размере плитки (84 в строке, 340×150 в карточке). */
+.ri-art path,
+.ri-art circle,
+.ri-art rect,
+.ri-art ellipse {
+  vector-effect: non-scaling-stroke;
+}
+.ri-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Просмотр без входа (вид «Акимат»): подсказка и тихая «Войти» внизу листа. */
+.ri-sheet-ft--public {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-3);
+}
+.ri-public-note {
+  flex: 1 1 200px;
+  margin: 0;
 }
