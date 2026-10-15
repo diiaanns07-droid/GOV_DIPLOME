@@ -41,6 +41,7 @@
     syncUrl: true, // хранить дату и район в адресе: F5, печать и ссылка показывают то же
     refreshMs: 120000, // тихое обновление, пока вкладка видна (0 — выключить)
     titleTag: "h1", // в оболочке со своим h1 передайте "h2" — на странице будет один заголовок первого уровня
+    weekHref: "/civic/akim/week.html", // раунд 15: «Картина недели» (отчёт A4)
   };
   var STALE_ON_RETURN_MS = 60000; // вернулись на вкладку, а данным больше минуты — обновить
   var TIMEOUT_MS = 15000;
@@ -112,6 +113,7 @@
       "akim.forecast.month": "Прогноз на месяц",
       "akim.forecast.badge": "прототип",
       "akim.forecast.note": "Прототип: модель обучена на синтетической истории, это не настоящая оценка риска.",
+      "akim.week.open": "Картина недели",
     },
     kk: {
       "akim.pulse.spike_new": "{category} · {district}: жаңа",
@@ -151,6 +153,7 @@
       "akim.forecast.month": "Айлық болжам",
       "akim.forecast.badge": "прототип",
       "akim.forecast.note": "Прототип: модель синтетикалық тарихта оқытылған, бұл нақты тәуекел бағасы емес.",
+      "akim.week.open": "Апта қорытындысы",
     },
   };
   function wave2(key, params) {
@@ -1432,6 +1435,14 @@
           icon("print"),
           tr("common.action.print"),
         ])
+      );
+      // Раунд 15: «Картина недели» — отчёт A4 для совещания (week.html), та же дата и район.
+      var wq = new URLSearchParams();
+      if (state.date) wq.set("date", state.date);
+      if (state.district) wq.set("district", state.district);
+      body.appendChild(
+        h("a", { class: "bk-btn bk-btn--ghost bk-btn--block akim-week-link", "data-key": "week-link",
+          href: opts.weekHref + (wq.toString() ? "?" + wq : "") }, [icon("calendar"), tr("akim.week.open")])
       );
       // «Данные — пример» — одна серая строка внизу экрана (CLEAN_PASS §2.9, §3 R08 п. 1).
       if (d.demo && d.demo.any) body.appendChild(h("p", { class: "bk-footnote akim-demo", text: tr("common.demo_footnote") }));

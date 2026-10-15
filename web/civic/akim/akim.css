@@ -1543,6 +1543,9 @@
   .akim-forecast {
     order: 4;
   }
+  .akim-week-link {
+    order: 6;
+  }
 }
 @media print {
   /* Лист дня — 1–3 страницы A4: прогноз-прототип, карточки соседей и кнопки не печатаются — соседи целиком
@@ -1551,7 +1554,12 @@
   .akim-mini__open,
   .akim-forecast,
   .akim-trio,
+  .akim-week-link,
   .akim-decision__more {
     display: none;
   }
+}
+
+.akim-week-link {
+  margin-top: 4px;
 }

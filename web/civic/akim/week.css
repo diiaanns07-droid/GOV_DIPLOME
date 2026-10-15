@@ -1,0 +1,436 @@
+/*
+ * Birge · «Картина недели» (R08, раунд 15): лист отчёта для совещания. Светлая тема продукта, токены ui-kit R11,
+ * шкала эталона A (12 / 13 / 14 / 15 / 22). На экране — лист по центру и панель сверху; при печати — A4, только лист.
+ * Без картинок (поправка П1): числа, столбики, полосы и текст.
+ */
+.wk-page {
+  margin: 0;
+  background: var(--c-paper, #f3f1ec);
+  color: var(--c-ink, #121a17);
+  font-family: var(--font, system-ui, sans-serif);
+}
+.wk {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 16px 16px 40px;
+}
+.wk-boot {
+  margin: 24px;
+  color: var(--c-text-2, #4b5752);
+}
+
+/* панель (только экран) */
+.wk-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  width: min(210mm, 100%);
+}
+.wk-back {
+  margin-right: auto;
+}
+.wk-select {
+  min-height: 44px;
+}
+
+/* лист */
+.wk-sheet {
+  box-sizing: border-box;
+  width: min(210mm, 100%);
+  padding: 14mm 14mm 12mm;
+  border: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+  border-radius: 16px;
+  background: var(--c-surface, #fff);
+  box-shadow: 0 12px 32px rgba(16, 24, 20, 0.08);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.wk-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+}
+.wk-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+  color: var(--c-text-2, #4b5752);
+  font-size: 12px;
+  font-weight: 600;
+}
+.wk-brand__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: var(--c-brand, #152c26);
+  color: #fff;
+  font-size: 11px;
+}
+.wk-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.wk-meta {
+  margin: 4px 0 0;
+  color: var(--c-text-2, #4b5752);
+  font-size: 12px;
+}
+
+/* числа */
+.wk-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0 4px;
+}
+.wk-kpi {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  min-width: 0;
+}
+.wk-kpi__label,
+.wk-kpi__sub,
+.wk-kpi__note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--c-text-2, #4b5752);
+}
+.wk-kpi__value {
+  margin: 2px 0;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.wk-kpi__note {
+  color: var(--c-ok, #27500a);
+}
+.wk-kpi--late .wk-kpi__value {
+  color: var(--c-danger, #b3362e);
+}
+.wk-empty {
+  margin: 8px 0;
+  color: var(--c-text-2, #4b5752);
+}
+
+/* разделы */
+.wk-sec {
+  margin-top: 14px;
+  break-inside: avoid;
+}
+.wk-h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.wk-h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.wk-text__p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.wk-note {
+  margin: 4px 0 0;
+  color: var(--c-text-3, #7e8a85);
+  font-size: 12px;
+}
+.wk-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 20px;
+}
+
+/* по дням */
+.wk-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.wk-chart__new {
+  fill: var(--c-ink, #121a17);
+}
+.wk-chart__fixed {
+  fill: var(--ok-mark, #3b8a2e);
+}
+.wk-chart__future {
+  stroke: var(--c-line-strong, rgba(18, 26, 23, 0.16));
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+}
+.wk-chart__day {
+  fill: var(--c-text-2, #4b5752);
+  font-size: 12px;
+}
+.wk-chart__val {
+  fill: var(--c-ink, #121a17);
+  font-size: 12px;
+  font-weight: 600;
+}
+.wk-chart__val--fixed {
+  fill: var(--c-ok, #27500a);
+}
+.wk-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 0;
+  color: var(--c-text-2, #4b5752);
+  font-size: 12px;
+}
+.wk-legend__key {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-left: 8px;
+}
+.wk-legend__key:first-child {
+  margin-left: 0;
+}
+.wk-legend__key--new {
+  background: var(--c-ink, #121a17);
+}
+.wk-legend__key--fixed {
+  background: var(--ok-mark, #3b8a2e);
+}
+
+/* полосы тем и районов */
+.wk-bars {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wk-bars__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.6fr) 3ch 7ch;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.wk-bars__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wk-bars__track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  overflow: hidden;
+}
+.wk-bars__fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--heat-2, #ef9f27);
+}
+.wk-bars__num {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.wk-bars__delta {
+  color: var(--c-text-2, #4b5752);
+  white-space: nowrap;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.wk-bars__delta[data-trend="up"] {
+  color: var(--c-ink, #121a17);
+  font-weight: 600;
+}
+/* горячие места — одной строкой: число людей (цвет уровня + число) · место · тема и район */
+.wk-hot__list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wk-hot__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, auto);
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+}
+.wk-hot__row:last-child {
+  border-bottom: 0;
+}
+.wk-hot__name {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wk-hot__sub {
+  color: var(--c-text-2, #4b5752);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* списки */
+.wk-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wk-list > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+}
+.wk-list > li:last-child {
+  border-bottom: 0;
+}
+.wk-list__main {
+  font-weight: 500;
+}
+.wk-list__sub {
+  flex-basis: 100%;
+  color: var(--c-text-2, #4b5752);
+  font-size: 12px;
+}
+.wk-heat {
+  min-width: 30px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.wk-late {
+  color: var(--c-danger, #b3362e);
+  font-weight: 600;
+}
+.wk-trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.wk-trio[data-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.wk-trio[data-count="1"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.wk-card {
+  padding: 10px 12px;
+  border: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+  border-radius: 12px;
+  min-width: 0;
+}
+.wk-proto {
+  background: var(--c-warn-soft, #faeeda);
+  color: var(--c-warn, #7a520f);
+}
+.wk-foot {
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+  color: var(--c-text-3, #7e8a85);
+  font-size: 12px;
+}
+.wk-foot p {
+  margin: 0;
+}
+
+/* состояния: П1 — маленький значок, текст, одна кнопка */
+.wk-state {
+  padding: 24px 8px;
+}
+.wk-state__ic {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 8px;
+  color: var(--c-text-2, #4b5752);
+  stroke-width: 1.2;
+}
+
+@media (max-width: 720px) {
+  .wk-sheet {
+    padding: 16px;
+  }
+  .wk-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wk-cols,
+  .wk-trio,
+  .wk-trio[data-count="2"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wk-head {
+    flex-wrap: wrap;
+  }
+}
+
+/* печать: A4, только лист, без панели и теней */
+@page {
+  size: A4;
+  margin: 10mm 11mm 12mm;
+}
+@media print {
+  .wk-page {
+    background: #fff;
+  }
+  .wk {
+    display: block;
+    padding: 0;
+  }
+  .wk-bar {
+    display: none;
+  }
+  .wk-sheet {
+    width: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 12px;
+  }
+  .wk-sec {
+    margin-top: 10px;
+  }
+  .wk-text__p {
+    font-size: 12px;
+  }
+  .wk-kpi,
+  .wk-bars__track {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .wk-chart rect,
+  .wk-heat,
+  .wk-legend__key,
+  .wk-bars__fill {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

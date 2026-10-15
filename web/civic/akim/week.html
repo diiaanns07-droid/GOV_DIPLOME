@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Картина недели · Birge</title>
+  <!-- R08 · «Картина недели» (раунд 15): отчёт для совещания акимата на одном–двух листах A4, ru / kk.
+       Данные — GET /api/civic/v2/akim/week?date&district (только сотрудник). Открывается ссылкой из «Картины дня».
+       Монтирование — в week.js (data-week-auto): CSP сервера без встроенных скриптов. Без картинок (поправка П1):
+       числа, полосы и текст. -->
+  <link rel="stylesheet" href="../ui-kit/tokens.css">
+  <link rel="stylesheet" href="../ui-kit/components.css">
+  <link rel="stylesheet" href="week.css">
+</head>
+<body class="bk-app wk-page">
+  <main id="week" class="wk" data-week-auto data-state="loading" aria-busy="true">
+    <p class="wk-boot">Собираем картину недели…</p>
+  </main>
+  <noscript><p style="padding: 24px">Для «Картины недели» нужен включённый JavaScript.</p></noscript>
+  <script src="../i18n/i18n.js"></script>
+  <script src="week.js"></script>
+</body>
+</html>
