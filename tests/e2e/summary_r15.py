@@ -94,7 +94,7 @@ def main() -> int:
         for c in fails:
             reasons.append(f"числа: {c['name']} — {json.dumps(c['values'], ensure_ascii=False)[:120]}")
         if final:
-            nr = [c["name"] for c in num["checks"] if c["status"] == "NOT_RUN"]
+            nr = [c["name"] for c in num["checks"] if c["status"] == "NOT_RUN" and not c.get("optional")]
             if nr:
                 reasons.append("числа на FINAL-5 не проверены: " + "; ".join(nr[:4]))
     else:

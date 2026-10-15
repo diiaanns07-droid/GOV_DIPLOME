@@ -103,8 +103,10 @@ class Consistency:
         print(f"  {metric:<28} {source:<34} {str(shown):<10} {definition}")
         return value
 
-    def compare(self, name, pairs, note=""):
-        """pairs: [(источник, владелец, значение)]. None — раздела нет: NOT_RUN, если сравнивать не с чем."""
+    def compare(self, name, pairs, note="", optional=False):
+        """pairs: [(источник, владелец, значение)]. None — раздела нет: NOT_RUN, если сравнивать не с чем.
+        optional — число показывается не везде по замыслу (overdue_fix у табло R17 — только если R17 его выводит):
+        NOT_RUN такой сверки не держит FINAL-5 (summary_r15.py), противоречие подписей ловит C4."""
         present = [(src, owner, v) for src, owner, v in pairs if v is not None]
         owners = sorted({owner for _, owner, _ in present})
         values = {src: v for src, _, v in pairs}
@@ -114,7 +116,10 @@ class Consistency:
             note = (note + "; " if note else "") + f"нет раздела: {', '.join(missing)}"
         else:
             status = "PASS" if len({json.dumps(v, sort_keys=True) for _, _, v in present}) == 1 else "FAIL"
-        self.checks.append({"name": name, "status": status, "values": values, "owners": owners, "note": note})
+        rec = {"name": name, "status": status, "values": values, "owners": owners, "note": note}
+        if optional and status == "NOT_RUN":
+            rec["optional"] = True
+        self.checks.append(rec)
         print(f"{status:<7} {name} — {json.dumps(values, ensure_ascii=False)}" + (f" ({note})" if note else ""))
 
     # --- источники
@@ -247,11 +252,22 @@ class Consistency:
         sit = self.get(self.staff, "/akim/board") if self.staff_ok else None
         overdue_sit = None
         if sit is not None and sit.status == 200 and isinstance(sit.body, dict):
-            found = re.search(r'"overdue"\s*:\s*\{[^{}]*"value"\s*:\s*(\d+)', json.dumps(sit.body))
-            overdue_sit = int(found.group(1)) if found else None
+            # R08 akim/board: kpi.items — плитки [{id: "overdue", value}]; запасной вид — kpi.overdue.value, как у summary.
+            data = sit.data() if hasattr(sit, "data") else sit.body
+            kpi = data.get("kpi") if isinstance(data, dict) else None
+            if isinstance(kpi, dict) and isinstance(kpi.get("items"), list):
+                tile = next((t for t in kpi["items"] if isinstance(t, dict) and t.get("id") == "overdue"), None)
+                overdue_sit = tile.get("value") if tile and isinstance(tile.get("value"), int) else None
+            elif isinstance(kpi, dict) and isinstance(kpi.get("overdue"), dict):
+                overdue_sit = kpi["overdue"].get("value") if isinstance(kpi["overdue"].get("value"), int) else None
+            else:
+                found = re.search(r'"overdue"\s*:\s*\{[^{}]*"value"\s*:\s*(\d+)', json.dumps(sit.body))
+                overdue_sit = int(found.group(1)) if found else None
         self.value("просрочено (город)", "Ситуационный центр R08", "R08", overdue_sit, "kpi overdue большого экрана")
         self.compare("C1. «Просрочено» (срок исправления): «Картина дня» R08 = табло R17 (overdue_fix)",
-                     [("«Картина дня» R08", "R08", overdue_r08), ("табло R17", "R17", overdue_fix_r17)])
+                     [("«Картина дня» R08", "R08", overdue_r08), ("табло R17", "R17", overdue_fix_r17)],
+                     note="табло R17 выводит только «нет ответа в срок» — сверять нечего" if overdue_fix_r17 is None and overdue_r08 is not None else "",
+                     optional=True)
         self.compare("C2. «Просрочено» (срок ответа): «Обращения» R09 = табло R17",
                      [("«Обращения» R09", "R09", overdue_r09), ("табло R17", "R17", overdue_r17)])
         self.labels_check(overdue_r08, overdue_r09)
