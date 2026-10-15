@@ -1022,7 +1022,8 @@
     // ---------------------------------------------------------------- отрисовка
     function render() {
       if (!state.alive) return;
-      const active = doc.activeElement && box.contains(doc.activeElement) ? doc.activeElement.getAttribute("data-focus") : null;
+      const hadFocus = !!doc.activeElement && box.contains(doc.activeElement);
+      const active = hadFocus ? doc.activeElement.getAttribute("data-focus") : null;
       const scroller = box.querySelector(".mt-body");
       const scrollTop = scroller ? scroller.scrollTop : 0;
       state.lang = lang();
@@ -1046,9 +1047,12 @@
       const shown = state.tab + "|" + state.view + "|" + (state.meetingId || "");
       body.scrollTop = shown === state.shown ? scrollTop : 0;
       state.shown = shown;
-      if (active) {
-        const again = box.querySelector('[data-focus="' + active + '"]');
-        if (again) again.focus({ preventScroll: true });
+      // Фокус был в разделе и пропал вместе с прежней разметкой — на тот же элемент, а нет его (другой вид: встреча →
+      // список) — на заголовок вида. Иначе Esc и Tab после «тихой» перезагрузки шли бы от body.
+      if (hadFocus && (!doc.activeElement || doc.activeElement === doc.body)) {
+        const again = active && box.querySelector('[data-focus="' + active + '"]');
+        const target = again || box.querySelector(".mt-focus-target");
+        if (target) target.focus({ preventScroll: !!again });
       }
       state.bump = false;
     }
@@ -1066,7 +1070,7 @@
       }
       head = h("div", { class: "mt__head" }, [
         h("div", { class: "mt__ttl" }, [
-          h(opts.titleTag || "h2", { class: "mt__title" + (state.view === "list" ? " mt-focus-target" : ""), tabindex: "-1",
+          h(opts.titleTag || "h2", { class: "mt__title" + (state.view === "list" ? " mt-focus-target" : ""), tabindex: "-1", "data-focus": "title",
             "data-focus": "title", text: tr("meet.title") }),
         ]),
         typeof opts.close === "function" ? h("button", { type: "button", class: "mt__close bk-x", "aria-label": tr("common.action.close"),
@@ -1342,7 +1346,7 @@
         dateTile(m.at),
         h("div", { class: "bk-meet__main" }, [
           h("p", { class: "mt-eyebrow" }, [phaseTag(m), m.demo ? demoTag() : null]),
-          h("h3", { class: "bk-meet__title mt-dhead__title mt-focus-target", tabindex: "-1", text: pick(m, "title") }),
+          h("h3", { class: "bk-meet__title mt-dhead__title mt-focus-target", tabindex: "-1", "data-focus": "dtitle", text: pick(m, "title") }),
           h("p", { class: "bk-meet__meta mt-meta" }, [whenSpan(m), placeSpan(m),
             h("span", null, [icon("user"), h("span", { text: tr("meet.host") + " · " + districtName(m.district) })])]),
         ]),
@@ -1626,7 +1630,7 @@
       const d = state.draft;
       const wrap = h("div", { class: "mt-detail" });
       wrap.appendChild(h("button", { type: "button", class: "mt-back mt-link", "data-focus": "back", onclick: backToList }, [icon("back"), tr("meet.back")]));
-      wrap.appendChild(h("h3", { class: "mt-dhead__title mt-focus-target", tabindex: "-1", text: tr("meet.staff.new") }));
+      wrap.appendChild(h("h3", { class: "mt-dhead__title mt-focus-target", tabindex: "-1", "data-focus": "ntitle", text: tr("meet.staff.new") }));
       const err = (f) => (d.field === f ? d.error : null);
       const placeInput = input("place", d.place, (v) => { d.place = v; }, { list: "mt-places", maxlength: "120", autocomplete: "off" });
       const durations = [60, 90, 120, 180].map((n) => [String(n), tr("meet.staff.minutes", { n })]);
@@ -1682,8 +1686,11 @@
     function onKey(e) {
       if (e.key !== "Escape" || e.defaultPrevented || !box.isConnected || !box.getClientRects().length) return;
       if (state.tab !== "meetings") return;  // вкладка «Вопросы» — Esc у «Вопроса акиму» и оболочки
+      // Фокус — в нашем разделе: в .mt или в экране оболочки, который его держит (оболочка R01 при открытии раздела
+      // ставит фокус на свой скрытый заголовок #birge-screen-title), либо на body после перерисовки.
       const target = e.target;
-      const inside = target && target.nodeType === 1 && box.contains(target);
+      const host = box.closest("#birge-screen, .birge-screen") || box;
+      const inside = target && target.nodeType === 1 && host.contains(target);
       if (!inside && target !== doc.body && target !== doc.documentElement) return;  // фокус в другом модуле
       if (doc.querySelector("#birge-account:not([hidden]), .birge-more-menu:not([hidden]), .birge-palette:not([hidden])")) return;
       let handled = true;
