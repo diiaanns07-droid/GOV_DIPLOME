@@ -266,6 +266,15 @@ async function jpegBuffer(page, w, h) {
       await page.waitForSelector(".tg-detail .tg-actionbar", { timeout: 10000 });
       await page.waitForTimeout(300);
       const before = await page.$eval(".tg-actionbar .tg-count", (n) => n.dataset.n);
+      // «Что взять» — на языке интерфейса (R11 R16-1): слова из подсказок и демо-мира другого языка переведены.
+      const bring = await page.evaluate((l) => {
+        const T = window.BirgeTogetherText || {}, other = l === "kk" ? "ru" : "kk";
+        const words = (x) => new Set(Object.keys(T[x] || {}).filter((k) => k.startsWith("together.bring.")).flatMap((k) => T[x][k]));
+        const mine = words(l), theirs = words(other);
+        const tags = [...document.querySelectorAll(".tg-detail .tg-bring .bk-tag")].map((n) => n.textContent.trim());
+        return { tags, foreign: tags.filter((w) => theirs.has(w) && !mine.has(w)) };
+      }, lang);
+      check(`${tag} карточка дела: «что взять» на языке интерфейса`, bring.tags.length > 0 && !bring.foreign.length, bring);
       await shot(page, `${tag}_detail`);
       await page.click(".tg-actionbar .tg-join");
       await page.waitForFunction(() => document.querySelector(".tg-actionbar .tg-join")?.getAttribute("aria-pressed") === "true" &&

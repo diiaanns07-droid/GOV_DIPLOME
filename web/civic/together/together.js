@@ -98,6 +98,27 @@
     var value = dict(lang())[key];
     return Array.isArray(value) ? value : (Array.isArray(dict("ru")[key]) ? dict("ru")[key] : []);
   }
+  // «Что взять» на языке интерфейса (просьба R11 R16-1): подсказки мастера и слова демо-мира — пары ru / kk с тем же
+  // номером в списках together.bring.*; дело на другом языке («перчатки, мешки» в ҚАЗ) показывает их по-своему.
+  // Своё слово жителя (не из списков) — как написал автор.
+  // Строка вкладок длиннее экрана (4 kk-вкладки на 375) — край затухает, пока есть что прокрутить (ui-kit R11 scrollFade,
+  // просьба R11 R16-2; ui-kit подключает его и сам, повтор ничего не меняет).
+  function fadeRow(el) {
+    if (root.BirgeUI && typeof root.BirgeUI.scrollFade === "function") root.BirgeUI.scrollFade(el);
+    return el;
+  }
+  var BRING_LISTS = ["cleanup", "greening", "snow", "repair", "help", "other", "words"];
+  function bringLabel(word) {
+    var here = lang(), other = here === "kk" ? "ru" : "kk", key = String(word || "").trim().toLowerCase();
+    for (var i = 0; i < BRING_LISTS.length; i++) {
+      var name = "together.bring." + BRING_LISTS[i], mine = dict(here)[name], theirs = dict(other)[name];
+      if (!Array.isArray(mine) || !Array.isArray(theirs)) continue;
+      for (var j = 0; j < theirs.length; j++) {
+        if (String(theirs[j]).toLowerCase() === key && mine[j]) return mine[j];
+      }
+    }
+    return word;
+  }
   // Подпись двора/цели на языке интерфейса (у демо — оба языка; у настоящих — что есть).
   function label(obj, base) {
     if (!obj) return "";
@@ -735,14 +756,14 @@
             onclick: function () { opts.openTarget("area", yard.id); } }, [icon("pin"), t("together.show_map")]) : null,
         ]),
       ]);
-      var tabs = h("div", { class: "bk-tabs tg-tabs", role: "tablist", "aria-label": t("together.tabs_label") },
+      var tabs = fadeRow(h("div", { class: "bk-tabs tg-tabs", role: "tablist", "aria-label": t("together.tabs_label") },
         ["overview", "problems", "initiatives", "works"].map(function (id) {
           var n = id === "problems" ? counts.problems : id === "initiatives" ? counts.initiatives : null;
           return h("button", { type: "button", role: "tab", id: "tg-tab-" + id, "aria-selected": String(tab === id),
             "aria-controls": "tg-panel", tabindex: tab === id ? "0" : "-1", "data-focus": "tab-" + id,
             onclick: function () { setTab(id); }, onkeydown: tabKeys },
             [t("together.tab." + id), typeof n === "number" ? h("span", { class: "bk-num", text: formatNumber(n) }) : null]);
-        }));
+        })));
       var panel = h("div", { class: "tg-panel", id: "tg-panel", role: "tabpanel", "aria-labelledby": "tg-tab-" + tab },
         [({ overview: yardOverview, problems: yardProblems, initiatives: yardInitiatives, works: yardWorks })[tab](page)]);
       var foot = S.role === "akimat" ? null : h("div", { class: "tg-yardfoot" }, [
@@ -1142,7 +1163,7 @@
           h("span", { text: label(item.target) || districtName(item.district) }), mapLink, yardLink]),
       ]);
       var bring = (item.bring || []).length ? h("div", { class: "bk-init__bring tg-bring" }, [h("span", { class: "tg-bring__label", text: t("together.bring") })]
-        .concat(item.bring.map(function (b) { return h("span", { class: "bk-tag", text: b }); }))) : null;
+        .concat(item.bring.map(function (b) { return h("span", { class: "bk-tag", text: bringLabel(b) }); }))) : null;
       var what = item.support ? supportWhat(item.support) : [];
       var support = item.support && item.support.by_akimat ? h("div", { class: "bk-support bk-support--block tg-supportbox" }, [
         icon("building"), h("span", { text: t("together.supported") + (what.length ? ": " + what.join(" · ") : "") }),
@@ -1525,12 +1546,12 @@
       return h("section", { class: "tg-staff" }, [
         h("header", { class: "tg-listhead" }, [h("div", {}, [title(t("together.staff.title")),
           h("p", { class: "tg-lead", text: t("together.staff.lead") })])]),
-        h("div", { class: "bk-tabs tg-tabs", role: "tablist", "aria-label": t("together.staff.title") },
+        fadeRow(h("div", { class: "bk-tabs tg-tabs", role: "tablist", "aria-label": t("together.staff.title") },
           ["queue", "waiting", "going", "done"].map(function (id) {
             return h("button", { type: "button", role: "tab", "aria-selected": String(tab === id), tabindex: tab === id ? "0" : "-1",
               "data-focus": "stab-" + id, onkeydown: tabKeys, onclick: function () { S.staffTab = id; S.open = null; render(); } },
             [t("together.staff." + id), typeof counts[id] === "number" ? h("span", { class: "bk-num", text: formatNumber(counts[id]) }) : null]);
-          })),
+          }))),
         body,
       ]);
     }
