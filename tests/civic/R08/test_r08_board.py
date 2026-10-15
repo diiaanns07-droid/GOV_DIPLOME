@@ -360,6 +360,9 @@ def test_current_week_counts_to_now_and_future_days_are_null():
     status, w = get(WEEK, svc())
     assert status == 200 and w["week"]["current"] is True and w["week"]["start"] == "2026-10-12"   # NOW — понедельник
     assert w["kpi"]["new"]["series"][1:] == [None] * 6
+    # Текст идущей недели — за прошедшие дни (в понедельник — один день), а не «12–18 окт».
+    assert w["week"]["label_ru"].startswith("12–18") and not w["week"]["so_far_label_ru"].startswith("12–18")
+    assert w["text"]["ru"][0].startswith(w["week"]["so_far_label_ru"])
     assert w["week"]["days_counted"] == 1
 
 

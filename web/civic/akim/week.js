@@ -32,6 +32,8 @@
       "week.current": "неделя идёт — данные по {date}",
       "week.kpi.new": "Поступило обращений",
       "week.kpi.fixed": "Исправлено за неделю",
+      "week.kpi.new_since": "Поступило с {date}",
+      "week.kpi.fixed_since": "Исправлено с {date}",
       "week.kpi.verified": "проверено жителями: {n}",
       "week.kpi.in_progress": "В работе на {date}",
       "week.kpi.overdue": "Просрочено на {date}",
@@ -57,6 +59,7 @@
       "week.together.upcoming": "Впереди дел: {n} · записались: {m}",
       "week.meetings": "Поручения встреч с жителями",
       "week.meetings.counts": "Сделано {done} из {total} · просрочено {overdue}",
+      "week.meetings.counts_ok": "Сделано {done} из {total}",
       "week.meetings.due": "срок {date}",
       "week.decisions": "Нужно решение акима",
       "week.decisions.overdue": "просрочено на {n} дн.",
@@ -88,6 +91,8 @@
       "week.current": "апта жүріп жатыр — {date} дейінгі деректер",
       "week.kpi.new": "Түскен өтініштер",
       "week.kpi.fixed": "Апта ішінде түзетілді",
+      "week.kpi.new_since": "{date} бастап түскені",
+      "week.kpi.fixed_since": "{date} бастап түзетілгені",
       "week.kpi.verified": "тұрғындар тексерді: {n}",
       "week.kpi.in_progress": "{date} жағдайы: орындалуда",
       "week.kpi.overdue": "{date} жағдайы: мерзімі өткен",
@@ -113,6 +118,7 @@
       "week.together.upcoming": "Алдағы істер: {n} · жазылғандар: {m}",
       "week.meetings": "Тұрғындармен кездесу тапсырмалары",
       "week.meetings.counts": "Орындалды {done}/{total} · мерзімі өткені {overdue}",
+      "week.meetings.counts_ok": "Орындалды {done}/{total}",
       "week.meetings.due": "мерзімі {date}",
       "week.decisions": "Әкімнің шешімі керек",
       "week.decisions.overdue": "мерзімі {n} күнге өтті",
@@ -164,9 +170,14 @@
       return typeof params[name] === "number" ? num(params[name]) : String(params[name]);
     });
   }
+  // Строка словаря с незаполненной подстановкой (ключ с другим смыслом) — запасной текст R08, а не «{n}» на листе.
+  var HOLE = /\{[A-Za-z_]+\}/;
   function tr(key, params) {
     var B = I();
-    if (B && B.has && B.has(key)) return B.t(key, params);
+    if (B && B.has && B.has(key)) {
+      var t = B.t(key, params);
+      if (!HOLE.test(t) || !(Object.prototype.hasOwnProperty.call(FALLBACK.ru, key) || Object.prototype.hasOwnProperty.call(SHARED.ru, key))) return t;
+    }
     var l = lang(), v;
     [FALLBACK[l], SHARED[l], FALLBACK.ru, SHARED.ru].some(function (d) {
       if (d && Object.prototype.hasOwnProperty.call(d, key)) { v = d[key]; return true; }
@@ -375,8 +386,10 @@
         demoAll ? h("span", { class: "bk-tag bk-tag--demo", text: tr("common.demo") }) : null,
       ]);
       var kpis = h("section", { class: "wk-kpis" }, [
-        kpiTile(tr("week.kpi.new"), k.new.value, deltaText(k.new, "week"), null, "new"),
-        kpiTile(tr("week.kpi.fixed"), k.fixed.value, deltaText(k.fixed, "week"),
+        // Идущая неделя — «с понедельника» явно: в «Картине дня» «Исправлено за неделю» — это последние 7 дней, и числа
+        // разные (R10 consistency C5); подпись говорит, за какие дни число.
+        kpiTile(w.current ? tr("week.kpi.new_since", { date: fmtDate(w.start) }) : tr("week.kpi.new"), k.new.value, deltaText(k.new, "week"), null, "new"),
+        kpiTile(w.current ? tr("week.kpi.fixed_since", { date: fmtDate(w.start) }) : tr("week.kpi.fixed"), k.fixed.value, deltaText(k.fixed, "week"),
           k.verification_available ? tr("week.kpi.verified", { n: k.fixed.verified || 0 }) : null, "fixed"),
         kpiTile(tr("week.kpi.in_progress", { date: asOf }), k.in_progress.value, deltaText(k.in_progress, "ago"), null),
         kpiTile(tr("week.kpi.overdue", { date: asOf }), k.overdue.value, deltaText(k.overdue, "ago"), null, k.overdue.value ? "late" : null),
@@ -433,7 +446,7 @@
         if (mt && mt.available && (mt.counts || {}).total) {
           var mc = mt.counts;
           nb.push(h("div", { class: "wk-card" }, [h("h3", { class: "wk-h3", text: tr("week.meetings") }), list(
-            [[tr("week.meetings.counts", { done: mc.done || 0, total: mc.total, overdue: mc.overdue || 0 })]].concat(
+            [[tr(mc.overdue ? "week.meetings.counts" : "week.meetings.counts_ok", { done: mc.done || 0, total: mc.total, overdue: mc.overdue || 0 })]].concat(
               (mt.orders || []).slice(0, 2).map(function (o) {
                 return [h("span", { class: "wk-list__main", text: pick(o, "text") }),
                   h("span", { class: "wk-list__sub" + (o.overdue ? " wk-late" : ""), text: o.due ? tr("week.meetings.due", { date: fmtDate(o.due) }) : "" })];

@@ -658,15 +658,19 @@ class AkimService:
         topics.sort(key=lambda t: (-t["value"], order[t["category"]]))
 
         # Районы — всегда по всему городу (сравнение районов), выбранный район подсвечивает интерфейс.
+        # level — уровень района на карте R07 (её правило и цвет: карта районов Ситуационного центра = карта).
+        d_level = {}
         if is_today:
-            d_now = {it["district"]: it["count"] for it in
-                     self.heat.heat(days=HEAT_DAYS, zoom=0, now=as_of)["items"] if it.get("state") == "active"}
+            on_map = [it for it in self.heat.heat(days=HEAT_DAYS, zoom=0, now=as_of)["items"] if it.get("state") == "active"]
+            d_now = {it["district"]: it["count"] for it in on_map}
+            d_level = {it["district"]: it.get("level") for it in on_map}
         else:
             d_now = self._by_district(self._items_past(snap_now, as_of))
         d_prev = self._by_district(self._items_past(snap_prev, moment_prev))
         dist_rows = []
         for d_id, info in districts().items():
-            row = {"district": d_id, "ru": info["ru"], "kk": info["kk"], **change(d_now.get(d_id, 0), d_prev.get(d_id, 0))}
+            row = {"district": d_id, "ru": info["ru"], "kk": info["kk"], **change(d_now.get(d_id, 0), d_prev.get(d_id, 0)),
+                   "level": d_level.get(d_id, 0) if is_today else None}
             dist_rows.append(row)
         dist_rows.sort(key=lambda r: (-r["value"], r["ru"]))
 

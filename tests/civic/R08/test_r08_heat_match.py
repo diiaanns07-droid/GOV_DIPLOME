@@ -143,6 +143,17 @@ def test_districts_equal_map_district_mode(heat, city):
     assert sum(on_map.values()) > 0
 
 
+def test_district_level_and_hot_anchor_equal_map(heat, city):
+    """Карта районов Ситуационного центра: уровень района и точка горячего места — ровно с карты R07."""
+    levels = {it["district"]: it["level"] for it in heat.heat(days=7, zoom=0, now=NOW)["items"] if it["state"] == "active"}
+    for d in city["districts"]["items"]:
+        assert d["level"] == levels.get(d["district"], 0), d["district"]
+    top = {it["target"]["id"]: it for it in heat.top(10, days=7, now=NOW)}
+    for it in city["hot"]["items"]:
+        assert it["anchor"] == top[it["target"]["id"]].get("anchor")
+    assert any(d["level"] for d in city["districts"]["items"]) and all(it["anchor"] for it in city["hot"]["items"])
+
+
 def test_main_problem_equals_map(heat, city):
     m = city["main_problem"]
     assert m and m["value"] == map_districts(heat, NOW, category=m["category"]).get(m["district"])

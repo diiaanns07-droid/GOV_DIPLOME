@@ -271,6 +271,26 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-stat--danger .sc-stat__value { color: var(--sc-danger); }
 
 /* Службы: таблица-строки как в Linear */
+/* Карта районов (блок «Районы»): контуры OSM, заливка — уровень района на карте R07 (те же цвета, что у меток мест),
+   кружки — горячие места. Без теней, свечения и градиентов (П1): цвет несёт только данные. */
+.sc-slide__body > .sc-mapwrap { flex: 1 1 auto; min-height: 0; }
+.sc-mapwrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-rows: minmax(0, 1fr);
+  gap: 1.4em; align-items: center; }
+.sc-map__cell { min-width: 0; min-height: 0; height: 100%; display: grid; place-items: center; }
+.sc-map { position: relative; }
+.sc-map__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sc-map__d { fill: rgba(238, 243, 240, 0.06); stroke: rgba(238, 243, 240, 0.34); stroke-width: 1.2;
+  vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.sc-map__d[data-level="1"] { fill: var(--sc-heat-1); }
+.sc-map__d[data-level="2"] { fill: var(--sc-heat-2); }
+.sc-map__d[data-level="3"] { fill: var(--sc-heat-3); }
+.sc-map__d[data-level="4"] { fill: var(--sc-heat-4); }
+.sc-map__d[data-selected="true"] { stroke: var(--sc-ink); stroke-width: 2.6; }
+.sc-map__label { position: absolute; transform: translate(-50%, -50%); pointer-events: none; white-space: nowrap;
+  color: var(--sc-ink); font-size: var(--sc-fs-m); font-weight: 600; line-height: 1.15;
+  padding: 0.04em 0.4em; border-radius: 0.45em; background: rgba(11, 16, 14, 0.74); } /* подложка: читается на любой заливке */
+.sc-map__pin { position: absolute; transform: translate(-50%, -50%) scale(0.86); box-shadow: 0 0 0 2px var(--sc-bg); }
+
 .sc-table { display: grid; grid-auto-rows: minmax(var(--sc-row), auto); min-height: 0; }
 .sc-trow {
   display: grid; grid-template-columns: minmax(0, 3.2fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 1.4fr);
@@ -400,7 +420,8 @@ body.sc-page.sc-idle { cursor: none; }
 @media (min-width: 761px) and (max-aspect-ratio: 3/2) {
   .sc { --sc-fs-xl: max(40px, 7.4vh); --sc-fs-m: max(16px, 2.45vh); --sc-fs-s: max(13px, 1.85vh); }
   .sc-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .sc-spark { width: 38%; }
+  /* узкая плитка: график — справа от числа, а не над подписью («Исправлено за 7 дней» не уходит под линию) */
+  .sc-spark { width: 38%; top: calc(var(--sc-pad) + 1.9 * var(--sc-fs-s)); }
   .sc-foot__keys { display: none; }
 }
 

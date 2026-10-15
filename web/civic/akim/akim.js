@@ -104,6 +104,7 @@
       "akim.trio.together_done": { one: "Сделано вместе: {n} дело", few: "Сделано вместе: {n} дела", many: "Сделано вместе: {n} дел" },
       "akim.trio.together_none": "Ближайших дел пока нет",
       "akim.trio.together_now": "идёт сейчас",
+      "akim.pulse.title_city": "Пульс города",
       "akim.trio.meetings": "Встречи",
       "akim.trio.meetings_num": { one: "поручение в работе", few: "поручения в работе", many: "поручений в работе" },
       "akim.trio.meetings_overdue": "Просрочено: {n}",
@@ -145,6 +146,7 @@
       "akim.trio.together_done": "Бірге атқарылды: {n}",
       "akim.trio.together_none": "Жақын арада іс жоқ",
       "akim.trio.together_now": "қазір өтіп жатыр",
+      "akim.pulse.title_city": "Қала пульсі",
       "akim.trio.meetings": "Кездесулер",
       "akim.trio.meetings_num": "орындалудағы тапсырма",
       "akim.trio.meetings_overdue": "Мерзімі өткені: {n}",
@@ -173,7 +175,10 @@
     var i18n = I();
     if (!i18n) return wave2(key, params) || interpolate(key, params);
     if (!i18n.has(key) && !i18n.has(key, "ru") && WAVE2_KEYS.ru[key] != null) return wave2(key, params);
-    return i18n.t(key, params);
+    var t = i18n.t(key, params);
+    // Ключ словаря с тем же именем, но другим смыслом (ждёт подстановку, которой нет) — свой текст раунда 15.
+    if (/\{[A-Za-z_]+\}/.test(t) && WAVE2_KEYS.ru[key] != null) return wave2(key, params);
+    return t;
   }
 
   // ───────────── мелкие помощники ─────────────
@@ -947,7 +952,8 @@
       var items = p.items || [];
       if (!items.length) return null; // пустое не показываем (CLEAN_PASS §2.6, §3 R08 п. 6)
       var card = h("section", { class: "bk-card akim-card akim-pulse", "aria-labelledby": "akim-pulse-title" }, [
-        h("h2", { class: "bk-h2", id: "akim-pulse-title", text: tr("akim.pulse.title") }),
+        // Весь город — «Пульс города» (как на Ситуационном центре), выбран район — «Пульс района».
+        h("h2", { class: "bk-h2", id: "akim-pulse-title", text: tr(state.district ? "akim.pulse.title" : "akim.pulse.title_city") }),
       ]);
       var first = h("ul", { class: "akim-pulse__list" });
       items.slice(0, 3).forEach(function (a) {

@@ -60,7 +60,7 @@ def _counts(recs: list[dict], start: datetime, as_of: datetime) -> dict:
 def _sentences(w: dict, lang: str) -> list[str]:
     """Сводка недели одним абзацем (3–7 фраз). Пустые блоки соседей — без фраз о них."""
     k, d = w["kpi"], w.get("district")
-    rng = w["week"]["label_" + lang]
+    rng = w["week"]["so_far_label_" + lang] if w["week"]["current"] else w["week"]["label_" + lang]
     out = []
     n, ch = k["new"]["value"], k["new"]
     if lang == "ru":
@@ -186,6 +186,9 @@ def build(service, *, date=None, district=None, now: datetime | None = None) -> 
         "label_kk": _range_text(start, (end - timedelta(days=1)).date(), "kk"),
         "as_of_label_ru": text.fmt_date(last_day.isoformat(), "ru"),
         "as_of_label_kk": text.fmt_date(last_day.isoformat(), "kk"),
+        # Идущая неделя: дни, за которые уже есть числа («12–15 окт»), — для текста, чтобы не писать «12–18 окт» в четверг.
+        **{f"so_far_label_{lg}": (_range_text(start, last_day, lg) if last_day > start.date()
+                                  else text.fmt_date(last_day.isoformat(), lg)) for lg in ("ru", "kk")},
         "prev_start": (start - WEEK).date().isoformat(), "prev_end": (start - timedelta(days=1)).date().isoformat(),
     }
     out = {
