@@ -17,9 +17,16 @@
 
 ## Сделано
 - 11:26 UTC — роль занята, читаю пакет (IDEA, CONTRACT, VISUAL_BRIEF, передача r14).
+- Продолжение: scheduled task trig_01H9m4m3GachgcWAJ6hT8KsA (каждый час в :26 UTC, в эту сессию). Удалить после
+  17 окт 23:59 по Астане (18:59 UTC).
+- Пути R08 в FINAL-4 = поставка r14 d5719635 (код совпадает с claude/r14-R08; restored_from не нужен).
+- 12:00 UTC — research/round-15-results/R08/INTEGRATION.txt (черновик 1): просьбы к R01 (маршруты akim/board и akim/week
+  с staff_view=True, db_path в configure), R17 (табло, кризисы, ссылка штаба), R16 («Жители вместе»), R13 (поручения,
+  прогноз на неделю). Запасной путь — make_service соседа по маршрутам CONTRACT §7.
 
 ## Дальше
-- Прочитать пакет и прошлую передачу claude/r14-R08, поднять стенд, начать с akim/board.
+- ui/civic_akim/board.py + neighbors.py (GET akim/board, каждый блок необязателен), тесты без соседей.
+- web/civic/board/ — Ситуационный центр.
 
 ## Вопросы владельцу
 - (пока нет)
