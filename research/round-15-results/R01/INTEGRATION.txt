@@ -1,0 +1,112 @@
+R01 · РАУНД 15 · КАК ПОДКЛЮЧИТЬСЯ К ОБОЛОЧКЕ И ШЛЮЗУ (для ролей R02–R17)
+
+Ветка R01: claude/brave-fermi-nhzetj (find_branches.py --role R01). Последняя сборка: find_branches.py --build.
+Поправки владельца: research/round-15/AMENDMENTS.md в ветке пакета — читать каждый круг (П1 «Без ИИ-слопа»).
+
+=====================================================================================================================
+1. МАРШРУТЫ API v2 РАУНДА 15 (CONTRACT §7) — УЖЕ В ШЛЮЗЕ ui/web_server.py
+=====================================================================================================================
+Все строки таблицы §7 есть в V2_ROUTES_ROUND15 / V2_HANDLERS_ROUND15. Пока модуля нет — 503 module_not_ready
+{"error", "message", "module", "role"}. Модуль появился в сборке — маршрут оживает сам (importlib), правка R01 не нужна.
+Назвали функцию или модуль иначе — напишите в своём INTEGRATION.txt, R01 поправит таблицу.
+
+1.1 Вид вызова
+  service  — make_service(db_path).handle(method, path, query, body, principal, context) -> {"status","headers","body"}
+             path — полный (/api/civic/v2/…), query — строка, principal — сессия R02 или None, context — заголовки
+             (ключи в нижнем регистре: context["headers"]["x-birge-device"]), cookies, client_ip.
+             R16 ui.civic_together · R17 ui.civic_agencies · R13 ui.civic_meetings · R09 ui.civic_feedback.v2.integration
+  raw      — fn(path, parse_qs(query)) -> (status, body): R12 engine.civic_geo.api.handle (путь без /api/civic/v2),
+             R07 ui.civic_heat.api.handle_get, R08 ui.civic_akim.api.handle_get (полный путь)
+  function — именованные аргументы, функция получает только объявленные (+ context, principal, если объявлены):
+             R04 ui.civic_ml_api: route(text, category, point, target, lang, body) · reply_draft(complaint_id, lang, body)
+                                  · moderate(text, kind, lang, body)        [ключ маршрута POST /moderate — ml.text_check]
+             R03 agent.civic_assistant.api: ask(question, lang, district, body)
+             R06 ui.civic_store.v2: list_notifications(device_id, since, lang) · read_notifications(device_id, ids, all, body)
+                                    · idea_to_initiative(idea_id, body)
+             Ошибки: ValueError → 400, LookupError → 404, PermissionError → 403, исключение с .status/.code → этот код.
+
+1.2 Что шлюз проверяет ДО модуля (раунд 15)
+  1) сотрудник (staff=True) — сессия R02 + CSRF (заголовок X-CSRF-Token) — и для GET (табло R17, board/week R08,
+     календарь R12): без сессии 401 unauthenticated, без CSRF 403 csrf_failed. Клиент оболочки
+     BirgeShell.api.v2(method, path, body) шлёт токен вошедшего сотрудника во ВСЕХ запросах — пользуйтесь им.
+     Сервисы (R16, R17, R13, R09) проверяют сотрудника и сами — защита в глубину.
+  2) форма параметров адреса (400 {"error":"bad_request","field","message"} по-русски):
+     from/to/since — дата ГГГГ-ММ-ДД или время ISO 8601 (+05:00, Z; «+» без %2B тоже принимается); from ≤ to,
+     период ≤ 366 дней; days 1…366; district [a-z…]; bbox — 4 числа в Астане; status/kind/step — латинское слово
+     (можно через запятую); yard — id по правилу CIVIC_ID; category — id categories_v2; street — до 120 символов.
+     Смысл значений (неизвестный статус, нет такого двора) — проверяет модуль.
+  3) житель (R06 function): X-Birge-Device (запасной — device_id в теле/адресе), 8–128 символов [A-Za-z0-9._:-].
+  4) лимиты записи жителя по адресу (429 + Retry-After): инициатива 3/мин и 10/ч; «Я приду», «Я живу здесь»,
+     «Приду» на встречу — ≤ 20 в сутки на одну запись; вопрос к встрече 3/мин, 20/ч, 30/сут; отчёт «после» 5/мин;
+     route/moderate 60/мин; notifications/read 60/мин. Свои лимиты в модуле — по CONTRACT §7.
+
+1.3 R01 сам: GET /api/civic/v2/demo/scenes -> {"world": bool, "scenes": {...}} (id сцен 7–9 для палитры, без текстов).
+
+=====================================================================================================================
+2. ДЕМО-МИР (CONTRACT §11, SCHEMA R02 §4)
+=====================================================================================================================
+При CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 сервер при старте зовёт seed_world(db_path, world, now=now) в модулях (порядок):
+ui.civic_feedback.v2.integration | ui.civic_feedback.v2 (R09) → ui.civic_store.v2 (R06) → ui.civic_together (R16) →
+ui.civic_agencies (R17) → ui.civic_meetings, ui.civic_qa (R13) → engine.civic_geo (R12) → ui.civic_heat (R07) →
+ui.civic_akim (R08) → ui.civic_ml_api (R04). Одна функция в пакете и подмодуле зовётся один раз.
+- world — весь мир R02 (относительные времена: ml.datasets.demo_world_io.materialize(world, now)); now — один для всех,
+  aware datetime по Астане (+05:00). Вернуть {"inserted": n, "skipped": m} (идемпотентно по id).
+- В консоли одна строка: «civic-world: R09 743, R06 55 (новых 40), R16 42 …»; сбой модуля → «R16 ошибка (KeyError)»,
+  остальные засеваются.
+- С флагом мира карта НЕ подмешивает синтетику R07 (ui.civic_heat.demo_seed): все жалобы мира — у R09.
+- Без флага — демо FINAL-4 без изменений. run-city.bat / run.sh флаг пока НЕ включают (ждём seed_world модулей и
+  зелёный регресс R10 части 1).
+Стенд с миром: CIVIC_DB_PATH=/tmp/birge/w.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8656
+(файл мира — data/civic/astana/demo-world/world_v1.json; другой путь — CIVIC_DEMO_WORLD_PATH).
+
+=====================================================================================================================
+3. ЭКРАНЫ, МЕНЮ, СЛОИ (R11 IA_ROUND15 — уже в оболочке web/civic/shell/birge.js)
+=====================================================================================================================
+3.1 Разделы и глобальные имена (модуль: window.<Имя>.mount(root, opts) -> {destroy?, setLang?, setPath?})
+  yard, together → BirgeTogether (R16) · meetings → BirgeMeetings (R13) · agencies, crisis → BirgeAgencies (R17) ·
+  analyst → BirgeAnalyst (R03) · works-calendar → BirgeWorksCalendar (R12) · прежние: inbox (R09), projects/ideas/works
+  (R06), nearby/services/day (R08), questions (R13), qr (R12).
+  Вместо глобального имени можно BirgeShell.registerScreen({id, mount, modes?, titleKey?}); ссылка-страница —
+  registerScreen({id: "board", href: "/civic/board/", modes: ["akimat"], titleKey: "shell.nav.board"}) (R08).
+  Нет модуля — нет пункта; «родитель» пропал — раздел возвращается на место FINAL-4 (Рядом, Проекты и идеи, «Ещё»).
+3.2 opts (что получает mount): api {v2, ApiError}, apiBase "/api/civic/v2", lang, role (вид), section (id раздела —
+  один модуль на два раздела различает их так), titleTag "h2", syncUrl false, t(key), openTarget(kind, id, days),
+  openSection(id, path?), close(), map (MapLibre), path, navigate(path), setLayer(layerId|null).
+3.3 Адрес #<раздел>/<путь> (путь [A-Za-z0-9][A-Za-z0-9_.:/-]{0,79}): #yard/yard-123, #together/i-w15-01,
+  #agencies/calendar, #agencies/crisis/inc-w15-buran, #meetings/questions, #crisis/inc-1, #inbox/c-w1500010.
+  opts.navigate(path) — оболочка пишет адрес и зовёт handle.setPath(path) БЕЗ перемонтажа (нет setPath — перемонтаж).
+  Назад/вперёд браузера — так же через setPath.
+  Ждём от ролей: R16 — opts.path = id двора / инициативы; R17 — "board|joint|handoffs|calendar|crisis[/inc-id]";
+  R09 — #inbox/<id жалобы> открывает её карточку (сцена 8); R13 — "questions" и id встречи.
+3.4 Esc на экране раздела — назад на карту. Своё окно поверх экрана помечайте role="dialog" (или aria-modal="true"),
+  закрытое — атрибутом hidden: тогда Esc закрывает окно, а не экран; сами обработали Esc — event.preventDefault().
+3.5 Слои: BirgeShell.registerLayer({id, titleKey | title:{ru,kk}, modes, show(map), hide(map)}); по умолчанию выключен,
+  одновременно — один. Включить из экрана: opts.setLayer(id) (кнопка «Показать на карте»).
+3.6 Баннер (R17, кризис жителям): BirgeShell.alertSlot() -> контейнер под капсулой разделов (телефон — под полем
+  поиска, 8 px от краёв); один баннер: slot.replaceChildren(ваш_узел). Пустой контейнер места не занимает.
+3.7 Режим показа ?show=1: html[data-birge-show="1"], BirgeShell.show === true. Служебные плашки прячет оболочка;
+  «Пример» у синтетики НЕ прятать. На 1024 шкала ui-kit на ступень крупнее (токены --fs-*): берите размеры из токенов.
+3.8 Палитра Ctrl+K: все доступные разделы, «Календарь работ», «Кризисный штаб» (при agencies), сцены 7–9 (при
+  демо-мире). Сцена 7 → житель, #yard/<двор> (нет R16 — двор на карте); 8 → акимат, #inbox/<жалоба>;
+  9 → акимат, #agencies/crisis/<кризис> (нет R17 — «Картина дня»).
+
+=====================================================================================================================
+4. КЛЮЧИ ДЛЯ R11 (запасной текст — web/civic/shell/shell-text.js, ru и kk)
+=====================================================================================================================
+Меню (IA_ROUND15 §8, уже в словаре R11): shell.nav.yard, shell.nav.together, shell.nav.meetings, shell.nav.agencies,
+shell.nav.agencies_title, shell.nav.works_calendar, shell.nav.crisis, shell.nav.analyst, shell.nav.board,
+shell.nav.replay, shell.nav.replay_title, shell.nav.notifications, shell.more.group.residents, shell.more.group.tools.
+Новые R01: shell.palette.scenes («Сцены демо» / «Демо сахналары»), shell.palette.scene7 («Сцена 7 · Двор вместе» /
+«7-сахна · Аула бірге»), shell.palette.scene8 («Сцена 8 · Ведомства вместе» / «8-сахна · Ведомстволар бірге»),
+shell.palette.scene9 («Сцена 9 · Буран» / «9-сахна · Боран»), shell.palette.calendar, shell.palette.crisis.
+
+=====================================================================================================================
+5. СДАЧА ПОСТАВКИ В СБОРКУ (B1 16 окт 14:00, B2 16 окт 23:00, FINAL-5 17 окт 18:00 по Астане)
+=====================================================================================================================
+R01 берёт ТОЛЬКО ваши пути (CONTRACT §2) с code_sha из research/round-15-results/<R>/DELIVERY.json вашей ветки:
+  git checkout <code_sha> -- <ваши пути>
+Файлы для браузера (js/css/html/json) — перечислите в INTEGRATION.txt: R01 добавит их в CIVIC_ASSETS
+(ui/web_server.py, белый список) и теги script/link в web/index.html (defer, после birge-ref.js; inline-скриптов нет — CSP).
+Правка чужого пути (в т. ч. оболочки) — patch в своём INTEGRATION.txt, R01 применит.
+Приёмка сборки (поправка П1): кадры 1366/1024/375 × ru/kk без нарисованных копий зданий и логотипов, без больших
+иллюстраций, эмодзи, свечения «для красоты»; модели ориентиров R05 в сборку не берутся.

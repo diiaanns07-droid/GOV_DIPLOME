@@ -1,0 +1,45 @@
+{
+  "role": "R01",
+  "round": 15,
+  "branch": "claude/brave-fermi-nhzetj",
+  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+  "restored_from": "a4937462 (FINAL-4, claude/sharp-dijkstra-0t87gl) — в базе пакета без изменений",
+  "code_sha": "c2df555a",
+  "tested_sha": "c2df555a",
+  "push_status": "OK (push после каждого коммита; см. git log origin/claude/brave-fermi-nhzetj)",
+  "builds": {"FINAL-4.1": "bd3800d8"},
+  "changed_paths": [
+    "ui/web_server.py", "web/civic/shell/birge.js", "web/civic/shell/birge-ref.js", "web/civic/shell/birge.css",
+    "web/civic/shell/birge-ref.css", "web/civic/shell/shell.js", "web/civic/shell/shell-text.js",
+    "tests/civic/R01/round15/", "tests/civic/R01/browser/r15_ia.cjs", "tests/civic/R01/browser/r14_wave2.cjs",
+    "tests/civic/R01/test_r01_api_v2.py", "tests/civic/R01/run_checks.sh",
+    "web/civic/heat/heat.js и heat.css — поставка R07 fe209c56", "web/civic/feedback, tests/civic/R09 — поставка R09 e494026e"
+  ],
+  "tests": {
+    "pytest tests/civic/R01/round15": "PASS 154 passed, 1 skipped (мир R02 ещё не в ветке R01)",
+    "pytest R01 + R15 + R06 r14 + R13 + R09": "PASS 1433 passed, 3 skipped (на d987a112)",
+    "pytest весь tests/ (FINAL-4.1, 0b76f9ed)": "FAIL 3599 / 2 — оба R10 accuracy [c24-R12], [c28-R07], те же на базе e91acb69 (данные LOCAL-10 пакета), не оболочка",
+    "browser r15_ia.cjs (новый)": "PASS 25/0 (на c2df555a)",
+    "browser r14_wave2.cjs": "PASS 42/0 (на c2df555a, ?screens=r14)",
+    "browser r14_shell / r14_b1 / r14_b2 / p0_flow (FINAL-4.1 bd3800d8)": "PASS 43/0 · 16/0 · 28/0 · 63/0 (1 NOT_RUN)",
+    "R10 demo_flow на FINAL-4.1": "NOT_RUN (R10 гоняет сам; ~30 мин на прогон)"
+  },
+  "screens": [
+    "research/round-15-results/R01/screens/final41/bylo-stalo-more-1366-ru.jpg",
+    "research/round-15-results/R01/screens/final41/bylo-stalo-more-1366-kk.jpg",
+    "research/round-15-results/R01/screens/final41/bylo-stalo-phone-375-ru.jpg",
+    "research/round-15-results/R01/screens/final41/bylo-stalo-phone-375-kk.jpg",
+    "research/round-15-results/R01/screens/final41/bylo-stalo-1024-ru.jpg",
+    "research/round-15-results/R01/screens/final41/bylo-stalo-1024-kk.jpg",
+    "research/round-15-results/R01/screens/final41/stalo-wizard-one-sheet-375-ru.jpg",
+    "research/round-15-results/R01/screens/final41/stalo-phone-akimat-375-kk.jpg",
+    "research/round-15-results/R01/screens/final41/stalo-1100-kk-capsule-tight.jpg"
+  ],
+  "known_limits": [
+    "Облако без интернета: подложка карты — упрощённый фон, 3D-зданий подложки нет (П1 правило 6; вид проверяет LOCAL-12).",
+    "Демо-мир: флаг CIVIC_DEMO_WORLD в run-city.bat/run.sh не включён — ждём seed_world модулей и регресс R10 части 1.",
+    "Колокольчик R06 и чип «Хроника» R07 в оболочке — когда придут их модули (API в INTEGRATION ролей).",
+    "Значки sparkle/monitor/bell — из ui-kit R11 раунда 15 (берётся в B1)."
+  ],
+  "next_step": "B1 — 16 окт 14:00 по Астане: поставки ролей по find_branches.py, CIVIC_ASSETS и теги, проверки, BUILD.json"
+}

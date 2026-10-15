@@ -1,0 +1,34 @@
+R01 · РАУНД 15 · КАК ЗАПУСТИТЬ И ПРОВЕРИТЬ
+
+Ветка: claude/brave-fermi-nhzetj. Последняя сборка и её SHA — research/round-15-results/R01/BUILD.json
+(python3 research/round-15/tools/find_branches.py --build).
+
+ЗАПУСК (ноутбук владельца): run-city.bat → http://127.0.0.1:8611/ (как в FINAL-4).
+СТЕНД В ОБЛАКЕ (Linux):
+  mkdir -p /tmp/birge
+  python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
+  python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
+  python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
+  printf 'Birge-Stend-Kokshetau-77\nBirge-Stend-Kokshetau-77\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
+  CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655
+  (пароль от 12 символов и не «простой»: «пароль» R02 не принимает)
+  Демо-мир R02 (раунд 15): добавить CIVIC_DEMO_WORLD=1 — в консоли строка «civic-world: …».
+
+АДРЕСА
+  /                 — эталон A (по умолчанию); /?layout=classic — прежний вид; /?glass=off — без стекла
+  /?show=1          — режим показа (проектор): без служебных плашек, на 1024 текст крупнее; /?show=0 — выключить
+  /?screens=all     — все разделы раунда 15 (разбор R11/R10); /?screens=r14 — полное меню раунда 14
+  /#yard/yard-123, /#agencies/crisis/inc-1 … — раздел и путь внутри него (IA_ROUND15 §7.3)
+КЛАВИШИ: / — поиск · J / K — горячие места · Esc — закрыть карточку / вернуться с экрана на карту ·
+  Ctrl+K — палитра (разделы, «Календарь работ», «Кризисный штаб», «Сцена 7 / 8 / 9» при демо-мире)
+
+ЧТО ТЕПЕРЬ МОЖЕТ ПОЛЬЗОВАТЕЛЬ (раунд 15, R01)
+- телефон: сверху одно поле поиска во всю ширину со знаком Birge и аватаром; одна шторка за раз;
+- ноутбук: «Ещё» под своей кнопкой; на 1024 разделы чаще в капсуле (поля 12);
+- меню по схеме R11: «Мой двор» (житель) и «Ведомства» (акимат) появляются, как только роль сдаст модуль;
+- ведущий демо: Ctrl+K «Сцена 7 / 8 / 9» — переход к двору, обращению, кризису по id демо-мира за ≤ 1 с.
+
+ПРОВЕРКИ R01 (браузерные — строго по одному)
+  bash tests/civic/R01/run_checks.sh <out>          # pytest, web_check, node, все браузерные R01 по очереди
+  python3 -m pytest -q tests/civic/R01/round15      # маршруты раунда 15 и демо-мир (154)
+  NODE_PATH=$(npm root -g) node tests/civic/R01/browser/r15_ia.cjs <out>   # меню IA_ROUND15, сцены, ?show=1 (25)
