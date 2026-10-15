@@ -594,3 +594,43 @@ def test_staff_tabs_waiting_and_going(svc):
 def test_scene_yard_first_in_yard_list(svc):
     items = call(svc, "GET", "/yards")["body"]["items"]
     assert items[0]["id"] == SCENE["yard"]
+
+
+def test_r15_s51_yard_get_writes_nothing_and_far_cells_are_404(svc):
+    """R15 S51: GET страницы двора ничего не записывает (у GET нет лимита шлюза); ячейка сетки вне Астаны — 404 и для
+    «Я живу здесь»; в списке «Выбрать двор» — только дворы, где есть соседи или дела (и двор сцены демо)."""
+    cells = {"cell-500-500": {"label_ru": "Примерное место", "label_kk": "Шамамен орын", "point": [71.42, 51.13],
+                              "approximate": True, "street": None, "geometry": None},
+             "cell-999999-999999": {"label_ru": "Примерное место", "label_kk": "Шамамен орын",
+                                    "point": [2219.1, 1407.4], "approximate": True, "street": None, "geometry": None}}
+    neighbors.configure(yard_geo=lambda yid: cells.get(yid))
+
+    def rows():
+        with svc.store._read() as conn:
+            return conn.execute("SELECT COUNT(*) FROM tg_yards").fetchone()[0]
+
+    before = rows()
+    assert call(svc, "GET", "/yards/cell-500-500")["status"] == 200
+    assert call(svc, "GET", "/yards/cell-999999-999999")["status"] == 404
+    assert rows() == before
+    assert call(svc, "POST", "/yards/cell-999999-999999/join", {}, context=ctx(DEV_A))["status"] == 404
+    listed = [y["id"] for y in call(svc, "GET", "/yards")["body"]["items"]]
+    assert "cell-500-500" not in listed and listed[0] == SCENE["yard"]
+    assert call(svc, "POST", "/yards/cell-500-500/join", {}, context=ctx(DEV_A))["status"] == 200
+    assert "cell-500-500" in [y["id"] for y in call(svc, "GET", "/yards")["body"]["items"]]
+
+
+def test_r10_b124_warm_up_reads_scene_yard_first_and_writes_nothing(svc, monkeypatch):
+    """R10 B-124: прогрев при старте читает двор сцены демо (и самые «людные» дворы) и ничего не пишет; в тестах фоновый
+    поток не запускается (PYTEST_CURRENT_TEST), выключатель — CIVIC_TOGETHER_WARM=0."""
+    from ui.civic_together import service as service_module
+    with svc.store._read() as conn:
+        before = [conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in ("tg_yards", "tg_events")]
+    result = svc.warm_up(limit=3)
+    assert result["yards"][0] == SCENE["yard"] and 1 <= len(result["yards"]) <= 3
+    with svc.store._read() as conn:
+        assert [conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in ("tg_yards", "tg_events")] == before
+    assert service_module.warm_up_enabled() is False
+    monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
+    monkeypatch.setenv("CIVIC_TOGETHER_WARM", "0")
+    assert service_module.start_warm_up(svc) is False

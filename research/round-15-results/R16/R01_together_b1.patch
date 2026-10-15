@@ -22,21 +22,19 @@ index 48a0b7d5..cc753593 100644
      ("POST", "incidents"), ("POST", "incidents/{id}/task"), ("POST", "incidents/{id}/update"),
      ("POST", "incidents/{id}/close"),
 diff --git a/ui/web_server.py b/ui/web_server.py
-index c00c49c1..61e0d066 100644
+index 2abab5b6..d3c0e00b 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
-@@ -123,7 +123,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
-                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
+@@ -124,6 +124,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                  "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
                  # R13 раунд 15: «Вопросы и встречи» (раздел #meetings; вкладка «Вопросы» — qa.js выше).
--                "meetings/meetings.js", "meetings/meetings.css", "meetings/forecast-week.js")  # + блок «Прогноз на неделю» для R08
-+                "meetings/meetings.js", "meetings/meetings.css", "meetings/forecast-week.js",  # + блок «Прогноз на неделю» для R08
+                 "meetings/meetings.js", "meetings/meetings.css", "meetings/forecast-week.js",  # + блок «Прогноз на неделю» для R08
 +                # R16 раунд 15: «Мой двор» (#yard) и «Сделаем вместе» (#together), слой «Инициативы».
-+                "together/together.js", "together/together-text.js", "together/together.css")
- # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
- CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
-               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
-@@ -251,6 +253,7 @@ V2_RATE_LIMITS = {
++                "together/together.js", "together/together-text.js", "together/together.css",
+                 # R17 раунд 15: «Штаб ведомств» и кризисный штаб (раздел #agencies, слой «Кризис», стенд index.html).
+                 "agencies/agencies.js", "agencies/agencies.css", "agencies/crisis-layer.js", "agencies/index.html",
+                 # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (раздел #analyst; стенд analyst-demo.html не отдаём).
+@@ -259,6 +261,7 @@ V2_RATE_LIMITS = {
      "together.initiatives.report": ((60, 5, False), (3600, 20, False)),
      "together.yards.join": ((60, 20, False), (86400, 20, True)),
      "together.yards.leave": ((60, 20, False), (86400, 20, True)),
@@ -44,7 +42,7 @@ index c00c49c1..61e0d066 100644
      "meetings.register": ((60, 20, False), (86400, 20, True)),   # R13 INTEGRATION §2
      "meetings.question": ((60, 3, False), (3600, 20, False), (86400, 30, False)),
      "ml.route": ((60, 60, False),),
-@@ -781,9 +784,12 @@ V2_ROUTES_ROUND15 = (
+@@ -789,9 +792,12 @@ V2_ROUTES_ROUND15 = (
      ("POST", ("together", "initiatives", "{id}", "support"), "together.initiatives.support"),
      ("POST", ("together", "initiatives", "{id}", "moderate"), "together.initiatives.moderate"),
      ("POST", ("together", "initiatives", "{id}", "report"), "together.initiatives.report"),
@@ -57,7 +55,7 @@ index c00c49c1..61e0d066 100644
      ("GET", ("together", "updates"), "together.updates"),
      # R17 «Штаб ведомств» и кризисный штаб (ui.civic_agencies, сервис)
      ("GET", ("agencies",), "agencies.list"),
-@@ -909,6 +915,10 @@ V2_HANDLERS_ROUND15 = {
+@@ -917,6 +923,10 @@ V2_HANDLERS_ROUND15 = {
      "together.yards.get": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
      "together.yards.join": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
      "together.yards.leave": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
@@ -68,8 +66,21 @@ index c00c49c1..61e0d066 100644
      "together.updates": V2Handler("R16", _TOGETHER, "make_service", kind="service", query={"since": "when"}),
      "agencies.list": V2Handler("R17", _AGENCIES, "make_service", kind="service"),
      "agencies.board": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True, query={
+@@ -2491,6 +2501,12 @@ def main():
+             threading.Thread(target=importlib.import_module("engine.civic_geo.api").warm_up, daemon=True).start()
+         except Exception:  # R12 не сдан или сломан — /targets ответит 503, приложение работает
+             LOGGER.info("civic-v2: R12 warm-up skipped")
++        # R16 (R10 B-124): «Мой двор» — соседи двора сцены демо (форма R12, индексы карты R07) прогреваются в фоне.
++        try:
++            together, together_db = importlib.import_module("ui.civic_together"), server.civic_v2.db_path
++            threading.Thread(target=lambda: together.warm_up(together_db), daemon=True).start()
++        except Exception:  # R16 не сдан — «Мой двор» посчитается при первом открытии
++            LOGGER.info("civic-v2: R16 warm-up skipped")
+     except OSError as exc:
+         if getattr(exc, "winerror", None) == 10048 or getattr(exc, "errno", None) in (48, 98, 10048):
+             parser.exit(1, "Порт занят. Закройте прежнее приложение или задайте другой PORT.\n")
 diff --git a/web/index.html b/web/index.html
-index 1b0cd36c..2741726c 100644
+index ea3ab8ef..34d0df67 100644
 --- a/web/index.html
 +++ b/web/index.html
 @@ -27,6 +27,7 @@
@@ -77,15 +88,15 @@ index 1b0cd36c..2741726c 100644
      <link rel="stylesheet" href="/civic/qa/qa.css" />
      <link rel="stylesheet" href="/civic/meetings/meetings.css" />
 +    <link rel="stylesheet" href="/civic/together/together.css" />
+     <link rel="stylesheet" href="/civic/agencies/agencies.css" />
+     <link rel="stylesheet" href="/civic/assistant/analyst.css" />
      <link rel="stylesheet" href="/civic/proposals/proposals.css" />
-     <link rel="stylesheet" href="/civic/ideas/ideas.css" />
-     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
-@@ -258,6 +259,8 @@
+@@ -260,6 +261,8 @@
      <script defer src="/civic/qa/qa.js"></script>
      <script defer src="/civic/meetings/meetings.js"></script>
      <script defer src="/civic/meetings/forecast-week.js"></script>
 +    <script defer src="/civic/together/together-text.js"></script>
 +    <script defer src="/civic/together/together.js"></script>
-     <script defer src="/civic/ideas/ideas.js"></script>
-     <script defer src="/civic/proposals/works.js"></script>
-     <script defer src="/civic/akim/services.js"></script>
+     <script defer src="/civic/agencies/agencies.js"></script>
+     <script defer src="/civic/agencies/crisis-layer.js"></script>
+     <script defer src="/civic/assistant/analyst.js"></script>

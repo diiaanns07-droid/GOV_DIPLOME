@@ -7,14 +7,18 @@ R06 (лента, идея → дело), R08/R03 (сводка), R17 (вывоз
 1. R01 · ПОДКЛЮЧЕНИЕ К СБОРКЕ (одна правка, готовый patch)
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
 B1 — ветка R01 claude/brave-fermi-nhzetj (12 маршрутов together/* из CONTRACT §7 уже есть, файлов R16 ещё нет):
-  git apply research/round-15-results/R16/R01_together_b1.patch            # проверено: git apply --check на cc510c9d
+  git apply research/round-15-results/R16/R01_together_b1.patch            # проверено: git apply --check на c9069723
+  если patch уже не ложится (файлы R01 меняются быстро) — то же самое по якорям, повтор ничего не дублирует:
+  python3 research/round-15-results/R16/r01_together_apply.py .
   + файлы роли: ui/civic_together/, web/civic/together/, tests/civic/R16/ (ветка claude/youthful-johnson-6nz5mp).
   Что в нём: 3 маршрута [доп.] (GET together/yards; POST together/yards/{id}/captain; POST together/yards/{id}/moderate —
   staff=True) + V2_HANDLERS + лимит «старшего» 10/ч; CIVIC_ASSETS together/*; index.html — together.css после
-  meetings.css, together-text.js и together.js после forecast-week.js; в тест R01 test_r01_round15_routes.py — 3 строки
-  [доп.] таблицы и yards/{id}/moderate в STAFF_ROUTES. Лимиты together.* у R01 свои — оставлены как есть.
-  Проверено на cc510c9d + patch + ui-kit/i18n R11 (b6f039c4): tests/civic/R01 — 363 passed, 1 skipped; tests/civic/R16 —
-  54 passed; браузер R16 в оболочке R01 с путями (#yard/<двор>, #together/<дело>) — см. §5.
+  meetings.css, together-text.js и together.js после forecast-week.js; в main() рядом с warm_up R12 — фоновый
+  ui.civic_together.warm_up(db_path) (R10 B-124: первый «Мой двор» после старта 2,6 с → 0,03–0,09 с); в тест R01
+  test_r01_round15_routes.py — 3 строки [доп.] таблицы и yards/{id}/moderate в STAFF_ROUTES. Лимиты together.* у R01
+  свои — оставлены как есть.
+  Проверено на c9069723 + patch + ui-kit/i18n R11 (b3502428): tests/civic/R01 + tests/civic/R16 — 418 passed, 1 skipped;
+  браузер R16 в оболочке R01 с путями (#yard/<двор>, #together/<дело>) — см. §5.
   Без 3 [доп.] модуль тоже работает: спрашивает GET /modules и прячет список дворов и «старшего по двору» (без 404).
 Пакет / FINAL-4 (без маршрутов раунда 15) — прежний полный patch:
   git apply research/round-15-results/R16/R01_together_routes.patch        # проверено: git apply --check на e91acb6
@@ -143,5 +147,9 @@ R04: moderate() и similar_initiatives(title, point, 30, records=…, kind=…) 
     тесты шлюза пропускаются — SKIP, а не PASS)
   • Браузер: NODE_PATH=$(npm root -g) node tests/civic/R16/browser/r16_browser.cjs http://127.0.0.1:8655 <кадры>
     сцена 7 (на чистой базе): node tests/civic/R16/browser/r16_scene7.cjs http://127.0.0.1:8655 <кадры> ru 1366x768
+  • Находки соседей (круг 2): R15 S51 (GET страницы двора писал строку в tg_yards, ячейки вне Астаны) — закрыто
+    patch R15 P-R16-S51 + тест test_r15_s51_…; R10 B-124 (двор 3,3–3,6 с на холодную) — закрыто прогревом
+    (seed_world и make_service демо запускают его сами, R01 — строкой в main()): холодный GET 2,57 с → 0,03–0,09 с,
+    тёплый 10–25 мс; повтор R10: demo_flow_v2 «Ctrl+K Сцена 7 ≤ 1 с». R10 B-114 (зоны нажатия) — следующий круг.
   • LOCAL (по желанию): настоящее фото «после» для показа сцены 7 — снять на телефон двор после уборки (без людей
     крупным планом) и загрузить кнопкой «Отметить сделанным» → «Добавить фото». В Git фото не класть.

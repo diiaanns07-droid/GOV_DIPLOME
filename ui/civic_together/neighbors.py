@@ -24,6 +24,7 @@ PROBLEM_RADIUS_M = 60      # цель тепловой карты относит
 IDEA_RADIUS_M = 600        # идеи жителей рядом с двором
 WORK_RADIUS_M = 800        # работы и отключения рядом
 _GEO_TTL_S = 3600          # подпись и форма двора OSM меняются только с новой выгрузкой — кэш на час
+_GEO_CACHE_MAX = 4096      # R15 S51: id двора приходит из адреса — кэш не растёт без предела
 
 _overrides: dict = {}
 _geo_cache: dict = {}
@@ -159,6 +160,8 @@ def yard_geo(yard_id: str) -> dict | None:
         LOGGER.info("R12: двор %s не найден (%s)", yard_id, type(exc).__name__)
         value = None
     with _lock:
+        if len(_geo_cache) >= _GEO_CACHE_MAX:
+            _geo_cache.clear()
         _geo_cache[yard_id] = (time.monotonic(), value)
     return value
 

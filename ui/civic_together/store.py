@@ -311,12 +311,14 @@ class TogetherStore:
             where.append("y.district = ?")
             args.append(district)
         scene = self.meta("scene_yard") or ""
-        sql = (f"SELECT y.*, {MEMBERS_SQL} AS members, "
+        # R15 S51: только дворы, где есть соседи или дела (и двор сцены демо), — не всё, что когда-то открывали.
+        sql = (f"SELECT * FROM (SELECT y.*, {MEMBERS_SQL} AS members, "
                "(SELECT COUNT(*) FROM tg_initiatives i WHERE i.target_id = y.id AND i.status IN ('published', 'done')) "
                "AS initiatives FROM tg_yards y" + (" WHERE " + " AND ".join(where) if where else "") +
-               " ORDER BY (y.id = ?) DESC, members DESC, initiatives DESC, y.id LIMIT ?")
+               ") WHERE members > 0 OR initiatives > 0 OR id = ? "
+               "ORDER BY (id = ?) DESC, members DESC, initiatives DESC, id LIMIT ?")
         with self._read() as conn:
-            return [dict(r) for r in conn.execute(sql, (*args, scene, int(limit))).fetchall()]
+            return [dict(r) for r in conn.execute(sql, (*args, scene, scene, int(limit))).fetchall()]
 
     def is_member(self, yard_id: str, device_id: str | None) -> bool:
         if not device_id:

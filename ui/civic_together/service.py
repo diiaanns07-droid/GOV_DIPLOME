@@ -731,7 +731,13 @@ class TogetherService:
                                        "demo": bool(r["demo"])} for r in rows]})
 
     def _yard_info(self, yard_id: str) -> tuple[dict | None, dict | None]:
-        return neighbors.yard_geo(yard_id), self.store.yard(yard_id)
+        geo = neighbors.yard_geo(yard_id)
+        point = (geo or {}).get("point")
+        # R15 S51: ячейка сетки R12 — любые целые cell-<ix>-<iy>; двор вне Астаны — «нет такого двора».
+        if geo is not None and not (point and ASTANA_BOUNDS[0] <= point[0] <= ASTANA_BOUNDS[2]
+                                    and ASTANA_BOUNDS[1] <= point[1] <= ASTANA_BOUNDS[3]):
+            geo = None
+        return geo, self.store.yard(yard_id)
 
     def yard_page(self, yard_id: str, q: dict, context) -> dict:
         geo, known = self._yard_info(yard_id)
@@ -741,8 +747,9 @@ class TogetherService:
         point = (geo or {}).get("point") or ([known["lon"], known["lat"]] if known and known.get("lon") else None)
         district = (known or {}).get("district") or neighbors.district_of(point)
         if known is None or not known.get("label_ru"):
-            known = self.store.remember_yard(yard_id, label_ru=(geo or {}).get("label_ru"),
-                                             label_kk=(geo or {}).get("label_kk"), district=district, point=point)
+            # R15 S51: GET ничего не записывает (у GET нет лимита шлюза) — двор запоминают «Я живу здесь» и инициатива.
+            known = dict(known or {"members": 0}, label_ru=(geo or {}).get("label_ru"),
+                         label_kk=(geo or {}).get("label_kk"), district=district)
         area = {"id": yard_id, "point": point, "geometry": (geo or {}).get("geometry")}
         problems = neighbors.problems(area)
         ideas = neighbors.ideas(area, district)
@@ -773,6 +780,28 @@ class TogetherService:
         return _reply(200, {"yard": yard, "me": me, "counts": counts, "problems": problems, "ideas": ideas,
                             "initiatives": initiatives, "works": works,
                             "feed": self._yard_feed(yard_id, problems)})
+
+    def warm_up(self, limit: int = 4) -> dict:
+        """Прогрев соседей для двора сцены демо и самых «людных» дворов (R10 B-124): форма двора R12 и индексы целей
+        тепловой карты R07 грузятся секунды только в первый раз — после прогрева страница двора считается за десятки мс.
+        Ничего не пишет (страница двора только читает, R15 S51); сбой соседа — в журнал, не ошибка."""
+        started = time.monotonic()
+        ids = [y for y in [self.store.meta("scene_yard")] if y]
+        for row in self.store.yards(limit=limit):
+            if row["id"] not in ids:
+                ids.append(row["id"])
+        warmed = []
+        for yard_id in ids[:max(1, int(limit))]:
+            try:
+                self.yard_page(yard_id, {}, {"headers": {}})
+                warmed.append(yard_id)
+            except LookupError:
+                continue
+            except Exception:
+                LOGGER.exception("R16: прогрев двора %s не удался", yard_id)
+        result = {"yards": warmed, "ms": round((time.monotonic() - started) * 1000)}
+        LOGGER.info("R16: прогрев дворов %s за %s мс", ", ".join(warmed) or "—", result["ms"])
+        return result
 
     def _yard_feed(self, yard_id: str, problems: dict) -> list[dict]:
         """Лента двора: дела соседей (события модуля) и проблемы двора с карты (новое сообщение, исправлено)."""
@@ -938,6 +967,8 @@ def make_service(db_path, *, clock=None, demo: bool | None = None, autopublish: 
         store.meta("scene_yard", demo_data.SCENE["yard"])
     service = TogetherService(store, autopublish=autopublish)
     _register(service)
+    if want_demo:
+        start_warm_up(service)
     return service
 
 
@@ -950,6 +981,37 @@ def _register(service: TogetherService) -> None:
     _services[None] = service
 
 
+_warm_started: set = set()
+_warm_lock = threading.Lock()
+
+
+def warm_up_enabled() -> bool:
+    """Прогрев в фоне — только в живом процессе сервера: не в тестах (там соседи подменены) и не при CIVIC_TOGETHER_WARM=0."""
+    return os.environ.get("CIVIC_TOGETHER_WARM", "1") != "0" and "PYTEST_CURRENT_TEST" not in os.environ
+
+
+def start_warm_up(service: TogetherService | None = None, db_path=None) -> bool:
+    """Запустить warm_up() в фоновом потоке — один раз на базу. True — поток запущен сейчас."""
+    if not warm_up_enabled():
+        return False
+    key = str(service.store.db_path if service is not None else db_path)
+    with _warm_lock:
+        if key in _warm_started:
+            return False
+        _warm_started.add(key)
+
+    def run():
+        try:
+            target = service if service is not None else default_service(db_path)
+            if target is not None:
+                target.warm_up()
+        except Exception:
+            LOGGER.exception("R16: прогрев дворов не удался")
+
+    threading.Thread(target=run, name="r16-warm-up", daemon=True).start()
+    return True
+
+
 def default_service(db_path=None) -> TogetherService | None:
     if db_path is not None:
         key = str(db_path)
@@ -960,4 +1022,4 @@ def default_service(db_path=None) -> TogetherService | None:
     return make_service(env, demo=False) if env else None
 
 
-__all__ = ["ApiError", "TogetherService", "default_service", "make_service"]
+__all__ = ["ApiError", "TogetherService", "default_service", "make_service", "start_warm_up"]

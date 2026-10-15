@@ -14,6 +14,7 @@
     initiatives_summary(district=None)      — R08/R03: сколько дел, сколько соседей пришло (числа — код)
     pickups(district=None)                  — R17: вывоз мусора после дел, которые поддержал акимат (служба waste)
     configure(problems=…, ideas=…, works=…) — R01/тесты: подменить источник блока «Мой двор»
+    warm_up(db_path=None)                   — R01: при старте в фоне (как warm_up R12) — «Мой двор» без секунд ожидания
 
 Подключение к шлюзу, маршруты, лимиты и экран — research/round-15-results/R16/INTEGRATION.txt.
 Экран — web/civic/together/together.js (window.BirgeTogether, разделы оболочки #yard и #together).
@@ -22,16 +23,17 @@
 from __future__ import annotations
 
 from datetime import datetime
+import logging
 
 from . import demo as _demo
 from .neighbors import configure
-from .service import TogetherService, default_service, make_service
+from .service import TogetherService, default_service, make_service, start_warm_up
 from .store import TogetherStore
 
 SCENE = _demo.SCENE
 
 __all__ = ["SCENE", "TogetherService", "TogetherStore", "configure", "create_from_idea", "default_service",
-           "initiatives_summary", "make_service", "pickups", "seed_world", "updates"]
+           "initiatives_summary", "make_service", "pickups", "seed_world", "updates", "warm_up"]
 
 
 def updates(device_id, since=None, db_path=None, limit: int = 50) -> list[dict]:
@@ -60,7 +62,20 @@ def seed_world(db_path, records, now: datetime | None = None) -> dict:
     # Двор сцены 7 — первым в списке дворов (IA R11 §5.1): из scenes мира или своей фикстуры.
     scene = ((records or {}).get("scenes") or {}).get("scene7") if isinstance(records, dict) else None
     store.meta("scene_yard", (scene or {}).get("yard") if source == "world" and scene else _demo.SCENE["yard"])
+    # Демо-мир засевают при старте сервера: сразу прогреваем дворы в фоне (R10 B-124 — первая сцена части 2).
+    start_warm_up(db_path=db_path)
     return dict(result, source=source)
+
+
+def warm_up(db_path=None, limit: int = 4) -> dict:
+    """Прогреть соседей для двора сцены демо и самых «людных» дворов: {"yards": [...], "ms"}. Блокирует — R01 зовёт
+    в фоновом потоке при старте сервера (как engine.civic_geo.api.warm_up). Нет базы — ничего не делает."""
+    try:
+        service = default_service(db_path)
+        return service.warm_up(limit=limit) if service is not None else {"yards": [], "ms": 0}
+    except Exception:  # база ещё создаётся или сосед упал — первый житель просто подождёт расчёта
+        logging.getLogger("civic_together").exception("R16: прогрев дворов не удался")
+        return {"yards": [], "ms": 0}
 
 
 def create_from_idea(idea: dict, *, starts_at: str | None = None, db_path=None, actor: str = "staff") -> dict:
