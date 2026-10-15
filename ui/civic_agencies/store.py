@@ -130,8 +130,10 @@ class AgencyStore:
         self.db_path = str(db_path)
         self.clock = clock
         self._write = threading.Lock()
-        with self._tx() as conn:
+        # executescript сам завершает транзакцию — схема создаётся вне BEGIN IMMEDIATE (как у R13 civic_qa).
+        with self._write, self._read() as conn:
             conn.executescript(SCHEMA)
+        with self._tx() as conn:
             conn.execute("INSERT OR REPLACE INTO agency_meta (key, value) VALUES ('schema', ?)", (SCHEMA_VERSION,))
 
     # ------------------------------------------------------------------ соединения
