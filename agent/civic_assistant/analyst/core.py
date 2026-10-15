@@ -247,14 +247,15 @@ def ask(question=None, lang=None, principal=None, context=None, body=None, distr
     if parsed.flags and not parsed.intents:
         notices.append(NO_DATA_NOTICE)
 
-    # Языковая модель — только если настроена, вопрос без «инструкций» и есть что упорядочить.
+    # Языковая модель — только если настроена, в вопросе нет ни одного флага безопасности (инструкция, «придумай»,
+    # «удали», личные данные — R15 S44: иначе её вводная фраза без чисел показывалась бы как есть) и есть что упорядочить.
     mode, offline_reason, model, lead = "offline", None, None, _lead(built)
     llm = cfg["provider"] if "provider" in cfg else (L.provider_from_env() if provider is _AUTO else provider)
     if provider is not _AUTO:
         llm = provider
     if llm is None:
         offline_reason = "no_key"
-    elif "injection" in parsed.flags:
+    elif parsed.flags:
         offline_reason = "question_has_instructions"
     elif not parsed.intents:
         offline_reason = "nothing_to_refine"
