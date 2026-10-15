@@ -4,8 +4,8 @@
   "branch": "claude/birge-r07-round-15-zjp4ob",
   "base_sha": "2d329b2cceeb07edbcb4f98ae8fdb3bb37ec1499",
   "restored_from": "fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.css, heat.js, ui/civic_heat/devserver.py, tests/civic/R07/test_r07_devserver.py",
-  "code_sha": "0943fcf191b5d4150d764cc8e0ae78e398cf5aed",
-  "tested_sha": "0943fcf191b5d4150d764cc8e0ae78e398cf5aed",
+  "code_sha": "29d2e7e6e586b851156a65ec6ef2cb4c8017ecce",
+  "tested_sha": "29d2e7e6e586b851156a65ec6ef2cb4c8017ecce",
   "push_status": "OK",
   "changed_paths": [
     "ui/civic_heat/world.py (новый): демо-мир — world_mode, seed_world (отметки шкалы: events + incidents + scenes, своя таблица heat_replay_marks_v1), materialize/time_of (время SCHEMA R02 §1)",
