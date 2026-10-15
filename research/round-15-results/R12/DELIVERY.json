@@ -173,6 +173,10 @@
    "passed": 48,
    "skipped": 1,
    "how": "мир R02 засеян через engine.civic_geo.seed_world в том же процессе до tests/civic/R12/test_works.py (как в полном pytest R01 после tests/civic/R07)"
+  },
+  "r01_build_b08": {
+   "status": "PASS",
+   "how": "сборка R01 B0.8 7f78b1ca как есть (R12 3d4c1afb внутри, без наложений), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: works_calendar.test.cjs 124/0 (1366/1024/375 × ru/kk + состояния + вкладка «Ведомств»), app_qr_acceptance 35/0, GET works-calendar 12–16 мс"
   }
  },
  "screens": {
