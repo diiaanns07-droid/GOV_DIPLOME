@@ -4,8 +4,8 @@
  "branch": "claude/youthful-johnson-6nz5mp",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g: FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "e475fae93850273f45a59514643954e78b8e6bdd",
- "tested_sha": "e475fae93850273f45a59514643954e78b8e6bdd",
+ "code_sha": "3d0a4c36644c18c5d2a4d128968d68e9fd7f2fb1",
+ "tested_sha": "3d0a4c36644c18c5d2a4d128968d68e9fd7f2fb1",
  "push_status": "OK (origin/claude/youthful-johnson-6nz5mp)",
  "amendments_applied": [
   "П1 «Без ИИ-слопа» (15 окт 17:05): без иллюстраций, значки R11 ≤ 48 px, фото «после» — только настоящие"
@@ -18,7 +18,7 @@
   "research/handoffs/astana/R16/round15/STATUS.md"
  ],
  "integration": {
-  "r01_patch": "research/round-15-results/R16/R01_together_routes.patch (git apply --check OK на e91acb6)",
+  "r01_patch": "research/round-15-results/R16/R01_together_b1.patch (сборка R01 claude/brave-fermi-nhzetj: git apply --check OK на c9069723); по якорям — r01_together_apply.py; для пакета/FINAL-4 — R01_together_routes.patch (e91acb6)",
   "routes": "15 под /api/civic/v2/together/* (12 из CONTRACT §7 + 3 доп.: GET yards, POST yards/{id}/captain, POST yards/{id}/moderate)",
   "module": "ui.civic_together · make_service (kind=service)",
   "assets": [
@@ -29,12 +29,13 @@
   "screens": "registerScreen yard, together; registerLayer initiatives (выключен по умолчанию)",
   "demo_world": "seed_world(db_path, records, now=None) — yards, initiatives; повтор = сброс демо к виду мира от нового now",
   "for_neighbors": "updates (R06), create_from_idea (R06), initiatives_summary (R08/R03), pickups (R17)",
-  "i18n": "research/round-15-results/R16/i18n_together.json — 233 ключа ru/kk для R11"
+  "i18n": "research/round-15-results/R16/i18n_together.json — 242 строковых ключа ru/kk; словарь R11 b3502428 содержит все",
+  "warm_up": "ui.civic_together.warm_up(db_path) — R01 в фоне при старте (строка в main() в patch); seed_world и make_service демо запускают сами"
  },
  "tests": {
   "pytest_r16": {
    "status": "PASS",
-   "passed": 52,
+   "passed": 56,
    "failed": 0,
    "skipped": 0,
    "env": "python3 3.13 + numpy 2.5.3, pytest из uv (PYTHONPATH)",
@@ -45,7 +46,7 @@
   },
   "browser_r16": {
    "status": "PASS",
-   "passed": 222,
+   "passed": 246,
    "failed": 0,
    "sizes": [
     "1366x768",
@@ -58,7 +59,8 @@
    ],
    "script": "tests/civic/R16/browser/r16_browser.cjs",
    "stand": "tests/civic/R16/stand.py (маршруты в памяти) на базе FINAL-4 + R16",
-   "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон"
+   "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон",
+   "note": "246/246 на стенде FINAL-4 (fbd9e247) и 246/246 на сборке «как B1» (R01 cc510c9d + patch + ui-kit R11); после checkpoint 5 (только сервер и тексты) — 1366-ru 41/41"
   },
   "scene7": {
    "status": "PASS",
@@ -70,7 +72,15 @@
    ],
    "steps": 9,
    "script": "tests/civic/R16/browser/r16_scene7.cjs",
-   "result": "14 → 15, «Поддержано акиматом», «Сделано вместе: 15 соседей», слой карты"
+   "result": "14 → 15, «Поддержано акиматом», «Сделано вместе: 15 соседей», слой карты",
+   "b1_like_world": {
+    "status": "PASS",
+    "runs": [
+     "1366-ru",
+     "375-kk"
+    ],
+    "stand": "R01 cc510c9d + patch + R16, CIVIC_DEMO_WORLD=1 (двор yard-1454082640, дело i-w15-01)"
+   }
   },
   "r02_world_seed": {
    "status": "PASS",
@@ -83,8 +93,28 @@
    "branch": "claude/gifted-maxwell-i66wwi @ b9f828cc"
   },
   "r01_shell_paths": {
-   "status": "NOT_RUN",
-   "reason": "оболочка R01 с путями #раздел/путь ещё в работе (claude/brave-fermi-nhzetj); модуль подстраивается следующим кругом"
+   "status": "PASS",
+   "what": "#yard/<двор>, #together/<дело> после перезагрузки, setPath без перемонтажа, «Выбрать на карте»"
+  },
+  "pytest_r01_with_patch": {
+   "status": "PASS",
+   "passed": 418,
+   "failed": 0,
+   "skipped": 1,
+   "what": "tests/civic/R01 + tests/civic/R16 на R01 c9069723 + R01_together_b1.patch + файлы R16 + ui-kit/i18n R11 b3502428"
+  },
+  "perf_yard_cold": {
+   "status": "PASS",
+   "before_s": 2.57,
+   "after_s": [
+    0.029,
+    0.089
+   ],
+   "warm_ms": [
+    10,
+    25
+   ],
+   "what": "первый GET together/yards/<двор> сразу после старта сервера (R10 B-124)"
   }
  },
  "screens": [
@@ -162,7 +192,15 @@
   "Фото «после» в демо нет (П1): на показе — настоящее фото с телефона кнопкой «Отметить сделанным».",
   "Число «проблем» двора — места тепловой карты R07 (двор и ≤ 60 м), а не жалобы с target = двор (EXPECTED R02 yards.by_yard) — правило в INTEGRATION.",
   "Время действий акимата в облачном Chromium 3–4 с — программная отрисовка WebGL карты; API отвечает за 4–20 мс.",
-  "Без 3 доп. маршрутов в сборке: выбор двора без списка дворов, без «старшего по двору»."
+  "Без 3 доп. маршрутов в сборке модуль спрашивает /modules и прячет список дворов и «старшего по двору» (без 404)."
  ],
- "next_step": "Подстройка под оболочку R01 (opts.section/path, setPath, navigate) и IA_ROUND15 R11 (вкладки акимата, «Выбрать на карте», капсулы «дата · число»); проверка на ветке R01."
+ "next_step": "Компоненты ui-kit R11 раунда 15 (.bk-yard, .bk-feed, .bk-pc/.bk-join, .bk-init, .bk-done) с запасными правилами для FINAL-4 и зоны нажатия B-114; снова браузер на обеих сборках; поставка к B1 (16 окт 14:00 Астаны).",
+ "findings_closed": [
+  "R15 S45, S46, S47 (checkpoint 3)",
+  "R15 S51 (checkpoint 5)",
+  "R10 B-124 (checkpoint 5)"
+ ],
+ "findings_open": [
+  "R10 B-114 зоны нажатия ≥ 44 px (заголовок карточки, вкладка «Шолу») — следующий круг вместе с компонентами ui-kit R11"
+ ]
 }
