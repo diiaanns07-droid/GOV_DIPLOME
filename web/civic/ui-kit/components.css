@@ -4123,7 +4123,7 @@ button.bk-conflict::after {
   gap: 10px;
   max-width: 560px;
   min-height: var(--tap);
-  padding: 4px 4px 4px 14px;
+  padding: 0 4px 0 14px; /* кнопки внутри — 44 px во всю высоту строки, сама строка остаётся 44 */
   border-radius: var(--r-pill);
   color: var(--c-ink);
   font-size: var(--fs-small);
@@ -4166,7 +4166,7 @@ button.bk-conflict::after {
 }
 .bk-crisis > .bk-btn {
   flex: none;
-  min-height: 36px;
+  min-height: var(--tap); /* было 36 — ниже зоны нажатия 44 (витрина R11, порог приёмки R10) */
 }
 @media (max-width: 760px) {
   .bk-crisis {
