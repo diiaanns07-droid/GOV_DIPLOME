@@ -4,10 +4,10 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "ac903d1b",
- "tested_sha": "ac903d1b",
+ "code_sha": "b6ced41d",
+ "tested_sha": "b6ced41d",
  "push_status": "OK",
- "updated": "2026-10-15 17:31 Астана",
+ "updated": "2026-10-15 17:35 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -23,11 +23,12 @@
  "deliverables": {
   "IA_ROUND15": "research/round-15-results/R11/IA_ROUND15.md — меню жителя и акимата, «Ещё» группами, экраны (главное, одна главная кнопка, чего нет, слой), хроника — чип легенды, ситуационный центр — страница, запасные места FINAL-4; опубликован 15 окт ~16:37 Астаны (08bde777)",
   "ui_kit_r15": "компоненты: .bk-yard, .bk-feed, .bk-join, .bk-support, .bk-init, .bk-done, .bk-svcs/.bk-svc, .bk-deadline, .bk-board, .bk-handoffs, .bk-wcal, .bk-conflict, .bk-advice, .bk-crisis, .bk-crisis-hd, .bk-svcchip, .bk-zone, .bk-replay, .bk-range, .bk-meet, .bk-orders, .bk-bell, .bk-notify, .bk-answer, .bk-sc (+ .bk-dark); по П1: .bk-thumb--kind, .bk-init__kind, .bk-done--nophoto; ill-* 48/40 px",
-  "dictionary": "ru = kk 2316 ключей (check PASS): меню раунда 15 + R03 analyst.* 56 + R16 together.*, R17 agencies/crisis.*, R12 wcal.*, R13 meet.*, R08 board.* (656); единые казахские термины KK_REVIEW_R15",
-  "r01_menu_patch": "research/round-15-results/R11/patches/R01_menu_ia15.patch — к R01 0b76f9ed; pytest R01 198/0, r14_wave2 43/0, r14_shell 43/0",
+  "dictionary": "ru = kk 2349 ключей (check PASS): меню раунда 15, оболочка R01 (33), R03 analyst.* 56, R16/R17/R12/R13/R08 (656); единые казахские термины KK_REVIEW_R15 (36)",
+  "r01_menu_patch": "не нужен: R01 сделал меню по IA_ROUND15 сам (c2df555a); patches/R01_menu_ia15.patch — для сверки",
   "review_round_1": "REVIEW_R15.md: R03 — patches/R03_dictionary_terms.patch (тесты R03 273/0) + 56 ключей analyst.* в словаре",
   "kk_review": "KK_REVIEW_R15.md — 34 спорных казахских термина, ⚑ 7 главных",
-  "review_round_2": "REVIEW_R15.md: R17 9 замечаний, R12 5 замечаний (INTEGRATION §4)"
+  "review_round_2": "REVIEW_R15.md: R17 9 замечаний, R12 5 замечаний (INTEGRATION §4)",
+  "review_round_3": "REVIEW_R15.md: R08 3 мелочи, R13 1 замечание"
  },
  "tests": {
   "pytest tests/civic/R11": "PASS 28/28",

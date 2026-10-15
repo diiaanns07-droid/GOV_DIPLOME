@@ -54,6 +54,10 @@ COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочита
 - 17:30 — **разбор круг 2** (`ac903d1b`): R17 — 9 замечаний, R12 — 5 (REVIEW_R15.md, INTEGRATION §4); значки служб
   paw/traffic/radiator/zap/flame + метла; таблица «служба → значок» для R17.
 
+- 17:33 — **разбор круг 3, часть 1** (`c88232d6`): R08 (ситуационный центр — лучший экран; 3 мелочи), R13 (id в поручении).
+- 17:34 — словарь: 33 ключа оболочки R01 (палитра, сцены 7–9 — «N-көрініс», виды поиска); R01 сделал меню по IA сам
+  (`c2df555a`), мой патч меню — только для сверки.
+
 ## Соседи (find_branches.py, 15 окт 16:30)
 R01 claude/brave-fermi-nhzetj · R02 claude/affectionate-shannon-jm6ws5 · R03 claude/modest-mccarthy-lrl98u ·
 R04 claude/gifted-maxwell-i66wwi · R05 claude/bold-cray-dopshy · R06 claude/eloquent-einstein-wvuyje ·

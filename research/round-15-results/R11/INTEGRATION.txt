@@ -6,7 +6,9 @@ tokens.css, components.css, icons.svg, ui-kit.js, ru.json, kk.json (CIVIC_ASSETS
 ======================================================================================================================
 §1. R01 — меню по схеме IA_ROUND15 (research/round-15-results/R11/IA_ROUND15.md, §7 — точный список)
 ======================================================================================================================
-ГОТОВЫЙ ПАТЧ: research/round-15-results/R11/patches/R01_menu_ia15.patch — к ветке R01 claude/brave-fermi-nhzetj @ 0b76f9ed
+R01 СДЕЛАЛ МЕНЮ САМ (claude/brave-fermi-nhzetj c2df555a: r15_ia.cjs 25/0, ?screens=r14 — регресс FINAL-4) — патч ниже
+  применять не нужно, он оставлен для сверки. R11 проверит меню на сборке B1 (кадры 1366 / 1024 / 375 × ru / kk).
+БЫВШИЙ ПАТЧ: research/round-15-results/R11/patches/R01_menu_ia15.patch — к ветке R01 claude/brave-fermi-nhzetj @ 0b76f9ed
   (web/civic/shell/birge.js: п. 1.1–1.6 ниже; tests/civic/R01/browser/r14_wave2.cjs: ожидания ?screens=all под IA_ROUND15).
   Применить из корня: git apply -3 research/round-15-results/R11/patches/R01_menu_ia15.patch
   Проверено на стенде (ветка R01 0b76f9ed + патч + ui-kit/словарь R11 этой ветки):
@@ -146,7 +148,7 @@ R08 (claude/inspiring-johnson-j7wksj @ 85628c3a): R08-1 знак в шапке �
   R08-2 «В эфире» — не зелёная точка (.bk-live-dot); R08-3 подписи title/aria-label у значков переключателя блоков.
 R13 (claude/gifted-mayer-p86myv @ 315d01bd): R13-1 вместо «Проект · p-demo-123» — название связанного объекта.
 
-Словарь для R01 (15 окт, ~17:40): 33 ключа оболочки из shell-text.js R01 (shell.ref.*, shell.palette.* со сценами 7–9,
+Словарь для R01 (15 окт, 17:34): 33 ключа оболочки из shell-text.js R01 (shell.ref.*, shell.palette.* со сценами 7–9,
   shell.explore.kind.*, shell.explore.chosen_spot, shell.view.spot) — в ru.json / kk.json. По-казахски: «Сцена N» —
   «N-көрініс» («сахна» — подмостки), «Горячее место» — «Шағымы көп орын» (как «Шағымы көп орындар» везде).
   Где тексты shell-text.js и словаря расходятся (10 ключей, напр. common.account.menu, shell.layers.none) — главнее
