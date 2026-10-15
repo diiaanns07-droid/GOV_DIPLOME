@@ -29,6 +29,10 @@
   GET  /staff/ideas?status&district      сотрудник: идеи на проверке (review, voting) и любые статусы
   GET  /works?district                   сотрудник: работы и отключения «Рядом» (форма «Работы и отключения»)
   POST /works                            сотрудник: новая запись; POST /works/{id} — правка; POST /works/{id}/remove
+Раунд 15 (CONTRACT §5.6, §5.8, §7):
+  GET  /notifications?since              житель (X-Birge-Device): лента «Что нового для меня» (notify.py)
+  POST /notifications/read               житель: {ids: [...]} | {all: true} | {until: ISO}
+  POST /ideas/{id}/to-initiative         сотрудник: идея → инициатива R16 («Сделайте вместе — поддержим инвентарём»)
 
 Права: чтение и голос — публичные (только адрес этого сервера; голос — без чужого Origin);
 запись этапа и решения по предложениям — сессия редактора + X-CSRF-Token (require_staff R02).
@@ -36,8 +40,12 @@
 
 from __future__ import annotations
 
+import importlib
+import inspect
 import logging
+import os
 import sqlite3
+import threading
 from urllib.parse import unquote
 
 from .db import StorageError
@@ -45,15 +53,59 @@ from .districts import DISTRICT_NAMES
 from .objects import BadRequest, Conflict, NotFound
 from .ideas import IdeaRepository
 from .nearby import NearbyRepository
+from .notify import NotificationCenter
 from .proposals import DECISIONS, KINDS, ProposalRepository, VISIBLE_STATUSES, _VoteRateLimited
-from .service import MAX_BODY, _TooLarge, error, ok, parse_body, parse_query
+from .service import MAX_BODY, _TooLarge, error, header, ok, parse_body, parse_query
 from .stages import STAGES, STALE_DAYS, StageRepository, parse_district, _single
 from .validate import ValidationError, is_valid_id
 
 
 LOGGER = logging.getLogger("ui.civic_store.v2")
 PREFIX_V2 = "/api/civic/v2"
-OWN_ROOTS = ("objects", "proposals", "staff", "meta", "ideas", "works")
+OWN_ROOTS = ("objects", "proposals", "staff", "meta", "ideas", "works", "notifications")
+
+
+DEVICE_HEADER = "X-Birge-Device"              # житель — как у R09, R08, R13, R16, R17 (localStorage "birge.device")
+IDEAS_DEVICE_HEADER = "X-Birge-Ideas-Device"  # id голосов и идей R06 (localStorage "birge.device_id"), для своей ленты
+
+
+def resident_device(context, params=None, payload=None):
+    """Id устройства жителя: заголовок X-Birge-Device, запасной — device_id в теле или адресе (как у R09)."""
+    value = header(context, DEVICE_HEADER)
+    if not value and isinstance(payload, dict):
+        value = payload.get("device_id")
+    if not value and isinstance(params, dict):
+        value = _single(params, "device_id")
+    return value
+
+
+# Виды дел R16 (CONTRACT §5.2) — POST ideas/{id}/to-initiative {kind?} выбирает вид инициативы.
+TOGETHER_KINDS = ("cleanup", "greening", "snow", "repair", "help", "other")
+
+
+def _accepts(fn, name: str) -> bool:
+    """Объявила ли функция соседа параметр name (или **kwargs) — чтобы не падать на старой сигнатуре."""
+    try:
+        params = inspect.signature(fn).parameters
+    except (TypeError, ValueError):
+        return False
+    return name in params or any(p.kind is inspect.Parameter.VAR_KEYWORD for p in params.values())
+
+
+def together_create():
+    """Функция R16 «идея → инициатива» (ui.civic_together.create_from_idea) или None — модуля нет в сборке."""
+    try:
+        module = importlib.import_module("ui.civic_together")
+    except ModuleNotFoundError as exc:
+        if (getattr(exc, "name", "") or "") in ("ui.civic_together", "ui"):
+            return None
+        LOGGER.exception("civic v2: ui.civic_together не загрузился")
+        return None
+    except Exception:  # noqa: BLE001 — модуль соседа сломан: кнопку прячем, остальное работает
+        LOGGER.exception("civic v2: ui.civic_together не загрузился")
+        return None
+    fn = getattr(module, "create_from_idea", None)
+    return fn if callable(fn) else None
 
 
 def meta_v2() -> dict:
@@ -77,6 +129,7 @@ class CivicV2:
         self.proposals = ProposalRepository(service.db, service.clock)
         self.ideas = IdeaRepository(service.db, service.clock, self.proposals)
         self.nearby = NearbyRepository(service.db, service.clock)
+        self.notify = NotificationCenter(self)
 
     # --- функции для соседей без HTTP (R08 «Картина дня», R05, R01) ---------------------
 
@@ -91,6 +144,65 @@ class CivicV2:
 
     def list_proposals(self, query=None, device_id=None) -> dict:
         return self.proposals.list(parse_query(query), device_id)
+
+    def ideas_to_initiative(self, actor, idea_id, payload) -> dict:
+        """Идея → инициатива R16 «Сделайте вместе — поддержим инвентарём» (CONTRACT §7). Сотрудник.
+
+        Можно для опубликованной идеи (голосование, проверка, отказ как проекта): жители сделают сами, акимат поддержит
+        инвентарём и вывозом. Повтор для той же идеи — та же инициатива (created: false). Нет R16 — 503 module_not_ready.
+        """
+        payload = payload if isinstance(payload, dict) else {}
+        unknown = sorted(set(payload) - {"starts_at", "kind"})
+        if unknown:
+            raise ValidationError({str(unknown[0])[:64]: "Неизвестное поле."})
+        starts_at = payload.get("starts_at")
+        if starts_at is not None and (not isinstance(starts_at, str) or not 10 <= len(starts_at) <= 40):
+            raise ValidationError({"starts_at": "Дата и время ISO 8601, например 2026-10-18T10:00:00+05:00."})
+        kind = payload.get("kind")
+        if kind is not None and kind not in TOGETHER_KINDS:
+            raise ValidationError({"kind": "Вид дела: " + ", ".join(TOGETHER_KINDS) + "."})
+        create = together_create()
+        if create is None:
+            raise V2Error(503, "module_not_ready", "Раздел «Сделаем вместе» (R16) не подключён в этой сборке.")
+        with self.service.db.read() as conn:
+            row = self.ideas._row(conn, idea_id)
+            if row["status"] not in ("voting", "checking", "rejected") or row["published_at"] is None:
+                raise Conflict("«Сделать вместе» можно только опубликованную идею (не на проверке и не проект).", None,
+                               code="not_allowed")
+            existing = row["initiative_id"]
+        if existing:
+            return {"item": self.ideas.get(idea_id, staff=True)["item"], "initiative": {"id": existing},
+                    "created": False}
+        idea = self.ideas.get(idea_id, staff=True)["item"]
+        # R16 выбирает вид инициативы по объекту идеи; у идеи без объекта — её тема (скамейки, озеленение…).
+        if not idea.get("object") and idea.get("topic") not in (None, "other"):
+            idea = dict(idea, object={"kind": idea["topic"]})
+        extra = {}
+        if kind is not None:
+            # вид дела выбрал сотрудник: функции R16 с параметром kind — напрямую; без него — через вид объекта идеи
+            # (R16 сам выбирает вид дела по объекту: greening → «Озеленение»; прочие — как решит R16)
+            if _accepts(create, "kind"):
+                extra["kind"] = kind
+            elif kind == "greening":
+                idea = dict(idea, object={"kind": "greening"})
+        try:
+            initiative = create(idea, starts_at=starts_at, db_path=str(self.service.db.path), actor="staff", **extra)
+        except ValueError as exc:
+            raise ValidationError({"idea": str(exc)[:200] or "Идею нельзя превратить в инициативу."}) from None
+        except Exception:  # noqa: BLE001 — сбой соседа: идея не меняется
+            LOGGER.exception("civic v2: R16 create_from_idea упал")
+            raise V2Error(503, "module_failed", "Раздел «Сделаем вместе» сейчас недоступен. Повторите позже.") from None
+        initiative_id = initiative.get("id") if isinstance(initiative, dict) else None
+        if not isinstance(initiative_id, str) or not is_valid_id(initiative_id):
+            raise V2Error(502, "bad_module_response", "Раздел «Сделаем вместе» вернул некорректный ответ.")
+        from .objects import iso, utc_now
+        with self.service.db.write() as conn:
+            conn.execute("""UPDATE civic_ideas SET initiative_id = ?, initiative_at = ?
+                            WHERE id = ? AND initiative_id IS NULL""",
+                         (initiative_id, iso(utc_now(self.service.clock)), idea_id))
+        public = {k: initiative.get(k) for k in ("id", "status", "title", "kind", "starts_at", "joined", "support")
+                  if k in initiative}
+        return {"item": self.ideas.get(idea_id, staff=True)["item"], "initiative": public, "created": True}
 
     # --- HTTP ------------------------------------------------------------------------------
 
@@ -129,6 +241,8 @@ class CivicV2:
         except _VoteRateLimited as exc:
             return error(429, "rate_limited", exc.message,
                          headers={"Retry-After": str(exc.retry_after)}, retry_after=exc.retry_after)
+        except V2Error as exc:
+            return error(exc.status, exc.code, exc.message, exc.fields or None)
         except sqlite3.OperationalError as exc:
             if "locked" in str(exc) or "busy" in str(exc):
                 return error(503, "busy", "База занята, повторите запрос.", headers={"Retry-After": "1"})
@@ -182,6 +296,12 @@ class CivicV2:
             return {"POST": (self._update_work, (s[1],))}
         if n == 3 and s[0] == "works" and s[2] == "remove":
             return {"POST": (self._remove_work, (s[1],))}
+        if s == ["notifications"]:
+            return {"GET": (self._notifications, ())}
+        if s == ["notifications", "read"]:
+            return {"POST": (self._notifications_read, ())}
+        if n == 3 and s[0] == "ideas" and s[2] == "to-initiative":
+            return {"POST": (self._to_initiative, (s[1],))}
         return None
 
     # --- обработчики -----------------------------------------------------------------------
@@ -306,7 +426,9 @@ class CivicV2:
         principal, denied = self.service.require_staff(context, unsafe=False)
         if denied:
             return denied
-        return ok(self.ideas.list(params, None, staff=True))
+        data = self.ideas.list(params, None, staff=True)
+        data["capabilities"] = {"to_initiative": together_create() is not None}
+        return ok(data)
 
     def _works(self, context, params, payload):
         principal, denied = self.service.require_staff(context, unsafe=False)
@@ -332,6 +454,28 @@ class CivicV2:
             return denied
         return ok(self.nearby.remove(principal.actor(), item_id, payload))
 
+    # --- раунд 15: лента уведомлений и идея → инициатива ------------------------------------------------------
+
+    def _notifications(self, context, params, payload):
+        denied = self._public_ok(context)
+        if denied:
+            return denied
+        device = resident_device(context, params, payload)
+        return ok(self.notify.collect(device, _single(params, "since"), header(context, IDEAS_DEVICE_HEADER)))
+
+    def _notifications_read(self, context, params, payload):
+        denied = self._resident_write(context)
+        if denied:
+            return denied
+        return ok(self.notify.mark_read(resident_device(context, params, payload), payload,
+                                        header(context, IDEAS_DEVICE_HEADER)))
+
+    def _to_initiative(self, context, params, payload, idea_id):
+        principal, denied = self.service.require_staff(context, unsafe=True)
+        if denied:
+            return denied
+        return ok(self.ideas_to_initiative(principal.actor(), idea_id, payload), status=201)
+
 
 # ===========================================================================================
 # Функции уровня модуля для шлюза R01 (ui/web_server.py, CivicV2Gateway, ветка claude/sharp-dijkstra-0t87gl).
@@ -352,17 +496,40 @@ class V2Error(Exception):
 
 
 _BOUND: CivicV2 | None = None
+_BIND_LOCK = threading.Lock()
 
 
 def bind(service) -> CivicV2:
     """Связать модуль с CivicService шлюза. Повторный вызов с тем же сервисом ничего не меняет."""
     global _BOUND
-    if _BOUND is None or _BOUND.service is not service:
-        _BOUND = CivicV2(service)
-    return _BOUND
+    with _BIND_LOCK:
+        if _BOUND is None or _BOUND.service is not service:
+            _BOUND = CivicV2(service)
+        return _BOUND
+
+
+def _bind_from_env() -> None:
+    """Раунд 15: соседи (R12 календарь, R16 двор, R08) могут спросить работы раньше, чем шлюз R01 создал хранилище
+    (оно создаётся при первом запросе v1). Тогда связываемся сами с той же базой CIVIC_DB_PATH; шлюз потом
+    вызовет bind(своё хранилище) — это ничего не ломает (та же база, те же сессии в ней)."""
+    path = os.environ.get("CIVIC_DB_PATH")
+    if not path:
+        return
+    try:
+        from .service import CivicService
+        service = CivicService(path)
+    except Exception:  # noqa: BLE001 — нет файла, чужая схема: соседи получат 503 и покажут «пока нет данных»
+        LOGGER.exception("civic v2: не удалось открыть CIVIC_DB_PATH для соседей")
+        return
+    with _BIND_LOCK:
+        global _BOUND
+        if _BOUND is None:
+            _BOUND = CivicV2(service)
 
 
 def _v2() -> CivicV2:
+    if _BOUND is None:
+        _bind_from_env()
     if _BOUND is None:
         raise V2Error(503, "module_not_ready", "R06 не связан с хранилищем: шлюз должен вызвать bind(service).")
     return _BOUND
@@ -526,9 +693,12 @@ def support_idea(idea_id, body, context=None):
 
 
 def list_ideas_staff(district=None, status=None, context=None, principal=None):
-    """GET /staff/ideas — сотрудник: по умолчанию review и voting («Идеи на проверке»)."""
+    """GET /staff/ideas — сотрудник: по умолчанию review и voting («Идеи на проверке»).
+    Раунд 15: capabilities.to_initiative — есть ли в сборке R16 (кнопка «Сделайте вместе»)."""
     _actor(context, unsafe=False)
-    return _run(_v2().ideas.list, _query(None, district, status), None, staff=True)
+    data = _run(_v2().ideas.list, _query(None, district, status), None, staff=True)
+    data["capabilities"] = {"to_initiative": together_create() is not None}
+    return data
 
 
 def decide_idea(idea_id, body, context=None, principal=None):
@@ -563,3 +733,67 @@ def update_work(work_id, body, context=None, principal=None):
 
 def remove_work(work_id, body=None, context=None, principal=None):
     return _run(_v2().nearby.remove, _actor(context), work_id, body or {})
+
+
+# --- раунд 15: работа v2 для соседей (CONTRACT §5.6, §7 «Вызовы между модулями») ----------------------------------
+
+def works_v2(date_from=None, date_to=None, district=None, street=None, service=None, include_outages=False):
+    """Для R12 (GET works-calendar, works-conflicts): работы служб в формате §5.6.
+
+    {"items": [{id, type, service, kind, segments, starts_on, ends_on, source: real|demo, status, title_ru/kk,
+    street_ru/kk, district, planned_end, forecast_end, delayed, geometry, updated_at, demo, link}], "count", "today"}.
+    Перекрытия проезда (отключение road_closure) входят с видом closure; отключения воды/тепла — только с
+    include_outages=True. Нет связи с хранилищем — V2Error 503 module_not_ready (R12: «пока нет данных»).
+    """
+    return _run(_v2().nearby.works_v2, date_from=date_from, date_to=date_to, district=district, street=street,
+                service=service, include_outages=bool(include_outages))
+
+
+def works_near(point=None, radius_m=None, include_outages=True, include_done=False, lon=None, lat=None):
+    """Для R16 «Мой двор» → «Работы»: работы и отключения ближе radius_m (по умолчанию 500 м) к точке двора.
+
+    point — [lon, lat] (или lon=…, lat=…). Ответ — как works_v2 + distance_m у каждой записи; без места — не входят.
+    """
+    if point is None and lon is not None and lat is not None:
+        point = [lon, lat]
+    return _run(_v2().nearby.works_near, point, radius_m=radius_m, include_outages=bool(include_outages),
+                include_done=bool(include_done))
+
+
+# --- раунд 15: лента уведомлений (CONTRACT §5.8, §7) и идея → инициатива ------------------------------------------
+
+def _resident_context(context):
+    context = context or {}
+    if context.get("host_allowed") is False:
+        raise V2Error(403, "forbidden_host", "Откройте интерфейс через адрес этого сервера.")
+    return context
+
+
+def list_notifications(since=None, device_id=None, ideas_device=None, context=None):
+    """GET notifications?since — житель (заголовок X-Birge-Device; запасной — device_id в адресе).
+
+    -> {"items": [{id, at, module, kind, target, title_ru, title_kk, link, demo, read}], "unread", "read_until",
+        "now", "sources": {"R06": "ok", "R09": "ok|absent|error", ...}, "truncated"}
+    Новые сверху; since — только события позже этого времени (счётчик unread — по всей ленте).
+    """
+    context = _resident_context(context)
+    device = device_id or header(context, DEVICE_HEADER)
+    ideas = ideas_device or header(context, IDEAS_DEVICE_HEADER)
+    return _run(_v2().notify.collect, device, since, ideas)
+
+
+def read_notifications(body=None, device_id=None, context=None):
+    """POST notifications/read — житель: {ids: [...]} | {all: true} | {until: ISO} -> {read_until, read_ids}."""
+    context = _resident_context(context)
+    if context.get("is_same_origin") is False:
+        raise V2Error(403, "cross_origin", "Запрос с чужого сайта отклонён.")
+    body = body if isinstance(body, dict) else {}
+    device = device_id or header(context, DEVICE_HEADER) or body.get("device_id")
+    return _run(_v2().notify.mark_read, device, body, header(context, IDEAS_DEVICE_HEADER))
+
+
+def idea_to_initiative(idea_id, body=None, context=None, principal=None):
+    """POST ideas/{id}/to-initiative — сотрудник (сессия + CSRF): идея → инициатива R16. 201 {item, initiative,
+    created}; нет R16 в сборке — 503 module_not_ready (кнопка в карточке скрыта по capabilities.to_initiative)."""
+    actor = _actor(context)
+    return 201, _run(_v2().ideas_to_initiative, actor, idea_id, body or {})

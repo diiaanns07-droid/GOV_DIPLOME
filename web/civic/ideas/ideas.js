@@ -26,7 +26,8 @@
   var DEVICE_KEY = "birge.device_id"; // тот же id устройства, что у голосов за проекты (proposals.js)
   var DRAFT_KEY = "birge.idea.draft";
   var KINDS = ["square", "playground", "sports", "stop", "lighting"];
-  var KIND_ICON = { square: "trees", playground: "playground", sports: "ball", stop: "bus", lighting: "bulb" };
+  var KIND_ICON = { square: "trees", playground: "playground", sports: "ball", stop: "bus", lighting: "bulb",
+    benches: "bench", greening: "sprout", other: "pin" };   // + темы идей раунда 15 (значки R11 i-bench, i-sprout)
   var CHECK_KEYS = ["land", "networks", "access", "maintenance"];
   var CHECK_ICON = { land: "pin", networks: "droplet", access: "walk", maintenance: "building" };
   var ANSWERS = ["yes", "no", "unknown"];
@@ -80,6 +81,8 @@
       "idea.hidden_note": "Идея не прошла проверку: в ней личные данные, грубые слова или реклама.",
       "idea.mine": "Ваша идея",
       "idea.kind_none": "Идея",
+      "idea.topic.benches": "Скамейки",
+      "idea.topic.greening": "Озеленение",
       "idea.place": "Где это нужно?",
       "idea.place_pick": "Выбрать место на карте",
       "idea.place_change": "Изменить место",
@@ -117,6 +120,16 @@
       "idea.field_required": "Заполните это поле",
       // Дизайн-марафон (12–14 окт): пустые вкладки, пояснения чек-листа, прогресс — I18N_DESIGN_R06.json для R11.
       "idea.empty.title": "Идей пока нет",
+      // Раунд 15, задача 1: просмотр без входа (вид «Акимат») — I18N_R15_R06.json для R11
+      "idea.public.staff_hint": "Проверять и публиковать идеи может сотрудник акимата после входа.",
+      "idea.public.vote_residents": "Голосуют жители — в виде «Житель». Решение принимает акимат.",
+      "idea.together.line": "Сделайте вместе — поддержим инвентарём",
+      "idea.together.open": "Открыть дело",
+      "idea.together.make": "Сделать инициативой",
+      "idea.together.hint": "Жители могут сделать это сами — акимат поддержит инвентарём и вывозом.",
+      "idea.together.can": "Если жители могут сделать это сами — сделайте инициативой, акимат поддержит инвентарём.",
+      "idea.together.done": "Инициатива создана — её видно в «Сделаем вместе»",
+      "idea.together.error": "Не получилось создать инициативу. Повторите позже.",
       "idea.empty.text": "Предложите первую — соседи смогут её поддержать.",
       "idea.empty.project": "Пока ни одна идея не стала проектом",
       "idea.empty.rejected": "Отклонённых идей нет",
@@ -140,6 +153,8 @@
       "idea.hidden_note": "Идея тексеруден өтпеді: онда жеке деректер, дөрекі сөздер немесе жарнама бар.",
       "idea.mine": "Сіздің идеяңыз",
       "idea.kind_none": "Идея",
+      "idea.topic.benches": "Орындықтар",
+      "idea.topic.greening": "Көгалдандыру",
       "idea.place": "Бұл қай жерге керек?",
       "idea.place_pick": "Картадан орын таңдау",
       "idea.place_change": "Орынды өзгерту",
@@ -176,6 +191,15 @@
       "idea.project_link": "Жоба: {title}",
       "idea.field_required": "Бұл өрісті толтырыңыз",
       "idea.empty.title": "Әзірге идея жоқ",
+      "idea.public.staff_hint": "Идеяларды әкімдік қызметкері кіргеннен кейін тексеріп, жариялай алады.",
+      "idea.public.vote_residents": "Тұрғындар дауыс береді — «Тұрғын» көрінісінде. Шешімді әкімдік қабылдайды.",
+      "idea.together.line": "Бірге жасаңыз — құрал-жабдықпен қолдаймыз",
+      "idea.together.open": "Істі ашу",
+      "idea.together.make": "Бастамаға айналдыру",
+      "idea.together.hint": "Тұрғындар мұны өздері жасай алады — әкімдік құрал-жабдықпен және қоқыс шығарумен қолдайды.",
+      "idea.together.can": "Тұрғындар өздері жасай алса — бастамаға айналдырыңыз, әкімдік құрал-жабдықпен қолдайды.",
+      "idea.together.done": "Бастама құрылды — ол «Бірге жасайық» бөлімінде көрінеді",
+      "idea.together.error": "Бастаманы құру мүмкін болмады. Кейінірек қайталаңыз.",
       "idea.empty.text": "Біріншісін ұсыныңыз — көршілеріңіз қолдай алады.",
       "idea.empty.project": "Әзірге бірде-бір идея жобаға айналмады",
       "idea.empty.rejected": "Қабылданбаған идея жоқ",
@@ -309,7 +333,7 @@
     var staffGet = function (method, path) { return method === "GET" && /^\/(staff\/|works(\?|$))/.test(path); };
     // Все запросы сотрудника (чтение очереди, решения по идеям, записи «Рядом») — напрямую с токеном: не зависят от того,
     // успела ли оболочка узнать сессию после перезагрузки страницы.
-    var staffPath = function (path) { return /^\/(staff\/|works(\/|\?|$))/.test(path) || /^\/ideas\/[^/]+\/decide$/.test(path); };
+    var staffPath = function (path) { return /^\/(staff\/|works(\/|\?|$))/.test(path) || /^\/ideas\/[^/]+\/(decide|to-initiative)$/.test(path); };
     // Токен сотрудника: у оболочки (CivicShell) — когда она уже узнала сессию; иначе (экран открыт сразу после
     // перезагрузки) — из GET /api/civic/v1/session, как у карточек R06 (proposals.js).
     var token = null;
@@ -477,54 +501,39 @@
     setTimeout(function () { cancel.focus(); }, 0);
   }
 
-  // ── эталон (13 окт): картинки карточек — плоские иллюстрации вида объекта (как в REFERENCE.html, вариант A) ──
-  // Статичная разметка без данных пользователя. Плитка 84 × 84 и картинка карточки 340 × 150 (та же сцена крупнее).
-  var ART = {
-    square: { bg: "#EAF4E0", g: '<g fill="#7FC08D"><circle cx="28" cy="40" r="11"/><circle cx="54" cy="36" r="13"/><circle cx="44" cy="58" r="10"/></g><path d="M8 66h68" stroke="#F4EFE3" stroke-width="6" stroke-linecap="round"/>' },
-    stop: { bg: "#E8F0F6", g: '<rect x="18" y="30" width="48" height="30" rx="4" fill="#fff" stroke="#9FB7C7" stroke-width="2"/><path d="M18 30 42 16 66 30" fill="none" stroke="#9FB7C7" stroke-width="2"/><rect x="26" y="44" width="10" height="16" fill="#F4C76A"/>' },
-    playground: { bg: "#FDF3E3", g: '<path d="M20 62 42 24 64 62" fill="none" stroke="#E0A64B" stroke-width="4" stroke-linejoin="round"/><circle cx="42" cy="22" r="5" fill="#E24B4A"/><path d="M14 64h56" stroke="#D9CBB0" stroke-width="4" stroke-linecap="round"/>' },
-    sports: { bg: "#E9F1E4", g: '<rect x="14" y="24" width="56" height="38" rx="4" fill="#CFE5C2" stroke="#fff" stroke-width="2"/><path d="M42 24v38" stroke="#fff" stroke-width="2"/><circle cx="42" cy="43" r="7" fill="none" stroke="#fff" stroke-width="2"/><circle cx="58" cy="52" r="4" fill="#E24B4A"/>' },
-    lighting: { bg: "#FDF6E0", g: '<circle cx="42" cy="26" r="14" fill="#FCE7A8" opacity=".8"/><path d="M42 70V28M42 28h-9" stroke="#9AA3A0" stroke-width="4" stroke-linecap="round"/><circle cx="33" cy="30" r="5" fill="#F4C76A"/><path d="M22 70h40" stroke="#D9CBB0" stroke-width="4" stroke-linecap="round"/>' },
-    none: { bg: "#EEF0EE", g: '<path d="M36 52h12M38 58h8M42 22a12 12 0 0 0-7 21.8V48h14v-4.2A12 12 0 0 0 42 22Z" fill="none" stroke="#7E8A85" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>' },
+  // ── П1 (поправка владельца 15 окт, «Без ИИ-слопа»): у идеи и проекта — маленький монохромный значок вида объекта
+  // (набор R11, одна толщина линии) на спокойной плитке 48 px вместо серой лампочки, сцен и 3D-рендеров. Сам объект в 3D
+  // виден на карте (слои «Проекты» и «Идеи жителей»), больших картинок в списке и карточке нет.
+  // Значков i-bench и i-sprout нет в ui-kit FINAL-4: пока спрайт без них — тот же рисунок R11 встроенным SVG.
+  var INLINE_ICON = {
+    bench: '<path d="M4 8.5h16M4 13h16"/><path d="M6 13v6.5M18 13v6.5M7 8.5V13M17 8.5V13"/>',
+    sprout: '<path d="M12 20.5v-8"/><path d="M12 13C12 9 9.2 6.5 4.5 6.5c0 4 2.8 6.5 7.5 6.5Z"/><path d="M12 10.5c0-3.6 2.6-6 7.5-6 0 3.6-2.6 6-7.5 6Z"/>',
   };
-  // Крупная картинка «Сквера» — как в эталоне (ромб участка с деревьями), остальные — сцена плитки крупнее.
-  var ART_WIDE_SQUARE = '<rect width="340" height="150" fill="#E7F2DD"/><path d="M170 40 300 95 170 140 40 95Z" fill="#D2EAB9"/><g fill="#7FC08D"><circle cx="120" cy="88" r="16"/><circle cx="200" cy="80" r="18"/><circle cx="160" cy="108" r="14"/><circle cx="235" cy="104" r="13"/></g><path d="M80 96h180" stroke="#F4EFE3" stroke-width="7" stroke-linecap="round"/>';
-  function artSvg(kind, wide) {
-    var a = ART[kind] || ART.none;
-    if (wide) {
-      var inner = kind === "square" ? ART_WIDE_SQUARE
-        : '<rect width="340" height="150" fill="' + a.bg + '"/><g transform="translate(105 6) scale(1.65)">' + a.g + "</g>";
-      return '<svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' + inner + "</svg>";
+  var spriteIds = null;
+  (function loadSpriteIds() {
+    var sprite = root.BirgeUI && root.BirgeUI.SPRITE;
+    if (!sprite || !root.fetch) return;
+    root.fetch(sprite, { credentials: "same-origin" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (text) {
+      var ids = {};
+      String(text || "").replace(/id="(i-[a-z0-9-]+)"/g, function (_, id) { ids[id] = true; return _; });
+      spriteIds = ids;
+    }, function () { /* без спрайта — значки запасные */ });
+  })();
+  function kindIcon(kind) {
+    var name = KIND_ICON[kind] || KIND_ICON.other;
+    if (INLINE_ICON[name] && !(spriteIds && spriteIds["i-" + name])) {
+      var box = doc.createElement("span");
+      box.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + INLINE_ICON[name] + "</svg>";
+      return box.firstChild;
     }
-    return '<svg viewBox="0 0 84 84" aria-hidden="true" focusable="false"><rect width="84" height="84" fill="' + a.bg + '"/>' + a.g + "</svg>";
+    return icon(name);
+  }
+  function kindTile(kind) {
+    return h("span", { class: "ri-tile ri-kind", "data-kind": KIND_ICON[kind] ? kind : "other", "aria-hidden": "true" },
+      [kindIcon(kind)]);
   }
   // Сердце «Поддержать» — как в эталоне (одна толщина линии с иконками ui-kit); заполненное — поддержано.
   var HEART = '<svg class="ri-heart" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>';
-  // Картинка объекта: 3D-превью модели R05 (handle.previewOf(kind): square 84 для строки, 240×160 для карточки — тот же
-  // свет и угол, что на карте) на светлой подложке вида; без R05 или без файла — плоский рисунок эталона (artSvg).
-  function preview(kind, wide) {
-    var b = kind && build3d && build3d();
-    var pv = b && typeof b.previewOf === "function" ? b.previewOf(kind) : null;
-    var pic = pv && (wide ? pv : pv.square);
-    var cls = wide ? "bk-pd__im ri-pd__im" : "bk-thumb ri-thumb";
-    if (!pic || !pic.src) return svgEl(artSvg(kind || "none", wide), cls);
-    var box = doc.createElement("span");
-    box.className = cls + " ri-pic3d";
-    box.setAttribute("aria-hidden", "true");
-    if (pv.tint) box.style.backgroundColor = pv.tint;
-    var img = doc.createElement("img");
-    img.alt = "";
-    img.src = pic.src;
-    if (pic.srcset) img.srcset = pic.srcset;
-    img.width = pic.width || (wide ? 240 : 84);
-    img.height = pic.height || (wide ? 160 : 84);
-    img.draggable = false;
-    img.addEventListener("error", function () {
-      if (box.parentNode) box.parentNode.replaceChild(svgEl(artSvg(kind || "none", wide), cls), box);
-    });
-    box.appendChild(img);
-    return box;
-  }
   function svgEl(markup, cls) {
     var span = doc.createElement("span");
     span.className = cls;
@@ -536,7 +545,10 @@
   // ===================================================================================== экран
   function mount(rootEl, options) {
     var opts = Object.assign({ titleTag: "h2" }, options || {});
+    // akimat — интерфейс сотрудника (очередь проверки, решения). Раунд 15, задача 1: без входа акимат видит те же
+    // проекты и идеи, что житель, — только просмотр (readOnly: без голосов и решений), и тихую кнопку «Войти».
     var akimat = opts.section === "projects" || opts.role === "akimat";
+    var readOnly = false;
     var request = makeRequest(opts);
     var state = {
       tab: "ideas", sel: null, selClosed: false, mode: null, more: false,
@@ -546,6 +558,12 @@
     // pendingFocus гасится, когда идея найдена в загруженном списке (load): оболочка может пересоздать экран до ответа.
     var alive = true;
     rootEl.classList.add("ri");
+    // Адрес «#ideas/<id>» или «#projects/<id>» (ссылка из ленты) — открыть эту идею или проект. Оболочка раунда 15
+    // передаёт путь в opts.path (и потом в handle.setPath), FINAL-4 — нет: тогда читаем адрес сами.
+    var deep = ITEM_ID.test(opts.path || "") ? [null, opts.path]
+      : /^#(?:ideas|projects)\/([A-Za-z0-9._:-]{1,64})$/.exec(root.location ? root.location.hash : "");
+    if (deep && !pendingFocus) pendingFocus = deep[1];
+    if (pendingFocus) state.flash = pendingFocus;
     if (!akimat && loadDraft() && draft.active) state.view = "new";
     if (state.view === "new") state.step = draft.step || 1;
 
@@ -563,6 +581,7 @@
         if (!alive) return;
         state.items = (res[0] && res[0].items) || [];
         state.counts = (res[0] && res[0].counts) || {};
+        state.caps = (res[0] && res[0].capabilities) || {};   // раунд 15: to_initiative — есть ли R16 в сборке
         state.appear = true;
         state.projects = res[1] ? res[1].items || [] : [];
         if (state.flash) {
@@ -572,15 +591,27 @@
         render();
       }, function (err) {
         if (!alive) return;
+        if (akimat && (err.status === 401 || err.status === 403)) {
+          akimat = false;   // сессии нет — открытый список жителя, только просмотр
+          readOnly = true;
+          load();
+          return;
+        }
         state.error = err;
         render();
       });
     }
+    function staffLogin() {
+      if (root.BirgeShell) root.BirgeShell.setSection("map");
+      if (root.CivicShell && root.CivicShell.openEditor) root.CivicShell.openEditor();
+    }
     // Нажатие на метку идеи на карте (или «Идея отправлена» → список): идея выбрана, её карточка открыта.
     function focusIdea(id) {
       var item = (state.items || []).filter(function (x) { return x.id === id; })[0];
-      if (!item) return;
-      state.tab = "ideas";
+      // Раунд 15: ссылка из ленты уведомлений может вести и на проект («Проект, за который вы голосовали, одобрен»).
+      var project = !item && (state.projects || []).filter(function (x) { return x.id === id; })[0];
+      if (!item && !project) return;
+      state.tab = item ? "ideas" : "projects";
       state.sel = id;
       state.selClosed = false;
       state.mode = null;
@@ -726,7 +757,7 @@
         list.forEach(function (p) { body.appendChild(projectCard(p, sel)); });
       } else {
         var open = akimat ? list.filter(function (x) { return !isDecided(x); }) : list;
-        if (!list.length) emptyBox(body, tr(akimat ? "idea.empty.review" : "idea.empty.title"), akimat ? null : tr("idea.empty.text"), null, akimat ? "done" : "idea");
+        if (!list.length) emptyBox(body, tr(akimat ? "idea.empty.review" : "idea.empty.title"), akimat || readOnly ? null : tr("idea.empty.text"), null, akimat ? "done" : "idea");
         else if (!open.length) emptyBox(body, tr("idea.empty.review"), null, ["check"], "done");
         open.forEach(function (x) { body.appendChild(ideaCard(x, sel)); });
         var decided = akimat ? list.filter(isDecided) : [];
@@ -750,10 +781,15 @@
       if (!sideCard()) body.insertBefore(h("p", { class: "bk-footnote ri-honest-note", text: tr("idea.honest") }), body.firstChild);
       if (demo) body.appendChild(h("p", { class: "bk-footnote ri-demo-note", text: tr("common.tag.demo_hint") }));
       rootEl.appendChild(body);
-      if (!akimat) {
+      if (!akimat && !readOnly) {
         rootEl.appendChild(h("div", { class: "ri-sheet-ft" }, [
           h("button", { type: "button", class: "bk-btn ri-newbtn", "data-key": "new", onclick: startWizard }, [
             h("span", { class: "ri-newbtn__ic", "aria-hidden": "true" }, [icon("plus")]), h("span", { text: tr("idea.new") })])]));
+      } else if (readOnly) {
+        // Просмотр без входа: подсказка одной строкой и тихая «Войти» (главного действия здесь нет — это витрина).
+        rootEl.appendChild(h("div", { class: "ri-sheet-ft ri-sheet-ft--public" }, [
+          h("p", { class: "bk-footnote ri-public-note", text: tr("idea.public.staff_hint") }),
+          button("bk-btn--ghost ri-loginbtn", tr("staff.login.submit"), "user", { "data-key": "login", onclick: staffLogin })]));
       }
       placeDetail(sel);
       // Выбор сменился (нажатие, ↑↓, первая карточка после загрузки или смены вкладки) — карта плавно ведёт к объекту.
@@ -784,10 +820,10 @@
       return h("button", { type: "button", class: "bk-vote ri-vote" + (opts2.pop ? " ri-pop" : ""), "aria-pressed": String(!!opts2.pressed), "aria-label": opts2.label,
         title: opts2.label, "data-key": opts2.key, onclick: opts2.onclick }, kids);
     }
-    function rowCard(id, attrs, kind, titleText, titleLang, sub, pillEl, capsule, sel) {
+    function rowCard(id, attrs, kind, titleText, titleLang, sub, pillEl, capsule, sel, topic) {
       var on = !!(sel && sel.id === id);
       var card = h("article", Object.assign({ class: "bk-pc ri-pc", "aria-current": on ? "true" : null, "aria-labelledby": "ri-t-" + id }, attrs), [
-        preview(kind, false),
+        kindTile(topic || kind),
         h("div", { class: "bk-pc__body ri-pc__t" }, [
           h("h3", { class: "bk-pc__title ri-pc__title", id: "ri-t-" + id, lang: titleLang }, [
             h("button", { type: "button", class: "ri-pc__open", "data-key": "sel-" + id, "aria-expanded": String(on), onclick: function () { select(id); } }, [titleText])]),
@@ -802,15 +838,16 @@
       var kind = item.object && item.object.kind;
       var capsule = null;
       var bump = state.bump && state.bump.id === item.id ? state.bump.dir : 0;
-      if (!akimat && item.status === "voting") {
+      if (!akimat && !readOnly && item.status === "voting") {
         capsule = voteCapsule(item.votes || 0, { pressed: item.my_support, label: tr(item.my_support ? "idea.supported" : "idea.support"), key: "support-" + item.id,
           roll: bump > 0 ? "up" : bump < 0 ? "down" : "", pop: !!bump, onclick: function () { support(item, !item.my_support); } });
       } else if (item.status !== "review" && item.status !== "hidden") {
         capsule = voteCapsule(item.votes || 0, {});
       }
       var sub = joinDot([item.mine ? tr("idea.mine") : tr("idea.sub"), districtShort(item.district)]);
-      return rowCard(item.id, { "data-idea": item.id, "data-idea-status": item.status, "data-demo": item.demo ? "" : null }, kind, t.text, t.lang, sub,
-        pill(tr("idea.pill." + item.status), IDEA_TONE[item.status] || "neutral"), capsule, sel);
+      return rowCard(item.id, { "data-idea": item.id, "data-idea-status": item.status, "data-demo": item.demo ? "" : null,
+        "data-topic": item.topic || null }, kind, t.text, t.lang, sub,
+        pill(tr("idea.pill." + item.status), IDEA_TONE[item.status] || "neutral"), capsule, sel, item.topic);
     }
     function projTitle(p) {
       return lang() === "kk" && p.title_kk ? { text: p.title_kk, lang: "kk" } : { text: p.title_ru, lang: "ru" };
@@ -818,7 +855,7 @@
     function projectCard(p, sel) {
       var t = projTitle(p);
       var bump = state.bump && state.bump.id === p.id ? state.bump.dir : 0;
-      var capsule = !akimat && p.voting_open && p.status === "proposal"
+      var capsule = !akimat && !readOnly && p.voting_open && p.status === "proposal"
         ? voteCapsule(p.votes_up || 0, { pressed: p.my_vote === 1, label: tr("proposal.vote_up"), key: "vote-" + p.id, roll: bump > 0 ? "up" : bump < 0 ? "down" : "",
           pop: !!bump, onclick: function () { voteProject(p, 1); } })
         : voteCapsule(p.votes_up || 0, {});
@@ -936,6 +973,11 @@
         if (row) row.after(card);
       }
     }
+    // «Объект» в трёх цифрах идеи: вид из каталога, иначе тема по словам идеи (сервер, topic_of) — «Скамейки», «Сквер».
+    function objectName(kind) {
+      if (kind === "benches" || kind === "greening") return tr("idea.topic." + kind);
+      return kind && kind !== "other" ? tr("proposal.kind." + kind) : tr("idea.kind_none");
+    }
     function fact(value, label) {
       return h("div", { class: "ri-fact" }, [h("b", { class: "bk-num", text: value }), h("span", { text: label })]);
     }
@@ -944,11 +986,9 @@
       var kind = isProj ? x.kind : x.object && x.object.kind;
       var t = isProj ? projTitle(x) : textOf(x, "title");
       var inner = h("div", { class: "bk-pd__in ri-pd__in" }, [h("h3", { class: "bk-pd__title ri-pd__title", id: "ri-pd-t", lang: t.lang, text: t.text })]);
+      // П1: без большой картинки — название, три цифры, одно предложение и действие; значок вида — в строке списка.
       var card = h("section", { class: "bk-pd ri-pd bk-glass bk-glass--strong", role: "region", "aria-labelledby": "ri-pd-t",
-        "data-pd": x.id, "data-pd-kind": isProj ? "project" : "idea" }, [
-        preview(kind, true),
-        inner,
-      ]);
+        "data-pd": x.id, "data-pd-kind": isProj ? "project" : "idea" }, [inner]);
       if (isProj) {
         inner.appendChild(h("div", { class: "bk-facts ri-facts" }, [
           fact(I() ? I().formatNumber(x.votes_up || 0) : String(x.votes_up || 0), tr("idea.fact.supported")),
@@ -964,13 +1004,15 @@
         inner.appendChild(h("div", { class: "bk-facts ri-facts" }, [
           fact(I() ? I().formatNumber(x.votes || 0) : String(x.votes || 0), tr("idea.fact.supported")),
           year ? fact(String(year), tr("idea.fact.year")) : fact(districtShort(x.district) || "—", tr("idea.fact.district")),
-          fact(kind ? tr("proposal.kind." + kind) : tr("idea.kind_none"), tr("idea.fact.object"))]));
+          fact(objectName(kind || x.topic), tr("idea.fact.object"))]));
         var decision = decisionBlock(x);
         if (decision) inner.appendChild(decision);
         else {
           var d = textOf(x, "description");
           if (d.text) inner.appendChild(h("p", { class: "bk-quote ri-pd__text" + (state.more ? " ri-pd__text--full" : ""), lang: d.lang, text: d.text }));
         }
+        var together = togetherLine(x);
+        if (together) inner.appendChild(together);
         if (akimat) inner.appendChild(staffActions(x));
         else inner.appendChild(residentActions(x));
         if (state.more) inner.appendChild(moreBlock(x));
@@ -980,7 +1022,7 @@
     }
     function residentActions(item) {
       var row = h("div", { class: "bk-acts ri-pd__acts" });
-      if (item.status === "voting") {
+      if (item.status === "voting" && !readOnly) {
         var on = !!item.my_support;
         row.appendChild(button("bk-btn--primary ri-pd__main", tr(on ? "idea.supported" : "idea.support"), on ? "check" : null,
           { "aria-pressed": String(on), "data-key": "pd-support", onclick: function () { support(item, !item.my_support); } }));
@@ -1043,6 +1085,8 @@
         } else {
           row.appendChild(h("p", { class: "ri-pd__text", text: tr("proposal.status." + p.status) }));
         }
+      } else if (p.voting_open && p.status === "proposal" && readOnly) {
+        row.appendChild(h("p", { class: "ri-pd__text", text: tr("idea.public.vote_residents") }));
       } else if (p.voting_open && p.status === "proposal") {
         row.appendChild(button("bk-btn--primary ri-pd__main", tr("proposal.vote_up"), "thumb-up",
           { "aria-pressed": String(p.my_vote === 1), "data-key": "pd-up", onclick: function () { voteProject(p, 1); } }));
@@ -1112,6 +1156,56 @@
       var mark = "\u0001", full = tr(key, { text: mark }), at = full.indexOf(mark);
       if (at < 0) return h("p", { class: cls, text: tr(key, { text: text }) });
       return h("p", { class: cls }, [h("strong", { text: full.slice(0, at).replace(/\s+$/, "") }), " " + text + full.slice(at + 1)]);
+    }
+    // ── раунд 15: идея → дело жителей (R16 «Сделаем вместе»; IA R11 §5.5) ──
+    // Строка «Сделайте вместе — поддержим инвентарём» со ссылкой на дело — у идеи, ставшей инициативой; у сотрудника —
+    // тихая «Сделать инициативой» для опубликованной идеи (главная кнопка карточки остаётся «Проверить»).
+    // Нет R16 в сборке (ни экрана, ни capabilities.to_initiative) — ни строки, ни кнопки.
+    function togetherAvailable() {
+      return !!(root.BirgeTogether || (state.caps && state.caps.to_initiative));
+    }
+    function togetherLine(item) {
+      if (item.initiative && item.initiative.id && togetherAvailable()) {
+        return h("p", { class: "ri-together", "data-key": "together-line" }, [
+          h("span", { class: "ri-together__ic", "aria-hidden": "true" }, [icon("heart")]),
+          h("span", { class: "ri-together__text", text: tr("idea.together.line") }),
+          h("a", { class: "ri-together__link", href: "#together/" + item.initiative.id, "data-key": "together-open",
+            onclick: function (e) { e.preventDefault(); openTogether(item.initiative.id); } }, [tr("idea.together.open")])]);
+      }
+      if (akimat && state.caps && state.caps.to_initiative && !item.initiative
+          && (item.status === "voting" || item.status === "checking" || item.status === "rejected")) {
+        return h("div", { class: "ri-together ri-together--staff" }, [
+          h("p", { class: "ri-together__text", text: tr(item.self_doable ? "idea.together.hint" : "idea.together.can") }),
+          button("bk-btn--ghost ri-together__make", tr("idea.together.make"), "heart",
+            { "data-key": "together-make", onclick: function () { makeTogether(item); } })]);
+      }
+      return null;
+    }
+    // Открыть дело R16: его BirgeTogether.open("initiative", id) (палитра R01, лента R06 — тот же вход); иначе адрес
+    // «#together/<id>» (оболочка раунда 15 и R16 понимают его сами) или раздел + событие birge:open (FINAL-4).
+    function openTogether(id) {
+      var T = root.BirgeTogether;
+      if (T && typeof T.open === "function" && T.open("initiative", id) !== false) return;
+      var S = shell();
+      if (S && typeof S.openLink === "function") { S.openLink("#together/" + id); return; }
+      if (S && "path" in S) { root.location.hash = "#together/" + id; return; }
+      if (S && S.setSection) S.setSection("together");
+      doc.dispatchEvent(new CustomEvent("birge:open", { detail: { section: "together", path: id, link: "#together/" + id } }));
+    }
+    function makeTogether(item) {
+      if (state.busy) return;
+      state.busy = true;
+      request("POST", "/ideas/" + encodeURIComponent(item.id) + "/to-initiative", {}).then(function (data) {
+        state.busy = false;
+        if (data && data.item) replace(data.item);
+        toast(tr("idea.together.done"));
+        render();
+      }, function (err) {
+        state.busy = false;
+        if (err.status === 503) state.caps = { to_initiative: false };
+        toast(tr("idea.together.error"), { type: "error" });
+        render();
+      });
     }
     function decisionBlock(item) {
       if (item.status === "rejected") {
@@ -1196,15 +1290,13 @@
     }
     // Пусто: иллюстрация из линий ui-kit (три плитки видов объектов), заголовок и одна строка подсказки.
     function emptyBox(body, title, text, kinds, ill) {
+      // П1: одна маленькая монохромная иконка (≤ 48 px) + заголовок + строка подсказки, без сценок.
       var art;
       if (hasIllustrations()) {
-        // Рисунок из линий ui-kit R11 (тот же, что у других разделов) — единый вид пустых состояний.
-        art = h("span", { class: "ri-empty__ill", "aria-hidden": "true" });
+        art = h("span", { class: "ri-empty__ill", "aria-hidden": "true" });  // значок R11, размер ограничен в ideas.css
         art.innerHTML = root.BirgeUI.illustration(ill || "idea");
       } else {
-        art = h("div", { class: "ri-empty__art", "aria-hidden": "true" }, (kinds || ["square", "playground", "lighting"]).map(function (k) {
-          return h("span", { class: "ri-tile", "data-kind": k }, [icon(KIND_ICON[k] || k)]);
-        }));
+        art = h("span", { class: "ri-tile", "aria-hidden": "true" }, [icon(KIND_ICON[(kinds || [])[0]] || "pin")]);
       }
       body.appendChild(h("div", { class: "ri-empty", role: "status" }, [
         art,
@@ -1410,8 +1502,8 @@
           ]));
           primary = button("bk-btn--primary", tr("common.action.next"), "forward", { "data-key": "next", onclick: function () { go(2); } });
         } else {
-          // Иллюстрация «булавка на карте» из линий ui-kit и одна строка, что делать.
-          content.appendChild(h("div", { class: "ri-pickart", "aria-hidden": "true" }, [h("span", { class: "ri-pickart__pin" }, [icon("pin")])]));
+          // П1: маленький значок набора R11 (≤ 48 px) и одна строка, что делать; кнопка ниже — одна.
+          content.appendChild(h("span", { class: "ri-tile", "aria-hidden": "true" }, [icon("pin")]));
           content.appendChild(h("p", { class: "ri-lead", text: tr("idea.place_hint") }));
           primary = button("bk-btn--primary", tr("idea.place_pick"), "pin", { "data-key": "pick", onclick: pick });
         }
@@ -1595,6 +1687,8 @@
     else load();
     return {
       setLang: function () { render(); },
+      // Оболочка раунда 15: тот же раздел, другой путь («#ideas/<id>» из ленты, назад/вперёд) — без перемонтажа.
+      setPath: function (path) { if (ITEM_ID.test(path || "")) current.focus(path); },
       destroy: function () {
         alive = false;
         removeDetail();
@@ -1610,6 +1704,7 @@
     };
   }
 
+  var ITEM_ID = /^[A-Za-z0-9._:-]{1,64}$/;   // id идеи или проекта в адресе «#ideas/<id>»
   var mounted = null;     // открытый экран (для нажатия на метку идеи на карте)
   var pendingFocus = null; // id идеи, которую открыть, когда экран смонтируется
 
@@ -1668,6 +1763,25 @@
   if (doc.readyState === "complete") registerLayer();
   else root.addEventListener("load", registerLayer);
 
+  // Раунд 15: открыть идею или проект по ссылке («#ideas/<id>») — лента уведомлений R06 (событие birge:open от
+  // BirgeNotify, пока оболочка не понимает адреса «#раздел/путь») и BirgeIdeas.open(id) для соседей.
+  function openItem(id) {
+    var S = shell();
+    if (!id || !S) return;
+    var section = S.mode === "akimat" ? "projects" : "ideas";
+    if (mounted && S.section === section) {
+      mounted.focus(id);
+      return;
+    }
+    pendingFocus = id;
+    S.setSection(section);
+  }
+  doc.addEventListener("birge:open", function (e) {
+    var d = e.detail || {};
+    if ((d.section === "ideas" || d.section === "projects") && ITEM_ID.test(d.path || "")) openItem(d.path);
+  });
+
   // Карточка проекта R06 сама пишет «По идее жителей · N голосов» (proposals.js) — R05 свою строку не добавляет.
-  root.BirgeIdeas = { mount: mount, version: "ideas-r14-w2", KEYS: KEYS, cancelPick: function () { if (picker) picker.finish(false); } };
+  root.BirgeIdeas = { mount: mount, open: openItem, version: "ideas-r15", KEYS: KEYS,
+    cancelPick: function () { if (picker) picker.finish(false); } };
 })(typeof self !== "undefined" ? self : this);

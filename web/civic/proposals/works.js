@@ -10,6 +10,11 @@
  * Правила R11 (IA_WAVE2 §4) — и в форме, и на сервере: 4 строки «Зачем?» обязательны; у отключения — источник,
  * время начала и конца и «где». Задержки показываем: у работы — срок по плану и новый срок, если сдвинулся.
  * Тексты — на языке интерфейса; перевод — та же запись после переключения ҚАЗ / РУС.
+ *
+ * Раунд 15 — работа v2 (CONTRACT §5.6) для «Календаря работ» R12: служба (id таблицы служб), вид работ v2
+ * (раскопка, асфальт, перекрытие, благоустройство, освещение, другое), дата начала и «Участок улицы»: сотрудник
+ * отмечает на карте начало и конец, линию по форме OSM строит R12 (GET /street-segment) — здесь только предпросмотр,
+ * на сервер уходят две точки, и сервер строит участок сам. Форма переживает переход на карту (pending ниже).
  */
 (function (root) {
   "use strict";
@@ -26,6 +31,28 @@
   // Плитка-иллюстрация записи — значок ui-kit по виду работ / что отключат (дизайн-марафон).
   var KIND_ICON = { roadworks: "road", construction: "building", landscaping: "trees", lighting: "bulb", event: "calendar", other: "dots" };
   var UTILITY_ICON = { water: "droplet", heating: "droplet", power: "bulb", gas: "alert", road_closure: "road" };
+  // Работа v2: вид для календаря R12 и его значок; вид раунда 14 (подпись в «Рядом» R08) выводит сервер.
+  var KINDS_V2 = ["dig", "surface", "closure", "landscape", "lighting", "other"];
+  var KIND_V2_ICON = { dig: "droplet", surface: "road", closure: "alert", landscape: "trees", lighting: "bulb", other: "dots" };
+  var WORK_KIND_TO_V2 = { roadworks: "surface", construction: "other", landscaping: "landscape", lighting: "lighting", event: "other", other: "other" };
+  // Таблица служб R08 (GET /akim/routing) — запасные общие названия, если её нет в сборке (реальных организаций нет).
+  var SERVICE_NAMES = {
+    road: ["Дорожная служба", "Жол қызметі"], traffic: ["Служба светофоров и разметки", "Бағдаршам және жол таңбасы қызметі"],
+    street_cleaning: ["Служба уборки улиц", "Көшелерді тазалау қызметі"], transport: ["Служба общественного транспорта", "Қоғамдық көлік қызметі"],
+    lighting: ["Служба освещения", "Жарықтандыру қызметі"], landscaping: ["Служба благоустройства", "Абаттандыру қызметі"],
+    greenery: ["Служба озеленения", "Көгалдандыру қызметі"], waste: ["Оператор вывоза мусора", "Қоқыс шығару операторы"],
+    utilities: ["Служба ЖКХ", "ТКШ қызметі"], heating: ["Теплосеть", "Жылу желісі"], water: ["Водоканал", "Сумен жабдықтау қызметі"],
+    power: ["Электросети", "Электр желілері"], gas: ["Газовая служба", "Газ қызметі"], housing: ["Управляющая компания дома", "Үйді басқарушы компания"],
+    ecology: ["Служба экологии", "Экология қызметі"], emergency: ["Служба спасения", "Құтқару қызметі"], police: ["Полиция", "Полиция"],
+    animals: ["Служба отлова животных", "Жануарларды аулау қызметі"], parking: ["Служба парковок", "Тұрақ қызметі"],
+    akimat: ["Аппарат акима района", "Аудан әкімінің аппараты"],
+  };
+  // Служба по умолчанию для нового вида работ (сотрудник может выбрать другую).
+  var KIND_V2_SERVICE = { dig: "water", surface: "road", closure: "road", landscape: "landscaping", lighting: "lighting", other: "akimat" };
+  var SECTION_SOURCE = "rw-section";
+  var SECTION_COLOR = "#2563EB"; // линия участка в предпросмотре — синяя, как выбор на карте (не цвет уровня жалоб)
+  // Форма, открытая до перехода на карту (выбор участка): экран раздела при этом пересоздаётся.
+  var pending = null;
 
   var KEYS = {
     ru: {
@@ -61,6 +88,38 @@
       "works.form.until": "до {date}",
       "works.form.error": "Не получилось сохранить. Проверьте связь и повторите.",
       "staff.login.note": "Учётную запись выдаёт администратор.",
+      // Раунд 15 — работа v2 (I18N_R15_R06.json для R11)
+      "works.form.service": "Служба",
+      "works.form.kind_v2": "Вид работ",
+      "works.kind_v2.dig": "Раскопка: трубы и кабели",
+      "works.kind_v2.surface": "Асфальт и покрытие",
+      "works.kind_v2.closure": "Перекрытие улицы",
+      "works.kind_v2.landscape": "Благоустройство",
+      "works.kind_v2.lighting": "Освещение",
+      "works.kind_v2.other": "Другое",
+      "works.kind_v2_short.dig": "Раскопка",
+      "works.kind_v2_short.surface": "Асфальт",
+      "works.kind_v2_short.closure": "Перекрытие",
+      "works.kind_v2_short.landscape": "Благоустройство",
+      "works.kind_v2_short.lighting": "Освещение",
+      "works.kind_v2_short.other": "Другое",
+      "works.form.starts_on": "Начало работ",
+      "works.form.section": "Участок улицы",
+      "works.form.section_hint": "По участкам «Календарь работ» видит, где улицу хотят раскопать после нового асфальта.",
+      "works.form.section_none": "Участок не выбран — запись будет без линии на карте",
+      "works.form.section_pick": "Отметить на карте",
+      "works.form.section_change": "Изменить участок",
+      "works.form.section_clear": "Убрать участок",
+      "works.form.section_start": "Нажмите на карте начало участка улицы",
+      "works.form.section_end": "Теперь нажмите конец участка",
+      "works.form.section_wait": "Строим участок по улице…",
+      "works.form.section_ready": "{street} · {m} м. Нажмите «Готово» или выберите заново",
+      "works.form.section_value": "{street} · {m} м",
+      "works.form.section_unnamed": "Участок улицы",
+      "works.form.section_failed": "Участок не построить: {text}",
+      "works.form.section_unavailable": "Карта улиц сейчас недоступна — сохраните запись без участка.",
+      "works.form.section_kept": "Участок сохранён (по карте улиц)",
+      "works.form.bad_order": "Окончание — не раньше начала",
     },
     kk: {
       "works.form.add": "Жазба қосу",
@@ -95,6 +154,37 @@
       "works.form.until": "мерзімі: {date}",
       "works.form.error": "Сақтау мүмкін болмады. Байланысты тексеріп, қайталаңыз.",
       "staff.login.note": "Тіркелгіні әкімші береді.",
+      "works.form.service": "Қызмет",
+      "works.form.kind_v2": "Жұмыс түрі",
+      "works.kind_v2.dig": "Қазу: құбырлар мен кабельдер",
+      "works.kind_v2.surface": "Асфальт және жабын",
+      "works.kind_v2.closure": "Көшені жабу",
+      "works.kind_v2.landscape": "Абаттандыру",
+      "works.kind_v2.lighting": "Жарықтандыру",
+      "works.kind_v2.other": "Басқа",
+      "works.kind_v2_short.dig": "Қазу",
+      "works.kind_v2_short.surface": "Асфальт",
+      "works.kind_v2_short.closure": "Жол жабу",
+      "works.kind_v2_short.landscape": "Абаттандыру",
+      "works.kind_v2_short.lighting": "Жарықтандыру",
+      "works.kind_v2_short.other": "Басқа",
+      "works.form.starts_on": "Жұмыстың басталуы",
+      "works.form.section": "Көше учаскесі",
+      "works.form.section_hint": "Учаскелер бойынша «Жұмыс күнтізбесі» жаңа асфальттан кейін көшені қайта қазу жоспарын көреді.",
+      "works.form.section_none": "Учаске таңдалмаған — жазба картада сызықсыз болады",
+      "works.form.section_pick": "Картадан белгілеу",
+      "works.form.section_change": "Учаскені өзгерту",
+      "works.form.section_clear": "Учаскені алып тастау",
+      "works.form.section_start": "Картадан көше учаскесінің басын басыңыз",
+      "works.form.section_end": "Енді учаскенің соңын басыңыз",
+      "works.form.section_wait": "Көше бойынша учаске құрылып жатыр…",
+      "works.form.section_ready": "{street} · {m} м. «Дайын» батырмасын басыңыз немесе қайта таңдаңыз",
+      "works.form.section_value": "{street} · {m} м",
+      "works.form.section_unnamed": "Көше учаскесі",
+      "works.form.section_failed": "Учаске құрылмады: {text}",
+      "works.form.section_unavailable": "Көше картасы қазір қолжетімсіз — жазбаны учаскесіз сақтаңыз.",
+      "works.form.section_kept": "Учаске сақталды (көше картасы бойынша)",
+      "works.form.bad_order": "Аяқталуы басталуынан ерте болмауы керек",
     },
   };
 
@@ -158,8 +248,130 @@
   }
   function kindLabel(item) {
     if (item.type === "outage") return tr("nearby.utility." + item.utility);
+    // Строка записи — короткое слово («Раскопка»); полное «Раскопка: трубы и кабели» — в списке формы.
+    if (item.kind && KINDS_V2.indexOf(item.kind) >= 0) return tr("works.kind_v2_short." + item.kind);
     if (item.work_kind === "lighting") return tr("proposal.kind.lighting");
     return tr("works.kind." + (item.work_kind || "other"));
+  }
+  // Карта приложения (web/map.js R01): та же, что у мастера идей (ideas.js mapObject).
+  function mapObject() {
+    try {
+      // eslint-disable-next-line no-undef
+      return typeof mapReady !== "undefined" && mapReady && typeof map !== "undefined" && map && typeof map.on === "function" ? map : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  function reducedMotion() {
+    return root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+  function sectionText(section) {
+    if (!section) return tr("works.form.section_none");
+    var street = (lang() === "kk" ? section.street_kk || section.street_ru : section.street_ru || section.street_kk) || tr("works.form.section_unnamed");
+    var m = section.length_m != null ? Math.round(section.length_m) : null;
+    return m != null ? tr("works.form.section_value", { street: street, m: I() ? I().formatNumber(m) : String(m) }) : street;
+  }
+
+  // ── выбор участка улицы на карте (работа v2) ──
+  // Модуль, а не экран: при переходе на карту экран раздела уничтожается, выбор живёт дальше и возвращает форму.
+  // Нажатие 1 — начало, нажатие 2 — конец: R12 строит участок по графу OSM (предпросмотр синей линией). Третье
+  // нажатие начинает заново. Esc и «Отменить» — вернуться к форме без изменений.
+  var sectionPicker = null;
+  function pickSection(m, request, onDone) {
+    if (sectionPicker) sectionPicker.finish(false);
+    root.BirgeShell.setSection("map");
+    var a = null, b = null, picked = null, markers = [], seq = 0;
+    var done = button("bk-btn--primary", tr("common.action.done"), "check", { disabled: true, "data-key": "section-done" });
+    var cancel = button("bk-btn--ghost", tr("common.action.cancel"), "close", { "data-key": "section-cancel" });
+    var hint = h("p", { class: "ri-pick__hint", role: "status", "aria-live": "polite", text: tr("works.form.section_start") });
+    // Та же плавающая полоса, что у выбора места идеи (ideas.css .ri-pick, стекло ui-kit).
+    var bar = h("div", { class: "ri-pick rw-pick bk-app bk-glass", role: "dialog", "aria-label": tr("works.form.section") },
+      [hint, h("div", { class: "bk-actions" }, [done, cancel])]);
+    doc.body.appendChild(bar);
+    doc.body.classList.add("ri-picking");
+    m.getCanvas().style.cursor = "crosshair";
+    function round6(v) { return Math.round(v * 1e6) / 1e6; }
+    function marker(p) {
+      if (!root.maplibregl || !root.maplibregl.Marker) return null;
+      return new root.maplibregl.Marker({ color: SECTION_COLOR, scale: 0.8 }).setLngLat(p).addTo(m);
+    }
+    function clearMarkers() {
+      markers.forEach(function (x) { if (x) x.remove(); });
+      markers = [];
+    }
+    function clearLine() {
+      try {
+        if (m.getLayer(SECTION_SOURCE)) m.removeLayer(SECTION_SOURCE);
+        if (m.getSource(SECTION_SOURCE)) m.removeSource(SECTION_SOURCE);
+      } catch (e) { /* стиль карты перезагружается — линии уже нет */ }
+    }
+    function drawLine(geometry) {
+      clearLine();
+      if (!geometry) return;
+      try {
+        m.addSource(SECTION_SOURCE, { type: "geojson", data: { type: "Feature", geometry: geometry, properties: {} } });
+        m.addLayer({ id: SECTION_SOURCE, type: "line", source: SECTION_SOURCE, layout: { "line-cap": "round", "line-join": "round" },
+          paint: { "line-color": SECTION_COLOR, "line-width": 6, "line-opacity": 0.9 } });
+      } catch (e) { /* без линии предпросмотра участок всё равно сохранится — его строит сервер */ }
+    }
+    function onClick(e) {
+      var p = [round6(e.lngLat.lng), round6(e.lngLat.lat)];
+      if (!a || b) {
+        a = p;
+        b = null;
+        picked = null;
+        seq += 1;
+        clearLine();
+        clearMarkers();
+        markers.push(marker(a));
+        done.disabled = true;
+        hint.textContent = tr("works.form.section_end");
+        if (m.getZoom() < 15) m.easeTo({ center: p, zoom: 16, duration: reducedMotion() ? 0 : 500 });
+        return;
+      }
+      b = p;
+      markers.push(marker(b));
+      hint.textContent = tr("works.form.section_wait");
+      var my = ++seq;
+      request("GET", "/street-segment?from=" + a.join(",") + "&to=" + b.join(",") + "&kind=road").then(function (seg) {
+        if (my !== seq || !sectionPicker) return;
+        drawLine(seg && seg.geometry);
+        picked = { from: a, to: b, street_ru: seg && seg.street_ru, street_kk: seg && seg.street_kk, length_m: seg && seg.length_m };
+        var street = (lang() === "kk" ? picked.street_kk || picked.street_ru : picked.street_ru || picked.street_kk) || tr("works.form.section_unnamed");
+        var meters = picked.length_m != null ? Math.round(picked.length_m) : 0;
+        hint.textContent = tr("works.form.section_ready", { street: street, m: I() ? I().formatNumber(meters) : String(meters) });
+        done.disabled = false;
+        done.focus();
+      }, function (err) {
+        if (my !== seq || !sectionPicker) return;
+        var e2 = err && err.error && typeof err.error === "object" ? err.error : null;
+        hint.textContent = err && (err.status === 503 || err.status === 0) ? tr("works.form.section_unavailable")
+          : tr("works.form.section_failed", { text: (e2 && e2.message) || (err && err.message) || "" });
+        b = null;
+        var last = markers.pop();
+        if (last) last.remove();
+      });
+    }
+    function finish(ok) {
+      m.off("click", onClick);
+      m.getCanvas().style.cursor = "";
+      clearLine();
+      clearMarkers();
+      bar.remove();
+      doc.body.classList.remove("ri-picking");
+      doc.removeEventListener("keydown", onKey, true);
+      sectionPicker = null;
+      onDone(ok ? picked : null);
+    }
+    function onKey(e) {
+      if (e.key === "Escape") finish(false);
+    }
+    m.on("click", onClick);
+    doc.addEventListener("keydown", onKey, true);
+    done.addEventListener("click", function () { if (picked) finish(true); });
+    cancel.addEventListener("click", function () { finish(false); });
+    sectionPicker = { finish: finish };
+    setTimeout(function () { cancel.focus(); }, 0);
   }
 
   function makeRequest(opts) {
@@ -229,6 +441,13 @@
       view: "list", form: null, errors: {}, busy: false, confirm: null };
     var alive = true;
     rootEl.classList.add("rw");
+    if (pending) {
+      // Вернулись с карты после выбора участка: та же форма, что была открыта.
+      state.form = pending.form;
+      state.district = pending.district || state.district;
+      state.view = "form";
+      pending = null;
+    }
 
     function load() {
       state.items = null;
@@ -252,7 +471,14 @@
     }
     function serviceName(id) {
       var s = state.services && state.services[id];
-      return s ? s[lang()] || s.ru : id;
+      if (s) return s[lang()] || s.ru;
+      var f = SERVICE_NAMES[id];
+      return f ? f[lang() === "kk" ? 1 : 0] : id || "";
+    }
+    function serviceIds() {
+      var ids = state.services ? Object.keys(state.services) : [];
+      Object.keys(SERVICE_NAMES).forEach(function (k) { if (ids.indexOf(k) < 0) ids.push(k); });
+      return ids;
     }
 
     function render() {
@@ -309,7 +535,8 @@
     // Строка записи (дизайн-марафон): плитка вида работ, тихая строка «вид · Пример», название, срок одной строкой.
     // Сдвинутый срок — «до / после»: плановый зачёркнут → новый, метка «срок перенесён». «Изменить» — капсула, «Удалить» — тихая.
     function tileOf(item) {
-      var ic = item.type === "outage" ? UTILITY_ICON[item.utility] || "alert" : KIND_ICON[item.work_kind] || "dots";
+      var ic = item.type === "outage" ? UTILITY_ICON[item.utility] || "alert"
+        : KIND_V2_ICON[item.kind] || KIND_ICON[item.work_kind] || "dots";
       return h("span", { class: "ri-tile", "aria-hidden": "true" }, [icon(ic)]);
     }
     function whenLine(item) {
@@ -334,7 +561,11 @@
       var title = item["title_" + l] || item.title_ru;
       var confirming = state.confirm === item.id;
       // «Пример» — одной строкой под списком, а не у каждой записи (R11 INTEGRATION §13 D-5).
-      var meta = h("p", { class: "ri-meta" }, [h("span", { text: kindLabel(item) })]);
+      // Раунд 15: служба и улица участка — в той же тихой строке (кто копает и где), без новых плашек.
+      var metaText = [kindLabel(item), item.service ? serviceName(item.service) : null,
+        item.segments && item.segments.length ? sectionText({ street_ru: item.street_ru, street_kk: item.street_kk }) : null]
+        .filter(Boolean).join(" · ");
+      var meta = h("p", { class: "ri-meta" }, [h("span", { text: metaText })]);
       return h("article", { class: "bk-card rw-card", "data-work": item.id, "data-demo": item.demo ? "" : null }, [
         h("div", { class: "ri-app" }, [tileOf(item), h("div", { class: "ri-app__body" }, [meta,
           h("h3", { class: "bk-card__title rw-title", lang: item["title_" + l] ? l : "ru", text: title }), whenLine(item)])]),
@@ -376,6 +607,13 @@
         start: item && item.type === "outage" ? toLocalInput(item.start) : "", end: item && item.type === "outage" ? toLocalInput(item.end) : "",
         planned_end: item && item.planned_end || "", forecast_end: item && item.forecast_end || "",
         why: { problem: pick("why_problem"), reason: pick("why_reason"), result: pick("why_result"), inconvenience: pick("why_inconvenience") },
+        // Работа v2: вид, служба, начало работ и участок улицы (segments хранит сервер; здесь — что показать и что прислать).
+        kind: item && item.kind || (item && item.type === "work" ? WORK_KIND_TO_V2[item.work_kind] || "other" : "dig"),
+        service: item && (item.service || item.source) || "water",
+        starts_on: item && item.type === "work" && item.start ? String(item.start).slice(0, 10) : "",
+        section: item && item.segments && item.segments.length ? { street_ru: item.street_ru, street_kk: item.street_kk,
+          length_m: item.place && item.place.length_m, kept: true } : null,
+        sectionChanged: false, kindTouched: false, originalKind: item ? item.kind : null, originalWorkKind: item ? item.work_kind : null,
       };
       state.errors = {};
       state.view = "form";
@@ -437,27 +675,41 @@
         f.district, function (v) { f.district = v; }));
       form.appendChild(input("title", "works.form.title", "text", f.title, function (v) { f.title = v; }, { maxlength: "120", autocomplete: "off" }));
       var grid = h("div", { class: "rw-grid" });
+      var services = serviceIds().map(function (sv) { return { value: sv, label: serviceName(sv) }; });
       if (f.type === "work") {
         form.appendChild(seg("status", "works.form.status", Object.keys(WORK_STATUS).map(function (s) { return { value: s, label: tr(WORK_STATUS[s]) }; }),
           f.status, function (v) { f.status = v; }));
-        grid.appendChild(select("work_kind", "works.form.kind", WORK_KINDS.map(function (k) {
-          return { value: k, label: kindLabel({ type: "work", work_kind: k }) };
-        }), f.work_kind, function (v) { f.work_kind = v; }));
-        grid.appendChild(h("span"));
-        grid.appendChild(input("planned_end", "works.form.planned_end", "date", f.planned_end, function (v) { f.planned_end = v; }));
-        grid.appendChild(input("forecast_end", "works.form.forecast_end", "date", f.forecast_end, function (v) { f.forecast_end = v; }));
+        // Вид работ v2 (для календаря R12) и служба. Вид раунда 14 для «Рядом» выводит сервер из вида v2.
+        grid.appendChild(select("kind", "works.form.kind_v2", KINDS_V2.map(function (k) {
+          return { value: k, label: tr("works.kind_v2." + k) };
+        }), f.kind, function (v) {
+          // Служба по виду — только пока сотрудник её не выбрал сам (новая запись).
+          if (!f.id && !f.serviceTouched) f.service = KIND_V2_SERVICE[v] || f.service;
+          f.kind = v;
+          f.kindTouched = true;
+          render();
+        }));
+        grid.appendChild(select("service", "works.form.service", services, f.service, function (v) { f.service = v; f.serviceTouched = true; }));
+        // Три даты — одной строкой на ноутбуке (начало → срок по плану → новый срок): сроки рядом, как в FINAL-4.
+        var dates = h("div", { class: "rw-grid rw-dates" });
+        dates.appendChild(input("start", "works.form.starts_on", "date", f.starts_on, function (v) { f.starts_on = v; }));
+        dates.appendChild(input("planned_end", "works.form.planned_end", "date", f.planned_end, function (v) { f.planned_end = v; }));
+        dates.appendChild(input("forecast_end", "works.form.forecast_end", "date", f.forecast_end, function (v) { f.forecast_end = v; }));
+        form.appendChild(grid);
+        grid = dates;
       } else {
         grid.appendChild(select("utility", "works.form.utility", UTILITIES.map(function (u) { return { value: u, label: tr("nearby.utility." + u) }; }),
-          f.utility, function (v) { f.utility = v; }));
-        var ids = state.services ? Object.keys(state.services) : [f.source];
-        grid.appendChild(select("source", "works.form.source", ids.map(function (s) { return { value: s, label: serviceName(s) }; }),
-          f.source, function (v) { f.source = v; }));
+          f.utility, function (v) { f.utility = v; render(); }));
+        // У отключения служба и есть источник (сервер принимает оба поля одним значением).
+        grid.appendChild(select("service", "works.form.service", services, f.service, function (v) { f.service = v; f.source = v; }));
         grid.appendChild(input("start", "works.form.start", "datetime-local", f.start, function (v) { f.start = v; }));
         grid.appendChild(input("end", "works.form.end", "datetime-local", f.end, function (v) { f.end = v; }));
         grid.appendChild(input("zone", "works.form.zone", "text", f.zone, function (v) { f.zone = v; }, { maxlength: "200" }));
         grid.appendChild(input("detour", "works.form.detour", "text", f.detour, function (v) { f.detour = v; }, { maxlength: "200" }));
       }
       form.appendChild(grid);
+      // Участок улицы: у работы и у перекрытия проезда (по нему R12 ищет конфликты «копаем дважды»).
+      if (f.type === "work" || f.utility === "road_closure") form.appendChild(sectionField(f));
       var whyGrid = h("div", { class: "rw-why" });
       var why = h("fieldset", {}, [h("legend", { text: tr("works.form.why") }), whyGrid]);
       WHY.forEach(function (k) {
@@ -471,22 +723,74 @@
       rootEl.appendChild(form);
     }
 
+    function sectionField(f) {
+      var err = state.errors.segment || state.errors.segments;
+      var value = h("p", { class: "rw-section__value" + (f.section ? "" : " rw-section__value--none"), id: "rw-section-value",
+        role: "status", text: sectionText(f.section) });
+      var actions = h("div", { class: "rw-section__actions" }, [
+        button(f.section ? "bk-btn--ghost" : "rw-capsule", tr(f.section ? "works.form.section_change" : "works.form.section_pick"), "pin",
+          { "data-key": "section-pick", "aria-describedby": "rw-section-value", onclick: function () { startSection(); } }),
+        f.section ? button("bk-btn--ghost rw-remove", tr("works.form.section_clear"), "close", { "data-key": "section-clear", onclick: function () {
+          f.section = null;
+          f.sectionChanged = true;
+          delete state.errors.segment;
+          delete state.errors.segments;
+          render();
+        } }) : null,
+      ]);
+      return h("fieldset", { class: "rw-section" + (err ? " bk-field--error" : "") }, [
+        h("legend", { text: tr("works.form.section") }),
+        h("p", { class: "bk-field__hint", text: tr("works.form.section_hint") }), value, actions,
+        err ? h("p", { class: "bk-field__error", text: err }) : null]);
+    }
+    // Выбор участка на карте: экран уходит на карту (форма — в pending), два нажатия → предпросмотр R12 → «Готово».
+    function startSection() {
+      var m = mapObject();
+      if (!m || !root.BirgeShell) {
+        toast(tr("works.form.section_unavailable"), { type: "error" });
+        return;
+      }
+      pending = { form: state.form, district: state.district };
+      pickSection(m, request, function (picked) {
+        var f = pending && pending.form;
+        if (f && picked) {
+          f.section = picked;
+          f.sectionChanged = true;
+        }
+        if (root.BirgeShell) root.BirgeShell.setSection("works");
+      });
+    }
+
     function body() {
       var f = state.form;
       var b = { type: f.type, district: f.district, lang: lang(), title: f.title.trim(), why: {} };
       WHY.forEach(function (k) { b.why[k] = f.why[k].trim(); });
       if (f.type === "work") {
         b.status = f.status;
-        b.work_kind = f.work_kind;
+        b.kind = f.kind;
+        b.service = f.service;
+        // Вид раунда 14 (подпись в «Рядом»): прежний, пока вид v2 не меняли; иначе его выведет сервер.
+        if (f.id && !f.kindTouched && f.originalWorkKind && WORK_KIND_TO_V2[f.originalWorkKind] === f.kind) b.work_kind = f.originalWorkKind;
+        b.start = f.starts_on || null;
         b.planned_end = f.planned_end || null;
         b.forecast_end = f.forecast_end || null;
       } else {
         b.utility = f.utility;
-        b.source = f.source;
+        b.source = f.service;
+        b.service = f.service;
         b.start = f.start || null;
         b.end = f.end || null;
         b.zone = f.zone.trim() || null;
         b.detour = f.detour.trim() || null;
+      }
+      // Участок: новые две точки — сервер построит участок сам; убрали — пустой список; не трогали — не шлём (останется).
+      if (f.type === "work" || f.utility === "road_closure") {
+        if (f.sectionChanged) {
+          if (f.section && f.section.from && f.section.to) b.segment = { from: f.section.from, to: f.section.to };
+          else if (!f.section) b.segments = [];
+        }
+      } else if (f.id && f.section) {
+        b.segments = [];  // отключение воды/тепла — не участок улицы
       }
       if (f.id) b.expected_revision = f.revision;
       return b;
@@ -497,6 +801,7 @@
       if (!b.title) e.title = req;
       WHY.forEach(function (k) { if (!b.why[k]) e["why." + k] = req; });
       if (b.type === "work" && !b.planned_end) e.planned_end = req;
+      if (b.type === "work" && b.start && b.planned_end && b.planned_end < b.start) e.planned_end = tr("works.form.bad_order");
       if (b.type === "outage") {
         if (!b.zone) e.zone = req;
         if (!b.start) e.start = req;
@@ -532,8 +837,10 @@
         if (err.status === 422 && err.fields) {
           state.errors = {};
           Object.keys(err.fields).forEach(function (k) {
-            var name = k === "why" ? "why.problem" : k;
-            state.errors[name] = name === "end" ? tr("works.form.bad_time") : /end|date|start/.test(name) ? tr("works.form.bad_date") : tr("works.form.required");
+            var name = k === "why" ? "why.problem" : k === "starts_on" ? "start" : k === "ends_on" ? "planned_end" : k;
+            // Участок, служба, вид — текст сервера (он объясняет, что не так: «далеко от улицы», «нет пути»).
+            if (name === "segment" || name === "segments" || name === "service" || name === "kind") state.errors[name] = String(err.fields[k]);
+            else state.errors[name] = name === "end" ? tr("works.form.bad_time") : /end|date|start/.test(name) ? tr("works.form.bad_date") : tr("works.form.required");
           });
           render();
           var bad = rootEl.querySelector("[aria-invalid=true]");
@@ -554,6 +861,7 @@
     }
 
     var offLang = I() && I().onChange ? I().onChange(function () { render(); }) : null;
+    if (state.view === "form") loadServices();
     if (I() && I().ready) I().ready.then(load, load);
     else load();
     return {
@@ -567,5 +875,5 @@
     };
   }
 
-  root.BirgeWorks = { mount: mount, version: "works-r14-w2", KEYS: KEYS };
+  root.BirgeWorks = { mount: mount, version: "works-r15-v2", KEYS: KEYS };
 })(typeof self !== "undefined" ? self : this);

@@ -131,7 +131,7 @@ async function geometry(page, tag, wideScreen, wide) {
     const sel = document.querySelector(".ri-pc[aria-current=true]");
     const seg = document.querySelector(".ri-seg > button[aria-selected=true]");
     const title = document.querySelector(".ri-sheet-title");
-    const thumb = c0 && c0.querySelector(".ri-thumb"), vote = document.querySelector(".ri-plist .ri-vote"), pill = c0 && c0.querySelector(".ri-pill");
+    const thumb = c0 && c0.querySelector(".ri-kind"), vote = document.querySelector(".ri-plist .ri-vote"), pill = c0 && c0.querySelector(".ri-pill");
     const pd = document.querySelector(".ri-pd-host .ri-pd") || document.querySelector(".ri-pd");
     const im = pd && pd.querySelector(".ri-pd__im"), facts = pd ? pd.querySelectorAll(".ri-fact").length : 0;
     const acts = pd ? Array.from(pd.querySelectorAll(".ri-pd__acts > .bk-btn")).map((b) => Math.round(r(b).height)) : [];
@@ -159,12 +159,14 @@ async function geometry(page, tag, wideScreen, wide) {
   check(`${tag}: заголовок листа 19/600, сегмент 13/500`, g.title && g.title.join() === "19px,600" && g.seg && g.seg.join() === "13px,500", { title: g.title, seg: g.seg });
   check(`${tag}: карточка — поля 10, радиус 16, промежуток 10; название 15/600, строка 13`, g.card && g.card.pad === "10px" && g.card.rad === "16px"
     && g.card.gap === 10 && g.card.title.join() === "15px,600" && g.card.sub === "13px", g.card);
-  check(`${tag}: картинка 84 × 84, радиус 12; плашка 12/600; капсула ♥ 32, 13/600`, g.thumb && g.thumb.join() === "84,84,12px" && g.pill && g.pill.join() === "12px,600"
+  // П1 (поправка владельца 15 окт): вместо картинки 84 — плитка 48 со значком вида объекта (набор R11).
+  check(`${tag}: значок вида 48 × 48, радиус 12; плашка 12/600; капсула ♥ 32, 13/600`, g.thumb && g.thumb.join() === "48,48,12px" && g.pill && g.pill.join() === "12px,600"
     && (!g.vote || g.vote.join() === "32,13px,600"), { thumb: g.thumb, pill: g.pill, vote: g.vote });
   if (wide) {
     check(`${tag}: выбранная — рамка 2 px цвета текста`, /0px 0px 0px 2px/.test(g.ring || ""), g.ring);
-    check(`${tag}: карточка выбранного 340 — справа 84, сверху 132; картинка 150, 3 цифры, кнопки 44`, g.pd && g.pd.w === 340 && g.pd.right === 84 && g.pd.t === 132
-      && g.pd.im === 150 && g.pd.facts === 3 && g.pd.acts.length >= 1 && g.pd.acts.every((x) => x === 44), g.pd);
+    // П1: в карточке выбранного больших картинок нет (было — картинка 150 эталона A).
+    check(`${tag}: карточка выбранного 340 — справа 84, сверху 132; без картинки, 3 цифры, кнопки 44`, g.pd && g.pd.w === 340 && g.pd.right === 84 && g.pd.t === 132
+      && !g.pd.im && g.pd.facts === 3 && g.pd.acts.length >= 1 && g.pd.acts.every((x) => x === 44), g.pd);
     check(`${tag}: заголовок карточки 18/600, одно предложение 14 (≤ 2 строк), строка «это опрос» 12`, g.pd && g.pd.h3.join() === "18px,600" && g.pd.note === "12px"
       && (!g.pd.text || (g.pd.text[0] === "14px" && g.pd.text[1] === "2")), g.pd);
   }

@@ -44,6 +44,7 @@ from .nearby import NearbyRepository
 from .objects import Actor, iso, utc_now
 from .proposals import ProposalRepository
 from .stages import StageRepository
+from .world import world_enabled
 
 
 DEMO_ACTOR = Actor(kind="system", user_id=None, label="seed-r14-demo", public_label="Демо-данные (синтетика)")
@@ -294,6 +295,12 @@ def seed_r14_demo(service) -> dict:
                              (item["id"], device, 1 if n < up else -1, iso(now), iso(now)))
         report["proposals"].append({"kind": kind, "action": "create", "id": item["id"],
                                     "votes_up": up, "votes_down": down, "place": osm_ref})
+    if world_enabled():
+        # Раунд 15: демо-мир R02 (CIVIC_DEMO_WORLD=1) — идеи и «Рядом» засевает seed_world из мира, иначе в разделах
+        # два демо-набора и числа расходятся. Этапы и 5 проектов выше (шаг 5 сценария) — как в FINAL-4.
+        report["ideas"] = [{"action": "skipped", "reason": "demo world (seed_world R06)"}]
+        report["nearby"] = [{"action": "skipped", "reason": "demo world (seed_world R06)"}]
+        return report
     report["ideas"] = seed_demo_ideas(service, proposals)
     nearby = NearbyRepository(service.db, service.clock)
     report["nearby"] = [{"id": item["demo_key"], "action": "create" if nearby.seed_demo(item) else "kept"}

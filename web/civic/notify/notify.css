@@ -1,0 +1,283 @@
+/* Birge · «Уведомления» (R06, раунд 15). Разметка — компоненты ui-kit R11 раунда 15: .bk-bell, .bk-notify, .bk-feed.
+   Ниже — запасной вид для ui-kit FINAL-4 (где этих компонентов ещё нет): все правила в :where(), вес 0 — компоненты
+   R11 перекрывают их сами. Свои классы — rn-*: место панели, экран телефона, пусто, скелетон.
+   П1 (15 окт): только значки набора R11, без рисунков; цвет — только у кризиса и точки «не прочитано». */
+
+/* ── запасной вид компонентов R11 ── */
+:where(.bk-bell) {
+  position: relative;
+}
+:where(.bk-bell .bk-nav__badge) {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--c-danger, #c8322b);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+:where(.bk-notify) {
+  display: flex;
+  flex-direction: column;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(70vh, 560px);
+  border-radius: var(--r-xl, 18px);
+  overflow: hidden;
+  color: var(--c-ink, #121a17);
+}
+:where(.bk-notify:not(.bk-glass)) {
+  border: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+  background: var(--c-surface, #fff);
+  box-shadow: var(--shadow-3, 0 12px 32px rgba(18, 26, 23, 0.16));
+}
+:where(.bk-notify__hd) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 8px 4px 16px;
+}
+:where(.bk-notify__title) {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+:where(.bk-notify__readall) {
+  flex: none;
+  min-height: 36px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--r-s, 8px);
+  background: transparent;
+  color: var(--c-text-2, #4b5752);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+:where(.bk-notify__readall:hover) {
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
+}
+:where(.bk-notify__list) {
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 8px 8px;
+}
+:where(.bk-feed) {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:where(.bk-feed > li + li) {
+  border-top: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
+}
+:where(.bk-feed__group) {
+  margin: 0;
+  padding: 12px 8px 4px;
+  color: var(--c-text-3, #5c6863);
+  font-size: 13px;
+  font-weight: 500;
+}
+:where(.bk-feed__item) {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 24px 10px 8px;
+  border: 0;
+  border-radius: var(--r-s, 8px);
+  background: transparent;
+  color: var(--c-ink, #121a17);
+  font: inherit;
+  line-height: 1.35;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+:where(.bk-feed__item:hover) {
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+}
+:where(.bk-feed__ic) {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
+}
+:where(.bk-feed__ic .ic) {
+  width: 18px;
+  height: 18px;
+}
+:where(.bk-feed__item[data-kind="crisis"] .bk-feed__ic) {
+  background: var(--c-danger-soft, #fbe9e7);
+  color: var(--c-danger, #c8322b);
+}
+:where(.bk-feed__main) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+:where(.bk-feed__title) {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+:where(.bk-feed__meta) {
+  color: var(--c-text-3, #5c6863);
+  font-size: 12px;
+}
+:where(.bk-feed__item[data-unread="true"])::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-danger, #c8322b);
+}
+@media (max-width: 480px) {
+  :where(.bk-feed__title) {
+    -webkit-line-clamp: 3; /* телефон: длинный казахский заголовок не обрывается многоточием на второй строке */
+  }
+}
+
+/* ── своё: место панели, экран, состояния ── */
+/* Панель под колокольчиком (позицию ставит notify.js по кнопке): поверх карты и шапки, под тостами. */
+.rn-panel {
+  position: fixed;
+  z-index: calc(var(--z-toast, 60) - 1);
+}
+/* Плотное стекло (IA §5.7, эталон .glass.strong 86 % и кромка 1 px): вес выше правила оболочки R01
+   «body.civic-mode .bk-glass» (72 %, без кромки) — иначе кнопки карты просвечивают сквозь ленту. */
+body.civic-mode .rn-panel.bk-glass.bk-glass--strong {
+  border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.7));
+  background-color: var(--glass-strong, rgba(255, 255, 255, 0.86));
+}
+.rn-panel.rn-in {
+  animation: rn-in var(--t-base, 200ms) var(--ease-out, ease-out) both;
+  transform-origin: top right;
+}
+@keyframes rn-in {
+  from {
+    transform: translateY(-6px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.rn-panel:focus {
+  outline: none;
+}
+.rn-panel:focus-visible {
+  outline: 3px solid var(--c-focus, #2f7fd6);
+  outline-offset: 2px;
+}
+:where(.bk-feed__item):focus-visible {
+  outline: 3px solid var(--c-focus, #2f7fd6);
+  outline-offset: -3px;
+}
+/* Экран «Уведомления» (телефон: пункт меню аватара; «Ещё»): та же лента, колонка до 560. */
+.rn {
+  display: grid;
+  gap: var(--s-2, 8px);
+  max-width: 560px;
+}
+.rn-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2, 8px);
+}
+.rn-title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+}
+.rn-list {
+  min-height: 120px;
+}
+/* Пусто (П1, правило 2): значок ≤ 48 px, заголовок, строка, одна кнопка. */
+.rn-empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-2, 8px);
+  padding: var(--s-6, 24px) var(--s-4, 16px);
+  text-align: center;
+}
+.rn-empty__ic {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+  color: var(--c-ink, #121a17);
+}
+.rn-empty__ic .ic {
+  width: 24px;
+  height: 24px;
+}
+.rn-empty__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.rn-empty__text {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--c-text-2, #4b5752);
+  font-size: 14px;
+}
+.rn-msg {
+  margin: 0;
+  padding: var(--s-4, 16px);
+  color: var(--c-text-2, #4b5752);
+}
+/* Скелетон — компонент ui-kit .bk-skel (мерцание и цвет — его): три строки высотой со строку ленты. */
+.rn-skeleton {
+  display: grid;
+  gap: 12px;
+  padding: 12px 8px;
+}
+.rn-skeleton__row {
+  height: 40px;
+  border-radius: 10px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rn-panel.rn-in,
+  .rn-skeleton__row {
+    animation: none;
+  }
+}
+.rn .bk-sr-only,
+.rn-panel .bk-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

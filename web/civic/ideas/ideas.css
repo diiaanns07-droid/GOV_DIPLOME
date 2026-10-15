@@ -150,38 +150,9 @@
   outline: 3px solid var(--c-focus, #2f7fd6);
   outline-offset: 2px;
 }
-.ri-thumb {
-  display: block;
-  flex: none;
-  width: 84px;
-  height: 84px;
-  border-radius: var(--r-m, 12px);
-  overflow: hidden;
-}
-.ri-thumb > svg,
-.ri-pd__im > svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  stroke: none; /* общее svg { stroke: currentColor } страницы не обводит фигуры рисунка */
-  stroke-width: 0;
-}
-/* 3D-превью модели R05 на светлой подложке вида: миниатюра — во весь квадрат, картинка карточки — по центру 150 px. */
-.ri-pic3d {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-.ri-pic3d > img {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-.ri-thumb.ri-pic3d > img {
-  width: 100%;
-  height: 100%;
+/* П1 (15 окт): у строки — плитка 48 со значком вида объекта (набор R11, одна краска и толщина), без рисунков и рендеров. */
+.ri .ri-pc > .ri-kind {
+  align-self: flex-start;
 }
 .ri-pc__t {
   display: flex;
@@ -418,10 +389,6 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
   border: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.7));
   background-color: var(--glass-strong, rgba(255, 255, 255, 0.86));
 }
-.ri-pd__im {
-  display: block;
-  height: 150px;
-}
 .ri-pd__in {
   display: block;
   padding: 14px 16px 16px;
@@ -595,9 +562,6 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
   box-shadow: 0 0 0 1px var(--c-line, rgba(18, 26, 23, 0.08));
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-}
-.ri-pd--inline .ri-pd__im {
-  height: 120px;
 }
 .ri-pd--inline .ri-fact {
   background: var(--c-fill, rgba(18, 26, 23, 0.06));
@@ -902,25 +866,17 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
   padding: var(--s-8) var(--s-4);
   text-align: center;
 }
-.ri-empty__art {
-  display: flex;
-  margin-bottom: var(--s-3);
-}
 .ri-empty__ill {
   display: grid;
   place-items: center;
   margin-bottom: var(--s-2);
 }
-.ri-empty__art > .ri-tile {
-  width: 56px;
-  height: 56px;
-  box-shadow: 0 0 0 3px var(--c-surface), var(--shadow-1);
-}
-.ri-empty__art > .ri-tile + .ri-tile {
-  margin-left: -10px;
-}
-.ri-empty__art > .ri-tile:nth-child(2) {
-  transform: translateY(-8px);
+/* П1: значок пустого состояния — не больше 48 px, одна краска. */
+.ri-empty__ill > svg {
+  width: 48px;
+  height: 48px;
+  max-width: 48px;
+  max-height: 48px;
 }
 .ri-empty__title {
   margin: 0;
@@ -1030,33 +986,6 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
     opacity: 1;
   }
 }
-.ri-pickart {
-  display: grid;
-  place-items: center;
-  height: 120px;
-  border-radius: var(--r-l);
-  background:
-    radial-gradient(circle at 50% 58%, rgba(21, 44, 38, 0.12) 0 6px, transparent 7px),
-    repeating-linear-gradient(0deg, transparent 0 23px, var(--c-line) 23px 24px),
-    repeating-linear-gradient(90deg, transparent 0 23px, var(--c-line) 23px 24px),
-    var(--c-paper);
-}
-.ri-pickart__pin {
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  margin-bottom: 24px;
-  border-radius: 50%;
-  background: var(--c-surface);
-  color: var(--c-ink);
-  box-shadow: var(--shadow-2);
-}
-.ri-pickart__pin > .ic {
-  width: 28px;
-  height: 28px;
-  stroke-width: 1.7;
-}
 .ri-lead {
   margin: 0;
   color: var(--c-text-2);
@@ -1131,8 +1060,8 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
 }
 .ri-sent__mark {
   display: block;
-  width: 72px;
-  height: 72px;
+  width: 48px;    /* П1: значок ≤ 48 px */
+  height: 48px;
   color: var(--c-brand);
 }
 .ri-sent__mark svg {
@@ -1399,10 +1328,31 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
   gap: var(--s-3) var(--s-4);
   align-items: start;
 }
+/* Раунд 15: «Участок улицы» (работа v2) — строка с улицей и длиной, кнопки «Отметить на карте» / «Убрать». */
+.rw-section__value {
+  margin: 0 0 var(--s-2);
+  font-weight: 500;
+  color: var(--c-ink);
+}
+.rw-section__value--none {
+  font-weight: 400;
+  color: var(--c-text-2);
+}
+.rw-section__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.rw-section.bk-field--error .rw-section__value {
+  color: var(--c-danger, #B42318);
+}
 @media (min-width: 761px) {
   .rw-grid,
   .rw-why {
     grid-template-columns: 1fr 1fr;
+  }
+  .rw-grid.rw-dates {
+    grid-template-columns: 1fr 1fr 1fr; /* раунд 15: начало · срок по плану · новый срок — одной строкой */
   }
   /* Подпись, поле и ошибка соседних полей — на общих линиях, даже если одна подпись в две строки
      («Новый срок, если сдвинулся (по желанию)»): subgrid; без него — как раньше. */
@@ -1488,4 +1438,62 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
     animation: none;
     stroke-dashoffset: 0;
   }
+}
+
+/* ── Раунд 15 (R06, задача 1) ── */
+/* Просмотр без входа (вид «Акимат»): подсказка и тихая «Войти» внизу листа. */
+.ri-sheet-ft--public {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-3);
+}
+.ri-public-note {
+  flex: 1 1 200px;
+  margin: 0;
+}
+
+/* Раунд 15: идея → дело жителей (R16). Строка с маленьким значком, текстом и ссылкой; у сотрудника — подсказка и тихая кнопка. */
+.ri-together {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.ri-together__ic {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--c-fill, rgba(18, 26, 23, 0.06));
+}
+.ri-together__ic .ic {
+  width: 16px;
+  height: 16px;
+}
+.ri-together__text {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+.ri-together__link {
+  color: var(--c-ink, #121a17);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.ri-together--staff {
+  flex-direction: column;
+  align-items: stretch;
+}
+.ri-together--staff .ri-together__text {
+  margin: 0;
+  color: var(--c-text-2, #4b5752);
 }
