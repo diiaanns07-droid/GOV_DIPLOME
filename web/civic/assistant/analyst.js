@@ -337,7 +337,7 @@
 
     function renderSkeleton() {
       live.replaceChildren(el("div", { className: "ba-card ba-skel", "aria-hidden": "true" }, [
-        el("span", { className: "bk-skel bk-skel--line ba-skel__eyebrow" }),
+        el("p", { className: "ba-skel__label", text: t("analyst.loading") }),
         el("span", { className: "bk-skel bk-skel--title" }),
         el("div", { className: "ba-nums" }, [0, 1, 2].map(function () { return el("span", { className: "bk-skel ba-skel__num" }); })),
         el("span", { className: "bk-skel bk-skel--line" }), el("span", { className: "bk-skel bk-skel--line ba-skel__short" }),

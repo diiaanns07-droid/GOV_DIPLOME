@@ -212,6 +212,33 @@ def test_no_heat_module():
     assert block(a, "hot_spots")["status"] == "not_ready"
 
 
+def test_warm_up_needs_no_staff_spends_no_limit_and_never_calls_the_model():
+    """R10 B-107: прогрев при старте сервера — вопросы сцен без сотрудника, без лимита и без языковой модели."""
+    stub = F.StubProvider({"order": [], "lead": "Прогрев"})
+    seen = []
+
+    def board_calls(**kw):
+        seen.append(kw)
+        return F.full_config()["agencies_board"](**kw)
+
+    core.configure(**F.full_config(provider=stub, rate=(1, 60.0), agencies_board=board_calls))
+    result = api.warm_up()
+    assert result["questions"] == len(core.WARM_UP_QUESTIONS) and result["failed"] == 0
+    assert stub.requests == []                 # наружу ничего не уходит, даже если модель настроена
+    assert seen                                 # соседи действительно спрошены (их кэши прогреты)
+    api.ask("Какие службы отстают?", "ru", F.STAFF)  # лимит сотрудника (1 в минуту) прогрев не потратил
+    with pytest.raises(core.TooManyQuestions):
+        api.ask("Какие службы отстают?", "ru", F.STAFF)
+
+
+def test_warm_up_survives_broken_neighbours():
+    def boom(**_kw):
+        raise RuntimeError("db is locked")
+    core.configure(**F.full_config(heat=None, akim_summary=boom, agencies_board=boom, agencies_incidents=boom))
+    result = core.warm_up()
+    assert result["questions"] == len(core.WARM_UP_QUESTIONS) and result["failed"] == 0
+
+
 # ---------------------------------------------------------------- безопасность
 
 def test_resident_texts_and_personal_data_never_in_answer():

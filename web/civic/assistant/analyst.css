@@ -121,6 +121,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--s-2);
+  min-width: var(--tap); /* R10 B-120: на телефоне кнопка — один значок, всё равно 44 × 44 */
   min-height: var(--tap);
   margin: 3px;
   padding: 0 var(--s-4);
@@ -164,12 +165,16 @@
   margin: calc(-1 * var(--s-1)) 0 0;
 }
 .ba-chip {
+  min-height: var(--tap); /* R10 B-120, VISUAL_BRIEF §4 п. 10: видимая зона нажатия 44 px, а не только ::after */
   max-width: min(300px, 78vw); /* длинный вопрос — в две строки, ряд прокручивается вбок */
   padding-block: 6px;
   font-weight: var(--fw-regular);
   line-height: 1.25;
   text-align: left;
   white-space: normal;
+}
+.ba-chip::after {
+  inset: 0; /* чип уже 44 px — запас ::after ui-kit не нужен (ряды не перекрывают зоны друг друга) */
 }
 
 /* Есть ответ — подсказки одним рядом с прокруткой: ответ поднимается выше, к первому экрану */
@@ -186,6 +191,10 @@
   border: 1px dashed var(--c-line-strong);
   border-radius: var(--r-xl);
 }
+/* VISUAL_BRIEF §4 п. 3: на пустом экране три размера — 22 заголовок, 15 текст и кнопки, 14 подпись и чипы */
+.ba-empty .bk-empty__title {
+  font-size: var(--fs-body);
+}
 /* П1: значок 48 px одного цвета, без кругов и иллюстраций */
 .ba-empty .ic--48,
 .ba-error .ic--48 {
@@ -194,8 +203,11 @@
 .ba-skel {
   gap: var(--s-3);
 }
-.ba-skel__eyebrow {
-  width: 40%;
+/* Видимая подпись скелетона (R10 B-107): аким видит, что ответ считается, а не завис */
+.ba-skel__label {
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: var(--fs-small);
 }
 .ba-skel__num {
   height: 70px;
