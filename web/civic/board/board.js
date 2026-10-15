@@ -351,9 +351,13 @@
     var wd = WEEKDAYS[l][p.wd];
     return l === "kk" ? p.d + " " + MONTHS.kk[p.m] + ", " + wd : wd.charAt(0).toUpperCase() + wd.slice(1) + ", " + p.d + " " + MONTHS.ru[p.m];
   }
+  // Время события: сегодня — «07:46», раньше — «13 окт, 07:46» (кризис, начатый позавчера, не выглядит сегодняшним).
   function timeOf(iso) {
     var t = Date.parse(iso || "");
-    return isFinite(t) ? clockText(t) : "—";
+    if (!isFinite(t)) return "—";
+    var p = astana(t), n = astana();
+    if (p.y === n.y && p.m === n.m && p.d === n.d) return clockText(t);
+    return p.d + " " + MONTHS[lang() === "kk" ? "kk" : "ru"][p.m] + ", " + clockText(t);
   }
   function shortDate(iso) {
     var B = I();
