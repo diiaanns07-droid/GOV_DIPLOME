@@ -4,8 +4,8 @@
  "branch": "claude/youthful-johnson-6nz5mp",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g: FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "f4d19afe1978ac89109aa424641f85827c5fb888",
- "tested_sha": "f4d19afe1978ac89109aa424641f85827c5fb888",
+ "code_sha": "3cc802b9e6f30b8c463cb4bc9ce9ba754f89b029",
+ "tested_sha": "3cc802b9e6f30b8c463cb4bc9ce9ba754f89b029",
  "push_status": "OK (origin/claude/youthful-johnson-6nz5mp)",
  "amendments_applied": [
   "П1 «Без ИИ-слопа» (15 окт 17:05): без иллюстраций, значки R11 ≤ 48 px, фото «после» — только настоящие"
@@ -37,7 +37,7 @@
  "tests": {
   "pytest_r16": {
    "status": "PASS",
-   "passed": 59,
+   "passed": 60,
    "failed": 0,
    "skipped": 0,
    "env": "python3 3.13 + numpy 2.5.3, pytest из uv (PYTHONPATH)",
@@ -49,7 +49,7 @@
   },
   "browser_r16": {
    "status": "PASS",
-   "passed": 258,
+   "passed": 264,
    "failed": 0,
    "sizes": [
     "1366x768",
@@ -62,9 +62,8 @@
    ],
    "script": "tests/civic/R16/browser/r16_browser.cjs",
    "runs": {
-    "b1_like_r01_7208a580_code_0433fab9": "258/258 (R01 7208a580 + R01_together_b1.patch — лист слева + словарь R11 442b617b; web/ тот же, что в code_sha)",
-    "b1_like_r01_c9069723_code_34b49cc8": "258/258",
-    "final4_stand_code_34b49cc8": "252/252 (стенд FINAL-4 + маршруты R16 в памяти; без оболочки раунда 15 одна проверка «На карте» не нужна)"
+    "b1_like_r01_7208a580_code_3cc802b9": "264/264 (R01 7208a580 + R01_together_b1.patch — лист слева + словарь R11 442b617b)",
+    "final4_stand_code_3cc802b9": "258/258 (стенд FINAL-4 + маршруты R16 в памяти; без оболочки раунда 15 одна проверка «На карте» не нужна)"
    },
    "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон"
   },
@@ -149,6 +148,17 @@
    "r08": "tests/civic/R08 + R16 на R01 7208a580 с кодом f4d19afe — 360 passed, 1 skipped",
    "r15": "tests/civic/R15/round15/test_r15_round15_together.py — 36 passed, 1 XPASS(strict) S51: находка исправлена (R16 3d0a4c36), R15 снимет xfail (просьба R01)",
    "r03": "tests/civic/R03 — 296 passed, 1 FAIL test_real_neighbours_if_present на вопросе «Какие службы отстают?» (числа R17); тот же FAIL с кодом R16 из сборки R01 — не R16"
+  },
+  "day_support_r16": {
+   "status": "PASS",
+   "script": "tests/civic/R16/browser/r16_day_support.cjs",
+   "what": "шаг 3 сцены 7 по DEMO_SCRIPT R01: акимат → «Картина дня» R08 → «Жители вместе» → «Поддержать» → дело сцены 7 (i-w15-01) с «Поддержать» сотрудника, форма открывается",
+   "runs": "сборка «как B1» R01 7208a580 + демо-мир: 1366/375 × ru/kk — 16/16; FINAL-4 — NOT_RUN (нет карточки R08 «Жители вместе»)"
+  },
+  "r10_visual_audit": {
+   "status": "PASS",
+   "tool": "tests/e2e/visual_audit.cjs (ветка R10 claude/zen-wozniak-69d41q @ 1868488c), --only yard,together,together-card",
+   "result": "PASS 171 · WARN 12 · FAIL 0 на сборке «как B1» R01 7208a580 (1366/1024/375 × ru/kk, демо-мир); WARN — «больше 3 размеров шрифта» (шкала компонентов R11); было 30 FAIL до круга 5 R16"
   }
  },
  "screens": [
@@ -262,7 +272,10 @@
   "R15 S45, S46, S47 (checkpoint 3)",
   "R15 S51 (checkpoint 5)",
   "R10 B-124 (checkpoint 5)",
-  "R10 B-114 (checkpoint 6)"
+  "R10 B-114 (checkpoint 6)",
+  "R10 B-114 остаток на B0.9 («Я приду» 32 px, «Скоро · Сделано» 30 px, даты ленты 3,54:1) — круг 5",
+  "R01 просьба R16 (12 px подписи, «Я приду» 32 px) — круг 5",
+  "R11 R16-1 («что взять» на языке интерфейса), R16-2 (scrollFade вкладок), R16-3 (кадры на оболочке раунда 15) — круг 5"
  ],
  "findings_open": [],
  "screens_note": "Кадры — настоящий интерфейс на сборке «как B1» (R01 7208a580, ui-kit и словарь R11, лист слева) в облаке без подложки OpenFreeMap; сцена 7 — на демо-мире R02; «На карте» — 1366 (лист остаётся) и 375 (лист закрыт)."
