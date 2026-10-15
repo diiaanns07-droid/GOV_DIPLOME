@@ -33,7 +33,7 @@
     ru: { layer: "Кризис", more: "Подробнее", close: "Скрыть", zone: "Зона: {zone}", updates: "Обновления служб",
       none: "Пока без обновлений", show: "Показать зону", demo: "Пример", since: "с {time}", closed: "Кризис закрыт" },
     kk: { layer: "Төтенше жағдай", more: "Толығырақ", close: "Жасыру", zone: "Аймақ: {zone}", updates: "Қызметтердің жаңартулары",
-      none: "Әзірге жаңарту жоқ", show: "Аймақты көрсету", demo: "Мысал", since: "{time} бастап", closed: "Төтенше жағдай аяқталды" },
+      none: "Әзірге жаңарту жоқ", show: "Аймақты көрсету", demo: "Үлгі", since: "{time} бастап", closed: "Төтенше жағдай аяқталды" },
   };
 
   var state = { incidents: [], details: {}, on: false, map: null, pulse: null, timer: null, banner: null, card: null,
@@ -43,6 +43,8 @@
   function lang() { var i = I(); return i && i.getLang && i.getLang() === "kk" ? "kk" : "ru"; }
   function tr(key, params) {
     var i = I(), full = "crisis.map." + key;
+    // «Пример» — общий термин словаря R11 (common.demo: «Пример» / «Үлгі»), как у шапки штаба и других экранов.
+    if (key === "demo" && i && i.has && i.has("common.demo")) return i.t("common.demo");
     var text = i && i.has && i.has(full) ? i.t(full, params) : (TEXT[lang()] || TEXT.ru)[key] || key;
     return String(text).replace(/\{(\w+)\}/g, function (w, n) { return params && params[n] != null ? String(params[n]) : w; });
   }

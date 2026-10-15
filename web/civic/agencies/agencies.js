@@ -360,7 +360,7 @@
       "crisis.remove": "Алып тастау",
       "agencies.returned_pill": "тұрғындар қайтарды",
       "agencies.widen": "Барлық аудандар бойынша 90 күнді көрсету",
-      "common.demo": "Мысал",
+      "common.demo": "Үлгі",
       "common.state.loading": "Жүктеліп жатыр…",
       "common.state.error_title": "Жүктеу мүмкін болмады",
       "common.state.network_title": "Сервермен байланыс жоқ",
