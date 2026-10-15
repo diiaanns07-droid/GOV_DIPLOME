@@ -1,0 +1,25 @@
+R15 · раунд 15 · как запустить проверки безопасности
+
+Что это даёт: любой (R01, роль, Codex на ноутбуке) за 2 минуты проверяет сборку или ветку роли на угрозы раунда 15
+(THREATS_R15.md) и на все 44 находки R15 (раунды 14–15): открытые — xfail, исправленные — регрессия.
+
+1. Тесты R15 на текущей рабочей копии (сборка R01 или эта ветка):
+     python3 -m pip install pytest            # если нет
+     python3 -B -m pytest tests/civic/R15 -q -rs
+   Итог читается так: passed — защита работает; xfailed — открытая находка (ID S… в причине);
+   skipped «NOT_RUN: …» — модуля роли или маршрута шлюза ещё нет в этой сборке (не ошибка).
+
+2. Тесты R15 на ветке роли без сборки (другая рабочая копия):
+     git worktree add --detach /tmp/r15-role origin/<ветка роли>
+     R15_ROOT=/tmp/r15-role python3 -B -m pytest tests/civic/R15/round15 -q -rs
+
+3. Только раунд 15:  python3 -B -m pytest tests/civic/R15/round15 -q -rs
+   По ролям: test_r15_round15_gateway.py (R01), _agencies (R17), _meetings (R13), _assistant (R03),
+   _together (R16), _handoffs (R09), _notify (R06), _moderate (R04), _world (R02), _pages (CSP новых страниц).
+
+4. Проверка patch R15 перед применением (пример для R01):
+     git apply --check research/round-15-results/R15/patches/P-R01-S42.diff && git apply …
+     python3 -B -m pytest tests/civic/R15/round15/test_r15_round15_gateway.py -q   # S42: XPASS(strict) = исправлено
+
+Среда проверки R15 (облако): Linux, CPython 3.13, pytest 9.1; без интернета; SQLite во временной папке; сервер — 127.0.0.1
+на случайном порту. Настоящих персональных данных в тестах нет: телефоны, ИИН (с верной контрольной цифрой), карта — выдуманы.

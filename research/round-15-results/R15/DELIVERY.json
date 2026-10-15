@@ -1,0 +1,44 @@
+{
+  "role": "R15",
+  "round": 15,
+  "title": "Безопасность и приватность новых функций",
+  "branch": "claude/practical-fermi-c58v1u",
+  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+  "restored_from": null,
+  "restored_note": "tests/civic/R15 в пакете = claude/r14-R15@540b4d3c + перенос S41 в FIXED (R01, FINAL-4) — восстанавливать нечего",
+  "code_sha": "см. git log ветки: последний коммит R15 (код R15 — только tests/civic/R15/)",
+  "tested_sha": {
+    "package": "e91acb69",
+    "R17": "61558bd3 (claude/sweet-euler-5tiu5b)",
+    "R13": "ded8c258 (claude/gifted-mayer-p86myv)",
+    "R03": "a85e4765 (claude/modest-mccarthy-lrl98u)"
+  },
+  "push_status": "OK (checkpoint 2)",
+  "changed_paths": [
+    "tests/civic/R15/r15_common.py",
+    "tests/civic/R15/round15/",
+    "research/round-15-results/R15/",
+    "research/handoffs/astana/R15/round15/STATUS.md"
+  ],
+  "tests": {
+    "package_e91acb69_all_R15": {"passed": 262, "failed": 0, "xfailed": 1, "skipped_not_run": 132, "open": ["S42"]},
+    "R17_61558bd3_agencies": {"passed": 32, "failed": 0, "xfailed": 3, "open": ["S43"]},
+    "R13_ded8c258_meetings": {"passed": 27, "failed": 0, "xfailed": 0},
+    "R03_a85e4765_assistant": {"passed": 15, "failed": 0, "xfailed": 2, "open": ["S44"]},
+    "R01_gateway_with_P-R01-S42": {"passed": 158, "failed": 0, "note": "tests/civic/R01 api_v2 + gateway + hardening на пакете с patch"},
+    "browser": "NOT_RUN: новых экранов ролей в сборке ещё нет (B1 — 16 окт 14:00)"
+  },
+  "findings": {
+    "S42": {"owner": "R01", "level": "средний", "status": "open", "patch": "patches/P-R01-S42.diff"},
+    "S43": {"owner": "R17", "level": "низкий", "status": "open", "patch": "patches/P-R17-S43.diff"},
+    "S44": {"owner": "R03", "level": "низкий", "status": "open", "patch": "patches/P-R03-S44.diff"}
+  },
+  "high_open": 0,
+  "screens": [],
+  "known_limits": [
+    "R16, R06 (лента), R04 (moderate), R09 (передачи), R12, R08, R07 раунда 15 ещё не поставили код — их тесты NOT_RUN",
+    "браузерная проба HTML-нагрузки в новых экранах — после B1",
+    "проверка в облаке без интернета; подложка карты — упрощённый фон"
+  ],
+  "next_step": "тесты R16/R09/R06/R04 по коду их веток, браузерная проба r15_round15.cjs, круг ревью каждые 2–3 часа, B1 16 окт 14:00"
+}

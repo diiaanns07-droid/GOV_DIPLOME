@@ -17,7 +17,7 @@
 3. Ревью поставок кругами каждые 2–3 часа: R16, R17, R09, R13, R06, R03, R04, R12, R08.
 4. Финал на B2 и FINAL-5: набор R15 раунда 14 + новый; SECURITY_REVIEW_R15.md.
 
-## Checkpoint 1 (15 окт ~17:15 Астана)
+## Checkpoint 1 (15 окт 16:40 Астана, 4d321426)
 - Пакет прочитан (COMMON, IDEA, CONTRACT §5/§7/§10, VISUAL_BRIEF, промпты R01 R03 R04 R06 R08 R09 R12 R13 R16 R17),
   передача r14 (claude/r14-R15 @ 540b4d3c). Восстанавливать нечего: tests/civic/R15 в пакете = r14 + перенос S41 в FIXED
   (R01, FINAL-4) — restored_from не нужен.
@@ -29,9 +29,24 @@
 - Продолжение: scheduled task trig_011uE6W1SdrvugJbYhE5CbEh (каждый час в :27 UTC, эта сессия). Удалить после
   17 окт 23:59 Астаны (18:59 UTC).
 
+## Checkpoint 2 (15 окт 17:00 Астана)
+- Каркас тестов раунда 15: tests/civic/R15/round15/ (conftest, r15_round15.py — сервис роли напрямую, Principal R06,
+  контекст шлюза, поиск утечек id устройств/хэшей/логинов, синтетические ПДн: телефон, ИИН с верной контрольной, карта Луна).
+- test_r15_round15_gateway.py (R01): staff=True у всех «сотрудник» CONTRACT §7, лимиты записей жителя (с пределом на цель
+  для «Я приду»/«Приду»/«Я живу здесь»), raw+staff закрыт шлюзом, HTTP без сессии -> 401/403, ?show=1 не меняет защиту.
+- test_r15_round15_agencies.py (R17 @ 61558bd3): 32 passed + 3 xfailed (S43).
+- test_r15_round15_meetings.py (R13 @ ded8c258): 27 passed.
+- test_r15_round15_assistant.py (R03 @ a85e4765): 15 passed + 2 xfailed (S44).
+- Пакет e91acb6, весь tests/civic/R15: 262 passed, 132 NOT_RUN (модулей/маршрутов нет), 1 xfailed (S42).
+- Находки (все с patch, проверены на ветках): S42 R01 средний (raw+staff не проверяется шлюзом), S43 R17 низкий
+  (список вместо строки -> 500), S44 R03 низкий (просьба выдумать/показать телефоны уходит модели). Высоких — 0.
+- research/round-15-results/R15/: INTEGRATION.txt, patches/P-R01-S42, P-R17-S43, P-R03-S44, RUN.txt, DELIVERY.json.
+
 ## Следующий шаг
-- tests/civic/R15/round15/: каркас (conftest, помощники), тесты шлюза (raw+staff, политика новых маршрутов),
-  тесты сервисов R16/R17/R13/R09/R06/R03/R04 по CONTRACT (нет модуля — NOT_RUN).
+- Тесты R16 (together), R09 (передачи), R06 (лента), R04 (moderate), R02 (демо-мир), CSP новых страниц — по коду
+  веток, как только появятся (в 16:55 у R16, R06, R12, R08, R01, R02 — только STATUS; у R04 — набор фраз).
+- Браузерная проба tests/civic/R15/browser/r15_round15.cjs (HTML-нагрузка в новых экранах) — к B1.
+- Круг ревью 2 — ~19:00: свежие головы R16 R17 R09 R13 R06 R03 R04 R12 R08 (find_branches.py).
 
 ## Вопросы владельцу
 - (пока нет)

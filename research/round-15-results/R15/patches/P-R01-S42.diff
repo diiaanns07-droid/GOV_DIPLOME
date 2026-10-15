@@ -1,0 +1,22 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index b1292654..aabb532b 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -1312,6 +1312,17 @@ class CivicV2Gateway:
+             return v2_error(503, reason, message, module=module, role=handler.role)
+         if handler.kind == "raw":
+             staff = self._is_staff(context) if handler.staff_view else None
++            if handler.staff:
++                # R15-S42: у raw-функции нет principal — сотрудника проверяет шлюз (R12 works-calendar/conflicts,
++                # R08 akim/board и akim/week — «сотрудник» по CONTRACT §7). Чтение — сессия R02, запись — ещё и CSRF.
++                if method == "GET":
++                    if not self._is_staff(context):
++                        return v2_error(401, "unauthenticated", "Войдите как сотрудник акимата.")
++                else:
++                    _principal, denied = self._staff(context)
++                    if denied:
++                        return denied
++                # staff=True функции не передаём: его ждут только маршруты staff_view (R07), у R12/R08 подписи прежние.
+             return self._raw(fn, key, rel_path if handler.strip_prefix else CIVIC_V2_PREFIX + rel_path, query, module,
+                              handler, staff=staff)
+         if handler.kind == "service":
