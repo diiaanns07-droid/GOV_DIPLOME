@@ -341,7 +341,13 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
       step("8", "«Штаб ведомств» → «Табло» открыт", o.ok, { title: o.title, chars: o.chars }, "R17", f);
       if (o.ok) { await quality("8", "R17", f); await errorState("8", "#agencies/board", /\/api\/civic\/v2\/agencies/, "R17"); }
     }
+    // IA_ROUND15: «Календарь работ» — вкладка «Ведомств» (#agencies/calendar, R17 191f81e7+); запасной адрес — свой
+    // раздел R12 #works-calendar (R17 без вкладки календаря). Признак, что смонтирован календарь, — корень .wcal (R12).
     o = await open("#agencies/calendar", "BirgeWorksCalendar");
+    if (o.ok !== null && !(await page.evaluate(() => !!document.querySelector("#birge-screen:not([hidden]) .wcal")).catch(() => false))) {
+      o = await open("#works-calendar", "BirgeWorksCalendar");
+      step("8", "«Календарь работ» — вкладка «Ведомств» (IA_ROUND15 §5.4)", false, "вкладки нет: календарь открыт своим разделом #works-calendar, из «Ведомств» и «Ещё» к нему не перейти", "R17 + R01");
+    }
     const f2 = await shot("8-calendar");
     if (o.ok === null) step("8", "«Календарь работ» (вкладка «Ведомств»)", null, o.why, "R12 + R17");
     else {
@@ -366,8 +372,9 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     const f = await shot("9-day");
     step("9", "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»", shell && shell.globals.includes("BirgeAgencies") ? hasBtn : null,
       shell && shell.globals.includes("BirgeAgencies") ? { button: hasBtn } : "модуля BirgeAgencies нет на странице", "R08 + R17", f);
-    // Адрес штаба по R17 INTEGRATION (R01 8ac171b0): #agencies/crisis=<id>; запасной по IA_ROUND15 — #crisis/<id>.
-    let o = await open(`#agencies/crisis=${s9.incident}`, "BirgeAgencies");
+    // Адрес штаба: #agencies/crisis/<id> (R17 191f81e7+), прежний #agencies/crisis=<id>; публичная карточка — #crisis/<id>.
+    let o = await open(`#agencies/crisis/${s9.incident}`, "BirgeAgencies");
+    if (o.ok === false) o = await open(`#agencies/crisis=${s9.incident}`, "BirgeAgencies");
     if (o.ok === false) o = await open(`#crisis/${s9.incident}`, "BirgeAgencies");
     const f2 = await shot("9-crisis");
     if (o.ok === null) step("9", "кризисный штаб", null, o.why, "R17");

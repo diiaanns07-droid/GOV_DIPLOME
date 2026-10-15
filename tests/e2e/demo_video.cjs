@@ -528,6 +528,8 @@ async function recordLang(browser, lang) {
     if (plan[3].ok) {
       const s = scene("scene8-works");
       await go("#agencies/calendar");
+      // Вкладка «Календарь работ» у R17 (191f81e7+); без неё — свой раздел R12.
+      if (!(await page.evaluate(() => !!document.querySelector("#birge-screen:not([hidden]) .wcal")).catch(() => false))) await go("#works-calendar");
       await say("works", 5200);
       await shot("8-works");
       done(s);
