@@ -225,11 +225,31 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     step(s, "контраст текста ≥ 4,5:1", q.lowContrastN === 0, { n: q.lowContrastN, ex: (q.lowContrast || []).slice(0, 4) }, owner);
     if (lang === "kk") {
       const ru = await page.evaluate(() => { const r = document.querySelector("#birge-screen:not([hidden])"); return r ? r.innerText : ""; })
-        .then((t) => (t.match(/\b(Мой двор|Сделаем вместе|Я приду|Поддержать|Ведомства|Табло|Совместные|Передачи|Календарь работ|Кризис|Проверено жителями|Соседи|Пример)\b/g) || []));
+        // Границы слова — по буквам Юникода: \b в JS кириллицу не видит.
+        .then((t) => (t.match(/(?<!\p{L})(Мой двор|Сделаем вместе|Я приду|Поддержать|Ведомства|Табло|Совместные|Передачи|Календарь работ|Кризис|Проверено жителями|Соседи|Пример)(?!\p{L})/gu) || []));
       step(s, "ҚАЗ: на экране нет русских подписей раздела", ru.length === 0, { ru: [...new Set(ru)].slice(0, 6) }, owner);
     }
   };
   const visibleText = async (re) => !!(await firstVisible(page.getByText(re)));
+  // VISUAL_BRIEF §4 п. 8 / COMMON «ошибка сети»: запросы модуля оборваны → понятное сообщение и «Повторить»,
+  // а не пустой экран; после связи «Повторить» возвращает содержимое.
+  const retryRe = new RegExp("^" + esc(T(dict, ["common.action.retry", "heat.retry"], lang === "kk" ? "Қайталау" : "Повторить")), "i");
+  const errorState = async (s, hash, apiRe, owner) => {
+    const block = (route) => route.abort("failed");
+    await page.route(apiRe, block);
+    await page.evaluate(() => { location.hash = "#map"; }).catch(() => null); await sleep(600);
+    await page.evaluate((hh) => { location.hash = hh; }, hash); await sleep(2500);
+    const msg = await page.evaluate(() => { const r = document.querySelector("#birge-screen:not([hidden])");
+      return r ? (r.innerText || "").trim().slice(0, 160) : ""; }).catch(() => "");
+    const retry = await firstVisible(page.getByRole("button", { name: retryRe }));
+    const f = await shot(`${s}-offline`);
+    await page.unroute(apiRe, block);
+    let back = null;
+    if (retry) { await retry.click({ timeout: 4000 }).catch(() => null); await sleep(2500);
+      back = !(await firstVisible(page.getByRole("button", { name: retryRe }))); }
+    step(s, `нет связи: понятное сообщение и «Повторить», после связи данные вернулись (${hash})`,
+      msg.length > 10 && !!retry && back !== false, { message: msg.slice(0, 100), retry: !!retry, recovered: back }, owner, f);
+  };
   const clickBtn = async (re) => { const b = await firstVisible(page.getByRole("button", { name: re })); if (!b) return false;
     await b.click({ timeout: 4000 }).catch(() => null); await sleep(1500); return true; };
 
@@ -249,11 +269,12 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
         await quality("7", "R16", f);
         const iniTitle = S.ini && S.ini.title;
         step("7", `в «Обзоре» — инициатива «${iniTitle}»`, iniTitle ? await visibleText(new RegExp(esc(iniTitle), "i")) : null, null, "R16");
+        await errorState("7", `#yard/${s7.yard}`, /\/api\/civic\/v2\/together\//, "R16");
       }
     }
     o = await open(`#together/${s7.initiative}`, "BirgeTogether");
     if (o.ok !== null) {
-      const goRe = new RegExp("^(" + [word("together.join", "Я приду", "Мен келемін"), "Я приду", "Мен келемін", "Барамын"].map(esc).join("|") + ")", "i");
+      const goRe = new RegExp("^(" + [word("together.join", "Я приду", "Мен барамын"), "Я приду", "Мен барамын"].map(esc).join("|") + ")", "i");
       const before = await page.evaluate(() => (document.querySelector("#birge-screen:not([hidden])") || document.body).innerText);
       const pressed = await clickBtn(goRe);
       const after = await page.evaluate(() => (document.querySelector("#birge-screen:not([hidden])") || document.body).innerText);
@@ -275,7 +296,7 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     if (o.ok === null) step("8", "«Штаб ведомств» → «Табло»", null, o.why, "R17");
     else {
       step("8", "«Штаб ведомств» → «Табло» открыт", o.ok, { title: o.title, chars: o.chars }, "R17", f);
-      if (o.ok) await quality("8", "R17", f);
+      if (o.ok) { await quality("8", "R17", f); await errorState("8", "#agencies/board", /\/api\/civic\/v2\/agencies/, "R17"); }
     }
     o = await open("#agencies/calendar", "BirgeWorksCalendar");
     const f2 = await shot("8-calendar");
@@ -295,7 +316,9 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     const t9 = Date.now();
     await setMode("akimat");
     await page.evaluate(() => { location.hash = "#day"; }); await sleep(2600);
-    const crisisRe = new RegExp("^(" + [word("akim.pulse.open_crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу"), "Открыть кризисный штаб", "Дағдарыс штабын ашу"].map(esc).join("|") + ")", "i");
+    // Ключ R11 board.crisis.open («Открыть кризисный штаб» / «Жедел штабты ашу»).
+    const crisisRe = new RegExp("^(" + [T(dict, ["board.crisis.open", "akim.pulse.open_crisis"], lang === "kk" ? "Жедел штабты ашу" : "Открыть кризисный штаб"),
+      "Открыть кризисный штаб", "Жедел штабты ашу"].map(esc).join("|") + ")", "i");
     const hasBtn = !!(await firstVisible(page.getByRole("button", { name: crisisRe }))) || !!(await firstVisible(page.getByRole("link", { name: crisisRe })));
     const f = await shot("9-day");
     step("9", "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»", shell && shell.globals.includes("BirgeAgencies") ? hasBtn : null,
