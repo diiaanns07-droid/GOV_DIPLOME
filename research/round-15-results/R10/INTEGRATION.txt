@@ -126,8 +126,11 @@ api_v2 116 PASS / 0 FAIL. Не передавать staff=True всем raw: eng
 без CSRF → 403 (B-102); засев мира — R09 743 (B-106): карта Нуры 96 = «Обращения» 96, «Я тоже» 93 = мир, жалоб 154 = мир;
 «Картина дня» 7 дней 83 = карта 83; табло R17 по службам = «Обращения»; «Спросить Birge» R03 — 96 / 83 / 5 / 96 адам
 (= карта и «Картина дня»), ответ 45 мс; модули R12, R13, R17, R04, R03 — ready; pytest tests/civic/R10 — 50 passed.
+Обновление 15 окт ~14:50 UTC — ветка R01 c9069723 («B0.2», research/round-15-results/R10/b02-c9069723/): R08 6cd8f2be взят —
+Ситуационный центр и «Картина недели» открываются сотруднику (akim/board, akim/week 200), «Ещё → Ситуационный центр» есть,
+сверки A3 (район 83 = карта 83) и C3 (35 = 35) PASS; эталон 18 из 47 = FINAL-4; часть 1 169 / 2 / 3 (FAIL — B-109).
 Осталось для «можно показывать»:
-  1. Тесты R10 — из DELIVERY R10 (tests/civic/R10, tests/e2e).
+  1. Тесты R10 — из DELIVERY R10 (tests/civic/R10, tests/e2e); R01 взял ранние 95de8b99.
   2. Поставки, которых нет в c97aa5f5 (превью R10 pvC собрано из них — research/round-15-results/R10/preview/):
      R16 (ui/civic_together + web/civic/together: CIVIC_ASSETS together.js / together-text.js / together.css, теги
        index.html; маршруты together/yards (GET список), yards/{id}/captain, yards/{id}/moderate и лимиты — patch R16);
@@ -142,7 +145,8 @@ api_v2 116 PASS / 0 FAIL. Не передавать staff=True всем raw: eng
      R17 191f81e7 — вкладка «Календарь работ» в «Ведомствах» (IA_ROUND15 §5.4) и адреса #agencies/<вкладка>; в c97aa5f5
        R17 75300896: вкладки нет, а оболочка (PARENT) прячет works-calendar, services и works из «Ещё», пока есть
        agencies → «Календарь работ», «Службы», «Работы и отключения» открываются только адресом и Ctrl+K.
-  3. Дефекты (BUGS.md): B-104 (одна подпись «Просрочено» у двух чисел — R08 + R09 + R11), B-109 (контраст красного
-     «просрочено» в «Сегодня в Астане» — R08), B-105 (R13 meetings/updates без устройства → 400).
+  3. Дефекты (BUGS.md): B-104 (одна подпись «Просрочено» у двух чисел — R08 + R17; R09 97342bdf уже пишет «Ответ
+     просрочен»), B-109 (контраст красного «просрочено» в «Сегодня в Астане» — R08), B-105 (R13 meetings/updates без
+     устройства → 400), B-112 (`--fs-xs: 12px` — R11, одна строка), B-123 (ҚАЗ «Дағдарыс штабы» у R08 6cd8f2be).
   4. Демо: run-city с CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 — так R10 и принимает (demo_flow --world, consistency, сцены).
 R10 возьмёт BUILD.json (find_branches.py --build) и через ~1 ч после сборки положит ACCEPTANCE_B1.md с вердиктом.
