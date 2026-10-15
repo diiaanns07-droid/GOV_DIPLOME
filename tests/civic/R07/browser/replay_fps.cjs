@@ -38,6 +38,28 @@ const BASE = (process.argv[2] || "http://127.0.0.1:8618").replace(/\/$/, "");
       mode: st.mode, items: st.items, errors: errs });
     await page.close();
   }
+  // Перемещение карты при 1 000 целей (задача R07 №4): fps перелёта с тепловой картой и без неё (та же страница)
+  out.pan = [];
+  for (const z of ["12.6", "15"]) {
+    const page = await browser.newPage({ viewport: { width: 1366, height: 768 } });
+    await page.goto(`${BASE}/civic/heat/demo.html?view=city&z=${z}&lang=ru`, { waitUntil: "load" });
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    await page.waitForTimeout(1000);
+    const pan = () => page.evaluate(() => new Promise((res) => {
+      const m = window.__map, c = m.getCenter(), d = []; let last = performance.now();
+      m.easeTo({ center: [c.lng + 0.04, c.lat + 0.015], duration: 2500 });
+      const end = last + 2400;
+      const f = (t) => { d.push(t - last); last = t; if (t < end) requestAnimationFrame(f); else { d.sort((a, b) => a - b); const avg = d.reduce((a, b) => a + b, 0) / d.length; res({ fps: +(1000 / avg).toFixed(1), p95_ms: +d[Math.floor(d.length * 0.95)].toFixed(1) }); } };
+      requestAnimationFrame(f);
+    }));
+    const markers = await page.evaluate(() => ({ in_dom: document.querySelectorAll(".r07-badge").length, items: window.__heat.state().items }));
+    const withHeat = await pan();
+    await page.waitForTimeout(500);
+    await page.evaluate(() => window.__heat.destroy());
+    const without = await pan();
+    out.pan.push({ zoom: z, targets: markers.items, badges_in_dom: markers.in_dom, with_heat: withHeat, without_heat: without });
+    await page.close();
+  }
   console.log(JSON.stringify(out, null, 1));
   await browser.close();
 })();

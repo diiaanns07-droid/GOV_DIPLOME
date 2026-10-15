@@ -538,3 +538,6 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
 .r07-hot--replay .r07-list { margin-top: 8px; }
 .r07-replay-note, .r07-replay-empty { margin: 12px 0 0; font-size: 13px; line-height: 1.4; }
 @media (prefers-reduced-motion: reduce) { .r07-replaying .r07-badge__dot { transition: none; } }
+/* Кластер из одних исправленных мест (раунд 15): ✓ и число мест — людей прошлых жалоб на нём не складываем */
+.r07-cluster--fixed { display: inline-flex; gap: 3px; align-items: center; }
+.r07-cluster--fixed .r07-ic { width: 14px; height: 14px; stroke-width: 2.4; }

@@ -74,15 +74,16 @@ const shot = (page, name) => page.screenshot({ path: path.join(OUT, `${LABEL}-${
       if (r.overlaps) p.push(`значки налезают: ${r.overlaps}`);
       if (!/255, 255, 255|#fff/i.test(r.countHalo)) p.push("число значка не на белой плашке: " + r.countHalo);
       check(`semantic-zoom-${tag}`, p, r);
-      // кластер: число = сумма людей, цвет = самого высокого уровня; нажатие — приблизить
+      // кластер: число = сумма людей ОТКРЫТЫХ мест (раунд 15: исправленные свои прошлые жалобы не добавляют; одни
+      // исправленные — ✓ и число мест), цвет = самого высокого уровня; нажатие — приблизить
       const c = await page.evaluate(async () => {
         const cl = window.__heat.badges().filter((b) => b.mode === "cluster").sort((a, b) => b.members.length - a.members.length)[0];
         if (!cl) return null;
         const el = [...document.querySelectorAll(".r07-badge--cluster")].find((e) => e.dataset.key === cl.key);
         const d = await (await fetch("/api/civic/v2/heat?days=30&zoom=15")).json();
         const items = d.items.filter((x) => cl.members.includes(x.target.kind + ":" + x.target.id));
-        const sum = items.reduce((a, x) => a + x.count, 0);
         const active = items.filter((x) => x.state !== "fixed");
+        const sum = active.length ? active.reduce((a, x) => a + x.count, 0) : (items.length > 1 ? items.length : 0);
         const top = (active.length ? active : items).sort((a, b) => b.weight - a.weight || b.count - a.count)[0];
         return { n: Number(el.innerText.replace(/\D/g, "")), sum, color: getComputedStyle(el).getPropertyValue("--r07-c").trim(), want: top.color,
           aria: el.getAttribute("aria-label"), zoom: window.__map.getZoom(), objects: items.some((x) => x.target.kind === "object"), key: cl.key };

@@ -5,41 +5,69 @@
   {
    "label": "город (районы)",
    "played_s": 13.2,
-   "map_ease_fps": 12.7,
-   "replay_fps": 55.1,
+   "map_ease_fps": 11,
+   "replay_fps": 55.8,
    "p95_ms": 16.8,
-   "worst_ms": 183.4,
+   "worst_ms": 150,
    "tween_ms_per_frame": 0,
-   "day_switch_ms": 8.9,
+   "day_switch_ms": 7.8,
    "mode": "districts",
    "items": 6,
    "errors": []
   },
   {
    "label": "места, масштаб 12,6",
-   "played_s": 13.5,
-   "map_ease_fps": 6.3,
-   "replay_fps": 15.4,
+   "played_s": 13.7,
+   "map_ease_fps": 7.6,
+   "replay_fps": 15.1,
    "p95_ms": 166.7,
-   "worst_ms": 266.6,
-   "tween_ms_per_frame": 0.88,
-   "day_switch_ms": 51.1,
+   "worst_ms": 216.7,
+   "tween_ms_per_frame": 1.04,
+   "day_switch_ms": 47.2,
    "mode": "targets",
    "items": 1006,
    "errors": []
   },
   {
    "label": "места, масштаб 14",
-   "played_s": 13.4,
-   "map_ease_fps": 7.6,
-   "replay_fps": 17.4,
-   "p95_ms": 116.8,
-   "worst_ms": 183.3,
-   "tween_ms_per_frame": 0.44,
-   "day_switch_ms": 42.6,
+   "played_s": 13.5,
+   "map_ease_fps": 10.5,
+   "replay_fps": 17.7,
+   "p95_ms": 116.7,
+   "worst_ms": 183.2,
+   "tween_ms_per_frame": 0.43,
+   "day_switch_ms": 33.7,
    "mode": "targets",
    "items": 1006,
    "errors": []
+  }
+ ],
+ "pan": [
+  {
+   "zoom": "12.6",
+   "targets": 1006,
+   "badges_in_dom": 52,
+   "with_heat": {
+    "fps": 7.8,
+    "p95_ms": 166.8
+   },
+   "without_heat": {
+    "fps": 12,
+    "p95_ms": 100
+   }
+  },
+  {
+   "zoom": "15",
+   "targets": 1006,
+   "badges_in_dom": 1,
+   "with_heat": {
+    "fps": 15.2,
+    "p95_ms": 100
+   },
+   "without_heat": {
+    "fps": 20,
+    "p95_ms": 66.7
+   }
   }
  ]
 }

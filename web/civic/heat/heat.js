@@ -133,6 +133,9 @@
       "heat.cluster.label": "Рядом {places}: {people}. Нажмите, чтобы приблизить",
       "heat.cluster.tip": "{places} · {people} — нажмите, чтобы приблизить",
       "heat.cluster.zoom": "Нажмите, чтобы приблизить",
+      // Раунд 15: кластер из одних исправленных мест — ✓ и число мест (людей прошлых жалоб на нём не считаем)
+      "heat.cluster.fixed_label": "Рядом исправлено: {places}. Нажмите, чтобы приблизить",
+      "heat.cluster.fixed_tip": "Исправлено: {places} — нажмите, чтобы приблизить",
       "heat.kind.bus_stop": "Остановка", "heat.kind.playground": "Детская площадка", "heat.kind.pitch": "Спортплощадка",
       "heat.kind.park": "Парк", "heat.kind.garden": "Сквер", "heat.kind.waste_disposal": "Контейнерная площадка",
       "heat.kind.recycling": "Приём вторсырья", "heat.kind.street_lamp": "Фонарь", "heat.kind.school": "Школа",
@@ -258,6 +261,8 @@
       "heat.cluster.label": "Жақын жерде {places}: {people}. Жақындату үшін басыңыз",
       "heat.cluster.tip": "{places} · {people} — жақындату үшін басыңыз",
       "heat.cluster.zoom": "Жақындату үшін басыңыз",
+      "heat.cluster.fixed_label": "Жақын жерде жөнделді: {places}. Жақындату үшін басыңыз",
+      "heat.cluster.fixed_tip": "Жөнделді: {places} — жақындату үшін басыңыз",
       "heat.kind.bus_stop": "Аялдама", "heat.kind.playground": "Балалар алаңы", "heat.kind.pitch": "Спорт алаңы",
       "heat.kind.park": "Саябақ", "heat.kind.garden": "Гүлзар", "heat.kind.waste_disposal": "Қоқыс алаңы",
       "heat.kind.recycling": "Қайталама шикізат қабылдау пункті", "heat.kind.street_lamp": "Көше шамы", "heat.kind.school": "Мектеп",
@@ -1250,7 +1255,7 @@
       // Замеры пачкой: сначала все записи, потом чтения. Пара «запись — замер» у каждого значка заставляла браузер
       // пересчитывать раскладку страницы ~2 000 раз — при 1 000 целей смена дня «Хроники» стоила ~0,3 с.
       if (measure.length) {
-        measure.forEach(([m]) => { m.el.hidden = false; m.el.classList.remove("r07-badge--mini"); });
+        measure.forEach(([m]) => { if (m.attached === false) { m.marker.addTo(map); m.attached = true; } m.el.hidden = false; m.el.classList.remove("r07-badge--mini"); });
         measure.forEach(([m]) => { if (m.el.offsetWidth) { m.w = m.el.offsetWidth; m.h = m.el.offsetHeight; } });
         // И размер маленькой плашки: с двузначным числом она ~47 px, а не 34 — иначе плашки налезали на соседей.
         measure.forEach(([m]) => m.el.classList.add("r07-badge--mini"));
@@ -1557,9 +1562,9 @@
         const el = makeClusterEl(c.members.map((m) => m.item));
         // Размер кружка зависит только от длины числа: меряем один раз на длину (каждый замер нового элемента —
         // пересчёт раскладки страницы; при 1 000 целях «Хроника» строит десятки кластеров каждый день).
-        const digits = String(el.textContent || "").length;
-        if (!S.clusterSize[digits]) S.clusterSize[digits] = [el.offsetWidth || CLUSTER_W, el.offsetHeight || CLUSTER_W];
-        const [w, h] = S.clusterSize[digits];
+        const kind = (el.querySelector(".r07-cluster--fixed") ? "f" : "") + String(el.textContent || "").length;   // ✓ шире
+        if (!S.clusterSize[kind]) S.clusterSize[kind] = [el.offsetWidth || CLUSTER_W, el.offsetHeight || CLUSTER_W];
+        const [w, h] = S.clusterSize[kind];
         // в середине; тесно — рядом (кольцо 26 и 48 px); совсем некуда — к ближайшему уже стоящему кластеру.
         // Кружок одного места — только на самом месте: сдвинутый, он показывал бы не туда (и выбор места жалобой мимо).
         const tries = [[0, 0]];
@@ -1598,8 +1603,12 @@
         if ((mode === "full" || mode === "mini") && (spot[0] !== m.spot?.[0] || spot[1] !== m.spot?.[1])) { m.marker.setLngLat(spot); m.spot = spot; }
         // Пишем только изменившееся: у 1 000 значков каждая лишняя запись — пересчёт их стилей
         const hide = mode === "hidden" || mode === "cluster";
+        // Скрытый значок (в кластере, вне места) — не на карте: MapLibre двигает каждый маркер на каждом кадре
+        // перемещения, а при 1 000 целях видно ~50. Показали — вернули на карту (тот же элемент и обработчики).
+        if (!hide && m.attached === false) { m.marker.addTo(map); m.attached = true; }
         if (!hide && m.dirty) { fillBadge(m.el, m.item); m.sig = m.dirty; m.dirty = null; }   // хроника: дорисовать перед показом
         if (m.el.hidden !== hide) m.el.hidden = hide;
+        if (hide && m.attached !== false) { m.marker.remove(); m.attached = false; }
         m.el.classList.toggle("r07-badge--mini", mode === "mini");
         if (m.el.tabIndex !== -1) m.el.tabIndex = -1;
         if (m.el.dataset.mode !== mode) m.el.dataset.mode = mode;
@@ -1633,17 +1642,23 @@
       const active = items.filter((it) => it.state !== "fixed");
       return (active.length ? active : items).slice().sort((a, b) => (b.weight || 0) - (a.weight || 0) || (b.count || 0) - (a.count || 0))[0];
     }
+    // Число на кластере — люди только по открытым местам (как число района и «Обращения»): исправленное место своего
+    // числа на карте не показывает, и в кластере его прошлые жалобы не складываются. Одни исправленные — ✓ и число мест.
+    const activePeople = (items) => items.reduce((a, it) => a + (it.state === "fixed" ? 0 : Number(it.count) || 0), 0);
     function fillCluster(el, items) {
       const top = clusterTop(items);
-      const people = items.reduce((a, it) => a + (Number(it.count) || 0), 0);
+      const people = activePeople(items);
       const allFixed = items.every((it) => it.state === "fixed");
       el.dataset.level = allFixed ? "fixed" : String(top.level);
       el.dataset.n = String(items.length);
       el.style.setProperty("--r07-c", top.color || "#999");
+      const places = t("heat.cluster.places", { count: items.length });
       el.setAttribute("aria-label", items.length === 1
-        ? t("heat.badge_label", { target: label(top.target), reported: t("heat.reported", { count: top.count }) }) + ". " + t("heat.cluster.zoom")
-        : t("heat.cluster.label", { places: t("heat.cluster.places", { count: items.length }), people: t("heat.tip.people", { count: people }) }));
-      el.innerHTML = '<span class="r07-badge__inner"><span class="r07-cluster" style="--r07-c:' + esc(top.color || "#999") + '">' + fmtNum(people) + "</span></span>";
+        ? t("heat.badge_label", { target: label(top.target), reported: t(allFixed ? "heat.reported_fixed" : "heat.reported", { count: top.count }) }) + ". " + t("heat.cluster.zoom")
+        : allFixed ? t("heat.cluster.fixed_label", { places })
+          : t("heat.cluster.label", { places, people: t("heat.tip.people", { count: people }) }));
+      const body = allFixed ? svgIcon("check", 14) + (items.length > 1 ? "<span>" + fmtNum(items.length) + "</span>" : "") : fmtNum(people);
+      el.innerHTML = '<span class="r07-badge__inner"><span class="r07-cluster' + (allFixed ? " r07-cluster--fixed" : "") + '" style="--r07-c:' + esc(top.color || "#999") + '">' + body + "</span></span>";
     }
     function clusterItems(el) {
       const c = S.clusters.find((q) => q.el === el);
@@ -1652,8 +1667,9 @@
     function clusterTip(el) {
       const items = clusterItems(el);
       if (items.length === 1) return badgeTip(items[0]);
-      const people = items.reduce((a, it) => a + (Number(it.count) || 0), 0);
-      return t("heat.cluster.tip", { places: t("heat.cluster.places", { count: items.length }), people: t("heat.tip.people", { count: people }) });
+      const places = t("heat.cluster.places", { count: items.length });
+      if (items.every((it) => it.state === "fixed")) return t("heat.cluster.fixed_tip", { places });
+      return t("heat.cluster.tip", { places, people: t("heat.tip.people", { count: activePeople(items) }) });
     }
     // Нажатие на кластер — приблизить к его местам (не меньше 15-го масштаба, если в нём объекты: там они видны поштучно).
     function onClusterClick(el, ev) {
@@ -1991,7 +2007,9 @@
       if (!lg) return "";
       const ex = legendExtras();
       const st = lg.states || {};
-      const fixedLabel = ex.verified ? t("heat.legend.verified") : S.lang === "kk" ? lg.fixed.kk : lg.fixed.ru;
+      // Рядом с пунктиром «сообщили об устранении» сплошной зелёный — это «проверено жителями» (heat_states.verified_fixed
+      // в categories_v2.json): без пунктира — короткое «исправлено», как в строке легенды оболочки.
+      const fixedLabel = ex.verified || ex.reported ? t("heat.legend.verified") : S.lang === "kk" ? lg.fixed.kk : lg.fixed.ru;
       const rows = lg.levels.filter((lv) => lv.level > 0).map((lv) =>
         '<li><i class="r07-sw" style="background:' + esc(lv.color) + '"></i>' + esc(legendLabel(lv)) + "</li>").join("") +
         (ex.reported && st.reported_fixed ? '<li data-extra="reported"><i class="r07-sw r07-sw--dashed" style="background:' + esc(st.reported_fixed.color) + '"></i>' + esc(t("heat.legend.reported_fixed")) + "</li>" : "") +
