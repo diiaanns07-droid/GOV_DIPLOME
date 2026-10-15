@@ -50,6 +50,11 @@ body.civic-mode[data-birge-layout="ref"] .civic-explore-list [role="option"]:is(
   content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 50%; vertical-align: middle;
   background: var(--c-text-3, #7e8a85);
 }
+/* Ориентир (R05, поправка П1) — настоящее здание подложки: маленький тёмный квадрат вместо точки, без отдельной краски. */
+body.civic-mode[data-birge-layout="ref"] .civic-explore-list [role="option"][data-kind="landmark"] .civic-explore-opt-name::before {
+  content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 2px; vertical-align: middle;
+  background: var(--c-text-2, #4b5752);
+}
 body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="1"] .civic-explore-opt-name::before { background: var(--heat-1, #fac775); }
 body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="2"] .civic-explore-opt-name::before { background: var(--heat-2, #ef9f27); }
 body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="3"] .civic-explore-opt-name::before { background: var(--heat-3, #e24b4a); }
@@ -153,7 +158,7 @@ body.civic-mode[data-birge-layout="ref"] #birge-header .birge-avatar .ic { width
     left: 20px; right: auto; top: 84px; bottom: auto; width: 388px; height: auto; max-height: calc(100% - 84px - 84px); border-radius: 18px;
   }
   body.civic-mode[data-birge-layout="ref"] .civic-panel .civic-scroll { flex: 0 1 auto; }
-  body.civic-mode[data-birge-layout="ref"]:is([data-birge-left="none"], [data-birge-left="summary"]) .civic-panel { display: none; }
+  body.civic-mode[data-birge-layout="ref"]:is([data-birge-left="none"], [data-birge-left="summary"], [data-birge-left="replay"]) .civic-panel { display: none; }
   body.civic-mode[data-birge-layout="ref"] .civic-panel .civic-foot { display: none; }
   /* Плотное стекло 86 % — сильнее общего правила оболочки (.bk-glass → --glass-panel), о чём просили R08 и R09. */
   body.civic-mode[data-birge-layout="ref"] .bk-glass.bk-glass--strong { background-color: var(--glass-strong, rgba(255, 255, 255, 0.86)); }
@@ -197,6 +202,8 @@ body.civic-mode[data-birge-layout="ref"] :is(#birge-near, #birge-today) .bk-hot_
 /* ---------- телефон: шторка «Рядом с вами» (R09) у жителя на главной ---------- */
 @media (max-width: 760px) {
   body.civic-mode[data-birge-layout="ref"][data-birge-left="near"] .civic-panel { display: none; }
+  /* «Хроника» R07 — полоса снизу вместо шторки (IA_ROUND15 §5.8 «Телефон»). */
+  body.civic-mode[data-birge-layout="ref"][data-birge-left="replay"] :is(.civic-panel, #civic-sheet-handle) { display: none; }
   body.civic-mode[data-birge-layout="ref"] #birge-near { position: fixed; z-index: 6; left: 0; right: 0; bottom: 0; }
   body.civic-mode[data-birge-layout="ref"]:not([data-birge-left="near"]) #birge-near { display: none; }
   body.civic-mode[data-birge-layout="ref"] #birge-chips { display: none; }

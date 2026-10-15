@@ -43,6 +43,10 @@ CONTRACT = [
     ("GET", "together/yards/{id}", "R16", "ui.civic_together", "make_service"),
     ("POST", "together/yards/{id}/join", "R16", "ui.civic_together", "make_service"),
     ("POST", "together/yards/{id}/leave", "R16", "ui.civic_together", "make_service"),
+    # R16 [доп.] (INTEGRATION R16 §1): выбор двора, «старший по двору» и его проверка акиматом.
+    ("GET", "together/yards", "R16", "ui.civic_together", "make_service"),
+    ("POST", "together/yards/{id}/captain", "R16", "ui.civic_together", "make_service"),
+    ("POST", "together/yards/{id}/moderate", "R16", "ui.civic_together", "make_service"),
     ("GET", "together/updates", "R16", "ui.civic_together", "make_service"),
     ("GET", "agencies", "R17", "ui.civic_agencies", "make_service"),
     ("GET", "agencies/board", "R17", "ui.civic_agencies", "make_service"),
@@ -82,6 +86,7 @@ CONTRACT = [
 # «Кто может» из §7: сотрудник (сессия + CSRF).
 STAFF_ROUTES = {
     ("POST", "together/initiatives/{id}/support"), ("POST", "together/initiatives/{id}/moderate"),
+    ("POST", "together/yards/{id}/moderate"),
     ("GET", "agencies/board"), ("GET", "agencies/joint"), ("GET", "agencies/handoffs"),
     ("POST", "incidents"), ("POST", "incidents/{id}/task"), ("POST", "incidents/{id}/update"),
     ("POST", "incidents/{id}/close"),

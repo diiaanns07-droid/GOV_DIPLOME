@@ -32,7 +32,7 @@
   if (layout !== "ref") { window.BirgeRef = { layout, state: () => "classic" }; return; }
 
   const S = { listOpen: false, todayClosed: false, today: null, todayEl: null, chipsEl: null, cats: null, near: null,
-    nearEl: null, palette: null, queued: false, mapBound: false, scenes: null, scenesLoading: null, escBusy: false };
+    nearEl: null, palette: null, queued: false, mapBound: false, scenes: null, scenesLoading: null, escBusy: false, replay: false };
   try { S.todayClosed = sessionStorage.getItem("birge.today.closed") === "1"; } catch (e) { /* сводка снова видна */ }
 
   const desktop = () => innerWidth >= PHONE;
@@ -73,8 +73,11 @@
     const c = document.documentElement.classList;
     return c.contains("bc-open") || c.contains("bc-mine-open");
   };
+  // «Хроника» R07 открыта (класс ставит BirgeReplay): режим карты — слева ничего, шторки нет (IA_ROUND15 §5.8).
+  const replayOpen = () => body.classList.contains("birge-replay-open");
   function leftState() {
     if (!civic() || section() !== "map") return "none";
+    if (replayOpen()) return "replay";
     if (body.classList.contains("birge-report-open")) return "report";
     if (hasCard()) return "card";
     if (S.listOpen) return "list";
@@ -89,6 +92,15 @@
   }
   function sync() {
     S.queued = false;
+    // Хронику открыли (чип легенды, Ctrl+K, «Хроника недели» R17 / R08, ?replay=7): к карте, карточка слева и
+    // дополнительный слой закрываются — значки карты показывают только дни хроники.
+    const replay = replayOpen();
+    if (replay && !S.replay) {
+      if (window.BirgeShell && section() !== "map") window.BirgeShell.setSection("map");
+      closeLeft(true);
+      if (window.BirgeShell && window.BirgeShell.layer) window.BirgeShell.setLayer(null);
+    }
+    S.replay = replay;
     const st = leftState();
     if (body.dataset.birgeLeft !== st) body.dataset.birgeLeft = st;
     syncToday(st === "summary");

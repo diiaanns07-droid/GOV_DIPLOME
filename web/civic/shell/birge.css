@@ -353,6 +353,12 @@ body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root:not(:has(.b3
 .birge-legend-q::after { content: ""; position: absolute; inset: -4px; }  /* зона нажатия 48 px */
 .birge-legend-q[aria-expanded="true"] { background: var(--c-ink, #152c26); color: #fff; }
 .birge-legend-q:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
+/* «▶ Хроника» R07 (IA_ROUND15 R11 §5.8, §7.8) — последний чип строки легенды; на телефоне — только значок (строка у края).
+   Пока хроника открыта, строки легенды нет (шкала цвета — в полосе хроники), «Сообщить о проблеме» не закрывает полосу. */
+.birge-legend-line .birge-replay-chip { margin-left: 2px; padding: 0 12px 0 10px; }
+.birge-legend-line .birge-replay-chip .ic { width: 16px; height: 16px; fill: currentColor; }  /* ▶ залитый, как у R11 .bk-replay__play */
+.birge-legend-line .birge-replay-chip:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
+body.birge-replay-open #birge-legend, body.birge-replay-open .bc-fab { display: none !important; }
 @media (min-width: 761px) {
   /* Сообщения R07 («Взято в работу», «Отмечено исправленным») — над легендой и кнопкой «Сообщить о проблеме», не на них. */
   .civic-mode .r07-toasts { bottom: 96px; }
@@ -522,6 +528,8 @@ body[data-civic-sheet="full"].civic-mode .civic-explore #map-status { display: n
 @media (max-width: 760px) {
   .civic-mode .birge-legend-line { max-width: 100%; box-sizing: border-box; gap: 6px; padding-left: 10px; }
   .civic-mode .birge-legend-line .bk-legend__scale { width: 40px; }
+  .civic-mode .birge-legend-line .birge-replay-chip { width: 40px; padding: 0; justify-content: center; }
+  .civic-mode .birge-legend-line .birge-replay-chip__text { display: none; }
   .civic-mode .map-tools .bk-mapctl__group > #zoom-out { display: grid; }
 }
 /* «·», «✓», аватар 44/48 и «ҚАЗ/РУС» ≥ 44/48 — в ui-kit R11 (bdc9934, по R01 §21.7); свои правила R01 сняты. */

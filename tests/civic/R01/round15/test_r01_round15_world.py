@@ -117,6 +117,7 @@ def test_real_world_file_has_the_scenes_r01_needs():
 
 
 def _heat_items(tmp_path, monkeypatch, demo_world):
+    """Значки карты /heat и записи, из которых карта их считает (источник, который связал шлюз)."""
     pytest.importorskip("ui.civic_feedback.v2.integration")
     pytest.importorskip("ui.civic_heat.api")
     import ui.civic_heat as civic_heat
@@ -124,17 +125,22 @@ def _heat_items(tmp_path, monkeypatch, demo_world):
     v1 = CivicGateway.for_project(tmp_path, tmp_path / "civic.sqlite3")
     gateway = CivicV2Gateway(v1, demo=True, demo_world=demo_world)
     reply = gateway.handle("GET", "/heat", "days=30&zoom=12", None, CTX)
+    records = civic_heat.service.default_service().records(datetime.now(timezone.utc) - timedelta(days=60))
     monkeypatch.setattr(civic_heat.service, "_default", None)
     assert reply["status"] == 200
-    return reply["body"]["items"]
+    return reply["body"]["items"], records
 
 
 def test_world_map_takes_complaints_from_r09_only(tmp_path, monkeypatch):
-    classic = _heat_items(tmp_path / "a", monkeypatch, demo_world=False)
-    world = _heat_items(tmp_path / "b", monkeypatch, demo_world=True)
-    # FINAL-4: синтетика R07 (районы, «Нура · 81»); мир: только записи R09 (здесь — демо «Хан Шатыр» шага 2)
-    assert sum(i.get("count", 0) for i in classic) > 20
-    assert sum(i.get("count", 0) for i in world) <= 5, json.dumps(world, ensure_ascii=False)[:500]
+    """FINAL-4: к жалобам R09 карта добавляет синтетику R07 («Нура · 81»). Демо-мир: только жалобы R09 — мир R02,
+    засеянный связкой wire() (R02 INTEGRATION §1): числа карты = «Обращения», второго набора нет."""
+    from ui.civic_heat import engine
+    classic, classic_records = _heat_items(tmp_path / "a", monkeypatch, demo_world=False)
+    world, world_records = _heat_items(tmp_path / "b", monkeypatch, demo_world=True)
+    assert sum(i.get("count", 0) for i in classic) > 20 and any(engine.is_r07_example(r) for r in classic_records)
+    assert world_records and not any(engine.is_r07_example(r) for r in world_records)
+    assert any(str(r.get("id", "")).startswith("c-w15") for r in world_records), [r.get("id") for r in world_records[:5]]
+    assert sum(i.get("count", 0) for i in world) > 20, json.dumps(world, ensure_ascii=False)[:300]
 
 
 def test_world_is_materialized_once_with_the_r02_helper(tmp_path):

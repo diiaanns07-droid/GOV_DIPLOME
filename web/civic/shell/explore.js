@@ -112,7 +112,7 @@
     return scored.map((x) => x[1]);
   }
 
-  function mount({ root, map, districts, onNavigate, onObjects, onStreet, onPlace, streetsUrl, placesUrl }) {
+  function mount({ root, map, districts, onNavigate, onObjects, onStreet, onPlace, onLandmark, streetsUrl, placesUrl }) {
     const features = (districts?.features || []).filter((f) => bounds(f.geometry));
     let selected = "", destroyed = false;
     const box = document.createElement("section");
@@ -254,6 +254,28 @@
         if (document.activeElement === input && normalize(input.value)) refresh();
       }).catch(() => { sidx = { state: "idle", index: null }; });  // ошибка — следующая попытка при фокусе
     }
+    // Ориентиры города (R05, раунд 15, поправка П1): «Байтерек», «Хан Шатыр», «Ақорда»… — настоящие здания подложки;
+    // выбор — перелёт камеры к зданию с наклоном (BirgeLandmarks.flyTo). Данные — web/civic/build3d/data/landmarks.json
+    // (центры по OSM, названия ru/kk), грузятся один раз при фокусе поля.
+    let landmarks = { state: "idle", index: null };
+    function loadLandmarks() {
+      const L = global.BirgeLandmarks;
+      if (landmarks.state !== "idle" || !L || typeof L.load !== "function") return;
+      landmarks = { state: "loading", index: null };
+      L.load().then((ix) => {
+        if (destroyed) return;
+        landmarks = { state: "ready", index: ix };
+        if (document.activeElement === input && normalize(input.value)) refresh();
+      }).catch(() => { landmarks = { state: "idle", index: null }; });  // ошибка — следующая попытка при фокусе
+    }
+    function matchLandmarks(q) {
+      if (landmarks.state !== "ready" || !normalize(q)) return [];
+      let found = [];
+      try { found = landmarks.index.query(q, { lang: lang(), limit: 3 }) || []; } catch (e) { return []; }
+      const districtName = (id) => { const f = features.find((x) => x.properties?.id === id); return f ? T("district.name", { name: districtLabel(f) }) : ""; };
+      return found.map((r) => ({ kind: "landmark", id: r.id, name: r.label, centre: r.point, district: r.district || null,
+        place: [r.type, districtName(r.district)].filter(Boolean).join(" · ") }));
+    }
     const KIND_KEY = { bus_stop: "stop", yard: "yard", park: "park", pitch: "pitch", playground: "playground" };
     function matchIndex(q, hot) {
       const n = normalize(q);
@@ -347,7 +369,7 @@
       // районы, горячие места (R07), остановки, дворы и парки (R12), улицы.
       if (!normalize(q).length) { if (onFocus === true) render(cityAndDistricts("")); else close(); quiet(); return; }
       const hot = matchPlaces(q);
-      const top = [...cityAndDistricts(q), ...hot, ...matchIndex(q, hot)];
+      const top = [...cityAndDistricts(q), ...matchLandmarks(q), ...hot, ...matchIndex(q, hot)];
       const streets = index.state === "ready" ? matchStreets(index.items, q) : [];
       const matches = [...top, ...streets];
       render(matches);
@@ -369,6 +391,16 @@
         input.value = it.name; clear.hidden = false;
         close(); unpin(); quiet();
         onPlace?.(it.target);
+        if (phone()) setOpen(false);
+        return;
+      }
+      if (it.kind === "landmark") {  // ориентир (R05): настоящее здание подложки — перелёт камеры к нему с наклоном
+        input.value = it.name; clear.hidden = false;
+        close(); unpin();
+        selected = ""; select.value = ""; paint();
+        say("shell.explore.chosen_spot", "chosen", { name: it.name, place: it.place });
+        if (typeof onLandmark === "function") onLandmark(it);
+        else global.BirgeLandmarks?.flyTo?.(map, it.id);
         if (phone()) setOpen(false);
         return;
       }
@@ -395,7 +427,7 @@
     input.addEventListener("input", refresh);
     // Фокус пустого поля самим человеком — «Вся Астана» и районы списком; после «×» (фокус из кода) — без списка.
     let quietFocus = false;
-    input.addEventListener("focus", () => { loadPlaces(); loadSearchIndex(); if (status.dataset.kind !== "chosen") refresh(!quietFocus); quietFocus = false; });
+    input.addEventListener("focus", () => { loadPlaces(); loadSearchIndex(); loadLandmarks(); if (status.dataset.kind !== "chosen") refresh(!quietFocus); quietFocus = false; });
     // Нажатие на уже активное пустое поле тоже показывает «Вся Астана» и районы (после выбора или Esc).
     input.addEventListener("click", () => { if (!input.value.trim() && list.hidden) { loadPlaces(); refresh(true); } });
     input.addEventListener("blur", () => setTimeout(() => { if (document.activeElement !== input) close(); }, 0));
@@ -416,7 +448,7 @@
       const q = input.value.trim();
       if (!q) { input.focus(); return; }
       const hot = matchPlaces(q);
-      const top = [...cityAndDistricts(q), ...hot, ...matchIndex(q, hot)];
+      const top = [...cityAndDistricts(q), ...matchLandmarks(q), ...hot, ...matchIndex(q, hot)];
       const exactTop = top.filter((m) => normalize(m.name) === normalize(q));
       if (exactTop.length === 1) { choose(exactTop[0]); return; }
       if (index.state === "loading" && !top.length) { say("shell.explore.loading", "loading"); return; }

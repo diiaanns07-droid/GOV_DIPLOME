@@ -89,6 +89,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json",
                 # B1: R07 тепловая карта @ 5a97636, R09 путь жителя v2 @ da295be, R08 «Картина дня» @ 9f1d9c0.
                 "heat/heat.js", "heat/heat.css",
+                # R07 раунд 15: «Хроника города» (BirgeReplay — полоса внизу карты, чип «▶ Хроника» в строке легенды).
+                "replay/replay.js", "replay/replay.css",
                 "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
                 "feedback/complaint.css",
                 # Волна 2 (R09): действия сотрудника по обращению и экран акимата «Обращения» (#complaints).
@@ -108,12 +110,17 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
                 "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
                 "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",
+                # Раунд 15, R05: ориентиры (центры и названия ru/kk для подписей и поиска) и перелёт к зданию из поиска.
+                "build3d/landmarks.js", "build3d/data/landmarks.json",
                 # Дизайн-марафон, R05 2b33c59: превью объектов для карточек каталога (240×160 и @2x, рендер моделей R05).
                 *(f"build3d/data/previews/{kind}{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
                   for scale in ("", "@2x")),
                 # Эталон 13 окт (R05 3997d91e → R06): квадратные превью 84 × 84 и @2x для строк списка «Проекты и идеи».
                 *(f"build3d/data/previews/{kind}-sq{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
                   for scale in ("", "@2x")),
+                # Раунд 15, R05: «Было / станет» и «День / Ночь» в карточке проекта (рендер тех же моделей, «белый макет»).
+                *(f"build3d/data/previews/{name}@2x.png" for name in ("square-before", "playground-before", "sports-before",
+                  "stop-before", "lighting-before", "lighting-after", "lighting-night-before", "lighting-night-after")),
                 # B3: запасной фон карты без интернета (web/map.js offlineStyle) — оси улиц OSM со стенда R07 @ 306074b.
                 "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
@@ -129,7 +136,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (раздел #analyst; стенд analyst-demo.html не отдаём).
                 "assistant/analyst.js", "assistant/analyst.css",
                 # R08 раунд 15: «Ситуационный центр» (отдельная страница /civic/board/) и «Картина недели» (печать A4).
-                "board/index.html", "board/board.js", "board/board.css", "akim/week.html", "akim/week.js", "akim/week.css")
+                "board/index.html", "board/board.js", "board/board.css", "akim/week.html", "akim/week.js", "akim/week.css",
+                # R16 раунд 15: «Мой двор» (#yard) и «Сделаем вместе» (#together), слой «Инициативы».
+                "together/together.js", "together/together-text.js", "together/together.css")
 # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
@@ -259,6 +268,7 @@ V2_RATE_LIMITS = {
     "together.initiatives.report": ((60, 5, False), (3600, 20, False)),
     "together.yards.join": ((60, 20, False), (86400, 20, True)),
     "together.yards.leave": ((60, 20, False), (86400, 20, True)),
+    "together.yards.captain": ((3600, 10, False),),   # R16: имя «старшего по двору» — редко
     "meetings.register": ((60, 20, False), (86400, 20, True)),   # R13 INTEGRATION §2
     "meetings.question": ((60, 3, False), (3600, 20, False), (86400, 30, False)),
     "ml.route": ((60, 60, False),),
@@ -789,9 +799,12 @@ V2_ROUTES_ROUND15 = (
     ("POST", ("together", "initiatives", "{id}", "support"), "together.initiatives.support"),
     ("POST", ("together", "initiatives", "{id}", "moderate"), "together.initiatives.moderate"),
     ("POST", ("together", "initiatives", "{id}", "report"), "together.initiatives.report"),
+    ("GET", ("together", "yards"), "together.yards.list"),   # R16 [доп.]: выбор двора — дворы, где уже есть соседи
     ("GET", ("together", "yards", "{id}"), "together.yards.get"),
     ("POST", ("together", "yards", "{id}", "join"), "together.yards.join"),
     ("POST", ("together", "yards", "{id}", "leave"), "together.yards.leave"),
+    ("POST", ("together", "yards", "{id}", "captain"), "together.yards.captain"),     # R16 [доп.]: «старший по двору»
+    ("POST", ("together", "yards", "{id}", "moderate"), "together.yards.moderate"),   # R16 [доп.]: имя старшего — акимат
     ("GET", ("together", "updates"), "together.updates"),
     # R17 «Штаб ведомств» и кризисный штаб (ui.civic_agencies, сервис)
     ("GET", ("agencies",), "agencies.list"),
@@ -917,6 +930,10 @@ V2_HANDLERS_ROUND15 = {
     "together.yards.get": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
     "together.yards.join": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
     "together.yards.leave": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.yards.list": V2Handler("R16", _TOGETHER, "make_service", kind="service", query={"district": "district"}),
+    # «Старший по двору»: сосед предлагает только имя (на проверку); снять / опубликовать имя — сотрудник.
+    "together.yards.captain": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.yards.moderate": V2Handler("R16", _TOGETHER, "make_service", kind="service", staff=True),
     "together.updates": V2Handler("R16", _TOGETHER, "make_service", kind="service", query={"since": "when"}),
     "agencies.list": V2Handler("R17", _AGENCIES, "make_service", kind="service"),
     "agencies.board": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True, query={
@@ -943,7 +960,9 @@ V2_HANDLERS_ROUND15 = {
                                      staff=True, query={"from": "when", "to": "when", "district": "district"}),
     # «Хроника города» — всем, «мягкий вид» (без текстов жалоб), как /heat.
     "heat.replay": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", query={
-        "from": "when", "to": "when", "step": "word", "category": "category", "district": "district"}),
+        "from": "when", "to": "when", "step": "word", "category": "category", "district": "district",
+        # R07 INTEGRATION §1.1: last (1…92) и days (окно карты) — числа дней, format — compact | full; пределы — модуль.
+        "last": "days", "days": "days", "format": "word"}),
     "akim.board": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, query={
         "district": "district"}),
     "akim.week": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, query={
@@ -1247,6 +1266,14 @@ class CivicV2Gateway:
         if store is not None and self.demo and not self.demo_world:
             # Демо-мир (раунд 15): жалобы шага 2 («Хан Шатыр», те же id c-demo…) кладёт засев мира — seed_world().
             self._seed_demo_complaints(store)
+        if store is not None and self.demo_world and self.world_report is None:
+            # Демо-мир засевается вместе со связкой (R02 INTEGRATION §1, R07 test_gateway_wire_in_world_mode_uses_only_r09):
+            # после wire() карта, «Обращения» и табло уже видят жалобы мира. Повторно не засевается — app.py берёт
+            # готовый отчёт (world_report) для строки civic-world.
+            try:
+                self.seed_world()
+            except Exception:
+                LOGGER.exception("civic-world: засев демо-мира при связке не удался")
         if store is not None:
             # R04 (INTEGRATION п. 4): «Я тоже» ищет в том же хранилище R09; модели грузятся в фоне.
             # Без R04 или до подключения /similar отвечает 503 — форма R09 работает без подсказки.
@@ -1401,7 +1428,10 @@ class CivicV2Gateway:
                 fn = getattr(module, "seed_world", None) if module is not None else None
                 if callable(fn) and fn not in seen:
                     seen.add(fn)
-                    calls.append((name, lambda fn=fn: fn(db_path, world, now=now)))
+                    # R09 (R02 INTEGRATION §1): его seed_world берёт и живое хранилище — то же, что у карты и «Обращений»
+                    # (без второго соединения с базой); нет хранилища — путь к базе, как у всех.
+                    target = (self._r09_store() or db_path) if role == "R09" else db_path
+                    calls.append((name, lambda fn=fn, target=target: fn(target, world, now=now)))
             if role == "R09" and not calls:
                 # У R09 ещё нет seed_world — жалобы мира кладёт помощник R02 в живое хранилище R09 (те же правила reset,
                 # что у seed_demo R09; R02 INTEGRATION §1–2). Появится seed_world у R09 — возьмётся он.
@@ -2508,7 +2538,8 @@ def main():
         server.civic_v2.wire()  # связка R09 -> R07/R08/R04 сразу при старте (B-032), демо-жалобы R09 при CIVIC_DEMO=1
     except Exception:
         LOGGER.exception("civic-v2: связка модулей при старте не удалась — повторится при первом запросе")
-    world_line = server.civic_v2.world_line(server.civic_v2.seed_world())  # раунд 15: CIVIC_DEMO_WORLD=1
+    # Раунд 15, CIVIC_DEMO_WORLD=1: мир уже засеян связкой (wire); не вышло при старте — засев здесь.
+    world_line = server.civic_v2.world_line(server.civic_v2.world_report or server.civic_v2.seed_world())
     if world_line:
         print(world_line, flush=True)
     ready_v2 = sorted({item["role"] for item in server.civic_v2.modules().values() if item["status"] == "ready"})

@@ -230,11 +230,14 @@
     return moreGroups(mode).flatMap((g) => g.ids);
   }
   const navTitle = (id, mode = state.mode) => {
+    // Известный раздел IA (SCREENS) — всегда ключ меню R11, даже если модуль зарегистрировался со своей подписью
+    // (B0: R17 75300896 регистрировал «Штаб ведомств» и перебивал пункт меню «Ведомства»).
+    const key = SCREENS[id]?.key?.[mode];
+    if (key) return t(key);
     const extra = state.extra.find((x) => x.id === id);
     if (extra?.titleKey) return t(extra.titleKey);
     if (extra?.title) return extra.title[lang()] || extra.title.ru || id;
-    const key = SCREENS[id]?.key?.[mode];
-    return t(key || "common.nav." + id);  // известный раздел (SCREENS) — ключ меню, даже если модуль зарегистрирован
+    return t("common.nav." + id);
   };
   // Заголовок экрана раздела: свой ключ (SCREENS.titleKey, «Штаб ведомств»), иначе подпись меню.
   const screenTitle = (id) => (SCREENS[id]?.titleKey ? t(SCREENS[id].titleKey) : navTitle(id));

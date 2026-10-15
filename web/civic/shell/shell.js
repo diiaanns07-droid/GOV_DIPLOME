@@ -475,6 +475,7 @@
         labelLegend();
       });
       line.append(more);
+      replayChip(line);
       wrap.append(host, line);
       m.getContainer().append(wrap);
       labelLegend();
@@ -492,6 +493,32 @@
     set(".birge-legend-many", "heat.legend.many");
     // Текст — во вложенном span: у .bk-legend__fixed значок «✓» (::before), подпись меряется отдельно от него (R10 G-3).
     set(".birge-legend-fixed-text", "heat.fixed");
+    const chip = wrap.querySelector(".birge-replay-chip");
+    if (chip) {
+      set(".birge-replay-chip__text", "shell.nav.replay");
+      chip.title = T("shell.nav.replay_title");
+      chip.setAttribute("aria-label", T("shell.nav.replay_title"));
+    }
+  }
+  // R07 «Хроника города» — режим карты (IA_ROUND15 R11 §5.8, §7.8): чип «▶ Хроника» в конце строки легенды. Ctrl+K
+  // (команды R07), ?replay=7|30 и событие birge:replay-open (кнопки «Хроника недели» R17 / R08) — BirgeReplay.attach
+  // без своей кнопки у кнопок карты. Пока хроника открыта, слева пусто и слой выключен (birge-ref.js, состояние replay).
+  function replayChip(line) {
+    const R = window.BirgeReplay;
+    if (!R || typeof R.open !== "function" || line.querySelector(".birge-replay-chip")) return;
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "bk-chip birge-replay-chip";
+    chip.innerHTML = '<svg class="ic" aria-hidden="true" width="16" height="16"><use href="/civic/ui-kit/icons.svg#i-play"></use></svg>'
+      + '<span class="birge-replay-chip__text"></span>';
+    chip.addEventListener("click", () => openReplay(7));
+    line.append(chip);
+  }
+  function openReplay(days) {
+    const R = window.BirgeReplay;
+    if (!R || typeof R.open !== "function" || !S.mounted.heat) return null;
+    if (R.active) { R.active.close(); return null; }
+    return R.open({ map: currentMap(), heat: S.mounted.heat, days: Number(days) === 30 ? 30 : 7, autoplay: true });
   }
   // R07 «Карта жалоб» в панели и R09 «Сообщить о проблеме» (кнопка видна только жителю, birge.css).
   function mountBirgeModules() {
@@ -510,6 +537,9 @@
         // "desktop" — × только на ноутбуке, на телефоне список в шторке (R07 INTEGRATION R.13, просьба R01 §26.12).
         closable: document.body.dataset.birgeLayout === "ref" ? "desktop" : false,
       });
+      if (S.mounted.heat && typeof window.BirgeReplay?.attach === "function") {
+        try { window.BirgeReplay.attach({ map: currentMap(), heat: S.mounted.heat }); } catch (error) { console.error("birge replay attach", error); }
+      }
       openTargetFromLink();
     }
     if (!S.mounted.complaint && moduleFor("complaint")) {
@@ -1135,6 +1165,12 @@
       },
       // Поиск в шапке (чистый дизайн): место с жалобами — карточка цели R07 (та же, что по значку на карте).
       onPlace: (target) => { if (target?.kind && target?.id) S.mounted.heat?.focusTarget?.(target.kind, target.id); },
+      // Ориентир из поиска (R05, П1): перелёт к настоящему зданию подложки — в свободную часть карты, с наклоном 3D.
+      onLandmark: (lm) => {
+        S.mounted.map?.selectObject?.(null);
+        showView(() => lm.name, "landmark");
+        window.BirgeLandmarks?.flyTo?.(currentMap(), lm.id, { padding: freeArea() });
+      },
       onStreet: (street) => {
         S.mounted.map?.selectObject?.(null);
         S.mounted.map?.setFilters?.({ area: true });
@@ -1302,6 +1338,8 @@
     // B1: «Мои обращения» жителя (R09) — из шапки Birge.
     openMine() { S.mounted.complaint?.openMine?.(); },
     get heat() { return S.mounted.heat || null; },
+    // Раунд 15: «Хроника города» R07 (7 или 30 дней); открытая — закрывает. null — хроники нет в сборке.
+    openReplay,
     get build3d() { return S.mounted.build3d || null; },  // B2: R05 3D-превью (приёмка R10, проверки R01)
     // Раунд 14: CSRF-токен вошедшего сотрудника для клиента API v2 (birge.js); null, если не вошёл.
     csrfToken() { return session.authenticated ? session.csrfToken : null; },

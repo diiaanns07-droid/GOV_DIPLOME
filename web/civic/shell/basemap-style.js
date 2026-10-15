@@ -4,8 +4,9 @@
  *
  *  - здания — тёплые светло-серые, цвет по высоте: 0 м #ECE9E2 → 60 м #DEDAD2 → 150 м+ #D2CDC4; боковые грани темнее
  *    (fill-extrusion-vertical-gradient), мягкий свет;
- *  - ориентиры (Хан Шатыр, Бәйтерек, Ақорда, Хазрет Султан, Дворец мира и согласия, Нұр Әлем/ЭКСПО) — тон #E6DCC8
- *    и подпись ru/kk;
+ *  - ориентиры (Хан Шатыр, Бәйтерек, Ақорда, Хазрет Султан, Дворец мира и согласия, Нұр Әлем/ЭКСПО) — «белый макет»
+ *    (поправка П1): тон чуть светлее соседних зданий (#F6F4EF) и спокойная подпись ru/kk, без отдельной краски;
+ *    центры, радиусы и названия — из web/civic/build3d/data/landmarks.json (R05, один источник с поиском);
  *  - парки #DFECD5, вода #C3DFEC; насыщенного зелёного на подложке нет — зелёный значит «исправлено/проверено»
  *    (research/round-14/categories_v2.json → heat_states; токены ui-kit R11 --fixed).
  * MapLibre не читает CSS-переменные, поэтому значения здесь; те же значения переданы R11 как токены --map-*.
@@ -15,7 +16,7 @@
 
   const palette = {
     building0: "#ECE9E2", building60: "#DEDAD2", building150: "#D2CDC4",
-    buildingOutline: "#D9D4CB", landmark: "#E6DCC8", landmarkText: "#6E5A36",
+    buildingOutline: "#D9D4CB", landmark: "#F6F4EF", landmarkText: "#4B5752",
     park: "#DFECD5", water: "#C3DFEC", land: "#F4F3EF", landuse: "#EEECE6",
   };
   // Мягкий тёплый свет сбоку-сверху: боковые грани зданий чуть темнее крыш.
@@ -26,7 +27,8 @@
 
   // Ориентиры: опорный центр [lon, lat] и допуск (м): здание выше 15 м, которое ближе допуска к центру (обычно центр внутри
   // здания — расстояние 0), — ориентир. Выражение "distance" (MapLibre 5): "within" полигоны зданий не проверяет.
-  // Центр уточняется по POI самой подложки (refine): точка с тем же именем ближе 500 м к опорной.
+  // Центры, радиусы и названия — из landmarks.json R05 (applyLandmarksFile: центры по кольцам дорожек OSM); значения ниже —
+  // запасные, пока файл не пришёл. Без файла центр уточняется по POI самой подложки (refine): то же имя ближе 500 м.
   // Дворец мира и согласия — узел OSM 5009488810 (data/civic/astana/osm-walking).
   const landmarks = [
     { id: "khan-shatyr", center: [71.4030, 51.1323], radius: 60, ru: "Хан Шатыр", kk: "Хан Шатыр",
@@ -132,7 +134,34 @@
     addLabels(map);
     state.refineLeft = 30;
     map.on("idle", refine);
+    applyLandmarksFile(map);
     return true;
+  }
+  // Один источник центров и названий ориентиров с поиском (R05, поправка П1): web/civic/build3d/data/landmarks.json.
+  // Пришёл файл — его центры, радиусы и подписи ru/kk; уточнение по POI подложки больше не нужно.
+  function applyLandmarksFile(map) {
+    if (typeof fetch !== "function") return;
+    fetch("/civic/build3d/data/landmarks.json", { headers: { Accept: "application/json" } }).then((r) => (r.ok ? r.json() : null)).then((data) => {
+      const list = Array.isArray(data?.landmarks) ? data.landmarks : [];
+      let changed = false;
+      for (const l of landmarks) {
+        const f = list.find((x) => x.id === l.id && Number.isFinite(x.lon) && Number.isFinite(x.lat));
+        if (!f) continue;
+        l.center = [f.lon, f.lat];
+        if (Number.isFinite(f.radius_m)) l.radius = f.radius_m;
+        if (f.name?.ru) l.ru = f.name.ru;
+        if (f.name?.kk) l.kk = f.name.kk;
+        l.refined = true;
+        changed = true;
+      }
+      if (!changed || state.map !== map) return;
+      const filters = landmarkFilters(state.base.filter, state.base.height);
+      try {
+        map.setFilter("akim-3d", filters.main);
+        map.setFilter("akim-3d-landmark", filters.landmark);
+        map.getSource("birge-landmarks")?.setData(landmarkPoints());
+      } catch (e) { /* стиль сменился — центры применятся при следующей установке */ }
+    }).catch(() => { /* нет файла — запасные центры и refine по POI */ });
   }
   const lang = () => (document.documentElement.lang === "kk" ? "kk" : "ru");
   function addLabels(map) {
