@@ -93,7 +93,7 @@ async function replayAndMap(browser, base, [w, h]) {
     const loop = (t) => { ours.push(t - last); last = t; if (run) requestAnimationFrame(loop); };
     const heat = window.CivicShell && window.CivicShell.heat;
     const t0 = performance.now();
-    const rp = window.BirgeReplay.open({ map: m, heat, days, autoplay: true });
+    const rp = await Promise.resolve(window.BirgeReplay.open({ map: m, heat, days, autoplay: true }));  // лёгкий вход R07 — Promise
     requestAnimationFrame(loop);
     let st = null, maxMarkers = 0;
     for (let i = 0; i < 300; i++) {  // до 60 с
