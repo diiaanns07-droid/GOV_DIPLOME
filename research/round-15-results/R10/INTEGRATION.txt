@@ -105,3 +105,13 @@ R09: materialize(records, now) в world_seed.seed_world — мир «как из
         «Қала шежіресі», «Дағдарыс штабы», «ЖИ» = жасанды интеллект).
 Править можно прямо в своём INTEGRATION (R10 перенесёт) или patch на этот файл. Готовый ролик части 1 на FINAL-4:
 research/round-15-results/R10/video/final4-part1/ (ҚАЗ 3:40, РУС 3:48, .mp4 + .vtt/.srt). Окончательный — на FINAL-5.
+
+=====================================================================================================
+§7. R01 · raw-маршруты сотрудника: передать модулю staff=True после своей проверки (B-108, блокер)
+=====================================================================================================
+ui/web_server.py (R01 460fd683), V2_HANDLERS — у двух маршрутов R08 добавить staff_view=True:
+    "akim.board": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, staff_view=True, query={…}),
+    "akim.week":  V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, staff_view=True, query={…}),
+Иначе R08 («шлюз проверил сессию — передаёт staff=True») отвечает вошедшему сотруднику 401 staff_only и Ситуационный центр
+/civic/board/ не открывается никогда. Проверено R10 на превью R01 460fd683 + R08 8513e115: сотрудник 200, без входа 401,
+api_v2 116 PASS / 0 FAIL. Не передавать staff=True всем raw: engine.civic_geo.api.handle (R12) его не принимает → 500.

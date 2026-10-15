@@ -11,7 +11,7 @@
      C2 первый ответ — «Обращения» R09 = табло R17; C3 Ситуационный центр = «Картина дня»; C4 если числа R08 и R09
      разные — подписи на экранах разные (ключи R11 akim.kpi.overdue и inbox.tab.overdue, ru и kk);
   D. «Открытые у службы» — табло R17 по каждой службе = R09 (ведущая служба открытых жалоб района);
-  E. «Мой двор» R16 — проблемы двора сцены 7 = открытые жалобы R09 на этот двор;
+  E. «Мой двор» R16 — люди у двора сцены 7 на странице двора = карточка цели «двор» на карте R07;
   F. «Спросить Birge» R03 — F1/F2 «сколько жалоб за 30 дней / неделю» = карта (люди), F3 «сколько просрочено» = «Картина
      дня», F4 тот же вопрос на ҚАЗ; число и метка из numbers ответа (числа считает код, не модель).
 Раздела нет (503) — NOT_RUN с причиной. Расхождение — FAIL с владельцами обеих сторон.
@@ -357,22 +357,28 @@ class Consistency:
             self.compare("E. «Мой двор»: проблемы двора = открытые жалобы на двор", [("«Мой двор» R16", "R16", None)],
                          note="нет двора сцены 7 (scenes в файле мира R02)")
             return
+        # «Проблемы двора» у R16 — МЕСТА с жалобами (цели тепловой карты в дворе и до 60 м), у каждого — люди, как на карте.
+        # Сверяем людей у самого двора: страница «Мой двор» = карточка цели «двор» на карте R07 (/heat/target).
         r = self.get(self.anon, f"/together/yards/{yard}")
-        problems = None
+        r16_people = r16_places = None
         if r is not None and r.status == 200:
             body = unwrap(r.body) or {}
-            rec = body.get("yard") if isinstance(body.get("yard"), dict) else body
-            raw = rec.get("problems") if isinstance(rec, dict) else None
-            if raw is None and isinstance(body, dict):
-                raw = body.get("problems")
-            problems = raw if isinstance(raw, int) else len(raw) if isinstance(raw, list) else (
-                raw.get("count") if isinstance(raw, dict) else None)
+            problems = body.get("problems") if isinstance(body.get("problems"), dict) else {}
+            r16_places = (body.get("counts") or {}).get("problems", problems.get("count"))
+            own = [it for it in problems.get("items") or [] if ((it.get("target") or {}).get("id")) == yard]
+            r16_people = own[0].get("count") if own else (0 if problems.get("status") == "ok" else None)
+        h = self.get(self.anon, f"/heat/target?kind=area&id={yard}")
+        r07_people = None
+        if h is not None and h.status in (200, 404):
+            item = (h.body or {}).get("item") if isinstance(h.body, dict) else None
+            r07_people = (item or {}).get("count", 0) if h.status == 200 else 0
         r09_yard = (sum(1 for x in r09_all if (x.get("target") or {}).get("id") == yard and x.get("status") in OPEN)
                     if r09_all is not None else None)
-        self.value(f"проблемы двора {yard}", "«Мой двор» R16", "R16", problems, "открытые проблемы двора")
-        self.value(f"проблемы двора {yard}", "«Обращения» R09", "R09", r09_yard, "открытые жалобы с целью-двором")
-        self.compare("E. «Мой двор»: проблемы двора = открытые жалобы на двор",
-                     [("«Мой двор» R16", "R16", problems), ("«Обращения» R09", "R09", r09_yard)])
+        self.value(f"двор {yard}: люди у двора", "«Мой двор» R16", "R16", r16_people, f"проблемных мест рядом: {r16_places}")
+        self.value(f"двор {yard}: люди у двора", "карта R07 /heat/target", "R07", r07_people, "карточка цели «двор» на карте")
+        self.value(f"двор {yard}: открытые жалобы", "«Обращения» R09", "R09", r09_yard, "справка: записи с целью-двором")
+        self.compare("E. «Мой двор»: люди у двора = карточка двора на карте",
+                     [("«Мой двор» R16", "R16", r16_people), ("карта R07", "R07", r07_people)])
 
     def ask_check(self, map30, map7, overdue_r08, overdue_r09):
         """«Спросить Birge» (R03): три отдельных вопроса — в ответе то же число, что на экране, и понятная метка.
