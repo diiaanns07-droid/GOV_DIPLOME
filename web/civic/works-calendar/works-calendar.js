@@ -30,7 +30,9 @@
   const DAY = 86400000;
   const LANE_H = 30;          // высота дорожки полосы: полоса 24 + зазор 6
   const ROW_PAD = 8;          // поля строки сверху и снизу
-  const CHIP_LANE = 24;       // дорожка чипов конфликта над полосами строки: чип не закрывает короткую полосу
+  const CHIP_LANE = 32;       // дорожка чипов конфликта над полосами строки: чип (зона 40 px) не закрывает полосу
+  const HIT = 40;             // зона нажатия полосы и чипа (R10 B-111, правило ≥ 40, цель 44); видимая полоса — 24 px внутри
+  const BAR_H = 24;
   const MIN_MONTH_W = 46;     // уже — месяц не читается: лента прокручивается вбок (телефон — 60)
   const SKELETON_DELAY = 150; // скелетон не раньше 150 мс (COMMON «Качество»)
   const MAP_SRC = "birge-r12-wc";
@@ -335,7 +337,7 @@
       if (!measureCtx) {
         measureCtx = doc.createElement("canvas").getContext("2d");
         const fam = getComputedStyle(doc.body).getPropertyValue("--font").trim() || "Inter, system-ui, sans-serif";
-        measureCtx.font = "500 12px " + fam;
+        measureCtx.font = "500 13px " + fam;  // подписи полос — 13 px (решение владельца 12 окт: мельче 13 нет)
       }
       return measureCtx.measureText(text).width;
     } catch (e) {
@@ -729,15 +731,22 @@
           if (w.conflicts && w.conflicts.length) cls.push("wcal-bar--conflict");
           if (sel && selWorks.has(w.id)) cls.push("is-sel");
           if (sel && !selWorks.has(w.id)) cls.push("is-dim");
+          // Кнопка — зона нажатия не меньше HIT × HIT вокруг полосы; сама полоса (24 px) — заливка внутри.
+          const hitW = Math.max(width, HIT);
+          const hitX = x0 - (hitW - width) / 2;
           const bar = h("button", { type: "button", class: cls.join(" "), "data-work": w.id,
-            style: `left:${x0}px;top:${y}px;width:${width}px;--wcal-c:${color};--wcal-on:${textOn(color)}`,
+            style: `left:${hitX}px;top:${y - (HIT - BAR_H) / 2}px;width:${hitW}px;--wcal-c:${color};--wcal-on:${textOn(color)}`,
             "aria-label": tr("wcal.bar.label", { title: lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru, service: svcText, dates: fmtRange(w.starts_on, w.ends_on) })
               + (w.approximate ? ". " + tr("common.tag.approx") : ""),
             title: (lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru) + " · " + fmtRange(w.starts_on, w.ends_on),
-            onclick: (e) => openPopover(w, e.currentTarget) }, [inside ? h("span", { class: "wcal-bar__text", text: inside }) : null]);
+            onclick: (e) => openPopover(w, e.currentTarget) }, [
+              h("span", { class: "wcal-bar__fill", style: `left:${x0 - hitX}px;width:${width}px` },
+                [inside ? h("span", { class: "wcal-bar__text", text: inside }) : null]),
+            ]);
           track.append(bar);
-          if (!inside && x1 + 150 < trackW && !linkStarts.has(w.id)) {
-            track.append(h("span", { class: "wcal-bar__out", style: `left:${x0 + width + 6}px;top:${y + 4}px`, "aria-hidden": "true", text: kindText }));
+          const outLeft = Math.max(x0 + width + 6, hitX + hitW + 4);  // справа от зоны нажатия, а не под ней
+          if (!inside && outLeft + 144 < trackW && !linkStarts.has(w.id)) {
+            track.append(h("span", { class: "wcal-bar__out", style: `left:${outLeft}px;top:${y + 3}px`, "aria-hidden": "true", text: kindText }));
           }
         }
         body.append(h("div", { class: "wcal-row" + (r.row.conflicts ? " wcal-row--bad" : "") + (height >= 58 ? " wcal-row--tall" : ""),
@@ -795,7 +804,7 @@
         const chip = chips.get(c.id);
         if (chip && chip.stemTo - chip.y > CHIP_LANE / 2 + 3) {
           // Ножка от чипа (в дорожке над полосами) к его связи — какой чип к какой связи, видно без подписи.
-          add("line", { class: cls + " wcal-link__stem", x1: chip.x, y1: chip.y + 11, x2: chip.ax, y2: chip.stemTo });
+          add("line", { class: cls + " wcal-link__stem", x1: chip.x, y1: chip.y + 12, x2: chip.ax, y2: chip.stemTo });
         }
         if (c.kind === "dig_after_surface") {
           // От конца асфальта к началу раскопки — на уровне полос (промежуток времени между ними); разные дорожки —
@@ -838,7 +847,7 @@
           cx = (x0 + Math.max(x0, x1)) / 2;
           stemTo = Math.min(a.y, b.y) - 15;
         }
-        const half = (textWidth(tr("wcal.chip." + c.kind)) * 11 / 12 + 22) / 2;
+        const half = (textWidth(tr("wcal.chip." + c.kind)) * 1.04 + 24) / 2;  // 13 px полужирный + поля 10 + рамка
         const y = Math.min(a.rowTop, b.rowTop) + ROW_PAD / 2 + CHIP_LANE / 2;
         cx = Math.min(Math.max(cx, half + 2), width - half - 2);
         const lane = lanes.get(y) || [];
@@ -865,7 +874,7 @@
         out.push(h("button", { type: "button", class: "wcal-cchip wcal-cchip--" + c.severity + (on ? " is-sel" : ""), "data-conflict": c.id,
           style: `left:${labelWidth() + place.x}px;top:${place.y}px`, "aria-pressed": on ? "true" : "false",
           "aria-label": conflictTitle(c) + (c.street_ru ? ": " + (lang() === "kk" ? c.street_kk || c.street_ru : c.street_ru) : ""),
-          onclick: () => select(c.id, false) }, [tr("wcal.chip." + c.kind)]));
+          onclick: () => select(c.id, false) }, [h("span", { class: "wcal-cchip__pill", text: tr("wcal.chip." + c.kind) })]));
       }
       return out;
     }
@@ -901,7 +910,7 @@
         ...(w.conflicts || []).map((id) => {
           const c = state.data.conflicts.find((x) => x.id === id);
           return c ? h("button", { type: "button", class: "wcal-cchip wcal-cchip--" + c.severity + " wcal-pop__conflict",
-            onclick: () => { closePopover(false); select(c.id, true); } }, [tr("wcal.chip." + c.kind)]) : null;
+            onclick: () => { closePopover(false); select(c.id, true); } }, [h("span", { class: "wcal-cchip__pill", text: tr("wcal.chip." + c.kind) })]) : null;
         }),
         h("div", { class: "wcal-pop__acts" }, [
           !w.approximate && w.geometry ? h("button", { type: "button", class: "bk-btn wcal-pop__map", onclick: () => showWorkOnMap(w) }, [icon("pin"), tr("common.action.show_on_map")]) : null,
@@ -1007,6 +1016,9 @@
 
     function render(quiet) {
       if (state.destroyed) return;
+      // Открытая карточка работы переживает перерисовку (ширина листа поменялась, полоса прокрутки появилась):
+      // после неё — та же карточка у новой полосы.
+      const reopen = state.popover && state.popover.work;
       closePopover(false);
       const scroll = rootEl.querySelector(".wcal-tl");
       const keep = scroll ? { left: scroll.scrollLeft, top: scroll.scrollTop } : null;
@@ -1027,6 +1039,11 @@
         if (tl && !active) { tl.scrollLeft = keep.left; tl.scrollTop = keep.top; }
       }
       if (active) restoreFocus(active);
+      if (reopen && state.status === "ready") {
+        const w = state.data.works.find((x) => x.id === reopen);
+        const anchor = w && rootEl.querySelector(`.wcal-bar[data-work="${CSS.escape(reopen)}"]`);
+        if (anchor) openPopover(w, anchor);
+      }
       if (state.status === "ready") state.animateLink = false;
     }
     function readyParts(stale) {

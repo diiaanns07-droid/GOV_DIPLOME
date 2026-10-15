@@ -96,15 +96,36 @@ async function openCalendar(page, lang) {
           (lang === "kk" ? /Алдымен желілерді ауыстырыңыз/.test(info.advice) : /Сначала замените сети, потом кладите асфальт/.test(info.advice)), info.street);
         // Чип конфликта стоит в своей дорожке над полосами: не закрывает ни одной полосы (короткий асфальт, узкий промежуток).
         const covered = await page.evaluate(() => {
-          const bars = [...document.querySelectorAll(".wcal-bar")].map((b) => b.getBoundingClientRect());
+          const bars = [...document.querySelectorAll(".wcal-bar__fill")].map((b) => b.getBoundingClientRect());
           const out = [];
-          for (const c of document.querySelectorAll(".wcal-cchip")) {
+          for (const c of document.querySelectorAll(".wcal-cchip__pill")) {
             const r = c.getBoundingClientRect();
-            if (bars.some((b) => r.left < b.right - 1 && r.right > b.left + 1 && r.top < b.bottom - 1 && r.bottom > b.top + 1)) out.push(c.dataset.conflict);
+            if (bars.some((b) => r.left < b.right - 1 && r.right > b.left + 1 && r.top < b.bottom - 1 && r.bottom > b.top + 1)) out.push(c.parentElement.dataset.conflict);
           }
           return out;
         });
         check(`${w} ${lang}: чипы конфликтов не закрывают полосы`, covered.length === 0, covered.join(", "));
+        // R10 B-111 (решение владельца 12 окт): текст ≥ 13 px; кнопки и ссылки ≥ 40 × 40 px (цель 44) — как ux_lib R10.
+        const ux = await page.evaluate(() => {
+          const root = document.querySelector(".wcal");
+          const vis = (e) => { const r = e.getBoundingClientRect(), st = getComputedStyle(e);
+            return r.width > 0 && r.height > 0 && st.visibility !== "hidden" && st.display !== "none"; };
+          const tiny = [], small = [];
+          for (const el of root.querySelectorAll("*")) {
+            const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+            if (own.length < 2 || !vis(el)) continue;
+            const fs = parseFloat(getComputedStyle(el).fontSize);
+            if (fs < 13) tiny.push(fs + "px «" + own.slice(0, 20) + "»");
+          }
+          for (const el of root.querySelectorAll("button, a[href], [role=button], select")) {
+            if (!vis(el)) continue;
+            const r = el.getBoundingClientRect();
+            if (r.height < 40 || r.width < 40) small.push(Math.round(r.width) + "×" + Math.round(r.height) + " «" + (el.innerText || el.getAttribute("aria-label") || "").trim().slice(0, 18) + "»");
+          }
+          return { tiny: tiny.slice(0, 6), tinyN: tiny.length, small: small.slice(0, 6), smallN: small.length };
+        });
+        check(`${w} ${lang}: шрифт ≥ 13 px`, ux.tinyN === 0, ux.tiny.join("; "));
+        check(`${w} ${lang}: зоны нажатия ≥ 40 px`, ux.smallN === 0, ux.small.join("; "));
         if (world) {
           // Асфальт уже уложен (пр. Кабанбай Батыра, cf-w15-02): совет беречь покрытие, а не «перенести асфальт».
           await page.click('.wcal-cchip[data-conflict="cf-w15-02"]');
@@ -128,6 +149,7 @@ async function openCalendar(page, lang) {
         // Нажатие на полосу — карточка работы, Esc закрывает и возвращает фокус.
         await page.click(".wcal-bar.is-sel");
         await page.waitForSelector(".wcal-pop", { timeout: 5000 });
+        await page.waitForTimeout(350);  // карточка появляется плавно (200 мс) — кадр после появления
         if (OUT && lang === "ru" && w === 1366) await page.screenshot({ path: path.join(OUT, `calendar_${w}_${lang}_work.png`) });
         await page.keyboard.press("Escape");
         const popGone = await page.evaluate(() => !document.querySelector(".wcal-pop") && document.activeElement?.classList.contains("wcal-bar"));
