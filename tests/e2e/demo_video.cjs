@@ -32,9 +32,9 @@ const [W, H] = String(args.size || "1366x768").split("x").map(Number);
 const FAST = !!args.fast;                       // паузы ×0,35 — пробный прогон, не для показа
 const STEPS = Math.max(4, Math.min(30, Number(args["cursor-steps"] || 10)));  // шаги движения курсора к кнопке
 let stepsNow = STEPS;
-// Сцены, которые не снимаем: по умолчанию «project» (шаг 5, проект в 3D) — пока 3D не «белый макет» R05 (AMENDMENTS П1,
-// правило 3), и так ролик с частью 2 укладывается в 5 мин. Вернуть: --skip none.
-const SKIP = new Set(String(args.skip === undefined ? "project" : args.skip).split(",").filter((x) => x && x !== "none" && x !== "true"));
+// Сцены, которые не снимаем (--skip project,…). С 15 окт шаг 5 (проект в 3D) снимается по умолчанию: R05 сдал «белый
+// макет» (AMENDMENTS П1, правило 3), а с курсором 10 / 6 шагов ролик с частью 2 — 4:49 ҚАЗ / 4:44 РУС (ветка R01 B0.9).
+const SKIP = new Set(String(args.skip === undefined ? "none" : args.skip).split(",").filter((x) => x && x !== "none" && x !== "true"));
 const BASEMAP = args.basemap === "real" ? "real" : "simplified";
 const GLASS = args.glass === "auto" ? null : String(args.glass || "keep");
 const SUBS = JSON.parse(fs.readFileSync(path.resolve(args.subtitles || path.join(__dirname, "fixtures/video_subtitles.json")), "utf8"));
@@ -368,7 +368,7 @@ async function recordLang(browser, lang) {
     let login = preLogin;
     const doProject = !SKIP.has("project");
     if (!doProject) skipped.push({ scene: "project", owner: "R05",
-      why: "шаг 5 (проект в 3D) не снимался: 3D ещё не «белый макет» (AMENDMENTS П1, правило 3); вернуть — --skip none" });
+      why: "шаг 5 (проект в 3D) не снимался: --skip project" });
     if (doProject) s = scene("project");
     if (doProject && !login && srv.staff && srv.staff.user) {
       if (await header(textRe(lang === "kk" ? "Қызметкерлерге" : "Для сотрудников"), 1600)) {
