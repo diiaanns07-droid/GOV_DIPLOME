@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+import json
 import os
 import re
 from urllib.parse import parse_qs
@@ -90,6 +91,51 @@ def _rude(text: str):
         return bool(profanity.is_rude(text))
     except Exception:
         return None
+
+
+def _flags(raw) -> list[str]:
+    """flags из базы (JSON-список) -> список строк; битое поле — пустой список."""
+    if not raw:
+        return []
+    try:
+        value = json.loads(raw)
+    except (TypeError, ValueError):
+        return []
+    return [str(x) for x in value if isinstance(x, str)] if isinstance(value, list) else []
+
+
+def moderate_text(text: str, lang: str | None = None) -> tuple[str | None, list[str]]:
+    """Фильтр R04 до публикации: (text_public или None, flags). Нет R04 — свои проверки (телефон, ИИН, почта, мат).
+
+    R04 (раунд 15): ui.civic_ml_api.moderate(text, lang) -> {"text_public", "flags"}. Его сбой не мешает вопросу:
+    вопрос всё равно идёт на проверку человеком, а сотрудник видит пометки.
+    """
+    try:
+        from ui.civic_ml_api import moderate as r04_moderate  # noqa: WPS433 — модуль соседа может отсутствовать
+    except Exception:
+        r04_moderate = None
+    if callable(r04_moderate):
+        try:
+            try:
+                result = r04_moderate(text, lang)
+            except TypeError:
+                result = r04_moderate(text)
+            if isinstance(result, dict):
+                public = result.get("text_public")
+                flags = result.get("flags") or []
+                if isinstance(flags, dict):  # {"phone": 1, ...} или {"phone": true}
+                    flags = [k for k, v in flags.items() if v]
+                flags = [str(f.get("kind") if isinstance(f, dict) else f) for f in flags]
+                return (public if isinstance(public, str) and public.strip() else None), flags
+        except Exception:
+            pass
+    flags = pii_kinds(text)
+    if _rude(text):
+        flags.append("profanity")
+    public = text
+    for kind, rx in PII_PATTERNS:
+        public = rx.sub("***", public)
+    return (public if public != text else None), flags
 
 
 def clean_text(value, *, field: str, low: int, high: int) -> str:
@@ -216,19 +262,31 @@ class QuestionService:
     @staticmethod
     def _public_view(row: dict, mine: bool = False) -> dict:
         answered = bool(row.get("answered_at"))
-        return {
-            "id": row["id"], "text": row["text"], "lang": row["lang"], "district": row["district"],
+        view = {
+            # Жителям — текст после фильтра R04 (телефоны, ИИН, почта — «***»), если фильтр что-то закрыл.
+            "id": row["id"], "text": row.get("text_public") or row["text"], "lang": row["lang"],
+            "district": row["district"],
             "votes": int(row.get("votes") or 0), "published_at": row.get("published_at"),
             "answer": ({"ru": row.get("answer_ru"), "kk": row.get("answer_kk"), "answered_at": row["answered_at"],
                         "edited_at": row.get("answer_edited_at")} if answered else None),
             "demo": bool(row.get("demo")), "my_vote": bool(mine),
         }
+        if row.get("meeting_id"):  # вопрос к встрече (раунд 15); у общих вопросов поля нет — как в раунде 14
+            view["meeting_id"] = row["meeting_id"]
+        return view
 
     @staticmethod
     def _staff_view(row: dict) -> dict:
         view = QuestionService._public_view(row)
-        view.update({"status": row["status"], "created_at": row["created_at"], "pii": pii_kinds(row["text"]),
-                     "rude": _rude(row["text"]), "reject_reason": row.get("reject_reason")})
+        flags = _flags(row.get("flags"))
+        found = set(pii_kinds(row["text"])) | set(flags)
+        pii = [kind for kind in ("phone", "iin", "email", "card") if kind in found]  # порядок — как в подсказке экрана
+        rude = _rude(row["text"])
+        if "profanity" in flags or "rude" in flags:
+            rude = True
+        # Сотрудник видит исходный текст (решает человек) и что нашли фильтры.
+        view.update({"text": row["text"], "status": row["status"], "created_at": row["created_at"], "pii": pii,
+                     "rude": rude, "reject_reason": row.get("reject_reason")})
         view.pop("my_vote", None)
         return view
 
@@ -266,8 +324,9 @@ class QuestionService:
         request_id = body.get("request_id")
         if request_id is not None and (not isinstance(request_id, str) or not REQUEST_RE.match(request_id)):
             raise ApiError(400, "bad_request", "request_id: строка 8–64 символа.", "request_id")
+        public, flags = moderate_text(text, lang)
         row, created = self.store.create(text=text, lang=lang, district=district, device_id=device,
-                                         request_id=request_id)
+                                         request_id=request_id, text_public=public, flags=flags)
         # Житель видит только номер и «на проверке» — ни текста в чужих списках, ни голосов до публикации.
         return _reply(201 if created else 200, {"question": {"id": row["id"], "status": row["status"]},
                                                 "created": created})
@@ -288,13 +347,14 @@ class QuestionService:
         now = self.store.now()
         start, end = week_bounds(now)
         if tab == "queue":
-            rows = self.store.list(status="pending", district=district, order="queue", limit=50)
+            # Общая очередь проверки: вопросы акиму и вопросы к встречам (у них meeting_id — экран пишет «к встрече»).
+            rows = self.store.list(status="pending", district=district, order="queue", limit=50, meeting=None)
         elif tab == "top":
             rows = self.store.list(status="published", answered=False, district=district, order="votes",
                                    limit=WEEKLY_TOP)
         else:
             rows = self.store.list(status="published", answered=True, district=district, order="answered", limit=50)
-        counts = {"queue": self.store.count(status="pending", district=district),
+        counts = {"queue": self.store.count(status="pending", district=district, meeting=None),
                   "top": min(WEEKLY_TOP, self.store.count(status="published", answered=False, district=district)),
                   "answered": self.store.count(status="published", answered=True, district=district)}
         week = {"start": iso(start), "end": iso(end), "limit": WEEKLY_TOP,
@@ -329,9 +389,15 @@ class QuestionService:
 
 
 def make_service(db_path, *, clock=None, demo: bool | None = None) -> QuestionService:
-    """Сервис на базе шлюза. demo=None — по переменной CIVIC_DEMO=1 (run-city.bat): тогда добавляются демо-вопросы."""
+    """Сервис на базе шлюза. demo=None — по переменной CIVIC_DEMO=1 (run-city.bat): тогда добавляются демо-вопросы.
+
+    Демо-мир раунда 15 (CIVIC_DEMO_WORLD=1): свой набор не подмешиваем — вопросы приходят из world_v1.json через
+    seed_world (CONTRACT §11), чтобы числа совпадали во всех разделах.
+    """
     from . import demo as demo_data  # локально: демо-тексты нужны только при засеве
     store = QuestionStore(db_path, clock=clock) if clock else QuestionStore(db_path)
-    if (os.environ.get("CIVIC_DEMO") == "1") if demo is None else demo:
+    if demo is None:
+        demo = os.environ.get("CIVIC_DEMO") == "1" and os.environ.get("CIVIC_DEMO_WORLD") != "1"
+    if demo:
         store.seed(demo_data.rows(store.now()))
     return QuestionService(store)

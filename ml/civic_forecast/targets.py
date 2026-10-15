@@ -187,7 +187,12 @@ def kk_street(name_ru: str | None) -> str | None:
 
 def label(target: dict, lang: str) -> str:
     """Подпись для интерфейса: «Остановка «Нура»», «Двор: ЖК Инжу Арена», «Участок ул. …»."""
-    name = (target.get("name_kk") or kk_street(target.get("name_ru"))) if lang == "kk" else target.get("name_ru")
+    # Имя собственное годится в обоих языках: у двора только с name:kk («Ақ-Тау») русская подпись — «Двор «Ақ-Тау»», а не
+    # «Двор рядом: остановка …» (раунд 15: ru и kk подписи одной территории расходились).
+    if lang == "kk":
+        name = target.get("name_kk") or kk_street(target.get("name_ru"))
+    else:
+        name = target.get("name_ru") or target.get("name_kk")
     kind = target["kind"]
     if lang == "kk":
         base = {"yard": "Аула", "bus_stop": "Аялдама", "playground": "Балалар алаңы", "park": "Саябақ",

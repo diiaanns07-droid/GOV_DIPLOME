@@ -6,6 +6,11 @@
   qa_votes     — голос «Поддержать»: (вопрос, хэш устройства) — одно устройство, один голос (первичный ключ).
   qa_meta      — соль для хэша устройства (создаётся один раз, случайная).
 
+Раунд 15 (встречи с акимом, ui/civic_meetings): вопрос к встрече — тот же вопрос с meeting_id; голосование за него
+закрывается к началу встречи (votes_close_at). Вопросы встреч не попадают в общие списки «Вопроса акиму» и в «Топ-5
+недели» (на них отвечают на встрече), но проверяются в общей очереди сотрудника. text_public — текст после фильтра
+R04 moderate() (телефоны, ИИН, почта — «***»), flags — что нашёл фильтр (для сотрудника).
+
 Число голосов = base_votes (только у демо-вопросов: «как будто проголосовали раньше», без выдуманных устройств —
 R15 S20) + строки qa_votes. Логин сотрудника, который проверил или ответил, хранится, но наружу не отдаётся (R15 S28).
 """
@@ -15,6 +20,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 import hashlib
+import json
 import secrets
 import sqlite3
 import threading
@@ -58,7 +64,20 @@ CREATE TABLE IF NOT EXISTS qa_votes (
 # Сколько голосов у вопроса: демо-основа + настоящие голоса устройств.
 _VOTES = "(q.base_votes + (SELECT COUNT(*) FROM qa_votes v WHERE v.question_id = q.id))"
 _COLUMNS = ("id, text, lang, district, status, created_at, published_at, rejected_at, reject_reason, reject_note, "
-            "device_hash, answer_ru, answer_kk, answered_at, answer_edited_at, demo")
+            "device_hash, answer_ru, answer_kk, answered_at, answer_edited_at, demo, meeting_id, votes_close_at, "
+            "text_public, flags")
+# Поля, добавленные после первой версии таблицы: (имя, тип). Базы раунда 14 получают их при запуске.
+_ADDED_COLUMNS = (("answer_edited_at", "TEXT"), ("meeting_id", "TEXT"), ("votes_close_at", "TEXT"),
+                  ("text_public", "TEXT"), ("flags", "TEXT"))
+
+
+def _meeting_filter(where: list, args: list, meeting, prefix: str) -> None:
+    """False — общие вопросы, None — все, строка — вопросы этой встречи."""
+    if meeting is False:
+        where.append(f"{prefix}meeting_id IS NULL")
+    elif isinstance(meeting, str):
+        where.append(f"{prefix}meeting_id = ?")
+        args.append(meeting)
 
 
 def utc_now() -> datetime:
@@ -90,11 +109,18 @@ class QuestionStore:
         self.db_path = str(db_path)
         self.clock = clock
         self._write = threading.Lock()
-        with self._read() as conn:
+        with self._write, self._read() as conn:
             conn.executescript(SCHEMA)
-            # R15-S39: правка ответа видна всем (дата правки); базы до этого поля получают его здесь.
-            if "answer_edited_at" not in {r[1] for r in conn.execute("PRAGMA table_info(qa_questions)")}:
-                conn.execute("ALTER TABLE qa_questions ADD COLUMN answer_edited_at TEXT")
+            # R15-S39 (дата правки ответа) и раунд 15 (встречи, фильтр R04): базы до этих полей получают их здесь.
+            have = {r[1] for r in conn.execute("PRAGMA table_info(qa_questions)")}
+            for name, kind in _ADDED_COLUMNS:
+                if name not in have:
+                    try:
+                        conn.execute(f"ALTER TABLE qa_questions ADD COLUMN {name} {kind}")
+                    except sqlite3.OperationalError as exc:  # второй процесс успел добавить поле раньше
+                        if "duplicate column" not in str(exc).lower():
+                            raise
+            conn.execute("CREATE INDEX IF NOT EXISTS qa_questions_meeting ON qa_questions (meeting_id, status)")
         with self._tx() as conn:
             conn.execute("INSERT OR IGNORE INTO qa_meta (key, value) VALUES ('device_salt', ?)", (secrets.token_hex(16),))
             self._salt = conn.execute("SELECT value FROM qa_meta WHERE key = 'device_salt'").fetchone()[0]
@@ -136,11 +162,14 @@ class QuestionStore:
 
     # ------------------------------------------------------------------ запись
     def create(self, *, text: str, lang: str, district: str, device_id: str, request_id: str | None = None,
-               max_pending: int = 3, max_per_day: int = 5) -> tuple[dict, bool]:
+               max_pending: int = 3, max_per_day: int = 5, meeting_id: str | None = None,
+               votes_close_at: str | None = None, text_public: str | None = None, flags: list | None = None,
+               max_per_meeting: int = 3) -> tuple[dict, bool]:
         """Новый вопрос на проверке. Повтор того же request_id с того же устройства — тот же вопрос (created=False).
 
         Ограничения устройства (лимиты по адресу ставит шлюз R01): не больше max_pending вопросов на проверке
-        одновременно и max_per_day вопросов за сутки — иначе Conflict("too_many").
+        одновременно и max_per_day вопросов за сутки — иначе Conflict("too_many"). Вопрос к встрече (meeting_id) —
+        ещё не больше max_per_meeting вопросов к одной встрече с устройства.
         """
         dev = self.device_hash(device_id)
         req = hashlib.sha256(f"{dev}:{request_id}".encode()).hexdigest() if request_id else None
@@ -157,10 +186,18 @@ class QuestionStore:
                                  (dev, iso(now - timedelta(days=1)))).fetchone()[0]
             if pending >= max_pending or today >= max_per_day:
                 raise Conflict("too_many", "Слишком много вопросов с этого устройства. Дождитесь проверки.")
+            if meeting_id:
+                mine = conn.execute("SELECT COUNT(*) FROM qa_questions WHERE device_hash = ? AND meeting_id = ? "
+                                    "AND status != 'rejected'", (dev, meeting_id)).fetchone()[0]
+                if mine >= max_per_meeting:
+                    raise Conflict("too_many_meeting", "К этой встрече с устройства уже есть 3 вопроса.")
             qid = "q-" + secrets.token_hex(6)
             conn.execute("INSERT INTO qa_questions (id, text, lang, district, status, created_at, device_hash, "
-                         "request_hash) VALUES (?, ?, ?, ?, 'pending', ?, ?, ?)",
-                         (qid, text, lang, district, iso(now), dev, req))
+                         "request_hash, meeting_id, votes_close_at, text_public, flags) "
+                         "VALUES (?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?)",
+                         (qid, text, lang, district, iso(now), dev, req, meeting_id, votes_close_at,
+                          text_public if text_public and text_public != text else None,
+                          json.dumps(sorted(set(flags)), ensure_ascii=False) if flags else None))
             # Автор поддерживает свой вопрос сам: голос с его устройства (после публикации виден как «Вы поддержали»).
             conn.execute("INSERT OR IGNORE INTO qa_votes (question_id, device_hash, created_at) VALUES (?, ?, ?)",
                          (qid, dev, iso(now)))
@@ -172,11 +209,14 @@ class QuestionStore:
         """Голос «Поддержать»: только опубликованный вопрос без ответа; повтор с того же устройства не считается."""
         dev = self.device_hash(device_id)
         with self._tx() as conn:
-            row = conn.execute("SELECT status, answered_at FROM qa_questions WHERE id = ?", (question_id,)).fetchone()
+            row = conn.execute("SELECT status, answered_at, votes_close_at FROM qa_questions WHERE id = ?",
+                               (question_id,)).fetchone()
             if row is None or row["status"] != "published":
                 raise LookupError(question_id)
             if row["answered_at"]:
                 raise Conflict("answered", "На этот вопрос уже ответили.")
+            if row["votes_close_at"] and row["votes_close_at"] <= iso(self.now()):
+                raise Conflict("closed", "Встреча уже началась — голосование закрыто.")
             cur = conn.execute("INSERT OR IGNORE INTO qa_votes (question_id, device_hash, created_at) VALUES (?, ?, ?)",
                                (question_id, dev, iso(self.now())))
             created = cur.rowcount == 1
@@ -232,16 +272,30 @@ class QuestionStore:
                           question_id))
         return self.get(question_id)
 
-    def seed(self, rows: list[dict]) -> int:
-        """Демо-набор (demo=1): вставка по постоянным id, повтор ничего не дублирует и не возвращает снятое."""
+    def seed(self, rows: list[dict], *, refresh: bool = False) -> int:
+        """Демо-набор (demo=1): вставка по постоянным id, повтор ничего не дублирует и не возвращает снятое.
+
+        refresh=True (встречи раунда 15): у уже засеянных демо-вопросов обновить время, голоса-основу, ответ и встречу —
+        от момента этого запуска (иначе вопросы «ближайшей» встречи стареют вместе с ней). Статус не трогаем: снятый
+        сотрудником вопрос (личные данные) не возвращается (R15 S20)."""
         made = 0
         with self._tx() as conn:
             for r in rows:
+                if refresh:
+                    conn.execute(
+                        "UPDATE qa_questions SET created_at = ?, published_at = CASE WHEN status = 'published' THEN ? "
+                        "ELSE published_at END, base_votes = ?, answer_ru = ?, answer_kk = ?, answered_at = ?, "
+                        "meeting_id = ?, votes_close_at = ? WHERE id = ? AND demo = 1",
+                        (r["created_at"], r.get("published_at") or r["created_at"], int(r.get("base_votes") or 0),
+                         r.get("answer_ru"), r.get("answer_kk"), r.get("answered_at"), r.get("meeting_id"),
+                         r.get("votes_close_at"), r["id"]))
                 cur = conn.execute(
                     "INSERT OR IGNORE INTO qa_questions (id, text, lang, district, status, created_at, published_at, "
-                    "base_votes, answer_ru, answer_kk, answered_at, demo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)",
+                    "base_votes, answer_ru, answer_kk, answered_at, demo, meeting_id, votes_close_at) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)",
                     (r["id"], r["text"], r["lang"], r["district"], r["status"], r["created_at"], r.get("published_at"),
-                     int(r.get("base_votes") or 0), r.get("answer_ru"), r.get("answer_kk"), r.get("answered_at")))
+                     int(r.get("base_votes") or 0), r.get("answer_ru"), r.get("answer_kk"), r.get("answered_at"),
+                     r.get("meeting_id"), r.get("votes_close_at")))
                 made += cur.rowcount
         return made
 
@@ -255,9 +309,13 @@ class QuestionStore:
         return dict(row)
 
     def list(self, *, status: str, answered: bool | None = None, district: str | None = None,
-             order: str = "votes", limit: int = 30) -> list[dict]:
-        """Вопросы со статусом status. order: votes (больше голосов, потом раньше опубликован), new, answered, queue."""
+             order: str = "votes", limit: int = 30, meeting: str | bool | None = False) -> list[dict]:
+        """Вопросы со статусом status. order: votes (больше голосов, потом раньше опубликован), new, answered, queue.
+
+        meeting: False — только общие вопросы (без встречи), None — все, строка — вопросы этой встречи.
+        """
         where, args = ["q.status = ?"], [status]
+        _meeting_filter(where, args, meeting, "q.")
         if answered is True:
             where.append("q.answered_at IS NOT NULL")
         elif answered is False:
@@ -277,8 +335,9 @@ class QuestionStore:
             return [dict(r) for r in conn.execute(sql, (*args, int(limit))).fetchall()]
 
     def count(self, *, status: str, answered: bool | None = None, district: str | None = None,
-              answered_since: str | None = None) -> int:
+              answered_since: str | None = None, meeting: str | bool | None = False) -> int:
         where, args = ["status = ?"], [status]
+        _meeting_filter(where, args, meeting, "")
         if answered is True:
             where.append("answered_at IS NOT NULL")
         elif answered is False:
@@ -291,6 +350,44 @@ class QuestionStore:
             args.append(answered_since)
         with self._read() as conn:
             return conn.execute(f"SELECT COUNT(*) FROM qa_questions WHERE {' AND '.join(where)}", args).fetchone()[0]
+
+    # ------------------------------------------------------------------ встречи (раунд 15)
+    def set_votes_close(self, meeting_id: str, close_at: str | None) -> int:
+        """Встречу перенесли: голосование за её вопросы закрывается к новому началу."""
+        with self._tx() as conn:
+            return conn.execute("UPDATE qa_questions SET votes_close_at = ? WHERE meeting_id = ?",
+                                (close_at, meeting_id)).rowcount
+
+    def meeting_counts(self, meeting_ids: list[str]) -> dict[str, dict]:
+        """{meeting_id: {"published": n, "pending": n, "answered": n}} — для списка встреч и сотрудника."""
+        out = {mid: {"published": 0, "pending": 0, "answered": 0} for mid in meeting_ids}
+        if not meeting_ids:
+            return out
+        marks = ",".join("?" * len(meeting_ids))
+        sql = (f"SELECT meeting_id, status, answered_at IS NOT NULL AS answered, COUNT(*) FROM qa_questions "
+               f"WHERE meeting_id IN ({marks}) GROUP BY meeting_id, status, answered")
+        with self._read() as conn:
+            for mid, status, answered, n in conn.execute(sql, meeting_ids):
+                row = out.setdefault(mid, {"published": 0, "pending": 0, "answered": 0})
+                if status == "published":
+                    row["published"] += n
+                    if answered:
+                        row["answered"] += n
+                elif status == "pending":
+                    row["pending"] += n
+        return out
+
+    def device_meeting_questions(self, device_id: str) -> list[dict]:
+        """Вопросы этого устройства к встречам (для ленты: «вопрос опубликован», «на встрече ответили»)."""
+        return [q for q in self.device_questions(device_id) if q["meeting_id"]]
+
+    def device_questions(self, device_id: str) -> list[dict]:
+        """Все вопросы этого устройства (к встречам и общие) — только для ленты самого автора."""
+        dev = self.device_hash(device_id)
+        with self._read() as conn:
+            rows = conn.execute("SELECT id, meeting_id, status, published_at, answered_at, rejected_at, reject_reason "
+                                "FROM qa_questions WHERE device_hash = ?", (dev,))
+            return [dict(r) for r in rows.fetchall()]
 
     def voted(self, question_ids: list[str], device_id: str | None) -> set[str]:
         """За какие из вопросов уже проголосовало это устройство (для «Вы поддержали»)."""

@@ -51,13 +51,13 @@
     qr: { global: ["BirgeQr"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.qr" } },
     services: { global: ["BirgeServices"], modes: ["akimat"], owner: "R08", key: { akimat: "shell.nav.services" } },
     // Раунд 15 (IA_ROUND15 §7.5). Один модуль может вести несколько разделов — различает их по opts.section.
-    yard: { r15: true, global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.yard", akimat: "shell.nav.yard" } },
-    together: { r15: true, global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.together", akimat: "shell.nav.together" } },
-    meetings: { r15: true, global: ["BirgeMeetings"], modes: ["resident", "akimat"], owner: "R13", key: { resident: "shell.nav.meetings", akimat: "shell.nav.meetings" } },
-    agencies: { r15: true, global: ["BirgeAgencies"], modes: ["akimat"], owner: "R17", key: { akimat: "shell.nav.agencies" }, titleKey: "shell.nav.agencies_title" },
-    crisis: { r15: true, global: ["BirgeAgencies"], modes: ["resident", "akimat"], owner: "R17", key: { resident: "shell.nav.crisis", akimat: "shell.nav.crisis" } },
-    analyst: { r15: true, global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
-    "works-calendar": { r15: true, global: ["BirgeWorksCalendar"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.works_calendar" } },
+    yard: { global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.yard", akimat: "shell.nav.yard" } },
+    together: { global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.together", akimat: "shell.nav.together" } },
+    meetings: { global: ["BirgeMeetings"], modes: ["resident", "akimat"], owner: "R13", key: { resident: "shell.nav.meetings", akimat: "shell.nav.meetings" } },
+    agencies: { global: ["BirgeAgencies"], modes: ["akimat"], owner: "R17", key: { akimat: "shell.nav.agencies" }, titleKey: "shell.nav.agencies_title" },
+    crisis: { global: ["BirgeAgencies"], modes: ["resident", "akimat"], owner: "R17", key: { resident: "shell.nav.crisis", akimat: "shell.nav.crisis" } },
+    analyst: { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
+    "works-calendar": { global: ["BirgeWorksCalendar"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.works_calendar" } },
   };
   const SECTIONS = ["map", "day", ...Object.keys(SCREENS)];
   // Прежние адреса волны 2 (до схемы R11) ведут в те же разделы.
@@ -128,10 +128,11 @@
   // цифры, «-_.:/=&,%»), до 120 знаков; иначе — без пути.
   const PATH_RE = /^[A-Za-z0-9][A-Za-z0-9_.:\/=&,%-]{0,119}$/;
   const cleanPath = (path) => (typeof path === "string" && PATH_RE.test(path) ? path : "");
-  // ?screens=all — все разделы, и раунда 15 тоже (разбор R11/R10); ?screens=r14 — все разделы раунда 14 без новых
-  // (регресс меню FINAL-4, tests/civic/R01/browser/r14_wave2.cjs).
+  // ?screens=all — все разделы, и раунда 15 тоже (разбор R11/R10); ?screens=r14 — меню раунда 14: все его разделы,
+  // а разделы раунда 15 скрыты, даже если их модули в сборке (регресс запасного меню FINAL-4, r14_wave2.cjs).
+  const R15_IDS = new Set(["yard", "together", "meetings", "agencies", "crisis", "analyst", "works-calendar", "board"]);
   const screensParam = () => (/[?&]screens=(all|r14)(?:&|$)/.exec(location.search) || [])[1] || null;
-  const screensAll = (id) => { const p = screensParam(); return p === "all" || (p === "r14" && !SCREENS[id]?.r15); };
+  const screensAll = (id) => { const p = screensParam(); return p === "all" || (p === "r14" && !R15_IDS.has(id)); };
 
   function savedMode() {
     try { const v = localStorage.getItem(MODE_KEY); return MODES.includes(v) ? v : null; } catch (e) { return null; }
@@ -198,6 +199,7 @@
     if (id === "day") return mode === "akimat";
     if (id === "more") return moreItems(mode).length > 0;
     if (!SCREENS[id] && !state.extra.find((x) => x.id === id)) return false;   // «board» и др.: только когда роль зарегистрировала
+    if (screensParam() === "r14" && R15_IDS.has(id)) return false;
     if (!screenModes(id).includes(mode)) return false;
     return screensAll(id) || !!screenModule(id) || !!state.extra.find((x) => x.id === id && x.href);
   }

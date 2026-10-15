@@ -119,7 +119,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
                 "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
-                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
+                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
+                # R13 раунд 15: «Вопросы и встречи» (раздел #meetings; вкладка «Вопросы» — qa.js выше).
+                "meetings/meetings.js", "meetings/meetings.css", "meetings/forecast-week.js")  # + блок «Прогноз на неделю» для R08
 # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",

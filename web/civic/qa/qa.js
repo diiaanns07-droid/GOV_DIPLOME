@@ -5,7 +5,8 @@
  *   <link rel="stylesheet" href="/civic/qa/qa.css">
  *   <script src="/civic/i18n/i18n.js"></script>
  *   <script src="/civic/qa/qa.js"></script>
- *   BirgeAsk.mount(element, { role: "resident" | "akimat", titleTag: "h2", api })  → { setLang, destroy }
+ *   BirgeAsk.mount(element, { role: "resident" | "akimat", titleTag: "h2", api, embedded? })  → { setLang, destroy }
+ *   embedded: true — вкладка внутри экрана «Вопросы и встречи» (R13, раунд 15): без своего заголовка и «×».
  *
  * В оболочке R01 (INTEGRATION R01 §11.2, раздел #questions): opts.api.v2(method, path, body) — клиент шлюза
  * (CSRF сотрудника ставит сам), opts.role — вид. Без оболочки — свой fetch на /api/civic/v2.
@@ -436,14 +437,16 @@
       // Шапка листа как в эталоне (лист «Проекты и идеи»): заголовок 19/600 и круглая «×» справа — закрыть раздел
       // (то же, что Esc и «Карта»; без оболочки кнопки нет).
       // Правило «раз в неделю…» — подзаголовок 13 под названием (как «Остановка · …» у карточки эталона).
-      box.appendChild(h("div", { class: "qa__head" }, [
+      // Раунд 15 (IA_ROUND15 §5.3): вкладка «Вопросы» внутри «Вопросов и встреч» — opts.embedded: заголовок и «×» уже
+      // у экрана R13, здесь — только правило недели (заголовок остаётся для чтения с экрана).
+      box.appendChild(h("div", { class: "qa__head" + (opts.embedded ? " qa__head--embedded" : "") }, [
         h("div", { class: "qa__ttl" }, [
-          h(opts.titleTag || "h2", { class: "qa__title", id: "qa-title", tabindex: "-1", "data-focus": "title",
-            text: tr(staff() ? "ask.staff.title" : "ask.title") }),
+          h(opts.titleTag || "h2", { class: "qa__title" + (opts.embedded ? " bk-sr-only" : ""), id: "qa-title", tabindex: "-1",
+            "data-focus": "title", text: tr(staff() ? "ask.staff.title" : "ask.title") }),
           h("p", { class: "qa__rule", text: tr("ask.rule") }),
         ]),
-        typeof opts.close === "function" ? h("button", { type: "button", class: "qa__close bk-x", "aria-label": tr("common.action.close"),
-          "data-focus": "close", onclick: function () { opts.close(); } }, [icon("close")]) : null,
+        typeof opts.close === "function" && !opts.embedded ? h("button", { type: "button", class: "qa__close bk-x",
+          "aria-label": tr("common.action.close"), "data-focus": "close", onclick: function () { opts.close(); } }, [icon("close")]) : null,
       ]));
       if (!staff() && state.view === "form") box.appendChild(renderForm());
       else if (!staff() && state.view === "sent") box.appendChild(renderSent());
@@ -549,24 +552,11 @@
         h("p", { class: "bk-sr-only", role: "status", text: tr("common.state.loading") }), list]);
     }
 
-    // Пустое состояние: линейная картинка в стиле иконок ui-kit, что здесь будет и (если есть) куда пойти.
+    // Пустое состояние (поправка владельца П1, 15 окт): одна маленькая монохромная иконка набора R11 (40 px) + короткий
+    // текст + кнопка, если есть куда пойти. Нарисованной картинки-сценки больше нет.
     function emptyArt() {
-      var NS = "http://www.w3.org/2000/svg";
-      var svg = doc.createElementNS(NS, "svg");
-      svg.setAttribute("class", "qa-empty__art");
-      svg.setAttribute("viewBox", "0 0 120 88");
-      svg.setAttribute("aria-hidden", "true");
-      svg.setAttribute("focusable", "false");
-      // Два «облачка» разговора: вопрос жителя и ответ акима (тонкие линии, без заливки).
-      [["path", { d: "M14 14h56a8 8 0 0 1 8 8v26a8 8 0 0 1-8 8H38l-12 10v-10H14a8 8 0 0 1-8-8V22a8 8 0 0 1 8-8Z" }],
-        ["path", { d: "M38 27.5a6 6 0 1 1 8.5 5.4c-1.6.8-2.5 2-2.5 3.6v1.5" }],
-        ["circle", { cx: "44", cy: "44", r: "1.4", class: "qa-empty__dot" }],
-        ["path", { d: "M84 34h22a8 8 0 0 1 8 8v20a8 8 0 0 1-8 8h-2v9l-10-9H84a8 8 0 0 1-8-8" }],
-        ["path", { d: "M88 47h16M88 55h10" }]].forEach(function (x) {
-        var el = doc.createElementNS(NS, x[0]);
-        Object.keys(x[1]).forEach(function (k) { el.setAttribute(k, x[1][k]); });
-        svg.appendChild(el);
-      });
+      var svg = icon("message");
+      svg.setAttribute("class", "ic qa-empty__icon");
       return svg;
     }
     function emptyState(title, hint, action) {
@@ -876,7 +866,8 @@
       mark.setAttribute("class", "qa-sent__mark");
       mark.setAttribute("viewBox", "0 0 52 52");
       mark.setAttribute("aria-hidden", "true");
-      // Галочка рисуется линией (240 мс) внутри круга; при prefers-reduced-motion — сразу целиком.
+      // Галочка рисуется линией (240 мс) внутри круга; при prefers-reduced-motion — сразу целиком. Цвет — основной текст
+      // (П1: зелёный только у «исправлено» / «выполнено»), размер 40 px.
       mark.innerHTML = '<circle cx="26" cy="26" r="24"></circle><path d="m15 27 7.5 7.5L37.5 19"></path>';
       return h("div", { class: "qa-empty qa-sent", role: "status" }, [
         mark,

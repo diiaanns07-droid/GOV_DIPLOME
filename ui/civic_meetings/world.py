@@ -1,0 +1,278 @@
+"""Засев «Встреч с акимом» из демо-мира R02 (CONTRACT §11): seed_world(db_path, records, now=None).
+
+records — весь мир (dict из data/civic/astana/demo-world/world_v1.json) или только список встреч. Берём свою часть:
+  meetings  — встречи по CONTRACT §5.7 (+ поручения внутри, + итог), время — относительно момента засева;
+  questions — вопросы: с meeting / meeting_id — к встрече, без — общие вопросы «Вопроса акиму».
+Повторный засев ничего не дублирует (постоянные id) и не трогает правки сотрудника.
+
+Время в мире R02 относительное (SCHEMA.md R02 §1: {"ago_days": d}, {"in_days": d}, {"day": n}, {"next_weekday": {…}}).
+R01 передаёт уже материализованный мир (ISO); сырой мир переводим сами — ml.datasets.demo_world_io.materialize (R02),
+а без него — своим разбором тех же форм. Понимаем и плоские поля:
+  встреча:   at (ISO | объект времени) | in_days / in_hours / ago_days / ago_hours [+ time «18:30» по Астане];
+  итог:      result {text_ru, text_kk, at | ago_days | ago_hours} или result_ru / result_kk;
+  поручение: due «ГГГГ-ММ-ДД» | due_in_days (от сегодня) | due_days_after (от дня встречи); status todo|in_progress|done;
+  вопрос:    published_at / created_at (ISO | объект времени) | ago_days / ago_hours, votes | base_votes,
+             answer_ru / answer_kk, answered_at, meeting | meeting_id.
+Неизвестные поля пропускаем; запись без обязательного поля — skipped (засев не падает).
+"""
+
+from __future__ import annotations
+
+from datetime import datetime, timedelta, timezone
+import re
+
+from .store import iso, parse_iso
+
+ASTANA = timezone(timedelta(hours=5))
+DISTRICTS = ("almaty", "baikonur", "esil", "nura", "saraishyk", "saryarka")
+SERVICES = ("road", "traffic", "street_cleaning", "transport", "lighting", "landscaping", "greenery", "waste",
+            "utilities", "heating", "water", "power", "gas", "housing", "ecology", "emergency", "police", "animals",
+            "parking", "akimat")
+ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")
+TIME_RE = re.compile(r"(\d{1,2}):(\d{2})\Z")
+
+
+def _num(value, default=0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _reltime(value, now: datetime) -> datetime | None:
+    """Объект времени мира R02 (SCHEMA §1) -> момент UTC: ago_/in_ hours|days, next_weekday. Иначе None."""
+    if not isinstance(value, dict) or len(value) != 1:
+        return None
+    (key, inner), = value.items()
+    units = {"ago_hours": -3600, "in_hours": 3600, "ago_days": -86400, "in_days": 86400}
+    if key in units and isinstance(inner, (int, float)) and not isinstance(inner, bool):
+        return now + timedelta(seconds=float(inner) * units[key])
+    if key == "day_at" and isinstance(inner, dict):  # схема 1.1 R02: «сегодня ± N дней» в hh:mm по Астане
+        try:
+            local = now.astimezone(ASTANA) + timedelta(days=int(inner["day"]))
+            local = local.replace(hour=int(inner.get("hour", 0)), minute=int(inner.get("minute", 0)), second=0, microsecond=0)
+            return local.astimezone(timezone.utc)
+        except (KeyError, TypeError, ValueError):
+            return None
+    if key == "next_weekday" and isinstance(inner, dict):
+        try:
+            local = now.astimezone(ASTANA)
+            day = local.replace(hour=int(inner["hour"]), minute=int(inner["minute"]), second=0, microsecond=0)
+            day += timedelta(days=(int(inner["weekday"]) - local.weekday()) % 7)
+            while day - local < timedelta(hours=12):  # как у R02: не раньше чем через 12 часов
+                day += timedelta(days=7)
+            return day.astimezone(timezone.utc)
+        except (KeyError, TypeError, ValueError):
+            return None
+    return None
+
+
+def _when(value, now: datetime) -> datetime | None:
+    """ISO-строка или объект времени мира -> момент UTC."""
+    if isinstance(value, str):
+        return parse_iso(value)
+    return _reltime(value, now)
+
+
+def _moment(rec: dict, now: datetime, *, prefix: str = "") -> datetime | None:
+    """Момент из записи: ISO или объект времени (prefix+at) или плоское относительное время (prefix+in_days/…)."""
+    absolute = _when(rec.get(prefix + "at"), now)
+    if absolute is not None:
+        return absolute
+    delta, found = timedelta(0), False
+    for key, sign, unit in (("in_days", 1, "days"), ("in_hours", 1, "hours"), ("ago_days", -1, "days"),
+                            ("ago_hours", -1, "hours"), ("in_minutes", 1, "minutes"), ("ago_minutes", -1, "minutes")):
+        if rec.get(prefix + key) is not None:
+            delta += sign * timedelta(**{unit: _num(rec[prefix + key])})
+            found = True
+    if not found:
+        return None
+    moment = now + delta
+    clock = rec.get(prefix + "time") or rec.get(prefix + "local_time")
+    if isinstance(clock, str) and TIME_RE.match(clock.strip()):
+        hour, minute = (int(x) for x in TIME_RE.match(clock.strip()).groups())
+        local = moment.astimezone(ASTANA).replace(hour=min(hour, 23), minute=min(minute, 59), second=0, microsecond=0)
+        moment = local.astimezone(timezone.utc)
+    return moment
+
+
+def _with_time(moment: datetime | None, clock) -> datetime | None:
+    """«18:30» — время суток встречи по Астане поверх дня из мира (у относительного «через 9,3 дня» время случайное)."""
+    if moment is None or not isinstance(clock, str) or not TIME_RE.match(clock.strip()):
+        return moment
+    hour, minute = (int(x) for x in TIME_RE.match(clock.strip()).groups())
+    local = moment.astimezone(ASTANA).replace(hour=min(hour, 23), minute=min(minute, 59), second=0, microsecond=0)
+    return local.astimezone(timezone.utc)
+
+
+def _due(order: dict, now: datetime, meeting_at: datetime) -> str | None:
+    due = order.get("due")
+    if isinstance(due, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", due):
+        return due
+    if isinstance(due, dict) and isinstance(due.get("day"), int) and not isinstance(due.get("day"), bool):  # {"day": n}
+        return (now.astimezone(ASTANA) + timedelta(days=due["day"])).date().isoformat()
+    if order.get("due_in_days") is not None:
+        return (now.astimezone(ASTANA) + timedelta(days=_num(order["due_in_days"]))).date().isoformat()
+    if order.get("due_days_after") is not None:
+        return (meeting_at.astimezone(ASTANA) + timedelta(days=_num(order["due_days_after"]))).date().isoformat()
+    if order.get("due_ago_days") is not None:
+        return (now.astimezone(ASTANA) - timedelta(days=_num(order["due_ago_days"]))).date().isoformat()
+    return None
+
+
+def _place(rec: dict) -> tuple[dict | None, list | None]:
+    place = rec.get("place") or rec.get("target") or {}
+    if not isinstance(place, dict):
+        place = {}
+    out = None
+    if place.get("label_ru") or place.get("id"):
+        kind = place.get("kind") if place.get("kind") in ("object", "segment", "area") else None
+        pid = place.get("id") if isinstance(place.get("id"), str) and ID_RE.match(place["id"]) else None
+        out = {"kind": kind if pid else None, "id": pid if kind else None,
+               "label_ru": place.get("label_ru") or place.get("label") or pid,
+               "label_kk": place.get("label_kk")}
+    point = rec.get("point") or place.get("point")
+    if not (isinstance(point, (list, tuple)) and len(point) == 2):
+        point = None
+    else:
+        point = [float(point[0]), float(point[1])]
+    return out, point
+
+
+def meeting_rows(world, now: datetime) -> tuple[list[dict], list[dict], int]:
+    """(встречи, поручения, пропущено) в виде для MeetingStore.seed."""
+    raw = world.get("meetings") if isinstance(world, dict) else world
+    meetings, orders, skipped = [], [], 0
+    for rec in raw or []:
+        if not isinstance(rec, dict):
+            skipped += 1
+            continue
+        mid = rec.get("id")
+        start = _with_time(_moment(rec, now), rec.get("time") or rec.get("local_time"))
+        district = rec.get("district")
+        title_ru = rec.get("title_ru") or rec.get("title")
+        if not (isinstance(mid, str) and ID_RE.match(mid) and start and district in DISTRICTS and title_ru):
+            skipped += 1
+            continue
+        place, point = _place(rec)
+        result = rec.get("result") if isinstance(rec.get("result"), dict) else {}
+        result_ru = result.get("text_ru") or rec.get("result_ru")
+        result_kk = result.get("text_kk") or rec.get("result_kk")
+        result_at = _moment(result, now) if result else None
+        duration = int(_num(rec.get("duration_min"), 90)) or 90
+        if (result_ru or result_kk) and result_at is None:
+            result_at = start + timedelta(minutes=duration)
+        meetings.append({
+            "id": mid, "district": district, "title_ru": title_ru, "title_kk": rec.get("title_kk"),
+            "at": iso(start), "duration_min": max(30, min(480, duration)), "place": place, "point": point,
+            "status": "cancelled" if rec.get("status") == "cancelled" else "scheduled",
+            "base_registered": int(_num(rec.get("registered") or rec.get("base_registered"), 0)),
+            "result_ru": result_ru, "result_kk": result_kk,
+            "result_at": iso(result_at) if (result_ru or result_kk) and result_at else None,
+            "created_at": iso(min(start, now) - timedelta(days=7)), "demo": rec.get("demo", True) is not False,
+        })
+        for position, order in enumerate(rec.get("orders") or [], start=1):
+            if not isinstance(order, dict):
+                skipped += 1
+                continue
+            oid = order.get("id")
+            # Короткие id поручений мира («o-1») уникальны только внутри встречи — делаем уникальными в базе.
+            if isinstance(oid, str) and ID_RE.match(oid) and not oid.startswith(mid + "-"):
+                oid = f"o-{mid.removeprefix('m-')}-{oid.removeprefix('o-')}"
+            due = _due(order, now, start)
+            status = order.get("status") if order.get("status") in ("todo", "in_progress", "done") else "todo"
+            if not (isinstance(oid, str) and ID_RE.match(oid) and order.get("text_ru") and order.get("service") in SERVICES
+                    and due):
+                skipped += 1
+                continue
+            created = start + timedelta(minutes=duration) + timedelta(hours=2)
+            created = min(created, now)
+            updated = _moment(order, now, prefix="updated_") or (created if status == "todo" else min(now, created + timedelta(days=2)))
+            link = order.get("link") if isinstance(order.get("link"), dict) else None
+            if link and not (link.get("kind") in ("complaint", "work", "project") and isinstance(link.get("id"), str)
+                             and ID_RE.match(link["id"])):
+                link = None
+            orders.append({
+                "id": oid, "meeting_id": mid, "position": position, "text_ru": order["text_ru"],
+                "text_kk": order.get("text_kk"), "service": order["service"], "due": due, "status": status,
+                "link": link, "created_at": iso(created), "updated_at": iso(updated),
+                "done_at": iso(updated) if status == "done" else None, "demo": order.get("demo", True) is not False,
+            })
+    return meetings, orders, skipped
+
+
+def question_rows(world, now: datetime, meetings: dict[str, dict]) -> tuple[list[dict], int]:
+    """Вопросы мира -> строки QuestionStore.seed. meetings — {id: строка встречи} (для района и закрытия голосов)."""
+    raw = world.get("questions") if isinstance(world, dict) else None
+    rows, skipped = [], 0
+    for rec in raw or []:
+        if not isinstance(rec, dict):
+            skipped += 1
+            continue
+        qid = rec.get("id")
+        text = rec.get("text") or rec.get("text_ru")
+        meeting_id = rec.get("meeting_id") or rec.get("meeting")
+        meeting = meetings.get(meeting_id) if isinstance(meeting_id, str) else None
+        district = rec.get("district") or (meeting or {}).get("district")
+        if not (isinstance(qid, str) and qid.startswith("q-") and ID_RE.match(qid) and isinstance(text, str)
+                and 10 <= len(text) <= 300 and district in DISTRICTS):
+            skipped += 1
+            continue
+        published = (_when(rec.get("published_at"), now) or _moment(rec, now) or _when(rec.get("created_at"), now)
+                     or now - timedelta(days=1))
+        status = rec.get("status") if rec.get("status") in ("pending", "published", "rejected") else "published"
+        if status == "rejected":  # отклонённые в демо не нужны: их никто не видит
+            skipped += 1
+            continue
+        if meeting is not None and published > parse_iso(meeting["at"]):
+            published = parse_iso(meeting["at"]) - timedelta(hours=6)  # вопрос к встрече — до её начала
+        answer_ru, answer_kk = rec.get("answer_ru"), rec.get("answer_kk")
+        answered = None
+        if answer_ru or answer_kk:
+            answered = _when(rec.get("answered_at"), now) or _moment(rec, now, prefix="answered_") or (
+                parse_iso(meeting["at"]) + timedelta(hours=2) if meeting else published + timedelta(days=2))
+            answered = min(answered, now)
+        rows.append({
+            "id": qid, "district": district, "lang": rec.get("lang") if rec.get("lang") in ("ru", "kk") else "ru",
+            "text": text.strip(), "status": status,
+            "created_at": iso(published - timedelta(hours=2)),
+            "published_at": iso(published) if status == "published" else None,
+            "base_votes": int(_num(rec.get("votes") if rec.get("votes") is not None else rec.get("base_votes"), 0)),
+            "answer_ru": answer_ru if status == "published" else None,
+            "answer_kk": answer_kk if status == "published" else None,
+            "answered_at": iso(answered) if answered and status == "published" else None,
+            "meeting_id": meeting_id if meeting else None,
+            "votes_close_at": meeting["at"] if meeting else None,
+        })
+    return rows, skipped
+
+
+def seed_world(db_path, records, now=None) -> dict:
+    """CONTRACT §11: засеять встречи, поручения и вопросы мира. -> {"inserted", "skipped", "reset"} (идемпотентно)."""
+    from ui.civic_qa.store import QuestionStore  # noqa: WPS433
+    from .store import MeetingStore
+
+    now = now.astimezone(timezone.utc) if isinstance(now, datetime) else datetime.now(timezone.utc)
+    if isinstance(records, dict):
+        try:  # сырой мир (тест, ручной запуск) — перевести времена так же, как R01 (SCHEMA §4); материализованный не меняется
+            from ml.datasets.demo_world_io import materialize  # noqa: WPS433 — модуль R02 может отсутствовать
+            records = materialize({k: records[k] for k in ("meetings", "questions") if k in records}, now)
+        except Exception:
+            pass  # без R02 — свой разбор тех же форм (_reltime, _due)
+    store = MeetingStore(db_path)
+    meetings, orders, skipped = meeting_rows(records, now)
+    inserted, already = store.seed(meetings, orders)  # повтор: демо-записи возвращаются к виду мира (reset)
+    by_id = {m["id"]: m for m in meetings}
+    raw_questions = (records.get("questions") or []) if isinstance(records, dict) else []
+    # Вопросы к встречам, уже лежащим в базе (засев раньше или встреча сотрудника), тоже узнаём по id встречи.
+    for mid in {(q.get("meeting_id") or q.get("meeting")) for q in raw_questions if isinstance(q, dict)} - set(by_id):
+        if isinstance(mid, str):
+            try:
+                by_id[mid] = store.get_meeting(mid)
+            except LookupError:
+                pass
+    questions, q_skipped = question_rows(records, now, by_id)
+    made = QuestionStore(db_path).seed(questions, refresh=True) if questions else 0
+    # reset — сколько уже засеянных демо-записей вернулось к виду мира от этого now (встречи, поручения, вопросы):
+    # для R02/R01 видно, что повторный засев не «пропустил» их, а обновил (иначе через сутки встреча — в прошлом).
+    return {"inserted": inserted + made, "skipped": skipped + q_skipped, "reset": already + (len(questions) - made)}
