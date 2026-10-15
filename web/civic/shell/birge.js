@@ -715,6 +715,12 @@
     screen.dataset.path = state.path;
     const mod = screenModule(id);
     if (!mod) { root.replaceChildren(emptyScreen("soon")); return; }
+    // «Обращения» R09 по адресу #inbox/<id жалобы> (сцена 8, IA_ROUND15 §7.3): пока экран R09 не читает opts.path, путь
+    // отдаётся его же входом «открыть одно обращение» — фильтр штаба R17 (sessionStorage birge.inbox.filter, INTEGRATION
+    // R17 §4); экран берёт его один раз при монтаже. Модуль, который понимает путь (setPath), получит и его.
+    if (id === "inbox" && /^c-[A-Za-z0-9_-]{1,80}$/.test(state.path) && typeof mod.setPath !== "function") {
+      try { sessionStorage.setItem("birge.inbox.filter", JSON.stringify({ ids: [state.path] })); } catch (e) { /* без хранилища — список */ }
+    }
     try {
       state.screenHandle = mod.mount(root, screenOptions(id)) || {};
       screen.classList.add("birge-day--module");  // у модуля свой заголовок; наш — для чтения с экрана

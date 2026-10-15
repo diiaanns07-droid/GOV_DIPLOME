@@ -33,15 +33,17 @@ const WORLD = { schema: "birge-demo-world-v1", schema_version: "1.0", synthetic:
             scene9: { incident: "inc-w15-buran", district: "nura" } } };
 
 const REAL_WORLD = path.join(REPO, "data/civic/astana/demo-world/world_v1.json");
+const STAFF = ["operator", "Birge-Stend-Kokshetau-77"];   // сотрудник стенда: «Обращения» R09 — только после входа
 async function startServer(port, dir) {
   const db = path.join(dir, "civic.sqlite3"), world = path.join(dir, "world.json");
   fs.writeFileSync(world, JSON.stringify(WORLD));
   // Настоящий мир R02 (карта, «Хроника», «Мой двор» с данными); без него — только блок scenes.
   const env = { ...process.env, CIVIC_DB_PATH: db, CIVIC_DEMO: "1", CIVIC_DEMO_WORLD: "1", PYTHONDONTWRITEBYTECODE: "1" };
   if (!fs.existsSync(REAL_WORLD)) env.CIVIC_DEMO_WORLD_PATH = world;
-  const run = (args) => execSync(`python3 -B -m ui.civic_store --db "${db}" ${args}`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
+  const run = (args, input) => execSync(`python3 -B -m ui.civic_store --db "${db}" ${args}`, { cwd: REPO, env, input, stdio: ["pipe", "ignore", "inherit"] });
   run("init");
   run("seed-demo --package data/civic/astana/demo_synthetic.json");
+  run(`create-editor ${STAFF[0]} --password-stdin`, STAFF[1] + "\n" + STAFF[1] + "\n");
   const srv = spawn("python3", ["-B", "app.py", "--host", "127.0.0.1", "--port", String(port)], { cwd: REPO, env, stdio: ["ignore", "pipe", "pipe"] });
   srv.log = ""; srv.stdout.on("data", (d) => (srv.log += d)); srv.stderr.on("data", (d) => (srv.log += d));
   for (let i = 0; i < 100; i++) { try { if ((await fetch(`http://127.0.0.1:${port}/api/health`)).ok) return srv; } catch {} await sleep(200); }
@@ -117,7 +119,12 @@ async function main() {
     check("Ctrl+K: «Ведомства», «Календарь работ», «Кризисный штаб», «Работы и отключения», «Службы» and scenes 7–9",
       ["Ведомства", "Календарь работ", "Кризисный штаб", "Работы и отключения", "Службы", "Сцена 7 · Двор вместе",
         "Сцена 8 · Ведомства вместе", "Сцена 9 · Буран"].every((t) => items.includes(t)), items);
-    // Scene 8 → «Обращения» with the complaint id in the address (R09 opens it by opts.path)
+    // Scene 8 → «Обращения» with the complaint id in the address; the card of that complaint is open (R09 — by its
+    // single-complaint filter that the shell sets for #inbox/<id>, until R09 reads opts.path itself)
+    await page.keyboard.press("Escape");
+    await page.evaluate(([u, p]) => window.CivicShell.api.login(u, p), STAFF).catch(() => null);
+    await page.waitForTimeout(400);
+    await palette(page);
     await page.fill(".birge-palette__input", "Сцена 8");
     await page.waitForTimeout(150);
     const t0 = Date.now();
@@ -127,6 +134,13 @@ async function main() {
     n = await nav(page);
     check("Сцена 8: akimat «Обращения» with #inbox/c-w1500010, ≤ 1 s", n.mode === "akimat" && n.section === "inbox"
       && n.hash === "#inbox/c-w1500010" && sceneMs <= 1000, { n, sceneMs });
+    if (await page.evaluate(() => !!window.BirgeComplaintList || !!window.BirgeInbox)) {
+      await page.waitForFunction(() => /Принять|Службы/.test(document.querySelector("#birge-screen .bc-inbox__item--open")?.innerText || ""),
+        null, { timeout: 10000 }).catch(() => null);
+      const card = await page.evaluate(() => document.querySelector("#birge-screen .bc-inbox__item--open")?.innerText || "");
+      check("Сцена 8: the card of the scene complaint is open (ул. Баян Сулу, «нужны 2 службы» → «Принять»)",
+        /Баян Сулу|Раскопали|Яма/.test(card) && /2 службы/.test(card) && /Принять/.test(card), card.replace(/\s+/g, " ").slice(0, 220));
+    }
     await page.keyboard.press("Escape");
     await page.waitForTimeout(250);
     n = await nav(page);
