@@ -1,8 +1,8 @@
 {
  "role": "R05",
- "generated_at": "2026-10-15T12:40:56.394Z",
- "tested_sha": "138b6008b44c9694f94dd149edd3e69a0df05277",
- "dirty": true,
+ "generated_at": "2026-10-15T12:52:54.826Z",
+ "tested_sha": "645d600881d3c394fea67849e5a248b33946ea82",
+ "dirty": false,
  "environment": {
   "node": "v22.22.0",
   "chromium": "141.0.7390.37",
@@ -10,13 +10,13 @@
   "ui_kit_i18n": "web/civic/ui-kit, web/civic/i18n этой ветки",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 6,
+  "fps_0_objects_swiftshader": 6.3,
   "fps_20_objects_swiftshader": 3.4,
   "gpu_geometries_20_objects": 100
  },
  "summary": {
-  "pass": 55,
-  "fail": 1,
+  "pass": 56,
+  "fail": 0,
   "not_run": 1
  },
  "checks": [
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.4 кадр/с (без объектов 6)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.4 кадр/с (без объектов 6.3)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
@@ -244,7 +244,7 @@
   {
    "id": "r11_21_selected_object_not_under_card_1366_375",
    "status": "PASS",
-   "detail": "1366 px: объект (515, 490) на экране и не под карточкой; 375 px: объект (187, 242) на экране и не под карточкой"
+   "detail": "1366 px: объект (515, 490) на экране и не под карточкой; 375 px: объект (188, 242) на экране и не под карточкой"
   },
   {
    "id": "r11_22_23_demo_header_title_and_3d_label",
@@ -1201,8 +1201,8 @@
   },
   {
    "id": "controls_48px_all_states_1366_375_ru_kk",
-   "status": "FAIL",
-   "detail": "{\"1366_ru\":[{\"tag\":\"card_akimat\",\"what\":\" «День»\",\"w\":57,\"h\":30},{\"tag\":\"card_akimat\",\"what\":\" «Ночь»\",\"w\":57,\"h\":30}],\"1366_kk\":[{\"tag\":\"card_akimat\",\"what\":\" «Күндіз»\",\"w\":64,\"h\":30},{\"tag\":\"card_akimat\",\"what\":\" «Түнде»\",\"w\":64,\"h\":30}],\"375_ru\":[{\"tag\":\"card_akimat\",\"what\":\" «День»\",\"w\":57,\"h\":30},{\"tag\":\"card_akimat\",\"what\":\" «Ночь»\",\"w\":57,\"h\":30}],\"375_kk\":[{\"tag\":\"card_akimat\",\"what\":\" «Күндіз»\",\"w\":64,\"h\":30},{\"tag\":\"card_akimat\",\"what\":\" «Түнде»\",\"w\":64,\"h\":30}]}"
+   "status": "PASS",
+   "detail": "все кнопки R05 ≥ 44 × 44 px (эталон 13.10, --tap): каталог, размещение, тост, карточка акимата, эскиз, подсказка, таблички, лёгкая карточка — 1366/375 × ru/kk"
   },
   {
    "id": "glass_panel_from_ui_kit_1366_375",
