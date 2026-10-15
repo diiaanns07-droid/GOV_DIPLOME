@@ -52,6 +52,12 @@ def test_r17_agencies_filter_handoff():
     assert 'document.removeEventListener("birge:inbox-filter", onFilter)' in LIST_JS      # снимается при destroy
     assert "sessionStorage.removeItem(FILTER_KEY)" in LIST_JS                              # фильтр берётся один раз
 
+
+def test_yard_link_opens_section_when_no_yard_id():
+    # BirgeTogether.open R16 без id двора отвечает false — тогда раздел «Мой двор» оболочки, а не тихое «ничего».
+    assert 'if (together.open("yard", yard) !== false) return;' in JS
+    assert 'shell.setSection("yard")' in JS and '"#yard/" + yard : "#yard"' in JS
+
 def test_amendment_p1_no_large_illustrations_no_glow():
     css = (WEB / "complaint.css").read_text(encoding="utf-8")
     assert "#ill-" not in JS and "#ill-" not in LIST_JS and "#ill-" not in STAFF_JS   # рисунки ui-kit не берём

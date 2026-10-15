@@ -1573,7 +1573,13 @@
         var yard = complaint.target && complaint.target.kind === "area" && /^yard-/.test(complaint.target.id || "") ? complaint.target.id : null;
         body.appendChild(h("button", { "class": "bc-link bc-yard-link", type: "button", onclick: function () {
           close();
-          if (typeof together.open === "function") { try { together.open("yard", yard || undefined); return; } catch (e) { /* адрес ниже */ } }
+          // BirgeTogether.open R16 без id двора отвечает false и ничего не открывает — тогда раздел «Мой двор» оболочки
+          // (двор выбирает R16), а без оболочки — адрес #yard, который R16 разбирает сам.
+          if (yard && typeof together.open === "function") {
+            try { if (together.open("yard", yard) !== false) return; } catch (e) { /* адрес ниже */ }
+          }
+          var shell = window.BirgeShell;
+          if (!yard && shell && typeof shell.setSection === "function") { shell.setSection("yard"); return; }
           window.location.hash = yard ? "#yard/" + yard : "#yard";
         } }, [icon("home"), h("span", {}, t("complaint.step5.yard"))]));
       }
