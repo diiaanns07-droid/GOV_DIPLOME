@@ -3,8 +3,8 @@
   "branch": "claude/eloquent-einstein-wvuyje",
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "restored_from": null,
-  "code_sha": "e80d4f464ca65be513d2ff6b28d620197eccd17b",
-  "tested_sha": "e80d4f464ca65be513d2ff6b28d620197eccd17b",
+  "code_sha": "66c697c2dbd31a7314a2e45b2cd7ea43721a5a9b",
+  "tested_sha": "66c697c2dbd31a7314a2e45b2cd7ea43721a5a9b",
   "push_status": "OK",
   "environment": "облако Linux; Python 3.13.16, pytest 9.1.1; Node 22.22.0, Playwright 1.56.1, Chromium 1194 (headless); без интернета: подложка карты — упрощённый фон (П1 правило 6)",
   "changed_paths": [
@@ -49,7 +49,7 @@
   "tests": [
     {
       "name": "pytest tests/civic/R06 (рабочая копия = FINAL-4 + R06)",
-      "sha": "e80d4f464ca65be513d2ff6b28d620197eccd17b",
+      "sha": "66c697c2dbd31a7314a2e45b2cd7ea43721a5a9b",
       "status": "PASS",
       "passed": 726,
       "failed": 0,
@@ -62,7 +62,7 @@
       "passed": 727,
       "failed": 0,
       "skipped": 2,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd",
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2",
       "note": "включая засев настоящего мира R02 (55 записей) и миграцию на базе FINAL-4"
     },
     {
@@ -71,7 +71,7 @@
       "passed": 365,
       "failed": 0,
       "skipped": 1,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd"
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2"
     },
     {
       "name": "pytest tests/civic/R16 на дереве «как B1» (идея → инициатива не ломает R16)",
@@ -79,7 +79,8 @@
       "passed": 52,
       "failed": 0,
       "skipped": 0,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd"
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd",
+      "note": "на дереве R01 197ad600 + R06 7f6636cd (код R06 для R16 с тех пор не менялся)"
     },
     {
       "name": "приёмка API R10 tests/civic/R10/api_v2.py на дереве «как B1» — строки R06",
@@ -92,16 +93,10 @@
     {
       "name": "браузер tests/civic/R06/round15/browser_r15.cjs на дереве «как B1»",
       "status": "PASS",
-      "passed": 256,
+      "passed": 273,
       "failed": 0,
-      "parts": {
-        "works 1366/1024/375 × ru/kk": 72,
-        "ideas 1366/1024/375 × ru/kk": 102,
-        "notify 1366/1024 ru/kk + 375 ru/kk + пусто (кризис R17 → карточка; меню аватара «Уведомления · N»)": 60,
-        "together (настоящий экран R16)": 22
-      },
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd",
-      "note": "полный прогон 256/0 — на 7f6636cd; после него в R06 менялись только цвет плашек идей и строка стилей ленты — части ideas+notify перепроверены на e80d4f46: 162 PASS / 0 FAIL"
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2",
+      "note": "+ на каждом экране R06 и в панели ленты — нет текста мельче --fs-xs (13 px в ui-kit R11 r7)"
     },
     {
       "name": "сценарий демо R10 tests/e2e/demo_flow.cjs (часть 1, шаги 1–7 FINAL-4) на дереве «как B1»",
@@ -125,16 +120,16 @@
       "status": "PASS",
       "passed": 284,
       "failed": 0,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd",
-      "sha": "e80d4f464ca65be513d2ff6b28d620197eccd17b"
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2",
+      "sha": "66c697c2dbd31a7314a2e45b2cd7ea43721a5a9b"
     },
     {
       "name": "регресс FINAL-4 R06: tests/civic/R06/round14/app_r01_wave2.cjs",
       "status": "PASS",
       "passed": 130,
       "failed": 0,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd",
-      "sha": "e80d4f464ca65be513d2ff6b28d620197eccd17b"
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8: R06 e80d4f46, ui-kit R11 ea188ed6 с --fs-xs 13 px, R16, R17, R12, R13, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 66c697c2",
+      "sha": "66c697c2dbd31a7314a2e45b2cd7ea43721a5a9b"
     },
     {
       "name": "соседи на дереве «как B1»: pytest tests/civic/R02 R10 R15",
