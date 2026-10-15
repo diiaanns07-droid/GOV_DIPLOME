@@ -1,14 +1,14 @@
 {
  "role": "R05",
  "round": 15,
- "delivery": "D1.1 (к сборке B1 16 окт 14:00)",
+ "delivery": "D1.2 (к сборке B1 16 окт 14:00)",
  "branch": "claude/bold-cray-dopshy",
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "base_code": "FINAL-4 a493746234022664db5f7c9d33c0868082f6f346",
  "restored_from": null,
  "restored_note": "web/civic/build3d в FINAL-4 = поставка R05 раунда 14 (82d47a07) — восстанавливать нечего",
- "code_sha": "0050c4cedf885be7a6fe982ddeb8c0396135bef2",
- "tested_sha": "0050c4cedf885be7a6fe982ddeb8c0396135bef2",
+ "code_sha": "b1e7fcf6444918a28695f1c0d1e51b2b63e13db9",
+ "tested_sha": "b1e7fcf6444918a28695f1c0d1e51b2b63e13db9",
  "push_status": "OK",
  "amendments": [
   "П1 «Без ИИ-слопа» (15 окт 17:05) — принята: модели ориентиров удалены (061a575c), коммит a3749eaa НЕ брать"
@@ -21,7 +21,7 @@
   "research/round-15-results/R05/patches/R01_web_server_assets.patch",
   "research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch"
  ],
- "r01_patches_base": "claude/brave-fermi-nhzetj @ 5529d819 (git apply --check: OK)",
+ "r01_patches_base": "claude/brave-fermi-nhzetj @ c9069723 (git apply --check: OK; файлы оболочки стенда = c9069723 + патчи, сверено cmp)",
  "changed_paths": [
   "web/civic/build3d/build3d.js",
   "web/civic/build3d/build3d.css",
@@ -30,8 +30,8 @@
   "web/civic/build3d/data/landmarks.json",
   "web/civic/build3d/data/previews/*.png (20 перерисованы «белым макетом» + 8 новых: *-before@2x, lighting-after/-night-*@2x)",
   "data/civic/astana/landmarks/ (landmarks.json, README.md, tools/derive_landmarks.py)",
-  "tests/civic/R05/round15/ (test_landmarks, test_white_model, app_landmarks_search, app_card_check, perf_fps, make_before_after)",
-  "tests/civic/R05/build3d/make_previews.mjs",
+  "tests/civic/R05/round15/ (test_landmarks, test_white_model, test_basemap_patch, app_landmarks_search, app_card_check, perf_fps, make_before_after)",
+  "tests/civic/R05/build3d/make_previews.mjs, tests/civic/R05/build3d/app_b2_smoke.mjs",
   "research/round-15-results/R05/",
   "research/handoffs/astana/R05/round15/STATUS.md"
  ],
@@ -39,17 +39,19 @@
   "П1 «Настоящий город»: ориентиры — настоящие здания подложки; landmarks.json v2 — один источник центров (по кольцам дорожек снимка OSM), названий ru/kk, вида здания, других написаний, радиуса и камеры (id как у R01); поиск «Байтерек / Ақорда / пирамида / экспо / мечеть» → перелёт к зданию с наклоном 52° (landmarks.js + патч R01 explore.js/shell.js); выделение ориентира в подложке — светлее соседей #F6F4EF + спокойная подпись, центры из landmarks.json (патч R01 basemap-style.js)",
   "«Белый макет» (П1 правило 3): модели проектов — белые/светло-серые объёмы, бледная зелень, нейтральная тень, кайма акцента #C9E27D у нового проекта, без бликов и дневного свечения; превью каталога и списка R06 перерисованы; один спокойный фон превью",
   "Карточка проекта (своя и R06): шторка «Было / станет» по превью (ручка 44 px, role=slider, ← → / Shift / Home / End, перетаскивание; нет картинки — прежнее превью); у освещения «День / Ночь» (ночью тёмно-серые объёмы и тёплые конусы света); телефон: карточка R06 компактная, как в раунде 14 (кнопки карты свободны), шторку открывает кнопка «Было / станет»; API для R06: build3d.beforeAfter(kind), previewOf(kind).before/.after",
-  "Постройка проекта — по частям за 760 мс (было 1 100), «уменьшить движение» — сразу"
+  "Постройка проекта — по частям за 760 мс (было 1 100), «уменьшить движение» — сразу",
+  "D1.2: патчи R01 пересобраны на голове R01 c9069723; подпись ориентира на карте — label из landmarks.json («Нур Алем · ЭКСПО», как было у R01); «что на карте» после выбора ориентира переключается с ҚАЗ/РУС; проверка приёмки R01 (grep baiterek|khan.shatyr|nur.alem|akorda) находит только данные landmarks.json — держит тест; README данных ориентиров переписан под v2 (без моделей); тест логики патча подложки без подложки (test_basemap_patch)"
  ],
  "tests": {
-  "node": "PASS 48/48 (test_landmarks 5, test_white_model 5, r14 test_models + test_core 38)",
-  "app_landmarks_search": "6 PASS / 0 FAIL / 1 NOT_RUN (вид здания-ориентира: в облаке нет подложки со зданиями — LOCAL-12); runs/app_landmarks_search.json",
-  "app_card_check": "10 PASS / 0 FAIL / 0 NOT_RUN (шторка 1366/375 ru/kk, телефон: кнопки карты свободны + кнопка «Было / станет», клавиши, перетаскивание, день/ночь, API для R06, отказ картинки, reduced-motion, каталог); runs/app_card_check.json",
-  "r14_browser_check_demo": "56 PASS / 0 FAIL / 1 NOT_RUN (плавность на GPU — LOCAL); runs/r14_browser_check_on_r15.json",
-  "r14_shell_smoke": "28 PASS / 0 FAIL — как у чистого FINAL-4 (28/28) на том же стенде; runs/r14_app_smoke_on_r15.json",
-  "perf_fps": "SwiftShader (облако, без GPU): вращение 4,2 к/с с 5 проектами в 3D против 4,9 к/с без них; наклон 8,3 к/с; на плоской карте three.js и данные 3D не грузятся (0 запросов); ноутбук — LOCAL-12; runs/perf_fps.json (на 138b6008, 3D-сцена с тех пор не менялась)"
+  "node": "PASS 52/52 (test_landmarks 5, test_white_model 5, test_basemap_patch 4, r14 test_models + test_core 38) — на ветке R05 и на стенде R01 c9069723",
+  "app_landmarks_search": "7 PASS / 0 FAIL / 1 NOT_RUN (вид здания-ориентира: в облаке нет подложки со зданиями — LOCAL-12; логика патча — test_basemap_patch) на стенде R01 c9069723 + R05 + патчи; runs/app_landmarks_search_on_r01.json",
+  "app_card_check": "10 PASS / 0 FAIL / 0 NOT_RUN на стенде R01 c9069723 + R05 + патчи; runs/app_card_check_on_r01.json",
+  "r14_shell_smoke": "28 PASS / 0 FAIL на стенде R01 c9069723 + R05 + патчи; runs/r14_app_smoke_on_r01.json",
+  "r01_r15_ia": "20 PASS / 5 FAIL — те же 5 проверок падают и на чистой R01 c9069723 (меню R01), патчи R05 результат не меняют; runs/r01_r15_ia_with_r05_patches.json",
+  "r14_browser_check_demo": "56 PASS / 0 FAIL / 1 NOT_RUN (на D1.1 0050c4ce; 3D-сцена с тех пор не менялась); runs/r14_browser_check_on_r15.json",
+  "perf_fps": "SwiftShader (облако, без GPU): вращение 4,2 к/с с 5 проектами в 3D против 4,9 к/с без них; наклон 8,3 к/с; на плоской карте three.js и данные 3D не грузятся (0 запросов); ноутбук — LOCAL-12; runs/perf_fps.json (3D-сцена с тех пор не менялась)"
  },
- "environment": "облако: Chromium headless + SwiftShader (программная графика), стенд FINAL-4 + R05 + патчи R05 для R01, упрощённый фон карты (OpenFreeMap недоступен)",
+ "environment": "облако: Chromium headless + SwiftShader (программная графика); стенд — голова R01 claude/brave-fermi-nhzetj @ c9069723 + патчи R05 + пути R05 @ code_sha, демо-мир; упрощённый фон карты (OpenFreeMap недоступен)",
  "screens": [
   "research/round-15-results/R05/screens/card_ba_1366_ru.png",
   "research/round-15-results/R05/screens/card_ba_1366_kk_square.png",
@@ -64,14 +66,19 @@
   "research/round-15-results/R05/screens/search_akorda_1366_kk.png",
   "research/round-15-results/R05/screens/search_palace-peace_1024_ru.png",
   "research/round-15-results/R05/screens/search_khan-shatyr_375_kk.png",
-  "research/round-15-results/R05/screens/search_nur-alem_375_ru.png"
+  "research/round-15-results/R05/screens/search_nur-alem_375_ru.png",
+  "research/round-15-results/R05/screens/flight_baiterek_1366_ru.png",
+  "research/round-15-results/R05/screens/flight_khan-shatyr_375_kk.png"
  ],
  "known_limits": [
   "Центры ориентиров выведены из колец дорожек OSM, контуров зданий в репозитории нет — пометка LOCAL-13 (сверка с Overpass на ноутбуке)",
-  "Вид настоящих 3D-зданий-ориентиров (светлее соседей, подпись) в облаке не проверить — NOT_RUN, LOCAL-12",
+  "Вид настоящих 3D-зданий-ориентиров (светлее соседей, подпись) в облаке не проверить — NOT_RUN, LOCAL-12; логика патча проверена в Node (test_basemap_patch)",
   "Поиск ориентиров и новый вид выделения работают после патча R01 (explore.js, shell.js, index.html, birge-ref.css, basemap-style.js, web_server.py); без патча — ничего не ломается, просто нет подсказки «ориентир»",
+  "Патчи сделаны на голове R01 c9069723; на FINAL-4 index.html и birge-ref.css не лягут (там другие строки)",
   "Картинки «было» — схема места без проекта (пустой участок / тротуар / улица без фонарей), а не снимок настоящего места",
   "FPS в облаке — программная графика; на ноутбуке с видеокартой — LOCAL-12"
  ],
- "next_step": "R01: взять web/civic/build3d/ и data/civic/astana/landmarks/ на code_sha + два патча; R11: 7 ключей build3d.ba.* / build3d.time.* (INTEGRATION §4); LOCAL-12/13 на ноутбуке"
+ "next_step": "R01 (B1): взять web/civic/build3d/ и data/civic/astana/landmarks/ на code_sha + два патча (INTEGRATION «КОРОТКО ДЛЯ R01», §1, §5); R11: 8 ключей build3d.ba.* / build3d.time.* (INTEGRATION §4); LOCAL-12/13 на ноутбуке",
+ "replaces": "D1.1 0050c4ce (тот же код 3D-сцены и карточки; изменились данные ориентиров, landmarks.js, патчи R01 и тесты)",
+ "screens_note": "настоящий интерфейс на стенде R01 c9069723 (облако, упрощённый фон карты — здания подложки не видны, LOCAL-12); сняты после того, как плашка R01 «Карта улиц не загрузилась» гаснет сама"
 }

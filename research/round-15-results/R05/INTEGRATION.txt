@@ -1,5 +1,13 @@
 R05 · раунд 15 · INTEGRATION (дополняется по ходу раунда; последнее изменение — см. git log этого файла)
 
+КОРОТКО ДЛЯ R01 (сборка B1): взять web/civic/build3d/ и data/civic/astana/landmarks/ на DELIVERY.json → code_sha
+и два патча из patches/ — они сделаны на вашей голове claude/brave-fermi-nhzetj @ c9069723 (git apply --check: OK).
+Ваша проверка приёмки из STATUS R01 (П1):  git grep -n -i "baiterek\|khan.shatyr\|nur.alem\|akorda" -- web/civic/build3d
+найдёт ровно 8 строк и только в web/civic/build3d/data/landmarks.json — это id (те же, что в вашем basemap-style.js) и
+латинские написания для поиска, не модели. Точная проверка «моделей нет» (должно быть пусто):
+  git grep -n -i "baiterek\|khan.shatyr\|nur.alem\|akorda" -- web/civic/build3d ':!web/civic/build3d/data/landmarks.json'
+(её же держит тест R05: node --test tests/civic/R05/round15/test_landmarks.mjs, проверка 3).
+
 0. ПОПРАВКА П1 «БЕЗ ИИ-СЛОПА» (15 окт, 17:05) — ДЛЯ R01 ВАЖНО
    - Моделей ориентиров (Байтерек, Хан Шатыр, Ақорда, «Нұр Әлем», пирамида) у R05 больше НЕТ: файл
      web/civic/build3d/build3d-landmarks.js и его подключение удалены коммитом 061a575c. Коммит a3749eaa (модели) — НЕ брать.
@@ -12,25 +20,30 @@ R05 · раунд 15 · INTEGRATION (дополняется по ходу рау
 1. ОРИЕНТИРЫ: ПОИСК → ПЕРЕЛЁТ К НАСТОЯЩЕМУ ЗДАНИЮ (R01)
    Файлы R05: web/civic/build3d/landmarks.js (BirgeLandmarks: load / query / flyTo, без three.js и без DOM),
               web/civic/build3d/data/landmarks.json (= data/civic/astana/landmarks/landmarks.json, schema birge-landmarks-v2).
-   Патч R01 (одним файлом; применяется на ветке R01 claude/brave-fermi-nhzetj @ 5529d819 — git apply --check, и на
-   FINAL-4 кроме birge-ref.css; проверен на стенде FINAL-4 + R05):
+   Патч R01 (одним файлом; сделан на голове R01 claude/brave-fermi-nhzetj @ c9069723 — git apply --check: OK; на FINAL-4
+   не ляжет: index.html и birge-ref.css там другие; проверен на стенде «R01 c9069723 + патчи + пути R05», §5):
      research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch
        - web/index.html: <script defer src="/civic/build3d/landmarks.js"> перед explore.js;
        - web/civic/shell/explore.js: подсказка вида «landmark» (название, «монумент · район Есиль»), первыми после районов;
          выбор → onLandmark(it) (или BirgeLandmarks.flyTo(map, id), если оболочка колбэк не дала); landmarks.json — при
          первом фокусе поля, один раз;
-       - web/civic/shell/shell.js: onLandmark → showView(название) и BirgeLandmarks.flyTo(map, id, {padding: freeArea()})
+       - web/civic/shell/shell.js: onLandmark → showView(название на текущем языке — names[birgeLang()], ҚАЗ/РУС
+         переключает и его) и BirgeLandmarks.flyTo(map, id, {padding: freeArea()})
          — здание встаёт в центр свободной части карты (offset, не padding MapLibre), наклон 52° как у кнопки «3D»
          (автонаклон оболочки не доворачивает камеру второй раз), «уменьшить движение» — сразу, без полёта;
        - web/civic/shell/birge-ref.css: маркер подсказки ориентира — маленький тёмный квадрат (#4B5752), как точки других видов;
        - web/civic/shell/basemap-style.js — «белый макет» (П1, правило 3): тон зданий-ориентиров #F6F4EF (светлее соседей
          #ECE9E2…#D2CDC4, без отдельной краски; было бежевое #E6DCC8), подпись #4B5752 (было коричневое #6E5A36);
-         центры, радиусы и названия ru/kk — из landmarks.json (applyLandmarksFile; запасные значения и refine по POI —
-         как раньше, если файла нет). id ориентиров R05 = id R01 (khan-shatyr, baiterek, akorda, hazrat-sultan,
-         palace-peace, nur-alem).
+         центры, радиусы и подписи ru/kk — из landmarks.json (applyLandmarksFile: подпись = label, иначе name; у «Нур
+         Алем» label «Нур Алем · ЭКСПО», как было у вас; запасные значения и refine по POI — как раньше, если файла нет).
+         id ориентиров R05 = id R01 (khan-shatyr, baiterek, akorda, hazrat-sultan, palace-peace, nur-alem).
+         Логика патча проверяется без подложки (облако): node --test tests/civic/R05/round15/test_basemap_patch.mjs —
+         берёт ваш basemap-style.js из рабочей копии (если патч не применён — накладывает его на копию) и проверяет
+         центры, радиусы, подписи, фильтры обоих слоёв зданий, тон «светлее соседей» и запасной режим без файла.
      research/round-15-results/R05/patches/R01_web_server_assets.patch — CIVIC_ASSETS: build3d/landmarks.js, build3d/data/landmarks.json.
-   Проверка: NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_landmarks_search.mjs → 6 PASS / 0 FAIL / 1 NOT_RUN
-   (вид здания-ориентира — нет подложки в облаке, LOCAL-12). Node: node --test tests/civic/R05/round15/test_landmarks.mjs.
+   Проверка: NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_landmarks_search.mjs → 7 PASS / 0 FAIL / 1 NOT_RUN
+   (вид здания-ориентира — нет подложки в облаке, LOCAL-12). Node: node --test tests/civic/R05/round15/test_landmarks.mjs
+   tests/civic/R05/round15/test_basemap_patch.mjs.
    Ключи R11: новых нет (подсказка берёт shell.explore.chosen_spot и district.name; вид здания — из landmarks.json ru/kk).
 
 2. LOCAL-13 — контуры ориентиров из Overpass (ноутбук Codex; в облаке нет интернета)
@@ -90,3 +103,23 @@ R05 · раунд 15 · INTEGRATION (дополняется по ходу рау
      CivicShell.build3d.beforeAfter(kind) → <figure class="b3d-ba"> (ручка 44 px, клавиши, перетаскивание; стили —
      build3d.css, уже подключён); адреса картинок — previewOf(kind).before.src / .after.src (480 × 320, одна рамка).
      Неизвестный вид — null; нет картинки — обычное превью.
+
+5. ПРОВЕРКА НА ГОЛОВЕ R01 c9069723 (15 окт, 21:30–22:00 по Астане) — стенд для B1
+   Стенд: git worktree add --detach <папка> origin/claude/brave-fermi-nhzetj (c9069723); git apply patches/R01_*.patch;
+   git checkout origin/claude/bold-cray-dopshy -- web/civic/build3d data/civic/astana/landmarks tests/civic/R05; БД — RUN.txt R01
+   (init, seed-demo, seed-r14-demo, create-editor), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1. Файлы оболочки стенда побайтно = c9069723
+   + патчи (сверено cmp).
+   - Node R05: 52/52 (test_landmarks 5, test_white_model 5, test_basemap_patch 4, раунд 14 — 38).
+   - app_landmarks_search: 7 PASS / 0 FAIL / 1 NOT_RUN (вид здания — LOCAL-12) — runs/app_landmarks_search_on_r01.json.
+   - app_card_check: 10 PASS / 0 FAIL / 0 NOT_RUN — runs/app_card_check_on_r01.json.
+   - smoke 3D раунда 14 в оболочке (app_b2_smoke): 28 PASS / 0 FAIL — runs/r14_app_smoke_on_r01.json (проверка «карточка
+     не закрывает верх оболочки» теперь берёт поле поиска, если шапки header.topbar на телефоне нет — ваш раунд 15).
+   - ваш r15_ia.cjs: 20 PASS / 5 FAIL — и на чистой c9069723 те же 20 / 5 (те же 5 проверок): патчи R05 его не меняют;
+     runs/r01_r15_ia_with_r05_patches.json (5 падений — подписи «Штаб ведомств»/«Ведомства», «Ситуационный центр» в «Ещё»,
+     Ctrl+K, сцена 9, пустое состояние — состояние вашей ветки после c2df555a).
+   - Кадры research/round-15-results/R05/screens/ (16) сняты на этом стенде, после того как ваша плашка «Карта улиц не
+     загрузилась» гаснет сама (6 с) — иначе она закрывала плитку «Освещение» в каталоге.
+   Наблюдение для R01 (не блокирует R05): телефон 375 — после выбора места в поиске строка «Показано: …»
+   (.civic-explore-status[data-kind="chosen"]) стоит x 8–383, y 72–151: выходит за край экрана на 8 px и закрывает верх
+   столбика кнопок карты («?» легенды, компас, «моё место»). На ≥ 761 px эта строка у вас спрятана для глаз
+   (birge-ref.css:121, только для диктора) — на телефоне, видимо, тоже прятать или дать right: 70px.

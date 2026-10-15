@@ -3,14 +3,18 @@ R05 · раунд 15 · RUN (как запустить и что теперь м
 ПОПРАВКА П1 «БЕЗ ИИ-СЛОПА» (15 окт, 17:05): нарисованных моделей ориентиров нет — их задача отменена и удалена.
 Ориентиры — настоящие 3D-здания подложки R01; R05 даёт данные, поиск и перелёт; 3D проектов — «белый макет».
 
-СТЕНД (облако или ноутбук; COMMON «КАК ПОДНЯТЬ СТЕНД»)
-  1) применить патчи R05 к файлам R01 (пока R01 их не взял):
-       git apply research/round-15-results/R05/patches/R01_web_server_assets.patch
-       git apply research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch
+СТЕНД (облако или ноутбук; COMMON «КАК ПОДНЯТЬ СТЕНД») — на голове R01, как будет в сборке B1
+  1) оболочка R01 + патчи R05 + пути R05 (пока R01 их не взял; патчи сделаны на R01 c9069723):
+       git worktree add --detach ../r01 origin/claude/brave-fermi-nhzetj && cd ../r01
+       git apply <ветка R05>/research/round-15-results/R05/patches/R01_web_server_assets.patch
+       git apply <ветка R05>/research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch
+       git fetch origin claude/bold-cray-dopshy && git checkout origin/claude/bold-cray-dopshy -- web/civic/build3d data/civic/astana/landmarks tests/civic/R05
+     (когда R01 соберёт B1 с R05 — просто ветка R01, шаг 1 не нужен)
   2) mkdir -p /tmp/birge && python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
      python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
      python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
-     CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655   → http://127.0.0.1:8655/
+     (для smoke раунда 14 ещё create-editor operator --password-stdin — пароль свой, в файл с правами 600)
+     CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8655   → http://127.0.0.1:8655/
 
 ЧТО МОЖНО СДЕЛАТЬ
   - Поиск в шапке: «Байтерек», «Бәйтерек», «Хан Шатыр», «ақорда», «пирамида», «экспо», «мечеть» → подсказка
@@ -22,10 +26,14 @@ R05 · раунд 15 · RUN (как запустить и что теперь м
   - Постройка проекта на карте — по частям за 0,76 с (было 1,1 с); «уменьшить движение» — сразу готовый вид.
 
 ПРОВЕРКИ (из корня репозитория)
-  node --test tests/civic/R05/round15/test_landmarks.mjs            # данные ориентиров, поиск, перелёт (Node)
+  node --test tests/civic/R05/round15/test_landmarks.mjs            # данные ориентиров, поиск, перелёт, «моделей нет» (Node)
+  node --test tests/civic/R05/round15/test_basemap_patch.mjs        # патч подложки R01 без подложки: центры, подписи, тон
+  node --test tests/civic/R05/round15/test_white_model.mjs          # «белый макет»: палитра, без бликов, картинки
   node --test tests/civic/R05/build3d/test_models.mjs tests/civic/R05/build3d/test_core.mjs   # модели проектов (раунд 14)
   NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_landmarks_search.mjs   # стенд: поиск → перелёт
   NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_card_check.mjs         # стенд: шторка, день/ночь, каталог
+    (у обоих: --url адрес, --shots папка кадров, --stand «что за стенд» — в отчёт, --out имя отчёта в runs/)
+  NODE_PATH=$(npm root -g) node tests/civic/R05/build3d/app_b2_smoke.mjs http://127.0.0.1:8655/ <файл пароля>  # 3D в оболочке
   NODE_PATH=$(npm root -g) node tests/civic/R05/build3d/browser_check.mjs --no-shots  # демо-страница модуля (раунд 14)
   Браузерные проверки — по одной (несколько браузеров сразу в облаке дают ложные таймауты).
 
