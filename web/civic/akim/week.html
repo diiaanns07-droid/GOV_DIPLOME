@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Картина недели · Birge</title>
+  <!-- R08 · «Картина недели» (раунд 15): отчёт для совещания, печать A4 (ru / kk). Данные: GET /api/civic/v2/akim/week
+       (только сотрудник). Адрес: /civic/akim/week.html?date=2026-10-15&district=nura&lang=kk — неделя из 7 дней,
+       последний — date. Открывается из «Картины дня» (кнопка «Картина недели»). -->
+  <link rel="stylesheet" href="../ui-kit/tokens.css">
+  <link rel="stylesheet" href="../ui-kit/components.css">
+  <link rel="stylesheet" href="week.css">
+</head>
+<body class="wk-body">
+  <main id="week" class="wk" data-api="/api/civic/v2" aria-busy="true">
+    <p class="wk-boot">Картина недели · Birge</p>
+  </main>
+  <noscript><p class="wk-boot">Для «Картины недели» нужен включённый JavaScript.</p></noscript>
+  <script src="../i18n/i18n.js"></script>
+  <script src="week.js" data-autostart="week"></script>
+</body>
+</html>

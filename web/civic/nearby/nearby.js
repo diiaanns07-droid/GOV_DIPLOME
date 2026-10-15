@@ -109,13 +109,14 @@
     });
     return el;
   }
-  // Линейная иллюстрация ui-kit (#ill-* в icons.svg, класс .bk-ill — R11, дизайн-марафон).
-  function illustration(name) {
+  // Состояние «нет связи» — маленькая монохромная иконка набора R11 (≤ 48 px), без больших иллюстраций
+  // (поправка владельца П1 «Без ИИ-слопа», правило 2).
+  function stateIcon(name) {
     var svg = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("class", "bk-ill");
+    svg.setAttribute("class", "ic nearby-state-ic");
     svg.setAttribute("aria-hidden", "true");
     var use = doc.createElementNS("http://www.w3.org/2000/svg", "use");
-    use.setAttribute("href", ICONS + "#ill-" + name);
+    use.setAttribute("href", ICONS + "#i-" + name);
     svg.appendChild(use);
     return svg;
   }
@@ -435,9 +436,9 @@
       }
       if (state.status === "error") {
         rootEl.appendChild(
-          // «Нет связи» как у остальных разделов (R11 марафон §10): иллюстрация ui-kit, без карточки, обычная кнопка.
+          // «Нет связи» как у остальных разделов (R11 марафон §10): маленькая иконка R11 (П1), без карточки, обычная кнопка.
           h("div", { class: "bk-error", role: "alert" }, [
-            illustration("offline"),
+            stateIcon("wifi-off"),
             h("p", { class: "bk-error__title", text: tr("common.state.network_title") }),
             h("p", { class: "bk-error__text", text: tr("common.state.network_text") }),
             h("button", { type: "button", class: "bk-btn", onclick: load }, [icon("refresh"), tr("common.action.retry")]),

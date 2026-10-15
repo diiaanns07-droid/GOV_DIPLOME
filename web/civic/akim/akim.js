@@ -88,6 +88,7 @@
       "akim.decision.save_error": "Выбор не сохранился — попробуйте ещё раз",
       // Раунд 15, «Картина дня» 2.0 (R11 IA_ROUND15 §5.10)
       "akim.crisis.open": "Открыть кризисный штаб",
+      "akim.empty.yesterday": "Показать предыдущий день",
       "akim.decision.more": "Подробнее",
       "akim.r15.open": "Открыть",
       "akim.r15.agencies.title": "Ведомства",
@@ -126,6 +127,7 @@
       "akim.decision.forbidden": "Нұсқаны тек әкімдік қызметкері таңдай алады",
       "akim.decision.save_error": "Таңдау сақталмады — қайталап көріңіз",
       "akim.crisis.open": "Жедел штабты ашу",
+      "akim.empty.yesterday": "Алдыңғы күнді көрсету",
       "akim.decision.more": "Толығырақ",
       "akim.r15.open": "Ашу",
       "akim.r15.agencies.title": "Ведомстволар",
@@ -198,10 +200,11 @@
     svg.appendChild(use);
     return svg;
   }
-  // Линейная иллюстрация ui-kit (#ill-* в icons.svg, класс .bk-ill — R11, дизайн-марафон).
-  function illustration(name) {
-    var svg = svgEl("svg", { class: "bk-ill", "aria-hidden": "true", focusable: "false" });
-    svg.appendChild(svgEl("use", { href: ICONS + "#ill-" + name }));
+  // Пустое состояние и ошибка — одна маленькая монохромная иконка набора R11 (≤ 48 px), без больших рисунков
+  // (поправка владельца П1 «Без ИИ-слопа», правило 2).
+  function stateIcon(name) {
+    var svg = svgEl("svg", { class: "ic akim-state-ic", "aria-hidden": "true", focusable: "false" });
+    svg.appendChild(svgEl("use", { href: ICONS + "#i-" + name }));
     return svg;
   }
   function svgEl(tag, attrs) {
@@ -254,25 +257,6 @@
     var b = ASTANA_OUTLINE.box;
     if (!lonlat || lonlat[0] < b[0] || lonlat[0] > b[2] || lonlat[1] < b[1] || lonlat[1] > b[3]) return null;
     return [(lonlat[0] - b[0]) * ASTANA_OUTLINE.k, (b[3] - lonlat[1]) * ASTANA_OUTLINE.sy];
-  }
-  // Иллюстрация «тихий день» (дизайн-марафон, чек-лист п. 12): линии как у значков ui-kit — 2 px, скруглённые концы;
-  // город с Байтереком и галочка. Только для глаза.
-  function quietArt() {
-    var svg = svgEl("svg", { class: "akim-empty__art", viewBox: "0 0 160 96", "aria-hidden": "true", focusable: "false" });
-    [
-      "M8 84H152",
-      "M20 84V48h22v36M26 56h4M34 56h4M26 64h4M34 64h4M26 72h4M34 72h4",
-      "M50 84V62h16v22",
-      "M80 84V44M80 44c-6-2-10-7-10-13M80 44c6-2 10-7 10-13",
-      "M96 84V58h12v26",
-      "M114 84V50h24v34M120 58h4M128 58h4M120 66h4M128 66h4M120 74h4M128 74h4",
-    ].forEach(function (d) {
-      svg.appendChild(svgEl("path", { class: "akim-empty__line", d: d }));
-    });
-    svg.appendChild(svgEl("circle", { class: "akim-empty__line akim-empty__sun", cx: "80", cy: "26", r: "8" }));
-    svg.appendChild(svgEl("circle", { class: "akim-empty__badge", cx: "136", cy: "22", r: "11" }));
-    svg.appendChild(svgEl("path", { class: "akim-empty__check", d: "M131 22l3.5 3.5L141 19" }));
-    return svg;
   }
   function todayAstana() {
     return new Date(Date.now() + ASTANA_OFFSET_MS).toISOString().slice(0, 10);
@@ -620,11 +604,11 @@
     }
     function renderError() {
       var kind = state.error;
-      // Как у остальных разделов (R11 марафон §10.2): без карточки (на стекле листа и так подложка), иллюстрация
-      // ui-kit, «Повторить» — обычная кнопка (главное на экране — сами данные, а не повтор).
+      // Как у остальных разделов (R11 марафон §10.2): без карточки, маленькая иконка R11 (П1), «Повторить» — обычная
+      // кнопка (главное на экране — сами данные, а не повтор).
       var box = h("div", { class: "akim-card akim-error" }, [
         h("div", { class: "bk-error", role: "alert" }, [
-          illustration(kind === "network" ? "offline" : "search"),
+          stateIcon(kind === "network" ? "wifi-off" : "search"),
           h("p", {
             class: "bk-error__title",
             text: kind === "network" ? tr("common.state.network_title") : kind === "date" ? tr("akim.bad_date") : tr("common.state.error_title"),
@@ -1351,10 +1335,16 @@
       var nothing = d.empty && !decisionsEl && !pulseEl && !main.length && !side.length && !renderR15Cards(d) && !renderForecast(d);
       if (nothing)
         body.appendChild(
+          // П1: маленькая иконка + короткий текст + одна кнопка (без нарисованного города).
           h("div", { class: "bk-empty akim-empty", role: "status" }, [
-            quietArt(),
+            stateIcon("check"),
             h("p", { class: "bk-empty__title", text: tr(d.is_today === false ? "akim.empty_day" : "akim.empty") }),
             h("p", { class: "bk-empty__text", text: tr("akim.empty_hint") }),
+            h("button", { type: "button", class: "bk-btn bk-btn--ghost akim-empty__btn", "data-key": "empty-yesterday",
+              onclick: function () {
+                var y = new Date(Date.parse((state.date || todayAstana()) + "T00:00:00Z") - 86400000).toISOString().slice(0, 10);
+                setDate(y);
+              } }, [tr("akim.empty.yesterday")]),
           ])
         );
       // «Коротко о дне» — обычный абзац 17 без плашки; заголовок — только для чтения с экрана (CLEAN_PASS §3 R08 п. 4).

@@ -299,6 +299,17 @@
     svg.appendChild(svgEl("use", { href: ICONS + "#" + (name.indexOf("st-") === 0 ? name : "i-" + name) }));
     return svg;
   }
+  // Какие значки есть в наборе R11 (новые i-expand, i-pause, i-play — с раунда 15). Нет значка — запасная форма CSS.
+  var ICON_IDS = null;
+  var iconsReady = typeof fetch === "function"
+    ? fetch(ICONS, { credentials: "same-origin" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (t) {
+        ICON_IDS = {};
+        (t.match(/id="[a-z0-9-]+"/g) || []).forEach(function (m) { ICON_IDS[m.slice(4, -1)] = true; });
+      }).catch(function () { ICON_IDS = {}; })
+    : Promise.resolve();
+  function hasIcon(name) {
+    return !!(ICON_IDS && ICON_IDS["i-" + name]);
+  }
   function label(obj, base) {
     if (!obj) return "";
     var l = lang();
@@ -703,7 +714,7 @@
         type: "button", class: "sc-icon-btn", "aria-pressed": String(full),
         "aria-label": tr(full ? "board.fullscreen_exit" : "board.fullscreen"), title: tr(full ? "board.fullscreen_exit" : "board.fullscreen"),
         onclick: toggleFullscreen,
-      }, [h("span", { class: "sc-fs-ic", "data-on": full ? "" : null, "aria-hidden": "true" })]) : null;
+      }, [hasIcon("expand") ? icon("expand") : h("span", { class: "sc-fs-ic", "data-on": full ? "" : null, "aria-hidden": "true" })]) : null;
       var back = h("a", { class: "sc-back", href: opts.backHref, onclick: goBack }, [icon("back"), tr("board.back")]);
       head.appendChild(brand);
       head.appendChild(mid);
@@ -958,10 +969,12 @@
       var id = state.stageId;
       stageBody.textContent = "";
       var content = id ? STAGE_RENDER[id](state.data[id] || {}) : null;
+      // П1: пустое состояние — маленькая иконка R11, короткий текст и одна кнопка.
       if (!content) content = h("div", { class: "sc-calm" }, [
         icon("check", "sc-calm__ic"),
         h("p", { class: "sc-calm__title", text: tr("board.calm.title") }),
         h("p", { class: "sc-hint", text: tr("board.calm.text") }),
+        h("a", { class: "sc-btn", href: "/#day" }, [tr("board.to_day")]),
       ]);
       var wrap = h("div", { class: "sc-block" + (animate && !reduced() ? " is-entering" : ""), "data-block": id || "calm" }, [
         id ? h("div", { class: "sc-block__head" }, [
@@ -1000,7 +1013,8 @@
           type: "button", class: "sc-tab sc-tab--pause", "aria-pressed": String(state.paused),
           "aria-label": tr(state.paused ? "board.stage.play" : "board.stage.pause"),
           onclick: togglePause,
-        }, [h("span", { class: "sc-pause-ic", "data-paused": state.paused ? "" : null, "aria-hidden": "true" })]));
+        }, [hasIcon("pause") && hasIcon("play") ? icon(state.paused ? "play" : "pause")
+          : h("span", { class: "sc-pause-ic", "data-paused": state.paused ? "" : null, "aria-hidden": "true" })]));
       }
       updateProgress();
     }
@@ -1283,6 +1297,10 @@
       });
       render();
       load();
+      iconsReady.then(function () {
+        renderHead();
+        renderStageNav();
+      });
     });
 
     var handle = {

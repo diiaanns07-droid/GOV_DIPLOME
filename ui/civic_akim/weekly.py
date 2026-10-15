@@ -172,7 +172,7 @@ def text_ru(w: dict) -> list[str]:
     if ag.get("available") and (ag.get("joint") is not None or ag.get("handoffs_week") is not None):
         bits = []
         if ag.get("joint") is not None:
-            bits.append(f"совместных обращений в работе — {T.fmt_num(ag['joint'])}")
+            bits.append(f"совместных обращений за неделю — {T.fmt_num(ag['joint'])}")
         if ag.get("handoffs_week") is not None:
             bits.append(f"передач между службами за неделю — {T.fmt_num(ag['handoffs_week'])}")
         out.append("Ведомства вместе: " + ", ".join(bits) + ".")
@@ -227,14 +227,14 @@ def text_kk(w: dict) -> list[str]:
     if ag.get("available") and (ag.get("joint") is not None or ag.get("handoffs_week") is not None):
         bits = []
         if ag.get("joint") is not None:
-            bits.append(f"жұмыстағы бірлескен өтініштер — {T.fmt_num(ag['joint'])}")
+            bits.append(f"аптадағы бірлескен өтініштер — {T.fmt_num(ag['joint'])}")
         if ag.get("handoffs_week") is not None:
             bits.append(f"аптада қызметтер арасында берілгені — {T.fmt_num(ag['handoffs_week'])}")
         out.append("Ведомстволар бірге: " + ", ".join(bits) + ".")
     cr = w.get("crisis") or {}
     if cr.get("available") and cr.get("active"):
         a = cr["active"]
-        out.append(f"«{a['title_kk']}» дағдарыс штабы жұмыс істеп тұр: қызметтердің {T.fmt_num(a['tasks_total'])} "
+        out.append(f"«{a['title_kk']}» жедел штабы жұмыс істеп тұр: қызметтердің {T.fmt_num(a['tasks_total'])} "
                    f"тапсырмасының {T.fmt_num(a['tasks_done'])} орындалды.")
     mt = w.get("meetings") or {}
     if mt.get("available") and mt.get("orders", {}).get("total"):

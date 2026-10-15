@@ -6,6 +6,11 @@
 Основа: origin/claude/clever-hypatia-q6ts4g (e91acb6, код FINAL-4 a4937462)
 Прошлая передача: claude/r14-R08 (в FINAL-4 — d5719635)
 
+**Каждый круг: сначала читать AMENDMENTS.md из ветки пакета** —
+`git fetch origin claude/clever-hypatia-q6ts4g && git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md`
+(координатор дописывает туда поправки; где поправка расходится с промптом, COMMON, IDEA или VISUAL_BRIEF — права поправка).
+Применено: П1 «Без ИИ-слопа» (15 окт, 17:05) — см. «Сделано».
+
 ## План
 1. GET akim/board — набор для «Ситуационного центра» (KPI, мини-графики, пульс, горячие места, табло служб R17,
    кризис R17, «Жители вместе» R16/R09, поручения R13, прогноз R13); каждый блок необязателен.

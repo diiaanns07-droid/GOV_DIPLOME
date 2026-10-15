@@ -14,12 +14,9 @@
   background: #0b1110;
   color-scheme: dark;
 }
+/* П1 «Без ИИ-слопа»: ровный тёмный фон без декоративных градиентов и свечения; «вау» — от данных и движения. */
 .sc-body {
-  background:
-    radial-gradient(70vw 60vh at 12% -12%, rgba(66, 128, 101, 0.3), transparent 62%),
-    radial-gradient(55vw 50vh at 108% 6%, rgba(215, 245, 124, 0.08), transparent 60%),
-    radial-gradient(60vw 60vh at 70% 120%, rgba(47, 127, 214, 0.1), transparent 60%),
-    #0b1110;
+  background: var(--c-paper, #0b100e);
 }
 .sc-boot {
   margin: 0;
@@ -304,6 +301,12 @@
   color: var(--sc-ink);
   background: var(--sc-panel-2);
 }
+/* Запасной значок «на весь экран» и «пауза» — только если в наборе R11 ещё нет i-expand / i-pause / i-play
+   (board.js проверяет набор); иначе — иконки R11 той же толщины, что и все. */
+.sc-icon-btn .sc-ic {
+  width: 20px;
+  height: 20px;
+}
 .sc-fs-ic {
   width: 16px;
   height: 16px;
@@ -374,7 +377,7 @@
   padding: calc(var(--u) * 0.55) calc(var(--u) * 0.6) calc(var(--u) * 0.55) calc(var(--u) * 1.2);
   border: 1px solid rgba(255, 143, 127, 0.38);
   border-radius: var(--sc-r);
-  background: linear-gradient(90deg, rgba(179, 54, 46, 0.42), rgba(179, 54, 46, 0.16));
+  background: rgba(179, 54, 46, 0.26);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .sc-crisis__pulse {
@@ -1049,7 +1052,6 @@
   height: calc(var(--u) * 0.6);
   border-radius: 50%;
   background: var(--sc-bad);
-  box-shadow: 0 0 0 3px rgba(255, 143, 127, 0.22);
 }
 /* Нагрузка службы — тонкая полоса под числом «Открыто» (доля от самой загруженной службы на табло). */
 .sc-open {
@@ -1207,7 +1209,7 @@
   padding: calc(var(--u) * 0.9) calc(var(--u) * 1);
   border-radius: calc(var(--u) * 0.9);
   border: 1px solid rgba(215, 245, 124, 0.28);
-  background: linear-gradient(160deg, rgba(215, 245, 124, 0.12), rgba(215, 245, 124, 0.03));
+  background: rgba(215, 245, 124, 0.06);
 }
 .sc-yard__eyebrow {
   display: inline-flex;
@@ -1328,10 +1330,14 @@
   gap: calc(var(--u) * 0.4);
   text-align: center;
 }
+/* П1: пустое состояние — маленькая монохромная иконка R11 (≤ 48 px), короткий текст и одна кнопка. */
 .sc-calm__ic {
-  width: calc(var(--u) * 3) !important;
-  height: calc(var(--u) * 3) !important;
-  color: var(--sc-good);
+  width: min(calc(var(--u) * 2.4), 48px) !important;
+  height: min(calc(var(--u) * 2.4), 48px) !important;
+  color: var(--sc-ink-3);
+}
+.sc-calm .sc-btn {
+  margin: calc(var(--u) * 0.4) 0 0;
 }
 .sc-calm__title {
   font-size: var(--fs-h);
@@ -1354,7 +1360,7 @@
 .sc-message__ic {
   width: 40px !important;
   height: 40px !important;
-  color: var(--sc-lime);
+  color: var(--sc-ink-3);
 }
 .sc-message .sc-h2 {
   font-size: 24px;
@@ -1402,15 +1408,15 @@
   font-size: 15px;
   color: var(--sc-ink-2);
 }
+/* Скелетон — ровная заливка с мягким «дыханием» (без бликов, П1). */
 .sc-skel {
   min-height: calc(var(--u) * 10);
-  background: linear-gradient(100deg, rgba(255, 255, 255, 0.04) 30%, rgba(255, 255, 255, 0.09) 50%, rgba(255, 255, 255, 0.04) 70%);
-  background-size: 300% 100%;
-  animation: sc-skel 1.4s linear infinite;
+  background: rgba(255, 255, 255, 0.05);
+  animation: sc-skel 1.6s ease-in-out infinite;
 }
 @keyframes sc-skel {
-  from { background-position: 100% 0; }
-  to { background-position: -50% 0; }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 
 /* ── подвал ── */
