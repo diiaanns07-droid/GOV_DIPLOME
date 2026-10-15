@@ -202,12 +202,21 @@ def test_parallel_closures_need_time_overlap(real, fixture_works):
     assert not any(k[0] == "parallel_closures" for k in got)
 
 
-def test_same_street_closures_are_not_parallel(real):
-    a = {"id": "a", "kind": "closure", "street": "улица Сыганак", "from": [71.381544, 51.130024],
+def test_same_street_adjacent_closures_by_two_services(real):
+    """Вариант same_street (демо-мир R02, cf-w15-04): соседние участки одной улицы перекрыты двумя службами разом."""
+    a = {"id": "a", "kind": "closure", "service": "road", "street": "улица Сыганак", "from": [71.381544, 51.130024],
          "to": [71.377997, 51.130475], "starts_on": "2027-08-01", "ends_on": "2027-08-20"}
-    b = {"id": "b", "kind": "closure", "street": "улица Сыганак", "from": [71.376426, 51.130671],
-         "to": [71.372275, 51.131209], "starts_on": "2027-08-01", "ends_on": "2027-08-20"}
-    assert W.find_conflicts(W.bind_all([a, b], real), real) == []
+    b = {"id": "b", "kind": "closure", "service": "traffic", "street": "улица Сыганак", "from": [71.377997, 51.130475],
+         "to": [71.372275, 51.131209], "starts_on": "2027-08-10", "ends_on": "2027-08-25"}
+    cs = W.find_conflicts(W.bind_all([a, b], real), real)
+    assert [(c["kind"], c["variant"], c["severity"]) for c in cs] == [("parallel_closures", "same_street", "medium")]
+    assert cs[0]["title_ru"] == "Соседние участки улицы перекрыты одновременно" and cs[0]["overlap_days"] == 11
+    assert "одно перекрытие" in cs[0]["advice_ru"] and "бір жабуға" in cs[0]["advice_kk"]
+    # одна служба — это одно её перекрытие: не конфликт
+    assert W.find_conflicts(W.bind_all([a, dict(b, service="road")], real), real) == []
+    # далёкие участки одной улицы — не соседние: не конфликт
+    far = dict(b, **{"from": [71.393086, 51.128589], "to": [71.398727, 51.127888]})
+    assert W.find_conflicts(W.bind_all([a, far], real), real) == []
 
 
 # ---------- календарь ----------
@@ -296,12 +305,15 @@ def test_sixty_works_and_conflicts_under_300_ms(real, fixture_works):
 
 
 # ---------- маршруты (raw, strip_prefix; сотрудник — staff=True от шлюза) ----------
-def test_api_requires_staff(monkeypatch):
+def test_api_staff_is_checked_by_gateway_explicit_false_denied(monkeypatch):
+    """Сотрудника проверяет шлюз R01 (staff=True у маршрута) до вызова; явное staff=False — 401 и в модуле."""
     monkeypatch.setenv("CIVIC_DEMO", "1")
-    status, body = api.handle("/works-calendar", {})
+    status, body = api.handle("/works-calendar", {}, staff=False)
     assert status == 401 and body["error"]["code"] == "staff_required"
-    status, body = api.handle("/works-conflicts", {}, staff=None)
+    status, body = api.handle("/works-conflicts", {}, staff=False)
     assert status == 401
+    status, body = api.handle("/works-calendar", {})  # вызов шлюзом R01 после его проверки
+    assert status == 200 and "conflicts" in body
 
 
 def test_api_calendar_and_conflicts_with_fixture_in_demo(monkeypatch):
@@ -337,3 +349,78 @@ def test_fixture_file_is_synthetic_and_on_known_edges(real):
     for w in data["works"]:
         assert w["demo"] is True and w["source"] == "demo" and w["district"] == "nura"
         assert all(s in real.by_id for s in w.get("segments") or [])
+
+
+# ---------- стыки: участок в узле, демо-мир R02 ----------
+def test_street_segment_does_not_take_a_zero_length_piece_at_a_node(real):
+    """Конец участка ровно в узле графа: соседнее ребро (нулевой кусок) в участок не входит — иначе работы,
+    стыкующиеся в узле, ложно «делят» ребро (ложный конфликт same_segment_overlap)."""
+    seg = W.segment_on_street("улица Сыганак", [71.381544, 51.130024], [71.377997, 51.130475], real)
+    assert "osm-w1179911015-4" not in seg["edge_ids"] and seg["edge_ids"][-1] == "osm-w1179911015-3"
+    assert all(abs(p["to_m"] - p["from_m"]) >= 1.0 for p in seg["pieces"])
+
+
+def test_world_r02_relative_dates_and_outages(tmp_path):
+    world = {"works": [
+        {"id": "w-1", "type": "work", "kind": "surface", "starts_on": {"season": {"month": 5, "day": 4}},
+         "ends_on": {"season": {"month": 5, "day": 22}}},
+        {"id": "w-2", "type": "work", "kind": "dig", "starts_on": {"day": -30}, "ends_on": {"day": -9}},
+        {"id": "o-1", "type": "outage", "utility": "water", "starts_at": "2026-10-16T08:00:00+05:00"},
+        {"id": "o-2", "type": "outage", "utility": "road_closure", "starts_at": "2026-10-17T22:00:00+05:00",
+         "ends_at": "2026-10-18T06:00:00+05:00"},
+    ]}
+    got = {w["id"]: w for w in load_world(TODAY, raw_world=world)}
+    assert set(got) == {"w-1", "w-2", "o-2"}  # отключение воды — не работа на улице
+    assert (got["w-1"]["starts_on"], got["w-1"]["ends_on"]) == ("2027-05-04", "2027-05-22")  # следующий сезон
+    assert (got["w-2"]["starts_on"], got["w-2"]["ends_on"]) == ("2026-09-15", "2026-10-06")
+    assert W.work_dates(got["o-2"]) == (date(2026, 10, 17), date(2026, 10, 18))
+    assert load_world(date(2027, 2, 1), raw_world=world)[0]["starts_on"] == "2027-05-04"  # январь–март — этот год
+
+
+def test_planned_conflict_ids_from_world(real, fixture_works, tmp_path, monkeypatch):
+    from engine.civic_geo import works_calendar as WC
+    p = tmp_path / "world_v1.json"
+    p.write_text(json.dumps({"planned_conflicts": [{"id": "cf-w15-01", "kind": "dig_after_surface",
+                                                    "works": ["w-demo-r12-02", "w-demo-r12-01"]}]}), "utf-8")
+    monkeypatch.setattr(WC, "WORLD_PATH", p)
+    monkeypatch.setattr(WC.planned_ids, "__defaults__", (p,))
+    cal = build_calendar(fixture_works, *PERIOD, {}, TODAY, real)
+    c = next(c for c in cal["conflicts"] if c["works"] == ["w-demo-r12-01", "w-demo-r12-02"])
+    assert c["id"] == "cf-w15-01" and c.get("planned") is True
+    w2 = next(w for w in cal["works"] if w["id"] == "w-demo-r12-02")
+    assert "cf-w15-01" in w2["conflicts"]
+
+
+WORLD = FIXTURE_PATH.parents[1] / "demo-world" / "world_v1.json"
+
+
+@pytest.mark.skipif(not WORLD.is_file(), reason="демо-мира R02 нет в этой сборке (data/civic/astana/demo-world/world_v1.json)")
+def test_demo_world_planned_conflicts_are_found(real):
+    """Мир R02: поиск R12 находит все задуманные конфликты на тех же работах и не находит лишних."""
+    world = json.loads(WORLD.read_text("utf-8"))
+    works = load_world(TODAY)
+    found = {(c["kind"], tuple(c["works"])) for c in W.find_conflicts(W.bind_all(works, real), real)}
+    planned = {(c["kind"], tuple(sorted(c["works"]))) for c in world.get("planned_conflicts") or []}
+    assert planned <= found, planned - found
+    assert len(found - planned) <= 1, found - planned
+
+
+def test_seed_world_remembers_works_and_planned_ids(real, monkeypatch):
+    """R01: engine.civic_geo.seed_world(db_path, records, now) — R12 не пишет в базу, но календарь берёт мир и id."""
+    import engine.civic_geo as geo_pkg
+    from datetime import datetime, timezone
+    from engine.civic_geo import works_calendar as WC
+    fixture = json.loads(FIXTURE_PATH.read_text("utf-8"))["works"]
+    world = {"works": [dict(w, starts_on=w["starts_on"], ends_on=w["ends_on"]) for w in fixture],
+             "planned_conflicts": [{"id": "cf-w15-01", "kind": "dig_after_surface", "works": ["w-demo-r12-01", "w-demo-r12-02"]}]}
+    try:
+        rep = geo_pkg.seed_world("/nonexistent.sqlite3", world, datetime(2026, 10, 15, 7, 0, tzinfo=timezone.utc))
+        assert rep["inserted"] == 0 and rep["skipped"] == 15 and rep["planned_conflicts"] == 1
+        monkeypatch.setenv("CIVIC_DEMO", "1")
+        monkeypatch.setenv("CIVIC_DEMO_WORLD", "1")
+        records, info = WC.load_works(TODAY)
+        assert "world" in info["source"] and len(records) == 15
+        cal = build_calendar(records, *PERIOD, {}, TODAY, real)
+        assert "cf-w15-01" in {c["id"] for c in cal["conflicts"]}
+    finally:
+        WC._WORLD.clear()

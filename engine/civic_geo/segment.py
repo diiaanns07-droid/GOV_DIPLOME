@@ -19,6 +19,7 @@ NAME_PENALTY = 3.0      # во сколько раз дороже ребро с 
 GROUP_PENALTY = 1.6     # во сколько раз дороже тротуар для участка дороги и наоборот
 MAX_SEGMENT_M = 6000.0  # участок длиннее 6 км — скорее ошибка выбора концов
 DEFAULT_SNAP_M = 60.0   # дальше 60 м от улицы точку не «прилепляем»
+MIN_END_PIECE_M = 1.0   # крайний кусок ребра короче 1 м (щелчок в узле) в участок не входит
 
 
 class GeoError(ValueError):
@@ -125,6 +126,12 @@ def street_segment(graph: StreetGraph, a, b, snap_radius_m: float = DEFAULT_SNAP
     length = geo.polyline_length_m(coords)
     if length > MAX_SEGMENT_M:
         raise GeoError("too_long", "Участок длиннее 6 км. Выберите концы ближе друг к другу.")
+    # Точка ровно в узле графа: крайний кусок соседнего ребра имеет нулевую длину — в участок его не берём
+    # (иначе две работы, которые стыкуются в узле, «делили» бы ребро и давали ложный конфликт в календаре R12).
+    if len(pieces) > 1:
+        kept = [pc for i, pc in enumerate(pieces)
+                if 0 < i < len(pieces) - 1 or abs(pc[2] - pc[1]) >= MIN_END_PIECE_M]
+        pieces = kept or pieces
     names = []
     for e, _, _ in pieces:
         if e.name and e.name not in names:

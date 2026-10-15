@@ -3,8 +3,9 @@
     GET /api/civic/v2/works-calendar?from&to&district&street&service   -> calendar_response(query, staff)
     GET /api/civic/v2/works-conflicts?from&to&district&service         -> conflicts_response(query, staff)
 
-Оба маршрута — только для сотрудника. Шлюз R01 вызывает engine.civic_geo.api.handle(path, query, staff=True), когда
-сессия сотрудника проверена (V2Handler kind="raw", strip_prefix=True, staff_view=True); без staff=True — 401.
+Оба маршрута — только для сотрудника. Сотрудника проверяет шлюз R01 ДО вызова модуля (раунд 15, ветка R01 d987a112:
+V2Handler kind="raw", strip_prefix=True, staff=True — сессия R02 + CSRF; raw-обработчик контекста не получает).
+Если шлюз передаёт staff=False явно — модуль отвечает 401 (вторая линия, например при staff_view).
 
 Откуда работы (по порядку, CONTRACT §5.6 и §11):
 1. R06 — функция чтения работ v2 из ui.civic_store.v2 (R06_FUNCTIONS; в процессе, только чтение).
@@ -112,18 +113,66 @@ def _relative_day(rec: dict, keys, today: date) -> str | None:
     return None
 
 
-def load_world(today: date | None = None, path=WORLD_PATH) -> list[dict]:
-    """Работы демо-мира R02 (CONTRACT §11). Даты: starts_on/ends_on как есть или из относительных полей."""
+def _season_day(spec: dict, today: date) -> str | None:
+    """{"season": {"month": 5, "day": 4}} — дата в следующем строительном сезоне (правило R02 SCHEMA §1):
+    год = текущий, если сейчас январь–март, иначе следующий."""
     try:
-        data = json.loads(path.read_text("utf-8"))
+        month, day = int(spec["month"]), int(spec["day"])
+        year = today.year if today.month <= 3 else today.year + 1
+        return date(year, month, day).isoformat()
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _materialize_day(value, today: date):
+    """Относительная дата мира R02 → «ГГГГ-ММ-ДД»: {"day": N}, {"season": {…}}, {"in_days"/"ago_days": N}."""
+    if not isinstance(value, dict):
+        return value
+    if isinstance(value.get("day"), (int, float)) and not isinstance(value.get("day"), bool):
+        return (today + timedelta(days=int(value["day"]))).isoformat()
+    if isinstance(value.get("season"), dict):
+        return _season_day(value["season"], today)
+    for key, sign in (("in_days", 1), ("ago_days", -1)):
+        v = value.get(key)
+        if isinstance(v, (int, float)) and not isinstance(v, bool):
+            return (today + timedelta(days=sign * float(v))).isoformat()
+    return None
+
+
+def _r02_materialize(data: dict):
+    """Сначала — функция R02 (ml.datasets.demo_world_io.materialize: один «сейчас» со всеми модулями); нет — своя."""
+    try:
+        from ml.datasets import demo_world_io  # только чтение, вызов в процессе (CONTRACT §11)
+        return demo_world_io.materialize(data, datetime.now(ASTANA_TZ))
+    except Exception:
+        return None
+
+
+def is_street_work(record: dict) -> bool:
+    """Работа на улице: работы и перекрытия проезда; отключения воды, тепла, света, газа — не работы (как у R06)."""
+    if record.get("type") != "outage":
+        return True
+    return record.get("utility") == "road_closure" or record.get("kind") == "closure"
+
+
+def load_world(today: date | None = None, path=WORLD_PATH, raw_world: dict | None = None) -> list[dict]:
+    """Работы демо-мира R02 (CONTRACT §11). Даты: как есть или из относительных полей (§1 SCHEMA R02)."""
+    try:
+        data = raw_world if raw_world is not None else json.loads(path.read_text("utf-8"))
     except (OSError, ValueError):
         return []
     today = today or today_astana()
+    materialized = _r02_materialize(data) if raw_world is None and isinstance(data, dict) else None
+    if isinstance(materialized, dict):
+        data = materialized
     out = []
     for raw in (data.get("works") if isinstance(data, dict) else None) or []:
-        if not isinstance(raw, dict):
+        if not isinstance(raw, dict) or not is_street_work(raw):
             continue
         w = dict(raw)
+        for key in ("starts_on", "ends_on", "starts_at", "ends_at"):
+            if isinstance(w.get(key), dict):
+                w[key] = _materialize_day(w[key], today)
         if not w.get("starts_on"):
             w["starts_on"] = _relative_day(raw, (("starts_in_days", 1), ("start_in_days", 1), ("in_days", 1),
                                                  ("starts_ago_days", -1), ("start_ago_days", -1), ("ago_days", -1)), today)
@@ -136,6 +185,48 @@ def load_world(today: date | None = None, path=WORLD_PATH) -> list[dict]:
         w.setdefault("source", "demo")
         out.append(w)
     return out
+
+
+_planned_cache: dict = {}
+# Мир R02, который R01 передал при засеве (seed_world: уже материализован с одним «сейчас» на все модули).
+_WORLD: dict = {}
+
+
+def remember_world(records, now=None) -> dict:
+    """R01 при CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 зовёт engine.civic_geo.seed_world(db_path, records, now): R12 записей не
+    хранит (работы — у R06), но запоминает работы мира и задуманные конфликты — для id конфликтов (сцена 8 = cf-w15-01)
+    и как запасной источник, если у R06 ещё нет работ v2."""
+    if not isinstance(records, dict):
+        return {"inserted": 0, "skipped": 0, "note": "нет мира"}
+    today = (now.astimezone(ASTANA_TZ).date() if isinstance(now, datetime) else None) or today_astana()
+    works = load_world(today, raw_world=records)
+    planned = {(c.get("kind"), tuple(sorted(c.get("works") or []))): c.get("id")
+               for c in records.get("planned_conflicts") or [] if isinstance(c, dict) and c.get("id")}
+    _WORLD.clear()
+    _WORLD.update({"works": works, "planned": planned, "today": today.isoformat()})
+    return {"inserted": 0, "skipped": len(works), "planned_conflicts": len(planned),
+            "note": "R12 не хранит записи: работы засевает R06, конфликты считаются при открытии календаря"}
+
+
+def planned_ids(path=WORLD_PATH) -> dict:
+    """id задуманных конфликтов демо-мира R02 (planned_conflicts) по (вид, работы): тогда у найденного конфликта id —
+    тот же, что в сценах R02 и проверках R10 (сцена 8: cf-w15-01). Сначала — мир, переданный R01 при засеве; иначе файл."""
+    if _WORLD.get("planned"):
+        return _WORLD["planned"]
+    try:
+        stamp = path.stat().st_mtime
+    except OSError:
+        return {}
+    if _planned_cache.get("stamp") != stamp:
+        try:
+            data = json.loads(path.read_text("utf-8"))
+            items = data.get("planned_conflicts") or []
+        except (OSError, ValueError, AttributeError):
+            items = []
+        _planned_cache["stamp"] = stamp
+        _planned_cache["ids"] = {(c.get("kind"), tuple(sorted(c.get("works") or []))): c.get("id")
+                                 for c in items if isinstance(c, dict) and c.get("id")}
+    return _planned_cache["ids"]
 
 
 def read_r06() -> tuple[list[dict] | None, str]:
@@ -169,9 +260,9 @@ def load_works(today: date | None = None) -> tuple[list[dict], dict]:
     today = today or today_astana()
     records, r06 = read_r06()
     info = {"r06": r06, "source": "r06" if records is not None else None}
-    records = list(records or [])
+    records = [r for r in (records or []) if is_street_work(r)]
     if demo_mode() and not any(_has_place(r) for r in records):
-        extra = load_world(today) if world_mode() else []
+        extra = (_WORLD.get("works") or load_world(today)) if world_mode() else []
         label = "world"
         if not any(_has_place(r) for r in extra):
             extra, label = load_fixture(today), "fixture"
@@ -312,6 +403,12 @@ def build_calendar(records: list[dict], date_from: date, date_to: date, filters:
     district = filters.get("district")
     in_district = [w for w in bound if district is None or w.district == district]
     conflicts_all = find_conflicts(in_district, g)
+    planned = planned_ids()
+    if planned:
+        for c in conflicts_all:
+            pid = planned.get((c["kind"], tuple(c["works"])))
+            if pid:
+                c["id"], c["planned"] = pid, True
 
     def visible(w: BoundWork) -> bool:
         if (w.status or "") in CANCELLED or not w.start:
@@ -427,9 +524,10 @@ def _error(status: int, code: str, message: str, field: str | None = None):
 
 
 def _staff_only(staff) -> tuple[int, dict] | None:
-    if staff is True:
-        return None
-    return _error(401, "staff_required", "Календарь работ — для сотрудников. Войдите как сотрудник.")
+    """Сотрудника проверяет шлюз R01 (staff=True у маршрута); явное staff=False — отказ и здесь."""
+    if staff is False:
+        return _error(401, "staff_required", "Календарь работ — для сотрудников. Войдите как сотрудник.")
+    return None
 
 
 def calendar_response(query: dict, staff=None):

@@ -58,6 +58,9 @@ ADJACENT_M = 20.0
 #   3) они идут бок о бок: проекции на общую ось перекрываются хотя бы на 50 м, а поперёк оси улицы разнесены
 #      хотя бы на 25 м (ближе — это одна улица или её вторая проезжая часть, а не параллельная улица).
 # Тогда транспорт с одной улицы уходит на другую; перекрыть обе сразу — значит не оставить объезда.
+# Второй вариант того же вида (variant "same_street"): две РАЗНЫЕ службы одновременно перекрывают соседние участки ОДНОЙ
+# улицы (участки касаются в узле графа или ближе 20 м) — коридор закрыт подряд, объезда по самой улице нет; правильно —
+# одно общее перекрытие или по очереди (так устроен конфликт cf-w15-04 демо-мира R02 на Коргалжинском шоссе).
 CORRIDOR_GRAPH_M = 400.0
 PARALLEL_MAX_ANGLE_DEG = 30.0
 PARALLEL_MIN_SIDE_BY_SIDE_M = 50.0
@@ -82,6 +85,8 @@ CONFLICT_TITLES = {
     "dig_after_surface": ("Копаем дважды", "Екі рет қазу"),
     "same_segment_overlap": ("Две службы на одном участке", "Бір учаскеде екі қызмет"),
     "parallel_closures": ("Параллельные улицы перекрыты одновременно", "Қатар көшелер бір уақытта жабылады"),
+    "parallel_closures/same_street": ("Соседние участки улицы перекрыты одновременно",
+                                      "Көшенің көрші учаскелері бір уақытта жабылады"),
 }
 KIND_ORDER = {"dig_after_surface": 0, "same_segment_overlap": 1, "parallel_closures": 2}
 SEVERITY_ORDER = {"high": 0, "medium": 1}
@@ -249,8 +254,8 @@ def _first(record: dict, *keys):
 def work_dates(record: dict) -> tuple[date | None, date | None]:
     """Даты работы: поля v2 (starts_on/ends_on), иначе прежние поля R06 (start/planned_end, schedule.*)."""
     sched = record.get("schedule") if isinstance(record.get("schedule"), dict) else {}
-    start = parse_day(_first(record, "starts_on", "start", "planned_start") or sched.get("planned_start"))
-    end = parse_day(_first(record, "ends_on", "forecast_end", "end", "planned_end", "current_planned_end")
+    start = parse_day(_first(record, "starts_on", "start", "starts_at", "planned_start") or sched.get("planned_start"))
+    end = parse_day(_first(record, "ends_on", "forecast_end", "end", "ends_at", "planned_end", "current_planned_end")
                     or sched.get("current_planned_end") or sched.get("original_planned_end"))
     if start and not end:
         end = start
@@ -650,7 +655,8 @@ def _make(kind: str, a: BoundWork, b: BoundWork, severity: str, segments, extra:
     edges = [g.by_id[s] for s in segments if s in g.by_id]
     lines = _chain_lines(g, edges)
     street_ru, street_kk = _street_pair(a, b)
-    title_ru, title_kk = CONFLICT_TITLES[kind]
+    variant = extra.get("variant")
+    title_ru, title_kk = CONFLICT_TITLES.get(f"{kind}/{variant}") or CONFLICT_TITLES[kind]
     out = {
         "id": _conflict_id(kind, ids), "kind": kind, "works": ids, "segments": list(segments),
         "severity": severity, "advice_ru": advice[0], "advice_kk": advice[1],
@@ -729,15 +735,42 @@ def _same_segment(a: BoundWork, b: BoundWork, g: StreetGraph, services: dict) ->
     return _make("same_segment_overlap", a, b, severity, shared, extra, (advice_ru, advice_kk), g)
 
 
+def _same_street_closures(a: BoundWork, b: BoundWork, ov, g: StreetGraph, services: dict) -> dict | None:
+    """Вариант same_street: две разные службы одновременно перекрывают соседние участки одной улицы."""
+    if a.service and b.service and a.service == b.service:
+        return None  # одна служба — это одно её перекрытие, она планирует его сама
+    if set(a.edge_ids) & set(b.edge_ids):
+        return None  # тот же участок — это same_segment_overlap
+    near_a, near_b = _near_edges(a, b, ADJACENT_M)
+    if not near_a:
+        return None
+    days = (ov[1] - ov[0]).days + 1
+    severity = "high" if days >= LONG_OVERLAP_DAYS else "medium"
+    a_ru, a_kk = _svc(services, a.service)
+    b_ru, b_kk = _svc(services, b.service)
+    advice_ru = (f"Не перекрывайте соседние участки одной улицы одновременно: объедините работы ({a_ru}, {b_ru}) "
+                 f"в одно перекрытие или проведите их по очереди, чтобы остался проезд.")
+    advice_kk = (f"Бір көшенің көрші учаскелерін бір уақытта жаппаңыз: жұмыстарды ({a_kk}, {b_kk}) бір жабуға "
+                 f"біріктіріңіз немесе кезекпен жүргізіңіз, жол ашық қалсын.")
+    first, second = sorted([a, b], key=lambda w: (w.start, w.id))
+    extra = {"variant": "same_street", "overlap_from": ov[0].isoformat(), "overlap_to": ov[1].isoformat(),
+             "overlap_days": days, "first": first.id, "second": second.id,
+             "when_from": min(a.start, b.start).isoformat(), "when_to": max(a.end, b.end).isoformat()}
+    segments = sorted(set(a.edge_ids) | set(b.edge_ids))
+    return _make("parallel_closures", a, b, severity, segments, extra, (advice_ru, advice_kk), g)
+
+
 def _parallel(a: BoundWork, b: BoundWork, reach: dict[str, float], g: StreetGraph, services: dict) -> dict | None:
-    """Перекрытия на параллельных улицах одного коридора в одни и те же дни."""
+    """Перекрытия на параллельных улицах одного коридора в одни и те же дни (или подряд на одной улице)."""
     ov = _overlap(a, b)
-    if not ov or a.axis is None or b.axis is None:
+    if not ov:
+        return None
+    if a.street_ru and a.street_ru == b.street_ru:
+        return _same_street_closures(a, b, ov, g, services)
+    if a.axis is None or b.axis is None:
         return None
     if set(a.edge_ids) & set(b.edge_ids) or a.nodes & b.nodes:
-        return None  # одна улица или продолжение — это не «параллельные улицы»
-    if a.street_ru and a.street_ru == b.street_ru:
-        return None
+        return None  # продолжение безымянного проезда — это не «параллельные улицы»
     if _angle_diff(a.axis, b.axis) > PARALLEL_MAX_ANGLE_DEG:
         return None
     graph_m = min((reach[n] for n in b.nodes if n in reach), default=None)
@@ -756,8 +789,8 @@ def _parallel(a: BoundWork, b: BoundWork, reach: dict[str, float], g: StreetGrap
     advice_kk = (f"Қатар көшелерді бір уақытта жаппаңыз{on_kk}: айналма жол қалуы үшін жабуларды әр уақытқа "
                  f"бөліңіз.")
     first, second = sorted([a, b], key=lambda w: (w.start, w.id))
-    extra = {"overlap_from": ov[0].isoformat(), "overlap_to": ov[1].isoformat(), "overlap_days": days,
-             "graph_m": round(graph_m, 1), "angle_deg": round(_angle_diff(a.axis, b.axis), 1),
+    extra = {"variant": "parallel_streets", "overlap_from": ov[0].isoformat(), "overlap_to": ov[1].isoformat(),
+             "overlap_days": days, "graph_m": round(graph_m, 1), "angle_deg": round(_angle_diff(a.axis, b.axis), 1),
              "first": first.id, "second": second.id, "when_from": min(a.start, b.start).isoformat(),
              "when_to": max(a.end, b.end).isoformat()}
     segments = sorted(set(a.edge_ids) | set(b.edge_ids))

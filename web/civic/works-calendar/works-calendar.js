@@ -224,6 +224,10 @@
     if (v && typeof v === "object") v = v[pluralRu(Number(params && params.n) || 0)] || v.many || v.other || "";
     return String(v).replace(/\{(\w+)\}/g, (w, n) => (params && params[n] != null ? String(params[n]) : w));
   }
+  // Заголовок конфликта: с сервера на языке экрана (там учтён вариант вида), иначе ключ вида.
+  function conflictTitle(c) {
+    return (lang() === "kk" ? c.title_kk : c.title_ru) || tr("wcal.kind." + c.kind);
+  }
   function serviceName(id, svc) {
     if (!id) return tr("wcal.service_none");
     const i = I();
@@ -422,11 +426,10 @@
       const p = new URLSearchParams();
       const now = new Date();
       if (state.shift) {
-        // Сдвиг периода по 3 месяца от «прошлый месяц … +11» (как по умолчанию на сервере).
+        // Сдвиг периода по 3 месяца от «прошлый месяц … +11». Только from (дата ГГГГ-ММ-ДД): конец сервер считает сам
+        // (13 месяцев), а шлюз R01 проверяет from/to как ISO-даты и период ≤ 366 дней, если заданы оба.
         const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1 + state.shift, 1));
-        const end = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 13, 0));
-        p.set("from", start.toISOString().slice(0, 7));
-        p.set("to", end.toISOString().slice(0, 7));
+        p.set("from", start.toISOString().slice(0, 10));
       }
       if (state.filters.district) p.set("district", state.filters.district);
       if (state.filters.service) p.set("service", state.filters.service);
@@ -565,10 +568,10 @@
           disabled: d.conflicts.length < 2 ? true : null, onclick: () => select(d.conflicts[(idx + 1) % d.conflicts.length].id, true) }, [icon("forward")]),
       ]);
       return h("section", { class: "wcal-focus" + (sev ? " wcal-focus--high" : ""), "data-conflict": c.id, "aria-live": "polite",
-        "aria-label": tr("wcal.kind." + c.kind) }, [
+        "aria-label": conflictTitle(c) }, [
         h("div", { class: "wcal-focus__top" }, [
           h("span", { class: "wcal-sev" + (sev ? " wcal-sev--high" : ""), "aria-hidden": "true" }, [icon("alert")]),
-          h("h3", { class: "wcal-focus__title", text: tr("wcal.kind." + c.kind) }),
+          h("h3", { class: "wcal-focus__title", text: conflictTitle(c) }),
           h("span", { class: "wcal-chip wcal-chip--" + c.severity, text: tr("wcal.severity." + c.severity) }),
           street ? h("span", { class: "wcal-focus__street" }, [icon("pin"), street]) : null,
         ]),
@@ -764,7 +767,7 @@
         const on = c.id === state.selected;
         out.push(h("button", { type: "button", class: "wcal-cchip wcal-cchip--" + c.severity + (on ? " is-sel" : ""), "data-conflict": c.id,
           style: `left:${labelWidth() + cx}px;top:${Math.max(2, cy)}px`, "aria-pressed": on ? "true" : "false",
-          "aria-label": tr("wcal.kind." + c.kind) + (c.street_ru ? ": " + (lang() === "kk" ? c.street_kk || c.street_ru : c.street_ru) : ""),
+          "aria-label": conflictTitle(c) + (c.street_ru ? ": " + (lang() === "kk" ? c.street_kk || c.street_ru : c.street_ru) : ""),
           onclick: () => select(c.id, false) }, [tr("wcal.chip." + c.kind)]));
       }
       return out;
@@ -1103,7 +1106,7 @@
     function showCard(focus) {
       closeCard();
       const c = focus.conflict, w = focus.work;
-      const title = c ? tr("wcal.kind." + c.kind) : (lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru);
+      const title = c ? conflictTitle(c) : (lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru);
       const street = c ? (lang() === "kk" ? c.street_kk || c.street_ru : c.street_ru) : (lang() === "kk" ? w.street_kk || w.street_ru : w.street_ru);
       const lines = (c ? focus.works : [w]).map((x) => {
         const svc = (focus.services || []).find((s) => s.id === x.service);

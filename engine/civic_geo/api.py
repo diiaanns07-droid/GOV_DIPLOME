@@ -12,7 +12,7 @@
 Каждая функция получает разобранный query (как parse_qs: {"lon": ["71.4"]} или просто {"lon": "71.4"})
 и возвращает (код, словарь для JSON). Исключений наружу не бросает: ошибки — 400/503 с понятным текстом.
 Первый вызов загружает граф (~2 с); R01 может вызвать warm_up() при старте сервера.
-Календарь и конфликты работ — только сотруднику: шлюз передаёт staff=True после проверки сессии (staff_view=True).
+Календарь и конфликты работ — только сотруднику: проверяет шлюз R01 (V2Handler staff=True) до вызова handle.
 """
 from __future__ import annotations
 
@@ -193,7 +193,7 @@ def _works_conflicts(query: dict, staff=None):
     return conflicts_response(query, staff=staff)
 
 
-# Раунд 15: календарь и конфликты работ — только сотрудник (staff=True от шлюза R01, staff_view=True).
+# Раунд 15: календарь и конфликты работ — только сотрудник (проверяет шлюз R01: staff=True у маршрута).
 STAFF_ROUTES = {
     "/works-calendar": _works_calendar,
     "/works-conflicts": _works_conflicts,
@@ -203,8 +203,8 @@ STAFF_ROUTES = {
 def handle(path: str, query: dict, staff=None):
     """Один вход для R01: path без префикса /api/civic/v2 ("/targets", ...). (код, тело) или None — не наш путь.
 
-    staff=True шлюз передаёт только после проверки сессии сотрудника (V2Handler staff_view=True); открытым маршрутам
-    (/targets, /target, …) он не нужен, маршрутам календаря работ без него — 401."""
+    Маршруты календаря работ — для сотрудника: его проверяет шлюз R01 до вызова (staff=True у V2Handler); явное
+    staff=False — 401 и здесь. Открытым маршрутам (/targets, /target, …) параметр не нужен."""
     if path == "/geo/status":
         return status_response()
     fn = STAFF_ROUTES.get(path)

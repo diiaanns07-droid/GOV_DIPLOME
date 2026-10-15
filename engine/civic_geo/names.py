@@ -109,13 +109,17 @@ RU_SHORT = (("улица", "ул."), ("проспект", "пр."), ("переу
 
 
 def ru_short(name_ru: str | None) -> str | None:
-    """«улица Кенесары» → «ул. Кенесары», «проспект Абая» → «пр. Абая» (для коротких подписей); иначе как есть."""
+    """«улица Кенесары» → «ул. Кенесары», «проспект Абая» → «пр. Абая» (для коротких подписей); иначе как есть.
+    Тип после имени остаётся после него: «Коргалжинское шоссе» → «Коргалжинское ш.» (а не «ш. Коргалжинское»)."""
     if not name_ru:
         return name_ru
     split = _split_type(name_ru, RU_SHORT)
     if not split:
         return name_ru
-    return dict(RU_SHORT)[split[0]] + " " + split[1]
+    short = dict(RU_SHORT)[split[0]]
+    if name_ru.lower().endswith(" " + split[0]):
+        return split[1] + " " + short
+    return short + " " + split[1]
 
 
 def crossing_pair_labels(streets_ru: list, streets_kk: list) -> tuple[str, str] | None:
