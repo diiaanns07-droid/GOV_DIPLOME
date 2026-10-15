@@ -399,6 +399,54 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
 // ------------------------------------------------------------------------------------------------ Ситуационный центр
 // VISUAL_BRIEF №4 (R08): страница /civic/board/ на весь экран — 1920×1080 и 1366×768 без прокрутки, тёмная тема (.bk-dark),
 // крупные живые числа (читается с 3 м), контраст ≥ 4,5:1, «Пример» на синтетике, «На весь экран» и «← В Birge».
+// VISUAL_BRIEF §1 №11 (R01): режим показа ?show=1 и Ctrl+K «Сцена 7 / 8 / 9» — переход к сцене ≤ 1 с, без мигания.
+// Сцены палитра берёт из GET demo/scenes (только с демо-миром). Ожидаемый раздел: 7 — «Мой двор» (или карта двора без
+// R16), 8 — «Обращения» с жалобой сцены, 9 — «Ведомства» с кризисом (или «Кризис», или «Картина дня» без R17).
+async function showCheck(browser, base, lang, staffAcc) {
+  const dict = L.loadDict(ROOT, lang);
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, deviceScaleFactor: 1, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+  await ctx.addInitScript((lg) => { try { localStorage.setItem("birge.lang", lg); } catch (e) { /* без хранилища */ } }, lang);
+  if (staffAcc && staffAcc.user) {
+    await ctx.request.post(base + "api/civic/v1/session/login", { data: { username: staffAcc.user, password: staffAcc.pass },
+      headers: { Origin: base.replace(/\/$/, "") } }).catch(() => null);
+  }
+  const page = await ctx.newPage();
+  await page.goto(base + "?show=1");
+  await page.waitForFunction(() => document.readyState === "complete" && document.body.innerText.length > 50, null, { timeout: 40000 }).catch(() => null);
+  await sleep(3000);
+  const show = await page.evaluate(() => document.documentElement.dataset.birgeShow === "1").catch(() => false);
+  add(`UI show-${lang}`, "S", "режим показа ?show=1 включён (html[data-birge-show])", show ? "PASS" : "NOT_RUN", show ? null : "нет режима показа в сборке", "R01");
+  const want = { 7: ["yard", "map"], 8: ["inbox"], 9: ["agencies", "crisis", "day"] };
+  for (const n of [7, 8, 9]) {
+    const title = T(dict, `shell.palette.scene${n}`, null);
+    await page.keyboard.press("Escape").catch(() => null);
+    await page.keyboard.press("Control+k").catch(() => null);
+    await sleep(500);
+    const input = await firstVisible(page.locator(".birge-palette__input"));
+    if (!input || !title) { add(`UI show-${lang}`, String(n), `Ctrl+K «Сцена ${n}» → сцена ≤ 1 с`, "NOT_RUN", input ? "нет ключа shell.palette.scene" + n : "палитры Ctrl+K нет", "R01"); continue; }
+    await input.fill(title.split("·")[0].trim()).catch(() => null);
+    await sleep(600);
+    const offered = await page.evaluate((tt) => [...document.querySelectorAll(".birge-palette__item")].some((li) => (li.textContent || "").includes(tt)), title).catch(() => false);
+    if (!offered) { add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → сцена ≤ 1 с`, "NOT_RUN", "команды сцены нет в палитре (нет демо-мира или сцены)", "R01"); continue; }
+    const t0 = Date.now();
+    await page.keyboard.press("Enter").catch(() => null);
+    let ms = null, sec = null;
+    for (let i = 0; i < 40; i++) {
+      const st = await page.evaluate(() => { const B = window.BirgeShell; const r = document.querySelector("#birge-screen:not([hidden])");
+        return { section: B && B.section, chars: r ? (r.innerText || "").trim().length : 0 }; }).catch(() => ({}));
+      sec = st.section;
+      if (want[n].includes(st.section) && (st.section === "map" || st.chars > 30)) { ms = Date.now() - t0; break; }
+      await sleep(100);
+    }
+    const f = path.join(OUT, `show-${lang}-scene${n}.jpg`);
+    await sleep(800);
+    await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+    add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → раздел ${want[n][0]} ≤ 1 с`, ms === null ? "FAIL" : ms <= 1000 ? "PASS" : "FAIL",
+      { ms, section: sec }, "R01", path.basename(f));
+  }
+  await ctx.close();
+}
+
 async function boardCheck(browser, base, lang, staffAcc) {
   const dict = L.loadDict(ROOT, lang);
   // Адрес страницы — /civic/board/index.html (каталожного индекса у шлюза нет); короткий /civic/board/ — если R01 добавил.
@@ -478,6 +526,7 @@ async function boardCheck(browser, base, lang, staffAcc) {
       const browser = await chromium.launch();
       for (const size of SIZES) for (const lang of LANGS) await uiFlow(browser, srv.base, size, lang, S && !S.error ? S : null, srv.staff, timing.ui);
       for (const lang of LANGS) await boardCheck(browser, srv.base, lang, srv.staff);
+      for (const lang of LANGS) await showCheck(browser, srv.base, lang, srv.staff);
       await browser.close();
     }
   } finally { await srv.stop(); }

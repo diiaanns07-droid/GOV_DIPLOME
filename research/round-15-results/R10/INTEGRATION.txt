@@ -117,14 +117,29 @@ ui/web_server.py (R01 460fd683), V2_HANDLERS — у двух маршрутов 
 api_v2 116 PASS / 0 FAIL. Не передавать staff=True всем raw: engine.civic_geo.api.handle (R12) его не принимает → 500.
 
 =====================================================================================================
-§8. R01 · список к B1 (16 окт 14:00 Астаны) — что проверит приёмка R10 (bash tests/e2e/acceptance_r15.sh)
+§8. R01 · список к B1 (16 окт 14:00 Астаны) — по приёмке R10 ветки R01 c97aa5f5 («B0», 15 окт 13:00 UTC)
 =====================================================================================================
-Уже сделано у R01 (по превью R10): маршруты §7 46/46 (d987a112), raw-сотрудник 401 без входа (B-102), засев мира с
-materialize (B-106, 460fd683), staff=True модулям (B-108, 5529d819). Осталось для «можно показывать»:
-  1. tests/civic/R10 и tests/e2e — из DELIVERY R10 (иначе pytest: 2 FAIL accuracy из-за снимка LOCAL-10, §0).
-  2. Экраны в web/index.html: R17 (agencies.js/css, crisis-layer.js — их patch), R16 (BirgeTogether — когда сдаст),
-     R12 (BirgeWorksCalendar — patch R12), R07 «Хроника» (replay.js/css + BirgeReplay.attach у кнопок карты),
-     R08 Ситуационный центр (/civic/board/ — статика, ссылка в «Ещё» акимата), R03 (BirgeAnalyst), R13 (BirgeMeetings).
-  3. Подписи «Просрочено» (B-104) — R11 + R08 + R09: без этого C4 FAIL и вердикт «нет» на FINAL-5.
+Уже в порядке на c97aa5f5 (research/round-15-results/R10/b0-c97aa5f5/): маршруты §7 46/46, сотрудник без входа → 401,
+без CSRF → 403 (B-102); засев мира — R09 743 (B-106): карта Нуры 96 = «Обращения» 96, «Я тоже» 93 = мир, жалоб 154 = мир;
+«Картина дня» 7 дней 83 = карта 83; табло R17 по службам = «Обращения»; «Спросить Birge» R03 — 96 / 83 / 5 / 96 адам
+(= карта и «Картина дня»), ответ 45 мс; модули R12, R13, R17, R04, R03 — ready; pytest tests/civic/R10 — 50 passed.
+Осталось для «можно показывать»:
+  1. Тесты R10 — из DELIVERY R10 (tests/civic/R10, tests/e2e).
+  2. Поставки, которых нет в c97aa5f5 (превью R10 pvC собрано из них — research/round-15-results/R10/preview/):
+     R16 (ui/civic_together + web/civic/together: CIVIC_ASSETS together.js / together-text.js / together.css, теги
+       index.html; маршруты together/yards (GET список), yards/{id}/captain, yards/{id}/moderate и лимиты — patch R16);
+     R07 «Хроника» (ui/civic_heat replay/marks/world + web/civic/replay; heat.js / heat.css у R01 уже правлены —
+       сливать 3-way, у R10 слилось без конфликтов; CIVIC_ASSETS replay/replay.js, replay/replay.css + теги index.html);
+     R08 Ситуационный центр и «Картина недели» (CIVIC_ASSETS board/index.html, board.js, board.css, akim/week.html,
+       week.js, week.css; короткий адрес ASSETS["/civic/board/"] = ASSETS["/civic/board/index.html"] — ссылка R08
+       ведёт на /civic/board/; пункт «Ситуационный центр» в «Ещё» акимата — registerScreen({id:"board", href})
+       по R08 INTEGRATION §4: в c97aa5f5 его никто не регистрирует);
+     R09 совместное исполнение (ui/civic_feedback/v2 joint*, complaint.js/css — у complaint.css два места правили и
+       R01, и R09 → решить вручную; маршруты handoff/services/part у R01 уже есть);
+     R17 191f81e7 — вкладка «Календарь работ» в «Ведомствах» (IA_ROUND15 §5.4) и адреса #agencies/<вкладка>; в c97aa5f5
+       R17 75300896: вкладки нет, а оболочка (PARENT) прячет works-calendar, services и works из «Ещё», пока есть
+       agencies → «Календарь работ», «Службы», «Работы и отключения» открываются только адресом и Ctrl+K.
+  3. Дефекты (BUGS.md): B-104 (одна подпись «Просрочено» у двух чисел — R08 + R09 + R11), B-109 (контраст красного
+     «просрочено» в «Сегодня в Астане» — R08), B-105 (R13 meetings/updates без устройства → 400).
   4. Демо: run-city с CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 — так R10 и принимает (demo_flow --world, consistency, сцены).
 R10 возьмёт BUILD.json (find_branches.py --build) и через ~1 ч после сборки положит ACCEPTANCE_B1.md с вердиктом.
