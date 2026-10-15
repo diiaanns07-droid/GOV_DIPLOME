@@ -680,7 +680,16 @@
     }
 
     // ----- закрытие: карта возвращается к «сегодня» тем же перетеканием, фокус — туда, откуда открыли -----
-    let closed = false;
+    // Закрытие идёт 200 мс (полоса уходит вниз); открыть снова в это время можно — open() дозакрывает её сразу (finish).
+    let closed = false, finished = false, closeTimer = 0;
+    function finishClose(focusOpener) {
+      if (finished) return;
+      finished = true;
+      clearTimeout(closeTimer);
+      if (!S.destroyed) destroyDom();
+      if (focusOpener && opener && opener.isConnected && typeof opener.focus === "function") opener.focus({ preventScroll: true });
+      if (typeof opts.onClose === "function") opts.onClose();
+    }
     function close() {
       if (closed) return;
       closed = true;
@@ -688,12 +697,7 @@
       if (S.began && heat) heat.replay.end({ ms: reduce() ? 0 : 700 });
       S.began = false;
       box.classList.add("rp--out");
-      const finishClose = () => {
-        destroyDom();
-        if (opener && opener.isConnected && typeof opener.focus === "function") opener.focus({ preventScroll: true });
-        if (typeof opts.onClose === "function") opts.onClose();
-      };
-      if (reduce()) finishClose(); else setTimeout(finishClose, 200);
+      if (reduce()) finishClose(true); else closeTimer = setTimeout(() => finishClose(true), 200);
     }
     function destroyDom() {
       S.destroyed = true;
@@ -719,7 +723,8 @@
       setPeriod: (n) => setPeriod(n),
       setLang: (lang) => setLang(lang),
       close: () => close(),
-      destroy: () => { if (!closed) { closed = true; pause(); if (S.began && heat) heat.replay.end({ ms: 0 }); S.began = false; } if (!S.destroyed) destroyDom(); },
+      closing: () => closed && !finished,
+      destroy: () => { if (!closed) { closed = true; pause(); if (S.began && heat) heat.replay.end({ ms: 0 }); S.began = false; } finishClose(false); },
       // Для проверок (R10, тесты R07): состояние и замер плавности последнего воспроизведения
       state: () => ({ status: S.status, period: S.period, index: S.index, days: S.days.map((d) => d.date), playing: S.playing,
         ended: S.ended, speed: S.speed, events: ((S.body && S.body.events) || []).map((e) => e.id),
@@ -739,8 +744,10 @@
 
   // ---------------------------------------------------------------- открыть над картой (кнопка, Ctrl+K, ?replay=)
   let active = null;
+  const openNow = () => (active && !active.closing() ? active : null);   // закрывающаяся (200 мс) — уже не открытая
   function open(options) {
     const o = options || {};
+    if (active && active.closing()) active.destroy();   // открыли снова во время закрытия — дозакрыть сразу, открыть новую
     if (active) { if (o.days) active.setPeriod(o.days); return active; }
     const m = o.map || globalMap();
     const container = o.container || (m && m.getContainer && m.getContainer()) || document.body;
@@ -772,7 +779,7 @@
       const label = () => { button.setAttribute("aria-label", text("replay.open") + " · " + text("replay.open_hint")); button.title = text("replay.open") + " · " + text("replay.open_hint"); };
       label();
       button.addEventListener("click", () => {
-        if (active) { active.close(); return; }
+        if (openNow()) { active.close(); return; }
         open({ map: o.map, heat: o.heat || (window.CivicShell && window.CivicShell.heat), days: 7 });
       });
       document.addEventListener("birge:lang", label);
@@ -796,5 +803,5 @@
     return { button };
   }
 
-  window.BirgeReplay = { mount, open, attach, version: VERSION, messages: DICT, get active() { return active; }, _buildDays: buildDays };
+  window.BirgeReplay = { mount, open, attach, version: VERSION, messages: DICT, get active() { return openNow(); }, _buildDays: buildDays };
 })();

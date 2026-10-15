@@ -221,9 +221,21 @@ const rpState = (page) => page.evaluate(() => window.BirgeReplay.active ? window
       await page.waitForFunction(() => window.BirgeReplay.active && window.BirgeReplay.active.state().status === "ready", null, { timeout: 30000 });
       await page.evaluate(() => window.BirgeReplay.active.close());
       if (asked.js !== 1 || asked.css !== 1) p.push(`загрузок полной хроники: js ${asked.js}, css ${asked.css} (ожидалась одна)`);
+      // событие оболочки (birge:replay-open) открывает месяц через тот же вход
+      await page.evaluate(() => document.dispatchEvent(new CustomEvent("birge:replay-open", { detail: { days: 30, autoplay: false } })));
+      await page.waitForFunction(() => window.BirgeReplay.active && window.BirgeReplay.active.state().status === "ready", null, { timeout: 30000 });
+      const month = await page.evaluate(() => window.BirgeReplay.active.state().days.length);
+      if (month !== 30) p.push("событие birge:replay-open {days: 30} открыло дней: " + month);
+      await page.evaluate(() => window.BirgeReplay.active.close());
     }
+    // адрес ?replay=7&autoplay=0 — лёгкий вход открывает неделю сам, когда карта загрузила «сегодня»
+    await page.goto(`${BASE}?lang=kk&role=akimat&view=city&replay=7&autoplay=0`, { waitUntil: "load" });
+    await page.waitForFunction(() => window.BirgeReplay && window.BirgeReplay.active && window.BirgeReplay.active.state().status === "ready", null, { timeout: 30000 })
+      .catch(() => p.push("?replay=7 через лёгкий вход не открыл хронику"));
+    const viaUrl = await page.evaluate(() => window.BirgeReplay.active ? { days: window.BirgeReplay.active.state().days.length, playing: window.BirgeReplay.active.state().playing } : null);
+    if (viaUrl && (viaUrl.days !== 7 || viaUrl.playing)) p.push("?replay=7&autoplay=0: " + JSON.stringify(viaUrl));
     if (errors.length) p.push("ошибки в консоли: " + errors.slice(0, 3).join(" | "));
-    check("lazy-entry-1366", p, { before, after: asked });
+    check("lazy-entry-1366", p, { before, after: asked, via_url: viaUrl });
     await ctx.close();
   }
 
