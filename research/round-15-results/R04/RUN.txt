@@ -1,0 +1,43 @@
+R04 · РАУНД 15 · КАК ЗАПУСТИТЬ И ПРОВЕРИТЬ
+
+Что теперь умеет Birge (R04):
+  • сказать, каким службам нужно обращение, и объяснить одной строкой — «Нужны 2 службы: Водоканал и Дорожная служба»
+    (сцена 8 демо v2: «Яма после раскопок водоканала»), ru и kk;
+  • написать сотруднику вежливый черновик ответа жителю на ҚАЗ и РУС по записи обращения: служба, срок ответа в рабочих
+    днях, следующий шаг, срок устранения — только если он есть в паспорте; две службы — «Водоканал — сделано, Дорожная
+    служба — в работе»;
+  • очистить текст жителя до публикации (инициативы R16, вопросы R13, обновления кризиса R17): мат — звёздочками,
+    телефоны, ИИН, e-mail, номера карт и счетов, номер квартиры, ники мессенджеров — «***»; сотрудник видит находки;
+  • найти похожую инициативу соседей рядом («Присоединиться к существующей», R16), ru и kk вперемешку.
+
+1) Без сервера (только Python 3, без сети):
+   python3 -B -m ui.civic_ml_api route "Яма после раскопок водоканала"
+   python3 -B -m ui.civic_ml_api route "Бағана құлап, жарық жоқ"
+   python3 -B -m ui.civic_ml_api route --category utilities --subtopic no_heating
+   python3 -B -m ui.civic_ml_api route-eval --split test          # набор 208 фраз: test 94 (журнал — RESULTS.md)
+   python3 -B -m ui.civic_ml_api moderate "Субботник в 10:00, звоните 8 701 123 45 67"
+   python3 -B -c "from ui.civic_ml_api import reply_draft; print(reply_draft(text='Не горит фонарь', status='new', lang='kk')['text'])"
+
+2) Тесты R04 (без сети, ~1 с):
+   python3 -m pytest -q tests/civic/R04/round15        # 75 тестов: route, moderate, reply_draft, similar_initiatives
+   python3 -m pytest -q tests/civic/R04/round14        # раунд 14: classify, similar, мат, «Это разные проблемы»
+   (в облаке: /root/.local/bin/pytest с PYTHONPATH на системные пакеты — см. DELIVERY.json tests)
+
+3) Стенд с маршрутами /route, /moderate, /reply-draft (нужен patch R01 из INTEGRATION.txt п. 1, пока R01 не взял его):
+   git apply research/round-15-results/R04/patches/r01_web_server_r04_routes.patch     # временно, в своей копии
+   mkdir -p /tmp/birge
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
+   printf 'parol-r04-test\nparol-r04-test\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
+   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655 &
+   python3 -B tests/civic/R04/round15/http_check_r04.py   # 14 проверок: 200 / 400 / 403 / 404, вход сотрудника, CSRF
+   (потом: git checkout -- ui/web_server.py — это путь R01)
+
+   Руками (curl):
+   curl -s -X POST http://127.0.0.1:8655/api/civic/v2/route -H 'Content-Type: application/json' \
+        -H 'Origin: http://127.0.0.1:8655' -d '{"text":"Яма после раскопок водоканала"}'
+   curl -s -X POST http://127.0.0.1:8655/api/civic/v2/moderate -H 'Content-Type: application/json' \
+        -H 'Origin: http://127.0.0.1:8655' -d '{"text":"Звоните 8 701 123 45 67"}'
+
+4) Для диплома — числа качества route(): RESULTS.md (журнал прогонов test, независимая проверка на корпусах R02).

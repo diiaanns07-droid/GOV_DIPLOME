@@ -4,27 +4,57 @@
 Ветка роли: claude/gifted-maxwell-i66wwi (ветка сессии; push в claude/r15-R04 средой не разрешён)
 Начато: 2026-10-15 16:25 Астана (11:25 UTC)
 База: origin/claude/clever-hypatia-q6ts4g @ e91acb69 (FINAL-4 a4937462 + пакет раунда 15)
-Прошлая передача: claude/r14-R04 (в FINAL-4 — 8e2b2ae)
+Прошлая передача: claude/r14-R04 (в FINAL-4 — 8e2b2ae; в базе новее — правка R15-S26 profanity, восстанавливать нечего)
+Продолжение: scheduled task trig_01M5zb65s5mTuk6bSDHfWwyq (раз в час, :25) в эту сессию — удалить после 17 окт 23:59 Астаны.
 
-## План (prompts/R04.txt, по порядку)
-1. route(text?, category?, subtopic?, point?) → services[] + joint + model_version; набор 150+ фраз ru/kk/смешанных.
-2. reply_draft(complaint_id | text, status, lang) — шаблоны ru/kk, факты кодом из записи R09.
-3. moderate(text, lang?) → {text_public, flags} + POST /moderate: мат, телефоны, ИИН, e-mail, карты.
-4. similar_initiatives(text, point, days) для R16 на основе поиска дублей.
-5. Тесты без сети, скорость (route < 30 мс, moderate < 5 мс), DELIVERY с числами, INTEGRATION.
+## Статус: D1 готова (поставка для B1) — все 5 задач промпта сделаны, ждём R01 (маршруты шлюза)
 
-## Сделано
-- (claim) ветка занята, STATUS создан.
-- CP1 16:50: набор route_cases.json (208 фраз ru/kk/смешанных/латиница; dev 114 / test 94; совместных 92) зафиксирован
-  коммитом ДО правил совместных случаев — протокол для диплома (правила подбираются только по dev).
-- Продолжение: scheduled task trig_01M5zb65s5mTuk6bSDHfWwyq (раз в час, :25) в эту сессию; удалить после 17 окт 23:59 Астаны.
+Поставка: research/round-15-results/R04/DELIVERY.json (code_sha 44f0c8f4). Подключение — INTEGRATION.txt, запуск — RUN.txt,
+числа — RESULTS.md.
 
-## Дальше
-- Задача 1: ui/civic_ml_api/routing.py — route(); затем оценка на dev.
-- Шлюз FINAL-4: arguments() не знает ключей route/reply_draft/moderate (вернёт {}): patch для R01 — в INTEGRATION.txt.
+## Сделано (15 окт, 16:25–17:15)
+1. route() — ui/civic_ml_api/routing.py: таблица R08 (с правками акимата) + сигналы текста + категория модели +
+   8 правил совместных случаев (раскопки сетей, течь + яма/наледь, упал столб, дерево на проводах, снег с крыши на
+   тротуаре, светофор без питания, два отключения, две проблемы). Сцена 8: «Яма после раскопок водоканала» ->
+   «Нужны 2 службы: Водоканал и Дорожная служба» + объяснение ru/kk.
+   Набор 208 фраз (ru/kk/вперемешку/латиница, совместных 92), test зафиксирован до правил (64e19fc4):
+   test 94/94, «нужны 2 службы» P/R/F1 = 1.0 (честно: один автор фраз и правил — см. RESULTS.md);
+   независимая проверка R02 v1_in_v2 (2 725, первый прогон): ложных «2 службы» 0, согласие с категорией 0.868;
+   route p95 0.3 мс.
+2. reply_draft() — ml/civic_replies/ + ui/civic_ml_api/replies.py: шаблоны 5 статусов + совместное исполнение +
+   передача + задержка + дубль, ru/kk; факты из записи R09 кодом; без паспортного срока — «сообщим срок»;
+   языковая модель — по желанию, с охраной чисел/дат/служб.
+3. moderate() — ui/civic_ml_api/moderation.py: мат (profanity), телефоны КЗ, ИИН (контрольная цифра), карты (Лун),
+   IBAN, e-mail (и «собака»), квартира, ники/t.me; 0 ложных на 65 099 строках; p95 0.08 мс.
+4. similar_initiatives() — ui/civic_ml_api/initiatives.py: ru/kk виды дел + n-граммы, 800 м, окно days; источники:
+   records / set_initiative_source / store R16 (только чтение).
+5. Тесты tests/civic/R04/round15: 75 passed (+ раунд 14: 337 passed, 3 skipped). Стенд FINAL-4 + patch шлюза:
+   http_check_r04.py 14/14.
 
-## Вопросы владельцу
-- (пока нет)
+## Соседи (проверено 15 окт 17:00 по их веткам)
+- R16 (claude/youthful-johnson-6nz5mp): уже зовёт moderate(text, lang) и similar_initiatives(title, point, 30) —
+  форматы совпадают.
+- R13 (claude/gifted-mayer-p86myv): moderate_text -> moderate(text, lang) — совместимо.
+- R17 (claude/sweet-euler-5tiu5b): check_public_texts смотрит только flags phone/iin/email/rude и не берёт
+  text_public -> карты/IBAN/квартира прошли бы. Правка — INTEGRATION.txt п. 3 (для R17).
+- R09 (claude/quirky-ptolemy-k3z2mj): пока восстановил раунд 14 (D0) — route/reply_draft ещё не зовёт; как звать —
+  INTEGRATION.txt п. 2.
+- R01 (claude/brave-fermi-nhzetj): V2_ROUTES для route/reply-draft/moderate ещё нет — patch готов
+  (patches/r01_web_server_r04_routes.patch), без строки в arguments() функции получат пустые аргументы.
+
+## Дальше (следующие круги)
+- Проверять соседей каждый круг: R01 взял patch? R09 зовёт route_hint/reply_draft? R17 поправил проверку pii?
+  Демо-мир R02 (world_v1.json, scenes) — прогнать route() по жалобе сцены 8 и по всем жалобам мира (доля «2 службы»
+  против ~5 % совместных у R02).
+- После B1 R01 (16 окт 14:00): прогнать tests/civic/R04 и http_check_r04.py на сборке, обновить DELIVERY tested_sha.
+- Улучшения: route() — точка: «рядом шли работы Водоканала» по календарю работ R12/R06 (кто копал), когда появятся
+  работы v2 (§5.6); kk-тексты — вычитка R11.
+
+## Вопросы владельцу (ответа не жду — решено по умолчанию)
+1. Кто ведущая служба, когда яму оставили «неизвестно кто»? По умолчанию — Водоканал (самый частый случай) с пометкой
+   «уточните, чьи работы» и уверенностью 0.6. Если акимат хочет иначе — правка одной строки (_network в routing.py).
+2. Открытый люк: R02 размечает как «опасное место» (полиция), R04 — владелец сетей (Водоканал). Оставлено Водоканал.
 
 ## SHA
-- claim: см. git log этой ветки
+- claim 469fe1e3 · CP1 64e19fc4 (набор фраз) · CP2 54b93e07 (route) · CP3 4242870f · CP4 7be7e71b (moderate) ·
+  CP5 250ea4a9 (similar_initiatives) · CP6 3898d618 (reply_draft) · CP7 44f0c8f4 (patch R01, http check) = code_sha D1.
