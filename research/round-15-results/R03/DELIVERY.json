@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "5d33bdc9fe839b5c8b509f220ed1d444c1878cab",
- "tested_sha": "5d33bdc9fe839b5c8b509f220ed1d444c1878cab",
+ "code_sha": "cea6c00247a90a45209bdb2ae87837caf7642d50",
+ "tested_sha": "cea6c00247a90a45209bdb2ae87837caf7642d50",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
