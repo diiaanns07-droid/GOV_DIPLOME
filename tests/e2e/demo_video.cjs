@@ -2,7 +2,7 @@
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/demo_video.cjs --root <папка сборки> --out <папка>
 //        [--langs kk,ru] [--parts 1,2] [--world] [--basemap simplified|real] [--glass keep|off|auto]
-//        [--subtitles <json>] [--pace 0.7] [--fast] [--no-mp4]
+//        [--subtitles <json>] [--pace 0.5] [--fast] [--no-mp4] [--skip project|none]
 //
 // Что получается в <out> (на каждый язык):
 //   birge-demo-<lang>.webm — запись Playwright (как есть);  birge-demo-<lang>.mp4 — H.264 для заявки (если есть ffmpeg);
@@ -30,6 +30,9 @@ const LANGS = String(args.langs || "kk,ru").split(",");
 const PARTS = String(args.parts || "1,2").split(",").map(Number);
 const [W, H] = String(args.size || "1366x768").split("x").map(Number);
 const FAST = !!args.fast;                       // паузы ×0,35 — пробный прогон, не для показа
+// Сцены, которые не снимаем: по умолчанию «project» (шаг 5, проект в 3D) — пока 3D не «белый макет» R05 (AMENDMENTS П1,
+// правило 3), и так ролик с частью 2 укладывается в 5 мин. Вернуть: --skip none.
+const SKIP = new Set(String(args.skip === undefined ? "project" : args.skip).split(",").filter((x) => x && x !== "none" && x !== "true"));
 const BASEMAP = args.basemap === "real" ? "real" : "simplified";
 const GLASS = args.glass === "auto" ? null : String(args.glass || "keep");
 const SUBS = JSON.parse(fs.readFileSync(path.resolve(args.subtitles || path.join(__dirname, "fixtures/video_subtitles.json")), "utf8"));
@@ -40,10 +43,11 @@ const SHOT_Q = 72;
 // pause — паузы для зрителя (в --fast короче); ожидания ответа интерфейса — wait (всегда полные, иначе шаги не проходят).
 // --pace — множитель пауз для зрителя (0,7 по умолчанию: часть 1 ≈ 3 мин, весь ролик ≤ 5 мин); --fast — 0,35.
 // Темп пауз: 0,6 — ролик ≤ 5 мин (VISUAL_BRIEF №12) с частью 2; субтитр всё равно держится не меньше времени чтения.
-const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.6)));
+const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.5)));
 const pause = (ms) => sleep(Math.round(ms * PACE));
 // Часть времени чтения даёт следующий шаг сцены (нажатие, перелёт карты): субтитр висит до следующего — вычитаем ~1,5 с.
-const READ_AHEAD = 1500;
+const READ_AHEAD = 2000;
+const READ_CPS = 16;   // знаков в секунду: удобная скорость чтения субтитров (норма 15–17)
 const wait = (ms) => sleep(ms);
 const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
 const dbg = (...xs) => { if (process.env.R10V_DEBUG) log("  ·", ...xs); };
@@ -150,6 +154,13 @@ async function recordLang(browser, lang) {
   await ctx.addInitScript((lg) => { try { if (!sessionStorage.getItem("r10v-lang")) { localStorage.setItem("birge.lang", lg);
     localStorage.setItem("civic.lang", lg); sessionStorage.setItem("r10v-lang", "1"); } } catch (e) { /* без хранилища */ } }, lang);
   await ctx.addInitScript(overlayScript);
+  // Вход сотрудника — до записи, через API (cookie сессии в контексте): вход не функция для показа, а 10 с ролика.
+  let preLogin = false;
+  if (srv.staff && srv.staff.user) {
+    const r = await ctx.request.post(srv.base + "api/civic/v1/session/login", { data: { username: srv.staff.user, password: srv.staff.pass },
+      headers: { Origin: srv.base.replace(/\/$/, "") } }).catch(() => null);
+    preLogin = !!(r && r.ok());
+  }
   const page = await ctx.newPage();
   const t0 = Date.now();
   const cues = [], scenes = [], skipped = [], shots = [];
@@ -163,8 +174,8 @@ async function recordLang(browser, lang) {
     if (open) { open.end = at(); cues.push(open); }
     open = text ? { start: at(), end: null, text, key } : null;
     await page.evaluate((x) => window.__r10v && window.__r10v.sub(x), text).catch(() => null);
-    // Субтитр должен успеть прочитаться: не меньше 1 с на 15 знаков (норма субтитров ~15–17 зн/с), кроме --fast.
-    await sleep(Math.max(Math.round(hold * PACE), FAST || !text ? 0 : Math.round(text.length / 15 * 1000) - READ_AHEAD));
+    // Субтитр должен успеть прочитаться: не меньше 1 с на READ_CPS знаков, кроме --fast.
+    await sleep(Math.max(Math.round(hold * PACE), FAST || !text ? 0 : Math.round(text.length / READ_CPS * 1000) - READ_AHEAD));
   };
   const quiet = async () => { if (open) { open.end = at(); cues.push(open); open = null; }
     await page.evaluate(() => window.__r10v && window.__r10v.sub("")).catch(() => null); };
@@ -348,9 +359,12 @@ async function recordLang(browser, lang) {
     done(s, day, day ? null : "раздела «Картина дня» нет");
 
     // Шаг 5: вход сотрудника → «Что построить?» → «Сквер» → место → «Поставить» → 3D; житель «За».
-    s = scene("project");
-    let login = false;
-    if (srv.staff && srv.staff.user) {
+    let login = preLogin;
+    const doProject = !SKIP.has("project");
+    if (!doProject) skipped.push({ scene: "project", owner: "R05",
+      why: "шаг 5 (проект в 3D) не снимался: 3D ещё не «белый макет» (AMENDMENTS П1, правило 3); вернуть — --skip none" });
+    if (doProject) s = scene("project");
+    if (doProject && !login && srv.staff && srv.staff.user) {
       if (await header(textRe(lang === "kk" ? "Қызметкерлерге" : "Для сотрудников"), 1600)) {
         const user = await firstVisible(page.locator("input[autocomplete=username], input[name=username]"));
         const pass = await firstVisible(page.locator("input[type=password]"));
@@ -367,7 +381,7 @@ async function recordLang(browser, lang) {
       }
     }
     let placed = false;
-    if (login) {
+    if (doProject && login) {
       await say("s5", 600);
       const catalogTitle = word("proposal.catalog.title", "Что построить?", "Не салайық?");
       const catalogShown = !!(await firstVisible(page.getByText(textRe(catalogTitle))));
@@ -411,7 +425,7 @@ async function recordLang(browser, lang) {
         await pressText(new RegExp("^" + esc(word("proposal.vote_up", "За", "Жақтаймын")) + "(\\s|:|\\d|$)", "i"), 2200);
         await shot("5-vote"); await page.keyboard.press("Escape").catch(() => null); await pause(600); }
     }
-    done(s, login && placed, !login ? "вход сотрудника не удался" : placed ? null : "проект не поставлен");
+    if (doProject) done(s, login && placed, !login ? "вход сотрудника не удался" : placed ? null : "проект не поставлен");
 
     // Шаги 6–7: служба → «Взять в работу» → «Отметить исправленным» → сообщение жителям; житель «Да, исправлено».
     s = scene("fixed");
