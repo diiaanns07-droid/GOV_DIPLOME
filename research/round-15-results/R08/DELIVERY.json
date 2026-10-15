@@ -5,8 +5,8 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "restored_from": null,
   "restored_note": "код R08 в основе = поставка раунда 14 d5719635 (FINAL-4) — восстанавливать нечего",
-  "code_sha": "144d73febb516e2dc8907b289c9c48b0e56fc888",
-  "tested_sha": "c3653b0216d1cba0ddb491ee86e1d2eb04b8b5b4",
+  "code_sha": "58bec6f572cb05c36d3015c99af00bcf3d655d05",
+  "tested_sha": "58bec6f572cb05c36d3015c99af00bcf3d655d05",
   "push_status": "OK (origin/claude/inspiring-johnson-j7wksj)",
   "amendments_applied": [
     "П1 «Без ИИ-слопа» (15 окт 17:05)"
@@ -19,6 +19,7 @@
   },
   "changed_paths": [
     "tests/civic/R08/board_check.cjs",
+    "tests/civic/R08/build_check.cjs",
     "tests/civic/R08/demo_server.py",
     "tests/civic/R08/r15_shots.cjs",
     "tests/civic/R08/test_r08_board.py",
@@ -54,19 +55,21 @@
       "status": "PASS",
       "passed": 294,
       "failed": 0,
-      "skipped": 1,
-      "env": "облако Claude Code, Linux, Python 3.13"
+      "skipped": 2,
+      "env": "облако Claude Code, Linux, Python 3.13",
+      "note": "второй пропуск — сторож test_gateway_passes_staff_flag_to_board_and_week: в ветке R08 маршрутов шлюза нет"
     },
     "tests/civic/R08/test_r08_board.py": {
       "status": "PASS",
       "passed": 31,
-      "failed": 0
+      "failed": 0,
+      "skipped": 1
     },
     "board_check.cjs (ситуационный центр)": {
       "status": "PASS",
-      "passed": 57,
+      "passed": 58,
       "failed": 0,
-      "env": "Chromium (Playwright 1.56), стенд demo_server.py --wave2-demo, соседи — фикстуры R08"
+      "env": "Chromium (Playwright 1.56), стенд demo_server.py --wave2-demo (как шлюз R01: GET board/week без X-CSRF-Token — 403), соседи — фикстуры R08"
     },
     "r15_shots.cjs (Картина дня 2.0, Картина недели)": {
       "status": "PASS",
@@ -83,13 +86,18 @@
       "status": "PASS",
       "note": "модули соседей из их веток во временной папке + та же база: все 5 блоков available, ссылка штаба только у тревоги про снег"
     },
-    "сборка R01 с маршрутами akim/board, akim/week": {
-      "status": "NOT_RUN",
-      "reason": "R01 ещё не добавил строки V2_ROUTES/V2_HANDLERS (INTEGRATION §1)"
-    },
     "демо-мир R02 (CIVIC_DEMO_WORLD=1) сверка чисел с R07/R09": {
       "status": "NOT_RUN",
       "reason": "world_v1.json и seed_world соседей ещё в работе; флаг и отключение фикстур покрыты тестами"
+    },
+    "сборка R01 (ветка claude/brave-fermi-nhzetj @ 460fd683 + пути R08)": {
+      "status": "PASS с патчем INTEGRATION §1–§3",
+      "passed": 8,
+      "failed": 0,
+      "check": "tests/civic/R08/build_check.cjs + curl: аноним 401, сотрудник без токена 403 csrf_failed, district=Bad! 400, сотрудник с токеном 200 (board, week)",
+      "without_patch": "как есть у R01: сотрудник с верным токеном получает 401 staff_only (нет staff_view=True), /civic/board/index.html и /civic/akim/week.html — 404 (нет CIVIC_ASSETS)",
+      "env": "облако, app.py --port 8655, CIVIC_DEMO=1, база seed-demo + seed-r14-demo во временной папке; соседей R17/R16 раунда 15 в ветке R01 нет — на табло только лента «Прогноз» (R13 основы)",
+      "patch": "research/round-15-results/R08/patches/R01-web_server-board-week.patch"
     }
   },
   "screens": [
@@ -115,6 +123,10 @@
     "research/round-15-results/R08/screens/board-1920-ru-meetings.jpg",
     "research/round-15-results/R08/screens/board-1920-ru-together.jpg",
     "research/round-15-results/R08/screens/board_check.json",
+    "research/round-15-results/R08/screens/build-board-1366-ru.jpg",
+    "research/round-15-results/R08/screens/build-board-1920-ru.jpg",
+    "research/round-15-results/R08/screens/build-week-1366-kk.jpg",
+    "research/round-15-results/R08/screens/build_check.json",
     "research/round-15-results/R08/screens/day-1024-kk-first.jpg",
     "research/round-15-results/R08/screens/day-1024-kk-r15.jpg",
     "research/round-15-results/R08/screens/day-1024-ru-first.jpg",
@@ -135,9 +147,9 @@
   ],
   "known_limits": [
     "Прогноз на неделю: у R13 пока только прогноз на месяц — экран пишет «Прогноз на месяц» с меткой «Прототип»",
-    "Без строки staff_view=True у R01 ситуационный центр и неделя отвечают 401 («Войдите как сотрудник»)",
+    "Сборка R01 @ 460fd683: у akim.board / akim.week нет staff_view=True — сотрудник видит 401; нет CIVIC_ASSETS страниц — 404. Патч — INTEGRATION §1–§3 (patches/R01-web_server-board-week.patch)",
     "Табло служб R17 считает просрочку по правилу R09 «нет ответа в срок» — столбец так и подписан; KPI «Просрочено» — «не исправлено в срок» (сроки R08)",
     "Кадры — облачный стенд: карта районов на ситуационном центре — контуры OSM (данные), подложки карты нет и не нужно"
   ],
-  "next_step": "Проверить свои блоки в сборке R01 B1 (16 окт 14:00); сверка чисел демо-мира R02 с R07/R09/R17; прогноз на неделю, когда R13 даст функцию; переписать устаревшие проверки ui_check под эталон A"
+  "next_step": "R01 берёт патч §1–§3 в B1 (16 окт 14:00) — проверить табло в B1 build_check.cjs; сверка чисел демо-мира R02 с R07/R09/R17; прогноз на неделю, когда R13 даст функцию"
 }

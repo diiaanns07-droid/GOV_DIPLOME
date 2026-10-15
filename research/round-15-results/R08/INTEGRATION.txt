@@ -17,26 +17,38 @@ R08 · раунд 15 · INTEGRATION — как подключить «Карти
   web/civic/akim/{akim.js,akim.css}                 «Картина дня» 2.0
   web/civic/akim/{week.html,week.js,week.css}       «Картина недели», печать A4 ru / kk (2 листа)
   web/civic/akim/{services.js,services.css}, web/civic/nearby/{nearby.js,nearby.css} — П1: иконки вместо иллюстраций
-  tests/civic/R08/test_r08_board.py (31 тест), board_check.cjs, r15_shots.cjs, demo_server.py (стенд), ui_check.cjs
+  tests/civic/R08/test_r08_board.py (32 теста), board_check.cjs, r15_shots.cjs, demo_server.py (стенд), ui_check.cjs,
+  build_check.cjs (табло и неделя в сборке R01: вход → CSRF → данные)
 
 §1. R01 — МАРШРУТЫ API v2 (ui/web_server.py). akim/board и akim/week — ТОЛЬКО СОТРУДНИК (CONTRACT §7).
-    Для kind="raw" шлюз сотрудника не проверяет, поэтому — staff_view=True: шлюз передаёт staff=True после проверки
-    сессии R02 (без CSRF — это GET), модуль R08 без staff=True отвечает 401 {"error": "staff_only"}.
-    Без staff_view экран всегда покажет «Войдите как сотрудник» (дыры нет, но и данных нет).
+    ВАЖНО (проверено 15 окт на ветке R01 claude/brave-fermi-nhzetj @ 460fd683 + пути R08): маршруты у R01 уже есть
+    (V2_ROUTES стр. 802–803), но обработчики записаны как
+        "akim.board": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, query={...}),
+    Шлюз проверяет сессию и CSRF (staff=True), но raw-обработчику передаёт staff=True ТОЛЬКО при staff_view=True
+    (CivicV2Gateway._raw). Модуль R08 без staff=True отвечает 401 staff_only — вошедший сотрудник с верным токеном
+    получает 401, экран всегда показывает форму входа. ПРАВКА — одно слово в двух строках (staff=True и query оставить):
+        "akim.board": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, staff_view=True,
+                                query={"district": "district"}),
+        "akim.week": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, staff_view=True,
+                               query={"date": "date", "district": "district"}),
+    Тогда порядок: аноним → 401 unauthenticated (шлюз); сотрудник без токена → 403 csrf_failed (шлюз); неверный
+    district → 400 (шлюз); сотрудник с токеном → шлюз передаёт staff=True → 200 (R08). Проверено в той же сборке с
+    правкой §1–§3: API (curl) и браузер tests/civic/R08/build_check.cjs — 8/8 PASS, кадры screens/build-*.jpg.
+    Страницы R08 шлют X-CSRF-Token и в GET (из CivicShell.csrfToken, ответа входа или GET /api/civic/v1/session;
+    отказ csrf_failed — один повтор со свежим токеном), поэтому работают и со staff=True, и с одним staff_view=True.
+    Сторож в тестах: tests/civic/R08/test_r08_board.py::test_gateway_passes_staff_flag_to_board_and_week — в сборке
+    падает, если у akim.board / akim.week нет staff_view=True (в ветке R08 маршрутов шлюза нет — пропуск).
+    Готовый патч §1–§3 на ui/web_server.py R01 @ 460fd683: research/round-15-results/R08/patches/
+    R01-web_server-board-week.patch (git apply; 5 строк +, 2 −; проверен на той же сборке).
 
-    V2_ROUTES (рядом с ("GET", ("akim", "summary"), "akim.summary")):
-        ("GET", ("akim", "board"), "akim.board"),
-        ("GET", ("akim", "week"), "akim.week"),
-    V2_HANDLERS:
-        **{key: V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff_view=True)
-           for key in ("akim.board", "akim.week")},
-
-§2. R01 — wire(): база шлюза для соседей (одна строка; без неё R08 берёт CIVIC_DB_PATH, затем .runtime/civic.sqlite3):
+§2. R01 — wire(): база шлюза для соседей (одна строка; без неё R08 берёт CIVIC_DB_PATH, затем .runtime/civic.sqlite3;
+    у R01 @ 460fd683 строки ещё нет):
         kwargs = {"demo_build": True} if self.demo else {}
         kwargs["db_path"] = str(self.db_path) if self.db_path else None     # ← новая строка
         akim.configure(**kwargs)
 
-§3. R01 — CIVIC_ASSETS (добавить):
+§3. R01 — CIVIC_ASSETS (добавить; у R01 @ 460fd683 их ещё нет — /civic/board/index.html и /civic/akim/week.html
+    отвечают 404, а кнопка «Картина недели» в «Картине дня» ведёт на 404 — брать вместе с §1):
         "board/index.html", "board/board.js", "board/board.css",
         "akim/week.html", "akim/week.js", "akim/week.css",
     Каталожного индекса у шлюза нет: адрес страницы — /civic/board/index.html. Если нужен короткий /civic/board/ —

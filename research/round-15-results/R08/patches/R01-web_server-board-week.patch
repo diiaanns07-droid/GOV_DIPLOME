@@ -1,0 +1,33 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 1d7ddfaa..0bd5f49a 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -96,6 +96,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 "akim/index.html", "akim/akim.js", "akim/akim.css",  # B2: akim.i18n.json удалён R08 (ключи у R11)
+                 # Волна 2, R08: «Службы» (Ещё → Службы, акимат) и «Что делают рядом» (раздел #nearby).
+                 "akim/services.html", "akim/services.js", "akim/services.css",
++                "board/index.html", "board/board.js", "board/board.css",
++                "akim/week.html", "akim/week.js", "akim/week.css",
+                 "nearby/index.html", "nearby/nearby.js", "nearby/nearby.css",
+                 # Эталон A (13 окт), R08: сводка «Сегодня в Астане» на главной карте акимата и её стенд.
+                 "akim/today.js", "akim/today.css", "akim/today.html", "akim/today-stand.js",
+@@ -928,9 +930,9 @@ V2_HANDLERS_ROUND15 = {
+     # «Хроника города» — всем, «мягкий вид» (без текстов жалоб), как /heat.
+     "heat.replay": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", query={
+         "from": "when", "to": "when", "step": "word", "category": "category", "district": "district"}),
+-    "akim.board": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, query={
++    "akim.board": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, staff_view=True, query={
+         "district": "district"}),
+-    "akim.week": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, query={
++    "akim.week": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, staff_view=True, query={
+         "date": "date", "district": "district"}),
+     "meetings.list": V2Handler("R13", _MEETINGS, "make_service", kind="service", query={
+         "district": "district", "status": "word"}),
+@@ -1200,6 +1202,7 @@ class CivicV2Gateway:
+             if akim is not None and hasattr(akim, "configure"):
+                 # Демо-сборка: пример «Нужно решение акима» не пропадает после жалобы репетиции (R10 B-061).
+                 kwargs = {"demo_build": True} if self.demo else {}
++                kwargs["db_path"] = str(self.db_path) if self.db_path else None
+                 try:
+                     akim.configure(**kwargs)
+                 except TypeError:  # R08 без demo_build — как раньше

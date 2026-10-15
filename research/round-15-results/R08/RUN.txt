@@ -20,21 +20,27 @@ R08 · раунд 15 · RUN — как запустить и что теперь
     → http://127.0.0.1:8508/civic/board/index.html   ситуационный центр
     → http://127.0.0.1:8508/civic/akim/              «Картина дня» 2.0
     → http://127.0.0.1:8508/civic/akim/week.html     «Картина недели»
-  --no-neighbors — без соседей (блоки скрыты, спокойный блок); --resident — 401 и форма входа (учебный вход:
-  operator / пароль); --state-dir <папка> — куда писать выбор акима.
+  --no-neighbors — без соседей (блоки скрыты, спокойный блок); --resident — 401 и форма входа (учебный вход
+  стенда: operator / пароль); --state-dir <папка> — куда писать выбор акима. Как в сборке R01, GET akim/board и
+  akim/week без X-CSRF-Token сотрудника — 403 csrf_failed (страницы берут токен из GET /api/civic/v1/session).
 
 В СБОРКЕ R01 (после INTEGRATION.txt §1–§4)
   mkdir -p /tmp/birge && python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
-  printf 'пароль\nпароль\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
+  printf 'Birge-Stend-Kokshetau-77\nBirge-Stend-Kokshetau-77\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
+      (пароль R02: от 12 символов, без логина — тот же, что в RUN R01)
   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655
   → вход: аватар → «Для сотрудников» → «Ещё» → «Ситуационный центр»; «Картина дня» → «Картина недели».
+  → или сразу http://127.0.0.1:8655/civic/board/index.html — форма входа на самом табло.
+  Проверка сборки: NODE_PATH=$(npm root -g) node tests/civic/R08/build_check.cjs http://127.0.0.1:8655 <папка> Birge-Stend-Kokshetau-77
+      (15 окт: ветка R01 460fd683 + пути R08 + патч patches/R01-web_server-board-week.patch — 8 PASS; без патча табло
+      отвечает 401 staff_only, страницы — 404)
   Демо-мир R02: CIVIC_DEMO_WORLD=1 — фикстуры R08 не подмешиваются, числа только из модулей.
 
 ПРОВЕРКИ
-  python3 -B -m pytest -q tests/civic/R08                                  # 294 passed, 1 skipped (15 окт)
-  NODE_PATH=$(npm root -g) node tests/civic/R08/board_check.cjs http://127.0.0.1:8508       # 57 PASS
+  python3 -B -m pytest -q tests/civic/R08                                  # см. DELIVERY.json tests
+  NODE_PATH=$(npm root -g) node tests/civic/R08/board_check.cjs http://127.0.0.1:8508       # 58 PASS
   NODE_PATH=$(npm root -g) node tests/civic/R08/r15_shots.cjs http://127.0.0.1:8508         # 28 PASS
   NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs http://127.0.0.1:8508 <папка>  # = основа FINAL-4
   Браузерные проверки — по одной (COMMON: несколько браузеров сразу дают ложные таймауты).

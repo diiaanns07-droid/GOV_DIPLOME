@@ -38,15 +38,35 @@
 - Проверки: pytest R08 294 passed / 1 skipped; board_check 57/57; r15_shots 28/28; ui_check «Картины дня» =
   основа FINAL-4 (144 PASS, те же 20 устаревших FAIL CLEAN_PASS — не регресс).
 
+## Круг 3 (15 окт 17:35–17:55 Астаны; код 58bec6f5)
+- AMENDMENTS.md прочитан — новых поправок нет (только П1).
+- **Сборка R01 проверена по-настоящему** (ветка R01 claude/brave-fermi-nhzetj @ 460fd683 + пути R08, app.py, вход
+  R02): маршруты akim/board, akim/week у R01 уже есть, но как `kind="raw", staff=True, query=…` **без staff_view=True**
+  → шлюз проверяет сессию и CSRF, но не передаёт staff=True → R08 отвечает **401 staff_only** вошедшему сотруднику;
+  страниц board/week нет в CIVIC_ASSETS → **404**. С патчем §1–§3 (одно слово staff_view=True + 6 ассетов + db_path)
+  — всё работает: build_check.cjs 8/8 PASS (вход → табло 1920/1366 без прокрутки, неделя kk, печать 2 листа, без
+  ошибок CSP). Патч для R01: research/round-15-results/R08/patches/R01-web_server-board-week.patch.
+- Шлюз R01 на staff=True требует X-CSRF-Token и на GET → board.js и week.js теперь шлют токен (оболочка / ответ входа
+  / GET /session), отказ csrf_failed — один повтор со свежим токеном. Стенд R08 ведёт себя как R01 (403 без токена).
+- Сторож в тестах: test_gateway_passes_staff_flag_to_board_and_week — в сборке без staff_view падает с текстом правки.
+- Проверки: pytest R08 294 passed / 2 skipped; board_check 58/58; r15_shots 28/28; ui_check 164/164; build_check 8/8.
+- RUN: пароль редактора R02 — от 12 символов и без логина (было «пароль» — R02 такой не принимает).
+
+## Просьба R01 (дублирую из INTEGRATION §1–§3)
+В B1 взять: `"akim.board"/"akim.week": V2Handler(..., kind="raw", staff=True, staff_view=True, query=…)`, CIVIC_ASSETS
+board/index.html, board/board.js, board/board.css, akim/week.html, akim/week.js, akim/week.css и строку
+`kwargs["db_path"] = …` в wire(). Без staff_view ситуационный центр и «Картина недели» в сборке не открываются.
+
 ## Соседи (15 окт 17:50 Астаны)
-- R01 claude/brave-fermi-nhzetj — маршрутов akim/board, akim/week ещё нет → INTEGRATION §1 (staff_view=True!), §2–§4.
+- R01 claude/brave-fermi-nhzetj @ 460fd683 — маршруты есть, но без staff_view=True; ассетов и db_path нет → §1–§3
+  (проверено в его сборке, см. круг 3).
 - R11 claude/gracious-mendel-eopem6 — IA_ROUND15 и .bk-dark есть; мои ключи — i18n_keys_r15.json (189).
 - R17 claude/sweet-euler-5tiu5b, R16 claude/youthful-johnson-6nz5mp, R13 claude/gifted-mayer-p86myv — функции есть.
 - R02 claude/affectionate-shannon-jm6ws5 — демо-мир в работе; просьба про «нужно решение» — INTEGRATION §8.
 
 ## Дальше
 1. Каждый круг: AMENDMENTS.md → find_branches.py → проверить соседей (R01 маршруты, R13 прогноз на неделю, R02 мир).
-2. Когда R01 добавит маршруты — поднять его сборку (B1 16 окт 14:00) и проверить board/week/день там.
+2. B1 R01 (16 окт 14:00 Астаны = 09:00 UTC): build_check.cjs на его сборке; если staff_view не взят — снова в STATUS.
 3. Демо-мир R02: сверка чисел «Картины дня», ситуационного центра и табло R17 с картой R07 и «Обращениями» R09.
 4. Полировка: ui_check — переписать 20 устаревших проверок под эталон A; кадры 1024 для ситуационного центра.
 
