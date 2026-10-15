@@ -83,6 +83,12 @@ GET works-calendar, GET works-conflicts (R12, engine.civic_geo.api.handle, strip
   R17: табло — две колонки (overdue_answer, overdue_fix) и в totals те же ключи.
 Проверка: python3 tests/civic/R10/consistency.py --root <сборка> → C1 (R08 = R17 overdue_fix), C2 (R09 = R17 overdue_answer),
 C4 (если числа разные — подписи разные, ru и kk).
+Состояние 15 окт 16:40 UTC (превью pvE и pvF): R09 97342bdf — вкладка «Ответ просрочен» / «Жауап мерзімі өтті» (сделано);
+R17 e7ade08f — overdue_fix в metrics (C1: R08 5 = R17 5 — PASS; C2: R09 2 = R17 2 — PASS). Осталось одно место — C4:
+в интерфейсе R17 (web/civic/agencies/agencies.js) KPI табло и строка службы подписаны «просрочено» / «мерзімі өткен»
+(ключ agencies.kpi.overdue), а число под ними — срок ответа (2), тогда как «Картина дня» R08 под тем же словом — 5.
+R17: подпись числа ответа — «Ответ просрочен» (ключ R11 inbox.tab.overdue_answer или свой agencies.kpi.overdue_answer),
+а «просрочено» — у overdue_fix (или обе колонки рядом). R08 может не менять ничего.
 
 Что уже сходится на мире R02 (превью pv1): A1 карта Нура 30 дн. 90 = «Обращения» 90; A2 «Картина дня» районы 7 дн. 81 =
 карта 81 = «Обращения» 81; «Я тоже» Нура 94 = мир 94; жалоб Нуры за 30 дней 154 = мир 154. R01: patch R02 для шлюза
