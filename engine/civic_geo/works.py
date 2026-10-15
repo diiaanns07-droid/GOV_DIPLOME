@@ -217,7 +217,8 @@ class BoundWork:
             "status": self.status, "source": self.source, "demo": self.demo, "district": self.district,
             "segments": list(self.edge_ids),
             "length_m": round(self.length_m, 1) if self.length_m else 0.0,
-            "street_ru": self.street_ru, "street_kk": self.street_kk,
+            # Улица — коротко, как в строках календаря и подписях конфликтов: «ул. Сыганак» / «Сығанақ көшесі».
+            "street_ru": names.ru_short(self.street_ru) if self.street_ru else None, "street_kk": self.street_kk,
             "approximate": self.approximate, "bind": self.bind, "point": self.point,
         }
         if self.approximate:
@@ -228,9 +229,12 @@ class BoundWork:
             out["bbox"] = [round(v, 6) for v in self.bbox]
         if self.issues:
             out["issues"] = list(self.issues)
-        for key in ("source_ref", "source_name"):
+        # Поля R06 (works_v2): ссылка на запись в разделе «Работы и отключения», перенос срока, зона отключения.
+        for key in ("source_ref", "source_name", "link", "zone_ru", "zone_kk"):
             if r.get(key):
                 out[key] = r[key]
+        if r.get("delayed"):
+            out["delayed"] = True
         return out
 
 

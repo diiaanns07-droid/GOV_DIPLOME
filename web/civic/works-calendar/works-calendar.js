@@ -85,6 +85,8 @@
       "wcal.work.days": { one: "{n} день", few: "{n} дня", many: "{n} дней" },
       "wcal.work.length": "участок {m} м",
       "wcal.work.context": "Показана как вторая сторона конфликта",
+      "wcal.work.open": "Открыть запись",
+      "wcal.work.delayed": "срок перенесён",
       "wcal.status.planned": "Запланировано",
       "wcal.status.in_progress": "Идут работы",
       "wcal.status.done": "Завершено",
@@ -154,6 +156,8 @@
       "wcal.work.days": "{n} күн",
       "wcal.work.length": "учаске {m} м",
       "wcal.work.context": "Қайшылықтың екінші жағы ретінде көрсетілген",
+      "wcal.work.open": "Жазбаны ашу",
+      "wcal.work.delayed": "мерзімі ауыстырылды",
       "wcal.status.planned": "Жоспарланған",
       "wcal.status.in_progress": "Жұмыс жүріп жатыр",
       "wcal.status.done": "Аяқталды",
@@ -330,6 +334,19 @@
     return "error";
   }
 
+  // Какой конфликт открыть: BirgeWorksCalendar.openConflict(id) (палитра R01, сцена 8), opts.conflict или адрес
+  // #works-calendar/<id конфликта или работы>. id работы — первый конфликт с этой работой.
+  let wantedConflict = null;
+  function takeWanted(data) {
+    let want = wantedConflict;
+    const m = /^#works-calendar\/([A-Za-z0-9._:-]{1,96})$/.exec(root.location && root.location.hash || "");
+    if (!want && m) want = m[1];
+    if (!want) return null;
+    wantedConflict = null;
+    const c = data.conflicts.find((x) => x.id === want) || data.conflicts.find((x) => x.works.includes(want));
+    return c ? c.id : null;
+  }
+
   // Общий кэш последнего ответа — слой карты рисует то же, что видел календарь (без второго запроса).
   const shared = { data: null, at: 0, pending: null };
 
@@ -386,6 +403,7 @@
   // ------------------------------------------------------------------ экран
   function mount(rootEl, options) {
     const opts = Object.assign({ apiBase: "/api/civic/v2" }, options || {});
+    if (opts.conflict) wantedConflict = String(opts.conflict);
     const state = {
       status: "loading", data: null, error: null, filters: { district: "", service: "" }, shift: 0,
       selected: null, popover: null, destroyed: false, seq: 0,
@@ -425,7 +443,9 @@
         state.status = "ready";
         shared.data = data;
         shared.at = Date.now();
-        if (!state.selected || !data.conflicts.some((c) => c.id === state.selected)) state.selected = data.conflicts[0] ? data.conflicts[0].id : null;
+        const wanted = takeWanted(data);
+        if (wanted) state.selected = wanted;
+        else if (!state.selected || !data.conflicts.some((c) => c.id === state.selected)) state.selected = data.conflicts[0] ? data.conflicts[0].id : null;
         render();
       }).catch((err) => {
         if (state.destroyed || seq !== state.seq) return;
@@ -744,7 +764,7 @@
         [tr("wcal.work.service"), h("span", { class: "wcal-pop__svc" }, [h("span", { class: "wcal-swatch", style: "background:" + ((svc && svc.color) || "#7b8494") }), serviceName(w.service, svc)])],
         [tr("wcal.work.kind"), tr("wcal.kind_short." + w.kind)],
         [tr("wcal.work.dates"), fmtRange(w.starts_on, w.ends_on) + " · " + tr("wcal.work.days", { n: days })],
-        [tr("wcal.work.status"), tr("wcal.status." + (w.status || "unknown"))],
+        [tr("wcal.work.status"), tr("wcal.status." + (w.status || "unknown")) + (w.delayed ? " · " + tr("wcal.work.delayed") : "")],
         [tr("wcal.work.place"), place],
       ];
       const pop = h("div", { class: "wcal-pop bk-glass bk-glass--strong", role: "dialog", "aria-label": lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru, tabindex: "-1" }, [
@@ -760,19 +780,29 @@
           return c ? h("button", { type: "button", class: "wcal-cchip wcal-cchip--" + c.severity + " wcal-pop__conflict",
             onclick: () => { closePopover(false); select(c.id, true); } }, [tr("wcal.chip." + c.kind)]) : null;
         }),
-        !w.approximate && w.geometry ? h("button", { type: "button", class: "bk-btn wcal-pop__map", onclick: () => showWorkOnMap(w) }, [icon("pin"), tr("common.action.show_on_map")]) : null,
+        h("div", { class: "wcal-pop__acts" }, [
+          !w.approximate && w.geometry ? h("button", { type: "button", class: "bk-btn wcal-pop__map", onclick: () => showWorkOnMap(w) }, [icon("pin"), tr("common.action.show_on_map")]) : null,
+          // Запись R06 («Работы и отключения», #works/<id>) — открыть для правки сроков и участка.
+          w.link && /^#works\/[A-Za-z0-9._:-]+$/.test(w.link) ? h("a", { class: "bk-btn bk-btn--ghost wcal-pop__open", href: w.link }, [icon("edit"), tr("wcal.work.open")]) : null,
+        ]),
       ]);
+      // Карточка — панель поверх ленты с той стороны, где нет нажатой полосы (лента не прокручивается и полоса видна);
+      // телефон — шторка снизу экрана.
       const box = rootEl.querySelector(".wcal-tl");
       if (!box) return;
-      box.append(pop);
-      const ar = anchor.getBoundingClientRect(), br = box.getBoundingClientRect();
-      const left = Math.min(Math.max(8, ar.left - br.left + box.scrollLeft), box.scrollLeft + box.clientWidth - 330);
-      pop.style.left = Math.max(box.scrollLeft + 8, left) + "px";
-      pop.style.top = ar.bottom - br.top + box.scrollTop + 6 + "px";
+      rootEl.append(pop);
+      if ((rootEl.clientWidth || innerWidth) < PHONE) {
+        pop.classList.add("wcal-pop--sheet");
+      } else {
+        const rr = rootEl.getBoundingClientRect(), br = box.getBoundingClientRect(), ar = anchor.getBoundingClientRect();
+        const onRight = (ar.left + ar.right) / 2 < (br.left + br.right) / 2;
+        pop.style.top = br.top - rr.top + 8 + "px";
+        pop.style.maxHeight = Math.max(200, br.height - 16) + "px";
+        if (onRight) pop.style.right = rr.right - br.right + 8 + "px";
+        else pop.style.left = br.left - rr.left + labelWidth() + 8 + "px";
+      }
       state.popover = { el: pop, anchor, work: w.id };
       pop.focus({ preventScroll: true });
-      const r = pop.getBoundingClientRect();
-      if (r.bottom > br.bottom) box.scrollTop += r.bottom - br.bottom + 8;
     }
     function closePopover(returnFocus) {
       if (!state.popover) return;
@@ -913,6 +943,7 @@
         rootEl.removeEventListener("keydown", onKey);
         doc.removeEventListener("click", onDocClick, true);
         doc.removeEventListener("birge:lang", onLang);
+        delete rootEl.birgeWorksCalendar;
         rootEl.classList.remove("wcal");
         rootEl.removeAttribute("data-wcal");
         rootEl.replaceChildren();
@@ -921,6 +952,7 @@
       reload: load,
       get state() { return { status: state.status, selected: state.selected, filters: Object.assign({}, state.filters) }; },
     };
+    rootEl.birgeWorksCalendar = handle;
     return handle;
   }
 
@@ -1134,7 +1166,20 @@
     return { focus, showLayer, hideLayer, closeCard, get card() { return card; } };
   })();
 
-  root.BirgeWorksCalendar = { mount, version: "wcal-r15-1", focusConflict: (c) => MapView.focus({ conflict: c, works: [], services: [], opts: {} }), map: MapView };
+  // Открыть календарь на конфликте (id конфликта или работы): для палитры R01 («Сцена 8») и ссылок соседей.
+  function openConflict(id) {
+    wantedConflict = id ? String(id) : null;
+    const shell = root.BirgeShell;
+    if (shell && typeof shell.setSection === "function") {
+      if (shell.section === SCREEN_ID) {
+        const el = doc.querySelector("[data-wcal]");
+        if (el && el.birgeWorksCalendar) el.birgeWorksCalendar.reload();
+      } else shell.setSection(SCREEN_ID);
+      return true;
+    }
+    return false;
+  }
+  root.BirgeWorksCalendar = { mount, version: "wcal-r15-1", openConflict, map: MapView };
 
   // Оболочка R01: экран в меню акимата и слой «Конфликты работ» (место в меню решают R11 и R01).
   function register() {

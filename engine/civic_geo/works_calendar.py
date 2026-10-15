@@ -395,6 +395,29 @@ def build_calendar(records: list[dict], date_from: date, date_to: date, filters:
     }
 
 
+# ------------------------------------------------------------------ для соседей (вызов в процессе, только чтение)
+def conflicts_summary(district: str | None = None, months_ahead: int = DEFAULT_MONTHS_AHEAD, limit: int = 3) -> dict:
+    """Короткая сводка конфликтов работ для R08 (ситуационный центр) и R17 («Штаб ведомств»).
+
+    {"conflicts": n, "high": k, "top": [{id, kind, severity, title_ru, title_kk, street_ru, street_kk, when_from,
+    when_to, works}], "period": {...}, "demo": bool, "source": "..."} — те же числа, что в «Календаре работ».
+    Права проверяет вызывающий модуль (данные — для экранов сотрудника). Ошибка данных — {"conflicts": 0, ...}."""
+    today = today_astana()
+    start = add_months(_month_start(today), -DEFAULT_MONTHS_BACK)
+    end = _month_end(add_months(_month_start(today), max(0, int(months_ahead))))
+    try:
+        records, info = load_works(today)
+        cal = build_calendar(records, start, end, {"district": district} if district in DISTRICTS else {}, today)
+    except Exception:
+        LOGGER.exception("civic_geo conflicts_summary failed")
+        return {"conflicts": 0, "high": 0, "top": [], "period": {"from": start.isoformat(), "to": end.isoformat()},
+                "demo": False, "source": "error"}
+    top = [{k: c.get(k) for k in ("id", "kind", "severity", "title_ru", "title_kk", "street_ru", "street_kk",
+                                  "when_from", "when_to", "works")} for c in cal["conflicts"][:max(0, int(limit))]]
+    return {"conflicts": cal["counts"]["conflicts"], "high": cal["counts"]["high"], "top": top,
+            "period": cal["period"], "demo": cal["demo"], "source": info["source"]}
+
+
 # ------------------------------------------------------------------ ответы маршрутов
 def _error(status: int, code: str, message: str, field: str | None = None):
     body = {"error": {"code": code, "message": message}}

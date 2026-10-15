@@ -2,7 +2,7 @@
    в var(…, x) — для страницы стенда без ui-kit. Красный — только конфликт; зелёный — только «нет конфликтов». */
 
 .wcal {
-  display: flex; flex-direction: column; gap: var(--s-4, 16px);
+  position: relative; display: flex; flex-direction: column; gap: var(--s-4, 16px);
   font-family: var(--font, "Inter", system-ui, sans-serif); color: var(--c-ink, #121a17);
   font-size: var(--fs-small, 14px); line-height: var(--lh-ui, 1.21);
 }
@@ -174,9 +174,15 @@
 @keyframes wcal-pop { from { scale: .85; } to { scale: 1; } }
 
 /* карточка работы по нажатию на полосу */
-.wcal-pop { position: absolute; z-index: 6; width: 320px; max-width: calc(100% - 16px); padding: 14px 16px 16px; border-radius: var(--r-xl, 18px);
-  background: var(--glass-strong, rgba(255, 255, 255, .96)); box-shadow: var(--shadow-2, 0 12px 32px rgba(16, 24, 20, .14));
-  display: grid; gap: 10px; outline: none; }
+.wcal-pop { position: absolute; z-index: 8; width: 330px; max-width: calc(100% - 16px); overflow: auto; padding: 14px 16px 16px;
+  border-radius: var(--r-xl, 18px); background: var(--glass-strong, rgba(255, 255, 255, .96));
+  box-shadow: var(--shadow-3, 0 20px 60px rgba(16, 24, 20, .18)); display: grid; align-content: start; gap: 10px; outline: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .wcal-pop { animation: wcal-fade var(--t-base, 200ms) var(--ease, ease-out); }
+}
+@keyframes wcal-fade { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
+.wcal-pop--sheet { position: fixed; left: 8px; right: 8px; bottom: 8px; width: auto; max-width: none; max-height: 70vh;
+  border-radius: var(--r-glass-sheet, 26px) var(--r-glass-sheet, 26px) var(--r-xl, 18px) var(--r-xl, 18px); }
 .wcal-pop__hd { display: flex; align-items: flex-start; gap: 8px; }
 .wcal-pop__title { margin: 0; flex: 1; font-size: var(--fs-body, 15px); font-weight: var(--fw-semi, 600); line-height: 1.3; }
 .wcal-pop__note { margin: 0; font-size: var(--fs-caption, 13px); color: var(--c-text-2, #4b5752); }
@@ -186,7 +192,9 @@
 .wcal-pop__svc { display: inline-flex; align-items: center; gap: 6px; }
 .wcal-pop .wcal-cchip { position: relative; transform: none; justify-self: start; }
 .wcal-pop .wcal-demo__tag { justify-self: start; }
-.wcal-pop__map { justify-self: start; gap: 8px; }
+.wcal-pop__acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.wcal-pop__acts:empty { display: none; }
+.wcal-pop__map, .wcal-pop__open { gap: 8px; text-decoration: none; }
 .wcal-x { display: inline-grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; flex: none;
   background: var(--c-fill, rgba(18, 26, 23, .06)); color: var(--c-ink, #121a17); cursor: pointer; position: relative; }
 .wcal-x::before { content: ""; position: absolute; inset: -6px; }
