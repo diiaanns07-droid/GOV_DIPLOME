@@ -79,12 +79,14 @@ function screenMetrics(page, sel) {
     const vis = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
       return r.width > 1 && r.height > 1 && cs.visibility !== "hidden" && cs.display !== "none" && r.bottom > 0 && r.top < innerHeight
         && !e.closest(".bk-sr-only, .sr-only, .visually-hidden"); };
-    const sizes = new Map();
+    const sizes = new Map(), tinyEx = [];
     for (const el of root.querySelectorAll("*")) {
       const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
-      if (!own || !vis(el) || el.closest("svg")) continue;
+      // Строка лицензии карты («© OpenStreetMap») — служебная подпись, правило шрифта к ней не относится (как в ux_lib).
+      if (!own || !vis(el) || el.closest("svg, .maplibregl-ctrl-attrib") || /©/.test(own)) continue;
       const fs = Math.round(parseFloat(getComputedStyle(el).fontSize) * 2) / 2;
       if (fs > 0) sizes.set(fs, (sizes.get(fs) || 0) + 1);
+      if (fs > 0 && fs < 13 && tinyEx.length < 6) tinyEx.push(`${fs}px «${own.slice(0, 28)}»`);
     }
     const small = [];
     for (const e of root.querySelectorAll("button, a[href], [role=button], [role=tab], input, select, summary, textarea")) {
@@ -118,7 +120,7 @@ function screenMetrics(page, sel) {
     }
     // Эмодзи — знаки, которые рисуются цветной картинкой: Emoji_Presentation или знак + VS16 (▶ ⚠ ✓ как текст — можно).
     const emoji = ((root.innerText || "").match(/\p{Emoji_Presentation}|\p{Extended_Pictographic}\uFE0F/gu) || []).filter((c) => !/^[0-9#*]/.test(c));
-    return { sizes: [...sizes.entries()].sort((a, b) => a[0] - b[0]), small, tabsCut, bigIll, emoji: [...new Set(emoji)].slice(0, 6) };
+    return { sizes: [...sizes.entries()].sort((a, b) => a[0] - b[0]), tinyEx, small, tabsCut, bigIll, emoji: [...new Set(emoji)].slice(0, 6) };
   }, sel);
 }
 
@@ -224,7 +226,7 @@ async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, 
   if (m) {
     const sizes = m.sizes.map(([s]) => s);
     const min = sizes.length ? sizes[0] : null;
-    add(sc.id, own, variant, "шрифт не мельче 13 px", min === null || min >= 13 ? "PASS" : "FAIL", { min, sizes: m.sizes.slice(0, 8) });
+    add(sc.id, own, variant, "шрифт не мельче 13 px", min === null || min >= 13 ? "PASS" : "FAIL", { min, ex: m.tinyEx, sizes: m.sizes.slice(0, 8) });
     add(sc.id, own, variant, "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)", sizes.length <= 3 ? "PASS" : "WARN", { n: sizes.length, sizes });
     const under40 = m.small.filter((x) => x.h < 40 || x.w < 40), mid = m.small.filter((x) => !(x.h < 40 || x.w < 40));
     add(sc.id, own, variant, "зоны нажатия ≥ 44 px (п. 10)", under40.length ? "FAIL" : mid.length ? "WARN" : "PASS",
