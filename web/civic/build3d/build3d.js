@@ -1223,11 +1223,17 @@
       fig.appendChild(tagA);
       fig.appendChild(line);
       fig.appendChild(handle);
-      // «Было» не загрузилось — показываем прежнее превью без шторки (одна картинка, без подписей).
-      before.addEventListener("error", function () {
-        if (!fig.parentNode) return;
+      // Картинка не загрузилась (сборка без новых превью) — прежнее превью без шторки и подписей; нет и его — fallback сам
+      // покажет значок вида (своя карточка) или уберёт поле картинки (карточка R06).
+      var fell = false;
+      var fallBack = function () {
+        if (fell || !fig.parentNode) return;
+        fell = true;
+        fig.parentNode.classList.remove("b3d-pd__im--night");
         fig.parentNode.replaceChild(fallback(), fig);
-      });
+      };
+      before.addEventListener("error", fallBack);
+      after.addEventListener("error", fallBack);
       function set(v) {
         v = Math.max(0, Math.min(100, Math.round(v)));
         ba.pos = v;

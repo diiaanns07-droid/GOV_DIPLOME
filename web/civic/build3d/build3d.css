@@ -1045,6 +1045,11 @@
   display: flex;
   align-items: center;
 }
+/* Зона нажатия 44 px — сама кнопка, а не только ::after ui-kit (проверка R05 «controls_48px» меряет кнопку). */
+.b3d-time__seg > button {
+  min-height: var(--tap, 44px);
+  min-width: 72px;
+}
 .b3d-time--r06 {
   padding: var(--s-3, 12px) var(--s-4, 16px) 0;
 }

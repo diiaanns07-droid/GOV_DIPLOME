@@ -5,11 +5,15 @@ R05 · раунд 15 · INTEGRATION (дополняется по ходу рау
      web/civic/build3d/build3d-landmarks.js и его подключение удалены коммитом 061a575c. Коммит a3749eaa (модели) — НЕ брать.
      Брать web/civic/build3d/ только из последней поставки R05 (DELIVERY.json → code_sha).
    - Ориентиры — настоящие здания подложки (R01 basemap-style.js). R05 даёт данные (landmarks.json), поиск и перелёт.
+   - Проверка «моделей нет» для сборки: `git grep -n "build3d-landmarks\|function baiterek\|khan_shatyr" web/civic/build3d`
+     → пусто. Слова baiterek / akorda в web/civic/build3d/landmarks.js и data/landmarks.json — это id ориентиров (те же,
+     что в basemap-style.js R01) для поиска и подписей, а не модели.
 
 1. ОРИЕНТИРЫ: ПОИСК → ПЕРЕЛЁТ К НАСТОЯЩЕМУ ЗДАНИЮ (R01)
    Файлы R05: web/civic/build3d/landmarks.js (BirgeLandmarks: load / query / flyTo, без three.js и без DOM),
               web/civic/build3d/data/landmarks.json (= data/civic/astana/landmarks/landmarks.json, schema birge-landmarks-v2).
-   Патч R01 (одним файлом, проверен на стенде FINAL-4 + R05):
+   Патч R01 (одним файлом; применяется на ветке R01 claude/brave-fermi-nhzetj @ 5529d819 — git apply --check, и на
+   FINAL-4 кроме birge-ref.css; проверен на стенде FINAL-4 + R05):
      research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch
        - web/index.html: <script defer src="/civic/build3d/landmarks.js"> перед explore.js;
        - web/civic/shell/explore.js: подсказка вида «landmark» (название, «монумент · район Есиль»), первыми после районов;

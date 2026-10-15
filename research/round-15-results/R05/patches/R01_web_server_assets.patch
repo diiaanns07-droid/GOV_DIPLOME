@@ -1,8 +1,8 @@
 diff --git a/ui/web_server.py b/ui/web_server.py
-index b1292654..32b118d0 100644
+index 5ace2123..df12bdb4 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
-@@ -107,12 +107,17 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+@@ -108,12 +108,17 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                  "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
                  "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
                  "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",

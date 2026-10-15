@@ -73,6 +73,7 @@ await check("card_slider_1366_ru", async () => {
   await page.keyboard.press("ArrowLeft");
   const k1 = (await slider(page)).now;
   await page.keyboard.press("End");
+  await page.waitForTimeout(250); // подпись гаснет за 150 мс (переход)
   const k2 = await slider(page);
   await page.keyboard.press("Home");
   const k3 = (await slider(page)).now;

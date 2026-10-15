@@ -70,21 +70,21 @@ index a1240590..e6480fed 100644
    function addLabels(map) {
      const style = map.getStyle();
 diff --git a/web/civic/shell/birge-ref.css b/web/civic/shell/birge-ref.css
-index 3fd9c08d..d28f1ad4 100644
+index 4890eddd..07270f3b 100644
 --- a/web/civic/shell/birge-ref.css
 +++ b/web/civic/shell/birge-ref.css
-@@ -105,6 +105,11 @@ body:not(.civic-mode) #birge-chips, body:not(.civic-mode) #birge-today, body:not
-     content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 50%; vertical-align: middle;
-     background: var(--c-text-3, #7e8a85);
-   }
-+  /* Ориентир (R05, П1) — настоящее здание: маленький тёмный квадрат вместо точки, без отдельной краски. */
-+  body.civic-mode[data-birge-layout="ref"] .civic-explore-list [role="option"][data-kind="landmark"] .civic-explore-opt-name::before {
-+    content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 2px; vertical-align: middle;
-+    background: var(--c-text-2, #4b5752);
-+  }
-   body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="1"] .civic-explore-opt-name::before { background: var(--heat-1, #fac775); }
-   body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="2"] .civic-explore-opt-name::before { background: var(--heat-2, #ef9f27); }
-   body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="3"] .civic-explore-opt-name::before { background: var(--heat-3, #e24b4a); }
+@@ -50,6 +50,11 @@ body.civic-mode[data-birge-layout="ref"] .civic-explore-list [role="option"]:is(
+   content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 50%; vertical-align: middle;
+   background: var(--c-text-3, #7e8a85);
+ }
++/* Ориентир (R05, поправка П1) — настоящее здание подложки: маленький тёмный квадрат вместо точки, без отдельной краски. */
++body.civic-mode[data-birge-layout="ref"] .civic-explore-list [role="option"][data-kind="landmark"] .civic-explore-opt-name::before {
++  content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 2px; vertical-align: middle;
++  background: var(--c-text-2, #4b5752);
++}
+ body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="1"] .civic-explore-opt-name::before { background: var(--heat-1, #fac775); }
+ body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="2"] .civic-explore-opt-name::before { background: var(--heat-2, #ef9f27); }
+ body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="3"] .civic-explore-opt-name::before { background: var(--heat-3, #e24b4a); }
 diff --git a/web/civic/shell/explore.js b/web/civic/shell/explore.js
 index 4587611b..b08cd345 100644
 --- a/web/civic/shell/explore.js
@@ -172,10 +172,10 @@ index 4587611b..b08cd345 100644
        if (exactTop.length === 1) { choose(exactTop[0]); return; }
        if (index.state === "loading" && !top.length) { say("shell.explore.loading", "loading"); return; }
 diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
-index fde39a8b..fde80439 100644
+index 33d54aaa..2e9fcf40 100644
 --- a/web/civic/shell/shell.js
 +++ b/web/civic/shell/shell.js
-@@ -1134,6 +1134,12 @@
+@@ -1135,6 +1135,12 @@
        },
        // Поиск в шапке (чистый дизайн): место с жалобами — карточка цели R07 (та же, что по значку на карте).
        onPlace: (target) => { if (target?.kind && target?.id) S.mounted.heat?.focusTarget?.(target.kind, target.id); },
