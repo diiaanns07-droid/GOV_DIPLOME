@@ -5,8 +5,8 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "e5597c0cc53abed4078a7fd0cadf3ad0b66adef0",
-  "tested_sha": "e5597c0cc53abed4078a7fd0cadf3ad0b66adef0",
+  "code_sha": "907bfc9d6dd8daa2f6d0adddfe4bbb58fa5ee6e1",
+  "tested_sha": "907bfc9d6dd8daa2f6d0adddfe4bbb58fa5ee6e1",
   "push_status": "OK",
   "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
   "world": {
@@ -14,10 +14,10 @@
     "schema": "birge-demo-world-v1",
     "schema_version": "1.1",
     "seed": 15,
-    "sha256": "d183eca5d19128e8e5b01644e593a94b4bf1cfe22485009d14b4ce3537d6e6cf",
+    "sha256": "53ff7be3339a7c723a3048af31015fd4693a352fb0eed240c751d0925756782d",
     "counts": {
       "complaints": 743,
-      "people_with_metoo": 1130,
+      "people_with_metoo": 1171,
       "works": 39,
       "outages": 4,
       "planned_conflicts": 5,
@@ -30,7 +30,7 @@
       "events": 4
     },
     "nura_share": 0.36,
-    "verified_share": 0.11,
+    "verified_share": 0.125,
     "joint_share": 0.054
   },
   "changed_paths": [
@@ -60,16 +60,18 @@
     "R09": "ваш world_seed.seed_world на материализованном мире = EXPECTED (743, inbox совпадает); patches/R09_world_seed_materialize.patch — страховка для сырого мира",
     "others": "R07 §4, R06 §5, R12 §6 (materialize в load_world), R13 §7, R16 §8, R17 §9, R10 §10 (materialize в world_numbers)",
     "R12": "patches/R12_works_calendar_world.patch — календарь читает мир, находит ровно 5 задуманных конфликтов; scenes.scene8.dig_work для openConflict",
-    "R10": "patches/R10_consistency_world.patch — world_numbers через materialize (154 жалобы / 78 «Я тоже» за 30 дней)"
+    "R10": "patches/R10_consistency_world.patch — world_numbers через materialize (154 жалобы / 78 «Я тоже» за 30 дней)",
+    "R04": "совместные жалобы — тексты, которые route() читает как те же две службы; 743/743 (INTEGRATION §10a)",
+    "R17": "EXPECTED services: «открыто» у совместной — по части службы, как табло R17"
   },
   "tests": {
     "pytest tests/civic/R02/round15": {
       "status": "PASS",
       "passed": 25,
-      "skipped": 1,
+      "skipped": 2,
       "failed": 0,
-      "seconds": 20,
-      "note": "skipped — test_r12_finds_planned_conflicts без кода R12 в ветке R02; на ветке R12 @ 8ecfbd37 — PASS"
+      "seconds": 21,
+      "note": "skipped — стыки с R12 (find_conflicts) и R04 (route) без их кода в ветке R02; на их ветках — PASS"
     },
     "pytest tests/civic/R02 (все раунды R02)": {
       "status": "PASS",
@@ -138,8 +140,7 @@
       "status": "PASS",
       "inserted": 743,
       "inbox_equals_expected": true,
-      "raw_world_without_patch": "743 invalid",
-      "raw_world_with_patch": "743 inserted"
+      "recheck": "ветка R09 @ eed6393f на текущем мире: inbox город и Нура = EXPECTED, совместных 40, передач 31"
     },
     "стык с R07: world.seed_world (ветка R07 @ 5f9dc0ae)": {
       "status": "PASS",
@@ -151,84 +152,89 @@
       "r09": "reset 743",
       "matched": 14,
       "of": 14
+    },
+    "стык с R04: route() по всем жалобам мира (ветка R04 @ b9f828cc)": {
+      "status": "PASS",
+      "agree": 743,
+      "of": 743
     }
   },
   "consistency_table": {
-    "where": "живой стенд R02 (облако), засев 15 окт 17:13 Астаны; файл research/round-15-results/R02/stand_numbers_world.json",
+    "where": "живой стенд R02 (облако), FINAL-4 + patches/R01_demo_world.patch, засев 15 окт ~17:45 Астаны; файл research/round-15-results/R02/stand_numbers_world.json",
     "district": "nura",
     "rows": [
       {
         "metric": "карта R07 «Нура · N», люди открытых целей, 7 / 14 / 30 дней",
         "stand": [
-          74,
-          90,
-          94
+          83,
+          91,
+          96
         ],
         "world": [
-          74,
-          90,
-          94
+          83,
+          91,
+          96
         ]
       },
       {
         "metric": "«Обращения» R09: люди открытых жалоб района, поданных за 7 / 30 дней",
         "stand": [
-          74,
-          94
+          83,
+          96
         ],
         "world": [
-          74,
-          94
+          83,
+          96
         ]
       },
       {
         "metric": "«Картина дня» R08: районы за 7 дней",
-        "stand": 74,
-        "world": 74
+        "stand": 83,
+        "world": 83
       },
       {
         "metric": "«Картина дня» R08 Нура: новые за день / за неделю / в работе / просрочено (исправление) / исправлено за неделю",
         "stand": [
           9,
           66,
-          50,
-          14,
-          36
+          43,
+          5,
+          45
         ],
         "world": [
           9,
           66,
-          50,
-          14,
-          36
+          43,
+          5,
+          45
         ]
       },
       {
         "metric": "«Нужно решение акима» Нура — жалобы мира",
         "stand": [
-          "c-w1500469",
-          "c-w1500483"
+          "c-w1500327",
+          "c-w1500417"
         ],
         "world": [
-          "c-w1500469",
-          "c-w1500483"
+          "c-w1500327",
+          "c-w1500417"
         ]
       },
       {
         "metric": "«Обращения» R09 город: новые / в работе / ждут проверки / ответ просрочен / вернули",
         "stand": [
-          21,
-          75,
-          436,
-          1,
-          7
+          19,
+          62,
+          424,
+          5,
+          5
         ],
         "world": [
-          21,
-          75,
-          436,
-          1,
-          7
+          19,
+          62,
+          424,
+          5,
+          5
         ]
       },
       {
@@ -244,23 +250,28 @@
       },
       {
         "metric": "«Пульс» Нуры",
-        "stand": "Снег ×7,1 (62 за 7 дней), транспорт ×4,8, освещение ×4,6, новое горячее место «Хан Шатыр» 12, «Я тоже» +8"
+        "stand": "Снег ×4,8 (60 за 7 дней), транспорт ×6,6, освещение ×5,3, новое горячее место «Хан Шатыр» 12, «Я тоже» +8"
       },
       {
-        "metric": "шаг 2 FINAL-4: «Хан Шатыр» — освещение, люди за 14 дней (R09 place_reporters) / на значке остановки",
-        "stand": "3 (тест seed_r09)",
+        "metric": "шаг 2 FINAL-4: «Хан Шатыр» — освещение, люди за 14 дней / на значке остановки",
+        "stand": "3 (тест seed_r09 и стык R09)",
         "world": [
           3,
           12
         ]
       },
       {
+        "metric": "подсказка ИИ R04 route() = службы жалоб мира",
+        "stand": "743 из 743 (ветка R04)",
+        "world": "40 совместных, 703 одиночных"
+      },
+      {
         "metric": "табло служб R17",
-        "stand": "NOT_RUN — модуля R17 нет в ветке R02",
+        "stand": "NOT_RUN — модуля R17 нет в ветке R02; R17 сверил свой расчёт с EXPECTED (20 служб) — расхождение «открыто у совместной» снято (по части службы)",
         "world": "EXPECTED.json → services.by_service"
       }
     ],
-    "note": "«Просрочено» у R08 (срок исправления, Нура 14) и у R09 (срок ответа, Нура 0) — разные понятия модулей, не ошибка мира; предложение подписей и сверки — INTEGRATION §3"
+    "note": "«Просрочено» у R08 (срок исправления, Нура 5) и у R09 (срок ответа, Нура 2) — разные понятия модулей, не ошибка мира; INTEGRATION §3"
   },
   "screens": [],
   "screens_note": "У R02 в раунде 15 нет своих экранов (данные). Кадры стенда в режиме мира — NOT_RUN: экраны принадлежат R01/R07/R08/R09, а подложка в облаке не грузится (П1 п. 6); числа экранов сверены через API (consistency_table).",
