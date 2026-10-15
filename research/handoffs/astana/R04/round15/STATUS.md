@@ -80,6 +80,15 @@
   Patch'и: patches/r13_pii_labels.patch (R13 174/174), patches/r11_pii_labels.patch (R11 28/28). Сводный флаг «pii»
   для R17 не добавляю: у R13 он бы показался той же сырой строкой. Код R04 не менялся (code_sha 0affd9d0).
 
+- 15 окт 22:26 (круг 6): AMENDMENTS — новых нет. R09 D1 (d9ca175c): карточка сотрудника сама зовёт POST /route
+  ({text ≤ 2000, category, subtopic?, point?}) и берёт why_ru / source / role — совместимо; «Черновик ответа» — POST
+  /reply-draft {complaint_id, status, lang} -> draft_ru / draft_kk — совместимо. R16 зовёт similar_initiatives(title,
+  point, 30, records=…, kind=…) — совместимо. Их pytest с ML-API R04: R09@80a35084 589 passed / 1 skipped,
+  R16@6bdf8c3c 56/56. Уточнил находку круга 5 (была неточной): у R13 сотрудник видит сырую строку только для карты
+  (qa.js), а счёт / квартира / ник отфильтрованы в _staff_view; ещё их запасной шаблон ИИН ловит первые 12 цифр карты.
+  patches/r13_pii_labels.patch пересобран на R13@97d6ccdf (176/176), r11_pii_labels.patch на R11@d94a2983 (31/31).
+  R17 правку pii всё ещё не взял. Код R04 не менялся (code_sha 0affd9d0).
+
 ## Дальше (следующие круги)
 - Проверять соседей каждый круг: R01 взял patch? R09 зовёт route_hint/reply_draft? R17 поправил проверку pii?
   Демо-мир R02 (world_v1.json, scenes) — прогнать route() по жалобе сцены 8 и по всем жалобам мира (доля «2 службы»

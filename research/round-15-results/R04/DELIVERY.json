@@ -204,7 +204,9 @@
   }
  },
  "patches_for_neighbours": {
-  "R17": "research/round-15-results/R04/patches/r17_crisis_pii.patch — блокировать card/iban/apartment/contact в публичных обновлениях кризиса (R17 @ 72676e3d: apply OK, их тесты 42/42)"
+  "R17": "research/round-15-results/R04/patches/r17_crisis_pii.patch — блокировать card/iban/apartment/contact в публичных обновлениях кризиса (R17 @ 72676e3d: apply OK, их тесты 42/42)",
+  "R13": "research/round-15-results/R04/patches/r13_pii_labels.patch — подписи card/iban/apartment/contact ru/kk (qa.js — иначе сотрудник видит сырую строку ask.staff.pii.card), все семь видов в _staff_view, шаблон ИИН не берёт кусок номера карты, запасной шаблон карты (R13 @ 97d6ccdf: apply OK, tests/civic/R13 176/176)",
+  "R11": "research/round-15-results/R04/patches/r11_pii_labels.patch — те же подписи в web/civic/i18n/ru.json, kk.json (R11 @ d94a2983: apply OK, tests/civic/R11 31/31)"
  },
  "r15_findings": {
   "S48": {

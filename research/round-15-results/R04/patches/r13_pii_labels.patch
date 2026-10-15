@@ -1,3 +1,51 @@
+diff --git a/ui/civic_qa/service.py b/ui/civic_qa/service.py
+index 46493862..881abc8e 100644
+--- a/ui/civic_qa/service.py
++++ b/ui/civic_qa/service.py
+@@ -42,8 +42,10 @@ ASTANA = timezone(timedelta(hours=5))
+ # Подсказка модератору «похоже на личные данные» (сам вопрос не меняем: решает человек, причина — personal_data).
+ PII_PATTERNS = (
+     ("phone", re.compile(r"(?<![\d+])(?:(?:\+\s*)?[78][\s(-]*)?7(?:[\s().-]{0,2}\d){9}(?!\d)")),
+-    ("iin", re.compile(r"(?<!\d)(?:\d[\s-]?){11}\d(?!\d)")),
++    # 12 цифр — но не кусок более длинного номера (карта 4400 4302 1234 5678 — не ИИН).
++    ("iin", re.compile(r"(?<!\d[\s-])(?<!\d)(?:\d[\s-]?){11}\d(?![\s-]?\d)")),
+     ("email", re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")),
++    ("card", re.compile(r"(?<!\d[\s-])(?<!\d)(?:\d[\s-]?){12,18}\d(?![\s-]?\d)")),  # 13–19 цифр
+ )
+ 
+ 
+@@ -280,7 +282,8 @@ class QuestionService:
+         view = QuestionService._public_view(row)
+         flags = _flags(row.get("flags"))
+         found = set(pii_kinds(row["text"])) | set(flags)
+-        pii = [kind for kind in ("phone", "iin", "email", "card") if kind in found]  # порядок — как в подсказке экрана
++        kinds = ("phone", "iin", "email", "card", "iban", "apartment", "contact")  # порядок — как в подсказке экрана
++        pii = [kind for kind in kinds if kind in found]
+         rude = _rude(row["text"])
+         if "profanity" in flags or "rude" in flags:
+             rude = True
+diff --git a/web/civic/meetings/meetings.js b/web/civic/meetings/meetings.js
+index 34915f1c..ea735226 100644
+--- a/web/civic/meetings/meetings.js
++++ b/web/civic/meetings/meetings.js
+@@ -315,6 +315,7 @@
+       "ask.staff.reason.not_question": "Это жалоба — её отправляют через «Сообщить о проблеме»",
+       "ask.staff.reason.duplicate": "Такой вопрос уже есть", "ask.staff.reason.other": "Другое",
+       "ask.staff.pii.phone": "телефон", "ask.staff.pii.iin": "ИИН", "ask.staff.pii.email": "почта", "ask.staff.pii.card": "номер карты",
++      "ask.staff.pii.iban": "номер счёта", "ask.staff.pii.apartment": "номер квартиры", "ask.staff.pii.contact": "контакт в мессенджере",
+     },
+     kk: {
+       "common.tag.demo": "Үлгі", "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты дерек емес",
+@@ -328,6 +329,7 @@
+       "ask.staff.reason.not_question": "Бұл — шағым, оны «Мәселе туралы хабарлау» арқылы жібереді",
+       "ask.staff.reason.duplicate": "Мұндай сұрақ бұрыннан бар", "ask.staff.reason.other": "Басқа себеп",
+       "ask.staff.pii.phone": "телефон", "ask.staff.pii.iin": "ЖСН", "ask.staff.pii.email": "электрондық пошта", "ask.staff.pii.card": "карта нөмірі",
++      "ask.staff.pii.iban": "шот нөмірі", "ask.staff.pii.apartment": "пәтер нөмірі", "ask.staff.pii.contact": "мессенджердегі байланыс",
+     },
+   };
+   const WEEKDAYS = {  // 0 — воскресенье, как Date.getUTCDay()
+diff --git a/web/civic/qa/qa.js b/web/civic/qa/qa.js
+index 53523edc..55e31fb2 100644
 --- a/web/civic/qa/qa.js
 +++ b/web/civic/qa/qa.js
 @@ -80,6 +80,10 @@
@@ -22,21 +70,3 @@
        "ask.staff.rude": "Дөрекі сөздер бар",
        "ask.staff.reason_title": "Бас тарту себебі",
        "ask.staff.reason.personal_data": "Жеке деректер",
---- a/web/civic/meetings/meetings.js
-+++ b/web/civic/meetings/meetings.js
-@@ -305,6 +305,7 @@
-       "ask.staff.reason.not_question": "Это жалоба — её отправляют через «Сообщить о проблеме»",
-       "ask.staff.reason.duplicate": "Такой вопрос уже есть", "ask.staff.reason.other": "Другое",
-       "ask.staff.pii.phone": "телефон", "ask.staff.pii.iin": "ИИН", "ask.staff.pii.email": "почта", "ask.staff.pii.card": "номер карты",
-+      "ask.staff.pii.iban": "номер счёта", "ask.staff.pii.apartment": "номер квартиры", "ask.staff.pii.contact": "контакт в мессенджере",
-     },
-     kk: {
-       "common.tag.demo": "Үлгі", "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты дерек емес",
-@@ -318,6 +319,7 @@
-       "ask.staff.reason.not_question": "Бұл — шағым, оны «Мәселе туралы хабарлау» арқылы жібереді",
-       "ask.staff.reason.duplicate": "Мұндай сұрақ бұрыннан бар", "ask.staff.reason.other": "Басқа себеп",
-       "ask.staff.pii.phone": "телефон", "ask.staff.pii.iin": "ЖСН", "ask.staff.pii.email": "электрондық пошта", "ask.staff.pii.card": "карта нөмірі",
-+      "ask.staff.pii.iban": "шот нөмірі", "ask.staff.pii.apartment": "пәтер нөмірі", "ask.staff.pii.contact": "мессенджердегі байланыс",
-     },
-   };
-   const WEEKDAYS = {  // 0 — воскресенье, как Date.getUTCDay()

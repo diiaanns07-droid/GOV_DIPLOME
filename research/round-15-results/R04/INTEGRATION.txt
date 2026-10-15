@@ -90,14 +90,22 @@ joint.parse_route_hint) и берёт объяснение из services[0].why_
 • Проверено 15 окт 17:21 (их ветка + ML-API R04, их pytest): R16 40/40, R13 166/166, R17 39/39, R09 578/578.
 • R16 (ui/civic_together/moderation.py): совместимо — берёт text_public и flags[].kind. similar_initiatives —
   см. п. 4.
-• R13 (ui/civic_qa/service.py moderate_text): совместимо (text_public, flags[].kind). НО экран сотрудника показывает
-  вид находки подписью ask.staff.pii.<kind>, а подписи есть только для phone / iin / email (+ card в meetings.js):
-  вопрос с номером счёта, квартиры или ником покажет сотруднику сырую строку «ask.staff.pii.iban». Patch:
-  research/round-15-results/R04/patches/r13_pii_labels.patch (web/civic/qa/qa.js, web/civic/meetings/meetings.js —
-  card, iban, apartment, contact ru/kk; на R13 @ eeacc26d: apply OK, tests/civic/R13 174/174) и для общих словарей
-  R11 — patches/r11_pii_labels.patch (web/civic/i18n/ru.json, kk.json; на R11 @ b3502428: apply OK, tests/civic/R11
-  28/28). Подписи: номер карты / карта нөмірі, номер счёта / шот нөмірі, номер квартиры / пәтер нөмірі,
-  контакт в мессенджере / мессенджердегі байланыс.
+• R13 (ui/civic_qa/service.py moderate_text): совместимо (text_public, flags[].kind) — жителю номер карты, счёта,
+  квартиры и ник уже закрыты «***». Подсказка сотруднику (уточнено 15 окт 22:50 — в 21:26 я описал её неточно):
+  _staff_view оставляет только phone / iin / email / card, поэтому счёт, квартира и ник сотруднику не называются
+  (сырой строки нет — их просто не видно). Видимые ошибки две:
+  1) вопрос с номером карты на экране «Вопросы» (qa.js) — подписи ask.staff.pii.card нет ни в qa.js, ни в словарях
+     R11 -> сотрудник видит сырую строку «ask.staff.pii.card» (в meetings.js подпись есть);
+  2) свой запасной шаблон ИИН R13 видит ИИН в первых 12 цифрах карты: «карта 4400 4302 1234 5678» -> подсказка
+     «ИИН, номер карты».
+  Patch research/round-15-results/R04/patches/r13_pii_labels.patch (пересобран на R13 @ 97d6ccdf: apply OK,
+  tests/civic/R13 с ML-API R04 — 176/176): подписи card, iban, apartment, contact ru/kk в qa.js и meetings.js;
+  в _staff_view — все семь видов; шаблон ИИН не берёт кусок более длинного номера; запасной шаблон карты (13–19
+  цифр), чтобы без R04 карта закрывалась целиком, а не первые 12 цифр. Пример после patch'а: подсказка
+  ['card', 'iban', 'apartment', 'contact'] вместо ['iin', 'card'].
+  Для общих словарей R11 — patches/r11_pii_labels.patch (web/civic/i18n/ru.json, kk.json; на R11 @ d94a2983: apply
+  OK, tests/civic/R11 31/31). Подписи: номер карты / карта нөмірі, номер счёта / шот нөмірі, номер квартиры /
+  пәтер нөмірі, контакт в мессенджере / мессенджердегі байланыс.
 • R17 (ui/civic_agencies/crisis.py check_public_texts): ВНИМАНИЕ — R17 смотрит только flags и блокирует phone/iin/
   email/rude, а text_public не использует. Тогда «card», «iban», «apartment», «contact» пройдут в публичный текст
   как есть. Готовый patch: research/round-15-results/R04/patches/r17_crisis_pii.patch (на R17 @ 72676e3d:
