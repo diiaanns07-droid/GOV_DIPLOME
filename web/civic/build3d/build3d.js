@@ -484,6 +484,7 @@
       kind: null,
       ghost: null, // {pos, rot, shownRot, follow, valid, manualRot, a, aStreet, section, hover}
       objects: {}, // id → объект сцены
+      aliases: {}, // временный id только что поставленного проекта → id, который дал сервер (выбор по старому id работает)
       selected: null,
       visible: true,
       destroyed: false,
@@ -1544,6 +1545,7 @@
         n.appendChild(b);
       }
       toasts.appendChild(n);
+      unblockToast(n);
       toastTimer = setTimeout(function () {
         if (n.parentNode) n.parentNode.removeChild(n);
       }, opts2.error ? 8000 : 6000);
@@ -1551,6 +1553,46 @@
     function clearToast() {
       clearTimeout(toastTimer);
       toasts.textContent = "";
+      toasts.style.transform = "";
+    }
+    // Тост над панелью не уходит под карточки хозяина (сборка R01 B0.3: «Сегодня в Астане» слева лежит выше корня
+    // модуля, и от «Проект поставлен · Отменить» оставалось одно «Отменить»). Начало тоста закрыто панелью из opts.avoid
+    // или чужим элементом поверх — сдвигаем тост вправо за неё, но не за край экрана и не на кнопки карты справа.
+    // Телефон и свой корень (overlay) — свой вид, там не трогаем.
+    function unblockToast(n) {
+      toasts.style.transform = "";
+      if (!n || !n.parentNode || phoneLayout() || ui.classList.contains("b3d--overlay")) return;
+      var tr = n.getBoundingClientRect();
+      if (!tr.width || !tr.height) return;
+      var doc = n.ownerDocument, canvas = map.getCanvas(), blockers = avoidRects();
+      if (doc && doc.elementFromPoint) {
+        // Строки текста и кнопки тоста: панель хозяина может закрыть только верх тоста (её низ выше середины тоста).
+        var rows = [].slice.call(n.querySelectorAll(".bk-toast__text, .bk-btn")).map(function (e) {
+          var r = e.getBoundingClientRect();
+          return r.top + r.height / 2;
+        });
+        rows.push(tr.top + tr.height / 2);
+        rows.forEach(function (y) {
+          for (var x = tr.left + 8; x < tr.left + tr.width / 2; x += 24) {
+            var hit = doc.elementFromPoint(x, y), box = hit;
+            if (!hit || ui.contains(hit) || hit === doc.body || hit === doc.documentElement) continue;
+            while (box && box !== doc.body && root.getComputedStyle(box).position === "static") box = box.parentElement;
+            if (box && box !== doc.body && !box.contains(canvas) && !canvas.contains(box)) blockers.push(box.getBoundingClientRect());
+          }
+        });
+      }
+      var dx = 0;
+      blockers.forEach(function (r) {
+        if (r.bottom <= tr.top || r.top >= tr.bottom || r.right <= tr.left || r.left >= tr.right) return;
+        if (r.left <= tr.left + 4) dx = Math.max(dx, r.right + 8 - tr.left);
+      });
+      if (!dx) return;
+      var room = (root.innerWidth || doc.documentElement.clientWidth) - 16 - tr.right;
+      avoidRects().forEach(function (r) {
+        if (r.bottom > tr.top && r.top < tr.bottom && r.left >= tr.right) room = Math.min(room, r.left - 8 - tr.right);
+      });
+      dx = Math.min(dx, Math.max(0, room));
+      if (dx > 0) toasts.style.transform = "translateX(" + Math.round(dx) + "px)";
     }
 
     // ───────────── Загрузка ─────────────
@@ -3495,14 +3537,21 @@
         function (saved) {
           if (S.destroyed) return;
           S.storeMode = store.mode || S.storeMode;
-          if (saved.id !== tempId && S.objects[tempId]) {
+          var renamed = saved.id !== tempId && S.objects[tempId];
+          if (renamed) {
             S.objects[saved.id] = S.objects[tempId];
             delete S.objects[tempId];
+            S.aliases[tempId] = saved.id;
             obj.label.setAttribute("data-id", saved.id);
           }
           obj.p = saved;
           obj.pending = false;
           updateLabelText(obj);
+          // Проект успели выбрать, пока шло сохранение: выбор переходит на настоящий id, хозяин узнаёт новую запись.
+          if (renamed && S.selected === tempId) {
+            S.selected = saved.id;
+            if (!S.cardless) emitSelect(saved);
+          }
           toast(t(S.storeMode === "local" ? "build3d.placed_local" : "build3d.placed"), {
             action: t("common.action.cancel"),
             actionId: "undo",
@@ -3631,6 +3680,7 @@
       });
     }
     function select(id) {
+      if (id && !S.objects[id] && S.aliases[id]) id = S.aliases[id];
       if (id && !S.objects[id]) id = null;
       if (S.mode === "placing" && id) cancel();
       S.selected = id;
@@ -3655,6 +3705,7 @@
     // в свободную часть карты (между листом и деталями); без него камера не двигается. highlight(null) — снять отметку.
     function highlight(id, how) {
       how = how || {};
+      if (id && !S.objects[id] && S.aliases[id]) id = S.aliases[id];
       if (id && !S.objects[id]) return false;
       if (S.mode === "placing") return false;
       S.selected = id || null;
@@ -4013,6 +4064,9 @@
           selected: S.selected,
           highlighted: !!(S.selected && S.cardless),
           count: Object.keys(S.objects).length,
+          pending: Object.keys(S.objects).filter(function (id) {
+            return S.objects[id].pending;
+          }).length, // проекты, которые ещё сохраняются (у них временный id)
           ghost: S.ghost
             ? {
                 pos: S.ghost.pos.slice(),

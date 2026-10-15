@@ -153,11 +153,37 @@ try {
   const pt = await p.evaluate(() => { const r = map.getCanvas().getBoundingClientRect(); return [r.left + r.width * 0.42, r.top + r.height * 0.42]; });
   await p.mouse.move(pt[0], pt[1]);
   await p.mouse.click(pt[0], pt[1]);
+  // Ответ сервера на «Поставить» задерживаем на 1,5 с: модуль строит проект сразу под временным id, а сервер даёт свой.
+  // Выбор по временному id после сохранения должен открыть карточку уже сохранённого проекта (гонка сборки B0.3).
+  const slowPost = async (route) => { if (route.request().method() === "POST") await new Promise((r) => setTimeout(r, 1500)); await route.continue(); };
+  await p.route("**/api/civic/v2/proposals", slowPost);
+  const postDone = p.waitForResponse((r) => /\/api\/civic\/v2\/proposals$/.test(new URL(r.url()).pathname) && r.request().method() === "POST", { timeout: 20000 }).catch(() => null);
   await p.click("#birge-build3d-root [data-action=place]");
-  await p.waitForFunction((n) => { const s = CivicShell.build3d.getState(); return s.count === n + 1 && s.proposals.every((q) => !/^tmp-/.test(q.id)) && !s.animating; }, before, { timeout: 30000 });
+  // Первый id нового сквера — временный (ответ сервера ещё задержан).
+  const tempId = await p.waitForFunction((ids) => { const q = CivicShell.build3d.getState().proposals.find((x) => !ids.includes(x.id) && x.kind === "square"); return q ? q.id : null; }, beforeIds, { timeout: 10000, polling: 50 }).then((h) => h.jsonValue(), () => null);
+  await postDone;
+  await p.waitForFunction((n) => { const s = CivicShell.build3d.getState(); return s.count === n + 1 && !s.pending && s.proposals.every((q) => !/^tmp-/.test(q.id)) && !s.animating; }, before, { timeout: 30000 });
+  await p.waitForTimeout(300); // обработка ответа модулем (then после fetch)
+  await p.unroute("**/api/civic/v2/proposals", slowPost);
   // Новый проект — тот, которого не было до «Поставить» (в базе стенда могут быть скверы прежних прогонов).
   const placed = await p.evaluate((ids) => CivicShell.build3d.getState().proposals.find((q) => !ids.includes(q.id) && q.kind === "square"), beforeIds);
   check("place_square_stored_by_r06_via_shell_client", !!placed && posts[posts.length - 1] === 201, { posts, id: placed && placed.id, year: placed && placed.year });
+  // «Проект поставлен · Отменить»: текст и кнопка тоста видны — не под карточками оболочки (R01 B0.3: «Сегодня в Астане»).
+  const toastFree = await p.evaluate(() => {
+    const t = document.querySelector("#birge-build3d-root .b3d-toasts .bk-toast");
+    if (!t) return null;
+    const m = t.querySelector(".bk-toast__text") || t, r = m.getBoundingClientRect(), btn = t.querySelector(".bk-btn"), br = btn && btn.getBoundingClientRect();
+    const pts = [[r.left + 4, r.top + r.height / 2], [r.right - 4, r.top + r.height / 2]].concat(br ? [[br.left + br.width / 2, br.top + br.height / 2]] : []);
+    const free = pts.every(([x, y]) => { const e = document.elementFromPoint(x, y); return !!e && !!e.closest(".bk-toast"); });
+    const today = document.getElementById("birge-today"), tr = today && today.getBoundingClientRect();
+    return { text: t.innerText.replace(/\s+/g, " ").trim(), text_rect: [r.left, r.top, r.right, r.bottom].map(Math.round), free,
+      shift: document.querySelector("#birge-build3d-root .b3d-toasts").style.transform || "", today: tr ? [tr.left, tr.top, tr.right, tr.bottom].map(Math.round) : null };
+  });
+  check("place_toast_text_not_under_host_panels", !!toastFree && toastFree.free, toastFree);
+  const viaTemp = tempId ? await p.evaluate((ids) => { CivicShell.build3d.select(ids[0]); const s = CivicShell.build3d.getState();
+    const d = document.querySelector("#birge-build3d-root .b3d-dock"); return { temp: ids[0], saved: ids[1], selected: s.selected, dock: d && d.dataset.state }; }, [tempId, placed && placed.id]) : null;
+  if (viaTemp) await p.evaluate(() => CivicShell.build3d.select(null));
+  check("placed_project_selectable_by_temp_id_after_save", !!viaTemp && viaTemp.selected === viaTemp.saved && viaTemp.dock === "card", viaTemp || "временный id не пойман");
   await shot(p, "b2_1366_ru_akimat.png");
   // 3. Карточка: не над панелью оболочки; «Удалить» — у акимата.
   await p.evaluate((id) => CivicShell.build3d.select(id), placed.id);
