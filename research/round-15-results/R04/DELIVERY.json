@@ -1,13 +1,13 @@
 {
  "role": "R04",
  "round": 15,
- "delivery": "D1 (для B1 R01, 16 окт 14:00)",
+ "delivery": "D1.1 (для B1 R01, 16 окт 14:00)",
  "branch": "claude/gifted-maxwell-i66wwi",
  "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
  "restored_from": null,
  "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
- "code_sha": "49725fbccf2b002ca5dda4408da44701634d90e8",
- "tested_sha": "49725fbccf2b002ca5dda4408da44701634d90e8",
+ "code_sha": "0e903c1b9e1d603de0c5e47c3ce1d5a87134855b",
+ "tested_sha": "0e903c1b9e1d603de0c5e47c3ce1d5a87134855b",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_replies/__init__.py",
@@ -15,12 +15,14 @@
   "ml/civic_replies/templates.py",
   "tests/civic/R04/round15/http_check_r04.py",
   "tests/civic/R04/round15/route_cases.json",
+  "tests/civic/R04/round15/test_r04_amendment_p1.py",
   "tests/civic/R04/round15/test_r04_moderate.py",
   "tests/civic/R04/round15/test_r04_replies.py",
   "tests/civic/R04/round15/test_r04_route.py",
   "tests/civic/R04/round15/test_r04_similar_initiatives.py",
   "ui/civic_ml_api/__init__.py",
   "ui/civic_ml_api/__main__.py",
+  "ui/civic_ml_api/classify_chain.py",
   "ui/civic_ml_api/initiatives.py",
   "ui/civic_ml_api/moderation.py",
   "ui/civic_ml_api/replies.py",
@@ -30,6 +32,7 @@
  ],
  "doc_paths": [
   "research/handoffs/astana/R04/round15/STATUS.md",
+  "research/round-15-results/R04/DELIVERY.json",
   "research/round-15-results/R04/INTEGRATION.txt",
   "research/round-15-results/R04/RESULTS.md",
   "research/round-15-results/R04/RUN.txt",
@@ -47,7 +50,7 @@
  "tests": {
   "R04_round15_pytest": {
    "status": "PASS",
-   "passed": 79,
+   "passed": 80,
    "failed": 0,
    "cmd": "pytest -q tests/civic/R04/round15"
   },
@@ -65,7 +68,7 @@
    "skipped": 23,
    "xfailed": 1,
    "sha": "fef4bd06",
-   "note": "2 падения R10 test_r10_accuracy::test_map_accuracy[c24-R12] и [c28-R07] — так же падают на чистой базе e91acb69 в этой облачной среде (проверено отдельно), к R04 не относятся. Код после fef4bd06 менял только routing.py (works evidence) — R04 77/77."
+   "note": "2 падения R10 test_r10_accuracy::test_map_accuracy[c24-R12] и [c28-R07] — так же падают на чистой базе e91acb69 в этой облачной среде (проверено отдельно), к R04 не относятся. Код после fef4bd06 менял только routing.py (works evidence) — R04 77/77. После fef4bd06 код менялся в routing.py, classify_chain.py (обрезка входа моделей до 1000 знаков), ml/civic_replies — тесты R04 и соседей с ML-API зелёные на 0e903c1b."
   },
   "stand_http_check": {
    "status": "PASS",
@@ -73,7 +76,8 @@
    "failed": 0,
    "sha": "49725fbccf2b002ca5dda4408da44701634d90e8",
    "env": "облако, FINAL-4 + patch R01 из этой поставки, демо-база (seed-demo + seed-r14-demo), редактор operator",
-   "cmd": "python3 -B tests/civic/R04/round15/http_check_r04.py"
+   "cmd": "python3 -B tests/civic/R04/round15/http_check_r04.py",
+   "note": "14/14 на 49725fbc; после него изменены только тексты черновика и обрезка входа — HTTP-слой тот же."
   },
   "route_quality": {
    "set": "tests/civic/R04/round15/route_cases.json — 208 фраз (ru 148, kk 50, mixed 10; совместных 92); test 94 зафиксирован до правил (64e19fc4)",
@@ -84,7 +88,7 @@
     "joint_precision": 1.0,
     "joint_recall": 1.0,
     "joint_f1": 1.0,
-    "runs_logged": 3
+    "runs_logged": 4
    },
    "dev": {
     "n": 114,
@@ -117,8 +121,9 @@
     "scene8": "c-w1500010 -> water + road (совпадает с route_hint мира)"
    },
    "speed_ms": {
-    "p50": 0.15,
-    "p95": 0.45,
+    "p50": 0.16,
+    "p95": 0.42,
+    "adversarial_5000_chars_max": 12,
     "target": "< 30"
    }
   },
@@ -129,8 +134,24 @@
     "p50": 0.035,
     "p95": 0.08,
     "max": 0.25,
-    "target": "< 5"
+    "target": "< 5",
+    "adversarial_5000_chars_max": 13
    }
+  },
+  "R04_all_pytest": {
+   "status": "PASS",
+   "passed": 416,
+   "failed": 0,
+   "skipped": 3,
+   "sha": "0e903c1b9e1d603de0c5e47c3ce1d5a87134855b",
+   "cmd": "pytest -q tests/civic/R04"
+  },
+  "neighbours_using_ml_api": {
+   "status": "PASS",
+   "passed": 143,
+   "failed": 0,
+   "sha": "0e903c1b9e1d603de0c5e47c3ce1d5a87134855b",
+   "files": "tests/civic/R01/test_r01_api_v2.py, tests/civic/R09/test_r09v2_neighbours.py, tests/civic/R15/test_r15_profanity.py, tests/civic/R09/stand/serve_r09.py"
   }
  },
  "screens": [],
