@@ -36,6 +36,9 @@ def main() -> None:
     ap.add_argument("--browser-sha", help="на каком коммите шла браузерная проверка (если не на code_sha)")
     ap.add_argument("--browser-quick", help="быстрый прогон 1366/375 × ru/kk, напр. 90/90")
     ap.add_argument("--qa", help="«Вопрос акиму» qa_browser.cjs, напр. 95/95")
+    ap.add_argument("--browser-env", default="облако: FINAL-4 e91acb69 + патчи R13 для R01 (маршруты, ассеты, лист слева)",
+                    help="на какой сборке шёл браузер")
+    ap.add_argument("--regress", help="быстрый прогон на втором стенде (FINAL-4 + патчи), напр. 90/90")
     ap.add_argument("--push", default="OK")
     args = ap.parse_args()
     code = git("rev-parse", args.code_sha)
@@ -54,11 +57,12 @@ def main() -> None:
         "passed": int(args.browser.split("/")[0]), "total": int(args.browser.split("/")[1]),
         "command": "tests/civic/R13/meetings/meetings_browser.cjs --full (BIRGE_URL стенда)",
         "sha": git("rev-parse", args.browser_sha or code),
-        "env": "облако: FINAL-4 e91acb69 + патчи R13 для R01 (маршруты, ассеты, лист слева), CIVIC_DEMO=1, Chromium 1194; "
-               "подложка карты — упрощённый фон (нет интернета)",
+        "env": args.browser_env + ", CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
         "note": "1366/1024/375 × ru/kk, все состояния; замер R10 B-118: зоны нажатия ≥ 44 px и текст ≥ 13 px на списке, "
                 "встрече, вкладке «Вопросы» и у акимата; кадры screens/ — с этого прогона",
-        "quick_run": run(args.browser_quick, "meetings_browser.cjs (1366/375 × ru/kk)", "быстрый прогон на свежей базе")}
+        "quick_run": run(args.browser_quick, "meetings_browser.cjs (1366/375 × ru/kk)", "быстрый прогон на свежей базе"),
+        "regress_final4": run(args.regress, "meetings_browser.cjs (1366/375 × ru/kk)",
+                              "второй стенд: FINAL-4 e91acb69 + патчи R13 (лист слева), свежая база")}
     data = {
         "role": "R13",
         "title": "Встречи с акимом, вопросы жителей, прогноз на экране",
@@ -91,10 +95,10 @@ def main() -> None:
         "patches_for_r01": ["research/round-15-results/R13/patches/r01_meetings_routes.patch",
                             "research/round-15-results/R13/patches/r01_meetings_assets_sheet.patch"],
         "known_limits": [
-            "Маршруты meetings.* и файлы раздела появятся в сборке только после патча R01 (INTEGRATION §2–§3); до этого "
-            "раздел #meetings не открывается (модуль сам регистрируется, но шлюз отвечает 503).",
-            "Адрес #meetings/<m-id> (ссылки ленты R06) работает полностью, когда R01 поставит путь раздела (IA_ROUND15 §7.3); "
-            "в оболочке FINAL-4 — только при открытии страницы.",
+            "Маршруты meetings.* и файлы раздела R01 уже взял в B0 (c9069723: 8 маршрутов, ассеты, теги); новые правки R13 "
+            "войдут в сборку с B1 по code_sha этой поставки.",
+            "Раздел в сборке R01 B0 — левой шторкой 412 px (патч R13 §3); если R11 + R01 переведут разделы в экран-колонку "
+            "720 px (IA §5) — вёрстка готова (кадры 1366-ru-col720-*.jpg).",
             "Прогноз — прототип на синтетической истории жалоб (погода реальная); на настоящих обращениях не проверялся.",
             "Названия связанных проектов и работ — из R06 той же базы (публичные функции); без R06 строка поручения пишет "
             "«Связано с проектом акимата» / «…с работой службы», номер записи — только в подсказке сотруднику.",
