@@ -187,7 +187,7 @@ def test_crisis_tasks_by_service_and_pulse_link(monkeypatch):
     assert [(s["service"], s["done"], s["total"]) for s in c["services"]] == [("street_cleaning", 1, 2), ("transport", 0, 1)]
     assert c["last_update"]["text_ru"] == "свежее"            # непубличное обновление не показываем
     assert c["zone"]["district_ru"] == "Нура" and c["zone"]["targets"] == 1
-    assert c["link"] == "/#agencies/crisis=inc-7"
+    assert c["link"] == "/#agencies/crisis/inc-7"
     items = [{"kind": "spike", "category": "snow_ice", "district": "nura"},
              {"kind": "spike", "category": "utilities", "district": "esil"},
              {"kind": "new_hot", "category": "roads", "district": "nura"},
@@ -196,8 +196,8 @@ def test_crisis_tasks_by_service_and_pulse_link(monkeypatch):
              {"kind": "spike", "category": "lighting", "district": "esil"},   # не кризисная тема, кризиса нет
              {"kind": "spike_city", "category": "snow_ice", "district": None}]
     neighbors.pulse_links(items, b["crisis"])
-    assert items[0]["crisis"] == {"link": "/#agencies/crisis=inc-7", "incident": "inc-7", "kind": "blizzard"}
-    assert items[1]["crisis"] == {"link": "/#agencies/crisis=new&template=heat_outage&district=esil", "incident": None,
+    assert items[0]["crisis"] == {"link": "/#agencies/crisis/inc-7", "incident": "inc-7", "kind": "blizzard"}
+    assert items[1]["crisis"] == {"link": "/#agencies/crisis/new/heat_outage/esil", "incident": None,
                                   "kind": "heat_outage"}
     assert "crisis" not in items[2]                          # тревога об одном месте ведёт на карту, не в штаб
     assert items[3]["crisis"]["incident"] == "inc-7"
@@ -318,17 +318,19 @@ def test_meeting_orders(monkeypatch):
 
 
 def test_forecast_week_preferred_month_fallback(monkeypatch):
+    # R13 без недельной функции (как в FINAL-4) — подменой, а не тем, что лежит в сборке: в B0 у R13 уже есть
+    # week_block, и тест не должен зависеть от того, какая версия R13 рядом (просьба R01, STATUS 15 окт).
+    import ui.civic_forecast as real
+    fake_module(monkeypatch, "ui.civic_forecast", attention_next_month=real.attention_next_month)
     _, b = get(BOARD, svc())
-    assert b["forecast"]["source"] == "r13-month" and b["forecast"]["horizon"] == "month"   # FINAL-4: прогноз на месяц
+    assert b["forecast"]["source"] == "r13-month" and b["forecast"]["horizon"] == "month"   # прогноз на месяц
     assert b["forecast"]["prototype"] is True and 1 <= len(b["forecast"]["items"]) <= 5
     assert b["forecast"]["items"][0]["reason_ru"]
-    real = sys.modules.get("ui.civic_forecast")
     week_fn = lambda district=None, k=5, now=None: {  # noqa: E731
         "horizon": "week", "items": [{"target": {"kind": "area", "id": "yard-1", "label_ru": "Двор"},
                                       "district": "nura", "level": "high", "reason_ru": "Снегопад", "reason_kk": "Қар"}],
         "method_ru": "Как считаем"}
-    fake_module(monkeypatch, "ui.civic_forecast", week_forecast=week_fn,
-                attention_next_month=getattr(real, "attention_next_month", None))
+    fake_module(monkeypatch, "ui.civic_forecast", week_forecast=week_fn, attention_next_month=real.attention_next_month)
     board.reset_cache()
     _, b = get(BOARD, svc())
     f = b["forecast"]
@@ -423,18 +425,18 @@ def test_r17_active_incidents_public_view(monkeypatch):
             "updates": [{"at": (NOW - timedelta(hours=1)).isoformat(), "text_ru": "Расчищаем", "text_kk": "Тазартамыз"}],
             "progress": [{"service": "street_cleaning", "done": 2, "doing": 1, "total": 4},
                          {"service": "transport", "done": 1, "doing": 0, "total": 1}],
-            "link": "#agencies/crisis=inc-9", "demo": True}
+            "link": "#agencies/crisis/inc-9", "demo": True}
     fake_module(monkeypatch, "ui.civic_agencies", active_incidents=lambda district=None: [view],
-                crisis_link=lambda district=None, kind="blizzard": f"#agencies/crisis=new&template={kind}")
+                crisis_link=lambda district=None, kind="blizzard": f"#agencies/crisis/new/{kind}")
     _, b = get(BOARD, svc())
     c = b["crisis"]["active"][0]
     assert c["tasks"] == {"total": 5, "done": 3, "doing": 1, "todo": 1}
     assert [(s["service"], s["done"], s["total"]) for s in c["services"]] == [("street_cleaning", 2, 4), ("transport", 1, 1)]
-    assert c["zone"]["label_ru"] == "район Нура" and c["link"] == "/#agencies/crisis=inc-9"
+    assert c["zone"]["label_ru"] == "район Нура" and c["link"] == "/#agencies/crisis/inc-9"
     assert c["last_update"]["text_kk"] == "Тазартамыз"
     items = [{"kind": "spike", "category": "utilities", "district": "esil"}]
     neighbors.pulse_links(items, b["crisis"])
-    assert items[0]["crisis"]["link"] == "/#agencies/crisis=new&template=heat_outage"   # адрес — функцией R17
+    assert items[0]["crisis"]["link"] == "/#agencies/crisis/new/heat_outage"   # адрес — функцией R17
 
 
 def test_r16_initiatives_summary_format(monkeypatch):
@@ -515,7 +517,7 @@ def test_summary_pulse_links_fresh(monkeypatch):
     cached = next(iter(s._cache.values()))[1]
     assert all("crisis" not in a for a in cached["pulse"]["items"])   # кэш без ссылок штаба
     incidents.append({"id": "inc-1", "kind": "blizzard", "status": "active", "zone": {"kind": "district", "district": "nura"},
-                      "progress": [], "link": "#agencies/crisis=inc-1"})
+                      "progress": [], "link": "#agencies/crisis/inc-1"})
     again = s.summary(now=NOW)
     assert again["crisis"]["active"][0]["id"] == "inc-1"
     for a in again["pulse"]["items"]:

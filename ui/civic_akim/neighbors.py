@@ -28,6 +28,7 @@ import os
 import threading
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import quote
 
 from . import routing, text
 
@@ -49,7 +50,7 @@ R16_FUNCS = ("initiatives_summary", "together_for_akim", "akim_together", "week_
 R13_MEETINGS_MODULE = "ui.civic_meetings"
 R13_MEETINGS_FUNCS = ("board_block", "meetings_for_akim", "orders_for_akim", "akim_meetings")
 R13_FORECAST_MODULE = "ui.civic_forecast"
-R13_WEEK_FUNCS = ("week_forecast", "forecast_week", "attention_next_week")
+R13_WEEK_FUNCS = ("week_block", "week_forecast", "forecast_week", "attention_next_week")
 
 # Вид кризиса R17 по теме тревоги пульса: «Открыть кризисный штаб» → шаблон этого вида (CONTRACT §5.5).
 # Только темы, которые бывают кризисом города; у тревоги нет уточнения, поэтому ЖКХ → «авария теплосети»
@@ -395,7 +396,7 @@ def crisis_link(incident: dict | None, *, kind: str | None = None, district: str
         link = incident.get("link")
         if isinstance(link, str) and link.startswith(("/", "#")):
             return _absolute(link)
-        return "/#agencies/crisis=" + str(incident.get("id"))
+        return "/#agencies/crisis/" + quote(str(incident.get("id")), safe="")
     try:
         module = _import(R17_MODULE)
         fn = getattr(module, "crisis_link", None) if module is not None else None
@@ -405,8 +406,9 @@ def crisis_link(incident: dict | None, *, kind: str | None = None, district: str
                 return _absolute(link)
     except Exception:  # ссылка — не повод ронять пульс
         log.exception("R08: crisis_link R17 не ответил")
-    tail = f"&district={district}" if district else ""
-    return f"/#agencies/crisis=new&template={kind or 'other'}{tail}"
+    # Формат путей R17 (INTEGRATION R17 §1, IA_ROUND15): #agencies/crisis/<id>, #agencies/crisis/new/<шаблон>/<район>.
+    tail = "/" + quote(district, safe="") if district else ""
+    return f"/#agencies/crisis/new/{quote(kind or 'other', safe='')}{tail}"
 
 
 def normalize_incident(rec: dict, names: dict) -> dict | None:
@@ -518,7 +520,7 @@ def _initiative_row(r: dict) -> dict:
             "place_ru": target.get("label_ru"), "place_kk": target.get("label_kk") or target.get("label_ru"),
             "target": {"kind": target.get("kind") or "area", "id": target.get("id")} if target.get("id") else None,
             **_district_label(r.get("district")),
-            "starts_at": r.get("starts_at"), "joined": max(0, int(r.get("joined") or 0)),
+            "starts_at": r.get("starts_at"), "ends_at": r.get("ends_at"), "joined": max(0, int(r.get("joined") or 0)),
             "supported": bool(support.get("by_akimat") or r.get("supported")),
             "support_note": support.get("note") if support.get("by_akimat") else None,
             "report": bool(r.get("report")), "demo": bool(r.get("demo"))}
@@ -541,6 +543,59 @@ def _r16_summary(data: dict, *, district) -> dict:
                          if star and star.get("label_ru") else None),
         "demo": bool(data.get("demo")),
     }
+
+
+def _r16_get(module, settings: Settings, route: str):
+    try:
+        return _service_get(module, settings, route)
+    except _Unavailable:
+        return None
+    except Exception:
+        log.exception("R08: R16 %s ответил ошибкой", route)
+        return None
+
+
+def _r16_details(settings: Settings, out: dict) -> dict:
+    """initiatives_summary() R16 отдаёт ближайшие дела без поддержки акимата, времени конца и подписи места. Их берём
+    из карточки дела R16 (GET together/initiatives/{id} — то же, что видит любой житель): без этого «Поддержать»
+    в «Картине дня» вело бы к уже поддержанному делу. «Двор недели» (VISUAL_BRIEF §1 п. 4), если R16 его не дал, —
+    двор ближайшего дела, куда записалось больше всего соседей; подпись и число соседей — со страницы двора R16
+    (GET together/yards/{id}). Нет сервиса или базы — блок как был. Числа R16 не пересчитываются."""
+    top = out.get("top") or []
+    try:
+        module = _import(R16_MODULE)
+    except Exception:
+        return out
+    if not top or module is None or not callable(getattr(module, "make_service", None)):
+        return out
+    rows = []
+    for row in top:
+        d = _r16_get(module, settings, "together/initiatives/" + quote(str(row.get("id") or ""), safe=""))
+        d = d.get("initiative", d) if isinstance(d, dict) else None
+        if isinstance(d, dict) and d.get("id") == row.get("id") and d.get("status") in SHOWN_INITIATIVE:
+            full = _initiative_row(d)
+            row = {**row, **{k: full[k] for k in ("kind", "lang", "status", "place_ru", "place_kk", "target",
+                                                   "ends_at", "supported", "support_note", "report")}}
+        rows.append(row)
+    out["top"] = rows
+    if out.get("yard_of_week") is None:
+        star = max((r for r in rows if r.get("status") == "published" and r.get("place_ru")
+                    and str((r.get("target") or {}).get("id") or "").startswith("yard-")),
+                   key=lambda r: (r.get("joined") or 0, str(r.get("id"))), default=None)
+        if star and star.get("joined"):
+            yard_id = star["target"]["id"]
+            y = _r16_get(module, settings, "together/yards/" + quote(yard_id, safe=""))
+            y = y.get("yard") if isinstance(y, dict) and isinstance(y.get("yard"), dict) else {}
+            if y.get("id") != yard_id:
+                y = {}
+            out["yard_of_week"] = {
+                "id": yard_id, "label_ru": y.get("label_ru") or star["place_ru"],
+                "label_kk": y.get("label_kk") or star.get("place_kk") or star["place_ru"],
+                **_district_label(y.get("district") or star.get("district")),
+                "members": y["members"] if isinstance(y.get("members"), int) else None,
+                "initiative": star,
+            }
+    return out
 
 
 def normalize_together(body, *, days: int, district, now: datetime) -> dict:
@@ -621,6 +676,8 @@ def together(settings: Settings, *, days: int = 7, district=None, now: datetime,
                                 lambda fx: normalize_together(fx["together"], days=days, district=district, now=now), now)
         return out or _empty(exc.reason, top=[], yard_of_week=None, counts={})
     out = normalize_together(body, days=days, district=district, now=now)
+    if how == "function" and out.get("available"):
+        out = _r16_details(settings, out)
     out.update(source=("r16" if how == "function" else "r16-service") if out.get("available") else "none", days=days)
     return out
 

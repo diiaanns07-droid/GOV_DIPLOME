@@ -77,6 +77,17 @@ def _free_reason(d: dict) -> str | None:
     return None
 
 
+def own_label(target: dict | None) -> dict | None:
+    """Подпись места из самой жалобы (цель R09: {kind, id, label_ru?, label_kk?, approximate?}).
+
+    Нужна, когда места нет на карте за 7 дней (давняя просрочка): иначе в «Нужно решение акима» нет адреса.
+    «Примерное место» (approximate) адресом не считаем — лучше район, чем «Шамамен орны».
+    """
+    if not isinstance(target, dict) or target.get("approximate") or not target.get("label_ru"):
+        return None
+    return {"ru": target["label_ru"], "kk": target.get("label_kk") or target["label_ru"]}
+
+
 def _subtopic(category: str | None, subtopic: str | None) -> dict | None:
     if not subtopic:
         return None
@@ -106,7 +117,8 @@ def build(records: list[dict], as_of: datetime, *, status_at, parse_time, labels
                     "kk_missing": not o.get("kk")}
                    for o in (d.get("options") or []) if isinstance(o, dict) and (o.get("ru") or o.get("kk"))][:2]
         target = r.get("target") if isinstance(r.get("target"), dict) else None
-        label = labels.get(target.get("id")) if target else None
+        on_map = labels.get(target.get("id")) if target else None
+        label = on_map or own_label(target)
         cat = cats.get(r.get("category")) or cats["other"]
         sub = _subtopic(r.get("category"), r.get("subtopic"))
         service = routing.service_for(r.get("category"), r.get("subtopic"))
@@ -117,7 +129,8 @@ def build(records: list[dict], as_of: datetime, *, status_at, parse_time, labels
             "district": r.get("district"),
             "place_ru": (label or {}).get("ru") or r.get("place_ru"),
             "place_kk": (label or {}).get("kk") or r.get("place_kk"),
-            "target": {"kind": target.get("kind"), "id": target.get("id")} if target and label else None,
+            # Ссылка «на карту» — только если место есть на карте (подпись пришла с тепловой карты R07).
+            "target": {"kind": target.get("kind"), "id": target.get("id")} if target and on_map else None,
             "people": 1 + int(r.get("metoo") or 0),
             "timer": timer,
             "service": {k: service[k] for k in ("id", "ru", "kk", "name_edited")},

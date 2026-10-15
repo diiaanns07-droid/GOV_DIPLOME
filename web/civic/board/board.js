@@ -62,7 +62,7 @@
       "board.crisis.updated": "обновлено {time}",
       "board.crisis.more": { one: "и ещё {n} кризис", few: "и ещё {n} кризиса", many: "и ещё {n} кризисов" },
       "board.crisis.open": "Открыть кризисный штаб",
-      "board.crisis.in_hq": "в кризисном штабе",
+      "board.crisis.in_hq": "в штабе",
       "board.crisis.zone_city": "весь город",
       "board.crisis.tasks": "Задачи служб",
       "board.crisis.since": "с {time}",
@@ -80,12 +80,12 @@
       "board.slide.of": "{i} из {n}",
       "board.services.name": "Служба",
       "board.services.open": "Открыто",
-      "board.services.overdue": "Просрочено",
+      "board.services.overdue": "Ответ просрочен",
       "board.services.median": "Ответ, дн.",
       "board.services.verified": "Проверено жителями",
       "board.services.joint": "Совместных обращений: {n}",
       "board.services.handoffs": "Передач между службами за неделю: {n}",
-      "board.services.lagging": "Красная точка — больше всего просрочек",
+      "board.services.lagging": "Красная точка — больше всего просроченных ответов",
       "board.decisions.option": "Вариант {n}: {text}",
       "board.decisions.overdue": { one: "просрочено на {n} день", few: "просрочено на {n} дня", many: "просрочено на {n} дней" },
       "board.decisions.where": "Выбрать вариант — в «Картине дня»",
@@ -99,6 +99,10 @@
       "board.together.people": { one: "{n} сосед", few: "{n} соседа", many: "{n} соседей" },
       "board.together.when": "{date}",
       "board.together.done_tag": "Сделано",
+      "board.together.now": "идёт сейчас",
+      "board.together.going": "придут: {n}",
+      "board.together.taking": "участвуют: {n}",
+      "board.together.took": "участвовали: {n}",
       "board.meetings.done": "Сделано",
       "board.meetings.in_work": "В работе",
       "board.meetings.overdue": "Просрочено",
@@ -154,7 +158,7 @@
       "board.crisis.updated": "жаңартылды: {time}",
       "board.crisis.more": "тағы {n} дағдарыс",
       "board.crisis.open": "Дағдарыс штабын ашу",
-      "board.crisis.in_hq": "дағдарыс штабында",
+      "board.crisis.in_hq": "штабта",
       "board.crisis.zone_city": "бүкіл қала",
       "board.crisis.tasks": "Қызметтердің тапсырмалары",
       "board.crisis.since": "{time} бастап",
@@ -172,12 +176,12 @@
       "board.slide.of": "{i}/{n}",
       "board.services.name": "Қызмет",
       "board.services.open": "Ашық",
-      "board.services.overdue": "Мерзімі өткен",
+      "board.services.overdue": "Жауап мерзімі өткен",
       "board.services.median": "Жауап, күн",
       "board.services.verified": "Тұрғындар тексерді",
       "board.services.joint": "Бірлескен өтініштер: {n}",
       "board.services.handoffs": "Апта ішінде басқа қызметке берілгені: {n}",
-      "board.services.lagging": "Қызыл нүкте — мерзімі өткені ең көп",
+      "board.services.lagging": "Қызыл нүкте — жауап мерзімі өткені ең көп",
       "board.decisions.option": "{n}-нұсқа: {text}",
       "board.decisions.overdue": "мерзімі {n} күнге өтті",
       "board.decisions.where": "Нұсқаны «Күн қорытындысында» таңдаңыз",
@@ -191,6 +195,10 @@
       "board.together.people": "{n} көрші",
       "board.together.when": "{date}",
       "board.together.done_tag": "Атқарылды",
+      "board.together.now": "қазір өтіп жатыр",
+      "board.together.going": "барады: {n}",
+      "board.together.taking": "қатысып жатыр: {n}",
+      "board.together.took": "қатысты: {n}",
       "board.meetings.done": "Орындалды",
       "board.meetings.in_work": "Орындалуда",
       "board.meetings.overdue": "Мерзімі өткен",
@@ -678,7 +686,7 @@
       if (a.kind === "spike") return [tr("akim.pulse.spike", { category: cat, district: dist, k: num(a.k) }), tr("akim.pulse.reason.spike", { n: a.value, base: num(base) })];
       if (a.kind === "spike_new") return [tr("akim.pulse.spike_new", { category: cat, district: dist }), tr("akim.pulse.reason.spike_new", { n: a.value })];
       if (a.kind === "spike_city") {
-        var names = (a.districts || []).slice(0, 3).map(function (x) { return districtName(x.district) + " — " + num(x.value); });
+        var names = (a.districts || []).slice(0, a.crisis && a.crisis.incident ? 2 : 3).map(function (x) { return districtName(x.district) + " — " + num(x.value); });
         return [tr("akim.pulse.spike_city", { category: cat, n: (a.districts || []).length, k: num(a.k) }), tr("akim.pulse.reason.city", { list: names.join(", ") })];
       }
       if (a.kind === "new_hot") return [tr("akim.pulse.new_hot", { place: place }), tr("akim.pulse.reason.new_hot", { n: a.value })];
@@ -842,8 +850,29 @@
         ]);
       })), h("p", { class: "sc-note sc-note--muted", text: tr("board.decisions.where") })];
     }
+    function started(it, now) {
+      var s = Date.parse(it.starts_at || ""), e = Date.parse(it.ends_at || "");
+      return isFinite(s) && s <= now && (!isFinite(e) || e > now);
+    }
+    // «придут» — до начала, «участвуют» — идёт, «участвовали» — сделано (R16 считает «Я приду»).
+    function togetherPeople(it, now) {
+      var key = it.status === "done" ? "board.together.took" : started(it, now) ? "board.together.taking" : "board.together.going";
+      return tr(key, { n: num(it.joined || 0) });
+    }
+    // «Двор: BI City Tokyo» → «BI City Tokyo»: в плитке уже написано «Двор недели».
+    function yardName(label) {
+      var short = String(label || "").replace(/^(двор|аула)(\s*[:—–-]\s*|\s+)/i, "");
+      return short || label || "";
+    }
+    function togetherWhen(it, now) {
+      if (!isFinite(Date.parse(it.starts_at || ""))) return null;
+      // Начатое и не законченное дело — «идёт сейчас», а не вчерашняя дата.
+      if (started(it, now)) return tr("board.together.now");
+      return dayTime(it.starts_at);
+    }
     function slideTogether(d) {
       var t = d.together, c = t.counts || {};
+      var now = Date.parse(d.generated_at || "") || Date.now();
       var stats = [stat(c.done || 0, tr("board.together.done"), "ok", "tg-done"),
         c.neighbors_done != null ? stat(c.neighbors_done, tr("board.together.neighbors"), null, "tg-neighbors")
           : stat(c.joined_upcoming || 0, tr("board.together.joined"), null, "tg-joined")];
@@ -851,18 +880,20 @@
       var y = t.yard_of_week;
       var yard = y ? h("div", { class: "sc-yard" }, [
         h("span", { class: "sc-yard__icon", "aria-hidden": "true" }, [icon("home")]),
-        h("p", { class: "sc-yard__title", text: tr("board.together.yard") + ": " + (pick(y, "label") || "") }),
+        h("p", { class: "sc-yard__title", text: tr("board.together.yard") + ": " + yardName(pick(y, "label")) }),
         h("p", { class: "sc-yard__meta", text: [y.initiative ? y.initiative.title : null,
-          y.initiative ? tr("board.together.people", { n: y.initiative.joined }) : null,
+          y.initiative ? togetherPeople(y.initiative, now) : null,
           y.members != null ? tr("board.together.members", { n: y.members }) : null].filter(Boolean).join(" · ") }),
       ]) : null;
-      var rows = h("ol", { class: "sc-rows", "data-fit": "0" }, (t.top || []).slice(0, 3).map(function (it) {
-        var when = it.status === "done" ? tr("board.together.done_tag") : shortDate(it.starts_at);
+      // Дело «двора недели» уже в плитке — в списке его не повторяем.
+      var list = (t.top || []).filter(function (it) { return !(y && y.initiative && y.initiative.id === it.id); });
+      var rows = h("ol", { class: "sc-rows", "data-fit": "0" }, list.slice(0, 3).map(function (it) {
+        var when = it.status === "done" ? tr("board.together.done_tag") : togetherWhen(it, now);
         return h("li", { class: "sc-row" }, [
           h("span", { class: "sc-pin", "data-level": "0", "aria-hidden": "true" }, [icon(it.status === "done" ? "check" : "users")]),
           h("div", { class: "sc-row__main" }, [
             h("p", { class: "sc-row__title", lang: it.lang === "kk" ? "kk" : it.lang === "ru" ? "ru" : null, text: it.title }),
-            h("p", { class: "sc-row__sub", text: [pick(it, "place"), when, tr("board.together.people", { n: it.joined })].filter(Boolean).join(" · ") }),
+            h("p", { class: "sc-row__sub", text: [pick(it, "place"), when, togetherPeople(it, now)].filter(Boolean).join(" · ") }),
           ]),
           it.supported ? h("span", { class: "sc-tag", text: tr("board.together.supported") }) : null,
         ]);
