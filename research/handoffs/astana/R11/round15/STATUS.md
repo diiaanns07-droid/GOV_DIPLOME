@@ -49,6 +49,11 @@ COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочита
   «Ещё» группами, PARENT, адреса `#раздел/путь`, map/path/navigate/setLayer в опциях экрана, новые SCREENS и значки;
   тест R01 r14_wave2 обновлён под IA. Проверено на стенде: pytest R01 198/0, r14_wave2 43/0, r14_shell 43/0.
 
+- 18:10 — **словарь круг 2** (`31c0403d`): 656 ключей R16/R17/R12/R13/R08 из их запасных текстов (словарь главнее),
+  единые термины (Барамын, Жедел штаб, Төтенше жағдай, Аула жетекшісі, Жіберулер), без «!» в тосте R16; 2316 ключей ru = kk.
+- 18:30 — **разбор круг 2** (`ac903d1b`): R17 — 9 замечаний, R12 — 5 (REVIEW_R15.md, INTEGRATION §4); значки служб
+  paw/traffic/radiator/zap/flame + метла; таблица «служба → значок» для R17.
+
 ## Соседи (find_branches.py, 15 окт 16:30)
 R01 claude/brave-fermi-nhzetj · R02 claude/affectionate-shannon-jm6ws5 · R03 claude/modest-mccarthy-lrl98u ·
 R04 claude/gifted-maxwell-i66wwi · R05 claude/bold-cray-dopshy · R06 claude/eloquent-einstein-wvuyje ·
