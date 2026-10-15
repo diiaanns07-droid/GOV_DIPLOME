@@ -7,8 +7,9 @@
   A. «Жалобы района» — карта R07 (/heat, подпись «Нура · N»: люди = жалобы + «Я тоже» открытых целей за 30 дней)
      = «Обращения» R09 (открытые жалобы района за 30 дней, люди) = «Картина дня» R08 (районы за 7 дней = карта за 7 дней);
   B. «Я тоже» района — R09 (сумма) = демо-мир R02 (если файл мира есть в сборке);
-  C. «Просрочено» района — «Картина дня» R08 = «Обращения» R09 (срок прошёл, жалоба открыта) = табло служб R17
-     = Ситуационный центр R08 (/akim/board);
+  C. «Просрочено» района — два срока (R02 INTEGRATION §3): C1 исправление — «Картина дня» R08 = табло R17 (overdue_fix);
+     C2 первый ответ — «Обращения» R09 = табло R17; C3 Ситуационный центр = «Картина дня»; C4 если числа R08 и R09
+     разные — подписи на экранах разные (ключи R11 akim.kpi.overdue и inbox.tab.overdue, ru и kk);
   D. «Открытые у службы» — табло R17 по каждой службе = R09 (ведущая служба открытых жалоб района);
   E. «Мой двор» R16 — проблемы двора сцены 7 = открытые жалобы R09 на этот двор;
   F. «Спросить Birge» R03 — в ответе на вопрос о районе есть число из A или C (числа считает код, CONTRACT §2 R03).
@@ -65,6 +66,17 @@ def lead_service(rec):
             return part.get("service")
     passport = rec.get("passport_view") or {}
     return passport.get("assignee_id")
+
+
+def _dig(d, dotted):
+    """Ключ словаря R11: плоский «a.b.c» (как web/civic/i18n/*.json) или вложенный."""
+    if isinstance(d, dict) and dotted in d:
+        return d[dotted]
+    for part in dotted.split("."):
+        if not isinstance(d, dict) or part not in d:
+            return None
+        d = d[part]
+    return d
 
 
 def is_overdue(rec):
@@ -196,35 +208,51 @@ class Consistency:
                          [("«Обращения» R09", "R09", len(r09_30) if r09_30 is not None else None),
                           ("демо-мир R02", "R02", world.get("complaints_30"))])
 
-        # C. «Просрочено» района
+        # C. «Просрочено» района. Два разных срока (R02 INTEGRATION §3): R08 — срок ИСПРАВЛЕНИЯ прошёл у открытой жалобы,
+        # R09 «Обращения» — срок ПЕРВОГО ОТВЕТА прошёл у новой. Сравниваем подобное с подобным, а если числа разные —
+        # подписи на экранах тоже должны быть разными (иначе жюри видит «Просрочено 7» и «Просрочено 1»).
         summary = self.akim_summary()
         overdue_r08 = ((summary or {}).get("kpi") or {}).get("overdue", {}).get("value") if summary else None
-        self.value("просрочено в районе", "«Картина дня» R08 kpi", "R08", overdue_r08, "открытые жалобы, срок прошёл")
+        self.value("просрочено (исправление)", "«Картина дня» R08 kpi", "R08", overdue_r08,
+                   "открытые жалобы района, срок исправления прошёл")
         r09_all = self.r09_items(365)
-        overdue_r09 = self.value("просрочено в районе", "«Обращения» R09", "R09",
-                                 sum(1 for x in r09_all if is_overdue(x)) if r09_all is not None else None,
-                                 "открытые жалобы района со сроком «просрочено»")
+        if r09_all is not None and any("inbox_tab" in x for x in r09_all):
+            overdue_r09 = sum(1 for x in r09_all if x.get("inbox_tab") == "overdue")
+        else:
+            overdue_r09 = sum(1 for x in r09_all if is_overdue(x)) if r09_all is not None else None
+        self.value("просрочено (ответ)", "«Обращения» R09 вкладка", "R09", overdue_r09,
+                   "жалобы района во вкладке «Просрочено» (срок первого ответа)")
         board, totals = self.agencies_board(30)
-        overdue_r17 = None
+        overdue_r17 = overdue_fix_r17 = None
         open_r17 = None
         if board is not None:
             # Совместная жалоба открыта у каждой своей службы: по строкам — части, по итогам — обращения.
             overdue_r17 = (int(totals["overdue"]) if totals and isinstance(totals.get("overdue"), int)
                            else sum(int(row.get("overdue") or 0) for row in board if isinstance(row, dict)))
+            if totals:
+                for key in ("overdue_answer", "answer_overdue"):
+                    if isinstance(totals.get(key), int):
+                        overdue_r17 = int(totals[key])
+                for key in ("overdue_fix", "fix_overdue"):
+                    if isinstance(totals.get(key), int):
+                        overdue_fix_r17 = int(totals[key])
             open_r17 = {row.get("service") or row.get("id"): int(row.get("open") or row.get("open_count") or 0)
                         for row in board if isinstance(row, dict)}
-        self.value("просрочено в районе", "табло служб R17", "R17", overdue_r17, "итог «просрочено» табло района (обращения)")
+        self.value("просрочено (ответ)", "табло служб R17", "R17", overdue_r17, "итог «просрочено» табло района (обращения)")
+        self.value("просрочено (исправление)", "табло служб R17", "R17", overdue_fix_r17, "итог overdue_fix табло (если есть)")
         sit = self.get(self.staff, "/akim/board") if self.staff_ok else None
         overdue_sit = None
         if sit is not None and sit.status == 200 and isinstance(sit.body, dict):
             found = re.search(r'"overdue"\s*:\s*\{[^{}]*"value"\s*:\s*(\d+)', json.dumps(sit.body))
             overdue_sit = int(found.group(1)) if found else None
         self.value("просрочено (город)", "Ситуационный центр R08", "R08", overdue_sit, "kpi overdue большого экрана")
-        self.compare("C. просрочено в районе: «Картина дня» = «Обращения» = табло служб",
-                     [("«Картина дня» R08", "R08", overdue_r08), ("«Обращения» R09", "R09", overdue_r09),
-                      ("табло R17", "R17", overdue_r17)])
+        self.compare("C1. «Просрочено» (срок исправления): «Картина дня» R08 = табло R17 (overdue_fix)",
+                     [("«Картина дня» R08", "R08", overdue_r08), ("табло R17", "R17", overdue_fix_r17)])
+        self.compare("C2. «Просрочено» (срок ответа): «Обращения» R09 = табло R17",
+                     [("«Обращения» R09", "R09", overdue_r09), ("табло R17", "R17", overdue_r17)])
+        self.labels_check(overdue_r08, overdue_r09)
         if overdue_sit is not None and city is not None:
-            self.compare("C2. просрочено по городу: Ситуационный центр = «Картина дня»",
+            self.compare("C3. просрочено по городу: Ситуационный центр = «Картина дня»",
                          [("Ситуационный центр R08", "R08", overdue_sit),
                           ("«Картина дня» R08", "R08", ((city.get("kpi") or {}).get("overdue") or {}).get("value"))])
 
@@ -258,6 +286,31 @@ class Consistency:
         # F. «Спросить Birge»
         self.ask_check(map30, list30, overdue_r08, overdue_r09)
         return self
+
+    def labels_check(self, fix_value, answer_value):
+        """Разные числа «просрочено» — разные подписи (ключи R11: akim.kpi.overdue и inbox.tab.overdue, ru и kk)."""
+        if not (isinstance(fix_value, int) and isinstance(answer_value, int)) or fix_value == answer_value:
+            self.checks.append({"name": "C4. подписи «просрочено» различаются, если числа разные", "status": "NOT_RUN",
+                                "values": {"R08": fix_value, "R09": answer_value}, "owners": ["R08", "R09", "R11"],
+                                "note": "числа совпадают или одного нет — различать нечего"})
+            return
+        same = []
+        for lang in ("ru", "kk"):
+            path = self.s.root / "web" / "civic" / "i18n" / f"{lang}.json"
+            try:
+                d = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            pick = lambda dotted: _dig(d, dotted)  # noqa: E731
+            a, b = pick("akim.kpi.overdue"), pick("inbox.tab.overdue")
+            if isinstance(a, str) and isinstance(b, str) and a.strip().lower() == b.strip().lower():
+                same.append(f"{lang}: «{a}»")
+        status = "FAIL" if same else "PASS"
+        self.checks.append({"name": "C4. подписи «просрочено» различаются, если числа разные (R08 ≠ R09)", "status": status,
+                            "values": {"«Картина дня» R08": fix_value, "«Обращения» R09": answer_value, "одинаковые подписи": same},
+                            "owners": ["R08", "R09", "R11"],
+                            "note": "жюри видит «Просрочено N» в двух местах с разными числами" if same else ""})
+        print(f"{status:<7} C4. подписи «просрочено»: {same or 'разные'}")
 
     def world_numbers(self):
         """Числа района из файла мира R02 (истина для засева): записи и «Я тоже» за 30 дней."""
