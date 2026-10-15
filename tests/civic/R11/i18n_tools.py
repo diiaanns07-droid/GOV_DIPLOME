@@ -4,7 +4,7 @@
   python3 tests/civic/R11/i18n_tools.py check            # проверка словарей; код выхода 1 при ошибках
   python3 tests/civic/R11/i18n_tools.py sync             # категории из research/round-14/categories_v2.json → ru/kk + копия в ui-kit
   python3 tests/civic/R11/i18n_tools.py add FILE.json    # добавить ключи, присланные ролью (см. формат ниже)
-  python3 tests/civic/R11/i18n_tools.py review           # пересобрать research/round-14-results/R11/KK_REVIEW.md
+  python3 tests/civic/R11/i18n_tools.py review           # пересобрать research/round-15-results/R11/KK_REVIEW.md
 
 Формат файла для add (роль кладёт его в свой INTEGRATION.txt, R11 сохраняет в JSON):
   {"heat.card.title": {"ru": "Остановка", "kk": "Аялдама", "where": "R07 · карточка цели", "note": "…"},
@@ -22,9 +22,13 @@ ROOT = Path(__file__).resolve().parents[3]
 I18N = ROOT / "web/civic/i18n"
 CATS_SRC = ROOT / "research/round-14/categories_v2.json"
 CATS_WEB = ROOT / "web/civic/ui-kit/categories_v2.json"
-NOTES = ROOT / "research/round-14-results/R11/kk_notes.json"  # ⚑ — настоящие сомнения в переводе
-SOURCES = ROOT / "research/round-14-results/R11/key_sources.json"  # кто прислал ключ и где он на экране
-REVIEW = ROOT / "research/round-14-results/R11/KK_REVIEW.md"
+# Раунд 15: пометки и источники ключей ведутся в папке результатов раунда 15; если файла ещё нет —
+# читаем пометки раунда 14 (их продолжение), записываем уже в раунд 15.
+RESULTS = ROOT / "research/round-15-results/R11"
+NOTES = RESULTS / "kk_notes.json"  # ⚑ — настоящие сомнения в переводе
+NOTES_R14 = ROOT / "research/round-14-results/R11/kk_notes.json"
+SOURCES = RESULTS / "key_sources.json"  # кто прислал ключ и где он на экране
+REVIEW = RESULTS / "KK_REVIEW.md"
 
 LANGS = ("ru", "kk")
 RU_FORMS = {"one", "few", "many"}
@@ -45,7 +49,10 @@ def save(lang, data):
 
 
 def load_notes():
-    return json.loads(NOTES.read_text("utf-8")) if NOTES.exists() else {}
+    for path in (NOTES, NOTES_R14):
+        if path.exists():
+            return json.loads(path.read_text("utf-8"))
+    return {}
 
 
 def texts(value):
@@ -171,6 +178,7 @@ def add(path):
             sources[key] = spec["where"]
     save("ru", insert_grouped(ru, new_ru))
     save("kk", insert_grouped(kk, new_kk))
+    NOTES.parent.mkdir(parents=True, exist_ok=True)
     NOTES.write_text(json.dumps(notes, ensure_ascii=False, indent=1) + "\n", "utf-8")
     SOURCES.write_text(json.dumps(sources, ensure_ascii=False, indent=1) + "\n", "utf-8")
     print(f"добавлено ключей: {len(new_ru)}")
@@ -189,7 +197,7 @@ def review():
     lines = [
         "# KK_REVIEW — казахский текст Birge для проверки владельцем",
         "",
-        "Собрано автоматически из `web/civic/i18n/ru.json`, `kk.json` и пометок `research/round-14-results/R11/kk_notes.json`",
+        "Собрано автоматически из `web/civic/i18n/ru.json`, `kk.json` и пометок `research/round-15-results/R11/kk_notes.json`",
         "(`python3 tests/civic/R11/i18n_tools.py review`). Правки пишите прямо в столбец «қаз» или списком «ключ → как надо» —",
         "R11 вносит их в `kk.json` сразу.",
         "",
