@@ -84,7 +84,7 @@
   "screen": "window.BirgeAnalyst.mount(root, {api, apiBase, lang, openTarget, openSection, titleTag}); сам вызывает BirgeShell.registerScreen({id:'analyst', modes:['akimat']})",
   "i18n_for_R11": "research/round-15-results/R03/i18n_analyst.json (58 ключей analyst.* ru/kk)",
   "menu_for_R11": "Сделано у R01 по IA_ROUND15 v1.1 R11: акимат → «Ещё» → «Инструменты» → «Спросить Birge» (#analyst, SCREENS.analyst, i-sparkle); palette: BirgeAnalyst.ask(text)",
-  "verified_on": "15 окт ~16:50 UTC: git worktree ветки R01 c9069723 (B0) + пути R03 + R01_warm_up.patch, мир R02 (CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1; civic-world: R09 743, R17 3, R13 17, R12 39): первый вопрос сразу после «civic-v2: ready» 0,66–1,2 с (без прогрева 3,4 с); Chromium 1366 и 375: «Ещё» содержит analyst, ответ 40 · 15, первое место «Двор ЖК „BI City Tokyo“» 7 → «Показать на карте» → карточка R07 «7 человек сообщили», ошибок JS нет; tests/civic/R03/round15 в этой копии: 81 passed, 1 skipped. Раньше (12:45 UTC, R01 dbf25c05): 401/403/400/200, тесты R01 round15 + api_v2 — 286 passed, 1 skipped"
+  "verified_on": "15 окт ~16:35 UTC: git worktree ветки R01 c9069723 (B0) + пути R03 + R01_warm_up.patch, мир R02 (CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1; civic-world: R09 743, R17 3, R13 17, R12 39): первый вопрос сразу после «civic-v2: ready» 0,66–1,2 с (без прогрева 3,4 с); Chromium 1366 и 375: «Ещё» содержит analyst, ответ 40 · 15, первое место «Двор ЖК „BI City Tokyo“» 7 → «Показать на карте» → карточка R07 «7 человек сообщили», ошибок JS нет; tests/civic/R03/round15 в этой копии: 81 passed, 1 skipped. Раньше (12:45 UTC, R01 dbf25c05): 401/403/400/200, тесты R01 round15 + api_v2 — 286 passed, 1 skipped"
  },
  "tests": {
   "pytest_R03_round15": {
