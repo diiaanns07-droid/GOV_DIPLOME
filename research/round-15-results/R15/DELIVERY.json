@@ -10,19 +10,21 @@
  "tested_sha": {
   "package": "e91acb69",
   "R17": "4132ad57",
-  "R13": "eeacc26d",
-  "R03": "cae2e270",
+  "R13": "a702d487",
+  "R03": "e4bb9f6d",
   "R16": "6bdf8c3c",
   "R04": "f20775ab",
   "R02": "ac75f3a8 (claude/affectionate-shannon-jm6ws5)",
-  "R07": "7ce9aee7",
+  "R07": "7e35dc4a (разбор)",
   "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
   "R09": "80a35084",
   "R01": "197ad600 (B0.4 в ветке R01)",
-  "R08": "5d9b4138 (claude/laughing-euler-iv3on3)",
-  "R06": "c2604ea2",
+  "R08": "b8838abe (claude/laughing-euler-iv3on3, разбор)",
+  "R06": "98e154af (разбор)",
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
-  "R11": "b3502428"
+  "R11": "f8ce804c (разбор)",
+  "R12": "99000a8d (разбор)",
+  "R05": "c98493b7 (разбор)"
  },
  "push_status": "OK (круг 3)",
  "changed_paths": [
@@ -269,7 +271,9 @@
   "round7_heads": {
    "R16_6bdf8c3c_together": "36 passed + S51 XPASS(strict); tests/civic/R16 56 passed",
    "R17_4132ad57_agencies": "32 passed + S43 XPASS(strict) ×3",
-   "R09_80a35084_handoffs": "30 passed + 2 XPASS (S49)"
+   "R09_80a35084_handoffs": "30 passed + 2 XPASS (S49)",
+   "R03_e4bb9f6d_assistant": "15 passed + 2 XPASS (S44)",
+   "R13_a702d487_meetings": "27 passed"
   }
  },
  "findings": {
