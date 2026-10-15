@@ -5,8 +5,8 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "3d8db4948c83eb3f0c6df44fb5960fdee84dea66",
-  "tested_sha": "3d8db4948c83eb3f0c6df44fb5960fdee84dea66",
+  "code_sha": "c68b179f9e81695b6869581609a4055f986e6b7f",
+  "tested_sha": "c68b179f9e81695b6869581609a4055f986e6b7f",
   "push_status": "OK",
   "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
   "world": {
