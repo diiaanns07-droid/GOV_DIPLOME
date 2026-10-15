@@ -275,3 +275,15 @@ R01 (B0 claude/brave-fermi-nhzetj @ c9069723; стенд с ui-kit и слова
   shell.palette.scene + номер (ключи scene7–9 есть).
   Казахский: «Картина недели» — «Апта қорытындысы» (пара к «Күн қорытындысы»); «передач между службами» —
   «жіберу»; «Табло служб» — «Қызметтер таблосы»; «шторка» было | станет — «жүгірткі»; «Сделано» — «Жасалды».
+
+R09 (claude/quirky-ptolemy-k3z2mj @ dfaee97e), сцена 8 — 21:57 (joint_r09.cjs 102/108; провалы — только старые kk-слова теста):
+  R09-2 web/civic/feedback/complaint.css (375 ҚАЗ: чип «Біздің жауапкершілік аймағы емес» обрезан):
+      .bc-joint__reasons .bk-chip { min-height: 44px; white-space: normal; text-align: left; flex: 0 1 auto; max-width: 100%; }
+  R09-3 web/civic/feedback/complaint-staff.js, handoffHistory(): причина на языке интерфейса —
+      var rk = x.reason_code ? "handoff.reason." + x.reason_code : "";
+      var I = window.BirgeI18n, why = rk && I && I.has && I.has(rk) ? t(rk) : x.reason;
+      why ? h("span", { "class": "bc-joint__hreason" }, " · «" + why + "»") : null,
+  R09-4 tests/civic/R09/joint_r09.cjs SAY.kk: handoff "Жіберілді: Жол қызметі", work "орындалуда" (словарь R11).
+  R09-6 чип части службы в строке: text-align: left (сейчас две строки по центру на 375).
+  Словарь: «в работе» — «орындалуда» везде (joint.part.in_progress, agencies.part.in_progress, crisis.task.doing; было
+  «жұмыста» после правки R11 в круге 5 — исправлено, KK_REVIEW № 40).
