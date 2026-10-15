@@ -5,8 +5,8 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "c68b179f9e81695b6869581609a4055f986e6b7f",
-  "tested_sha": "c68b179f9e81695b6869581609a4055f986e6b7f",
+  "code_sha": "eaed8f4ff961efcf89cabf08cfb48d6fb1fb2fbb",
+  "tested_sha": "eaed8f4ff961efcf89cabf08cfb48d6fb1fb2fbb",
   "push_status": "OK",
   "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
   "world": {
@@ -14,7 +14,7 @@
     "schema": "birge-demo-world-v1",
     "schema_version": "1.1",
     "seed": 15,
-    "sha256": "c4a42501b49bab717b3d7f5a90a8123c4343f8cc119a2935f33741bc92701bc3",
+    "sha256": "efaaa553263d7b38a0eee3a8de0fc9d53deda9ca0ba8befb159f8e6ac8e48ca9",
     "counts": {
       "complaints": 743,
       "people_with_metoo": 1171,
@@ -31,7 +31,8 @@
     },
     "nura_share": 0.36,
     "verified_share": 0.125,
-    "joint_share": 0.054
+    "joint_share": 0.054,
+    "r12_map_data": "objects.json 247c24a8 (карта R12 d4e968ce / f8157a68: светофоры и переходы из свежего снимка OSM LOCAL-10)"
   },
   "changed_paths": [
     "ml/datasets/demo_world.py",
@@ -59,31 +60,31 @@
     "research/round-15-results/R02/stand_numbers_builds.json"
   ],
   "integration": {
-    "R01": "для голого FINAL-4 — patches/R01_demo_world.patch; для ветки R01 (B0 и дальше) — patches/R01_world_reset.patch: строка civic-world считает reset (перезапуск показывал «R09 0, R17 0, R13 0»), reset=True тем seed_world, у кого есть параметр (R06)",
+    "R01": "patch R01_world_reset взят в B0.3 (f6324e7e); мир пересобран на данных R12 f8157a68 по просьбе R01 (INTEGRATION §0); для голого FINAL-4 — patches/R01_demo_world.patch",
     "R09": "seed_world(db_path, world, now) в сборке R01 пишет в ту же базу — экраны видят 743 сразу; «Ждут проверки» 14 дней принято; EXPECTED.json пересчитан кодом R09 97342bdf с inbox.waiting_check_days=14 — их test_r02_world_counts_match_expected PASS",
     "others": "R07 §4, R06 §5, R12 §6 (materialize в load_world), R13 §7, R16 §8, R17 §9, R10 §10 (materialize в world_numbers)",
     "R12": "patches/R12_works_calendar_world.patch — календарь читает мир, находит ровно 5 задуманных конфликтов; scenes.scene8.dig_work для openConflict; замечание: латинские буквы в нескольких названиях OSM («Шaкaрима» и др.) — поиск по кириллице их не находит (INTEGRATION §6)",
     "R10": "patches/R10_consistency_world.patch — world_numbers через materialize (154 жалобы / 78 «Я тоже» за 30 дней)",
     "R04": "совместные жалобы — тексты, которые route() читает как те же две службы; 743/743 (INTEGRATION §10a)",
     "R17": "EXPECTED services: «открыто» у совместной — по части службы, как табло R17",
-    "R07": "events и closed_at прочитаны (6 отметок); patches/R07_world_marks_reseed.patch — отметки «Хроники» едут с миром при повторном засеве (иначе «Буран» на шкале раньше жалоб на столько дней, сколько прошло с первого засева)",
+    "R07": "events и closed_at прочитаны (6 отметок); отметки «Хроники» едут с миром при повторном засеве — взято в fcfd9256",
     "R06": "seed_world на мире: 55 (39 работ + 4 отключения + 12 идей), повтор 55 skipped, reset 55; статусы, голоса, даты = миру; 2 проекта"
   },
   "tests": {
     "pytest tests/civic/R02/round15": {
       "status": "PASS",
-      "passed": 26,
-      "skipped": 2,
+      "passed": 27,
+      "skipped": 3,
       "failed": 0,
-      "seconds": 26,
-      "note": "skipped — стыки с R12 (find_conflicts) и R04 (route) без их кода в ветке R02; в сборке R01 B0 и в B1-симуляции — 28 passed"
+      "seconds": 22,
+      "note": "в ветке R02 (objects.json FINAL-4): пропуски — сверка файла мира с генератором (мир собран на данных R12 f8157a68), стыки R12 и R04 без их кода"
     },
     "pytest tests/civic/R02 (все раунды R02)": {
       "status": "PASS",
-      "passed": 362,
+      "passed": 363,
       "failed": 0,
-      "skipped": 3,
-      "seconds": 53
+      "skipped": 4,
+      "seconds": 50
     },
     "pytest tests/civic/R02/test_r02_schema.py на коде R06 (claude/eloquent-einstein-wvuyje, миграция 10)": {
       "status": "PASS",
@@ -96,7 +97,8 @@
       "warnings": 0
     },
     "python3 -m ml.datasets.demo_world --check (тот же sha256, без сети)": {
-      "status": "PASS"
+      "status": "PASS",
+      "note": "на тех же входных файлах (карта R12 f8157a68); в ветке R02 с objects.json FINAL-4 — код 2 с причиной"
     },
     "стенд FINAL-4 + patch R01, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: tests/civic/R02/round15/stand_numbers.py": {
       "status": "PASS",
@@ -231,6 +233,14 @@
       "matched": 14,
       "of": 14,
       "restart": "14/14"
+    },
+    "дерево поставок к B1 (R01 197ad600 + R12 f8157a68, R07 fcfd9256, R08 0e6e57a5, R09 d9ca175c, R04 0affd9d0, R06 2e818928)": {
+      "status": "PASS",
+      "R02_tests": "366 passed, 1 skipped (старый http-patch R02 раунда 13)",
+      "round15": "30 passed, 0 skipped",
+      "demo_world --check": "OK (тот же sha256 efaaa553…)",
+      "demo_world_check": "0 ошибок, 0 предупреждений",
+      "neighbours": "R09 test_r09v21_world + R12 test_works, test_fresh_snapshot + R07 test_r07_replay — 93 passed"
     }
   },
   "consistency_table": {
@@ -387,12 +397,12 @@
   "known_limits": [
     "Мир осенний (отопление, первый снег, буран): время относительное, но содержимое рассчитано на показ в октябре; при показе в другой сезон месяцы снега и работ не сдвигаются (кроме работ «следующего сезона»).",
     "Ритм недели построен от опорной пятницы: в другой день показа «пик понедельника» окажется в другом дне недели.",
-    "EXPECTED.json посчитан кодом R09 @ 97342bdf (WAITING_CHECK_DAYS 14), R07 @ f42f4347, R08 из B0 (поле code_note) и хранит отпечатки кода: в дереве с другим кодом модуля его блок не сравнивается с файлом — живые числа сверяет stand_numbers.py тем же кодом, что у экрана. «Обращения» на опорный момент: город {21, 72, 159, 5, 5}, Нура {8, 24, 54, 2, 0}.",
+    "Мир собран на файлах карты R12 f8157a68 (objects.json 247c24a8) и EXPECTED — кодом поставок к B1 (R09 d9ca175c, R07 fcfd9256, R08 0e6e57a5); в дереве с другими файлами R12 или кодом модулей сверка с файлами пропускается с причиной, живые числа сверяет stand_numbers.py. «Обращения» на опорный момент: город {21, 72, 159, 5, 5}, Нура {8, 24, 54, 2, 0}.",
     "Сверка R10 C («Просрочено» R08 = R09 = R17) упадёт на любых данных: два разных определения у модулей (INTEGRATION §3).",
     "Сверки R10 A1/A2 сходятся при засеве и до ~30 ч после него; через 3 суток без перезапуска стенда расхождение в 1 человека (окна сдвигаются, мир — нет). Перезапуск стенда заново «освежает» мир.",
     "Тексты — шаблоны R02 (225 шт.): узнаваемые повторы; казахские шаблоны ждут вычитки носителем.",
     "Жалобы на остановки — только на остановки OSM с названием (46 % остановок в OSM без названия).",
     "Разборщики времени у R07, R12, R13, R16, R17, R10 ждут ISO или плоские поля: работают с миром только после materialize (R01 передаёт материализованный мир; R12 и R10 читают файл сами — им нужна правка из INTEGRATION §6, §10)."
   ],
-  "next_step": "Каждый круг: AMENDMENTS.md → find_branches.py → seed_world соседей на мире; R01 — patch R01_world_reset, R07 — patch R07_world_marks_reseed (ответ в их STATUS); к B1 (16 окт 14:00 Астаны) — стенд на сборке B1: stand_numbers.py, перезапуск, табло R17, сцены → consistency_table."
+  "next_step": "Каждый круг: AMENDMENTS.md → find_branches.py → просьбы соседей; к B1 (16 окт 14:00 Астаны) — стенд на сборке B1: stand_numbers.py, перезапуск, табло R17, сцены, «Просрочено» R08/R09/R17 → consistency_table."
 }
