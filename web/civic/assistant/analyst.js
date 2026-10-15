@@ -254,7 +254,8 @@
     var t = makeT(function () { return state.lang === "kk" ? "kk" : "ru"; });
     var titleTag = /^h[1-4]$/.test(opts.titleTag || "") ? opts.titleTag : "h2";
 
-    var rootEl = el("div", { className: "ba", "data-lang": state.lang });
+    // В оболочке R01 (opts.section) лист раздела уже даёт поля 24 / 16 px — свои поля не добавляем.
+    var rootEl = el("div", { className: "ba" + (opts.section ? " ba--embedded" : ""), "data-lang": state.lang });
     var title = el(titleTag, { className: "ba-title", id: "ba-title" });
     var subtitle = el("p", { className: "ba-subtitle" });
     var label = el("label", { className: "bk-sr-only", for: "ba-input" });
