@@ -27,6 +27,9 @@
   white-space: nowrap; }
 
 .wcal-controls { display: flex; align-items: flex-end; gap: var(--s-2, 8px); flex-wrap: wrap; }
+.wcal-head--embedded { align-items: flex-end; }
+.wcal-head--embedded .wcal-meta { margin-top: 0; }
+.wcal-addmain { gap: 6px; min-height: var(--tap, 44px); }
 .wcal-field { display: grid; gap: 4px; margin: 0; }
 .wcal-field__label { font-size: var(--fs-xs, 12px); color: var(--c-text-3, #7e8a85); }
 /* Вид поля — ui-kit (.bk-field select: заливка, без рамки, родная стрелка); здесь только размер в шапке. */

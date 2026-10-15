@@ -116,6 +116,38 @@ async function openCalendar(page, lang) {
         await ctx.close();
       }
     }
+    // Вкладка «Календарь работ» в «Ведомствах» R17 (схема R11 §5.4, patch R17 из INTEGRATION R12) — если экран R17 есть.
+    {
+      const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+      const page = await ctx.newPage();
+      page.on("pageerror", (e) => errors.push(`embedded: ${e.message}`));
+      await page.goto(URL + "/", { waitUntil: "domcontentloaded" });
+      await login(page);
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await page.waitForFunction(() => window.BirgeShell && window.BirgeWorksCalendar, null, { timeout: 20000 });
+      const hasTab = await page.evaluate(async () => {
+        if (!window.BirgeAgencies) return false;
+        window.BirgeShell.setSection("agencies");
+        for (let i = 0; i < 40 && !document.querySelector('[role="tab"][data-tab="calendar"]'); i++) await new Promise((r) => setTimeout(r, 100));
+        return !!document.querySelector('[role="tab"][data-tab="calendar"]');
+      });
+      if (!hasTab) {
+        console.log("NOT_RUN вкладка в «Ведомствах» — в сборке нет экрана R17 или patch R17 ещё не применён");
+      } else {
+        await page.click('[role="tab"][data-tab="calendar"]');
+        await page.waitForSelector(".ag-calendar .wcal-bar", { timeout: 15000 });
+        const emb = await page.evaluate(() => ({ h2: !!document.querySelector(".ag-calendar .wcal-title"),
+          main: [...document.querySelectorAll(".ag-calendar .bk-btn--primary")].map((x) => x.textContent.trim()),
+          chips: document.querySelectorAll(".ag-calendar .wcal-cchip").length }));
+        check("вкладка «Календарь работ» в «Ведомствах»: без своего заголовка, главная — «Добавить работу»",
+          !emb.h2 && emb.main.length <= 1 && emb.chips >= 5, JSON.stringify(emb));
+        if (OUT) await page.screenshot({ path: path.join(OUT, "embedded_r17_tab_1366_ru.png") });
+        await page.click('[role="tab"][data-tab="board"]');
+        await page.waitForTimeout(300);
+        check("вкладка снимает календарь при уходе", await page.evaluate(() => !document.querySelector(".ag-calendar")));
+      }
+      await ctx.close();
+    }
     // Все состояния экрана (подмена ответа шлюза): сотрудник не вошёл, модуль не подключён, нет связи, пусто, скелетон.
     if (!args["no-states"]) {
       const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });

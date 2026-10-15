@@ -3,7 +3,10 @@
  *
  *   <link rel="stylesheet" href="/civic/works-calendar/works-calendar.css">
  *   <script defer src="/civic/works-calendar/works-calendar.js"></script>
- *   BirgeWorksCalendar.mount(root, { apiBase: "/api/civic/v2", api, map, close }) → { destroy(), setLang(lang), reload() }
+ *   BirgeWorksCalendar.mount(root, { apiBase: "/api/civic/v2", api, map, close, embedded, conflict })
+ *     → { destroy(), setLang(lang), reload() }
+ *   embedded: true — вкладка «Календарь работ» внутри «Ведомств» R17 (схема R11 §5.4): без своего заголовка, главная
+ *   кнопка — «Добавить работу» (форма R06); conflict — id конфликта или работы, который открыть сразу.
  *
  * Данные: GET {apiBase}/works-calendar?from&to&district&service — только сотрудник (шлюз R01: сессия R02),
  * считает R12 engine/civic_geo/works_calendar.py: работы по участкам улиц графа OSM и конфликты:
@@ -477,14 +480,15 @@
       } else {
         meta.append(h("span", { text: tr("wcal.subtitle") }));
       }
-      const title = h(opts.titleTag || "h2", { class: "wcal-title", text: tr("wcal.title") });
+      // embedded (вкладка «Календарь работ» в «Ведомствах» R17, схема R11 §5.4): заголовок и «Пример» — у экрана R17.
+      const title = opts.embedded ? null : h(opts.titleTag || "h2", { class: "wcal-title", text: tr("wcal.title") });
       const titleBox = h("div", { class: "wcal-head__title" }, [title, meta]);
       if (d && d.demo && state.status === "ready") {
         titleBox.append(h("p", { class: "wcal-demo" }, [h("span", { class: "wcal-demo__tag", text: tr("common.tag.demo") }), tr("wcal.demo_note")]));
       }
       // Фильтры нужны, когда есть данные или «пусто» (можно сменить район); при «войдите», «не подключён», ошибке — нет.
       const withControls = state.status === "ready" || (state.status === "loading" && state.data);
-      return h("header", { class: "wcal-head" }, [titleBox, withControls ? controls() : null]);
+      return h("header", { class: "wcal-head" + (opts.embedded ? " wcal-head--embedded" : "") }, [titleBox, withControls ? controls() : null]);
     }
 
     function controls() {
@@ -513,11 +517,17 @@
         h("button", { type: "button", class: "wcal-iconbtn", "aria-label": tr("wcal.period.next"), title: tr("wcal.period.next"),
           onclick: () => { state.shift += 3; load(); } }, [icon("forward")]),
       ]);
-      // Поля — компонент ui-kit R11 (.bk-field): тот же вид, что в формах сотрудника.
+      // Поля — компонент ui-kit R11 (.bk-field): тот же вид, что в формах сотрудника. Во вкладке R17 главная кнопка —
+      // «Добавить работу» (форма R06), здесь же, справа (схема R11 §5.4).
+      const sh = root.BirgeShell;
+      const addMain = opts.embedded && sh && root.BirgeWorks && typeof sh.setSection === "function"
+        ? h("button", { type: "button", class: "bk-btn bk-btn--primary wcal-addmain", onclick: () => sh.setSection("works") }, [icon("plus"), tr("wcal.add")])
+        : null;
       return h("div", { class: "wcal-controls" }, [
         h("label", { class: "bk-field wcal-field" }, [h("span", { class: "bk-field__label wcal-field__label", text: tr("wcal.filter.district") }), district]),
         h("label", { class: "bk-field wcal-field" }, [h("span", { class: "bk-field__label wcal-field__label", text: tr("wcal.filter.service") }), service]),
         nav,
+        addMain,
       ]);
     }
 
@@ -577,7 +587,7 @@
         ]),
         h("div", { class: "wcal-focus__actions" }, [
           counter,
-          h("button", { type: "button", class: "bk-btn bk-btn--primary wcal-mapbtn", onclick: () => showOnMap(c) },
+          h("button", { type: "button", class: "bk-btn" + (opts.embedded && root.BirgeWorks ? "" : " bk-btn--primary") + " wcal-mapbtn", onclick: () => showOnMap(c) },
             [icon("pin"), tr("common.action.show_on_map")]),
         ]),
         facts,
@@ -605,7 +615,7 @@
       // Угол над названиями улиц: «Добавить работу» — форма R06 «Работы и отключения» (служба, вид, участок улицы
       // через R12). Тихая кнопка: главная на экране — «Показать на карте». Нет экрана R06 — угол пустой.
       const shell = root.BirgeShell;
-      const add = shell && root.BirgeWorks && typeof shell.setSection === "function"
+      const add = !opts.embedded && shell && root.BirgeWorks && typeof shell.setSection === "function"
         ? h("button", { type: "button", class: "wcal-add", onclick: () => shell.setSection("works") }, [icon("plus"), tr("wcal.add")])
         : null;
       const head = h("div", { class: "wcal-tl__head" }, [h("div", { class: "wcal-tl__corner" }, [add])]);
