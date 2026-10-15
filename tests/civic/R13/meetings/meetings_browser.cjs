@@ -237,10 +237,20 @@ async function staffFlow(browser, w, h, lang) {
     await page.click(".mt-lead .bk-btn--primary");
     await page.fill('.mt-form [name="text_ru"]', "Установить урны у детской площадки");
     await page.selectOption('.mt-form [name="service"]', "waste");
+    // Связь — выбором из открытых обращений района (R09), без ввода номера
+    await page.waitForSelector('.mt-form [name="link_pick"]', { timeout: 15000 }).catch(() => null);
+    const pick = await page.$('.mt-form [name="link_pick"]');
+    if (pick) {
+      const value = await pick.evaluate((sel) => sel.options[1] && sel.options[1].value);
+      await page.selectOption('.mt-form [name="link_pick"]', value);
+      check("выбор обращения района подставил номер записи", (await page.inputValue('.mt-form [name="link_id"]')) === value, value);
+    } else check("выбор обращения района", false, "нет списка");
     await shot(page, `${tag}-a-order-form`);
     await page.click(".mt-form button[type=submit]");
     await page.waitForFunction((n) => document.querySelectorAll(".mt-order").length === n + 1, n0, { timeout: 15000 }).catch(() => null);
     check("поручение добавлено", (await page.$$(".mt-order")).length === n0 + 1);
+    await sleep(600);
+    check("у нового поручения видно место обращения", /Обращение: Остановка «Хан Шатыр»/.test(await page.innerText(".mt-orders")));
     const overdueBefore = (await page.$$(".mt-order.is-overdue")).length;
     const sel = await page.$(".mt-order.is-overdue .mt-select--sm");
     if (sel) {

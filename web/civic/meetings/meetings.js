@@ -117,6 +117,10 @@
       "meet.staff.due": "Срок",
       "meet.staff.link": "Связь",
       "meet.staff.link_none": "Без связи",
+      "meet.staff.link_pick": "Обращения района",
+      "meet.staff.link_pick_none": "— выберите обращение —",
+      "meet.staff.link_pick_empty": "Открытых обращений в районе нет — укажите номер записи",
+      "meet.staff.reporters": { one: "{n} житель", few: "{n} жителя", many: "{n} жителей" },
       "meet.staff.link_id": "Номер записи",
       "meet.staff.link_edit": "Связать",
       "meet.staff.link_save": "Сохранить связь",
@@ -154,6 +158,7 @@
       "meet.staff.login": "Чтобы назначать встречи и вести поручения, войдите как сотрудник акимата",
       "meet.staff.login_btn": "Войти",
       "meet.staff.registered": "Придут: {n}",
+      "meet.staff.registered_past": "Отметили «Приду»: {n}",
       "meet.staff.questions_count": "Вопросов: {n}",
       "meet.staff.default_title": "Встреча акима района {district} с жителями",
       "meet.staff.pii": "Похоже на личные данные: {what}",
@@ -237,6 +242,10 @@
       "meet.staff.due": "Мерзімі",
       "meet.staff.link": "Байланыс",
       "meet.staff.link_none": "Байланыссыз",
+      "meet.staff.link_pick": "Ауданның өтініштері",
+      "meet.staff.link_pick_none": "— өтінішті таңдаңыз —",
+      "meet.staff.link_pick_empty": "Ауданда ашық өтініш жоқ — жазба нөмірін көрсетіңіз",
+      "meet.staff.reporters": "{n} тұрғын",
       "meet.staff.link_id": "Жазба нөмірі",
       "meet.staff.link_edit": "Байланыстыру",
       "meet.staff.link_save": "Байланысты сақтау",
@@ -274,6 +283,7 @@
       "meet.staff.login": "Кездесу белгілеу және тапсырмаларды жүргізу үшін әкімдік қызметкері ретінде кіріңіз",
       "meet.staff.login_btn": "Кіру",
       "meet.staff.registered": "Келетіндер: {n}",
+      "meet.staff.registered_past": "«Барамын» деп белгілегендер: {n}",
       "meet.staff.questions_count": "Сұрақтар: {n}",
       "meet.staff.default_title": "{district} ауданы әкімінің тұрғындармен кездесуі",
       "meet.staff.pii": "Жеке деректерге ұқсайды: {what}",
@@ -510,7 +520,7 @@
       draft: null,                // сотрудник: черновик новой встречи
       rejectFor: null, reject: { reason: null, busy: false },
       busy: {}, alive: true, lang: lang(), listReq: 0, cardReq: 0, skeletonTimer: null, showSkeleton: false, shown: "",
-      bump: false, places: [],
+      bump: false, places: [], complaints: {},
     };
     let askHandle = null;
     const box = h("section", { class: "mt", "data-role": state.role });
@@ -917,6 +927,40 @@
         render();
       });
     }
+    // Открытые обращения района для связи поручения (R09 GET /complaints — публичный вид, без текстов жителей).
+    // Грузим один раз на район; сначала те, о которых сообщило больше жителей.
+    function loadComplaints(district) {
+      if (!district || state.complaints[district]) return;
+      state.complaints[district] = { loading: true, items: [] };
+      call("GET", "/complaints?days=60&status=new,accepted,in_progress").then((data) => {
+        const items = ((data && (data.items || (data.data && data.data.items))) || [])
+          .filter((c) => c && c.id && c.district === district && !c.duplicate_of)
+          .sort((a, b) => (b.reporters || 0) - (a.reporters || 0) || String(b.created_at).localeCompare(String(a.created_at)))
+          .slice(0, 30);
+        state.complaints[district] = { loading: false, items };
+        if (state.alive) render();
+      }, () => {
+        state.complaints[district] = { loading: false, items: [], failed: true };
+        if (state.alive) render();
+      });
+    }
+    function complaintLabel(c) {
+      const place = c.target ? pick(c.target, "label") : "";
+      const category = I() && typeof I().cat === "function" && c.category ? I().cat(c.category) : c.category || "";
+      return [place || c.id, category, tr("meet.staff.reporters", { n: c.reporters || 1 })].filter(Boolean).join(" · ");
+    }
+    // Выбор обращения (только для связи «Обращение»): список района + запасной ввод номера рядом.
+    function complaintPicker(district, value, onPick, name) {
+      loadComplaints(district);
+      const box = state.complaints[district] || { loading: true, items: [] };
+      if (box.loading) return null;
+      if (!box.items.length) return h("p", { class: "bk-field__hint mt-pick-empty", text: tr("meet.staff.link_pick_empty") });
+      const el = h("select", { id: "mt-f-" + name, name, class: "mt-select", "data-focus": "f-" + name, onchange: (e) => onPick(e.target.value) },
+        [h("option", { value: "", text: tr("meet.staff.link_pick_none") })].concat(box.items.map((c) => h("option", { value: c.id, text: complaintLabel(c) }))));
+      el.value = box.items.some((c) => c.id === value) ? value : "";
+      return field(tr("meet.staff.link_pick"), el);
+    }
+
     function newDraft() {
       const district = state.district || "nura";
       state.draft = { district, title_ru: defaultTitle(district, "ru"), title_kk: defaultTitle(district, "kk"),
@@ -1187,7 +1231,7 @@
       const progress = oc.total ? Math.round((oc.done / oc.total) * 100) : 0;
       const meta = [districtName(m.district)];
       if (staff()) {
-        meta.push(tr("meet.staff.registered", { n: m.registered || 0 }));
+        meta.push(tr(m.phase === "upcoming" ? "meet.staff.registered" : "meet.staff.registered_past", { n: m.registered || 0 }));
         meta.push(tr("meet.staff.questions_count", { n: (m.questions_count && m.questions_count.published) || 0 }));
       }
       return h("button", { type: "button", class: "mt-row", "data-focus": "row-" + m.id, onclick: () => openMeeting(m.id) }, [
@@ -1356,7 +1400,7 @@
     function renderStaffDetail(wrap, m) {
       wrap.appendChild(detailHeader(m));
       wrap.appendChild(h("p", { class: "mt-staffmeta" }, [
-        h("span", { text: tr("meet.staff.registered", { n: m.registered || 0 }) }),
+        h("span", { text: tr(m.phase === "upcoming" ? "meet.staff.registered" : "meet.staff.registered_past", { n: m.registered || 0 }) }),
         h("span", { class: "mt-dot", "aria-hidden": "true", text: "·" }),
         h("span", { text: tr("meet.staff.questions_count", { n: m.questions.length }) }),
       ]));
@@ -1367,7 +1411,9 @@
         if (!state.order) {
           wrap.appendChild(h("div", { class: "mt-lead" }, [h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "add-order",
             onclick: () => {
-              state.order = { text_ru: "", text_kk: "", service: "akimat", due: astanaDate(14, m.at), linkKind: "complaint", linkId: "", busy: false, error: null, field: null };
+              // Срок по умолчанию — через 2 недели от встречи, но не раньше чем через 2 недели от сегодня (давняя встреча).
+              const from = Date.parse(m.at) > Date.now() ? m.at : new Date().toISOString();
+              state.order = { text_ru: "", text_kk: "", service: "akimat", due: astanaDate(14, from), linkKind: "complaint", linkId: "", busy: false, error: null, field: null };
               render();
               focusField('[name="text_ru"]');
             } }, [icon("plus"), tr("meet.staff.add_order")])]));
@@ -1413,9 +1459,10 @@
         ]),
         h("div", { class: "mt-grid2" }, [
           field(tr("meet.staff.link"), select("link_kind", d.linkKind, [["complaint", tr("meet.link.complaint")], ["work", tr("meet.link.work")],
-            ["project", tr("meet.link.project")]], (v) => { d.linkKind = v; })),
+            ["project", tr("meet.link.project")]], (v) => { d.linkKind = v; render(); })),
           field(tr("meet.staff.link_id"), input("link_id", d.linkId, (v) => { d.linkId = v; }, { maxlength: "96", autocomplete: "off", spellcheck: "false" }), { error: err("link") }),
         ]),
+        d.linkKind === "complaint" ? complaintPicker(m.district, d.linkId, (v) => { d.linkId = v; render(); }, "link_pick") : null,
         d.error && !d.field ? h("p", { class: "bk-field__error", role: "alert", text: d.error }) : null,
         h("div", { class: "mt-actions" }, [
           h("button", { type: "submit", class: "bk-btn bk-btn--primary", disabled: d.busy ? true : null, "data-focus": "order-save", text: tr("meet.staff.save_order") }),
@@ -1440,7 +1487,8 @@
         const l = state.link;
         tools.appendChild(h("form", { class: "mt-linkform", novalidate: true, onsubmit: (e) => { e.preventDefault(); saveLink(m, o); } }, [
           select("order_link_kind", l.kind, [["complaint", tr("meet.link.complaint")], ["work", tr("meet.link.work")], ["project", tr("meet.link.project")]],
-            (v) => { l.kind = v; }),
+            (v) => { l.kind = v; render(); }),
+          l.kind === "complaint" ? complaintPicker(m.district, l.id, (v) => { l.id = v; render(); }, "order_link_pick") : null,
           input("order_link_id", l.id, (v) => { l.id = v; }, { maxlength: "96", "aria-label": tr("meet.staff.link_id"), placeholder: tr("meet.staff.link_none"),
             autocomplete: "off", spellcheck: "false" }),
           h("button", { type: "submit", class: "bk-btn", disabled: l.busy ? true : null, "data-focus": "link-save", text: tr("meet.staff.link_save") }),

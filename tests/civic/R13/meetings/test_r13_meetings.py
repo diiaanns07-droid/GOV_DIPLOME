@@ -491,7 +491,7 @@ def test_seed_world_takes_own_part_and_is_idempotent(tmp_path, clock):
 
 def test_seed_world_accepts_plain_list_and_empty(tmp_path):
     path = str(tmp_path / "w.sqlite3")
-    assert seed_world(path, [], now=NOW) == {"inserted": 0, "skipped": 0}
+    assert seed_world(path, [], now=NOW) == {"inserted": 0, "skipped": 0, "reset": 0}
     assert seed_world(path, {"meetings": WORLD["meetings"][:1]}, now=NOW)["inserted"] == 1
 
 
@@ -548,7 +548,8 @@ RAW_WORLD = {  # формы времени SCHEMA.md R02 §1 (до materialize)
 def test_seed_world_reads_raw_r02_time_forms(tmp_path, clock):
     path = str(tmp_path / "raw.sqlite3")
     report = seed_world(path, RAW_WORLD, now=NOW)
-    assert report == {"inserted": 2 + 2 + 2, "skipped": 0}
+    assert report == {"inserted": 2 + 2 + 2, "skipped": 0, "reset": 0}
+    assert seed_world(path, RAW_WORLD, now=NOW) == {"inserted": 0, "skipped": 0, "reset": 6}  # повтор — сброс демо
     service = make_service(path, clock=clock, demo=False)
     _s, body = call(service, "GET", "/meetings")
     by_id = {m["id"]: m for m in body["items"]}

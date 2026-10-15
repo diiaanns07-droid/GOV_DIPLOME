@@ -728,6 +728,14 @@
   flex: 1 1 140px;
   width: auto;
 }
+/* выбор обращения района — во всю ширину формы связи */
+.mt-linkform .mt-field,
+.mt-linkform .mt-pick-empty {
+  flex: 1 1 100%;
+}
+.mt-field .mt-select {
+  width: 100%;
+}
 .mt-staffmeta {
   display: flex;
   flex-wrap: wrap;

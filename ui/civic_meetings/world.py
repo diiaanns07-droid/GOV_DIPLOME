@@ -47,6 +47,13 @@ def _reltime(value, now: datetime) -> datetime | None:
     units = {"ago_hours": -3600, "in_hours": 3600, "ago_days": -86400, "in_days": 86400}
     if key in units and isinstance(inner, (int, float)) and not isinstance(inner, bool):
         return now + timedelta(seconds=float(inner) * units[key])
+    if key == "day_at" and isinstance(inner, dict):  # схема 1.1 R02: «сегодня ± N дней» в hh:mm по Астане
+        try:
+            local = now.astimezone(ASTANA) + timedelta(days=int(inner["day"]))
+            local = local.replace(hour=int(inner.get("hour", 0)), minute=int(inner.get("minute", 0)), second=0, microsecond=0)
+            return local.astimezone(timezone.utc)
+        except (KeyError, TypeError, ValueError):
+            return None
     if key == "next_weekday" and isinstance(inner, dict):
         try:
             local = now.astimezone(ASTANA)
@@ -241,7 +248,7 @@ def question_rows(world, now: datetime, meetings: dict[str, dict]) -> tuple[list
 
 
 def seed_world(db_path, records, now=None) -> dict:
-    """CONTRACT §11: засеять встречи, поручения и вопросы мира. -> {"inserted", "skipped"} (идемпотентно)."""
+    """CONTRACT §11: засеять встречи, поручения и вопросы мира. -> {"inserted", "skipped", "reset"} (идемпотентно)."""
     from ui.civic_qa.store import QuestionStore  # noqa: WPS433
     from .store import MeetingStore
 
@@ -254,7 +261,7 @@ def seed_world(db_path, records, now=None) -> dict:
             pass  # без R02 — свой разбор тех же форм (_reltime, _due)
     store = MeetingStore(db_path)
     meetings, orders, skipped = meeting_rows(records, now)
-    inserted, already = store.seed(meetings, orders)
+    inserted, already = store.seed(meetings, orders)  # повтор: демо-записи возвращаются к виду мира (reset)
     by_id = {m["id"]: m for m in meetings}
     raw_questions = (records.get("questions") or []) if isinstance(records, dict) else []
     # Вопросы к встречам, уже лежащим в базе (засев раньше или встреча сотрудника), тоже узнаём по id встречи.
@@ -266,4 +273,6 @@ def seed_world(db_path, records, now=None) -> dict:
                 pass
     questions, q_skipped = question_rows(records, now, by_id)
     made = QuestionStore(db_path).seed(questions, refresh=True) if questions else 0
-    return {"inserted": inserted + made, "skipped": skipped + already + q_skipped + (len(questions) - made)}
+    # reset — сколько уже засеянных демо-записей вернулось к виду мира от этого now (встречи, поручения, вопросы):
+    # для R02/R01 видно, что повторный засев не «пропустил» их, а обновил (иначе через сутки встреча — в прошлом).
+    return {"inserted": inserted + made, "skipped": skipped + q_skipped, "reset": already + (len(questions) - made)}

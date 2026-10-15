@@ -58,4 +58,4 @@ def test_r06_updates_signature_and_empty_safe(tmp_path):
 def test_r01_seed_world_positional_call(tmp_path):
     # R01 (patch R02): fn(str(db_path), world, now)
     report = meetings.seed_world(str(tmp_path / "w.sqlite3"), {"meetings": [], "questions": []}, NOW)
-    assert report == {"inserted": 0, "skipped": 0}
+    assert report == {"inserted": 0, "skipped": 0, "reset": 0}
