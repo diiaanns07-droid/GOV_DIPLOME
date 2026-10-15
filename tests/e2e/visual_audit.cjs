@@ -97,7 +97,20 @@ function screenMetrics(page, sel) {
       }
       if (r.right > edge.right + 1 || r.left < edge.left - 1) tabsCut.push((t.innerText || "").trim().slice(0, 24));
     }
-    return { sizes: [...sizes.entries()].sort((a, b) => a[0] - b[0]), small, tabsCut };
+    // П1 «Без ИИ-слопа» (AMENDMENTS 15 окт): иллюстрации — только малые значки ≤ 48 px; эмодзи в интерфейсе нет.
+    const bigIll = [];
+    for (const e of root.querySelectorAll("svg, img")) {
+      if (!vis(e) || e.closest(".maplibregl-map, canvas")) continue;
+      const use = e.querySelector && e.querySelector("use");
+      const ref = (use && (use.getAttribute("href") || use.getAttribute("xlink:href"))) || e.getAttribute("src") || "";
+      const cls = String(e.getAttribute("class") || "");
+      if (!/(^|[#\/_-])ill[-_]|bk-ill|illustr/i.test(ref + " " + cls)) continue;
+      const r = e.getBoundingClientRect();
+      if (r.width > 48 || r.height > 48) bigIll.push(`${Math.round(r.width)}×${Math.round(r.height)} ${(ref || cls).slice(0, 40)}`);
+    }
+    // Эмодзи — знаки, которые рисуются цветной картинкой: Emoji_Presentation или знак + VS16 (▶ ⚠ ✓ как текст — можно).
+    const emoji = ((root.innerText || "").match(/\p{Emoji_Presentation}|\p{Extended_Pictographic}\uFE0F/gu) || []).filter((c) => !/^[0-9#*]/.test(c));
+    return { sizes: [...sizes.entries()].sort((a, b) => a[0] - b[0]), small, tabsCut, bigIll, emoji: [...new Set(emoji)].slice(0, 6) };
   }, sel);
 }
 
@@ -212,6 +225,8 @@ async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, 
   add(sc.id, own, variant, "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)", q.lowContrastN ? "FAIL" : "PASS", { n: q.lowContrastN, ex: (q.lowContrast || []).slice(0, 3) });
   if (lang === "kk") add(sc.id, own, variant, "казахский не обрезан и не перекрыт", q.cutN || q.clippedN ? "FAIL" : "PASS", { cut: q.cut.slice(0, 3), clipped: q.clipped.slice(0, 3) });
   if (m && m.tabsCut.length) add(sc.id, own, variant, "вкладки целиком (полоса вкладок не режет подпись краем)", "WARN", { cut: m.tabsCut });
+  if (m) add(sc.id, own, variant, "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)", m.bigIll.length || m.emoji.length ? "FAIL" : "PASS",
+    { big: m.bigIll.slice(0, 4), emoji: m.emoji });
   const fc = await focusCheck(page, SEL);
   add(sc.id, own, variant, "видимый фокус с клавиатуры (п. 10)", fc === null ? "NOT_RUN" : fc.ring ? "PASS" : "FAIL", fc || "Tab не дошёл до элементов экрана");
   // Состояние «нет связи» (п. 8) — один размер на язык (1366): запросы модуля оборваны → понятный текст и «Повторить»,
