@@ -21,7 +21,7 @@
   "initiatives": 10,
   "incidents": 3,
   "meetings": 3,
-  "questions": 10,
+  "questions": 15,
   "events": 4
  },
  "districts": [
@@ -5788,15 +5788,112 @@
   },
   {
    "id": "q-w15-10",
+   "district": "nura",
+   "lang": "ru",
+   "text": "Когда поставят светофор у новой школы? Дети переходят дорогу без перехода.",
+   "status": "published",
+   "created_at": {
+    "ago_days": 6.1
+   },
+   "published_at": {
+    "ago_days": 6.0
+   },
+   "base_votes": 34,
+   "answer_ru": null,
+   "answer_kk": null,
+   "answered_at": null,
+   "meeting": null,
+   "demo": true
+  },
+  {
+   "id": "q-w15-11",
+   "district": "esil",
+   "lang": "kk",
+   "text": "Қыста аулалардағы балалар алаңдарын қардан кім тазалайды?",
+   "status": "published",
+   "created_at": {
+    "ago_days": 5.1
+   },
+   "published_at": {
+    "ago_days": 5.0
+   },
+   "base_votes": 27,
+   "answer_ru": null,
+   "answer_kk": null,
+   "answered_at": null,
+   "meeting": null,
+   "demo": true
+  },
+  {
+   "id": "q-w15-12",
    "district": "saryarka",
    "lang": "ru",
-   "text": "Можно ли продлить вечерние рейсы автобуса?",
-   "status": "pending",
+   "text": "Можно ли продлить вечерние рейсы автобуса до 23:00? Последний уходит в 21:30.",
+   "status": "published",
    "created_at": {
-    "ago_days": 0.3
+    "ago_days": 4.1
    },
-   "published_at": null,
-   "base_votes": 0,
+   "published_at": {
+    "ago_days": 4.0
+   },
+   "base_votes": 21,
+   "answer_ru": null,
+   "answer_kk": null,
+   "answered_at": null,
+   "meeting": null,
+   "demo": true
+  },
+  {
+   "id": "q-w15-13",
+   "district": "almaty",
+   "lang": "ru",
+   "text": "Почему во дворах до сих пор нет контейнеров для раздельного сбора мусора?",
+   "status": "published",
+   "created_at": {
+    "ago_days": 3.1
+   },
+   "published_at": {
+    "ago_days": 3.0
+   },
+   "base_votes": 15,
+   "answer_ru": null,
+   "answer_kk": null,
+   "answered_at": null,
+   "meeting": null,
+   "demo": true
+  },
+  {
+   "id": "q-w15-14",
+   "district": "baikonur",
+   "lang": "kk",
+   "text": "Саябақтағы шамдар түнде неге сөніп қалады?",
+   "status": "published",
+   "created_at": {
+    "ago_days": 2.1
+   },
+   "published_at": {
+    "ago_days": 2.0
+   },
+   "base_votes": 12,
+   "answer_ru": null,
+   "answer_kk": null,
+   "answered_at": null,
+   "meeting": null,
+   "demo": true
+  },
+  {
+   "id": "q-w15-15",
+   "district": "saraishyk",
+   "lang": "ru",
+   "text": "Будут ли делать велодорожку вдоль набережной?",
+   "status": "published",
+   "created_at": {
+    "ago_days": 1.1
+   },
+   "published_at": {
+    "ago_days": 1.0
+   },
+   "base_votes": 9,
    "answer_ru": null,
    "answer_kk": null,
    "answered_at": null,
