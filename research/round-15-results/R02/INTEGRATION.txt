@@ -121,7 +121,7 @@ scenes.scene8.surface_work = w-w15-002. Когда R06 засеет работы
 =====================================================================================================
 3 встречи §5.7: m-w15-1 (Нура, 12 дней назад, 54 записались, 4 поручения со ссылками на жалобы и работу мира),
 m-w15-2 (Нура, ближайший четверг 18:30 — next_weekday), m-w15-3 (Есиль, через 9 дней). place — двор (цель area).
-orders[].due — дата. 10 вопросов (формат вашего ui/civic_qa/demo.py: base_votes, published_at, answer_ru/kk,
+orders[].due — дата. 17 вопросов (формат вашего ui/civic_qa/demo.py: base_votes, published_at, answer_ru/kk,
 answered_at, + meeting). С материализованным миром ваш world.py берёт at / published_at как ISO.
 Стык проверен на вашей ветке @ 41f2ea6b: seed_world → 17 записей; m-w15-1 «held», итог есть (result ru/kk, схема 1.1),
 4 поручения (2 done, 1 in_progress, 1 todo); m-w15-2 и m-w15-3 «upcoming» в 18:30 / 18:00 по Астане; у всех point.
