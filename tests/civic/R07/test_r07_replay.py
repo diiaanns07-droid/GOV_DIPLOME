@@ -241,13 +241,20 @@ def test_blizzard_mark_from_world_and_scene_id(tmp_path):
     assert svc.replay(last=2)["events"] == []          # буран был раньше — в 2 последних днях отметки нет
 
 
-def test_seed_world_is_idempotent_and_keeps_first_time(tmp_path):
+def test_seed_world_is_idempotent_and_moves_with_the_world(tmp_path):
     db = tmp_path / "w.sqlite3"
     w = world_fixture.build_world()
     world.seed_world(db, w, NOW)
     first = world.stored_marks(str(db))
-    assert world.seed_world(db, w, NOW + timedelta(days=2)) == {"inserted": 0, "skipped": 1}
-    assert world.stored_marks(str(db)) == first          # перезапуск сервера не сдвигает «Буран»
+    assert world.seed_world(db, w, NOW) == {"inserted": 0, "skipped": 1}          # тот же now — ничего не меняется
+    assert world.stored_marks(str(db)) == first
+    # перезапуск через 2 дня на той же базе: R09 reset двигает жалобы бурана к новому now — отметка едет с ними
+    assert world.seed_world(db, w, NOW + timedelta(days=2)) == {"inserted": 0, "skipped": 0, "reset": 1}
+    moved = world.stored_marks(str(db))
+    assert [m["id"] for m in moved] == [m["id"] for m in first]
+    assert moved[0]["started_at"] == world.stored_marks(str(db))[0]["started_at"] != first[0]["started_at"]
+    world.seed_world(db, w, NOW)                           # и обратно — тот же вид, что при первом засеве
+    assert world.stored_marks(str(db)) == first
     # R01 передаёт уже материализованный мир (SCHEMA R02 §4) — тот же результат
     db2 = tmp_path / "w2.sqlite3"
     world.seed_world(db2, world.materialize(w, NOW), NOW)

@@ -67,7 +67,7 @@
       "replay.days": { other: "{n} күн" },
       "replay.today": "бүгін",
       "replay.people": { other: "{n} адам хабарлады" },
-      "replay.fixed": { other: "{n} орын жөнделді" },
+      "replay.fixed": { other: "{n} орын түзетілді" },
       "replay.slider": "Шежіре күні",
       "replay.loading": "Шежіре жүктелуде…",
       "replay.error": "Шежірені жүктеу мүмкін болмады",
@@ -103,7 +103,9 @@
     close: '<path d="M6 6l12 12M18 6 6 18"/>',
     blizzard: '<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7"/><path d="m9.5 3.5 2.5 2 2.5-2M9.5 20.5l2.5-2 2.5 2"/>',
     water_outage: '<path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11z"/>',
-    heat_outage: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.4 1.3-4 2.5-5 .3 1.6 1 2.6 2 3 0-3 .2-5.6.5-8z"/>',
+    // радиатор — тот же рисунок, что i-radiator набора R11 (раунд 15): отопительный сезон и авария на теплосети
+    season: '<rect x="4" y="5" width="4" height="14" rx="2"/><rect x="10" y="5" width="4" height="14" rx="2"/><rect x="16" y="5" width="4" height="14" rx="2"/><path d="M2 16.5h2M20 16.5h2"/>',
+    heat_outage: '<rect x="4" y="5" width="4" height="14" rx="2"/><rect x="10" y="5" width="4" height="14" rx="2"/><rect x="16" y="5" width="4" height="14" rx="2"/><path d="M2 16.5h2M20 16.5h2"/>',
     flood: '<path d="M3 15c2 0 2-1.5 4.5-1.5S9.5 15 12 15s2-1.5 4.5-1.5S18.5 15 21 15M3 19.5c2 0 2-1.5 4.5-1.5S9.5 19.5 12 19.5s2-1.5 4.5-1.5 2 1.5 4.5 1.5"/><path d="M12 3v8M8.5 7.5 12 11l3.5-3.5"/>',
     other: '<path d="M10.3 4.2 2.6 17.5a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
@@ -111,14 +113,32 @@
   };
 
   // Поправка П1: один набор иконок R11. В оболочке — значки из спрайта ui-kit (у кого он есть), без неё — те же рисунки
-  // здесь. ▶ / ❚❚ в наборе R11 пока нет — свои (запрос R11 в INTEGRATION.txt: i-play, i-pause).
-  const SPRITE_IDS = { close: "close", blizzard: "snowflake", water_outage: "droplet", flood: "droplet", other: "alert", heat_outage: "alert",
+  // здесь. ▶ / ❚❚ и радиатор (i-play, i-pause, i-radiator) R11 добавил в раунде 15: спрайт внешний (<use href="…#i-…">),
+  // а пустой <use> не виден — поэтому их берём из спрайта, только когда символ в нём есть (checkSprite); иначе — свои.
+  const SPRITE_IDS = { close: "close", blizzard: "snowflake", water_outage: "droplet", flood: "droplet", other: "alert",
     clock: "clock", again: "refresh", replay: "clock" };
-  function svg(name, size) {
+  const SPRITE_NEW = { play: "play", pause: "pause", season: "radiator", heat_outage: "radiator" };
+  const FILLED = { play: 1, pause: 1 };
+  const ICON_ALIAS = { snow: "blizzard", ice: "blizzard" };   // снег и гололёд — та же снежинка, что у бурана
+  let spriteCheck = null;
+  function checkSprite() {
+    if (spriteCheck) return spriteCheck;
+    const ui = window.BirgeUI;
+    const m = ui && typeof ui.icon === "function" ? /href="([^"#]+)#/.exec(ui.icon("close")) : null;
+    if (!m || typeof fetch !== "function") return (spriteCheck = Promise.resolve(false));
+    spriteCheck = fetch(m[1]).then((r) => (r.ok ? r.text() : "")).then((txt) => {
+      Object.keys(SPRITE_NEW).forEach((k) => { if (txt.indexOf('id="i-' + SPRITE_NEW[k] + '"') >= 0) SPRITE_IDS[k] = SPRITE_NEW[k]; });
+      return true;
+    }).catch(() => false);
+    return spriteCheck;
+  }
+  function svg(icon, size) {
+    const name = ICON_ALIAS[icon] || icon;
     const s = size || 20;
     const ui = window.BirgeUI;
     if (ui && typeof ui.icon === "function" && SPRITE_IDS[name]) {
-      return '<span class="rp-ic rp-ic--sprite" style="width:' + s + "px;height:" + s + 'px" aria-hidden="true">' + ui.icon(SPRITE_IDS[name]) + "</span>";
+      return '<span class="rp-ic rp-ic--sprite' + (FILLED[name] ? " rp-ic--fill" : "") + '" style="width:' + s + "px;height:" + s + 'px" aria-hidden="true">' +
+        ui.icon(SPRITE_IDS[name]) + "</span>";
     }
     return '<svg class="rp-ic" viewBox="0 0 24 24" width="' + s + '" height="' + s + '" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[name] || ICONS.other) + "</svg>";
   }
@@ -246,6 +266,29 @@
     };
     const eventTitle = (ev) => (S.lang === "kk" ? ev.title_kk || ev.title_ru : ev.title_ru) || "";
 
+    // ----- место полосы: не поверх плашек оболочки у нижнего края карты (строка легенды, карточка слева / справа) -----
+    // Свои отступы оболочка может задать сама (--rp-left / --rp-right на .rp-host); иначе считаем по плашкам, которые
+    // заходят в нижнюю полосу карты. Телефон — полоса во всю ширину (CSS), отступы не нужны.
+    const AVOID = "#birge-legend, .birge-legend-line, #civic-panel, .r07-maplegend, [data-rp-avoid]" + (opts.avoid ? ", " + opts.avoid : "");
+    function placeBar() {
+      const host = root.closest(".rp-host") || root;
+      const box = (host.parentElement || document.body).getBoundingClientRect();
+      if (!box.width || innerWidth <= 760 || opts.place === false) return;
+      const band = box.bottom - 200;
+      let left = 0, right = 0;
+      document.querySelectorAll(AVOID).forEach((el) => {
+        if (root.contains(el) || !el.getClientRects().length || getComputedStyle(el).visibility === "hidden") return;
+        const r = el.getBoundingClientRect();
+        if (!r.width || r.bottom < band || r.top > box.bottom || r.right < box.left || r.left > box.right) return;
+        if (r.left + r.width / 2 < box.left + box.width / 2) left = Math.max(left, r.right - box.left + 12);
+        else right = Math.max(right, box.right - r.left + 12);
+      });
+      if (!host.style.getPropertyValue("--rp-left-fixed")) host.style.setProperty("--rp-left", Math.round(left) + "px");
+      if (!host.style.getPropertyValue("--rp-right-fixed")) host.style.setProperty("--rp-right", Math.round(right) + "px");
+    }
+    const placeTimer = setInterval(() => { if (!S.destroyed) placeBar(); }, 1000);
+    window.addEventListener("resize", placeBar);
+
     // ----- разметка -----
     root.classList.add("rp-root", "bk-app");
     root.innerHTML = '<section class="rp" role="region"><div class="rp-bar bk-glass bk-glass--strong"></div>' +
@@ -255,6 +298,7 @@
     const sr = root.querySelector(".rp-sr");
     const opener = document.activeElement;
     document.body.classList.add("birge-replay-open");
+    placeBar();
 
     function render() {
       if (S.destroyed) return;
@@ -330,14 +374,16 @@
       if (!evs.length || S.days.length < 2) return "";
       const tail = S.days.length - 1;
       const first = S.days[0].date, last = S.days[tail].date;
+      const ranked = evs.slice().sort(byRank);
       return '<div class="rp-marks">' + evs.map((ev) => {
         const a = ev.start < first ? 0 : dayIndex(ev.start);
         const b = !ev.end || ev.end > last ? tail : dayIndex(ev.end);
         if (a < 0 || b < 0) return "";
         const left = (a / tail) * 100, width = Math.max(((b - a) / tail) * 100, 0);
         const title = eventTitle(ev);
-        return '<span class="rp-mark rp-mark--' + esc(ev.kind) + '" style="left:' + left.toFixed(2) + "%;width:" + width.toFixed(2) + '%" title="' +
-          esc(title + (districtName(ev) ? " · " + districtName(ev) : "")) + '"><span class="rp-mark__label">' + svg(ev.kind, 14) + esc(title) + "</span></span>";
+        return '<span class="rp-mark rp-mark--' + esc(ev.kind) + (ev.kind === "season" ? " rp-mark--background" : "") + '" data-rank="' + ranked.indexOf(ev) +
+          '" style="left:' + left.toFixed(2) + "%;width:" + width.toFixed(2) + '%" title="' +
+          esc(title + (districtName(ev) ? " · " + districtName(ev) : "")) + '"><span class="rp-mark__label">' + svg(ev.kind, 14) + '<span class="rp-mark__text">' + esc(title) + "</span></span></span>";
       }).join("") + "</div>";
     }
     function ticksHtml() {
@@ -415,11 +461,50 @@
         evEl.innerHTML = svg(ev.kind, 14) + "<span>" + esc(districtName(ev) ? t("replay.event_in", { title: eventTitle(ev), district: districtName(ev) }) : eventTitle(ev)) + "</span>";
       } else evEl.hidden = true;
       bar.querySelectorAll(".rp-mark").forEach((m, i) => m.classList.toggle("rp-mark--on", ((S.body.events || [])[i] || null) === ev));
+      if (full === true) fitMarkLabels();
       countTo(Number(d.totals.people) || 0, Number(d.totals.fixed) || 0);
+    }
+    // Событие дня для подписи у даты и на шкале: фоновое («отопительный сезон», kind season) — последним; событие с
+    // кризисом R17 или сценой демо («Буран в Нуре», сцена 9) важнее остальных; дальше короткое важнее долгого, свежее — давнего
+    function eventRank(ev) {
+      const last = S.days.length ? S.days[S.days.length - 1].date : ev.start;
+      const span = (Date.parse(ev.end || last) - Date.parse(ev.start)) / 86400000 || 0;
+      return [ev.kind === "season" ? 1 : 0, ev.incident || ev.scene ? 0 : 1, span, -Date.parse(ev.start)];
+    }
+    const byRank = (a, b) => { const x = eventRank(a), y = eventRank(b); return x[0] - y[0] || x[1] - y[1] || x[2] - y[2] || x[3] - y[3]; };
+    // Подписи событий на шкале не налезают: важнее (data-rank меньше) — с названием; менее важной, если тесно, — только
+    // значок события (название — у даты, когда день дойдёт до полосы); нет места и значку — только полоса.
+    // У правого края подпись не выходит за шкалу — сдвигается влево над своей полосой.
+    function fitMarkLabels() {
+      const track = bar.querySelector(".rp-track");
+      if (!track) return;
+      const edge = track.getBoundingClientRect().right;
+      const marks = [...bar.querySelectorAll(".rp-mark")].sort((a, b) => Number(a.dataset.rank) - Number(b.dataset.rank));
+      const placed = [];
+      const place = (label) => {
+        label.style.transform = "";
+        const r = label.getBoundingClientRect();
+        const over = Math.ceil(r.right - edge);
+        if (over <= 0) return { left: r.left, right: r.right };
+        label.style.transform = "translateX(" + -over + "px)";
+        return { left: r.left - over, right: r.right - over };
+      };
+      const free = (r) => !placed.some((q) => !(r.right + 4 < q.left || q.right + 4 < r.left));
+      marks.forEach((m) => {
+        const label = m.querySelector(".rp-mark__label");
+        m.classList.remove("rp-mark--nolabel", "rp-mark--icon");
+        let r = place(label);
+        if (free(r)) { placed.push(r); return; }
+        m.classList.add("rp-mark--icon");
+        r = place(label);
+        if (free(r)) { placed.push(r); return; }
+        m.classList.remove("rp-mark--icon");
+        m.classList.add("rp-mark--nolabel");
+      });
     }
     function activeEvent(d) {
       if (!d) return null;
-      return ((S.body && S.body.events) || []).find((ev) => ev.start <= d.date && (!ev.end || ev.end >= d.date)) || null;
+      return ((S.body && S.body.events) || []).filter((ev) => ev.start <= d.date && (!ev.end || ev.end >= d.date)).sort(byRank)[0] || null;
     }
     // «Сообщили 230 человек» и «21 место исправлено» перетекают вместе с картой
     function countTo(people, fixed) {
@@ -459,6 +544,7 @@
       if (f.days) q.set("days", String(f.days));
       if (f.category) q.set("category", f.category);
       if (f.district) q.set("district", f.district);
+      const sprite = checkSprite();
       try {
         const res = await fetchFn(apiBase + "/heat/replay?" + q.toString(), { headers: { Accept: "application/json" } });
         let body = null;
@@ -469,9 +555,14 @@
         S.body = body;
         S.days = buildDays(body);
         if (!S.days.length || S.days.every((d) => !d.items.length && !(d.totals.people > 0))) { S.status = "empty"; render(); return; }
+        // значки ▶ / ❚❚ — до первой отрисовки полосы (спрайт обычно уже в кэше); не дождались — подменятся при ответе
+        await Promise.race([sprite, new Promise((r) => setTimeout(r, 300))]);
+        if (seq !== S.reqSeq || S.destroyed) return;
+        sprite.then(() => { if (seq === S.reqSeq && !S.destroyed) updateBar(); });
         S.status = "ready";
         heat.replay.begin();
         S.began = true;
+        placeBar();   // своя легенда тепловой карты на время хроники спрятана — место полосы считаем заново
         S.index = 0; S.pos = 0; S.ended = false;
         S.shownPeople = null; S.shownFixed = null;
         render();
@@ -613,7 +704,16 @@
     }
 
     // ----- закрытие: карта возвращается к «сегодня» тем же перетеканием, фокус — туда, откуда открыли -----
-    let closed = false;
+    // Закрытие идёт 200 мс (полоса уходит вниз); открыть снова в это время можно — open() дозакрывает её сразу (finish).
+    let closed = false, finished = false, closeTimer = 0;
+    function finishClose(focusOpener) {
+      if (finished) return;
+      finished = true;
+      clearTimeout(closeTimer);
+      if (!S.destroyed) destroyDom();
+      if (focusOpener && opener && opener.isConnected && typeof opener.focus === "function") opener.focus({ preventScroll: true });
+      if (typeof opts.onClose === "function") opts.onClose();
+    }
     function close() {
       if (closed) return;
       closed = true;
@@ -621,12 +721,7 @@
       if (S.began && heat) heat.replay.end({ ms: reduce() ? 0 : 700 });
       S.began = false;
       box.classList.add("rp--out");
-      const finishClose = () => {
-        destroyDom();
-        if (opener && opener.isConnected && typeof opener.focus === "function") opener.focus({ preventScroll: true });
-        if (typeof opts.onClose === "function") opts.onClose();
-      };
-      if (reduce()) finishClose(); else setTimeout(finishClose, 200);
+      if (reduce()) finishClose(true); else closeTimer = setTimeout(() => finishClose(true), 200);
     }
     function destroyDom() {
       S.destroyed = true;
@@ -634,6 +729,8 @@
       if (S.raf) cancelAnimationFrame(S.raf);
       if (S.counter) cancelAnimationFrame(S.counter);
       document.removeEventListener("keydown", onKey, true);
+      clearInterval(placeTimer);
+      window.removeEventListener("resize", placeBar);
       window.removeEventListener("birge:lang", onLang);
       document.removeEventListener("birge:lang", onLang);
       document.body.classList.remove("birge-replay-open");
@@ -650,7 +747,8 @@
       setPeriod: (n) => setPeriod(n),
       setLang: (lang) => setLang(lang),
       close: () => close(),
-      destroy: () => { if (!closed) { closed = true; pause(); if (S.began && heat) heat.replay.end({ ms: 0 }); S.began = false; } if (!S.destroyed) destroyDom(); },
+      closing: () => closed && !finished,
+      destroy: () => { if (!closed) { closed = true; pause(); if (S.began && heat) heat.replay.end({ ms: 0 }); S.began = false; } finishClose(false); },
       // Для проверок (R10, тесты R07): состояние и замер плавности последнего воспроизведения
       state: () => ({ status: S.status, period: S.period, index: S.index, days: S.days.map((d) => d.date), playing: S.playing,
         ended: S.ended, speed: S.speed, events: ((S.body && S.body.events) || []).map((e) => e.id),
@@ -670,8 +768,10 @@
 
   // ---------------------------------------------------------------- открыть над картой (кнопка, Ctrl+K, ?replay=)
   let active = null;
+  const openNow = () => (active && !active.closing() ? active : null);   // закрывающаяся (200 мс) — уже не открытая
   function open(options) {
     const o = options || {};
+    if (active && active.closing()) active.destroy();   // открыли снова во время закрытия — дозакрыть сразу, открыть новую
     if (active) { if (o.days) active.setPeriod(o.days); return active; }
     const m = o.map || globalMap();
     const container = o.container || (m && m.getContainer && m.getContainer()) || document.body;
@@ -703,7 +803,7 @@
       const label = () => { button.setAttribute("aria-label", text("replay.open") + " · " + text("replay.open_hint")); button.title = text("replay.open") + " · " + text("replay.open_hint"); };
       label();
       button.addEventListener("click", () => {
-        if (active) { active.close(); return; }
+        if (openNow()) { active.close(); return; }
         open({ map: o.map, heat: o.heat || (window.CivicShell && window.CivicShell.heat), days: 7 });
       });
       document.addEventListener("birge:lang", label);
@@ -727,5 +827,5 @@
     return { button };
   }
 
-  window.BirgeReplay = { mount, open, attach, version: VERSION, messages: DICT, get active() { return active; }, _buildDays: buildDays };
+  window.BirgeReplay = { mount, open, attach, version: VERSION, messages: DICT, get active() { return openNow(); }, _buildDays: buildDays };
 })();

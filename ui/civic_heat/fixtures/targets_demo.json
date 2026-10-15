@@ -11,7 +11,11 @@
   "focus": [
    71.405,
    51.128
-  ]
+  ],
+  "osm_objects_snapshot": {
+   "traffic_signals": "2026-10-12T03:54:18Z",
+   "crossings": "2026-10-12T03:54:18Z"
+  }
  },
  "targets": {
   "cell-143-245": {
@@ -1965,7 +1969,7 @@
    "label_ru": "Светофор на перекрёстке пр. Кабанбай Батыра и ул. Сыганак",
    "label_kk": "Қабанбай Батыр даңғылы мен Сығанақ көшесінің қиылысындағы бағдаршам",
    "district": "nura",
-   "source": "osm-walking/traffic_signal",
+   "source": "osm-objects/traffic_signals",
    "osm": {
     "type": "node",
     "id": 13389177523
@@ -1998,14 +2002,14 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     71.4289602,
-     51.0905814
+     71.4289675,
+     51.0906018
     ]
    },
    "label_ru": "Пешеходный переход у ул. Абиша Кекильбаева",
    "label_kk": "Әбіш Кекілбайұлы көшесі маңындағы жаяу жүргіншілер өткелі",
    "district": "esil",
-   "source": "osm-walking/crossing",
+   "source": "osm-objects/crossings",
    "osm": {
     "type": "node",
     "id": 13355349235
