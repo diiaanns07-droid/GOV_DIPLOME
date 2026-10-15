@@ -49,7 +49,15 @@ def test_colors_readable_and_not_heat_or_fixed():
 
 
 def test_icons_exist_in_ui_kit_sprite():
+    """Значок службы — из спрайта ui-kit. Спрайт раунда 15 (R11: radiator, zap, flame, paw, traffic, siren, broom,
+    wrench) — icon; старый спрайт (FINAL-4) — icon_fallback, его экран берёт, если нового значка в спрайте нет."""
     from pathlib import Path
     sprite = (Path(__file__).resolve().parents[3] / "web" / "civic" / "ui-kit" / "icons.svg").read_text("utf-8")
-    for sid, base in profiles.PROFILES.items():
-        assert f'id="i-{base["icon"]}"' in sprite, sid
+    round15 = 'id="i-radiator"' in sprite
+    for sid in profiles.SERVICE_IDS:
+        p = profiles.profile(sid, names={}, answers={})
+        assert f'id="i-{p["icon_fallback"]}"' in sprite or round15, sid
+        if round15:
+            assert f'id="i-{p["icon"]}"' in sprite, sid
+    assert profiles.profile("heating", names={}, answers={})["icon"] == "radiator"
+    assert profiles.profile("emergency", names={}, answers={})["icon"] == "siren"

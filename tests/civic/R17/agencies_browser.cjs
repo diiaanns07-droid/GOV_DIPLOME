@@ -222,6 +222,12 @@ const openAgencies = async (page, base, tab) => {
         check(`${tag}: 20 служб в табло`, info.rows === 20, info.rows);
         if (w === 1366) check(`${tag}: все 20 служб на одном экране без прокрутки`, info.lastBottom <= info.inner, info);
         check(`${tag}: KPI «открыто» = API`, info.kpiOpen === String(apiBoard.totals.open), [info.kpiOpen, apiBoard.totals.open]);
+        if (w !== 375) {
+          // R11 R17-3: на 1366 название службы целиком в строку, на 1024 — не больше двух строк, без обрезки.
+          const cutNames = await page.evaluate(() => [...document.querySelectorAll(".ag-row .ag-svc__name")]
+            .filter((e) => e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1).map((e) => e.textContent));
+          check(`${tag}: названия служб не обрезаны`, cutNames.length === 0, cutNames);
+        }
         check(`${tag}: нет прокрутки вбок`, await noSideScroll(page));
         check(`${tag}: нет непереведённых ключей`, (await rawKeys(page)).length === 0, await rawKeys(page));
         const ux = await uxProbe(page);

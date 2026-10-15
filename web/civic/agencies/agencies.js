@@ -26,6 +26,28 @@
   var PERIODS = [7, 30, 90];
   var KIND_ICONS = { blizzard: "snowflake", heat_outage: "home", water_outage: "droplet", flood: "droplet", other: "alert" };
 
+  // Значки служб раунда 15 — в спрайте ui-kit R11 (radiator, zap, flame, paw, traffic, siren, broom, wrench). Сборка со
+  // старым спрайтом (FINAL-4) их не знает — тогда берём icon_fallback профиля. Спрайт читаем один раз (он уже в кэше).
+  var sprite = { state: "none", ids: null, waiters: [] };
+  function loadSprite(onReady) {
+    if (sprite.state === "ready") return;
+    if (typeof onReady === "function") sprite.waiters.push(onReady);
+    if (sprite.state === "loading" || typeof root.fetch !== "function") return;
+    sprite.state = "loading";
+    root.fetch(SPRITE, { credentials: "same-origin" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (text) {
+      var ids = {};
+      (String(text).match(/id="i-[A-Za-z0-9_-]+"/g) || []).forEach(function (m) { ids[m.slice(6, -1)] = true; });
+      sprite.ids = Object.keys(ids).length ? ids : null;
+      sprite.state = "ready";
+      sprite.waiters.splice(0).forEach(function (fn) { try { fn(); } catch (e) { /* экран уже закрыт */ } });
+    }, function () { sprite.state = "ready"; sprite.ids = null; sprite.waiters.length = 0; });
+  }
+  function iconOf(p) {
+    if (!p) return "dots";
+    if (sprite.ids && p.icon && !sprite.ids[p.icon] && p.icon_fallback) return p.icon_fallback;
+    return p.icon || p.icon_fallback || "dots";
+  }
+
   // Запасные тексты (до словаря R11). Казахский — на вычитку R11 (INTEGRATION.txt R17 §5).
   var KEYS = {
     ru: {
@@ -72,6 +94,7 @@
       "agencies.col.joint": "Вместе",
       "agencies.col.answer_hint": "Медиана: рабочих дней от подачи до первого ответа (ведущая служба)",
       "agencies.col.verified_hint": "Доля исправленных, которые жители проверили",
+      "agencies.col.deadline_hint": "Полоса — открытые обращения службы: красное — ответ просрочен, жёлтое — срок ответа сегодня, серое — в срок, светлое — ответ уже дан. Число — сколько с просроченным ответом",
       "agencies.col.returned_hint": "Жители вернули в работу: проблема осталась",
       "agencies.col.handoffs_hint": "Передано в службу ↓ и из службы ↑ за период",
       "agencies.col.joint_hint": "Обращения, где работают две службы и больше",
@@ -243,6 +266,7 @@
       "agencies.col.joint": "Бірге",
       "agencies.col.answer_hint": "Медиана: өтініш берілгеннен алғашқы жауапқа дейінгі жұмыс күндері (жетекші қызмет)",
       "agencies.col.verified_hint": "Түзетілгендердің ішінде тұрғындар тексергендерінің үлесі",
+      "agencies.col.deadline_hint": "Жолақ — қызметтің ашық өтініштері: қызыл — жауап мерзімі өтті, сары — жауап мерзімі бүгін, сұр — мерзімінде, ақшыл — жауап берілді. Сан — жауап мерзімі өткендер саны",
       "agencies.col.returned_hint": "Тұрғындар жұмысқа қайтарды: мәселе қалды",
       "agencies.col.handoffs_hint": "Кезеңде қызметке ↓ және қызметтен ↑ жіберілгені",
       "agencies.col.joint_hint": "Екі және одан көп қызмет жұмыс істейтін өтініштер",
@@ -473,7 +497,8 @@
     done: "st-done", fixed: "st-ring-check", verified: "st-done", rejected: "st-reject" };
   function statusIcon(status, size) {
     var s = svg(STATUS_SHAPE[status] || "st-ring", "bk-st-ic");
-    s.setAttribute("data-status", status === "todo" ? "new" : status === "doing" ? "in_progress" : status === "done" ? "verified" : status);
+    // Задача кризиса: «не начата» — свой серый круг (не красное «новое» жалобы), в работе — оранжевый, сделано — зелёный.
+    s.setAttribute("data-status", status === "doing" ? "in_progress" : status === "done" ? "verified" : status);
     s.setAttribute("width", String(size || 14));
     s.setAttribute("height", String(size || 14));
     return s;
@@ -619,6 +644,12 @@
     // Раздел «crisis» (#crisis/<id>) — публичная карточка кризиса для жителя и сотрудника (IA_ROUND15 §3, §5.12).
     if (opts.section === "crisis") return mountPublic(rootEl, opts);
     var request = makeClient(opts);
+    // Старый спрайт без значков служб раунда 15 — один раз перерисовать значки запасными (iconOf), только если нужно.
+    loadSprite(function () {
+      if (!S.alive || !sprite.ids) return;
+      var map = profileMap();
+      if (Object.keys(map).some(function (k) { return map[k].icon && !sprite.ids[map[k].icon] && map[k].icon_fallback; })) render();
+    });
     var S = {
       tab: "board", days: 30, district: "", sort: { key: "overdue", dir: -1 },
       meta: null, board: null, joint: null, handoffs: null, incidents: null, detail: {},
@@ -778,7 +809,13 @@
         remember();
         refresh();
       });
-      return h("div", { class: "ag-filters ag-filters--bar" }, [seg, select]);
+      // «Пример» на телефоне — рядом с периодом (R11 R17-12); на компьютере он у заголовка (.ag-demo--head).
+      // Только у табло: в «Совместных» и «Передачах» плашка «Пример» есть у каждой строки.
+      var current = S.tab === "board" ? S.board : null;
+      var demo = current && (current.source === "fixture" || current.demo)
+        ? h("span", { class: "ag-demo ag-demo--bar", title: current.source === "fixture" ? tr("agencies.demo_note") : null }, [tr("common.demo")])
+        : null;
+      return h("div", { class: "ag-filters ag-filters--bar" }, [seg, select, demo].filter(Boolean));
     }
     function activeCount() {
       if (S.activeHint != null && !S.incidents) return S.activeHint;
@@ -824,7 +861,7 @@
     // из профиля §5.4 остаётся для полос календаря работ R12.
     function serviceBadge(id) {
       var p = profileMap()[id] || {};
-      return h("span", { class: "ag-svc__ic" }, [svg("i-" + (p.icon || "dots"))]);
+      return h("span", { class: "ag-svc__ic" }, [svg("i-" + iconOf(p))]);
     }
 
     // ---------------------------------------------------------------- табло
@@ -867,7 +904,7 @@
       ]);
       var table = h("div", { class: "ag-table", role: "table", "aria-label": tr("agencies.tab.board") });
       var hasFix = totals.overdue_fix != null;
-      var cols = [["name", "agencies.col.service"], ["open", "agencies.col.open"], ["overdue", "agencies.col.deadline"],
+      var cols = [["name", "agencies.col.service"], ["open", "agencies.col.open"], ["overdue", "agencies.col.deadline", "agencies.col.deadline_hint"],
         hasFix ? ["fix", "agencies.col.fix", "agencies.col.fix_hint"] : null,
         ["answer", "agencies.col.answer", "agencies.col.answer_hint"], ["verified", "agencies.col.verified", "agencies.col.verified_hint"],
         ["returned", "agencies.col.returned", "agencies.col.returned_hint"], ["handoffs", "agencies.col.handoffs", "agencies.col.handoffs_hint"],
@@ -949,7 +986,7 @@
         "aria-expanded": String(S.open === r.service),
         "aria-label": hasFix ? tr("agencies.row.label_v2", { name: name, open: r.open, overdue: r.overdue, fix: r.overdue_fix })
           : tr("agencies.row.label", { name: name, open: r.open, overdue: r.overdue }) }, [
-        h("span", { class: "ag-svc", role: "cell" }, [serviceBadge(r.service), h("span", { class: "ag-svc__name", text: name }),
+        h("span", { class: "ag-svc", role: "cell" }, [serviceBadge(r.service), h("span", { class: "ag-svc__name", text: name, title: name }),
           pickupsMark(r.service)]),
         h("span", { class: "ag-num" + (r.open ? "" : " ag-num--zero"), role: "cell", "data-col": "open", text: num(r.open) }),
         deadlineBar(r, maxOpen),
@@ -963,8 +1000,8 @@
           h("span", { class: "ag-num" + (r.verified_share == null ? " ag-num--zero" : ""), text: pct(r.verified_share) })]),
         h("span", { class: "ag-num" + (r.returned ? "" : " ag-num--zero"), role: "cell", "data-col": "returned", text: num(r.returned) }),
         h("span", { class: "ag-flow", role: "cell", "data-col": "handoffs" }, [
-          h("span", { "data-zero": r.handoffs_in ? null : "", text: "↓" + num(r.handoffs_in) }),
-          h("span", { "data-zero": r.handoffs_out ? null : "", text: "↑" + num(r.handoffs_out) })]),
+          h("span", { class: r.handoffs_in ? null : "bk-board__zero", "data-zero": r.handoffs_in ? null : "", text: "↓" + num(r.handoffs_in) }),
+          h("span", { class: r.handoffs_out ? null : "bk-board__zero", "data-zero": r.handoffs_out ? null : "", text: "↑" + num(r.handoffs_out) })]),
         h("span", { class: "ag-num" + (r.joint ? "" : " ag-num--zero"), role: "cell", "data-col": "joint", text: num(r.joint) }),
         h("span", { class: "ag-mobile-meta" }, [
           h("span", { text: tr("agencies.kpi.overdue_answer") + ": " + num(r.overdue) }),
@@ -1330,7 +1367,7 @@
       return h("li", { class: "ag-upd", "data-public": String(u.public !== false) }, [
         h("div", { class: "ag-upd__meta" }, [
           h("span", { text: fmtWhen(u.at) }),
-          h("span", { class: "ag-pill" + (u.public === false ? "" : " ag-pill--ok"), text: u.public === false ? tr("crisis.update.internal") : tr("crisis.update.public") }),
+          h("span", { class: "ag-pill" + (u.public === false ? "" : " ag-pill--info"), text: u.public === false ? tr("crisis.update.internal") : tr("crisis.update.public") }),
           u.kind === "closed" ? h("span", { class: "ag-pill", text: tr("crisis.result") }) : null]),
         h("p", { class: "ag-upd__text", lang: u["text_" + l] ? l : other, text: mine }),
         second ? h("p", { class: "ag-upd__other", lang: other, text: second }) : null,

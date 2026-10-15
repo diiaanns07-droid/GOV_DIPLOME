@@ -40,28 +40,29 @@ KIND_COLORS = {
     "admin": "#5b5f5c",
 }
 
-# Значки — из набора ui-kit (web/civic/ui-kit/icons.svg, id без префикса «i-»). Для части служб в наборе пока нет
-# точного значка (пламя, молния, газ, лапа, светофор) — взят ближайший; просьба к R11 — в INTEGRATION.txt.
+# Значки — из набора ui-kit (web/civic/ui-kit/icons.svg, id без префикса «i-»). Точные значки служб раунда 15 дал R11
+# (INTEGRATION R11: R17-6, R17-10 — radiator, zap, flame, paw, traffic, siren, broom, wrench); в сборке со старым
+# спрайтом (FINAL-4) экран берёт icon_fallback — ближайший значок старого набора.
 # sla_fix_days — настройка прототипа (см. шапку файла).
 PROFILES = {
     "road":            {"kind": "road",      "icon": "road",       "sla_fix_days": 20},
-    "traffic":         {"kind": "road",      "icon": "alert",      "sla_fix_days": 5},
-    "street_cleaning": {"kind": "cleaning",  "icon": "snowflake",  "sla_fix_days": 2},
+    "traffic":         {"kind": "road",      "icon": "traffic", "icon_fallback": "alert",      "sla_fix_days": 5},
+    "street_cleaning": {"kind": "cleaning",  "icon": "broom", "icon_fallback": "snowflake",  "sla_fix_days": 2},
     "transport":       {"kind": "transport", "icon": "bus",        "sla_fix_days": 10},
     "lighting":        {"kind": "utility",   "icon": "bulb",       "sla_fix_days": 7},
     "landscaping":     {"kind": "cleaning",  "icon": "playground", "sla_fix_days": 20},
     "greenery":        {"kind": "cleaning",  "icon": "trees",      "sla_fix_days": 20},
     "waste":           {"kind": "cleaning",  "icon": "trash",      "sla_fix_days": 3},
-    "utilities":       {"kind": "utility",   "icon": "building",   "sla_fix_days": 5},
-    "heating":         {"kind": "utility",   "icon": "home",       "sla_fix_days": 2},
+    "utilities":       {"kind": "utility",   "icon": "wrench", "icon_fallback": "building",   "sla_fix_days": 5},
+    "heating":         {"kind": "utility",   "icon": "radiator", "icon_fallback": "home",       "sla_fix_days": 2},
     "water":           {"kind": "utility",   "icon": "droplet",    "sla_fix_days": 3},
-    "power":           {"kind": "utility",   "icon": "bulb",       "sla_fix_days": 2},
-    "gas":             {"kind": "utility",   "icon": "wind",       "sla_fix_days": 1},
+    "power":           {"kind": "utility",   "icon": "zap", "icon_fallback": "bulb",       "sla_fix_days": 2},
+    "gas":             {"kind": "utility",   "icon": "flame", "icon_fallback": "wind",       "sla_fix_days": 1},
     "housing":         {"kind": "utility",   "icon": "home",       "sla_fix_days": 10},
     "ecology":         {"kind": "cleaning",  "icon": "wind",       "sla_fix_days": 10},
-    "emergency":       {"kind": "safety",    "icon": "shield",     "sla_fix_days": 1},
+    "emergency":       {"kind": "safety",    "icon": "siren", "icon_fallback": "shield",     "sla_fix_days": 1},
     "police":          {"kind": "safety",    "icon": "shield",     "sla_fix_days": 3},
-    "animals":         {"kind": "safety",    "icon": "alert",      "sla_fix_days": 5},
+    "animals":         {"kind": "safety",    "icon": "paw", "icon_fallback": "alert",      "sla_fix_days": 5},
     "parking":         {"kind": "road",      "icon": "parking",    "sla_fix_days": 10},
     "akimat":          {"kind": "admin",     "icon": "building",   "sla_fix_days": 15},
 }
@@ -151,6 +152,8 @@ def profile(sid: str, names: dict | None = None, answers: dict | None = None) ->
     name = names.get(sid) or {}
     return {
         "id": sid, "kind": base["kind"], "color": KIND_COLORS[base["kind"]], "icon": base["icon"],
+        # Значок из спрайта ui-kit раунда 15 (R11); в сборке со старым спрайтом экран берёт icon_fallback.
+        "icon_fallback": base.get("icon_fallback", base["icon"]),
         "sla_answer_days": answers.get(sid, FALLBACK_ANSWER_DAYS), "sla_fix_days": base["sla_fix_days"],
         "sla_fix_source": "default",  # настройка прототипа, не норматив
         "ru": name.get("ru") or "", "kk": name.get("kk") or "", "name_edited": bool(name.get("edited")),

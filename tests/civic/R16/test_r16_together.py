@@ -460,6 +460,23 @@ def test_summary_next_rows_are_the_public_view(svc):
     assert s["next"][0]["starts_at"] <= s["next"][-1]["starts_at"]
 
 
+def test_summary_keeps_the_scene_initiative_among_the_nearest(svc):
+    """Время демо-мира R02 — от запуска: в субботу утром впереди «Субботника» другие дела. Дело сцены 7 остаётся в next
+    (R08 «Картина дня» → «Поддержать», шаг 3 сцены 7 DEMO_SCRIPT R01), по порядку времени; без демо-метки — просто
+    три ближайших."""
+    staff = dict(principal=Staff(), context=ctx(csrf="csrf-ok"))
+    for n, (day, hour) in enumerate(((16, 18), (16, 19), (17, 9))):
+        body = new_body(title=f"Раннее дело {n + 1}", starts_at=iso(datetime(2026, 10, day, hour, 0, tzinfo=ASTANA)))
+        made = call(svc, "POST", "/initiatives", body, context=ctx(f"d-test-device-early-000{n}"))
+        assert made["status"] == 201, made
+        iid = made["body"]["initiative"]["id"]
+        assert call(svc, "POST", f"/initiatives/{iid}/moderate", {"action": "publish"}, **staff)["status"] == 200
+    rows = initiatives_summary("nura")["next"]
+    assert len(rows) == 3 and SCENE["initiative"] in [r["id"] for r in rows]
+    assert [r["starts_at"] for r in rows] == sorted(r["starts_at"] for r in rows)
+    svc.store.meta("scene_item", "")
+    assert SCENE["initiative"] not in [r["id"] for r in initiatives_summary("nura")["next"]]
+
 # --------------------------------------------------------------------------- похожие, идея -> инициатива
 def test_similar_nearby_same_kind(svc):
     q = "similar=1&lon=71.3972&lat=51.1349&kind=cleanup&title=Субботник"

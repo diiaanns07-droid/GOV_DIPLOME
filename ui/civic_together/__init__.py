@@ -60,9 +60,12 @@ def seed_world(db_path, records, now: datetime | None = None) -> dict:
         yards, items = _demo.rows(moment)
         source = "fixture"
     result = store.seed(yards, items, reset=True)
-    # Двор сцены 7 — первым в списке дворов (IA R11 §5.1): из scenes мира или своей фикстуры.
+    # Двор сцены 7 — первым в списке дворов (IA R11 §5.1), дело сцены — среди ближайших в сводке (Картина дня R08):
+    # из scenes мира или своей фикстуры.
     scene = ((records or {}).get("scenes") or {}).get("scene7") if isinstance(records, dict) else None
-    store.meta("scene_yard", (scene or {}).get("yard") if source == "world" and scene else _demo.SCENE["yard"])
+    from_world = source == "world" and isinstance(scene, dict)
+    store.meta("scene_yard", scene.get("yard") if from_world else _demo.SCENE["yard"])
+    store.meta("scene_item", (scene.get("initiative") or "") if from_world else _demo.SCENE["initiative"])
     # Демо-мир засевают при старте сервера: сразу прогреваем дворы в фоне (R10 B-124 — первая сцена части 2).
     start_warm_up(db_path=db_path)
     return dict(result, source=source)
@@ -101,8 +104,21 @@ def initiatives_summary(district: str | None = None, db_path=None) -> dict:
             "done": len(done), "neighbors_done": sum(int((r.get("report") or {}).get("joined_final") or r.get("joined")
                                                          or 0) for r in done),
             "on_review": store.count(statuses=("on_review",), district=district),
-            "next": [_summary_row(service, r) for r in upcoming[:3]],
+            "next": [_summary_row(service, r) for r in _nearest(store, upcoming)],
             "demo": bool(upcoming or done) and all(r.get("demo") for r in upcoming + done)}
+
+
+def _nearest(store, upcoming: list[dict], n: int = 3) -> list[dict]:
+    """Ближайшие дела сводки (по времени начала). В демо дело сцены 7 всегда среди них: время мира R02 считается от
+    запуска, и в субботу утром «Субботник в субботу» — уже через неделю, впереди него другие дела. Без этого в «Картине
+    дня» R08 не было бы «Поддержать» у субботника (шаг 3 сцены 7 DEMO_SCRIPT R01). Без демо-засева метки нет."""
+    rows = list(upcoming[:n])
+    scene = store.meta("scene_item")
+    if scene and all(r["id"] != scene for r in rows):
+        star = next((r for r in upcoming if r["id"] == scene), None)
+        if star is not None:
+            rows = sorted(rows[:n - 1] + [star], key=lambda r: (r["starts_at"], r["id"]))
+    return rows
 
 
 def _summary_row(service, row: dict) -> dict:

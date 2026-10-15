@@ -965,6 +965,7 @@ def make_service(db_path, *, clock=None, demo: bool | None = None, autopublish: 
         # Каждый запуск демо — с чистой сценой 7 (после репетиции снова 14 «Я приду», дело не «сделано»).
         store.seed(yards, items, reset=True)
         store.meta("scene_yard", demo_data.SCENE["yard"])
+        store.meta("scene_item", demo_data.SCENE["initiative"])
     service = TogetherService(store, autopublish=autopublish)
     _register(service)
     if want_demo:
