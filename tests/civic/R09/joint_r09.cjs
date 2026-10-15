@@ -177,10 +177,36 @@ async function variant(browser, base, width, height, lang, staff) {
     } else {
       check(`${tag}: вторая строка для передачи найдена`, false);
     }
-    // Житель: «Я тоже» на той же яме → в «Моих обращениях» — две службы со статусами.
-    const device = "r09joint" + Math.random().toString(36).slice(2, 14);
     const list = await api(base, "GET", "/complaints?days=30");
     const pit = ((list.body && list.body.data && list.body.data.items) || []).filter((c) => (c.target || {}).id === PIT_TARGET)[0];
+    // Табло R17 → «Открыть в «Обращениях»» (INTEGRATION R17 §4): фильтр в sessionStorage + событие birge:inbox-filter.
+    // «Обращения» Дорожной службы (она — партнёр ямы), строка ямы открыта сразу.
+    if (pit) {
+      await page.evaluate(() => window.BirgeShell.setSection("map"));
+      await page.evaluate((id) => {
+        const detail = { service: "road", ids: [id] };
+        sessionStorage.setItem("birge.inbox.filter", JSON.stringify(detail));
+        window.BirgeShell.setSection("complaints");
+        setTimeout(() => document.dispatchEvent(new CustomEvent("birge:inbox-filter", { detail })), 0);
+      }, pit.id);
+      await page.waitForSelector(`.bc-inbox__item--open[data-target="${PIT_TARGET}"]`, { timeout: 10000 }).catch(() => null);
+      const filtered = await page.evaluate((target) => ({
+        chip: (document.querySelector('.bc-inbox__filter-chip[data-filter="service"]') || {}).textContent || "",
+        open: !!document.querySelector(`.bc-inbox__item--open[data-target="${target}"]`),
+        rows: document.querySelectorAll(".bc-inbox__item").length,
+        left: (() => { try { return sessionStorage.getItem("birge.inbox.filter"); } catch (e) { return "?"; } })(),
+      }), PIT_TARGET);
+      check(`${tag}: из табло R17 — «Обращения» Дорожной службы, строка ямы открыта, фильтр взят один раз`,
+            filtered.chip.includes(say.road) && filtered.open && filtered.left === null, filtered);
+      await shot(page, `joint-${tag}-6b-from-agencies`);
+      await page.click('.bc-inbox__filter-chip[data-filter="service"]');
+      await page.waitForFunction(() => !document.querySelector('.bc-inbox__filter-chip[data-filter="service"]'), null, { timeout: 8000 })
+        .catch(() => null);
+      const cleared = await page.$('.bc-inbox__filter-chip[data-filter="service"]');
+      check(`${tag}: чип «Служба: …» снимает фильтр`, !cleared);
+    }
+    // Житель: «Я тоже» на той же яме → в «Моих обращениях» — две службы со статусами.
+    const device = "r09joint" + Math.random().toString(36).slice(2, 14);
     const me = pit ? await api(base, "POST", `/complaints/${pit.id}/metoo`, {}, { "X-Birge-Device": device }) : { status: 0 };
     check(`${tag}: житель «Я тоже» на той же яме`, me.status === 200, me.status);
     const rctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: width < 1024 });

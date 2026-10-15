@@ -84,6 +84,24 @@
     var m = /[#/&?]district=([a-z][a-z0-9_-]{1,39})(?:$|[&/])/.exec(window.location.hash || "");
     return m ? m[1] : null;
   }
+  // R17 «Штаб ведомств» → «Открыть в «Обращениях»» (INTEGRATION R17 §4): перед переходом в раздел кладёт
+  // sessionStorage["birge.inbox.filter"] = {service, ids} и шлёт на document событие "birge:inbox-filter" с тем же
+  // detail. Фильтр берём один раз (ключ удаляем): следующий заход в «Обращения» — снова все службы.
+  var FILTER_KEY = "birge.inbox.filter";
+  function cleanFilter(value) {
+    if (!value || typeof value !== "object") return null;
+    var service = typeof value.service === "string" && /^[a-z_]{2,30}$/.test(value.service) ? value.service : null;
+    var ids = (Array.isArray(value.ids) ? value.ids : []).filter(function (id) {
+      return typeof id === "string" && /^[A-Za-z0-9_-]{1,80}$/.test(id);
+    }).slice(0, 200);
+    return service || ids.length ? { service: service, ids: ids } : null;
+  }
+  function takeStoredFilter() {
+    var raw = null;
+    try { raw = window.sessionStorage.getItem(FILTER_KEY); window.sessionStorage.removeItem(FILTER_KEY); } catch (e) { return null; }
+    if (!raw) return null;
+    try { return cleanFilter(JSON.parse(raw)); } catch (e) { return null; }
+  }
   // Название района: словарь R11 (district.<id>), иначе id как есть.
   function districtLabel(id) {
     var key = "district." + id;
@@ -139,8 +157,12 @@
     var box = h("section", { "class": "bc-inbox", "aria-labelledby": "bc-inbox-title" });
     root.appendChild(box);
     // tab: "all" — все группы по статусу (как в Linear); или одна вкладка-фильтр. menu — ключ строки с открытым меню статуса.
+    var asked = takeStoredFilter();
     var state = { data: null, error: false, tab: "all", open: null, openFix: false, menu: null, slow: false, hover: null,
-                  service: opts.service || serviceFromHash(), district: opts.district || districtFromHash(), partMenu: null };
+                  service: opts.service || serviceFromHash() || (asked && asked.service) || null,
+                  district: opts.district || districtFromHash(), partMenu: null };
+    // Одно обращение из табло R17 (строка «Совместные») — после загрузки сразу открыть его строку.
+    var askedId = asked && asked.ids.length === 1 ? asked.ids[0] : null;
     var staffHandle = null;
     var alive = true;
 
@@ -168,6 +190,7 @@
         state.enter = !state.data;   // первые данные — строки мягко появляются; обновление на месте — без движения
         state.data = res.data;
         takePending();
+        openAsked();
         render();
       });
     }
@@ -193,7 +216,9 @@
                              onclick: function () {
                                state[key] = null;
                                if (new RegExp(key + "=").test(window.location.hash)) {
-                                 try { history.replaceState(null, "", window.location.pathname + window.location.search + "#complaints"); } catch (e) { /* */ }
+                                 // Раздел оставляем тем же (#inbox оболочки R01 или прежний #complaints), снимаем только фильтр.
+                                 var base = (window.location.hash || "").split("/")[0] || "#complaints";
+                                 try { history.replaceState(null, "", window.location.pathname + window.location.search + base); } catch (e) { /* */ }
                                }
                                state.data = null; load();
                              } },
@@ -210,6 +235,27 @@
       if ((sid && sid !== state.service) || (did && did !== state.district)) {
         state.service = sid || state.service; state.district = did || state.district; state.data = null; load();
       }
+    }
+    // Фильтр R17 событием (список уже смонтирован): служба — перезагрузить «Обращения» этой службы; одно обращение — открыть.
+    function onFilter(e) {
+      try { window.sessionStorage.removeItem(FILTER_KEY); } catch (err) { /* без хранилища */ }
+      var f = cleanFilter(e && e.detail);
+      if (!f) return;
+      askedId = f.ids.length === 1 ? f.ids[0] : null;
+      if (f.service && f.service !== state.service) { state.service = f.service; state.data = null; load(); return; }
+      if (openAsked()) render();
+    }
+    function openAsked() {
+      if (!askedId || !state.data) return false;
+      var want = askedId, found = null;
+      (state.data.items || []).some(function (g) {
+        if ((g.complaints || []).some(function (c) { return c.id === want; })) { found = g; return true; }
+        return false;
+      });
+      if (!found) return false;
+      askedId = null;
+      state.tab = "all"; state.menu = null; state.open = found.key; state.openFix = false;
+      return true;
     }
 
     // Части служб совместного обращения — под строкой: значок статуса · служба; нажатие — меню статуса части.
@@ -642,6 +688,7 @@
     window.addEventListener("birge:inbox-open", onOpenRequest);
     window.addEventListener("birge:inbox-changed", onChanged);
     window.addEventListener("hashchange", onHash);
+    document.addEventListener("birge:inbox-filter", onFilter);
 
     // Язык: оболочка зовёт setLang(lang); словарь R11 грузится асинхронно и потом шлёт "birge:lang" — перерисуем и тогда.
     function onLang() { if (alive) render(); }
@@ -655,6 +702,7 @@
         document.removeEventListener("click", onOutside); window.removeEventListener("birge:target-hover", onMapHover);
         window.removeEventListener("birge:inbox-open", onOpenRequest); window.removeEventListener("birge:inbox-changed", onChanged);
         window.removeEventListener("hashchange", onHash);
+        document.removeEventListener("birge:inbox-filter", onFilter);
         if (box.parentNode) box.parentNode.removeChild(box);
       }
     };

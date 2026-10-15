@@ -42,6 +42,13 @@ def test_routes_used_by_screens():
     assert '"/route"' not in STAFF_JS and 'rawCall("/reply-draft"' in STAFF_JS and 'API + "/modules"' in STAFF_JS
 
 
+
+def test_r17_agencies_filter_handoff():
+    # R17 «Штаб ведомств» → «Открыть в «Обращениях»» (INTEGRATION R17 §4): sessionStorage + событие на document.
+    assert '"birge.inbox.filter"' in LIST_JS and 'document.addEventListener("birge:inbox-filter", onFilter)' in LIST_JS
+    assert 'document.removeEventListener("birge:inbox-filter", onFilter)' in LIST_JS      # снимается при destroy
+    assert "sessionStorage.removeItem(FILTER_KEY)" in LIST_JS                              # фильтр берётся один раз
+
 def test_amendment_p1_no_large_illustrations_no_glow():
     css = (WEB / "complaint.css").read_text(encoding="utf-8")
     assert "#ill-" not in JS and "#ill-" not in LIST_JS and "#ill-" not in STAFF_JS   # рисунки ui-kit не берём

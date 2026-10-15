@@ -57,6 +57,8 @@ const FAKE = ([mode, phrase]) => {
     }
     stop() { window.__voice.stopped += 1; setTimeout(() => this.onend && this.onend(), 20); }
   }
+  // Chromium 141+ отдаёт и SpeechRecognition без префикса — экран берёт его первым, подменяем оба имени.
+  window.SpeechRecognition = FakeRecognition;
   window.webkitSpeechRecognition = FakeRecognition;
 };
 

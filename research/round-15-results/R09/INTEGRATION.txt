@@ -127,18 +127,30 @@ F1. R01: маршруты handoff/services/part в ветке R01 уже ест�
     (ui.civic_feedback.v2.integration.seed_world): материализованный мир R02 — как есть, сырой — R09 материализует сам
     (ml.datasets.demo_world_io.materialize или своя копия грамматики). reset=True по умолчанию: при повторном запуске ответ
     {"inserted": 0, "skipped": 0, "reset": 743, …} — в строке консоли «civic-world» лучше складывать inserted + skipped + reset.
-F2. R02: (1) «Ждут проверки» — 14 дней (WAITING_CHECK_DAYS в ui/civic_feedback/v2/lifecycle.py) — ПРИНЯТО; на мире
-    (now 16 окт 12:00) «Обращения» теперь: город {new 24, in_progress 83, waiting_check 169, overdue 1, reopened 7},
-    Нура {13, 33, 59, 0, 1}, групп в Нуре 106. Пересчитайте, пожалуйста, EXPECTED.json кодом R09 и добавьте в блок inbox
-    поле "waiting_check_days": 14 — тогда тест R09 test_r02_world_counts_match_expected перестанет пропускаться.
+F2. R02: (1) «Ждут проверки» — 14 дней (WAITING_CHECK_DAYS в ui/civic_feedback/v2/lifecycle.py) — ПРИНЯТО. Мир R02
+    @ a7251430 (world_v1.json + EXPECTED.json, now 16 окт 12:00), код R09 @ 085e7474, сырой мир без патча — inserted 743,
+    invalid 0. По старому правилу «Обращения» = EXPECTED.json ровно: город {19, 62, 424, 5, 5}, Нура {8, 19, 131, 2, 0},
+    160 групп. С правилом 14 дней: город {new 21, in_progress 72, waiting_check 159, overdue 5, reopened 5},
+    Нура {8, 24, 54, 2, 0}, групп в Нуре 88 (группа, где старый ремонт ждал проверки рядом с открытой жалобой, уходит в
+    «Новые» / «В работе»). Пересчитайте, пожалуйста, EXPECTED.json кодом R09 и добавьте в блок inbox поле
+    "waiting_check_days": 14 — тогда тест R09 test_r02_world_counts_match_expected перестанет пропускаться.
     (2) reset=True по умолчанию — ПРИНЯТО. (3) «Ответ просрочен» у R09 — ПРИНЯТО (ключ inbox.tab.overdue_answer).
     Патч R09_world_seed_materialize.patch не нужен: seed_world понимает сырой мир сам (743 / 0 invalid).
 F3. R17: табло — service_parts(db, days=…) и handoffs(db, days=…) (раздел B1); ответ просрочен — answered_at,
     deadline_state/overdue (срок первого ответа); срок исправления считайте своим правилом (просьба R02 §3).
-F3a. R11 + R10 (consistency C4 «подписи просрочено различаются»): вкладка R09 берёт ключ inbox.tab.overdue_answer
-    («Ответ просрочен» / «Жауап мерзімі өтті»), а если его нет в словаре — inbox.tab.overdue. Просьба R11: в ru.json /
-    kk.json поставить inbox.tab.overdue = «Ответ просрочен» / «Жауап мерзімі өтті» (или добавить inbox.tab.overdue_answer)
-    — тогда и проверка R10 по ключу inbox.tab.overdue увидит разные подписи с akim.kpi.overdue («Просрочено»).
+    «Открыть в «Обращениях»» (ваш INTEGRATION §4) — ПРИНЯТО: «Обращения» берут sessionStorage["birge.inbox.filter"]
+    = {service, ids} один раз (ключ удаляют) и слушают на document событие "birge:inbox-filter" {service, ids}:
+    служба → «Обращения» этой службы (ведущая или партнёр) с чипом «Служба: … ×»; ids из одного обращения — его строка
+    открыта сразу. Проверено в приложении (joint_r09.cjs, шаг «из табло R17»).
+F3a. R11 + R10 (consistency C4 «подписи просрочено различаются»): вкладка R09 показывает ключ inbox.tab.overdue_answer
+    («Ответ просрочен» / «Жауап мерзімі өтті»): словарь R11, а если там ключа нет — запасной словарь R09
+    (web/civic/feedback/complaint-strings.js); inbox.tab.overdue — только если нет обоих. Просьба R11: добавить в ru.json /
+    kk.json inbox.tab.overdue_answer = «Ответ просрочен» / «Жауап мерзімі өтті».
+    R10: C4 читает inbox.tab.overdue (в словаре R11 — «Просрочено», как akim.kpi.overdue) и падает, хотя экран R09
+    пишет «Ответ просрочен». Патч research/round-15-results/R09/patches/R10_overdue_label.patch (38 строк, ложится на
+    tests/civic/R10/consistency.py @ ac2779b2): подпись берётся так же, как её берёт экран — overdue_answer из R11, затем из
+    словаря R09, затем inbox.tab.overdue. Проверено: ru «Ответ просрочен» ≠ «Просрочено», kk «Жауап мерзімі өтті» ≠
+    «Мерзімі өткен».
 F4. R16: «Мой двор» может брать проблемы двора у R09 — yard_complaints(db, yard, targets, polygon) (раздел B2), числа те
     же, что в «Обращениях».
 
