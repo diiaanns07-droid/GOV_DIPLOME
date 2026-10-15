@@ -466,7 +466,7 @@
     function agencies(d) {
       var g = d.agencies;
       if (!g || !g.available) return null;
-      var rows = g.board || [];
+      var rows = (g.board || []).slice(0, 6);
       var table = rows.length ? h("table", { class: "wk-table" }, [
         h("thead", null, [h("tr", null, [
           h("th", { scope: "col", text: tr("akim.week.agencies.service") }),
@@ -577,17 +577,17 @@
       if (!f || !f.available || !(f.items || []).length) return null;
       return section("wk-forecast", tr(f.period === "month" ? "akim.week.forecast_month" : "akim.week.forecast"), [
         h("ol", { class: "wk-rows" }, f.items.slice(0, 3).map(function (it) {
+          // Уровень — точка цвета и слово в первой строке подписи (цвет никогда не один); название — во всю ширину.
           return h("li", { class: "wk-row wk-row--fc" }, [
             h("span", { class: "wk-level", "data-level": it.level || "low", "aria-hidden": "true" }),
-            h("span", { class: "wk-row__name" }, [it.target ? label(it.target, "label") : catName(it.category), h("span", { class: "wk-sub", text: [catName(it.category), districtName(it.district), label(it, "reason")].filter(Boolean).join(" · ") })]),
-            h("span", { class: "wk-row__delta", text: it.level ? tr("forecast.level." + it.level) : "" }),
+            h("span", { class: "wk-row__name" }, [it.target ? label(it.target, "label") : catName(it.category), h("span", { class: "wk-sub", text: [it.level ? tr("forecast.level." + it.level) : null, catName(it.category), districtName(it.district), label(it, "reason")].filter(Boolean).join(" · ") })]),
           ]);
         })),
         h("p", { class: "wk-note", text: tr("akim.week.forecast.note") }),
       ], h("span", { class: "bk-tag wk-proto", text: tr("akim.week.proto") }));
     }
-    // Лист 2: табло служб во всю ширину, ниже две колонки — слева кризис, жители, встречи; справа решения, объекты,
-    // прогноз (так колонки примерно равны и на ru, и на kk).
+    // Лист 2: табло служб (6 самых загруженных) во всю ширину, ниже две колонки — слева кризис, жители, встречи; справа
+    // решения, объекты, прогноз (так колонки примерно равны и на ru, и на kk, и лист 2 помещается на страницу A4).
     function page2(d) {
       var left = [crisis(d), together(d), meetings(d)].filter(Boolean);
       var right = [decisions(d), objects(d), forecast(d)].filter(Boolean);

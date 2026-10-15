@@ -376,8 +376,11 @@
   color: var(--c-danger, #b3362e);
 }
 .wk-row--fc {
-  grid-template-columns: 10px minmax(0, 1fr) auto;
-  align-items: center;
+  grid-template-columns: 10px minmax(0, 1fr);
+  align-items: start;
+}
+.wk-row--fc .wk-level {
+  margin-top: 4px;
 }
 .wk-level {
   width: 10px;
