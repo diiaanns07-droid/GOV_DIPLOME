@@ -620,6 +620,16 @@
       "name": "empty question hint 375",
       "ok": true,
       "detail": null
+    },
+    {
+      "name": "calendar button opens the agencies tab #agencies/calendar (R11 R03-8)",
+      "ok": true,
+      "detail": "→ #agencies/calendar"
+    },
+    {
+      "name": "calendar button calls R12 openConflict when present",
+      "ok": true,
+      "detail": "cf-1"
     }
   ]
 }
