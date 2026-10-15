@@ -14,6 +14,8 @@ web/civic/works-calendar/works-calendar.{js,css}   экран BirgeWorksCalendar
 tests/civic/R12/test_works.py        pytest 42; tests/civic/R12/works/works_calendar.test.cjs — браузер в приложении
 Поставка 6 (R10 B-103): светофоры и переходы из свежего снимка OSM — engine/civic_geo/{build_geo_data,objects,
   street_points,__init__}.py, data/civic/astana/geo/{objects,SOURCE}.json, tests/civic/R12/test_fresh_snapshot.py — §10.
+Ответ R01 (STATUS B0.5): test_planned_conflict_ids_from_world после tests/civic/R07 — исправлено в e37c2460: тесты
+  календаря работают с чистым состоянием мира (autouse-фикстура), порядок больше не важен.
 Поставка 7 (проверка на B0 R01 74fb8c6d с миром R02): engine/civic_geo/works.py, works_calendar.py,
   web/civic/works-calendar/works-calendar.{js,css} — стадия конфликта и совет на сегодня, чипы в своей дорожке — §11.
 

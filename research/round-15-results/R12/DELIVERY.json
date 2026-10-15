@@ -7,8 +7,8 @@
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "9e3f1b2d760b38a2fcbcafddcc82ea7293c49b57",
- "tested_sha": "9e3f1b2d760b38a2fcbcafddcc82ea7293c49b57",
+ "code_sha": "e37c2460444613eeb8cfccd2c01f70150544bfe8",
+ "tested_sha": "e37c2460444613eeb8cfccd2c01f70150544bfe8",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/SOURCE.json",
@@ -168,6 +168,12 @@
    "passed": 87,
    "failed": 0,
    "how": "node --test tests/civic/R12/map/{core,r12_accuracy,search_index,r02_contract,r12_offline_glyphs} + editor/{core,contract_mock}; один тест r12_accuracy при общем прогоне на занятой машине упал по времени и прошёл отдельно (6/6)"
+  },
+  "pytest_order_independent": {
+   "status": "PASS",
+   "passed": 48,
+   "skipped": 1,
+   "how": "мир R02 засеян через engine.civic_geo.seed_world в том же процессе до tests/civic/R12/test_works.py (как в полном pytest R01 после tests/civic/R07)"
   }
  },
  "screens": {
