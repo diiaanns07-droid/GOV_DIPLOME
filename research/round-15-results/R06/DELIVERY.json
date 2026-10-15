@@ -3,8 +3,8 @@
   "branch": "claude/eloquent-einstein-wvuyje",
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "restored_from": null,
-  "code_sha": "2e8189285ae936f8b0626395327525420127ad90",
-  "tested_sha": "2e8189285ae936f8b0626395327525420127ad90",
+  "code_sha": "7f6636cd44b0f0cebb62f8f4afc67ce1a4d88cc8",
+  "tested_sha": "7f6636cd44b0f0cebb62f8f4afc67ce1a4d88cc8",
   "push_status": "OK",
   "environment": "облако Linux; Python 3.13.16, pytest 9.1.1; Node 22.22.0, Playwright 1.56.1, Chromium 1194 (headless); без интернета: подложка карты — упрощённый фон (П1 правило 6)",
   "changed_paths": [
@@ -16,6 +16,7 @@
     "research/round-15-results/R06/r01_round15_r06.patch",
     "research/round-15-results/R06/r08_nearby_path.patch",
     "research/round-15-results/R06/r16_create_from_idea_kind.patch",
+    "tests/civic/R06/round14/app_r01_wave2.cjs",
     "tests/civic/R06/round14/design_audit.cjs",
     "tests/civic/R06/round15/browser_r15.cjs",
     "tests/civic/R06/round15/conftest.py",
@@ -43,14 +44,14 @@
     "web/civic/notify/notify.css",
     "web/civic/notify/notify.js",
     "web/civic/proposals/works.js",
-    "research/round-15-results/R06/screens/ (28 кадров)"
+    "research/round-15-results/R06/screens/ (29 кадров)"
   ],
   "tests": [
     {
       "name": "pytest tests/civic/R06 (рабочая копия = FINAL-4 + R06)",
-      "sha": "2e8189285ae936f8b0626395327525420127ad90",
+      "sha": "7f6636cd44b0f0cebb62f8f4afc67ce1a4d88cc8",
       "status": "PASS",
-      "passed": 724,
+      "passed": 726,
       "failed": 0,
       "skipped": 3,
       "note": "skip: полный мир R02 (нет файла мира в базе пакета), 2 — прежние условные"
@@ -58,51 +59,56 @@
     {
       "name": "pytest tests/civic/R06 на дереве «как B1»",
       "status": "PASS",
-      "passed": 725,
+      "passed": 727,
       "failed": 0,
       "skipped": 2,
-      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 29b4ae9d (B0.2: R16 e475fae9, R17, R12, R13, R11, R02, R03, R04, R10, R15) + пути R06 @ 2e818928 + 3 строки ленты (CIVIC_ASSETS, 2 тега)",
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd",
       "note": "включая засев настоящего мира R02 (55 записей) и миграцию на базе FINAL-4"
     },
     {
       "name": "pytest tests/civic/R01 на дереве «как B1» (код R06 не ломает шлюз и сборку)",
       "status": "PASS",
-      "passed": 363,
+      "passed": 365,
       "failed": 0,
-      "skipped": 1
+      "skipped": 1,
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd"
     },
     {
       "name": "pytest tests/civic/R16 на дереве «как B1» (идея → инициатива не ломает R16)",
       "status": "PASS",
       "passed": 52,
       "failed": 0,
-      "skipped": 0
+      "skipped": 0,
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd"
     },
     {
       "name": "приёмка API R10 tests/civic/R10/api_v2.py на дереве «как B1» — строки R06",
       "status": "PASS",
       "passed": 10,
       "failed": 0,
-      "note": "всего по сборке PASS 147 / FAIL 2 / NOT_RUN 4 (FAIL — не R06: 2 строки соседей; на дереве B0 это были R16 POST together/initiatives (far_from_yard на примере R10) и R13 GET meetings/updates (device_id)); прогон на коде 2daa408a (после него в Python R06 менялась только строка документации notify.py)"
+      "note": "всего по сборке PASS 147 / FAIL 2 / NOT_RUN 4 (FAIL — не R06: 2 строки соседей; на дереве B0 это были R16 POST together/initiatives (far_from_yard на примере R10) и R13 GET meetings/updates (device_id)); прогон на коде 2daa408a (после него в Python R06 менялась только строка документации notify.py)",
+      "env": "дерево «как B1»: R01 29b4ae9d (B0.2) + R06 2daa408a"
     },
     {
       "name": "браузер tests/civic/R06/round15/browser_r15.cjs на дереве «как B1»",
       "status": "PASS",
-      "passed": 253,
+      "passed": 256,
       "failed": 0,
       "parts": {
         "works 1366/1024/375 × ru/kk": 72,
         "ideas 1366/1024/375 × ru/kk": 102,
-        "notify 1366/1024 ru/kk + 375 ru/kk + пусто (в т. ч. кризис R17 → его карточка)": 57,
-        "together (настоящий экран R16 из B0.2)": 22
-      }
+        "notify 1366/1024 ru/kk + 375 ru/kk + пусто (кризис R17 → карточка; меню аватара «Уведомления · N»)": 60,
+        "together (настоящий экран R16)": 22
+      },
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd"
     },
     {
       "name": "сценарий демо R10 tests/e2e/demo_flow.cjs (часть 1, шаги 1–7 FINAL-4) на дереве «как B1»",
       "status": "PASS*",
       "passed": 169,
       "failed": 4,
-      "note": "шаг 5 (проект в 3D и голос) — 43/43 PASS, как в FINAL-4; 4 FAIL — не R06: зона нажатия чипа «Хроника» 34 px (R07/R01) на 1366/375 × ru/kk"
+      "note": "шаг 5 (проект в 3D и голос) — 43/43 PASS, как в FINAL-4; 4 FAIL — не R06: зона нажатия чипа «Хроника» 34 px (R07/R01) на 1366/375 × ru/kk",
+      "env": "дерево «как B1»: R01 29b4ae9d (B0.2) + R06 9422c926 (после него в R06 менялись только «Прочитать все» ленты и тесты)"
     },
     {
       "name": "сценарий демо R10 tests/e2e/demo_flow_v2.cjs (сцены 7–9, демо-мир) на дереве «как B1»",
@@ -110,21 +116,22 @@
       "passed": 156,
       "failed": 50,
       "not_run": 3,
-      "note": "строк R06 нет; сцена 8 «асфальт раньше сетей — копаем дважды» (API R12 по работам seed_world R06) — PASS; FAIL — UX экранов R16 (18), R17 (16), R12 (16): зоны нажатия 36 px, контраст; NOT_RUN — маршруты R09 (поставки нет в сборке)"
+      "note": "строк R06 нет; сцена 8 «асфальт раньше сетей — копаем дважды» (API R12 по работам seed_world R06) — PASS; FAIL — UX экранов R16 (18), R17 (16), R12 (16): зоны нажатия 36 px, контраст; NOT_RUN — маршруты R09 (поставки нет в сборке)",
+      "env": "дерево «как B1»: R01 29b4ae9d (B0.2) + R06 9422c926 (после него в R06 менялись только «Прочитать все» ленты и тесты)"
     },
     {
       "name": "регресс FINAL-4 R06: tests/civic/R06/round14/design_audit.cjs",
       "status": "PASS",
       "passed": 284,
       "failed": 0,
-      "env": "дерево «как B1» (R01 29b4ae9d + R06 9422c926; интерфейс R06 тот же, что в 2e818928)"
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd"
     },
     {
       "name": "регресс FINAL-4 R06: tests/civic/R06/round14/app_r01_wave2.cjs",
       "status": "PASS",
       "passed": 130,
       "failed": 0,
-      "env": "дерево «как B1» (R01 29b4ae9d + R06 2e818928); проверка плашки kk принимает «Тексерілуде» словаря R11"
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 197ad600 (B0.4: R06 2daa408a и проводка ленты R01 8b1e5f0c; R16, R17, R12, R13, R11, R09, R08, R07, R05, R04, R03, R02) + пути R06 @ 7f6636cd"
     },
     {
       "name": "соседи на дереве «как B1»: pytest tests/civic/R02 R10 R15",
@@ -134,7 +141,8 @@
       "failed": 1,
       "skipped": 45,
       "xfailed": 10,
-      "note": "1 FAIL — R15 S42 XPASS(strict): R01 исправил, R15 должен снять xfail (просьба R01); к R06 не относится"
+      "note": "1 FAIL — R15 S42 XPASS(strict): R01 исправил, R15 должен снять xfail (просьба R01); к R06 не относится",
+      "env": "R01 c9069723 (B0) + R06 c2604ea2"
     },
     {
       "name": "стык ленты с настоящими модулями R09/R13/R16/R17 (neighbors_check.py)",
@@ -167,6 +175,7 @@
     "research/round-15-results/R06/screens/notify-1366-ru-opened-idea.png",
     "research/round-15-results/R06/screens/notify-1366-ru-panel.png",
     "research/round-15-results/R06/screens/notify-375-kk.png",
+    "research/round-15-results/R06/screens/notify-375-ru-avatar-menu.png",
     "research/round-15-results/R06/screens/notify-375-ru-empty.png",
     "research/round-15-results/R06/screens/notify-375-ru.png",
     "research/round-15-results/R06/screens/together-1366-ru-staff-done.png",
@@ -193,5 +202,5 @@
     "Кадры — облако: подложка упрощённая; настоящий вид — LOCAL-12."
   ],
   "next_step": "R01 B1: взять пути R06 из code_sha и 3 строки ленты (INTEGRATION.txt). R06 дальше по кругам: сборка B1 глазами (колокольчик, лента, работы рядом в «Моём дворе» R16), патчи R08/R16, ключи R11, находки R10/R15.",
-  "screens_note": "кадры — облако, дерево «как B1» (R01 29b4ae9d + R06 9422c926/2e818928, интерфейс один), 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6)"
+  "screens_note": "кадры — облако, дерево «как B1» (R01 197ad600 B0.4 + R06 7f6636cd), 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6)"
 }
