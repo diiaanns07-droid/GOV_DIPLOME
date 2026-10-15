@@ -711,6 +711,19 @@
           ]),
         ]);
         const track = h("div", { class: "wcal-row__track", style: `width:${trackW}px;height:${height}px` });
+        // Левый край зоны нажатия следующей полосы той же дорожки: подпись «вид» справа от полосы не заходит под неё.
+        const nextLeft = new Map();
+        const byLane = new Map();
+        for (const it of r.items) byLane.set(it.lane, (byLane.get(it.lane) || []).concat([it]));
+        for (const list of byLane.values()) {
+          list.sort((a, b) => a.s - b.s);
+          list.forEach((it, k) => {
+            const nx = list[k + 1];
+            if (!nx) return;
+            const nx0 = x(nx.s), nw = Math.max(8, x(nx.e + 1) - nx0);
+            nextLeft.set(it.work.id, nx0 - (Math.max(nw, HIT) - nw) / 2);
+          });
+        }
         for (const it of r.items) {
           const w = it.work;
           const svc = d.services.find((s) => s.id === w.service);
@@ -745,7 +758,8 @@
             ]);
           track.append(bar);
           const outLeft = Math.max(x0 + width + 6, hitX + hitW + 4);  // справа от зоны нажатия, а не под ней
-          if (!inside && outLeft + 144 < trackW && !linkStarts.has(w.id)) {
+          const room = (nextLeft.has(w.id) ? nextLeft.get(w.id) : trackW) - outLeft - 4;
+          if (!inside && outLeft + 144 < trackW && textWidth(kindText) <= room && !linkStarts.has(w.id)) {
             track.append(h("span", { class: "wcal-bar__out", style: `left:${outLeft}px;top:${y + 3}px`, "aria-hidden": "true", text: kindText }));
           }
         }
