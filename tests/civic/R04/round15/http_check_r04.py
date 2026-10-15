@@ -35,8 +35,11 @@ def check(name, cond, detail=""):
 
 st, body, ms = call("GET", "/api/civic/v2/modules")
 mods = body.get("modules", {})
-check("modules: route/reply_draft/moderate ready", all(mods.get(k, {}).get("status") == "ready"
-      for k in ("route", "reply_draft", "moderate")), {k: mods.get(k) for k in ("route", "reply_draft", "moderate")})
+# Ключи маршрутов: patch R04 (route, reply_draft, moderate) или как назвал R01 (ml.route, ml.reply_draft, ml.text_check).
+KEYS = (("route", "ml.route"), ("reply_draft", "ml.reply_draft"), ("moderate", "ml.text_check"))
+check("modules: route/reply_draft/moderate ready",
+      all(any(mods.get(k, {}).get("status") == "ready" for k in pair) for pair in KEYS),
+      {k: mods.get(k) for pair in KEYS for k in pair if k in mods})
 
 st, body, ms = call("POST", "/api/civic/v2/route", {"text": "Яма после раскопок водоканала"})
 check("route scene 8 -> 200 water+road", st == 200 and [s["service"] for s in body["services"]] == ["water", "road"]

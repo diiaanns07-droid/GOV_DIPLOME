@@ -793,16 +793,23 @@ def route(text=None, category=None, subtopic=None, point=None, body=None, **_ign
                       + f", {work['distance_m']} м. {a_kk} — көму мен желі, {b_kk} — жабын.")
         role_why = _ROLE_WHY.get(joint.rule) or _ROLE_WHY["two_problems"]
         lead_score = 0.6 if joint.default_network else joint.score
+        def part_why(name: str, role_text: str) -> str:
+            return f"{name} — {role_text[:1].lower()}{role_text[1:]}."
+
+        # why у ведущей службы — объяснение всего случая одной строкой (его показывает подсказка R09: она берёт
+        # services[0].why_ru); у участвующих — их часть. Короткая роль каждой службы — role_ru / role_kk.
         services = [
             {"service": joint.lead, "role": "lead", "score": lead_score, "name_ru": a_ru, "name_kk": a_kk,
-             "why_ru": role_why[0][0], "why_kk": role_why[0][1]},
+             "why_ru": why_ru, "why_kk": why_kk, "role_ru": role_why[0][0], "role_kk": role_why[0][1]},
             {"service": joint.partner, "role": "partner", "score": joint.score, "name_ru": b_ru, "name_kk": b_kk,
-             "why_ru": role_why[1][0], "why_kk": role_why[1][1]},
+             "why_ru": part_why(b_ru, role_why[1][0]), "why_kk": part_why(b_kk, role_why[1][1]),
+             "role_ru": role_why[1][0], "role_kk": role_why[1][1]},
         ]
         for sid in joint.extra:
             c_ru, c_kk = nm(sid)
             services.append({"service": sid, "role": "partner", "score": joint.score, "name_ru": c_ru, "name_kk": c_kk,
-                             "why_ru": role_why[1][0], "why_kk": role_why[1][1]})
+                             "why_ru": part_why(c_ru, role_why[1][0]), "why_kk": part_why(c_kk, role_why[1][1]),
+                             "role_ru": role_why[1][0], "role_kk": role_why[1][1]})
         names_ru = [x["name_ru"] for x in services]
         names_kk = [x["name_kk"] for x in services]
         count_ru = {2: "Нужны 2 службы", 3: "Нужны 3 службы"}[len(services)]

@@ -43,6 +43,10 @@ def test_scene8_two_services(kwargs):
     assert res["summary_ru"] == "Нужны 2 службы: Водоканал и Дорожная служба"
     assert res["summary_kk"] == "Екі қызмет керек: Сумен жабдықтау қызметі және Жол қызметі"
     assert res["why_ru"] and res["why_kk"] and "\n" not in res["why_ru"]
+    # Подсказка R09 (joint.parse_route_hint) берёт services[0].why_ru — там полное объяснение случая.
+    assert res["services"][0]["why_ru"] == res["why_ru"] and res["services"][0]["why_kk"] == res["why_kk"]
+    assert res["services"][1]["why_ru"].startswith("Дорожная служба — ")
+    assert res["services"][1]["role_ru"] and res["services"][0]["role_kk"]
     assert res["model_version"].startswith(R.VERSION)
 
 
