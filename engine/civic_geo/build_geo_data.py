@@ -151,6 +151,11 @@ def _file_entry(path: Path) -> dict:
 
 STREET_POINT_KINDS = ("traffic_signal", "crossing")
 WALKING_KINDS = ("bus_stop",) + STREET_POINT_KINDS
+# R10 B-103: светофоры и переходы — из свежего снимка raw/ (LOCAL-10, 12.10.2026), когда он есть. Узел старого снимка
+# пешеходной сети (06.05.2026), которого в свежем нет (удалён или перерисован в OSM), — «выбывший» (retired): не цель
+# для новых жалоб и не в поиске рядом, но его id по-прежнему находится (на него ссылаются демо-мир R02 и пример QR).
+# Свежий узел того же вида ближе REPLACED_M — его замена (replaced_by): тот же перекрёсток или тот же подход к нему.
+REPLACED_M = 30.0
 
 
 def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OSM_WALKING_RAW,
@@ -165,11 +170,16 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
     for p in raw_files:
         sources.append(_file_entry(p))
         elements.extend((el, p.name) for el in _load_elements(p))
+    # Порядок важен (R10 B-103): сначала raw/ — свежий снимок (LOCAL-10, 12.10.2026: traffic_signals, crossings), потом
+    # снимок пешеходной сети 06.05.2026. Дубли по id отбрасываются: узел из обоих снимков берёт СВЕЖИЕ координаты и теги.
+    walking_name = None
     if walking_raw is not None and Path(walking_raw).is_file():
-        sources.append(_file_entry(Path(walking_raw)) | {"use": "узлы на линиях дорог: остановки, светофоры, переходы"})
+        walking_name = Path(walking_raw).name
+        sources.append(_file_entry(Path(walking_raw)) | {"use": "узлы на линиях дорог: остановки, светофоры, переходы "
+                                                                "(светофоры и переходы — только если их нет в raw/)"})
         for el in _load_elements(Path(walking_raw)):
             if el.get("type") == "node" and el.get("tags") and classify(el["tags"]) in WALKING_KINDS:
-                elements.append((el, Path(walking_raw).name))
+                elements.append((el, walking_name))
 
     objects: dict[str, dict] = {}
     yards: dict[str, dict] = {}
@@ -244,18 +254,36 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
                 del objects[b["id"]]
                 skipped["duplicate"] += 1
 
+    # B-103: светофор/переход только из старого снимка, когда свежий снимок этого вида есть, — выбывший (см. REPLACED_M).
+    retired: dict[str, dict] = {}
+    if walking_name:
+        fresh_kinds = {o["kind"] for o in objects.values() if o["kind"] in STREET_POINT_KINDS and o["src"] != walking_name}
+        for oid in [oid for oid, o in objects.items() if o["kind"] in fresh_kinds and o["src"] == walking_name]:
+            retired[oid] = objects.pop(oid)
+
     street_counts = {}
     if street_points:
         from .graph import get_graph
         from .street_points import build_street_points
-        street_counts = build_street_points(objects, graph or get_graph(), boundary.contains)
+        street_counts = build_street_points(objects, graph or get_graph(), boundary.contains, retired=retired)
+    # Узел выбывшего светофора — теперь перекрёсток (в свежем OSM светофоры на подходах): id остаётся за перекрёстком.
+    for oid in [oid for oid in retired if oid in objects]:
+        del retired[oid]
+    mark_replaced(retired, objects)
 
     items = sorted(objects.values(), key=lambda o: (o["kind"], o["id"]))
     counts: dict[str, int] = {}
     for o in items:
         counts[o["kind"]] = counts.get(o["kind"], 0) + 1
+    retired_items = sorted(retired.values(), key=lambda o: (o["kind"], o["id"]))
+    retired_counts: dict[str, int] = {}
+    for o in retired_items:
+        retired_counts[o["kind"]] = retired_counts.get(o["kind"], 0) + 1
     return {
         "objects": items,
+        "retired": retired_items,
+        "retired_counts": retired_counts,
+        "retired_replaced": sum(1 for o in retired_items if o.get("replaced_by")),
         "yards": sorted(yards.values(), key=lambda y: y["id"]),
         "sources": sources,
         "counts": counts | {"yard": len(yards)},
@@ -265,6 +293,21 @@ def build(raw_dir: Path = OSM_OBJECTS_DIR / "raw", walking_raw: Path | None = OS
         "raw_dir_present": bool(raw_files),
         "evidence_type": evidence_type,
     }
+
+
+def mark_replaced(retired: dict, objects: dict, radius_m: float = REPLACED_M) -> None:
+    """Выбывшему узлу — ближайший свежий объект того же вида не дальше radius_m (replaced_by, replaced_m)."""
+    from .street_points import _PointIndex
+
+    index = {}
+    for oid, o in sorted(retired.items()):
+        o["retired"] = True
+        kind = o["kind"]
+        if kind not in index:
+            index[kind] = _PointIndex(sorted((x for x in objects.values() if x["kind"] == kind), key=lambda x: x["id"]))
+        best = index[kind].nearest(o["point"], radius_m)
+        if best:
+            o["replaced_by"], o["replaced_m"] = best[1]["id"], round(best[0], 1)
 
 
 LICENSE = {"id": "ODbL-1.0", "attribution": "© OpenStreetMap contributors",
@@ -277,6 +320,14 @@ def write(result: dict, out_dir: Path, raw_dir: Path) -> dict:
     objects = {"schema": "r12-geo-objects-v1", **common,
                "kinds": ["bus_stop", "playground", "pitch", "park", "waste", "traffic_signal", "crossing", "intersection"],
                "count": len(result["objects"]), "items": result["objects"]}
+    if result.get("retired"):
+        objects["retired_note"] = (
+            "R10 B-103: светофоры и переходы — из свежего снимка OSM (raw/, LOCAL-10). retired — узлы старого снимка "
+            "пешеходной сети, которых в свежем нет: не цели для новых жалоб и не в поиске рядом, только чтобы старые "
+            "ссылки по id (демо-мир, QR) находились; replaced_by — свежий узел того же вида не дальше "
+            f"{int(REPLACED_M)} м.")
+        objects["retired_count"] = len(result["retired"])
+        objects["retired"] = result["retired"]
     yards = {"schema": "r12-geo-yards-v1", **common,
              "note": "Дворы — полигоны landuse=residential из OSM, упрощены с допуском 1,5 м.",
              "count": len(result["yards"]), "items": result["yards"]}
@@ -295,6 +346,10 @@ def write(result: dict, out_dir: Path, raw_dir: Path) -> dict:
         "raw_dir_present": result["raw_dir_present"],
         "inputs": result["sources"],
         "counts": result["counts"],
+        "retired": {"counts": result.get("retired_counts") or {}, "replaced": result.get("retired_replaced", 0),
+                    "replaced_m": REPLACED_M,
+                    "rule": "светофор/переход из старого снимка пешеходной сети, которого нет в свежем raw/: не цель, "
+                            "id находится (R10 B-103)"},
         "street_points": result.get("street_points"),
         "intersection_rule": "узел графа: ≥ 3 рёбра проезжей части и ≥ 2 названия; узлы той же пары улиц ближе 60 м — один перекрёсток",
         "skipped": result["skipped"],

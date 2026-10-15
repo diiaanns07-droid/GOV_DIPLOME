@@ -152,7 +152,10 @@ def gap_words(days: int) -> tuple[str, str]:
     if days < 45:
         n = max(1, days)
         return f"через {n} {ru_plural(n, 'день', 'дня', 'дней')}", f"{n} күннен кейін"
-    n = max(1, round(days / 30.4))
+    months = days / 30.4
+    if 1.25 <= months < 1.75:  # 45–53 дня: «полтора месяца», а не «1 месяц» (то же правило у экрана, gapWords)
+        return "через полтора месяца", "бір жарым айдан кейін"
+    n = max(1, round(months))
     return f"через {n} {ru_plural(n, 'месяц', 'месяца', 'месяцев')}", f"{n} айдан кейін"
 
 
@@ -672,7 +675,23 @@ def _make(kind: str, a: BoundWork, b: BoundWork, severity: str, segments, extra:
     return out
 
 
-def _dig_after_surface(surface: BoundWork, dig: BoundWork, g: StreetGraph, services: dict) -> dict | None:
+# Стадия конфликта на «сегодня» (совет и порядок списка): planned — всё впереди; surface_done — новый асфальт уже лежит,
+# раскопка впереди; now — пересечение/раскопка идёт; past — всё уже прошло (в конец списка, совет «на будущее»).
+STAGE_ORDER = {"planned": 0, "surface_done": 0, "now": 0, "past": 1}
+
+
+def _stage(today: date | None, start: date, end: date, surface_end: date | None = None) -> str:
+    if today is None or today < start:
+        return "surface_done" if (today is not None and surface_end is not None and surface_end < today) else "planned"
+    return "now" if today <= end else "past"
+
+
+def _lower_first(text: str) -> str:
+    return text[:1].lower() + text[1:] if text else text
+
+
+def _dig_after_surface(surface: BoundWork, dig: BoundWork, g: StreetGraph, services: dict,
+                       today: date | None = None) -> dict | None:
     """Асфальт (surface) закончили, потом на том же или соседнем участке начинается раскопка (dig)."""
     if not (surface.end < dig.start <= add_months(surface.end, DIG_AFTER_SURFACE_MONTHS)):
         return None
@@ -691,14 +710,33 @@ def _dig_after_surface(surface: BoundWork, dig: BoundWork, g: StreetGraph, servi
     d_ru, d_kk = _svc(services, dig.service)
     where = "на том же участке" if severity == "high" else "на соседнем участке"
     where_kk = "сол учаскеде" if severity == "high" else "көрші учаскеде"
-    advice_ru = (f"Сначала замените сети, потом кладите асфальт. {d_ru} начнёт раскопку {where} {gap_ru} после "
-                 f"нового асфальта ({s_ru}). Перенесите асфальт на время после раскопки или раскопку — до асфальта.")
-    advice_kk = (f"Алдымен желілерді ауыстырыңыз, содан кейін асфальт төсеңіз. Жаңа асфальт төселгеннен "
-                 f"{gap_kk} {where_kk} қазу басталады ({d_kk}). Асфальт төсеуді қазудан кейінге "
-                 f"ауыстырыңыз немесе қазуды асфальтқа дейін жүргізіңіз.")
+    stage = _stage(today, dig.start, dig.end, surface.end)
+    if stage == "surface_done":  # асфальт уже лежит — переносить его поздно; беречь покрытие
+        advice_ru = (f"Новый асфальт уже уложен ({s_ru}), а {gap_ru} после него {d_ru} начнёт раскопку {where}. "
+                     f"Проложите сети без вскрытия покрытия (прокол) или перенесите раскопку; если копать всё же "
+                     f"придётся — восстановите покрытие на всю ширину участка.")
+        advice_kk = (f"Жаңа асфальт төселіп қойды ({s_kk}), ал {gap_kk} {where_kk} қазу басталады ({d_kk}). "
+                     f"Желілерді жабынды ашпай (тесу әдісімен) төсеңіз немесе қазуды кейінге қалдырыңыз; қазу "
+                     f"қажет болса — учаскенің бүкіл енінде жабынды қалпына келтіріңіз.")
+    elif stage == "now":
+        advice_ru = (f"Раскопка уже идёт по новому асфальту ({d_ru}). После работ восстановите покрытие на всю "
+                     f"ширину участка; в следующий раз — сначала сети, потом асфальт.")
+        advice_kk = (f"Жаңа асфальтта қазу жүріп жатыр ({d_kk}). Жұмыстан кейін учаскенің бүкіл енінде жабынды "
+                     f"қалпына келтіріңіз; келесі жолы — алдымен желілер, содан кейін асфальт.")
+    elif stage == "past":
+        advice_ru = (f"Новый асфальт вскрыли {gap_ru} после укладки ({s_ru} → {d_ru}). В следующий раз — сначала "
+                     f"сети, потом асфальт.")
+        advice_kk = (f"Жаңа асфальт төселгеннен {gap_kk} қазылды ({s_kk} → {d_kk}). Келесі жолы — алдымен "
+                     f"желілер, содан кейін асфальт.")
+    else:
+        advice_ru = (f"Сначала замените сети, потом кладите асфальт. {d_ru} начнёт раскопку {where} {gap_ru} после "
+                     f"нового асфальта ({s_ru}). Перенесите асфальт на время после раскопки или раскопку — до асфальта.")
+        advice_kk = (f"Алдымен желілерді ауыстырыңыз, содан кейін асфальт төсеңіз. Жаңа асфальт төселгеннен "
+                     f"{gap_kk} {where_kk} қазу басталады ({d_kk}). Асфальт төсеуді қазудан кейінге "
+                     f"ауыстырыңыз немесе қазуды асфальтқа дейін жүргізіңіз.")
     extra = {"surface_ends_on": surface.end.isoformat(), "dig_starts_on": dig.start.isoformat(), "gap_days": gap,
              "first": surface.id, "second": dig.id, "when_from": surface.start.isoformat(),
-             "when_to": dig.end.isoformat()}
+             "when_to": dig.end.isoformat(), "stage": stage}
     return _make("dig_after_surface", surface, dig, severity, segments, extra, (advice_ru, advice_kk), g)
 
 
@@ -797,8 +835,21 @@ def _parallel(a: BoundWork, b: BoundWork, reach: dict[str, float], g: StreetGrap
     return _make("parallel_closures", a, b, severity, segments, extra, (advice_ru, advice_kk), g)
 
 
-def find_conflicts(bound: Sequence[BoundWork], graph: StreetGraph | None = None) -> list[dict]:
-    """Все конфликты между привязанными работами (примерные места и отменённые не участвуют)."""
+def _with_overlap_stage(c: dict | None, today: date | None) -> dict | None:
+    """Стадия пересечения по датам; прошедшее — совет «в следующий раз»."""
+    if not c or c["kind"] == "dig_after_surface":
+        return c
+    stage = _stage(today, date.fromisoformat(c["overlap_from"]), date.fromisoformat(c["overlap_to"]))
+    c["stage"] = stage
+    if stage == "past":
+        c["advice_ru"] = "Это уже прошло. В следующий раз: " + _lower_first(c["advice_ru"])
+        c["advice_kk"] = "Бұл өтіп кетті. Келесі жолы: " + _lower_first(c["advice_kk"])
+    return c
+
+
+def find_conflicts(bound: Sequence[BoundWork], graph: StreetGraph | None = None, today: date | None = None) -> list[dict]:
+    """Все конфликты между привязанными работами (примерные места и отменённые не участвуют).
+    today — «сегодня» календаря: от него стадия конфликта (stage) и совет; без today — всё считается впереди."""
     g = graph or get_graph()
     services = _service_names()
     usable = [w for w in bound if not w.approximate and w.start and w.end and (w.status or "") not in CANCELLED]
@@ -814,10 +865,10 @@ def find_conflicts(bound: Sequence[BoundWork], graph: StreetGraph | None = None)
     for s in surfaces:
         for d in digs:
             if s.id != d.id:
-                keep(_dig_after_surface(s, d, g, services))
+                keep(_dig_after_surface(s, d, g, services, today))
     for i, a in enumerate(usable):
         for b in usable[i + 1:]:
-            keep(_same_segment(a, b, g, services))
+            keep(_with_overlap_stage(_same_segment(a, b, g, services), today))
     closures = [w for w in usable if w.kind in CLOSURE_KINDS]
     for i, a in enumerate(closures):
         rest = closures[i + 1:]
@@ -825,9 +876,9 @@ def find_conflicts(bound: Sequence[BoundWork], graph: StreetGraph | None = None)
             continue
         reach = _graph_reach(g, a.nodes, CORRIDOR_GRAPH_M)
         for b in rest:
-            keep(_parallel(a, b, reach, g, services))
-    return sorted(out.values(), key=lambda c: (SEVERITY_ORDER[c["severity"]], KIND_ORDER[c["kind"]],
-                                               c.get("when_from") or "", c["id"]))
+            keep(_with_overlap_stage(_parallel(a, b, reach, g, services), today))
+    return sorted(out.values(), key=lambda c: (STAGE_ORDER.get(c.get("stage"), 0), SEVERITY_ORDER[c["severity"]],
+                                               KIND_ORDER[c["kind"]], c.get("when_from") or "", c["id"]))
 
 
 # ------------------------------------------------------------------ кэш привязки

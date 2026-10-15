@@ -56,11 +56,19 @@ class Feature:
 
 
 class FeatureSet:
-    def __init__(self, items: list[dict], meta: dict | None = None):
+    """items / by_id / near — действующие объекты. retired — выбывшие узлы старого снимка OSM (R10 B-103): только
+    поиск по id (find), чтобы старые ссылки (демо-мир, QR) находились; в поиск рядом и в перечисления не попадают."""
+
+    def __init__(self, items: list[dict], meta: dict | None = None, retired: list[dict] | None = None):
         self.meta = meta or {}
         self.items = [Feature(r) for r in items]
         self.by_id = {f.id: f for f in self.items}
+        self.retired = {f.id: f for f in (Feature(r) for r in retired or ())}
         self.index = GridIndex(((i, f.bbox) for i, f in enumerate(self.items)), 51.14, cell_m=150.0)
+
+    def find(self, fid: str) -> "Feature | None":
+        """Объект по id — действующий или выбывший (у выбывшего raw["retired"] и, если есть, raw["replaced_by"])."""
+        return self.by_id.get(fid) or self.retired.get(fid)
 
     def near(self, p, radius_m: float, kinds=None) -> list[tuple[float, Feature]]:
         out = []
@@ -129,7 +137,8 @@ def get_layers(geo_dir: Path | None = None) -> tuple[FeatureSet, FeatureSet, Cel
             objects = _read(d / "objects.json") or {"items": []}
             yards = _read(d / "yards.json") or {"items": []}
             cells = _read(d / "cells.json")
-            _cache[key] = (FeatureSet(objects["items"], objects), FeatureSet(yards["items"], yards), Cells(cells))
+            _cache[key] = (FeatureSet(objects["items"], objects, objects.get("retired")), FeatureSet(yards["items"], yards),
+                           Cells(cells))
         return _cache[key]
 
 

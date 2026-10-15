@@ -30,6 +30,7 @@
   const DAY = 86400000;
   const LANE_H = 30;          // высота дорожки полосы: полоса 24 + зазор 6
   const ROW_PAD = 8;          // поля строки сверху и снизу
+  const CHIP_LANE = 24;       // дорожка чипов конфликта над полосами строки: чип не закрывает короткую полосу
   const MIN_MONTH_W = 46;     // уже — месяц не читается: лента прокручивается вбок (телефон — 60)
   const SKELETON_DELAY = 150; // скелетон не раньше 150 мс (COMMON «Качество»)
   const MAP_SRC = "birge-r12-wc";
@@ -62,6 +63,9 @@
       "wcal.chip.parallel_closures": "нет объезда",
       "wcal.severity.high": "Важно",
       "wcal.severity.medium": "Проверить",
+      "wcal.stage.surface_done": "асфальт уже уложен",
+      "wcal.stage.now": "идёт сейчас",
+      "wcal.stage.past": "уже прошло",
       "wcal.gap": "через {gap}",
       "wcal.overlap": { one: "{n} день вместе", few: "{n} дня вместе", many: "{n} дней вместе" },
       "wcal.of": "{i} из {n}",
@@ -138,6 +142,9 @@
       "wcal.chip.parallel_closures": "айналма жол жоқ",
       "wcal.severity.high": "Маңызды",
       "wcal.severity.medium": "Тексеру керек",
+      "wcal.stage.surface_done": "асфальт төселіп қойды",
+      "wcal.stage.now": "қазір жүріп жатыр",
+      "wcal.stage.past": "өтіп кетті",
       "wcal.gap": "{gap}",
       "wcal.overlap": "{n} күн бірге",
       "wcal.of": "{n} ішінен {i}",
@@ -278,7 +285,10 @@
       const n = Math.max(1, days);
       return lang() === "kk" ? n + " күннен кейін" : n + " " + ({ one: "день", few: "дня", many: "дней" })[pluralRu(n)];
     }
-    const n = Math.max(1, Math.round(days / 30.4));
+    const months = days / 30.4;
+    // 45–53 дня (асфальт в мае → сети в июле) — «полтора месяца», а не «1 месяц»: так же считает движок (works.gap_words).
+    if (months >= 1.25 && months < 1.75) return lang() === "kk" ? "бір жарым айдан кейін" : "полтора месяца";
+    const n = Math.max(1, Math.round(months));
     return lang() === "kk" ? n + " айдан кейін" : n + " " + ({ one: "месяц", few: "месяца", many: "месяцев" })[pluralRu(n)];
   }
 
@@ -461,8 +471,11 @@
         shared.data = data;
         shared.at = Date.now();
         const wanted = takeWanted(data);
+        // Демо-мир: открыть на конфликте сцены 8 (сервер присылает scene_conflict только в режиме мира), иначе — первый
+        // по срочности. Выбор пользователя при смене фильтров сохраняется.
+        const scene = data.scene_conflict && data.conflicts.some((c) => c.id === data.scene_conflict) ? data.scene_conflict : null;
         if (wanted) state.selected = wanted;
-        else if (!state.selected || !data.conflicts.some((c) => c.id === state.selected)) state.selected = data.conflicts[0] ? data.conflicts[0].id : null;
+        else if (!state.selected || !data.conflicts.some((c) => c.id === state.selected)) state.selected = scene || (data.conflicts[0] ? data.conflicts[0].id : null);
         render();
       }).catch((err) => {
         if (state.destroyed || seq !== state.seq) return;
@@ -597,6 +610,7 @@
           h("span", { class: "wcal-sev" + (sev ? " wcal-sev--high" : ""), "aria-hidden": "true" }, [icon("alert")]),
           h("h3", { class: "wcal-focus__title", text: conflictTitle(c) }),
           h("span", { class: "wcal-chip wcal-chip--" + c.severity, text: tr("wcal.severity." + c.severity) }),
+          c.stage && c.stage !== "planned" ? h("span", { class: "wcal-chip wcal-chip--stage", text: tr("wcal.stage." + c.stage) }) : null,
           street ? h("span", { class: "wcal-focus__street" }, [icon("pin"), street]) : null,
         ]),
         h("div", { class: "wcal-focus__actions" }, [
@@ -659,13 +673,22 @@
       body.append(grid);
       const rows = layoutRows(d, range);
       const geom = new Map();  // id работы → {x0, x1, y} для связей конфликтов
+      // Чип конфликта стоит в своей дорожке над полосами верхней из двух строк — не закрывает короткую полосу.
+      const rowOf = new Map();
+      rows.forEach((r, i) => r.items.forEach((it) => rowOf.set(it.work.id, i)));
+      const chipRows = new Set();
+      for (const c of d.conflicts) {
+        const ia = rowOf.get(c.first || c.works[0]), ib = rowOf.get(c.second || c.works[1]);
+        if (ia !== undefined && ib !== undefined) chipRows.add(Math.min(ia, ib));
+      }
       let top = 0;
       const sel = d.conflicts.find((c) => c.id === state.selected);
       const selWorks = new Set(sel ? sel.works : []);
       // Справа от этих полос — связь «копаем дважды» с чипом: подпись вида там не ставим (её говорит карточка).
       const linkStarts = new Set(d.conflicts.filter((c) => c.kind === "dig_after_surface").map((c) => c.first || c.works[0]));
-      for (const r of rows) {
-        const height = r.lanes * LANE_H + ROW_PAD * 2 - 6;
+      rows.forEach((r, ri) => {
+        const lift = chipRows.has(ri) ? CHIP_LANE : 0;
+        const height = r.lanes * LANE_H + ROW_PAD * 2 - 6 + lift;
         const street = r.row.street_ru ? (lang() === "kk" ? r.row.street_kk || r.row.street_ru : r.row.street_ru) : tr("wcal.street_none");
         const label = h("div", { class: "wcal-row__label", style: `height:${height}px` }, [
           h("span", { class: "wcal-row__street", text: street, title: street }),
@@ -681,7 +704,7 @@
           const color = (svc && svc.color) || "#7b8494";
           const x0 = x(it.s), x1 = x(it.e + 1);
           const width = Math.max(8, x1 - x0);
-          const y = ROW_PAD + it.lane * LANE_H;
+          const y = ROW_PAD + lift + it.lane * LANE_H;
           geom.set(w.id, { x0, x1: x0 + width, y: top + y + 12, rowTop: top });
           const kindText = tr("wcal.kind_short." + w.kind);
           const svcText = serviceName(w.service, svc);
@@ -708,12 +731,13 @@
         }
         body.append(h("div", { class: "wcal-row" + (r.row.conflicts ? " wcal-row--bad" : ""), "data-row": r.row.key }, [label, track]));
         top += height + 1;
-      }
+      });
       // Связи конфликтов: SVG поверх строк (координаты — из той же раскладки, без замеров DOM).
-      const links = svgLinks(d.conflicts, geom, trackW, top);
+      const chips = placeChips(d.conflicts, geom, trackW);
+      const links = svgLinks(d.conflicts, geom, trackW, top, chips);
       links.style.left = labelWidth() + "px";
       body.append(links);
-      body.append(...chipsFor(d.conflicts, geom));
+      body.append(...chipsFor(d.conflicts, chips));
       body.style.height = top + "px";
       inner.append(body);
       // Открыть сразу на выбранном конфликте или на «сегодня»; высота — до низа листа раздела.
@@ -738,7 +762,7 @@
       return (rootEl.clientWidth || 960) < PHONE ? 118 : 196;
     }
 
-    function svgLinks(conflicts, geom, width, height) {
+    function svgLinks(conflicts, geom, width, height, chips) {
       const NS = "http://www.w3.org/2000/svg";
       const svg = doc.createElementNS(NS, "svg");
       svg.setAttribute("class", "wcal-links");
@@ -756,6 +780,11 @@
         if (!a || !b) continue;
         const on = c.id === state.selected;
         const cls = "wcal-link" + (on ? " is-sel" : "") + (state.selected && !on ? " is-dim" : "");
+        const chip = chips.get(c.id);
+        if (chip && chip.stemTo - chip.y > CHIP_LANE / 2 + 3) {
+          // Ножка от чипа (в дорожке над полосами) к его связи — какой чип к какой связи, видно без подписи.
+          add("line", { class: cls + " wcal-link__stem", x1: chip.x, y1: chip.y + 11, x2: chip.ax, y2: chip.stemTo });
+        }
         if (c.kind === "dig_after_surface") {
           // От конца асфальта к началу раскопки — на уровне полос (промежуток времени между ними); разные дорожки —
           // плавная S-кривая. Внутри строки: не уходит под липкую шапку месяцев.
@@ -780,17 +809,49 @@
       }
       return svg;
     }
-    function chipsFor(conflicts, geom) {
-      const out = [];
+    // Место чипа: по горизонтали — середина промежутка «асфальт → раскопка» или общего отрезка дат, по вертикали —
+    // дорожка чипов верхней строки. Чипы одной дорожки не налезают друг на друга и не выходят за края ленты.
+    function placeChips(conflicts, geom, width) {
+      const out = new Map();
+      const lanes = new Map();
       for (const c of conflicts) {
         const a = geom.get(c.first || c.works[0]), b = geom.get(c.second || c.works[1]);
         if (!a || !b) continue;
-        let cx, cy;
-        if (c.kind === "dig_after_surface") { cx = (a.x1 + b.x0) / 2; cy = (a.y + b.y) / 2; }
-        else { const x0 = Math.max(a.x0, b.x0), x1 = Math.min(a.x1, b.x1); cx = (x0 + Math.max(x0, x1)) / 2; cy = Math.min(a.y, b.y) - 15; }
+        let cx, stemTo;
+        if (c.kind === "dig_after_surface") {
+          cx = (a.x1 + Math.max(a.x1, b.x0)) / 2;
+          stemTo = a.y === b.y ? a.y : (a.y + b.y) / 2;
+        } else {
+          const x0 = Math.max(a.x0, b.x0), x1 = Math.min(a.x1, b.x1);
+          cx = (x0 + Math.max(x0, x1)) / 2;
+          stemTo = Math.min(a.y, b.y) - 15;
+        }
+        const half = (textWidth(tr("wcal.chip." + c.kind)) * 11 / 12 + 22) / 2;
+        const y = Math.min(a.rowTop, b.rowTop) + ROW_PAD / 2 + CHIP_LANE / 2;
+        cx = Math.min(Math.max(cx, half + 2), width - half - 2);
+        const lane = lanes.get(y) || [];
+        lane.push({ id: c.id, cx, ax: cx, half, stemTo });
+        lanes.set(y, lane);
+      }
+      for (const [y, lane] of lanes) {
+        lane.sort((p, q) => p.cx - q.cx || (p.id < q.id ? -1 : 1));
+        let right = -Infinity;
+        for (const p of lane) {
+          const x = Math.max(p.cx, right + p.half + 6);
+          right = x + p.half;
+          out.set(p.id, { x, y, ax: p.ax, stemTo: p.stemTo });
+        }
+      }
+      return out;
+    }
+    function chipsFor(conflicts, chips) {
+      const out = [];
+      for (const c of conflicts) {
+        const place = chips.get(c.id);
+        if (!place) continue;
         const on = c.id === state.selected;
         out.push(h("button", { type: "button", class: "wcal-cchip wcal-cchip--" + c.severity + (on ? " is-sel" : ""), "data-conflict": c.id,
-          style: `left:${labelWidth() + cx}px;top:${Math.max(2, cy)}px`, "aria-pressed": on ? "true" : "false",
+          style: `left:${labelWidth() + place.x}px;top:${place.y}px`, "aria-pressed": on ? "true" : "false",
           "aria-label": conflictTitle(c) + (c.street_ru ? ": " + (lang() === "kk" ? c.street_kk || c.street_ru : c.street_ru) : ""),
           onclick: () => select(c.id, false) }, [tr("wcal.chip." + c.kind)]));
       }

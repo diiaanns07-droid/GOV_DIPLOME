@@ -172,6 +172,43 @@ def test_dig_after_surface_threshold_18_months(real):
     assert outside == []
 
 
+def test_advice_follows_what_is_already_done(real):
+    """Совет на «сегодня»: асфальт ещё впереди — поменять порядок; уже уложен — беречь его; раскопка идёт; всё прошло."""
+    end, dig = date(2026, 9, 25), date(2026, 10, 30)  # как пр. Кабанбай Батыра в демо-мире R02: асфальт в сентябре
+    works = W.bind_all(_pair(end, dig), real)
+    stages = {}
+    for today in (date(2026, 9, 1), date(2026, 10, 15), date(2026, 11, 3), date(2026, 12, 1)):
+        (c,) = W.find_conflicts(works, real, today)
+        stages[c["stage"]] = c
+    assert set(stages) == {"planned", "surface_done", "now", "past"}
+    assert len({c["id"] for c in stages.values()}) == 1, "id конфликта не зависит от даты"
+    assert stages["planned"]["advice_ru"].startswith("Сначала замените сети, потом кладите асфальт.")
+    done = stages["surface_done"]
+    assert done["advice_ru"].startswith("Новый асфальт уже уложен") and "Перенесите асфальт" not in done["advice_ru"]
+    assert "прокол" in done["advice_ru"] and "тесу әдісімен" in done["advice_kk"]
+    assert stages["now"]["advice_ru"].startswith("Раскопка уже идёт по новому асфальту")
+    assert stages["past"]["advice_ru"].startswith("Новый асфальт вскрыли через 35 дней после укладки")
+    for c in stages.values():
+        assert "₸" not in c["advice_ru"] and "тенге" not in c["advice_ru"].lower() and "None" not in c["advice_kk"]
+    # без today — как раньше: всё впереди
+    assert W.find_conflicts(works, real)[0]["stage"] == "planned"
+
+
+def test_past_conflicts_go_last_with_advice_for_next_time(real):
+    past = _pair(date(2025, 5, 20), date(2025, 7, 1))
+    soon = [dict(w, id=w["id"] + "2", segments=["osm-w1179911016-15", "osm-w1179911016-16"]) for w in
+            _pair(date(2026, 11, 20), date(2027, 1, 10))]
+    cs = W.find_conflicts(W.bind_all(past + soon, real), real, date(2026, 10, 15))
+    assert [c["stage"] for c in cs] == ["planned", "past"], "прошедший — в конце, даже если он важнее"
+    a = {"id": "a", "kind": "closure", "service": "road", "street": "улица Сыганак", "from": [71.381544, 51.130024],
+         "to": [71.377997, 51.130475], "starts_on": "2026-08-01", "ends_on": "2026-08-20"}
+    b = {"id": "b", "kind": "closure", "service": "traffic", "street": "улица Сыганак", "from": [71.377997, 51.130475],
+         "to": [71.372275, 51.131209], "starts_on": "2026-08-10", "ends_on": "2026-08-25"}
+    (c,) = W.find_conflicts(W.bind_all([a, b], real), real, date(2026, 10, 15))
+    assert c["stage"] == "past" and c["advice_ru"].startswith("Это уже прошло. В следующий раз: не перекрывайте")
+    assert c["advice_kk"].startswith("Бұл өтіп кетті. Келесі жолы: ")
+
+
 def test_networks_first_then_asphalt_is_not_a_conflict(cal):
     ids = {w for c in cal["conflicts"] for w in c["works"]}
     assert "w-demo-r12-11" not in ids and "w-demo-r12-12" not in ids
@@ -423,6 +460,32 @@ def test_seed_world_remembers_works_and_planned_ids(real, monkeypatch):
         assert "world" in info["source"] and len(records) == 15
         cal = build_calendar(records, *PERIOD, {}, TODAY, real)
         assert "cf-w15-01" in {c["id"] for c in cal["conflicts"]}
+        assert "scene_conflict" not in cal, "сцены в мире нет — экран открывается на первом по срочности"
+    finally:
+        WC._WORLD.clear()
+
+
+def test_world_scene8_conflict_opens_first_but_keeps_the_order(real, monkeypatch):
+    """Мир R02 называет конфликт сцены 8 (scenes.scene8.conflict): только в режиме мира он приходит как scene_conflict."""
+    import engine.civic_geo as geo_pkg
+    from datetime import datetime, timezone
+    from engine.civic_geo import works_calendar as WC
+    fixture = json.loads(FIXTURE_PATH.read_text("utf-8"))["works"]
+    world = {"works": fixture, "scenes": {"scene8": {"conflict": "cf-w15-01"}},
+             "planned_conflicts": [{"id": "cf-w15-01", "kind": "dig_after_surface", "works": ["w-demo-r12-01", "w-demo-r12-02"]}]}
+    try:
+        geo_pkg.seed_world(None, world, datetime(2026, 10, 15, 7, 0, tzinfo=timezone.utc))
+        monkeypatch.setenv("CIVIC_DEMO", "1")
+        monkeypatch.setenv("CIVIC_DEMO_WORLD", "1")
+        records, _ = WC.load_works(TODAY)
+        cal = build_calendar(records, *PERIOD, {}, TODAY, real)
+        assert cal["scene_conflict"] == "cf-w15-01"
+        plain = build_calendar(records, *PERIOD, {}, TODAY, real)
+        assert [c["id"] for c in cal["conflicts"]] == [c["id"] for c in plain["conflicts"]]
+        # фильтр без этого конфликта — поля нет
+        assert "scene_conflict" not in build_calendar(records, *PERIOD, {"service": "lighting"}, TODAY, real)
+        monkeypatch.delenv("CIVIC_DEMO_WORLD")
+        assert "scene_conflict" not in build_calendar(records, *PERIOD, {}, TODAY, real)
     finally:
         WC._WORLD.clear()
 
@@ -471,3 +534,17 @@ def test_real_works_do_not_hide_the_demo_scene(real, monkeypatch):
     assert info["source"].endswith("fixture+real") and info["real"]["total"] == 4
     ids = {r["id"] for r in records}
     assert "w-demo-r12-01" in ids and sum(1 for i in ids if i.startswith("w-real-")) == 4
+
+
+def test_conflicts_summary_for_neighbours_has_numbers_and_advice(real, monkeypatch):
+    """R08 / R17 / R03: сводка — те же числа, что календарь, и совет первого конфликта (R03 читает advice_ru)."""
+    from engine.civic_geo import works_calendar as WC
+    monkeypatch.setenv("CIVIC_DEMO", "1")
+    monkeypatch.delenv("CIVIC_DEMO_WORLD", raising=False)
+    monkeypatch.setattr(WC, "read_r06", lambda: (None, "module_missing"))
+    got = WC.conflicts_summary()
+    assert got["conflicts"] >= 1 and got["high"] >= 1 and got["source"] == "fixture" and got["demo"] is True
+    top = got["top"][0]
+    assert top["advice_ru"] and top["advice_kk"] and top["stage"] in ("planned", "surface_done", "now")
+    assert set(top) >= {"id", "kind", "severity", "title_ru", "street_ru", "when_from", "works"}
+    assert len(got["top"]) <= 3

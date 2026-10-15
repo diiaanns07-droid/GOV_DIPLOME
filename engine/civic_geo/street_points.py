@@ -152,17 +152,22 @@ def labels(obj: dict) -> tuple[str, str]:
     return ru, kk
 
 
-def build_street_points(objects: dict, graph: StreetGraph, inside) -> dict:
-    """Дополняет objects (id -> запись) перекрёстками и подписывает светофоры/переходы. Возвращает счётчики."""
+def build_street_points(objects: dict, graph: StreetGraph, inside, retired: dict | None = None) -> dict:
+    """Дополняет objects (id -> запись) перекрёстками и подписывает светофоры/переходы. Возвращает счётчики.
+    retired — выбывшие узлы старого снимка (build_geo_data, B-103): их только подписываем (id находится), перекрёсток
+    в их узле остаётся перекрёстком."""
     junctions = find_intersections(graph, inside)
     index = _PointIndex(junctions)
     # Светофор/переход не на улице графа (например, на дороге в статусе «строится», highway=construction) —
     # не цель для жалобы: убираем (тот же допуск 15 м, что в отчёте точности).
-    off_street = [oid for oid, o in objects.items() if o["kind"] in ("traffic_signal", "crossing")
-                  and not graph.nearest(o["point"], ON_STREET_M, limit=1)]
-    for oid in off_street:
-        del objects[oid]
-    for obj in objects.values():
+    off_street = []
+    for group in (objects, retired or {}):
+        gone = [oid for oid, o in group.items() if o["kind"] in ("traffic_signal", "crossing")
+                and not graph.nearest(o["point"], ON_STREET_M, limit=1)]
+        for oid in gone:
+            del group[oid]
+        off_street += gone
+    for obj in list(objects.values()) + list((retired or {}).values()):
         if obj["kind"] in ("traffic_signal", "crossing"):
             annotate(obj, graph, index)
             # у светофора/перехода имени в OSM почти никогда нет — пустые поля не храним (файл меньше)

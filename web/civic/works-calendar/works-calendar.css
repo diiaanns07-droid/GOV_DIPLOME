@@ -79,6 +79,8 @@
   font-size: var(--fs-xs, 12px); font-weight: var(--fw-medium, 500); white-space: nowrap; }
 .wcal-chip--high { background: var(--c-danger-soft, #fcebeb); color: var(--c-danger, #b3362e); }
 .wcal-chip--medium { background: var(--c-warn-soft, #faeeda); color: var(--c-warn, #7a520f); }
+/* стадия конфликта на сегодня («асфальт уже уложен», «идёт сейчас», «уже прошло») — нейтрально, без цвета тревоги */
+.wcal-chip--stage { background: var(--c-fill, rgba(18, 26, 23, .06)); color: var(--c-text-2, #4b5752); }
 .wcal-focus__street { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; font-size: var(--fs-body, 15px);
   font-weight: var(--fw-medium, 500); color: var(--c-ink, #121a17); white-space: nowrap; }
 .wcal-focus__street .ic { width: 16px; height: 16px; color: var(--c-text-3, #7e8a85); }
@@ -167,6 +169,8 @@
 .wcal-link__band { fill: rgba(179, 54, 46, .07); stroke-width: 1.5; stroke-dasharray: 4 3; }
 .wcal-link__band.is-sel { fill: rgba(179, 54, 46, .12); }
 .wcal-link__tie { stroke-width: 1.5; stroke-dasharray: 3 3; }
+.wcal-link__stem { stroke-width: 1.5; }
+.wcal-link__stem.is-sel { stroke-width: 2; }
 /* «Мелочь вау»: связь выбранного конфликта прорисовывается от асфальта к раскопке (600 мс). */
 @media (prefers-reduced-motion: no-preference) {
   .wcal-link--draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: wcal-draw 600ms var(--ease, ease-out) 80ms forwards; }
