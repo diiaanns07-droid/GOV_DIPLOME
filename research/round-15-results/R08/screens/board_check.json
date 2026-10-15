@@ -1,0 +1,426 @@
+{
+  "base": "http://127.0.0.1:8508",
+  "at": "2026-10-15T12:26:03.898Z",
+  "passed": 57,
+  "failed": 0,
+  "results": [
+    {
+      "name": "1920-ru: без прокрутки (по вертикали и горизонтали)",
+      "status": "PASS",
+      "detail": {
+        "sh": 1080,
+        "ch": 1080,
+        "sw": 1920,
+        "cw": 1920
+      }
+    },
+    {
+      "name": "1920-ru: ни одной обрезанной строки (многоточием или скрытием)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1920-ru: строки списков — целиком (лишние скрыты подгонкой, а не обрезаны)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1920-ru: нет ключей перевода и «{…}»",
+      "status": "PASS"
+    },
+    {
+      "name": "1920-ru: заголовок на своём языке",
+      "status": "PASS",
+      "detail": "Ситуационный центр"
+    },
+    {
+      "name": "1920-ru: часы Астаны ЧЧ:ММ",
+      "status": "PASS",
+      "detail": "17:25"
+    },
+    {
+      "name": "1920-ru: 5 блоков ленты (кризис, ведомства, жители, встречи, прогноз)",
+      "status": "PASS",
+      "detail": [
+        "crisis",
+        "agencies",
+        "together",
+        "meetings",
+        "forecast"
+      ]
+    },
+    {
+      "name": "1920-ru: полоса кризиса ведёт в штаб R17 (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": "/#agencies/crisis=inc-demo-blizzard"
+    },
+    {
+      "name": "1920-ru: П1 — ровный тёмный фон без градиентов",
+      "status": "PASS",
+      "detail": {
+        "bg": "none",
+        "c": "rgb(11, 16, 14)"
+      }
+    },
+    {
+      "name": "1920-ru: подписи от 18 px (R11 §5.9)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1920-ru: числа от 48 px",
+      "status": "PASS",
+      "detail": [
+        74.88,
+        74.88,
+        74.88,
+        74.88
+      ]
+    },
+    {
+      "name": "1920-ru: без ошибок в консоли",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1920-kk: без прокрутки (по вертикали и горизонтали)",
+      "status": "PASS",
+      "detail": {
+        "sh": 1080,
+        "ch": 1080,
+        "sw": 1920,
+        "cw": 1920
+      }
+    },
+    {
+      "name": "1920-kk: ни одной обрезанной строки (многоточием или скрытием)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1920-kk: строки списков — целиком (лишние скрыты подгонкой, а не обрезаны)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1920-kk: нет ключей перевода и «{…}»",
+      "status": "PASS"
+    },
+    {
+      "name": "1920-kk: заголовок на своём языке",
+      "status": "PASS",
+      "detail": "Жағдаяттық орталық"
+    },
+    {
+      "name": "1920-kk: часы Астаны ЧЧ:ММ",
+      "status": "PASS",
+      "detail": "17:25"
+    },
+    {
+      "name": "1920-kk: 5 блоков ленты (кризис, ведомства, жители, встречи, прогноз)",
+      "status": "PASS",
+      "detail": [
+        "crisis",
+        "agencies",
+        "together",
+        "meetings",
+        "forecast"
+      ]
+    },
+    {
+      "name": "1920-kk: полоса кризиса ведёт в штаб R17 (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": "/#agencies/crisis=inc-demo-blizzard"
+    },
+    {
+      "name": "1920-kk: П1 — ровный тёмный фон без градиентов",
+      "status": "PASS",
+      "detail": {
+        "bg": "none",
+        "c": "rgb(11, 16, 14)"
+      }
+    },
+    {
+      "name": "1920-kk: подписи от 18 px (R11 §5.9)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1920-kk: числа от 48 px",
+      "status": "PASS",
+      "detail": [
+        74.88,
+        74.88,
+        74.88,
+        74.88
+      ]
+    },
+    {
+      "name": "1920-kk: без ошибок в консоли",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1366-ru: без прокрутки (по вертикали и горизонтали)",
+      "status": "PASS",
+      "detail": {
+        "sh": 768,
+        "ch": 768,
+        "sw": 1366,
+        "cw": 1366
+      }
+    },
+    {
+      "name": "1366-ru: ни одной обрезанной строки (многоточием или скрытием)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1366-ru: строки списков — целиком (лишние скрыты подгонкой, а не обрезаны)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1366-ru: нет ключей перевода и «{…}»",
+      "status": "PASS"
+    },
+    {
+      "name": "1366-ru: заголовок на своём языке",
+      "status": "PASS",
+      "detail": "Ситуационный центр"
+    },
+    {
+      "name": "1366-ru: часы Астаны ЧЧ:ММ",
+      "status": "PASS",
+      "detail": "17:25"
+    },
+    {
+      "name": "1366-ru: 5 блоков ленты (кризис, ведомства, жители, встречи, прогноз)",
+      "status": "PASS",
+      "detail": [
+        "crisis",
+        "agencies",
+        "together",
+        "meetings",
+        "forecast"
+      ]
+    },
+    {
+      "name": "1366-ru: полоса кризиса ведёт в штаб R17 (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": "/#agencies/crisis=inc-demo-blizzard"
+    },
+    {
+      "name": "1366-ru: П1 — ровный тёмный фон без градиентов",
+      "status": "PASS",
+      "detail": {
+        "bg": "none",
+        "c": "rgb(11, 16, 14)"
+      }
+    },
+    {
+      "name": "1366-ru: без ошибок в консоли",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1366-kk: без прокрутки (по вертикали и горизонтали)",
+      "status": "PASS",
+      "detail": {
+        "sh": 768,
+        "ch": 768,
+        "sw": 1366,
+        "cw": 1366
+      }
+    },
+    {
+      "name": "1366-kk: ни одной обрезанной строки (многоточием или скрытием)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1366-kk: строки списков — целиком (лишние скрыты подгонкой, а не обрезаны)",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1366-kk: нет ключей перевода и «{…}»",
+      "status": "PASS"
+    },
+    {
+      "name": "1366-kk: заголовок на своём языке",
+      "status": "PASS",
+      "detail": "Жағдаяттық орталық"
+    },
+    {
+      "name": "1366-kk: часы Астаны ЧЧ:ММ",
+      "status": "PASS",
+      "detail": "17:25"
+    },
+    {
+      "name": "1366-kk: 5 блоков ленты (кризис, ведомства, жители, встречи, прогноз)",
+      "status": "PASS",
+      "detail": [
+        "crisis",
+        "agencies",
+        "together",
+        "meetings",
+        "forecast"
+      ]
+    },
+    {
+      "name": "1366-kk: полоса кризиса ведёт в штаб R17 (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": "/#agencies/crisis=inc-demo-blizzard"
+    },
+    {
+      "name": "1366-kk: П1 — ровный тёмный фон без градиентов",
+      "status": "PASS",
+      "detail": {
+        "bg": "none",
+        "c": "rgb(11, 16, 14)"
+      }
+    },
+    {
+      "name": "1366-kk: без ошибок в консоли",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "лента: блок сменился через 15 с",
+      "status": "PASS",
+      "detail": {
+        "s0": "crisis",
+        "s1": "agencies"
+      }
+    },
+    {
+      "name": "лента: при наведении — пауза",
+      "status": "PASS",
+      "detail": {
+        "status": "ok",
+        "stage": "agencies",
+        "stages": [
+          "crisis",
+          "agencies",
+          "together",
+          "meetings",
+          "forecast"
+        ],
+        "paused": true,
+        "stale": false
+      }
+    },
+    {
+      "name": "лента: → и ← листают блоки",
+      "status": "PASS",
+      "detail": {
+        "s3": "together",
+        "s4": "agencies"
+      }
+    },
+    {
+      "name": "лента: пробел — пауза (блок не меняется)",
+      "status": "PASS",
+      "detail": {
+        "s5": {
+          "status": "ok",
+          "stage": "agencies",
+          "stages": [
+            "crisis",
+            "agencies",
+            "together",
+            "meetings",
+            "forecast"
+          ],
+          "paused": true,
+          "stale": false
+        },
+        "s6": {
+          "status": "ok",
+          "stage": "agencies",
+          "stages": [
+            "crisis",
+            "agencies",
+            "together",
+            "meetings",
+            "forecast"
+          ],
+          "paused": true,
+          "stale": false
+        }
+      }
+    },
+    {
+      "name": "лента: кнопка паузы с подписью и состоянием",
+      "status": "PASS",
+      "detail": {
+        "pressed": "true",
+        "label": "Продолжить"
+      }
+    },
+    {
+      "name": "401: форма входа сотрудника, «← В Birge», фокус в поле логина",
+      "status": "PASS",
+      "detail": {
+        "state": "login",
+        "inputs": 2,
+        "back": true,
+        "focus": "sc-user",
+        "text": "B\nСитуационный центр\n\nВ эфире · Астана · весь город\n\nҚАЗ\nРУС\nВ Birge\n17:25\nчетверг · 15 окт\nСитуационный центр — для сотрудников акимата\n\nВойдите как сотрудник — тем же логином, что «Для сотрудников» на главной.\n\nЛогин\nПароль\n\nВойти\n← В Birge"
+      }
+    },
+    {
+      "name": "401: неверный пароль — понятная ошибка, форма остаётся",
+      "status": "PASS",
+      "detail": "Логин или пароль не подошли"
+    },
+    {
+      "name": "сеть: «Нет связи с сервером», повтор сам и кнопка «Повторить»",
+      "status": "PASS",
+      "detail": {
+        "state": "error",
+        "text": "B\nСитуационный центр\n\nВ эфире · Астана · весь город\n\nҚАЗ\nРУС\nВ Birge\n17:25\nчетверг · 15 окт\nНет связи с сервером\n\nПовторим сами через 30 секунд.\n\nПовторить",
+        "btn": true
+      }
+    },
+    {
+      "name": "сеть: после «Повторить» — данные",
+      "status": "PASS"
+    },
+    {
+      "name": "сеть: при обновлении — прежние числа и «Нет связи — показаны данные на …»",
+      "status": "PASS",
+      "detail": {
+        "state": "ok",
+        "foot": "Нет связи — показаны данные на 17:25",
+        "live": true
+      }
+    },
+    {
+      "name": "без соседей: спокойный блок — иконка ≤ 48 px, текст, одна кнопка; полосы кризиса нет; без прокрутки",
+      "status": "PASS",
+      "detail": {
+        "has": true,
+        "icon": 32.765625,
+        "buttons": 1,
+        "bar": false,
+        "sh": 768,
+        "ch": 768
+      }
+    },
+    {
+      "name": "prefers-reduced-motion: точки «в эфире» и кризиса не пульсируют",
+      "status": "PASS",
+      "detail": [
+        "none",
+        "none"
+      ]
+    },
+    {
+      "name": "П1: картинок больше 48 px нет (кроме карты районов, мини-графиков и кольца задач — это данные)",
+      "status": "PASS",
+      "detail": []
+    }
+  ]
+}

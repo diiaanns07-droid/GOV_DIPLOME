@@ -1,0 +1,382 @@
+{
+  "base": "http://127.0.0.1:8508",
+  "at": "2026-10-15T12:26:41.715Z",
+  "passed": 28,
+  "failed": 0,
+  "results": [
+    {
+      "name": "day-1366-ru: без горизонтальной прокрутки",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "name": "day-1366-ru: у тревоги про снег — «Открыть кризисный штаб» (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": [
+        "/#agencies/crisis=inc-demo-blizzard",
+        "/#agencies/crisis=new&template=blizzard&district=baikonur"
+      ]
+    },
+    {
+      "name": "day-1366-ru: три карточки «Ведомства · Жители вместе · Встречи» → разделы",
+      "status": "PASS",
+      "detail": [
+        [
+          "agencies",
+          "/#agencies"
+        ],
+        [
+          "together",
+          "/#together"
+        ],
+        [
+          "meetings",
+          "/#meetings"
+        ]
+      ]
+    },
+    {
+      "name": "day-1366-ru: новые блоки — после «Пульса»",
+      "status": "PASS",
+      "detail": {
+        "hscroll": 0,
+        "crisis": [
+          "/#agencies/crisis=inc-demo-blizzard",
+          "/#agencies/crisis=new&template=blizzard&district=baikonur"
+        ],
+        "cards": [
+          [
+            "agencies",
+            "/#agencies"
+          ],
+          [
+            "together",
+            "/#together"
+          ],
+          [
+            "meetings",
+            "/#meetings"
+          ]
+        ],
+        "pulseBottom": 1449.171875,
+        "r15Top": 1461.171875,
+        "week": "http://127.0.0.1:8508/civic/akim/week.html"
+      }
+    },
+    {
+      "name": "day-1366-kk: без горизонтальной прокрутки",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "name": "day-1366-kk: у тревоги про снег — «Открыть кризисный штаб» (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": [
+        "/#agencies/crisis=inc-demo-blizzard",
+        "/#agencies/crisis=new&template=blizzard&district=baikonur"
+      ]
+    },
+    {
+      "name": "day-1366-kk: три карточки «Ведомства · Жители вместе · Встречи» → разделы",
+      "status": "PASS",
+      "detail": [
+        [
+          "agencies",
+          "/#agencies"
+        ],
+        [
+          "together",
+          "/#together"
+        ],
+        [
+          "meetings",
+          "/#meetings"
+        ]
+      ]
+    },
+    {
+      "name": "day-1366-kk: новые блоки — после «Пульса»",
+      "status": "PASS",
+      "detail": {
+        "hscroll": 0,
+        "crisis": [
+          "/#agencies/crisis=inc-demo-blizzard",
+          "/#agencies/crisis=new&template=blizzard&district=baikonur"
+        ],
+        "cards": [
+          [
+            "agencies",
+            "/#agencies"
+          ],
+          [
+            "together",
+            "/#together"
+          ],
+          [
+            "meetings",
+            "/#meetings"
+          ]
+        ],
+        "pulseBottom": 1449.171875,
+        "r15Top": 1461.171875,
+        "week": "http://127.0.0.1:8508/civic/akim/week.html"
+      }
+    },
+    {
+      "name": "day-1024-ru: без горизонтальной прокрутки",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "name": "day-1024-ru: у тревоги про снег — «Открыть кризисный штаб» (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": [
+        "/#agencies/crisis=inc-demo-blizzard",
+        "/#agencies/crisis=new&template=blizzard&district=baikonur"
+      ]
+    },
+    {
+      "name": "day-1024-ru: три карточки «Ведомства · Жители вместе · Встречи» → разделы",
+      "status": "PASS",
+      "detail": [
+        [
+          "agencies",
+          "/#agencies"
+        ],
+        [
+          "together",
+          "/#together"
+        ],
+        [
+          "meetings",
+          "/#meetings"
+        ]
+      ]
+    },
+    {
+      "name": "day-1024-ru: новые блоки — после «Пульса»",
+      "status": "PASS",
+      "detail": {
+        "hscroll": 0,
+        "crisis": [
+          "/#agencies/crisis=inc-demo-blizzard",
+          "/#agencies/crisis=new&template=blizzard&district=baikonur"
+        ],
+        "cards": [
+          [
+            "agencies",
+            "/#agencies"
+          ],
+          [
+            "together",
+            "/#together"
+          ],
+          [
+            "meetings",
+            "/#meetings"
+          ]
+        ],
+        "pulseBottom": 1511.515625,
+        "r15Top": 1523.515625,
+        "week": "http://127.0.0.1:8508/civic/akim/week.html"
+      }
+    },
+    {
+      "name": "day-1024-kk: без горизонтальной прокрутки",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "name": "day-1024-kk: у тревоги про снег — «Открыть кризисный штаб» (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": [
+        "/#agencies/crisis=inc-demo-blizzard",
+        "/#agencies/crisis=new&template=blizzard&district=baikonur"
+      ]
+    },
+    {
+      "name": "day-1024-kk: три карточки «Ведомства · Жители вместе · Встречи» → разделы",
+      "status": "PASS",
+      "detail": [
+        [
+          "agencies",
+          "/#agencies"
+        ],
+        [
+          "together",
+          "/#together"
+        ],
+        [
+          "meetings",
+          "/#meetings"
+        ]
+      ]
+    },
+    {
+      "name": "day-1024-kk: новые блоки — после «Пульса»",
+      "status": "PASS",
+      "detail": {
+        "hscroll": 0,
+        "crisis": [
+          "/#agencies/crisis=inc-demo-blizzard",
+          "/#agencies/crisis=new&template=blizzard&district=baikonur"
+        ],
+        "cards": [
+          [
+            "agencies",
+            "/#agencies"
+          ],
+          [
+            "together",
+            "/#together"
+          ],
+          [
+            "meetings",
+            "/#meetings"
+          ]
+        ],
+        "pulseBottom": 1511.515625,
+        "r15Top": 1523.515625,
+        "week": "http://127.0.0.1:8508/civic/akim/week.html"
+      }
+    },
+    {
+      "name": "day-375-ru: без горизонтальной прокрутки",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "name": "day-375-ru: у тревоги про снег — «Открыть кризисный штаб» (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": [
+        "/#agencies/crisis=inc-demo-blizzard",
+        "/#agencies/crisis=new&template=blizzard&district=baikonur"
+      ]
+    },
+    {
+      "name": "day-375-ru: три карточки «Ведомства · Жители вместе · Встречи» → разделы",
+      "status": "PASS",
+      "detail": [
+        [
+          "agencies",
+          "/#agencies"
+        ],
+        [
+          "together",
+          "/#together"
+        ],
+        [
+          "meetings",
+          "/#meetings"
+        ]
+      ]
+    },
+    {
+      "name": "day-375-ru: новые блоки — после «Пульса»",
+      "status": "PASS",
+      "detail": {
+        "hscroll": 0,
+        "crisis": [
+          "/#agencies/crisis=inc-demo-blizzard",
+          "/#agencies/crisis=new&template=blizzard&district=baikonur"
+        ],
+        "cards": [
+          [
+            "agencies",
+            "/#agencies"
+          ],
+          [
+            "together",
+            "/#together"
+          ],
+          [
+            "meetings",
+            "/#meetings"
+          ]
+        ],
+        "pulseBottom": 2388.21875,
+        "r15Top": 2400.21875,
+        "week": "http://127.0.0.1:8508/civic/akim/week.html"
+      }
+    },
+    {
+      "name": "day-375-kk: без горизонтальной прокрутки",
+      "status": "PASS",
+      "detail": 0
+    },
+    {
+      "name": "day-375-kk: у тревоги про снег — «Открыть кризисный штаб» (#agencies/crisis=…)",
+      "status": "PASS",
+      "detail": [
+        "/#agencies/crisis=inc-demo-blizzard",
+        "/#agencies/crisis=new&template=blizzard&district=baikonur"
+      ]
+    },
+    {
+      "name": "day-375-kk: три карточки «Ведомства · Жители вместе · Встречи» → разделы",
+      "status": "PASS",
+      "detail": [
+        [
+          "agencies",
+          "/#agencies"
+        ],
+        [
+          "together",
+          "/#together"
+        ],
+        [
+          "meetings",
+          "/#meetings"
+        ]
+      ]
+    },
+    {
+      "name": "day-375-kk: новые блоки — после «Пульса»",
+      "status": "PASS",
+      "detail": {
+        "hscroll": 0,
+        "crisis": [
+          "/#agencies/crisis=inc-demo-blizzard",
+          "/#agencies/crisis=new&template=blizzard&district=baikonur"
+        ],
+        "cards": [
+          [
+            "agencies",
+            "/#agencies"
+          ],
+          [
+            "together",
+            "/#together"
+          ],
+          [
+            "meetings",
+            "/#meetings"
+          ]
+        ],
+        "pulseBottom": 2426.3125,
+        "r15Top": 2438.3125,
+        "week": "http://127.0.0.1:8508/civic/akim/week.html"
+      }
+    },
+    {
+      "name": "week-ru: два листа на экране",
+      "status": "PASS",
+      "detail": 2
+    },
+    {
+      "name": "week-ru: печать — ровно 2 листа A4",
+      "status": "PASS",
+      "detail": 2
+    },
+    {
+      "name": "week-kk: два листа на экране",
+      "status": "PASS",
+      "detail": 2
+    },
+    {
+      "name": "week-kk: печать — ровно 2 листа A4",
+      "status": "PASS",
+      "detail": 2
+    }
+  ]
+}
