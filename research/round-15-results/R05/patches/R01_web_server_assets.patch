@@ -1,5 +1,5 @@
 diff --git a/ui/web_server.py b/ui/web_server.py
-index 5ace2123..df12bdb4 100644
+index 2abab5b6..2083a35b 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
 @@ -108,12 +108,17 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st

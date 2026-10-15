@@ -3,7 +3,7 @@
 //
 // Нужен стенд (COMMON «КАК ПОДНЯТЬ СТЕНД») с патчем R05 для R01:
 //   research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch (+ R01_web_server_assets.patch).
-// Запуск:  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_landmarks_search.mjs [--url http://127.0.0.1:8655] [--shots папка]
+// Запуск:  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_landmarks_search.mjs [--url http://127.0.0.1:8655] [--shots папка] [--stand подпись] [--out имя.json]
 // Отчёт — research/round-15-results/R05/runs/app_landmarks_search.json. В облаке нет подложки со зданиями (упрощённый
 // фон): вид здания и подписи — NOT_RUN, проверка на ноутбуке (LOCAL-12).
 import { mkdir, writeFile, readFile } from "node:fs/promises";
@@ -16,6 +16,8 @@ const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 const arg = (n, d) => { const i = process.argv.indexOf(n); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
 const URL0 = arg("--url", "http://127.0.0.1:8655");
+const STAND = arg("--stand", "");  // подпись стенда в отчёте: сборка R01 + код R05 (если стенд не из этой ветки)
+const OUT = arg("--out", "app_landmarks_search.json");
 const SHOTS = arg("--shots", path.join(ROOT, "research/round-15-results/R05/screens"));
 const { chromium } = require("playwright");
 const DATA = JSON.parse(await readFile(path.join(ROOT, "web/civic/build3d/data/landmarks.json"), "utf8"));
@@ -83,6 +85,23 @@ for (const [w, h, lang, q, id] of [[1366, 768, "ru", "Байтерек", "baiter
   });
 }
 
+await check("view_label_follows_language", async () => {
+  // «Что на карте» (поле вида оболочки) после выбора ориентира — название на языке интерфейса, и при ҚАЗ/РУС тоже.
+  const page = await open({ width: 1366, height: 768 }, "ru", { reducedMotion: "reduce" });
+  await typeAndPick(page, "Байтерек");
+  await page.locator('.civic-explore-list [role="option"][data-kind="landmark"]').first().click();
+  await page.waitForTimeout(500);
+  const view = () => page.evaluate(() => { const v = document.querySelector(".civic-explore-view"); return v ? [v.textContent, v.dataset.kind] : null; });
+  const ru = await view();
+  await page.evaluate(() => window.BirgeI18n?.setLang?.("kk"));
+  await page.waitForTimeout(400);
+  const kk = await view();
+  await page.context().close();
+  assert(ru && ru[0] === byId.baiterek.name.ru && ru[1] === "landmark", "вид ru: " + JSON.stringify(ru));
+  assert(kk && kk[0] === byId.baiterek.name.kk, "вид после ҚАЗ: " + JSON.stringify(kk));
+  return { ru: ru[0], kk: kk[0] };
+});
+
 await check("reduced_motion_jumps_without_flight", async () => {
   const page = await open({ width: 1366, height: 768 }, "ru", { reducedMotion: "reduce" });
   await typeAndPick(page, "Хан");
@@ -106,7 +125,8 @@ await check("basemap_landmark_lighter_and_labelled", async () => {
     centers: (window.BirgeBasemapStyle?.landmarks || []).map((l) => [l.id, l.center, l.radius]) }));
   await page.context().close();
   const fromFile = r.centers.every(([id, c]) => byId[id] && Math.abs(c[0] - byId[id].lon) < 1e-6 && Math.abs(c[1] - byId[id].lat) < 1e-6);
-  if (!r.landmarkLayer) return { status: "NOT_RUN", detail: { why: "в облаке нет подложки со зданиями (OpenFreeMap недоступен) — вид проверяет LOCAL-12", centers_from_landmarks_json: fromFile } };
+  if (!r.landmarkLayer) return { status: "NOT_RUN", detail: { why: "в облаке нет подложки со зданиями (OpenFreeMap недоступен) — вид проверяет LOCAL-12",
+    logic: "центры, подписи и цвет из патча проверены без подложки: node --test tests/civic/R05/round15/test_basemap_patch.mjs" } };
   assert(fromFile, "центры R01 не из landmarks.json: " + JSON.stringify(r.centers));
   assert(r.color === "#F6F4EF", "цвет ориентира: " + JSON.stringify(r.color));
   return r;
@@ -114,9 +134,9 @@ await check("basemap_landmark_lighter_and_labelled", async () => {
 
 let sha = "?";
 try { sha = execSync("git rev-parse --short HEAD", { cwd: ROOT }).toString().trim(); } catch (e) {}
-const report = { at: new Date().toISOString(), url: URL0, code_head: sha, env: "облако: Chromium headless + SwiftShader, без подложки со зданиями (упрощённый фон)", results, pageErrors };
+const report = { at: new Date().toISOString(), url: URL0, code_head: sha, stand: STAND || undefined, env: "облако: Chromium headless + SwiftShader, без подложки со зданиями (упрощённый фон)", results, pageErrors };
 await mkdir(path.join(ROOT, "research/round-15-results/R05/runs"), { recursive: true });
-await writeFile(path.join(ROOT, "research/round-15-results/R05/runs/app_landmarks_search.json"), JSON.stringify(report, null, 1));
+await writeFile(path.join(ROOT, "research/round-15-results/R05/runs", OUT), JSON.stringify(report, null, 1));
 const fails = results.filter((r) => r.status === "FAIL").length;
 console.log(`итог: ${results.filter((r) => r.status === "PASS").length} PASS / ${fails} FAIL / ${results.filter((r) => r.status === "NOT_RUN").length} NOT_RUN; ошибки страницы: ${pageErrors.length}`);
 if (pageErrors.length) console.log(pageErrors.slice(0, 5).join("\n"));

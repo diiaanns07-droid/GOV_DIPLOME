@@ -7,13 +7,13 @@
  * центры выведены из колец дорожек снимка OSM, пометка LOCAL-13 «сверить с контурами»).
  *
  *   const lm = await BirgeLandmarks.load();                 // один раз; повтор — тот же Promise
- *   lm.query("бай", { lang: "ru", limit: 3 })
- *     → [{ kind: "landmark", id: "baiterek", label: "Байтерек", other: "Бәйтерек", type: "монумент",
- *          point: [lon, lat], district: "esil" }]
- *   lm.get("baiterek")                                       // запись landmarks.json
- *   BirgeLandmarks.flyTo(map, "baiterek", { padding })        // → Promise: камера у здания (наклон 52°)
+ *   lm.query("пирамида", { lang: "ru", limit: 3 })
+ *     → [{ kind: "landmark", id: "palace-peace", label: "Дворец мира и согласия", other: "Бейбітшілік және келісім сарайы",
+ *          names: { ru, kk }, type: "дворец (пирамида)", point: [lon, lat], district: "saraishyk" }]
+ *   lm.get("palace-peace")                                   // запись landmarks.json
+ *   BirgeLandmarks.flyTo(map, "palace-peace", { padding })    // → Promise: камера у здания (наклон 52°)
  *
- * Поиск — с начала любого слова названия на обоих языках и других написаний («бай», «бәй», «baiterek», «пирамида»),
+ * Поиск — с начала любого слова названия на обоих языках и других написаний («дво», «бейб», «pyramid», «пирамида»),
  * без учёта регистра, «ё/е» и казахских букв — та же свёртка, что у индекса R12 (BirgeSearchIndex.norm).
  * padding перелёта — свободная часть карты хозяина {top, right, bottom, left}: здание встаёт в её центр (offset,
  * а не padding MapLibre — тот остался бы на карте после перелёта). «Уменьшить движение» — сразу, без полёта.
@@ -99,6 +99,7 @@
             id: l.id,
             label: l.name[lang] || l.name.ru,
             other: l.name[other] && l.name[other] !== l.name[lang] ? l.name[other] : "",
+            names: { ru: l.name.ru, kk: l.name.kk || l.name.ru },  // подпись «что на карте» при смене языка
             type: (l.kind && (l.kind[lang] || l.kind.ru)) || "",
             point: [l.lon, l.lat],
             district: l.district || null,

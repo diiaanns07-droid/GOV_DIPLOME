@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { createRequire } from "node:module";
@@ -22,6 +22,7 @@ test("landmarks.json v2: шесть ориентиров R01, ru/kk, вид зд
   assert.deepEqual(data.landmarks.map((l) => l.id).sort(), IDS.slice().sort());
   for (const l of data.landmarks) {
     assert.ok(l.name.ru && l.name.kk && l.kind.ru && l.kind.kk, l.id + ": название и вид ru/kk");
+    assert.ok(l.label && l.label.ru && l.label.kk, l.id + ": подпись на карте ru/kk (R01 basemap-style.js)");
     assert.ok(l.lat > 51.05 && l.lat < 51.2 && l.lon > 71.35 && l.lon < 71.5, l.id + ": координаты вне центра Астаны");
     assert.ok(typeof l.district === "string" && l.district.length > 2, l.id + ": район по контурам OSM");
     assert.ok(l.radius_m >= 20 && l.radius_m <= 80, l.id + ": радиус «здание подложки — ориентир»");
@@ -38,10 +39,25 @@ test("координаты пересобираются из снимка OSM т
   execFileSync("python3", [path.join(ROOT, "data/civic/astana/landmarks/tools/derive_landmarks.py"), "--check"], { cwd: ROOT, stdio: "pipe" });
 });
 
-test("П1: нарисованных моделей ориентиров в модуле нет", () => {
+test("П1: нарисованных моделей ориентиров в модуле нет (проверка приёмки R01)", () => {
   assert.equal(existsSync(path.join(ROOT, "web/civic/build3d/build3d-landmarks.js")), false);
   const src = readFileSync(path.join(ROOT, "web/civic/build3d/build3d.js"), "utf8");
   assert.equal(/baiterek|khan_shatyr|условн(ая|ые) модел/i.test(src), false, "в build3d.js остались модели ориентиров");
+  // R01 принимает сборку командой git grep -i "baiterek\|khan.shatyr\|nur.alem\|akorda" web/civic/build3d (STATUS R01, П1).
+  // Совпадения допустимы только в данных web/civic/build3d/data/landmarks.json (id и латинские написания для поиска).
+  const hits = [];
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      const p = path.join(dir, name);
+      if (statSync(p).isDirectory()) { walk(p); continue; }
+      if (!/\.(js|mjs|css|html|json)$/.test(name)) continue;
+      const rel = path.relative(ROOT, p).split(path.sep).join("/");
+      if (rel === "web/civic/build3d/data/landmarks.json") continue;
+      readFileSync(p, "utf8").split("\n").forEach((line, i) => { if (/baiterek|khan.shatyr|nur.alem|akorda/i.test(line)) hits.push(rel + ":" + (i + 1)); });
+    }
+  };
+  walk(path.join(ROOT, "web/civic/build3d"));
+  assert.deepEqual(hits, [], "grep приёмки R01 находит не только данные landmarks.json");
 });
 
 // ───────────── Поиск и перелёт (web/civic/build3d/landmarks.js) ─────────────
@@ -62,6 +78,7 @@ test("поиск: с первой буквы, оба языка и другие 
   assert.equal(ix.query("zzz", { lang: "ru" }).length, 0);
   const r = ix.query("бай", { lang: "kk" })[0];
   assert.equal(r.label, "Бәйтерек");
+  assert.deepEqual({ ...r.names }, { ru: "Байтерек", kk: "Бәйтерек" }, "оба названия — подпись вида при смене языка");
   assert.equal(r.type, "монумент");
   assert.deepEqual(r.point, [ix.get("baiterek").lon, ix.get("baiterek").lat]);
 });

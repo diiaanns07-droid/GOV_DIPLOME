@@ -1,5 +1,5 @@
 diff --git a/web/civic/shell/basemap-style.js b/web/civic/shell/basemap-style.js
-index a1240590..e6480fed 100644
+index a1240590..cdf09163 100644
 --- a/web/civic/shell/basemap-style.js
 +++ b/web/civic/shell/basemap-style.js
 @@ -4,8 +4,9 @@
@@ -33,7 +33,7 @@ index a1240590..e6480fed 100644
    // Дворец мира и согласия — узел OSM 5009488810 (data/civic/astana/osm-walking).
    const landmarks = [
      { id: "khan-shatyr", center: [71.4030, 51.1323], radius: 60, ru: "Хан Шатыр", kk: "Хан Шатыр",
-@@ -132,8 +134,35 @@
+@@ -132,8 +134,36 @@
      addLabels(map);
      state.refineLeft = 30;
      map.on("idle", refine);
@@ -41,7 +41,7 @@ index a1240590..e6480fed 100644
      return true;
    }
 +  // Один источник центров и названий ориентиров с поиском (R05, поправка П1): web/civic/build3d/data/landmarks.json.
-+  // Пришёл файл — его центры, радиусы и подписи ru/kk; уточнение по POI подложки больше не нужно.
++  // Пришёл файл — его центры, радиусы и подписи ru/kk (label, иначе name); уточнение по POI подложки больше не нужно.
 +  function applyLandmarksFile(map) {
 +    if (typeof fetch !== "function") return;
 +    fetch("/civic/build3d/data/landmarks.json", { headers: { Accept: "application/json" } }).then((r) => (r.ok ? r.json() : null)).then((data) => {
@@ -52,8 +52,9 @@ index a1240590..e6480fed 100644
 +        if (!f) continue;
 +        l.center = [f.lon, f.lat];
 +        if (Number.isFinite(f.radius_m)) l.radius = f.radius_m;
-+        if (f.name?.ru) l.ru = f.name.ru;
-+        if (f.name?.kk) l.kk = f.name.kk;
++        const label = f.label || f.name;  // подпись на карте («Нур Алем · ЭКСПО»), иначе название
++        if (label?.ru) l.ru = label.ru;
++        if (label?.kk) l.kk = label.kk;
 +        l.refined = true;
 +        changed = true;
 +      }
@@ -86,7 +87,7 @@ index 4890eddd..07270f3b 100644
  body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="2"] .civic-explore-opt-name::before { background: var(--heat-2, #ef9f27); }
  body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="3"] .civic-explore-opt-name::before { background: var(--heat-3, #e24b4a); }
 diff --git a/web/civic/shell/explore.js b/web/civic/shell/explore.js
-index 4587611b..b08cd345 100644
+index 4587611b..df3d23bf 100644
 --- a/web/civic/shell/explore.js
 +++ b/web/civic/shell/explore.js
 @@ -112,7 +112,7 @@
@@ -121,7 +122,7 @@ index 4587611b..b08cd345 100644
 +      let found = [];
 +      try { found = landmarks.index.query(q, { lang: lang(), limit: 3 }) || []; } catch (e) { return []; }
 +      const districtName = (id) => { const f = features.find((x) => x.properties?.id === id); return f ? T("district.name", { name: districtLabel(f) }) : ""; };
-+      return found.map((r) => ({ kind: "landmark", id: r.id, name: r.label, centre: r.point, district: r.district || null,
++      return found.map((r) => ({ kind: "landmark", id: r.id, name: r.label, names: r.names, centre: r.point, district: r.district || null,
 +        place: [r.type, districtName(r.district)].filter(Boolean).join(" · ") }));
 +    }
      const KIND_KEY = { bus_stop: "stop", yard: "yard", park: "park", pitch: "pitch", playground: "playground" };
@@ -172,7 +173,7 @@ index 4587611b..b08cd345 100644
        if (exactTop.length === 1) { choose(exactTop[0]); return; }
        if (index.state === "loading" && !top.length) { say("shell.explore.loading", "loading"); return; }
 diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
-index 33d54aaa..2e9fcf40 100644
+index 33d54aaa..e0c37805 100644
 --- a/web/civic/shell/shell.js
 +++ b/web/civic/shell/shell.js
 @@ -1135,6 +1135,12 @@
@@ -182,20 +183,20 @@ index 33d54aaa..2e9fcf40 100644
 +      // Ориентир из поиска (R05, П1): перелёт к настоящему зданию подложки — в свободную часть карты, с наклоном 3D.
 +      onLandmark: (lm) => {
 +        S.mounted.map?.selectObject?.(null);
-+        showView(() => lm.name, "landmark");
++        showView(() => lm.names?.[birgeLang()] || lm.name, "landmark");
 +        window.BirgeLandmarks?.flyTo?.(currentMap(), lm.id, { padding: freeArea() });
 +      },
        onStreet: (street) => {
          S.mounted.map?.selectObject?.(null);
          S.mounted.map?.setFilters?.({ area: true });
 diff --git a/web/index.html b/web/index.html
-index 78455458..362ff415 100644
+index ea3ab8ef..bf1ccb26 100644
 --- a/web/index.html
 +++ b/web/index.html
-@@ -258,6 +258,7 @@
-     <script defer src="/civic/proposals/works.js"></script>
+@@ -268,6 +268,7 @@
      <script defer src="/civic/akim/services.js"></script>
      <script defer src="/civic/map/search_index.js"></script>
+     <script defer src="/civic/works-calendar/works-calendar.js"></script>
 +    <script defer src="/civic/build3d/landmarks.js"></script>
      <script defer src="/civic/shell/explore.js"></script>
      <script defer src="/civic/shell/shell.js"></script>
