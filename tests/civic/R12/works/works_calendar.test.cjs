@@ -141,9 +141,11 @@ async function openCalendar(page, lang) {
           card: document.querySelector(".wcal-mapcard__title")?.textContent,
           // eslint-disable-next-line no-undef
           hasLayer: (() => { try { return !!(typeof map !== "undefined" && map.getLayer && map.getLayer("birge-r12-wc-line")); } catch (e) { return false; } })(),
+          // точки конфликтов для масштаба города (видны до зума 13,5) — тот же слой
+          hasDots: (() => { try { return !!(map.getLayer("birge-r12-wc-dot") && map.getSource("birge-r12-wc-pt")); } catch (e) { return false; } })(),
         }));
         check(`${w} ${lang}: «Показать на карте» → раздел «Карта»`, mapInfo.section === "map", mapInfo.section);
-        check(`${w} ${lang}: слой «Конфликты работ» включён`, mapInfo.layer === "works-conflicts" && mapInfo.hasLayer, String(mapInfo.layer));
+        check(`${w} ${lang}: слой «Конфликты работ» включён`, mapInfo.layer === "works-conflicts" && mapInfo.hasLayer && mapInfo.hasDots, String(mapInfo.layer));
         check(`${w} ${lang}: карточка конфликта на карте`, !!mapInfo.card, mapInfo.card);
         if (OUT) await page.screenshot({ path: path.join(OUT, `map_${w}_${lang}.png`) });
         await page.keyboard.press("Escape");

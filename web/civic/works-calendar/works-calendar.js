@@ -35,6 +35,9 @@
   const SKELETON_DELAY = 150; // скелетон не раньше 150 мс (COMMON «Качество»)
   const MAP_SRC = "birge-r12-wc";
   const MAP_LAYERS = ["birge-r12-wc-casing", "birge-r12-wc-line"];  // П1: без слоя свечения — белая обводка и линия
+  const MAP_PT_SRC = "birge-r12-wc-pt";   // точка конфликта на самой улице: видно, где конфликты, на масштабе города
+  const MAP_DOT = "birge-r12-wc-dot";
+  const DOT_MAX_ZOOM = 13.5;               // ближе — видна сама линия участка, точка не нужна
   const DANGER = "#b3362e";   // = --c-danger ui-kit: красный только у конфликта
   const PHONE = 761;
 
@@ -1136,6 +1139,21 @@
       }
       return { type: "FeatureCollection", features: out };
     }
+    // Точка конфликта — средняя вершина самой длинной линии участка (вершина OSM: лежит на улице, не «от руки»).
+    function anchorOf(geom) {
+      const lines = geom.type === "MultiLineString" ? geom.coordinates : geom.type === "LineString" ? [geom.coordinates] : [];
+      let best = null;
+      for (const line of lines) if (!best || line.length > best.length) best = line;
+      return best && best.length ? best[Math.floor(best.length / 2)] : null;
+    }
+    function points(data) {
+      const out = [];
+      for (const c of (data && data.conflicts) || []) {
+        const at = c.geometry && anchorOf(c.geometry);
+        if (at) out.push({ type: "Feature", geometry: { type: "Point", coordinates: at }, properties: { id: c.id, severity: c.severity } });
+      }
+      return { type: "FeatureCollection", features: out };
+    }
     function firstSymbolLayer(m) {
       const layers = (m.getStyle() && m.getStyle().layers) || [];
       const sym = layers.find((l) => l.type === "symbol");
@@ -1144,7 +1162,12 @@
     function draw(m, data, focus) {
       const fc = features(data, focus);
       const src = m.getSource(MAP_SRC);
-      if (src) { src.setData(fc); return; }
+      if (src) {
+        src.setData(fc);
+        const pts = m.getSource(MAP_PT_SRC);
+        if (pts) pts.setData(points(data));
+        return;
+      }
       m.addSource(MAP_SRC, { type: "geojson", data: fc });
       const before = firstSymbolLayer(m);
       m.addLayer({ id: MAP_LAYERS[0], type: "line", source: MAP_SRC, layout: { "line-cap": "round", "line-join": "round" },
@@ -1154,17 +1177,26 @@
         paint: { "line-color": ["case", ["==", ["get", "work"], 1], ["get", "color"], DANGER],
           "line-opacity": ["case", ["==", ["get", "focus"], 1], 1, 0.75],
           "line-width": ["interpolate", ["linear"], ["zoom"], 11, ["case", ["==", ["get", "focus"], 1], 3.5, 2.2], 16, ["case", ["==", ["get", "focus"], 1], 8, 5]] } }, before);
+      // Масштаб города: участок в сотни метров — штрих в пару пикселей; точка показывает, где конфликт (нажатие — к нему).
+      m.addSource(MAP_PT_SRC, { type: "geojson", data: points(data) });
+      m.addLayer({ id: MAP_DOT, type: "circle", source: MAP_PT_SRC, maxzoom: DOT_MAX_ZOOM,
+        paint: { "circle-color": DANGER, "circle-stroke-color": "#ffffff", "circle-stroke-width": 2.5,
+          "circle-radius": ["case", ["==", ["get", "severity"], "high"], 7, 5.5] } }, before);
       if (!clickBound) {
-        clickBound = (e) => {
+        const pick = (zoomTo) => (e) => {
           const f = e.features && e.features[0];
           if (!f || f.properties.work) return;
           const data2 = shared.data;
           const c = data2 && data2.conflicts.find((x) => x.id === f.properties.id);
-          if (c) focusOn(m, { conflict: c, works: worksFromShared(c), services: data2.services, opts: {} }, false);
+          if (c) focusOn(m, { conflict: c, works: worksFromShared(c), services: data2.services, opts: {} }, zoomTo);
         };
-        m.on("click", MAP_LAYERS[1], clickBound);
-        m.on("mouseenter", MAP_LAYERS[1], () => { m.getCanvas().style.cursor = "pointer"; });
-        m.on("mouseleave", MAP_LAYERS[1], () => { m.getCanvas().style.cursor = ""; });
+        clickBound = { line: pick(false), dot: pick(true) };
+        m.on("click", MAP_LAYERS[1], clickBound.line);
+        m.on("click", MAP_DOT, clickBound.dot);
+        for (const id of [MAP_LAYERS[1], MAP_DOT]) {
+          m.on("mouseenter", id, () => { m.getCanvas().style.cursor = "pointer"; });
+          m.on("mouseleave", id, () => { m.getCanvas().style.cursor = ""; });
+        }
       }
     }
     function worksFromShared(c) {
@@ -1175,9 +1207,12 @@
     }
     function remove(m) {
       if (!m) return;
-      if (clickBound) { try { m.off("click", MAP_LAYERS[1], clickBound); } catch (e) { /* слой уже снят */ } clickBound = null; }
-      for (const id of [...MAP_LAYERS].reverse()) if (m.getLayer && m.getLayer(id)) m.removeLayer(id);
-      if (m.getSource && m.getSource(MAP_SRC)) m.removeSource(MAP_SRC);
+      if (clickBound) {
+        try { m.off("click", MAP_LAYERS[1], clickBound.line); m.off("click", MAP_DOT, clickBound.dot); } catch (e) { /* слой уже снят */ }
+        clickBound = null;
+      }
+      for (const id of [MAP_DOT, ...[...MAP_LAYERS].reverse()]) if (m.getLayer && m.getLayer(id)) m.removeLayer(id);
+      for (const id of [MAP_PT_SRC, MAP_SRC]) if (m.getSource && m.getSource(id)) m.removeSource(id);
     }
     function bboxOf(geom) {
       const xs = [], ys = [];
