@@ -64,7 +64,7 @@
    "akim/week.js",
    "akim/week.css"
   ],
-  "menu": "R01 (B0.10): registerScreen({id: 'board', href: '/civic/board/', modes: ['akimat'], titleKey: 'shell.nav.board'}) — «Ещё → Инструменты → Ситуационный центр» работает; Ctrl+K и адрес #board — дефект оболочки, патч R01: research/round-15-results/R08/patches/R01_shell_href_sections.patch (INTEGRATION §15)",
+  "menu": "R01: registerScreen({id: 'board', href: '/civic/board/', modes: ['akimat'], titleKey: 'shell.nav.board'}) — «Ещё → Инструменты → Ситуационный центр», Ctrl+K и #board (патч R08, R01 взял в B0.12 6a512398)",
   "i18n_for_r11": "research/round-15-results/R08/I18N_R15.json (190 ключей ru/kk; 184 уже в словаре R11 2856, 6 фрагментов — только в модуле, решение R11); новый ключ akim.kpi.fixed_7d R11 влил",
   "neighbors": {
    "R17": "board_snapshot, active_incidents, crisis_link (ссылки-пути #agencies/crisis/<id>)",
@@ -90,9 +90,10 @@
   "R10 consistency.py (zen-wozniak, на интеграционной сборке, демо-мир)": "PASS 16 / FAIL 0 / NOT_RUN 0 на R01 B0.10 + R08 (C4 подписи и C5 окна — PASS)",
   "R10 test_r10_api_v2.py": "PASS 11",
   "fit_scan.cjs (VISUAL_BRIEF §4 на сборке: ≥ 13 px, ≥ 44 px, без обрезки)": "PASS 7 / FAIL 0 — табло 1366 kk, 1920 ru; лист недели 1366 kk, 375 ru; «Картина дня» 1366 ru, 375 kk; «Сегодня в Астане» 1366 kk; теперь и контраст ≥ 4,5:1",
-  "board_entry_check.cjs (вход в табло из оболочки R01)": "B0.10 как есть: PASS 10 / FAIL 2 / NOT_RUN 1 — Ctrl+K и #board открывают «Раздел не удалось открыть» (оболочка R01); с патчем patches/R01_shell_href_sections.patch — PASS 13 / 0",
+  "board_entry_check.cjs (вход в табло из оболочки R01)": "B0.12 (R01 взял патч оболочки 6a512398): PASS 13 / 0 — screens/world/entry-b012; на B0.10 без патча было 10 / 2",
   "R10 visual_audit (B0.9) — предупреждения по R08": "сделано (INTEGRATION §17): board-page 1366-kk подпись под графиком → графики ряда справа от чисел; week-page 4 размера шрифта → 13/15/22",
-  "скорость akim/summary (сборка R01 B0.11 + R08, демо-мир)": "первый запрос через 12 с после старта 37–64 мс (прогрев R03/R08); поминутный пересчёт 253 → 174 мс (памятки R08); после записи (сброс карты R07) город 430–560 мс, с патчем R07 245–315 мс"
+  "скорость akim/summary (сборка R01 B0.11 + R08, демо-мир)": "первый запрос через 12 с после старта 37–64 мс (прогрев R03/R08); поминутный пересчёт 253 → 174 мс (памятки R08); после записи (сброс карты R07) город 430–560 мс, с патчем R07 245–315 мс",
+  "world_check.py на R01 B0.12 + R08 (текущая поставка)": "PASS 19 / FAIL 0 (C11 «Поддержать» → дело сцены 7)"
  },
  "environment": "облачная сессия Claude Code, Linux, Python 3.13, Chromium/Playwright 1.56, без интернета (подложка карты — упрощённый фон)",
  "screens": [
@@ -201,7 +202,9 @@
   "research/round-15-results/R08/screens/world/entry-b010/entry-more-1366-ru.jpg",
   "research/round-15-results/R08/screens/world/entry-b010/board_entry.json",
   "research/round-15-results/R08/screens/world/entry-b010-patch/board_entry.json",
-  "research/round-15-results/R08/screens/world/fit_scan.json"
+  "research/round-15-results/R08/screens/world/fit_scan.json",
+  "research/round-15-results/R08/screens/world/entry-b012/board_entry.json",
+  "research/round-15-results/R08/screens/world/entry-b012/entry-more-1366-ru.jpg"
  ],
  "known_limits": [
   "Ситуационный центр и «Картина недели» — только сотруднику: шлюз R01 (staff=True) пускает после входа; без входа — экран «Войдите как сотрудник».",
@@ -209,7 +212,6 @@
   "«Просрочено» R08 (срок исправления) и «Ответ просрочен» R17/R09 (срок ответа) — разные правила (INTEGRATION R02 §3); на экранах R08 подписи разные.",
   "Две сессии R08 стартовали одновременно; R01 берёт R08 из этой ветки целиком (STATUS R01, таблица ролей).",
   "Карта районов в Ситуационном центре берёт контуры из файла сборки build3d/data/astana-districts.json (INTEGRATION §11); нет файла — полосы.",
-  "Ctrl+K «Ситуационный центр» и адрес #board в оболочке R01 B0.10 открывают «Раздел не удалось открыть» — патч для R01 готов (INTEGRATION §15); пункт «Ещё» работает.",
   "Карточка «Сегодня в Астане»: подписи 13 px по решению владельца (эталон раунда 14 — 12 px); today_ref_compare разойдётся на кегле этих строк сознательно.",
   "Казахские тексты новых ключей — в словаре R11 (вычитка R11); 6 фрагментов фраз — только в модуле (решение R11)."
  ],
