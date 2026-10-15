@@ -1524,7 +1524,8 @@
 
     // ---------------------------------------------------------------- «Мои обращения»
     function loadMine(focusCode, focusEvent) {
-      var cached = mineCache && mineCache.items.length ? mineCache : null;   // пустой список хранить незачем
+      // Повторное открытие — сразу из памяти (и пустой список тоже: правило 4 «мгновенный отклик», R10 §9), затем обновление.
+      var cached = mineCache;
       state.mine = cached ? cached.items : null; state.mineError = false; state.changes = cached ? cached.changes : null;
       state.changesAll = false; state.mineSlow = false; state.mineStale = false;
       if (focusCode) state.focusCode = focusCode;

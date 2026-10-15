@@ -40,6 +40,8 @@ function startStand(port, extra) {
   return new Promise((resolve, reject) => {
     const proc = spawn("python3", [path.join(__dirname, "stand", "serve_r09.py"), "--port", String(port), "--seed", ...extra],
       { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"] });
+    // Прогон упал необработанной ошибкой — стенд не остаётся занимать порт до следующего прогона.
+    process.on("exit", () => { try { proc.kill(); } catch (e) { /* уже остановлен */ } });
     let out = "";
     const timer = setTimeout(() => reject(new Error("stand did not start: " + out)), 90000);
     proc.stdout.on("data", (d) => { out += d; if (out.includes("R09 stand:")) { clearTimeout(timer); resolve(proc); } });
@@ -396,7 +398,8 @@ async function newComplaintAndMine(browser, base, lang, width, height, tag, poin
 async function mineStates(browser, base, lang, width, height, tag) {
   const page = await newPage(browser, base, width, height, lang);
   const MINE = "**/api/civic/v2/complaints/mine";
-  await page.route(MINE, async (route) => { await new Promise((ok) => setTimeout(ok, 2500)); await route.continue(); });
+  // Запрос мог закончиться без нас (страницу перезагрузили, пока ответ «шёл» 2,5 с) — тогда continue не нужен.
+  await page.route(MINE, async (route) => { await new Promise((ok) => setTimeout(ok, 2500)); await route.continue().catch(() => null); });
   await page.evaluate(() => window.standUi.openMine());
   const loading = await page.waitForSelector(".bc-panel .bc-loading .bk-skel", { timeout: 3000 }).then(() => true, () => false);
   const loadingText = loading ? (await page.textContent(".bc-panel .bc-loading")).trim() : "";
@@ -420,17 +423,38 @@ async function mineStates(browser, base, lang, width, height, tag) {
         /ничего не отправляли|ештеңе жібермедіңіз/.test(empty.title) && /Сообщить о проблеме|Мәселе туралы хабарлау/.test(empty.text)
         && empty.h >= 44, JSON.stringify(empty));   // эталон A: кнопки 44 (.btn)
   await shot(page, `${tag}-mine-empty`);
+  // Правило 4 эталона A (R10 §9): повторное открытие — сразу из памяти, и пустой список тоже (сервер ещё отвечает 2,5 с).
+  await page.evaluate(() => window.standUi.openMine());
+  await page.waitForTimeout(300);
+  const again = await page.evaluate(() => ({ empty: !!document.querySelector(".bc-panel .bk-empty"),
+                                             loading: !!document.querySelector(".bc-panel .bc-loading, .bc-panel .bk-skel") }));
+  check(`${tag}: «Мои обращения» — повторное открытие сразу из памяти (пусто без «Загружаем…»)`,
+        again.empty && !again.loading, JSON.stringify(again));
+  await page.waitForTimeout(2400);   // ответ этого открытия приходит — дальше без «висящих» запросов
   await page.unroute(MINE);
   await page.route(MINE, (route) => route.abort());
-  await page.evaluate(() => window.standUi.openMine());
-  await page.waitForSelector(".bc-panel .bk-error", { timeout: 8000 });
-  const error = await page.evaluate(() => {
-    const box = document.querySelector(".bc-panel .bk-error"); const b = box.querySelector("button").getBoundingClientRect();
+  const errorBox = async (sel) => page.evaluate((s) => {
+    const box = document.querySelector(s); const b = box.querySelector("button").getBoundingClientRect();
     return { title: box.querySelector(".bk-error__title").textContent.trim(), button: box.querySelector("button").textContent.trim(),
-             role: box.getAttribute("role"), h: Math.round(b.height) };
-  });
+             role: box.getAttribute("role"), h: Math.round(b.height), list: !!document.querySelector(".bc-panel .bk-empty") };
+  }, sel);
+  // Нет связи, а список уже был: сверху «Нет связи» с «Повторить», ниже — то, что было (не пустой экран ошибки).
+  await page.evaluate(() => window.standUi.openMine());
+  await page.waitForSelector(".bc-panel .bk-error.bc-stale", { timeout: 8000 });
+  const stale = await errorBox(".bc-panel .bk-error.bc-stale");
+  check(`${tag}: «Мои обращения» — нет связи при списке в памяти: «${stale.title}» и «${stale.button}» над списком`,
+        /Нет связи|байланыс жоқ/.test(stale.title) && /Повторить|Қайталау/.test(stale.button) && stale.role === "alert"
+        && stale.h >= 44 && stale.list, JSON.stringify(stale));
+  // Первое открытие без связи (страница заново — памяти нет): экран ошибки с иллюстрацией и «Повторить».
+  await page.reload();
+  await page.evaluate((l) => BirgeComplaint.setLang(l), lang);
+  await page.waitForFunction(() => document.documentElement.getAttribute("data-map-ready") === "1", null, { timeout: 15000 });
+  await page.evaluate(() => window.standUi.openMine());
+  await page.waitForSelector(".bc-panel .bk-error:not(.bc-stale)", { timeout: 8000 });
+  const error = await errorBox(".bc-panel .bk-error:not(.bc-stale)");
   check(`${tag}: «Мои обращения» — нет связи: «${error.title}» и «${error.button}» (${error.h} px)`,
-        /Нет связи|байланыс жоқ/.test(error.title) && /Повторить|Қайталау/.test(error.button) && error.role === "alert" && error.h >= 44, JSON.stringify(error));
+        /Нет связи|байланыс жоқ/.test(error.title) && /Повторить|Қайталау/.test(error.button) && error.role === "alert" && error.h >= 44
+        && !error.list, JSON.stringify(error));
   await shot(page, `${tag}-mine-error`);
   await page.unroute(MINE);
   await page.click(".bc-panel .bk-error button");
