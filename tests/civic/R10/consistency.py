@@ -11,8 +11,9 @@
      C2 первый ответ — «Обращения» R09 = табло R17; C3 Ситуационный центр = «Картина дня»; C4 если числа R08 и R09
      разные — подписи на экранах разные (ключи R11 akim.kpi.overdue и inbox.tab.overdue, ru и kk);
   D. «Открытые у службы» — табло R17 по каждой службе = R09 (ведущая служба открытых жалоб района);
-  E. «Мой двор» R16 — проблемы двора сцены 7 = открытые жалобы R09 на этот двор;
-  F. «Спросить Birge» R03 — в ответе на вопрос о районе есть число из A или C (числа считает код, CONTRACT §2 R03).
+  E. «Мой двор» R16 — люди у двора сцены 7 на странице двора = карточка цели «двор» на карте R07;
+  F. «Спросить Birge» R03 — F1/F2 «сколько жалоб за 30 дней / неделю» = карта (люди), F3 «сколько просрочено» = «Картина
+     дня», F4 тот же вопрос на ҚАЗ; число и метка из numbers ответа (числа считает код, не модель).
 Раздела нет (503) — NOT_RUN с причиной. Расхождение — FAIL с владельцами обеих сторон.
 """
 from __future__ import annotations
@@ -102,8 +103,10 @@ class Consistency:
         print(f"  {metric:<28} {source:<34} {str(shown):<10} {definition}")
         return value
 
-    def compare(self, name, pairs, note=""):
-        """pairs: [(источник, владелец, значение)]. None — раздела нет: NOT_RUN, если сравнивать не с чем."""
+    def compare(self, name, pairs, note="", optional=False):
+        """pairs: [(источник, владелец, значение)]. None — раздела нет: NOT_RUN, если сравнивать не с чем.
+        optional — число показывается не везде по замыслу (overdue_fix у табло R17 — только если R17 его выводит):
+        NOT_RUN такой сверки не держит FINAL-5 (summary_r15.py), противоречие подписей ловит C4."""
         present = [(src, owner, v) for src, owner, v in pairs if v is not None]
         owners = sorted({owner for _, owner, _ in present})
         values = {src: v for src, _, v in pairs}
@@ -113,7 +116,10 @@ class Consistency:
             note = (note + "; " if note else "") + f"нет раздела: {', '.join(missing)}"
         else:
             status = "PASS" if len({json.dumps(v, sort_keys=True) for _, _, v in present}) == 1 else "FAIL"
-        self.checks.append({"name": name, "status": status, "values": values, "owners": owners, "note": note})
+        rec = {"name": name, "status": status, "values": values, "owners": owners, "note": note}
+        if optional and status == "NOT_RUN":
+            rec["optional"] = True
+        self.checks.append(rec)
         print(f"{status:<7} {name} — {json.dumps(values, ensure_ascii=False)}" + (f" ({note})" if note else ""))
 
     # --- источники
@@ -197,6 +203,17 @@ class Consistency:
         self.compare("A2. «Картина дня» районы (7 дней) = карта за 7 дней",
                      [("«Картина дня» R08", "R08", dist7), ("карта R07", "R07", map7)],
                      note="" if list7 is None or list7 == map7 else f"справка: «Обращения» по дате подачи — {list7}")
+        # A3. Карта районов Ситуационного центра (R08 akim/board, тот же расчёт «за 7 дней») = карта R07 за 7 дней.
+        board = self.get(self.staff, "/akim/board") if self.staff_ok else None
+        bdata = board.data() if board is not None and board.status == 200 and isinstance(board.body, dict) else None
+        board7 = None
+        if isinstance(bdata, dict):
+            rows = ((bdata.get("districts") or {}).get("items")) or []
+            board7 = next((row.get("value") for row in rows if row.get("district") == d), 0) if rows else None
+        self.value("жалобы района, 7 дн.", "Ситуационный центр R08 карта районов", "R08", board7, "районы за 7 дней на большом экране")
+        if board7 is not None:
+            self.compare("A3. Ситуационный центр: район за 7 дней = карта за 7 дней",
+                         [("Ситуационный центр R08", "R08", board7), ("карта R07", "R07", map7)])
 
         # B. «Я тоже» района
         metoo = self.value("«Я тоже» района, 30 дн.", "«Обращения» R09", "R09",
@@ -246,18 +263,48 @@ class Consistency:
         sit = self.get(self.staff, "/akim/board") if self.staff_ok else None
         overdue_sit = None
         if sit is not None and sit.status == 200 and isinstance(sit.body, dict):
-            found = re.search(r'"overdue"\s*:\s*\{[^{}]*"value"\s*:\s*(\d+)', json.dumps(sit.body))
-            overdue_sit = int(found.group(1)) if found else None
+            # R08 akim/board: kpi.items — плитки [{id: "overdue", value}]; запасной вид — kpi.overdue.value, как у summary.
+            data = sit.data() if hasattr(sit, "data") else sit.body
+            kpi = data.get("kpi") if isinstance(data, dict) else None
+            if isinstance(kpi, dict) and isinstance(kpi.get("items"), list):
+                tile = next((t for t in kpi["items"] if isinstance(t, dict) and t.get("id") == "overdue"), None)
+                overdue_sit = tile.get("value") if tile and isinstance(tile.get("value"), int) else None
+            elif isinstance(kpi, dict) and isinstance(kpi.get("overdue"), dict):
+                overdue_sit = kpi["overdue"].get("value") if isinstance(kpi["overdue"].get("value"), int) else None
+            else:
+                found = re.search(r'"overdue"\s*:\s*\{[^{}]*"value"\s*:\s*(\d+)', json.dumps(sit.body))
+                overdue_sit = int(found.group(1)) if found else None
         self.value("просрочено (город)", "Ситуационный центр R08", "R08", overdue_sit, "kpi overdue большого экрана")
         self.compare("C1. «Просрочено» (срок исправления): «Картина дня» R08 = табло R17 (overdue_fix)",
-                     [("«Картина дня» R08", "R08", overdue_r08), ("табло R17", "R17", overdue_fix_r17)])
+                     [("«Картина дня» R08", "R08", overdue_r08), ("табло R17", "R17", overdue_fix_r17)],
+                     note="табло R17 выводит только «нет ответа в срок» — сверять нечего" if overdue_fix_r17 is None and overdue_r08 is not None else "",
+                     optional=True)
         self.compare("C2. «Просрочено» (срок ответа): «Обращения» R09 = табло R17",
                      [("«Обращения» R09", "R09", overdue_r09), ("табло R17", "R17", overdue_r17)])
-        self.labels_check(overdue_r08, overdue_r09)
+        self.labels_check(overdue_r08, overdue_r09, overdue_r17)
         if overdue_sit is not None and city is not None:
             self.compare("C3. просрочено по городу: Ситуационный центр = «Картина дня»",
                          [("Ситуационный центр R08", "R08", overdue_sit),
                           ("«Картина дня» R08", "R08", ((city.get("kpi") or {}).get("overdue") or {}).get("value"))])
+        # C5. «Исправлено за неделю» (служба сообщила): «Картина дня» / Ситуационный центр (kpi.fixed_week, последние 7 × 24 ч)
+        # = «Картина недели» (totals.fixed, неделя по дням до сейчас). Одно слово «неделя» — одно число (CONTRACT §0).
+        # Окна у R08 могут быть разными и подписанными («за 7 дней» и «9–15 октября») — тогда это не противоречие, но жюри
+        # увидит два числа: проверка не блокирует вердикт (blocking: False), расхождение идёт в «смотреть» (B-122).
+        week = self.get(self.staff, "/akim/week") if self.staff_ok else None
+        wdata = week.data() if week is not None and week.status == 200 and isinstance(week.body, dict) else None
+        wfix = None
+        if isinstance(wdata, dict):
+            wfix = ((wdata.get("totals") or {}).get("fixed")) or ((wdata.get("kpi") or {}).get("fixed"))  # R08 eca77d34 / 6cd8f2be
+        dfix = ((city or {}).get("kpi") or {}).get("fixed_week") if isinstance(city, dict) else None
+        name5 = "C5. «Исправлено за неделю» и «проверено жителями»: «Картина дня» = «Картина недели»"
+        if isinstance(wfix, dict) and isinstance(dfix, dict):
+            self.compare(name5,
+                         [("«Картина дня» R08 (7 × 24 ч)", "R08", {"fixed": dfix.get("value"), "verified": dfix.get("verified")}),
+                          ("«Картина недели» R08 (дни недели)", "R08", {"fixed": wfix.get("value"), "verified": wfix.get("verified")})])
+            self.checks[-1]["blocking"] = False
+        else:
+            self.checks.append({"name": name5, "status": "NOT_RUN", "values": {"week": week.status if week is not None else None},
+                                "owners": ["R08"], "note": "нет «Картины недели» или её итогов в ответе akim/week", "optional": True})
 
         # D. «Открытые у службы»
         if open_30 is not None:
@@ -287,33 +334,57 @@ class Consistency:
         self.yard_check(r09_all)
 
         # F. «Спросить Birge»
-        self.ask_check(map30, list30, overdue_r08, overdue_r09)
+        self.ask_check(map30, map7, overdue_r08, overdue_r09)
         return self
 
-    def labels_check(self, fix_value, answer_value):
-        """Разные числа «просрочено» — разные подписи (ключи R11: akim.kpi.overdue и inbox.tab.overdue, ru и kk)."""
-        if not (isinstance(fix_value, int) and isinstance(answer_value, int)) or fix_value == answer_value:
+    def screen_label(self, lang, r11, keys, fallback_js):
+        """Подпись так, как её показывает экран роли: первый ключ из словаря R11, иначе тот же ключ из запасных строк
+        роли (JS-файл сборки: сначала ru, затем kk). R09 INTEGRATION F3a: вкладка «Обращений» берёт
+        inbox.tab.overdue_answer («Ответ просрочен»), затем inbox.tab.overdue."""
+        for key in keys:
+            v = _dig(r11, key)
+            if isinstance(v, str) and v.strip():
+                return v
+            try:
+                text = (self.s.root / fallback_js).read_text(encoding="utf-8") if fallback_js else ""
+            except OSError:
+                text = ""
+            found = re.findall(r'"' + re.escape(key) + r'":\s*"([^"]+)"', text)
+            if found:
+                return found[0] if lang == "ru" or len(found) < 2 else found[1]
+        return None
+
+    def labels_check(self, fix_value, answer_value, r17_value=None):
+        """Разные числа «просрочено» — разные подписи (ru и kk), как их показывают экраны:
+        «Картина дня» R08 (срок исправления) против вкладки «Обращений» R09 и итога табло R17 (срок ответа)."""
+        if not isinstance(fix_value, int) or not any(isinstance(v, int) and v != fix_value for v in (answer_value, r17_value)):
             self.checks.append({"name": "C4. подписи «просрочено» различаются, если числа разные", "status": "NOT_RUN",
-                                "values": {"R08": fix_value, "R09": answer_value}, "owners": ["R08", "R09", "R11"],
+                                "values": {"R08": fix_value, "R09": answer_value, "R17": r17_value}, "owners": ["R08", "R09", "R17", "R11"],
                                 "note": "числа совпадают или одного нет — различать нечего"})
             return
-        same = []
+        same, labels = [], {}
         for lang in ("ru", "kk"):
             path = self.s.root / "web" / "civic" / "i18n" / f"{lang}.json"
             try:
                 d = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, ValueError):
                 continue
-            pick = lambda dotted: _dig(d, dotted)  # noqa: E731
-            a, b = pick("akim.kpi.overdue"), pick("inbox.tab.overdue")
-            if isinstance(a, str) and isinstance(b, str) and a.strip().lower() == b.strip().lower():
-                same.append(f"{lang}: «{a}»")
+            a = self.screen_label(lang, d, ["akim.kpi.overdue"], "web/civic/akim/akim.js")
+            others = {"«Обращения» R09": (answer_value, self.screen_label(lang, d, ["inbox.tab.overdue_answer", "inbox.tab.overdue"],
+                                                                          "web/civic/feedback/complaint-strings.js")),
+                      "табло R17": (r17_value, self.screen_label(lang, d, ["agencies.kpi.overdue"], "web/civic/agencies/agencies.js"))}
+            labels[lang] = {"«Картина дня» R08": a, **{k: v[1] for k, v in others.items()}}
+            for name, (num, b) in others.items():
+                if isinstance(num, int) and num != fix_value and isinstance(a, str) and isinstance(b, str) \
+                        and a.strip().lower() == b.strip().lower():
+                    same.append(f"{lang}: «{a}» у R08 ({fix_value}) и у {name} ({num})")
         status = "FAIL" if same else "PASS"
-        self.checks.append({"name": "C4. подписи «просрочено» различаются, если числа разные (R08 ≠ R09)", "status": status,
-                            "values": {"«Картина дня» R08": fix_value, "«Обращения» R09": answer_value, "одинаковые подписи": same},
-                            "owners": ["R08", "R09", "R11"],
+        self.checks.append({"name": "C4. подписи «просрочено» различаются, если числа разные (R08 ≠ R09, R17)", "status": status,
+                            "values": {"«Картина дня» R08": fix_value, "«Обращения» R09": answer_value, "табло R17": r17_value,
+                                       "одинаковые подписи": same, "подписи": labels},
+                            "owners": ["R08", "R09", "R17", "R11"],
                             "note": "жюри видит «Просрочено N» в двух местах с разными числами" if same else ""})
-        print(f"{status:<7} C4. подписи «просрочено»: {same or 'разные'}")
+        print(f"{status:<7} C4. подписи «просрочено»: {same or labels}")
 
     def world_numbers(self):
         """Числа района из файла мира R02 (истина для засева): записи и «Я тоже» за 30 дней."""
@@ -356,46 +427,69 @@ class Consistency:
             self.compare("E. «Мой двор»: проблемы двора = открытые жалобы на двор", [("«Мой двор» R16", "R16", None)],
                          note="нет двора сцены 7 (scenes в файле мира R02)")
             return
+        # «Проблемы двора» у R16 — МЕСТА с жалобами (цели тепловой карты в дворе и до 60 м), у каждого — люди, как на карте.
+        # Сверяем людей у самого двора: страница «Мой двор» = карточка цели «двор» на карте R07 (/heat/target).
         r = self.get(self.anon, f"/together/yards/{yard}")
-        problems = None
+        r16_people = r16_places = None
         if r is not None and r.status == 200:
             body = unwrap(r.body) or {}
-            rec = body.get("yard") if isinstance(body.get("yard"), dict) else body
-            raw = rec.get("problems") if isinstance(rec, dict) else None
-            if raw is None and isinstance(body, dict):
-                raw = body.get("problems")
-            problems = raw if isinstance(raw, int) else len(raw) if isinstance(raw, list) else (
-                raw.get("count") if isinstance(raw, dict) else None)
+            problems = body.get("problems") if isinstance(body.get("problems"), dict) else {}
+            r16_places = (body.get("counts") or {}).get("problems", problems.get("count"))
+            own = [it for it in problems.get("items") or [] if ((it.get("target") or {}).get("id")) == yard]
+            r16_people = own[0].get("count") if own else (0 if problems.get("status") == "ok" else None)
+        h = self.get(self.anon, f"/heat/target?kind=area&id={yard}")
+        r07_people = None
+        if h is not None and h.status in (200, 404):
+            item = (h.body or {}).get("item") if isinstance(h.body, dict) else None
+            r07_people = (item or {}).get("count", 0) if h.status == 200 else 0
         r09_yard = (sum(1 for x in r09_all if (x.get("target") or {}).get("id") == yard and x.get("status") in OPEN)
                     if r09_all is not None else None)
-        self.value(f"проблемы двора {yard}", "«Мой двор» R16", "R16", problems, "открытые проблемы двора")
-        self.value(f"проблемы двора {yard}", "«Обращения» R09", "R09", r09_yard, "открытые жалобы с целью-двором")
-        self.compare("E. «Мой двор»: проблемы двора = открытые жалобы на двор",
-                     [("«Мой двор» R16", "R16", problems), ("«Обращения» R09", "R09", r09_yard)])
+        self.value(f"двор {yard}: люди у двора", "«Мой двор» R16", "R16", r16_people, f"проблемных мест рядом: {r16_places}")
+        self.value(f"двор {yard}: люди у двора", "карта R07 /heat/target", "R07", r07_people, "карточка цели «двор» на карте")
+        self.value(f"двор {yard}: открытые жалобы", "«Обращения» R09", "R09", r09_yard, "справка: записи с целью-двором")
+        self.compare("E. «Мой двор»: люди у двора = карточка двора на карте",
+                     [("«Мой двор» R16", "R16", r16_people), ("карта R07", "R07", r07_people)])
 
-    def ask_check(self, map30, list30, overdue_r08, overdue_r09):
+    def ask_check(self, map30, map7, overdue_r08, overdue_r09):
+        """«Спросить Birge» (R03): три отдельных вопроса — в ответе то же число, что на экране, и понятная метка.
+
+        Ответ R03: {"headline", "lead", "numbers": [{"value", "label": {"ru", "kk"}, "fact"}], "blocks"} — сверяем numbers;
+        нет numbers — числа из текста ответа (слабее: только «есть ли число»)."""
         if not self.staff_ok:
             self.compare("F. «Спросить Birge»", [("R03", "R03", None)], note="нет входа сотрудника")
             return
-        names = {"nura": "Нуре"}
-        question = f"Сколько жалоб в районе {names.get(self.d, self.d)} за 30 дней и сколько из них просрочено?"
-        r = self.staff.post(V2 + "/assistant/ask", {"question": question, "lang": "ru"})
-        if r.status in (404, 503) or r.status == 0:
-            self.compare("F. «Спросить Birge»: в ответе числа платформы", [("«Спросить Birge» R03", "R03", None)],
-                         note=f"маршрут ответил {r.status}")
-            return
-        text = json.dumps(unwrap(r.body), ensure_ascii=False)
-        numbers = {int(n) for n in re.findall(r"(?<![\w.])(\d{1,5})(?![\w.])", text)}
-        expected = {v for v in (map30, list30, overdue_r08, overdue_r09) if isinstance(v, int)}
-        hit = sorted(numbers & expected)
-        self.value("ответ «Спросить Birge»", "R03 /assistant/ask", "R03", sorted(numbers)[:12],
-                   f"числа в ответе за {round(r.ms)} мс")
-        status = "PASS" if r.status == 200 and hit else "FAIL"
-        self.checks.append({"name": "F. «Спросить Birge»: в ответе числа платформы (A или C)", "status": status,
-                            "values": {"в ответе": sorted(numbers)[:12], "ожидались": sorted(expected), "ms": round(r.ms)},
-                            "owners": ["R03"], "note": "" if hit else "ни одного числа платформы в ответе"})
-        print(f"{status:<7} F. «Спросить Birge» — найдено {hit} из {sorted(expected)}")
-
+        names = {"nura": ("Нуре", "Нұрада")}.get(self.d, (self.d, self.d))
+        cases = [
+            ("F1", f"Сколько жалоб в {names[0]} за 30 дней?", "ru", map30, r"человек", "карта 30 дней (люди)"),
+            ("F2", f"Сколько жалоб в {names[0]} за неделю?", "ru", map7, r"человек", "карта 7 дней (люди)"),
+            ("F3", f"Сколько обращений просрочено в {names[0]}?", "ru", overdue_r08, r"просроч", "«Картина дня» (исправление)"),
+            ("F4", f"{names[1]} 30 күнде қанша шағым түсті?", "kk", map30, r"адам", "карта 30 дней (люди), вопрос на ҚАЗ"),
+        ]
+        for tag, question, lang, expected, label_re, what in cases:
+            r = self.staff.post(V2 + "/assistant/ask", {"question": question, "lang": lang})
+            if r.status in (404, 503) or r.status == 0:
+                self.compare(f"{tag}. «Спросить Birge»: «{question}»", [("«Спросить Birge» R03", "R03", None)],
+                             note=f"маршрут ответил {r.status}")
+                continue
+            data = unwrap(r.body) if isinstance(r.body, dict) else {}
+            nums = data.get("numbers") if isinstance(data, dict) else None
+            if isinstance(nums, list) and nums:
+                got = [(n.get("value"), ((n.get("label") or {}).get(lang) or (n.get("label") or {}).get("ru") or ""))
+                       for n in nums if isinstance(n, dict)]
+                hit = [v for v, lab in got if v == expected and re.search(label_re, lab, re.I)]
+                shown = [f"{v} {lab}" for v, lab in got][:4]
+            else:
+                text = json.dumps(data, ensure_ascii=False)
+                got = sorted({int(n) for n in re.findall(r"(?<![\w.])(\d{1,5})(?![\w.])", text)})
+                hit = [v for v in got if v == expected]
+                shown = got[:12]
+            ok = r.status == 200 and isinstance(expected, int) and bool(hit)
+            status = "NOT_RUN" if not isinstance(expected, int) else ("PASS" if ok else "FAIL")
+            self.value(f"«Спросить Birge» {tag}", "R03 /assistant/ask", "R03", shown, f"{question} — за {round(r.ms)} мс")
+            self.checks.append({"name": f"{tag}. «Спросить Birge»: «{question}» = {what}", "status": status,
+                                "values": {"ответ": shown, "ожидалось": expected, "ms": round(r.ms)}, "owners": ["R03"],
+                                "note": "" if ok or status == "NOT_RUN" else "в ответе нет числа экрана с понятной меткой"})
+            print(f"{status:<7} {tag}. {question} → {shown} (ожидалось {expected})")
 
 def run(root, district="nura", world=True):
     with Stand(root, world=world) as stand:

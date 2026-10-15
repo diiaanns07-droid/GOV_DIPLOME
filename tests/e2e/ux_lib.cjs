@@ -21,9 +21,17 @@ function uiScreen(page) {
     const onTop = (e) => { const r = e.getBoundingClientRect();
       const x = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1), y = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
       const h = document.elementFromPoint(x, y); return !h || h === e || e.contains(h) || h.contains(e); };
+    // Текст только для экранного диктора (.bk-sr-only R11 и подобные: 1×1 px, clip) человек не видит — не оцениваем.
+    const srOnly = (e) => { const r = e.getBoundingClientRect(); if (r.width <= 1 || r.height <= 1) return true;
+      for (let n = e; n && n.nodeType === 1; n = n.parentElement) {
+        if (n.classList && (n.classList.contains("bk-sr-only") || n.classList.contains("sr-only") || n.classList.contains("visually-hidden"))) return true;
+        const cs = getComputedStyle(n);
+        if (cs.clip === "rect(0px, 0px, 0px, 0px)" || /inset\(50%\)/.test(cs.clipPath || "")) return true;
+      }
+      return false; };
     const vis = (e) => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
       return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && s.opacity !== "0"
-        && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth && onTop(e); };
+        && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth && onTop(e) && !srOnly(e); };
     const text = document.body.innerText;
     const small = [], tiny = [];
     for (const el of document.querySelectorAll("body *")) {

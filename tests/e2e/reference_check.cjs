@@ -192,7 +192,19 @@ async function buildShots(browser, server) {
       await L.sleep(5000);
       let reached = true;
       if (f === "obj") { const pt = await L.showPoint(page, KHAN, 16); if (pt) { await L.tap(page, pt.x, pt.y); await L.sleep(2500); } reached = !!(await L.firstVisible(page.locator(".r07-card"))); }
-      if (f === "proj") reached = await L.headerClick(page, /^\s*Проекты( и идеи)?\s*$/i, { wait: 3000, menuRe: /^\s*Меню\s*$/i });
+      if (f === "proj") {
+        // Эталон 13 окт: «Проекты» — кнопка капсулы. Раунд 15 (IA_ROUND15 R11): у акимата слот занимают «Ведомства»,
+        // «Проекты и идеи» — в «Ещё» (menuitem). Сравниваем тот же экран, открытый по новой схеме меню.
+        reached = await L.headerClick(page, /^\s*Проекты( и идеи)?\s*$/i, { wait: 3000, menuRe: /^\s*Меню\s*$/i });
+        if (!reached) {
+          const more = await L.firstVisible(page.getByRole("button", { name: /^\s*(Ещё|Тағы)\s*$/i }));
+          if (more) {
+            await more.click({ timeout: 3000 }).catch(() => null); await L.sleep(500);
+            const item = await L.firstVisible(page.getByRole("menuitem", { name: /^\s*Проекты( и идеи)?\s*$/i }));
+            if (item) { await item.click({ timeout: 3000 }).catch(() => null); await L.sleep(3000); reached = "через «Ещё»"; }
+          }
+        }
+      }
       await page.evaluate(() => { const s = document.createElement("style"); s.textContent = "*,*::before,*::after{transition:none!important;animation:none!important}"; document.head.appendChild(s); });
       await L.sleep(400);
       const png = await page.screenshot();
@@ -310,7 +322,7 @@ const BAD = new Set(["расходится", "НЕТ В СБОРКЕ", "лишн
   const BEFORE = args.before ? path.resolve(String(args.before)) : null;
   const was = BEFORE && fs.existsSync(path.join(BEFORE, "REFERENCE.json")) ? JSON.parse(fs.readFileSync(path.join(BEFORE, "REFERENCE.json"), "utf8")) : null;
   const browser = await chromium.launch();
-  const server = await L.startServer(ROOT);
+  const server = await L.startServer(ROOT, { world: !!args.world });  // --world — раунд 15: демо-мир R02
   const report = {};
   try {
     const R = await refShots(browser), B = await buildShots(browser, server);

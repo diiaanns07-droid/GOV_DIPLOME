@@ -348,7 +348,8 @@ async function apiTimes(base) {
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   let server = null, base = args.url;
-  if (!base) { server = await L.startServer(ROOT, { staff: false }); base = server.base; }
+  // --world — раунд 15: сервер с CIVIC_DEMO_WORLD=1 (единый демо-мир R02).
+  if (!base) { server = await L.startServer(ROOT, { staff: false, world: !!args.world }); base = server.base; }
   const sha = L.buildSha(ROOT);
   console.log(`R10 map_baseline: сборка ${ROOT} @ ${sha}, сервер ${base}`);
   const browser = await chromium.launch();

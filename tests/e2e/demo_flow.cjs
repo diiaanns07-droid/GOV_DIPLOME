@@ -3,6 +3,7 @@
 //   node tests/e2e/demo_flow.cjs --root <папка сборки> --out <папка отчёта>
 //        [--sizes 1366x768,375x812] [--langs ru,kk] [--url http://127.0.0.1:8611/ --user U --pass P]
 //        [--stop "lon,lat,osm-node-…,Имя"] [--inject-css <файл>  — проверка предлагаемой правки CSS, не приёмка]
+//        [--world — раунд 15: сервер с CIVIC_DEMO_WORLD=1]
 //
 // Без --url тест сам поднимает сервер сборки (python3 app.py) на свободном порту с ВРЕМЕННОЙ базой:
 // init → seed-demo (синтетика R02) → seed-r14-demo (если есть у R06) → сотрудник «r10-operator».
@@ -81,7 +82,9 @@ async function startServer() {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r10-e2e-"));
   const db = path.join(tmp, "civic.sqlite3");
   // CIVIC_DEMO=1 — как run-city.bat на демо (синтетический набор R07 на карте); --no-demo — без него.
-  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1", CIVIC_DEMO: args["no-demo"] ? "" : "1" };
+  // --world — раунд 15: CIVIC_DEMO_WORLD=1 (единый демо-мир R02, CONTRACT §11); шаг 2 «Хан Шатыр» в мире тот же (3 → 4).
+  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1", CIVIC_DEMO: args["no-demo"] ? "" : "1",
+    CIVIC_DEMO_WORLD: args.world && !args["no-demo"] ? "1" : "" };
   const cli = (argv, input) => execFileSync(PY, ["-B", "-m", "ui.civic_store", "--db", db, ...argv],
     { cwd: ROOT, env, input, stdio: [input ? "pipe" : "ignore", "pipe", "pipe"] }).toString();
   cli(["init"]);
@@ -164,8 +167,26 @@ async function apiFlow(A, staffInfo) {
   const m = await A.call("GET", "/api/civic/v2/modules");
   const modules = (A.data(m) || {}).modules || {};
   const notReady = Object.entries(modules).filter(([, v]) => v.status !== "ready").map(([k, v]) => `${k}:${v.role}:${v.status}`);
-  add("API", "0", "шлюз v2: все маршруты ready", m.status === 200 && notReady.length === 0 ? "PASS" : "FAIL",
-    m.status === 200 ? { not_ready: notReady } : { status: m.status });
+  // Раунд 15: часть 1 — регресс FINAL-4. Маршруты FINAL-4 (74, все ready — tests/civic/R10/fixtures/final4_v2_modules.json)
+  // обязаны быть ready; новые маршруты §7 до прихода модуля отвечают 503 module_not_ready (CONTRACT §7) — их принимает
+  // tests/civic/R10/api_v2.py, а сцены 7–9 — demo_flow_v2.cjs (на FINAL-5 там NOT_RUN = 0).
+  let f4 = null;
+  try { f4 = JSON.parse(fs.readFileSync(path.join(__dirname, "../civic/R10/fixtures/final4_v2_modules.json"), "utf8")).modules; } catch (e) { f4 = null; }
+  if (!f4) {
+    add("API", "0", "шлюз v2: все маршруты ready", m.status === 200 && notReady.length === 0 ? "PASS" : "FAIL",
+      m.status === 200 ? { not_ready: notReady } : { status: m.status });
+  } else {
+    const oldBad = notReady.filter((x) => x.split(":")[0] in f4);
+    const gone = Object.keys(f4).filter((k) => !(k in modules));
+    add("API", "0", "шлюз v2: маршруты FINAL-4 на месте и ready", m.status === 200 && oldBad.length === 0 && gone.length === 0 ? "PASS" : "FAIL",
+      m.status === 200 ? { not_ready: oldBad, missing: gone.slice(0, 8) } : { status: m.status });
+    const newBad = notReady.filter((x) => !(x.split(":")[0] in f4));
+    if (newBad.length) {
+      const byRole = {};
+      for (const x of newBad) { const [, role, st] = x.split(":"); byRole[`${role} ${st}`] = (byRole[`${role} ${st}`] || 0) + 1; }
+      add("API", "0", "шлюз v2: новые маршруты раунда 15 ready", "NOT_RUN", `модулей ещё нет в сборке (503 по CONTRACT §7): ${JSON.stringify(byRole)}`);
+    } else add("API", "0", "шлюз v2: новые маршруты раунда 15 ready", "PASS", { routes: Object.keys(modules).length - Object.keys(f4).length });
+  }
   ctx.modules = modules;
 
   // 0б. Шаг 2 DEMO_SCRIPT на ЧИСТОЙ базе (как run-city.bat): ведущий пишет «Аялдамада жарық жоқ, вечером на остановке
@@ -535,7 +556,13 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
       q = await offered();
       step("1", "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)", q, { under: pt.under });
       if (!q && pt.near) { await tap(page, pt.near.x, pt.near.y); q = await offered(); }  // обход для демо: нажать рядом
-    } else if (pt) { await tap(page, pt.x, pt.y); q = await offered(); }
+    } else if (pt) {
+      // Значка над остановкой в этот момент нет (раскладка значков зависит от данных и масштаба) — проверку перехвата
+      // нажатия честно пропускаем с причиной, а место выбираем нажатием прямо по карте.
+      add(`UI ${tag}`, "1", "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)", "NOT_RUN",
+        "значка над остановкой в этот момент нет — нажатие прямо по карте");
+      await tap(page, pt.x, pt.y); q = await offered();
+    }
     step("1", `после нажатия на карту в форме предложена остановка «${st.name}»`, q, { point: pt, names }, await shot("1-target"));
     if (q) picked = await clickText(form, nameRe, { wait: 1500 });
     else {
@@ -961,7 +988,7 @@ async function networkErrors(browser, base, [w, h], lang) {
     t.prev = r.ms;
   }
   for (const t of Object.values(timing)) { t.total_ms = t.prev - t.start_ms; delete t.prev; }
-  const meta = { ...(GLASS ? { glass: GLASS, glass_seen: glassLog } : {}), root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
+  const meta = { ...(GLASS ? { glass: GLASS, glass_seen: glassLog } : {}), world: !!args.world, root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
     when: new Date().toISOString(), node: process.version, total_ms: Date.now() - T0, ...(INJECT_CSS ? { inject_css: String(args["inject-css"]) } : {}) };
   if (AUDIT) meta.audit = { font_min_px: 13, tap_min_px: 44, shots: Object.values(audit).reduce((n, a) => n + Object.keys(a).length, 0), excluded_ms: auditMs };
   fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results, ...(AUDIT ? { audit } : {}) }, null, 1));

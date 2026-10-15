@@ -121,6 +121,7 @@ async function apiFlow(A, S, staff, timing) {
       r = await call("8", "POST", `${V2}/complaints/${s8.complaint}/services`,
         { services: [{ service: "water", role: "lead" }, { service: "road", role: "partner" }] }, true);
       jointSet = [200, 201].includes(r.status);
+      S.jointSet = jointSet;  // для интерфейса: житель видит строку служб в «Моих обращениях»
       add("API", "8", "сотрудник: совместное исполнение — 2 службы у обращения", r.status === 503 || r.status === 404 ? "NOT_RUN" : ok3(jointSet),
         { status: r.status, err: r.body && r.body.error }, "R09");
       r = await call("8", "POST", `${V2}/complaints/${s8.complaint}/part`, { service: "water", status: "done", note: "Трубу заменили" }, true);
@@ -129,10 +130,14 @@ async function apiFlow(A, S, staff, timing) {
     }
     r = await call("8", "GET", `${V2}/complaints/${s8.complaint}`, null, false, dev);
     const c = r.status === 200 ? rec(r.body, "complaint") || {} : null;
-    const parts = c && Array.isArray(c.services) ? c.services : [];
+    // §5.1 — services[] у записи; публичный вид R09 отдаёт жителю те же части в joint.services (без причин передач и
+    // ролей сотрудников). Принимаем обе формы, форму пишем в отчёт.
+    const shape = c && Array.isArray(c.services) && c.services.length ? "services"
+      : c && c.joint && Array.isArray(c.joint.services) ? "joint.services" : null;
+    const parts = shape === "services" ? c.services : shape ? c.joint.services : [];
     // Без совместного исполнения (маршрута R09 нет) паспорт с двумя службами проверять не на чем — NOT_RUN.
     add("API", "8", "у жителя паспорт с двумя службами и их статусами", c && (jointSet || parts.length) ? ok3(parts.length >= 2 && parts.every((x) => x.service && x.status)) : null,
-      c ? (jointSet || parts.length ? { services: parts.map((x) => `${x.service}:${x.status}`) } : "совместное исполнение не задано (маршрут R09 не ответил)") : st(r), "R09");
+      c ? (jointSet || parts.length ? { services: parts.map((x) => `${x.service}:${x.status}`), shape } : "совместное исполнение не задано (маршрут R09 не ответил)") : st(r), "R09");
     if (staff) {
       r = await call("8", "GET", `${V2}/agencies/board?days=30`, null, true);
       const rows = r.status === 200 ? list(r.body, "rows", "services") : null;
@@ -142,6 +147,7 @@ async function apiFlow(A, S, staff, timing) {
       r = await call("8", "GET", `${V2}/works-conflicts?district=nura`, null, true);
       const cfs = r.status === 200 ? list(r.body, "conflicts", "items") || [] : null;
       const hit = cfs ? cfs.find((x) => S.conflict && (x.id === S.conflict.id || (Array.isArray(x.works) && S.conflict.works.every((w) => x.works.includes(w))))) : null;
+      S.conflictApi = hit || null;  // для интерфейса: ссылка #works-calendar/<id> и совет R12 (его собственный текст)
       add("API", "8", "«Календарь работ»: конфликт «асфальт раньше сетей — копаем дважды» и совет ru/kk",
         cfs ? ok3(!!hit && hit.kind === "dig_after_surface" && !!hit.advice_ru && !!hit.advice_kk) : r.status === 503 || r.status === 404 ? null : false,
         cfs ? { found: !!hit, n: cfs.length, kind: hit && hit.kind } : st(r), "R12");
@@ -156,6 +162,16 @@ async function apiFlow(A, S, staff, timing) {
     const snow = pulse.find((p) => p.category === (s9.category || "snow_ice") && (p.district === s9.district || (p.districts || []).some((d) => d.district === s9.district)));
     add("API", "9", "«Картина дня»: пульс «Снег в Нуре ×N»", r.status === 200 ? ok3(!!snow) : null,
       r.status === 200 ? { pulse: pulse.slice(0, 3).map((p) => `${p.kind}:${p.category}:${p.district || "-"}:×${p.ratio}`) } : st(r), "R08 + R02");
+    // «Картина дня» 2.0 (R08 раунда 15): у тревоги «Снег» — ссылка штаба R17 (crisis — активный кризис, crisis_new — шаблон).
+    // Признак поставки R08 раунда 15 в сборке — его маршрут akim/board (сотрудник): 404 у модуля → поставки нет → NOT_RUN.
+    const r08 = staff ? await call("9", "GET", `${V2}/akim/board`, null, true) : { status: 0 };
+    const r15day = r08.status === 200;
+    S.pulseCrisis = !!(snow && (snow.crisis || snow.crisis_new));
+    add("API", "9", "«Картина дня»: у тревоги «Снег» ссылка «Открыть кризисный штаб» (R17)",
+      !r15day ? "NOT_RUN" : ok3(S.pulseCrisis),
+      !r15day ? `поставки R08 раунда 15 нет в сборке (akim/board → HTTP ${r08.status})` : { crisis: snow && (snow.crisis || snow.crisis_new) },
+      "R08 + R17");
+    S.r15day = r15day;
     // Штаб открывает акимат: вид сотрудника (публичная карточка жителя задач служб не показывает — так у R17).
     r = await call("9", "GET", `${V2}/incidents/${s9.incident}`, null, !!staff);
     const inc = r.status === 200 ? rec(r.body, "incident") || {} : null;
@@ -225,11 +241,34 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     step(s, "контраст текста ≥ 4,5:1", q.lowContrastN === 0, { n: q.lowContrastN, ex: (q.lowContrast || []).slice(0, 4) }, owner);
     if (lang === "kk") {
       const ru = await page.evaluate(() => { const r = document.querySelector("#birge-screen:not([hidden])"); return r ? r.innerText : ""; })
-        .then((t) => (t.match(/\b(Мой двор|Сделаем вместе|Я приду|Поддержать|Ведомства|Табло|Совместные|Передачи|Календарь работ|Кризис|Проверено жителями|Соседи|Пример)\b/g) || []));
-      step(s, "ҚАЗ: на экране нет русских подписей раздела", ru.length === 0, { ru: [...new Set(ru)].slice(0, 6) }, owner);
+        // Границы слова — по буквам Юникода: \b в JS кириллицу не видит.
+        .then((t) => (t.match(/(?<!\p{L})(Мой двор|Сделаем вместе|Я приду|Поддержать|Ведомства|Табло|Совместные|Передачи|Календарь работ|Кризис|Проверено жителями|Соседи|Пример)(?!\p{L})/gu) || []));
+      // Слово, которое и в казахском словаре R11 такое же («Табло»), — не русское.
+      const kkSame = new Set(Object.values(dict || {}).filter((v) => typeof v === "string"));
+      const ruOnly = [...new Set(ru)].filter((w) => !kkSame.has(w));
+      step(s, "ҚАЗ: на экране нет русских подписей раздела", ruOnly.length === 0, { ru: ruOnly.slice(0, 6) }, owner);
     }
   };
   const visibleText = async (re) => !!(await firstVisible(page.getByText(re)));
+  // VISUAL_BRIEF §4 п. 8 / COMMON «ошибка сети»: запросы модуля оборваны → понятное сообщение и «Повторить»,
+  // а не пустой экран; после связи «Повторить» возвращает содержимое.
+  const retryRe = new RegExp("^" + esc(T(dict, ["common.action.retry", "heat.retry"], lang === "kk" ? "Қайталау" : "Повторить")), "i");
+  const errorState = async (s, hash, apiRe, owner) => {
+    const block = (route) => route.abort("failed");
+    await page.route(apiRe, block);
+    await page.evaluate(() => { location.hash = "#map"; }).catch(() => null); await sleep(600);
+    await page.evaluate((hh) => { location.hash = hh; }, hash); await sleep(2500);
+    const msg = await page.evaluate(() => { const r = document.querySelector("#birge-screen:not([hidden])");
+      return r ? (r.innerText || "").trim().slice(0, 160) : ""; }).catch(() => "");
+    const retry = await firstVisible(page.getByRole("button", { name: retryRe }));
+    const f = await shot(`${s}-offline`);
+    await page.unroute(apiRe, block);
+    let back = null;
+    if (retry) { await retry.click({ timeout: 4000 }).catch(() => null); await sleep(2500);
+      back = !(await firstVisible(page.getByRole("button", { name: retryRe }))); }
+    step(s, `нет связи: понятное сообщение и «Повторить», после связи данные вернулись (${hash})`,
+      msg.length > 10 && !!retry && back !== false, { message: msg.slice(0, 100), retry: !!retry, recovered: back }, owner, f);
+  };
   const clickBtn = async (re) => { const b = await firstVisible(page.getByRole("button", { name: re })); if (!b) return false;
     await b.click({ timeout: 4000 }).catch(() => null); await sleep(1500); return true; };
 
@@ -249,20 +288,60 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
         await quality("7", "R16", f);
         const iniTitle = S.ini && S.ini.title;
         step("7", `в «Обзоре» — инициатива «${iniTitle}»`, iniTitle ? await visibleText(new RegExp(esc(iniTitle), "i")) : null, null, "R16");
+        await errorState("7", `#yard/${s7.yard}`, /\/api\/civic\/v2\/together\//, "R16");
       }
     }
     o = await open(`#together/${s7.initiative}`, "BirgeTogether");
     if (o.ok !== null) {
-      const goRe = new RegExp("^(" + [word("together.join", "Я приду", "Мен келемін"), "Я приду", "Мен келемін", "Барамын"].map(esc).join("|") + ")", "i");
+      const goRe = new RegExp("^(" + [word("together.join", "Я приду", "Мен барамын"), "Я приду", "Мен барамын"].map(esc).join("|") + ")", "i");
       const before = await page.evaluate(() => (document.querySelector("#birge-screen:not([hidden])") || document.body).innerText);
       const pressed = await clickBtn(goRe);
       const after = await page.evaluate(() => (document.querySelector("#birge-screen:not([hidden])") || document.body).innerText);
       const f2 = await shot("7-join");
-      step("7", `карточка инициативы → «Я приду» → счётчик ${s7.joined_before} → ${s7.joined_after}`,
-        pressed ? new RegExp(`\\b${s7.joined_after}\\b`).test(after) && !new RegExp(`\\b${s7.joined_after}\\b`).test(before.replace(/\d{4}/g, "")) : false,
-        { pressed }, "R16", f2);
+      // Счётчик R16: «14 соседей придут» → «15 соседей придут» (kk «15 көрші келеді»). Ищем число рядом со словом
+      // «сосед/көрші», а не любое «15» (сегодня 15 окт — дата на карточке тоже «15»).
+      const cnt = (txt) => { const m = /(?<!\d)(\d{1,4})(?!\d)\s*(?:сосед\p{L}*\s+прид|көрші\s+(?:келеді|барады))/iu.exec(txt || ""); return m ? Number(m[1]) : null; };
+      const n0 = cnt(before), n1 = cnt(after);
+      // API-часть уже нажимала «Я приду» (14 → 15 по миру), поэтому в интерфейсе — «+1 к тому, что на карточке».
+      step("7", `карточка инициативы → «Я приду» → счётчик +1 (по миру ${s7.joined_before} → ${s7.joined_after})`,
+        pressed ? n0 !== null && n1 === n0 + 1 : false, { pressed, before: n0, after: n1 }, "R16", f2);
     }
     (timing["7"] = timing["7"] || []).push(Date.now() - t7);
+  }
+
+  // --- сцена 8 (житель): «Я тоже» на жалобе сцены → «Мои обращения»: «2 службы: Водоканал — сделано · Дорожная служба —
+  // в работе» (IDEA §3, R09 joint.resident). Совместное исполнение задал сотрудник в API-части (S.jointSet).
+  const s8r = S && S.raw.scene8;
+  if (s8r && !S.jointSet) step("8", "житель: «Мои обращения» — две службы и статус каждой", null, "совместное исполнение не задано (маршрута R09 раунда 15 нет в сборке)", "R09");
+  else if (s8r) {
+    await setMode("resident");
+    const dev = await page.evaluate(() => { try { let d = localStorage.getItem("birge.device");
+      if (!d || !/^[A-Za-z0-9_-]{16,80}$/.test(d)) { d = "d-r10ui-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); localStorage.setItem("birge.device", d); }
+      return d; } catch (e) { return null; } }).catch(() => null);
+    const me = dev ? await ctx.request.post(base + `api/civic/v2/complaints/${s8r.complaint}/metoo`, { data: { device_id: dev },
+      headers: { "X-Birge-Device": dev, Origin: base.replace(/\/$/, "") } }).catch(() => null) : null;
+    await page.evaluate(() => { location.hash = "#mine"; }).catch(() => null); await sleep(2800);
+    const names = ["service.water", "service.road"].map((k) => T(dict, k, null)).filter(Boolean);
+    const jl = await page.evaluate((nm) => {
+      const vis = (e) => !!(e && e.getClientRects().length && getComputedStyle(e).visibility !== "hidden");
+      const e = [...document.querySelectorAll(".bc-joint-line")].find(vis);
+      if (e) return { text: e.innerText.trim().replace(/\s+/g, " ").slice(0, 160), parts: [...e.querySelectorAll("[data-status]")].map((x) => x.getAttribute("data-status")) };
+      const t = document.body.innerText;
+      return nm.length >= 2 && nm.every((x) => t.includes(x)) ? { text: nm.join(" · "), parts: nm.map(() => "?") } : null;
+    }, names).catch(() => null);
+    const f = await shot("8-mine-joint");
+    step("8", "житель: «Мои обращения» — две службы и статус каждой (совместное исполнение)", jl ? jl.parts.length >= 2 && jl.parts.includes("done") : false,
+      { metoo: me && me.status(), line: jl }, "R09", f);
+    if (jl) await quality("8m", "R09", f);
+    await page.evaluate(() => { location.hash = "#map"; }).catch(() => null); await sleep(800);
+  }
+
+  // --- сцены 8–9 ведёт акимат после входа сотрудника (DEMO_SCRIPT: вход перед шагом 5) — сессия на весь контекст.
+  if (staffAcc && staffAcc.user) {
+    const r = await ctx.request.post(base + "api/civic/v1/session/login", { data: { username: staffAcc.user, password: staffAcc.pass },
+      headers: { Origin: base.replace(/\/$/, "") } }).catch(() => null);
+    step("8", "вход сотрудника для сцен 8–9", r ? r.ok() : false, { status: r && r.status() }, "R01");
+    await page.reload(); await sleep(2500);
   }
 
   // --- сцена 8: акимат «Ведомства» → табло → календарь работ (конфликт)
@@ -275,16 +354,34 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     if (o.ok === null) step("8", "«Штаб ведомств» → «Табло»", null, o.why, "R17");
     else {
       step("8", "«Штаб ведомств» → «Табло» открыт", o.ok, { title: o.title, chars: o.chars }, "R17", f);
-      if (o.ok) await quality("8", "R17", f);
+      if (o.ok) { await quality("8", "R17", f); await errorState("8", "#agencies/board", /\/api\/civic\/v2\/agencies/, "R17"); }
     }
+    // IA_ROUND15: «Календарь работ» — вкладка «Ведомств» (#agencies/calendar, R17 191f81e7+); запасной адрес — свой
+    // раздел R12 #works-calendar (R17 без вкладки календаря). Признак, что смонтирован календарь, — корень .wcal (R12).
     o = await open("#agencies/calendar", "BirgeWorksCalendar");
+    if (o.ok !== null && !(await page.evaluate(() => !!document.querySelector("#birge-screen:not([hidden]) .wcal")).catch(() => false))) {
+      o = await open("#works-calendar", "BirgeWorksCalendar");
+      step("8", "«Календарь работ» — вкладка «Ведомств» (IA_ROUND15 §5.4)", false, "вкладки нет: календарь открыт своим разделом #works-calendar, из «Ведомств» и «Ещё» к нему не перейти", "R17 + R01");
+    }
     const f2 = await shot("8-calendar");
     if (o.ok === null) step("8", "«Календарь работ» (вкладка «Ведомств»)", null, o.why, "R12 + R17");
     else {
-      const advice = S.conflict && (lang === "kk" ? S.conflict.advice_kk : S.conflict.advice_ru);
-      step("8", "«Календарь работ» открыт, виден конфликт работ и совет", o.ok && (advice ? await visibleText(new RegExp(esc(advice.slice(0, 24)), "i")) : true),
-        { title: o.title, advice: advice && advice.slice(0, 40) }, "R12", f2);
+      step("8", "«Календарь работ» открыт", o.ok, { title: o.title, chars: o.chars }, "R12", f2);
       if (o.ok) await quality("8c", "R12", f2);
+      // Конфликт сцены (R02 scenes.scene8 → R12 works-conflicts): своя ссылка R12 #works-calendar/<id>, совет — текст R12
+      // из API (не текст мира R02), улица сцены — в строке календаря.
+      const cf = S.conflictApi;
+      if (o.ok && cf) {
+        const advice = lang === "kk" ? cf.advice_kk : cf.advice_ru;
+        const street = (lang === "kk" ? s8.street_kk : s8.street_ru) || "";
+        const streetCore = street.replace(/^(улица|проспект|переулок)\s+/i, "").replace(/\s+(көшесі|даңғылы)$/i, "");
+        await open(`#works-calendar/${cf.id}`, "BirgeWorksCalendar");
+        const f3 = await shot("8-conflict");
+        const seenAdvice = advice ? await visibleText(new RegExp(esc(advice.slice(0, 30)), "i")) : false;
+        const seenStreet = streetCore ? await visibleText(new RegExp(esc(streetCore), "i")) : true;
+        step("8", `конфликт сцены «копаем дважды» (${street || cf.id}) по ссылке #works-calendar/${cf.id}: улица и совет видны`,
+          seenAdvice && seenStreet, { advice: advice && advice.slice(0, 50), street: streetCore, seenAdvice, seenStreet }, "R12", f3);
+      } else if (o.ok) step("8", "конфликт сцены «копаем дважды» в календаре", null, "конфликта сцены нет в ответе works-conflicts (API-часть)", "R12");
     }
     (timing["8"] = timing["8"] || []).push(Date.now() - t8);
   }
@@ -295,22 +392,187 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     const t9 = Date.now();
     await setMode("akimat");
     await page.evaluate(() => { location.hash = "#day"; }); await sleep(2600);
-    const crisisRe = new RegExp("^(" + [word("akim.pulse.open_crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу"), "Открыть кризисный штаб", "Дағдарыс штабын ашу"].map(esc).join("|") + ")", "i");
-    const hasBtn = !!(await firstVisible(page.getByRole("button", { name: crisisRe }))) || !!(await firstVisible(page.getByRole("link", { name: crisisRe })));
+    // Ключ R11 board.crisis.open («Открыть кризисный штаб» / «Жедел штабты ашу»).
+    const crisisRe = new RegExp("^(" + [T(dict, ["board.crisis.open", "akim.pulse.open_crisis"], lang === "kk" ? "Жедел штабты ашу" : "Открыть кризисный штаб"),
+      "Открыть кризисный штаб", "Жедел штабты ашу"].map(esc).join("|") + ")", "i");
+    // Кнопку ищем по классу R08 (.akim-pulse__crisis) или по названию; подпись сверяем со словарём R11 отдельно —
+    // термин «Жедел штаб» / «кризисный штаб» должен быть один во всех экранах.
+    const byName = (await firstVisible(page.getByRole("button", { name: crisisRe }))) || (await firstVisible(page.getByRole("link", { name: crisisRe })));
+    const byClass = await firstVisible(page.locator(".akim-pulse__crisis"));
+    const btn = byName || byClass;
+    const btnText = btn ? ((await btn.innerText().catch(() => "")) || "").trim() : null;
     const f = await shot("9-day");
-    step("9", "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»", shell && shell.globals.includes("BirgeAgencies") ? hasBtn : null,
-      shell && shell.globals.includes("BirgeAgencies") ? { button: hasBtn } : "модуля BirgeAgencies нет на странице", "R08 + R17", f);
-    const o = await open(`#crisis/${s9.incident}`, "BirgeAgencies");
+    const why9 = !(shell && shell.globals.includes("BirgeAgencies")) ? "модуля BirgeAgencies нет на странице"
+      : !S.r15day ? "поставки R08 раунда 15 («Картина дня» 2.0) нет в сборке" : null;
+    step("9", "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»", why9 ? null : !!btn,
+      why9 || { button: !!btn, text: btnText }, "R08 + R17", f);
+    if (!why9 && btn) {
+      const term = T(dict, ["board.crisis.open"], null);
+      step("9", "подпись кнопки штаба — термин словаря R11 (board.crisis.open)", term ? crisisRe.test(btnText) : null,
+        term ? { shown: btnText, r11: term } : "в словаре R11 нет board.crisis.open", "R08 + R11");
+    }
+    // Адрес штаба: #agencies/crisis/<id> (R17 191f81e7+), прежний #agencies/crisis=<id>; публичная карточка — #crisis/<id>.
+    // Экран открыт — мало: штаб должен показать именно этот кризис (название из мира), иначе пробуем следующий адрес
+    // (у R17 до 191f81e7 адрес #agencies/crisis/<id> открывает «Табло»).
+    const incTitle = S.inc && (lang === "kk" ? S.inc.title_kk : S.inc.title_ru);
+    let o = null;
+    for (const hh of [`#agencies/crisis/${s9.incident}`, `#agencies/crisis=${s9.incident}`, `#crisis/${s9.incident}`]) {
+      o = await open(hh, "BirgeAgencies");
+      if (o.ok === null) break;
+      if (o.ok && (!incTitle || await visibleText(new RegExp(esc(incTitle), "i")))) { o.addr = hh; break; }
+      o = { ...o, ok: false, addr: hh };
+    }
     const f2 = await shot("9-crisis");
     if (o.ok === null) step("9", "кризисный штаб", null, o.why, "R17");
     else {
-      step("9", `кризис ${s9.incident}: открыт, зона, службы и обновления`, o.ok, { title: o.title, chars: o.chars }, "R17", f2);
+      step("9", `кризис ${s9.incident}: штаб «${incTitle || s9.incident}» открыт по адресу`, o.ok, { addr: o.addr, title: o.title, chars: o.chars }, "R17", f2);
+      if (o.ok && S.inc) {
+        // VISUAL_BRIEF №5: чипы служб с прогрессом задач — названия служб сцены (по таблице R08) или тексты задач на экране.
+        const tasks = (S.inc.tasks || []).map((t) => (lang === "kk" ? t.text_kk : t.text_ru)).filter(Boolean);
+        const seen = [];
+        for (const t of tasks) if (await visibleText(new RegExp(esc(t.slice(0, 28)), "i"))) seen.push(t.slice(0, 28));
+        step("9", `в штабе видны задачи служб (${tasks.length} в демо-мире)`, tasks.length ? seen.length >= Math.min(3, tasks.length) : null,
+          { seen: seen.length, of: tasks.length }, "R17");
+      }
       if (o.ok) await quality("9", "R17", f2);
     }
     (timing["9"] = timing["9"] || []).push(Date.now() - t9);
   }
   step("*", "консоль без ошибок (кроме шума среды)", errors.length === 0, errors.slice(0, 6), "по тексту ошибки");
   await ctx.close();
+}
+
+// ------------------------------------------------------------------------------------------------ Ситуационный центр
+// VISUAL_BRIEF №4 (R08): страница /civic/board/ на весь экран — 1920×1080 и 1366×768 без прокрутки, тёмная тема (.bk-dark),
+// крупные живые числа (читается с 3 м), контраст ≥ 4,5:1, «Пример» на синтетике, «На весь экран» и «← В Birge».
+// VISUAL_BRIEF §1 №11 (R01): режим показа ?show=1 и Ctrl+K «Сцена 7 / 8 / 9» — переход к сцене ≤ 1 с, без мигания.
+// Сцены палитра берёт из GET demo/scenes (только с демо-миром). Ожидаемый раздел: 7 — «Мой двор» (или карта двора без
+// R16), 8 — «Обращения» с жалобой сцены, 9 — «Ведомства» с кризисом (или «Кризис», или «Картина дня» без R17).
+async function showCheck(browser, base, lang, staffAcc) {
+  const dict = L.loadDict(ROOT, lang);
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, deviceScaleFactor: 1, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+  await ctx.addInitScript((lg) => { try { localStorage.setItem("birge.lang", lg); } catch (e) { /* без хранилища */ } }, lang);
+  if (staffAcc && staffAcc.user) {
+    await ctx.request.post(base + "api/civic/v1/session/login", { data: { username: staffAcc.user, password: staffAcc.pass },
+      headers: { Origin: base.replace(/\/$/, "") } }).catch(() => null);
+  }
+  const page = await ctx.newPage();
+  await page.goto(base + "?show=1");
+  await page.waitForFunction(() => document.readyState === "complete" && document.body.innerText.length > 50, null, { timeout: 40000 }).catch(() => null);
+  await sleep(3000);
+  const show = await page.evaluate(() => document.documentElement.dataset.birgeShow === "1").catch(() => false);
+  add(`UI show-${lang}`, "S", "режим показа ?show=1 включён (html[data-birge-show])", show ? "PASS" : "NOT_RUN", show ? null : "нет режима показа в сборке", "R01");
+  const want = { 7: ["yard", "map"], 8: ["inbox"], 9: ["agencies", "crisis", "day"] };
+  for (const n of [7, 8, 9]) {
+    const title = T(dict, `shell.palette.scene${n}`, null);
+    await page.keyboard.press("Escape").catch(() => null);
+    await page.keyboard.press("Control+k").catch(() => null);
+    await sleep(500);
+    const input = await firstVisible(page.locator(".birge-palette__input"));
+    if (!input || !title) { add(`UI show-${lang}`, String(n), `Ctrl+K «Сцена ${n}» → сцена ≤ 1 с`, "NOT_RUN", input ? "нет ключа shell.palette.scene" + n : "палитры Ctrl+K нет", "R01"); continue; }
+    await input.fill(title.split("·")[0].trim()).catch(() => null);
+    await sleep(600);
+    const offered = await page.evaluate((tt) => [...document.querySelectorAll(".birge-palette__item")].some((li) => (li.textContent || "").includes(tt)), title).catch(() => false);
+    if (!offered) { add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → сцена ≤ 1 с`, "NOT_RUN", "команды сцены нет в палитре (нет демо-мира или сцены)", "R01"); continue; }
+    // Время меряет сама страница: от нажатия Enter (keydown, capture) до кадра, где раздел сцены открыт с содержимым
+    // (requestAnimationFrame) — без накладных расходов опроса из теста.
+    await page.evaluate((wantIds) => {
+      const box = window.__r10scene = { t0: null, t1: null, section: null };
+      addEventListener("keydown", (e) => { if (e.key === "Enter" && box.t0 === null) box.t0 = performance.now(); }, { capture: true, once: true });
+      const tick = () => {
+        const B = window.BirgeShell, r = document.querySelector("#birge-screen:not([hidden])");
+        box.section = B && B.section;
+        if (box.t0 !== null && B && wantIds.includes(B.section) && (B.section === "map" || (r && (r.innerText || "").trim().length > 30))) { box.t1 = performance.now(); return; }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, want[n]).catch(() => null);
+    await page.keyboard.press("Enter").catch(() => null);
+    let ms = null, sec = null;
+    for (let i = 0; i < 40; i++) {
+      const box = await page.evaluate(() => window.__r10scene).catch(() => null);
+      sec = box && box.section;
+      if (box && box.t1 !== null && box.t0 !== null) { ms = Math.round(box.t1 - box.t0); break; }
+      await sleep(100);
+    }
+    const f = path.join(OUT, `show-${lang}-scene${n}.jpg`);
+    await sleep(800);
+    await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+    add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → раздел ${want[n][0]} ≤ 1 с`, ms === null ? "FAIL" : ms <= 1000 ? "PASS" : "FAIL",
+      { ms, section: sec }, "R01", path.basename(f));
+  }
+  await ctx.close();
+}
+
+async function boardCheck(browser, base, lang, staffAcc) {
+  const dict = L.loadDict(ROOT, lang);
+  // Адрес страницы — /civic/board/index.html (каталожного индекса у шлюза нет); короткий /civic/board/ — если R01 добавил.
+  let page_url = null, head = 0;
+  for (const u of ["civic/board/", "civic/board/index.html"]) {
+    head = await fetch(base + u).then((r) => r.status).catch(() => 0);
+    if (head === 200) { page_url = u; break; }
+  }
+  if (!page_url) { add("UI board", "9", `Ситуационный центр /civic/board/ (${lang})`, "NOT_RUN", `страницы нет (HTTP ${head})`, "R08"); return; }
+  for (const [w, h] of [[1920, 1080], [1366, 768]]) {
+    const tag = `${w}-${lang}`;
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+    if (staffAcc && staffAcc.user) {
+      // Вход сотрудника — той же сессией, что «Для сотрудников» на главной (страница сама просит войти при 401).
+      await ctx.request.post(base + "api/civic/v1/session/login", { data: { username: staffAcc.user, password: staffAcc.pass },
+        headers: { Origin: base.replace(/\/$/, "") } }).catch(() => null);
+    }
+    const page = await ctx.newPage();
+    const errors = [];
+    page.on("pageerror", (e) => errors.push(e.message.slice(0, 160)));
+    await page.goto(base + `${page_url}?lang=${lang}&rotate=0`);
+    await sleep(3500);
+    const m = await page.evaluate(() => {
+      const root = document.documentElement, body = document.body;
+      const lum = (c) => { const v = (c.match(/\d+(\.\d+)?/g) || [255, 255, 255]).slice(0, 3).map(Number).map((x) => x / 255)
+        .map((x) => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+      let bg = getComputedStyle(body).backgroundColor;
+      if (/rgba\(0, 0, 0, 0\)|transparent/.test(bg)) bg = getComputedStyle(root).backgroundColor;
+      const vis = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight; };
+      const leaves = [...document.querySelectorAll("body *")].filter((e) => vis(e) && !e.children.length && (e.textContent || "").trim());
+      // Текст в SVG (подписи районов мини-карты) масштабирует viewBox: размер на экране = font-size × масштаб CTM.
+      // Текст для диктора (.bk-sr-only, 1×1 px) не видно — не считаем.
+      const eff = (e) => { const fs = parseFloat(getComputedStyle(e).fontSize);
+        if (e instanceof SVGElement && typeof e.getScreenCTM === "function") { const m = e.getScreenCTM(); if (m) return fs * Math.sqrt(m.a * m.a + m.b * m.b); }
+        return fs; };
+      // Строка лицензии карты («© OpenStreetMap») — служебная, к правилу «читается с 3 м» не относится.
+      const shown = leaves.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1
+        && !e.closest(".bk-sr-only, .sr-only, .visually-hidden") && !/©/.test(e.textContent || ""); });
+      const sizes = shown.map((e) => Math.round(eff(e) * 10) / 10);
+      const smallest = shown.map((e) => [Math.round(eff(e) * 10) / 10, (e.textContent || "").trim().slice(0, 30)]).sort((a, b) => a[0] - b[0]).slice(0, 4);
+      const big = leaves.filter((e) => /^\d[\d\s.,%×]*$/.test(e.textContent.trim()) && parseFloat(getComputedStyle(e).fontSize) >= 40).length;
+      return { dark: root.classList.contains("bk-dark"), bg_lum: Math.round(lum(bg) * 1000) / 1000,
+        scrollH: root.scrollHeight, scrollW: root.scrollWidth, innerH: innerHeight, innerW: innerWidth,
+        state: (document.getElementById("board") || {}).dataset ? document.getElementById("board").dataset.state : null,
+        min_font: sizes.length ? Math.min(...sizes) : null, smallest, big_numbers: big,
+        text: (body.innerText || "").slice(0, 4000) };
+    }).catch(() => null);
+    const f = path.join(OUT, `board-${tag}.jpg`);
+    await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+    const q = await uiScreen(page).catch(() => null);
+    const step = (name, ok, detail) => add(`UI board ${tag}`, "9", name, ok3(ok), detail, "R08", path.basename(f));
+    if (!m) { step("страница открылась", false, "нет данных страницы"); await ctx.close(); continue; }
+    const loginShown = /для сотрудников|қызметкерлеріне/i.test(m.text) && /Войти|Кіру/.test(m.text);
+    step("открыта с данными (вход сотрудника принят)", m.state !== "loading" && !loginShown, { state: m.state, login_form: loginShown });
+    step("без прокрутки на весь экран", m.scrollH <= m.innerH + 2 && m.scrollW <= m.innerW + 2, { scrollH: m.scrollH, h: m.innerH, scrollW: m.scrollW, w: m.innerW });
+    step("тёмная тема только здесь (.bk-dark, тёмный фон)", m.dark && m.bg_lum < 0.2, { dark: m.dark, bg_luminance: m.bg_lum });
+    step("крупные живые числа (≥ 40 px) — читается с 3 м", m.big_numbers >= 3, { big_numbers: m.big_numbers });
+    step("мелкого текста нет (≥ 14 px на большом экране)", m.min_font === null || m.min_font >= 14, { min_font: m.min_font, smallest: m.smallest });
+    if (q) step("контраст текста ≥ 4,5:1 на тёмном", q.lowContrastN === 0, { n: q.lowContrastN, ex: (q.lowContrast || []).slice(0, 4) });
+    const sample = /Пример|Үлгі/.test(m.text);
+    step("пометка «Пример» на синтетике", sample, null);
+    const back = T(dict, "board.back", lang === "kk" ? "Birge-ге" : "В Birge"), full = T(dict, "board.fullscreen", lang === "kk" ? "Толық экран" : "На весь экран");
+    const backRe = new RegExp(esc(back.replace(/^←\s*/, "")), "i");
+    const hasFull = !!(await firstVisible(page.getByRole("button", { name: new RegExp(esc(full), "i") })));
+    const hasBack = !!(await firstVisible(page.getByRole("link", { name: backRe }))) || !!(await firstVisible(page.getByRole("button", { name: backRe })));
+    step("«На весь экран» и «← В Birge»", hasFull && hasBack, { full: hasFull, back: hasBack });
+    step("консоль без ошибок", errors.length === 0, errors.slice(0, 4));
+    await ctx.close();
+  }
 }
 
 // ------------------------------------------------------------------------------------------------ запуск
@@ -329,6 +591,8 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     if (!args["api-only"]) {
       const browser = await chromium.launch();
       for (const size of SIZES) for (const lang of LANGS) await uiFlow(browser, srv.base, size, lang, S && !S.error ? S : null, srv.staff, timing.ui);
+      for (const lang of LANGS) await boardCheck(browser, srv.base, lang, srv.staff);
+      for (const lang of LANGS) await showCheck(browser, srv.base, lang, srv.staff);
       await browser.close();
     }
   } finally { await srv.stop(); }

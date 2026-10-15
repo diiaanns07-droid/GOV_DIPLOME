@@ -133,11 +133,12 @@ ROUTE_404 = re.compile(r"адрес|нет такого|unknown (route|path)", r
 def bodies(ids):
     """Примеры тел «как в интерфейсе» (форматы CONTRACT §5). Модуль вправе отказать 400 — но не упасть 500."""
     yard = ids.get("yard") or "yard-r10-probe"
+    point = ids.get("_yard_point") or [71.4065, 51.1312]  # точка во дворе (R16 проверяет: «далеко от двора» — 422)
     return {
         "together/initiatives": {
             "kind": "cleanup", "title": "Субботник во дворе (проверка R10)", "lang": "ru",
             "text": "Соберёмся в субботу в 10:00, уберём двор. Возьмите перчатки.",
-            "target": {"kind": "area", "id": yard}, "point": [71.4065, 51.1312], "district": "nura",
+            "target": {"kind": "area", "id": yard}, "point": point, "district": "nura",
             "starts_at": _iso(2), "ends_at": _iso(2, 3), "bring": ["перчатки", "мешки"]},
         "together/initiatives/{initiative}/join": {},
         "together/initiatives/{initiative}/leave": {},
@@ -481,7 +482,7 @@ class ApiCheck:
     # --- адреса
     def fill(self, template, ids=None):
         ids = self.ids if ids is None else ids
-        return re.sub(r"\{(\w+)\}", lambda m: ids.get(m.group(1)) or PROBE, template)
+        return re.sub(r"\{(\w+)\}", lambda m: str(ids.get(m.group(1)) or PROBE), template)
 
     def query(self, route):
         values = {"since": _iso(-7), "from": _date(-30), "to": _date(60), "from_week": _date(-7),
@@ -596,6 +597,11 @@ class ApiCheck:
             target = item.get("target") or {}
             if str(target.get("id", "")).startswith("yard-"):
                 self.ids["yard"] = target["id"]
+        if "yard" in self.ids:
+            yr = self.anon.get(f"{V2}/together/yards/{self.ids['yard']}")
+            ypoint = ((record(yr.body, "yard") or {}).get("point") if yr.status == 200 else None)
+            if isinstance(ypoint, list) and len(ypoint) == 2:
+                self.ids["_yard_point"] = ypoint
         item = first_id("incidents", "incidents")
         if item:
             self.ids["incident"] = item["id"]
@@ -789,7 +795,14 @@ class ApiCheck:
                  None if back == before else {"after_leave": back}, owner)
 
     def handoff_keeps_deadline(self):
-        cid = self.ids["complaint"]
+        # Своя свежая жалоба: на общей уже была передача в проверке доступа (вторая такая же — справедливо 409/422).
+        fresh = self.res2.post(f"{V2}/complaints", {
+            "text": "Раскопали тротуар и не засыпали, ходить негде", "lang": "ru", "category": "roads",
+            "category_source": "resident", "point": [71.4060541, 51.1266034],
+            "target": {"kind": "object", "id": "osm-node-13394597038"}, "device_id": self.res2.device, "demo": True})
+        rec_fresh = record(fresh.body, "complaint") or {}
+        cid = rec_fresh.get("id") if fresh.status in (200, 201) and str(rec_fresh.get("id", "")).startswith("c-") \
+            else self.ids["complaint"]
         before = record(self.staff.get(f"{V2}/complaints/{cid}").body, "complaint") or {}
         r = self.staff.post(f"{V2}/complaints/{cid}/handoff", {"to": "water", "reason": "Сначала нужна замена трубы"})
         after = record(self.staff.get(f"{V2}/complaints/{cid}").body, "complaint") or {}

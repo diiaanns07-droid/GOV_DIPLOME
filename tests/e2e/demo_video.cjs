@@ -2,7 +2,7 @@
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/demo_video.cjs --root <папка сборки> --out <папка>
 //        [--langs kk,ru] [--parts 1,2] [--world] [--basemap simplified|real] [--glass keep|off|auto]
-//        [--subtitles <json>] [--pace 0.8] [--fast] [--no-mp4]
+//        [--subtitles <json>] [--pace 0.5] [--fast] [--no-mp4] [--skip project|none]
 //
 // Что получается в <out> (на каждый язык):
 //   birge-demo-<lang>.webm — запись Playwright (как есть);  birge-demo-<lang>.mp4 — H.264 для заявки (если есть ffmpeg);
@@ -30,6 +30,9 @@ const LANGS = String(args.langs || "kk,ru").split(",");
 const PARTS = String(args.parts || "1,2").split(",").map(Number);
 const [W, H] = String(args.size || "1366x768").split("x").map(Number);
 const FAST = !!args.fast;                       // паузы ×0,35 — пробный прогон, не для показа
+// Сцены, которые не снимаем: по умолчанию «project» (шаг 5, проект в 3D) — пока 3D не «белый макет» R05 (AMENDMENTS П1,
+// правило 3), и так ролик с частью 2 укладывается в 5 мин. Вернуть: --skip none.
+const SKIP = new Set(String(args.skip === undefined ? "project" : args.skip).split(",").filter((x) => x && x !== "none" && x !== "true"));
 const BASEMAP = args.basemap === "real" ? "real" : "simplified";
 const GLASS = args.glass === "auto" ? null : String(args.glass || "keep");
 const SUBS = JSON.parse(fs.readFileSync(path.resolve(args.subtitles || path.join(__dirname, "fixtures/video_subtitles.json")), "utf8"));
@@ -38,9 +41,13 @@ const PLACE = [71.4148, 51.1131];               // место сквера (ка
 const SHOT_Q = 72;
 
 // pause — паузы для зрителя (в --fast короче); ожидания ответа интерфейса — wait (всегда полные, иначе шаги не проходят).
-// --pace — множитель пауз для зрителя (0,8 по умолчанию: часть 1 ≈ 3 мин); --fast — 0,35.
-const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.8)));
+// --pace — множитель пауз для зрителя (0,7 по умолчанию: часть 1 ≈ 3 мин, весь ролик ≤ 5 мин); --fast — 0,35.
+// Темп пауз: 0,6 — ролик ≤ 5 мин (VISUAL_BRIEF №12) с частью 2; субтитр всё равно держится не меньше времени чтения.
+const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.5)));
 const pause = (ms) => sleep(Math.round(ms * PACE));
+// Часть времени чтения даёт следующий шаг сцены (нажатие, перелёт карты): субтитр висит до следующего — вычитаем ~1,5 с.
+const READ_AHEAD = 2000;
+const READ_CPS = 16;   // знаков в секунду: удобная скорость чтения субтитров (норма 15–17)
 const wait = (ms) => sleep(ms);
 const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
 const dbg = (...xs) => { if (process.env.R10V_DEBUG) log("  ·", ...xs); };
@@ -114,8 +121,12 @@ function overlayScript() {
       const W = innerWidth, H = innerHeight;
       const top = busy(400, H - 132, W - 96, H - 62) && !busy(540, 128, W - 20, 160);
       sub.classList.toggle("top", top);
+      // Пометка «Демо-запись…»: на стороне, противоположной субтитру (субтитр внизу — пометка справа под шапкой,
+      // наверху — справа внизу), и только если там нет интерфейса (баннер кризиса, кнопки панели); иначе прячем.
+      const bh = badge.offsetHeight || 40, y = top ? H - 60 - bh : 74;
+      const free = !busy(W - 440, y + 2, W - 24, y + bh - 2);
       badge.classList.toggle("low", top);
-      badge.classList.toggle("off", top && busy(W - 440, H - 112, W - 20, H - 62));
+      badge.classList.toggle("off", !free);
     }, 250);
   };
   window.__r10v = {
@@ -143,6 +154,13 @@ async function recordLang(browser, lang) {
   await ctx.addInitScript((lg) => { try { if (!sessionStorage.getItem("r10v-lang")) { localStorage.setItem("birge.lang", lg);
     localStorage.setItem("civic.lang", lg); sessionStorage.setItem("r10v-lang", "1"); } } catch (e) { /* без хранилища */ } }, lang);
   await ctx.addInitScript(overlayScript);
+  // Вход сотрудника — до записи, через API (cookie сессии в контексте): вход не функция для показа, а 10 с ролика.
+  let preLogin = false;
+  if (srv.staff && srv.staff.user) {
+    const r = await ctx.request.post(srv.base + "api/civic/v1/session/login", { data: { username: srv.staff.user, password: srv.staff.pass },
+      headers: { Origin: srv.base.replace(/\/$/, "") } }).catch(() => null);
+    preLogin = !!(r && r.ok());
+  }
   const page = await ctx.newPage();
   const t0 = Date.now();
   const cues = [], scenes = [], skipped = [], shots = [];
@@ -156,7 +174,8 @@ async function recordLang(browser, lang) {
     if (open) { open.end = at(); cues.push(open); }
     open = text ? { start: at(), end: null, text, key } : null;
     await page.evaluate((x) => window.__r10v && window.__r10v.sub(x), text).catch(() => null);
-    await pause(hold);
+    // Субтитр должен успеть прочитаться: не меньше 1 с на READ_CPS знаков, кроме --fast.
+    await sleep(Math.max(Math.round(hold * PACE), FAST || !text ? 0 : Math.round(text.length / READ_CPS * 1000) - READ_AHEAD));
   };
   const quiet = async () => { if (open) { open.end = at(); cues.push(open); open = null; }
     await page.evaluate(() => window.__r10v && window.__r10v.sub("")).catch(() => null); };
@@ -222,6 +241,8 @@ async function recordLang(browser, lang) {
     if (PARTS.includes(1)) await part1();
     if (PARTS.includes(2)) await part2();
     await say("final", 6500);
+    // Последний субтитр — без «следующего шага сцены»: дочитать целиком (READ_AHEAD здесь не вычитается).
+    if (!FAST) await sleep(READ_AHEAD);
     await quiet();
     await pause(1200);
   } catch (e) {
@@ -331,24 +352,28 @@ async function recordLang(browser, lang) {
       await say("s4", 2400);
       await shot("4-day");
       await page.mouse.move(W / 2, H / 2);
-      for (let i = 0; i < 4; i++) { await page.mouse.wheel(0, 260); await pause(900); }
-      await pause(1200);
-      for (let i = 0; i < 4; i++) { await page.mouse.wheel(0, -260); await pause(250); }
+      for (let i = 0; i < 3; i++) { await page.mouse.wheel(0, 300); await pause(900); }
+      await pause(900);
+      for (let i = 0; i < 3; i++) { await page.mouse.wheel(0, -300); await pause(200); }
       const mapRe = exact(word("common.nav.map", "Карта", "Карта"));
       if (!(await header(mapRe, 1500))) await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null);
     }
     done(s, day, day ? null : "раздела «Картина дня» нет");
 
     // Шаг 5: вход сотрудника → «Что построить?» → «Сквер» → место → «Поставить» → 3D; житель «За».
-    s = scene("project");
-    let login = false;
-    if (srv.staff && srv.staff.user) {
+    let login = preLogin;
+    const doProject = !SKIP.has("project");
+    if (!doProject) skipped.push({ scene: "project", owner: "R05",
+      why: "шаг 5 (проект в 3D) не снимался: 3D ещё не «белый макет» (AMENDMENTS П1, правило 3); вернуть — --skip none" });
+    if (doProject) s = scene("project");
+    if (doProject && !login && srv.staff && srv.staff.user) {
       if (await header(textRe(lang === "kk" ? "Қызметкерлерге" : "Для сотрудников"), 1600)) {
         const user = await firstVisible(page.locator("input[autocomplete=username], input[name=username]"));
         const pass = await firstVisible(page.locator("input[type=password]"));
         if (user && pass) {
-          await press(user, 200); await page.keyboard.type(srv.staff.user, { delay: FAST ? 3 : 30 });
-          await press(pass, 200); await page.keyboard.type(srv.staff.pass, { delay: FAST ? 2 : 12 });
+          // Вход без посимвольного набора: пароль не «печатается» в кадре, сцена короче.
+          await press(user, 150); await user.fill(srv.staff.user).catch(() => null);
+          await press(pass, 150); await pass.fill(srv.staff.pass).catch(() => null);
           await page.keyboard.press("Enter"); await wait(2400);
           login = !!(await button(/^(Выйти|Шығу)$/i));
           dbg("5: вход сотрудника", login);
@@ -358,7 +383,7 @@ async function recordLang(browser, lang) {
       }
     }
     let placed = false;
-    if (login) {
+    if (doProject && login) {
       await say("s5", 600);
       const catalogTitle = word("proposal.catalog.title", "Что построить?", "Не салайық?");
       const catalogShown = !!(await firstVisible(page.getByText(textRe(catalogTitle))));
@@ -382,11 +407,10 @@ async function recordLang(browser, lang) {
       const pt = await L.showPoint(page, PLACE, 17);
       if (pt) { const x = pt.onCanvas ? pt.x : pt.near ? pt.near.x : pt.x, y = pt.onCanvas ? pt.y : pt.near ? pt.near.y : pt.y;
         await moveTo(x, y); await pause(300); await page.mouse.click(x, y); await wait(1400); }
-      await pressText(exact(word("proposal.rotate_right", "Повернуть вправо", "Оңға бұру")), 600);
       placed = await pressText(exact(word("proposal.place", "Поставить", "Орнату")), 3800);
       await shot("5-placed");
       const view3d = new RegExp("^(3D|" + esc(word("common.map.view3d", "Объёмный вид", "Көлемді көрініс")) + ")$", "i");
-      if (await pressText(view3d, 3200)) { await shot("5-3d"); await pressText(view3d, 900); }
+      if (await pressText(view3d, 2400)) { await shot("5-3d"); await pressText(view3d, 800); }
       // Житель голосует «За» по табличке проекта.
       await setMode("resident");
       await say("s5b", 600);
@@ -403,7 +427,7 @@ async function recordLang(browser, lang) {
         await pressText(new RegExp("^" + esc(word("proposal.vote_up", "За", "Жақтаймын")) + "(\\s|:|\\d|$)", "i"), 2200);
         await shot("5-vote"); await page.keyboard.press("Escape").catch(() => null); await pause(600); }
     }
-    done(s, login && placed, !login ? "вход сотрудника не удался" : placed ? null : "проект не поставлен");
+    if (doProject) done(s, login && placed, !login ? "вход сотрудника не удался" : placed ? null : "проект не поставлен");
 
     // Шаги 6–7: служба → «Взять в работу» → «Отметить исправленным» → сообщение жителям; житель «Да, исправлено».
     s = scene("fixed");
@@ -445,48 +469,141 @@ async function recordLang(browser, lang) {
   // ---------------------------------------------------------------------------------------------- часть 2 (сцены 7–9)
   // Экраны раунда 15 ищутся по оболочке (BirgeShell: разделы вида и «Ещё»), модули — по /api/civic/v2/modules.
   async function part2() {
-    const shell = await page.evaluate(() => {
-      const B = window.BirgeShell;
-      if (!B) return null;
-      const ids = new Set();
-      for (const mode of ["akimat", "resident"]) { try { (B.navItems(mode) || []).forEach((x) => ids.add(x)); } catch (e) { /* старая оболочка */ } }
-      try { (B.moreItems() || []).forEach((x) => ids.add(typeof x === "string" ? x : x.id)); } catch (e) { /* нет «Ещё» */ }
-      return [...ids];
-    }).catch(() => null) || [];
+    // Сцены — по scenes демо-мира R02 (двор, инициатива, кризис) и адресам IA_ROUND15 R11 / INTEGRATION R17:
+    // #yard/<двор>, #together/<инициатива>, #agencies/board, #agencies/calendar, #agencies/crisis=<id>; «Хроника» —
+    // BirgeReplay.open (R07). Нет модуля на странице или в API — сцена не записывается, причина — в MANIFEST.
+    const W15 = loadWorldScenes();
+    const has = await page.evaluate(() => ({ together: !!window.BirgeTogether, agencies: !!window.BirgeAgencies,
+      works: !!window.BirgeWorksCalendar, replay: !!(window.BirgeReplay && window.BirgeReplay.open) })).catch(() => ({}));
     const mods = await fetch(srv.base + "api/civic/v2/modules").then((r) => r.json()).then((j) => j.modules || {}).catch(() => ({}));
     const ready = (re) => Object.entries(mods).some(([k, v]) => re.test(k) && v.status === "ready");
-    const screenOf = (re) => shell.find((id) => re.test(id)) || null;
-    const plan = [
-      { id: "scene7-yard", subs: ["yard", "yard_join"], screen: screenOf(/together|yard|dvor|aula/), api: ready(/together/), owner: "R16" },
-      { id: "scene8-agencies", subs: ["agencies", "board"], screen: screenOf(/agenc|shtab|board|services/), api: ready(/agenc/), owner: "R17 + R09" },
-      { id: "scene8-works", subs: ["works"], screen: screenOf(/works|calendar/), api: ready(/works-(calendar|conflicts)|works_calendar|conflict/), owner: "R12" },
-      { id: "scene9-crisis", subs: ["crisis"], screen: screenOf(/crisis|incident|kriz/), api: ready(/incident/), owner: "R17" },
-      { id: "scene9-replay", subs: ["replay"], screen: screenOf(/replay|chronic|hronik/), api: ready(/replay/), owner: "R07" },
-    ];
-    const todo = plan.filter((p) => p.screen && p.api);
-    for (const p of plan.filter((x) => !todo.includes(x)))
-      skipped.push({ scene: p.id, owner: p.owner, why: !p.api ? "модуля нет в сборке (503 / нет маршрута)" : "экрана нет в оболочке (registerScreen)" });
-    await title(sub("part2"), 2200);
-    if (!todo.length) { await say("skipped", 4200); return; }
-    await setMode("resident");
-    for (const p of todo) {
-      const s = scene(p.id);
-      const mode = /agenc|works|crisis/.test(p.id) ? "akimat" : "resident";
-      await setMode(mode);
-      await page.evaluate((id) => window.BirgeShell && window.BirgeShell.setSection(id), p.screen).catch(() => null);
-      await wait(2200);
-      for (const key of p.subs) {
-        await say(key, 4600);
-        await page.mouse.move(W / 2, H / 2);
-        await page.mouse.wheel(0, 240); await pause(1200);
+    // Сцена 8, житель: жалоба сцены на 2 службы. Состояние готовит API (как в DEMO_SCRIPT делает сотрудник): совместное
+    // исполнение «Водоканал + Дорожная служба», часть «Водоканал — сделано»; житель этой вкладки — «Я тоже» → в «Моих
+    // обращениях» строка служб (R09 joint.resident). Нет маршрута R09 раунда 15 — сцена пропускается с причиной.
+    let joint = false;
+    if (W15.complaint8 && srv.staff && srv.staff.user) {
+      const A = L.api(srv.base);
+      if ((await A.login(srv.staff.user, srv.staff.pass)).ok) {
+        const c8 = `/api/civic/v2/complaints/${W15.complaint8}`;
+        const r1 = await A.call("POST", `${c8}/services`, { services: [{ service: "water", role: "lead" }, { service: "road", role: "partner" }] }, true);
+        const r2 = r1.status === 200 ? await A.call("POST", `${c8}/part`, { service: "water", status: "done",
+          note: lang === "kk" ? "Құбыр ауыстырылды" : "Трубу заменили" }, true) : r1;
+        const dev = r2.status === 200 ? await page.evaluate(() => { try { let d = localStorage.getItem("birge.device");
+          if (!d || !/^[A-Za-z0-9_-]{16,80}$/.test(d)) { d = "d-r10video-" + Date.now().toString(36); localStorage.setItem("birge.device", d); }
+          return d; } catch (e) { return null; } }).catch(() => null) : null;
+        const r3 = dev ? await A.call("POST", `${c8}/metoo`, { device_id: dev }, false, dev) : { status: 0 };
+        joint = [200, 201, 409].includes(r3.status);
       }
-      await shot(p.id);
-      const empty = await page.evaluate(() => { const r = document.querySelector("#birge-screen-root, #birge-screen, main");
-        return !r || (r.innerText || "").trim().length < 20; }).catch(() => true);
-      done(s, !empty, empty ? "экран пустой" : null);
-      await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null);
-      await pause(900);
     }
+    const plan = [
+      { id: "scene7-yard", ok: has.together && ready(/together/) && W15.yard, owner: "R16", why: "«Мой двор» (BirgeTogether R16)" },
+      { id: "scene8-joint", ok: joint, owner: "R09", why: "паспорт жителя «2 службы» (R09 совместное исполнение)" },
+      { id: "scene8-board", ok: has.agencies && ready(/agenc/), owner: "R17", why: "«Штаб ведомств» (BirgeAgencies R17)" },
+      { id: "scene8-works", ok: has.works && ready(/works.(calendar|conflicts)|conflict/), owner: "R12", why: "«Календарь работ» (BirgeWorksCalendar R12)" },
+      { id: "scene9-crisis", ok: has.agencies && ready(/incident/) && W15.incident, owner: "R17", why: "кризисный штаб (BirgeAgencies R17)" },
+      { id: "scene9-replay", ok: has.replay && ready(/replay/), owner: "R07", why: "«Хроника города» (BirgeReplay R07)" },
+    ];
+    for (const p of plan.filter((x) => !x.ok)) skipped.push({ scene: p.id, owner: p.owner, why: `нет в сборке: ${p.why}` });
+    const go = async (hash, after = 2400) => { await page.evaluate((hh) => { location.hash = hh; }, hash).catch(() => null); await wait(after); };
+    const toMap = async () => { await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null); await wait(900); };
+    await page.evaluate((x) => window.__r10v && window.__r10v.title(x), sub("part2")).catch(() => null);
+    await pause(1800);
+    await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null);
+    if (!plan.some((x) => x.ok)) { await say("skipped", 4200); return; }
+    // --- сцена 7: «Мой двор» → «Я приду»
+    if (plan[0].ok) {
+      const s = scene("scene7-yard");
+      await setMode("resident");
+      await go(`#yard/${W15.yard}`);
+      await say("yard", 4200);
+      await shot("7-yard");
+      if (W15.initiative) {
+        await go(`#together/${W15.initiative}`);
+        await say("yard_join", 900);
+        const joinRe = new RegExp("^(" + [word("together.join", "Я приду", "Мен барамын"), "Я приду", "Мен барамын"].map(esc).join("|") + ")", "i");
+        await pressText(joinRe, 2200);
+        await shot("7-join");
+        await pause(2400);
+      }
+      done(s);
+      await toMap();
+    }
+    // --- сцена 8, житель: «Мои обращения» → «2 службы: Водоканал — сделано · Дорожная служба — в работе»
+    if (plan[1].ok) {
+      const s = scene("scene8-joint");
+      await setMode("resident");
+      await go("#mine", 2600);
+      await say("agencies", 5200);
+      const seen = await page.evaluate(() => [...document.querySelectorAll(".bc-joint-line")].some((e) => e.getClientRects().length)).catch(() => false);
+      await shot("8-joint");
+      done(s, seen, seen ? null : "строки служб нет на карточке");
+      await toMap();
+    }
+    // --- сцена 8: «Штаб ведомств» (табло) и «Календарь работ»
+    if (plan[2].ok || plan[3].ok) await setMode("akimat");
+    if (plan[2].ok) {
+      const s = scene("scene8-board");
+      await go("#agencies/board");
+      await say("board", 5200);
+      await page.mouse.move(W / 2, H / 2); await page.mouse.wheel(0, 260); await pause(1200);
+      await shot("8-board");
+      done(s);
+    }
+    if (plan[3].ok) {
+      const s = scene("scene8-works");
+      await go("#agencies/calendar");
+      // Вкладка «Календарь работ» у R17 (191f81e7+); без неё — свой раздел R12.
+      if (!(await page.evaluate(() => !!document.querySelector("#birge-screen:not([hidden]) .wcal")).catch(() => false))) await go("#works-calendar");
+      await say("works", 5200);
+      await shot("8-works");
+      done(s);
+    }
+    // --- сцена 9: кризисный штаб и «Хроника города»
+    if (plan[4].ok) {
+      const s = scene("scene9-crisis");
+      await setMode("akimat");
+      // Адрес штаба: #agencies/crisis/<id> (R17 191f81e7+; внутри уже открытых «Ведомств» прежний вид crisis=<id>
+      // вкладку не переключает), прежний #agencies/crisis=<id>, публичная карточка #crisis/<id>. В кадр — только когда
+      // на экране название этого кризиса.
+      const title = W15.incTitle && (lang === "kk" ? W15.incTitle.kk : W15.incTitle.ru);
+      const shown = async () => !title || page.evaluate((tt) => (document.querySelector("#birge-screen:not([hidden])") || document.body).innerText.includes(tt), title).catch(() => false);
+      let opened = false;
+      const tries = [`#agencies/crisis/${W15.incident}`, `#agencies/crisis=${W15.incident}`, `#crisis/${W15.incident}`];
+      for (let i = 0; i < tries.length && !opened; i++) {
+        if (i) await toMap();   // повтор — с карты: экран смонтируется заново и прочтёт адрес
+        await go(tries[i], 2800);
+        opened = await shown();
+      }
+      await say("crisis", 5200);
+      await shot("9-crisis");
+      done(s, opened, opened ? null : "штаб кризиса не открылся по адресам R17");
+      await toMap();
+    }
+    if (plan[5].ok) {
+      const s = scene("scene9-replay");
+      await page.evaluate(() => { const m = typeof map !== "undefined" ? map : null; if (m) m.flyTo({ center: [71.40, 51.13], zoom: 11.6, duration: 1200 }); }).catch(() => null);
+      await wait(1500);
+      await say("replay", 600);
+      const ended = await page.evaluate(async () => {
+        const rp = window.BirgeReplay.open({ map: typeof map !== "undefined" ? map : null, heat: window.CivicShell && window.CivicShell.heat, days: 7, autoplay: true });
+        for (let i = 0; i < 150; i++) { await new Promise((ok) => setTimeout(ok, 200)); const st = rp.state && rp.state(); if (st && (st.ended || st.status === "error")) return !!st.ended; }
+        return false;
+      }).catch(() => false);
+      await shot("9-replay");
+      await pause(1800);
+      await page.evaluate(() => { try { window.BirgeReplay.active && window.BirgeReplay.active.close(); } catch (e) { /* закрыто */ } }).catch(() => null);
+      done(s, ended, ended ? null : "хроника не доиграла до конца");
+    }
+  }
+
+  function loadWorldScenes() {
+    try {
+      const w = JSON.parse(fs.readFileSync(path.join(ROOT, "data/civic/astana/demo-world/world_v1.json"), "utf8"));
+      const sc = w.scenes || {};
+      const inc = (w.incidents || []).find((x) => x.id === (sc.scene9 || {}).incident);
+      return { yard: (sc.scene7 || {}).yard, initiative: (sc.scene7 || {}).initiative, complaint8: (sc.scene8 || {}).complaint,
+        incident: (sc.scene9 || {}).incident, incTitle: inc ? { ru: inc.title_ru, kk: inc.title_kk } : null };
+    } catch (e) { return {}; }
   }
 
   async function center(loc) { const b = await loc.boundingBox().catch(() => null); return b ? [b.x + b.width / 2, b.y + b.height / 2] : [W / 2, H / 2]; }
