@@ -93,7 +93,7 @@
    "total": 146,
    "command": "tests/civic/R13/meetings/meetings_browser.cjs --full (BIRGE_URL стенда)",
    "sha": "8a7b94686a0144042e143bf7264aa779423d67e7",
-   "env": "облако: сборка R01 claude/brave-fermi-nhzetj @ c9069723 (B0.2, оболочка R01) + модули R13 ссылками, CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
+   "env": "облако: сборка R01 claude/brave-fermi-nhzetj @ 7f78b1ca (B0.8, оболочка R01, меню «Мой двор») + модули R13 ссылками, CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
    "note": "1366/1024/375 × ru/kk, все состояния; замер R10 B-118: зоны нажатия ≥ 44 px и текст ≥ 13 px на списке, встрече, вкладке «Вопросы» и у акимата; кадры screens/ — с этого прогона",
    "quick_run": {
     "status": "PASS",
