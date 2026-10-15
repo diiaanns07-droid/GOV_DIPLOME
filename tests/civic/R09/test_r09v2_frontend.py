@@ -272,7 +272,8 @@ def test_emergency_call_is_the_only_primary_button():
 
 def test_inbox_screen_contract_for_r01():
     """R01 INTEGRATION §11.2: window.BirgeComplaintList.mount(root, opts) -> {destroy, setLang}; вкладки R11 §2.5."""
-    assert "window.BirgeComplaintList = { mount: mount, commands: commands };" in LIST_JS   # + команды палитры Ctrl+K (эталон, правило 2)
+    # + команды палитры Ctrl+K (эталон, правило 2) и путь раздела оболочки R01 (раунд 15, IA_ROUND15 §7.3).
+    assert "window.BirgeComplaintList = { mount: mount, commands: commands," in LIST_JS
     assert all(k in LIST_JS for k in ("destroy:", "setLang:", "opts.api.v2", "opts.openTarget", "opts.titleTag"))
     assert 'var TABS = ["new", "in_progress", "waiting_check", "overdue", "reopened"];' in LIST_JS
     # Главная кнопка — у карточки действий (одна на экран); исключение — «Войти» без входа: карточки действий тогда нет

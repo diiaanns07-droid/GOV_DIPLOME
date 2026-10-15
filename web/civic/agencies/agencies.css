@@ -51,6 +51,10 @@
 .ag-head .bk-tabs > [role="tab"] {
   min-height: 44px;   /* зона нажатия ≥ 44 px (VISUAL_BRIEF §4 п. 10, R10 B-110) */
 }
+/* Неактивная вкладка на стекле оболочки — --c-text-2 (7,5:1), а не --c-text-3 (3,54:1): R10 B-127, пока ui-kit R11 не в сборке */
+.ag-head .bk-tabs > [role="tab"]:not([aria-selected="true"]) {
+  color: var(--c-text-2);
+}
 .ag-filters {
   display: flex;
   align-items: center;
@@ -474,6 +478,28 @@
   gap: 8px;
   min-height: 30px;
   font-size: var(--fs-caption);
+}
+/* Строка обращения — кнопка «Открыть обращение» (#inbox/<id>, карточка в «Обращениях» R09): зона нажатия 40 px */
+.ag-item--link {
+  display: block;
+}
+.ag-item__btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--r-s);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.ag-item__btn:hover {
+  background: var(--c-fill);
 }
 .ag-item__code {
   flex: none;

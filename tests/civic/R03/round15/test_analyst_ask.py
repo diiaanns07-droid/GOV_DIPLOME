@@ -162,6 +162,45 @@ def test_overdue_without_place_names_the_topic_and_zero_median_reads_same_day():
     assert "Обычно эта служба отвечает в тот же день." in lag["lines"]["ru"]
 
 
+def test_resident_checks_from_r17_board_totals():
+    """«Сколько обращений проверено жителями?» — итоги табло R17 за период: исправлено, подтвердили, доля, вернули."""
+    seen = []
+
+    def board(**kw):
+        seen.append(kw)
+        return F.board_fixture()
+
+    a = ask("Сколько обращений проверено жителями за месяц?", agencies_board=board)
+    assert a["intents"] == ["resident_checks"]
+    chk = block(a, "resident_checks")
+    assert chk["status"] == "ok" and chk["source"]["role"] == "R17"
+    assert [n["value"] for n in chk["numbers"]] == [20, 12, 60]
+    assert chk["numbers"][2]["text"] == "60\u00a0%"
+    assert seen[0]["days"] == 30
+    assert chk["lines"]["ru"][0] == ("Службы исправили 20 обращений за 30 дней; жители проверили и подтвердили 12 — "
+                                     "60\u00a0%.")
+    assert "Вернули жители (сказали, что не исправлено): 2." in chk["lines"]["ru"]
+    assert chk["items"][0]["service"] == "street_cleaning"
+    assert chk["items"][0]["value_text"]["ru"] == "подтверждено 8 из 12"
+    assert a["actions"][0] == {"kind": "open", "section": "agencies",
+                               "label": {"ru": "Открыть «Штаб ведомств»", "kk": "«Ведомстволар штабын» ашу"}}
+
+
+def test_resident_checks_honest_without_board_data():
+    q = "Сколько исправлений подтвердили жители?"
+    # Табло без источника (source "none") — как «модуль не подключён»; пустое табло из базы — «не из чего считать».
+    unlinked = block(ask(q, agencies_board=lambda **kw: {"services": [], "totals": {}, "empty": True, "source": "none"}),
+                     "resident_checks")
+    assert unlinked["status"] == "not_ready" and not unlinked["numbers"]
+    empty = block(ask(q, agencies_board=lambda **kw: {"services": [], "totals": {"open": 0}, "empty": True,
+                                                      "source": "db"}), "resident_checks")
+    assert empty["status"] == "empty" and not empty["numbers"]
+    assert "ещё не связано с обращениями" in empty["lines"]["ru"][0]
+    missing = block(ask("Сколько исправлений подтвердили жители?", agencies_board=_missing("ui.civic_agencies")),
+                    "resident_checks")
+    assert missing["status"] == "not_ready" and not missing["numbers"]
+
+
 def test_lagging_services_fallback_matches_deadlines_without_r17():
     a = ask("Какие службы отстают?", agencies_board=_missing("ui.civic_agencies"),
             heat=F.FakeHeat(records=_records()))

@@ -34,6 +34,18 @@ def test_reason_chips_and_part_statuses_match_server():
         assert 'done: "reported_fixed"' in code and "verified" not in re.search(r"PART_ICON = \{[^}]+\}|todo: \"new\", in_progress: \"in_progress\", done: \"reported_fixed\"", code).group(0)
 
 
+
+def test_reason_labels_match_server_in_both_languages():
+    # Подписи причин (чипы и системные «Совместное исполнение», «Выбор службы в паспорте») = joint.py сервера: история
+    # передач показывает подпись кода на языке экрана, когда сервер хранит его русскую подпись (reasonText).
+    labels = {**joint.HANDOFF_REASONS, **joint.SYSTEM_REASONS}
+    both = strings()
+    for lang in ("ru", "kk"):
+        table = both[lang]
+        for code, names in labels.items():
+            assert table["handoff.reason." + code] == names[lang], (lang, code)
+    assert 'x.reason === ru' in STAFF_JS and '"handoff.reason." + code' in STAFF_JS
+
 def test_routes_used_by_screens():
     for action in ("handoff", "services", "part"):
         assert f'"/{action}"' in STAFF_JS
@@ -52,6 +64,14 @@ def test_r17_agencies_filter_handoff():
     assert 'document.removeEventListener("birge:inbox-filter", onFilter)' in LIST_JS      # снимается при destroy
     assert "sessionStorage.removeItem(FILTER_KEY)" in LIST_JS                              # фильтр берётся один раз
 
+
+
+def test_shell_path_contract_r01():
+    # Оболочка R01 (IA_ROUND15 §7.3): opts.path при монтаже и handle.setPath без перемонтажа; по module.setPath она видит,
+    # что экран понимает путь, и не кладёт фильтр в sessionStorage. Открытая строка прокручивается в видимую часть.
+    assert "parsePath(opts.path)" in LIST_JS and "setPath: setPath," in LIST_JS
+    assert "setPath: function (path) { if (live) live.setPath(path); }" in LIST_JS
+    assert 'opened.scrollIntoView({ block: "start" })' in LIST_JS
 
 def test_yard_link_opens_section_when_no_yard_id():
     # BirgeTogether.open R16 без id двора отвечает false — тогда раздел «Мой двор» оболочки, а не тихое «ничего».

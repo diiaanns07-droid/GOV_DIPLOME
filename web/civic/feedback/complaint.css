@@ -354,6 +354,8 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 /* Группы и строки — компонент Linear ui-kit R11 (.bk-lgroup, .bk-llist, .bk-lrow: 44, без разделителей, заливка при
    наведении). Список — на белой подложке: лист раздела R01 стеклянный, а строки читаются при любом фоне карты. */
 .bc-inbox__ghead { margin: 0; }
+/* Открыто по пути #inbox/<id> или из табло R17 — строка прокручивается под липкий заголовок группы (36 px), не за него. */
+.bc-inbox__item { scroll-margin-top: 48px; }
 .bc-inbox__group[data-group="overdue"] .bc-inbox__ghead, .bc-inbox__group[data-group="reopened"] .bc-inbox__ghead { color: var(--c-danger, #B3362E); }
 .bc-inbox__list { list-style: none; margin: 0; padding: 4px; background: var(--c-surface, #fff); border-radius: var(--r-m, 12px);
                   box-shadow: inset 0 0 0 1px var(--c-line, rgba(18, 26, 23, .08)); }
@@ -582,14 +584,21 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-joint { gap: 8px; }
 .bc-joint__parts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .bc-joint__part { display: flex; flex-direction: column; gap: 8px; padding: 8px 12px 12px; border-radius: var(--r-m, 10px);
-                  background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px var(--c-line, rgba(18, 26, 23, .08)); }
+                  background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px var(--c-line, rgba(18, 26, 23, .08));
+                  container: joint-part / inline-size; }
 .bc-joint__head { display: flex; align-items: center; gap: 8px; min-height: 28px; flex-wrap: wrap; }
 .bc-joint__name { font-weight: var(--fw-semi, 600); overflow-wrap: anywhere; }
 .bc-joint__role { font-size: var(--fs-caption, 13px); }
 .bc-joint__note { margin: 0; overflow-wrap: anywhere; }
 .bc-joint__seg { display: flex; width: 100%; }
 .bc-joint__seg > button { flex: 1 1 0; min-width: 0; min-height: 36px; padding: 4px 8px; font: inherit;
-                          font-size: var(--fs-small, 14px); line-height: 1.2; white-space: normal; overflow-wrap: anywhere; }
+                          font-size: var(--fs-small, 14px); line-height: 1.2; white-space: normal; overflow-wrap: normal; }
+/* Узкая карточка (телефон): «Орындалуда» не помещается в треть ширины — сегменты столбиком по 44 px на обоих языках,
+   слова не рвутся посередине («Орындал/уда»). */
+@container joint-part (max-width: 340px) {
+  .bc-joint__seg { flex-direction: column; }
+  .bc-joint__seg > button { flex: 0 0 auto; min-height: 44px; }
+}
 .bc-joint__seg > button::first-letter { text-transform: uppercase; }   /* «Ждёт · В работе · Сделано»; в фразах — строчные */
 /* Запасной вид без ui-kit — тот же сегмент .bk-seg: серая дорожка, выбранное — белое. */
 :where(.bc-joint__seg) { padding: 3px; border-radius: var(--r-m, 10px); background: var(--c-fill, #eff1f2); }

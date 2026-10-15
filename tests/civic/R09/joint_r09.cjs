@@ -40,7 +40,7 @@ const SAY = {
         handoff: "Передано: Дорожная служба", note: "Трубу заменили" },
   kk: { hint: "2 қызмет керек сияқты: Сумен жабдықтау қызметі және Жол қызметі", water: "Сумен жабдықтау қызметі",
         road: "Жол қызметі", done: "орындалды", work: "орындалуда", resident: "2 қызмет жұмыс істейді:",
-        waiting: "Алдымен өз бөлігін белгілейді", handoff: "Берілді: Жол қызметі", note: "Құбыр ауыстырылды" },
+        waiting: "Алдымен өз бөлігін белгілейді", handoff: "Жіберілді: Жол қызметі", note: "Құбыр ауыстырылды" },
 };
 const results = [];
 const check = (name, ok, detail) => { results.push({ name, ok: !!ok });
@@ -166,13 +166,15 @@ async function variant(browser, base, width, height, lang, staff) {
       await page.click('.bc-inbox__item--open .bc-joint__reasons [data-reason="not_our_zone"]');
       await shot(page, `joint-${tag}-5-handoff-form`);
       await page.click(".bc-inbox__item--open .bc-joint__handoff button[type=submit]");
-      const want = to === "road" ? say.handoff : (lang === "kk" ? "Берілді: Абаттандыру қызметі" : "Передано: Служба благоустройства");
+      const want = to === "road" ? say.handoff : (lang === "kk" ? "Жіберілді: Абаттандыру қызметі" : "Передано: Служба благоустройства");
+      // Причина-чип в истории — на языке экрана (сервер хранит русскую подпись кода для журналов R17).
+      const reason = lang === "kk" ? "Біздің жауапкершілік аймағы емес" : "Не наша зона ответственности";
       await page.waitForFunction((w) => { const n = document.querySelector(".bc-inbox__item--open .bc-staff__note");
         return n && n.textContent.includes(w); }, want, { timeout: 8000 }).catch(() => null);
       const note = clean(await page.textContent(".bc-inbox__item--open .bc-staff__note").catch(() => ""));
       const hist = clean(await page.textContent(".bc-inbox__item--open .bc-joint__history").catch(() => ""));
-      check(`${tag}: «Передать в другую службу» → «${want}…», в «Передачах» — причина и роль`, note.includes(want) &&
-            /→/.test(hist), { note, hist: hist.slice(0, 160) });
+      check(`${tag}: «Передать в другую службу» → «${want}…», в «Передачах» — причина «${reason}» и роль`, note.includes(want) &&
+            /→/.test(hist) && hist.includes(reason), { note, hist: hist.slice(0, 160) });
       await shot(page, `joint-${tag}-6-handoff-done`);
     } else {
       check(`${tag}: вторая строка для передачи найдена`, false);
@@ -204,6 +206,38 @@ async function variant(browser, base, width, height, lang, staff) {
         .catch(() => null);
       const cleared = await page.$('.bc-inbox__filter-chip[data-filter="service"]');
       check(`${tag}: чип «Служба: …» снимает фильтр`, !cleared);
+      // Адрес раздела оболочки R01 раунда 15 (IA_ROUND15 §7.3): #inbox/<id жалобы> — сцена 8 открывается ссылкой.
+      // Оболочка FINAL-4 путей разделов не знает (адрес остаётся #inbox) — тогда шаг не нужен и пропускается.
+      await page.evaluate(() => window.BirgeShell.setSection("map"));
+      await page.evaluate((id) => window.BirgeShell.setSection("inbox", { path: id }), pit.id);
+      const pathShell = await page.evaluate((id) => location.hash === "#inbox/" + id, pit.id);
+      if (!pathShell) console.log(`  ${tag}: оболочка без путей разделов (FINAL-4) — шаг «адрес #inbox/<id>» не нужен`);
+      if (pathShell) {
+        const seen = async () => page.evaluate((target) => {
+          const li = document.querySelector(`.bc-inbox__item--open[data-target="${target}"]`);
+          const r = li && li.getBoundingClientRect();
+          return { open: !!li, top: r ? Math.round(r.top) : null, visible: !!r && r.top >= 0 && r.top < innerHeight - 40,
+                   hash: location.hash, stored: (() => { try { return sessionStorage.getItem("birge.inbox.filter"); } catch (e) { return "?"; } })() };
+        }, PIT_TARGET);
+        await page.waitForSelector(`.bc-inbox__item--open[data-target="${PIT_TARGET}"]`, { timeout: 10000 }).catch(() => null);
+        await sleep(400);
+        const mounted = await seen();
+        check(`${tag}: адрес #inbox/<id> — экран открыт на яме, строка в видимой части, без фильтра в sessionStorage`,
+              mounted.open && mounted.visible && mounted.stored === null && mounted.hash === "#inbox/" + pit.id, mounted);
+        await shot(page, `joint-${tag}-6c-path`);
+        // Тот же раздел, другой путь — оболочка зовёт handle.setPath без перемонтажа: другая строка, потом снова яма.
+        const otherRow = page.locator(".bc-inbox__item:not(.bc-inbox__item--open) .bc-inbox__row").first();
+        await otherRow.click();
+        await sleep(400);
+        const closed = !(await seen()).open;
+        await page.evaluate(() => window.BirgeShell.setSection("inbox", { path: "" }));
+        await page.evaluate((id) => window.BirgeShell.setSection("inbox", { path: id }), pit.id);
+        await page.waitForSelector(`.bc-inbox__item--open[data-target="${PIT_TARGET}"]`, { timeout: 8000 }).catch(() => null);
+        await sleep(400);
+        const again = await seen();
+        check(`${tag}: смена пути без перемонтажа (setPath) — открыта другая строка, путь ямы снова открывает яму`,
+              closed && again.open && again.visible, { closed, again });
+      }
     }
     // Житель: «Я тоже» на той же яме → в «Моих обращениях» — две службы со статусами.
     const device = "r09joint" + Math.random().toString(36).slice(2, 14);

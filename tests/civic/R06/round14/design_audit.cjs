@@ -137,6 +137,7 @@ async function geometry(page, tag, wideScreen, wide) {
     const acts = pd ? Array.from(pd.querySelectorAll(".ri-pd__acts > .bk-btn")).map((b) => Math.round(r(b).height)) : [];
     const text = pd && pd.querySelector(".ri-pd__text"), note = pd && pd.querySelector(".ri-pd__note"), h3 = pd && pd.querySelector(".ri-pd__title");
     return {
+      fsXs: getComputedStyle(document.documentElement).getPropertyValue("--fs-xs").trim() || "12px",
       sheet: sheet && { l: Math.round(r(sheet).left), t: Math.round(r(sheet).top), w: Math.round(r(sheet).width), rad: cs(sheet).borderTopLeftRadius },
       title: title && [cs(title).fontSize, cs(title).fontWeight],
       seg: seg && [cs(seg).fontSize, cs(seg).fontWeight],
@@ -160,14 +161,15 @@ async function geometry(page, tag, wideScreen, wide) {
   check(`${tag}: карточка — поля 10, радиус 16, промежуток 10; название 15/600, строка 13`, g.card && g.card.pad === "10px" && g.card.rad === "16px"
     && g.card.gap === 10 && g.card.title.join() === "15px,600" && g.card.sub === "13px", g.card);
   // П1 (поправка владельца 15 окт): вместо картинки 84 — плитка 48 со значком вида объекта (набор R11).
-  check(`${tag}: значок вида 48 × 48, радиус 12; плашка 12/600; капсула ♥ 32, 13/600`, g.thumb && g.thumb.join() === "48,48,12px" && g.pill && g.pill.join() === "12px,600"
+  // Кегль плашки — токен --fs-xs сборки: 12 в ui-kit FINAL-4, 13 у R11 раунда 15 («мельче 13 px текста нет», B-112).
+  check(`${tag}: значок вида 48 × 48, радиус 12; плашка ${g.fsXs}/600; капсула ♥ 32, 13/600`, g.thumb && g.thumb.join() === "48,48,12px" && g.pill && g.pill.join() === g.fsXs + ",600"
     && (!g.vote || g.vote.join() === "32,13px,600"), { thumb: g.thumb, pill: g.pill, vote: g.vote });
   if (wide) {
     check(`${tag}: выбранная — рамка 2 px цвета текста`, /0px 0px 0px 2px/.test(g.ring || ""), g.ring);
     // П1: в карточке выбранного больших картинок нет (было — картинка 150 эталона A).
     check(`${tag}: карточка выбранного 340 — справа 84, сверху 132; без картинки, 3 цифры, кнопки 44`, g.pd && g.pd.w === 340 && g.pd.right === 84 && g.pd.t === 132
       && !g.pd.im && g.pd.facts === 3 && g.pd.acts.length >= 1 && g.pd.acts.every((x) => x === 44), g.pd);
-    check(`${tag}: заголовок карточки 18/600, одно предложение 14 (≤ 2 строк), строка «это опрос» 12`, g.pd && g.pd.h3.join() === "18px,600" && g.pd.note === "12px"
+    check(`${tag}: заголовок карточки 18/600, одно предложение 14 (≤ 2 строк), строка «это опрос» ${g.fsXs}`, g.pd && g.pd.h3.join() === "18px,600" && g.pd.note === g.fsXs
       && (!g.pd.text || (g.pd.text[0] === "14px" && g.pd.text[1] === "2")), g.pd);
   }
 }

@@ -146,6 +146,11 @@ for (const [w, h, lang] of [[1366, 768, "ru"], [375, 812, "kk"]]) {
     assert(bg === "rgb(37, 40, 42)", "поле ночью не тёмно-серое: " + bg);
     const pressed = await page.evaluate(() => [...document.querySelectorAll(".b3d-time button")].map((b) => b.getAttribute("aria-pressed")));
     assert(pressed[0] === "false" && pressed[1] === "true", "aria-pressed: " + pressed);
+    // «×» карточки поверх тёмной ночной картинки — в светлом круге (на телефоне без круга тёмный «×» не был виден).
+    const x = await page.evaluate(() => { const b = document.querySelector('.b3d-dock [data-action="close-card"]'); if (!b) return null;
+      const m = getComputedStyle(b).backgroundColor.match(/rgba?\(([^)]+)\)/), v = m ? m[1].split(/[ ,/]+/).filter(Boolean).map(Number) : [];
+      return { rgb: v.slice(0, 3), alpha: v.length > 3 ? v[3] : (v.length ? 1 : 0) }; });
+    assert(x && x.alpha >= 0.5 && Math.min(...x.rgb) >= 200, "«×» над ночной картинкой без светлого круга: " + JSON.stringify(x));
     await shot(page, `card_night_${w}_${lang}`);
     await page.context().close();
     return { buttons: btns.map((b) => b[1]), night: s1.imgs };

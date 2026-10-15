@@ -122,6 +122,33 @@ def test_no_false_positives(text):
     assert res["clean"] is True and res["text_public"] == text and res["action"] == "publish"
 
 
+# Находка R17 (обновления кризиса, D8 29176133): перечень коротких чисел склеивался в «карту» / «телефон» / «ИИН».
+@pytest.mark.parametrize("text", [
+    "Из-за бурана маршруты 10 12 14 16 18 21 24 идут с задержкой",
+    "Маршруты 8 10 12 14 16 18 изменены",
+    "Подъезды 1 2 3 4 5 6 7 8 9 10 11 12 — проверьте отопление",
+    "Отключение 21 22 23 24 25 26 октября",
+    "Автобусы 32 21 40 12 46 и 18 ходят реже",
+    "Остановки маршрутов 10 12 14 16 18 21 24: телефон диспетчера не указываем",
+])
+def test_lists_of_short_numbers_are_not_pii(text):
+    res = moderate(text)
+    assert res["clean"] is True and res["text_public"] == text
+
+
+@pytest.mark.parametrize("text, kind", [
+    ("звоните 8 7 0 1 1 2 3 4 5 6 7", "phone"),          # цифры по одной — так прячут телефон
+    ("номер 87 01 12 34 56 7", "phone"),                  # пары без роста — телефон по-прежнему
+    ("тел 8 10 12 14 16 18", "phone"),                    # после подписи и перечень — номер
+    ("Телефон: 8 10 12 14 16 18", "phone"),
+    ("ИИН 88 01 01 30 01 23", "iin"),
+    ("карта 10 12 14 16 18 21 24", "card"),
+])
+def test_number_list_rule_keeps_hidden_and_labeled_numbers(text, kind):
+    res = moderate(text)
+    assert kind in kinds(res) and "***" in res["text_public"]
+
+
 def test_no_pii_flags_on_r02_corpora_and_r11_dictionaries():
     texts = []
     for path in ("ml/datasets/synth_v3/data/corpus_v3.jsonl", "ml/datasets/probe_v2/probe_v2.jsonl",

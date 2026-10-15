@@ -460,11 +460,12 @@
 .b3d-dock--r06pd > .b3d-head--end {
   z-index: 1;
 }
-@media (min-width: 761px) {
-  .b3d-dock--r06pd > .b3d-head--end .bk-iconbtn {
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.72);
-  }
+/* «×» — в светлом круге всегда: на ноутбуке он лежит на картинке, на телефоне — тоже, когда открыта шторка «Было /
+   станет» (раунд 15; ночью картинка тёмная, и тёмный «×» без круга не виден). Без картинки круг почти сливается с
+   карточкой — не мешает. */
+.b3d-dock--r06pd > .b3d-head--end .bk-iconbtn {
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.72);
 }
 .b3d-pd__in--r06 {
   gap: var(--s-3, 12px);
