@@ -211,6 +211,34 @@ await check("catalog_white_model_previews", async () => {
   return { previews: tints.length };
 });
 
+// 1024 (оболочка R01 даёт каталогу ~588 px): пять плиток в строку без прокрутки — пятая («Освещение улицы») не обрезана.
+for (const lang of ["ru", "kk"]) {
+  await check(`catalog_fits_row_1024_${lang}`, async () => {
+    const ctx = await browser.newContext({ viewport: { width: 1024, height: 768 } });
+    await ctx.addInitScript((l) => { try { localStorage.setItem("birge.lang", l); } catch (e) {} }, lang);
+    const page = await ctx.newPage();
+    await page.goto(URL0 + "/?lang=" + lang);
+    await page.waitForFunction(() => window.CivicShell?.build3d && window.BirgeShell, null, { timeout: 60000 });
+    if (lang === "kk") await page.evaluate(() => window.BirgeI18n?.setLang?.("kk"));
+    await page.evaluate(() => window.BirgeShell.setLayer("projects"));
+    await page.waitForFunction(() => window.CivicShell.build3d.getState().phase === "ready", null, { timeout: 60000 });
+    const btn = page.locator(".birge-b3d-toggle");
+    if (!(await btn.count())) { await ctx.close(); return { status: "NOT_RUN", detail: "кнопки «Что построить?» нет в этом виде (житель)" }; }
+    await btn.click();
+    await page.waitForSelector('.b3d-dock[data-state="catalog"] .b3d-card', { timeout: 15000 });
+    await page.waitForTimeout(500);
+    const r = await page.evaluate(() => {
+      const row = document.querySelector('.b3d-dock[data-state="catalog"] .b3d-cards'), cards = [...row.querySelectorAll(".b3d-card")];
+      const a = row.getBoundingClientRect(), last = cards[cards.length - 1].getBoundingClientRect();
+      return { cards: cards.length, scroll: [row.scrollWidth, row.clientWidth], last_right: Math.round(last.right), row_right: Math.round(a.right),
+        labels: cards.map((c) => c.textContent.trim()) };
+    });
+    await ctx.close();
+    assert(r.cards === 5 && r.scroll[0] <= r.scroll[1] + 1 && r.last_right <= r.row_right + 1, "каталог 1024 не помещается: " + JSON.stringify(r));
+    return r;
+  });
+}
+
 let sha = "?";
 try { sha = execSync("git rev-parse --short HEAD", { cwd: ROOT }).toString().trim(); } catch (e) {}
 const report = { at: new Date().toISOString(), url: URL0, code_head: sha, stand: STAND || undefined, env: "облако: Chromium headless + SwiftShader, упрощённый фон карты", results, pageErrors };
