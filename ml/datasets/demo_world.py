@@ -41,7 +41,6 @@ from ml.datasets.synth_v3.templates import T
 ROOT = wio.ROOT
 OUT_DIR = wio.WORLD_DIR
 CATEGORIES_JSON = ROOT / "research" / "round-14" / "categories_v2.json"
-R07_TARGETS = ROOT / "ui" / "civic_heat" / "fixtures" / "targets_demo.json"
 YARDS_JSON = ROOT / "data" / "civic" / "astana" / "geo" / "yards.json"
 OBJECTS_JSON = ROOT / "data" / "civic" / "astana" / "geo" / "objects.json"
 GRAPH_MANIFEST = ROOT / "engine" / "civic_scenarios" / "graphs" / "MANIFEST.json"
@@ -227,7 +226,6 @@ class Inputs:
                 self._add(d, "road" if e.group == "road" else "foot", e.id,
                           {"kind": "segment", "point": [mid[0], mid[1]], "name_ru": e.name, "name_kk": e.name_kk,
                            "way": e.way_id})
-        self.r07_targets = json.loads(R07_TARGETS.read_text(encoding="utf-8"))["targets"]
 
     def _add(self, district: str, kind: str, tid: str, info: dict) -> None:
         self.pools.setdefault((district, kind), []).append(tid)
@@ -624,8 +622,11 @@ class WorldBuilder:
             family = weighted(rnd, fams, [FAMILIES[cat][f][2] * self.season(cat, f, age_d) for f in fams])
             if rnd.random() > min(1.0, self.season(cat, family, age_d)):
                 continue  # сезон: летом мало «нет отопления», осенью меньше пыли
+            # «Горячие» нити (много «Я тоже») — только старше недели: свежая неделя — история бурана, без случайных
+            # всплесков в «Пульсе» R08 (парковки, мусор), которые отвлекали бы от сцены 9.
+            hot = 2.6 if rnd.random() < 0.12 else 1.0
             out.append({"age_h": age_h, "district": district, "category": cat, "family": family, "event": None,
-                        "hot": 2.6 if rnd.random() < 0.12 else 1.0})
+                        "hot": hot if age_h > 8 * 24 else 1.0})
         for ep in SNOW_EPISODES:
             fams = sorted(ep["families"])
             for district in DISTRICTS:
@@ -717,10 +718,13 @@ class WorldBuilder:
             state = "reported"
             verified_at = reopened_at = None
             votes = {"yes": 0, "no": 0, "cant": 0}
-            if since > 14 and r < 0.02 and t.category not in ("other",):
-                state, reopened_at = "reopened", since - rnd.uniform(8, min(40.0, since - 2))
+            # «Проблема осталась» — только у нитей не старше 26 дней с возвратом не позже чем 9 дней назад: тогда карта R07
+            # (сообщения возвращённой жалобы считаются от момента возврата) и список R09 (жалобы, поданные в окне)
+            # дают одно число людей и за 7, и за 30 дней (сверка R10 A1/A2) с запасом в несколько дней.
+            if t.start <= 26 * 24 and since >= 10 * 24 + 10 and r < 0.05 and t.category not in ("other",):
+                state, reopened_at = "reopened", since - rnd.uniform(8, min(20.0, since - 9 * 24))
                 votes["no"] = 1
-            elif since > 10 and r < 0.17:
+            elif since > 10 and 0.05 <= r < 0.22:
                 state, verified_at = "verified", since - rnd.uniform(5, min(48, since - 1))
                 votes["yes"] = min(len(fixed_cs) + sum(c["metoo"] for c in fixed_cs), rnd.randint(1, 3))
             for c in fixed_cs:
@@ -799,15 +803,20 @@ class WorldBuilder:
                 c["passport"] = {"assignee_id": c["service"], "next_step": NEXT_STEP.get(c["category"]),
                                  "fix_eta": {"day": rnd.randint(1, 12)}, "updated_at": c["status_history"][-1]["at"]}
         # «Нужно решение акима»: старые (≥ 12 дней) в работе, у служб без своего решения — 3 примера, как в R08.
-        old = [c for c in open_ if c["_age"] > 12 * 24 and c["category"] in DECISIONS]
+        # Срок исправления R08 у этих жалоб должен точно пройти (R08 показывает только просроченные): площадки — 14
+        # рабочих дней (≈ 20 календарных), дороги 7, остановки 5, свет 3 — берём с запасом.
+        min_age = {"yards": 23, "roads": 13, "transport": 12, "lighting": 12}
+        old = [c for c in self.complaints if c["status"] in ("accepted", "in_progress") and not c.get("scene")
+               and c["category"] in DECISIONS and c["_age"] > min_age[c["category"]] * 24]
         # Нура — район демо: два примера там (иначе фильтр «Нура» в «Картине дня» показал бы пример-фикстуру R08).
         old.sort(key=lambda c: (c["district"] != "nura", -c["_age"], c["id"]))
-        chosen, cats, nura = [], set(), 0
+        chosen, per_cat, nura = [], {}, 0
         for c in old:
-            if c["category"] in cats or (c["district"] == "nura" and nura >= 2):
+            if per_cat.get(c["category"], 0) >= 2 or (c["district"] == "nura" and nura >= 2) \
+                    or (c["district"] != "nura" and len(chosen) - nura >= 1):
                 continue
             chosen.append(c)
-            cats.add(c["category"])
+            per_cat[c["category"]] = per_cat.get(c["category"], 0) + 1
             nura += c["district"] == "nura"
             if len(chosen) == 3:
                 break
@@ -1049,8 +1058,10 @@ def _ring_area_m2(ring) -> float:
 
 
 def street_run(inputs: Inputs, district: str, *, min_edges: int, max_edges: int, rank: int = 0,
-               prefer_prefix: str | None = None, exclude_ways: set | None = None, group: str = "road") -> list[str]:
-    """Участок улицы из подряд идущих рёбер ОДНОЙ линии OSM (way) в районе: настоящая форма, без «от руки»."""
+               prefer_prefix: str | None = None, exclude_ways: set | None = None, group: str = "road",
+               need_kk: bool = True) -> list[str]:
+    """Участок улицы из подряд идущих рёбер ОДНОЙ линии OSM (way) в районе: настоящая форма, без «от руки».
+    need_kk — только улицы с казахским названием (заголовок работы на ҚАЗ без русских вставок); нет таких — любые."""
     by_way: dict[int, list[tuple[int, str]]] = {}
     for tid in inputs.pools.get((district, group), []):
         info = inputs.info[tid]
@@ -1058,6 +1069,8 @@ def street_run(inputs: Inputs, district: str, *, min_edges: int, max_edges: int,
         if not m:
             continue
         if prefer_prefix and not (info.get("name_ru") or "").lower().startswith(prefer_prefix):
+            continue
+        if need_kk and not info.get("name_kk"):
             continue
         if exclude_ways and info.get("way") in exclude_ways:
             continue
@@ -1075,6 +1088,9 @@ def street_run(inputs: Inputs, district: str, *, min_edges: int, max_edges: int,
                 cur = [item]
         if len(cur) >= min_edges:
             runs.append((way, cur))
+    if not runs and need_kk:
+        return street_run(inputs, district, min_edges=min_edges, max_edges=max_edges, rank=rank,
+                          prefer_prefix=prefer_prefix, exclude_ways=exclude_ways, group=group, need_kk=False)
     if not runs and group != "road":
         # у пешеходных дорожек редко есть названия — тогда благоустройство идёт вдоль проезжей части
         return street_run(inputs, district, min_edges=min_edges, max_edges=max_edges, rank=rank,
@@ -1298,18 +1314,31 @@ def build_yards(b: WorldBuilder, must: list[str], want: int = 32) -> list[dict]:
         if tid.startswith("yard-"):
             counts[tid] = counts.get(tid, 0) + 1
     ranked = sorted(counts, key=lambda t: (-counts[t], t))
-    chosen = []
-    for tid in list(must) + ranked:
-        if tid not in chosen:
+    # Нура — район сцены 7 и «Моего двора»: половина дворов оттуда, остальные — самые «жалобные» дворы других районов.
+    nura_quota = want // 2
+    chosen = list(dict.fromkeys(must))
+    for tid in ranked:
+        if len(chosen) >= nura_quota:
+            break
+        if tid not in chosen and b.inputs.district_of(b.inputs.info[tid]["point"]) == "nura":
             chosen.append(tid)
+    for district in DISTRICTS[1:]:          # хотя бы по одному двору каждого района (инициативы по всему городу)
+        for tid in ranked:
+            if tid not in chosen and b.inputs.district_of(b.inputs.info[tid]["point"]) == district:
+                chosen.append(tid)
+                break
+    for tid in ranked:
         if len(chosen) >= want:
             break
+        if tid not in chosen:
+            chosen.append(tid)
     out = []
     for k, tid in enumerate(chosen):
         target = b.inputs.label("area", tid)
         geom = b.inputs.geometry("area", tid)
         area = _ring_area_m2(geom["geometry"]["coordinates"][0])
-        members = int(max(6, min(160, area / 260 * rnd.uniform(0.6, 1.4))))
+        # Соседей в Birge — растёт с размером двора, но медленнее площади (большой ЖК ≠ все жители в приложении).
+        members = int(round((12 + 22 * math.log1p(area / 2000)) * rnd.uniform(0.75, 1.25)))
         captain = None
         if k == 0 or rnd.random() < 0.4:
             captain = {"display_name": CAPTAINS[k % len(CAPTAINS)], "since": {"ago_days": rnd.randint(9, 50)}}
@@ -1637,8 +1666,7 @@ def build_world(seed: int = SEED) -> dict:
         "generator": "ml/datasets/demo_world.py",
         "note_ru": "Синтетический демо-мир Birge: все записи придуманы (demo: true, «Пример»). Настоящие — только "
                    "цели OpenStreetMap (ODbL, © OpenStreetMap contributors). Время — относительно засева.",
-        "inputs": {str(p.relative_to(ROOT)): _sha(p) for p in (CATEGORIES_JSON, R07_TARGETS, YARDS_JSON, OBJECTS_JSON,
-                                                               GRAPH_MANIFEST)},
+        "inputs": {str(p.relative_to(ROOT)): _sha(p) for p in (CATEGORIES_JSON, YARDS_JSON, OBJECTS_JSON, GRAPH_MANIFEST)},
         "counts": {},
         "districts": [{"id": d, "ru": DISTRICT_NAMES[d][0], "kk": DISTRICT_NAMES[d][1]} for d in DISTRICTS],
         "services": [{"id": sid, "ru": names["ru"], "kk": names["kk"]}
