@@ -1,0 +1,455 @@
+"""R12 · раунд 15 · «Календарь работ» для сотрудника: откуда берутся работы, строки и месяцы, ответы маршрутов.
+
+    GET /api/civic/v2/works-calendar?from&to&district&street&service   -> calendar_response(query, staff)
+    GET /api/civic/v2/works-conflicts?from&to&district&service         -> conflicts_response(query, staff)
+
+Оба маршрута — только для сотрудника. Шлюз R01 вызывает engine.civic_geo.api.handle(path, query, staff=True), когда
+сессия сотрудника проверена (V2Handler kind="raw", strip_prefix=True, staff_view=True); без staff=True — 401.
+
+Откуда работы (по порядку, CONTRACT §5.6 и §11):
+1. R06 — функция чтения работ v2 из ui.civic_store.v2 (R06_FUNCTIONS; в процессе, только чтение).
+2. Демо-режим (CIVIC_DEMO=1), если у R06 ещё нет ни одной работы с участками:
+   демо-мир R02 (CIVIC_DEMO_WORLD=1, data/civic/astana/demo-world/world_v1.json → works),
+   иначе фикстура R12 data/civic/astana/geo/works_fixture.json — синтетика на настоящих улицах Нуры (demo: true).
+   Записи R06 без участков при этом остаются (как «примерное место»), фикстура только добавляет работы с участками.
+Числа (сколько работ, конфликтов, дней) считает код; ничего не придумывается.
+"""
+from __future__ import annotations
+
+import importlib
+import json
+import logging
+import os
+import time
+from datetime import date, datetime, timedelta, timezone
+
+from . import names
+from .graph import get_graph
+from .paths import GEO_DIR, ROOT
+from .works import (APPROX_RADIUS_M, CANCELLED, FALLBACK_SERVICES, KINDS, KIND_LABELS, BoundWork, add_months,
+                    bind_all, find_conflicts, parse_day, _norm, _service_names)
+
+LOGGER = logging.getLogger(__name__)
+
+ASTANA_TZ = timezone(timedelta(hours=5))
+FIXTURE_PATH = GEO_DIR / "works_fixture.json"
+WORLD_PATH = ROOT / "data" / "civic" / "astana" / "demo-world" / "world_v1.json"
+R06_MODULE = "ui.civic_store.v2"
+# Имена функции чтения работ v2 у R06 (первое найденное). Договорённость — INTEGRATION.txt R12 §R06.
+R06_FUNCTIONS = ("works_v2", "calendar_works", "list_works_v2", "works_for_calendar")
+DISTRICTS = ("almaty", "baikonur", "esil", "nura", "saraishyk", "saryarka")
+DEFAULT_MONTHS_BACK = 1      # календарь по умолчанию: прошлый месяц …
+DEFAULT_MONTHS_AHEAD = 11    # … и ещё 11 месяцев вперёд от текущего (весь следующий строительный сезон)
+MAX_MONTHS = 24              # длиннее — календарь не читается
+
+# Запасные цвета служб (пока нет профилей R17, CONTRACT §5.4). Без зелёного (он — только «исправлено») и без
+# красного (он — только конфликт). Контраст с белым ≥ 3:1 — полосу видно, подпись на полосе белая.
+FALLBACK_COLORS = {
+    "road": "#5B6577", "traffic": "#0E7FB8", "street_cleaning": "#6B7A8F", "transport": "#5A5FD6",
+    "lighting": "#B07A06", "landscaping": "#0F8A80", "greenery": "#5F7F1E", "waste": "#7A6E64",
+    "utilities": "#8A5A2B", "heating": "#D0621B", "water": "#2563EB", "power": "#8E44C9", "gas": "#B5398F",
+    "housing": "#6D5BD0", "ecology": "#2F7D6A", "emergency": "#B4235A", "police": "#2B3F7A", "animals": "#9A5BC2",
+    "parking": "#0B7A93", "akimat": "#3E4A5C",
+}
+NO_SERVICE_COLOR = "#7B8494"
+
+
+class CalendarError(ValueError):
+    def __init__(self, code: str, message: str, field: str | None = None):
+        super().__init__(message)
+        self.code, self.message, self.field = code, message, field
+
+
+def today_astana() -> date:
+    return datetime.now(ASTANA_TZ).date()
+
+
+def demo_mode() -> bool:
+    return os.environ.get("CIVIC_DEMO") == "1"
+
+
+def world_mode() -> bool:
+    return os.environ.get("CIVIC_DEMO_WORLD") == "1"
+
+
+# ------------------------------------------------------------------ источники
+def _shift_years(day: date, years: int) -> date:
+    try:
+        return day.replace(year=day.year + years)
+    except ValueError:  # 29 февраля
+        return day.replace(year=day.year + years, day=28)
+
+
+def load_fixture(today: date | None = None, path=FIXTURE_PATH) -> list[dict]:
+    """Фикстура R12: даты записаны для anchor (день сборки). Если показ позже чем через год — даты сдвигаются на
+    целые годы, чтобы «асфальт в мае, сети в июле» оставались ближайшим сезоном, а месяцы — теми же."""
+    try:
+        data = json.loads(path.read_text("utf-8"))
+    except (OSError, ValueError):
+        return []
+    today = today or today_astana()
+    anchor = parse_day(data.get("anchor")) or today
+    shift = max(0, int((today - anchor).days // 365.25))
+    out = []
+    for raw in data.get("works") or []:
+        w = dict(raw)
+        for key in ("starts_on", "ends_on"):
+            d = parse_day(w.get(key))
+            if d and shift:
+                w[key] = _shift_years(d, shift).isoformat()
+        w.setdefault("demo", True)
+        w.setdefault("source", "demo")
+        out.append(w)
+    return out
+
+
+def _relative_day(rec: dict, keys, today: date) -> str | None:
+    """Демо-мир R02 хранит время относительно засева: in_days (вперёд) / ago_days (назад)."""
+    for key, sign in keys:
+        v = rec.get(key)
+        if isinstance(v, (int, float)) and not isinstance(v, bool):
+            return (today + timedelta(days=sign * int(v))).isoformat()
+    return None
+
+
+def load_world(today: date | None = None, path=WORLD_PATH) -> list[dict]:
+    """Работы демо-мира R02 (CONTRACT §11). Даты: starts_on/ends_on как есть или из относительных полей."""
+    try:
+        data = json.loads(path.read_text("utf-8"))
+    except (OSError, ValueError):
+        return []
+    today = today or today_astana()
+    out = []
+    for raw in (data.get("works") if isinstance(data, dict) else None) or []:
+        if not isinstance(raw, dict):
+            continue
+        w = dict(raw)
+        if not w.get("starts_on"):
+            w["starts_on"] = _relative_day(raw, (("starts_in_days", 1), ("start_in_days", 1), ("in_days", 1),
+                                                 ("starts_ago_days", -1), ("start_ago_days", -1), ("ago_days", -1)), today)
+        if not w.get("ends_on"):
+            w["ends_on"] = _relative_day(raw, (("ends_in_days", 1), ("end_in_days", 1), ("ends_ago_days", -1),
+                                               ("end_ago_days", -1)), today)
+        if not w.get("ends_on") and w.get("starts_on") and isinstance(raw.get("days"), int):
+            w["ends_on"] = (parse_day(w["starts_on"]) + timedelta(days=max(0, raw["days"] - 1))).isoformat()
+        w.setdefault("demo", True)
+        w.setdefault("source", "demo")
+        out.append(w)
+    return out
+
+
+def read_r06() -> tuple[list[dict] | None, str]:
+    """Работы v2 из хранилища R06 (только чтение). (None, причина) — модуля или функции ещё нет."""
+    try:
+        mod = importlib.import_module(R06_MODULE)
+    except Exception:  # нет модуля или он не загрузился — календарь работает на демо-данных
+        return None, "module_missing"
+    for name in R06_FUNCTIONS:
+        fn = getattr(mod, name, None)
+        if not callable(fn):
+            continue
+        try:
+            got = fn()
+        except Exception as exc:  # хранилище не подключено (503) или ошибка — не роняем календарь
+            status = getattr(exc, "status", None)
+            if status != 503:
+                LOGGER.warning("R06 %s.%s: %s", R06_MODULE, name, exc)
+            return None, "not_ready" if status == 503 else "failed"
+        items = (got.get("items") or got.get("works")) if isinstance(got, dict) else got
+        return [x for x in (items or []) if isinstance(x, dict)], "ok"
+    return None, "no_function"
+
+
+def _has_place(record: dict) -> bool:
+    return bool(record.get("segments")) or bool(record.get("street") and record.get("from") and record.get("to"))
+
+
+def load_works(today: date | None = None) -> tuple[list[dict], dict]:
+    """(записи работ, {source, r06, demo}) — см. порядок источников в начале модуля."""
+    today = today or today_astana()
+    records, r06 = read_r06()
+    info = {"r06": r06, "source": "r06" if records is not None else None}
+    records = list(records or [])
+    if demo_mode() and not any(_has_place(r) for r in records):
+        extra = load_world(today) if world_mode() else []
+        label = "world"
+        if not any(_has_place(r) for r in extra):
+            extra, label = load_fixture(today), "fixture"
+        if extra:
+            known = {r.get("id") for r in records}
+            records.extend(r for r in extra if r.get("id") not in known)
+            info["source"] = f"{info['source']}+{label}" if info["source"] else label
+    info["source"] = info["source"] or "none"
+    return records, info
+
+
+# ------------------------------------------------------------------ параметры запроса
+def _one(query: dict, key: str):
+    v = query.get(key)
+    if isinstance(v, (list, tuple)):
+        v = v[0] if v else None
+    return v.strip() if isinstance(v, str) else v
+
+
+def _month_start(d: date) -> date:
+    return d.replace(day=1)
+
+
+def _month_end(d: date) -> date:
+    return add_months(d.replace(day=1), 1) - timedelta(days=1)
+
+
+def parse_period(query: dict, today: date) -> tuple[date, date]:
+    """from/to: «2027-05» (месяц целиком) или «2027-05-01». Нет — прошлый месяц и 11 месяцев вперёд."""
+    def day(key, end=False):
+        text = _one(query, key)
+        if not text:
+            return None
+        if len(text) == 7:
+            d = parse_day(text + "-01")
+            if d is None:
+                raise CalendarError("bad_date", f"Параметр {key}: месяц в виде ГГГГ-ММ.", key)
+            return _month_end(d) if end else d
+        d = parse_day(text) if len(text) == 10 else None
+        if d is None:
+            raise CalendarError("bad_date", f"Параметр {key}: дата в виде ГГГГ-ММ-ДД.", key)
+        return d
+    start, end = day("from"), day("to", end=True)
+    if start is None and end is None:
+        start = add_months(_month_start(today), -DEFAULT_MONTHS_BACK)
+        end = _month_end(add_months(_month_start(today), DEFAULT_MONTHS_AHEAD))
+    elif start is None:
+        start = add_months(_month_start(end), -(DEFAULT_MONTHS_BACK + DEFAULT_MONTHS_AHEAD))
+    elif end is None:
+        end = _month_end(add_months(_month_start(start), DEFAULT_MONTHS_BACK + DEFAULT_MONTHS_AHEAD))
+    if end < start:
+        raise CalendarError("bad_period", "Конец периода раньше начала.", "to")
+    if (end.year - start.year) * 12 + end.month - start.month + 1 > MAX_MONTHS:
+        raise CalendarError("period_too_long", f"Период — не длиннее {MAX_MONTHS} месяцев.", "to")
+    return start, end
+
+
+def parse_filters(query: dict) -> dict:
+    district = (_one(query, "district") or "").lower() or None
+    if district in ("all", "*"):
+        district = None
+    if district is not None and district not in DISTRICTS:
+        raise CalendarError("bad_district", "Неизвестный район.", "district")
+    service = _one(query, "service") or None
+    if service is not None and service not in FALLBACK_SERVICES:
+        raise CalendarError("bad_service", "Неизвестная служба.", "service")
+    street = _one(query, "street") or None
+    if street is not None and len(street) > 80:
+        raise CalendarError("bad_street", "Название улицы — не длиннее 80 знаков.", "street")
+    kind = _one(query, "kind") or None
+    if kind is not None and kind not in KINDS:
+        raise CalendarError("bad_kind", "Неизвестный вид работы.", "kind")
+    return {"district": district, "service": service, "street": street, "kind": kind}
+
+
+# ------------------------------------------------------------------ сборка календаря
+def _months(start: date, end: date) -> list[str]:
+    out, cur = [], _month_start(start)
+    while cur <= end:
+        out.append(cur.strftime("%Y-%m"))
+        cur = add_months(cur, 1)
+    return out
+
+
+def _intersects(a0: date, a1: date, b0: date, b1: date) -> bool:
+    return a0 <= b1 and b0 <= a1
+
+
+def service_list(ids) -> list[dict]:
+    """Службы календаря: id, названия (таблица служб R08), цвет (профиль R17, иначе запасной)."""
+    names_ = _service_names()
+    profiles = _profiles()
+    out = []
+    for sid in sorted({i for i in ids if i}, key=lambda s: (list(FALLBACK_SERVICES).index(s) if s in FALLBACK_SERVICES else 99, s)):
+        item = names_.get(sid) or FALLBACK_SERVICES.get(sid) or {}
+        prof = profiles.get(sid) or {}
+        out.append({"id": sid, "name_ru": item.get("ru") or sid, "name_kk": item.get("kk") or item.get("ru") or sid,
+                    "color": prof.get("color") or FALLBACK_COLORS.get(sid, NO_SERVICE_COLOR),
+                    "icon": prof.get("icon"), "color_source": "r17" if prof.get("color") else "r12"})
+    return out
+
+
+def _profiles() -> dict:
+    """Профили служб R17 (CONTRACT §5.4): цвет и иконка. Нет модуля — {} (запасные цвета R12)."""
+    try:
+        mod = importlib.import_module("ui.civic_agencies")
+    except Exception:
+        return {}
+    for name in ("service_profiles", "profiles", "list_profiles"):
+        fn = getattr(mod, name, None)
+        if callable(fn):
+            try:
+                got = fn()
+            except Exception:
+                return {}
+            items = got.get("items") or got.get("services") or got.get("profiles") if isinstance(got, dict) else got
+            if isinstance(items, dict):
+                return {k: v for k, v in items.items() if isinstance(v, dict)}
+            return {x.get("id"): x for x in (items or []) if isinstance(x, dict) and x.get("id")}
+    return {}
+
+
+def _row_key(w: BoundWork) -> tuple[str, str | None, str | None]:
+    if w.street_ru:
+        short = names.ru_short(w.street_ru)
+        return "street:" + _norm(w.street_ru), short, w.street_kk or w.street_ru
+    return "place:none", None, None
+
+
+def build_calendar(records: list[dict], date_from: date, date_to: date, filters: dict | None = None,
+                   today: date | None = None, graph=None) -> dict:
+    """Календарь: строки по улицам, полосы работ по датам, конфликты со связями. Детерминированно."""
+    t0 = time.perf_counter()
+    filters = filters or {}
+    today = today or today_astana()
+    g = graph or get_graph()
+    bound = bind_all(records, g)
+    district = filters.get("district")
+    in_district = [w for w in bound if district is None or w.district == district]
+    conflicts_all = find_conflicts(in_district, g)
+
+    def visible(w: BoundWork) -> bool:
+        if (w.status or "") in CANCELLED or not w.start:
+            return False
+        if filters.get("service") and w.service != filters["service"]:
+            return False
+        if filters.get("kind") and w.kind != filters["kind"]:
+            return False
+        if filters.get("street"):
+            want = _norm(filters["street"])
+            if want not in _norm(w.street_ru) and want not in _norm(w.street_kk) and want not in _norm(names.ru_short(w.street_ru)):
+                return False
+        return _intersects(w.start, w.end, date_from, date_to)
+
+    shown = {w.id: w for w in in_district if visible(w)}
+    by_id = {w.id: w for w in in_district}
+    conflicts = []
+    for c in conflicts_all:
+        if not any(i in shown for i in c["works"]):
+            continue
+        if not _intersects(parse_day(c["when_from"]), parse_day(c["when_to"]), date_from, date_to):
+            continue
+        conflicts.append(c)
+    context = {}
+    for c in conflicts:  # вторая работа конфликта видна, даже если её отсекли фильтры службы/улицы (без неё нет связи)
+        for i in c["works"]:
+            if i not in shown and i in by_id:
+                context[i] = by_id[i]
+    works_out = []
+    conflicts_of: dict[str, list[str]] = {}
+    for c in conflicts:
+        for i in c["works"]:
+            conflicts_of.setdefault(i, []).append(c["id"])
+    rows: dict[str, dict] = {}
+    ordered = sorted(list(shown.values()) + list(context.values()), key=lambda w: (w.start, w.end, w.id))
+    for w in ordered:
+        item = w.to_public()
+        item["conflicts"] = conflicts_of.get(w.id, [])
+        if w.id in context:
+            item["context"] = True
+        key, ru, kk = _row_key(w)
+        row = rows.setdefault(key, {"key": key, "street_ru": ru, "street_kk": kk, "works": [], "conflicts": 0,
+                                    "first": item["starts_on"]})
+        row["works"].append(w.id)
+        item["row"] = key
+        works_out.append(item)
+    for c in conflicts:
+        for k in {_row_key(by_id[i])[0] for i in c["works"] if i in by_id}:
+            if k in rows:
+                rows[k]["conflicts"] += 1
+    # Порядок строк: сначала с конфликтами (важнее), потом по первой дате; «без улицы» — в конце.
+    row_list = sorted(rows.values(), key=lambda r: (r["key"] == "place:none", r["conflicts"] == 0, r["first"] or "",
+                                                     r["street_ru"] or ""))
+    for r in row_list:
+        r.pop("first", None)
+    undated = [w for w in in_district if not w.start and (w.status or "") not in CANCELLED]
+    services = service_list([w.service for w in ordered])
+    counts = {
+        "works": len(shown), "context": len(context), "conflicts": len(conflicts),
+        "high": sum(1 for c in conflicts if c["severity"] == "high"),
+        "by_kind": {k: sum(1 for c in conflicts if c["kind"] == k)
+                    for k in ("dig_after_surface", "same_segment_overlap", "parallel_closures")},
+        "approximate": sum(1 for w in shown.values() if w.approximate),
+        "undated": len(undated), "total_in_district": len(in_district),
+    }
+    return {
+        "period": {"from": date_from.isoformat(), "to": date_to.isoformat(), "today": today.isoformat()},
+        "months": _months(date_from, date_to),
+        "filters": {k: v for k, v in filters.items() if v},
+        "rows": row_list,
+        "works": works_out,
+        "conflicts": conflicts,
+        "services": services,
+        "kinds": [{"id": k, "name_ru": KIND_LABELS[k][0], "name_kk": KIND_LABELS[k][1]} for k in KINDS],
+        "undated": [{"id": w.id, "title_ru": w.record.get("title_ru") or w.record.get("title"),
+                     "title_kk": w.record.get("title_kk"), "service": w.service} for w in undated[:50]],
+        "counts": counts,
+        "demo": any(w.demo for w in ordered),
+        "approx_radius_m": APPROX_RADIUS_M,
+        "generated_ms": round((time.perf_counter() - t0) * 1000, 1),
+    }
+
+
+# ------------------------------------------------------------------ ответы маршрутов
+def _error(status: int, code: str, message: str, field: str | None = None):
+    body = {"error": {"code": code, "message": message}}
+    if field:
+        body["error"]["field"] = field
+    return status, body
+
+
+def _staff_only(staff) -> tuple[int, dict] | None:
+    if staff is True:
+        return None
+    return _error(401, "staff_required", "Календарь работ — для сотрудников. Войдите как сотрудник.")
+
+
+def calendar_response(query: dict, staff=None):
+    denied = _staff_only(staff)
+    if denied:
+        return denied
+    try:
+        today = today_astana()
+        start, end = parse_period(query, today)
+        filters = parse_filters(query)
+        records, info = load_works(today)
+        body = build_calendar(records, start, end, filters, today)
+        body["source"] = info["source"]
+        body["r06"] = info["r06"]
+        return 200, body
+    except CalendarError as exc:
+        return _error(400, exc.code, exc.message, exc.field)
+    except Exception:
+        LOGGER.exception("civic_geo works-calendar failed")
+        return _error(503, "works_unavailable", "Календарь работ сейчас недоступен. Повторите позже.")
+
+
+def conflicts_response(query: dict, staff=None):
+    """Только конфликты (для слоя карты «Конфликты работ» и для соседей: R08, R17)."""
+    denied = _staff_only(staff)
+    if denied:
+        return denied
+    try:
+        today = today_astana()
+        start, end = parse_period(query, today)
+        filters = parse_filters(query)
+        records, info = load_works(today)
+        cal = build_calendar(records, start, end, filters, today)
+        works = {w["id"]: {k: w.get(k) for k in ("id", "title_ru", "title_kk", "service", "kind", "kind_ru", "kind_kk",
+                                                 "starts_on", "ends_on", "status", "street_ru", "street_kk", "demo",
+                                                 "district", "geometry", "bbox", "length_m")}
+                 for w in cal["works"] if w["conflicts"]}
+        return 200, {"period": cal["period"], "filters": cal["filters"], "conflicts": cal["conflicts"],
+                     "works": works, "services": [s for s in cal["services"] if any(w["service"] == s["id"] for w in works.values())],
+                     "counts": {k: cal["counts"][k] for k in ("conflicts", "high", "by_kind")},
+                     "demo": cal["demo"], "source": info["source"], "generated_ms": cal["generated_ms"]}
+    except CalendarError as exc:
+        return _error(400, exc.code, exc.message, exc.field)
+    except Exception:
+        LOGGER.exception("civic_geo works-conflicts failed")
+        return _error(503, "works_unavailable", "Конфликты работ сейчас недоступны. Повторите позже.")
