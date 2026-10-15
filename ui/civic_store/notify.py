@@ -53,7 +53,9 @@ TITLE_MAX = 240
 READ_IDS_MAX = 300
 CACHE_SECONDS = 5.0          # колокольчик опрашивает раз в минуту, вкладок может быть несколько
 CACHE_DEVICES = 2000
-WORK_NEAR_DAYS = 30          # работа рядом попадает в ленту, если её добавили или изменили за последние 30 дней
+WORK_NEAR_DAYS = 30          # работа у двора попадает в ленту, если её добавили или изменили за последние 30 дней
+DISTRICT_DAYS = 7            # по подписке на район — только свежее за неделю (район большой: иначе лента — поток работ)
+DISTRICT_MAX = 5             # и не больше 5 на район (самые свежие); у двора — все ближе YARD_RADIUS_M
 YARD_RADIUS_M = 500          # «рядом с двором» — как works_near для R16
 
 
@@ -341,9 +343,12 @@ class NotificationCenter:
             return []
         now = utc_now(self.clock)
         fresh = now - timedelta(days=WORK_NEAR_DAYS)
+        fresh_district = now - timedelta(days=DISTRICT_DAYS)
         out = []
+        per_district: dict = {}
         from . import works_v2
-        for item in self.v2.nearby.items(None):
+        items = sorted(self.v2.nearby.items(None), key=lambda i: str(i.get("updated_at") or ""), reverse=True)
+        for item in items:
             updated = _parse_time(item.get("updated_at"))
             if updated is None or updated < fresh:
                 continue
@@ -353,8 +358,12 @@ class NotificationCenter:
                 continue
             near_yard = any((works_v2.distance_to_geometry_m(p, item.get("geometry")) or 1e9) <= YARD_RADIUS_M
                             for p in points)
-            if not (near_yard or item["id"] in subscribed or item.get("district") in districts):
+            by_district = item.get("district") in districts and updated >= fresh_district \
+                and per_district.get(item.get("district"), 0) < DISTRICT_MAX
+            if not (near_yard or item["id"] in subscribed or by_district):
                 continue
+            if by_district and not near_yard and item["id"] not in subscribed:
+                per_district[item.get("district")] = per_district.get(item.get("district"), 0) + 1
             ru, kk = item.get("title_ru") or "", item.get("title_kk") or item.get("title_ru") or ""
             where_ru = "Рядом с вашим двором" if near_yard else "В вашем районе"
             where_kk = "Аулаңыздың жанында" if near_yard else "Сіздің ауданыңызда"
