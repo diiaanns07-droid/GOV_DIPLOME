@@ -203,6 +203,17 @@ class Consistency:
         self.compare("A2. «Картина дня» районы (7 дней) = карта за 7 дней",
                      [("«Картина дня» R08", "R08", dist7), ("карта R07", "R07", map7)],
                      note="" if list7 is None or list7 == map7 else f"справка: «Обращения» по дате подачи — {list7}")
+        # A3. Карта районов Ситуационного центра (R08 akim/board, тот же расчёт «за 7 дней») = карта R07 за 7 дней.
+        board = self.get(self.staff, "/akim/board") if self.staff_ok else None
+        bdata = board.data() if board is not None and board.status == 200 and isinstance(board.body, dict) else None
+        board7 = None
+        if isinstance(bdata, dict):
+            rows = ((bdata.get("districts") or {}).get("items")) or []
+            board7 = next((row.get("value") for row in rows if row.get("district") == d), 0) if rows else None
+        self.value("жалобы района, 7 дн.", "Ситуационный центр R08 карта районов", "R08", board7, "районы за 7 дней на большом экране")
+        if board7 is not None:
+            self.compare("A3. Ситуационный центр: район за 7 дней = карта за 7 дней",
+                         [("Ситуационный центр R08", "R08", board7), ("карта R07", "R07", map7)])
 
         # B. «Я тоже» района
         metoo = self.value("«Я тоже» района, 30 дн.", "«Обращения» R09", "R09",

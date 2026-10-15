@@ -302,8 +302,9 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
       // «сосед/көрші», а не любое «15» (сегодня 15 окт — дата на карточке тоже «15»).
       const cnt = (txt) => { const m = /(?<!\d)(\d{1,4})(?!\d)\s*(?:сосед\p{L}*\s+прид|көрші\s+(?:келеді|барады))/iu.exec(txt || ""); return m ? Number(m[1]) : null; };
       const n0 = cnt(before), n1 = cnt(after);
-      step("7", `карточка инициативы → «Я приду» → счётчик ${s7.joined_before} → ${s7.joined_after}`,
-        pressed ? n0 === s7.joined_before && n1 === s7.joined_after : false, { pressed, before: n0, after: n1 }, "R16", f2);
+      // API-часть уже нажимала «Я приду» (14 → 15 по миру), поэтому в интерфейсе — «+1 к тому, что на карточке».
+      step("7", `карточка инициативы → «Я приду» → счётчик +1 (по миру ${s7.joined_before} → ${s7.joined_after})`,
+        pressed ? n0 !== null && n1 === n0 + 1 : false, { pressed, before: n0, after: n1 }, "R16", f2);
     }
     (timing["7"] = timing["7"] || []).push(Date.now() - t7);
   }
@@ -523,12 +524,19 @@ async function boardCheck(browser, base, lang, staffAcc) {
       if (/rgba\(0, 0, 0, 0\)|transparent/.test(bg)) bg = getComputedStyle(root).backgroundColor;
       const vis = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight; };
       const leaves = [...document.querySelectorAll("body *")].filter((e) => vis(e) && !e.children.length && (e.textContent || "").trim());
-      const sizes = leaves.map((e) => parseFloat(getComputedStyle(e).fontSize));
+      // Текст в SVG (подписи районов мини-карты) масштабирует viewBox: размер на экране = font-size × масштаб CTM.
+      // Текст для диктора (.bk-sr-only, 1×1 px) не видно — не считаем.
+      const eff = (e) => { const fs = parseFloat(getComputedStyle(e).fontSize);
+        if (e instanceof SVGElement && typeof e.getScreenCTM === "function") { const m = e.getScreenCTM(); if (m) return fs * Math.sqrt(m.a * m.a + m.b * m.b); }
+        return fs; };
+      const shown = leaves.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1 && !e.closest(".bk-sr-only, .sr-only, .visually-hidden"); });
+      const sizes = shown.map((e) => Math.round(eff(e) * 10) / 10);
+      const smallest = shown.map((e) => [Math.round(eff(e) * 10) / 10, (e.textContent || "").trim().slice(0, 30)]).sort((a, b) => a[0] - b[0]).slice(0, 4);
       const big = leaves.filter((e) => /^\d[\d\s.,%×]*$/.test(e.textContent.trim()) && parseFloat(getComputedStyle(e).fontSize) >= 40).length;
       return { dark: root.classList.contains("bk-dark"), bg_lum: Math.round(lum(bg) * 1000) / 1000,
         scrollH: root.scrollHeight, scrollW: root.scrollWidth, innerH: innerHeight, innerW: innerWidth,
         state: (document.getElementById("board") || {}).dataset ? document.getElementById("board").dataset.state : null,
-        min_font: sizes.length ? Math.min(...sizes) : null, big_numbers: big,
+        min_font: sizes.length ? Math.min(...sizes) : null, smallest, big_numbers: big,
         text: (body.innerText || "").slice(0, 4000) };
     }).catch(() => null);
     const f = path.join(OUT, `board-${tag}.jpg`);
@@ -541,7 +549,7 @@ async function boardCheck(browser, base, lang, staffAcc) {
     step("без прокрутки на весь экран", m.scrollH <= m.innerH + 2 && m.scrollW <= m.innerW + 2, { scrollH: m.scrollH, h: m.innerH, scrollW: m.scrollW, w: m.innerW });
     step("тёмная тема только здесь (.bk-dark, тёмный фон)", m.dark && m.bg_lum < 0.2, { dark: m.dark, bg_luminance: m.bg_lum });
     step("крупные живые числа (≥ 40 px) — читается с 3 м", m.big_numbers >= 3, { big_numbers: m.big_numbers });
-    step("мелкого текста нет (≥ 14 px на большом экране)", m.min_font === null || m.min_font >= 14, { min_font: m.min_font });
+    step("мелкого текста нет (≥ 14 px на большом экране)", m.min_font === null || m.min_font >= 14, { min_font: m.min_font, smallest: m.smallest });
     if (q) step("контраст текста ≥ 4,5:1 на тёмном", q.lowContrastN === 0, { n: q.lowContrastN, ex: (q.lowContrast || []).slice(0, 4) });
     const sample = /Пример|Үлгі/.test(m.text);
     step("пометка «Пример» на синтетике", sample, null);
