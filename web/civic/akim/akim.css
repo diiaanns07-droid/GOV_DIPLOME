@@ -1153,6 +1153,8 @@
   .akim-summary,
   .akim-empty { order: 3; }
   .akim-pulse { order: 4; }
+  .akim-r15,
+  .akim-forecast { order: 4; } /* раунд 15: после «Пульса», в порядке разметки */
   .akim-grid { order: 5; }
   .akim-print-bottom { order: 6; }
   .akim-kpi-more { order: 1; }
@@ -1562,6 +1564,10 @@
   .akim-r15 {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
+  /* Прогноз-прототип на бумаге «Картины дня» не печатаем (он есть в «Картине недели»): лист не длиннее 3 страниц. */
+  .akim-forecast {
+    display: none !important;
+  }
   .akim-r15-card__open,
   .akim-pulse__crisis,
   .akim-decision__more > summary {
@@ -1570,5 +1576,22 @@
   .akim-r15-card,
   .akim-forecast__row {
     break-inside: avoid;
+  }
+}
+
+/* «Картина недели» — тихая ссылка рядом с «Распечатать» (одна главная кнопка на экране — у тревоги кризиса). */
+.akim__week.bk-btn {
+  gap: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+@media (max-width: 720px) {
+  .akim__week.bk-btn {
+    display: none;
+  }
+}
+@media print {
+  .akim__week {
+    display: none !important;
   }
 }

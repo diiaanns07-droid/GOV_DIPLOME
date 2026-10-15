@@ -413,6 +413,8 @@ async function shot(page, name, full) {
   empty.empty = true;
   empty.decisions = { available: true, items: [], count: 0, demo: false, source: "complaints" };
   empty.pulse = { available: true, items: [], base_weeks: 4 };
+  // Раунд 15: «пустой день» — и без соседей (R17/R16/R13): у их блоков свои данные, здесь проверяется пустое состояние.
+  for (const k of ["agencies", "crisis", "together", "meetings", "forecast"]) empty[k] = { available: false, reason: "module_not_ready" };
   empty.overdue = { count: 0, places: 0, items: [], top: 5 };
   empty.kpi.verification_available = false;
   Object.assign(empty.objects, { late: [], stale: [], late_count: 0, stale_count: 0 });

@@ -41,6 +41,7 @@
     syncUrl: true, // хранить дату и район в адресе: F5, печать и ссылка показывают то же
     refreshMs: 120000, // тихое обновление, пока вкладка видна (0 — выключить)
     titleTag: "h1", // в оболочке со своим h1 передайте "h2" — на странице будет один заголовок первого уровня
+    weekHref: "/civic/akim/week.html", // «Картина недели» (раунд 15): отчёт для совещания, печать A4
   };
   var STALE_ON_RETURN_MS = 60000; // вернулись на вкладку, а данным больше минуты — обновить
   var TIMEOUT_MS = 15000;
@@ -88,6 +89,7 @@
       "akim.decision.save_error": "Выбор не сохранился — попробуйте ещё раз",
       // Раунд 15, «Картина дня» 2.0 (R11 IA_ROUND15 §5.10)
       "akim.crisis.open": "Открыть кризисный штаб",
+      "akim.week.open": "Картина недели",
       "akim.empty.yesterday": "Показать предыдущий день",
       "akim.decision.more": "Подробнее",
       "akim.r15.open": "Открыть",
@@ -127,6 +129,7 @@
       "akim.decision.forbidden": "Нұсқаны тек әкімдік қызметкері таңдай алады",
       "akim.decision.save_error": "Таңдау сақталмады — қайталап көріңіз",
       "akim.crisis.open": "Жедел штабты ашу",
+      "akim.week.open": "Апта қорытындысы",
       "akim.empty.yesterday": "Алдыңғы күнді көрсету",
       "akim.decision.more": "Толығырақ",
       "akim.r15.open": "Ашу",
@@ -494,6 +497,14 @@
       load();
     }
 
+    function weekHref() {
+      var q = new URLSearchParams();
+      if (state.date) q.set("date", state.date);
+      if (state.district) q.set("district", state.district);
+      var s = q.toString();
+      return opts.weekHref + (s ? "?" + s : "");
+    }
+
     // ── шапка страницы: заголовок, дата, район, печать ──
     function renderTop() {
       var d = state.data;
@@ -554,6 +565,18 @@
           h("span", { class: "akim__field-label", text: tr("heat.filter.district") }),
           districtSelect,
         ]),
+        // Раунд 15: «Картина недели» — отчёт для совещания (печать A4, ru / kk), та же дата и район, в новой вкладке.
+        h(
+          "a",
+          {
+            class: "bk-btn bk-btn--ghost akim__week",
+            href: weekHref(),
+            target: "_blank",
+            rel: "noopener",
+            "data-key": "week-report",
+          },
+          [icon("calendar"), tr("akim.week.open")]
+        ),
         h(
           "button",
           {
@@ -916,12 +939,11 @@
       var h0 = link && link.charAt(0) === "#" ? link : fallback;
       return "/" + h0;
     }
-    function r15Card(id, titleKey, value, numberKey, lines, href, demo) {
+    // «Пример» у демо-данных — одной строкой внизу экрана (CLEAN_PASS п. 1: d.demo.any включает блоки соседей),
+    // а не меткой в каждой карточке.
+    function r15Card(id, titleKey, value, numberKey, lines, href) {
       return h("article", { class: "bk-card akim-card akim-r15-card", "data-block": id }, [
-        h("div", { class: "akim-r15-card__head" }, [
-          h("h2", { class: "bk-h2", text: tr(titleKey) }),
-          demo ? h("span", { class: "bk-tag bk-tag--demo akim-r15-card__demo", text: tr("common.demo") }) : null,
-        ]),
+        h("div", { class: "akim-r15-card__head" }, [h("h2", { class: "bk-h2", text: tr(titleKey) })]),
         h("p", { class: "akim-r15-card__value" }, [
           h("span", { class: "akim-r15-card__num", text: value == null ? "—" : num(value) }),
           h("span", { class: "akim-r15-card__label", text: tr(numberKey, { n: value || 0 }) }),
@@ -942,7 +964,7 @@
         cards.push(r15Card("agencies", "akim.r15.agencies.title", g.joint, "akim.r15.agencies.number", [
           lag.length ? tr("akim.r15.agencies.lagging", { list: lag.join(", ") }) : tr("akim.r15.agencies.no_lagging"),
           g.handoffs_week != null ? tr("akim.r15.agencies.handoffs", { n: g.handoffs_week }) : null,
-        ], sectionHref(g.link, "#agencies"), g.demo));
+        ], sectionHref(g.link, "#agencies")));
       }
       var t = d.together;
       if (t && t.available) {
@@ -953,7 +975,7 @@
         cards.push(r15Card("together", "akim.r15.together.title", (t.done_week || 0) + (t.upcoming || 0), "akim.r15.together.number", [
           tr("akim.r15.together.split", { done: t.done_week || 0, people: people, soon: t.upcoming || 0 }),
           second,
-        ], sectionHref(t.link, "#together"), t.demo));
+        ], sectionHref(t.link, "#together")));
       }
       var m = d.meetings;
       if (m && m.available && (m.orders || m.next)) {
@@ -964,7 +986,7 @@
           late ? tr("akim.r15.meetings.overdue", { n: o.overdue || 1, text: late["text_" + lang()] || late.text_ru })
             : tr("akim.r15.meetings.no_overdue", { done: o.done || 0, total: o.total || 0 }),
           nx ? tr("akim.r15.meetings.next", { place: nx.district ? tr("district." + nx.district) : "", date: I().formatDateTime(nx.at) }) : null,
-        ], sectionHref(m.link, "#meetings"), m.demo));
+        ], sectionHref(m.link, "#meetings")));
       }
       if (!cards.length) return null;
       return h("section", { class: "akim-r15", "data-count": String(cards.length), "aria-label": tr("akim.r15.board") }, cards);
@@ -1430,7 +1452,8 @@
     function preparePrint() {
       if (!rootEl.isConnected || !rootEl.getClientRects().length) return; // экран скрыт — печатает тот, кто на виду
       // На бумаге «Ещё N тревог» не раскрыть — раскрываем перед печатью и сворачиваем после.
-      Array.prototype.forEach.call(rootEl.querySelectorAll("details:not([open])"), function (el) {
+      // «Подробнее» у «Нужно решение акима» (раунд 15) на бумаге не раскрываем: лист — «проблема → варианты».
+      Array.prototype.forEach.call(rootEl.querySelectorAll("details:not([open]):not(.akim-decision__more)"), function (el) {
         el.open = true;
         openedForPrint.push(el);
       });
