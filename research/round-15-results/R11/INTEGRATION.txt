@@ -235,7 +235,7 @@ R01 (B0 claude/brave-fermi-nhzetj @ c9069723; стенд с ui-kit и слова
   R01-2 тосты (напр. «Карта улиц не загрузилась…») — выше нижних панелей («Что построить?» R05, лист R09).
   R01-3 R16 «Мой двор» ещё не в B0 — ждём в B1.
 
-Круг 5, словарь (15 окт, после 21:30) — 2554 ключа, ru = kk, i18n_tools check PASS:
+Круг 5, словарь (15 окт, 21:28) — 2554 ключа, ru = kk, i18n_tools check PASS:
   - +140 ключей: R06 уведомления notify.* (колокольчик), idea.* раунда 15 (идея → дело, статусы), works.* (вид работ,
     участок улицы); R09 joint.* / handoff.reason.* / reply.draft.* / mine.update.* / inbox.filter.* / complaint.voice.*;
     R17 agencies.pickups.*.
