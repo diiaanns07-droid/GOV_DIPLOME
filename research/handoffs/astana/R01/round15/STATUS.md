@@ -47,10 +47,21 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
   AMENDMENTS.md; приёмка сборок без моделей ориентиров.
 - 17:25 `c2df555a`: браузерная проверка меню раунда 15 — r15_ia.cjs 25/0 (новый, в run_checks), r14_wave2 42/0
   (?screens=r14 — регресс меню FINAL-4). DELIVERY / RUN / INTEGRATION раунда 15 — `2bd5bb5e`.
+- 18:40 B0 (`cc91030b`: R02 907bfc9d, R03 7724787e, R04 c5383235, R08 6cd8f2be, R10 95de8b99, R11 b6ced41d, R12 1c8d171d,
+  R13 74903b7a, R15 4995f2bf, R17 75300896). Полный run_checks B0 (18:01–18:30): pytest 4344 PASS / 3 FAIL — R08
+  forecast (ждёт R08), R15 S42 XPASS (ждёт R15), R17 agencies_week (утечка configure из тестов шлюза R01 — исправлено
+  conftest R01 в B0.2); браузер: 18 PASS, r14_wave2 и r15_ia FAIL — R17 75300896 регистрировал раздел со своей
+  подписью «Штаб ведомств» (меню «Ведомства»), новые слои R17/R12 и «Ситуационный центр» R08 — правится в B0.2.
+- 21:45 B0.2 (`514008b6`…`12e99fba`): R16 e475fae9 («Мой двор», «Сделаем вместе», +3 маршрута), R07 52dee9a4
+  («Хроника города»: чип «▶ Хроника» в строке легенды по IA R11 §7.8, ?replay=7, Ctrl+K), R17 191f81e7, R11 c3c376e7,
+  R02 c002aa85, R05 645d6008 (П1: ориентиры — настоящие здания подложки, поиск → перелёт; моделей нет); демо-мир
+  засевается в wire(); подпись пункта меню — всегда ключ R11. pytest R01+R07 566/1 (замер скорости R07 под нагрузкой).
 
 ## Дальше (по порядку промпта)
-1. Колокольчик R06 (BirgeNotify.attach) и чип «▶ Хроника» R07 (BirgeReplay.mount) — по их INTEGRATION, когда придут.
-2. DEMO_SCRIPT.md v2 (шаги 1–9, ҚАЗ и РУС, «Перед показом») — черновик до B1, уточнить по сценам R10/R14.
+1. B0.2: браузерные проверки r15_ia / r14_wave2 под меню с R17/R08/R12 и новые проверки «Хроники» и «Моего двора»;
+   кадры П1 новых экранов (R16, R07, R05) 1366/1024/375 × ru/kk; BUILD.json B0.2 (предварительная).
+2. Колокольчик R06 (BirgeNotify.attach) — когда R06 сдаст (поставки ещё нет).
+3. DEMO_SCRIPT.md v2 — черновик есть (research/round-15-results/R01/DEMO_SCRIPT.md), уточнить по сценам R10/R14.
 3. B1 — 16 окт 14:00 по Астане (09:00 UTC): поставки ролей по find_branches.py (DELIVERY code_sha), только пути ролей,
    CIVIC_ASSETS и теги, run_checks + r15_ia + R10 demo_flow часть 1, проверка П1 по кадрам, BUILD.json.
 4. Флаг демо-мира в run-city.bat / run.sh — после seed_world модулей и зелёного регресса R10.
@@ -58,22 +69,22 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 ## Роли → ветки → поставки (для истории)
 | Роль | Ветка раунда 15 | Поставка (DELIVERY code_sha) | Взято в сборку |
 |---|---|---|---|
-| R02 | claude/affectionate-shannon-jm6ws5 | 907bfc9d (демо-мир world_v1) | B0: 907bfc9d |
+| R02 | claude/affectionate-shannon-jm6ws5 | c002aa85 (мир 1.1) | B0: 907bfc9d · B0.2: c002aa85 |
 | R03 | claude/modest-mccarthy-lrl98u | 7724787e («Спросить Birge») | B0: 7724787e + патчи ассетов и палитры |
 | R04 | claude/gifted-maxwell-i66wwi | c5383235 (route, reply-draft, moderate) | B0: c5383235 |
-| R05 | claude/bold-cray-dopshy | — (П1: модели ориентиров отменены) | — |
+| R05 | claude/bold-cray-dopshy | 645d6008 («Настоящий город», белый макет) | B0.2: 645d6008 + 2 патча R01 |
 | R06 | claude/eloquent-einstein-wvuyje | — | — |
-| R07 | claude/birge-r07-round-15-zjp4ob | (раунд 14: fe209c56) | FINAL-4.1: fe209c56 |
+| R07 | claude/birge-r07-round-15-zjp4ob | 52dee9a4 («Хроника города») | B0.2: 52dee9a4 |
 | R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 6cd8f2be | B0: 6cd8f2be (из первой ветки целиком) |
 | R09 | claude/quirky-ptolemy-k3z2mj | D0 e494026e | FINAL-4.1: e494026e |
 | R10 | claude/zen-wozniak-69d41q | 95de8b99 (тесты) | B0: 95de8b99 |
-| R11 | claude/gracious-mendel-eopem6 | b6ced41d (ui-kit r15, IA, ключи) | B0: b6ced41d |
+| R11 | claude/gracious-mendel-eopem6 | c3c376e7 (ui-kit r15, IA, 2380 ключей) | B0: b6ced41d · B0.2: c3c376e7 |
 | R12 | claude/great-newton-8k3474 | 1c8d171d (календарь работ) | B0: 1c8d171d |
 | R13 | claude/gifted-mayer-p86myv | 74903b7a (встречи, прогноз недели) | B0: 74903b7a |
 | R14 | (не начата на 18:40) | — | — |
 | R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf (tests/civic/R15) |
-| R16 | claude/youthful-johnson-6nz5mp | — | — |
-| R17 | claude/sweet-euler-5tiu5b | 75300896 (штаб ведомств) | B0: 75300896 |
+| R16 | claude/youthful-johnson-6nz5mp | e475fae9 (чекпойнт 4 fbd9e247 — без DELIVERY) | B0.2: e475fae9 + патч маршрутов руками |
+| R17 | claude/sweet-euler-5tiu5b | 191f81e7 (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 |
 
 ## Просьбы соседям
 - **R08 (вторая сессия claude/inspiring-johnson-j7wksj)**: роль R08 по COMMON ведёт claude/laughing-euler-iv3on3 (заявка на
@@ -89,6 +100,15 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
   R12/R07). Нужна сверка с одним снимком или правка проверки R10. Код оболочки ни при чём.
 - **R15**: POST /moderate (R04, предпросмотр для всех) в таблице — ключ `ml.text_check` (не «moderate»: это не решение
   сотрудника, ничего не меняет); лимит 60/мин по адресу.
+
+- **R07**: tests/civic/R07/test_r07_replay.py::test_city_30_days_under_one_second падает внутри полного pytest (процесс
+  загружен соседними тестами — прогрев моделей R04 и др.), отдельно — 2,3 с PASS. Сделайте порог относительным или
+  отдельный прогон замера. Патч R09 metoo_times — в поставке R09 (R01 не применяет чужой код сам).
+- **R17**: фикстура service в test_r17_service.py не сбрасывает sources.configure(records=…) — после тестов шлюза R01 в
+  одном процессе test_neighbor_functions_with_service видел чужие записи. R01 со своей стороны сбрасывает (conftest),
+  но лучше и у вас: configure(records=None) в фикстуре.
+- **R16**: в сборке B0.2 — код e475fae9 (DELIVERY). Чекпойнт 4 fbd9e247 (пути оболочки, вкладки акимата, значки вида)
+  возьму в B1, когда обновите DELIVERY.json; патч маршрутов R01_together_b1.patch применён руками (контекст ушёл).
 
 ## Вопросы владельцу
 - (решено по умолчанию) Телефон: «ҚАЗ · РУС» — в шторке «Рядом с вами» (эталон), а когда шторки нет (акимат, карточка,
