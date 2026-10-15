@@ -106,6 +106,12 @@ restored_from: fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.
 - (15:26 UTC) Круг 4: AMENDMENTS — только П1. Новое только у R10 (2100f6bf): ролик и perf_check понимают лёгкий вход
   хроники (open → Promise) — в INTEGRATION §1.3 дописано, как вызывать в обоих случаях. R01 — без новых коммитов.
 
+- (16:30 UTC, fcfd9256) Круг 5: AMENDMENTS — только П1. R02 прислал patch R07_world_marks_reseed: при перезапуске на той же
+  базе с новым now отметки «Хроники» оставались на старом времени, а жалобы R09 (reset) уезжали к новому — «Буран» на
+  шкале раньше всплеска. Patch проверен и принят (seed_world: тот же now — без изменений, новый — {"reset": n});
+  pytest R07 203/1 skip. R17 мой patch слоя кризиса ещё не взял (применяется к их e7ade08f); R11 — 6 ключей heat.* ещё
+  нет; R10 pvD со свежим R07 — замечаний к R07 нет. R01 — без новых коммитов.
+
 ## Дальше
 - Своё по промпту сделано (задачи 1–6), поставка — DELIVERY.json (code_sha в нём). Круги до B1 — короткие: AMENDMENTS,
   find_branches.py (R01 / R10 / R11 / R17 / R09 — новые коммиты, касающиеся R07), строка в STATUS.
@@ -126,7 +132,8 @@ restored_from: fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.
 - R10 (claude/zen-wozniak-69d41q @ ce52465c): B-103 исправлен у R07, патч их проверки принят (2d70ca6d); B-113 — лёгкий
   вход хроники и замер; B-116 (термин «Хроника» по-казахски) — решает R11, R07 берёт из словаря.
 - R15 (claude/practical-fermi-c58v1u @ 6ca34f42): хроника (heat/replay) проверена — «чисто», пределы периода — 12 тестов.
-- R02 (claude/affectionate-shannon-jm6ws5 @ fbb9de1b): EXPECTED.json посчитан с кодом R07 f42f4347 — числа карты те же.
+- R02 (claude/affectionate-shannon-jm6ws5 @ ac75f3a8): EXPECTED.json посчитан с кодом R07 f42f4347 — числа карты те же;
+  patch R07_world_marks_reseed (отметки едут с миром при перезасеве) — принят у R07.
 
 ## Вопросы владельцу
 - (пока нет)
