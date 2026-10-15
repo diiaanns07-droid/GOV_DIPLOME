@@ -706,7 +706,7 @@ class WorldBuilder:
         """«Служба сообщила» → «Проверено жителями» / «Проблема осталась» (R09 resolution, волна 2)."""
         rnd = self.rnd
         for t in self.threads:
-            if t.fixed is None or not t.complaints or t.scene:
+            if t.fixed is None or not t.complaints or t.scene in ("step2", "scene8"):
                 continue
             fixed_cs = [c for c in t.complaints if c["status"] == "fixed"]
             if not fixed_cs:
@@ -800,12 +800,15 @@ class WorldBuilder:
                                  "fix_eta": {"day": rnd.randint(1, 12)}, "updated_at": c["status_history"][-1]["at"]}
         # «Нужно решение акима»: старые (≥ 12 дней) в работе, у служб без своего решения — 3 примера, как в R08.
         old = [c for c in open_ if c["_age"] > 12 * 24 and c["category"] in DECISIONS]
-        old.sort(key=lambda c: (-c["_age"], c["id"]))
-        chosen, cats = [], set()
+        # Нура — район демо: два примера там (иначе фильтр «Нура» в «Картине дня» показал бы пример-фикстуру R08).
+        old.sort(key=lambda c: (c["district"] != "nura", -c["_age"], c["id"]))
+        chosen, cats, nura = [], set(), 0
         for c in old:
-            if c["category"] not in cats:
-                chosen.append(c)
-                cats.add(c["category"])
+            if c["category"] in cats or (c["district"] == "nura" and nura >= 2):
+                continue
+            chosen.append(c)
+            cats.add(c["category"])
+            nura += c["district"] == "nura"
             if len(chosen) == 3:
                 break
         for c in chosen:
@@ -912,14 +915,14 @@ def strip_private(c: dict) -> dict:
 # Октябрь в Астане: первый снег и утренний гололёд — обычное дело; «Буран в Нуре» — последние ~3 суток (сцена 9).
 BURAN = {"id": "ev-w15-buran", "from_h": 70.0, "to_h": 3.0}
 SNOW_EPISODES = (
-    {"event": "ev-w15-first-snow", "from_h": 13.2 * 24, "to_h": 11.6 * 24, "hot": 1.2,
-     "per_district": {"nura": 10, "esil": 5, "almaty": 3, "saryarka": 4, "baikonur": 3, "saraishyk": 3},
+    {"event": "ev-w15-first-snow", "from_h": 13.2 * 24, "to_h": 11.6 * 24, "hot": 1.4,
+     "per_district": {"nura": 15, "esil": 6, "almaty": 4, "saryarka": 5, "baikonur": 4, "saraishyk": 4},
      "families": {"road_snow": 3, "sidewalk_ice": 3, "yard_snow": 2, "stop_ice": 1.5, "no_sand": 1}},
-    {"event": "ev-w15-ice", "from_h": 9.6 * 24, "to_h": 8.3 * 24, "hot": 1.0,
-     "per_district": {"nura": 8, "esil": 4, "almaty": 2, "saryarka": 3, "baikonur": 2, "saraishyk": 2},
+    {"event": "ev-w15-ice", "from_h": 9.6 * 24, "to_h": 8.3 * 24, "hot": 1.2,
+     "per_district": {"nura": 12, "esil": 5, "almaty": 3, "saryarka": 3, "baikonur": 3, "saraishyk": 3},
      "families": {"sidewalk_ice": 4, "no_sand": 2, "stop_ice": 2}},
     {"event": BURAN["id"], "from_h": BURAN["from_h"], "to_h": BURAN["to_h"], "hot": 2.0,
-     "per_district": {"nura": 34, "esil": 6, "almaty": 3, "saryarka": 4, "baikonur": 3, "saraishyk": 4},
+     "per_district": {"nura": 30, "esil": 6, "almaty": 3, "saryarka": 4, "baikonur": 3, "saraishyk": 4},
      "families": {"road_snow": 3, "sidewalk_ice": 2, "yard_snow": 3, "stop_ice": 1.5, "snow_dumped": 0.6,
                   "no_sand": 1, "icicles": 0.4}},
     # Буран тянет за собой транспорт (автобусы опаздывают) и обрывы освещения — в Нуре.
@@ -1699,11 +1702,59 @@ def sample_of(world: dict) -> dict:
             if x not in chosen:
                 chosen.append(x)
         out[key] = chosen
+    _close_references(out, world)
     out["sample"] = True
     out["sample_note_ru"] = ("Образец — подмножество world_v1.json (те же записи и id). Ссылки на записи вне образца "
                              "(например, работа в поручении встречи) могут вести в полный мир.")
     out["counts"] = {k: len(out[k]) for k in world["counts"]}
     return out
+
+
+def _close_references(out: dict, world: dict) -> None:
+    """Образец замкнут: всё, на что ссылаются его записи (двор инициативы, жалоба в поручении, работы конфликта,
+    идея ↔ инициатива, вопросы встречи), тоже в образце — тесты ролей не упираются в «нет такой записи»."""
+    index = {key: {x["id"]: x for x in world[key]} for key in ("yards", "complaints", "works", "ideas", "initiatives",
+                                                                "questions", "meetings", "incidents")}
+    def need(key, item_id):  # noqa: E306
+        if item_id in index[key] and all(x["id"] != item_id for x in out[key]):
+            out[key].append(index[key][item_id])
+            return True
+        return False
+    changed = True
+    while changed:
+        changed = False
+        for i in list(out["initiatives"]):
+            changed |= need("yards", i["target"]["id"])
+            if i.get("from_idea"):
+                changed |= need("ideas", i["from_idea"])
+        for idea in list(out["ideas"]):
+            if (idea.get("target") or {}).get("id"):
+                changed |= need("yards", idea["target"]["id"])
+            if idea.get("to_initiative"):
+                changed |= need("initiatives", idea["to_initiative"])
+        for m in list(out["meetings"]):
+            if m["place"]["id"].startswith("yard-"):
+                changed |= need("yards", m["place"]["id"])
+            for q in m.get("questions") or []:
+                changed |= need("questions", q)
+            for o in m.get("orders") or []:
+                link = o.get("link") or {}
+                if link.get("kind") == "complaint":
+                    changed |= need("complaints", link["id"])
+                elif link.get("kind") == "work":
+                    changed |= need("works", link["id"])
+        for q in list(out["questions"]):
+            if q.get("meeting"):
+                changed |= need("meetings", q["meeting"])
+        for cf in list(out["planned_conflicts"]):
+            for wid in cf["works"]:
+                changed |= need("works", wid)
+        for inc in list(out["incidents"]):
+            for tid in inc["zone"].get("targets") or []:
+                if tid.startswith("yard-"):
+                    changed |= need("yards", tid)
+    for key in index:
+        out[key].sort(key=lambda x: x["id"])
 
 
 def dump(obj) -> str:

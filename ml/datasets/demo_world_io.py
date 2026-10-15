@@ -66,8 +66,10 @@ def is_reltime(value) -> bool:
     if not isinstance(value, dict) or len(value) != 1:
         return False
     (key, inner), = value.items()
-    if key in _INSTANT_KEYS or key == "day":
+    if key in _INSTANT_KEYS:
         return isinstance(inner, (int, float)) and not isinstance(inner, bool)
+    if key == "day":
+        return isinstance(inner, int) and not isinstance(inner, bool)  # дата — целое число дней
     if key == "season":
         return (isinstance(inner, dict) and set(inner) == {"month", "day"}
                 and all(isinstance(inner[k], int) and not isinstance(inner[k], bool) for k in inner))
