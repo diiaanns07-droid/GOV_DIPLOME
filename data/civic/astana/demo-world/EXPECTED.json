@@ -4,6 +4,12 @@
  "world_version": "1.1",
  "now": "2026-10-16T12:00:00+05:00",
  "note_ru": "Числа посчитаны кодом модулей (R07 карта, R08 «Картина дня», R09 «Обращения») на записях мира. Табло служб и «Мой двор» — простые правила R02 для сверки, пока модулей R16/R17 нет.",
+ "code": {
+  "R07": "545dd234a72cbc9b",
+  "R08": "ee66a0f380fb428e",
+  "R09": "edebb11fcf96d4e4"
+ },
+ "code_note": "R09 claude/quirky-ptolemy-k3z2mj 97342bdf (WAITING_CHECK_DAYS 14), R07 claude/birge-r07-round-15-zjp4ob f42f4347, R08 из сборки R01 B0 c9069723 (6cd8f2be)",
  "heat": {
   "available": true,
   "districts_7d": {
@@ -328,20 +334,21 @@
  "inbox": {
   "available": true,
   "city": {
-   "new": 19,
-   "in_progress": 62,
-   "waiting_check": 424,
+   "new": 21,
+   "in_progress": 72,
+   "waiting_check": 159,
    "overdue": 5,
    "reopened": 5
   },
+  "waiting_check_days": 14,
   "nura": {
    "new": 8,
-   "in_progress": 19,
-   "waiting_check": 131,
+   "in_progress": 24,
+   "waiting_check": 54,
    "overdue": 2,
    "reopened": 0
   },
-  "nura_groups": 160,
+  "nura_groups": 88,
   "complaints_total": 743,
   "complaints_by_district": {
    "saryarka": 81,
@@ -925,8 +932,8 @@
   "day_overdue": 5,
   "inbox_counts": {
    "new": 8,
-   "in_progress": 19,
-   "waiting_check": 131,
+   "in_progress": 24,
+   "waiting_check": 54,
    "overdue": 2,
    "reopened": 0
   },

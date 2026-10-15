@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from collections import Counter, defaultdict
@@ -25,6 +26,12 @@ from ml.datasets import demo_world_io as wio
 
 REFERENCE_NOW = "2026-10-16T12:00:00+05:00"
 HEAT_DAYS = (7, 14, 30)
+# Чей код считает блок EXPECTED.json. В сборке R01 у соседей код новее, чем в ветке R02 (например, R09 раунда 15
+# «Ждут проверки» = 14 дней): блок с другим отпечатком кода тест R02 не сравнивает с файлом — его сверяет
+# tests/civic/R02/round15/stand_numbers.py на живом стенде (тот же код, что у экрана).
+MODULE_DIRS = {"R07": "ui/civic_heat", "R08": "ui/civic_akim", "R09": "ui/civic_feedback/v2"}
+SECTION_CODE = {"heat": ("R07", "R09"), "akim": ("R07", "R08", "R09"), "inbox": ("R09",), "services": ("R09",),
+                "nura_check": ("R07", "R08", "R09")}
 
 
 def _with_r09_fields(complaints: list[dict]) -> list[dict]:
@@ -36,6 +43,18 @@ def _with_r09_fields(complaints: list[dict]) -> list[dict]:
         c["due_at"] = rec.due_at(c["created_at"], c["category"])
         c.setdefault("code", f"B-{n:04d}")
         out.append(c)
+    return out
+
+
+def code_fingerprints() -> dict:
+    """Отпечаток кода модулей, которыми посчитаны блоки: sha256 файлов .py пакета (16 знаков); пакета нет — None."""
+    out = {}
+    for role, rel in MODULE_DIRS.items():
+        files = sorted((wio.ROOT / rel).rglob("*.py")) if (wio.ROOT / rel).is_dir() else []
+        digest = hashlib.sha256()
+        for f in files:
+            digest.update(f.relative_to(wio.ROOT).as_posix().encode() + b"\0" + f.read_bytes() + b"\0")
+        out[role] = digest.hexdigest()[:16] if files else None
     return out
 
 
@@ -86,7 +105,9 @@ def akim_numbers(heat, now: datetime) -> dict:
 
 def inbox_numbers(records: list[dict], now: datetime) -> dict:
     from ui.civic_feedback.v2 import lifecycle
-    out = {"available": True, "city": lifecycle.inbox(records, now)["counts"]}
+    out = {"available": True, "city": lifecycle.inbox(records, now)["counts"],
+           # «Ждут проверки» — ремонты последних N дней (R09 раунда 15: 14); в коде FINAL-4 правила нет — None
+           "waiting_check_days": getattr(lifecycle, "WAITING_CHECK_DAYS", None)}
     for district in ("nura",):
         part = [r for r in records if r.get("district") == district]
         res = lifecycle.inbox(part, now)
@@ -162,14 +183,16 @@ def scenes_numbers(world_m: dict, records: list[dict], now: datetime) -> dict:
     return out
 
 
-def expected(world: dict, now: datetime | None = None) -> dict:
+def expected(world: dict, now: datetime | None = None, code_note: str | None = None) -> dict:
     now = wio.astana_now(now)
     world_m = wio.materialize(world, now)
     records = _with_r09_fields(world_m["complaints"])
     result = {"schema": "birge-demo-world-expected-v1", "world_schema": world.get("schema"),
               "world_version": world.get("schema_version"), "now": wio.iso(now),
               "note_ru": "Числа посчитаны кодом модулей (R07 карта, R08 «Картина дня», R09 «Обращения») на записях мира. "
-                         "Табло служб и «Мой двор» — простые правила R02 для сверки, пока модулей R16/R17 нет."}
+                         "Табло служб и «Мой двор» — простые правила R02 для сверки, пока модулей R16/R17 нет.",
+              "code": code_fingerprints(),
+              "code_note": code_note}   # откуда код модулей, если считали не в ветке R02 (ветки и SHA)
     heat_pack = _safe(lambda: heat_numbers(records, now))
     if isinstance(heat_pack, tuple):
         result["heat"], heat = heat_pack
@@ -200,10 +223,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--world", default=None, help="путь к миру (по умолчанию world_v1.json)")
     ap.add_argument("--now", default=REFERENCE_NOW, help="момент засева, ISO (по умолчанию опорный)")
     ap.add_argument("--print", action="store_true", help="напечатать, не записывать EXPECTED.json")
+    ap.add_argument("--code-note", default=None, help="откуда код R07/R08/R09 (например «R09 97342bdf») — в EXPECTED.json")
     args = ap.parse_args(argv)
     world = wio.load_world(args.world)
     now = datetime.fromisoformat(args.now)
-    result = expected(world, now)
+    result = expected(world, now, code_note=args.code_note)
     text = json.dumps(result, ensure_ascii=False, indent=1) + "\n"
     if args.print:
         sys.stdout.write(text)
