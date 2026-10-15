@@ -1,7 +1,8 @@
 /*
  * Birge · Ситуационный центр акимата (R08, раунд 15) — большой экран, тёмное стекло.
- * Тёмная тема — ТОЛЬКО здесь (VISUAL_BRIEF §2 п. 8): все цвета заданы токенами --sc-* внутри .sc и не утекают
- * в основной продукт. Когда R11 выпустит тёмные токены ui-kit, они подставляются сюда (var(--…, запасной цвет)).
+ * Тёмная тема — ТОЛЬКО здесь (VISUAL_BRIEF §2 п. 8): цвета — токены --sc-* внутри .sc, не утекают в основной продукт.
+ * Значения — палитра .bk-dark ui-kit R11 (tokens.css, раунд 15) один в один; заданы числами, а не var(--c-*), чтобы
+ * страница была тёмной и со старым ui-kit FINAL-4, где .bk-dark ещё нет (там --c-ink тёмный — текст пропал бы).
  *
  * Сетка 16:9 (1920×1080 и 1366×768) — без прокрутки: шапка · [кризис] · 4 числа · (пульс + горячие места | слайд) · низ.
  * Размеры шрифта — от высоты экрана, ровно три (чек-лист VISUAL_BRIEF §4 п. 3): крупные числа, текст, подписи.
@@ -11,27 +12,28 @@
 
 .sc {
   /* ── Тёмные токены (R11: тёмное стекло только для Ситуационного центра) ── */
-  --sc-bg: var(--dark-bg, #0a100f);
+  --sc-bg: #0b100e; /* .bk-dark --c-paper */
   --sc-bg-glow-1: rgba(58, 132, 112, 0.34);
   --sc-bg-glow-2: rgba(215, 245, 124, 0.09);
-  --sc-glass: var(--dark-glass, rgba(255, 255, 255, 0.055));
-  --sc-glass-strong: var(--dark-glass-strong, rgba(255, 255, 255, 0.085));
-  --sc-solid: #131b19; /* ?glass=off и печать скриншота без размытия */
-  --sc-edge: rgba(255, 255, 255, 0.1);
+  --sc-glass: rgba(255, 255, 255, 0.055);
+  --sc-glass-strong: rgba(255, 255, 255, 0.085);
+  --sc-solid: #131b18; /* .bk-dark --c-surface: ?glass=off */
+  --sc-edge: rgba(255, 255, 255, 0.09);
   --sc-edge-top: rgba(255, 255, 255, 0.08);
-  --sc-ink: var(--dark-ink, #f2f5f3); /* 17.6:1 на фоне */
-  --sc-text-2: var(--dark-text-2, #b9c4bf); /* 10.6:1 */
-  --sc-text-3: var(--dark-text-3, #8f9b96); /* 6.4:1 — только подписи */
-  --sc-line: rgba(255, 255, 255, 0.09);
+  --sc-ink: #eef3f0; /* .bk-dark --c-ink: 16:1 на фоне */
+  --sc-text-2: #aebbb5; /* --c-text-2: 9:1 */
+  --sc-text-3: #8a9792; /* --c-text-3: 5:1 — только подписи */
+  --sc-line: rgba(255, 255, 255, 0.08);
   --sc-fill: rgba(255, 255, 255, 0.06);
   --sc-fill-2: rgba(255, 255, 255, 0.12);
   --sc-accent: var(--c-lime, #d7f57c); /* одна акцентная краска: «живая» точка, текущий слайд, фокус */
   --sc-accent-ink: #1d2a06;
   --sc-up: #ffb067; /* «больше жалоб» — тёплый (цвет жалоб), всегда со стрелкой и словом */
-  --sc-danger: #ff8478; /* 7.2:1 на фоне: просрочки, кризис */
+  --sc-danger: #ff8a80; /* .bk-dark --c-danger, 7.6:1: просрочки, кризис */
+  --sc-focus: #7fb3ff; /* .bk-dark --c-focus */
   --sc-danger-glass: rgba(226, 75, 74, 0.16);
-  --sc-ok: #8fd46c; /* только «исправлено» и «проверено жителями» */
-  --sc-demo: #c7d3ea;
+  --sc-ok: #a6dc7a; /* .bk-dark --c-ok: только «исправлено» и «проверено жителями» */
+  --sc-demo: #c2cde0; /* .bk-dark --c-demo */
   --sc-heat-1: var(--heat-1, #fac775);
   --sc-heat-2: var(--heat-2, #ef9f27);
   --sc-heat-3: var(--heat-3-badge, #c93b3a);
@@ -46,7 +48,7 @@
   --sc-gap: max(10px, 1.5vh);
   --sc-pad: max(14px, 2.1vh);
   --sc-r: max(14px, 1.9vh);
-  --sc-row: max(34px, 4.6vh);
+  --sc-row: max(34px, 4.4vh);
   --sc-blur: 26px;
 
   position: fixed;
@@ -76,11 +78,11 @@
 .sc *::before,
 .sc *::after { box-sizing: border-box; }
 html.sc-html,
-body.sc-page { margin: 0; height: 100%; background: #0a100f; }
+body.sc-page { margin: 0; height: 100%; background: #0b100e; }
 body.sc-page.sc-idle { cursor: none; }
 
 .sc :focus-visible {
-  outline: 3px solid var(--sc-accent);
+  outline: 3px solid var(--sc-focus);
   outline-offset: 3px;
   border-radius: 8px;
 }
@@ -182,6 +184,7 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-btn--danger { background: rgba(255, 132, 120, 0.18); color: #ffd9d4; border-color: rgba(255, 132, 120, 0.4); }
 .sc-btn--danger:hover { background: rgba(255, 132, 120, 0.28); }
 .sc-btn--icon { padding: 0; width: max(40px, 5vh); }
+.sc-back { color: var(--sc-ink); }
 
 /* ── Числа (KPI) ── */
 .sc-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sc-gap); }
@@ -236,7 +239,7 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-rows { list-style: none; margin: 0; padding: 0; display: grid; align-content: start; min-height: 0; }
 .sc-row {
   display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 0.7em;
-  min-height: var(--sc-row); padding: 0.3em 0; border-top: 1px solid var(--sc-line);
+  min-height: var(--sc-row); padding: 0.18em 0; border-top: 1px solid var(--sc-line);
 }
 .sc-row:first-child { border-top: 0; }
 .sc-row__main { min-width: 0; }
@@ -246,7 +249,7 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-row--line { grid-template-columns: auto minmax(0, 1fr) minmax(0, max-content); }
 .sc-row--line .sc-row__end { overflow: hidden; text-overflow: ellipsis; max-width: 13em; }
 .sc-pin {
-  display: grid; place-items: center; min-width: max(36px, 4.6vh); height: max(36px, 4.6vh); padding: 0 0.35em;
+  display: grid; place-items: center; min-width: max(32px, 4.1vh); height: max(32px, 4.1vh); padding: 0 0.35em;
   border-radius: 999px; font-weight: 700; font-size: var(--sc-fs-s); border: 2px solid rgba(255, 255, 255, 0.85);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }

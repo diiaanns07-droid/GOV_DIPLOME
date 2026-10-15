@@ -142,8 +142,8 @@ def test_r17_function_board_and_lagging(monkeypatch):
     water = next(it for it in sv["items"] if it["service"] == "water")
     assert (water["open"], water["overdue"], water["median_answer_days"], water["verified_share"]) == (9, 4, 3.2, 0.4)
     assert water["ru"] == "Водоканал" and water["kk"]                     # названия — из таблицы R08 (CONTRACT §3)
-    # Порядок «отстающих»: просрочки, затем медиана; без просрочек службы в «отстающих» нет.
-    assert sv["lagging"] == ["road", "water", "waste"] and sv["lagging_source"] == "r08_order"
+    # Порядок «отстающих» — как у R17 lagging(): просрочки, затем открытые; без просрочек службы в «отстающих» нет.
+    assert sv["lagging"] == ["road", "water", "waste"] and sv["lagging_source"] == "r17_order"
     assert sv["joint"] == {"open": 2, "week": 3} and sv["handoffs"] == {"week": 5}
     assert "services" in b["slides"]
 
@@ -187,7 +187,7 @@ def test_crisis_tasks_by_service_and_pulse_link(monkeypatch):
     assert [(s["service"], s["done"], s["total"]) for s in c["services"]] == [("street_cleaning", 1, 2), ("transport", 0, 1)]
     assert c["last_update"]["text_ru"] == "свежее"            # непубличное обновление не показываем
     assert c["zone"]["district_ru"] == "Нура" and c["zone"]["targets"] == 1
-    assert c["link"] == "/#agencies/inc-7"
+    assert c["link"] == "/#agencies/crisis=inc-7"
     items = [{"kind": "spike", "category": "snow_ice", "district": "nura"},
              {"kind": "spike", "category": "utilities", "district": "esil"},
              {"kind": "new_hot", "category": "roads", "district": "nura"},
@@ -196,8 +196,8 @@ def test_crisis_tasks_by_service_and_pulse_link(monkeypatch):
              {"kind": "spike", "category": "lighting", "district": "esil"},   # не кризисная тема, кризиса нет
              {"kind": "spike_city", "category": "snow_ice", "district": None}]
     neighbors.pulse_links(items, b["crisis"])
-    assert items[0]["crisis"] == {"link": "/#agencies/inc-7", "incident": "inc-7", "kind": "blizzard"}
-    assert items[1]["crisis"] == {"link": "/#agencies/new?kind=heat_outage&district=esil", "incident": None,
+    assert items[0]["crisis"] == {"link": "/#agencies/crisis=inc-7", "incident": "inc-7", "kind": "blizzard"}
+    assert items[1]["crisis"] == {"link": "/#agencies/crisis=new&template=heat_outage&district=esil", "incident": None,
                                   "kind": "heat_outage"}
     assert "crisis" not in items[2]                          # тревога об одном месте ведёт на карту, не в штаб
     assert items[3]["crisis"]["incident"] == "inc-7"
@@ -210,7 +210,7 @@ def test_crisis_own_link_from_r17(monkeypatch):
                 incidents_for_akim=lambda **kw: [{"id": "inc-1", "status": "active", "link": "#agencies/crisis/inc-1",
                                                   "zone": {"kind": "district", "district": None}}])
     _, b = get(BOARD, svc())
-    assert b["crisis"]["active"][0]["link"] == "#agencies/crisis/inc-1"
+    assert b["crisis"]["active"][0]["link"] == "/#agencies/crisis/inc-1"   # со страницы центра — в Birge, а не на себя
 
 
 # ---------------------------------------------------------------- R17 через make_service (запасной путь)
@@ -281,7 +281,7 @@ def test_together_privacy_and_counts(monkeypatch):
     ids = [r["id"] for r in t["top"]]
     assert "i-3" not in ids and "i-4" not in ids and "i-6" not in ids     # на проверке, скрытые, чужой район
     assert ids == ["i-1", "i-2"]                                          # сначала ближайшее, потом сделанное
-    assert t["counts"] == {"published": 1, "joined": 36, "done": 1, "supported": 1}
+    assert t["counts"] == {"upcoming": 1, "joined_upcoming": 14, "done": 1, "neighbors_done": 22, "supported": 1}
     assert "dev-секрет" not in json.dumps(b, ensure_ascii=False)          # устройство автора не уходит наружу
     assert t["yard_of_week"]["id"] == "yard-2" and t["yard_of_week"]["members"] == 31
     assert t["yard_of_week"]["initiative"]["id"] == "i-2"
@@ -381,3 +381,98 @@ def test_week_neighbor_sentences_only_for_current_week(monkeypatch):
 def test_week_module_direct_call():
     w = week.build(svc(), date="2026-10-12")
     assert w["week"]["label_ru"] == "12–18 окт" and w["week"]["label_kk"] == "12–18 қазан"
+
+
+# ---------------------------------------------------------------- настоящие форматы соседей (раунд 15)
+
+def test_r17_board_snapshot_format(monkeypatch):
+    """R17 board_snapshot(days, district): {"services": [20 строк], "totals": {...}, "demo", "empty"}."""
+    seen = {}
+
+    def board_snapshot(days=30, district=None):
+        seen.update(days=days, district=district)
+        rows = [{"service": sid, "open": 0, "overdue": 0, "median_answer_days": None, "verified_share": None,
+                 "returned": 0, "joint": 0, "handoffs_in": 0, "handoffs_out": 0} for sid in ("road", "water", "lighting")]
+        rows[0].update(open=12, overdue=5, median_answer_days=2.5, verified_share=0.5)
+        rows[1].update(open=20, overdue=5)
+        return {"services": rows, "totals": {"open": 32, "overdue": 10, "joint": 3, "handoffs": 7, "loops": 1},
+                "demo": False, "empty": False}
+
+    fake_module(monkeypatch, "ui.civic_agencies", board_snapshot=board_snapshot, active_incidents=lambda district=None: [])
+    _, b = get(BOARD, svc())
+    sv = b["services"]
+    assert seen == {"days": 7, "district": None} and sv["source"] == "r17"
+    assert sv["lagging"] == ["water", "road"]                 # 5 = 5 просрочек → больше открытых первым (как R17)
+    assert sv["joint"] == {"open": None, "week": 3} and sv["handoffs"] == {"week": 7}
+    assert sv["totals"]["loops"] == 1
+
+
+def test_r17_empty_board_has_no_slide(monkeypatch):
+    fake_module(monkeypatch, "ui.civic_agencies",
+                board_snapshot=lambda days=30, district=None: {"services": [{"service": "road", "open": 0, "overdue": 0}],
+                                                             "totals": {}, "empty": True},
+                active_incidents=lambda district=None: [])
+    _, b = get(BOARD, svc())
+    assert b["services"]["available"] is True and b["services"]["items"] == [] and "services" not in b["slides"]
+
+
+def test_r17_active_incidents_public_view(monkeypatch):
+    view = {"id": "inc-9", "kind": "blizzard", "title_ru": "Буран", "title_kk": "Боран", "status": "active",
+            "zone": {"kind": "district", "district": "nura"}, "zone_label": {"ru": "район Нура", "kk": "Нұра ауданы"},
+            "started_at": (NOW - timedelta(hours=2)).isoformat(),
+            "updates": [{"at": (NOW - timedelta(hours=1)).isoformat(), "text_ru": "Расчищаем", "text_kk": "Тазартамыз"}],
+            "progress": [{"service": "street_cleaning", "done": 2, "doing": 1, "total": 4},
+                         {"service": "transport", "done": 1, "doing": 0, "total": 1}],
+            "link": "#agencies/crisis=inc-9", "demo": True}
+    fake_module(monkeypatch, "ui.civic_agencies", active_incidents=lambda district=None: [view],
+                crisis_link=lambda district=None, kind="blizzard": f"#agencies/crisis=new&template={kind}")
+    _, b = get(BOARD, svc())
+    c = b["crisis"]["active"][0]
+    assert c["tasks"] == {"total": 5, "done": 3, "doing": 1, "todo": 1}
+    assert [(s["service"], s["done"], s["total"]) for s in c["services"]] == [("street_cleaning", 2, 4), ("transport", 1, 1)]
+    assert c["zone"]["label_ru"] == "район Нура" and c["link"] == "/#agencies/crisis=inc-9"
+    assert c["last_update"]["text_kk"] == "Тазартамыз"
+    items = [{"kind": "spike", "category": "utilities", "district": "esil"}]
+    neighbors.pulse_links(items, b["crisis"])
+    assert items[0]["crisis"]["link"] == "/#agencies/crisis=new&template=heat_outage"   # адрес — функцией R17
+
+
+def test_r16_initiatives_summary_format(monkeypatch):
+    summary = {"status": "ok", "district": None, "upcoming": 2, "joined_upcoming": 23, "supported": 1, "done": 4,
+               "neighbors_done": 51, "on_review": 1,
+               "next": [{"id": "i-1", "title": "Субботник", "starts_at": (NOW + timedelta(days=2)).isoformat(),
+                         "joined": 14, "district": "nura", "target": {"kind": "area", "id": "yard-1"}, "demo": True}],
+               "demo": True}
+    fake_module(monkeypatch, "ui.civic_together", initiatives_summary=lambda district=None, db_path=None: summary)
+    _, b = get(BOARD, svc())
+    t = b["together"]
+    assert t["source"] == "r16" and t["counts"] == {"upcoming": 2, "joined_upcoming": 23, "done": 4,
+                                                     "neighbors_done": 51, "supported": 1}
+    assert t["top"][0]["title"] == "Субботник" and t["top"][0]["joined"] == 14
+    assert "on_review" not in json.dumps(t)                     # на проверке — не на экране
+    fake_module(monkeypatch, "ui.civic_together", initiatives_summary=lambda district=None, db_path=None: {"status": "no_data"})
+    board.reset_cache()
+    _, b = get(BOARD, svc())
+    assert b["together"]["available"] is False and "together" not in b["slides"]
+
+
+def test_r13_board_block_format(monkeypatch):
+    block = {"next": {"id": "m-2", "district": "nura", "title_ru": "Встреча", "title_kk": "Кездесу",
+                      "at": (NOW + timedelta(days=3)).isoformat(), "registered": 40, "demo": True},
+             "orders": [{"id": "o-2", "text_ru": "Переход", "text_kk": "Өткел", "service": "traffic", "due": "2026-10-20",
+                         "status": "todo", "overdue": False, "meeting_id": "m-1", "district": "nura",
+                         "meeting_title_ru": "Встреча 8 окт", "meeting_title_kk": "8 қазан кездесуі",
+                         "meeting_at": "2026-10-08T18:00:00+05:00", "demo": True},
+                        {"id": "o-1", "text_ru": "Свет", "service": "lighting", "due": "2026-10-09",
+                         "status": "in_progress", "overdue": True, "meeting_id": "m-1", "district": "nura", "demo": True}],
+             "counts": {"total": 5, "todo": 1, "in_progress": 1, "done": 3, "overdue": 1}, "link": "#meetings", "demo": True}
+    fake_module(monkeypatch, "ui.civic_meetings", board_block=lambda db_path=None, district=None, limit=5: block)
+    _, b = get(BOARD, svc())
+    m = b["meetings"]
+    assert m["source"] == "r13" and m["counts"] == {"total": 5, "overdue": 1, "todo": 1, "in_progress": 1, "done": 3}
+    assert [o["id"] for o in m["orders"]] == ["o-1", "o-2"]     # просроченное — первым
+    assert m["orders"][1]["meeting"]["title_ru"] == "Встреча 8 окт" and m["next"]["registered"] == 40
+    fake_module(monkeypatch, "ui.civic_meetings", board_block=lambda db_path=None, district=None, limit=5: None)
+    board.reset_cache()
+    _, b = get(BOARD, svc())
+    assert b["meetings"]["available"] is False and b["meetings"]["reason"] == "no_data"

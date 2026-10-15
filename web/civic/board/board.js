@@ -24,8 +24,7 @@
   var SPRITE = scriptBase + "../ui-kit/icons.svg";
   var DEFAULTS = {
     apiBase: "/api/civic/v2",
-    loginHref: "/", // вход сотрудника — на главной (аватар → «Для сотрудников»)
-    homeHref: "/",
+    homeHref: "/#day", // «← В Birge» (и Esc) — назад в «Картину дня» (R11 IA_ROUND15 §5.9)
     syncUrl: true, // район и язык — в адресе: ссылку на экран можно отправить
     timeoutMs: 15000,
   };
@@ -91,7 +90,8 @@
       "board.decisions.overdue": { one: "просрочено на {n} день", few: "просрочено на {n} дня", many: "просрочено на {n} дней" },
       "board.decisions.where": "Выбрать вариант — в «Картине дня»",
       "board.together.done": "Сделано вместе",
-      "board.together.joined": "Откликов «Я приду»",
+      "board.together.neighbors": "Соседей участвовало",
+      "board.together.joined": "Записались на ближайшие дела",
       "board.together.verified": "Проверено жителями",
       "board.together.supported": "Поддержано акиматом",
       "board.together.yard": "Двор недели",
@@ -117,17 +117,19 @@
       "board.foot.pause": "Пауза",
       "board.foot.play": "Дальше",
       "board.foot.fullscreen": "На весь экран",
-      "board.foot.keys": "← → блоки · пробел — пауза",
+      "board.foot.keys": "← → блоки · пробел — пауза · Esc — в Birge",
       "board.foot.demo": "Пример: числа посчитаны по синтетическим данным",
       "board.state.loading": "Собираем картину города…",
       "board.state.forbidden": "Ситуационный центр открывается сотрудникам акимата",
-      "board.state.forbidden_hint": "Войдите на главной странице: аватар → «Для сотрудников», затем откройте центр снова.",
+      "board.state.forbidden_hint": "Ситуационный центр открывается сотрудникам акимата. В Birge: аватар → «Для сотрудников», затем «Ещё → Ситуационный центр».",
       "board.state.login": "Перейти ко входу",
       "board.state.not_ready": "Ситуационный центр ещё не подключён в этой сборке",
       "board.state.not_ready_hint": "Сервер работает, но маршрут akim/board пока не включён. Карта и «Картина дня» доступны.",
       "board.state.error": "Не удалось загрузить данные",
       "board.state.error_hint": "Проверьте связь с сервером. Повторим сами через 30 секунд.",
       "board.home": "Birge — на карту",
+      "board.back": "← В Birge",
+      "board.state.forbidden_title": "Войдите как сотрудник",
     },
     kk: {
       "board.title": "Жағдаяттық орталық",
@@ -180,7 +182,8 @@
       "board.decisions.overdue": "мерзімі {n} күнге өтті",
       "board.decisions.where": "Нұсқаны «Күн қорытындысында» таңдаңыз",
       "board.together.done": "Бірге атқарылды",
-      "board.together.joined": "«Барамын» белгісі",
+      "board.together.neighbors": "Қатысқан көршілер",
+      "board.together.joined": "Жақын істерге жазылғандар",
       "board.together.verified": "Тұрғындар тексерді",
       "board.together.supported": "Әкімдік қолдады",
       "board.together.yard": "Апта ауласы",
@@ -206,17 +209,19 @@
       "board.foot.pause": "Кідірту",
       "board.foot.play": "Жалғастыру",
       "board.foot.fullscreen": "Толық экран",
-      "board.foot.keys": "← → блоктар · бос орын — кідірту",
+      "board.foot.keys": "← → блоктар · бос орын — кідірту · Esc — Birge-ге",
       "board.foot.demo": "Үлгі: сандар синтетикалық деректер бойынша есептелген",
       "board.state.loading": "Қала жағдайы жиналуда…",
       "board.state.forbidden": "Жағдаяттық орталық әкімдік қызметкерлеріне ашылады",
-      "board.state.forbidden_hint": "Басты бетте кіріңіз: аватар → «Қызметкерлерге», содан кейін орталықты қайта ашыңыз.",
+      "board.state.forbidden_hint": "Жағдаяттық орталық әкімдік қызметкерлеріне ашылады. Birge-де: аватар → «Қызметкерлерге», содан кейін «Тағы → Жағдаяттық орталық».",
       "board.state.login": "Кіруге өту",
       "board.state.not_ready": "Жағдаяттық орталық бұл жинақта әлі қосылмаған",
       "board.state.not_ready_hint": "Сервер жұмыс істеп тұр, бірақ akim/board маршруты әлі қосылмаған. Карта мен «Күн қорытындысы» қолжетімді.",
       "board.state.error": "Деректер жүктелмеді",
       "board.state.error_hint": "Сервермен байланысты тексеріңіз. 30 секундтан кейін өзіміз қайталаймыз.",
       "board.home": "Birge — картаға",
+      "board.back": "← Birge-ге",
+      "board.state.forbidden_title": "Қызметкер ретінде кіріңіз",
     },
   };
   // Ключи общего словаря R11, которые экран берёт как есть (их запас — на случай, если словарь не загрузился).
@@ -547,21 +552,24 @@
           onclick: function () { if (I() && I().setLang) I().setLang(l); } });
       }),
     };
-    head.brand = h("a", { class: "sc-brand", href: opts.homeHref }, [
+    head.brand = h("div", { class: "sc-brand" }, [
       h("span", { class: "sc-mark", "aria-hidden": "true", text: "B" }), h("span", {}, [head.title, head.scope])]);
     head.seg = h("div", { class: "sc-seg", role: "group" }, head.langs);
-    parts.head.replaceChildren(head.brand, h("div", { class: "sc-head__end" }, [
+    head.full = doc.fullscreenEnabled ? h("button", { type: "button", class: "sc-btn sc-btn--icon sc-full", onclick: toggleFull }, [glyph("expand")]) : null;
+    head.back = h("a", { class: "sc-btn sc-back", href: opts.homeHref });
+    fill(parts.head, [head.brand, h("div", { class: "sc-head__end" }, [
       head.demo, head.select,
       h("div", { class: "sc-clock" }, [h("span", { class: "sc-live", "aria-hidden": "true" }), head.clock, head.date]),
-      head.seg,
-    ]));
+      head.seg, head.full, head.back,
+    ].filter(Boolean))]);
     parts.clock = head.clock;
     parts.date = head.date;
     function renderHead() {
       var d = state.data;
       head.title.textContent = tr("board.title");
       head.scope.textContent = state.district ? tr("board.scope.district", { name: districtName(state.district) }) : tr("board.scope.city");
-      head.brand.setAttribute("aria-label", tr("board.home"));
+      head.back.textContent = tr("board.back");
+      if (head.full) { head.full.setAttribute("aria-label", tr("board.foot.fullscreen")); head.full.title = tr("board.foot.fullscreen"); }
       head.demo.hidden = !(d && d.demo && d.demo.any);
       head.demo.textContent = tr("common.demo");
       head.demo.title = tr("board.foot.demo");
@@ -592,7 +600,7 @@
       rootEl.setAttribute("data-crisis", list.length ? "yes" : "no");
       if (!list.length) { parts.crisis.hidden = true; parts.crisis.replaceChildren(); return; }
       var x = list[0];
-      var zone = x.zone && x.zone.district ? pick(x.zone, "district") : tr("board.crisis.zone_city");
+      var zone = zoneText(x);
       var meta = tr("board.crisis.meta", { time: timeOf(x.started_at), done: x.tasks.done, total: x.tasks.total, services: (x.services || []).length });
       if (x.last_update) meta += " · " + tr("board.crisis.updated", { time: timeOf(x.last_update.at) });
       if (list.length > 1) meta += " · " + tr("board.crisis.more", { n: list.length - 1 });
@@ -604,7 +612,6 @@
           h("p", { class: "sc-crisis__meta", text: meta }),
         ]),
         demoTag(x.demo),
-        h("a", { class: "sc-btn sc-btn--danger", href: x.link }, [tr("board.crisis.open")]),
       ]);
     }
 
@@ -677,15 +684,11 @@
       if (a.kind === "new_hot") return [tr("akim.pulse.new_hot", { place: place }), tr("akim.pulse.reason.new_hot", { n: a.value })];
       return [tr("akim.pulse.metoo_growth", { place: place, n: a.value }), tr("akim.pulse.reason.metoo", { n: a.prev || 0 })];
     }
-    // Одна главная кнопка на экран (VISUAL_BRIEF §2 п. 3): идёт кризис — кнопка штаба только в баннере, у тревоги
-    // того же штаба — тихая пометка; кризиса нет — кнопка «Открыть кризисный штаб» (создать) у первой такой тревоги.
-    function alarmAction(a, d) {
-      if (!a.crisis) return null;
-      var banner = d.crisis && d.crisis.available && (d.crisis.active || [])[0];
-      if (banner && a.crisis.incident === banner.id) return h("span", { class: "sc-tag sc-tag--plain", text: tr("board.crisis.in_hq") });
-      var first = (d.pulse.items || []).filter(function (x) { return x.crisis; })[0];
-      if (banner || first !== a) return h("a", { class: "sc-tag sc-tag--plain", href: a.crisis.link, text: tr("board.crisis.open") });
-      return h("a", { class: "sc-btn sc-btn--danger", href: a.crisis.link }, [tr("board.crisis.open")]);
+    // Экран только для просмотра (R11 IA_ROUND15 §5.9: «кнопок действий нет»): тревога, по которой уже работает
+    // кризисный штаб, получает тихую пометку «в кризисном штабе»; кнопка «Открыть кризисный штаб» — в «Картине дня».
+    function alarmAction(a) {
+      if (!a.crisis || !a.crisis.incident) return null;
+      return h("span", { class: "sc-tag sc-tag--plain", text: tr("board.crisis.in_hq") });
     }
     function renderPulse(d) {
       var p = d.pulse || {};
@@ -705,7 +708,7 @@
           h("p", { class: "sc-alarm__title", text: txt[0] }),
           h("div", { class: "sc-alarm__row" }, [
             h("p", { class: "sc-alarm__reason", text: txt[1] }),
-            alarmAction(a, d),
+            alarmAction(a),
           ]),
         ]);
       }));
@@ -763,9 +766,14 @@
       return h("div", { class: "sc-stat" + (mod ? " sc-stat--" + mod : "") }, [v, h("p", { class: "sc-stat__label", text: label })]);
     }
 
+    // Зона кризиса: подпись R17 («район Нура», «3 места · район Нура»), иначе — район, иначе — «весь город».
+    function zoneText(x) {
+      var z = x.zone || {};
+      return pick(z, "label") || (z.district ? pick(z, "district") : tr("board.crisis.zone_city"));
+    }
     function slideCrisis(d) {
       var x = (d.crisis.active || [])[0];
-      var zone = x.zone && x.zone.district ? pick(x.zone, "district") : tr("board.crisis.zone_city");
+      var zone = zoneText(x);
       var part = x.tasks.total ? x.tasks.done / x.tasks.total : 0;
       return [
         h("p", { class: "sc-row__title", text: pick(x, "title") + " · " + zone + " · " + tr("board.crisis.since", { time: timeOf(x.started_at) }) }),
@@ -836,7 +844,9 @@
     }
     function slideTogether(d) {
       var t = d.together, c = t.counts || {};
-      var stats = [stat(c.done || 0, tr("board.together.done"), "ok", "tg-done"), stat(c.joined || 0, tr("board.together.joined"), null, "tg-joined")];
+      var stats = [stat(c.done || 0, tr("board.together.done"), "ok", "tg-done"),
+        c.neighbors_done != null ? stat(c.neighbors_done, tr("board.together.neighbors"), null, "tg-neighbors")
+          : stat(c.joined_upcoming || 0, tr("board.together.joined"), null, "tg-joined")];
       if (t.verified_week != null) stats.push(stat(t.verified_week, tr("board.together.verified"), "ok", "tg-verified"));
       var y = t.yard_of_week;
       var yard = y ? h("div", { class: "sc-yard" }, [
@@ -987,15 +997,13 @@
     parts.updated = h("span", { class: "sc-updated", "aria-live": "off" });
     parts.footDemo = h("span", { hidden: true });
     parts.keys = h("span", { class: "sc-foot__keys" });
-    parts.full = doc.fullscreenEnabled ? h("button", { type: "button", class: "sc-btn sc-btn--icon sc-full", onclick: toggleFull }, [glyph("expand")]) : null;
     parts.foot.replaceChildren.apply(parts.foot, [parts.pause, parts.keys, h("span", { class: "sc-foot__gap" }),
-      h("div", { class: "sc-foot__end" }, [parts.footDemo, parts.updated]), parts.full].filter(Boolean));
+      h("div", { class: "sc-foot__end" }, [parts.footDemo, parts.updated])]);
     function renderFoot() {
       var d = state.data;
       parts.tabs.setAttribute("aria-label", tr("board.title"));
       parts.footDemo.hidden = true;
       parts.keys.textContent = tr("board.foot.keys");
-      if (parts.full) { parts.full.setAttribute("aria-label", tr("board.foot.fullscreen")); parts.full.title = tr("board.foot.fullscreen"); }
       syncPause();
       syncUpdated();
       renderTabs();
@@ -1059,11 +1067,11 @@
         return;
       }
       if (kind === "forbidden") {
-        title = tr("board.state.forbidden"); hint = tr("board.state.forbidden_hint");
-        action = h("a", { class: "sc-btn sc-btn--primary", href: opts.loginHref }, [tr("board.state.login")]);
+        title = tr("board.state.forbidden_title"); hint = tr("board.state.forbidden_hint");
+        action = h("a", { class: "sc-btn sc-btn--primary", href: opts.homeHref }, [tr("board.back")]);
       } else if (kind === "not_ready") {
         title = tr("board.state.not_ready"); hint = tr("board.state.not_ready_hint");
-        action = h("a", { class: "sc-btn", href: opts.homeHref }, [tr("board.home")]);
+        action = h("a", { class: "sc-btn", href: opts.homeHref }, [tr("board.back")]);
       } else {
         title = tr("board.state.error"); hint = tr("board.state.error_hint");
         action = h("button", { type: "button", class: "sc-btn sc-btn--primary", onclick: function () { load(true); } }, [icon("refresh"), tr("common.action.retry")]);
@@ -1183,6 +1191,7 @@
       else if (e.key === "ArrowLeft") { go(state.slide - 1, true); e.preventDefault(); }
       else if ((e.key === " " || e.key === "Spacebar") && (tag !== "BUTTON" && tag !== "A")) { setPaused(!state.paused); e.preventDefault(); }
       else if ((e.key === "f" || e.key === "F" || e.key === "а" || e.key === "А") && tag !== "BUTTON") { toggleFull(); }
+      else if (e.key === "Escape" && !doc.fullscreenElement) { root.location.href = opts.homeHref; }
     }
     function onEnter() { state.hover = true; syncPause(); schedule(); }
     function onLeave() { state.hover = false; syncPause(); schedule(); }

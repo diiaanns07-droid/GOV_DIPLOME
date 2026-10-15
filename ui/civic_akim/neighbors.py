@@ -39,13 +39,15 @@ PREFIX = "/api/civic/v2"
 ASTANA_TZ = timezone(timedelta(hours=5))
 
 # Имена функций чтения (INTEGRATION R08 §2–4). Первое — то, что R08 попросил; остальные — вероятные синонимы.
+# Фактические функции соседей (раунд 15): R17 board_snapshot / active_incidents / crisis_link (claude/sweet-euler-5tiu5b),
+# R16 initiatives_summary (claude/youthful-johnson-6nz5mp), R13 board_block (claude/gifted-mayer-p86myv).
 R17_MODULE = "ui.civic_agencies"
-R17_BOARD_FUNCS = ("board_for_akim", "akim_board", "board_summary", "board")
-R17_INCIDENT_FUNCS = ("incidents_for_akim", "akim_incidents", "active_incidents", "list_incidents")
+R17_BOARD_FUNCS = ("board_snapshot", "board_for_akim", "akim_board", "board_summary")
+R17_INCIDENT_FUNCS = ("active_incidents", "incidents_for_akim", "akim_incidents", "list_incidents")
 R16_MODULE = "ui.civic_together"
-R16_FUNCS = ("together_for_akim", "akim_together", "akim_summary", "week_summary")
+R16_FUNCS = ("initiatives_summary", "together_for_akim", "akim_together", "week_summary")
 R13_MEETINGS_MODULE = "ui.civic_meetings"
-R13_MEETINGS_FUNCS = ("meetings_for_akim", "orders_for_akim", "akim_meetings", "list_meetings")
+R13_MEETINGS_FUNCS = ("board_block", "meetings_for_akim", "orders_for_akim", "akim_meetings")
 R13_FORECAST_MODULE = "ui.civic_forecast"
 R13_WEEK_FUNCS = ("week_forecast", "forecast_week", "attention_next_week")
 
@@ -316,6 +318,8 @@ def normalize_board(body, names: dict | None = None) -> dict:
     names = names or service_names()
     data = body if isinstance(body, dict) else {"items": body if isinstance(body, list) else []}
     rows = data.get("items") or data.get("services") or data.get("rows") or []
+    if data.get("empty") is True:
+        rows = []  # R17: записей нет — строки из одних нулей не показываем (экран пропускает блок)
     items = []
     for row in rows if isinstance(rows, list) else []:
         if not isinstance(row, dict):
@@ -339,9 +343,15 @@ def normalize_board(body, names: dict | None = None) -> dict:
         order = {sid: i for i, sid in enumerate(lagging)}
         ranked = sorted((it for it in items if it["service"] in order), key=lambda it: order[it["service"]])
     else:
+        # Тот же порядок, что у R17 lagging(): больше просроченных, затем больше открытых; без просрочек — не «отстаёт».
         ranked = sorted((it for it in items if (it["overdue"] or 0) > 0),
-                        key=lambda it: (-(it["overdue"] or 0), -(it["median_answer_days"] or 0), it["service"]))
+                        key=lambda it: (-(it["overdue"] or 0), -(it["open"] or 0), it["service"]))
+    totals = data.get("totals") if isinstance(data.get("totals"), dict) else {}
     joint, handoffs = data.get("joint"), data.get("handoffs")
+    if joint is None and "joint" in totals:          # R17 board_snapshot: совместные и передачи — в totals за days
+        joint = {"week": totals.get("joint")}
+    if handoffs is None and "handoffs" in totals:
+        handoffs = {"week": totals.get("handoffs")}
     joint = joint if isinstance(joint, dict) else ({"open": joint} if isinstance(joint, int) else {})
     handoffs = handoffs if isinstance(handoffs, dict) else ({"week": handoffs} if isinstance(handoffs, int) else {})
     return {
@@ -349,7 +359,8 @@ def normalize_board(body, names: dict | None = None) -> dict:
         "days": data.get("days") or 7,
         "items": items,
         "lagging": [it["service"] for it in ranked[:LAGGING_N]],
-        "lagging_source": "r17" if lagging else "r08_order",
+        "lagging_source": "r17" if lagging else "r17_order",
+        "totals": {k: totals.get(k) for k in ("open", "overdue", "received", "loops", "verified_share") if k in totals},
         "joint": {"open": _num(joint, ("open", "open_count")), "week": _num(joint, ("week", "new", "count"))},
         "handoffs": {"week": _num(handoffs, ("week", "count", "total"))},
         "demo": bool(data.get("demo")),
@@ -373,19 +384,29 @@ def agencies_board(settings: Settings, *, days: int = 7, district=None, now: dat
 
 # ---------------------------------------------------------------- R17: кризисы
 
+def _absolute(link: str) -> str:
+    """«#agencies/…» R17 → «/#agencies/…»: со страницы Ситуационного центра ссылка ведёт в Birge, а не на себя."""
+    return "/" + link if link.startswith("#") else link
+
+
 def crisis_link(incident: dict | None, *, kind: str | None = None, district: str | None = None) -> str:
-    """Адрес «Открыть кризисный штаб» (INTEGRATION R08 §2.3; свой адрес R17 — поле link записи кризиса)."""
+    """Адрес «Открыть кризисный штаб»: свой адрес R17 (поле link кризиса, функция crisis_link) или запасной."""
     if incident:
         link = incident.get("link")
         if isinstance(link, str) and link.startswith(("/", "#")):
-            return link
-        return "/#agencies/" + str(incident.get("id"))
-    params = []
-    if kind:
-        params.append("kind=" + kind)
-    if district:
-        params.append("district=" + district)
-    return "/#agencies/new" + ("?" + "&".join(params) if params else "")
+            return _absolute(link)
+        return "/#agencies/crisis=" + str(incident.get("id"))
+    try:
+        module = _import(R17_MODULE)
+        fn = getattr(module, "crisis_link", None) if module is not None else None
+        if callable(fn):
+            link = fn(district, kind or "other")
+            if isinstance(link, str) and link.startswith(("/", "#")):
+                return _absolute(link)
+    except Exception:  # ссылка — не повод ронять пульс
+        log.exception("R08: crisis_link R17 не ответил")
+    tail = f"&district={district}" if district else ""
+    return f"/#agencies/crisis=new&template={kind or 'other'}{tail}"
 
 
 def normalize_incident(rec: dict, names: dict) -> dict | None:
@@ -395,25 +416,36 @@ def normalize_incident(rec: dict, names: dict) -> dict | None:
     zone = rec.get("zone") if isinstance(rec.get("zone"), dict) else {}
     tasks = [t for t in rec.get("tasks") or [] if isinstance(t, dict)]
     per: dict = {}
+    progress = [p for p in rec.get("progress") or [] if isinstance(p, dict) and isinstance(p.get("service"), str)]
+    if progress and not tasks:
+        # R17 active_incidents: публичная часть без текстов задач, прогресс по службам готовый.
+        for p in progress:
+            per[p["service"]] = {"done": int(p.get("done") or 0), "total": int(p.get("total") or 0),
+                                 "doing": int(p.get("doing") or 0)}
     for t in tasks:
         sid = t.get("service") if isinstance(t.get("service"), str) else "akimat"
-        acc = per.setdefault(sid, {"done": 0, "total": 0})
+        acc = per.setdefault(sid, {"done": 0, "total": 0, "doing": 0})
         acc["total"] += 1
         acc["done"] += int(t.get("status") == "done")
+        acc["doing"] += int(t.get("status") == "doing")
     updates = sorted((u for u in rec.get("updates") or [] if isinstance(u, dict) and u.get("public", True)
                       and parse_time(u.get("at"))), key=lambda u: parse_time(u["at"]))
     last = updates[-1] if updates else None
     targets = zone.get("targets") if isinstance(zone.get("targets"), list) else []
+    total = sum(a["total"] for a in per.values())
+    done = sum(a["done"] for a in per.values())
+    doing = sum(a.get("doing", 0) for a in per.values())
+    label = rec.get("zone_label") if isinstance(rec.get("zone_label"), dict) else None
     return {
         "id": rec["id"], "kind": rec.get("kind") or "other", "status": rec.get("status") or "active",
         "title_ru": rec.get("title_ru") or rec.get("title_kk") or "", "title_kk": rec.get("title_kk") or rec.get("title_ru") or "",
         "started_at": rec.get("started_at"),
         "zone": {"kind": zone.get("kind") or "district", **_district_label(zone.get("district")),
-                 "targets": len(targets), "approximate": zone.get("geometry") is not None},
-        "tasks": {"total": len(tasks), "done": sum(1 for t in tasks if t.get("status") == "done"),
-                  "doing": sum(1 for t in tasks if t.get("status") == "doing"),
-                  "todo": sum(1 for t in tasks if t.get("status") not in ("done", "doing"))},
-        "services": sorted(({**_service_label(sid, names), **acc} for sid, acc in per.items()),
+                 "targets": len(targets), "approximate": zone.get("geometry") is not None,
+                 "label_ru": (label or {}).get("ru"), "label_kk": (label or {}).get("kk")},
+        "tasks": {"total": total, "done": done, "doing": doing, "todo": total - done - doing},
+        "services": sorted(({**_service_label(sid, names), "done": acc["done"], "total": acc["total"]}
+                            for sid, acc in per.items()),
                            key=lambda s: (s["done"] == s["total"], -s["total"], s["service"])),
         "last_update": {"at": last.get("at"), "text_ru": last.get("text_ru") or last.get("text_kk") or "",
                         "text_kk": last.get("text_kk") or last.get("text_ru") or ""} if last else None,
@@ -471,15 +503,58 @@ def pulse_links(items: list[dict], crisis: dict) -> None:
                 match = c
                 break
         if match is not None:
-            a["crisis"] = {"link": crisis_link(match), "incident": match["id"], "kind": match["kind"]}
+            a["crisis"] = {"link": match["link"], "incident": match["id"], "kind": match["kind"]}
         elif kind is not None:
             a["crisis"] = {"link": crisis_link(None, kind=kind, district=district), "incident": None, "kind": kind}
 
 
 # ---------------------------------------------------------------- R16: жители вместе
 
+def _initiative_row(r: dict) -> dict:
+    target = r.get("target") if isinstance(r.get("target"), dict) else {}
+    support = r.get("support") if isinstance(r.get("support"), dict) else {}
+    return {"id": r.get("id"), "kind": r.get("kind") or "other", "title": r.get("title") or r.get("title_public") or "",
+            "lang": r.get("lang") or "ru", "status": r.get("status") or "published",
+            "place_ru": target.get("label_ru"), "place_kk": target.get("label_kk") or target.get("label_ru"),
+            "target": {"kind": target.get("kind") or "area", "id": target.get("id")} if target.get("id") else None,
+            **_district_label(r.get("district")),
+            "starts_at": r.get("starts_at"), "joined": max(0, int(r.get("joined") or 0)),
+            "supported": bool(support.get("by_akimat") or r.get("supported")),
+            "support_note": support.get("note") if support.get("by_akimat") else None,
+            "report": bool(r.get("report")), "demo": bool(r.get("demo"))}
+
+
+def _r16_summary(data: dict, *, district) -> dict:
+    """R16 initiatives_summary(): {"status", "upcoming", "joined_upcoming", "supported", "done", "neighbors_done",
+    "next": [...], "demo"} — числа R16 как есть."""
+    nxt = [_initiative_row({**r, "status": "published"}) for r in data.get("next") or [] if isinstance(r, dict)]
+    star = data.get("yard_of_week") if isinstance(data.get("yard_of_week"), dict) else None
+    return {
+        "available": True,
+        "counts": {k: _num(data, (k,)) for k in ("upcoming", "joined_upcoming", "done", "neighbors_done", "supported")},
+        "top": nxt[:3],
+        "yard_of_week": ({"id": star.get("id"), "label_ru": star.get("label_ru"),
+                          "label_kk": star.get("label_kk") or star.get("label_ru"),
+                          **_district_label(star.get("district")),
+                          "members": star.get("members") if isinstance(star.get("members"), int) else None,
+                          "initiative": _initiative_row(star["initiative"]) if isinstance(star.get("initiative"), dict) else None}
+                         if star and star.get("label_ru") else None),
+        "demo": bool(data.get("demo")),
+    }
+
+
 def normalize_together(body, *, days: int, district, now: datetime) -> dict:
+    """«Жители вместе»: единые счётчики для экрана и «Картины недели».
+
+    counts: upcoming — ближайших дел (опубликованы, ещё не начались); joined_upcoming — сколько раз нажали «Я приду»
+    на них; done — сделано вместе (за период у записей §5.2, у R16 — его число); neighbors_done — соседей участвовало
+    в сделанном; supported — поддержано акиматом. На проверке и скрытые инициативы не показываются никогда (§10).
+    """
     data = body if isinstance(body, dict) else {"initiatives": body if isinstance(body, list) else []}
+    if data.get("status") in ("ok", "no_data") or "joined_upcoming" in data:
+        if data.get("status") == "no_data":
+            return {"available": False, "reason": "no_data", "counts": {}, "top": [], "yard_of_week": None, "demo": False}
+        return _r16_summary(data, district=district)
     raw = [r for r in data.get("initiatives") or data.get("items") or [] if isinstance(r, dict)]
     shown = [r for r in raw if r.get("status") in SHOWN_INITIATIVE and (district is None or r.get("district") == district)]
     since = now - timedelta(days=days)
@@ -498,22 +573,9 @@ def normalize_together(body, *, days: int, district, now: datetime) -> dict:
     relevant = [r for r in shown if recent(r)]
     upcoming = [r for r in relevant if r.get("status") == "published" and (parse_time(r.get("starts_at")) or now) >= now]
     done_week = [r for r in relevant if r.get("status") == "done"]
-    counts = data.get("counts") if isinstance(data.get("counts"), dict) else {}
     joined = lambda r: max(0, int(r.get("joined") or 0))  # noqa: E731
 
-    def row(r) -> dict:
-        target = r.get("target") if isinstance(r.get("target"), dict) else {}
-        support = r.get("support") if isinstance(r.get("support"), dict) else {}
-        return {"id": r.get("id"), "kind": r.get("kind") or "other", "title": r.get("title") or "",
-                "lang": r.get("lang") or "ru", "status": r.get("status"),
-                "place_ru": target.get("label_ru"), "place_kk": target.get("label_kk") or target.get("label_ru"),
-                "target": {"kind": target.get("kind"), "id": target.get("id")} if target.get("id") else None,
-                **_district_label(r.get("district")),
-                "starts_at": r.get("starts_at"), "joined": joined(r), "supported": bool(support.get("by_akimat")),
-                "support_note": support.get("note") if support.get("by_akimat") else None,
-                "report": bool(r.get("report")), "demo": bool(r.get("demo"))}
-
-    # Показ: сначала ближайшие (их ещё можно поддержать), потом сделанные за неделю — по числу соседей.
+    # Показ: сначала ближайшие (их ещё можно поддержать), потом сделанные за период — по числу соседей.
     top = sorted(upcoming, key=lambda r: (parse_time(r.get("starts_at")) or now, -joined(r)))[:2]
     top += sorted((r for r in done_week if r not in top), key=lambda r: -joined(r))[:3 - len(top)]
 
@@ -521,7 +583,7 @@ def normalize_together(body, *, days: int, district, now: datetime) -> dict:
     pick = (data.get("yard_of_week") or {}).get("id") if isinstance(data.get("yard_of_week"), dict) else None
     star = None
     if pick is None:
-        # «Двор недели» (VISUAL_BRIEF §1 п. 4): двор, где за неделю больше всего соседей сделали дело вместе;
+        # «Двор недели» (VISUAL_BRIEF §1 п. 4): двор, где за период больше всего соседей сделали дело вместе;
         # нет сделанного — где больше всего «Я приду» у ближайшей инициативы.
         pool = done_week or upcoming
         star = max(pool, key=lambda r: (joined(r), str(r.get("id"))), default=None)
@@ -531,21 +593,19 @@ def normalize_together(body, *, days: int, district, now: datetime) -> dict:
         y = yards.get(pick, {})
         star = star or next((r for r in shown if (r.get("target") or {}).get("id") == pick), None)
         t = (star or {}).get("target") or {}
-        yard_of_week = {"id": pick, "label_ru": y.get("label_ru") or t.get("label_ru"),
-                        "label_kk": y.get("label_kk") or t.get("label_kk") or y.get("label_ru") or t.get("label_ru"),
-                        **_district_label(y.get("district") or (star or {}).get("district")),
-                        "members": int(y["members"]) if isinstance(y.get("members"), int) else None,
-                        "initiative": row(star) if star else None}
+        label_ru = y.get("label_ru") or t.get("label_ru")
+        if label_ru:
+            yard_of_week = {"id": pick, "label_ru": label_ru,
+                            "label_kk": y.get("label_kk") or t.get("label_kk") or label_ru,
+                            **_district_label(y.get("district") or (star or {}).get("district")),
+                            "members": int(y["members"]) if isinstance(y.get("members"), int) else None,
+                            "initiative": _initiative_row(star) if star else None}
     return {
-        "available": True, "days": days,
-        # Счётчики R16, если прислал; иначе — штуки по записям за период (одна инициатива — один раз).
-        "counts": {"published": _num(counts, ("published", "active")) if counts else
-                   sum(r.get("status") == "published" for r in relevant),
-                   "joined": _num(counts, ("joined",)) if counts else sum(joined(r) for r in relevant),
-                   "done": _num(counts, ("done",)) if counts else len(done_week),
-                   "supported": _num(counts, ("supported",)) if counts else sum(
-                       1 for r in relevant if isinstance(r.get("support"), dict) and r["support"].get("by_akimat"))},
-        "top": [row(r) for r in top],
+        "available": True,
+        "counts": {"upcoming": len(upcoming), "joined_upcoming": sum(joined(r) for r in upcoming),
+                   "done": len(done_week), "neighbors_done": sum(joined(r) for r in done_week),
+                   "supported": sum(1 for r in relevant if isinstance(r.get("support"), dict) and r["support"].get("by_akimat"))},
+        "top": [_initiative_row(r) for r in top],
         "yard_of_week": yard_of_week,
         "demo": any(r.get("demo") for r in shown),
     }
@@ -561,7 +621,7 @@ def together(settings: Settings, *, days: int = 7, district=None, now: datetime,
                                 lambda fx: normalize_together(fx["together"], days=days, district=district, now=now), now)
         return out or _empty(exc.reason, top=[], yard_of_week=None, counts={})
     out = normalize_together(body, days=days, district=district, now=now)
-    out.update(source="r16" if how == "function" else "r16-service")
+    out.update(source=("r16" if how == "function" else "r16-service") if out.get("available") else "none", days=days)
     return out
 
 
@@ -570,33 +630,51 @@ def together(settings: Settings, *, days: int = 7, district=None, now: datetime,
 ORDERS_N = 5
 
 
+def _order_row(o: dict, meeting: dict, today: date, names: dict) -> dict | None:
+    if not isinstance(o, dict):
+        return None
+    status = o.get("status") if o.get("status") in ORDER_STATUSES else "todo"
+    due = _day(o.get("due"))
+    overdue = o.get("overdue") if isinstance(o.get("overdue"), bool) else bool(due and status != "done" and due < today)
+    return {"id": o.get("id"), "text_ru": o.get("text_ru") or o.get("text_kk") or "",
+            "text_kk": o.get("text_kk") or o.get("text_ru") or "", "status": status,
+            "due": due.isoformat() if due else None, "overdue": overdue,
+            "days_left": (due - today).days if due and status != "done" else None,
+            **_service_label(o.get("service") or "akimat", names),
+            "meeting": {"id": meeting.get("id"), "title_ru": meeting.get("title_ru"), "title_kk": meeting.get("title_kk"),
+                        "at": meeting.get("at"), **_district_label(meeting.get("district"))},
+            "demo": bool(o.get("demo") or meeting.get("demo"))}
+
+
+def _next_meeting(nxt: dict | None) -> dict | None:
+    if not isinstance(nxt, dict):
+        return None
+    return {"id": nxt.get("id"), "title_ru": nxt.get("title_ru"), "title_kk": nxt.get("title_kk") or nxt.get("title_ru"),
+            "at": nxt.get("at"), "registered": nxt.get("registered"), **_district_label(nxt.get("district")),
+            "demo": bool(nxt.get("demo"))}
+
+
 def normalize_meetings(body, *, district, now: datetime, names: dict | None = None) -> dict:
+    """Поручения встреч. Формат R13 board_block() ({next, orders — открытые, counts}) или записи встреч §5.7."""
     names = names or service_names()
+    today = now.astimezone(ASTANA_TZ).date()
+    rank = {"todo": 1, "in_progress": 1, "done": 2}
+    if isinstance(body, dict) and "counts" in body and "orders" in body and "items" not in body:
+        orders = [r for r in (_order_row(o, {"id": o.get("meeting_id"), "title_ru": o.get("meeting_title_ru"),
+                                             "title_kk": o.get("meeting_title_kk"), "at": o.get("meeting_at"),
+                                             "district": o.get("district"), "demo": body.get("demo")}, today, names)
+                              for o in body.get("orders") or []) if r]
+        orders.sort(key=lambda o: (0 if o["overdue"] else rank[o["status"]], o["due"] or "9999", str(o["id"])))
+        counts = body.get("counts") if isinstance(body.get("counts"), dict) else {}
+        return {"available": True, "orders": orders[:ORDERS_N],
+                "counts": {k: int(counts.get(k) or 0) for k in ("total", "overdue", "todo", "in_progress", "done")},
+                "next": _next_meeting(body.get("next")), "demo": bool(body.get("demo"))}
     data = body if isinstance(body, list) else (body or {}).get("items") or (body or {}).get("meetings") or []
     meetings = [m for m in data if isinstance(m, dict) and (district is None or m.get("district") == district)]
-    today = now.astimezone(ASTANA_TZ).date()
-    orders = []
-    for m in meetings:
-        for o in m.get("orders") or []:
-            if not isinstance(o, dict):
-                continue
-            status = o.get("status") if o.get("status") in ORDER_STATUSES else "todo"
-            due = _day(o.get("due"))
-            orders.append({"id": o.get("id"), "text_ru": o.get("text_ru") or o.get("text_kk") or "",
-                           "text_kk": o.get("text_kk") or o.get("text_ru") or "", "status": status,
-                           "due": due.isoformat() if due else None,
-                           "overdue": bool(due and status != "done" and due < today),
-                           "days_left": (due - today).days if due and status != "done" else None,
-                           **_service_label(o.get("service") or "akimat", names),
-                           "meeting": {"id": m.get("id"), "title_ru": m.get("title_ru"), "title_kk": m.get("title_kk"),
-                                       "at": m.get("at"), **_district_label(m.get("district"))},
-                           "demo": bool(m.get("demo"))})
-    rank = {"overdue": 0, "todo": 1, "in_progress": 1, "done": 2}
-    orders.sort(key=lambda o: (rank["overdue"] if o["overdue"] else rank[o["status"]],
-                               o["due"] or "9999", str(o["id"])))
+    orders = [r for m in meetings for r in (_order_row(o, m, today, names) for o in m.get("orders") or []) if r]
+    orders.sort(key=lambda o: (0 if o["overdue"] else rank[o["status"]], o["due"] or "9999", str(o["id"])))
     upcoming = sorted((m for m in meetings if (t := parse_time(m.get("at"))) is not None and t >= now),
                       key=lambda m: parse_time(m["at"]))
-    nxt = upcoming[0] if upcoming else None
     return {
         "available": True,
         "orders": orders[:ORDERS_N],
@@ -604,10 +682,7 @@ def normalize_meetings(body, *, district, now: datetime, names: dict | None = No
                    "todo": sum(o["status"] == "todo" for o in orders),
                    "in_progress": sum(o["status"] == "in_progress" for o in orders),
                    "done": sum(o["status"] == "done" for o in orders)},
-        "next": {"id": nxt.get("id"), "title_ru": nxt.get("title_ru"), "title_kk": nxt.get("title_kk"),
-                 "at": nxt.get("at"), "registered": nxt.get("registered"), **_district_label(nxt.get("district")),
-                 "demo": bool(nxt.get("demo"))} if nxt else None,
-        "meetings": len(meetings),
+        "next": _next_meeting(upcoming[0]) if upcoming else None,
         "demo": any(m.get("demo") for m in meetings),
     }
 
@@ -620,6 +695,8 @@ def meetings(settings: Settings, *, district=None, now: datetime, all_demo=False
         out = _fixture_or_empty(settings, exc.reason, all_demo,
                                 lambda fx: normalize_meetings(fx["meetings"], district=district, now=now), now)
         return out or _empty(exc.reason, orders=[], counts={}, next=None)
+    if body is None:  # R13 board_block(): нет базы или данных — None
+        return _empty("no_data", orders=[], counts={}, next=None)
     out = normalize_meetings(body, district=district, now=now)
     out.update(source="r13" if how == "function" else "r13-service")
     return out

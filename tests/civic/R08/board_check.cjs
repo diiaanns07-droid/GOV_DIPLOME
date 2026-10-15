@@ -118,6 +118,10 @@ async function openBoard(browser, viewport, opts = {}) {
       const font = await minFont(page);
       check(`${tag}: шрифт не меньше 13 px`, font.min >= 13, font);
       if (lang === "ru") {
+        // R11 IA_ROUND15 §5.9: только просмотр (кнопок действий нет), вверху — «На весь экран» и «← В Birge».
+        const actions = await page.$$eval(".sc-main .sc-btn, .sc-crisis .sc-btn, .sc-kpis .sc-btn", (els) => els.map((e) => e.textContent));
+        check(`${tag}: только просмотр — без кнопок действий`, actions.length === 0, actions);
+        check(`${tag}: вверху «← В Birge» и «На весь экран»`, !!(await page.$(".sc-head a.sc-back[href='/#day']")) && !!(await page.$(".sc-head .sc-full")));
         const kpi = await page.$$eval(".sc-kpi__value", (els) => els.map((e) => e.textContent.replace(/\s/g, "")));
         const want = ["new_day", "in_progress", "overdue", "fixed_week"].map((k) => String(api.kpi[k].value));
         check(`${tag}: 4 числа = ответ akim/board`, JSON.stringify(kpi) === JSON.stringify(want), { kpi, want });
@@ -171,6 +175,9 @@ async function openBoard(browser, viewport, opts = {}) {
     await page.keyboard.press("Enter");
     check("сегмент: Enter открывает блок, фокус — пауза", (await page.getAttribute(".sc-slide", "data-slide")) === api.slides[2] &&
       (await page.getAttribute(".sc", "data-paused")) === "yes");
+    await page.keyboard.press("Escape");
+    await page.waitForURL((u) => !/\/civic\/board\//.test(u.pathname), { timeout: 5000 }).catch(() => {});
+    check("Esc — назад в Birge", !/\/civic\/board\//.test(new URL(page.url()).pathname), page.url());
     await ctx.close();
   }
 
@@ -196,7 +203,7 @@ async function openBoard(browser, viewport, opts = {}) {
 
   // ── состояния ──
   const states = [
-    ["403", (r) => r.fulfill({ status: 403, contentType: "application/json", body: JSON.stringify({ error: "forbidden" }) }), /сотрудникам акимата/, "a.sc-btn--primary"],
+    ["403", (r) => r.fulfill({ status: 403, contentType: "application/json", body: JSON.stringify({ error: "forbidden" }) }), /Войдите как сотрудник/, "a.sc-btn--primary[href='/#day']"],
     ["503", (r) => r.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: "module_not_ready" }) }), /ещё не подключён/, "a.sc-btn"],
     ["offline", (r) => r.abort(), /Не удалось загрузить/, "button.sc-btn--primary"],
   ];

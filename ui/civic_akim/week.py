@@ -109,13 +109,18 @@ def _sentences(w: dict, lang: str) -> list[str]:
     tg = w["together"]
     if tg.get("available") and (tg.get("counts") or {}).get("done"):
         c = tg["counts"]
+        people = c.get("neighbors_done")
         if lang == "ru":
             deeds = text.plural_ru(c["done"], "дело", "дела", "дел")
-            out.append(f"Жители сделали вместе {text.fmt_num(c['done'])} {deeds}; откликов «Я приду» — "
-                       f"{text.fmt_num(c.get('joined') or 0)}.")
+            line = f"Жители сделали вместе {text.fmt_num(c['done'])} {deeds}"
+            if people:
+                line += f", участвовали {text.fmt_num(people)} {text.plural_ru(people, 'сосед', 'соседа', 'соседей')}"
+            out.append(line + ".")
         else:
-            out.append(f"Тұрғындар бірге {text.fmt_num(c['done'])} іс атқарды; «Барамын» белгісі — "
-                       f"{text.fmt_num(c.get('joined') or 0)}.")
+            line = f"Тұрғындар бірге {text.fmt_num(c['done'])} іс атқарды"
+            if people:
+                line += f", {text.fmt_num(people)} көрші қатысты"
+            out.append(line + ".")
     mt = w["meetings"]
     if mt.get("available") and (mt.get("counts") or {}).get("total"):
         c = mt["counts"]
