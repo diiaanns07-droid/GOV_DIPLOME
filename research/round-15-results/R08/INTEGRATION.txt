@@ -1,88 +1,96 @@
-R08 · раунд 15 · «Картина дня» 2.0 и Ситуационный центр — как подключить и что нужно от соседей
-Ветка: claude/laughing-euler-iv3on3 (ветка сессии R08). Черновик 1 — 15 окт ~17:00 по Астане; дополняется на каждом checkpoint.
+R08 · раунд 15 · «Картина дня» 2.0, Ситуационный центр, «Картина недели» — как подключить
+Ветка: claude/laughing-euler-iv3on3 (ветка сессии R08). Версия 2 — 15 окт ~18:00 по Астане. Код — см. DELIVERY.json code_sha.
 
-═══ 0. КОРОТКО: ЧТО НУЖНО ОТ КОГО (просьбы; формат — ниже) ═══
-R01 — 2 маршрута (§1.1), db_path в configure (§1.2), файлы board/ в CIVIC_ASSETS (§1.3), ссылка в «Ещё» (§1.4).
-R17 — функция чтения табло и кризисов для Ситуационного центра (§2); формат ссылки «Открыть кризисный штаб» (§2.3).
-R16 — функция чтения «Жители вместе» (§3).
-R13 — функция чтения поручений встреч (§4.1) и прогноза на неделю (§4.2).
-Нет функции — R08 сам вызывает make_service(db_path).handle("GET", <маршрут CONTRACT §7>) соседа (§5).
-Нет и сервиса — блок «пока нет данных» (а в демо-сборке без демо-мира — фикстура с меткой «Пример»).
+═══ 0. КОРОТКО ═══
+R01 — применить r01_routes_r08.patch (2 маршрута staff_view, 6 файлов в CIVIC_ASSETS) и пункт «Ещё → Ситуационный центр».
+R11 — 170 ключей ru/kk: I18N_R15.json (board.*, week.*, akim.trio.*, akim.forecast.*, akim.crisis.open, …).
+R17 / R16 / R13 — уже подключены их настоящие функции (§2–4); две маленькие просьбы — §3.2, §4.2.
+R10 — проверки: board_check.cjs (88), week_check.cjs (18), ui_check.cjs (171) + pytest tests/civic/R08 (296).
+Проверено на настоящем шлюзе (копия FINAL-4 + патч §1): без входа 403 и экран «Войдите как сотрудник», после входа
+operator — табло, «Картина недели», три карточки в «Картине дня» внутри оболочки (кадры screens/real-*.jpg).
 
 ═══ 1. R01 (ui/web_server.py, оболочка) ═══
-1.1 Маршруты (CONTRACT §7). Ситуационный центр и «Картина недели» — только для сотрудника. Модуль raw проверяет это сам
-    по флагу staff, который шлюз передаёт только при staff_view=True (как у heat.target R07):
+1.1 Патч: research/round-15-results/R08/r01_routes_r08.patch (33 строки, git apply к FINAL-4 ui/web_server.py).
+    V2_ROUTES:   ("GET", ("akim", "board"), "akim.board"),  ("GET", ("akim", "week"), "akim.week")
+    V2_HANDLERS: akim.board, akim.week → V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff_view=True)
+    ВАЖНО: staff_view=True. Только тогда шлюз проверяет сессию сотрудника и передаёт handle_get(..., staff=True).
+    Без него модуль честно отвечает 403 forbidden всем (защита по умолчанию, R15).
+    CIVIC_ASSETS: "board/index.html", "board/board.js", "board/board.css", "akim/week.html", "akim/week.js", "akim/week.css".
+    Адрес страницы — /civic/board/index.html (каталоги сервер не отдаёт; можно добавить псевдоним "/civic/board/").
+1.2 Меню (R11 IA_ROUND15 §3, §5.9): «Ещё» акимата → группа «Инструменты» → «Ситуационный центр», значок i-monitor:
+        BirgeShell.registerScreen({ id: "board", href: "/civic/board/index.html", modes: ["akimat"], titleKey: "board.title" })
+    Открывается в той же вкладке. Ctrl+K: «Ситуационный центр» (тот же адрес), «Картина недели» (/civic/akim/week.html).
+1.3 «Картина дня»: кнопка «Открыть кризисный штаб» у тревоги пульса — ссылка R17 "/#agencies/crisis=<id>" (или
+    "/#agencies/crisis=new&template=blizzard&district=nura") и отменяемое событие document "birge:open-crisis"
+    {incident, kind, district, link}. Оболочке нужно разбирать адреса "#agencies/<…>" (IA_ROUND15: #agencies/<вкладка>)
+    — или перехватить событие и открыть штаб R17 у себя (preventDefault).
+    Карточки «Ведомства / Жители вместе / Встречи» ведут на "#agencies", "#together" (или "#together/<i-id>" —
+    «Поддержать», сцена 7), "#meetings".
+1.4 Необязательно (запасной путь чтения соседей, §5): в CivicV2Gateway.wire() передать базу:
+        akim.configure(demo_build=self.demo, db_path=str(self.db_path) if self.db_path else None)
+    Сейчас соседи сами находят свои сервисы (R17 api_state, R13 _SERVICES, R16 default_service), так что можно не трогать.
+1.5 Демо-мир: при CIVIC_DEMO_WORLD=1 фикстуры R08 выключаются сами (переменная окружения или configure(demo_world=True)).
+    seed_world у R08 нет: своих записей в демо-мире у R08 нет, он только читает соседей.
 
-    V2_ROUTES += (
-        ("GET", ("akim", "board"), "akim.board"),
-        ("GET", ("akim", "week"), "akim.week"),
-    )
-    V2_HANDLERS += {
-        "akim.board": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff_view=True),
-        "akim.week": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff_view=True),
-    }
-    Без staff_view функция не получит staff=True и честно ответит 403 forbidden («только для сотрудников акимата»).
-    Ответы: 200 JSON; 400 bad_request (district, date); 403 forbidden; 500 akim_failed (сервер не падает).
+═══ 2. R17 (ui/civic_agencies) — подключено как есть ═══
+    board_snapshot(days=7, district)  → «Ведомства»: строки services[], totals.joint, totals.handoffs; empty → блока нет.
+                                         «3 отстающие» — по правилу R17 lagging(): просрочено ↓, открыто ↓.
+    active_incidents(district)         → кризис: зона (zone_label), прогресс задач по службам (progress), обновления, link.
+    crisis_link(district, kind)        → адрес «Открыть кризисный штаб», когда кризиса ещё нет.
+    Правило кнопки (neighbors.pulse_links): тревога «тема растёт» в районе идущего кризиса (любого) → этот штаб; тревога
+    по городу → кризис того же вида; кризиса нет, а тема «кризисная» (снег → blizzard, ЖКХ → heat_outage) → создание.
+    Табло — только сотруднику (akim/board); в публичной «Картине дня» — только публичная часть кризиса.
 
-1.2 В CivicV2Gateway.wire() (где сейчас akim.configure(demo_build=...)) передать путь к той же SQLite и флаг демо-мира:
-        kwargs = {"demo_build": True} if self.demo else {}
-        kwargs["db_path"] = str(self.db_path) if self.db_path else None
-        kwargs["demo_world"] = os.environ.get("CIVIC_DEMO_WORLD") == "1"
-        akim.configure(**kwargs)
-    Нужен, чтобы читать сервисы соседей (R17, R16, R13), если у них нет функции чтения (§5). Без него R08 берёт
-    CIVIC_DB_PATH / CIVIC_DB из окружения. Старый вызов configure(demo_build=True) продолжает работать.
-
-1.3 CIVIC_ASSETS (будет уточнено к B1): "board/index.html", "board/board.js", "board/board.css",
-    "akim/week.html", "akim/week.js", "akim/week.css".
-1.4 Меню: «Ситуационный центр» — отдельная страница на весь экран (/civic/board/index.html); место — по IA_ROUND15 R11.
-    Если R11 оставит «Ещё»: BirgeShell.registerScreen({id: "board", href: "/civic/board/index.html", modes: ["akimat"],
-    titleKey: "board.title"}) — ссылка в «Ещё». Палитра Ctrl+K: «Ситуационный центр».
-
-═══ 2. R17 (ui/civic_agencies) — что читает Ситуационный центр и «Картина дня» ═══
-2.1 Табло служб (только чтение, без пересчёта у R08 — R08 только показывает):
-    board_for_akim(db_path=None, *, days=7, district=None, now=None) -> dict   — то же тело, что GET agencies/board
-    Поля, которые R08 показывает (имена можно свои — R08 понимает и синонимы, но лучше так):
-      {"days": 7, "demo": true|false,
-       "items": [{"service": "water", "open": 12, "overdue": 3, "median_answer_days": 2.5,
-                  "verified_share": 0.4, "returned": 1, "handoffs_in": 2, "handoffs_out": 1, "joint": 3}],
-       "joint": {"open": 4, "week": 6},            # совместных обращений: открытых сейчас / новых за days
-       "handoffs": {"week": 9}}                    # передач между службами за days
-    «3 самые отстающие службы» на «Картине дня»: если в ответе есть "lagging": ["water", …] — беру ваш порядок;
-    нет — по убыванию overdue, затем median_answer_days (числа ваши, порядок — только для показа).
-2.2 Кризисы: incidents_for_akim(db_path=None, *, district=None, now=None) -> list[dict] — записи CONTRACT §5.5
-    (активные первыми), с задачами (вид сотрудника). R08 показывает: название, зону, задачи по службам (сделано/всего),
-    последнее обновление ru/kk.
-2.3 Ссылка «Открыть кризисный штаб» (кнопка у тревоги пульса и в блоке кризиса). R08 по умолчанию ставит:
-      активный кризис → "/#agencies/<incident id>";   нет кризиса → "/#agencies/new?kind=blizzard&district=nura"
-    (kind по теме тревоги: snow_ice → blizzard, utilities/no_heating → heat_outage, utilities/no_water → water_outage).
-    Если у вас другой адрес — поле "link" в записи кризиса и строка в вашем INTEGRATION: R08 возьмёт его.
-
-═══ 3. R16 (ui/civic_together) — блок «Жители вместе» ═══
-    together_for_akim(db_path=None, *, days=7, district=None, now=None) -> dict
-      {"initiatives": [записи CONTRACT §5.2 — только публичные поля, без author_device],
-       "yards": [записи §5.3 — members только числом],
-       "counts": {"published": n, "joined": n, "done": n, "supported": n}}   # за days; нет counts — R08 сосчитает по записям
-    «Двор недели» — двор с самой живой инициативой недели (больше всего «Я приду» / «Сделано вместе»); если у вас есть свой
-    выбор — поле "yard_of_week": {"id": "yard-…"}.
+═══ 3. R16 (ui/civic_together) ═══
+3.1 Подключено: initiatives_summary(district, db_path) → «Жители вместе»: сделано вместе, соседей участвовало, ближайшие
+    дела и записавшиеся, «Поддержать» у ближайшего дела без поддержки акимата (сцена 7). На проверке — не показывается.
+3.2 Просьба (для «Двора недели» на большом экране): в initiatives_summary добавить
+        next[].target.label_ru / label_kk и, по желанию, "yard_of_week": {"id", "label_ru", "label_kk", "members",
+        "initiative": {"title", "joined"}}. Пока этих полей нет — плитки «Двор недели» нет (а не пустая).
 
 ═══ 4. R13 ═══
-4.1 ui/civic_meetings: meetings_for_akim(db_path=None, *, district=None, now=None) -> list[dict] — записи §5.7 с orders
-    (поручения: text_ru/kk, service, due, status). R08 показывает поручения со сроком: просроченные, на этой неделе, сделано.
-4.2 Прогноз на неделю: ui.civic_forecast.week_forecast(district=None, k=5, now=None) -> dict
-      {"horizon": "week", "evidence_type": "synthetic", "demo": true,
-       "items": [{"target": {kind,id,label_ru,label_kk}, "district", "main_category", "level",
-                  "reason_ru": "…одной строкой…", "reason_kk": "…"}],
-       "method_ru": "…", "method_kk": "…"}   # «Как считаем» (числа backtest из ваших результатов)
-    Пока функции нет — R08 показывает attention_next_month() (FINAL-4) с честным заголовком «на месяц», пометка «прототип».
-4.3 Пульс считает R08 (ui/civic_akim/pulse.py); ссылку «Открыть кризисный штаб» к тревоге добавляет R08 (§2.3).
+4.1 Подключено: ui.civic_meetings.board_block(db_path, district, limit) → «Встречи»: открытые поручения (просроченные
+    первыми), сделано из всего, следующая встреча. ui.civic_forecast.attention_next_month() → «Прогноз на месяц» (прототип).
+4.2 Просьба: ui.civic_forecast.week_forecast(district=None, k=5, now=None) → {"horizon": "week", "items": [{target,
+    district, main_category, level, reason_ru, reason_kk}], "method_ru", "method_kk"}. Есть функция — заголовок сам
+    станет «Прогноз на неделю».
 
-═══ 5. Запасной путь чтения (если функции из §2–4 нет) ═══
-R08 создаёт один экземпляр make_service(db_path) соседа на процесс и вызывает .handle("GET", "/api/civic/v2/<маршрут>",
-query, None, principal, {}) только для чтения: agencies/board?days=7, incidents, together/initiatives?status=published,
-meetings. principal — служебный {"username": "situation-center", "role": "staff"} (сам маршрут akim/board — только
-сотруднику, §1.1). Конверт {"ok": true, "data": …} и голое тело понимаются оба. Ошибка соседа — блок «пока нет данных»,
-не ошибка всего ответа.
+═══ 5. Как R08 читает соседей (ui/civic_akim/neighbors.py) ═══
+1) функция чтения соседа (§2–4); 2) нет функции, но есть make_service(db_path) — GET-маршрут CONTRACT §7 внутри процесса
+служебным сотрудником «situation-center» (только чтение, check_csrf всегда False); 3) соседа нет в сборке, а сборка
+демо (CIVIC_DEMO=1) без демо-мира — фикстура fixtures/board_demo.json (demo: true, «Пример»); 4) иначе блок
+«пока нет данных». Сбой соседа — пустой блок, ответ R08 не падает (тесты test_r08_board.py).
+Свежесть: «Картина дня» кэширует расчёт 30 с, а блоки соседей и ссылки штаба считаются при каждом ответе
+(«Я приду» 14 → 15 видно сразу).
 
-═══ 6. Демо-мир (CONTRACT §11) ═══
-CIVIC_DEMO_WORLD=1 → фикстуры R08 (ui/civic_akim/fixtures/) не подмешиваются: числа только из модулей. Своих записей
-в демо-мире у R08 нет (R08 только читает) — seed_world не нужен.
+═══ 6. Что видно где ═══
+- Ситуационный центр (/civic/board/index.html, тёмный, только просмотр — R11 §5.9): часы, район, ҚАЗ/РУС, «На весь экран»,
+  «← В Birge» (и Esc); 4 числа с графиками 14 дней; пульс и горячие места; блоки по 15 с: кризисный штаб, ведомства,
+  решение акима, жители вместе, встречи, прогноз (прототип), темы, районы; ← → и пробел; без входа — «Войдите как сотрудник».
+- «Картина дня» 2.0 (R11 §5.10): первый экран прежний; «Нужно решение акима» коротко; «Открыть кризисный штаб» у первой
+  подходящей тревоги; три карточки соседей; «Прогноз»; внизу — «Картина недели».
+- «Картина недели» (/civic/akim/week.html): неделя пн–вс по Астане, 2 листа A4, ru/kk.
+- Поправка П1: картинок нет; состояния — маленький значок ui-kit 40–44 px + текст + одна кнопка; без градиентов и свечения.
+
+═══ 7. R11 — словарь и вычитка ═══
+I18N_R15.json — 170 ключей ru и kk (board.*, week.*, akim.trio.*, akim.forecast.*, akim.crisis.open, akim.decision.more,
+akim.week.open, akim.empty.yesterday). Спорные казахские термины (на вычитку владельцу):
+  «Жағдаяттық орталық» (Ситуационный центр), «Дағдарыс штабын ашу» (Открыть кризисный штаб), «Ведомстволар» (как в
+  IA_ROUND15), «Апта қорытындысы» (Картина недели), «Барамын / жазылғандар» (Я приду / записались), «Бірлескен өтініштер»
+  (совместные обращения), «Қызметтер арасында берілгені» (передачи между службами), «прототип».
+Цвета Ситуационного центра — значения .bk-dark R11 числами (страница тёмная и со старым ui-kit FINAL-4); на <html> — bk-dark.
+
+═══ 8. R10 — проверки ═══
+    python3 tests/civic/R08/demo_server.py --wave2-demo &          # стенд R08 (все запросы — сотрудника)
+    NODE_PATH=$(npm root -g) node tests/civic/R08/board_check.cjs   # 88: 1920/1366 без прокрутки, все блоки, ҚАЗ, 1024, 375,
+                                                                     #     403/503/нет связи/устаревшие данные, автосмена, пауза
+    NODE_PATH=$(npm root -g) node tests/civic/R08/week_check.cjs    # 18: ru/kk, печать ≤ 2 листа A4, состояния, ссылка
+    NODE_PATH=$(npm root -g) node tests/civic/R08/ui_check.cjs <base> <папка>   # 171: «Картина дня» (эталон A)
+    python3 -m pytest -q tests/civic/R08                             # 296 passed, 1 skipped
+Сцена 9: «Картина дня» → «Пульс» → «Открыть кризисный штаб» (одна кнопка у первой тревоги, ссылка R17).
+
+═══ 9. R15 — для проверки ═══
+- akim/board и akim/week: 403 без staff=True; staff даёт только шлюз после проверки сессии (staff_view).
+- Чтение соседей внутри процесса служебным «situation-center» — только GET; check_csrf() → False (записать нельзя).
+- В ответах нет текстов жалоб, устройств и персональных данных; инициативы на проверке и скрытые не показываются;
+  у кризиса в публичной сводке — только публичная часть R17 (без задач).

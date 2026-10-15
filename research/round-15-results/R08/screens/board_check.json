@@ -1,0 +1,680 @@
+{
+ "base": "http://127.0.0.1:8508",
+ "at": "2026-10-15T12:35:59.230Z",
+ "pass": 88,
+ "fail": 0,
+ "results": [
+  {
+   "name": "1920-ru: заголовок на своём языке",
+   "status": "PASS",
+   "detail": "Ситуационный центр"
+  },
+  {
+   "name": "1920-ru: без прокрутки и выхода за экран",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1920-ru: нет ключей и технических слов",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1920-ru: шрифт не меньше 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 21.06,
+    "where": "sc-scope"
+   }
+  },
+  {
+   "name": "1920-ru: только просмотр — без кнопок действий",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1920-ru: вверху «← В Birge» и «На весь экран»",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: 4 числа = ответ akim/board",
+   "status": "PASS",
+   "detail": {
+    "kpi": [
+     "40",
+     "67",
+     "5",
+     "142"
+    ],
+    "want": [
+     "40",
+     "67",
+     "5",
+     "142"
+    ]
+   }
+  },
+  {
+   "name": "1920-ru: блок «crisis» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-ru: блок «services» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-ru: блок «decisions» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-ru: блок «together» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-ru: блок «meetings» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-ru: блок «forecast» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-ru: блок «topics» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-ru: блок «districts» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-ru: ← → проходят все блоки по кругу",
+   "status": "PASS",
+   "detail": {
+    "seen": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ],
+    "slides": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ]
+   }
+  },
+  {
+   "name": "1920-ru: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1920-kk: заголовок на своём языке",
+   "status": "PASS",
+   "detail": "Жағдаяттық орталық"
+  },
+  {
+   "name": "1920-kk: без прокрутки и выхода за экран",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1920-kk: нет ключей и технических слов",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1920-kk: шрифт не меньше 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 21.06,
+    "where": "sc-scope"
+   }
+  },
+  {
+   "name": "1920-kk: блок «crisis» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-kk: блок «services» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-kk: блок «decisions» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-kk: блок «together» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-kk: блок «meetings» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-kk: блок «forecast» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-kk: блок «topics» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-kk: блок «districts» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1920-kk: ← → проходят все блоки по кругу",
+   "status": "PASS",
+   "detail": {
+    "seen": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ],
+    "slides": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ]
+   }
+  },
+  {
+   "name": "1920-kk: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: заголовок на своём языке",
+   "status": "PASS",
+   "detail": "Ситуационный центр"
+  },
+  {
+   "name": "1366-ru: без прокрутки и выхода за экран",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: нет ключей и технических слов",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: шрифт не меньше 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14.976,
+    "where": "sc-scope"
+   }
+  },
+  {
+   "name": "1366-ru: только просмотр — без кнопок действий",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вверху «← В Birge» и «На весь экран»",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: 4 числа = ответ akim/board",
+   "status": "PASS",
+   "detail": {
+    "kpi": [
+     "40",
+     "67",
+     "5",
+     "142"
+    ],
+    "want": [
+     "40",
+     "67",
+     "5",
+     "142"
+    ]
+   }
+  },
+  {
+   "name": "1366-ru: блок «crisis» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-ru: блок «services» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-ru: блок «decisions» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-ru: блок «together» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-ru: блок «meetings» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-ru: блок «forecast» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-ru: блок «topics» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-ru: блок «districts» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-ru: ← → проходят все блоки по кругу",
+   "status": "PASS",
+   "detail": {
+    "seen": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ],
+    "slides": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ]
+   }
+  },
+  {
+   "name": "1366-ru: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: заголовок на своём языке",
+   "status": "PASS",
+   "detail": "Жағдаяттық орталық"
+  },
+  {
+   "name": "1366-kk: без прокрутки и выхода за экран",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: нет ключей и технических слов",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: шрифт не меньше 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14.976,
+    "where": "sc-scope"
+   }
+  },
+  {
+   "name": "1366-kk: блок «crisis» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-kk: блок «services» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-kk: блок «decisions» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-kk: блок «together» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-kk: блок «meetings» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-kk: блок «forecast» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-kk: блок «topics» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-kk: блок «districts» помещается и без ключей",
+   "status": "PASS",
+   "detail": {
+    "bodyFits": true,
+    "probs": []
+   }
+  },
+  {
+   "name": "1366-kk: ← → проходят все блоки по кругу",
+   "status": "PASS",
+   "detail": {
+    "seen": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ],
+    "slides": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ]
+   }
+  },
+  {
+   "name": "1366-kk: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "автосмена: через 15 с — следующий блок",
+   "status": "PASS",
+   "detail": {
+    "first": "crisis",
+    "second": "services"
+   }
+  },
+  {
+   "name": "наведение — пауза",
+   "status": "PASS"
+  },
+  {
+   "name": "на паузе блок не меняется",
+   "status": "PASS"
+  },
+  {
+   "name": "мышь ушла — снова идёт",
+   "status": "PASS"
+  },
+  {
+   "name": "пробел — пауза",
+   "status": "PASS"
+  },
+  {
+   "name": "пробел ещё раз — дальше",
+   "status": "PASS"
+  },
+  {
+   "name": "Tab: видна рамка фокуса",
+   "status": "PASS",
+   "detail": {
+    "tag": "BUTTON",
+    "outline": "solid",
+    "w": "3px"
+   }
+  },
+  {
+   "name": "сегмент: Enter открывает блок, фокус — пауза",
+   "status": "PASS"
+  },
+  {
+   "name": "Esc — назад в Birge",
+   "status": "PASS",
+   "detail": "http://127.0.0.1:8508/civic/akim/#day"
+  },
+  {
+   "name": "1024-ru: без горизонтальной прокрутки",
+   "status": "PASS"
+  },
+  {
+   "name": "1024-ru: нет ключей и технических слов",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024: без прокрутки и выхода за экран",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: без горизонтальной прокрутки",
+   "status": "PASS"
+  },
+  {
+   "name": "375-ru: нет ключей и технических слов",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: все блоки подряд",
+   "status": "PASS",
+   "detail": [
+    "crisis",
+    "services",
+    "decisions",
+    "together",
+    "meetings",
+    "forecast",
+    "topics",
+    "districts"
+   ]
+  },
+  {
+   "name": "375-ru: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: без горизонтальной прокрутки",
+   "status": "PASS"
+  },
+  {
+   "name": "375-kk: нет ключей и технических слов",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: все блоки подряд",
+   "status": "PASS",
+   "detail": [
+    "crisis",
+    "services",
+    "decisions",
+    "together",
+    "meetings",
+    "forecast",
+    "topics",
+    "districts"
+   ]
+  },
+  {
+   "name": "375-kk: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "состояние 403: понятный текст и действие",
+   "status": "PASS",
+   "detail": "Войдите как сотрудникСитуационный центр открывается сотрудникам акимата. В Birge: аватар → «Для сотрудников», затем «Ещё → Ситуационный центр».← В Birge"
+  },
+  {
+   "name": "состояние 503: понятный текст и действие",
+   "status": "PASS",
+   "detail": "Ситуационный центр ещё не подключён в этой сборкеСервер работает, но маршрут akim/board пока не включён. Карта и «Картина дня» доступны.← В Birge"
+  },
+  {
+   "name": "состояние offline: понятный текст и действие",
+   "status": "PASS",
+   "detail": "Не удалось загрузить данныеПроверьте связь с сервером. Повторим сами через 30 секунд.Повторить"
+  },
+  {
+   "name": "нет связи после загрузки: числа на месте и «Нет связи — данные на …»",
+   "status": "PASS",
+   "detail": "Нет связи — данные на 17:35"
+  },
+  {
+   "name": "prefers-reduced-motion: полоса блока без анимации",
+   "status": "PASS",
+   "detail": "none"
+  }
+ ]
+}
