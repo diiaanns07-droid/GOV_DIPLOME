@@ -2,9 +2,11 @@
 
     python -m ui.civic_heat.devserver            # http://127.0.0.1:8617/civic/heat/demo.html
     python -m ui.civic_heat.devserver --port 8620
+    python -m ui.civic_heat.devserver --world    # раунд 15: мини-мир R07 (буран в Нуре) — для «Хроники города»
 
 Отдаёт папку web/ и маршруты:
     GET  /api/civic/v2/heat, /heat/meta, /heat/target       — настоящий модуль ui/civic_heat (api.handle_get)
+    GET  /api/civic/v2/heat/replay                           — «Хроника города» (раунд 15), тот же модуль
     POST /api/civic/v2/complaints/{id}/status {status}      — ПОДСТАВНОЙ двойник R09 (меняет демо-записи в памяти)
     POST /api/civic/v2/complaints/{id}/metoo {device_id}    — ПОДСТАВНОЙ двойник R09 (одно «Я тоже» с устройства)
     POST /api/civic/v2/complaints/{id}/verify {answer}      — ПОДСТАВНОЙ двойник R09 «Проблема решена?» (yes | no | cant;
@@ -17,13 +19,14 @@ from __future__ import annotations
 import argparse
 import json
 import mimetypes
+import tempfile
 import threading
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from . import api, demo_seed
+from . import api, demo_seed, world, world_fixture
 from .engine import iso
 from .service import HeatService
 
@@ -35,12 +38,19 @@ STATUSES = ("new", "accepted", "in_progress", "fixed", "rejected")
 class DemoStore:
     """Демо-записи в памяти + подставные операции R09 (status, metoo, verify)."""
 
-    def __init__(self, now=None):
+    def __init__(self, now=None, world_db=None):
         self.lock = threading.Lock()
-        self.records = demo_seed.demo_records(now=now)
         self.metoo_devices: dict[str, set] = {}
+        if world_db:
+            # Мини-мир R07 (world_fixture): буран в Нуре и отметка шкалы «Буран» — как засеял бы R01 из world_v1.json
+            w = world_fixture.build_world()
+            moment = now or datetime.now(timezone.utc)
+            self.records = world_fixture.to_records(w, moment)
+            world.seed_world(world_db, w, moment)
+        else:
+            self.records = demo_seed.demo_records(now=now)
         # стенд сам отвечает на статус и «Я тоже» примеров — действия с ними работают
-        self.service = HeatService(source=lambda since: self.snapshot(), examples_actionable=True)
+        self.service = HeatService(source=lambda since: self.snapshot(), examples_actionable=True, db_path=world_db)
 
     def snapshot(self):
         with self.lock:
@@ -166,8 +176,13 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Демо-сервер тепловой карты R07 (synthetic)")
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=8617)
+    ap.add_argument("--world", action="store_true", help="мини-мир R07 с бураном (раунд 15, «Хроника города»)")
     args = ap.parse_args(argv)
-    store = DemoStore()
+    world_db = None
+    if args.world:
+        world_db = str(Path(tempfile.gettempdir()) / f"birge-r07-world-{args.port}.sqlite3")
+        Path(world_db).unlink(missing_ok=True)   # отметки — от этого запуска (время мира — от момента засева)
+    store = DemoStore(world_db=world_db)
     httpd = ThreadingHTTPServer((args.host, args.port), make_handler(store))
     print(f"R07 демо: http://{args.host}:{args.port}/civic/heat/demo.html  (Ctrl+C — стоп)")
     try:

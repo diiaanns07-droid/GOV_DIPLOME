@@ -94,12 +94,13 @@ def as_of(c: dict, t: datetime) -> dict | None:
             ver = parse_time(res.get("verified_at"))
             ver_ok = ver is not None and ver <= t
             state = res.get("state")
-            if state == "reopened" and (parse_time(res.get("reopened_at")) is None or _after(res.get("reopened_at"), t)):
+            if state == "reopened" and _after(res.get("reopened_at"), t):
                 state = "verified" if ver_ok else "reported"
                 votes["no"] = 0
                 r2["reopened_at"] = None
-            if state == "verified" and not ver_ok:
-                state = "reported"
+            if ver is not None and ver > t:     # первое «Да» и есть проверка: до неё голосов «да» не было
+                if state == "verified":
+                    state = "reported"
                 votes["yes"] = 0
                 r2["verified_at"] = None
             if state == "withdrawn" and out.get("status") == "fixed":
@@ -108,6 +109,28 @@ def as_of(c: dict, t: datetime) -> dict | None:
             r2["votes"] = votes
             out["resolution"] = r2
     return out
+
+
+def last_event(c: dict) -> datetime | None:
+    """Самое позднее событие жалобы (шаг статуса, «Я тоже», ответ жителя, раунд ремонта). Кадр позже него получает
+    запись как есть, без копии: так прошлые дни месяца считаются быстро (as_of нужен только «молодым» жалобам)."""
+    found = [parse_time(c.get(k)) for k in ("created_at", "updated_at", "verified_at", "checked_at")]
+    for h in c.get("status_history") or []:
+        if isinstance(h, dict):
+            found.append(parse_time(h.get("at")))
+    found.extend(parse_time(x) for x in c.get("metoo_times") or [])
+    for key in ("resident_checks", "checks"):
+        for x in c.get(key) or [] if isinstance(c.get(key), list) else []:
+            if isinstance(x, dict):
+                found.append(parse_time(x.get("at")))
+    for key in ("resident_check", "verification"):
+        if isinstance(c.get(key), dict):
+            found.append(parse_time(c[key].get("at")))
+    res = c.get("resolution")
+    if isinstance(res, dict):
+        found.extend(parse_time(res.get(k)) for k in ("reported_at", "verified_at", "reopened_at"))
+    found = [x for x in found if x is not None]
+    return max(found) if found else None
 
 
 # ---------------------------------------------------------------- даты
@@ -194,6 +217,7 @@ class Replay:
         self._lock = threading.Lock()
         self._frames: dict = {}    # (поколение, день, days, category, district) -> (items, districts)
         self._replies: dict = {}   # ключ запроса -> (monotonic, ответ)
+        self._warmed: set = set()  # (поколение, days, category, district): месяц уже досчитывается в фоне
         self.last_compute_ms = 0.0
 
     def params(self, *, from_=None, to=None, step=None, days=None, category=None, district=None, last=None, fmt=None, now=None):
@@ -251,7 +275,28 @@ class Replay:
             if len(self._replies) >= CACHE_REPLIES_MAX:
                 self._replies.clear()
             self._replies[rkey] = (time.monotonic(), reply)
+        self._warm_month(p, gen)
         return reply
+
+    def _warm_month(self, p: dict, gen: int) -> None:
+        """Попросили неделю — в фоне досчитать месяц (чип «30 дней» откроется сразу). Один раз на поколение данных."""
+        today = p["now"].astimezone(ASTANA_TZ).date()
+        if p["end"] != today or (p["end"] - p["start"]).days >= 29:
+            return
+        key = (gen, p["days"], p["category"], p["district"])
+        with self._lock:
+            if key in self._warmed:
+                return
+            self._warmed.add(key)
+        month = dict(p, start=today - timedelta(days=29))
+
+        def run():
+            try:
+                self._frames_for(month, gen)
+            except Exception:   # фоновый расчёт не мешает ответу; ошибку увидит обычный запрос
+                pass
+
+        threading.Thread(target=run, name="heat-replay-warm", daemon=True).start()
 
     # кадры: прошлые дни — из кэша, если записи не менялись (то же поколение)
     def _frames_for(self, p: dict, gen: int) -> list:
@@ -271,24 +316,22 @@ class Replay:
             # Один запрос к источнику на все кадры (с запасом на самый ранний); дальше — фильтр как у источника:
             # R09 отдаёт жалобы, созданные не раньше since (= момент − период − 7 дней), демо-набор — все.
             records = svc.records(first - span)
+            # Порядок записей — как у источника: при равных весе и числе порядок мест в ответе тот же, что у /heat.
             rows = []
             for r in records:
                 if isinstance(r, dict):
                     cr = parse_time(r.get("created_at"))
                     if cr is not None:
-                        rows.append((cr, r))
-            rows.sort(key=lambda x: x[0])
+                        rows.append((cr, last_event(r) or cr, r))
             filter_since = not svc.is_demo
             for d in need:
                 t = day_moment(d, now)
                 lo = t - span
                 recs = []
-                for cr, r in rows:
-                    if cr > t:
-                        break
-                    if filter_since and cr < lo:
+                for cr, last, r in rows:
+                    if cr > t or (filter_since and cr < lo):
                         continue
-                    a = as_of(r, t)
+                    a = r if last <= t else as_of(r, t)
                     if a is not None:
                         recs.append(a)
                 computed = svc._compute(now=t, days=p["days"], category=p["category"], district=p["district"], bbox=None, records=recs)

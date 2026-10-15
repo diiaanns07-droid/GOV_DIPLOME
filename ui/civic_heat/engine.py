@@ -23,6 +23,7 @@ import math
 import re
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
+from functools import lru_cache
 
 from . import deadline, geo
 from .config import DAILY_WINDOW_DAYS, DISTRICT_LEVEL_SCALE, HeatConfig
@@ -38,8 +39,14 @@ def parse_time(value) -> datetime | None:
         return value if value.tzinfo else value.replace(tzinfo=ASTANA_TZ)
     if not value:
         return None
+    return _parse_iso(str(value))
+
+
+@lru_cache(maxsize=65536)
+def _parse_iso(text: str) -> datetime | None:
+    """Разбор ISO с памятью: «Хроника» считает те же записи на каждый день (datetime неизменяем — делить безопасно)."""
     try:
-        dt = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
     except ValueError:
         return None
     return dt if dt.tzinfo else dt.replace(tzinfo=ASTANA_TZ)
