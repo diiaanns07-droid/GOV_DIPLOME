@@ -20,7 +20,7 @@
   "R09": "97342bdf",
   "R01": "c9069723 (B0)",
   "R08": "5d9b4138 (claude/laughing-euler-iv3on3)",
-  "R06": "2b31dbe1",
+  "R06": "6f886297",
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt"
  },
  "push_status": "OK (круг 3)",
@@ -227,7 +227,8 @@
   "round5_heads": {
    "R02_ac75f3a8_world": "4 passed",
    "R07_7ce9aee7_replay": "12 passed",
-   "R04_f20775ab_moderate": "45 passed + 5 xpassed (S48 PENDING)"
+   "R04_f20775ab_moderate": "45 passed + 5 xpassed (S48 PENDING)",
+   "R06_6f886297_notify": "3 passed"
   }
  },
  "findings": {
