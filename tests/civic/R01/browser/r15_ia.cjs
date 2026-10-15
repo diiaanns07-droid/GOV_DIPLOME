@@ -9,7 +9,8 @@
 //   - demo world (CIVIC_DEMO_WORLD=1): Ctrl+K «Сцена 7 / 8 / 9» open the yard / complaint / crisis by world ids;
 //   - ?show=1: no service plates, larger text at 1024, scenes first in Ctrl+K;
 //   - B0.2: «▶ Хроника» R07 at the end of the legend line (IA R11 §5.8, §7.8): the bar opens, the legend hides, nothing
-//     on the left, Esc closes; phone — icon-only chip, the bar instead of the sheet; scene 7 with and without R16.
+//     on the left, Esc closes; phone — icon-only chip, the bar instead of the sheet; scene 7 with and without R16;
+//   - «Уведомления» R06 (IA R11 §5.7): resident bell before the avatar, panel; akimat — no bell; phone — first avatar item.
 // The stand runs the real demo world of R02 (data/civic/astana/demo-world/world_v1.json) when it is in the build.
 // Usage: node tests/civic/R01/browser/r15_ia.cjs <out_dir>
 "use strict";
@@ -308,6 +309,42 @@ async function main() {
       await ctx.close();
     } else {
       console.log("NOT_RUN chronicle checks (R07 replay.js is not in the build)");
+      await ctx.close();
+    }
+
+    // ------------------------------------------------------------ «Уведомления» R06 (IA R11 §5.7, §7.7)
+    ({ ctx, page } = await open(browser, base, 1366, 768, "resident"));
+    if (await page.evaluate(() => !!window.BirgeNotify)) {
+      await page.waitForFunction(() => document.querySelector('.birge-me [data-action="notifications"]'), null, { timeout: 8000 }).catch(() => null);
+      const bell = await page.evaluate(() => {
+        const me = document.querySelector(".birge-me"), b = me?.querySelector('[data-action="notifications"]'), r = b?.getBoundingClientRect();
+        const kids = me ? [...me.children] : [];
+        return { bell: !!b, size: r ? [Math.round(r.width), Math.round(r.height)] : null, beforeAvatar: !!b && kids.indexOf(b) === kids.indexOf(me.querySelector(".birge-avatar")) - 1,
+          icon: !!b?.querySelector("svg.ic"), inMore: window.BirgeShell.moreItems().includes("notifications") };
+      });
+      check("resident 1366: bell between «ҚАЗ · РУС» and the avatar (44 px, icon of the R11 set), not an «Ещё» item", bell.bell && bell.beforeAvatar
+        && bell.size && bell.size[0] >= 40 && bell.size[1] >= 40 && bell.icon && !bell.inMore, bell);
+      await page.click('.birge-me [data-action="notifications"]');
+      await page.waitForTimeout(600);
+      const panel = await page.evaluate(() => { const n = document.querySelector(".bk-notify"); return { open: !!n && !!n.getClientRects().length,
+        buttons: n ? n.querySelectorAll("button").length : 0, ill: !!n?.querySelector(".bk-ill") }; });
+      check("bell opens the panel under it (empty: small icon, text, one button — P1)", panel.open && !panel.ill, panel);
+      await page.keyboard.press("Escape");
+      await page.evaluate(() => window.BirgeShell.setMode("akimat"));
+      await page.waitForTimeout(400);
+      const akimatBell = await page.evaluate(() => !!document.querySelector('.birge-me [data-action="notifications"]')?.getClientRects().length);
+      check("akimat view: no bell (resident only)", !akimatBell, akimatBell);
+      check("no page errors (bell)", page.errs.length === 0, page.errs);
+      await ctx.close();
+      ({ ctx, page } = await open(browser, base, 375, 812, "resident"));
+      await page.click("#birge-header .birge-avatar");
+      await page.waitForTimeout(400);
+      const phoneMenu = await page.evaluate(() => ({ first: document.querySelector(".birge-account .bk-menu__item")?.textContent.trim(),
+        headerBell: !!document.querySelector('#birge-header [data-action="notifications"]')?.getClientRects().length }));
+      check("phone: no bell in the header, «Уведомления» is the first avatar-menu item", /^Уведомления/.test(phoneMenu.first || "") && !phoneMenu.headerBell, phoneMenu);
+      await ctx.close();
+    } else {
+      console.log("NOT_RUN bell checks (R06 notify.js is not in the build)");
       await ctx.close();
     }
 

@@ -34,8 +34,9 @@
   const MORE_MAX = 7;
   // Без своего пункта, пока в этом виде доступен «родитель» (иначе — в «Ещё», как в FINAL-4). Адрес и Ctrl+K работают.
   const PARENT = { nearby: "yard", questions: "meetings", works: "agencies", services: "agencies", "works-calendar": "agencies" };
-  // Совсем без пункта меню: публичная карточка кризиса R17 открывается баннером, уведомлением и Ctrl+K (IA_ROUND15 §3).
-  const NO_ITEM = new Set(["crisis"]);
+  // Совсем без пункта меню: публичная карточка кризиса R17 открывается баннером, уведомлением и Ctrl+K (IA_ROUND15 §3);
+  // «Уведомления» R06 — колокольчик в капсуле справа (ноутбук) и первый пункт меню аватара (телефон), не «Ещё» (§5.7).
+  const NO_ITEM = new Set(["crisis", "notifications"]);
   // Экраны новых разделов (п. 2: свои экраны, не поверх карты). Модуль роли: window[global].mount(root, опции) →
   // {destroy?, setLang?}. Пункт меню виден, только когда модуль подключён; ?screens=all — показать все (разбор R11/R10).
   // modes — в каких видах раздел есть; пункт, которого нет в NAV этого вида, попадает в «Ещё».
@@ -58,6 +59,7 @@
     crisis: { global: ["BirgeAgencies"], modes: ["resident", "akimat"], owner: "R17", key: { resident: "shell.nav.crisis", akimat: "shell.nav.crisis" } },
     analyst: { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
     "works-calendar": { global: ["BirgeWorksCalendar"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.works_calendar" } },
+    notifications: { global: ["BirgeNotify"], modes: ["resident"], owner: "R06", key: { resident: "shell.nav.notifications" } },
   };
   const SECTIONS = ["map", "day", ...Object.keys(SCREENS)];
   // Прежние адреса волны 2 (до схемы R11) ведут в те же разделы.
@@ -130,7 +132,7 @@
   const cleanPath = (path) => (typeof path === "string" && PATH_RE.test(path) ? path : "");
   // ?screens=all — все разделы, и раунда 15 тоже (разбор R11/R10); ?screens=r14 — меню раунда 14: все его разделы,
   // а разделы раунда 15 скрыты, даже если их модули в сборке (регресс запасного меню FINAL-4, r14_wave2.cjs).
-  const R15_IDS = new Set(["yard", "together", "meetings", "agencies", "crisis", "analyst", "works-calendar", "board"]);
+  const R15_IDS = new Set(["yard", "together", "meetings", "agencies", "crisis", "analyst", "works-calendar", "board", "notifications"]);
   const screensParam = () => (/[?&]screens=(all|r14)(?:&|$)/.exec(location.search) || [])[1] || null;
   const screensAll = (id) => { const p = screensParam(); return p === "all" || (p === "r14" && !R15_IDS.has(id)); };
 
@@ -409,6 +411,18 @@
     const items = [];
     const item = (attrs, text) => { const b = el("button", { type: "button", class: "bk-menu__item", role: "menuitem", ...attrs }); b.textContent = text; return b; };
     if (document.body.dataset.birgeHeader === "compact") {
+      // Телефон (IA_ROUND15 §5.7): колокольчика в шапке нет — первый пункт меню аватара «Уведомления · N» (лента R06).
+      if (state.mode === "resident" && available("notifications", "resident")) {
+        const b = menuIcon(item({ "data-section": "notifications" }, t("shell.nav.notifications")), "notifications");
+        if (notifyUnread > 0) {
+          const badge = el("span", { class: "bk-nav__badge", "aria-hidden": "true" });
+          badge.textContent = notifyUnread > 9 ? "9+" : String(notifyUnread);
+          b.append(badge);
+          b.setAttribute("aria-label", t("shell.nav.notifications") + " · " + notifyUnread);
+        }
+        if (state.section === "notifications") b.setAttribute("aria-current", "page");
+        items.push(b);
+      }
       for (const id of navOf(state.mode).filter((x) => x !== "more")) {
         const b = menuIcon(id === "mine" ? item({ "data-action": "mine" }, t("common.nav.mine")) : item({ "data-section": id }, navTitle(id)), id);
         if (id === state.section) b.setAttribute("aria-current", "page");
@@ -473,6 +487,20 @@
   // «Мои обращения»: единственный бейдж меню (IA_WAVE2 §1) — число новых изменений по обращениям жителя. R09 шлёт
   // window "birge:complaint-changes" {detail: {n}} (после открытия «Мои обращения» n = 0). На телефоне — точка на ≡.
   let mineChanges = 0;
+  // Непрочитанные уведомления R06 (BirgeNotify.onCount): на телефоне — точка на аватаре и число в пункте меню аватара.
+  let notifyUnread = 0, notifyHooked = false;
+  function hookNotify() {
+    const N = window.BirgeNotify;
+    if (notifyHooked || !N || typeof N.onCount !== "function") return;
+    notifyHooked = true;
+    N.onCount((n) => {
+      const next = Math.max(0, Math.floor(Number(n) || 0));
+      if (next === notifyUnread) return;
+      notifyUnread = next;
+      labelMine();
+      renderAccount();
+    });
+  }
   function labelMine() {
     const mine = header && header.querySelector(".birge-mine-btn");
     if (!mine) return;
@@ -486,7 +514,9 @@
     header.dataset.mineChanges = mineChanges > 0 ? "yes" : "no";
     // Компактная шапка: разделы в меню аватара — точка на аватаре (ui-kit .bk-avatar[data-badge]).
     const avatar = header.querySelector(".birge-avatar");
-    if (avatar) { if (mineChanges > 0 && state.mode === "resident") avatar.dataset.badge = ""; else delete avatar.dataset.badge; }
+    const compact = document.body.dataset.birgeHeader === "compact";
+    const dot = state.mode === "resident" && (mineChanges > 0 || (compact && notifyUnread > 0));
+    if (avatar) { if (dot) avatar.dataset.badge = ""; else delete avatar.dataset.badge; }
   }
   window.addEventListener("birge:complaint-changes", (event) => {
     const n = Math.max(0, Math.floor(Number(event && event.detail && event.detail.n) || 0));
@@ -496,6 +526,7 @@
   });
 
   function render() {
+    hookNotify();
     if (skip) skip.textContent = t("common.action.skip_to_main");
     if (header) {
       header.querySelector(".birge-nav").setAttribute("aria-label", t("shell.nav.label"));

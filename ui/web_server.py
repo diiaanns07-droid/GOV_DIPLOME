@@ -107,6 +107,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
                 # Волна 2, R06: «Идеи жителей» (#ideas, #projects) и форма «Работы и отключения» (#works).
                 "ideas/ideas.js", "ideas/ideas.css", "proposals/works.js",
+                # R06 раунд 15: лента «Уведомления» — колокольчик в капсуле справа (вид «Житель»), экран #notifications.
+                "notify/notify.js", "notify/notify.css",
                 # B2: R05 3D-превью @ b0353ee. demo.html и data/demo-basemap.json не отдаём (только для демо R05).
                 "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
                 "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
