@@ -144,11 +144,14 @@ def board_fixture(**_kw):
     """Табло служб R17: overdue — срок первого ответа R09, overdue_fix — срок исправления R08 (другое число)."""
     return {"days": 30, "demo": True, "services": [
         {"service": "street_cleaning", "open": 21, "overdue": 4, "overdue_fix": 3, "median_answer_days": 2.5,
-         "verified_pct": 61, "demo": True},
+         "verified_pct": 61, "fixed": 12, "verified": 8, "returned": 1, "demo": True},
         {"service": "road", "open": 13, "overdue": 2, "overdue_fix": 1, "median_answer_days": 3.0, "verified_pct": 70,
-         "demo": True},
+         "fixed": 6, "verified": 3, "returned": 1, "demo": True},
         {"service": "lighting", "open": 3, "overdue": 0, "overdue_fix": 0, "median_answer_days": 1.0, "verified_pct": 90,
-         "demo": True}]}
+         "fixed": 2, "verified": 1, "returned": 0, "demo": True}],
+        # Итоги за период — как totals R17 (обращения, а не строки: совместное считается один раз).
+        "totals": {"open": 37, "overdue": 6, "overdue_fix": 4, "fixed": 20, "verified": 12, "verified_share": 0.6,
+                   "returned": 2}}
 
 
 def board_without_r08(**_kw):

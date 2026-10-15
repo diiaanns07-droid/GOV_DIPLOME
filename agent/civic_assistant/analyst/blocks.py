@@ -42,9 +42,9 @@ class Block:
         self.facts.append({"id": fid, "value": value, "what": both(what_ru, what_kk), "role": self.role, "fn": fn})
         return fid
 
-    def number(self, value, label_ru: str, label_kk: str, fn: str, tone: str = "neutral") -> None:
+    def number(self, value, label_ru: str, label_kk: str, fn: str, tone: str = "neutral", text: str | None = None) -> None:
         fid = self.fact(value, label_ru, label_kk, fn)
-        self.numbers.append({"value": value, "text": fmt_num(value), "label": both(label_ru, label_kk),
+        self.numbers.append({"value": value, "text": text or fmt_num(value), "label": both(label_ru, label_kk),
                              "fact": fid, "tone": tone})
 
     def focus(self, target: dict | None, days: int | None = None, label: dict | None = None) -> None:
@@ -540,6 +540,66 @@ def lagging_services(ctx) -> Block:
     return b
 
 
+# ---------------------------------------------------------------- проверено жителями (R17: fixed / verified / returned)
+
+def resident_checks(ctx) -> Block:
+    """Сколько исправленного жители проверили и подтвердили — итоги табло R17 за период (как его столбец «Проверено»)."""
+    p, b = ctx.parsed, Block("resident_checks", "R17")
+    where = _where(p)
+    days = p.days if p.days_given else 30  # табло R17 считает за 30 дней, как его экран
+    span = period(days)
+    b.title = both(f"Проверено жителями {where['ru']}, {span['ru']}",
+                   f"Тұрғындар тексергені: {where['kk']}, {span['kk']}")
+    status, board = ctx.call("R17", "ui.civic_agencies", "board_snapshot", ctx.src.agencies_board,
+                             {"days": days, "district": p.district})
+    if status != "ok":
+        return _not_ready(b, status, "Штаб ведомств", "Ведомстволар штабы")
+    totals = board.get("totals") if isinstance(board, dict) else None
+    b.open("agencies", "Открыть «Штаб ведомств»", "«Ведомстволар штабын» ашу")
+    if not isinstance(totals, dict) or board.get("empty") or totals.get("fixed") is None:
+        b.status = "empty"
+        b.line("Табло служб ещё не связано с обращениями — проверки жителей посчитать не из чего.",
+               "Қызметтер таблосы өтініштермен әлі байланыспаған — тұрғындар тексеруін есептейтін дерек жоқ.")
+        return b
+    b.demo = bool(board.get("demo"))
+    fixed, verified, returned = _int(totals.get("fixed")), _int(totals.get("verified")), _int(totals.get("returned"))
+    if not fixed:
+        b.status = "empty"
+        b.line(f"Исправленных обращений {where['ru']} {span['ru']} нет — проверять жителям пока нечего.",
+               f"{where['kk'].capitalize()} {span['kk']} түзетілген өтініш жоқ — тұрғындарға тексеретін ештеңе жоқ.")
+        return b
+    b.number(fixed, plural_ru(fixed, "обращение исправлено", "обращения исправлены", "обращений исправлено"),
+             "өтініш түзетілді", "ui.civic_agencies.board_snapshot.totals.fixed")
+    b.number(verified, plural_ru(verified, "подтвердили жители", "подтвердили жители", "подтвердили жители"),
+             "тұрғындар растады", "ui.civic_agencies.board_snapshot.totals.verified", tone="up")
+    share = totals.get("verified_share")  # R17: доля 0…1; None — исправленных нет
+    pct = round(float(share) * 100) if isinstance(share, (int, float)) and not isinstance(share, bool) and share <= 1 \
+        else None
+    if pct is not None:
+        b.number(pct, "исправленного подтверждено", "түзетілгеннің расталғаны",
+                 "ui.civic_agencies.board_snapshot.totals.verified_share", text=fmt_pct(pct))
+    b.line(f"Службы исправили {count_ru(fixed, 'обращение', 'обращения', 'обращений')} {span['ru']}; жители проверили и "
+           f"подтвердили {fmt_num(verified)}" + (f" — {fmt_pct(pct)}." if pct is not None else "."),
+           f"Қызметтер {span['kk']} {fmt_num(fixed)} өтінішті түзетті; тұрғындар {fmt_num(verified)} өтінішті тексеріп "
+           f"растады" + (f" — {fmt_pct(pct)}." if pct is not None else "."))
+    if returned:
+        b.line(f"Вернули жители (сказали, что не исправлено): {fmt_num(returned)}.",
+               f"Тұрғындар қайтарды (түзетілмеген деп): {fmt_num(returned)}.")
+        b.fact(returned, "обращений вернули жители", "тұрғындар қайтарған өтініш",
+               "ui.civic_agencies.board_snapshot.totals.returned")
+    rows = [r for r in S.items_of(board, "services") if isinstance(r, dict) and _int(r.get("fixed"))]
+    rows.sort(key=lambda r: (-_int(r.get("fixed")), str(r.get("service"))))
+    for r in rows[:MAX_ITEMS]:
+        sid = r.get("service") if isinstance(r.get("service"), str) else None
+        if not sid:
+            continue
+        n_fixed, n_ver = _int(r.get("fixed")), _int(r.get("verified"))
+        b.items.append({"label": both(service_name(sid, "ru"), service_name(sid, "kk")), "value": n_ver, "service": sid,
+                        "value_text": both(f"подтверждено {fmt_num(n_ver)} из {fmt_num(n_fixed)}",
+                                           f"{fmt_num(n_fixed)} ішінен {fmt_num(n_ver)} расталды")})
+    return b
+
+
 # ---------------------------------------------------------------- кризис (R17 → запасной: пульс R08)
 
 def _incident_rows(answer) -> list[dict]:
@@ -916,6 +976,7 @@ BUILDERS = {
     "district_compare": district_compare,
     "overdue": overdue,
     "lagging_services": lagging_services,
+    "resident_checks": resident_checks,
     "crisis": crisis,
     "work_conflicts": work_conflicts,
     "initiatives": initiatives,

@@ -62,7 +62,7 @@ class Oracle:
             return S.find_function(S.MEETINGS_MODULES, S.MEETING_FUNCS)[2] is not None
         if intent == "crisis":
             return S.find_function(S.AGENCIES_MODULES, S.INCIDENT_FUNCS)[2] is not None
-        if intent == "lagging_services":
+        if intent in ("lagging_services", "resident_checks"):
             return S.find_function(S.AGENCIES_MODULES, S.BOARD_FUNCS)[2] is not None
         return True
 
@@ -149,6 +149,16 @@ class Oracle:
             else:
                 exp = int((self.summary(d).get("overdue") or {}).get("count") or 0)
             return bool(nums) and nums[0] == exp, f"ожидалось {exp}, в ответе {nums[:1]}"
+        if intent == "resident_checks":
+            board = self._board(d, days if gold.get("days") else 30) if self.module_present(intent) else None
+            if board is None:  # табло нет или пустое — честный блок без чисел
+                ok = block["status"] in ("not_ready", "empty") and not nums
+                return ok, f"табло R17 нет или пустое → {block['status']} {nums}"
+            totals = board.get("totals") or {}
+            exp = [int(totals.get("fixed") or 0), int(totals.get("verified") or 0)]
+            if not exp[0]:
+                return block["status"] == "empty" and not nums, f"исправленных нет → {block['status']} {nums}"
+            return nums[:2] == exp, f"табло R17: ожидалось {exp} (исправлено, подтвердили), в ответе {nums[:2]}"
         if intent == "lagging_services":
             board = self._board(d, days if gold.get("days") else 30)
             if board is not None:

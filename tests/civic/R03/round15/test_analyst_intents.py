@@ -36,6 +36,12 @@ def parse(q):
     ("Какой прогноз на следующий месяц?", ["forecast"], None, None, 30),
     ("Что сегодня главное?", ["day_summary"], None, None, 1),
     ("Жалобы на мусор за 14 дней", ["hot_spots"], None, "waste", 14),
+    # Вопросы проверки скорости R10 (perf_check.cjs): «больше всего» про службу — не горячие места.
+    ("Какая служба больше всего просрочила?", ["lagging_services"], None, None, 7),
+    ("Какие службы отстают и сколько всего просрочено?", ["lagging_services", "overdue"], None, None, 7),
+    ("Сколько обращений проверено жителями за месяц?", ["resident_checks"], None, None, 30),
+    ("Сколько исправлений подтвердили жители?", ["resident_checks"], None, None, 7),
+    ("Тұрғындар тексерген жөндеу қанша?", ["resident_checks"], None, None, 7),
 ])
 def test_parse_cases(question, intents, district, category, days):
     p = parse(question)
