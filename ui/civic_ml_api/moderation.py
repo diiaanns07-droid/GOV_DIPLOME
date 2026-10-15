@@ -37,7 +37,7 @@ import unicodedata
 
 from ui.civic_ml_api import profanity
 
-VERSION = "r04-moderate-2"   # 2: перечень коротких чисел («маршруты 10 12 14 16») — не номер
+VERSION = "r04-moderate-3"   # 2: перечень коротких чисел — не номер; 3: кроме цифр номера Казахстана
 MAX_TEXT = 5000
 MASK = "***"
 
@@ -118,6 +118,23 @@ def ascii_digits(raw: str) -> str:
     return "".join(str(unicodedata.decimal(ch)) for ch in raw if unicodedata.decimal(ch, None) is not None)
 
 
+# Коды мобильных операторов Казахстана; междугородние коды — 71xx и 72xx. Растущий «перечень», цифры которого дают
+# такой номер («8 70 71 72 73 74» = 8 707 172 73 74), — всё-таки телефон (наблюдение R15, круг 10).
+_KZ_MOBILE = frozenset(("700", "701", "702", "705", "706", "707", "708", "747", "750", "751", "760", "761", "762",
+                        "763", "764", "771", "775", "776", "777", "778"))
+
+
+def _kz_phone_shape(digits: str) -> bool:
+    """10 цифр с кода или 11 цифр с 8 / 7 и коду оператора / города Казахстана."""
+    if len(digits) == 11 and digits[0] in "78":
+        code = digits[1:4]
+    elif len(digits) == 10:
+        code = digits[:3]
+    else:
+        return False
+    return code in _KZ_MOBILE or code[:2] in ("71", "72")
+
+
 def _number_list(raw: str) -> str | None:
     """Перечень коротких чисел, а не номер: «маршруты 10 12 14 16 18 21 24», «подъезды 1 2 3 … 12»,
     «21 22 23 24 25 26 октября» (находка R17). -> "rising" (≥ 3 группы по 1–2 цифры, каждая больше предыдущей),
@@ -145,6 +162,8 @@ def _classify_run(raw: str, labeled: bool = False) -> str | None:
     plus = raw.lstrip().startswith("+")
     thousands = bool(_THOUSANDS.match(raw.strip()))
     listed = None if labeled or n < 10 else _number_list(raw)
+    if listed == "rising" and n in (10, 11) and _kz_phone_shape(digits):
+        listed = None
     if n == 11 and digits[0] in "78" and not thousands and listed != "rising":
         return "phone"
     if n == 11 and plus:
