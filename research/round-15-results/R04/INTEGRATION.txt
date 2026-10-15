@@ -90,7 +90,14 @@ joint.parse_route_hint) и берёт объяснение из services[0].why_
 • Проверено 15 окт 17:21 (их ветка + ML-API R04, их pytest): R16 40/40, R13 166/166, R17 39/39, R09 578/578.
 • R16 (ui/civic_together/moderation.py): совместимо — берёт text_public и flags[].kind. similar_initiatives —
   см. п. 4.
-• R13 (ui/civic_qa/service.py moderate_text): совместимо (text_public, flags[].kind).
+• R13 (ui/civic_qa/service.py moderate_text): совместимо (text_public, flags[].kind). НО экран сотрудника показывает
+  вид находки подписью ask.staff.pii.<kind>, а подписи есть только для phone / iin / email (+ card в meetings.js):
+  вопрос с номером счёта, квартиры или ником покажет сотруднику сырую строку «ask.staff.pii.iban». Patch:
+  research/round-15-results/R04/patches/r13_pii_labels.patch (web/civic/qa/qa.js, web/civic/meetings/meetings.js —
+  card, iban, apartment, contact ru/kk; на R13 @ eeacc26d: apply OK, tests/civic/R13 174/174) и для общих словарей
+  R11 — patches/r11_pii_labels.patch (web/civic/i18n/ru.json, kk.json; на R11 @ b3502428: apply OK, tests/civic/R11
+  28/28). Подписи: номер карты / карта нөмірі, номер счёта / шот нөмірі, номер квартиры / пәтер нөмірі,
+  контакт в мессенджере / мессенджердегі байланыс.
 • R17 (ui/civic_agencies/crisis.py check_public_texts): ВНИМАНИЕ — R17 смотрит только flags и блокирует phone/iin/
   email/rude, а text_public не использует. Тогда «card», «iban», «apartment», «contact» пройдут в публичный текст
   как есть. Готовый patch: research/round-15-results/R04/patches/r17_crisis_pii.patch (на R17 @ 72676e3d:
