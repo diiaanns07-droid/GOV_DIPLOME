@@ -64,8 +64,8 @@ def configure(**overrides) -> None:
 
         heat=HeatService | None, akim_summary=fn(district) | None, agencies_board=fn(**kw), agencies_incidents=fn(**kw),
         works_conflicts=fn(**kw), together_initiatives=fn(**kw), meetings_list=fn(**kw), forecast=fn(**kw),
-        provider=объект с complete(messages, timeout_s) | None (None — всегда офлайн), clock=() -> datetime,
-        rate=(лимит, окно_с).
+        provider=объект с complete(messages, timeout_s) | None (None — всегда офлайн), llm_timeout_s=8.0,
+        clock=() -> datetime, rate=(лимит, окно_с).
     Повторный вызов заменяет только переданные ключи; reset() — вернуть всё по умолчанию.
     """
     global _LIMITER
@@ -240,7 +240,7 @@ def ask(question=None, lang=None, principal=None, context=None, body=None, *, no
         offline_reason = "nothing_to_refine"
     else:
         try:
-            choice = L.refine(llm, text, answer_lang, built)
+            choice = L.refine(llm, text, answer_lang, built, timeout_s=float(cfg.get("llm_timeout_s", L.TIMEOUT_S)))
             order = choice["order"] + [b["id"] for b in built if b["id"] not in choice["order"]]
             built.sort(key=lambda b: order.index(b["id"]))
             if choice["lead"]:

@@ -227,7 +227,8 @@ def category_growth(ctx) -> Block:
 # ---------------------------------------------------------------- сравнение районов (R07 / R08)
 
 def district_compare(ctx) -> Block:
-    p, b = ctx.parsed, Block("district_compare", "R07" if p.category else "R08")
+    p = ctx.parsed
+    b = Block("district_compare", "R07" if p.category or p.days != 7 else "R08")
     topic = _topic(p)
     per = period(p.days)
     rows: list[dict] = []
@@ -513,19 +514,23 @@ def crisis(ctx) -> Block:
     b.role = "R08"
     b.title = both("Кризис: штаб не открыт", "Дағдарыс: штаб ашылмаған")
     if status in ("not_ready", "error"):
-        b.line("Кризисный штаб пока не подключён в этой сборке.", "Дағдарыс штабы бұл жинақта әлі қосылмаған.")
+        b.note = both("Кризисный штаб пока не подключён в этой сборке — ниже пульс «Картины дня».",
+                      "Дағдарыс штабы бұл жинақта әлі қосылмаған — төменде «Күн көрінісінің» пульсі.")
     else:
-        b.line("Активного кризиса нет: штаб не открыт.", "Белсенді дағдарыс жоқ: штаб ашылмаған.")
+        b.note = both("Активного кризиса нет: штаб не открыт. Ниже — пульс «Картины дня».",
+                      "Белсенді дағдарыс жоқ: штаб ашылмаған. Төменде — «Күн көрінісінің» пульсі.")
     st, summary = ctx.summary(p.district)
     if st != "ok":
         b.status = "not_ready" if status == "not_ready" else "empty"
+        b.line(b.note["ru"], b.note["kk"])
         return b
     b.demo = bool((summary.get("demo") or {}).get("complaints"))
     category = p.category or "snow_ice"
     spikes = [a for a in (summary.get("pulse") or {}).get("items") or [] if a.get("category") == category]
     if not spikes:
         b.status = "empty"
-        b.line("Пульс «Картины дня» всплеска по этой теме не видит.", "«Күн көрінісінің» пульсі бұл тақырып бойынша секіріс көрмейді.")
+        b.line("Штаб не открыт, и пульс «Картины дня» всплеска по этой теме не видит.",
+               "Штаб ашылмаған, «Күн көрінісінің» пульсі бұл тақырып бойынша секіріс көрмейді.")
         return b
     spike = spikes[0]
     b.number(int(spike.get("value") or 0), "сообщений за 7 дней (пульс)", "7 күндегі хабарлама (пульс)",
