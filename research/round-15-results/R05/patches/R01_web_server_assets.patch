@@ -1,13 +1,12 @@
 diff --git a/ui/web_server.py b/ui/web_server.py
-index b1292654..5358d36e 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
 @@ -107,6 +107,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                  "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
                  "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
                  "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",
-+                # Раунд 15, R05: 3D-Астана — модели ориентиров (грузятся лениво при наклоне) и их координаты.
-+                "build3d/build3d-landmarks.js", "build3d/data/landmarks.json",
++                # Раунд 15, R05: ориентиры (центры и названия ru/kk для подписей и поиска) и перелёт к зданию из поиска.
++                "build3d/landmarks.js", "build3d/data/landmarks.json",
                  # Дизайн-марафон, R05 2b33c59: превью объектов для карточек каталога (240×160 и @2x, рендер моделей R05).
                  *(f"build3d/data/previews/{kind}{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
                    for scale in ("", "@2x")),

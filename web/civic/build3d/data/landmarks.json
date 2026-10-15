@@ -1,7 +1,7 @@
 {
- "schema": "birge-landmarks-v1",
- "purpose": "Ориентиры Астаны в 3D-виде карты (R05, раунд 15): условные модели на координатах из данных OSM.",
- "evidence_type": "real (OSM) — только координаты; модели, высоты и размеры условные",
+ "schema": "birge-landmarks-v2",
+ "purpose": "Ориентиры Астаны — один источник центров и названий ru/kk для подписей на карте (R01 basemap-style.js) и поиска (перелёт к настоящему зданию подложки). Моделей нет: здания — из подложки (поправка П1).",
+ "evidence_type": "real (OSM): координаты выведены из снимка пешеходной сети, контуры зданий — LOCAL-13",
  "generated_by": "data/civic/astana/landmarks/tools/derive_landmarks.py",
  "source": {
   "path": "data/civic/astana/osm-walking/overpass.json.gz",
@@ -10,34 +10,32 @@
   "license": "ODbL-1.0",
   "attribution": "© OpenStreetMap contributors"
  },
- "note": {
-  "ru": "Условные модели: форма упрощена, размеры примерные. Это не точные копии зданий.",
-  "kk": "Шартты модельдер: пішіні жеңілдетілген, өлшемдері шамамен алынған. Бұл ғимараттардың дәл көшірмесі емес."
- },
- "visible": {
-  "min_zoom": 13,
-  "min_pitch_deg": 30
- },
  "landmarks": [
   {
    "id": "baiterek",
-   "model": "baiterek",
    "name": {
     "ru": "Байтерек",
     "kk": "Бәйтерек"
    },
+   "kind": {
+    "ru": "монумент",
+    "kk": "монумент"
+   },
+   "aliases": [
+    "Монумент Байтерек",
+    "Baiterek",
+    "Bayterek"
+   ],
    "lat": 51.1282763,
    "lon": 71.4305148,
-   "rotation_deg": 0,
-   "height_m": 105,
-   "size_m": {
-    "base_r": 16,
-    "sphere_d": 22
+   "district": "esil",
+   "radius_m": 30,
+   "camera": {
+    "zoom": 16.6,
+    "pitch": 52,
+    "bearing": -76
    },
-   "mask_m": {
-    "shape": "circle",
-    "r": 26
-   },
+   "osm_object": null,
    "coords": {
     "method": "ring",
     "osm": [
@@ -70,30 +68,32 @@
      7.4
     ],
     "check": "LOCAL-13"
-   },
-   "osm_object": null,
-   "conditional": true
+   }
   },
   {
    "id": "khan-shatyr",
-   "model": "khan_shatyr",
    "name": {
     "ru": "Хан Шатыр",
     "kk": "Хан Шатыр"
    },
+   "kind": {
+    "ru": "торговый центр",
+    "kk": "сауда орталығы"
+   },
+   "aliases": [
+    "ТРЦ Хан Шатыр",
+    "Khan Shatyr"
+   ],
    "lat": 51.1324485,
    "lon": 71.4038131,
-   "rotation_deg": 13.3,
-   "height_m": 150,
-   "size_m": {
-    "base_a": 100,
-    "base_b": 86
+   "district": "nura",
+   "radius_m": 60,
+   "camera": {
+    "zoom": 15.9,
+    "pitch": 52,
+    "bearing": -76
    },
-   "mask_m": {
-    "shape": "ellipse",
-    "a": 108,
-    "b": 94
-   },
+   "osm_object": null,
    "coords": {
     "method": "ellipse",
     "osm": [
@@ -112,30 +112,179 @@
      159.3,
      142.5
     ],
+    "ring_axis_deg": 13.3,
     "door_offset_m": 95.2,
     "check": "LOCAL-13"
+   }
+  },
+  {
+   "id": "akorda",
+   "name": {
+    "ru": "Акорда",
+    "kk": "Ақорда"
+   },
+   "kind": {
+    "ru": "резиденция Президента",
+    "kk": "Президент резиденциясы"
+   },
+   "aliases": [
+    "Ак Орда",
+    "Ақ Орда",
+    "Akorda",
+    "Ak Orda"
+   ],
+   "lat": 51.1257772,
+   "lon": 71.4464221,
+   "district": "esil",
+   "radius_m": 50,
+   "camera": {
+    "zoom": 16.3,
+    "pitch": 52,
+    "bearing": -76
    },
    "osm_object": null,
-   "conditional": true
+   "coords": {
+    "method": "hole",
+    "osm": [
+     {
+      "type": "way",
+      "id": 329669144,
+      "role": "северный сад (ось)"
+     },
+     {
+      "type": "way",
+      "id": 329669208,
+      "role": "южный сад (ось)"
+     }
+    ],
+    "hole": {
+     "area_m2": 9805,
+     "ray_min_m": 38.2,
+     "ray_max_m": 75.4,
+     "open_rays": 0
+    },
+    "axis_deg": 14.1,
+    "offset_from_axis_m": 2.0,
+    "check": "LOCAL-13"
+   }
+  },
+  {
+   "id": "hazrat-sultan",
+   "name": {
+    "ru": "Мечеть Хазрет Султан",
+    "kk": "Әзірет Сұлтан мешіті"
+   },
+   "kind": {
+    "ru": "мечеть",
+    "kk": "мешіт"
+   },
+   "aliases": [
+    "Хазрет Султан",
+    "Хазрат Султан",
+    "Әзірет Сұлтан",
+    "Hazrat Sultan"
+   ],
+   "lat": 51.125604,
+   "lon": 71.4724025,
+   "district": "saraishyk",
+   "radius_m": 60,
+   "camera": {
+    "zoom": 16.0,
+    "pitch": 52,
+    "bearing": -45
+   },
+   "osm_object": null,
+   "coords": {
+    "method": "hole",
+    "osm": [
+     {
+      "type": "way",
+      "id": 1373014142,
+      "role": "дорожки вокруг двора мечети"
+     }
+    ],
+    "hole": {
+     "area_m2": 25094,
+     "ray_min_m": 62.9,
+     "ray_max_m": 117.2,
+     "open_rays": 0
+    },
+    "check": "LOCAL-13"
+   }
+  },
+  {
+   "id": "palace-peace",
+   "name": {
+    "ru": "Дворец мира и согласия",
+    "kk": "Бейбітшілік және келісім сарайы"
+   },
+   "kind": {
+    "ru": "дворец (пирамида)",
+    "kk": "сарай (пирамида)"
+   },
+   "aliases": [
+    "Пирамида",
+    "Palace of Peace and Reconciliation",
+    "Pyramid"
+   ],
+   "lat": 51.1231163,
+   "lon": 71.4635865,
+   "district": "saraishyk",
+   "radius_m": 40,
+   "camera": {
+    "zoom": 16.5,
+    "pitch": 52,
+    "bearing": -76
+   },
+   "osm_object": {
+    "type": "node",
+    "id": 5009488810
+   },
+   "coords": {
+    "method": "named_node",
+    "osm": [
+     {
+      "type": "node",
+      "id": 5009488810,
+      "role": "узел с именем «Дворец мира и согласия»"
+     }
+    ],
+    "hole_center_offset_m": 4.6,
+    "hole": {
+     "area_m2": 11871,
+     "ray_min_m": 46.6,
+     "ray_max_m": 81.0,
+     "open_rays": 0
+    },
+    "check": "LOCAL-13"
+   }
   },
   {
    "id": "nur-alem",
-   "model": "nur_alem",
    "name": {
     "ru": "Нур Алем",
     "kk": "Нұр Әлем"
    },
+   "kind": {
+    "ru": "павильон ЭКСПО",
+    "kk": "ЭКСПО павильоны"
+   },
+   "aliases": [
+    "ЭКСПО",
+    "Экспо",
+    "EXPO",
+    "Nur Alem"
+   ],
    "lat": 51.0892746,
    "lon": 71.4160875,
-   "rotation_deg": 0,
-   "height_m": 100,
-   "size_m": {
-    "sphere_d": 80
+   "district": "esil",
+   "radius_m": 45,
+   "camera": {
+    "zoom": 16.1,
+    "pitch": 52,
+    "bearing": -20
    },
-   "mask_m": {
-    "shape": "circle",
-    "r": 46
-   },
+   "osm_object": null,
    "coords": {
     "method": "circles",
     "osm": [
@@ -194,99 +343,7 @@
     ],
     "centers_spread_m": 1.1,
     "check": "LOCAL-13"
-   },
-   "osm_object": null,
-   "conditional": true
-  },
-  {
-   "id": "akorda",
-   "model": "akorda",
-   "name": {
-    "ru": "Ак Орда",
-    "kk": "Ақорда"
-   },
-   "lat": 51.1257772,
-   "lon": 71.4464221,
-   "rotation_deg": 14.1,
-   "height_m": 80,
-   "size_m": {
-    "length": 116,
-    "depth": 46
-   },
-   "mask_m": {
-    "shape": "rect",
-    "w": 72,
-    "d": 128
-   },
-   "coords": {
-    "method": "hole",
-    "osm": [
-     {
-      "type": "way",
-      "id": 329669144,
-      "role": "северный сад (ось)"
-     },
-     {
-      "type": "way",
-      "id": 329669208,
-      "role": "южный сад (ось)"
-     }
-    ],
-    "hole": {
-     "area_m2": 9805,
-     "ray_min_m": 38.2,
-     "ray_max_m": 75.4,
-     "open_rays": 0
-    },
-    "offset_from_axis_m": 2.0,
-    "check": "LOCAL-13"
-   },
-   "osm_object": null,
-   "conditional": true
-  },
-  {
-   "id": "palace-peace",
-   "model": "pyramid",
-   "name": {
-    "ru": "Дворец мира и согласия",
-    "kk": "Бейбітшілік және келісім сарайы"
-   },
-   "lat": 51.1231163,
-   "lon": 71.4635865,
-   "rotation_deg": 14.1,
-   "height_m": 62,
-   "size_m": {
-    "base": 62
-   },
-   "mask_m": {
-    "shape": "rect",
-    "w": 76,
-    "d": 76
-   },
-   "coords": {
-    "method": "named_node",
-    "osm": [
-     {
-      "type": "node",
-      "id": 5009488810,
-      "role": "узел с именем «Дворец мира и согласия»"
-     }
-    ],
-    "hole_center_offset_m": 4.6,
-    "hole": {
-     "area_m2": 11871,
-     "ray_min_m": 46.6,
-     "ray_max_m": 81.0,
-     "open_rays": 0
-    },
-    "rotation_from": "ось Ақорды (сады 329669144 / 329669208)",
-    "check": "LOCAL-13"
-   },
-   "osm_object": {
-    "type": "node",
-    "id": 5009488810
-   },
-   "conditional": true
+   }
   }
  ]
 }

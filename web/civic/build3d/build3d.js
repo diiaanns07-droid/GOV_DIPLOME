@@ -109,9 +109,6 @@
       "build3d.resident.hint": "Нажмите на проект, чтобы проголосовать",
       "build3d.resident.empty": "Здесь пока нет проектов",
       "build3d.demo.title": "3D-превью",
-      // Раунд 15: 3D-Астана — ориентиры города (условные модели) и «Было / станет», «День / Ночь» в карточке проекта.
-      "build3d.landmarks.title": "Ориентиры в 3D",
-      "build3d.landmarks.note": "Ориентиры в 3D — условные модели: форма упрощена, это не точные копии зданий.",
     },
     kk: {
       "build3d.loading": "3D жүктеліп жатыр…",
@@ -171,8 +168,6 @@
       "build3d.resident.hint": "Дауыс беру үшін жобаны басыңыз",
       "build3d.resident.empty": "Мұнда әзірге жоба жоқ",
       "build3d.demo.title": "3D-көрініс",
-      "build3d.landmarks.title": "3D-дегі белгілі ғимараттар",
-      "build3d.landmarks.note": "3D-дегі белгілі ғимараттар — шартты модельдер: пішіні жеңілдетілген, ғимараттардың дәл көшірмесі емес.",
     },
   };
 
@@ -401,7 +396,7 @@
       return function () {
         var args = arguments;
         if (inner) return inner[name].apply(inner, args);
-        if (name === "update" || name === "setVisible" || name === "setMode" || name === "setIdeas" || name === "setLandmarks")
+        if (name === "update" || name === "setVisible" || name === "setMode" || name === "setIdeas")
           queued.push(function (h) {
             h[name].apply(h, args);
           });
@@ -423,8 +418,6 @@
       setVisible: later("setVisible"),
       setMode: later("setMode"),
       update: later("update"),
-      setLandmarks: later("setLandmarks"),
-      flyToLandmarks: later("flyToLandmarks"),
       getState: function () {
         return inner ? inner.getState() : { phase: "waiting_map", mode: "idle", count: 0, proposals: [], items: [] };
       },
@@ -461,13 +454,7 @@
       // auto — плоская карта: лёгкие метки и карточки без three.js; наклон ≥ 30° (кнопка «3D»), «Посмотреть в 3D»
       // или размещение — объёмный вид. 3d — всегда объёмный (демо-страница 3D-превью). light — только по кнопке.
       view: opts.view === "3d" || opts.view === "light" ? opts.view : "auto",
-      // Раунд 15, 3D-Астана: условные модели ориентиров при наклоне карты с 13-го масштаба (false — выключить).
-      landmarks: opts.landmarks !== false,
-      landmarksUrl: opts.landmarksUrl || null, // по умолчанию dataUrl + "landmarks.json"
-      landmarksLib: opts.landmarksLib || "/civic/build3d/build3d-landmarks.js",
-      legendHost: typeof opts.legendHost === "function" ? opts.legendHost : null, // «?» легенды хозяина (R01: #birge-legend)
     };
-    if (!o.landmarksUrl) o.landmarksUrl = o.dataUrl + "landmarks.json";
     var i18n = opts.i18n || root.BirgeI18n || null;
     var t = makeT(i18n);
 
@@ -488,21 +475,6 @@
       cardBusy: null,
       view: "light", // light — метки и карточки без 3D; 3d — модели three.js на карте
       three: "idle", // idle | loading | ready | unsupported | error — объёмный вид грузится только когда нужен
-    };
-    // 3D-Астана (раунд 15): ориентиры города — своё состояние, не зависит от слоя «Проекты» (раздел «Ориентиры» ниже).
-    var LM = {
-      on: o.landmarks,
-      phase: "idle", // idle | data (координаты есть) | loading | ready | error | unsupported
-      data: null,
-      lib: null,
-      items: [],
-      shown: false, // модели в сцене видимы (карта наклонена, масштаб ≥ 13)
-      k: -1, // доля «роста» из земли 0…1 (наклон × масштаб × подъём)
-      rise: 1, // подъём при первом показе 0 → 1 (700 мс; «уменьшить движение» — сразу 1)
-      tris: 0,
-      hidBasemap: false,
-      note: null,
-      retryAt: 0,
     };
     var THREE = null,
       Models = null,
@@ -1570,10 +1542,9 @@
         stepAnimations(now);
         lastMatrix = new THREE.Matrix4().fromArray(mm).multiply(originMatrix);
         camera.projectionMatrix.copy(lastMatrix);
-        if (LM.shown) stepLandmarks();
         renderer.resetState();
         renderer.render(scene, camera);
-        if (S.view === "3d") updateLabels(); // слой виден и без проектов — ради ориентиров (раунд 15)
+        updateLabels();
         if (anims.length || fades.length) map.triggerRepaint();
       },
       onRemove: function () {
@@ -1621,7 +1592,7 @@
 
     // После смены стиля карты (map.setStyle) MapLibre убирает все слои — возвращаем свой.
     function onStyleData() {
-      if (!THREE || !renderer || S.destroyed || (S.three !== "ready" && LM.phase !== "ready")) return;
+      if (!THREE || !renderer || S.destroyed || S.three !== "ready") return;
       if (map.getLayer(LAYER_ID)) return;
       layerAdded = false;
       try {
@@ -1670,8 +1641,7 @@
       });
       labelsLayer.classList.toggle("b3d-labels--projects-off", !S.visible);
       try {
-        var on = (anyVisible() && S.view === "3d") || LM.shown; // ориентиры (раунд 15) — и без проектов
-        if (layerAdded && map.getLayer(LAYER_ID)) map.setLayoutProperty(LAYER_ID, "visibility", on ? "visible" : "none");
+        if (layerAdded && map.getLayer(LAYER_ID)) map.setLayoutProperty(LAYER_ID, "visibility", anyVisible() && S.view === "3d" ? "visible" : "none");
       } catch (e) {
         /* стиль ещё не готов — слой вернётся в onStyleData */
       }
@@ -3581,7 +3551,7 @@
       return best || a;
     }
     // minH — самая низкая полоса карты, которую ещё считаем свободной (по умолчанию 120 px; призраку хватает 80).
-    function freeArea(minH, extraRects) {
+    function freeArea(minH) {
       var canvas = map.getCanvas();
       var cr = canvas.getBoundingClientRect();
       var w = canvas.clientWidth,
@@ -3602,11 +3572,9 @@
       }
       a = largestFree(
         a,
-        avoidRects()
-          .concat(extraRects || [])
-          .map(function (r) {
-            return { x0: r.left - cr.left, y0: r.top - cr.top, x1: r.right - cr.left, y1: r.bottom - cr.top };
-          }),
+        avoidRects().map(function (r) {
+          return { x0: r.left - cr.left, y0: r.top - cr.top, x1: r.right - cr.left, y1: r.bottom - cr.top };
+        }),
         minH
       );
       // Видимый тост («Проект поставлен… Отменить») тоже занимает место над панелью — объект ставим выше него.
@@ -3691,327 +3659,6 @@
       }
     }
 
-
-    // ───────────── 3D-Астана: ориентиры города (раунд 15) ─────────────
-    // Условные модели пяти ориентиров (build3d-landmarks.js) на координатах из landmarks.json (data/civic/astana/
-    // landmarks/ — центры по кольцам дорожек OSM). Видны только в объёмном виде (наклон ≥ 30°) с 13-го масштаба: растут
-    // из земли вместе с наклоном и приближением, как здания подложки; на плоской карте их нет. Грузится лениво: данные
-    // (8 КБ) — при первом наклоне, three.js и модели — только когда ориентир в кадре. Значки жалоб R07 — HTML-маркеры
-    // поверх холста карты: модели их не закрывают. Здания подложки на месте ориентира (слой R01 akim-3d-landmark)
-    // прячем, пока видны модели, — иначе они прорастают сквозь шатёр и шар.
-    var LM_MIN_ZOOM = 13;
-    var LM_RISE_MS = 700;
-    var BASEMAP_LANDMARKS = "akim-3d-landmark"; // web/civic/shell/basemap-style.js (R01)
-    var lmFrustum = null,
-      lmSphere = null;
-
-    function lmTilted() {
-      return o.view === "3d" || map.getPitch() >= PITCH_3D;
-    }
-    function lmWanted() {
-      return LM.on && !S.destroyed && S.three !== "unsupported" && lmTilted() && map.getZoom() >= LM_MIN_ZOOM - 0.15;
-    }
-    // Есть ли ориентир в кадре (с запасом ~1,5 км: высокая модель видна раньше, чем её основание).
-    function lmInView() {
-      if (!LM.data) return false;
-      var b;
-      try {
-        b = map.getBounds();
-      } catch (e) {
-        return true;
-      }
-      var padLat = 1500 / 110540,
-        padLon = 1500 / (111320 * Math.cos(map.getCenter().lat * DEG));
-      return LM.data.landmarks.some(function (l) {
-        return l.lat >= b.getSouth() - padLat && l.lat <= b.getNorth() + padLat && l.lon >= b.getWest() - padLon && l.lon <= b.getEast() + padLon;
-      });
-    }
-    function validLandmark(l) {
-      return (
-        l && typeof l.id === "string" && typeof l.model === "string" && isFinite(l.lat) && isFinite(l.lon) &&
-        Math.abs(l.lat - 51.15) < 0.5 && Math.abs(l.lon - 71.45) < 0.5 // только Астана: битая запись не уедет на край света
-      );
-    }
-    // Свой загрузчик скрипта моделей (лениво; второй вызов — тот же Promise).
-    var lmLibP = null;
-    function loadLandmarkLib() {
-      if (root.CivicBuild3DLandmarks) return Promise.resolve(root.CivicBuild3DLandmarks);
-      if (!lmLibP)
-        lmLibP = new Promise(function (resolve, reject) {
-          var sc = doc.createElement("script");
-          sc.src = o.landmarksLib;
-          sc.async = true;
-          sc.onload = function () {
-            if (root.CivicBuild3DLandmarks) resolve(root.CivicBuild3DLandmarks);
-            else reject(new Error("build3d-landmarks.js: нет CivicBuild3DLandmarks"));
-          };
-          sc.onerror = function () {
-            lmLibP = null;
-            reject(new Error("не загрузился " + o.landmarksLib));
-          };
-          doc.head.appendChild(sc);
-        });
-      return lmLibP;
-    }
-
-    // Главная проверка — на конце каждого движения карты и при наклоне: показать, спрятать или догрузить.
-    function syncLandmarks() {
-      if (S.destroyed) return;
-      if (!lmWanted()) return lmHide();
-      if (LM.phase === "error" && performance.now() > LM.retryAt) LM.phase = LM.data ? "data" : "idle";
-      if (LM.phase === "idle") return loadLandmarkData();
-      if (LM.phase === "data" && lmInView()) return loadLandmarkModels();
-      if (LM.phase === "ready") lmShow();
-    }
-    function loadLandmarkData() {
-      LM.phase = "loading";
-      return fetchJson(o.landmarksUrl)
-        .then(function (d) {
-          if (S.destroyed) return;
-          var list = d && Array.isArray(d.landmarks) ? d.landmarks.filter(validLandmark) : [];
-          if (!list.length) throw new Error("landmarks.json: нет записей");
-          LM.data = { landmarks: list, note: d.note || null };
-          LM.phase = "data";
-          syncLandmarks();
-        })
-        .catch(function (err) {
-          LM.phase = "error";
-          LM.retryAt = performance.now() + 30000; // украшение карты: без тоста, повтор не чаще раза в 30 с
-          logFail("[build3d] ориентиры: данные", err);
-        });
-    }
-    function loadLandmarkModels() {
-      LM.phase = "loading";
-      return Promise.all([loadThree(), loadLandmarkLib()])
-        .then(function (r) {
-          return whenStyleReady().then(function () {
-            return r[1];
-          });
-        })
-        .then(function (lib) {
-          if (S.destroyed) return;
-          addLayer(); // слой three.js (onAdd → рендерер и сцена), если проекты его ещё не добавили
-          if (!renderer || S.three === "unsupported") {
-            LM.phase = "unsupported";
-            return;
-          }
-          LM.lib = lib.create(THREE, Models);
-          buildLandmarks();
-          LM.phase = "ready";
-          // Первый показ после загрузки — подъём из земли (если человек не просил «уменьшить движение»).
-          LM.rise = reducedMotion() ? 1 : 0;
-          syncLandmarks();
-        })
-        .catch(function (err) {
-          if (S.destroyed) return;
-          LM.phase = "error";
-          LM.retryAt = performance.now() + 30000;
-          logFail("[build3d] ориентиры: модели", err);
-        });
-    }
-    function buildLandmarks() {
-      LM.tris = 0;
-      LM.items = LM.data.landmarks.map(function (spec) {
-        var geos = LM.lib.build(spec);
-        LM.tris += LM.lib.triangles(geos);
-        var mats = makeMaterials(false);
-        var group = makeMeshes(geos, mats);
-        var local = Core.toLocal(origin, [spec.lon, spec.lat]);
-        group.position.set(local[0], local[1], 0);
-        group.rotation.set(0, 0, -(spec.rotation_deg || 0) * DEG);
-        group.visible = false;
-        group.userData.landmark = spec.id;
-        group.updateMatrixWorld(true);
-        scene.add(group);
-        var b = geos.bounds;
-        var r = Math.max(b.max.x - b.min.x, b.max.y - b.min.y, b.max.z) * 0.62 + 20;
-        return { spec: spec, group: group, mats: mats, geos: geos, height: geos.height, center: [local[0], local[1], geos.height / 2], radius: r };
-      });
-      // Мягкие тени — в простое браузера, по одной (как у проектов): модели появляются без задержки.
-      var queue = LM.items.slice();
-      var next = function () {
-        if (S.destroyed || !queue.length) return;
-        var it = queue.shift();
-        var th = (it.spec.rotation_deg || 0) * DEG;
-        var sun = Models.SUN,
-          wx = -sun[0] / sun[2],
-          wy = -sun[1] / sun[2];
-        var sh = Models.shadowMesh && Models.shadowMesh(it.geos, wx * Math.cos(th) - wy * Math.sin(th), wx * Math.sin(th) + wy * Math.cos(th));
-        if (sh && it.group) {
-          it.group.add(sh);
-          it.mats.shadow = sh.material;
-          LM.k = -1; // прозрачность тени выставит следующий кадр
-          repaint();
-        }
-        if (queue.length) root.requestIdleCallback ? root.requestIdleCallback(next, { timeout: 400 }) : root.setTimeout(next, 30);
-      };
-      root.requestIdleCallback ? root.requestIdleCallback(next, { timeout: 400 }) : root.setTimeout(next, 30);
-    }
-    function lmShow() {
-      if (LM.shown) return;
-      LM.shown = true;
-      LM.k = -1;
-      if (LM.rise < 1) {
-        var t0 = performance.now();
-        fades.push({
-          update: function (now) {
-            var k = Math.min(1, (now - t0) / LM_RISE_MS);
-            LM.rise = easeOutCubic(k);
-            LM.k = -1;
-            return k < 1;
-          },
-        });
-      }
-      setBasemapLandmarks(false);
-      lmNote(true);
-      setLayerVisibility();
-      repaint();
-    }
-    function lmHide() {
-      if (!LM.shown) return;
-      LM.shown = false;
-      LM.items.forEach(function (it) {
-        it.group.visible = false;
-      });
-      setBasemapLandmarks(true);
-      lmNote(false);
-      setLayerVisibility();
-      repaint();
-    }
-    // Каждый кадр (слой three.js): рост из земли по наклону и масштабу, видимость по кадру камеры.
-    function stepLandmarks() {
-      var z = map.getZoom(),
-        p = map.getPitch();
-      var kz = smoothstep((z - (LM_MIN_ZOOM - 0.1)) / 0.7); // 12,9 → 13,6
-      var kp = o.view === "3d" ? 1 : smoothstep((p - 16) / 16); // 16° → 32°: модели растут вместе с наклоном
-      var k = Math.min(kz, kp) * LM.rise;
-      if (!lmFrustum) {
-        lmFrustum = new THREE.Frustum();
-        lmSphere = new THREE.Sphere();
-      }
-      lmFrustum.setFromProjectionMatrix(lastMatrix);
-      var changed = Math.abs(k - LM.k) > 1e-4;
-      LM.k = k;
-      LM.items.forEach(function (it) {
-        lmSphere.center.set(it.center[0], it.center[1], it.center[2]);
-        lmSphere.radius = it.radius;
-        it.group.visible = k > 0.002 && lmFrustum.intersectsSphere(lmSphere);
-        if (!changed) return;
-        var v = k >= 0.999 ? 1e4 : k;
-        [it.mats.solid, it.mats.glass, it.mats.glow].forEach(function (m) {
-          if (m && m.userData.reveal) m.userData.reveal.value = v;
-        });
-        if (it.mats.decal) it.mats.decal.opacity = Math.min(1, k * 1.5);
-        if (it.mats.shadow) it.mats.shadow.opacity = easeOutCubic(Math.min(1, Math.max(0, (k - 0.45) / 0.55)));
-      });
-    }
-    function smoothstep(x) {
-      x = x < 0 ? 0 : x > 1 ? 1 : x;
-      return x * x * (3 - 2 * x);
-    }
-    // Здания подложки на месте ориентиров (R01 basemap-style.js выделяет их в свой слой) — прячем, пока видны модели.
-    function setBasemapLandmarks(visible) {
-      try {
-        if (!map.getLayer(BASEMAP_LANDMARKS)) return;
-        if (!visible && map.getLayoutProperty(BASEMAP_LANDMARKS, "visibility") !== "none") {
-          map.setLayoutProperty(BASEMAP_LANDMARKS, "visibility", "none");
-          LM.hidBasemap = true;
-        } else if (visible && LM.hidBasemap) {
-          map.setLayoutProperty(BASEMAP_LANDMARKS, "visibility", "visible");
-          LM.hidBasemap = false;
-        }
-      } catch (e) {
-        /* стиль меняется — вернём на следующем движении */
-      }
-    }
-    // Строка в «?» легенды хозяина: «Ориентиры в 3D — условные модели…» (только пока модели видны).
-    function lmNote(show) {
-      var host = null;
-      try {
-        host = o.legendHost ? o.legendHost() : doc.querySelector("#birge-legend .birge-legend-host");
-      } catch (e) {
-        host = null;
-      }
-      if (!host && !LM.note) return;
-      if (!LM.note) {
-        LM.note = el("p", "b3d-lm-note bk-glass bk-glass--strong");
-        LM.note.appendChild(icon("info", o.iconsUrl));
-        LM.note.appendChild(el("span", "b3d-lm-note__text"));
-      }
-      if (host && LM.note.parentNode !== host) host.appendChild(LM.note);
-      LM.note.querySelector(".b3d-lm-note__text").textContent = t("build3d.landmarks.note");
-      LM.note.hidden = !show;
-    }
-    // Камера «3D-Астана»: бульвар Нұржол с юго-востока — Байтерек крупно справа, Хан Шатыр в глубине слева (ноутбук
-    // 1366: Байтерек ~80 px, Хан Шатыр ~60 px, оба вне панелей). Телефон: вдоль оси — Хан Шатыр вдали, Байтерек ближе,
-    // оба над шторкой. Ось бульвара — поворот Ақорды из landmarks.json. how — для подбора кадра в проверках.
-    // Панели оболочки «Сегодня в Астане» (#birge-today) и шторка «Рядом» (#birge-near) не в opts.avoid R01 (FINAL-4) —
-    // для этого кадра учитываем их сами (INTEGRATION: предложено добавить в avoid).
-    function hostPanelRects() {
-      return Array.prototype.slice
-        .call(doc.querySelectorAll("#birge-today, #birge-near"))
-        .filter(function (n) {
-          var cs = root.getComputedStyle ? root.getComputedStyle(n) : null;
-          return !n.hidden && !(cs && (cs.display === "none" || cs.visibility === "hidden"));
-        })
-        .map(function (n) {
-          return n.getBoundingClientRect();
-        })
-        .filter(function (r) {
-          return r.width && r.height;
-        });
-    }
-    function flyToLandmarks(how) {
-      how = how || {};
-      var c = [71.4305148, 51.1282763],
-        axis = 14.1;
-      (LM.data ? LM.data.landmarks : []).forEach(function (l) {
-        if (l.id === "baiterek") c = [l.lon, l.lat];
-        if (l.id === "akorda" && isFinite(l.rotation_deg)) axis = l.rotation_deg;
-      });
-      // Центр — в свободной части карты (без шапки, панелей и шторки хозяина), как у карточки проекта (keepAboveDock).
-      var f = freeArea(80, hostPanelRects()),
-        cpt = map.project(map.getCenter());
-      var narrow = f.x1 - f.x0 < 600;
-      // Точка кадра — на оси бульвара: along м от Байтерека к Хан Шатыру, across м к югу.
-      var along = how.along != null ? how.along : 700 + (narrow ? 200 : 0),
-        across = how.across != null ? how.across : 0;
-      var a = -axis * DEG,
-        dx = -along * Math.cos(a) + across * Math.sin(a),
-        dy = -along * Math.sin(a) - across * Math.cos(a);
-      var center = Core.fromLocal(c, [dx, dy]);
-      var offset = [Math.round((f.x0 + f.x1) / 2 - cpt.x), Math.round((f.y0 + f.y1) / 2 - cpt.y)];
-      LM.on = true;
-      // Масштаб < 15 — ниже порога автонаклона оболочки (R01: с 15-го наклон 52°), иначе она сменит наш наклон 65°.
-      map.easeTo({
-        center: center,
-        offset: offset,
-        zoom: how.zoom || (narrow ? 14.5 : 14.9),
-        pitch: Math.min(65, map.getMaxPitch ? map.getMaxPitch() : 60),
-        bearing: how.bearing != null ? how.bearing : narrow ? -68 : -55,
-        duration: how.duration != null ? how.duration : reducedMotion() ? 0 : 1600,
-      });
-      return true;
-    }
-    function onLmPitch() {
-      // Во время наклона кнопкой «3D» (900 мс) moveend ещё не пришёл: начинаем показ и загрузку с 16°, чтобы модели
-      // росли вместе с наклоном, а не появлялись после него.
-      if (!LM.on || S.destroyed || map.getPitch() < 16 || map.getZoom() < LM_MIN_ZOOM - 0.15) return;
-      if (LM.phase === "ready") lmShow();
-      else if (LM.phase === "idle" || (LM.phase === "data" && lmInView())) {
-        if (LM.phase === "idle") loadLandmarkData();
-        else loadLandmarkModels();
-      }
-    }
-    function disposeLandmarks() {
-      LM.items.forEach(function (it) {
-        disposeGroup(it.group);
-      });
-      LM.items = [];
-      setBasemapLandmarks(true);
-      if (LM.note && LM.note.parentNode) LM.note.parentNode.removeChild(LM.note);
-    }
-
     // ───────────── Язык ─────────────
     function onLang() {
       Object.keys(S.objects).forEach(function (id) {
@@ -4025,7 +3672,6 @@
         // Начало участка уже выбрано: название улицы — на новом языке (в подсказке оно подставлено текстом).
         setHint("build3d.hint.segment_end", { street: streetName(S.ghost.aStreet, S.ghost.aStreetKk) || t("build3d.street.this") });
       }
-      if (LM.note) lmNote(LM.shown);
       render(true);
       repaint();
     }
@@ -4054,8 +3700,6 @@
     map.on("styledata", onStyleData);
     map.on("idle", refitSoon); // панели хозяина появляются позже модуля (легенда R07 — после загрузки жалоб)
     map.on("moveend", onViewMoveEnd);
-    map.on("moveend", syncLandmarks);
-    map.on("pitch", onLmPitch);
     map.on("render", onMapRender);
     doc.addEventListener("keydown", onKey);
     if (opts.followShellMode !== false) doc.addEventListener("birge:mode", onShellMode);
@@ -4199,37 +3843,7 @@
           three: S.three,
           ideas: Object.keys(ideas).length,
           picking: !!pick,
-          // 3D-Астана (раунд 15): ориентиры — фаза загрузки, видны ли, сколько, треугольников, доля роста.
-          landmarks: {
-            on: LM.on,
-            phase: LM.phase,
-            shown: LM.shown,
-            count: LM.items.length,
-            visible: LM.items.filter(function (it) {
-              return it.group.visible;
-            }).length,
-            triangles: LM.tris,
-            k: LM.k < 0 ? null : Math.round(LM.k * 1000) / 1000,
-            basemapHidden: LM.hidBasemap,
-          },
         };
-      },
-      // 3D-Астана (раунд 15): ориентиры при наклоне — включить/выключить (по умолчанию включены); камера «над Есилем».
-      setLandmarks: function (on) {
-        LM.on = on !== false;
-        if (!LM.on) lmHide();
-        else syncLandmarks();
-        return LM.on;
-      },
-      flyToLandmarks: flyToLandmarks,
-      // Для проверок (tests/civic/R05/round15): экранная точка ориентира (x, y, z — метры модели, z по умолчанию — верх).
-      _landmarkScreen: function (id, z) {
-        var it = LM.items.filter(function (x) {
-          return x.spec.id === id;
-        })[0];
-        if (!it || !lastMatrix) return null;
-        var wp = new THREE.Vector3(0, 0, z == null ? it.height : z).applyMatrix4(it.group.matrixWorld);
-        return projectLocal(wp.x, wp.y, wp.z);
       },
       // Для проверок точности (tests/civic/R05): экранная точка 3D-точки объекта (x, y, z в метрах модели).
       _project: function (id, point) {
@@ -4250,8 +3864,6 @@
         map.off("styledata", onStyleData);
         map.off("idle", refitSoon);
         map.off("moveend", onViewMoveEnd);
-        map.off("moveend", syncLandmarks);
-        map.off("pitch", onLmPitch);
         map.off("render", onMapRender);
         doc.removeEventListener("keydown", onKey);
         doc.removeEventListener("birge:mode", onShellMode);
@@ -4262,7 +3874,6 @@
         if (unsubLang) unsubLang();
         clearTimeout(toastTimer);
         Object.keys(S.objects).forEach(disposeObject);
-        disposeLandmarks();
         if (ghostGroup) disposeGroup(ghostGroup);
         anims = [];
         try {
@@ -4286,6 +3897,6 @@
     t: function (key, params) {
       return makeT(root.BirgeI18n || null)(key, params);
     },
-    version: "r15-1",
+    version: "r14-2",
   };
 })(typeof self !== "undefined" ? self : this);

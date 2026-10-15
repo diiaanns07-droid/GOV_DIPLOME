@@ -1,6 +1,9 @@
-"""Ориентиры Астаны для 3D-вида (R05, раунд 15): координаты — из данных OSM в репозитории.
+"""Ориентиры Астаны (R05, раунд 15): центры и названия ru/kk — из данных OSM в репозитории.
 
-Контуров самих зданий (Байтерек, Хан Шатыр, Ақорда, «Нұр Әлем», Дворец мира и согласия) в репозитории нет:
+Один источник для подписей ориентиров на карте (R01 web/civic/shell/basemap-style.js выделяет настоящие здания
+подложки) и для поиска («Байтерек» → перелёт камеры к зданию с наклоном). Нарисованных моделей нет (поправка П1).
+
+Контуров самих зданий (Байтерек, Хан Шатыр, Ақорда, Хазрет Султан, «Нұр Әлем», Дворец мира и согласия) в репозитории нет:
 выгрузка LOCAL-1 брала только площадки, остановки, парки и дворы. Зато в снимке пешеходной сети
 (data/civic/astana/osm-walking/overpass.json.gz, OSM на 2026-05-06) есть дорожки и проезды, которые обходят
 эти здания кольцом. Центр здания считаем по этим кольцам, а способ и номера линий OSM пишем в запись:
@@ -9,18 +12,17 @@
   ring        — центр замкнутого кольца площади (Байтерек: кольцо радиусом 42 м вокруг монумента);
   ellipse     — центр и ось эллипса, вписанного по точкам кольцевого проезда (Хан Шатыр);
   circles     — средний центр концентрических колец (ЭКСПО: «Нұр Әлем» в центре колец павильонов);
-  hole        — центр пустого места, со всех сторон окружённого дорожками (Ақорда).
+  hole        — центр пустого места, со всех сторон окружённого дорожками (Ақорда, двор мечети Хазрет Султан).
 
 Это вывод по соседним линиям, а не контур здания, поэтому у каждой записи check = "LOCAL-13": на ноутбуке
 Codex скачивает контуры через Overpass и сверяет (research/round-15-results/R05/INTEGRATION.txt).
-Высоты и размеры моделей — условные (по открытым описаниям, округлены): это не точные копии зданий.
 
 Запуск из корня репозитория:
     python3 data/civic/astana/landmarks/tools/derive_landmarks.py          # пересобрать landmarks.json
     python3 data/civic/astana/landmarks/tools/derive_landmarks.py --check  # только сверить с файлом
 
 Пишет два одинаковых файла: data/civic/astana/landmarks/landmarks.json (источник) и
-web/civic/build3d/data/landmarks.json (его берёт модуль 3D в браузере).
+web/civic/build3d/data/landmarks.json (его берут поиск и подписи в браузере: web/civic/build3d/landmarks.js).
 """
 
 from __future__ import annotations
@@ -223,6 +225,73 @@ def axis_deg(p_south, p_north) -> float:
     return round(-ang, 1)
 
 
+DISTRICTS = ROOT / "web/civic/build3d/data/astana-districts.json"
+
+
+def district_of(lat: float, lon: float) -> str | None:
+    """Район по контурам OSM (data/civic/astana/geofence.json → web/civic/build3d/data/astana-districts.json)."""
+    data = json.loads(DISTRICTS.read_text(encoding="utf-8"))
+    for d in data["districts"]:
+        rings = d["rings"]
+        inside = False
+        for ring in rings:
+            for (x0, y0), (x1, y1) in zip(ring, ring[1:] + ring[:1]):
+                if (y0 > lat) != (y1 > lat) and lon < x0 + (lat - y0) * (x1 - x0) / (y1 - y0):
+                    inside = not inside
+        if inside:
+            return d["id"]
+    return None
+
+
+# Что показывать в поиске и подписи: название ru/kk, вид здания (строка подсказки), другие написания для поиска,
+# радиус «здание подложки — этот ориентир» (R01 basemap-style.js, выражение distance) и камера перелёта из поиска
+# (наклон 52° — как кнопка «3D» оболочки, иначе автонаклон R01 доворачивает камеру второй раз).
+INFO = {
+    "baiterek": {
+        "name": {"ru": "Байтерек", "kk": "Бәйтерек"},
+        "kind": {"ru": "монумент", "kk": "монумент"},
+        "aliases": ["Монумент Байтерек", "Baiterek", "Bayterek"],
+        "radius_m": 30,
+        "camera": {"zoom": 16.6, "pitch": 52, "bearing": -76},
+    },
+    "khan-shatyr": {
+        "name": {"ru": "Хан Шатыр", "kk": "Хан Шатыр"},
+        "kind": {"ru": "торговый центр", "kk": "сауда орталығы"},
+        "aliases": ["ТРЦ Хан Шатыр", "Khan Shatyr"],
+        "radius_m": 60,
+        "camera": {"zoom": 15.9, "pitch": 52, "bearing": -76},
+    },
+    "akorda": {
+        "name": {"ru": "Акорда", "kk": "Ақорда"},
+        "kind": {"ru": "резиденция Президента", "kk": "Президент резиденциясы"},
+        "aliases": ["Ак Орда", "Ақ Орда", "Akorda", "Ak Orda"],
+        "radius_m": 50,
+        "camera": {"zoom": 16.3, "pitch": 52, "bearing": -76},
+    },
+    "hazrat-sultan": {
+        "name": {"ru": "Мечеть Хазрет Султан", "kk": "Әзірет Сұлтан мешіті"},
+        "kind": {"ru": "мечеть", "kk": "мешіт"},
+        "aliases": ["Хазрет Султан", "Хазрат Султан", "Әзірет Сұлтан", "Hazrat Sultan"],
+        "radius_m": 60,
+        "camera": {"zoom": 16.0, "pitch": 52, "bearing": -45},
+    },
+    "palace-peace": {
+        "name": {"ru": "Дворец мира и согласия", "kk": "Бейбітшілік және келісім сарайы"},
+        "kind": {"ru": "дворец (пирамида)", "kk": "сарай (пирамида)"},
+        "aliases": ["Пирамида", "Palace of Peace and Reconciliation", "Pyramid"],
+        "radius_m": 40,
+        "camera": {"zoom": 16.5, "pitch": 52, "bearing": -76},
+    },
+    "nur-alem": {
+        "name": {"ru": "Нур Алем", "kk": "Нұр Әлем"},
+        "kind": {"ru": "павильон ЭКСПО", "kk": "ЭКСПО павильоны"},
+        "aliases": ["ЭКСПО", "Экспо", "EXPO", "Nur Alem"],
+        "radius_m": 45,
+        "camera": {"zoom": 16.1, "pitch": 52, "bearing": -20},
+    },
+}
+
+
 def build(snap: Snapshot) -> dict:
     items = []
 
@@ -230,53 +299,75 @@ def build(snap: Snapshot) -> dict:
     #    кольцо 258818051 (r ≈ 84 м) и входы 2389116250 («main») / 2389116244 («exit») у самого основания.
     o = (51.1283, 71.4305)
     c, ring = ring_center(snap, 258818019, o)
-    c2, ring2 = ring_center(snap, 258818051, o)
+    c2, _ = ring_center(snap, 258818051, o)
     entrances = [(snap.nodes[n]["lat"], snap.nodes[n]["lon"]) for n in (2389116250, 2389116244)]
-    items.append({
-        "id": "baiterek", "model": "baiterek",
-        "name": {"ru": "Байтерек", "kk": "Бәйтерек"},
-        "lat": round(c[0], 7), "lon": round(c[1], 7), "rotation_deg": 0,
-        "height_m": 105, "size_m": {"base_r": 16, "sphere_d": 22},
-        "mask_m": {"shape": "circle", "r": 26},
-        "coords": {
-            "method": "ring",
-            "osm": [{"type": "way", "id": 258818019, "role": "кольцо площади вокруг монумента"},
-                    {"type": "way", "id": 258818051, "role": "внешнее кольцо (проверка)"},
-                    {"type": "node", "id": 2389116250, "role": "вход main у основания"},
-                    {"type": "node", "id": 2389116244, "role": "вход exit у основания"}],
-            "ring_radius_m": ring["radius_m"], "ring_spread_m": ring["radius_spread_m"],
-            "outer_ring_offset_m": round(dist_m(c, c2), 1),
-            "entrances_offset_m": [round(dist_m(c, e), 1) for e in entrances],
-        },
-    })
+    items.append({"id": "baiterek", "lat": c[0], "lon": c[1], "coords": {
+        "method": "ring",
+        "osm": [{"type": "way", "id": 258818019, "role": "кольцо площади вокруг монумента"},
+                {"type": "way", "id": 258818051, "role": "внешнее кольцо (проверка)"},
+                {"type": "node", "id": 2389116250, "role": "вход main у основания"},
+                {"type": "node", "id": 2389116244, "role": "вход exit у основания"}],
+        "ring_radius_m": ring["radius_m"], "ring_spread_m": ring["radius_spread_m"],
+        "outer_ring_offset_m": round(dist_m(c, c2), 1),
+        "entrances_offset_m": [round(dist_m(c, e), 1) for e in entrances],
+    }})
 
-    # 2. Хан Шатыр — эллипс кольцевого проезда вокруг шатра (way 164938029, 43 точки, охват ~330°).
+    # 2. Хан Шатыр — центр эллипса кольцевого проезда вокруг шатра (way 164938029, 43 точки, охват ~330°).
     o = (51.13247, 71.40393)
     pts = [to_xy(lat, lon, o) for lat, lon in snap.way_points(164938029)]
     ex, ey, ra, rb, major = ellipse_fit(pts)
     c = to_ll(ex, ey, o)
-    # Азимут по часовой от востока: major_deg — против часовой. Ось шатра — по большой оси кольца.
-    items.append({
-        "id": "khan-shatyr", "model": "khan_shatyr",
-        "name": {"ru": "Хан Шатыр", "kk": "Хан Шатыр"},
-        "lat": round(c[0], 7), "lon": round(c[1], 7), "rotation_deg": round(norm180(-major), 1),
-        "height_m": 150, "size_m": {"base_a": 100, "base_b": 86},
-        "mask_m": {"shape": "ellipse", "a": 108, "b": 94},
-        "coords": {
-            "method": "ellipse",
-            "osm": [{"type": "way", "id": 164938029, "role": "кольцевой проезд вокруг шатра"},
-                    {"type": "node", "id": 13294095201, "role": "вход в шатёр (проверка радиуса)"}],
-            "ring_semi_axes_m": [round(ra, 1), round(rb, 1)],
-            # Вход 13294095201 (door, level 1) — на краю шатра: его расстояние до центра — радиус основания в ту сторону.
-            "door_offset_m": round(dist_m(c, (snap.nodes[13294095201]["lat"], snap.nodes[13294095201]["lon"])), 1),
-        },
-    })
+    door = (snap.nodes[13294095201]["lat"], snap.nodes[13294095201]["lon"])
+    items.append({"id": "khan-shatyr", "lat": c[0], "lon": c[1], "coords": {
+        "method": "ellipse",
+        "osm": [{"type": "way", "id": 164938029, "role": "кольцевой проезд вокруг шатра"},
+                {"type": "node", "id": 13294095201, "role": "вход в шатёр (проверка радиуса)"}],
+        "ring_semi_axes_m": [round(ra, 1), round(rb, 1)], "ring_axis_deg": round(norm180(-major), 1),
+        # Вход (door, level 1) — на краю шатра: его расстояние до центра — радиус основания в ту сторону.
+        "door_offset_m": round(dist_m(c, door), 1),
+    }})
 
-    # 3. «Нұр Әлем» — центр концентрических колец ЭКСПО (проезды 455013941/2/3, дорожки 1461824179/80).
+    # 3. Ақорда — пустое место между дорожками в центре симметричной композиции: два одинаковых сада
+    #    (кольца 329669144 на севере и 329669208 на юге) задают ось бульвара, полукруглая площадь — восточный фасад.
+    seed = (51.1256, 71.4464)
+    c, hole = hole_center(snap, seed)
+    gn, _ = ring_center(snap, 329669144, seed)
+    gs, _ = ring_center(snap, 329669208, seed)
+    axis = axis_deg(gs, gn)
+    mid = ((gn[0] + gs[0]) / 2, (gn[1] + gs[1]) / 2)
+    ax, ay = to_xy(c[0], c[1], mid)
+    th = math.radians(-axis)
+    off_axis = abs(-ax * math.sin(th) + ay * math.cos(th))
+    items.append({"id": "akorda", "lat": c[0], "lon": c[1], "coords": {
+        "method": "hole",
+        "osm": [{"type": "way", "id": 329669144, "role": "северный сад (ось)"},
+                {"type": "way", "id": 329669208, "role": "южный сад (ось)"}],
+        "hole": hole, "axis_deg": axis, "offset_from_axis_m": round(off_axis, 1),
+    }})
+
+    # 4. Мечеть Хазрет Султан — центр большого восьмиугольного места внутри кольца дорожек (двор мечети).
+    c, hole = hole_center(snap, (51.1254, 71.4718), max_r=170.0)
+    items.append({"id": "hazrat-sultan", "lat": c[0], "lon": c[1], "coords": {
+        "method": "hole",
+        "osm": [{"type": "way", "id": 1373014142, "role": "дорожки вокруг двора мечети"}],
+        "hole": hole,
+    }})
+
+    # 5. Дворец мира и согласия — узел OSM с именем здания (5009488810, вход подземного перехода в пирамиду);
+    #    проверка — центр пустого квадрата между дорожками вокруг пирамиды.
+    n = snap.nodes[5009488810]
+    c = (n["lat"], n["lon"])
+    hc, hole = hole_center(snap, c)
+    items.append({"id": "palace-peace", "lat": c[0], "lon": c[1], "coords": {
+        "method": "named_node",
+        "osm": [{"type": "node", "id": 5009488810, "role": "узел с именем «Дворец мира и согласия»"}],
+        "hole_center_offset_m": round(dist_m(c, hc), 1), "hole": hole,
+    }})
+
+    # 6. «Нұр Әлем» — центр концентрических колец ЭКСПО (проезды 455013941/2/3, дорожки 1461824179/80).
     o = (51.08925, 71.41624)
     rings = [455013941, 455013942, 455013943, 1461824179, 1461824180]
-    centers = []
-    fits = []
+    centers, fits = [], []
     for wid in rings:
         cx, cy, r, rms = circle_fit([to_xy(lat, lon, o) for lat, lon in snap.way_points(wid)])
         centers.append((cx, cy))
@@ -285,76 +376,36 @@ def build(snap: Snapshot) -> dict:
     cy = sum(p[1] for p in centers) / len(centers)
     spread = max(math.hypot(p[0] - cx, p[1] - cy) for p in centers)
     c = to_ll(cx, cy, o)
-    items.append({
-        "id": "nur-alem", "model": "nur_alem",
-        "name": {"ru": "Нур Алем", "kk": "Нұр Әлем"},
-        "lat": round(c[0], 7), "lon": round(c[1], 7), "rotation_deg": 0,
-        "height_m": 100, "size_m": {"sphere_d": 80},
-        "mask_m": {"shape": "circle", "r": 46},
-        "coords": {
-            "method": "circles",
-            "osm": [{"type": "way", "id": w, "role": "кольцо площади ЭКСПО"} for w in rings],
-            "fits": fits, "centers_spread_m": round(spread, 1),
-        },
-    })
+    items.append({"id": "nur-alem", "lat": c[0], "lon": c[1], "coords": {
+        "method": "circles",
+        "osm": [{"type": "way", "id": w, "role": "кольцо площади ЭКСПО"} for w in rings],
+        "fits": fits, "centers_spread_m": round(spread, 1),
+    }})
 
-    # 4. Ақорда — пустое место между дорожками в центре симметричной композиции: два одинаковых сада
-    #    (кольца 329669144 на севере и 329669208 на юге) задают ось, полукруглая площадь — восточный фасад.
-    seed = (51.1256, 71.4464)
-    c, hole = hole_center(snap, seed)
-    gn, _ = ring_center(snap, 329669144, seed)
-    gs, _ = ring_center(snap, 329669208, seed)
-    axis = axis_deg(gs, gn)
-    mid = ((gn[0] + gs[0]) / 2, (gn[1] + gs[1]) / 2)
-    ax, ay = to_xy(c[0], c[1], mid)
-    # Расстояние центра до оси садов (по нормали к оси).
-    th = math.radians(-axis)
-    off_axis = abs(-ax * math.sin(th) + ay * math.cos(th))
-    items.append({
-        "id": "akorda", "model": "akorda",
-        "name": {"ru": "Ак Орда", "kk": "Ақорда"},
-        "lat": round(c[0], 7), "lon": round(c[1], 7), "rotation_deg": axis,
-        "height_m": 80, "size_m": {"length": 116, "depth": 46},
-        # w — вдоль оси бульвара (x модели), d — поперёк: здание вытянуто поперёк оси, фасад — на восток.
-        "mask_m": {"shape": "rect", "w": 72, "d": 128},
-        "coords": {
-            "method": "hole",
-            "osm": [{"type": "way", "id": 329669144, "role": "северный сад (ось)"},
-                    {"type": "way", "id": 329669208, "role": "южный сад (ось)"}],
-            "hole": hole, "offset_from_axis_m": round(off_axis, 1),
-        },
-    })
-
-    # 5. Дворец мира и согласия — узел OSM с именем здания (5009488810, вход подземного перехода в пирамиду);
-    #    проверка — центр пустого квадрата между дорожками вокруг пирамиды.
-    n = snap.nodes[5009488810]
-    c = (n["lat"], n["lon"])
-    hc, hole = hole_center(snap, c)
-    items.append({
-        "id": "palace-peace", "model": "pyramid",
-        "name": {"ru": "Дворец мира и согласия", "kk": "Бейбітшілік және келісім сарайы"},
-        "lat": round(c[0], 7), "lon": round(c[1], 7), "rotation_deg": axis,
-        "height_m": 62, "size_m": {"base": 62},
-        "mask_m": {"shape": "rect", "w": 76, "d": 76},
-        "coords": {
-            "method": "named_node",
-            "osm": [{"type": "node", "id": 5009488810, "role": "узел с именем «Дворец мира и согласия»"}],
-            "hole_center_offset_m": round(dist_m(c, hc), 1), "hole": hole,
-            "rotation_from": "ось Ақорды (сады 329669144 / 329669208)",
-        },
-    })
-
+    out = []
     for it in items:
+        info = INFO[it["id"]]
+        lat, lon = round(it["lat"], 7), round(it["lon"], 7)
         it["coords"]["check"] = "LOCAL-13"
-        it["osm_object"] = (
-            {"type": "node", "id": 5009488810} if it["id"] == "palace-peace" else None
-        )
-        it["conditional"] = True
+        out.append({
+            "id": it["id"],
+            "name": info["name"],
+            "kind": info["kind"],
+            "aliases": info["aliases"],
+            "lat": lat,
+            "lon": lon,
+            "district": district_of(lat, lon),
+            "radius_m": info["radius_m"],
+            "camera": info["camera"],
+            "osm_object": {"type": "node", "id": 5009488810} if it["id"] == "palace-peace" else None,
+            "coords": it["coords"],
+        })
 
     return {
-        "schema": "birge-landmarks-v1",
-        "purpose": "Ориентиры Астаны в 3D-виде карты (R05, раунд 15): условные модели на координатах из данных OSM.",
-        "evidence_type": "real (OSM) — только координаты; модели, высоты и размеры условные",
+        "schema": "birge-landmarks-v2",
+        "purpose": "Ориентиры Астаны — один источник центров и названий ru/kk для подписей на карте (R01 basemap-style.js) "
+                   "и поиска (перелёт к настоящему зданию подложки). Моделей нет: здания — из подложки (поправка П1).",
+        "evidence_type": "real (OSM): координаты выведены из снимка пешеходной сети, контуры зданий — LOCAL-13",
         "generated_by": "data/civic/astana/landmarks/tools/derive_landmarks.py",
         "source": {
             "path": "data/civic/astana/osm-walking/overpass.json.gz",
@@ -363,12 +414,7 @@ def build(snap: Snapshot) -> dict:
             "license": "ODbL-1.0",
             "attribution": "© OpenStreetMap contributors",
         },
-        "note": {
-            "ru": "Условные модели: форма упрощена, размеры примерные. Это не точные копии зданий.",
-            "kk": "Шартты модельдер: пішіні жеңілдетілген, өлшемдері шамамен алынған. Бұл ғимараттардың дәл көшірмесі емес.",
-        },
-        "visible": {"min_zoom": 13, "min_pitch_deg": 30},
-        "landmarks": items,
+        "landmarks": out,
     }
 
 

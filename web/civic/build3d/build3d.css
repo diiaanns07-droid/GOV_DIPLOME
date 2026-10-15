@@ -953,37 +953,3 @@
     transition: none;
   }
 }
-
-/* ───────────── 3D-Астана (раунд 15): строка «условные модели» под «?» легенды карты ─────────────
-   Модуль кладёт её в «?» легенды хозяина (R01 #birge-legend .birge-legend-host) рядом с подробной легендой R07 и
-   показывает только пока видны модели ориентиров. Тот же край и стекло, что у легенды R07 (16 / 18 px, плотное стекло
-   под текстом — GLASS §2); текст — вторичный цвет, 13 px, как подсказка легенды R07. */
-.b3d-lm-note {
-  box-sizing: border-box;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--s-2, 8px);
-  max-width: 380px;
-  margin: var(--s-2, 8px) 0 0;
-  padding: 10px 18px;
-  font-family: var(--font, "Birge Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif);
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--c-text-2, #4b5752);
-  pointer-events: auto;
-}
-.b3d-lm-note:not(.bk-glass) {
-  border-radius: 14px;
-  background: var(--c-surface, #ffffff);
-  box-shadow: var(--shadow-1, 0 1px 2px rgba(21, 44, 38, 0.05), 0 2px 10px rgba(21, 44, 38, 0.06));
-}
-.b3d-lm-note[hidden] {
-  display: none;
-}
-.b3d-lm-note .ic {
-  flex: none;
-  width: 16px;
-  height: 16px;
-  margin-top: 1px;
-  color: var(--c-text-2, #4b5752);
-}
