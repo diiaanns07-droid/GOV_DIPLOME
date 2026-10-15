@@ -55,6 +55,13 @@
       "agencies.kpi.joint": "совместных",
       "agencies.kpi.handoffs": "передач",
       "agencies.kpi.verified": "проверено жителями",
+      "agencies.kpi.overdue_answer": "ответ просрочен",
+      "agencies.kpi.overdue_fix": "не исправлено в срок",
+      "agencies.col.fix": "Срок испр.",
+      "agencies.col.fix_hint": "Не исправлено в срок — норматив «Картины дня» (подано → исправлено)",
+      "agencies.row.label_v2": "{name}: открыто {open}, ответ просрочен {overdue}, не исправлено в срок {fix}",
+      "agencies.part.todo": "ждёт",
+      "agencies.sort.fix": "по сроку исправления",
       "agencies.col.service": "Служба",
       "agencies.col.open": "Открыто",
       "agencies.col.deadline": "Срок ответа",
@@ -218,6 +225,13 @@
       "agencies.kpi.joint": "бірлескен",
       "agencies.kpi.handoffs": "жіберу",
       "agencies.kpi.verified": "тұрғындар тексерді",
+      "agencies.kpi.overdue_answer": "жауап мерзімі өтті",
+      "agencies.kpi.overdue_fix": "мерзімінде түзетілмеген",
+      "agencies.col.fix": "Түзету мерзімі",
+      "agencies.col.fix_hint": "Мерзімінде түзетілмеген — «Күн суретінің» нормативі (берілді → түзетілді)",
+      "agencies.row.label_v2": "{name}: ашық {open}, жауап мерзімі өтті {overdue}, мерзімінде түзетілмеген {fix}",
+      "agencies.part.todo": "күтуде",
+      "agencies.sort.fix": "түзету мерзімі бойынша",
       "agencies.col.service": "Қызмет",
       "agencies.col.open": "Ашық",
       "agencies.col.deadline": "Жауап мерзімі",
@@ -810,6 +824,7 @@
       returned: function (r) { return [r.returned, r.open]; },
       handoffs: function (r) { return [r.handoffs_in + r.handoffs_out, r.handoffs_in]; },
       joint: function (r) { return [r.joint, r.open]; },
+      fix: function (r) { return [r.overdue_fix || 0, r.open]; },
     };
     function sortedRows(rows) {
       var key = S.sort.key, dir = S.sort.dir;
@@ -830,16 +845,21 @@
       var totals = data.totals || {};
       var kpis = h("div", { class: "ag-kpis" }, [
         kpi(totals.open, tr("agencies.kpi.open")),
-        kpi(totals.overdue, tr("agencies.kpi.overdue"), totals.overdue > 0),
+        // Два разных «просрочено» (R02 INTEGRATION §3, R10 B-104): срок первого ответа R09 и срок исправления R08.
+        kpi(totals.overdue, tr("agencies.kpi.overdue_answer"), totals.overdue > 0),
+        totals.overdue_fix == null ? null : kpi(totals.overdue_fix, tr("agencies.kpi.overdue_fix"), totals.overdue_fix > 0),
         kpi(totals.joint, tr("agencies.kpi.joint")),
         // Передачи — во вкладке «Передачи» и в столбце табло: четыре плитки шире, казахские подписи не режутся.
         kpi(totals.verified_share == null ? "—" : pct(totals.verified_share), tr("agencies.kpi.verified")),
       ]);
       var table = h("div", { class: "ag-table", role: "table", "aria-label": tr("agencies.tab.board") });
+      var hasFix = totals.overdue_fix != null;
       var cols = [["name", "agencies.col.service"], ["open", "agencies.col.open"], ["overdue", "agencies.col.deadline"],
+        hasFix ? ["fix", "agencies.col.fix", "agencies.col.fix_hint"] : null,
         ["answer", "agencies.col.answer", "agencies.col.answer_hint"], ["verified", "agencies.col.verified", "agencies.col.verified_hint"],
         ["returned", "agencies.col.returned", "agencies.col.returned_hint"], ["handoffs", "agencies.col.handoffs", "agencies.col.handoffs_hint"],
-        ["joint", "agencies.col.joint", "agencies.col.joint_hint"]];
+        ["joint", "agencies.col.joint", "agencies.col.joint_hint"]].filter(Boolean);
+      if (hasFix) table.classList.add("ag-table--fix");
       var head = h("div", { class: "ag-thead", role: "row" }, cols.map(function (c) {
         var active = S.sort.key === c[0];
         var b = h("button", { type: "button", class: "ag-th", role: "columnheader", "data-sort": c[0], title: c[2] ? tr(c[2]) : null,
@@ -859,7 +879,7 @@
         if (S.open === r.service) table.appendChild(detailBox(r));
       });
       var sortbar = h("label", { class: "ag-sortbar" }, [tr("agencies.sort")]);
-      var sortSelect = h("select", { class: "ag-select" }, ["overdue", "open", "answer", "verified", "name"].map(function (k) {
+      var sortSelect = h("select", { class: "ag-select" }, ["overdue", hasFix ? "fix" : null, "open", "answer", "verified", "name"].filter(Boolean).map(function (k) {
         return h("option", { value: k, text: tr("agencies.sort." + k) });
       }));
       sortSelect.value = S.sort.key in SORTS || S.sort.key === "name" ? S.sort.key : "overdue";
@@ -908,13 +928,20 @@
     function boardRow(r, maxOpen) {
       var name = serviceName(r.service);
       var quiet = !r.open && !r.received;
-      var row = h("button", { type: "button", class: "ag-row" + (quiet ? " ag-row--quiet" : ""), role: "row", "data-service": r.service,
+      var hasFix = r.overdue_fix != null;
+      // Строка — role="row" с фокусом (Enter/пробел раскрывают), а не <button role="row">: у кнопки не может быть
+      // роли строки (ARIA in HTML). Высота 26 px на компьютере — плотная таблица (20 служб на экране 1366, R10 B-110:
+      // «строки не трогать»); на телефоне строка в две линии, выше 44 px.
+      var row = h("div", { class: "ag-row" + (quiet ? " ag-row--quiet" : ""), role: "row", tabindex: "0", "data-service": r.service,
         "aria-expanded": String(S.open === r.service),
-        "aria-label": tr("agencies.row.label", { name: name, open: r.open, overdue: r.overdue }) }, [
+        "aria-label": hasFix ? tr("agencies.row.label_v2", { name: name, open: r.open, overdue: r.overdue, fix: r.overdue_fix })
+          : tr("agencies.row.label", { name: name, open: r.open, overdue: r.overdue }) }, [
         h("span", { class: "ag-svc", role: "cell" }, [serviceBadge(r.service), h("span", { class: "ag-svc__name", text: name }),
           pickupsMark(r.service)]),
         h("span", { class: "ag-num" + (r.open ? "" : " ag-num--zero"), role: "cell", "data-col": "open", text: num(r.open) }),
         deadlineBar(r, maxOpen),
+        hasFix ? h("span", { class: "ag-num" + (r.overdue_fix ? " ag-num--alert" : " ag-num--zero"), role: "cell", "data-col": "fix",
+          title: tr("agencies.col.fix_hint"), text: num(r.overdue_fix) }) : null,
         h("span", { class: "ag-num" + (r.median_answer_days == null ? " ag-num--zero" : ""), role: "cell", "data-col": "answer",
           text: r.median_answer_days == null ? "—" : tr("agencies.days_short", { n: r.median_answer_days }) }),
         h("span", { class: "ag-share", role: "cell", "data-col": "verified" }, [
@@ -927,16 +954,21 @@
           h("span", { "data-zero": r.handoffs_out ? null : "", text: "↑" + num(r.handoffs_out) })]),
         h("span", { class: "ag-num" + (r.joint ? "" : " ag-num--zero"), role: "cell", "data-col": "joint", text: num(r.joint) }),
         h("span", { class: "ag-mobile-meta" }, [
-          h("span", { text: tr("agencies.kpi.overdue") + ": " + num(r.overdue) }),
+          h("span", { text: tr("agencies.kpi.overdue_answer") + ": " + num(r.overdue) }),
+          hasFix ? h("span", { text: tr("agencies.kpi.overdue_fix") + ": " + num(r.overdue_fix) }) : null,
           h("span", { text: tr("agencies.col.answer") + ": " + (r.median_answer_days == null ? "—" : tr("agencies.days_short", { n: r.median_answer_days })) }),
           h("span", { text: tr("agencies.col.verified") + ": " + pct(r.verified_share) })]),
       ]);
-      row.addEventListener("click", function () {
+      function toggle() {
         S.open = S.open === r.service ? null : r.service;
         if (S.open && !S.openItems[r.service]) loadServiceItems(r.service);
         render();
         var again = bodyBox.querySelector('[data-service="' + r.service + '"]');
         if (again) again.focus();
+      }
+      row.addEventListener("click", toggle);
+      row.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); toggle(); }
       });
       return row;
     }
@@ -1557,7 +1589,9 @@
         if (typeof opts.openSection === "function") opts.openSection("works");
         else if (root.BirgeShell) root.BirgeShell.setSection("works");
       } }, [svg("i-plus"), tr("agencies.calendar.add")]);
-      bodyBox.replaceChildren(h("div", { class: "ag-actions ag-actions--end" }, [add]), panel);
+      // R12 в режиме embedded сам рисует главную «Добавить работу» в строке фильтров (.wcal-addmain) — тогда своя
+      // прячется (CSS :has), одна главная кнопка на экран (R10 B-115). Старый R12 без неё — видна эта.
+      bodyBox.replaceChildren(h("div", { class: "ag-actions ag-actions--end", "data-calendar-actions": "" }, [add]), panel);
       try {
         // Клиент R17 вместо клиента оболочки: он сам достаёт CSRF сотрудника из сессии (шлюз R01 требует его и в GET
         // календаря), ошибки — {status, error, message}, как ждёт R12 (err.status).

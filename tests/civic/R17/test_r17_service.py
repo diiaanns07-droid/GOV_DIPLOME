@@ -148,6 +148,27 @@ def test_public_update_with_personal_data_is_rejected(service, text, code):
     assert reply["status"] == 422 and reply["body"]["error"] == code
 
 
+def test_r04_round15_flags_kind_and_group(service, monkeypatch):
+    """R04 раунда 15: flags — [{kind, group}], наверху pii/rude. Находка «contact» группы pii — тоже 422."""
+    import sys
+    import types
+    fake = types.ModuleType("ui.civic_ml_api")
+
+    def moderate(text=None, lang=None, body=None, **_):
+        if "t.me/" in (text or ""):
+            return {"text_public": "***", "clean": False, "action": "review", "pii": True, "rude": False,
+                    "flags": [{"kind": "contact", "group": "pii", "count": 1}]}
+        return {"text_public": text, "clean": True, "action": "publish", "pii": False, "rude": False, "flags": []}
+    fake.moderate = moderate
+    monkeypatch.setitem(sys.modules, "ui.civic_ml_api", fake)
+    bad = call(service, "POST", "/incidents/inc-demo-blizzard-nura/update",
+               {"text_ru": "Вопросы — в t.me/akimat_nura", "text_kk": "Қызметтер жұмыс істеп жатыр"}, Staff())
+    assert bad["status"] == 422 and bad["body"]["error"] == "personal_data"
+    good = call(service, "POST", "/incidents/inc-demo-blizzard-nura/update",
+                {"text_ru": "Дороги расчищены", "text_kk": "Жолдар тазартылды"}, Staff())
+    assert good["status"] in (200, 201)
+
+
 def test_zone_rules(service):
     staff = Staff()
     polygon = call(service, "POST", "/incidents", {"kind": "flood", "zone": {"kind": "polygon",

@@ -68,6 +68,66 @@ async function setup(page, { lang, mode, tab }) {
 const noSideScroll = (page) => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1
   && [...document.querySelectorAll(".ag *")].every((e) => e.getBoundingClientRect().right <= innerWidth + 1
     || e.closest(".bk-tabs, .ag-yards, .ag-scroll")));
+// Как проверка R10 (tests/e2e/ux_lib.cjs uiScreen): текст мельче 13 px и зоны нажатия < 40 px — внутри экрана R17.
+// Строки табло — role="row" (не кнопки): 26 px на компьютере по замыслу (R10 B-110: «строки не трогать»).
+const uxProbe = (page) => page.evaluate(() => {
+  // Текст только для диктора (.bk-sr-only R11: 1×1 px, clip) человек не видит — не оцениваем (как R10).
+  const srOnly = (e) => { const r = e.getBoundingClientRect(); if (r.width <= 1 || r.height <= 1) return true;
+    for (let n = e; n && n.nodeType === 1; n = n.parentElement) {
+      if (n.classList && (n.classList.contains("bk-sr-only") || n.classList.contains("sr-only"))) return true;
+      const cs = getComputedStyle(n);
+      if (cs.clip === "rect(0px, 0px, 0px, 0px)" || /inset\(50%\)/.test(cs.clipPath || "")) return true;
+    }
+    return false; };
+  const vis = (e) => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && s.opacity !== "0"
+      && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth && !srOnly(e); };
+  const roots = [...document.querySelectorAll(".ag, .ag-banner, .ag-public")];
+  const inside = (e) => roots.some((r) => r.contains(e)) && !e.closest(".wcal, [data-calendar]");
+  const tiny = [];
+  for (const el of document.querySelectorAll(".ag *, .ag-banner *, .ag-public *")) {
+    if (!inside(el) || !vis(el) || el.children.length || !el.textContent.trim() || el.closest("svg")) continue;
+    const fs = parseFloat(getComputedStyle(el).fontSize);
+    if (fs && fs < 13) tiny.push(`${fs}px «${el.textContent.trim().slice(0, 24)}»`);
+  }
+  const small = [...document.querySelectorAll("button, a[href], [role=button], input, select, summary, textarea")]
+    .filter((e) => inside(e) && vis(e))
+    .map((e) => { const box = (/^(checkbox|radio)$/.test(e.type) && e.closest("label")) || e; const r = box.getBoundingClientRect();
+      return { h: Math.round(r.height), w: Math.round(r.width), t: (box.innerText || e.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 24) }; })
+    .filter((t) => t.h < 40 || t.w < 40);
+  // Контраст ≥ 4,5:1 (крупный ≥ 24 px или ≥ 18,66 px полужирный — 3:1), фон — первый непрозрачный слой вверх (как R10).
+  const rgba = (c) => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const v = m[1].split(/[ ,\/]+/).filter(Boolean).map(Number);
+    return [v[0], v[1], v[2], v.length > 3 ? v[3] : 1]; };
+  const lum = (c) => { const f = (x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+    return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+  const over = (top, bot) => { const a = top[3]; return [0, 1, 2].map((i) => top[i] * a + bot[i] * (1 - a)).concat(1); };
+  const bgOf = (e) => {
+    const layers = [];
+    for (let n = e; n && n.nodeType === 1; n = n.parentElement) {
+      const cs = getComputedStyle(n);
+      if (Number(cs.opacity) < 0.99 || (cs.backgroundImage && cs.backgroundImage !== "none")) return null;
+      const c = rgba(cs.backgroundColor);
+      if (c && c[3] > 0) { layers.push(c); if (c[3] >= 0.99) break; }
+      if (n === document.documentElement && (!c || c[3] < 0.99)) layers.push([255, 255, 255, 1]);
+    }
+    if (!layers.length) return null;
+    let col = layers[layers.length - 1]; if (col[3] < 0.99) col = over(col, [255, 255, 255, 1]);
+    for (let i = layers.length - 2; i >= 0; i--) col = over(layers[i], col);
+    return col;
+  };
+  const low = [];
+  for (const el of document.querySelectorAll(".ag *, .ag-banner *, .ag-public *")) {
+    const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+    if (own.length < 2 || !inside(el) || !vis(el) || el.closest("svg, [disabled], [aria-disabled=true]")) continue;
+    const cs = getComputedStyle(el), fg = rgba(cs.color), bg = bgOf(el);
+    if (!fg || !bg) continue;
+    const f = fg[3] < 0.99 ? over(fg, bg) : fg;
+    const L1 = lum(f), L2 = lum(bg), ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+    const fs = parseFloat(cs.fontSize), need = fs >= 24 || (Number(cs.fontWeight) >= 700 && fs >= 18.66) ? 3 : 4.5;
+    if (ratio < need) low.push(`${ratio.toFixed(2)}:1 «${own.slice(0, 24)}»`);
+  }
+  return { tiny: tiny.slice(0, 6), tinyN: tiny.length, small: small.slice(0, 6), smallN: small.length, low: low.slice(0, 6), lowN: low.length };
+});
 const rawKeys = (page) => page.evaluate(() => [...document.querySelectorAll(".ag, .ag-banner, .ag-public")]
   .map((e) => e.innerText).join("\n").match(/\b(agencies|crisis|common|shell)\.[a-z_.]+/g) || []);
 const openAgencies = async (page, base, tab) => {
@@ -147,7 +207,10 @@ const openAgencies = async (page, base, tab) => {
           const rows = [...document.querySelectorAll(".ag-row")];
           const last = rows[rows.length - 1];
           const kpi = document.querySelector(".ag-kpi__value");
-          return { rows: rows.length, lastBottom: last ? last.getBoundingClientRect().bottom : 0, inner: innerHeight,
+          // Видимая часть — до края прокручиваемой панели оболочки (а не окна): строка под краем листа не видна.
+          let sc = last; while (sc && sc !== document.body) { const o = getComputedStyle(sc).overflowY; if (o === "auto" || o === "scroll") break; sc = sc.parentElement; }
+          const edge = sc && sc !== document.body ? Math.min(innerHeight, sc.getBoundingClientRect().top + sc.clientHeight) : innerHeight;
+          return { rows: rows.length, lastBottom: last ? last.getBoundingClientRect().bottom : 0, inner: Math.round(edge),
             kpiOpen: kpi ? kpi.textContent.replace(/\s/g, "") : null };
         });
         check(`${tag}: 20 служб в табло`, info.rows === 20, info.rows);
@@ -155,6 +218,14 @@ const openAgencies = async (page, base, tab) => {
         check(`${tag}: KPI «открыто» = API`, info.kpiOpen === String(apiBoard.totals.open), [info.kpiOpen, apiBoard.totals.open]);
         check(`${tag}: нет прокрутки вбок`, await noSideScroll(page));
         check(`${tag}: нет непереведённых ключей`, (await rawKeys(page)).length === 0, await rawKeys(page));
+        const ux = await uxProbe(page);
+        check(`${tag}: шрифт ≥ 13 px`, ux.tinyN === 0, ux.tiny);
+        check(`${tag}: зоны нажатия ≥ 40 px`, ux.smallN === 0, ux.small);
+        check(`${tag}: контраст текста ≥ 4,5:1`, ux.lowN === 0, ux.low);
+        if (apiBoard.totals && apiBoard.totals.overdue_fix != null) {
+          const two = await page.evaluate(() => [...document.querySelectorAll(".ag-kpi__label")].map((e) => e.textContent));
+          check(`${tag}: два «просрочено» — разные подписи (ответ R09 и исправление R08)`, two.length === 5 && new Set(two).size === 5, two);
+        }
         await page.screenshot({ path: `${OUT}/board-${tag}.png` });
         // раскрыть самую загруженную службу
         await page.click(".ag-row");
@@ -180,6 +251,8 @@ const openAgencies = async (page, base, tab) => {
           await page.waitForTimeout(500);
           check(`${tag}: вкладка ${tab} без прокрутки вбок`, await noSideScroll(page));
           check(`${tag}: вкладка ${tab} без непереведённых ключей`, (await rawKeys(page)).length === 0, await rawKeys(page));
+          const uxTab = await uxProbe(page);
+          check(`${tag}: вкладка ${tab}: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1`, uxTab.tinyN === 0 && uxTab.smallN === 0 && uxTab.lowN === 0, uxTab);
           await page.screenshot({ path: `${OUT}/${tab}-${tag}.png` });
         }
         check(`${tag}: нет ошибок JS`, page.errs.length === 0, page.errs);

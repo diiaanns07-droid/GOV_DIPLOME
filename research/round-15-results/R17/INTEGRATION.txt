@@ -2,7 +2,15 @@ R17 · «Бірге: ведомства вместе» — штаб ведомс
 
 Ветка: claude/sweet-euler-5tiu5b (ветка сессии; claude/r15-R17 средой не разрешена). Код R17 — только мои пути:
 ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы (ui/web_server.py, web/index.html) я НЕ коммитил —
-для них ниже готовый patch.
+для них ниже готовый patch. Какой код брать — code_sha в DELIVERY.json (последняя поставка).
+
+СОСТОЯНИЕ НА 15 ОКТ ~21:45 (Астана)
+  • Сборка R01 B0 (ветка R01, коммит 74fb8c6d) уже взяла R17 @ 75300896: маршруты, ассеты, теги, configure(records)
+    сделаны — patch из §1 на ветку R01 больше не нужен. Для B1 — только пути R17 из DELIVERY.json:
+      git checkout <code_sha> -- ui/civic_agencies web/civic/agencies tests/civic/R17
+  • Проверено: ветка R01 @ 06d5d404 (B0) + текущий код R17 + R16 @ fbd9e247 — браузер 158/158 PASS (в т. ч. проверки
+    R10: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1 внутри экрана R17; 20 служб видны в панели 1366 × 768).
+  • Дефекты R10 на R17 — §10 (B-104, B-110, B-115, B-117 закрыты в коде R17).
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 1. R01 · шлюз API v2, ассеты, теги — ОДИН patch
@@ -44,6 +52,9 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
   ж) Палитра Ctrl+K / режим показа (уже так в birge.js R01 @ 4dd0c8e6): «Сцена 9» → setSection("agencies",
      {path: "crisis/inc-w15-buran"}); «Сцена 8 · табло» → setSection("agencies") (или path "board").
   з) Лимит частоты (по желанию): "incidents.updates": ((60, 60, False),) — житель опрашивает раз в минуту.
+  и) Ленивая загрузка (R10 B-113, если будете делать): agencies.js можно грузить при первом открытии раздела agencies
+     или crisis (до вызова mount); crisis-layer.js — сразу со страницей: баннер жителю зоны и слой «Кризис» на карте
+     нужны без открытия раздела (crisis-layer.js сам ~10 КБ, без зависимостей от agencies.js).
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 2. R11 · меню (IA_ROUND15) и словарь
@@ -62,16 +73,30 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
     • баннер жителю — в BirgeShell.alertSlot() (§7.9), одна строка, точка-пульс 2 с, «Подробнее» → #crisis/<id>,
       «Скрыть» — до конца сессии; без слота — свой контейнер и своя карточка.
   Отступления от IA_ROUND15 (осознанно):
-    • строки табло 26 px, а не 44 px: иначе 20 служб не помещаются на одном экране 1366 (критерий «готово» R17);
+    • строки табло 25 px, а не 44 px: иначе 20 служб не помещаются на одном экране 1366 (критерий «готово» R17;
+      R10 B-110: «строки не трогать»). Строка — role="row" с фокусом (Enter/пробел раскрывают), не <button>;
       на телефоне строка — две линии ≥ 44 px;
     • период — «7 · 30 · 90 дней» (у IA — 7 · 30): 90 дней показывают редкие службы и передачи по кругу.
+  Шкала R11 (B-110/B-112): R17 больше не берёт --fs-xs (12 px) — подписи 13 px (--fs-caption); вкладки, район и
+  «Обновить» — 44 px, период «7 · 30 · 90» — 40 px в подложке 44 px, сортировка столбцов — 40 px; читаемый текст —
+  --c-text-2 (7,5:1), а не --c-text-3.
   Слой карты: BirgeShell.registerLayer({id: "crisis", …}); подпись — shell.layers.crisis, если ключ есть.
   Просьба: ключи shell.nav.agencies («Штаб ведомств» / «Ведомстволар штабы»), shell.layers.crisis («Кризис» /
   «Төтенше жағдай») и все ключи agencies.* / crisis.* / crisis.map.* из запасных словарей:
     web/civic/agencies/agencies.js — объект KEYS (ru и kk, ~150 ключей);
     web/civic/agencies/crisis-layer.js — объект TEXT (ключи crisis.map.<имя>).
   Казахский — мой черновик, нужна вычитка (особенно: «Жіберулер» для «Передачи», «Бірлескен» для «Совместные»,
-  «Төтенше жағдай» для «Кризис», тексты шаблонов кризисов в ui/civic_agencies/crisis.py TEMPLATES).
+  тексты шаблонов кризисов в ui/civic_agencies/crisis.py TEMPLATES).
+  Сверка со словарём R11 @ b6f039c4 (15 окт): 142 ключа agencies.*/crisis.* у вас есть; 8 ваших правок я взял в запасной
+  словарь (crisis.update.send «Отправить жителям», crisis.close «Закрыть кризис», crisis.new «Новый кризис»; ҚАЗ:
+  agencies.tab.crisis «Төтенше жағдай», agencies.demo_note «Үлгі: …», те же три кнопки). НОВЫЕ ключи R17 — добавьте:
+    agencies.tab.calendar, agencies.calendar.add, agencies.calendar.missing, agencies.services_link,
+    agencies.pickups.title, agencies.pickups.hint, agencies.pickups.when,
+    agencies.kpi.overdue_answer («ответ просрочен» / «жауап мерзімі өтті» — как inbox.tab.overdue_answer R09),
+    agencies.kpi.overdue_fix («не исправлено в срок» / «мерзімінде түзетілмеген» — как akim.kpi.overdue_hint R08),
+    agencies.col.fix («Срок испр.» / «Түзету мерзімі»), agencies.col.fix_hint, agencies.row.label_v2, agencies.sort.fix,
+    agencies.part.todo («ждёт» / «күтуде» — R10 B-117), crisis.chronicle, crisis.open_hq, crisis.public.services,
+    crisis.public.show, crisis.public.updates. Тексты ru/kk — в KEYS web/civic/agencies/agencies.js.
   Значки: в icons.svg нет пламени, молнии, газа, лапы, светофора, сирены — службы heating/power/gas/animals/traffic/
   emergency пока с ближайшими (home, bulb, wind, alert, alert, shield). Если добавите i-flame, i-bolt, i-gas, i-paw,
   i-traffic-light, i-siren — поменяю PROFILES в ui/civic_agencies/profiles.py (одна строка на службу).
@@ -82,6 +107,8 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
 3. Функции R17 для соседей (в том же процессе; сервиса нет — пустой ответ, не ошибка; CONTRACT §7)
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
   import ui.civic_agencies as agencies
+  Все функции принимают db_path=… (именованный): тот же CIVIC_DB_PATH; сервис — один на базу (make_service отдаёт уже
+  поднятый шлюзом, а не второй экземпляр — демо-кризис не сбрасывается посреди показа).
   R06  agencies.updates(device, since=None) → [событие §5.8]: module "R17", kind "incident.update", target {district},
        title_ru/kk «Буран в Нуре: <текст>», link "#crisis/<id>" (публичная карточка, IA_ROUND15 §5.12).
        Зона жителя — двор R16 («Я живу здесь») или подписка R08 «Рядом» на район. Неизвестно, где живёт, — [].
@@ -92,9 +119,11 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
        agencies.crisis_link(district, kind="blizzard") → "#agencies/crisis/<id>" (идёт кризис района) или
        "#agencies/crisis/new/blizzard/nura" — для кнопки «Открыть кризисный штаб» у тревоги пульса.
        В JS то же: BirgeAgencies.openCrisis({incident}) | BirgeAgencies.openCrisis({template: "blizzard", district: "nura"}).
-  R03  agencies.board(days, district) и agencies.list_incidents(status="active", district=None) → {items: [...]}
-       (имена совпадают с BOARD_FUNCS / INCIDENT_FUNCS в agent/civic_assistant/analyst/sources.py @ 6c7777e2).
+  R03  agencies.board(days, district) и agencies.active_incidents(district) / list_incidents(status, district) →
+       {items: [...]} (имена из BOARD_FUNCS / INCIDENT_FUNCS agent/civic_assistant/analyst/sources.py; R03 берёт
+       active_incidents первым). list_incidents по умолчанию status="all" (идущие и закрытые — R07 «Хроника»).
        Поле verified_share — доля 0…1 (не проценты); median_answer_days — рабочие дни или null.
+       «Просрочено» — два числа (§5): totals.overdue = overdue_answer (срок ответа R09), totals.overdue_fix (R08).
   R07  agencies.incident_marks(start=None, end=None) → [{id, kind, title_ru, title_kk, started_at, closed_at, district,
        status, demo}] — отметки «Буран 12 окт» на шкале хроники.
   R12  agencies.service_profiles() → [профиль §5.4 ×20] (цвет, значок, сроки, названия R08) — уже ищется в
@@ -104,7 +133,9 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 4. R09 · «Обращения» с фильтром по службе (клик по строке табло → «Открыть в «Обращениях»»)
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
-  Перед переходом в раздел inbox R17 кладёт фильтр и шлёт событие (подхватите любое):
+  Оболочка раунда 15 (пути разделов): R17 открывает «Обращения» адресом #inbox/service=<id> — R09 v2.1 читает
+  service= из адреса (complaint-list.js serviceFromHash) и ставит чип «Служба: …». Так же «Совместные» → ведущая служба.
+  Для старой оболочки (FINAL-4) и на всякий случай R17 ещё кладёт фильтр и шлёт событие:
     sessionStorage["birge.inbox.filter"] = {"service": "water", "ids": ["c-…", …]}
     document.dispatchEvent(new CustomEvent("birge:inbox-filter", {detail: {service, ids}}))
   Чтение данных: R17 берёт записи у R09 так (первое доступное): configure(records) от R01 → функция модуля
@@ -113,7 +144,11 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
   role, status, updated_at}], handoffs[{at, from, to, reason, by_role}], status, status_history, due_at, resolution.
   Признак «R09 v2.1 поставлен» для R17 — маршрут "/complaints/{id}/handoff" в integration.ROUTES: тогда демо-сборка
   перестаёт брать фикстуру R17 и считает по базе R09.
-  Статус части: done | in_progress | accepted | new | rejected (fixed читаю как done).
+  Статус части: todo | in_progress | done (R09 v2.1) и старые accepted | new | rejected (fixed читаю как done);
+  подписи всех — ключи agencies.part.* (todo — «ждёт», R10 B-117).
+  Ваши функции service_parts(db, days, district) и handoffs(db, …) знаю: сейчас R01 отдаёт R17 полные записи
+  (configure(records=store.list())), этого хватает; если решите не отдавать тексты соседям — переключу табло на
+  service_parts (поля совпадают: services[], handoffs, resolution, reopen_count, due_at, answered_at, deadline_state).
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 5. R02 / R10 · сверка чисел табло с демо-миром
@@ -128,13 +163,23 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
       due_at ставит R09 при засеве — в сыром мире его нет, поэтому сверять на базе R09 после seed_world.
   Единица — обращение, не место (как «Картина дня» R08); «Обращения» R09 группируют по месту — в ответе табло есть
   places (сколько мест у открытых) для подписи «N обращений · M мест».
+  «ПРОСРОЧЕНО» — ДВА ЧИСЛА (R02 INTEGRATION §3, R10 B-104): в ответе GET agencies/board
+    services[].overdue · totals.overdue = totals.overdue_answer — срок ПЕРВОГО ОТВЕТА прошёл (вкладка R09
+      «Ответ просрочен»): R10 C2 = «Обращения» R09;
+    services[].overdue_fix · totals.overdue_fix — срок ИСПРАВЛЕНИЯ прошёл (ui.civic_akim.deadlines.due, как
+      kpi.overdue «Картины дня»: статус new/accepted/in_progress и now > due): R10 C1 = R08. Нет R08 в сборке — null.
+    На экране — две плитки с разными подписями («ответ просрочен» / «не исправлено в срок»), столбец «Срок ответа»
+    (полоса) и столбец «Срок испр.»; сортировка по обоим.
+  «Открыто у службы» (R10 D) — незакрытые части службы (done/rejected — закрыты), как правило R10 для совместных.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 6. R04 · модерация обновлений кризиса
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
-  R17 зовёт ui.civic_ml_api.moderate(text, lang) → {text_public, flags}; flags — список строк или {имя: bool}.
-  Публичное обновление с флагом phone|iin|email|pii|personal_data → 422 «Уберите телефон, ИИН или e-mail»;
-  rude|profanity|obscene → 422 «Уберите грубые слова» (текст пишет сотрудник — не маскируем, а просим исправить).
+  R17 зовёт ui.civic_ml_api.moderate(text, lang). Понимает ответ раунда 15 (@ f20775ab): flags — [{kind, group, …}]
+  (беру и kind, и group), наверху pii / rude (True — флаг); и старые формы (список строк, {имя: bool}).
+  Публичное обновление с флагом phone|iin|email|pii|personal_data (в т. ч. contact группы pii) → 422 «Уберите телефон,
+  ИИН или e-mail»; rude|profanity|obscene → 422 «Уберите грубые слова» (текст пишет сотрудник — не маскируем, а просим
+  исправить). Тест: test_r04_round15_flags_kind_and_group.
   Нет функции — свои правила личных данных (как R13) + ui.civic_ml_api.profanity.moderation.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -142,7 +187,13 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
   R17 ищет в ui.civic_together функцию (по порядку) yards_of_device | device_yards | my_yards | yards_for_device:
   (device_id) → [yard-id | {"id": yard-id}] — дворы, где житель нажал «Я живу здесь». Только id, без состава.
-  Если назовёте иначе — напишите в своём INTEGRATION, добавлю имя.
+  На ветке R16 @ fbd9e247 такой функции пока нет — баннер кризиса жителю идёт по подписке R08 «Рядом» на район или
+  по тому, что он смотрит на зону. Просьба: одна функция (любое имя из списка) — двор жителя для баннера и ленты.
+  ВЫВОЗ ПОСЛЕ ДЕЛ ЖИТЕЛЕЙ (IDEA §2A «задача оператору вывоза — R17») — подключено: R17 зовёт pickups(district, db_path)
+  и показывает на табло: число в строке службы (обычно waste — «Оператор вывоза мусора») и список «Вывоз после дел
+  жителей» в раскрытой строке (дело, заметка акимата, когда). В API: board.pickups {service: n} и
+  board?service=<id> → pickup_items (только публичные поля). Проверено браузером: сотрудник «Поддержал» дело с вывозом
+  через POST together/initiatives/{id}/support → отметка «1» у waste и строка в списке.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 8. R15 · что проверить у R17
@@ -167,3 +218,17 @@ LOCAL-задач нет: всё работает без сети (форма з�
     вне «Ведомств» этого не получит.
   • R01: слот баннера (#birge-alert) на 1366 по вертикали совпадает со строкой чипов категорий (top 76 px) и может
     закрыть «Ещё» у чипов; на 375 во всю ширину перекрывает кнопку «Моё место» справа — проверьте на кадрах.
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+10. R10 · дефекты на R17 (research/round-15-results/R10/BUGS.md) — что сделано
+──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  B-104 «Просрочено — одно слово, два числа»: табло отдаёт overdue (= overdue_answer) и overdue_fix (§5), на экране
+        две подписи «ответ просрочен» / «не исправлено в срок» и столбец «Срок испр.». R08 и R09 — свои подписи (ключи R11).
+  B-110 «шрифт 12 px, вкладки 36 px»: подписи 13 px, вкладки 44, район 44, период 40 (в подложке 44), сортировка
+        столбцов 40, «Обновлено …» 40; строки табло — role="row" (25 px, 20 служб видны в панели 1366 × 768 оболочки R01).
+        Своя проверка в tests/civic/R17/agencies_browser.cjs повторяет вашу (ux_lib uiScreen) внутри экрана R17.
+  B-115 «две главные кнопки в «Календаре работ»»: R12 в режиме embedded уже рисует «Добавить работу» сам
+        (.wcal-addmain) — своя кнопка R17 тогда прячется (CSS :has); со старым R12 без неё — видна кнопка R17.
+        R12 ничего менять не нужно.
+  B-117 «статус части todo без текста»: ключ agencies.part.todo («ждёт» / «күтуде»).

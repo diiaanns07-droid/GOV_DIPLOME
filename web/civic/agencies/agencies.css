@@ -1,12 +1,13 @@
 /*
  * Birge · «Штаб ведомств» (R17, раунд 15). Только токены ui-kit (web/civic/ui-kit/tokens.css); свои — лишь размеры строк.
- * Табло: 20 служб на одном экране 1366 × 768 — строки 28 px, числа табличные; телефон — строки в две линии.
+ * Табло: 20 служб на одном экране 1366 × 768 — строки 25 px, числа табличные; телефон — строки в две линии.
+ * Мельче 13 px текста нет, зоны нажатия ≥ 40–44 px (VISUAL_BRIEF §4, R10 B-110); строки — role="row", не кнопки.
  * Слой «Кризис» и баннер жителям — в конце файла (crisis-layer.js).
  */
 
 .ag {
-  --ag-row: 26px;
-  --ag-cols: minmax(190px, 1.7fr) 64px minmax(132px, 1.25fr) 76px minmax(104px, 0.95fr) 58px 76px 56px;
+  --ag-row: 25px;
+  --ag-cols: minmax(184px, 1.7fr) 64px minmax(128px, 1.25fr) 76px minmax(100px, 0.95fr) 72px 82px 56px;
   display: flex;
   flex-direction: column;
   gap: var(--s-2);
@@ -48,7 +49,7 @@
   border-bottom: 0;
 }
 .ag-head .bk-tabs > [role="tab"] {
-  min-height: 36px;
+  min-height: 44px;   /* зона нажатия ≥ 44 px (VISUAL_BRIEF §4 п. 10, R10 B-110) */
 }
 .ag-filters {
   display: flex;
@@ -63,8 +64,8 @@
   background: var(--c-fill);
 }
 .ag-seg > button {
-  min-width: 40px;
-  min-height: 32px;
+  min-width: 44px;
+  min-height: 40px;
   padding: 0 8px;
   border: 0;
   border-radius: 10px;
@@ -82,7 +83,7 @@
   box-shadow: var(--shadow-1);
 }
 .ag-select {
-  min-height: 36px;
+  min-height: 44px;
   max-width: 180px;
   padding: 0 28px 0 12px;
   border: 1px solid var(--c-line-strong);
@@ -99,8 +100,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: 0;
   border-radius: var(--r-m);
   background: var(--c-fill);
@@ -121,8 +122,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 6px 12px;
-  color: var(--c-text-3);
-  font-size: var(--fs-xs);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
 }
 .ag-demo {
   display: inline-flex;
@@ -132,7 +133,7 @@
   border-radius: var(--r-s);
   background: var(--c-demo-soft);
   color: var(--c-demo);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   font-weight: var(--fw-semi);
 }
 
@@ -164,7 +165,8 @@
 /* ───── KPI ───── */
 .ag-kpis {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;   /* 4 или 5 плиток (без R08 — без «не исправлено в срок») — одной строкой */
   gap: var(--s-2);
 }
 .ag-kpi {
@@ -189,7 +191,7 @@
   min-width: 0;
   overflow: hidden;
   color: var(--c-text-2);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   line-height: 1.2;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -207,6 +209,9 @@
   background: var(--c-surface);
   overflow: hidden;
 }
+.ag-table--fix {
+  --ag-cols: minmax(166px, 1.6fr) 58px minmax(108px, 1.1fr) 72px 66px minmax(88px, 0.9fr) 72px 82px 56px;
+}
 .ag-thead,
 .ag-row {
   display: grid;
@@ -219,7 +224,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  min-height: 30px;
+  min-height: 40px;
   border-bottom: 1px solid var(--c-line);
   background: var(--c-surface);
 }
@@ -228,16 +233,18 @@
   align-items: center;
   justify-content: flex-end;
   gap: 2px;
-  min-height: 30px;
+  min-width: 0;
+  min-height: 40px;
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font: inherit;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
+  line-height: 1.15;
   text-align: right;
-  white-space: nowrap;
+  overflow-wrap: normal;   /* длинные казахские подписи — в две строки по пробелу, не посреди слова */
   cursor: pointer;
 }
 .ag-th:first-child {
@@ -249,9 +256,9 @@
   color: var(--c-ink);
 }
 .ag-th__arrow {
+  flex: none;
   width: 10px;
   color: var(--c-text-2);
-  font-size: 10px;
 }
 .ag-row {
   position: relative;
@@ -280,7 +287,7 @@
   outline-offset: -3px;
 }
 .ag-row--quiet {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
 }
 .ag-svc {
   display: flex;
@@ -324,15 +331,15 @@
   white-space: nowrap;
 }
 .ag-num--zero {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
 }
 .ag-num--alert {
   color: var(--c-danger);
   font-weight: var(--fw-semi);
 }
 .ag-num small {
-  color: var(--c-text-3);
-  font-size: var(--fs-xs);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
 }
 
 /* Полоса срока: просрочено · сегодня · в срок · ответ дан. Цвет не один: рядом число просроченных словом. */
@@ -380,7 +387,7 @@
 .ag-deadline__note {
   flex: none;
   min-width: 26px;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   font-variant-numeric: tabular-nums;
   text-align: right;
   white-space: nowrap;
@@ -414,7 +421,7 @@
   font-variant-numeric: tabular-nums;
 }
 .ag-flow span[data-zero] {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
 }
 .ag-total {
   min-height: 30px;
@@ -470,7 +477,7 @@
 }
 .ag-item__code {
   flex: none;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-variant-numeric: tabular-nums;
 }
 .ag-item__title {
@@ -482,8 +489,8 @@
 }
 .ag-item__meta {
   flex: none;
-  color: var(--c-text-3);
-  font-size: var(--fs-xs);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
   white-space: nowrap;
 }
 .ag-pill {
@@ -495,7 +502,7 @@
   border-radius: var(--r-pill);
   background: var(--c-fill);
   color: var(--c-text-2);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
   white-space: nowrap;
 }
@@ -557,8 +564,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 8px;
-  color: var(--c-text-3);
-  font-size: var(--fs-xs);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
 }
 .ag-lrow__end {
   display: flex;
@@ -575,7 +582,7 @@
   border-radius: var(--r-pill);
   background: var(--c-fill);
   color: var(--c-ink);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
   white-space: nowrap;
 }
@@ -600,7 +607,7 @@
 .ag-section-title {
   margin: 6px 0 0;
   color: var(--c-text-2);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   font-weight: var(--fw-semi);
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -608,7 +615,7 @@
 .ag-quote {
   overflow: hidden;
   color: var(--c-text-2);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -682,7 +689,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 34px;
+  min-height: 40px;
   padding: 0 12px 0 6px;
   border: 1px solid var(--c-line);
   border-radius: var(--r-pill);
@@ -710,7 +717,7 @@
   background: var(--c-surface);
 }
 .ag-svcchip__count {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-variant-numeric: tabular-nums;
 }
 .ag-tasks {
@@ -737,8 +744,8 @@
   align-items: center;
   justify-content: center;
   flex: none;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   border: 0;
   border-radius: 8px;
@@ -762,14 +769,14 @@
   font-size: var(--fs-caption);
 }
 .ag-task[data-status="done"] .ag-task__text {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   text-decoration: line-through;
   text-decoration-color: var(--c-line-strong);
 }
 .ag-task__svc {
   flex: none;
-  color: var(--c-text-3);
-  font-size: var(--fs-xs);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
   white-space: nowrap;
 }
 .ag-actions {
@@ -802,8 +809,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  color: var(--c-text-3);
-  font-size: var(--fs-xs);
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
 }
 .ag-upd__text {
   margin: 0;
@@ -813,7 +820,7 @@
 .ag-upd__other {
   margin: 0;
   color: var(--c-text-2);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   line-height: var(--lh-text);
 }
 .ag-form {
@@ -836,7 +843,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 36px;
+  min-height: 44px;
   font-size: var(--fs-caption);
   cursor: pointer;
 }
@@ -848,7 +855,7 @@
 .ag-field-error {
   margin: 0;
   color: var(--c-danger);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
 }
 .ag-templates {
   display: flex;
@@ -863,7 +870,7 @@
 }
 .ag-taskedit input,
 .ag-taskedit select {
-  min-height: 36px;
+  min-height: 44px;
   min-width: 0;
   padding: 0 10px;
   border: 1px solid var(--c-line-strong);
@@ -888,7 +895,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 32px;
+  min-height: 40px;
   font-size: var(--fs-caption);
   cursor: pointer;
 }
@@ -1002,8 +1009,8 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  min-height: 32px;
-  padding: 0 4px;
+  min-height: 40px;
+  padding: 0 6px;
   border: 0;
   border-radius: var(--r-s);
   background: transparent;
@@ -1018,9 +1025,9 @@
 }
 .ag-link--quiet {
   gap: 4px;
-  min-height: 28px;
-  color: var(--c-text-3);
-  font-size: var(--fs-xs);
+  min-height: 40px;
+  color: var(--c-text-2);
+  font-size: var(--fs-caption);
   font-weight: var(--fw-regular);
 }
 .ag-link--quiet .ic {
@@ -1112,6 +1119,7 @@
     margin-left: 0;
   }
   .ag-kpis {
+    grid-auto-flow: row;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .ag-kpirow {
@@ -1156,6 +1164,7 @@
   .ag-row > [data-col="deadline"] {
     grid-area: deadline;
   }
+  .ag-row > [data-col="fix"],
   .ag-row > [data-col="answer"],
   .ag-row > [data-col="verified"],
   .ag-row > [data-col="returned"],
@@ -1214,7 +1223,7 @@
   flex-wrap: wrap;
   gap: 4px 12px;
   color: var(--c-text-2);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1316,7 +1325,7 @@
 .ag-banner__text {
   overflow: hidden;
   color: var(--c-text-2);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1355,8 +1364,8 @@
   height: 16px;
 }
 .ag-banner__close {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: 0;
   border-radius: 10px;
   background: transparent;
@@ -1427,4 +1436,9 @@
     animation: none;
     opacity: 0.4;
   }
+}
+
+/* Вкладка «Календарь работ»: главная кнопка — одна. R12 (embedded) рисует «Добавить работу» сам — своя прячется. */
+.ag:has(.wcal-addmain) [data-calendar-actions] {
+  display: none;
 }
