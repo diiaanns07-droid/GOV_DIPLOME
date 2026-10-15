@@ -325,10 +325,12 @@ def write(result: dict, out_dir: Path, raw_dir: Path) -> dict:
                "count": len(result["objects"]), "items": result["objects"]}
     if result.get("retired"):
         objects["retired_note"] = (
+            # Текст не меняю после поставки 6: по sha256 objects.json демо-мир R02 сверяет, на каких данных он собран.
+            # Точное правило (по явной ссылке выбывший id остаётся целью) — engine/civic_geo/README.md, п. 5.
             "R10 B-103: светофоры и переходы — из свежего снимка OSM (raw/, LOCAL-10). retired — узлы старого снимка "
-            "пешеходной сети, которых в свежем нет: их не предлагают поиск рядом и кандидаты места жалобы, но по явной "
-            "ссылке (старая табличка QR, демо-мир) id находится и остаётся целью; replaced_by — свежий узел того же вида "
-            f"не дальше {int(REPLACED_M)} м (на него печатаются новые таблички).")
+            "пешеходной сети, которых в свежем нет: не цели для новых жалоб и не в поиске рядом, только чтобы старые "
+            "ссылки по id (демо-мир, QR) находились; replaced_by — свежий узел того же вида не дальше "
+            f"{int(REPLACED_M)} м.")
         objects["retired_count"] = len(result["retired"])
         objects["retired"] = result["retired"]
     yards = {"schema": "r12-geo-yards-v1", **common,
