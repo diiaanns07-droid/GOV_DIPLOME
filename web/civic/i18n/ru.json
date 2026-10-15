@@ -3339,5 +3339,21 @@
  "qr.form.updated": "Номер {old} обновлён по свежей карте OSM: на табличке — {id}.",
  "qr.form.gone": "Объекта {id} нет в свежей карте OSM — проверьте на месте перед печатью.",
  "common.nav.inbox": "Обращения",
- "common.nav.agencies": "Ведомства"
+ "common.nav.agencies": "Ведомства",
+ "together.range_days": "{day}, {from} — {day2}, {to}",
+ "board.kpi.overdue_fix": "Не исправлено в срок",
+ "board.kpi.overdue_places": {
+  "one": "в {n} месте",
+  "few": "в {n} местах",
+  "many": "в {n} местах"
+ },
+ "week.kpi.new_7d": "Поступило за 7 дней",
+ "week.kpi.fixed_7d": "Исправлено за 7 дней",
+ "week.last7": "Последние 7 дней",
+ "week.prev7": "Неделей раньше",
+ "week.window.now": "последние 7 дней — до {time}",
+ "week.window.past": "7 дней до конца {date}",
+ "week.days.first_from": "первый столбик — с {time} накануне",
+ "week.kpi.overdue_fix": "Не исправлено в срок",
+ "week.kpi.work": "В работе"
 }

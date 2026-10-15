@@ -1256,5 +1256,17 @@
  "qr.form.updated": "R12 · web/civic/qr/print.js (INTEGRATION R12, поставка 8)",
  "qr.form.gone": "R12 · web/civic/qr/print.js (INTEGRATION R12, поставка 8)",
  "common.nav.inbox": "R01 · web/civic/shell/birge.js (подпись скрытой кнопки раздела в виде «Житель»; в DOM был сам ключ)",
- "common.nav.agencies": "R01 · web/civic/shell/birge.js (подпись скрытой кнопки раздела в виде «Житель»; в DOM был сам ключ)"
+ "common.nav.agencies": "R01 · web/civic/shell/birge.js (подпись скрытой кнопки раздела в виде «Житель»; в DOM был сам ключ)",
+ "together.range_days": "R16 · web/civic/together/together-text.js",
+ "board.kpi.overdue_fix": "R08 · web/civic/board/board.js",
+ "board.kpi.overdue_places": "R08 · web/civic/board/board.js",
+ "week.kpi.new_7d": "R08 · web/civic/akim/week.js",
+ "week.kpi.fixed_7d": "R08 · web/civic/akim/week.js",
+ "week.last7": "R08 · web/civic/akim/week.js",
+ "week.prev7": "R08 · web/civic/akim/week.js",
+ "week.window.now": "R08 · web/civic/akim/week.js",
+ "week.window.past": "R08 · web/civic/akim/week.js",
+ "week.days.first_from": "R08 · web/civic/akim/week.js",
+ "week.kpi.overdue_fix": "R08 · web/civic/akim/week.js",
+ "week.kpi.work": "R08 · web/civic/akim/week.js"
 }

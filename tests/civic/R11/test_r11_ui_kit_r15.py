@@ -162,3 +162,10 @@ def test_feed_title_keeps_kazakh_predicate():
     css = re.sub(r"/\*.*?\*/", "", COMPONENTS, flags=re.S)
     rule = re.search(r"\n:lang\(kk\) \.bk-feed__title \{([^}]*)\}", css)
     assert rule and "-webkit-line-clamp: 4" in rule.group(1)
+
+
+def test_inactive_tab_label_contrast():
+    """Запрос R01 (приёмка R10 на B0.6): неактивная вкладка — --c-text-2 (≥ 4.5 : 1), не --c-text-3 (3.54 : 1)."""
+    css = re.sub(r"/\*.*?\*/", "", COMPONENTS, flags=re.S)
+    rule = re.search(r'\n\.bk-tabs > \[role="tab"\] \{([^}]*)\}', css).group(1)
+    assert "color: var(--c-text-2)" in rule and "c-text-3" not in rule
