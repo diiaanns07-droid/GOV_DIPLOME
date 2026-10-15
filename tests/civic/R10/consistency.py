@@ -140,15 +140,17 @@ class Consistency:
         return r.body if r is not None and r.status == 200 and isinstance(r.body, dict) else None
 
     def agencies_board(self, days):
+        """(строки служб, итоги) табло R17: {"services": [{service, open, overdue, …}], "totals": {open, overdue, …}}."""
         if not self.staff_ok:
-            return None
+            return None, None
         r = self.get(self.staff, f"/agencies/board?days={days}&district={self.d}")
         if r is None or r.status != 200:
-            return None
+            return None, None
         body = unwrap(r.body)
         rows = body if isinstance(body, list) else next(
-            (body.get(k) for k in ("rows", "services", "items", "board") if isinstance(body.get(k), list)), None)
-        return rows
+            (body.get(k) for k in ("services", "rows", "items", "board") if isinstance(body.get(k), list)), None)
+        totals = body.get("totals") if isinstance(body, dict) and isinstance(body.get("totals"), dict) else None
+        return rows, totals
 
     # --- проверки
     def run(self):
@@ -202,14 +204,16 @@ class Consistency:
         overdue_r09 = self.value("просрочено в районе", "«Обращения» R09", "R09",
                                  sum(1 for x in r09_all if is_overdue(x)) if r09_all is not None else None,
                                  "открытые жалобы района со сроком «просрочено»")
-        board = self.agencies_board(30)
+        board, totals = self.agencies_board(30)
         overdue_r17 = None
         open_r17 = None
         if board is not None:
-            overdue_r17 = sum(int(row.get("overdue") or 0) for row in board if isinstance(row, dict))
+            # Совместная жалоба открыта у каждой своей службы: по строкам — части, по итогам — обращения.
+            overdue_r17 = (int(totals["overdue"]) if totals and isinstance(totals.get("overdue"), int)
+                           else sum(int(row.get("overdue") or 0) for row in board if isinstance(row, dict)))
             open_r17 = {row.get("service") or row.get("id"): int(row.get("open") or row.get("open_count") or 0)
                         for row in board if isinstance(row, dict)}
-        self.value("просрочено в районе", "табло служб R17", "R17", overdue_r17, "сумма просрочек служб района")
+        self.value("просрочено в районе", "табло служб R17", "R17", overdue_r17, "итог «просрочено» табло района (обращения)")
         sit = self.get(self.staff, "/akim/board") if self.staff_ok else None
         overdue_sit = None
         if sit is not None and sit.status == 200 and isinstance(sit.body, dict):
@@ -226,11 +230,22 @@ class Consistency:
 
         # D. «Открытые у службы»
         if open_30 is not None:
-            by_service = Counter(lead_service(x) for x in (r09_all or []) if x.get("status") in OPEN)
+            by_service = Counter()
+            for x in r09_all or []:
+                if x.get("status") not in OPEN:
+                    continue
+                parts = [p for p in (x.get("services") or []) if isinstance(p, dict) and p.get("service")]
+                if parts:  # совместное исполнение (§5.1): у каждой службы своя часть; закрытая часть не открыта
+                    for part in parts:
+                        if part.get("status") != "done":
+                            by_service[part["service"]] += 1
+                else:
+                    by_service[lead_service(x)] += 1
             r09_services = {k: v for k, v in sorted(by_service.items()) if k}
         else:
             r09_services = None
-        self.value("открытые по службам", "«Обращения» R09", "R09", r09_services, "ведущая служба открытых жалоб района")
+        self.value("открытые по службам", "«Обращения» R09", "R09", r09_services,
+                   "открытые жалобы района по службам (у совместных — каждая незакрытая часть)")
         self.value("открытые по службам", "табло служб R17", "R17",
                    {k: v for k, v in sorted(open_r17.items()) if v} if open_r17 else open_r17, "open по строкам табло")
         self.compare("D. открытые у каждой службы: табло R17 = «Обращения» R09",
@@ -256,12 +271,18 @@ class Consistency:
         complaints = [c for c in data.get("complaints", []) if isinstance(c, dict) and c.get("district") == self.d]
 
         def age_days(c):
-            if isinstance(c.get("ago_days"), (int, float)):
-                return float(c["ago_days"]) + float(c.get("ago_hours") or 0) / 24
-            t = parse_time(c.get("created_at"))
+            # Время мира R02 (SCHEMA §1) — объект {"ago_hours": 30.5} / {"ago_days": 3.25}; абсолютная строка — как есть.
+            v = c.get("created_at")
+            if isinstance(v, dict):
+                if isinstance(v.get("ago_days"), (int, float)):
+                    return float(v["ago_days"])
+                if isinstance(v.get("ago_hours"), (int, float)):
+                    return float(v["ago_hours"]) / 24
+                return None
+            t = parse_time(v)
             return (self.now - t).total_seconds() / 86400 if t else None
 
-        recent = [c for c in complaints if (age_days(c) or 0) <= 30]
+        recent = [c for c in complaints if (age_days(c) if age_days(c) is not None else 999) <= 30]
         return {"complaints_30": len(recent), "metoo_30": sum(people(c) - 1 for c in recent)}
 
     def yard_check(self, r09_all):

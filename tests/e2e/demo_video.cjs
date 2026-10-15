@@ -1,0 +1,539 @@
+// R10 · раунд 15 · демо-ролик Birge: автоматическая запись сценария v2 (IDEA §3) в Playwright, 1366×768, ҚАЗ и РУС.
+//
+//   NODE_PATH="$(npm root -g)" node tests/e2e/demo_video.cjs --root <папка сборки> --out <папка>
+//        [--langs kk,ru] [--parts 1,2] [--world] [--basemap simplified|real] [--glass keep|off|auto]
+//        [--subtitles <json>] [--fast] [--no-mp4]
+//
+// Что получается в <out> (на каждый язык):
+//   birge-demo-<lang>.webm — запись Playwright (как есть);  birge-demo-<lang>.mp4 — H.264 для заявки (если есть ffmpeg);
+//   birge-demo-<lang>.vtt / .srt — субтитры с временем (те же, что «вшиты» в кадр);  кадры <lang>-<шаг>.jpg;
+//   MANIFEST.json — сборка, длительность, сцены с временем, что пропущено и почему.
+// Субтитры, пометка «Пример / упрощённая подложка» и курсор рисуются слоем поверх страницы (pointer-events: none) —
+// нажатиям не мешают и уже есть в видео. Текст — tests/e2e/fixtures/video_subtitles.json (черновик R10; окончательный —
+// docs/gton/VIDEO_SCRIPT.md R14, казахский проверяет R11), --subtitles <файл> — свой текст.
+// Облако: подложка OpenFreeMap не грузится — карта с упрощённым фоном, в кадре это подписано (--basemap simplified).
+// Ноутбук с интернетом (LOCAL-16): --basemap real — пометка про подложку не ставится.
+// Сценарий: часть 1 — шаги 1–7 DEMO_SCRIPT R01 (FINAL-4); часть 2 — сцены 7–9 «Бірге» (IDEA §3), если их модули есть в
+// сборке; нет модуля — сцена не записывается, причина в MANIFEST (в ролике — одна строка «появятся в FINAL-5»).
+// Каждый язык — свой сервер с чистой временной базой (сценарий меняет данные: «Я тоже», проект, статусы).
+"use strict";
+const { chromium } = require("playwright");
+const { execFileSync } = require("child_process");
+const fs = require("fs"), path = require("path"), os = require("os");
+const L = require("./r10_lib.cjs");
+const { sleep, T, esc, textRe, firstVisible } = L;
+
+const args = L.parseArgs(process.argv.slice(2));
+const ROOT = path.resolve(args.root || path.join(__dirname, "../.."));
+const OUT = path.resolve(args.out || path.join(os.tmpdir(), "r10-video"));
+const LANGS = String(args.langs || "kk,ru").split(",");
+const PARTS = String(args.parts || "1,2").split(",").map(Number);
+const [W, H] = String(args.size || "1366x768").split("x").map(Number);
+const FAST = !!args.fast;                       // паузы ×0,35 — пробный прогон, не для показа
+const BASEMAP = args.basemap === "real" ? "real" : "simplified";
+const GLASS = args.glass === "auto" ? null : String(args.glass || "keep");
+const SUBS = JSON.parse(fs.readFileSync(path.resolve(args.subtitles || path.join(__dirname, "fixtures/video_subtitles.json")), "utf8"));
+const STOP = { id: "osm-node-4109037549", name: "Хан Шатыр", name_kk: "Хан Шатыр", point: [71.406553, 51.131155] };
+const PLACE = [71.4148, 51.1131];               // место сквера (как demo_flow.cjs)
+const SHOT_Q = 72;
+
+// pause — паузы для зрителя (в --fast короче); ожидания ответа интерфейса — wait (всегда полные, иначе шаги не проходят).
+const pause = (ms) => sleep(FAST ? Math.round(ms * 0.35) : ms);
+const wait = (ms) => sleep(ms);
+const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
+const dbg = (...xs) => { if (process.env.R10V_DEBUG) log("  ·", ...xs); };
+
+// ------------------------------------------------------------------------------------------------ слой поверх страницы
+// Субтитры внизу по центру, пометка о данных справа внизу, заголовок части сверху, курсор и «круг» нажатия.
+// Всё — pointer-events: none и z-index максимальный: интерфейс под слоем работает как обычно.
+function overlayScript() {
+  const css = `
+  /* Субтитры: правее строки легенды (слева внизу) и выше подписи © OpenStreetMap (ODbL — её не закрываем). */
+  #r10v-sub{position:fixed;left:400px;right:96px;bottom:58px;display:flex;justify-content:center;opacity:0;
+    transition:opacity .22s ease-out;pointer-events:none;z-index:2147483646}
+  /* Текст слоя — через content: attr(data-t): поиск элементов по тексту (getByText) его не видит и не путает с интерфейсом. */
+  #r10v-sub span{display:inline-block;max-width:100%;padding:9px 16px;border-radius:12px;background:rgba(14,18,16,.84);
+    color:#fff;font:500 19px/1.38 Inter,"Segoe UI",Arial,sans-serif;text-align:center;letter-spacing:.005em;
+    box-shadow:0 6px 24px rgba(0,0,0,.22)}
+  #r10v-sub span::after,#r10v-badge::after,#r10v-title::after{content:attr(data-t)}
+  #r10v-sub.on{opacity:1}
+  /* Низ занят интерфейсом (шторка каталога, лист, форма) — субтитр наверху, под капсулой разделов. */
+  #r10v-sub.top{top:84px;bottom:auto;left:420px;right:20px}
+  @media (max-width:900px){#r10v-sub{left:12px;right:12px;bottom:96px}}
+  /* Пометка о данных: справа сверху, под «ҚАЗ · РУС» и аватаром. */
+  #r10v-badge{position:fixed;right:20px;top:74px;max-width:430px;padding:5px 10px;border-radius:8px;
+    background:rgba(255,255,255,.9);color:#3b4541;font:500 12.5px/1.35 Inter,"Segoe UI",Arial,sans-serif;text-align:right;
+    box-shadow:0 1px 6px rgba(0,0,0,.12);pointer-events:none;z-index:2147483646}
+  #r10v-badge.low{top:auto;bottom:60px}
+  #r10v-badge.off{display:none}
+  #r10v-title{position:fixed;left:50%;top:78px;transform:translateX(-50%);padding:6px 14px;border-radius:999px;
+    background:rgba(14,18,16,.78);color:#fff;font:600 15px/1.3 Inter,"Segoe UI",Arial,sans-serif;opacity:0;
+    transition:opacity .25s ease-out;pointer-events:none;z-index:2147483646}
+  #r10v-title.on{opacity:1}
+  #r10v-cur{position:fixed;left:0;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;
+    background:rgba(20,24,22,.55);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);pointer-events:none;
+    z-index:2147483647;transition:transform .08s ease-out}
+  #r10v-cur.down{transform:scale(.75)}
+  .r10v-ring{position:fixed;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:3px solid rgba(232,93,4,.85);
+    pointer-events:none;z-index:2147483647;animation:r10vring .5s ease-out forwards}
+  @keyframes r10vring{from{transform:scale(.4);opacity:1}to{transform:scale(1.25);opacity:0}}`;
+  const mount = () => {
+    if (document.getElementById("r10v-sub") || !document.body) return;
+    const st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
+    for (const id of ["r10v-sub", "r10v-badge", "r10v-title", "r10v-cur"]) {
+      const d = document.createElement("div"); d.id = id; d.setAttribute("aria-hidden", "true"); document.body.appendChild(d);
+    }
+    const cur = document.getElementById("r10v-cur");
+    const pos = window.__r10vPos || { x: innerWidth / 2, y: innerHeight / 2 };
+    cur.style.left = pos.x + "px"; cur.style.top = pos.y + "px";
+    document.addEventListener("mousemove", (e) => { cur.style.left = e.clientX + "px"; cur.style.top = e.clientY + "px";
+      window.__r10vPos = { x: e.clientX, y: e.clientY }; }, true);
+    document.addEventListener("mousedown", (e) => { cur.classList.add("down");
+      const r = document.createElement("div"); r.className = "r10v-ring"; r.style.left = e.clientX + "px"; r.style.top = e.clientY + "px";
+      document.body.appendChild(r); setTimeout(() => r.remove(), 600); }, true);
+    document.addEventListener("mouseup", () => cur.classList.remove("down"), true);
+    const s = window.__r10vState || {};
+    if (s.badge) window.__r10v.badge(s.badge);
+    if (s.sub) window.__r10v.sub(s.sub);
+    // Место субтитров: внизу, если там карта; если низ занят панелью интерфейса, а верх свободен — наверху.
+    const mine = (n) => n.closest && n.closest("#r10v-sub,#r10v-badge,#r10v-title,#r10v-cur,.r10v-ring");
+    const mapLike = (n) => !n || n === document.body || n === document.documentElement
+      || (n.closest && n.closest(".maplibregl-canvas-container, .maplibregl-marker, .maplibregl-ctrl-attrib, .b3d-labels"));
+    const busy = (x0, y0, x1, y1) => {
+      for (let x = x0; x <= x1; x += 60) for (let y = y0; y <= y1; y += 22) {
+        const hit = document.elementsFromPoint(x, y).find((n) => !mine(n));
+        if (!mapLike(hit)) return true;
+      }
+      return false;
+    };
+    setInterval(() => {
+      const sub = document.getElementById("r10v-sub"), badge = document.getElementById("r10v-badge");
+      if (!sub || !badge || innerWidth < 900) return;
+      const W = innerWidth, H = innerHeight;
+      const top = busy(400, H - 132, W - 96, H - 62) && !busy(420, 86, W - 20, 150);
+      sub.classList.toggle("top", top);
+      badge.classList.toggle("low", top);
+      badge.classList.toggle("off", top && busy(W - 440, H - 112, W - 20, H - 62));
+    }, 250);
+  };
+  window.__r10v = {
+    sub(text) { (window.__r10vState = window.__r10vState || {}).sub = text; const el = document.getElementById("r10v-sub");
+      if (!el) return; if (!text) { el.classList.remove("on"); return; }
+      const span = document.createElement("span"); span.dataset.t = text; el.replaceChildren(span); el.classList.add("on"); },
+    badge(text) { (window.__r10vState = window.__r10vState || {}).badge = text; const el = document.getElementById("r10v-badge");
+      if (el) el.dataset.t = text || ""; if (el) el.style.display = text ? "" : "none"; },
+    title(text) { const el = document.getElementById("r10v-title"); if (!el) return;
+      if (!text) { el.classList.remove("on"); return; } el.dataset.t = text; el.classList.add("on"); },
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount); else mount();
+}
+
+// ------------------------------------------------------------------------------------------------ запись одного языка
+async function recordLang(browser, lang) {
+  const srv = await L.startServer(ROOT, { demo: true, staff: true, world: !!args.world });
+  const dict = L.loadDict(ROOT, lang);
+  const sub = (key) => (SUBS[key] && (SUBS[key][lang] || SUBS[key].ru)) || "";
+  const tmpVideo = fs.mkdtempSync(path.join(os.tmpdir(), "r10-video-"));
+  const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1,
+    locale: lang === "kk" ? "kk-KZ" : "ru-RU", recordVideo: { dir: tmpVideo, size: { width: W, height: H } } });
+  await L.glassMode(ctx, GLASS);
+  // Язык интерфейса — до первой загрузки (как выбор человека, сохранённый в браузере), чтобы ролик не начинался с РУС.
+  await ctx.addInitScript((lg) => { try { if (!sessionStorage.getItem("r10v-lang")) { localStorage.setItem("birge.lang", lg);
+    localStorage.setItem("civic.lang", lg); sessionStorage.setItem("r10v-lang", "1"); } } catch (e) { /* без хранилища */ } }, lang);
+  await ctx.addInitScript(overlayScript);
+  const page = await ctx.newPage();
+  const t0 = Date.now();
+  const cues = [], scenes = [], skipped = [], shots = [];
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message.slice(0, 200)));
+  let open = null, trim = 0;
+  const at = () => (Date.now() - t0) / 1000;
+  const say = async (key, hold = 4200, vars = {}) => {
+    let text = sub(key);
+    for (const [k, v] of Object.entries(vars)) text = text.replace("{" + k + "}", v);
+    if (open) { open.end = at(); cues.push(open); }
+    open = text ? { start: at(), end: null, text, key } : null;
+    await page.evaluate((x) => window.__r10v && window.__r10v.sub(x), text).catch(() => null);
+    await pause(hold);
+  };
+  const quiet = async () => { if (open) { open.end = at(); cues.push(open); open = null; }
+    await page.evaluate(() => window.__r10v && window.__r10v.sub("")).catch(() => null); };
+  const title = async (text, ms = 2600) => { await page.evaluate((x) => window.__r10v && window.__r10v.title(x), text).catch(() => null);
+    await pause(ms); await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null); };
+  const scene = (id) => { const s = { id, start: at(), end: null, ok: true, notes: [] }; scenes.push(s); return s; };
+  const done = (s, ok = true, note) => { s.end = at(); s.ok = s.ok && ok; if (note) s.notes.push(note); log(lang, s.id, ok ? "ok" : "НЕ ВЫШЛО", note || ""); };
+  const shot = async (name) => { const f = path.join(OUT, `${lang}-${name}.jpg`);
+    await page.screenshot({ path: f, type: "jpeg", quality: SHOT_Q }).catch(() => null); shots.push(path.basename(f)); };
+
+  // Плавный курсор: к центру элемента за ~0,5 с, затем нажатие.
+  const moveTo = async (x, y, steps = 18) => { await page.mouse.move(x, y, { steps: FAST ? 4 : steps }); };
+  const press = async (loc, after = 900) => {
+    if (!loc) return false;
+    await loc.scrollIntoViewIfNeeded({ timeout: 2000 }).catch(() => null);
+    const b = await loc.boundingBox().catch(() => null);
+    if (!b) return false;
+    await moveTo(b.x + b.width / 2, b.y + b.height / 2);
+    await pause(180);
+    await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
+    await sleep(after);
+    return true;
+  };
+  const button = async (re, scope = page, role = "button") => firstVisible(scope.getByRole(role, { name: re }));
+  const pressText = async (re, wait, scope, role) => press(await button(re, scope, role), wait);
+  const word = (key, ru, kk) => T(dict, key, lang === "kk" ? kk : ru);
+  const exact = (s) => new RegExp("^" + esc(s) + "$", "i");
+  // Кнопки шапки и меню аватара — как demo_flow (L.headerClick), но с видимым движением курсора к аватару.
+  const header = async (re, wait = 1200) => {
+    const own = await firstVisible(page.getByRole("button", { name: re }).and(page.locator(":not(.birge-avatar)")));
+    if (own) return press(own, wait);
+    const avatar = await firstVisible(page.locator(".birge-avatar"));
+    if (avatar) { await press(avatar, 500); }
+    const menu = await firstVisible(page.locator("#birge-account"));
+    if (menu) for (const role of ["menuitemradio", "menuitem", "button", "link"]) {
+      const it = await firstVisible(menu.getByRole(role, { name: re }));
+      if (it) return press(it, wait);
+    }
+    await page.keyboard.press("Escape").catch(() => null);
+    return false;
+  };
+  const setMode = (mode) => header(exact(mode === "resident" ? word("common.role.resident", "Житель", "Тұрғын") : word("common.role.akimat", "Акимат", "Әкімдік")), 1400);
+  // Карта: плавный перелёт к точке (кинематографично), затем точка на свободной части холста (как demo_flow showPoint).
+  const flyTo = async (p, zoom, ms = 2200) => page.evaluate(async ([pp, z, d]) => {
+    // eslint-disable-next-line no-undef
+    const m = typeof map !== "undefined" && map && map.flyTo ? map : null;
+    if (!m) return false;
+    m.flyTo({ center: pp, zoom: z, pitch: 0, bearing: 0, duration: d, essential: true });
+    await new Promise((ok) => setTimeout(ok, d + 300));
+    return true;
+  }, [p, zoom, FAST ? 600 : ms]).catch(() => false);
+
+  try {
+    await page.goto(srv.base + (BASEMAP === "real" ? "" : ""));
+    await page.waitForFunction(() => document.readyState === "complete" && document.body.innerText.length > 50, null, { timeout: 40000 }).catch(() => null);
+    await wait(2500);
+    // Язык: если интерфейс открылся не на нужном языке — переключатель в шапке.
+    const langNow = await page.evaluate(() => document.documentElement.lang).catch(() => "");
+    if (langNow !== lang) { const b = await button(lang === "kk" ? /^(·\s*)?ҚАЗ$/ : /^(·\s*)?РУС$/); if (b) { await press(b, 1200); } }
+    await page.evaluate((x) => window.__r10v && window.__r10v.badge(x), sub(BASEMAP === "real" ? "badge_real" : "badge")).catch(() => null);
+    trim = Math.max(0, at() - 0.4);  // начало ролика — готовая карта, без белой страницы загрузки
+
+    if (PARTS.includes(1)) await part1();
+    if (PARTS.includes(2)) await part2();
+    await say("final", 6500);
+    await quiet();
+    await pause(1200);
+  } catch (e) {
+    errors.push("сценарий: " + String(e.message || e).slice(0, 300));
+    log(lang, "ошибка сценария", e.message);
+  }
+  const video = page.video();
+  await ctx.close();
+  const raw = video ? await video.path().catch(() => null) : null;
+  await srv.stop();
+  const base = path.join(OUT, `birge-demo-${lang}`);
+  let webm = null, mp4 = null;
+  if (raw && fs.existsSync(raw)) { webm = base + ".webm"; fs.copyFileSync(raw, webm); }
+  fs.rmSync(tmpVideo, { recursive: true, force: true });
+  if (open) { open.end = at(); cues.push(open); }
+  if (webm && !args["no-mp4"]) mp4 = toMp4(webm, base + ".mp4", trim);
+  // Субтитры — по времени .mp4 (он начинается с готовой карты); нет .mp4 — по времени .webm.
+  const shift = mp4 ? trim : 0;
+  const timed = cues.map((c) => ({ ...c, start: Math.max(0, c.start - shift), end: Math.max(0, c.end - shift) }));
+  fs.writeFileSync(base + ".vtt", toVtt(timed));
+  fs.writeFileSync(base + ".srt", toSrt(timed));
+  const duration = mp4 ? probeDuration(mp4) : webm ? probeDuration(webm) : null;
+  return { lang, webm: webm && path.basename(webm), mp4: mp4 && path.basename(mp4), vtt: path.basename(base + ".vtt"),
+    srt: path.basename(base + ".srt"), duration_s: duration ?? Math.round(at()), trim_s: Math.round(shift * 10) / 10,
+    bytes: webm ? fs.statSync(webm).size : 0,
+    mp4_bytes: mp4 ? fs.statSync(mp4).size : 0, scenes, skipped, cues: cues.length, shots, page_errors: errors.slice(0, 8),
+    seeds: srv.seeds };
+
+  // ---------------------------------------------------------------------------------------------- часть 1 (FINAL-4)
+  async function part1() {
+    await title(sub("part1"), 2200);
+    let s = scene("intro");
+    await setMode("akimat");
+    await say("intro", 6500);
+    await shot("0-intro");
+    done(s);
+
+    // Шаги 1–2: житель, жалоба на остановку, категория, «Я тоже».
+    s = scene("complaint");
+    await setMode("resident");
+    await say("s1", 1800);
+    const startLabel = word("complaint.start.button", "Сообщить о проблеме", "Мәселе туралы хабарлау");
+    const started = await pressText(textRe(startLabel), 1600);
+    const formRe = textRe(word("complaint.step2.title", "Где проблема?", "Мәселе қай жерде?"));
+    const form = started ? await firstVisible(page.getByRole("dialog").filter({ hasText: formRe })) : null;
+    let picked = false;
+    if (form) {
+      const pt = await L.showPoint(page, STOP.point, 17);
+      if (pt) { await moveTo(pt.x, pt.y); await pause(250); await page.mouse.click(pt.x, pt.y); await wait(2600); }
+      const nameRe = new RegExp([STOP.name, STOP.name_kk].map(esc).join("|"), "i");
+      const choice = await button(nameRe, form);
+      if (!choice && pt && pt.near) { await page.mouse.click(pt.near.x, pt.near.y); await wait(2400); }
+      picked = await press(await button(nameRe, form), 1500);
+    }
+    await shot("1-place");
+    if (picked) {
+      await say("s2", 600);
+      const dlg = (await firstVisible(page.getByRole("dialog"))) || page;
+      const box = await firstVisible(dlg.getByRole("textbox"));
+      if (box) { await press(box, 300); await page.keyboard.type("Аялдамада жарық жоқ, вечером на остановке темно", { delay: FAST ? 5 : 42 }); }
+      await wait(3600);
+      await shot("2-category");
+      const sendRe = textRe(word("complaint.step3.send", "Отправить", "Жіберу"));
+      const nextRe = exact(word("complaint.wizard.next", "Далее", "Әрі қарай"));
+      let sent = await pressText(sendRe, 2600, dlg);
+      if (!sent) sent = await pressText(nextRe, 2600, dlg);
+      const metooRe = exact(word("complaint.step4.metoo", "Я тоже", "Мен де"));
+      const metoo = await button(metooRe);
+      if (metoo) { await say("s2b", 1200); await press(metoo, 2600); }
+      else await pressText(sendRe, 2600, (await firstVisible(page.getByRole("dialog"))) || page);
+      await shot("2-sent");
+      await pause(1500);
+      // Закрыть окно подтверждения (Esc), вернуться на карту.
+      await page.keyboard.press("Escape").catch(() => null);
+      await pause(800);
+      done(s, true);
+    } else done(s, false, "форма жалобы или остановка не найдены");
+
+    // Шаг 3: тепловая карта у акимата, «Горячие места».
+    s = scene("heat");
+    await setMode("akimat");
+    await say("s3", 600);
+    await flyTo(STOP.point, 14.6, 2600);
+    await pause(2600);
+    await shot("3-heat");
+    const allHot = exact(word("akim.today.all_hot", "Все горячие места", "Барлық шағымы көп орындар"));
+    let hotOpen = await pressText(allHot, 1400, page, "link");
+    if (!hotOpen) hotOpen = await pressText(allHot, 1400);
+    if (hotOpen) {
+      await say("s3b", 900);
+      const hotRe = new RegExp("^" + esc(word("heat.hot_title", "Горячие места", "Шағымы көп орындар")), "i");
+      const items = page.locator("section").filter({ has: page.getByRole("heading", { name: hotRe }) }).getByRole("listitem").getByRole("button");
+      if (await items.count().catch(() => 0)) { await press(items.first(), 2800); await shot("3-hot"); await pause(1800); }
+      await page.keyboard.press("Escape").catch(() => null); await pause(700);
+      await page.keyboard.press("Escape").catch(() => null); await pause(700);
+    }
+    done(s, hotOpen, hotOpen ? null : "ссылки «Все горячие места» нет");
+
+    // Шаг 4: «Картина дня».
+    s = scene("day");
+    const dayRe = exact(word("common.nav.day", "Картина дня", "Күн қорытындысы"));
+    const day = await header(dayRe, 2600);
+    if (day) {
+      await say("s4", 2400);
+      await shot("4-day");
+      await page.mouse.move(W / 2, H / 2);
+      for (let i = 0; i < 4; i++) { await page.mouse.wheel(0, 260); await pause(900); }
+      await pause(1200);
+      for (let i = 0; i < 4; i++) { await page.mouse.wheel(0, -260); await pause(250); }
+      const mapRe = exact(word("common.nav.map", "Карта", "Карта"));
+      if (!(await header(mapRe, 1500))) await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null);
+    }
+    done(s, day, day ? null : "раздела «Картина дня» нет");
+
+    // Шаг 5: вход сотрудника → «Что построить?» → «Сквер» → место → «Поставить» → 3D; житель «За».
+    s = scene("project");
+    let login = false;
+    if (srv.staff && srv.staff.user) {
+      if (await header(textRe(lang === "kk" ? "Қызметкерлерге" : "Для сотрудников"), 1600)) {
+        const user = await firstVisible(page.locator("input[autocomplete=username], input[name=username]"));
+        const pass = await firstVisible(page.locator("input[type=password]"));
+        if (user && pass) {
+          await press(user, 200); await page.keyboard.type(srv.staff.user, { delay: FAST ? 3 : 30 });
+          await press(pass, 200); await page.keyboard.type(srv.staff.pass, { delay: FAST ? 2 : 12 });
+          await page.keyboard.press("Enter"); await wait(2400);
+          login = !!(await button(/^(Выйти|Шығу)$/i));
+          dbg("5: вход сотрудника", login);
+          if (!(await pressText(/^(Закрыть кабинет|Кабинетті жабу)$/i, 900))) await page.keyboard.press("Escape").catch(() => null);
+          await pause(600);
+        }
+      }
+    }
+    let placed = false;
+    if (login) {
+      await say("s5", 600);
+      const catalogTitle = word("proposal.catalog.title", "Что построить?", "Не салайық?");
+      const catalogShown = !!(await firstVisible(page.getByText(textRe(catalogTitle))));
+      dbg("5: каталог виден до слоя", catalogShown);
+      if (!catalogShown) {
+        const layersRe = exact(word("shell.layers.label", "Слой на карте", "Картадағы қабат"));
+        const lb = await button(layersRe);
+        dbg("5: кнопка слоёв", !!lb);
+        if (lb) { await press(lb, 700);
+          const radio = await firstVisible(page.getByRole("radio", { name: new RegExp("^" + esc(word("shell.layers.projects", "Проекты", "Жобалар")), "i") }));
+          dbg("5: пункт «Проекты»", !!radio);
+          if (radio) { await moveTo(...(await center(radio))); await radio.evaluate((e) => e.click()).catch(() => null); await wait(1600); } }
+        dbg("5: каталог после слоя", !!(await firstVisible(page.getByText(textRe(catalogTitle)))));
+      }
+      const kindName = word("proposal.kind.square", "Сквер", "Гүлзар");
+      const aria = word("build3d.catalog.place", "{kind}: поставить на карту", "{kind}: картаға орнату").replace("{kind}", kindName);
+      const kindRe = new RegExp("^(" + esc(kindName) + "|" + esc(aria) + ")$", "i");
+      if (!(await button(kindRe))) dbg("5: развернуть каталог", await pressText(exact(catalogTitle), 1000));
+      await flyTo(PLACE, 17, 1800);
+      dbg("5: вид «Сквер»", await pressText(kindRe, 1200));
+      const pt = await L.showPoint(page, PLACE, 17);
+      if (pt) { const x = pt.onCanvas ? pt.x : pt.near ? pt.near.x : pt.x, y = pt.onCanvas ? pt.y : pt.near ? pt.near.y : pt.y;
+        await moveTo(x, y); await pause(300); await page.mouse.click(x, y); await wait(1400); }
+      await pressText(exact(word("proposal.rotate_right", "Повернуть вправо", "Оңға бұру")), 600);
+      placed = await pressText(exact(word("proposal.place", "Поставить", "Орнату")), 3800);
+      await shot("5-placed");
+      const view3d = new RegExp("^(3D|" + esc(word("common.map.view3d", "Объёмный вид", "Көлемді көрініс")) + ")$", "i");
+      if (await pressText(view3d, 3200)) { await shot("5-3d"); await pressText(view3d, 900); }
+      // Житель голосует «За» по табличке проекта.
+      await setMode("resident");
+      await say("s5b", 600);
+      const p2 = await L.showPoint(page, PLACE, 17);
+      const projRe = new RegExp("^" + esc(kindName) + ":.*2027", "i");
+      const labels = page.getByRole("button", { name: projRe });
+      let best = null, bestD = Infinity;
+      for (let i = 0; i < Math.min(await labels.count().catch(() => 0), 30); i++) {
+        const it = labels.nth(i); if (!(await it.isVisible().catch(() => false))) continue;
+        const b = await it.boundingBox().catch(() => null); if (!b || !p2) continue;
+        const d = Math.hypot(b.x + b.width / 2 - p2.x, b.y + b.height / 2 - p2.y); if (d < bestD) { best = it; bestD = d; }
+      }
+      if (best) { await press(best, 1600);
+        await pressText(new RegExp("^" + esc(word("proposal.vote_up", "За", "Жақтаймын")) + "(\\s|:|\\d|$)", "i"), 2200);
+        await shot("5-vote"); await page.keyboard.press("Escape").catch(() => null); await pause(600); }
+    }
+    done(s, login && placed, !login ? "вход сотрудника не удался" : placed ? null : "проект не поставлен");
+
+    // Шаги 6–7: служба → «Взять в работу» → «Отметить исправленным» → сообщение жителям; житель «Да, исправлено».
+    s = scene("fixed");
+    let verified = false;
+    if (login) {
+      await setMode("akimat");
+      await say("s6", 600);
+      const st = await L.showPoint(page, STOP.point, 17);
+      if (st) { await moveTo(st.x, st.y); await pause(250); await page.mouse.click(st.x, st.y); await wait(2400); }
+      await pressText(textRe(word("target.take", "Взять в работу", "Жұмысқа алу")), 2000);
+      const fix = await pressText(textRe(word("target.mark_fixed", "Отметить исправленным", "Түзетілді деп белгілеу")), 2400);
+      const fixForm = fix ? await firstVisible(page.locator(".r07-fixform")) : null;
+      if (fixForm) {
+        const what = await firstVisible(fixForm.locator("input[name=what_done], textarea[name=what_done], textarea, input[type=text]"));
+        if (what) { await press(what, 200); await page.keyboard.type(lang === "kk" ? "Шам ауыстырылды" : "Заменили лампу", { delay: FAST ? 5 : 45 }); }
+        const send = (await firstVisible(fixForm.locator("button[type=submit]")))
+          || (await button(textRe(word("fix.send", "Сообщить жителям", "Тұрғындарға хабарлау")), fixForm));
+        if (send) await press(send, 2800);
+      }
+      await shot("6-fixed");
+      await page.keyboard.press("Escape").catch(() => null); await pause(700);
+      await setMode("resident");
+      await say("s7", 600);
+      const mineLabel = word("common.nav.mine", "Мои обращения", "Менің өтініштерім");
+      if (await header(textRe(mineLabel), 1900)) {
+        const box = (await firstVisible(page.getByRole("dialog").filter({ hasText: textRe(mineLabel) }))) || page;
+        const yes = await button(exact(word("verify.yes", "Да, исправлено", "Иә, түзетілді")), box);
+        if (yes) { await press(yes, 2600);
+          verified = !!(await firstVisible(page.getByText(new RegExp(esc(word("status.verified", "Проверено жителями", "Тұрғындар тексерді")), "i")))); }
+        await shot("7-verified");
+        await say("s7b", 4200);
+        await page.keyboard.press("Escape").catch(() => null); await pause(600);
+      }
+    }
+    done(s, verified, verified ? null : "проверка жителем не показана");
+    await setMode("akimat");
+  }
+
+  // ---------------------------------------------------------------------------------------------- часть 2 (сцены 7–9)
+  // Экраны раунда 15 ищутся по оболочке (BirgeShell: разделы вида и «Ещё»), модули — по /api/civic/v2/modules.
+  async function part2() {
+    const shell = await page.evaluate(() => {
+      const B = window.BirgeShell;
+      if (!B) return null;
+      const ids = new Set();
+      for (const mode of ["akimat", "resident"]) { try { (B.navItems(mode) || []).forEach((x) => ids.add(x)); } catch (e) { /* старая оболочка */ } }
+      try { (B.moreItems() || []).forEach((x) => ids.add(typeof x === "string" ? x : x.id)); } catch (e) { /* нет «Ещё» */ }
+      return [...ids];
+    }).catch(() => null) || [];
+    const mods = await fetch(srv.base + "api/civic/v2/modules").then((r) => r.json()).then((j) => j.modules || {}).catch(() => ({}));
+    const ready = (re) => Object.entries(mods).some(([k, v]) => re.test(k) && v.status === "ready");
+    const screenOf = (re) => shell.find((id) => re.test(id)) || null;
+    const plan = [
+      { id: "scene7-yard", subs: ["yard", "yard_join"], screen: screenOf(/together|yard|dvor|aula/), api: ready(/together/), owner: "R16" },
+      { id: "scene8-agencies", subs: ["agencies", "board"], screen: screenOf(/agenc|shtab|board|services/), api: ready(/agenc/), owner: "R17 + R09" },
+      { id: "scene8-works", subs: ["works"], screen: screenOf(/works|calendar/), api: ready(/works-(calendar|conflicts)|works_calendar|conflict/), owner: "R12" },
+      { id: "scene9-crisis", subs: ["crisis"], screen: screenOf(/crisis|incident|kriz/), api: ready(/incident/), owner: "R17" },
+      { id: "scene9-replay", subs: ["replay"], screen: screenOf(/replay|chronic|hronik/), api: ready(/replay/), owner: "R07" },
+    ];
+    const todo = plan.filter((p) => p.screen && p.api);
+    for (const p of plan.filter((x) => !todo.includes(x)))
+      skipped.push({ scene: p.id, owner: p.owner, why: !p.api ? "модуля нет в сборке (503 / нет маршрута)" : "экрана нет в оболочке (registerScreen)" });
+    await title(sub("part2"), 2200);
+    if (!todo.length) { await say("skipped", 4200); return; }
+    await setMode("resident");
+    for (const p of todo) {
+      const s = scene(p.id);
+      const mode = /agenc|works|crisis/.test(p.id) ? "akimat" : "resident";
+      await setMode(mode);
+      await page.evaluate((id) => window.BirgeShell && window.BirgeShell.setSection(id), p.screen).catch(() => null);
+      await wait(2200);
+      for (const key of p.subs) {
+        await say(key, 4600);
+        await page.mouse.move(W / 2, H / 2);
+        await page.mouse.wheel(0, 240); await pause(1200);
+      }
+      await shot(p.id);
+      const empty = await page.evaluate(() => { const r = document.querySelector("#birge-screen-root, #birge-screen, main");
+        return !r || (r.innerText || "").trim().length < 20; }).catch(() => true);
+      done(s, !empty, empty ? "экран пустой" : null);
+      await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null);
+      await pause(900);
+    }
+  }
+
+  async function center(loc) { const b = await loc.boundingBox().catch(() => null); return b ? [b.x + b.width / 2, b.y + b.height / 2] : [W / 2, H / 2]; }
+}
+
+// ------------------------------------------------------------------------------------------------ субтитры и видео
+const stamp = (s, sep) => { const ms = Math.max(0, Math.round(s * 1000)); const h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60,
+  sec = Math.floor(ms / 1000) % 60, r = ms % 1000; return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}${sep}${String(r).padStart(3, "0")}`; };
+const toVtt = (cues) => "WEBVTT\n\n" + cues.map((c, i) => `${i + 1}\n${stamp(c.start, ".")} --> ${stamp(c.end, ".")}\n${c.text}\n`).join("\n");
+const toSrt = (cues) => cues.map((c, i) => `${i + 1}\n${stamp(c.start, ",")} --> ${stamp(c.end, ",")}\n${c.text}\n`).join("\n");
+
+function ffmpegBin() {
+  for (const bin of [process.env.FFMPEG, "ffmpeg"]) { if (!bin) continue;
+    try { execFileSync(bin, ["-hide_banner", "-version"], { stdio: "ignore" }); return bin; } catch { /* нет */ } }
+  return null;
+}
+function toMp4(webm, mp4, trim = 0) {
+  const bin = ffmpegBin();
+  if (!bin) return null;
+  try {
+    execFileSync(bin, ["-y", "-hide_banner", "-loglevel", "error", "-ss", trim.toFixed(2), "-i", webm, "-c:v", "libx264", "-preset", "medium", "-crf", "26",
+      "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an", mp4], { stdio: "ignore", timeout: 900000 });
+    return fs.existsSync(mp4) ? mp4 : null;
+  } catch { return null; }
+}
+function probeDuration(file) {
+  const bin = ffmpegBin();
+  if (!bin) return null;
+  try { execFileSync(bin, ["-hide_banner", "-i", file], { stdio: "pipe" }); } catch (e) {
+    const m = String(e.stderr || "").match(/Duration: (\d+):(\d+):(\d+\.\d+)/);
+    if (m) return Math.round(Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]));
+  }
+  return null;
+}
+
+// ------------------------------------------------------------------------------------------------ запуск
+(async () => {
+  fs.mkdirSync(OUT, { recursive: true });
+  const browser = await chromium.launch({ args: ["--disable-dev-shm-usage"] });
+  const runs = [];
+  for (const lang of LANGS) { log("запись", lang); runs.push(await recordLang(browser, lang)); }
+  await browser.close();
+  const manifest = {
+    what: "Демо-ролик Birge, сценарий v2 (IDEA §3): часть 1 — шаги 1–7 DEMO_SCRIPT R01, часть 2 — сцены 7–9 «Бірге»",
+    build: { root: ROOT, sha: L.buildSha(ROOT) }, size: `${W}x${H}`, parts: PARTS, fast: FAST, glass: GLASS || "auto",
+    basemap: BASEMAP === "real" ? "настоящая подложка (интернет)" : "упрощённая подложка — облако без интернета (подписано в кадре)",
+    world: !!args.world, subtitles: args.subtitles || "tests/e2e/fixtures/video_subtitles.json (черновик R10)",
+    machine: L.machine(), when: new Date().toISOString(), runs,
+  };
+  fs.writeFileSync(path.join(OUT, "MANIFEST.json"), JSON.stringify(manifest, null, 1));
+  for (const r of runs) log(r.lang, `${r.duration_s} с`, r.mp4 || r.webm, "сцены:", r.scenes.map((s) => `${s.id}${s.ok ? "" : "✗"}`).join(" "),
+    r.skipped.length ? "пропущено: " + r.skipped.map((x) => x.scene).join(", ") : "");
+  const bad = runs.some((r) => !r.webm || r.scenes.some((s) => !s.ok));
+  process.exit(bad ? 1 : 0);
+})().catch((e) => { console.error(e); process.exit(2); });
