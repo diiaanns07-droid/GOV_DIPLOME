@@ -1113,7 +1113,15 @@
         wrap.appendChild(stateBox("empty", tr("meet.empty_title"), tr("meet.empty_text"),
           { label: tr("meet.empty_action"), onClick: () => setTab("questions") }, "question"));
       }
-      const past = items().filter((m) => m.phase !== "upcoming");
+      // Остальные предстоящие встречи (в других районах или позже) — строками, чтобы ни одна не потерялась.
+      const more = items().filter((m) => (m.phase === "upcoming" || m.phase === "live") && (!next || m.id !== next.id));
+      if (more.length) {
+        wrap.appendChild(h("section", { class: "mt-sec", "aria-labelledby": "mt-more" }, [
+          h("h3", { class: "mt-sec__title", id: "mt-more", text: tr("meet.upcoming") }),
+          h("ul", { class: "mt-rows" }, more.map((m) => h("li", null, [meetingRow(m)]))),
+        ]));
+      }
+      const past = items().filter((m) => m.phase !== "upcoming" && m.phase !== "live");
       if (past.length) {
         wrap.appendChild(h("section", { class: "mt-sec", "aria-labelledby": "mt-past" }, [
           h("h3", { class: "mt-sec__title", id: "mt-past", text: tr("meet.past") }),
