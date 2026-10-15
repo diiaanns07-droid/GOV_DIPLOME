@@ -45,7 +45,7 @@
       "analyst.llm_hint": "Языковая модель выбрала порядок и вводную фразу; все числа посчитал код",
       "analyst.how": "Как получен ответ",
       "analyst.how_summary": "{calls} · {ms}",
-      "analyst.calls": { one: "{n} вызов модуля", few: "{n} вызова модулей", many: "{n} вызовов модулей" },
+      "analyst.calls": { one: "{n} источник", few: "{n} источника", many: "{n} источников" },
       "analyst.ms": "{n} мс",
       "analyst.understood": "Как понят вопрос",
       "analyst.u.district": "район",
@@ -58,7 +58,7 @@
       "analyst.u.lang.mixed": "вперемешку",
       "analyst.status.ok": "есть данные",
       "analyst.status.empty": "данных за период нет",
-      "analyst.status.not_ready": "модуль не подключён",
+      "analyst.status.not_ready": "пока нет данных",
       "analyst.status.error": "не ответил",
       "analyst.mode": "Режим",
       "analyst.reason.no_key": "ключ модели не задан",
@@ -103,7 +103,7 @@
       "analyst.llm_hint": "Тілдік модель тек реті мен кіріспе сөйлемді таңдады; барлық санды код есептеді",
       "analyst.how": "Жауап қалай алынды",
       "analyst.how_summary": "{calls} · {ms}",
-      "analyst.calls": "модульге {n} сұрау",
+      "analyst.calls": "{n} дереккөз",
       "analyst.ms": "{n} мс",
       "analyst.understood": "Сұрақ қалай түсінілді",
       "analyst.u.district": "аудан",
@@ -116,7 +116,7 @@
       "analyst.u.lang.mixed": "аралас",
       "analyst.status.ok": "дерек бар",
       "analyst.status.empty": "кезеңде дерек жоқ",
-      "analyst.status.not_ready": "модуль қосылмаған",
+      "analyst.status.not_ready": "әзірге дерек жоқ",
       "analyst.status.error": "жауап бермеді",
       "analyst.mode": "Режим",
       "analyst.reason.no_key": "модель кілті берілмеген",
@@ -147,11 +147,14 @@
   };
   // Примеры вопросов (чипы): первые три — сцены демо (снег в Нуре, отстающие службы, буран).
   var SUGGESTIONS = [
-    { ru: "Где в Нуре больше всего жалоб на снег за неделю?", kk: "Нұрада бір аптада қар туралы шағым қай жерде көп?" },
+    // short — подпись чипа в одну строку (R11: длинный вопрос делал чип двухстрочным); в поле уходит полный вопрос
+    { ru: "Где в Нуре больше всего жалоб на снег за неделю?", kk: "Нұрада бір аптада қар туралы шағым қай жерде көп?",
+      short: { ru: "Снег в Нуре, 7 дней", kk: "Нұрада қар, 7 күн" } },
     { ru: "Какие службы отстают?", kk: "Қай қызметтер артта қалып жатыр?" },
     { ru: "Что с бураном?", kk: "Боран бойынша не жағдай?" },
     { ru: "Какие темы растут за неделю?", kk: "Аптада қай тақырыптар өсті?" },
-    { ru: "Сравни районы по жалобам", kk: "Аудандарды шағым бойынша салыстыр" },
+    { ru: "Сравни районы по жалобам", kk: "Аудандарды шағым бойынша салыстыр",
+      short: { ru: "Сравнить районы", kk: "Аудандарды салыстыру" } },
     { ru: "Сколько обращений просрочено?", kk: "Қанша өтініштің мерзімі өтті?" },
   ];
   // Где в оболочке раздел, на который ведёт кнопка «Открыть …» (id разделов соседей; нет раздела — кнопки нет).
@@ -275,7 +278,7 @@
       chips.setAttribute("aria-label", t("analyst.chips_label"));
       chips.replaceChildren.apply(chips, SUGGESTIONS.map(function (s, i) {
         var b = el("button", { type: "button", className: "bk-chip ba-chip" + (i > 3 ? " ba-chip--extra" : ""),
-          text: pick(s, state.lang) });
+          text: pick(s.short || s, state.lang), title: pick(s, state.lang) });
         b.addEventListener("click", function () { input.value = pick(s, state.lang); syncClear(); submit(); });
         return b;
       }));
@@ -298,9 +301,20 @@
     function syncClear() { clearBtn.hidden = !input.value; }
 
     // -------------------------------------------------------------- состояния
+    // Линейная иллюстрация ui-kit (icons.svg #ill-…), как в пустых состояниях оболочки (R11 R03-6).
+    function illustration(name) {
+      var NS = "http://www.w3.org/2000/svg", svg = doc.createElementNS(NS, "svg"), use = doc.createElementNS(NS, "use");
+      svg.setAttribute("class", "bk-ill");
+      svg.setAttribute("aria-hidden", "true");
+      svg.setAttribute("focusable", "false");
+      use.setAttribute("href", ((root.BirgeUI && root.BirgeUI.SPRITE) || ICONS) + "#ill-" + name);
+      svg.append(use);
+      return svg;
+    }
+
     function renderIdle() {
       live.replaceChildren(el("div", { className: "bk-empty ba-empty" }, [
-        el("div", { className: "ba-empty__ic", "aria-hidden": "true" }, [icon("chart")]),
+        illustration("question"),
         el("p", { className: "bk-empty__title", text: t("analyst.empty_title") }),
         el("p", { className: "bk-empty__text", text: t("analyst.empty_text") }),
       ]));
@@ -320,7 +334,8 @@
       var kind = e.status === 0 ? "network" : e.status === 401 || e.status === 403 ? "login"
         : e.status === 429 ? "rate" : e.status === 503 ? "not_ready" : "server";
       var box = el("div", { className: "bk-error ba-error", role: "alert" }, [
-        el("div", { className: "ba-error__ic", "aria-hidden": "true" }, [icon(kind === "network" ? "wifi-off" : "alert")]),
+        kind === "network" ? illustration("offline")
+          : el("div", { className: "ba-error__ic", "aria-hidden": "true" }, [icon(kind === "login" ? "user" : "alert")]),
         el("p", { className: "bk-error__title", text: t("analyst.error." + kind + "_title") }),
         el("p", { className: "bk-error__text", text: t("analyst.error." + kind + "_text") }),
       ]);
@@ -400,6 +415,10 @@
           row = el("button", { type: "button", className: "bk-list__item ba-item", "aria-label": t("analyst.open_place", { name: name }) },
             [dot, main, icon("chevron-right", "bk-list__chevron")]);
           row.addEventListener("click", function () { focusOnMap({ target: it.target, days: it.days || (state.answer && state.answer.understood && state.answer.understood.days) }); });
+        } else if (it.service && sectionAvailable("agencies")) {
+          // Строка службы ведёт на табло служб (R11 R03-7) — с шевроном, как строки мест.
+          row = el("button", { type: "button", className: "bk-list__item ba-item" }, [main, icon("chevron-right", "bk-list__chevron")]);
+          row.addEventListener("click", function () { opts.openSection(sectionAvailable("agencies")); });
         } else if (it.ask) {
           row = el("button", { type: "button", className: "bk-list__item ba-item" }, [main, icon("chevron-right", "bk-list__chevron")]);
           row.addEventListener("click", function () { input.value = pick(it.ask, state.lang); syncClear(); submit(); });
@@ -439,9 +458,9 @@
           calls: t("analyst.calls", { n: calls.length }), ms: fmtMs(a.ms || 0, t) }) }),
       ]);
       var rows = calls.map(function (c) {
-        return el("li", { className: "ba-call ba-call--" + c.status }, [
-          el("span", { className: "ba-call__role", text: c.role }),
-          el("code", { className: "ba-call__fn", text: c.module + "." + c.fn }),
+        // На виду — название источника для акима; код модуля и функции — только в подсказке (R11 R03-3).
+        return el("li", { className: "ba-call ba-call--" + c.status, title: c.role + " · " + c.module + "." + c.fn }, [
+          el("span", { className: "ba-call__name", text: pick(c.name, state.lang) || c.role }),
           el("span", { className: "ba-call__status", text: t("analyst.status." + (c.status || "error")) }),
           el("span", { className: "ba-call__ms", text: fmtMs(c.ms || 0, t) }),
         ]);

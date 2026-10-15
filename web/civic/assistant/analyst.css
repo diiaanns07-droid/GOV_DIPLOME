@@ -174,7 +174,7 @@
 /* ── Пусто, ошибка, скелетон ── */
 .ba-empty,
 .ba-error {
-  padding-block: var(--s-8);
+  padding-block: var(--s-6);
   border: 1px dashed var(--c-line-strong);
   border-radius: var(--r-xl);
 }
@@ -473,7 +473,7 @@
 }
 .ba-call {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: var(--s-2);
   min-height: 36px;
@@ -483,14 +483,9 @@
 .ba-call + .ba-call {
   border-top: 1px solid var(--c-line);
 }
-.ba-call__role {
-  font-weight: var(--fw-semi);
-}
-.ba-call__fn {
+.ba-call__name {
   overflow: hidden;
-  color: var(--c-text-2);
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -607,7 +602,7 @@
     font-size: 28px;
   }
   .ba-call {
-    grid-template-columns: 36px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
   .ba-call__ms {
     display: none;

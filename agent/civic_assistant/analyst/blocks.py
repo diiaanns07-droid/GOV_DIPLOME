@@ -135,7 +135,7 @@ def hot_spots(ctx) -> Block:
     status, data = ctx.call("R07", "ui.civic_heat", "heat", S.heat_targets,
                             {"service": ctx.src.heat, "days": p.days, "district": p.district, "category": p.category})
     if status != "ok":
-        return _not_ready(b, status, "Тепловая карта", "Жылу картасы")
+        return _not_ready(b, status, "Карта жалоб", "Шағымдар картасы")
     items = data["items"]
     b.demo = data["demo"]
     if not items:
@@ -200,7 +200,7 @@ def category_growth(ctx) -> Block:
                    f"{where['kk'].capitalize()} не өсіп жатыр: 7 күн мен өткен апта")
     status, summary = ctx.summary(p.district)
     if status != "ok":
-        return _not_ready(b, status, "Картина дня", "Күн көрінісі")
+        return _not_ready(b, status, "Картина дня", "Күн қорытындысы")
     b.demo = bool((summary.get("demo") or {}).get("complaints"))
     topics = (summary.get("topics") or {}).get("items") or []
     if p.category:
@@ -242,7 +242,7 @@ def category_growth(ctx) -> Block:
         b.fact(spikes[0].get("value"), "сообщений за 7 дней (пульс)", "7 күндегі хабарлама (пульс)",
                "ui.civic_akim.summary.pulse")
         b.focus(spikes[0].get("target"), 7)
-    b.open("day", "Открыть «Картину дня»", "«Күн көрінісін» ашу")
+    b.open("day", "Открыть «Картину дня»", "«Күн қорытындысын» ашу")
     return b
 
 
@@ -260,7 +260,7 @@ def district_compare(ctx) -> Block:
         status, data = ctx.call("R07", "ui.civic_heat", "districts", S.heat_districts,
                                 {"service": ctx.src.heat, "days": p.days, "category": p.category})
         if status != "ok":
-            return _not_ready(b, status, "Тепловая карта", "Жылу картасы")
+            return _not_ready(b, status, "Карта жалоб", "Шағымдар картасы")
         b.demo = data["demo"]
         for it in data["items"]:
             d = it["target"]["id"]
@@ -270,7 +270,7 @@ def district_compare(ctx) -> Block:
         b.title = both("Районы: жалобы за 7 дней и изменение за неделю", "Аудандар: 7 күндегі шағымдар және апталық өзгеріс")
         status, summary = ctx.summary(None)
         if status != "ok":
-            return _not_ready(b, status, "Картина дня", "Күн көрінісі")
+            return _not_ready(b, status, "Картина дня", "Күн қорытындысы")
         b.demo = bool((summary.get("demo") or {}).get("complaints"))
         for it in (summary.get("districts") or {}).get("items") or []:
             rows.append({"district": it.get("district"), "value": int(it.get("value") or 0), "row": it})
@@ -332,7 +332,7 @@ def overdue(ctx) -> Block:
     b.title = both(f"Просрочено {where['ru']}", f"Мерзімі өткен өтініштер: {where['kk']}")
     status, summary = ctx.summary(p.district)
     if status != "ok":
-        return _not_ready(b, status, "Картина дня", "Күн көрінісі")
+        return _not_ready(b, status, "Картина дня", "Күн қорытындысы")
     b.demo = bool((summary.get("demo") or {}).get("complaints"))
     part = summary.get("overdue") or {}
     items = list(part.get("items") or [])
@@ -340,7 +340,7 @@ def overdue(ctx) -> Block:
     if p.service:
         sname = {lang: service_name(p.service, lang) for lang in ("ru", "kk")}
         b.title = both(f"Просрочено у службы «{sname['ru']}» {where['ru']}", f"«{sname['kk']}» — мерзімі өткен, {where['kk']}")
-        st, by_service = ctx.call("R08", "ui.civic_akim", "deadlines (по службам)", S.services_from_deadlines,
+        st, by_service = ctx.call("R08", "ui.civic_akim", "deadlines", S.services_from_deadlines,
                                   {"heat": ctx.src.heat, "district": p.district})
         row = next((r for r in (by_service or {}).get("items", []) if r["service"] == p.service), None) \
             if st == "ok" else None
@@ -426,14 +426,14 @@ def lagging_services(ctx) -> Block:
     else:
         # Табло R17 ещё нет: те же сроки и службы, что в «Картине дня» R08 (честная подпись источника).
         b.role = "R08"
-        st, data = ctx.call("R08", "ui.civic_akim", "deadlines (по службам)", S.services_from_deadlines,
+        st, data = ctx.call("R08", "ui.civic_akim", "deadlines", S.services_from_deadlines,
                             {"heat": ctx.src.heat, "district": p.district})
         if st != "ok":
             return _not_ready(b, st, "Штаб ведомств", "Ведомстволар штабы")
         rows = data["items"]
         b.demo = bool(data.get("demo"))
         source_note = both("Табло служб ещё не подключено — посчитано по срокам «Картины дня».",
-                           "Қызметтер таблосы әлі қосылмаған — «Күн көрінісі» мерзімдері бойынша есептелді.")
+                           "Қызметтер таблосы әлі қосылмаған — «Күн қорытындысы» мерзімдері бойынша есептелді.")
     if p.service:
         rows = [r for r in rows if r["service"] == p.service] or rows
     lagging = [r for r in rows if r["overdue"] > 0]
@@ -540,10 +540,10 @@ def crisis(ctx) -> Block:
     b.title = both("Кризис: штаб не открыт", "Дағдарыс: штаб ашылмаған")
     if status in ("not_ready", "error"):
         b.note = both("Кризисный штаб пока не подключён в этой сборке — показан пульс «Картины дня».",
-                      "Дағдарыс штабы бұл жинақта әлі қосылмаған — «Күн көрінісінің» пульсі көрсетілген.")
+                      "Дағдарыс штабы бұл жинақта әлі қосылмаған — «Күн қорытындысының» пульсі көрсетілген.")
     else:
         b.note = both("Активного кризиса нет: штаб не открыт. Показан пульс «Картины дня».",
-                      "Белсенді дағдарыс жоқ: штаб ашылмаған. «Күн көрінісінің» пульсі көрсетілген.")
+                      "Белсенді дағдарыс жоқ: штаб ашылмаған. «Күн қорытындысының» пульсі көрсетілген.")
     st, summary = ctx.summary(p.district)
     if st != "ok":
         b.status = "not_ready" if status == "not_ready" else "empty"
@@ -555,7 +555,7 @@ def crisis(ctx) -> Block:
     if not spikes:
         b.status = "empty"
         b.line("Штаб не открыт, и пульс «Картины дня» всплеска по этой теме не видит.",
-               "Штаб ашылмаған, «Күн көрінісінің» пульсі бұл тақырып бойынша секіріс көрмейді.")
+               "Штаб ашылмаған, «Күн қорытындысының» пульсі бұл тақырып бойынша секіріс көрмейді.")
         return b
     spike = spikes[0]
     b.number(int(spike.get("value") or 0), "сообщений за 7 дней (пульс)", "7 күндегі хабарлама (пульс)",
@@ -571,7 +571,7 @@ def crisis(ctx) -> Block:
                         "value": int(d.get("value") or 0), "district": d.get("district"),
                         "value_text": both(f"{fmt_num(d.get('value') or 0)} сообщ.", f"{fmt_num(d.get('value') or 0)} хабарлама")})
     b.focus(spike.get("target"), 7)
-    b.open("day", "Открыть «Картину дня»", "«Күн көрінісін» ашу")
+    b.open("day", "Открыть «Картину дня»", "«Күн қорытындысын» ашу")
     return b
 
 
@@ -730,10 +730,10 @@ def forecast(ctx) -> Block:
 def day_summary(ctx) -> Block:
     p, b = ctx.parsed, Block("day_summary", "R08")
     where = _where(p)
-    b.title = both(f"Картина дня {where['ru']}", f"Күн көрінісі: {where['kk']}")
+    b.title = both(f"Картина дня {where['ru']}", f"Күн қорытындысы: {where['kk']}")
     status, summary = ctx.summary(p.district)
     if status != "ok":
-        return _not_ready(b, status, "Картина дня", "Күн көрінісі")
+        return _not_ready(b, status, "Картина дня", "Күн қорытындысы")
     b.demo = bool((summary.get("demo") or {}).get("any"))
     kpi = summary.get("kpi") or {}
     if kpi.get("new_day"):
@@ -753,7 +753,7 @@ def day_summary(ctx) -> Block:
     hot = ((summary.get("hot") or {}).get("items") or [])
     if hot:
         b.focus(hot[0].get("target"), 7)
-    b.open("day", "Открыть «Картину дня»", "«Күн көрінісін» ашу")
+    b.open("day", "Открыть «Картину дня»", "«Күн қорытындысын» ашу")
     return b
 
 

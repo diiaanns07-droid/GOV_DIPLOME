@@ -1,5 +1,5 @@
 {
- "_note": "Ключи экрана «Спросить Birge» (R03 r15) для web/civic/i18n/ru.json и kk.json (R11). Источник — KEYS в web/civic/assistant/analyst.js; формы числа ru — {one,few,many}.",
+ "_note": "Ключи экрана «Спросить Birge» (R03 r15) для web/civic/i18n/ru.json и kk.json (R11). Источник — KEYS в web/civic/assistant/analyst.js; формы числа ru — {one,few,many}. С ревью R11 круг 1: analyst.calls — источники, status.not_ready — «пока нет данных».",
  "ru": {
   "analyst.title": "Спросить Birge",
   "analyst.subtitle": "Вопрос словами — ответ с числами из данных Birge",
@@ -18,9 +18,9 @@
   "analyst.how": "Как получен ответ",
   "analyst.how_summary": "{calls} · {ms}",
   "analyst.calls": {
-   "one": "{n} вызов модуля",
-   "few": "{n} вызова модулей",
-   "many": "{n} вызовов модулей"
+   "one": "{n} источник",
+   "few": "{n} источника",
+   "many": "{n} источников"
   },
   "analyst.ms": "{n} мс",
   "analyst.understood": "Как понят вопрос",
@@ -34,7 +34,7 @@
   "analyst.u.lang.mixed": "вперемешку",
   "analyst.status.ok": "есть данные",
   "analyst.status.empty": "данных за период нет",
-  "analyst.status.not_ready": "модуль не подключён",
+  "analyst.status.not_ready": "пока нет данных",
   "analyst.status.error": "не ответил",
   "analyst.mode": "Режим",
   "analyst.reason.no_key": "ключ модели не задан",
@@ -79,7 +79,7 @@
   "analyst.llm_hint": "Тілдік модель тек реті мен кіріспе сөйлемді таңдады; барлық санды код есептеді",
   "analyst.how": "Жауап қалай алынды",
   "analyst.how_summary": "{calls} · {ms}",
-  "analyst.calls": "модульге {n} сұрау",
+  "analyst.calls": "{n} дереккөз",
   "analyst.ms": "{n} мс",
   "analyst.understood": "Сұрақ қалай түсінілді",
   "analyst.u.district": "аудан",
@@ -92,7 +92,7 @@
   "analyst.u.lang.mixed": "аралас",
   "analyst.status.ok": "дерек бар",
   "analyst.status.empty": "кезеңде дерек жоқ",
-  "analyst.status.not_ready": "модуль қосылмаған",
+  "analyst.status.not_ready": "әзірге дерек жоқ",
   "analyst.status.error": "жауап бермеді",
   "analyst.mode": "Режим",
   "analyst.reason.no_key": "модель кілті берілмеген",

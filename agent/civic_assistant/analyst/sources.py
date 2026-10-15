@@ -28,6 +28,16 @@ ASTANA_TZ = timezone(timedelta(hours=5))
 OPEN = ("new", "accepted", "in_progress")
 
 
+MODULE_NAMES = {
+    "R07": {"ru": "Карта жалоб", "kk": "Шағымдар картасы"},
+    "R08": {"ru": "Картина дня", "kk": "Күн қорытындысы"},
+    "R12": {"ru": "Календарь работ", "kk": "Жұмыстар күнтізбесі"},
+    "R13": {"ru": "Встречи и прогноз", "kk": "Кездесулер мен болжам"},
+    "R16": {"ru": "Сделаем вместе", "kk": "Бірге жасайық"},
+    "R17": {"ru": "Штаб ведомств", "kk": "Ведомстволар штабы"},
+}
+
+
 class NotReady(Exception):
     """Модуля-соседа нет в сборке (или он не связан с базой) — честное «пока нет данных»."""
 
@@ -56,7 +66,8 @@ class CallLog:
             else:
                 status = "error"
                 LOGGER.exception("analyst: %s.%s failed", module, fn_name)
-        row = {"role": role, "module": module, "fn": fn_name,
+        # name — подпись источника для акима (R11 R03-3: коды модулей — только в подсказке строки).
+        row = {"role": role, "name": dict(MODULE_NAMES.get(role) or {"ru": role, "kk": role}), "module": module, "fn": fn_name,
                "args": {k: v for k, v in args.items() if isinstance(v, (str, int, float, bool)) or v is None},
                "status": status, "ms": round((time.perf_counter() - started) * 1000, 1)}
         if note:
