@@ -1,0 +1,14 @@
+diff --git a/web/civic/agencies/crisis-layer.js b/web/civic/agencies/crisis-layer.js
+index 51f7b51c..59055f9d 100644
+--- a/web/civic/agencies/crisis-layer.js
++++ b/web/civic/agencies/crisis-layer.js
+@@ -146,7 +146,8 @@
+   }
+   function beforeId(m) {
+     var layers = (m.getStyle() && m.getStyle().layers) || [];
+-    var heat = layers.filter(function (l) { return /^r07-heat/.test(l.id); })[0];
++    // Под слоями тепловой карты R07 (их id начинаются с r07-: r07-district-fill, r07-seg, …): цвета мест не тонут в заливке зоны
++    var heat = layers.filter(function (l) { return /^r07-/.test(l.id); })[0];
+     if (heat) return heat.id;
+     var sym = layers.filter(function (l) { return l.type === "symbol"; })[0];
+     return sym ? sym.id : undefined;

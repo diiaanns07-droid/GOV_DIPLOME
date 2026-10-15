@@ -1,0 +1,14 @@
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index 33d54aaa..0675a35d 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -438,7 +438,8 @@
+     // Плашки и кнопки оболочки поверх карты: значок R07 не встаёт под «Аймақ», кнопки карты, легенду и край шторки
+     // (R07 868de08 приближает карту к районам — на 375 «Байқоңыр» уходил под «Аймақ», «Есіл» — под ручку шторки; R11).
+     // Эталон A: чипы тем, сводка «Сегодня в Астане» (R08) и шторка «Рядом с вами» (R09) — тоже плашки поверх карты.
+-    for (const el of document.querySelectorAll(".civic-explore, .civic-explore-registry, .map-tools, #birge-legend, #civic-panel, #civic-sheet-handle, #map-status, #birge-chips, #birge-today, #birge-near")) {
++    // Эталон A: капсула разделов и «ҚАЗ · РУС» с аватаром — тоже над картой (значок у верхнего края уходил под капсулу)
++    for (const el of document.querySelectorAll(".civic-explore, .civic-explore-registry, .map-tools, #birge-legend, #civic-panel, #civic-sheet-handle, #map-status, #birge-chips, #birge-today, #birge-near, .birge-nav, .birge-me")) {
+       if (!el.getClientRects().length || getComputedStyle(el).visibility === "hidden") continue;
+       const r = el.getBoundingClientRect();
+       if (r.width > 0 && r.height > 0) rects.push(r);

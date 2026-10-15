@@ -246,6 +246,29 @@
     };
     const eventTitle = (ev) => (S.lang === "kk" ? ev.title_kk || ev.title_ru : ev.title_ru) || "";
 
+    // ----- место полосы: не поверх плашек оболочки у нижнего края карты (строка легенды, карточка слева / справа) -----
+    // Свои отступы оболочка может задать сама (--rp-left / --rp-right на .rp-host); иначе считаем по плашкам, которые
+    // заходят в нижнюю полосу карты. Телефон — полоса во всю ширину (CSS), отступы не нужны.
+    const AVOID = "#birge-legend, .birge-legend-line, #civic-panel, .r07-maplegend, [data-rp-avoid]" + (opts.avoid ? ", " + opts.avoid : "");
+    function placeBar() {
+      const host = root.closest(".rp-host") || root;
+      const box = (host.parentElement || document.body).getBoundingClientRect();
+      if (!box.width || innerWidth <= 760 || opts.place === false) return;
+      const band = box.bottom - 200;
+      let left = 0, right = 0;
+      document.querySelectorAll(AVOID).forEach((el) => {
+        if (root.contains(el) || !el.getClientRects().length || getComputedStyle(el).visibility === "hidden") return;
+        const r = el.getBoundingClientRect();
+        if (!r.width || r.bottom < band || r.top > box.bottom || r.right < box.left || r.left > box.right) return;
+        if (r.left + r.width / 2 < box.left + box.width / 2) left = Math.max(left, r.right - box.left + 12);
+        else right = Math.max(right, box.right - r.left + 12);
+      });
+      if (!host.style.getPropertyValue("--rp-left-fixed")) host.style.setProperty("--rp-left", Math.round(left) + "px");
+      if (!host.style.getPropertyValue("--rp-right-fixed")) host.style.setProperty("--rp-right", Math.round(right) + "px");
+    }
+    const placeTimer = setInterval(() => { if (!S.destroyed) placeBar(); }, 1000);
+    window.addEventListener("resize", placeBar);
+
     // ----- разметка -----
     root.classList.add("rp-root", "bk-app");
     root.innerHTML = '<section class="rp" role="region"><div class="rp-bar bk-glass bk-glass--strong"></div>' +
@@ -255,6 +278,7 @@
     const sr = root.querySelector(".rp-sr");
     const opener = document.activeElement;
     document.body.classList.add("birge-replay-open");
+    placeBar();
 
     function render() {
       if (S.destroyed) return;
@@ -330,13 +354,15 @@
       if (!evs.length || S.days.length < 2) return "";
       const tail = S.days.length - 1;
       const first = S.days[0].date, last = S.days[tail].date;
+      const ranked = evs.slice().sort(byRank);
       return '<div class="rp-marks">' + evs.map((ev) => {
         const a = ev.start < first ? 0 : dayIndex(ev.start);
         const b = !ev.end || ev.end > last ? tail : dayIndex(ev.end);
         if (a < 0 || b < 0) return "";
         const left = (a / tail) * 100, width = Math.max(((b - a) / tail) * 100, 0);
         const title = eventTitle(ev);
-        return '<span class="rp-mark rp-mark--' + esc(ev.kind) + '" style="left:' + left.toFixed(2) + "%;width:" + width.toFixed(2) + '%" title="' +
+        return '<span class="rp-mark rp-mark--' + esc(ev.kind) + (ev.kind === "season" ? " rp-mark--background" : "") + '" data-rank="' + ranked.indexOf(ev) +
+          '" style="left:' + left.toFixed(2) + "%;width:" + width.toFixed(2) + '%" title="' +
           esc(title + (districtName(ev) ? " · " + districtName(ev) : "")) + '"><span class="rp-mark__label">' + svg(ev.kind, 14) + esc(title) + "</span></span>";
       }).join("") + "</div>";
     }
@@ -415,11 +441,31 @@
         evEl.innerHTML = svg(ev.kind, 14) + "<span>" + esc(districtName(ev) ? t("replay.event_in", { title: eventTitle(ev), district: districtName(ev) }) : eventTitle(ev)) + "</span>";
       } else evEl.hidden = true;
       bar.querySelectorAll(".rp-mark").forEach((m, i) => m.classList.toggle("rp-mark--on", ((S.body.events || [])[i] || null) === ev));
+      if (full === true) fitMarkLabels();
       countTo(Number(d.totals.people) || 0, Number(d.totals.fixed) || 0);
+    }
+    // Событие дня для подписи у даты: самое конкретное — буран важнее фонового «отопительного сезона» (kind season),
+    // короткое важнее долгого, свежее важнее давнего
+    function eventRank(ev) {
+      const last = S.days.length ? S.days[S.days.length - 1].date : ev.start;
+      const span = (Date.parse(ev.end || last) - Date.parse(ev.start)) / 86400000 || 0;
+      return [ev.kind === "season" ? 1 : 0, span, -Date.parse(ev.start)];
+    }
+    const byRank = (a, b) => { const x = eventRank(a), y = eventRank(b); return x[0] - y[0] || x[1] - y[1] || x[2] - y[2]; };
+    // Подписи событий на шкале не налезают: важнее (data-rank меньше) — видна, менее важная, если тесно, — только полоса
+    function fitMarkLabels() {
+      const marks = [...bar.querySelectorAll(".rp-mark")].sort((a, b) => Number(a.dataset.rank) - Number(b.dataset.rank));
+      const placed = [];
+      marks.forEach((m) => {
+        m.classList.remove("rp-mark--nolabel");
+        const r = m.querySelector(".rp-mark__label").getBoundingClientRect();
+        if (placed.some((q) => !(r.right + 4 < q.left || q.right + 4 < r.left))) m.classList.add("rp-mark--nolabel");
+        else placed.push(r);
+      });
     }
     function activeEvent(d) {
       if (!d) return null;
-      return ((S.body && S.body.events) || []).find((ev) => ev.start <= d.date && (!ev.end || ev.end >= d.date)) || null;
+      return ((S.body && S.body.events) || []).filter((ev) => ev.start <= d.date && (!ev.end || ev.end >= d.date)).sort(byRank)[0] || null;
     }
     // «Сообщили 230 человек» и «21 место исправлено» перетекают вместе с картой
     function countTo(people, fixed) {
@@ -472,6 +518,7 @@
         S.status = "ready";
         heat.replay.begin();
         S.began = true;
+        placeBar();   // своя легенда тепловой карты на время хроники спрятана — место полосы считаем заново
         S.index = 0; S.pos = 0; S.ended = false;
         S.shownPeople = null; S.shownFixed = null;
         render();
@@ -634,6 +681,8 @@
       if (S.raf) cancelAnimationFrame(S.raf);
       if (S.counter) cancelAnimationFrame(S.counter);
       document.removeEventListener("keydown", onKey, true);
+      clearInterval(placeTimer);
+      window.removeEventListener("resize", placeBar);
       window.removeEventListener("birge:lang", onLang);
       document.removeEventListener("birge:lang", onLang);
       document.body.classList.remove("birge-replay-open");

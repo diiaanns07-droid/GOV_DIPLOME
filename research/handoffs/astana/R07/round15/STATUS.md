@@ -69,18 +69,26 @@ restored_from: fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.
   (проверено кадрами). Регресс: волна 2 38/38, читаемость 18/18 (проверка кластера обновлена под новое правило),
   хроника 15/15, pytest R07 203/1 skip.
 
+- (14:55 UTC) Задача 5 — полная сборка во временной папке (R01 c9069723 + R09 9153f7b2 + R02 a7251430 + R17 2388a11b +
+  R12 8dee1cbb + R16 fbd9e247 + R06 + R11 + R07): значки R07 ни одним слоем не закрыты; зона кризиса R17 лежала
+  поверх цветов тепловой карты (их beforeId искал /^r07-heat/) — патч R17 (1 строка) проверен; капсула разделов R01
+  закрывала значок у верхнего края — патч R01 (+ .birge-nav, .birge-me) проверен. Хроника в оболочке: кнопка-часы,
+  полоса обходит легенду и карточку слева, подпись дня — самое конкретное событие («Буран в Нуре», а не фоновое
+  «Начало отопительного сезона» — оно тонкой полосой), обводка графика от ui-kit убрана. R09 сам перешёл на
+  metoo_times — патч R09 снят; карта = EXPECTED R02 (0 расхождений).
+
 ## Дальше
-- Задача 5: значки поверх слоёв R16/R17/R12 — проверить на их ветках, замечания в INTEGRATION.
 - Перед сборкой B1 (16 окт 14:00 Астаны): DELIVERY с новым code_sha.
 - Проверка в сборке R01 B1 (16 окт 14:00 Астаны) с демо-миром; ответы соседей на патч R09 и просьбы R11/R17.
 
 ## Соседи (15 окт 13:40 UTC)
 - R02 (claude/affectionate-shannon-jm6ws5 @ 08bb57a1): SCHEMA 1.1, world_v1.json, EXPECTED.json — взято.
-- R09 (claude/quirky-ptolemy-k3z2mj @ eed6393f): seed_world есть; «Я тоже» читает metoo_ago, а мир пишет metoo_times —
-  патч в research/round-15-results/R07/patches/R09_world_seed_metoo_times.patch (INTEGRATION §2). Сообщить R09.
-- R17 (claude/sweet-euler-5tiu5b @ 72676e3d): incident_marks(start, end) для R07 — подключено; просьба: поле event.
-- R01 (claude/brave-fermi-nhzetj @ 460fd683): маршрут heat.replay и вызов ui.civic_heat.world.seed_world уже есть;
-  примеры R07 в демо-мире не подмешивает. Нужны: replay.js/css в статике и attach у кнопок карты (INTEGRATION §1.2–1.4).
+- R09 (claude/quirky-ptolemy-k3z2mj @ 9153f7b2): seed_world читает metoo_times — сверка с EXPECTED R02 без расхождений.
+- R17 (claude/sweet-euler-5tiu5b @ 2388a11b): incident_marks(start, end) для R07 — подключено; просьба: поле event;
+  патч crisis-layer beforeId /^r07-/ (зона кризиса под тепловой картой) — patches/R17_crisis_layer_under_heat.patch.
+- R01 (claude/brave-fermi-nhzetj @ c9069723): маршрут heat.replay и вызов ui.civic_heat.world.seed_world уже есть;
+  примеры R07 в демо-мире не подмешивает. Нужны: replay.js/css в статике и attach у кнопок карты (INTEGRATION §1.2–1.4),
+  патч birgeOverlayRects (капсулы шапки), прятать #birge-today и поднимать #map-status на время хроники (§3б).
 - R11 (claude/gracious-mendel-eopem6): просьба i-play / i-pause в icons.svg и ключи replay.* (INTEGRATION §5).
 
 ## Вопросы владельцу

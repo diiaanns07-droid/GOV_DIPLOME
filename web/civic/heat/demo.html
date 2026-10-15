@@ -39,7 +39,6 @@
     .attr { position: absolute; z-index: 20; left: 8px; bottom: 6px; font-size: 13px; color: #5b6a64; background: #ffffffcc; padding: 2px 6px; border-radius: 6px; }
     /* «Хроника города» (раунд 15) — над картой, левее панели «Горячие места» */
     .replay-slot { position: absolute; z-index: 35; left: 0; right: 0; bottom: 0; height: 0; }
-    .replay-slot .rp-host { --rp-right: 424px; }
     .mapbtns .rp-open { width: 48px; height: 48px; border-radius: 10px; background: #fff; box-shadow: 0 1px 2px #1936281a, 0 2px 8px #19362812; }
     .maplibregl-ctrl-attrib { display: none; }
     @media (max-width: 760px) {
@@ -59,7 +58,6 @@
       .mapbtns { top: 64px; right: 10px; }
       .attr { bottom: auto; top: auto; left: auto; right: 8px; top: 304px; }   /* ниже кнопок карты, не под легендой */
       .replay-slot { bottom: 140px; }   /* над свёрнутой шторкой */
-      .replay-slot .rp-host { --rp-right: 0px; }
     }
   </style>
 </head>
@@ -82,7 +80,7 @@
   </div>
   <div class="attr">© OpenStreetMap contributors (ODbL)</div>
   <div class="replay-slot" id="replay-slot"></div>
-  <aside class="panel" id="panel" data-state="half" aria-label="Карта жалоб">
+  <aside class="panel" id="panel" data-state="half" aria-label="Карта жалоб" data-rp-avoid>
     <button type="button" class="handle" id="handle" aria-label="Развернуть или свернуть панель"></button>
     <div id="heat-root"></div>
   </aside>

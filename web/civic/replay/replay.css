@@ -50,8 +50,11 @@
 /* Шкала: график жалоб по дням (всплеск бурана виден сразу), полосы событий, дорожка, отметки дней, ползунок */
 .rp-track { grid-area: track; position: relative; height: 64px; margin-top: 4px; cursor: pointer; touch-action: none; user-select: none; border-radius: 8px; }
 .rp-spark { position: absolute; left: 0; top: 10px; width: 100%; height: 26px; overflow: visible; }
-.rp-spark__area { fill: color-mix(in srgb, var(--rp-hot) 12%, transparent); }
-.rp-spark__line { fill: none; stroke: color-mix(in srgb, var(--rp-hot) 60%, transparent); stroke-width: 1.5; }
+/* Свои краски у графика явно: в оболочке ui-kit даёт всем svg внутри .bk-app обводку иконок — у растянутого графика
+   (preserveAspectRatio none) края площади становились тёмными полосами 13 px */
+.rp-spark, .rp-spark path { stroke-linecap: round; stroke-linejoin: round; }
+.rp-spark__area { fill: color-mix(in srgb, var(--rp-hot) 12%, transparent); stroke: none; }
+.rp-spark__line { fill: none; stroke: color-mix(in srgb, var(--rp-hot) 60%, transparent); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
 .rp-rail { position: absolute; left: 0; right: 0; top: 40px; height: 4px; border-radius: 2px; background: var(--rp-fill-hover); overflow: hidden; }
 .rp-fill { position: absolute; inset: 0; background: var(--rp-ink); transform: scaleX(0); transform-origin: 0 50%; will-change: transform; }
 .rp-thumb { position: absolute; top: 42px; left: 0; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: #fff;
@@ -69,6 +72,12 @@
   border-radius: 999px; background: #fff; color: var(--glass-info, #184981); box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-info, #1f5fa8) 25%, transparent);
   font-size: 12px; font-weight: 600; white-space: nowrap; }
 .rp-mark--on { background: color-mix(in srgb, var(--c-info, #1f5fa8) 14%, transparent); }
+/* Фоновое долгое событие («Начало отопительного сезона») — тонкая полоса у верха шкалы, не заливка всей недели */
+.rp-mark--background { height: 6px; top: 0; border-left: 0; border-radius: 3px; background: color-mix(in srgb, var(--c-info, #1f5fa8) 18%, transparent); }
+.rp-mark--background .rp-mark__label { top: 8px; background: transparent; box-shadow: none; color: var(--rp-ink-3); font-weight: 500; }
+.rp-mark--background.rp-mark--on { background: color-mix(in srgb, var(--c-info, #1f5fa8) 28%, transparent); }
+.rp-mark--background.rp-mark--on .rp-mark__label { background: transparent; color: var(--glass-info, #184981); }
+.rp-mark--nolabel .rp-mark__label { visibility: hidden; }
 .rp-mark--on .rp-mark__label { background: var(--c-info, #1f5fa8); color: #fff; box-shadow: none; }
 .rp-mark__label .rp-ic { width: 12px; height: 12px; }
 

@@ -34,4 +34,4 @@ API
 
 ИНТЕГРАЦИЯ С СОСЕДЯМИ (проверено во временной сборке, см. INTEGRATION.txt §2):
   мир R02 (08bb57a1) → R09.seed_world (eed6393f) → R17.seed_world (72676e3d) → R07: отметка «Буран в Нуре» со ссылкой
-  на кризис inc-w15-buran и сценой 9; числа районов карты = EXPECTED.json R02 (с патчем R09 metoo_times).
+  на кризис inc-w15-buran и сценой 9; числа районов карты = EXPECTED.json R02 (R09 9153f7b2 читает metoo_times мира).
