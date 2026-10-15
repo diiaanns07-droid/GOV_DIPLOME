@@ -66,6 +66,36 @@ class Oracle:
             return S.find_function(S.AGENCIES_MODULES, S.BOARD_FUNCS)[2] is not None
         return True
 
+    def _board(self, district, days):
+        """Табло R17, если его сервис запущен (иначе аналитик честно считает по срокам R08)."""
+        fn = S.find_function(S.AGENCIES_MODULES, ("board_snapshot",))[2]
+        if fn is None:
+            return None
+        board = fn(days=days, district=district)
+        return None if board.get("empty") and board.get("source") == "none" else board
+
+    def _incidents(self):
+        try:
+            return S.agencies_incidents(district=None)
+        except S.NotReady:
+            return []
+
+    def _neighbour_value(self, intent, district):
+        """Число соседа для первого крупного числа блока; None — сосед не связан с базой."""
+        if intent == "work_conflicts":
+            fn = S.find_function(S.GEO_MODULES, ("conflicts_summary",))[2]
+            return int(fn(district=district)["conflicts"]) if fn else None
+        if intent == "initiatives":
+            fn = S.find_function(S.TOGETHER_MODULES, ("initiatives_summary",))[2]
+            data = fn(district=district) if fn else None
+            return None if not data or data.get("status") == "no_data" else \
+                (int(data["upcoming"]) if data["upcoming"] or data["done"] else 0)
+        if intent == "meeting_orders":
+            fn = S.find_function(S.MEETINGS_MODULES, ("board_block",))[2]
+            data = fn(district=district) if fn else None
+            return None if data is None else int(data["counts"]["total"])
+        return None
+
     def check(self, intent: str, gold: dict, block: dict | None) -> tuple[bool, str]:
         """(верно?, пояснение) для блока ответа по эталонным параметрам вопроса."""
         if block is None:
@@ -75,6 +105,16 @@ class Oracle:
         if intent in NEW_MODULE_INTENTS and not self.module_present(intent):
             ok = block["status"] == "not_ready" and not nums
             return ok, "модуль не подключён → not_ready без чисел" if ok else f"ожидался not_ready, а {block['status']} {nums}"
+        if intent in NEW_MODULE_INTENTS:
+            # Сосед в сборке: ожидаемое число — его же функция «для R03»; сервиса нет — честный not_ready.
+            exp = self._neighbour_value(intent, d)
+            if exp is None:
+                ok = block["status"] == "not_ready" and not nums
+                return ok, "сосед не связан с базой → not_ready" if ok else f"ожидался not_ready, а {block['status']} {nums}"
+            if exp == 0:
+                ok = block["status"] == "empty" and not nums
+                return ok, "у соседа 0 → empty" if ok else f"у соседа 0, а в ответе {block['status']} {nums}"
+            return bool(nums) and nums[0] == exp, f"сосед: ожидалось {exp}, в ответе {nums[:1]}"
         if intent == "hot_spots":
             items = [it for it in self.heat.heat(days=days, district=d, category=c)["items"] if it["state"] == "active"]
             exp = [sum(it["count"] for it in items), len(items)] if items else []
@@ -109,15 +149,22 @@ class Oracle:
                 exp = int((self.summary(d).get("overdue") or {}).get("count") or 0)
             return bool(nums) and nums[0] == exp, f"ожидалось {exp}, в ответе {nums[:1]}"
         if intent == "lagging_services":
-            if self.module_present("lagging_services"):
-                return bool(nums), "табло R17: числа есть"
+            board = self._board(d, days if gold.get("days") else 30)
+            if board is not None:
+                rows = [r for r in board["services"] if r.get("open") or r.get("overdue")]
+                exp = [sum(1 for r in rows if r.get("overdue")), int(board["totals"]["overdue"])]
+                return nums[:2] == exp, f"табло R17: ожидалось {exp}, в ответе {nums[:2]}"
             exp_total = int((self.summary(d).get("overdue") or {}).get("count") or 0)
             rows = S.services_from_deadlines(self.heat, district=d)["items"]
             exp = [sum(1 for r in rows if r["overdue"] > 0), exp_total]
             return nums[:2] == exp, f"ожидалось {exp} (служб с просрочками, просрочено = R08), в ответе {nums[:2]}"
         if intent == "crisis":
-            if self.module_present("crisis"):
-                return bool(nums), "штаб R17: числа есть"
+            incidents = self._incidents()
+            if incidents:
+                inc = incidents[0]
+                progress = inc.get("progress") or []
+                exp = [sum(int(r.get("done") or 0) for r in progress), len(progress)]
+                return nums[:2] == exp, f"штаб R17: ожидалось {exp}, в ответе {nums[:2]}"
             spikes = [a for a in (self.summary(d).get("pulse") or {}).get("items") or [] if a.get("category") == (c or "snow_ice")]
             exp = int(spikes[0]["value"]) if spikes else None
             return bool(nums) and nums[0] == exp, f"пульс R08: ожидалось {exp}, в ответе {nums[:1]}"
@@ -279,13 +326,34 @@ def environment() -> dict:
             "llm_configured": bool(os.environ.get("OPENAI_API_KEY") and os.environ.get("OPENAI_MODEL"))}
 
 
+def start_neighbours(db_path: str) -> dict:
+    """Как в демо-сборке R01 (CIVIC_DEMO=1): сервисы соседей на одной базе, каждый засевает свой пример."""
+    os.environ["CIVIC_DEMO"] = "1"
+    started = {}
+    for module in ("ui.civic_agencies", "ui.civic_together", "ui.civic_meetings"):
+        try:
+            mod = S._import(module)
+            if mod is not None and callable(getattr(mod, "make_service", None)):
+                mod.make_service(db_path)
+                started[module] = True
+            else:
+                started[module] = False
+        except Exception as exc:  # noqa: BLE001
+            started[module] = f"failed: {type(exc).__name__}"
+    return started
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", default="research/round-15-results/R03/results")
     parser.add_argument("--set", default=str(SET_FILE))
     parser.add_argument("--llm", action="store_true", help="режим с моделью из OPENAI_* (LOCAL-17)")
     parser.add_argument("--tag", default="offline")
+    parser.add_argument("--with-neighbours", metavar="DB",
+                        help="поднять демо-сервисы соседей раунда 15 (R17, R16, R13; R12 — фикстура) на этой SQLite")
     args = parser.parse_args()
+    if args.with_neighbours:
+        start_neighbours(args.with_neighbours)
     data = json.loads(Path(args.set).read_text("utf-8"))
     provider = None
     if args.llm:

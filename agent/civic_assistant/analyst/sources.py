@@ -252,25 +252,50 @@ MEETINGS_MODULES = ("ui.civic_meetings", "ui.civic_meetings.service", "ui.civic_
 MEETING_FUNCS = ("board_block", "list_meetings", "meetings", "public_meetings", "get_meetings")
 
 
+def adapt(fn, name: str = "neighbour"):
+    """Одинаковый вызов соседа — настоящего или подменённого через configure: только объявленные им параметры,
+    ответ в любом принятом виде (unwrap), «не связан с базой» → NotReady.
+
+    Сосед есть, но не связан с базой: None (R13 board_block), {"status": "no_data"} (R16 initiatives_summary),
+    {"source": "none", "empty": True} (R17 board_snapshot без сервиса) — это «пока нет данных», а не ноль.
+    """
+    def call(**kwargs):
+        answer = unwrap(call_flexible(fn, **kwargs))
+        if answer is None or (isinstance(answer, dict) and (answer.get("status") == "no_data"
+                                                            or (answer.get("source") == "none" and answer.get("empty")))):
+            raise NotReady(name)
+        return answer
+    return call
+
+
 def neighbour(modules, funcs):
     """Функция-источник «спросить соседа»: (**kwargs) → данные; соседа нет → NotReady."""
     def call(**kwargs):
         modname, _name, fn = find_function(modules, funcs)
         if fn is None:
             raise NotReady(modules[0])
-        answer = unwrap(call_flexible(fn, **kwargs))
-        # Сосед есть, но не связан с базой: None (R13 board_block), {"status": "no_data"} (R16),
-        # {"source": "none", "empty": True} (R17 board_snapshot) — это «пока нет данных», а не ноль.
-        if answer is None or (isinstance(answer, dict) and (answer.get("status") == "no_data"
-                                                            or answer.get("source") == "none")):
-            raise NotReady(modname or modules[0])
-        return answer
+        return adapt(fn, modname or modules[0])(**kwargs)
     call.modules = modules
     return call
 
 
 agencies_board = neighbour(AGENCIES_MODULES, BOARD_FUNCS)
-agencies_incidents = neighbour(AGENCIES_MODULES, INCIDENT_FUNCS)
+_agencies_incidents = neighbour(AGENCIES_MODULES, INCIDENT_FUNCS)
+
+
+def agencies_incidents(**kwargs):
+    """Кризисы R17. Пока шлюз не запустил сервис R17 (api_state пуст), active_incidents() отдаёт [] — это «штаб не
+    подключён», а не «кризиса нет»: иначе аналитик сказал бы акиму «бурана нет», когда штаб в базе открыт."""
+    try:
+        state = _import("ui.civic_agencies.api_state")
+    except Exception:  # noqa: BLE001
+        state = None
+    if state is not None and callable(getattr(state, "current", None)) and state.current() is None:
+        raise NotReady("ui.civic_agencies (сервис не запущен)")
+    return _agencies_incidents(**kwargs)
+
+
+agencies_incidents.modules = AGENCIES_MODULES
 works_conflicts = neighbour(GEO_MODULES, CONFLICT_FUNCS)
 together_initiatives = neighbour(TOGETHER_MODULES, INITIATIVE_FUNCS)
 meetings_list = neighbour(MEETINGS_MODULES, MEETING_FUNCS)

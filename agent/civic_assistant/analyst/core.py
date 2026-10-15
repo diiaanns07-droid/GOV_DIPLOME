@@ -88,12 +88,15 @@ class _Sources:
     def __init__(self, cfg: dict):
         self.heat = cfg["heat"] if "heat" in cfg else S.heat_service()
         self.akim_summary = cfg["akim_summary"] if "akim_summary" in cfg else S.akim_summary_fn()
-        self.agencies_board = cfg.get("agencies_board") or S.agencies_board
-        self.agencies_incidents = cfg.get("agencies_incidents") or S.agencies_incidents
-        self.works_conflicts = cfg.get("works_conflicts") or S.works_conflicts
-        self.together_initiatives = cfg.get("together_initiatives") or S.together_initiatives
-        self.meetings_list = cfg.get("meetings_list") or S.meetings_list
-        self.forecast = cfg.get("forecast") or S.forecast
+        # Подменённый источник вызывается так же, как настоящий сосед (sources.adapt).
+        def pick(key, default):
+            return S.adapt(cfg[key], key) if callable(cfg.get(key)) else default
+        self.agencies_board = pick("agencies_board", S.agencies_board)
+        self.agencies_incidents = pick("agencies_incidents", S.agencies_incidents)
+        self.works_conflicts = pick("works_conflicts", S.works_conflicts)
+        self.together_initiatives = pick("together_initiatives", S.together_initiatives)
+        self.meetings_list = pick("meetings_list", S.meetings_list)
+        self.forecast = pick("forecast", S.forecast)
 
 
 class _Ctx:

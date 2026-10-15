@@ -237,3 +237,50 @@ class StubProvider:
         if isinstance(self.reply, BaseException):
             raise self.reply
         return self.reply if isinstance(self.reply, str) else json.dumps(self.reply, ensure_ascii=False)
+
+
+# ---------------------------------------------------------------- форматы функций соседей «для R03» (их ветки, 15 окт)
+
+def r17_board_snapshot(days=30, district=None):
+    """ui.civic_agencies.board_snapshot: все 20 служб (с нулями), итоги по обращениям (совместное — одно)."""
+    rows = [{"service": s, "open": 0, "overdue": 0, "median_answer_days": None, "verified_share": None}
+            for s in ("road", "street_cleaning", "utilities", "water", "lighting")]
+    rows[2].update(open=5, overdue=4, median_answer_days=4.0, verified_share=0.5)    # ЖКХ
+    rows[3].update(open=6, overdue=3, median_answer_days=2.5)                        # Водоканал
+    rows[0].update(open=7, overdue=2, median_answer_days=1.5, verified_share=0.75)   # дороги
+    return {"days": days, "district": district, "services": rows,
+            "totals": {"open": 18, "overdue": 8, "joint": 1}, "demo": True, "empty": False, "source": "fixture"}
+
+
+def r17_active_incidents(district=None):
+    """ui.civic_agencies.active_incidents: публичный вид, без задач — прогресс по службам."""
+    return [{"id": "inc-demo-blizzard-nura", "kind": "blizzard", "title_ru": "Буран в Нуре", "title_kk": "Нұрадағы боран",
+             "zone": {"kind": "district", "district": "nura"}, "zone_label": {"ru": "район Нура", "kk": "Нұра ауданы"},
+             "status": "active", "services": ["street_cleaning", "transport"],
+             "progress": [{"service": "street_cleaning", "done": 0, "doing": 1, "total": 1},
+                          {"service": "transport", "done": 1, "doing": 0, "total": 1}],
+             "updates": [{"id": "u-1", "at": NOW.isoformat(), "text_ru": "Дворы расчищают", "text_kk": "Аулалар тазаланып жатыр"}],
+             "link": "#agencies/crisis=inc-demo-blizzard-nura", "demo": True}]
+
+
+def r12_conflicts_summary(district=None):
+    return {"conflicts": 5, "high": 2, "source": "fixture", "demo": True,
+            "top": [{"id": "cf-1", "kind": "dig_after_surface", "severity": "high", "title_ru": "Копаем дважды",
+                     "title_kk": "Екі рет қазамыз", "street_ru": "ул. Сыганак", "street_kk": "Сығанақ көшесі"}]}
+
+
+def r12_no_works(district=None):
+    return {"conflicts": 0, "high": 0, "top": [], "source": "none", "demo": False}
+
+
+def r16_initiatives_summary(district=None):
+    return {"status": "ok", "district": district, "upcoming": 4, "joined_upcoming": 34, "supported": 1, "done": 2,
+            "neighbors_done": 26, "on_review": 2, "demo": True,
+            "next": [{"id": "i-1", "title": "Субботник во дворе", "starts_at": NOW.isoformat(), "joined": 14,
+                      "district": "nura", "target": {"kind": "area", "id": "yard-7"}, "demo": True}]}
+
+
+def r13_board_block(district=None):
+    return {"next": None, "counts": {"total": 9, "todo": 2, "in_progress": 3, "done": 4, "overdue": 1}, "demo": True,
+            "orders": [{"id": "o-1", "text_ru": "Нанести разметку", "text_kk": "Таңба салу", "service": "traffic",
+                        "due": "2026-10-10", "status": "in_progress", "overdue": True}]}

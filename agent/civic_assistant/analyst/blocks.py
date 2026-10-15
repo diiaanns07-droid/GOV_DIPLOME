@@ -446,7 +446,11 @@ def lagging_services(ctx) -> Block:
     rows = [r for r in rows if r["open"] or r["overdue"]] or rows  # табло R17 отдаёт все 20 служб, и с нулями
     lagging = sorted((r for r in rows if r["overdue"] > 0),
                      key=lambda r: (-r["overdue"], -r["open"], r["service"]))
-    total_overdue = sum(r["overdue"] for r in rows)
+    # Обращений просрочено — итог табло R17, если он есть: совместное обращение стоит в строках двух служб,
+    # и сумма по строкам была бы больше числа обращений на экране «Штаб ведомств».
+    totals = board.get("totals") if b.role == "R17" and isinstance(board, dict) else None
+    total_overdue = _int(totals.get("overdue")) if isinstance(totals, dict) and "overdue" in totals and not p.service \
+        else sum(r["overdue"] for r in rows)
     if not rows:
         b.status = "empty"
         b.line(f"Открытых обращений у служб {where['ru']} нет.", f"{where['kk'].capitalize()} қызметтерде ашық өтініш жоқ.")
@@ -481,13 +485,15 @@ def lagging_services(ctx) -> Block:
         if r.get("verified_pct") is not None:
             item["verified_pct"] = r["verified_pct"]
         b.items.append(item)
-    # Место, где служба отстаёт сильнее всего, — из «Просрочено — дольше всех» R08 (если оно есть на карте).
+    # Место на карте — самое долгое «Просрочено» R08 у отстающих служб (по порядку отставания), если оно на карте.
     if lagging:
         st, summary = ctx.summary(p.district)
         if st == "ok":
-            worst = next((it for it in (summary.get("overdue") or {}).get("items") or []
-                          if (it.get("service") or {}).get("id") == lagging[0]["service"] and it.get("on_map")), None)
-            if worst and worst.get("target"):
+            items = [it for it in (summary.get("overdue") or {}).get("items") or [] if it.get("on_map") and it.get("target")]
+            order = [r["service"] for r in lagging]
+            worst = min((it for it in items if (it.get("service") or {}).get("id") in order),
+                        key=lambda it: order.index(it["service"]["id"]), default=None)
+            if worst:
                 b.focus(dict(worst["target"], label_ru=worst.get("place_ru"), label_kk=worst.get("place_kk")), 30)
     b.open("agencies", "Открыть «Штаб ведомств»", "«Ведомстволар штабын» ашу")
     return b
@@ -516,6 +522,10 @@ def _incident_progress(inc: dict) -> tuple[int, int, list[str], list[str]]:
     services = list(dict.fromkeys(t["service"] for t in tasks if isinstance(t.get("service"), str)))
     working = list(dict.fromkeys(t["service"] for t in tasks if isinstance(t.get("service"), str) and t.get("status") != "done"))
     return sum(1 for t in tasks if t.get("status") == "done"), len(tasks), services, working
+
+
+# Вид кризиса R17 (§5.5) → тема жалоб на карте, по которой искать самое горячее место зоны.
+CRISIS_CATEGORY = {"blizzard": "snow_ice", "heat_outage": "utilities", "water_outage": "utilities", "flood": "utilities"}
 
 
 def crisis(ctx) -> Block:
@@ -569,6 +579,16 @@ def crisis(ctx) -> Block:
                 b.focus(target, 7)
             elif isinstance(target, str) and target.startswith(("yard-", "cell-")):
                 b.focus({"kind": "area", "id": target}, 7)
+        if not any(a["kind"] == "map.focus" for a in b.actions) and zone_d:
+            # Зона — район целиком: «Показать на карте» ведёт к самому горячему месту района по теме кризиса
+            # (буран — «Снег и гололёд»), те же числа, что на карте R07.
+            category = CRISIS_CATEGORY.get(str(inc.get("kind") or ""))
+            st, data = ctx.call("R07", "ui.civic_heat", "heat", S.heat_targets,
+                                {"service": ctx.src.heat, "days": 7, "district": zone_d, "category": category})
+            if st == "ok" and data["items"]:
+                top = data["items"][0]["target"]
+                b.focus(top, 7, both(f"Показать на карте: {_target_label(top, 'ru')}",
+                                     f"Картадан көрсету: {_target_label(top, 'kk')}"))
         b.open("crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу",
                opener={"global": "BirgeAgencies", "fn": "openCrisis", "arg": {"incident": str(inc.get("id") or "")}})
         return b
@@ -639,7 +659,11 @@ def work_conflicts(ctx) -> Block:
         b.demo = any(r.get("demo") for r in rows) or bool(isinstance(answer, dict) and answer.get("demo"))
     if not total:
         b.status = "empty"
-        b.line(f"Конфликтов работ {where['ru']} не найдено.", f"{where['kk'].capitalize()} жұмыстар қайшылығы табылмады.")
+        if isinstance(answer, dict) and answer.get("source") == "none":
+            b.line("В «Календаре работ» пока нет записей о работах — конфликтов искать не в чем.",
+                   "«Жұмыстар күнтізбесінде» әзірге жұмыс жазбалары жоқ — қайшылық іздейтін ештеңе жоқ.")
+        else:
+            b.line(f"Конфликтов работ {where['ru']} не найдено.", f"{where['kk'].capitalize()} жұмыстар қайшылығы табылмады.")
         return b
     b.number(total, plural_ru(total, "конфликт работ", "конфликта работ", "конфликтов работ"),
              "жұмыстар қайшылығы", "works_conflicts", tone="up")

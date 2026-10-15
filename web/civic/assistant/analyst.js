@@ -161,6 +161,9 @@
       short: { ru: "Сравнить районы", kk: "Аудандарды салыстыру" } },
     { ru: "Сколько обращений просрочено?", kk: "Қанша өтініштің мерзімі өтті?" },
   ];
+  // Функции экранов соседей, которые открывают конкретную запись (сервер присылает opener {global, fn, arg}).
+  // Вызываем только эти имена: ответ сервера не может заставить экран вызвать что-то другое.
+  var OPENERS = { "BirgeAgencies.openCrisis": true, "BirgeWorksCalendar.openConflict": true };
   // Где в оболочке раздел, на который ведёт кнопка «Открыть …» (id разделов соседей; нет раздела — кнопки нет).
   var SECTION_ALIASES = { agencies: ["agencies", "services"], crisis: ["crisis", "agencies"],
     "works-calendar": ["works-calendar", "works"], together: ["together", "initiatives"], meetings: ["meetings", "questions"],
@@ -380,7 +383,15 @@
         if (!section) return null;
         var o = el("button", { type: "button", className: "bk-btn" + (primary ? " bk-btn--primary" : "") },
           [el("span", { text: pick(action.label, state.lang) }), icon("chevron-right")]);
-        o.addEventListener("click", function () { opts.openSection(section); });
+        o.addEventListener("click", function () {
+          var op = action.opener, key = op && op.global + "." + op.fn;
+          var target = key && OPENERS[key] && root[op.global] && root[op.global][op.fn];
+          // Экран соседа сам переключает раздел и открывает запись (кризис, конфликт работ); иначе — просто раздел.
+          if (typeof target === "function") {
+            try { target.call(root[op.global], op.arg); return; } catch (e) { /* откроем раздел ниже */ }
+          }
+          opts.openSection(section);
+        });
         return o;
       }
       return null;

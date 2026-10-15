@@ -46,11 +46,15 @@ def test_hot_spots_equal_heat_map():
     assert nura["count"] == hot["numbers"][0]["value"]
 
 
-def test_lagging_services_equal_day_picture_overdue():
+def test_lagging_services_equal_source_totals():
+    """Табло R17 есть — его итог; нет — «Просрочено» «Картины дня» R08 (запасной расчёт)."""
     a = api.ask(SCENE[1], "ru", F.STAFF)
     lag = block(a, "lagging_services")
-    summary = akim_mod.summary()
-    assert lag["numbers"][1]["value"] == summary["overdue"]["count"]
+    if lag["source"]["role"] == "R17":
+        board = __import__("ui.civic_agencies", fromlist=["_"]).board_snapshot(30, None)
+        assert lag["numbers"][1]["value"] == board["totals"]["overdue"]
+    else:
+        assert lag["numbers"][1]["value"] == akim_mod.summary()["overdue"]["count"]
 
 
 def test_overdue_and_districts_equal_day_picture():
@@ -72,5 +76,6 @@ def test_scene_questions_offline_under_one_second():
         elapsed = time.perf_counter() - started
         assert elapsed < 1.0, (q, elapsed)
         assert a["mode"] == "offline"
-        assert a["actions"] and a["actions"][0]["kind"] == "map.focus"
+        # Главная кнопка есть всегда: «Показать на карте» или «Открыть …» (табло служб, кризисный штаб).
+        assert a["actions"] and a["actions"][0]["kind"] in ("map.focus", "open")
         assert any(b["numbers"] for b in a["blocks"])
