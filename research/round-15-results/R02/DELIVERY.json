@@ -5,8 +5,8 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "ef677c7e69b6a1fa52306008b38abbdd05ddb6a4",
-  "tested_sha": "ef677c7e69b6a1fa52306008b38abbdd05ddb6a4",
+  "code_sha": "e5597c0cc53abed4078a7fd0cadf3ad0b66adef0",
+  "tested_sha": "e5597c0cc53abed4078a7fd0cadf3ad0b66adef0",
   "push_status": "OK",
   "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
   "world": {
@@ -14,7 +14,7 @@
     "schema": "birge-demo-world-v1",
     "schema_version": "1.1",
     "seed": 15,
-    "sha256": "e6b6f4ec84036eed1bc206516e17c436f6757343e01155715c4de26ae1ec8e71",
+    "sha256": "d183eca5d19128e8e5b01644e593a94b4bf1cfe22485009d14b4ce3537d6e6cf",
     "counts": {
       "complaints": 743,
       "people_with_metoo": 1130,
@@ -56,8 +56,8 @@
     "research/handoffs/astana/R02/round15/STATUS.md"
   ],
   "integration": {
-    "R01": "research/round-15-results/R02/patches/R01_demo_world.patch (ui/web_server.py): CIVIC_DEMO_WORLD=1 — мир материализуется один раз, seed_world всех модулей одним now, карта без синтетики R07; INTEGRATION §1",
-    "R09": "готовый seed_world: ml/datasets/demo_world_seed.seed_world(db_path, records, now); INTEGRATION §2",
+    "R01": "patches/R01_demo_world.patch (91 строка): materialize мира один раз, seed_world модулей одним now (R09 — его integration.seed_world с живым хранилищем, reset=True по сигнатуре), карта без синтетики R07; стенд: засев 743, перезапуск reset 743, 14/14",
+    "R09": "ваш world_seed.seed_world на материализованном мире = EXPECTED (743, inbox совпадает); patches/R09_world_seed_materialize.patch — страховка для сырого мира",
     "others": "R07 §4, R06 §5, R12 §6 (materialize в load_world), R13 §7, R16 §8, R17 §9, R10 §10 (materialize в world_numbers)",
     "R12": "patches/R12_works_calendar_world.patch — календарь читает мир, находит ровно 5 задуманных конфликтов; scenes.scene8.dig_work для openConflict",
     "R10": "patches/R10_consistency_world.patch — world_numbers через materialize (154 жалобы / 78 «Я тоже» за 30 дней)"
@@ -133,6 +133,24 @@
       "status": "PASS",
       "inserted": 17,
       "note": "встречи 18:30/18:00, итог у прошедшей"
+    },
+    "стык с R09: world_seed.seed_world на мире (ветка R09 @ 2ee80d8c)": {
+      "status": "PASS",
+      "inserted": 743,
+      "inbox_equals_expected": true,
+      "raw_world_without_patch": "743 invalid",
+      "raw_world_with_patch": "743 inserted"
+    },
+    "стык с R07: world.seed_world (ветка R07 @ 5f9dc0ae)": {
+      "status": "PASS",
+      "marks": 3,
+      "note": "events мира R07 пока не читает — просьба в INTEGRATION §4"
+    },
+    "стенд: перезапуск на той же базе (повторный засев)": {
+      "status": "PASS",
+      "r09": "reset 743",
+      "matched": 14,
+      "of": 14
     }
   },
   "consistency_table": {

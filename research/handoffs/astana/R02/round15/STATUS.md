@@ -47,6 +47,12 @@ restored_from: — (роль начата с нуля, прежней ветки
   на стенде: числа стенда = числам мира 14/14 (stand_numbers_world.json); INTEGRATION.txt.
 - 12:15 UTC — финальная калибровка мира (пульс рассказывает буран, 3 «решения акима», A1/A2 R10 сходятся),
   DATASHEET.md, RUN.txt; поправка П1 применена; влит пакет 2d329b2c; DELIVERY.json (code_sha 4b67f69b).
+- 12:20–12:35 UTC — стыки с соседями на их ветках (временные worktree, их пути не коммитил):
+  R12 — с patch R12_works_calendar_world находит ровно 5 задуманных конфликтов (пара Айтеке Би / Култегин для
+  параллельных перекрытий); R10 — patch R10_consistency_world (154 / 78); R16 — 42 записи (просьба reset);
+  R17 — 3 + reset 3; R13 — 17 (встречи 18:30, итог; схема 1.1 day_at); R07 — 3 отметки (просьба читать events,
+  closed_at); R09 — их world_seed на материализованном мире = EXPECTED, на сыром — 743 invalid → patch R09 и
+  patch R01: R09 integration.seed_world с живым хранилищем и reset=True; перезапуск стенда — reset 743, 14/14.
 
 ## Дальше
 - Каждый круг: AMENDMENTS.md → find_branches.py → у соседей: seed_world на мире (R09, R06, R16, R17, R13, R07),
