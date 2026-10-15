@@ -444,28 +444,44 @@ async function togetherPart(browser) {
     const item = (first.json.items || []).find((x) => x.id === made) || {};
     check("идея → инициатива: повтор не создаёт второе дело", again.status === 201 && again.json && again.json.created === false
       && again.json.initiative && item.initiative && again.json.initiative.id === item.initiative.id, JSON.stringify(again.json).slice(0, 300));
+    // Экран R16 в сборке (web/civic/together) — «Открыть дело» ведёт в настоящий раздел «Сделаем вместе»;
+    // нет — заглушка BirgeTogether проверяет вызов open("initiative", id).
+    const realR16 = fs.existsSync(path.join(ROOT, "web", "civic", "together", "together.js"))
+      && fs.readFileSync(path.join(ROOT, "web", "index.html"), "utf8").includes("/civic/together/together.js");
     for (const lang of ["ru", "kk"]) {
       const tag = `together-375-resident-${lang}`;
       const page = await newPage(browser, 375, lang, "resident");
-      await page.addInitScript(() => {
-        window.BirgeTogether = { version: "stub", open: (kind, id) => { window.__opened = [kind, id]; return true; },
-          mount: (el) => { el.textContent = "R16"; return {}; } };
-      });
+      if (!realR16) {
+        await page.addInitScript(() => {
+          window.BirgeTogether = { version: "stub", open: (kind, id) => { window.__opened = [kind, id]; return true; },
+            mount: (el) => { el.textContent = "R16"; return {}; } };
+        });
+      }
       await page.goto(base + "/#ideas/" + made, { waitUntil: "domcontentloaded" });
       const ok = await page.waitForSelector(`[data-pd="${made}"] [data-key=together-line]`, { timeout: 20000 }).then(() => true, () => false);
       check(`${tag}: житель видит «Сделайте вместе — поддержим инвентарём»`, ok);
       const text = ok ? await page.$eval(`[data-pd="${made}"] [data-key=together-line]`, (e) => e.innerText) : "";
       check(`${tag}: подпись на языке интерфейса`, lang === "kk" ? /Бірге жасаңыз/.test(text) : /Сделайте вместе/.test(text), text);
       await shot(page, tag);
-      if (ok) {
+      if (ok && !realR16) {
         await page.click(`[data-pd="${made}"] [data-key=together-open]`);
         const opened = await page.evaluate(() => window.__opened || null);
         check(`${tag}: «Открыть дело» → BirgeTogether.open("initiative", id)`, opened && opened[0] === "initiative" && opened[1] === item.initiative.id, JSON.stringify(opened));
+      } else if (ok) {
+        await page.click(`[data-pd="${made}"] [data-key=together-open]`);
+        const inTogether = await page.waitForFunction(() => document.body.dataset.birgeSection === "together", null, { timeout: 10000 })
+          .then(() => true, () => false);
+        check(`${tag}: «Открыть дело» → раздел «Сделаем вместе» R16`, inTogether);
+        await sleep(1200);
+        const shown = await page.evaluate(() => (document.querySelector("#birge-screen") || document.body).innerText);
+        const titles = [item.title_ru, item.title_kk, item.title].filter(Boolean);
+        check(`${tag}: R16 показывает это дело (название идеи)`, titles.some((t) => shown.includes(t)), titles.join(" / ") + " — " + shown.slice(0, 300));
+        await shot(page, `${tag}-r16`);
       }
       check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
       await page.close();
     }
-    // Без экрана R16 (нет BirgeTogether) — у жителя строки нет: нечего открывать.
+    // Без экрана R16 (нет BirgeTogether) — у жителя строки нет: нечего открывать (в сборке с R16 — проверка про то же).
     const bare = await newPage(browser, 1366, "ru", "resident");
     await bare.goto(base + "/#ideas/" + made, { waitUntil: "domcontentloaded" });
     await bare.waitForSelector(`[data-pd="${made}"]`, { timeout: 20000 }).catch(() => {});

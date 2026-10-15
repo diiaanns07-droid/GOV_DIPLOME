@@ -1,0 +1,180 @@
+{
+  "role": "R06",
+  "branch": "claude/eloquent-einstein-wvuyje",
+  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+  "restored_from": null,
+  "code_sha": "2daa408aa2bbb6abed0b1b24f5504ceccc367edc",
+  "tested_sha": "2daa408aa2bbb6abed0b1b24f5504ceccc367edc",
+  "push_status": "OK",
+  "environment": "облако Linux; Python 3.13.16, pytest 9.1.1; Node 22.22.0, Playwright 1.56.1, Chromium 1194 (headless); без интернета: подложка карты — упрощённый фон (П1 правило 6)",
+  "changed_paths": [
+    "research/handoffs/astana/R06/round15/STATUS.md",
+    "research/round-15-results/R06/DELIVERY.json",
+    "research/round-15-results/R06/I18N_R15_R06.json",
+    "research/round-15-results/R06/INTEGRATION.txt",
+    "research/round-15-results/R06/RUN.txt",
+    "research/round-15-results/R06/r01_round15_r06.patch",
+    "research/round-15-results/R06/r08_nearby_path.patch",
+    "research/round-15-results/R06/r16_create_from_idea_kind.patch",
+    "tests/civic/R06/round14/design_audit.cjs",
+    "tests/civic/R06/round15/browser_r15.cjs",
+    "tests/civic/R06/round15/conftest.py",
+    "tests/civic/R06/round15/fixtures/world_r06_part.json",
+    "tests/civic/R06/round15/neighbors_check.py",
+    "tests/civic/R06/round15/neighbors_tree.sh",
+    "tests/civic/R06/round15/test_r06r15_ideas_public.py",
+    "tests/civic/R06/round15/test_r06r15_notify.py",
+    "tests/civic/R06/round15/test_r06r15_works_v2.py",
+    "tests/civic/R06/round15/test_r06r15_world.py",
+    "tests/civic/R06/round15/tree_r01_build.sh",
+    "tests/civic/R06/round15/tree_with_r01_patch.sh",
+    "tests/civic/R06/store/test_r06store_schema.py",
+    "ui/civic_store/__init__.py",
+    "ui/civic_store/db.py",
+    "ui/civic_store/demo_r14.py",
+    "ui/civic_store/ideas.py",
+    "ui/civic_store/nearby.py",
+    "ui/civic_store/notify.py",
+    "ui/civic_store/v2.py",
+    "ui/civic_store/works_v2.py",
+    "ui/civic_store/world.py",
+    "web/civic/ideas/ideas.css",
+    "web/civic/ideas/ideas.js",
+    "web/civic/notify/notify.css",
+    "web/civic/notify/notify.js",
+    "web/civic/proposals/works.js",
+    "research/round-15-results/R06/screens/ (27 кадров)"
+  ],
+  "tests": [
+    {
+      "name": "pytest tests/civic/R06 (рабочая копия = FINAL-4 + R06)",
+      "sha": "2daa408aa2bbb6abed0b1b24f5504ceccc367edc",
+      "status": "PASS",
+      "passed": 724,
+      "failed": 0,
+      "skipped": 3,
+      "note": "skip: полный мир R02 (нет файла мира в базе пакета), 2 — прежние условные"
+    },
+    {
+      "name": "pytest tests/civic/R06 на дереве «как B1»",
+      "status": "PASS",
+      "passed": 725,
+      "failed": 0,
+      "skipped": 2,
+      "env": "дерево «как B1»: tests/civic/R06/round15/tree_r01_build.sh — ветка R01 claude/brave-fermi-nhzetj @ 29b4ae9d (B0.2: R16 e475fae9, R17, R12, R13, R11, R02, R03, R04, R10, R15) + пути R06 @ 2daa408a + 3 строки ленты (CIVIC_ASSETS, 2 тега)",
+      "note": "включая засев настоящего мира R02 (55 записей) и миграцию на базе FINAL-4"
+    },
+    {
+      "name": "pytest tests/civic/R01 на дереве «как B1» (код R06 не ломает шлюз и сборку)",
+      "status": "PASS",
+      "passed": 363,
+      "failed": 0,
+      "skipped": 1
+    },
+    {
+      "name": "pytest tests/civic/R16 на дереве «как B1» (идея → инициатива не ломает R16)",
+      "status": "PASS",
+      "passed": 52,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "приёмка API R10 tests/civic/R10/api_v2.py на дереве «как B1» — строки R06",
+      "status": "PASS",
+      "passed": 10,
+      "failed": 0,
+      "note": "всего по сборке PASS 147 / FAIL 2 / NOT_RUN 4 (FAIL — не R06: 2 строки соседей; на дереве B0 это были R16 POST together/initiatives (far_from_yard на примере R10) и R13 GET meetings/updates (device_id))"
+    },
+    {
+      "name": "браузер tests/civic/R06/round15/browser_r15.cjs на дереве «как B1»",
+      "status": "PASS",
+      "passed": 252,
+      "failed": 0,
+      "parts": {
+        "works 1366/1024/375 × ru/kk": 72,
+        "ideas 1366/1024/375 × ru/kk": 102,
+        "notify 1366/1024 ru/kk + 375 ru/kk + пусто": 56,
+        "together (настоящий R16 из B0.2)": 22
+      }
+    },
+    {
+      "name": "регресс FINAL-4 R06: tests/civic/R06/round14/design_audit.cjs",
+      "status": "PASS",
+      "passed": 284,
+      "failed": 0,
+      "env": "дерево R01 c9069723 (B0) + R06 c2604ea2 и дерево «FINAL-4 + патч R01» (интерфейс R06 тот же, что в 2daa408a); прогон на B0.2 — в следующем коммите"
+    },
+    {
+      "name": "регресс FINAL-4 R06: tests/civic/R06/round14/app_r01_wave2.cjs",
+      "status": "PASS",
+      "passed": 130,
+      "failed": 0,
+      "env": "те же два дерева, что design_audit"
+    },
+    {
+      "name": "соседи на дереве «как B1»: pytest tests/civic/R02 R10 R15",
+      "sha": "c2604ea2 + R01 c9069723",
+      "status": "PASS*",
+      "passed": 905,
+      "failed": 1,
+      "skipped": 45,
+      "xfailed": 10,
+      "note": "1 FAIL — R15 S42 XPASS(strict): R01 исправил, R15 должен снять xfail (просьба R01); к R06 не относится"
+    },
+    {
+      "name": "стык ленты с настоящими модулями R09/R13/R16/R17 (neighbors_check.py)",
+      "sha": "6f886297",
+      "status": "PASS",
+      "note": "источники ok; события двора R16, инцидента R17, работы рядом R06; нет id устройств; ссылки внутренние"
+    },
+    {
+      "name": "кадры с настоящей картой (подложка)",
+      "status": "NOT_RUN",
+      "note": "в облаке нет архива карты — LOCAL-12 (П1 правило 6)"
+    },
+    {
+      "name": "патч пути «#nearby/<район>/<id>» в модуле R08",
+      "status": "NOT_RUN",
+      "note": "патч r08_nearby_path.patch проверен git apply --check на ветках R08 и сборке R01; применяет владелец R08"
+    }
+  ],
+  "screens": [
+    "research/round-15-results/R06/screens/ideas-1024-kk-resident.png",
+    "research/round-15-results/R06/screens/ideas-1024-ru-akimat-public.png",
+    "research/round-15-results/R06/screens/ideas-1366-kk-akimat-public.png",
+    "research/round-15-results/R06/screens/ideas-1366-ru-resident.png",
+    "research/round-15-results/R06/screens/ideas-375-kk-akimat-public.png",
+    "research/round-15-results/R06/screens/ideas-375-ru-resident.png",
+    "research/round-15-results/R06/screens/notify-1024-kk-panel.png",
+    "research/round-15-results/R06/screens/notify-1024-ru-panel.png",
+    "research/round-15-results/R06/screens/notify-1366-kk-panel.png",
+    "research/round-15-results/R06/screens/notify-1366-ru-opened-idea.png",
+    "research/round-15-results/R06/screens/notify-1366-ru-panel.png",
+    "research/round-15-results/R06/screens/notify-375-kk.png",
+    "research/round-15-results/R06/screens/notify-375-ru-empty.png",
+    "research/round-15-results/R06/screens/notify-375-ru.png",
+    "research/round-15-results/R06/screens/together-1366-ru-staff-done.png",
+    "research/round-15-results/R06/screens/together-1366-ru-staff-make.png",
+    "research/round-15-results/R06/screens/together-375-resident-kk.png",
+    "research/round-15-results/R06/screens/together-375-resident-ru-r16.png",
+    "research/round-15-results/R06/screens/works-1024-kk-list.png",
+    "research/round-15-results/R06/screens/works-1024-kk-section-pick.png",
+    "research/round-15-results/R06/screens/works-1024-ru-form.png",
+    "research/round-15-results/R06/screens/works-1366-kk-form.png",
+    "research/round-15-results/R06/screens/works-1366-ru-list.png",
+    "research/round-15-results/R06/screens/works-1366-ru-saved.png",
+    "research/round-15-results/R06/screens/works-1366-ru-section-pick.png",
+    "research/round-15-results/R06/screens/works-375-kk-form.png",
+    "research/round-15-results/R06/screens/works-375-ru-list.png"
+  ],
+  "known_limits": [
+    "Колокольчик: пока у оболочки R01 нет своей кнопки, notify.js ставит свою в «.birge-me» (ноутбук, вид «Житель»); на телефоне лента — «Ещё → Уведомления» (пункт меню аватара «Уведомления · N» — по желанию R01, BirgeNotify.onCount).",
+    "Для ленты в B1 R01 должен добавить 3 строки (CIVIC_ASSETS и два тега) — INTEGRATION.txt «Коротко для R01»; маршруты уже в B0.",
+    "«Работа рядом» по подписке «Рядом» R08 открывает запись только с патчем R08 (r08_nearby_path.patch); без него — лента «Рядом» района.",
+    "kind сотрудника для «идея → инициатива» доходит до R16 только с патчем r16_create_from_idea_kind.patch (иначе — только greening через вид объекта; кнопка в интерфейсе kind не шлёт — вид выбирает R16).",
+    "Обращения R09 в ленте — когда в сборке R09 раунда 15 (updates); в B0.2 источник R09 — absent (лента работает без него).",
+    "Демо-мир: записи synthetic (demo:true, «Пример»); без флага CIVIC_DEMO_WORLD — демо FINAL-4 без изменений.",
+    "Кадры — облако: подложка упрощённая; настоящий вид — LOCAL-12."
+  ],
+  "next_step": "R01 B1: взять пути R06 из code_sha и 3 строки ленты (INTEGRATION.txt). R06 дальше по кругам: сборка B1 глазами (колокольчик, лента, работы рядом в «Моём дворе» R16), патчи R08/R16, ключи R11, находки R10/R15."
+}
