@@ -2,7 +2,7 @@
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/demo_video.cjs --root <папка сборки> --out <папка>
 //        [--langs kk,ru] [--parts 1,2] [--world] [--basemap simplified|real] [--glass keep|off|auto]
-//        [--subtitles <json>] [--pace 0.5] [--fast] [--no-mp4] [--skip project|none]
+//        [--subtitles <json>] [--pace 0.5] [--fast] [--no-mp4] [--skip project|none] [--cursor-steps 10]
 //
 // Что получается в <out> (на каждый язык):
 //   birge-demo-<lang>.webm — запись Playwright (как есть);  birge-demo-<lang>.mp4 — H.264 для заявки (если есть ffmpeg);
@@ -30,6 +30,8 @@ const LANGS = String(args.langs || "kk,ru").split(",");
 const PARTS = String(args.parts || "1,2").split(",").map(Number);
 const [W, H] = String(args.size || "1366x768").split("x").map(Number);
 const FAST = !!args.fast;                       // паузы ×0,35 — пробный прогон, не для показа
+const STEPS = Math.max(4, Math.min(30, Number(args["cursor-steps"] || 10)));  // шаги движения курсора к кнопке
+let stepsNow = STEPS;
 // Сцены, которые не снимаем: по умолчанию «project» (шаг 5, проект в 3D) — пока 3D не «белый макет» R05 (AMENDMENTS П1,
 // правило 3), и так ролик с частью 2 укладывается в 5 мин. Вернуть: --skip none.
 const SKIP = new Set(String(args.skip === undefined ? "project" : args.skip).split(",").filter((x) => x && x !== "none" && x !== "true"));
@@ -187,7 +189,9 @@ async function recordLang(browser, lang) {
     await page.screenshot({ path: f, type: "jpeg", quality: SHOT_Q }).catch(() => null); shots.push(path.basename(f)); };
 
   // Плавный курсор: к центру элемента за ~0,5 с, затем нажатие.
-  const moveTo = async (x, y, steps = 18) => { await page.mouse.move(x, y, { steps: FAST ? 4 : steps }); };
+  // Шаги курсора: каждый шаг ждёт кадра страницы; на 3D-карте в облаке (программный WebGL) кадр ~0,4 с, и 18 шагов
+  // съедали секунды на каждое нажатие (шаг 5 — 64 с). 10 шагов — движение ещё видно; в 3D-сцене — 6.
+  const moveTo = async (x, y, steps = stepsNow) => { await page.mouse.move(x, y, { steps: FAST ? 4 : steps }); };
   const press = async (loc, after = 900) => {
     if (!loc) return false;
     await loc.scrollIntoViewIfNeeded({ timeout: 2000 }).catch(() => null);
@@ -383,6 +387,7 @@ async function recordLang(browser, lang) {
       }
     }
     let placed = false;
+    if (doProject) stepsNow = Math.min(6, STEPS);  // 3D-сцена: кадры дорогие — короче движения курсора
     if (doProject && login) {
       await say("s5", 600);
       const catalogTitle = word("proposal.catalog.title", "Что построить?", "Не салайық?");
@@ -453,6 +458,7 @@ async function recordLang(browser, lang) {
         await pressText(new RegExp("^" + esc(word("proposal.vote_up", "За", "Жақтаймын")) + "(\\s|:|\\d|$)", "i"), 2200);
         await shot("5-vote"); await page.keyboard.press("Escape").catch(() => null); await pause(600); }
     }
+    stepsNow = STEPS;
     if (doProject) done(s, login && placed, !login ? "вход сотрудника не удался" : placed ? null : "проект не поставлен");
 
     // Шаги 6–7: служба → «Взять в работу» → «Отметить исправленным» → сообщение жителям; житель «Да, исправлено».
