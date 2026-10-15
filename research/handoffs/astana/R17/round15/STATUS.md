@@ -14,10 +14,15 @@
 6. Тесты tests/civic/R17/, браузер 1366/1024/375 × ru/kk, сцены 8 и 9.
 
 ## Сделано
-- Ветка занята, STATUS создан.
+- Ветка занята, STATUS создан. Продолжение: задача по расписанию trig_0145naAMrgFxY3FPM88AsvHp (каждый час в :25 UTC,
+  в эту же сессию) — удалить после 17 окт 23:59 по Астане (18:59 UTC).
+- Checkpoint 1 (17:25): ui/civic_agencies/ — profiles.py (20 служб, §5.4), board.py (табло, совместные, передачи —
+  чистые функции, метод в шапке), geo.py (районы и дворы OSM для зоны), fixture.py (синтетика §5.1 до R09),
+  sources.py (R01 configure → R09 → фикстура), store.py (таблицы agency_* кризисного штаба). Сервиса HTTP ещё нет.
 
 ## Следующий шаг
-- Прочитать IDEA §2B, сцены 8–9, CONTRACT §3, §5.1, §5.4–5.5, §5.8, §7, §10, VISUAL_BRIEF п. 5 и 10; образец ui/civic_qa/.
+- crisis.py (шаблоны, зона, модерация), service.py (make_service(db).handle), __init__.py (updates, seed_world,
+  функции для R08/R03/R07/R12), тесты tests/civic/R17/, затем экран web/civic/agencies/.
 
 ## Вопросы владельцу
 - (пока нет)
