@@ -22,7 +22,9 @@ def replay(tmp_path_factory):
     api = module("ui.civic_heat.api", "R07")
     if "replay" not in (api.__doc__ or "") and not hasattr(module("ui.civic_heat", "R07"), "replay"):
         not_run("в ui.civic_heat нет heat/replay (R07 раунда 15)")
-    return lambda query: api.handle_get(PATH, {k: [v] for k, v in query.items()})
+    call = lambda query: api.handle_get(PATH, {k: [v] for k, v in query.items()})  # noqa: E731
+    call({"step": "hour"})   # прогрев: первая загрузка модуля и данных не входит в замер «быстрого отказа»
+    return call
 
 
 @pytest.mark.parametrize("query", [

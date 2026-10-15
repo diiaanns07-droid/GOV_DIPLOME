@@ -16,12 +16,13 @@ from __future__ import annotations
 
 import base64
 import re
+import sqlite3
 
 import pytest
 
 from r15_common import xfail
 from r15_round15 import (CSRF, DEVICES, PII, STAFF_LOGIN, Svc, XSS, YARD_ID, YARD_POINT, data, db_contains,
-                         device_needles, dump, iso_in, leaks, module, staff_principal, xmarks)
+                         device_needles, dump, iso_in, leaks, module, not_run, staff_principal, xmarks)
 
 AUTHOR, OTHER = DEVICES[20], DEVICES[21]
 
@@ -331,3 +332,38 @@ def test_unknown_ids_are_404(tg):
         assert tg.anon("GET", "/together/initiatives/" + iid)[0] == 404, iid
     for yid in ("yard-999999999999", XSS, "../yard-1"):
         assert tg.anon("GET", "/together/yards/" + yid)[0] == 404, yid
+
+
+def _rows(db_path) -> dict:
+    """Строки во всех таблицах базы модуля: анонимный GET не должен их добавлять."""
+    with sqlite3.connect(db_path) as conn:
+        tables = [r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type = 'table' "
+                                             "AND name NOT LIKE 'sqlite_%'")]
+        return {name: conn.execute(f'SELECT COUNT(*) FROM "{name}"').fetchone()[0] for name in tables}
+
+
+# Ячейки сетки R12 (~150 м, id cell-<ix>-<iy>, начало 71.0, 50.8): в черте Астаны (рядом с YARD_POINT) и далеко за ней.
+CITY_CELLS = tuple(f"cell-{190 + i}-{232 + i}" for i in range(12))
+FAR_CELLS = ("cell-999999-999999", "cell-5-99999", "cell-100000-150")
+
+
+@xfail("S51")
+def test_yard_page_get_writes_nothing_and_stays_in_city(tg):
+    """S51 / T-R16-18, T-R16-21: GET страницы двора ничего не записывает (у GET нет лимита шлюза); ячейка вне Астаны —
+    404 и для «Я живу здесь»; в публичном списке «Выбрать двор» — только дворы, где есть соседи или дела."""
+    status, _ = tg.anon("GET", "/together/yards")
+    if status == 404:
+        not_run("нет GET together/yards (выбор двора R16)")
+    before = _rows(tg.db_path)
+    for cid in CITY_CELLS:
+        assert tg.anon("GET", "/together/yards/" + cid)[0] in (200, 404), cid
+    for cid in FAR_CELLS:
+        status, body = tg.anon("GET", "/together/yards/" + cid)
+        assert status == 404, (cid, status, dump(body)[:200])
+    assert _rows(tg.db_path) == before, "анонимный GET страницы двора добавил строки в базу"
+    status, body = tg.resident("POST", "/together/yards/" + FAR_CELLS[0] + "/join", {}, device=OTHER)
+    assert status == 404, (status, body)
+    assert tg.resident("POST", f"/together/yards/{YARD_ID}/join", {}, device=OTHER)[0] in (200, 201)
+    status, body = tg.anon("GET", "/together/yards")
+    listed = {row.get("id") for row in data(body).get("items") or []}
+    assert YARD_ID in listed and not listed & set(CITY_CELLS + FAR_CELLS), sorted(listed)[:10]

@@ -44,6 +44,7 @@ CONTRACT_STAFF = (
     ("POST", ("reply-draft",)),
     ("POST", ("assistant", "ask")),
     ("POST", ("ideas", "{id}", "to-initiative")),
+    ("POST", ("together", "yards", "{id}", "moderate")),   # R16 [доп.]: имя «старшего по двору» — акимат
 )
 # Запись жителя (или «все») из CONTRACT §7 -> нужен ли суточный предел на одну цель с адреса (S08).
 CONTRACT_RESIDENT_WRITES = (
@@ -51,6 +52,9 @@ CONTRACT_RESIDENT_WRITES = (
     ("POST", ("together", "initiatives", "{id}", "join"), True),
     ("POST", ("together", "initiatives", "{id}", "report"), False),
     ("POST", ("together", "yards", "{id}", "join"), True),
+    ("POST", ("together", "yards", "{id}", "leave"), False),
+    ("POST", ("together", "initiatives", "{id}", "leave"), False),
+    ("POST", ("together", "yards", "{id}", "captain"), False),   # R16 [доп.]: «старший по двору» — сосед
     ("POST", ("meetings", "{id}", "register"), True),
     ("POST", ("meetings", "{id}", "question"), False),
     ("POST", ("route",), False),
@@ -106,6 +110,20 @@ def test_contract_resident_write_is_rate_limited(ws, method, pattern, per_target
     if per_target:
         assert any(target and window >= 3600 for window, _limit, target in rules), (
             f"{key}: нужен предел на одну цель с адреса (окно ≥ 1 ч, per_target=True), как proposals.vote — {rules}")
+
+
+def test_every_round15_write_route_is_staff_or_rate_limited(ws):
+    """T-R01-03: любая запись раунда 15 — и из CONTRACT §7, и [доп.] ролей, которые R01 берёт в сборку, — либо
+    сотрудник (staff=True), либо в V2_RATE_LIMITS. Новый маршрут без того и другого — запись без предела от любого."""
+    routes = getattr(ws, "V2_ROUTES_ROUND15", None)
+    if not routes:
+        not_run("в шлюзе нет V2_ROUTES_ROUND15 (R01)")
+    unguarded = []
+    for method, pattern, key in routes:
+        handler = ws.V2_HANDLERS.get(key)
+        if method != "GET" and not (handler and handler.staff) and key not in ws.V2_RATE_LIMITS:
+            unguarded.append(f"{_name(method, pattern)} ({key})")
+    assert not unguarded, "запись без staff=True и без лимита: " + ", ".join(unguarded)
 
 
 class _FakeRaw:
