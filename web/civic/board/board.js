@@ -1061,8 +1061,8 @@
     function showState(kind) {
       var title, hint, action = null;
       if (kind === "loading") {
-        parts.state.replaceChildren(h("span", { class: "sc-mark", "aria-hidden": "true", text: "B" }),
-          h("p", { class: "sc-state__title", text: tr("board.state.loading") }), h("span", { class: "sc-skel", style: "width: 18em" }));
+        parts.state.replaceChildren(h("p", { class: "sc-state__title", text: tr("board.state.loading") }),
+          h("span", { class: "sc-skel", style: "width: 18em" }));
         parts.state.hidden = false;
         return;
       }
@@ -1076,8 +1076,8 @@
         title = tr("board.state.error"); hint = tr("board.state.error_hint");
         action = h("button", { type: "button", class: "sc-btn sc-btn--primary", onclick: function () { load(true); } }, [icon("refresh"), tr("common.action.retry")]);
       }
-      fill(parts.state, [h("span", { class: "sc-mark", "aria-hidden": "true", text: "B" }),
-        h("h1", { class: "sc-state__title", text: title }), h("p", { class: "sc-state__hint", text: hint }), action]);
+      var ic = icon(kind === "forbidden" ? "user" : kind === "not_ready" ? "info" : "wifi-off", "sc-state__ic");
+      fill(parts.state, [ic, h("h1", { class: "sc-state__title", text: title }), h("p", { class: "sc-state__hint", text: hint }), action]);
       parts.state.hidden = false;
     }
     function url() {

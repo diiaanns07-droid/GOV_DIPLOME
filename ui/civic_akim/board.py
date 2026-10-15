@@ -23,7 +23,7 @@ REFRESH_S = 60       # как часто экран спрашивает нов�
 HOT_N = 5
 TOPICS_N = 6
 DECISIONS_N = 3
-CACHE_TTL_S = 15.0
+CACHE_TTL_S = 3.0   # тяжёлое (summary) кэшируется в нём самом; здесь — только защита от очереди одинаковых запросов
 
 _cache: dict = {}
 _cache_lock = threading.Lock()
@@ -127,11 +127,10 @@ def build(service, *, district=None, now: datetime | None = None) -> dict:
     started = time.perf_counter()
     settings = service.neighbors
     all_demo = service.source_names.get("complaints") == "r07-demo"
-    crisis = neighbors.incidents(settings, district=d_id, now=now, all_demo=all_demo)
+    # Кризис, пульс со ссылками штаба, «Жители вместе», встречи и прогноз — уже свежие в summary (_with_neighbors).
+    crisis = s.get("crisis") or neighbors.incidents(settings, district=d_id, now=now, all_demo=all_demo)
     pulse = s.get("pulse") or {"available": False, "items": []}
-    pulse = {**pulse, "items": [dict(a) for a in pulse.get("items") or []]}
-    neighbors.pulse_links(pulse["items"], crisis)
-    together = neighbors.together(settings, district=d_id, now=now, all_demo=all_demo)
+    together = dict(s.get("together") or neighbors.together(settings, district=d_id, now=now, all_demo=all_demo))
     fw = (s.get("kpi") or {}).get("fixed_week") or {}
     # «Проверено жителями» (R09) — то же число, что в KPI «Исправлено за 7 дней»; R08 его не пересчитывает.
     together["verified_week"] = fw.get("verified") if (s.get("kpi") or {}).get("verification_available") else None
@@ -144,8 +143,8 @@ def build(service, *, district=None, now: datetime | None = None) -> dict:
         "services": neighbors.agencies_board(settings, district=d_id, now=now, all_demo=all_demo),
         "crisis": crisis,
         "together": together,
-        "meetings": neighbors.meetings(settings, district=d_id, now=now, all_demo=all_demo),
-        "forecast": neighbors.forecast(settings, district=d_id, now=now),
+        "meetings": s.get("meetings") or neighbors.meetings(settings, district=d_id, now=now, all_demo=all_demo),
+        "forecast": s.get("forecast") or neighbors.forecast(settings, district=d_id, now=now),
     }
     board["slides"] = _slides(board)
     blocks = ("services", "crisis", "together", "meetings", "forecast")

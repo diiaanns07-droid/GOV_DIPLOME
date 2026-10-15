@@ -399,13 +399,45 @@ class AkimService:
         with self._lock:
             hit = self._cache.get(key)
             if hit and time.monotonic() - hit[0] < CACHE_TTL_S:
-                return hit[1]
+                return self._with_neighbors(hit[1], district, now)
         result = self._build(day, district, now)
         with self._lock:
             if len(self._cache) > 32:
                 self._cache.clear()
             self._cache[key] = (time.monotonic(), result)
-        return result
+        return self._with_neighbors(result, district, now)
+
+    def _with_neighbors(self, core: dict, district, now: datetime) -> dict:
+        """«Картина дня» 2.0 (раунд 15): к расчёту (он кэшируется 30 с) — свежие блоки соседей при КАЖДОМ ответе.
+
+        Публичное (видно и без входа, как сама «Картина дня» на шаге 4 демо): «Жители вместе» (R16), поручения встреч
+        (R13), прогноз (R13, прототип), идущие кризисы — публичная часть (R17) и ссылка «Открыть кризисный штаб» у
+        тревог пульса. Табло служб R17 — только сотруднику, в akim/board. Свежими — чтобы «Я приду» 14 → 15 или новый
+        кризис не ждали полминуты кэша. За прошедший день соседи не показываются: они знают только «сейчас».
+        Кэш не меняется: ответ — копия верхнего уровня с новыми полями.
+        """
+        out = dict(core)
+        if not core.get("is_today"):
+            past = {"available": False, "reason": "past_day", "source": "none", "demo": False}
+            out.update(together=dict(past), meetings=dict(past), forecast=dict(past),
+                       crisis={**past, "active": [], "closed": 0})
+            return out
+        d_id = (core.get("district") or {}).get("id")
+        settings, all_demo = self.neighbors, self.source_names.get("complaints") == "r07-demo"
+        crisis = neighbors.incidents(settings, district=d_id, now=now, all_demo=all_demo)
+        pulse_part = core.get("pulse") or {"available": False, "items": []}
+        items = [dict(a) for a in pulse_part.get("items") or []]
+        neighbors.pulse_links(items, crisis)
+        out["pulse"] = {**pulse_part, "items": items}
+        out["crisis"] = crisis
+        out["together"] = neighbors.together(settings, district=d_id, now=now, all_demo=all_demo)
+        out["meetings"] = neighbors.meetings(settings, district=d_id, now=now, all_demo=all_demo)
+        out["forecast"] = neighbors.forecast(settings, district=d_id, now=now)
+        blocks = ("together", "meetings", "forecast", "crisis")
+        out["demo"] = {**(core.get("demo") or {}), **{b: bool(out[b].get("demo")) for b in blocks}}
+        out["demo"]["any"] = any(v for k, v in out["demo"].items() if k != "any")
+        out["sources"] = {**(core.get("sources") or {}), **{b: out[b].get("source", "none") for b in blocks}}
+        return out
 
     def _build(self, day: Date, district: str | None, now: datetime) -> dict:
         started = time.perf_counter()
@@ -749,19 +781,14 @@ class AkimService:
         return {"id": item_id, "chosen": record}
 
     def _pulse_part(self, recs: list[dict], as_of: datetime, items_now, items_prev) -> dict:
-        """«Пульс» (волна 2 п. 8): метод — pulse.py. Раунд 15: у тревог «тема растёт» — ссылка «Открыть кризисный штаб»
-        (R17): на активный кризис в этом районе или на создание кризиса из шаблона (neighbors.pulse_links)."""
+        """«Пульс» (волна 2 п. 8): метод — pulse.py. Ссылку «Открыть кризисный штаб» (раунд 15) добавляет
+        _with_neighbors при каждом ответе — она зависит от кризисов R17, а не от жалоб."""
         if self._records is None or items_now is None:
             return {"available": False, "items": []}
         names = {d_id: {"ru": i["ru"], "kk": i["kk"]} for d_id, i in districts().items()}
-        out = pulse.alarms(recs, as_of, parse_time=parse_time, district_of=self._district_of,
-                           categories=deadlines.load_categories()["categories"], district_names=names,
-                           items_now=items_now, items_prev=items_prev or [])
-        if out.get("items"):
-            crisis = neighbors.incidents(self.neighbors, now=as_of,
-                                         all_demo=self.source_names.get("complaints") == "r07-demo")
-            neighbors.pulse_links(out["items"], crisis)
-        return out
+        return pulse.alarms(recs, as_of, parse_time=parse_time, district_of=self._district_of,
+                            categories=deadlines.load_categories()["categories"], district_names=names,
+                            items_now=items_now, items_prev=items_prev or [])
 
     # ---------- объекты и предложения (R06) ----------
     def _objects_part(self, district, as_of: datetime) -> dict:

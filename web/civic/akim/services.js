@@ -266,9 +266,9 @@
       }
       if (state.status === "error") {
         rootEl.appendChild(
-          // Как у остальных разделов (R11 марафон §10): иллюстрация ui-kit, без карточки, обычная кнопка «Повторить».
+          // Как у остальных разделов (R11 марафон §10), П1 раунда 15: значок, без карточки, обычная кнопка «Повторить».
           h("div", { class: "bk-error", role: "alert" }, [
-            sprite("bk-ill", "ill-offline"),
+            sprite("ic svc-state-ic", "i-wifi-off"),  // П1: маленький значок вместо иллюстрации
             h("p", { class: "bk-error__title", text: tr("common.state.error_title") }),
             h("button", { type: "button", class: "bk-btn", onclick: load }, [sprite("ic", "i-refresh"), tr("common.action.retry")]),
           ])

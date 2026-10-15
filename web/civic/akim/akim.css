@@ -815,32 +815,16 @@
 .akim-empty { /* ниже чисел пусто всё — одно состояние «пусто» ui-kit (CLEAN_PASS §3 R08 п. 6) */
   margin: var(--s-4) 0;
 }
-.akim-empty__art {
+/* П1 (раунд 15): маленькая монохромная иконка состояния вместо иллюстрации — 40 px, линия 1,2 (= 2 px значка 24) */
+.akim-state-ic {
   display: block;
-  width: 160px;
-  height: auto;
-  margin: 0 auto var(--s-3);
+  width: 40px;
+  height: 40px;
+  margin: 0 auto var(--s-2);
+  color: var(--c-text-3);
+  stroke-width: 1.2;
 }
-.akim-empty__line { /* как иллюстрации ui-kit (.bk-ill): линия 1,5, цвет --c-text-3 */
-  fill: none;
-  stroke: var(--c-text-3);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.akim-empty__sun {
-  stroke: var(--c-brand);
-}
-.akim-empty__badge {
-  fill: var(--c-brand);
-}
-.akim-empty__check {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 2.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+.bk-error .akim-state-ic { color: var(--c-text-2); }
 
 /* ═══════ ЭТАЛОН A (13 окт, research/round-14/design/REFERENCE.html): «Картина дня» в стиле сводки «Сегодня в Астане»
    и карточки эталона. Числа — плитки (белые 72 %, радиус 12); блоки — радиус 16, граница 1 px вместо тени (правило

@@ -118,6 +118,23 @@ async function open(browser, w, h, lang, extra) {
     }
   }
   {
+    // Смена района при показанной ленте: без мигания скелетом — прежнее приглушено, полоса загрузки, потом новое.
+    const { ctx, page } = await open(browser, 1366, 768, "ru");
+    await page.waitForSelector(".nb[data-state=ok]");
+    await page.route("**/api/civic/v2/nearby?**", async (route) => { await new Promise((r) => setTimeout(r, 900)); await route.continue(); });
+    const other = await page.evaluate(() => Array.from(document.querySelectorAll("#nb-district option")).map((o) => o.value).find((v) => v !== document.querySelector("#nb-district").value));
+    await page.selectOption("#nb-district", other);
+    await page.waitForTimeout(250);
+    const mid = await page.evaluate(() => ({ state: document.querySelector(".nb").dataset.state, pending: document.querySelector(".nb").hasAttribute("data-pending"),
+      skel: document.querySelectorAll(".nb .bk-skel").length, tabs: document.querySelectorAll(".nb [role=tab]").length,
+      op: getComputedStyle(document.querySelector(".nb [role=tablist]")).opacity }));
+    await page.waitForSelector(".nb[data-state=ok]");
+    const end = await page.evaluate(() => document.querySelector(".nb").hasAttribute("data-pending"));
+    check("смена района: без мигания — прежняя лента приглушена, без скелета, затем новая", mid.state === "loading" && mid.pending && mid.skel === 0
+      && mid.tabs === 4 && parseFloat(mid.op) < 0.6 && !end, { mid, end });
+    await ctx.close();
+  }
+  {
     // Подписка на карточку и на район: POST с номером устройства R09, видно после перезагрузки.
     const { ctx, page } = await open(browser, 1366, 768, "ru");
     await page.waitForSelector(".nb[data-state=ok]");

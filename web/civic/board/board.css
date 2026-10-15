@@ -13,8 +13,6 @@
 .sc {
   /* ── Тёмные токены (R11: тёмное стекло только для Ситуационного центра) ── */
   --sc-bg: #0b100e; /* .bk-dark --c-paper */
-  --sc-bg-glow-1: rgba(58, 132, 112, 0.34);
-  --sc-bg-glow-2: rgba(215, 245, 124, 0.09);
   --sc-glass: rgba(255, 255, 255, 0.055);
   --sc-glass-strong: rgba(255, 255, 255, 0.085);
   --sc-solid: #131b18; /* .bk-dark --c-surface: ?glass=off */
@@ -61,11 +59,7 @@
   overflow: hidden;
   box-sizing: border-box;
   color: var(--sc-ink);
-  background:
-    radial-gradient(70vw 70vh at 8% -12%, var(--sc-bg-glow-1), transparent 62%),
-    radial-gradient(60vw 60vh at 105% 115%, var(--sc-bg-glow-2), transparent 60%),
-    radial-gradient(40vw 40vh at 60% 40%, rgba(40, 70, 64, 0.22), transparent 70%),
-    var(--sc-bg);
+  background: var(--sc-bg); /* П1: без цветных пятен и свечения — «вау» дают числа и движение, а не фон */
   font-family: var(--font, "Inter", system-ui, sans-serif);
   font-size: var(--sc-fs-m);
   line-height: 1.25;
@@ -155,16 +149,14 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-crisis {
   display: flex; align-items: center; gap: max(12px, 1.2vw);
   padding: max(8px, 1vh) var(--sc-pad);
-  border-radius: var(--sc-r); border: 1px solid rgba(255, 132, 120, 0.35);
-  background: linear-gradient(90deg, rgba(226, 75, 74, 0.26), rgba(226, 75, 74, 0.08));
+  border-radius: var(--sc-r); border: 1px solid rgba(255, 138, 128, 0.35);
+  background: rgba(255, 138, 128, 0.12); /* .bk-dark --c-danger-soft: ровный тон, без градиента (П1) */
 }
 .sc-crisis[hidden] { display: none; }
 .sc-crisis__mark {
   flex: none; width: max(32px, 4.2vh); height: max(32px, 4.2vh); border-radius: 50%;
-  display: grid; place-items: center; background: rgba(255, 132, 120, 0.2); color: var(--sc-danger);
-  animation: sc-breathe 2.4s ease-in-out infinite;
+  display: grid; place-items: center; background: rgba(255, 138, 128, 0.16); color: var(--sc-danger);
 }
-@keyframes sc-breathe { 50% { box-shadow: 0 0 0 0.45em rgba(255, 132, 120, 0.12); } }
 .sc-crisis__text { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 0.2em 1em; flex-wrap: wrap; }
 .sc-crisis__title { margin: 0; font-weight: 600; font-size: var(--sc-fs-m); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sc-crisis__meta { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
@@ -318,10 +310,9 @@ body.sc-page.sc-idle { cursor: none; }
 
 /* Двор недели */
 .sc-yard { display: grid; grid-template-columns: auto 1fr; gap: 0.2em 0.9em; align-items: center; padding: 0.8em 1em;
-  border-radius: calc(var(--sc-r) * 0.8); background: linear-gradient(120deg, rgba(215, 245, 124, 0.14), rgba(215, 245, 124, 0.03));
-  border: 1px solid rgba(215, 245, 124, 0.25); }
-.sc-yard__icon { grid-row: span 2; width: max(40px, 5.4vh); height: max(40px, 5.4vh); border-radius: 30%; display: grid; place-items: center;
-  background: var(--sc-accent); color: var(--sc-accent-ink); font-size: var(--sc-fs-m); }
+  border-radius: calc(var(--sc-r) * 0.8); background: var(--sc-fill); border: 1px solid var(--sc-line); }
+.sc-yard__icon { grid-row: span 2; width: max(36px, 4.6vh); height: max(36px, 4.6vh); border-radius: 30%; display: grid; place-items: center;
+  background: var(--sc-fill-2); color: var(--sc-text-2); font-size: var(--sc-fs-m); }
 .sc-yard__title { margin: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sc-yard__meta { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sc-tag { display: inline-flex; align-items: center; gap: 0.35em; padding: 0.1em 0.6em; border-radius: 999px; font-size: var(--sc-fs-s);
@@ -361,14 +352,14 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-state[hidden] { display: none; }
 .sc-state__title { margin: 0; font-size: var(--sc-fs-m); font-weight: 600; max-width: 34em; }
 .sc-state__hint { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); max-width: 40em; }
-.sc-state .sc-mark { width: max(56px, 8vh); height: max(56px, 8vh); font-size: var(--sc-fs-m); }
+/* П1: состояние — маленький монохромный значок набора ui-kit (≤ 48 px), короткий текст и одна кнопка */
+.sc-state__ic { width: 44px; height: 44px; color: var(--sc-text-2); stroke-width: 1.1; }
 .sc[data-state="loading"] .sc-layout,
 .sc[data-state="forbidden"] .sc-layout,
 .sc[data-state="error"] .sc-layout { visibility: hidden; }
 .sc-layout { display: contents; }
-.sc-skel { display: block; height: 1em; border-radius: 0.4em; background: linear-gradient(90deg, var(--sc-fill), var(--sc-fill-2), var(--sc-fill));
-  background-size: 200% 100%; animation: sc-shimmer 1.4s ease-in-out infinite; }
-@keyframes sc-shimmer { to { background-position: -200% 0; } }
+.sc-skel { display: block; height: 1em; border-radius: 0.4em; background: var(--sc-fill-2); animation: sc-wait 1.4s ease-in-out infinite; }
+@keyframes sc-wait { 50% { opacity: 0.45; } }
 
 /* ── Узкий экран (телефон, планшет вертикально, 4:3 ниже 700 px): обычная страница, все блоки подряд ── */
 @media (max-width: 760px), (max-height: 600px) and (max-aspect-ratio: 4/3) {
@@ -414,7 +405,7 @@ body.sc-page.sc-idle { cursor: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sc-live::after, .sc-crisis__mark, .sc-skel { animation: none; }
+  .sc-live::after, .sc-skel { animation: none; }
   .sc-slide { animation: none; }
   .sc-tab[aria-selected="true"] .sc-tab__bar { animation: none; transform: scaleX(1); }
   .sc-bar__fill, .sc-progress > span { transition: none; }

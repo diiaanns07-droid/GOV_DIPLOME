@@ -476,3 +476,49 @@ def test_r13_board_block_format(monkeypatch):
     board.reset_cache()
     _, b = get(BOARD, svc())
     assert b["meetings"]["available"] is False and b["meetings"]["reason"] == "no_data"
+
+
+# ---------------------------------------------------------------- «Картина дня» 2.0: соседи в публичной сводке
+
+def test_summary_neighbors_fresh_every_answer(monkeypatch):
+    """«Я приду» 14 → 15 видно сразу: блоки соседей не ждут 30-секундного кэша расчёта (и не портят его)."""
+    joined = {"n": 14}
+
+    def initiatives_summary(district=None, db_path=None):
+        return {"status": "ok", "upcoming": 1, "joined_upcoming": joined["n"], "supported": 0, "done": 0,
+                "neighbors_done": 0, "next": [], "demo": False}
+
+    fake_module(monkeypatch, "ui.civic_together", initiatives_summary=initiatives_summary)
+    s = svc()
+    first = s.summary(now=NOW)
+    joined["n"] = 15
+    second = s.summary(now=NOW)
+    assert first["together"]["counts"]["joined_upcoming"] == 14 and second["together"]["counts"]["joined_upcoming"] == 15
+    assert first["kpi"] is second["kpi"]                       # сам расчёт — из кэша
+    cached = next(iter(s._cache.values()))[1]
+    assert "together" not in cached and "crisis" not in cached # кэш без блоков соседей
+
+
+def test_summary_past_day_has_no_neighbors(monkeypatch):
+    fake_module(monkeypatch, "ui.civic_together", initiatives_summary=lambda **kw: pytest.fail("прошлый день не читает соседей"))
+    out = svc().summary(date="2026-10-10", now=NOW)
+    for block in ("together", "meetings", "forecast", "crisis"):
+        assert out[block]["available"] is False and out[block]["reason"] == "past_day"
+
+
+def test_summary_pulse_links_fresh(monkeypatch):
+    incidents = []
+    fake_module(monkeypatch, "ui.civic_agencies", active_incidents=lambda district=None: list(incidents))
+    recs = [rec(i, age_days=1 + i % 6, category="snow_ice") for i in range(40)]
+    s = svc(recs=recs)
+    out = s.summary(now=NOW)
+    cached = next(iter(s._cache.values()))[1]
+    assert all("crisis" not in a for a in cached["pulse"]["items"])   # кэш без ссылок штаба
+    incidents.append({"id": "inc-1", "kind": "blizzard", "status": "active", "zone": {"kind": "district", "district": "nura"},
+                      "progress": [], "link": "#agencies/crisis=inc-1"})
+    again = s.summary(now=NOW)
+    assert again["crisis"]["active"][0]["id"] == "inc-1"
+    for a in again["pulse"]["items"]:
+        if a["kind"] in ("spike", "spike_new", "spike_city") and a.get("district") in (None, "nura"):
+            assert a["crisis"]["incident"] == "inc-1"
+    assert out["crisis"]["active"] == []
