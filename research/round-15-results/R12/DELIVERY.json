@@ -1,27 +1,34 @@
 {
  "role": "R12",
  "round": 15,
- "delivery": 5,
+ "delivery": 6,
  "title": "Единый календарь работ и «копаем один раз»",
  "branch": "claude/great-newton-8k3474",
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "1c8d171dbfd069d678da7d1f5b209d1449c82fd6",
- "tested_sha": "1c8d171dbfd069d678da7d1f5b209d1449c82fd6",
+ "code_sha": "11a5d0ff4de65a7c551b52d992f95fd43f1fd811",
+ "tested_sha": "11a5d0ff4de65a7c551b52d992f95fd43f1fd811",
  "push_status": "OK",
  "changed_paths": [
+  "data/civic/astana/geo/SOURCE.json",
+  "data/civic/astana/geo/objects.json",
   "data/civic/astana/geo/works_fixture.json",
+  "engine/civic_geo/README.md",
   "engine/civic_geo/__init__.py",
   "engine/civic_geo/__main__.py",
   "engine/civic_geo/api.py",
+  "engine/civic_geo/build_geo_data.py",
   "engine/civic_geo/build_works_fixture.py",
   "engine/civic_geo/names.py",
+  "engine/civic_geo/objects.py",
   "engine/civic_geo/real_works.py",
   "engine/civic_geo/segment.py",
+  "engine/civic_geo/street_points.py",
   "engine/civic_geo/works.py",
   "engine/civic_geo/works_calendar.py",
   "tests/civic/R12/fixtures/real_works_TEST.csv",
+  "tests/civic/R12/test_fresh_snapshot.py",
   "tests/civic/R12/test_works.py",
   "tests/civic/R12/works/works_calendar.test.cjs",
   "web/civic/works-calendar/works-calendar.css",
@@ -45,7 +52,7 @@
  "tests": {
   "pytest_R12_all": {
    "status": "PASS",
-   "passed": 91,
+   "passed": 96,
    "failed": 0,
    "skipped": 1,
    "skip_reason": "test_demo_world_planned_conflicts_are_found — мира R02 нет в ветке R12 (проверен на копии мира R02: PASS)",
@@ -94,6 +101,28 @@
    "passed": 2,
    "failed": 0,
    "how": "стенд R01 856b3027 + R17 75300896 + patch R17: вкладка без заголовка R12, главная «Добавить работу», 5 конфликтов, снятие при смене вкладки"
+  },
+  "pytest_fresh_snapshot_B103": {
+   "status": "PASS",
+   "passed": 6,
+   "failed": 0,
+   "covers": "свежий снимок побеждает (координаты raw/); узел только из старого снимка — retired (не в items, не в near, находится по id); replaced_by ≤ 30 м того же вида; без свежего файла старый снимок действует; на настоящих данных: все светофоры/переходы из raw/ ≤ 0,5 м, osm-node-13411167450 (было 28,8 м) по свежему; пример QR osm-node-10185771782 находится (retired, replaced_by osm-node-14140558124), новая жалоба получает свежий узел"
+  },
+  "r10_accuracy": {
+   "status": "PASS",
+   "passed": 31,
+   "failed": 0,
+   "not_run": 0,
+   "how": "tests/civic/R10/accuracy.py из ветки R10 (b4be0c66) --root . на коде 11a5d0ff",
+   "r12_objects": "объекты R12 = точки OSM: 7354 сверено, 0 сдвигов (by_src: traffic_signals 870, crossings 3761, overpass.json.gz 441 — остановки и выбывшие узлы, сверены со своим снимком)",
+   "note": "R07: newer_snapshot_moved 1 (osm-node-13355349235, 2,32 м) — цель R07, не R12 (INTEGRATION §10)"
+  },
+  "r02_world_on_new_geo": {
+   "status": "PASS",
+   "errors": 0,
+   "warnings": 1,
+   "how": "ml/datasets/demo_world_check.py R02 (a7251430) --no-heat на мире R02 a7251430 и данных карты 11a5d0ff",
+   "warning": "complaints/c-w1500643: узел osm-node-3530788994 в свежем OSM — перекрёсток без светофора; подпись «Перекрёсток пр. Жумабаева и пр. Рахимжана Кошкарбаева» вместо «Светофор на перекрёстке …» (INTEGRATION §10)"
   }
  },
  "screens": {
@@ -142,5 +171,11 @@
    "П1 15 окт 17:05 Астаны «Без ИИ-слопа»"
   ],
   "P1_applied": "Нарисованных зданий и картинок у R12 нет. Убрано: слой свечения на карте, цветная аура выбранной полосы, градиентный блеск скелетона, штриховка-градиент «примерного места» (теперь пунктирная рамка), цветные круги у иконок состояний (теперь одна монохромная иконка ui-kit ≤ 48 px + текст + одна кнопка), зелёный у «нет конфликтов». Поля фильтров — компонент ui-kit .bk-field."
+ },
+ "bugs": {
+  "B-103": {
+   "status": "исправлен в 11a5d0ff",
+   "what": "светофоры 767 → 870, переходы 3053 → 3761 — из raw/ LOCAL-10 (12.10.2026); 643 узла сдвинуты на свежие координаты (до 28,8 м); 398 узлов только старого снимка — retired (127 светофоров, 271 переход; у 369 есть свежая замена ≤ 30 м); 0 id потеряно; перекрёстков 2388 → 2409"
+  }
  }
 }
