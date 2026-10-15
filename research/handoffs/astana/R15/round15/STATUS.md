@@ -17,8 +17,21 @@
 3. Ревью поставок кругами каждые 2–3 часа: R16, R17, R09, R13, R06, R03, R04, R12, R08.
 4. Финал на B2 и FINAL-5: набор R15 раунда 14 + новый; SECURITY_REVIEW_R15.md.
 
+## Checkpoint 1 (15 окт ~17:15 Астана)
+- Пакет прочитан (COMMON, IDEA, CONTRACT §5/§7/§10, VISUAL_BRIEF, промпты R01 R03 R04 R06 R08 R09 R12 R13 R16 R17),
+  передача r14 (claude/r14-R15 @ 540b4d3c). Восстанавливать нечего: tests/civic/R15 в пакете = r14 + перенос S41 в FIXED
+  (R01, FINAL-4) — restored_from не нужен.
+- Базовый прогон tests/civic/R15 на пакете e91acb6 (облако, Python 3.13): **261 passed** за 88 с.
+- **THREATS_R15.md v1** — research/round-15-results/R15/THREATS_R15.md: активы, нарушители, уровни, правила P1–P10,
+  ~90 угроз по R16 R17 R09 R13 R06 R03 R04 + шлюз/R12/R08/R07/R05/R02/R10/R11, остаточный риск.
+- Найдено заранее (до кода ролей): **T-R01-01** — в шлюзе ветка raw возвращает ответ до проверки `staff`; по CONTRACT §7
+  raw-маршруты сотрудника — works-calendar/conflicts (R12), akim/board/week (R08). Готовлю patch P-R01-r15-1 и тест.
+- Продолжение: scheduled task trig_011uE6W1SdrvugJbYhE5CbEh (каждый час в :27 UTC, эта сессия). Удалить после
+  17 окт 23:59 Астаны (18:59 UTC).
+
 ## Следующий шаг
-- Прочитать IDEA.md, CONTRACT.md (§5, §7, §10), VISUAL_BRIEF.md, передачу r14 (claude/r14-R15).
+- tests/civic/R15/round15/: каркас (conftest, помощники), тесты шлюза (raw+staff, политика новых маршрутов),
+  тесты сервисов R16/R17/R13/R09/R06/R03/R04 по CONTRACT (нет модуля — NOT_RUN).
 
 ## Вопросы владельцу
 - (пока нет)
