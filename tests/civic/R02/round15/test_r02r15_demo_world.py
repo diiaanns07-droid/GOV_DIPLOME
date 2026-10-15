@@ -160,6 +160,7 @@ def _broken(sample, mutate):
     (lambda w: w["works"][0].update(segments=["osm-w1-1"]), "не ребро графа"),
     (lambda w: w["initiatives"][0]["target"].update(id="yard-1"), "не из yards"),
     (lambda w: w["complaints"][0].update(created_at="2026-10-16T10:00:00+05:00"), "относительного времени"),
+    (lambda w: next(i for i in w["initiatives"] if i.get("report"))["report"].update(photo_ids=["p-1"]), "фото"),
 ])
 def test_checker_catches(sample, mutate, needle):
     assert needle in _broken(sample, mutate)

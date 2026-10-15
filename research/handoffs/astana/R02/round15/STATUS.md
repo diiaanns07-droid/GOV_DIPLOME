@@ -7,6 +7,16 @@
 restored_from: — (роль начата с нуля, прежней ветки r15 не было)
 Продолжение: задача по расписанию trig_01Dhq9GwEwVkapPj6zt97EHb (каждый час, :24 UTC) — удалить после 17 окт 23:59 Астаны.
 
+**Каждый круг: сначала читать AMENDMENTS.md из ветки пакета**
+  git fetch origin claude/clever-hypatia-q6ts4g
+  git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md
+  (где поправка расходится с промптом R02, COMMON, IDEA или VISUAL_BRIEF — права поправка)
+
+## Поправки
+- П1 (15 окт 17:05, «Без ИИ-слопа») — применена 15 окт ~17:20 Астаны: у R02 нет экранов демо; в мире нет фото и
+  картинок (photos_after и report.photo_ids всегда [], правило в SCHEMA §0 и в demo_world_check, тест);
+  web/labeling проверен — нет эмодзи, градиентов, свечения и картинок; R16 — строка «Фото появится после дела» (INTEGRATION §8).
+
 ## ОБРАЗЕЦ ГОТОВ (для R09, R06, R16, R17, R12, R13, R07, R08, R01, R10)
 - Схема: `data/civic/astana/demo-world/SCHEMA.md` (birge-demo-world-v1, версия 1.0)
 - Образец: `data/civic/astana/demo-world/world_v1.sample.json` (10–23 записи каждого вида, те же id, что в полном мире)

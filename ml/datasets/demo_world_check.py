@@ -150,6 +150,11 @@ def check_private(rep: Report, world: dict) -> None:
             for forbidden in ("device", "device_id", "device_hash", "author_device", "phone", "email", "iin"):
                 if forbidden in item:
                     rep.err(f"{key}/{item.get('id')}", f"поле {forbidden} не должно быть в мире")
+            # П1 (AMENDMENTS.md): в демо-мире фото нет — только текст; картинки не выдумываются.
+            photos = ((item.get("resolution") or {}).get("photos_after") or []) + \
+                ((item.get("report") or {}).get("photo_ids") or []) + list(item.get("photo_ids") or [])
+            if photos:
+                rep.err(f"{key}/{item.get('id')}", "в демо-мире не должно быть фото (поправка П1): только текст")
 
 
 # ---------------------------------------------------------------- id
