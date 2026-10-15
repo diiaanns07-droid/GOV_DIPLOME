@@ -259,3 +259,10 @@ R01 (B0 claude/brave-fermi-nhzetj @ c9069723; стенд с ui-kit и слова
     "joint.pair": "{a} и {b}" / "{a} және {b}" — его R11 добавит, как только он появится в complaint-strings.js.
   R06-1 web/civic/proposals/works.js UTILITY_ICON: heating "droplet" → "radiator", power "bulb" → "zap",
     gas "alert" → "flame" (значки в спрайте R11 с b3502428).
+
+Круг 5, автоматический разбор B0 (21:49): tests/civic/R11/review/r15_screens.cjs — 68 кадров, прокрутка 0, сырые ключи 0,
+  непереведённые подписи в ҚАЗ 0, обрезанные подписи на 375 ҚАЗ 0, ошибки JS 0; меню — см. R01-1.
+  R09-2 «Обращения», телефон: название места в строке — 2 строки вместо многоточия
+    (.bc-inbox__place { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    при max-width: 480px): «Брусиловского көшесінің бөлігі» сейчас обрезается.
+  R17-3 (круг 2) подтверждён замером: 1366 ҚАЗ — «Бағдаршам және жол таңбасы қызметі» обрезана в колонке службы.
