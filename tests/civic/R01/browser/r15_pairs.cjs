@@ -1,14 +1,18 @@
 // R01 round 15: «было | стало» — the same views of two running builds (e.g. FINAL-4.1 and the current build) for the
 // build log and the diploma. Both stands must already run (they need different code trees); the script only shoots.
-//   node tests/civic/R01/browser/r15_pairs.cjs <out_dir> <url_before> <url_after> [label_before] [label_after]
-// Writes <out_dir>/before_<view>.jpg, after_<view>.jpg and pairs.json; scripts/merge (python, PIL) glue them side by side.
+//   node tests/civic/R01/browser/r15_pairs.cjs <out_dir> <url_before> <url_after> [label_before] [label_after] [--hide-env]
+// Writes <out_dir>/before_<view>.jpg, after_<view>.jpg and pairs.json; r15_pairs_merge.py (python, PIL) glues them side by side.
+// --hide-env: hide the basemap notice «Карта улиц не загрузилась…» (#map-status) in BOTH shots — in the cloud the tiles of
+// the basemap are not reachable, the notice is about the environment, not the build; the simplified background stays.
 // Views: akimat and resident home at 1366 / 1024 / 375 (ru and kk), «Ещё» of the akimat at 1366, «Картина дня» at 1366.
 "use strict";
 const { chromium } = require("playwright");
 const fs = require("fs"), path = require("path");
 
-const [OUT, BEFORE, AFTER] = [path.resolve(process.argv[2] || "r15-pairs-out"), process.argv[3], process.argv[4]];
-const LABELS = [process.argv[5] || "было", process.argv[6] || "стало"];
+const HIDE_ENV = process.argv.includes("--hide-env");
+const ARGV = process.argv.slice(2).filter((a) => a !== "--hide-env");
+const [OUT, BEFORE, AFTER] = [path.resolve(ARGV[0] || "r15-pairs-out"), ARGV[1], ARGV[2]];
+const LABELS = [ARGV[3] || "было", ARGV[4] || "стало"];
 const VIEWS = [
   { id: "1366_ru_akimat", w: 1366, h: 768, mode: "akimat", lang: "ru" },
   { id: "1366_kk_akimat", w: 1366, h: 768, mode: "akimat", lang: "kk" },
@@ -34,12 +38,13 @@ async function shoot(browser, base, view, file) {
   await page.waitForTimeout(1500);
   if (view.section) { await page.evaluate((s) => window.BirgeShell.setSection(s), view.section); await page.waitForTimeout(2500); }
   if (view.more) { await page.click("#birge-header .birge-nav [data-section=more]").catch(() => null); await page.waitForTimeout(500); }
+  if (HIDE_ENV) await page.addStyleTag({ content: "#map-status { display: none !important; }" }).catch(() => null);
   await page.screenshot({ path: file, type: "jpeg", quality: 80 });
   await ctx.close();
 }
 
 async function main() {
-  if (!BEFORE || !AFTER) { console.error("usage: r15_pairs.cjs <out> <url_before> <url_after> [label_before] [label_after]"); process.exit(2); }
+  if (!BEFORE || !AFTER) { console.error("usage: r15_pairs.cjs <out> <url_before> <url_after> [label_before] [label_after] [--hide-env]"); process.exit(2); }
   fs.mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch();
   const done = [];
@@ -50,7 +55,7 @@ async function main() {
       done.push(view.id);
     }
   } finally { await browser.close(); }
-  fs.writeFileSync(path.join(OUT, "pairs.json"), JSON.stringify({ labels: LABELS, before: BEFORE, after: AFTER, views: done }, null, 1));
+  fs.writeFileSync(path.join(OUT, "pairs.json"), JSON.stringify({ labels: LABELS, before: BEFORE, after: AFTER, views: done, hide_env: HIDE_ENV }, null, 1));
   console.log(JSON.stringify({ pairs: done.length }));
 }
 main().catch((e) => { console.error(e); process.exit(2); });
