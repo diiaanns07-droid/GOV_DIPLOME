@@ -33,7 +33,7 @@ R15_CLASSES = {
     "ситуационный центр (R08)": ["bk-sc", "bk-sc__top", "bk-sc__grid", "bk-sc-tile", "bk-sc-num", "bk-sc__dots"],
 }
 R15_ICONS = ["bell", "play", "pause", "monitor", "sparkle", "handoff", "shovel", "cone", "broom", "sprout", "wrench", "expand",
-             "megaphone", "bench"]
+             "megaphone", "bench", "paw", "traffic", "radiator", "zap", "flame"]
 R15_ILLS = ["together", "calendar", "bell", "chart", "handoff"]
 # П1 (AMENDMENTS.md, 15 окт): сценки убраны — вид объекта или дела показывается значком i-*
 R15_KIND_ICONS = ["trees", "playground", "ball", "bus", "bulb", "bench", "sprout", "broom", "snowflake", "wrench", "heart"]

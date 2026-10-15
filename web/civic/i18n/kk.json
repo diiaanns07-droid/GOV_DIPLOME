@@ -1900,7 +1900,7 @@
  "agencies.period.days": "{n} күн",
  "agencies.district.all": "Барлық аудандар",
  "agencies.refresh": "Жаңарту",
- "agencies.demo_note": "Мысал: демо-әлемге дейінгі синтетикалық өтініштер",
+ "agencies.demo_note": "Үлгі: демо-әлемге дейінгі синтетикалық өтініштер",
  "agencies.source.r09": "Сандар — «Өтініштерден»",
  "agencies.updated": "Жаңартылды {time}",
  "agencies.kpi.open": "ашық",
