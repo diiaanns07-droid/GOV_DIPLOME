@@ -4,8 +4,8 @@
   "branch": "claude/birge-r07-round-15-zjp4ob",
   "base_sha": "2d329b2cceeb07edbcb4f98ae8fdb3bb37ec1499",
   "restored_from": "fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.css, heat.js, ui/civic_heat/devserver.py, tests/civic/R07/test_r07_devserver.py",
-  "code_sha": "f42f434737d1b4a6ebf980b46bf0af069c2d9e65",
-  "tested_sha": "f42f434737d1b4a6ebf980b46bf0af069c2d9e65",
+  "code_sha": "0943fcf191b5d4150d764cc8e0ae78e398cf5aed",
+  "tested_sha": "0943fcf191b5d4150d764cc8e0ae78e398cf5aed",
   "push_status": "OK",
   "changed_paths": [
     "ui/civic_heat/world.py (новый): демо-мир — world_mode, seed_world (отметки шкалы: events + incidents + scenes, своя таблица heat_replay_marks_v1), materialize/time_of (время SCHEMA R02 §1)",
@@ -25,13 +25,14 @@
     "pytest tests/civic/R07": "PASS 203 passed, 1 skipped (test_real_world_file_when_present — мира R02 нет в ветке R07; в сборке R01 пройдёт)",
     "pytest tests/civic/R08": "PASS 263 passed, 1 skipped",
     "pytest tests/civic/R01": "PASS 198 passed, 1 skipped",
-    "browser tests/civic/R07/browser/replay.cjs": "PASS 16/16 (стенд R07 --world, Chromium headless; + lazy-entry-1366: до открытия replay.js/css не грузятся)",
+    "browser tests/civic/R07/browser/replay.cjs": "PASS 16/16 (стенд R07 --world, Chromium headless; lazy-entry-1366: до открытия replay.js/css не грузятся, кнопка, birge:replay-open сразу после закрытия, ?replay=7&autoplay=0)",
     "browser wave2.js / readability.js / pan_stability.js / shots.js (стенд R07, демо)": "PASS 38/38 · 18/18 · 2/2 · 64/64",
     "R10 accuracy.py (3e63952d) на ветке R07": "7 проверок R07: 6 PASS + «объекты R07 = точки OSM» FAIL 2,32 м (сверяет с пешеходной сетью); с patches/R10_accuracy_fresh_snapshot.patch — 7/7 PASS",
     "integration R02 world → R09 → R17 → R07 (временная сборка R01 c9069723 + R02 a7251430 + R09 9153f7b2 + R17 2388a11b + R12 8dee1cbb + R16 fbd9e247)": "PASS: «Буран в Нуре» + кризис inc-w15-buran + сцена 9; районы карты 7/14/30 дней = EXPECTED.json R02 (0 расхождений); значки R07 не закрыты слоями соседей (патчи R17, R01)",
     "speed": "город за 30 дней: мир R02 (743 жалобы) 0,74–0,85 с; синтетика 900 жалоб / 500 целей 0,57 с; 7 дней по кэшу 0,01–0,03 с",
     "fps 1000 targets (cloud, SwiftShader)": "районы 55 к/с; места 15–17 к/с при fps самой карты 6–13 к/с; код хроники ≤ 1 мс/кадр, смена дня 34–51 мс; перемещение z15 10,8 → 15,2 к/с — fps_cloud.json; 60 к/с на ноутбуке — NOT_RUN (облако без GPU), LOCAL по INTEGRATION §7",
-    "first badge (полная сборка, 1366)": "медианы 1 771 / 1 729 / 1 738 мс (без хроники / целиком / лёгкий вход) — first_badge_cloud.json"
+    "first badge (полная сборка, 1366)": "медианы 1 771 / 1 729 / 1 738 мс (без хроники / целиком / лёгкий вход) — first_badge_cloud.json",
+    "часть 1 (R10 tests/e2e/demo_flow.cjs 3e63952d --world) на полной сборке с кодом R07 f42f4347": "PASS 170, FAIL 2, NOT_RUN 2: FAIL — контраст красного «35» в «Сегодня в Астане» (не R07, тот же FAIL на B0); NOT_RUN — у остановки варианта kk в этот момент нет значка (нечего проверять). «Я тоже» +1, цель на /heat, «исправлено» → зелёная, «Проверено жителями» — PASS. Отчёт: research/round-15-results/R07/e2e_part1_full_build/RESULT.md"
   },
   "screens": {
     "replay 1366/1024/375 × ru/kk × start/buran/after": "research/round-15-results/R07/screens/replay_*.png (18 кадров, стенд R07, упрощённый фон — без интернета подложки нет)",
@@ -42,7 +43,7 @@
   "known_limits": [
     "60 к/с при 1 000 целей не измерено: в облаке программный WebGL (сама карта 6–13 к/с); замер на ноутбуке — LOCAL",
     "Хроника в оболочке ждёт R01: ассеты в списке шлюза и вызов attach (INTEGRATION §1.2–1.3); пока открывается на стенде R07, Ctrl+K и ?replay=7",
-    "Пока открыта хроника, «Сегодня в Астане» (#birge-today) показывает сегодняшние числа, а плашка #map-status просвечивает под полосой — просьба к R01 (INTEGRATION §3б)",
+    "Пока открыта хроника, «Сегодня в Астане» (#birge-today) и шторка телефона (#birge-near) показывают сегодняшние числа — готовый патч для R01: patches/R01_replay_open_shell_css.patch (INTEGRATION §3б)",
     "Проверка R10 «объекты R07 = точки OSM» до патча R10 даст FAIL 2,32 м (цель-переход теперь по свежему снимку, как просил R10 в B-103)",
     "Отмотка в прошлое не знает времени пометки дубля и голосов «не могу проверить» — на цвет и число не влияет",
     "6 ключей heat.* (подпись списка в хронике, команды Ctrl+K, кластер «✓ N мест») ещё не в словаре R11 — работают запасные из модуля"
