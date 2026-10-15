@@ -50,7 +50,7 @@ R16_FUNCS = ("initiatives_summary", "together_for_akim", "akim_together", "week_
 R13_MEETINGS_MODULE = "ui.civic_meetings"
 R13_MEETINGS_FUNCS = ("board_block", "meetings_for_akim", "orders_for_akim", "akim_meetings")
 R13_FORECAST_MODULE = "ui.civic_forecast"
-R13_WEEK_FUNCS = ("week_forecast", "forecast_week", "attention_next_week")
+R13_WEEK_FUNCS = ("week_block", "week_forecast", "forecast_week", "attention_next_week")
 
 # Вид кризиса R17 по теме тревоги пульса: «Открыть кризисный штаб» → шаблон этого вида (CONTRACT §5.5).
 # Только темы, которые бывают кризисом города; у тревоги нет уточнения, поэтому ЖКХ → «авария теплосети»
@@ -396,7 +396,7 @@ def crisis_link(incident: dict | None, *, kind: str | None = None, district: str
         link = incident.get("link")
         if isinstance(link, str) and link.startswith(("/", "#")):
             return _absolute(link)
-        return "/#agencies/crisis=" + str(incident.get("id"))
+        return "/#agencies/crisis/" + quote(str(incident.get("id")), safe="")
     try:
         module = _import(R17_MODULE)
         fn = getattr(module, "crisis_link", None) if module is not None else None
@@ -406,8 +406,9 @@ def crisis_link(incident: dict | None, *, kind: str | None = None, district: str
                 return _absolute(link)
     except Exception:  # ссылка — не повод ронять пульс
         log.exception("R08: crisis_link R17 не ответил")
-    tail = f"&district={district}" if district else ""
-    return f"/#agencies/crisis=new&template={kind or 'other'}{tail}"
+    # Формат путей R17 (INTEGRATION R17 §1, IA_ROUND15): #agencies/crisis/<id>, #agencies/crisis/new/<шаблон>/<район>.
+    tail = "/" + quote(district, safe="") if district else ""
+    return f"/#agencies/crisis/new/{quote(kind or 'other', safe='')}{tail}"
 
 
 def normalize_incident(rec: dict, names: dict) -> dict | None:
