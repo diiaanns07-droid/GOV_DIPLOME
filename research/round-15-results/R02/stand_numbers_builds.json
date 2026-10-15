@@ -584,6 +584,331 @@
    "where": "то же, перезапуск на той же базе",
    "same": 14,
    "total": 14
+  },
+  "b1sim2": {
+   "base": "http://127.0.0.1:8662",
+   "now": "2026-10-15T21:26:00+05:00",
+   "rows": [
+    {
+     "metric": "map_people_7d",
+     "stand": 83,
+     "expected": 83,
+     "same": true
+    },
+    {
+     "metric": "map_people_14d",
+     "stand": 91,
+     "expected": 91,
+     "same": true
+    },
+    {
+     "metric": "map_people_30d",
+     "stand": 96,
+     "expected": 96,
+     "same": true
+    },
+    {
+     "metric": "day_new_day",
+     "stand": 12,
+     "expected": 12,
+     "same": true
+    },
+    {
+     "metric": "day_new_week",
+     "stand": 66,
+     "expected": 66,
+     "same": true
+    },
+    {
+     "metric": "day_in_progress",
+     "stand": 43,
+     "expected": 43,
+     "same": true
+    },
+    {
+     "metric": "day_overdue",
+     "stand": 5,
+     "expected": 5,
+     "same": true
+    },
+    {
+     "metric": "day_fixed_week",
+     "stand": 45,
+     "expected": 45,
+     "same": true
+    },
+    {
+     "metric": "day_decisions",
+     "stand": [
+      "c-w1500327",
+      "c-w1500417"
+     ],
+     "expected": [
+      "c-w1500327",
+      "c-w1500417"
+     ],
+     "same": true
+    },
+    {
+     "metric": "inbox_city",
+     "stand": {
+      "new": 21,
+      "in_progress": 72,
+      "waiting_check": 159,
+      "overdue": 5,
+      "reopened": 5
+     },
+     "expected": {
+      "new": 21,
+      "in_progress": 72,
+      "waiting_check": 159,
+      "overdue": 5,
+      "reopened": 5
+     },
+     "same": true
+    },
+    {
+     "metric": "r09_complaints",
+     "stand": 743,
+     "expected": 743,
+     "same": true
+    },
+    {
+     "metric": "r09_complaints_nura",
+     "stand": 267,
+     "expected": 267,
+     "same": true
+    },
+    {
+     "metric": "r09_people_open_7d",
+     "stand": 83,
+     "expected": 83,
+     "same": true
+    },
+    {
+     "metric": "r09_people_open_30d",
+     "stand": 96,
+     "expected": 96,
+     "same": true
+    }
+   ],
+   "extra": {
+    "day_pulse": [
+     [
+      "spike",
+      "snow_ice",
+      60,
+      4.8
+     ],
+     [
+      "spike",
+      "transport",
+      23,
+      6.6
+     ],
+     [
+      "spike",
+      "lighting",
+      8,
+      5.3
+     ],
+     [
+      "new_hot",
+      "transport",
+      12,
+      null
+     ],
+     [
+      "metoo",
+      "transport",
+      8,
+      null
+     ]
+    ],
+    "day_districts_7d": 83
+   },
+   "where": "повтор B1-симуляции 15 окт ~21:26 Астаны: R01 B0 c9069723 + backend голов соседей (R06 c2604ea2, R07 7ce9aee7, R09 dfaee97e, R12 8dee1cbb, R13 eeacc26d, R16 fbd9e247, R17 e7ade08f) + patches R01_world_reset и R07_world_marks_reseed",
+   "same": 14,
+   "total": 14
+  },
+  "b1sim2_restart": {
+   "base": "http://127.0.0.1:8662",
+   "now": "2026-10-15T21:26:48+05:00",
+   "rows": [
+    {
+     "metric": "map_people_7d",
+     "stand": 83,
+     "expected": 83,
+     "same": true
+    },
+    {
+     "metric": "map_people_14d",
+     "stand": 91,
+     "expected": 91,
+     "same": true
+    },
+    {
+     "metric": "map_people_30d",
+     "stand": 96,
+     "expected": 96,
+     "same": true
+    },
+    {
+     "metric": "day_new_day",
+     "stand": 12,
+     "expected": 12,
+     "same": true
+    },
+    {
+     "metric": "day_new_week",
+     "stand": 66,
+     "expected": 66,
+     "same": true
+    },
+    {
+     "metric": "day_in_progress",
+     "stand": 43,
+     "expected": 43,
+     "same": true
+    },
+    {
+     "metric": "day_overdue",
+     "stand": 5,
+     "expected": 5,
+     "same": true
+    },
+    {
+     "metric": "day_fixed_week",
+     "stand": 45,
+     "expected": 45,
+     "same": true
+    },
+    {
+     "metric": "day_decisions",
+     "stand": [
+      "c-w1500327",
+      "c-w1500417"
+     ],
+     "expected": [
+      "c-w1500327",
+      "c-w1500417"
+     ],
+     "same": true
+    },
+    {
+     "metric": "inbox_city",
+     "stand": {
+      "new": 21,
+      "in_progress": 72,
+      "waiting_check": 159,
+      "overdue": 5,
+      "reopened": 5
+     },
+     "expected": {
+      "new": 21,
+      "in_progress": 72,
+      "waiting_check": 159,
+      "overdue": 5,
+      "reopened": 5
+     },
+     "same": true
+    },
+    {
+     "metric": "r09_complaints",
+     "stand": 743,
+     "expected": 743,
+     "same": true
+    },
+    {
+     "metric": "r09_complaints_nura",
+     "stand": 267,
+     "expected": 267,
+     "same": true
+    },
+    {
+     "metric": "r09_people_open_7d",
+     "stand": 83,
+     "expected": 83,
+     "same": true
+    },
+    {
+     "metric": "r09_people_open_30d",
+     "stand": 96,
+     "expected": 96,
+     "same": true
+    }
+   ],
+   "extra": {
+    "day_pulse": [
+     [
+      "spike",
+      "snow_ice",
+      60,
+      4.8
+     ],
+     [
+      "spike",
+      "transport",
+      23,
+      6.6
+     ],
+     [
+      "spike",
+      "lighting",
+      8,
+      5.3
+     ],
+     [
+      "new_hot",
+      "transport",
+      12,
+      null
+     ],
+     [
+      "metoo",
+      "transport",
+      8,
+      null
+     ]
+    ],
+    "day_districts_7d": 83
+   },
+   "where": "то же, перезапуск на той же базе",
+   "same": 14,
+   "total": 14
   }
+ },
+ "overdue_b1sim2": {
+  "note_ru": "«Просрочено» на одном стенде (b1sim2): R08 «Картина дня» kpi.overdue (срок исправления) = R17 табло totals.overdue_fix; R09 «Ответ просрочен» = R17 totals.overdue_answer",
+  "rows": [
+   {
+    "district": "город",
+    "r08_fix": 35,
+    "r17_overdue_fix": 35,
+    "r09_answer": 5,
+    "r17_overdue_answer": 5
+   },
+   {
+    "district": "nura",
+    "r08_fix": 5,
+    "r17_overdue_fix": 5,
+    "r09_answer": 2,
+    "r17_overdue_answer": 2
+   },
+   {
+    "district": "esil",
+    "r08_fix": 11,
+    "r17_overdue_fix": 11,
+    "r09_answer": 2,
+    "r17_overdue_answer": 2
+   },
+   {
+    "district": "almaty",
+    "r08_fix": 3,
+    "r17_overdue_fix": 3,
+    "r09_answer": 0,
+    "r17_overdue_answer": 0
+   }
+  ]
  }
 }
