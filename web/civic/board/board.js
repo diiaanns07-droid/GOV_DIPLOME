@@ -461,6 +461,17 @@
     }
   }
 
+  // Строка не помещается и обрезалась бы многоточием — короткая форма из data-short (на любом языке и экране).
+  function shorten(box) {
+    if (!box || narrow()) return;
+    var els = box.querySelectorAll("[data-short]");
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i], short = el.getAttribute("data-short");
+      // любое переполнение: доли пикселя уже рисуют многоточие (scrollWidth округлён вверх на 1)
+      if (short && el.scrollWidth > el.clientWidth && el.textContent !== short) el.textContent = short;
+    }
+  }
+
   // Карта районов: самый большой прямоугольник с пропорциями контуров внутри своей ячейки.
   function sizeMaps(box) {
     var maps = box.querySelectorAll(".sc-map");
@@ -783,13 +794,14 @@
           valueEl,
           // 1024–1279: «больше на 17 %» без «, чем неделю назад» — иначе строка обрезается многоточием (телефон — переносит).
           h("p", { class: "sc-kpi__delta", "data-trend": v.trend || "flat", "data-bad": String(k.bad === true && v.trend === "up"),
-            text: !narrow() && root.innerWidth < 1280 ? deltaShort(v) : deltaText(v) }),
+            "data-short": deltaShort(v), text: !narrow() && root.innerWidth < 1280 ? deltaShort(v) : deltaText(v) }),
           note[0] ? h("p", { class: "sc-kpi__note" + (note[1] ? " sc-kpi__note--muted" : ""), text: note[0] }) : null,
           sparkline(v.series, k.color),
         ]);
       });
       parts.kpis.setAttribute("aria-label", tr("board.title"));
       parts.kpis.replaceChildren.apply(parts.kpis, tiles);
+      shorten(parts.kpis);
     }
     // Живые числа: новое значение «досчитывается» от прежнего за 600 мс (при reduced motion — сразу).
     var shown = {};
@@ -871,7 +883,8 @@
         return h("li", { class: "sc-row sc-row--line" }, [
           h("span", { class: "sc-pin", "data-level": String(it.level || 0) }, [num(it.count)]),
           h("p", { class: "sc-row__title", text: pick(it.target, "label") || sub }),
-          h("p", { class: "sc-row__end", text: sub }),
+          // не влезло — короче: только тема (район виден на карте и в «Районах»), а не «Аялдамалар мен көлік · Нұ…»
+          h("p", { class: "sc-row__end", text: sub, "data-short": it.category ? catName(it.category) : sub }),
         ]);
       }));
     }
@@ -884,6 +897,18 @@
       var items = hot.available ? hot.items || [] : [];
       parts.hot.replaceChildren(head, items.length ? hotRows(items, 5) : h("p", { class: "sc-empty", text: tr("board.nodata") }));
       fit(parts.hot);
+      shorten(parts.hot);
+      // Название места важнее темы: не влезает — тему убираем, всё ещё не влезает — название в две строки
+      // (казахский не обрезается, VISUAL_BRIEF §4 п. 3); лишние строки снова убирает подгонка.
+      if (!narrow()) {
+        Array.prototype.forEach.call(parts.hot.querySelectorAll(".sc-row--line"), function (row) {
+          var title = row.querySelector(".sc-row__title"), end = row.querySelector(".sc-row__end");
+          if (!title || title.scrollWidth <= title.clientWidth) return;
+          if (end) end.hidden = true;
+          if (title.scrollWidth > title.clientWidth) title.classList.add("sc-row__title--wrap");
+        });
+        fit(parts.hot);
+      }
     }
 
     // ── слайды ──
@@ -1436,6 +1461,8 @@
     function onVisible() { if (doc.visibilityState === "visible" && state.lastOk && Date.now() - state.lastOk > 60000) load(false); }
     var resizeTimer = null;
     function onResize() { clearTimeout(resizeTimer); resizeTimer = setTimeout(function () { if (state.data) renderAll(); }, 200); }
+    // Подгонка строк меряет ширину текста — после загрузки шрифтов Inter ширины другие: раскладываем ещё раз.
+    if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { if (state.data && !state.destroyed) renderAll(); });
 
     doc.addEventListener("keydown", onKey);
     doc.addEventListener("mousemove", wake);

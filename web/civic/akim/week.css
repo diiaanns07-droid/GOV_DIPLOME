@@ -78,12 +78,12 @@
 .wk-brand__mark {
   display: inline-grid;
   place-items: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
   background: var(--c-brand, #152c26);
   color: #fff;
-  font-size: 11px;
+  font-size: 13px;
 }
 .wk-title {
   margin: 0;
@@ -404,6 +404,17 @@
   }
   .wk-head {
     flex-wrap: wrap;
+  }
+  /* телефон: место — во всю строку (переносится), тема и район — под ним; ничего не обрезается */
+  .wk-hot__row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .wk-hot__name,
+  .wk-hot__sub {
+    white-space: normal;
+  }
+  .wk-hot__sub {
+    grid-column: 2;
   }
 }
 

@@ -132,13 +132,13 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-badge--proto { background: rgba(255, 176, 103, 0.12); color: var(--sc-up); border-color: rgba(255, 176, 103, 0.3); }
 .sc-seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--sc-fill); border: 1px solid var(--sc-line); }
 .sc-seg button {
-  min-width: max(44px, 5.4vh); min-height: max(36px, 4.6vh); padding: 0 0.8em; border: 0; border-radius: 999px;
+  min-width: max(44px, 5.4vh); min-height: max(44px, 4.6vh); padding: 0 0.8em; border: 0; border-radius: 999px;
   background: transparent; color: var(--sc-text-2); font: inherit; font-size: var(--sc-fs-s); font-weight: 600; cursor: pointer;
   transition: background-color 150ms var(--ease, ease-out), color 150ms var(--ease, ease-out);
 }
 .sc-seg button[aria-pressed="true"] { background: var(--sc-ink); color: var(--sc-bg); }
 .sc-select {
-  appearance: none; -webkit-appearance: none; min-height: max(36px, 4.6vh); padding: 0 2.2em 0 0.9em;
+  appearance: none; -webkit-appearance: none; min-height: max(44px, 4.6vh); padding: 0 2.2em 0 0.9em;
   border-radius: 999px; border: 1px solid var(--sc-line); color: var(--sc-ink); font: inherit; font-size: var(--sc-fs-s);
   background: var(--sc-fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23b9c4bf' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 0.9em center;
   cursor: pointer;
@@ -164,7 +164,7 @@ body.sc-page.sc-idle { cursor: none; }
 /* ── Кнопки ── */
 .sc-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.5em; flex: none;
-  min-height: max(40px, 5vh); padding: 0 1.1em; border-radius: 999px; border: 1px solid var(--sc-line);
+  min-height: max(44px, 5vh); padding: 0 1.1em; border-radius: 999px; border: 1px solid var(--sc-line);
   background: var(--sc-fill); color: var(--sc-ink); font: inherit; font-size: var(--sc-fs-s); font-weight: 600;
   text-decoration: none; cursor: pointer; white-space: nowrap;
   transition: background-color 150ms var(--ease, ease-out), transform 100ms var(--ease, ease-out);
@@ -175,7 +175,7 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-btn--primary:hover { background: #ffffff; }
 .sc-btn--danger { background: rgba(255, 132, 120, 0.18); color: #ffd9d4; border-color: rgba(255, 132, 120, 0.4); }
 .sc-btn--danger:hover { background: rgba(255, 132, 120, 0.28); }
-.sc-btn--icon { padding: 0; width: max(40px, 5vh); }
+.sc-btn--icon { padding: 0; width: max(44px, 5vh); }
 .sc-back { color: var(--sc-ink); }
 
 /* ── Числа (KPI) ── */
@@ -343,10 +343,13 @@ body.sc-page.sc-idle { cursor: none; }
 .sc-status[data-status="overdue"] { color: var(--sc-danger); }
 
 /* ── Сегменты-вкладки над слайдом ── */
+.sc-row__title--wrap { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  line-clamp: 2; }
 .sc-tabs { display: flex; gap: 0.45em; margin: -0.35em 0 0.7em; }
 .sc-tab {
-  position: relative; flex: 1; min-width: 0; height: max(24px, 2.6vh); padding: 0; border: 0; background: transparent;
-  cursor: pointer; border-radius: 6px;
+  /* полоска 4 px видна как раньше, а зона нажатия — 44 px (VISUAL_BRIEF §4 п. 10): отрицательные поля держат раскладку */
+  position: relative; flex: 1; min-width: 0; height: 44px; margin-block: calc((max(24px, 2.6vh) - 44px) / 2);
+  padding: 0; border: 0; background: transparent; cursor: pointer; border-radius: 6px;
 }
 .sc-tab::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 4px; margin-top: -2px; border-radius: 4px;
   background: var(--sc-fill-2); }
