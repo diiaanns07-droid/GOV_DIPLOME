@@ -235,11 +235,29 @@ def test_expected_numbers_story(expected):
 
 
 def test_expected_file_is_current(world):
+    """EXPECTED.json = пересчёт на тот же момент. Блок, который считает код соседа (SECTION_CODE), сравниваем, только
+    если код тот же, что при записи файла: в сборке R01 код R07/R08/R09 новее — такой блок сверяет stand_numbers.py."""
     path = wio.WORLD_DIR / "EXPECTED.json"
     have = json.loads(path.read_text(encoding="utf-8"))
+    fresh = json.loads(json.dumps(exp.expected(world, datetime.fromisoformat(have["now"])), ensure_ascii=False))
+    changed = {role for role, sha in fresh["code"].items() if (have.get("code") or {}).get(role) != sha}
+    other_code = {key for key, roles in exp.SECTION_CODE.items() if changed & set(roles)}
+    assert set(have) == set(fresh)
+    for key in sorted(set(fresh) - other_code - {"code"}):
+        assert have[key] == fresh[key], f"EXPECTED.json устарел ({key}): python3 -m ml.datasets.demo_world_expected"
+    assert {"yards", "scenes", "world_version"} <= set(fresh) - other_code     # свои блоки R02 сверяются всегда
+
+
+def test_expected_skips_only_blocks_of_changed_code(world, monkeypatch):
+    """Новый код R09 в сборке (другой отпечаток) не ломает сверку: пропускаются блоки R09, свои блоки R02 — нет."""
+    have = json.loads((wio.WORLD_DIR / "EXPECTED.json").read_text(encoding="utf-8"))
+    assert set(have["code"]) == {"R07", "R08", "R09"}
+    monkeypatch.setattr(exp, "code_fingerprints", lambda: {**have["code"], "R09": "0" * 16})
     fresh = exp.expected(world, datetime.fromisoformat(have["now"]))
-    assert have == json.loads(json.dumps(fresh, ensure_ascii=False)), \
-        "EXPECTED.json устарел: python3 -m ml.datasets.demo_world_expected"
+    changed = {role for role, sha in fresh["code"].items() if have["code"].get(role) != sha}
+    assert changed == {"R09"}
+    assert {key for key, roles in exp.SECTION_CODE.items() if changed & set(roles)} == {
+        "heat", "akim", "inbox", "services", "nura_check"}
 
 
 # ---------------------------------------------------------------- совместимость с соседями (в сборке R01)

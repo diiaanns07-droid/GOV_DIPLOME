@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from collections import Counter, defaultdict
@@ -25,6 +26,12 @@ from ml.datasets import demo_world_io as wio
 
 REFERENCE_NOW = "2026-10-16T12:00:00+05:00"
 HEAT_DAYS = (7, 14, 30)
+# Чей код считает блок EXPECTED.json. В сборке R01 у соседей код новее, чем в ветке R02 (например, R09 раунда 15
+# «Ждут проверки» = 14 дней): блок с другим отпечатком кода тест R02 не сравнивает с файлом — его сверяет
+# tests/civic/R02/round15/stand_numbers.py на живом стенде (тот же код, что у экрана).
+MODULE_DIRS = {"R07": "ui/civic_heat", "R08": "ui/civic_akim", "R09": "ui/civic_feedback/v2"}
+SECTION_CODE = {"heat": ("R07", "R09"), "akim": ("R07", "R08", "R09"), "inbox": ("R09",), "services": ("R09",),
+                "nura_check": ("R07", "R08", "R09")}
 
 
 def _with_r09_fields(complaints: list[dict]) -> list[dict]:
@@ -36,6 +43,18 @@ def _with_r09_fields(complaints: list[dict]) -> list[dict]:
         c["due_at"] = rec.due_at(c["created_at"], c["category"])
         c.setdefault("code", f"B-{n:04d}")
         out.append(c)
+    return out
+
+
+def code_fingerprints() -> dict:
+    """Отпечаток кода модулей, которыми посчитаны блоки: sha256 файлов .py пакета (16 знаков); пакета нет — None."""
+    out = {}
+    for role, rel in MODULE_DIRS.items():
+        files = sorted((wio.ROOT / rel).rglob("*.py")) if (wio.ROOT / rel).is_dir() else []
+        digest = hashlib.sha256()
+        for f in files:
+            digest.update(f.relative_to(wio.ROOT).as_posix().encode() + b"\0" + f.read_bytes() + b"\0")
+        out[role] = digest.hexdigest()[:16] if files else None
     return out
 
 
@@ -169,7 +188,8 @@ def expected(world: dict, now: datetime | None = None) -> dict:
     result = {"schema": "birge-demo-world-expected-v1", "world_schema": world.get("schema"),
               "world_version": world.get("schema_version"), "now": wio.iso(now),
               "note_ru": "Числа посчитаны кодом модулей (R07 карта, R08 «Картина дня», R09 «Обращения») на записях мира. "
-                         "Табло служб и «Мой двор» — простые правила R02 для сверки, пока модулей R16/R17 нет."}
+                         "Табло служб и «Мой двор» — простые правила R02 для сверки, пока модулей R16/R17 нет.",
+              "code": code_fingerprints()}
     heat_pack = _safe(lambda: heat_numbers(records, now))
     if isinstance(heat_pack, tuple):
         result["heat"], heat = heat_pack
