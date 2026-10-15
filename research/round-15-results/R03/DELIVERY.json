@@ -38,6 +38,7 @@
  ],
  "results_paths": [
   "research/handoffs/astana/R03/round15/STATUS.md",
+  "research/round-15-results/R03/ARCHITECTURE.md",
   "research/round-15-results/R03/DELIVERY.json",
   "research/round-15-results/R03/INTEGRATION.txt",
   "research/round-15-results/R03/RUN.txt",
@@ -95,7 +96,7 @@
   },
   "pytest_R03_R09_R01_related": {
    "status": "PASS",
-   "passed": 848,
+   "passed": 851,
    "skipped": 10,
    "xfailed": 1,
    "failed": 0,

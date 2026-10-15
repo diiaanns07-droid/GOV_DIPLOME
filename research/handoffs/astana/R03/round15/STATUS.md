@@ -62,15 +62,28 @@
   формате web/labeling — 3 passed); в облаке LOCAL-14 — NOT_RUN (нет разметки людей). RUN.txt §6 — команды ноутбука.
   Тесты R03 round15: 74 passed + 1 skipped. Время в STATUS — по `date -u` (раньше были оценки на глаз).
 
+- 12:30–12:36 UTC: карточка на ui-kit R11 .bk-answer (IA_ROUND15 §5.6: «Спросить» — главная кнопка, прошлые ответы
+  строками), BirgeAnalyst.ask(text) для палитры «Спросить Birge: …», без двойных полей в листе оболочки; проверка в
+  оболочке (копия + patch R01) снова 1366 и 375 ✓. ARCHITECTURE.md — для диплома и Gton (R14).
+  Тесты: R03 74 + 1 skipped; с R09/R01/R03 r14 — 851 passed, 10 skipped, 1 xfailed. Браузер стенда 104/0.
+
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,
   web/civic/qa/qa.js, SCREENS.questions в birge.js). Два модуля с одним именем ломали бы друг друга.
 - Шлюз R01: маршрут POST assistant/ask → agent.civic_assistant.api.ask (kind=function, staff=True); в arguments() нужна
   строка для ключа assistant.ask (patch — в INTEGRATION.txt). ask принимает и question/lang, и body.
 
-## Следующий шаг
-- Каждый круг: find_branches.py — появились ли R17/R12/R16/R13; подключить их функции (имена в sources.py).
-- eval_human.py для LOCAL-14 (или NOT_RUN с причиной).
+## Следующий шаг (каждый круг, по порядку)
+1. AMENDMENTS.md из ветки пакета (см. вверху) — новые поправки применить первыми.
+2. python3 research/round-15/tools/find_branches.py (+ --build): новые коммиты R17 / R12 / R16 / R13 / R08 / R11 / R01.
+   Соседи поменяли функции «для R03» — обновить sources.py/blocks.py, проверить на их коде во временной копии
+   (git worktree + git checkout <их ветка> -- <их пути>; python3 -B -m agent.civic_assistant.analyst.evaluate
+   --with-neighbours <db>) и тест tests/civic/R03/round15/test_analyst_neighbours.py.
+3. Ревью R11 (research/round-15-results/R11/REVIEW_R15.md в их ветке): правки по R03 — сразу.
+4. Сборка R01 (B1 16 окт 09:00 UTC, B2 18:00 UTC, FINAL-5 17 окт 13:00 UTC): взял ли R01 patch R03; если в сборке
+   что-то не так с «Спросить Birge» — исправить в своих путях, обновить DELIVERY.json (code_sha).
+5. Кадры: tests/civic/R03/round15/analyst_screens.cjs (стенд) и analyst_shell_check.cjs (оболочка с patch).
+6. После 17 окт 23:59 Астаны (18:59 UTC): удалить scheduled task trig_01HDRqCuZR25GqKUWS9wJjpG, финальные DELIVERY/STATUS.
 
 ## Вопросы владельцу
 - Где кнопка «Спросить Birge» в меню акимата? «Ещё» уже полное (4 пункта) — решение R11; я предложил кнопку в «Картине
