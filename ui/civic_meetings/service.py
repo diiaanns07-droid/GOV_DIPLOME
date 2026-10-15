@@ -571,11 +571,13 @@ class MeetingService:
 
     # ------------------------------------------------------------------ лента уведомлений (R06)
     def updates_route(self, q: dict, context) -> dict:
-        device = self._device({}, context, q)
+        # Маршрут «для всех» (CONTRACT §7): без устройства — пустая лента, как у R16 и R17 (R10 B-105);
+        # 400 — только для испорченного device_id или since.
+        device = self._device({}, context, q, required=False)
         since = q.get("since") or None
         if since is not None and parse_iso(since) is None:
             raise ApiError(400, "bad_request", "since: время ISO 8601.", "since")
-        items = self.updates(device, since)
+        items = self.updates(device, since) if device else []
         return _reply(200, {"items": items, "since": since, "now": iso(self.store.now())})
 
     def updates(self, device: str, since: str | None = None, *, limit: int = 50) -> list[dict]:

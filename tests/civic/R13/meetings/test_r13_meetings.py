@@ -427,7 +427,9 @@ def test_updates_only_for_devices_that_care(svc, clock):
     status, page = call(svc, "GET", "/meetings/updates", query=f"since=2026-10-20T00:00:00Z&device_id={DEV_A}")
     assert status == 200 and [e["id"] for e in page["items"]] == [e["id"] for e in events]
     assert call(svc, "GET", "/meetings/updates", query="since=вчера&device_id=" + DEV_A)[0] == 400
-    assert call(svc, "GET", "/meetings/updates")[0] == 400  # нужен device
+    status, empty = call(svc, "GET", "/meetings/updates")  # маршрут «для всех»: без устройства — пустая лента (B-105)
+    assert status == 200 and empty["items"] == [] and empty["now"]
+    assert call(svc, "GET", "/meetings/updates", query="device_id=short")[0] == 400  # испорченный id — ошибка
 
 
 def test_module_level_updates_and_board_block(demo, tmp_path):
