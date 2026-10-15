@@ -127,7 +127,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 # R17 раунд 15: «Штаб ведомств» и кризисный штаб (раздел #agencies, слой «Кризис», стенд index.html).
                 "agencies/agencies.js", "agencies/agencies.css", "agencies/crisis-layer.js", "agencies/index.html",
                 # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (раздел #analyst; стенд analyst-demo.html не отдаём).
-                "assistant/analyst.js", "assistant/analyst.css")
+                "assistant/analyst.js", "assistant/analyst.css",
+                # R08 раунд 15: «Ситуационный центр» (отдельная страница /civic/board/) и «Картина недели» (печать A4).
+                "board/index.html", "board/board.js", "board/board.css", "akim/week.html", "akim/week.js", "akim/week.css")
 # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
 CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
@@ -135,6 +137,8 @@ CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charse
               ".geojson": "application/geo+json; charset=utf-8", ".png": "image/png"}
 for _asset in CIVIC_ASSETS:
     ASSETS["/civic/" + _asset] = ("civic/" + _asset, CIVIC_MIME.get(Path(_asset).suffix, "text/plain; charset=utf-8"))
+# Короткий адрес страницы «Ситуационного центра» R08 (IA_ROUND15 §3: /civic/board/) — каталоги сервер не отдаёт.
+ASSETS["/civic/board/"] = ASSETS["/civic/board/index.html"]
 
 
 # ---------------------------------------------------------------------------

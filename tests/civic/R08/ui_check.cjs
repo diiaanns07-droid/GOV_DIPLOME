@@ -67,7 +67,7 @@ async function layoutProblems(page) {
       const box = el.getBoundingClientRect();
       if (box.width <= 1 && box.height <= 1) continue; // только для экранного диктора — на экране не видно
       const hasText = Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim());
-      if (hasText && parseFloat(cs.fontSize) < 13) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
+      if (hasText && parseFloat(cs.fontSize) < 12) out.small.push(el.className + ":" + el.textContent.trim().slice(0, 30));
       if (hasText && el.scrollWidth > el.clientWidth + 1 && cs.overflow !== "visible" && el.clientWidth > 0)
         out.clipped.push(el.className + ":" + el.textContent.trim().slice(0, 30));
     }
@@ -114,7 +114,7 @@ async function shot(page, name, full) {
       check(`${tag}: нет ключей перевода на экране`, !KEYLIKE.test(text), (text.match(KEYLIKE) || [])[0]);
       check(`${tag}: нет технических слов`, !TECH.test(text), (text.match(TECH) || [])[0]);
       check(`${tag}: нет предупреждений [i18n] и ошибок JS`, logs.length === 0, logs);
-      check(`${tag}: шрифт не меньше 13 px (шкала R11: 13/15/17/22/28)`, lp.small.length === 0, lp.small.slice(0, 5));
+      check(`${tag}: шрифт не меньше 12 px (эталон A: подписи 12)`, lp.small.length === 0, lp.small.slice(0, 5));
       check(`${tag}: текст не обрезан`, lp.clipped.length === 0, lp.clipped.slice(0, 5));
       check(`${tag}: зоны нажатия не меньше 44 px`, lp.tiny.length === 0, lp.tiny.slice(0, 5));
       const nums = await page.$$eval(".akim-kpi .bk-kpi__value", (els) => els.map((e) => e.textContent));
@@ -147,8 +147,9 @@ async function shot(page, name, full) {
                  card: cs.boxShadow !== "none" || parseFloat(cs.borderTopWidth) > 0 || !/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor),
                  num: v.fontSize + "/" + v.fontWeight, label: l.fontSize };
       }));
-      check(`${tag}: плитки без карточек, число 28/600, подпись 15, одна строка изменения (CLEAN_PASS п. 3)`,
-        kpiStyle.length === 4 && kpiStyle.every((k) => k.deltas === 1 && !k.card && k.num === "28px/600" && k.label === "15px"), kpiStyle);
+      // Эталон A (13 окт): числа — плитки, как «34 новых» в сводке эталона (фон белый 72 %, радиус 12).
+      check(`${tag}: числа — плитки эталона, число 22/600, подпись 12 (как в сводке «Сегодня в Астане»), одна строка изменения`,
+        kpiStyle.length === 4 && kpiStyle.every((k) => k.deltas === 1 && k.card && k.num === "22px/600" && k.label === "12px"), kpiStyle);
       const more = await page.evaluate(() => {
         const d = document.querySelector(".akim-kpis + .akim-kpi-more, .akim-kpi-more");
         return d ? { open: d.open, summary: d.querySelector("summary").textContent, rows: d.querySelectorAll("li").length } : null;
@@ -164,8 +165,8 @@ async function shot(page, name, full) {
                  bold: Array.from(p.querySelectorAll("*")).filter((e) => parseInt(getComputedStyle(e).fontWeight, 10) >= 600).map((e) => e.className),
                  mainWeight: (document.querySelector(".akim-summary__main") && getComputedStyle(document.querySelector(".akim-summary__main")).fontWeight) || "" };
       });
-      check(`${tag}: сводка — абзац 17 px без плашки, жирная только главная фраза (CLEAN_PASS п. 4)`,
-        sum.size === "17px" && !sum.plaque && sum.mainWeight === "600" && sum.bold.length === 1, sum);
+      check(`${tag}: сводка — абзац 15 px (текст эталона) без плашки, жирная только главная фраза`,
+        sum.size === "15px" && !sum.plaque && sum.mainWeight === "600" && sum.bold.length === 1, sum);
       // CLEAN_PASS п. 1–2: заголовок 28/600, одна серая строка 13; поля даты и района — с заливкой; «Распечатать» — ghost.
       const top = await page.evaluate(() => {
         const t = document.querySelector(".akim__title"), cs = getComputedStyle(t);
@@ -175,8 +176,8 @@ async function shot(page, name, full) {
                  print: (document.querySelector(".akim__print") || { className: "" }).className.includes("bk-btn--ghost"),
                  printIcon: !!document.querySelector(".akim__print svg") };
       });
-      check(`${tag}: заголовок 28/600, одна строка 13, поля с заливкой, «Распечатать» ghost со значком (CLEAN_PASS п. 1–2)`,
-        top.title === "28px/600" && top.metas === 1 && top.meta === "13px" && top.fields === 2 && top.print && top.printIcon, top);
+      check(`${tag}: заголовок 22/600 (шкала эталона), одна строка 13, поля с заливкой, «Распечатать» ghost со значком`,
+        top.title === "22px/600" && top.metas === 1 && top.meta === "13px" && top.fields === 2 && top.print && top.printIcon, top);
       // CLEAN_PASS §2: два начертания — 400 и 600.
       const weights = await page.evaluate(() => {
         const set = new Set();
@@ -186,7 +187,17 @@ async function shot(page, name, full) {
         }
         return Array.from(set).sort();
       });
-      check(`${tag}: два начертания — 400 и 600 (CLEAN_PASS §2)`, weights.every((w) => w === "400" || w === "600"), weights);
+      check(`${tag}: начертания эталона — 400, 500, 600 и 700 (цифры на плашках)`, weights.every((w) => ["400", "500", "600", "700"].includes(w)), weights);
+      // Эталон A: шкала кеглей 12 / 13 / 14 / 15 / 16 / 19 / 22 / 34 (R11 tokens.css) — других размеров текста нет.
+      const sizes = await page.evaluate(() => {
+        const set = new Set();
+        for (const el of document.querySelectorAll("#akim *")) {
+          if (!el.getClientRects().length || el.getBoundingClientRect().width <= 1) continue;
+          if (Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent.trim())) set.add(parseFloat(getComputedStyle(el).fontSize));
+        }
+        return Array.from(set).sort((a, b) => a - b);
+      });
+      check(`${tag}: кегли только из шкалы эталона 12/13/14/15/16/19/22/34`, sizes.every((s) => [12, 13, 14, 15, 16, 19, 22, 34].includes(s)), sizes);
       // П. 14: у объектов полоса из 6 этапов (ui-kit .bk-stages--compact) и подпись «Этап N из 6: …».
       const stages = await page.$$eval(".akim-objects .akim-obj", (rows) => rows.map((r) => {
         const ol = r.querySelector(".bk-stages--compact");
@@ -602,6 +613,48 @@ async function shot(page, name, full) {
     check(`${width}-${lang}: компактная полоса «${lang === "kk" ? "Күн қорытындысы" : "Картина дня"} · дата» появляется после прокрутки, нажатие — к началу`,
       !before && bar.on && bar.op === "1" && bar.top >= 0 && bar.top <= 20 && bar.h >= 44 && bar.tab === -1 && bar.hidden === "true"
         && bar.text.startsWith(lang === "kk" ? "Күн қорытындысы · " : "Картина дня · ") && back.y < 400 && !back.on, { before, bar, back });
+    await ctx.close();
+  }
+  {
+    // Правило Linear 4: быстрый ответ (80 мс) — без мигания скелетом; правило 2: ↓ / J / K по «Горячим местам».
+    const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru",
+      route: async (route) => { await new Promise((r) => setTimeout(r, 80)); await route.continue(); } });
+    let sawSkel = false;
+    for (let i = 0; i < 15; i++) { if (await page.$(".akim-skel, .akim-loading")) sawSkel = true; await page.waitForTimeout(10); }
+    await waitState(page, "ok");
+    await page.focus(".akim-hot__item >> nth=0");
+    await page.keyboard.press("ArrowDown");
+    const k1 = await page.evaluate(() => Array.from(document.querySelectorAll(".akim-hot__item")).indexOf(document.activeElement));
+    await page.keyboard.press("j");
+    const k2 = await page.evaluate(() => Array.from(document.querySelectorAll(".akim-hot__item")).indexOf(document.activeElement));
+    await page.keyboard.press("k");
+    const k3 = await page.evaluate(() => Array.from(document.querySelectorAll(".akim-hot__item")).indexOf(document.activeElement));
+    check("быстрый ответ — без скелета (Linear 4); ↓ / J / K по «Горячим местам» (Linear 2)", !sawSkel && k1 === 1 && k2 === 2 && k3 === 1, { sawSkel, k1, k2, k3 });
+    // Правило 5: наведение на место — событие birge:hover-target {target, on, from: "akim"} (карта R07 подсвечивает значок)
+    await page.evaluate(() => { window.__hv = []; document.addEventListener("birge:hover-target", (e) => window.__hv.push([e.detail.target && e.detail.target.id, e.detail.on, e.detail.from])); });
+    await page.mouse.move(5, 5);
+    await page.hover(".akim-hot__item >> nth=0");
+    await page.mouse.move(5, 5);
+    const hv = await page.evaluate(() => ({ ev: window.__hv, id: document.querySelector(".akim-hot__item").getAttribute("data-key") }));
+    check("«Горячие места»: наведение — birge:hover-target on/off (from akim) для карты R07 (Linear 5)",
+      hv.ev.some((e) => e[1] === true && e[2] === "akim") && hv.ev.some((e) => e[1] === false && e[2] === "akim"), hv);
+    await ctx.close();
+  }
+  {
+    // Смена района при показанных числах: без мигания скелетом — прежние приглушены, полоса загрузки, потом новые.
+    const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru" });
+    await waitState(page, "ok");
+    await page.route(API, async (route) => { await new Promise((r) => setTimeout(r, 900)); await route.continue(); });
+    await page.selectOption("#akim-district", "nura");
+    await page.waitForTimeout(250);
+    const mid = await page.evaluate(() => ({ state: document.getElementById("akim").dataset.state, pending: document.getElementById("akim").hasAttribute("data-pending"),
+      kpis: document.querySelectorAll(".akim-kpi .bk-kpi__value").length, skel: document.querySelectorAll(".akim-skel").length,
+      op: getComputedStyle(document.querySelector(".akim__body")).opacity }));
+    await page.screenshot({ path: path.join(OUT, "akim-pending-1366-ru.png") });
+    await waitState(page, "ok");
+    const end = await page.evaluate(() => ({ pending: document.getElementById("akim").hasAttribute("data-pending"), meta: document.querySelector(".akim__meta").textContent }));
+    check("смена района: без мигания — прежние числа приглушены, без скелета, затем новые", mid.state === "loading" && mid.pending && mid.kpis === 4
+      && mid.skel === 0 && parseFloat(mid.op) < 0.6 && !end.pending && /Нура/.test(end.meta), { mid, end });
     await ctx.close();
   }
   {

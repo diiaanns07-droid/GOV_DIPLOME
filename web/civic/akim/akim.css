@@ -815,32 +815,16 @@
 .akim-empty { /* ниже чисел пусто всё — одно состояние «пусто» ui-kit (CLEAN_PASS §3 R08 п. 6) */
   margin: var(--s-4) 0;
 }
-.akim-empty__art {
+/* П1 (раунд 15): маленькая монохромная иконка состояния вместо иллюстрации — 40 px, линия 1,2 (= 2 px значка 24) */
+.akim-state-ic {
   display: block;
-  width: 160px;
-  height: auto;
-  margin: 0 auto var(--s-3);
+  width: 40px;
+  height: 40px;
+  margin: 0 auto var(--s-2);
+  color: var(--c-text-3);
+  stroke-width: 1.2;
 }
-.akim-empty__line { /* как иллюстрации ui-kit (.bk-ill): линия 1,5, цвет --c-text-3 */
-  fill: none;
-  stroke: var(--c-text-3);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.akim-empty__sun {
-  stroke: var(--c-brand);
-}
-.akim-empty__badge {
-  fill: var(--c-brand);
-}
-.akim-empty__check {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 2.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+.bk-error .akim-state-ic { color: var(--c-text-2); }
 
 /* ═══════ ЭТАЛОН A (13 окт, research/round-14/design/REFERENCE.html): «Картина дня» в стиле сводки «Сегодня в Астане»
    и карточки эталона. Числа — плитки (белые 72 %, радиус 12); блоки — радиус 16, граница 1 px вместо тени (правило
@@ -1385,4 +1369,197 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+}
+
+/* ═══════ Раунд 15 · «Картина дня» 2.0 (R11 IA_ROUND15 §5.10, VISUAL_BRIEF §3, поправка П1) ═══════
+   Первый экран не меняется: числа · «Нужно решение акима» (коротко) · «Пульс» (кнопка кризисного штаба у тревоги).
+   Ниже — три одинаковые карточки соседей «Ведомства · Жители вместе · Встречи» (заголовок, одно число, 2 строки,
+   «Открыть») и «Прогноз» с меткой «прототип». Без картинок: только числа, текст и значки набора ui-kit (П1). */
+
+/* «Нужно решение акима» коротко: проблема → варианты → «Выбрать»; подробности свёрнуты */
+.akim-decision--short {
+  padding-block: 10px;
+}
+.akim-decision--short .akim-decision__problem {
+  font-size: 14px;
+  line-height: 1.35;
+}
+.akim-decision__more {
+  margin-top: 4px;
+}
+.akim-decision__more > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  cursor: pointer;
+  color: var(--c-brand);
+  font-size: 13px;
+  font-weight: 500;
+}
+.akim-decision__more > p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* «Пульс»: кнопка «Открыть кризисный штаб» на месте «Показать на карте» */
+.akim-pulse__crisis {
+  grid-area: map;
+  min-height: 44px;
+  padding-inline: 14px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.akim-pulse__crisis .ic {
+  width: 18px;
+  height: 18px;
+}
+
+/* три карточки соседей */
+.akim-trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.akim-trio[data-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.akim-trio[data-count="1"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.akim-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.akim-mini__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.akim-mini__num {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+}
+.akim-mini__value {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: var(--ls-num, -0.02em);
+  font-variant-numeric: tabular-nums;
+}
+.akim-mini__label {
+  color: var(--c-text-2);
+  font-size: 12px;
+}
+.akim-mini__lines {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+}
+.akim-mini__line {
+  margin: 0;
+  color: var(--c-text-2);
+  font-size: 13px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.akim-mini__line strong {
+  color: var(--c-ink);
+  font-weight: 500;
+}
+.akim-mini__open {
+  align-self: flex-start;
+  gap: 4px;
+  margin-left: -12px;
+  font-size: 14px;
+}
+
+/* «Прогноз» (прототип) */
+.akim-forecast {
+  margin-bottom: 12px;
+}
+.akim-forecast__badge {
+  background: var(--c-warn-soft);
+  color: var(--c-warn);
+}
+.akim-forecast__list.bk-list {
+  margin: 8px 0 0;
+  background: transparent;
+}
+.akim-forecast__list > li + li {
+  border-top: 1px solid var(--akim-line);
+}
+.akim-forecast__item.bk-list__item {
+  gap: 12px;
+  min-height: 48px;
+  padding: 8px 0;
+}
+.akim-forecast__rank {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 8px;
+  background: var(--akim-fill);
+  font-size: 13px;
+  font-weight: 600;
+}
+.akim-forecast__item .bk-list__title {
+  font-size: 14px;
+  font-weight: 500;
+}
+.akim-forecast__item .bk-list__sub {
+  color: var(--c-text-3);
+  font-size: 12px;
+}
+.akim-forecast__note {
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+@media (max-width: 1023px) {
+  .akim-trio,
+  .akim-trio[data-count="2"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 720px) {
+  .akim-pulse__crisis {
+    grid-column: 2 / -1;
+    grid-row: auto;
+    justify-self: start;
+    margin-top: 6px;
+  }
+  /* Телефон: тело — колонка с порядком блоков (order); соседи и прогноз — сразу за «Пульсом», как на ноутбуке */
+  .akim-trio,
+  .akim-forecast {
+    order: 4;
+  }
+  .akim-week-link {
+    order: 6;
+  }
+}
+@media print {
+  /* Лист дня — 1–3 страницы A4: прогноз-прототип, карточки соседей и кнопки не печатаются — соседи целиком
+     печатаются в «Картине недели» (A4, akim/week). */
+  .akim-pulse__crisis,
+  .akim-mini__open,
+  .akim-forecast,
+  .akim-trio,
+  .akim-week-link,
+  .akim-decision__more {
+    display: none;
+  }
+}
+
+.akim-week-link {
+  margin-top: 4px;
 }

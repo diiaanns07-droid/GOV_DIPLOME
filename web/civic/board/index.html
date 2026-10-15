@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru" class="sc-html bk-dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0a100f">
+  <title>Ситуационный центр · Birge</title>
+  <!-- R08 · Ситуационный центр акимата (раунд 15): страница на весь экран для большого экрана и проектора.
+       Открывается из меню акимата ссылкой (схема R11); данные — GET /api/civic/v2/akim/board (только сотрудник).
+       Монтирование — в board.js (data-board-auto): CSP сервера без встроенных скриптов.
+       .bk-dark на <html> — тёмные токены ui-kit R11 только для этой страницы (IA_ROUND15 §5.9). -->
+  <link rel="stylesheet" href="../ui-kit/tokens.css">
+  <link rel="stylesheet" href="board.css">
+</head>
+<body class="sc-page">
+  <main id="board" data-board-auto data-state="loading" aria-busy="true">
+    <p style="color:#b9c4bf;font:500 18px/1.4 system-ui,sans-serif;padding:32px">Собираем картину города…</p>
+  </main>
+  <noscript><p style="color:#f2f5f3;font:500 18px/1.4 system-ui,sans-serif;padding:32px">Для Ситуационного центра нужен включённый JavaScript.</p></noscript>
+  <script src="../i18n/i18n.js"></script>
+  <script src="board.js"></script>
+</body>
+</html>

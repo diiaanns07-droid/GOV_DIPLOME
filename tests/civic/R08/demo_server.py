@@ -10,7 +10,8 @@
 
     python tests/civic/R08/demo_server.py --wave2-demo   # + уточнения и проверка жителями в демо-жалобах (синтетика)
 
-Отдаёт только файлы из web/civic/ (без листинга папок) и API R08: GET /akim/summary, GET/PUT /akim/routing,
+Отдаёт только файлы из web/civic/ (без листинга папок) и API R08: GET /akim/summary, GET /akim/board и /akim/week
+(раунд 15, только сотрудник — на стенде все запросы сотрудника, --resident → 403), GET/PUT /akim/routing,
 POST /akim/decisions/<id>, GET /nearby, GET/POST /nearby/subscriptions, GET /nearby/updates. Стенд — локальный: все запросы считаются запросами сотрудника (--resident — наоборот),
 GET /api/civic/v1/session отдаёт учебный CSRF-токен. Выбор акима и правки служб пишутся во временную папку
 (--state-dir), а не в .runtime проекта.
@@ -66,7 +67,8 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return
         if path.startswith(PREFIX + "/"):
-            status, body = handle_get(path, parse_qs(url.query))
+            # Стенд: шлюз R01 передаёт staff=True только после проверки сессии (staff_view) — здесь это флаг стенда.
+            status, body = handle_get(path, parse_qs(url.query), staff=self.server.staff)
             self.send(status, json.dumps(body, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
             return
         if path.startswith("/civic/"):
@@ -179,6 +181,7 @@ def main(argv=None):
     for warning in stand_warnings(httpd.kit_dir):
         print("ВНИМАНИЕ: " + warning, flush=True)
     print(f"Картина дня: http://{args.host}:{args.port}/civic/akim/", flush=True)
+    print(f"Ситуационный центр: http://{args.host}:{args.port}/civic/board/", flush=True)
     print(f"Службы: http://{args.host}:{args.port}/civic/akim/services.html · Рядом: http://{args.host}:{args.port}/civic/nearby/",
           flush=True)
     try:

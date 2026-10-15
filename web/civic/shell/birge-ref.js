@@ -534,6 +534,14 @@
     const target = d.on && d.target && d.target.kind && d.target.id ? { kind: d.target.kind, id: d.target.id, source: "today" } : null;
     window.dispatchEvent(new CustomEvent("birge:target-hover", { detail: target }));
   });
+  // «Открыть кризисный штаб» в «Картине дня» R08 (отменяемое событие birge:open-crisis {incident, kind, district, link}):
+  // штаб R17 открывает кризис сам (BirgeAgencies.openCrisis); без R17 — ссылка R08 как есть.
+  document.addEventListener("birge:open-crisis", (event) => {
+    const A = window.BirgeAgencies, d = event.detail || {};
+    if (!A || typeof A.openCrisis !== "function") return;
+    event.preventDefault();
+    A.openCrisis(d.incident ? { incident: d.incident } : { template: d.kind, district: d.district });
+  });
   // × в «Горячих местах» R07 (mount closable) — список закрыт.
   window.addEventListener("birge:heat-close", () => { S.listOpen = false; queue(); });
   // Язык: сводка и шторка перерисовываются; чипы — заново.

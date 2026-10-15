@@ -1153,6 +1153,9 @@
     // R12 волна 2 п. 6: QR-таблички — отдельная страница печати (web/civic/qr/print.html); пункт «Ещё → QR-таблички»
     // у акимата появляется, когда в сборке есть модуль QR R12 (report.js). Скрипты defer: проверяем после всех.
     const linkQr = () => { if (window.BirgeReport && !screenModule("qr")) registerScreen({ id: "qr", href: "/civic/qr/print.html" }); };
+    // Раунд 15, R08: «Ситуационный центр» — отдельная страница на весь экран, пункт «Ещё → Инструменты» у акимата
+    // (IA_ROUND15 §3, §5.9; страница в сборке — ui/web_server.py CIVIC_ASSETS board/*). Убрали R08 из сборки — убрать и строку.
+    registerScreen({ id: "board", href: "/civic/board/", modes: ["akimat"], titleKey: "shell.nav.board" });
     if (document.readyState === "complete") linkQr();
     else { document.addEventListener("DOMContentLoaded", linkQr, { once: true }); window.addEventListener("load", linkQr, { once: true }); }
     // Разделы — адрес #day, #nearby, #ideas, #yard/yard-123…; прочие адреса (#object=, #target=, #school) — карта, как раньше.

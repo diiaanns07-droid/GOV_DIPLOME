@@ -1,0 +1,412 @@
+/*
+ * Birge · Ситуационный центр акимата (R08, раунд 15) — большой экран, тёмное стекло.
+ * Тёмная тема — ТОЛЬКО здесь (VISUAL_BRIEF §2 п. 8): цвета — токены --sc-* внутри .sc, не утекают в основной продукт.
+ * Значения — палитра .bk-dark ui-kit R11 (tokens.css, раунд 15) один в один; заданы числами, а не var(--c-*), чтобы
+ * страница была тёмной и со старым ui-kit FINAL-4, где .bk-dark ещё нет (там --c-ink тёмный — текст пропал бы).
+ *
+ * Сетка 16:9 (1920×1080 и 1366×768) — без прокрутки: шапка · [кризис] · 4 числа · (пульс + горячие места | слайд) · низ.
+ * Размеры шрифта — от высоты экрана, ровно три (чек-лист VISUAL_BRIEF §4 п. 3): крупные числа, текст, подписи.
+ * С 3 м: числа ≈ 90 px на 1080, текст 28 px, подписи 21 px; на 1366×768 — 66 / 20 / 15 px (проектор крупнее экрана).
+ * Узкие экраны (< 761 px и 4:3 ниже 700 px) — обычная страница с прокруткой, все блоки подряд, без автосмены.
+ */
+
+.sc {
+  /* ── Тёмные токены (R11: тёмное стекло только для Ситуационного центра) ── */
+  --sc-bg: #0b100e; /* .bk-dark --c-paper */
+  --sc-glass: rgba(255, 255, 255, 0.055);
+  --sc-glass-strong: rgba(255, 255, 255, 0.085);
+  --sc-solid: #131b18; /* .bk-dark --c-surface: ?glass=off */
+  --sc-edge: rgba(255, 255, 255, 0.09);
+  --sc-edge-top: rgba(255, 255, 255, 0.08);
+  --sc-ink: #eef3f0; /* .bk-dark --c-ink: 16:1 на фоне */
+  --sc-text-2: #aebbb5; /* --c-text-2: 9:1 */
+  --sc-text-3: #8a9792; /* --c-text-3: 5:1 — только подписи */
+  --sc-line: rgba(255, 255, 255, 0.08);
+  --sc-fill: rgba(255, 255, 255, 0.06);
+  --sc-fill-2: rgba(255, 255, 255, 0.12);
+  --sc-accent: var(--c-lime, #d7f57c); /* одна акцентная краска: «живая» точка, текущий слайд, фокус */
+  --sc-accent-ink: #1d2a06;
+  --sc-up: #ffb067; /* «больше жалоб» — тёплый (цвет жалоб), всегда со стрелкой и словом */
+  --sc-danger: #ff8a80; /* .bk-dark --c-danger, 7.6:1: просрочки, кризис */
+  --sc-focus: #7fb3ff; /* .bk-dark --c-focus */
+  --sc-danger-glass: rgba(226, 75, 74, 0.16);
+  --sc-ok: #a6dc7a; /* .bk-dark --c-ok: только «исправлено» и «проверено жителями» */
+  --sc-demo: #c2cde0; /* .bk-dark --c-demo */
+  --sc-heat-1: var(--heat-1, #fac775);
+  --sc-heat-2: var(--heat-2, #ef9f27);
+  --sc-heat-3: var(--heat-3-badge, #c93b3a);
+  --sc-heat-4: var(--heat-4-badge, #a32d2d);
+  --sc-heat-1-on: var(--heat-1-on, #5a3a00);
+  --sc-heat-2-on: #1c1100;
+
+  /* ── Размеры от высоты экрана ── */
+  --sc-fs-xl: max(40px, 8.4vh); /* числа */
+  --sc-fs-m: max(17px, 2.6vh); /* заголовки блоков, строки */
+  --sc-fs-s: max(13px, 1.95vh); /* подписи, мета */
+  --sc-gap: max(10px, 1.5vh);
+  --sc-pad: max(14px, 2.1vh);
+  --sc-r: max(14px, 1.9vh);
+  --sc-row: max(34px, 4.4vh);
+  --sc-blur: 26px;
+
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* без этого длинные строки распирают экран вправо */
+  grid-template-rows: auto auto minmax(0, 1fr) auto; /* шапка · числа · основная часть · низ */
+  gap: var(--sc-gap);
+  padding: max(14px, 2.2vh) max(16px, 2vw);
+  overflow: hidden;
+  box-sizing: border-box;
+  color: var(--sc-ink);
+  background: var(--sc-bg); /* П1: без цветных пятен и свечения — «вау» дают числа и движение, а не фон */
+  font-family: var(--font, "Inter", system-ui, sans-serif);
+  font-size: var(--sc-fs-m);
+  line-height: 1.25;
+  font-feature-settings: "tnum" 1, "cv11" 1;
+  -webkit-font-smoothing: antialiased;
+  color-scheme: dark;
+}
+.sc[data-crisis="yes"] { grid-template-rows: auto auto auto minmax(0, 1fr) auto; } /* + баннер кризиса */
+.sc *,
+.sc *::before,
+.sc *::after { box-sizing: border-box; }
+html.sc-html,
+body.sc-page { margin: 0; height: 100%; background: #0b100e; }
+body.sc-page.sc-idle { cursor: none; }
+
+.sc :focus-visible {
+  outline: 3px solid var(--sc-focus);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.sc-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.sc .ic { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.125em; }
+.sc-num { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+
+/* ── Стекло ── */
+.sc-glass {
+  background: var(--sc-glass);
+  border: 1px solid var(--sc-edge);
+  border-radius: var(--sc-r);
+  box-shadow: inset 0 1px 0 var(--sc-edge-top), 0 24px 64px rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(var(--sc-blur)) saturate(150%);
+  backdrop-filter: blur(var(--sc-blur)) saturate(150%);
+}
+.sc[data-glass="off"] .sc-glass { background: var(--sc-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* ── Шапка ── */
+.sc-head {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sc-gap);
+  min-height: max(44px, 6.4vh);
+}
+.sc-brand { display: flex; align-items: center; gap: max(10px, 1.2vw); min-width: 0; color: inherit; text-decoration: none; }
+.sc-mark {
+  display: grid; place-items: center; flex: none;
+  width: max(40px, 5.6vh); height: max(40px, 5.6vh); border-radius: 30%;
+  background: var(--sc-accent); color: var(--sc-accent-ink);
+  font-weight: 700; font-size: var(--sc-fs-m);
+}
+.sc-title { margin: 0; font-size: var(--sc-fs-m); font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+.sc-scope { margin: 0.15em 0 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; }
+.sc-head__end { display: flex; align-items: center; gap: max(10px, 1.1vw); }
+.sc-clock { display: flex; align-items: baseline; gap: 0.5em; white-space: nowrap; }
+.sc-time { font-size: var(--sc-fs-m); font-weight: 600; font-variant-numeric: tabular-nums; }
+.sc-date { color: var(--sc-text-2); font-size: var(--sc-fs-s); }
+.sc-live { position: relative; align-self: center; flex: none; width: 0.5em; height: 0.5em; border-radius: 50%;
+  background: var(--sc-accent); }
+.sc-live::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--sc-accent);
+  animation: sc-live 2.4s ease-out infinite; }
+.sc[data-stale="yes"] .sc-live { background: var(--sc-up); }
+.sc[data-stale="yes"] .sc-live::after { animation: none; opacity: 0; }
+@keyframes sc-live { 0% { transform: scale(1); opacity: 0.8; } 65%, 100% { transform: scale(3.4); opacity: 0; } }
+.sc-badge {
+  display: inline-flex; align-items: center; gap: 0.4em; padding: 0.3em 0.75em; border-radius: 999px;
+  background: rgba(199, 211, 234, 0.14); color: var(--sc-demo); font-size: var(--sc-fs-s); font-weight: 500;
+  white-space: nowrap; border: 1px solid rgba(199, 211, 234, 0.22);
+}
+.sc-badge--proto { background: rgba(255, 176, 103, 0.12); color: var(--sc-up); border-color: rgba(255, 176, 103, 0.3); }
+.sc-seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--sc-fill); border: 1px solid var(--sc-line); }
+.sc-seg button {
+  min-width: max(44px, 5.4vh); min-height: max(36px, 4.6vh); padding: 0 0.8em; border: 0; border-radius: 999px;
+  background: transparent; color: var(--sc-text-2); font: inherit; font-size: var(--sc-fs-s); font-weight: 600; cursor: pointer;
+  transition: background-color 150ms var(--ease, ease-out), color 150ms var(--ease, ease-out);
+}
+.sc-seg button[aria-pressed="true"] { background: var(--sc-ink); color: var(--sc-bg); }
+.sc-select {
+  appearance: none; -webkit-appearance: none; min-height: max(36px, 4.6vh); padding: 0 2.2em 0 0.9em;
+  border-radius: 999px; border: 1px solid var(--sc-line); color: var(--sc-ink); font: inherit; font-size: var(--sc-fs-s);
+  background: var(--sc-fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23b9c4bf' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 0.9em center;
+  cursor: pointer;
+}
+.sc-select option { color: #121a17; background: #fff; }
+
+/* ── Кризис (баннер) ── */
+.sc-crisis {
+  display: flex; align-items: center; gap: max(12px, 1.2vw);
+  padding: max(8px, 1vh) var(--sc-pad);
+  border-radius: var(--sc-r); border: 1px solid rgba(255, 138, 128, 0.35);
+  background: rgba(255, 138, 128, 0.12); /* .bk-dark --c-danger-soft: ровный тон, без градиента (П1) */
+}
+.sc-crisis[hidden] { display: none; }
+.sc-crisis__mark {
+  flex: none; width: max(32px, 4.2vh); height: max(32px, 4.2vh); border-radius: 50%;
+  display: grid; place-items: center; background: rgba(255, 138, 128, 0.16); color: var(--sc-danger);
+}
+.sc-crisis__text { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 0.2em 1em; flex-wrap: wrap; }
+.sc-crisis__title { margin: 0; font-weight: 600; font-size: var(--sc-fs-m); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-crisis__meta { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+/* ── Кнопки ── */
+.sc-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5em; flex: none;
+  min-height: max(40px, 5vh); padding: 0 1.1em; border-radius: 999px; border: 1px solid var(--sc-line);
+  background: var(--sc-fill); color: var(--sc-ink); font: inherit; font-size: var(--sc-fs-s); font-weight: 600;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+  transition: background-color 150ms var(--ease, ease-out), transform 100ms var(--ease, ease-out);
+}
+.sc-btn:hover { background: var(--sc-fill-2); }
+.sc-btn:active { transform: scale(0.97); }
+.sc-btn--primary { background: var(--sc-ink); color: var(--sc-bg); border-color: transparent; }
+.sc-btn--primary:hover { background: #ffffff; }
+.sc-btn--danger { background: rgba(255, 132, 120, 0.18); color: #ffd9d4; border-color: rgba(255, 132, 120, 0.4); }
+.sc-btn--danger:hover { background: rgba(255, 132, 120, 0.28); }
+.sc-btn--icon { padding: 0; width: max(40px, 5vh); }
+.sc-back { color: var(--sc-ink); }
+
+/* ── Числа (KPI) ── */
+.sc-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sc-gap); }
+.sc-kpi {
+  position: relative; display: grid; grid-template-rows: auto auto auto 1fr; align-content: start;
+  padding: var(--sc-pad); min-height: max(150px, 19vh); overflow: hidden;
+}
+.sc-kpi__label { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); font-weight: 500; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+.sc-kpi__value { margin: 0.05em 0 0; font-size: var(--sc-fs-xl); font-weight: 600; line-height: 1.05; }
+.sc-kpi__delta { margin: 0.2em 0 0; font-size: var(--sc-fs-s); color: var(--sc-text-2); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; }
+.sc-kpi__delta[data-trend="up"][data-bad="true"] { color: var(--sc-up); }
+.sc-kpi__delta[data-trend]::before { display: inline-block; margin-right: 0.4em; }
+.sc-kpi__delta[data-trend="up"]::before { content: "▲"; font-size: 0.75em; }
+.sc-kpi__delta[data-trend="down"]::before { content: "▼"; font-size: 0.75em; }
+.sc-kpi__delta[data-trend="flat"]::before { content: "＝"; font-size: 0.75em; }
+.sc-kpi__note { margin: 0.2em 0 0; font-size: var(--sc-fs-s); color: var(--sc-ok); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-kpi__note--muted { color: var(--sc-text-3); }
+.sc-kpi--overdue .sc-kpi__value[data-zero="false"] { color: var(--sc-danger); }
+.sc-kpi--fixed .sc-kpi__value { color: var(--sc-ink); }
+.sc-spark { position: absolute; right: var(--sc-pad); top: var(--sc-pad); width: 42%; height: max(40px, 6.2vh); opacity: 0.95; }
+.sc-spark path.line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.sc-spark path.area { stroke: none; opacity: 0.18; }
+.sc-spark circle { stroke: var(--sc-bg); stroke-width: 2; vector-effect: non-scaling-stroke; }
+
+/* ── Основная часть ── */
+.sc-main { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--sc-gap); min-height: 0; }
+.sc-col { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: var(--sc-gap); min-height: 0; }
+.sc-card { display: flex; flex-direction: column; min-height: 0; padding: var(--sc-pad); overflow: hidden; }
+.sc-card > * { flex: none; } /* списки не сжимаются: лишние строки убирает подгонка board.js fit() */
+.sc-card__end { display: inline-flex; align-items: center; gap: 0.6em; }
+.sc-card__head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75em; margin-bottom: 0.6em; flex: none; }
+.sc-card__title { margin: 0; font-size: var(--sc-fs-m); font-weight: 600; letter-spacing: -0.01em; display: flex; align-items: center; gap: 0.45em; min-width: 0; }
+.sc-card__meta { margin: 0; color: var(--sc-text-3); font-size: var(--sc-fs-s); white-space: nowrap; }
+.sc-empty { margin: auto 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); }
+
+/* Пульс */
+.sc-alarms { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7em; }
+.sc-alarm { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.2em 0.7em; align-items: start; }
+.sc-alarm__icon { grid-row: span 2; width: max(30px, 3.8vh); height: max(30px, 3.8vh); border-radius: 50%;
+  display: grid; place-items: center; background: rgba(255, 176, 103, 0.16); color: var(--sc-up); font-size: var(--sc-fs-s); }
+.sc-alarm__title { margin: 0; font-size: var(--sc-fs-m); font-weight: 500; line-height: 1.2;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sc-alarm__row { display: flex; align-items: center; gap: 0.8em; min-width: 0; }
+.sc-alarm__reason { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); flex: 1; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-alarm .sc-btn { min-height: max(32px, 4vh); }
+.sc-pulse__more { margin: 0.6em 0 0; color: var(--sc-text-3); font-size: var(--sc-fs-s); }
+
+/* Строки (горячие места, службы, поручения) */
+.sc-rows { list-style: none; margin: 0; padding: 0; display: grid; align-content: start; min-height: 0; }
+.sc-row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 0.7em;
+  min-height: var(--sc-row); padding: 0.18em 0; border-top: 1px solid var(--sc-line);
+}
+.sc-row:first-child { border-top: 0; }
+.sc-row__main { min-width: 0; }
+.sc-row__title { margin: 0; font-size: var(--sc-fs-m); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-row__sub { margin: 0.1em 0 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-row__end { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; text-align: right; }
+.sc-row--line { grid-template-columns: auto minmax(0, 1fr) minmax(0, max-content); }
+.sc-row--line .sc-row__end { overflow: hidden; text-overflow: ellipsis; max-width: 13em; }
+.sc-pin {
+  display: grid; place-items: center; min-width: max(32px, 4.1vh); height: max(32px, 4.1vh); padding: 0 0.35em;
+  border-radius: 999px; font-weight: 700; font-size: var(--sc-fs-s); border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.sc-pin[data-level="1"] { background: var(--sc-heat-1); color: var(--sc-heat-1-on); }
+.sc-pin[data-level="2"] { background: var(--sc-heat-2); color: var(--sc-heat-2-on); }
+.sc-pin[data-level="3"] { background: var(--sc-heat-3); color: #fff; }
+.sc-pin[data-level="4"] { background: var(--sc-heat-4); color: #fff; }
+.sc-pin[data-level="0"] { background: var(--sc-fill-2); color: var(--sc-ink); }
+
+/* ── Сцена со слайдами: сверху сегменты (прошедшие · текущий заполняется · будущие), под ними слайд ── */
+.sc-stage { position: relative; }
+.sc-slide-host { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.sc-progress-row { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1em; }
+.sc-slide { display: flex; flex-direction: column; min-height: 0; flex: 1; animation: sc-in 220ms var(--ease, ease-out) both; }
+@keyframes sc-in { from { opacity: 0; transform: translateY(0.6vh); } to { opacity: 1; transform: none; } }
+.sc-slide__body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 0.8em; overflow: hidden; }
+.sc-slide__body > * { flex: none; } /* строки не сжимаются: лишние строки убирает подгонка (board.js fit) */
+
+.sc-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: var(--sc-gap); }
+/* Плитка числа в блоке: число и подпись в строку — ниже, чем в KPI, но то же крупное число (читается с 3 м). */
+.sc-stat { display: flex; align-items: center; gap: 0.5em; padding: 0.35em 0.8em; border-radius: calc(var(--sc-r) * 0.8);
+  background: var(--sc-fill); border: 1px solid var(--sc-line); min-width: 0; }
+.sc-stat__value { margin: 0; font-size: var(--sc-fs-xl); font-weight: 600; line-height: 1; flex: none; }
+.sc-stat__label { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); line-height: 1.2; min-width: 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sc-stat--ok .sc-stat__value { color: var(--sc-ok); }
+.sc-stat--danger .sc-stat__value { color: var(--sc-danger); }
+
+/* Службы: таблица-строки как в Linear */
+.sc-table { display: grid; grid-auto-rows: minmax(var(--sc-row), auto); min-height: 0; }
+.sc-trow {
+  display: grid; grid-template-columns: minmax(0, 3.2fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 1.4fr);
+  align-items: center; gap: 0.8em; border-top: 1px solid var(--sc-line); font-size: var(--sc-fs-s);
+}
+.sc-trow:first-child { border-top: 0; }
+.sc-trow--head { color: var(--sc-text-3); font-size: var(--sc-fs-s); min-height: 0; padding-bottom: 0.3em; }
+.sc-trow__name { font-size: var(--sc-fs-m); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-trow[data-lagging="true"] .sc-trow__name::after { content: ""; display: inline-block; width: 0.45em; height: 0.45em;
+  margin-left: 0.45em; border-radius: 50%; background: var(--sc-danger); vertical-align: middle; }
+.sc-trow__num { text-align: right; font-variant-numeric: tabular-nums; }
+.sc-bar { display: flex; align-items: center; gap: 0.5em; }
+.sc-bar__track { flex: 1; height: 0.5em; border-radius: 999px; background: var(--sc-fill); overflow: hidden; }
+.sc-bar__fill { display: block; height: 100%; border-radius: inherit; background: var(--sc-danger); transform-origin: left;
+  transition: transform 600ms var(--ease, ease-out); }
+.sc-bar__fill--ok { background: var(--sc-ok); }
+.sc-bar__fill--heat { background: var(--sc-heat-2); }
+.sc-bar__num { min-width: 2.2em; text-align: right; font-variant-numeric: tabular-nums; }
+.sc-note { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); }
+.sc-note--muted { color: var(--sc-text-3); }
+
+/* Кризис: службы с прогрессом задач */
+.sc-chips { display: flex; flex-wrap: wrap; gap: 0.5em; }
+.sc-chip {
+  display: inline-flex; align-items: center; gap: 0.5em; padding: 0.35em 0.8em; border-radius: 999px;
+  background: var(--sc-fill); border: 1px solid var(--sc-line); font-size: var(--sc-fs-s); white-space: nowrap;
+}
+.sc-chip__ring { width: 1.1em; height: 1.1em; flex: none; }
+.sc-chip[data-done="true"] { border-color: rgba(143, 212, 108, 0.4); }
+.sc-progress { height: 0.6em; border-radius: 999px; background: var(--sc-fill); overflow: hidden; }
+.sc-progress > span { display: block; height: 100%; background: var(--sc-accent); border-radius: inherit;
+  transform-origin: left; transition: transform 600ms var(--ease, ease-out); }
+.sc-update { padding: 0.8em 1em; border-radius: calc(var(--sc-r) * 0.8); background: var(--sc-fill); border-left: 3px solid var(--sc-danger); }
+.sc-update__time { margin: 0; color: var(--sc-text-3); font-size: var(--sc-fs-s); }
+.sc-update__text { margin: 0.2em 0 0; font-size: var(--sc-fs-m);
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Двор недели */
+.sc-yard { display: grid; grid-template-columns: auto 1fr; gap: 0.2em 0.9em; align-items: center; padding: 0.8em 1em;
+  border-radius: calc(var(--sc-r) * 0.8); background: var(--sc-fill); border: 1px solid var(--sc-line); }
+.sc-yard__icon { grid-row: span 2; width: max(36px, 4.6vh); height: max(36px, 4.6vh); border-radius: 30%; display: grid; place-items: center;
+  background: var(--sc-fill-2); color: var(--sc-text-2); font-size: var(--sc-fs-m); }
+.sc-yard__title { margin: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-yard__meta { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-tag { display: inline-flex; align-items: center; gap: 0.35em; padding: 0.1em 0.6em; border-radius: 999px; font-size: var(--sc-fs-s);
+  background: rgba(143, 212, 108, 0.14); color: var(--sc-ok); white-space: nowrap; }
+.sc-tag--plain { background: var(--sc-fill); color: var(--sc-text-2); }
+.sc-status { display: inline-flex; width: 1.15em; height: 1.15em; flex: none; color: var(--sc-text-2); }
+.sc-status[data-status="done"] { color: var(--sc-ok); }
+.sc-status[data-status="overdue"] { color: var(--sc-danger); }
+
+/* ── Сегменты-вкладки над слайдом ── */
+.sc-tabs { display: flex; gap: 0.45em; margin: -0.35em 0 0.7em; }
+.sc-tab {
+  position: relative; flex: 1; min-width: 0; height: max(24px, 2.6vh); padding: 0; border: 0; background: transparent;
+  cursor: pointer; border-radius: 6px;
+}
+.sc-tab::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 4px; margin-top: -2px; border-radius: 4px;
+  background: var(--sc-fill-2); }
+.sc-tab:hover::before { background: rgba(255, 255, 255, 0.22); }
+.sc-tab__bar { position: absolute; left: 0; right: 0; top: 50%; height: 4px; margin-top: -2px; border-radius: 4px;
+  background: var(--sc-accent); transform: scaleX(0); transform-origin: left; }
+.sc-tab[data-past="true"] .sc-tab__bar { transform: scaleX(1); background: rgba(215, 245, 124, 0.45); }
+.sc-tab[aria-selected="true"] .sc-tab__bar { animation: sc-progress var(--sc-rotate, 15s) linear both; }
+.sc[data-paused="yes"] .sc-tab[aria-selected="true"] .sc-tab__bar { animation-play-state: paused; }
+@keyframes sc-progress { to { transform: scaleX(1); } }
+
+/* ── Низ: пауза, подсказка клавиш, время обновления, весь экран ── */
+.sc-foot { display: flex; align-items: center; gap: var(--sc-gap); min-height: max(40px, 5vh); }
+.sc-foot__gap { flex: 1; }
+.sc-foot__keys { color: var(--sc-text-3); font-size: var(--sc-fs-s); }
+.sc-foot__end { display: flex; align-items: center; gap: 0.8em; color: var(--sc-text-3); font-size: var(--sc-fs-s); white-space: nowrap; }
+.sc-foot__keys { color: var(--sc-text-3); }
+.sc[data-stale="yes"] .sc-updated { color: var(--sc-up); }
+
+/* ── Состояния всей страницы ── */
+.sc-state { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 1.2em;
+  padding: 6vh 8vw; text-align: center; }
+.sc-state[hidden] { display: none; }
+.sc-state__title { margin: 0; font-size: var(--sc-fs-m); font-weight: 600; max-width: 34em; }
+.sc-state__hint { margin: 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); max-width: 40em; }
+/* П1: состояние — маленький монохромный значок набора ui-kit (≤ 48 px), короткий текст и одна кнопка */
+.sc-state__ic { width: 44px; height: 44px; color: var(--sc-text-2); stroke-width: 1.1; }
+.sc[data-state="loading"] .sc-layout,
+.sc[data-state="forbidden"] .sc-layout,
+.sc[data-state="error"] .sc-layout { visibility: hidden; }
+.sc-layout { display: contents; }
+.sc-skel { display: block; height: 1em; border-radius: 0.4em; background: var(--sc-fill-2); animation: sc-wait 1.4s ease-in-out infinite; }
+@keyframes sc-wait { 50% { opacity: 0.45; } }
+
+/* ── Узкий экран (телефон, планшет вертикально, 4:3 ниже 700 px): обычная страница, все блоки подряд ── */
+@media (max-width: 760px), (max-height: 600px) and (max-aspect-ratio: 4/3) {
+  .sc { position: static; min-height: 100vh; overflow: visible; display: flex; flex-direction: column;
+    --sc-fs-xl: 44px; --sc-fs-m: 18px; --sc-fs-s: 14px; --sc-gap: 12px; --sc-pad: 16px; --sc-r: 16px; --sc-row: 44px; }
+  .sc-head { flex-wrap: wrap; }
+  .sc-head__end { flex-wrap: wrap; gap: 8px; }
+  .sc-date, .sc-foot__keys { display: none; }
+  .sc-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sc-kpi { min-height: 0; }
+  .sc-spark { position: static; width: 100%; height: 36px; margin-top: 8px; }
+  .sc-main, .sc-col { display: flex; flex-direction: column; }
+  .sc-stage { display: none; }
+  .sc-all { display: flex !important; flex-direction: column; gap: 12px; }
+  .sc-pause, .sc-full, .sc-foot__keys { display: none; }
+  .sc-trow { grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr) minmax(0, 1.6fr); }
+  .sc-trow > :nth-child(4), .sc-trow > :nth-child(5) { display: none; }
+  /* Телефон: не обрезать, а переносить — экран прокручивается */
+  .sc-crisis { flex-direction: column; align-items: stretch; gap: 10px; }
+  .sc-crisis__text { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .sc-crisis__title, .sc-crisis__meta { white-space: normal; }
+  .sc-crisis .sc-btn { width: 100%; }
+  .sc-crisis__mark { display: none; }
+  .sc-kpi__label, .sc-kpi__delta, .sc-kpi__note { white-space: normal; }
+  .sc-stat { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .sc-stat__label { -webkit-line-clamp: 3; }
+  .sc-row--line { grid-template-columns: auto minmax(0, 1fr); }
+  .sc-row--line .sc-row__end { grid-column: 2; max-width: none; text-align: left; white-space: normal; }
+  .sc-row__title, .sc-row__sub, .sc-trow__name, .sc-alarm__reason { white-space: normal; }
+  .sc-alarm__row { flex-wrap: wrap; }
+  .sc-tag { white-space: normal; }
+  .sc-chip { white-space: normal; max-width: 100%; }
+  .sc-state { position: static; min-height: 70vh; }
+}
+.sc-all { display: none; }
+
+/* 1024×768 и другие 4:3 — четыре числа в ряд, две колонки поровну */
+@media (min-width: 761px) and (max-aspect-ratio: 3/2) {
+  .sc { --sc-fs-xl: max(40px, 7.4vh); --sc-fs-m: max(16px, 2.45vh); --sc-fs-s: max(13px, 1.85vh); }
+  .sc-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .sc-spark { width: 38%; }
+  .sc-foot__keys { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-live::after, .sc-skel { animation: none; }
+  .sc-slide { animation: none; }
+  .sc-tab[aria-selected="true"] .sc-tab__bar { animation: none; transform: scaleX(1); }
+  .sc-bar__fill, .sc-progress > span { transition: none; }
+}

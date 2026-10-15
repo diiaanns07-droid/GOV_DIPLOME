@@ -147,3 +147,6 @@
     flex: 1 1 100%;
   }
 }
+
+/* П1 (раунд 15): значок состояния 40 px вместо иллюстрации, линия как у значков */
+.svc-state-ic { display: block; width: 40px; height: 40px; margin: 0 auto 8px; color: var(--c-text-2); stroke-width: 1.2; }
