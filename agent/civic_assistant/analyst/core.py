@@ -8,10 +8,12 @@
 
 Ответ (schema birge-analyst-answer-v1): см. research/round-15-results/R03/INTEGRATION.txt, раздел «Формат ответа».
 Ошибки для шлюза R01: ValueError → 400, PermissionError → 403, исключение со status=429 → 429.
+warm_up() — прогрев кэшей соседей при старте сервера (R10 B-107), без сотрудника и без языковой модели.
 """
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import logging
 import threading
 import time
 
@@ -24,6 +26,14 @@ from .texts import DISTRICTS, both, category_name, district_name, service_name
 SCHEMA = "birge-analyst-answer-v1"
 RATE = (30, 60.0)  # вопросов на сотрудника за минуту: защита модулей и (если включена) платной модели
 _AUTO = object()
+LOGGER = logging.getLogger(__name__)
+# Вопросы прогрева: карта R07 (Нура, 7 и 30 дней), «Картина дня» R08 (район и весь город), табло и кризис R17.
+WARM_UP_QUESTIONS = (
+    "Где в Нуре больше всего жалоб на снег за неделю и какие службы отстают?",
+    "Какие службы отстают?",
+    "Что с бураном?",
+    "Сколько жалоб в Нуре за 30 дней?",
+)
 
 
 class TooManyQuestions(Exception):
@@ -145,7 +155,7 @@ def _clarify_block() -> dict:
     lines = {"ru": ["Я считаю по данным Birge: горячие места, рост жалоб, районы, просрочки, службы, кризис, "
                     "работы, инициативы жителей, поручения после встреч.", "Попробуйте спросить так:"],
              "kk": ["Мен Birge деректері бойынша есептеймін: шағымы көп орындар, шағымдардың өсуі, аудандар, мерзімі "
-                    "өткен өтініштер, қызметтер, дағдарыс, жұмыстар, тұрғындар бастамалары, кездесулерден кейінгі "
+                    "өткен өтініштер, қызметтер, төтенше жағдай, жұмыстар, тұрғындар бастамалары, кездесулерден кейінгі "
                     "тапсырмалар.", "Былай сұрап көріңіз:"]}
     return {"id": "clarify", "kind": "clarify", "status": "empty", "title": both("Что я умею", "Мен не істей аламын"),
             "numbers": [], "lines": lines, "items": [{"label": s, "value": None, "ask": s} for s in SUGGESTIONS[:4]],
@@ -225,9 +235,39 @@ def ask(question=None, lang=None, principal=None, context=None, body=None, distr
         raise ValueError("district: неизвестный район.")
     with _CONFIG_LOCK:
         cfg = dict(_CONFIG)
-    limiter = _LIMITER
-    if not limiter.allow(_who(principal)):
+    if not _LIMITER.allow(_who(principal)):
         raise TooManyQuestions()
+    llm = cfg["provider"] if "provider" in cfg else (L.provider_from_env() if provider is _AUTO else provider)
+    if provider is not _AUTO:
+        llm = provider
+    return _answer(text, lang, district, cfg, now, llm)
+
+
+def warm_up(questions=WARM_UP_QUESTIONS) -> dict:
+    """Прогрев при старте сервера (R10 B-107): первый вызов карты R07 и «Картины дня» R08 грузит данные 3–4 с.
+
+    Аналитик сам задаёт себе вопросы сцен — без сотрудника, без лимита и без языковой модели (наружу ничего не
+    уходит); ответы выбрасываются, остаются тёплые кэши соседей — первый вопрос акима отвечается сразу. Сбой соседа
+    сервер не роняет: его честно покажет первый настоящий вопрос. R01 зовёт в фоне после wire() и засева мира.
+    """
+    started = time.perf_counter()
+    with _CONFIG_LOCK:
+        cfg = dict(_CONFIG)
+    answered, failed = 0, 0
+    for question in questions:
+        try:
+            _answer(I.normalize_question(question), "ru", None, cfg, None, None)
+            answered += 1
+        except Exception:  # noqa: BLE001 — прогрев не должен ронять сервер; подробности — в журнале
+            failed += 1
+            LOGGER.warning("analyst warm-up: вопрос не прогрет", exc_info=True)
+    ms = round((time.perf_counter() - started) * 1000, 1)
+    LOGGER.info("analyst warm-up: %d вопросов за %.0f мс (сбоев %d)", answered, ms, failed)
+    return {"questions": answered, "failed": failed, "ms": ms}
+
+
+def _answer(text, lang, district, cfg, now, llm) -> dict:
+    """Ответ на уже проверенный вопрос: разбор, вызовы соседей, блоки, (по желанию) модель."""
     started = time.perf_counter()
     clock = cfg.get("clock")
     moment = now or (clock() if callable(clock) else datetime.now(timezone.utc))
@@ -247,14 +287,12 @@ def ask(question=None, lang=None, principal=None, context=None, body=None, distr
     if parsed.flags and not parsed.intents:
         notices.append(NO_DATA_NOTICE)
 
-    # Языковая модель — только если настроена, вопрос без «инструкций» и есть что упорядочить.
+    # Языковая модель — только если настроена, в вопросе нет ни одного флага безопасности (инструкция, «придумай»,
+    # «удали», личные данные — R15 S44: иначе её вводная фраза без чисел показывалась бы как есть) и есть что упорядочить.
     mode, offline_reason, model, lead = "offline", None, None, _lead(built)
-    llm = cfg["provider"] if "provider" in cfg else (L.provider_from_env() if provider is _AUTO else provider)
-    if provider is not _AUTO:
-        llm = provider
     if llm is None:
         offline_reason = "no_key"
-    elif "injection" in parsed.flags:
+    elif parsed.flags:
         offline_reason = "question_has_instructions"
     elif not parsed.intents:
         offline_reason = "nothing_to_refine"

@@ -13,7 +13,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from . import sources as S
-from .texts import (MODULES, both, category_name, count_ru, district_name, fmt_num, fmt_pct, period, plural_ru,
+from .texts import (MODULES, both, quoted, category_name, count_ru, district_name, fmt_num, fmt_pct, period, plural_ru,
                     service_name)
 
 MAX_ITEMS = 5
@@ -78,11 +78,11 @@ def _not_ready(block: Block, status: str, ru_what: str, kk_what: str) -> Block:
     """Соседа нет или он сломался: честно, без чисел и без ошибки для акима."""
     block.status = status
     if status == "not_ready":
-        block.line(f"Пока нет данных: раздел «{ru_what}» ещё не подключён в этой сборке.",
-                   f"Әзірге дерек жоқ: «{kk_what}» бөлімі бұл жинақта әлі қосылмаған.")
+        block.line(f"Пока нет данных: раздел {quoted(ru_what)} ещё не подключён в этой сборке.",
+                   f"Әзірге дерек жоқ: {quoted(kk_what)} бөлімі бұл жинақта әлі қосылмаған.")
     else:
-        block.line(f"Раздел «{ru_what}» сейчас не ответил. Попробуйте ещё раз через минуту.",
-                   f"«{kk_what}» бөлімі қазір жауап бермеді. Бір минуттан кейін қайталаңыз.")
+        block.line(f"Раздел {quoted(ru_what)} сейчас не ответил. Попробуйте ещё раз через минуту.",
+                   f"{quoted(kk_what)} бөлімі қазір жауап бермеді. Бір минуттан кейін қайталаңыз.")
     return block
 
 
@@ -155,8 +155,8 @@ def hot_spots(ctx) -> Block:
              "картадағы орын", "ui.civic_heat.heat")
     top = items[0]
     top_n = int(top.get("count") or 0)
-    b.line(f"Больше всего — «{_target_label(top['target'], 'ru')}»: {_people(top_n)['ru']}.",
-           f"Ең көбі — «{_target_label(top['target'], 'kk')}»: {_people(top_n)['kk']}.")
+    b.line(f"Больше всего — {quoted(_target_label(top['target'], 'ru'))}: {_people(top_n)['ru']}.",
+           f"Ең көбі — {quoted(_target_label(top['target'], 'kk'))}: {_people(top_n)['kk']}.")
     b.fact(top_n, "человек — первое место", "адам — бірінші орын", "ui.civic_heat.heat")
     trend = _week_trend(ctx, total) if p.days == 7 else None
     if trend:
@@ -225,16 +225,16 @@ def category_growth(ctx) -> Block:
         b.number(int(top["prev"]), "неделю назад", "бір апта бұрын", "ui.civic_akim.summary.topics")
     change = _change(top)
     if change:
-        b.line(f"«{top.get('ru')}»: {_people(top.get('value') or 0)['ru']}, {change['ru']}.",
-               f"«{top.get('kk')}»: {_people(top.get('value') or 0)['kk']}, {change['kk']}.")
+        b.line(f"{quoted(top.get('ru'))}: {_people(top.get('value') or 0)['ru']}, {change['ru']}.",
+               f"{quoted(top.get('kk'))}: {_people(top.get('value') or 0)['kk']}, {change['kk']}.")
     if not growing:
         b.line("Ни одна тема не выросла по сравнению с прошлой неделей.",
                "Өткен аптамен салыстырғанда ешбір тақырып өспеді.")
     for t in rows[1:3]:
         ch = _change(t)
         if ch and t.get("trend") == "up":
-            b.line(f"Ещё растёт «{t.get('ru')}»: {_people(t.get('value') or 0)['ru']}, {ch['ru']}.",
-                   f"«{t.get('kk')}» да өсуде: {_people(t.get('value') or 0)['kk']}, {ch['kk']}.")
+            b.line(f"Ещё растёт {quoted(t.get('ru'))}: {_people(t.get('value') or 0)['ru']}, {ch['ru']}.",
+                   f"{quoted(t.get('kk'))} да өсуде: {_people(t.get('value') or 0)['kk']}, {ch['kk']}.")
     for t in rows[:MAX_ITEMS]:
         n = int(t.get("value") or 0)
         b.items.append({"label": both(t.get("ru") or "", t.get("kk") or ""), "value": n, "value_text": _people(n),
@@ -344,7 +344,8 @@ def overdue(ctx) -> Block:
     count, places = int(part.get("count") or 0), int(part.get("places") or 0)
     if p.service:
         sname = {lang: service_name(p.service, lang) for lang in ("ru", "kk")}
-        b.title = both(f"Просрочено у службы «{sname['ru']}» {where['ru']}", f"«{sname['kk']}» — мерзімі өткен, {where['kk']}")
+        b.title = both(f"Просрочено у службы {quoted(sname['ru'])} {where['ru']}",
+                       f"{quoted(sname['kk'])} — мерзімі өткен, {where['kk']}")
         st, by_service = ctx.call("R08", "ui.civic_akim", "deadlines", S.services_from_deadlines,
                                   {"heat": ctx.src.heat, "district": p.district})
         row = next((r for r in (by_service or {}).get("items", []) if r["service"] == p.service), None) \
@@ -368,8 +369,12 @@ def overdue(ctx) -> Block:
         late = _overdue_text(first.get("timer") or {})
         place_ru = first.get("place_ru") or category_name(first.get("category"), "ru")
         place_kk = first.get("place_kk") or category_name(first.get("category"), "kk")
-        b.line(f"Дольше всех: «{place_ru}» — {svc.get('ru') or ''}, {late['ru']}.",
-               f"Ең ұзағы: «{place_kk}» — {svc.get('kk') or ''}, {late['kk']}.")
+        if first.get("place_ru"):
+            b.line(f"Дольше всех: {quoted(place_ru)} — {svc.get('ru') or ''}, {late['ru']}.",
+                   f"Ең ұзағы: {quoted(place_kk)} — {svc.get('kk') or ''}, {late['kk']}.")
+        else:  # места на карте нет (мир R02: двор не на карте R07) — называем тему, а не выдаём её за место
+            b.line(f"Дольше всех ждёт жалоба на тему {quoted(place_ru)} — {svc.get('ru') or ''}, {late['ru']}.",
+                   f"Ең ұзақ күткені — {quoted(place_kk)} тақырыбындағы шағым — {svc.get('kk') or ''}, {late['kk']}.")
         b.fact(int((first.get("timer") or {}).get("overdue_by") or 0), "дней просрочки — дольше всех",
                "мерзімі өткен күн — ең ұзағы", "ui.civic_akim.summary.overdue")
         if first.get("on_map") and first.get("target"):
@@ -401,9 +406,11 @@ def _board_rows(board) -> list[dict]:
         if not isinstance(sid, str):
             continue
         share = r.get("verified_share")  # R17: доля 0…1 (или None — исправленных ещё не было)
+        fix = r.get("overdue_fix")  # R17: срок исправления R08; None — R08 нет в сборке (не 0)
         out.append({"service": sid,
                     "open": _int(r.get("open") if r.get("open") is not None else r.get("in_work")),
                     "overdue": _int(r.get("overdue") if r.get("overdue") is not None else r.get("late")),
+                    "overdue_fix": fix if isinstance(fix, int) and not isinstance(fix, bool) else None,
                     "median_days": r.get("median_answer_days") if r.get("median_answer_days") is not None
                     else r.get("median_days"),
                     "verified_pct": r.get("verified_pct") if r.get("verified_pct") is not None
@@ -443,43 +450,77 @@ def lagging_services(ctx) -> Block:
                            "Қызметтер таблосы әлі қосылмаған — «Күн қорытындысы» мерзімдері бойынша есептелді.")
     if p.service:
         rows = [r for r in rows if r["service"] == p.service] or rows
-    rows = [r for r in rows if r["open"] or r["overdue"]] or rows  # табло R17 отдаёт все 20 служб, и с нулями
-    lagging = sorted((r for r in rows if r["overdue"] > 0),
-                     key=lambda r: (-r["overdue"], -r["open"], r["service"]))
-    # Обращений просрочено — итог табло R17, если он есть: совместное обращение стоит в строках двух служб,
+    # Два разных «просрочено» (R17 metrics.py, R02 INTEGRATION §3): срок ИСПРАВЛЕНИЯ R08 — «Просрочено» «Картины дня»
+    # и ответ на «Сколько просрочено?» — и срок первого ОТВЕТА жителю R09 (вкладка «Ответ просрочен»). Отставание служб
+    # считаем по сроку исправления (у табло R17 — overdue_fix); табло без R08 (overdue_fix = null) — по сроку ответа,
+    # и подпись тогда другая: одно слово для двух разных чисел — это R10 B-104.
+    by_answer = b.role == "R17" and any(r.get("overdue_fix") is None for r in rows)
+    for r in rows:
+        r["late"] = r["overdue_fix"] if b.role == "R17" and not by_answer else r["overdue"]
+    rows = [r for r in rows if r["open"] or r["late"]] or rows  # табло R17 отдаёт все 20 служб, и с нулями
+    lagging = sorted((r for r in rows if r["late"] > 0), key=lambda r: (-r["late"], -r["open"], r["service"]))
+    # Итог — из табло R17, если он есть: совместное обращение стоит в строках двух служб,
     # и сумма по строкам была бы больше числа обращений на экране «Штаб ведомств».
     totals = board.get("totals") if b.role == "R17" and isinstance(board, dict) else None
-    total_overdue = _int(totals.get("overdue")) if isinstance(totals, dict) and "overdue" in totals and not p.service \
-        else sum(r["overdue"] for r in rows)
+    total_key = "overdue" if by_answer else "overdue_fix"
+    total_late = _int(totals[total_key]) if isinstance(totals, dict) and totals.get(total_key) is not None \
+        and not p.service else sum(r["late"] for r in rows)
     if not rows:
         b.status = "empty"
         b.line(f"Открытых обращений у служб {where['ru']} нет.", f"{where['kk'].capitalize()} қызметтерде ашық өтініш жоқ.")
         return b
-    b.number(len(lagging), plural_ru(len(lagging), "служба с просрочками", "службы с просрочками", "служб с просрочками"),
-             "мерзімі өткен өтініші бар қызмет", "services", tone="up" if lagging else "neutral")
-    b.number(total_overdue, plural_ru(total_overdue, "обращение просрочено", "обращения просрочены",
-                                      "обращений просрочено"), "өтініштің мерзімі өткен", "services")
+    if by_answer:
+        b.number(len(lagging), plural_ru(len(lagging), "служба с просроченными ответами", "службы с просроченными ответами",
+                                         "служб с просроченными ответами"), "жауап мерзімі өткен қызмет", "services",
+                 tone="up" if lagging else "neutral")
+        b.number(total_late, plural_ru(total_late, "обращение: ответ просрочен", "обращения: ответ просрочен",
+                                       "обращений: ответ просрочен"), "өтініштің жауап мерзімі өтті", "services")
+    else:
+        b.number(len(lagging), plural_ru(len(lagging), "служба с просрочками", "службы с просрочками",
+                                         "служб с просрочками"), "мерзімі өткен өтініші бар қызмет", "services",
+                 tone="up" if lagging else "neutral")
+        b.number(total_late, plural_ru(total_late, "обращение просрочено", "обращения просрочены",
+                                       "обращений просрочено"), "өтініштің мерзімі өткен", "services")
     if lagging:
         worst = lagging[0]
         name_ru, name_kk = service_name(worst["service"], "ru"), service_name(worst["service"], "kk")
-        b.line(f"Больше всего просрочек — {name_ru}: {fmt_num(worst['overdue'])} из {fmt_num(worst['open'])} открытых.",
-               f"Мерзімі өткені ең көп — {name_kk}: {fmt_num(worst['open'])} ашық өтініштің {fmt_num(worst['overdue'])}.")
-        if worst.get("median_days") is not None:
+        late, opened = fmt_num(worst["late"]), fmt_num(worst["open"])
+        if by_answer:
+            b.line(f"Больше всего просроченных ответов — {name_ru}: {late} из {opened} открытых.",
+                   f"Жауап мерзімі өткені ең көп — {name_kk}: {opened} ашық өтініштің {late}.")
+        else:
+            b.line(f"Больше всего просрочек — {name_ru}: {late} из {opened} открытых.",
+                   f"Мерзімі өткені ең көп — {name_kk}: {opened} ашық өтініштің {late}.")
+        if worst.get("median_days") is not None and float(worst["median_days"]) == 0:
+            b.line("Обычно эта служба отвечает в тот же день.", "Бұл қызмет әдетте сол күні жауап береді.")
+        elif worst.get("median_days") is not None:
             b.line(f"Медиана ответа этой службы — {fmt_num(float(worst['median_days']))} дн.",
                    f"Бұл қызметтің жауап беру медианасы — {fmt_num(float(worst['median_days']))} күн.")
     else:
         busiest = max(rows, key=lambda r: r["open"])
-        b.line(f"Просрочек нет. Больше всего открытых обращений у службы «{service_name(busiest['service'], 'ru')}»: "
-               f"{fmt_num(busiest['open'])}.",
-               f"Мерзімі өткен өтініш жоқ. Ашық өтініш ең көп — «{service_name(busiest['service'], 'kk')}»: "
-               f"{fmt_num(busiest['open'])}.")
+        name = {lang: quoted(service_name(busiest["service"], lang)) for lang in ("ru", "kk")}
+        none_ru, none_kk = ("Просроченных ответов нет", "Жауап мерзімі өткен өтініш жоқ") if by_answer \
+            else ("Просрочек нет", "Мерзімі өткен өтініш жоқ")
+        b.line(f"{none_ru}. Больше всего открытых обращений у службы {name['ru']}: {fmt_num(busiest['open'])}.",
+               f"{none_kk}. Ашық өтініш ең көп — {name['kk']}: {fmt_num(busiest['open'])}.")
+    if b.role == "R17" and not by_answer:
+        # Срок ответа жителю — другое число (вкладка «Ответ просрочен» в «Обращениях»): называем его своим именем.
+        answered_late = _int(totals.get("overdue")) if isinstance(totals, dict) and totals.get("overdue") is not None \
+            and not p.service else sum(r["overdue"] for r in rows)
+        if answered_late:
+            b.line(f"Срок первого ответа жителю прошёл у {count_ru(answered_late, 'обращения', 'обращений', 'обращений')} "
+                   f"(вкладка «Ответ просрочен»).",
+                   f"Тұрғынға алғашқы жауап мерзімі {fmt_num(answered_late)} өтініште өтті («Жауап мерзімі өтті» қойындысы).")
+            b.fact(answered_late, "обращений: ответ просрочен", "жауап мерзімі өткен өтініш",
+                   "ui.civic_agencies.board_snapshot.totals.overdue")
     if source_note:
         b.note = source_note
     for r in (lagging or rows)[:MAX_ITEMS]:
+        late, opened = fmt_num(r["late"]), fmt_num(r["open"])
         item = {"label": both(service_name(r["service"], "ru"), service_name(r["service"], "kk")),
-                "value": r["overdue"], "service": r["service"],
-                "value_text": both(f"просрочено {fmt_num(r['overdue'])} из {fmt_num(r['open'])}",
-                                   f"{fmt_num(r['open'])} ішінен {fmt_num(r['overdue'])} мерзімі өткен")}
+                "value": r["late"], "service": r["service"],
+                "value_text": both(f"ответ просрочен: {late} из {opened}", f"{opened} ішінен {late} — жауап мерзімі өткен")
+                if by_answer else both(f"просрочено {late} из {opened}", f"{opened} ішінен {late} мерзімі өткен")}
         if r.get("median_days") is not None:
             item["median_days"] = r["median_days"]
         if r.get("verified_pct") is not None:
@@ -530,7 +571,7 @@ CRISIS_CATEGORY = {"blizzard": "snow_ice", "heat_outage": "utilities", "water_ou
 
 def crisis(ctx) -> Block:
     p, b = ctx.parsed, Block("crisis", "R17")
-    b.title = both("Кризисный штаб", "Дағдарыс штабы")
+    b.title = both("Кризисный штаб", "Жедел штаб")
     status, answer = ctx.call("R17", "ui.civic_agencies", "active_incidents", ctx.src.agencies_incidents,
                               {"status": "active", "district": None})
     incidents = [r for r in _incident_rows(answer) if r.get("status", "active") == "active"] if status == "ok" else []
@@ -539,10 +580,10 @@ def crisis(ctx) -> Block:
     if incidents:
         inc = incidents[0]
         b.demo = bool(inc.get("demo"))
-        title = both(str(inc.get("title_ru") or "Кризис"), str(inc.get("title_kk") or inc.get("title_ru") or "Дағдарыс"))
+        title = both(str(inc.get("title_ru") or "Кризис"), str(inc.get("title_kk") or inc.get("title_ru") or "Төтенше жағдай"))
         zone_d = (inc.get("zone") or {}).get("district")
         zone_label = inc.get("zone_label") if isinstance(inc.get("zone_label"), dict) else None
-        b.title = both(f"Кризисный штаб: {title['ru']}", f"Дағдарыс штабы: {title['kk']}")
+        b.title = both(f"Кризисный штаб: {title['ru']}", f"Жедел штаб: {title['kk']}")
         done, total, services, working = _incident_progress(inc)
         updates = [u for u in inc.get("updates") or [] if isinstance(u, dict) and u.get("public", True)]
         b.number(done, f"задач выполнено из {fmt_num(total)}", f"тапсырма орындалды ({fmt_num(total)} ішінен)",
@@ -554,8 +595,9 @@ def crisis(ctx) -> Block:
         else:
             zone_ru = f"район {district_name(zone_d, 'ru')}" if zone_d else "зона на карте"
             zone_kk = f"{district_name(zone_d, 'kk')} ауданы" if zone_d else "картадағы аймақ"
-        b.line(f"«{title['ru']}» — штаб открыт, {zone_ru}. Выполнено {fmt_num(done)} из {fmt_num(total)} задач служб.",
-               f"«{title['kk']}» — штаб ашық, {zone_kk}. Қызметтердің {fmt_num(total)} тапсырмасының "
+        b.line(f"{quoted(title['ru'])} — штаб открыт, {zone_ru}. "
+               f"Выполнено {fmt_num(done)} из {fmt_num(total)} задач служб.",
+               f"{quoted(title['kk'])} — штаб ашық, {zone_kk}. Қызметтердің {fmt_num(total)} тапсырмасының "
                f"{fmt_num(done)} орындалды.")
         if working:
             b.line("Ещё работают: " + ", ".join(service_name(sv, "ru") for sv in working) + ".",
@@ -589,18 +631,18 @@ def crisis(ctx) -> Block:
                 top = data["items"][0]["target"]
                 b.focus(top, 7, both(f"Показать на карте: {_target_label(top, 'ru')}",
                                      f"Картадан көрсету: {_target_label(top, 'kk')}"))
-        b.open("crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу",
+        b.open("crisis", "Открыть кризисный штаб", "Жедел штабты ашу",
                opener={"global": "BirgeAgencies", "fn": "openCrisis", "arg": {"incident": str(inc.get("id") or "")}})
         return b
     # Штаба нет (или R17 ещё не подключён): честно говорим и показываем пульс «Картины дня» по снегу.
     b.role = "R08"
-    b.title = both("Кризис: штаб не открыт", "Дағдарыс: штаб ашылмаған")
+    b.title = both("Кризис: штаб не открыт", "Төтенше жағдай: штаб ашылмаған")
     if status in ("not_ready", "error"):
         b.note = both("Кризисный штаб пока не подключён в этой сборке — показан пульс «Картины дня».",
-                      "Дағдарыс штабы бұл жинақта әлі қосылмаған — «Күн қорытындысының» пульсі көрсетілген.")
+                      "Жедел штаб бұл жинақта әлі қосылмаған — «Күн қорытындысының» пульсі көрсетілген.")
     else:
         b.note = both("Активного кризиса нет: штаб не открыт. Показан пульс «Картины дня».",
-                      "Белсенді дағдарыс жоқ: штаб ашылмаған. «Күн қорытындысының» пульсі көрсетілген.")
+                      "Белсенді төтенше жағдай жоқ: штаб ашылмаған. «Күн қорытындысының» пульсі көрсетілген.")
     st, summary = ctx.summary(p.district)
     if st != "ok":
         b.status = "not_ready" if status == "not_ready" else "empty"
@@ -630,7 +672,7 @@ def crisis(ctx) -> Block:
     b.focus(spike.get("target"), 7)
     if status == "ok":
         # Штаб подключён, но открыт не был: кнопка ведёт к форме нового штаба с шаблоном «Буран» (R17 crisis_link).
-        b.open("crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу",
+        b.open("crisis", "Открыть кризисный штаб", "Жедел штабты ашу",
                opener={"global": "BirgeAgencies", "fn": "openCrisis",
                        "arg": {"template": "blizzard" if category == "snow_ice" else "other", "district": p.district}})
     else:
@@ -821,8 +863,8 @@ def forecast(ctx) -> Block:
              "тәуекелі жоғары орын", "ui.civic_forecast.forecast_response", tone="up" if high else "neutral")
     first = items[0]
     reasons = first.get("top_reasons") or []
-    b.line(f"Первое в списке — «{_target_label(first.get('target'), 'ru')}».",
-           f"Тізімде бірінші — «{_target_label(first.get('target'), 'kk')}».")
+    b.line(f"Первое в списке — {quoted(_target_label(first.get('target'), 'ru'))}.",
+           f"Тізімде бірінші — {quoted(_target_label(first.get('target'), 'kk'))}.")
     if reasons and isinstance(reasons[0], dict):
         b.line(str(reasons[0].get("ru") or ""), str(reasons[0].get("kk") or reasons[0].get("ru") or ""))
     b.note = both(str(data.get("note_ru") or "Прототип на синтетике."), str(data.get("note_kk") or data.get("note_ru") or ""))

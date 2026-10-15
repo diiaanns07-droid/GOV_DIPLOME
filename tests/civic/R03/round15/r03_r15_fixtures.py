@@ -141,11 +141,22 @@ def summary_fixture(district=None):
 
 
 def board_fixture(**_kw):
-    """Табло служб R17 (предполагаемый вид: services[] с id службы и счётчиками)."""
+    """Табло служб R17: overdue — срок первого ответа R09, overdue_fix — срок исправления R08 (другое число)."""
     return {"days": 30, "demo": True, "services": [
-        {"service": "street_cleaning", "open": 21, "overdue": 4, "median_answer_days": 2.5, "verified_pct": 61, "demo": True},
-        {"service": "road", "open": 13, "overdue": 2, "median_answer_days": 3.0, "verified_pct": 70, "demo": True},
-        {"service": "lighting", "open": 3, "overdue": 0, "median_answer_days": 1.0, "verified_pct": 90, "demo": True}]}
+        {"service": "street_cleaning", "open": 21, "overdue": 4, "overdue_fix": 3, "median_answer_days": 2.5,
+         "verified_pct": 61, "demo": True},
+        {"service": "road", "open": 13, "overdue": 2, "overdue_fix": 1, "median_answer_days": 3.0, "verified_pct": 70,
+         "demo": True},
+        {"service": "lighting", "open": 3, "overdue": 0, "overdue_fix": 0, "median_answer_days": 1.0, "verified_pct": 90,
+         "demo": True}]}
+
+
+def board_without_r08(**_kw):
+    """Табло R17 в сборке без R08: срока исправления нет (overdue_fix = null), есть только срок ответа."""
+    board = board_fixture()
+    for row in board["services"]:
+        row["overdue_fix"] = None
+    return board
 
 
 def incidents_fixture(**_kw):
@@ -243,13 +254,14 @@ class StubProvider:
 
 def r17_board_snapshot(days=30, district=None):
     """ui.civic_agencies.board_snapshot: все 20 служб (с нулями), итоги по обращениям (совместное — одно)."""
-    rows = [{"service": s, "open": 0, "overdue": 0, "median_answer_days": None, "verified_share": None}
+    rows = [{"service": s, "open": 0, "overdue": 0, "overdue_fix": 0, "median_answer_days": None, "verified_share": None}
             for s in ("road", "street_cleaning", "utilities", "water", "lighting")]
-    rows[2].update(open=5, overdue=4, median_answer_days=4.0, verified_share=0.5)    # ЖКХ
-    rows[3].update(open=6, overdue=3, median_answer_days=2.5)                        # Водоканал
-    rows[0].update(open=7, overdue=2, median_answer_days=1.5, verified_share=0.75)   # дороги
+    rows[2].update(open=5, overdue=4, overdue_fix=2, median_answer_days=4.0, verified_share=0.5)    # ЖКХ
+    rows[3].update(open=6, overdue=3, overdue_fix=3, median_answer_days=2.5)                       # Водоканал
+    rows[0].update(open=7, overdue=2, overdue_fix=0, median_answer_days=1.5, verified_share=0.75)  # дороги
     return {"days": days, "district": district, "services": rows,
-            "totals": {"open": 18, "overdue": 8, "joint": 1}, "demo": True, "empty": False, "source": "fixture"}
+            "totals": {"open": 18, "overdue": 8, "overdue_fix": 4, "overdue_answer": 8, "joint": 1}, "demo": True,
+            "empty": False, "source": "fixture"}
 
 
 def r17_active_incidents(district=None):

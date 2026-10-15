@@ -97,7 +97,7 @@
       "analyst.clear": "Тазалау",
       "analyst.chips_label": "Сұрақ үлгілері",
       "analyst.empty_title": "Қала туралы сұраңыз",
-      "analyst.empty_text": "Шағымы көп орындар, қызметтер, дағдарыс, жұмыстар, бастамалар — сандармен жауап бір секундта.",
+      "analyst.empty_text": "Шағымы көп орындар, қызметтер, төтенше жағдай, жұмыстар, бастамалар — сандармен жауап бір секундта.",
       "analyst.empty_action": "Бүгінгі басты жаңалық",
       "analyst.empty_question": "Бүгін не басты?",
       "analyst.loading": "Деректер бойынша есептеп жатырмыз…",
@@ -337,7 +337,7 @@
 
     function renderSkeleton() {
       live.replaceChildren(el("div", { className: "ba-card ba-skel", "aria-hidden": "true" }, [
-        el("span", { className: "bk-skel bk-skel--line ba-skel__eyebrow" }),
+        el("p", { className: "ba-skel__label", text: t("analyst.loading") }),
         el("span", { className: "bk-skel bk-skel--title" }),
         el("div", { className: "ba-nums" }, [0, 1, 2].map(function () { return el("span", { className: "bk-skel ba-skel__num" }); })),
         el("span", { className: "bk-skel bk-skel--line" }), el("span", { className: "bk-skel bk-skel--line ba-skel__short" }),
@@ -517,7 +517,7 @@
       var first = blocks[0];
       // Разметка ui-kit R11 «Спросить Birge»: .bk-answer (+ __q, __nums, __text, __acts), .bk-details, .bk-tag.
       var q = el("p", { className: "bk-answer__q ba-q" }, [
-        el("span", { className: "ba-q__text", text: "«" + a.question + "»" }),
+        el("span", { className: "ba-q__text", text: "«" + String(a.question).replace(/«/g, "„").replace(/»/g, "“") + "»" }),
         el("span", { className: "ba-q__src", text: " · " + (first ? pick(first.source && first.source.name, state.lang) : "") }),
         a.demo ? el("span", { className: "ba-demo", title: t("analyst.demo_hint"), text: " · " + t("analyst.demo") }) : null,
       ]);

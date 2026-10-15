@@ -32,7 +32,7 @@ from agent.civic_assistant.answer import (AssistantInputError, build_answer, det
                                           stale_revision_answer, unavailable_answer)
 from agent.civic_assistant.facts import ID_RE, ContextError, build_verified_context
 # Раунд 15 (R03): «Спросить Birge» — ИИ-аналитик акима, маршрут v2 POST assistant/ask (CONTRACT §7, kind="function").
-from agent.civic_assistant.analyst import ask, configure as configure_analyst  # noqa: F401 — точка входа для шлюза R01
+from agent.civic_assistant.analyst import ask, configure as configure_analyst, warm_up  # noqa: F401 — шлюз и старт R01
 
 API_PREFIX = "/api/civic/v1"
 ASSISTANT_PATH = API_PREFIX + "/assistant"

@@ -37,6 +37,26 @@ function check(name, ok, detail) {
 async function noHScroll(page) {
   return page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
 }
+// Как в аудите R10 (tests/e2e/visual_audit.cjs screenMetrics): размеры шрифта видимого текста и зоны < 44 px в .ba.
+async function screenMetrics(page) {
+  return page.evaluate(() => {
+    const root = document.querySelector(".ba");
+    const vis = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
+      return r.width > 1 && r.height > 1 && cs.visibility !== "hidden" && cs.display !== "none" && r.bottom > 0 &&
+        r.top < innerHeight && !e.closest(".bk-sr-only"); };
+    const sizes = new Set(), small = [];
+    for (const el of root.querySelectorAll("*")) {
+      const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+      if (own && vis(el) && !el.closest("svg")) sizes.add(Math.round(parseFloat(getComputedStyle(el).fontSize) * 2) / 2);
+    }
+    for (const e of root.querySelectorAll("button, a[href], [role=button], [role=tab], input, select, summary, textarea")) {
+      if (!vis(e)) continue;
+      const r = e.getBoundingClientRect();
+      if (r.height < 44 || r.width < 44) small.push(`${Math.round(r.width)}×${Math.round(r.height)} «${(e.textContent || "").trim().slice(0, 20)}»`);
+    }
+    return { sizes: [...sizes].sort((a, b) => a - b), small };
+  });
+}
 async function waitAnswer(page) {
   await page.waitForSelector(".ba-answer", { timeout: 15000 });
   await page.waitForTimeout(260); // анимация появления 200 мс
@@ -58,11 +78,18 @@ async function waitAnswer(page) {
         check(`idle: one small icon, one button (P1) ${tag}`,
           (await page.locator(".ba-empty .ic--48").count()) === 1 && (await page.locator(".ba-empty .bk-btn").count()) === 1 &&
           (await page.locator(".ba-empty .bk-ill").count()) === 0);
+        const idle = await screenMetrics(page);
+        check(`idle: at most 3 font sizes (VISUAL_BRIEF §4 p. 3) ${tag}`, idle.sizes.length <= 3, idle.sizes.join(" / "));
+        check(`idle: tap zones >= 44 px (p. 10, R10 B-120) ${tag}`, idle.small.length === 0, idle.small.join("; "));
         for (let i = 0; i < SCENE[lang].length; i++) {
           await page.fill("#ba-input", SCENE[lang][i]);
           await page.press("#ba-input", "Enter");
           await waitAnswer(page);
           const nums = await page.locator(".ba-block--first .ba-num__value").allTextContents();
+          if (i === 0) {
+            const answered = await screenMetrics(page);
+            check(`scene1 tap zones >= 44 px ${tag}`, answered.small.length === 0, answered.small.join("; "));
+          }
           const mapBtn = page.locator('.ba-actions [data-action="map"]');
           check(`scene${i + 1} numbers ${tag}`, nums.length >= 1 && nums.every((n) => /\d/.test(n)), nums.join(" | "));
           check(`scene${i + 1} offline badge ${tag}`, (await page.locator(".ba-mode--offline").count()) === 1);
@@ -122,6 +149,8 @@ async function waitAnswer(page) {
       await page.press("#ba-input", "Enter");
       await page.waitForSelector(".ba-skel", { timeout: 2000 });
       check(`skeleton after 150ms ${w}`, true);
+      const label = await page.locator(".ba-skel__label").textContent().catch(() => "");
+      check(`skeleton shows «Считаем…» (R10 B-107) ${w}`, /Считаем по данным/.test(label || ""), label);
       await page.screenshot({ path: path.join(OUT, `analyst_loading_${w}_ru.png`) });
       await waitAnswer(page);
       await page.unroute("**/assistant/ask");

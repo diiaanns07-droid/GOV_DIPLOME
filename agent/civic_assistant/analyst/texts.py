@@ -161,5 +161,10 @@ def period(days: int) -> dict:
     return {"ru": "за " + days_ru(days), "kk": f"{fmt_num(days)} күнде"}
 
 
+def quoted(text) -> str:
+    """«Название» с вложенными кавычками по правилам: «Двор ЖК „BI City Tokyo“», а не «Двор ЖК «BI City Tokyo»»."""
+    return "«" + str(text or "").replace("«", "„").replace("»", "“") + "»"
+
+
 def both(ru: str, kk: str) -> dict:
     return {"ru": ru, "kk": kk}
