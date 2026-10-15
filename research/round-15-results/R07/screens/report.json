@@ -1,7 +1,7 @@
 {
  "base": "http://127.0.0.1:8617/civic/heat/demo.html",
- "at": "2026-10-15T13:16:26.926Z",
- "pass": 15,
+ "at": "2026-10-15T14:03:01.139Z",
+ "pass": 16,
  "fail": 0,
  "results": [
   {
@@ -60,16 +60,16 @@
    "pass": true,
    "problems": [],
    "extra": {
-    "played_s": 13.4,
+    "played_s": 13.5,
     "stats": {
      "frames": 261,
-     "avg_ms": 51.2,
-     "fps": 19.5,
+     "avg_ms": 51.4,
+     "fps": 19.4,
      "p95_ms": 116.7,
-     "worst_ms": 183.4,
+     "worst_ms": 150,
      "heat": {
-      "tween_ms_per_frame": 0.27,
-      "day_switch_ms": 8.2,
+      "tween_ms_per_frame": 0.34,
+      "day_switch_ms": 7.1,
       "day_switches": 11,
       "targets": 6
      }
@@ -231,9 +231,24 @@
    "problems": [],
    "extra": {
     "tween_ms_per_frame": 0,
-    "day_switch_ms": 11.5,
+    "day_switch_ms": 9.7,
     "day_switches": 2,
     "targets": 6
+   }
+  },
+  {
+   "name": "lazy-entry-1366",
+   "pass": true,
+   "problems": [],
+   "extra": {
+    "before": {
+     "js": 0,
+     "css": 0
+    },
+    "after": {
+     "js": 1,
+     "css": 1
+    }
    }
   }
  ]

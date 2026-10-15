@@ -15,11 +15,20 @@ web/civic/replay/, tests/civic/R07/. Чужие файлы не менялись
     status, source world|incident|scene, incident, scene, demo}], demo, district_zoom_max, compute_ms}.
     Ошибка параметра — 400 {error: bad_request, field}. Сбой — 500 без падения сервера.
 
-1.2 Статика (CIVIC_ASSETS / web/index.html), ПОСЛЕ heat.js:
+1.2 Статика (CIVIC_ASSETS / web/index.html), ПОСЛЕ heat.js — один из двух вариантов:
+    а) лёгкий вход (предлагаю, R10 B-113: на первый кадр хроника не нужна):
+      <script defer src="/civic/replay/replay-attach.js"></script>
+       ≈ 7 КБ: кнопка, ?replay=7|30, birge:replay-open и Ctrl+K работают сразу; replay.css и replay.js из той же папки
+       грузятся при первом открытии (или в свободное время браузера через 3 с после первого кадра карты, или при
+       наведении на кнопку). Вызов attach — тот же (§1.3).
+    б) целиком:
       <link rel="stylesheet" href="/civic/replay/replay.css">
-      <script src="/civic/replay/replay.js"></script>
+      <script defer src="/civic/replay/replay.js"></script>
     В список ассетов шлюза (ui/web_server.py, рядом с "heat/heat.js", "heat/heat.css"): "replay/replay.js",
-    "replay/replay.css".
+    "replay/replay.css" и для варианта а) — "replay/replay-attach.js".
+    Замер в полной сборке (first_badge_cloud.json): первый значок R07 — медиана 1 771 мс без хроники, 1 729 — с ней
+    целиком, 1 738 — с лёгким входом (разница в пределах шума); лёгкий вход в оболочке проверен: до нажатия загружен
+    только replay-attach.js, по нажатию — полная хроника на 7 дней.
 
 1.3 Где открывается (место — схема R11 IA_ROUND15; по умолчанию — кнопка у кнопок карты). Один вызов после монтажа R07:
       window.BirgeReplay.attach({ map: currentMap(), heat: S.mounted.heat, tools: document.querySelector(".map-tools") });
@@ -111,19 +120,25 @@ make_service(db).handle GET incidents). Кризис о событии мира 
 ================================================================================================================
 5. R11 — тексты (ключи для ru.json / kk.json; запасные — в модулях) и иконки
 ================================================================================================================
-web/civic/replay/replay.js (BirgeReplay.messages):
-  replay.title «Хроника города» / «Қала шежіресі»; replay.open; replay.open_hint «Неделя за 10 секунд» /
-  «Бір апта 10 секундта»; replay.close; replay.play «Смотреть» / «Көру»; replay.pause; replay.again «Сначала» /
-  «Басынан»; replay.speed; replay.period; replay.days (плюрал); replay.today «сегодня» / «бүгін»; replay.people
-  «Сообщили {n} человек» / «{n} адам хабарлады»; replay.fixed «{n} мест исправлено» / «{n} орын жөнделді»;
-  replay.slider; replay.loading; replay.error; replay.error_hint; replay.retry; replay.not_ready; replay.no_map;
-  replay.empty; replay.empty_hint; replay.demo «Пример» / «Үлгі»; replay.keys; replay.event_in; replay.sr_day.
-web/civic/heat/heat.js: heat.replay.list_note «Хроника: так карта выглядела в этот день» / «Шежіре: карта осы күні
-  осындай болды»; heat.replay.list_empty; heat.replay.command; heat.replay.command_month.
-Казахский — проверка R11 / владельца (особенно «Қала шежіресі», «Бір апта 10 секундта»).
-Иконки: из спрайта ui-kit берутся close, snowflake, droplet, alert, clock, refresh. Просьба R11 (П1 «один набор»):
-  добавить i-play (треугольник) и i-pause (две полосы) в icons.svg — сейчас они свои в replay.js (заливка, без
-  градиентов), заменю на спрайт, как только появятся.
+web/civic/replay/replay.js: все 26 ключей replay.* уже есть в словаре R11 (c3c376e7, «Қала шежіресі») — в оболочке
+  тексты берутся оттуда (Birge.i18n.has → t), запасные в модуле совпадают с ними. Казахский в модуле выровнен по R11:
+  replay.fixed «{n} орын түзетілді» (было «жөнделді»).
+web/civic/heat/heat.js — этих ключей в словаре R11 ещё нет (работают запасные из модуля), просьба добавить:
+  heat.replay.list_note «Хроника: так карта выглядела в этот день» / «Шежіре: карта осы күні осындай болды»;
+  heat.replay.list_empty «В этот день жалоб на карте не было» / «Бұл күні картада шағым болған жоқ»;
+  heat.replay.command «Хроника города: неделя за 10 секунд» / «Қала шежіресі: бір апта 10 секундта»;
+  heat.replay.command_month «Хроника города: месяц» / «Қала шежіресі: бір ай»;
+  heat.cluster.fixed_label «Рядом исправлено: {places}. Нажмите, чтобы приблизить» /
+    «Жақын жерде түзетілді: {places}. Жақындату үшін басыңыз»;
+  heat.cluster.fixed_tip «Исправлено: {places} — нажмите, чтобы приблизить» / «Түзетілді: {places} — жақындату үшін басыңыз».
+Иконки: i-play и i-pause R11 добавил (6724cc9d, в сборке B0 уже есть) — хроника берёт их из спрайта, когда символ в нём
+  есть (спрайт внешний, пустой <use> не виден — при открытии хроника проверяет спрайт), залитыми, как .bk-replay__play;
+  со старым спрайтом — свои той же формы. Остальные значки хроники — из спрайта: close, snowflake, droplet, alert,
+  clock, refresh. Проверено в полной сборке (R01 c9069723): <use href="…/icons.svg#i-pause"> / #i-play.
+Компонент витрины .bk-replay (R11): у хроники R07 своя разметка .rp-* на токенах ui-kit — в ней больше данных (график
+  жалоб по дням, полосы событий, числа дня); дорожка 4 px, заполнение цветом текста, ручка 18 px и ▶ / ❚❚ на тёмной
+  кнопке — как в .bk-replay / .bk-range. Живую хронику можно показать и в витрине: BirgeReplay.mount(root, {apiBase})
+  без карты даёт состояние «нет карты» (no_map), с картой стенда — настоящую.
 
 ================================================================================================================
 6. R10 — проверки
@@ -133,6 +148,21 @@ web/civic/heat/heat.js: heat.replay.list_note «Хроника: так карт�
 - Пустое состояние карты: одна кнопка (П1) — старая проверка «две кнопки» больше не верна.
 - BirgeReplay.active.stats() — плавность последнего воспроизведения (fps, p95, код хроники: tween_ms_per_frame,
   day_switch_ms).
+- B-103 (переход R07 по старому снимку): исправлено у R07. build_fixtures --street-targets берёт светофор и переход из
+  свежего снимка LOCAL-10, если узел там есть: osm-node-13355349235 — точка raw/crossings.json.gz (2026-10-12),
+  сдвиг 2,32 м, source «osm-objects/crossings»; светофор osm-node-13389177523 — та же точка, source
+  «osm-objects/traffic_signals»; в _meta — osm_objects_snapshot. Проверка R10 «объекты R07 = точки OSM» пока сверяет
+  такие цели со снимком пешеходной сети и даст FAIL 2,32 м — патч в 1 строку: patches/R10_accuracy_fresh_snapshot.patch
+  (пешеходная сеть — только для source osm-walking/…; git apply --check на R10 3e63952d — OK; с ним все 7 проверок
+  R07 в accuracy.py — PASS на ветке R07).
+- B-116 (Хроника по-казахски): название панели R07 берётся из словаря R11 (replay.title), в модуле — запасное, то же,
+  что у R11 сейчас: «Қала шежіресі». Один термин выбирает R11; R07 ничего не переименовывает.
+- B-113 (первый значок > 3 с): хроника подключается лениво — web/civic/replay/replay-attach.js (§1.2а): до первого
+  открытия replay.js и replay.css не грузятся (тест replay.cjs lazy-entry-1366 и проверка в полной сборке). Честно:
+  на первый значок хроника и так почти не влияет — медианы 1 771 / 1 729 / 1 738 мс (без / целиком / лёгкий вход,
+  first_badge_cloud.json, tests/civic/R07/browser/first_badge_shell.cjs); главный резерв — ленивые модули других
+  экранов у R01. heat.js первый кадр не ждёт: /heat/meta и /heat идут одновременно, первый ответ оболочка может отдать
+  через opts.fetch (как в B0).
 
 ================================================================================================================
 7. LOCAL (ноутбук владельца, Codex) — замер 60 к/с при 1 000 целей

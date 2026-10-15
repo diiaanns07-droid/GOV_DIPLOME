@@ -24,6 +24,8 @@
 .rp-ic { flex: none; }
 .rp-ic--sprite { display: inline-grid; place-items: center; }
 .rp-ic--sprite > svg { width: 100%; height: 100%; }
+/* ▶ и ❚❚ — залитые, как .bk-replay__play в ui-kit R11: так их узнают с первого взгляда */
+.rp-ic--fill > svg { fill: currentColor; }
 .rp-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Дата — главное на экране хроники (иерархия за 2 секунды): крупно, цифры одной ширины */
@@ -31,10 +33,11 @@
 .rp-date .rp-title { margin-bottom: 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--rp-ink-3); }
 .rp-day { font-size: 30px; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .rp-wd { margin-top: 2px; font-size: 13px; color: var(--rp-ink-2); }
-.rp-event { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px; min-width: 0;
+.rp-event { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px; min-width: 0; max-width: 100%;
   background: var(--c-info-soft, #e8f0fb); color: var(--glass-info, #184981); font-size: 12px; font-weight: 600; white-space: nowrap;
   animation: rp-pop var(--t-base, 200ms) var(--rp-ease); }
 .rp-event[hidden] { display: none; }
+.rp-event > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 @keyframes rp-pop { from { opacity: 0; transform: scale(0.92); } }
 
 .rp-head { grid-area: head; display: grid; gap: 6px; min-width: 0; font-size: 13px; color: var(--rp-ink-2); }
@@ -137,7 +140,8 @@ body.birge-replay-open .rp-open { background: var(--c-primary, #121a17); color: 
   .rp-period { margin-top: 0; align-self: center; justify-self: end; }
   .rp-speed { display: none; }
   .rp-head { gap: 4px; }
-  .rp-head__top:not(:has(.rp-event:not([hidden]))) { display: none; }
+  /* строка «что идёт» прячется, только если в ней пусто: метка «Пример» у демо-данных видна на любой ширине */
+  .rp-head__top:not(:has(.rp-event:not([hidden]))):not(:has(.rp-tag)) { display: none; }
   .rp-nums { flex-wrap: wrap; row-gap: 2px; }
   .rp-track { height: 58px; }
 }
@@ -150,7 +154,6 @@ body.birge-replay-open .rp-open { background: var(--c-primary, #121a17); color: 
   .rp-play { width: 44px; min-width: 44px; padding: 0; }
   .rp-play__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .rp-nums { gap: 12px; font-size: 13px; }
-  .rp-tag { display: none; }
   .rp-track { height: 56px; }
   .rp-tick--prev span { display: none; }
 }

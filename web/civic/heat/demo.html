@@ -167,23 +167,28 @@
       // значки не под подписью OSM и не под кнопками карты (панель модуль обходит сам)
       avoidRects: () => [...document.querySelectorAll(".attr, .mapbtns button, #demo-new")].map((el) => el.getBoundingClientRect()) });
     window.__heat = heat;
-    // «Хроника города» (раунд 15): кнопка у кнопок карты; на телефоне шторка сворачивается, пока идёт хроника
+    // «Хроника города» (раунд 15): кнопка у кнопок карты; на телефоне шторка сворачивается, пока идёт хроника.
+    // Лёгкий вход (replay-attach.js вместо replay.js + replay.css — так её может подключить оболочка, R10 B-113):
+    // кнопку, ?replay=7 и событие берёт на себя BirgeReplay.attach, хроника грузится при первом открытии.
     const replaySlot = document.getElementById("replay-slot");
-    const openReplay = (days) => {
-      if (window.matchMedia("(max-width: 760px)").matches) { panel.dataset.state = "peek"; document.body.dataset.sheet = "peek"; }
-      return window.BirgeReplay.open({ map, heat, container: replaySlot, days: days || 7, autoplay: P.get("autoplay") !== "0" });
-    };
-    const replayBtn = document.createElement("button");
-    replayBtn.type = "button";
-    replayBtn.className = "rp-open";
-    replayBtn.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4.5 4.8v3.9h3.9"/><path d="M10.5 9.2v5.6l4.5-2.8z" fill="currentColor" stroke="none"/></svg>';
-    const replayLabel = () => { const m = window.BirgeReplay.messages[lang] || window.BirgeReplay.messages.ru; replayBtn.setAttribute("aria-label", m["replay.open"] + " · " + m["replay.open_hint"]); replayBtn.title = replayBtn.getAttribute("aria-label"); };
-    replayLabel();
-    window.addEventListener("birge:lang", replayLabel);
-    replayBtn.addEventListener("click", () => { if (window.BirgeReplay.active) window.BirgeReplay.active.close(); else openReplay(7); });
-    document.querySelector(".mapbtns").append(replayBtn);
-    if (P.get("replay") === "7" || P.get("replay") === "30") {
-      const waitHeat = setInterval(() => { if (heat.state().status === "ready") { clearInterval(waitHeat); window.__replay = openReplay(Number(P.get("replay"))); } }, 100);
+    if (window.BirgeReplay && window.BirgeReplay.lazy) window.BirgeReplay.attach({ map, heat, tools: document.querySelector(".mapbtns") });
+    else {
+      const openReplay = (days) => {
+        if (window.matchMedia("(max-width: 760px)").matches) { panel.dataset.state = "peek"; document.body.dataset.sheet = "peek"; }
+        return window.BirgeReplay.open({ map, heat, container: replaySlot, days: days || 7, autoplay: P.get("autoplay") !== "0" });
+      };
+      const replayBtn = document.createElement("button");
+      replayBtn.type = "button";
+      replayBtn.className = "rp-open";
+      replayBtn.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4.5 4.8v3.9h3.9"/><path d="M10.5 9.2v5.6l4.5-2.8z" fill="currentColor" stroke="none"/></svg>';
+      const replayLabel = () => { const m = window.BirgeReplay.messages[lang] || window.BirgeReplay.messages.ru; replayBtn.setAttribute("aria-label", m["replay.open"] + " · " + m["replay.open_hint"]); replayBtn.title = replayBtn.getAttribute("aria-label"); };
+      replayLabel();
+      window.addEventListener("birge:lang", replayLabel);
+      replayBtn.addEventListener("click", () => { if (window.BirgeReplay.active) window.BirgeReplay.active.close(); else openReplay(7); });
+      document.querySelector(".mapbtns").append(replayBtn);
+      if (P.get("replay") === "7" || P.get("replay") === "30") {
+        const waitHeat = setInterval(() => { if (heat.state().status === "ready") { clearInterval(waitHeat); window.__replay = openReplay(Number(P.get("replay"))); } }, 100);
+      }
     }
     document.querySelectorAll("#role [data-role]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.role === role)));
 

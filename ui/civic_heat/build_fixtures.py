@@ -20,6 +20,8 @@
       Только этот файл:  python -m ui.civic_heat.build_fixtures --street-nodes
   В targets_demo.json — три такие цели для демо (светофор, переход, перекрёсток в Нуре), без пересборки остальных:
       python -m ui.civic_heat.build_fixtures --street-targets
+      Светофор и переход, которые есть в свежем снимке LOCAL-10 (raw/traffic_signals, raw/crossings), берут точку
+      оттуда (source osm-objects/<набор>): объект стоит там, где он в самом свежем снимке сборки (R10 B-103).
 
 Отбор детерминированный: одинаковые данные → одинаковые файлы. Объекты не выдумываются.
 Место промзоны в OSM-наборе нет (landuse=industrial не выгружали) — «запахи» пока на ячейках у Коргалжинского шоссе.
@@ -528,8 +530,43 @@ def add_street_targets() -> dict:
                         "label_ru": ru, "label_kk": kk, "district": district, "source": f"osm-walking/{subtype}",
                         "osm": {"type": "node", "id": int(tid.rsplit("-", 1)[1])}}
         added[role] = (tid, ru)
+    added.update(refresh_street_targets(data))
     OUT_TARGETS.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", "utf-8")
     return added
+
+
+# Подтип цели → набор LOCAL-10, где тот же узел OSM лежит в более свежем снимке, чем пешеходная сеть 2026-05-06
+FRESH_NODE_SETS = {"traffic_signal": "traffic_signals", "crossing": "crossings"}
+
+
+def refresh_street_targets(data: dict) -> dict:
+    """Светофор и переход демо — по самому свежему снимку: если узел есть в raw/<набор>.json.gz (LOCAL-10), точка и
+    источник берутся оттуда (R10 B-103: переход osm-node-13355349235 в снимке 2026-10-12 стоит на 2,3 м иначе).
+    Подписи не меняются (улицы те же). Набора нет — цели как были."""
+    moved = {}
+    for subtype, set_name in FRESH_NODE_SETS.items():
+        path = osm_objects.OSM_OBJECTS_DIR / "raw" / f"{set_name}.json.gz"
+        try:
+            raw = json.loads(gzip.open(path).read().decode("utf-8"))
+        except (OSError, ValueError):
+            continue
+        fresh = {e["id"]: (e["lon"], e["lat"]) for e in raw.get("elements", []) if e.get("type") == "node" and "lon" in e}
+        stamp = (raw.get("osm3s") or {}).get("timestamp_osm_base")
+        for tid, t in data["targets"].items():
+            osm = t.get("osm") or {}
+            if t.get("subtype") != subtype or osm.get("type") != "node" or osm.get("id") not in fresh:
+                continue
+            lon, lat = fresh[osm["id"]]
+            pt = [round(lon, 7), round(lat, 7)]
+            before = t["geometry"]["coordinates"]
+            t["geometry"] = {"type": "Point", "coordinates": pt}
+            t["source"] = f"osm-objects/{set_name}"
+            t["district"] = geo.district_of(pt)
+            if stamp:
+                data["_meta"].setdefault("osm_objects_snapshot", {})[set_name] = stamp
+            if before != pt:
+                moved[tid] = round(geo.haversine_m(before, pt), 2)
+    return {"moved_to_fresh_snapshot": moved} if moved else {}
 
 
 def write_basemaps(graph, ways, nodes):

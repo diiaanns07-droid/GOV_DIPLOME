@@ -260,6 +260,13 @@ SNAPSHOT = ROOT / "data/civic/astana/osm-walking/overpass.json.gz"
 GRAPH = ROOT / "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json"
 
 
+def _fresh_nodes(set_name: str) -> dict:
+    path = osm_objects.OSM_OBJECTS_DIR / "raw" / f"{set_name}.json.gz"
+    if not path.exists():
+        return {}
+    return {e["id"]: e for e in json.loads(gzip.open(path).read().decode("utf-8"))["elements"] if e.get("type") == "node"}
+
+
 @pytest.mark.skipif(not SNAPSHOT.exists(), reason="NOT_RUN: нет снимка osm-walking")
 def test_street_demo_targets_are_real_osm_nodes():
     raw = json.loads(gzip.open(SNAPSHOT).read().decode("utf-8"))
@@ -267,8 +274,14 @@ def test_street_demo_targets_are_real_osm_nodes():
     street = {tid: t for tid, t in TARGETS.items() if t.get("subtype") in ("traffic_signal", "crossing", "intersection")}
     assert {t["subtype"] for t in street.values()} == {"traffic_signal", "crossing", "intersection"}
     graph = json.loads(GRAPH.read_text("utf-8")) if GRAPH.exists() else None
+    fresh = {"traffic_signal": _fresh_nodes("traffic_signals"), "crossing": _fresh_nodes("crossings")}
     for tid, t in street.items():
         n = nodes[t["osm"]["id"]]
+        # R10 B-103: узел есть в свежем снимке LOCAL-10 — точка оттуда (источник osm-objects/<набор>), иначе — пешеходная сеть
+        newer = fresh.get(t["subtype"], {}).get(n["id"])
+        if newer is not None:
+            assert t["source"] == "osm-objects/" + {"traffic_signal": "traffic_signals", "crossing": "crossings"}[t["subtype"]]
+            n = dict(n, lon=newer["lon"], lat=newer["lat"])
         assert tid == f"osm-node-{n['id']}" and t["geometry"]["coordinates"] == [round(n["lon"], 7), round(n["lat"], 7)]
         hw = (n.get("tags") or {}).get("highway", "")
         if t["subtype"] == "traffic_signal":

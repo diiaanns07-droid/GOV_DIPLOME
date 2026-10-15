@@ -182,6 +182,51 @@ const rpState = (page) => page.evaluate(() => window.BirgeReplay.active ? window
     await ctx.close();
   }
 
+  // ---- лёгкий вход (R10 B-113): replay-attach.js вместо replay.js + replay.css — так стенд, как оболочка R01 при
+  //      ленивой загрузке; до первого открытия полная хроника не грузится, кнопка открывает и закрывает её ----
+  {
+    const ctx = await browser.newContext({ viewport: SIZES[1366], deviceScaleFactor: 1 });
+    const page = await ctx.newPage();
+    const errors = [];
+    const asked = { js: 0, css: 0 };
+    page.on("pageerror", (e) => errors.push(String(e)));
+    page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push(m.text()); });
+    page.on("request", (r) => { if (/\/civic\/replay\/replay\.js/.test(r.url())) asked.js++; if (/\/civic\/replay\/replay\.css/.test(r.url())) asked.css++; });
+    await page.route(/\/civic\/heat\/demo\.html/, async (route) => {
+      const res = await route.fetch();
+      const html = (await res.text())
+        .replace('<link rel="stylesheet" href="/civic/replay/replay.css" />', "")
+        .replace('<script src="/civic/replay/replay.js"></script>', '<script src="/civic/replay/replay-attach.js"></script>');
+      await route.fulfill({ response: res, body: html });
+    });
+    await page.goto(`${BASE}?lang=ru&role=akimat&view=city`, { waitUntil: "load" });
+    await page.waitForFunction(() => window.__heat && window.__heat.state().status === "ready", null, { timeout: 30000 });
+    const p = [];
+    const before = { ...asked };
+    const lazy = await page.evaluate(() => !!(window.BirgeReplay && window.BirgeReplay.lazy && !window.BirgeReplay.mount));
+    if (!lazy) p.push("на странице не лёгкий вход");
+    if (before.js || before.css) p.push(`полная хроника загружена до открытия (js ${before.js}, css ${before.css})`);
+    const btn = page.locator(".mapbtns .rp-open");
+    if (await btn.count() !== 1) p.push("нет кнопки «Хроника» у кнопок карты");
+    else {
+      const label = await btn.getAttribute("aria-label");
+      if (!/Хроника города/.test(label || "")) p.push("подпись кнопки: " + label);
+      await btn.click();
+      await page.waitForFunction(() => window.BirgeReplay.active && window.BirgeReplay.active.state().status === "ready", null, { timeout: 30000 });
+      const st = await page.evaluate(() => ({ days: window.BirgeReplay.active.state().days.length, full: typeof window.BirgeReplay.mount === "function" }));
+      if (!st.full || st.days !== 7) p.push("после нажатия нет полной хроники на 7 дней: " + JSON.stringify(st));
+      await page.keyboard.press("Escape");
+      await page.waitForFunction(() => !window.BirgeReplay.active, null, { timeout: 10000 });
+      await btn.click();   // второй раз — без новой загрузки
+      await page.waitForFunction(() => window.BirgeReplay.active && window.BirgeReplay.active.state().status === "ready", null, { timeout: 30000 });
+      await page.evaluate(() => window.BirgeReplay.active.close());
+      if (asked.js !== 1 || asked.css !== 1) p.push(`загрузок полной хроники: js ${asked.js}, css ${asked.css} (ожидалась одна)`);
+    }
+    if (errors.length) p.push("ошибки в консоли: " + errors.slice(0, 3).join(" | "));
+    check("lazy-entry-1366", p, { before, after: asked });
+    await ctx.close();
+  }
+
   await browser.close();
   const fails = results.filter((r) => !r.pass).length;
   fs.writeFileSync(path.join(OUT, "report.json"), JSON.stringify({ base: BASE, at: new Date().toISOString(), pass: results.length - fails, fail: fails, results }, null, 1));

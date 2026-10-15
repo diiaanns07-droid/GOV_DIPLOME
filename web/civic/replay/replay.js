@@ -67,7 +67,7 @@
       "replay.days": { other: "{n} күн" },
       "replay.today": "бүгін",
       "replay.people": { other: "{n} адам хабарлады" },
-      "replay.fixed": { other: "{n} орын жөнделді" },
+      "replay.fixed": { other: "{n} орын түзетілді" },
       "replay.slider": "Шежіре күні",
       "replay.loading": "Шежіре жүктелуде…",
       "replay.error": "Шежірені жүктеу мүмкін болмады",
@@ -111,14 +111,29 @@
   };
 
   // Поправка П1: один набор иконок R11. В оболочке — значки из спрайта ui-kit (у кого он есть), без неё — те же рисунки
-  // здесь. ▶ / ❚❚ в наборе R11 пока нет — свои (запрос R11 в INTEGRATION.txt: i-play, i-pause).
+  // здесь. ▶ / ❚❚ (i-play, i-pause) R11 добавил в раунде 15: спрайт внешний (<use href="…/icons.svg#i-…">), а пустой <use>
+  // не виден — поэтому берём их из спрайта, только когда символ в нём есть (checkSprite); в старом спрайте — свои.
   const SPRITE_IDS = { close: "close", blizzard: "snowflake", water_outage: "droplet", flood: "droplet", other: "alert", heat_outage: "alert",
     clock: "clock", again: "refresh", replay: "clock" };
+  const SPRITE_NEW = { play: "play", pause: "pause" };
+  let spriteCheck = null;
+  function checkSprite() {
+    if (spriteCheck) return spriteCheck;
+    const ui = window.BirgeUI;
+    const m = ui && typeof ui.icon === "function" ? /href="([^"#]+)#/.exec(ui.icon("close")) : null;
+    if (!m || typeof fetch !== "function") return (spriteCheck = Promise.resolve(false));
+    spriteCheck = fetch(m[1]).then((r) => (r.ok ? r.text() : "")).then((txt) => {
+      Object.keys(SPRITE_NEW).forEach((k) => { if (txt.indexOf('id="i-' + SPRITE_NEW[k] + '"') >= 0) SPRITE_IDS[k] = SPRITE_NEW[k]; });
+      return true;
+    }).catch(() => false);
+    return spriteCheck;
+  }
   function svg(name, size) {
     const s = size || 20;
     const ui = window.BirgeUI;
     if (ui && typeof ui.icon === "function" && SPRITE_IDS[name]) {
-      return '<span class="rp-ic rp-ic--sprite" style="width:' + s + "px;height:" + s + 'px" aria-hidden="true">' + ui.icon(SPRITE_IDS[name]) + "</span>";
+      return '<span class="rp-ic rp-ic--sprite' + (SPRITE_NEW[name] ? " rp-ic--fill" : "") + '" style="width:' + s + "px;height:" + s + 'px" aria-hidden="true">' +
+        ui.icon(SPRITE_IDS[name]) + "</span>";
     }
     return '<svg class="rp-ic" viewBox="0 0 24 24" width="' + s + '" height="' + s + '" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[name] || ICONS.other) + "</svg>";
   }
@@ -505,6 +520,7 @@
       if (f.days) q.set("days", String(f.days));
       if (f.category) q.set("category", f.category);
       if (f.district) q.set("district", f.district);
+      const sprite = checkSprite();
       try {
         const res = await fetchFn(apiBase + "/heat/replay?" + q.toString(), { headers: { Accept: "application/json" } });
         let body = null;
@@ -515,6 +531,10 @@
         S.body = body;
         S.days = buildDays(body);
         if (!S.days.length || S.days.every((d) => !d.items.length && !(d.totals.people > 0))) { S.status = "empty"; render(); return; }
+        // значки ▶ / ❚❚ — до первой отрисовки полосы (спрайт обычно уже в кэше); не дождались — подменятся при ответе
+        await Promise.race([sprite, new Promise((r) => setTimeout(r, 300))]);
+        if (seq !== S.reqSeq || S.destroyed) return;
+        sprite.then(() => { if (seq === S.reqSeq && !S.destroyed) updateBar(); });
         S.status = "ready";
         heat.replay.begin();
         S.began = true;
