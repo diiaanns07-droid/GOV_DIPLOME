@@ -83,10 +83,10 @@ KIND_LABELS = {
 }
 CONFLICT_TITLES = {
     "dig_after_surface": ("Копаем дважды", "Екі рет қазу"),
-    "same_segment_overlap": ("Две службы на одном участке", "Бір учаскеде екі қызмет"),
+    "same_segment_overlap": ("Две службы на одном участке", "Бір бөлікте екі қызмет"),
     "parallel_closures": ("Параллельные улицы перекрыты одновременно", "Қатар көшелер бір уақытта жабылады"),
     "parallel_closures/same_street": ("Соседние участки улицы перекрыты одновременно",
-                                      "Көшенің көрші учаскелері бір уақытта жабылады"),
+                                      "Көшенің көрші бөліктері бір уақытта жабылады"),
 }
 KIND_ORDER = {"dig_after_surface": 0, "same_segment_overlap": 1, "parallel_closures": 2}
 SEVERITY_ORDER = {"high": 0, "medium": 1}
@@ -709,7 +709,7 @@ def _dig_after_surface(surface: BoundWork, dig: BoundWork, g: StreetGraph, servi
     s_ru, s_kk = _svc(services, surface.service)
     d_ru, d_kk = _svc(services, dig.service)
     where = "на том же участке" if severity == "high" else "на соседнем участке"
-    where_kk = "сол учаскеде" if severity == "high" else "көрші учаскеде"
+    where_kk = "сол бөлікте" if severity == "high" else "көрші бөлікте"
     stage = _stage(today, dig.start, dig.end, surface.end)
     if stage == "surface_done":  # асфальт уже лежит — переносить его поздно; беречь покрытие
         advice_ru = (f"Новый асфальт уже уложен ({s_ru}), а {gap_ru} после него {d_ru} начнёт раскопку {where}. "
@@ -717,11 +717,11 @@ def _dig_after_surface(surface: BoundWork, dig: BoundWork, g: StreetGraph, servi
                      f"придётся — восстановите покрытие на всю ширину участка.")
         advice_kk = (f"Жаңа асфальт төселіп қойды ({s_kk}), ал {gap_kk} {where_kk} қазу басталады ({d_kk}). "
                      f"Желілерді жабынды ашпай (тесу әдісімен) төсеңіз немесе қазуды кейінге қалдырыңыз; қазу "
-                     f"қажет болса — учаскенің бүкіл енінде жабынды қалпына келтіріңіз.")
+                     f"қажет болса — бөліктің бүкіл енінде жабынды қалпына келтіріңіз.")
     elif stage == "now":
         advice_ru = (f"Раскопка уже идёт по новому асфальту ({d_ru}). После работ восстановите покрытие на всю "
                      f"ширину участка; в следующий раз — сначала сети, потом асфальт.")
-        advice_kk = (f"Жаңа асфальтта қазу жүріп жатыр ({d_kk}). Жұмыстан кейін учаскенің бүкіл енінде жабынды "
+        advice_kk = (f"Жаңа асфальтта қазу жүріп жатыр ({d_kk}). Жұмыстан кейін бөліктің бүкіл енінде жабынды "
                      f"қалпына келтіріңіз; келесі жолы — алдымен желілер, содан кейін асфальт.")
     elif stage == "past":
         advice_ru = (f"Новый асфальт вскрыли {gap_ru} после укладки ({s_ru} → {d_ru}). В следующий раз — сначала "
@@ -759,12 +759,12 @@ def _same_segment(a: BoundWork, b: BoundWork, g: StreetGraph, services: dict) ->
     if wrong_order:
         advice_ru = ("Сначала замените сети, потом кладите асфальт: на этом участке раскопка и асфальт идут в одни "
                      f"и те же дни ({a_ru}, {b_ru}). Договоритесь о порядке — сначала сети.")
-        advice_kk = ("Алдымен желілерді ауыстырыңыз, содан кейін асфальт төсеңіз: бұл учаскеде қазу мен асфальт "
+        advice_kk = ("Алдымен желілерді ауыстырыңыз, содан кейін асфальт төсеңіз: бұл бөлікте қазу мен асфальт "
                      f"бір уақытта жоспарланған ({a_kk}, {b_kk}). Ретін келісіңіз — алдымен желілер.")
     else:
         advice_ru = (f"Совместите работы на этом участке: одно перекрытие и общий график для двух служб "
                      f"({a_ru}, {b_ru}) вместо двух отдельных.")
-        advice_kk = (f"Осы учаскедегі жұмыстарды біріктіріңіз: екі қызметке бір жабу және ортақ кесте "
+        advice_kk = (f"Осы бөліктегі жұмыстарды біріктіріңіз: екі қызметке бір жабу және ортақ кесте "
                      f"({a_kk}, {b_kk}).")
     first, second = sorted([a, b], key=lambda w: (w.start, w.id))
     extra = {"overlap_from": ov[0].isoformat(), "overlap_to": ov[1].isoformat(), "overlap_days": days,
@@ -788,7 +788,7 @@ def _same_street_closures(a: BoundWork, b: BoundWork, ov, g: StreetGraph, servic
     b_ru, b_kk = _svc(services, b.service)
     advice_ru = (f"Не перекрывайте соседние участки одной улицы одновременно: объедините работы ({a_ru}, {b_ru}) "
                  f"в одно перекрытие или проведите их по очереди, чтобы остался проезд.")
-    advice_kk = (f"Бір көшенің көрші учаскелерін бір уақытта жаппаңыз: жұмыстарды ({a_kk}, {b_kk}) бір жабуға "
+    advice_kk = (f"Бір көшенің көрші бөліктерін бір уақытта жаппаңыз: жұмыстарды ({a_kk}, {b_kk}) бір жабуға "
                  f"біріктіріңіз немесе кезекпен жүргізіңіз, жол ашық қалсын.")
     first, second = sorted([a, b], key=lambda w: (w.start, w.id))
     extra = {"variant": "same_street", "overlap_from": ov[0].isoformat(), "overlap_to": ov[1].isoformat(),
