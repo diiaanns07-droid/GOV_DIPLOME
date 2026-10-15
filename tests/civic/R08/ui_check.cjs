@@ -617,6 +617,9 @@ async function shot(page, name, full) {
   }
   {
     // Правило Linear 4: быстрый ответ (80 мс) — без мигания скелетом; правило 2: ↓ / J / K по «Горячим местам».
+    // Сводку сначала прогреваем: холодный расчёт на стенде (кэш 30 с) — 100–160 мс сверх 80 мс задержки, и скелет
+    // появлялся бы честно — проверка же про быстрый ответ.
+    await (await fetch(BASE + "/api/civic/v2/akim/summary")).text();
     const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru",
       route: async (route) => { await new Promise((r) => setTimeout(r, 80)); await route.continue(); } });
     let sawSkel = false;

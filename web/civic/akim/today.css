@@ -75,8 +75,8 @@
   line-height: normal;
   letter-spacing: var(--ls-num, -0.02em);
 }
-.akim-today__kpi[data-kind="overdue"] b { /* как в эталоне --l3; 22/600 — крупный текст, контраст ≥ 3:1 */
-  color: var(--heat-3, #e24b4a);
+.akim-today__kpi[data-kind="overdue"] b { /* красный текста ui-kit: 6,0:1 на белом (R10 B-109; #e24b4a — 3,9:1) */
+  color: var(--c-danger, #b3362e);
 }
 .akim-today__kpi span { /* подпись переносится, а не обрезается (kk «мерзімі өткен» на 375) */
   color: var(--c-text-2);

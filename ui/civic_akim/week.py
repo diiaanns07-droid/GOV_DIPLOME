@@ -1,17 +1,17 @@
 """«Картина недели» (раунд 15): GET /api/civic/v2/akim/week?date=2026-10-14&district=nura — отчёт для совещания.
 
 ОПРЕДЕЛЕНИЯ (одним местом):
-- Неделя — понедельник 00:00 … следующий понедельник 00:00 по Астане (UTC+5), в которой лежит date
-  (по умолчанию — сегодня). Идущая неделя считается до текущего момента (as_of = сейчас), прошедшая — до конца
-  воскресенья. Будущая дата — ошибка 400 (как у «Картины дня»).
-- «Поступило» — обращения без дублей, поданные за [начало недели, as_of]; по дням — 7 столбиков (будущие дни идущей
-  недели — null). Сравнение — с тем же отрезком неделей раньше: в среду 10:00 — с прошлым пн…ср 10:00.
-- «Исправлено» — обращения, которые за неделю (последний раз) получили «исправлено» и не открыты снова на as_of;
-  «подтвердили жители» — те из них, где жители ответили «Да, исправлено» (summary.verified_at).
+- Неделя — 7 × 24 часа до момента «на»: для сегодняшней даты (по умолчанию) — до текущего момента, для прошедшей — до
+  конца того дня (23:59:59 по Астане, UTC+5). То же окно, что «за неделю» в «Картине дня» и «за 7 дней» на Ситуационном
+  центре и карте R07: одно слово «неделя» — одно число (CONTRACT §0, приёмка R10 C5 / B-122). Будущая дата — 400.
+- «Поступило» и «исправлено» (+ «подтвердили жители») — ровно числа «Картины дня» на этот момент (summary.kpi.new_week
+  и fixed_week: их код, не пересчёт). По дням — 7 суток по Астане (date − 6 … date); первый столбик забирает и начало
+  окна в предыдущих сутках (вечер, если отчёт строится днём) — сумма столбиков = числу недели. Сравнение — с 7 × 24 ч
+  неделей раньше (как у «Картины дня»).
 - «В работе», «Просрочено», темы, районы, горячие места, главная проблема, «Нужно решение акима» — «Картина дня»
-  на последний день недели (summary(date=…)): ровно то, что аким видел в тот вечер (для идущей недели — сейчас).
+  на эту дату (summary(date=…)): ровно то, что аким видит (для сегодняшней — сейчас).
 - Ведомства (R17), «Жители вместе» (R16), поручения встреч и прогноз (R13) — состояние на момент формирования
-  отчёта (соседи отдают текущее состояние; на листе это подписано датой формирования).
+  отчёта (соседи отдают текущее состояние; на листе это подписано датой формирования), только для сегодняшней недели.
 Числа считает код; текст — шаблон ru/kk без языковой модели (как text.py «Картины дня»).
 """
 from __future__ import annotations
@@ -19,48 +19,41 @@ from __future__ import annotations
 from datetime import date as Date, datetime, timedelta
 
 from . import board as board_mod, neighbors, text
-from .summary import ASTANA_TZ, WEEK, AkimError, change, fixed_moment, iso, parse_time, verified_at
+from .summary import ASTANA_TZ, WEEK, AkimError, fixed_moment, iso, parse_time
 
 NBSP = text.NBSP
 
 
-def _week_bounds(day: Date) -> tuple[datetime, datetime]:
-    start_day = day - timedelta(days=day.weekday())
-    start = datetime(start_day.year, start_day.month, start_day.day, tzinfo=ASTANA_TZ)
-    return start, start + WEEK
+def _range_text(first: Date, last: Date, lang: str) -> str:
+    """«9–15 окт» / «28 сен – 4 окт» (как подписи дат R11, месяц коротко)."""
+    if first.month == last.month:
+        return f"{first.day}–{last.day}{NBSP}{text.month_short(last.month, lang)}"
+    return f"{first.day}{NBSP}{text.month_short(first.month, lang)} – {last.day}{NBSP}{text.month_short(last.month, lang)}"
 
 
-def _range_text(start: datetime, last: Date, lang: str) -> str:
-    """«12–18 окт» / «28 сен – 4 окт» (как подписи дат R11, месяц коротко)."""
-    a = start.date()
-    if a.month == last.month:
-        return f"{a.day}–{last.day}{NBSP}{text.month_short(last.month, lang)}"
-    return f"{a.day}{NBSP}{text.month_short(a.month, lang)} – {last.day}{NBSP}{text.month_short(last.month, lang)}"
+def _by_days(recs: list[dict], first: Date, as_of: datetime) -> dict:
+    """Поступило / исправлено по суткам Астаны за окно (as_of − 7 дней, as_of] — те же условия, что summary._kpi
+    (new_week, fixed_week); начало окна в сутках до first — в первом столбике."""
+    since = as_of - WEEK
+    days, fixed_days = [0] * 7, [0] * 7
 
+    def slot(moment: datetime) -> int:
+        return max(0, min(6, (moment.astimezone(ASTANA_TZ).date() - first).days))
 
-def _counts(recs: list[dict], start: datetime, as_of: datetime) -> dict:
-    """Поступило / исправлено / подтвердили жители за [start, as_of] и по дням."""
-    days = [0] * 7
-    fixed_days = [0] * 7
-    new = fixed = verified = 0
     for r in recs:
         created = parse_time(r.get("created_at"))
-        if created is not None and start <= created <= as_of:
-            new += 1
-            days[min(6, (created - start).days)] += 1
+        if created is not None and since < created <= as_of:
+            days[slot(created)] += 1
         f = fixed_moment(r, as_of)
-        if f is not None and start <= f <= as_of:
-            fixed += 1
-            fixed_days[min(6, max(0, (f - start).days))] += 1
-            if verified_at(r, as_of) is not None:
-                verified += 1
-    return {"new": new, "fixed": fixed, "verified": verified, "days": days, "fixed_days": fixed_days}
+        if f is not None and since < f <= as_of:
+            fixed_days[slot(f)] += 1
+    return {"days": days, "fixed_days": fixed_days}
 
 
 def _sentences(w: dict, lang: str) -> list[str]:
     """Сводка недели одним абзацем (3–7 фраз). Пустые блоки соседей — без фраз о них."""
     k, d = w["kpi"], w.get("district")
-    rng = w["week"]["so_far_label_" + lang] if w["week"]["current"] else w["week"]["label_" + lang]
+    rng = w["week"]["label_" + lang]
     out = []
     n, ch = k["new"]["value"], k["new"]
     if lang == "ru":
@@ -165,43 +158,42 @@ def _delta_week_kk(ch: dict) -> str:
 def build(service, *, date=None, district=None, now: datetime | None = None) -> dict:
     now = now or service._clock()
     day, district = service._params(date, district, now)   # та же проверка даты и района, что у «Картины дня»
-    start, end = _week_bounds(day)
-    current = now.astimezone(ASTANA_TZ) < end
-    as_of = now.astimezone(ASTANA_TZ) if current else end - timedelta(seconds=1)
-    last_day = as_of.date()
-    s = service.summary(date=last_day, district=district, now=now)
+    local_now = now.astimezone(ASTANA_TZ)
+    current = day >= local_now.date()
+    day_start = datetime(day.year, day.month, day.day, tzinfo=ASTANA_TZ)
+    as_of = local_now if current else day_start + timedelta(days=1) - timedelta(seconds=1)   # как summary()
+    first = day - timedelta(days=6)
+    s = service.summary(date=day, district=district, now=now)
 
     all_records, _ = service._load_records()
     recs = [r for r in all_records if not r.get("duplicate_of")]
     scoped = [r for r in recs if district is None or service._district_of(r) == district]
-    cur, prev = _counts(scoped, start, as_of), _counts(scoped, start - WEEK, as_of - WEEK)
-    shown_days = (last_day - start.date()).days + 1
+    by_days = _by_days(scoped, first, as_of)
     kpi_s = s.get("kpi") or {}
+    keys = ("value", "prev", "abs", "pct", "ratio", "trend", "mode")
+    new_w, fixed_w = kpi_s.get("new_week") or {}, kpi_s.get("fixed_week") or {}
+    since = as_of - WEEK
     settings = service.neighbors
     all_demo = service.source_names.get("complaints") == "r07-demo"
     week = {
-        "start": start.date().isoformat(), "end": (end - timedelta(days=1)).date().isoformat(),
-        "current": current, "as_of": iso(as_of), "days_counted": shown_days,
-        "label_ru": _range_text(start, (end - timedelta(days=1)).date(), "ru"),
-        "label_kk": _range_text(start, (end - timedelta(days=1)).date(), "kk"),
-        "as_of_label_ru": text.fmt_date(last_day.isoformat(), "ru"),
-        "as_of_label_kk": text.fmt_date(last_day.isoformat(), "kk"),
-        # Идущая неделя: дни, за которые уже есть числа («12–15 окт»), — для текста, чтобы не писать «12–18 окт» в четверг.
-        **{f"so_far_label_{lg}": (_range_text(start, last_day, lg) if last_day > start.date()
-                                  else text.fmt_date(last_day.isoformat(), lg)) for lg in ("ru", "kk")},
-        "prev_start": (start - WEEK).date().isoformat(), "prev_end": (start - timedelta(days=1)).date().isoformat(),
+        "start": first.isoformat(), "end": day.isoformat(), "current": current, "as_of": iso(as_of),
+        "from": iso(since), "window": "7x24h", "days_counted": 7,
+        # Окно начинается накануне первого дня (отчёт строится днём) — первый столбик «по дням» начинается с этого часа.
+        "first_from": iso(since) if (since + timedelta(seconds=1)).astimezone(ASTANA_TZ).date() < first else None,
+        "label_ru": _range_text(first, day, "ru"), "label_kk": _range_text(first, day, "kk"),
+        "as_of_label_ru": text.fmt_date(day.isoformat(), "ru"), "as_of_label_kk": text.fmt_date(day.isoformat(), "kk"),
+        "prev_start": (first - timedelta(days=7)).isoformat(), "prev_end": (day - timedelta(days=7)).isoformat(),
     }
     out = {
         "generated_at": iso(now), "week": week, "district": s.get("district"),
         "complaints_available": s.get("complaints_available"),
         "kpi": {
-            "new": {**change(cur["new"], prev["new"]),
-                    "series": [v if i < shown_days else None for i, v in enumerate(cur["days"])],
-                    "prev_series": prev["days"]},
-            "fixed": {**change(cur["fixed"], prev["fixed"]), "verified": cur["verified"],
-                      "series": [v if i < shown_days else None for i, v in enumerate(cur["fixed_days"])]},
-            "in_progress": {k: (kpi_s.get("in_progress") or {}).get(k) for k in ("value", "prev", "abs", "pct", "ratio", "trend", "mode")},
-            "overdue": {k: (kpi_s.get("overdue") or {}).get(k) for k in ("value", "prev", "abs", "pct", "ratio", "trend", "mode")},
+            # Числа недели — числа «Картины дня» на этот момент (их код), по дням — те же записи по суткам.
+            "new": {**{k: new_w.get(k) for k in keys}, "series": by_days["days"]},
+            "fixed": {**{k: fixed_w.get(k) for k in keys}, "verified": fixed_w.get("verified"),
+                      "series": by_days["fixed_days"]},
+            "in_progress": {k: (kpi_s.get("in_progress") or {}).get(k) for k in keys},
+            "overdue": {k: (kpi_s.get("overdue") or {}).get(k) for k in keys},
             "verification_available": bool(kpi_s.get("verification_available")),
         },
         "main_problem": s.get("main_problem"),

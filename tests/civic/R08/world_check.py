@@ -13,7 +13,8 @@
   C6  кризис: Ситуационный центр = «Картина дня» = R17; кнопка штаба у тревоги про снег ведёт в идущий штаб;
   C7  «Жители вместе» и «Встречи»: Ситуационный центр = «Картина дня»; «двор недели» = страница двора R16;
   C8  демо-мир: фикстуры R08 выключены (источники — соседи), в ответах нет id примеров R08;
-  C9  «Картина недели»: сумма по дням = числу за неделю; в работе и просрочено = «Картине дня»;
+  C9  «Картина недели»: сумма по дням = числу за неделю; в работе, просрочено, поступило, исправлено и проверено
+      за 7 дней = «Картине дня» (одно окно 7 × 24 ч, R10 C5);
   C10 «Нужно решение акима»: у каждого пункта есть адрес; с --expected — те же жалобы, что в EXPECTED.json R02;
   C11 сцена 7: «Поддержать» в «Картине дня» ведёт к делу сцены (GET demo/scenes R01), если сцена есть.
 Итог — JSON (по умолчанию research/round-15-results/R08/world_check.json); код выхода 1, если есть FAIL.
@@ -208,6 +209,13 @@ def main(argv=None) -> int:
             rep.check("C9", "«Картина недели»: в работе и просрочено = «Картина дня»",
                       val("in_progress") == day_k["in_progress"] and val("overdue") == day_k["overdue"],
                       {"week": [val("in_progress"), val("overdue")], "day": [day_k["in_progress"], day_k["overdue"]]})
+            # Одно окно «неделя» = 7 × 24 ч (R10 consistency C5 / B-122): поступило, исправлено и проверено жителями.
+            day_fw = ((day_city.get("kpi") or {}).get("fixed_week") or {})
+            rep.check("C9", "«Картина недели» = «Картина дня»: поступило, исправлено, проверено за 7 дней",
+                      val("new") == day_k["new_week"] and val("fixed") == day_k["fixed_week"]
+                      and (k.get("fixed") or {}).get("verified") == day_fw.get("verified"),
+                      {"week": [val("new"), val("fixed"), (k.get("fixed") or {}).get("verified")],
+                       "day": [day_k["new_week"], day_k["fixed_week"], day_fw.get("verified")]})
 
     # C10: «Нужно решение акима»
     dec = (day_city.get("decisions") or {}).get("items") or []

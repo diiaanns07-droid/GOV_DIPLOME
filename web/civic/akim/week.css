@@ -31,8 +31,19 @@
 .wk-back {
   margin-right: auto;
 }
-.wk-select {
+/* зоны нажатия ≥ 44 px (VISUAL_BRIEF §4 п. 10, R10 B-119): кнопки окна, языка, печати и «← Картина дня» */
+.wk-select,
+.wk-bar .bk-seg button,
+.wk-bar .bk-btn,
+.wk-back {
   min-height: 44px;
+}
+.wk-bar .bk-seg button {
+  padding-inline: 14px;
+}
+.wk-back {
+  display: inline-flex;
+  align-items: center;
 }
 
 /* лист */
@@ -61,7 +72,7 @@
   gap: 6px;
   margin: 0 0 6px;
   color: var(--c-text-2, #4b5752);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 .wk-brand__mark {
@@ -84,7 +95,7 @@
 .wk-meta {
   margin: 4px 0 0;
   color: var(--c-text-2, #4b5752);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* числа */
@@ -104,7 +115,7 @@
 .wk-kpi__sub,
 .wk-kpi__note {
   margin: 0;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--c-text-2, #4b5752);
 }
 .wk-kpi__value {
@@ -150,8 +161,8 @@
 }
 .wk-note {
   margin: 4px 0 0;
-  color: var(--c-text-3, #7e8a85);
-  font-size: 12px;
+  color: var(--c-text-2, #4b5752);
+  font-size: 13px;
 }
 .wk-cols {
   display: grid;
@@ -178,11 +189,11 @@
 }
 .wk-chart__day {
   fill: var(--c-text-2, #4b5752);
-  font-size: 12px;
+  font-size: 13.5px;
 }
 .wk-chart__val {
   fill: var(--c-ink, #121a17);
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 600;
 }
 .wk-chart__val--fixed {
@@ -190,11 +201,12 @@
 }
 .wk-legend {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
   margin: 2px 0 0;
   color: var(--c-text-2, #4b5752);
-  font-size: 12px;
+  font-size: 13px;
 }
 .wk-legend__key {
   display: inline-block;
@@ -226,12 +238,12 @@
   grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.6fr) 3ch 7ch;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 13px;
 }
+/* казахские названия тем длиннее — переносятся, а не обрезаются (VISUAL_BRIEF §4 п. 3, R10 B-119) */
 .wk-bars__name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 .wk-bars__track {
   height: 6px;
@@ -287,7 +299,7 @@
 }
 .wk-hot__sub {
   color: var(--c-text-2, #4b5752);
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
 }
 
@@ -316,14 +328,14 @@
 .wk-list__sub {
   flex-basis: 100%;
   color: var(--c-text-2, #4b5752);
-  font-size: 12px;
+  font-size: 13px;
 }
 .wk-heat {
   min-width: 30px;
   height: 22px;
   padding: 0 6px;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 .wk-late {
@@ -355,8 +367,8 @@
   margin-top: 16px;
   padding-top: 8px;
   border-top: 1px solid var(--c-line, rgba(18, 26, 23, 0.08));
-  color: var(--c-text-3, #7e8a85);
-  font-size: 12px;
+  color: var(--c-text-2, #4b5752);
+  font-size: 13px;
 }
 .wk-foot p {
   margin: 0;
@@ -419,6 +431,24 @@
     margin-top: 10px;
   }
   .wk-text__p {
+    font-size: 12px;
+  }
+  .wk-brand,
+  .wk-meta,
+  .wk-kpi__label,
+  .wk-kpi__sub,
+  .wk-kpi__note,
+  .wk-note,
+  .wk-legend,
+  .wk-bars__row,
+  .wk-hot__sub,
+  .wk-list__sub,
+  .wk-heat,
+  .wk-foot {
+    font-size: 11px;
+  }
+  .wk-chart__day,
+  .wk-chart__val {
     font-size: 12px;
   }
   .wk-kpi,

@@ -54,7 +54,8 @@
       "board.kpi.waiting": "ждут ответа: {n}",
       "board.kpi.verified": "проверено жителями: {n}",
       "board.kpi.reported": "служба сообщила об устранении",
-      "board.kpi.overdue_hint": "не исправлено в срок",
+      "board.kpi.overdue_fix": "Не исправлено в срок",
+      "board.kpi.overdue_places": { one: "в {n} месте", few: "в {n} местах", many: "в {n} местах" },
       "board.delta.vs_week": ", чем неделю назад",
       "board.delta.vs_week_before": "",
       "board.pulse.title": "Пульс",
@@ -151,23 +152,24 @@
       "board.kpi.waiting": "жауап күтуде: {n}",
       "board.kpi.verified": "тұрғындар тексерді: {n}",
       "board.kpi.reported": "қызмет түзетілгенін хабарлады",
-      "board.kpi.overdue_hint": "мерзімінде түзетілмеген",
+      "board.kpi.overdue_fix": "Мерзімінде түзетілмеген",
+      "board.kpi.overdue_places": "{n} орында",
       "board.delta.vs_week": "",
       "board.delta.vs_week_before": "бір апта бұрынғыдан ",
       "board.pulse.title": "Пульс",
       "board.hot.meta": "соңғы 7 күн · адам саны",
-      "board.crisis.title": "Дағдарыс: {title} · {zone}",
+      "board.crisis.title": "Төтенше жағдай: {title} · {zone}",
       "board.crisis.meta": "{time} бастап · тапсырмалар: {done}/{total} · қызметтер: {services}",
       "board.crisis.updated": "жаңартылды: {time}",
-      "board.crisis.more": "тағы {n} дағдарыс",
-      "board.crisis.open": "Дағдарыс штабын ашу",
+      "board.crisis.more": "тағы {n} төтенше жағдай",
+      "board.crisis.open": "Жедел штабты ашу",
       "board.crisis.in_hq": "штабта",
       "board.crisis.zone_city": "бүкіл қала",
       "board.crisis.since": "{time} бастап",
       "board.crisis.tasks_done": "Қызметтердің тапсырмалары: {done}/{total}",
       "board.crisis.last": "Аймақ тұрғындарына",
-      "board.slide.crisis": "Дағдарыс штабы",
-      "board.slide.services": "Қызметтер",
+      "board.slide.crisis": "Жедел штаб",
+      "board.slide.services": "Ведомстволар",
       "board.slide.decisions": "Әкімнің шешімі керек",
       "board.slide.together": "Тұрғындар бірге",
       "board.slide.meetings": "Тұрғындармен кездесулер",
@@ -182,12 +184,12 @@
       "board.services.median": "Жауап, күн",
       "board.services.verified": "Тұрғындар тексерді",
       "board.services.joint": "Бірлескен өтініштер: {n}",
-      "board.services.handoffs": "Апта ішінде басқа қызметке берілгені: {n}",
+      "board.services.handoffs": "Апта ішінде басқа қызметке жіберілгені: {n}",
       "board.services.lagging": "Қызыл нүкте — жауап мерзімі өткені ең көп",
       "board.decisions.option": "{n}-нұсқа: {text}",
       "board.decisions.overdue": "мерзімі {n} күнге өтті",
       "board.decisions.where": "Нұсқаны «Күн қорытындысында» таңдаңыз",
-      "board.together.done": "Бірге атқарылды",
+      "board.together.done": "Бірге жасалды",
       "board.together.neighbors": "Қатысқан көршілер",
       "board.together.joined": "Жақын істерге жазылғандар",
       "board.together.verified": "Тұрғындар тексерді",
@@ -196,7 +198,7 @@
       "board.together.members": "Birge-де {n} көрші",
       "board.together.people": "{n} көрші",
       "board.together.when": "{date}",
-      "board.together.done_tag": "Атқарылды",
+      "board.together.done_tag": "Жасалды",
       "board.together.now": "қазір өтіп жатыр",
       "board.map.note": "Түсі — 7 күндік картадағыдай · дөңгелектер — шағымы көп орындар · аудан шекаралары © OpenStreetMap",
       "board.map.aria": "Аудандар картасы: {list}",
@@ -755,14 +757,15 @@
     var KPI = [
       { id: "new_day", label: "board.kpi.new_day", color: "#ef9f27", bad: true },
       { id: "in_progress", label: "board.kpi.in_progress", color: "#b9c4bf", bad: null },
-      { id: "overdue", label: "board.kpi.overdue", color: "#ff8478", bad: true },
+      // «Не исправлено в срок»: «просрочено» у табло R17 и «Обращений» R09 — срок ответа, другое число (R10 B-104).
+      { id: "overdue", label: "board.kpi.overdue_fix", color: "#ff8478", bad: true },
       { id: "fixed_week", label: "board.kpi.fixed", color: "#8fd46c", bad: false },
     ];
     function kpiNote(k, d) {
       var all = d.kpi;
       if (k.id === "new_day" && all.new_week && all.new_week.value != null) return [tr("board.kpi.week", { n: all.new_week.value }), true];
       if (k.id === "in_progress" && all.in_progress.waiting != null) return [tr("board.kpi.waiting", { n: all.in_progress.waiting }), true];
-      if (k.id === "overdue") return [tr("board.kpi.overdue_hint"), true];
+      if (k.id === "overdue") return all.overdue && all.overdue.places ? [tr("board.kpi.overdue_places", { n: all.overdue.places }), true] : ["", true];
       if (k.id === "fixed_week") {
         if (all.verification_available) return [tr("board.kpi.verified", { n: all.fixed_week.verified || 0 }), false];
         return [tr("board.kpi.reported"), true];
