@@ -645,8 +645,10 @@ def check_osm_points(rep: Report, root: Path, sources, graph=None):
             key = (osm["type"], int(osm["id"]))
             ref = raw.get(key)
             sub = t.get("subtype")
-            if sub in ("traffic_signal", "crossing") and key in raw:
+            if sub in ("traffic_signal", "crossing") and key in raw and str(t.get("source", "")).startswith("osm-walking/"):
                 # Цель из снимка пешеходной сети (R07 9e337dc): сверка с ним, свежий снимок LOCAL-10 — справкой.
+                # Цель из LOCAL-10 (source osm-objects/…, R07 r15 по B-103) сверяется со свежим снимком, как все объекты
+                # (предложение R07 patches/R10_accuracy_fresh_snapshot.patch, принято R10).
                 if walking is None:
                     walking = load_walking_raw(root) or {}
                 if key in walking and walking[key][1] in WALKING_KINDS[sub]:

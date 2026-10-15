@@ -281,7 +281,7 @@ class Consistency:
                      optional=True)
         self.compare("C2. «Просрочено» (срок ответа): «Обращения» R09 = табло R17",
                      [("«Обращения» R09", "R09", overdue_r09), ("табло R17", "R17", overdue_r17)])
-        self.labels_check(overdue_r08, overdue_r09)
+        self.labels_check(overdue_r08, overdue_r09, overdue_r17)
         if overdue_sit is not None and city is not None:
             self.compare("C3. просрочено по городу: Ситуационный центр = «Картина дня»",
                          [("Ситуационный центр R08", "R08", overdue_sit),
@@ -328,30 +328,54 @@ class Consistency:
         self.ask_check(map30, map7, overdue_r08, overdue_r09)
         return self
 
-    def labels_check(self, fix_value, answer_value):
-        """Разные числа «просрочено» — разные подписи (ключи R11: akim.kpi.overdue и inbox.tab.overdue, ru и kk)."""
-        if not (isinstance(fix_value, int) and isinstance(answer_value, int)) or fix_value == answer_value:
+    def screen_label(self, lang, r11, keys, fallback_js):
+        """Подпись так, как её показывает экран роли: первый ключ из словаря R11, иначе тот же ключ из запасных строк
+        роли (JS-файл сборки: сначала ru, затем kk). R09 INTEGRATION F3a: вкладка «Обращений» берёт
+        inbox.tab.overdue_answer («Ответ просрочен»), затем inbox.tab.overdue."""
+        for key in keys:
+            v = _dig(r11, key)
+            if isinstance(v, str) and v.strip():
+                return v
+            try:
+                text = (self.s.root / fallback_js).read_text(encoding="utf-8") if fallback_js else ""
+            except OSError:
+                text = ""
+            found = re.findall(r'"' + re.escape(key) + r'":\s*"([^"]+)"', text)
+            if found:
+                return found[0] if lang == "ru" or len(found) < 2 else found[1]
+        return None
+
+    def labels_check(self, fix_value, answer_value, r17_value=None):
+        """Разные числа «просрочено» — разные подписи (ru и kk), как их показывают экраны:
+        «Картина дня» R08 (срок исправления) против вкладки «Обращений» R09 и итога табло R17 (срок ответа)."""
+        if not isinstance(fix_value, int) or not any(isinstance(v, int) and v != fix_value for v in (answer_value, r17_value)):
             self.checks.append({"name": "C4. подписи «просрочено» различаются, если числа разные", "status": "NOT_RUN",
-                                "values": {"R08": fix_value, "R09": answer_value}, "owners": ["R08", "R09", "R11"],
+                                "values": {"R08": fix_value, "R09": answer_value, "R17": r17_value}, "owners": ["R08", "R09", "R17", "R11"],
                                 "note": "числа совпадают или одного нет — различать нечего"})
             return
-        same = []
+        same, labels = [], {}
         for lang in ("ru", "kk"):
             path = self.s.root / "web" / "civic" / "i18n" / f"{lang}.json"
             try:
                 d = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, ValueError):
                 continue
-            pick = lambda dotted: _dig(d, dotted)  # noqa: E731
-            a, b = pick("akim.kpi.overdue"), pick("inbox.tab.overdue")
-            if isinstance(a, str) and isinstance(b, str) and a.strip().lower() == b.strip().lower():
-                same.append(f"{lang}: «{a}»")
+            a = self.screen_label(lang, d, ["akim.kpi.overdue"], "web/civic/akim/akim.js")
+            others = {"«Обращения» R09": (answer_value, self.screen_label(lang, d, ["inbox.tab.overdue_answer", "inbox.tab.overdue"],
+                                                                          "web/civic/feedback/complaint-strings.js")),
+                      "табло R17": (r17_value, self.screen_label(lang, d, ["agencies.kpi.overdue"], "web/civic/agencies/agencies.js"))}
+            labels[lang] = {"«Картина дня» R08": a, **{k: v[1] for k, v in others.items()}}
+            for name, (num, b) in others.items():
+                if isinstance(num, int) and num != fix_value and isinstance(a, str) and isinstance(b, str) \
+                        and a.strip().lower() == b.strip().lower():
+                    same.append(f"{lang}: «{a}» у R08 ({fix_value}) и у {name} ({num})")
         status = "FAIL" if same else "PASS"
-        self.checks.append({"name": "C4. подписи «просрочено» различаются, если числа разные (R08 ≠ R09)", "status": status,
-                            "values": {"«Картина дня» R08": fix_value, "«Обращения» R09": answer_value, "одинаковые подписи": same},
-                            "owners": ["R08", "R09", "R11"],
+        self.checks.append({"name": "C4. подписи «просрочено» различаются, если числа разные (R08 ≠ R09, R17)", "status": status,
+                            "values": {"«Картина дня» R08": fix_value, "«Обращения» R09": answer_value, "табло R17": r17_value,
+                                       "одинаковые подписи": same, "подписи": labels},
+                            "owners": ["R08", "R09", "R17", "R11"],
                             "note": "жюри видит «Просрочено N» в двух местах с разными числами" if same else ""})
-        print(f"{status:<7} C4. подписи «просрочено»: {same or 'разные'}")
+        print(f"{status:<7} C4. подписи «просрочено»: {same or labels}")
 
     def world_numbers(self):
         """Числа района из файла мира R02 (истина для засева): записи и «Я тоже» за 30 дней."""
