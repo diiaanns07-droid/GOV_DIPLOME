@@ -19,9 +19,22 @@
 
 ## Сделано
 - 11:24 UTC: роль занята, ветка сессии переведена на пакет раунда 15 (fast-forward).
+- 11:25 UTC: продолжение каждый час — scheduled task trig_01HDRqCuZR25GqKUWS9wJjpG (в :25). УДАЛИТЬ после 17 окт 23:59 Астаны
+  (18:59 UTC): delete_trigger trig_01HDRqCuZR25GqKUWS9wJjpG.
+- 12:25 UTC checkpoint 1: agent/civic_assistant/analyst/ (intents, sources, blocks, llm, core) + ask в api.py.
+  Три вопроса сценария офлайн: «снег в Нуре + службы» 0,5 с (холодный старт), «службы отстают» 0,15 с, «буран» < 0,01 с.
+  Пока нет R17: «отстающие службы» — запасной расчёт по срокам «Картины дня» (сумма просрочек = R08 overdue.count,
+  проверено: 5 = 5, открытые 88 = 67 + 21); «буран» — пульс R08 с честной пометкой «штаб не подключён».
+
+## Решения по умолчанию (автопилот)
+- Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,
+  web/civic/qa/qa.js, SCREENS.questions в birge.js). Два модуля с одним именем ломали бы друг друга.
+- Шлюз R01: маршрут POST assistant/ask → agent.civic_assistant.api.ask (kind=function, staff=True); в arguments() нужна
+  строка для ключа assistant.ask (patch — в INTEGRATION.txt). ask принимает и question/lang, и body.
 
 ## Следующий шаг
-- Прочитать IDEA, CONTRACT §7/§10, VISUAL_BRIEF, текущий agent/civic_assistant/ и передачу r14 (claude/r14-R03).
+- Тесты tests/civic/R03/test_analyst_*.py (без сети, заглушка провайдера), затем экран web/civic/assistant/analyst.js.
 
 ## Вопросы владельцу
-- (пока нет)
+- Имя экрана: промпт R03 называет window.BirgeAsk, но это имя уже у R13. Сделал window.BirgeAnalyst (решение по
+  умолчанию). Если нужно именно BirgeAsk — R13 должен переименовать свой экран.
