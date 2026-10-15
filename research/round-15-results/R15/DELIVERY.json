@@ -1,284 +1,316 @@
 {
-  "role": "R15",
-  "round": 15,
-  "title": "Безопасность и приватность новых функций",
-  "branch": "claude/practical-fermi-c58v1u",
-  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
-  "restored_from": null,
-  "restored_note": "tests/civic/R15 в пакете = claude/r14-R15@540b4d3c + перенос S41 в FIXED (R01, FINAL-4) — восстанавливать нечего",
-  "code_sha": "см. git log ветки: последний коммит R15 (код R15 — только tests/civic/R15/)",
-  "tested_sha": {
-    "package": "e91acb69",
-    "R17": "2388a11b",
-    "R13": "98485ce5",
-    "R03": "8820fc67",
-    "R16": "fbd9e247",
-    "R04": "d8448d48",
-    "R02": "0c0a8636 (claude/affectionate-shannon-jm6ws5)",
-    "R07": "090f9a6e",
-    "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
-    "R09": "97342bdf",
-    "R01": "c9069723 (B0 в работе)",
-    "R08": "5d9b4138 (claude/laughing-euler-iv3on3)",
-    "R06": "2b31dbe1",
-    "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt"
+ "role": "R15",
+ "round": 15,
+ "title": "Безопасность и приватность новых функций",
+ "branch": "claude/practical-fermi-c58v1u",
+ "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+ "restored_from": null,
+ "restored_note": "tests/civic/R15 в пакете = claude/r14-R15@540b4d3c + перенос S41 в FIXED (R01, FINAL-4) — восстанавливать нечего",
+ "code_sha": "см. git log ветки: последний коммит R15 (код R15 — только tests/civic/R15/)",
+ "tested_sha": {
+  "package": "e91acb69",
+  "R17": "2388a11b",
+  "R13": "98485ce5",
+  "R03": "8820fc67",
+  "R16": "fbd9e247",
+  "R04": "f20775ab",
+  "R02": "ac75f3a8 (claude/affectionate-shannon-jm6ws5)",
+  "R07": "7ce9aee7",
+  "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
+  "R09": "97342bdf",
+  "R01": "c9069723 (B0)",
+  "R08": "5d9b4138 (claude/laughing-euler-iv3on3)",
+  "R06": "2b31dbe1",
+  "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt"
+ },
+ "push_status": "OK (круг 3)",
+ "changed_paths": [
+  "tests/civic/R15/r15_common.py",
+  "tests/civic/R15/round15/",
+  "research/round-15-results/R15/",
+  "research/handoffs/astana/R15/round15/STATUS.md"
+ ],
+ "tests": {
+  "package_e91acb69_all_R15": {
+   "passed": 262,
+   "failed": 0,
+   "xfailed": 1,
+   "skipped_not_run": 132,
+   "open": [
+    "S42"
+   ]
   },
-  "push_status": "OK (круг 3)",
-  "changed_paths": [
-    "tests/civic/R15/r15_common.py",
-    "tests/civic/R15/round15/",
-    "research/round-15-results/R15/",
-    "research/handoffs/astana/R15/round15/STATUS.md"
-  ],
-  "tests": {
-    "package_e91acb69_all_R15": {
-      "passed": 262,
-      "failed": 0,
-      "xfailed": 1,
-      "skipped_not_run": 132,
-      "open": [
-        "S42"
-      ]
-    },
-    "R17_61558bd3_agencies": {
-      "passed": 32,
-      "failed": 0,
-      "xfailed": 3,
-      "open": [
-        "S43"
-      ]
-    },
-    "R13_ded8c258_meetings": {
-      "passed": 27,
-      "failed": 0,
-      "xfailed": 0
-    },
-    "R03_a85e4765_assistant": {
-      "passed": 15,
-      "failed": 0,
-      "xfailed": 2,
-      "open": [
-        "S44"
-      ]
-    },
-    "R01_gateway_with_P-R01-S42": {
-      "passed": 158,
-      "failed": 0,
-      "note": "tests/civic/R01 api_v2 + gateway + hardening на пакете с patch"
-    },
-    "browser": {
-      "script": "tests/civic/R15/browser/r15_round15.cjs + r15_stand.py",
-      "tree": "наложение веток ролей на пакет",
-      "PASS": 5,
-      "FAIL": 0,
-      "NOT_RUN": 2,
-      "steps": {
-        "akimat-1366 agencies crisis": "PASS",
-        "akimat-1366 meetings card": "PASS",
-        "akimat-1366 analyst question": "PASS",
-        "akimat-1366 situation-center board": "PASS",
-        "resident-375 meetings card": "PASS",
-        "akimat-1366 works-calendar": "NOT_RUN: R06 не принимает HTML в работах (422)",
-        "resident-375 together": "NOT_RUN: у R16 нет экрана web/civic/together"
-      }
-    },
-    "R16_aef7b79f_together": {
-      "passed": 28,
-      "failed": 0,
-      "xfailed": 8,
-      "open": [
-        "S45",
-        "S46",
-        "S47"
-      ]
-    },
-    "R04_7be7e71b_moderate": {
-      "passed": 45,
-      "failed": 0,
-      "xfailed": 5,
-      "open": [
-        "S48"
-      ]
-    },
-    "R02_0c0a8636_world": {
-      "passed": 4,
-      "failed": 0
-    },
-    "R04_with_P-R04-S48": {
-      "passed": 413,
-      "skipped": 1,
-      "note": "tests/civic/R04 целиком с patch"
-    },
-    "R07_5f9dc0ae_replay": {
-      "passed": 12,
-      "failed": 0
-    },
-    "pages_csp_overlay": {
-      "passed": 12,
-      "failed": 0,
-      "not_run": 1,
-      "note": "шлюз ещё не отдаёт новых страниц (CIVIC_ASSETS R01)"
-    },
-    "R09_ebe69436_handoffs": {
-      "passed": 30,
-      "failed": 0,
-      "xfailed": 2,
-      "open": [
-        "S49"
-      ]
-    },
-    "R09_with_P-R09-S49": {
-      "passed": 578,
-      "note": "tests/civic/R09 целиком с patch"
-    },
-    "overlay_all_R15": {
-      "passed": 467,
-      "xfailed": 19,
-      "skipped_not_run": 54,
-      "failed": 0,
-      "note": "наложение 11 веток ролей; 0 регрессий находок раунда 14; S46 XPASS (закрыт R04)"
-    },
-    "R01_79468aab_gateway": {
-      "passed": 39,
-      "xfailed": 2,
-      "skipped_not_run": 15,
-      "open": [
-        "S42",
-        "S50"
-      ]
-    },
-    "near_B1_overlay_all_R15": {
-      "passed": 519,
-      "xfailed": 19,
-      "xpassed": 2,
-      "skipped_not_run": 5,
-      "failed": 0,
-      "note": "шлюз R01 79468aab + 11 веток ролей"
-    },
-    "browser_near_B1": {
-      "PASS": 5,
-      "NOT_RUN": 2,
-      "FAIL": 0,
-      "note": "с P-R01-S42-raw-staff + P-R08-board-csrf; без них Ситуационный центр — NOT_RUN (401/403)"
-    },
-    "browser_r14_reference_on_R01_79468aab": {
-      "PASS": 18,
-      "FAIL": 0,
-      "NOT_RUN": 0,
-      "note": "r15_reference.cjs раунда 14 (поиск, Ctrl+K, карточки, идеи, вопросы) на новой оболочке R01; Ctrl+K теперь PASS"
-    },
-    "near_B1_overlay2_all_R15": {
-      "passed": 535,
-      "xfailed": 13,
-      "skipped_not_run": 1,
-      "failed": 0,
-      "open_xfail": [
-        "S42",
-        "S43",
-        "S44",
-        "S48",
-        "S49"
-      ]
-    },
-    "browser_overlay2": {
-      "PASS": 8,
-      "FAIL": 0,
-      "NOT_RUN": 1,
-      "not_run": "календарь работ: R06 не принимает HTML в работах (422)"
-    },
-    "R06_2b31dbe1_notify": {
-      "passed": 3,
-      "failed": 0
-    },
-    "R01_B0_c9069723_all_R15": {
-      "passed": 449,
-      "skipped_not_run": 86,
-      "xfailed": 10,
-      "xpassed": 1,
-      "failed": 0,
-      "note": "ветка R01 как сборка B0 (без R16, свежих R06/R09)"
-    },
-    "browser_R01_B0": {
-      "PASS": 5,
-      "FAIL": 0,
-      "NOT_RUN": 4,
-      "not_run": "R16 нет в B0 (3 шага), календарь работ — R06 не принимает HTML"
-    }
+  "R17_61558bd3_agencies": {
+   "passed": 32,
+   "failed": 0,
+   "xfailed": 3,
+   "open": [
+    "S43"
+   ]
   },
-  "findings": {
-    "S42": {
-      "owner": "R01",
-      "level": "низкий",
-      "status": "исправлено в ветке владельца: R01 28893ffc (PENDING до сборки B1)",
-      "patch": "patches/P-R01-S42.diff"
-    },
-    "S43": {
-      "owner": "R17",
-      "level": "низкий",
-      "status": "open",
-      "patch": "patches/P-R17-S43.diff"
-    },
-    "S44": {
-      "owner": "R03",
-      "level": "низкий",
-      "status": "open",
-      "patch": "patches/P-R03-S44.diff"
-    },
-    "S45": {
-      "owner": "R16",
-      "level": "низкий",
-      "status": "исправлено: R16 e475fae9",
-      "patch": "patches/P-R16-S45-S47.diff"
-    },
-    "S46": {
-      "owner": "R16/R04",
-      "level": "средний",
-      "status": "исправлено: R16 e475fae9",
-      "patch": "patches/P-R16-S45-S47.diff",
-      "note": "в сборке с R04 moderate закрывается (проверено наложением); patch — для запасного пути R16"
-    },
-    "S47": {
-      "owner": "R16",
-      "level": "средний",
-      "status": "исправлено: R16 e475fae9",
-      "patch": "patches/P-R16-S45-S47.diff"
-    },
-    "S48": {
-      "owner": "R04",
-      "level": "средний",
-      "status": "исправлено в ветке владельца: R04 d8448d48 (PENDING до сборки B1)",
-      "patch": "patches/P-R04-S48.diff"
-    },
-    "S49": {
-      "owner": "R09",
-      "level": "низкий",
-      "status": "исправлено в ветке владельца: R09 dd93ba11 (PENDING до сборки B1)",
-      "patch": "patches/P-R09-S49.diff"
-    },
-    "S50": {
-      "owner": "R01/R08",
-      "level": "средний (доступность)",
-      "status": "исправлено: R01 5529d819",
-      "patch": [
-        "patches/P-R01-S42-raw-staff.diff",
-        "patches/P-R08-board-csrf.diff"
-      ],
-      "note": "Ситуационный центр и «Картина недели» — 401/403 сотруднику в шлюзе R01; B1"
-    }
+  "R13_ded8c258_meetings": {
+   "passed": 27,
+   "failed": 0,
+   "xfailed": 0
   },
-  "high_open": 0,
-  "screens": [
-    "research/round-15-results/R15/browser/akimat_1366_agencies_crisis.png",
-    "research/round-15-results/R15/browser/akimat_1366_analyst_question.png",
-    "research/round-15-results/R15/browser/akimat_1366_situation_center_board.png",
-    "research/round-15-results/R15/browser/resident_375_meetings_card.png",
-    "research/round-15-results/R15/browser/resident_375_together_initiatives.png",
-    "research/round-15-results/R15/browser/resident_375_together_my_yard.png",
-    "research/round-15-results/R15/browser/akimat_1366_together_staff_tools.png"
-  ],
-  "known_limits": [
-    "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
-    "проверка в облаке без интернета; подложка карты — упрощённый фон"
-  ],
-  "next_step": "круг 2 (~19:00): свежие головы ролей, R06 лента, R09 передачи, экран R16; B1 16 окт 14:00 — полный прогон на сборке"
+  "R03_a85e4765_assistant": {
+   "passed": 15,
+   "failed": 0,
+   "xfailed": 2,
+   "open": [
+    "S44"
+   ]
+  },
+  "R01_gateway_with_P-R01-S42": {
+   "passed": 158,
+   "failed": 0,
+   "note": "tests/civic/R01 api_v2 + gateway + hardening на пакете с patch"
+  },
+  "browser": {
+   "script": "tests/civic/R15/browser/r15_round15.cjs + r15_stand.py",
+   "tree": "наложение веток ролей на пакет",
+   "PASS": 5,
+   "FAIL": 0,
+   "NOT_RUN": 2,
+   "steps": {
+    "akimat-1366 agencies crisis": "PASS",
+    "akimat-1366 meetings card": "PASS",
+    "akimat-1366 analyst question": "PASS",
+    "akimat-1366 situation-center board": "PASS",
+    "resident-375 meetings card": "PASS",
+    "akimat-1366 works-calendar": "NOT_RUN: R06 не принимает HTML в работах (422)",
+    "resident-375 together": "NOT_RUN: у R16 нет экрана web/civic/together"
+   }
+  },
+  "R16_aef7b79f_together": {
+   "passed": 28,
+   "failed": 0,
+   "xfailed": 8,
+   "open": [
+    "S45",
+    "S46",
+    "S47"
+   ]
+  },
+  "R04_7be7e71b_moderate": {
+   "passed": 45,
+   "failed": 0,
+   "xfailed": 5,
+   "open": [
+    "S48"
+   ]
+  },
+  "R02_0c0a8636_world": {
+   "passed": 4,
+   "failed": 0
+  },
+  "R04_with_P-R04-S48": {
+   "passed": 413,
+   "skipped": 1,
+   "note": "tests/civic/R04 целиком с patch"
+  },
+  "R07_5f9dc0ae_replay": {
+   "passed": 12,
+   "failed": 0
+  },
+  "pages_csp_overlay": {
+   "passed": 12,
+   "failed": 0,
+   "not_run": 1,
+   "note": "шлюз ещё не отдаёт новых страниц (CIVIC_ASSETS R01)"
+  },
+  "R09_ebe69436_handoffs": {
+   "passed": 30,
+   "failed": 0,
+   "xfailed": 2,
+   "open": [
+    "S49"
+   ]
+  },
+  "R09_with_P-R09-S49": {
+   "passed": 578,
+   "note": "tests/civic/R09 целиком с patch"
+  },
+  "overlay_all_R15": {
+   "passed": 467,
+   "xfailed": 19,
+   "skipped_not_run": 54,
+   "failed": 0,
+   "note": "наложение 11 веток ролей; 0 регрессий находок раунда 14; S46 XPASS (закрыт R04)"
+  },
+  "R01_79468aab_gateway": {
+   "passed": 39,
+   "xfailed": 2,
+   "skipped_not_run": 15,
+   "open": [
+    "S42",
+    "S50"
+   ]
+  },
+  "near_B1_overlay_all_R15": {
+   "passed": 519,
+   "xfailed": 19,
+   "xpassed": 2,
+   "skipped_not_run": 5,
+   "failed": 0,
+   "note": "шлюз R01 79468aab + 11 веток ролей"
+  },
+  "browser_near_B1": {
+   "PASS": 5,
+   "NOT_RUN": 2,
+   "FAIL": 0,
+   "note": "с P-R01-S42-raw-staff + P-R08-board-csrf; без них Ситуационный центр — NOT_RUN (401/403)"
+  },
+  "browser_r14_reference_on_R01_79468aab": {
+   "PASS": 18,
+   "FAIL": 0,
+   "NOT_RUN": 0,
+   "note": "r15_reference.cjs раунда 14 (поиск, Ctrl+K, карточки, идеи, вопросы) на новой оболочке R01; Ctrl+K теперь PASS"
+  },
+  "near_B1_overlay2_all_R15": {
+   "passed": 535,
+   "xfailed": 13,
+   "skipped_not_run": 1,
+   "failed": 0,
+   "open_xfail": [
+    "S42",
+    "S43",
+    "S44",
+    "S48",
+    "S49"
+   ]
+  },
+  "browser_overlay2": {
+   "PASS": 8,
+   "FAIL": 0,
+   "NOT_RUN": 1,
+   "not_run": "календарь работ: R06 не принимает HTML в работах (422)"
+  },
+  "R06_2b31dbe1_notify": {
+   "passed": 3,
+   "failed": 0
+  },
+  "R01_B0_c9069723_all_R15": {
+   "passed": 449,
+   "skipped_not_run": 86,
+   "xfailed": 10,
+   "xpassed": 1,
+   "failed": 0,
+   "note": "ветка R01 как сборка B0 (без R16, свежих R06/R09)"
+  },
+  "browser_R01_B0": {
+   "PASS": 5,
+   "FAIL": 0,
+   "NOT_RUN": 4,
+   "not_run": "R16 нет в B0 (3 шага), календарь работ — R06 не принимает HTML"
+  },
+  "R16_fbd9e247_together": {
+   "passed": 36,
+   "failed": 0,
+   "xfailed": 1,
+   "open": [
+    "S51"
+   ]
+  },
+  "R16_fbd9e247_with_P-R16-S51": {
+   "passed": 54,
+   "failed": 0,
+   "note": "tests/civic/R16 целиком с patch; тесты R15 together — 36 passed + S51 XPASS(strict)"
+  },
+  "R01_c9069723_gateway_round5": {
+   "passed": 55,
+   "failed": 0,
+   "xpassed": 1,
+   "skipped_not_run": 6,
+   "note": "+ инвариант «любая запись раунда 15 — staff или лимит»; XPASS = S42 (PENDING)"
+  },
+  "round5_heads": {
+   "R02_ac75f3a8_world": "4 passed",
+   "R07_7ce9aee7_replay": "12 passed",
+   "R04_f20775ab_moderate": "45 passed + 5 xpassed (S48 PENDING)"
+  }
+ },
+ "findings": {
+  "S42": {
+   "owner": "R01",
+   "level": "низкий",
+   "status": "исправлено в ветке владельца: R01 28893ffc (PENDING до сборки B1)",
+   "patch": "patches/P-R01-S42.diff"
+  },
+  "S43": {
+   "owner": "R17",
+   "level": "низкий",
+   "status": "open",
+   "patch": "patches/P-R17-S43.diff"
+  },
+  "S44": {
+   "owner": "R03",
+   "level": "низкий",
+   "status": "open",
+   "patch": "patches/P-R03-S44.diff"
+  },
+  "S45": {
+   "owner": "R16",
+   "level": "низкий",
+   "status": "исправлено: R16 e475fae9",
+   "patch": "patches/P-R16-S45-S47.diff"
+  },
+  "S46": {
+   "owner": "R16/R04",
+   "level": "средний",
+   "status": "исправлено: R16 e475fae9",
+   "patch": "patches/P-R16-S45-S47.diff",
+   "note": "в сборке с R04 moderate закрывается (проверено наложением); patch — для запасного пути R16"
+  },
+  "S47": {
+   "owner": "R16",
+   "level": "средний",
+   "status": "исправлено: R16 e475fae9",
+   "patch": "patches/P-R16-S45-S47.diff"
+  },
+  "S48": {
+   "owner": "R04",
+   "level": "средний",
+   "status": "исправлено в ветке владельца: R04 d8448d48 (PENDING до сборки B1)",
+   "patch": "patches/P-R04-S48.diff"
+  },
+  "S49": {
+   "owner": "R09",
+   "level": "низкий",
+   "status": "исправлено в ветке владельца: R09 dd93ba11 (PENDING до сборки B1)",
+   "patch": "patches/P-R09-S49.diff"
+  },
+  "S50": {
+   "owner": "R01/R08",
+   "level": "средний (доступность)",
+   "status": "исправлено: R01 5529d819",
+   "patch": [
+    "patches/P-R01-S42-raw-staff.diff",
+    "patches/P-R08-board-csrf.diff"
+   ],
+   "note": "Ситуационный центр и «Картина недели» — 401/403 сотруднику в шлюзе R01; B1"
+  },
+  "S51": {
+   "owner": "R16",
+   "level": "средний",
+   "status": "open",
+   "patch": "patches/P-R16-S51.diff",
+   "what": "анонимный GET together/yards/cell-<любые числа> записывает двор в базу и кэш без предела; ячейка вне Астаны — 200; такие дворы — в публичном списке «Выбрать двор»"
+  }
+ },
+ "high_open": 0,
+ "screens": [
+  "research/round-15-results/R15/browser/akimat_1366_agencies_crisis.png",
+  "research/round-15-results/R15/browser/akimat_1366_analyst_question.png",
+  "research/round-15-results/R15/browser/akimat_1366_situation_center_board.png",
+  "research/round-15-results/R15/browser/resident_375_meetings_card.png",
+  "research/round-15-results/R15/browser/resident_375_together_initiatives.png",
+  "research/round-15-results/R15/browser/resident_375_together_my_yard.png",
+  "research/round-15-results/R15/browser/akimat_1366_together_staff_tools.png"
+ ],
+ "known_limits": [
+  "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
+  "проверка в облаке без интернета; подложка карты — упрощённый фон"
+ ],
+ "next_step": "круг 6 (~21:30 Астаны): S51 у R16, S43 у R17, S44 у R03; новые [доп.] маршруты в B1; B1 16 окт 14:00 — полный прогон на сборке, PENDING (S42, S48, S49) -> FIXED"
 }
