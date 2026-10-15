@@ -1,8 +1,8 @@
 diff --git a/ui/web_server.py b/ui/web_server.py
-index b1292654..892cb432 100644
+index b1292654..32b118d0 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
-@@ -107,6 +107,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+@@ -107,12 +107,17 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                  "build3d/build3d-core.js", "build3d/build3d-models.js", "build3d/build3d.js", "build3d/build3d.css",
                  "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
                  "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",
@@ -11,3 +11,12 @@ index b1292654..892cb432 100644
                  # Дизайн-марафон, R05 2b33c59: превью объектов для карточек каталога (240×160 и @2x, рендер моделей R05).
                  *(f"build3d/data/previews/{kind}{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
                    for scale in ("", "@2x")),
+                 # Эталон 13 окт (R05 3997d91e → R06): квадратные превью 84 × 84 и @2x для строк списка «Проекты и идеи».
+                 *(f"build3d/data/previews/{kind}-sq{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
+                   for scale in ("", "@2x")),
++                # Раунд 15, R05: «Было / станет» и «День / Ночь» в карточке проекта (рендер тех же моделей, «белый макет»).
++                *(f"build3d/data/previews/{name}@2x.png" for name in ("square-before", "playground-before", "sports-before",
++                  "stop-before", "lighting-before", "lighting-after", "lighting-night-before", "lighting-night-after")),
+                 # B3: запасной фон карты без интернета (web/map.js offlineStyle) — оси улиц OSM со стенда R07 @ 306074b.
+                 "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
+                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.

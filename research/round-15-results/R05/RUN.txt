@@ -1,0 +1,37 @@
+R05 · раунд 15 · RUN (как запустить и что теперь может пользователь)
+
+ПОПРАВКА П1 «БЕЗ ИИ-СЛОПА» (15 окт, 17:05): нарисованных моделей ориентиров нет — их задача отменена и удалена.
+Ориентиры — настоящие 3D-здания подложки R01; R05 даёт данные, поиск и перелёт; 3D проектов — «белый макет».
+
+СТЕНД (облако или ноутбук; COMMON «КАК ПОДНЯТЬ СТЕНД»)
+  1) применить патчи R05 к файлам R01 (пока R01 их не взял):
+       git apply research/round-15-results/R05/patches/R01_web_server_assets.patch
+       git apply research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch
+  2) mkdir -p /tmp/birge && python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
+     python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
+     python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
+     CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655   → http://127.0.0.1:8655/
+
+ЧТО МОЖНО СДЕЛАТЬ
+  - Поиск в шапке: «Байтерек», «Бәйтерек», «Хан Шатыр», «ақорда», «пирамида», «экспо», «мечеть» → подсказка
+    «Байтерек · монумент · район Есиль» (маленький тёмный квадрат) → камера плавно летит к настоящему зданию подложки,
+    наклон 52°, здание в центре свободной части карты. «Уменьшить движение» — сразу, без полёта.
+  - Слои → «Проекты» → нажать проект: в карточке шторка «Было / станет» — потянуть мышью или пальцем, или Tab на ручку
+    и ← → (Shift — шаг 20), Home / End. Освещение: под шторкой «День / Ночь» — ночью тёмно-серые объёмы, тёплые конусы.
+  - «Что построить?» (акимат): каталог в «белом макете» — белые объёмы, кайма акцента у нового проекта.
+  - Постройка проекта на карте — по частям за 0,76 с (было 1,1 с); «уменьшить движение» — сразу готовый вид.
+
+ПРОВЕРКИ (из корня репозитория)
+  node --test tests/civic/R05/round15/test_landmarks.mjs            # данные ориентиров, поиск, перелёт (Node)
+  node --test tests/civic/R05/build3d/test_models.mjs tests/civic/R05/build3d/test_core.mjs   # модели проектов (раунд 14)
+  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_landmarks_search.mjs   # стенд: поиск → перелёт
+  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_card_check.mjs         # стенд: шторка, день/ночь, каталог
+  NODE_PATH=$(npm root -g) node tests/civic/R05/build3d/browser_check.mjs --no-shots  # демо-страница модуля (раунд 14)
+  Браузерные проверки — по одной (несколько браузеров сразу в облаке дают ложные таймауты).
+
+ПЕРЕСОБРАТЬ ДАННЫЕ И КАРТИНКИ
+  python3 data/civic/astana/landmarks/tools/derive_landmarks.py            # landmarks.json из снимка OSM (+ --check)
+  NODE_PATH=$(npm root -g) node tests/civic/R05/build3d/make_previews.mjs   # превью каталога и списка R06
+  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/make_before_after.mjs   # «было», освещение день/ночь
+
+В ОБЛАКЕ: подложки со зданиями нет (упрощённый фон) — вид настоящих зданий-ориентиров NOT_RUN, проверка — LOCAL-12.

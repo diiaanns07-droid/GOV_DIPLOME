@@ -472,21 +472,11 @@
 .b3d-pd__im--r06 {
   flex: 0 0 auto;
 }
-.b3d-pd__im--r06[data-kind="playground"] {
-  background: #fdf3e3;
-}
-.b3d-pd__im--r06[data-kind="sports"] {
-  background: #e4f1e6;
-}
-.b3d-pd__im--r06[data-kind="stop"] {
-  background: #e8f0f6;
-}
-.b3d-pd__im--r06[data-kind="lighting"] {
-  background: #f6f1e4;
-}
 @media (max-width: 760px) {
+  /* Телефон: картинка ниже (120 px), но есть — шторка «Было / станет» объясняет проект без слов (раунд 15;
+     в раунде 14 картинка была скрыта, над карточкой — сам проект на карте: его по-прежнему ставит keepAboveDock). */
   .b3d-pd__im.b3d-pd__im--r06 {
-    display: none;
+    height: 120px;
   }
   .b3d-dock.b3d-dock--r06pd {
     padding-top: var(--s-2, 8px);
@@ -513,19 +503,7 @@
   align-items: center;
   justify-content: center;
   height: 150px;
-  background: #e7f2dd;
-}
-.b3d-pd[data-kind="playground"] .b3d-pd__im {
-  background: #fdf3e3;
-}
-.b3d-pd[data-kind="sports"] .b3d-pd__im {
-  background: #e4f1e6;
-}
-.b3d-pd[data-kind="stop"] .b3d-pd__im {
-  background: #e8f0f6;
-}
-.b3d-pd[data-kind="lighting"] .b3d-pd__im {
-  background: #f6f1e4;
+  background: #f1f2ee; /* «белый макет» (П1): один спокойный фон, цвет — только у проекта */
 }
 .b3d-pd .b3d-pd__im img {
   width: auto;
@@ -950,6 +928,133 @@
 @media (prefers-reduced-motion: reduce) {
   .b3d-card,
   .b3d-label {
+    transition: none;
+  }
+}
+
+/* ───────────── «Было / станет» по превью и «День / Ночь» (раунд 15) ─────────────
+   Фигура — сама картинка 3 : 2 по центру поля превью; слева «было» (обрезка clip-path по --pos), справа «станет».
+   Ручка — 44 px (зона нажатия эталона), белая, мягкая тень; линия — 2 px. Подписи «Было» / «Станет» — в углах,
+   тихо (вторичный цвет на плотной белой подложке). Без движения: позиция следует за пальцем/клавишами. */
+.b3d-ba {
+  --pos: 50%;
+  position: relative;
+  flex: none;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 3 / 2;
+  margin: 0;
+  overflow: hidden;
+  cursor: ew-resize;
+  touch-action: pan-y; /* вертикальная прокрутка карточки пальцем остаётся */
+  -webkit-user-select: none;
+  user-select: none;
+}
+.b3d-ba__img,
+.b3d-pd .b3d-pd__im .b3d-ba__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  pointer-events: none;
+}
+.b3d-ba__before {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+  background: #f1f2ee; /* картинки на прозрачном фоне: «было» закрывает «станет» под собой целиком */
+}
+.b3d-ba--night .b3d-ba__before {
+  background: #25282a;
+}
+.b3d-ba__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--c-surface, #ffffff);
+  box-shadow: 0 0 0 1px rgba(21, 44, 38, 0.1);
+  pointer-events: none;
+}
+.b3d-ba__handle {
+  position: absolute;
+  top: 50%;
+  left: var(--pos);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap, 44px);
+  height: var(--tap, 44px);
+  margin: calc(var(--tap, 44px) / -2) 0 0 calc(var(--tap, 44px) / -2);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-surface, #ffffff);
+  box-shadow: var(--shadow-2, 0 4px 12px rgba(21, 44, 38, 0.08), 0 12px 40px rgba(21, 44, 38, 0.1));
+  color: var(--c-ink, #152c26);
+  cursor: ew-resize;
+}
+.b3d-ba__handle .ic {
+  width: 14px;
+  height: 14px;
+}
+.b3d-ba__handle:focus-visible {
+  outline: 3px solid var(--c-focus, #152c26);
+  outline-offset: 2px;
+}
+.b3d-ba__tag {
+  position: absolute;
+  top: var(--s-2, 8px);
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--c-text-2, #4b5752);
+  font-size: 12px;
+  font-weight: var(--fw-semi, 600);
+  line-height: 18px;
+  pointer-events: none;
+  transition: opacity var(--t-fast, 150ms) var(--ease-out, ease-out);
+}
+.b3d-ba__tag--before {
+  left: var(--s-2, 8px);
+}
+.b3d-ba__tag--after {
+  right: var(--s-2, 8px);
+}
+.b3d-ba--before-only .b3d-ba__tag--after,
+.b3d-ba--after-only .b3d-ba__tag--before {
+  opacity: 0;
+}
+/* Ночь: тёмно-серое поле под тёмной картинкой (без синевы — «белый макет», П1). */
+.b3d-pd__im.b3d-pd__im--night {
+  background: #25282a;
+}
+.b3d-ba--night .b3d-ba__tag {
+  background: rgba(37, 40, 42, 0.86);
+  color: #e6e8e5;
+}
+.b3d-ba--night .b3d-ba__line {
+  background: #e6e8e5;
+}
+.b3d-time {
+  display: flex;
+  align-items: center;
+}
+.b3d-time--r06 {
+  padding: var(--s-3, 12px) var(--s-4, 16px) 0;
+}
+@media (max-width: 760px) {
+  .b3d-time--r06 {
+    padding-top: var(--s-2, 8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .b3d-ba__tag {
     transition: none;
   }
 }

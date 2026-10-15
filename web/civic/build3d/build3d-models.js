@@ -25,48 +25,53 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  // Палитра 3D (светлая, спокойная; согласована с токенами ui-kit: бренд #176b4a, акцент #d7f57c).
-  // Дизайн-марафон: без бежевых плашек — мощение и покрытие нейтральные серые, зелень мягче, металл светлее.
+  // Палитра 3D — «белый макет», как у архитекторов (поправка П1, правило 3): белые и светло-серые объёмы, мягкие тени,
+  // приглушённая зелень (бледный шалфей). Цвет — только у того, что важно: новый проект стоит на плите акцента бренда
+  // (лайм эталона A, как метка «Проект · 2027»: accentBase — плита, accentEdge — её край). Без насыщенных «игрушечных»
+  // цветов оборудования, бликов и свечения. Было (раунд 14): коралловые крыши, жёлтые горки, зелёный газон и бирюза.
   var P = {
-    paving: "#e3e4de",
-    pavingDark: "#d4d6cf",
-    curb: "#c9cdc5",
-    lawn: "#b3d29b",
-    lawnDark: "#a6c98f",
-    soil: "#8f7258",
-    trunk: "#86684f",
-    leaf: ["#7fb26f", "#72a866", "#88b978", "#6aa063"],
-    conifer: ["#4f8a5e", "#5b9567"],
-    wood: "#c9a07a",
-    metal: "#6b7671",
-    metalDark: "#46524d",
-    white: "#f3f5f1",
-    roof: "#eceeea",
-    water: "#8fcfe0",
-    waterLight: "#bfe6ef",
-    jet: "#f4fbfd",
-    hedge: "#7ea86c",
-    stone: "#dfe3dc",
-    rubber: "#cbd8de", // мягкое покрытие площадки — светлое серо-голубое, не персиковое
-    rubberZoneA: "#b9cad3", // зона под качелями — темнее
-    rubberZoneB: "#cfe2d4", // зона под башней — мятная
-    sand: "#ecd9a8",
-    teal: "#4f8a8b",
-    coral: "#e07a5f",
-    yellow: "#f2b33d",
-    turf: "#5fa36a",
-    turf2: "#69ac73",
-    line: "#f7f8f4",
-    fence: "#2f5e4e",
-    brand: "#176b4a",
-    brandLight: "#2f7d5b",
-    tactile: "#e9c46a",
-    glass: "#cfe8ee",
-    net: "#f4f6f2",
-    glow: "#fff1c1",
-    lightPool: "#ffe7a1",
-    shadow: "#152c26",
-    flowers: ["#e9a3b4", "#f5c451", "#ffffff", "#c9a7e0"],
+    paving: "#efeeea",
+    pavingDark: "#e4e3de",
+    curb: "#d9d8d2",
+    lawn: "#e1e8d9",
+    lawnDark: "#d8e1cf",
+    soil: "#ddd6ca",
+    trunk: "#cdc7bd",
+    leaf: ["#cbd8bd", "#c4d2b6", "#d1ddc4", "#bfcdb1"],
+    conifer: ["#b7c8ae", "#c0cfb7"],
+    wood: "#e2dcd2",
+    metal: "#b4b9b6",
+    metalDark: "#9ba19e",
+    white: "#f8f8f5",
+    roof: "#f3f3f0",
+    water: "#dde6e9",
+    waterLight: "#edf2f3",
+    jet: "#f6f9f9",
+    hedge: "#c9d5bd",
+    stone: "#ecebe6",
+    rubber: "#e7e7e2",
+    rubberZoneA: "#deded9",
+    rubberZoneB: "#e3e7dd",
+    sand: "#ebe5d8",
+    teal: "#dadcd8", // оборудование площадки — светло-серое, как всё в макете
+    coral: "#efefeb",
+    yellow: "#e8e8e3",
+    turf: "#d6e0cd",
+    turf2: "#dce5d3",
+    line: "#fbfbf9",
+    fence: "#a7adaa",
+    brand: "#2f4a10", // пунктир границы проекта (на карте его цвет задаёт материал build3d.js)
+    brandLight: "#dcdeda",
+    sign: "#4b5752", // табличка остановки — тёмно-серая (информация, не украшение)
+    tactile: "#e3ddcc",
+    glass: "#e8eef0",
+    net: "#f4f6f4",
+    glow: "#f1efe8", // плафон днём — светлый, без свечения
+    lightPool: "#f3efe4",
+    shadow: "#2b302e", // тень — нейтральная, без зелёного оттенка
+    flowers: ["#f4f4f1", "#e8ece4", "#f0efe9", "#e4e8e0"],
+    accentBase: "#f3f5ec", // плита нового проекта — почти белая (лайм читался бы как кремовый)
+    accentEdge: "#c9e27d", // акцент бренда: кайма плиты нового проекта, цоколь опоры освещения
   };
 
   // Детерминированный генератор случайных чисел (одинаковый вид объекта после перезагрузки).
@@ -490,12 +495,23 @@
 
     // ───────────── Модели ─────────────
 
+    // Кайма нового проекта (акцент бренда, П1): полоса 0,6 м по краю плиты, чуть выше неё — читается и сверху, и сбоку.
+    function accentRim(b, W, D, z) {
+      var t = 0.6,
+        h = 0.08;
+      b.box(W, t, h, 0, -D / 2 + t / 2, z, P.accentEdge);
+      b.box(W, t, h, 0, D / 2 - t / 2, z, P.accentEdge);
+      b.box(t, D - 2 * t, h, -W / 2 + t / 2, 0, z, P.accentEdge);
+      b.box(t, D - 2 * t, h, W / 2 - t / 2, 0, z, P.accentEdge);
+    }
+
     // Сквер 40×30: мощение, четыре газона, крестом дорожки, фонтан в центре, деревья, скамейки, фонари.
     function square(b, rand) {
       var W = 40,
         D = 30;
       b.softDisc(W / 2 + 2, D / 2 + 2, 0, 0, 0.01, P.shadow, 0.1);
-      b.box(W, D, 0.1, 0, 0, 0, P.paving);
+      b.box(W, D, 0.1, 0, 0, 0, P.accentBase);
+      accentRim(b, W, D, 0.1);
       var path = 3.2;
       var qw = (W - path) / 2 - 1.2,
         qd = (D - path) / 2 - 1.2;
@@ -580,15 +596,15 @@
       var W = 24,
         D = 18;
       b.softDisc(W / 2 + 1.5, D / 2 + 1.5, 0, 0, 0.01, P.shadow, 0.1);
-      b.box(W, D, 0.12, 0, 0, 0, P.rubber);
+      b.box(W, D, 0.12, 0, 0, 0, P.accentBase);
       // Зоны покрытия: под качелями и под башней с горкой — мягкие оттенки, как разметка безопасных зон.
       b.box(6.2, 4.6, 0.015, 5.5, 3.5, 0.12, P.rubberZoneA);
       b.box(5.6, 8.6, 0.015, -6, 0.2, 0.12, P.rubberZoneB);
       // Бортик.
-      b.box(W, 0.3, 0.25, 0, -D / 2 + 0.15, 0, P.curb);
-      b.box(W, 0.3, 0.25, 0, D / 2 - 0.15, 0, P.curb);
-      b.box(0.3, D, 0.25, -W / 2 + 0.15, 0, 0, P.curb);
-      b.box(0.3, D, 0.25, W / 2 - 0.15, 0, 0, P.curb);
+      b.box(W, 0.3, 0.25, 0, -D / 2 + 0.15, 0, P.accentEdge);
+      b.box(W, 0.3, 0.25, 0, D / 2 - 0.15, 0, P.accentEdge);
+      b.box(0.3, D, 0.25, -W / 2 + 0.15, 0, 0, P.accentEdge);
+      b.box(0.3, D, 0.25, W / 2 - 0.15, 0, 0, P.accentEdge);
       // Башня: 4 стойки, площадка на 1.2 м, перила, крыша-пирамида.
       var tx = -6,
         ty = 2.5;
@@ -662,7 +678,8 @@
         FW = 28,
         FD = 16;
       b.softDisc(W / 2 + 1.5, D / 2 + 1.5, 0, 0, 0.01, P.shadow, 0.1);
-      b.box(W, D, 0.1, 0, 0, 0, P.stone);
+      b.box(W, D, 0.1, 0, 0, 0, P.accentBase);
+      accentRim(b, W, D, 0.1);
       var stripes = 10;
       for (var i = 0; i < stripes; i++) {
         var sw = FW / stripes;
@@ -728,8 +745,8 @@
       var W = 12,
         D = 4.5;
       b.softDisc(W / 2 + 1, D / 2 + 1, 0, 0, 0.01, P.shadow, 0.1);
-      b.box(W, D, 0.15, 0, 0, 0, P.stone);
-      b.box(W, 0.3, 0.2, 0, -D / 2 + 0.15, 0, P.curb);
+      b.box(W, D, 0.15, 0, 0, 0, P.accentBase);
+      b.box(W, 0.3, 0.2, 0, -D / 2 + 0.15, 0, P.accentEdge);
       b.box(W - 1, 0.4, 0.02, 0, -D / 2 + 0.75, 0.15, P.tactile);
       var py = 0.85,
         pw = 6,
@@ -758,11 +775,11 @@
       b.box(0.08, 0.3, 0.32, 0.9, py + 0.45, 0.15, P.metalDark);
       // Информационный щит у правой боковины.
       b.box(1.0, 0.06, 1.5, 2.1, py + pd / 2 - 0.05, 0.6, P.white);
-      b.box(1.0, 0.07, 0.25, 2.1, py + pd / 2 - 0.05, 1.85, P.brand);
+      b.box(1.0, 0.07, 0.25, 2.1, py + pd / 2 - 0.05, 1.85, P.sign);
       b._grp = { id: ++grpSeq };
       // Табличка остановки на столбе у бордюра.
       b.cyl(0.05, 0.05, 2.9, 6, 4.9, -1.2, 0.15, P.metal);
-      b.box(0.62, 0.05, 0.62, 4.9, -1.2, 2.55, P.brand);
+      b.box(0.62, 0.05, 0.62, 4.9, -1.2, 2.55, P.sign);
       b.box(0.36, 0.06, 0.2, 4.9, -1.2, 2.75, P.white);
       b._grp = null;
       b.bin(-4.6, 0.9);
@@ -786,7 +803,7 @@
         b._grp = { id: ++grpSeq }; // опора со светильником растёт целиком; волна — вдоль участка
         // Круглый цоколь, коническая опора, изогнутый кронштейн, плоский светильник со светящимся стеклом.
         // Опора толще настоящей (0.16 → 0.1 м): на 17–19 масштабе тоньше — только волосок на карте.
-        b.cyl(0.36, 0.34, 0.3, 10, x, y, 0, P.curb);
+        b.cyl(0.36, 0.34, 0.3, 10, x, y, 0, P.accentEdge); // цоколь — акцент нового проекта
         b.cyl(0.16, 0.1, H, 10, x, y, 0.3, P.metal);
         b.rod([x, y, H + 0.25], [x + ax * 0.9, y + ay * 0.9, H + 0.55], 0.06, 6, P.metal);
         b.rod([x + ax * 0.9, y + ay * 0.9, H + 0.55], [x + ax * 1.85, y + ay * 1.85, H + 0.62], 0.06, 6, P.metal);
@@ -796,7 +813,7 @@
         var lens = new THREE.BoxGeometry(0.88, 0.32, 0.04);
         b.add("glow", lens, P.glow, new THREE.Matrix4().makeRotationZ(rot).setPosition(x + ax * 1.95, y + ay * 1.95, H + 0.52));
         b.softDisc(0.9, 0.9, x, y, 0.015, P.shadow, 0.16); // мягкая тень у основания
-        b.softDisc(6, 6, x + ax * 1.95, y + ay * 1.95, 0.02, P.lightPool, 0.34);
+        // Днём пятна света нет (П1: без свечения); ночной вид — отдельная картинка карточки «День / Ночь».
       });
       b._grp = null;
       if (opts.line && opts.line.length > 1) b.dashedLine(opts.line, 0.03);
@@ -882,7 +899,7 @@
     // (shadowShape) растрируются в маленькую картинку (свой растеризатор — заливка пути холста на 3 000 треугольников
     // сквера стоила ~40 мс, здесь ~2 мс), размываются и ложатся текстурой на плоскость чуть выше газона — на землю,
     // мощение и газон внутри объекта; плюс мягкий «след» прямо под скамейками и кронами. sx, sy — смещение тени на метр
-    // высоты в осях модели. Тень тёмно-зелёная бренда. Работает и в Node (без DOM) — проверяется тестами.
+    // высоты в осях модели. Тень нейтральная тёмно-серая («белый макет», П1). Работает и в Node (без DOM) — проверяется тестами.
     var SHADOW_Z = 0.2; // над газоном (0.18) и плитами; ниже бордюров и скамеек
     function rasterize(tris, x0, y0, ppm, W, H) {
       var out = new Float32Array(W * H);
@@ -930,9 +947,9 @@
       var foot = blur2(rasterize(sh.foot, x0, y0, ppm, W, H), W, H, Math.max(1, Math.round(1.0 * ppm)));
       var data = new Uint8Array(W * H * 4);
       for (var k = 0; k < cast.length; k++) {
-        data[k * 4] = 21; // P.shadow #152c26 (sRGB)
-        data[k * 4 + 1] = 44;
-        data[k * 4 + 2] = 38;
+        data[k * 4] = 43; // P.shadow #2b302e (sRGB) — нейтральная тень «белого макета»
+        data[k * 4 + 1] = 48;
+        data[k * 4 + 2] = 46;
         data[k * 4 + 3] = Math.round(255 * Math.max(cast[k] * 0.26, foot[k] * 0.2));
       }
       var tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat);
