@@ -270,3 +270,22 @@ def test_r02_world_counts_match_expected(tmp_path):
             assert pit is not None and pit["route_hint"] and len(pit["route_hint"]["services"]) == 2
     finally:
         store.close()
+
+
+def test_r17_reader_and_r06_call_convention(tmp_path, world):
+    """Стыки соседей: R17 ui/civic_agencies/sources.py ищет ui.civic_feedback.v2.agencies.records_for_agencies;
+    R06 ui/civic_store/notify.py зовёт integration.updates(device, since, db=<путь>) — по сигнатуре."""
+    import inspect
+    from ui.civic_feedback.v2 import agencies, integration
+    db = tmp_path / "w.sqlite3"
+    seed_world(db, world, now=NOW)
+    rows = agencies.records_for_agencies(str(db))
+    assert len(rows) == 5 and agencies.agency_records is agencies.records_for_agencies
+    joint_row = next(r for r in rows if r["joint"])
+    assert joint_row["service"] == "water" and [s["service"] for s in joint_row["services"]] == ["water", "road"]
+    assert joint_row["handoffs"][0]["to"] == "water" and joint_row["passport"] == {"assignee_id": "water"}
+    flat = json.dumps(rows, ensure_ascii=False)
+    for private in ("Прорыв трубы", "point", "device", "photos", "Водоканал заменил трубу"):
+        assert private not in flat, private
+    assert "db" in inspect.signature(integration.updates).parameters        # R06 передаёт db=<путь> по имени
+    assert integration.updates("dev-nobody-00000000001", None, db=str(db)) == []

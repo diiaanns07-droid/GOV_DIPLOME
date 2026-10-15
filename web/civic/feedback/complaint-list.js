@@ -265,6 +265,13 @@
     function setPart(group, part, status) {
       state.partMenu = null;
       if (part.status === status) { render(); return; }
+      // «Сделано» — с обязательной строкой «что сделала служба»: открываем карточку с формой заметки этой службы.
+      if (status === "done") {
+        state.open = group.key; state.openPart = part.service; render();
+        var note = box.querySelector(".bc-inbox__item--open [name=part_note]");
+        if (note) note.focus();
+        return;
+      }
       var before = JSON.stringify(state.data);
       var was = part.status;
       part.status = status;
@@ -405,8 +412,9 @@
         li.appendChild(detail);
         if (main && !readonly(main) && window.BirgeComplaintStaff) {
           staffHandle = window.BirgeComplaintStaff.mount(holder, { complaintId: main.id, csrf: csrfToken, openFix: state.openFix,
+            openPart: state.openPart || null,
             onChange: function (complaint) { syncParts(group, complaint); refreshCounts(); } });
-          state.openFix = false;
+          state.openFix = false; state.openPart = null;
         } else if (main && readonly(main)) {
           // Примеры не меняются (как в карточке R07: «Это пример: статус примеров не меняется»).
           holder.appendChild(h("p", { "class": "bc-meta" }, t("heat.example_readonly")));

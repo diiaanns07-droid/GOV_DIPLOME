@@ -107,7 +107,7 @@
     var fixing = !!opts.openFix;
     var lastNote = null;
     // Блок «Службы» (раунд 15): какая форма открыта, скрыта ли подсказка R04, подсказка, полученная по запросу.
-    var jointUi = { form: null, hintHidden: false, noteFor: null, draft: "idle" };
+    var jointUi = { form: null, hintHidden: false, noteFor: opts.openPart || null, draft: "idle" };
 
     function call(method, path, body) {
       return fetch(API + path, { method: method, credentials: "same-origin",
@@ -336,7 +336,9 @@
     // Строка части: значок статуса · служба (ведущая — пометкой) · сегменты «ждёт · в работе · сделано».
     function partRow(part, j) {
       var editable = current.status !== "rejected";
-      var seg = h("div", { "class": "bk-seg bc-joint__seg", role: "group",
+      // Одна служба — статус ведут прежние «Взять в работу» и «Отметить исправленным» (с обязательным «что сделали»,
+      // R11 §2.3); сегменты частей — только у совместного исполнения.
+      var seg = !j.joint ? null : h("div", { "class": "bk-seg bc-joint__seg", role: "group",
                            "aria-label": t("joint.part.menu", { service: serviceLabel(part.service) }) },
         PART_STATUSES.map(function (st) {
           return h("button", { "class": "bk-seg__btn bc-joint__segbtn", type: "button", "data-status": st,
@@ -363,11 +365,16 @@
         part.note ? h("p", { "class": "bc-meta bc-joint__note" }, "«" + part.note + "»") : null,
         seg].concat(tools));
       if (jointUi.noteFor === part.service) {
-        var input = h("input", { name: "part_note", maxlength: "120", value: part.note || "",
+        var input = h("input", { name: "part_note", maxlength: "120", value: part.note || "", required: true,
                                  "aria-describedby": "bc-part-hint-" + uid });
+        var noteError = h("p", { "class": "bc-staff__fix-error", role: "alert", hidden: true });
         li.appendChild(h("form", { "class": "bc-staff__form bc-joint__noteform", onsubmit: function (e) {
-          e.preventDefault(); setPart(part.service, "done", input.value.trim());
-        } }, [field(t("joint.part.note"), input, t("joint.part.note_hint"), "bc-part-hint-" + uid),
+          e.preventDefault();
+          // «Сделано» — с одной строкой «что сделала служба», как «что сделали» у «Отметить исправленным» (R11 §2.3):
+          // жители видят «Водоканал — сделано: Трубу заменили», а не пустое «сделано».
+          if (input.value.trim().length < 3) { noteError.textContent = t("staff.fixed.need_what"); noteError.hidden = false; input.focus(); return; }
+          setPart(part.service, "done", input.value.trim());
+        } }, [field(t("joint.part.note"), input, t("joint.part.note_hint"), "bc-part-hint-" + uid), noteError,
               h("div", { "class": "bc-joint__formrow" }, [
                 h("button", { "class": "bk-btn", type: "submit" }, t("common.action.save")),
                 h("button", { "class": "bc-link", type: "button", onclick: function () { jointUi.noteFor = null; render(); } },
@@ -620,7 +627,11 @@
       return call("GET", "/complaints/" + encodeURIComponent(id)).then(function (res) {
         // opts.staffOnly (карточка R07): не сотрудник (нет служебных полей) или ошибка — блока просто нет.
         if (res.ok && opts.staffOnly && !(res.data.complaint && "subscribers" in res.data.complaint)) { root.hidden = true; return; }
-        if (res.ok) { current = res.data.complaint; root.hidden = false; render(); }
+        if (res.ok) {
+          current = res.data.complaint; root.hidden = false; render();
+          // Открыли из строки «Обращений» выбором «Сделано» у части — сразу курсор в «что сделала служба».
+          if (opts.openPart) { opts.openPart = null; focusNote(); }
+        }
         else if (opts.staffOnly) { root.hidden = true; }
         else { root.innerHTML = ""; root.appendChild(h("p", { "class": "bk-error" }, t("mine.error.title"))); }
       });
