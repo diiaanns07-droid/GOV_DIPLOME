@@ -4,8 +4,8 @@
  "branch": "claude/youthful-johnson-6nz5mp",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g: FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "3cc802b9e6f30b8c463cb4bc9ce9ba754f89b029",
- "tested_sha": "3cc802b9e6f30b8c463cb4bc9ce9ba754f89b029",
+ "code_sha": "99aa6cdcc61e5bbd66ec2b686de5a3d9060dd414",
+ "tested_sha": "99aa6cdcc61e5bbd66ec2b686de5a3d9060dd414",
  "push_status": "OK (origin/claude/youthful-johnson-6nz5mp)",
  "amendments_applied": [
   "П1 «Без ИИ-слопа» (15 окт 17:05): без иллюстраций, значки R11 ≤ 48 px, фото «после» — только настоящие"
@@ -62,8 +62,9 @@
    ],
    "script": "tests/civic/R16/browser/r16_browser.cjs",
    "runs": {
-    "b1_like_r01_7208a580_code_3cc802b9": "264/264 (R01 7208a580 + R01_together_b1.patch — лист слева + словарь R11 442b617b)",
-    "final4_stand_code_3cc802b9": "258/258 (стенд FINAL-4 + маршруты R16 в памяти; без оболочки раунда 15 одна проверка «На карте» не нужна)"
+    "b1_like_r01_b012_code_99aa6cdc": "264/264 (R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px)",
+    "final4_stand_code_99aa6cdc": "258/258 (стенд FINAL-4 + маршруты R16 в памяти; без оболочки раунда 15 одна проверка «На карте» не нужна)",
+    "b1_like_r01_7208a580_left_sheet": "264/264 (код 3cc802b9, лист слева — до решения R01)"
    },
    "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон"
   },
@@ -77,7 +78,7 @@
    ],
    "steps": 9,
    "script": "tests/civic/R16/browser/r16_scene7.cjs",
-   "stand": "сборка «как B1» R01 7208a580 + patch + словарь R11, демо-мир R02 (CIVIC_DEMO_WORLD=1, двор yard-1454082640, дело i-w15-01), лист слева",
+   "stand": "сборка «как B1» R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px, демо-мир R02 (CIVIC_DEMO_WORLD=1, двор yard-1454082640, дело i-w15-01)",
    "result": "14 → 15, «Поддержано акиматом: инвентарь · вывоз мусора», «15 соседей — сделано вместе», слой карты",
    "passed": 36,
    "failed": 0
@@ -98,10 +99,11 @@
   },
   "pytest_r01_with_patch": {
    "status": "PASS",
-   "passed": 423,
+   "passed": 1289,
    "failed": 0,
-   "skipped": 1,
-   "what": "tests/civic/R01 + tests/civic/R16 на R01 7208a580 + R01_together_b1.patch + код R16 0433fab9"
+   "skipped": 2,
+   "xpassed": 2,
+   "what": "tests/civic/R01 + R08 + R15 + R16 на R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px + код R16 99aa6cdc"
   },
   "perf_yard_cold": {
    "status": "PASS",
@@ -153,12 +155,12 @@
    "status": "PASS",
    "script": "tests/civic/R16/browser/r16_day_support.cjs",
    "what": "шаг 3 сцены 7 по DEMO_SCRIPT R01: акимат → «Картина дня» R08 → «Жители вместе» → «Поддержать» → дело сцены 7 (i-w15-01) с «Поддержать» сотрудника, форма открывается",
-   "runs": "сборка «как B1» R01 7208a580 + демо-мир: 1366/375 × ru/kk — 16/16; FINAL-4 — NOT_RUN (нет карточки R08 «Жители вместе»)"
+   "runs": "сборка «как B1» R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px + демо-мир: 1366/375 × ru/kk — 16/16; FINAL-4 — NOT_RUN (нет карточки R08 «Жители вместе»)"
   },
   "r10_visual_audit": {
    "status": "PASS",
    "tool": "tests/e2e/visual_audit.cjs (ветка R10 claude/zen-wozniak-69d41q @ 1868488c), --only yard,together,together-card",
-   "result": "PASS 171 · WARN 12 · FAIL 0 на сборке «как B1» R01 7208a580 (1366/1024/375 × ru/kk, демо-мир); WARN — «больше 3 размеров шрифта» (шкала компонентов R11); было 30 FAIL до круга 5 R16"
+   "result": "PASS 171 · WARN 12 · FAIL 0 на сборке «как B1» R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px (1366/1024/375 × ru/kk, демо-мир); WARN — «больше 3 размеров шрифта» (шкала компонентов R11); было 30 FAIL до круга 5 R16"
   }
  },
  "screens": [
@@ -267,7 +269,7 @@
   "Время действий акимата в облачном Chromium 3–4 с — программная отрисовка WebGL карты; API отвечает за 4–20 мс.",
   "Без 3 доп. маршрутов в сборке модуль спрашивает /modules и прячет список дворов и «старшего по двору» (без 404)."
  ],
- "next_step": "B1 (16 окт 14:00 Астаны): R01 берёт код по code_sha (ui/civic_together/, web/civic/together/, tests/civic/R16/) и R01_together_b1.patch (лист слева); затем проверить сцену 7 и экраны R16 на их сборке; замечания R10/R11/R15 — кругами.",
+ "next_step": "B1 (16 окт 14:00 Астаны): R01 берёт код по code_sha (ui/civic_together/, web/civic/together/, tests/civic/R16/) — patch не нужен; после выхода B1 — сцена 7, «Картина дня» → «Поддержать», visual_audit R10 и кадры на их сборке; замечания R10/R11/R15 — кругами.",
  "findings_closed": [
   "R15 S45, S46, S47 (checkpoint 3)",
   "R15 S51 (checkpoint 5)",
@@ -278,5 +280,5 @@
   "R11 R16-1 («что взять» на языке интерфейса), R16-2 (scrollFade вкладок), R16-3 (кадры на оболочке раунда 15) — круг 5"
  ],
  "findings_open": [],
- "screens_note": "Кадры — настоящий интерфейс на сборке «как B1» (R01 7208a580, ui-kit и словарь R11, лист слева) в облаке без подложки OpenFreeMap; сцена 7 — на демо-мире R02; «На карте» — 1366 (лист остаётся) и 375 (лист закрыт)."
+ "screens_note": "Кадры — настоящий интерфейс на сборке «как B1» (R01 B0.12 7d599d46 с кодом R16, «Сделаем вместе» — свой экран 720 px) в облаке без подложки OpenFreeMap; сцена 7 — на демо-мире R02; «На карте» — 1366 и 375."
 }
