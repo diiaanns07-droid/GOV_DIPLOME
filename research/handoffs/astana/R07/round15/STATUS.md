@@ -52,16 +52,30 @@ restored_from: fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.
   две кнопки); иконки хроники — из спрайта ui-kit, где он есть; без эмодзи и декоративных градиентов.
 - Регресс: волна 2 в браузере 38/38 (стенд R07), pytest tests/civic/R07 200/0, R01 198/0, R08 263/0.
 
-## Дальше
-- Браузерный тест хроники tests/civic/R07/browser/replay.cjs (открыть, клавиши, неделя 10–20 с, Esc без мигания,
-  ошибка/503/пусто, reduced-motion, 375/1366 × ru/kk) + кадры для R14/R10 (начало, буран, после).
-- Ctrl+K «Хроника города» в commands(); кнопка в колонке кнопок карты — патч R01 в INTEGRATION.
-- Задача 4 (кластеры, появление, фокус, легенда) и 5 (слои соседей), DELIVERY/RUN/INTEGRATION.
+- (13:40 UTC) Мир R02 (SCHEMA 1.1): отметки шкалы — из events + incidents (связь event) + scenes; время-объекты
+  {"ago_hours"} (world.materialize); R17 incident_marks(start, end) — его функция для хроники; кризис о событии
+  склеивается с событием («Буран в Нуре» + incident inc-w15-buran, сцена 9).
+- Окно выборки /heat и хроники: + 60 дней (HeatService.window) — давние жалобы, исправленные на днях, снова зелёные.
+- Интеграция во временной сборке (R02 08bb57a1 + R09 eed6393f + R17 72676e3d + R07): карта = EXPECTED.json R02
+  во всех районах за 7/14/30 дней — при патче R09 metoo_times (patches/, INTEGRATION §2); месяц хроники 0,8 с.
+- Браузер: tests/civic/R07/browser/replay.cjs 15/15 (клавиши, неделя 13 с, Esc без мигания, 500/503/пусто,
+  reduced-motion, 1366/1024/375 × ru/kk); раскладка полосы — container queries (по ширине полосы).
+  Кадры: research/round-15-results/R07/screens/. FPS 1 000 целей: fps_cloud.json.
+- Ctrl+K «Хроника города» (heat.commands). DELIVERY.json, RUN.txt, INTEGRATION.txt — первые версии.
 
-## Соседи (15 окт 11:50 UTC — проверить заново на следующем круге)
-- R02 (claude/affectionate-shannon-jm6ws5): только STATUS; образец мира обещан к 18:30 Астаны — жду SCHEMA.md.
-- R17: ветки нет — работаю на фикстуре §5.5. R09: ветки нет. R01 (claude/brave-fermi-nhzetj): только STATUS.
-- R11 (claude/gracious-mendel-eopem6): только STATUS — IA_ROUND15 ещё нет.
+## Дальше
+- Задача 4: кластеры с числом на уровне города, мягкое появление, режим фокуса, легенда = heat_states.
+- Задача 5: значки поверх слоёв R16/R17/R12 — проверить на их ветках, замечания в INTEGRATION.
+- Проверка в сборке R01 B1 (16 окт 14:00 Астаны) с демо-миром; ответы соседей на патч R09 и просьбы R11/R17.
+
+## Соседи (15 окт 13:40 UTC)
+- R02 (claude/affectionate-shannon-jm6ws5 @ 08bb57a1): SCHEMA 1.1, world_v1.json, EXPECTED.json — взято.
+- R09 (claude/quirky-ptolemy-k3z2mj @ eed6393f): seed_world есть; «Я тоже» читает metoo_ago, а мир пишет metoo_times —
+  патч в research/round-15-results/R07/patches/R09_world_seed_metoo_times.patch (INTEGRATION §2). Сообщить R09.
+- R17 (claude/sweet-euler-5tiu5b @ 72676e3d): incident_marks(start, end) для R07 — подключено; просьба: поле event.
+- R01 (claude/brave-fermi-nhzetj @ 460fd683): маршрут heat.replay и вызов ui.civic_heat.world.seed_world уже есть;
+  примеры R07 в демо-мире не подмешивает. Нужны: replay.js/css в статике и attach у кнопок карты (INTEGRATION §1.2–1.4).
+- R11 (claude/gracious-mendel-eopem6): просьба i-play / i-pause в icons.svg и ключи replay.* (INTEGRATION §5).
 
 ## Вопросы владельцу
 - (пока нет)

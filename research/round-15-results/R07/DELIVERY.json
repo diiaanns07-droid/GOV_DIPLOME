@@ -1,0 +1,47 @@
+{
+  "role": "R07",
+  "round": 15,
+  "branch": "claude/birge-r07-round-15-zjp4ob",
+  "base_sha": "2d329b2cceeb07edbcb4f98ae8fdb3bb37ec1499",
+  "restored_from": "fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.css, heat.js, ui/civic_heat/devserver.py, tests/civic/R07/test_r07_devserver.py",
+  "code_sha": "52dee9a4b98e45cb883505f994d9fcffbe9288c9",
+  "tested_sha": "52dee9a4b98e45cb883505f994d9fcffbe9288c9",
+  "push_status": "OK",
+  "changed_paths": [
+    "ui/civic_heat/world.py (новый): демо-мир — world_mode, seed_world (отметки шкалы: events + incidents + scenes, своя таблица heat_replay_marks_v1), materialize/time_of (время SCHEMA R02 §1)",
+    "ui/civic_heat/replay.py (новый): GET heat/replay — as_of + тот же расчёт /heat на каждый день, компактные кадры, кэш прошлых дней, фоновый досчёт месяца",
+    "ui/civic_heat/marks.py (новый): отметки шкалы — свои (мир) + R17 incident_marks; кризис о событии склеивается с событием",
+    "ui/civic_heat/world_fixture.py (новый): мини-мир R07 в формате R02 v1.1 и city_world (1 000 целей)",
+    "ui/civic_heat/service.py: replay(), window() (+60 дней к выборке /heat), db_path, meta.replay/meta.world",
+    "ui/civic_heat/api.py, __init__.py, engine.py (разбор ISO с памятью), demo_seed.py ([] в демо-мире), devserver.py (--world, --world city1000)",
+    "web/civic/heat/heat.js: replay.begin/frame/end (перетекание цвета и веса через feature-state, счёт чисел, угасание), CivicHeat.current, Ctrl+K «Хроника», быстрые значки при 1 000 целей, П1 — пустое состояние/ошибка: значок R11 ≤ 48 px + одна кнопка",
+    "web/civic/heat/heat.css, demo.html (стенд: кнопка «Хроника», ?replay=7)",
+    "web/civic/replay/replay.js, replay.css (новые): BirgeReplay.mount/open/attach",
+    "tests/civic/R07/test_r07_replay.py (26 + 1 skip), tests/civic/R07/browser/replay.cjs (15 проверок), replay_fps.cjs, browser/shots.js (проверка пустого состояния по П1)"
+  ],
+  "tests": {
+    "pytest tests/civic/R07": "PASS 203 passed, 1 skipped (test_real_world_file_when_present — мира R02 нет в ветке R07; в сборке R01 пройдёт)",
+    "pytest tests/civic/R08": "PASS 263 passed, 1 skipped (после смены окна выборки /heat)",
+    "pytest tests/civic/R01": "PASS 198 passed, 1 skipped (на checkpoint 2, до смены окна; шлюз не менялся)",
+    "browser tests/civic/R07/browser/replay.cjs": "PASS 15/15 (стенд R07 --world, Chromium headless 141)",
+    "browser regress round14 wave2.js": "PASS 38/38",
+    "browser regress round14 readability.js": "PASS 18/18",
+    "browser regress round14 pan_stability.js": "PASS 2/2",
+    "integration R02 world → R09 → R17 → R07 (временная сборка, R02 08bb57a1 + R09 eed6393f + R17 72676e3d)": "PASS: отметка «Буран в Нуре» + кризис inc-w15-buran + сцена 9; районы карты 7/14/30 дней = EXPECTED.json R02 (0 расхождений) — С ПАТЧЕМ R09 metoo_times; без патча 9 районов расходятся",
+    "speed": "город за 30 дней: мир R02 (743 жалобы) 0,76–0,85 с; синтетика 900 жалоб / 500 целей 0,57 с; 7 дней по кэшу 0,01–0,03 с",
+    "fps 1000 targets (cloud, SwiftShader)": "районы 55 к/с (p95 16,8 мс); места 15–17 к/с при fps самой карты 6–13 к/с; код хроники 0,4–0,9 мс/кадр, смена дня 43–51 мс — fps_cloud.json; 60 к/с на ноутбуке — NOT_RUN (облако без GPU), LOCAL по INTEGRATION §7"
+  },
+  "screens": {
+    "replay 1366/1024/375 × ru/kk × start/buran/after": "research/round-15-results/R07/screens/replay_*.png (18 кадров, стенд R07, упрощённый фон — без интернета подложки нет)",
+    "states": "research/round-15-results/R07/screens/replay_state_{error-500,not-ready-503,empty}.png",
+    "report": "research/round-15-results/R07/screens/report.json"
+  },
+  "known_limits": [
+    "60 к/с при 1 000 целей не измерено: в облаке программный WebGL (сама карта 6–13 к/с); замер на ноутбуке — LOCAL",
+    "Числа карты = EXPECTED R02 только с патчем R09 metoo_times (INTEGRATION §2) — до него «Я тоже» в базе R09 стоят равномерно",
+    "Кнопка у кнопок карты, место полосы, скрытие шторки на телефоне — у R01 (INTEGRATION §1.3–1.4); пока не подключено, хроника открывается на стенде R07, Ctrl+K и ?replay=7",
+    "Отмотка в прошлое не знает времени пометки дубля и голосов «не могу проверить» — на цвет и число не влияет",
+    "▶ / ❚❚ — свои значки до появления i-play / i-pause в наборе R11"
+  ],
+  "next_step": "Задача 4 (кластеры, появление, фокус, легенда) и 5 (значки поверх слоёв R16/R17/R12); проверка в сборке R01 B1 (16 окт 14:00) с демо-миром; кадры с настоящей картой — LOCAL-12"
+}
