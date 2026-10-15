@@ -1,9 +1,9 @@
 diff --git a/ui/web_server.py b/ui/web_server.py
-index 2abab5b6..a876dfe7 100644
+index 412efbda..e908a949 100644
 --- a/ui/web_server.py
 +++ b/ui/web_server.py
-@@ -2511,6 +2511,12 @@ def main():
-     world_line = server.civic_v2.world_line(server.civic_v2.seed_world())  # раунд 15: CIVIC_DEMO_WORLD=1
+@@ -2552,6 +2552,12 @@ def main():
+     world_line = server.civic_v2.world_line(server.civic_v2.world_report or server.civic_v2.seed_world())
      if world_line:
          print(world_line, flush=True)
 +    # R03 (R10 B-107): «Спросить Birge» и карта — первый вызов R07/R08 грузит данные 3–4 с. Прогрев в фоне после
