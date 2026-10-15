@@ -69,7 +69,9 @@ R05 · раунд 15 · INTEGRATION (дополняется по ходу рау
      видов (handle.previewOf(kind).tint тоже #F1F2EE; R06 берёт его сам).
    - Карточка проекта (своя и R06 renderProposal): вместо одной картинки — шторка «Было / станет» по превью (ручка 44 px,
      role=slider, ← → / Shift / Home / End, перетаскивание); у освещения под ней — «День / Ночь» (bk-seg ui-kit).
-     На телефоне картинка карточки R06 теперь видна (120 px; в раунде 14 была скрыта) — шторка объясняет проект.
+     Телефон: картинка карточки R06 по-прежнему скрыта (над карточкой — проект и кнопки карты «3D», слои; проверено
+     smoke раунда 14 в оболочке — 28/28), шторку открывает кнопка «Было / станет» в нижней строке карточки (44 px,
+     aria-expanded; повторно — свернуть).
    - Новые файлы для CIVIC_ASSETS (R01, patches/R01_web_server_assets.patch): data/previews/{square,playground,sports,
      stop,lighting}-before@2x.png, lighting-after@2x.png, lighting-night-before@2x.png, lighting-night-after@2x.png.
      Нет файла «было» — карточка показывает прежнее превью без шторки (проверено).
@@ -83,6 +85,7 @@ R05 · раунд 15 · INTEGRATION (дополняется по ходу рау
        build3d.time.label     «Время суток» / «Тәулік уақыты»
        build3d.time.day       «День» / «Күндіз»
        build3d.time.night     «Ночь» / «Түнде»
+       build3d.ba.toggle      «Было / станет» / «Бұрын / кейін»   (кнопка на телефоне)
    - Для R06 (идея с объектом из каталога, список «Проекты и идеи»): та же шторка готовым элементом —
      CivicShell.build3d.beforeAfter(kind) → <figure class="b3d-ba"> (ручка 44 px, клавиши, перетаскивание; стили —
      build3d.css, уже подключён); адреса картинок — previewOf(kind).before.src / .after.src (480 × 320, одна рамка).

@@ -1,7 +1,7 @@
 {
  "role": "R05",
- "generated_at": "2026-10-15T12:52:54.826Z",
- "tested_sha": "645d600881d3c394fea67849e5a248b33946ea82",
+ "generated_at": "2026-10-15T13:28:18.607Z",
+ "tested_sha": "0050c4cedf885be7a6fe982ddeb8c0396135bef2",
  "dirty": false,
  "environment": {
   "node": "v22.22.0",
@@ -10,8 +10,8 @@
   "ui_kit_i18n": "web/civic/ui-kit, web/civic/i18n этой ветки",
   "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
   "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
-  "fps_0_objects_swiftshader": 6.3,
-  "fps_20_objects_swiftshader": 3.4,
+  "fps_0_objects_swiftshader": 5,
+  "fps_20_objects_swiftshader": 3.6,
   "gpu_geometries_20_objects": 100
  },
  "summary": {
@@ -113,7 +113,7 @@
   {
    "id": "limit_20_objects",
    "status": "PASS",
-   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.4 кадр/с (без объектов 6.3)"
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.6 кадр/с (без объектов 5)"
   },
   {
    "id": "build_animation_grows_then_shows_label",
