@@ -53,6 +53,10 @@ tests/civic/R04/round15/http_check_r04.py (modules ready; route 200/400; moderat
     d = reply_draft(record=rec, status="in_progress", lang="kk")   # или POST /reply-draft {complaint_id}
     # d["text"] — в поле ответа (сотрудник правит), d["warnings"] — показать под полем, d["needs_input"] = ["reason"]
     # — подсветить место «[причина — допишите]» (отказ без причины).
+Длина: черновик ≤ 320 знаков на каждом языке (поле «Обновление для всех» R09 хранит 320 — PASSPORT_TEXT_MAX × 2):
+если не влезает, R04 сам убирает второстепенное («спасибо», дату следующего обновления, приветствие…) и сокращает
+текст сотрудника по границе слова; что убрано — в ответе shortened и в warnings. Обрезать slice(0, 320) у R09 больше
+не придётся (кнопка R09 «Черновик ответа» — web/civic/feedback/complaint-staff.js @ 97342bdf — совместима).
 Факты черновика берутся из записи кодом: code, services[] (части §5.1: service, role, status), passport.assignee_id /
 service, due_at (срок ответа; рабочие дни — ui.civic_feedback.v2.workdays.deadline_info), passport.next_step,
 passport.fix_eta (только если есть — иначе «сообщим срок, как только служба его определит»), passport.delay
@@ -128,6 +132,8 @@ R16 уже вызывает similar_initiatives(title, point, 30) и берёт 
 - POST /reply-draft — сотрудник (шлюз staff=True + сама функция: context без principal -> 403).
 - POST /route — открыт всем, текст жителя наружу не отдаёт (только службы и объяснение).
 - similar_initiatives — не отдаёт тексты, авторов, устройства (тест test_other_deeds_and_privacy).
+- S48 (R15, средний: «Тел.87011234567», «ИИН-…», «8.701.123.45.67», полноширинные цифры) — исправлено в d8448d48:
+  тест R15 test_label_glued_dotted_and_fullwidth_numbers с кодом R04 — 5/5 XPASS(strict) (пометку xfail можно снять).
 - Найдено и закрыто у себя: обезличивание модели v1 (ml/civic_classifier/text.py, _EMAIL = [\w.+-]+@…) квадратично
   на длинном слове без «@»: 5 000 букв — 0.25–0.35 с CPU на запрос открытого /classify (раунд 14) и /route. Теперь
   classify_chain подаёт моделям первые 1 000 знаков (MODEL_TEXT) — ≤ 9 мс. Сам шаблон v1 не мой путь (и заморожен);

@@ -1,13 +1,13 @@
 {
  "role": "R04",
  "round": 15,
- "delivery": "D1.3 (для B1 R01, 16 окт 14:00)",
+ "delivery": "D1.4 (для B1 R01, 16 окт 14:00)",
  "branch": "claude/gifted-maxwell-i66wwi",
  "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
  "restored_from": null,
  "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
- "code_sha": "c53832352dcf64147905978cccd967d7aea044a9",
- "tested_sha": "c53832352dcf64147905978cccd967d7aea044a9",
+ "code_sha": "2ee5d48dfcb3760ae2bd45c485e17d8813a234bc",
+ "tested_sha": "2ee5d48dfcb3760ae2bd45c485e17d8813a234bc",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_replies/__init__.py",
@@ -50,10 +50,10 @@
  "tests": {
   "R04_round15_pytest": {
    "status": "PASS",
-   "passed": 80,
+   "passed": 89,
    "failed": 0,
    "cmd": "pytest -q tests/civic/R04/round15",
-   "sha": "de64a81bbc6cf74b8865733dfb786629cd06fa53"
+   "sha": "2ee5d48dfcb3760ae2bd45c485e17d8813a234bc"
   },
   "R04_round14_pytest": {
    "status": "PASS",
@@ -198,5 +198,12 @@
  },
  "patches_for_neighbours": {
   "R17": "research/round-15-results/R04/patches/r17_crisis_pii.patch — блокировать card/iban/apartment/contact в публичных обновлениях кризиса (R17 @ 72676e3d: apply OK, их тесты 42/42)"
+ },
+ "r15_findings": {
+  "S48": {
+   "status": "fixed",
+   "sha": "d8448d48",
+   "note": "подпись вплотную к номеру, номер через точки, полноширинные цифры; тест R15 test_label_glued_dotted_and_fullwidth_numbers — 5/5 XPASS(strict) с кодом R04"
+  }
  }
 }
