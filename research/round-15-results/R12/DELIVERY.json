@@ -1,14 +1,14 @@
 {
  "role": "R12",
  "round": 15,
- "delivery": 4,
+ "delivery": 5,
  "title": "Единый календарь работ и «копаем один раз»",
  "branch": "claude/great-newton-8k3474",
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "3ac2af66a1ae532684337a9bce6a2a36f2140b32",
- "tested_sha": "3ac2af66a1ae532684337a9bce6a2a36f2140b32",
+ "code_sha": "1c8d171dbfd069d678da7d1f5b209d1449c82fd6",
+ "tested_sha": "1c8d171dbfd069d678da7d1f5b209d1449c82fd6",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/works_fixture.json",
@@ -17,9 +17,11 @@
   "engine/civic_geo/api.py",
   "engine/civic_geo/build_works_fixture.py",
   "engine/civic_geo/names.py",
+  "engine/civic_geo/real_works.py",
   "engine/civic_geo/segment.py",
   "engine/civic_geo/works.py",
   "engine/civic_geo/works_calendar.py",
+  "tests/civic/R12/fixtures/real_works_TEST.csv",
   "tests/civic/R12/test_works.py",
   "tests/civic/R12/works/works_calendar.test.cjs",
   "web/civic/works-calendar/works-calendar.css",
@@ -43,7 +45,7 @@
  "tests": {
   "pytest_R12_all": {
    "status": "PASS",
-   "passed": 87,
+   "passed": 91,
    "failed": 0,
    "skipped": 1,
    "skip_reason": "test_demo_world_planned_conflicts_are_found — мира R02 нет в ветке R12 (проверен на копии мира R02: PASS)",
@@ -51,7 +53,7 @@
   },
   "pytest_works": {
    "status": "PASS",
-   "passed": 39,
+   "passed": 42,
    "failed": 0,
    "skipped": 1,
    "covers": "≤ 5 м от рёбер OSM; три вида конфликтов + вариант same_street; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API (шлюз R01 проверяет сотрудника, staff=False → 401, 400 на параметры); участок в узле без нулевого ребра; мир R02: даты day/season, отключения не работы, id planned_conflicts, seed_world"
@@ -80,7 +82,8 @@
   },
   "real_works_LOCAL5": {
    "status": "NOT_RUN",
-   "reason": "data/civic/astana/nura-real/records.csv нет ни в одной ветке origin (15 окт)"
+   "reason": "data/civic/astana/nura-real/records.csv нет ни в одной ветке origin (15 окт, 13:00 UTC)",
+   "ready": "импорт engine/civic_geo/real_works.py проверен на синтетической таблице tests/civic/R12/fixtures/real_works_TEST.csv (4 строки «ТЕСТ»): участок между перекрёстками 1, примерное место 2, без места 1, без дат 1; ссылка только http/https"
   },
   "r02_world": {
    "status": "PASS",
@@ -127,11 +130,11 @@
  },
  "known_limits": [
   "Работы в демо — синтетика фикстуры R12 (15 работ, Нура), пока у R06 нет работ v2 с участками и нет демо-мира R02; помечены «Пример».",
-  "Реальные работы Нуры (LOCAL-5) не привязаны: файла records.csv нет.",
   "Работа без участка (только точка) — «примерное место», в конфликтах не участвует (честно, без уверенной линии).",
   "kk-тексты — черновик R12 (на проверку R11 и владельцу).",
   "Пункт 4: служба, вид и участок при создании работы — в форме R06 «Работы и отключения» (их путь, ветка 1aff1f47; участок — R12 /street-segment). Объекты v1 редактора R12 в календарь не входят: схема v1 у R06 не хранит службу (и это капитальные объекты с этапами, не работы служб). Из календаря — «Добавить работу» → форма R06.",
-  "R02 ожидает cf-w15-03 medium, R12 по правилу даёт high (раскопка по тем же рёбрам, что новый асфальт) — предложено R02 в INTEGRATION §3."
+  "R02 ожидает cf-w15-03 medium, R12 по правилу даёт high (раскопка по тем же рёбрам, что новый асфальт) — предложено R02 в INTEGRATION §3.",
+  "Реальные работы Нуры (LOCAL-5): файла records.csv нет — NOT_RUN. Импорт готов: как только файл появится, записи лягут на участки как real со ссылкой на источник и покрытием на экране."
  ],
  "next_step": "Круги: AMENDMENTS → соседи (R01 patch, R02 world works, R06 seed_world, R17 профили, R11 ключи); импорт LOCAL-5 при появлении файла; визуал по VISUAL_BRIEF + П1.",
  "amendments": {

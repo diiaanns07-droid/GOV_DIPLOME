@@ -43,7 +43,11 @@ R12 · раунд 15 · «Календарь работ» и «копаем од
 
 4. РЕАЛЬНЫЕ РАБОТЫ (LOCAL-5)
    data/civic/astana/nura-real/records.csv в репозитории нет (ни в одной ветке) — привязка реальных работ NOT_RUN.
-   Когда файл появится — R12 привяжет записи к участкам как source "real" со ссылкой на источник и посчитает покрытие.
+   Импорт готов (engine/civic_geo/real_works.py): положите CSV (ChatGPT LOCAL-5: название; тип; адрес или улицы «ул. X от
+   ул. Y до ул. Z»; начало; плановое окончание; перенос; статус; ссылка; дата публикации; цитата) — календарь сам добавит
+   работы как «Настоящие» со ссылкой на источник. Проверка покрытия в консоли:
+   python3 -B -c "from engine.civic_geo.real_works import load_real_works; print(load_real_works()[1])"
+   → {total, on_segments (участок между перекрёстками), approximate (только улица), no_place, no_dates, dates_approx}.
 
 5. МАРШРУТЫ (под /api/civic/v2, только сотрудник)
    GET works-calendar?from=2026-09&to=2027-09&district=nura&service=water&street=Сыганак

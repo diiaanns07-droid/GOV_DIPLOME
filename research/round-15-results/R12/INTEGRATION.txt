@@ -139,5 +139,7 @@ tests/civic/R12/test_works.py        pytest 35; tests/civic/R12/works/works_cale
 9. LOCAL
 ====================================================================================================
 LOCAL-5 (реальные работы Нуры): файла data/civic/astana/nura-real/records.csv в репозитории нет — задача R12 п. 5 NOT_RUN.
-  Когда файл появится: python3 -m engine.civic_geo works … (привязка как real с источником) — см. RUN.txt §4.
+  Импорт уже готов (engine/civic_geo/real_works.py; тест на синтетической таблице «ТЕСТ»). Codex/владелец: положить CSV
+  по промпту LOCAL-5 раунда 14 в data/civic/astana/nura-real/records.csv и запушить в ветку R12 (или R01) — календарь
+  покажет работы как «Настоящие» со ссылкой на источник и покрытие (RUN.txt §4). Ничего не придумывать: пустое — пустым.
 LOCAL-12: кадры календаря и карты с настоящей подложкой — по DEMO_SCRIPT R01, сцена 8.
