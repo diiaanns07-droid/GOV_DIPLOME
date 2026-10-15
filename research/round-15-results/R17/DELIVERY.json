@@ -5,8 +5,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15); поправка П1 (2d329b2c) применена в коде",
  "restored_from": null,
- "code_sha": "c5d9849c92e44abafc66952f9a16ec70f4ec686e",
- "tested_sha": "c5d9849c92e44abafc66952f9a16ec70f4ec686e",
+ "code_sha": "13589572049a02d586e1775d87a80dd2a8b3dc7f",
+ "tested_sha": "13589572049a02d586e1775d87a80dd2a8b3dc7f",
  "push_status": "OK (origin/claude/sweet-euler-5tiu5b)",
  "changed_paths": [
   "ui/civic_agencies/",
@@ -83,13 +83,13 @@
  "tests": {
   "pytest tests/civic/R17": {
    "status": "PASS",
-   "passed": 48,
+   "passed": 255,
    "failed": 0,
-   "covers": "расчёт табло (нет данных, одна служба, передачи по кругу, дубли, район, период, рабочие дни), профили (id R08=R09, контраст цветов ≥ 4,5:1, значки ui-kit), права (сессия, CSRF, Origin, Host), публичная часть без задач, поток кризиса, ПДн в обновлении → 422, зона без полигона, лента жителя, seed_world формата R02, сброс демо, имена функций для R03/R12, вывоз R16 (pickups) на табло и без R16, два «просрочено» (overdue = срок ответа R09, overdue_fix = срок исправления R08; без R08 — null), флаги модерации R04 раунда 15 ({kind, group}, pii/rude)"
+   "covers": "расчёт табло (нет данных, одна служба, передачи по кругу, дубли, район, период, рабочие дни), профили (id R08=R09, контраст цветов ≥ 4,5:1, значки ui-kit), права (сессия, CSRF, Origin, Host), публичная часть без задач, поток кризиса, ПДн в обновлении → 422, зона без полигона, лента жителя, seed_world формата R02, сброс демо, имена функций для R03/R12, вывоз R16 (pickups) на табло и без R16, два «просрочено» (overdue = срок ответа R09, overdue_fix = срок исправления R08; без R08 — null), флаги модерации R04 раунда 15 ({kind, group}, pii/rude); R15-S43: неверный тип JSON в любом поле записи (207 случаев) → 4xx, не 500"
   },
   "browser tests/civic/R17/agencies_browser.cjs": {
    "status": "PASS",
-   "passed": 150,
+   "passed": 156,
    "failed": 0,
    "env": "облако, Chromium Playwright, свой сервер CIVIC_DEMO=1, оболочка FINAL-4 + patch R01 (своя ветка); без интернета",
    "covers": "1366/1024/375 × ru/kk: 20 служб на одном экране 1366, KPI = API, вкладки, раскрытие службы, нет прокрутки вбок и сырых ключей; сцена 9: задача, обновление ҚАЗ+РУС, новый кризис, закрытие, слой карты; житель зоны: баннер и карточка без задач, Esc; без входа; reduced motion; проверки как у R10 (ux_lib uiScreen) внутри экрана R17: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1; 20 служб видны в панели оболочки (а не только в окне); две разные подписи «просрочено»",
@@ -101,8 +101,20 @@
    "detail": "GET /api/civic/v2/modules — 11 маршрутов R17 ready (FINAL-4 + patch); на ветке R01 B0 — маршруты уже в сборке"
   },
   "scene 8 (табло) с демо-миром R02 через R09": {
-   "status": "NOT_RUN",
-   "reason": "R09 ещё не поставил v2.1 и seed_world (на 15 окт 17:30); на мире R02 расчёт сверен скриптом с EXPECTED.json (см. method.check_vs_R02)"
+   "status": "PASS",
+   "env": "R01 @ c9069723 + R09 @ dfaee97e + R02 @ ac75f3a8 (мир и ml/datasets) + R16 @ fbd9e247 + R10 @ c7f64223 + R17 @ checkpoint 8; CIVIC_DEMO=1, CIVIC_DEMO_WORLD=1; засев «civic-world: R09 743, R16 42, R17 3, R13 24, R12 39»",
+   "tool": "python3 tests/civic/R10/consistency.py --root <сборка> (R10)",
+   "result": "C1 «Картина дня» R08 = табло R17 overdue_fix (Нура) 5 = 5 PASS; C2 «Обращения» R09 = табло R17 overdue 2 = 2 PASS; D открытые по каждой службе = «Обращения» R09 PASS; C4 FAIL ложный для R17 (R10 читает старый ключ agencies.kpi.overdue — просьба в INTEGRATION §10); C5 FAIL — R08",
+   "report": "research/round-15-results/R17/world_check/ (README.txt, CONSISTENCY.md, CONSISTENCY.json)",
+   "screens": [
+    "research/round-15-results/R17/screens/world-board-1366-kk.png",
+    "research/round-15-results/R17/screens/world-board-1366-ru.png",
+    "research/round-15-results/R17/screens/world-board-375-kk.png",
+    "research/round-15-results/R17/screens/world-crisis-1366-kk.png",
+    "research/round-15-results/R17/screens/world-crisis-1366-ru.png",
+    "research/round-15-results/R17/screens/world-handoffs-1366-ru.png",
+    "research/round-15-results/R17/screens/world-joint-1366-ru.png"
+   ]
   },
   "real basemap frames": {
    "status": "NOT_RUN",
@@ -110,10 +122,14 @@
   },
   "browser on R01 round-15 shell": {
    "status": "PASS",
-   "passed": 158,
+   "passed": 165,
    "failed": 0,
    "env": "ветка R01 @ 06d5d404 (B0) + код R17 + R16 @ fbd9e247 (ui/civic_together), CIVIC_DEMO=1",
-   "covers": "то же, что выше, и вывоз R16: сотрудник «Поддержал» дело с вывозом (POST together/initiatives/{id}/support) → отметка «1» у службы waste и список «Вывоз после дел жителей» (1366/375 × ru/kk)"
+   "covers": "то же, что выше, и вывоз R16: сотрудник «Поддержал» дело с вывозом (POST together/initiatives/{id}/support) → отметка «1» у службы waste и список «Вывоз после дел жителей» (1366/375 × ru/kk); слой «Кризис» под слоями тепловой карты R07 (patch R07)"
+  },
+  "R15 security tests (tests/civic/R15/round15/test_r15_round15_agencies.py)": {
+   "status": "PASS",
+   "detail": "32 passed + 3 XPASS(strict) по S43 — находка исправлена, R15 переводит в FIXED"
   }
  },
  "screens": [
@@ -144,21 +160,28 @@
   "research/round-15-results/R17/screens/resident-banner-375-kk.png",
   "research/round-15-results/R17/screens/resident-card-1366-kk.png",
   "research/round-15-results/R17/screens/resident-card-1366-ru.png",
-  "research/round-15-results/R17/screens/resident-card-375-kk.png"
+  "research/round-15-results/R17/screens/resident-card-375-kk.png",
+  "research/round-15-results/R17/screens/world-board-1366-kk.png",
+  "research/round-15-results/R17/screens/world-board-1366-ru.png",
+  "research/round-15-results/R17/screens/world-board-375-kk.png",
+  "research/round-15-results/R17/screens/world-crisis-1366-kk.png",
+  "research/round-15-results/R17/screens/world-crisis-1366-ru.png",
+  "research/round-15-results/R17/screens/world-handoffs-1366-ru.png",
+  "research/round-15-results/R17/screens/world-joint-1366-ru.png"
  ],
  "amendments": {
   "P1": "применена: пустые состояния — монохромная иконка ui-kit 48 px + текст + одна кнопка; значки служб монохромные; декоративных картинок нет; «вау» — пульс зоны кризиса и данные",
   "checked_at": "15 окт 21:20 по Астане — новых поправок после П1 нет"
  },
  "known_limits": [
-  "Демо-сборка без демо-мира (CIVIC_DEMO=1 без CIVIC_DEMO_WORLD): на сборке R01 табло считается по базе R09 (configure) — в базе только жалобы шага 2 демо, поэтому табло почти пустое; полная картина — с CIVIC_DEMO_WORLD=1 (мир R02 через seed_world R09).",
   "Двор жителя для ленты и баннера — функция R16 (ищется по 4 именам; на R16 @ fbd9e247 её нет); без неё — подписка R08 «Рядом» на район или центр карты в зоне.",
   "Казахские тексты новых ключей (вывоз, два «просрочено», календарь, публичная карточка) — черновик R17, ждут R11.",
   "Для heating/power/gas/animals/traffic/emergency нет точных значков в наборе ui-kit — взяты ближайшие (просьба к R11).",
-  "Срок исправления (overdue_fix) — демо-норматив R08 (ui/civic_akim/deadlines.py), акиматом не утверждён."
+  "Срок исправления (overdue_fix) — демо-норматив R08 (ui/civic_akim/deadlines.py), акиматом не утверждён.",
+  "Без демо-мира (CIVIC_DEMO=1 без CIVIC_DEMO_WORLD) на сборке R01 табло считается по базе R09, где только жалобы шага 2 демо — табло почти пустое; полная картина и сцена 8 — с CIVIC_DEMO_WORLD=1 (проверено)."
  ],
- "next_step": "Сверка табло на демо-мире R02 через R09 v2.1 (сборка R01 + R09 @ dfaee97e, CIVIC_DEMO_WORLD=1): числа = «Обращения» и EXPECTED.json; круги по соседям до B1 (16 окт 14:00): R01 — взять D3; R11 — новые ключи; R16 — дворы устройства; R10 — повтор B-104/B-110 на B1.",
- "delivery": "D3",
+ "next_step": "Круги по соседям до B1 (16 окт 14:00): R01 — взять D4 (пути R17); R10 — C4 по ключу agencies.kpi.overdue_answer, повтор B-104/B-110 на B1; R11 — новые ключи; R16 — двор устройства; R15 — S43 в FIXED. После B1 — прогон сцен 8 и 9 на сборке, правки по находкам R10/R15.",
+ "delivery": "D4",
  "screens_env": "кадры — с оболочки R01 раунда 15 (ветка R01 @ 06d5d404, B0) + код R17 @ D3 + R16; подложка — упрощённый фон без интернета (П1 п. 6)",
  "deviations_from_IA_ROUND15": [
   "строки табло 25 px вместо 44 px — иначе 20 служб не помещаются в панели 1366 × 768 (критерий «готово» R17; R10 B-110: «строки не трогать»); строка — role=\"row\" с фокусом, не кнопка; на телефоне строка ≥ 44 px",
@@ -169,5 +192,12 @@
   "B-110": "закрыт в R17: подписи 13 px, вкладки/район/«Обновить» 44 px, период и сортировка 40 px; строки role=row",
   "B-115": "закрыт в R17: своя «Добавить работу» прячется, если R12 (embedded) рисует свою .wcal-addmain",
   "B-117": "закрыт в R17: agencies.part.todo («ждёт» / «күтуде»)"
+ },
+ "security": {
+  "S43": "исправлено в checkpoint 8 (isinstance перед проверкой по справочнику + фазз-тест всех полей записи)"
+ },
+ "neighbor_patches_applied": {
+  "R07": "patches/R17_crisis_layer_under_heat.patch — зона кризиса под слоями r07-",
+  "R15": "patches/P-R17-S43.diff (по смыслу, шире: все поля записи)"
  }
 }
