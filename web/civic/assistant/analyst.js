@@ -165,9 +165,10 @@
   // Вызываем только эти имена: ответ сервера не может заставить экран вызвать что-то другое.
   var OPENERS = { "BirgeAgencies.openCrisis": true, "BirgeWorksCalendar.openConflict": true };
   // Где в оболочке раздел, на который ведёт кнопка «Открыть …» (id разделов соседей; нет раздела — кнопки нет).
+  // «раздел/путь» — вкладка раздела (адрес #раздел/путь, IA R11 §7.3): календарь работ — вкладка «Ведомств» (R11 R03-8).
   var SECTION_ALIASES = { agencies: ["agencies", "services"], crisis: ["crisis", "agencies"],
-    "works-calendar": ["works-calendar", "works"], together: ["together", "initiatives"], meetings: ["meetings", "questions"],
-    day: ["day"], inbox: ["inbox"] };
+    "works-calendar": ["agencies/calendar", "works-calendar", "works"], together: ["together", "initiatives"],
+    meetings: ["meetings", "questions"], day: ["day"], inbox: ["inbox"] };
 
   // ------------------------------------------------------------------ тексты
   function i18n() { return root.BirgeI18n || null; }
@@ -370,8 +371,15 @@
       try {
         avail = (B.navItems ? B.navItems() : []).concat(B.moreItems ? B.moreItems() : []);
       } catch (e) { avail = []; }
-      for (var i = 0; i < ids.length; i++) if (avail.indexOf(ids[i]) >= 0) return ids[i];
+      for (var i = 0; i < ids.length; i++) if (avail.indexOf(ids[i].split("/")[0]) >= 0) return ids[i];
       return null;
+    }
+
+    // «agencies/calendar» → openSection("agencies", "calendar"): оболочка пишет #agencies/calendar и откроет вкладку.
+    function openSectionPath(section) {
+      var cut = section.indexOf("/");
+      if (cut > 0) opts.openSection(section.slice(0, cut), section.slice(cut + 1));
+      else opts.openSection(section);
     }
 
     function focusOnMap(action) {
@@ -406,7 +414,7 @@
           if (typeof target === "function") {
             try { target.call(root[op.global], op.arg); return; } catch (e) { /* откроем раздел ниже */ }
           }
-          opts.openSection(section);
+          openSectionPath(section);
         });
         return o;
       }

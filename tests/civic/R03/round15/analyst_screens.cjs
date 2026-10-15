@@ -176,6 +176,30 @@ async function waitAnswer(page) {
       check(`empty question hint ${w}`, await page.locator("#ba-field-error").isVisible());
       await page.close();
     }
+
+    // «Открыть «Календарь работ»» (R11 R03-8): вкладка «Ведомств» #agencies/calendar; есть экран R12 — его openConflict.
+    const conflicts = fs.readFileSync(path.join(__dirname, "answer_conflicts_fixture.json"), "utf8");
+    for (const withR12 of [false, true]) {
+      const page = await browser.newPage({ viewport: { width: 1366, height: 768 } });
+      await page.route("**/assistant/ask", (r) => r.fulfill({ status: 200, contentType: "application/json", body: conflicts }));
+      await page.goto(URL + "?lang=ru");
+      if (withR12) {
+        await page.evaluate(() => { window.__opened = null; window.BirgeWorksCalendar = { openConflict: (id) => { window.__opened = id; } }; });
+      }
+      await page.fill("#ba-input", "Где копаем дважды?");
+      await page.press("#ba-input", "Enter");
+      await waitAnswer(page);
+      await page.locator('[data-action="open"]').first().click();
+      await page.waitForTimeout(150);
+      if (withR12) {
+        const opened = await page.evaluate(() => window.__opened);
+        check("calendar button calls R12 openConflict when present", opened === "cf-1", String(opened));
+      } else {
+        const line = await page.locator("#stand-map").textContent();
+        check("calendar button opens the agencies tab #agencies/calendar (R11 R03-8)", /#agencies\/calendar/.test(line || ""), line);
+      }
+      await page.close();
+    }
   } finally {
     await browser.close();
   }
