@@ -69,7 +69,8 @@ async function audit(page, lang, w, ruOnly) {
       if (rect.width <= 2 || rect.height <= 2 || (cs.clip && cs.clip !== "auto") || /inset\(50%/.test(cs.clipPath || "")) continue;  // только для диктора
       const own = [...e.childNodes].filter((n) => n.nodeType === 3).map((n) => n.nodeValue).join(" ").replace(/\s+/g, " ").trim();
       // обрезка — только у элемента, в котором сам текст (не у контейнера со скруглением и overflow: hidden)
-      const clips = cs.overflow === "hidden" || cs.overflowX === "hidden" || cs.textOverflow === "ellipsis";
+      // многоточие без overflow: hidden ничего не режет (у R09 на телефоне название переносится, overflow: visible)
+      const clips = /hidden|clip/.test(cs.overflowX) || /hidden|clip/.test(cs.overflow);
       const hCut = clips && e.clientWidth > 0 && e.scrollWidth > e.clientWidth + 1;
       const vCut = cs.webkitLineClamp !== "none" && e.scrollHeight > e.clientHeight + 2;
       if (own && (hCut || vCut) && !e.closest(".bk-tabs, .bk-scroll-x, [data-more]")) {
