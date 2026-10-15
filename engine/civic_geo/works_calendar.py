@@ -203,9 +203,25 @@ def remember_world(records, now=None) -> dict:
     planned = {(c.get("kind"), tuple(sorted(c.get("works") or []))): c.get("id")
                for c in records.get("planned_conflicts") or [] if isinstance(c, dict) and c.get("id")}
     _WORLD.clear()
-    _WORLD.update({"works": works, "planned": planned, "today": today.isoformat()})
+    _WORLD.update({"works": works, "planned": planned, "scene": _scene_of(records), "today": today.isoformat()})
     return {"inserted": 0, "skipped": len(works), "planned_conflicts": len(planned),
             "note": "R12 не хранит записи: работы засевает R06, конфликты считаются при открытии календаря"}
+
+
+def _scene_of(world) -> str | None:
+    """Конфликт сцены 8 мира R02 (scenes.scene8.conflict) или None."""
+    scene = ((world or {}).get("scenes") or {}).get("scene8") if isinstance(world, dict) else None
+    cid = scene.get("conflict") if isinstance(scene, dict) else None
+    return cid if isinstance(cid, str) and cid else None
+
+
+def scene_conflict(path=WORLD_PATH) -> str | None:
+    """Конфликт сцены 8 демо-мира: в режиме мира экран открывается на нём (DEMO_SCRIPT R01, сцена 8, шаг 4 —
+    «асфальт в мае, сети в июле»), а список конфликтов остаётся по срочности. Мир засеян — из него, иначе из файла."""
+    if _WORLD.get("planned") is not None and "scene" in _WORLD:
+        return _WORLD.get("scene")
+    planned_ids(path)
+    return _planned_cache.get("scene")
 
 
 def planned_ids(path=WORLD_PATH) -> dict:
@@ -222,8 +238,9 @@ def planned_ids(path=WORLD_PATH) -> dict:
             data = json.loads(path.read_text("utf-8"))
             items = data.get("planned_conflicts") or []
         except (OSError, ValueError, AttributeError):
-            items = []
+            data, items = None, []
         _planned_cache["stamp"] = stamp
+        _planned_cache["scene"] = _scene_of(data)
         _planned_cache["ids"] = {(c.get("kind"), tuple(sorted(c.get("works") or []))): c.get("id")
                                  for c in items if isinstance(c, dict) and c.get("id")}
     return _planned_cache["ids"]
@@ -490,7 +507,7 @@ def build_calendar(records: list[dict], date_from: date, date_to: date, filters:
         "approximate": sum(1 for w in shown.values() if w.approximate),
         "undated": len(undated), "total_in_district": len(in_district),
     }
-    return {
+    out = {
         "period": {"from": date_from.isoformat(), "to": date_to.isoformat(), "today": today.isoformat()},
         "months": _months(date_from, date_to),
         "filters": {k: v for k, v in filters.items() if v},
@@ -506,6 +523,10 @@ def build_calendar(records: list[dict], date_from: date, date_to: date, filters:
         "approx_radius_m": APPROX_RADIUS_M,
         "generated_ms": round((time.perf_counter() - t0) * 1000, 1),
     }
+    scene = scene_conflict() if world_mode() else None
+    if scene and any(c["id"] == scene for c in conflicts):
+        out["scene_conflict"] = scene  # экран открывается на нём; порядок списка не меняется
+    return out
 
 
 # ------------------------------------------------------------------ для соседей (вызов в процессе, только чтение)

@@ -471,8 +471,11 @@
         shared.data = data;
         shared.at = Date.now();
         const wanted = takeWanted(data);
+        // Демо-мир: открыть на конфликте сцены 8 (сервер присылает scene_conflict только в режиме мира), иначе — первый
+        // по срочности. Выбор пользователя при смене фильтров сохраняется.
+        const scene = data.scene_conflict && data.conflicts.some((c) => c.id === data.scene_conflict) ? data.scene_conflict : null;
         if (wanted) state.selected = wanted;
-        else if (!state.selected || !data.conflicts.some((c) => c.id === state.selected)) state.selected = data.conflicts[0] ? data.conflicts[0].id : null;
+        else if (!state.selected || !data.conflicts.some((c) => c.id === state.selected)) state.selected = scene || (data.conflicts[0] ? data.conflicts[0].id : null);
         render();
       }).catch((err) => {
         if (state.destroyed || seq !== state.seq) return;

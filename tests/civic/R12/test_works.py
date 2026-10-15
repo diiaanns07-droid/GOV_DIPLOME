@@ -460,6 +460,32 @@ def test_seed_world_remembers_works_and_planned_ids(real, monkeypatch):
         assert "world" in info["source"] and len(records) == 15
         cal = build_calendar(records, *PERIOD, {}, TODAY, real)
         assert "cf-w15-01" in {c["id"] for c in cal["conflicts"]}
+        assert "scene_conflict" not in cal, "сцены в мире нет — экран открывается на первом по срочности"
+    finally:
+        WC._WORLD.clear()
+
+
+def test_world_scene8_conflict_opens_first_but_keeps_the_order(real, monkeypatch):
+    """Мир R02 называет конфликт сцены 8 (scenes.scene8.conflict): только в режиме мира он приходит как scene_conflict."""
+    import engine.civic_geo as geo_pkg
+    from datetime import datetime, timezone
+    from engine.civic_geo import works_calendar as WC
+    fixture = json.loads(FIXTURE_PATH.read_text("utf-8"))["works"]
+    world = {"works": fixture, "scenes": {"scene8": {"conflict": "cf-w15-01"}},
+             "planned_conflicts": [{"id": "cf-w15-01", "kind": "dig_after_surface", "works": ["w-demo-r12-01", "w-demo-r12-02"]}]}
+    try:
+        geo_pkg.seed_world(None, world, datetime(2026, 10, 15, 7, 0, tzinfo=timezone.utc))
+        monkeypatch.setenv("CIVIC_DEMO", "1")
+        monkeypatch.setenv("CIVIC_DEMO_WORLD", "1")
+        records, _ = WC.load_works(TODAY)
+        cal = build_calendar(records, *PERIOD, {}, TODAY, real)
+        assert cal["scene_conflict"] == "cf-w15-01"
+        plain = build_calendar(records, *PERIOD, {}, TODAY, real)
+        assert [c["id"] for c in cal["conflicts"]] == [c["id"] for c in plain["conflicts"]]
+        # фильтр без этого конфликта — поля нет
+        assert "scene_conflict" not in build_calendar(records, *PERIOD, {"service": "lighting"}, TODAY, real)
+        monkeypatch.delenv("CIVIC_DEMO_WORLD")
+        assert "scene_conflict" not in build_calendar(records, *PERIOD, {}, TODAY, real)
     finally:
         WC._WORLD.clear()
 

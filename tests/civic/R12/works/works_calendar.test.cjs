@@ -72,6 +72,9 @@ async function openCalendar(page, lang) {
         // более срочный; без мира — фикстура R12, сцена 8 первая (ул. Сыганак).
         const world = await page.evaluate(() => !!document.querySelector('.wcal-cchip[data-conflict="cf-w15-01"]'));
         if (world) {
+          // DEMO_SCRIPT R01, сцена 8, шаг 4: «Календарь работ» открывается сразу на конфликте сцены (scene_conflict).
+          const first = await page.evaluate(() => document.querySelector(".wcal-focus")?.dataset.conflict || "");
+          check(`${w} ${lang}: мир R02 — календарь открывается на сцене 8`, first === "cf-w15-01", first);
           await page.click('.wcal-cchip[data-conflict="cf-w15-01"]');
           await page.waitForSelector('.wcal-focus[data-conflict="cf-w15-01"]', { timeout: 5000 });
         }
