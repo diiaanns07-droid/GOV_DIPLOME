@@ -264,9 +264,11 @@ def _connect(path: str) -> sqlite3.Connection:
 
 
 def seed_world(db_path, records, now: datetime | None = None) -> dict:
-    """Засев части мира R07 — отметок шкалы «Хроники» (CONTRACT §11). Идемпотентно по id отметки:
-    повторный запуск оставляет прежнее время (даты мира не «уезжают» вслед за перезапуском сервера).
-    records — весь мир (dict из world_v1.json) или список записей. -> {"inserted", "skipped"}."""
+    """Засев части мира R07 — отметок шкалы «Хроники» (CONTRACT §11). Идемпотентно по id отметки: тот же мир на тот
+    же now ничего не меняет. Повторный засев с новым now (перезапуск R01 на той же базе) двигает отметку вместе с
+    миром — R09 и соседи так же возвращают демо-записи к виду мира от нового now (reset, R02 SCHEMA §4, R10 B-048),
+    иначе «Буран» на шкале оказался бы раньше всплеска жалоб.
+    records — весь мир (dict из world_v1.json) или список записей. -> {"inserted", "skipped"} (+ "reset", если сдвинули)."""
     now = now or datetime.now(timezone.utc)
     if now.tzinfo is None:
         now = now.replace(tzinfo=ASTANA_TZ)
@@ -274,21 +276,27 @@ def seed_world(db_path, records, now: datetime | None = None) -> dict:
     remember_db(db_path)
     if not db_path:
         return {"inserted": 0, "skipped": len(marks)}
-    inserted = skipped = 0
+    inserted = skipped = moved = 0
     with _lock:
         db = _connect(str(db_path))
         try:
             with db:
                 for m in marks:
-                    cur = db.execute(f"INSERT OR IGNORE INTO {TABLE} (id, record_json, started_at, seeded_at) VALUES (?,?,?,?)",
-                                     (m["id"], json.dumps(m, ensure_ascii=False), m["started_at"], iso(now)))
-                    if cur.rowcount:
+                    record = json.dumps(m, ensure_ascii=False)
+                    row = db.execute(f"SELECT record_json FROM {TABLE} WHERE id = ?", (m["id"],)).fetchone()
+                    if row is None:
+                        db.execute(f"INSERT INTO {TABLE} (id, record_json, started_at, seeded_at) VALUES (?,?,?,?)",
+                                   (m["id"], record, m["started_at"], iso(now)))
                         inserted += 1
-                    else:
+                    elif row[0] == record:
                         skipped += 1
+                    else:
+                        db.execute(f"UPDATE {TABLE} SET record_json = ?, started_at = ?, seeded_at = ? WHERE id = ?",
+                                   (record, m["started_at"], iso(now), m["id"]))
+                        moved += 1
         finally:
             db.close()
-    return {"inserted": inserted, "skipped": skipped}
+    return {"inserted": inserted, "skipped": skipped, **({"reset": moved} if moved else {})}
 
 
 def stored_marks(path: str | None = None) -> list[dict]:

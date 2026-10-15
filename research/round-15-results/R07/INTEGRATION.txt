@@ -51,8 +51,9 @@ web/civic/replay/, tests/civic/R07/. Чужие файлы не менялись
 
 1.5 Демо-мир (CONTRACT §11): R01 уже зовёт ui.civic_heat.world.seed_world(db_path, world, now) — R07 берёт из мира
     только отметки шкалы: events (§2.1) + incidents (§2.8, связь event) + scenes; хранит в своей таблице
-    heat_replay_marks_v1 той же базы (идемпотентно, время первого засева не сдвигается). Жалобы R07 не сеет: карта
-    берёт их у R09. demo_seed.demo_records() при CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 возвращает [] — даже если шлюз
+    heat_replay_marks_v1 той же базы (тот же мир на тот же now — без изменений; перезапуск на той же базе с новым
+    now — отметки едут вместе с миром, как жалобы R09 после reset: ответ {inserted, skipped, reset}; patch R02 принят).
+    Жалобы R07 не сеет: карта берёт их у R09. demo_seed.demo_records() при CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 возвращает [] — даже если шлюз
     подмешивает синтетику R07, в демо-мире её нет (один источник; тест test_gateway_wire_in_world_mode_uses_only_r09).
     Необязательно: heat.configure(source=…, metoo_times=…, db_path=self.db_path) — тогда отметки ищутся в базе
     шлюза и без seed_world (без него — путь из seed_world, CIVIC_DB_PATH или .runtime/civic.sqlite3).
