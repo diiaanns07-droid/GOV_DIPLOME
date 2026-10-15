@@ -5,8 +5,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15); поправка П1 (2d329b2c) применена в коде",
  "restored_from": null,
- "code_sha": "13589572049a02d586e1775d87a80dd2a8b3dc7f",
- "tested_sha": "13589572049a02d586e1775d87a80dd2a8b3dc7f",
+ "code_sha": "6093455d2c80489d0645b2759ae455ae0a9b9ffe",
+ "tested_sha": "6093455d2c80489d0645b2759ae455ae0a9b9ffe",
  "push_status": "OK (origin/claude/sweet-euler-5tiu5b)",
  "changed_paths": [
   "ui/civic_agencies/",
@@ -89,7 +89,7 @@
   },
   "browser tests/civic/R17/agencies_browser.cjs": {
    "status": "PASS",
-   "passed": 156,
+   "passed": 158,
    "failed": 0,
    "env": "облако, Chromium Playwright, свой сервер CIVIC_DEMO=1, оболочка FINAL-4 + patch R01 (своя ветка); без интернета",
    "covers": "1366/1024/375 × ru/kk: 20 служб на одном экране 1366, KPI = API, вкладки, раскрытие службы, нет прокрутки вбок и сырых ключей; сцена 9: задача, обновление ҚАЗ+РУС, новый кризис, закрытие, слой карты; житель зоны: баннер и карточка без задач, Esc; без входа; reduced motion; проверки как у R10 (ux_lib uiScreen) внутри экрана R17: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1; 20 служб видны в панели оболочки (а не только в окне); две разные подписи «просрочено»",
@@ -122,14 +122,18 @@
   },
   "browser on R01 round-15 shell": {
    "status": "PASS",
-   "passed": 165,
+   "passed": 184,
    "failed": 0,
    "env": "ветка R01 @ 06d5d404 (B0) + код R17 + R16 @ fbd9e247 (ui/civic_together), CIVIC_DEMO=1",
-   "covers": "то же, что выше, и вывоз R16: сотрудник «Поддержал» дело с вывозом (POST together/initiatives/{id}/support) → отметка «1» у службы waste и список «Вывоз после дел жителей» (1366/375 × ru/kk); слой «Кризис» под слоями тепловой карты R07 (patch R07)"
+   "covers": "то же, что выше, и вывоз R16: сотрудник «Поддержал» дело с вывозом (POST together/initiatives/{id}/support) → отметка «1» у службы waste и список «Вывоз после дел жителей» (1366/375 × ru/kk); слой «Кризис» под слоями тепловой карты R07 (patch R07); вкладка «Календарь работ» (R12 embedded): открывается у сотрудника без просьбы войти, одна главная кнопка; ссылка прежнего вида R08 #agencies/crisis=<id> открывает кризис"
   },
   "R15 security tests (tests/civic/R15/round15/test_r15_round15_agencies.py)": {
    "status": "PASS",
    "detail": "32 passed + 3 XPASS(strict) по S43 — находка исправлена, R15 переводит в FIXED"
+  },
+  "board latency on the demo world": {
+   "status": "PASS",
+   "detail": "743 жалобы мира: GET agencies/board 23–50 мс (первый запрос 161 мс с импортами), joint 31 мс, handoffs 23 мс — в процессе, облако"
   }
  },
  "screens": [
@@ -143,6 +147,8 @@
   "research/round-15-results/R17/screens/board-open-375-kk.png",
   "research/round-15-results/R17/screens/board-pickups-1366-ru.png",
   "research/round-15-results/R17/screens/board-pickups-375-kk.png",
+  "research/round-15-results/R17/screens/calendar-1366-ru.png",
+  "research/round-15-results/R17/screens/calendar-375-kk.png",
   "research/round-15-results/R17/screens/crisis-1024-ru.png",
   "research/round-15-results/R17/screens/crisis-1366-kk.png",
   "research/round-15-results/R17/screens/crisis-1366-ru.png",
@@ -181,7 +187,7 @@
   "Без демо-мира (CIVIC_DEMO=1 без CIVIC_DEMO_WORLD) на сборке R01 табло считается по базе R09, где только жалобы шага 2 демо — табло почти пустое; полная картина и сцена 8 — с CIVIC_DEMO_WORLD=1 (проверено)."
  ],
  "next_step": "Круги по соседям до B1 (16 окт 14:00): R01 — взять D4 (пути R17); R10 — C4 по ключу agencies.kpi.overdue_answer, повтор B-104/B-110 на B1; R11 — новые ключи; R16 — двор устройства; R15 — S43 в FIXED. После B1 — прогон сцен 8 и 9 на сборке, правки по находкам R10/R15.",
- "delivery": "D4",
+ "delivery": "D5",
  "screens_env": "кадры — с оболочки R01 раунда 15 (ветка R01 @ 06d5d404, B0) + код R17 @ D3 + R16; подложка — упрощённый фон без интернета (П1 п. 6)",
  "deviations_from_IA_ROUND15": [
   "строки табло 25 px вместо 44 px — иначе 20 служб не помещаются в панели 1366 × 768 (критерий «готово» R17; R10 B-110: «строки не трогать»); строка — role=\"row\" с фокусом, не кнопка; на телефоне строка ≥ 44 px",
