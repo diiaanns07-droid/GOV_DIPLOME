@@ -7,8 +7,8 @@
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "721d6d497bb83baf3a5e76914f32b14591844033",
- "tested_sha": "721d6d497bb83baf3a5e76914f32b14591844033",
+ "code_sha": "6c42e2a9b034a22776524231d1f56cecd0920a2f",
+ "tested_sha": "6c42e2a9b034a22776524231d1f56cecd0920a2f",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/SOURCE.json",
@@ -28,6 +28,7 @@
   "engine/civic_geo/works.py",
   "engine/civic_geo/works_calendar.py",
   "tests/civic/R12/fixtures/real_works_TEST.csv",
+  "tests/civic/R12/map/app_acceptance.mjs",
   "tests/civic/R12/qr/app_qr_acceptance.mjs",
   "tests/civic/R12/qr/qr.test.mjs",
   "tests/civic/R12/qr/qr_stand.py",
@@ -152,6 +153,20 @@
    "passed": 35,
    "failed": 0,
    "how": "tests/civic/R12/qr/app_qr_acceptance.mjs на R01 B0.2 29b4ae9d + R06 c2604ea2 + R12, мир R02: скан → паспорт → «Я тоже» (R09) → мастер, ҚАЗ 375, подменённая ссылка, лист печати под CSP R01 с настоящим генератором LOCAL-11, ссылка «Распечатать QR» в карточке R07"
+  },
+  "map_app_legacy": {
+   "status": "PASS с 2 FAIL (компоновка карты раунда 15, не код R12)",
+   "passed": 10,
+   "failed": 2,
+   "not_run": "подложка OpenFreeMap недоступна из облака",
+   "how": "tests/civic/R12/map/app_acceptance.mjs (приёмка карты и редактора раунда 13) в дереве R01 B0.2 + R06 + R12",
+   "failed_note": "слой R07 лежит над объектами R12: при инструменте «Участок улицы» над целью R07 курсор — «рука» (сам щелчок уходит инструменту — PASS); после отмены тот же щелчок открывает карточку R07, а не объекта R12"
+  },
+  "node_map_editor": {
+   "status": "PASS",
+   "passed": 87,
+   "failed": 0,
+   "how": "node --test tests/civic/R12/map/{core,r12_accuracy,search_index,r02_contract,r12_offline_glyphs} + editor/{core,contract_mock}; один тест r12_accuracy при общем прогоне на занятой машине упал по времени и прошёл отдельно (6/6)"
   }
  },
  "screens": {
