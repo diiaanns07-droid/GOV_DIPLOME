@@ -50,7 +50,7 @@
       openTarget: function (kind, id, days) {
         mapLine.textContent = (lang === "kk" ? "Карта: " : "Карта: ") + kind + " · " + id + (days ? " · " + days + " d" : "");
       },
-      openSection: function (section) { mapLine.textContent = "→ #" + section; },
+      openSection: function (section, path) { mapLine.textContent = "→ #" + section + (path ? "/" + path : ""); },
     });
     function setLang(next) {
       lang = next;

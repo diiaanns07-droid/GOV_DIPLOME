@@ -49,7 +49,7 @@ const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.5)));
 const pause = (ms) => sleep(Math.round(ms * PACE));
 // Часть времени чтения даёт следующий шаг сцены (нажатие, перелёт карты): субтитр висит до следующего — вычитаем ~1,5 с.
 const READ_AHEAD = 2000;
-const READ_CPS = 16;   // знаков в секунду: удобная скорость чтения субтитров (норма 15–17)
+const READ_CPS = 17;   // знаков в секунду: удобная скорость чтения субтитров (норма 15–17); 17 — запас под 5 мин для ҚАЗ
 const wait = (ms) => sleep(ms);
 const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
 const dbg = (...xs) => { if (process.env.R10V_DEBUG) log("  ·", ...xs); };
@@ -70,6 +70,7 @@ function overlayScript() {
   #r10v-sub.on{opacity:1}
   /* Низ занят интерфейсом (шторка каталога, лист, форма) — субтитр наверху, под капсулой разделов. */
   #r10v-sub.top{top:84px;bottom:auto;left:530px;right:20px}
+  #r10v-sub.raise{bottom:150px}
   @media (max-width:900px){#r10v-sub{left:12px;right:12px;bottom:96px}}
   /* Пометка о данных: справа сверху, под «ҚАЗ · РУС» и аватаром. */
   #r10v-badge{position:fixed;right:20px;top:74px;max-width:430px;padding:5px 10px;border-radius:8px;
@@ -121,8 +122,11 @@ function overlayScript() {
       const sub = document.getElementById("r10v-sub"), badge = document.getElementById("r10v-badge");
       if (!sub || !badge || innerWidth < 900) return;
       const W = innerWidth, H = innerHeight;
-      const top = busy(400, H - 132, W - 96, H - 62) && !busy(540, 128, W - 20, 160);
+      // Низ занят (сообщение «Голос учтён», панель) — наверх; занят и верх (баннер кризиса) — чуть выше нижних сообщений.
+      const low = busy(400, H - 132, W - 96, H - 62), high = busy(540, 128, W - 20, 160);
+      const top = low && !high;
       sub.classList.toggle("top", top);
+      sub.classList.toggle("raise", low && high && !busy(400, H - 212, W - 96, H - 152));  // выше — только если там свободно
       // Пометка «Демо-запись…»: на стороне, противоположной субтитру (субтитр внизу — пометка справа под шапкой,
       // наверху — справа внизу), и только если там нет интерфейса (баннер кризиса, кнопки панели); иначе прячем.
       const bh = badge.offsetHeight || 40, y = top ? H - 60 - bh : 74;

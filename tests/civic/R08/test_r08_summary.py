@@ -202,8 +202,8 @@ def test_empty_data_has_no_blank_numbers():
     s = summary([])
     assert s["empty"] is True
     assert all(s["kpi"][k]["value"] == 0 for k in ("new_day", "new_week", "in_progress", "overdue", "fixed_week"))
-    assert s["text"]["ru"] == "Сегодня новых обращений нет. Просроченных обращений нет."
-    assert s["text"]["kk"] == "Бүгін жаңа өтініш жоқ. Мерзімі өткен өтініш жоқ."
+    assert s["text"]["ru"] == "Сегодня новых обращений нет. Сроки исправления не нарушены."
+    assert s["text"]["kk"] == "Бүгін жаңа өтініш жоқ. Мерзімінде түзетілмеген өтініш жоқ."
 
 
 def test_invalid_records_are_skipped_not_fatal():

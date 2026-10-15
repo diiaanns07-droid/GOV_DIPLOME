@@ -472,6 +472,38 @@
     }
   }
 
+  // Плитки чисел: длинная подпись (ҚАЗ на 1366 — «Мерзімінде түзетілмеген», R10 аудит B0.9) уходит под график справа —
+  // тогда графики всего ряда опускаются к числам (ряд ровный, как на 4:3); тесно и там — график короче; места нет совсем —
+  // плитка без графика.
+  var measure = null;
+  function textWidth(el, text) {
+    measure = measure || doc.createElement("canvas").getContext("2d");
+    var cs = root.getComputedStyle(el);
+    measure.font = cs.fontStyle + " " + cs.fontWeight + " " + cs.fontSize + " " + cs.fontFamily;
+    return measure.measureText(text).width;
+  }
+  function placeSparks(box) {
+    if (!box || narrow()) return;
+    var tiles = Array.prototype.slice.call(box.querySelectorAll(".sc-kpi")), gap = 12;
+    var low = tiles.some(function (tile) {
+      var label = tile.querySelector(".sc-kpi__label"), spark = tile.querySelector(".sc-spark");
+      tile.removeAttribute("data-spark");
+      if (spark) spark.style.width = "";
+      return !!label && !!spark && label.getBoundingClientRect().left + textWidth(label, label.textContent) > spark.getBoundingClientRect().left - gap;
+    });
+    if (!low) return;
+    tiles.forEach(function (tile) {
+      var value = tile.querySelector(".sc-kpi__value"), spark = tile.querySelector(".sc-spark");
+      if (!value || !spark) return;
+      tile.setAttribute("data-spark", "low");
+      var sr = spark.getBoundingClientRect();
+      var free = sr.right - (value.getBoundingClientRect().left + textWidth(value, value.getAttribute("data-final") || value.textContent) + gap);
+      if (free >= sr.width) return;
+      if (free < 48) tile.setAttribute("data-spark", "none");
+      else spark.style.width = Math.floor(free) + "px";
+    });
+  }
+
   // Карта районов: самый большой прямоугольник с пропорциями контуров внутри своей ячейки.
   function sizeMaps(box) {
     var maps = box.querySelectorAll(".sc-map");
@@ -787,7 +819,8 @@
       var tiles = KPI.map(function (k) {
         var v = d.kpi[k.id] || {};
         var note = kpiNote(k, d);
-        var valueEl = h("p", { class: "sc-kpi__value sc-num", "data-kpi": k.id, "data-zero": String(!v.value) });
+        var valueEl = h("p", { class: "sc-kpi__value sc-num", "data-kpi": k.id, "data-zero": String(!v.value),
+          "data-final": v.value == null ? "—" : num(Number(v.value) || 0) });
         setNumber(valueEl, v.value);
         return h("article", { class: "sc-kpi sc-glass sc-kpi--" + k.id.replace("_week", "").replace("_day", "") }, [
           h("p", { class: "sc-kpi__label", text: tr(k.label) }),
@@ -802,6 +835,7 @@
       parts.kpis.setAttribute("aria-label", tr("board.title"));
       parts.kpis.replaceChildren.apply(parts.kpis, tiles);
       shorten(parts.kpis);
+      placeSparks(parts.kpis);
     }
     // Живые числа: новое значение «досчитывается» от прежнего за 600 мс (при reduced motion — сразу).
     var shown = {};

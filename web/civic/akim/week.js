@@ -310,9 +310,13 @@
     rootEl.replaceChildren(bar, sheet);
 
     function renderBar() {
-      var isPrev = !!state.date;
+      // Нажата та кнопка, чьё окно на листе: без даты или с сегодняшней — последние 7 дней, сегодня − 7 — неделей раньше.
+      // Пришли из «Картины дня» с другим днём — не нажата ни одна (окно названо в шапке листа).
+      var today = todayAstana();
+      var isLast = !state.date || state.date >= today;
+      var isPrev = state.date === shiftDay(today, -7);
       var seg = h("div", { class: "bk-seg wk-weeks", role: "group" }, [
-        h("button", { type: "button", "aria-pressed": String(!isPrev), text: tr("week.last7"), onclick: function () { setDate(null); } }),
+        h("button", { type: "button", "aria-pressed": String(isLast), text: tr("week.last7"), onclick: function () { setDate(null); } }),
         h("button", { type: "button", "aria-pressed": String(isPrev), text: tr("week.prev7"),
           onclick: function () { setDate(shiftDay(todayAstana(), -7)); } }),
       ]);

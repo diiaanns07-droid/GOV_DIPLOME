@@ -1,0 +1,219 @@
+{
+ "schema": "birge-analyst-answer-v1",
+ "question": "Где копаем дважды?",
+ "question_lang": "ru",
+ "lang": "ru",
+ "intents": [
+  "work_conflicts"
+ ],
+ "understood": {
+  "days": 7,
+  "days_given": false
+ },
+ "headline": {
+  "ru": "Конфликты работ «копаем дважды» по городу",
+  "kk": "Жұмыстар қайшылығы «екі рет қазу»: қала бойынша"
+ },
+ "lead": {
+  "ru": "Сначала сети, потом асфальт: перенесите укладку асфальта после работ Водоканала.",
+  "kk": "Алдымен желілер, содан кейін асфальт."
+ },
+ "numbers": [
+  {
+   "value": 2,
+   "text": "2",
+   "label": {
+    "ru": "конфликта работ",
+    "kk": "жұмыстар қайшылығы"
+   },
+   "fact": "work_conflicts.1",
+   "tone": "up"
+  },
+  {
+   "value": 1,
+   "text": "1",
+   "label": {
+    "ru": "серьёзных",
+    "kk": "маңызды"
+   },
+   "fact": "work_conflicts.2",
+   "tone": "neutral"
+  }
+ ],
+ "blocks": [
+  {
+   "id": "work_conflicts",
+   "kind": "work_conflicts",
+   "status": "ok",
+   "title": {
+    "ru": "Конфликты работ «копаем дважды» по городу",
+    "kk": "Жұмыстар қайшылығы «екі рет қазу»: қала бойынша"
+   },
+   "numbers": [
+    {
+     "value": 2,
+     "text": "2",
+     "label": {
+      "ru": "конфликта работ",
+      "kk": "жұмыстар қайшылығы"
+     },
+     "fact": "work_conflicts.1",
+     "tone": "up"
+    },
+    {
+     "value": 1,
+     "text": "1",
+     "label": {
+      "ru": "серьёзных",
+      "kk": "маңызды"
+     },
+     "fact": "work_conflicts.2",
+     "tone": "neutral"
+    }
+   ],
+   "lines": {
+    "ru": [
+     "Сначала сети, потом асфальт: перенесите укладку асфальта после работ Водоканала."
+    ],
+    "kk": [
+     "Алдымен желілер, содан кейін асфальт."
+    ]
+   },
+   "items": [
+    {
+     "label": {
+      "ru": "раскопка после нового асфальта",
+      "kk": "жаңа асфальттан кейін қазу"
+     },
+     "value": null,
+     "severity": "high",
+     "id": "cf-1",
+     "value_text": {
+      "ru": "серьёзный",
+      "kk": "маңызды"
+     }
+    },
+    {
+     "label": {
+      "ru": "соседние улицы перекрыты одновременно",
+      "kk": "көрші көшелер бір мезгілде жабылған"
+     },
+     "value": null,
+     "severity": "medium",
+     "id": "cf-2",
+     "value_text": {
+      "ru": "средний",
+      "kk": "орташа"
+     }
+    }
+   ],
+   "actions": [
+    {
+     "kind": "open",
+     "section": "works-calendar",
+     "label": {
+      "ru": "Открыть «Календарь работ»",
+      "kk": "«Жұмыстар күнтізбесін» ашу"
+     },
+     "opener": {
+      "global": "BirgeWorksCalendar",
+      "fn": "openConflict",
+      "arg": "cf-1"
+     }
+    }
+   ],
+   "source": {
+    "role": "R12",
+    "name": {
+     "ru": "Календарь работ",
+     "kk": "Жұмыстар күнтізбесі"
+    },
+    "demo": true
+   },
+   "facts": [
+    {
+     "id": "work_conflicts.1",
+     "value": 2,
+     "what": {
+      "ru": "конфликта работ",
+      "kk": "жұмыстар қайшылығы"
+     },
+     "role": "R12",
+     "fn": "works_conflicts"
+    },
+    {
+     "id": "work_conflicts.2",
+     "value": 1,
+     "what": {
+      "ru": "серьёзных",
+      "kk": "маңызды"
+     },
+     "role": "R12",
+     "fn": "works_conflicts"
+    }
+   ]
+  }
+ ],
+ "actions": [
+  {
+   "kind": "open",
+   "section": "works-calendar",
+   "label": {
+    "ru": "Открыть «Календарь работ»",
+    "kk": "«Жұмыстар күнтізбесін» ашу"
+   },
+   "opener": {
+    "global": "BirgeWorksCalendar",
+    "fn": "openConflict",
+    "arg": "cf-1"
+   }
+  }
+ ],
+ "notices": [],
+ "flags": [],
+ "facts": [
+  {
+   "id": "work_conflicts.1",
+   "value": 2,
+   "what": {
+    "ru": "конфликта работ",
+    "kk": "жұмыстар қайшылығы"
+   },
+   "role": "R12",
+   "fn": "works_conflicts"
+  },
+  {
+   "id": "work_conflicts.2",
+   "value": 1,
+   "what": {
+    "ru": "серьёзных",
+    "kk": "маңызды"
+   },
+   "role": "R12",
+   "fn": "works_conflicts"
+  }
+ ],
+ "calls": [
+  {
+   "role": "R12",
+   "name": {
+    "ru": "Календарь работ",
+    "kk": "Жұмыстар күнтізбесі"
+   },
+   "module": "engine.civic_geo",
+   "fn": "conflicts_summary",
+   "args": {
+    "district": null
+   },
+   "status": "ok",
+   "ms": 0.1
+  }
+ ],
+ "mode": "offline",
+ "offline": true,
+ "offline_reason": "no_key",
+ "model": null,
+ "demo": true,
+ "generated_at": "2026-10-15T12:00:00+05:00",
+ "ms": 0.5
+}

@@ -145,12 +145,12 @@
   margin-top: 14px;
   break-inside: avoid;
 }
-.wk-h2 {
+.wk-h2 { /* 15 px — как кнопки панели: на экране три размера 13 / 15 / 22 (VISUAL_BRIEF §4 п. 3, аудит R10); на бумаге 14 */
   display: flex;
   align-items: center;
   gap: 8px;
   margin: 0 0 6px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 }
 .wk-h3 {
@@ -447,6 +447,9 @@
   }
   .wk-text__p {
     font-size: 12px;
+  }
+  .wk-h2 {
+    font-size: 14px;
   }
   .wk-brand,
   .wk-meta,

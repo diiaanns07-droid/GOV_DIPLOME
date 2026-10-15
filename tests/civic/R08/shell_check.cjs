@@ -82,7 +82,8 @@ const KEYLIKE = /\b(akim|common|district|cat|status|stage|object|heat|shell|date
         await page.waitForSelector(".r07-card__title", { timeout: 10000 });
         card = await page.evaluate(() => ({
           title: document.querySelector(".r07-card__title").textContent.trim(),
-          reported: (document.querySelector(".r07-card__reported") || {}).textContent || "",
+          // R07 раунда 15: число и период — строка «12 человек сообщили · за 7 дней» (.r07-big); раньше .r07-card__reported
+          reported: (document.querySelector(".r07-card__reported") || document.querySelector(".r07-card .r07-big") || {}).textContent || "",
         }));
       } catch (e) { /* карточки нет */ }
       const name = first.target["label_" + lang] || first.target.label_ru;

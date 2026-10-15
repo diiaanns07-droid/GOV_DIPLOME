@@ -90,6 +90,10 @@
 .nb-tabs {
   margin: 0;
 }
+/* число у вкладки — текст: вторичный цвет (≥ 4,5:1), а не третичный ui-kit .bk-tabs .bk-num (3,6:1; просьба R11 — §16) */
+.nb-tabs .nb-tabs__count {
+  color: var(--c-text-2);
+}
 .nb-loading {
   display: grid;
   gap: var(--s-3);
