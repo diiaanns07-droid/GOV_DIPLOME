@@ -10,7 +10,7 @@
 промптом или VISUAL_BRIEF — права поправка):
     git fetch origin claude/clever-hypatia-q6ts4g
     git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md
-Прочитано: П1 (15 окт 17:05 Астаны, «Без ИИ-слопа») — применено 15 окт ~12:40 UTC.
+Прочитано: П1 (15 окт 17:05 Астаны, «Без ИИ-слопа») — применено 15 окт ~12:15 UTC (коммит b41da2e6).
 
 ## План
 1. agent/civic_assistant/api.py · ask(question, lang, principal) по CONTRACT §7: офлайн-намерения ru/kk/смешанные →
@@ -46,17 +46,21 @@
   Тесты: R03 round15 65 passed; вместе с R09/R01/R03 r14 — 842 passed, 9 skipped (нет torch), 1 xfailed.
 - 12:12 UTC: DELIVERY.json (code_sha 10f90adc), RUN.txt — поставка готова к B1.
 
-- ~12:40 UTC: ПОПРАВКА П1 «Без ИИ-слопа» применена к экрану R03: пустое состояние и ошибки — один значок набора
+- ~12:15 UTC (b41da2e6): ПОПРАВКА П1 «Без ИИ-слопа» применена к экрану R03: пустое состояние и ошибки — один значок набора
   R11 48 px (ic--48, один цвет) + короткий текст + одна кнопка («Главное за сегодня» → «Что сегодня главное?»);
   иллюстрации ill-* убраны; декоративных картинок на экране нет (крупные числа, точки уровня = цвет + число — это данные).
-- ~12:40 UTC: ревью R11 круг 1 применено (62e1c63a): термины словаря, короткие чипы, источники названиями.
-- ~12:40 UTC: подключение соседей по их функциям «для R03»: R17 board_snapshot / active_incidents (progress вместо задач),
+- ~12:12 UTC: ревью R11 круг 1 применено (62e1c63a): термины словаря, короткие чипы, источники названиями.
+- ~12:15 UTC: подключение соседей по их функциям «для R03»: R17 board_snapshot / active_incidents (progress вместо задач),
   R12 conflicts_summary, R16 initiatives_summary, R13 board_block; «Открыть …» вызывает BirgeAgencies.openCrisis /
   BirgeWorksCalendar.openConflict. Проверка на их настоящем коде — следующий шаг.
 
-- ~13:05 UTC (650d5ef6 = code_sha DELIVERY): соседи проверены на их настоящем коде (временная копия: R17 e5b834f9,
+- 12:24 UTC (650d5ef6): соседи проверены на их настоящем коде (временная копия: R17 e5b834f9,
   R12 8ecfbd37, R16 aef7b79f, R13 455b8950, CIVIC_DEMO=1): оценка 100 % фактов на обоих наборах, провокации 10/10.
   Тесты: 71 passed + 1 skipped (с соседями — 72 passed); с R09/R01/R03 r14 — 848 passed, 10 skipped, 1 xfailed.
+
+- 12:28 UTC (c7bcf274 = code_sha DELIVERY): eval_human.py для LOCAL-14 (числа без текстов людей; на синтетике в
+  формате web/labeling — 3 passed); в облаке LOCAL-14 — NOT_RUN (нет разметки людей). RUN.txt §6 — команды ноутбука.
+  Тесты R03 round15: 74 passed + 1 skipped. Время в STATUS — по `date -u` (раньше были оценки на глаз).
 
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,

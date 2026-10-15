@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "650d5ef611db3bd731180347d3a507a5b72b0504",
- "tested_sha": "650d5ef611db3bd731180347d3a507a5b72b0504",
+ "code_sha": "c7bcf2746857bf7b623a73997c222a3fc3f99554",
+ "tested_sha": "c7bcf2746857bf7b623a73997c222a3fc3f99554",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -21,6 +21,7 @@
   "agent/civic_assistant/analyst/sources.py",
   "agent/civic_assistant/analyst/texts.py",
   "agent/civic_assistant/api.py",
+  "ml/civic_classifier_v2/eval_human.py",
   "tests/civic/R03/round15/analyst_devserver.py",
   "tests/civic/R03/round15/analyst_screens.cjs",
   "tests/civic/R03/round15/analyst_shell_check.cjs",
@@ -30,6 +31,7 @@
   "tests/civic/R03/round15/test_analyst_intents.py",
   "tests/civic/R03/round15/test_analyst_neighbours.py",
   "tests/civic/R03/round15/test_analyst_real_modules.py",
+  "tests/civic/R03/round15/test_eval_human.py",
   "web/civic/assistant/analyst-demo.html",
   "web/civic/assistant/analyst.css",
   "web/civic/assistant/analyst.js"
@@ -85,11 +87,11 @@
  "tests": {
   "pytest_R03_round15": {
    "status": "PASS",
-   "passed": 71,
+   "passed": 74,
    "skipped": 1,
    "failed": 0,
    "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
-   "note": "skipped — тест с настоящими соседями: их модулей нет в ветке R03; с их кодом (временная копия) — 72 passed"
+   "note": "skipped — тест с настоящими соседями: их модулей нет в ветке R03; с их кодом (временная копия) — проходит"
   },
   "pytest_R03_R09_R01_related": {
    "status": "PASS",
@@ -158,7 +160,9 @@
   },
   "classifier_v2_human_eval": {
    "status": "NOT_RUN",
-   "reason": "размеченных текстов людей (LOCAL-14) в облаке нет; см. RUN.txt §6"
+   "reason": "размеченных текстов людей (LOCAL-14) в облаке нет",
+   "tool": "ml/civic_classifier_v2/eval_human.py — готов; проверен на синтетике в формате web/labeling (test_eval_human.py: 3 passed)",
+   "cmd_laptop": "python -m ml.civic_classifier_v2.eval_human --human private/labels_owner.jsonl --model ml/civic_classifier_v2/artifacts/onnx"
   },
   "eval_with_round15_neighbours": {
    "status": "PASS",

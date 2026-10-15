@@ -78,6 +78,17 @@ R03 · раунд 15 · «Спросить Birge» — ИИ-аналитик а�
   В сборке модель включается теми же переменными окружения сервера (app.py); без них — офлайн.
 
 ====================================================================================================
-6. LOCAL-14 · ТЕКСТЫ ЛЮДЕЙ ДЛЯ КЛАССИФИКАТОРА v2 (ноутбук)
+6. LOCAL-14 · ТЕКСТЫ ЛЮДЕЙ ДЛЯ КЛАССИФИКАТОРА v2 (ноутбук, ~5 мин после разметки)
 ====================================================================================================
-  См. раздел LOCAL-14 ниже (ml/civic_classifier_v2/eval_human.py) — добавляется следующим кругом R03.
+  Разметка — по LOCAL_TASKS.md (import_form.py R02 → web/labeling, ~300 текстов) в папку private\ (она в .gitignore).
+  PowerShell из корня репозитория ($PY — python из venv, где стоят onnxruntime и scikit-learn):
+    & $PY -m ml.civic_classifier_v2.eval_human --human private\labels_owner.jsonl `
+        --model ml\civic_classifier_v2\artifacts\onnx --out ml\civic_classifier_v2\results
+    (несколько разметчиков: --human private\labels_owner.jsonl private\labels_2.jsonl — первым владельца)
+  Что считается: словарь продукта, логрегрессия на синтетике (если есть scikit-learn), трансформер (папка модели) —
+  macro-F1 с 95 % ДИ, срезы ru / kk / вперемешку / транслит, матрица ошибок и разрыв «люди − синтетика (probe_v2)».
+  Результат: ml\civic_classifier_v2\results\human_eval.json и RESULTS_HUMAN.md — только числа и счётчики, без текстов.
+  Файл под контролем Git скрипт откажется читать (код 3): тексты людей в репозиторий не попадают.
+  Commit: только эти два файла, push в ветку R03 (claude/modest-mccarthy-lrl98u или новую ветку сессии R03).
+  В облаке: NOT_RUN — размеченных текстов людей нет; скрипт проверен на синтетике в формате web/labeling
+  (tests/civic/R03/round15/test_eval_human.py: 3 passed).
