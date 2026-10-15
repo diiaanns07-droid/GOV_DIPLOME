@@ -1,0 +1,648 @@
+{
+ "root": "<превью>",
+ "world": true,
+ "seeds": [
+  "init",
+  "seed-demo",
+  "seed-r14-demo"
+ ],
+ "rows": [
+  {
+   "area": "FINAL-4",
+   "name": "маршруты FINAL-4 на месте (74)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01"
+  },
+  {
+   "area": "FINAL-4",
+   "name": "модули FINAL-4 подключены, как в FINAL-4 (ready)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "владелец модуля"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/initiatives: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET together/initiatives/{initiative}: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/join: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/leave: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/support: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/moderate: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/report: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET together/yards/{yard}: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST together/yards/{yard}/join: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST together/yards/{yard}/leave: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET together/updates: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_together"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies/board: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies/joint: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies/handoffs: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET incidents: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET incidents/{incident}: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents/{incident}/task: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents/{incident}/update: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents/{incident}/close: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET incidents/updates: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_agencies"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET meetings: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_meetings"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET meetings/{meeting}: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_meetings"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET meetings/updates: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_meetings"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_meetings"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/order: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_meetings"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/result: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_meetings"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/register: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_meetings"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/question: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_meetings"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST route: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_ml_api"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST reply-draft: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_ml_api"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST moderate: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_ml_api"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST assistant/ask: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "agent.civic_assistant.api"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "GET notifications: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_store.v2"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST notifications/read: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_store.v2"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST ideas/{idea}/to-initiative: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_store.v2"
+   },
+   "owner": null
+  },
+  {
+   "area": "подготовка",
+   "name": "id записей для проверки",
+   "status": "PASS",
+   "detail": {
+    "idea": "i-demo-11193ec5",
+    "complaint": "c-237e2d6f4a0001eb"
+   },
+   "owner": null
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/handoff: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/handoff: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "ответ",
+   "name": "POST complaints/{complaint}/handoff: сотрудник → 404 «Адрес не найден.»",
+   "status": "NOT_RUN",
+   "detail": "модуль R09 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)",
+   "owner": "R09"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST complaints/{complaint}/handoff: сотрудник, пустое тело → 404 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/services: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/services: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "ответ",
+   "name": "POST complaints/{complaint}/services: сотрудник → 404 «Адрес не найден.»",
+   "status": "NOT_RUN",
+   "detail": "модуль R09 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)",
+   "owner": "R09"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST complaints/{complaint}/services: сотрудник, пустое тело → 404 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/part: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/part: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "ответ",
+   "name": "POST complaints/{complaint}/part: сотрудник → 404 «Адрес не найден.»",
+   "status": "NOT_RUN",
+   "detail": "модуль R09 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)",
+   "owner": "R09"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST complaints/{complaint}/part: сотрудник, пустое тело → 404 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "GET works-calendar: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "ответ",
+   "name": "GET works-calendar: сотрудник → 404 «Адрес API не найден.»",
+   "status": "NOT_RUN",
+   "detail": "модуль R12 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)",
+   "owner": "R12"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET works-calendar: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "доступ",
+   "name": "GET works-conflicts: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "ответ",
+   "name": "GET works-conflicts: сотрудник → 404 «Адрес API не найден.»",
+   "status": "NOT_RUN",
+   "detail": "модуль R12 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)",
+   "owner": "R12"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET works-conflicts: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "ответ",
+   "name": "GET heat/replay: житель без входа → 404 «нет такого адреса»",
+   "status": "NOT_RUN",
+   "detail": "модуль R07 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)",
+   "owner": "R07"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET heat/replay: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R07"
+  },
+  {
+   "area": "доступ",
+   "name": "GET akim/board: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08"
+  },
+  {
+   "area": "ответ",
+   "name": "GET akim/board: сотрудник → 404 «нет такого адреса»",
+   "status": "NOT_RUN",
+   "detail": "модуль R08 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)",
+   "owner": "R08"
+  },
+  {
+   "area": "доступ",
+   "name": "GET akim/week: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08"
+  },
+  {
+   "area": "ответ",
+   "name": "GET akim/week: сотрудник → 404 «нет такого адреса»",
+   "status": "NOT_RUN",
+   "detail": "модуль R08 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)",
+   "owner": "R08"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET akim/week: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08"
+  },
+  {
+   "area": "поведение",
+   "name": "передача в другую службу: с причиной, срок ответа не начинается заново",
+   "status": "NOT_RUN",
+   "detail": "маршрута передачи в модуле R09 ещё нет (поставки нет в сборке)",
+   "owner": "R09"
+  },
+  {
+   "area": "журнал",
+   "name": "сервер без Traceback модулей во время проверки",
+   "status": "PASS",
+   "detail": null,
+   "owner": "по тексту ошибки"
+  }
+ ],
+ "counts": {
+  "PASS": 59,
+  "FAIL": 0,
+  "NOT_RUN": 9
+ },
+ "by_role": {
+  "R16": {
+   "routes": 12,
+   "ready": 0,
+   "not_ready": 12,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R17": {
+   "routes": 11,
+   "ready": 0,
+   "not_ready": 11,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R09": {
+   "routes": 3,
+   "ready": 3,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R12": {
+   "routes": 2,
+   "ready": 2,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R07": {
+   "routes": 1,
+   "ready": 1,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R08": {
+   "routes": 2,
+   "ready": 2,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R13": {
+   "routes": 8,
+   "ready": 0,
+   "not_ready": 8,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R04": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 3,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R03": {
+   "routes": 1,
+   "ready": 0,
+   "not_ready": 1,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R06": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 3,
+   "failed": 0,
+   "not_registered": 0
+  }
+ },
+ "ids": {
+  "idea": "i-demo-11193ec5",
+  "complaint": "c-237e2d6f4a0001eb"
+ },
+ "timing_ms": {}
+}

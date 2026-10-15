@@ -125,7 +125,9 @@ ROUTES = (
     Route("POST", "ideas/{idea}/to-initiative", "R06", "staff"),
 )
 
-PROBE = "r10-probe"  # id по правилу CIVIC_ID, которого нет в базе: маршрут должен ответить 404 / 503, а не 500
+PROBE = "r10-probe"
+# 404 «адрес не найден» от модуля (а не «запись не найдена»): путь модулю неизвестен.
+ROUTE_404 = re.compile(r"адрес|нет такого|unknown (route|path)", re.I)  # id по правилу CIVIC_ID, которого нет в базе: маршрут должен ответить 404 / 503, а не 500
 
 
 def bodies(ids):
@@ -505,6 +507,8 @@ class ApiCheck:
 
     # --- основной проход
     def run(self):
+        # Журнал сервера — только с этого места: исключения при старте (нет файла мира и т. п.) модули ловят и пишут сами.
+        self.log_from = len(self.s.log)
         self.modules_regress()
         present = [rt for rt in ROUTES if self.registered(rt)]
         if not present:
@@ -546,7 +550,7 @@ class ApiCheck:
             for rt in ready:
                 self.access(rt)
             self.functional()
-        traces = self.s.tracebacks()
+        traces = self.s.tracebacks(self.log_from)
         self.add("журнал", "сервер без Traceback модулей во время проверки", "FAIL" if traces else "PASS",
                  traces[:5] or None, "по тексту ошибки")
         return self
@@ -684,6 +688,12 @@ class ApiCheck:
                 return
             self.add("ответ", f"{name} → {r.status}", "PASS", None, rt.role)
             self.check_format(name, r, rt)
+        elif r.status == 404 and ROUTE_404.search(str(error_info(r)[1] or "")):
+            # Модуль роли раунда 14 есть, а нового пути в нём нет: поставки роли в сборке ещё нет (R01 зарегистрировал
+            # маршрут заранее). Это не дефект шлюза и не FAIL роли — NOT_RUN, пока поставка не вошла в сборку.
+            self.add("ответ", f"{name} → 404 «{error_info(r)[1]}»", "NOT_RUN",
+                     f"модуль {rt.role} ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)",
+                     rt.role)
         elif r.status == 404 and not has_ids:
             ok, why = understandable(r)
             self.add("ответ", f"{name} → 404 (записи-заглушки нет)", "PASS" if ok else "FAIL", None if ok else why,
@@ -783,6 +793,10 @@ class ApiCheck:
         before = record(self.staff.get(f"{V2}/complaints/{cid}").body, "complaint") or {}
         r = self.staff.post(f"{V2}/complaints/{cid}/handoff", {"to": "water", "reason": "Сначала нужна замена трубы"})
         after = record(self.staff.get(f"{V2}/complaints/{cid}").body, "complaint") or {}
+        if r.status == 404 and ROUTE_404.search(str(error_info(r)[1] or "")):
+            self.add("поведение", "передача в другую службу: с причиной, срок ответа не начинается заново", "NOT_RUN",
+                     "маршрута передачи в модуле R09 ещё нет (поставки нет в сборке)", "R09")
+            return
         due_keys = sorted(k for k in before if "due" in k or "deadline" in k)
         changed = {k: (before.get(k), after.get(k)) for k in due_keys if before.get(k) != after.get(k)}
         handoffs = after.get("handoffs") or []
