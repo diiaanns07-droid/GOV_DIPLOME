@@ -384,3 +384,46 @@ def test_pickups_without_r16_is_empty(tmp_path, monkeypatch):
     monkeypatch.setitem(sys.modules, "ui.civic_together", old_style)
     rows = sources.pickups(str(tmp_path / "none.sqlite3"), "nura")
     assert [r["service"] for r in rows] == ["waste"] and "author_device" not in rows[0]
+
+
+# ---------------------------------------------------------------- R15-S43: неверный тип JSON → 4xx, не 500
+WRONG = [["road"], {"x": 1}, 7, 1.5, True, None, [["nested"]]]
+ZONE_OK = {"kind": "district", "district": "esil"}
+
+
+def _fuzz_cases():
+    base = {
+        "/incidents": {"kind": "flood", "zone": ZONE_OK, "tasks": [{"service": "road", "text_ru": "Задача"}],
+                       "title_ru": "Подтопление", "title_kk": "Су басу",
+                       "update": {"text_ru": "Штаб открыт", "text_kk": "Штаб ашылды"}},
+        "/incidents/inc-demo-blizzard-nura/task": {"service": "road", "text_ru": "Задача", "text_kk": "Тапсырма"},
+        "/incidents/inc-demo-blizzard-nura/update": {"text_ru": "Текст", "text_kk": "Мәтін", "public": True},
+        "/incidents/inc-demo-blizzard-nura/close": {"result_ru": "Итог", "result_kk": "Қорытынды"},
+    }
+    for path, body in base.items():
+        for field in body:
+            for value in WRONG:
+                yield path, dict(body, **{field: value}), field
+    # вложенные поля: задача кризиса, зона, обновление, смена статуса задачи
+    for value in WRONG:
+        yield "/incidents", dict(base["/incidents"], tasks=[{"service": value, "text_ru": "Задача"}]), "tasks[].service"
+        yield "/incidents", dict(base["/incidents"], tasks=[{"service": "road", "text_ru": value}]), "tasks[].text_ru"
+        yield "/incidents", dict(base["/incidents"], tasks=[value]), "tasks[]"
+        yield "/incidents", dict(base["/incidents"], zone={"kind": value}), "zone.kind"
+        yield "/incidents", dict(base["/incidents"], zone={"kind": "district", "district": value}), "zone.district"
+        yield "/incidents", dict(base["/incidents"], zone={"kind": "targets", "targets": [value]}), "zone.targets[]"
+        yield "/incidents", dict(base["/incidents"], zone={"kind": "targets", "targets": value}), "zone.targets"
+        yield "/incidents", dict(base["/incidents"], update={"text_ru": value, "text_kk": "Мәтін"}), "update.text_ru"
+        yield "/incidents/inc-demo-blizzard-nura/task", {"task_id": value, "status": "done"}, "task_id"
+        yield "/incidents/inc-demo-blizzard-nura/task", {"task_id": "t-1", "status": value}, "status"
+        yield "/incidents/inc-demo-blizzard-nura/task", {"task_id": "t-1", "status": "done", "expected": value}, "expected"
+    for path in base:
+        for value in WRONG + ["строка"]:
+            yield path, value, "body"
+
+
+@pytest.mark.parametrize("path,body,field", list(_fuzz_cases()))
+def test_wrong_json_types_answer_4xx_not_500(service, path, body, field):
+    """R15-S43: список/словарь/число вместо строки (и не-объект вместо тела) — понятная ошибка 4xx, а не TypeError → 500."""
+    reply = call(service, "POST", path, body, Staff())
+    assert 400 <= reply["status"] < 500 or reply["status"] in (200, 201), (field, body, reply)

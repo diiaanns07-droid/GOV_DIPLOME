@@ -203,7 +203,7 @@ class AgencyService:
     def board(self, q: dict) -> dict:
         days, district = self._days(q), self._district(q)
         service = q.get("service") or None
-        if service is not None and service not in profiles.PROFILES:
+        if service is not None and (not isinstance(service, str) or service not in profiles.PROFILES):
             raise ApiError(400, "bad_request", "Неизвестная служба.", "service")
         now = self._now()
         records, source = self._records(now)
@@ -313,7 +313,7 @@ class AgencyService:
     # ------------------------------------------------------------------ кризисы: запись (сотрудник)
     def create_incident(self, body: dict, principal) -> dict:
         kind = body.get("kind")
-        if kind not in crisis.TEMPLATES:
+        if not isinstance(kind, str) or kind not in crisis.TEMPLATES:  # R15-S43: не строка → 422, а не 500
             raise crisis.InputError("kind", "Выберите вид кризиса.")
         tpl = crisis.TEMPLATES[kind]
         title_ru = crisis.clean_text(body.get("title_ru"), field="title_ru", high=crisis.TITLE_MAX, required=False)
@@ -351,7 +351,7 @@ class AgencyService:
             incident = self.store.set_task(incident_id, task_id, status=status, by_role=_role(principal),
                                            expected=expected)
         else:
-            if body.get("service") not in profiles.PROFILES:
+            if not isinstance(body.get("service"), str) or body["service"] not in profiles.PROFILES:  # R15-S43
                 raise crisis.InputError("service", "Выберите службу из справочника.")
             ru = crisis.clean_text(body.get("text_ru"), field="text_ru", high=200, required=False)
             kk = crisis.clean_text(body.get("text_kk"), field="text_kk", high=200, required=False)

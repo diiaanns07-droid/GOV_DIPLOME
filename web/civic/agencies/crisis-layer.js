@@ -146,7 +146,9 @@
   }
   function beforeId(m) {
     var layers = (m.getStyle() && m.getStyle().layers) || [];
-    var heat = layers.filter(function (l) { return /^r07-heat/.test(l.id); })[0];
+    // Под слоями тепловой карты R07 (id слоёв — r07-district-fill, r07-seg, …; r07-heat — это id источника): заливка
+    // зоны не ложится поверх цветов мест (R07 INTEGRATION §3а, patches/R17_crisis_layer_under_heat.patch).
+    var heat = layers.filter(function (l) { return /^r07-/.test(l.id); })[0];
     if (heat) return heat.id;
     var sym = layers.filter(function (l) { return l.type === "symbol"; })[0];
     return sym ? sym.id : undefined;

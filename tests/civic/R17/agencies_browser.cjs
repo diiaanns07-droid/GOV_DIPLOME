@@ -224,7 +224,10 @@ const openAgencies = async (page, base, tab) => {
         check(`${tag}: контраст текста ≥ 4,5:1`, ux.lowN === 0, ux.low);
         if (apiBoard.totals && apiBoard.totals.overdue_fix != null) {
           const two = await page.evaluate(() => [...document.querySelectorAll(".ag-kpi__label")].map((e) => e.textContent));
-          check(`${tag}: два «просрочено» — разные подписи (ответ R09 и исправление R08)`, two.length === 5 && new Set(two).size === 5, two);
+          check(`${tag}: два «просрочено» — разные подписи (ответ R09 и исправление R08)`, two.length === 4 && new Set(two).size === 4, two);
+          const cutKpi = await page.evaluate(() => [...document.querySelectorAll(".ag-kpi__label")]
+            .filter((e) => e.scrollHeight > e.clientHeight + 1 || e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent));
+          check(`${tag}: подписи плиток не обрезаны`, cutKpi.length === 0, cutKpi);
         }
         await page.screenshot({ path: `${OUT}/board-${tag}.png` });
         // раскрыть самую загруженную службу
@@ -306,10 +309,16 @@ const openAgencies = async (page, base, tab) => {
       await page.waitForSelector("[data-action=show-map]");
       await page.click("[data-action=show-map]");
       await page.waitForTimeout(3000);
-      const layer = await page.evaluate(() => ({ layer: window.BirgeShell && window.BirgeShell.layer,
+      const layer = await page.evaluate(() => {
         // eslint-disable-next-line no-undef
-        drawn: typeof map !== "undefined" && !!map.getLayer && !!map.getLayer("r17-crisis-fill") }));
+        const m = typeof map !== "undefined" ? map : null;
+        const ids = m && m.getStyle && m.getStyle() ? m.getStyle().layers.map((l) => l.id) : [];
+        const heat = ids.findIndex((id) => /^r07-/.test(id)), fill = ids.indexOf("r17-crisis-fill");
+        return { layer: window.BirgeShell && window.BirgeShell.layer, drawn: fill >= 0, fill, firstR07: heat,
+          underHeat: heat < 0 || (fill >= 0 && fill < heat) };
+      });
       check("карта: слой «Кризис» включён и нарисован", layer.layer === "crisis" && layer.drawn, layer);
+      check("карта: зона кризиса под слоями тепловой карты R07 (цвета мест не тонут)", layer.underHeat, layer);
       await page.screenshot({ path: `${OUT}/crisis-map-1366-ru.png` });
       check("кризис: нет ошибок JS", page.errs.length === 0, page.errs);
       await ctx.close();

@@ -231,7 +231,8 @@ def parse_tasks(raw) -> list[dict]:
         raise InputError("tasks", "Задачи — список.")
     out = []
     for i, item in enumerate(raw):
-        if not isinstance(item, dict) or item.get("service") not in profiles.PROFILES:
+        # R15-S43: список/словарь вместо строки — 422, а не TypeError (unhashable) → 500.
+        if not isinstance(item, dict) or not isinstance(item.get("service"), str) or item["service"] not in profiles.PROFILES:
             raise InputError(f"tasks[{i}].service", "Выберите службу из справочника.")
         ru = clean_text(item.get("text_ru"), field=f"tasks[{i}].text_ru", high=200, required=False)
         kk = clean_text(item.get("text_kk"), field=f"tasks[{i}].text_kk", high=200, required=False)
