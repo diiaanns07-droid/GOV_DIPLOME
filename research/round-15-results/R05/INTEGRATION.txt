@@ -1,0 +1,23 @@
+R05 · раунд 15 · INTEGRATION (черновик, дополняется по ходу раунда)
+
+1. LOCAL-13 — контуры ориентиров из Overpass (ноутбук Codex; в облаке нет интернета)
+   Зачем: в репозитории нет контуров зданий Байтерек, Хан Шатыр, Ақорда, «Нұр Әлем», Дворец мира и согласия.
+   Центры в data/civic/astana/landmarks/landmarks.json выведены из колец дорожек снимка OSM (см. README.md рядом),
+   у каждой записи пометка check = "LOCAL-13" («координаты проверить»).
+   Сделать:
+     a) Overpass (тот же bbox, что LOCAL-1: 50.9206,71.2079,51.3612,71.7953):
+        [out:json][timeout:90];
+        (
+          nwr["name"~"Бәйтерек|Байтерек|Baiterek|Bayterek"]["man_made"];
+          nwr["name"~"Бәйтерек|Байтерек|Baiterek|Bayterek"]["tourism"];
+          nwr["name"~"Хан Шатыр|Khan Shatyr"]["building"];
+          nwr["name"~"Ақорда|Акорда|Ak Orda|Akorda"]["building"];
+          nwr["name"~"Нұр Әлем|Нур Алем|Nur Alem"];
+          nwr["name"~"Бейбітшілік және келісім сарайы|Дворец мира и согласия|Palace of Peace"]["building"];
+        );
+        out geom;
+     b) сохранить ответ без изменений: data/civic/astana/landmarks/raw/landmarks.json.gz (+ SOURCE.json: запрос, время,
+        osm_base, sha256) — путь LOCAL по CONTRACT §2;
+     c) для каждого ориентира: центр контура (центроид) против lat/lon в landmarks.json; расхождение > 10 м — записать
+        в research/round-15-results/LOCAL/R05_landmarks_check.txt (R05 поправит способ вывода и пересоберёт).
+   Готово, когда: файл raw/ лежит, расхождения ≤ 10 м или записаны.
