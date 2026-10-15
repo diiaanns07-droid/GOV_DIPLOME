@@ -124,6 +124,20 @@ async function openCalendar(page, lang) {
           }
           return { tiny: tiny.slice(0, 6), tinyN: tiny.length, small: small.slice(0, 6), smallN: small.length };
         });
+        // Ревью: зона нажатия соседней полосы не накрывает видимую полосу — нажатие на полосу открывает её саму.
+        const steal = await page.evaluate(() => {
+          const out = [];
+          for (const f of document.querySelectorAll(".wcal-bar__fill")) {
+            const r = f.getBoundingClientRect();
+            if (r.width < 2 || r.right < 0 || r.left > innerWidth || r.bottom < 0 || r.top > innerHeight) continue;
+            const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+            const own = f.closest(".wcal-bar");
+            const got = hit && hit.closest(".wcal-bar");
+            if (got && got !== own) out.push(own.dataset.work + "→" + got.dataset.work);
+          }
+          return out;
+        });
+        check(`${w} ${lang}: нажатие на полосу — сама полоса (зоны соседей не накрывают)`, steal.length === 0, steal.slice(0, 4).join(", "));
         check(`${w} ${lang}: шрифт ≥ 13 px`, ux.tinyN === 0, ux.tiny.join("; "));
         check(`${w} ${lang}: зоны нажатия ≥ 40 px`, ux.smallN === 0, ux.small.join("; "));
         if (world) {

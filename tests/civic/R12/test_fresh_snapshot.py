@@ -123,3 +123,17 @@ def test_qr_example_still_resolves_and_new_complaints_get_the_fresh_signal():
     assert ids[0] == QR_EXAMPLE_FRESH and QR_EXAMPLE not in ids
     objects, _, _ = get_layers()
     assert QR_EXAMPLE not in [f.id for _, f in objects.near(p, 60.0)]
+
+
+def test_origin_is_tracked_not_guessed_from_the_file_name(tmp_path):
+    """Ревью: свежая выгрузка в raw/ с тем же именем, что у снимка пешеходной сети (overpass.json.gz), — всё равно свежая."""
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    (raw / "overpass.json.gz").write_bytes(gzip.compress(json.dumps(
+        {"elements": [_node(1, 71.43029, 51.16, highway="traffic_signals")]}).encode("utf-8")))
+    walking = tmp_path / "overpass.json.gz"
+    walking.write_bytes(gzip.compress(json.dumps({"elements": [_node(1, 71.43, 51.16, highway="traffic_signals"),
+                                                               _node(2, 71.432, 51.16, highway="traffic_signals")]}).encode("utf-8")))
+    r = build_geo_data.build(raw, walking_raw=walking, evidence_type="synthetic", street_points=False)
+    assert [(o["id"], o["point"]) for o in r["objects"]] == [("osm-node-1", [71.43029, 51.16])]
+    assert [o["id"] for o in r["retired"]] == ["osm-node-2"]

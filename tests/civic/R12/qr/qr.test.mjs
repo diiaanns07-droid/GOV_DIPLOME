@@ -240,6 +240,13 @@ test("print sheet: QR + domain + bilingual address + number; bad and unknown ids
   assert.match(await r.page.locator(".bqp-sign").nth(1).innerText(), /Объект № 14\s140\s558\s124/);
   assert.match(msgs, /Номер osm-node-10185771782 обновлён по свежей карте OSM: на табличке — osm-node-14140558124/);
   assert.match(msgs, /«<x>» — не номер объекта/);
+  // ревью: два выбывших номера с одной заменой — одна табличка (замена osm-node-14162863853)
+  const twin = ["osm-node-12534575509", "osm-node-12534575510"].join(",");
+  const r2 = await open("?ids=" + encodeURIComponent(twin) + "&base=" + encodeURIComponent("https://birge.example.kz"), { path: "/civic/qr/print.html" });
+  await r2.page.waitForSelector(".bqp-sign");
+  assert.equal(await r2.page.locator(".bqp-sign").count(), 1);
+  assert.match(await r2.page.locator(".bqp-status").innerText(), /Готово табличек: 1/);
+  await r2.ctx.close();
   assert.match(msgs, /Объект osm-node-1 не найден/);
   // R15-S25: адрес сайта из ссылки не совпадает с этим сервером — предупреждение до печати
   assert.match(msgs, /birge\.example\.kz — это не адрес этого сервера/);

@@ -548,3 +548,30 @@ def test_conflicts_summary_for_neighbours_has_numbers_and_advice(real, monkeypat
     assert top["advice_ru"] and top["advice_kk"] and top["stage"] in ("planned", "surface_done", "now")
     assert set(top) >= {"id", "kind", "severity", "title_ru", "street_ru", "when_from", "works"}
     assert len(got["top"]) <= 3
+
+
+def test_world_with_unexpected_shapes_does_not_break_the_calendar(real, tmp_path, monkeypatch):
+    """Ревью: scenes списком, planned_conflicts с мусором — календарь работает, сцены нет, кэш не ломается."""
+    from engine.civic_geo import works_calendar as WC
+    p = tmp_path / "world_v1.json"
+    p.write_text(json.dumps({"scenes": [{"id": "scene8"}], "planned_conflicts": [1, {"id": "x", "works": "w"},
+                                                                                     {"id": "cf-1", "kind": "k", "works": ["b", "a"]}]}), "utf-8")
+    monkeypatch.setattr(WC, "WORLD_PATH", p)
+    monkeypatch.setattr(WC.planned_ids, "__defaults__", (p,))
+    monkeypatch.setattr(WC.scene_conflict, "__defaults__", (p,))
+    WC._planned_cache.clear()
+    try:
+        assert WC.planned_ids() == {("k", ("a", "b")): "cf-1"}
+        assert WC.planned_ids() == {("k", ("a", "b")): "cf-1"}, "второй вызов — из кэша, без KeyError"
+        assert WC.scene_conflict() is None
+        assert WC.remember_world({"scenes": "x", "planned_conflicts": {"a": 1}, "works": []})["planned_conflicts"] == 0
+    finally:
+        WC._WORLD.clear()
+        WC._planned_cache.clear()
+
+
+def test_gap_words_round_half_up_like_the_screen():
+    """Ревью: 76 дней = 2,5 месяца — «через 3 месяца» и в совете, и на экране (Math.round)."""
+    assert W.gap_words(76)[0] == "через 3 месяца" and W.gap_words(380)[0] == "через 13 месяцев"
+    assert W.gap_words(61)[0] == "через 2 месяца" and W.gap_words(45)[0] == "через полтора месяца"
+

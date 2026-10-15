@@ -322,7 +322,7 @@
     svg.append(use);
     return svg;
   }
-  // Подпись на полосе: белая на тёмном цвете службы, тёмная — на светлом (контраст ≥ 4.5:1 у 12 px).
+  // Подпись на полосе: белая на тёмном цвете службы, тёмная — на светлом (контраст ≥ 4.5:1 у 13 px).
   function textOn(hex) {
     const m = /^#?([0-9a-f]{6})$/i.exec(hex || "");
     if (!m) return "#fff";
@@ -330,7 +330,7 @@
     const L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
     return (1.05) / (L + 0.05) >= 4.5 ? "#fff" : "#121a17";
   }
-  // Ширина подписи полосы (12 px, 500) — по шрифту страницы; без canvas — оценка 6,9 px на знак.
+  // Ширина подписи полосы (13 px, 500) — по шрифту страницы; без canvas — оценка 7,5 px на знак.
   let measureCtx = null;
   function textWidth(text) {
     try {
@@ -341,7 +341,7 @@
       }
       return measureCtx.measureText(text).width;
     } catch (e) {
-      return text.length * 6.9;
+      return text.length * 7.5;  // нет canvas: средняя ширина знака Inter 13 px
     }
   }
   const reducedMotion = () => !!(root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -444,6 +444,7 @@
     rootEl.setAttribute("data-wcal", "1");
     let skeletonTimer = null;
     let ro = null;
+    let resizing = false;  // перерисовка из-за ширины листа: открытая карточка работы остаётся открытой
     let rafId = 0;
 
     // Хозяин вкладки сам даёт главную «Добавить работу» (рядом [data-action="add-work"], R17 «Ведомства») или просит
@@ -711,17 +712,20 @@
           ]),
         ]);
         const track = h("div", { class: "wcal-row__track", style: `width:${trackW}px;height:${height}px` });
-        // Левый край зоны нажатия следующей полосы той же дорожки: подпись «вид» справа от полосы не заходит под неё.
-        const nextLeft = new Map();
+        // Зона нажатия полосы — HIT × HIT вокруг неё, но не дальше середины промежутка до соседней полосы той же дорожки:
+        // нажатие на видимую полосу всегда открывает её саму. Подпись «вид» справа — только до зоны следующей полосы.
+        const hitOf = new Map();
         const byLane = new Map();
         for (const it of r.items) byLane.set(it.lane, (byLane.get(it.lane) || []).concat([it]));
         for (const list of byLane.values()) {
           list.sort((a, b) => a.s - b.s);
+          const vis = list.map((it) => { const a = x(it.s); return [a, a + Math.max(8, x(it.e + 1) - a)]; });
           list.forEach((it, k) => {
-            const nx = list[k + 1];
-            if (!nx) return;
-            const nx0 = x(nx.s), nw = Math.max(8, x(nx.e + 1) - nx0);
-            nextLeft.set(it.work.id, nx0 - (Math.max(nw, HIT) - nw) / 2);
+            const [a, b] = vis[k];
+            const pad = Math.max(0, (HIT - (b - a)) / 2);
+            const lo = k ? (vis[k - 1][1] + a) / 2 : -Infinity;
+            const hi = k + 1 < list.length ? (b + vis[k + 1][0]) / 2 : Infinity;
+            hitOf.set(it.work.id, { left: Math.max(a - pad, lo), right: Math.min(b + pad, hi), nextLeft: hi });
           });
         }
         for (const it of r.items) {
@@ -744,9 +748,9 @@
           if (w.conflicts && w.conflicts.length) cls.push("wcal-bar--conflict");
           if (sel && selWorks.has(w.id)) cls.push("is-sel");
           if (sel && !selWorks.has(w.id)) cls.push("is-dim");
-          // Кнопка — зона нажатия не меньше HIT × HIT вокруг полосы; сама полоса (24 px) — заливка внутри.
-          const hitW = Math.max(width, HIT);
-          const hitX = x0 - (hitW - width) / 2;
+          // Кнопка — зона нажатия (HIT × HIT, где есть место); сама полоса (24 px) — заливка внутри.
+          const hz = hitOf.get(w.id) || { left: x0, right: x0 + width, nextLeft: Infinity };
+          const hitX = hz.left, hitW = Math.max(width, hz.right - hz.left);
           const bar = h("button", { type: "button", class: cls.join(" "), "data-work": w.id,
             style: `left:${hitX}px;top:${y - (HIT - BAR_H) / 2}px;width:${hitW}px;--wcal-c:${color};--wcal-on:${textOn(color)}`,
             "aria-label": tr("wcal.bar.label", { title: lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru, service: svcText, dates: fmtRange(w.starts_on, w.ends_on) })
@@ -758,7 +762,7 @@
             ]);
           track.append(bar);
           const outLeft = Math.max(x0 + width + 6, hitX + hitW + 4);  // справа от зоны нажатия, а не под ней
-          const room = (nextLeft.has(w.id) ? nextLeft.get(w.id) : trackW) - outLeft - 4;
+          const room = Math.min(hz.nextLeft, trackW) - outLeft - 4;
           if (!inside && outLeft + 144 < trackW && textWidth(kindText) <= room && !linkStarts.has(w.id)) {
             track.append(h("span", { class: "wcal-bar__out", style: `left:${outLeft}px;top:${y + 3}px`, "aria-hidden": "true", text: kindText }));
           }
@@ -872,10 +876,16 @@
         lane.sort((p, q) => p.cx - q.cx || (p.id < q.id ? -1 : 1));
         let right = -Infinity;
         for (const p of lane) {
-          const x = Math.max(p.cx, right + p.half + 6);
-          right = x + p.half;
-          out.set(p.id, { x, y, ax: p.ax, stemTo: p.stemTo });
+          p.x = Math.max(p.cx, right + p.half + 6);
+          right = p.x + p.half;
         }
+        let limit = width - 2;  // сдвинуть влево то, что вышло за правый край
+        for (let k = lane.length - 1; k >= 0; k--) {
+          const p = lane[k];
+          p.x = Math.min(p.x, limit - p.half);
+          limit = p.x - p.half - 6;
+        }
+        for (const p of lane) out.set(p.id, { x: p.x, y, ax: p.ax, stemTo: p.stemTo });
       }
       return out;
     }
@@ -1032,7 +1042,8 @@
       if (state.destroyed) return;
       // Открытая карточка работы переживает перерисовку (ширина листа поменялась, полоса прокрутки появилась):
       // после неё — та же карточка у новой полосы.
-      const reopen = state.popover && state.popover.work;
+      const reopen = resizing && state.popover && state.popover.work;
+      resizing = false;
       closePopover(false);
       const scroll = rootEl.querySelector(".wcal-tl");
       const keep = scroll ? { left: scroll.scrollLeft, top: scroll.scrollTop } : null;
@@ -1103,7 +1114,7 @@
         if (Math.abs(w - lastW) < 2) return;
         lastW = w;
         cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => { if (state.status === "ready") render(); });
+        rafId = requestAnimationFrame(() => { if (state.status === "ready") { resizing = true; render(); } });
       });
       ro.observe(rootEl);
     }
@@ -1170,12 +1181,28 @@
       }
       return { type: "FeatureCollection", features: out };
     }
-    // Точка конфликта — средняя вершина самой длинной линии участка (вершина OSM: лежит на улице, не «от руки»).
+    // Точка конфликта — середина самой длинной линии участка по длине: лежит на форме улицы OSM (не «от руки»)
+    // и не попадает на перекрёсток в конце участка.
     function anchorOf(geom) {
       const lines = geom.type === "MultiLineString" ? geom.coordinates : geom.type === "LineString" ? [geom.coordinates] : [];
-      let best = null;
-      for (const line of lines) if (!best || line.length > best.length) best = line;
-      return best && best.length ? best[Math.floor(best.length / 2)] : null;
+      const len = (a, b) => Math.hypot((b[0] - a[0]) * Math.cos(a[1] * Math.PI / 180), b[1] - a[1]);
+      let best = null, bestLen = -1;
+      for (const line of lines) {
+        let L = 0;
+        for (let i = 1; i < line.length; i++) L += len(line[i - 1], line[i]);
+        if (line.length && L > bestLen) { best = line; bestLen = L; }
+      }
+      if (!best) return null;
+      let half = bestLen / 2;
+      for (let i = 1; i < best.length; i++) {
+        const d = len(best[i - 1], best[i]);
+        if (d >= half && d > 0) {
+          const t = half / d;
+          return [best[i - 1][0] + (best[i][0] - best[i - 1][0]) * t, best[i - 1][1] + (best[i][1] - best[i - 1][1]) * t];
+        }
+        half -= d;
+      }
+      return best[best.length - 1];
     }
     function points(data) {
       const out = [];
@@ -1217,16 +1244,19 @@
         const pick = (zoomTo) => (e) => {
           const f = e.features && e.features[0];
           if (!f || f.properties.work) return;
+          // Точка лежит на своей линии: щелчок по ней — один (у точки, с облётом), линия его не повторяет.
+          if (!zoomTo && m.getLayer(MAP_DOT) && m.queryRenderedFeatures(e.point, { layers: [MAP_DOT] }).length) return;
           const data2 = shared.data;
           const c = data2 && data2.conflicts.find((x) => x.id === f.properties.id);
           if (c) focusOn(m, { conflict: c, works: worksFromShared(c), services: data2.services, opts: {} }, zoomTo);
         };
-        clickBound = { line: pick(false), dot: pick(true) };
+        clickBound = { line: pick(false), dot: pick(true),
+          enter: () => { m.getCanvas().style.cursor = "pointer"; }, leave: () => { m.getCanvas().style.cursor = ""; } };
         m.on("click", MAP_LAYERS[1], clickBound.line);
         m.on("click", MAP_DOT, clickBound.dot);
         for (const id of [MAP_LAYERS[1], MAP_DOT]) {
-          m.on("mouseenter", id, () => { m.getCanvas().style.cursor = "pointer"; });
-          m.on("mouseleave", id, () => { m.getCanvas().style.cursor = ""; });
+          m.on("mouseenter", id, clickBound.enter);
+          m.on("mouseleave", id, clickBound.leave);
         }
       }
     }
@@ -1239,7 +1269,11 @@
     function remove(m) {
       if (!m) return;
       if (clickBound) {
-        try { m.off("click", MAP_LAYERS[1], clickBound.line); m.off("click", MAP_DOT, clickBound.dot); } catch (e) { /* слой уже снят */ }
+        try {
+          m.off("click", MAP_LAYERS[1], clickBound.line);
+          m.off("click", MAP_DOT, clickBound.dot);
+          for (const id of [MAP_LAYERS[1], MAP_DOT]) { m.off("mouseenter", id, clickBound.enter); m.off("mouseleave", id, clickBound.leave); }
+        } catch (e) { /* слой уже снят */ }
         clickBound = null;
       }
       for (const id of [MAP_DOT, ...[...MAP_LAYERS].reverse()]) if (m.getLayer && m.getLayer(id)) m.removeLayer(id);
