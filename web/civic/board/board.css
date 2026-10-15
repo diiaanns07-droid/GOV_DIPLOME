@@ -420,7 +420,8 @@ body.sc-page.sc-idle { cursor: none; }
 @media (min-width: 761px) and (max-aspect-ratio: 3/2) {
   .sc { --sc-fs-xl: max(40px, 7.4vh); --sc-fs-m: max(16px, 2.45vh); --sc-fs-s: max(13px, 1.85vh); }
   .sc-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .sc-spark { width: 38%; }
+  /* узкая плитка: график — справа от числа, а не над подписью («Исправлено за 7 дней» не уходит под линию) */
+  .sc-spark { width: 38%; top: calc(var(--sc-pad) + 1.9 * var(--sc-fs-s)); }
   .sc-foot__keys { display: none; }
 }
 

@@ -778,7 +778,9 @@
         return h("article", { class: "sc-kpi sc-glass sc-kpi--" + k.id.replace("_week", "").replace("_day", "") }, [
           h("p", { class: "sc-kpi__label", text: tr(k.label) }),
           valueEl,
-          h("p", { class: "sc-kpi__delta", "data-trend": v.trend || "flat", "data-bad": String(k.bad === true && v.trend === "up"), text: deltaText(v) }),
+          // 1024–1279: «больше на 17 %» без «, чем неделю назад» — иначе строка обрезается многоточием (телефон — переносит).
+          h("p", { class: "sc-kpi__delta", "data-trend": v.trend || "flat", "data-bad": String(k.bad === true && v.trend === "up"),
+            text: !narrow() && root.innerWidth < 1280 ? deltaShort(v) : deltaText(v) }),
           note[0] ? h("p", { class: "sc-kpi__note" + (note[1] ? " sc-kpi__note--muted" : ""), text: note[0] }) : null,
           sparkline(v.series, k.color),
         ]);
