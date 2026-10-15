@@ -135,8 +135,7 @@ def test_author_is_never_disclosed(tg):
     assert not db_contains(tg.db_path, [AUTHOR, OTHER]), "сырой id устройства в SQLite"
 
 
-@pytest.mark.xfail(strict=False, reason="R15-S45 (R16, низкий): точка инициативы публично с 6 знаками (≈ 10 см) — "
-                                        "рекомендация 4 знака (≈ 10 м); решает R16")
+@xfail("S45")
 def test_public_point_is_not_doorstep_precise(tg):
     """T-R16-04: место дела публично — не точнее 4 знаков (≈ 10 м): «помощь соседям» не указывает дверь подъезда."""
     item = _create(tg, kind="help", point=[71.4047391, 51.1111749], title="Помощь пожилой соседке",

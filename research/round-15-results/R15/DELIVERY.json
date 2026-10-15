@@ -9,18 +9,21 @@
   "code_sha": "см. git log ветки: последний коммит R15 (код R15 — только tests/civic/R15/)",
   "tested_sha": {
     "package": "e91acb69",
-    "R17": "61558bd3 (claude/sweet-euler-5tiu5b)",
-    "R13": "ded8c258 (claude/gifted-mayer-p86myv)",
-    "R03": "a85e4765 (claude/modest-mccarthy-lrl98u)",
-    "R16": "aef7b79f (claude/youthful-johnson-6nz5mp)",
-    "R04": "7be7e71b (claude/gifted-maxwell-i66wwi)",
+    "R17": "72676e3d",
+    "R13": "98485ce5",
+    "R03": "93816c28",
+    "R16": "c5836427",
+    "R04": "b9f828cc",
     "R02": "0c0a8636 (claude/affectionate-shannon-jm6ws5)",
     "R07": "5f9dc0ae (claude/birge-r07-round-15-zjp4ob)",
     "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
-    "R09": "ebe69436 (claude/quirky-ptolemy-k3z2mj)",
-    "R01": "79468aab (claude/brave-fermi-nhzetj)"
+    "R09": "ace74398",
+    "R01": "6d998e9b",
+    "R08": "5d9b4138 (claude/laughing-euler-iv3on3)",
+    "R06": "2b31dbe1",
+    "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt"
   },
-  "push_status": "OK (checkpoint 7)",
+  "push_status": "OK (checkpoint 8)",
   "changed_paths": [
     "tests/civic/R15/r15_common.py",
     "tests/civic/R15/round15/",
@@ -163,6 +166,29 @@
       "FAIL": 0,
       "NOT_RUN": 0,
       "note": "r15_reference.cjs раунда 14 (поиск, Ctrl+K, карточки, идеи, вопросы) на новой оболочке R01; Ctrl+K теперь PASS"
+    },
+    "near_B1_overlay2_all_R15": {
+      "passed": 535,
+      "xfailed": 13,
+      "skipped_not_run": 1,
+      "failed": 0,
+      "open_xfail": [
+        "S42",
+        "S43",
+        "S44",
+        "S48",
+        "S49"
+      ]
+    },
+    "browser_overlay2": {
+      "PASS": 8,
+      "FAIL": 0,
+      "NOT_RUN": 1,
+      "not_run": "календарь работ: R06 не принимает HTML в работах (422)"
+    },
+    "R06_2b31dbe1_notify": {
+      "passed": 3,
+      "failed": 0
     }
   },
   "findings": {
@@ -187,20 +213,20 @@
     "S45": {
       "owner": "R16",
       "level": "низкий",
-      "status": "open",
+      "status": "исправлено: R16 e475fae9",
       "patch": "patches/P-R16-S45-S47.diff"
     },
     "S46": {
       "owner": "R16/R04",
       "level": "средний",
-      "status": "pending (закрывается в сборке с R04 moderate)",
+      "status": "исправлено: R16 e475fae9",
       "patch": "patches/P-R16-S45-S47.diff",
       "note": "в сборке с R04 moderate закрывается (проверено наложением); patch — для запасного пути R16"
     },
     "S47": {
       "owner": "R16",
       "level": "средний",
-      "status": "open",
+      "status": "исправлено: R16 e475fae9",
       "patch": "patches/P-R16-S45-S47.diff"
     },
     "S48": {
@@ -218,7 +244,7 @@
     "S50": {
       "owner": "R01/R08",
       "level": "средний (доступность)",
-      "status": "open",
+      "status": "исправлено: R01 5529d819",
       "patch": [
         "patches/P-R01-S42-raw-staff.diff",
         "patches/P-R08-board-csrf.diff"
@@ -231,12 +257,13 @@
     "research/round-15-results/R15/browser/akimat_1366_agencies_crisis.png",
     "research/round-15-results/R15/browser/akimat_1366_analyst_question.png",
     "research/round-15-results/R15/browser/akimat_1366_situation_center_board.png",
-    "research/round-15-results/R15/browser/resident_375_meetings_card.png"
+    "research/round-15-results/R15/browser/resident_375_meetings_card.png",
+    "research/round-15-results/R15/browser/resident_375_together_initiatives.png",
+    "research/round-15-results/R15/browser/resident_375_together_my_yard.png",
+    "research/round-15-results/R15/browser/akimat_1366_together_staff_tools.png"
   ],
   "known_limits": [
-    "R06 лента уведомлений и R09 передачи раунда 15 ещё не поставлены — их тесты NOT_RUN",
     "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
-    "у R16 ещё нет экрана — его HTML-вывод не проверен в браузере",
     "проверка в облаке без интернета; подложка карты — упрощённый фон"
   ],
   "next_step": "круг 2 (~19:00): свежие головы ролей, R06 лента, R09 передачи, экран R16; B1 16 окт 14:00 — полный прогон на сборке"

@@ -1,5 +1,6 @@
 // R15 · обвязка браузерной пробы раунда 15: грузит экран роли и монтирует его в #r15-root, как оболочка R01.
-// ?m=agencies|meetings|analyst|works-calendar|together · &role=akimat|resident · &lang=ru|kk · &hash=<глубокая ссылка>.
+// ?m=agencies|meetings|analyst|works-calendar|together · &role=akimat|resident · &lang=ru|kk · &hash=<глубокая ссылка>
+// · &view=yard|initiatives (R16).
 // CSRF-токен сотрудника кладёт проба (sessionStorage r15csrf) — экраны берут его через CivicShell.csrfToken().
 (function () {
   "use strict";
@@ -21,7 +22,8 @@
     analyst: { css: ["/civic/assistant/analyst.css"], js: ["/civic/assistant/analyst.js"], global: "BirgeAnalyst" },
     "works-calendar": { css: ["/civic/works-calendar/works-calendar.css"], js: ["/civic/works-calendar/works-calendar.js"],
       global: "BirgeWorksCalendar" },
-    together: { css: ["/civic/together/together.css"], js: ["/civic/together/together.js"], global: "BirgeTogether" },
+    together: { css: ["/civic/together/together.css"],
+      js: ["/civic/together/together-text.js", "/civic/together/together.js"], global: "BirgeTogether" },
     notify: { css: ["/civic/notify/notify.css"], js: ["/civic/notify/notify.js"], global: "BirgeNotify" }
   };
   var spec = MODULES[name];
@@ -45,7 +47,7 @@
         if (window.BirgeI18n && typeof window.BirgeI18n.setLang === "function") window.BirgeI18n.setLang(lang);
       } catch (e) { /* словарь R11 — по желанию */ }
       window.__r15handle = mod.mount(document.getElementById("r15-root"), {
-        apiBase: "/api/civic/v2", role: role, mode: role, lang: lang, embedded: false
+        apiBase: "/api/civic/v2", role: role, mode: role, lang: lang, embedded: false, view: q.get("view") || undefined
       });
       window.__r15ready = true;
     });

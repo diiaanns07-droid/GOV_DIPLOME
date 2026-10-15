@@ -86,6 +86,11 @@ async function seed(api) {
   if (ids.initiative) {
     await want("R16 publish", api.call("POST", `/api/civic/v2/together/initiatives/${ids.initiative}/moderate`, { action: "publish" }));
     await want("R16 support", api.call("POST", `/api/civic/v2/together/initiatives/${ids.initiative}/support`, { inventory: true, pickup_service: "waste", note: PAY("sup") }));
+    // Вторая инициатива остаётся «на проверке»: сотрудник видит оригинал без маски — экранирование и там.
+    const queued = await want("R16 queued", api.call("POST", "/api/civic/v2/together/initiatives", { kind: "repair", title: PAY("qini"),
+      text: PAY("qtxt") + " на проверке", point: [71.404739, 51.1111745], target: { kind: "area", id: "yard-1026285032" },
+      starts_at: iso(3), bring: [PAY("qbr").slice(0, 40)] }, { "X-Birge-Device": "r15dev-browser-0000000002" }));
+    ids.queued = dataOf(queued.json).initiative && dataOf(queued.json).initiative.id;
     // 25 соседей «Я приду» — инициатива с нагрузкой наверху списков (Ситуационный центр, «Жители вместе»).
     for (let i = 0; i < 25; i++) await api.call("POST", `/api/civic/v2/together/initiatives/${ids.initiative}/join`, {}, { "X-Birge-Device": "r15dev-browser-join-" + String(i).padStart(4, "0") });
   }
@@ -171,6 +176,13 @@ async function main() {
       // шаг проверяет только CSP и отсутствие разметки и пишется NOT_RUN с этой причиной.
       if (!ids.work) return "R06 не принимает HTML в работах (422) — нагрузка в календарь не попадает; CSP чистая";
     });
+    await step(page, "akimat-1366 together staff tools", async () => {
+      await page.goto(`${base}/r15/screen.html?m=together&role=akimat&view=initiatives` +
+        (ids.initiative ? `&hash=${encodeURIComponent("together/" + ids.initiative)}` : ""));
+      await page.waitForFunction(() => window.__r15ready !== undefined, null, { timeout: 15000 });
+      if ((await page.evaluate(() => window.__r15ready)) !== true) return false;
+      await sleep(2000);
+    });
     await step(page, "akimat-1366 situation-center board", async () => {
       await page.goto(`${base}/civic/board/index.html`);
       await sleep(3000);
@@ -185,12 +197,20 @@ async function main() {
       await rpage.waitForFunction(() => window.__r15ready !== undefined, null, { timeout: 15000 });
       await sleep(1500);
     });
-    await step(rpage, "resident-375 together", async () => {
-      await rpage.goto(`${base}/r15/screen.html?m=together&role=resident`);
+    await step(rpage, "resident-375 together initiatives", async () => {
+      await rpage.goto(`${base}/r15/screen.html?m=together&role=resident&view=initiatives` +
+        (ids.initiative ? `&hash=${encodeURIComponent("together/" + ids.initiative)}` : ""));
       await rpage.waitForFunction(() => window.__r15ready !== undefined, null, { timeout: 15000 });
-      const ready = await rpage.evaluate(() => window.__r15ready);
-      if (ready !== true) return false;
-      await sleep(1500);
+      if ((await rpage.evaluate(() => window.__r15ready)) !== true) return false;
+      await sleep(2000);
+    });
+    await step(rpage, "resident-375 together my-yard", async () => {
+      // «Мой двор» открывает последний двор жителя (localStorage birge.together.yard) — как после «Я живу здесь».
+      await rpage.addInitScript(() => { try { localStorage.setItem("birge.together.yard", "yard-1026285032"); } catch (e) {} });
+      await rpage.goto(`${base}/r15/screen.html?m=together&role=resident&view=yard`);
+      await rpage.waitForFunction(() => window.__r15ready !== undefined, null, { timeout: 15000 });
+      if ((await rpage.evaluate(() => window.__r15ready)) !== true) return false;
+      await sleep(2500);
     });
     await browser.close();
   } finally {
