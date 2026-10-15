@@ -5,8 +5,8 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "4b67f69bea103f956a68f7b3f0acf2640bd40560",
-  "tested_sha": "4b67f69bea103f956a68f7b3f0acf2640bd40560",
+  "code_sha": "4da9486b997ab952b3c80f95f68c93f805537b51",
+  "tested_sha": "4da9486b997ab952b3c80f95f68c93f805537b51",
   "push_status": "OK",
   "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
   "world": {
@@ -14,9 +14,21 @@
     "schema": "birge-demo-world-v1",
     "schema_version": "1.0.1",
     "seed": 15,
-    "sha256": "946f9dbcf28f57888e1e05768d037e9121f1dfaac57783a74a4e8367034b0d60",
-    "counts": {"complaints": 743, "people_with_metoo": 1130, "works": 39, "outages": 4, "planned_conflicts": 5,
-               "yards": 32, "ideas": 12, "initiatives": 10, "incidents": 3, "meetings": 3, "questions": 10, "events": 4},
+    "sha256": "4f24d3b7bb6d523c1107edbb6383136c61c742b9f61b8b3fdf049749f4f05322",
+    "counts": {
+      "complaints": 743,
+      "people_with_metoo": 1130,
+      "works": 39,
+      "outages": 4,
+      "planned_conflicts": 5,
+      "yards": 32,
+      "ideas": 12,
+      "initiatives": 10,
+      "incidents": 3,
+      "meetings": 3,
+      "questions": 10,
+      "events": 4
+    },
     "nura_share": 0.36,
     "verified_share": 0.11,
     "joint_share": 0.054
@@ -46,33 +58,174 @@
   "integration": {
     "R01": "research/round-15-results/R02/patches/R01_demo_world.patch (ui/web_server.py): CIVIC_DEMO_WORLD=1 — мир материализуется один раз, seed_world всех модулей одним now, карта без синтетики R07; INTEGRATION §1",
     "R09": "готовый seed_world: ml/datasets/demo_world_seed.seed_world(db_path, records, now); INTEGRATION §2",
-    "others": "R07 §4, R06 §5, R12 §6 (materialize в load_world), R13 §7, R16 §8, R17 §9, R10 §10 (materialize в world_numbers)"
+    "others": "R07 §4, R06 §5, R12 §6 (materialize в load_world), R13 §7, R16 §8, R17 §9, R10 §10 (materialize в world_numbers)",
+    "R12": "patches/R12_works_calendar_world.patch — календарь читает мир, находит ровно 5 задуманных конфликтов; scenes.scene8.dig_work для openConflict",
+    "R10": "patches/R10_consistency_world.patch — world_numbers через materialize (154 жалобы / 78 «Я тоже» за 30 дней)"
   },
   "tests": {
-    "pytest tests/civic/R02/round15": {"status": "PASS", "passed": 25, "failed": 0, "seconds": 22},
-    "pytest tests/civic/R02 (все раунды R02)": {"status": "PASS", "passed": 361, "failed": 0, "skipped": 1, "seconds": 48},
-    "pytest tests/civic/R02/test_r02_schema.py на коде R06 (claude/eloquent-einstein-wvuyje, миграция 10)": {"status": "PASS", "passed": 15, "failed": 0},
-    "python3 -m ml.datasets.demo_world_check (мир и образец)": {"status": "PASS", "errors": 0, "warnings": 0},
-    "python3 -m ml.datasets.demo_world --check (тот же sha256, без сети)": {"status": "PASS"},
-    "стенд FINAL-4 + patch R01, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: tests/civic/R02/round15/stand_numbers.py": {"status": "PASS", "matched": 14, "of": 14},
-    "node --test tests/civic/R02/round14/labeling_core.test.mjs": {"status": "PASS", "passed": 12, "failed": 0},
-    "браузерные тесты web/labeling (раунд 14)": {"status": "NOT_RUN", "reason": "web/labeling в раунде 15 не менялся"},
-    "seed_world модулей R06, R16, R17, R13, R07 на стенде": {"status": "NOT_RUN", "reason": "их кода ещё нет в ветке R02; стенд пишет «нет seed_world», разборщики соседей проверены чтением кода (INTEGRATION)"}
+    "pytest tests/civic/R02/round15": {
+      "status": "PASS",
+      "passed": 25,
+      "skipped": 1,
+      "failed": 0,
+      "seconds": 20,
+      "note": "skipped — test_r12_finds_planned_conflicts без кода R12 в ветке R02; на ветке R12 @ 8ecfbd37 — PASS"
+    },
+    "pytest tests/civic/R02 (все раунды R02)": {
+      "status": "PASS",
+      "passed": 361,
+      "failed": 0,
+      "skipped": 1,
+      "seconds": 48
+    },
+    "pytest tests/civic/R02/test_r02_schema.py на коде R06 (claude/eloquent-einstein-wvuyje, миграция 10)": {
+      "status": "PASS",
+      "passed": 15,
+      "failed": 0
+    },
+    "python3 -m ml.datasets.demo_world_check (мир и образец)": {
+      "status": "PASS",
+      "errors": 0,
+      "warnings": 0
+    },
+    "python3 -m ml.datasets.demo_world --check (тот же sha256, без сети)": {
+      "status": "PASS"
+    },
+    "стенд FINAL-4 + patch R01, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: tests/civic/R02/round15/stand_numbers.py": {
+      "status": "PASS",
+      "matched": 14,
+      "of": 14
+    },
+    "node --test tests/civic/R02/round14/labeling_core.test.mjs": {
+      "status": "PASS",
+      "passed": 12,
+      "failed": 0
+    },
+    "браузерные тесты web/labeling (раунд 14)": {
+      "status": "NOT_RUN",
+      "reason": "web/labeling в раунде 15 не менялся"
+    },
+    "seed_world модулей R06, R16, R17, R13, R07 на стенде": {
+      "status": "NOT_RUN",
+      "reason": "их кода ещё нет в ветке R02; стенд пишет «нет seed_world», разборщики соседей проверены чтением кода (INTEGRATION)"
+    },
+    "стык с R12: find_conflicts на работах мира (ветка R12 + patch R12_works_calendar_world)": {
+      "status": "PASS",
+      "found": 5,
+      "planned": 5
+    },
+    "стык с R10: world_numbers на мире (ветка R10 + patch R10_consistency_world)": {
+      "status": "PASS",
+      "complaints_30": 154,
+      "metoo_30": 78
+    }
   },
   "consistency_table": {
     "where": "живой стенд R02 (облако), засев 15 окт 17:13 Астаны; файл research/round-15-results/R02/stand_numbers_world.json",
     "district": "nura",
     "rows": [
-      {"metric": "карта R07 «Нура · N», люди открытых целей, 7 / 14 / 30 дней", "stand": [74, 90, 94], "world": [74, 90, 94]},
-      {"metric": "«Обращения» R09: люди открытых жалоб района, поданных за 7 / 30 дней", "stand": [74, 94], "world": [74, 94]},
-      {"metric": "«Картина дня» R08: районы за 7 дней", "stand": 74, "world": 74},
-      {"metric": "«Картина дня» R08 Нура: новые за день / за неделю / в работе / просрочено (исправление) / исправлено за неделю", "stand": [9, 66, 50, 14, 36], "world": [9, 66, 50, 14, 36]},
-      {"metric": "«Нужно решение акима» Нура — жалобы мира", "stand": ["c-w1500469", "c-w1500483"], "world": ["c-w1500469", "c-w1500483"]},
-      {"metric": "«Обращения» R09 город: новые / в работе / ждут проверки / ответ просрочен / вернули", "stand": [21, 75, 436, 1, 7], "world": [21, 75, 436, 1, 7]},
-      {"metric": "жалоб в хранилище R09 (город / Нура)", "stand": [743, 267], "world": [743, 267]},
-      {"metric": "«Пульс» Нуры", "stand": "Снег ×7,1 (62 за 7 дней), транспорт ×4,8, освещение ×4,6, новое горячее место «Хан Шатыр» 12, «Я тоже» +8"},
-      {"metric": "шаг 2 FINAL-4: «Хан Шатыр» — освещение, люди за 14 дней (R09 place_reporters) / на значке остановки", "stand": "3 (тест seed_r09)", "world": [3, 12]},
-      {"metric": "табло служб R17", "stand": "NOT_RUN — модуля R17 нет в ветке R02", "world": "EXPECTED.json → services.by_service"}
+      {
+        "metric": "карта R07 «Нура · N», люди открытых целей, 7 / 14 / 30 дней",
+        "stand": [
+          74,
+          90,
+          94
+        ],
+        "world": [
+          74,
+          90,
+          94
+        ]
+      },
+      {
+        "metric": "«Обращения» R09: люди открытых жалоб района, поданных за 7 / 30 дней",
+        "stand": [
+          74,
+          94
+        ],
+        "world": [
+          74,
+          94
+        ]
+      },
+      {
+        "metric": "«Картина дня» R08: районы за 7 дней",
+        "stand": 74,
+        "world": 74
+      },
+      {
+        "metric": "«Картина дня» R08 Нура: новые за день / за неделю / в работе / просрочено (исправление) / исправлено за неделю",
+        "stand": [
+          9,
+          66,
+          50,
+          14,
+          36
+        ],
+        "world": [
+          9,
+          66,
+          50,
+          14,
+          36
+        ]
+      },
+      {
+        "metric": "«Нужно решение акима» Нура — жалобы мира",
+        "stand": [
+          "c-w1500469",
+          "c-w1500483"
+        ],
+        "world": [
+          "c-w1500469",
+          "c-w1500483"
+        ]
+      },
+      {
+        "metric": "«Обращения» R09 город: новые / в работе / ждут проверки / ответ просрочен / вернули",
+        "stand": [
+          21,
+          75,
+          436,
+          1,
+          7
+        ],
+        "world": [
+          21,
+          75,
+          436,
+          1,
+          7
+        ]
+      },
+      {
+        "metric": "жалоб в хранилище R09 (город / Нура)",
+        "stand": [
+          743,
+          267
+        ],
+        "world": [
+          743,
+          267
+        ]
+      },
+      {
+        "metric": "«Пульс» Нуры",
+        "stand": "Снег ×7,1 (62 за 7 дней), транспорт ×4,8, освещение ×4,6, новое горячее место «Хан Шатыр» 12, «Я тоже» +8"
+      },
+      {
+        "metric": "шаг 2 FINAL-4: «Хан Шатыр» — освещение, люди за 14 дней (R09 place_reporters) / на значке остановки",
+        "stand": "3 (тест seed_r09)",
+        "world": [
+          3,
+          12
+        ]
+      },
+      {
+        "metric": "табло служб R17",
+        "stand": "NOT_RUN — модуля R17 нет в ветке R02",
+        "world": "EXPECTED.json → services.by_service"
+      }
     ],
     "note": "«Просрочено» у R08 (срок исправления, Нура 14) и у R09 (срок ответа, Нура 0) — разные понятия модулей, не ошибка мира; предложение подписей и сверки — INTEGRATION §3"
   },
