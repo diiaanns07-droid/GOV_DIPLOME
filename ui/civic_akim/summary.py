@@ -30,7 +30,7 @@ import threading
 import time
 from datetime import date as Date, datetime, timedelta, timezone
 
-from . import deadlines, decisions, pulse, routing, sources, text
+from . import deadlines, decisions, neighbors, pulse, routing, sources, text
 
 ASTANA_TZ = timezone(timedelta(hours=5))
 WEEK = timedelta(days=7)
@@ -326,12 +326,16 @@ def districts() -> dict:
 # ---------------------------------------------------------------- сервис
 
 class AkimService:
-    def __init__(self, *, heat=_AUTO, records=_AUTO, objects=_AUTO, proposals=_AUTO, clock=None, demo_build=False):
+    def __init__(self, *, heat=_AUTO, records=_AUTO, objects=_AUTO, proposals=_AUTO, clock=None, demo_build=False,
+                 db_path=None, demo_world=None, examples=None):
         """heat — HeatService R07 (False — без карты); records — функция since → записи v2;
         objects / proposals — функции (district, today) → список (CONTRACT §7, R06).
         demo_build — демо-сборка R01 (CIVIC_DEMO=1): пример «Нужно решение акима» виден, пока настоящих нет (R10 B-061).
-        По умолчанию всё подключается само (sources.py)."""
+        Раунд 15 (соседи Ситуационного центра, neighbors.py): db_path — общая SQLite шлюза (для сервисов R17/R16/R13),
+        demo_world — CIVIC_DEMO_WORLD=1 (фикстуры R08 не подмешиваются), examples — явно разрешить/запретить фикстуры.
+        По умолчанию всё подключается само (sources.py, neighbors.py)."""
         self.demo_build = bool(demo_build)
+        self.neighbors = neighbors.Settings(db_path=db_path, demo_build=demo_build, demo_world=demo_world, examples=examples)
         self.heat = sources.heat_service() if heat is _AUTO else (heat or None)
         self.engine = sources.heat_engine() if self.heat is not None else None
         self.source_names = {}
@@ -745,13 +749,19 @@ class AkimService:
         return {"id": item_id, "chosen": record}
 
     def _pulse_part(self, recs: list[dict], as_of: datetime, items_now, items_prev) -> dict:
-        """«Пульс» (волна 2 п. 8): метод — pulse.py."""
+        """«Пульс» (волна 2 п. 8): метод — pulse.py. Раунд 15: у тревог «тема растёт» — ссылка «Открыть кризисный штаб»
+        (R17): на активный кризис в этом районе или на создание кризиса из шаблона (neighbors.pulse_links)."""
         if self._records is None or items_now is None:
             return {"available": False, "items": []}
         names = {d_id: {"ru": i["ru"], "kk": i["kk"]} for d_id, i in districts().items()}
-        return pulse.alarms(recs, as_of, parse_time=parse_time, district_of=self._district_of,
-                            categories=deadlines.load_categories()["categories"], district_names=names,
-                            items_now=items_now, items_prev=items_prev or [])
+        out = pulse.alarms(recs, as_of, parse_time=parse_time, district_of=self._district_of,
+                           categories=deadlines.load_categories()["categories"], district_names=names,
+                           items_now=items_now, items_prev=items_prev or [])
+        if out.get("items"):
+            crisis = neighbors.incidents(self.neighbors, now=as_of,
+                                         all_demo=self.source_names.get("complaints") == "r07-demo")
+            neighbors.pulse_links(out["items"], crisis)
+        return out
 
     # ---------- объекты и предложения (R06) ----------
     def _objects_part(self, district, as_of: datetime) -> dict:

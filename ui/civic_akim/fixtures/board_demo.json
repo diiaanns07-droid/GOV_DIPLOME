@@ -1,0 +1,121 @@
+{
+  "_meta": {
+    "about": "R08 · фикстура соседей Ситуационного центра (раунд 15). СИНТЕТИКА: все записи demo: true, на экране — «Пример». Используется только в демо-сборке (CIVIC_DEMO=1) без демо-мира (CIVIC_DEMO_WORLD=1) и только для соседа, модуля которого ещё нет в сборке. Форматы — CONTRACT §5.2 (инициатива), §5.3 (двор), §5.5 (кризис), §5.7 (встреча); табло служб — формат, предложенный R17 в INTEGRATION R08 §2.1. Время живёт относительно anchor: все даты сдвигаются на (сейчас − anchor), поэтому пример всегда «свежий». Названия служб — общие (таблица R08), реальных организаций и людей нет.",
+    "anchor": "2026-10-15T12:00:00+05:00"
+  },
+  "agencies_board": {
+    "days": 7,
+    "demo": true,
+    "items": [
+      {"service": "street_cleaning", "open": 46, "overdue": 9, "median_answer_days": 1.5, "verified_share": 0.38, "returned": 3, "handoffs_in": 4, "handoffs_out": 1, "joint": 3},
+      {"service": "road", "open": 31, "overdue": 7, "median_answer_days": 3.0, "verified_share": 0.41, "returned": 2, "handoffs_in": 3, "handoffs_out": 4, "joint": 4},
+      {"service": "water", "open": 18, "overdue": 5, "median_answer_days": 4.5, "verified_share": 0.33, "returned": 2, "handoffs_in": 4, "handoffs_out": 2, "joint": 4},
+      {"service": "heating", "open": 14, "overdue": 4, "median_answer_days": 2.0, "verified_share": 0.5, "returned": 1, "handoffs_in": 1, "handoffs_out": 0, "joint": 1},
+      {"service": "lighting", "open": 12, "overdue": 2, "median_answer_days": 2.5, "verified_share": 0.58, "returned": 0, "handoffs_in": 0, "handoffs_out": 1, "joint": 0},
+      {"service": "transport", "open": 11, "overdue": 3, "median_answer_days": 3.5, "verified_share": 0.27, "returned": 1, "handoffs_in": 0, "handoffs_out": 0, "joint": 1},
+      {"service": "waste", "open": 10, "overdue": 1, "median_answer_days": 1.0, "verified_share": 0.62, "returned": 0, "handoffs_in": 1, "handoffs_out": 0, "joint": 0},
+      {"service": "traffic", "open": 8, "overdue": 1, "median_answer_days": 2.0, "verified_share": 0.5, "returned": 0, "handoffs_in": 1, "handoffs_out": 0, "joint": 0},
+      {"service": "landscaping", "open": 7, "overdue": 2, "median_answer_days": 5.0, "verified_share": 0.29, "returned": 1, "handoffs_in": 0, "handoffs_out": 1, "joint": 0},
+      {"service": "housing", "open": 6, "overdue": 1, "median_answer_days": 4.0, "verified_share": 0.33, "returned": 0, "handoffs_in": 1, "handoffs_out": 0, "joint": 0},
+      {"service": "greenery", "open": 4, "overdue": 0, "median_answer_days": 3.0, "verified_share": 0.5, "returned": 0, "handoffs_in": 0, "handoffs_out": 0, "joint": 0},
+      {"service": "power", "open": 3, "overdue": 0, "median_answer_days": 1.0, "verified_share": 0.67, "returned": 0, "handoffs_in": 0, "handoffs_out": 0, "joint": 0}
+    ],
+    "joint": {"open": 6, "week": 9},
+    "handoffs": {"week": 11}
+  },
+  "incidents": [
+    {
+      "id": "inc-demo-blizzard",
+      "kind": "blizzard",
+      "title_ru": "Буран",
+      "title_kk": "Боран",
+      "zone": {"kind": "district", "district": "nura", "targets": [], "geometry": null},
+      "started_at": "2026-10-15T06:30:00+05:00",
+      "status": "active",
+      "tasks": [
+        {"id": "t-1", "service": "street_cleaning", "text_ru": "Расчистить подъезды к школам и поликлиникам", "text_kk": "Мектептер мен емханаларға кіреберістерді тазарту", "status": "done"},
+        {"id": "t-2", "service": "street_cleaning", "text_ru": "Посыпать остановки и переходы", "text_kk": "Аялдамалар мен өткелдерге құм себу", "status": "doing"},
+        {"id": "t-3", "service": "transport", "text_ru": "Пустить автобусы по запасным маршрутам", "text_kk": "Автобустарды қосалқы бағыттармен жіберу", "status": "doing"},
+        {"id": "t-4", "service": "emergency", "text_ru": "Дежурство на выездах из района", "text_kk": "Аудан шығатын жолдарда кезекшілік", "status": "doing"},
+        {"id": "t-5", "service": "power", "text_ru": "Проверить линии после ветра", "text_kk": "Желден кейін желілерді тексеру", "status": "todo"},
+        {"id": "t-6", "service": "emergency", "text_ru": "Пункт обогрева в школе района", "text_kk": "Аудан мектебінде жылыну пункті", "status": "done"}
+      ],
+      "updates": [
+        {"at": "2026-10-15T07:10:00+05:00", "text_ru": "В Нуре буран. Службы расчищают дороги, выходите из дома только при необходимости.", "text_kk": "Нұрада боран. Қызметтер жолдарды тазартуда, үйден тек қажет болса шығыңыз.", "public": true},
+        {"at": "2026-10-15T11:40:00+05:00", "text_ru": "Подъезды к школам расчищены. Автобусы 21 и 40 идут по запасному маршруту.", "text_kk": "Мектептерге кіреберістер тазартылды. 21 және 40 автобустар қосалқы бағытпен жүреді.", "public": true}
+      ],
+      "result": null,
+      "demo": true
+    }
+  ],
+  "together": {
+    "initiatives": [
+      {
+        "id": "i-demo-cleanup", "kind": "cleanup", "title": "Субботник во дворе", "lang": "ru",
+        "target": {"kind": "area", "id": "yard-demo-1", "label_ru": "Двор у ул. Коксенгир", "label_kk": "Көксеңгір көшесіндегі аула"},
+        "district": "nura", "starts_at": "2026-10-17T10:00:00+05:00", "ends_at": "2026-10-17T13:00:00+05:00",
+        "bring": ["перчатки", "мешки"], "status": "published", "joined": 15,
+        "support": {"by_akimat": true, "inventory": true, "pickup_service": "waste", "note": "Мешки и вывоз в 14:00"},
+        "report": null, "from_idea": null, "demo": true
+      },
+      {
+        "id": "i-demo-trees", "kind": "greening", "title": "Посадим 12 клёнов у площадки", "lang": "ru",
+        "target": {"kind": "area", "id": "yard-demo-2", "label_ru": "Двор на ул. Сыганак", "label_kk": "Сығанақ көшесіндегі аула"},
+        "district": "esil", "starts_at": "2026-10-12T11:00:00+05:00", "ends_at": "2026-10-12T14:00:00+05:00",
+        "bring": ["лопаты"], "status": "done", "joined": 22,
+        "support": {"by_akimat": true, "inventory": true, "pickup_service": null, "note": "Саженцы от акимата"},
+        "report": {"text": "Посадили 12 клёнов, полили, поставили опоры", "photo_ids": [], "at": "2026-10-12T15:30:00+05:00"},
+        "from_idea": null, "demo": true
+      },
+      {
+        "id": "i-demo-snow", "kind": "snow", "title": "Аула қарын бірге тазалайық", "lang": "kk",
+        "target": {"kind": "area", "id": "yard-demo-3", "label_ru": "Двор у парка", "label_kk": "Саябақ жанындағы аула"},
+        "district": "nura", "starts_at": "2026-10-16T09:00:00+05:00", "ends_at": "2026-10-16T11:00:00+05:00",
+        "bring": ["күрек"], "status": "published", "joined": 9,
+        "support": null, "report": null, "from_idea": null, "demo": true
+      },
+      {
+        "id": "i-demo-bench", "kind": "repair", "title": "Покрасим скамейки и песочницу", "lang": "ru",
+        "target": {"kind": "area", "id": "yard-demo-4", "label_ru": "Двор на пр. Туран", "label_kk": "Тұран даңғылындағы аула"},
+        "district": "esil", "starts_at": "2026-10-10T10:00:00+05:00", "ends_at": "2026-10-10T12:00:00+05:00",
+        "bring": ["кисти"], "status": "done", "joined": 8,
+        "support": {"by_akimat": true, "inventory": true, "pickup_service": null, "note": "Краска от акимата"},
+        "report": {"text": "Покрасили 6 скамеек и песочницу", "photo_ids": [], "at": "2026-10-10T13:00:00+05:00"},
+        "from_idea": null, "demo": true
+      },
+      {
+        "id": "i-demo-review", "kind": "help", "title": "Поможем пожилым соседям с продуктами", "lang": "ru",
+        "target": {"kind": "area", "id": "yard-demo-1", "label_ru": "Двор у ул. Коксенгир", "label_kk": "Көксеңгір көшесіндегі аула"},
+        "district": "nura", "starts_at": "2026-10-18T12:00:00+05:00", "ends_at": "2026-10-18T14:00:00+05:00",
+        "bring": [], "status": "on_review", "joined": 0, "support": null, "report": null, "from_idea": null, "demo": true
+      }
+    ],
+    "yards": [
+      {"id": "yard-demo-1", "label_ru": "Двор у ул. Коксенгир", "label_kk": "Көксеңгір көшесіндегі аула", "district": "nura", "members": 37, "captain": null, "demo": true},
+      {"id": "yard-demo-2", "label_ru": "Двор на ул. Сыганак", "label_kk": "Сығанақ көшесіндегі аула", "district": "esil", "members": 52, "captain": null, "demo": true},
+      {"id": "yard-demo-3", "label_ru": "Двор у парка", "label_kk": "Саябақ жанындағы аула", "district": "nura", "members": 21, "captain": null, "demo": true},
+      {"id": "yard-demo-4", "label_ru": "Двор на пр. Туран", "label_kk": "Тұран даңғылындағы аула", "district": "esil", "members": 18, "captain": null, "demo": true}
+    ]
+  },
+  "meetings": [
+    {
+      "id": "m-demo-nura-1", "district": "nura",
+      "title_ru": "Встреча акима района Нура с жителями", "title_kk": "Нұра ауданы әкімінің тұрғындармен кездесуі",
+      "at": "2026-10-08T18:00:00+05:00", "place": {"kind": "object", "id": "demo-school", "label_ru": "Школа района, актовый зал", "label_kk": "Аудан мектебі, мәжіліс залы"},
+      "registered": 54, "questions": [],
+      "orders": [
+        {"id": "o-1", "text_ru": "Отремонтировать освещение во дворах у парка", "text_kk": "Саябақ жанындағы аулалардың жарығын жөндеу", "service": "lighting", "due": "2026-10-14", "status": "in_progress", "link": null},
+        {"id": "o-2", "text_ru": "Поставить пешеходный переход у остановки «Коксенгир»", "text_kk": "«Көксеңгір» аялдамасы жанында жаяу өткел салу", "service": "traffic", "due": "2026-10-20", "status": "todo", "link": null},
+        {"id": "o-3", "text_ru": "Вывезти строительный мусор со двора на ул. Коксенгир", "text_kk": "Көксеңгір көшесіндегі ауладан құрылыс қоқысын шығару", "service": "waste", "due": "2026-10-12", "status": "done", "link": null},
+        {"id": "o-4", "text_ru": "Проверить отопление в домах у парка", "text_kk": "Саябақ жанындағы үйлердің жылуын тексеру", "service": "heating", "due": "2026-10-16", "status": "in_progress", "link": null}
+      ],
+      "demo": true
+    },
+    {
+      "id": "m-demo-esil-1", "district": "esil",
+      "title_ru": "Встреча акима района Есиль с жителями", "title_kk": "Есіл ауданы әкімінің тұрғындармен кездесуі",
+      "at": "2026-10-22T18:30:00+05:00", "place": {"kind": "object", "id": "demo-center-esil", "label_ru": "Дом культуры, малый зал", "label_kk": "Мәдениет үйі, кіші зал"},
+      "registered": 31, "questions": [], "orders": [], "demo": true
+    }
+  ]
+}

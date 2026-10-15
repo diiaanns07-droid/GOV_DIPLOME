@@ -12,6 +12,11 @@
         handle_put(path, body, staff=True, actor=…) — только для сотрудника; кто сотрудник и CSRF — решает шлюз R01.
     POST /api/civic/v2/akim/decisions/<id>  {"option": 1|2}   «Выбрать» вариант в «Нужно решение акима»:
         handle_post(path, body, staff=True, actor=…) — тоже только сотрудник.
+Раунд 15 — только для сотрудника (шлюз R01: kind="raw", staff_view=True → handle_get(..., staff=True)):
+    GET /api/civic/v2/akim/board?district=nura      Ситуационный центр: KPI, пульс, горячие места, службы (R17),
+        кризис (R17), «Жители вместе» (R16 + R09), поручения встреч и прогноз (R13) — board.py, neighbors.py.
+    GET /api/civic/v2/akim/week?date=2026-10-12&district=nura   «Картина недели» (неделя пн–вс с этой датой) — week.py.
+    Без staff=True → 403 forbidden: ни один сосед не читается.
 Раздел жителя «Рядом» (nearby.py, публично, без личных данных):
     GET  /api/civic/v2/nearby?district=nura&tab=now|done|planned|outages
     GET  /api/civic/v2/nearby/subscriptions?device_id=…        мои подписки
@@ -25,7 +30,7 @@ from __future__ import annotations
 import logging
 import traceback
 
-from . import decisions, nearby, routing
+from . import board, decisions, nearby, routing
 from .summary import AkimError, default_service
 
 PREFIX = "/api/civic/v2"
@@ -39,11 +44,22 @@ def _one(query: dict, name: str):
     return v
 
 
-def handle_get(path: str, query: dict | None = None, service=None) -> tuple[int, dict]:
+STAFF_ONLY = (PREFIX + "/akim/board", PREFIX + "/akim/week")
+
+
+def handle_get(path: str, query: dict | None = None, service=None, staff: bool = False) -> tuple[int, dict]:
+    """staff=True передаёт только шлюз R01 после проверки сессии сотрудника (V2Handler staff_view=True)."""
+    if path in STAFF_ONLY and staff is not True:
+        return 403, {"error": "forbidden", "message": "Ситуационный центр и «Картина недели» — только для сотрудников акимата"}
     svc = service or default_service()
     try:
         if path == PREFIX + "/akim/summary":
             return 200, svc.summary(date=_one(query, "date"), district=_one(query, "district"))
+        if path == PREFIX + "/akim/board":
+            return 200, board.build(svc, district=_one(query, "district"))
+        if path == PREFIX + "/akim/week":
+            from . import week  # локально: модуль печати нужен только этому маршруту
+            return 200, week.build(svc, date=_one(query, "date"), district=_one(query, "district"))
         if path == PREFIX + "/akim/routing":
             category = _one(query, "category")
             if category:
