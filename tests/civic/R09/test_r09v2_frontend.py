@@ -485,3 +485,33 @@ def test_reference_a_r09():
     assert "mountNear: mountNear" in JS
     s = strings()
     assert s["ru"]["home.near.title"] == "Рядом с вами" and s["kk"]["home.near.title"] == "Сіздің маңайыңызда"
+
+
+def test_reference_a_r09_round2():
+    """Эталон A, круг 2 (R11 §22.3 c, R10 §9): «×» одной толщины с остальными значками; повторное открытие «Моих
+    обращений» — сразу из памяти, и пустой список тоже."""
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    # Правило 6 Linear: значок 16 при линии 2.25 — видимая 1,5 px (как значки 20 при линии 1.5–1.75), не 1,3.
+    assert ".bc-x .ic { width: 16px; height: 16px; stroke-width: 2.25; }" in css
+    assert ".bc-fab__mark .ic { width: 16px; height: 16px; stroke-width: 2.25; }" in css and "stroke-width: 2.4" not in css
+    load = JS.split("function loadMine(focusCode, focusEvent)", 1)[1].split("function focusCard()", 1)[0]
+    assert "var cached = mineCache;" in load and "items.length ? mineCache" not in load
+    # Без связи при списке в памяти — «Нет связи» над списком, а не экран ошибки вместо него.
+    assert "if (cached) { state.mineStale = true; render(); return; }" in load
+
+
+def test_reference_a_r09_motion_rule6():
+    """Правило 6 Linear: анимации 150–250 мс — у движений R09 длительность из --t-base / --t-slow или 150–250 мс
+    (задержки ступенек списка и галочки после круга — не длительность)."""
+    import re
+    css = (WEB / "complaint.css").read_text(encoding="utf-8")
+    for decl in re.findall(r"(?:animation|transition)\s*:\s*([^;}]+)", css):
+        decl = re.sub(r"var\(--[\w-]+,\s*([^()]+)\)", r"\1", decl)              # var(--t-slow, 250ms) → 250ms
+        decl = re.sub(r"cubic-bezier\([^()]*\)", "ease", decl)
+        for part in decl.split(","):
+            words = part.split()
+            durations = [w for w in words if re.fullmatch(r"\d+ms", w)]
+            if durations:   # первая длительность в части — продолжительность, вторая — задержка
+                ms = int(durations[0][:-2])
+                assert 150 <= ms <= 250, part
+    assert "bc-flash var(--t-slow, 250ms)" in css and "bc-rise var(--t-slow, 250ms)" in css
