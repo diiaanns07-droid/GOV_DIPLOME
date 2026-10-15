@@ -181,3 +181,12 @@ R17 29176133 (изоляция api_state — тесты R03 / R17 больше �
 R03 90fd9824, R04 be7dcd1a, R05 e30167fe (D1.4), R06 66c697c2, R09 0e0e8306 (путь `#inbox/<id>` читает сам: opts.path +
 setPath — мост оболочки `0665c667` не срабатывает), R11 ffdb30c2 (ҚАЗ пункт «Аулам»: 1024 ҚАЗ житель с колокольчиком —
 снова капсула), R17 0add52ac. pytest R01, R03, R04, R06, R09, R11, R17 — 2746 / 0; r15_ia 40 / 0.
+
+### Флаг демо-мира включён по умолчанию (16 окт, 02:30 по Астане)
+R10 (INTEGRATION `2d5fd169`, приёмка B0.9 `49786917`): часть 1 **с демо-миром — 172 PASS / 0 FAIL / 2 NOT_RUN**, B-109
+закрыт R08 `1a54fd12` — «условие промпта R01 для флага демо-мира выполнено». Поэтому:
+- `run-city.bat`: `if not defined CIVIC_DEMO_WORLD set "CIVIC_DEMO_WORLD=1"`;
+- `run.bat` и `run.sh`: с `CIVIC_DEMO` по умолчанию и `CIVIC_DEMO_WORLD=1` (одинаково на Windows и Linux / macOS);
+- выключить мир (показ FINAL-4) — `set CIVIC_DEMO_WORLD=0` / `CIVIC_DEMO_WORLD=0 CIVIC_DEMO=1 bash run.sh`.
+Сервер не изменён: мир по-прежнему засевается только при `CIVIC_DEMO=1` и `CIVIC_DEMO_WORLD=1` (тесты и стенды ролей,
+которые запускают `app.py` сами, не затронуты). `?layout=classic` и `?glass=off` остаются.

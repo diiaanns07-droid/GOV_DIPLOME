@@ -9,7 +9,8 @@
 #   PYTHON=python3.12 bash run.sh   — выбрать интерпретатор (нужен Python 3.11–3.14)
 #   PORT=8502 bash run.sh           — другой порт
 #   NO_BROWSER=1 bash run.sh        — не открывать браузер (сервер без экрана)
-#   CIVIC_DEMO=1 bash run.sh        — загрузить синтетический демо-срез Астаны (R05) в .runtime/civic.sqlite3
+#   CIVIC_DEMO=1 bash run.sh        — загрузить синтетический демо-срез Астаны (R05) в .runtime/civic.sqlite3;
+#                                     раунд 15: с ним по умолчанию и демо-мир R02 (CIVIC_DEMO_WORLD=1, выключить — =0)
 # Учётная запись редактора создаётся отдельно, пароль вводится скрыто:
 #   .venv/bin/python -m ui.civic_store create-editor <логин>
 set -euo pipefail
@@ -85,6 +86,9 @@ fi
 # или командой init (R02 >= 9b005be требует init перед seed-demo/import).
 # Демо-данные — только по явному флагу; импорт идемпотентен и публикует лишь synthetic-записи.
 if [ -n "${CIVIC_DEMO:-}" ]; then
+    # Раунд 15: один демо-мир Астаны для всех разделов (R02 world_v1.json) — включён после зелёного регресса R10
+    # части 1 с миром (B0.9: 172/0/2). Показ FINAL-4 без мира: CIVIC_DEMO_WORLD=0 CIVIC_DEMO=1 bash run.sh.
+    export CIVIC_DEMO_WORLD="${CIVIC_DEMO_WORLD:-1}"
     echo "[civic] Загружаю синтетический демо-срез Астаны (не сведения о реальных работах)..."
     "$VENV_PY" -B -m ui.civic_store init >/dev/null
     "$VENV_PY" -B -m ui.civic_store seed-demo --package data/civic/astana/demo_synthetic.json >/dev/null

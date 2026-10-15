@@ -68,6 +68,8 @@ if exist ".env" (
 rem Городская платформа (civic-v1): база .runtime\civic.sqlite3 создаётся сервером при первом запросе.
 rem Демо-данные только по флагу: set CIVIC_DEMO=1 (синтетический срез Астаны, импорт идемпотентен).
 rem Редактор создаётся отдельно, пароль скрыто: .venv\Scripts\python -m ui.civic_store create-editor ЛОГИН
+rem Раунд 15: с CIVIC_DEMO по умолчанию и демо-мир R02 (как run.sh); показ без мира — set CIVIC_DEMO_WORLD=0.
+if defined CIVIC_DEMO if not defined CIVIC_DEMO_WORLD set "CIVIC_DEMO_WORLD=1"
 if defined CIVIC_DEMO (
     echo [civic] Загружаю синтетический демо-срез Астаны, не сведения о реальных работах...
     "%VENV_PY%" -B -m ui.civic_store init >nul
