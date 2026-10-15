@@ -153,12 +153,9 @@ def hot_spots(ctx) -> Block:
     b.line(f"Больше всего — «{_target_label(top['target'], 'ru')}»: {_people(top_n)['ru']}.",
            f"Ең көбі — «{_target_label(top['target'], 'kk')}»: {_people(top_n)['kk']}.")
     b.fact(top_n, "человек — первое место", "адам — бірінші орын", "ui.civic_heat.heat")
-    if len(items) > 1:
-        rest = items[1:3]
-        b.line("Дальше: " + "; ".join(f"«{_target_label(it['target'], 'ru')}» — {fmt_num(it.get('count') or 0)}"
-                                      for it in rest) + ".",
-               "Одан кейін: " + "; ".join(f"«{_target_label(it['target'], 'kk')}» — {fmt_num(it.get('count') or 0)}"
-                                         for it in rest) + ".")
+    trend = _week_trend(ctx, total) if p.days == 7 else None
+    if trend:
+        b.line(trend["ru"], trend["kk"])
     for it in items[:MAX_ITEMS]:
         n = int(it.get("count") or 0)
         b.items.append({"label": both(_target_label(it["target"], "ru"), _target_label(it["target"], "kk")),
@@ -167,6 +164,31 @@ def hot_spots(ctx) -> Block:
                         "district": it.get("district"), "approximate": bool(it.get("approximate"))})
     b.focus(top["target"], p.days)
     return b
+
+
+def _week_trend(ctx, total: int) -> dict | None:
+    """Строка «на 50 % больше, чем неделю назад» из «Картины дня» R08 — только если её число совпало с картой.
+
+    R08 считает темы и районы ровно как карта R07 за 7 дней; совпадение value с суммой мест — проверка, что речь
+    об одном и том же (иначе строку не показываем, а не подставляем чужое изменение).
+    """
+    p = ctx.parsed
+    status, summary = ctx.summary(p.district)
+    if status != "ok":
+        return None
+    if p.category:
+        row = next((t for t in (summary.get("topics") or {}).get("items") or [] if t.get("category") == p.category), None)
+    elif p.district:
+        row = next((d for d in (summary.get("districts") or {}).get("items") or []
+                    if d.get("district") == p.district), None)
+    else:
+        return None
+    if not row or int(row.get("value") or -1) != int(total):
+        return None
+    change = _change(row)
+    if not change:
+        return None
+    return both(f"За неделю — {_people(total)['ru']}, {change['ru']}.", f"Аптада — {_people(total)['kk']}, {change['kk']}.")
 
 
 # ---------------------------------------------------------------- рост категорий (R08 темы + пульс)
@@ -425,10 +447,13 @@ def lagging_services(ctx) -> Block:
     b.number(total_overdue, plural_ru(total_overdue, "обращение просрочено", "обращения просрочены",
                                       "обращений просрочено"), "өтініштің мерзімі өткен", "services")
     if lagging:
-        for r in lagging[:3]:
-            name_ru, name_kk = service_name(r["service"], "ru"), service_name(r["service"], "kk")
-            b.line(f"{name_ru}: просрочено {fmt_num(r['overdue'])} из {fmt_num(r['open'])} открытых.",
-                   f"{name_kk}: {fmt_num(r['open'])} ашық өтініштің {fmt_num(r['overdue'])} мерзімі өткен.")
+        worst = lagging[0]
+        name_ru, name_kk = service_name(worst["service"], "ru"), service_name(worst["service"], "kk")
+        b.line(f"Больше всего просрочек — {name_ru}: {fmt_num(worst['overdue'])} из {fmt_num(worst['open'])} открытых.",
+               f"Мерзімі өткені ең көп — {name_kk}: {fmt_num(worst['open'])} ашық өтініштің {fmt_num(worst['overdue'])}.")
+        if worst.get("median_days") is not None:
+            b.line(f"Медиана ответа этой службы — {fmt_num(float(worst['median_days']))} дн.",
+                   f"Бұл қызметтің жауап беру медианасы — {fmt_num(float(worst['median_days']))} күн.")
     else:
         busiest = max(rows, key=lambda r: r["open"])
         b.line(f"Просрочек нет. Больше всего открытых обращений у службы «{service_name(busiest['service'], 'ru')}»: "
@@ -514,11 +539,11 @@ def crisis(ctx) -> Block:
     b.role = "R08"
     b.title = both("Кризис: штаб не открыт", "Дағдарыс: штаб ашылмаған")
     if status in ("not_ready", "error"):
-        b.note = both("Кризисный штаб пока не подключён в этой сборке — ниже пульс «Картины дня».",
-                      "Дағдарыс штабы бұл жинақта әлі қосылмаған — төменде «Күн көрінісінің» пульсі.")
+        b.note = both("Кризисный штаб пока не подключён в этой сборке — показан пульс «Картины дня».",
+                      "Дағдарыс штабы бұл жинақта әлі қосылмаған — «Күн көрінісінің» пульсі көрсетілген.")
     else:
-        b.note = both("Активного кризиса нет: штаб не открыт. Ниже — пульс «Картины дня».",
-                      "Белсенді дағдарыс жоқ: штаб ашылмаған. Төменде — «Күн көрінісінің» пульсі.")
+        b.note = both("Активного кризиса нет: штаб не открыт. Показан пульс «Картины дня».",
+                      "Белсенді дағдарыс жоқ: штаб ашылмаған. «Күн көрінісінің» пульсі көрсетілген.")
     st, summary = ctx.summary(p.district)
     if st != "ok":
         b.status = "not_ready" if status == "not_ready" else "empty"
