@@ -679,8 +679,11 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const soon = day ? await visibleText(page, textRe(T(dict, "shell.day.soon_title", "скоро появится"))) : false;
   const kpis = day ? await page.locator(".bk-kpi, .akim-kpi").filter({ visible: true }).count() : 0;
   const kpiText = day ? await visibleText(page, textRe(T(dict, "akim.kpi.in_progress", "В работе"))) : false;
-  const overdue = day ? await visibleText(page, textRe(T(dict, "akim.kpi.overdue", "Просрочено"))) : false;
-  step("4", "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»", day && !soon && kpis >= 4 && kpiText && overdue, { day, placeholder_soon: soon, kpis, kpiText, overdue }, await shot("4-day"));
+  // Подпись плитки «просрочено» — тем ключом, которым её рисует экран R08 (0e0623bf: akim.kpi.overdue_hint «Не исправлено в
+  // срок» после B-104; раньше akim.kpi.overdue «Просрочено»).
+  const dayKey = (() => { try { const m = /kpiCard\(\s*"overdue"\s*,\s*[\w.]+\s*,\s*"([\w.]+)"/.exec(fs.readFileSync(path.join(ROOT, "web/civic/akim/akim.js"), "utf8")); return m ? m[1] : null; } catch (e) { return null; } })();
+  const overdue = day ? await visibleText(page, textRe(T(dict, [dayKey, "akim.kpi.overdue"].filter(Boolean), "Просрочено"))) : false;
+  step("4", "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»", day && !soon && kpis >= 4 && kpiText && overdue, { day, placeholder_soon: soon, kpis, kpiText, overdue, overdue_key: dayKey || "akim.kpi.overdue" }, await shot("4-day"));
 
   // 5. Акимат: вход сотрудника → «Что построить?» → «Сквер» → место → «Поставить»; житель «За»; акимат «Удалить».
   await fresh();
