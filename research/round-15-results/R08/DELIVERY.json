@@ -4,8 +4,8 @@
  "branch": "claude/laughing-euler-iv3on3",
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": "origin/claude/r14-R08 4b215c77 (только браузерные проверки tests/civic/R08/*.cjs; код R08 в FINAL-4 = d5719635 совпадает)",
- "code_sha": "147259ebb737d133163c4588e37a04c33c35ae10",
- "tested_sha": "147259ebb737d133163c4588e37a04c33c35ae10",
+ "code_sha": "0e6e57a541d7ea97fba330aa93f975abfb4b6988",
+ "tested_sha": "0e6e57a541d7ea97fba330aa93f975abfb4b6988",
  "push_status": "OK (origin/claude/laughing-euler-iv3on3)",
  "summary": "Ситуационный центр (страница /civic/board/, тёмная, 1920/1366 без прокрутки, смена блоков 15 с) + GET akim/board; «Картина дня» 2.0 (решения коротко, кнопка кризисного штаба, три карточки соседей, прогноз); «Картина недели» (GET akim/week + A4 ru/kk); соседи R17/R16/R13 — только чтение их функций и открытых маршрутов; поправка П1 применена; на демо-мире R02 числа всех экранов сходятся (world_check 18/18, world_shots 82/82); в блоке «Районы» — карта районов (контуры OSM, цвет — уровень карты R07).",
  "changed_paths": [
