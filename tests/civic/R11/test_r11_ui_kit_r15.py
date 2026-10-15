@@ -70,7 +70,10 @@ def test_r15_does_not_redefine_reference_classes():
             sel = sel.strip()
             if not sel or sel.startswith("@") or sel.startswith(("from", "to")) or re.match(r"^\d+%", sel):
                 continue
-            first = re.sub(r"^[a-z]+(?=\.)", "", sel.split()[0])  # a.bk-feed__item, button.bk-conflict
+            parts = sel.split()
+            if re.fullmatch(r":lang\([a-z]+\)", parts[0]) and len(parts) > 1:  # :lang(kk) .bk-feed__title — правило языка
+                parts = parts[1:]
+            first = re.sub(r"^[a-z]+(?=\.)", "", parts[0])  # a.bk-feed__item, button.bk-conflict
             assert first.startswith(allowed), f"селектор раунда 15 трогает класс эталона: {sel}"
 
 
@@ -152,3 +155,10 @@ def test_tabs_fit_four_kk_tabs_on_phone():
     phone = re.findall(r"@media \(max-width: 480px\) \{(.*?)\n\}", css, re.S)
     assert any(re.search(r"\.bk-tabs \{\s*gap: 14px;", block) for block in phone)
     assert re.search(r"\n\.bk-tabs \{[^}]*gap: 18px;", css), "на ноутбуке — как эталон .tabs (18)"
+
+
+def test_feed_title_keeps_kazakh_predicate():
+    """Обзор R11 круг 5: в казахском сказуемое в конце — заголовок ленты в ҚАЗ до 4 строк (было 2: «…жобасы…»)."""
+    css = re.sub(r"/\*.*?\*/", "", COMPONENTS, flags=re.S)
+    rule = re.search(r"\n:lang\(kk\) \.bk-feed__title \{([^}]*)\}", css)
+    assert rule and "-webkit-line-clamp: 4" in rule.group(1)

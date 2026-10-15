@@ -287,3 +287,8 @@ R09 (claude/quirky-ptolemy-k3z2mj @ dfaee97e), сцена 8 — 21:57 (joint_r09
   R09-6 чип части службы в строке: text-align: left (сейчас две строки по центру на 375).
   Словарь: «в работе» — «орындалуда» везде (joint.part.in_progress, agencies.part.in_progress, crisis.task.doing; было
   «жұмыста» после правки R11 в круге 5 — исправлено, KK_REVIEW № 40).
+
+R06 (claude/eloquent-einstein-wvuyje @ c2604ea2) — 22:01: browser_r15 --only notify,ideas 158/0 (с патчем R01 из ветки R06).
+  ui-kit R11: :lang(kk) .bk-feed__title — до 4 строк (казахское сказуемое в конце заголовка уведомления больше не
+    съедается многоточием); тест R11 test_feed_title_keeps_kazakh_predicate.
+  R06-3 web/civic/ideas/ideas.js: STATUS_LOOK project: "fixed" → "accepted" (зелёный только «исправлено», VISUAL_BRIEF §4.4).
