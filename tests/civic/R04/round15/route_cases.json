@@ -1,0 +1,2649 @@
+{
+ "version": "r04-route-cases-v1",
+ "created": "2026-10-15",
+ "author": "R04 (раунд 15), тексты написаны вручную; синтетика, не настоящие обращения",
+ "protocol": "Набор зафиксирован коммитом ДО правил совместных случаев (ui/civic_ml_api/routing.py). Правила подбираются только по split=dev; split=test считается в конце и каждый прогон пишется в журнал RESULTS. Разбиение: первый байт sha1(id) чётный -> dev.",
+ "label_rules": [
+  "expect — нужные службы, ведущая первой (id CONTRACT §3). Одна служба — по таблице R08 «категория/уточнение -> служба».",
+  "Раскопки сетей, после которых не восстановлено покрытие: [служба сетей, служба покрытия]. Сети: водопровод, трубы, канализация -> water; теплотрасса, отопление -> heating; кабель -> power; газопровод -> gas; кто копал не сказано -> water (чаще всего). Покрытие: дорога, тротуар, проезд -> road; двор, детская площадка -> landscaping; газон -> greenery.",
+  "Прорыв трубы с ямой или размывом -> [water|heating, road]; с наледью -> [water|heating, street_cleaning].",
+  "Упал столб + провода/нет света -> [power, lighting]; дерево на проводах -> [greenery, power].",
+  "Сосульки или снег с крыши + неубранный тротуар -> [housing, street_cleaning].",
+  "Два отключения разных сетей (вода и свет) или две разные проблемы в одном тексте -> обе службы, any_order=true.",
+  "Горячая вода и отопление — одна служба heating. Лифт, подъезд, крыша дома -> housing."
+ ],
+ "cases": [
+  {
+   "id": "rc-001",
+   "split": "dev",
+   "text": "Яма после раскопок водоканала",
+   "lang": "ru",
+   "category": "roads",
+   "subtopic": "pothole",
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true,
+   "note": "сцена 8"
+  },
+  {
+   "id": "rc-002",
+   "split": "test",
+   "text": "Яма после раскопок водоканала",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true,
+   "note": "сцена 8 без категории"
+  },
+  {
+   "id": "rc-003",
+   "split": "dev",
+   "text": "Водоканал раскопал дорогу и уехал, яма уже две недели",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-004",
+   "split": "test",
+   "text": "Вскрыли асфальт и не закопали, все объезжают по встречке",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true,
+   "note": "кто копал — не сказано"
+  },
+  {
+   "id": "rc-005",
+   "split": "test",
+   "text": "Траншея поперёк проезда, засыпали кое-как, машины проваливаются",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-006",
+   "split": "dev",
+   "text": "После ремонта водопровода оставили яму на дороге",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-007",
+   "split": "test",
+   "text": "Прорвало трубу, вода течёт по дороге и размыла асфальт",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-008",
+   "split": "dev",
+   "text": "Прорыв трубы и яма на перекрёстке",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-009",
+   "split": "dev",
+   "text": "Меняли трубы и не восстановили асфальт",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-010",
+   "split": "test",
+   "text": "Раскопали тротуар под канализацию, пройти невозможно",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-011",
+   "split": "dev",
+   "text": "Провал асфальта над колодцем, вода стоит",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-012",
+   "split": "test",
+   "text": "Течёт вода из-под асфальта, образовалась промоина",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-013",
+   "split": "dev",
+   "text": "После аварии на водопроводе осталась огромная яма",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-014",
+   "split": "test",
+   "text": "Копали, копали и бросили — котлован посреди улицы без ограждения",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-015",
+   "split": "dev",
+   "text": "Теплосеть раскопала дорогу и не закопала",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-016",
+   "split": "dev",
+   "text": "После ремонта теплотрассы на улице остались ямы",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-017",
+   "split": "dev",
+   "text": "Порыв теплотрассы, кипяток на дороге, асфальт провалился",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-018",
+   "split": "test",
+   "text": "Ремонтировали отопление, раскопали тротуар и бросили",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-019",
+   "split": "dev",
+   "text": "Теплосеть перекопала весь двор и ушла",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "landscaping"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-020",
+   "split": "dev",
+   "text": "После замены труб отопления во дворе не восстановили детскую площадку",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "landscaping"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-021",
+   "split": "test",
+   "text": "Водоканал раскопал двор, засыпали без асфальта, грязь",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "landscaping"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-022",
+   "split": "dev",
+   "text": "Во дворе после прорыва трубы яма, дети играют рядом",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "landscaping"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-023",
+   "split": "test",
+   "text": "Раскопали газон под трубы и оставили кучи земли",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "greenery"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-024",
+   "split": "test",
+   "text": "После ремонта теплотрассы газон перекопан, деревья поломали",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "greenery"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-025",
+   "split": "test",
+   "text": "Электросети меняли кабель, раскопали тротуар и не восстановили",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-026",
+   "split": "test",
+   "text": "Прокладывали кабель, теперь вдоль дороги траншея",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-027",
+   "split": "dev",
+   "text": "Газовики раскопали проезд и неделю не закапывают",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "gas",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-028",
+   "split": "dev",
+   "text": "Прорвало трубу, вся улица во льду, каток",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "street_cleaning"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-029",
+   "split": "dev",
+   "text": "Из люка течёт вода, на тротуаре наледь",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "street_cleaning"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-030",
+   "split": "dev",
+   "text": "Теплотрасса течёт, на дороге образовался лёд",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "street_cleaning"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-031",
+   "split": "test",
+   "text": "Нет света и упал столб",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "lighting"
+   ],
+   "joint": true,
+   "note": "пример промпта"
+  },
+  {
+   "id": "rc-032",
+   "split": "dev",
+   "text": "Упал столб, провода на земле, во дворе темно",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "lighting"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-033",
+   "split": "test",
+   "text": "Ветром повалило столб освещения, оборваны провода",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "lighting"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-034",
+   "split": "test",
+   "text": "Машина снесла фонарный столб, провода висят",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "lighting"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-035",
+   "split": "dev",
+   "text": "Дерево упало на провода",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery",
+    "power"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-036",
+   "split": "dev",
+   "text": "Ветка лежит на линии электропередачи, искрит",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery",
+    "power"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-037",
+   "split": "test",
+   "text": "Сухое дерево навалилось на провода у дома",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery",
+    "power"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-038",
+   "split": "dev",
+   "text": "С крыши свисают сосульки, а тротуар под ними не почищен",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing",
+    "street_cleaning"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-039",
+   "split": "dev",
+   "text": "Снег с крыши сбросили на тротуар и не убрали",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing",
+    "street_cleaning"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-040",
+   "split": "dev",
+   "text": "В доме нет ни воды, ни света",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "power"
+   ],
+   "joint": true,
+   "any_order": true,
+   "note": "два отключения"
+  },
+  {
+   "id": "rc-041",
+   "split": "test",
+   "text": "Нет отопления и холодной воды",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "water"
+   ],
+   "joint": true,
+   "any_order": true,
+   "note": "два отключения"
+  },
+  {
+   "id": "rc-042",
+   "split": "dev",
+   "text": "Третий день нет света и газа",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "gas"
+   ],
+   "joint": true,
+   "any_order": true,
+   "note": "два отключения"
+  },
+  {
+   "id": "rc-043",
+   "split": "test",
+   "text": "На перекрёстке не работает светофор, во всём районе отключили свет",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "traffic",
+    "power"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-044",
+   "split": "test",
+   "text": "На остановке разбит павильон и не горит фонарь",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "transport",
+    "lighting"
+   ],
+   "joint": true,
+   "any_order": true,
+   "note": "две проблемы"
+  },
+  {
+   "id": "rc-045",
+   "split": "test",
+   "text": "На дороге яма, а рядом переполнены мусорные баки",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road",
+    "waste"
+   ],
+   "joint": true,
+   "any_order": true,
+   "note": "две проблемы"
+  },
+  {
+   "id": "rc-046",
+   "split": "dev",
+   "text": "Сломана детская площадка, и во дворе бродячие собаки",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "landscaping",
+    "animals"
+   ],
+   "joint": true,
+   "any_order": true,
+   "note": "две проблемы"
+  },
+  {
+   "id": "rc-047",
+   "split": "dev",
+   "text": "Су құбырын жөндегеннен кейін жолда үлкен шұңқыр қалды",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-048",
+   "split": "dev",
+   "text": "Траншея қазып, көмбей кетті, көлік өте алмайды",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-049",
+   "split": "test",
+   "text": "Құбыр жарылып, жолға су ағып жатыр, асфальт опырылды",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-050",
+   "split": "test",
+   "text": "Жылу желісі ауланы қазып тастап кетті",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "landscaping"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-051",
+   "split": "test",
+   "text": "Бағана құлап, жарық жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "lighting"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-052",
+   "split": "test",
+   "text": "Ағаш сымның үстіне құлап жатыр",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery",
+    "power"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-053",
+   "split": "dev",
+   "text": "Шатырдан сүңгілер салбырап тұр, тротуар тазаланбаған",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing",
+    "street_cleaning"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-054",
+   "split": "dev",
+   "text": "Үйде су да, жарық та жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "power"
+   ],
+   "joint": true,
+   "any_order": true
+  },
+  {
+   "id": "rc-055",
+   "split": "dev",
+   "text": "Құбыр жарылып, көше мұзға айналды",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "street_cleaning"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-056",
+   "split": "test",
+   "text": "Кабель тартып, тротуарды қазып тастады",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-057",
+   "split": "test",
+   "text": "Водоканал қазып кетті, яма на дороге қалды",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-058",
+   "split": "dev",
+   "text": "Раскопали дорогу, әлі күнге дейін көмбеді",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-059",
+   "split": "test",
+   "text": "Столб құлады, свет жоқ во всём дворе",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "lighting"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-060",
+   "split": "test",
+   "text": "Аулада теплосеть раскопала и бросила",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "landscaping"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-061",
+   "split": "dev",
+   "text": "Trubu prorvalo, voda na doroge, yama",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true,
+   "note": "латиница"
+  },
+  {
+   "id": "rc-062",
+   "split": "dev",
+   "text": "Raskopali dorogu i ne zakopali",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true,
+   "note": "латиница"
+  },
+  {
+   "id": "rc-063",
+   "split": "dev",
+   "text": "Яма на дороге уже месяц",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-064",
+   "split": "dev",
+   "text": "После ремонта дороги снова появилась яма",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false,
+   "note": "«после ремонта» без сетей"
+  },
+  {
+   "id": "rc-065",
+   "split": "dev",
+   "text": "Разбитый асфальт на въезде во двор",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-066",
+   "split": "test",
+   "text": "Огромные ямы на улице Кенесары",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-067",
+   "split": "test",
+   "text": "Лежачий полицейский слишком высокий",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-068",
+   "split": "dev",
+   "text": "Не работает светофор на перекрёстке",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "traffic"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-069",
+   "split": "dev",
+   "text": "Светофор долго горит красный, пробки",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "traffic"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-070",
+   "split": "dev",
+   "text": "Стёрлась разметка на пешеходном переходе",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "traffic"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-071",
+   "split": "dev",
+   "text": "Опасный перекрёсток, нужен светофор",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "traffic"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-072",
+   "split": "dev",
+   "text": "Жолда үлкен шұңқыр бар",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-073",
+   "split": "test",
+   "text": "Бағдаршам істемейді",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "traffic"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-074",
+   "split": "dev",
+   "text": "Жол таңбасы өшіп қалған",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "traffic"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-075",
+   "split": "dev",
+   "text": "Не убран снег на улице",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "street_cleaning"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-076",
+   "split": "test",
+   "text": "Гололёд на тротуаре, ничем не посыпано",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "street_cleaning"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-077",
+   "split": "dev",
+   "text": "Сосульки на крыше дома над входом",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-078",
+   "split": "test",
+   "text": "Снег с крыши может упасть на людей",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-079",
+   "split": "dev",
+   "text": "Көшеде қар тазаланбаған",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "street_cleaning"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-080",
+   "split": "dev",
+   "text": "Көктайғақ, құм себілмеген",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "street_cleaning"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-081",
+   "split": "dev",
+   "text": "Шатырдан сүңгілер салбырап тұр",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-082",
+   "split": "dev",
+   "text": "Разбит тротуар возле школы",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-083",
+   "split": "test",
+   "text": "Нет пандуса у аптеки, коляска не проезжает",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-084",
+   "split": "dev",
+   "text": "Нужен пешеходный переход у остановки",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "traffic"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-085",
+   "split": "test",
+   "text": "Тротуар бұзылған",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-086",
+   "split": "test",
+   "text": "Сломана скамейка на остановке",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "transport"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-087",
+   "split": "test",
+   "text": "Автобус ходит раз в час, нет расписания",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "transport"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-088",
+   "split": "dev",
+   "text": "Нужен маршрут до нового микрорайона",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "transport"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-089",
+   "split": "dev",
+   "text": "Аялдамада орындық сынған",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "transport"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-090",
+   "split": "dev",
+   "text": "Автобусты ұзақ күтеміз, кесте жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "transport"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-091",
+   "split": "dev",
+   "text": "Не горит фонарь у подъезда",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-092",
+   "split": "test",
+   "text": "Во дворе темно, нет освещения",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-093",
+   "split": "test",
+   "text": "Фонарь мигает всю ночь",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-094",
+   "split": "dev",
+   "text": "Не горит фонарь, столб наклонился",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false,
+   "note": "столб без обрыва и отключения"
+  },
+  {
+   "id": "rc-095",
+   "split": "test",
+   "text": "Оборван провод у дороги",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-096",
+   "split": "dev",
+   "text": "Аулада шам жанбайды",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-097",
+   "split": "dev",
+   "text": "Аулада қараңғы, жарық жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-098",
+   "split": "test",
+   "text": "Сым үзілген, жерде жатыр",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-099",
+   "split": "dev",
+   "text": "Вечером на остановке нет света, темно",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false,
+   "note": "шаг 2 демо"
+  },
+  {
+   "id": "rc-100",
+   "split": "dev",
+   "text": "Сломаны качели на детской площадке",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "landscaping"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-101",
+   "split": "test",
+   "text": "Нет скамеек во дворе",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "landscaping"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-102",
+   "split": "test",
+   "text": "Сухие деревья во дворе, надо спилить",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-103",
+   "split": "test",
+   "text": "Газон вытоптан, надо посадить траву",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-104",
+   "split": "test",
+   "text": "Балалар алаңы бұзылған",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "landscaping"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-105",
+   "split": "test",
+   "text": "Аулада ағаштар қурап қалған",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-106",
+   "split": "test",
+   "text": "Упало дерево и перегородило дорогу",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery"
+   ],
+   "joint": false,
+   "note": "дерево без проводов"
+  },
+  {
+   "id": "rc-107",
+   "split": "test",
+   "text": "Переполнены мусорные баки",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "waste"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-108",
+   "split": "dev",
+   "text": "Стихийная свалка за гаражами",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "waste"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-109",
+   "split": "test",
+   "text": "Мусор не вывозят неделю",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "waste"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-110",
+   "split": "dev",
+   "text": "Қоқыс шығарылмайды",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "waste"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-111",
+   "split": "test",
+   "text": "Контейнерлер толып кеткен",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "waste"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-112",
+   "split": "dev",
+   "text": "В квартире нет отопления",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-113",
+   "split": "dev",
+   "text": "Нет горячей воды и отопления",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating"
+   ],
+   "joint": false,
+   "note": "оба — теплосеть"
+  },
+  {
+   "id": "rc-114",
+   "split": "test",
+   "text": "Нет воды с утра",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-115",
+   "split": "dev",
+   "text": "Водоканал отключил воду без предупреждения",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false,
+   "note": "водоканал без раскопок"
+  },
+  {
+   "id": "rc-116",
+   "split": "test",
+   "text": "Канализация течёт в подвал",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-117",
+   "split": "test",
+   "text": "В доме нет света",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-118",
+   "split": "test",
+   "text": "Теплотрасса парит, из люка идёт пар",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating"
+   ],
+   "joint": false,
+   "note": "сети без покрытия"
+  },
+  {
+   "id": "rc-119",
+   "split": "dev",
+   "text": "Открытый люк на тротуаре",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false,
+   "note": "владелец по умолчанию"
+  },
+  {
+   "id": "rc-120",
+   "split": "test",
+   "text": "Пәтерде жылу жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-121",
+   "split": "dev",
+   "text": "Су жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-122",
+   "split": "dev",
+   "text": "Үйде жарық жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-123",
+   "split": "dev",
+   "text": "Кәріз ағып жатыр",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-124",
+   "split": "dev",
+   "text": "Не работает лифт",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-125",
+   "split": "dev",
+   "text": "В подъезде не убирают",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-126",
+   "split": "test",
+   "text": "Течёт крыша, заливает верхний этаж",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-127",
+   "split": "dev",
+   "text": "Пахнет газом в подъезде",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "gas"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-128",
+   "split": "dev",
+   "text": "Дым из подвала, что-то горит",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "emergency"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-129",
+   "split": "test",
+   "text": "Пыль от стройки, нечем дышать",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "ecology"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-130",
+   "split": "dev",
+   "text": "Воняет канализацией во дворе",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-131",
+   "split": "test",
+   "text": "Газ иісі шығып тұр",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "gas"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-132",
+   "split": "test",
+   "text": "Түтін шығып жатыр, бірдеңе жанып жатыр",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "emergency"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-133",
+   "split": "dev",
+   "text": "Шаң көп, тыныс алу қиын",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "ecology"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-134",
+   "split": "test",
+   "text": "Соседи шумят по ночам",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "police"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-135",
+   "split": "dev",
+   "text": "Шумные работы ночью на стройке",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "police"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-136",
+   "split": "test",
+   "text": "Стая бродячих собак у школы",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "animals"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-137",
+   "split": "test",
+   "text": "Опасное место: открытый колодец без крышки",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-138",
+   "split": "test",
+   "text": "Түнде шу, ұйықтай алмаймыз",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "police"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-139",
+   "split": "test",
+   "text": "Қаңғыбас иттер көп, балаларға қауіпті",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "animals"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-140",
+   "split": "test",
+   "text": "Заброшенное здание, туда лазят дети",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "police"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-141",
+   "split": "dev",
+   "text": "Машины стоят на газоне во дворе",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "parking"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-142",
+   "split": "test",
+   "text": "Паркуются на тротуаре, не пройти",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "police"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-143",
+   "split": "test",
+   "text": "Негде припарковаться у поликлиники",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "parking"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-144",
+   "split": "dev",
+   "text": "Тротуарға көлік қойып тастаған",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "police"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-145",
+   "split": "test",
+   "text": "Аулада көлік қоятын орын жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "parking"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-146",
+   "split": "dev",
+   "text": "Хочу предложить открыть библиотеку",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "akimat"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-147",
+   "split": "dev",
+   "text": "Спасибо за ремонт двора",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "akimat"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-148",
+   "split": "dev",
+   "text": "Светофор істемейді на перекрёстке",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "traffic"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-149",
+   "split": "dev",
+   "text": "Свет жоқ во всём доме",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-150",
+   "split": "test",
+   "text": "Аулада мусор не вывозят",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "waste"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-151",
+   "split": "dev",
+   "text": "Yama na doroge",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false,
+   "note": "латиница"
+  },
+  {
+   "id": "rc-152",
+   "split": "dev",
+   "text": "Ne gorit fonar vo dvore",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false,
+   "note": "латиница"
+  },
+  {
+   "id": "rc-153",
+   "split": "dev",
+   "text": "Koqys shygarylmaidy",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "waste"
+   ],
+   "joint": false,
+   "note": "казахский латиницей"
+  },
+  {
+   "id": "rc-154",
+   "split": "dev",
+   "text": "Яма после раскопок",
+   "lang": "ru",
+   "category": "roads",
+   "subtopic": "pothole",
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true,
+   "note": "форма: категория выбрана"
+  },
+  {
+   "id": "rc-155",
+   "split": "test",
+   "text": "Прорвало трубу, вода течёт на дорогу",
+   "lang": "ru",
+   "category": "utilities",
+   "subtopic": "no_water",
+   "expect": [
+    "water"
+   ],
+   "joint": false,
+   "note": "без ямы и льда — одна служба"
+  },
+  {
+   "id": "rc-156",
+   "split": "test",
+   "text": "Упал столб, нет света во дворе",
+   "lang": "ru",
+   "category": "lighting",
+   "subtopic": "lamp_off",
+   "expect": [
+    "power",
+    "lighting"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-157",
+   "split": "dev",
+   "text": "Сосульки и тротуар не чищен",
+   "lang": "ru",
+   "category": "snow_ice",
+   "subtopic": "icicles",
+   "expect": [
+    "housing",
+    "street_cleaning"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-158",
+   "split": "dev",
+   "text": "Яма на дороге",
+   "lang": "ru",
+   "category": "roads",
+   "subtopic": "pothole",
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-159",
+   "split": "dev",
+   "text": "Оборван провод",
+   "lang": "ru",
+   "category": "lighting",
+   "subtopic": "wire_down",
+   "expect": [
+    "power"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-160",
+   "split": "dev",
+   "text": "Дерево упало на провода",
+   "lang": "ru",
+   "category": "yards",
+   "subtopic": "trees_lawn",
+   "expect": [
+    "greenery",
+    "power"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-161",
+   "split": "dev",
+   "text": "Канализация затопила подвал",
+   "lang": "ru",
+   "category": "utilities",
+   "subtopic": "sewage",
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-162",
+   "split": "test",
+   "text": "",
+   "lang": "ru",
+   "category": "roads",
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false,
+   "note": "только категория"
+  },
+  {
+   "id": "rc-163",
+   "split": "dev",
+   "text": "",
+   "lang": "ru",
+   "category": "utilities",
+   "subtopic": "no_heating",
+   "expect": [
+    "heating"
+   ],
+   "joint": false,
+   "note": "только категория и уточнение"
+  },
+  {
+   "id": "rc-164",
+   "split": "dev",
+   "text": "Нет воды и света",
+   "lang": "ru",
+   "category": "other",
+   "subtopic": null,
+   "expect": [
+    "water",
+    "power"
+   ],
+   "joint": true,
+   "any_order": true
+  },
+  {
+   "id": "rc-165",
+   "split": "test",
+   "text": "Светофор не работает, в районе нет электричества",
+   "lang": "ru",
+   "category": "roads",
+   "subtopic": "traffic_light_broken",
+   "expect": [
+    "traffic",
+    "power"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-166",
+   "split": "test",
+   "text": "Раскопали тротуар и бросили",
+   "lang": "ru",
+   "category": "sidewalks",
+   "subtopic": "broken_sidewalk",
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-167",
+   "split": "test",
+   "text": "Баки переполнены",
+   "lang": "ru",
+   "category": "waste",
+   "subtopic": "bins_full",
+   "expect": [
+    "waste"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-168",
+   "split": "dev",
+   "text": "",
+   "lang": "ru",
+   "category": "noise_safety",
+   "subtopic": "stray_dogs",
+   "expect": [
+    "animals"
+   ],
+   "joint": false,
+   "note": "только категория и уточнение"
+  },
+  {
+   "id": "rc-169",
+   "split": "dev",
+   "text": "Здравствуйте! Уже третью неделю на пересечении улиц стоит раскопанная яма после того, как водоканал менял трубы. Ограждения нет, ночью не видно, вчера туда въехала машина. Просим закопать и восстановить асфальт.",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true,
+   "note": "длинный текст"
+  },
+  {
+   "id": "rc-170",
+   "split": "dev",
+   "text": "Сәлеметсіз бе! Біздің аулада жылу желісі жұмыс жасап, жерді қазып кетті. Екі апта болды, ешкім көмбейді, балалар құлап қалуы мүмкін.",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "landscaping"
+   ],
+   "joint": true,
+   "note": "длинный текст"
+  },
+  {
+   "id": "rc-171",
+   "split": "test",
+   "text": "Добрый день. У нас во дворе не горит ни один фонарь, вечером страшно выходить. Просим починить освещение.",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-172",
+   "split": "test",
+   "text": "Құрметті әкімдік! Көшеде қар үйіліп жатыр, тротуармен жүру мүмкін емес.",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "street_cleaning"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-173",
+   "split": "test",
+   "text": "Прошу разобраться: соседи сверху шумят каждую ночь до 3 часов.",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "police"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-174",
+   "split": "test",
+   "text": "Во время ремонта дороги повредили водопровод, теперь нет воды и яма",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true,
+   "any_order": true
+  },
+  {
+   "id": "rc-175",
+   "split": "dev",
+   "text": "Ветер сорвал провода, упал столб на машину",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "lighting"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-176",
+   "split": "test",
+   "text": "Водоканал обещал прийти и не пришёл, нет воды",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-177",
+   "split": "dev",
+   "text": "Ремонт дороги идёт медленно",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-178",
+   "split": "dev",
+   "text": "Ямочный ремонт сделали плохо, снова яма",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-179",
+   "split": "dev",
+   "text": "Почему в нашем районе всегда отключают свет?",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-180",
+   "split": "dev",
+   "text": "На дороге лужа после дождя, ливнёвка не работает",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-181",
+   "split": "test",
+   "text": "Траву не косят, бурьян по пояс",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-182",
+   "split": "test",
+   "text": "Из крана течёт ржавая вода",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-183",
+   "split": "test",
+   "text": "Батареи еле тёплые",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-184",
+   "split": "dev",
+   "text": "Жолды жөндеу баяу жүріп жатыр",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-185",
+   "split": "test",
+   "text": "Су құбыры ағып жатыр",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-186",
+   "split": "dev",
+   "text": "Бағана қисайып тұр, шам жанбайды",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "lighting"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-187",
+   "split": "dev",
+   "text": "Кейінгі жөндеуден соң жолда тағы шұңқыр",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "road"
+   ],
+   "joint": false
+  },
+  {
+   "id": "rc-188",
+   "split": "dev",
+   "text": "Lift ne rabotaet",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing"
+   ],
+   "joint": false,
+   "note": "латиница"
+  },
+  {
+   "id": "rc-189",
+   "split": "dev",
+   "text": "Раскопки водоканала во дворе, детская площадка в грязи",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "landscaping"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-190",
+   "split": "test",
+   "text": "Две недели назад раскопали проезд под теплотрассу и так и оставили",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-191",
+   "split": "dev",
+   "text": "Канализационный коллектор меняли, дорогу разбили",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-192",
+   "split": "test",
+   "text": "После работ по замене кабеля не восстановили газон",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "greenery"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-193",
+   "split": "test",
+   "text": "Аварийная яма водоканала без ограждения",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-194",
+   "split": "test",
+   "text": "Вода бьёт из-под земли, дорога проседает",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-195",
+   "split": "dev",
+   "text": "Улицу перекопали под газопровод, асфальт не положили",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "gas",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-196",
+   "split": "dev",
+   "text": "Пар из-под асфальта, дорога просела",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-197",
+   "split": "dev",
+   "text": "Сломали тротуар, когда меняли трубы",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-198",
+   "split": "dev",
+   "text": "Упал столб освещения на проезжую часть, провода оборваны",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "lighting"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-199",
+   "split": "dev",
+   "text": "Сумен жабдықтау қызметі жолды қазып, асфальт төсемеді",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-200",
+   "split": "test",
+   "text": "Жылу құбыры жарылып, жолда бу шығып жатыр, шұңқыр пайда болды",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-201",
+   "split": "test",
+   "text": "Ағаш құлап, электр сымын үзіп кетті",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "greenery",
+    "power"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-202",
+   "split": "test",
+   "text": "Шатырдан қар түсіріп, тротуарға тастап кетті",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing",
+    "street_cleaning"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-203",
+   "split": "dev",
+   "text": "Жылу да, ыстық су да жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "heating"
+   ],
+   "joint": false,
+   "note": "оба — теплосеть"
+  },
+  {
+   "id": "rc-204",
+   "split": "dev",
+   "text": "Суық су жоқ, жарық та жоқ",
+   "lang": "kk",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "power"
+   ],
+   "joint": true,
+   "any_order": true
+  },
+  {
+   "id": "rc-205",
+   "split": "dev",
+   "text": "Аялдамада павильон сынған, фонарь тоже не горит",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "transport",
+    "lighting"
+   ],
+   "joint": true,
+   "any_order": true
+  },
+  {
+   "id": "rc-206",
+   "split": "test",
+   "text": "Жолда яма после раскопок, көлікпен өту қиын",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "water",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-207",
+   "split": "test",
+   "text": "Кабель тартқаннан кейін тротуар разбит",
+   "lang": "mixed",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "power",
+    "road"
+   ],
+   "joint": true
+  },
+  {
+   "id": "rc-208",
+   "split": "dev",
+   "text": "Snega s kryshi navalili na trotuar",
+   "lang": "ru",
+   "category": null,
+   "subtopic": null,
+   "expect": [
+    "housing",
+    "street_cleaning"
+   ],
+   "joint": true,
+   "note": "латиница"
+  }
+ ]
+}
