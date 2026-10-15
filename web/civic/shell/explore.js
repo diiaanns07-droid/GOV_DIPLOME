@@ -273,7 +273,7 @@
       let found = [];
       try { found = landmarks.index.query(q, { lang: lang(), limit: 3 }) || []; } catch (e) { return []; }
       const districtName = (id) => { const f = features.find((x) => x.properties?.id === id); return f ? T("district.name", { name: districtLabel(f) }) : ""; };
-      return found.map((r) => ({ kind: "landmark", id: r.id, name: r.label, centre: r.point, district: r.district || null,
+      return found.map((r) => ({ kind: "landmark", id: r.id, name: r.label, names: r.names, centre: r.point, district: r.district || null,
         place: [r.type, districtName(r.district)].filter(Boolean).join(" · ") }));
     }
     const KIND_KEY = { bus_stop: "stop", yard: "yard", park: "park", pitch: "pitch", playground: "playground" };

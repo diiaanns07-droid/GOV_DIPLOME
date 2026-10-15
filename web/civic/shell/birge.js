@@ -1123,6 +1123,9 @@
       day?.querySelector("#birge-day-root")?.replaceChildren();
     }
     if (section === "map" || section === "day") destroyScreen();
+    // Одна панель за раз (ревью R11 R01-5): экран раздела закрывает окно «Мои обращения» / мастер жалобы R09 поверх
+    // карты — иначе после «Мой двор» под листом раздела остаётся лист R09.
+    if (section !== "map") { try { window.CivicShell?.closeComplaint?.(); } catch (e) { /* R09 не ломает оболочку */ } }
     if (options?.hash !== false) {
       const want = "#" + section + (state.path ? "/" + state.path : "");
       if (section !== "map" && location.hash !== want) history.pushState(null, "", location.pathname + location.search + want);

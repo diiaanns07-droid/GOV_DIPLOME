@@ -196,6 +196,16 @@ async function main() {
     check("resident «Ещё»: Сделаем вместе · Вопросы и встречи (no labels ≤ 4; «Вопрос акиму» inside «Вопросы и встречи»)",
       more.shown && JSON.stringify(more.items) === '["Сделаем вместе","Вопросы и встречи"]' && more.labels.length === 0, more);
     await page.keyboard.press("Escape");
+    // Одна панель за раз (R11 R01-5): «Мои обращения» R09 открыты, житель идёт в раздел — окно R09 закрывается.
+    await page.evaluate(() => window.CivicShell.openMine && window.CivicShell.openMine());
+    await page.waitForTimeout(500);
+    const mineBefore = await page.evaluate(() => document.documentElement.classList.contains("bc-mine-open"));
+    await page.evaluate(() => window.BirgeShell.setSection("meetings"));
+    await page.waitForTimeout(400);
+    const mineAfter = await page.evaluate(() => document.documentElement.classList.contains("bc-mine-open"));
+    check("one panel at a time: a section screen closes «Мои обращения» (R11 R01-5)", mineBefore && !mineAfter, { mineBefore, mineAfter });
+    await page.evaluate(() => window.BirgeShell.setSection("map"));
+    await page.waitForTimeout(300);
     await page.evaluate(() => { location.hash = "#nearby"; });
     await page.waitForTimeout(400);
     n = await nav(page);

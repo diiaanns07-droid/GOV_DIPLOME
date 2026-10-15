@@ -138,7 +138,7 @@
     return true;
   }
   // Один источник центров и названий ориентиров с поиском (R05, поправка П1): web/civic/build3d/data/landmarks.json.
-  // Пришёл файл — его центры, радиусы и подписи ru/kk; уточнение по POI подложки больше не нужно.
+  // Пришёл файл — его центры, радиусы и подписи ru/kk (label, иначе name); уточнение по POI подложки больше не нужно.
   function applyLandmarksFile(map) {
     if (typeof fetch !== "function") return;
     fetch("/civic/build3d/data/landmarks.json", { headers: { Accept: "application/json" } }).then((r) => (r.ok ? r.json() : null)).then((data) => {
@@ -149,8 +149,9 @@
         if (!f) continue;
         l.center = [f.lon, f.lat];
         if (Number.isFinite(f.radius_m)) l.radius = f.radius_m;
-        if (f.name?.ru) l.ru = f.name.ru;
-        if (f.name?.kk) l.kk = f.name.kk;
+        const label = f.label || f.name;  // подпись на карте («Нур Алем · ЭКСПО»), иначе название
+        if (label?.ru) l.ru = label.ru;
+        if (label?.kk) l.kk = label.kk;
         l.refined = true;
         changed = true;
       }

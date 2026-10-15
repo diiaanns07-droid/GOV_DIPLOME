@@ -642,7 +642,8 @@
         // объект в свободную часть карты, а не под них.
         // Легенда тепловой карты тоже: на телефоне она строкой под «Территорией» — призрак и табличка поставленного
         // проекта (R10 B-041) встают ниже неё, а не под неё.
-        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools, #birge-legend"),
+        // Карточка «Сегодня в Астане» (#birge-today, слева) — тоже: под ней не ставить проект и тост R05 (R05 D1.3).
+        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools, #birge-legend, #birge-today"),
         // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
         onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
         // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —
@@ -1168,7 +1169,7 @@
       // Ориентир из поиска (R05, П1): перелёт к настоящему зданию подложки — в свободную часть карты, с наклоном 3D.
       onLandmark: (lm) => {
         S.mounted.map?.selectObject?.(null);
-        showView(() => lm.name, "landmark");
+        showView(() => lm.names?.[birgeLang()] || lm.name, "landmark");
         window.BirgeLandmarks?.flyTo?.(currentMap(), lm.id, { padding: freeArea() });
       },
       onStreet: (street) => {
@@ -1337,6 +1338,11 @@
     get modules() { return S.modules ? JSON.parse(JSON.stringify(S.modules)) : null; },
     // B1: «Мои обращения» жителя (R09) — из шапки Birge.
     openMine() { S.mounted.complaint?.openMine?.(); },
+    // Раунд 15 (R11 R01-5): закрыть «Мои обращения» / мастер жалобы R09, когда открывается экран раздела.
+    closeComplaint() {
+      const open = document.documentElement.classList;  // R09 ставит html.bc-open / bc-mine-open, пока окно открыто
+      if (open.contains("bc-open") || open.contains("bc-mine-open")) S.mounted.complaint?.close?.();
+    },
     get heat() { return S.mounted.heat || null; },
     // Раунд 15: «Хроника города» R07 (7 или 30 дней); открытая — закрывает. null — хроники нет в сборке.
     openReplay,
