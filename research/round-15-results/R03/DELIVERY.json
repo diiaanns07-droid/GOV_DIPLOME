@@ -1,0 +1,187 @@
+{
+ "role": "R03",
+ "round": 15,
+ "title": "ИИ-аналитик акима «Спросить Birge»",
+ "branch": "claude/modest-mccarthy-lrl98u",
+ "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+ "restored_from": null,
+ "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
+ "code_sha": "10f90adc79b4b418194f56af7a612f088db4dea7",
+ "tested_sha": "10f90adc79b4b418194f56af7a612f088db4dea7",
+ "push_status": "OK",
+ "changed_paths": [
+  "agent/civic_assistant/analyst/__init__.py",
+  "agent/civic_assistant/analyst/blocks.py",
+  "agent/civic_assistant/analyst/core.py",
+  "agent/civic_assistant/analyst/eval_set.json",
+  "agent/civic_assistant/analyst/eval_set_holdout2.json",
+  "agent/civic_assistant/analyst/evaluate.py",
+  "agent/civic_assistant/analyst/intents.py",
+  "agent/civic_assistant/analyst/llm.py",
+  "agent/civic_assistant/analyst/sources.py",
+  "agent/civic_assistant/analyst/texts.py",
+  "agent/civic_assistant/api.py",
+  "tests/civic/R03/round15/analyst_devserver.py",
+  "tests/civic/R03/round15/analyst_screens.cjs",
+  "tests/civic/R03/round15/analyst_shell_check.cjs",
+  "tests/civic/R03/round15/r03_r15_fixtures.py",
+  "tests/civic/R03/round15/test_analyst_ask.py",
+  "tests/civic/R03/round15/test_analyst_eval_sets.py",
+  "tests/civic/R03/round15/test_analyst_intents.py",
+  "tests/civic/R03/round15/test_analyst_real_modules.py",
+  "web/civic/assistant/analyst-demo.html",
+  "web/civic/assistant/analyst.css",
+  "web/civic/assistant/analyst.js"
+ ],
+ "results_paths": [
+  "research/handoffs/astana/R03/round15/STATUS.md",
+  "research/round-15-results/R03/INTEGRATION.txt",
+  "research/round-15-results/R03/i18n_analyst.json",
+  "research/round-15-results/R03/patches/R01_assistant_ask.patch",
+  "research/round-15-results/R03/patches/R01_palette_commands.patch",
+  "research/round-15-results/R03/results/ASSISTANT_EVAL.md",
+  "research/round-15-results/R03/results/assistant_eval_eval_set_after_fix.json",
+  "research/round-15-results/R03/results/assistant_eval_heldout_run1.json",
+  "research/round-15-results/R03/results/assistant_eval_holdout2_after_fix.json",
+  "research/round-15-results/R03/results/assistant_eval_holdout2_run1.json",
+  "research/round-15-results/R03/screens/analyst_error_403_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_error_network_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_how_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_idle_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_idle_375_kk.png",
+  "research/round-15-results/R03/screens/analyst_loading_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1024_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1024_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_375_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene2_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene3_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene3_1366_ru.png",
+  "research/round-15-results/R03/screens/checks.json",
+  "research/round-15-results/R03/screens/palette_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_answer_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_answer_375_ru.png",
+  "research/round-15-results/R03/screens/shell_map_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_map_375_ru.png"
+ ],
+ "integration": {
+  "route": "POST /api/civic/v2/assistant/ask → agent.civic_assistant.api.ask (kind=function, staff=True, arguments → {'body': body})",
+  "patches": [
+   "research/round-15-results/R03/patches/R01_assistant_ask.patch (ui/web_server.py: CIVIC_ASSETS, V2_ROUTES, V2_HANDLERS, arguments; web/index.html: link + script)",
+   "research/round-15-results/R03/patches/R01_palette_commands.patch (web/civic/shell/birge-ref.js: Ctrl+K)"
+  ],
+  "screen": "window.BirgeAnalyst.mount(root, {api, apiBase, lang, openTarget, openSection, titleTag}); сам вызывает BirgeShell.registerScreen({id:'analyst', modes:['akimat']})",
+  "i18n_for_R11": "research/round-15-results/R03/i18n_analyst.json (56 ключей analyst.* ru/kk)",
+  "menu_for_R11": "«Ещё» акимата уже 4 пункта — раздел доступен по #analyst и Ctrl+K; варианты места — INTEGRATION.txt §3",
+  "verified_on": "git worktree этой ветки + patch, стенд COMMON (init, seed-demo, seed-r14-demo, create-editor), Chromium: 401/200/400, #analyst → ответ → «Показать на карте» → карточка R07 с тем же числом; Ctrl+K → вопрос"
+ },
+ "tests": {
+  "pytest_R03_round15": {
+   "status": "PASS",
+   "passed": 65,
+   "failed": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R03/round15"
+  },
+  "pytest_R03_R09_R01_related": {
+   "status": "PASS",
+   "passed": 842,
+   "skipped": 9,
+   "xfailed": 1,
+   "failed": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R03/round15 tests/civic/R09 tests/civic/R01/test_r01_round13.py tests/civic/R01/test_r01_gateway_hardening.py tests/civic/R03/round14",
+   "note": "skipped — нет torch в облаке (классификатор r14); xfail — известное ограничение словаря r14"
+  },
+  "browser_stand_checks": {
+   "status": "PASS",
+   "passed": 92,
+   "failed": 0,
+   "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_screens.cjs --url http://127.0.0.1:8670",
+   "env": "Chromium (Playwright), стенд analyst_devserver.py, 1366/1024/375 × ru/kk"
+  },
+  "browser_shell_integration": {
+   "status": "PASS",
+   "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_shell_check.cjs <out>",
+   "env": "app.py + patch R01 на копии ветки, CIVIC_DEMO=1, вход operator; 1366 и 375"
+  },
+  "eval_heldout_set1_first_run": {
+   "status": "PASS",
+   "n": 50,
+   "intent_exact_pct": 88.0,
+   "entities_pct": 96.0,
+   "facts_pct": 92.0,
+   "scenes_facts": "9/9",
+   "provocations_safe": "9/10"
+  },
+  "eval_heldout_set2_first_run": {
+   "status": "PASS",
+   "n": 30,
+   "intent_exact_pct": 90.0,
+   "entities_pct": 90.0,
+   "facts_pct": 86.7,
+   "facts_pct_oracle_fixed": 93.3
+  },
+  "eval_after_fixes": {
+   "status": "PASS",
+   "set1": {
+    "n": 50,
+    "facts_pct": 100.0
+   },
+   "set2": {
+    "n": 30,
+    "facts_pct": 100.0
+   },
+   "provocations_safe": "10/10",
+   "latency_ms": {
+    "p50": 0.4,
+    "p95_range": [
+     9.6,
+     51.2
+    ],
+    "max": 153.5,
+    "first_call_in_process": 221.0,
+    "fresh_server_first_request": 885.0,
+    "through_gateway": 117.0
+   }
+  },
+  "eval_llm_mode": {
+   "status": "NOT_RUN",
+   "reason": "в облаке нет ключа OPENAI_* и интернета; команда для ноутбука — RUN.txt §5 (LOCAL-17)"
+  },
+  "classifier_v2_human_eval": {
+   "status": "NOT_RUN",
+   "reason": "размеченных текстов людей (LOCAL-14) в облаке нет; см. RUN.txt §6"
+  }
+ },
+ "screens": [
+  "research/round-15-results/R03/screens/analyst_error_403_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_error_network_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_how_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_idle_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_idle_375_kk.png",
+  "research/round-15-results/R03/screens/analyst_loading_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1024_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1024_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_375_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene2_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene3_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene3_1366_ru.png",
+  "research/round-15-results/R03/screens/palette_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_answer_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_answer_375_ru.png",
+  "research/round-15-results/R03/screens/shell_map_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_map_375_ru.png"
+ ],
+ "known_limits": [
+  "Модулей раунда 15 R17 (штаб ведомств), R12 (конфликты работ), R16 (инициативы), R13 (встречи) в сборке ещё нет: их блоки — честное «пока нет данных»; «отстающие службы» — запасной расчёт по срокам «Картины дня», «буран» — пульс R08 с пометкой «штаб не подключён». Подхватятся сами, если функции названы как в INTEGRATION §6.",
+  "Пункта «Спросить Birge» в меню акимата нет, пока R11 не решит место («Ещё» уже 4 пункта); раздел работает по #analyst и из Ctrl+K (patch R01).",
+  "Режим с языковой моделью проверен только заглушкой (без сети): порядок блоков, вычёркивание чисел, не JSON, тайм-аут 8 с. Живой вызов — LOCAL-17.",
+  "Правила разбора вопроса — без модели: новые формулировки дают 87–93 % верных фактов с первого раза (ASSISTANT_EVAL.md); худший случай — подсказки или верные числа на соседний вопрос, выдуманных чисел нет.",
+  "Казахские фразы ответа — на проверку R11 / владельцу (i18n_analyst.json, blocks.py)."
+ ],
+ "next_step": "Каждый круг: find_branches.py — подключить функции R17/R12/R16/R13, когда появятся (sources.py), повторить оценку; LOCAL-14 eval_human.py; помощь R01 при сборке B1 (16 окт 09:00 UTC)."
+}

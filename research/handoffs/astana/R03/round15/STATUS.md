@@ -29,10 +29,16 @@
 - 11:45 UTC checkpoint 2 (5126861f): тесты tests/civic/R03/round15 — 62 passed (без сети, заглушка модели, сверка с R07/R08).
 - 11:55 UTC checkpoint 3 (6c7777e2): экран web/civic/assistant/analyst.js/.css + стенд; браузер 1366/1024/375 × ru/kk —
   92 PASS, 0 FAIL (кадры research/round-15-results/R03/screens/).
-- ~12:20 UTC checkpoint 4: проверено ПОДКЛЮЧЕНИЕ в настоящей оболочке (копия ветки + мои patch для R01):
+- 12:01 UTC checkpoint 4 (8a715e8a): проверено ПОДКЛЮЧЕНИЕ в настоящей оболочке (копия ветки + мои patch для R01):
   401 без входа, 200 сотрудник 117 мс, 400 пустой вопрос, /modules ready; #analyst → ответ → «Показать на карте» →
   карточка R07 «Участок ул. Е-308 · 8 человек» (то же 8, что в ответе); Ctrl+K → вопрос → ответ.
   INTEGRATION.txt (patch R01: CIVIC_ASSETS, маршрут, arguments, index.html; patch палитры), i18n_analyst.json (56 ключей).
+
+- 12:09 UTC checkpoint 5 (10f90adc = code_sha поставки): оценка для диплома — results/ASSISTANT_EVAL.md.
+  Отложенные прогоны: набор 1 (50) — факты 92 %, сцены 9/9, провокации 9/10; набор 2 (30, записан после правок 1) —
+  факты 86,7 % (93,3 % без бага оракула). После общих правок — 100 % на обоих, провокации 10/10. Задержка p95 ≤ 51 мс.
+  Тесты: R03 round15 65 passed; вместе с R09/R01/R03 r14 — 842 passed, 9 skipped (нет torch), 1 xfailed.
+- 12:12 UTC: DELIVERY.json (code_sha 10f90adc), RUN.txt — поставка готова к B1.
 
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,
@@ -41,8 +47,6 @@
   строка для ключа assistant.ask (patch — в INTEGRATION.txt). ask принимает и question/lang, и body.
 
 ## Следующий шаг
-- Оценка: 50 вопросов ru/kk/вперемешку + 10 провокаций → results/ASSISTANT_EVAL.md (agent/civic_assistant/analyst/eval).
-- RUN.txt, DELIVERY.json (code_sha) к сборке B1 (16 окт 14:00 Астаны = 09:00 UTC).
 - Каждый круг: find_branches.py — появились ли R17/R12/R16/R13; подключить их функции (имена в sources.py).
 - eval_human.py для LOCAL-14 (или NOT_RUN с причиной).
 
