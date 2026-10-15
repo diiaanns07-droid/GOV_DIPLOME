@@ -342,8 +342,7 @@ body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root:not(:has(.b3
 .birge-legend-line { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 4px 0 14px;
   border-radius: 999px; background: var(--c-surface, #fff); box-shadow: var(--shadow-1, 0 2px 10px #15362818);
   color: var(--c-text-2, #5b6a64); font-size: 13px; white-space: nowrap; }
-.birge-legend-line .bk-legend__scale { flex: none; width: 72px; height: 8px; border-radius: 4px;
-  background: linear-gradient(90deg, var(--heat-1, #f9cb80), var(--heat-2, #ef9f27), var(--heat-3, #e24b4a), var(--heat-4, #a32d2d)); }
+/* Шкала — ступени ui-kit R11 (.bk-legend__scale: четыре плашки 14 × 8, как в эталоне A), без своего градиента (П1 п. 4). */
 .birge-legend-line .bk-legend__fixed { display: inline-flex; align-items: center; gap: 4px; color: var(--c-ink, #152c26); }
 .birge-legend[data-open="false"] .birge-legend-host { display: none; }
 .birge-legend[data-open="true"] .birge-legend-host { position: absolute; left: 0; bottom: calc(100% + 8px); width: max-content; max-width: min(420px, calc(100vw - 32px)); }
@@ -359,6 +358,8 @@ body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root:not(:has(.b3
 .birge-legend-line .birge-replay-chip .ic { width: 16px; height: 16px; fill: currentColor; }  /* ▶ залитый, как у R11 .bk-replay__play */
 .birge-legend-line .birge-replay-chip:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
 body.birge-replay-open #birge-legend, body.birge-replay-open .bc-fab { display: none !important; }
+/* Служебная плашка карты (запасной фон без интернета) стоит внизу по центру — на время хроники её нет, полоса видна целиком. */
+body.birge-replay-open #map-status { display: none !important; }
 @media (min-width: 761px) {
   /* Сообщения R07 («Взято в работу», «Отмечено исправленным») — над легендой и кнопкой «Сообщить о проблеме», не на них. */
   .civic-mode .r07-toasts { bottom: 96px; }
@@ -527,7 +528,11 @@ body[data-civic-sheet="full"].civic-mode .civic-explore #map-status { display: n
    место»; капсула масштаба целая [+ | −] (раунд 13 прятал «−» на телефоне; убрать ли +/− совсем — вопрос владельцу 5). */
 @media (max-width: 760px) {
   .civic-mode .birge-legend-line { max-width: 100%; box-sizing: border-box; gap: 6px; padding-left: 10px; }
-  .civic-mode .birge-legend-line .bk-legend__scale { width: 40px; }
+  /* Телефон: строка между краем и кнопками карты (~300 px) — «мало / много» остаются только для экранного диктора, без «·»;
+     видно «▬▬▬▬ ✓ исправлено ? ▶» (ступени слева направо — от мало к много, «?» объясняет). */
+  .civic-mode .birge-legend-line :is(.birge-legend-few, .birge-legend-many) { position: absolute; width: 1px; height: 1px;
+    margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .civic-mode .birge-legend-line > span[aria-hidden="true"] { display: none; }
   .civic-mode .birge-legend-line .birge-replay-chip { width: 40px; padding: 0; justify-content: center; }
   .civic-mode .birge-legend-line .birge-replay-chip__text { display: none; }
   .civic-mode .map-tools .bk-mapctl__group > #zoom-out { display: grid; }

@@ -391,7 +391,10 @@
     const has = (id, m) => typeof B.available === "function" && B.available(id, m);
     if (n === 7 && sc.yard) {
       B.setMode("resident");
-      if (has("yard", "resident")) B.setSection("yard", { path: sc.yard });
+      const T = window.BirgeTogether;
+      // R16 (INTEGRATION §1): двор открывает сам модуль — BirgeTogether.open("yard", id) (по пути раздела или после монтажа).
+      if (T && typeof T.open === "function" && has("yard", "resident")) T.open("yard", sc.yard);
+      else if (has("yard", "resident")) B.setSection("yard", { path: sc.yard });
       else { B.setSection("map"); location.hash = "#target=area:" + encodeURIComponent(sc.yard); }
     } else if (n === 8 && sc.complaint) {
       B.setMode("akimat");
@@ -399,9 +402,9 @@
     } else if (n === 9 && sc.incident) {
       B.setMode("akimat");
       const A = window.BirgeAgencies;
-      // R17 (INTEGRATION §1 ж): кризис открывает сам штаб — openCrisis({incident}); адрес — #agencies/crisis=<id>.
+      // R17 (INTEGRATION §1 ж, §2): кризис открывает сам штаб — openCrisis({incident}); адрес — #agencies/crisis/<id>.
       if (A && typeof A.openCrisis === "function") A.openCrisis({ incident: sc.incident });
-      else if (has("agencies", "akimat")) B.setSection("agencies", { path: "crisis=" + sc.incident });
+      else if (has("agencies", "akimat")) B.setSection("agencies", { path: "crisis/" + sc.incident });
       else if (has("crisis", "akimat")) B.setSection("crisis", { path: sc.incident });
       else B.setSection("day");
     }

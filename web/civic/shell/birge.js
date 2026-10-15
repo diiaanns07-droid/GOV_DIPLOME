@@ -124,7 +124,7 @@
   // ------------------------------------------------------------------ состояние
   const state = { mode: null, section: "map", path: "", dayHandle: null, screenHandle: null, extra: [], layers: [], layer: null };
   // Внутренний путь раздела (IA_ROUND15 §7.3): #<раздел>/<путь> — #yard/yard-123, #together/i-7, #agencies/calendar,
-  // глубокие ссылки R17 #agencies/crisis=<id>&district=nura. Путь — id записей, вкладок и простые параметры (латиница,
+  // #agencies/crisis/inc-w15-buran (R17). Путь — id записей, вкладок и простые параметры (латиница,
   // цифры, «-_.:/=&,%»), до 120 знаков; иначе — без пути.
   const PATH_RE = /^[A-Za-z0-9][A-Za-z0-9_.:\/=&,%-]{0,119}$/;
   const cleanPath = (path) => (typeof path === "string" && PATH_RE.test(path) ? path : "");

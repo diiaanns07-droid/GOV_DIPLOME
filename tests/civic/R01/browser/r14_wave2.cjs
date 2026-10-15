@@ -62,7 +62,9 @@ async function newPage(ctx) {
 }
 const MISSING_KEYS = new Set();
 // Меню по схеме R11 IA_WAVE2 §1; в сборке видны только разделы с модулем роли (BirgeShell.navItems).
-const IA = { akimat: ["map", "day", "inbox", "projects", "more"], resident: ["map", "mine", "nearby", "ideas", "more"] };
+// Порядок пунктов: IA_ROUND15 R11 с запасными местами FINAL-4 — слот 4 акимата «Ведомства» (R17) или «Проекты и идеи»,
+// слот 3 жителя «Мой двор» (R16) или «Рядом».
+const IA = { akimat: ["map", "day", "inbox", "agencies", "projects", "more"], resident: ["map", "mine", "yard", "nearby", "ideas", "more"] };
 const inOrder = (ids, mode) => { let i = 0; for (const id of ids) { i = IA[mode].indexOf(id, i); if (i < 0) return false; i++; } return true; };
 const menuOk = async (page, n, mode, must) => {
   const expected = await page.evaluate((m) => window.BirgeShell.navItems(m), mode);
@@ -107,9 +109,12 @@ async function main() {
       await menuOk(page, n, "akimat", ["map", "day"]), n);
     const layers0 = await page.evaluate(() => ({ active: window.BirgeShell.layer,
       options: [...document.querySelectorAll("#birge-layer-list input")].map((i) => i.value) }));
-    // Пункты слоёв — от модулей: «Проекты» (R05), «Идеи жителей» (R06 волна 2, только с R05 ≥ 395d9ea). По умолчанию — ни одного.
-    check("default map: one «слои» button with «Проекты» (R05) (+ «Идеи жителей» R06), no extra layer on — map shows complaints and city works only",
-      n.layerBtn && layers0.active === null && ['["","projects"]', '["","projects","ideas"]'].includes(JSON.stringify(layers0.options)), { n, layers0 });
+    // Пункты слоёв — от модулей: «Проекты» (R05), «Идеи жителей» (R06), раунд 15 — «Кризис» (R17), «Конфликты работ» (R12),
+    // «Инициативы» (R16). По умолчанию — ни одного (IA_ROUND15 §6: один дополнительный слой, выключен).
+    const KNOWN_LAYERS = ["", "projects", "ideas", "crisis", "works-conflicts", "initiatives"];
+    check("default map: one «слои» button with «Проекты» (R05) and only known module layers, no extra layer on — map shows complaints and city works only",
+      n.layerBtn && layers0.active === null && layers0.options[0] === "" && layers0.options.includes("projects")
+      && layers0.options.every((id) => KNOWN_LAYERS.includes(id)), { n, layers0 });
     // Маркеры MapLibre (элемент из new Marker({element})): без transition на transform/left/top — значок не отстаёт.
     await page.waitForFunction(() => window.CivicShell?.heat?.state?.().status === "ready"
       && [...document.querySelectorAll(".maplibregl-marker")].some((e) => e.getBoundingClientRect().width > 0), null, { timeout: 20000 }).catch(() => null);
@@ -335,9 +340,13 @@ async function main() {
     } }));
     await page.waitForTimeout(200);
     n = await nav(page);
-    check("registerScreen(nearby): «Рядом» appears in the resident menu only when the module is there", registered
-      && await menuOk(page, n, "resident", ["map", "mine", "nearby"]) && n.labels[n.ids.indexOf("nearby")] === "Рядом", n);
-    await page.click("#birge-header [data-section=nearby]");
+    // С «Мой двор» (R16) в сборке «Рядом» — его вкладка без своего пункта (IA_ROUND15 §2, PARENT); без R16 — пункт FINAL-4.
+    const yardSlot = n.ids.includes("yard");
+    check("registerScreen(nearby): «Рядом» appears in the resident menu only when the module is there (with «Мой двор» R16 — under it)",
+      registered && (yardSlot ? await menuOk(page, n, "resident", ["map", "mine", "yard"]) && !n.ids.includes("nearby")
+        : await menuOk(page, n, "resident", ["map", "mine", "nearby"]) && n.labels[n.ids.indexOf("nearby")] === "Рядом"), { n, yardSlot });
+    if (yardSlot) await page.evaluate(() => window.BirgeShell.setSection("nearby"));
+    else await page.click("#birge-header [data-section=nearby]");
     await page.waitForTimeout(300);
     const mounted = await page.evaluate(() => ({ w2: window.__w2, html: document.getElementById("birge-screen-root").innerText }));
     check("module mounted with api.v2, lang, role, section, openTarget, close", mounted.w2?.mounted && mounted.w2.api && mounted.w2.lang === "ru"

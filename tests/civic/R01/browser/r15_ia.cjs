@@ -7,7 +7,10 @@
 //   - Esc on a screen → map; Esc that closes «Ещё» stays on the screen;
 //   - empty state: one small icon (≤ 48 px), text and one button (amendment P1), no large illustration;
 //   - demo world (CIVIC_DEMO_WORLD=1): Ctrl+K «Сцена 7 / 8 / 9» open the yard / complaint / crisis by world ids;
-//   - ?show=1: no service plates, larger text at 1024, scenes first in Ctrl+K.
+//   - ?show=1: no service plates, larger text at 1024, scenes first in Ctrl+K;
+//   - B0.2: «▶ Хроника» R07 at the end of the legend line (IA R11 §5.8, §7.8): the bar opens, the legend hides, nothing
+//     on the left, Esc closes; phone — icon-only chip, the bar instead of the sheet; scene 7 with and without R16.
+// The stand runs the real demo world of R02 (data/civic/astana/demo-world/world_v1.json) when it is in the build.
 // Usage: node tests/civic/R01/browser/r15_ia.cjs <out_dir>
 "use strict";
 const { chromium } = require("playwright");
@@ -28,11 +31,13 @@ const WORLD = { schema: "birge-demo-world-v1", schema_version: "1.0", synthetic:
   scenes: { scene7: { yard: "yard-1454082640", initiative: "i-w15-01" }, scene8: { complaint: "c-w1500010" },
             scene9: { incident: "inc-w15-buran", district: "nura" } } };
 
+const REAL_WORLD = path.join(REPO, "data/civic/astana/demo-world/world_v1.json");
 async function startServer(port, dir) {
   const db = path.join(dir, "civic.sqlite3"), world = path.join(dir, "world.json");
   fs.writeFileSync(world, JSON.stringify(WORLD));
-  const env = { ...process.env, CIVIC_DB_PATH: db, CIVIC_DEMO: "1", CIVIC_DEMO_WORLD: "1", CIVIC_DEMO_WORLD_PATH: world,
-    PYTHONDONTWRITEBYTECODE: "1" };
+  // Настоящий мир R02 (карта, «Хроника», «Мой двор» с данными); без него — только блок scenes.
+  const env = { ...process.env, CIVIC_DB_PATH: db, CIVIC_DEMO: "1", CIVIC_DEMO_WORLD: "1", PYTHONDONTWRITEBYTECODE: "1" };
+  if (!fs.existsSync(REAL_WORLD)) env.CIVIC_DEMO_WORLD_PATH = world;
   const run = (args) => execSync(`python3 -B -m ui.civic_store --db "${db}" ${args}`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
   run("init");
   run("seed-demo --package data/civic/astana/demo_synthetic.json");
@@ -43,9 +48,11 @@ async function startServer(port, dir) {
 }
 const ready = (page) => page.waitForFunction(() => window.CivicShell?.mode === "civic" && window.BirgeShell && typeof mapReady !== "undefined" && mapReady
   && document.querySelector("#birge-header"), null, { timeout: 40000 }).then(() => page.waitForTimeout(800));
-async function open(browser, url, w, h, mode) {
+async function open(browser, url, w, h, mode, block) {
   const mobile = w < 761;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile });
+  // block: скрипты модулей, которых «нет в сборке» (проверка запасных ходов оболочки при полной сборке).
+  for (const pattern of block || []) await ctx.route(pattern, (route) => route.abort());
   await ctx.addInitScript((m) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", "ru"); } catch (e) { /* без хранилища */ } }, mode);
   const page = await ctx.newPage();
   page.errs = [];
@@ -94,9 +101,11 @@ async function main() {
     await page.click("#birge-header .birge-nav [data-section=more]");
     await page.waitForTimeout(250);
     let more = await moreMenu(page);
-    check("akimat «Ещё»: two labelled groups — С жителями (Проекты и идеи · Сделаем вместе · Вопросы и встречи), Инструменты (Спросить Birge · QR-таблички); ≤ 7; works/services under «Ведомства»",
-      more.shown && JSON.stringify(more.labels) === '["С жителями","Инструменты"]'
-      && JSON.stringify(more.items) === '["Проекты и идеи","Сделаем вместе","Вопросы и встречи","Спросить Birge","QR-таблички"]', more);
+    const board = await page.evaluate(() => window.BirgeShell.sections().includes("board"));
+    const tools = ["Спросить Birge", ...(board ? ["Ситуационный центр"] : []), "QR-таблички"];
+    check("akimat «Ещё»: two labelled groups — С жителями (Проекты и идеи · Сделаем вместе · Вопросы и встречи), Инструменты (Спросить Birge · Ситуационный центр R08 · QR-таблички); ≤ 7; works/services under «Ведомства»",
+      more.shown && JSON.stringify(more.labels) === '["С жителями","Инструменты"]' && more.items.length <= 7
+      && JSON.stringify(more.items) === JSON.stringify(["Проекты и идеи", "Сделаем вместе", "Вопросы и встречи", ...tools]), more);
     check("«Ещё» opens under its button, right edge not past the capsule (VISUAL_BRIEF §3)",
       !!more.box && more.box.top >= more.button.bottom && more.box.top <= more.button.bottom + 16
       && more.box.right <= more.button.right + 6 && more.box.left <= more.button.left, { box: more.box, button: more.button });
@@ -128,9 +137,9 @@ async function main() {
     await page.keyboard.press("Enter");
     await page.waitForTimeout(400);
     n = await nav(page);
-    check("Сцена 9: «Ведомства» #agencies/crisis=inc-w15-buran (адрес R17; screen title «Штаб ведомств»)", n.section === "agencies"
-      && n.hash === "#agencies/crisis=inc-w15-buran" && JSON.stringify(n.pressed) === '["agencies"]'
-      && await page.evaluate(() => document.getElementById("birge-screen-title").textContent === "Штаб ведомств"), n);
+    const screenTitle = await page.evaluate(() => document.getElementById("birge-screen-title")?.textContent);
+    check("Сцена 9: «Ведомства» #agencies/crisis/inc-w15-buran (путь R17; заголовок экрана «Штаб ведомств»)", n.section === "agencies"
+      && n.hash === "#agencies/crisis/inc-w15-buran" && JSON.stringify(n.pressed) === '["agencies"]' && screenTitle === "Штаб ведомств", { n, screenTitle });
     // «Ещё» opened on a screen and closed by Esc: the screen stays
     await page.click("#birge-header .birge-nav [data-section=more]");
     await page.waitForTimeout(200);
@@ -139,7 +148,14 @@ async function main() {
     n = await nav(page);
     more = await moreMenu(page);
     check("Esc that closes «Ещё» keeps the screen (no jump to the map)", !more.shown && n.section === "agencies", { n, more: more.shown });
-    // Empty state (module not in the build): small icon + text + one button, no large illustration (amendment P1)
+    await page.screenshot({ path: path.join(OUT, "ia_1366_scene9.png") });
+    check("no page errors (akimat)", page.errs.length === 0, page.errs);
+    await ctx.close();
+
+    // Empty state (module not in the build — R03 script blocked here): small icon + text + one button (amendment P1)
+    ({ ctx, page } = await open(browser, base + "?screens=all", 1366, 768, "akimat", ["**/civic/assistant/analyst.js"]));
+    await page.evaluate(() => window.BirgeShell.setSection("analyst"));
+    await page.waitForTimeout(400);
     const empty = await page.evaluate(() => {
       const box = document.querySelector("#birge-screen .birge-day-empty");
       const ic = box?.querySelector(".birge-state-ic"), r = ic?.getBoundingClientRect();
@@ -148,12 +164,13 @@ async function main() {
     });
     check("empty state: one small icon ≤ 48 px, text and one button; no large illustration (P1 rule 2)",
       empty.box && !!empty.icon && empty.icon[0] <= 48 && empty.icon[1] <= 48 && !empty.ill && empty.buttons === 1, empty);
-    await page.screenshot({ path: path.join(OUT, "ia_1366_scene9_soon.png") });
-    check("no page errors (akimat)", page.errs.length === 0, page.errs);
+    await page.screenshot({ path: path.join(OUT, "ia_1366_empty_p1.png") });
+    check("no page errors (empty state)", page.errs.length === 0, page.errs);
     await ctx.close();
 
     // ------------------------------------------------------------ resident: «Мой двор», parent highlight, path routing
-    ({ ctx, page } = await open(browser, base + "?screens=all", 1366, 768, "resident"));
+    // Контракт оболочки на модуле-заглушке: скрипт R16 здесь не грузится (его ссылки #yard/… ведёт он сам).
+    ({ ctx, page } = await open(browser, base + "?screens=all", 1366, 768, "resident", ["**/civic/together/together.js"]));
     n = await nav(page);
     check("resident menu: Карта · Мои обращения · Мой двор · Идеи · Ещё (IA_ROUND15 §2)",
       JSON.stringify(n.ids) === '["map","mine","yard","ideas","more"]'
@@ -212,11 +229,16 @@ async function main() {
     await page.keyboard.press("Enter");
     await page.waitForTimeout(500);
     n = await nav(page);
-    check("Сцена 7: resident view, «Мой двор» #yard/yard-1454082640", n.mode === "resident" && n.section === "yard" && n.hash === "#yard/yard-1454082640", n);
+    const r16 = await page.evaluate(() => !!window.BirgeTogether);
+    // R16 в сборке: экран «Мой двор» двора сцены (название двора из мира); R16 e475fae9 сам переписывает адрес на #yard.
+    await page.waitForFunction(() => /BI City Tokyo/.test(document.getElementById("birge-screen")?.innerText || ""), null, { timeout: 5000 }).catch(() => null);
+    const yardText = await page.evaluate(() => (document.getElementById("birge-screen")?.innerText || "").slice(0, 160));
+    check("Сцена 7: resident view, «Мой двор» of yard-1454082640 (R16: «Двор: BI City Tokyo»)", n.mode === "resident" && n.section === "yard"
+      && (r16 ? /^#yard(\/yard-1454082640)?$/.test(n.hash) && /BI City Tokyo/.test(yardText) : n.hash === "#yard/yard-1454082640"), { n, r16, yardText });
     await page.screenshot({ path: path.join(OUT, "ia_1024_show_scene7.png") });
+    await ctx.close();
     // Without the R16 module the scene does not open an empty screen: the yard is shown on the map (#target=area:…).
-    await page.goto(base + "?show=1");
-    await ready(page);
+    ({ ctx, page } = await open(browser, base + "?show=1", 1024, 768, "akimat", ["**/civic/together/together.js"]));
     await palette(page);
     await page.fill(".birge-palette__input", "Сцена 7");
     await page.waitForTimeout(150);
@@ -230,6 +252,64 @@ async function main() {
     check("?show=0 turns the show mode off", await page.evaluate(() => !document.documentElement.dataset.birgeShow), null);
     check("no page errors (show mode)", page.errs.length === 0, page.errs);
     await ctx.close();
+
+    // ------------------------------------------------------------ «▶ Хроника» R07 (IA R11 §5.8, §7.8)
+    ({ ctx, page } = await open(browser, base, 1366, 768, "akimat"));
+    const hasReplay = await page.evaluate(() => !!window.BirgeReplay);
+    if (hasReplay) {
+      await page.waitForFunction(() => { const c = document.querySelector("#birge-legend .birge-replay-chip"); return c && c.getClientRects().length; }, null, { timeout: 15000 }).catch(() => null);
+      const chip = await page.evaluate(() => {
+        const line = document.querySelector("#birge-legend .birge-legend-line"), c = line?.querySelector(".birge-replay-chip");
+        const r = c?.getBoundingClientRect();
+        return { chip: !!c, last: !!c && line.lastElementChild === c, text: c?.innerText.trim(), label: c?.getAttribute("aria-label"),
+          icon: !!c?.querySelector("use[href$='#i-play']"), h: r ? Math.round(r.height) : 0 };
+      });
+      check("«▶ Хроника»: chip at the end of the legend line, i-play icon, «Хроника» / «Хроника города»", chip.chip && chip.last
+        && chip.text === "Хроника" && chip.label === "Хроника города" && chip.icon && chip.h >= 34, chip);
+      await page.click("#birge-legend .birge-replay-chip");
+      await page.waitForFunction(() => document.body.classList.contains("birge-replay-open") && document.querySelector(".rp-host .rp-bar"), null, { timeout: 8000 }).catch(() => null);
+      await page.waitForTimeout(600);
+      const opened = await page.evaluate(() => {
+        const vis = (e) => !!e && e.getClientRects().length > 0 && getComputedStyle(e).display !== "none" && getComputedStyle(e).visibility !== "hidden";
+        const bar = document.querySelector(".rp-host .rp-bar")?.getBoundingClientRect();
+        return { open: document.body.classList.contains("birge-replay-open"), bar: bar ? [Math.round(bar.left), Math.round(bar.bottom), Math.round(bar.width)] : null,
+          legend: vis(document.getElementById("birge-legend")), left: document.body.dataset.birgeLeft,
+          panel: vis(document.querySelector(".civic-panel")), today: vis(document.getElementById("birge-today")), layer: window.BirgeShell.layer,
+          status: document.querySelector(".rp-host .rp")?.dataset.status };
+      });
+      check("click: the chronicle bar at the bottom, legend hidden, nothing on the left, no extra layer", opened.open && !!opened.bar
+        && opened.bar[1] <= 768 && !opened.legend && opened.left === "replay" && !opened.panel && !opened.today && !opened.layer, opened);
+      await page.screenshot({ path: path.join(OUT, "replay_1366_akimat.png") });
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(700);
+      const closed = await page.evaluate(() => ({ open: document.body.classList.contains("birge-replay-open"), host: !!document.querySelector(".rp-host"),
+        legend: !!document.getElementById("birge-legend")?.getClientRects().length, section: document.body.dataset.birgeSection }));
+      check("Esc closes the chronicle: legend back, still on the map", !closed.open && !closed.host && closed.legend && closed.section === "map", closed);
+      check("no page errors (chronicle, 1366)", page.errs.length === 0, page.errs);
+      await ctx.close();
+      ({ ctx, page } = await open(browser, base, 375, 812, "resident"));
+      await page.waitForFunction(() => { const c = document.querySelector("#birge-legend .birge-replay-chip"); return c && c.getClientRects().length; }, null, { timeout: 15000 }).catch(() => null);
+      const phoneChip = await page.evaluate(() => { const c = document.querySelector("#birge-legend .birge-replay-chip"), r = c?.getBoundingClientRect();
+        return r ? { w: Math.round(r.width), right: Math.round(r.right), text: getComputedStyle(c.querySelector(".birge-replay-chip__text")).display } : null; });
+      check("phone: icon-only chip (40 px) inside the screen", !!phoneChip && phoneChip.w <= 44 && phoneChip.right <= 375 - 8 && phoneChip.text === "none", phoneChip);
+      await page.click("#birge-legend .birge-replay-chip");
+      await page.waitForFunction(() => document.querySelector(".rp-host .rp-bar"), null, { timeout: 8000 }).catch(() => null);
+      await page.waitForTimeout(600);
+      const phoneOpen = await page.evaluate(() => {
+        const vis = (e) => !!e && e.getClientRects().length > 0 && getComputedStyle(e).display !== "none";
+        const bar = document.querySelector(".rp-host .rp-bar")?.getBoundingClientRect();
+        return { bar: bar ? [Math.round(bar.left), Math.round(bar.right), Math.round(bar.bottom)] : null, near: vis(document.getElementById("birge-near")),
+          panel: vis(document.querySelector(".civic-panel")), fab: vis(document.querySelector(".bc-fab")) };
+      });
+      check("phone: the bar instead of the sheet — no «Рядом с вами», no list sheet, no report button over it", !!phoneOpen.bar
+        && phoneOpen.bar[0] >= 0 && phoneOpen.bar[1] <= 375 && phoneOpen.bar[2] <= 812 && !phoneOpen.near && !phoneOpen.panel && !phoneOpen.fab, phoneOpen);
+      await page.screenshot({ path: path.join(OUT, "replay_375_resident.png") });
+      check("no page errors (chronicle, phone)", page.errs.length === 0, page.errs);
+      await ctx.close();
+    } else {
+      console.log("NOT_RUN chronicle checks (R07 replay.js is not in the build)");
+      await ctx.close();
+    }
 
     // ------------------------------------------------------------ phone: alert slot under the search field
     ({ ctx, page } = await open(browser, base, 375, 812, "resident"));
