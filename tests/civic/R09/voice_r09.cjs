@@ -85,7 +85,9 @@ async function variant(browser, base, width, height, lang, mode) {
   const tag = `${width}-${lang}-${mode}`;
   const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: width < 1024 });
   await ctx.addInitScript(([l]) => { try { localStorage.setItem("birge.mode", "resident"); localStorage.setItem("birge.lang", l); } catch (e) {} }, [lang]);
-  const phrase = lang === "kk" ? "аялдамада жарық жоқ" : "на остановке не горит фонарь";
+  // Фраза, в которой классификатор R04 уверен (suggest): «аялдамада жарық жоқ» — score 0.5, сетка категорий вместо
+  // подсказки (так и задумано у R04), это не про голос.
+  const phrase = lang === "kk" ? "көшеде шам жанбайды" : "на остановке не горит фонарь";
   if (mode !== "none") await ctx.addInitScript(FAKE, [mode, phrase]);
   const page = await ctx.newPage();
   const errors = [];
