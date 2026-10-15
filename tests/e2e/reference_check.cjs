@@ -310,7 +310,7 @@ const BAD = new Set(["расходится", "НЕТ В СБОРКЕ", "лишн
   const BEFORE = args.before ? path.resolve(String(args.before)) : null;
   const was = BEFORE && fs.existsSync(path.join(BEFORE, "REFERENCE.json")) ? JSON.parse(fs.readFileSync(path.join(BEFORE, "REFERENCE.json"), "utf8")) : null;
   const browser = await chromium.launch();
-  const server = await L.startServer(ROOT);
+  const server = await L.startServer(ROOT, { world: !!args.world });  // --world — раунд 15: демо-мир R02
   const report = {};
   try {
     const R = await refShots(browser), B = await buildShots(browser, server);

@@ -3,6 +3,7 @@
 //   node tests/e2e/demo_flow.cjs --root <папка сборки> --out <папка отчёта>
 //        [--sizes 1366x768,375x812] [--langs ru,kk] [--url http://127.0.0.1:8611/ --user U --pass P]
 //        [--stop "lon,lat,osm-node-…,Имя"] [--inject-css <файл>  — проверка предлагаемой правки CSS, не приёмка]
+//        [--world — раунд 15: сервер с CIVIC_DEMO_WORLD=1]
 //
 // Без --url тест сам поднимает сервер сборки (python3 app.py) на свободном порту с ВРЕМЕННОЙ базой:
 // init → seed-demo (синтетика R02) → seed-r14-demo (если есть у R06) → сотрудник «r10-operator».
@@ -81,7 +82,9 @@ async function startServer() {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r10-e2e-"));
   const db = path.join(tmp, "civic.sqlite3");
   // CIVIC_DEMO=1 — как run-city.bat на демо (синтетический набор R07 на карте); --no-demo — без него.
-  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1", CIVIC_DEMO: args["no-demo"] ? "" : "1" };
+  // --world — раунд 15: CIVIC_DEMO_WORLD=1 (единый демо-мир R02, CONTRACT §11); шаг 2 «Хан Шатыр» в мире тот же (3 → 4).
+  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1", CIVIC_DEMO: args["no-demo"] ? "" : "1",
+    CIVIC_DEMO_WORLD: args.world && !args["no-demo"] ? "1" : "" };
   const cli = (argv, input) => execFileSync(PY, ["-B", "-m", "ui.civic_store", "--db", db, ...argv],
     { cwd: ROOT, env, input, stdio: [input ? "pipe" : "ignore", "pipe", "pipe"] }).toString();
   cli(["init"]);
@@ -961,7 +964,7 @@ async function networkErrors(browser, base, [w, h], lang) {
     t.prev = r.ms;
   }
   for (const t of Object.values(timing)) { t.total_ms = t.prev - t.start_ms; delete t.prev; }
-  const meta = { ...(GLASS ? { glass: GLASS, glass_seen: glassLog } : {}), root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
+  const meta = { ...(GLASS ? { glass: GLASS, glass_seen: glassLog } : {}), world: !!args.world, root: ROOT, sha, base: args.url || "(свой сервер)", seeds, sizes: SIZES.map((s) => s.join("x")), langs: LANGS,
     when: new Date().toISOString(), node: process.version, total_ms: Date.now() - T0, ...(INJECT_CSS ? { inject_css: String(args["inject-css"]) } : {}) };
   if (AUDIT) meta.audit = { font_min_px: 13, tap_min_px: 44, shots: Object.values(audit).reduce((n, a) => n + Object.keys(a).length, 0), excluded_ms: auditMs };
   fs.writeFileSync(path.join(OUT, "RESULT.json"), JSON.stringify({ meta, counts, timing, results, ...(AUDIT ? { audit } : {}) }, null, 1));
