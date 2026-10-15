@@ -42,11 +42,17 @@
   (список вместо строки -> 500), S44 R03 низкий (просьба выдумать/показать телефоны уходит модели). Высоких — 0.
 - research/round-15-results/R15/: INTEGRATION.txt, patches/P-R01-S42, P-R17-S43, P-R03-S44, RUN.txt, DELIVERY.json.
 
+## Checkpoint 3 (15 окт 17:05 Астана)
+- test_r15_round15_together.py (R16 @ aef7b79f): 28 passed + 8 xfailed. Новые находки с patch P-R16-S45-S47.diff
+  (проверен: tests/civic/R16 40 passed, тесты R15 -> XPASS): S47 средний (bring без модерации), S46 средний (запасной
+  фильтр: ИИН с пробелами, мобильный без +7/8), S45 низкий (точка 6 знаков публично; рекомендация 4).
+- Итого открыто: S42 (R01, ср.), S43 (R17, низ.), S44 (R03, низ.), S45 (R16, низ.), S46 (R16/R04, ср.), S47 (R16, ср.).
+  Высоких — 0.
+
 ## Следующий шаг
-- Тесты R16 (together), R09 (передачи), R06 (лента), R04 (moderate), R02 (демо-мир), CSP новых страниц — по коду
-  веток, как только появятся (в 16:55 у R16, R06, R12, R08, R01, R02 — только STATUS; у R04 — набор фраз).
-- Браузерная проба tests/civic/R15/browser/r15_round15.cjs (HTML-нагрузка в новых экранах) — к B1.
-- Круг ревью 2 — ~19:00: свежие головы R16 R17 R09 R13 R06 R03 R04 R12 R08 (find_branches.py).
+- R04 moderate/route (gifted-maxwell-i66wwi), R06 лента (eloquent-einstein-wvuyje), R09 передачи, R02 демо-мир
+  (affectionate-shannon-jm6ws5: world_v1.json — скан ПДн), R12 works_calendar.py (great-newton-8k3474), R08 weekly.py.
+- Браузерная проба r15_round15.cjs к B1.
 
 ## Вопросы владельцу
 - (пока нет)

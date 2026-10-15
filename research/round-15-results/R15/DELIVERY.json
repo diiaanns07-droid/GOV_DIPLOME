@@ -11,9 +11,10 @@
     "package": "e91acb69",
     "R17": "61558bd3 (claude/sweet-euler-5tiu5b)",
     "R13": "ded8c258 (claude/gifted-mayer-p86myv)",
-    "R03": "a85e4765 (claude/modest-mccarthy-lrl98u)"
+    "R03": "a85e4765 (claude/modest-mccarthy-lrl98u)",
+    "R16": "aef7b79f (claude/youthful-johnson-6nz5mp)"
   },
-  "push_status": "OK (checkpoint 2)",
+  "push_status": "OK (checkpoint 3)",
   "changed_paths": [
     "tests/civic/R15/r15_common.py",
     "tests/civic/R15/round15/",
@@ -21,17 +22,90 @@
     "research/handoffs/astana/R15/round15/STATUS.md"
   ],
   "tests": {
-    "package_e91acb69_all_R15": {"passed": 262, "failed": 0, "xfailed": 1, "skipped_not_run": 132, "open": ["S42"]},
-    "R17_61558bd3_agencies": {"passed": 32, "failed": 0, "xfailed": 3, "open": ["S43"]},
-    "R13_ded8c258_meetings": {"passed": 27, "failed": 0, "xfailed": 0},
-    "R03_a85e4765_assistant": {"passed": 15, "failed": 0, "xfailed": 2, "open": ["S44"]},
-    "R01_gateway_with_P-R01-S42": {"passed": 158, "failed": 0, "note": "tests/civic/R01 api_v2 + gateway + hardening на пакете с patch"},
-    "browser": "NOT_RUN: новых экранов ролей в сборке ещё нет (B1 — 16 окт 14:00)"
+    "package_e91acb69_all_R15": {
+      "passed": 262,
+      "failed": 0,
+      "xfailed": 1,
+      "skipped_not_run": 132,
+      "open": [
+        "S42"
+      ]
+    },
+    "R17_61558bd3_agencies": {
+      "passed": 32,
+      "failed": 0,
+      "xfailed": 3,
+      "open": [
+        "S43"
+      ]
+    },
+    "R13_ded8c258_meetings": {
+      "passed": 27,
+      "failed": 0,
+      "xfailed": 0
+    },
+    "R03_a85e4765_assistant": {
+      "passed": 15,
+      "failed": 0,
+      "xfailed": 2,
+      "open": [
+        "S44"
+      ]
+    },
+    "R01_gateway_with_P-R01-S42": {
+      "passed": 158,
+      "failed": 0,
+      "note": "tests/civic/R01 api_v2 + gateway + hardening на пакете с patch"
+    },
+    "browser": "NOT_RUN: новых экранов ролей в сборке ещё нет (B1 — 16 окт 14:00)",
+    "R16_aef7b79f_together": {
+      "passed": 28,
+      "failed": 0,
+      "xfailed": 8,
+      "open": [
+        "S45",
+        "S46",
+        "S47"
+      ]
+    }
   },
   "findings": {
-    "S42": {"owner": "R01", "level": "средний", "status": "open", "patch": "patches/P-R01-S42.diff"},
-    "S43": {"owner": "R17", "level": "низкий", "status": "open", "patch": "patches/P-R17-S43.diff"},
-    "S44": {"owner": "R03", "level": "низкий", "status": "open", "patch": "patches/P-R03-S44.diff"}
+    "S42": {
+      "owner": "R01",
+      "level": "средний",
+      "status": "open",
+      "patch": "patches/P-R01-S42.diff"
+    },
+    "S43": {
+      "owner": "R17",
+      "level": "низкий",
+      "status": "open",
+      "patch": "patches/P-R17-S43.diff"
+    },
+    "S44": {
+      "owner": "R03",
+      "level": "низкий",
+      "status": "open",
+      "patch": "patches/P-R03-S44.diff"
+    },
+    "S45": {
+      "owner": "R16",
+      "level": "низкий",
+      "status": "open",
+      "patch": "patches/P-R16-S45-S47.diff"
+    },
+    "S46": {
+      "owner": "R16/R04",
+      "level": "средний",
+      "status": "open",
+      "patch": "patches/P-R16-S45-S47.diff"
+    },
+    "S47": {
+      "owner": "R16",
+      "level": "средний",
+      "status": "open",
+      "patch": "patches/P-R16-S45-S47.diff"
+    }
   },
   "high_open": 0,
   "screens": [],

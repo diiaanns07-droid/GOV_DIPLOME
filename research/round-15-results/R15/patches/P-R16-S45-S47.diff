@@ -1,0 +1,52 @@
+diff --git a/ui/civic_together/moderation.py b/ui/civic_together/moderation.py
+index ad274b96..d5a8bb31 100644
+--- a/ui/civic_together/moderation.py
++++ b/ui/civic_together/moderation.py
+@@ -22,8 +22,10 @@ MASK = "***"
+ _PATTERNS = (
+     ("email", re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")),
+     ("card", re.compile(r"(?<!\d)(?:\d[ -]?){15,18}\d(?!\d)")),
+-    ("iin", re.compile(r"(?<!\d)\d{12}(?!\d)")),
++    # R15-S46: ИИН и с пробелами/дефисами («900101 300 125»); мобильный — и без +7/8 («701 123 45 67»).
++    ("iin", re.compile(r"(?<!\d)(?:\d[ -]?){11}\d(?!\d)")),
+     ("phone", re.compile(r"(?<![\d+])(?:\+\s*7|8|7)[\s(-]*\d{3}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}(?!\d)")),
++    ("phone", re.compile(r"(?<![\d+])\(?7\d{2}\)?[\s-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}(?!\d)")),
+     ("link", re.compile(r"(?i)\b(?:https?://|www\.|t\.me/|wa\.me/)\S+")),
+ )
+ 
+diff --git a/ui/civic_together/service.py b/ui/civic_together/service.py
+index 42f3997d..1dd558a5 100644
+--- a/ui/civic_together/service.py
++++ b/ui/civic_together/service.py
+@@ -378,7 +378,8 @@ class TogetherService:
+         view = {
+             "id": item["id"], "kind": item["kind"], "title": item.get("title_public") or item["title"],
+             "text": item.get("text_public") or item.get("text") or "", "lang": item.get("lang") or "ru",
+-            "target": target, "point": [item["lon"], item["lat"]], "district": item.get("district"),
++            # R15-S45: место дела публично — 4 знака (≈ 10 м): найти площадку можно, дверь подъезда — нет.
++            "target": target, "point": [round(item["lon"], 4), round(item["lat"], 4)], "district": item.get("district"),
+             "starts_at": item["starts_at"], "ends_at": item.get("ends_at"), "bring": item.get("bring") or [],
+             "status": item["status"], "joined": int(item.get("joined") or 0), "my_join": bool(my_join),
+             "mine": bool(mine), "support": support, "report": public_report, "from_idea": item.get("from_idea"),
+@@ -610,7 +611,11 @@ class TogetherService:
+         request_id = body.get("request_id")
+         if request_id is not None and (not isinstance(request_id, str) or not REQUEST_RE.match(request_id)):
+             raise ApiError(400, "bad_request", "request_id: строка 8–64 символа.", "request_id")
+-        checked = moderation.check(fields["title"] + "\n" + fields["text"], fields["lang"])
++        # R15-S47: «что взять» — тоже текст жителя: в общую проверку (пометки сотруднику) и с маской, как текст.
++        bring_text = "\n".join(fields["bring"])
++        checked = moderation.check(fields["title"] + "\n" + fields["text"] + ("\n" + bring_text if bring_text else ""),
++                                   fields["lang"])
++        fields["bring"] = [moderation.check(item, fields["lang"])["text_public"] for item in fields["bring"]]
+         title_mod = moderation.check(fields["title"], fields["lang"])
+         text_mod = moderation.check(fields["text"], fields["lang"]) if fields["text"] else {"text_public": ""}
+         fields["moderation"] = {"flags": checked["flags"], "source": checked["source"]}
+@@ -622,7 +627,7 @@ class TogetherService:
+         # Житель видит номер и «на проверке» (или «опубликовано» при автопубликации) — и подсказку о личных данных.
+         return _reply(201 if created else 200, {
+             "initiative": self._public(item, mine=True, full=True), "created": created,
+-            "hints": moderation.hints(fields["title"] + "\n" + fields["text"])})
++            "hints": moderation.hints(fields["title"] + "\n" + fields["text"] + "\n" + bring_text)})
+ 
+     def join(self, iid: str, body: dict, context) -> dict:
+         self._resident_write(context)
