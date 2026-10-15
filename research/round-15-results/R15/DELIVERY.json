@@ -9,18 +9,18 @@
  "code_sha": "см. git log ветки: последний коммит R15 (код R15 — только tests/civic/R15/)",
  "tested_sha": {
   "package": "e91acb69",
-  "R17": "10cce40a",
+  "R17": "9d8ec438 (разбор)",
   "R13": "ece97f53",
   "R03": "fdbfc09a (разбор JS)",
   "R16": "3cc802b9 (разбор)",
-  "R04": "0d4bb1b6 (r04-moderate-3)",
+  "R04": "4769d0d4 (разбор: черновики ответов, routing)",
   "R02": "01ecf59e (claude/affectionate-shannon-jm6ws5)",
-  "R07": "8e57f9a5 (разбор)",
+  "R07": "ae749f4e (разбор)",
   "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
   "R09": "0b6d37f8 (разбор)",
-  "R01": "0121f7bd (B0.12 в ветке R01)",
+  "R01": "aad86127 (B0.13 в ветке R01)",
   "R08": "92406c57 (claude/laughing-euler-iv3on3, разбор JS)",
-  "R06": "bf20c566 (разбор)",
+  "R06": "c1e02b02 (разбор)",
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
   "R11": "17bf4c3e (разбор)",
   "R12": "de492a1b (разбор)",
@@ -337,6 +337,13 @@
    "xpassed": 0,
    "skipped_not_run": 0,
    "note": "все находки S01–S52 — FIXED (регрессия); до переноса S52 — 563 passed + 2 XPASS"
+  },
+  "R01_aad86127_B013_all_R15": {
+   "passed": 565,
+   "failed": 0,
+   "xfailed": 0,
+   "xpassed": 0,
+   "skipped_not_run": 0
   }
  },
  "findings": {
