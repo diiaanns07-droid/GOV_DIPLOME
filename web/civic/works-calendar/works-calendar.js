@@ -30,11 +30,16 @@
   const DAY = 86400000;
   const LANE_H = 30;          // высота дорожки полосы: полоса 24 + зазор 6
   const ROW_PAD = 8;          // поля строки сверху и снизу
-  const CHIP_LANE = 24;       // дорожка чипов конфликта над полосами строки: чип не закрывает короткую полосу
+  const CHIP_LANE = 32;       // дорожка чипов конфликта над полосами строки: чип (зона 40 px) не закрывает полосу
+  const HIT = 40;             // зона нажатия полосы и чипа (R10 B-111, правило ≥ 40, цель 44); видимая полоса — 24 px внутри
+  const BAR_H = 24;
   const MIN_MONTH_W = 46;     // уже — месяц не читается: лента прокручивается вбок (телефон — 60)
   const SKELETON_DELAY = 150; // скелетон не раньше 150 мс (COMMON «Качество»)
   const MAP_SRC = "birge-r12-wc";
   const MAP_LAYERS = ["birge-r12-wc-casing", "birge-r12-wc-line"];  // П1: без слоя свечения — белая обводка и линия
+  const MAP_PT_SRC = "birge-r12-wc-pt";   // точка конфликта на самой улице: видно, где конфликты, на масштабе города
+  const MAP_DOT = "birge-r12-wc-dot";
+  const DOT_MAX_ZOOM = 13.5;               // ближе — видна сама линия участка, точка не нужна
   const DANGER = "#b3362e";   // = --c-danger ui-kit: красный только у конфликта
   const PHONE = 761;
 
@@ -121,7 +126,7 @@
     },
     kk: {
       "wcal.title": "Жұмыстар күнтізбесі",
-      "wcal.subtitle": "Барлық қызметтердің жұмыстары көше учаскелері бойынша — қайшылық жұмыс басталғанға дейін көрінеді",
+      "wcal.subtitle": "Барлық қызметтердің жұмыстары көше бөліктері бойынша — қайшылық жұмыс басталғанға дейін көрінеді",
       "wcal.count.works": "{n} жұмыс",
       "wcal.count.conflicts": "{n} қайшылық",
       "wcal.count.high": "{n} маңызды",
@@ -135,7 +140,7 @@
       "wcal.period.now": "Бүгінгі күнге",
       "wcal.period.label": "Кезең: {from} – {to}",
       "wcal.kind.dig_after_surface": "Екі рет қазу",
-      "wcal.kind.same_segment_overlap": "Бір учаскеде екі қызмет",
+      "wcal.kind.same_segment_overlap": "Бір бөлікте екі қызмет",
       "wcal.kind.parallel_closures": "Қатар көшелер бір уақытта жабылады",
       "wcal.chip.dig_after_surface": "екі рет қазу",
       "wcal.chip.same_segment_overlap": "бір уақытта",
@@ -170,12 +175,12 @@
       "wcal.work.status": "Мәртебесі",
       "wcal.work.place": "Қайда",
       "wcal.work.days": "{n} күн",
-      "wcal.work.length": "учаске {m} м",
+      "wcal.work.length": "бөлік {m} м",
       "wcal.work.context": "Қайшылықтың екінші жағы ретінде көрсетілген",
       "wcal.work.open": "Жазбаны ашу",
       "wcal.work.source": "Дереккөз",
       "wcal.real.tag": "Нақты",
-      "wcal.real.coverage": "ашық дереккөздердегі жұмыстар: {n} · көше учаскесінде {exact} · шамамен {approx}",
+      "wcal.real.coverage": "ашық дереккөздердегі жұмыстар: {n} · көше бөлігінде {exact} · шамамен {approx}",
       "wcal.add": "Жұмыс қосу",
       "wcal.work.delayed": "мерзімі ауыстырылды",
       "wcal.status.planned": "Жоспарланған",
@@ -185,7 +190,7 @@
       "wcal.status.unknown": "Мәртебесі көрсетілмеген",
       "wcal.service_none": "Қызмет көрсетілмеген",
       "wcal.map.back": "Күнтізбеге оралу",
-      "wcal.map.where": "Учаске көше пішіні бойынша (OpenStreetMap)",
+      "wcal.map.where": "Бөлік көше пішіні бойынша (OpenStreetMap)",
       "wcal.layer": "Жұмыстар қайшылығы",
       "wcal.layer.empty": "Жақын жылы жұмыстар қайшылығы жоқ",
       "wcal.layer.staff": "«Жұмыстар қайшылығы» қабаты — қызметкерлерге арналған. Қызметкер ретінде кіріңіз.",
@@ -332,7 +337,7 @@
       if (!measureCtx) {
         measureCtx = doc.createElement("canvas").getContext("2d");
         const fam = getComputedStyle(doc.body).getPropertyValue("--font").trim() || "Inter, system-ui, sans-serif";
-        measureCtx.font = "500 12px " + fam;
+        measureCtx.font = "500 13px " + fam;  // подписи полос — 13 px (решение владельца 12 окт: мельче 13 нет)
       }
       return measureCtx.measureText(text).width;
     } catch (e) {
@@ -441,6 +446,12 @@
     let ro = null;
     let rafId = 0;
 
+    // Хозяин вкладки сам даёт главную «Добавить работу» (рядом [data-action="add-work"], R17 «Ведомства») или просит
+    // календарь без неё (addButton: false).
+    function hostAdd() {
+      return opts.addButton === false || !!(rootEl.parentElement && rootEl.parentElement.querySelector('[data-action="add-work"]'));
+    }
+
     function query() {
       const p = new URLSearchParams();
       const now = new Date();
@@ -545,9 +556,11 @@
           onclick: () => { state.shift += 3; load(); } }, [icon("forward")]),
       ]);
       // Поля — компонент ui-kit R11 (.bk-field): тот же вид, что в формах сотрудника. Во вкладке R17 главная кнопка —
-      // «Добавить работу» (форма R06), здесь же, справа (схема R11 §5.4).
+      // «Добавить работу» (форма R06), здесь же, справа (схема R11 §5.4). Если хозяин вкладки уже дал её сам
+      // ([data-action="add-work"] рядом, как у R17 191f81e7) или просит без неё (addButton: false) — своей нет:
+      // на экране одна главная кнопка.
       const sh = root.BirgeShell;
-      const addMain = opts.embedded && sh && root.BirgeWorks && typeof sh.setSection === "function"
+      const addMain = opts.embedded && !hostAdd() && sh && root.BirgeWorks && typeof sh.setSection === "function"
         ? h("button", { type: "button", class: "bk-btn bk-btn--primary wcal-addmain", onclick: () => sh.setSection("works") }, [icon("plus"), tr("wcal.add")])
         : null;
       return h("div", { class: "wcal-controls" }, [
@@ -615,7 +628,7 @@
         ]),
         h("div", { class: "wcal-focus__actions" }, [
           counter,
-          h("button", { type: "button", class: "bk-btn" + (opts.embedded && root.BirgeWorks ? "" : " bk-btn--primary") + " wcal-mapbtn", onclick: () => showOnMap(c) },
+          h("button", { type: "button", class: "bk-btn" + (opts.embedded && (root.BirgeWorks || hostAdd()) ? "" : " bk-btn--primary") + " wcal-mapbtn", onclick: () => showOnMap(c) },
             [icon("pin"), tr("common.action.show_on_map")]),
         ]),
         facts,
@@ -718,18 +731,26 @@
           if (w.conflicts && w.conflicts.length) cls.push("wcal-bar--conflict");
           if (sel && selWorks.has(w.id)) cls.push("is-sel");
           if (sel && !selWorks.has(w.id)) cls.push("is-dim");
+          // Кнопка — зона нажатия не меньше HIT × HIT вокруг полосы; сама полоса (24 px) — заливка внутри.
+          const hitW = Math.max(width, HIT);
+          const hitX = x0 - (hitW - width) / 2;
           const bar = h("button", { type: "button", class: cls.join(" "), "data-work": w.id,
-            style: `left:${x0}px;top:${y}px;width:${width}px;--wcal-c:${color};--wcal-on:${textOn(color)}`,
+            style: `left:${hitX}px;top:${y - (HIT - BAR_H) / 2}px;width:${hitW}px;--wcal-c:${color};--wcal-on:${textOn(color)}`,
             "aria-label": tr("wcal.bar.label", { title: lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru, service: svcText, dates: fmtRange(w.starts_on, w.ends_on) })
               + (w.approximate ? ". " + tr("common.tag.approx") : ""),
             title: (lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru) + " · " + fmtRange(w.starts_on, w.ends_on),
-            onclick: (e) => openPopover(w, e.currentTarget) }, [inside ? h("span", { class: "wcal-bar__text", text: inside }) : null]);
+            onclick: (e) => openPopover(w, e.currentTarget) }, [
+              h("span", { class: "wcal-bar__fill", style: `left:${x0 - hitX}px;width:${width}px` },
+                [inside ? h("span", { class: "wcal-bar__text", text: inside }) : null]),
+            ]);
           track.append(bar);
-          if (!inside && x1 + 150 < trackW && !linkStarts.has(w.id)) {
-            track.append(h("span", { class: "wcal-bar__out", style: `left:${x0 + width + 6}px;top:${y + 4}px`, "aria-hidden": "true", text: kindText }));
+          const outLeft = Math.max(x0 + width + 6, hitX + hitW + 4);  // справа от зоны нажатия, а не под ней
+          if (!inside && outLeft + 144 < trackW && !linkStarts.has(w.id)) {
+            track.append(h("span", { class: "wcal-bar__out", style: `left:${outLeft}px;top:${y + 3}px`, "aria-hidden": "true", text: kindText }));
           }
         }
-        body.append(h("div", { class: "wcal-row" + (r.row.conflicts ? " wcal-row--bad" : ""), "data-row": r.row.key }, [label, track]));
+        body.append(h("div", { class: "wcal-row" + (r.row.conflicts ? " wcal-row--bad" : "") + (height >= 58 ? " wcal-row--tall" : ""),
+          "data-row": r.row.key }, [label, track]));
         top += height + 1;
       });
       // Связи конфликтов: SVG поверх строк (координаты — из той же раскладки, без замеров DOM).
@@ -783,7 +804,7 @@
         const chip = chips.get(c.id);
         if (chip && chip.stemTo - chip.y > CHIP_LANE / 2 + 3) {
           // Ножка от чипа (в дорожке над полосами) к его связи — какой чип к какой связи, видно без подписи.
-          add("line", { class: cls + " wcal-link__stem", x1: chip.x, y1: chip.y + 11, x2: chip.ax, y2: chip.stemTo });
+          add("line", { class: cls + " wcal-link__stem", x1: chip.x, y1: chip.y + 12, x2: chip.ax, y2: chip.stemTo });
         }
         if (c.kind === "dig_after_surface") {
           // От конца асфальта к началу раскопки — на уровне полос (промежуток времени между ними); разные дорожки —
@@ -826,7 +847,7 @@
           cx = (x0 + Math.max(x0, x1)) / 2;
           stemTo = Math.min(a.y, b.y) - 15;
         }
-        const half = (textWidth(tr("wcal.chip." + c.kind)) * 11 / 12 + 22) / 2;
+        const half = (textWidth(tr("wcal.chip." + c.kind)) * 1.04 + 24) / 2;  // 13 px полужирный + поля 10 + рамка
         const y = Math.min(a.rowTop, b.rowTop) + ROW_PAD / 2 + CHIP_LANE / 2;
         cx = Math.min(Math.max(cx, half + 2), width - half - 2);
         const lane = lanes.get(y) || [];
@@ -853,7 +874,7 @@
         out.push(h("button", { type: "button", class: "wcal-cchip wcal-cchip--" + c.severity + (on ? " is-sel" : ""), "data-conflict": c.id,
           style: `left:${labelWidth() + place.x}px;top:${place.y}px`, "aria-pressed": on ? "true" : "false",
           "aria-label": conflictTitle(c) + (c.street_ru ? ": " + (lang() === "kk" ? c.street_kk || c.street_ru : c.street_ru) : ""),
-          onclick: () => select(c.id, false) }, [tr("wcal.chip." + c.kind)]));
+          onclick: () => select(c.id, false) }, [h("span", { class: "wcal-cchip__pill", text: tr("wcal.chip." + c.kind) })]));
       }
       return out;
     }
@@ -889,7 +910,7 @@
         ...(w.conflicts || []).map((id) => {
           const c = state.data.conflicts.find((x) => x.id === id);
           return c ? h("button", { type: "button", class: "wcal-cchip wcal-cchip--" + c.severity + " wcal-pop__conflict",
-            onclick: () => { closePopover(false); select(c.id, true); } }, [tr("wcal.chip." + c.kind)]) : null;
+            onclick: () => { closePopover(false); select(c.id, true); } }, [h("span", { class: "wcal-cchip__pill", text: tr("wcal.chip." + c.kind) })]) : null;
         }),
         h("div", { class: "wcal-pop__acts" }, [
           !w.approximate && w.geometry ? h("button", { type: "button", class: "bk-btn wcal-pop__map", onclick: () => showWorkOnMap(w) }, [icon("pin"), tr("common.action.show_on_map")]) : null,
@@ -995,6 +1016,9 @@
 
     function render(quiet) {
       if (state.destroyed) return;
+      // Открытая карточка работы переживает перерисовку (ширина листа поменялась, полоса прокрутки появилась):
+      // после неё — та же карточка у новой полосы.
+      const reopen = state.popover && state.popover.work;
       closePopover(false);
       const scroll = rootEl.querySelector(".wcal-tl");
       const keep = scroll ? { left: scroll.scrollLeft, top: scroll.scrollTop } : null;
@@ -1015,6 +1039,11 @@
         if (tl && !active) { tl.scrollLeft = keep.left; tl.scrollTop = keep.top; }
       }
       if (active) restoreFocus(active);
+      if (reopen && state.status === "ready") {
+        const w = state.data.works.find((x) => x.id === reopen);
+        const anchor = w && rootEl.querySelector(`.wcal-bar[data-work="${CSS.escape(reopen)}"]`);
+        if (anchor) openPopover(w, anchor);
+      }
       if (state.status === "ready") state.animateLink = false;
     }
     function readyParts(stale) {
@@ -1127,6 +1156,21 @@
       }
       return { type: "FeatureCollection", features: out };
     }
+    // Точка конфликта — средняя вершина самой длинной линии участка (вершина OSM: лежит на улице, не «от руки»).
+    function anchorOf(geom) {
+      const lines = geom.type === "MultiLineString" ? geom.coordinates : geom.type === "LineString" ? [geom.coordinates] : [];
+      let best = null;
+      for (const line of lines) if (!best || line.length > best.length) best = line;
+      return best && best.length ? best[Math.floor(best.length / 2)] : null;
+    }
+    function points(data) {
+      const out = [];
+      for (const c of (data && data.conflicts) || []) {
+        const at = c.geometry && anchorOf(c.geometry);
+        if (at) out.push({ type: "Feature", geometry: { type: "Point", coordinates: at }, properties: { id: c.id, severity: c.severity } });
+      }
+      return { type: "FeatureCollection", features: out };
+    }
     function firstSymbolLayer(m) {
       const layers = (m.getStyle() && m.getStyle().layers) || [];
       const sym = layers.find((l) => l.type === "symbol");
@@ -1135,7 +1179,12 @@
     function draw(m, data, focus) {
       const fc = features(data, focus);
       const src = m.getSource(MAP_SRC);
-      if (src) { src.setData(fc); return; }
+      if (src) {
+        src.setData(fc);
+        const pts = m.getSource(MAP_PT_SRC);
+        if (pts) pts.setData(points(data));
+        return;
+      }
       m.addSource(MAP_SRC, { type: "geojson", data: fc });
       const before = firstSymbolLayer(m);
       m.addLayer({ id: MAP_LAYERS[0], type: "line", source: MAP_SRC, layout: { "line-cap": "round", "line-join": "round" },
@@ -1145,17 +1194,26 @@
         paint: { "line-color": ["case", ["==", ["get", "work"], 1], ["get", "color"], DANGER],
           "line-opacity": ["case", ["==", ["get", "focus"], 1], 1, 0.75],
           "line-width": ["interpolate", ["linear"], ["zoom"], 11, ["case", ["==", ["get", "focus"], 1], 3.5, 2.2], 16, ["case", ["==", ["get", "focus"], 1], 8, 5]] } }, before);
+      // Масштаб города: участок в сотни метров — штрих в пару пикселей; точка показывает, где конфликт (нажатие — к нему).
+      m.addSource(MAP_PT_SRC, { type: "geojson", data: points(data) });
+      m.addLayer({ id: MAP_DOT, type: "circle", source: MAP_PT_SRC, maxzoom: DOT_MAX_ZOOM,
+        paint: { "circle-color": DANGER, "circle-stroke-color": "#ffffff", "circle-stroke-width": 2.5,
+          "circle-radius": ["case", ["==", ["get", "severity"], "high"], 7, 5.5] } }, before);
       if (!clickBound) {
-        clickBound = (e) => {
+        const pick = (zoomTo) => (e) => {
           const f = e.features && e.features[0];
           if (!f || f.properties.work) return;
           const data2 = shared.data;
           const c = data2 && data2.conflicts.find((x) => x.id === f.properties.id);
-          if (c) focusOn(m, { conflict: c, works: worksFromShared(c), services: data2.services, opts: {} }, false);
+          if (c) focusOn(m, { conflict: c, works: worksFromShared(c), services: data2.services, opts: {} }, zoomTo);
         };
-        m.on("click", MAP_LAYERS[1], clickBound);
-        m.on("mouseenter", MAP_LAYERS[1], () => { m.getCanvas().style.cursor = "pointer"; });
-        m.on("mouseleave", MAP_LAYERS[1], () => { m.getCanvas().style.cursor = ""; });
+        clickBound = { line: pick(false), dot: pick(true) };
+        m.on("click", MAP_LAYERS[1], clickBound.line);
+        m.on("click", MAP_DOT, clickBound.dot);
+        for (const id of [MAP_LAYERS[1], MAP_DOT]) {
+          m.on("mouseenter", id, () => { m.getCanvas().style.cursor = "pointer"; });
+          m.on("mouseleave", id, () => { m.getCanvas().style.cursor = ""; });
+        }
       }
     }
     function worksFromShared(c) {
@@ -1166,9 +1224,12 @@
     }
     function remove(m) {
       if (!m) return;
-      if (clickBound) { try { m.off("click", MAP_LAYERS[1], clickBound); } catch (e) { /* слой уже снят */ } clickBound = null; }
-      for (const id of [...MAP_LAYERS].reverse()) if (m.getLayer && m.getLayer(id)) m.removeLayer(id);
-      if (m.getSource && m.getSource(MAP_SRC)) m.removeSource(MAP_SRC);
+      if (clickBound) {
+        try { m.off("click", MAP_LAYERS[1], clickBound.line); m.off("click", MAP_DOT, clickBound.dot); } catch (e) { /* слой уже снят */ }
+        clickBound = null;
+      }
+      for (const id of [MAP_DOT, ...[...MAP_LAYERS].reverse()]) if (m.getLayer && m.getLayer(id)) m.removeLayer(id);
+      for (const id of [MAP_PT_SRC, MAP_SRC]) if (m.getSource && m.getSource(id)) m.removeSource(id);
     }
     function bboxOf(geom) {
       const xs = [], ys = [];

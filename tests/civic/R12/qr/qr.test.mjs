@@ -212,7 +212,8 @@ test("QR: Kazakh and phone 375 px — no keys, main button visible without scrol
     assert.doesNotMatch(txt, /qr\.[a-z]/);
     assert.ok((await overflow(page)) <= 0, lang + " " + vp.width);
     const btn = await page.locator(".bk-btn--primary").boundingBox();
-    assert.ok(btn.height >= 44 && btn.y + btn.height <= vp.height, "главная кнопка (44, эталон A) видна без прокрутки: " + JSON.stringify(btn));
+    // 44 px эталона A; раскладка даёт дробные пиксели (43,99997) — допуск полпикселя
+    assert.ok(btn.height >= 43.5 && btn.y + btn.height <= vp.height, "главная кнопка (44, эталон A) видна без прокрутки: " + JSON.stringify(btn));
     assert.equal(await page.evaluate(() => document.documentElement.lang), lang, "ссылка не переключила язык");
     await shot(page, `qr-passport-stop-${vp.width}-${lang}`);
     assert.deepEqual(errors, []);
@@ -235,6 +236,9 @@ test("print sheet: QR + domain + bilingual address + number; bad and unknown ids
   assert.match(first, /https:\/\/birge\.example\.kz\/\?report=osm-node-10272524280/);
   assert.equal(await r.page.locator(".bqp-sign path").count(), 2, "QR нарисован (тестовая заглушка генератора)");
   const msgs = await r.page.locator(".bqp-status").innerText();
+  // R10 B-103: светофора SIGNAL нет в свежем снимке OSM (12.10.2026) — табличка на его замену 14140558124 (0 м)
+  assert.match(await r.page.locator(".bqp-sign").nth(1).innerText(), /Объект № 14\s140\s558\s124/);
+  assert.match(msgs, /Номер osm-node-10185771782 обновлён по свежей карте OSM: на табличке — osm-node-14140558124/);
   assert.match(msgs, /«<x>» — не номер объекта/);
   assert.match(msgs, /Объект osm-node-1 не найден/);
   // R15-S25: адрес сайта из ссылки не совпадает с этим сервером — предупреждение до печати
@@ -269,8 +273,8 @@ test("print sheet: QR + domain + bilingual address + number; bad and unknown ids
   assert.match(p6.page, /A4 portrait/);
   assert.doesNotMatch(first, /Сообщил|Статус|адам хабарлады|Мәртебе/);
   await r.ctx.close();
-  // без генератора QR — честное предупреждение, печать не предлагается
-  await set("fake_qr=0");
+  // без генератора QR — честное предупреждение, печать не предлагается (файл LOCAL-11 в сборке есть — стенд его прячет)
+  await set("fake_qr=0&no_qr=1");
   r = await open("?ids=" + STOP, { path: "/civic/qr/print.html" });
   await r.page.waitForSelector(".bqp-sign");
   assert.match(await r.page.locator(".bqp-status").innerText(), /Генератор QR ещё не подключён/);
@@ -283,4 +287,5 @@ test("print sheet: QR + domain + bilingual address + number; bad and unknown ids
   assert.match(await r.page.locator(".bqp-status").innerText(), /Адрес сайта должен начинаться/);
   assert.equal(await r.page.locator(".bqp-sign").count(), 0);
   await r.ctx.close();
+  await set("no_qr=0");
 });

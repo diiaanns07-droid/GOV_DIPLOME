@@ -9,7 +9,8 @@
 - GET  /api/test/calls                   что приходило на «Я тоже» (для проверок)
 - GET  /api/test/set?fail_metoo=1&delay_metoo_ms=N   сбой или задержка «Я тоже» (откат и мгновенный отклик)
 - статика: /civic/** и /vendor/** из web/, /stand/** из этой папки;
-  /vendor/qrcode/qrcode.js — настоящий файл LOCAL-11, если есть; ?fakeqr подменяет его ТЕСТОВОЙ заглушкой.
+  /vendor/qrcode/qrcode.js — настоящий файл LOCAL-11, если есть; ?fakeqr подменяет его ТЕСТОВОЙ заглушкой;
+  /api/test/set?no_qr=1 — генератора «нет» (404), даже когда файл LOCAL-11 в сборке: проверка честного предупреждения.
 """
 import json
 import time
@@ -30,7 +31,7 @@ FIXTURE = json.loads((HERE / "heat_fixture.json").read_text("utf-8"))
 HEAT = FIXTURE["items"]
 COMPLAINTS = FIXTURE.get("complaints", {})
 CALLS = []
-STATE = {"fail_target": 0, "fail_heat": 0, "fail_metoo": 0, "delay_metoo_ms": 0, "fake_qr": False}
+STATE = {"fail_target": 0, "fail_heat": 0, "fail_metoo": 0, "delay_metoo_ms": 0, "fake_qr": False, "no_qr": False}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -60,6 +61,8 @@ class Handler(BaseHTTPRequestHandler):
                     STATE[k] = int(q[k][0])
             if "fake_qr" in q:
                 STATE["fake_qr"] = q["fake_qr"][0] == "1"
+            if "no_qr" in q:
+                STATE["no_qr"] = q["no_qr"][0] == "1"
             return self._send(200, STATE)
         if u.path == "/api/civic/v2/target":
             if STATE["fail_target"]:
@@ -78,6 +81,8 @@ class Handler(BaseHTTPRequestHandler):
             item = HEAT.get((q.get("id") or [""])[0])
             return self._send(200, {"item": item}) if item else self._send(404, {"error": "not_found"})
         if u.path == "/vendor/qrcode/qrcode.js":
+            if STATE["no_qr"]:
+                return self._send(404, {"error": "not_found"})
             if STATE["fake_qr"]:
                 return self._static(HERE, "fake_qrcode.js")
             return self._static(ROOT / "web", "vendor/qrcode/qrcode.js")

@@ -56,6 +56,10 @@ async function setView(p, mode) {
   }
   await p.waitForFunction((m) => document.body.dataset.birgeMode === m, mode, { timeout: 5000 });
 }
+// Обычная карта жалоб: раздел «Карта» оболочки раунда 15 (корень R07 там — слот без своего размера) или видимый корень
+// R07 (оболочка раунда 14).
+const onMap = (p) => p.evaluate(() => document.body.dataset.birgeSection === "map" ||
+  ((document.querySelector("#birge-heat-root")?.getBoundingClientRect().width || 0) > 0)).catch(() => false);
 const reportState = (p) => p.waitForFunction(() => /ready|error/.test(document.querySelector("#birge-report-root .bq-report")?.dataset.state || ""), null, { timeout: 30000 });
 
 try {
@@ -123,7 +127,7 @@ try {
     await p.keyboard.press("Escape");
     await p.click("#birge-report-root .bq-report__close");
     await p.waitForTimeout(300);
-    check("закрыли паспорт — обычная карта, адрес без ?report", (await p.locator("#birge-heat-root").isVisible()) && !/report=/.test(p.url()), p.url());
+    check("закрыли паспорт — обычная карта, адрес без ?report", (await onMap(p)) && !/report=/.test(p.url()), p.url());
     check("нет ошибок страницы (ноутбук)", errors.length === 0, errors.slice(0, 3));
     await ctx.close();
   }
@@ -155,7 +159,7 @@ try {
       /Объект не найден/.test(card) && /На карту/.test(card) && !(await p.evaluate(() => window.__x)), card.slice(0, 200));
     await p.click('#birge-report-root [data-act="map"]');
     await p.waitForTimeout(300);
-    check("«На карту» — обычная карта жалоб, не пустой экран", (await p.locator("#birge-heat-root").isVisible()) && !/report=/.test(p.url()), p.url());
+    check("«На карту» — обычная карта жалоб, не пустой экран", (await onMap(p)) && !/report=/.test(p.url()), p.url());
     check("нет ошибок страницы (подмена)", errors.length === 0, errors.slice(0, 3));
     await ctx.close();
   }
@@ -180,7 +184,8 @@ try {
     await p.waitForFunction(() => document.querySelector("#birge-heat-root .r07-item, #birge-heat-root .r07-list"), null, { timeout: 30000 }).catch(() => null);
     await setView(p, "akimat");
     await p.goto(BASE + "/#target=object:" + STOP);
-    const link = await p.waitForSelector("#birge-heat-root .r07-qr a", { timeout: 20000 }).then((h) => h.getAttribute("href"), () => null);
+    // R07 раунда 15: ссылка — сама a.r07-qr (раунд 14: .r07-qr a)
+    const link = await p.waitForSelector("#birge-heat-root a.r07-qr, #birge-heat-root .r07-qr a", { timeout: 20000 }).then((h) => h.getAttribute("href"), () => null);
     check("акимат: в карточке места есть «Распечатать QR» на лист этого объекта", link === "/civic/qr/print.html?ids=" + STOP, link);
     const prim = await p.locator("#birge-heat-root .r07-card .r07-btn--primary").count();
     check("в карточке места по-прежнему одна главная кнопка", prim <= 1, prim);

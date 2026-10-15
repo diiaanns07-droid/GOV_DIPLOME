@@ -36,6 +36,8 @@
       "qr.form.too_many": "Не больше {n} объектов за раз.", "qr.form.bad_base": "Адрес сайта должен начинаться с https:// или http:// и не содержать пути.",
       "qr.form.no_qr": "Генератор QR ещё не подключён. Пока на табличке будет только ссылка.",
       "qr.form.network": "Нет связи. Повторите.", "qr.form.loading": "Загружаем…", "qr.form.ready": "Готово табличек: {n}",
+      "qr.form.updated": "Номер {old} обновлён по свежей карте OSM: на табличке — {id}.",
+      "qr.form.gone": "Объекта {id} нет в свежей карте OSM — проверьте на месте перед печатью.",
       "qr.form.base_other": "QR на табличках поведёт на {base} — это не адрес этого сервера. Проверьте адрес перед печатью.",
       "qr.sign.call": "Сообщите о проблеме", "qr.sign.how": "Наведите камеру телефона на код",
       "qr.form.size": "Размер таблички", "qr.form.size_a5": "A5 · 148 × 210 мм", "qr.form.size_a6": "A6 · 105 × 148 мм",
@@ -52,6 +54,8 @@
       "qr.form.too_many": "Бір ретте {n} нысаннан аспасын.", "qr.form.bad_base": "Сайт мекенжайы https:// немесе http:// деп басталып, жолсыз болуы керек.",
       "qr.form.no_qr": "QR генераторы әлі қосылмаған. Әзірге тақтайшада тек сілтеме болады.",
       "qr.form.network": "Байланыс жоқ. Қайталаңыз.", "qr.form.loading": "Жүктелуде…", "qr.form.ready": "Дайын тақтайшалар: {n}",
+      "qr.form.updated": "{old} нөмірі OSM-нің жаңа картасы бойынша жаңартылды: тақтайшада — {id}.",
+      "qr.form.gone": "{id} нысаны OSM-нің жаңа картасында жоқ — басып шығарар алдында орнында тексеріңіз.",
       "qr.form.base_other": "Тақтайшадағы QR {base} мекенжайына апарады — бұл осы сервердің мекенжайы емес. Басып шығарар алдында тексеріңіз.",
       "qr.sign.call": "Мәселе туралы хабарлаңыз", "qr.sign.how": "Телефон камерасын кодқа бағыттаңыз",
       "qr.form.size": "Тақтайша өлшемі", "qr.form.size_a5": "A5 · 148 × 210 мм", "qr.form.size_a6": "A6 · 105 × 148 мм",
@@ -269,15 +273,37 @@
       S.state = "loading";
       S.messages.push({ kind: "info", text: tx("qr.form.loading") });
       paintStatus();
-      return Promise.all(parsed.ids.map(function (id) {
+      function fetchTarget(id) {
         return fetchFn(api + "/target?id=" + encodeURIComponent(id), { credentials: "same-origin", headers: { Accept: "application/json" } })
           .then(function (r) { return r.json().catch(function () { return null; }).then(function (b) { return { id: id, status: r.status, body: b }; }); },
             function () { return { id: id, status: 0, body: null }; });
-      })).then(function (rows) {
+      }
+      // R10 B-103: узла нет в свежем снимке OSM (retired). Есть замена рядом (replaced_by) — табличка на неё (жалобы по
+      // QR идут к живому объекту), сотрудник видит, что номер обновлён; замены нет — табличка старая, но с предупреждением.
+      function fresh(row) {
+        var b = row.body;
+        if (row.status !== 200 || !b || !b.retired) return Promise.resolve(row);
+        if (!b.replaced_by) {
+          S.messages.push({ kind: "warn", text: tx("qr.form.gone", { id: row.id }) });
+          return Promise.resolve(row);
+        }
+        var updated = { kind: "info", text: tx("qr.form.updated", { old: row.id, id: b.replaced_by }) };
+        if (parsed.ids.indexOf(b.replaced_by) >= 0) {  // замена уже в списке — одна табличка
+          S.messages.push(updated);
+          return Promise.resolve({ id: row.id, status: 0, skip: true });
+        }
+        return fetchTarget(b.replaced_by).then(function (got) {
+          if (got.status !== 200 || !got.body || !got.body.target) return row;
+          S.messages.push(updated);
+          return got;
+        });
+      }
+      return Promise.all(parsed.ids.map(function (id) { return fetchTarget(id).then(fresh); })).then(function (rows) {
         if (my !== S.seq) return false;
         S.messages = S.messages.filter(function (m) { return m.text !== tx("qr.form.loading"); });
         var offline = false;
         rows.forEach(function (row) {
+          if (row.skip) return;
           if (row.status === 200 && row.body && row.body.target) S.signs.push(row.body);
           else if (row.status === 404 || row.status === 400) S.messages.push({ kind: "error", text: tx("qr.form.not_found", { id: row.id }) });
           else offline = true;
