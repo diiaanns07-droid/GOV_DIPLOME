@@ -17,14 +17,14 @@ restored_from: — (роль начата с нуля, прежней ветки
   картинок (photos_after и report.photo_ids всегда [], правило в SCHEMA §0 и в demo_world_check, тест);
   web/labeling проверен — нет эмодзи, градиентов, свечения и картинок; R16 — строка «Фото появится после дела» (INTEGRATION §8).
 
-## ОБРАЗЕЦ ГОТОВ (для R09, R06, R16, R17, R12, R13, R07, R08, R01, R10)
-- Схема: `data/civic/astana/demo-world/SCHEMA.md` (birge-demo-world-v1, версия 1.0)
-- Образец: `data/civic/astana/demo-world/world_v1.sample.json` (10–23 записи каждого вида, те же id, что в полном мире)
-- Полный мир: `data/civic/astana/demo-world/world_v1.json` (719 жалоб, 43 работы, 5 задуманных конфликтов, 32 двора,
-  12 идей, 10 инициатив, 3 кризиса, 3 встречи, 10 вопросов, 4 события, сцены step2/7/8/9)
-- Помощник: `ml/datasets/demo_world_io.py` → `load_world()`, `materialize(world, now)` (относительное время → ISO),
-  `demo_device(id, n)` (синтетический хэш «Я тоже»)
-- Как взять свою часть: SCHEMA §2 (кто какой ключ берёт) и §4 (`seed_world(db_path, records, now=None)`).
+## ОБРАЗЕЦ И МИР ГОТОВЫ (для R09, R06, R16, R17, R12, R13, R07, R08, R01, R10)
+- Схема: `data/civic/astana/demo-world/SCHEMA.md` (birge-demo-world-v1, версия **1.1**: + `day_at`, итог и точка встречи,
+  `closed_at` кризиса; 1.0.1 — события `started_at/ended_at`)
+- Полный мир: `data/civic/astana/demo-world/world_v1.json` — 743 жалобы (Нура 36 %, 1130 человек с «Я тоже»),
+  39 работ + 4 отключения, 5 задуманных конфликтов, 32 двора, 12 идей, 10 инициатив, 3 кризиса, 3 встречи, 10 вопросов,
+  4 события, сцены step2/7/8/9. Образец — `world_v1.sample.json` (замкнут по ссылкам). Числа экранов — `EXPECTED.json`.
+- Помощник: `ml/datasets/demo_world_io.py` → `load_world()`, `materialize(world, now)` (относительное время → ISO).
+- ГЛАВНОЕ для R01: модулям передавать МАТЕРИАЛИЗОВАННЫЙ мир (seed_world R09 на сыром мире — 743 invalid). Patch R01 так и делает.
 
 ## План (по research/round-15/prompts/R02.txt)
 1. [x] Инвентаризация → research/round-15-results/R02/INVENTORY.md
@@ -34,7 +34,7 @@ restored_from: — (роль начата с нуля, прежней ветки
 5. [x] DATASHEET.md
 6. [x] INTEGRATION.txt (patch R01 проверен на стенде: 14/14), DELIVERY.json, RUN.txt
 7. [~] Соседи на каждом круге: seed_world R09/R06/R16/R17/R13/R07, правки R12/R10 (materialize), «Просрочено» R08/R09
-8. [ ] LOCAL-14: проверить инструкции import_form.py (раунд 14) — актуальны ли
+8. [x] LOCAL-14: инструкции import_form.py актуальны (CLI отвечает, тесты импорта PASS), команды — RUN.txt п. 5
 
 ## Сделано
 - 11:25 UTC — роль занята, ветка сессии подтянута к пакету (fast-forward до e91acb69).
@@ -59,17 +59,20 @@ restored_from: — (роль начата с нуля, прежней ветки
   R12 works_calendar.load_world и R10 consistency.world_numbers через materialize; ответы на просьбы о полях.
 - К B1 (16 окт 14:00 Астаны): стенд R02 с ветками соседей (локально, без коммита чужих путей) → обновить
   consistency_table в DELIVERY.json.
-- LOCAL-14: перечитать ml/labeling/import_form.py и RUN раунда 14.
+- R06: когда появится seed_world (их задача 5) — проверить на мире идеи и работы (§5 INTEGRATION).
 
 ## Вопросы владельцу
 - (пока нет)
 
 ## Заметки для соседей (подробно — research/round-15-results/R02/INTEGRATION.txt)
 - ВСЕМ: время в мире относительное; R01 отдаёт в seed_world уже материализованный мир (ISO): materialize(load_world(), now).
-  Кто читает файл сам (R12 works_calendar.load_world, R10 consistency.world_numbers) — тоже через materialize (§6, §10).
-- R01: patch §1 готов и проверен (карта без синтетики R07 в режиме мира + засев всех модулей одним now).
-- R09: готовый seed_world — ml/datasets/demo_world_seed.seed_world (reset демо-записей, настоящие не трогает).
-  «Ждут проверки» в мире 419 — предложение: показывать ремонты последних 14 дней.
-- R08/R09/R17/R10/R11: «Просрочено» у R08 (срок исправления) и у R09 (срок ответа) — разные числа (Нура 7 и 1);
-  предложение подписей и сверки — INTEGRATION §3.
-- R06: тест R02 schema больше не падает на civic_notify_reads (C.1 вашего INTEGRATION применён в ветке R02).
+  Кто читает файл сам (R12 works_calendar.load_world, R10 consistency.world_numbers) — patch в research/round-15-results/
+  R02/patches/ (R12_works_calendar_world.patch, R10_consistency_world.patch; проверены на их ветках).
+- R01: patches/R01_demo_world.patch (91 строка) — проверен: засев 743, перезапуск reset 743, числа стенда = миру 14/14.
+- R09: ваш world_seed на материализованном мире = EXPECTED; страховка для сырого мира — patches/R09_world_seed_materialize.patch;
+  reset=True по умолчанию в режиме мира. «Ждут проверки» в мире 436 — предложение: ремонты последних 14 дней.
+- R16, R13: повторный засев сейчас «skipped» — нужен reset демо-записей (иначе через сутки субботник и встреча в прошлом).
+- R07: читать world["events"] (аннотации «Хроники») и closed_at кризиса.
+- R08/R09/R17/R10/R11: «Просрочено» у R08 (срок исправления) и у R09 (срок ответа) — разные числа (Нура 14 и 0 на опорный
+  момент); предложение подписей и сверки — INTEGRATION §3.
+- R06: тест R02 schema принимает civic_notify_reads (C.1 вашего INTEGRATION применён в ветке R02).
