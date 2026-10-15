@@ -20,9 +20,11 @@ R12 · раунд 15 · «Календарь работ» и «копаем од
    python3 -B -m engine.civic_geo build-works-fixture                                # пересобрать фикстуру из графа OSM
 
 2. ТЕСТЫ
-   python3 -m pytest -q tests/civic/R12/test_works.py        # 35: ≤ 5 м от рёбер, 3 вида конфликтов, порог 18 мес., пустой
-                                                              # период, фильтры, детерминизм, 60 работ < 300 мс, API 401/400
-   python3 -m pytest -q tests/civic/R12                      # всё R12 (регресс QR-паспорта, целей, поиска, точности)
+   python3 -m pytest -q tests/civic/R12/test_works.py        # 44: ≤ 5 м от рёбер, 3 вида конфликтов, порог 18 мес., пустой
+                                                              # период, фильтры, детерминизм, 60 работ < 300 мс, API 401/400,
+                                                              # совет по стадии (асфальт уже уложен / идёт / прошло)
+   python3 -m pytest -q tests/civic/R12/test_fresh_snapshot.py   # 6: светофоры и переходы из свежего снимка OSM (B-103)
+   python3 -m pytest -q tests/civic/R12                      # всё R12: 98 + 1 пропуск без мира R02
 
 3. СТЕНД В ОБЛАКЕ (настоящее приложение — сборка R01 с путями R12; INTEGRATION.txt §1)
    mkdir -p /tmp/birge
@@ -34,7 +36,8 @@ R12 · раунд 15 · «Календарь работ» и «копаем од
    # сборка R01 (маршруты works-calendar уже в его ветке); ассеты R12, если их ещё нет в сборке:
    git apply research/round-15-results/R12/patches/R01_works_calendar_assets.patch
    CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655
-   # демо-мир R02: + CIVIC_DEMO_WORLD=1 (R01 засевает мир; календарь берёт id конфликтов мира, сцена 8 = cf-w15-01)
+   # демо-мир R02: + CIVIC_DEMO_WORLD=1 (R01 засевает мир; календарь берёт id конфликтов мира, сцена 8 = cf-w15-01 —
+   #   «2 из 5»: первым стоит более срочный cf-w15-02, асфальт уже уложен; сцена 8 — Ctrl+K «Сцена 8» или #works-calendar/cf-w15-01)
    → http://127.0.0.1:8655/ → аватар → «Для сотрудников» (operator) → «Ещё» → «Календарь работ».
    Браузерная проверка (по одной, COMMON):
    NODE_PATH=$(npm root -g) node tests/civic/R12/works/works_calendar.test.cjs --url http://127.0.0.1:8655 \

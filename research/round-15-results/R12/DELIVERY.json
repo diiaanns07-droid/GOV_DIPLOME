@@ -1,14 +1,14 @@
 {
  "role": "R12",
  "round": 15,
- "delivery": 6,
+ "delivery": 7,
  "title": "Единый календарь работ и «копаем один раз»",
  "branch": "claude/great-newton-8k3474",
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "11a5d0ff4de65a7c551b52d992f95fd43f1fd811",
- "tested_sha": "11a5d0ff4de65a7c551b52d992f95fd43f1fd811",
+ "code_sha": "b549f69627995a643a890850e919a0eb3c965033",
+ "tested_sha": "b549f69627995a643a890850e919a0eb3c965033",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/SOURCE.json",
@@ -45,14 +45,14 @@
    "works-calendar/works-calendar.css"
   ],
   "shell": "registerScreen works-calendar (akimat) + registerLayer works-conflicts (off by default) — модуль сам",
-  "i18n_keys": "research/round-15-results/R12/i18n_keys.json (69 ключей wcal.*, kk — черновик)",
-  "neighbours": "R01 856b3027 (шлюз, оболочка — проверено браузером), R06 works_v2 (1f76738a), R02 мир 4afd9bf9 (5/5 planned_conflicts, id cf-w15-*), R17 service_profiles (75300896, цвета полос), R08/R17 conflicts_summary()",
+  "i18n_keys": "research/round-15-results/R12/i18n_keys.json (77 ключей wcal.*, kk — черновик; новые: wcal.stage.*, wcal.add, wcal.staff.login, wcal.work.source, wcal.real.*)",
+  "neighbours": "R01 B0 74fb8c6d (R12 1c8d171d в сборке — проверено браузером с миром R02), R06 works_v2 (1f76738a), R02 мир a7251430 (5/5 planned_conflicts, id cf-w15-*), R17 service_profiles (75300896, цвета полос), R08/R17 conflicts_summary()",
   "R17_patch": "research/round-15-results/R12/patches/R17_agencies_calendar_tab.patch — вкладка «Календарь работ» в «Ведомствах» (к R17 75300896)"
  },
  "tests": {
   "pytest_R12_all": {
    "status": "PASS",
-   "passed": 96,
+   "passed": 98,
    "failed": 0,
    "skipped": 1,
    "skip_reason": "test_demo_world_planned_conflicts_are_found — мира R02 нет в ветке R12 (проверен на копии мира R02: PASS)",
@@ -60,10 +60,10 @@
   },
   "pytest_works": {
    "status": "PASS",
-   "passed": 42,
+   "passed": 44,
    "failed": 0,
    "skipped": 1,
-   "covers": "≤ 5 м от рёбер OSM; три вида конфликтов + вариант same_street; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API (шлюз R01 проверяет сотрудника, staff=False → 401, 400 на параметры); участок в узле без нулевого ребра; мир R02: даты day/season, отключения не работы, id planned_conflicts, seed_world"
+   "covers": "≤ 5 м от рёбер OSM; три вида конфликтов + вариант same_street; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API (шлюз R01 проверяет сотрудника, staff=False → 401, 400 на параметры); участок в узле без нулевого ребра; мир R02: даты day/season, отключения не работы, id planned_conflicts, seed_world; стадия конфликта на сегодня (асфальт впереди / уже уложен / раскопка идёт / прошло) — совет и порядок, id не зависит от даты"
   },
   "pytest_neighbours_using_civic_geo": {
    "status": "PASS",
@@ -73,9 +73,11 @@
   },
   "browser_app": {
    "status": "PASS",
-   "passed": 86,
+   "passed": 98,
    "failed": 0,
-   "how": "сборка R01 856b3027 + пути R12 (worktree) + профили R17 75300896, CIVIC_DEMO=1, вход сотрудника через шлюз R01, 1366/1024/375 × ru/kk + все состояния",
+   "not_run": 1,
+   "how": "сборка R01 B0 74fb8c6d (R12 1c8d171d уже внутри) + код R12 этой поставки поверх (worktree), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 (мир R02: «civic-world: … R12 39»), вход сотрудника через шлюз R01, 1366/1024/375 × ru/kk + все состояния; сцена 8 — cf-w15-01 мира (ул. Баян Сулу); чипы не закрывают полосы; «асфальт уже уложен» — совет беречь покрытие. Без мира (фикстура R12, сцена 8 ул. Сыганак): 15/0.",
+   "not_run_reason": "вкладка «Календарь работ» в «Ведомствах»: patch R17 ещё не применён в R17/R01 (проверен ранее на стенде R01 856b3027 + R17 75300896 + patch: PASS)",
    "result_file": "research/round-15-results/R12/browser_works_calendar.json"
   },
   "perf_60_works": {
@@ -144,7 +146,7 @@
    "map_375_ru.png",
    "map_375_kk.png"
   ],
-  "note": "Кадры — сборка R01 856b3027 + R12 9090eb8d + профили R17 (цвета служб). Облако без интернета: подложка OpenFreeMap не грузится, карта — упрощённый фон (настоящий вид — LOCAL-12).",
+  "note": "Кадры — сборка R01 B0 74fb8c6d + R12 этой поставки, демо-мир R02 (CIVIC_DEMO_WORLD=1). Облако без интернета: подложка — офлайн-слой сборки, OpenFreeMap не грузится (настоящий вид — LOCAL-12). embedded_r17_tab_1366_ru.png — стенд R01 856b3027 + R17 75300896 + patch R17.",
   "states": [
    "state_staff_1366_ru.png",
    "state_not_ready_1366_ru.png",
