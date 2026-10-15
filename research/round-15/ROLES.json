@@ -245,5 +245,15 @@
     "LOCAL-17 проверка ИИ-аналитика с LLM",
     "LOCAL-18 презентация Gton на gh-pages"
   ],
-  "coordinator": "сессия Claude, подготовившая пакет (ветка claude/clever-hypatia-q6ts4g) или владелец"
+  "coordinator": "не нужен: ветки и сборки находит find_branches.py; итог — STATUS и BUILD.json R01",
+  "mode": "autopilot: все роли стартуют одновременно, порядок не важен; дедлайн 2026-10-17 23:59 Asia/Almaty (UTC+5)",
+  "schedule_astana": {
+    "B1": "2026-10-16 14:00",
+    "B2": "2026-10-16 23:00",
+    "last_deliveries": "2026-10-17 17:00",
+    "FINAL-5": "2026-10-17 18:00",
+    "end": "2026-10-17 23:59"
+  },
+  "branch_convention": "claude/r15-<роль>; поиск — research/round-15/tools/find_branches.py",
+  "launch_page": "https://claude.ai/artifact/QxYjmo5Bywj3ZPkes2q1Mk"
 }

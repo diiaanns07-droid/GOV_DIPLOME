@@ -14,7 +14,10 @@
 
 ## 1. Ветки и последние поставки
 
-- База — FINAL-4 `a4937462`. Роль работает в своей ветке сессии (или `claude/r15-<роль>`), не в `main` и не в ветке пакета.
+- База — FINAL-4 `a4937462`. Ветка роли — `claude/r15-<роль>` (если среда не даёт — ветка сессии); как найти или занять её
+  и как найти соседей — COMMON, раздел «АВТОПИЛОТ», скрипт `research/round-15/tools/find_branches.py`. Не `main`, не ветка пакета.
+- График сборок R01 (время Астаны): B1 — 16 окт 14:00, B2 — 16 окт 23:00, FINAL-5 — 17 окт 18:00. Номер и SHA каждой сборки —
+  `research/round-15-results/R01/BUILD.json` в ветке R01 (`find_branches.py --build`).
 - Если твой путь в FINAL-4 старее твоей последней поставки раунда 14 — сначала восстанови её путями
   (`git fetch origin <ветка> && git checkout <sha> -- <пути>`), запиши SHA в DELIVERY.json (`restored_from`).
 
@@ -249,4 +252,5 @@ R06 собирает `updates()` R16/R17/R13/R09. Писать в чужие т�
 
 В `research/round-15-results/<R>/`: `DELIVERY.json` (role, branch, base_sha, restored_from, code_sha, tested_sha,
 push_status, changed_paths, tests PASS/FAIL/NOT_RUN, screens, known_limits, next_step), `RUN.txt`, `INTEGRATION.txt`.
-Handoff: `research/handoffs/astana/<R>/round15/STATUS.md`. Checkpoint с push каждые 30–40 минут и около 85% лимита.
+Handoff: `research/handoffs/astana/<R>/round15/STATUS.md` — первые строки «Роль: RXX», «Ветка роли: <имя>» (по ним роль находят
+соседи и следующая сессия). Checkpoint с push каждые 30–40 минут и около 85% лимита.
