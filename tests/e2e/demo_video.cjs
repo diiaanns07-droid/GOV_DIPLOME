@@ -241,6 +241,8 @@ async function recordLang(browser, lang) {
     if (PARTS.includes(1)) await part1();
     if (PARTS.includes(2)) await part2();
     await say("final", 6500);
+    // Последний субтитр — без «следующего шага сцены»: дочитать целиком (READ_AHEAD здесь не вычитается).
+    if (!FAST) await sleep(READ_AHEAD);
     await quiet();
     await pause(1200);
   } catch (e) {
