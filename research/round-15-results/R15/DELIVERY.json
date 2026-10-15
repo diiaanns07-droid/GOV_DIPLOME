@@ -11,15 +11,15 @@
   "package": "e91acb69",
   "R17": "10cce40a",
   "R13": "ece97f53",
-  "R03": "39e531ef",
-  "R16": "6563e46e (разбор)",
+  "R03": "fdbfc09a (разбор JS)",
+  "R16": "3cc802b9 (разбор)",
   "R04": "0d4bb1b6 (r04-moderate-3)",
   "R02": "01ecf59e (claude/affectionate-shannon-jm6ws5)",
   "R07": "8e57f9a5 (разбор)",
   "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
   "R09": "0b6d37f8 (разбор)",
-  "R01": "09fe273e (B0.10 в ветке R01; R04 там — moderate-2)",
-  "R08": "ba1e596a (claude/laughing-euler-iv3on3, разбор)",
+  "R01": "0121f7bd (B0.12 в ветке R01)",
+  "R08": "92406c57 (claude/laughing-euler-iv3on3, разбор JS)",
   "R06": "bf20c566 (разбор)",
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
   "R11": "17bf4c3e (разбор)",
@@ -329,6 +329,14 @@
   "round11": {
    "R04_0d4bb1b6_moderate": "57 passed + 2 XPASS (S52 исправлен)",
    "R01_09fe273e_moderate": "57 passed + 2 xfailed (S52 в сборке нет)"
+  },
+  "R01_0121f7bd_B012_all_R15": {
+   "passed": 565,
+   "failed": 0,
+   "xfailed": 0,
+   "xpassed": 0,
+   "skipped_not_run": 0,
+   "note": "все находки S01–S52 — FIXED (регрессия); до переноса S52 — 563 passed + 2 XPASS"
   }
  },
  "findings": {
@@ -401,7 +409,7 @@
   "S52": {
    "owner": "R04",
    "level": "низкий",
-   "status": "исправлено в ветке владельца: R04 0d4bb1b6 (PENDING до сборки)",
+   "status": "исправлено: R04 0d4bb1b6 (r04-moderate-3); в сборке R01 B0.12 0121f7bd — FIXED, регрессия",
    "patch": "описание и вариант правки — INTEGRATION.txt, наблюдение круга 10",
    "what": "moderate-2: номер с возрастающими группами по 1–2 цифры («8 70 71 72 73 74») не скрывался без подписи"
   }
@@ -423,5 +431,5 @@
   "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
   "проверка в облаке без интернета; подложка карты — упрощённый фон"
  ],
- "next_step": "круг 10 (~01:30 Астаны) и далее раз в час; B1 16 окт 14:00 — полный прогон на сборке (ожидание 556 / 0), браузер, эталон; B2 23:00; FINAL-5 17 окт 18:00 — финальный SECURITY_REVIEW_R15"
+ "next_step": "круг 13 (~04:30 Астаны) и далее раз в час; B1 16 окт 14:00 — полный прогон на сборке (ожидание 565 / 0), браузер, эталон; B2 23:00; FINAL-5 17 окт 18:00 — финальный SECURITY_REVIEW_R15"
 }
