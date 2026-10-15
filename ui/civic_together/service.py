@@ -456,15 +456,21 @@ class TogetherService:
                             "limits": {"title_min": TITLE_MIN, "title_max": TITLE_MAX, "text_max": TEXT_MAX,
                                        "bring_items": BRING_ITEMS}})
 
+    # Вкладки акимата (IA R11 §5.2): «На проверке · Ждут поддержки · Идут · Сделано»; published и hidden — для API.
+    STAFF_TABS = ("queue", "waiting", "going", "done", "published", "hidden")
+
     def list_staff(self, q: dict) -> dict:
         tab = q.get("tab") or "queue"
-        if tab not in ("queue", "published", "done", "hidden"):
-            raise ApiError(400, "bad_request", "tab: queue, published, done или hidden.", "tab")
+        if tab not in self.STAFF_TABS:
+            raise ApiError(400, "bad_request", "tab: " + ", ".join(self.STAFF_TABS) + ".", "tab")
         district = self._district(q.get("district"))
         reports = self.store.reports_on_review()
         captains = self.store.captains_on_review()
         if tab == "queue":
             rows = self.store.list(statuses=("on_review",), district=district, order="queue", limit=50)
+        elif tab in ("waiting", "going"):
+            rows = self.store.list(statuses=("published",), district=district, supported=tab == "going",
+                                   limit=LIST_LIMIT)
         else:
             status = {"published": ("published",), "done": ("done",), "hidden": ("hidden", "cancelled")}[tab]
             rows = self.store.list(statuses=status, district=district, limit=LIST_LIMIT,
@@ -473,6 +479,8 @@ class TogetherService:
         if tab != "queue":
             reports, captains = [], []
         counts = {"queue": queue_size,
+            "waiting": self.store.count(statuses=("published",), district=district, supported=False),
+            "going": self.store.count(statuses=("published",), district=district, supported=True),
             "published": self.store.count(statuses=("published",), district=district),
             "done": self.store.count(statuses=("done",), district=district),
             "hidden": self.store.count(statuses=("hidden", "cancelled"), district=district)}
@@ -927,6 +935,7 @@ def make_service(db_path, *, clock=None, demo: bool | None = None, autopublish: 
         yards, items = demo_data.rows(store.now())
         # Каждый запуск демо — с чистой сценой 7 (после репетиции снова 14 «Я приду», дело не «сделано»).
         store.seed(yards, items, reset=True)
+        store.meta("scene_yard", demo_data.SCENE["yard"])
     service = TogetherService(store, autopublish=autopublish)
     _register(service)
     return service

@@ -30,7 +30,15 @@
   var SKELETON_DELAY = 150;
   var NET_TIMEOUT = 12000;
   var KINDS = ["cleanup", "greening", "snow", "repair", "help", "other"];
-  var KIND_ICON = { cleanup: "trash", greening: "trees", snow: "snowflake", repair: "edit", help: "heart", other: "dots" };
+  // Значок вида дела: первый, который есть в спрайте ui-kit (R11 добавляет i-broom, i-sprout, i-wrench в раунде 15).
+  var KIND_ICONS = { cleanup: ["broom", "trash"], greening: ["sprout", "trees"], snow: ["snowflake"], repair: ["wrench", "edit"],
+    help: ["heart"], other: ["dots"] };
+  var spriteIds = null;   // id символов icons.svg после загрузки
+  function kindIcon(kind) {
+    var options = KIND_ICONS[kind] || KIND_ICONS.other;
+    for (var i = 0; spriteIds && i < options.length; i++) if (spriteIds["i-" + options[i]]) return options[i];
+    return options[options.length - 1];
+  }
   var TIMES = ["09:00", "10:00", "11:00", "12:00", "15:00", "17:00", "18:00"];
   var HOURS = [1, 2, 3, 4];
   var REASONS = ["personal_data", "rude", "spam", "duplicate", "not_initiative", "other"];
@@ -185,7 +193,7 @@
   // Поправка владельца П1 («без ИИ-слопа»): никаких иллюстраций и «сценок» — значок вида из набора R11 и слово.
   function kindBadge(kind, big) {
     return h("span", { class: "tg-kindbadge" + (big ? " tg-kindbadge--big" : ""), "data-kind": kind }, [
-      h("span", { class: "tg-kindbadge__ic" }, [icon(KIND_ICON[kind] || "dots")]),
+      h("span", { class: "tg-kindbadge__ic" }, [icon(kindIcon(kind))]),
       h("span", { class: "tg-kindbadge__label", text: t("together.kind." + kind) }),
     ]);
   }
@@ -271,6 +279,29 @@
     return PII.filter(function (p) { return p[1].test(text || ""); }).map(function (p) { return p[0]; });
   }
   function textLang(text) { return KK_LETTERS.test(text || "") ? "kk" : lang(); }
+
+  // ------------------------------------------------------------------ что есть в сборке
+  // Маршруты [доп.] R16 (список дворов, «старший по двору») R01 мог ещё не поставить: спрашиваем шлюз один раз
+  // (GET /modules) и прячем то, чего нет, — вместо ошибки 404 на экране. Нет ответа — считаем, что всё есть.
+  var routes = null;
+  function loadRoutes(base) {
+    if (routes) return routes;
+    routes = request(base, "GET", "/modules").then(function (data) {
+      var have = {};
+      Object.keys((data && data.modules) || {}).forEach(function (k) { have[k] = data.modules[k].status === "ready"; });
+      return have;
+    }, function () { return null; });
+    return routes;
+  }
+  var routeOk = { "together.yards.list": true, "together.yards.captain": true };
+  function loadSprite() {
+    if (spriteIds || !root.fetch) return;
+    spriteIds = {};
+    root.fetch(ICONS).then(function (r) { return r.text(); }).then(function (txt) {
+      (txt.match(/id="i-[a-z0-9-]+"/g) || []).forEach(function (m) { spriteIds[m.slice(4, -1)] = true; });
+      mounted.forEach(function (c) { if (c.rerender) c.rerender(); });
+    }).catch(function () { /* без спрайта — прежние значки */ });
+  }
 
   // ------------------------------------------------------------------ фото «после»: сжатие в браузере
   // canvas перекодирует JPEG — EXIF и GPS отпадают (сервер чистит ещё раз). Размер подбираем под тело запроса.
@@ -396,12 +427,14 @@
   var pending = null; // {kind, id} — открыть после монтирования
 
   function mount(rootEl, options) {
-    var opts = { apiBase: "/api/civic/v2", view: "initiatives", role: "resident", titleTag: "h2" };
+    var opts = { apiBase: "/api/civic/v2", role: "resident", titleTag: "h2" };
     Object.keys(options || {}).forEach(function (k) { if (options[k] !== undefined) opts[k] = options[k]; });
     var api = function (method, path, body) { return request(opts.apiBase, method, path, body); };
+    // Раздел оболочки R01 (IA R11 §5): opts.section — «yard» или «together»; свой вызов — opts.view.
+    var viewName = opts.view || (opts.section === "yard" ? "yard" : "initiatives");
     var S = {
       role: opts.role === "akimat" ? "akimat" : "resident",
-      view: opts.view === "yard" ? "yard" : "initiatives",
+      view: viewName === "yard" ? "yard" : "initiatives",
       stack: [],
       cache: {},           // ключ -> {status, data, error}
       busy: {},            // id -> true, пока идёт действие
@@ -415,6 +448,12 @@
     var host = h("div", { class: "tg bk-app", "data-view": S.view, "data-role": S.role });
     rootEl.replaceChildren(host);
     var off = [];
+    loadSprite();
+    loadRoutes(opts.apiBase).then(function (have) {
+      if (!have || S.destroyed) return;
+      Object.keys(routeOk).forEach(function (k) { routeOk[k] = have[k] !== undefined ? have[k] : false; });
+      render();
+    });
 
     function route() { return S.stack[S.stack.length - 1] || baseRoute(); }
     function baseRoute() {
@@ -424,12 +463,63 @@
       }
       return S.role === "akimat" ? { name: "staff", base: true } : { name: "list", base: true };
     }
-    function go(next) { S.stack.push(next); S.wizardError = null; render(true); }
+    function go(next) { S.stack.push(next); S.wizardError = null; render(true); syncPath(); }
     function back() {
-      if (S.stack.length) { S.stack.pop(); render(true); return true; }
+      if (S.stack.length) { S.stack.pop(); render(true); syncPath(); return true; }
       return false;
     }
-    function reset(next) { S.stack = next ? [next] : []; render(true); }
+    function reset(next) { S.stack = next ? [next] : []; render(true); syncPath(); }
+
+    // --- путь в адресе (оболочка R01, IA R11 §7.3): #yard/<двор>, #yard/<двор>/<дело>, #together/<дело>.
+    // Модуль переходит по пути сам (setPath — «Назад» браузера, ссылка ленты) и сообщает оболочке свой путь (navigate).
+    // Оболочка FINAL-4 путей не знает: тогда адрес не меняется, работает свой стек экрана.
+    var nav = typeof opts.navigate === "function" ? opts.navigate : null;
+    var currentPath = typeof opts.path === "string" ? opts.path : "";
+    var echo = false;
+    var YARD_RE = /^(yard|cell)-[A-Za-z0-9_-]{1,60}$/, ITEM_RE = /^i-[a-z0-9-]{4,40}$/;
+    function pathOf(r) {
+      if (r.name === "wizard" || r.name === "sent") return null;   // черновик в адрес не пишем
+      if (S.view === "yard") {
+        if (r.name === "picker") return "";
+        if (r.name === "yard") return r.base ? "" : r.id;
+        if (r.name === "initiative") return r.yard ? r.yard + "/" + r.id : null;
+        return null;
+      }
+      if (r.name === "initiative") return r.id;
+      if (r.name === "yard") return r.id;
+      return r.name === "list" || r.name === "staff" ? "" : null;
+    }
+    function stackFromPath(path) {
+      var parts = String(path || "").split("/").filter(Boolean);
+      if (S.view === "yard") {
+        if (!parts.length || !YARD_RE.test(parts[0])) return [];
+        var out = [{ name: "yard", id: parts[0] }];
+        if (parts[1] && ITEM_RE.test(parts[1])) out.push({ name: "initiative", id: parts[1], yard: parts[0] });
+        return out;
+      }
+      if (parts[0] && ITEM_RE.test(parts[0])) return [{ name: "initiative", id: parts[0] }];
+      if (parts[0] && YARD_RE.test(parts[0])) return [{ name: "yard", id: parts[0] }];
+      return [];
+    }
+    function syncPath() {
+      if (!nav || S.destroyed) return;
+      var p = pathOf(route());
+      if (p === null || p === currentPath) return;
+      currentPath = p;
+      echo = true;
+      try { nav(p); } catch (e) { /* оболочка без путей */ } finally { echo = false; }
+    }
+    function setPath(path) {
+      path = typeof path === "string" ? path : "";
+      if (echo) { currentPath = path; return; }      // наш же navigate вернулся эхом — уже на месте
+      if (path === currentPath && path !== "") return;
+      currentPath = path;
+      S.stack = stackFromPath(path);
+      S.open = null;
+      S.wizard = null;
+      render(true);
+    }
+    if (currentPath) S.stack = stackFromPath(currentPath);
 
     // --- загрузка с кэшем: скелетон не раньше 150 мс, повторное открытие — сразу прежние данные и тихое обновление
     function load(key, path, force) {
@@ -502,10 +592,11 @@
     // ================================================================ двор: выбор
     function viewPicker() {
       var key = "yards";
-      load(key, "/together/yards");
-      var e = entryState(key);
       var rows;
+      var e = { status: "ready", data: { items: [] } };
+      if (routeOk["together.yards.list"]) { load(key, "/together/yards"); e = entryState(key); }
       if (e.status === "loading") rows = e.slow ? skeleton(3) : h("div", { class: "tg-wait" });
+      else if (e.status === "error" && e.error && (e.error.status === 404 || e.error.status === 503)) rows = null;  // нет в сборке
       else if (e.status === "error") rows = errorState(e.error, function () { load(key, "/together/yards", true); });
       else {
         var items = (e.data && e.data.items) || [];
@@ -522,19 +613,32 @@
             y.demo ? demoTag() : null,
             icon("chevron-right", "tg-yardrow__go"),
           ])]);
-        })) : h("p", { class: "tg-muted", text: t("together.pick.empty") });
+        })) : null;
       }
+      // Карта оболочки может появиться позже экрана (оболочка R01 создаёт её после загрузки стиля): кнопка есть всегда,
+      // когда есть оболочка или карта; саму карту берём в момент нажатия.
+      var canPick = !!(opts.map || mapObject() || root.BirgeShell);
       return h("section", { class: "tg-picker" }, [
         h("div", { class: "tg-hero" }, [
+          h("span", { class: "tg-empty__ic" }, [icon("pin")]),
           h("div", { class: "tg-hero__text" }, [
             title(t("together.pick.title")),
             h("p", { class: "tg-lead", text: t("together.pick.text") }),
-            h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "locate", "aria-busy": S.locating ? "true" : null,
-              disabled: S.locating || null, onclick: locate }, [icon("locate"), S.locating ? t("together.pick.locating") : t("together.pick.locate")]),
+            h("div", { class: "tg-wnav tg-hero__actions" }, [
+              canPick ? h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "pick-map", onclick: function () {
+                var base = opts.apiBase;
+                if (typeof opts.close === "function") opts.close();
+                else if (root.BirgeShell && root.BirgeShell.setSection) root.BirgeShell.setSection("map");
+                whenMap(opts.map, function (m) { startPick(m, base); });
+              } }, [icon("pin"), t("together.pick.on_map")]) : null,
+              h("button", { type: "button", class: "bk-btn" + (canPick ? "" : " bk-btn--primary"), "data-focus": "locate",
+                "aria-busy": S.locating ? "true" : null, disabled: S.locating || null, onclick: locate },
+                [icon("locate"), S.locating ? t("together.pick.locating") : t("together.pick.locate")]),
+            ]),
             S.locateError ? h("p", { class: "tg-note", role: "status", text: S.locateError }) : null,
           ]),
         ]),
-        h("h3", { class: "tg-h3", text: t("together.pick.list") }),
+        rows ? h("h3", { class: "tg-h3", text: t("together.pick.list") }) : null,
         rows,
       ]);
     }
@@ -553,8 +657,13 @@
       { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 });
     }
     function openYard(id, tab) {
+      // Житель в «Сделаем вместе» → раздел «Мой двор» оболочки со своим адресом (#yard/<двор>), если оболочка умеет пути.
+      if (S.view !== "yard" && S.role === "resident" && nav && typeof opts.openSection === "function") {
+        opts.openSection("yard", id);
+        return;
+      }
       var r = route();
-      if (r.name === "picker" && r.base) { S.stack = [{ name: "yard", id: id, tab: tab }]; render(true); return; }
+      if (r.name === "picker" && r.base) { S.stack = [{ name: "yard", id: id, tab: tab }]; render(true); syncPath(); return; }
       go({ name: "yard", id: id, tab: tab });
     }
 
@@ -583,7 +692,7 @@
         kpi(counts.initiatives, "together.kpi.initiatives", function () { setTab("initiatives"); }),
       ]);
       function setTab(next) { r.tab = next; render(); var b = host.querySelector('[data-focus="tab-' + next + '"]'); if (b) b.focus(); }
-      var main = mine
+      var main = S.role === "akimat" ? null : mine
         ? h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "propose", onclick: function () { startWizard(page); } },
           [icon("plus"), t("together.yard.propose")])
         : h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "join-yard", "aria-busy": S.busy.yard ? "true" : null,
@@ -615,12 +724,12 @@
         }));
       var panel = h("div", { class: "tg-panel", id: "tg-panel", role: "tabpanel", "aria-labelledby": "tg-tab-" + tab },
         [({ overview: yardOverview, problems: yardProblems, initiatives: yardInitiatives, works: yardWorks })[tab](page)]);
-      var foot = h("div", { class: "tg-yardfoot" }, [
+      var foot = S.role === "akimat" ? null : h("div", { class: "tg-yardfoot" }, [
         mine ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "leave-yard",
           onclick: function () { yardMembership(page, false); } }, [t("together.yard.leave")]) : null,
         h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "other-yard",
           onclick: function () { storage(YARD_KEY, null); reset(S.view === "yard" ? null : { name: "picker" }); } }, [t("together.yard.other")]),
-        mine ? captainBlock(page) : null,
+        mine && routeOk["together.yards.captain"] ? captainBlock(page) : null,
       ]);
       return h("section", { class: "tg-yard" }, [S.stack.length ? backButton() : null, header, tabs, panel, foot]);
     }
@@ -660,7 +769,7 @@
       ]));
       blocks.push(h("aside", { class: "tg-col tg-col--side" }, [
         h("h3", { class: "tg-h3", text: t("together.feed.title") }),
-        feedList(page.feed || []),
+        feedList((page.feed || []).slice(0, 5)),
       ]));
       return h("div", { class: "tg-overview" }, blocks);
     }
@@ -861,7 +970,7 @@
     function mineRow(i) {
       var status = i.report_status === "on_review" ? t("together.report_review") : statusText(i);
       return h("li", {}, [h("button", { type: "button", class: "tg-row", onclick: function () { openInitiative(i.id); } }, [
-        h("span", { class: "tg-level tg-level--kind", "data-kind": i.kind }, [icon(KIND_ICON[i.kind] || "dots")]),
+        h("span", { class: "tg-level tg-level--kind", "data-kind": i.kind }, [icon(kindIcon(i.kind))]),
         h("span", { class: "tg-row__main" }, [h("span", { class: "tg-row__title", text: i.title }),
           h("span", { class: "tg-row__meta", text: whenLabel(i) })]),
         h("span", { class: "tg-status", "data-status": i.status }, [status]),
@@ -952,7 +1061,10 @@
         });
       });
     }
-    function openInitiative(id) { go({ name: "initiative", id: id }); }
+    function openInitiative(id) {
+      var r = route();
+      go({ name: "initiative", id: id, yard: S.view === "yard" ? (r.name === "yard" ? r.id : r.yard || null) : null });
+    }
 
     // ================================================================ инициатива: карточка
     function viewInitiative(r) {
@@ -1113,7 +1225,7 @@
               w.kind = k;
               if (!w.bringTouched) w.bring = list("together.bring." + k).slice(0, 2);
               render();
-            } }, [h("span", { class: "tg-kind__ic" }, [icon(KIND_ICON[k])]), h("span", { text: t("together.kind." + k) })]);
+            } }, [h("span", { class: "tg-kind__ic" }, [icon(kindIcon(k))]), h("span", { text: t("together.kind." + k) })]);
         })),
         h("label", { class: "bk-field", for: "tg-wname" }, [h("span", { class: "bk-field__label", text: t("together.wizard.name") }), name]),
         h("label", { class: "bk-field", for: "tg-wtext" }, [h("span", { class: "bk-field__label", text: t("together.wizard.text") }), text,
@@ -1342,7 +1454,7 @@
     function viewStaff() {
       var tab = S.staffTab;
       var key = "staff:" + tab;
-      var path = "/together/initiatives?view=staff&tab=" + tab;
+      var path = "/together/initiatives?view=staff&tab=" + tab;   // queue | waiting | going | done
       load(key, path);
       var e = entryState(key);
       var counts = (e.data && e.data.counts) || (S.cache["staff:queue"] && S.cache["staff:queue"].data && S.cache["staff:queue"].data.counts) || {};
@@ -1356,7 +1468,7 @@
         h("header", { class: "tg-listhead" }, [h("div", {}, [title(t("together.staff.title")),
           h("p", { class: "tg-lead", text: t("together.staff.lead") })])]),
         h("div", { class: "bk-tabs tg-tabs", role: "tablist", "aria-label": t("together.staff.title") },
-          ["queue", "published", "done", "hidden"].map(function (id) {
+          ["queue", "waiting", "going", "done"].map(function (id) {
             return h("button", { type: "button", role: "tab", "aria-selected": String(tab === id), tabindex: tab === id ? "0" : "-1",
               "data-focus": "stab-" + id, onkeydown: tabKeys, onclick: function () { S.staffTab = id; S.open = null; render(); } },
             [t("together.staff." + id), typeof counts[id] === "number" ? h("span", { class: "bk-num", text: formatNumber(counts[id]) }) : null]);
@@ -1411,7 +1523,7 @@
       var changed = original.title && (original.title !== item.title || (original.text || "") !== (item.text || ""));
       return h("article", { class: "tg-staffrow", "data-id": item.id, "data-status": item.status }, [
         h("div", { class: "tg-staffrow__head" }, [
-          h("span", { class: "tg-level tg-level--kind", "data-kind": item.kind }, [icon(KIND_ICON[item.kind] || "dots")]),
+          h("span", { class: "tg-level tg-level--kind", "data-kind": item.kind }, [icon(kindIcon(item.kind))]),
           h("div", { class: "tg-row__main" }, [
             h("button", { type: "button", class: "tg-staffrow__title", onclick: function () { openInitiative(item.id); } },
               [tab === "queue" ? original.title || item.title : item.title]),
@@ -1624,9 +1736,12 @@
       S.stack = [{ name: kind === "yard" ? "yard" : "initiative", id: id }];
       S.open = null;
       render(true);
+      syncPath();
     }
     var controller = {
       setLang: function () { render(); },
+      setPath: setPath,
+      rerender: function () { render(); },
       open: openExternal,
       refresh: function () { Object.keys(S.cache).forEach(function (k) { S.cache[k].status = "stale"; }); render(); },
       destroy: function () {
@@ -1644,11 +1759,64 @@
     if (pending && pending.screen === S.view) {
       var p = pending;
       pending = null;
-      openExternal(p.kind, p.id);
+      // Оболочка с путями уже передала путь (opts.path) — тот же переход, повторять не нужно.
+      if (currentPath && pathOf(route()) !== null) render(true);
+      else openExternal(p.kind, p.id);
     } else {
       render(true);
     }
     return controller;
+  }
+
+  // ------------------------------------------------------------------ выбор двора на карте (IA R11 §5.1)
+  // Экран закрывается, сверху — строка «Нажмите на свой двор»; нажатие внутри двора OSM (R12 /yard) открывает «Мой двор».
+  // Esc или «Отмена» — выход. Карта сама не двигается.
+  function mapObject() {
+    try {
+      // eslint-disable-next-line no-undef
+      return typeof map !== "undefined" && map && typeof map.on === "function" && typeof map.project === "function" ? map : null;
+    } catch (e) { return null; }
+  }
+  // Карта есть сразу или появится в течение нескольких секунд (оболочка создаёт её после загрузки стиля).
+  function whenMap(given, done) {
+    var tries = 0;
+    (function check() {
+      var m = given && typeof given.on === "function" ? given : mapObject();
+      if (m) { done(m); return; }
+      if (++tries < 40) setTimeout(check, 100);
+    })();
+  }
+  var picking = null;
+  function stopPick() {
+    if (!picking) return;
+    try { picking.map.off("click", picking.onClick); } catch (e) { /* карта снята */ }
+    doc.removeEventListener("keydown", picking.onKey, true);
+    if (picking.bar.parentNode) picking.bar.parentNode.removeChild(picking.bar);
+    if (picking.canvas) picking.canvas.style.cursor = "";
+    picking = null;
+  }
+  function startPick(mapObj, base) {
+    stopPick();
+    var text = h("span", { class: "tg-pickbar__text", text: t("together.pick.on_map_hint") });
+    var bar = h("div", { class: "tg-pickbar bk-app", role: "status", "aria-live": "polite" }, [
+      icon("pin"), text,
+      h("button", { type: "button", class: "bk-btn bk-btn--ghost", onclick: stopPick }, [t("common.action.cancel")]),
+    ]);
+    doc.body.appendChild(bar);
+    var canvas = mapObj.getCanvas ? mapObj.getCanvas() : null;
+    if (canvas) canvas.style.cursor = "crosshair";
+    function onClick(ev) {
+      var ll = ev.lngLat;
+      if (!ll) return;
+      request(base || "/api/civic/v2", "GET", "/yard?lon=" + ll.lng.toFixed(6) + "&lat=" + ll.lat.toFixed(6)).then(function (data) {
+        if (data && data.yard && data.yard.id) { stopPick(); open("yard", data.yard.id); }
+        else text.textContent = t("together.pick.not_found_map");
+      }, function () { text.textContent = t("together.error.text"); });
+    }
+    function onKey(ev) { if (ev.key === "Escape") { stopPick(); ev.preventDefault(); ev.stopPropagation(); } }
+    mapObj.on("click", onClick);
+    doc.addEventListener("keydown", onKey, true);
+    picking = { map: mapObj, onClick: onClick, onKey: onKey, bar: bar, canvas: canvas };
   }
 
   // ------------------------------------------------------------------ слой карты «Инициативы»
@@ -1666,11 +1834,17 @@
         var done = item.status === "done";
         if (item.status === "published" && isPast(item)) return;
         var n = done ? (item.report && item.report.joined || item.joined) : item.joined;
+        // Капсула ui-kit «дата · число» со значком вида (IA R11 §5.2); «сделано» — галочка и число соседей.
         var el = h("button", { type: "button", class: "tg-pin" + (done ? " tg-pin--done" : ""), "data-kind": item.kind,
-          "aria-label": item.title + " · " + (done ? t("together.done_count", { n: n }) : t("together.count", { n: n })),
-          title: item.title }, [icon(done ? "check" : KIND_ICON[item.kind] || "dots"), h("span", { class: "tg-pin__n", text: formatNumber(n) })]);
+          "aria-label": item.title + " · " + (done ? t("together.done_count", { n: n }) : whenLabel(item) + " · " + t("together.count", { n: n })),
+          title: item.title }, [icon(done ? "check" : kindIcon(item.kind)),
+          done ? null : h("span", { class: "tg-pin__date", text: shortDate(item.starts_at) }),
+          h("span", { class: "tg-pin__n", text: formatNumber(n) })]);
         el.addEventListener("click", function (ev) { ev.stopPropagation(); open("initiative", item.id); });
         var marker = new root.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat(item.point).addTo(map);
+        // Под значками тепловой карты: значки R07 — тоже HTML-метки, порядок в DOM = порядок слоёв.
+        var firstMarker = el.parentNode && el.parentNode.querySelector(".maplibregl-marker");
+        if (firstMarker && firstMarker !== el) el.parentNode.insertBefore(el, firstMarker);
         // Важнее — предстоящее дело (по дате), затем больше соседей; «сделано» — после предстоящих.
         marker.tgRank = [done ? 1 : 0, done ? 0 : Date.parse(item.starts_at) || 0, -n];
         layerState.markers.push(marker);
@@ -1737,12 +1911,14 @@
   function open(kind, id) {
     if (!/^(yard|initiative)$/.test(kind) || !/^[A-Za-z0-9._:-]{3,96}$/.test(String(id || ""))) return false;
     var shell = root.BirgeShell;
+    // Акимат открывает двор внутри «Инициатив жителей» (пункта «Мой двор» у акимата нет — IA R11 §5.1).
     var screen = kind === "yard" && (!shell || shell.mode !== "akimat") ? "yard" : "initiatives";
     var section = screen === "yard" ? "yard" : "together";
     var live = mounted.filter(function (m) { return m.view === screen; })[0];
     if (live && shell && shell.section === section) { live.open(kind, id); return true; }
     pending = { kind: kind, id: id, screen: screen };
-    if (shell && typeof shell.setSection === "function") shell.setSection(section);
+    // Оболочка R01 раунда 15 понимает путь (#together/i-…); FINAL-4 — нет, тогда сработает pending.
+    if (shell && typeof shell.setSection === "function") shell.setSection(section, { path: id });
     return true;
   }
   // «#together/i-…» и «#yard/yard-…» (CONTRACT §5.8 link) — после обработчиков оболочки (она такие адреса не знает).
@@ -1751,6 +1927,9 @@
     if (!m) return;
     var kind = m[1] === "yard" ? "yard" : (/^yard-|^cell-/.test(m[2]) ? "yard" : "initiative");
     setTimeout(function () {
+      var shell = root.BirgeShell;
+      // Оболочка с путями (R01, раунд 15) уже открыла раздел и передала путь модулю — второй переход не нужен.
+      if (shell && shell.section === m[1]) return;
       open(kind, m[2]);
       try { root.history.replaceState(null, "", root.location.pathname + root.location.search + "#" + (kind === "yard" && (!root.BirgeShell || root.BirgeShell.mode !== "akimat") ? "yard" : "together")); } catch (e) { /* без адреса */ }
     }, 0);

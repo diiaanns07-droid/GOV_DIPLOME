@@ -576,3 +576,21 @@ def test_r15_s46_fallback_catches_spaced_iin_and_bare_mobile(raw):
 def test_r15_s45_public_point_is_rounded_to_4_digits(svc):
     item = call(svc, "GET", "/initiatives/" + SCENE["initiative"])["body"]["initiative"]
     assert all(len(str(v).split(".")[1]) <= 4 for v in item["point"])
+
+
+def test_staff_tabs_waiting_and_going(svc):
+    staff = dict(principal=Staff(), context=ctx(csrf="csrf-ok"))
+    waiting = call(svc, "GET", "/initiatives", query="view=staff&tab=waiting", **staff)["body"]
+    going = call(svc, "GET", "/initiatives", query="view=staff&tab=going", **staff)["body"]
+    assert SCENE["initiative"] in [i["id"] for i in waiting["items"]]
+    assert all(not (i["support"] or {}).get("by_akimat") for i in waiting["items"])
+    assert all(i["support"]["by_akimat"] for i in going["items"]) and going["items"]
+    assert waiting["counts"]["waiting"] == len(waiting["items"]) and waiting["counts"]["going"] == len(going["items"])
+    call(svc, "POST", f"/initiatives/{SCENE['initiative']}/support", {"note": "Мешки"}, **staff)
+    going2 = call(svc, "GET", "/initiatives", query="view=staff&tab=going", **staff)["body"]
+    assert SCENE["initiative"] in [i["id"] for i in going2["items"]]
+
+
+def test_scene_yard_first_in_yard_list(svc):
+    items = call(svc, "GET", "/yards")["body"]["items"]
+    assert items[0]["id"] == SCENE["yard"]

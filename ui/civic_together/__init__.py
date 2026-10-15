@@ -57,6 +57,9 @@ def seed_world(db_path, records, now: datetime | None = None) -> dict:
         yards, items = _demo.rows(moment)
         source = "fixture"
     result = store.seed(yards, items, reset=True)
+    # Двор сцены 7 — первым в списке дворов (IA R11 §5.1): из scenes мира или своей фикстуры.
+    scene = ((records or {}).get("scenes") or {}).get("scene7") if isinstance(records, dict) else None
+    store.meta("scene_yard", (scene or {}).get("yard") if source == "world" and scene else _demo.SCENE["yard"])
     return dict(result, source=source)
 
 

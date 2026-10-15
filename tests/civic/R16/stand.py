@@ -7,7 +7,7 @@ index.html. Файлы R01 на диске не меняются.
     mkdir -p /tmp/birge && python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init   # и засев по COMMON.txt
     CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B tests/civic/R16/stand.py --port 8655
 
-Если в сборке маршруты уже есть (R01 взял поставку) — стенд ничего не добавляет и просто запускает приложение.
+Если часть маршрутов уже есть (R01 взял поставку частично) — стенд добавляет только недостающие.
 """
 
 from __future__ import annotations
@@ -58,17 +58,26 @@ TAGS_BODY = (b'    <script defer src="/civic/together/together-text.js"></script
 
 
 def install() -> bool:
-    """Добавить маршруты, лимиты, файлы и теги (если их ещё нет в сборке). True — что-то добавили."""
+    """Добавить недостающие маршруты, лимиты, файлы и теги. True — что-то добавили.
+
+    По одному: в сборке R01 раунда 15 уже 12 маршрутов together/* (без списка дворов и «старшего по двору»),
+    но ещё нет файлов web/civic/together/ — стенд добавляет только то, чего нет, и не трогает то, что есть."""
+    added = False
     have = {key for _m, _p, key in ws.V2_ROUTES}
-    if any(key.startswith("together.") for key in have):
-        return False
-    new_routes = tuple((method, pattern, key) for method, pattern, key, _staff in ROUTES)
-    ws.V2_ROUTES = ws.V2_ROUTES + new_routes
+    new_routes = tuple((method, pattern, key) for method, pattern, key, _staff in ROUTES if key not in have)
+    if new_routes:
+        ws.V2_ROUTES = ws.V2_ROUTES + new_routes
+        added = True
     for _method, _pattern, key, staff in ROUTES:
-        ws.V2_HANDLERS[key] = ws.V2Handler("R16", MODULE, "make_service", kind="service", staff=staff)
-    ws.V2_RATE_LIMITS.update(RATE_LIMITS)
+        if key not in ws.V2_HANDLERS:
+            ws.V2_HANDLERS[key] = ws.V2Handler("R16", MODULE, "make_service", kind="service", staff=staff)
+            added = True
+    for key, limits in RATE_LIMITS.items():
+        ws.V2_RATE_LIMITS.setdefault(key, limits)
     for asset in ASSETS:
-        ws.ASSETS["/civic/" + asset] = ("civic/" + asset, ws.CIVIC_MIME.get(Path(asset).suffix, "text/plain; charset=utf-8"))
+        if "/civic/" + asset not in ws.ASSETS:
+            ws.ASSETS["/civic/" + asset] = ("civic/" + asset, ws.CIVIC_MIME.get(Path(asset).suffix, "text/plain; charset=utf-8"))
+            added = True
     original = ws.Handler.send_bytes
 
     def send_bytes(self, status, data, content_type):
@@ -77,9 +86,9 @@ def install() -> bool:
         return original(self, status, data, content_type)
 
     ws.Handler.send_bytes = send_bytes
-    return True
+    return added
 
 
 if __name__ == "__main__":
-    print("R16 stand: " + ("маршруты together/* добавлены в памяти" if install() else "маршруты уже в сборке"), flush=True)
+    print("R16 stand: " + ("недостающие маршруты/файлы together добавлены в памяти" if install() else "всё уже в сборке"), flush=True)
     ws.main()

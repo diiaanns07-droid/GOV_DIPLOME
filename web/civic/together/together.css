@@ -68,7 +68,18 @@
   display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); align-items: center;
   padding: var(--s-6); border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface);
 }
+.tg-hero { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
 .tg-hero__text { display: grid; gap: var(--s-3); justify-items: start; }
+.tg-hero__actions { justify-content: flex-start; }
+/* Выбор двора на карте: строка над картой под шапкой (как плашка карты), Esc / «Отмена» — выход. */
+.tg-pickbar {
+  position: fixed; z-index: 25; top: 84px; left: 50%; translate: -50% 0; display: flex; align-items: center; gap: var(--s-2);
+  max-width: calc(100vw - 24px); padding: 6px 6px 6px 14px; border-radius: var(--r-pill); background: var(--c-surface);
+  color: var(--c-ink); box-shadow: var(--shadow-2); font-family: var(--font); font-size: var(--fs-small); font-weight: var(--fw-medium);
+}
+.tg-pickbar > .ic { width: 18px; height: 18px; flex: none; }
+.tg-pin__date { color: var(--c-text-2); font-weight: var(--fw-medium); }
+.tg-pin__date::after { content: " ·"; }
 .tg-yardlist { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
 .tg-yardrow {
   display: flex; align-items: center; gap: var(--s-3); width: 100%; min-height: 60px; padding: var(--s-2) var(--s-3);
@@ -356,7 +367,8 @@ button.tg-staffrow__title:hover { text-decoration: underline; }
 @media (max-width: 760px) {
   .tg { --tg-gap: var(--s-3); }
   .tg-title { font-size: var(--fs-title); }
-  .tg-hero { padding: var(--s-4); }
+  .tg-hero { padding: var(--s-4); grid-template-columns: minmax(0, 1fr); }
+  .tg-pickbar { top: 72px; }
   .tg-yardhead { padding: var(--s-4); }
   .tg-kinds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tg-fact { grid-template-columns: minmax(0, 1fr); gap: var(--s-1); }

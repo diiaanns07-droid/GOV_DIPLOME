@@ -6,6 +6,17 @@ R06 (лента, идея → дело), R08/R03 (сводка), R17 (вывоз
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
 1. R01 · ПОДКЛЮЧЕНИЕ К СБОРКЕ (одна правка, готовый patch)
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+B1 — ветка R01 claude/brave-fermi-nhzetj (12 маршрутов together/* из CONTRACT §7 уже есть, файлов R16 ещё нет):
+  git apply research/round-15-results/R16/R01_together_b1.patch            # проверено: git apply --check на cc510c9d
+  + файлы роли: ui/civic_together/, web/civic/together/, tests/civic/R16/ (ветка claude/youthful-johnson-6nz5mp).
+  Что в нём: 3 маршрута [доп.] (GET together/yards; POST together/yards/{id}/captain; POST together/yards/{id}/moderate —
+  staff=True) + V2_HANDLERS + лимит «старшего» 10/ч; CIVIC_ASSETS together/*; index.html — together.css после
+  meetings.css, together-text.js и together.js после forecast-week.js; в тест R01 test_r01_round15_routes.py — 3 строки
+  [доп.] таблицы и yards/{id}/moderate в STAFF_ROUTES. Лимиты together.* у R01 свои — оставлены как есть.
+  Проверено на cc510c9d + patch + ui-kit/i18n R11 (b6f039c4): tests/civic/R01 — 363 passed, 1 skipped; tests/civic/R16 —
+  54 passed; браузер R16 в оболочке R01 с путями (#yard/<двор>, #together/<дело>) — см. §5.
+  Без 3 [доп.] модуль тоже работает: спрашивает GET /modules и прячет список дворов и «старшего по двору» (без 404).
+Пакет / FINAL-4 (без маршрутов раунда 15) — прежний полный patch:
   git apply research/round-15-results/R16/R01_together_routes.patch        # проверено: git apply --check на e91acb6
 Что в нём (ui/web_server.py + web/index.html):
   а) V2_ROUTES — 15 маршрутов together/* (точные пути раньше {id});
@@ -22,7 +33,8 @@ make_service · kind="service"; дополнительно нужны 3 марш
 Маршруты (/api/civic/v2/…):
   GET  together/initiatives?bbox&status&kind&yard&district&limit   все (опубликованные и «сделано»)
        …?view=mine                                                 житель: свои (и на проверке)
-       …?view=staff&tab=queue|published|done|hidden                сотрудник: очередь, отчёты жителей, старшие по двору
+       …?view=staff&tab=queue|waiting|going|done|published|hidden   сотрудник: на проверке (+ отчёты, старшие), ждут
+                                                                   поддержки, идут (поддержаны), сделано; counts — числа вкладок
        …?similar=1&lon&lat&kind&title                              все: похожее дело рядом (≤ 600 м, тот же вид)
   POST together/initiatives                                        житель (X-Birge-Device) → 201 «на проверке»
   GET  together/initiatives/{id}                                   все (на проверке — автору и сотруднику)
@@ -58,6 +70,10 @@ ml.datasets.demo_world_io.materialize, если он есть в сборке). 
     ISO, {in_days|ago_days|hour…} или плоские <поле>_in_days / ago_days. Нет инициатив в мире — своя фикстура.
   • Повтор засева ничего не дублирует и не возвращает снятое сотрудником.
 
+Оболочка R01 раунда 15 (IA R11 §7.3): модуль понимает opts.section ("yard" | "together"), opts.path, opts.navigate(path)
+и handle.setPath(path) — переходы внутри раздела без перемонтажа, адрес #yard/<двор>, #together/<дело> переживает
+перезагрузку; житель из «Сделаем вместе» в двор — opts.openSection("yard", id). «Выбрать на карте» берёт opts.map
+(или карту страницы, когда она появится), закрывает экран (opts.close) и ждёт нажатия во дворе (R12 GET /yard).
 Разделы и слой (модуль регистрирует сам, BirgeShell.registerScreen / registerLayer, подписи {ru, kk}):
   • «yard» — «Мой двор / Менің аулам» (житель);  «together» — «Сделаем вместе / Бірге жасайық» (житель — дела соседей;
     акимат — «Инициативы жителей»: проверка, «Поддержать», «Отметить сделанным»);
@@ -79,6 +95,8 @@ BirgeTogether.open("initiative", scenes.initiative) — переход без п
        инвентарь и вывоз); повтор для той же идеи — то же дело. Для POST ideas/{id}/to-initiative (сотрудник).
   R08/R03  tg.initiatives_summary(district=None) -> {upcoming, joined_upcoming, supported, done, neighbors_done,
        on_review, next:[…]} — числа считает код («Жители вместе» в Ситуационном центре и «Картине дня»).
+       R03 уже ищет её первой (sources.py INITIATIVE_FUNCS) — наблюдение R15 «not_ready» снято. В ответе только
+       опубликованное и «сделано» (next — публичные названия); очередь «на проверке» — только числом on_review.
   R17  tg.pickups(district=None) -> [{initiative_id, service:"waste", title, point, district, target, starts_at,
        ends_at, note, supported_at}] — задача оператору вывоза после «Поддержать: мешки и вывоз».
 Приватность (CONTRACT §10): нигде нет id/хэшей устройств, времени вступления и «Я приду», списков людей.
@@ -94,13 +112,19 @@ R04: moderate() и similar_initiatives(title, point, 30, records=…, kind=…) 
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
 3. R11 · СЛОВАРЬ И UI-KIT
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
-  • 233 ключа together.* ru/kk — research/round-15-results/R16/i18n_together.json (готово к слиянию в ru.json, kk.json);
-    массивы together.wd, together.months, together.bring.* остаются в web/civic/together/together-text.js.
-  • KK_REVIEW (на проверку владельцу): «старший по двору» → «аула жетекшісі»; «Сделаем вместе» → «Бірге жасайық»;
-    «Я приду» → «Мен келемін»; «Поддержано акиматом» → «Әкімдік қолдады»; «Сделано вместе» → «Бірге жасалды»;
-    «субботник» → «сенбілік».
-  • Когда в ui-kit появятся компоненты «шапка двора с 3 числами» и «карточка инициативы» — модуль перейдёт на них
-    (сейчас свои классы tg-* только на токенах ui-kit). Значки — набор R11 (trash, trees, snowflake, edit, heart, dots).
+  • 242 строковых ключа together.* ru/kk — research/round-15-results/R16/i18n_together.json (ru = kk). Новые в круге 2
+    (в словаре R11 b6f039c4 их ещё нет — 10): together.after_none, together.pick.on_map, together.pick.on_map_hint,
+    together.pick.not_found_map, together.pii.iban, together.pii.apartment, together.pii.contact, together.pii.other,
+    together.staff.waiting («Ждут поддержки» / «Қолдау күтуде»), together.staff.going («Идут» / «Жүріп жатыр»).
+    Массивы together.wd, together.months, together.bring.* остаются в web/civic/together/together-text.js.
+  • Термины KK_REVIEW R11 взяты и в запасные тексты: «Мен барамын / Сіз барасыз / Бара алмаймын», тост «Готово: …» /
+    «Дайын: …» без «!»; «аула жетекшісі»; «Бірге жасайық»; «Әкімдік қолдады»; «Бірге жасалды»; «сенбілік».
+  • Значки вида — набор R11: уборка i-broom, озеленение i-sprout, ремонт i-wrench, снег i-snowflake, помощь i-heart,
+    другое i-dots; пока в спрайте сборки нет новых — прежние (trash, trees, edit): модуль читает icons.svg и выбирает сам.
+  • Вкладки акимата — IA §5.2: «На проверке · Ждут поддержки · Идут · Сделано» (+ отчёты жителей и «старшие» на проверке
+    внутри «На проверке»). Слой карты — капсула «значок · дата · число», «сделано» — галочка и число; под значками R07.
+  • Классы ui-kit раунда 15 (.bk-yard, .bk-init, .bk-join, .bk-done--nophoto) — модуль пока на своих tg-* поверх токенов
+    (проверено и на ui-kit FINAL-4, и на ui-kit R11); переход — когда классы будут в сборке B1 (не ломая FINAL-4).
 
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════
 4. R02 · ДЕМО-МИР (что R16 ждёт в world_v1.json)

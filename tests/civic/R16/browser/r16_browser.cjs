@@ -11,7 +11,10 @@ const BASE = process.argv[2] || "http://127.0.0.1:8655";
 const OUT = process.argv[3] || "research/round-15-results/R16/screens";
 const ONLY = process.env.R16_ONLY || "";          // «1366-ru» — один размер и язык (быстрый круг)
 const STAFF = { user: process.env.R16_STAFF_USER || "operator", pass: process.env.R16_STAFF_PASS || "demo-stand-pass-2026" };
-const SCENE = { yard: "yard-1454082638", initiative: "i-demo-scene7", emptyYard: "yard-1104998691" };
+// Сцена 7: по умолчанию — запасные демо R16; с демо-миром R02 (CIVIC_DEMO_WORLD=1) — R16_SCENE_YARD=yard-1454082640
+// R16_SCENE_ITEM=i-w15-01 (scenes.scene7 в world_v1.json).
+const SCENE = { yard: process.env.R16_SCENE_YARD || "yard-1454082638", initiative: process.env.R16_SCENE_ITEM || "i-demo-scene7",
+  emptyYard: "yard-1104998691" };
 const SIZES = [[1366, 768], [1024, 768], [375, 812]];
 const LANGS = ["ru", "kk"];
 fs.mkdirSync(OUT, { recursive: true });
@@ -128,6 +131,47 @@ async function jpegBuffer(page, w, h) {
       check(`${tag} выбор двора: одна главная кнопка`, (await primaries(page)).length === 1, await primaries(page));
       await shot(page, `${tag}_yard_picker`);
 
+      // Выбор двора на карте (IA R11 §5.1): главная кнопка — «Выбрать на карте»; Esc — выход; нажатие во дворе — двор.
+      const pickMain = await page.$('.tg-picker .bk-btn--primary[data-focus="pick-map"]');
+      check(`${tag} выбор двора: главная — «Выбрать на карте», «Определить по месту» — тише`,
+        !!pickMain && !!(await page.$('.tg-picker [data-focus="locate"]:not(.bk-btn--primary)')));
+      if (pickMain) {
+        await page.click('.tg-picker [data-focus="pick-map"]');   // экран мог перерисоваться — по селектору
+        await page.waitForSelector(".tg-pickbar", { timeout: 5000 });
+        check(`${tag} выбор на карте: строка-подсказка над картой`, await page.$eval(".tg-pickbar", (n) => n.getBoundingClientRect().width > 0));
+        if (w === 1366 || phone) await shot(page, `${tag}_yard_pick_map`);
+        await page.keyboard.press("Escape");
+        await page.waitForFunction(() => !document.querySelector(".tg-pickbar"), null, { timeout: 5000 });
+        check(`${tag} выбор на карте: Esc — выход`, true);
+        await go(page, "#yard", ".tg-yardrow");
+        await page.click('[data-focus="pick-map"]');
+        await page.waitForSelector(".tg-pickbar", { timeout: 5000 });
+        const spot = await page.evaluate(async (id) => {
+          const res = await fetch("/api/civic/v2/together/yards/" + encodeURIComponent(id), { headers: { Accept: "application/json" } });
+          const j = await res.json();
+          const pt = (j.yard || {}).point;
+          if (!pt || typeof map === "undefined" || !map) return null;   // eslint-disable-line no-undef
+          map.jumpTo({ center: pt, zoom: 17 });                         // eslint-disable-line no-undef
+          await new Promise((r) => setTimeout(r, 400));
+          const xy = map.project(pt);                                   // eslint-disable-line no-undef
+          const box = map.getCanvas().getBoundingClientRect();          // eslint-disable-line no-undef
+          // Точка двора, не закрытая значками тепловой карты: ищем рядом свободное место на холсте.
+          for (const [dx, dy] of [[0, 0], [14, 0], [-14, 0], [0, 14], [0, -14], [20, 20], [-20, -20]]) {
+            const x = box.left + xy.x + dx, y = box.top + xy.y + dy;
+            if (document.elementFromPoint(x, y) === map.getCanvas()) return { x, y }; // eslint-disable-line no-undef
+          }
+          return null;
+        }, SCENE.yard);
+        if (spot) {
+          await page.mouse.click(spot.x, spot.y);
+          const opened = await page.waitForSelector(`.tg-yardhead`, { timeout: 15000 }).then(() => true, () => false);
+          check(`${tag} выбор на карте: нажатие во дворе открывает «Мой двор»`, opened && !(await page.$(".tg-pickbar")));
+        } else {
+          check(`${tag} выбор на карте: двор сцены 7 виден на карте`, false, "нет точки двора или она закрыта");
+        }
+        await go(page, "#yard", ".tg-yardrow");
+      }
+
       // Страница двора (сцена 7)
       await page.click(`[data-focus="yard-${SCENE.yard}"]`);
       await page.waitForSelector(".tg-yardhead", { timeout: 15000 });
@@ -231,8 +275,10 @@ async function jpegBuffer(page, w, h) {
       check(`${tag} «Я приду»: ${before} → ${after} (+1, один раз)`, Number(after) === Number(before) + 1, { before, after });
       await shot(page, `${tag}_detail_joined`);
       await page.reload({ waitUntil: "load" });
-      await waitTg(page, ".tg-card");
-      await page.click(`[data-focus="open-${SCENE.initiative}"]`);
+      // Оболочка с путями (R01 раунд 15) хранит адрес дела (#together/i-…) — после перезагрузки сразу карточка дела;
+      // оболочка FINAL-4 — список.
+      await waitTg(page, ".tg-card, .tg-detail .tg-actionbar");
+      if (!(await page.$(".tg-detail .tg-actionbar"))) await page.click(`[data-focus="open-${SCENE.initiative}"]`);
       await page.waitForSelector(".tg-actionbar", { timeout: 10000 });
       const kept = await page.evaluate(() => ({ n: document.querySelector(".tg-actionbar .tg-count")?.dataset.n,
         pressed: document.querySelector(".tg-actionbar .tg-join")?.getAttribute("aria-pressed") }));
@@ -310,7 +356,7 @@ async function jpegBuffer(page, w, h) {
       const sh = await textHealth(sp);
       check(`${tag} акимат: нет ключей и обрезанного текста`, !sh.raw.length && !sh.clipped.length, sh);
       await shot(sp, `${tag}_staff_queue`);
-      await sp.click('.tg-tabs [data-focus="stab-published"]');
+      await sp.click('.tg-tabs [data-focus="stab-waiting"]');
       await sp.waitForSelector(`.tg-staffrow[data-id="${SCENE.initiative}"]`, { timeout: 10000 });
       await sp.click(`[data-focus="support-${SCENE.initiative}"]`);
       await sp.waitForSelector(".tg-form", { timeout: 5000 });

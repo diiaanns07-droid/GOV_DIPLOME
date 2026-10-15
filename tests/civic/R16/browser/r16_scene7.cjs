@@ -12,8 +12,9 @@ const OUT = process.argv[3] || "research/round-15-results/R16/screens";
 const LANG = process.argv[4] || "ru";
 const [W, H] = (process.argv[5] || "1366x768").split("x").map(Number);
 const STAFF = { user: process.env.R16_STAFF_USER || "operator", pass: process.env.R16_STAFF_PASS || "demo-stand-pass-2026" };
-const YARD = "yard-1454082638";
-const ITEM = "i-demo-scene7";
+// Демо-мир R02 (CIVIC_DEMO_WORLD=1): R16_SCENE_YARD=yard-1454082640 R16_SCENE_ITEM=i-w15-01 (scenes.scene7).
+const YARD = process.env.R16_SCENE_YARD || "yard-1454082638";
+const ITEM = process.env.R16_SCENE_ITEM || "i-demo-scene7";
 const tag = `scene7_${W}-${LANG}`;
 fs.mkdirSync(OUT, { recursive: true });
 const steps = [];
