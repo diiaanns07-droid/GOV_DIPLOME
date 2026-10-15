@@ -165,6 +165,20 @@ async function main() {
     check("Esc that closes «Ещё» keeps the screen (no jump to the map)", !more.shown && n.section === "agencies", { n, more: more.shown });
     await page.screenshot({ path: path.join(OUT, "ia_1366_scene9.png") });
     check("no page errors (akimat)", page.errs.length === 0, page.errs);
+    // A section that is a page (registerScreen with href — «Ситуационный центр» R08): Ctrl+K and the address #board lead
+    // to the page like the «Ещё» item, not to the shell screen «Раздел не удалось открыть» (R08 INTEGRATION §15).
+    if (board) {
+      await palette(page);
+      await page.fill(".birge-palette__input", "Ситуационный");
+      await page.waitForTimeout(150);
+      await Promise.all([page.waitForURL(/\/civic\/board\//, { timeout: 8000 }).catch(() => null), page.keyboard.press("Enter")]);
+      const viaPalette = new URL(page.url()).pathname;
+      await page.goto(base + "#board");
+      await page.waitForURL(/\/civic\/board\//, { timeout: 8000 }).catch(() => null);
+      const viaHash = new URL(page.url()).pathname;
+      check("«Ситуационный центр» (a page section): Ctrl+K and #board open /civic/board/, not a failed shell screen",
+        viaPalette === "/civic/board/" && viaHash === "/civic/board/", { viaPalette, viaHash });
+    }
     await ctx.close();
 
     // Empty state (module not in the build — R03 script blocked here): small icon + text + one button (amendment P1)

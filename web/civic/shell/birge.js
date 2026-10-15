@@ -1105,6 +1105,15 @@
       section = section.slice(0, cut);
     }
     section = ROUTE_ALIAS[section] || section;  // прежние имена (#complaints, #ask) — и из кода ролей
+    // Раздел-страница (registerScreen с href: «Ситуационный центр», «QR-таблички») — не экран оболочки: палитра Ctrl+K,
+    // адрес #board и вызовы ролей ведут туда же, куда пункт «Ещё» (иначе — «Раздел не удалось открыть»). Пришли по адресу —
+    // replace, чтобы «Назад» со страницы не возвращал на тот же адрес.
+    const pageScreen = state.extra.find((x) => x.id === section && x.href);
+    if (pageScreen) {
+      if (options?.hash === false) location.replace(pageScreen.href);
+      else location.assign(pageScreen.href);
+      return;
+    }
     if (!SECTIONS.includes(section)) section = "map";
     state.path = section === "map" || section === "day" ? "" : cleanPath(options?.path);
     // «Картина дня» — экран акимата; житель всегда на карте. Раздел другого вида переключает вид (ссылка, «Ещё»).
