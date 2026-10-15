@@ -57,9 +57,13 @@ def test_iin_with_checksum_and_other_long_numbers():
     iin = synthetic_iin("95010130012")
     res = moderate(f"Мой ИИН {iin}, помогите")
     assert res["text_public"] == "Мой ИИН ***, помогите" and kinds(res) == {"iin": 1}
+    assert res["flags"][0]["checksum_ok"] == 1
     bad = iin[:-1] + str((int(iin[-1]) + 1) % 10)
-    res = moderate(f"Номер {bad}")
-    assert res["text_public"] == "Номер ***" and kinds(res) == {"id_number": 1}
+    res = moderate(f"Номер {bad}")                     # опечатка в контрольной цифре — всё равно ИИН (R16, R17)
+    assert res["text_public"] == "Номер ***" and kinds(res) == {"iin": 1} and res["flags"][0]["checksum_ok"] == 0
+    # Как в тесте R16 (test_personal_data_is_flagged_and_masked_for_public): телефон, e-mail и ИИН — три вида.
+    res = moderate("Звоните +7 701 123-45-67 или пишите a.b@example.com, ИИН 900101300123")
+    assert set(kinds(res)) == {"phone", "email", "iin"} and "900101300123" not in res["text_public"]
 
 
 def test_cards_iban_email_apartment_contacts():
@@ -67,7 +71,10 @@ def test_cards_iban_email_apartment_contacts():
     assert luhn_ok(card) and not luhn_ok(card[:-1] + str((int(card[-1]) + 1) % 10))
     grouped = " ".join(card[i:i + 4] for i in range(0, 16, 4))
     assert kinds(moderate(f"Карта {grouped}")) == {"card": 1}
-    assert kinds(moderate(f"Карта {card}")) == {"card": 1}
+    res = moderate(f"Карта {card}")
+    assert kinds(res) == {"card": 1} and res["flags"][0]["luhn_ok"] == 1
+    res = moderate("Карта " + card[:-1] + str((int(card[-1]) + 1) % 10))
+    assert kinds(res) == {"card": 1} and res["flags"][0]["luhn_ok"] == 0
     assert kinds(moderate("Счёт KZ86 125K ZT50 0410 0100")) == {"iban": 1}
     res = moderate("Почта aigul.k@mail.ru, aigul собака mail.ru, aigul (at) gmail (dot) com")
     assert res["text_public"] == "Почта ***, ***, ***" and kinds(res) == {"email": 3}

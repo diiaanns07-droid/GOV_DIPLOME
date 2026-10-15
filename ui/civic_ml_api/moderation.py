@@ -15,9 +15,10 @@
   rude      — мат и оскорбления: ui.civic_ml_api.profanity (раунд 14; первая буква слова остаётся: «б*****»);
   phone     — телефоны Казахстана: +7 / 8 / 7 и 10–11 цифр с пробелами, дефисами, скобками («+7 (701) 123-45-67»,
               «8 701 1234567», «87011234567»); городские «21-34-56», «521-34-56» — только с дефисами или пробелами по парам;
-  iin       — ИИН / БИН: 12 цифр, контрольная цифра по алгоритму РК (веса 1–11, при остатке 10 — 3–11, 1, 2);
-              12 цифр с неверной контрольной цифрой тоже скрываем, но видом id_number (номер, по которому найдут человека);
-  card      — номер карты: 13–19 цифр, проходит проверку Луна (или 16 цифр группами 4-4-4-4);
+  iin       — ИИН / БИН: 12 цифр; контрольная цифра по алгоритму РК (веса 1–11, при остатке 10 — 3–11, 1, 2) —
+              в флаге checksum_ok (сколько номеров с верной цифрой). Номер с опечаткой в контрольной цифре всё равно
+              скрываем и зовём iin: соседи (R16, R17) блокируют и показывают сотруднику именно этот вид;
+  card      — номер карты: 13–19 цифр подряд или группами (проверка Луна — в флаге luhn_ok);
   iban      — счёт KZ… (20 знаков, с пробелами или без);
   email     — адрес e-mail, в том числе «name собака mail.ru», «name (at) gmail (dot) com»;
   apartment — номер квартиры («кв. 45», «квартира 45», «45-пәтер», «пәтер 45»): точный адрес жителя не публикуем;
@@ -117,14 +118,10 @@ def _classify_run(raw: str) -> str | None:
     if n == 10 and digits[0] == "7" and not thousands:
         return "phone"                     # 701 123 45 67 без восьмёрки
     if n == 12:
-        if iin_checksum_ok(digits):
-            return "iin"
-        return None if thousands else "id_number"
+        # «1 000 000 000 000» — сумма, а не ИИН, если контрольная цифра не сходится.
+        return None if thousands and not iin_checksum_ok(digits) else "iin"
     if 13 <= n <= 19:
-        grouped4 = bool(re.fullmatch(r"\d{4}(?:[ \-]\d{4}){3}", raw.strip()))
-        if luhn_ok(digits) or grouped4:
-            return "card"
-        return None if thousands else "id_number"
+        return None if thousands and not luhn_ok(digits) else "card"
     if n in (6, 7) and _LOCAL_PHONE.match(raw.strip()):
         return "phone"
     return None
@@ -221,11 +218,21 @@ def moderate(text=None, lang=None, body=None, **_ignored) -> dict:
         public = public[:a] + repl + public[b:]
 
     counts: dict[str, int] = {}
-    for _a, _b, kind in pii:
+    valid: dict[str, int] = {}
+    for a, b, kind in pii:
         counts[kind] = counts.get(kind, 0) + 1
+        digits = re.sub(r"\D", "", text[a:b])
+        if (kind == "iin" and iin_checksum_ok(digits)) or (kind == "card" and luhn_ok(digits)):
+            valid[kind] = valid.get(kind, 0) + 1
     kinds = [k for k in _PII_ORDER if k in counts]
-    flags = [{"kind": k, "group": "pii", "count": counts[k], "label_ru": LABELS[k][0], "label_kk": LABELS[k][1]}
-             for k in kinds]
+    flags = []
+    for k in kinds:
+        flag = {"kind": k, "group": "pii", "count": counts[k], "label_ru": LABELS[k][0], "label_kk": LABELS[k][1]}
+        if k == "iin":
+            flag["checksum_ok"] = valid.get(k, 0)      # сколько из них — настоящий ИИН/БИН по контрольной цифре
+        elif k == "card":
+            flag["luhn_ok"] = valid.get(k, 0)
+        flags.append(flag)
     if rude_spans:
         flags.append({"kind": "rude", "group": "rude", "count": len(rude_spans), "label_ru": LABELS["rude"][0],
                       "label_kk": LABELS["rude"][1], "kinds": verdict.kinds})
