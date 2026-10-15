@@ -310,6 +310,14 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.ag-svc__extra {
+  padding: 0 6px;
+  font-variant-numeric: tabular-nums;
+}
+.ag .ag-svc__extra .ic {
+  width: 12px;
+  height: 12px;
+}
 .ag-num {
   font-variant-numeric: tabular-nums;
   text-align: right;
@@ -438,6 +446,13 @@
   margin: 0;
   font-size: var(--fs-caption);
   font-weight: var(--fw-semi);
+}
+.ag-detail__sub {
+  margin-top: 8px;
+  color: var(--c-text-2);
+}
+.ag-items[data-list="pickups"] .ic {
+  color: var(--c-text-3);
 }
 .ag-items {
   display: grid;

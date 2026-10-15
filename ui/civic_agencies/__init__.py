@@ -43,8 +43,15 @@ def configure(records=None, db_path=None) -> None:
         make_service(db_path)
 
 
-def _service():
-    return api_state.current()
+def _service(db_path=None):
+    """Сервис R17 этого процесса; нет его, но сосед знает базу — создать на ней (тот же экземпляр для всех)."""
+    service = api_state.current()
+    if service is None and db_path:
+        try:
+            service = make_service(db_path)
+        except Exception:  # noqa: BLE001 — база недоступна: соседу пустой ответ
+            service = None
+    return service
 
 
 def _now() -> datetime:
@@ -79,9 +86,9 @@ def updates(device, since=None) -> list[dict]:
     return out
 
 
-def board_snapshot(days: int = 30, district: str | None = None) -> dict:
+def board_snapshot(days: int = 30, district: str | None = None, *, db_path=None) -> dict:
     """Табло служб (как GET agencies/board) для R08 и R03. Сервиса нет — {"services": [], "empty": True}."""
-    service = _service()
+    service = _service(db_path)
     if service is None:
         return {"services": [], "totals": {}, "empty": True, "source": "none"}
     now = _now()
@@ -91,14 +98,17 @@ def board_snapshot(days: int = 30, district: str | None = None) -> dict:
     return body
 
 
-def board(days: int = 30, district: str | None = None) -> dict:
+def board(days: int = 30, district: str | None = None, *, db_path=None) -> dict:
     """Табло служб для соседей (R03 «ИИ-аналитик» ищет функцию с этим именем): как GET agencies/board."""
-    return board_snapshot(days=days, district=district)
+    return board_snapshot(days=days, district=district, db_path=db_path)
 
 
-def list_incidents(status: str = "active", district: str | None = None) -> dict:
-    """Кризисы для соседей (R03): {"items": [публичная часть]} — без внутренних задач служб."""
-    service = _service()
+def list_incidents(status: str = "all", district: str | None = None, *, db_path=None) -> dict:
+    """Кризисы для соседей: {"items": [публичная часть + progress]} — без внутренних задач служб.
+
+    status: all (по умолчанию — R07 ставит отметки и прошедших кризисов на шкалу хроники) | active (R03) | closed.
+    """
+    service = _service(db_path)
     if service is None:
         return {"items": [], "empty": True}
     try:
@@ -114,9 +124,9 @@ def list_incidents(status: str = "active", district: str | None = None) -> dict:
     return {"items": items, "status": status, "district": district}
 
 
-def agencies_week(days: int = 7, district: str | None = None, lagging: int = 3) -> dict:
+def agencies_week(days: int = 7, district: str | None = None, lagging: int = 3, *, db_path=None) -> dict:
     """Блок «Ведомства» для «Картины дня» R08: 3 отстающие службы, совместные обращения и передачи за неделю."""
-    service = _service()
+    service = _service(db_path)
     if service is None:
         return {"lagging": [], "joint": 0, "handoffs": 0, "loops": 0, "empty": True, "source": "none"}
     now = _now()
@@ -128,9 +138,9 @@ def agencies_week(days: int = 7, district: str | None = None, lagging: int = 3) 
             "demo": body["demo"], "source": source, "link": "#agencies"}
 
 
-def active_incidents(district: str | None = None) -> list[dict]:
+def active_incidents(district: str | None = None, *, db_path=None) -> list[dict]:
     """Идущие кризисы (публичная часть, без задач) — для ситуационного центра R08 и пульса R13."""
-    service = _service()
+    service = _service(db_path)
     if service is None:
         return []
     try:
@@ -146,9 +156,9 @@ def active_incidents(district: str | None = None) -> list[dict]:
     return out
 
 
-def incident_marks(start=None, end=None) -> list[dict]:
+def incident_marks(start=None, end=None, *, db_path=None) -> list[dict]:
     """Отметки для хроники R07: {id, kind, title_ru, title_kk, started_at, closed_at, district, demo} за период."""
-    service = _service()
+    service = _service(db_path)
     if service is None:
         return []
     lo, hi = _parse_iso(start) if isinstance(start, str) else start, _parse_iso(end) if isinstance(end, str) else end

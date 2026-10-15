@@ -116,12 +116,22 @@ const openAgencies = async (page, base, tab) => {
       const page = await newPage(ctx);
       await login(page, base);
       // Шлюз R01 раунда 15: «сотрудник» = сессия + CSRF и для чтения — токен из GET /api/civic/v1/session.
-      const body = await page.evaluate(async () => {
+      // R16 в сборке: сотрудник «Поддержал» дело жителей вывозом мусора (тот же маршрут, что кнопка R16) →
+      // задача оператору вывоза на табло R17.
+      const r16 = (modules.modules || {})["together.initiatives.support"];
+      const body = await page.evaluate(async (withR16) => {
         const sess = await (await fetch("/api/civic/v1/session", { credentials: "same-origin" })).json();
         const d = sess && sess.data ? sess.data : sess;
-        return (await fetch("/api/civic/v2/agencies/board?days=30", { credentials: "same-origin",
-          headers: { "X-CSRF-Token": d.csrf_token || "" } })).json();
-      });
+        const headers = { "X-CSRF-Token": d.csrf_token || "" };
+        if (withR16) {
+          const list = await (await fetch("/api/civic/v2/together/initiatives?status=published", { credentials: "same-origin", headers })).json();
+          const item = ((list && list.items) || []).filter((x) => !(x.support && x.support.by_akimat))[0];
+          if (item) await fetch(`/api/civic/v2/together/initiatives/${encodeURIComponent(item.id)}/support`, { method: "POST",
+            credentials: "same-origin", headers: { ...headers, "Content-Type": "application/json" },
+            body: JSON.stringify({ inventory: true, pickup_service: "waste", note: "Мешки и вывоз к 14:00" }) });
+        }
+        return (await fetch("/api/civic/v2/agencies/board?days=30", { credentials: "same-origin", headers })).json();
+      }, !!(r16 && r16.status === "ready"));
       await ctx.close();
       return body;
     })();
@@ -151,6 +161,19 @@ const openAgencies = async (page, base, tab) => {
         await page.waitForSelector(".ag-detail .ag-item, .ag-detail .ag-note", { timeout: 15000 });
         check(`${tag}: строка службы раскрывается списком обращений`, !!(await page.$(".ag-detail")));
         if (w !== 1024) await page.screenshot({ path: `${OUT}/board-open-${tag}.png` });
+        // Вывоз после дел жителей (R16 pickups): отметка в строке службы и список в раскрытой строке.
+        const pick = Object.entries(apiBoard.pickups || {}).filter(([, n]) => n > 0)[0];
+        if (!pick) {
+          if (w === 1366 && lang === "ru") checks.push({ name: "вывоз после дел жителей (R16)", status: "NOT_RUN", detail: "R16 нет в сборке — pickups пусто" });
+        } else if (w !== 1024) {
+          const mark = await page.$(`.ag-row[data-service="${pick[0]}"] .ag-svc__extra`);
+          check(`${tag}: у службы ${pick[0]} отметка вывоза (${pick[1]})`, !!mark && (await mark.innerText()).trim() === String(pick[1]));
+          await page.click(`.ag-row[data-service="${pick[0]}"]`);
+          await page.waitForSelector('[data-list="pickups"] .ag-item', { timeout: 15000 });
+          check(`${tag}: раскрытая строка — «Вывоз после дел жителей»`, (await page.$$('[data-list="pickups"] .ag-item')).length === pick[1]);
+          check(`${tag}: вывоз без прокрутки вбок`, await noSideScroll(page));
+          await page.screenshot({ path: `${OUT}/board-pickups-${tag}.png` });
+        }
         for (const tab of ["joint", "handoffs", "crisis"]) {
           await page.click(`[data-tab=${tab}]`);
           await page.waitForSelector(tab === "crisis" ? ".ag-crisis, .ag-empty" : ".ag-list, .ag-empty", { timeout: 20000 });
@@ -275,8 +298,9 @@ const openAgencies = async (page, base, tab) => {
     await browser.close();
     if (srv) srv.kill();
     const failed = checks.filter((c) => c.status === "FAIL").length;
-    fs.writeFileSync(path.join(OUT, "browser_checks.json"), JSON.stringify({ base: base, total: checks.length, failed, checks }, null, 1));
-    console.log(`\n${checks.length - failed}/${checks.length} PASS`);
+    const notRun = checks.filter((c) => c.status === "NOT_RUN").length;
+    fs.writeFileSync(path.join(OUT, "browser_checks.json"), JSON.stringify({ base: base, total: checks.length, failed, not_run: notRun, checks }, null, 1));
+    console.log(`\n${checks.length - failed - notRun}/${checks.length - notRun} PASS` + (notRun ? ` · NOT_RUN ${notRun}` : ""));
     process.exit(failed ? 1 : 0);
   }
 })();

@@ -240,6 +240,10 @@ def test_names_neighbors_look_for(service):
     listed = agencies.list_incidents(status="active")
     assert [i["id"] for i in listed["items"]] == ["inc-demo-blizzard-nura"]
     assert "tasks" not in listed["items"][0] and listed["items"][0]["progress"]
+    # R07 (ui/civic_heat/marks.py @ cbfea106): list_incidents(db_path=…) — все кризисы, и прошедшие, для шкалы хроники.
+    every = agencies.list_incidents(db_path=service.store.db_path)
+    assert {i["id"] for i in every["items"]} == {"inc-demo-blizzard-nura", "inc-demo-heat-saryarka"}
+    assert all(i["district"] for i in every["items"])
     assert {p["id"] for p in agencies.service_profiles()} == set(agencies._profiles.SERVICE_IDS)
 
 
@@ -305,3 +309,57 @@ def test_seed_world_never_touches_real_incident(tmp_path, clock):
     report = agencies.seed_world(db, WORLD, now=clock.now)
     assert report["skipped"] == 2 and report["reset"] == 0
     assert store.get("inc-w15-buran")["title_ru"] == "Настоящий"
+
+
+def test_make_service_is_one_per_database(tmp_path, monkeypatch):
+    """Шлюз R01 и R08 (neighbors.py) зовут make_service для одной базы — второй вызов не пересевает демо-кризисы."""
+    monkeypatch.setattr(api_state, "_state", {"service": None})
+    db = str(tmp_path / "one.sqlite3")
+    first = agencies.make_service(db, demo=True)
+    staff = Staff()
+    first.handle("POST", P + "/incidents/inc-demo-blizzard-nura/close", "",
+                 {"result_ru": "Готово", "result_kk": "Дайын"}, staff, OK_CTX)
+    second = agencies.make_service(db, demo=True)
+    assert second is first
+    assert second.store.get("inc-demo-blizzard-nura")["status"] == "closed"   # правка оператора цела
+    other = agencies.make_service(str(tmp_path / "other.sqlite3"), demo=True)
+    assert other is not first
+
+
+def test_board_shows_r16_pickups_as_service_tasks(service, monkeypatch):
+    """IDEA §2A: акимат «Поддержать» с вывозом → задача оператору вывоза (служба waste) на табло R17."""
+    from ui.civic_agencies import sources
+
+    rows = [{"initiative_id": "i-w15-01", "service": "waste", "title": "Субботник во дворе", "district": "nura",
+             "target": {"kind": "area", "id": "yard-1454082640"}, "starts_at": "2026-10-17T10:00:00+05:00",
+             "ends_at": None, "note": "Мешки и вывоз в 14:00", "supported_at": "2026-10-15T12:00:00+05:00",
+             "demo": True, "author_device": "не должен попасть наружу"}]
+    monkeypatch.setattr(sources, "pickups", lambda db_path, district=None: [
+        {k: r.get(k) for k in ("initiative_id", "service", "title", "district", "target", "starts_at", "ends_at",
+                               "note", "demo")} for r in rows])
+    body = call(service, "GET", "/agencies/board", principal=Staff())["body"]
+    assert body["pickups"] == {"waste": 1}
+    detail = call(service, "GET", "/agencies/board", principal=Staff(), query="service=waste")["body"]
+    assert detail["pickup_items"][0]["note"] == "Мешки и вывоз в 14:00"
+    assert "author_device" not in detail["pickup_items"][0]
+    other = call(service, "GET", "/agencies/board", principal=Staff(), query="service=road")["body"]
+    assert other["pickup_items"] == []
+
+
+def test_pickups_without_r16_is_empty(tmp_path, monkeypatch):
+    """R16 нет в сборке (или его функция упала) — табло без задач вывоза, не ошибка."""
+    import sys
+    import types
+    from ui.civic_agencies import sources
+
+    monkeypatch.setitem(sys.modules, "ui.civic_together", None)      # import → ImportError
+    assert sources.pickups(str(tmp_path / "none.sqlite3")) == []
+    broken = types.ModuleType("ui.civic_together")
+    broken.pickups = lambda district=None, db_path=None: 1 / 0
+    monkeypatch.setitem(sys.modules, "ui.civic_together", broken)
+    assert sources.pickups(str(tmp_path / "none.sqlite3")) == []
+    old_style = types.ModuleType("ui.civic_together")                # только позиционный district
+    old_style.pickups = lambda district=None: [{"service": "waste", "title": "Дело", "author_device": "d-1"}, "мусор"]
+    monkeypatch.setitem(sys.modules, "ui.civic_together", old_style)
+    rows = sources.pickups(str(tmp_path / "none.sqlite3"), "nura")
+    assert [r["service"] for r in rows] == ["waste"] and "author_device" not in rows[0]

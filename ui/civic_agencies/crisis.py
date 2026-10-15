@@ -279,7 +279,8 @@ def public_view(incident: dict, *, with_geometry: bool = False) -> dict:
     zone = {k: v for k, v in incident["zone"].items() if k in ("kind", "district", "targets", "labels")}
     view = {
         "id": incident["id"], "kind": incident["kind"], "title_ru": incident["title_ru"], "title_kk": incident["title_kk"],
-        "zone": zone, "zone_label": zone_label(incident["zone"]), "status": incident["status"],
+        "zone": zone, "zone_label": zone_label(incident["zone"]), "district": zone.get("district"),
+        "status": incident["status"],
         "started_at": incident["started_at"], "closed_at": incident.get("closed_at"), "result": incident.get("result"),
         "services": services_of(incident),
         "updates": [{"id": u["id"], "at": u["at"], "kind": u["kind"], "text_ru": u["text_ru"], "text_kk": u["text_kk"]}

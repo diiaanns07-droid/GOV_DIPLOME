@@ -179,3 +179,27 @@ def test_totals_open_equals_distinct_complaints(district):
                    if any(p["status"] not in calc.PART_CLOSED for p in calc.parts_of(r)))
     assert body["totals"]["open"] == distinct
     assert body["totals"]["open"] <= sum(r["open"] for r in body["services"])   # совместные — в каждой службе
+
+
+def test_two_overdue_numbers_answer_r09_and_fix_r08():
+    """R02 INTEGRATION §3: «просрочено» — два разных числа. overdue (= overdue_answer) — срок первого ответа R09;
+    overdue_fix — срок исправления R08 («Картина дня» kpi.overdue: открытое обращение, deadlines.due прошёл)."""
+    pytest.importorskip("ui.civic_akim.deadlines")
+    records = [
+        rec(1, created_days=5, due_days=10),       # ответ ещё в срок; исправление «Нет воды» (1 кал. день) — просрочено
+        rec(2, created_days=0.2, due_days=3),      # всё в срок
+        rec(3, status="fixed", created_days=9, due_days=1),   # исправлено — ни то, ни другое
+        rec(4, created_days=4, due_days=1),        # просрочены и ответ, и исправление
+    ]
+    body = calc.board(records, NOW)
+    water = row(body, "water")
+    assert water["overdue"] == 1 and water["overdue_fix"] == 2
+    assert body["totals"]["overdue"] == body["totals"]["overdue_answer"] == 1
+    assert body["totals"]["overdue_fix"] == 2
+
+
+def test_overdue_fix_is_null_without_r08(monkeypatch):
+    monkeypatch.setattr(calc, "_deadlines", lambda: None)
+    body = calc.board([rec(1, created_days=5, due_days=1)], NOW)
+    assert body["totals"]["overdue_fix"] is None and row(body, "water")["overdue_fix"] is None
+    assert body["totals"]["overdue"] == 1          # срок ответа R09 считается как раньше

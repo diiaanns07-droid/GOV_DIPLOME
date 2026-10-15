@@ -86,6 +86,9 @@
       "agencies.detail.empty": "Открытых обращений нет",
       "agencies.detail.inbox": "Открыть в «Обращениях»",
       "agencies.detail.more": "и ещё {n}",
+      "agencies.pickups.title": "Вывоз после дел жителей",
+      "agencies.pickups.hint": "Акимат поддержал дела жителей — после них нужен вывоз: {n}",
+      "agencies.pickups.when": "{date}, с {time}",
       "agencies.joint.title": "Совместные обращения",
       "agencies.joint.hint": "Одно обращение — несколько служб, у каждой своя часть. Срок ответа жителю общий.",
       "agencies.joint.empty": "Совместных обращений пока нет",
@@ -136,14 +139,14 @@
       "crisis.update.internal": "Только штабу",
       "crisis.update.ru": "Текст на русском",
       "crisis.update.kk": "Текст на казахском",
-      "crisis.update.send": "Отправить обновление жителям",
+      "crisis.update.send": "Отправить жителям",
       "crisis.update.save_note": "Сохранить заметку",
       "crisis.update.sent": "Обновление отправлено жителям зоны",
       "crisis.update.noted": "Заметка сохранена",
       "crisis.update.template": "Подставить текст шаблона",
       "crisis.update.empty": "Обновлений пока нет",
       "crisis.show_map": "Показать на карте",
-      "crisis.close": "Закрыть с итогом",
+      "crisis.close": "Закрыть кризис",
       "crisis.close.title": "Итог для жителей",
       "crisis.close.ru": "Итог на русском",
       "crisis.close.kk": "Итог на казахском",
@@ -152,7 +155,7 @@
       "crisis.result": "Итог",
       "crisis.none": "Сейчас кризисов нет",
       "crisis.none_text": "Когда случится буран, авария или прорыв, откройте штаб: зона, задачи служб, обновления жителям.",
-      "crisis.new": "Открыть кризисный штаб",
+      "crisis.new": "Новый кризис",
       "crisis.new.title": "Новый кризисный штаб",
       "crisis.new.kind": "Что случилось",
       "crisis.new.zone": "Зона",
@@ -193,7 +196,7 @@
       "agencies.tab.board": "Табло",
       "agencies.tab.joint": "Бірлескен",
       "agencies.tab.handoffs": "Жіберулер",
-      "agencies.tab.crisis": "Жедел штаб",
+      "agencies.tab.crisis": "Төтенше жағдай",
       "agencies.tab.calendar": "Жұмыстар күнтізбесі",
       "agencies.calendar.add": "Жұмыс қосу",
       "agencies.calendar.missing": "Жұмыстар күнтізбесі бұл жинақта әлі қосылмаған",
@@ -207,7 +210,7 @@
       "agencies.period.days": "{n} күн",
       "agencies.district.all": "Барлық аудандар",
       "agencies.refresh": "Жаңарту",
-      "agencies.demo_note": "Мысал: демо-әлемге дейінгі синтетикалық өтініштер",
+      "agencies.demo_note": "Үлгі: демо-әлемге дейінгі синтетикалық өтініштер",
       "agencies.source.r09": "Сандар — «Өтініштерден»",
       "agencies.updated": "Жаңартылды {time}",
       "agencies.kpi.open": "ашық",
@@ -246,6 +249,9 @@
       "agencies.detail.empty": "Ашық өтініш жоқ",
       "agencies.detail.inbox": "«Өтініштерде» ашу",
       "agencies.detail.more": "тағы {n}",
+      "agencies.pickups.title": "Тұрғындар ісінен кейін қоқыс шығару",
+      "agencies.pickups.hint": "Әкімдік тұрғындардың ісін қолдады — кейін қоқыс шығару керек: {n}",
+      "agencies.pickups.when": "{date}, {time} бастап",
       "agencies.joint.title": "Бірлескен өтініштер",
       "agencies.joint.hint": "Бір өтініш — бірнеше қызмет, әрқайсысының өз бөлігі бар. Тұрғынға жауап мерзімі ортақ.",
       "agencies.joint.empty": "Әзірге бірлескен өтініш жоқ",
@@ -296,14 +302,14 @@
       "crisis.update.internal": "Тек штабқа",
       "crisis.update.ru": "Орысша мәтін",
       "crisis.update.kk": "Қазақша мәтін",
-      "crisis.update.send": "Тұрғындарға жаңарту жіберу",
+      "crisis.update.send": "Тұрғындарға жіберу",
       "crisis.update.save_note": "Жазбаны сақтау",
       "crisis.update.sent": "Жаңарту аймақ тұрғындарына жіберілді",
       "crisis.update.noted": "Жазба сақталды",
       "crisis.update.template": "Үлгі мәтінін қою",
       "crisis.update.empty": "Әзірге жаңарту жоқ",
       "crisis.show_map": "Картадан көрсету",
-      "crisis.close": "Қорытындымен жабу",
+      "crisis.close": "Төтенше жағдайды жабу",
       "crisis.close.title": "Тұрғындарға қорытынды",
       "crisis.close.ru": "Орысша қорытынды",
       "crisis.close.kk": "Қазақша қорытынды",
@@ -312,7 +318,7 @@
       "crisis.result": "Қорытынды",
       "crisis.none": "Қазір төтенше жағдай жоқ",
       "crisis.none_text": "Боран, апат немесе құбыр жарылса, штабты ашыңыз: аймақ, қызметтердің тапсырмалары, тұрғындарға жаңартулар.",
-      "crisis.new": "Жедел штабты ашу",
+      "crisis.new": "Жаңа төтенше жағдай",
       "crisis.new.title": "Жаңа жедел штаб",
       "crisis.new.kind": "Не болды",
       "crisis.new.zone": "Аймақ",
@@ -905,7 +911,8 @@
       var row = h("button", { type: "button", class: "ag-row" + (quiet ? " ag-row--quiet" : ""), role: "row", "data-service": r.service,
         "aria-expanded": String(S.open === r.service),
         "aria-label": tr("agencies.row.label", { name: name, open: r.open, overdue: r.overdue }) }, [
-        h("span", { class: "ag-svc", role: "cell" }, [serviceBadge(r.service), h("span", { class: "ag-svc__name", text: name })]),
+        h("span", { class: "ag-svc", role: "cell" }, [serviceBadge(r.service), h("span", { class: "ag-svc__name", text: name }),
+          pickupsMark(r.service)]),
         h("span", { class: "ag-num" + (r.open ? "" : " ag-num--zero"), role: "cell", "data-col": "open", text: num(r.open) }),
         deadlineBar(r, maxOpen),
         h("span", { class: "ag-num" + (r.median_answer_days == null ? " ag-num--zero" : ""), role: "cell", "data-col": "answer",
@@ -933,10 +940,17 @@
       });
       return row;
     }
+    // Задачи вывоза после дел жителей, поддержанных акиматом (R16 pickups): сколько — в строке службы, что — в раскрытой.
+    function pickupsMark(service) {
+      var n = ((S.board && S.board.pickups) || {})[service] || 0;
+      if (!n) return null;
+      return h("span", { class: "ag-pill ag-svc__extra", title: tr("agencies.pickups.hint", { n: n }),
+        "aria-label": tr("agencies.pickups.hint", { n: n }) }, [svg("i-calendar"), num(n)]);
+    }
     function loadServiceItems(service) {
       S.openItems[service] = { loading: true };
       request("GET", "/agencies/board" + query() + "&service=" + encodeURIComponent(service)).then(function (d) {
-        S.openItems[service] = { items: d.items || [] };
+        S.openItems[service] = { items: d.items || [], pickups: d.pickup_items || [] };
       }, function (err) {
         S.openItems[service] = { error: err || { status: 0 } };
       }).then(function () { if (S.alive) render(); });
@@ -973,6 +987,7 @@
       }
       if (!st.items.length) {
         box.appendChild(h("p", { class: "ag-note", text: tr("agencies.detail.empty") }));
+        appendPickups(box, st.pickups);
         return box;
       }
       var list = h("ul", { class: "ag-items" });
@@ -989,14 +1004,31 @@
       });
       box.appendChild(list);
       if (st.items.length > 8) box.appendChild(h("p", { class: "ag-note", text: tr("agencies.detail.more", { n: st.items.length - 8 }) }));
+      appendPickups(box, st.pickups);
       return box;
     }
-    // «Обращения» R09 с фильтром по службе: событие для экрана R09 + раздел inbox (подключение — INTEGRATION R17 §4).
+    function appendPickups(box, items) {
+      if (!items || !items.length) return;
+      box.appendChild(h("p", { class: "ag-detail__title ag-detail__sub", text: tr("agencies.pickups.title") }));
+      box.appendChild(h("ul", { class: "ag-items", "data-list": "pickups" }, items.slice(0, 8).map(function (item) {
+        return h("li", { class: "ag-item" }, [
+          svg("i-calendar"),
+          h("span", { class: "ag-item__title", text: [item.title, item.note].filter(Boolean).join(" · ") }),
+          h("span", { class: "ag-item__meta", text: item.starts_at ? tr("agencies.pickups.when", { date: fmtDate(item.starts_at), time: fmtTime(item.starts_at) }) : "" }),
+          item.demo ? demoTag() : null,
+        ]);
+      })));
+    }
+    // «Обращения» R09 одной службы: адрес #inbox/service=<id> (R09 v2.1 читает service= из адреса и ставит чип
+    // «Служба: …»); оболочка без путей разделов (FINAL-4) — раздел inbox + событие (INTEGRATION R17 §4).
     function openInboxFor(service, items) {
       var detail = { service: service, ids: (items || []).map(function (x) { return x.id; }) };
       try { root.sessionStorage.setItem("birge.inbox.filter", JSON.stringify(detail)); } catch (e) { /* без хранилища */ }
-      if (typeof opts.openSection === "function") opts.openSection("inbox");
-      else if (root.BirgeShell) root.BirgeShell.setSection("inbox");
+      var shell = root.BirgeShell;
+      var paths = !!(shell && typeof shell.alertSlot === "function");   // оболочка раунда 15: «#раздел/путь»
+      var path = /^[a-z_]{2,30}$/.test(service || "") && paths ? "service=" + service : "";
+      if (typeof opts.openSection === "function") opts.openSection(path ? "inbox/" + path : "inbox");
+      else if (shell) shell.setSection("inbox", path ? { path: path } : undefined);
       setTimeout(function () { doc.dispatchEvent(new CustomEvent("birge:inbox-filter", { detail: detail })); }, 0);
     }
 
