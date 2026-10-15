@@ -64,12 +64,18 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
   считает возвращённые записи), R04 0affd9d0, R05 0050c4ce, R07 fcfd9256 (лёгкий вход replay-attach.js), R08 ca8326cb
   (первая ветка), R10 46face57, R12 d4e968ce. pytest ролей R01/R02/R04/R07/R08/R10/R12 1821/3 (R02 мир после R12,
   R07 скорость, R12 кэш — ниже), r15_ia 33/0, узловые тесты R05 10/0.
+- 22:50 B0.4 (`f4f55ba2`, `8b1e5f0c`): R06 2daa408a — «Уведомления»: колокольчик R06 в капсуле справа (житель, ноутбук),
+  на телефоне — первый пункт меню аватара «Уведомления · N» и точка на аватаре; r15_ia 38/0. DEMO_SCRIPT v2 — шаги 1–9
+  РУС и ҚАЗ, BUILD_LOG B0…B0.4.
+- 23:40 B0.5 (`…2a03e5b5`): R03 c6574a39, R05 b1e7fcf6, R08 ca8326cb → 0e6e57a5, R11 201ba4f6, R12 721d6d49, R13 8a7b9468,
+  R16 db7da7de, R17 d75e3cd9; прогрев R03 и R16 после засева мира; ревью R11: лист раздела — плотное стекло, тост карты не
+  ложится на нижние панели, 1024 ҚАЗ акимат — капсула; 761–1279 житель — легенда над кнопкой R09 (правило эталона
+  перебивало подъём с FINAL-4). r15_ia 38/0, r14_wave2 42/0; pytest ролей B0.5 1577/5 (порядок тестов и замеры скорости).
 
 ## Дальше (по порядку промпта)
-1. B0.2: браузерные проверки r15_ia / r14_wave2 под меню с R17/R08/R12 и новые проверки «Хроники» и «Моего двора»;
-   кадры П1 новых экранов (R16, R07, R05) 1366/1024/375 × ru/kk; BUILD.json B0.2 (предварительная).
-2. Колокольчик R06 (BirgeNotify.attach) — когда R06 сдаст (поставки ещё нет).
-3. DEMO_SCRIPT.md v2 — черновик есть (research/round-15-results/R01/DEMO_SCRIPT.md), уточнить по сценам R10/R14.
+1. Полный run_checks на B0.5; кадры П1 1024 × ru/kk (1366 и 375 РУС, 1366 ҚАЗ просмотрены — нарушений нет).
+2. B1 16 окт 14:00 Астаны: свежие поставки по find_branches, BUILD.json, R10 demo_flow часть 1, кадры, DEMO_SCRIPT.
+3. R09 v2.1 (совместное исполнение, «Принять» для сцены 8) — ждём его DELIVERY.
 3. B1 — 16 окт 14:00 по Астане (09:00 UTC): поставки ролей по find_branches.py (DELIVERY code_sha), только пути ролей,
    CIVIC_ASSETS и теги, run_checks + r15_ia + R10 demo_flow часть 1, проверка П1 по кадрам, BUILD.json.
 4. Флаг демо-мира в run-city.bat / run.sh — после seed_world модулей и зелёного регресса R10.
@@ -78,21 +84,21 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 | Роль | Ветка раунда 15 | Поставка (DELIVERY code_sha) | Взято в сборку |
 |---|---|---|---|
 | R02 | claude/affectionate-shannon-jm6ws5 | c002aa85 (мир 1.1) | B0: 907bfc9d · B0.2: c002aa85 |
-| R03 | claude/modest-mccarthy-lrl98u | 7724787e («Спросить Birge») | B0: 7724787e + патчи ассетов и палитры |
-| R04 | claude/gifted-maxwell-i66wwi | c5383235 (route, reply-draft, moderate) | B0: c5383235 |
-| R05 | claude/bold-cray-dopshy | 645d6008 («Настоящий город», белый макет) | B0.2: 645d6008 + 2 патча R01 |
-| R06 | claude/eloquent-einstein-wvuyje | — | — |
-| R07 | claude/birge-r07-round-15-zjp4ob | 52dee9a4 («Хроника города») | B0.2: 52dee9a4 |
-| R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 6cd8f2be | B0: 6cd8f2be (из первой ветки целиком) |
+| R03 | claude/modest-mccarthy-lrl98u | c6574a39 («Спросить Birge», warm_up) | B0: 7724787e · B0.5: c6574a39 + прогрев |
+| R04 | claude/gifted-maxwell-i66wwi | 0affd9d0 (D1.5) | B0: c5383235 · B0.3: 0affd9d0 |
+| R05 | claude/bold-cray-dopshy | b1e7fcf6 («Настоящий город», белый макет) | B0.2: 645d6008 · B0.3: 0050c4ce · B0.5: b1e7fcf6 |
+| R06 | claude/eloquent-einstein-wvuyje | 2daa408a («Уведомления») | B0.4: 2daa408a |
+| R07 | claude/birge-r07-round-15-zjp4ob | fcfd9256 («Хроника», лёгкий вход) | B0.2: 52dee9a4 · B0.3: fcfd9256 |
+| R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 0e6e57a5 | B0: 6cd8f2be · B0.3: ca8326cb · B0.5: 0e6e57a5 (из первой ветки целиком) |
 | R09 | claude/quirky-ptolemy-k3z2mj | D0 e494026e | FINAL-4.1: e494026e |
-| R10 | claude/zen-wozniak-69d41q | 95de8b99 (тесты) | B0: 95de8b99 |
-| R11 | claude/gracious-mendel-eopem6 | c3c376e7 (ui-kit r15, IA, 2380 ключей) | B0: b6ced41d · B0.2: c3c376e7 |
-| R12 | claude/great-newton-8k3474 | 1c8d171d (календарь работ) | B0: 1c8d171d |
-| R13 | claude/gifted-mayer-p86myv | 74903b7a (встречи, прогноз недели) | B0: 74903b7a |
+| R10 | claude/zen-wozniak-69d41q | 46face57 (приёмка) | B0: 95de8b99 · B0.3: 46face57 |
+| R11 | claude/gracious-mendel-eopem6 | 201ba4f6 (ui-kit r15, словарь 2554) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 |
+| R12 | claude/great-newton-8k3474 | 721d6d49 (календарь работ, QR) | B0: 1c8d171d · B0.3: d4e968ce · B0.5: 721d6d49 |
+| R13 | claude/gifted-mayer-p86myv | 8a7b9468 (встречи, прогноз) | B0: 74903b7a · B0.5: 8a7b9468 |
 | R14 | (не начата на 18:40) | — | — |
 | R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf (tests/civic/R15) |
-| R16 | claude/youthful-johnson-6nz5mp | e475fae9 (чекпойнт 4 fbd9e247 — без DELIVERY) | B0.2: e475fae9 + патч маршрутов руками |
-| R17 | claude/sweet-euler-5tiu5b | 191f81e7 (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 |
+| R16 | claude/youthful-johnson-6nz5mp | db7da7de («Мой двор», «Сделаем вместе») | B0.2: e475fae9 · B0.5: db7da7de |
+| R17 | claude/sweet-euler-5tiu5b | d75e3cd9 (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 |
 
 ## Просьбы соседям
 - **R08 (вторая сессия claude/inspiring-johnson-j7wksj)**: роль R08 по COMMON ведёт claude/laughing-euler-iv3on3 (заявка на
@@ -129,6 +135,13 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
   (R12 INTEGRATION: 1 предупреждение c-w1500643 → osm-node-10746274755) и сверьте EXPECTED (числа сцен).
 - **R17** (повтор): утечку configure(records) дают и тесты R10/R15/R16, которые связывают шлюз; сброс в вашей фикстуре
   service нужен, conftest R01 закрывает только свои тесты.
+
+- **R03 / R17**: test_analyst_real_modules.py::test_lagging_services_equal_source_totals и eval_set (ru01, «табло R17
+  overdue_fix: ожидалось [0, 0], в ответе [2, 5]») падают после соседних тестов в одном процессе — у R17 остаётся
+  «текущий» сервис api_state с демо-фикстурой; отдельно — 4/4 PASS. R17: сбрасывайте api_state в фикстурах (или
+  ключуйте по db_path); R03: в тестах с настоящими модулями — свой сервис R17 на временной базе.
+- **R02 / R16**: время дел в демо-мире «16:13–04:13», «17:14–20:14» — минуты от момента запуска (относительное время);
+  для показа лучше круглые часы (day_at / next_weekday с hour), как у «Субботника» 10:00–13:00.
 
 ## Вопросы владельцу
 - (решено по умолчанию) Телефон: «ҚАЗ · РУС» — в шторке «Рядом с вами» (эталон), а когда шторки нет (акимат, карточка,
