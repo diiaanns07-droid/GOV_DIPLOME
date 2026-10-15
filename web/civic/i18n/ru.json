@@ -2524,7 +2524,7 @@
  "meet.result_lang_kk": "Итоги опубликованы на казахском языке",
  "meet.answered": "Ответы на встрече",
  "meet.answer_sign": "Аким района · {date}",
- "meet.due": "срок {date}",
+ "meet.due": "до {date}",
  "meet.overdue": "просрочено",
  "meet.status.todo": "Не начато",
  "meet.status.in_progress": "В работе",
@@ -2764,5 +2764,52 @@
  "board.fullscreen_exit": "Выйти из полноэкранного режима",
  "board.login.staff": "Войдите как сотрудник",
  "board.agencies.no_answer": "Нет ответа в срок",
- "board.agencies.period": "за {n} дней"
+ "board.agencies.period": "за {n} дней",
+ "replay.title": "Хроника города",
+ "replay.open": "Хроника города",
+ "replay.open_hint": "Неделя за 10 секунд",
+ "replay.close": "Закрыть хронику",
+ "replay.play": "Смотреть",
+ "replay.pause": "Пауза",
+ "replay.again": "Сначала",
+ "replay.speed": "Скорость",
+ "replay.period": "Период хроники",
+ "replay.days": {
+  "one": "{n} день",
+  "few": "{n} дня",
+  "many": "{n} дней"
+ },
+ "replay.today": "сегодня",
+ "replay.people": {
+  "one": "Сообщил {n} человек",
+  "few": "Сообщили {n} человека",
+  "many": "Сообщили {n} человек"
+ },
+ "replay.fixed": {
+  "one": "{n} место исправлено",
+  "few": "{n} места исправлено",
+  "many": "{n} мест исправлено"
+ },
+ "replay.slider": "День хроники",
+ "replay.loading": "Загружаем хронику…",
+ "replay.error": "Не удалось загрузить хронику",
+ "replay.error_hint": "Проверьте связь и нажмите «Повторить».",
+ "replay.retry": "Повторить",
+ "replay.not_ready": "Хроника ещё не подключена к серверу",
+ "replay.no_map": "Карта жалоб ещё не загрузилась",
+ "replay.empty": "За эти дни жалоб нет",
+ "replay.empty_hint": "Попробуйте 30 дней",
+ "replay.demo": "Пример",
+ "replay.keys": "Пробел — пауза · ← → — день · Esc — закрыть",
+ "replay.event_in": "{title} · {district}",
+ "replay.sr_day": "{date}. {people}. {fixed}",
+ "meet.staff.link_pick": "Обращения района",
+ "meet.staff.link_pick_none": "— выберите обращение —",
+ "meet.staff.link_pick_empty": "Открытых обращений в районе нет — укажите номер записи",
+ "meet.staff.reporters": {
+  "one": "{n} житель",
+  "few": "{n} жителя",
+  "many": "{n} жителей"
+ },
+ "meet.staff.registered_past": "Отметили «Приду»: {n}"
 }

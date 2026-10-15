@@ -58,6 +58,9 @@ COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочита
 - 17:34 — словарь: 33 ключа оболочки R01 (палитра, сцены 7–9 — «N-көрініс», виды поиска); R01 сделал меню по IA сам
   (`c2df555a`), мой патч меню — только для сверки.
 
+- 17:38 — **круг 4** (по триггеру): AMENDMENTS — новых нет; словарь +26 ключей R07 (хроника — «Шежіре»), +5 R13,
+  синхронизация изменённых текстов ролей с сохранением правок R11; 2380 ключей ru = kk. Новых кадров у R16, R07 нет.
+
 ## Соседи (find_branches.py, 15 окт 16:30)
 R01 claude/brave-fermi-nhzetj · R02 claude/affectionate-shannon-jm6ws5 · R03 claude/modest-mccarthy-lrl98u ·
 R04 claude/gifted-maxwell-i66wwi · R05 claude/bold-cray-dopshy · R06 claude/eloquent-einstein-wvuyje ·

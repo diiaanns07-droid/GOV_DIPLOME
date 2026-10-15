@@ -158,3 +158,11 @@ R13 (claude/gifted-mayer-p86myv @ 315d01bd): R13-1 вместо «Проект �
   (claude/youthful-johnson-6nz5mp @ 9e9bc0e2) уже показывают вид значком (KIND_ICON) — по П1. Значки i-bench и i-sprout
   теперь есть в спрайте ui-kit R11 (у R06 ICON_FALLBACK можно не трогать — сработает сам). R16 (мелочь): KIND_ICON
   cleanup "trash" → "broom", repair "edit" → "wrench", greening "trees" → "sprout" — точнее по смыслу, значки в спрайте.
+
+Круг 4 (15 окт, 17:38) — словарь: AMENDMENTS — только П1 (уже применена).
+  - R07 «Хроника» (claude/birge-r07-round-15-zjp4ob, web/civic/replay/replay.js DICT): 26 ключей replay.* в словаре.
+    Хроника по-казахски — «Шежіре / Қала шежіресі», как у R07 во всех строках (shell.nav.replay и shell.nav.replay_title
+    R11 переведены так же); replay.fixed — «{n} орын түзетілді» («исправлено» — «түзетілді» везде).
+  - Синхронизация с запасными текстами ролей (tests: i18n_tools check PASS): +5 ключей R13 meet.staff.*, обновлены тексты,
+    которые роли поменяли (meet.due); намеренные правки R11 (пометка «R11:» в kk_notes.json) сохраняются.
+  Словарь — 2380 ключей, ru = kk.
