@@ -1,0 +1,36 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index ec1cac00..e6f35132 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -119,7 +119,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
+                 "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
+                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
+-                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
++                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
++                # R17 раунд 15: «Ведомства» (#agencies, #crisis), слой карты «Кризис» и баннер жителям зоны.
++                "agencies/agencies.js", "agencies/agencies.css", "agencies/crisis-layer.js", "agencies/index.html")
+ # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+ CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
+diff --git a/web/index.html b/web/index.html
+index 78455458..23be12de 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -26,6 +26,7 @@
+     <link rel="stylesheet" href="/civic/nearby/nearby.css" />
+     <link rel="stylesheet" href="/civic/akim/today.css" />
+     <link rel="stylesheet" href="/civic/qa/qa.css" />
++    <link rel="stylesheet" href="/civic/agencies/agencies.css" />
+     <link rel="stylesheet" href="/civic/proposals/proposals.css" />
+     <link rel="stylesheet" href="/civic/ideas/ideas.css" />
+     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+@@ -257,6 +258,8 @@
+     <script defer src="/civic/ideas/ideas.js"></script>
+     <script defer src="/civic/proposals/works.js"></script>
+     <script defer src="/civic/akim/services.js"></script>
++    <script defer src="/civic/agencies/agencies.js"></script>
++    <script defer src="/civic/agencies/crisis-layer.js"></script>
+     <script defer src="/civic/map/search_index.js"></script>
+     <script defer src="/civic/shell/explore.js"></script>
+     <script defer src="/civic/shell/shell.js"></script>
