@@ -41,8 +41,9 @@
   var PII = [
     ["email", /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/],
     ["card", /(?:^|\D)(?:\d[ -]?){15,18}\d(?!\d)/],
-    ["iin", /(?:^|\D)\d{12}(?!\d)/],
+    ["iin", /(?:^|\D)(?:\d[ -]?){11}\d(?!\d)/],   // как на сервере (R15-S46): и с пробелами
     ["phone", /(?:^|[^\d+])(?:\+\s*7|8|7)[\s(-]*\d{3}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}(?!\d)/],
+    ["phone", /(?:^|[^\d+])\(?7\d{2}\)?[\s-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}(?!\d)/],
   ];
   var KK_LETTERS = /[әғқңөұүһіӘҒҚҢӨҰҮҺІ]/;
 
@@ -986,8 +987,10 @@
         return h("figure", { class: "tg-photo" }, [h("img", { src: p.data_url, alt: t("together.after"), loading: "lazy" }),
           h("figcaption", { text: t("together.after") })]);
       })) : (item.status === "published" || item.status === "done")
-        // П1: в демо-мире фото нет — только строка (нарисованное «фото» было бы подделкой).
-        ? h("p", { class: "tg-afterline" }, [icon("camera"), t("together.after_soon")]) : null;
+        // П1: в демо-мире фото нет — только строка (нарисованное «фото» было бы подделкой). Для прошедшего дела —
+        // «пока не добавили»: «появится после дела» про уже сделанное звучало бы как ошибка.
+        ? h("p", { class: "tg-afterline" }, [icon("camera"), t(item.status === "done" ? "together.after_none" : "together.after_soon")])
+        : null;
       var report = item.report ? h("section", { class: "tg-report" }, [
         h("p", { class: "tg-report__big" }, [icon("heart"), t("together.done_count", { n: item.report.joined || item.joined })]),
         item.report.text ? h("p", { class: "tg-report__text", text: item.report.text }) : null,
@@ -1016,7 +1019,7 @@
         item.text ? h("p", { class: "tg-detail__text", text: item.text }) : null,
         facts,
         support,
-        report || (photoBlock && item.status === "published" ? h("section", { class: "tg-report" }, [
+        report || (photoBlock && item.status === "published" ? h("section", { class: "tg-after" }, [
           h("p", { class: "tg-h3 tg-report__label", text: t("together.after") }), photoBlock]) : null),
         authorReport,
         staff ? staffActions(item, true) : null,
@@ -1266,7 +1269,8 @@
     }
     function wizardReview(w) {
       var item = draftItem(w);
-      var pii = piiKinds(item.title + "\n" + item.text);
+      var pii = piiKinds([item.title, item.text].concat(item.bring).join("\n"));   // и «что взять» (R15-S47)
+      pii = pii.filter(function (k, i) { return pii.indexOf(k) === i; });
       var preview = card(item);
       preview.classList.add("tg-card--preview");
       Array.prototype.forEach.call(preview.querySelectorAll("button"), function (b) { b.disabled = true; b.tabIndex = -1; });
@@ -1395,8 +1399,12 @@
     }
     function flagsLine(flags) {
       if (!flags || !flags.length) return null;
+      // Вид пометки без своей подписи (новый у R04) — «личные данные», а не ключ словаря.
+      var known = dict("ru");
       return h("p", { class: "tg-flags", role: "note" }, [icon("alert"),
-        t("together.staff.flags", { what: flags.map(function (f) { return t("together.pii." + f); }).join(", ") })]);
+        t("together.staff.flags", { what: flags.map(function (f) {
+          return t(known["together.pii." + f] ? "together.pii." + f : "together.pii.other"); })
+          .filter(function (x, i, a) { return a.indexOf(x) === i; }).join(", ") })]);
     }
     function staffRow(item, tab) {
       var original = item.original || {};
@@ -1645,7 +1653,8 @@
 
   // ------------------------------------------------------------------ слой карты «Инициативы»
   // Капсула ui-kit (иконка вида + число «придут»); «сделано» — зелёная галочка. По умолчанию выключен (CONTRACT §8).
-  var layerState = { markers: [], token: 0 };
+  // Капсулы не наползают: на мелком масштабе видна важная (ближайшее дело, больше соседей), остальные — при приближении.
+  var layerState = { markers: [], token: 0, map: null, onMove: null };
   function showLayer(map) {
     hideLayer();
     var token = ++layerState.token;
@@ -1656,20 +1665,46 @@
         if (!item.point) return;
         var done = item.status === "done";
         if (item.status === "published" && isPast(item)) return;
+        var n = done ? (item.report && item.report.joined || item.joined) : item.joined;
         var el = h("button", { type: "button", class: "tg-pin" + (done ? " tg-pin--done" : ""), "data-kind": item.kind,
-          "aria-label": item.title + " · " + (done ? t("together.done_count", { n: item.report && item.report.joined || item.joined }) : t("together.count", { n: item.joined })),
-          title: item.title }, [icon(done ? "check" : KIND_ICON[item.kind] || "dots"),
-          h("span", { class: "tg-pin__n", text: formatNumber(done ? (item.report && item.report.joined || item.joined) : item.joined) })]);
+          "aria-label": item.title + " · " + (done ? t("together.done_count", { n: n }) : t("together.count", { n: n })),
+          title: item.title }, [icon(done ? "check" : KIND_ICON[item.kind] || "dots"), h("span", { class: "tg-pin__n", text: formatNumber(n) })]);
         el.addEventListener("click", function (ev) { ev.stopPropagation(); open("initiative", item.id); });
         var marker = new root.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat(item.point).addTo(map);
+        // Важнее — предстоящее дело (по дате), затем больше соседей; «сделано» — после предстоящих.
+        marker.tgRank = [done ? 1 : 0, done ? 0 : Date.parse(item.starts_at) || 0, -n];
         layerState.markers.push(marker);
       });
+      layerState.map = map;
+      layerState.onMove = function () { declutter(map); };
+      map.on("moveend", layerState.onMove);
+      declutter(map);
     }, function () {
       toast(t("together.error.text"), "error");
     });
   }
+  function declutter(map) {
+    var placed = [];
+    layerState.markers.slice().sort(function (a, b) {
+      for (var i = 0; i < 3; i++) if (a.tgRank[i] !== b.tgRank[i]) return a.tgRank[i] - b.tgRank[i];
+      return 0;
+    }).forEach(function (marker) {
+      var el = marker.getElement();
+      var p = map.project(marker.getLngLat());
+      var w = el.offsetWidth || 56, hh = el.offsetHeight || 30;
+      var box = [p.x - w / 2 - 4, p.y - hh - 4, p.x + w / 2 + 4, p.y + 4];
+      var hit = placed.some(function (b) { return !(box[2] < b[0] || box[0] > b[2] || box[3] < b[1] || box[1] > b[3]); });
+      el.style.visibility = hit ? "hidden" : "";
+      el.tabIndex = hit ? -1 : 0;
+      if (hit) el.setAttribute("aria-hidden", "true"); else el.removeAttribute("aria-hidden");
+      if (!hit) placed.push(box);
+    });
+  }
   function hideLayer() {
     layerState.token++;
+    if (layerState.map && layerState.onMove) { try { layerState.map.off("moveend", layerState.onMove); } catch (e) { /* карта снята */ } }
+    layerState.map = null;
+    layerState.onMove = null;
     layerState.markers.forEach(function (m) { try { m.remove(); } catch (e) { /* карта уже снята */ } });
     layerState.markers = [];
   }

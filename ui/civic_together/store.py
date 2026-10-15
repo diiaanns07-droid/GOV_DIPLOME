@@ -752,9 +752,29 @@ class TogetherStore:
         return [dict(r) for r in rows]
 
     # ------------------------------------------------------------------ демо и демо-мир
-    def seed_yard(self, conn, yard: dict) -> bool:
+    def _reset_initiative(self, conn, iid: str) -> None:
+        """Демо-запись — к виду демо-набора: без «Я приду» прошлых показов, событий, отчёта и фото."""
+        for table in ("tg_joins", "tg_events", "tg_reports", "tg_photos"):
+            conn.execute(f"DELETE FROM {table} WHERE initiative_id = ?", (iid,))
+        conn.execute("DELETE FROM tg_initiatives WHERE id = ? AND demo = 1", (iid,))
+
+    def seed_yard(self, conn, yard: dict, reset: bool = False) -> bool:
         exists = conn.execute("SELECT 1 FROM tg_yards WHERE id = ?", (yard["id"],)).fetchone() is not None
         at = iso(self.now())
+        if exists and reset and yard.get("demo", True):
+            # Повторный засев (R02, R01 при старте): соседи демо-двора — снова число демо-набора, без устройств прошлых
+            # показов; старший — как в демо-наборе.
+            captain = yard.get("captain") or None
+            point = yard.get("point") or (None, None)
+            conn.execute("DELETE FROM tg_members WHERE yard_id = ?", (yard["id"],))
+            conn.execute("UPDATE tg_yards SET label_ru = COALESCE(?, label_ru), label_kk = COALESCE(?, label_kk), "
+                         "district = COALESCE(?, district), lon = COALESCE(?, lon), lat = COALESCE(?, lat), "
+                         "base_members = ?, captain_name = ?, captain_status = ?, captain_hash = NULL, captain_since = ?, "
+                         "demo = 1, updated_at = ? WHERE id = ?",
+                         (yard.get("label_ru"), yard.get("label_kk"), yard.get("district"), point[0], point[1],
+                          int(yard.get("members") or 0), captain.get("display_name") if captain else None,
+                          "published" if captain else None, captain.get("since") if captain else None, at, yard["id"]))
+            return True
         if exists:
             # Демо-двор, уже известный модулю: подписи и число соседей «раньше» — из демо-набора.
             conn.execute("UPDATE tg_yards SET base_members = MAX(base_members, ?), demo = MAX(demo, ?), "
@@ -773,10 +793,15 @@ class TogetherStore:
                       int(bool(yard.get("demo", True))), at, at))
         return True
 
-    def seed_initiative(self, conn, item: dict) -> bool:
-        """Демо-инициатива по постоянному id: повтор ничего не дублирует и не возвращает снятое сотрудником."""
-        if conn.execute("SELECT 1 FROM tg_initiatives WHERE id = ?", (item["id"],)).fetchone() is not None:
-            return False
+    def seed_initiative(self, conn, item: dict, reset: bool = False) -> bool:
+        """Демо-инициатива по постоянному id. reset=False — повтор ничего не трогает; reset=True — демо-запись
+        возвращается к виду демо-набора от нового «сейчас» (сцену 7 можно показать снова: 14 «Я приду», не «сделано»).
+        Записи жителей (demo = 0) засев не трогает никогда."""
+        row = conn.execute("SELECT demo FROM tg_initiatives WHERE id = ?", (item["id"],)).fetchone()
+        if row is not None:
+            if not (reset and row["demo"] and item.get("demo", True)):
+                return False
+            self._reset_initiative(conn, item["id"])
         target = item.get("target") or {}
         status = item["status"]
         conn.execute(
@@ -817,13 +842,18 @@ class TogetherStore:
             self._event(conn, item["done_at"], "done", "yard", initiative_id=item["id"], yard_id=yard_id, demo=demo)
         return True
 
-    def seed(self, yards: list[dict], initiatives: list[dict]) -> dict:
-        """Демо-набор или часть демо-мира R02: дворы и инициативы (идемпотентно)."""
-        inserted = skipped = 0
+    def seed(self, yards: list[dict], initiatives: list[dict], reset: bool = False) -> dict:
+        """Демо-набор или часть демо-мира R02: дворы и инициативы. reset=False — идемпотентно (повтор — skipped);
+        reset=True — демо-записи заново от нового «сейчас» (reset), новые — inserted."""
+        inserted = skipped = was_reset = 0
         with self._tx() as conn:
             for yard in yards:
-                if self.seed_yard(conn, yard):
-                    inserted += 1
+                existed = conn.execute("SELECT 1 FROM tg_yards WHERE id = ?", (yard["id"],)).fetchone() is not None
+                if self.seed_yard(conn, yard, reset=reset):
+                    if existed:
+                        was_reset += 1
+                    else:
+                        inserted += 1
                 else:
                     skipped += 1
             for item in initiatives:
@@ -834,8 +864,12 @@ class TogetherStore:
                         self.seed_yard(conn, {"id": target["id"], "label_ru": target.get("label_ru"),
                                               "label_kk": target.get("label_kk"), "district": item.get("district"),
                                               "point": item.get("point"), "members": 0, "demo": item.get("demo", True)})
-                if self.seed_initiative(conn, item):
-                    inserted += 1
+                existed = conn.execute("SELECT 1 FROM tg_initiatives WHERE id = ?", (item["id"],)).fetchone() is not None
+                if self.seed_initiative(conn, item, reset=reset):
+                    if existed:
+                        was_reset += 1
+                    else:
+                        inserted += 1
                 else:
                     skipped += 1
-        return {"inserted": inserted, "skipped": skipped}
+        return {"inserted": inserted, "skipped": skipped, "reset": was_reset}

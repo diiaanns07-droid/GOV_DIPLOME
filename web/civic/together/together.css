@@ -260,7 +260,7 @@ button.tg-feed__row:hover { background: var(--c-brand-soft); }
   border-radius: var(--r-m); background: var(--c-info-soft); }
 .tg-supportbox .tg-support { padding: 0; background: none; }
 .tg-supportbox__note { color: var(--c-ink); }
-.tg-report { margin-top: var(--s-5); display: grid; gap: var(--s-3); }
+.tg-report, .tg-after { margin-top: var(--s-5); display: grid; gap: var(--s-3); }
 .tg-report__big { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-title); font-weight: var(--fw-semi); color: var(--c-ok); }
 .tg-report__big .ic { width: 22px; height: 22px; }
 .tg-report__text { white-space: pre-line; }
@@ -361,8 +361,11 @@ button.tg-staffrow__title:hover { text-decoration: underline; }
   .tg-kinds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tg-fact { grid-template-columns: minmax(0, 1fr); gap: var(--s-1); }
   .tg-grid, .tg-skel { grid-template-columns: minmax(0, 1fr); }
-  .tg-actionbar { bottom: calc(-1 * var(--s-4)); margin-inline: calc(-1 * var(--s-4)); border-radius: var(--r-xl) var(--r-xl) 0 0; }
-  .tg-actionbar .tg-join { flex: 1 1 100%; margin-left: 0; }
+  .tg-actionbar { bottom: calc(-1 * var(--s-4)); margin-inline: calc(-1 * var(--s-4)); gap: var(--s-2) var(--s-3);
+    padding: var(--s-3); border-radius: var(--r-xl) var(--r-xl) 0 0; }
+  /* Телефон: счётчик и «Я приду» — одна строка; «Не смогу прийти» — тихая ссылка под кнопкой. */
+  .tg-actionbar .tg-join { flex: 1 1 auto; min-width: 0; }
+  .tg-actionbar .tg-unjoin { flex: 1 1 100%; min-height: 36px; justify-content: flex-end; padding-block: 0; }
   .tg-listhead > .bk-btn { width: 100%; }
   .tg-wnav > .bk-btn { flex: 1 1 auto; }
   .tg-row__golabel { display: none; }

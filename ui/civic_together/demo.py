@@ -123,9 +123,22 @@ _TIME_FIELDS = ("starts_at", "ends_at", "created_at", "published_at", "done_at",
 
 
 def _relative(spec, now: datetime) -> datetime | None:
-    """{"in_days", "in_hours", "ago_days", "ago_hours", "hour", "minute"} -> время по Астане."""
+    """Относительное время -> время по Астане. Понимает объекты SCHEMA R02 §1 ({"next_weekday": {weekday, hour,
+    minute}}, {"day_at": {day, hour, minute}}, {"day": N}) и плоские {"in_days", "in_hours", "ago_days", "ago_hours",
+    "hour", "minute"}."""
     if not isinstance(spec, dict):
         return None
+    if isinstance(spec.get("next_weekday"), dict):
+        nw = spec["next_weekday"]
+        return next_weekday(now, int(nw.get("weekday", 5)), int(nw.get("hour", 10)), minimum=timedelta(hours=12)) \
+            .replace(minute=int(nw.get("minute") or 0))
+    if isinstance(spec.get("day_at"), dict):
+        da = spec["day_at"]
+        day = (now.astimezone(ASTANA) + timedelta(days=int(da.get("day") or 0)))
+        return day.replace(hour=int(da.get("hour") or 0), minute=int(da.get("minute") or 0), second=0, microsecond=0)
+    if isinstance(spec.get("day"), (int, float)) and len(spec) == 1:
+        return (now.astimezone(ASTANA) + timedelta(days=int(spec["day"]))).replace(hour=12, minute=0, second=0,
+                                                                                  microsecond=0)
     moment = now
     moment += timedelta(days=float(spec.get("in_days") or 0), hours=float(spec.get("in_hours") or 0))
     moment -= timedelta(days=float(spec.get("ago_days") or 0), hours=float(spec.get("ago_hours") or 0))
@@ -152,16 +165,34 @@ def _moment(record: dict, field: str, now: datetime) -> str | None:
     return None
 
 
+def _materialize(records: dict, now: datetime) -> dict:
+    """R01 передаёт мир уже с абсолютными временами (SCHEMA R02 §4). Сырой мир — через materialize R02, если он есть
+    в сборке; нет — свой разбор ниже понимает те же объекты времени."""
+    try:
+        from ml.datasets.demo_world_io import materialize
+    except Exception:
+        return records
+    try:
+        part = {key: records[key] for key in ("yards", "initiatives") if key in records}
+        return dict(records, **materialize(part, now))
+    except Exception:
+        return records
+
+
 def world_part(records: dict, now: datetime) -> tuple[list[dict], list[dict]]:
     """Дворы и инициативы из world_v1.json (R02) в формате seed(): только своя часть, время — от момента засева."""
     now = now.astimezone(ASTANA)
+    records = _materialize(records, now)
     yards = []
     for raw in records.get("yards") or []:
         if not isinstance(raw, dict) or not str(raw.get("id", "")).startswith(("yard-", "cell-")):
             continue
+        captain = raw.get("captain") if isinstance(raw.get("captain"), dict) and raw["captain"].get("display_name") else None
+        if captain:
+            captain = {"display_name": str(captain["display_name"])[:40], "since": _moment(captain, "since", now)}
         yards.append({"id": raw["id"], "label_ru": raw.get("label_ru"), "label_kk": raw.get("label_kk"),
                       "district": raw.get("district"), "point": raw.get("point"),
-                      "members": int(raw.get("members") or 0), "captain": raw.get("captain"), "demo": True})
+                      "members": int(raw.get("members") or 0), "captain": captain, "demo": True})
     items = []
     for raw in records.get("initiatives") or []:
         if not isinstance(raw, dict) or not raw.get("id") or not raw.get("title") or not raw.get("point"):

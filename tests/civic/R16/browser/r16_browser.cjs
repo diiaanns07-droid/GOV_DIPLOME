@@ -252,7 +252,7 @@ async function jpegBuffer(page, w, h) {
       // Сделано вместе: карточка с фото «после» (демо-иллюстрация)
       await go(page, "#together", ".tg-card");
       await page.click('[data-focus="open-i-demo-benches"]');
-      await page.waitForSelector(".tg-report", { timeout: 10000 });
+      await page.waitForSelector(".tg-report__big", { timeout: 10000 });
       // П1: у демо-дела нет фото — строка «Фото появится после дела», а не нарисованная картинка.
       check(`${tag} «Сделано вместе»: число соседей и строка вместо фото (П1)`, !!(await page.$(".tg-report .tg-afterline")) &&
         !(await page.$(".tg-report img")) && /\d/.test(await page.$eval(".tg-report__big", (n) => n.textContent)));

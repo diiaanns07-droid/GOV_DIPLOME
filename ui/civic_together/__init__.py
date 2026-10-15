@@ -12,6 +12,7 @@
     seed_world(db_path, records, now=None)  — R01: своя часть демо-мира R02 (дворы, инициативы), идемпотентно
     create_from_idea(idea, starts_at=None)  — R06: POST ideas/{id}/to-initiative («Сделайте вместе — поддержим»)
     initiatives_summary(district=None)      — R08/R03: сколько дел, сколько соседей пришло (числа — код)
+    pickups(district=None)                  — R17: вывоз мусора после дел, которые поддержал акимат (служба waste)
     configure(problems=…, ideas=…, works=…) — R01/тесты: подменить источник блока «Мой двор»
 
 Подключение к шлюзу, маршруты, лимиты и экран — research/round-15-results/R16/INTEGRATION.txt.
@@ -30,7 +31,7 @@ from .store import TogetherStore
 SCENE = _demo.SCENE
 
 __all__ = ["SCENE", "TogetherService", "TogetherStore", "configure", "create_from_idea", "default_service",
-           "initiatives_summary", "make_service", "seed_world", "updates"]
+           "initiatives_summary", "make_service", "pickups", "seed_world", "updates"]
 
 
 def updates(device_id, since=None, db_path=None, limit: int = 50) -> list[dict]:
@@ -43,9 +44,11 @@ def updates(device_id, since=None, db_path=None, limit: int = 50) -> list[dict]:
 
 
 def seed_world(db_path, records, now: datetime | None = None) -> dict:
-    """Своя часть демо-мира R02 (yards, initiatives): {"inserted", "skipped", "source"}. Повтор ничего не дублирует.
+    """Своя часть демо-мира R02 (yards, initiatives): {"inserted", "skipped", "reset", "source"}.
 
-    В демо-мире нет инициатив (R02 их ещё не добавил) — засевается фикстура модуля, чтобы сцена 7 не была пустой."""
+    Повтор возвращает демо-записи к виду мира от нового now (просьба R02, как reset у R09 и R17): через сутки
+    «Субботник в субботу» не окажется в прошлом, «Я приду» снова 14. Записи жителей не трогает.
+    В демо-мире нет инициатив — засевается фикстура модуля, чтобы сцена 7 не была пустой."""
     store = TogetherStore(db_path)
     moment = now or store.now()
     yards, items = _demo.world_part(records if isinstance(records, dict) else {}, moment)
@@ -53,7 +56,7 @@ def seed_world(db_path, records, now: datetime | None = None) -> dict:
     if not items:
         yards, items = _demo.rows(moment)
         source = "fixture"
-    result = store.seed(yards, items)
+    result = store.seed(yards, items, reset=True)
     return dict(result, source=source)
 
 
@@ -84,3 +87,22 @@ def initiatives_summary(district: str | None = None, db_path=None) -> dict:
                       "target": {"kind": "area", "id": r["target_id"]} if r.get("target_id") else None,
                       "demo": bool(r.get("demo"))} for r in upcoming[:3]],
             "demo": bool(upcoming or done) and all(r.get("demo") for r in upcoming + done)}
+
+
+def pickups(district: str | None = None, db_path=None) -> list[dict]:
+    """Для R17 (задача оператору вывоза, CONTRACT §3 «waste»): опубликованные дела, где акимат обещал вывоз мусора.
+    Только то, что видно всем: дело, место, время, заметка акимата — без жителей и устройств."""
+    service = default_service(db_path)
+    if service is None:
+        return []
+    out = []
+    for row in service.store.list(statuses=("published",), district=district, upcoming_only=True, limit=60):
+        support = row.get("support") or {}
+        if not support.get("by_akimat") or not support.get("pickup_service"):
+            continue
+        out.append({"initiative_id": row["id"], "service": support["pickup_service"],
+                    "title": row.get("title_public") or row["title"], "point": [row["lon"], row["lat"]],
+                    "district": row.get("district"), "target": {"kind": "area", "id": row["target_id"]}
+                    if row.get("target_id") else None, "starts_at": row["starts_at"], "ends_at": row.get("ends_at"),
+                    "note": support.get("note"), "supported_at": support.get("at"), "demo": bool(row.get("demo"))})
+    return out

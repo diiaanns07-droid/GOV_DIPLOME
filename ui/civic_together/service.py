@@ -377,7 +377,8 @@ class TogetherService:
         view = {
             "id": item["id"], "kind": item["kind"], "title": item.get("title_public") or item["title"],
             "text": item.get("text_public") or item.get("text") or "", "lang": item.get("lang") or "ru",
-            "target": target, "point": [item["lon"], item["lat"]], "district": item.get("district"),
+            # R15-S45: место дела публично — 4 знака (≈ 10 м): найти площадку можно, дверь подъезда — нет.
+            "target": target, "point": [round(item["lon"], 4), round(item["lat"], 4)], "district": item.get("district"),
             "starts_at": item["starts_at"], "ends_at": item.get("ends_at"), "bring": item.get("bring") or [],
             "status": item["status"], "joined": int(item.get("joined") or 0), "my_join": bool(my_join),
             "mine": bool(mine), "support": support, "report": public_report, "from_idea": item.get("from_idea"),
@@ -396,7 +397,7 @@ class TogetherService:
         flags = mod.get("flags") or []
         if not mod.get("source"):
             # Запись без проверки при создании (демо-набор, демо-мир, старая база) — пометки считаем при чтении.
-            flags = moderation.local_check(item["title"] + "\n" + (item.get("text") or ""))["flags"]
+            flags = moderation.local_check("\n".join([item["title"], item.get("text") or ""] + list(item.get("bring") or [])))["flags"]
         view.update({
             "original": {"title": item["title"], "text": item.get("text") or ""},
             "flags": flags, "moderation_source": mod.get("source"),
@@ -513,7 +514,10 @@ class TogetherService:
             if d <= SIMILAR_RADIUS_M:
                 found[row["id"]] = (d, row)
         title = (q.get("title") or "")[:TITLE_MAX]
-        for iid in self._r04_similar(title, [lon, lat]):
+        # R04 ищет по смыслу («субботник» = «уборка» = «сенбілік») в наших же записях рядом (передаём сами — R04 INTEGRATION §4).
+        near = self.store.list(statuses=("published",), bbox=(lon - dlon * 1.4, lat - dlat * 1.4, lon + dlon * 1.4,
+                                                               lat + dlat * 1.4), upcoming_only=True, limit=40)
+        for iid in self._r04_similar(title, [lon, lat], near, kind):
             if iid in found:
                 continue
             try:
@@ -527,7 +531,7 @@ class TogetherService:
                             "radius_m": SIMILAR_RADIUS_M})
 
     @staticmethod
-    def _r04_similar(title: str, point) -> list[str]:
+    def _r04_similar(title: str, point, records=None, kind=None) -> list[str]:
         if len(title) < TITLE_MIN:
             return []
         try:
@@ -535,7 +539,10 @@ class TogetherService:
         except Exception:
             return []
         try:
-            result = similar_initiatives(title, point, 30)
+            try:
+                result = similar_initiatives(title, point, 30, records=records, kind=kind)
+            except TypeError:   # R04 до раунда 15: без records/kind
+                result = similar_initiatives(title, point, 30)
         except Exception:
             LOGGER.exception("R04 similar_initiatives не сработал")
             return []
@@ -613,7 +620,11 @@ class TogetherService:
         request_id = body.get("request_id")
         if request_id is not None and (not isinstance(request_id, str) or not REQUEST_RE.match(request_id)):
             raise ApiError(400, "bad_request", "request_id: строка 8–64 символа.", "request_id")
-        checked = moderation.check(fields["title"] + "\n" + fields["text"], fields["lang"])
+        # R15-S47: «что взять» — тоже текст жителя: в общую проверку (пометки сотруднику) и с маской, как текст.
+        bring_text = "\n".join(fields["bring"])
+        checked = moderation.check(fields["title"] + "\n" + fields["text"] + ("\n" + bring_text if bring_text else ""),
+                                   fields["lang"])
+        fields["bring"] = [moderation.check(item, fields["lang"])["text_public"] for item in fields["bring"]]
         title_mod = moderation.check(fields["title"], fields["lang"])
         text_mod = moderation.check(fields["text"], fields["lang"]) if fields["text"] else {"text_public": ""}
         fields["moderation"] = {"flags": checked["flags"], "source": checked["source"]}
@@ -625,7 +636,7 @@ class TogetherService:
         # Житель видит номер и «на проверке» (или «опубликовано» при автопубликации) — и подсказку о личных данных.
         return _reply(201 if created else 200, {
             "initiative": self._public(item, mine=True, full=True), "created": created,
-            "hints": moderation.hints(fields["title"] + "\n" + fields["text"])})
+            "hints": moderation.hints(fields["title"] + "\n" + fields["text"] + "\n" + bring_text)})
 
     def join(self, iid: str, body: dict, context) -> dict:
         self._resident_write(context)
@@ -914,7 +925,8 @@ def make_service(db_path, *, clock=None, demo: bool | None = None, autopublish: 
     if want_demo and not (demo is None and os.environ.get("CIVIC_DEMO_WORLD") == "1"):
         from . import demo as demo_data
         yards, items = demo_data.rows(store.now())
-        store.seed(yards, items)
+        # Каждый запуск демо — с чистой сценой 7 (после репетиции снова 14 «Я приду», дело не «сделано»).
+        store.seed(yards, items, reset=True)
     service = TogetherService(store, autopublish=autopublish)
     _register(service)
     return service

@@ -1,0 +1,123 @@
+R16 · «Бірге: жители вместе» — «Мой двор» и «Сделаем вместе» · INTEGRATION для R01 (сборка), R11 (меню, словарь),
+R06 (лента, идея → дело), R08/R03 (сводка), R17 (вывоз), R02 (демо-мир), R10 (приёмка), R15 (ревью).
+Ветка роли: claude/youthful-johnson-6nz5mp (ветка сессии). Код — ui/civic_together/, web/civic/together/, тесты — tests/civic/R16/.
+Поправка П1 («без ИИ-слопа») применена: в модуле нет иллюстраций и нарисованных «фото»; значки — набор R11.
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+1. R01 · ПОДКЛЮЧЕНИЕ К СБОРКЕ (одна правка, готовый patch)
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+  git apply research/round-15-results/R16/R01_together_routes.patch        # проверено: git apply --check на e91acb6
+Что в нём (ui/web_server.py + web/index.html):
+  а) V2_ROUTES — 15 маршрутов together/* (точные пути раньше {id});
+  б) V2_HANDLERS — V2Handler("R16", ("ui.civic_together",), "make_service", kind="service"); сотрудник (staff=True) —
+     together.initiatives.support, together.initiatives.moderate, together.yards.moderate. Отчёт «Сделано вместе»
+     (together.initiatives.report) — БЕЗ staff=True: его пишет автор-житель или сотрудник, модуль проверяет сам;
+  в) V2_RATE_LIMITS по адресу клиента (как R13/R06, R15 S08): создание 3/мин · 10/ч · 20/сутки; «Я приду» 30/мин и
+     20/сутки на одно дело; «Я живу здесь» 10/мин · 50/сутки; модуль держит ещё свои лимиты на устройство;
+  г) CIVIC_ASSETS: together/together.js, together/together-text.js, together/together.css;
+  д) index.html: <link …/together/together.css> и <script defer> together-text.js, together.js (после qa.js).
+Если R01 уже добавил строки CONTRACT §7 под своими ключами — достаточно, чтобы обработчик был ui.civic_together ·
+make_service · kind="service"; дополнительно нужны 3 маршрута сверх таблицы §7 (ниже «[доп.]»).
+
+Маршруты (/api/civic/v2/…):
+  GET  together/initiatives?bbox&status&kind&yard&district&limit   все (опубликованные и «сделано»)
+       …?view=mine                                                 житель: свои (и на проверке)
+       …?view=staff&tab=queue|published|done|hidden                сотрудник: очередь, отчёты жителей, старшие по двору
+       …?similar=1&lon&lat&kind&title                              все: похожее дело рядом (≤ 600 м, тот же вид)
+  POST together/initiatives                                        житель (X-Birge-Device) → 201 «на проверке»
+  GET  together/initiatives/{id}                                   все (на проверке — автору и сотруднику)
+  POST together/initiatives/{id}/join · /leave                     житель: «Я приду» — одно устройство, один раз
+  POST together/initiatives/{id}/support                           сотрудник: {inventory, pickup_service:"waste"|null, note}
+  POST together/initiatives/{id}/moderate                          сотрудник: {action: publish|hide|cancel|publish_report|hide_report, reason}
+  POST together/initiatives/{id}/report                            автор (на проверку) или сотрудник (сразу «сделано»):
+                                                                   {text, photo?: {data_url, thumb, width, height}} ≤ 64 КБ
+  GET  together/yards [доп.]                                       все: дворы, где уже есть соседи или дела (выбор двора)
+  GET  together/yards/{id}                                         все: страница двора (блоки соседей — «пока нет данных»)
+  POST together/yards/{id}/join · /leave                           житель: «Я живу здесь» / «Больше не живу здесь»
+  POST together/yards/{id}/captain [доп.]                          житель-сосед: «старший по двору» (только имя, на проверку)
+  POST together/yards/{id}/moderate [доп.]                         сотрудник: имя старшего — publish | hide
+  GET  together/updates?since                                      житель: события ленты (CONTRACT §5.8) + id своих дворов
+
+Связка wire() не нужна: модуль сам читает соседей их функциями в процессе (R12 engine.civic_geo.target_info / yard_at,
+R07 ui.civic_heat.default_service — тот же сервис карты, что связал шлюз, поэтому числа «Мой двор» = числа карты;
+R06 ui.civic_store.v2.list_ideas / nearby_items). Нет соседа — блок «Пока нет данных», не ошибка.
+По желанию (тесты, другой источник): ui.civic_together.configure(problems=…, ideas=…, works=…, yard_geo=…, yard_at=…).
+
+Повторный засев (просьба R02, как reset у R09 и R17): seed_world и демо-набор при каждом запуске возвращают демо-записи
+(demo: true) к виду набора от нового «сейчас» — «Я приду» снова 14, дело не «сделано», соседи двора — число набора;
+записи жителей (demo = 0) не трогаются. Ответ seed_world: {"inserted", "skipped", "reset", "source"}.
+Мир R02 можно передавать и сырым: объекты времени next_weekday / day_at / day / ago_* / in_* модуль понимает сам (и через
+ml.datasets.demo_world_io.materialize, если он есть в сборке). Проверено на world_v1.json R02 @ 7128b6ba: 42 записи,
+двор сцены 7 «Двор: BI City Tokyo» (37 соседей, старший «Айгуль»), i-w15-01 суббота 10:00–13:00, «Я приду» 14.
+
+Демо (CONTRACT §11):
+  • CIVIC_DEMO=1 без CIVIC_DEMO_WORLD — make_service засевает свою фикстуру (8 настоящих дворов OSM, 9 дел-примеров;
+    сцена 7: двор yard-1454082638 «GreenLine.Asyl Mura», Нура; дело i-demo-scene7 «Субботник во дворе», 14 «Я приду»).
+  • CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 — R01 вызывает ui.civic_together.seed_world(db_path, world, now=None) →
+    {"inserted", "skipped", "source": "world"|"fixture"}; берёт world["yards"] и world["initiatives"]; время —
+    ISO, {in_days|ago_days|hour…} или плоские <поле>_in_days / ago_days. Нет инициатив в мире — своя фикстура.
+  • Повтор засева ничего не дублирует и не возвращает снятое сотрудником.
+
+Разделы и слой (модуль регистрирует сам, BirgeShell.registerScreen / registerLayer, подписи {ru, kk}):
+  • «yard» — «Мой двор / Менің аулам» (житель);  «together» — «Сделаем вместе / Бірге жасайық» (житель — дела соседей;
+    акимат — «Инициативы жителей»: проверка, «Поддержать», «Отметить сделанным»);
+  • слой карты «initiatives» — «Инициативы / Бастамалар», по умолчанию выключен, один дополнительный слой;
+  • адреса: #yard, #together, ссылки ленты #together/i-…, #yard/yard-… (модуль открывает их сам, после старта оболочки).
+Место в меню — схема R11 IA_ROUND15. Предложение R11 по умолчанию (prompts/R11): житель «Карта · Мои обращения ·
+Мой двор · Идеи · Ещё (…, Сделаем вместе, …)». Тогда в birge.js NAV.resident: ["map", "mine", "yard", "ideas", "more"];
+«Рядом» (R08) — работы рядом есть и во вкладке «Работы» двора. Решает R11 + R01.
+Палитра Ctrl+K (R01, режим показа): «Сцена 7 · Двор вместе» → BirgeTogether.open("yard", scenes.yard) или
+BirgeTogether.open("initiative", scenes.initiative) — переход без перезагрузки, Esc закрывает один слой.
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+2. ФУНКЦИИ ДЛЯ СОСЕДЕЙ (вызов в процессе; модуля нет — пропустить блок)
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+  from ui import civic_together as tg
+  R06  tg.updates(device_id, since=None) -> [{id, at, module:"R16", kind:"yard.news"|"initiative.update", target,
+       title_ru, title_kk, link:"#together/i-…", demo}] — дворы устройства, дела, куда оно записалось, свои дела.
+  R06  tg.create_from_idea(idea_dto, starts_at=None) -> опубликованное дело (from_idea, «Поддержано акиматом»:
+       инвентарь и вывоз); повтор для той же идеи — то же дело. Для POST ideas/{id}/to-initiative (сотрудник).
+  R08/R03  tg.initiatives_summary(district=None) -> {upcoming, joined_upcoming, supported, done, neighbors_done,
+       on_review, next:[…]} — числа считает код («Жители вместе» в Ситуационном центре и «Картине дня»).
+  R17  tg.pickups(district=None) -> [{initiative_id, service:"waste", title, point, district, target, starts_at,
+       ends_at, note, supported_at}] — задача оператору вывоза после «Поддержать: мешки и вывоз».
+Приватность (CONTRACT §10): нигде нет id/хэшей устройств, времени вступления и «Я приду», списков людей.
+
+Числа «Мой двор» для сверки (R10, R02): «соседей» = base_members демо-набора + «Я живу здесь» устройств; «проблем» =
+число мест тепловой карты R07 (сам двор и участки улиц / объекты не дальше 60 м от формы двора OSM) в состоянии active
+за период карты (30 дней) — у каждого места тот же цвет и то же число людей, что на карте; «дел соседей» = опубликованные
++ «сделано» у двора. EXPECTED.json R02 yards.by_yard (жалобы с target = двор) — другое правило: для сцены 7 двор
+yard-1454082640 — одно из мест «проблем», его число людей = people_14d карты.
+Находки R15 S45–S47 закрыты в коде R16 (точка дела — 4 знака, «что взять» — через модерацию, запасной фильтр ИИН/мобильный).
+R04: moderate() и similar_initiatives(title, point, 30, records=…, kind=…) — совместимо, проверено с их веткой @ b9f828cc.
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+3. R11 · СЛОВАРЬ И UI-KIT
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+  • 233 ключа together.* ru/kk — research/round-15-results/R16/i18n_together.json (готово к слиянию в ru.json, kk.json);
+    массивы together.wd, together.months, together.bring.* остаются в web/civic/together/together-text.js.
+  • KK_REVIEW (на проверку владельцу): «старший по двору» → «аула жетекшісі»; «Сделаем вместе» → «Бірге жасайық»;
+    «Я приду» → «Мен келемін»; «Поддержано акиматом» → «Әкімдік қолдады»; «Сделано вместе» → «Бірге жасалды»;
+    «субботник» → «сенбілік».
+  • Когда в ui-kit появятся компоненты «шапка двора с 3 числами» и «карточка инициативы» — модуль перейдёт на них
+    (сейчас свои классы tg-* только на токенах ui-kit). Значки — набор R11 (trash, trees, snowflake, edit, heart, dots).
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+4. R02 · ДЕМО-МИР (что R16 ждёт в world_v1.json)
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+  yards: [{id: "yard-<osm>", label_ru, label_kk, district, point:[lon,lat], members: 37, captain: null}]
+  initiatives: [{id: "i-…", kind: cleanup|greening|snow|repair|help|other, title, text, lang, target:{kind:"area",
+    id:"yard-…"}, point, district, status: published|done|on_review|cancelled, joined: 14, starts_at|in_days+hour,
+    ends_at?, bring:[…], support?:{by_akimat, inventory, pickup_service:"waste", note, at|ago_days},
+    report?:{text, joined, at|ago_days}}]  — без фото (П1). scenes: {yard: "yard-…", initiative: "i-…"}.
+
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+5. ПРОВЕРКА (R10, R15) · LOCAL
+═══════════════════════════════════════════════════════════════════════════════════════════════════════
+  • Стенд с маршрутами R16 в памяти (файлы R01 не меняются): bash tests/civic/R16/stand_reset.sh /tmp/birge 8655
+  • Python: PYTHONPATH=<site-packages pytest> python3 -B -m pytest -q tests/civic/R16/   (46 тестов; без numpy
+    тесты шлюза пропускаются — SKIP, а не PASS)
+  • Браузер: NODE_PATH=$(npm root -g) node tests/civic/R16/browser/r16_browser.cjs http://127.0.0.1:8655 <кадры>
+    сцена 7 (на чистой базе): node tests/civic/R16/browser/r16_scene7.cjs http://127.0.0.1:8655 <кадры> ru 1366x768
+  • LOCAL (по желанию): настоящее фото «после» для показа сцены 7 — снять на телефон двор после уборки (без людей
+    крупным планом) и загрузить кнопкой «Отметить сделанным» → «Добавить фото». В Git фото не класть.

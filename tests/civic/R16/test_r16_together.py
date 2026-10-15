@@ -15,7 +15,7 @@ from urllib.parse import quote
 
 import pytest
 
-from ui.civic_together import create_from_idea, initiatives_summary, seed_world, updates
+from ui.civic_together import create_from_idea, initiatives_summary, pickups, seed_world, updates
 from ui.civic_together import neighbors
 from ui.civic_together.demo import SCENE, next_weekday, rows as demo_rows
 from ui.civic_together.service import make_service
@@ -481,39 +481,56 @@ def test_demo_rows_scene_and_format():
     assert next_weekday(datetime(2026, 10, 17, 9, 0, tzinfo=ASTANA), 5, 10).day == 24   # «через час» — слишком рано
 
 
-def test_seed_world_relative_times_and_idempotent(tmp_path):
+def test_seed_world_relative_times_and_reset(tmp_path):
     db = tmp_path / "w.sqlite3"
     world = {"yards": [{"id": "yard-1454082638", "label_ru": "Двор: GreenLine.Asyl Mura", "district": "nura",
-                        "point": [71.3970633, 51.1348358], "members": 41}],
+                        "point": [71.3970633, 51.1348358], "members": 41,
+                        "captain": {"display_name": "Айгуль", "since": {"ago_days": 40}}}],
              "initiatives": [{"id": "i-world-1", "kind": "cleanup", "title": "Субботник во дворе", "text": "…",
                               "target": {"kind": "area", "id": "yard-1454082638"}, "point": [71.397, 51.1348],
                               "district": "nura", "status": "published", "joined": 14, "ago_days": 2,
-                              "starts_at": {"in_days": 2, "hour": 10}, "bring": ["перчатки"]},
+                              "starts_at": {"next_weekday": {"weekday": 5, "hour": 10, "minute": 0}},
+                              "ends_at": {"next_weekday": {"weekday": 5, "hour": 13, "minute": 0}}, "bring": ["перчатки"]},
                              {"id": "i-world-2", "kind": "greening", "title": "Посадили деревья", "point": [71.405, 51.122],
-                              "status": "done", "joined": 15, "done_at": {"ago_days": 5},
-                              "report": {"text": "Посадили 6 саженцев", "joined": 15}}]}
+                              "status": "done", "joined": 15, "starts_at": {"day_at": {"day": -26, "hour": 10, "minute": 0}},
+                              "done_at": {"ago_days": 5}, "report": {"text": "Посадили 6 саженцев", "joined": 15}}]}
     now = datetime(2026, 10, 15, 12, 0, tzinfo=ASTANA)
     first = seed_world(db, world, now=now)
-    again = seed_world(db, world, now=now)
-    assert first == {"inserted": 3, "skipped": 0, "source": "world"}
-    assert again == {"inserted": 0, "skipped": 3, "source": "world"}
+    assert first == {"inserted": 3, "skipped": 0, "reset": 0, "source": "world"}
     svc = make_service(db, demo=False)
     item = svc.store.get("i-world-1")
-    assert item["starts_at"] == "2026-10-17T10:00:00+05:00" and item["joined"] == 14
-    done = svc.store.get("i-world-2")
-    assert done["status"] == "done" and done["report"]["joined_final"] == 15
+    assert item["starts_at"] == "2026-10-17T10:00:00+05:00" and item["ends_at"] == "2026-10-17T13:00:00+05:00"
+    assert item["joined"] == 14
+    assert svc.store.get("i-world-2")["starts_at"] == "2026-09-19T10:00:00+05:00"
+    yard = svc.store.yard("yard-1454082638")
+    assert yard["members"] == 41 and yard["captain_name"] == "Айгуль" and yard["captain_status"] == "published"
+    # Показ: житель пришёл и вступил, акимат отметил «сделано» — повторный засев (новый день) возвращает сцену.
+    svc.store.join("i-world-1", DEV_A)
+    svc.store.join_yard("yard-1454082638", DEV_A)
+    svc.store.report("i-world-1", text="Убрали двор.", text_public=None, moderation=None, by_role="staff", publish=True)
+    assert svc.store.get("i-world-1")["status"] == "done"
+    later = datetime(2026, 10, 18, 12, 0, tzinfo=ASTANA)
+    again = seed_world(db, world, now=later)
+    assert again == {"inserted": 0, "skipped": 0, "reset": 3, "source": "world"}
+    item = svc.store.get("i-world-1")
+    assert item["status"] == "published" and item["joined"] == 14 and item["report"] is None
+    assert item["starts_at"] == "2026-10-24T10:00:00+05:00"      # следующая суббота от нового «сейчас»
     assert svc.store.yard("yard-1454082638")["members"] == 41
     empty = seed_world(tmp_path / "e.sqlite3", {"complaints": []}, now=now)
     assert empty["source"] == "fixture" and empty["inserted"] > 0
 
 
-def test_demo_seed_is_idempotent_and_keeps_moderation(tmp_path, clock):
+def test_demo_reseed_resets_demo_but_never_resident_records(tmp_path, clock):
     db = tmp_path / "d.sqlite3"
     svc = make_service(db, clock=clock, demo=True)
     staff = dict(principal=Staff(), context=ctx(csrf="csrf-ok"))
     call(svc, "POST", "/initiatives/i-demo-review-flowers/moderate", {"action": "hide", "reason": "other"}, **staff)
-    again = make_service(db, clock=clock, demo=True)
-    assert again.store.get("i-demo-review-flowers")["status"] == "hidden"   # засев не возвращает снятое
+    call(svc, "POST", f"/initiatives/{SCENE['initiative']}/join", {}, context=ctx(DEV_A))
+    own = call(svc, "POST", "/initiatives", new_body(), context=ctx(DEV_B))["body"]["initiative"]["id"]
+    again = make_service(db, clock=clock, demo=True)       # перезапуск сервера с CIVIC_DEMO=1
+    assert again.store.get("i-demo-review-flowers")["status"] == "on_review"   # демо — снова как в наборе
+    assert again.store.get(SCENE["initiative"])["joined"] == 14
+    assert again.store.get(own)["status"] == "on_review"                      # запись жителя на месте
     assert len(again.store.list(statuses=("published", "done"))) == 7
 
 
@@ -522,3 +539,40 @@ def test_unknown_routes_and_methods(svc):
     assert call(svc, "DELETE", "/initiatives")["status"] == 405
     assert call(svc, "PUT", "/initiatives/" + SCENE["initiative"])["status"] == 404
     assert svc.handle("GET", "/api/civic/v2/other", "", None, None, ctx())["status"] == 404
+
+
+def test_pickups_for_waste_service(svc):
+    assert pickups() == []
+    call(svc, "POST", f"/initiatives/{SCENE['initiative']}/support", {"inventory": True, "pickup_service": "waste",
+                                                                     "note": "Мешки и вывоз в 14:00"},
+         principal=Staff(), context=ctx(csrf="csrf-ok"))
+    rows = pickups("nura")
+    assert [r["initiative_id"] for r in rows] == [SCENE["initiative"]]
+    assert rows[0]["service"] == "waste" and rows[0]["note"] == "Мешки и вывоз в 14:00"
+    assert "device" not in json.dumps(rows, ensure_ascii=False)
+
+
+# --------------------------------------------------------------------------- находки R15 (S45–S47)
+def test_r15_s47_bring_items_are_moderated(svc):
+    body = new_body(bring=["перчатки", "звоните 8 701 123 45 67", "почта a.b@example.com"])
+    r = call(svc, "POST", "/initiatives", body, context=ctx(DEV_A))
+    iid = r["body"]["initiative"]["id"]
+    assert {"phone", "email"} <= set(r["body"]["hints"])
+    staff = call(svc, "GET", "/initiatives", principal=Staff(), query="view=staff&tab=queue")["body"]
+    assert {"phone", "email"} <= set(next(i for i in staff["items"] if i["id"] == iid)["flags"])
+    call(svc, "POST", f"/initiatives/{iid}/moderate", {"action": "publish"}, principal=Staff(), context=ctx(csrf="csrf-ok"))
+    public = call(svc, "GET", "/initiatives/" + iid, context=ctx(DEV_B))["body"]["initiative"]
+    text = json.dumps(public["bring"], ensure_ascii=False)
+    assert "701" not in text and "example.com" not in text and "***" in text
+
+
+@pytest.mark.parametrize("raw", ["ИИН 900101 300 125", "ИИН 900101-300-125", "мой 701 123 45 67", "(701) 123-45-67"])
+def test_r15_s46_fallback_catches_spaced_iin_and_bare_mobile(raw):
+    from ui.civic_together import moderation
+    checked = moderation.local_check(raw)
+    assert checked["flags"] and "***" in checked["text_public"]
+
+
+def test_r15_s45_public_point_is_rounded_to_4_digits(svc):
+    item = call(svc, "GET", "/initiatives/" + SCENE["initiative"])["body"]["initiative"]
+    assert all(len(str(v).split(".")[1]) <= 4 for v in item["point"])
