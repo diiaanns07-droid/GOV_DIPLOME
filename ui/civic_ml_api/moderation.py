@@ -37,7 +37,7 @@ import unicodedata
 
 from ui.civic_ml_api import profanity
 
-VERSION = "r04-moderate-1"
+VERSION = "r04-moderate-2"   # 2: перечень коротких чисел («маршруты 10 12 14 16») — не номер
 MAX_TEXT = 5000
 MASK = "***"
 
@@ -64,9 +64,13 @@ _DIGIT_RUN = re.compile(r"(?<![\w+\-/.#])\+?\d(?:[ \t\-()\xa0]{0,3}\d)+(?![\w\-/
 # после подписи отдельно (сам _DIGIT_RUN после «.» и «-» не начинается: это защита от id «osm-node-7127598060»).
 _LABELED_RUN = re.compile(r"(?<![\w])(?:тел|т|моб|сот|ватсап|whatsapp|tel|phone|иин|жсн|бин|iin)[.\-:]\s*"
                           r"(\+?\d(?:[ \t\-()\xa0]{0,3}\d)+)(?![\w\-/])", re.IGNORECASE)
+# Подпись перед цепочкой через пробел («тел 8 …», «ИИН: …», «карта …»): после неё и перечень чисел — номер.
+_LABEL_BEFORE = re.compile(r"(?<![\w])(?:тел(?:ефон)?|моб(?:ильный)?|сот(?:овый)?|ватсап|whatsapp|tel|phone"
+                           r"|иин|жсн|бин|iin|карт[аыуе]?|card)\W{0,3}$", re.IGNORECASE)
 # R15-S48: мобильный через точки «8.701.123.45.67» — дата «12.10.2026» сюда не подходит (2-2-4, а не 1-3-3-2-2).
 _DOTTED_PHONE = re.compile(r"(?<![\w.])(?:\+?7|8)\.\d{3}\.\d{3}\.\d{2}\.\d{2}(?![\w.])")
 _THOUSANDS = re.compile(r"^\d{1,3}(?:[ \xa0]\d{3})+$")
+_GROUP_SPLIT = re.compile(r"[ \t\-\xa0]+")    # группы цифр внутри цепочки (скобок в перечне не бывает)
 _LOCAL_PHONE = re.compile(r"^\d{2,3}-\d{2}-\d{2}$")    # городской — только с дефисами: «дома 15 17 18» не телефон
 _EMAIL = re.compile(r"(?<![\w.+-])[A-Za-z0-9][A-Za-z0-9._%+-]{0,63}@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}(?![\w-])")
 _EMAIL_OBF = re.compile(
@@ -114,8 +118,25 @@ def ascii_digits(raw: str) -> str:
     return "".join(str(unicodedata.decimal(ch)) for ch in raw if unicodedata.decimal(ch, None) is not None)
 
 
-def _classify_run(raw: str) -> str | None:
-    """Вид цепочки цифр: phone | iin | card | None (обычное число)."""
+def _number_list(raw: str) -> str | None:
+    """Перечень коротких чисел, а не номер: «маршруты 10 12 14 16 18 21 24», «подъезды 1 2 3 … 12»,
+    «21 22 23 24 25 26 октября» (находка R17). -> "rising" (≥ 3 группы по 1–2 цифры, каждая больше предыдущей),
+    "pairs" (≥ 3 группы по 1–2 цифры, половина и больше — двузначные) или None.
+    Цифры по одной («8 7 0 1 2 …») — так прячут телефон: это не перечень."""
+    if raw.lstrip().startswith("+") or "(" in raw or ")" in raw:
+        return None
+    groups = [ascii_digits(g) for g in _GROUP_SPLIT.split(raw.strip()) if g]
+    if len(groups) < 3 or any(len(g) > 2 for g in groups):
+        return None
+    values = [int(g) for g in groups]
+    if all(a < b for a, b in zip(values, values[1:])):
+        return "rising"
+    return "pairs" if 2 * sum(1 for g in groups if len(g) == 2) >= len(groups) else None
+
+
+def _classify_run(raw: str, labeled: bool = False) -> str | None:
+    """Вид цепочки цифр: phone | iin | card | None (обычное число). labeled — номер стоит после подписи («ИИН», «тел.»):
+    тогда и перечень чисел считается номером."""
     digits = ascii_digits(raw)
     n = len(digits)
     # Скобка — только после кода страны или восьмёрки («+7 (701)», «8 (7172)»), а «2025-2029 (2025-2026» — годы.
@@ -123,17 +144,22 @@ def _classify_run(raw: str) -> str | None:
         return None
     plus = raw.lstrip().startswith("+")
     thousands = bool(_THOUSANDS.match(raw.strip()))
-    if n == 11 and digits[0] in "78" and not thousands:
+    listed = None if labeled or n < 10 else _number_list(raw)
+    if n == 11 and digits[0] in "78" and not thousands and listed != "rising":
         return "phone"
     if n == 11 and plus:
         return "phone"
-    if n == 10 and digits[0] == "7" and not thousands:
+    if n == 10 and digits[0] == "7" and not thousands and listed != "rising":
         return "phone"                     # 701 123 45 67 без восьмёрки
     if n == 12:
-        # «1 000 000 000 000» — сумма, а не ИИН, если контрольная цифра не сходится.
-        return None if thousands and not iin_checksum_ok(digits) else "iin"
+        # «1 000 000 000 000» — сумма, а не ИИН, если контрольная цифра не сходится; перечень — тоже.
+        if listed == "rising" or ((thousands or listed) and not iin_checksum_ok(digits)):
+            return None
+        return "iin"
     if 13 <= n <= 19:
-        return None if thousands and not luhn_ok(digits) else "card"
+        if listed == "rising" or ((thousands or listed) and not luhn_ok(digits)):
+            return None
+        return "card"
     if n in (6, 7) and _LOCAL_PHONE.match(raw.strip()):
         return "phone"
     return None
@@ -157,7 +183,7 @@ def _pii_spans(text: str) -> list[tuple[int, int, str]]:
         add(m.start(), m.end(), "iban")
     # Сначала номер после подписи и номер через точки: «моб-8 701 123 45 67» целиком, а не «8» + остаток.
     for m in _LABELED_RUN.finditer(text):
-        kind = _classify_run(m.group(1))
+        kind = _classify_run(m.group(1), labeled=True)
         if kind:
             add(m.start(1), m.end(1), kind)
     for m in _DOTTED_PHONE.finditer(text):
@@ -168,7 +194,7 @@ def _pii_spans(text: str) -> list[tuple[int, int, str]]:
         start, end = m.start(), m.end()
         while end > start and text[end - 1] in " -(\t\xa0":
             end -= 1
-        kind = _classify_run(text[start:end])
+        kind = _classify_run(text[start:end], labeled=bool(_LABEL_BEFORE.search(text[max(0, start - 16):start])))
         if kind:
             add(start, end, kind)
         del raw
