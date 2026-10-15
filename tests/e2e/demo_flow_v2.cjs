@@ -323,7 +323,9 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     const f = await shot("9-day");
     step("9", "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»", shell && shell.globals.includes("BirgeAgencies") ? hasBtn : null,
       shell && shell.globals.includes("BirgeAgencies") ? { button: hasBtn } : "модуля BirgeAgencies нет на странице", "R08 + R17", f);
-    const o = await open(`#crisis/${s9.incident}`, "BirgeAgencies");
+    // Адрес штаба по R17 INTEGRATION (R01 8ac171b0): #agencies/crisis=<id>; запасной по IA_ROUND15 — #crisis/<id>.
+    let o = await open(`#agencies/crisis=${s9.incident}`, "BirgeAgencies");
+    if (o.ok === false) o = await open(`#crisis/${s9.incident}`, "BirgeAgencies");
     const f2 = await shot("9-crisis");
     if (o.ok === null) step("9", "кризисный штаб", null, o.why, "R17");
     else {
@@ -334,6 +336,66 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
   }
   step("*", "консоль без ошибок (кроме шума среды)", errors.length === 0, errors.slice(0, 6), "по тексту ошибки");
   await ctx.close();
+}
+
+// ------------------------------------------------------------------------------------------------ Ситуационный центр
+// VISUAL_BRIEF №4 (R08): страница /civic/board/ на весь экран — 1920×1080 и 1366×768 без прокрутки, тёмная тема (.bk-dark),
+// крупные живые числа (читается с 3 м), контраст ≥ 4,5:1, «Пример» на синтетике, «На весь экран» и «← В Birge».
+async function boardCheck(browser, base, lang, staffAcc) {
+  const dict = L.loadDict(ROOT, lang);
+  const head = await fetch(base + "civic/board/").then((r) => r.status).catch(() => 0);
+  if (head !== 200) { add("UI board", "9", `Ситуационный центр /civic/board/ (${lang})`, "NOT_RUN", `страницы нет (HTTP ${head})`, "R08"); return; }
+  for (const [w, h] of [[1920, 1080], [1366, 768]]) {
+    const tag = `${w}-${lang}`;
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+    if (staffAcc && staffAcc.user) {
+      // Вход сотрудника — той же сессией, что «Для сотрудников» на главной (страница сама просит войти при 401).
+      await ctx.request.post(base + "api/civic/v1/session/login", { data: { username: staffAcc.user, password: staffAcc.pass },
+        headers: { Origin: base.replace(/\/$/, "") } }).catch(() => null);
+    }
+    const page = await ctx.newPage();
+    const errors = [];
+    page.on("pageerror", (e) => errors.push(e.message.slice(0, 160)));
+    await page.goto(base + `civic/board/?lang=${lang}&rotate=0`);
+    await sleep(3500);
+    const m = await page.evaluate(() => {
+      const root = document.documentElement, body = document.body;
+      const lum = (c) => { const v = (c.match(/\d+(\.\d+)?/g) || [255, 255, 255]).slice(0, 3).map(Number).map((x) => x / 255)
+        .map((x) => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+      let bg = getComputedStyle(body).backgroundColor;
+      if (/rgba\(0, 0, 0, 0\)|transparent/.test(bg)) bg = getComputedStyle(root).backgroundColor;
+      const vis = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight; };
+      const leaves = [...document.querySelectorAll("body *")].filter((e) => vis(e) && !e.children.length && (e.textContent || "").trim());
+      const sizes = leaves.map((e) => parseFloat(getComputedStyle(e).fontSize));
+      const big = leaves.filter((e) => /^\d[\d\s.,%×]*$/.test(e.textContent.trim()) && parseFloat(getComputedStyle(e).fontSize) >= 40).length;
+      return { dark: root.classList.contains("bk-dark"), bg_lum: Math.round(lum(bg) * 1000) / 1000,
+        scrollH: root.scrollHeight, scrollW: root.scrollWidth, innerH: innerHeight, innerW: innerWidth,
+        state: (document.getElementById("board") || {}).dataset ? document.getElementById("board").dataset.state : null,
+        min_font: sizes.length ? Math.min(...sizes) : null, big_numbers: big,
+        text: (body.innerText || "").slice(0, 4000) };
+    }).catch(() => null);
+    const f = path.join(OUT, `board-${tag}.jpg`);
+    await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+    const q = await uiScreen(page).catch(() => null);
+    const step = (name, ok, detail) => add(`UI board ${tag}`, "9", name, ok3(ok), detail, "R08", path.basename(f));
+    if (!m) { step("страница открылась", false, "нет данных страницы"); await ctx.close(); continue; }
+    const loginShown = /для сотрудников|қызметкерлеріне/i.test(m.text) && /Войти|Кіру/.test(m.text);
+    step("открыта с данными (вход сотрудника принят)", m.state !== "loading" && !loginShown, { state: m.state, login_form: loginShown });
+    step("без прокрутки на весь экран", m.scrollH <= m.innerH + 2 && m.scrollW <= m.innerW + 2, { scrollH: m.scrollH, h: m.innerH, scrollW: m.scrollW, w: m.innerW });
+    step("тёмная тема только здесь (.bk-dark, тёмный фон)", m.dark && m.bg_lum < 0.2, { dark: m.dark, bg_luminance: m.bg_lum });
+    step("крупные живые числа (≥ 40 px) — читается с 3 м", m.big_numbers >= 3, { big_numbers: m.big_numbers });
+    step("мелкого текста нет (≥ 14 px на большом экране)", m.min_font === null || m.min_font >= 14, { min_font: m.min_font });
+    if (q) step("контраст текста ≥ 4,5:1 на тёмном", q.lowContrastN === 0, { n: q.lowContrastN, ex: (q.lowContrast || []).slice(0, 4) });
+    const sample = /Пример|Үлгі/.test(m.text);
+    step("пометка «Пример» на синтетике", sample, null);
+    const back = T(dict, "board.back", lang === "kk" ? "Birge-ге" : "В Birge"), full = T(dict, "board.fullscreen", lang === "kk" ? "Толық экран" : "На весь экран");
+    const backRe = new RegExp(esc(back.replace(/^←\s*/, "")), "i");
+    const hasFull = !!(await firstVisible(page.getByRole("button", { name: new RegExp(esc(full), "i") })));
+    const hasBack = !!(await firstVisible(page.getByRole("link", { name: backRe }))) || !!(await firstVisible(page.getByRole("button", { name: backRe })));
+    step("«На весь экран» и «← В Birge»", hasFull && hasBack, { full: hasFull, back: hasBack });
+    step("консоль без ошибок", errors.length === 0, errors.slice(0, 4));
+    await ctx.close();
+  }
 }
 
 // ------------------------------------------------------------------------------------------------ запуск
@@ -352,6 +414,7 @@ async function uiFlow(browser, base, [w, h], lang, S, staffAcc, timing) {
     if (!args["api-only"]) {
       const browser = await chromium.launch();
       for (const size of SIZES) for (const lang of LANGS) await uiFlow(browser, srv.base, size, lang, S && !S.error ? S : null, srv.staff, timing.ui);
+      for (const lang of LANGS) await boardCheck(browser, srv.base, lang, srv.staff);
       await browser.close();
     }
   } finally { await srv.stop(); }
