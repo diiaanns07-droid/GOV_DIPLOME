@@ -265,8 +265,8 @@ async function main() {
         return { chip: !!c, last: !!c && line.lastElementChild === c, text: c?.innerText.trim(), label: c?.getAttribute("aria-label"),
           icon: !!c?.querySelector("use[href$='#i-play']"), h: r ? Math.round(r.height) : 0 };
       });
-      check("«▶ Хроника»: chip at the end of the legend line, i-play icon, «Хроника» / «Хроника города»", chip.chip && chip.last
-        && chip.text === "Хроника" && chip.label === "Хроника города" && chip.icon && chip.h >= 34, chip);
+      check("«▶ Хроника»: chip at the end of the legend line, i-play icon, «Хроника» / «Хроника города», 44 px tall", chip.chip && chip.last
+        && chip.text === "Хроника" && chip.label === "Хроника города" && chip.icon && chip.h >= 44, chip);  // R10 B-125: зона нажатия 44
       await page.click("#birge-legend .birge-replay-chip");
       await page.waitForFunction(() => document.body.classList.contains("birge-replay-open") && document.querySelector(".rp-host .rp-bar"), null, { timeout: 8000 }).catch(() => null);
       await page.waitForTimeout(600);
@@ -291,8 +291,8 @@ async function main() {
       ({ ctx, page } = await open(browser, base, 375, 812, "resident"));
       await page.waitForFunction(() => { const c = document.querySelector("#birge-legend .birge-replay-chip"); return c && c.getClientRects().length; }, null, { timeout: 15000 }).catch(() => null);
       const phoneChip = await page.evaluate(() => { const c = document.querySelector("#birge-legend .birge-replay-chip"), r = c?.getBoundingClientRect();
-        return r ? { w: Math.round(r.width), right: Math.round(r.right), text: getComputedStyle(c.querySelector(".birge-replay-chip__text")).display } : null; });
-      check("phone: icon-only chip (40 px) inside the screen", !!phoneChip && phoneChip.w <= 44 && phoneChip.right <= 375 - 8 && phoneChip.text === "none", phoneChip);
+        return r ? { w: Math.round(r.width), h: Math.round(r.height), right: Math.round(r.right), text: getComputedStyle(c.querySelector(".birge-replay-chip__text")).display } : null; });
+      check("phone: icon-only chip 44 × 44 inside the screen", !!phoneChip && phoneChip.w === 44 && phoneChip.h >= 44 && phoneChip.right <= 375 - 8 && phoneChip.text === "none", phoneChip);
       await page.click("#birge-legend .birge-replay-chip");
       await page.waitForFunction(() => document.querySelector(".rp-host .rp-bar"), null, { timeout: 8000 }).catch(() => null);
       await page.waitForTimeout(600);

@@ -185,6 +185,11 @@ body.civic-mode[data-birge-layout="ref"] #birge-header .birge-avatar .ic { width
   /* ---------- легенда-строка: слева внизу ---------- */
   body.civic-mode[data-birge-layout="ref"] .birge-legend { left: 20px; bottom: 20px; }
 }
+/* R10 B-126 (с FINAL-4): сообщение R05 «✓ Проект поставлен · Отменить» уходило под карточку «Сегодня в Астане» (обе на
+   слое 6, карточка позже в DOM). Слой 3D-превью R05 — над карточками слева: сообщение читается целиком. */
+@media (min-width: 761px) {
+  body.civic-mode[data-birge-layout="ref"] .birge-build3d-root { z-index: 7; }
+}
 /* Житель, 761–1279 px: кнопка R09 «Сообщить о проблеме» — по центру свободной карты (≈ 190…450 при 1024), строка легенды
    с «▶ Хроника» — над ней (16 + 54 + 18), как задумано в birge.css; правило эталона выше это перебивало (кадр B0.5 1024). */
 @media (min-width: 761px) and (max-width: 1279px) {

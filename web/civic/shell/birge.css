@@ -354,7 +354,8 @@ body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root:not(:has(.b3
 .birge-legend-q:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
 /* «▶ Хроника» R07 (IA_ROUND15 R11 §5.8, §7.8) — последний чип строки легенды; на телефоне — только значок (строка у края).
    Пока хроника открыта, строки легенды нет (шкала цвета — в полосе хроники), «Сообщить о проблеме» не закрывает полосу. */
-.birge-legend-line .birge-replay-chip { margin-left: 2px; padding: 0 12px 0 10px; }
+/* Зона нажатия 44 px, как у «?» и кнопок карты (R10 B-125: у .bk-chip ui-kit 34 px — порог части 1 «≥ 40 px»). */
+.birge-legend-line .birge-replay-chip { margin-left: 2px; padding: 0 12px 0 10px; min-height: 44px; }
 .birge-legend-line .birge-replay-chip .ic { width: 16px; height: 16px; fill: currentColor; }  /* ▶ залитый, как у R11 .bk-replay__play */
 .birge-legend-line .birge-replay-chip:focus-visible { outline: 3px solid var(--c-focus, #152c26); outline-offset: 2px; }
 body.birge-replay-open #birge-legend, body.birge-replay-open .bc-fab { display: none !important; }
@@ -537,7 +538,7 @@ body[data-civic-sheet="full"].civic-mode .civic-explore #map-status { display: n
   .civic-mode .birge-legend-line :is(.birge-legend-few, .birge-legend-many) { position: absolute; width: 1px; height: 1px;
     margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .civic-mode .birge-legend-line > span[aria-hidden="true"] { display: none; }
-  .civic-mode .birge-legend-line .birge-replay-chip { width: 40px; padding: 0; justify-content: center; }
+  .civic-mode .birge-legend-line .birge-replay-chip { width: 44px; padding: 0; justify-content: center; }
   .civic-mode .birge-legend-line .birge-replay-chip__text { display: none; }
   .civic-mode .map-tools .bk-mapctl__group > #zoom-out { display: grid; }
 }
