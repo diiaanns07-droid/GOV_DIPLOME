@@ -1,13 +1,13 @@
 {
  "role": "R04",
  "round": 15,
- "delivery": "D1.2 (для B1 R01, 16 окт 14:00)",
+ "delivery": "D1.3 (для B1 R01, 16 окт 14:00)",
  "branch": "claude/gifted-maxwell-i66wwi",
  "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
  "restored_from": null,
  "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
- "code_sha": "de64a81bbc6cf74b8865733dfb786629cd06fa53",
- "tested_sha": "de64a81bbc6cf74b8865733dfb786629cd06fa53",
+ "code_sha": "c53832352dcf64147905978cccd967d7aea044a9",
+ "tested_sha": "c53832352dcf64147905978cccd967d7aea044a9",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_replies/__init__.py",
@@ -46,7 +46,7 @@
   "route_hint": "ui.civic_ml_api.route_hint(route(...)) -> поле route_hint R09 (CONTRACT §5.1)",
   "moderation_record": "ui.civic_ml_api.moderation_record(moderate(...)) -> поле moderation записи соседа"
  },
- "gateway_patch": "research/round-15-results/R04/patches/r01_web_server_r04_routes.patch (V2_ROUTES, V2_HANDLERS, arguments(), V2_RATE_LIMITS) — git apply --check OK на e91acb69",
+ "gateway_patch": "R01 подключил маршруты сам (2bd5bb5e: ml.route, ml.reply_draft, ml.text_check); patch research/round-15-results/R04/patches/r01_web_server_r04_routes.patch — справка",
  "tests": {
   "R04_round15_pytest": {
    "status": "PASS",
@@ -166,6 +166,14 @@
    "heads": "R16@aef7b79f R13@65ca0b2f R17@e5b834f9 R09@2ee80d8c",
    "sha": "de64a81bbc6cf74b8865733dfb786629cd06fa53",
    "found_and_fixed": "R16 test_personal_data_is_flagged_and_masked_for_public ждал вид iin для 12 цифр с неверной контрольной цифрой — теперь iin (+ checksum_ok)."
+  },
+  "stand_http_check_r01_branch": {
+   "status": "PASS",
+   "passed": 14,
+   "failed": 0,
+   "sha": "c53832352dcf64147905978cccd967d7aea044a9",
+   "env": "ветка R01 claude/brave-fermi-nhzetj @ 2bd5bb5e + ui/civic_ml_api и ml/civic_replies R04, демо-база, operator",
+   "cmd": "R04_STAND=http://127.0.0.1:8656 python3 -B tests/civic/R04/round15/http_check_r04.py"
   }
  },
  "screens": [],
@@ -187,5 +195,8 @@
    "package_sha": "2d329b2c",
    "applied": "У R04 нет экрана, кадров и слайдов — выходы только текстовые. Правило 4 (без эмодзи и украшений) и правила 1–2, 7 (без картинок) закреплены тестом test_r04_amendment_p1.py (2/2)."
   }
+ },
+ "patches_for_neighbours": {
+  "R17": "research/round-15-results/R04/patches/r17_crisis_pii.patch — блокировать card/iban/apartment/contact в публичных обновлениях кризиса (R17 @ 72676e3d: apply OK, их тесты 42/42)"
  }
 }

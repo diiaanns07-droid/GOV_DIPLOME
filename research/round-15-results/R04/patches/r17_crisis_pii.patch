@@ -1,0 +1,12 @@
+--- a/ui/civic_agencies/crisis.py
++++ b/ui/civic_agencies/crisis.py
+@@ -168,7 +168,8 @@
+         result = moderate(text, lang)
+         report[lang] = result
+         flags = set(result["flags"])
+-        if flags & {"phone", "iin", "email", "pii", "personal_data"}:
++        # R04 moderate(): личные данные — ещё card, iban, apartment, contact (номер карты, счёт, квартира, ник/t.me).
++        if flags & {"phone", "iin", "email", "pii", "personal_data", "card", "iban", "apartment", "contact"}:
+             raise InputError("text_" + lang, "Уберите из текста телефон, ИИН или e-mail: обновление видят все жители зоны.",
+                              code="personal_data")
+         if flags & {"rude", "profanity", "obscene"}:

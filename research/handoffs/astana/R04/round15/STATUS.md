@@ -17,9 +17,9 @@
   tests/civic/R04/round15/test_r04_amendment_p1.py по всем текстам route / reply_draft / moderate / similar_initiatives
   и шаблонам; правила 1–2, 7 (никаких нарисованных картинок) — тест «в путях R04 нет изображений». Кадров R04 не сдаёт.
 
-## Статус: D1.2 готова (поставка для B1) — все 5 задач промпта сделаны, ждём R01 (маршруты шлюза)
+## Статус: D1.3 готова (поставка для B1) — все 5 задач промпта сделаны, ждём R01 (маршруты шлюза)
 
-Поставка: research/round-15-results/R04/DELIVERY.json (code_sha de64a81b). Подключение — INTEGRATION.txt, запуск — RUN.txt,
+Поставка: research/round-15-results/R04/DELIVERY.json (code_sha c5383235). Подключение — INTEGRATION.txt, запуск — RUN.txt,
 числа — RESULTS.md.
 
 ## Сделано (15 окт, 16:25–17:21)
@@ -49,8 +49,13 @@
   text_public -> карты/IBAN/квартира прошли бы. Правка — INTEGRATION.txt п. 3 (для R17).
 - R09 (claude/quirky-ptolemy-k3z2mj): пока восстановил раунд 14 (D0) — route/reply_draft ещё не зовёт; как звать —
   INTEGRATION.txt п. 2.
-- R01 (claude/brave-fermi-nhzetj): V2_ROUTES для route/reply-draft/moderate ещё нет — patch готов
-  (patches/r01_web_server_r04_routes.patch), без строки в arguments() функции получат пустые аргументы.
+- R01 (claude/brave-fermi-nhzetj): маршруты подключены (2bd5bb5e), стенд 14/14 — patch R04 не нужен.
+
+## Круги
+- 15 окт 17:25 (круг 1, по расписанию): AMENDMENTS — новых нет (только П1). R01 подключил маршруты сам
+  (2bd5bb5e: ml.route / ml.reply_draft / ml.text_check) — стенд ветки R01 + ML-API R04: 14/14. R09 зовёт route() при
+  создании жалобы и берёт services[0].why_ru — теперь там полное объяснение (CP12). R17 D1 (72676e3d) пропуск карт/IBAN
+  не закрыл — patch patches/r17_crisis_pii.patch (их тесты 42/42 с ним). code_sha c5383235.
 
 ## Дальше (следующие круги)
 - Проверять соседей каждый круг: R01 взял patch? R09 зовёт route_hint/reply_draft? R17 поправил проверку pii?

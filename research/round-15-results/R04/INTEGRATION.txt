@@ -6,6 +6,11 @@ tests/civic/R04/. Код — только стандартная библиот�
 ======================================================================================================================
 1. R01 — ШЛЮЗ (ui/web_server.py): три маршрута CONTRACT §7
 ======================================================================================================================
+СТАТУС 15 окт 17:27: R01 подключил маршруты сам (ветка claude/brave-fermi-nhzetj @ 2bd5bb5e: ключи ml.route,
+ml.reply_draft (staff), ml.text_check -> moderate; аргументы — _arguments_round15). Проверено: ветка R01 + ML-API R04,
+стенд, http_check_r04.py — 14/14. Patch ниже R01 больше не нужен (оставлен как справка).
+Заметка R01: _arguments_round15 для ml.route требует text (_v2_text) — запрос только с category ответит 400; R04 умеет
+и без текста (category + subtopic). Если нужно — передавать text как необязательный.
 Готовый patch: research/round-15-results/R04/patches/r01_web_server_r04_routes.patch (git apply --check на базе FINAL-4
 e91acb69 — OK). Что в нём (4 места):
   V2_ROUTES:     ("POST", ("route",), "route"), ("POST", ("reply-draft",), "reply_draft"), ("POST", ("moderate",), "moderate")
@@ -55,6 +60,10 @@ passport.fix_eta (только если есть — иначе «сообщим
 duplicate_of (+ код исходной жалобы). Текст жителя в черновик не попадает.
 Сцена 8: route(text="Яма после раскопок водоканала") -> water (lead) + road (partner), summary «Нужны 2 службы:
 Водоканал и Дорожная служба» (тест test_scene8_two_services).
+R09 (claude/quirky-ptolemy-k3z2mj @ 2ee80d8c) уже зовёт route() при создании жалобы (store._route_hint ->
+joint.parse_route_hint) и берёт объяснение из services[0].why_ru — там теперь полное объяснение случая одной строкой
+(«Раскопки сетей: Водоканал — работы на сетях и засыпка, Дорожная служба — восстановление покрытия.»); роль каждой
+службы — services[i].role_ru / role_kk. Верхний уровень why_ru / summary_ru — тот же текст и «Нужны 2 службы: …».
 Передавайте и точку жалобы: route(text, category, subtopic, point=rec["point"]). Если в тексте раскоп или течь, а рядом
 (150 м) в календаре работ R06 есть раскопка сетей (ui.civic_store.v2.works_near, вид dig, начата не раньше 180 дней
 назад), route() назовёт её службу вместо догадки «водопровод» и напишет: «Рядом шли раскопки: Теплосеть, 1 сентября –
@@ -79,8 +88,10 @@ duplicate_of (+ код исходной жалобы). Текст жителя �
   см. п. 4.
 • R13 (ui/civic_qa/service.py moderate_text): совместимо (text_public, flags[].kind).
 • R17 (ui/civic_agencies/crisis.py check_public_texts): ВНИМАНИЕ — R17 смотрит только flags и блокирует phone/iin/
-  email/rude, а text_public не использует. Тогда «card», «iban», «id_number», «apartment», «contact» пройдут в
-  публичный текст как есть. Минимальная правка R17 (patch-текст):
+  email/rude, а text_public не использует. Тогда «card», «iban», «apartment», «contact» пройдут в публичный текст
+  как есть. Готовый patch: research/round-15-results/R04/patches/r17_crisis_pii.patch (на R17 @ 72676e3d:
+  git apply --check OK, tests/civic/R17 с ML-API R04 — 42/42; «Сбор помощи на карту 4400 …» -> 422 personal_data).
+  Суть (одна строка):
       -        if flags & {"phone", "iin", "email", "pii", "personal_data"}:
       +        if flags & {"phone", "iin", "email", "pii", "personal_data", "card", "iban", "apartment", "contact"} \
       +                or result.get("pii"):
