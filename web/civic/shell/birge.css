@@ -791,6 +791,8 @@ body.civic-mode .civic-explore #map-status { transition: opacity var(--t-slow, 3
 /* Разделы-списки — одна колонка 720 по центру листа 1080 (R11 решение D-1: «Рядом», «Вопрос акиму»; «Идеи» и
    «Обращения» — у ролей); «Картина дня» — дашборд на весь лист (≤ 1080). */
 body.civic-mode .birge-screen-root.nb, body.civic-mode .birge-screen-root > .qa { max-width: 720px; margin-inline: auto; }
+/* Раунд 15: «Вопросы и встречи» R13 — та же колонка 720 (R13 проверил вёрстку в колонке: screens/1366-ru-col720-*.jpg). */
+body.civic-mode .birge-screen-root > .mt { max-width: 720px; margin-inline: auto; }
 /* Открыт раздел (лист поверх карты уже не во всю ширину) — элементы карты по краям не выглядывают из-под листа:
    легенда, кнопки карты, подпись карты и 3D-каталог прячутся до возврата на «Карту». */
 body.civic-mode[data-birge-section]:not([data-birge-section="map"]) :is(#birge-legend, .map-tools, .maplibregl-ctrl-bottom-right, .birge-build3d-root) {
@@ -928,36 +930,37 @@ body.civic-mode:has(#birge-legend[data-open="true"], #birge-layer-btn[aria-expan
   body.civic-mode #birge-heat-root .r07-error .r07-btn { margin-top: 4px; }
 }
 
+/* Раунд 15 (R01, решение по VISUAL_BRIEF §2 п. 2 «новые разделы — свои экраны»; R10 P1_REVIEW, R13 INTEGRATION): «Вопросы и
+   встречи» (R13) и «Сделаем вместе» (R16) — свои экраны-колонки 720 px (правило ниже), а не листы поверх карты. Лист слева
+   412 остаётся у разделов раунда 14 эталона A — «Вопрос акиму» (?screens=r14) и «Проекты и идеи». */
 /* Эталон A (13 окт, R13 INTEGRATION §12.1): «Вопрос акиму» — лист слева, как «Проекты и идеи» эталона: ширина 412
    (--sheet-w), 20 от края, под строкой поиска (84), 20 снизу, радиус 18, плотное стекло 86 % (.glass.strong) с цветами
    текста .bk-glass--strong. Шапка листа стоит, прокручивается список (правила списка — qa.css). Справа видна карта. Запасной непрозрачный вид не меняется: фон задан переменной --glass-panel,
    а запасные правила ui-kit ставят белый напрямую. Телефон — шторка от края до края (ниже). */
 @media (min-width: 761px) {
-  body.civic-mode:is([data-birge-section="questions"], [data-birge-section="meetings"]) .birge-day.bk-glass {
+  body.civic-mode[data-birge-section="questions"] .birge-day.bk-glass {
     left: 20px; right: auto; top: 84px; bottom: 20px; width: min(var(--sheet-w, 412px), calc(100vw - 40px));
     padding: 0; border-radius: var(--r-xl, 18px);
     --glass-panel: var(--glass-strong, rgba(255, 255, 255, 0.86));
     --c-text-2: #4b5752; --c-text-3: #7e8a85; --c-warn: #754c0f; --c-ok: #2b6110; --c-danger: #9a2e28;
   }
   /* шапка и сегменты стоят, прокручивается только список (эталон .psheet — колонка, .list — overflow: auto) */
-  body.civic-mode:is([data-birge-section="questions"], [data-birge-section="meetings"]) .birge-day.bk-glass:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
-  body.civic-mode:is([data-birge-section="questions"], [data-birge-section="meetings"]) .birge-screen-root { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+  body.civic-mode[data-birge-section="questions"] .birge-day.bk-glass:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
+  body.civic-mode[data-birge-section="questions"] .birge-screen-root { display: flex; flex: 1; flex-direction: column; min-height: 0; }
   body.civic-mode[data-birge-section="questions"] .birge-screen-root > .qa { max-width: none; }
-  body.civic-mode[data-birge-section="meetings"] .birge-screen-root > .mt { flex: 1; max-width: none; width: 100%; }
 }
 /* Телефон: шторка во всю ширину от края до края (эталон, телефон: радиус 26 сверху, поля 18), под капсулой шапки (72);
    ручки нет — шторка не перетаскивается. Шапка листа так же стоит, прокручивается список. */
 @media (max-width: 760px) {
-  body.civic-mode:is([data-birge-section="questions"], [data-birge-section="meetings"]) .birge-day.bk-glass {
+  body.civic-mode[data-birge-section="questions"] .birge-day.bk-glass {
     left: 0; right: 0; bottom: 0; padding: 0;
     border-radius: var(--r-glass-sheet, 26px) var(--r-glass-sheet, 26px) 0 0;
     --glass-panel: var(--glass-strong, rgba(255, 255, 255, 0.86));
     --c-text-2: #4b5752; --c-text-3: #7e8a85; --c-warn: #754c0f; --c-ok: #2b6110; --c-danger: #9a2e28;
   }
-  body.civic-mode:is([data-birge-section="questions"], [data-birge-section="meetings"]) .birge-day.bk-glass:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
-  body.civic-mode:is([data-birge-section="questions"], [data-birge-section="meetings"]) .birge-screen-root { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+  body.civic-mode[data-birge-section="questions"] .birge-day.bk-glass:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
+  body.civic-mode[data-birge-section="questions"] .birge-screen-root { display: flex; flex: 1; flex-direction: column; min-height: 0; }
   body.civic-mode[data-birge-section="questions"] .birge-screen-root > .qa { --qa-px: 18px; --qa-pb: 18px; }
-  body.civic-mode[data-birge-section="meetings"] .birge-screen-root > .mt { flex: 1; max-width: none; width: 100%; }
 }
 
 /* R06 → R01 (эталон 13 окт, вариант A): «Проекты и идеи» — лист 412 слева под поиском, справа — карта и карточка
