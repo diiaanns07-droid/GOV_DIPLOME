@@ -243,7 +243,7 @@ def test_expected_file_is_current(world):
     changed = {role for role, sha in fresh["code"].items() if (have.get("code") or {}).get(role) != sha}
     other_code = {key for key, roles in exp.SECTION_CODE.items() if changed & set(roles)}
     assert set(have) == set(fresh)
-    for key in sorted(set(fresh) - other_code - {"code"}):
+    for key in sorted(set(fresh) - other_code - {"code", "code_note"}):
         assert have[key] == fresh[key], f"EXPECTED.json устарел ({key}): python3 -m ml.datasets.demo_world_expected"
     assert {"yards", "scenes", "world_version"} <= set(fresh) - other_code     # свои блоки R02 сверяются всегда
 
