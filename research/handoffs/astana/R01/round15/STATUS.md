@@ -5,18 +5,58 @@
 Начато: 2026-10-15 16:22 по Астане (11:22 UTC)
 База: origin/claude/clever-hypatia-q6ts4g @ e91acb69 (код FINAL-4 a4937462 + пакет раунда 15)
 Push в claude/r15-R01 средой не предусмотрен — работаю в ветке сессии, find_branches.py находит её по этому файлу.
+Продолжение: часовой триггер этой сессии `trig_01QbRVYt7xvyTzaxvwGwMEBw` (каждый час в :24 UTC) — «Продолжи роль R01 по
+своему STATUS.md и research/round-15/prompts/R01.txt». **Удалить после 17 окт 23:59 по Астане (18:59 UTC).**
 
-## План (по research/round-15/prompts/R01.txt)
-1. FINAL-4.1: поставка R07 fe209c56 (heat.js/heat.css) + patches/R01_shell_closable_desktop.patch; чекпойнт R09 280dab7a
-   (только при DELIVERY R09 с этим SHA); дефекты оболочки VISUAL_BRIEF §3; run_checks.sh зелёный.
-2. Маршруты раунда 15 (CONTRACT §7) — в V2_ROUTES / V2_HANDLERS, 503 module_not_ready без модуля; тесты tests/civic/R01/round15/.
-3. Демо-мир (CONTRACT §11): CIVIC_DEMO=1 + CIVIC_DEMO_WORLD=1 → seed_world каждого модуля, одна строка в консоли.
-4. Меню по схеме R11 (IA_ROUND15.md), registerScreen/registerLayer, команды Ctrl+K.
-5. Режим показа ?show=1, сцены 7–9 в палитре.
-6. Сборки B1 (16 окт 14:00), B2 (16 окт 23:00), FINAL-5 (17 окт 18:00) → BUILD.json, BUILD_LOG.md, DEMO_SCRIPT.md v2, DELIVERY.json.
+## Последняя сборка
 
-## Сейчас
-- Роль занята, читаю пакет раунда 15 и handoff раунда 14.
+**FINAL-4.1 = `bd3800d8`** (15 окт, 17:12 по Астане) — `research/round-15-results/R01/BUILD.json`.
+R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты оболочки VISUAL_BRIEF §3. Журнал — BUILD_LOG.md.
+
+## Сделано
+- 16:24 роль занята, триггер продолжения поставлен.
+- 16:49 FINAL-4.1 шаг 1 (`0b76f9ed`): R07 fe209c56 heat.js/css + `closable: "desktop"`; «Ещё» под своей кнопкой; один
+  знак Birge (домик ui-kit); телефон — поле поиска во всю ширину с знаком и аватаром внутри; 1024 — поля 12; одна шторка на
+  телефоне (мастер R09 прячет «Рядом с вами»); аватар — круг фоном, точка ui-kit видна.
+- 17:10 FINAL-4.1 шаг 2 (`bd3800d8`): R09 D0 e494026e. Проверки — BUILD.json.
+
+## Дальше (по порядку промпта)
+1. Маршруты раунда 15 (CONTRACT §7) — готовы в рабочей копии: таблица V2_ROUTES_ROUND15 / V2_HANDLERS_ROUND15, проверка
+   входа и формы параметров до модуля, лимиты записи жителя, тесты tests/civic/R01/round15 (154 PASS). Коммит — следующим.
+2. Демо-мир (§11): CIVIC_DEMO_WORLD=1 → seed_world всех модулей с одним now, строка «civic-world: …», без синтетики R07 на
+   карте; GET /api/civic/v2/demo/scenes для палитры. Готово в рабочей копии, тесты есть.
+3. Меню по IA_ROUND15 R11 (слоты NAV, «Ещё» группами, PARENT, #раздел/путь, opts.map/path/navigate/setLayer, Esc → карта,
+   alertSlot, команды Ctrl+K), режим показа ?show=1 и сцены 7–9 — в рабочей копии, браузерная проверка впереди.
+4. B1 — 16 окт 14:00 по Астане: поставки ролей по find_branches.py.
+
+## Роли → ветки → поставки (для истории)
+| Роль | Ветка раунда 15 | Поставка (DELIVERY code_sha) | Взято в сборку |
+|---|---|---|---|
+| R02 | claude/affectionate-shannon-jm6ws5 | — (мир world_v1.json в работе) | — |
+| R03 | claude/modest-mccarthy-lrl98u | — | — |
+| R04 | claude/gifted-maxwell-i66wwi | — | — |
+| R05 | claude/bold-cray-dopshy | — | — |
+| R06 | claude/eloquent-einstein-wvuyje | — | — |
+| R07 | claude/birge-r07-round-15-zjp4ob | (раунд 14: fe209c56) | FINAL-4.1: fe209c56 |
+| R08 | claude/inspiring-johnson-j7wksj | — | — |
+| R09 | claude/quirky-ptolemy-k3z2mj | D0 e494026e | FINAL-4.1: e494026e |
+| R10 | claude/zen-wozniak-69d41q | — | — |
+| R11 | claude/gracious-mendel-eopem6 | 6724cc9d (ui-kit r15, IA, ключи) | B1 |
+| R12 | claude/great-newton-8k3474 | — | — |
+| R13 | claude/gifted-mayer-p86myv | — | — |
+| R14 | (не начата на 17:00) | — | — |
+| R15 | claude/practical-fermi-c58v1u | — | — |
+| R16 | claude/youthful-johnson-6nz5mp | — | — |
+| R17 | claude/sweet-euler-5tiu5b | — | — |
+
+## Просьбы соседям
+- **R10 / R12 / R07**: pytest пакета e91acb69 — 2 FAIL `tests/civic/R10/test_r10_accuracy.py` [c24-R12], [c28-R07]
+  «объекты = точки OSM» (сдвиг 2–18 м). Причина — новые файлы LOCAL-10 пакета
+  `data/civic/astana/osm-objects/raw/crossings.json.gz`, `traffic_signals.json.gz` (другой снимок OSM, чем у объектов
+  R12/R07). Нужна сверка с одним снимком или правка проверки R10. Код оболочки ни при чём.
+- **R15**: POST /moderate (R04, предпросмотр для всех) в таблице — ключ `ml.text_check` (не «moderate»: это не решение
+  сотрудника, ничего не меняет); лимит 60/мин по адресу.
 
 ## Вопросы владельцу
-- (пока нет)
+- (решено по умолчанию) Телефон: «ҚАЗ · РУС» — в шторке «Рядом с вами» (эталон), а когда шторки нет (акимат, карточка,
+  мастер жалобы) — в поле поиска рядом с аватаром.

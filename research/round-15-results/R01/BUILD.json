@@ -1,0 +1,19 @@
+{
+  "build": "FINAL-4.1",
+  "code_sha": "bd3800d8ef5c489ea99b77f2fc9256b99fd4ccb4",
+  "branch": "claude/brave-fermi-nhzetj",
+  "at": "2026-10-15T17:12:00+05:00",
+  "base": "e91acb69 (пакет claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + research/round-15)",
+  "roles": {
+    "R01": "bd3800d8 (оболочка: «Ещё» под кнопкой, один знак Birge, поиск телефона во всю ширину, 1024 поля 12, одна шторка на телефоне)",
+    "R07": "fe209c56 (web/civic/heat/heat.js, heat.css) + patches/R01_shell_closable_desktop.patch",
+    "R09": "e494026e (D0: web/civic/feedback, tests/civic/R09)"
+  },
+  "demo_world": "нет (флаг CIVIC_DEMO_WORLD появится в следующей сборке)",
+  "checks": {
+    "pytest": "3599 passed / 2 failed на 0b76f9ed — те же 2 FAIL на базе e91acb69 (R10 accuracy c24-R12, c28-R07: данные LOCAL-10 пакета, см. BUILD_LOG); tests/civic/R09 на bd3800d8: 550 passed",
+    "browser_r01": "на 0b76f9ed: P0, сценарии, город, пустой реестр, шапка 43/0, B1 16/0, B2 28/0, волна 2 42/0; на bd3800d8: шапка 43/0, B1 16/0, B2 28/0, волна 2 42/0",
+    "web_check_and_node": "PASS (ui.web_check, govtech ×5, R12 map/editor/glyphs, R04, R01 explore)"
+  },
+  "next": "маршруты раунда 15 (CONTRACT §7), демо-мир (§11), меню R11 IA_ROUND15, режим показа; B1 — 16 окт 14:00"
+}
