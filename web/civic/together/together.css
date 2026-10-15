@@ -1,0 +1,380 @@
+/*
+ * Birge · «Бірге: жители вместе» (R16): «Мой двор», «Сделаем вместе», мастер дела, акимат, слой карты.
+ * Только токены ui-kit R11 (tokens.css): свои цвета не вводим. Правила: VISUAL_BRIEF §2 — зелёный только «сделано»,
+ * поддержка акимата — синим (info), цвет никогда не один (иконка + слово), движение 150–250 мс, reduced-motion — без него.
+ * Поправка П1 («без ИИ-слопа»): никаких иллюстраций — значки набора R11 (≤ 48 px), фото — только настоящие.
+ */
+
+.tg {
+  --tg-gap: var(--s-4);
+  max-width: 960px;
+  margin: 0 auto;
+  padding-top: var(--s-2);
+  color: var(--c-ink);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: var(--lh-text);
+}
+.tg :focus-visible { outline: 3px solid var(--c-focus); outline-offset: 2px; }
+/* Сброс полей без веса селектора: .tg-h3 и другие классы задают свои отступы. */
+:where(.tg) :where(h2, h3, p, dl, figure) { margin: 0; }
+.tg button { font: inherit; }
+.tg-title {
+  font-size: var(--fs-h1);
+  line-height: var(--lh-head);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--ls-title);
+  outline: none;
+  overflow-wrap: anywhere;
+}
+.tg-title:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 4px; border-radius: 6px; }
+.tg-lead { margin-top: var(--s-1); color: var(--c-text-2); max-width: 60ch; }
+.tg-h3 {
+  margin: var(--s-6) 0 var(--s-3);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-head);
+}
+.tg-muted { color: var(--c-text-2); font-size: var(--fs-small); }
+.tg-note { display: flex; align-items: center; gap: var(--s-2); margin-top: var(--s-2); color: var(--c-text-2); font-size: var(--fs-small); }
+.tg-calm { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-3) 0; color: var(--c-text-2); }
+.tg-calm .ic { color: var(--ok-mark); }
+.tg-wait { min-height: 160px; }
+.tg-back { justify-self: start; margin: 0 0 var(--s-2) calc(-1 * var(--s-3)); }
+.tg-demo { font-size: var(--fs-caption); }
+.tg .bk-banner { display: flex; align-items: flex-start; gap: var(--s-2); }
+
+/* ── скелетон, пусто, ошибка, «нет данных» ── */
+.tg-skel { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--tg-gap); margin-top: var(--s-4); }
+.tg-skel-card { display: grid; gap: var(--s-2); padding: var(--s-3); border: 1px solid var(--c-line); border-radius: var(--r-xl); }
+.tg-empty { padding: var(--s-6) var(--s-4); }
+/* Значок пустого состояния: 48 px, один цвет, иконка набора R11 (П1, правило 2). */
+.tg-empty__ic, .tg-sent__ic {
+  display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 50%;
+  background: var(--c-fill); color: var(--c-text-2);
+}
+.tg-empty__ic .ic, .tg-sent__ic .ic { width: 24px; height: 24px; }
+.tg-error .ic--48 { width: 48px; height: 48px; }
+.tg-nodata {
+  display: flex; gap: var(--s-3); align-items: flex-start;
+  padding: var(--s-3) var(--s-4); border: 1px dashed var(--c-line-strong); border-radius: var(--r-m);
+  color: var(--c-text-2);
+}
+.tg-nodata__title { color: var(--c-ink); font-weight: var(--fw-semi); }
+.tg-nodata__text { font-size: var(--fs-small); }
+
+/* ── выбор двора ── */
+.tg-hero {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); align-items: center;
+  padding: var(--s-6); border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface);
+}
+.tg-hero__text { display: grid; gap: var(--s-3); justify-items: start; }
+.tg-yardlist { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.tg-yardrow {
+  display: flex; align-items: center; gap: var(--s-3); width: 100%; min-height: 60px; padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--c-line); border-radius: var(--r-m); background: var(--c-surface); color: var(--c-ink);
+  text-align: left; cursor: pointer; transition: background var(--t-fast) var(--ease);
+}
+.tg-yardrow:hover { background: var(--c-brand-soft); }
+.tg-yardrow__ic {
+  display: inline-grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: var(--r-m);
+  background: var(--c-fill);
+}
+.tg-yardrow__main { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.tg-yardrow__name { font-weight: var(--fw-semi); overflow-wrap: anywhere; }
+.tg-yardrow__meta { color: var(--c-text-2); font-size: var(--fs-small); }
+.tg-yardrow__go { color: var(--c-text-3); flex: none; }
+
+/* ── страница двора ── */
+.tg-yardhead {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); align-items: end;
+  padding: var(--s-5) var(--s-6); border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface);
+}
+.tg-yardhead__text { display: grid; gap: var(--s-3); min-width: 0; }
+.tg-yardhead__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); color: var(--c-text-2); font-size: var(--fs-small); }
+.tg-yardhead__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+.tg-captain { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-small); color: var(--c-text-2); }
+.tg-member { display: inline-flex; align-items: center; gap: var(--s-1); color: var(--c-text-2); font-size: var(--fs-small); }
+.tg-member .ic { color: var(--c-ink); }
+.tg-kpis { max-width: 520px; }
+.tg-kpi { background: var(--c-fill); text-align: left; }
+.tg-kpi--btn { border: 0; cursor: pointer; color: inherit; transition: background var(--t-fast) var(--ease); }
+.tg-kpi--btn:hover { background: var(--c-fill-hover); }
+.tg-tabs { margin-top: var(--s-5); }
+.tg-panel { padding-top: var(--s-1); }
+.tg-overview { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: var(--s-6); }
+.tg-overview .tg-h3:first-child { margin-top: var(--s-2); }
+.tg-col { min-width: 0; }
+.tg-yardfoot { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: flex-start; margin-top: var(--s-8);
+  padding-top: var(--s-4); border-top: 1px solid var(--c-line); }
+.tg-captainbox { display: grid; gap: var(--s-2); max-width: 420px; }
+
+/* ── строки: проблемы, работы, мои дела ── */
+.tg-rows { list-style: none; margin: 0; padding: 0; display: grid; }
+.tg-rows > li + li { border-top: 1px solid var(--c-line); }
+.tg-row {
+  display: flex; align-items: center; gap: var(--s-3); width: 100%; min-height: 56px; padding: var(--s-2) var(--s-1);
+  border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; border-radius: var(--r-s);
+  transition: background var(--t-fast) var(--ease);
+}
+.tg-row:hover { background: var(--c-brand-soft); }
+.tg-row--static { cursor: default; }
+.tg-row--static:hover { background: transparent; }
+.tg-row__main { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.tg-row__title { font-weight: var(--fw-medium); overflow-wrap: anywhere; }
+.tg-row__meta { color: var(--c-text-2); font-size: var(--fs-small); overflow-wrap: anywhere; }
+.tg-row__go { display: inline-flex; align-items: center; gap: var(--s-1); flex: none; color: var(--c-brand); font-size: var(--fs-small); font-weight: var(--fw-medium); }
+.tg-more { margin-top: var(--s-1); }
+.tg-level {
+  display: inline-grid; place-items: center; flex: none; min-width: 34px; height: 34px; padding: 0 6px;
+  border: 2.5px solid #fff; border-radius: var(--r-pill); box-shadow: var(--shadow-pin);
+  font-size: var(--fs-caption); font-weight: var(--fw-num); font-variant-numeric: tabular-nums;
+  background: var(--heat-1-badge); color: var(--heat-1-on);
+}
+.tg-level[data-level="2"] { background: var(--heat-2-badge); color: var(--heat-2-on); }
+.tg-level[data-level="3"] { background: var(--heat-3-badge); color: var(--heat-3-on); }
+.tg-level[data-level="4"] { background: var(--heat-4-badge); color: var(--heat-4-on); }
+.tg-level--fixed { background: var(--fixed-badge); color: var(--fixed-on); }
+.tg-level--work, .tg-level--idea, .tg-level--kind { border: 0; box-shadow: none; background: var(--c-fill); color: var(--c-ink); border-radius: var(--r-m); }
+.tg-level .ic { width: 18px; height: 18px; }
+
+/* ── лента двора ── */
+.tg-feed { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.tg-feed__row {
+  display: flex; gap: var(--s-3); align-items: flex-start; width: 100%; padding: var(--s-2) var(--s-1);
+  border: 0; background: transparent; color: inherit; text-align: left; border-radius: var(--r-s);
+}
+button.tg-feed__row { cursor: pointer; }
+button.tg-feed__row:hover { background: var(--c-brand-soft); }
+.tg-feed__ic {
+  display: inline-grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--c-fill); color: var(--c-text-2);
+}
+.tg-feed__ic[data-kind="problem.fixed"] { background: var(--c-ok-soft); color: var(--c-ok); }
+.tg-feed__ic[data-kind="initiative.supported"] { background: var(--c-info-soft); color: var(--c-info); }
+.tg-feed__ic[data-kind="initiative.done"] { background: var(--c-ok-soft); color: var(--c-ok); }
+.tg-feed__ic .ic { width: 16px; height: 16px; }
+.tg-feed__main { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.tg-feed__text { font-size: var(--fs-small); overflow-wrap: anywhere; }
+.tg-feed__when { font-size: var(--fs-xs); color: var(--c-text-3); }
+
+/* ── список дел ── */
+.tg-listhead { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: flex-end; justify-content: space-between; }
+.tg-listhead > div { min-width: 0; flex: 1 1 320px; }
+.tg-filter { margin-top: var(--s-4); }
+.tg-mine { margin-top: var(--s-2); }
+.tg-status {
+  display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--r-s); flex: none;
+  font-size: var(--fs-caption); font-weight: var(--fw-semi); background: var(--c-fill); color: var(--c-text-2);
+}
+.tg-status[data-status="on_review"] { background: var(--c-warn-soft); color: var(--c-warn); }
+.tg-status[data-status="done"] { background: var(--c-ok-soft); color: var(--c-ok); }
+.tg-status[data-status="hidden"], .tg-status[data-status="cancelled"] { background: var(--c-danger-soft); color: var(--c-danger); }
+.tg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--tg-gap); }
+
+/* ── карточка дела «как в App Store» ── */
+.tg-card {
+  position: relative; display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+  border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface);
+  transition: box-shadow var(--t-base) var(--ease), translate var(--t-base) var(--ease);
+}
+.tg-card:hover { box-shadow: var(--shadow-2); translate: 0 -2px; }
+.tg-card:focus-within { box-shadow: var(--shadow-2); }
+.tg-card--preview:hover { box-shadow: none; translate: none; }
+.tg-card__body { display: grid; gap: var(--s-2); padding: var(--s-4); }
+.tg-card__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+/* Настоящее фото «после» (загружено жителем или акиматом) — сверху карточки; нарисованных обложек нет (П1). */
+.tg-card__photo { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; background: var(--c-paper); }
+/* Значок вида дела: иконка R11 в плитке 32 px + слово (цвет никогда не один). */
+.tg-kindbadge { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--c-text-2);
+  font-size: var(--fs-caption); font-weight: var(--fw-semi); }
+.tg-kindbadge__ic { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-s);
+  background: var(--c-fill); color: var(--c-ink); }
+.tg-kindbadge__ic .ic { width: 18px; height: 18px; }
+.tg-kindbadge--big .tg-kindbadge__ic { width: 40px; height: 40px; border-radius: var(--r-m); }
+.tg-kindbadge--big .tg-kindbadge__ic .ic { width: 22px; height: 22px; }
+.tg-kindbadge--big { font-size: var(--fs-small); }
+.tg-card__eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); color: var(--c-text-2); font-size: var(--fs-caption); font-weight: var(--fw-medium); }
+.tg-card__title { font-size: var(--fs-title); line-height: var(--lh-head); font-weight: var(--fw-semi); letter-spacing: var(--ls-title); }
+/* Вся карточка нажимается (растянутая ссылка), «Я приду» — поверх. */
+.tg-card__open {
+  padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere;
+}
+.tg-card__open::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.tg-card__open:focus-visible { outline: none; }
+.tg-card__open:focus-visible::after { outline: 3px solid var(--c-focus); outline-offset: -3px; }
+.tg-card__meta { display: flex; align-items: center; gap: var(--s-1); color: var(--c-text-2); font-size: var(--fs-small); overflow-wrap: anywhere; }
+.tg-card__meta .ic { width: 16px; height: 16px; flex: none; }
+.tg-card__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); margin-top: var(--s-1); }
+.tg-card__foot .tg-join { position: relative; z-index: 1; margin-left: auto; }
+
+/* ── счётчик «Я приду» ── */
+.tg-count { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: var(--c-text-2); font-size: var(--fs-small); }
+.tg-count > .ic { width: 18px; height: 18px; color: var(--c-ink); }
+.tg-count__num {
+  position: relative; display: inline-grid; overflow: hidden; height: 1.3em; min-width: 1ch;
+  color: var(--c-ink); font-weight: var(--fw-semi); font-variant-numeric: tabular-nums;
+}
+.tg-count__n { grid-area: 1 / 1; line-height: 1.3em; transition: translate var(--t-slow) var(--ease-out), opacity var(--t-slow) var(--ease-out); }
+.tg-count__n--in { translate: 0 100%; opacity: 0; animation: tg-roll-in var(--t-slow) var(--ease-out) forwards; }
+.tg-count__n--in.tg-count__n--down { translate: 0 -100%; animation-name: tg-roll-in-down; }
+.tg-count__n--out.tg-up { animation: tg-roll-out var(--t-slow) var(--ease-out) forwards; }
+.tg-count__n--out.tg-down { animation: tg-roll-out-down var(--t-slow) var(--ease-out) forwards; }
+@keyframes tg-roll-in { from { translate: 0 100%; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+@keyframes tg-roll-in-down { from { translate: 0 -100%; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+@keyframes tg-roll-out { to { translate: 0 -100%; opacity: 0; } }
+@keyframes tg-roll-out-down { to { translate: 0 100%; opacity: 0; } }
+.tg-count.tg-pop > .ic { animation: tg-pop 360ms var(--ease-out); }
+@keyframes tg-pop { 40% { scale: 1.28; } 100% { scale: 1; } }
+.tg-count--lg { font-size: var(--fs-body); }
+.tg-count--lg .tg-count__num { font-size: var(--fs-title); }
+.tg-count--done { color: var(--c-ok); font-weight: var(--fw-semi); }
+.tg-count--done .ic { color: var(--c-ok); }
+
+.tg-support {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--r-pill);
+  background: var(--c-info-soft); color: var(--c-info); font-size: var(--fs-caption); font-weight: var(--fw-semi);
+}
+.tg-support .ic { width: 16px; height: 16px; }
+.tg-support__what { font-weight: var(--fw-regular); }
+.tg-join--on { background: var(--c-fill); color: var(--c-ink); }
+.tg-join--on .ic { color: var(--c-ink); }
+
+/* ── карточка дела (экран) ── */
+.tg-detail { max-width: 720px; margin: 0 auto; padding-bottom: var(--s-2); }
+.tg-detail__head { display: grid; gap: var(--s-3); margin-bottom: var(--s-3); }
+.tg-afterline { display: flex; align-items: center; gap: var(--s-2); color: var(--c-text-2); font-size: var(--fs-small); }
+.tg-afterline .ic { width: 18px; height: 18px; }
+.tg-report__label { margin: 0; }
+.tg-detail__text { margin: var(--s-2) 0 var(--s-4); white-space: pre-line; overflow-wrap: anywhere; }
+.tg-facts { display: grid; gap: 0; margin: 0; border-top: 1px solid var(--c-line); }
+.tg-fact { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: var(--s-3); padding: var(--s-3) 0; border-bottom: 1px solid var(--c-line); }
+.tg-fact dt { display: flex; align-items: center; gap: var(--s-2); color: var(--c-text-2); font-size: var(--fs-small); }
+.tg-fact dt .ic { width: 18px; height: 18px; }
+.tg-fact dd { margin: 0; display: grid; gap: var(--s-1); overflow-wrap: anywhere; }
+.tg-fact__links { display: flex; flex-wrap: wrap; gap: var(--s-1); margin-left: calc(-1 * var(--s-3)); }
+.tg-link { min-height: 36px; font-size: var(--fs-small); }
+.tg-chip-static { cursor: default; }
+.tg-chip-static:hover { background: var(--c-fill); }
+.tg-supportbox { display: grid; gap: var(--s-2); justify-items: start; margin-top: var(--s-4); padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-m); background: var(--c-info-soft); }
+.tg-supportbox .tg-support { padding: 0; background: none; }
+.tg-supportbox__note { color: var(--c-ink); }
+.tg-report, .tg-after { margin-top: var(--s-5); display: grid; gap: var(--s-3); }
+.tg-report__big { display: flex; align-items: center; gap: var(--s-2); font-size: var(--fs-title); font-weight: var(--fw-semi); color: var(--c-ok); }
+.tg-report__big .ic { width: 22px; height: 22px; }
+.tg-report__text { white-space: pre-line; }
+.tg-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s-3); }
+.tg-photo { margin: 0; display: grid; gap: var(--s-1); }
+.tg-photo img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--r-m); border: 1px solid var(--c-line); background: var(--c-paper); }
+.tg-photo figcaption { display: flex; gap: var(--s-2); color: var(--c-text-2); font-size: var(--fs-xs); }
+.tg-photos--small { grid-template-columns: repeat(auto-fill, minmax(96px, 120px)); }
+.tg-photos--small img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--r-s); }
+.tg-actionbar {
+  position: sticky; bottom: calc(-1 * var(--s-2)); z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3);
+  margin: var(--s-5) calc(-1 * var(--s-2)) 0; padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface); box-shadow: var(--shadow-2);
+}
+.tg-actionbar .tg-join { margin-left: auto; min-width: 160px; }
+.tg-banner { margin: var(--s-2) 0; }
+
+/* ── мастер ── */
+.tg-wizard { max-width: 640px; margin: 0 auto; display: grid; gap: var(--s-3); }
+.tg-wizard__top { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.tg-wizard__top .tg-back { margin-bottom: 0; }
+.tg-wizard__name { color: var(--c-text-2); font-size: var(--fs-small); font-weight: var(--fw-medium); }
+.tg-werror { margin: 0; }
+.tg-wstep { display: grid; gap: var(--s-4); }
+.tg-wnav { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: flex-end; align-items: center; }
+.tg-wstep > .tg-wnav { margin-top: var(--s-2); }
+.tg-kinds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
+.tg-kind {
+  display: grid; justify-items: start; align-content: space-between; gap: var(--s-2); min-height: 92px; padding: var(--s-3);
+  border: 1px solid var(--c-line); border-radius: var(--r-m); background: var(--c-surface); color: var(--c-ink);
+  font-weight: var(--fw-medium); text-align: left; cursor: pointer; transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.tg-kind:hover { background: var(--c-brand-soft); }
+.tg-kind[aria-checked="true"] { border: 2px solid var(--c-primary); padding: calc(var(--s-3) - 1px); }
+.tg-kind__ic { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: var(--r-m); background: var(--c-fill); }
+.tg-kind[data-kind="cleanup"] .tg-kind__ic { background: var(--c-warn-soft); color: var(--c-warn); }
+.tg-kind[data-kind="greening"] .tg-kind__ic { background: var(--c-accent); color: var(--c-brand); }
+.tg-kind[data-kind="snow"] .tg-kind__ic { background: var(--c-info-soft); color: var(--c-info); }
+.tg-kind[data-kind="repair"] .tg-kind__ic { background: var(--c-demo-soft); color: var(--c-demo); }
+.tg-yardmap {
+  display: block; width: 100%; height: auto; aspect-ratio: 320 / 200; max-height: 260px;
+  border-radius: var(--r-tile); background: var(--c-paper);
+  border: 1px solid var(--c-line); cursor: crosshair; touch-action: manipulation;
+}
+.tg-yardmap__area { fill: var(--c-accent); stroke: var(--c-line-strong); stroke-width: 1.5; }
+.tg-yardmap__halo { fill: var(--c-ink); opacity: 0.14; }
+.tg-yardmap__dot { fill: var(--c-ink); stroke: #fff; stroke-width: 2.5; }
+.tg-yardmap__pin { transition: transform var(--t-base) var(--ease); }
+.tg-bringadd { display: flex; gap: var(--s-2); align-items: flex-start; }
+.tg-bringadd .bk-field { flex: 1; }
+.tg .tg-similar { display: grid; gap: var(--s-3); justify-items: stretch; }
+.tg-similar .tg-card { max-width: 420px; background: var(--c-surface); }
+.tg-similar .tg-wnav { justify-content: flex-start; }
+.tg-sent { max-width: 640px; margin: 0 auto; }
+
+/* ── акимат ── */
+.tg-staffrows { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: var(--s-3); }
+.tg-staffrow { display: grid; gap: var(--s-3); padding: var(--s-4); border: 1px solid var(--c-line); border-radius: var(--r-xl); background: var(--c-surface); }
+.tg-staffrow__head { display: flex; align-items: flex-start; gap: var(--s-3); }
+.tg-staffrow__title { padding: 0; border: 0; background: none; color: inherit; text-align: left; font-weight: var(--fw-semi); cursor: pointer; overflow-wrap: anywhere; }
+button.tg-staffrow__title:hover { text-decoration: underline; }
+.tg-flags { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-2) var(--s-3); border-radius: var(--r-m);
+  background: var(--c-warn-soft); color: var(--c-warn); font-size: var(--fs-small); font-weight: var(--fw-semi); }
+.tg-quote { padding-left: var(--s-3); border-left: 3px solid var(--c-line-strong); color: var(--c-text-2); white-space: pre-line; overflow-wrap: anywhere; }
+.tg-staffactions { display: grid; gap: var(--s-3); }
+.tg-staffactions > .tg-wnav { justify-content: flex-start; }
+.tg-staffactions--detail { margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--c-line); }
+.tg-form { display: grid; gap: var(--s-3); padding: var(--s-4); border-radius: var(--r-m); background: var(--c-fill); justify-items: start; }
+.tg-form .bk-field { width: 100%; }
+.tg-form .bk-field input, .tg-form .bk-field textarea { background: var(--c-surface); }
+.tg-form__title { font-weight: var(--fw-semi); }
+.tg-check { display: flex; align-items: center; gap: var(--s-2); min-height: 44px; cursor: pointer; }
+.tg-check input { width: 20px; height: 20px; margin: 0; accent-color: var(--c-primary); }
+.tg-photoadd { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+.tg-photoadd__thumb { width: 72px; height: 48px; object-fit: cover; border-radius: var(--r-s); border: 1px solid var(--c-line); }
+
+/* ── слой карты «Инициативы»: капсула над картой (вне .tg) ── */
+.tg-pin {
+  display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 10px 0 4px;
+  border: 1px solid var(--c-line-strong); border-radius: var(--r-pill); background: var(--c-surface); color: var(--c-ink);
+  box-shadow: var(--shadow-pin); font-family: var(--font); font-size: var(--fs-caption); font-weight: var(--fw-num);
+  font-variant-numeric: tabular-nums; cursor: pointer; transition: scale var(--t-fast) var(--ease);
+}
+.tg-pin:hover { scale: 1.06; }
+.tg-pin:focus-visible { outline: 3px solid var(--c-focus); outline-offset: 2px; }
+.tg-pin .ic { width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: var(--c-ink); color: #fff; }
+.tg-pin--done .ic { background: var(--ok-mark); }
+
+/* ── ноутбук 1024 и телефон ── */
+@media (max-width: 900px) {
+  .tg-overview { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+@media (max-width: 760px) {
+  .tg { --tg-gap: var(--s-3); }
+  .tg-title { font-size: var(--fs-title); }
+  .tg-hero { padding: var(--s-4); }
+  .tg-yardhead { padding: var(--s-4); }
+  .tg-kinds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tg-fact { grid-template-columns: minmax(0, 1fr); gap: var(--s-1); }
+  .tg-grid, .tg-skel { grid-template-columns: minmax(0, 1fr); }
+  .tg-actionbar { bottom: calc(-1 * var(--s-4)); margin-inline: calc(-1 * var(--s-4)); gap: var(--s-2) var(--s-3);
+    padding: var(--s-3); border-radius: var(--r-xl) var(--r-xl) 0 0; }
+  /* Телефон: счётчик и «Я приду» — одна строка; «Не смогу прийти» — тихая ссылка под кнопкой. */
+  .tg-actionbar .tg-join { flex: 1 1 auto; min-width: 0; }
+  .tg-actionbar .tg-unjoin { flex: 1 1 100%; min-height: 36px; justify-content: flex-end; padding-block: 0; }
+  .tg-listhead > .bk-btn { width: 100%; }
+  .tg-wnav > .bk-btn { flex: 1 1 auto; }
+  .tg-row__golabel { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tg-card, .tg-card:hover { transition: none; translate: none; }
+  .tg-count__n, .tg-count__n--in, .tg-count__n--out { animation: none !important; transition: none; translate: none; opacity: 1; }
+  .tg-count__n--out { display: none; }
+  .tg-count.tg-pop > .ic { animation: none; }
+  .tg-pin { transition: none; }
+}
