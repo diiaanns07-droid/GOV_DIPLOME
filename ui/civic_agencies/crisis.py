@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 
 from . import geo, profiles
 
@@ -151,7 +152,8 @@ def _iin_ok(raw: str) -> bool:
 
 
 def pii_kinds(text: str | None) -> list[str]:
-    text = text or ""
+    # NFKC: полноширинные «＋７ ７０１ …» и другие совместимые формы — к обычным знакам (R15: запасной путь без R04).
+    text = unicodedata.normalize("NFKC", text or "")
     found = []
     for kind, rx in PII_PATTERNS:
         if kind == "iin":
