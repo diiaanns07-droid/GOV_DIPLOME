@@ -4,12 +4,12 @@ R05 · раунд 15 · RUN (как запустить и что теперь м
 Ориентиры — настоящие 3D-здания подложки R01; R05 даёт данные, поиск и перелёт; 3D проектов — «белый макет».
 
 СТЕНД (облако или ноутбук; COMMON «КАК ПОДНЯТЬ СТЕНД») — на голове R01, как будет в сборке B1
-  1) оболочка R01 + патчи R05 + пути R05 (пока R01 их не взял; патчи сделаны на R01 c9069723):
+  1) оболочка R01 (с B0.2 в ней уже R05 и оба полных патча) + дельта R05 + пути R05 последней поставки:
        git worktree add --detach ../r01 origin/claude/brave-fermi-nhzetj && cd ../r01
-       git apply <ветка R05>/research/round-15-results/R05/patches/R01_web_server_assets.patch
-       git apply <ветка R05>/research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch
+       git apply <ветка R05>/research/round-15-results/R05/patches/R01_delta_b03.patch
        git fetch origin claude/bold-cray-dopshy && git checkout origin/claude/bold-cray-dopshy -- web/civic/build3d data/civic/astana/landmarks tests/civic/R05
-     (когда R01 соберёт B1 с R05 — просто ветка R01, шаг 1 не нужен)
+     (когда R01 возьмёт D1.3 и дельту в сборку — просто ветка R01, шаг 1 не нужен; на FINAL-4 — полные патчи
+      R01_web_server_assets.patch и R01_landmarks_search_basemap.patch сделаны на R01 c9069723, на FINAL-4 не лягут)
   2) mkdir -p /tmp/birge && python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
      python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
      python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
@@ -24,6 +24,8 @@ R05 · раунд 15 · RUN (как запустить и что теперь м
     и ← → (Shift — шаг 20), Home / End. Освещение: под шторкой «День / Ночь» — ночью тёмно-серые объёмы, тёплые конусы.
   - «Что построить?» (акимат): каталог в «белом макете» — белые объёмы, кайма акцента у нового проекта.
   - Постройка проекта на карте — по частям за 0,76 с (было 1,1 с); «уменьшить движение» — сразу готовый вид.
+  - Только что поставленный проект можно сразу открыть нажатием — и пока он сохраняется, и после (id от сервера);
+    сообщение «Проект поставлен · Отменить» не прячется под карточку «Сегодня в Астане».
 
 ПРОВЕРКИ (из корня репозитория)
   node --test tests/civic/R05/round15/test_landmarks.mjs            # данные ориентиров, поиск, перелёт, «моделей нет» (Node)

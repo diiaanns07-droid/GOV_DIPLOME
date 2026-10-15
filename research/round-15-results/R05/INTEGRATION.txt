@@ -1,7 +1,21 @@
 R05 · раунд 15 · INTEGRATION (дополняется по ходу раунда; последнее изменение — см. git log этого файла)
 
-КОРОТКО ДЛЯ R01 (сборка B1): взять web/civic/build3d/ и data/civic/astana/landmarks/ на DELIVERY.json → code_sha
-и два патча из patches/ — они сделаны на вашей голове claude/brave-fermi-nhzetj @ c9069723 (git apply --check: OK).
+КОРОТКО ДЛЯ R01 (сборка B1) — обновлено 16 окт 00:10 по Астане, поставка D1.3:
+  У вас уже есть: B0.2 — R05 645d6008 + оба полных патча (12e99fba), B0.3 — R05 0050c4ce (88136378), B0.5 — R05 b1e7fcf6
+  (80809e03). Полные патчи patches/R01_landmarks_search_basemap.patch и R01_web_server_assets.patch второй раз НЕ
+  накладывать.
+  Взять сверху:
+    1) web/civic/build3d/ и data/civic/astana/landmarks/ на DELIVERY.json → code_sha (6d45fa3b): после «Поставить»
+       проект открывается по любому своему id (раньше на B0.3 выбор по первому id карточку не открывал — smoke
+       «до исправления» 28/1), тост «Проект поставлен · Отменить» не уходит под «Сегодня в Астане»; подпись ориентира
+       label, names для ҚАЗ/РУС;
+    2) patches/R01_delta_b03.patch — дельта (сделана на adb5fba9; git apply --check: OK и на df6c9c2f; 3 файла, 8 строк):
+       basemap-style.js — подпись из label («Нур Алем · ЭКСПО», как было у вас), explore.js — names, shell.js — вид
+       «что на карте» на текущем языке и #birge-today в avoid модуля R05 (камера и тост не ставят проект под «Сегодня в
+       Астане»; ваш freeArea() её уже учитывает). С вашим B-126 (слой R05 над левыми карточками) тост без дельты лежит
+       поверх угла «Сегодня в Астане»; с дельтой — встаёт правее неё.
+  Проверено на стендах «adb5fba9 (B0.3) + дельта + R05 6d45fa3b» и «df6c9c2f (B0.6) + дельта + R05 6d45fa3b» — §6.
+(Ниже §0–§5 — история: полные патчи сделаны на c9069723 и уже в вашей сборке с B0.2.)
 Ваша проверка приёмки из STATUS R01 (П1):  git grep -n -i "baiterek\|khan.shatyr\|nur.alem\|akorda" -- web/civic/build3d
 найдёт ровно 8 строк и только в web/civic/build3d/data/landmarks.json — это id (те же, что в вашем basemap-style.js) и
 латинские написания для поиска, не модели. Точная проверка «моделей нет» (должно быть пусто):
@@ -123,3 +137,23 @@ R05 · раунд 15 · INTEGRATION (дополняется по ходу рау
    (.civic-explore-status[data-kind="chosen"]) стоит x 8–383, y 72–151: выходит за край экрана на 8 px и закрывает верх
    столбика кнопок карты («?» легенды, компас, «моё место»). На ≥ 761 px эта строка у вас спрятана для глаз
    (birge-ref.css:121, только для диктора) — на телефоне, видимо, тоже прятать или дать right: 70px.
+
+6. ПРОВЕРКА НА СБОРКЕ R01 B0.3 adb5fba9 (15 окт, 22:05–23:30 по Астане) — поставка D1.3
+   Стенд: git worktree add --detach <папка> adb5fba9; git apply patches/R01_delta_b03.patch; git checkout
+   origin/claude/bold-cray-dopshy -- web/civic/build3d data/civic/astana/landmarks tests/civic/R05; БД — RUN.txt R01
+   (+ create-editor для smoke), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1. Файлы оболочки стенда = adb5fba9 + дельта (сверено cmp).
+   - Node R05: 52/52 (test_basemap_patch — в трёх состояниях файла R01: FINAL-4 + весь патч, B0.3 + дельта, уже с дельтой).
+   - app_landmarks_search 7 / 0 / 1 NOT_RUN (LOCAL-12) — runs/app_landmarks_search_on_b03.json.
+   - app_card_check 10 / 0 / 0 — runs/app_card_check_on_b03.json.
+   - smoke 3D в оболочке (app_b2_smoke) 30 / 0 — runs/r14_app_smoke_on_b03.json; две новые проверки:
+       placed_project_selectable_by_temp_id_after_save — ответ на POST задержан на 1,5 с, выбор по первому (временному)
+       id после сохранения открывает карточку сохранённого проекта; на коде D1.2 b1e7fcf6 — FAIL
+       (runs/r14_app_smoke_on_b03_before_fix.json: temp p-mv9t21e8-0af3a → saved p-4d6bce937236, selected null);
+       place_toast_text_not_under_host_panels — текст и «Отменить» тоста видны (сдвиг translateX(199px) за «Сегодня
+       в Астане»; без дельты avoid сдвиг тоже срабатывает, когда панель лежит поверх — проверено отдельно).
+   - демо-страница модуля (раунд 14, browser_check) 56 / 0 / 1 NOT_RUN (GPU) — runs/r14_browser_check_on_b03.json.
+   То же на df6c9c2f (B0.6: в ней R05 b1e7fcf6, слой R05 над левыми карточками — ваш B-126) + дельта + R05 6d45fa3b:
+   smoke 30 / 0 (тост сдвинут translateX(199px), выбор по временному id → карточка), карточка 10 / 0 / 0, поиск 7 / 0 / 1 —
+   runs/r14_app_smoke_on_b06.json, runs/app_card_check_on_b06.json, runs/app_landmarks_search_on_b06.json.
+   Наблюдение (облако, не R05): плашка «Карта улиц не загрузилась» гаснет через 6 с, но после смены языка/слоя
+   показывается снова на 6 с; на телефоне в это время лежит поверх верха карточки проекта (y 112–190) с «×».

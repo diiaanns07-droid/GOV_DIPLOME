@@ -1,0 +1,139 @@
+{
+ "at": "2026-10-15T18:03:06.528Z",
+ "url": "http://127.0.0.1:8657",
+ "code_head": "adb5fba9",
+ "stand": "R01 claude/brave-fermi-nhzetj @ adb5fba9 (B0.3) + R05 6d45fa3b (web/civic/build3d, data/civic/astana/landmarks) + patches/R01_delta_b03.patch",
+ "env": "облако: Chromium headless + SwiftShader, без подложки со зданиями (упрощённый фон)",
+ "results": [
+  {
+   "id": "search_Байтерек_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Байтерек",
+     "place": "монумент · район Есиль"
+    },
+    "camera": {
+     "x": 858,
+     "y": 388,
+     "zoom": 16.6,
+     "pitch": 52,
+     "bearing": -76,
+     "w": 1366,
+     "h": 768
+    },
+    "flight_ms": 2923
+   }
+  },
+  {
+   "id": "search_ақорда_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Ақорда",
+     "place": "Президент резиденциясы · Есіл ауданы"
+    },
+    "camera": {
+     "x": 858,
+     "y": 388,
+     "zoom": 16.3,
+     "pitch": 52,
+     "bearing": -76,
+     "w": 1366,
+     "h": 768
+    },
+    "flight_ms": 2834
+   }
+  },
+  {
+   "id": "search_пирамида_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Дворец мира и согласия",
+     "place": "дворец (пирамида) · район Сарайшык"
+    },
+    "camera": {
+     "x": 687,
+     "y": 388,
+     "zoom": 16.5,
+     "pitch": 52,
+     "bearing": -76,
+     "w": 1024,
+     "h": 768
+    },
+    "flight_ms": 3210
+   }
+  },
+  {
+   "id": "search_хан шатыр_375_kk",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Хан Шатыр",
+     "place": "сауда орталығы · Нұра ауданы"
+    },
+    "camera": {
+     "x": 158,
+     "y": 243,
+     "zoom": 15.9,
+     "pitch": 52,
+     "bearing": -76,
+     "w": 375,
+     "h": 812
+    },
+    "flight_ms": 3162
+   }
+  },
+  {
+   "id": "search_экспо_375_ru",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Нур Алем",
+     "place": "павильон ЭКСПО · район Есиль"
+    },
+    "camera": {
+     "x": 158,
+     "y": 243,
+     "zoom": 16.1,
+     "pitch": 52,
+     "bearing": -20,
+     "w": 375,
+     "h": 812
+    },
+    "flight_ms": 3083
+   }
+  },
+  {
+   "id": "view_label_follows_language",
+   "status": "PASS",
+   "detail": {
+    "ru": "Байтерек",
+    "kk": "Бәйтерек"
+   }
+  },
+  {
+   "id": "reduced_motion_jumps_without_flight",
+   "status": "PASS",
+   "detail": {
+    "moves": 1,
+    "ms": 493
+   }
+  },
+  {
+   "id": "basemap_landmark_lighter_and_labelled",
+   "status": "NOT_RUN",
+   "detail": {
+    "why": "в облаке нет подложки со зданиями (OpenFreeMap недоступен) — вид проверяет LOCAL-12",
+    "logic": "центры, подписи и цвет из патча проверены без подложки: node --test tests/civic/R05/round15/test_basemap_patch.mjs"
+   }
+  }
+ ],
+ "pageErrors": []
+}
