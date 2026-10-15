@@ -203,6 +203,46 @@ def test_read_state_since_and_privacy_between_devices(stack):
     assert len(rows) == 1 and MAIN_A not in rows[0]["device_hash"] and len(rows[0]["device_hash"]) == 64
 
 
+def test_read_all_does_not_swallow_later_events(stack):
+    """«Прочитать все», когда у соседа событие «в будущем» (часы модулей разошлись, демо «через час»): граница «прочитано
+    до» — сейчас, будущее отмечено по id; событие, пришедшее потом (раньше того «будущего»), — непрочитанное."""
+    svc, v2 = stack
+    events = [dict(EV_CRISIS)]                         # 08:00 UTC — на 4 часа впереди часов теста (04:00 UTC)
+    v2.notify = center_with(v2, {"ui.civic_agencies": neighbor(events, signature="plain")})
+    ctx = dict(context(), headers={"X-Birge-Device": MAIN_A})
+    assert feed(v2, MAIN_A)["body"]["data"]["unread"] == 1
+    assert call(v2, "POST", "/notifications/read", {"all": True}, ctx=ctx)["status"] == 200
+    assert feed(v2, MAIN_A)["body"]["data"]["unread"] == 0
+    svc.clock.advance(minutes=30)
+    events.append(dict(EV_CRISIS, id="incident.u-2", at="2026-10-11T04:20:00+00:00", title_ru="Буран: автобусы по зимней схеме"))
+    v2.notify._cache.clear()
+    data = feed(v2, MAIN_A)["body"]["data"]
+    assert data["unread"] == 1 and [e["id"] for e in data["items"] if not e["read"]] == ["R17:incident.u-2"], data
+
+
+def test_read_until_with_ids_marks_exactly_what_was_shown(stack):
+    """Интерфейс: «Прочитать все» = {until: now ленты, ids: события «впереди часов» из неё}. Пришедшее позже — новое;
+    событие «впереди», прочитанное раньше нажатием, не становится снова новым."""
+    svc, v2 = stack
+    ahead = dict(EV_CRISIS)                                       # 08:00 UTC, часы теста — 04:00 UTC
+    ahead2 = dict(EV_CRISIS, id="incident.u-3", at="2026-10-11T09:00:00+00:00", title_ru="Буран: школы закрыты")
+    events = [ahead, ahead2]
+    v2.notify = center_with(v2, {"ui.civic_agencies": neighbor(events, signature="plain")})
+    ctx = dict(context(), headers={"X-Birge-Device": MAIN_A})
+    shown = feed(v2, MAIN_A)["body"]["data"]
+    assert shown["unread"] == 2
+    one = call(v2, "POST", "/notifications/read", {"ids": ["R17:incident.u-3"]}, ctx=ctx)        # нажал одно
+    assert one["status"] == 200
+    svc.clock.advance(minutes=10)
+    events.append(dict(EV_CRISIS, id="incident.u-4", at="2026-10-11T04:05:00+00:00", title_ru="Буран: новое"))
+    v2.notify._cache.clear()                                      # пришло после того, как житель открыл ленту
+    done = call(v2, "POST", "/notifications/read", {"until": shown["now"], "ids": ["R17:incident.u-1"]}, ctx=ctx)
+    assert done["status"] == 200, done
+    data = feed(v2, MAIN_A)["body"]["data"]
+    unread = [e["id"] for e in data["items"] if not e["read"]]
+    assert unread == ["R17:incident.u-4"] and data["unread"] == 1, data
+
+
 @pytest.mark.parametrize("body, field", [
     ({}, "ids"), ({"ids": "R16:tg-1"}, "ids"), ({"ids": [1]}, "ids"), ({"all": "yes"}, "all"),
     ({"until": "вчера"}, "until"), ({"ids": ["a"] * 201}, "ids"), ({"who": "me"}, "who"),

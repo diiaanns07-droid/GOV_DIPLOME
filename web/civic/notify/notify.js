@@ -398,9 +398,21 @@
       },
     };
   }
+  // «Прочитать все» — ровно то, что житель видит: до времени этой ленты (now ответа) и события «впереди часов» из неё
+  // по id. Пришедшее после последнего обновления ленты останется новым (а не «прочитается» молча).
+  function readAll() {
+    var data = state.data;
+    if (!data || !data.now) return markRead({ all: true });
+    var ahead = (data.items || []).filter(function (e) { return !e.read && e.at > data.now; })
+      .map(function (e) { return e.id; }).slice(0, 200);
+    (data.items || []).forEach(function (e) { e.read = true; });   // сразу: точки гаснут, счётчик — 0 (правило 4 эталона)
+    data.unread = 0;
+    emit();
+    return markRead(ahead.length ? { until: data.now, ids: ahead } : { until: data.now });
+  }
   function readAllButton() {
     return h("button", { type: "button", class: "bk-notify__readall", "data-key": "notify-read-all",
-      hidden: unread() ? null : true, onclick: function () { markRead({ all: true }); } }, [tr("notify.read_all")]);
+      hidden: unread() ? null : true, onclick: function () { readAll(); } }, [tr("notify.read_all")]);
   }
 
   // ------------------------------------------------------------------ колокольчик и панель

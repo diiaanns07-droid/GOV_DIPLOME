@@ -420,8 +420,9 @@ class NotificationCenter:
     def mark_read(self, device_id, payload, ideas_device=None) -> dict:
         """{all: true} — прочитано всё, что сейчас в ленте; {ids: [...]} — отдельные события; {until: ISO} — до момента.
 
-        «Всё» — до самого нового события ленты, даже если его время впереди часов сервера (демо со временем «через
-        час», расхождение часов модулей): иначе «Прочитать все» оставляло бы счётчик."""
+        «Всё» — граница «прочитано до» = сейчас, а события ленты со временем впереди часов сервера (демо «через час»,
+        расхождение часов модулей) отмечаются по id: иначе «Прочитать все» оставляло бы счётчик, а граница в будущем
+        молча «прочитала» бы новые события, пришедшие до этого времени."""
         device = self._device(device_id)
         ideas_device = ideas_device if isinstance(ideas_device, str) and DEVICE_RE.match(ideas_device) else None
         payload = payload if isinstance(payload, dict) else {}
@@ -445,10 +446,10 @@ class NotificationCenter:
                 return {"read_until": read_until, "read_ids": len(read_ids)}
             raise ValidationError({"ids": "Что отметить: ids, all или until."})
         now = utc_now(self.clock)
-        newest = None
+        future = []
         if everything:
             events, _sources = self._events(device, ideas_device)
-            newest = events[0]["at"] if events else None
+            future = [e["id"] for e in events if e["at"] > iso(now)]
         with self.db.write() as conn:
             dev = self._hash(conn, device)
             row = conn.execute("SELECT read_until, read_ids_json FROM civic_notify_reads WHERE device_hash = ?",
@@ -457,12 +458,10 @@ class NotificationCenter:
             read_ids = list(_loads(row["read_ids_json"]) or []) if row else []
             if everything or until_dt is not None:
                 mark = iso(now if everything else min(until_dt, now))
-                if everything and newest and newest > mark:
-                    mark = newest
                 if read_until is None or mark > read_until:
                     read_until = mark
-                read_ids = []
-            for event_id in ids:
+            # прежние отметки по id не сбрасываем: событие «впереди часов», прочитанное нажатием, остаётся прочитанным
+            for event_id in list(future) + list(ids):
                 if event_id not in read_ids:
                     read_ids.append(event_id)
             read_ids = read_ids[-READ_IDS_MAX:]

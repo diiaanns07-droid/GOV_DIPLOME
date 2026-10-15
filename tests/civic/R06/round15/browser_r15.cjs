@@ -359,10 +359,12 @@ async function notifyPart(browser) {
           .then(() => true, () => false);
         check(`${tag}: «Прочитать все» — счётчика нет`, zero);
         // Кризис R17 (если модуль в сборке и событие в ленте): уведомление открывает его карточку — «#crisis/<id>».
-        const crisis = await page.$('.bk-notify .bk-feed__item[data-kind="crisis"]');
+        await sleep(800);   // «Прочитать все» перерисовывает ленту дважды (сразу и по ответу сервера)
+        const crisisSel = '.bk-notify .bk-feed__item[data-kind="crisis"]';
+        const crisis = await page.$(crisisSel);
         if (crisis) {
-          const href = await crisis.getAttribute("href");
-          await crisis.click();
+          const href = await page.getAttribute(crisisSel, "href");
+          await page.click(crisisSel);
           const opened = await page.waitForFunction(() => document.body.dataset.birgeSection === "crisis", null, { timeout: 10000 })
             .then(() => true, () => false);
           check(`${tag}: уведомление о кризисе открыло его карточку (${href})`, opened && /^#crisis\//.test(href || ""), href);
@@ -383,6 +385,14 @@ async function notifyPart(browser) {
       check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
       await ctx.close();
     }
+    // Новое событие после «Прочитать все» (вторая идея жителя опубликована) — на телефоне будет что считать.
+    const idea2 = await api(base, "POST", "/api/civic/v2/ideas", { title: "Урны у остановки", description: "Мусор летит на дорогу.",
+      geometry: { type: "Point", coordinates: [71.3671, 51.1371] }, device_id: IDEAS, lang: "ru" });
+    const pub2 = idea2.status === 201
+      ? await api(base, "POST", `/api/civic/v2/ideas/${idea2.json.item.id}/decide`, { action: "publish" }, auth) : null;
+    check("уведомления: вторая идея жителя опубликована (новое событие после «Прочитать все»)", idea2.status === 201 && pub2 && pub2.status === 200,
+      JSON.stringify(idea2.json).slice(0, 200));
+    await sleep(5500);   // сборщик ленты кэширует ответ на 5 с — следующий житель увидит новое
     // Телефон: экран «Уведомления» (#notifications) — лента и пустое состояние.
     for (const [lang, main, ideas, empty] of [["ru", MAIN, IDEAS, false], ["kk", MAIN, IDEAS, false], ["ru", "d-" + "Z".repeat(24), null, true]]) {
       const tag = `notify-375-${lang}${empty ? "-empty" : ""}`;
@@ -404,6 +414,28 @@ async function notifyPart(browser) {
       const au = await textAudit(page, "#birge-screen");
       check(`${tag}: без технических слов и прокрутки вбок`, !au.missing && !au.tech.length && !au.overflow, JSON.stringify({ tech: au.tech, overflow: au.overflow }));
       await shot(page, tag);
+      if (!empty && lang === "ru") {
+        // Оболочка раунда 15 (R01 B0.4): на телефоне колокольчика нет — первый пункт меню аватара «Уведомления · N» и точка
+        // на аватаре; число — из BirgeNotify.onCount. Оболочка без этого пункта (FINAL-4) — NOT_RUN.
+        const want = (await (await fetch(base + "/api/civic/v2/notifications", { headers: { "X-Birge-Device": MAIN, "X-Birge-Ideas-Device": IDEAS } })).json()).unread;
+        await page.goto(base + "/#map", { waitUntil: "domcontentloaded" });
+        await page.waitForFunction(() => document.body.dataset.birgeSection === "map", null, { timeout: 10000 }).catch(() => {});
+        await sleep(1500);
+        const dot = await page.$eval(".birge-avatar", (e) => e.hasAttribute("data-badge")).catch(() => null);
+        await page.click(".birge-avatar").catch(() => {});
+        const item = await page.waitForSelector('.bk-menu__item[data-section="notifications"]', { timeout: 4000 }).then((x) => x, () => null);
+        if (!item) {
+          console.log(`NOT_RUN ${tag}: в меню аватара нет пункта «Уведомления» (оболочка без IA §5.7)`);
+        } else {
+          const badge = await item.$eval(".bk-nav__badge", (e) => e.textContent).catch(() => "");
+          check(`${tag}: меню аватара — «Уведомления · ${want}» и точка на аватаре`, want > 0 && badge === (want > 9 ? "9+" : String(want)) && dot === true,
+            JSON.stringify({ want, badge, dot }));
+          await shot(page, `${tag}-avatar-menu`);
+          await item.click();
+          const opened = await page.waitForSelector(".rn .bk-feed__item", { timeout: 10000 }).then(() => true, () => false);
+          check(`${tag}: пункт меню аватара открывает ленту`, opened && (await page.evaluate(() => document.body.dataset.birgeSection)) === "notifications");
+        }
+      }
       check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
       await ctx.close();
     }
