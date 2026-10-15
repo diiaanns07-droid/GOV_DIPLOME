@@ -146,6 +146,12 @@
    "status": "PASS",
    "note": "R08 claude/laughing-euler-iv3on3 @ b8838abe (её берёт R01 в B0.3): neighbors.forecast — r13-week, 5 пунктов с причиной; neighbors.meetings — r13, counts"
   },
+  "neighbor_tests_on_r01_build": {
+   "status": "PASS",
+   "passed": 437,
+   "failed": 0,
+   "note": "сборка R01 197ad600 (B0.4) с модулями и тестами R13 этой поставки: tests/civic/R01/round15/test_r01_round15_routes.py, R03 test_analyst_neighbours.py, R06 test_r06r15_notify.py, R08 test_r08_board.py + test_r08_world.py, R15 test_r15_qa.py + round15 notify/meetings, tests/civic/R13"
+  },
   "r15_meetings_tests": {
    "status": "PASS",
    "passed": 27,

@@ -94,6 +94,10 @@ def main() -> None:
                                           "(sources R13 ok) → нажатие открывает #meetings/m-w15-2/q-… с прокруткой к вопросу"},
             "r08_contract_first_branch": {"status": "PASS", "note": "R08 claude/laughing-euler-iv3on3 @ b8838abe (её берёт R01 в B0.3): "
                                           "neighbors.forecast — r13-week, 5 пунктов с причиной; neighbors.meetings — r13, counts"},
+            "neighbor_tests_on_r01_build": {"status": "PASS", "passed": 437, "failed": 0,
+                                            "note": "сборка R01 197ad600 (B0.4) с модулями и тестами R13 этой поставки: tests/civic/R01/"
+                                            "round15/test_r01_round15_routes.py, R03 test_analyst_neighbours.py, R06 test_r06r15_notify.py, "
+                                            "R08 test_r08_board.py + test_r08_world.py, R15 test_r15_qa.py + round15 notify/meetings, tests/civic/R13"},
             "r15_meetings_tests": {"status": "PASS", "passed": 27, "total": 27,
                                    "note": "tests/civic/R15/round15/test_r15_round15_meetings.py R15 @ 19748bff на коде R13 этой поставки"},
             "demo_world_on_r01_build": {"status": "PASS", "note": "сборка R01 c9069723, CIVIC_DEMO_WORLD=1: оболочка засевает R13 "
