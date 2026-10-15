@@ -529,7 +529,9 @@ async function boardCheck(browser, base, lang, staffAcc) {
       const eff = (e) => { const fs = parseFloat(getComputedStyle(e).fontSize);
         if (e instanceof SVGElement && typeof e.getScreenCTM === "function") { const m = e.getScreenCTM(); if (m) return fs * Math.sqrt(m.a * m.a + m.b * m.b); }
         return fs; };
-      const shown = leaves.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1 && !e.closest(".bk-sr-only, .sr-only, .visually-hidden"); });
+      // Строка лицензии карты («© OpenStreetMap») — служебная, к правилу «читается с 3 м» не относится.
+      const shown = leaves.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1
+        && !e.closest(".bk-sr-only, .sr-only, .visually-hidden") && !/©/.test(e.textContent || ""); });
       const sizes = shown.map((e) => Math.round(eff(e) * 10) / 10);
       const smallest = shown.map((e) => [Math.round(eff(e) * 10) / 10, (e.textContent || "").trim().slice(0, 30)]).sort((a, b) => a[0] - b[0]).slice(0, 4);
       const big = leaves.filter((e) => /^\d[\d\s.,%×]*$/.test(e.textContent.trim()) && parseFloat(getComputedStyle(e).fontSize) >= 40).length;
