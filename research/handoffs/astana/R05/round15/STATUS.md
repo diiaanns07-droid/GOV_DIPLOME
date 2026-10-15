@@ -49,8 +49,7 @@
   handle.flyToLandmarks() (кадр «Байтерек + Хан Шатыр»), setLandmarks(on), getState().landmarks.
 - Проверки: node --test tests/civic/R05/round15/test_landmarks.mjs 11/11; app_landmarks_check.mjs (стенд R01 + мой
   патч ассетов) 11 PASS / 0 FAIL / 1 NOT_RUN (здания подложки — нет интернета в облаке); старые test_models/test_core 38/38.
-- ВНИМАНИЕ (локально): в рабочей копии ui/web_server.py изменён для стенда (два пути в CIVIC_ASSETS) — НЕ коммитить,
-  это путь R01; патч — research/round-15-results/R05/patches/R01_web_server_assets.patch.
+- (Устарело: стендовые правки путей R01 теперь в git stash, см. П1-1 ниже.)
 
 - П1 (17:10–): модели удалены; landmarks.json v2 (6 ориентиров с id R01, + мечеть Хазрет Султан — центр двора по
   кольцу дорожек), тесты test_landmarks.mjs 3/3.
@@ -59,8 +58,10 @@
   зданию (наклон 52°, центр в свободной части карты, reduced-motion — сразу). Патч R01 (explore.js, shell.js,
   index.html, birge-ref.css, basemap-style.js: центры из landmarks.json, ориентир светлее соседей #F6F4EF, подпись
   #4B5752) — patches/R01_landmarks_search_basemap.patch. Проверки: test_landmarks.mjs 5/5; app_landmarks_search.mjs
-  6 PASS / 0 FAIL / 1 NOT_RUN (вид здания — LOCAL-12). Рабочая копия: патчи R01 применены локально (НЕ коммитить
-  web/civic/shell/*, web/index.html, ui/web_server.py).
+  6 PASS / 0 FAIL / 1 NOT_RUN (вид здания — LOCAL-12). Стенд с патчами R01: в этом контейнере — `git stash pop`
+  (stash «R05 local stand: R01 patches»), в новом — `git apply research/round-15-results/R05/patches/R01_*.patch`
+  (birge-ref.css из патча — под ветку R01 5529d819, на FINAL-4 не ляжет; стенду он не нужен). Пути R01
+  (web/civic/shell/*, web/index.html, ui/web_server.py) НЕ коммитить; перед концом хода — снова `git stash`.
 
 - П1-2 (готово, проверка идёт): «белый макет» — build3d-models.js (белые/светло-серые объёмы, бледная зелень,
   нейтральная тень, кайма акцента #C9E27D у нового проекта, без бликов и дневного «свечения»), стекло — Lambert,
