@@ -137,7 +137,13 @@ def main() -> int:
     v2 = load(out / "v2" / "RESULT.json")
     if v2:
         c = v2["counts"]
-        lines.append(f"| Сцены 7–9 «Бірге» | PASS {c['PASS']} · FAIL {c['FAIL']} · NOT_RUN {c['NOT_RUN']} |")
+        lines.append(f"| Сцены 7–9 «Бірге» | PASS {c['PASS']} · FAIL {c['FAIL']} · NOT_RUN {c['NOT_RUN']}"
+                     + (f" · ИНФО {c['INFO']}" if c.get("INFO") else "") + " |")
+        info = [r for r in v2["results"] if r["status"] == "INFO"]
+        if info:
+            watch.append("сцены 7–9, проверить на ноутбуке (облако — программный WebGL): " + "; ".join(
+                f"{r['layer']} {r['step']} {r['name'][:40]} {((r.get('detail') or {}).get('ms'))} мс, без кадров карты "
+                f"{((r.get('detail') or {}).get('ms_without_map_frames'))} мс" for r in info[:4]))
         bad = [r for r in v2["results"] if r["status"] == "FAIL" and not QUALITY.search(r["name"])]
         soft = [r for r in v2["results"] if r["status"] == "FAIL" and QUALITY.search(r["name"])]
         if bad:
