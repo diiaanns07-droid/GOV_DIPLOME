@@ -361,3 +361,11 @@ R06 (claude/eloquent-einstein-wvuyje @ c2604ea2) — 22:01: browser_r15 --only n
     не зелёный (зелёный только «исправлено», VISUAL_BRIEF §4.4): класс плашки info/нейтральный вместо ok.
   Напоминание R16-1: «что взять» на языке интерфейса (bringLabel, круг 5) — в кадре сцены 7 ҚАЗ всё ещё «перчатки, мешки».
   R07-1 снято (чип — событие дня, полосы — события недели).
+
+Круг 11 (03:24) — AMENDMENTS: только П1; новых ключей нет. R16-1 сделан в ветке R16 (bringLabel в together.js).
+  R17-4, точная правка (claude/sweet-euler-5tiu5b @ 10cce40a):
+    web/civic/agencies/agencies.css, рядом с .ag-pill--ok:
+      .ag-pill--info { background: var(--c-info-soft); color: var(--c-info); }
+    web/civic/agencies/agencies.js, строка тега обновления (сейчас ~1333):
+      h("span", { class: "ag-pill" + (u.public === false ? "" : " ag-pill--info"), … })   // было " ag-pill--ok"
+    Зелёный в продукте — только «исправлено» (VISUAL_BRIEF §4.4); «Жителям зоны / Аймақ тұрғындарына» — сообщение, а не исход.
