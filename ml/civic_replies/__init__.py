@@ -133,9 +133,74 @@ def facts_from_record(record: dict, *, names: dict, now: datetime, working_days=
     }
 
 
+# Поле «Обновление для всех» у R09 хранит до 320 знаков (lifecycle.PASSPORT_TEXT_MAX × 2): черновик длиннее
+# оборвался бы на полуслове. Порядок «что отдать» — в _fit. Главное предложение (статус, службы, причина отказа)
+# не трогаем никогда.
+MAX_LEN = 320
+_SOFT_DROP = ("thanks", "next_update", "temp_measure", "rejected_again", "hello", "no_eta")
+_HARD_DROP = ("handoff", "due")
+_MIN_STAFF = 40                    # короче текст сотрудника не режем: смысл шага теряется
+
+
+def _shorten(text: str, limit: int) -> str:
+    """Текст сотрудника не длиннее limit знаков: по границе слова и с «…»."""
+    text = str(text)
+    if len(text) <= limit:
+        return text
+    cut = text[:max(1, limit - 1)].rsplit(" ", 1)[0].rstrip(",;:—- ")
+    return (cut or text[:max(1, limit - 1)]) + "…"
+
+
+def _join(items: list[dict]) -> str:
+    return " ".join(it["text"] for it in items)
+
+
+def _shortened(items: list[dict], limit: int) -> tuple[list[dict], list[str]] | None:
+    """Сократить тексты сотрудника ровно настолько, чтобы влезть в limit (сначала самый длинный). None — не выйдет."""
+    out = [dict(it) for it in items]
+    changed = []
+    for it in sorted((x for x in out if x.get("render")), key=lambda x: -x["body_len"]):
+        over = len(_join(out)) - limit
+        if over <= 0:
+            break
+        target = max(_MIN_STAFF, it["body_len"] - over - 1)
+        if target < it["body_len"]:
+            it["text"] = it["render"](target)
+            changed.append("сокращено: " + it["key"])
+    return (out, changed) if len(_join(out)) <= limit else None
+
+
+def _fit(items: list[dict], limit: int) -> tuple[str, list[str]]:
+    """Склеить предложения в черновик не длиннее limit. -> (текст, что убрано или сокращено).
+
+    1) убираем второстепенное (_SOFT_DROP); 2) если тексты сотрудника можно сократить и влезть — сокращаем ровно
+    настолько; 3) иначе убираем передачу, затем срок ответа (_HARD_DROP), каждый раз снова пробуя шаг 2;
+    4) в крайнем случае режем по границе слова (при текстах сотрудника ≤ 200 знаков не бывает)."""
+    items = [dict(it) for it in items]
+    changed: list[str] = []
+    for step in _SOFT_DROP:
+        if len(_join(items)) <= limit:
+            return _join(items), changed
+        for it in [x for x in items if x["key"] == step]:
+            items.remove(it)
+            changed.append("убрано: " + step)
+    for step in (None,) + _HARD_DROP:
+        if step is not None:
+            for it in [x for x in items if x["key"] == step]:
+                items.remove(it)
+                changed.append("убрано: " + step)
+        if len(_join(items)) <= limit:
+            return _join(items), changed
+        trial = _shortened(items, limit)
+        if trial is not None:
+            return _join(trial[0]), changed + trial[1]
+    text = _shorten(_join(items), limit)
+    return text, changed + ["обрезано"]
+
+
 def draft(record: dict | None = None, *, status: str | None = None, lang: str | None = None, category=None,
           subtopic=None, names: dict | None = None, now: datetime | None = None, working_days=None,
-          original_code=None, facts: dict | None = None) -> dict:
+          original_code=None, facts: dict | None = None, max_len: int = MAX_LEN) -> dict:
     """Черновик по записи R09 (или по категории без записи). status — какой ответ готовим (по умолчанию — статус записи)."""
     now = now or datetime.now(ASTANA_TZ)
     names = names or {}
@@ -163,7 +228,9 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
     service_kk = ", ".join(p["name_kk"] for p in parts) or "әкімдік кестесі бойынша қызмет"
     due = date_words(facts.get("response_due"))
     used, warnings, needs_input = [], [], []
-    ru, kk = [T.HELLO[0]], [T.HELLO[1]]
+    # Предложения по порядку вывода: {"key", "text", "render"?, "body_len"?} — render(n) пересобирает предложение
+    # с текстом сотрудника не длиннее n знаков (бюджет длины, _fit).
+    ru, kk = [{"key": "hello", "text": T.HELLO[0]}], [{"key": "hello", "text": T.HELLO[1]}]
     keep = {w for item in names.values() for w in (item.get("ru", "").split()[:1] + item.get("kk", "").split()[:1])}
     staff_texts = {}
     for key in ("next_step", "delay_reason", "temp_measure", "what_done"):
@@ -174,14 +241,29 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
             elif text_lang(facts[key]) == "kk":
                 warnings.append(f"Поле «{key}» написано по-казахски — для ответа на русском переведите его.")
 
-    def say(key: str, **values) -> None:
+    def say(key: str, staff: str | None = None, **values) -> None:
         """Предложение на двух языках. Пустой номер (черновик без записи) не оставляет двойных пробелов, а
-        предложение всегда начинается с заглавной: «{code} өтінішіңіз» без номера -> «Өтінішіңіз»."""
+        предложение всегда начинается с заглавной: «{code} өтінішіңіз» без номера -> «Өтінішіңіз».
+        staff — имя значения с текстом сотрудника: его можно сократить, если черновик не влезает в поле R09."""
         r, k = T.SENT[key]
         for out, template, i in ((ru, r, 0), (kk, k, 1)):
-            line = " ".join(template.format(**{n: v[i] if isinstance(v, tuple) else v
-                                               for n, v in values.items()}).split())
-            out.append(line[:1].upper() + line[1:])
+            vals = {n: v[i] if isinstance(v, tuple) else v for n, v in values.items()}
+
+            def render(limit=None, template=template, vals=vals):
+                local = dict(vals)
+                if staff and limit is not None:
+                    local[staff] = _shorten(local[staff], limit)
+                line = " ".join(template.format(**local).split()).replace("….", "…")
+                return line[:1].upper() + line[1:]
+
+            item = {"key": key, "text": render()}
+            if staff:
+                item["render"], item["body_len"] = render, len(vals[staff])
+            out.append(item)
+
+    def plain(key: str, text_ru: str, text_kk: str) -> None:
+        ru.append({"key": key, "text": text_ru})
+        kk.append({"key": key, "text": text_kk})
 
     if code:
         used.append("code")
@@ -196,11 +278,10 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
         say("fixed")
         if what:
             # «Что сделали: …» — как в карточке жителя; текст сотрудника — как он написал (с заглавной).
-            say("what_done", what_done=what)
+            say("what_done", staff="what_done", what_done=what)
             used.append("what_done")
         say("verify")
-        ru.append(T.THANKS[0])
-        kk.append(T.THANKS[1])
+        plain("thanks", T.THANKS[0], T.THANKS[1])
         template = "fixed"
     elif status == "rejected":
         reason = staff_texts.get("delay_reason") or staff_texts.get("next_step")
@@ -209,7 +290,7 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
         else:
             needs_input.append("reason")
             warnings.append("Нет причины отказа в записи — допишите её в черновик.")
-        say("rejected", code=(code_ru, code_kk), about=(about_ru, about_kk),
+        say("rejected", staff="reason" if reason else None, code=(code_ru, code_kk), about=(about_ru, about_kk),
             reason=(reason or T.FILL_REASON[0], reason or T.FILL_REASON[1]))
         say("rejected_again")
         template = "rejected"
@@ -248,15 +329,15 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
             say("handoff", to=(to.get("ru") or facts["handoff_to"], to.get("kk") or facts["handoff_to"]), due=due)
             used.append("handoff")
         if facts.get("next_step"):
-            say("next_step", next_step=staff_texts["next_step"])
+            say("next_step", staff="next_step", next_step=staff_texts["next_step"])
             used.append("next_step")
         if facts.get("delay_reason") or facts.get("next_update"):
             if facts.get("delay_reason"):
-                say("delay", reason=staff_texts["delay_reason"])
+                say("delay", staff="reason", reason=staff_texts["delay_reason"])
             else:
                 say("delay_no_reason")
             if facts.get("temp_measure"):
-                say("temp_measure", temp_measure=staff_texts["temp_measure"])
+                say("temp_measure", staff="temp_measure", temp_measure=staff_texts["temp_measure"])
             nxt = date_words(facts.get("next_update"))
             if nxt:
                 say("next_update", next_update=nxt)
@@ -266,8 +347,7 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
             if isinstance(left, int) and left > 0:
                 say("due", days=working_days_words(left), due=due)
             else:
-                ru.append(f"Срок ответа — {due[0]}.")
-                kk.append(f"Жауап мерзімі — {due[1]}.")
+                plain("due", f"Срок ответа — {due[0]}.", f"Жауап мерзімі — {due[1]}.")
             used.append("response_due")
         if status == "in_progress" and template != "joint":
             eta = date_words(facts.get("fix_eta"))
@@ -278,14 +358,18 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
                 say("no_eta")
                 warnings.append("Срока устранения нет в паспорте — дату не обещаем.")
         if status == "new":
-            ru.append(T.THANKS[0])
-            kk.append(T.THANKS[1])
-    text_ru, text_kk = " ".join(ru), " ".join(kk)
+            plain("thanks", T.THANKS[0], T.THANKS[1])
+    text_ru, cut_ru = _fit(ru, max_len)
+    text_kk, cut_kk = _fit(kk, max_len)
+    if cut_ru or cut_kk:
+        warnings.append(f"Черновик сокращён до {max_len} знаков (поле «Обновление для всех»): "
+                        + ", ".join(sorted(set(cut_ru) | set(cut_kk))) + ".")
     want = lang if lang in ("ru", "kk") else "ru"
     return {
         "draft_ru": text_ru, "draft_kk": text_kk, "lang": want, "text": text_kk if want == "kk" else text_ru,
         "status": status, "template": template, "facts": facts, "facts_used": used,
         "needs_input": needs_input, "warnings": warnings, "source": "template", "version": VERSION,
+        "max_len": max_len, "shortened": sorted(set(cut_ru) | set(cut_kk)),
     }
 
 

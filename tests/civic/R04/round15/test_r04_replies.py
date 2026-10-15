@@ -138,3 +138,25 @@ def test_store_lookup_errors_and_staff_only(tmp_path):
     assert reply_draft(code=rec["code"])["facts"]["code"] == rec["code"]
     with pytest.raises(LookupError):
         reply_draft(complaint_id="c-nothere1")
+
+
+def test_draft_fits_r09_update_field_320():
+    """Поле «Обновление для всех» R09 — 320 знаков (PASSPORT_TEXT_MAX × 2): черновик не обрывается на полуслове."""
+    long_step = ("Сначала Водоканал меняет участок трубы под проезжей частью, потом засыпка и уплотнение грунта, "
+                 "затем Дорожная служба кладёт новый асфальт на всю ширину проезда и наносит разметку")
+    rec = dict(REC, status="in_progress",
+               services=[{"service": "water", "role": "lead", "status": "in_progress"},
+                         {"service": "road", "role": "partner", "status": "new"}],
+               handoffs=[{"at": "2026-10-15T11:00:00+05:00", "from": "road", "to": "water", "reason": "x"}],
+               passport={"next_step": long_step, "delay": {"reason": "Ждём поставку труб нужного диаметра от завода",
+                                                         "temp_measure": "Поставили ограждение и знак объезда",
+                                                         "next_update_at": "2026-10-20"}})
+    res = reply_draft(record=rec, now=NOW)
+    for text in (res["draft_ru"], res["draft_kk"]):
+        assert len(text) <= 320, (len(text), text)
+        assert text.endswith((".", "…", "!"))
+        assert "B-0042" in text                                  # главное предложение цело
+    assert "Водоканал — в работе" in res["draft_ru"]
+    assert res["shortened"] and any("сокращён до 320" in w for w in res["warnings"])
+    short = reply_draft(record=REC, status="new", now=NOW)
+    assert short["shortened"] == [] and short["draft_ru"].startswith("Здравствуйте!")
