@@ -445,48 +445,96 @@ async function recordLang(browser, lang) {
   // ---------------------------------------------------------------------------------------------- часть 2 (сцены 7–9)
   // Экраны раунда 15 ищутся по оболочке (BirgeShell: разделы вида и «Ещё»), модули — по /api/civic/v2/modules.
   async function part2() {
-    const shell = await page.evaluate(() => {
-      const B = window.BirgeShell;
-      if (!B) return null;
-      const ids = new Set();
-      for (const mode of ["akimat", "resident"]) { try { (B.navItems(mode) || []).forEach((x) => ids.add(x)); } catch (e) { /* старая оболочка */ } }
-      try { (B.moreItems() || []).forEach((x) => ids.add(typeof x === "string" ? x : x.id)); } catch (e) { /* нет «Ещё» */ }
-      return [...ids];
-    }).catch(() => null) || [];
+    // Сцены — по scenes демо-мира R02 (двор, инициатива, кризис) и адресам IA_ROUND15 R11 / INTEGRATION R17:
+    // #yard/<двор>, #together/<инициатива>, #agencies/board, #agencies/calendar, #agencies/crisis=<id>; «Хроника» —
+    // BirgeReplay.open (R07). Нет модуля на странице или в API — сцена не записывается, причина — в MANIFEST.
+    const W15 = loadWorldScenes();
+    const has = await page.evaluate(() => ({ together: !!window.BirgeTogether, agencies: !!window.BirgeAgencies,
+      works: !!window.BirgeWorksCalendar, replay: !!(window.BirgeReplay && window.BirgeReplay.open) })).catch(() => ({}));
     const mods = await fetch(srv.base + "api/civic/v2/modules").then((r) => r.json()).then((j) => j.modules || {}).catch(() => ({}));
     const ready = (re) => Object.entries(mods).some(([k, v]) => re.test(k) && v.status === "ready");
-    const screenOf = (re) => shell.find((id) => re.test(id)) || null;
     const plan = [
-      { id: "scene7-yard", subs: ["yard", "yard_join"], screen: screenOf(/together|yard|dvor|aula/), api: ready(/together/), owner: "R16" },
-      { id: "scene8-agencies", subs: ["agencies", "board"], screen: screenOf(/agenc|shtab|board|services/), api: ready(/agenc/), owner: "R17 + R09" },
-      { id: "scene8-works", subs: ["works"], screen: screenOf(/works|calendar/), api: ready(/works-(calendar|conflicts)|works_calendar|conflict/), owner: "R12" },
-      { id: "scene9-crisis", subs: ["crisis"], screen: screenOf(/crisis|incident|kriz/), api: ready(/incident/), owner: "R17" },
-      { id: "scene9-replay", subs: ["replay"], screen: screenOf(/replay|chronic|hronik/), api: ready(/replay/), owner: "R07" },
+      { id: "scene7-yard", ok: has.together && ready(/together/) && W15.yard, owner: "R16", why: "«Мой двор» (BirgeTogether R16)" },
+      { id: "scene8-board", ok: has.agencies && ready(/agenc/), owner: "R17", why: "«Штаб ведомств» (BirgeAgencies R17)" },
+      { id: "scene8-works", ok: has.works && ready(/works.(calendar|conflicts)|conflict/), owner: "R12", why: "«Календарь работ» (BirgeWorksCalendar R12)" },
+      { id: "scene9-crisis", ok: has.agencies && ready(/incident/) && W15.incident, owner: "R17", why: "кризисный штаб (BirgeAgencies R17)" },
+      { id: "scene9-replay", ok: has.replay && ready(/replay/), owner: "R07", why: "«Хроника города» (BirgeReplay R07)" },
     ];
-    const todo = plan.filter((p) => p.screen && p.api);
-    for (const p of plan.filter((x) => !todo.includes(x)))
-      skipped.push({ scene: p.id, owner: p.owner, why: !p.api ? "модуля нет в сборке (503 / нет маршрута)" : "экрана нет в оболочке (registerScreen)" });
-    await title(sub("part2"), 2200);
-    if (!todo.length) { await say("skipped", 4200); return; }
-    await setMode("resident");
-    for (const p of todo) {
-      const s = scene(p.id);
-      const mode = /agenc|works|crisis/.test(p.id) ? "akimat" : "resident";
-      await setMode(mode);
-      await page.evaluate((id) => window.BirgeShell && window.BirgeShell.setSection(id), p.screen).catch(() => null);
-      await wait(2200);
-      for (const key of p.subs) {
-        await say(key, 4600);
-        await page.mouse.move(W / 2, H / 2);
-        await page.mouse.wheel(0, 240); await pause(1200);
+    for (const p of plan.filter((x) => !x.ok)) skipped.push({ scene: p.id, owner: p.owner, why: `нет в сборке: ${p.why}` });
+    const go = async (hash, after = 2400) => { await page.evaluate((hh) => { location.hash = hh; }, hash).catch(() => null); await wait(after); };
+    const toMap = async () => { await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null); await wait(900); };
+    await page.evaluate((x) => window.__r10v && window.__r10v.title(x), sub("part2")).catch(() => null);
+    await pause(1800);
+    await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null);
+    if (!plan.some((x) => x.ok)) { await say("skipped", 4200); return; }
+    // --- сцена 7: «Мой двор» → «Я приду»
+    if (plan[0].ok) {
+      const s = scene("scene7-yard");
+      await setMode("resident");
+      await go(`#yard/${W15.yard}`);
+      await say("yard", 4200);
+      await shot("7-yard");
+      if (W15.initiative) {
+        await go(`#together/${W15.initiative}`);
+        await say("yard_join", 900);
+        const joinRe = new RegExp("^(" + [word("together.join", "Я приду", "Мен барамын"), "Я приду", "Мен барамын"].map(esc).join("|") + ")", "i");
+        await pressText(joinRe, 2200);
+        await shot("7-join");
+        await pause(2400);
       }
-      await shot(p.id);
-      const empty = await page.evaluate(() => { const r = document.querySelector("#birge-screen-root, #birge-screen, main");
-        return !r || (r.innerText || "").trim().length < 20; }).catch(() => true);
-      done(s, !empty, empty ? "экран пустой" : null);
-      await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null);
-      await pause(900);
+      done(s);
+      await toMap();
     }
+    // --- сцена 8: «Штаб ведомств» (табло) и «Календарь работ»
+    if (plan[1].ok || plan[2].ok) await setMode("akimat");
+    if (plan[1].ok) {
+      const s = scene("scene8-board");
+      await go("#agencies/board");
+      await say("board", 5200);  // «agencies» (2 службы у обращения) — когда в сборке будет экран R09 «Принять: 2 службы»
+      await page.mouse.move(W / 2, H / 2); await page.mouse.wheel(0, 260); await pause(1200);
+      await shot("8-board");
+      done(s);
+    }
+    if (plan[2].ok) {
+      const s = scene("scene8-works");
+      await go("#agencies/calendar");
+      await say("works", 5200);
+      await shot("8-works");
+      done(s);
+    }
+    // --- сцена 9: кризисный штаб и «Хроника города»
+    if (plan[3].ok) {
+      const s = scene("scene9-crisis");
+      await setMode("akimat");
+      await go(`#agencies/crisis=${W15.incident}`, 2800);
+      await say("crisis", 5200);
+      await shot("9-crisis");
+      done(s);
+      await toMap();
+    }
+    if (plan[4].ok) {
+      const s = scene("scene9-replay");
+      await page.evaluate(() => { const m = typeof map !== "undefined" ? map : null; if (m) m.flyTo({ center: [71.40, 51.13], zoom: 11.6, duration: 1200 }); }).catch(() => null);
+      await wait(1500);
+      await say("replay", 600);
+      const ended = await page.evaluate(async () => {
+        const rp = window.BirgeReplay.open({ map: typeof map !== "undefined" ? map : null, heat: window.CivicShell && window.CivicShell.heat, days: 7, autoplay: true });
+        for (let i = 0; i < 150; i++) { await new Promise((ok) => setTimeout(ok, 200)); const st = rp.state && rp.state(); if (st && (st.ended || st.status === "error")) return !!st.ended; }
+        return false;
+      }).catch(() => false);
+      await shot("9-replay");
+      await pause(1800);
+      await page.evaluate(() => { try { window.BirgeReplay.active && window.BirgeReplay.active.close(); } catch (e) { /* закрыто */ } }).catch(() => null);
+      done(s, ended, ended ? null : "хроника не доиграла до конца");
+    }
+  }
+
+  function loadWorldScenes() {
+    try {
+      const w = JSON.parse(fs.readFileSync(path.join(ROOT, "data/civic/astana/demo-world/world_v1.json"), "utf8"));
+      const sc = w.scenes || {};
+      return { yard: (sc.scene7 || {}).yard, initiative: (sc.scene7 || {}).initiative, incident: (sc.scene9 || {}).incident };
+    } catch (e) { return {}; }
   }
 
   async function center(loc) { const b = await loc.boundingBox().catch(() => null); return b ? [b.x + b.width / 2, b.y + b.height / 2] : [W / 2, H / 2]; }
