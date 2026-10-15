@@ -20,29 +20,38 @@ R12 · раунд 15 · «Календарь работ» и «копаем од
    python3 -B -m engine.civic_geo build-works-fixture                                # пересобрать фикстуру из графа OSM
 
 2. ТЕСТЫ
-   python3 -m pytest -q tests/civic/R12/test_works.py        # 44: ≤ 5 м от рёбер, 3 вида конфликтов, порог 18 мес., пустой
+   python3 -m pytest -q tests/civic/R12/test_works.py        # 46: ≤ 5 м от рёбер, 3 вида конфликтов, порог 18 мес., пустой
                                                               # период, фильтры, детерминизм, 60 работ < 300 мс, API 401/400,
                                                               # совет по стадии (асфальт уже уложен / идёт / прошло)
    python3 -m pytest -q tests/civic/R12/test_fresh_snapshot.py   # 6: светофоры и переходы из свежего снимка OSM (B-103)
-   python3 -m pytest -q tests/civic/R12                      # всё R12: 98 + 1 пропуск без мира R02
+   python3 -m pytest -q tests/civic/R12                      # всё R12: 100 + 1 пропуск без мира R02
+   python3 tests/civic/R10/accuracy.py --root .              # точность карты R10 (их скрипт b4be0c66): 31/0
 
-3. СТЕНД В ОБЛАКЕ (настоящее приложение — сборка R01 с путями R12; INTEGRATION.txt §1)
-   mkdir -p /tmp/birge
+3. СТЕНД В ОБЛАКЕ (настоящее приложение — сборка R01 с путями R12; INTEGRATION.txt §1, §11)
+   Сборка R01 (B0.2 29b4ae9d уже содержит R12 1c8d171d, вкладку R17 и мир R02) + свежие пути R12 поверх:
+   git worktree add --detach /tmp/b0 origin/claude/brave-fermi-nhzetj
+   for f in $(git diff --name-only origin/claude/brave-fermi-nhzetj claude/great-newton-8k3474 -- engine/civic_geo \
+       data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor); do \
+       mkdir -p /tmp/b0/$(dirname $f); git show claude/great-newton-8k3474:$f > /tmp/b0/$f; done
+   # (по желанию) R06 с засевом мира: те же строки для ui/civic_store и web/civic/{proposals,ideas,notify} из её ветки
+   cd /tmp/b0 && mkdir -p /tmp/birge
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
    printf 'Kokterek-Nura-71-Stand\nKokterek-Nura-71-Stand\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 \
        create-editor operator --password-stdin          # пароль ≥ 12 знаков и без логина в нём
-   # сборка R01 (маршруты works-calendar уже в его ветке); ассеты R12, если их ещё нет в сборке:
-   git apply research/round-15-results/R12/patches/R01_works_calendar_assets.patch
-   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655
-   # демо-мир R02: + CIVIC_DEMO_WORLD=1 (R01 засевает мир; календарь берёт id конфликтов мира, сцена 8 = cf-w15-01 —
-   #   «2 из 5»: первым стоит более срочный cf-w15-02, асфальт уже уложен; сцена 8 — Ctrl+K «Сцена 8» или #works-calendar/cf-w15-01)
-   → http://127.0.0.1:8655/ → аватар → «Для сотрудников» (operator) → «Ещё» → «Календарь работ».
-   Браузерная проверка (по одной, COMMON):
+   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8655
+   # в консоли: «civic-world: … R06 55 … R12 39 (новых 0)» — R12 записей не хранит, работы засевает R06
+   → http://127.0.0.1:8655/ → аватар → «Для сотрудников» (operator) → «Ведомства» → «Календарь работ»
+     (или «Ещё» → «Календарь работ», Ctrl+K «Календарь работ», ссылка #works-calendar/cf-w15-01).
+   С миром календарь открывается на сцене 8 (cf-w15-01, ул. Баян Сулу — «2 из 5»: первым по срочности идёт cf-w15-02,
+   асфальт уже уложен); без мира (без CIVIC_DEMO_WORLD) — фикстура R12, сцена 8 первая (ул. Сыганак).
+   Браузерные проверки (по одной, COMMON):
    NODE_PATH=$(npm root -g) node tests/civic/R12/works/works_calendar.test.cjs --url http://127.0.0.1:8655 \
-       --out research/round-15-results/R12/screens --sizes 1366x768,1024x768,375x812 --langs ru,kk
-   В облаке нет интернета: подложка OpenFreeMap не грузится, карта рисует упрощённый фон — это нормально.
+       --out research/round-15-results/R12/screens --sizes 1366x768,1024x768,375x812 --langs ru,kk      # 118/0
+   NODE_PATH=$(npm root -g) node tests/civic/R12/qr/app_qr_acceptance.mjs http://127.0.0.1:8655 /tmp/qr     # 35/0
+   NODE_PATH=$(npm root -g) node --test tests/civic/R12/qr/qr.test.mjs                                     # 7/0 (свой стенд)
+   В облаке нет интернета: подложка OpenFreeMap не грузится, карта рисует офлайн-фон сборки — это нормально.
 
 4. РЕАЛЬНЫЕ РАБОТЫ (LOCAL-5)
    data/civic/astana/nura-real/records.csv в репозитории нет (ни в одной ветке) — привязка реальных работ NOT_RUN.
