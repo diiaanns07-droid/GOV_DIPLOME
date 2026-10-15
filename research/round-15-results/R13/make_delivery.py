@@ -33,6 +33,7 @@ def main() -> None:
     ap.add_argument("--tested-sha")
     ap.add_argument("--pytest", required=True, help="PASS/FAIL, напр. 170/0")
     ap.add_argument("--browser", default="NOT_RUN", help="PASS/всего браузерной проверки, напр. 125/125")
+    ap.add_argument("--browser-sha", help="на каком коммите шла браузерная проверка (если не на code_sha)")
     ap.add_argument("--push", default="OK")
     args = ap.parse_args()
     code = git("rev-parse", args.code_sha)
@@ -43,6 +44,7 @@ def main() -> None:
         "status": "PASS" if args.browser.split("/")[0] == args.browser.split("/")[1] else "FAIL",
         "passed": int(args.browser.split("/")[0]), "total": int(args.browser.split("/")[1]),
         "command": "tests/civic/R13/meetings/meetings_browser.cjs --full (BIRGE_URL стенда)",
+        "sha": git("rev-parse", args.browser_sha) if args.browser_sha else None,
         "env": "облако: FINAL-4 e91acb69 + патчи R13 для R01 (маршруты, ассеты, лист слева), CIVIC_DEMO=1, Chromium 1194; "
                "подложка карты — упрощённый фон (нет интернета)"}
     data = {
