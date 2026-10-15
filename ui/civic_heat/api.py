@@ -7,6 +7,9 @@
     GET /heat?bbox&days&category&district&zoom  → {generated_at, items:[{target, geometry, weight, level, count, fixed_until, …}]}
     GET /heat/meta                              → категории, легенда, районы, периоды (интерфейс ничего не копирует)
     GET /heat/target?kind&id&days               → одна цель для карточки + «Что пишут жители» (texts.groups)
+    GET /heat/replay?from&to&step=day&days&category&district&last&format
+                                                → «Хроника города» (раунд 15, replay.py): кадры по дням той же формулой,
+                                                  компактно (формы целей один раз, дальше только изменения), отметки событий
 Тексты настоящих жалоб — только сотруднику: шлюз R01 передаёт staff=True после проверки входа (principal R02).
 Без этого в texts только примеры (demo: true), а люди настоящих жалоб — числом hidden_people.
 Ошибка в параметрах → 400 {"error":"bad_request","field":…,"message":…}. Сбой расчёта → 500 без падения сервера.
@@ -16,6 +19,7 @@ from __future__ import annotations
 import logging
 import traceback
 
+from .replay import ReplayError
 from .service import HeatError, default_service
 
 PREFIX = "/api/civic/v2"
@@ -38,6 +42,10 @@ def handle_get(path: str, query: dict | None = None, service=None, staff: bool =
                                  district=_one(q, "district"), zoom=_one(q, "zoom"))
         if path == PREFIX + "/heat/meta":
             return 200, svc.meta()
+        if path == PREFIX + "/heat/replay":
+            return 200, svc.replay(from_=_one(q, "from"), to=_one(q, "to"), step=_one(q, "step"), days=_one(q, "days"),
+                                   category=_one(q, "category"), district=_one(q, "district"), last=_one(q, "last"),
+                                   fmt=_one(q, "format"))
         if path == PREFIX + "/heat/target":
             kind, tid = _one(q, "kind"), _one(q, "id")
             if not kind or not tid:
@@ -47,7 +55,7 @@ def handle_get(path: str, query: dict | None = None, service=None, staff: bool =
                 return 404, {"error": "not_found", "message": "по этой цели жалоб за период нет"}
             return 200, {"item": item, "legend": svc.config.legend(), "demo": svc.is_demo}
         return 404, {"error": "not_found", "message": "нет такого адреса"}
-    except HeatError as exc:
+    except (HeatError, ReplayError) as exc:
         return 400, {"error": "bad_request", "field": exc.field, "message": str(exc)}
     except Exception:  # сервер не должен падать из-за карты
         log.error("heat failed: %s", traceback.format_exc())

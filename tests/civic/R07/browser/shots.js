@@ -236,12 +236,19 @@ async function colorOnlyCheck(page) {
         });
         await page.waitForSelector(".r07-empty", { timeout: 6000 });
       }, async (page) => {
-        const e = await page.evaluate(() => ({ title: document.querySelector(".r07-empty__title").innerText,
-          next: !!document.querySelector("[data-days-next]"), reset: !!document.querySelector(".r07-empty [data-reset]"),
-          check: !!document.querySelector('.r07-empty svg path[d="m5 12.5 4.5 4.5L19 7"]') }));
+        // Раунд 15, поправка П1: одна маленькая иконка (≤ 48 px) + текст + ОДНА кнопка; с фильтром — «Сбросить фильтры»
+        const e = await page.evaluate(() => {
+          const ic = document.querySelector(".r07-empty .r07-state-ic");
+          const r = ic ? ic.getBoundingClientRect() : null;
+          return { title: document.querySelector(".r07-empty__title").innerText,
+            buttons: document.querySelectorAll(".r07-empty button").length, reset: !!document.querySelector(".r07-empty [data-reset]"),
+            icon: r ? Math.max(r.width, r.height) : 0, bigPicture: !!document.querySelector(".r07-empty .r07-illo, .r07-empty .bk-ill"),
+            check: !!document.querySelector('.r07-empty svg path[d="m5 12.5 4.5 4.5L19 7"]') };
+        });
         const out = [];
         if (!/7/.test(e.title)) out.push("заголовок пустого фильтра без периода: " + e.title);
-        if (!e.next || !e.reset) out.push("нет «Показать 30 дней» / «Сбросить фильтры»");
+        if (e.buttons !== 1 || !e.reset) out.push("нужна одна кнопка «Сбросить фильтры» (П1), а их " + e.buttons);
+        if (!e.icon || e.icon > 48 || e.bigPicture) out.push("значок пустого состояния не ≤ 48 px или есть большой рисунок (П1)");
         if (e.check) out.push("зелёная галочка в пустом состоянии");
         return out;
       });
