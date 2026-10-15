@@ -19,14 +19,14 @@
       title: "Прогноз на неделю: где вероятнее рост жалоб", prototype: "прототип", how: "Как считаем",
       high: "высокий риск", medium: "средний риск", low: "низкий риск", on_map: "На карте",
       empty: "Прогноза на эту неделю пока нет.", error: "Прогноз сейчас недоступен.", retry: "Повторить",
-      period: "{from} — {to}", weather: "Погода (норма прошлых лет)", loading: "Загружаем прогноз…",
+      period: "{from} — {to}", weather: "Сезон (норма прошлых лет)", loading: "Загружаем прогноз…",
       top10: "Точность первых 10", base: "«как в прошлом месяце»",
     },
     kk: {
       title: "Апталық болжам: шағым қай жерде көбеюі мүмкін", prototype: "прототип", how: "Қалай есептейміз",
       high: "жоғары тәуекел", medium: "орташа тәуекел", low: "төмен тәуекел", on_map: "Картада",
       empty: "Осы аптаға болжам әзірге жоқ.", error: "Болжам қазір қолжетімсіз.", retry: "Қайталау",
-      period: "{from} — {to}", weather: "Ауа райы (өткен жылдардың нормасы)", loading: "Болжам жүктелуде…",
+      period: "{from} — {to}", weather: "Маусым (өткен жылдардың нормасы)", loading: "Болжам жүктелуде…",
       top10: "Алғашқы 10-ның дәлдігі", base: "«өткен айдағыдай»",
     },
   };
@@ -64,6 +64,8 @@
       return box;
     }
     box.appendChild(h("p", { class: "fw__period", text: t("period", { from: day(week.period.from), to: day(week.period.to) }) + " · " + (week["note_" + l] || "") }));
+    // Общая для всех территорий сезонная причина — одной строкой над списком (не пять раз подряд).
+    if (week["season_" + l]) box.appendChild(h("p", { class: "fw__season" }, [h("span", { class: "fw__weather-label", text: t("weather") + ": " }), week["season_" + l]]));
     box.appendChild(h("ol", { class: "fw__list" }, week.items.map((item) => {
       const label = (item.target && (item.target["label_" + l] || item.target.label_ru)) || "";
       const canMap = typeof opts.openTarget === "function" && item.target && item.target.kind && item.target.id;
@@ -127,7 +129,7 @@
     style.textContent = [
       ".fw{display:grid;gap:8px;padding:16px;font-size:15px;line-height:1.45;color:var(--c-ink,#121a17)}",
       ".fw p{margin:0}.fw__hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}",
-      ".fw__title{margin:0;font-size:15px;font-weight:600}.fw__period,.fw__meta,.fw__reason,.fw__weather,.fw__empty{color:var(--c-text-2,#4b5752);font-size:13px}",
+      ".fw__title{margin:0;font-size:15px;font-weight:600}.fw__period,.fw__season,.fw__meta,.fw__reason,.fw__weather,.fw__empty{color:var(--c-text-2,#4b5752);font-size:13px}",
       ".fw__list{display:grid;gap:0;margin:0;padding:0;list-style:none}",
       ".fw__item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--c-line,rgba(18,26,23,.08))}",
       ".fw__item:first-child{border-top:0}.fw__rank{flex:none;width:24px;height:24px;border-radius:50%;background:var(--c-fill,rgba(18,26,23,.06));",

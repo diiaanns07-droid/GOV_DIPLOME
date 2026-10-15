@@ -80,3 +80,25 @@ def test_meetings_board_card_for_day_picture(tmp_path):
     assert "Ближайшая встреча" in card["lines"][1]["ru"] and "«Приду» 54" in card["lines"][1]["ru"]
     empty = make_service(str(tmp_path / "e.sqlite3"), demo=False).board_block()
     assert empty["card"]["value"] == 0 and empty["next"] is None and "пока нет" in empty["card"]["lines"][1]["ru"]
+
+
+def test_shared_seasonal_reason_is_shown_once():
+    block = week_block(today=date(2026, 10, 15))
+    weather = [i.get("weather_ru") for i in block["items"]]
+    if block["season_ru"]:  # одна сезонная причина у всех — над списком, у пунктов её нет
+        assert all(w is None for w in weather) and block["season_kk"]
+    else:                   # разные — у каждого своя, общей строки нет
+        assert block["season_kk"] is None
+
+
+def test_territory_labels_agree_between_languages():
+    from ml.civic_forecast.targets import label
+    yard = {"kind": "yard", "name_ru": None, "name_kk": "Ақ-Тау",
+            "near": {"kind": "bus_stop", "name_ru": "Бухар жырау", "name_kk": None, "distance_m": 120}}
+    assert label(yard, "ru") == "Двор «Ақ-Тау»" and label(yard, "kk") == "Аула «Ақ-Тау»"
+    unnamed = dict(yard, name_kk=None)
+    assert label(unnamed, "ru") == "Двор рядом: остановка «Бухар жырау»"
+    assert label(unnamed, "kk") == "Аула · жанында «Бухар жырау» аялдамасы"
+    for item in week_block(today=date(2026, 10, 15))["items"]:  # подписи кэша пересчитаны по тому же правилу
+        ru, kk = item["target"]["label_ru"], item["target"]["label_kk"]
+        assert ("«" in ru) == ("«" in kk)

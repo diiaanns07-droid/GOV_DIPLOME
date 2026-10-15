@@ -48,7 +48,22 @@ def _load():
     with _lock:
         if _cache is None:
             _cache = json.loads(CACHE_PATH.read_text(encoding="utf-8")) if CACHE_PATH.is_file() else {"months": {}}
+            _relabel(_cache)
         return _cache
+
+
+def _relabel(cache: dict) -> None:
+    """Подписи территорий — по текущему правилу targets.label (кэш собран раньше; модель и числа не меняются)."""
+    try:
+        from ml.civic_forecast.targets import label, load_targets
+        by_id = {t["id"]: t for t in load_targets()}
+    except Exception:
+        return
+    for block in (cache.get("months") or {}).values():
+        for tid, item in (block.get("items") or {}).items():
+            target = by_id.get(tid)
+            if target and isinstance(item.get("target"), dict):
+                item["target"]["label_ru"], item["target"]["label_kk"] = label(target, "ru"), label(target, "kk")
 
 
 def _month_block(month: str) -> tuple[dict, bool]:
@@ -239,12 +254,22 @@ def week_block(district=None, k=5, today=None, now=None) -> dict:
         if weather and main is not weather[0]:
             row["weather_ru"], row["weather_kk"] = weather[0]["ru"], weather[0]["kk"]
         items.append(row)
+    # Одна и та же сезонная причина у всех («В октябре начинается отопительный сезон…») — показываем её один раз над
+    # списком, а не пять раз подряд; у пунктов остаётся только своя, отличающаяся.
+    season = {(i.get("weather_ru"), i.get("weather_kk")) for i in items if i.get("weather_ru")}
+    shared = None
+    if len(season) == 1 and all(i.get("weather_ru") for i in items):
+        shared = season.pop()
+        for i in items:
+            i.pop("weather_ru", None)
+            i.pop("weather_kk", None)
     method = week_method(today)
     return {
         "module": "R13", "horizon": "week", "title_ru": "Прогноз на неделю: где вероятнее рост жалоб",
         "title_kk": "Апталық болжам: шағым қай жерде көбеюі мүмкін",
         "period": {"from": start.isoformat(), "to": end.isoformat()}, "month": month, "district": district or None,
         "label": "prototype", "evidence_type": "synthetic", "demo": True, "items": items,
+        "season_ru": shared[0] if shared else None, "season_kk": shared[1] if shared else None,  # общая сезонная причина
         "method": method, "method_ru": method["text_ru"], "method_kk": method["text_kk"],  # «Как считаем» для R08
         "note_ru": "Прототип: история жалоб — синтетическая, погода — реальная (Open-Meteo). Не реальная оценка риска.",
         "note_kk": "Прототип: шағымдар тарихы — синтетикалық, ауа райы — нақты (Open-Meteo). Нақты тәуекел бағасы емес.",
