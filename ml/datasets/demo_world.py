@@ -48,7 +48,7 @@ GRAPH_MANIFEST = ROOT / "engine" / "civic_scenarios" / "graphs" / "MANIFEST.json
 NURA_REAL_CSV = ROOT / "data" / "civic" / "astana" / "nura-real" / "records.csv"
 
 SEED = 15
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.0.1"
 WINDOW_DAYS = 60
 MODEL_VERSION = "demo-world-v1"
 # Опорный момент для EXPECTED.json (сборка B1 R01 — 16 окт 14:00; берём полдень того же дня).
@@ -930,14 +930,15 @@ SNOW_EPISODES = (
      "per_district": {"nura": 6}, "families": {"interval": 3, "skips_stop": 1}},
 )
 EVENTS = (
+    # started_at / ended_at — как у кризиса (CONTRACT §5.5): отметки «Хроники» R07 читают те же имена полей.
     {"id": "ev-w15-heating", "kind": "season", "title_ru": "Начало отопительного сезона",
-     "title_kk": "Жылыту маусымының басталуы", "district": None, "from": {"ago_days": 18}, "to": None},
+     "title_kk": "Жылыту маусымының басталуы", "district": None, "started_at": {"ago_days": 18}, "ended_at": None},
     {"id": "ev-w15-first-snow", "kind": "snow", "title_ru": "Первый снег", "title_kk": "Алғашқы қар",
-     "district": None, "from": {"ago_hours": 13.2 * 24}, "to": {"ago_hours": 11.6 * 24}},
+     "district": None, "started_at": {"ago_hours": 13.2 * 24}, "ended_at": {"ago_hours": 11.6 * 24}},
     {"id": "ev-w15-ice", "kind": "ice", "title_ru": "Утренний гололёд", "title_kk": "Таңғы көктайғақ",
-     "district": None, "from": {"ago_hours": 9.6 * 24}, "to": {"ago_hours": 8.3 * 24}},
+     "district": None, "started_at": {"ago_hours": 9.6 * 24}, "ended_at": {"ago_hours": 8.3 * 24}},
     {"id": BURAN["id"], "kind": "blizzard", "title_ru": "Буран в Нуре", "title_kk": "Нұрада боран",
-     "district": "nura", "from": {"ago_hours": BURAN["from_h"]}, "to": {"ago_hours": BURAN["to_h"]}},
+     "district": "nura", "started_at": {"ago_hours": BURAN["from_h"]}, "ended_at": {"ago_hours": BURAN["to_h"]}},
 )
 
 # ---------------------------------------------------------------- сцены

@@ -525,8 +525,14 @@ def check_rest(rep: Report, world: dict, geo: Geo, ids: dict) -> None:
         if q.get("meeting") and q["meeting"] not in ids.get("meetings", set()):
             rep.err(where, f"встреча {q['meeting']} не из meetings")
     for e in world.get("events", []):
+        where = f"events/{e.get('id')}"
         if e.get("district") is not None and e["district"] not in DISTRICTS:
-            rep.err(f"events/{e.get('id')}", "район события")
+            rep.err(where, "район события")
+        _check_time(rep, where + "/started_at", e.get("started_at"))
+        if e.get("ended_at") is not None:
+            _check_time(rep, where + "/ended_at", e.get("ended_at"))
+            if _order_bad(e.get("started_at"), e.get("ended_at")):
+                rep.err(where, "конец события раньше начала")
 
 
 def check_scenes(rep: Report, world: dict, ids: dict) -> None:

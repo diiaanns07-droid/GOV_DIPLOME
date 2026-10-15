@@ -1,6 +1,6 @@
 {
  "schema": "birge-demo-world-v1",
- "schema_version": "1.0",
+ "schema_version": "1.0.1",
  "seed": 15,
  "synthetic": true,
  "demo": true,
@@ -166,10 +166,10 @@
    "title_ru": "Начало отопительного сезона",
    "title_kk": "Жылыту маусымының басталуы",
    "district": null,
-   "from": {
+   "started_at": {
     "ago_days": 18
    },
-   "to": null,
+   "ended_at": null,
    "demo": true
   },
   {
@@ -178,10 +178,10 @@
    "title_ru": "Первый снег",
    "title_kk": "Алғашқы қар",
    "district": null,
-   "from": {
+   "started_at": {
     "ago_hours": 316.79999999999995
    },
-   "to": {
+   "ended_at": {
     "ago_hours": 278.4
    },
    "demo": true
@@ -192,10 +192,10 @@
    "title_ru": "Утренний гололёд",
    "title_kk": "Таңғы көктайғақ",
    "district": null,
-   "from": {
+   "started_at": {
     "ago_hours": 230.39999999999998
    },
-   "to": {
+   "ended_at": {
     "ago_hours": 199.20000000000002
    },
    "demo": true
@@ -206,10 +206,10 @@
    "title_ru": "Буран в Нуре",
    "title_kk": "Нұрада боран",
    "district": "nura",
-   "from": {
+   "started_at": {
     "ago_hours": 70.0
    },
-   "to": {
+   "ended_at": {
     "ago_hours": 3.0
    },
    "demo": true

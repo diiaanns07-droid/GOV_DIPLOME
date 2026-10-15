@@ -1,0 +1,88 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index b1292654..1c7beb2c 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -887,6 +887,8 @@ class CivicV2Gateway:
+         self.db_path = db_path if db_path is not None else getattr(store_gateway, "db_path", None)
+         # Демо-сборка (run-city.bat, CIVIC_DEMO=1): к жалобам R09 добавляется синтетический набор R07 (demo: true).
+         self.demo = (os.environ.get("CIVIC_DEMO") == "1") if demo is None else bool(demo)
++        # Раунд 15 (CONTRACT §11): CIVIC_DEMO_WORLD=1 — вместо наборов модулей один демо-мир R02 для всех.
++        self.world = self.demo and os.environ.get("CIVIC_DEMO_WORLD") == "1"
+         # modules: {имя_модуля: объект} — подмена для тестов; иначе importlib.
+         self._override = dict(modules) if modules is not None else None
+         self._resolved = {}  # route_key -> (callable | None, причина, имя модуля)
+@@ -974,7 +976,7 @@ class CivicV2Gateway:
+             heat = None
+         if heat is not None and store is not None:
+             demo_records = []
+-            if self.demo:
++            if self.demo and not self.world:  # в демо-мире карта — только жалобы R09 (числа = «Обращения»)
+                 try:
+                     from datetime import datetime, timezone
+                     demo_records = list(importlib.import_module("ui.civic_heat.demo_seed").demo_records(
+@@ -1012,7 +1014,10 @@ class CivicV2Gateway:
+             except Exception:
+                 LOGGER.exception("API v2: проверка цели жалобы по карте R12 не подключилась")
+         if store is not None and self.demo:
+-            self._seed_demo_complaints(store)
++            if self.world:
++                self._seed_world(store)
++            else:
++                self._seed_demo_complaints(store)
+         if store is not None:
+             # R04 (INTEGRATION п. 4): «Я тоже» ищет в том же хранилище R09; модели грузятся в фоне.
+             # Без R04 или до подключения /similar отвечает 503 — форма R09 работает без подсказки.
+@@ -1074,6 +1079,53 @@ class CivicV2Gateway:
+             LOGGER.info("civic-demo: R09 synthetic complaints added: %d", made)
+         return made
+ 
++    # R02 раунд 15 (research/round-15-results/R02/INTEGRATION.txt §1): при CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 все модули
++    # засеваются из ОДНОГО мира data/civic/astana/demo-world/world_v1.json — карта, «Обращения», «Картина дня», табло
++    # служб и «Мой двор» считают одни записи. Время мира относительное: мир материализуется один раз, один now на всех.
++    WORLD_SEEDS = (
++        ("R09", "ui.civic_feedback.v2", "seed_world"),
++        ("R06", "ui.civic_store", "seed_world"),
++        ("R16", "ui.civic_together", "seed_world"),
++        ("R17", "ui.civic_agencies", "seed_world"),
++        ("R13", "ui.civic_meetings", "seed_world"),
++        ("R07", "ui.civic_heat.world", "seed_world"),
++    )
++
++    def _seed_world(self, store):
++        """Засев демо-мира (идемпотентно: демо-записи возвращаются в исходный вид от нового now). Сбой модуля не мешает
++        остальным; нет мира — демо как в FINAL-4. -> {роль: отчёт}."""
++        from datetime import datetime, timezone
++        try:
++            io = importlib.import_module("ml.datasets.demo_world_io")
++            now = datetime.now(timezone.utc)
++            world = io.materialize(io.load_world(), now)   # абсолютные ISO-времена: модулям ничего не пересчитывать
++        except Exception:
++            LOGGER.exception("civic-demo-world: мир R02 не загрузился — демо как в FINAL-4")
++            self.world = False
++            return self._seed_demo_complaints(store)
++        report = {}
++        for role, module, name in self.WORLD_SEEDS:
++            try:
++                fn = getattr(self._import(module), name, None)
++            except Exception:
++                fn = None
++            if not callable(fn) and role == "R09":
++                # R09 ещё без seed_world — жалобы мира кладёт помощник R02 в то же хранилище (правила R09 seed_demo).
++                helper = importlib.import_module("ml.datasets.demo_world_seed")
++                live = getattr(store, "store", store)
++                fn = lambda _db, records, moment: helper.seed_r09(live, records, moment)  # noqa: E731
++            if not callable(fn):
++                report[role] = "нет seed_world"
++                continue
++            try:
++                result = fn(str(self.db_path), world, now)
++                report[role] = ", ".join(f"{k} {v}" for k, v in result.items()) if isinstance(result, dict) else str(result)
++            except Exception:
++                LOGGER.exception("civic-demo-world: засев %s не удался", role)
++                report[role] = "ошибка"
++        print("civic-demo-world: " + "; ".join(f"{k}: {v}" for k, v in report.items()), flush=True)
++        return report
++
+     def seed_demo(self):
+         """Демо-сборка (run-city.bat, CIVIC_DEMO=1): этапы демо-объектов и 5 демо-предложений R06 в Нуре.
+ 

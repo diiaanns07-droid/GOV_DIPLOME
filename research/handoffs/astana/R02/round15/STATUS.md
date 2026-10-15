@@ -17,29 +17,39 @@ restored_from: — (роль начата с нуля, прежней ветки
 - Как взять свою часть: SCHEMA §2 (кто какой ключ берёт) и §4 (`seed_world(db_path, records, now=None)`).
 
 ## План (по research/round-15/prompts/R02.txt)
-1. [x] Инвентаризация → research/round-15-results/R02/INVENTORY.md (карта «Нура 80», «Картина дня» 39/163,
-   «Обращения» 2 группы — три разных демо-набора)
-2. [x] SCHEMA.md + world_v1.sample.json — push 15 окт ~17:00 Астаны
-3. [~] Генератор ml/datasets/demo_world.py (seed 15, без сети) → world_v1.json — первая версия готова, калибровка чисел
-4. [ ] Проверка ml/datasets/demo_world_check.py + тесты tests/civic/R02/round15/ + EXPECTED.json (числа экранов кодом модулей)
+1. [x] Инвентаризация → research/round-15-results/R02/INVENTORY.md
+2. [x] SCHEMA.md + world_v1.sample.json — push 15 окт ~16:50 Астаны (схема 1.0.1: события started_at/ended_at)
+3. [x] Генератор ml/datasets/demo_world.py (seed 15, без сети) → world_v1.json (743 жалобы, Нура 36 %)
+4. [x] demo_world_check.py (0 ошибок), EXPECTED.json (числа кодом R07/R08/R09), 24 теста tests/civic/R02/round15
 5. [ ] DATASHEET.md
-6. [ ] Помощь соседям: INTEGRATION.txt (patch R01: при CIVIC_DEMO_WORLD=1 не подмешивать синтетику R07; образцы seed_world)
-7. [ ] LOCAL-14: import_form.py — проверить инструкции
+6. [~] Соседи: INTEGRATION.txt (patch R01 проверен на стенде: 14/14 чисел совпали), заметки R07/R09/R10/R12/R13/R16/R17
+7. [ ] LOCAL-14: проверить инструкции import_form.py
+8. [ ] DELIVERY.json, RUN.txt; кадры стенда в режиме мира (карта «Нура · N», «Обращения», «Картина дня»)
 
 ## Сделано
 - 11:25 UTC — роль занята, ветка сессии подтянута к пакету (fast-forward до e91acb69).
 - 11:30 UTC — стенд FINAL-4 поднят, числа экранов сняты, INVENTORY.md.
-- 11:50 UTC — SCHEMA.md, demo_world_io.py, генератор, world_v1.json + sample (все 719 жалоб проходят разбор R09
-  record.parse_* и цели находятся картой R12 target_geometry; повторная сборка — тот же sha256).
+- 11:50 UTC — SCHEMA.md, demo_world_io.py, генератор, world_v1.json + sample (push 0b375fc3), черновой PR
+  https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (база — ветка пакета, не сливать).
+- 11:56 UTC — проверка мира, EXPECTED.json, помощник засева R09, 24 теста (push d8af32a0).
+- 12:10 UTC — тест tests/civic/R02/test_r02_schema.py принимает таблицу R06 civic_notify_reads (миграция 10; проверено и
+  на коде R06); patch R01 для CIVIC_DEMO_WORLD=1 (research/round-15-results/R02/patches/R01_demo_world.patch) проверен
+  на стенде: числа стенда = числам мира 14/14 (stand_numbers_world.json); INTEGRATION.txt.
 
 ## Дальше
-- demo_world_check.py, EXPECTED.json (R07 heat, R08 summary, R09 inbox на опорном now), тесты, DATASHEET, INTEGRATION.
+- DATASHEET.md, RUN.txt, DELIVERY.json; кадры стенда в режиме мира (1366, ru/kk).
+- На каждом круге: find_branches.py → проверить seed_world соседей (R09, R06, R16, R17, R13, R07) и R12/R10 на мире;
+  поля по запросам — в SCHEMA и генератор (версия схемы).
 
 ## Вопросы владельцу
 - (пока нет)
 
-## Заметки для соседей
-- R09: вкладка «Ждут проверки» в мире будет большой (≈ 500 исправленных без голосов жителей за 60 дней — так и в
-  жизни). Предложение: показывать в ней только ремонты последних 14 дней (как «проверено» на карте 7 дней) — решает R09.
-- R01: в режиме CIVIC_DEMO_WORLD=1 синтетику R07 (ui.civic_heat.demo_seed) в карту не подмешивать — иначе числа
-  снова разъедутся (patch будет в INTEGRATION.txt R02).
+## Заметки для соседей (подробно — research/round-15-results/R02/INTEGRATION.txt)
+- ВСЕМ: время в мире относительное; R01 отдаёт в seed_world уже материализованный мир (ISO): materialize(load_world(), now).
+  Кто читает файл сам (R12 works_calendar.load_world, R10 consistency.world_numbers) — тоже через materialize (§6, §10).
+- R01: patch §1 готов и проверен (карта без синтетики R07 в режиме мира + засев всех модулей одним now).
+- R09: готовый seed_world — ml/datasets/demo_world_seed.seed_world (reset демо-записей, настоящие не трогает).
+  «Ждут проверки» в мире 419 — предложение: показывать ремонты последних 14 дней.
+- R08/R09/R17/R10/R11: «Просрочено» у R08 (срок исправления) и у R09 (срок ответа) — разные числа (Нура 7 и 1);
+  предложение подписей и сверки — INTEGRATION §3.
+- R06: тест R02 schema больше не падает на civic_notify_reads (C.1 вашего INTEGRATION применён в ветке R02).

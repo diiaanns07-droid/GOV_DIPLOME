@@ -1,4 +1,4 @@
-# Демо-мир Астаны · схема `birge-demo-world-v1` (R02, раунд 15)
+# Демо-мир Астаны · схема `birge-demo-world-v1`, версия 1.0.1 (R02, раунд 15)
 
 Один синтетический месяц-два Астаны, из которого **каждый модуль берёт свою часть** — тогда числа на карте, в
 «Обращениях», в «Картине дня», на табло служб и в «Моём дворе» совпадают (CONTRACT §11). Записи — строго в форматах
@@ -60,7 +60,7 @@ part = materialize(world, now)["complaints"]   # абсолютные ISO-вре
 
 ```json
 {
-  "schema": "birge-demo-world-v1", "schema_version": "1.0", "seed": 15, "synthetic": true,
+  "schema": "birge-demo-world-v1", "schema_version": "1.0.1", "seed": 15, "synthetic": true,
   "generator": "ml/datasets/demo_world.py", "inputs": {"…": "sha256 входных файлов"},
   "counts": {"complaints": 812, "…": 0},
   "districts": [...], "services": [...],
@@ -84,9 +84,10 @@ part = materialize(world, now)["complaints"]   # абсолютные ISO-вре
 | `scenes` | R01 (палитра «сцены»), R10, R14 | §3 |
 
 ### 2.1 Событие мира (`events`)
-`{"id": "ev-w15-buran", "kind": "blizzard", "title_ru": "Буран в Нуре", "title_kk": "Нұрада боран",
-"district": "nura", "from": {"ago_hours": 70}, "to": {"ago_hours": 2}, "demo": true}` — источник аннотаций хроники и
-кризиса. Жалобы, вызванные событием, помечены `"event": "ev-w15-buran"`.
+`{"id": "ev-w15-buran", "kind": "blizzard|snow|ice|season", "title_ru": "Буран в Нуре", "title_kk": "Нұрада боран",
+"district": "nura" | null, "started_at": {"ago_hours": 70}, "ended_at": {"ago_hours": 3} | null, "demo": true}` —
+источник аннотаций хроники и кризиса (имена полей времени — как у кризиса §5.5). Жалобы, вызванные событием, помечены
+`"event": "ev-w15-buran"`.
 
 ### 2.2 Двор (`yards`, CONTRACT §5.3)
 `{"id": "yard-1026285032", "osm": "osm-way-1026285032", "label_ru", "label_kk", "district", "point": [lon, lat],
@@ -188,8 +189,12 @@ support, report, from_idea, demo` (`author_device` нет — его делае�
 - `scene9` — `incident` («Буран»), `event`, `district`, ожидаемый пульс «Снег в Нуре ×N».
 
 ## 4. `seed_world` в модулях (CONTRACT §11)
-`seed_world(db_path, records, now=None) -> {"inserted", "skipped"}`; `records` — весь мир (как из `load_world()`),
-модуль берёт **только свой ключ**, времена — через `materialize(records, now)` или сам по §1.
+`seed_world(db_path, records, now=None) -> {"inserted", "skipped"}`; модуль берёт **только свой ключ**.
+**R01 передаёт уже материализованный мир**: `records = materialize(load_world(), now)` — все времена в нём ISO
+(`2026-10-15T10:01:00+05:00`, даты `2026-10-04`), один `now` на все модули. Так «терпимые» разборщики модулей (ISO-поля
+`*_at`, `starts_on`) работают без знания §1, а формы `season` и `next_weekday` уже посчитаны. Модуль, получивший сырой
+мир (тест, ручной запуск), зовёт `materialize(records, now)` сам — функция идемпотентна (ISO-строки не трогает).
+Модуль, который читает файл мира напрямую (R12 календарь работ, R10 сверка), — тоже через `materialize(load_world(), now)`.
 Советы (опыт R09 `seed_demo`, R10 B-048/B-049):
 - засев идемпотентен по `id`; **демо-запись с тем же id возвращать в исходное состояние** при каждом запуске
   (`reset`) — иначе через день «сегодня» пусто, а после репетиции «Хан Шатыр» уже исправлен; настоящие записи
@@ -205,3 +210,4 @@ R02 или в своём INTEGRATION.txt; R02 добавляет в схему �
 | Версия | Что изменилось |
 |---|---|
 | 1.0 | первая версия (15 окт) |
+| 1.0.1 | события: `from/to` → `started_at/ended_at` (как у кризиса); §4 — R01 передаёт материализованный мир (15 окт, вечер) |
