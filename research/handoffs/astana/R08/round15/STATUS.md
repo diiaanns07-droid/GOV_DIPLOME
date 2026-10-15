@@ -33,16 +33,17 @@
 - 15 окт 21:20 Астаны: **R01 решил** — R08 берётся только из этой ветки (STATUS R01, таблица ролей: «B0: 6cd8f2be
   (из первой ветки целиком)»; второй сессии R01 написал то же). Вторая ветка молчит с 12:45 UTC.
 
-## Поставка для сборки B1 — готова (код ca8326cb, DELIVERY.json)
+## Поставка для сборки B1 — готова (код b52f119a, DELIVERY.json)
 - Ситуационный центр: web/civic/board/ (тёмный, только просмотр, R11 §5.9) + GET akim/board (только сотрудник).
 - «Картина дня» 2.0: решения коротко (с адресом), «Открыть кризисный штаб» у тревоги, три карточки соседей, прогноз.
 - «Картина недели»: GET akim/week + web/civic/akim/week.html (2 листа A4, ru/kk).
 - Соседи — только чтение: R17 board_snapshot/active_incidents/crisis_link, R16 initiatives_summary + открытые карточки
   дела и двора, R13 board_block/week_block; нет соседа — «пока нет данных», в демо без демо-мира — пример.
 - R01 (c9069723) уже провёл маршруты (staff=True), CIVIC_ASSETS и configure(db_path, demo_world); в B0 взят 6cd8f2be.
-- Демо-мир R02: world_check 18/18, world_shots 78/78 (сборка R01 + соседи + R08, кадры screens/world/).
-- Для R11: I18N_R15.json (175 ключей ru/kk). Для R10: board_check 88, week_check 18, ui_check 171, pytest 300,
-  world_check 18, world_shots 78.
+- Демо-мир R02: world_check 18/18, world_shots 82/82 (сборка R01 + соседи + R08, кадры screens/world/).
+- Карта районов в блоке «Районы»: контуры OSM из файла сборки build3d/data/astana-districts.json (INTEGRATION §11).
+- Для R11: I18N_R15.json (177 ключей ru/kk). Для R10: board_check 88, week_check 18, ui_check 171, pytest 301,
+  world_check 18, world_shots 82.
 
 ## Сделано (хроника; время UTC, по Астане +5 ч)
 - 11:25 — роль занята (4c0ca39d). Продолжение: scheduled task trig_01H9m4m3GachgcWAJ6hT8KsA (каждый час в :26 UTC,
@@ -61,6 +62,8 @@
   запасные ссылки R08 тоже.
 - 16:40 — world_shots 78/78 и кадры screens/world/; по кадрам: пульс не режет число, «Двор недели» без двойного
   «Двор», «придут / участвуют / участвовали» (ca8326cb). Стенд: board 88, week 18, ui 171. DELIVERY → ca8326cb.
+- 17:10 — карта районов в блоке «Районы» Ситуационного центра: контуры OSM (файл сборки), цвет — уровень района карты
+  R07, числа = карта, 3 горячих места в их точке; без файла — полосы (b52f119a). pytest 301, board 88, world 18 + 82.
 
 ## Дальше (следующий круг)
 1. AMENDMENTS.md → find_branches: B1 R01 (16 окт 14:00 Астаны = 09:00 UTC), новые версии R16/R17/R13/R02.

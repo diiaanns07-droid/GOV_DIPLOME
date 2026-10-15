@@ -117,3 +117,10 @@ R16 fbd9e247, R17 e7ade08f) + R08; CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1; вход ope
 Для R10: «Просрочено: R08 = R09 = R17» сравнивать нельзя (разные правила, R02 INTEGRATION §3); сравнимое —
   KPI R08 overdue = EXPECTED akim.*.overdue, табло R17 overdue = «Обращения» R09 overdue (= EXPECTED inbox.*.overdue).
 
+═══ 11. КАРТА РАЙОНОВ (Ситуационный центр, блок «Районы») — 15 окт, 22:10 ═══
+Контуры — /civic/build3d/data/astana-districts.json (уже в CIVIC_ASSETS FINAL-4; OSM, ODbL, «не официальная граница»).
+R05 / R01: пожалуйста, оставьте этот файл и его формат {districts: [{id, rings: [[[lon, lat], …]]}]} в сборках B1/B2/FINAL-5.
+Нет файла или он битый — блок «Районы» остаётся полосами (как раньше), ошибок нет.
+Цвет района — level района на карте R07 (summary.districts.items[].level берётся из heat(zoom=0) — то же правило и те же
+цвета, что на карте), число — люди за 7 дней (= карта); кружки — 3 горячих места в их точке на карте R07 (hot.items[].anchor).
+Проверки: test_r08_heat_match.py::test_district_level_and_hot_anchor_equal_map; world_shots.cjs «карта районов — числа = akim/board».
