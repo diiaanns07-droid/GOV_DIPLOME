@@ -530,7 +530,7 @@ CRISIS_CATEGORY = {"blizzard": "snow_ice", "heat_outage": "utilities", "water_ou
 
 def crisis(ctx) -> Block:
     p, b = ctx.parsed, Block("crisis", "R17")
-    b.title = both("Кризисный штаб", "Дағдарыс штабы")
+    b.title = both("Кризисный штаб", "Жедел штаб")
     status, answer = ctx.call("R17", "ui.civic_agencies", "active_incidents", ctx.src.agencies_incidents,
                               {"status": "active", "district": None})
     incidents = [r for r in _incident_rows(answer) if r.get("status", "active") == "active"] if status == "ok" else []
@@ -539,10 +539,10 @@ def crisis(ctx) -> Block:
     if incidents:
         inc = incidents[0]
         b.demo = bool(inc.get("demo"))
-        title = both(str(inc.get("title_ru") or "Кризис"), str(inc.get("title_kk") or inc.get("title_ru") or "Дағдарыс"))
+        title = both(str(inc.get("title_ru") or "Кризис"), str(inc.get("title_kk") or inc.get("title_ru") or "Төтенше жағдай"))
         zone_d = (inc.get("zone") or {}).get("district")
         zone_label = inc.get("zone_label") if isinstance(inc.get("zone_label"), dict) else None
-        b.title = both(f"Кризисный штаб: {title['ru']}", f"Дағдарыс штабы: {title['kk']}")
+        b.title = both(f"Кризисный штаб: {title['ru']}", f"Жедел штаб: {title['kk']}")
         done, total, services, working = _incident_progress(inc)
         updates = [u for u in inc.get("updates") or [] if isinstance(u, dict) and u.get("public", True)]
         b.number(done, f"задач выполнено из {fmt_num(total)}", f"тапсырма орындалды ({fmt_num(total)} ішінен)",
@@ -590,18 +590,18 @@ def crisis(ctx) -> Block:
                 top = data["items"][0]["target"]
                 b.focus(top, 7, both(f"Показать на карте: {_target_label(top, 'ru')}",
                                      f"Картадан көрсету: {_target_label(top, 'kk')}"))
-        b.open("crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу",
+        b.open("crisis", "Открыть кризисный штаб", "Жедел штабты ашу",
                opener={"global": "BirgeAgencies", "fn": "openCrisis", "arg": {"incident": str(inc.get("id") or "")}})
         return b
     # Штаба нет (или R17 ещё не подключён): честно говорим и показываем пульс «Картины дня» по снегу.
     b.role = "R08"
-    b.title = both("Кризис: штаб не открыт", "Дағдарыс: штаб ашылмаған")
+    b.title = both("Кризис: штаб не открыт", "Төтенше жағдай: штаб ашылмаған")
     if status in ("not_ready", "error"):
         b.note = both("Кризисный штаб пока не подключён в этой сборке — показан пульс «Картины дня».",
-                      "Дағдарыс штабы бұл жинақта әлі қосылмаған — «Күн қорытындысының» пульсі көрсетілген.")
+                      "Жедел штаб бұл жинақта әлі қосылмаған — «Күн қорытындысының» пульсі көрсетілген.")
     else:
         b.note = both("Активного кризиса нет: штаб не открыт. Показан пульс «Картины дня».",
-                      "Белсенді дағдарыс жоқ: штаб ашылмаған. «Күн қорытындысының» пульсі көрсетілген.")
+                      "Белсенді төтенше жағдай жоқ: штаб ашылмаған. «Күн қорытындысының» пульсі көрсетілген.")
     st, summary = ctx.summary(p.district)
     if st != "ok":
         b.status = "not_ready" if status == "not_ready" else "empty"
@@ -631,7 +631,7 @@ def crisis(ctx) -> Block:
     b.focus(spike.get("target"), 7)
     if status == "ok":
         # Штаб подключён, но открыт не был: кнопка ведёт к форме нового штаба с шаблоном «Буран» (R17 crisis_link).
-        b.open("crisis", "Открыть кризисный штаб", "Дағдарыс штабын ашу",
+        b.open("crisis", "Открыть кризисный штаб", "Жедел штабты ашу",
                opener={"global": "BirgeAgencies", "fn": "openCrisis",
                        "arg": {"template": "blizzard" if category == "snow_ice" else "other", "district": p.district}})
     else:
