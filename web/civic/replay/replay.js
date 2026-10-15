@@ -103,7 +103,9 @@
     close: '<path d="M6 6l12 12M18 6 6 18"/>',
     blizzard: '<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7"/><path d="m9.5 3.5 2.5 2 2.5-2M9.5 20.5l2.5-2 2.5 2"/>',
     water_outage: '<path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11z"/>',
-    heat_outage: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.4 1.3-4 2.5-5 .3 1.6 1 2.6 2 3 0-3 .2-5.6.5-8z"/>',
+    // радиатор — тот же рисунок, что i-radiator набора R11 (раунд 15): отопительный сезон и авария на теплосети
+    season: '<rect x="4" y="5" width="4" height="14" rx="2"/><rect x="10" y="5" width="4" height="14" rx="2"/><rect x="16" y="5" width="4" height="14" rx="2"/><path d="M2 16.5h2M20 16.5h2"/>',
+    heat_outage: '<rect x="4" y="5" width="4" height="14" rx="2"/><rect x="10" y="5" width="4" height="14" rx="2"/><rect x="16" y="5" width="4" height="14" rx="2"/><path d="M2 16.5h2M20 16.5h2"/>',
     flood: '<path d="M3 15c2 0 2-1.5 4.5-1.5S9.5 15 12 15s2-1.5 4.5-1.5S18.5 15 21 15M3 19.5c2 0 2-1.5 4.5-1.5S9.5 19.5 12 19.5s2-1.5 4.5-1.5 2 1.5 4.5 1.5"/><path d="M12 3v8M8.5 7.5 12 11l3.5-3.5"/>',
     other: '<path d="M10.3 4.2 2.6 17.5a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
@@ -111,11 +113,13 @@
   };
 
   // Поправка П1: один набор иконок R11. В оболочке — значки из спрайта ui-kit (у кого он есть), без неё — те же рисунки
-  // здесь. ▶ / ❚❚ (i-play, i-pause) R11 добавил в раунде 15: спрайт внешний (<use href="…/icons.svg#i-…">), а пустой <use>
-  // не виден — поэтому берём их из спрайта, только когда символ в нём есть (checkSprite); в старом спрайте — свои.
-  const SPRITE_IDS = { close: "close", blizzard: "snowflake", water_outage: "droplet", flood: "droplet", other: "alert", heat_outage: "alert",
+  // здесь. ▶ / ❚❚ и радиатор (i-play, i-pause, i-radiator) R11 добавил в раунде 15: спрайт внешний (<use href="…#i-…">),
+  // а пустой <use> не виден — поэтому их берём из спрайта, только когда символ в нём есть (checkSprite); иначе — свои.
+  const SPRITE_IDS = { close: "close", blizzard: "snowflake", water_outage: "droplet", flood: "droplet", other: "alert",
     clock: "clock", again: "refresh", replay: "clock" };
-  const SPRITE_NEW = { play: "play", pause: "pause" };
+  const SPRITE_NEW = { play: "play", pause: "pause", season: "radiator", heat_outage: "radiator" };
+  const FILLED = { play: 1, pause: 1 };
+  const ICON_ALIAS = { snow: "blizzard", ice: "blizzard" };   // снег и гололёд — та же снежинка, что у бурана
   let spriteCheck = null;
   function checkSprite() {
     if (spriteCheck) return spriteCheck;
@@ -128,11 +132,12 @@
     }).catch(() => false);
     return spriteCheck;
   }
-  function svg(name, size) {
+  function svg(icon, size) {
+    const name = ICON_ALIAS[icon] || icon;
     const s = size || 20;
     const ui = window.BirgeUI;
     if (ui && typeof ui.icon === "function" && SPRITE_IDS[name]) {
-      return '<span class="rp-ic rp-ic--sprite' + (SPRITE_NEW[name] ? " rp-ic--fill" : "") + '" style="width:' + s + "px;height:" + s + 'px" aria-hidden="true">' +
+      return '<span class="rp-ic rp-ic--sprite' + (FILLED[name] ? " rp-ic--fill" : "") + '" style="width:' + s + "px;height:" + s + 'px" aria-hidden="true">' +
         ui.icon(SPRITE_IDS[name]) + "</span>";
     }
     return '<svg class="rp-ic" viewBox="0 0 24 24" width="' + s + '" height="' + s + '" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + (ICONS[name] || ICONS.other) + "</svg>";
@@ -378,7 +383,7 @@
         const title = eventTitle(ev);
         return '<span class="rp-mark rp-mark--' + esc(ev.kind) + (ev.kind === "season" ? " rp-mark--background" : "") + '" data-rank="' + ranked.indexOf(ev) +
           '" style="left:' + left.toFixed(2) + "%;width:" + width.toFixed(2) + '%" title="' +
-          esc(title + (districtName(ev) ? " · " + districtName(ev) : "")) + '"><span class="rp-mark__label">' + svg(ev.kind, 14) + esc(title) + "</span></span>";
+          esc(title + (districtName(ev) ? " · " + districtName(ev) : "")) + '"><span class="rp-mark__label">' + svg(ev.kind, 14) + '<span class="rp-mark__text">' + esc(title) + "</span></span></span>";
       }).join("") + "</div>";
     }
     function ticksHtml() {
@@ -459,23 +464,42 @@
       if (full === true) fitMarkLabels();
       countTo(Number(d.totals.people) || 0, Number(d.totals.fixed) || 0);
     }
-    // Событие дня для подписи у даты: самое конкретное — буран важнее фонового «отопительного сезона» (kind season),
-    // короткое важнее долгого, свежее важнее давнего
+    // Событие дня для подписи у даты и на шкале: фоновое («отопительный сезон», kind season) — последним; событие с
+    // кризисом R17 или сценой демо («Буран в Нуре», сцена 9) важнее остальных; дальше короткое важнее долгого, свежее — давнего
     function eventRank(ev) {
       const last = S.days.length ? S.days[S.days.length - 1].date : ev.start;
       const span = (Date.parse(ev.end || last) - Date.parse(ev.start)) / 86400000 || 0;
-      return [ev.kind === "season" ? 1 : 0, span, -Date.parse(ev.start)];
+      return [ev.kind === "season" ? 1 : 0, ev.incident || ev.scene ? 0 : 1, span, -Date.parse(ev.start)];
     }
-    const byRank = (a, b) => { const x = eventRank(a), y = eventRank(b); return x[0] - y[0] || x[1] - y[1] || x[2] - y[2]; };
-    // Подписи событий на шкале не налезают: важнее (data-rank меньше) — видна, менее важная, если тесно, — только полоса
+    const byRank = (a, b) => { const x = eventRank(a), y = eventRank(b); return x[0] - y[0] || x[1] - y[1] || x[2] - y[2] || x[3] - y[3]; };
+    // Подписи событий на шкале не налезают: важнее (data-rank меньше) — с названием; менее важной, если тесно, — только
+    // значок события (название — у даты, когда день дойдёт до полосы); нет места и значку — только полоса.
+    // У правого края подпись не выходит за шкалу — сдвигается влево над своей полосой.
     function fitMarkLabels() {
+      const track = bar.querySelector(".rp-track");
+      if (!track) return;
+      const edge = track.getBoundingClientRect().right;
       const marks = [...bar.querySelectorAll(".rp-mark")].sort((a, b) => Number(a.dataset.rank) - Number(b.dataset.rank));
       const placed = [];
+      const place = (label) => {
+        label.style.transform = "";
+        const r = label.getBoundingClientRect();
+        const over = Math.ceil(r.right - edge);
+        if (over <= 0) return { left: r.left, right: r.right };
+        label.style.transform = "translateX(" + -over + "px)";
+        return { left: r.left - over, right: r.right - over };
+      };
+      const free = (r) => !placed.some((q) => !(r.right + 4 < q.left || q.right + 4 < r.left));
       marks.forEach((m) => {
-        m.classList.remove("rp-mark--nolabel");
-        const r = m.querySelector(".rp-mark__label").getBoundingClientRect();
-        if (placed.some((q) => !(r.right + 4 < q.left || q.right + 4 < r.left))) m.classList.add("rp-mark--nolabel");
-        else placed.push(r);
+        const label = m.querySelector(".rp-mark__label");
+        m.classList.remove("rp-mark--nolabel", "rp-mark--icon");
+        let r = place(label);
+        if (free(r)) { placed.push(r); return; }
+        m.classList.add("rp-mark--icon");
+        r = place(label);
+        if (free(r)) { placed.push(r); return; }
+        m.classList.remove("rp-mark--icon");
+        m.classList.add("rp-mark--nolabel");
       });
     }
     function activeEvent(d) {

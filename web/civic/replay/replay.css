@@ -1,5 +1,5 @@
 /* R07 · «Хроника города» (раунд 15). Стекло на хроме (VISUAL_BRIEF п. 7), токены ui-kit R11 с запасными значениями —
-   модуль выглядит так же и без ui-kit (стенд R07). Сетка 8 pt, три размера шрифта: 30 (дата), 14 (подписи), 12–13 (мета). */
+   модуль выглядит так же и без ui-kit (стенд R07). Сетка 8 pt, три размера шрифта: 30 (дата), 14 (подписи), 13 (мета — не мельче 13 px: решение владельца 12 окт, проверка R10 B-112). */
 /* Место над картой: оболочка может сдвинуть полосу от своих панелей — --rp-left / --rp-right (карточка слева 388 + поля) */
 .rp-host { --rp-left: 0px; --rp-right: 0px; position: absolute; left: 0; right: 0; bottom: 0; z-index: 35; height: 0; pointer-events: none; }
 .rp-root { --rp-ink: var(--c-ink, #121a17); --rp-ink-2: var(--c-text-2, #4b5752); --rp-ink-3: var(--c-text-3, #7e8a85);
@@ -30,11 +30,11 @@
 
 /* Дата — главное на экране хроники (иерархия за 2 секунды): крупно, цифры одной ширины */
 .rp-date { grid-area: date; display: flex; flex-direction: column; align-items: flex-start; min-width: 150px; }
-.rp-date .rp-title { margin-bottom: 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--rp-ink-3); }
+.rp-date .rp-title { margin-bottom: 2px; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--rp-ink-3); }
 .rp-day { font-size: 30px; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .rp-wd { margin-top: 2px; font-size: 13px; color: var(--rp-ink-2); }
 .rp-event { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px; min-width: 0; max-width: 100%;
-  background: var(--c-info-soft, #e8f0fb); color: var(--glass-info, #184981); font-size: 12px; font-weight: 600; white-space: nowrap;
+  background: var(--c-info-soft, #e8f0fb); color: var(--glass-info, #184981); font-size: 13px; font-weight: 600; white-space: nowrap;
   animation: rp-pop var(--t-base, 200ms) var(--rp-ease); }
 .rp-event[hidden] { display: none; }
 .rp-event > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
@@ -44,7 +44,7 @@
 .rp-head__top { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .rp-title { white-space: nowrap; }
 .rp-tag { flex: none; display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px;
-  background: var(--c-demo-soft, #edf1f7); color: var(--glass-demo, #3b4960); font-size: 12px; font-weight: 500; }
+  background: var(--c-demo-soft, #edf1f7); color: var(--glass-demo, #3b4960); font-size: 13px; font-weight: 500; }
 .rp-nums { display: flex; gap: 16px; min-width: 0; white-space: nowrap; font-size: 14px; color: var(--rp-ink); font-variant-numeric: tabular-nums; }
 .rp-num { display: inline-flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; }
 .rp-num i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--rp-hot); }
@@ -64,7 +64,7 @@
   box-shadow: 0 0 0 2.5px var(--rp-ink), 0 2px 8px rgba(16, 24, 20, 0.25); will-change: left; pointer-events: none; }
 .rp-ticks { position: absolute; left: 0; right: 0; top: 48px; height: 16px; }
 .rp-tick { position: absolute; top: 0; width: 1px; height: 4px; background: var(--rp-line); }
-.rp-tick span { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: var(--rp-ink-3);
+.rp-tick span { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: 13px; line-height: 14px; color: var(--rp-ink-3);
   white-space: nowrap; font-style: normal; font-variant-numeric: tabular-nums; }
 .rp-tick:first-child span { left: 0; transform: none; }
 .rp-tick:last-child span { left: auto; right: 0; transform: none; font-weight: 500; color: var(--rp-ink-2); }
@@ -73,7 +73,7 @@
   border-left: 1.5px solid color-mix(in srgb, var(--c-info, #1f5fa8) 45%, transparent); transition: background var(--t-base, 200ms) var(--rp-ease); }
 .rp-mark__label { position: absolute; top: -9px; left: -1px; display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px 0 5px;
   border-radius: 999px; background: #fff; color: var(--glass-info, #184981); box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-info, #1f5fa8) 25%, transparent);
-  font-size: 12px; font-weight: 600; white-space: nowrap; }
+  font-size: 13px; font-weight: 600; white-space: nowrap; }
 .rp-mark--on { background: color-mix(in srgb, var(--c-info, #1f5fa8) 14%, transparent); }
 /* Фоновое долгое событие («Начало отопительного сезона») — тонкая полоса у верха шкалы, не заливка всей недели */
 .rp-mark--background { height: 6px; top: 0; border-left: 0; border-radius: 3px; background: color-mix(in srgb, var(--c-info, #1f5fa8) 18%, transparent); }
@@ -81,6 +81,9 @@
 .rp-mark--background.rp-mark--on { background: color-mix(in srgb, var(--c-info, #1f5fa8) 28%, transparent); }
 .rp-mark--background.rp-mark--on .rp-mark__label { background: transparent; color: var(--glass-info, #184981); }
 .rp-mark--nolabel .rp-mark__label { visibility: hidden; }
+.rp-mark--icon .rp-mark__label { padding: 0 4px; gap: 0; }
+.rp-mark--icon .rp-mark__text { display: none; }
+.rp-mark--background.rp-mark--icon .rp-mark__label { padding: 0; }
 .rp-mark--on .rp-mark__label { background: var(--c-info, #1f5fa8); color: #fff; box-shadow: none; }
 .rp-mark__label .rp-ic { width: 12px; height: 12px; }
 
