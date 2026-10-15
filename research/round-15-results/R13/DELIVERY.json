@@ -5,8 +5,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "путь R13 в FINAL-4 = поставка 6 раунда 14 (0487f2a6), восстанавливать нечего",
- "code_sha": "8a7b94686a0144042e143bf7264aa779423d67e7",
- "tested_sha": "8a7b94686a0144042e143bf7264aa779423d67e7",
+ "code_sha": "07458571350152716edc899ce372105bee6168af",
+ "tested_sha": "07458571350152716edc899ce372105bee6168af",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_forecast/targets.py",
