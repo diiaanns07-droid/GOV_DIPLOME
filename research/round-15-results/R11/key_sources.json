@@ -1272,5 +1272,9 @@
  "handoff.reason.joint": "R09 · web/civic/feedback/complaint-strings.js",
  "handoff.reason.passport": "R09 · web/civic/feedback/complaint-strings.js",
  "akim.kpi.fixed_7d": "R08 · web/civic/akim/akim.js",
- "agencies.detail.open_one": "R17 · web/civic/agencies/agencies.js"
+ "agencies.detail.open_one": "R17 · web/civic/agencies/agencies.js",
+ "ask.status.waiting": "R13 · web/civic/qa/qa.js",
+ "ask.status.answered": "R13 · web/civic/qa/qa.js",
+ "ask.answer.more": "R13 · web/civic/qa/qa.js",
+ "ask.answer.less": "R13 · web/civic/qa/qa.js"
 }

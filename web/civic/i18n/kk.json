@@ -2854,5 +2854,9 @@
  "handoff.reason.joint": "Бірлескен орындау",
  "handoff.reason.passport": "Паспортта қызмет таңдалды",
  "akim.kpi.fixed_7d": "7 күнде түзетілді",
- "agencies.detail.open_one": "Өтінішті ашу"
+ "agencies.detail.open_one": "Өтінішті ашу",
+ "ask.status.waiting": "Жауап күтуде",
+ "ask.status.answered": "Жауабы бар",
+ "ask.answer.more": "Толық оқу",
+ "ask.answer.less": "Жию"
 }

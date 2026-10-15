@@ -118,6 +118,9 @@ COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочита
   словарь — шаблоны сроков без «дейін» после даты (KK_REVIEW № 42), «түйме» (№ 41); субтитры ролика R10 вычитаны
   (`patches/R10_video_subtitles_kk.patch`, просьба их INTEGRATION §6). Решение R01 «новые разделы — свои экраны» —
   подтверждено (IA §1.3). Скрипты кадров R11 — с языком браузера ru-RU / kk-KZ (поле даты 16.10.2026).
+  Словарь 2860 (+4 ключа «Вопроса акиму» R13 из qa.js — файла не было в списке синхронизации; «Свернуть» — «Жию», № 43).
+  Размеры шрифта (просьба R10): замер `tests/civic/R11/review/r15_fonts.cjs`; «Мой двор» R16 — 5 размеров (24 px от общего h2
+  FINAL-4) → `patches/R16_font_scale.patch` (3 размера, проверено на стенде).
 
 ## Соседи (find_branches.py, 15 окт 16:30)
 R01 claude/brave-fermi-nhzetj · R02 claude/affectionate-shannon-jm6ws5 · R03 claude/modest-mccarthy-lrl98u ·

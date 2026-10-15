@@ -3359,5 +3359,9 @@
  "handoff.reason.joint": "Совместное исполнение",
  "handoff.reason.passport": "Выбор службы в паспорте",
  "akim.kpi.fixed_7d": "Исправлено за 7 дней",
- "agencies.detail.open_one": "Открыть обращение"
+ "agencies.detail.open_one": "Открыть обращение",
+ "ask.status.waiting": "Ждёт ответа",
+ "ask.status.answered": "Есть ответ",
+ "ask.answer.more": "Читать полностью",
+ "ask.answer.less": "Свернуть"
 }

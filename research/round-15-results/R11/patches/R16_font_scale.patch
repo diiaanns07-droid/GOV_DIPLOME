@@ -1,0 +1,51 @@
+--- a/web/civic/together/together.css
++++ b/web/civic/together/together.css
+@@ -28,8 +28,10 @@
+ :where(.tg) :where(h2, h3, p, dl, figure) { margin: 0; }
+ /* Без веса селектора: классы ui-kit (.bk-join, .bk-btn) задают свой шрифт и должны быть главнее. */
+ :where(.tg) button { font: inherit; }
+-/* Заголовок экрана: у шапки двора и карточки дела размер задают компоненты ui-kit (.bk-yard__title, .bk-init__title). */
+-:where(.tg-title) {
++/* Заголовок экрана: у шапки двора и карточки дела размер задают компоненты ui-kit (.bk-yard__title, .bk-init__title).
++   Тег в селекторе: без него общий h2 { font-size: 24px } из web/style.css (FINAL-4) главнее и заголовок выходит 24 px —
++   шестой размер на экране (R11, круг 12); классы ui-kit по-прежнему главнее. */
++:is(h1, h2):where(.tg-title) {
+   font-size: var(--fs-h1);
+   line-height: var(--lh-head);
+   font-weight: var(--fw-semi);
+@@ -40,7 +42,7 @@
+ .tg-lead { margin-top: var(--s-1); color: var(--c-text-2); max-width: 60ch; }
+ .tg-h3 {
+   margin: var(--s-6) 0 var(--s-3);
+-  font-size: var(--fs-lead);
++  font-size: var(--fs-body);   /* не больше 3 размеров на экране (VISUAL_BRIEF §4 п. 3): 16 — только главная кнопка телефона */
+   font-weight: var(--fw-semi);
+   line-height: var(--lh-head);
+ }
+@@ -209,7 +211,7 @@
+ }
+ .tg-yardrow__main { display: grid; gap: 2px; min-width: 0; flex: 1; }
+ .tg-yardrow__name { font-weight: var(--fw-semi); overflow-wrap: anywhere; }
+-.tg-yardrow__meta { color: var(--c-text-2); font-size: var(--fs-small); }
++.tg-yardrow__meta { color: var(--c-text-2); font-size: var(--fs-caption); }
+ .tg-yardrow__go { color: var(--c-text-3); flex: none; }
+ 
+ /* ── страница двора ── */
+@@ -248,7 +250,7 @@
+ .tg-row--static:hover { background: transparent; }
+ .tg-row__main { display: grid; gap: 2px; min-width: 0; flex: 1; }
+ .tg-row__title { font-weight: var(--fw-medium); overflow-wrap: anywhere; }
+-.tg-row__meta { color: var(--c-text-2); font-size: var(--fs-small); overflow-wrap: anywhere; }
++.tg-row__meta { color: var(--c-text-2); font-size: var(--fs-caption); overflow-wrap: anywhere; }
+ .tg-row__go { display: inline-flex; align-items: center; gap: var(--s-1); flex: none; color: var(--c-brand); font-size: var(--fs-small); font-weight: var(--fw-medium); }
+ .tg-more { margin-top: var(--s-1); }
+ .tg-level {
+@@ -442,7 +444,7 @@
+ }
+ @container tg (max-width: 600px) {
+   .tg-skel { gap: var(--s-3); }
+-  :where(.tg-title) { font-size: var(--fs-title); }
++  :is(h1, h2):where(.tg-title) { font-size: var(--fs-title); }
+   .tg-hero { padding: var(--s-4); grid-template-columns: minmax(0, 1fr); }
+   .tg .tg-ill { width: 40px; height: 40px; }
+   .tg-kinds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
