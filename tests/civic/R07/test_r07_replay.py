@@ -483,7 +483,7 @@ def test_city_30_days_under_one_second():
     for _ in range(3):                     # лучшее из трёх: замер не зависит от случайной загрузки машины
         svc = svc_for(records)
         svc.heat(days=30)                  # прогрев резолвера (как на работающем сервере)
-        svc._cache.clear()
+        svc.invalidate()                   # все кэши расчёта сброшены — замер настоящего расчёта
         t0 = time.perf_counter()
         svc.heat(days=30)                  # один расчёт /heat в тех же условиях — мера для относительного порога
         one = time.perf_counter() - t0

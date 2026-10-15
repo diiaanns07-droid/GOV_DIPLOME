@@ -7,8 +7,8 @@
 Правила — CONTRACT §6–§7 и engine.py. Подключение к серверу — research/round-15-results/R07/INTEGRATION.txt.
 """
 from .config import load_config
-from .service import HeatError, HeatService, configure, default_service, invalidate
+from .service import HeatError, HeatService, configure, default_service, invalidate, warm_up
 from .world import seed_world, world_mode
 
 __all__ = ["HeatError", "HeatService", "configure", "default_service", "invalidate", "load_config", "seed_world",
-           "world_mode"]
+           "warm_up", "world_mode"]
