@@ -533,8 +533,9 @@ def build_calendar(records: list[dict], date_from: date, date_to: date, filters:
 def conflicts_summary(district: str | None = None, months_ahead: int = DEFAULT_MONTHS_AHEAD, limit: int = 3) -> dict:
     """Короткая сводка конфликтов работ для R08 (ситуационный центр) и R17 («Штаб ведомств»).
 
-    {"conflicts": n, "high": k, "top": [{id, kind, severity, title_ru, title_kk, street_ru, street_kk, when_from,
-    when_to, works}], "period": {...}, "demo": bool, "source": "..."} — те же числа, что в «Календаре работ».
+    {"conflicts": n, "high": k, "top": [{id, kind, severity, stage, title_ru, title_kk, street_ru, street_kk, advice_ru,
+    advice_kk, when_from, when_to, works}], "period": {...}, "demo": bool, "source": "..."} — те же числа и советы, что
+    в «Календаре работ» (R03 «Спросить Birge» читает совет первого конфликта).
     Права проверяет вызывающий модуль (данные — для экранов сотрудника). Ошибка данных — {"conflicts": 0, ...}."""
     today = today_astana()
     start = add_months(_month_start(today), -DEFAULT_MONTHS_BACK)
@@ -546,8 +547,9 @@ def conflicts_summary(district: str | None = None, months_ahead: int = DEFAULT_M
         LOGGER.exception("civic_geo conflicts_summary failed")
         return {"conflicts": 0, "high": 0, "top": [], "period": {"from": start.isoformat(), "to": end.isoformat()},
                 "demo": False, "source": "error"}
-    top = [{k: c.get(k) for k in ("id", "kind", "severity", "title_ru", "title_kk", "street_ru", "street_kk",
-                                  "when_from", "when_to", "works")} for c in cal["conflicts"][:max(0, int(limit))]]
+    top = [{k: c.get(k) for k in ("id", "kind", "severity", "stage", "title_ru", "title_kk", "street_ru", "street_kk",
+                                  "advice_ru", "advice_kk", "when_from", "when_to", "works")}
+           for c in cal["conflicts"][:max(0, int(limit))]]
     return {"conflicts": cal["counts"]["conflicts"], "high": cal["counts"]["high"], "top": top,
             "period": cal["period"], "demo": cal["demo"], "source": info["source"]}
 

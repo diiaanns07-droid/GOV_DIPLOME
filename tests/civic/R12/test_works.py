@@ -534,3 +534,17 @@ def test_real_works_do_not_hide_the_demo_scene(real, monkeypatch):
     assert info["source"].endswith("fixture+real") and info["real"]["total"] == 4
     ids = {r["id"] for r in records}
     assert "w-demo-r12-01" in ids and sum(1 for i in ids if i.startswith("w-real-")) == 4
+
+
+def test_conflicts_summary_for_neighbours_has_numbers_and_advice(real, monkeypatch):
+    """R08 / R17 / R03: сводка — те же числа, что календарь, и совет первого конфликта (R03 читает advice_ru)."""
+    from engine.civic_geo import works_calendar as WC
+    monkeypatch.setenv("CIVIC_DEMO", "1")
+    monkeypatch.delenv("CIVIC_DEMO_WORLD", raising=False)
+    monkeypatch.setattr(WC, "read_r06", lambda: (None, "module_missing"))
+    got = WC.conflicts_summary()
+    assert got["conflicts"] >= 1 and got["high"] >= 1 and got["source"] == "fixture" and got["demo"] is True
+    top = got["top"][0]
+    assert top["advice_ru"] and top["advice_kk"] and top["stage"] in ("planned", "surface_done", "now")
+    assert set(top) >= {"id", "kind", "severity", "title_ru", "street_ru", "when_from", "works"}
+    assert len(got["top"]) <= 3
