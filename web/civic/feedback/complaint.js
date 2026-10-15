@@ -1516,6 +1516,17 @@
         [icon("list"), h("span", {}, t("complaint.step5.mine"))]));
       body.appendChild(h("button", { "class": "bk-btn bk-btn--block", type: "button", onclick: close },
         t("complaint.step5.to_map")));
+      // Раунд 15 (R16 «Мой двор»): тихая ссылка — что ещё происходит во дворе. Только если модуль R16 есть в сборке;
+      // жалоба на двор открывает этот двор, иначе — экран «Мой двор» (двор выбирает R16).
+      var together = window.BirgeTogether;
+      if (together && (typeof together.open === "function" || typeof together.mount === "function")) {
+        var yard = complaint.target && complaint.target.kind === "area" && /^yard-/.test(complaint.target.id || "") ? complaint.target.id : null;
+        body.appendChild(h("button", { "class": "bc-link bc-yard-link", type: "button", onclick: function () {
+          close();
+          if (typeof together.open === "function") { try { together.open("yard", yard || undefined); return; } catch (e) { /* адрес ниже */ } }
+          window.location.hash = yard ? "#yard/" + yard : "#yard";
+        } }, [icon("home"), h("span", {}, t("complaint.step5.yard"))]));
+      }
     }
 
     // ---------------------------------------------------------------- «Мои обращения»

@@ -200,7 +200,7 @@ async function variant(browser, base, width, height, lang, staff) {
   let browser = null;
   try {
     browser = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
-    const runs = [[1366, 768, "ru"], [375, 812, "kk"], [1366, 768, "kk"], [375, 812, "ru"]]
+    const runs = [[1366, 768, "ru"], [375, 812, "kk"], [1024, 768, "ru"], [1366, 768, "kk"], [375, 812, "ru"], [1024, 768, "kk"]]
       .filter(([w, , l]) => !ONLY || ONLY.includes(`${w}-${l}`));
     for (const [i, [w, h, lang]] of runs.entries()) {
       const port = await freePort();

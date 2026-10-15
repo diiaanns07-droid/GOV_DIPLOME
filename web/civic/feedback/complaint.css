@@ -51,15 +51,17 @@ body:has(.r07-card) .bc-fab { display: none; }
 body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-strong, rgba(255, 255, 255, .86));
   /* серый текст — затемнённый стеклянный: #4b5752 на 86 % над оранжевой заливкой карты даёт 4,37 : 1 (< 4,5), --glass-text-2 — 5,3 */
   --c-text-2: var(--glass-text-2, #3f4a46); }
-/* Запасной вид — как у всего стекла: непрозрачный белый (меньше прозрачности, стекло выключено, нет backdrop-filter). */
+/* Запасной вид — как у всего стекла: непрозрачный белый (меньше прозрачности, стекло выключено, нет backdrop-filter).
+   html в селекторе: правило оболочки R01 «body.civic-mode[data-birge-layout=ref] .bk-glass.bk-glass--strong» той же силы
+   и подключено позже — без html оно возвращало 86 % и при «уменьшить прозрачность» (glass_r09, 15 окт). */
 html.bk-glass-off body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
 @media (prefers-reduced-transparency: reduce) {
-  body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
+  html body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
 }
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
+  html body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: var(--glass-solid, #fff); }
 }
-@media print { body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: #fff; } }
+@media print { html body.civic-mode .bc-panel.bk-glass.bk-glass--strong { background-color: #fff; } }
 :where(.bc-panel.bk-glass) { background-color: var(--glass-solid, #fff); border-radius: var(--r-glass, 24px);
                              box-shadow: var(--shadow-2, 0 6px 20px rgba(21, 44, 38, .18)); }
 /* Шапка «Закрыть» прилипает: прокрученные карточки под ней размыты тем же стеклом, а не просвечивают текстом. */
@@ -81,6 +83,9 @@ html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
    открыт мастер или «Мои обращения», шторка «Рядом» (R09 mountNear в #birge-near оболочки R01) не видна и не нажимается;
    закрыли — она на месте, с тем же списком (без нового запроса). */
 html.bc-open .bc-near, html.bc-mine-open .bc-near { visibility: hidden; }
+/* Ноутбук: ряд чипов карты оболочки («Все · Остановки · Дворы …», #birge-chips R01) лежит под карточкой R09 слева — пока
+   открыты «Мои обращения» или мастер, он не виден (тёмный «Все» просвечивал по краю стекла: контраст 1,06, glass_r09). */
+html.bc-mine-open body.civic-mode #birge-chips, html.bc-open body.civic-mode #birge-chips { visibility: hidden; }
 .bk-glass-off .bc-panel.bk-glass .bc-head { background: var(--glass-solid, #fff); -webkit-backdrop-filter: none; backdrop-filter: none; }
 @media print { .bc-panel.bk-glass .bc-head { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; } }
 .bc-handle { display: none; }
@@ -649,3 +654,6 @@ button.bc-inbox__part:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6)
 @media (prefers-reduced-motion: reduce) { .bc-inbox__part, .bc-joint__seg > button { transition: none; } }
 /* Шторка «Рядом с вами»: «исправлено службой» — значок «галочка» набора R11 в плашке (П1: без глифов вне набора). */
 .bc-near .bk-hot__cnt .ic { width: 16px; height: 16px; stroke-width: 2.25; }
+/* Экран успеха: тихая ссылка «Мой двор» (R16) под кнопками — не вторая главная кнопка. */
+.bc-yard-link { display: inline-flex; align-items: center; gap: 8px; align-self: center; min-height: 44px; margin-top: 4px; }
+.bc-yard-link .ic { width: 18px; height: 18px; }

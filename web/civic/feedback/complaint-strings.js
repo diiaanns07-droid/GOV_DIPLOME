@@ -367,6 +367,7 @@
       "inbox.filter.service": "Служба: {service}",
       "inbox.filter.clear": "Показать все службы",
       "inbox.filter.district": "Район: {district}",
+      "complaint.step5.yard": "Что ещё во дворе — «Мой двор»",
       "inbox.filter.clear_district": "Показать все районы",
       "district.nura": "Нура", "district.esil": "Есиль", "district.almaty": "Алматы",
       "district.saryarka": "Сарыарка", "district.baikonur": "Байконур", "district.saraishyk": "Сарайшык"
@@ -727,6 +728,7 @@
       "inbox.filter.service": "Қызмет: {service}",
       "inbox.filter.clear": "Барлық қызметті көрсету",
       "inbox.filter.district": "Аудан: {district}",
+      "complaint.step5.yard": "Аулада тағы не бар — «Менің аулам»",
       "inbox.filter.clear_district": "Барлық ауданды көрсету",
       "district.nura": "Нұра", "district.esil": "Есіл", "district.almaty": "Алматы",
       "district.saryarka": "Сарыарқа", "district.baikonur": "Байқоңыр", "district.saraishyk": "Сарайшық"

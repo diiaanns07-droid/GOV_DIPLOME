@@ -65,7 +65,24 @@
     return names.slice(0, -1).join(", ") + t("joint.and") + names[names.length - 1];
   }
 
-  // Маршруты-функции R04 (POST /route, /reply-draft) отвечают голым JSON шлюза v2 (без конверта ok/data).
+  // Какие маршруты v2 подключены в сборке: GET /modules шлюза R01 (один раз на страницу). Кнопка «Черновик ответа»
+  // видна, только если маршрут R04 reply-draft готов — без него не будет ни кнопки, ни 404 в консоли.
+  var modulesPromise = null;
+  function modules() {
+    if (!modulesPromise) {
+      modulesPromise = fetch(API + "/modules", { credentials: "same-origin", headers: { "Accept": "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : null; }, function () { return null; })
+        .then(function (j) { return (j && (j.modules || (j.data && j.data.modules))) || {}; }, function () { return {}; });
+    }
+    return modulesPromise;
+  }
+  function draftReady(list) {
+    return Object.keys(list || {}).some(function (key) {
+      return /reply/.test(key) && list[key] && list[key].status === "ready";
+    });
+  }
+
+  // Маршруты-функции R04 (POST /reply-draft) отвечают голым JSON шлюза v2 (без конверта ok/data).
   function rawCall(path, body, csrf) {
     return fetch(API + path, { method: "POST", credentials: "same-origin",
       headers: { "Content-Type": "application/json", "Accept": "application/json", "X-CSRF-Token": csrf || "" },
@@ -90,7 +107,7 @@
     var fixing = !!opts.openFix;
     var lastNote = null;
     // Блок «Службы» (раунд 15): какая форма открыта, скрыта ли подсказка R04, подсказка, полученная по запросу.
-    var jointUi = { form: null, hintHidden: false, hint: null, hintAsked: false, noteFor: null, draft: "idle" };
+    var jointUi = { form: null, hintHidden: false, noteFor: null, draft: "idle" };
 
     function call(method, path, body) {
       return fetch(API + path, { method: method, credentials: "same-origin",
@@ -288,28 +305,13 @@
       });
     }
 
-    // Подсказка R04: из записи (route_hint при подаче) или один запрос POST /route по тексту жалобы.
+    // Подсказка R04 «нужны 2 службы» — из записи: сервер R09 зовёт route() R04 в процессе при подаче (route_hint) и
+    // берёт её из демо-мира R02. Отдельного запроса POST /route с экрана нет: пока маршрута нет в сборке, он давал бы
+    // 404 в консоли (приёмка R10 считает такие ошибки).
     function routeHint() {
       var j = jointInfo();
-      if (j.route_hint && j.route_hint.services) return j.route_hint;
-      if (!jointUi.hintAsked && current.text) {
-        jointUi.hintAsked = true;
-        rawCall("/route", { text: current.text, category: current.category, subtopic: current.subtopic || null,
-                            point: current.point || null }, csrf()).then(function (res) {
-          var b = res.ok && res.body;
-          var ids = b && (b.services || []).map(function (x) { return typeof x === "string" ? x : x && x.service; })
-            .filter(function (x) { return x && hasService(x); });
-          if (ids && ids.length > 1) {
-            var first = (b.services || [])[0] || {};
-            jointUi.hint = { services: ids.slice(0, 3), joint: true, why_ru: first.why_ru, why_kk: first.why_kk };
-            if (root.isConnected && current) render();
-          }
-        });
-      }
-      return jointUi.hint;
+      return j.route_hint && j.route_hint.services ? j.route_hint : null;
     }
-
-    function hasService(sid) { return services().some(function (s) { return s.id === sid; }) || !!t("service." + sid); }
 
     function hintBanner(j) {
       var hint = routeHint();
@@ -600,9 +602,10 @@
       // 3) Одно обновление всем «Я тоже» (п. 3): число людей видно до отправки.
       var area = h("textarea", { name: "text", maxlength: "320", rows: "2", required: true, placeholder: t("broadcast.placeholder") });
       var draftNote = h("p", { "class": "bc-meta bc-staff__draft-note", role: "status", hidden: true });
-      var draft = jointUi.draft === "unavailable" ? null : h("button", { "class": "bc-link bc-staff__draft", type: "button",
+      var draft = jointUi.draft === "unavailable" ? null : h("button", { "class": "bc-link bc-staff__draft", type: "button", hidden: true,
         onclick: function () { draftReply(area, draftNote).then(function () { if (jointUi.draft === "unavailable" && draft) draft.hidden = true; }); } },
         [C().icon ? C().icon("message") : null, h("span", {}, t("reply.draft"))]);
+      if (draft) modules().then(function (list) { if (draftReady(list)) draft.hidden = false; });
       var update = h("form", { "class": "bc-staff__form bc-staff__broadcast", onsubmit: function (e) { e.preventDefault(); postUpdate(update); } }, [
         field(t("broadcast.title"), area), draft, draftNote,
         h("button", { "class": "bk-btn bk-btn--block", type: "submit" }, t("broadcast.send")),
