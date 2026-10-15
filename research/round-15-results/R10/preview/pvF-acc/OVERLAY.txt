@@ -1,0 +1,12 @@
+ca8326cb..0e6e57a5: files 7, ok 7, conflicts 0
+e494026e..d9ca175c: files 15, ok 15, conflicts 0
+c3c376e7..201ba4f6: files 5, ok 5, conflicts 0
+d4e968ce..f8157a68: files 4, ok 4, conflicts 0
+74903b7a..8a7b9468: files 5, ok 5, conflicts 0
+e475fae9..db7da7de: files 7, ok 7, conflicts 0
+191f81e7..d75e3cd9: files 8, ok 8, conflicts 0
+7724787e..c6574a39: files 9, ok 9, conflicts 0
+0050c4ce..b1e7fcf6: files 5, ok 5, conflicts 0
+2daa408a..2e818928: files 4, ok 4, conflicts 0
+DONE conflicts 0
+R16 warm-up hunk from research/round-15-results/R16/R01_together_b1.patch (db7da7de) inserted by anchor (R10 preview only)

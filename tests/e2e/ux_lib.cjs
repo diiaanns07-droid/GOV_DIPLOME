@@ -59,17 +59,38 @@ function uiScreen(page) {
     // и закрытые точки. Полностью закрытое (панель под «Картиной дня») и значки на карте не считаем.
     const onMapLayer = (e) => !!(e && e.closest && e.closest(".maplibregl-marker, .b3d-labels, .maplibregl-canvas-container, .maplibregl-ctrl-attrib"));
     const clipped = [];
+    // Прозрачная зона нажатия (поля ссылки или кнопки, расширенные до 44 px): поверх соседнего текста ничего не рисует —
+    // не «закрывает», если в этой точке нет её собственного текста (R13 «Картада» под строкой времени, ложный FAIL).
+    const clearAt = (h, x, y) => {
+      const cs = getComputedStyle(h);
+      const clear = /^(transparent|rgba\(0, 0, 0, 0\))$/.test(cs.backgroundColor) && cs.backgroundImage === "none" && cs.boxShadow === "none"
+        && !parseFloat(cs.borderTopWidth) && !parseFloat(cs.borderBottomWidth) && (!cs.backdropFilter || cs.backdropFilter === "none");
+      if (!clear) return false;
+      const rg = document.createRange(); rg.selectNodeContents(h);
+      return ![...rg.getClientRects()].some((q) => x >= q.left && x <= q.right && y >= q.top && y <= q.bottom);
+    };
     for (const el of document.querySelectorAll("body *")) {
       const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
       if (own.length < 3 || onMapLayer(el)) continue;
       if (el.closest("details:not([open])") && !el.closest("summary")) continue;  // содержимое свёрнутого <details> не рисуется
       const r = el.getBoundingClientRect(), st = getComputedStyle(el);
       if (r.width < 20 || r.height < 8 || st.visibility === "hidden" || st.opacity === "0" || r.top < 0 || r.bottom > innerHeight || r.left < 0 || r.right > innerWidth) continue;
-      const y = r.top + r.height / 2, pts = [r.left + 3, r.left + r.width / 2, r.right - 3];
+      // Точки — по строкам самого текста (Range), не по коробке элемента: у ячейки в две строки середина коробки может
+      // прийтись на пустую вторую строку под плашкой («қаз» и «бүгін» в календаре R12 — ложный FAIL).
+      const lines = [];
+      for (const tn of el.childNodes) {
+        if (tn.nodeType !== 3 || !tn.textContent.trim()) continue;
+        const rg = document.createRange(); rg.selectNodeContents(tn);
+        for (const q of rg.getClientRects()) if (q.width > 2 && q.height > 2) lines.push(q);
+      }
+      const pts = (lines.length ? lines.slice(0, 3) : [r]).flatMap((q) => {
+        const y = q.top + q.height / 2;
+        return [[q.left + 2, y], [q.left + q.width / 2, y], [q.right - 2, y]];
+      });
       let seen = 0, hidden = 0, by = null;
-      for (const x of pts) {
+      for (const [x, y] of pts) {
         const h = document.elementFromPoint(x, y);
-        if (!h || h === el || el.contains(h) || h.contains(el)) seen++;
+        if (!h || h === el || el.contains(h) || h.contains(el) || clearAt(h, x, y)) seen++;
         else if (!onMapLayer(h)) { hidden++; by = by || h; }
       }
       if (seen && hidden) clipped.push(`«${own.slice(0, 28)}» под «${(by.innerText || by.getAttribute("aria-label") || by.tagName).trim().replace(/\s+/g, " ").slice(0, 28)}»`);
