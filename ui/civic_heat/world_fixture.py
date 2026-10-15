@@ -3,7 +3,7 @@
     python -m ui.civic_heat.world_fixture            # сводка
     python -m ui.civic_heat.world_fixture --write    # fixtures/world_r07_mini.json
 
-Зачем: тесты «Хроники» и стенд R07 (devserver --world) — неделя бурана в Нуре: снег копится три дня, город краснеет,
+Зачем: тесты «Хроники» и стенд R07 (devserver --world) — неделя бурана в Нуре (6–3 дня назад): снег копится три дня, город краснеет,
 службы чистят, места зеленеют и остывают. Время — относительно засева (ago_hours), как в мире R02.
 Цели — настоящие объекты OSM из fixtures/targets_demo.json (те же, что у демо-набора R07).
 
@@ -28,7 +28,7 @@ OUT_PATH = HERE / "fixtures" / "world_r07_mini.json"
 SEED = 15
 BLIZZARD = {"id": "inc-r07-blizzard-nura", "kind": "blizzard", "title_ru": "Буран", "title_kk": "Боран",
             "zone": {"kind": "district", "district": "nura", "targets": [], "geometry": None},
-            "started_ago_hours": 8 * 24 + 6, "ended_ago_hours": 5 * 24 + 4, "status": "closed",
+            "started_ago_hours": 6 * 24 + 6, "ended_ago_hours": 3 * 24 + 4, "status": "closed",
             "tasks": [], "updates": [], "result": {"text_ru": "Дороги и дворы расчищены", "text_kk": "Жолдар мен аулалар тазартылды"},
             "demo": True}
 TEXTS = {
@@ -52,7 +52,8 @@ def _point(t: dict, rnd: random.Random) -> list[float]:
 
 
 def build_world(seed: int = SEED) -> dict:
-    """Детерминированный мини-мир: ~40 дней фона + буран в Нуре (8–5 дней назад) + чистка после."""
+    """Детерминированный мини-мир: ~40 дней фона + буран в Нуре (6–3 дня назад) + чистка после: «Хроника» за 7 дней
+    показывает спокойный день, буран, чистку и «сегодня»."""
     rnd = random.Random(seed)
     targets = demo_seed.load_targets()
     ids = sorted(targets)
@@ -123,6 +124,42 @@ def build_world(seed: int = SEED) -> dict:
         "complaints": complaints, "incidents": [dict(BLIZZARD)],
         "scenes": {"scene9": {"incident": BLIZZARD["id"], "replay": {"last": 7}}},
     }
+
+
+def city_world(n_targets: int = 1000, n_complaints: int = 2500, seed: int = 7) -> dict:
+    """Большой синтетический город для замера плавности «Хроники» (1 000 целей): ячейки ~150 м по всей Астане,
+    40 дней фона, буран в Нуре (как в build_world). Только для стенда и тестов скорости — не демо."""
+    from . import geo
+
+    rnd = random.Random(seed)
+    bbox = (71.30, 51.05, 71.60, 51.25)
+    cells: dict = {}
+    while len(cells) < n_targets:
+        pt = [round(rnd.uniform(bbox[0], bbox[2]), 6), round(rnd.uniform(bbox[1], bbox[3]), 6)]
+        d = geo.district_of(pt)
+        if d:
+            cells.setdefault(geo.cell_id_for(pt), (pt, d))
+    ids = sorted(cells)
+    nura = [c for c in ids if cells[c][1] == "nura"]
+    start_h, end_h = BLIZZARD["started_ago_hours"], BLIZZARD["ended_ago_hours"]
+    complaints = []
+    for i in range(n_complaints):
+        blizzard = i % 4 == 0 and nura
+        cid = rnd.choice(nura) if blizzard else rnd.choice(ids)
+        pt, d = cells[cid]
+        ago = rnd.uniform(end_h, start_h) if blizzard else rnd.uniform(1, 40 * 24)
+        hist = [{"status": "new", "ago_hours": round(ago, 2)}]
+        status, res = "new", None
+        fix = (ago - rnd.uniform(end_h - 70, end_h - 18)) if blizzard else (rnd.uniform(40, 140) if ago > 72 and rnd.random() < 0.75 else None)
+        if fix is not None and ago - fix > 0.5:
+            hist += [{"status": "accepted", "ago_hours": round(ago - 2, 2)}, {"status": "fixed", "ago_hours": round(ago - fix, 2)}]
+            status = "fixed"
+            res = {"state": "reported", "reported_ago_hours": round(ago - fix, 2), "votes": {"yes": 0, "no": 0, "cant": 0}}
+        complaints.append({"id": f"c-city-{i:05d}", "ago_hours": round(ago, 2), "category": "snow_ice" if blizzard else rnd.choice(["roads", "yards", "transport", "lighting"]),
+                           "text": "Пример", "lang": "ru", "point": pt, "target": {"kind": "area", "id": cid}, "district": d,
+                           "status": status, "status_history": hist, "metoo_ago_hours": [], "resolution": res, "demo": True})
+    return {"version": "r07-city-1", "demo": True, "note": "Синтетика R07 для замера плавности (не мир R02).",
+            "complaints": complaints, "incidents": [dict(BLIZZARD)], "scenes": {"scene9": {"incident": BLIZZARD["id"]}}}
 
 
 def _at(now: datetime, hours) -> str:

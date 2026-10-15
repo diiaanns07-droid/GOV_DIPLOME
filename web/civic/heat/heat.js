@@ -18,7 +18,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "r07-round14-final3";
+  const VERSION = "r07-round15";
   const NBSP = " ";
   const ANIM_MS = 800;           // перетекание цвета при новой жалобе (UX_BRIEF: ~0.8 с)
   // Значки ≥ 44 px (FINAL-3): кружок 44 + плашка с числом; размеры ниже — нижние границы, настоящие меряются в DOM.
@@ -144,6 +144,9 @@
       "heat.legend.reported_fixed": "сообщили об устранении", "heat.legend.verified": "проверено жителями",
       "heat.legend.nodata": "нет свежих данных", "heat.legend.nodata_hint": "Нет жалоб и осмотров за период — это не значит, что всё хорошо",
       "heat.reopened_mark": "вернули жители",
+      // Раунд 15: «Хроника города» — панель показывает горячие места выбранного дня (web/civic/replay)
+      "heat.replay.list_note": "Хроника: так карта выглядела в этот день",
+      "heat.replay.list_empty": "В этот день жалоб на карте не было",
       "heat.reopened_note": "Проблема осталась — снова в работе · вернули жители",
       "heat.reported_wait": "Ждёт проверки жителями",
       "heat.verified_note": { one: "Подтвердил {count} житель", few: "Подтвердили {count} жителя", many: "Подтвердили {count} жителей" },
@@ -263,6 +266,8 @@
       "heat.legend.reported_fixed": "түзетілгені хабарланды", "heat.legend.verified": "тұрғындар тексерді",
       "heat.legend.nodata": "жаңа дерек жоқ", "heat.legend.nodata_hint": "Кезеңде шағым да, тексеру де болмады — бұл бәрі жақсы дегенді білдірмейді",
       "heat.reopened_mark": "тұрғындар қайтарды",
+      "heat.replay.list_note": "Шежіре: карта осы күні осындай болды",
+      "heat.replay.list_empty": "Бұл күні картада шағым болған жоқ",
       "heat.reopened_note": "Мәселе қалды — қайта жұмыста · тұрғындар қайтарды",
       "heat.reported_wait": "Тұрғындардың тексеруін күтуде",
       "heat.verified_note": { other: "{count} тұрғын растады" },
@@ -323,24 +328,16 @@
   // На значке на карте — иконка категории; у светофора, перехода и перекрёстка — своя (волна 1, п. 12)
   const BADGE_SUBTYPE_ICON = { traffic_signal: "traffic", crossing: "zebra", intersection: "crossroads" };
 
-  // Линейные иллюстрации пустого состояния и ошибки (дизайн-марафон, чек-лист №8 и №12): та же линия 1.9, что у иконок.
-  const ILLO = {
-    // сложенная карта и лупа: «здесь пока ничего не нашлось»
-    empty: '<path d="M10 22 34 14l24 8 24-8v40l-24 8-24-8-24 8z"/><path d="M34 14v40M58 22v40"/>' +
-      '<circle cx="64" cy="44" r="12" fill="var(--r07-illo-bg, #fff)"/><path d="m72.5 52.5 8 8"/>',
-    // облако без связи
-    error: '<path d="M28 60h34a14 14 0 0 0 1-28 20 20 0 0 0-38-2 14 14 0 0 0 3 30z"/><path d="m22 14 52 52"/>',
-  };
-  // В оболочке — линейные иллюстрации ui-kit R11 (одна семья рисунков во всех разделах: R11 INTEGRATION §10.1, DESIGN_BOOK);
-  // без ui-kit (страница R07 сама по себе) — свои рисунки выше.
-  const UI_ILL = { empty: "map", empty_filtered: "search", error: "offline", not_ready: "search" };
-  const uiKit = () => (window.BirgeUI && typeof window.BirgeUI.illustration === "function" ? window.BirgeUI : null);
+  // Пустое состояние и ошибка — поправка П1 «Без ИИ-слопа» (15 окт): одна маленькая монохромная иконка набора R11
+  // (≤ 48 px) + короткий текст + одна кнопка. Больших рисунков нет. В оболочке — значок из спрайта ui-kit, без неё — тот же
+  // рисунок из ICONS (те же линии 1,9).
+  const STATE_ICON = { empty: "search", empty_filtered: "search", error: "wifi_off", not_ready: "alert" };
+  const uiKit = () => (window.BirgeUI && typeof window.BirgeUI.icon === "function" ? window.BirgeUI : null);
   function illo(name) {
+    const id = STATE_ICON[name] || "alert";
     const ui = uiKit();
-    if (ui && UI_ILL[name]) return ui.illustration(UI_ILL[name]);
-    if (name === "not_ready") return svgIcon("alert", 40);
-    const own = ILLO[name === "empty_filtered" ? "empty" : name];
-    return '<svg class="r07-illo" viewBox="0 0 96 80" width="96" height="80" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + own + "</svg>";
+    const inner = ui ? ui.icon(id.replace("_", "-")) : svgIcon(id, 32);
+    return '<span class="r07-state-ic" aria-hidden="true">' + inner + "</span>";
   }
   // Статус-иконки (README эталона, правило 3 «Linear»; рисует R11 в ui-kit — если есть BirgeUI.statusIcon, берём её):
   // пустой кружок — новое, наполовину заполненный — в работе, кружок с галочкой — служба сообщила об устранении,
@@ -399,6 +396,12 @@
     const x = hexToRgb(a), y = hexToRgb(b);
     const c = x.map((v, i) => Math.round(v + (y[i] - v) * t));
     return "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
+  }
+  // Цвет с прозрачностью (хроника: новая цель проявляется из прозрачного, ушедшая — гаснет)
+  function mixA(a, b, t, alpha) {
+    const x = hexToRgb(a), y = hexToRgb(b);
+    const c = x.map((v, i) => Math.round(v + (y[i] - v) * t));
+    return "rgba(" + c.join(",") + "," + Math.max(0, Math.min(1, alpha)).toFixed(3) + ")";
   }
   function keyOf(target) { return target.kind + ":" + target.id; }
   // Цели, на которые можно повесить QR-табличку (R12: тот же вид id, что принимает /?report=): объект, участок, двор.
@@ -476,6 +479,7 @@
   }
 
   // ---------- Модуль ----------
+  let current = null;
   function mount(options) {
     const opts = options || {};
     const root = opts.root;
@@ -509,11 +513,18 @@
       top: [],                // 10 самых горячих мест (и в режиме районов) — список «Горячие места» и подгонка карты
       topItems: new Map(),    // ключ → место из top (в режиме районов его нет в S.data.items)
       places: [],             // все места (не районы) последнего ответа — для nearby() шторки «Рядом с вами»
+      clusterSize: {},        // длина числа на кружке-кластере → [ширина, высота] (замер один раз на длину)
+      badgeSize: {},          // вид значка (язык, состояние, длина числа, у района — название) → {w, h, mw, mh}
       anim: null,
       reqSeq: 0,
       destroyed: false,
     };
     const userMoved = { value: false };
+    // «Хроника города» (раунд 15): on — карта показывает прошлый день; live — «сегодня», отложенное на время хроники;
+    // frame — текущий день хроники; fading — ушедшие за день цели (ещё один шаг гаснут); shown — что сейчас на карте
+    // (цвет, прозрачность, вес) — чтобы следующий день перетекал с того же места, даже если прошлый не доиграл.
+    const R = { on: false, live: null, frame: null, missed: false, fading: [], shown: new Map(), tween: null, counts: null,
+      cost: { ms: 0, n: 0, draws: 0, drawMs: 0 } };   // cost — сколько мс кадра уходит на код хроники (замер для DELIVERY)
 
     function t(key, params) {
       const p = params || {};
@@ -616,6 +627,7 @@
     function modeFor(z) { return z < ((S.meta && S.meta.district_zoom_max) || DISTRICT_ZOOM) ? "districts" : "targets"; }
 
     async function load(reason) {
+      if (R.on) { R.missed = true; return; }   // хроника: «сегодня» догрузим после её закрытия (replay.end)
       const seq = ++S.reqSeq;
       if (!S.data) { S.status = "loading"; render(); }
       try {
@@ -829,6 +841,8 @@
       map.addSource(SRC, { type: "geojson", data: { type: "FeatureCollection", features: [] }, promoteId: "key" });
       map.addSource(SRC_PTS, { type: "geojson", data: { type: "FeatureCollection", features: [] }, promoteId: "key" });
       const color = ["coalesce", ["feature-state", "color"], ["get", "color"]];
+      // Вес цели: хроника (раунд 15) плавно меняет его через feature-state — ореол и толщина участка растут и опадают.
+      const W = ["coalesce", ["feature-state", "w"], ["get", "w"]];
       const before = beforeLayerId();
       const add = (layer) => map.addLayer(layer, before);
       // Районы (мелкий масштаб)
@@ -859,12 +873,12 @@
       // участок улицы — тёмная подложка под цветной линией
       add({ id: "r07-sel-line", type: "line", source: SRC, filter: ["==", ["get", "key"], ""],
         layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": "#152c26", "line-width": ["interpolate", ["linear"], ["zoom"], 11, ["+", 7, ["*", ["get", "w"], 0.25]], 17, ["+", 14, ["*", ["get", "w"], 1.1]]] } });
+        paint: { "line-color": "#152c26", "line-width": ["interpolate", ["linear"], ["zoom"], 11, ["+", 7, ["*", W, 0.25]], 17, ["+", 14, ["*", W, 1.1]]] } });
       // Участки улиц: белая подложка + цветная линия, толщина растёт с весом. Форма — из OSM как есть.
       add({ id: "r07-seg-casing", type: "line", source: SRC, filter: ["==", ["get", "kind"], "segment"],
         layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": "#ffffff", "line-width": ["interpolate", ["linear"], ["zoom"], 11, ["+", 4, ["*", ["get", "w"], 0.25 * soft]], 17, ["+", 9, ["*", ["get", "w"], 1.1 * soft]]] } });
-      const segWidth = ["interpolate", ["linear"], ["zoom"], 11, ["+", 2, ["*", ["get", "w"], 0.2 * soft]], 17, ["+", 5, ["*", ["get", "w"], 0.9 * soft]]];
+        paint: { "line-color": "#ffffff", "line-width": ["interpolate", ["linear"], ["zoom"], 11, ["+", 4, ["*", W, 0.25 * soft]], 17, ["+", 9, ["*", W, 1.1 * soft]]] } });
+      const segWidth = ["interpolate", ["linear"], ["zoom"], 11, ["+", 2, ["*", W, 0.2 * soft]], 17, ["+", 5, ["*", W, 0.9 * soft]]];
       add({ id: "r07-seg", type: "line", source: SRC, filter: ["all", ["==", ["get", "kind"], "segment"], ["!", ["boolean", ["get", "dashed"], false]]],
         layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": color, "line-width": segWidth } });
@@ -874,7 +888,7 @@
       // Объекты: ореол растёт с весом. Цвет никогда не один (UX_BRIEF, правило 5; UX_REVIEW R11 день 3, №2):
       // на 12–15 объекты уровней 1–2 не рисуются вовсе, а уровни 3–4 и «исправлено» — ореол + значок с числом;
       // с 15-го масштаба — все объекты: точка, ореол и значок.
-      const haloRadius = ["interpolate", ["linear"], ["zoom"], 12, ["+", 8, ["*", ["get", "w"], 1.2 * soft]], 17, ["+", 20, ["*", ["get", "w"], 4 * soft]]];
+      const haloRadius = ["interpolate", ["linear"], ["zoom"], 12, ["+", 8, ["*", W, 1.2 * soft]], 17, ["+", 20, ["*", W, 4 * soft]]];
       // Ореол — мягкий диск с тонким краем, а не размытое пятно (на 12–15 под кластером он читался как грязь)
       const haloPaint = { "circle-color": color, "circle-opacity": 0.2 * soft, "circle-blur": 0.18, "circle-radius": haloRadius,
         "circle-stroke-color": color, "circle-stroke-width": 1, "circle-stroke-opacity": 0.35 * soft };
@@ -911,6 +925,7 @@
 
     function onFeatureClick(e) {
       if (isPicking()) return;   // щелчок — для мастера жалобы, карточка цели под ним не открывается
+      if (R.on) return;          // хроника: карта показывает прошлый день, карточки «сегодня» не открываются
       const f = e.features && e.features[0];
       if (!f) return;
       const key = f.properties.key;
@@ -925,7 +940,8 @@
 
     function featureCollections() {
       const feats = [], pts = [];
-      (S.data ? S.data.items : []).forEach((it) => {
+      // Хроника: ушедшие за день цели ещё один шаг гаснут на карте (R.fading), значков у них уже нет.
+      (S.data ? S.data.items : []).concat(R.on ? R.fading : []).forEach((it) => {
         const key = keyOf(it.target);
         const w = Math.min(Number(it.weight) || 0, 12);
         const props = { key, kind: it.target.kind, level: it.level === "fixed" ? 5 : it.level, color: it.color || "#999999",
@@ -980,6 +996,195 @@
       S.anim = requestAnimationFrame(step);
     }
 
+    // ----- «Хроника города» (раунд 15, web/civic/replay): карта показывает прошлый день -----
+    // Хроника рисует теми же слоями и значками, что и «сегодня»: город «оживает», а не подменяется другой картой.
+    //  replay.begin()            — запомнить «сегодня»; пока идёт хроника, живые обновления (новая жалоба, масштаб,
+    //                              фильтр) не грузят /heat, а копятся; карточка закрыта, панель — горячие места дня;
+    //  replay.frame(frame, {ms}) — нарисовать день {date, items, districts}: цвет, ореол и число перетекают за ms,
+    //                              новые цели проявляются, ушедшие гаснут (ms = 0 и «меньше движения» — сразу);
+    //  replay.end({ms})          — вернуть «сегодня» тем же перетеканием (последний кадр хроники = «сегодня»,
+    //                              поэтому без мигания) и догрузить, что пришло за время хроники.
+    function replayData(frame) {
+      const mode = modeFor(zoomNow());
+      return { mode, items: (mode === "districts" ? frame.districts : frame.items) || [], demo: frame.demo, replay: frame.date || null };
+    }
+    const wOf = (it) => (it.state === "fixed" ? 1 : Math.min(Number(it.weight) || 0, 12));
+    function replayShow(data, ms) {
+      const prev = new Map((S.data ? S.data.items : []).map((it) => [keyOf(it.target), it]));
+      const next = new Map(data.items.map((it) => [keyOf(it.target), it]));
+      const dur = moveMs(ms || 0);
+      // Ушедшие за день цели гаснут (их значки — в drawBadges); прошлые угасшие уходят из источника карты насовсем.
+      const fading = [];
+      for (const [key, it] of prev) if (!next.has(key) && dur && R.on) fading.push(it);
+      const dropped = R.fading.filter((it) => !next.has(keyOf(it.target)) && !fading.includes(it));
+      R.fading = fading;
+      if (map && layersReady) dropped.forEach((it) => clearState(keyOf(it.target), it));
+      S.prevColors = new Map([...prev].map(([k, it]) => [k, it.color]));
+      S.data = data;
+      S.mode = data.mode;
+      if (map) map.getContainer().style.setProperty("--r07-replay-ms", Math.max(dur, 1) + "ms");
+      const counts = [];
+      for (const [key, it] of next) {
+        const before = prev.get(key);
+        if (before && before.count !== it.count && dur) counts.push({ key, from: Number(before.count) || 0, to: Number(it.count) || 0 });
+      }
+      const d0 = performance.now();
+      tweenFeatures(prev, fading, dur);   // начальные feature-state — до setData: новый день не мелькает «готовым»
+      draw(false);
+      tweenCounts(counts, dur);
+      render();
+      R.cost.draws += 1;
+      R.cost.drawMs += performance.now() - d0;   // смена дня целиком: данные карты, значки, раскладка, панель
+    }
+    function stateSources(it) { return it.target.kind === "object" ? [SRC_PTS, SRC] : [SRC]; }
+    function clearState(key, it) {
+      R.shown.delete(key);
+      stateSources(it).forEach((source) => { try { map.removeFeatureState({ source, id: key }); } catch (e) { /* слой пересоздан */ } });
+    }
+    function tweenFeatures(prev, fading, dur) {
+      if (!map || !layersReady) { ensureLayers(); if (!layersReady) return; }
+      if (R.tween) cancelAnimationFrame(R.tween);
+      R.tween = null;
+      const list = [];
+      const startOf = (key, it) => R.shown.get(key) || (prev.get(key) ? { c: prev.get(key).color || "#999999", a: 1, w: wOf(prev.get(key)) } : { c: it.color || "#999999", a: 0, w: 0 });
+      // Перетекают только цели в кадре (с запасом): остальные сразу встают в новый день — каждый кадр перетекания карта
+      // пересчитывает краски всех изменившихся целей, а при 1 000 целях на экране обычно лишь часть.
+      let view = null;
+      try {
+        const b = map.getBounds();
+        const dx = (b.getEast() - b.getWest()) * 0.15, dy = (b.getNorth() - b.getSouth()) * 0.15;
+        view = [b.getWest() - dx, b.getSouth() - dy, b.getEast() + dx, b.getNorth() + dy];
+      } catch (e) { view = null; }
+      const inView = (it) => {
+        if (!view || it.target.kind === "district" || !it.anchor) return true;
+        const [x, y] = it.anchor;
+        return x >= view[0] && x <= view[2] && y >= view[1] && y <= view[3];
+      };
+      S.data.items.forEach((it) => {
+        const key = keyOf(it.target);
+        const to = { c: it.color || "#999999", a: 1, w: wOf(it) };
+        const from = startOf(key, it);
+        if (!dur || !inView(it) || (from.c === to.c && from.a === to.a && Math.abs(from.w - to.w) < 0.01)) {
+          if (R.shown.has(key) || from.a !== 1) clearState(key, it);
+          return;
+        }
+        list.push({ key, it, from, to });
+      });
+      fading.forEach((it) => {
+        const key = keyOf(it.target);
+        if (inView(it)) list.push({ key, it, from: startOf(key, it), to: { c: it.color || "#999999", a: 0, w: 0 }, out: true });
+        else R.fading = R.fading.filter((x) => x !== it);   // вне кадра — уходит сразу
+      });
+      if (!list.length) return;
+      const apply = (c, e) => {
+        const now = { c: mix(c.from.c, c.to.c, e), a: c.from.a + (c.to.a - c.from.a) * e, w: c.from.w + (c.to.w - c.from.w) * e };
+        R.shown.set(c.key, now);
+        const st = { color: mixA(c.from.c, c.to.c, e, now.a), w: now.w };
+        stateSources(c.it).forEach((source) => { try { map.setFeatureState({ source, id: c.key }, st); } catch (err) { /* нет слоя */ } });
+      };
+      list.forEach((c) => apply(c, 0));
+      const started = performance.now();
+      const step = (t) => {
+        const c0 = performance.now();
+        const k = Math.min(1, (t - started) / dur);
+        const e = 1 - Math.pow(1 - k, 3);   // ease-out, как перекраска карты (VISUAL_BRIEF п. 5)
+        list.forEach((c) => apply(c, e));
+        R.cost.ms += performance.now() - c0;
+        R.cost.n += 1;
+        if (k < 1) { R.tween = requestAnimationFrame(step); return; }
+        R.tween = null;
+        list.forEach((c) => { if (!c.out) clearState(c.key, c.it); });   // дошли — значения из данных, состояние не нужно
+      };
+      R.tween = requestAnimationFrame(step);
+    }
+    // Число на значке растёт и падает вместе с цветом (3 → 8 за шаг), а не прыгает
+    function tweenCounts(list, dur) {
+      if (R.counts) cancelAnimationFrame(R.counts);
+      R.counts = null;
+      // Прерванное перетекание (перемотка ← →) сразу дописывает свои итоговые числа: иначе значок, чьё число назавтра
+      // не меняется (его не перерисовывают), так и остался бы с промежуточным
+      (R.countList || []).forEach((c) => { const html = badgeCountHtml(c.item, c.to); if (c.el.r07Html !== html) { c.el.innerHTML = html; c.el.r07Html = html; } });
+      R.countList = null;
+      if (!list.length || !dur) return;
+      const els = list.map((c) => {
+        const m = S.markers.get(c.key);
+        const el = m && m.el.querySelector(".r07-badge__count");
+        return el ? Object.assign(c, { el, item: m.item }) : null;
+      }).filter(Boolean);
+      const started = performance.now();
+      const step = (t) => {
+        const c0 = performance.now();
+        const k = Math.min(1, (t - started) / dur);
+        const e = 1 - Math.pow(1 - k, 3);
+        R.cost.ms -= c0;   // время чисел — в ту же копилку, что перетекание цвета
+        els.forEach((c) => {
+          const html = badgeCountHtml(c.item, Math.round(c.from + (c.to - c.from) * e));
+          if (c.el.r07Html !== html) { c.el.innerHTML = html; c.el.r07Html = html; }
+        });
+        R.cost.ms += performance.now();
+        R.counts = k < 1 ? requestAnimationFrame(step) : null;
+        if (k >= 1) R.countList = null;
+      };
+      els.forEach((c) => { const html = badgeCountHtml(c.item, c.from); c.el.innerHTML = html; c.el.r07Html = html; });
+      R.countList = els;
+      R.counts = requestAnimationFrame(step);
+    }
+    function replayBegin() {
+      if (R.on) return false;
+      R.on = true;
+      R.live = S.data;
+      R.missed = false;
+      R.fading = [];
+      R.cost = { ms: 0, n: 0, draws: 0, drawMs: 0 };
+      if (S.selected) { S.selected = null; updateSelectionLayer(); }
+      hideTip();
+      root.classList.add("r07-root--replay");
+      if (map) map.getContainer().classList.add("r07-replaying");
+      render();
+      return true;
+    }
+    function replayFrame(frame, o) {
+      if (!R.on || !frame) return;
+      R.frame = frame;
+      replayShow(replayData(frame), o && o.ms);
+    }
+    function replayEnd(o) {
+      if (!R.on) return false;
+      const live = R.live;
+      const ms = o && o.ms != null ? o.ms : ANIM_MS;
+      const sameMode = live && live.mode === modeFor(zoomNow());
+      // «Сегодня» — тем же перетеканием, пока R.on (ушедшие за хронику места гаснут), и только потом обычный режим.
+      if (sameMode) replayShow(live, ms);
+      R.on = false;
+      R.live = null;
+      R.frame = null;
+      root.classList.remove("r07-root--replay");
+      if (map) map.getContainer().classList.remove("r07-replaying");
+      render();
+      if (R.missed || !sameMode) void load("event");
+      return true;
+    }
+    // Панель во время хроники: горячие места этого дня (те же строки, что «Горячие места»); нажатие — к месту на карте
+    function replayListHtml() {
+      const day = R.frame && R.frame.date ? fmtDate(R.frame.date + "T12:00:00+05:00", S.lang) : "";
+      const items = (R.frame && R.frame.items || []).filter((it) => it.state === "active" && it.count > 0)
+        .slice().sort((a, b) => (b.weight || 0) - (a.weight || 0) || (b.count || 0) - (a.count || 0)).slice(0, TOP_N);
+      const rows = items.map((it) => '<li><button type="button" class="r07-item" data-rkey="' + esc(keyOf(it.target)) + '">' +
+        '<span class="r07-mini" data-level="' + esc(it.level) + '">' + fmtNum(it.count) + "</span>" +
+        '<span class="r07-item__text"><span class="r07-item__title">' + esc(label(it.target)) + '</span><span class="r07-item__meta">' +
+        esc(distName(it.district) || topicName(it)) + "</span></span></button></li>").join("");
+      return '<section class="r07-hot r07-hot--replay" aria-labelledby="r07-hot-h"><header class="r07-lhd"><h2 class="r07-h" id="r07-hot-h">' +
+        esc(t("heat.hot_title")) + '</h2><span class="r07-muted r07-lhd__days">' + esc(keep(day)) + "</span></header>" +
+        (rows ? '<ol class="r07-list">' + rows + "</ol>" : '<p class="r07-muted r07-replay-empty">' + esc(t("heat.replay.list_empty")) + "</p>") +
+        '<p class="r07-muted r07-replay-note">' + esc(t("heat.replay.list_note")) + "</p></section>";
+    }
+    function bindReplayList() {
+      panel.querySelectorAll("[data-rkey]").forEach((b) => b.addEventListener("click", () => {
+        const it = (R.frame && R.frame.items || []).find((x) => keyOf(x.target) === b.dataset.rkey);
+        if (it && it.anchor && map) map.easeTo({ center: it.anchor, zoom: Math.max(map.getZoom(), 15), duration: moveMs(600) });
+      }));
+    }
+
     function updateSelectionLayer() {
       applyFocus();
       if (!map || !layersReady) return;
@@ -993,6 +1198,7 @@
       if (!map || !window.maplibregl) return;
       const items = S.data ? S.data.items : [];
       const keep = new Set();
+      const measure = [];   // значки, у которых мог смениться размер, — меряются пачкой после всех записей
       items.forEach((it) => {
         if (!it.anchor || (it.target.kind === "district" && !it.count)) return;
         const key = keyOf(it.target);
@@ -1017,19 +1223,47 @@
         if (!m.anchor || m.anchor[0] !== it.anchor[0] || m.anchor[1] !== it.anchor[1]) { m.marker.setLngLat(it.anchor); m.spot = it.anchor; }
         m.anchor = it.anchor;
         m.item = it;
-        fillBadge(m.el, it);
+        // Значок, у которого не изменилось видимое (число, уровень, цвет, состояние, подпись, язык, выбор), не трогаем:
+        // «Хроника» меняет день каждые 0,5–1,5 с, а меняется за день обычно меньшая часть мест.
+        const sig = [it.count, it.level, it.color, it.state, it.fixed_kind, it.reopened ? 1 : 0, S.lang, S.selected === key ? 1 : 0,
+          it.target.label_ru, it.target.subtype, Object.keys(it.by_category || {})[0]].join("|");
+        if (m.sig !== sig) {
+          // Хроника: скрытый значок (в кластере, вне места) дорисуется, когда раскладка его покажет (declutter)
+          if (R.on && m.el.hidden && m.sig) m.dirty = sig;
+          else { fillBadge(m.el, it); m.sig = sig; m.dirty = null; }
+        }
         m.el.classList.toggle("r07-badge--pick", !!S.picking);
+        m.el.classList.remove("r07-badge--out");
         // Настоящий размер значка (у района с названием ~130 px, а не 64) — для честной проверки наложений.
-        m.el.hidden = false;
-        m.el.classList.remove("r07-badge--mini");
-        if (m.el.offsetWidth) { m.w = m.el.offsetWidth; m.h = m.el.offsetHeight; }
-        // И размер маленькой плашки: с двузначным числом она ~47 px, а не 34 — иначе плашки налезали на соседей.
-        m.el.classList.add("r07-badge--mini");
-        if (m.el.offsetWidth) { m.mw = m.el.offsetWidth; m.mh = m.el.offsetHeight; }
-        m.el.classList.remove("r07-badge--mini");
+        // Размер зависит только от вида значка (язык, состояние, длина числа, у района — название): меряем один раз на вид.
+        const sizeKey = S.lang + "|" + (it.state === "fixed" ? "f" : "") + (it.reopened ? "r" : "") + "|" + String(fmtNum(it.count)).length +
+          (it.target.kind === "district" ? "|" + label(it.target) : "");
+        const known = S.badgeSize[sizeKey];
+        if (known) { if (m.sizeKey !== sizeKey) { Object.assign(m, known); m.sizeKey = sizeKey; } }
+        else if (m.dirty) { m.sizeKey = null; }   // размер узнаем, когда значок дорисуется
+        else measure.push([m, sizeKey]);
       });
+      // Замеры пачкой: сначала все записи, потом чтения. Пара «запись — замер» у каждого значка заставляла браузер
+      // пересчитывать раскладку страницы ~2 000 раз — при 1 000 целей смена дня «Хроники» стоила ~0,3 с.
+      if (measure.length) {
+        measure.forEach(([m]) => { m.el.hidden = false; m.el.classList.remove("r07-badge--mini"); });
+        measure.forEach(([m]) => { if (m.el.offsetWidth) { m.w = m.el.offsetWidth; m.h = m.el.offsetHeight; } });
+        // И размер маленькой плашки: с двузначным числом она ~47 px, а не 34 — иначе плашки налезали на соседей.
+        measure.forEach(([m]) => m.el.classList.add("r07-badge--mini"));
+        measure.forEach(([m, k]) => {
+          if (m.el.offsetWidth) { m.mw = m.el.offsetWidth; m.mh = m.el.offsetHeight; }
+          if (m.w) { m.sizeKey = k; S.badgeSize[k] = { w: m.w, h: m.h, mw: m.mw, mh: m.mh }; }
+        });
+        measure.forEach(([m]) => m.el.classList.remove("r07-badge--mini"));
+      }
       for (const [key, m] of S.markers) {
-        if (!keep.has(key)) { m.marker.remove(); S.markers.delete(key); }
+        if (keep.has(key)) continue;
+        S.markers.delete(key);
+        if (R.on && !m.el.hidden && !moveMs(1)) { m.marker.remove(); continue; }
+        if (R.on && !m.el.hidden) {   // хроника: место ушло с карты в этот день — значок мягко гаснет, а не исчезает
+          m.el.classList.add("r07-badge--out");
+          setTimeout(() => m.marker.remove(), 260);
+        } else m.marker.remove();
       }
       declutter("full");   // новые данные — раскладываем заново
     }
@@ -1103,33 +1337,41 @@
         clearTimeout(el.r07SettleTimer);
         el.r07SettleTimer = setTimeout(() => el.classList.remove("r07-badge--settle"), 1000);   // кольцо --t-heat 800 мс
       }
-      el.dataset.level = fixed ? "fixed" : String(it.level);
+      // Записи — только при изменении: хроника перерисовывает значки каждый день, и лишняя запись атрибута у 1 000 значков
+      // — это пересчёт их стилей.
+      const put = (name, value) => { if (value == null) { if (name in el.dataset) delete el.dataset[name]; } else if (el.dataset[name] !== value) el.dataset[name] = value; };
+      put("level", fixed ? "fixed" : String(it.level));
       // Волна 2: «служба сообщила» — пунктирная кайма; «вернули жители» — отметка ↺ (R11 IA_WAVE2 §3)
-      if (fixed && it.fixed_kind) el.dataset.fixed = it.fixed_kind; else delete el.dataset.fixed;
-      if (it.reopened) el.dataset.reopened = "true"; else delete el.dataset.reopened;
-      el.style.setProperty("--r07-c", it.color || "#999");
-      el.dataset.kind = it.target.kind;
+      put("fixed", fixed && it.fixed_kind ? it.fixed_kind : null);
+      put("reopened", it.reopened ? "true" : null);
+      if (el.r07C !== (it.color || "#999")) { el.r07C = it.color || "#999"; el.style.setProperty("--r07-c", el.r07C); }
+      put("kind", it.target.kind);
       el.classList.toggle("r07-badge--selected", S.selected === keyOf(it.target));
       const reported = t(fixed ? "heat.reported_fixed" : "heat.reported", { count: it.count });
       const stateWord = fixed ? t(it.fixed_kind === "reported" ? "heat.status.reported_fixed" : it.fixed_kind === "verified" ? "heat.status.verified" : "heat.fixed_word")
         : it.reopened ? t("heat.reopened_mark") : "";
-      el.setAttribute("aria-label", t("heat.badge_label", { target: label(it.target), reported }) + (stateWord ? ". " + stateWord : ""));
-      el.removeAttribute("title");   // подсказка при наведении — своя (название · люди · категория), без двойной системной
-      el.dataset.label = label(it.target);   // для проверок (R10, тесты R07): какое место у значка
+      const aria = t("heat.badge_label", { target: label(it.target), reported }) + (stateWord ? ". " + stateWord : "");
+      if (el.getAttribute("aria-label") !== aria) el.setAttribute("aria-label", aria);
+      if (el.hasAttribute("title")) el.removeAttribute("title");   // подсказка при наведении — своя (название · люди · категория), без двойной системной
+      put("label", label(it.target));   // для проверок (R10, тесты R07): какое место у значка
       // Обёртка __inner — для увеличения при наведении/выборе: сам el — маркер MapLibre, его transform двигает карта.
       // Кружок и плашку обновляем на месте, а не пересоздаём: тогда цвет кружка перетекает за 0,8 с (новая жалоба,
       // «исправлено → проверено»), а не меняется скачком (UX_BRIEF: плавное покраснение).
       const dotHtml = svgIcon(icon, 18) + (it.reopened ? '<span class="r07-badge__mark" aria-hidden="true">↺</span>' : "");
-      const countHtml = (district ? '<span class="r07-badge__name">' + esc(label(it.target)) + " · </span>" : "") + fmtNum(it.count);
+      const countHtml = badgeCountHtml(it, it.count);
       let dot = el.querySelector(".r07-badge__dot"), count = el.querySelector(".r07-badge__count");
       if (!dot || !count) {
         el.innerHTML = '<span class="r07-badge__inner"><span class="r07-badge__dot"></span><span class="r07-badge__count"></span></span>';
         dot = el.querySelector(".r07-badge__dot");
         count = el.querySelector(".r07-badge__count");
       }
-      dot.style.setProperty("--r07-c", it.color || "#999");
+      if (dot.r07C !== (it.color || "#999")) { dot.r07C = it.color || "#999"; dot.style.setProperty("--r07-c", dot.r07C); }
       if (dot.r07Html !== dotHtml) { dot.innerHTML = dotHtml; dot.r07Html = dotHtml; }
       if (count.r07Html !== countHtml) { count.innerHTML = countHtml; count.r07Html = countHtml; }
+    }
+
+    function badgeCountHtml(it, n) {
+      return (it.target.kind === "district" ? '<span class="r07-badge__name">' + esc(label(it.target)) + " · </span>" : "") + fmtNum(n);
     }
 
     // Где можно поставить значок цели: у участка улицы — середина и ещё две точки на линии (30 % и 70 %),
@@ -1200,6 +1442,8 @@
         if (r.width && r.height && cs.visibility !== "hidden" && Number(cs.opacity) > 0.1) overlays.push(r);
       });
       if (typeof opts.avoidRects === "function") overlays.push(...(opts.avoidRects() || []));
+      // Полоса «Хроники города» (web/civic/replay) внизу карты: значки дня не прячутся под ней
+      document.querySelectorAll(".rp-bar").forEach((el) => { const r = el.getBoundingClientRect(); if (r.width && r.height) overlays.push(r); });
       return overlays;
     }
     const overlaySig = (list) => list.map((r) => (r && r.width ? Math.round(r.left) + "," + Math.round(r.top) + "," + Math.round(r.right) + "," + Math.round(r.bottom) : "")).join(";");
@@ -1307,7 +1551,11 @@
         const cx = c.pts.reduce((a, q) => a + q.x, 0) / c.pts.length, cy = c.pts.reduce((a, q) => a + q.y, 0) / c.pts.length;
         const keys = c.members.map((m) => keyOf(m.item.target));
         const el = makeClusterEl(c.members.map((m) => m.item));
-        const [w, h] = [el.offsetWidth || CLUSTER_W, el.offsetHeight || CLUSTER_W];
+        // Размер кружка зависит только от длины числа: меряем один раз на длину (каждый замер нового элемента —
+        // пересчёт раскладки страницы; при 1 000 целях «Хроника» строит десятки кластеров каждый день).
+        const digits = String(el.textContent || "").length;
+        if (!S.clusterSize[digits]) S.clusterSize[digits] = [el.offsetWidth || CLUSTER_W, el.offsetHeight || CLUSTER_W];
+        const [w, h] = S.clusterSize[digits];
         // в середине; тесно — рядом (кольцо 26 и 48 px); совсем некуда — к ближайшему уже стоящему кластеру.
         // Кружок одного места — только на самом месте: сдвинутый, он показывал бы не туда (и выбор места жалобой мимо).
         const tries = [[0, 0]];
@@ -1344,10 +1592,13 @@
       list.forEach((m) => {
         const [mode, spot] = result.get(m) || ["hidden", m.spot || m.item.anchor];
         if ((mode === "full" || mode === "mini") && (spot[0] !== m.spot?.[0] || spot[1] !== m.spot?.[1])) { m.marker.setLngLat(spot); m.spot = spot; }
-        m.el.hidden = mode === "hidden" || mode === "cluster";
+        // Пишем только изменившееся: у 1 000 значков каждая лишняя запись — пересчёт их стилей
+        const hide = mode === "hidden" || mode === "cluster";
+        if (!hide && m.dirty) { fillBadge(m.el, m.item); m.sig = m.dirty; m.dirty = null; }   // хроника: дорисовать перед показом
+        if (m.el.hidden !== hide) m.el.hidden = hide;
         m.el.classList.toggle("r07-badge--mini", mode === "mini");
-        m.el.tabIndex = -1;
-        m.el.dataset.mode = mode;
+        if (m.el.tabIndex !== -1) m.el.tabIndex = -1;
+        if (m.el.dataset.mode !== mode) m.el.dataset.mode = mode;
       });
       if (full) S.layout = { z, bearing, pitch, w: host.width, h: host.height };
       // Значки — одна остановка Tab (R10 B-025): внутрь входит Tab, между значками — стрелки (самый горячий первый).
@@ -1456,6 +1707,10 @@
       if (isPicking()) { forwardPick(key, ev); return; }
       const it = findItem(key);
       if (!it) return;
+      if (R.on) {
+        if (map && it.anchor) map.easeTo({ center: it.anchor, zoom: Math.max(map.getZoom() + 1.5, it.target.kind === "district" ? 13 : 15), duration: moveMs(600) });
+        return;
+      }
       if (it.target.kind === "district") {
         map.easeTo({ center: it.anchor, zoom: 13, duration: moveMs(700) });
         return;
@@ -1621,6 +1876,11 @@
       // нет связи) — фильтров тоже нет: на телефоне в шторке сразу видно скелетон или «Нет связи · Повторить».
       // Список «Горячие места» (эталон A + Linear): заголовок, чипы тем, период и группы по статусу — одна секция (listHtml);
       // пока данных нет (скелет, «нет связи») — только заголовок над ними.
+      if (R.on) {   // значки уже разложены drawBadges этого же дня — второй раскладки не нужно
+        panel.innerHTML = replayListHtml() + footnoteHtml(null);
+        bindReplayList();
+        return;
+      }
       if (!cardItem && !S.data) parts.push(listHeadHtml());
       if (S.status === "loading" && !S.data) parts.push(skeletonHtml());
       else if ((S.status === "error" || S.status === "not_ready") && !S.data) parts.push(errorHtml());
@@ -1765,13 +2025,14 @@
       // кнопки «Сообщить о проблеме» (R10 INTEGRATION §10, эталон «Житель, телефон» — строки сразу под заголовком).
       const hint = S.mode === "districts" ? '<p class="r07-zoomhint">' + svgIcon("pin", 16) + esc(t("heat.zoom_hint")) + "</p>" : "";
       if (!items.length) {
-        // Пусто ≠ «всё исправлено»: иллюстрация, «За 7 дней жалоб нет» и действие «Показать 30 дней» (№8).
+        // Пусто ≠ «всё исправлено»: значок, «За 7 дней жалоб нет» и ОДНО действие (П1): с фильтром — «Сбросить фильтры»,
+        // без фильтра — «Показать 30 дней» (№8).
         const filtered = Boolean(S.filters.category || S.filters.district);
         const next = (S.meta && S.meta.periods || [7, 30, 90]).find((d) => d > S.filters.days);
+        const action = filtered ? '<button type="button" class="r07-btn r07-btn--primary" data-reset>' + esc(t("heat.filter.reset")) + "</button>"
+          : next ? '<button type="button" class="r07-btn r07-btn--primary" data-days-next="' + next + '">' + esc(t("heat.empty.show_days", { n: next })) + "</button>" : "";
         return '<section class="r07-hot" aria-labelledby="r07-hot-h">' + head + '<div class="r07-empty" role="status">' + illo(filtered ? "empty_filtered" : "empty") + '<p class="r07-empty__title">' + esc(t("heat.empty.title", { n: S.filters.days })) +
-          '</p><p class="r07-empty__hint">' + esc(t(filtered ? "heat.empty.hint_filters" : "heat.empty.hint")) + '</p><div class="r07-empty__actions">' +
-          (next ? '<button type="button" class="r07-btn r07-btn--primary" data-days-next="' + next + '">' + esc(t("heat.empty.show_days", { n: next })) + "</button>" : "") +
-          (filtered ? '<button type="button" class="r07-btn" data-reset>' + esc(t("heat.filter.reset")) + "</button>" : "") + "</div></div>" + hint + "</section>";
+          '</p><p class="r07-empty__hint">' + esc(t(filtered ? "heat.empty.hint_filters" : "heat.empty.hint")) + '</p><div class="r07-empty__actions">' + action + "</div></div>" + hint + "</section>";
       }
       // Строки как в Linear (README эталона, правило 5): 44 px — статус-иконка, число на плашке цвета места (эталон .cnt),
       // название 14/500 в одну строку, тема серым справа; группы по статусу «Новые» / «В работе». Порядок — по весу, как был.
@@ -2282,6 +2543,10 @@
       if (((ex.reported ? "r" : "") + (ex.nodata ? "n" : "")) !== (S.legendKey || "")) renderMapLegend();
       declutter();
       const nextMode = modeFor(zoomNow());
+      if (R.on) {   // хроника: тот же день районами или местами — из кадра, без запроса к серверу
+        if (R.frame && nextMode !== S.mode) replayShow(replayData(R.frame), moveMs(300));
+        return;
+      }
       if (nextMode !== S.mode) {
         clearTimeout(moveTimer);
         moveTimer = setTimeout(() => void load(), 150);
@@ -2294,6 +2559,7 @@
     }
     function onComplaintEvent(ev) {
       // R09 после create / metoo / status: window.dispatchEvent(new CustomEvent("birge:complaint", {detail:{type, target}}))
+      if (R.on) { R.missed = true; return; }
       const d = (ev && ev.detail) || {};
       void load("event").then(() => { if (d.target && d.target.id && d.type !== "status") pulse(keyOf(d.target)); });
     }
@@ -2302,6 +2568,7 @@
       if (next && next !== S.lang) { S.lang = next; render(); drawBadges(); }
     }
     function onKey(ev) {
+      if (R.on) return;
       if (ev.key === "Escape" && S.selected) { S.selected = null; updateSelectionLayer(); render(); drawBadges(); }
     }
     if (map) {
@@ -2312,6 +2579,9 @@
       map.on("movestart", (e) => { if (e && e.originalEvent) { userMoved.value = true; if (S.busyKey) clearBusy(); } });   // колесо, щипок, кнопки; перелёт к месту прерван — строка не «крутится»
     }
     window.addEventListener("birge:complaint", onComplaintEvent);
+    // Шрифт Inter догрузился позже первой раскладки — ширины значков другие: замерить заново (один раз на вид значка)
+    const onFonts = () => { S.badgeSize = {}; S.clusterSize = {}; for (const m of S.markers.values()) m.sizeKey = null; if (S.data) drawBadges(); };
+    if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener("loadingdone", onFonts);
     window.addEventListener("birge:target-hover", onTargetHover);
     // Язык: i18n R11 шлёт "birge:lang" на document, другие модули — на window. Слушаем оба (повтор отсекается).
     window.addEventListener("birge:lang", onLang);
@@ -2333,7 +2603,7 @@
     if (startHash) void focusTarget(startHash.kind, startHash.id, { days: startHash.days });
     else void load();
 
-    return {
+    const handle = {
       version: VERSION,
       refresh: () => load("event"),
       pulse: (target) => pulse(typeof target === "string" ? target : keyOf(target)),
@@ -2372,10 +2642,25 @@
           return out;
         }),
       isMoving: () => Boolean(map && map.isMoving()),
+      // «Хроника города» (раунд 15): web/civic/replay рисует прошлые дни этими же значками и слоями (см. replayBegin).
+      replay: {
+        begin: () => replayBegin(),
+        frame: (frame, o) => replayFrame(frame, o),
+        end: (o) => replayEnd(o),
+        get active() { return R.on; },
+        cost: () => ({ tween_ms_per_frame: R.cost.n ? +(R.cost.ms / R.cost.n).toFixed(2) : 0, day_switch_ms: R.cost.draws ? +(R.cost.drawMs / R.cost.draws).toFixed(1) : 0,
+          day_switches: R.cost.draws, targets: S.data ? S.data.items.length : 0 }),
+        apiBase,
+        lang: () => S.lang,
+        filters: () => ({ ...S.filters }),
+        fetch: fetchFn,
+      },
       state: () => ({ role: S.role, lang: S.lang, filters: { ...S.filters }, selected: S.selected, mode: S.mode, status: S.status,
         items: S.data ? S.data.items.length : 0, pending: S.pendingSelect, fittedKeys: S.fittedKeys || [] }),
       destroy,
     };
+    current = handle;   // для «Хроники» (web/civic/replay) на страницах без оболочки: CivicHeat.current
+    return handle;
 
     function removeLayers() {
       // Все слои модуля — по префиксу (новый слой не забудется: иначе источник нельзя удалить при смене роли)
@@ -2388,9 +2673,15 @@
     }
     function destroy() {
       S.destroyed = true;
+      if (current === handle) current = null;
       if (overlayTimer) clearInterval(overlayTimer);
       if (S.anim) cancelAnimationFrame(S.anim);
+      if (R.tween) cancelAnimationFrame(R.tween);
+      if (R.counts) cancelAnimationFrame(R.counts);
+      R.on = false;
+      if (map) map.getContainer().classList.remove("r07-replaying");
       window.removeEventListener("birge:complaint", onComplaintEvent);
+      if (document.fonts && document.fonts.removeEventListener) document.fonts.removeEventListener("loadingdone", onFonts);
       window.removeEventListener("birge:target-hover", onTargetHover);
       window.removeEventListener("birge:lang", onLang);
       document.removeEventListener("birge:lang", onLang);
@@ -2415,5 +2706,6 @@
   }
 
   // messages — запасной словарь ru/kk (R11 переносит ключи heat.* в общие ru.json / kk.json).
-  window.CivicHeat = { mount, version: VERSION, schema: "civic-v2", messages: DICT };
+  // current — последний смонтированный экземпляр (его ручку берёт «Хроника», если оболочка не передала свою).
+  window.CivicHeat = { mount, version: VERSION, schema: "civic-v2", messages: DICT, get current() { return current; } };
 })();

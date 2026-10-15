@@ -16,6 +16,7 @@
 """
 from __future__ import annotations
 
+import gc
 import threading
 import time
 from datetime import date, datetime, time as dtime, timedelta
@@ -312,38 +313,52 @@ class Replay:
                 else:
                     need.append(d)
         if need:
-            first = day_moment(need[0], now)
-            # Один запрос к источнику на все кадры (с запасом на самый ранний); дальше — фильтр как у источника:
-            # R09 отдаёт жалобы, созданные не раньше since (= момент − период − 7 дней), демо-набор — все.
-            records = svc.records(first - span)
-            # Порядок записей — как у источника: при равных весе и числе порядок мест в ответе тот же, что у /heat.
-            rows = []
-            for r in records:
-                if isinstance(r, dict):
-                    cr = parse_time(r.get("created_at"))
-                    if cr is not None:
-                        rows.append((cr, last_event(r) or cr, r))
-            filter_since = not svc.is_demo
-            for d in need:
-                t = day_moment(d, now)
-                lo = t - span
-                recs = []
-                for cr, last, r in rows:
-                    if cr > t or (filter_since and cr < lo):
-                        continue
-                    a = r if last <= t else as_of(r, t)
-                    if a is not None:
-                        recs.append(a)
-                computed = svc._compute(now=t, days=p["days"], category=p["category"], district=p["district"], bbox=None, records=recs)
-                items = computed["items"]
-                dists = engine.districts_summary(items, svc.config, district=p["district"])
-                out[d] = (t, items, dists)
-                if d < today:
-                    with self._lock:
-                        if len(self._frames) >= CACHE_DAYS_MAX:
-                            self._frames.clear()
-                        self._frames[(gen, d, p["days"], p["category"], p["district"])] = out[d]
+            # Сборщик мусора — на время расчёта кадров выключен: кадры создают десятки тысяч коротких словарей без циклов
+            # (их освобождает счётчик ссылок), а полный обход большой кучи процесса (граф R12, слой OSM) удваивал время.
+            gc_on = gc.isenabled()
+            gc.disable()
+            try:
+                self._compute_days(p, need, out, gen, span)
+            finally:
+                if gc_on:
+                    gc.enable()
         return [(d,) + out[d] for d in _days(p["start"], p["end"])]
+
+    def _compute_days(self, p: dict, need: list, out: dict, gen: int, span: timedelta) -> None:
+        """Кадры дней need: одна выборка записей, затем на каждый день — as_of и тот же расчёт, что у /heat."""
+        svc, now = self.svc, p["now"]
+        today = now.astimezone(ASTANA_TZ).date()
+        first = day_moment(need[0], now)
+        # Один запрос к источнику на все кадры (с запасом на самый ранний); дальше — фильтр как у источника:
+        # R09 отдаёт жалобы, созданные не раньше since (= момент − период − 7 дней), демо-набор — все.
+        records = svc.records(first - span)
+        # Порядок записей — как у источника: при равных весе и числе порядок мест в ответе тот же, что у /heat.
+        rows = []
+        for r in records:
+            if isinstance(r, dict):
+                cr = parse_time(r.get("created_at"))
+                if cr is not None:
+                    rows.append((cr, last_event(r) or cr, r))
+        filter_since = not svc.is_demo
+        for d in need:
+            t = day_moment(d, now)
+            lo = t - span
+            recs = []
+            for cr, last, r in rows:
+                if cr > t or (filter_since and cr < lo):
+                    continue
+                a = r if last <= t else as_of(r, t)
+                if a is not None:
+                    recs.append(a)
+            computed = svc._compute(now=t, days=p["days"], category=p["category"], district=p["district"], bbox=None, records=recs)
+            items = computed["items"]
+            dists = engine.districts_summary(items, svc.config, district=p["district"])
+            out[d] = (t, items, dists)
+            if d < today:
+                with self._lock:
+                    if len(self._frames) >= CACHE_DAYS_MAX:
+                        self._frames.clear()
+                    self._frames[(gen, d, p["days"], p["category"], p["district"])] = out[d]
 
     def _reply(self, p: dict, frames: list) -> dict:
         svc = self.svc

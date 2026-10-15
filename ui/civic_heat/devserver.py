@@ -38,12 +38,13 @@ STATUSES = ("new", "accepted", "in_progress", "fixed", "rejected")
 class DemoStore:
     """Демо-записи в памяти + подставные операции R09 (status, metoo, verify)."""
 
-    def __init__(self, now=None, world_db=None):
+    def __init__(self, now=None, world_db=None, world_kind="mini"):
         self.lock = threading.Lock()
         self.metoo_devices: dict[str, set] = {}
         if world_db:
-            # Мини-мир R07 (world_fixture): буран в Нуре и отметка шкалы «Буран» — как засеял бы R01 из world_v1.json
-            w = world_fixture.build_world()
+            # Мини-мир R07 (world_fixture): буран в Нуре и отметка шкалы «Буран» — как засеял бы R01 из world_v1.json;
+            # city1000 — 1 000 целей для замера плавности хроники
+            w = world_fixture.city_world(1300, 5200) if world_kind == "city1000" else world_fixture.build_world()
             moment = now or datetime.now(timezone.utc)
             self.records = world_fixture.to_records(w, moment)
             world.seed_world(world_db, w, moment)
@@ -176,13 +177,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Демо-сервер тепловой карты R07 (synthetic)")
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=8617)
-    ap.add_argument("--world", action="store_true", help="мини-мир R07 с бураном (раунд 15, «Хроника города»)")
+    ap.add_argument("--world", nargs="?", const="mini", choices=("mini", "city1000"),
+                    help="мини-мир R07 с бураном (раунд 15, «Хроника города»); city1000 — 1 000 целей для замера плавности")
     args = ap.parse_args(argv)
     world_db = None
     if args.world:
         world_db = str(Path(tempfile.gettempdir()) / f"birge-r07-world-{args.port}.sqlite3")
         Path(world_db).unlink(missing_ok=True)   # отметки — от этого запуска (время мира — от момента засева)
-    store = DemoStore(world_db=world_db)
+    store = DemoStore(world_db=world_db, world_kind=args.world or "mini")
     httpd = ThreadingHTTPServer((args.host, args.port), make_handler(store))
     print(f"R07 демо: http://{args.host}:{args.port}/civic/heat/demo.html  (Ctrl+C — стоп)")
     try:

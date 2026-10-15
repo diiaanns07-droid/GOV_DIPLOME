@@ -367,11 +367,11 @@ a.r07-qr { position: relative; display: inline-flex; align-items: center; min-he
 @keyframes r07-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 /* Пусто и нет связи: линейная иллюстрация (линия 1.9, как у иконок ui-kit), заголовок 17/600, одна строка, действие */
 .r07-empty, .r07-error { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px 8px 16px; text-align: center; }
-.r07-illo { width: 96px; height: 80px; margin-bottom: 4px; color: var(--r07-ink-2); opacity: 0.75; }
+/* П1 «Без ИИ-слопа»: вместо рисунка 96×80 — одна маленькая монохромная иконка набора R11 (≤ 48 px) */
+.r07-state-ic { display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 2px; border-radius: 50%; background: var(--r07-fill, rgba(18, 26, 23, 0.06)); color: var(--r07-ink-3, #7e8a85); }
+.r07-state-ic svg { width: 24px; height: 24px; }
 /* рисунок ui-kit (.bk-ill: 96 px, на телефоне 80, линия 1,5) — в «нет связи» темнее, как .bk-error у ui-kit */
-.r07-empty .bk-ill, .r07-error .bk-ill { margin-bottom: 4px; }
-.r07-error .bk-ill { stroke: var(--c-text-2, #4c5853); }
-.r07-error .r07-ic { color: var(--r07-danger); }
+.r07-error .r07-state-ic { color: var(--r07-ink-2, #4b5752); }
 .r07-empty__title, .r07-error__title { margin: 0; font-size: 17px; font-weight: 600; }
 .r07-empty__hint, .r07-error__hint { margin: 0; color: var(--r07-ink-2); max-width: 30ch; }
 .r07-error .r07-btn { margin-top: 8px; }
@@ -528,3 +528,13 @@ body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode],
   position: absolute; top: -6px; right: -6px; display: grid; place-items: center; width: 18px; height: 18px;
   border: 2px solid #fff; border-radius: 50%; background: #121A17; color: #fff; font-size: 13px; font-weight: 600; line-height: 1;
 }
+
+/* ---- Раунд 15: «Хроника города» (heat.js replay.*, web/civic/replay) ----
+   Хроника перекрашивает те же значки: кружок перетекает за шаг дня (--r07-replay-ms ставит heat.js), ушедший значок гаснет. */
+.r07-replaying .r07-badge__dot { transition-duration: var(--r07-replay-ms, 800ms), 0.25s, 0.25s; }
+.r07-badge.r07-badge--out { opacity: 0; pointer-events: none; }
+.r07-replaying .r07-badge { cursor: zoom-in; }
+.r07-hot--replay .r07-item { cursor: zoom-in; }
+.r07-hot--replay .r07-list { margin-top: 8px; }
+.r07-replay-note, .r07-replay-empty { margin: 12px 0 0; font-size: 13px; line-height: 1.4; }
+@media (prefers-reduced-motion: reduce) { .r07-replaying .r07-badge__dot { transition: none; } }

@@ -1,0 +1,160 @@
+/* R07 · «Хроника города» (раунд 15). Стекло на хроме (VISUAL_BRIEF п. 7), токены ui-kit R11 с запасными значениями —
+   модуль выглядит так же и без ui-kit (стенд R07). Сетка 8 pt, три размера шрифта: 30 (дата), 14 (подписи), 12–13 (мета). */
+/* Место над картой: оболочка может сдвинуть полосу от своих панелей — --rp-left / --rp-right (карточка слева 388 + поля) */
+.rp-host { --rp-left: 0px; --rp-right: 0px; position: absolute; left: 0; right: 0; bottom: 0; z-index: 35; height: 0; pointer-events: none; }
+.rp-root { --rp-ink: var(--c-ink, #121a17); --rp-ink-2: var(--c-text-2, #4b5752); --rp-ink-3: var(--c-text-3, #7e8a85);
+  --rp-line: var(--c-line, rgba(18, 26, 23, 0.08)); --rp-fill: var(--c-fill, rgba(18, 26, 23, 0.06));
+  --rp-fill-hover: var(--c-fill-hover, rgba(18, 26, 23, 0.1)); --rp-hot: var(--heat-3, #e24b4a); --rp-ok: var(--ok-mark, #3b8a2e);
+  --rp-ease: var(--ease, cubic-bezier(0.22, 1, 0.36, 1)); --rp-focus: var(--c-focus, #2f7fd6);
+  font-family: var(--font, "Inter", "SF Pro Text", -apple-system, "Segoe UI", system-ui, sans-serif); color: var(--rp-ink); }
+.rp-root *, .rp-root *::before, .rp-root *::after { box-sizing: border-box; }
+.rp { position: absolute; left: calc(var(--rp-left, 0px) + (100% - var(--rp-left, 0px) - var(--rp-right, 0px)) / 2); bottom: 20px;
+  width: min(880px, calc(100% - var(--rp-left, 0px) - var(--rp-right, 0px) - 40px)); transform: translateX(-50%); pointer-events: auto;
+  animation: rp-in var(--t-slow, 250ms) var(--rp-ease) backwards; }
+.rp.rp--out { opacity: 0; transform: translate(-50%, 8px); transition: opacity 0.2s var(--rp-ease), transform 0.2s var(--rp-ease); }
+@keyframes rp-in { from { opacity: 0; transform: translate(-50%, 12px); } }
+.rp-bar { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "date head ctl" "period track track";
+  align-items: center; gap: 4px 20px; min-height: 96px; padding: 14px 14px 10px 20px; border-radius: var(--r-xl, 18px);
+  background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 12px 32px rgba(16, 24, 20, 0.14), 0 0 0 0.5px rgba(16, 24, 20, 0.1); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .rp-bar { background: #fff; } }
+.bk-glass-off .rp-bar, body.glass-off .rp-bar { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.rp-root :focus-visible { outline: 3px solid var(--rp-focus); outline-offset: 2px; }
+.rp-ic { flex: none; }
+.rp-ic--sprite { display: inline-grid; place-items: center; }
+.rp-ic--sprite > svg { width: 100%; height: 100%; }
+.rp-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Дата — главное на экране хроники (иерархия за 2 секунды): крупно, цифры одной ширины */
+.rp-date { grid-area: date; display: flex; flex-direction: column; align-items: flex-start; min-width: 150px; }
+.rp-date .rp-title { margin-bottom: 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--rp-ink-3); }
+.rp-day { font-size: 30px; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rp-wd { margin-top: 2px; font-size: 13px; color: var(--rp-ink-2); }
+.rp-event { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px; min-width: 0;
+  background: var(--c-info-soft, #e8f0fb); color: var(--glass-info, #184981); font-size: 12px; font-weight: 600; white-space: nowrap;
+  animation: rp-pop var(--t-base, 200ms) var(--rp-ease); }
+.rp-event[hidden] { display: none; }
+@keyframes rp-pop { from { opacity: 0; transform: scale(0.92); } }
+
+.rp-head { grid-area: head; display: grid; gap: 6px; min-width: 0; font-size: 13px; color: var(--rp-ink-2); }
+.rp-head__top { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.rp-title { white-space: nowrap; }
+.rp-tag { flex: none; display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px;
+  background: var(--c-demo-soft, #edf1f7); color: var(--glass-demo, #3b4960); font-size: 12px; font-weight: 500; }
+.rp-nums { display: flex; gap: 16px; min-width: 0; white-space: nowrap; font-size: 14px; color: var(--rp-ink); font-variant-numeric: tabular-nums; }
+.rp-num { display: inline-flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; }
+.rp-num i { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--rp-hot); }
+.rp-num--fixed i { background: var(--rp-ok); }
+
+/* Шкала: график жалоб по дням (всплеск бурана виден сразу), полосы событий, дорожка, отметки дней, ползунок */
+.rp-track { grid-area: track; position: relative; height: 64px; margin-top: 4px; cursor: pointer; touch-action: none; user-select: none; border-radius: 8px; }
+.rp-spark { position: absolute; left: 0; top: 10px; width: 100%; height: 26px; overflow: visible; }
+.rp-spark__area { fill: color-mix(in srgb, var(--rp-hot) 12%, transparent); }
+.rp-spark__line { fill: none; stroke: color-mix(in srgb, var(--rp-hot) 60%, transparent); stroke-width: 1.5; }
+.rp-rail { position: absolute; left: 0; right: 0; top: 40px; height: 4px; border-radius: 2px; background: var(--rp-fill-hover); overflow: hidden; }
+.rp-fill { position: absolute; inset: 0; background: var(--rp-ink); transform: scaleX(0); transform-origin: 0 50%; will-change: transform; }
+.rp-thumb { position: absolute; top: 42px; left: 0; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 0 2.5px var(--rp-ink), 0 2px 8px rgba(16, 24, 20, 0.25); will-change: left; pointer-events: none; }
+.rp-ticks { position: absolute; left: 0; right: 0; top: 48px; height: 16px; }
+.rp-tick { position: absolute; top: 0; width: 1px; height: 4px; background: var(--rp-line); }
+.rp-tick span { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: 12px; line-height: 14px; color: var(--rp-ink-3);
+  white-space: nowrap; font-style: normal; font-variant-numeric: tabular-nums; }
+.rp-tick:first-child span { left: 0; transform: none; }
+.rp-tick:last-child span { left: auto; right: 0; transform: none; font-weight: 500; color: var(--rp-ink-2); }
+.rp-marks { position: absolute; left: 0; right: 0; top: 4px; height: 36px; pointer-events: none; }
+.rp-mark { position: absolute; top: 0; height: 36px; min-width: 2px; border-radius: 6px; background: color-mix(in srgb, var(--c-info, #1f5fa8) 7%, transparent);
+  border-left: 1.5px solid color-mix(in srgb, var(--c-info, #1f5fa8) 45%, transparent); transition: background var(--t-base, 200ms) var(--rp-ease); }
+.rp-mark__label { position: absolute; top: -9px; left: -1px; display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px 0 5px;
+  border-radius: 999px; background: #fff; color: var(--glass-info, #184981); box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-info, #1f5fa8) 25%, transparent);
+  font-size: 12px; font-weight: 600; white-space: nowrap; }
+.rp-mark--on { background: color-mix(in srgb, var(--c-info, #1f5fa8) 14%, transparent); }
+.rp-mark--on .rp-mark__label { background: var(--c-info, #1f5fa8); color: #fff; box-shadow: none; }
+.rp-mark__label .rp-ic { width: 12px; height: 12px; }
+
+/* Кнопки: одна главная (▶ / ❚❚ — тёмная), остальные тише; зоны нажатия 44 px */
+.rp-ctl { grid-area: ctl; display: flex; align-items: center; gap: 8px; }
+.rp-period { grid-area: period; align-self: start; justify-self: start; display: inline-flex; gap: 2px; margin-top: 21px; padding: 3px; border-radius: 999px; background: var(--rp-fill); }
+.rp-chip { position: relative; min-height: 34px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: var(--rp-ink-2);
+  font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: background var(--t-fast, 150ms) var(--rp-ease), color var(--t-fast, 150ms); }
+.rp-chip::after { content: ""; position: absolute; inset: -5px 0; }
+.rp-chip:hover { color: var(--rp-ink); }
+.rp-chip[aria-pressed="true"] { background: var(--c-primary, #121a17); color: var(--c-on-primary, #fff); }
+.rp-speed, .rp-x { display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--rp-fill); color: var(--rp-ink); font: inherit; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; cursor: pointer;
+  transition: background var(--t-fast, 150ms) var(--rp-ease), transform var(--t-press, 100ms) var(--rp-ease); }
+.rp-speed:hover, .rp-x:hover { background: var(--rp-fill-hover); }
+.rp-play { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 132px; height: 44px; padding: 0 18px 0 14px; border: 0;
+  border-radius: 999px; background: var(--c-primary, #121a17); color: var(--c-on-primary, #fff); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: background var(--t-fast, 150ms) var(--rp-ease), transform var(--t-press, 100ms) var(--rp-ease); }
+.rp-play:hover { background: var(--c-primary-hover, #26312c); }
+.rp-play:active, .rp-speed:active, .rp-x:active, .rp-chip:active { transform: scale(0.96); }
+.rp-btn { min-height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--c-primary, #121a17); color: #fff; font: inherit;
+  font-size: 15px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+
+
+/* Состояния: загрузка (скелетон с 150 мс), нет связи, не подключено, пусто */
+.rp[data-status]:not([data-status="ready"]) .rp-bar { grid-template-columns: minmax(0, 1fr) auto; min-height: 76px; }
+.rp-skel { display: flex; align-items: center; gap: 20px; }
+.rp-skel[data-wait] { visibility: hidden; }
+.rp-skel i { display: block; border-radius: 8px; background: linear-gradient(90deg, var(--rp-fill) 25%, var(--rp-fill-hover) 50%, var(--rp-fill) 75%);
+  background-size: 200% 100%; animation: rp-shimmer 1.2s linear infinite; }
+.rp-skel__date { width: 132px; height: 34px; }
+.rp-skel__main { flex: 1; display: grid; gap: 10px; }
+.rp-skel__main i:first-child { width: 40%; height: 14px; }
+.rp-skel__main i:last-child { height: 22px; }
+.rp-skel__btn { width: 132px; height: 44px; border-radius: 999px !important; }
+@keyframes rp-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.rp-msg { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.rp-msg > .rp-ic { flex: none; color: var(--rp-ink-2); }
+.rp-msg__text { display: grid; gap: 2px; min-width: 0; font-size: 14px; color: var(--rp-ink-2); }
+.rp-msg__text b { font-size: 15px; font-weight: 600; color: var(--rp-ink); }
+.rp-msg .rp-btn { margin-left: auto; }
+
+/* Кнопка «Хроника» в колонке кнопок карты (BirgeReplay.attach) — как соседние кнопки 44 px */
+.rp-open { display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 14px; cursor: pointer; color: var(--c-ink, #121a17); }
+body.birge-replay-open .rp-open { background: var(--c-primary, #121a17); color: #fff; }
+
+/* Ноутбук 1024: подсказка клавиш и подпись «Хроника города» уступают место числам */
+@media (max-width: 1100px) {
+  .rp-play { min-width: 0; }
+}
+@media (max-width: 900px) {
+  .rp-speed { display: none; }
+}
+/* Телефон: на всю ширину над нижним краем; две строки — дата и кнопки, затем шкала (VISUAL_BRIEF: «упрощённо») */
+@media (max-width: 760px) {
+  .rp { left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); width: auto; max-width: none; transform: none; }
+  .rp.rp--out { transform: translateY(8px); }
+  @keyframes rp-in { from { opacity: 0; transform: translateY(12px); } }
+  .rp-bar { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "date ctl" "head head" "track track"; gap: 4px 10px; padding: 10px 10px 6px 16px; min-height: 0; }
+  .rp-date .rp-title { display: none; }
+  /* телефон — упрощённо: неделя (сцена 9), без выбора периода и скорости; на широком телефоне период — в строке событий */
+  .rp-period { display: none; }
+  .rp-date { min-width: 0; flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 8px; }
+  .rp-day { font-size: 24px; }
+  .rp-ctl { gap: 6px; }
+  .rp-head { gap: 4px; }
+  .rp-play { width: 44px; min-width: 44px; padding: 0; }
+  .rp-play__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .rp-chip { padding: 0 10px; font-size: 13px; }
+  .rp-nums { margin-left: 0; gap: 12px; font-size: 13px; }
+  .rp-head__top:empty, .rp-head__top:not(:has(.rp-event:not([hidden]))) { display: none; }
+  .rp-tag { display: none; }
+  .rp-track { height: 56px; }
+}
+@media (min-width: 480px) and (max-width: 760px) {
+  .rp-bar { grid-template-areas: "date ctl" "head period" "track track"; }
+  .rp-period { display: inline-flex; margin-top: 0; align-self: center; justify-self: end; }
+}
+@media (max-width: 340px) {
+  .rp-num--fixed { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rp, .rp-event, .rp-skel i { animation: none; }
+  .rp.rp--out, .rp-mark, .rp-chip, .rp-play, .rp-speed, .rp-x { transition: none; }
+  .rp-play:active, .rp-speed:active, .rp-x:active, .rp-chip:active { transform: none; }
+}
+
+/* Своя легенда стенда R07 уходит, пока идёт хроника: полоса внизу карты, цвета видны на значках (в оболочке — R01) */
+.r07-replaying .r07-maplegend { display: none; }
