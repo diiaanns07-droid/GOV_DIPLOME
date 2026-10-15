@@ -286,6 +286,16 @@ class Consistency:
             self.compare("C3. просрочено по городу: Ситуационный центр = «Картина дня»",
                          [("Ситуационный центр R08", "R08", overdue_sit),
                           ("«Картина дня» R08", "R08", ((city.get("kpi") or {}).get("overdue") or {}).get("value"))])
+        # C5. «Исправлено за неделю» (служба сообщила): «Картина дня» / Ситуационный центр (kpi.fixed_week, последние 7 × 24 ч)
+        # = «Картина недели» (totals.fixed, неделя по дням до сейчас). Одно слово «неделя» — одно число (CONTRACT §0).
+        week = self.get(self.staff, "/akim/week") if self.staff_ok else None
+        wdata = week.data() if week is not None and week.status == 200 and isinstance(week.body, dict) else None
+        wfix = ((wdata or {}).get("totals") or {}).get("fixed") if isinstance(wdata, dict) else None
+        dfix = ((city or {}).get("kpi") or {}).get("fixed_week") if isinstance(city, dict) else None
+        if isinstance(wfix, dict) and isinstance(dfix, dict):
+            self.compare("C5. «Исправлено за неделю» и «проверено жителями»: «Картина дня» = «Картина недели»",
+                         [("«Картина дня» R08 (7 × 24 ч)", "R08", {"fixed": dfix.get("value"), "verified": dfix.get("verified")}),
+                          ("«Картина недели» R08 (дни недели)", "R08", {"fixed": wfix.get("value"), "verified": wfix.get("verified")})])
 
         # D. «Открытые у службы»
         if open_30 is not None:
