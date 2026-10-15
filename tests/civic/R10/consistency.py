@@ -288,14 +288,23 @@ class Consistency:
                           ("«Картина дня» R08", "R08", ((city.get("kpi") or {}).get("overdue") or {}).get("value"))])
         # C5. «Исправлено за неделю» (служба сообщила): «Картина дня» / Ситуационный центр (kpi.fixed_week, последние 7 × 24 ч)
         # = «Картина недели» (totals.fixed, неделя по дням до сейчас). Одно слово «неделя» — одно число (CONTRACT §0).
+        # Окна у R08 могут быть разными и подписанными («за 7 дней» и «9–15 октября») — тогда это не противоречие, но жюри
+        # увидит два числа: проверка не блокирует вердикт (blocking: False), расхождение идёт в «смотреть» (B-122).
         week = self.get(self.staff, "/akim/week") if self.staff_ok else None
         wdata = week.data() if week is not None and week.status == 200 and isinstance(week.body, dict) else None
-        wfix = ((wdata or {}).get("totals") or {}).get("fixed") if isinstance(wdata, dict) else None
+        wfix = None
+        if isinstance(wdata, dict):
+            wfix = ((wdata.get("totals") or {}).get("fixed")) or ((wdata.get("kpi") or {}).get("fixed"))  # R08 eca77d34 / 6cd8f2be
         dfix = ((city or {}).get("kpi") or {}).get("fixed_week") if isinstance(city, dict) else None
+        name5 = "C5. «Исправлено за неделю» и «проверено жителями»: «Картина дня» = «Картина недели»"
         if isinstance(wfix, dict) and isinstance(dfix, dict):
-            self.compare("C5. «Исправлено за неделю» и «проверено жителями»: «Картина дня» = «Картина недели»",
+            self.compare(name5,
                          [("«Картина дня» R08 (7 × 24 ч)", "R08", {"fixed": dfix.get("value"), "verified": dfix.get("verified")}),
                           ("«Картина недели» R08 (дни недели)", "R08", {"fixed": wfix.get("value"), "verified": wfix.get("verified")})])
+            self.checks[-1]["blocking"] = False
+        else:
+            self.checks.append({"name": name5, "status": "NOT_RUN", "values": {"week": week.status if week is not None else None},
+                                "owners": ["R08"], "note": "нет «Картины недели» или её итогов в ответе akim/week", "optional": True})
 
         # D. «Открытые у службы»
         if open_30 is not None:

@@ -88,7 +88,10 @@ def main() -> int:
     # Числа
     num = load(out / "numbers" / "CONSISTENCY.json")
     if num:
-        fails = [c for c in num["checks"] if c["status"] == "FAIL"]
+        fails = [c for c in num["checks"] if c["status"] == "FAIL" and c.get("blocking", True)]
+        for c in num["checks"]:
+            if c["status"] == "FAIL" and not c.get("blocking", True):
+                watch.append(f"числа (не блокирует): {c['name']} — {json.dumps(c['values'], ensure_ascii=False)[:120]}")
         lines.append(f"| Согласованность чисел | PASS {num['counts']['PASS']} · FAIL {num['counts']['FAIL']} · NOT_RUN "
                      f"{num['counts']['NOT_RUN']} |")
         for c in fails:

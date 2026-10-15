@@ -233,7 +233,13 @@ async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, 
       { under40: under40.slice(0, 5), from40to43: mid.slice(0, 3), n: m.small.length });
   }
   add(sc.id, own, variant, "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)", q.lowContrastN ? "FAIL" : "PASS", { n: q.lowContrastN, ex: (q.lowContrast || []).slice(0, 3) });
-  if (lang === "kk") add(sc.id, own, variant, "казахский не обрезан и не перекрыт", q.cutN || q.clippedN ? "FAIL" : "PASS", { cut: q.cut.slice(0, 3), clipped: q.clipped.slice(0, 3) });
+  if (lang === "kk") {
+    // Перекрытие графикой (рамка SVG спарклайна, точка) рядом с подписью буквы часто не задевает — «смотреть», не FAIL.
+    const svgOnly = (x) => /под «(svg|circle|path|g|rect|line|polyline|polygon|use)»$/i.test(x);
+    const hard = q.clipped.filter((x) => !svgOnly(x)), soft = q.clipped.filter(svgOnly);
+    add(sc.id, own, variant, "казахский не обрезан и не перекрыт", q.cutN || hard.length ? "FAIL" : soft.length ? "WARN" : "PASS",
+      { cut: q.cut.slice(0, 3), clipped: hard.slice(0, 3), svg: soft.slice(0, 3) });
+  }
   if (m && m.tabsCut.length) add(sc.id, own, variant, "вкладки целиком (полоса вкладок не режет подпись краем)", "WARN", { cut: m.tabsCut });
   if (m) add(sc.id, own, variant, "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)", m.bigIll.length || m.emoji.length ? "FAIL" : "PASS",
     { big: m.bigIll.slice(0, 4), emoji: m.emoji });
