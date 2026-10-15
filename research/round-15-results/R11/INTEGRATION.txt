@@ -6,6 +6,16 @@ tokens.css, components.css, icons.svg, ui-kit.js, ru.json, kk.json (CIVIC_ASSETS
 ======================================================================================================================
 §1. R01 — меню по схеме IA_ROUND15 (research/round-15-results/R11/IA_ROUND15.md, §7 — точный список)
 ======================================================================================================================
+ГОТОВЫЙ ПАТЧ: research/round-15-results/R11/patches/R01_menu_ia15.patch — к ветке R01 claude/brave-fermi-nhzetj @ 0b76f9ed
+  (web/civic/shell/birge.js: п. 1.1–1.6 ниже; tests/civic/R01/browser/r14_wave2.cjs: ожидания ?screens=all под IA_ROUND15).
+  Применить из корня: git apply -3 research/round-15-results/R11/patches/R01_menu_ia15.patch
+  Проверено на стенде (ветка R01 0b76f9ed + патч + ui-kit/словарь R11 этой ветки):
+    - tests/civic/R01 pytest 198 passed, 1 skipped; browser r14_wave2 43/0; browser r14_shell 43/0;
+    - меню 1366 и 1024 × ru/kk × акимат/житель: в капсуле 5 пунктов, «Ведомстволар» и «Менің аулам» помещаются (не compact);
+    - без модулей раунда 15 — меню FINAL-4 само (Рядом, Проекты и идеи; «Ещё» акимата: Вопросы жителей | QR, Работы, Службы);
+    - #agencies/calendar → раздел agencies, путь calendar; setSection("meetings/questions"); «Назад» — к прежнему пути;
+      #target=… — карта, как раньше.
+  Колокольчик (1.7), чип хроники (1.8), alertSlot (1.9) в патч не входят — зависят от API модулей R06/R07/R17.
 1.1 NAV со слотами-запасом: житель ["map","mine",["yard","nearby"],"ideas","more"], акимат ["map","day","inbox",
     ["agencies","projects"],"more"] — в слоте берётся первый доступный раздел.
 1.2 «Ещё» — явный порядок и группы (вместо .slice(0, 4)): MORE и MORE_GROUPS из IA §7.2; PARENT — разделы без пункта,
