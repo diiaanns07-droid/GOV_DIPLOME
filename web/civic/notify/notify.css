@@ -17,7 +17,7 @@
   border-radius: 9px;
   background: var(--c-danger, #c8322b);
   color: #fff;
-  font-size: 11px;
+  font-size: var(--fs-caption, 12px);
   font-weight: 600;
   line-height: 18px;
   text-align: center;
@@ -144,7 +144,7 @@
 }
 :where(.bk-feed__meta) {
   color: var(--c-text-3, #5c6863);
-  font-size: 12px;
+  font-size: var(--fs-xs, 12px);
 }
 :where(.bk-feed__item[data-unread="true"])::after {
   content: "";

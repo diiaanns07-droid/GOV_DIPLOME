@@ -75,7 +75,19 @@ async function textAudit(page, sel) {
     const root = document.querySelector(s);
     if (!root) return { missing: true };
     const text = root.innerText || "";
-    return { tech: tech.filter((w) => text.includes(w)), overflow: document.documentElement.scrollWidth > innerWidth + 1, text };
+    // Мельче токена --fs-xs сборки текста нет (R11 раунда 15: 13 px, R10 B-112; ui-kit FINAL-4 — 12 px).
+    const min = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--fs-xs")) || 12;
+    const tiny = [];
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      const el = n.parentElement, t = n.textContent.trim();
+      if (!t || !el || el.closest(".bk-sr-only, [aria-hidden=true]")) continue;
+      const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+      if (!r.width || cs.visibility === "hidden" || cs.display === "none") continue;
+      if (parseFloat(cs.fontSize) < min - 0.01) tiny.push(cs.fontSize + " «" + t.slice(0, 24) + "»");
+    }
+    return { tech: tech.filter((w) => text.includes(w)), overflow: document.documentElement.scrollWidth > innerWidth + 1, text,
+      tiny: tiny.slice(0, 6), min };
   }, [sel, TECH]);
 }
 async function waitMap(page) {
@@ -160,6 +172,7 @@ async function worksPart(browser) {
       check(`${tag}: в списке — «Раскопка … · Водоканал · улица»`, metaNow.some((t) => /(Раскопка|Қазу) · (Водоканал|Сумен).*Омаров/.test(t)), metaNow.join(" | "));
       const au = await textAudit(page, "#birge-screen");
       check(`${tag}: без технических слов и прокрутки вбок`, !au.missing && !au.tech.length && !au.overflow, JSON.stringify({ tech: au.tech, overflow: au.overflow }));
+      check(`${tag}: текст не мельче ${au.min} px (токен --fs-xs)`, !au.missing && !au.tiny.length, JSON.stringify(au.tiny));
       await shot(page, `${tag}-saved`);
       check(`${tag}: без ошибок JS`, !page.errs.length, page.errs.join(" | "));
       await page.close();
@@ -214,6 +227,7 @@ async function ideasPart(browser) {
       check(`${tag}: акимат без входа видит проекты`, pubProjects >= 5, pubProjects);
       const au = await textAudit(pub, "#birge-screen");
       check(`${tag}: без технических слов и прокрутки вбок`, !au.missing && !au.tech.length && !au.overflow, JSON.stringify({ tech: au.tech, overflow: au.overflow }));
+      check(`${tag}: текст не мельче ${au.min} px (токен --fs-xs)`, !au.missing && !au.tiny.length, JSON.stringify(au.tiny));
       await shot(pub, `${tag}-akimat-public`);
       check(`${tag}: просмотр — без ошибок JS`, !pub.errs.length, pub.errs.join(" | "));
       // 3. После входа — очередь проверки и решения, как в FINAL-4.
@@ -333,6 +347,8 @@ async function notifyPart(browser) {
         && panel.unread === unread0, JSON.stringify(panel).slice(0, 300));
       check(`${tag}: в панели нет картинок > 48 px (П1)`, panel.big === 0, panel.big);
       check(`${tag}: в панели нет технических слов`, !TECH.some((w) => panel.text.includes(w)), panel.text.slice(0, 300));
+      const pa = await textAudit(page, ".bk-notify");
+      check(`${tag}: в панели текст не мельче ${pa.min} px (токен --fs-xs)`, !pa.missing && !pa.tiny.length, JSON.stringify(pa.tiny));
       if (lang === "kk") check(`${tag}: подписи по-казахски`, /Хабарламалар/.test(panel.text) && /Жаңа|Бұрынғы/.test(panel.text)
         && !/Новые|Раньше|Прочитать/.test(panel.text), panel.text.slice(0, 200));
       await shot(page, `${tag}-panel`);
@@ -413,6 +429,7 @@ async function notifyPart(browser) {
       }
       const au = await textAudit(page, "#birge-screen");
       check(`${tag}: без технических слов и прокрутки вбок`, !au.missing && !au.tech.length && !au.overflow, JSON.stringify({ tech: au.tech, overflow: au.overflow }));
+      check(`${tag}: текст не мельче ${au.min} px (токен --fs-xs)`, !au.missing && !au.tiny.length, JSON.stringify(au.tiny));
       await shot(page, tag);
       if (!empty && lang === "ru") {
         // Оболочка раунда 15 (R01 B0.4): на телефоне колокольчика нет — первый пункт меню аватара «Уведомления · N» и точка
