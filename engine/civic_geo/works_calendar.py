@@ -256,11 +256,16 @@ def _has_place(record: dict) -> bool:
 
 
 def load_works(today: date | None = None) -> tuple[list[dict], dict]:
-    """(записи работ, {source, r06, demo}) — см. порядок источников в начале модуля."""
+    """(записи работ, {source, r06, real}) — см. порядок источников в начале модуля.
+
+    Настоящие работы LOCAL-5 (data/civic/astana/nura-real/records.csv, engine.civic_geo.real_works) добавляются всегда,
+    если файл есть: source "real", ссылка на источник, покрытие привязки — info["real"]."""
     today = today or today_astana()
     records, r06 = read_r06()
     info = {"r06": r06, "source": "r06" if records is not None else None}
     records = [r for r in (records or []) if is_street_work(r)]
+    # Демо (мир R02 или фикстура) — только если у R06 нет ни одной работы с участком; настоящие работы LOCAL-5 на это
+    # не влияют и добавляются после (иначе одна настоящая запись прятала бы сцену 8).
     if demo_mode() and not any(_has_place(r) for r in records):
         extra = (_WORLD.get("works") or load_world(today)) if world_mode() else []
         label = "world"
@@ -270,6 +275,17 @@ def load_works(today: date | None = None) -> tuple[list[dict], dict]:
             known = {r.get("id") for r in records}
             records.extend(r for r in extra if r.get("id") not in known)
             info["source"] = f"{info['source']}+{label}" if info["source"] else label
+    try:
+        from .real_works import load_real_works
+        real, coverage = load_real_works()
+    except Exception:
+        LOGGER.exception("civic_geo real works failed")
+        real, coverage = [], {"status": "FAILED"}
+    info["real"] = coverage
+    if real:
+        known = {r.get("id") for r in records}
+        records.extend(r for r in real if r.get("id") not in known)
+        info["source"] = f"{info['source']}+real" if info["source"] else "real"
     info["source"] = info["source"] or "none"
     return records, info
 
@@ -542,6 +558,7 @@ def calendar_response(query: dict, staff=None):
         body = build_calendar(records, start, end, filters, today)
         body["source"] = info["source"]
         body["r06"] = info["r06"]
+        body["real"] = info.get("real")  # покрытие LOCAL-5: сколько на участке, примерно, без места, без дат (или NOT_RUN)
         return 200, body
     except CalendarError as exc:
         return _error(400, exc.code, exc.message, exc.field)

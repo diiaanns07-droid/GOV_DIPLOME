@@ -90,6 +90,9 @@
       "wcal.work.length": "участок {m} м",
       "wcal.work.context": "Показана как вторая сторона конфликта",
       "wcal.work.open": "Открыть запись",
+      "wcal.work.source": "Источник",
+      "wcal.real.tag": "Настоящие",
+      "wcal.real.coverage": "работ из открытых источников: {n} · на участке улицы {exact} · примерно {approx}",
       "wcal.add": "Добавить работу",
       "wcal.work.delayed": "срок перенесён",
       "wcal.status.planned": "Запланировано",
@@ -163,6 +166,9 @@
       "wcal.work.length": "учаске {m} м",
       "wcal.work.context": "Қайшылықтың екінші жағы ретінде көрсетілген",
       "wcal.work.open": "Жазбаны ашу",
+      "wcal.work.source": "Дереккөз",
+      "wcal.real.tag": "Нақты",
+      "wcal.real.coverage": "ашық дереккөздердегі жұмыстар: {n} · көше учаскесінде {exact} · шамамен {approx}",
       "wcal.add": "Жұмыс қосу",
       "wcal.work.delayed": "мерзімі ауыстырылды",
       "wcal.status.planned": "Жоспарланған",
@@ -486,6 +492,14 @@
       if (d && d.demo && state.status === "ready") {
         titleBox.append(h("p", { class: "wcal-demo" }, [h("span", { class: "wcal-demo__tag", text: tr("common.tag.demo") }), tr("wcal.demo_note")]));
       }
+      // Настоящие работы LOCAL-5 (если файл есть): сколько легло на участок улицы, сколько — примерным местом.
+      const real = d && state.status === "ready" ? d.real : null;
+      if (real && real.status === "OK" && real.total) {
+        titleBox.append(h("p", { class: "wcal-demo wcal-real" }, [
+          h("span", { class: "wcal-real__tag", text: tr("wcal.real.tag") }),
+          tr("wcal.real.coverage", { n: real.total, exact: real.on_segments, approx: real.approximate }),
+        ]));
+      }
       // Фильтры нужны, когда есть данные или «пусто» (можно сменить район); при «войдите», «не подключён», ошибке — нет.
       const withControls = state.status === "ready" || (state.status === "loading" && state.data);
       return h("header", { class: "wcal-head" + (opts.embedded ? " wcal-head--embedded" : "") }, [titleBox, withControls ? controls() : null]);
@@ -798,6 +812,11 @@
         [tr("wcal.work.status"), tr("wcal.status." + (w.status || "unknown")) + (w.delayed ? " · " + tr("wcal.work.delayed") : "")],
         [tr("wcal.work.place"), place],
       ];
+      // Настоящая работа — ссылка на источник (только http/https: проверено на сервере; здесь — ещё раз).
+      if (w.source === "real" && w.source_ref && /^https?:\/\//.test(w.source_ref)) {
+        rows.push([tr("wcal.work.source"), h("a", { class: "wcal-pop__src", href: w.source_ref, target: "_blank", rel: "noopener noreferrer" },
+          [w.source_name || w.source_ref])]);
+      }
       const pop = h("div", { class: "wcal-pop bk-glass bk-glass--strong", role: "dialog", "aria-label": lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru, tabindex: "-1" }, [
         h("div", { class: "wcal-pop__hd" }, [
           h("h4", { class: "wcal-pop__title", text: lang() === "kk" ? w.title_kk || w.title_ru : w.title_ru }),

@@ -235,7 +235,7 @@ class BoundWork:
         if self.issues:
             out["issues"] = list(self.issues)
         # Поля R06 (works_v2): ссылка на запись в разделе «Работы и отключения», перенос срока, зона отключения.
-        for key in ("source_ref", "source_name", "link", "zone_ru", "zone_kk"):
+        for key in ("source_ref", "source_name", "link", "zone_ru", "zone_kk", "published_on", "place_text", "dates_approx"):
             if r.get(key):
                 out[key] = r[key]
         if r.get("delayed"):
@@ -838,8 +838,9 @@ BIND_CACHE_MAX = 4000
 
 def _fingerprint(record: dict) -> str:
     keys = ("id", "segments", "street", "from", "to", "geometry", "point", "kind", "work_kind", "service", "starts_on",
-            "ends_on", "start", "end", "planned_end", "forecast_end", "schedule", "status", "district", "source", "demo",
-            "title_ru", "title_kk", "title", "street_ru", "street_kk", "source_ref", "source_name", "type")
+            "ends_on", "start", "end", "starts_at", "ends_at", "planned_end", "forecast_end", "schedule", "status",
+            "district", "source", "demo", "title_ru", "title_kk", "title", "street_ru", "street_kk", "source_ref",
+            "source_name", "type", "link", "delayed", "published_on", "place_text", "dates_approx")
     raw = json.dumps({k: record.get(k) for k in keys}, ensure_ascii=False, sort_keys=True, default=str)
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()
 

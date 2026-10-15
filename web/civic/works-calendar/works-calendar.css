@@ -26,6 +26,11 @@
   background: var(--c-demo-soft, #edf1f7); color: var(--c-demo, #4b5d7a); font-size: var(--fs-xs, 12px); font-weight: var(--fw-medium, 500);
   white-space: nowrap; }
 
+.wcal-real { margin-top: 4px; }
+.wcal-real__tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: var(--r-pill, 999px);
+  background: var(--c-info-soft, #e8f0fb); color: var(--c-info, #1f5fa8); font-size: var(--fs-xs, 12px);
+  font-weight: var(--fw-medium, 500); white-space: nowrap; }
+.wcal-pop__src { color: var(--c-info, #1f5fa8); text-decoration: underline; text-underline-offset: 2px; word-break: break-all; }
 .wcal-controls { display: flex; align-items: flex-end; gap: var(--s-2, 8px); flex-wrap: wrap; }
 .wcal-head--embedded { align-items: flex-end; }
 .wcal-head--embedded .wcal-meta { margin-top: 0; }

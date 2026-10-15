@@ -5,6 +5,7 @@
 Работы — СИНТЕТИКА фикстуры R12 (data/civic/astana/geo/works_fixture.json, demo: true) на настоящем графе OSM Астаны.
 """
 import copy
+from pathlib import Path
 import json
 import random
 import time
@@ -424,3 +425,49 @@ def test_seed_world_remembers_works_and_planned_ids(real, monkeypatch):
         assert "cf-w15-01" in {c["id"] for c in cal["conflicts"]}
     finally:
         WC._WORLD.clear()
+
+
+# ---------- LOCAL-5: реальные работы из CSV (файла в репозитории нет — тест на ТЕСТОВОЙ таблице) ----------
+def test_real_works_csv_binding_and_coverage(real):
+    """Синтетическая таблица с пометкой «ТЕСТ»: участок между перекрёстками, примерное место, без места, без дат."""
+    from engine.civic_geo.real_works import load_real_works
+    works, cov = load_real_works(Path(__file__).parent / "fixtures" / "real_works_TEST.csv", real)
+    assert cov["status"] == "OK" and cov["total"] == 4
+    assert (cov["on_segments"], cov["approximate"], cov["no_place"], cov["no_dates"]) == (1, 2, 1, 1)
+    first = works[0]
+    assert first["source"] == "real" and first["demo"] is False and first["place_bind"] == "street_between"
+    assert first["kind"] == "surface" and first["service"] == "road" and first["status"] == "planned"
+    assert (first["starts_on"], first["ends_on"]) == ("2027-05-01", "2027-05-20")
+    assert first["source_ref"] == "https://example.org/test-1" and first["source_name"] == "example.org"
+    edges = [real.by_id[e] for e in first["segments"]]
+    assert edges and all(e.name == "улица Сыганак" for e in edges)
+    second = works[1]
+    assert second["place_bind"] == "street_only" and second.get("point") and not second.get("segments")
+    assert (second["starts_on"], second["ends_on"], second.get("dates_approx")) == ("2027-06-01", "2027-06-30", True)
+    assert second["kind"] == "dig" and second["service"] == "water"
+    third = works[2]
+    assert third["place_bind"] == "none" and third["source_ref"] is None  # javascript: — не ссылка
+    assert third["ends_on"] == "2027-07-15" and third.get("delayed") is True
+    assert works[3]["starts_on"] is None and works[3]["kind"] == "closure"
+    bound = W.bind_all(works, real)
+    assert [w.approximate for w in bound] == [False, True, True, True]
+
+
+def test_real_works_missing_file_is_not_run(tmp_path):
+    from engine.civic_geo.real_works import load_real_works
+    works, cov = load_real_works(tmp_path / "records.csv")
+    assert works == [] and cov["status"] == "NOT_RUN" and "нет файла" in cov["reason"]
+
+
+def test_real_works_do_not_hide_the_demo_scene(real, monkeypatch):
+    """Настоящие работы LOCAL-5 добавляются к демо, а не вместо него (сцена 8 остаётся в календаре)."""
+    from engine.civic_geo import real_works as RW, works_calendar as WC
+    csv_path = Path(__file__).parent / "fixtures" / "real_works_TEST.csv"
+    monkeypatch.setattr(RW, "REAL_PATH", csv_path)
+    monkeypatch.setattr(RW.load_real_works, "__defaults__", (csv_path, None))
+    monkeypatch.setenv("CIVIC_DEMO", "1")
+    monkeypatch.delenv("CIVIC_DEMO_WORLD", raising=False)
+    records, info = WC.load_works(TODAY)
+    assert info["source"].endswith("fixture+real") and info["real"]["total"] == 4
+    ids = {r["id"] for r in records}
+    assert "w-demo-r12-01" in ids and sum(1 for i in ids if i.startswith("w-real-")) == 4
