@@ -74,7 +74,8 @@
           h("p", { class: "fw__meta" }, [h("span", { text: DISTRICTS[l][item.district] || item.district || "" }),
             h("span", { class: "fw__level fw__level--" + item.level, text: t(item.level) })]),
           item["reason_" + l] ? h("p", { class: "fw__reason", text: item["reason_" + l] }) : null,
-          item["weather_" + l] ? h("p", { class: "fw__weather", title: t("weather"), text: item["weather_" + l] }) : null,
+          item["weather_" + l] ? h("p", { class: "fw__weather" }, [h("span", { class: "fw__weather-label", text: t("weather") + ": " }),
+            item["weather_" + l]]) : null,
         ]),
         canMap ? h("button", { type: "button", class: "fw__map bk-btn bk-btn--ghost", onclick: () => opts.openTarget(item.target.kind, item.target.id),
           text: t("on_map") }) : null,
@@ -133,7 +134,7 @@
       "display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}",
       ".fw__main{display:grid;flex:1;gap:2px;min-width:0}.fw__label{font-weight:600;overflow-wrap:anywhere}",
       ".fw__meta{display:flex;flex-wrap:wrap;gap:4px 8px}.fw__level{font-weight:500}.fw__level--high{color:var(--c-danger,#9a2e28)}",
-      ".fw__weather::before{content:'☁ ';}.fw__map{flex:none;min-height:36px}",
+      ".fw__weather-label{font-weight:500}.fw__map{flex:none;min-height:36px}",  // П1: без эмодзи — подпись словами
       ".fw__how summary{cursor:pointer;font-size:13px;font-weight:600}.fw__how p{margin-top:6px;font-size:13px;color:var(--c-text-2,#4b5752)}",
       ".fw__nums b{color:var(--c-ink,#121a17)}",
     ].join("");

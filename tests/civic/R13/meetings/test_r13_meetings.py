@@ -586,3 +586,19 @@ def test_demo_reset_on_restart_keeps_real_records(tmp_path):
     assert own["order"]["id"] in orders                                       # поручение сотрудника не тронуто
     _s, card = call(svc2, "GET", "/meetings/m-demo-nura-next")
     assert "q-demo-m02" not in [q["id"] for q in card["meeting"]["questions"]]  # снятый вопрос не вернулся (R15 S20)
+
+
+def test_complaint_link_shows_place_and_status_from_r09_public_view(tmp_path, clock):
+    from ui.civic_feedback.v2.integration import make_service as make_complaints
+    path = str(tmp_path / "links.sqlite3")
+    make_complaints(path, demo_seed=True)                       # демо-жалоба R09 «Хан Шатыр» (освещение)
+    service = make_service(path, clock=clock, demo=True)
+    _s, past = call(service, "GET", "/meetings/m-demo-nura-past")
+    link = next(o["link"] for o in past["meeting"]["orders"] if o["link"])
+    assert link["label_ru"] == "Остановка «Хан Шатыр»" and link["target"] == {"kind": "object", "id": "osm-node-4109037549"}
+    assert link["status"] in ("new", "accepted", "in_progress", "fixed") and "text" not in link  # без слов жителя
+    # нет такой жалобы — остаётся номер, без ошибки
+    staff(service, "POST", "/meetings/m-demo-nura-past/order", {"order_id": "o-demo-n4", "link": {"kind": "complaint", "id": "c-missing-1"}})
+    _s, again = call(service, "GET", "/meetings/m-demo-nura-past")
+    bare = next(o["link"] for o in again["meeting"]["orders"] if o["id"] == "o-demo-n4")
+    assert bare == {"kind": "complaint", "id": "c-missing-1"}

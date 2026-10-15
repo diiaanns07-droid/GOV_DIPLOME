@@ -132,6 +132,7 @@ class MeetingService:
     def __init__(self, store: MeetingStore, qa=None):
         self.store = store
         self.qa = qa  # ui.civic_qa.QuestionService | None
+        self._complaints = None  # сервис жалоб R09 для подписи связанного обращения (лениво; нет модуля — False)
 
     # ------------------------------------------------------------------ вход
     def handle(self, method, path, query=None, body=None, principal=None, context=None):
@@ -341,7 +342,47 @@ class MeetingService:
                 pending = qs.list(status="pending", meeting=mid, order="queue", limit=50)
                 meeting["pending_questions"] = [self.qa._staff_view(r) for r in pending]
         meeting["voting_open"] = summary["phase"] == "upcoming"
+        self._link_details(meeting["orders"])
         return _reply(200, {"meeting": meeting, "staff": staff, "services": service_names()})
+
+    def _complaint_service(self):
+        """Жалобы R09 той же базы — только чтение публичного вида (CONTRACT §7 «вызовы между модулями»)."""
+        if self._complaints is None:
+            try:
+                from ui.civic_feedback.v2.integration import make_service as make_complaints  # noqa: WPS433
+                self._complaints = make_complaints(self.store.db_path)
+            except Exception:
+                self._complaints = False
+        return self._complaints or None
+
+    def _link_details(self, orders: list[dict]) -> None:
+        """У поручения, связанного с обращением, — что это и где: подпись цели, статус, цель для «На карте».
+
+        Берём публичный вид R09 (GET /complaints/{id}): без текста жителя и без исполнителей. Нет R09 или записи —
+        остаётся только {kind, id}, как раньше."""
+        linked = [o for o in orders if o.get("link") and o["link"]["kind"] == "complaint"]
+        if not linked:
+            return
+        svc = self._complaint_service()
+        if svc is None:
+            return
+        ctx = {"headers": {}, "host_allowed": True, "is_same_origin": True}
+        for order in linked:
+            try:
+                reply = svc.handle("GET", f"{PREFIX}/complaints/{order['link']['id']}", "", None, None, ctx)
+                body = reply.get("body") if isinstance(reply, dict) and reply.get("status") == 200 else None
+                data = body.get("data", body) if isinstance(body, dict) else None
+                complaint = data.get("complaint") if isinstance(data, dict) else None
+            except Exception:
+                complaint = None
+            if not isinstance(complaint, dict):
+                continue
+            target = complaint.get("target") if isinstance(complaint.get("target"), dict) else {}
+            order["link"].update({
+                "label_ru": target.get("label_ru"), "label_kk": target.get("label_kk"),
+                "target": {"kind": target.get("kind"), "id": target.get("id")} if target.get("id") else None,
+                "status": complaint.get("status"), "category": complaint.get("category"),
+            })
 
     # ------------------------------------------------------------------ житель
     def register(self, mid: str, body: dict, context) -> dict:

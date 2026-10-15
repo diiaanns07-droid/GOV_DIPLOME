@@ -290,10 +290,11 @@
   padding-inline: 18px;
   font-variant-numeric: tabular-nums;
 }
+/* Нажатая «Приду» — спокойная (как нажатая капсула голоса): зелёный в продукте только у «выполнено» (П1, VISUAL_BRIEF §4) */
 .mt-going.is-on {
   border: 1px solid var(--mt-line);
-  background: var(--mt-ok-bg);
-  color: var(--mt-ok-ink);
+  background: var(--mt-fill);
+  color: var(--mt-ink);
 }
 .mt-going[disabled] {
   cursor: default;
@@ -487,9 +488,10 @@
   align-items: flex-start;
   gap: 10px;
   padding: 12px;
+  border: 1px solid var(--mt-line);
   border-radius: var(--r-l, 14px);
-  background: var(--mt-ok-bg);
-  color: var(--mt-ok-ink);
+  background: var(--c-surface, #fff);
+  color: var(--mt-ink);
   animation: mt-enter 220ms var(--mt-ease) both;
 }
 .mt-sent:focus {
@@ -503,8 +505,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--mt-ok);
-  color: #fff;
+  background: var(--mt-ink);
+  color: var(--c-surface, #fff);
 }
 .mt-sent__title {
   font-weight: 600;
@@ -676,6 +678,12 @@
   font-weight: 500;
   overflow-wrap: anywhere;
 }
+.mt-linkline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
 .mt-linkchip .ic {
   width: 12px;
   height: 12px;
@@ -769,7 +777,7 @@
   0%,
   40% {
     box-shadow: inset 0 0 0 2px var(--mt-ink);
-    background-color: var(--mt-ok-bg);
+    background-color: var(--mt-fill);
   }
 }
 

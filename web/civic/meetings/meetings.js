@@ -993,10 +993,14 @@
       box.appendChild(tabs);
     }
 
+    // Пустое состояние и ошибка (поправка владельца П1): маленький монохромный значок набора R11 (48 px), короткий текст,
+    // одна кнопка. Не иллюстрация: BirgeUI.state рисует icon размером 48, когда передан opts.icon.
+    const STATE_ICON = { question: "message", list: "calendar", search: "search" };
     function stateBox(kind, title, text, action, illustration) {
       const el = h("div", { class: "mt-state" });
       if (root.BirgeUI && typeof root.BirgeUI.state === "function") {
-        root.BirgeUI.state(el, kind, { title, text, action, illustration });
+        const icon = kind === "error" ? "wifi-off" : STATE_ICON[illustration] || "info";
+        root.BirgeUI.state(el, kind, { title, text, action, icon });
         return el;
       }
       el.appendChild(h("p", { class: kind === "error" ? "bk-error__title" : "bk-empty__title", text: title || "" }));
@@ -1302,10 +1306,20 @@
       return li;
     }
     function linkChip(o) {
-      // Житель видит, с чем связано поручение; номер записи нужен только акимату.
-      const label = staff() ? tr("meet.link." + o.link.kind) + " · " + o.link.id : tr("meet.linked." + o.link.kind);
-      return h("p", { class: "mt-linkchip" }, [icon(o.link.kind === "complaint" ? "message" : o.link.kind === "work" ? "calendar" : "cube"),
-        h("span", { text: label })]);
+      // Житель видит, с чем связано поручение и где это (подпись цели обращения R09 и его статус); номер записи — только
+      // акимату. Есть цель — «На карте».
+      const l = o.link;
+      const place = pick(l, "label");
+      let label = place ? tr("meet.link." + l.kind) + ": " + place : tr("meet.linked." + l.kind);
+      if (l.status && I() && I().has && I().has("status." + l.status)) label += " · " + tr("status." + l.status);
+      if (staff()) label += " · " + l.id;
+      const canMap = l.target && l.target.kind && l.target.id && typeof opts.openTarget === "function";
+      return h("p", { class: "mt-linkline" }, [
+        h("span", { class: "mt-linkchip" }, [icon(l.kind === "complaint" ? "message" : l.kind === "work" ? "calendar" : "cube"),
+          h("span", { text: label })]),
+        canMap ? h("button", { type: "button", class: "mt-link", "data-focus": "lmap-" + o.id,
+          onclick: () => opts.openTarget(l.target.kind, l.target.id) }, [tr("meet.on_map")]) : null,
+      ]);
     }
 
     // ---------------------------------------------------------------- сотрудник
@@ -1564,9 +1578,11 @@
 
     // ---------------------------------------------------------------- клавиатура, язык, вид
     // Esc закрывает один слой (как в FINAL-4): форму → встречу → (дальше — оболочка закрывает раздел).
-    // Слушаем документ: после перерисовки фокус может оказаться на body (нажатая строка заменена новой разметкой).
+    // Слушаем документ в фазе захвата: после перерисовки фокус может оказаться на body (нажатая строка заменена новой
+    // разметкой), а Esc оболочки («закрыть раздел → карта», R01) не должен опередить закрытие нашего слоя.
     function onKey(e) {
       if (e.key !== "Escape" || e.defaultPrevented || !box.isConnected || !box.getClientRects().length) return;
+      if (state.tab !== "meetings") return;  // вкладка «Вопросы» — Esc у «Вопроса акиму» и оболочки
       const target = e.target;
       const inside = target && target.nodeType === 1 && box.contains(target);
       if (!inside && target !== doc.body && target !== doc.documentElement) return;  // фокус в другом модуле
@@ -1581,7 +1597,7 @@
       else handled = false;
       if (handled) { e.preventDefault(); e.stopPropagation(); render(); }
     }
-    doc.addEventListener("keydown", onKey);
+    doc.addEventListener("keydown", onKey, true);
     function relang() { if (state.lang !== lang()) render(); }
     const offLang = I() && typeof I().onChange === "function" ? I().onChange(relang) : null;
     function onMode(e) {
@@ -1619,7 +1635,7 @@
         clearTimeout(state.skeletonTimer);
         if (offLang) offLang();
         doc.removeEventListener("birge:mode", onMode);
-        doc.removeEventListener("keydown", onKey);
+        doc.removeEventListener("keydown", onKey, true);
         if (askHandle) { try { askHandle.destroy(); } catch (e) { /* ничего */ } askHandle = null; }
         if (box.parentNode) box.parentNode.removeChild(box);
       },

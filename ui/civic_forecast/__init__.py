@@ -204,7 +204,7 @@ def week_method(today=None) -> dict:
     }
 
 
-def week_block(district=None, k=5, today=None) -> dict:
+def week_block(district=None, k=5, today=None, now=None) -> dict:
     """Блок «Прогноз на неделю: где вероятнее рост жалоб» для R08 (вызов в процессе) и экрана (GET /forecast → week).
 
     -> {"title_ru", "title_kk", "period": {from, to}, "month", "label": "prototype", "evidence_type": "synthetic",
@@ -215,6 +215,8 @@ def week_block(district=None, k=5, today=None) -> dict:
     if isinstance(k, bool) or not isinstance(k, int):
         k = 5
     k = max(3, min(5, k))
+    if today is None and isinstance(now, datetime):  # R08 зовёт с now (ui/civic_akim/neighbors.py)
+        today = (now if now.tzinfo else now.replace(tzinfo=timezone.utc)).astimezone(ASTANA).date()
     today = today or datetime.now(ASTANA).date()
     start, end = today, today + timedelta(days=6)
     # Месяц недели — тот, где больше её дней; нет его в кэше — ближайший из кэша (прогноз считается заранее).
@@ -237,16 +239,20 @@ def week_block(district=None, k=5, today=None) -> dict:
         if weather and main is not weather[0]:
             row["weather_ru"], row["weather_kk"] = weather[0]["ru"], weather[0]["kk"]
         items.append(row)
+    method = week_method(today)
     return {
-        "module": "R13", "title_ru": "Прогноз на неделю: где вероятнее рост жалоб",
+        "module": "R13", "horizon": "week", "title_ru": "Прогноз на неделю: где вероятнее рост жалоб",
         "title_kk": "Апталық болжам: шағым қай жерде көбеюі мүмкін",
         "period": {"from": start.isoformat(), "to": end.isoformat()}, "month": month, "district": district or None,
         "label": "prototype", "evidence_type": "synthetic", "demo": True, "items": items,
-        "method": week_method(today),
+        "method": method, "method_ru": method["text_ru"], "method_kk": method["text_kk"],  # «Как считаем» для R08
         "note_ru": "Прототип: история жалоб — синтетическая, погода — реальная (Open-Meteo). Не реальная оценка риска.",
         "note_kk": "Прототип: шағымдар тарихы — синтетикалық, ауа райы — нақты (Open-Meteo). Нақты тәуекел бағасы емес.",
     }
 
 
-__all__ = ["ForecastError", "attention_next_month", "forecast", "forecast_response", "next_month", "week_block",
-           "week_method"]
+# Имена, под которыми блок ищет R08 (ui/civic_akim/neighbors.py R13_WEEK_FUNCS) — тот же блок.
+week_forecast = forecast_week = week_block
+
+__all__ = ["ForecastError", "attention_next_month", "forecast", "forecast_response", "forecast_week", "next_month",
+           "week_block", "week_forecast", "week_method"]
