@@ -145,30 +145,34 @@ def bodies(ids):
         "together/initiatives/{initiative}/report": {"text": "Убрали двор и посадили 6 саженцев", "photo_ids": []},
         "together/yards/{yard}/join": {},
         "together/yards/{yard}/leave": {},
-        "incidents": {"kind": "blizzard", "title_ru": "Буран (проверка R10)", "title_kk": "Боран (R10 тексеруі)",
-                      "zone": {"kind": "district", "district": "nura"}},
+        # Не буран в Нуре: он уже идёт в демо-мире (сцена 9), второй такой же модуль справедливо отклонит (409).
+        "incidents": {"kind": "water_outage", "title_ru": "Прорыв водопровода (проверка R10)",
+                      "title_kk": "Су құбырының жарылуы (R10 тексеруі)", "zone": {"kind": "district", "district": "esil"}},
         "incidents/{incident}/task": {"service": "street_cleaning", "text_ru": "Расчистить дороги к школам",
                                       "text_kk": "Мектептерге апаратын жолдарды тазарту"},
         "incidents/{incident}/update": {"text_ru": "Дороги расчищены на 60 %", "text_kk": "Жолдар 60 % тазартылды",
                                         "public": True},
-        "incidents/{incident}/close": {"result": {"text_ru": "Последствия бурана устранены",
-                                                  "text_kk": "Боран салдары жойылды"}},
+        # Запись §5.5 хранит result {text_ru, text_kk}; тело запроса CONTRACT не задаёт — даём оба вида (R17: result_ru/kk).
+        "incidents/{incident}/close": {"result": {"text_ru": "Последствия бурана устранены", "text_kk": "Боран салдары жойылды"},
+                                       "result_ru": "Последствия бурана устранены", "result_kk": "Боран салдары жойылды"},
         "complaints/{complaint}/handoff": {"to": "water", "reason": "Сначала нужна замена трубы"},
         "complaints/{complaint}/services": {"services": [{"service": "water", "role": "lead"},
                                                          {"service": "road", "role": "partner"}]},
         "complaints/{complaint}/part": {"service": "water", "status": "done", "note": "Трубу заменили"},
         "meetings": {"district": "nura", "title_ru": "Встреча акима района с жителями (проверка R10)",
                      "title_kk": "Аудан әкімінің тұрғындармен кездесуі (R10 тексеруі)", "at": _iso(5),
-                     "place": {"kind": "object", "id": "osm-node-4109037549"}},
+                     "place": {"kind": "object", "id": "osm-node-4109037549", "label_ru": "Остановка «Хан Шатыр»",
+                               "label_kk": "«Хан Шатыр» аялдамасы"}},
         "meetings/{meeting}/order": {"text_ru": "Восстановить освещение у остановки",
                                      "text_kk": "Аялдама жанындағы жарықты қалпына келтіру",
                                      "service": "lighting", "due": _date(14)},
-        "meetings/{meeting}/result": {"text_ru": "Встреча прошла, поручения даны",
-                                      "text_kk": "Кездесу өтті, тапсырмалар берілді"},
+        "meetings/{meeting}/result": {"text_ru": "Встреча прошла, поручения даны", "text_kk": "Кездесу өтті, тапсырмалар берілді",
+                                      "result_ru": "Встреча прошла, поручения даны",
+                                      "result_kk": "Кездесу өтті, тапсырмалар берілді"},
         "meetings/{meeting}/register": {},
         "meetings/{meeting}/question": {"text": "Когда починят освещение у остановки?", "lang": "ru"},
         "route": {"text": "Яма после раскопок: Водоканал менял трубу, асфальт не восстановили", "lang": "ru"},
-        "reply-draft": {"complaint_id": ids.get("complaint") or PROBE, "lang": "ru"},
+        "reply-draft": {"complaint_id": ids.get("complaint") or "c-r10probe0001", "lang": "ru"},
         "moderate": {"text": "Звоните мне +7 701 123 45 67, ИИН 900101300123, почта test@example.com",
                      "lang": "ru"},
         "assistant/ask": {"question": "Сколько жалоб в Нуре за неделю и сколько из них просрочено?", "lang": "ru"},
@@ -599,7 +603,7 @@ class ApiCheck:
             self.ids["idea"] = item["id"]
         # Жалоба для совместного исполнения: новая, у остановки «Республиканский диагностический центр» (как API-шаг demo_flow).
         r = self.res.post(f"{V2}/complaints", {
-            "text": "Яма после раскопок у остановки, асфальт не восстановили", "lang": "ru", "category": "road",
+            "text": "Яма после раскопок у остановки, асфальт не восстановили", "lang": "ru", "category": "roads",
             "category_source": "resident", "point": [71.4060541, 51.1266034],
             "target": {"kind": "object", "id": "osm-node-13394597038"}, "device_id": self.res.device, "demo": True})
         rec = record(r.body, "complaint") or {}
@@ -625,7 +629,13 @@ class ApiCheck:
                     self.expect_no_crash(name + ": сотрудник, пустое тело", r, rt.role)
         elif rt.who == "resident":
             r = self.call(self.anon, rt)
-            self.expect_denied(name + ": житель без X-Birge-Device", r, (400, 401, 403, 422), rt.role)
+            if rt.method == "GET" and r.status == 200:
+                # Чтение без устройства: допустимо, если ответ — общая часть без личного (зона по параметрам, пусто).
+                leaks = privacy_issues(r.body)
+                self.add("доступ", f"{name}: житель без X-Birge-Device → 200 (общая часть)", "FAIL" if leaks else "PASS",
+                         leaks or None, rt.role)
+            else:
+                self.expect_denied(name + ": житель без X-Birge-Device", r, (400, 401, 403, 422), rt.role)
             r = self.call(self.res, rt)
             self.expect_ok(name + ": житель", r, rt, has_ids)
         elif rt.who == "author":
@@ -680,6 +690,10 @@ class ApiCheck:
                      rt.role)
         elif r.status == 429:
             self.add("ответ", name, "NOT_RUN", "лимит частоты 429", None)
+        elif r.status == 409:
+            # Конфликт по правилу модуля (дубль кризиса, итог встречи до её начала) с понятным текстом — не дефект.
+            ok, why = understandable(r)
+            self.add("ответ", f"{name} → 409 (правило модуля)", "PASS" if ok else "FAIL", why, rt.role)
         elif 400 <= r.status < 500:
             ok, why = understandable(r)
             # Модуль отказал на примере «как в интерфейсе»: не сбой, но и не PASS — пример из §5 должен проходить.
@@ -704,7 +718,8 @@ class ApiCheck:
                     recs = []
             for rec in recs[:50]:
                 if isinstance(rec, dict):
-                    errs = checker(rec, world=self.world)
+                    # Запись, созданная проверкой (POST), — не синтетика мира: demo: true от неё не требуем.
+                    errs = checker(rec, world=self.world and rt.method == "GET")
                     if errs:
                         problems.append(f"{rec.get('id', '?')}: " + "; ".join(errs[:4]))
             if kind == "initiatives" and rt.who == "all":

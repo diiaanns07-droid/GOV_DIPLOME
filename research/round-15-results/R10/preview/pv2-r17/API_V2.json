@@ -1,0 +1,669 @@
+{
+ "root": "<превью pv2>",
+ "world": true,
+ "seeds": [
+  "init",
+  "seed-demo",
+  "seed-r14-demo"
+ ],
+ "rows": [
+  {
+   "area": "FINAL-4",
+   "name": "маршруты FINAL-4 на месте (74)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01"
+  },
+  {
+   "area": "FINAL-4",
+   "name": "модули FINAL-4 подключены, как в FINAL-4 (ready)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "владелец модуля"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/initiatives",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/initiatives/{initiative}",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/join",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/leave",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/support",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/moderate",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/report",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/yards/{yard}",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/yards/{yard}/join",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/yards/{yard}/leave",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/updates",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST complaints/{complaint}/handoff",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST complaints/{complaint}/services",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST complaints/{complaint}/part",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET works-calendar",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET works-conflicts",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET heat/replay",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET akim/board",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET akim/week",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET meetings",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET meetings/{meeting}",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET meetings/updates",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/order",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/result",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/register",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/question",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST route",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST reply-draft",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST moderate",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST assistant/ask",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET notifications",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST notifications/read",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST ideas/{idea}/to-initiative",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "подготовка",
+   "name": "id записей для проверки",
+   "status": "PASS",
+   "detail": {
+    "incident": "inc-w15-buran",
+    "idea": "i-demo-5dff7c2a"
+   },
+   "owner": null
+  },
+  {
+   "area": "ответ",
+   "name": "GET agencies: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET agencies: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "GET agencies/board: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET agencies/board: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET agencies/board: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET agencies/board: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "GET agencies/joint: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET agencies/joint: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET agencies/joint: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "GET agencies/handoffs: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET agencies/handoffs: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET agencies/handoffs: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET agencies/handoffs: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET incidents: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET incidents: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET incidents/{incident}: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET incidents/{incident}: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "POST incidents: сотрудник → 201",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "POST incidents: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST incidents: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/task: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/task: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "POST incidents/{incident}/task: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST incidents/{incident}/task: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/update: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/update: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "POST incidents/{incident}/update: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST incidents/{incident}/update: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/close: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/close: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "POST incidents/{incident}/close: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST incidents/{incident}/close: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "GET incidents/updates: житель без X-Birge-Device → 200 (общая часть)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET incidents/updates: житель → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET incidents/updates: житель: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET incidents/updates: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "журнал",
+   "name": "сервер без Traceback модулей во время проверки",
+   "status": "PASS",
+   "detail": null,
+   "owner": "по тексту ошибки"
+  }
+ ],
+ "counts": {
+  "PASS": 42,
+  "FAIL": 35,
+  "NOT_RUN": 0
+ },
+ "by_role": {
+  "R16": {
+   "routes": 12,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 12
+  },
+  "R17": {
+   "routes": 11,
+   "ready": 11,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R09": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 3
+  },
+  "R12": {
+   "routes": 2,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 2
+  },
+  "R07": {
+   "routes": 1,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 1
+  },
+  "R08": {
+   "routes": 2,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 2
+  },
+  "R13": {
+   "routes": 8,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 8
+  },
+  "R04": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 3
+  },
+  "R03": {
+   "routes": 1,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 1
+  },
+  "R06": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 3
+  }
+ },
+ "ids": {
+  "incident": "inc-w15-buran",
+  "idea": "i-demo-5dff7c2a"
+ },
+ "timing_ms": {
+  "GET agencies": [
+   6
+  ],
+  "GET agencies/board": [
+   79
+  ],
+  "GET agencies/joint": [
+   47
+  ],
+  "GET agencies/handoffs": [
+   62
+  ],
+  "GET incidents": [
+   6
+  ],
+  "GET incidents/{incident}": [
+   10
+  ],
+  "POST incidents": [
+   12
+  ],
+  "POST incidents/{incident}/task": [
+   14
+  ],
+  "POST incidents/{incident}/update": [
+   18
+  ],
+  "POST incidents/{incident}/close": [
+   15
+  ],
+  "GET incidents/updates": [
+   3
+  ]
+ }
+}

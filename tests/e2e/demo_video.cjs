@@ -2,7 +2,7 @@
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/demo_video.cjs --root <папка сборки> --out <папка>
 //        [--langs kk,ru] [--parts 1,2] [--world] [--basemap simplified|real] [--glass keep|off|auto]
-//        [--subtitles <json>] [--fast] [--no-mp4]
+//        [--subtitles <json>] [--pace 0.8] [--fast] [--no-mp4]
 //
 // Что получается в <out> (на каждый язык):
 //   birge-demo-<lang>.webm — запись Playwright (как есть);  birge-demo-<lang>.mp4 — H.264 для заявки (если есть ffmpeg);
@@ -38,7 +38,9 @@ const PLACE = [71.4148, 51.1131];               // место сквера (ка
 const SHOT_Q = 72;
 
 // pause — паузы для зрителя (в --fast короче); ожидания ответа интерфейса — wait (всегда полные, иначе шаги не проходят).
-const pause = (ms) => sleep(FAST ? Math.round(ms * 0.35) : ms);
+// --pace — множитель пауз для зрителя (0,8 по умолчанию: часть 1 ≈ 3 мин); --fast — 0,35.
+const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.8)));
+const pause = (ms) => sleep(Math.round(ms * PACE));
 const wait = (ms) => sleep(ms);
 const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
 const dbg = (...xs) => { if (process.env.R10V_DEBUG) log("  ·", ...xs); };
@@ -58,7 +60,7 @@ function overlayScript() {
   #r10v-sub span::after,#r10v-badge::after,#r10v-title::after{content:attr(data-t)}
   #r10v-sub.on{opacity:1}
   /* Низ занят интерфейсом (шторка каталога, лист, форма) — субтитр наверху, под капсулой разделов. */
-  #r10v-sub.top{top:84px;bottom:auto;left:420px;right:20px}
+  #r10v-sub.top{top:84px;bottom:auto;left:530px;right:20px}
   @media (max-width:900px){#r10v-sub{left:12px;right:12px;bottom:96px}}
   /* Пометка о данных: справа сверху, под «ҚАЗ · РУС» и аватаром. */
   #r10v-badge{position:fixed;right:20px;top:74px;max-width:430px;padding:5px 10px;border-radius:8px;
@@ -110,7 +112,7 @@ function overlayScript() {
       const sub = document.getElementById("r10v-sub"), badge = document.getElementById("r10v-badge");
       if (!sub || !badge || innerWidth < 900) return;
       const W = innerWidth, H = innerHeight;
-      const top = busy(400, H - 132, W - 96, H - 62) && !busy(420, 86, W - 20, 150);
+      const top = busy(400, H - 132, W - 96, H - 62) && !busy(540, 128, W - 20, 160);
       sub.classList.toggle("top", top);
       badge.classList.toggle("low", top);
       badge.classList.toggle("off", top && busy(W - 440, H - 112, W - 20, H - 62));
@@ -243,17 +245,20 @@ async function recordLang(browser, lang) {
   fs.writeFileSync(base + ".srt", toSrt(timed));
   const duration = mp4 ? probeDuration(mp4) : webm ? probeDuration(webm) : null;
   return { lang, webm: webm && path.basename(webm), mp4: mp4 && path.basename(mp4), vtt: path.basename(base + ".vtt"),
-    srt: path.basename(base + ".srt"), duration_s: duration ?? Math.round(at()), trim_s: Math.round(shift * 10) / 10,
+    srt: path.basename(base + ".srt"), duration_s: duration ?? Math.round(at()), trim_s: Math.round(shift * 10) / 10, pace: PACE,
     bytes: webm ? fs.statSync(webm).size : 0,
     mp4_bytes: mp4 ? fs.statSync(mp4).size : 0, scenes, skipped, cues: cues.length, shots, page_errors: errors.slice(0, 8),
     seeds: srv.seeds };
 
   // ---------------------------------------------------------------------------------------------- часть 1 (FINAL-4)
   async function part1() {
-    await title(sub("part1"), 2200);
+    // Заголовок части и вступление — сразу, вид «Акимат» включается под них (без пустых секунд в начале).
     let s = scene("intro");
+    await page.evaluate((x) => window.__r10v && window.__r10v.title(x), sub("part1")).catch(() => null);
+    await say("intro", 2400);
+    await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null);
     await setMode("akimat");
-    await say("intro", 6500);
+    await pause(3600);
     await shot("0-intro");
     done(s);
 
@@ -279,7 +284,7 @@ async function recordLang(browser, lang) {
       await say("s2", 600);
       const dlg = (await firstVisible(page.getByRole("dialog"))) || page;
       const box = await firstVisible(dlg.getByRole("textbox"));
-      if (box) { await press(box, 300); await page.keyboard.type("Аялдамада жарық жоқ, вечером на остановке темно", { delay: FAST ? 5 : 42 }); }
+      if (box) { await press(box, 300); await page.keyboard.type("Аялдамада жарық жоқ, вечером на остановке темно", { delay: FAST ? 5 : 30 }); }
       await wait(3600);
       await shot("2-category");
       const sendRe = textRe(word("complaint.step3.send", "Отправить", "Жіберу"));

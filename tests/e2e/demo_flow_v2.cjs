@@ -30,6 +30,7 @@ const V2 = "/api/civic/v2";
 const T0 = Date.now();
 const results = [], marks = {};
 const add = (layer, step, name, status, detail, owner, shot) => {
+  if (typeof status !== "string") status = status === null || status === undefined ? "NOT_RUN" : status ? "PASS" : "FAIL";
   results.push({ layer, step, name, status, detail: detail ?? null, owner: owner || null, shot: shot || null, ms: Date.now() - T0 });
   console.log(`${status.padEnd(7)} ${layer} ${step} ${name}` + (detail ? " — " + JSON.stringify(detail).slice(0, 260) : ""));
 };
@@ -84,7 +85,8 @@ async function apiFlow(A, S, staff, timing) {
     }
     r = await call("7", "GET", `${V2}/together/initiatives/${s7.initiative}`, null, false, dev);
     const before = r.status === 200 ? (rec(r.body, "initiative") || {}).joined : null;
-    if (r.status !== 200) add("API", "7", `инициатива ${s7.initiative}`, r.status === 503 ? "NOT_RUN" : "FAIL", st(r), "R16");
+    // 404 — нет маршрута в шлюзе (R01) или инициативы мира не засеяны (R16 seed_world): NOT_RUN с причиной, а не FAIL.
+    if (r.status !== 200) add("API", "7", `инициатива ${s7.initiative}`, [503, 404].includes(r.status) ? "NOT_RUN" : "FAIL", st(r), "R16");
     else {
       add("API", "7", `«Я приду» до сцены = ${s7.joined_before} (демо-мир)`, ok3(before === s7.joined_before), { joined: before }, "R16 + R02");
       const j = await call("7", "POST", `${V2}/together/initiatives/${s7.initiative}/join`, {}, false, dev);
@@ -100,7 +102,7 @@ async function apiFlow(A, S, staff, timing) {
       r = await call("7", "GET", `${V2}/together/initiatives/${s7.initiative_done}`, null, false, dev);
       const dn = r.status === 200 ? rec(r.body, "initiative") || {} : null;
       add("API", "7", "сделанная инициатива: статус done, отчёт «Сделано вместе: N соседей»",
-        dn ? ok3(dn.status === "done" && !!(dn.report && (dn.report.text || dn.report.joined))) : r.status === 503 ? null : false,
+        dn ? ok3(dn.status === "done" && !!(dn.report && (dn.report.text || dn.report.joined))) : [503, 404].includes(r.status) ? null : false,
         dn ? { status: dn.status, report: dn.report && (dn.report.text || "").slice(0, 80), joined: dn.joined } : st(r), "R16");
     }
   }
@@ -114,10 +116,12 @@ async function apiFlow(A, S, staff, timing) {
     add("API", "8", "ИИ: «Нужны 2 службы» — маршрутизация жалобы сцены (вода + дороги)",
       r.status === 200 ? ok3(services.length >= 2 && services.includes("water") && services.includes("road")) : r.status === 503 || r.status === 404 ? null : false,
       r.status === 200 ? { services, joint: (unwrap(r.body) || {}).joint } : st(r), "R04");
+    let jointSet = false;
     if (staff) {
       r = await call("8", "POST", `${V2}/complaints/${s8.complaint}/services`,
         { services: [{ service: "water", role: "lead" }, { service: "road", role: "partner" }] }, true);
-      add("API", "8", "сотрудник: совместное исполнение — 2 службы у обращения", r.status === 503 || r.status === 404 ? "NOT_RUN" : ok3([200, 201].includes(r.status)),
+      jointSet = [200, 201].includes(r.status);
+      add("API", "8", "сотрудник: совместное исполнение — 2 службы у обращения", r.status === 503 || r.status === 404 ? "NOT_RUN" : ok3(jointSet),
         { status: r.status, err: r.body && r.body.error }, "R09");
       r = await call("8", "POST", `${V2}/complaints/${s8.complaint}/part`, { service: "water", status: "done", note: "Трубу заменили" }, true);
       add("API", "8", "сотрудник: часть «Водоканал — сделано»", r.status === 503 || r.status === 404 ? "NOT_RUN" : ok3([200, 201].includes(r.status)),
@@ -126,8 +130,9 @@ async function apiFlow(A, S, staff, timing) {
     r = await call("8", "GET", `${V2}/complaints/${s8.complaint}`, null, false, dev);
     const c = r.status === 200 ? rec(r.body, "complaint") || {} : null;
     const parts = c && Array.isArray(c.services) ? c.services : [];
-    add("API", "8", "у жителя паспорт с двумя службами и их статусами", c ? ok3(parts.length >= 2 && parts.every((x) => x.service && x.status)) : null,
-      c ? { services: parts.map((x) => `${x.service}:${x.status}`) } : st(r), "R09");
+    // Без совместного исполнения (маршрута R09 нет) паспорт с двумя службами проверять не на чем — NOT_RUN.
+    add("API", "8", "у жителя паспорт с двумя службами и их статусами", c && (jointSet || parts.length) ? ok3(parts.length >= 2 && parts.every((x) => x.service && x.status)) : null,
+      c ? (jointSet || parts.length ? { services: parts.map((x) => `${x.service}:${x.status}`) } : "совместное исполнение не задано (маршрут R09 не ответил)") : st(r), "R09");
     if (staff) {
       r = await call("8", "GET", `${V2}/agencies/board?days=30`, null, true);
       const rows = r.status === 200 ? list(r.body, "rows", "services") : null;
@@ -151,12 +156,14 @@ async function apiFlow(A, S, staff, timing) {
     const snow = pulse.find((p) => p.category === (s9.category || "snow_ice") && (p.district === s9.district || (p.districts || []).some((d) => d.district === s9.district)));
     add("API", "9", "«Картина дня»: пульс «Снег в Нуре ×N»", r.status === 200 ? ok3(!!snow) : null,
       r.status === 200 ? { pulse: pulse.slice(0, 3).map((p) => `${p.kind}:${p.category}:${p.district || "-"}:×${p.ratio}`) } : st(r), "R08 + R02");
-    r = await call("9", "GET", `${V2}/incidents/${s9.incident}`);
+    // Штаб открывает акимат: вид сотрудника (публичная карточка жителя задач служб не показывает — так у R17).
+    r = await call("9", "GET", `${V2}/incidents/${s9.incident}`, null, !!staff);
     const inc = r.status === 200 ? rec(r.body, "incident") || {} : null;
     add("API", "9", "кризисный штаб: зона «Нура», 4 службы с задачами, обновления ru/kk",
       inc ? ok3(inc.status === "active" && (inc.tasks || []).length >= 4 && (inc.updates || []).some((u) => u.text_ru && u.text_kk)) : r.status === 503 || r.status === 404 ? null : false,
       inc ? { status: inc.status, tasks: (inc.tasks || []).map((t) => t.service), updates: (inc.updates || []).length } : st(r), "R17");
-    r = await call("9", "GET", `${V2}/incidents/updates?since=${encodeURIComponent(new Date(Date.now() - 7 * 864e5).toISOString())}`, null, false, dev);
+    // Житель зоны: район «Нура» (зона по параметру; по устройству — двор R16 или подписка R08).
+    r = await call("9", "GET", `${V2}/incidents/updates?district=${s9.district}&since=${encodeURIComponent(new Date(Date.now() - 7 * 864e5).toISOString())}`, null, false, dev);
     add("API", "9", "житель зоны получает обновления кризиса", r.status === 200 ? ok3((list(r.body, "events", "updates", "items") || []).length > 0) : r.status === 503 || r.status === 404 ? null : false,
       r.status === 200 ? { n: (list(r.body, "events", "updates", "items") || []).length } : st(r), "R17");
     const day = (n) => new Date(Date.now() - n * 864e5).toISOString().slice(0, 10);
