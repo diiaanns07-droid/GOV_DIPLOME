@@ -70,8 +70,9 @@ def main():
         print(f"{br} {head}: файлов {len(rows)}, чисто {sum(r['clean'] for r in rows)}")
     for spec in a.patch:
         br, p = spec.split(":", 1)
-        text = git("show", f"{br}:{p}", cwd=repo)
-        r = subprocess.run(["git", "apply", "-v"], cwd=wt, capture_output=True, text=True, input=text + "\n")
+        # Текст патча — как есть (без strip): последние пустые строки контекста — часть патча.
+        text = subprocess.run(["git", "show", f"{br}:{p}"], cwd=repo, capture_output=True, text=True, check=True).stdout
+        r = subprocess.run(["git", "apply", "-v"], cwd=wt, capture_output=True, text=True, input=text)
         ok = r.returncode == 0
         report["patches"].append({"patch": spec, "applied": ok, "log": (r.stderr or r.stdout).strip()[-400:]})
         print(f"patch {spec}: {'применён' if ok else 'НЕ применён'}")

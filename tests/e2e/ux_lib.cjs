@@ -6,7 +6,9 @@ const NOISE = /openfreemap|Failed to load resource|ERR_TUNNEL|AJAXError|GL Drive
 // UX_BRIEF правило 4 + UX_SPEC §8: таких слов в интерфейсе быть не должно.
 const TECH_WORDS = /(?<![\p{L}-])(ребро|рёбра|граф|графа|геометри\p{L}*|сценари\p{L}*|payload|demo-ring|target|null|undefined|NaN|editor|api|json|sqlite|\/(?:api|staff)\/[\w/.-]+)(?![\p{L}-])/iu;
 // Ключ перевода, попавший на экран: «complaint.step2.title».
-const RAW_KEY = /\b(shell|common|complaint|heat|akim|target|proposal|build3d|mine|status|stage|cat|district)\.[a-z_]+(\.[a-z_0-9]+)*\b/;
+// Раунд 15: и ключи новых модулей (R16 together/yard, R17 agencies/crisis, R12 works, R13 meetings, R03 analyst, R06 notify,
+// R07 replay, R08 board).
+const RAW_KEY = /\b(shell|common|complaint|heat|akim|target|proposal|build3d|mine|status|stage|cat|district|together|yard|initiative|agencies|agency|crisis|incident|works|calendar|meetings|meeting|analyst|assistant|notify|notifications|replay|board|ideas|idea)\.[a-z_]+(\.[a-z_0-9]+)*\b/;
 // Имена собственные и слова, одинаковые в ru и kk, — не считаются «непереведёнными».
 // «Алматы · 5» — подпись района с числом; пробел может быть неразрывным (R07 13 окт: «Алматы\u00a0·»).
 const SAME_IN_BOTH = /^((Астана|Нура|Есиль|Алматы|Сарыарка|Байконур|Сарайшык|Birge|3D|Карта|РУС|ҚАЗ)(\s*·(\s*\d+)?)?|[\d\s.,:%–—+-]+)$/i;

@@ -16,10 +16,12 @@ const freePort = () => new Promise((ok, no) => { const s = net.createServer().on
 
 // Сервер сборки: init → seed-demo → seed-r14-demo (если есть) → сотрудник; app.py с CIVIC_DEMO=1 (как run-city.bat).
 // База — во временной папке, удаляется в stop(). Ничего не пишет в репозиторий.
-async function startServer(root, { demo = true, staff = true } = {}) {
+// world: true — CIVIC_DEMO_WORLD=1 (раунд 15, единый демо-мир R02: seed_world модулей при старте, CONTRACT §11).
+async function startServer(root, { demo = true, staff = true, world = false } = {}) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r10-lib-"));
   const db = path.join(tmp, "civic.sqlite3");
-  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1", CIVIC_DEMO: demo ? "1" : "" };
+  const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1", CIVIC_DEMO: demo ? "1" : "",
+    CIVIC_DEMO_WORLD: world ? "1" : "" };
   const cli = (argv, input) => execFileSync(PY, ["-B", "-m", "ui.civic_store", "--db", db, ...argv],
     { cwd: root, env, input, stdio: [input ? "pipe" : "ignore", "pipe", "pipe"] }).toString();
   cli(["init"]);
