@@ -51,7 +51,9 @@ def _hot(s: dict) -> dict:
     hot = s.get("hot") or {}
     if not hot.get("available"):
         return {"available": False, "reason": hot.get("reason") or "heat_unavailable", "items": []}
-    keep = ("rank", "target", "count", "level", "color", "status", "district", "category", "subtopic", "approximate", "demo")
+    # anchor — точка места на карте R07 (номер места на карте районов); точки жителей сюда не попадают.
+    keep = ("rank", "target", "count", "level", "color", "status", "district", "category", "subtopic", "approximate",
+            "anchor", "demo")
     return {"available": True, "days": hot.get("days"),
             "items": [{f: it.get(f) for f in keep} for it in (hot.get("items") or [])[:HOT_N]]}
 

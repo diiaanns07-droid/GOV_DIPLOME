@@ -7,7 +7,8 @@
  * Пароль сотрудника — только из переменной окружения (operator, как в RUN.txt R01). Проверяет и снимает:
  *   - Ситуационный центр без входа — «Войдите как сотрудник» и одна кнопка;
  *   - после входа: 1920×1080 и 1366×768, ru и kk — без прокрутки, 4 числа = ответ akim/board, все блоки по очереди;
- *     колонка R17 «Ответ просрочен» (правило R09, не срок исправления), «Двор недели» и «идёт сейчас» у начатого дела;
+ *     колонка R17 «Ответ просрочен» (правило R09, не срок исправления), «Двор недели» и «идёт сейчас» у начатого дела,
+ *     карта районов (контуры OSM, числа = akim/board);
  *   - «Картина дня» в оболочке Birge: три карточки, «Поддержать» → дело сцены 7, «Открыть кризисный штаб» → идущий штаб;
  *   - «Картина недели»: ru и kk, печать — не больше 2 листов A4.
  * Итог — world_shots.json в папке кадров.
@@ -94,6 +95,18 @@ function pdfPages(file) {
         const yard = await page.textContent(".sc-yard").catch(() => "");
         check(`${tag}: «Двор недели» со страницы двора R16`, /BI City Tokyo/.test(yard) && /37/.test(yard), yard);
         check(`${tag}: начатое дело — «идёт сейчас»`, lang === "ru" ? /идёт сейчас/.test(body) : /қазір өтіп жатыр/.test(body));
+      }
+      if (ids[i] === "districts") {
+        // Карта районов: контуры OSM из сборки, числа = районы akim/board (= карта R07), не больше 3 кружков мест.
+        const map = await page.evaluate(() => {
+          const m = document.querySelector(".sc-map");
+          return m ? { labels: Array.from(m.querySelectorAll(".sc-map__label")).filter((l) => l.style.visibility !== "hidden")
+            .map((l) => l.textContent.replace(/\s/g, "")), pins: m.querySelectorAll(".sc-map__pin").length,
+            w: m.getBoundingClientRect().width } : null;
+        });
+        const want = (api.districts.items || []).map((r) => String(r.value));
+        check(`${tag}: карта районов — числа = akim/board`, !!map && map.w > 150 && map.pins <= 3
+          && map.labels.length >= 4 && map.labels.every((v) => want.includes(v)), { map, want });
       }
       if (w === 1920 || (w === 1366 && lang === "kk")) await shot(page, `world-board-${tag}-${String(i + 1).padStart(2, "0")}-${ids[i]}.jpg`);
     }

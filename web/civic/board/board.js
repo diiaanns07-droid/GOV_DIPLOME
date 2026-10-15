@@ -27,6 +27,8 @@
     homeHref: "/#day", // «← В Birge» (и Esc) — назад в «Картину дня» (R11 IA_ROUND15 §5.9)
     syncUrl: true, // район и язык — в адресе: ссылку на экран можно отправить
     timeoutMs: 15000,
+    // Контуры районов для карты блока «Районы» (OSM, упрощены; файл сборки). Нет файла — блок остаётся полосами.
+    districtsUrl: "../build3d/data/astana-districts.json",
   };
   var DISTRICTS = ["almaty", "baikonur", "esil", "nura", "saraishyk", "saryarka"];
   var IDLE_CURSOR_MS = 4000;
@@ -100,6 +102,8 @@
       "board.together.when": "{date}",
       "board.together.done_tag": "Сделано",
       "board.together.now": "идёт сейчас",
+      "board.map.note": "Цвет — как на карте за 7 дней · кружки — горячие места · контуры районов © OpenStreetMap",
+      "board.map.aria": "Карта районов: {list}",
       "board.together.going": "придут: {n}",
       "board.together.taking": "участвуют: {n}",
       "board.together.took": "участвовали: {n}",
@@ -196,6 +200,8 @@
       "board.together.when": "{date}",
       "board.together.done_tag": "Атқарылды",
       "board.together.now": "қазір өтіп жатыр",
+      "board.map.note": "Түсі — 7 күндік картадағыдай · дөңгелектер — шағымы көп орындар · аудан шекаралары © OpenStreetMap",
+      "board.map.aria": "Аудандар картасы: {list}",
       "board.together.going": "барады: {n}",
       "board.together.taking": "қатысып жатыр: {n}",
       "board.together.took": "қатысты: {n}",
@@ -431,13 +437,123 @@
   // пока блок не помещается, — никаких строк, обрезанных посередине. Остаётся хотя бы одна строка; data-fit="0" —
   // второстепенный список, его можно убрать совсем (например, инициативы под «Двором недели» на 1366).
   function fit(box) {
-    if (!box || narrow()) return;
+    if (!box) return;
+    sizeMaps(box);
+    if (narrow()) return;
     var lists = box.querySelectorAll("[data-fit]");
     for (var i = lists.length - 1; i >= 0; i--) {
       var list = lists[i], min = list.getAttribute("data-fit") === "0" ? 0 : 1;
       while (list.children.length > min && box.scrollHeight > box.clientHeight + 1) list.removeChild(list.lastElementChild);
       if (!list.children.length && list.parentNode) list.parentNode.removeChild(list);
     }
+  }
+
+  // Карта районов: самый большой прямоугольник с пропорциями контуров внутри своей ячейки.
+  function sizeMaps(box) {
+    var maps = box.querySelectorAll(".sc-map");
+    for (var i = 0; i < maps.length; i++) {
+      var m = maps[i], cell = m.parentNode, ratio = Number(m.getAttribute("data-ratio")) || 1;
+      var cw = cell.clientWidth, ch = cell.clientHeight;
+      if (!cw || !ch) continue;
+      var w = Math.min(cw, ch * ratio);
+      m.style.width = Math.floor(w) + "px";
+      m.style.height = Math.floor(w / ratio) + "px";
+      declutter(m);
+    }
+  }
+  // Числа районов не наезжают друг на друга и на кружки мест: крупные районы — первыми; не помещается — сдвиг
+  // вверх-вниз, потом числа нет (название и число есть в списке рядом).
+  function declutter(m) {
+    var labels = Array.prototype.slice.call(m.querySelectorAll(".sc-map__label"));
+    labels.forEach(function (l) { l.style.visibility = ""; l.style.marginTop = ""; });
+    var placed = Array.prototype.map.call(m.querySelectorAll(".sc-map__pin"), function (p) { return p.getBoundingClientRect(); });
+    function hits(r) {
+      return placed.some(function (q) { return r.left < q.right + 3 && r.right > q.left - 3 && r.top < q.bottom + 1 && r.bottom > q.top - 1; });
+    }
+    labels.sort(function (a, b) { return Number(b.getAttribute("data-value")) - Number(a.getAttribute("data-value")); });
+    labels.forEach(function (l) {
+      var shifts = [0, 0.8, -0.8, 1.6, -1.6];
+      var hgt = l.getBoundingClientRect().height;
+      for (var t = 0; t < shifts.length; t++) {
+        l.style.marginTop = Math.round(shifts[t] * hgt) + "px";
+        var r = l.getBoundingClientRect();
+        if (!hits(r)) { placed.push(r); return; }
+      }
+      l.style.marginTop = "";
+      l.style.visibility = "hidden";
+    });
+  }
+
+  // Контуры районов: загружаются один раз на страницу; ошибка — карты нет, блок «Районы» остаётся полосами.
+  var shapes = { state: "idle", list: null };
+  function loadShapes(url) {
+    if (shapes.state !== "idle" || !url || !root.fetch) return;
+    shapes.state = "loading";
+    root.fetch(url, { credentials: "same-origin" }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(function (j) {
+      var list = ((j && j.districts) || []).filter(function (x) {
+        return x && DISTRICTS.indexOf(x.id) >= 0 && Array.isArray(x.rings) && x.rings.length;
+      });
+      if (!list.length) throw new Error("empty");
+      shapes.list = list;
+      shapes.spots = labelSpots(list);
+      shapes.state = "ok";
+    }).catch(function () { shapes.state = "fail"; });
+  }
+  // Место подписи района: точка внутри самого большого кольца, дальше всего от его краёв (поиск по сетке 28×28,
+  // один раз на страницу). Центр масс узкого района (Сарайшык) лежит у края — подпись вылезала бы наружу.
+  function labelSpots(list) {
+    var K = Math.cos(51.15 * Math.PI / 180), out = {}, area = {};
+    list.forEach(function (sh) {
+      sh.rings.forEach(function (ring) {
+        var pts = ring.map(function (p) { return [p[0] * K, -p[1]]; });
+        var c = centroid(pts);
+        if (area[sh.id] != null && c.area <= area[sh.id]) return;
+        area[sh.id] = c.area;
+        var minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+        pts.forEach(function (q) { minx = Math.min(minx, q[0]); maxx = Math.max(maxx, q[0]); miny = Math.min(miny, q[1]); maxy = Math.max(maxy, q[1]); });
+        var best = [c.x, c.y], bestD = -1, N = 28;
+        for (var i = 0; i < N; i++) {
+          for (var j = 0; j < N; j++) {
+            var x = minx + (i + 0.5) * (maxx - minx) / N, y = miny + (j + 0.5) * (maxy - miny) / N;
+            if (!inside(x, y, pts)) continue;
+            var dd = edgeDistance(x, y, pts);
+            if (dd > bestD) { bestD = dd; best = [x, y]; }
+          }
+        }
+        out[sh.id] = [best[0] / K, -best[1]];
+      });
+    });
+    return out;
+  }
+  function inside(x, y, pts) {
+    var hit = false;
+    for (var i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      if ((pts[i][1] > y) !== (pts[j][1] > y) && x < (pts[j][0] - pts[i][0]) * (y - pts[i][1]) / (pts[j][1] - pts[i][1]) + pts[i][0]) hit = !hit;
+    }
+    return hit;
+  }
+  function edgeDistance(x, y, pts) {
+    var best = Infinity;
+    for (var i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      var ax = pts[j][0], ay = pts[j][1], bx = pts[i][0], by = pts[i][1];
+      var dx = bx - ax, dy = by - ay, len = dx * dx + dy * dy;
+      var t = len ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / len)) : 0;
+      var ex = ax + t * dx - x, ey = ay + t * dy - y;
+      best = Math.min(best, ex * ex + ey * ey);
+    }
+    return Math.sqrt(best);
+  }
+  function centroid(pts) {
+    var a = 0, cx = 0, cy = 0;
+    for (var i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      var f = pts[j][0] * pts[i][1] - pts[i][0] * pts[j][1];
+      a += f; cx += (pts[j][0] + pts[i][0]) * f; cy += (pts[j][1] + pts[i][1]) * f;
+    }
+    if (!a) return { x: pts[0][0], y: pts[0][1], area: 0 };
+    return { x: cx / (3 * a), y: cy / (3 * a), area: Math.abs(a / 2) };
   }
 
   // Мини-график за 14 дней: линия + мягкая заливка + точка «сегодня».
@@ -515,6 +631,7 @@
   function mount(rootEl, options) {
     var opts = {};
     Object.keys(DEFAULTS).forEach(function (k) { opts[k] = options && options[k] != null ? options[k] : DEFAULTS[k]; });
+    loadShapes(opts.districtsUrl);
     var params = new URLSearchParams(root.location.search);
     var state = {
       district: DISTRICTS.indexOf(params.get("district")) >= 0 ? params.get("district") : null,
@@ -936,7 +1053,13 @@
       }));
       return [rows, h("p", { class: "sc-note sc-note--muted", text: pick(f, "method") || tr("board.forecast.note") })];
     }
-    function barRows(items, label, mod) {
+    function deltaCompact(ch) {
+      if (!ch || ch.trend === "flat" || ch.trend == null) return "=";
+      if (ch.mode === "new") return tr("akim.delta.new");
+      if (ch.mode === "ratio") return "×" + num(ch.ratio);
+      return (ch.trend === "up" ? "+" : "−") + (ch.mode === "pct" ? num(ch.pct) + " %" : num(ch.abs));
+    }
+    function barRows(items, label, mod, compact) {
       var max = Math.max.apply(null, items.map(function (r) { return r.value || 0; }).concat([1]));
       return h("div", { class: "sc-table", "data-fit": "" }, items.map(function (r) {
         return h("div", { class: "sc-trow", style: "grid-template-columns: minmax(0, 2.4fr) minmax(0, 3fr) minmax(0, 2fr)" }, [
@@ -945,7 +1068,7 @@
             h("span", { class: "sc-bar__track" }, [h("span", { class: "sc-bar__fill " + mod, style: "transform: scaleX(" + ((r.value || 0) / max).toFixed(3) + ")" })]),
             h("span", { class: "sc-bar__num", text: num(r.value || 0) }),
           ]),
-          h("span", { class: "sc-trow__num", "data-trend": r.trend, text: r.trend === "flat" ? tr("akim.delta.same") : deltaShort(r) }),
+          h("span", { class: "sc-trow__num", "data-trend": r.trend, text: compact ? deltaCompact(r) : r.trend === "flat" ? tr("akim.delta.same") : deltaShort(r) }),
         ]);
       }));
     }
@@ -958,8 +1081,65 @@
       var sel = d.districts.selected;
       var items = (d.districts.items || []).filter(function (r) { return r.value || r.prev; });
       if (!items.length) items = d.districts.items || [];
-      return [barRows(items, function (r) { return districtName(r.district) + (r.district === sel ? " ●" : ""); }, "sc-bar__fill--heat"),
-        h("p", { class: "sc-note sc-note--muted", text: tr("board.topics.meta") })];
+      var map = shapes.list && !narrow() ? districtMap(d, shapes.list) : null;
+      var bars = barRows(items, function (r) { return districtName(r.district) + (r.district === sel ? " ●" : ""); }, "sc-bar__fill--heat", !!map);
+      if (!map) return [bars, h("p", { class: "sc-note sc-note--muted", text: tr("board.topics.meta") })];
+      return [h("div", { class: "sc-mapwrap" }, [h("div", { class: "sc-map__cell" }, [map]), bars]),
+        h("p", { class: "sc-note sc-note--muted", text: tr("board.map.note") })];
+    }
+    // Карта районов (П1: «вау» — от данных): контуры OSM, заливка — уровень района на карте R07 за 7 дней (то же
+    // правило и те же цвета), числа — люди, как на карте; кружки — горячие места из левой колонки (та же метка).
+    var MAP_K = Math.cos(51.15 * Math.PI / 180);   // долгота × cos(широты) — для Астаны без заметных искажений
+    function districtMap(d, list) {
+      var rows = {};
+      (d.districts.items || []).forEach(function (r) { rows[r.district] = r; });
+      var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      list.forEach(function (sh) { sh.rings.forEach(function (ring) { ring.forEach(function (p) {
+        var x = p[0] * MAP_K, y = -p[1];
+        if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y;
+      }); }); });
+      var spanX = maxX - minX, spanY = maxY - minY;
+      if (!(spanX > 0 && spanY > 0)) return null;
+      var W = 1000, H = Math.round(W * spanY / spanX);
+      function pt(p) { return [(p[0] * MAP_K - minX) / spanX * W, (-p[1] - minY) / spanY * H]; }
+      function pos(q) { return "left:" + (q[0] / W * 100).toFixed(2) + "%;top:" + (q[1] / H * 100).toFixed(2) + "%"; }
+      var svg = doc.createElementNS(SVG, "svg");
+      svg.setAttribute("class", "sc-map__svg");
+      svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+      svg.setAttribute("preserveAspectRatio", "none");
+      svg.setAttribute("aria-hidden", "true");
+      var best = {};
+      list.forEach(function (sh) {
+        var r = rows[sh.id] || {};
+        sh.rings.forEach(function (ring) {
+          var pts = ring.map(pt);
+          if (pts.length < 3) return;
+          var path = doc.createElementNS(SVG, "path");
+          path.setAttribute("class", "sc-map__d");
+          path.setAttribute("data-level", String(r.level || 0));
+          if (sh.id === d.districts.selected) path.setAttribute("data-selected", "true");
+          path.setAttribute("d", "M" + pts.map(function (q) { return q[0].toFixed(1) + " " + q[1].toFixed(1); }).join("L") + "Z");
+          svg.appendChild(path);
+          var c = centroid(pts);
+          if (!best[sh.id] || c.area > best[sh.id].area) best[sh.id] = c;
+        });
+      });
+      var labels = Object.keys(best).map(function (id) {
+        var r = rows[id] || {};
+        var spot = shapes.spots && shapes.spots[id] ? pt(shapes.spots[id]) : [best[id].x, best[id].y];
+        // На карте — только число: названия и те же числа — в списке рядом (на 300 px подписи закрыли бы районы).
+        return h("span", { class: "sc-map__label sc-num", "data-level": String(r.level || 0), "data-value": String(r.value || 0),
+          title: districtName(id), style: pos(spot), text: num(r.value || 0) });
+      });
+      var pins = ((d.hot && d.hot.items) || []).slice(0, 3).reverse().map(function (it) {
+        if (!Array.isArray(it.anchor) || it.anchor.length !== 2) return null;
+        var q = pt(it.anchor);
+        if (!(q[0] >= 0 && q[0] <= W && q[1] >= 0 && q[1] <= H)) return null;
+        return h("span", { class: "sc-pin sc-map__pin", "data-level": String(it.level || 0), style: pos(q) }, [num(it.count)]);
+      }).filter(Boolean);
+      var aria = (d.districts.items || []).map(function (r) { return districtName(r.district) + " — " + num(r.value || 0); }).join(", ");
+      return h("div", { class: "sc-map", "data-ratio": (W / H).toFixed(4), role: "img", "aria-label": tr("board.map.aria", { list: aria }) },
+        [svg].concat(labels, pins));
     }
 
     function slideIds() {
