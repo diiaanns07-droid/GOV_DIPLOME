@@ -136,6 +136,9 @@
   border-right: 1px solid var(--c-line, rgba(18, 26, 23, .08)); }
 .wcal-row--bad .wcal-row__label { box-shadow: inset 3px 0 0 var(--c-danger, #b3362e); }
 .wcal-row__street { overflow: hidden; font-size: var(--fs-small, 14px); font-weight: var(--fw-medium, 500); white-space: nowrap; text-overflow: ellipsis; }
+/* Высокая строка (с дорожкой чипов или в две дорожки): длинное название (kk «… даңғылы», «… көшесі») — в две строки. */
+.wcal-row--tall .wcal-row__street { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  line-clamp: 2; line-height: 1.2; overflow-wrap: anywhere; }
 .wcal-row__meta { font-size: var(--fs-xs, 12px); color: var(--c-text-3, #7e8a85); white-space: nowrap; }
 .wcal-row__bad { color: var(--c-danger, #b3362e); font-weight: var(--fw-medium, 500); }
 .wcal-row__track { position: relative; flex: none; z-index: 1; }

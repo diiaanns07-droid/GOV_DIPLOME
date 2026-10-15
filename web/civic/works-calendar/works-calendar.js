@@ -729,7 +729,8 @@
             track.append(h("span", { class: "wcal-bar__out", style: `left:${x0 + width + 6}px;top:${y + 4}px`, "aria-hidden": "true", text: kindText }));
           }
         }
-        body.append(h("div", { class: "wcal-row" + (r.row.conflicts ? " wcal-row--bad" : ""), "data-row": r.row.key }, [label, track]));
+        body.append(h("div", { class: "wcal-row" + (r.row.conflicts ? " wcal-row--bad" : "") + (height >= 58 ? " wcal-row--tall" : ""),
+          "data-row": r.row.key }, [label, track]));
         top += height + 1;
       });
       // Связи конфликтов: SVG поверх строк (координаты — из той же раскладки, без замеров DOM).
