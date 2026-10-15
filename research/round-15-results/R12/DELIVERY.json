@@ -40,7 +40,7 @@
   "web/civic/works-calendar/works-calendar.js"
  ],
  "integration": {
-  "R01_patch": "research/round-15-results/R12/patches/R01_works_calendar_assets.patch — только ассеты (маршруты уже у R01 d987a112, staff=True на шлюзе); применяется к R01 856b3027",
+  "R01_patch": "не нужен: в B0 (cc510c9d) R01 уже подключил маршруты works-calendar / works-conflicts, ассеты и теги; в B1 — взять пути R12 по code_sha (changed_paths), новых маршрутов и ассетов нет. patches/R01_works_calendar_assets.patch — история (к R01 856b3027)",
   "routes": [
    "GET works-calendar (R01: raw, strip_prefix, staff=True, query rules)",
    "GET works-conflicts (то же)"
@@ -52,7 +52,8 @@
   "shell": "registerScreen works-calendar (akimat) + registerLayer works-conflicts (off by default) — модуль сам",
   "i18n_keys": "research/round-15-results/R12/i18n_keys.json (77 ключей wcal.*): 74 уже в словаре R11 c3c376e7, kk совпадает (термин «бөлік»); ждут R11 три ключа wcal.stage.*",
   "neighbours": "R01 B0 74fb8c6d и B0.2 29b4ae9d (R12 1c8d171d в сборке), R06 c2604ea2 (works_v2 + seed_world мира), R02 мир a7251430 (5/5 planned_conflicts, scene8 = cf-w15-01), R17 191f81e7 (вкладка, цвета служб), R03 analyst (conflicts_summary), R08/R17 conflicts_summary()",
-  "R17_patch": "не нужен: R17 сам сделал вкладку «Календарь работ» в «Ведомствах» (191f81e7, в R01 B0.2) — проверено браузером; файл patches/R17_agencies_calendar_tab.patch оставлен как история"
+  "R17_patch": "не нужен: R17 сам сделал вкладку «Календарь работ» в «Ведомствах» (191f81e7, в R01 B0.2) — проверено браузером; файл patches/R17_agencies_calendar_tab.patch оставлен как история",
+  "for_B1": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor tests/civic/R12 (только пути R12); проверка: tests/civic/R12/works/works_calendar.test.cjs (118/0 на B0.2 + R06 + R12), app_qr_acceptance.mjs (35/0), python3 tests/civic/R10/accuracy.py --root . (31/0)"
  },
  "tests": {
   "pytest_R12_all": {
