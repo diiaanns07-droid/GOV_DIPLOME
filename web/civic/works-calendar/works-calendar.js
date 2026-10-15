@@ -441,6 +441,12 @@
     let ro = null;
     let rafId = 0;
 
+    // Хозяин вкладки сам даёт главную «Добавить работу» (рядом [data-action="add-work"], R17 «Ведомства») или просит
+    // календарь без неё (addButton: false).
+    function hostAdd() {
+      return opts.addButton === false || !!(rootEl.parentElement && rootEl.parentElement.querySelector('[data-action="add-work"]'));
+    }
+
     function query() {
       const p = new URLSearchParams();
       const now = new Date();
@@ -545,9 +551,11 @@
           onclick: () => { state.shift += 3; load(); } }, [icon("forward")]),
       ]);
       // Поля — компонент ui-kit R11 (.bk-field): тот же вид, что в формах сотрудника. Во вкладке R17 главная кнопка —
-      // «Добавить работу» (форма R06), здесь же, справа (схема R11 §5.4).
+      // «Добавить работу» (форма R06), здесь же, справа (схема R11 §5.4). Если хозяин вкладки уже дал её сам
+      // ([data-action="add-work"] рядом, как у R17 191f81e7) или просит без неё (addButton: false) — своей нет:
+      // на экране одна главная кнопка.
       const sh = root.BirgeShell;
-      const addMain = opts.embedded && sh && root.BirgeWorks && typeof sh.setSection === "function"
+      const addMain = opts.embedded && !hostAdd() && sh && root.BirgeWorks && typeof sh.setSection === "function"
         ? h("button", { type: "button", class: "bk-btn bk-btn--primary wcal-addmain", onclick: () => sh.setSection("works") }, [icon("plus"), tr("wcal.add")])
         : null;
       return h("div", { class: "wcal-controls" }, [
@@ -615,7 +623,7 @@
         ]),
         h("div", { class: "wcal-focus__actions" }, [
           counter,
-          h("button", { type: "button", class: "bk-btn" + (opts.embedded && root.BirgeWorks ? "" : " bk-btn--primary") + " wcal-mapbtn", onclick: () => showOnMap(c) },
+          h("button", { type: "button", class: "bk-btn" + (opts.embedded && (root.BirgeWorks || hostAdd()) ? "" : " bk-btn--primary") + " wcal-mapbtn", onclick: () => showOnMap(c) },
             [icon("pin"), tr("common.action.show_on_map")]),
         ]),
         facts,

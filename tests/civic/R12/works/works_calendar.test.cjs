@@ -171,11 +171,13 @@ async function openCalendar(page, lang) {
       } else {
         await page.click('[role="tab"][data-tab="calendar"]');
         await page.waitForSelector(".ag-calendar .wcal-bar", { timeout: 15000 });
+        // Главная кнопка вкладки — одна «Добавить работу» на весь экран «Ведомств» (у хозяина вкладки или у календаря).
         const emb = await page.evaluate(() => ({ h2: !!document.querySelector(".ag-calendar .wcal-title"),
-          main: [...document.querySelectorAll(".ag-calendar .bk-btn--primary")].map((x) => x.textContent.trim()),
+          main: [...document.querySelectorAll("[data-agencies] .ag-body .bk-btn--primary")].filter((x) => x.offsetParent)
+            .map((x) => x.textContent.trim()),
           chips: document.querySelectorAll(".ag-calendar .wcal-cchip").length }));
         check("вкладка «Календарь работ» в «Ведомствах»: без своего заголовка, главная — «Добавить работу»",
-          !emb.h2 && emb.main.length <= 1 && emb.chips >= 5, JSON.stringify(emb));
+          !emb.h2 && emb.main.length === 1 && /Добавить работу|Жұмыс қосу/.test(emb.main[0]) && emb.chips >= 5, JSON.stringify(emb));
         if (OUT) await page.screenshot({ path: path.join(OUT, "embedded_r17_tab_1366_ru.png") });
         await page.click('[role="tab"][data-tab="board"]');
         await page.waitForTimeout(300);
