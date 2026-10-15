@@ -554,6 +554,15 @@ def check_graph_intersections(rep: Report, graph, objs):
             {"checked": n, "mismatch": len(names), "examples": names[:8]}, "R12")
 
 
+def _newer_note(newer):
+    """Справка (не FAIL): объект из снимка пешеходной сети, а в свежем снимке LOCAL-10 (raw/) точка стоит иначе."""
+    if not newer:
+        return {}
+    return {"newer_snapshot_moved": {"n": len(newer), "max_m": max(x["moved_m"] for x in newer),
+                                     "examples": sorted(newer, key=lambda x: -x["moved_m"])[:5],
+                                     "note": "сверено со снимком-источником; свежий снимок LOCAL-10 — обновить набор"}}
+
+
 def check_osm_points(rep: Report, root: Path, sources, graph=None):
     """§8.2: точечные объекты — реальные из OSM, с их координатами."""
     raw = load_osm_raw(root)
@@ -565,7 +574,7 @@ def check_osm_points(rep: Report, root: Path, sources, graph=None):
         rep.add("объекты R12 = точки OSM", "NOT_RUN", "набора нет", "R12")
     else:
         walking = load_walking_raw(root)
-        missing, moved, not_checked, by_src, n = [], [], [], {}, 0
+        missing, moved, not_checked, by_src, n, newer = [], [], [], {}, 0, []
         for it in objs["items"]:
             src = it.get("src")
             if src == "graph":  # перекрёсток из графа улиц — отдельная проверка ниже (INTEGRATION §13.8)
@@ -576,14 +585,17 @@ def check_osm_points(rep: Report, root: Path, sources, graph=None):
                 missing.append({"id": it["id"], "why": "id не вида osm-node-/osm-way-/osm-relation-"})
                 continue
             key = (m.group(1), int(m.group(2)))
-            if key in raw:
-                ref = raw[key]
-            elif src == "overpass.json.gz" and walking is not None and key in walking:
-                # Светофоры, переходы и часть остановок R12 — из снимка пешеходной сети, а не из LOCAL-1.
+            if src == "overpass.json.gz" and walking is not None and key in walking:
+                # Светофоры, переходы и часть остановок R12 — из снимка пешеходной сети, а не из LOCAL-1: сверка с ним
+                # (раунд 15: в raw/ появился и свежий снимок LOCAL-10 светофоров и переходов — его расхождение ниже, справкой).
                 ref, highway = walking[key]
                 if highway not in WALKING_KINDS.get(it.get("kind"), {highway}):
                     missing.append({"id": it["id"], "kind": it.get("kind"), "why": f"в OSM highway={highway}"})
                     continue
+                if key in raw and raw[key] and dist_m(raw[key], it["point"]) > OSM_POINT_TOL_M:
+                    newer.append({"id": it["id"], "moved_m": round(dist_m(raw[key], it["point"]), 2)})
+            elif key in raw:
+                ref = raw[key]
             elif src in (None, "overpass.json.gz", "walking_graph", "osm-walking") and walking is None:
                 not_checked.append(it["id"])  # снимка пешеходной сети нет в сборке — сверить не с чем
                 continue
@@ -596,7 +608,7 @@ def check_osm_points(rep: Report, root: Path, sources, graph=None):
                 moved.append({"id": it["id"], "moved_m": round(dist_m(ref, it["point"]), 2)})
         rep.add("объекты R12 = точки OSM", "FAIL" if missing or moved else "PASS",
                 {"checked": n, "total": len(objs["items"]), "by_src": by_src, "not_checked": len(not_checked),
-                 "missing": missing[:10], "moved": moved[:10]}, "R12")
+                 "missing": missing[:10], "moved": moved[:10], **_newer_note(newer)}, "R12")
         check_graph_intersections(rep, graph, objs)
     _, r05 = sources["R05 astana-existing.json"]
     if r05 is None:
@@ -621,7 +633,7 @@ def check_osm_points(rep: Report, root: Path, sources, graph=None):
     if r07 is None:
         rep.add("объекты R07 = точки OSM", "NOT_RUN", "набора нет", "R07")
     else:
-        missing, moved, n, street, walking = [], [], 0, 0, None
+        missing, moved, n, street, walking, newer = [], [], 0, 0, None, []
         for tid, t in r07["targets"].items():
             osm = t.get("osm")
             if t.get("kind") != "object":
@@ -632,6 +644,15 @@ def check_osm_points(rep: Report, root: Path, sources, graph=None):
                 continue
             key = (osm["type"], int(osm["id"]))
             ref = raw.get(key)
+            sub = t.get("subtype")
+            if sub in ("traffic_signal", "crossing") and key in raw:
+                # Цель из снимка пешеходной сети (R07 9e337dc): сверка с ним, свежий снимок LOCAL-10 — справкой.
+                if walking is None:
+                    walking = load_walking_raw(root) or {}
+                if key in walking and walking[key][1] in WALKING_KINDS[sub]:
+                    if raw[key] and dist_m(raw[key], t["geometry"]["coordinates"]) > OSM_POINT_TOL_M:
+                        newer.append({"id": tid, "moved_m": round(dist_m(raw[key], t["geometry"]["coordinates"]), 2)})
+                    ref = walking[key][0]
             if key not in raw:
                 # Цели волны 1 п. 1 (R07 9e337dc, source osm-walking/…): светофор и переход — узлы снимка пешеходной сети,
                 # перекрёсток — узел графа улиц (≥ 3 ребра); их нет в LOCAL-1 — сверяем с теми же эталонами, что и R12.
@@ -650,7 +671,8 @@ def check_osm_points(rep: Report, root: Path, sources, graph=None):
             if key[0] == "node" and ref and dist_m(ref, t["geometry"]["coordinates"]) > OSM_POINT_TOL_M:
                 moved.append({"id": tid, "moved_m": round(dist_m(ref, t["geometry"]["coordinates"]), 2)})
         rep.add("объекты R07 = точки OSM", "FAIL" if missing or moved else ("PASS" if n else "NOT_RUN"),
-                {"objects": n, "street_points": street, "missing": missing[:10], "moved": moved[:10]}, "R07")
+                {"objects": n, "street_points": street, "missing": missing[:10], "moved": moved[:10],
+                 **_newer_note(newer)}, "R07")
 
 
 def check_target_ids(rep: Report, graph: Graph, sources):
