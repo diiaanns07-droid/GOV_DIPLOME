@@ -3,7 +3,8 @@
  *
  * Страница — /civic/akim/week.html (data-autostart). Данные — GET {apiBase}/akim/week?date=YYYY-MM-DD&district=<id>
  * (ui/civic_akim/weekly.py, только сотрудник, запрос несёт X-CSRF-Token; 401 → «Войдите как сотрудник»). Все числа считает сервер: неделя —
- * 7 календарных дней, последний — date; по дням столбики = «поступило за неделю»; «в работе» и «просрочено» — на
+ * то же окно, что «за 7 дней» «Картины дня» (сегодня — 7 суток до текущего часа: 8 столбиков, крайние неполные, «с 17:50» /
+ * «до 17:50»; прошлая дата — 7 календарных дней); по датам столбики = «поступило за неделю»; «в работе» и «просрочено» — на
  * конец недели (как «Картина дня» этого дня); темы, районы, места — тепловая карта R07 за 7 дней. Блоки служб (R17),
  * жителей (R16) и встреч (R13) — только у недели, которая заканчивается сегодня (у соседей нет истории «на дату»).
  * Лист 1 — главное (числа, по дням, темы, районы, места); лист 2 — службы, кризис, жители, встречи, решения, объекты,
@@ -42,7 +43,9 @@
       "akim.week.days": "Новые обращения по дням",
       "akim.week.days_legend_now": "эта неделя",
       "akim.week.days_legend_prev": "неделей раньше",
-      "akim.week.days_partial": "сегодня — до {time}",
+      "akim.week.days_partial": "7 суток до {time} — как в «Картине дня»; крайние дни неполные",
+      "akim.week.days_since": "с {time}",
+      "akim.week.days_until": "до {time}",
       "akim.week.topics": "Темы недели",
       "akim.week.districts": "Районы",
       "akim.week.people": "человек",
@@ -113,7 +116,9 @@
       "akim.week.days": "Күндер бойынша жаңа өтініштер",
       "akim.week.days_legend_now": "осы апта",
       "akim.week.days_legend_prev": "алдыңғы апта",
-      "akim.week.days_partial": "бүгін — {time} дейін",
+      "akim.week.days_partial": "{time} дейінгі 7 тәулік — «Күн қорытындысы» сияқты; шеткі күндер толық емес",
+      "akim.week.days_since": "{time} бастап",
+      "akim.week.days_until": "{time} дейін",
       "akim.week.topics": "Апта тақырыптары",
       "akim.week.districts": "Аудандар",
       "akim.week.people": "адам",
@@ -432,7 +437,8 @@
     function dayChart(d) {
       var days = d.days || [];
       if (!days.length) return null;
-      var W = 640, H = 150, padL = 8, padB = 30, padT = 18;
+      var cut = days.some(function (x) { return x.since || x.until; });
+      var W = 640, H = cut ? 162 : 150, padL = 8, padB = cut ? 42 : 30, padT = 18;
       var max = days.reduce(function (m, x) { return Math.max(m, x.new, x.prev); }, 0) || 1;
       var slot = (W - padL * 2) / days.length;
       var bw = Math.min(34, slot * 0.36);
@@ -449,6 +455,12 @@
         var lbl = svgEl("text", { class: "wk-chart__day", x: cx.toFixed(1), y: (H - padB + 15).toFixed(1), "text-anchor": "middle" });
         lbl.appendChild(doc.createTextNode((wd[(x.weekday || 1) - 1] || "") + " " + String(x.date).slice(8, 10).replace(/^0/, "")));
         svg.appendChild(lbl);
+        if (x.since || x.until) {
+          // Неполный день окна «7 суток до …»: первый — с часа окна, сегодняшний — до него.
+          var part = svgEl("text", { class: "wk-chart__part", x: cx.toFixed(1), y: (H - padB + 29).toFixed(1), "text-anchor": "middle" });
+          part.appendChild(doc.createTextNode(x.since ? tr("akim.week.days_since", { time: x.since }) : tr("akim.week.days_until", { time: x.until })));
+          svg.appendChild(part);
+        }
       });
       var partial = days.filter(function (x) { return x.partial; })[0];
       return h("figure", { class: "wk-chart-box" }, [
@@ -456,7 +468,7 @@
         h("figcaption", { class: "wk-legend" }, [
           h("span", { class: "wk-legend__now", text: tr("akim.week.days_legend_now") }),
           h("span", { class: "wk-legend__prev", text: tr("akim.week.days_legend_prev") }),
-          partial ? h("span", { text: tr("akim.week.days_partial", { time: I().formatTime(d.as_of) }) }) : null,
+          partial ? h("span", { text: tr("akim.week.days_partial", { time: (d.period && d.period.clock) || I().formatTime(d.as_of) }) }) : null,
         ]),
       ]);
     }
@@ -587,8 +599,11 @@
       var items = (d.decisions && d.decisions.items) || [];
       if (!items.length) return null;
       return section("wk-decisions", tr("akim.week.decisions"), [h("ol", { class: "wk-decs" }, items.map(function (it) {
+        // Место и район — у двух пунктов может быть один текст проблемы (разные участки), их нужно различать.
+        var where = [label(it, "place"), districtName(it.district)].filter(Boolean).join(" · ");
         return h("li", { class: "wk-dec" }, [
           h("p", { class: "wk-strong", text: label(it, "problem") }),
+          where ? h("span", { class: "wk-sub", text: where }) : null,
           h("ol", { class: "wk-dec__opts" }, (it.options || []).map(function (o, i) {
             var chosen = it.chosen && it.chosen.option === i + 1;
             return h("li", { class: chosen ? "is-chosen" : null, text: tr("akim.decision.option", { n: i + 1, text: o[lang()] || o.ru }) + (chosen ? " — " + tr("akim.week.chosen") : "") });
@@ -623,15 +638,22 @@
     }
     // Лист 2: табло служб (6 самых загруженных) во всю ширину, ниже две колонки — слева кризис, жители, встречи; справа
     // решения, объекты, прогноз (так колонки примерно равны и на ru, и на kk, и лист 2 помещается на страницу A4).
+    // Нет соседей (одна колонка пуста) — блоки делятся на две колонки поровну; один блок — во всю ширину.
     function page2(d) {
       var left = [crisis(d), together(d), meetings(d)].filter(Boolean);
       var right = [decisions(d), objects(d), forecast(d)].filter(Boolean);
+      if (!left.length || !right.length) {
+        var all = left.concat(right);
+        left = all.slice(0, Math.ceil(all.length / 2));
+        right = all.slice(left.length);
+      }
       var top = agencies(d);
       if (!top && !left.length && !right.length) return d.is_today ? null : sheet(2, [h("p", { class: "wk-note", text: tr("akim.week.past_note") })]);
       return sheet(2, [
         d.is_today ? null : h("p", { class: "wk-note", text: tr("akim.week.past_note") }),
         top,
-        left.length || right.length ? h("div", { class: "wk-twocol" }, [h("div", { class: "wk-col" }, left), h("div", { class: "wk-col" }, right)]) : null,
+        right.length ? h("div", { class: "wk-twocol" }, [h("div", { class: "wk-col" }, left), h("div", { class: "wk-col" }, right)])
+          : left.length ? h("div", { class: "wk-col" }, left) : null,
       ].filter(Boolean));
     }
 

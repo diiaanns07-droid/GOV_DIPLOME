@@ -292,15 +292,40 @@ def test_neighbour_function_gets_only_accepted_args(monkeypatch):
 # ---------------------------------------------------------------- «Картина недели»
 
 def test_week_days_sum_to_total_and_texts():
-    recs = [rec(i, age_days=d) for i, d in enumerate([0.2, 1.2, 1.4, 2.5, 6.5, 8.0, 9.0, 13.5])]
+    recs = [rec(i, age_days=d) for i, d in enumerate([0.2, 1.2, 1.4, 2.5, 6.5, 6.95, 7.2, 8.0, 9.0, 13.5])]
     w = svc(recs, sources=dict(NONE)).week(now=NOW)
-    assert len(w["days"]) == 7 and w["days"][-1]["date"] == NOW.date().isoformat() and w["days"][-1]["partial"]
-    assert sum(d["new"] for d in w["days"]) == w["totals"]["new"]["value"]
-    assert sum(d["prev"] for d in w["days"]) == w["totals"]["new"]["prev"]
-    assert w["period"]["from"] == (NOW.date() - timedelta(days=6)).isoformat()
+    # Сегодня (10:00): окно — 7 суток до 10:00, как «за 7 дней» «Картины дня»: 8 дат, крайние неполные.
+    days = w["days"]
+    assert len(days) == 8 and days[-1]["date"] == NOW.date().isoformat()
+    assert (days[0]["since"], days[-1]["until"]) == ("10:00", "10:00") and days[0]["partial"] and days[-1]["partial"]
+    assert not any(d["partial"] for d in days[1:-1])
+    assert sum(d["new"] for d in days) == w["totals"]["new"]["value"] == 6   # 0.2 … 6.95 суток; 7.2 — уже вне окна
+    assert sum(d["prev"] for d in days) == w["totals"]["new"]["prev"]
+    assert days[0]["new"] == 2   # 6.5 и 6.95 суток назад — 5 окт после 10:00
+    assert w["period"]["from"] == (NOW - timedelta(days=7)).date().isoformat() and w["period"]["clock"] == "10:00"
+    assert w["text"]["ru"][0].startswith("За 7 суток до 10:00") and w["text"]["kk"][0].startswith("10:00 дейінгі 7 тәулікте")
     for lang in ("ru", "kk"):
         text = " ".join(w["text"][lang])
         assert text and "{" not in text and str(w["totals"]["new"]["value"]) in text
+
+
+@pytest.mark.parametrize("date", [None, "2026-10-09"])
+def test_week_totals_equal_day_summary(date):
+    """«Картина недели» и «Картина дня» в одну минуту: поступило / исправлено / в работе / просрочено — одни числа."""
+    recs = [rec(i, age_days=d, history=[(max(0.0, d - 0.5), "fixed")] if i % 3 == 0 else [(max(0.0, d - 0.3), "in_progress")])
+            for i, d in enumerate([0.2, 0.9, 1.2, 2.5, 3.3, 4.1, 5.6, 6.5, 6.95, 7.2, 8.0, 9.0, 10.5, 13.5])]
+    s = svc(recs, sources=dict(NONE))
+    w, day = s.week(date=date, now=NOW), s.summary(date=date, now=NOW)
+    k = day["kpi"]
+    assert w["totals"]["new"]["value"] == k["new_week"]["value"] and w["totals"]["new"]["prev"] == k["new_week"]["prev"]
+    assert w["totals"]["fixed"]["value"] == k["fixed_week"]["value"] and w["totals"]["fixed"]["prev"] == k["fixed_week"]["prev"]
+    assert w["totals"]["fixed"]["verified"] == k["fixed_week"]["verified"]
+    assert w["totals"]["in_progress"]["value"] == k["in_progress"]["value"]
+    assert w["totals"]["overdue"]["value"] == k["overdue"]["value"]
+    if date:  # прошлая дата — ровно 7 календарных дней, без неполных
+        assert [d["date"] for d in w["days"]] == [f"2026-10-{n:02d}" for n in range(3, 10)]
+        assert not any(d["partial"] for d in w["days"]) and w["period"]["clock"] is None
+        assert w["text"]["ru"][0].startswith("За неделю 3–9")
 
 
 def test_week_past_date_closed_and_without_neighbours():

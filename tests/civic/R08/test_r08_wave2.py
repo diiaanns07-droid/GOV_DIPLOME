@@ -202,6 +202,19 @@ def test_decision_criterion():
     assert d["demo"] is False and d["source"] == "complaints"
 
 
+def test_decision_place_from_complaint_target_label():
+    """Демо-мир R02 / R09 v2.1: подпись места — в цели жалобы; два пункта с одним текстом проблемы различимы местом."""
+    a = rec(1, age_days=20, category="roads", status="in_progress",
+            target={"kind": "segment", "id": "osm-w1-1", "label_ru": "Участок: проспект Улы Дала", "label_kk": "Ұлы Дала даңғылының бөлігі"})
+    b = rec(2, age_days=21, category="roads", status="in_progress",
+            target={"kind": "segment", "id": "osm-w2-1", "label_ru": "Участок: улица Максута Нарикбаева"})
+    for r in (a, b):
+        r["delay"] = _delay()
+    items = {i["id"]: i for i in summary([a, b])["decisions"]["items"]}
+    assert items["c-r08-1"]["place_ru"] == "Участок: проспект Улы Дала" and items["c-r08-1"]["place_kk"] == "Ұлы Дала даңғылының бөлігі"
+    assert items["c-r08-2"]["place_kk"] is None and items["c-r08-2"]["place_ru"] == "Участок: улица Максута Нарикбаева"
+
+
 def test_decision_kk_missing_falls_back_with_flag():
     r = rec(1, age_days=20, category="roads", status="in_progress")
     r["delay"] = _delay(kk=False)

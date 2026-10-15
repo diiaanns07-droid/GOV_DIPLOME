@@ -320,6 +320,10 @@
   font: 500 12px var(--font);
   fill: var(--wk-ink-2);
 }
+.wk-chart__part {
+  font: 400 11px var(--font);
+  fill: var(--wk-ink-2);
+}
 .wk-legend {
   display: flex;
   flex-wrap: wrap;

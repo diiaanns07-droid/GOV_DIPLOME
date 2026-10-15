@@ -1,12 +1,15 @@
 """«Картина недели» (R08, раунд 15): GET /api/civic/v2/akim/week?date=YYYY-MM-DD&district=<id> — отчёт для совещания.
 
-ПЕРИОД: 7 календарных дней по Астане, последний — date (по умолчанию сегодня): «9–15 октября». Для прошлой даты неделя
-закрыта (до 23:59:59 date), для сегодняшней — до текущего момента («по состоянию на 14:32»). Сравнение — с теми же
-7 днями неделей раньше и до того же часа (как «Новые сегодня» в «Картине дня»: утром не всегда «меньше»).
+ПЕРИОД — ТО ЖЕ ОКНО, ЧТО «ЗА 7 ДНЕЙ» В «КАРТИНЕ ДНЯ»: (as_of − 7 суток, as_of]. Для прошлой даты as_of = date 23:59:59 —
+это ровно 7 календарных дней по Астане («10–16 октября», неделя закрыта); для сегодняшней — 7 суток до текущего момента
+(«по состоянию на 17:50»), поэтому «поступило» и «исправлено» недели = «за 7 дней» и «Исправлено за неделю» «Картины
+дня» в ту же минуту (демо-мир R02: город 126 / 106, Нура 66 / 45). Сравнение — с теми же сутками неделей раньше.
+Столбики — по календарным датам окна: у сегодняшней недели их 8, крайние неполные (первый — «с 17:50», последний —
+«до 17:50»); у прошлой — 7 полных дней.
 
 ЧИСЛА:
-- поступило, исправлено (служба сообщила), проверено жителями, вернули жители — за период, теми же правилами, что
-  «Картина дня» (summary.py: status_at, fixed_moment, verified_at, reopen_moments); по дням — новые за каждый день,
+- поступило, исправлено (служба сообщила), проверено жителями, вернули жители — за окно, теми же правилами, что
+  «Картина дня» (summary.py: status_at, fixed_moment, verified_at, reopen_moments); по дням — новые за каждую дату,
   сумма столбиков = «поступило за неделю»;
 - «в работе» и «просрочено» — на конец периода, ровно числа «Картины дня» этого дня;
 - главная проблема, темы, районы, горячие места, пульс — тепловая карта R07 за 7 дней на конец периода (как на карте);
@@ -28,30 +31,40 @@ HOT_TOP = 5
 OBJECTS_TOP = 5
 
 
-def _counts(recs: list[dict], start: datetime, end: datetime, day0: datetime) -> dict:
-    """Поступило / исправлено / проверено жителями / вернули — за [start, end]; новые по дням от day0 (7 дней)."""
+def _counts(recs: list[dict], start: datetime, end: datetime, dates: list) -> dict:
+    """Поступило / исправлено / проверено жителями / вернули — за (start, end], как «за 7 дней» «Картины дня»;
+    новые — по календарным датам dates (момент раньше первой даты — последняя секунда прошлого дня — в первый столбик)."""
     new = fixed = verified = reopened = reopened_res = 0
-    by_day = [0] * 7
+    index = {d: i for i, d in enumerate(dates)}
+    by_day = [0] * len(dates)
     for r in recs:
         created = parse_time(r.get("created_at"))
         if created is None:
             continue
-        if start <= created <= end:
+        if start < created <= end:
             new += 1
-            i = (created - day0).days
-            if 0 <= i < 7:
-                by_day[i] += 1
+            by_day[index.get(created.astimezone(ASTANA_TZ).date(), 0)] += 1
         f = fixed_moment(r, end)
-        if f is not None and start <= f <= end:
+        if f is not None and start < f <= end:
             fixed += 1
             if verified_at(r, end) is not None:
                 verified += 1
         for t, by_resident in reopen_moments(r, end):
-            if start <= t <= end:
+            if start < t <= end:
                 reopened += 1
                 reopened_res += int(by_resident)
     return {"new": new, "fixed": fixed, "verified": verified, "reopened": reopened,
             "reopened_by_residents": reopened_res, "by_day": by_day}
+
+
+def _dates(start: datetime, end: datetime) -> list:
+    """Календарные даты окна (start, end] по Астане. Начало в последнюю секунду дня (прошлая дата: as_of = 23:59:59)
+    не даёт отдельного столбика — эта секунда входит в первый полный день."""
+    a, b = start.astimezone(ASTANA_TZ), end.astimezone(ASTANA_TZ)
+    first = a.date()
+    if datetime(first.year, first.month, first.day, tzinfo=ASTANA_TZ) + timedelta(days=1) - a <= timedelta(seconds=1):
+        first += timedelta(days=1)
+    return [first + timedelta(days=i) for i in range((b.date() - first).days + 1)]
 
 
 def _period_ru(a: Date, b: Date) -> str:
@@ -72,18 +85,21 @@ def build(svc, *, date=None, district=None, now: datetime) -> dict:
     s = svc.summary(date=date, district=district, now=now)
     day = Date.fromisoformat(s["date"])
     as_of = parse_time(s["as_of"])
-    day0 = datetime(day.year, day.month, day.day, tzinfo=ASTANA_TZ) - timedelta(days=6)
+    start = as_of - WEEK
+    dates = _dates(start, as_of)
     all_records, _skipped = svc._load_records()
     recs = [r for r in all_records if not r.get("duplicate_of")
             and (s["district"] is None or svc._district_of(r) == s["district"]["id"])]
-    cur = _counts(recs, day0, as_of, day0)
-    prev = _counts(recs, day0 - WEEK, as_of - WEEK, day0 - WEEK)
+    cur = _counts(recs, start, as_of, dates)
+    prev = _counts(recs, start - WEEK, as_of - WEEK, [d - WEEK for d in dates])
     k = s["kpi"]
+    clock = as_of.astimezone(ASTANA_TZ).strftime("%H:%M")
     days = []
-    for i in range(7):
-        d = (day0 + timedelta(days=i)).date()
+    for i, d in enumerate(dates):
+        since = s["is_today"] and i == 0 and d == start.astimezone(ASTANA_TZ).date() and clock != "00:00"
+        until = s["is_today"] and d == day
         days.append({"date": d.isoformat(), "weekday": d.isoweekday(), "new": cur["by_day"][i], "prev": prev["by_day"][i],
-                     "partial": s["is_today"] and d == day})
+                     "partial": bool(since or until), "since": clock if since else None, "until": clock if until else None})
     totals = {
         "new": change(cur["new"], prev["new"]),
         "fixed": {**change(cur["fixed"], prev["fixed"]), "verified": cur["verified"],
@@ -97,9 +113,10 @@ def build(svc, *, date=None, district=None, now: datetime) -> dict:
     objects = s.get("objects") or {}
     result = {
         "generated_at": s["generated_at"], "date": s["date"], "is_today": s["is_today"], "as_of": s["as_of"],
-        "period": {"from": day0.date().isoformat(), "to": day.isoformat(),
-                   "prev_from": (day0 - WEEK).date().isoformat(), "prev_to": (day - timedelta(days=7)).isoformat(),
-                   "ru": _period_ru(day0.date(), day), "kk": _period_kk(day0.date(), day)},
+        "period": {"from": dates[0].isoformat(), "to": day.isoformat(),
+                   "prev_from": (dates[0] - WEEK).isoformat(), "prev_to": (day - timedelta(days=7)).isoformat(),
+                   "start": iso(start), "end": s["as_of"], "hours": 7 * 24, "clock": clock if s["is_today"] else None,
+                   "ru": _period_ru(dates[0], day), "kk": _period_kk(dates[0], day)},
         "district": s["district"],
         "complaints_available": s["complaints_available"],
         "totals": totals,
@@ -140,7 +157,9 @@ def text_ru(w: dict) -> list[str]:
     else:
         n = t["new"]["value"]
         noun = T.plural_ru(n, "обращение", "обращения", "обращений")
-        line = f"За неделю {w['period']['ru']}{place} поступило {T.fmt_num(n)} {noun}"
+        # Сегодняшняя неделя — 7 суток до текущего часа (как «за 7 дней» «Картины дня»), прошлая — 7 календарных дней.
+        lead = f"За 7 суток до {w['period']['clock']}" if w["period"].get("clock") else f"За неделю {w['period']['ru']}"
+        line = f"{lead}{place} поступило {T.fmt_num(n)} {noun}"
         line += ("." if t["new"]["trend"] == "flat" and n == 0 else
                  f" — {T.delta_ru(t['new']).replace('неделю назад', 'неделей раньше').removeprefix('это ')}.")
         out.append(line)
@@ -199,7 +218,8 @@ def text_kk(w: dict) -> list[str]:
         out.append("Өтініштер туралы деректер әзірге қосылмаған.")
     else:
         n = t["new"]["value"]
-        out.append(f"{w['period']['kk']} аралығында{place} {T.fmt_num(n)} өтініш түсті"
+        lead = f"{w['period']['clock']} дейінгі 7 тәулікте" if w["period"].get("clock") else f"{w['period']['kk']} аралығында"
+        out.append(f"{lead}{place} {T.fmt_num(n)} өтініш түсті"
                    f"{T.delta_kk(t['new']).replace('бір апта бұрын', 'алдыңғы аптада')}.")
         f = t["fixed"]
         if f["value"]:

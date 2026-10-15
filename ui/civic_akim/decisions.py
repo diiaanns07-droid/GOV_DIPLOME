@@ -88,6 +88,12 @@ def _subtopic(category: str | None, subtopic: str | None) -> dict | None:
     return None
 
 
+def _target_label(target: dict | None, lang: str) -> str | None:
+    """label_ru / label_kk цели жалобы (если есть и это строка)."""
+    value = (target or {}).get(f"label_{lang}")
+    return value.strip() if isinstance(value, str) and value.strip() else None
+
+
 def build(records: list[dict], as_of: datetime, *, status_at, parse_time, labels: dict | None = None) -> list[dict]:
     """Пункты блока по записям (уже отфильтрованным по району), самые давние просрочки первыми."""
     labels = labels or {}
@@ -115,8 +121,9 @@ def build(records: list[dict], as_of: datetime, *, status_at, parse_time, labels
             "category": cat["id"], "category_ru": cat["ru"], "category_kk": cat["kk"],
             "subtopic": sub,
             "district": r.get("district"),
-            "place_ru": (label or {}).get("ru") or r.get("place_ru"),
-            "place_kk": (label or {}).get("kk") or r.get("place_kk"),
+            # Подпись места: карта R07 → подпись цели в самой жалобе (R09 v2.1, демо-мир R02) → place_* записи.
+            "place_ru": (label or {}).get("ru") or _target_label(target, "ru") or r.get("place_ru"),
+            "place_kk": (label or {}).get("kk") or _target_label(target, "kk") or r.get("place_kk"),
             "target": {"kind": target.get("kind"), "id": target.get("id")} if target and label else None,
             "people": 1 + int(r.get("metoo") or 0),
             "timer": timer,
