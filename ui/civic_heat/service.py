@@ -11,7 +11,7 @@ import threading
 import time
 from datetime import datetime, timedelta, timezone
 
-from . import engine, geo
+from . import engine, geo, world
 from .config import DEFAULT_DAYS, DISTRICT_ZOOM_MAX, MAX_DAYS, PERIODS, load_config
 from .targets import TargetResolver
 
@@ -29,7 +29,7 @@ class HeatError(ValueError):
 
 class HeatService:
     def __init__(self, source=None, *, config=None, resolver: TargetResolver | None = None, clock=None, metoo_times=None,
-                 examples_actionable: bool | None = None):
+                 examples_actionable: bool | None = None, db_path=None):
         """source: функция (since: datetime) -> список жалоб v2, или объект с методом list(since=...).
         metoo_times: функция ([complaint_id, …]) -> {id: [ISO, …]} — время каждого «Я тоже» (R09
         ComplaintStore.metoo_times); тогда «Я тоже» остывает от своего момента, а не от момента жалобы.
@@ -38,6 +38,7 @@ class HeatService:
         examples_actionable: можно ли менять статус примеров R07 (c-demo-…). По умолчанию — только без source
         (чистое демо); стенд R07 (devserver) включает явно — у него свои маршруты статуса; в оболочке R01 примеров
         нет в хранилище R09, поэтому кнопок у них нет (R10 B-037).
+        db_path: база сборки (раунд 15) — там отметки шкалы «Хроники» (world.seed_world) и кризисы R17.
         """
         self.config = config or load_config()
         self.resolver = resolver or TargetResolver()
@@ -50,6 +51,10 @@ class HeatService:
         self._cache: dict = {}
         self._generation = 0
         self.last_compute_ms = 0.0
+        self.db_path = str(db_path) if db_path else None
+        if db_path:
+            world.remember_db(db_path)
+        self._replay = None
 
     # ---------- данные ----------
     def _records(self, since: datetime):
@@ -182,8 +187,10 @@ class HeatService:
             self._cache[key] = (time.monotonic(), result)
         return result
 
-    def _compute(self, *, now, days, category, district, bbox):
-        records = self._records(now - timedelta(days=max(days, self.config.fixed_days + days)))
+    def _compute(self, *, now, days, category, district, bbox, records=None):
+        """records — для «Хроники» (replay.py): записи, «отмотанные» к моменту now; иначе — из источника."""
+        if records is None:
+            records = self._records(now - timedelta(days=max(days, self.config.fixed_days + days)))
         # Чистое демо (свой стенд, source=None): примеры R07 — сами жалобы, действия с ними работают. С живым источником
         # (оболочка R01: жалобы R09 + примеры R07 при CIVIC_DEMO=1) у примеров R07 кнопок нет — их нет в R09 (B-037).
         examples_ok = self.is_demo if self._examples_actionable is None else self._examples_actionable
@@ -219,6 +226,16 @@ class HeatService:
                 return dict(it, texts=texts)
         return None
 
+    def replay(self, **params) -> dict:
+        """Ответ GET /api/civic/v2/heat/replay — «Хроника города» (replay.py): кадры по дням той же формулой."""
+        if self._replay is None:
+            from .replay import Replay
+
+            with self._lock:
+                if self._replay is None:
+                    self._replay = Replay(self)
+        return self._replay.build(**params)
+
     def meta(self) -> dict:
         """Категории, легенда, районы и периоды — чтобы интерфейс ничего не копировал руками."""
         return {
@@ -232,6 +249,9 @@ class HeatService:
             "district_zoom_max": DISTRICT_ZOOM_MAX,
             "districts": [{"id": d["id"], "ru": d["name_ru"], "kk": d["name_kk"], "bbox": d["bbox"]} for d in geo.districts().values()],
             "demo": self.is_demo,
+            # Раунд 15: «Хроника города» — периоды шкалы и один источник (демо-мир: только база R09, без примеров R07)
+            "replay": {"periods": [7, 30], "step": "day"},
+            "world": world.world_mode(),
         }
 
 
@@ -250,7 +270,8 @@ def default_service() -> HeatService:
 
 def configure(source=None, **kwargs) -> HeatService:
     """R01 подключает источник жалоб R09:
-        configure(source=lambda since: store.list(since=since), metoo_times=store.metoo_times)."""
+        configure(source=lambda since: store.list(since=since), metoo_times=store.metoo_times, db_path=db_path).
+    db_path (раунд 15, необязательно) — база сборки: отметки «Хроники» и кризисы R17."""
     global _default
     with _default_lock:
         _default = HeatService(source=source, **kwargs)

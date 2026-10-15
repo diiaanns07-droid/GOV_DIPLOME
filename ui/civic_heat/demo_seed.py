@@ -20,7 +20,7 @@ import random
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from . import geo
+from . import geo, world
 from .engine import ASTANA_TZ, iso
 
 HERE = Path(__file__).resolve().parent
@@ -211,7 +211,12 @@ def _history(created: datetime, end_status: str, fixed_time: datetime | None, no
 def demo_records(now: datetime | None = None, seed: int = DEFAULT_SEED, targets: dict | None = None) -> list[dict]:
     """Поток жалоб за 3 недели + работа акимата: старые жалобы у цели закрываются одним ремонтом
     (статус fixed у всех, кто пришёл до него), свежие — открыты. Поэтому на карте горят свежие места,
-    «неделю назад» сопоставимо с «сейчас», а просроченных немного (только цели из LATE)."""
+    «неделю назад» сопоставимо с «сейчас», а просроченных немного (только цели из LATE).
+
+    Демо-мир раунда 15 (CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1) — пустой список: один источник, все жалобы карты из базы
+    R09 (world.py). Так шлюз R01, который складывает «примеры R07 + жалобы R09», сам получает только R09."""
+    if world.world_mode():
+        return []
     now = (now or datetime.now(timezone.utc)).astimezone(ASTANA_TZ)
     targets = targets or load_targets()
     rnd = random.Random(seed)

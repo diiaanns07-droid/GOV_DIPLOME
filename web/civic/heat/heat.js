@@ -1669,10 +1669,11 @@
 
     // Заголовок списка (эталон: 19/600 как у листа «Проекты и идеи»), «за 30 дней» серым; «Сбросить» — когда фильтры
     // изменены; × — если оболочка показывает список закрываемой карточкой (opts.closable, событие birge:heat-close).
+    // opts.closable === "desktop" (R01 INTEGRATION §26.12): × только на ноутбуке — на телефоне список в шторке, × скрыт CSS.
     function listHeadHtml() {
       const dirty = S.filters.category || S.filters.district || S.filters.days !== ((S.meta && S.meta.default_days) || 30);
       const reset = dirty && (S.top || []).length ? '<button type="button" class="r07-link r07-reset" data-reset>' + esc(t("heat.reset")) + "</button>" : "";
-      const close = opts.closable ? '<button type="button" class="r07-x" data-close aria-label="' + esc(t("heat.close")) + '" title="' + esc(t("heat.close")) + '">' + svgIcon("close", 16) + "</button>" : "";
+      const close = opts.closable ? '<button type="button" class="r07-x' + (opts.closable === "desktop" ? " r07-x--desktop" : "") + '" data-close aria-label="' + esc(t("heat.close")) + '" title="' + esc(t("heat.close")) + '">' + svgIcon("close", 16) + "</button>" : "";
       return '<header class="r07-lhd"><h2 class="r07-h" id="r07-hot-h">' + esc(t("heat.hot_title")) + '</h2><span class="r07-muted r07-lhd__days">' +
         esc(keep(t("heat.for_days", { count: S.filters.days }))) + "</span>" + reset + close + "</header>";
     }
