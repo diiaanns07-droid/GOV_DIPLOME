@@ -22,6 +22,21 @@ TODAY = date(2026, 10, 15)          # anchor фикстуры
 PERIOD = (date(2026, 7, 1), date(2027, 12, 31))
 
 
+@pytest.fixture(autouse=True)
+def isolated_world_state():
+    """Каждый тест — с чистым состоянием мира R12 (R01 B0.5: после tests/civic/R07 в одном процессе мир R02, засеянный
+    соседями через engine.civic_geo.seed_world, переименовывал конфликты фикстуры). Состояние до теста возвращается."""
+    from engine.civic_geo import works_calendar as WC
+    saved_world, saved_cache = dict(WC._WORLD), dict(WC._planned_cache)
+    WC._WORLD.clear()
+    WC._planned_cache.clear()
+    yield
+    WC._WORLD.clear()
+    WC._WORLD.update(saved_world)
+    WC._planned_cache.clear()
+    WC._planned_cache.update(saved_cache)
+
+
 @pytest.fixture(scope="module")
 def real():
     return get_graph()
