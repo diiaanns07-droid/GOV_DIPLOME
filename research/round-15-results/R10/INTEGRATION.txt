@@ -17,6 +17,9 @@ crossings}.json.gz). Прежний tests/civic/R10/accuracy.py сверял с�
 191f81e7, Ctrl+K «Сцена 7/8/9», Ситуационный центр /civic/board/index.html, сверки A3/C3/C5, C4 по подписям экранов
 (R09 overdue_answer, R17), точность — со снимком-источником цели (R07), аудит экранов visual_audit, ролик ≤ 5 мин.)
 (тесты R10 не трогают код приложения; pytest tests/civic/R10 на пакете: 45 passed / 5 skipped).
+Ответ на просьбу в STATUS R01 («R10 / R12 / R07: 2 FAIL test_r10_accuracy на пакете»): закрыто в 46face57, который R01
+взял в B0.3 (BUILD_LOG: pytest R01/R02/R04/R07/R08/R10/R12 — падений R10 нет). На ветке R01 B0.2 29b4ae9d с тестами из
+ветки R10 — pytest tests/civic/R10 50 passed. Для B1 брать code_sha из DELIVERY.json R10 (там же — что изменилось).
 
 =====================================================================================================
 §1. R01 · ui/web_server.py · raw-маршруты сотрудника (B-102) — до B1

@@ -301,7 +301,10 @@ class Consistency:
             self.compare(name5,
                          [("«Картина дня» R08 (7 × 24 ч)", "R08", {"fixed": dfix.get("value"), "verified": dfix.get("verified")}),
                           ("«Картина недели» R08 (дни недели)", "R08", {"fixed": wfix.get("value"), "verified": wfix.get("verified")})])
-            self.checks[-1]["blocking"] = False
+            rec = self.checks[-1]
+            rec["blocking"] = False
+            if rec["status"] == "FAIL":
+                self.c5_labels(rec, wdata)
         else:
             self.checks.append({"name": name5, "status": "NOT_RUN", "values": {"week": week.status if week is not None else None},
                                 "owners": ["R08"], "note": "нет «Картины недели» или её итогов в ответе akim/week", "optional": True})
@@ -353,6 +356,35 @@ class Consistency:
             if found:
                 return found[0] if lang == "ru" or len(found) < 2 else found[1]
         return None
+
+    def c5_labels(self, rec, wdata):
+        """C5 при разных числах: окна разные, но подписаны — не противоречие. R08 147259eb: идущая неделя «Картины недели»
+        подписана «Исправлено с 12 окт» (week.current + so_far_label). Тогда и «Картина дня» должна сказать «за 7 дней»
+        (как Ситуационный центр, board.kpi.fixed): «Исправлено за неделю» рядом с «Исправлено с 12 окт» читается как «эта
+        неделя» — два числа под одним словом."""
+        w = (wdata or {}).get("week") or {}
+        week_labeled = bool(w.get("current") and (w.get("so_far_label_ru") or w.get("so_far_label_kk")))
+        labels, vague = {}, []
+        for lang, seven in (("ru", r"7\s*(дн|×)"), ("kk", r"7\s*күн")):
+            try:
+                d = json.loads((self.s.root / "web" / "civic" / "i18n" / f"{lang}.json").read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                d = {}
+            day = self.screen_label(lang, d, ["akim.kpi.fixed_week"], "web/civic/akim/akim.js")
+            labels[lang] = {"«Картина дня»": day, "«Картина недели»": w.get(f"so_far_label_{lang}")}
+            if not (isinstance(day, str) and re.search(seven, day, re.I)):
+                vague.append(f"{lang}: «{day}»")
+        rec["values"]["подписи"] = labels
+        if week_labeled and not vague:
+            rec["status"] = "PASS"
+            rec["note"] = "окна разные и подписаны: день — за 7 дней, неделя — с понедельника (so_far_label)"
+        elif week_labeled:
+            rec["note"] = ("«Картина недели» подписана «с понедельника», а «Картина дня» — " + ", ".join(vague)
+                           + " (последние 7 × 24 ч): «за неделю» читается как «эта неделя»; R08/R11 — «Исправлено за 7 дней», "
+                           "как на Ситуационном центре (board.kpi.fixed)")
+        else:
+            rec["note"] = "окна разные и не подписаны (B-122)"
+        print(f"  C5 подписи: {rec['status']} — {rec['note']}")
 
     def labels_check(self, fix_value, answer_value, r17_value=None):
         """Разные числа «просрочено» — разные подписи (ru и kk), как их показывают экраны:
