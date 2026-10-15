@@ -1,0 +1,61 @@
+{
+ "role": "R12",
+ "round": 15,
+ "delivery": 1,
+ "title": "Единый календарь работ и «копаем один раз»",
+ "branch": "claude/great-newton-8k3474",
+ "base_sha": "e91acb69",
+ "restored_from": null,
+ "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
+ "code_sha": "24140de81681be965c5dcf75b28aec373483712b",
+ "tested_sha": "24140de81681be965c5dcf75b28aec373483712b",
+ "push_status": "OK",
+ "changed_paths": [
+  "engine/civic_geo/works.py",
+  "engine/civic_geo/works_calendar.py",
+  "engine/civic_geo/build_works_fixture.py",
+  "engine/civic_geo/api.py",
+  "engine/civic_geo/__main__.py",
+  "data/civic/astana/geo/works_fixture.json",
+  "web/civic/works-calendar/works-calendar.js",
+  "web/civic/works-calendar/works-calendar.css",
+  "tests/civic/R12/test_works.py",
+  "tests/civic/R12/works/works_calendar.test.cjs"
+ ],
+ "integration": {
+  "R01_patch": "research/round-15-results/R12/patches/R01_works_calendar.patch (applies to e91acb69 and R01 0b76f9ed)",
+  "routes": ["GET works-calendar (raw, strip_prefix, staff_view)", "GET works-conflicts (raw, strip_prefix, staff_view)"],
+  "assets": ["works-calendar/works-calendar.js", "works-calendar/works-calendar.css"],
+  "shell": "registerScreen works-calendar (akimat) + registerLayer works-conflicts (off by default) — модуль сам",
+  "i18n_keys": "research/round-15-results/R12/i18n_keys.json (69 ключей wcal.*, kk — черновик)",
+  "neighbours": "R06 works_v2 (проверено стыком с 1f76738a), R17 профили служб (если есть), R08/R17 conflicts_summary()"
+ },
+ "tests": {
+  "pytest_R12_all": {"status": "PASS", "passed": 83, "failed": 0, "env": "cloud, Python 3, real OSM graph"},
+  "pytest_works": {"status": "PASS", "passed": 35, "failed": 0,
+   "covers": "линия ≤ 5 м от рёбер OSM; три вида конфликтов на синтетике; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API 401/400/200"},
+  "pytest_neighbours_using_civic_geo": {"status": "PASS", "passed": 236, "failed": 0,
+   "files": "tests/civic/R12 + R09 test_r09v2_neighbours/security + R01 test_r01_api_v2 + R10 accuracy"},
+  "browser_app": {"status": "PASS", "passed": 79, "failed": 0,
+   "how": "app.py + patch R01 (лаунчер стенда), CIVIC_DEMO=1, вход сотрудника, 1366/1024/375 × ru/kk",
+   "result_file": "research/round-15-results/R12/browser_works_calendar.json"},
+  "perf_60_works": {"status": "PASS", "value_ms": "43 (первый расчёт) / 9 (из кэша)", "limit_ms": 300},
+  "r06_join": {"status": "PASS", "note": "ветка R06 1f76738a: works_v2() → календарь source r06+fixture"},
+  "real_works_LOCAL5": {"status": "NOT_RUN", "reason": "data/civic/astana/nura-real/records.csv нет ни в одной ветке origin (15 окт)"}
+ },
+ "screens": {
+  "dir": "research/round-15-results/R12/screens",
+  "calendar": ["calendar_1366_ru.png", "calendar_1366_kk.png", "calendar_1024_ru.png", "calendar_1024_kk.png", "calendar_375_ru.png", "calendar_375_kk.png", "calendar_1366_ru_work.png"],
+  "map": ["map_1366_ru.png", "map_1366_kk.png", "map_1024_ru.png", "map_1024_kk.png", "map_375_ru.png", "map_375_kk.png"],
+  "note": "Облако без интернета: подложка OpenFreeMap не грузится, карта — упрощённый фон (кадры с настоящей картой — LOCAL-12)."
+ },
+ "known_limits": [
+  "Работы в демо — синтетика фикстуры R12 (15 работ, Нура), пока у R06 нет работ v2 с участками и нет демо-мира R02; помечены «Пример».",
+  "Реальные работы Нуры (LOCAL-5) не привязаны: файла records.csv нет.",
+  "Работа без участка (только точка) — «примерное место», в конфликтах не участвует (честно, без уверенной линии).",
+  "Профили служб R17 ещё не поставлены — цвета служб запасные R12.",
+  "kk-тексты — черновик R12 (на проверку R11 и владельцу).",
+  "Пункт 4 (служба и вид в редакторе) — в следующей поставке."
+ ],
+ "next_step": "Редактор: служба и вид работы при создании + выбор участка для формы R06; импорт LOCAL-5 (когда появится файл); стык с демо-миром R02 и профилями R17; круг визуала по VISUAL_BRIEF."
+}

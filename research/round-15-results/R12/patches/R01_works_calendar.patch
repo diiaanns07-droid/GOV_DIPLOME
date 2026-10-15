@@ -1,0 +1,50 @@
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -117,6 +117,8 @@
+                 "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
+                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
+                 "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
++                # R12 раунд 15: «Календарь работ» (экран акимата и слой «Конфликты работ»).
++                "works-calendar/works-calendar.js", "works-calendar/works-calendar.css",
+                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
+                 "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
+ # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+@@ -707,6 +709,9 @@
+     ("GET", ("yard",), "geo.yard"),
+     ("GET", ("geo", "status"), "geo.status"),
+     ("GET", ("target",), "geo.target"),  # R12 волна 2 п. 6: QR-паспорт — что за объект по id
++    # R12 раунд 15: «Календарь работ» и «копаем один раз» — только сотрудник (staff_view: шлюз передаёт staff=True).
++    ("GET", ("works-calendar",), "geo.works_calendar"),
++    ("GET", ("works-conflicts",), "geo.works_conflicts"),
+     ("GET", ("proposals",), "proposals.list"),
+     ("POST", ("proposals",), "proposals.create"),
+     # R06 @ 7031afa: точные пути (summary, lagging) — раньше шаблонов с {id}.
+@@ -765,6 +770,10 @@
+     "nearby.subscribe": V2Handler("R08", ("ui.civic_akim.api",), "nearby_subscribe"),
+     **{key: V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True)
+        for key in ("geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status", "geo.target")},
++    # R12 раунд 15: календарь и конфликты работ. staff_view=True — шлюз проверяет сессию R02 и передаёт staff=True;
++    # без сессии модуль отвечает 401 staff_required (данные служб — только сотруднику, CONTRACT §7).
++    **{key: V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True, staff_view=True)
++       for key in ("geo.works_calendar", "geo.works_conflicts")},
+     "proposals.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_proposals"),
+     "proposals.create": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "create_proposal", staff=True),
+     "proposals.vote": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "vote_proposal"),
+--- a/web/index.html
++++ b/web/index.html
+@@ -31,6 +31,7 @@
+     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+     <link rel="stylesheet" href="/civic/shell/shell.css" />
+     <link rel="stylesheet" href="/civic/qr/report.css" />
++    <link rel="stylesheet" href="/civic/works-calendar/works-calendar.css" />
+     <link rel="stylesheet" href="/civic/shell/birge.css" />
+     <!-- Эталон A «лучше 2ГИС» (13 окт): поиск, чипы, капсулы, одна закрываемая карточка слева; ?layout=classic — прежний вид. -->
+     <link rel="stylesheet" href="/civic/shell/birge-ref.css" />
+@@ -258,6 +259,7 @@
+     <script defer src="/civic/proposals/works.js"></script>
+     <script defer src="/civic/akim/services.js"></script>
+     <script defer src="/civic/map/search_index.js"></script>
++    <script defer src="/civic/works-calendar/works-calendar.js"></script>
+     <script defer src="/civic/shell/explore.js"></script>
+     <script defer src="/civic/shell/shell.js"></script>
+   </body>
