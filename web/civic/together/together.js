@@ -30,7 +30,15 @@
   var SKELETON_DELAY = 150;
   var NET_TIMEOUT = 12000;
   var KINDS = ["cleanup", "greening", "snow", "repair", "help", "other"];
-  var KIND_ICON = { cleanup: "trash", greening: "trees", snow: "snowflake", repair: "edit", help: "heart", other: "dots" };
+  // Значок вида дела: первый, который есть в спрайте ui-kit (R11 добавляет i-broom, i-sprout, i-wrench в раунде 15).
+  var KIND_ICONS = { cleanup: ["broom", "trash"], greening: ["sprout", "trees"], snow: ["snowflake"], repair: ["wrench", "edit"],
+    help: ["heart"], other: ["dots"] };
+  var spriteIds = null;   // id символов icons.svg после загрузки
+  function kindIcon(kind) {
+    var options = KIND_ICONS[kind] || KIND_ICONS.other;
+    for (var i = 0; spriteIds && i < options.length; i++) if (spriteIds["i-" + options[i]]) return options[i];
+    return options[options.length - 1];
+  }
   var TIMES = ["09:00", "10:00", "11:00", "12:00", "15:00", "17:00", "18:00"];
   var HOURS = [1, 2, 3, 4];
   var REASONS = ["personal_data", "rude", "spam", "duplicate", "not_initiative", "other"];
@@ -183,12 +191,6 @@
 
   // ------------------------------------------------------------------ значок вида дела
   // Поправка владельца П1 («без ИИ-слопа»): никаких иллюстраций и «сценок» — значок вида из набора R11 и слово.
-  function kindBadge(kind, big) {
-    return h("span", { class: "tg-kindbadge" + (big ? " tg-kindbadge--big" : ""), "data-kind": kind }, [
-      h("span", { class: "tg-kindbadge__ic" }, [icon(KIND_ICON[kind] || "dots")]),
-      h("span", { class: "tg-kindbadge__label", text: t("together.kind." + kind) }),
-    ]);
-  }
   // Фото «после» — только настоящее (загружено жителем или сотрудником, data URL с сервера).
   function realPhotos(item) {
     return ((item.report && item.report.photos) || []).filter(function (p) { return !!p.data_url; });
@@ -272,6 +274,29 @@
   }
   function textLang(text) { return KK_LETTERS.test(text || "") ? "kk" : lang(); }
 
+  // ------------------------------------------------------------------ что есть в сборке
+  // Маршруты [доп.] R16 (список дворов, «старший по двору») R01 мог ещё не поставить: спрашиваем шлюз один раз
+  // (GET /modules) и прячем то, чего нет, — вместо ошибки 404 на экране. Нет ответа — считаем, что всё есть.
+  var routes = null;
+  function loadRoutes(base) {
+    if (routes) return routes;
+    routes = request(base, "GET", "/modules").then(function (data) {
+      var have = {};
+      Object.keys((data && data.modules) || {}).forEach(function (k) { have[k] = data.modules[k].status === "ready"; });
+      return have;
+    }, function () { return null; });
+    return routes;
+  }
+  var routeOk = { "together.yards.list": true, "together.yards.captain": true };
+  function loadSprite() {
+    if (spriteIds || !root.fetch) return;
+    spriteIds = {};
+    root.fetch(ICONS).then(function (r) { return r.text(); }).then(function (txt) {
+      (txt.match(/id="i-[a-z0-9-]+"/g) || []).forEach(function (m) { spriteIds[m.slice(4, -1)] = true; });
+      mounted.forEach(function (c) { if (c.rerender) c.rerender(); });
+    }).catch(function () { /* без спрайта — прежние значки */ });
+  }
+
   // ------------------------------------------------------------------ фото «после»: сжатие в браузере
   // canvas перекодирует JPEG — EXIF и GPS отпадают (сервер чистит ещё раз). Размер подбираем под тело запроса.
   function shrink(file) {
@@ -318,9 +343,22 @@
     return h("div", { class: "tg-skel", "aria-busy": "true", role: "status", "aria-label": t("together.loading") }, out);
   }
   // Пусто (П1, правило 2): один маленький значок набора R11 (≤ 48 px) + короткий текст + одна кнопка.
-  function emptyState(title, text, action, iconName) {
+  // Малый монохромный значок пустого состояния ui-kit (ill-*, 48 px, П1 правило 2). «together», «calendar» есть только
+  // в спрайте ui-kit раунда 15 — пока его нет, значок набора в круге.
+  var ILL_BASE = { list: 1, map: 1, search: 1, done: 1, offline: 1, idea: 1, question: 1, staff: 1 };
+  function emptyArt(ill, fallback) {
+    if (ill && (ILL_BASE[ill] || (spriteIds && spriteIds["ill-" + ill]))) {
+      var node = svg("svg", { class: "bk-ill tg-ill", "aria-hidden": "true", focusable: "false" });
+      var use = svg("use", {});
+      use.setAttribute("href", ICONS + "#ill-" + ill);
+      node.appendChild(use);
+      return node;
+    }
+    return h("span", { class: "tg-empty__ic" }, [icon(fallback || "users")]);
+  }
+  function emptyState(title, text, action, iconName, ill) {
     return h("div", { class: "bk-empty tg-empty", role: "status" }, [
-      h("span", { class: "tg-empty__ic" }, [icon(iconName || "users")]),
+      emptyArt(ill, iconName),
       h("p", { class: "bk-empty__title", text: title }),
       text ? h("p", { class: "bk-empty__text", text: text }) : null,
       action || null,
@@ -383,25 +421,31 @@
       coming.classList.remove("tg-count__n--in", "tg-count__n--down");
     }, 320);
   }
-  function supportBadge(support) {
-    if (!support || !support.by_akimat) return null;
+  // Плашка «Поддержано акиматом» (.bk-support ui-kit): синяя, не зелёная — зелёный только «исправлено» (IA §5.2).
+  function supportWhat(support) {
     var what = [];
     if (support.inventory) what.push(t("together.support.inventory"));
     if (support.pickup_service) what.push(t("together.support.pickup"));
-    return h("span", { class: "tg-support", title: support.note || "" }, [icon("check"), t("together.supported"),
-      what.length ? h("span", { class: "tg-support__what", text: " · " + what.join(" · ") }) : null]);
+    return what;
+  }
+  function supportBadge(support) {
+    if (!support || !support.by_akimat) return null;
+    return h("span", { class: "bk-support tg-support", title: [supportWhat(support).join(" · "), support.note || ""].filter(Boolean).join(" — ") },
+      [icon("building"), t("together.supported")]);
   }
   // ------------------------------------------------------------------ модуль экрана
   var mounted = [];   // смонтированные экраны (для open() из палитры и ссылок ленты)
   var pending = null; // {kind, id} — открыть после монтирования
 
   function mount(rootEl, options) {
-    var opts = { apiBase: "/api/civic/v2", view: "initiatives", role: "resident", titleTag: "h2" };
+    var opts = { apiBase: "/api/civic/v2", role: "resident", titleTag: "h2" };
     Object.keys(options || {}).forEach(function (k) { if (options[k] !== undefined) opts[k] = options[k]; });
     var api = function (method, path, body) { return request(opts.apiBase, method, path, body); };
+    // Раздел оболочки R01 (IA R11 §5): opts.section — «yard» или «together»; свой вызов — opts.view.
+    var viewName = opts.view || (opts.section === "yard" ? "yard" : "initiatives");
     var S = {
       role: opts.role === "akimat" ? "akimat" : "resident",
-      view: opts.view === "yard" ? "yard" : "initiatives",
+      view: viewName === "yard" ? "yard" : "initiatives",
       stack: [],
       cache: {},           // ключ -> {status, data, error}
       busy: {},            // id -> true, пока идёт действие
@@ -415,6 +459,12 @@
     var host = h("div", { class: "tg bk-app", "data-view": S.view, "data-role": S.role });
     rootEl.replaceChildren(host);
     var off = [];
+    loadSprite();
+    loadRoutes(opts.apiBase).then(function (have) {
+      if (!have || S.destroyed) return;
+      Object.keys(routeOk).forEach(function (k) { routeOk[k] = have[k] !== undefined ? have[k] : false; });
+      render();
+    });
 
     function route() { return S.stack[S.stack.length - 1] || baseRoute(); }
     function baseRoute() {
@@ -424,12 +474,63 @@
       }
       return S.role === "akimat" ? { name: "staff", base: true } : { name: "list", base: true };
     }
-    function go(next) { S.stack.push(next); S.wizardError = null; render(true); }
+    function go(next) { S.stack.push(next); S.wizardError = null; render(true); syncPath(); }
     function back() {
-      if (S.stack.length) { S.stack.pop(); render(true); return true; }
+      if (S.stack.length) { S.stack.pop(); render(true); syncPath(); return true; }
       return false;
     }
-    function reset(next) { S.stack = next ? [next] : []; render(true); }
+    function reset(next) { S.stack = next ? [next] : []; render(true); syncPath(); }
+
+    // --- путь в адресе (оболочка R01, IA R11 §7.3): #yard/<двор>, #yard/<двор>/<дело>, #together/<дело>.
+    // Модуль переходит по пути сам (setPath — «Назад» браузера, ссылка ленты) и сообщает оболочке свой путь (navigate).
+    // Оболочка FINAL-4 путей не знает: тогда адрес не меняется, работает свой стек экрана.
+    var nav = typeof opts.navigate === "function" ? opts.navigate : null;
+    var currentPath = typeof opts.path === "string" ? opts.path : "";
+    var echo = false;
+    var YARD_RE = /^(yard|cell)-[A-Za-z0-9_-]{1,60}$/, ITEM_RE = /^i-[a-z0-9-]{4,40}$/;
+    function pathOf(r) {
+      if (r.name === "wizard" || r.name === "sent") return null;   // черновик в адрес не пишем
+      if (S.view === "yard") {
+        if (r.name === "picker") return "";
+        if (r.name === "yard") return r.base ? "" : r.id;
+        if (r.name === "initiative") return r.yard ? r.yard + "/" + r.id : null;
+        return null;
+      }
+      if (r.name === "initiative") return r.id;
+      if (r.name === "yard") return r.id;
+      return r.name === "list" || r.name === "staff" ? "" : null;
+    }
+    function stackFromPath(path) {
+      var parts = String(path || "").split("/").filter(Boolean);
+      if (S.view === "yard") {
+        if (!parts.length || !YARD_RE.test(parts[0])) return [];
+        var out = [{ name: "yard", id: parts[0] }];
+        if (parts[1] && ITEM_RE.test(parts[1])) out.push({ name: "initiative", id: parts[1], yard: parts[0] });
+        return out;
+      }
+      if (parts[0] && ITEM_RE.test(parts[0])) return [{ name: "initiative", id: parts[0] }];
+      if (parts[0] && YARD_RE.test(parts[0])) return [{ name: "yard", id: parts[0] }];
+      return [];
+    }
+    function syncPath() {
+      if (!nav || S.destroyed) return;
+      var p = pathOf(route());
+      if (p === null || p === currentPath) return;
+      currentPath = p;
+      echo = true;
+      try { nav(p); } catch (e) { /* оболочка без путей */ } finally { echo = false; }
+    }
+    function setPath(path) {
+      path = typeof path === "string" ? path : "";
+      if (echo) { currentPath = path; return; }      // наш же navigate вернулся эхом — уже на месте
+      if (path === currentPath && path !== "") return;
+      currentPath = path;
+      S.stack = stackFromPath(path);
+      S.open = null;
+      S.wizard = null;
+      render(true);
+    }
+    if (currentPath) S.stack = stackFromPath(currentPath);
 
     // --- загрузка с кэшем: скелетон не раньше 150 мс, повторное открытие — сразу прежние данные и тихое обновление
     function load(key, path, force) {
@@ -473,6 +574,7 @@
       var active = doc.activeElement;
       var focusKey = active && host.contains(active) ? active.getAttribute("data-focus") : null;
       var view;
+      S.pageDemo = false;   // «Пример» один раз на странице — только на странице двора-примера (ставит viewYard)
       try {
         view = ({ picker: viewPicker, yard: viewYard, list: viewList, initiative: viewInitiative, wizard: viewWizard,
           sent: viewSent, staff: viewStaff })[r.name](r);
@@ -491,8 +593,9 @@
         if (again && again.focus) again.focus({ preventScroll: true });
       }
     }
-    function title(text, extra) {
-      return h(opts.titleTag || "h2", { class: "tg-title", tabindex: "-1", "data-autofocus": "1" }, [text].concat(extra || []));
+    function title(text, extra, cls) {
+      return h(opts.titleTag || "h2", { class: "tg-title" + (cls ? " " + cls : ""), tabindex: "-1", "data-autofocus": "1" },
+        [text].concat(extra || []));
     }
     function backButton(text) {
       return h("button", { type: "button", class: "bk-btn bk-btn--ghost tg-back", "data-focus": "back", onclick: back },
@@ -502,10 +605,11 @@
     // ================================================================ двор: выбор
     function viewPicker() {
       var key = "yards";
-      load(key, "/together/yards");
-      var e = entryState(key);
       var rows;
+      var e = { status: "ready", data: { items: [] } };
+      if (routeOk["together.yards.list"]) { load(key, "/together/yards"); e = entryState(key); }
       if (e.status === "loading") rows = e.slow ? skeleton(3) : h("div", { class: "tg-wait" });
+      else if (e.status === "error" && e.error && (e.error.status === 404 || e.error.status === 503)) rows = null;  // нет в сборке
       else if (e.status === "error") rows = errorState(e.error, function () { load(key, "/together/yards", true); });
       else {
         var items = (e.data && e.data.items) || [];
@@ -522,19 +626,32 @@
             y.demo ? demoTag() : null,
             icon("chevron-right", "tg-yardrow__go"),
           ])]);
-        })) : h("p", { class: "tg-muted", text: t("together.pick.empty") });
+        })) : null;
       }
+      // Карта оболочки может появиться позже экрана (оболочка R01 создаёт её после загрузки стиля): кнопка есть всегда,
+      // когда есть оболочка или карта; саму карту берём в момент нажатия.
+      var canPick = !!(opts.map || mapObject() || root.BirgeShell);
       return h("section", { class: "tg-picker" }, [
         h("div", { class: "tg-hero" }, [
+          emptyArt("map", "pin"),
           h("div", { class: "tg-hero__text" }, [
             title(t("together.pick.title")),
             h("p", { class: "tg-lead", text: t("together.pick.text") }),
-            h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "locate", "aria-busy": S.locating ? "true" : null,
-              disabled: S.locating || null, onclick: locate }, [icon("locate"), S.locating ? t("together.pick.locating") : t("together.pick.locate")]),
+            h("div", { class: "tg-wnav tg-hero__actions" }, [
+              canPick ? h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "pick-map", onclick: function () {
+                var base = opts.apiBase;
+                if (typeof opts.close === "function") opts.close();
+                else if (root.BirgeShell && root.BirgeShell.setSection) root.BirgeShell.setSection("map");
+                whenMap(opts.map, function (m) { startPick(m, base); });
+              } }, [icon("pin"), t("together.pick.on_map")]) : null,
+              h("button", { type: "button", class: "bk-btn" + (canPick ? "" : " bk-btn--primary"), "data-focus": "locate",
+                "aria-busy": S.locating ? "true" : null, disabled: S.locating || null, onclick: locate },
+                [icon("locate"), S.locating ? t("together.pick.locating") : t("together.pick.locate")]),
+            ]),
             S.locateError ? h("p", { class: "tg-note", role: "status", text: S.locateError }) : null,
           ]),
         ]),
-        h("h3", { class: "tg-h3", text: t("together.pick.list") }),
+        rows ? h("h3", { class: "tg-h3", text: t("together.pick.list") }) : null,
         rows,
       ]);
     }
@@ -553,8 +670,13 @@
       { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 });
     }
     function openYard(id, tab) {
+      // Житель в «Сделаем вместе» → раздел «Мой двор» оболочки со своим адресом (#yard/<двор>), если оболочка умеет пути.
+      if (S.view !== "yard" && S.role === "resident" && nav && typeof opts.openSection === "function") {
+        opts.openSection("yard", id);
+        return;
+      }
       var r = route();
-      if (r.name === "picker" && r.base) { S.stack = [{ name: "yard", id: id, tab: tab }]; render(true); return; }
+      if (r.name === "picker" && r.base) { S.stack = [{ name: "yard", id: id, tab: tab }]; render(true); syncPath(); return; }
       go({ name: "yard", id: id, tab: tab });
     }
 
@@ -577,32 +699,34 @@
       S.pageDemo = !!yard.demo;
       var counts = page.counts || {};
       var mine = page.me && page.me.member;
-      var kpis = h("div", { class: "bk-kpis bk-kpis--3 tg-kpis" }, [
-        kpi(counts.members, "together.kpi.members"),
-        kpi(counts.problems, "together.kpi.problems", function () { setTab("problems"); }),
-        kpi(counts.initiatives, "together.kpi.initiatives", function () { setTab("initiatives"); }),
+      var kpis = h("div", { class: "bk-yard__stats tg-kpis" }, [
+        stat(counts.members, "together.kpi.members"),
+        stat(counts.problems, "together.kpi.problems", function () { setTab("problems"); }),
+        stat(counts.initiatives, "together.kpi.initiatives", function () { setTab("initiatives"); }),
       ]);
       function setTab(next) { r.tab = next; render(); var b = host.querySelector('[data-focus="tab-' + next + '"]'); if (b) b.focus(); }
-      var main = mine
+      var main = S.role === "akimat" ? null : mine
         ? h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "propose", onclick: function () { startWizard(page); } },
           [icon("plus"), t("together.yard.propose")])
         : h("button", { type: "button", class: "bk-btn bk-btn--primary", "data-focus": "join-yard", "aria-busy": S.busy.yard ? "true" : null,
           disabled: S.busy.yard || null, onclick: function () { yardMembership(page, true); } }, [icon("home"), t("together.yard.join")]);
-      var header = h("header", { class: "tg-yardhead" }, [
-        h("div", { class: "tg-yardhead__text" }, [
-          title(label(yard) || yard.id),
-          h("p", { class: "tg-yardhead__meta" }, [
-            yard.district ? h("span", { text: districtName(yard.district) }) : null,
-            yard.street ? h("span", { text: " · " + (lang() === "kk" ? yard.street.kk || yard.street.ru : yard.street.ru || yard.street.kk) }) : null,
-            yard.approximate ? h("span", { class: "bk-tag bk-tag--approx", text: t("together.yard.approx") }) : null,
-            yard.demo ? demoTag() : null,
-          ]),
-          yard.captain ? h("p", { class: "tg-captain" }, [icon("user"), t("together.yard.captain", { name: yard.captain.display_name })]) : null,
-          kpis,
-          h("div", { class: "tg-yardhead__actions" }, [
-            main,
-            mine ? h("span", { class: "tg-member" }, [icon("check"), t("together.yard.member")]) : null,
-          ]),
+      var street = yard.street ? (lang() === "kk" ? yard.street.kk || yard.street.ru : yard.street.ru || yard.street.kk) : "";
+      var where = [yard.district ? districtName(yard.district) : "", street].filter(Boolean).join(" · ");
+      var header = h("header", { class: "bk-yard tg-yardhead" }, [
+        h("p", { class: "bk-yard__eyebrow tg-yardhead__meta" }, [
+          where ? h("span", { text: where }) : null,
+          yard.approximate ? h("span", { class: "bk-tag bk-tag--approx", text: t("together.yard.approx") }) : null,
+          yard.demo ? demoTag() : null,
+        ]),
+        title(label(yard) || yard.id, null, "bk-yard__title"),
+        kpis,
+        yard.captain ? h("p", { class: "bk-yard__captain tg-captain" }, [icon("user"), t("together.yard.captain", { name: yard.captain.display_name })]) : null,
+        mine ? h("p", { class: "bk-yard__member tg-member" }, [icon("check"), t("together.yard.member")]) : null,
+        // «Показать на карте» подсвечивает двор как цель area (IA §5.1: своей карты в экране нет).
+        h("div", { class: "bk-yard__actions tg-yardhead__actions" }, [
+          main,
+          typeof opts.openTarget === "function" ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "yard-map",
+            onclick: function () { opts.openTarget("area", yard.id); } }, [icon("pin"), t("together.show_map")]) : null,
         ]),
       ]);
       var tabs = h("div", { class: "bk-tabs tg-tabs", role: "tablist", "aria-label": t("together.tabs_label") },
@@ -615,12 +739,12 @@
         }));
       var panel = h("div", { class: "tg-panel", id: "tg-panel", role: "tabpanel", "aria-labelledby": "tg-tab-" + tab },
         [({ overview: yardOverview, problems: yardProblems, initiatives: yardInitiatives, works: yardWorks })[tab](page)]);
-      var foot = h("div", { class: "tg-yardfoot" }, [
+      var foot = S.role === "akimat" ? null : h("div", { class: "tg-yardfoot" }, [
         mine ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "leave-yard",
           onclick: function () { yardMembership(page, false); } }, [t("together.yard.leave")]) : null,
         h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-focus": "other-yard",
           onclick: function () { storage(YARD_KEY, null); reset(S.view === "yard" ? null : { name: "picker" }); } }, [t("together.yard.other")]),
-        mine ? captainBlock(page) : null,
+        mine && routeOk["together.yards.captain"] ? captainBlock(page) : null,
       ]);
       return h("section", { class: "tg-yard" }, [S.stack.length ? backButton() : null, header, tabs, panel, foot]);
     }
@@ -632,12 +756,14 @@
       if (next) { next.click(); }
       event.preventDefault();
     }
-    function kpi(value, key, onClick) {
+    // Число шапки двора (.bk-yard__stat): подпись первой в разметке (порядок для диктора), число — сверху (ui-kit).
+    // «Проблемы» и «дела соседей» — кнопка во всю плитку: открывает вкладку (зона нажатия — вся плитка, R10 B-114).
+    function stat(value, key, onClick) {
       var known = typeof value === "number";
-      var content = [h("span", { class: "bk-kpi__value", text: known ? formatNumber(value) : "—" }),
-        h("span", { class: "bk-kpi__label", text: known ? t(key, { n: value }) : t("together.kpi.no_data") })];
-      return onClick && known ? h("button", { type: "button", class: "bk-kpi tg-kpi tg-kpi--btn", onclick: onClick }, content)
-        : h("div", { class: "bk-kpi tg-kpi" }, content);
+      var content = [h("span", { class: "tg-kpi__label", text: known ? t(key, { n: value }) : t("together.kpi.no_data") }),
+        h("span", { class: "tg-kpi__value", text: known ? formatNumber(value) : "—" })];
+      return onClick && known ? h("button", { type: "button", class: "bk-yard__stat tg-kpi tg-kpi--btn", onclick: onClick }, content)
+        : h("div", { class: "bk-yard__stat tg-kpi" }, content);
     }
     function districtName(id) {
       var names = { almaty: ["Алматы", "Алматы"], baikonur: ["Байконур", "Байқоңыр"], esil: ["Есиль", "Есіл"], nura: ["Нура", "Нұра"],
@@ -654,13 +780,13 @@
         h("h3", { class: "tg-h3", text: t("together.next.title") }),
         next ? card(next, { wide: true }) : emptyState(t("together.empty.title"), t("together.empty.text"),
           page.me && page.me.member ? h("button", { type: "button", class: "bk-btn", onclick: function () { startWizard(page); } },
-            [icon("plus"), t("together.yard.propose")]) : null, "calendar"),
+            [icon("plus"), t("together.yard.propose")]) : null, "calendar", "together"),
         h("h3", { class: "tg-h3", text: t("together.problems.title") }),
         problemsList(page.problems, 3),
       ]));
       blocks.push(h("aside", { class: "tg-col tg-col--side" }, [
         h("h3", { class: "tg-h3", text: t("together.feed.title") }),
-        feedList(page.feed || []),
+        feedList((page.feed || []).slice(0, 5)),
       ]));
       return h("div", { class: "tg-overview" }, blocks);
     }
@@ -702,18 +828,19 @@
     }
     function feedList(feed) {
       if (!feed.length) return h("p", { class: "tg-muted", text: t("together.feed.empty") });
-      return h("ol", { class: "tg-feed" }, feed.map(function (e) {
-        var kindIcon = e.kind === "problem.fixed" ? "check" : e.kind === "problem.new" ? "alert" :
+      return h("ol", { class: "bk-feed tg-feed" }, feed.map(function (e) {
+        var feedIcon = e.kind === "problem.fixed" ? "check" : e.kind === "problem.new" ? "alert" :
           e.kind === "initiative.done" ? "heart" : e.kind === "initiative.supported" ? "building" : "users";
+        var kind = /^problem\./.test(e.kind) ? "complaint" : /^initiative\./.test(e.kind) ? "initiative" : "yard";
         var text = lang() === "kk" ? e.title_kk || e.title_ru : e.title_ru || e.title_kk;
-        var inner = [h("span", { class: "tg-feed__ic", "data-kind": e.kind }, [icon(kindIcon)]),
-          h("span", { class: "tg-feed__main" }, [h("span", { class: "tg-feed__text", text: text }),
-            h("span", { class: "tg-feed__when", text: shortDate(e.at) + " · " + timeLabel(e.at) })]),
+        var inner = [h("span", { class: "bk-feed__ic tg-feed__ic", "data-kind": e.kind }, [icon(feedIcon)]),
+          h("span", { class: "bk-feed__main tg-feed__main" }, [h("span", { class: "bk-feed__title tg-feed__text", text: text }),
+            h("span", { class: "bk-feed__meta tg-feed__when", text: shortDate(e.at) + " · " + timeLabel(e.at) })]),
           e.demo && !S.pageDemo ? demoTag() : null];
         var go = e.initiative_id ? function () { openInitiative(e.initiative_id); }
           : e.target && typeof opts.openTarget === "function" ? function () { opts.openTarget(e.target.kind, e.target.id); } : null;
-        return h("li", {}, [go ? h("button", { type: "button", class: "tg-feed__row", onclick: go }, inner)
-          : h("div", { class: "tg-feed__row" }, inner)]);
+        return h("li", {}, [go ? h("button", { type: "button", class: "bk-feed__item tg-feed__row", "data-kind": kind, onclick: go }, inner)
+          : h("div", { class: "bk-feed__item tg-feed__row", "data-kind": kind }, inner)]);
       }));
     }
     function yardProblems(page) {
@@ -725,7 +852,7 @@
       if (!items.length && !done.length) {
         return emptyState(t("together.empty.title"), t("together.empty.text"), page.me && page.me.member
           ? h("button", { type: "button", class: "bk-btn bk-btn--primary", onclick: function () { startWizard(page); } },
-            [icon("plus"), t("together.yard.propose")]) : null, "users");
+            [icon("plus"), t("together.yard.propose")]) : null, "users", "together");
       }
       return h("div", {}, [
         items.length ? h("h3", { class: "tg-h3", text: t("together.list.soon") }) : null,
@@ -819,21 +946,26 @@
       load(key, path);
       load("mine", "/together/initiatives?view=mine");
       var e = entryState(key);
-      var body;
+      var body, whenChips = null;
       if (e.status === "loading") body = e.slow ? skeleton(3) : h("div", { class: "tg-wait" });
       else if (e.status === "error") body = errorState(e.error, function () { load(key, path, true); });
       else {
         var items = (e.data && e.data.items) || [];
         var soon = items.filter(function (i) { return i.status === "published" && !isPast(i); });
         var done = items.filter(function (i) { return i.status === "done"; });
+        // Чипы «Скоро · Сделано» (IA R11 §5.2): одно из двух — список короче, «Сделано» — отдельным нажатием.
+        var when = S.when === "done" ? "done" : "soon";
+        var shown = when === "done" ? done : soon;
+        whenChips = soon.length || done.length ? h("div", { class: "bk-seg tg-filter", role: "group", "aria-label": t("together.list.when") },
+          [["soon", t("together.list.soon"), soon.length], ["done", t("together.list.done_chip"), done.length]].map(function (c) {
+            return h("button", { type: "button", "aria-pressed": String(when === c[0]), "data-focus": "when-" + c[0],
+              onclick: function () { S.when = c[0]; render(); } }, [c[1], h("span", { class: "bk-num", text: formatNumber(c[2]) })]);
+          })) : null;
         body = !soon.length && !done.length
-          ? emptyState(t("together.empty.title"), t("together.empty.city"), proposeButton(false))
-          : h("div", {}, [
-            soon.length ? h("h3", { class: "tg-h3", text: t("together.list.soon") }) : null,
-            soon.length ? h("div", { class: "tg-grid" }, soon.map(function (i) { return card(i); })) : null,
-            done.length ? h("h3", { class: "tg-h3", text: t("together.list.done") }) : null,
-            done.length ? h("div", { class: "tg-grid" }, done.map(function (i) { return card(i); })) : null,
-          ]);
+          ? emptyState(t("together.empty.title"), t("together.empty.city"), proposeButton(false), "users", "together")
+          : !shown.length ? h("p", { class: "tg-calm" }, [icon(when === "done" ? "info" : "calendar"),
+            t(when === "done" ? "together.list.none_done" : "together.list.none_soon")])
+          : h("div", { class: "tg-grid" }, shown.map(function (i) { return card(i); }));
       }
       var mine = entryState("mine");
       var own = mine.status === "ready" ? ((mine.data && mine.data.items) || []).filter(function (i) {
@@ -843,14 +975,17 @@
           h("div", {}, [title(t("together.list.title")), h("p", { class: "tg-lead", text: t("together.list.lead") })]),
           proposeButton(true),
         ]),
-        myYard ? h("div", { class: "bk-seg tg-filter", role: "group", "aria-label": t("together.list.filter") }, [
-          h("button", { type: "button", "aria-pressed": String(filter === "city"), onclick: function () { S.filter = "city"; render(); } },
-            [t("together.list.all_city")]),
-          h("button", { type: "button", "aria-pressed": String(filter === "yard"), onclick: function () { S.filter = "yard"; render(); } },
-            [t("together.list.my_yard")]),
-        ]) : null,
         own.length ? h("div", { class: "tg-mine" }, [h("h3", { class: "tg-h3", text: t("together.list.mine") }),
           h("ul", { class: "tg-rows" }, own.map(mineRow))]) : null,
+        h("div", { class: "tg-filters" }, [
+          myYard ? h("div", { class: "bk-seg tg-filter", role: "group", "aria-label": t("together.list.filter") }, [
+            h("button", { type: "button", "aria-pressed": String(filter === "city"), onclick: function () { S.filter = "city"; render(); } },
+              [t("together.list.all_city")]),
+            h("button", { type: "button", "aria-pressed": String(filter === "yard"), onclick: function () { S.filter = "yard"; render(); } },
+              [t("together.list.my_yard")]),
+          ]) : null,
+          whenChips,
+        ]),
         body,
       ]);
     }
@@ -861,45 +996,58 @@
     function mineRow(i) {
       var status = i.report_status === "on_review" ? t("together.report_review") : statusText(i);
       return h("li", {}, [h("button", { type: "button", class: "tg-row", onclick: function () { openInitiative(i.id); } }, [
-        h("span", { class: "tg-level tg-level--kind", "data-kind": i.kind }, [icon(KIND_ICON[i.kind] || "dots")]),
+        h("span", { class: "tg-level tg-level--kind", "data-kind": i.kind }, [icon(kindIcon(i.kind))]),
         h("span", { class: "tg-row__main" }, [h("span", { class: "tg-row__title", text: i.title }),
           h("span", { class: "tg-row__meta", text: whenLabel(i) })]),
         h("span", { class: "tg-status", "data-status": i.status }, [status]),
       ])]);
     }
 
-    // Карточка дела «как в App Store»: обложка с видом, название, когда и где, счётчик, плашка акимата, «Я приду».
+    // Карточка дела «как в App Store» (.bk-pc эталона, IA §5.2): значок вида на спокойном фоне или настоящее фото,
+    // название, «когда · где», плашка акимата и «Я приду · 14» прямо в списке. Вся карточка нажимается.
     function card(item, cardOpts) {
       cardOpts = cardOpts || {};
       var upcoming = item.status === "published" && !isPast(item);
-      var count = item.status === "done"
-        ? h("span", { class: "tg-count tg-count--done" }, [icon("heart"), t("together.done_count", { n: item.report && item.report.joined || item.joined })])
-        : counter(item.joined);
+      var done = item.status === "done";
       var photo = realPhotos(item)[0];
-      var node = h("article", { class: "tg-card" + (cardOpts.wide ? " tg-card--wide" : ""), "data-kind": item.kind,
+      var right = done
+        ? h("span", { class: "tg-count tg-count--done" }, [icon("check"), t("together.done_count", { n: item.report && item.report.joined || item.joined })])
+        : upcoming && S.role === "resident" ? null : counter(item.joined);
+      var node = h("article", { class: "bk-pc tg-card" + (cardOpts.wide ? " tg-card--wide" : ""), "data-kind": item.kind,
         "data-status": item.status, "data-id": item.id }, [
-        photo ? h("img", { class: "tg-card__photo", src: photo.data_url, alt: t("together.after"), loading: "lazy" }) : null,
-        h("div", { class: "tg-card__body" }, [
-          h("div", { class: "tg-card__head" }, [kindBadge(item.kind), item.demo ? demoTag() : null]),
-          h("p", { class: "tg-card__eyebrow" }, [h("span", { text: item.status === "done" ? t("together.status.done") : whenLabel(item) })]),
-          h("h3", { class: "tg-card__title" }, [h("button", { type: "button", class: "tg-card__open", "data-focus": "open-" + item.id,
+        h("div", { class: "bk-thumb tg-card__thumb" + (photo ? "" : " bk-thumb--kind") }, photo
+          ? [h("img", { src: photo.data_url, alt: t("together.after"), loading: "lazy" })]
+          : [icon(kindIcon(item.kind)), h("span", { class: "bk-sr-only", text: t("together.kind." + item.kind) })]),
+        h("div", { class: "bk-pc__body tg-card__body" }, [
+          h("h3", { class: "bk-pc__title tg-card__title" }, [h("button", { type: "button", class: "tg-card__open", "data-focus": "open-" + item.id,
             onclick: function () { openInitiative(item.id); } }, [item.title])]),
-          h("p", { class: "tg-card__meta" }, [icon("pin"), label(item.target) || districtName(item.district)]),
-          h("div", { class: "tg-card__foot" }, [
-            count,
-            supportBadge(item.support),
-            upcoming && S.role === "resident" ? joinButton(item, node) : null,
+          h("p", { class: "bk-pc__sub tg-card__meta" }, [
+            h("span", { text: (done ? t("together.status.done") : whenLabel(item)) + " · " + (label(item.target) || districtName(item.district)) }),
+            item.demo && !S.pageDemo ? demoTag() : null,
+          ]),
+          h("div", { class: "bk-pc__foot tg-card__foot" }, [
+            supportBadge(item.support) || h("span", { class: "tg-card__kind", text: t("together.kind." + item.kind) }),
+            right,
           ]),
         ]),
       ]);
+      if (upcoming && S.role === "resident") node.querySelector(".tg-card__foot").appendChild(joinButton(item, node));
       return node;
     }
-    function joinButton(item, cardNode) {
+    // «Я приду»: в списке — капсула ui-kit .bk-join с числом («Я приду 14», нажата — «Вы придёте ✓ 15»);
+    // в карточке дела — большая главная кнопка (число рядом, крупно).
+    function joinButton(item, cardNode, big) {
       var on = !!item.my_join;
-      return h("button", { type: "button", class: "bk-btn tg-join" + (on ? " tg-join--on" : " bk-btn--primary"),
-        "aria-pressed": String(on), "data-focus": "join-" + item.id, "aria-busy": S.busy[item.id] ? "true" : null,
-        onclick: function (ev) { ev.stopPropagation(); toggleJoin(item, cardNode); } },
-      [on ? icon("check") : null, on ? t("together.joined") : t("together.join")]);
+      var text = on ? t("together.joined") : t("together.join");
+      var attrs = { type: "button", "aria-pressed": String(on), "data-focus": "join-" + item.id, "aria-busy": S.busy[item.id] ? "true" : null,
+        onclick: function (ev) { ev.stopPropagation(); toggleJoin(item, cardNode); } };
+      if (big) {
+        attrs.class = "bk-btn bk-btn--lg tg-join tg-join--big" + (on ? " tg-join--on" : " bk-btn--primary");
+        return h("button", attrs, [on ? icon("check") : null, text]);
+      }
+      attrs.class = "bk-join tg-join";
+      attrs["aria-label"] = text + ", " + t("together.count", { n: item.joined });
+      return h("button", attrs, [icon(on ? "check" : "users"), text, " ", h("span", { class: "bk-join__n", text: formatNumber(item.joined) })]);
     }
     // Оптимистично: число и кнопка меняются сразу; ошибка — возврат и тост «Не получилось».
     function toggleJoin(item, scope) {
@@ -933,8 +1081,15 @@
         bump(n.querySelector(".tg-count:not(.tg-count--done)"), item.joined);
         var btn = n.querySelector(".tg-join");
         if (btn) {
-          var fresh = joinButton(item, n);
+          var old = btn.querySelector(".bk-join__n");
+          var fresh = joinButton(item, n, btn.classList.contains("tg-join--big"));
           btn.replaceWith(fresh);
+          // Число в капсуле «подпрыгивает» на +1 (ui-kit .is-bump, 250 мс); при «уменьшить движение» — без анимации.
+          var num = fresh.querySelector(".bk-join__n");
+          if (num && old && old.textContent !== num.textContent && !reducedMotion()) {
+            num.classList.add("is-bump");
+            setTimeout(function () { num.classList.remove("is-bump"); }, 320);
+          }
           if (doc.activeElement === btn || doc.activeElement === doc.body) fresh.focus({ preventScroll: true });
         }
         var unjoin = n.querySelector(".tg-unjoin");
@@ -952,7 +1107,10 @@
         });
       });
     }
-    function openInitiative(id) { go({ name: "initiative", id: id }); }
+    function openInitiative(id) {
+      var r = route();
+      go({ name: "initiative", id: id, yard: S.view === "yard" ? (r.name === "yard" ? r.id : r.yard || null) : null });
+    }
 
     // ================================================================ инициатива: карточка
     function viewInitiative(r) {
@@ -965,40 +1123,39 @@
       if (e.status === "error") return h("section", { class: "tg-detail" }, [backButton(), errorState(e.error, function () { load(key, path, true); })]);
       var item = e.data.initiative;
       var upcoming = item.status === "published" && !isPast(item);
-      var facts = h("dl", { class: "tg-facts" }, [
-        h("div", { class: "tg-fact" }, [h("dt", {}, [icon("calendar"), t("together.when")]), h("dd", { text: whenLabel(item) })]),
-        h("div", { class: "tg-fact" }, [h("dt", {}, [icon("pin"), t("together.where")]), h("dd", {}, [
-          h("span", { text: label(item.target) || districtName(item.district) }),
-          h("span", { class: "tg-fact__links" }, [
-            typeof opts.openTarget === "function" && item.target ? h("button", { type: "button", class: "bk-btn bk-btn--ghost tg-link",
-              onclick: function () { opts.openTarget(item.target.kind, item.target.id); } }, [icon("pin"), t("together.show_map")]) : null,
-            item.target && item.target.id ? h("button", { type: "button", class: "bk-btn bk-btn--ghost tg-link",
-              onclick: function () { openYard(item.target.id); } }, [icon("home"), t("together.open_yard")]) : null,
-          ]),
-        ])]),
-        (item.bring || []).length ? h("div", { class: "tg-fact" }, [h("dt", {}, [icon("list"), t("together.bring")]),
-          h("dd", {}, [h("span", { class: "bk-chips bk-chips--wrap tg-bring" }, item.bring.map(function (b) {
-            return h("span", { class: "bk-chip tg-chip-static", text: b }); }))])]) : null,
+      var mapLink = typeof opts.openTarget === "function" && item.target ? h("button", { type: "button", class: "bk-btn bk-btn--ghost tg-link",
+        onclick: function () { opts.openTarget(item.target.kind, item.target.id); } }, [t("together.show_map")]) : null;
+      var yardLink = item.target && item.target.id ? h("button", { type: "button", class: "bk-btn bk-btn--ghost tg-link",
+        onclick: function () { openYard(item.target.id); } }, [icon("home"), t("together.open_yard")]) : null;
+      var facts = h("ul", { class: "bk-init__facts tg-facts" }, [
+        h("li", {}, [icon("calendar"), h("span", { class: "bk-sr-only", text: t("together.when") + ": " }), h("span", { text: whenLabel(item) })]),
+        h("li", {}, [icon("pin"), h("span", { class: "bk-sr-only", text: t("together.where") + ": " }),
+          h("span", { text: label(item.target) || districtName(item.district) }), mapLink, yardLink]),
       ]);
-      var support = item.support && item.support.by_akimat ? h("div", { class: "tg-supportbox" }, [
-        supportBadge(item.support), item.support.note ? h("p", { class: "tg-supportbox__note", text: item.support.note }) : null]) : null;
+      var bring = (item.bring || []).length ? h("div", { class: "bk-init__bring tg-bring" }, [h("span", { class: "tg-bring__label", text: t("together.bring") })]
+        .concat(item.bring.map(function (b) { return h("span", { class: "bk-tag", text: b }); }))) : null;
+      var what = item.support ? supportWhat(item.support) : [];
+      var support = item.support && item.support.by_akimat ? h("div", { class: "bk-support bk-support--block tg-supportbox" }, [
+        icon("building"), h("span", { text: t("together.supported") + (what.length ? ": " + what.join(" · ") : "") }),
+        item.support.note ? h("span", { class: "bk-support__note tg-supportbox__note", text: item.support.note }) : null]) : null;
       var photos = realPhotos(item);
-      var photoBlock = photos.length ? h("div", { class: "tg-photos" }, photos.map(function (p) {
-        return h("figure", { class: "tg-photo" }, [h("img", { src: p.data_url, alt: t("together.after"), loading: "lazy" }),
-          h("figcaption", { text: t("together.after") })]);
-      })) : (item.status === "published" || item.status === "done")
-        // П1: в демо-мире фото нет — только строка (нарисованное «фото» было бы подделкой). Для прошедшего дела —
-        // «пока не добавили»: «появится после дела» про уже сделанное звучало бы как ошибка.
-        ? h("p", { class: "tg-afterline" }, [icon("camera"), t(item.status === "done" ? "together.after_none" : "together.after_soon")])
-        : null;
-      var report = item.report ? h("section", { class: "tg-report" }, [
-        h("p", { class: "tg-report__big" }, [icon("heart"), t("together.done_count", { n: item.report.joined || item.joined })]),
-        item.report.text ? h("p", { class: "tg-report__text", text: item.report.text }) : null,
-        photoBlock,
+      // П1: фото «после» — только настоящее. В демо-мире фото нет — строка вместо картинки: у дела на сборе
+      // «Фото появится после дела», у сделанного — «Фото «после» пока не добавили» (про прошедшее «появится» читалось бы как ошибка).
+      var afterLine = !photos.length && item.status === "published"
+        ? h("p", { class: "tg-afterline" }, [icon("camera"), t("together.after_soon")]) : null;
+      var n = item.report ? item.report.joined || item.joined : 0;
+      var report = item.report ? h("div", { class: "bk-done tg-report" + (photos.length ? "" : " bk-done--nophoto") }, [
+        photos.length ? h("img", { class: "bk-done__photo", src: photos[0].data_url, alt: t("together.after") }) : null,
+        h("p", { class: "bk-done__num tg-report__big" }, [h("b", { text: formatNumber(n) }), h("span", { text: t("together.done_num", { n: n }) })]),
+        item.report.text ? h("p", { class: "bk-done__text tg-report__text", text: item.report.text }) : null,
+        photos.length ? null : h("p", { class: "bk-done__note tg-afterline" }, [t("together.after_none")]),
       ]) : null;
-      var bar = upcoming && !staff ? h("div", { class: "tg-actionbar", "data-id": item.id }, [
-        counter(item.joined, "tg-count--lg", true),
-        joinButton(item, null),
+      var morePhotos = photos.length > (item.report ? 1 : 0) ? h("div", { class: "tg-photos tg-photos--small" }, photos.slice(item.report ? 1 : 0).map(function (p) {
+        return h("figure", { class: "tg-photo" }, [h("img", { src: p.data_url, alt: t("together.after"), loading: "lazy" })]);
+      })) : null;
+      var bar = upcoming && !staff ? h("div", { class: "bk-init__cta tg-actionbar", "data-id": item.id }, [
+        joinButton(item, null, true),
+        counter(item.joined, "tg-count--lg bk-init__count", true),
         h("button", { type: "button", class: "bk-btn bk-btn--ghost tg-unjoin", hidden: !item.my_join || null,
           onclick: function () { if (item.my_join) toggleJoin(item, null); } }, [t("together.unjoin")]),
       ]) : null;
@@ -1010,19 +1167,23 @@
         ? reportForm(item, false) : null;
       return h("section", { class: "tg-detail", "data-id": item.id }, [
         backButton(),
-        h("div", { class: "tg-detail__head" }, [
-          h("div", { class: "tg-card__head" }, [kindBadge(item.kind, true),
+        h("article", { class: "bk-init tg-init" }, [h("div", { class: "bk-init__body" }, [
+          // Вид дела — значком в строке над названием, без большой картинки (IA §5.2, П1).
+          h("p", { class: "bk-init__kind" }, [h("span", { class: "bk-init__kind-ic" }, [icon(kindIcon(item.kind))]),
+            h("span", { text: t("together.kind." + item.kind) }),
             h("span", { class: "tg-status", "data-status": item.status, text: statusText(item) }), item.demo ? demoTag() : null]),
-          title(item.title),
-        ]),
-        ownNote,
-        item.text ? h("p", { class: "tg-detail__text", text: item.text }) : null,
-        facts,
-        support,
-        report || (photoBlock && item.status === "published" ? h("section", { class: "tg-after" }, [
-          h("p", { class: "tg-h3 tg-report__label", text: t("together.after") }), photoBlock]) : null),
-        authorReport,
-        staff ? staffActions(item, true) : null,
+          title(item.title, null, "bk-init__title"),
+          ownNote,
+          report,
+          morePhotos,
+          item.text ? h("p", { class: "tg-detail__text", text: item.text }) : null,
+          facts,
+          bring,
+          support,
+          afterLine,
+          authorReport,
+          staff ? staffActions(item, true) : null,
+        ])]),
         bar,
       ]);
     }
@@ -1113,7 +1274,7 @@
               w.kind = k;
               if (!w.bringTouched) w.bring = list("together.bring." + k).slice(0, 2);
               render();
-            } }, [h("span", { class: "tg-kind__ic" }, [icon(KIND_ICON[k])]), h("span", { text: t("together.kind." + k) })]);
+            } }, [h("span", { class: "tg-kind__ic" }, [icon(kindIcon(k))]), h("span", { text: t("together.kind." + k) })]);
         })),
         h("label", { class: "bk-field", for: "tg-wname" }, [h("span", { class: "bk-field__label", text: t("together.wizard.name") }), name]),
         h("label", { class: "bk-field", for: "tg-wtext" }, [h("span", { class: "bk-field__label", text: t("together.wizard.text") }), text,
@@ -1342,7 +1503,7 @@
     function viewStaff() {
       var tab = S.staffTab;
       var key = "staff:" + tab;
-      var path = "/together/initiatives?view=staff&tab=" + tab;
+      var path = "/together/initiatives?view=staff&tab=" + tab;   // queue | waiting | going | done
       load(key, path);
       var e = entryState(key);
       var counts = (e.data && e.data.counts) || (S.cache["staff:queue"] && S.cache["staff:queue"].data && S.cache["staff:queue"].data.counts) || {};
@@ -1356,7 +1517,7 @@
         h("header", { class: "tg-listhead" }, [h("div", {}, [title(t("together.staff.title")),
           h("p", { class: "tg-lead", text: t("together.staff.lead") })])]),
         h("div", { class: "bk-tabs tg-tabs", role: "tablist", "aria-label": t("together.staff.title") },
-          ["queue", "published", "done", "hidden"].map(function (id) {
+          ["queue", "waiting", "going", "done"].map(function (id) {
             return h("button", { type: "button", role: "tab", "aria-selected": String(tab === id), tabindex: tab === id ? "0" : "-1",
               "data-focus": "stab-" + id, onkeydown: tabKeys, onclick: function () { S.staffTab = id; S.open = null; render(); } },
             [t("together.staff." + id), typeof counts[id] === "number" ? h("span", { class: "bk-num", text: formatNumber(counts[id]) }) : null]);
@@ -1367,7 +1528,7 @@
     function loginPrompt(retry) {
       var shell = root.CivicShell;
       return h("div", { class: "bk-empty tg-empty", role: "status" }, [
-        h("span", { class: "tg-sent__ic" }, [icon("user")]),
+        emptyArt("staff", "user"),
         h("p", { class: "bk-empty__title", text: t("together.staff.login") }),
         h("div", { class: "tg-wnav" }, [
           shell && typeof shell.openEditor === "function" ? h("button", { type: "button", class: "bk-btn bk-btn--primary",
@@ -1381,7 +1542,7 @@
       var out = [];
       if (tab === "queue") {
         if (!items.length && !(data.reports || []).length && !(data.captains || []).length) {
-          return emptyState(t("together.staff.empty_queue"), null, null, "check");
+          return emptyState(t("together.staff.empty_queue"), null, null, "check", "done");
         }
         if (items.length) out.push(h("ul", { class: "tg-staffrows" }, items.map(function (i) { return h("li", {}, [staffRow(i, tab)]); })));
         if ((data.reports || []).length) {
@@ -1394,7 +1555,7 @@
         }
         return h("div", {}, out);
       }
-      if (!items.length) return emptyState(t("together.staff.empty"), null, null, "list");
+      if (!items.length) return emptyState(t("together.staff.empty"), null, null, "list", "list");
       return h("ul", { class: "tg-staffrows" }, items.map(function (i) { return h("li", {}, [staffRow(i, tab)]); }));
     }
     function flagsLine(flags) {
@@ -1411,7 +1572,7 @@
       var changed = original.title && (original.title !== item.title || (original.text || "") !== (item.text || ""));
       return h("article", { class: "tg-staffrow", "data-id": item.id, "data-status": item.status }, [
         h("div", { class: "tg-staffrow__head" }, [
-          h("span", { class: "tg-level tg-level--kind", "data-kind": item.kind }, [icon(KIND_ICON[item.kind] || "dots")]),
+          h("span", { class: "tg-level tg-level--kind", "data-kind": item.kind }, [icon(kindIcon(item.kind))]),
           h("div", { class: "tg-row__main" }, [
             h("button", { type: "button", class: "tg-staffrow__title", onclick: function () { openInitiative(item.id); } },
               [tab === "queue" ? original.title || item.title : item.title]),
@@ -1624,9 +1785,12 @@
       S.stack = [{ name: kind === "yard" ? "yard" : "initiative", id: id }];
       S.open = null;
       render(true);
+      syncPath();
     }
     var controller = {
       setLang: function () { render(); },
+      setPath: setPath,
+      rerender: function () { render(); },
       open: openExternal,
       refresh: function () { Object.keys(S.cache).forEach(function (k) { S.cache[k].status = "stale"; }); render(); },
       destroy: function () {
@@ -1644,11 +1808,64 @@
     if (pending && pending.screen === S.view) {
       var p = pending;
       pending = null;
-      openExternal(p.kind, p.id);
+      // Оболочка с путями уже передала путь (opts.path) — тот же переход, повторять не нужно.
+      if (currentPath && pathOf(route()) !== null) render(true);
+      else openExternal(p.kind, p.id);
     } else {
       render(true);
     }
     return controller;
+  }
+
+  // ------------------------------------------------------------------ выбор двора на карте (IA R11 §5.1)
+  // Экран закрывается, сверху — строка «Нажмите на свой двор»; нажатие внутри двора OSM (R12 /yard) открывает «Мой двор».
+  // Esc или «Отмена» — выход. Карта сама не двигается.
+  function mapObject() {
+    try {
+      // eslint-disable-next-line no-undef
+      return typeof map !== "undefined" && map && typeof map.on === "function" && typeof map.project === "function" ? map : null;
+    } catch (e) { return null; }
+  }
+  // Карта есть сразу или появится в течение нескольких секунд (оболочка создаёт её после загрузки стиля).
+  function whenMap(given, done) {
+    var tries = 0;
+    (function check() {
+      var m = given && typeof given.on === "function" ? given : mapObject();
+      if (m) { done(m); return; }
+      if (++tries < 40) setTimeout(check, 100);
+    })();
+  }
+  var picking = null;
+  function stopPick() {
+    if (!picking) return;
+    try { picking.map.off("click", picking.onClick); } catch (e) { /* карта снята */ }
+    doc.removeEventListener("keydown", picking.onKey, true);
+    if (picking.bar.parentNode) picking.bar.parentNode.removeChild(picking.bar);
+    if (picking.canvas) picking.canvas.style.cursor = "";
+    picking = null;
+  }
+  function startPick(mapObj, base) {
+    stopPick();
+    var text = h("span", { class: "tg-pickbar__text", text: t("together.pick.on_map_hint") });
+    var bar = h("div", { class: "tg-pickbar bk-app", role: "status", "aria-live": "polite" }, [
+      icon("pin"), text,
+      h("button", { type: "button", class: "bk-btn bk-btn--ghost", onclick: stopPick }, [t("common.action.cancel")]),
+    ]);
+    doc.body.appendChild(bar);
+    var canvas = mapObj.getCanvas ? mapObj.getCanvas() : null;
+    if (canvas) canvas.style.cursor = "crosshair";
+    function onClick(ev) {
+      var ll = ev.lngLat;
+      if (!ll) return;
+      request(base || "/api/civic/v2", "GET", "/yard?lon=" + ll.lng.toFixed(6) + "&lat=" + ll.lat.toFixed(6)).then(function (data) {
+        if (data && data.yard && data.yard.id) { stopPick(); open("yard", data.yard.id); }
+        else text.textContent = t("together.pick.not_found_map");
+      }, function () { text.textContent = t("together.error.text"); });
+    }
+    function onKey(ev) { if (ev.key === "Escape") { stopPick(); ev.preventDefault(); ev.stopPropagation(); } }
+    mapObj.on("click", onClick);
+    doc.addEventListener("keydown", onKey, true);
+    picking = { map: mapObj, onClick: onClick, onKey: onKey, bar: bar, canvas: canvas };
   }
 
   // ------------------------------------------------------------------ слой карты «Инициативы»
@@ -1666,11 +1883,17 @@
         var done = item.status === "done";
         if (item.status === "published" && isPast(item)) return;
         var n = done ? (item.report && item.report.joined || item.joined) : item.joined;
+        // Капсула ui-kit «дата · число» со значком вида (IA R11 §5.2); «сделано» — галочка и число соседей.
         var el = h("button", { type: "button", class: "tg-pin" + (done ? " tg-pin--done" : ""), "data-kind": item.kind,
-          "aria-label": item.title + " · " + (done ? t("together.done_count", { n: n }) : t("together.count", { n: n })),
-          title: item.title }, [icon(done ? "check" : KIND_ICON[item.kind] || "dots"), h("span", { class: "tg-pin__n", text: formatNumber(n) })]);
+          "aria-label": item.title + " · " + (done ? t("together.done_count", { n: n }) : whenLabel(item) + " · " + t("together.count", { n: n })),
+          title: item.title }, [icon(done ? "check" : kindIcon(item.kind)),
+          done ? null : h("span", { class: "tg-pin__date", text: shortDate(item.starts_at) }),
+          h("span", { class: "tg-pin__n", text: formatNumber(n) })]);
         el.addEventListener("click", function (ev) { ev.stopPropagation(); open("initiative", item.id); });
         var marker = new root.maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat(item.point).addTo(map);
+        // Под значками тепловой карты: значки R07 — тоже HTML-метки, порядок в DOM = порядок слоёв.
+        var firstMarker = el.parentNode && el.parentNode.querySelector(".maplibregl-marker");
+        if (firstMarker && firstMarker !== el) el.parentNode.insertBefore(el, firstMarker);
         // Важнее — предстоящее дело (по дате), затем больше соседей; «сделано» — после предстоящих.
         marker.tgRank = [done ? 1 : 0, done ? 0 : Date.parse(item.starts_at) || 0, -n];
         layerState.markers.push(marker);
@@ -1737,12 +1960,14 @@
   function open(kind, id) {
     if (!/^(yard|initiative)$/.test(kind) || !/^[A-Za-z0-9._:-]{3,96}$/.test(String(id || ""))) return false;
     var shell = root.BirgeShell;
+    // Акимат открывает двор внутри «Инициатив жителей» (пункта «Мой двор» у акимата нет — IA R11 §5.1).
     var screen = kind === "yard" && (!shell || shell.mode !== "akimat") ? "yard" : "initiatives";
     var section = screen === "yard" ? "yard" : "together";
     var live = mounted.filter(function (m) { return m.view === screen; })[0];
     if (live && shell && shell.section === section) { live.open(kind, id); return true; }
     pending = { kind: kind, id: id, screen: screen };
-    if (shell && typeof shell.setSection === "function") shell.setSection(section);
+    // Оболочка R01 раунда 15 понимает путь (#together/i-…); FINAL-4 — нет, тогда сработает pending.
+    if (shell && typeof shell.setSection === "function") shell.setSection(section, { path: id });
     return true;
   }
   // «#together/i-…» и «#yard/yard-…» (CONTRACT §5.8 link) — после обработчиков оболочки (она такие адреса не знает).
@@ -1751,6 +1976,9 @@
     if (!m) return;
     var kind = m[1] === "yard" ? "yard" : (/^yard-|^cell-/.test(m[2]) ? "yard" : "initiative");
     setTimeout(function () {
+      var shell = root.BirgeShell;
+      // Оболочка с путями (R01, раунд 15) уже открыла раздел и передала путь модулю — второй переход не нужен.
+      if (shell && shell.section === m[1]) return;
       open(kind, m[2]);
       try { root.history.replaceState(null, "", root.location.pathname + root.location.search + "#" + (kind === "yard" && (!root.BirgeShell || root.BirgeShell.mode !== "akimat") ? "yard" : "together")); } catch (e) { /* без адреса */ }
     }, 0);

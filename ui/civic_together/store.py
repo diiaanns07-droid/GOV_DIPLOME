@@ -293,18 +293,32 @@ class TogetherStore:
             self.upsert_yard(conn, yard_id, **fields)
         return self.yard(yard_id)
 
+    def meta(self, key: str, value: str | None = None) -> str | None:
+        """Служебное значение модуля (например, двор сцены 7 демо — первым в списке дворов)."""
+        if value is not None:
+            with self._tx() as conn:
+                conn.execute("INSERT OR REPLACE INTO tg_meta (key, value) VALUES (?, ?)", (key, value))
+            return value
+        with self._read() as conn:
+            row = conn.execute("SELECT value FROM tg_meta WHERE key = ?", (key,)).fetchone()
+        return row[0] if row else None
+
     def yards(self, *, district: str | None = None, limit: int = 60) -> list[dict]:
-        """Дворы, где уже есть соседи или инициативы, — для выбора двора (больше соседей — выше)."""
+        """Дворы, где уже есть соседи или инициативы, — для выбора двора: двор сцены демо первым (IA R11 §5.1),
+        дальше — больше соседей выше."""
         where, args = [], []
         if district:
             where.append("y.district = ?")
             args.append(district)
-        sql = (f"SELECT y.*, {MEMBERS_SQL} AS members, "
+        scene = self.meta("scene_yard") or ""
+        # R15 S51: только дворы, где есть соседи или дела (и двор сцены демо), — не всё, что когда-то открывали.
+        sql = (f"SELECT * FROM (SELECT y.*, {MEMBERS_SQL} AS members, "
                "(SELECT COUNT(*) FROM tg_initiatives i WHERE i.target_id = y.id AND i.status IN ('published', 'done')) "
                "AS initiatives FROM tg_yards y" + (" WHERE " + " AND ".join(where) if where else "") +
-               " ORDER BY members DESC, initiatives DESC, y.id LIMIT ?")
+               ") WHERE members > 0 OR initiatives > 0 OR id = ? "
+               "ORDER BY (id = ?) DESC, members DESC, initiatives DESC, id LIMIT ?")
         with self._read() as conn:
-            return [dict(r) for r in conn.execute(sql, (*args, int(limit))).fetchall()]
+            return [dict(r) for r in conn.execute(sql, (*args, scene, scene, int(limit))).fetchall()]
 
     def is_member(self, yard_id: str, device_id: str | None) -> bool:
         if not device_id:
@@ -653,8 +667,12 @@ class TogetherStore:
         return [dict(r) for r in rows]
 
     def list(self, *, statuses, bbox=None, kind=None, yard=None, district=None, author_device=None,
-             upcoming_only=False, limit: int = 60, order: str = "soon") -> list[dict]:
+             upcoming_only=False, supported=None, limit: int = 60, order: str = "soon") -> list[dict]:
         where, args = [f"i.status IN ({','.join('?' * len(statuses))})"], list(statuses)
+        if supported is True:
+            where.append("json_extract(i.support_json, '$.by_akimat') = 1")
+        elif supported is False:
+            where.append("(i.support_json IS NULL OR COALESCE(json_extract(i.support_json, '$.by_akimat'), 0) = 0)")
         if bbox is not None:
             where.append("i.lon BETWEEN ? AND ? AND i.lat BETWEEN ? AND ?")
             args += [bbox[0], bbox[2], bbox[1], bbox[3]]
@@ -688,8 +706,12 @@ class TogetherStore:
             rows = conn.execute(sql, (*args, int(limit))).fetchall()
             return [self._decorate(conn, dict(r)) for r in rows]
 
-    def count(self, *, statuses, yard=None, district=None) -> int:
+    def count(self, *, statuses, yard=None, district=None, supported=None) -> int:
         where, args = [f"status IN ({','.join('?' * len(statuses))})"], list(statuses)
+        if supported is True:
+            where.append("json_extract(support_json, '$.by_akimat') = 1")
+        elif supported is False:
+            where.append("(support_json IS NULL OR COALESCE(json_extract(support_json, '$.by_akimat'), 0) = 0)")
         if yard:
             where.append("target_id = ?")
             args.append(yard)
