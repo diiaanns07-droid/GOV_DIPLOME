@@ -10,6 +10,7 @@ import argparse
 import base64
 from collections import deque
 from copy import deepcopy
+from datetime import datetime, timedelta, timezone
 from http.cookies import CookieError, SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import importlib
@@ -238,6 +239,19 @@ V2_RATE_LIMITS = {
     # за один вопрос с адреса, R15 S08). Сервис R13 сам держит ≤ 3 вопросов на проверке и ≤ 5 в сутки на устройство.
     "qa.create": ((60, 3, False), (3600, 20, False), (86400, 30, False)),  # R15-S38: сутки — очередь модерации
     "qa.vote": ((60, 30, False), (86400, 20, True)),
+    # Раунд 15 (CONTRACT §7: свои лимиты в модуле + общий лимит шлюза). Новая инициатива — как идея; «Я приду» и
+    # «Я живу здесь» — как голос (≤ 20 в сутки на одну запись с адреса); вопрос к встрече — как «Вопрос акиму».
+    "together.initiatives.create": ((60, 3, False), (3600, 10, False)),
+    "together.initiatives.join": ((60, 30, False), (86400, 20, True)),
+    "together.initiatives.leave": ((60, 30, False), (86400, 20, True)),
+    "together.initiatives.report": ((60, 5, False), (3600, 20, False)),
+    "together.yards.join": ((60, 20, False), (86400, 20, True)),
+    "together.yards.leave": ((60, 20, False), (86400, 20, True)),
+    "meetings.register": ((60, 30, False), (86400, 20, True)),
+    "meetings.question": ((60, 3, False), (3600, 20, False), (86400, 30, False)),
+    "ml.route": ((60, 60, False),),
+    "ml.text_check": ((60, 60, False),),
+    "notifications.read": ((60, 60, False),),
 }
 
 
@@ -645,9 +659,13 @@ class V2Handler:
                       ждёт этот конверт). Сотрудника и CSRF такой сервис проверяет сам по principal R02.
     """
 
-    def __init__(self, role, modules, function, staff=False, kind="function", strip_prefix=False, staff_view=False):
+    def __init__(self, role, modules, function, staff=False, kind="function", strip_prefix=False, staff_view=False,
+                 query=None):
         self.role, self.modules, self.function, self.staff = role, tuple(modules), function, staff
         self.kind = kind
+        # query (раунд 15): {параметр адреса: правило} — шлюз проверяет форму до вызова модуля (400 с полем и текстом),
+        # остальное (смысл значения, тело) проверяет сам модуль. Правила — CivicV2Gateway._check_query.
+        self.query = dict(query or {})
         # strip_prefix: raw-обработчик ждёт путь без /api/civic/v2 (R12 engine.civic_geo.api.handle).
         self.strip_prefix = strip_prefix
         # staff_view: raw-маршрут открыт всем, но сотруднику показывает больше (R07 /heat/target — тексты
@@ -656,7 +674,7 @@ class V2Handler:
 
 
 # (метод, шаблон пути, ключ маршрута). {id} проверяется тем же правилом CIVIC_ID, что и в v1.
-V2_ROUTES = (
+V2_ROUTES_ROUND14 = (
     ("GET", ("modules",), "modules"),
     ("POST", ("classify",), "classify"),
     ("POST", ("similar",), "similar"),
@@ -743,6 +761,70 @@ V2_ROUTES = (
     ("POST", ("questions", "{id}", "reject"), "qa.reject"),
     ("POST", ("questions", "{id}", "answer"), "qa.answer"),
 )
+# Раунд 15 (research/round-15/CONTRACT.md §7): «Бірге — вместе». R01 добавил все строки заранее — пока модуля роли нет,
+# маршрут отвечает 503 module_not_ready. Точные пути (updates, board, joint, handoffs) — раньше шаблонов с {id}.
+V2_ROUTES_ROUND15 = (
+    # R16 «Мой двор» и «Сделаем вместе» (ui.civic_together, сервис)
+    ("GET", ("together", "initiatives"), "together.initiatives.list"),
+    ("POST", ("together", "initiatives"), "together.initiatives.create"),
+    ("GET", ("together", "initiatives", "{id}"), "together.initiatives.get"),
+    ("POST", ("together", "initiatives", "{id}", "join"), "together.initiatives.join"),
+    ("POST", ("together", "initiatives", "{id}", "leave"), "together.initiatives.leave"),
+    ("POST", ("together", "initiatives", "{id}", "support"), "together.initiatives.support"),
+    ("POST", ("together", "initiatives", "{id}", "moderate"), "together.initiatives.moderate"),
+    ("POST", ("together", "initiatives", "{id}", "report"), "together.initiatives.report"),
+    ("GET", ("together", "yards", "{id}"), "together.yards.get"),
+    ("POST", ("together", "yards", "{id}", "join"), "together.yards.join"),
+    ("POST", ("together", "yards", "{id}", "leave"), "together.yards.leave"),
+    ("GET", ("together", "updates"), "together.updates"),
+    # R17 «Штаб ведомств» и кризисный штаб (ui.civic_agencies, сервис)
+    ("GET", ("agencies",), "agencies.list"),
+    ("GET", ("agencies", "board"), "agencies.board"),
+    ("GET", ("agencies", "joint"), "agencies.joint"),
+    ("GET", ("agencies", "handoffs"), "agencies.handoffs"),
+    ("GET", ("incidents",), "incidents.list"),
+    ("POST", ("incidents",), "incidents.create"),
+    ("GET", ("incidents", "updates"), "incidents.updates"),
+    ("GET", ("incidents", "{id}"), "incidents.get"),
+    ("POST", ("incidents", "{id}", "task"), "incidents.task"),
+    ("POST", ("incidents", "{id}", "update"), "incidents.update"),
+    ("POST", ("incidents", "{id}", "close"), "incidents.close"),
+    # R09 совместное исполнение: передача, службы обращения, часть службы (тот же сервис жалоб)
+    ("POST", ("complaints", "{id}", "handoff"), "complaints.handoff"),
+    ("POST", ("complaints", "{id}", "services"), "complaints.services"),
+    ("POST", ("complaints", "{id}", "part"), "complaints.part"),
+    # R12 «Единый календарь работ» и «копаем один раз» (engine.civic_geo.api.handle, путь без /api/civic/v2)
+    ("GET", ("works-calendar",), "geo.works_calendar"),
+    ("GET", ("works-conflicts",), "geo.works_conflicts"),
+    # R07 «Хроника города» (ui.civic_heat.api.handle_get)
+    ("GET", ("heat", "replay"), "heat.replay"),
+    # R08 ситуационный центр (ui.civic_akim.api.handle_get)
+    ("GET", ("akim", "board"), "akim.board"),
+    ("GET", ("akim", "week"), "akim.week"),
+    # R13 «Встречи с акимом» (ui.civic_meetings, сервис)
+    ("GET", ("meetings",), "meetings.list"),
+    ("POST", ("meetings",), "meetings.create"),
+    ("GET", ("meetings", "updates"), "meetings.updates"),
+    ("GET", ("meetings", "{id}"), "meetings.get"),
+    ("POST", ("meetings", "{id}", "order"), "meetings.order"),
+    ("POST", ("meetings", "{id}", "result"), "meetings.result"),
+    ("POST", ("meetings", "{id}", "register"), "meetings.register"),
+    ("POST", ("meetings", "{id}", "question"), "meetings.question"),
+    # R04 ИИ для служб: маршрутизация, черновик ответа, модерация текста (ui.civic_ml_api, функции)
+    ("POST", ("route",), "ml.route"),
+    ("POST", ("reply-draft",), "ml.reply_draft"),
+    # Ключ не «moderate»: это предпросмотр текста для всех (ничего не решает и не меняет), а не модерация сотрудника.
+    ("POST", ("moderate",), "ml.text_check"),
+    # R03 «ИИ-аналитик акима» (agent.civic_assistant.api.ask)
+    ("POST", ("assistant", "ask"), "assistant.ask"),
+    # R06 центр уведомлений и «идея → инициатива» (ui.civic_store.v2, функции)
+    ("GET", ("notifications",), "notifications.list"),
+    ("POST", ("notifications", "read"), "notifications.read"),
+    ("POST", ("ideas", "{id}", "to-initiative"), "ideas.to_initiative"),
+    # R01: id сцен 7–9 демо-мира для палитры Ctrl+K и режима показа (?show=1)
+    ("GET", ("demo", "scenes"), "demo.scenes"),
+)
+V2_ROUTES = V2_ROUTES_ROUND14 + V2_ROUTES_ROUND15
 # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
 V2_HANDLERS = {
     "classify": V2Handler("R04", ("ui.civic_ml_api",), "classify"),
@@ -798,6 +880,78 @@ V2_HANDLERS = {
     **{key: V2Handler("R13", ("ui.civic_qa",), "make_service", kind="service", staff=True) for key in (
         "qa.publish", "qa.reject", "qa.answer")},
 }
+# Раунд 15 (CONTRACT §7). «Сервис» (R16, R17, R13 встречи, R09) отвечает целиком и сам проверяет жителя (X-Birge-Device)
+# и сотрудника; для маршрутов сотрудника (staff=True) шлюз ещё раз требует сессию R02 + CSRF — защита в глубину.
+# query — форма параметров адреса, которую шлюз проверяет до модуля (400 с полем и понятным текстом).
+_TOGETHER = ("ui.civic_together",)
+_AGENCIES = ("ui.civic_agencies",)
+_MEETINGS = ("ui.civic_meetings",)
+_R09 = ("ui.civic_feedback.v2.integration",)
+V2_HANDLERS_ROUND15 = {
+    "together.initiatives.list": V2Handler("R16", _TOGETHER, "make_service", kind="service", query={
+        "bbox": "bbox", "status": "word", "kind": "word", "yard": "id", "district": "district"}),
+    "together.initiatives.create": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.initiatives.get": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.initiatives.join": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.initiatives.leave": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.initiatives.support": V2Handler("R16", _TOGETHER, "make_service", kind="service", staff=True),
+    "together.initiatives.moderate": V2Handler("R16", _TOGETHER, "make_service", kind="service", staff=True),
+    # Отчёт «после» — автор (по устройству) или сотрудник: проверяет сам сервис R16.
+    "together.initiatives.report": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.yards.get": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.yards.join": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.yards.leave": V2Handler("R16", _TOGETHER, "make_service", kind="service"),
+    "together.updates": V2Handler("R16", _TOGETHER, "make_service", kind="service", query={"since": "when"}),
+    "agencies.list": V2Handler("R17", _AGENCIES, "make_service", kind="service"),
+    "agencies.board": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True, query={
+        "days": "days", "district": "district"}),
+    "agencies.joint": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True, query={
+        "days": "days", "district": "district"}),
+    "agencies.handoffs": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True, query={
+        "days": "days", "district": "district"}),
+    "incidents.list": V2Handler("R17", _AGENCIES, "make_service", kind="service", query={
+        "status": "word", "district": "district"}),
+    "incidents.create": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True),
+    "incidents.updates": V2Handler("R17", _AGENCIES, "make_service", kind="service", query={"since": "when"}),
+    "incidents.get": V2Handler("R17", _AGENCIES, "make_service", kind="service"),
+    "incidents.task": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True),
+    "incidents.update": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True),
+    "incidents.close": V2Handler("R17", _AGENCIES, "make_service", kind="service", staff=True),
+    "complaints.handoff": V2Handler("R09", _R09, "make_service", kind="service", staff=True),
+    "complaints.services": V2Handler("R09", _R09, "make_service", kind="service", staff=True),
+    "complaints.part": V2Handler("R09", _R09, "make_service", kind="service", staff=True),
+    "geo.works_calendar": V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True,
+                                    staff=True, query={"from": "when", "to": "when", "district": "district",
+                                                       "street": "text"}),
+    "geo.works_conflicts": V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True,
+                                     staff=True, query={"from": "when", "to": "when", "district": "district"}),
+    # «Хроника города» — всем, «мягкий вид» (без текстов жалоб), как /heat.
+    "heat.replay": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", query={
+        "from": "when", "to": "when", "step": "word", "category": "category", "district": "district"}),
+    "akim.board": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, query={
+        "district": "district"}),
+    "akim.week": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff=True, query={
+        "date": "date", "district": "district"}),
+    "meetings.list": V2Handler("R13", _MEETINGS, "make_service", kind="service", query={
+        "district": "district", "status": "word"}),
+    "meetings.create": V2Handler("R13", _MEETINGS, "make_service", kind="service", staff=True),
+    "meetings.updates": V2Handler("R13", _MEETINGS, "make_service", kind="service", query={"since": "when"}),
+    "meetings.get": V2Handler("R13", _MEETINGS, "make_service", kind="service"),
+    "meetings.order": V2Handler("R13", _MEETINGS, "make_service", kind="service", staff=True),
+    "meetings.result": V2Handler("R13", _MEETINGS, "make_service", kind="service", staff=True),
+    "meetings.register": V2Handler("R13", _MEETINGS, "make_service", kind="service"),
+    "meetings.question": V2Handler("R13", _MEETINGS, "make_service", kind="service"),
+    "ml.route": V2Handler("R04", ("ui.civic_ml_api",), "route"),
+    "ml.reply_draft": V2Handler("R04", ("ui.civic_ml_api",), "reply_draft", staff=True),
+    "ml.text_check": V2Handler("R04", ("ui.civic_ml_api",), "moderate"),
+    "assistant.ask": V2Handler("R03", ("agent.civic_assistant.api",), "ask", staff=True),
+    "notifications.list": V2Handler("R06", ("ui.civic_store.v2",), "list_notifications", query={"since": "when"}),
+    "notifications.read": V2Handler("R06", ("ui.civic_store.v2",), "read_notifications"),
+    "ideas.to_initiative": V2Handler("R06", ("ui.civic_store.v2",), "idea_to_initiative", staff=True),
+    # Свой маршрут шлюза (kind="local"): отвечает сам CivicV2Gateway.<function>().
+    "demo.scenes": V2Handler("R01", ("ui.web_server",), "scenes", kind="local"),
+}
+V2_HANDLERS.update(V2_HANDLERS_ROUND15)
 
 
 def v2_error(status, code, message, **extra):
@@ -868,11 +1022,52 @@ def _v2_point(raw, field="point"):
     return [lon, lat]
 
 
-def _v2_text(raw, field="text"):
+def _v2_text(raw, field="text", empty="Напишите текст обращения."):
     if not isinstance(raw, str) or not raw.strip():
-        raise V2BadRequest(field, "Напишите текст обращения.")
+        raise V2BadRequest(field, empty)
     if len(raw) > V2_TEXT_MAX:
         raise V2BadRequest(field, f"Текст длиннее {V2_TEXT_MAX} символов.")
+    return raw
+
+
+# --- раунд 15: форма параметров новых маршрутов (CONTRACT §7) ----------------------------------------------
+V2_WORD = re.compile(r"^[a-z][a-z0-9_,-]{0,59}\Z")   # status / kind / step: латиница, можно несколько через запятую
+V2_LANG = re.compile(r"^(ru|kk|mixed)\Z")
+V2_PERIOD_MAX_DAYS = 366                            # from…to и days: не длиннее года (защита от тяжёлых запросов)
+V2_WHEN_HINT = "дата ГГГГ-ММ-ДД или время ISO 8601, например 2026-10-16T10:00:00+05:00."
+
+
+def _v2_when(raw, field):
+    """Дата ГГГГ-ММ-ДД или момент ISO 8601 -> datetime (from / to / since). «+» пояса в адресе без %2B приходит
+    пробелом (так его читает parse_qs) — принимаем и так."""
+    text = raw.strip() if isinstance(raw, str) else ""
+    text = re.sub(r" (\d{2}:?\d{2})\Z", r"+\1", text)
+    if not text or len(text) > 40:
+        raise V2BadRequest(field, f"{field}: {V2_WHEN_HINT}")
+    try:
+        return datetime.fromisoformat(text[:-1] + "+00:00" if text.endswith("Z") else text)
+    except ValueError:
+        raise V2BadRequest(field, f"{field}: {V2_WHEN_HINT}") from None
+
+
+def _v2_device(context, body=None, query=None, required=True):
+    """Житель — как у R09: заголовок X-Birge-Device, запасной вариант — device_id в теле или адресе."""
+    headers = (context or {}).get("headers") or {}
+    raw = headers.get("x-birge-device") or (body or {}).get("device_id") or (query or {}).get("device_id")
+    if raw in (None, ""):
+        if required:
+            raise V2BadRequest("device_id", "device_id: нет кода устройства — обновите страницу.")
+        return None
+    if not isinstance(raw, str) or not V2_DEVICE_ID.match(raw):
+        raise V2BadRequest("device_id", "device_id: строка 8–128 символов.")
+    return raw
+
+
+def _v2_lang(raw, field="lang"):
+    if raw in (None, ""):
+        return None
+    if not isinstance(raw, str) or not V2_LANG.match(raw):
+        raise V2BadRequest(field, f"{field}: ru, kk или mixed.")
     return raw
 
 
@@ -880,13 +1075,17 @@ class CivicV2Gateway:
     """Маршрутизатор API v2: проверяет параметры и вызывает функцию модуля роли."""
 
     def __init__(self, store_gateway=None, modules=None, category_ids=None, db_path=None, demo=None,
-                 rate_limits="default"):
+                 rate_limits="default", demo_world=None):
         # store_gateway — шлюз v1: из него берётся R02 для проверки сессии сотрудника.
         self.store_gateway = store_gateway
         # Та же SQLite, что у v1 (R09 хранит жалобы v2 в своих таблицах рядом с v1).
         self.db_path = db_path if db_path is not None else getattr(store_gateway, "db_path", None)
         # Демо-сборка (run-city.bat, CIVIC_DEMO=1): к жалобам R09 добавляется синтетический набор R07 (demo: true).
         self.demo = (os.environ.get("CIVIC_DEMO") == "1") if demo is None else bool(demo)
+        # Раунд 15 (CONTRACT §11): демо-мир R02 — только вместе с CIVIC_DEMO=1 и флагом CIVIC_DEMO_WORLD=1.
+        # Без флага — демо FINAL-4 без изменений (синтетика R07 на карте, засев R06 и R09 как раньше).
+        self.demo_world = (self.demo and os.environ.get("CIVIC_DEMO_WORLD") == "1") if demo_world is None else bool(demo_world)
+        self.world_report = None   # итог seed_world: {"now", "roles": {...}, "scenes": {...}}
         # modules: {имя_модуля: объект} — подмена для тестов; иначе importlib.
         self._override = dict(modules) if modules is not None else None
         self._resolved = {}  # route_key -> (callable | None, причина, имя модуля)
@@ -917,6 +1116,9 @@ class CivicV2Gateway:
             if key in self._resolved:
                 return self._resolved[key]
             handler = V2_HANDLERS[key]
+            if handler.kind == "local":  # маршрут самого шлюза (R01)
+                self._resolved[key] = (getattr(self, handler.function), "ready", handler.modules[0])
+                return self._resolved[key]
             result = (None, "module_not_ready", handler.modules[0])
             for name in handler.modules:
                 try:
@@ -974,9 +1176,10 @@ class CivicV2Gateway:
             heat = None
         if heat is not None and store is not None:
             demo_records = []
-            if self.demo:
+            # Демо-мир (раунд 15): жалобы мира лежат у R09, карта берёт их оттуда — отдельная синтетика R07 дала бы
+            # второй набор чисел («Нура · 81» на карте и 2 записи в «Обращениях», VISUAL_BRIEF §3).
+            if self.demo and not self.demo_world:
                 try:
-                    from datetime import datetime, timezone
                     demo_records = list(importlib.import_module("ui.civic_heat.demo_seed").demo_records(
                         now=datetime.now(timezone.utc)))
                 except Exception:
@@ -1097,6 +1300,107 @@ class CivicV2Gateway:
             LOGGER.exception("civic-demo: демо-проекты R06 не загрузились")
             return None
 
+    # Раунд 15 (CONTRACT §11, SCHEMA R02 §4): у кого искать seed_world(db_path, records, now=None) -> {"inserted",
+    # "skipped"}. Модуль берёт из мира только свой ключ. Порядок: жалобы R09 первыми (соседи читают их у R09 через его
+    # функции), потом работы и идеи R06, дворы и инициативы R16, кризисы R17, встречи и вопросы R13, остальные.
+    # Одна и та же функция в пакете и подмодуле зовётся один раз.
+    DEMO_WORLD_SEEDERS = (
+        ("R09", "ui.civic_feedback.v2.integration"), ("R09", "ui.civic_feedback.v2"),
+        ("R06", "ui.civic_store.v2"),
+        ("R16", "ui.civic_together"),
+        ("R17", "ui.civic_agencies"),
+        ("R13", "ui.civic_meetings"), ("R13", "ui.civic_qa"),
+        ("R12", "engine.civic_geo"), ("R07", "ui.civic_heat"), ("R08", "ui.civic_akim"), ("R04", "ui.civic_ml_api"),
+    )
+    WORLD_FILE = ROOT / "data" / "civic" / "astana" / "demo-world" / "world_v1.json"
+    ASTANA_TZ = timezone(timedelta(hours=5))
+
+    def load_world(self):
+        """Мир R02 (относительные времена). Помощник R02 ml.datasets.demo_world_io, без него — тот же файл напрямую
+        (CIVIC_DEMO_WORLD_PATH — другой путь, для стенда и тестов)."""
+        try:
+            io = importlib.import_module("ml.datasets.demo_world_io")
+        except ModuleNotFoundError:
+            io = None
+        if io is not None and hasattr(io, "load_world"):
+            return io.load_world()
+        path = Path(os.environ.get("CIVIC_DEMO_WORLD_PATH") or self.WORLD_FILE)
+        world = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(world, dict) or not str(world.get("schema", "")).startswith("birge-demo-world"):
+            raise ValueError(f"это не демо-мир Birge: {path}")
+        return world
+
+    def seed_world(self, now=None, world=None):
+        """Демо-мир (CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1): все seed_world модулей с одним now (момент запуска).
+
+        Возвращает {"now", "roles": {роль: {"inserted", "skipped"} | {"error"}}, "scenes"} или None (флага нет).
+        Сбой одного модуля не мешает остальным и приложению — в итоге у роли {"error": "..."} и запись в журнале.
+        """
+        if not self.demo_world:
+            return None
+        now = now or datetime.now(self.ASTANA_TZ)
+        report = {"now": now.isoformat(timespec="seconds"), "roles": {}, "scenes": {}, "error": None}
+        try:
+            world = world if world is not None else self.load_world()
+        except Exception as exc:
+            LOGGER.exception("civic-world: файл демо-мира не прочитан")
+            report["error"] = str(exc)[:200]
+            self.world_report = report
+            return report
+        report["scenes"] = world.get("scenes") if isinstance(world.get("scenes"), dict) else {}
+        db_path = str(self.db_path) if self.db_path is not None else None
+        seen = set()
+        for role, name in self.DEMO_WORLD_SEEDERS:
+            try:
+                module = self._import(name)
+            except Exception:
+                LOGGER.exception("civic-world: модуль %s (%s) не загрузился", name, role)
+                report["roles"].setdefault(role, {"error": "module_failed"})
+                continue
+            fn = getattr(module, "seed_world", None) if module is not None else None
+            if not callable(fn) or fn in seen:
+                continue
+            seen.add(fn)
+            try:
+                result = fn(db_path, world, now=now)
+            except Exception as exc:
+                LOGGER.exception("civic-world: seed_world %s (%s) упал", name, role)
+                report["roles"][role] = {"error": type(exc).__name__}
+                continue
+            got = report["roles"].setdefault(role, {"inserted": 0, "skipped": 0})
+            if "error" in got:
+                continue
+            for field in ("inserted", "skipped"):
+                value = (result or {}).get(field) if isinstance(result, dict) else None
+                if isinstance(value, int) and not isinstance(value, bool):
+                    got[field] += value
+        self.world_report = report
+        return report
+
+    @staticmethod
+    def world_line(report):
+        """Одна строка в консоль: «civic-world: R09 743, R06 55, R16 42 …» (новые + уже были; ошибка — словом)."""
+        if report is None:
+            return None
+        if report.get("error"):
+            return "civic-world: демо-мир не загружен — " + report["error"]
+        parts = []
+        for role, got in report["roles"].items():
+            if "error" in got:
+                parts.append(f"{role} ошибка ({got['error']})")
+            else:
+                total = got["inserted"] + got["skipped"]
+                parts.append(f"{role} {total}" + (f" (новых {got['inserted']})" if got["skipped"] else ""))
+        return "civic-world: " + (", ".join(parts) if parts else "ни у одного модуля нет seed_world")
+
+    def scenes(self):
+        """GET /api/civic/v2/demo/scenes (R01): id сцен 7–9 демо-мира для палитры Ctrl+K и режима показа.
+
+        Только стабильные id синтетики (двор, инициатива, жалоба, кризис) — без текстов и людей. Мира нет — пусто."""
+        report = self.world_report or {}
+        scenes = report.get("scenes") if self.demo_world else None
+        return {"world": bool(self.demo_world and not report.get("error")), "scenes": scenes or {}}
+
     def modules(self):
         """Состояние каждого маршрута v2 — для оболочки и приёмки (R10)."""
         out = {}
@@ -1119,7 +1423,7 @@ class CivicV2Gateway:
             raise V2BadRequest("category", "category: неизвестная категория.")
         return raw
 
-    def arguments(self, key, params, query, body):
+    def arguments(self, key, params, query, body, context=None):
         """Именованные аргументы функции (только kind="function"). Ошибка ввода — V2BadRequest (ответ 400)."""
         q = {k: v[-1] for k, v in parse_qs(query or "", keep_blank_values=True).items()}
         body = body if isinstance(body, dict) else {}
@@ -1224,7 +1528,95 @@ class CivicV2Gateway:
             return {"district": district}
         if key in ("works.update", "works.remove"):
             return {"work_id": params["id"], "body": body}
+        return self._arguments_round15(key, params, q, body, context, district)
+
+    def _arguments_round15(self, key, params, q, body, context, district):
+        """Раунд 15 (CONTRACT §7): аргументы функций R04, R03, R06. Шлюз проверяет форму, смысл — модуль.
+
+        Функция получает только те имена, что объявила (_call): route(text) получит один text, route(body) — всё тело.
+        """
+        if key == "ml.route":
+            target = body.get("target")
+            if target is not None and not isinstance(target, (dict, str)):
+                raise V2BadRequest("target", "target: {kind, id} или id цели.")
+            return {"text": _v2_text(body.get("text")), "category": self._category(body.get("category")),
+                    "point": _v2_point(body["point"]) if body.get("point") is not None else None,
+                    "target": target, "lang": _v2_lang(body.get("lang")), "body": body}
+        if key == "ml.reply_draft":
+            complaint_id = body.get("complaint_id")
+            if complaint_id is not None and (not isinstance(complaint_id, str) or not CIVIC_ID.match(complaint_id)):
+                raise V2BadRequest("complaint_id", "complaint_id: неверный номер обращения.")
+            return {"complaint_id": complaint_id, "lang": _v2_lang(body.get("lang")), "body": body}
+        if key == "ml.text_check":
+            kind = body.get("kind")
+            if kind is not None and (not isinstance(kind, str) or not V2_WORD.match(kind)):
+                raise V2BadRequest("kind", "kind: неизвестный вид текста.")
+            return {"text": _v2_text(body.get("text"), empty="Напишите текст для проверки."), "kind": kind,
+                    "lang": _v2_lang(body.get("lang")), "body": body}
+        if key == "assistant.ask":
+            question = _v2_text(body.get("question", body.get("text")), field="question", empty="Напишите вопрос.")
+            raw_district = body.get("district")
+            if raw_district not in (None, "") and (not isinstance(raw_district, str) or not V2_DISTRICT.match(raw_district)):
+                raise V2BadRequest("district", "district: неизвестный район.")
+            return {"question": question, "lang": _v2_lang(body.get("lang")), "district": raw_district or None,
+                    "body": body}
+        if key == "notifications.list":
+            return {"device_id": _v2_device(context, None, q), "since": q.get("since") or None,
+                    "lang": _v2_lang(q.get("lang"))}
+        if key == "notifications.read":
+            ids = body.get("ids")
+            if ids is not None and (not isinstance(ids, list) or len(ids) > 500
+                                    or not all(isinstance(i, str) and CIVIC_ID.match(i) for i in ids)):
+                raise V2BadRequest("ids", "ids: список номеров уведомлений (не больше 500).")
+            return {"device_id": _v2_device(context, body, q), "ids": ids, "all": body.get("all") is True,
+                    "body": body}
+        if key == "ideas.to_initiative":
+            return {"idea_id": params["id"], "body": body}
         return {}
+
+    def _check_query(self, rules, query):
+        """Раунд 15: форма параметров адреса по правилам маршрута (V2Handler.query) — до вызова модуля.
+
+        Правила: when — дата или время ISO 8601; date — ГГГГ-ММ-ДД; days — 1…366; district; bbox; word — латинское
+        слово (status, kind, step); id — правило CIVIC_ID; category — id категории v2; text — до 120 символов одной
+        строкой. Пустой параметр — «не задан». from > to или период длиннее года — 400.
+        """
+        q = {k: v[-1] for k, v in parse_qs(query or "", keep_blank_values=True).items()}
+        when = {}
+        for name, rule in rules.items():
+            raw = q.get(name)
+            if raw in (None, ""):
+                continue
+            if rule == "when":
+                when[name] = _v2_when(raw, name)
+            elif rule == "date":
+                if not V2_DATE.match(raw):
+                    raise V2BadRequest(name, f"{name}: дата в формате ГГГГ-ММ-ДД.")
+            elif rule == "days":
+                _v2_int(raw, name, 1, V2_PERIOD_MAX_DAYS)
+            elif rule == "district":
+                if not V2_DISTRICT.match(raw):
+                    raise V2BadRequest(name, f"{name}: неизвестный район.")
+            elif rule == "bbox":
+                _v2_bbox(raw)
+            elif rule == "word":
+                if not V2_WORD.match(raw):
+                    raise V2BadRequest(name, f"{name}: неизвестное значение.")
+            elif rule == "id":
+                if not CIVIC_ID.match(raw):
+                    raise V2BadRequest(name, f"{name}: неверный идентификатор.")
+            elif rule == "category":
+                self._category(raw)
+            elif rule == "text":
+                if len(raw) > 120 or any(ord(c) < 32 for c in raw):
+                    raise V2BadRequest(name, f"{name}: до 120 символов одной строкой.")
+        start, end = when.get("from"), when.get("to")
+        if start is not None and end is not None:
+            days = (end.date() - start.date()).days
+            if days < 0:
+                raise V2BadRequest("from", "from: начало периода позже его конца.")
+            if days > V2_PERIOD_MAX_DAYS:
+                raise V2BadRequest("to", f"to: период не длиннее {V2_PERIOD_MAX_DAYS} дней.")
 
     # --- вызов ------------------------------------------------------------------
     def _staff(self, context):
@@ -1298,6 +1690,8 @@ class CivicV2Gateway:
         key, params = found
         if key == "modules":
             return {"status": 200, "headers": {}, "body": {"modules": self.modules()}}
+        if V2_HANDLERS[key].kind == "local":
+            return {"status": 200, "headers": {}, "body": self.resolve(key)[0]()}
         limited = self._rate_limited(key, params, context)
         if limited:
             return limited
@@ -1310,22 +1704,35 @@ class CivicV2Gateway:
             message = ("Модуль не загрузился, подробности в журнале сервера." if reason == "module_failed"
                        else "Эта часть ещё не подключена в сборке.")
             return v2_error(503, reason, message, module=module, role=handler.role)
+        principal, staff_checked = None, False
+        if key in V2_HANDLERS_ROUND15:
+            # Раунд 15: сначала вход сотрудника (сессия R02 + CSRF; R08 board/week и R12 календарь — raw-обработчики,
+            # сами сотрудника не проверяют), потом форма параметров адреса — аноним не узнаёт ничего о параметрах.
+            if handler.staff:
+                principal, denied = self._staff(context)
+                if denied:
+                    return denied
+                staff_checked = True
+            if handler.query:
+                try:
+                    self._check_query(handler.query, query)
+                except V2BadRequest as exc:
+                    return v2_error(400, "bad_request", exc.message, field=exc.field)
         if handler.kind == "raw":
             staff = self._is_staff(context) if handler.staff_view else None
             return self._raw(fn, key, rel_path if handler.strip_prefix else CIVIC_V2_PREFIX + rel_path, query, module,
                              handler, staff=staff)
         if handler.kind == "service":
-            if handler.staff:  # R15-S34: сервис проверяет сотрудника сам; шлюз — ещё раз (сессия R02 + CSRF)
+            if handler.staff and not staff_checked:  # R15-S34: сервис проверяет сотрудника сам; шлюз — ещё раз
                 _principal, denied = self._staff(context)
                 if denied:
                     return denied
             return self._delegate(fn, method, rel_path, query, body, context, module, handler)
         try:
-            args = self.arguments(key, params, query, body)
+            args = self.arguments(key, params, query, body, context)
         except V2BadRequest as exc:
             return v2_error(400, "bad_request", exc.message, field=exc.field)
-        principal = None
-        if handler.staff:
+        if handler.staff and not staff_checked:
             principal, denied = self._staff(context)
             if denied:
                 return denied
@@ -2015,6 +2422,9 @@ def main():
         server.civic_v2.wire()  # связка R09 -> R07/R08/R04 сразу при старте (B-032), демо-жалобы R09 при CIVIC_DEMO=1
     except Exception:
         LOGGER.exception("civic-v2: связка модулей при старте не удалась — повторится при первом запросе")
+    world_line = server.civic_v2.world_line(server.civic_v2.seed_world())  # раунд 15: CIVIC_DEMO_WORLD=1
+    if world_line:
+        print(world_line, flush=True)
     ready_v2 = sorted({item["role"] for item in server.civic_v2.modules().values() if item["status"] == "ready"})
     print("civic-v2: ready " + (", ".join(ready_v2) if ready_v2 else "none yet"), flush=True)
     cls = server.civic.classifier_status

@@ -955,3 +955,26 @@ body.civic-mode:has(#birge-legend[data-open="true"], #birge-layer-btn[aria-expan
 body.civic-mode #birge-screen:is([data-screen="projects"], [data-screen="ideas"]) > #birge-screen-root {
   display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0;
 }
+
+/* ===================================================================================================================
+   Раунд 15 (R01): режим показа ?show=1 и место для баннера R17.
+   =================================================================================================================== */
+/* Режим показа (VISUAL_BRIEF §1 п. 11): без служебных плашек — запасной фон карты, «реестр пуст», подсказки разработчика.
+   «Пример» у синтетики не прячется (правило честности). */
+html[data-birge-show="1"] body.civic-mode .civic-explore #map-status,
+html[data-birge-show="1"] body.civic-mode .civic-explore-registry,
+html[data-birge-show="1"] body.civic-mode .civic-explore-notices { display: none !important; }
+/* 1024: текст крупнее — шкала ui-kit на ступень выше (проектор в зале, читают с 3–5 м). */
+@media (min-width: 761px) and (max-width: 1100px) {
+  html[data-birge-show="1"] { --fs-xs: 13px; --fs-caption: 14px; --fs-small: 15px; --fs-body: 16px; --fs-lead: 17px;
+    --fs-title: 20px; --fs-h1: 24px; }
+}
+/* Баннер (кризис R17, IA_ROUND15 §5.12): ноутбук — по центру под капсулой разделов, до 560 px; телефон — под полем поиска.
+   Пустой контейнер места не занимает. */
+.birge-alert { position: fixed; z-index: 44; top: 76px; left: var(--birge-nav-left, 50%); transform: translateX(-50%); width: min(560px, calc(100vw - 40px)); }
+.birge-alert:empty { display: none; }
+body.civic-mode:not([data-birge-section="map"]) .birge-alert { display: none; }
+@media (max-width: 760px) {
+  .birge-alert { top: 68px; left: 8px; right: 8px; width: auto; transform: none; }
+}
+

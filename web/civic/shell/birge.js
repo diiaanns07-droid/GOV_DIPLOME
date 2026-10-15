@@ -18,12 +18,24 @@
   const MODES = ["akimat", "resident"];
   // Меню по виду (POLISH_WAVE_2, «Защита интерфейса от перегруза», п. 2): не больше 5 пунктов, редкое — в «Ещё».
   // «mine» — не экран, а окно «Мои обращения» модуля R09 поверх карты (как раньше).
-  // Схема R11 (IA_WAVE2 §1): «Ещё» — маленькое меню (≤ 4 пункта), не страница; у жителя — «Вопрос акиму»,
-  // у акимата — «Вопросы жителей», «Работы и отключения», «QR-таблички», «Службы».
+  // Схема R11 раунда 15 (research/round-15-results/R11/IA_ROUND15.md §2–§3, §7): слот-массив — «первый доступный»:
+  // житель — «Мой двор» (R16), нет его — «Рядом» (R08), как в FINAL-4; акимат — «Ведомства» (R17), нет — «Проекты и идеи».
   const NAV = {
-    resident: ["map", "mine", "nearby", "ideas", "more"],
-    akimat: ["map", "day", "inbox", "projects", "more"],
+    resident: ["map", "mine", ["yard", "nearby"], "ideas", "more"],
+    akimat: ["map", "day", "inbox", ["agencies", "projects"], "more"],
   };
+  // «Ещё» — меню под кнопкой (до 7 пунктов; больше 4 — группами с тихой подписью), порядок задаёт схема R11, а не порядок
+  // загрузки модулей. Раздел из NAV, вытесненный слотом (projects при agencies), попадает сюда своей группой.
+  const MORE = {
+    resident: [["together", "meetings", "questions"]],
+    akimat: [["projects", "together", "meetings", "questions"], ["analyst", "board", "qr", "works", "services", "works-calendar"]],
+  };
+  const MORE_GROUPS = { akimat: ["shell.more.group.residents", "shell.more.group.tools"] };
+  const MORE_MAX = 7;
+  // Без своего пункта, пока в этом виде доступен «родитель» (иначе — в «Ещё», как в FINAL-4). Адрес и Ctrl+K работают.
+  const PARENT = { nearby: "yard", questions: "meetings", works: "agencies", services: "agencies", "works-calendar": "agencies" };
+  // Совсем без пункта меню: публичная карточка кризиса R17 открывается баннером, уведомлением и Ctrl+K (IA_ROUND15 §3).
+  const NO_ITEM = new Set(["crisis"]);
   // Экраны новых разделов (п. 2: свои экраны, не поверх карты). Модуль роли: window[global].mount(root, опции) →
   // {destroy?, setLang?}. Пункт меню виден, только когда модуль подключён; ?screens=all — показать все (разбор R11/R10).
   // modes — в каких видах раздел есть; пункт, которого нет в NAV этого вида, попадает в «Ещё».
@@ -38,6 +50,14 @@
     works: { global: ["BirgeWorks"], modes: ["akimat"], owner: "R06 + R08", key: { akimat: "shell.nav.works_staff" } },
     qr: { global: ["BirgeQr"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.qr" } },
     services: { global: ["BirgeServices"], modes: ["akimat"], owner: "R08", key: { akimat: "shell.nav.services" } },
+    // Раунд 15 (IA_ROUND15 §7.5). Один модуль может вести несколько разделов — различает их по opts.section.
+    yard: { global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.yard", akimat: "shell.nav.yard" } },
+    together: { global: ["BirgeTogether"], modes: ["resident", "akimat"], owner: "R16", key: { resident: "shell.nav.together", akimat: "shell.nav.together" } },
+    meetings: { global: ["BirgeMeetings"], modes: ["resident", "akimat"], owner: "R13", key: { resident: "shell.nav.meetings", akimat: "shell.nav.meetings" } },
+    agencies: { global: ["BirgeAgencies"], modes: ["akimat"], owner: "R17", key: { akimat: "shell.nav.agencies" }, titleKey: "shell.nav.agencies_title" },
+    crisis: { global: ["BirgeAgencies"], modes: ["resident", "akimat"], owner: "R17", key: { resident: "shell.nav.crisis", akimat: "shell.nav.crisis" } },
+    analyst: { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
+    "works-calendar": { global: ["BirgeWorksCalendar"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.works_calendar" } },
   };
   const SECTIONS = ["map", "day", ...Object.keys(SCREENS)];
   // Прежние адреса волны 2 (до схемы R11) ведут в те же разделы.
@@ -74,7 +94,9 @@
     const headers = { Accept: "application/json" };
     if (body !== undefined) headers["Content-Type"] = "application/json";
     const csrf = window.CivicShell && window.CivicShell.csrfToken ? window.CivicShell.csrfToken() : null;
-    if (csrf && method !== "GET") headers["X-CSRF-Token"] = csrf;
+    // Раунд 15 (CONTRACT §7): «сотрудник» = сессия + CSRF и для чтения (табло служб R17, ситуационный центр R08,
+    // календарь работ R12) — токен идёт во всех запросах вошедшего сотрудника. Только наш адрес, не в строке адреса.
+    if (csrf) headers["X-CSRF-Token"] = csrf;
     let response;
     try {
       response = await fetch("/api/civic/v2" + path, {
@@ -100,7 +122,11 @@
   }
 
   // ------------------------------------------------------------------ состояние
-  const state = { mode: null, section: "map", dayHandle: null, screenHandle: null, extra: [], layers: [], layer: null };
+  const state = { mode: null, section: "map", path: "", dayHandle: null, screenHandle: null, extra: [], layers: [], layer: null };
+  // Внутренний путь раздела (IA_ROUND15 §7.3): #<раздел>/<путь> — #yard/yard-123, #together/i-7, #agencies/calendar.
+  // Путь — id записей и вкладок (латиница, цифры, «-_.:/»), до 80 знаков; иначе — без пути.
+  const PATH_RE = /^[A-Za-z0-9][A-Za-z0-9_.:\/-]{0,79}$/;
+  const cleanPath = (path) => (typeof path === "string" && PATH_RE.test(path) ? path : "");
   const screensAll = () => /[?&]screens=all(&|$)/.test(location.search);
 
   function savedMode() {
@@ -111,7 +137,10 @@
 
   // Значок пункта меню (марафон, чек-лист №9): один набор ui-kit (icons.svg), рядом с подписью, тише текста.
   const MENU_ICONS = { map: "pin", day: "chart", inbox: "list", projects: "cube", mine: "list", nearby: "users", ideas: "bulb",
-    questions: "info", works: "calendar", qr: "print", services: "building", staff: "user" };
+    questions: "info", works: "calendar", qr: "print", services: "building", staff: "user",
+    // Раунд 15 (IA_ROUND15 §7.6): значки — из icons.svg ui-kit R11 (новые sparkle, monitor, bell — с его поставки r15).
+    yard: "home", together: "heart", meetings: "message", agencies: "building", analyst: "sparkle", board: "monitor",
+    crisis: "alert", "works-calendar": "calendar", notifications: "bell" };
   // Линейная иллюстрация ui-kit (icons.svg #ill-…) для пустых состояний листа (чек-лист №8, №12) — без innerHTML.
   function illustration(name) {
     const sprite = window.BirgeUI && window.BirgeUI.SPRITE;
@@ -166,10 +195,31 @@
     if (!screenModes(id).includes(mode)) return false;
     return screensAll() || !!screenModule(id) || !!state.extra.find((x) => x.id === id && x.href);
   }
-  // «Ещё»: разделы этого вида, которых нет в его главном меню (п. 2: «Вопрос акиму» и прочее редкое).
+  // Пункты капсулы этого вида: слот-массив даёт первый доступный раздел (IA_ROUND15 §7.1); раздел без модуля — пропуск.
+  // «Ещё» здесь всегда (пустое «Ещё» прячут buildNav и navItems: available("more") сам зовёт navOf).
+  function navOf(mode) {
+    return NAV[mode].map((slot) => (Array.isArray(slot) ? slot.find((id) => available(id, mode)) || null
+      : slot === "more" || available(slot, mode) ? slot : null)).filter(Boolean);
+  }
+  // Все разделы, у которых может быть кнопка в капсуле (оба вида, все варианты слотов).
+  const navIds = () => [...new Set([...NAV.akimat, ...NAV.resident].flat())];
+  // «Ещё» этого вида — группы [{label, ids}] по схеме R11 (MORE): раздел доступен, не в капсуле и без доступного
+  // «родителя» (PARENT); разделы ролей, которых нет в схеме (registerScreen), — в конец последней группы. Всего ≤ 7.
+  function moreGroups(mode) {
+    const inNav = new Set(navOf(mode));
+    const fits = (id) => id !== "more" && !NO_ITEM.has(id) && !inNav.has(id) && available(id, mode)
+      && !(PARENT[id] && available(PARENT[id], mode));
+    const groups = (MORE[mode] || [[]]).map((ids, i) => ({ label: (MORE_GROUPS[mode] || [])[i] || null, ids: ids.filter(fits) }));
+    const known = new Set([...(MORE[mode] || []).flat(), ...navIds()]);
+    const rest = [...Object.keys(SCREENS), ...state.extra.map((x) => x.id)].filter((id, i, all) => all.indexOf(id) === i && !known.has(id) && fits(id));
+    groups[groups.length - 1].ids.push(...rest);
+    let left = MORE_MAX;
+    for (const g of groups) { g.ids = g.ids.slice(0, Math.max(0, left)); left -= g.ids.length; }
+    return groups.filter((g) => g.ids.length);
+  }
+  // «Ещё» одним списком (порядок групп) — для проверок, палитры и меню аватара.
   function moreItems(mode) {
-    const ids = [...Object.keys(SCREENS), ...state.extra.map((x) => x.id)];
-    return ids.filter((id, i) => ids.indexOf(id) === i && !NAV[mode].includes(id) && id !== "more" && available(id, mode)).slice(0, 4);
+    return moreGroups(mode).flatMap((g) => g.ids);
   }
   const navTitle = (id, mode = state.mode) => {
     const extra = state.extra.find((x) => x.id === id);
@@ -178,13 +228,15 @@
     const key = SCREENS[id]?.key?.[mode];
     return t(key || "common.nav." + id);  // известный раздел (SCREENS) — ключ меню, даже если модуль зарегистрирован
   };
-  // Кнопки меню: порядок — NAV текущего вида; кнопки другого вида остаются в DOM скрытыми (проверки R11 нажимают
-  // [data-section=day] из кода и в виде «Житель» — оболочка сама переключит вид).
+  // Заголовок экрана раздела: свой ключ (SCREENS.titleKey, «Штаб ведомств»), иначе подпись меню.
+  const screenTitle = (id) => (SCREENS[id]?.titleKey ? t(SCREENS[id].titleKey) : navTitle(id));
+  // Кнопки меню: порядок — капсула текущего вида; кнопки другого вида и запасные варианты слотов остаются в DOM скрытыми
+  // (проверки R11 нажимают [data-section=day] из кода и в виде «Житель» — оболочка сама переключит вид).
   function buildNav() {
     const nav = header?.querySelector(".birge-nav");
     if (!nav) return;
-    const order = [...NAV[state.mode], ...NAV[state.mode === "akimat" ? "resident" : "akimat"]];
-    const ids = order.filter((id, i) => order.indexOf(id) === i);
+    const shown = navOf(state.mode);
+    const ids = [...new Set([...shown, ...navIds()])];
     const have = new Map([...nav.children].map((b) => [b.dataset.section || b.dataset.action, b]));
     const buttons = ids.map((id) => {
       let b = have.get(id);
@@ -194,7 +246,7 @@
           : segButton("section", id, id === state.section);
         if (id === "more") { b.setAttribute("aria-haspopup", "menu"); b.setAttribute("aria-expanded", "false"); }
       }
-      b.hidden = !NAV[state.mode].includes(id) || !available(id, state.mode);
+      b.hidden = !shown.includes(id) || (id === "more" && !available("more", state.mode));
       return b;
     });
     nav.replaceChildren(...buttons);
@@ -211,15 +263,23 @@
       menu = el("div", { class: "birge-more-menu bk-app", role: "menu", hidden: true });
       header.querySelector(".birge-nav").after(menu);
     }
-    menu.replaceChildren(...moreItems(state.mode).map((id) => {
-      const extra = state.extra.find((x) => x.id === id);
-      const item = extra?.href
-        ? el("a", { role: "menuitem", class: "birge-more-item", href: extra.href, target: extra.target || null, rel: extra.target ? "noopener" : null })
-        : el("button", { type: "button", role: "menuitem", class: "birge-more-item", "data-section": id });
-      item.textContent = navTitle(id);
-      menuIcon(item, id);
-      if (id === state.section) item.setAttribute("aria-current", "page");
-      return item;
+    const groups = moreGroups(state.mode), labelled = moreItems(state.mode).length > 4;  // больше 4 — с подписями групп
+    menu.replaceChildren(...groups.flatMap((g, gi) => {
+      const head = [];
+      if (labelled && g.label) {
+        if (gi > 0) head.push(el("div", { class: "bk-menu__sep birge-more-sep", role: "separator" }));
+        head.push(el("p", { class: "bk-menu__label birge-more-label", role: "presentation", text: t(g.label) }));
+      }
+      return head.concat(g.ids.map((id) => {
+        const extra = state.extra.find((x) => x.id === id);
+        const item = extra?.href
+          ? el("a", { role: "menuitem", class: "birge-more-item", href: extra.href, target: extra.target || null, rel: extra.target ? "noopener" : null, "data-section": id })
+          : el("button", { type: "button", role: "menuitem", class: "birge-more-item", "data-section": id });
+        item.textContent = navTitle(id);
+        menuIcon(item, id);
+        if (id === state.section) item.setAttribute("aria-current", "page");
+        return item;
+      }));
     }));
     const r = button.getBoundingClientRect(), box = header.getBoundingClientRect();
     menu.hidden = false;
@@ -338,7 +398,7 @@
     const items = [];
     const item = (attrs, text) => { const b = el("button", { type: "button", class: "bk-menu__item", role: "menuitem", ...attrs }); b.textContent = text; return b; };
     if (document.body.dataset.birgeHeader === "compact") {
-      for (const id of NAV[state.mode].filter((x) => x !== "more" && available(x, state.mode))) {
+      for (const id of navOf(state.mode).filter((x) => x !== "more")) {
         const b = menuIcon(id === "mine" ? item({ "data-action": "mine" }, t("common.nav.mine")) : item({ "data-section": id }, navTitle(id)), id);
         if (id === state.section) b.setAttribute("aria-current", "page");
         if (id === "mine" && mineChanges > 0) {
@@ -348,13 +408,21 @@
         }
         items.push(b);
       }
-      for (const id of moreItems(state.mode)) {  // «Ещё» в меню аватара — сразу пунктами (вложенных меню нет)
-        const extra = state.extra.find((x) => x.id === id);
-        const b = extra?.href ? el("a", { role: "menuitem", class: "bk-menu__item", href: extra.href }) : item({ "data-section": id }, "");
-        b.textContent = navTitle(id);
-        menuIcon(b, id);
-        if (id === state.section) b.setAttribute("aria-current", "page");
-        items.push(b);
+      // «Ещё» в меню аватара — сразу пунктами (вложенных меню нет); больше 4 — под тонкой чертой с подписью группы.
+      const labelled = moreItems(state.mode).length > 4;
+      for (const g of moreGroups(state.mode)) {
+        if (labelled && g.label) {
+          items.push(el("div", { class: "bk-menu__sep", role: "separator" }));
+          items.push(el("p", { class: "bk-menu__label", text: t(g.label) }));
+        }
+        for (const id of g.ids) {
+          const extra = state.extra.find((x) => x.id === id);
+          const b = extra?.href ? el("a", { role: "menuitem", class: "bk-menu__item", href: extra.href }) : item({ "data-section": id }, "");
+          b.textContent = navTitle(id);
+          menuIcon(b, id);
+          if (id === state.section) b.setAttribute("aria-current", "page");
+          items.push(b);
+        }
       }
       items.push(el("div", { class: "bk-menu__sep", role: "separator" }));
     }
@@ -563,7 +631,7 @@
     state.screenHandle = null;
     screen?.classList.remove("birge-day--module");
     screen?.querySelector("#birge-screen-root")?.replaceChildren();
-    if (screen) screen.dataset.screen = "";
+    if (screen) { screen.dataset.screen = ""; screen.dataset.path = ""; }
   }
   // Опции модулю экрана (контракт — INTEGRATION.txt §11): тот же клиент API, язык, вид; переходы делает оболочка.
   function screenOptions(id) {
@@ -575,22 +643,33 @@
         setSection("map");
         location.hash = "#target=" + encodeURIComponent(kind) + ":" + encodeURIComponent(targetId) + (days ? "&days=" + days : "");
       },
-      openSection: (other) => setSection(other),
+      openSection: (other, path) => setSection(other, { path }),
       close: () => setSection("map"),
+      // Раунд 15 (IA_ROUND15 §7.3–7.4): карта (R07, R12, R17), путь внутри раздела и переход по нему без перемонтажа
+      // (оболочка пишет #<раздел>/<путь> и зовёт handle.setPath(path); нет setPath — модуль монтируется заново).
+      map: currentMapObject(), path: state.path,
+      navigate: (path) => setSection(id, { path }),
+      setLayer: (layerId) => setLayer(layerId || null),
     };
   }
   function renderScreen() {
     if (!screen) return;
     const id = state.section;
     if (id === "map" || id === "day") return;
-    screen.querySelector("#birge-screen-title").textContent = navTitle(id);
+    screen.querySelector("#birge-screen-title").textContent = screenTitle(id);
     const root = screen.querySelector("#birge-screen-root");
-    if (state.screenHandle && screen.dataset.screen === id) {
+    if (state.screenHandle && screen.dataset.screen === id && (screen.dataset.path || "") !== state.path
+        && typeof state.screenHandle.setPath === "function") {
+      screen.dataset.path = state.path;   // тот же раздел, другой путь — модуль переходит сам, без перемонтажа
+      try { state.screenHandle.setPath(state.path); } catch (e) { console.error("birge screen " + id + " path", e); }
+    }
+    if (state.screenHandle && screen.dataset.screen === id && (screen.dataset.path || "") === state.path) {
       try { state.screenHandle.setLang?.(lang()); } catch (e) { /* язык модуль может менять сам по birge:lang */ }
       return;
     }
     destroyScreen();
     screen.dataset.screen = id;
+    screen.dataset.path = state.path;
     const mod = screenModule(id);
     if (!mod) { root.replaceChildren(emptyScreen("soon")); return; }
     try {
@@ -614,6 +693,11 @@
       if (!SECTIONS.includes(spec.id)) SECTIONS.push(spec.id);
     }
     render();
+    // Страницу открыли по адресу раздела, модуль которого зарегистрировался позже, — теперь адрес можно открыть.
+    if (state.pendingRoute && !spec.href) {
+      const route = parseRoute(state.pendingRoute);
+      if (route.section === spec.id) { state.pendingRoute = null; setSection(route.section, { hash: false, path: route.path }); }
+    }
     return true;
   }
 
@@ -955,9 +1039,18 @@
       option("", t("shell.layers.none")), ...list.map((l) => option(l.id, layerTitle(l))));
   }
 
+  // Адрес раздела: «#раздел» или «#раздел/путь» (раздел — из SECTIONS или прежнее имя ROUTE_ALIAS).
+  function parseRoute(hash) {
+    const raw = String(hash || "").replace(/^#/, ""), cut = raw.indexOf("/");
+    const head = cut < 0 ? raw : raw.slice(0, cut);
+    const section = ROUTE_ALIAS[head] || head;
+    if (!/^[a-z][a-z0-9-]*$/.test(head) || !SECTIONS.includes(section)) return { section: "map", path: "", routed: false };
+    return { section, path: cut < 0 ? "" : cleanPath(raw.slice(cut + 1)), routed: true };
+  }
   function setSection(section, options) {
     section = ROUTE_ALIAS[section] || section;  // прежние имена (#complaints, #ask) — и из кода ролей
     if (!SECTIONS.includes(section)) section = "map";
+    state.path = section === "map" || section === "day" ? "" : cleanPath(options?.path);
     // «Картина дня» — экран акимата; житель всегда на карте. Раздел другого вида переключает вид (ссылка, «Ещё»).
     if (section === "day" && state.mode === "resident") setMode("akimat");
     else if (section !== "map" && section !== "day" && !screenModes(section).includes(state.mode)) {
@@ -975,17 +1068,43 @@
     }
     if (section === "map" || section === "day") destroyScreen();
     if (options?.hash !== false) {
-      const routed = /^#[a-z][a-z0-9-]*$/.test(location.hash) && SECTIONS.includes(location.hash.slice(1));
-      if (section !== "map" && location.hash !== "#" + section) history.pushState(null, "", location.pathname + location.search + "#" + section);
-      else if (section === "map" && routed) history.pushState(null, "", location.pathname + location.search);
+      const want = "#" + section + (state.path ? "/" + state.path : "");
+      if (section !== "map" && location.hash !== want) history.pushState(null, "", location.pathname + location.search + want);
+      else if (section === "map" && parseRoute(location.hash).routed) history.pushState(null, "", location.pathname + location.search);
     }
     render();
     if (section === "day") day?.querySelector("#birge-day-title")?.focus?.();
     else if (section !== "map") screen?.querySelector("#birge-screen-title")?.focus?.();
   }
 
+  // ------------------------------------------------------------------ режим показа (?show=1, VISUAL_BRIEF раунда 15 §1 п. 11)
+  // Чистый экран для проектора: без служебных плашек (запасной фон карты, «реестр пуст»), на 1024 текст крупнее
+  // (birge.css). Пометка «Пример» у синтетики остаётся всегда. Выбор живёт до конца вкладки; ?show=0 — выключить.
+  const SHOW_KEY = "birge.show";
+  function showMode() {
+    const asked = /[?&]show=([01])(?:&|$)/.exec(location.search);
+    let on = false;
+    try {
+      if (asked) sessionStorage.setItem(SHOW_KEY, asked[1]);
+      on = (asked ? asked[1] : sessionStorage.getItem(SHOW_KEY)) === "1";
+    } catch (e) { on = !!asked && asked[1] === "1"; }   // хранилище закрыто — только по адресу
+    if (on) document.documentElement.dataset.birgeShow = "1"; else delete document.documentElement.dataset.birgeShow;
+    return on;
+  }
+  // Место для баннера (IA_ROUND15 §7.9, кризис R17): ноутбук — под капсулой разделов, телефон — под полем поиска.
+  // Один баннер за раз: модуль кладёт в контейнер свой узел (прежний заменяется).
+  let alertBox = null;
+  function alertSlot() {
+    if (!alertBox) {
+      alertBox = el("div", { id: "birge-alert", class: "birge-alert bk-app", role: "status", "aria-live": "polite" });
+      document.body.append(alertBox);
+    }
+    return alertBox;
+  }
+
   // ------------------------------------------------------------------ запуск
   function start() {
+    showMode();
     // Сравнение перекрытий и помощник по объекту (модули раунда 13) в сценарий демо Birge не входят:
     // скрыты, код и API v1 целы. ?tools=all в адресе возвращает их (проверки ролей, показ сотрудникам).
     document.body.dataset.birgeTools = /[?&]tools=all(&|$)/.test(location.search) ? "all" : "off";
@@ -1021,14 +1140,16 @@
     const linkQr = () => { if (window.BirgeReport && !screenModule("qr")) registerScreen({ id: "qr", href: "/civic/qr/print.html" }); };
     if (document.readyState === "complete") linkQr();
     else { document.addEventListener("DOMContentLoaded", linkQr, { once: true }); window.addEventListener("load", linkQr, { once: true }); }
-    // Разделы — адрес #day, #nearby, #ideas, #more…; прочие адреса (#object=, #target=, #school) — карта, как раньше.
-    const routeOf = () => { const h = ROUTE_ALIAS[location.hash.slice(1)] || location.hash.slice(1); return SECTIONS.includes(h) ? h : "map"; };
-    setSection(routeOf(), { hash: false });
+    // Разделы — адрес #day, #nearby, #ideas, #yard/yard-123…; прочие адреса (#object=, #target=, #school) — карта, как раньше.
+    // Раздел, модуль которого загрузится позже (registerScreen), появится в SECTIONS потом — адрес разбираем ещё раз.
+    const first = parseRoute(location.hash);
+    setSection(first.section, { hash: false, path: first.path });
     window.addEventListener("hashchange", () => {
-      const route = routeOf();
-      if (route !== "map") setSection(route, { hash: false });
+      const route = parseRoute(location.hash);
+      if (route.section !== "map") setSection(route.section, { hash: false, path: route.path });
       else if (state.section !== "map") setSection("map", { hash: false });
     });
+    state.pendingRoute = first.routed ? null : location.hash;
     const I = i18n();
     if (I) {
       I.onChange(() => render());
@@ -1047,11 +1168,17 @@
     get layer() { return state.layer; },
     setMode, setSection, registerScreen, registerLayer, setLayer,
     // Для проверок: какие пункты меню видны в этом виде.
-    navItems: (mode) => NAV[MODES.includes(mode) ? mode : state.mode].filter((id) => available(id, MODES.includes(mode) ? mode : state.mode)),
+    navItems: (mode) => { const m = MODES.includes(mode) ? mode : state.mode; return navOf(m).filter((id) => id !== "more" || available("more", m)); },
     // Палитра команд (birge-ref.js): разделы «Ещё» этого вида и подпись раздела на языке интерфейса.
     moreItems: () => moreItems(state.mode),
     navTitle: (id) => navTitle(id),
     api: { v2, ApiError: BirgeApiError },
+    // Раунд 15: разделы этого вида с модулем (палитра Ctrl+K), путь внутри раздела, баннер, режим показа.
+    sections: () => SECTIONS.filter((id) => id !== "map" && available(id, state.mode)),
+    available: (id, mode) => SECTIONS.includes(id) && available(id, MODES.includes(mode) ? mode : state.mode),
+    get path() { return state.path; },
+    alertSlot,
+    get show() { return document.documentElement.dataset.birgeShow === "1"; },
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();

@@ -32,7 +32,7 @@
   if (layout !== "ref") { window.BirgeRef = { layout, state: () => "classic" }; return; }
 
   const S = { listOpen: false, todayClosed: false, today: null, todayEl: null, chipsEl: null, cats: null, near: null,
-    nearEl: null, palette: null, queued: false, mapBound: false };
+    nearEl: null, palette: null, queued: false, mapBound: false, scenes: null, scenesLoading: null, escBusy: false };
   try { S.todayClosed = sessionStorage.getItem("birge.today.closed") === "1"; } catch (e) { /* сводка снова видна */ }
 
   const desktop = () => innerWidth >= PHONE;
@@ -291,6 +291,11 @@
   function menuOpen() {
     return !!document.querySelector("#birge-account:not([hidden]), .birge-more-menu:not([hidden]), #birge-layer-list:not([hidden]), html.bc-open");
   }
+  // Что было открыто в момент нажатия — до обработчиков меню (фаза захвата идёт раньше всех): Esc закрывает их, а не экран.
+  const OVERLAY = "#birge-screen [role=dialog]:not([hidden]), #birge-day [role=dialog]:not([hidden]), [aria-modal=true]:not([hidden])";
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") S.escBusy = menuOpen() || !!(S.palette && !S.palette.hidden) || !!document.querySelector(OVERLAY);
+  }, true);
   document.addEventListener("keydown", (event) => {
     const k = event.key, code = event.code;
     if ((event.ctrlKey || event.metaKey) && !event.altKey && (code === "KeyK" || k === "k" || k === "K")) {
@@ -309,7 +314,16 @@
       input.focus();
       return;
     }
-    if (section() !== "map" || menuOpen()) return;
+    if (menuOpen()) return;
+    if (section() !== "map") {
+      // Экран раздела (в т. ч. сцена из палитры): Esc — назад на карту. Не тогда, когда этот Esc закрывает меню или окно
+      // поверх экрана (их обработчики могли уже спрятать меню — поэтому смотрим состояние до них, S.escBusy).
+      if (k === "Escape" && !S.escBusy) {
+        event.preventDefault();
+        if (window.BirgeShell) window.BirgeShell.setSection("map");
+      }
+      return;
+    }
     if (code === "KeyJ" || code === "KeyK") {
       const h = heat();
       if (!h || typeof h.stepHot !== "function") return;
@@ -347,25 +361,72 @@
     document.body.append(wrap);
     S.palette = wrap;
   }
+  // ------------------------------------------------------------------ сцены демо v2 (демо-мир R02, IDEA §3)
+  // id сцен 7–9 — GET /api/civic/v2/demo/scenes (шлюз R01 читает world_v1.json → scenes). Без демо-мира — команд нет.
+  function loadScenes() {
+    if (S.scenesLoading || typeof fetch !== "function") return S.scenesLoading || Promise.resolve(null);
+    S.scenesLoading = fetch("/api/civic/v2/demo/scenes", { headers: { Accept: "application/json" } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { S.scenes = data && data.world && data.scenes ? data.scenes : null; return S.scenes; })
+      .catch(() => { S.scenesLoading = null; return null; });   // нет связи — попробуем при следующем открытии
+    return S.scenesLoading;
+  }
+  // Сцена = вид + раздел + путь, одним переходом (без промежуточной карты: всё в одной задаче, кадр рисуется один раз).
+  // Модуля нужного раздела нет — запасной ход, чтобы не показать пустой экран: двор — на карте, кризис — «Картина дня».
+  function openScene(n) {
+    const B = window.BirgeShell, sc = (S.scenes || {})["scene" + n] || {};
+    if (!B) return;
+    const has = (id, m) => typeof B.available === "function" && B.available(id, m);
+    if (n === 7 && sc.yard) {
+      B.setMode("resident");
+      if (has("yard", "resident")) B.setSection("yard", { path: sc.yard });
+      else { B.setSection("map"); location.hash = "#target=area:" + encodeURIComponent(sc.yard); }
+    } else if (n === 8 && sc.complaint) {
+      B.setMode("akimat");
+      B.setSection(has("inbox", "akimat") ? "inbox" : "map", { path: sc.complaint });
+    } else if (n === 9 && sc.incident) {
+      B.setMode("akimat");
+      if (has("agencies", "akimat")) B.setSection("agencies", { path: "crisis/" + sc.incident });
+      else if (has("crisis", "akimat")) B.setSection("crisis", { path: sc.incident });
+      else B.setSection("day");
+    }
+  }
+  function sceneCommands() {
+    if (!S.scenes) return [];
+    const group = t("shell.palette.scenes");
+    return [7, 8, 9].filter((n) => S.scenes["scene" + n]).map((n) => ({ group, title: t("shell.palette.scene" + n), run: () => openScene(n) }));
+  }
+
   async function gatherCommands() {
     const out = [];
     const sections = t("shell.palette.sections");
     const seen = new Set();
+    await loadScenes();
+    // Режим показа (?show=1): сцены — первыми, ведущему они нужнее всего.
+    const scenes = sceneCommands();
+    if (window.BirgeShell && window.BirgeShell.show) out.push(...scenes);
     for (const b of document.querySelectorAll("#birge-header .birge-nav > [data-section]")) {
       const id = b.dataset.section;
       if (!id || id === "more" || b.hidden || seen.has(id)) continue;
       seen.add(id);
       out.push({ group: sections, title: (b.textContent || "").trim(), run: () => window.BirgeShell && window.BirgeShell.setSection(id) });
     }
-    // Разделы из «Ещё» (меню строится при открытии — берём список у оболочки).
+    // Разделы из «Ещё» и разделы без пункта меню (IA_ROUND15 §7.10: «Работы и отключения», «Службы», «Рядом» …).
     const B = window.BirgeShell;
     if (B && typeof B.moreItems === "function" && typeof B.navTitle === "function") {
-      for (const id of B.moreItems() || []) {
-        if (seen.has(id)) continue;
+      const rest = typeof B.sections === "function" ? B.sections() : [];
+      for (const id of [...(B.moreItems() || []), ...rest]) {
+        if (seen.has(id) || id === "more") continue;
         seen.add(id);
         out.push({ group: sections, title: B.navTitle(id), run: () => B.setSection(id) });
       }
+      // «Ведомства» R17: вкладки «Календарь работ» и «Кризисный штаб» — сразу по адресу #agencies/<вкладка>.
+      if (seen.has("agencies")) {
+        out.push({ group: sections, title: t("shell.palette.calendar"), run: () => B.setSection("agencies", { path: "calendar" }) });
+        out.push({ group: sections, title: t("shell.palette.crisis"), run: () => B.setSection("agencies", { path: "crisis" }) });
+      }
     }
+    if (!(B && B.show)) out.push(...scenes);
     const view = t("shell.palette.view");
     for (const m of ["akimat", "resident"]) if (m !== mode()) out.push({ group: view, title: t("common.role." + m), run: () => window.BirgeShell && window.BirgeShell.setMode(m) });
     const I = window.BirgeI18n;
@@ -491,7 +552,7 @@
   window.BirgeRef = {
     layout,
     state: () => body.dataset.birgeLeft || "none",
-    openList, closeLeft, openPalette, closePalette,
+    openList, closeLeft, openPalette, closePalette, openScene, loadScenes,
     get listOpen() { return S.listOpen; },
   };
 })();

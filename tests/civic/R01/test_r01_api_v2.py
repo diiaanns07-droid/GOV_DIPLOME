@@ -129,7 +129,9 @@ ROUTE_SAMPLES = [
 def test_every_contract_route_is_in_the_table():
     keys = {key for _m, _p, key in V2_ROUTES} - {"modules"}
     assert keys == set(V2_HANDLERS)
-    assert len(ROUTE_SAMPLES) == len(keys)
+    # Маршруты раунда 15 проверяет tests/civic/R01/round15/ (их роли и правила — CONTRACT раунда 15 §7).
+    round15 = {key for _m, _p, key in web_server.V2_ROUTES_ROUND15}
+    assert len(ROUTE_SAMPLES) == len(keys - round15)
 
 
 @pytest.mark.parametrize("method,path,query,body", ROUTE_SAMPLES)
