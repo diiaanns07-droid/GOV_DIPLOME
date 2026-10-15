@@ -29,7 +29,10 @@ const ROOT = path.resolve(args.includes("--root") ? args[args.indexOf("--root") 
 const SHOTS = args.includes("--screenshots") ? path.resolve(args[args.indexOf("--screenshots") + 1]) : null;
 const ONLY = args.includes("--only") ? args[args.indexOf("--only") + 1].split(",") : null;
 if (SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
-const WORLD = path.join(ROOT, "tests/civic/R09/fixtures/world_sample_r09.json");
+// --world <файл мира R02> --target <id цели жалобы сцены 8>: та же проверка на настоящем мире (scene8 R02 — «Участок:
+// улица Баян Сулу», osm-w243047611-4). По умолчанию — фикстура R09 той же формы (цель osm-w123-4).
+const WORLD = args.includes("--world") ? path.resolve(args[args.indexOf("--world") + 1]) : path.join(ROOT, "tests/civic/R09/fixtures/world_sample_r09.json");
+const PIT_TARGET = args.includes("--target") ? args[args.indexOf("--target") + 1] : "osm-w123-4";
 const NOISE = /openfreemap|Failed to load resource|GL Driver|style diff|swiftshader|GroupMarkerNotSet|ReadPixels/i;
 const SAY = {
   ru: { hint: "Похоже, нужны 2 службы: Водоканал и Дорожная служба", water: "Водоканал", road: "Дорожная служба",
@@ -97,8 +100,8 @@ async function variant(browser, base, width, height, lang, staff) {
     const inbox = await page.waitForSelector(".bc-inbox__row", { timeout: 10000 }).then(() => true, () => false);
     check(`${tag}: сотрудник вошёл, «Обращения» с жалобами демо-мира`, logged && inbox);
     if (!inbox) return;
-    // Строка ямы — цель «Участок ул. Сарайшык» (фикстура мира, сцена pit_after_digging).
-    const row = page.locator(".bc-inbox__item", { hasText: "Сарайшык" }).first();
+    // Строка ямы — цель жалобы сцены 8 (фикстура: «Участок ул. Сарайшык»; мир R02: «Участок: улица Баян Сулу»).
+    const row = page.locator(`.bc-inbox__item[data-target="${PIT_TARGET}"]`).first();
     await row.locator(".bc-inbox__row").click();
     const block = await page.waitForSelector(".bc-inbox__item--open .bc-joint", { timeout: 8000 }).then(() => true, () => false);
     const parts0 = block ? await page.$$eval(".bc-inbox__item--open .bc-joint__part", (n) => n.map((x) => x.getAttribute("data-service"))) : [];
@@ -127,6 +130,18 @@ async function variant(browser, base, width, height, lang, staff) {
     check(`${tag}: «Отметить исправленным» ждёт Дорожную службу («${say.waiting}…»)`, fixBtn && fixBtn.disabled &&
           fixBtn.wait.includes(say.waiting) && fixBtn.wait.includes(say.road), fixBtn);
     await shot(page, `joint-${tag}-3-waiting`);
+    // «Черновик ответа» R04 — только если маршрут reply-draft готов в сборке (GET /modules); текст — в «Обновление для всех».
+    const draftBtn = await page.$(".bc-inbox__item--open .bc-staff__draft:not([hidden])");
+    if (draftBtn) {
+      await draftBtn.click();
+      await page.waitForFunction(() => { const a = document.querySelector(".bc-inbox__item--open [name=text]"); return a && a.value.length > 20; },
+        null, { timeout: 8000 }).catch(() => null);
+      const draft = await page.$eval(".bc-inbox__item--open [name=text]", (a) => a.value).catch(() => "");
+      check(`${tag}: «Черновик ответа» R04 — текст в «Обновление для всех», сотрудник правит`, draft.length > 20, draft.slice(0, 120));
+      await shot(page, `joint-${tag}-3b-draft`);
+    } else {
+      console.log(`  ${tag}: «Черновик ответа» не показан — маршрута R04 reply-draft нет в этой сборке (так и задумано)`);
+    }
     // Часть Дорожной службы — прямо из строки (чип под строкой → меню → «в работе»).
     const chips = await page.$$eval(".bc-inbox__item--open .bc-inbox__part", (n) => n.map((x) => x.textContent.replace(/\s+/g, " ").trim()))
       .catch(() => []);
@@ -138,22 +153,24 @@ async function variant(browser, base, width, height, lang, staff) {
     const roadNow = await page.$eval('.bc-inbox__part[data-service="road"]', (c) => c.getAttribute("data-status")).catch(() => null);
     check(`${tag}: часть Дорожной службы «в работе» — прямо из строки «Обращений»`, roadNow === "in_progress", { roadNow, chips });
     await shot(page, `joint-${tag}-4-row-parts`);
-    // Передача на другом обращении: «Гололёд на тротуаре у школы» (Есиль) → Дорожная служба, причина — чип.
-    // Вторая строка — «Гололёд на тротуаре у школы» без выбранной цели: «примерное место» (ячейка cell-…).
-    const other = page.locator('.bc-inbox__item[data-target^="cell-"]').first();
+    // Передача на другом обращении → Дорожная служба (если уже у неё — Служба благоустройства), причина — чип.
+    // Вторая строка — любое другое «Новое» обращение (фикстура: «Гололёд на тротуаре у школы», примерное место).
+    const other = page.locator(`.bc-inbox__group[data-group="new"] .bc-inbox__item:not([data-target="${PIT_TARGET}"])`).first();
     if (await other.count()) {
       await other.locator(".bc-inbox__row").click();
       await page.waitForSelector(".bc-inbox__item--open .bc-joint__open-handoff", { timeout: 8000 });
       await page.click(".bc-inbox__item--open .bc-joint__open-handoff");
-      await page.selectOption(".bc-inbox__item--open [name=to]", "road");
+      const to = await page.$eval(".bc-inbox__item--open [name=to]", (sel) => [...sel.options].some((o) => o.value === "road") ? "road" : "landscaping");
+      await page.selectOption(".bc-inbox__item--open [name=to]", to);
       await page.click('.bc-inbox__item--open .bc-joint__reasons [data-reason="not_our_zone"]');
       await shot(page, `joint-${tag}-5-handoff-form`);
       await page.click(".bc-inbox__item--open .bc-joint__handoff button[type=submit]");
-      await page.waitForFunction((want) => { const n = document.querySelector(".bc-inbox__item--open .bc-staff__note");
-        return n && n.textContent.includes(want); }, say.handoff, { timeout: 8000 }).catch(() => null);
+      const want = to === "road" ? say.handoff : (lang === "kk" ? "Берілді: Абаттандыру қызметі" : "Передано: Служба благоустройства");
+      await page.waitForFunction((w) => { const n = document.querySelector(".bc-inbox__item--open .bc-staff__note");
+        return n && n.textContent.includes(w); }, want, { timeout: 8000 }).catch(() => null);
       const note = clean(await page.textContent(".bc-inbox__item--open .bc-staff__note").catch(() => ""));
       const hist = clean(await page.textContent(".bc-inbox__item--open .bc-joint__history").catch(() => ""));
-      check(`${tag}: «Передать в другую службу» → «${say.handoff}…», в «Передачах» — причина и роль`, note.includes(say.handoff) &&
+      check(`${tag}: «Передать в другую службу» → «${want}…», в «Передачах» — причина и роль`, note.includes(want) &&
             /→/.test(hist), { note, hist: hist.slice(0, 160) });
       await shot(page, `joint-${tag}-6-handoff-done`);
     } else {
@@ -162,7 +179,7 @@ async function variant(browser, base, width, height, lang, staff) {
     // Житель: «Я тоже» на той же яме → в «Моих обращениях» — две службы со статусами.
     const device = "r09joint" + Math.random().toString(36).slice(2, 14);
     const list = await api(base, "GET", "/complaints?days=30");
-    const pit = ((list.body && list.body.data && list.body.data.items) || []).filter((c) => (c.target || {}).id === "osm-w123-4")[0];
+    const pit = ((list.body && list.body.data && list.body.data.items) || []).filter((c) => (c.target || {}).id === PIT_TARGET)[0];
     const me = pit ? await api(base, "POST", `/complaints/${pit.id}/metoo`, {}, { "X-Birge-Device": device }) : { status: 0 };
     check(`${tag}: житель «Я тоже» на той же яме`, me.status === 200, me.status);
     const rctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, hasTouch: width < 1024 });
@@ -209,7 +226,8 @@ async function variant(browser, base, width, height, lang, staff) {
         // Маршруты R01 (CONTRACT §7): без патча шлюз отвечает 404 — проверка честно падает здесь.
         const probe = await api(`http://127.0.0.1:${port}`, "POST", "/complaints/c-nothere00/handoff", { to: "water", reason: "проверка" });
         check(`${w}-${lang}: маршруты шлюза complaints/{id}/handoff есть (без сессии — 401/403)`, [401, 403].includes(probe.status), probe.status);
-        check(`${w}-${lang}: демо-мир засеян (${srv.seeded.inserted})`, srv.seeded.inserted >= 5, srv.seeded);
+        check(`${w}-${lang}: демо-мир засеян (${srv.seeded.inserted})`, srv.seeded.inserted >= 5,
+              { ...srv.seeded, invalid: (srv.seeded.invalid || []).length });
         await variant(browser, `http://127.0.0.1:${port}`, w, h, lang, srv.staff);
       } finally { srv.kill(); }
     }

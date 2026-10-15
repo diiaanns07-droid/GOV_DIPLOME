@@ -133,6 +133,12 @@ def parse_route_hint(value) -> dict | None:
                 why_kk = item.get("why_kk") if isinstance(item.get("why_kk"), str) else None
     if not ids:
         return None
+    # R04 route() отдаёт и общее объяснение одной строкой (why_* / summary_*) — оно лучше объяснения первой службы.
+    for key_ru, key_kk in (("why_ru", "why_kk"), ("summary_ru", "summary_kk")):
+        if isinstance(value.get(key_ru), str) and value[key_ru].strip():
+            why_ru = value[key_ru]
+            why_kk = value.get(key_kk) if isinstance(value.get(key_kk), str) else why_kk
+            break
     source = value.get("source")
     if source not in ("model", "rules"):
         source = "model" if value.get("model_version") else "rules"

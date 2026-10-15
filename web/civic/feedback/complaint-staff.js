@@ -507,7 +507,8 @@
       var lang = C().lang ? C().lang() : "ru";
       return rawCall("/reply-draft", { complaint_id: id, status: current.status, lang: lang }, csrf()).then(function (res) {
         var b = res.ok && res.body;
-        var text = b && (b.text || b.draft || (lang === "kk" ? b.text_kk : b.text_ru) || b.reply);
+        // R04 reply_draft: {text, draft_ru, draft_kk, lang, …} — черновик на языке сотрудника.
+        var text = b && ((lang === "kk" ? b.draft_kk : b.draft_ru) || b.text || b.draft || b.reply);
         if (!text) { jointUi.draft = "unavailable"; hintBox.textContent = t("reply.draft.unavailable"); return; }
         jointUi.draft = "idle";
         area.value = String(text).slice(0, 320);

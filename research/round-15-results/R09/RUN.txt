@@ -1,25 +1,44 @@
 R09 · РАУНД 15 · ОБРАЩЕНИЕ ДЛЯ НЕСКОЛЬКИХ СЛУЖБ — ЗАПУСК И ПРОВЕРКА
 Ветка: claude/quirky-ptolemy-k3z2mj (ветка сессии; push в claude/r15-R09 средой запрещён). База — claude/clever-hypatia-q6ts4g.
-Python 3.11+, Node 18+, Chromium (Playwright; в облаке NODE_PATH=$(npm root -g)).
+Python 3.11+, Node 18+, Chromium (Playwright; в облаке NODE_PATH=$(npm root -g)). Браузерные проверки — по одной.
 
-1. ТЕСТЫ (без сети; временные SQLite в tmp_path)
-   python3 -B -m pytest -q tests/civic/R09
+1. ТЕСТЫ (без сети; временные SQLite)
+   python3 -B -m pytest -q tests/civic/R09                       # 583 passed, 1 skipped (мир R02 — пути R02, см. 4)
+   новое раунда 15: test_r09v21_joint.py (запись v2.1, передачи, части, срок через праздники, маршруты, сцена 8 по HTTP),
+                    test_r09v21_world.py (seed_world, reset, «Хан Шатыр», лента R06, фильтр района, мир R02 vs EXPECTED),
+                    test_r09v21_frontend.py (ключи ru/kk, причины = сервер, поправка П1 — без рисунков, свечения и эмодзи)
 
-2. БРАУЗЕР (по одному; каждый сам поднимает сервер на временной базе)
-   NODE_PATH=$(npm root -g) node tests/civic/R09/app_demo_r09.cjs [--screenshots <папка>]   # приложение, шаги 1–7
-   NODE_PATH=$(npm root -g) node tests/civic/R09/browser_r09.cjs --r11 web                 # стенд R09 с ui-kit сборки
-   NODE_PATH=$(npm root -g) node tests/civic/R09/hover_r09.cjs                             # «Обращения» ↔ карта
-   NODE_PATH=$(npm root -g) node tests/civic/R09/glass_r09.cjs                             # стекло «Моих обращений»
-   NODE_PATH=$(npm root -g) node tests/civic/R09/near_r09.cjs                              # шторка «Рядом с вами»
+2. БРАУЗЕР (каждая проверка сама поднимает сервер на временной базе)
+   NODE_PATH=$(npm root -g) node tests/civic/R09/joint_r09.cjs [--root <сборка>] [--screenshots <папка>] [--only 1366-ru]
+       сцена 8 в приложении: «яма после раскопок» → подсказка «2 службы» → «Принять» → части служб → «Водоканал —
+       сделано» → «исправлено» ждёт Дорожную службу → её часть из строки → передача с причиной → житель видит
+       «Работают 2 службы: … — сделано · … — в работе»; 1366 / 1024 / 375 × ru / kk. Нужны маршруты R01 (в ветке R01 есть;
+       для дерева FINAL-4 — git apply research/round-15-results/R09/R01_v2_routes_r09.patch).
+   NODE_PATH=$(npm root -g) node tests/civic/R09/app_demo_r09.cjs          # часть 1 демо: шаги 1–7, 375/1366 × ru/kk
+   NODE_PATH=$(npm root -g) node tests/civic/R09/browser_r09.cjs --r11 web # стенд R09 с ui-kit сборки
+   NODE_PATH=$(npm root -g) node tests/civic/R09/glass_r09.cjs             # стекло «Моих обращений», запасной белый вид
+   NODE_PATH=$(npm root -g) node tests/civic/R09/near_r09.cjs              # шторка «Рядом с вами» оболочки + «одна шторка»
+   NODE_PATH=$(npm root -g) node tests/civic/R09/hover_r09.cjs             # «Обращения» ↔ значки карты
 
-3. СТЕНД ПРИЛОЖЕНИЯ (COMMON «Как поднять стенд»)
+3. СТЕНД ПРИЛОЖЕНИЯ (COMMON «Как поднять стенд»; демо-мир — флаг CIVIC_DEMO_WORLD=1 в сборке R01)
    mkdir -p /tmp/birge && python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
    python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
    printf 'пароль\nпароль\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
-   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655   → http://127.0.0.1:8655/
+   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8655
+   Сцена 8: войти сотрудником → «Обращения» → строка «Участок: улица Баян Сулу» (жалоба мира scene8) → «Принять».
 
-ЧТО МОЖЕТ ПОЛЬЗОВАТЕЛЬ (D0 — как в FINAL-4, плюс мелочи чекпойнта)
-   Всё, что в FINAL-4: «Сообщить о проблеме», «Я тоже», «Мои обращения», «Проверено жителями», «Обращения» акимата.
-   D0: значки «×» и «+» одной толщины с остальными; анимации R09 короче (150–250 мс); «Мои обращения» повторно
-   открываются мгновенно, даже если список пуст.
+4. ДЕМО-МИР ВРУЧНУЮ (без сервера)
+   python3 -B -c "import json; from ui.civic_feedback.v2.integration import seed_world; \
+     print(seed_world('/tmp/birge/demo.sqlite3', json.load(open('data/civic/astana/demo-world/world_v1.json'))))"
+   → {"inserted": 743, …}; повтор — {"reset": 743} (записи мира от нового «сейчас»); reset=False — только добавить.
+
+ЧТО ТЕПЕРЬ МОЖЕТ ПОЛЬЗОВАТЕЛЬ
+   Сотрудник: увидеть подсказку «Похоже, нужны 2 службы: Водоканал и Дорожная служба» и принять её одним нажатием;
+   вести части служб («Ждёт · В работе · Сделано», короткая заметка для жителей) — в карточке и прямо из строки
+   «Обращений»; «Передать в другую службу» с причиной (срок ответа жителю не начинается заново); добавить службу
+   («Совместное исполнение»); видеть передачи (откуда → куда, причина, роль); «исправлено» у совместного — только когда
+   все службы отметили свою часть; открыть «Обращения» одной службы или района (#complaints/service=water,
+   #complaints/district=nura); «Черновик ответа» R04, когда он в сборке.
+   Житель: «Работают 2 службы: Водоканал — сделано · Дорожная служба — в работе», «Передано: …» простыми словами,
+   «Срок ответа тот же — до …»; причины передач и роли сотрудников не видны.

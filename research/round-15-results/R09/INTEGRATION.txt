@@ -7,7 +7,7 @@ R09 · РАУНД 15 · КАК ПОДКЛЮЧИТЬ К СБОРКЕ (обращ�
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 A. R01 — ШЛЮЗ (ui/web_server.py)
 A1. Три маршрута CONTRACT §7 → V2_ROUTES / V2_HANDLERS: research/round-15-results/R09/R01_v2_routes_r09.patch
-    (git apply --check проходит на FINAL-4). Ключи: complaints.handoff, complaints.services, complaints.part;
+    (git apply --check проходит на FINAL-4). В ветке R01 claude/brave-fermi-nhzetj они уже есть — патч не нужен. Ключи: complaints.handoff, complaints.services, complaints.part;
     сервис R09 (kind="service") и staff=True — сессию и CSRF проверяют и шлюз, и R09.
       POST /api/civic/v2/complaints/{id}/handoff   {to, reason | reason_code, keep?, expected_lead?}
       POST /api/civic/v2/complaints/{id}/services  {services: [{service, role: lead|partner}], reason?, expected_lead?}
@@ -20,12 +20,12 @@ A2. GET /complaints/inbox?service=<id> — уже существующий ма�
     ссылка из «Штаба ведомств» R17: #complaints/service=<id>). Шлюз пропускает query как есть.
 A3. Демо-мир (CONTRACT §11, CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1):
       from ui.civic_feedback.v2.integration import seed_world
-      report = seed_world(db_path, world_dict, reset=True)   # {"inserted", "skipped", "reset", "invalid", "total"}
+      report = seed_world(db_path, world_dict, now=now)      # {"inserted", "skipped", "reset", "invalid", "total"}
     · можно передать вместо db_path сервис R09 (resolve("complaints.list").__self__) или его store — тогда подписчики
       хранилища (кэш карты R07) получат одно событие {"type": "world_seeded"} и карта пересчитается сразу;
       с путём — вызывать ДО первого запроса /heat (или сбросить кэш R07 после);
-    · reset=True — рекомендую при каждом запуске демо-сборки: записи мира возвращаются в исходное состояние со временем от
-      этого запуска (репетиция не «съедает» сцену 8; настоящие жалобы не трогаются никогда); reset=False — только добавить;
+    · reset=True ПО УМОЛЧАНИЮ: при каждом запуске записи мира возвращаются в исходное состояние со временем от этого
+      запуска (репетиция не «съедает» сцену 8; настоящие жалобы не трогаются никогда); reset=False — только добавить;
     · в консоль: «civic-world: R09 <inserted+reset>»; invalid — список причин (запись мира не прошла проверку R09);
     · demo_seed.seed_demo (две жалобы «Хан Шатыр», шаг 2 демо) вызывается как раньше — мир его не заменяет.
 A4. Подсказка R04: make_service(db_path) сам берёт ui.civic_ml_api.route (если R04 поставил) и сохраняет route_hint в новой
@@ -74,6 +74,55 @@ C4. «Обращения»: группа получила services [{service, ro
 C5. События хранилища: передача/части — type "update" (как паспорт), смена статуса из-за частей — ещё "status".
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-D. ИНТЕРФЕЙС (web/civic/feedback/) — заполняется по мере поставок D1+: ключи i18n для R11, кадры, правка шторок.
+D. ИНТЕРФЕЙС (web/civic/feedback/) — новых файлов, тегов и CIVIC_ASSETS НЕТ: всё в прежних complaint*.js / complaint.css.
+D1. «Обращения» сотрудника (complaint-list.js + complaint-staff.js):
+    · блок «Службы» в карточке: подсказка R04 «Похоже, нужны 2 службы: …» (из route_hint записи) — «Принять» одним
+      нажатием; части служб с сегментами «Ждёт · В работе · Сделано» (сделано — заметка для жителей); «Передать в другую
+      службу» (кому, причина — 4 чипа + строка, «оставить участником»); «Совместное исполнение» (добавить службу);
+      «Передачи · N» свёрнуты (откуда → куда, причина, роль, дата); «Отметить исправленным» у совместной — недоступна,
+      пока другие службы не отметили свою часть («Сначала отметят свою часть: …»);
+    · под строкой совместного обращения — части служб чипами, статус части меняется прямо из строки (меню);
+    · фильтры: #complaints/service=<id> (ссылка из «Штаба ведомств» R17) и #complaints/district=<id> (сверка «Нура» с
+      картой R07 и «Картиной дня» R08) — чип «Служба: … ×» / «Район: … ×» над вкладками; оболочке ничего делать не нужно;
+    · жалобы демо-мира (поле world) — рабочие (сцены 7–9); две «Хан Шатыр» seed_demo — по-прежнему только просмотр;
+    · «Черновик ответа» (R04 POST /reply-draft) — кнопка видна, только если GET /api/civic/v2/modules говорит, что маршрут
+      R04 с «reply» в ключе готов; текст попадает в «Обновление для всех» (поле стало многострочным), сотрудник правит;
+    · вкладка «Ждут проверки» — ремонты последних 14 дней; вкладка «Просрочено» R09 подписана «Ответ просрочен» (срок
+      первого ответа, не срок исправления R08/R17).
+D2. Житель (complaint.js): в статусе карточки «Мои обращения» у совместного — «Работают 2 службы:» и по строке на службу
+    (статус-иконка ui-kit + «Водоканал — сделано»); в «Подробнее» и «Что изменилось» — «Передано: …», «Подключены службы»,
+    «Водоканал — сделано: Трубу заменили», у передачи — «Срок ответа тот же — до 6 нояб» (пока ответа нет). Экран успеха —
+    тихая ссылка «Что ещё во дворе — «Мой двор»», только если в сборке есть R16 (window.BirgeTogether: open("yard", id)
+    или адрес #yard/yard-…).
+D3. Поправка П1 (AMENDMENTS.md): пустые состояния R09 — одна иконка набора R11 48 px (BirgeComplaint.illustration теперь
+    отдаёт её, рисунков ill-* нет); галочка успеха — 48 px линией 1,5; без свечения у «Проверено жителями»; в шторке
+    «Рядом с вами» у «исправлено службой» — иконка check набора R11 вместо глифа «✓».
+D4. VISUAL_BRIEF §3 (телефон): пока открыт мастер или «Мои обращения», шторка «Рядом с вами» (R09 .bc-near в #birge-near
+    оболочки) не видна — одна шторка на экране (near_r09: «мастер открыт — шторка скрыта»). Ноутбук: ряд чипов карты
+    #birge-chips R01 скрыт, пока открыта карточка R09 слева (просвечивал по краю стекла).
+    Просьба R01 (по желанию): считать html.bc-mine-open / html.bc-open «карточкой слева» в birge-ref.js leftState() —
+    тогда правила R09 для #birge-chips и .civic-panel станут не нужны.
+D5. R11 — новые ключи (запасной текст — в complaint-strings.js, ru и kk): research/round-15-results/R09/i18n_r09_round15.json
+    (57 ключей: joint.*, handoff.reason.*, reply.draft*, mine.update/changes.handoff|services|part, inbox.filter.*,
+    inbox.tab.overdue_answer, complaint.step5.yard). Подписи причин передачи = ui/civic_feedback/v2/joint.py HANDOFF_REASONS
+    (тест test_r09v21_frontend сверяет). Просьба R11: в tokens.css при prefers-reduced-transparency отдавать сплошной
+    цвет и для --glass-strong (сейчас только --glass-panel / --glass-control).
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+F. ОТВЕТЫ СОСЕДЯМ (15 окт, вечер)
+F1. R01: маршруты handoff/services/part в ветке R01 уже есть (staff=True) — патч A1 больше не нужен. seed_world R09 есть
+    (ui.civic_feedback.v2.integration.seed_world): материализованный мир R02 — как есть, сырой — R09 материализует сам
+    (ml.datasets.demo_world_io.materialize или своя копия грамматики). reset=True по умолчанию: при повторном запуске ответ
+    {"inserted": 0, "skipped": 0, "reset": 743, …} — в строке консоли «civic-world» лучше складывать inserted + skipped + reset.
+F2. R02: (1) «Ждут проверки» — 14 дней (WAITING_CHECK_DAYS в ui/civic_feedback/v2/lifecycle.py) — ПРИНЯТО; на мире
+    (now 16 окт 12:00) «Обращения» теперь: город {new 24, in_progress 83, waiting_check 169, overdue 1, reopened 7},
+    Нура {13, 33, 59, 0, 1}, групп в Нуре 106. Пересчитайте, пожалуйста, EXPECTED.json кодом R09 и добавьте в блок inbox
+    поле "waiting_check_days": 14 — тогда тест R09 test_r02_world_counts_match_expected перестанет пропускаться.
+    (2) reset=True по умолчанию — ПРИНЯТО. (3) «Ответ просрочен» у R09 — ПРИНЯТО (ключ inbox.tab.overdue_answer).
+    Патч R09_world_seed_materialize.patch не нужен: seed_world понимает сырой мир сам (743 / 0 invalid).
+F3. R17: табло — service_parts(db, days=…) и handoffs(db, days=…) (раздел B1); ответ просрочен — answered_at,
+    deadline_state/overdue (срок первого ответа); срок исправления считайте своим правилом (просьба R02 §3).
+F4. R16: «Мой двор» может брать проблемы двора у R09 — yard_complaints(db, yard, targets, polygon) (раздел B2), числа те
+    же, что в «Обращениях».
 
 E. LOCAL — нет (всё работает офлайн).
