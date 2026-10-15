@@ -63,7 +63,7 @@ async function waitAnswer(page) {
           await page.press("#ba-input", "Enter");
           await waitAnswer(page);
           const nums = await page.locator(".ba-block--first .ba-num__value").allTextContents();
-          const mapBtn = page.locator(".ba-actions .bk-btn--primary");
+          const mapBtn = page.locator('.ba-actions [data-action="map"]');
           check(`scene${i + 1} numbers ${tag}`, nums.length >= 1 && nums.every((n) => /\d/.test(n)), nums.join(" | "));
           check(`scene${i + 1} offline badge ${tag}`, (await page.locator(".ba-mode--offline").count()) === 1);
           check(`scene${i + 1} no h-scroll ${tag}`, await noHScroll(page));
@@ -107,7 +107,7 @@ async function waitAnswer(page) {
       let reached = false;
       for (let i = 0; i < 30 && !reached; i++) {
         await page.keyboard.press("Tab");
-        reached = await page.evaluate(() => document.activeElement && document.activeElement.classList.contains("bk-btn--primary"));
+        reached = await page.evaluate(() => document.activeElement && document.activeElement.dataset.action === "map");
       }
       check("tab reaches show-on-map", reached);
       await page.close();

@@ -24,7 +24,7 @@ const OUT = process.argv[2];
     await p.waitForSelector(".ba-answer", { timeout: 15000 });
     await p.waitForTimeout(400);
     await p.screenshot({ path: OUT + "/shell_answer_" + w + "_ru.png" });
-    await p.click(".ba-actions .bk-btn--primary");
+    await p.click('.ba-actions [data-action="map"]');
     await p.waitForTimeout(3500);
     const after = await p.evaluate(() => ({ section: window.BirgeShell.section, hash: location.hash,
       card: !!document.querySelector(".r07-card, .r07-panel [data-key], .r07-sel, [class*='r07-card']"),

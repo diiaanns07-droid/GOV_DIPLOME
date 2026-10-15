@@ -292,15 +292,28 @@
       renderHistory();
     }
 
+    // Прошлые ответы строками под карточкой (IA R11 §5.6): вопрос и главное число; нажатие показывает тот ответ
+    // сразу, без нового запроса (числа — на момент того вопроса, время видно в «Как получен ответ»).
     function renderHistory() {
-      var items = state.history.filter(function (q) { return q !== state.question; });
+      var items = state.history.filter(function (h) { return h.answer !== state.answer; }).slice(0, 3);
       historyBox.hidden = !items.length || state.status === "loading";
       if (historyBox.hidden) { historyBox.replaceChildren(); return; }
-      var list = el("ul", { className: "ba-history__list" });
-      items.forEach(function (q) {
-        var b = el("button", { type: "button", className: "ba-history__item", text: q });
-        b.addEventListener("click", function () { input.value = q; syncClear(); submit(); });
-        list.append(el("li", null, [b]));
+      var list = el("ul", { className: "bk-list ba-history__list" });
+      items.forEach(function (h) {
+        var n = ((h.answer.blocks || [])[0] || {}).numbers || [];
+        var sub = n.length ? (n[0].text != null ? n[0].text : String(n[0].value)) + " " + pick(n[0].label, state.lang) : "";
+        var row = el("button", { type: "button", className: "bk-list__item ba-history__item" }, [
+          el("span", { className: "bk-list__main" }, [
+            el("span", { className: "bk-list__title", text: h.q }),
+            sub ? el("span", { className: "bk-list__sub", text: sub }) : null,
+          ]),
+          icon("chevron-right", "bk-list__chevron"),
+        ]);
+        row.addEventListener("click", function () {
+          state.answer = h.answer; state.question = h.q; state.status = "ready";
+          input.value = h.q; syncClear(); render();
+        });
+        list.append(el("li", null, [row]));
       });
       historyBox.replaceChildren(el("p", { className: "ba-history__title", text: t("analyst.history") }), list);
     }
@@ -373,7 +386,8 @@
 
     function actionButton(action, primary) {
       if (action.kind === "map.focus") {
-        var b = el("button", { type: "button", className: "bk-btn" + (primary ? " bk-btn--primary" : "") },
+        // Главная кнопка экрана — «Спросить» (IA R11 §5.6); действия ответа — вторичные.
+        var b = el("button", { type: "button", className: "bk-btn ba-act", "data-action": "map" },
           [icon("pin"), el("span", { text: pick(action.label, state.lang) || t("analyst.show_on_map") })]);
         b.addEventListener("click", function () { focusOnMap(action); });
         return b;
@@ -381,7 +395,8 @@
       if (action.kind === "open") {
         var section = sectionAvailable(action.section);
         if (!section) return null;
-        var o = el("button", { type: "button", className: "bk-btn" + (primary ? " bk-btn--primary" : "") },
+        var o = el("button", { type: "button", className: "bk-btn" + (primary ? "" : " bk-btn--ghost") + " ba-act",
+          "data-action": "open" },
           [el("span", { text: pick(action.label, state.lang) }), icon("chevron-right")]);
         o.addEventListener("click", function () {
           var op = action.opener, key = op && op.global + "." + op.fn;
@@ -397,14 +412,16 @@
       return null;
     }
 
+    // Крупные числа — разметка ui-kit R11 «Спросить Birge» (.bk-answer__nums / __num с <b>).
     function numbersRow(numbers, small) {
       if (!numbers || !numbers.length) return null;
-      return el("div", { className: "ba-nums" + (small ? " ba-nums--small" : "") }, numbers.slice(0, 3).map(function (n) {
-        return el("div", { className: "ba-num", "data-tone": n.tone || "neutral" }, [
-          el("span", { className: "ba-num__value", text: n.text != null ? n.text : String(n.value) }),
-          el("span", { className: "ba-num__label", text: pick(n.label, state.lang) }),
-        ]);
-      }));
+      return el("div", { className: "bk-answer__nums ba-nums" + (small ? " ba-nums--small" : "") },
+        numbers.slice(0, 3).map(function (n) {
+          return el("p", { className: "bk-answer__num ba-num", "data-tone": n.tone || "neutral" }, [
+            el("b", { className: "ba-num__value", text: n.text != null ? n.text : String(n.value) }),
+            el("span", { className: "ba-num__label", text: pick(n.label, state.lang) }),
+          ]);
+        }));
     }
 
     function itemsList(items) {
@@ -447,7 +464,7 @@
       parts.push(numbersRow(b.numbers, !first));
       var textLines = first ? lines.slice(0, 4) : lines.slice(0, 3);
       if (textLines.length) {
-        parts.push(el("p", { className: first ? "ba-lead" : "ba-text", text: textLines[0] }));
+        parts.push(el("p", { className: first ? "bk-answer__text ba-lead" : "ba-text", text: textLines[0] }));
         if (textLines.length > 1) {
           parts.push(el("ul", { className: "ba-lines" }, textLines.slice(1).map(function (l) { return el("li", { text: l }); })));
         }
@@ -485,7 +502,7 @@
         : t("analyst.offline")) + (reason ? " — " + reason : "")]);
       var dl = el("dl", { className: "ba-understood" });
       uRows.forEach(function (r) { dl.append(el("dt", { text: r[0] }), el("dd", { text: r[1] })); });
-      return el("details", { className: "ba-how" }, [summary,
+      return el("details", { className: "bk-details ba-how" }, [summary,
         el("div", { className: "ba-how__body" }, [
           el("p", { className: "ba-how__title", text: t("analyst.understood") }), dl,
           el("ol", { className: "ba-calls" }, rows),
@@ -497,15 +514,14 @@
       if (!a) { renderIdle(); return; }
       var blocks = a.blocks || [];
       var first = blocks[0];
-      var eyebrow = el("div", { className: "ba-eyebrow" }, [
-        el("span", { className: "ba-eyebrow__src", text: first ? pick(first.source && first.source.name, state.lang) : "" }),
-        a.demo ? el("span", { className: "bk-tag bk-tag--demo ba-demo", title: t("analyst.demo_hint"), text: "· " + t("analyst.demo") }) : null,
-        el("span", { className: "ba-mode ba-mode--" + (a.mode === "llm" ? "llm" : "offline"),
-          title: a.mode === "llm" ? t("analyst.llm_hint") : t("analyst.offline_hint"),
-          text: a.mode === "llm" ? t("analyst.llm") : t("analyst.offline") }),
+      // Разметка ui-kit R11 «Спросить Birge»: .bk-answer (+ __q, __nums, __text, __acts), .bk-details, .bk-tag.
+      var q = el("p", { className: "bk-answer__q ba-q" }, [
+        el("span", { className: "ba-q__text", text: "«" + a.question + "»" }),
+        el("span", { className: "ba-q__src", text: " · " + (first ? pick(first.source && first.source.name, state.lang) : "") }),
+        a.demo ? el("span", { className: "ba-demo", title: t("analyst.demo_hint"), text: " · " + t("analyst.demo") }) : null,
       ]);
       var head = el("h3", { className: "ba-answer__title", tabindex: "-1", text: pick(a.headline, state.lang) });
-      var card = el("article", { className: "ba-card ba-answer", "aria-labelledby": "ba-answer-title" }, [eyebrow, head]);
+      var card = el("article", { className: "bk-answer ba-card ba-answer", "aria-labelledby": "ba-answer-title" }, [q, head]);
       head.id = "ba-answer-title";
       (a.notices || []).forEach(function (n) {
         card.append(el("p", { className: "ba-notice" }, [icon("info"), el("span", { text: pick(n, state.lang) })]));
@@ -517,7 +533,10 @@
         card.insertBefore(el("p", { className: "ba-intro", text: pick(a.lead, state.lang) }), card.children[2] || null);
       }
       var actions = (a.actions || []).map(function (act, i) { return actionButton(act, i === 0); }).filter(Boolean);
-      if (actions.length) card.append(el("div", { className: "bk-actions ba-actions" }, actions));
+      actions.push(el("span", { className: "bk-tag ba-mode ba-mode--" + (a.mode === "llm" ? "llm" : "offline"),
+        title: a.mode === "llm" ? t("analyst.llm_hint") : t("analyst.offline_hint"),
+        text: a.mode === "llm" ? t("analyst.llm") : t("analyst.offline") }));
+      card.append(el("div", { className: "bk-answer__acts ba-actions" }, actions));
       card.append(howView(a));
       live.replaceChildren(card);
     }
@@ -558,7 +577,8 @@
         if (state.destroyed || seq !== state.seq) return;
         state.answer = answer;
         state.status = "ready";
-        state.history = [q].concat(state.history.filter(function (x) { return x !== q; })).slice(0, HISTORY);
+        state.history = [{ q: q, answer: answer }].concat(state.history.filter(function (h) { return h.q !== q; }))
+          .slice(0, HISTORY);
         render();
         var h = live.querySelector(".ba-answer__title");
         if (h && doc.activeElement !== input) h.focus({ preventScroll: false });
