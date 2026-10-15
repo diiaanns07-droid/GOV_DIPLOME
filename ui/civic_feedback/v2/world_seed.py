@@ -368,6 +368,25 @@ def build_record(raw: dict, now: datetime) -> tuple[dict, list[tuple[str, str]]]
     return record, metoo
 
 
+def explain_hint(record: dict, route_lookup) -> bool:
+    """Подсказка мира R02 «нужны 2 службы» приходит без объяснения — карточка показала бы только заголовок. Объяснение
+    берём у R04 route() (store.route_lookup), только если R04 предлагает те же службы. -> дописано ли объяснение."""
+    hint = record.get("route_hint")
+    if not callable(route_lookup) or not hint or not hint.get("joint") or hint.get("why_ru"):
+        return False
+    try:
+        found = joint.parse_route_hint(route_lookup(text=record["text"], category=record["category"],
+                                                    subtopic=record.get("subtopic"), point=record.get("point")))
+    except Exception:  # noqa: BLE001 — объяснение не обязательно, засев важнее
+        return False
+    if not found or not found.get("why_ru") or set(found["services"]) != set(hint["services"]):
+        return False
+    hint["why_ru"] = found["why_ru"]
+    if found.get("why_kk"):
+        hint["why_kk"] = found["why_kk"]
+    return True
+
+
 def seed_world(db_path, records, now=None, *, reset: bool = True) -> dict:
     """Засеять жалобы мира. db_path — путь к SQLite, ComplaintStore или сервис R09 (его store).
     -> {"inserted", "skipped", "reset", "invalid": [причины], "total"}. Идемпотентно (см. модуль).
@@ -384,9 +403,16 @@ def seed_world(db_path, records, now=None, *, reset: bool = True) -> dict:
         items = _complaints(records)
         report["total"] = len(items)
         built = []
+        # Объяснение подсказки мира (patch R04 r09_world_hint_why): route() R04 — у хранилища шлюза (make_service) или из
+        # сборки, если засев идёт по пути к базе (шлюз R01 передаёт db_path — своё хранилище без route_lookup).
+        hint_lookup = getattr(store, "route_lookup", None)
+        if hint_lookup is None:
+            from .integration import r04_route_lookup
+            hint_lookup = r04_route_lookup()
         for item in items:
             try:
                 built.append(build_record(item, moment))
+                explain_hint(built[-1][0], hint_lookup)
             except (WorldError, TypeError, ValueError) as exc:
                 report["invalid"].append(str(exc)[:200])
         # Одна транзакция на весь мир: 700–900 записей за доли секунды, а не по fsync на запись.

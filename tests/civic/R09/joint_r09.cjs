@@ -108,6 +108,18 @@ async function variant(browser, base, width, height, lang, staff) {
     check(`${tag}: в карточке — блок «Службы»: ведущая по таблице (Дорожная служба)`, block && parts0.join() === "road", parts0);
     const hint = clean(await page.textContent(".bc-inbox__item--open .bc-joint-hint").catch(() => ""));
     check(`${tag}: подсказка R04 — «${say.hint}»`, hint.includes(say.hint), hint.slice(0, 120));
+    // R04 в сборке (ml.route готов): у подсказки мира — строка «почему» (засев берёт объяснение у route(), patch R04).
+    const r04 = await page.evaluate(async () => {
+      try {
+        const j = await (await fetch("/api/civic/v2/modules", { headers: { Accept: "application/json" } })).json();
+        const list = (j && (j.modules || (j.data && j.data.modules))) || {};
+        return Object.keys(list).some((k) => /(^|\.)route$/.test(k) && list[k] && list[k].status === "ready");
+      } catch (e) { return false; }
+    });
+    if (r04) {
+      const why = clean(await page.textContent(".bc-inbox__item--open .bc-joint-hint__why").catch(() => ""));
+      check(`${tag}: у подсказки мира — объяснение R04 («${why.slice(0, 50)}…»)`, why.length > 20, why.slice(0, 120));
+    }
     await shot(page, `joint-${tag}-1-hint`);
     // «Принять» — одним нажатием: Водоканал ведущая, Дорожная служба участвует.
     await page.click(".bc-inbox__item--open .bc-joint-hint__accept");

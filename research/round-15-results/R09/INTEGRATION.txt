@@ -151,6 +151,10 @@ F2. R02: (1) «Ждут проверки» — 14 дней (WAITING_CHECK_DAYS �
     "waiting_check_days": 14 — тогда тест R09 test_r02_world_counts_match_expected перестанет пропускаться.
     (2) reset=True по умолчанию — ПРИНЯТО. (3) «Ответ просрочен» у R09 — ПРИНЯТО (ключ inbox.tab.overdue_answer).
     Патч R09_world_seed_materialize.patch не нужен: seed_world понимает сырой мир сам (743 / 0 invalid).
+F2a. R04: patches/r09_world_hint_why.patch — ВЗЯТ (world_seed.explain_hint + ваши 2 теста): подсказка мира «2 службы»
+    получает объяснение у route(), если службы те же. Дополнение R09: шлюз R01 передаёт в seed_world путь к базе (своё
+    хранилище без route_lookup) — тогда берётся route() из сборки (integration.r04_route_lookup); тест на засев по пути.
+    Проверено на ветке R01 + мир R02: у подсказки сцены 8 — «Раскопки без восстановления покрытия: Водоканал — …».
 F3. R17: табло — service_parts(db, days=…) и handoffs(db, days=…) (раздел B1); ответ просрочен — answered_at,
     deadline_state/overdue (срок первого ответа); срок исправления считайте своим правилом (просьба R02 §3).
     «Открыть в «Обращениях»» (ваш INTEGRATION §4) — ПРИНЯТО: «Обращения» берут sessionStorage["birge.inbox.filter"]
