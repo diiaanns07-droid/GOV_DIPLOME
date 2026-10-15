@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "82b1999d2d8c6096ac11099b58d0d80194de53a1",
- "tested_sha": "82b1999d2d8c6096ac11099b58d0d80194de53a1",
+ "code_sha": "cb24034d26b23bbd4094bad0ec1baf6c9ae70e0e",
+ "tested_sha": "cb24034d26b23bbd4094bad0ec1baf6c9ae70e0e",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -75,9 +75,9 @@
   "research/round-15-results/R03/screens/shell_map_375_ru.png"
  ],
  "integration": {
-  "route": "POST /api/civic/v2/assistant/ask → agent.civic_assistant.api.ask — в шлюзе R01 (V2_HANDLERS_ROUND15, аргументы question, lang ru|kk|mixed, district, body); в сборке B0 (R01 c97aa5f5) уже R03 7724787e",
+  "route": "POST /api/civic/v2/assistant/ask → agent.civic_assistant.api.ask — в шлюзе R01; в сборке B0.5 R03 c6574a39 и прогрев warm_up",
   "patches": [
-   "research/round-15-results/R03/patches/R01_warm_up.patch (НОВЫЙ к B1, снят с R01 197ad600: ui/web_server.py main() — прогрев agent.civic_assistant.api.warm_up в фоне после wire() и засева мира, R10 B-107; совместим с R16 R01_together_b1.patch в любом порядке)",
+   "research/round-15-results/R03/patches/R01_warm_up.patch — не нужен с B0.5: R01 сам зовёт warm_up R03 и R16 в фоне после засева мира (BUILD_LOG B0.5)",
    "research/round-15-results/R03/patches/R01_assistant_ask.patch (уже применён R01 в c97aa5f5: CIVIC_ASSETS analyst.js/analyst.css; web/index.html link + script)",
    "research/round-15-results/R03/patches/R01_palette_commands.patch (уже применён R01 в c97aa5f5: Ctrl+K)"
   ],
@@ -227,6 +227,12 @@
    },
    "provocations_safe": "10/10",
    "env": "R01 c9069723 (B0) + R03 c6574a39 + R17 ui/civic_agencies e7ade08f + база мира R02, --with-neighbours, CIVIC_DEMO=1; R16 в B0 нет; 15 окт 16:49 UTC"
+  },
+  "pytest_R03_round15_in_R01_build": {
+   "status": "PASS",
+   "passed": 86,
+   "failed": 0,
+   "env": "копия R01 c6d62440 (B0.6) + тесты/код R03 cb24034d; со всеми соседями (R17, R16, R13, R12): тест настоящих соседей — в отдельном процессе; порядок R17 → R03 и R03 → R13/R16/R17 — тесты R03 зелёные"
   }
  },
  "screens": [
@@ -252,7 +258,7 @@
   "research/round-15-results/R03/screens/shell_map_375_ru.png"
  ],
  "known_limits": [
-  "В сборке B0 (R01 c97aa5f5) — R03 7724787e: без S44, прогрева, 44-px чипов и кавычек; к B1 — code_sha этой поставки и patches/R01_warm_up.patch.",
+  "В сборке B0.5 (R01) — R03 c6574a39 + прогрев; к B1 — пути этой поставки (тесты без зависимости от порядка, оракул, «көше бөлігі»).",
   "Табло R17 считает по своей демо-фикстуре, «Картина дня» — по демо-набору R07: до единого демо-мира R02 их «просрочено» различаются (17 и 5) — разные наборы; аналитик подписывает источник каждого блока.",
   "Сервис R17 запускается шлюзом лениво: пока его нет, кризис — «штаб не подключён» (честно), табло — запасной расчёт по срокам R08. R01: ui.civic_agencies.configure(db_path=…) в wire().",
   "Первый вопрос о конфликтах работ ~2 с (R12 загружает работы и граф); следующие — миллисекунды.",
@@ -275,6 +281,7 @@
   "R15_R16_initiatives_name": "уже не актуально с 650d5ef6: первым идёт ui.civic_together.initiatives_summary (только published/done)",
   "R11_kk_terms": "сверено с R11 f8ce804c: 58 ключей analyst.* совпадают; ответы — «Жедел штаб», «төтенше жағдай», «көше бөлігі» (KK_REVIEW_R15 №22, 22а, 28)",
   "R17_two_deadlines": "c6574a39: «Какие службы отстают?» — по overdue_fix (срок исправления R08): на мире 35 = «Просрочено» R08 = итог R17; просрочка ответа R09 (5) — отдельной строкой «Срок первого ответа жителю прошёл…»; без R08 — «ответ просрочен». Иначе 5 и 35 под одним словом (как B-104)",
-  "R10_pvE": "R10 pvE (R01 c9069723 + роли 16:22 UTC): F1–F4 PASS (96 = карта, 83 = карта, 5 = «Картина дня», kk 96); время первого ответа 4,4 с — в превью ещё нет R01_warm_up.patch (B-107 закроется с B1)"
+  "R10_pvE": "R10 pvE (R01 c9069723 + роли 16:22 UTC): F1–F4 PASS (96 = карта, 83 = карта, 5 = «Картина дня», kk 96); время первого ответа 4,4 с — в превью ещё нет R01_warm_up.patch (B-107 закроется с B1)",
+  "R01_B06_test_order": "cb24034d: тест настоящих соседей — в отдельном процессе (make_service соседей больше не остаётся в их модулях для следующих тестов); оракул: пустое табло R17 → расчёт R08, как у аналитика; сверка итога табло — по overdue_fix"
  }
 }
