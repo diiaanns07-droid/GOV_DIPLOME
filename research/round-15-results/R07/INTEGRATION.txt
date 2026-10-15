@@ -38,6 +38,9 @@ web/civic/replay/, tests/civic/R07/. Чужие файлы не менялись
     Ctrl+K: heat.commands() уже отдаёт «Хроника города: неделя за 10 секунд» и «… месяц» (id heat:replay:7 / :30).
     Программно: BirgeReplay.open({ map, heat, days: 7, autoplay: true, container? }) → ручка {play, pause, seek,
     setPeriod, setLang, close, destroy, state(), stats()}; BirgeReplay.active — открытая хроника.
+    С лёгким входом (§1.2а) до первой загрузки BirgeReplay.open(...) возвращает Promise с той же ручкой, а
+    BirgeReplay.active — null; после загрузки window.BirgeReplay — полная хроника (ручка сразу). Надёжно в обоих случаях:
+      Promise.resolve(BirgeReplay.open({ days: 7 })).then((rp) => …)   (так уже сделали ролик и perf_check R10, 2100f6bf)
 
 1.4 Полоса хроники — внизу карты, по центру свободной части. Оболочка задаёт отступы от своих панелей на .rp-host
     (контейнер open() — карта, или opts.container):
