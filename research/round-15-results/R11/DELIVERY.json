@@ -4,8 +4,8 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "ffdb30c2",
- "tested_sha": "ffdb30c2",
+ "code_sha": "23eab2d2",
+ "tested_sha": "23eab2d2",
  "push_status": "OK",
  "updated": "2026-10-16 01:28 Астана",
  "changed_paths": [
@@ -33,7 +33,7 @@
   "review_tool": "tests/civic/R11/review/r15_screens.cjs — разбор сборки раунда 15 одной командой (B1, B2, FINAL-5)"
  },
  "tests": {
-  "pytest tests/civic/R11": "PASS 32/32 (ffdb30c2)",
+  "pytest tests/civic/R11": "PASS 32/32 (23eab2d2)",
   "node tests/civic/R11 (i18n, lang_order, ui_kit)": "PASS (ea188ed6: i18n, ui_kit)",
   "i18n_tools check": "PASS — 2856 ключей, ru = kk",
   "витрина ui-kit, Chromium (Playwright) 1366/375 × ru/kk": "PASS 4/4 (ea188ed6): прокрутки нет, кнопки ≥ 44 px (кнопка баннера кризиса исправлена с 36), текст ≥ 12 px, шрифт с казахскими буквами",
