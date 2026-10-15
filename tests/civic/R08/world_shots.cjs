@@ -28,7 +28,7 @@ function check(name, ok, detail) {
   results.push({ name, status: ok ? "PASS" : "FAIL", detail: detail == null ? undefined : detail });
   console.log((ok ? "PASS " : "FAIL ") + name + (detail != null && !ok ? " — " + JSON.stringify(detail).slice(0, 300) : ""));
 }
-const TECH = /undefined|NaN|\bnull\b|\[object|osm-|c-w15|i-w15|inc-w15/;
+const TECH = /undefined|NaN|\bnull\b|\[object|osm-|c-w15|i-w15|inc-w15|\{[A-Za-z_]+\}/;   // {n} — незаполненная подстановка словаря
 const shot = (page, name, full) => page.screenshot({ path: path.join(OUT, name), type: "jpeg", quality: 84, fullPage: !!full });
 function pdfPages(file) {
   return (fs.readFileSync(file).toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;

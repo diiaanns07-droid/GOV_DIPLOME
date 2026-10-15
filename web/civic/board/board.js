@@ -66,7 +66,6 @@
       "board.crisis.open": "Открыть кризисный штаб",
       "board.crisis.in_hq": "в штабе",
       "board.crisis.zone_city": "весь город",
-      "board.crisis.tasks": "Задачи служб",
       "board.crisis.since": "с {time}",
       "board.crisis.tasks_done": "Задачи служб: {done} из {total}",
       "board.crisis.last": "Жителям зоны",
@@ -107,11 +106,11 @@
       "board.together.going": "придут: {n}",
       "board.together.taking": "участвуют: {n}",
       "board.together.took": "участвовали: {n}",
-      "board.meetings.done": "Сделано",
+      "board.meetings.stat_done": "Сделано",
       "board.meetings.in_work": "В работе",
-      "board.meetings.overdue": "Просрочено",
+      "board.meetings.stat_overdue": "Просрочено",
       "board.meetings.due": "срок {date}",
-      "board.meetings.next": "Следующая встреча: {date} — {title}",
+      "board.meetings.next_line": "Следующая встреча: {date} — {title}",
       "board.meetings.registered": { one: "придёт {n} житель", few: "придут {n} жителя", many: "придут {n} жителей" },
       "board.forecast.note": "Прототип: модель обучена на синтетической истории, это не настоящая оценка риска.",
       "board.prototype": "прототип",
@@ -164,7 +163,6 @@
       "board.crisis.open": "Дағдарыс штабын ашу",
       "board.crisis.in_hq": "штабта",
       "board.crisis.zone_city": "бүкіл қала",
-      "board.crisis.tasks": "Қызметтердің тапсырмалары",
       "board.crisis.since": "{time} бастап",
       "board.crisis.tasks_done": "Қызметтердің тапсырмалары: {done}/{total}",
       "board.crisis.last": "Аймақ тұрғындарына",
@@ -205,11 +203,11 @@
       "board.together.going": "барады: {n}",
       "board.together.taking": "қатысып жатыр: {n}",
       "board.together.took": "қатысты: {n}",
-      "board.meetings.done": "Орындалды",
+      "board.meetings.stat_done": "Орындалды",
       "board.meetings.in_work": "Орындалуда",
-      "board.meetings.overdue": "Мерзімі өткен",
+      "board.meetings.stat_overdue": "Мерзімі өткен",
       "board.meetings.due": "мерзімі {date}",
-      "board.meetings.next": "Келесі кездесу: {date} — {title}",
+      "board.meetings.next_line": "Келесі кездесу: {date} — {title}",
       "board.meetings.registered": "{n} тұрғын келеді",
       "board.forecast.note": "Прототип: модель синтетикалық тарихта оқытылған, бұл нақты тәуекел бағасы емес.",
       "board.prototype": "прототип",
@@ -308,9 +306,15 @@
       return typeof params[name] === "number" ? num(params[name]) : String(params[name]);
     });
   }
+  // Словарь R11 главнее запасного текста; но если строка словаря ждёт подстановку, которой экран не передаёт
+  // (ключ с тем же именем, но другим смыслом), — запасной текст R08, а не «{done}» на большом экране.
+  var HOLE = /\{[A-Za-z_]+\}/;
   function tr(key, params) {
     var B = I();
-    if (B && B.has && B.has(key)) return B.t(key, params);
+    if (B && B.has && B.has(key)) {
+      var t = B.t(key, params);
+      if (!HOLE.test(t) || !ownText(key)) return t;
+    }
     var l = lang(), v;
     // Пустая строка — тоже перевод (в kk «чем неделю назад» стоит перед числом, после — ничего).
     [FALLBACK[l], SHARED[l], FALLBACK.ru, SHARED.ru].some(function (d) {
@@ -323,6 +327,9 @@
       v = l === "ru" ? v[pluralRu(n)] || v.many : v.other || v.many || v.one;
     }
     return interpolate(v, params);
+  }
+  function ownText(key) {
+    return [FALLBACK.ru, SHARED.ru].some(function (d) { return d && Object.prototype.hasOwnProperty.call(d, key); });
   }
   function catName(id) {
     var B = I();
@@ -1024,9 +1031,10 @@
     function slideMeetings(d) {
       var m = d.meetings, c = m.counts || {};
       var stats = h("div", { class: "sc-stats" }, [
-        stat(c.done || 0, tr("board.meetings.done"), "ok", "mt-done"),
+        // n — для склонения подписи, если в словаре R11 она по числу (one / few / many).
+        stat(c.done || 0, tr("board.meetings.stat_done", { n: c.done || 0 }), "ok", "mt-done"),
         stat((c.todo || 0) + (c.in_progress || 0), tr("board.meetings.in_work"), null, "mt-work"),
-        stat(c.overdue || 0, tr("board.meetings.overdue"), c.overdue ? "danger" : null, "mt-overdue"),
+        stat(c.overdue || 0, tr("board.meetings.stat_overdue", { n: c.overdue || 0 }), c.overdue ? "danger" : null, "mt-overdue"),
       ]);
       var rows = h("ol", { class: "sc-rows", "data-fit": "" }, (m.orders || []).slice(0, 4).map(function (o) {
         var st = o.overdue ? "overdue" : o.status;
@@ -1039,7 +1047,7 @@
           demoTag(o.demo),
         ]);
       }));
-      var next = m.next ? h("p", { class: "sc-note", text: tr("board.meetings.next", { date: dayTime(m.next.at), title: pick(m.next, "title") }) +
+      var next = m.next ? h("p", { class: "sc-note", text: tr("board.meetings.next_line", { date: dayTime(m.next.at), title: pick(m.next, "title") }) +
         (m.next.registered ? " · " + tr("board.meetings.registered", { n: m.next.registered }) : "") }) : null;
       return [stats, rows, next];
     }

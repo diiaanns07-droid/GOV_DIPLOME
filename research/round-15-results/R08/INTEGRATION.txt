@@ -124,3 +124,16 @@ R05 / R01: пожалуйста, оставьте этот файл и его ф
 Цвет района — level района на карте R07 (summary.districts.items[].level берётся из heat(zoom=0) — то же правило и те же
 цвета, что на карте), число — люди за 7 дней (= карта); кружки — 3 горячих места в их точке на карте R07 (hot.items[].anchor).
 Проверки: test_r08_heat_match.py::test_district_level_and_hot_anchor_equal_map; world_shots.cjs «карта районов — числа = akim/board».
+
+═══ 12. R11 — СЛОВАРЬ: КЛЮЧИ ДВУХ СЕССИЙ R08 (15 окт, 22:20) ═══
+В словаре R11 (f9254a00) 93 ключа board.* — это ключи второй сессии R08 (claude/inspiring-johnson-j7wksj). R01 берёт R08
+из этой ветки, и её код 80 из них не использует (board.stage.*, board.agencies.*, board.login.*, board.map.title, board.live,
+board.meetings.done/next/overdue, board.crisis.tasks, … — список: python-сверка в STATUS R08). Их можно удалить или оставить.
+Пересекаются 17 ключей: R08 принимает формулировки R11 (board.pulse.title «Пульс города», board.crisis.open kk «Жедел штабты
+ашу», board.meetings.stat_done / stat_overdue — R08 передаёт n, можно делать их по числу one/few/many, и т. д.).
+Было: ключи board.meetings.done / overdue / next у второй сессии — с другим смыслом («выполнено {done} из {total}»), и на табло
+выходило «{done}». Исправлено: R08 зовёт их board.meetings.stat_done / stat_overdue / next_line, а если строка словаря ждёт
+подстановку, которой экран не передаёт, — берёт свой текст (board.js, week.js, akim.js). Проверки world_shots и board_check
+ловят «{…}» на экране.
+Просьба: влить I18N_R15.json (176 ключей ru/kk, без board.crisis.tasks) — тогда тексты табло, «Картины недели» и карточек
+«Картины дня» будут в словаре и на вычитке kk.

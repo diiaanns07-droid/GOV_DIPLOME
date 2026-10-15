@@ -173,7 +173,10 @@
     var i18n = I();
     if (!i18n) return wave2(key, params) || interpolate(key, params);
     if (!i18n.has(key) && !i18n.has(key, "ru") && WAVE2_KEYS.ru[key] != null) return wave2(key, params);
-    return i18n.t(key, params);
+    var t = i18n.t(key, params);
+    // Ключ словаря с тем же именем, но другим смыслом (ждёт подстановку, которой нет) — свой текст раунда 15.
+    if (/\{[A-Za-z_]+\}/.test(t) && WAVE2_KEYS.ru[key] != null) return wave2(key, params);
+    return t;
   }
 
   // ───────────── мелкие помощники ─────────────

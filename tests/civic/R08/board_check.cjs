@@ -32,7 +32,7 @@ function check(name, ok, detail) {
   results.push({ name, status: ok ? "PASS" : "FAIL", detail: detail == null ? undefined : detail });
   console.log((ok ? "PASS " : "FAIL ") + name + (detail != null && !ok ? " — " + JSON.stringify(detail).slice(0, 400) : ""));
 }
-const TECH = /ребро|граф\b|геометри|сценари|payload|undefined|NaN|\bnull\b|\btarget\b|osm-|incident|SLA\b/i;
+const TECH = /ребро|граф\b|геометри|сценари|payload|undefined|NaN|\bnull\b|\btarget\b|osm-|incident|SLA\b|\{[A-Za-z_]+\}/i;
 const KEYLIKE = /\b(board|akim|common|district|status|service)\.[a-z_]+(\.[a-z_0-9]+)*\b/;
 
 async function shot(page, name) {

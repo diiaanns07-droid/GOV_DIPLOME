@@ -164,9 +164,14 @@
       return typeof params[name] === "number" ? num(params[name]) : String(params[name]);
     });
   }
+  // Строка словаря с незаполненной подстановкой (ключ с другим смыслом) — запасной текст R08, а не «{n}» на листе.
+  var HOLE = /\{[A-Za-z_]+\}/;
   function tr(key, params) {
     var B = I();
-    if (B && B.has && B.has(key)) return B.t(key, params);
+    if (B && B.has && B.has(key)) {
+      var t = B.t(key, params);
+      if (!HOLE.test(t) || !(Object.prototype.hasOwnProperty.call(FALLBACK.ru, key) || Object.prototype.hasOwnProperty.call(SHARED.ru, key))) return t;
+    }
     var l = lang(), v;
     [FALLBACK[l], SHARED[l], FALLBACK.ru, SHARED.ru].some(function (d) {
       if (d && Object.prototype.hasOwnProperty.call(d, key)) { v = d[key]; return true; }
