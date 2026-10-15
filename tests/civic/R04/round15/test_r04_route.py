@@ -207,3 +207,18 @@ def test_works_source_failure_is_harmless():
         assert services(route(text="Раскопали дорогу и так и бросили", point=[71.43, 51.12])) == ["water", "road"]
     finally:
         R.set_works_source(None)
+
+
+def test_long_adversarial_input_stays_fast():
+    """Открытый маршрут: 5 000 знаков без пробелов не должны тормозить (квадратичные шаблоны, обезличивание v1)."""
+    from ui.civic_ml_api import moderate
+    route(text="прогрев: яма на дороге")
+    moderate("прогрев")
+    for text in ("a" * 5000, "я" * 5000, "a." * 2500, "нет " + "а" * 4990, "кв. 1 " * 800, "@aaaa " * 830):
+        t0 = time.perf_counter()
+        try:
+            route(text=text)
+        except ValueError:
+            pass
+        moderate(text[:5000])
+        assert (time.perf_counter() - t0) * 1000 < 150, text[:20]

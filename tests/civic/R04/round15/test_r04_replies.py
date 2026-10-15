@@ -83,7 +83,8 @@ def test_joint_parts_and_handoff_keep_deadline():
 def test_fixed_rejected_duplicate():
     rec = dict(REC, status="fixed", resolution={"what_done": "Заасфальтировали яму"})
     res = reply_draft(record=rec, now=NOW)
-    assert "устранили: заасфальтировали яму" in res["draft_ru"] and "«Не исправлено»" in res["draft_ru"]
+    assert "Что сделали: Заасфальтировали яму." in res["draft_ru"] and "«Проблема осталась»" in res["draft_ru"]
+    assert "Не істелді: Заасфальтировали яму." in res["draft_kk"] and "«Иә, түзетілді»" in res["draft_kk"]
     res = reply_draft(record=dict(REC, status="rejected"), now=NOW)
     assert res["needs_input"] == ["reason"] and "[причина — допишите]" in res["draft_ru"]
     assert "[себебін жазыңыз]" in res["draft_kk"]

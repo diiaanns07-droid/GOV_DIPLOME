@@ -192,9 +192,11 @@ def draft(record: dict | None = None, *, status: str | None = None, lang: str | 
             used.append("original_code")
         template = "duplicate"
     elif status == "fixed":
-        what = staff_texts.get("what_done")
-        say("fixed", what_done=((": " + what) if what else "", (": " + what) if what else ""))
+        what = facts.get("what_done")
+        say("fixed")
         if what:
+            # «Что сделали: …» — как в карточке жителя; текст сотрудника — как он написал (с заглавной).
+            say("what_done", what_done=what)
             used.append("what_done")
         say("verify")
         ru.append(T.THANKS[0])
