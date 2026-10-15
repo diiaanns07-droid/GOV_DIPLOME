@@ -209,6 +209,7 @@
   },
   "akim.trio.together_none": "Ближайших дел пока нет",
   "akim.trio.together_now": "идёт сейчас",
+  "akim.pulse.title_city": "Пульс города",
   "akim.trio.meetings": "Встречи",
   "akim.trio.meetings_num": {
    "one": "поручение в работе",
@@ -391,6 +392,7 @@
   "akim.trio.together_done": "Бірге атқарылды: {n}",
   "akim.trio.together_none": "Жақын арада іс жоқ",
   "akim.trio.together_now": "қазір өтіп жатыр",
+  "akim.pulse.title_city": "Қала пульсі",
   "akim.trio.meetings": "Кездесулер",
   "akim.trio.meetings_num": "орындалудағы тапсырма",
   "akim.trio.meetings_overdue": "Мерзімі өткені: {n}",
