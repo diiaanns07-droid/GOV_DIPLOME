@@ -293,12 +293,16 @@ try {
       await q.waitForTimeout(1500);
     }
     const m = await q.evaluate(() => {
-      const st = CivicShell.build3d.getState(), d = document.querySelector("#birge-build3d-root .b3d-dock"), dr = d.getBoundingClientRect(), h = document.querySelector("header.topbar").getBoundingClientRect();
+      // Верх оболочки: шапка раунда 14 (header.topbar) или, если её на телефоне нет (раунд 15 R01: одно поле поиска во всю
+      // ширину), — поле поиска .civic-explore-search. Карточка не должна закрывать ни то, ни другое.
+      const tb = document.querySelector("header.topbar"), sf = document.querySelector(".civic-explore-search");
+      const hEl = tb && tb.getBoundingClientRect().height > 0 ? tb : (sf || tb);
+      const st = CivicShell.build3d.getState(), d = document.querySelector("#birge-build3d-root .b3d-dock"), dr = d.getBoundingClientRect(), h = hEl.getBoundingClientRect();
       const o = st.selected ? CivicShell.build3d._project(st.selected) : null, top = document.elementFromPoint(h.left + 40, h.bottom - 6);
       const sl = st.selected && document.querySelector(`.b3d-label[data-id="${st.selected}"]`), lr = sl && sl.getBoundingClientRect();
       const lc = lr && document.elementFromPoint((lr.left + lr.right) / 2, (lr.top + lr.bottom) / 2);
       return { state: d.dataset.state, sheet: document.querySelector(".civic-panel").dataset.sheet, dock: [Math.round(dr.top), Math.round(dr.bottom)], header_bottom: Math.round(h.bottom),
-        header_free: !!(top && top.closest("header.topbar")), object: o ? [Math.round(o.x), Math.round(o.y)] : null, object_above_card: !!o && o.y > h.bottom && o.y < dr.top,
+        header: hEl === tb ? "topbar" : "search", header_free: !!(top && top.closest("header.topbar, .civic-explore-search")), object: o ? [Math.round(o.x), Math.round(o.y)] : null, object_above_card: !!o && o.y > h.bottom && o.y < dr.top,
         label: lr ? [Math.round(lr.top), Math.round(lr.bottom)] : null, label_above_card: !!(lr && lc && lc.closest(".b3d-label") && lr.top >= h.bottom && lr.bottom <= dr.top) };
     });
     await shot(q, `phone_akimat_half_card_375_${lang}.png`);

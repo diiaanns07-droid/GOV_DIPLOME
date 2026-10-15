@@ -4,7 +4,7 @@
 //
 // Нужен стенд (COMMON «КАК ПОДНЯТЬ СТЕНД») с патчем R05 для R01: patches/R01_web_server_assets.patch (картинки
 // data/previews/*-before@2x.png, lighting-*@2x.png в CIVIC_ASSETS).
-// Запуск:  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_card_check.mjs [--url http://127.0.0.1:8655] [--shots папка]
+// Запуск:  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_card_check.mjs [--url http://127.0.0.1:8655] [--shots папка] [--stand подпись] [--out имя.json]
 // Отчёт — research/round-15-results/R05/runs/app_card_check.json.
 import { mkdir, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -16,6 +16,8 @@ const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 const arg = (n, d) => { const i = process.argv.indexOf(n); return i > 0 && process.argv[i + 1] ? process.argv[i + 1] : d; };
 const URL0 = arg("--url", "http://127.0.0.1:8655");
+const STAND = arg("--stand", "");  // подпись стенда в отчёте: сборка R01 + код R05 (если стенд не из этой ветки)
+const OUT = arg("--out", "app_card_check.json");
 const SHOTS = arg("--shots", path.join(ROOT, "research/round-15-results/R05/screens"));
 const { chromium } = require("playwright");
 
@@ -199,9 +201,9 @@ await check("catalog_white_model_previews", async () => {
 
 let sha = "?";
 try { sha = execSync("git rev-parse --short HEAD", { cwd: ROOT }).toString().trim(); } catch (e) {}
-const report = { at: new Date().toISOString(), url: URL0, code_head: sha, env: "облако: Chromium headless + SwiftShader, упрощённый фон карты", results, pageErrors };
+const report = { at: new Date().toISOString(), url: URL0, code_head: sha, stand: STAND || undefined, env: "облако: Chromium headless + SwiftShader, упрощённый фон карты", results, pageErrors };
 await mkdir(path.join(ROOT, "research/round-15-results/R05/runs"), { recursive: true });
-await writeFile(path.join(ROOT, "research/round-15-results/R05/runs/app_card_check.json"), JSON.stringify(report, null, 1));
+await writeFile(path.join(ROOT, "research/round-15-results/R05/runs", OUT), JSON.stringify(report, null, 1));
 const fails = results.filter((r) => r.status === "FAIL").length;
 console.log(`итог: ${results.filter((r) => r.status === "PASS").length} PASS / ${fails} FAIL / ${results.filter((r) => r.status === "NOT_RUN").length} NOT_RUN; ошибки страницы: ${pageErrors.length}`);
 if (pageErrors.length) console.log(pageErrors.slice(0, 5).join("\n"));
