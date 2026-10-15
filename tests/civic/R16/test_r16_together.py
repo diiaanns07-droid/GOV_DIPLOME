@@ -15,7 +15,7 @@ from urllib.parse import quote
 
 import pytest
 
-from ui.civic_together import create_from_idea, initiatives_summary, pickups, seed_world, updates
+from ui.civic_together import akim_initiatives, akim_yards, create_from_idea, initiatives_summary, pickups, seed_world, updates
 from ui.civic_together import neighbors
 from ui.civic_together.demo import SCENE, next_weekday, rows as demo_rows
 from ui.civic_together.service import make_service
@@ -634,3 +634,19 @@ def test_r10_b124_warm_up_reads_scene_yard_first_and_writes_nothing(svc, monkeyp
     monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
     monkeypatch.setenv("CIVIC_TOGETHER_WARM", "0")
     assert service_module.start_warm_up(svc) is False
+
+
+def test_akim_functions_for_r08_public_items_review_only_counted(svc):
+    """R08 «Картина дня» (FUNCS initiatives / yards): публичные дела как в GET together/initiatives; «на проверке» — без
+    названия и текста; дворы — только числа, без людей и устройств."""
+    created = call(svc, "POST", "/initiatives", new_body(title="Тайное дело 8 701 123 45 67"), context=ctx(DEV_A))["body"]
+    data = akim_initiatives(db_path=svc.store.db_path)
+    statuses = {i["status"] for i in data["items"]}
+    assert {"published", "done", "on_review"} <= statuses
+    review = [i for i in data["items"] if i["status"] == "on_review"]
+    assert any(i["id"] == created["initiative"]["id"] for i in review)
+    assert all(set(i) <= {"id", "kind", "status", "district", "demo"} for i in review)
+    assert "701" not in dump(data) and not HEX64.search(dump(data))
+    yards = akim_yards(db_path=svc.store.db_path)["yards"]
+    assert yards[0]["id"] == SCENE["yard"] and yards[0]["members"] == 37
+    assert all(set(y) == {"id", "label_ru", "label_kk", "district", "members", "initiatives", "demo"} for y in yards)

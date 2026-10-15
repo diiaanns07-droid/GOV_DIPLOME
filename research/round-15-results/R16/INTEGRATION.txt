@@ -110,6 +110,11 @@ BirgeTogether.open("initiative", scenes.initiative) или setSection("yard", {p
        опубликованное и «сделано» (next — публичные названия); очередь «на проверке» — только числом on_review.
   R17  tg.pickups(district=None) -> [{initiative_id, service:"waste", title, point, district, target, starts_at,
        ends_at, note, supported_at}] — задача оператору вывоза после «Поддержать: мешки и вывоз».
+  R08  tg.akim_initiatives(district=None) -> {"items": [...]} — для «Картины дня» / «Картины недели» (ui/civic_akim
+       neighbors.FUNCS «initiatives»): опубликованные и «сделано» в виде GET together/initiatives; «на проверке» — только
+       id, вид, район, статус (текст не проверен — его нет). tg.akim_yards(district=None) -> {"yards": [{id, label_ru,
+       label_kk, district, members, initiatives, demo}]} (FUNCS «yards») — «Двор недели» с числом соседей.
+       Проверено на R01 adb5fba9: tests/civic/R08 — 300 passed, 1 skipped; tests/civic/R10 — 50 passed.
 Приватность (CONTRACT §10): нигде нет id/хэшей устройств, времени вступления и «Я приду», списков людей.
 
 Числа «Мой двор» для сверки (R10, R02): «соседей» = base_members демо-набора + «Я живу здесь» устройств; «проблем» =
