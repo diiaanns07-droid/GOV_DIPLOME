@@ -7,7 +7,9 @@ import { fileURLToPath } from "node:url";
 import { readFileSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
+import { createRequire } from "node:module";
 
+const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 const DATA = path.join(ROOT, "data/civic/astana/landmarks/landmarks.json");
 const WEB = path.join(ROOT, "web/civic/build3d/data/landmarks.json");
@@ -40,4 +42,44 @@ test("П1: нарисованных моделей ориентиров в мо�
   assert.equal(existsSync(path.join(ROOT, "web/civic/build3d/build3d-landmarks.js")), false);
   const src = readFileSync(path.join(ROOT, "web/civic/build3d/build3d.js"), "utf8");
   assert.equal(/baiterek|khan_shatyr|условн(ая|ые) модел/i.test(src), false, "в build3d.js остались модели ориентиров");
+});
+
+// ───────────── Поиск и перелёт (web/civic/build3d/landmarks.js) ─────────────
+const LM = require(path.join(ROOT, "web/civic/build3d/landmarks.js"));
+const ix = LM.makeIndex(data);
+
+test("поиск: с первой буквы, оба языка и другие написания, казахские буквы без разницы", () => {
+  const top = (q, lang) => (ix.query(q, { lang })[0] || {}).id;
+  assert.equal(top("бай", "ru"), "baiterek");
+  assert.equal(top("бәй", "kk"), "baiterek");
+  assert.equal(top("Baiterek", "ru"), "baiterek");
+  assert.equal(top("хан ш", "ru"), "khan-shatyr");
+  assert.equal(top("ақ", "kk"), "akorda");
+  assert.equal(top("ак орда", "ru"), "akorda");
+  assert.equal(top("пирамида", "ru"), "palace-peace");
+  assert.equal(top("экспо", "kk"), "nur-alem");
+  assert.equal(top("мечеть", "ru"), "hazrat-sultan");
+  assert.equal(ix.query("zzz", { lang: "ru" }).length, 0);
+  const r = ix.query("бай", { lang: "kk" })[0];
+  assert.equal(r.label, "Бәйтерек");
+  assert.equal(r.type, "монумент");
+  assert.deepEqual(r.point, [ix.get("baiterek").lon, ix.get("baiterek").lat]);
+});
+
+test("перелёт: камера из landmarks.json, наклон 52°, центр — в свободной части карты (offset, не padding)", async () => {
+  const calls = [];
+  const map = {
+    flyTo: (o) => { calls.push(["flyTo", o]); setTimeout(() => map._end && map._end(), 5); },
+    jumpTo: (o) => { calls.push(["jumpTo", o]); setTimeout(() => map._end && map._end(), 5); },
+    once: (ev, fn) => { if (ev === "moveend") map._end = fn; },
+  };
+  const ok = await LM.flyTo(map, ix.get("khan-shatyr"), { padding: { top: 64, right: 80, bottom: 0, left: 420 } });
+  assert.equal(ok, true);
+  const [kind, o] = calls[0];
+  assert.equal(kind, "flyTo");
+  assert.equal(o.pitch, 52);
+  assert.equal(o.zoom, ix.get("khan-shatyr").camera.zoom);
+  assert.deepEqual(o.center, [ix.get("khan-shatyr").lon, ix.get("khan-shatyr").lat]);
+  assert.deepEqual(o.offset, [170, 32]);
+  assert.equal("padding" in o, false, "padding MapLibre остался бы на карте после перелёта");
 });

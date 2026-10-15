@@ -1,9 +1,38 @@
-R05 · раунд 15 · INTEGRATION (черновик, дополняется по ходу раунда)
+R05 · раунд 15 · INTEGRATION (дополняется по ходу раунда; последнее изменение — см. git log этого файла)
 
-1. LOCAL-13 — контуры ориентиров из Overpass (ноутбук Codex; в облаке нет интернета)
-   Зачем: в репозитории нет контуров зданий Байтерек, Хан Шатыр, Ақорда, «Нұр Әлем», Дворец мира и согласия.
-   Центры в data/civic/astana/landmarks/landmarks.json выведены из колец дорожек снимка OSM (см. README.md рядом),
-   у каждой записи пометка check = "LOCAL-13" («координаты проверить»).
+0. ПОПРАВКА П1 «БЕЗ ИИ-СЛОПА» (15 окт, 17:05) — ДЛЯ R01 ВАЖНО
+   - Моделей ориентиров (Байтерек, Хан Шатыр, Ақорда, «Нұр Әлем», пирамида) у R05 больше НЕТ: файл
+     web/civic/build3d/build3d-landmarks.js и его подключение удалены коммитом 061a575c. Коммит a3749eaa (модели) — НЕ брать.
+     Брать web/civic/build3d/ только из последней поставки R05 (DELIVERY.json → code_sha).
+   - Ориентиры — настоящие здания подложки (R01 basemap-style.js). R05 даёт данные (landmarks.json), поиск и перелёт.
+
+1. ОРИЕНТИРЫ: ПОИСК → ПЕРЕЛЁТ К НАСТОЯЩЕМУ ЗДАНИЮ (R01)
+   Файлы R05: web/civic/build3d/landmarks.js (BirgeLandmarks: load / query / flyTo, без three.js и без DOM),
+              web/civic/build3d/data/landmarks.json (= data/civic/astana/landmarks/landmarks.json, schema birge-landmarks-v2).
+   Патч R01 (одним файлом, проверен на стенде FINAL-4 + R05):
+     research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch
+       - web/index.html: <script defer src="/civic/build3d/landmarks.js"> перед explore.js;
+       - web/civic/shell/explore.js: подсказка вида «landmark» (название, «монумент · район Есиль»), первыми после районов;
+         выбор → onLandmark(it) (или BirgeLandmarks.flyTo(map, id), если оболочка колбэк не дала); landmarks.json — при
+         первом фокусе поля, один раз;
+       - web/civic/shell/shell.js: onLandmark → showView(название) и BirgeLandmarks.flyTo(map, id, {padding: freeArea()})
+         — здание встаёт в центр свободной части карты (offset, не padding MapLibre), наклон 52° как у кнопки «3D»
+         (автонаклон оболочки не доворачивает камеру второй раз), «уменьшить движение» — сразу, без полёта;
+       - web/civic/shell/birge-ref.css: маркер подсказки ориентира — маленький тёмный квадрат (#4B5752), как точки других видов;
+       - web/civic/shell/basemap-style.js — «белый макет» (П1, правило 3): тон зданий-ориентиров #F6F4EF (светлее соседей
+         #ECE9E2…#D2CDC4, без отдельной краски; было бежевое #E6DCC8), подпись #4B5752 (было коричневое #6E5A36);
+         центры, радиусы и названия ru/kk — из landmarks.json (applyLandmarksFile; запасные значения и refine по POI —
+         как раньше, если файла нет). id ориентиров R05 = id R01 (khan-shatyr, baiterek, akorda, hazrat-sultan,
+         palace-peace, nur-alem).
+     research/round-15-results/R05/patches/R01_web_server_assets.patch — CIVIC_ASSETS: build3d/landmarks.js, build3d/data/landmarks.json.
+   Проверка: NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_landmarks_search.mjs → 6 PASS / 0 FAIL / 1 NOT_RUN
+   (вид здания-ориентира — нет подложки в облаке, LOCAL-12). Node: node --test tests/civic/R05/round15/test_landmarks.mjs.
+   Ключи R11: новых нет (подсказка берёт shell.explore.chosen_spot и district.name; вид здания — из landmarks.json ru/kk).
+
+2. LOCAL-13 — контуры ориентиров из Overpass (ноутбук Codex; в облаке нет интернета)
+   Зачем: в репозитории нет контуров зданий Байтерек, Хан Шатыр, Ақорда, Хазрет Султан, «Нұр Әлем», Дворец мира и
+   согласия. Центры в data/civic/astana/landmarks/landmarks.json выведены из колец дорожек снимка OSM (README.md рядом),
+   у каждой записи check = "LOCAL-13" («координаты проверить»).
    Сделать:
      a) Overpass (тот же bbox, что LOCAL-1: 50.9206,71.2079,51.3612,71.7953):
         [out:json][timeout:90];
@@ -12,6 +41,7 @@ R05 · раунд 15 · INTEGRATION (черновик, дополняется п
           nwr["name"~"Бәйтерек|Байтерек|Baiterek|Bayterek"]["tourism"];
           nwr["name"~"Хан Шатыр|Khan Shatyr"]["building"];
           nwr["name"~"Ақорда|Акорда|Ak Orda|Akorda"]["building"];
+          nwr["name"~"Әзірет Сұлтан|Хазрет Султан|Hazrat Sultan"]["building"];
           nwr["name"~"Нұр Әлем|Нур Алем|Nur Alem"];
           nwr["name"~"Бейбітшілік және келісім сарайы|Дворец мира и согласия|Palace of Peace"]["building"];
         );
@@ -21,3 +51,8 @@ R05 · раунд 15 · INTEGRATION (черновик, дополняется п
      c) для каждого ориентира: центр контура (центроид) против lat/lon в landmarks.json; расхождение > 10 м — записать
         в research/round-15-results/LOCAL/R05_landmarks_check.txt (R05 поправит способ вывода и пересоберёт).
    Готово, когда: файл raw/ лежит, расхождения ≤ 10 м или записаны.
+
+3. LOCAL-12 — вид на ноутбуке с настоящей подложкой (что посмотреть по R05)
+   - Поиск «Байтерек», «Хан Шатыр», «Ақорда», «пирамида», «экспо», «мечеть» → камера у настоящего 3D-здания, оно в центре
+     свободной части карты, наклон 52°, без второго доворота; здание-ориентир светлее соседей, подпись ru/kk читается.
+   - Кадры 1366 / 375 × ru / kk → research/round-15-results/LOCAL/R05/ (в облаке подложки со зданиями нет — NOT_RUN).

@@ -1,0 +1,130 @@
+{
+ "at": "2026-10-15T12:23:01.758Z",
+ "url": "http://127.0.0.1:8655",
+ "code_head": "061a575c",
+ "env": "облако: Chromium headless + SwiftShader, без подложки со зданиями (упрощённый фон)",
+ "results": [
+  {
+   "id": "search_Байтерек_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Байтерек",
+     "place": "монумент · район Есиль"
+    },
+    "camera": {
+     "x": 858,
+     "y": 388,
+     "zoom": 16.6,
+     "pitch": 52,
+     "bearing": -76,
+     "w": 1366,
+     "h": 768
+    },
+    "flight_ms": 2915
+   }
+  },
+  {
+   "id": "search_ақорда_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Ақорда",
+     "place": "Президент резиденциясы · Есіл ауданы"
+    },
+    "camera": {
+     "x": 858,
+     "y": 388,
+     "zoom": 16.3,
+     "pitch": 52,
+     "bearing": -76,
+     "w": 1366,
+     "h": 768
+    },
+    "flight_ms": 2793
+   }
+  },
+  {
+   "id": "search_пирамида_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Дворец мира и согласия",
+     "place": "дворец (пирамида) · район Сарайшык"
+    },
+    "camera": {
+     "x": 687,
+     "y": 388,
+     "zoom": 16.5,
+     "pitch": 52,
+     "bearing": -76,
+     "w": 1024,
+     "h": 768
+    },
+    "flight_ms": 3047
+   }
+  },
+  {
+   "id": "search_хан шатыр_375_kk",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Хан Шатыр",
+     "place": "сауда орталығы · Нұра ауданы"
+    },
+    "camera": {
+     "x": 158,
+     "y": 236,
+     "zoom": 15.9,
+     "pitch": 52,
+     "bearing": -76,
+     "w": 375,
+     "h": 812
+    },
+    "flight_ms": 3072
+   }
+  },
+  {
+   "id": "search_экспо_375_ru",
+   "status": "PASS",
+   "detail": {
+    "suggestion": {
+     "kind": "landmark",
+     "name": "Нур Алем",
+     "place": "павильон ЭКСПО · район Есиль"
+    },
+    "camera": {
+     "x": 158,
+     "y": 227,
+     "zoom": 16.1,
+     "pitch": 52,
+     "bearing": -20,
+     "w": 375,
+     "h": 812
+    },
+    "flight_ms": 3077
+   }
+  },
+  {
+   "id": "reduced_motion_jumps_without_flight",
+   "status": "PASS",
+   "detail": {
+    "moves": 1,
+    "ms": 765
+   }
+  },
+  {
+   "id": "basemap_landmark_lighter_and_labelled",
+   "status": "NOT_RUN",
+   "detail": {
+    "why": "в облаке нет подложки со зданиями (OpenFreeMap недоступен) — вид проверяет LOCAL-12",
+    "centers_from_landmarks_json": false
+   }
+  }
+ ],
+ "pageErrors": []
+}

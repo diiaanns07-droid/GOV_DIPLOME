@@ -55,8 +55,14 @@
 - П1 (17:10–): модели удалены; landmarks.json v2 (6 ориентиров с id R01, + мечеть Хазрет Султан — центр двора по
   кольцу дорожек), тесты test_landmarks.mjs 3/3.
 
+- П1-1 (готово): web/civic/build3d/landmarks.js — поиск ориентиров (ru/kk, другие написания) и перелёт к настоящему
+  зданию (наклон 52°, центр в свободной части карты, reduced-motion — сразу). Патч R01 (explore.js, shell.js,
+  index.html, birge-ref.css, basemap-style.js: центры из landmarks.json, ориентир светлее соседей #F6F4EF, подпись
+  #4B5752) — patches/R01_landmarks_search_basemap.patch. Проверки: test_landmarks.mjs 5/5; app_landmarks_search.mjs
+  6 PASS / 0 FAIL / 1 NOT_RUN (вид здания — LOCAL-12). Рабочая копия: патчи R01 применены локально (НЕ коммитить
+  web/civic/shell/*, web/index.html, ui/web_server.py).
+
 ## Дальше
-- П1-1: web/civic/build3d/landmarks.js (поиск ориентиров + перелёт), патчи R01 (explore.js, basemap-style.js).
 - П1-2: «белый макет» — палитра моделей проектов, превью каталога, было/станет, ночь (генератор
   tests/civic/R05/round15/make_before_after.mjs).
 - Задача 3: «Было / станет» — шторка по превью в карточке проекта (ручка 44 px, ← →); задача 4 — «День / Ночь».
