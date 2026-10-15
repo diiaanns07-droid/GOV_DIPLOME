@@ -386,6 +386,15 @@ class Consistency:
             rec["note"] = "окна разные и не подписаны (B-122)"
         print(f"  C5 подписи: {rec['status']} — {rec['note']}")
 
+    def ui_keys(self, js, pattern, default):
+        """Какой ключ подписи берёт экран: первый захват pattern в исходнике экрана сборки; не нашли — default."""
+        try:
+            text = (self.s.root / js).read_text(encoding="utf-8")
+        except OSError:
+            return default
+        m = re.search(pattern, text)
+        return [m.group(1)] if m else default
+
     def labels_check(self, fix_value, answer_value, r17_value=None):
         """Разные числа «просрочено» — разные подписи (ru и kk), как их показывают экраны:
         «Картина дня» R08 (срок исправления) против вкладки «Обращений» R09 и итога табло R17 (срок ответа)."""
@@ -394,6 +403,11 @@ class Consistency:
                                 "values": {"R08": fix_value, "R09": answer_value, "R17": r17_value}, "owners": ["R08", "R09", "R17", "R11"],
                                 "note": "числа совпадают или одного нет — различать нечего"})
             return
+        # Ключ подписи — тот, которым экран рисует плитку (R17 d75e3cd9: tr("agencies.kpi.overdue_answer") у числа срока
+        # ответа; раньше — agencies.kpi.overdue). Старый ключ в словаре R11 может остаться со старым текстом — его не читаем.
+        r08_keys = self.ui_keys("web/civic/akim/akim.js", r'kpiCard\(\s*"overdue"\s*,\s*[\w.]+\s*,\s*"([\w.]+)"', ["akim.kpi.overdue"])
+        r17_keys = self.ui_keys("web/civic/agencies/agencies.js", r'kpi\(\s*totals\.overdue\s*,\s*tr\("([\w.]+)"',
+                                ["agencies.kpi.overdue_answer", "agencies.kpi.overdue"])
         same, labels = [], {}
         for lang in ("ru", "kk"):
             path = self.s.root / "web" / "civic" / "i18n" / f"{lang}.json"
@@ -401,10 +415,10 @@ class Consistency:
                 d = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, ValueError):
                 continue
-            a = self.screen_label(lang, d, ["akim.kpi.overdue"], "web/civic/akim/akim.js")
+            a = self.screen_label(lang, d, r08_keys, "web/civic/akim/akim.js")
             others = {"«Обращения» R09": (answer_value, self.screen_label(lang, d, ["inbox.tab.overdue_answer", "inbox.tab.overdue"],
                                                                           "web/civic/feedback/complaint-strings.js")),
-                      "табло R17": (r17_value, self.screen_label(lang, d, ["agencies.kpi.overdue"], "web/civic/agencies/agencies.js"))}
+                      "табло R17": (r17_value, self.screen_label(lang, d, r17_keys, "web/civic/agencies/agencies.js"))}
             labels[lang] = {"«Картина дня» R08": a, **{k: v[1] for k, v in others.items()}}
             for name, (num, b) in others.items():
                 if isinstance(num, int) and num != fix_value and isinstance(a, str) and isinstance(b, str) \
