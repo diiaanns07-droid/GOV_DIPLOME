@@ -3355,5 +3355,8 @@
  "week.window.past": "7 дней до конца {date}",
  "week.days.first_from": "первый столбик — с {time} накануне",
  "week.kpi.overdue_fix": "Не исправлено в срок",
- "week.kpi.work": "В работе"
+ "week.kpi.work": "В работе",
+ "handoff.reason.joint": "Совместное исполнение",
+ "handoff.reason.passport": "Выбор службы в паспорте",
+ "akim.kpi.fixed_7d": "Исправлено за 7 дней"
 }

@@ -785,7 +785,7 @@
  "shell.legend.less": "Түсіндірмені жасыру",
  "shell.legend.more": "Түстер нені білдіреді",
  "shell.map.locate_failed": "Орынды анықтау мүмкін болмады — геолокацияға рұқсат беріңіз немесе мекенжайды іздеп табыңыз",
- "shell.nav.yard": "Менің аулам",
+ "shell.nav.yard": "Аулам",
  "shell.nav.together": "Бірге жасайық",
  "shell.nav.meetings": "Сұрақтар мен кездесулер",
  "shell.nav.agencies": "Ведомстволар",
@@ -2850,5 +2850,8 @@
  "week.window.past": "{date} соңына дейінгі 7 күн",
  "week.days.first_from": "бірінші баған — алдыңғы күні {time} бастап",
  "week.kpi.overdue_fix": "Мерзімінде түзетілмеген",
- "week.kpi.work": "Орындалуда"
+ "week.kpi.work": "Орындалуда",
+ "handoff.reason.joint": "Бірлескен орындау",
+ "handoff.reason.passport": "Паспортта қызмет таңдалды",
+ "akim.kpi.fixed_7d": "7 күнде түзетілді"
 }

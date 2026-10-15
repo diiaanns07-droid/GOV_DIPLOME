@@ -1268,5 +1268,8 @@
  "week.window.past": "R08 · web/civic/akim/week.js",
  "week.days.first_from": "R08 · web/civic/akim/week.js",
  "week.kpi.overdue_fix": "R08 · web/civic/akim/week.js",
- "week.kpi.work": "R08 · web/civic/akim/week.js"
+ "week.kpi.work": "R08 · web/civic/akim/week.js",
+ "handoff.reason.joint": "R09 · web/civic/feedback/complaint-strings.js",
+ "handoff.reason.passport": "R09 · web/civic/feedback/complaint-strings.js",
+ "akim.kpi.fixed_7d": "R08 · web/civic/akim/akim.js"
 }
