@@ -5,8 +5,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "путь R13 в FINAL-4 = поставка 6 раунда 14 (0487f2a6), восстанавливать нечего",
- "code_sha": "e61c2bfecdfc04de36b7808b505e5f8492ac48cf",
- "tested_sha": "e61c2bfecdfc04de36b7808b505e5f8492ac48cf",
+ "code_sha": "74903b7a66108ef198d33e370f7946aa3a5e47a4",
+ "tested_sha": "74903b7a66108ef198d33e370f7946aa3a5e47a4",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_forecast/targets.py",
@@ -81,7 +81,7 @@
  "tests": {
   "pytest_tests_civic_R13": {
    "status": "PASS",
-   "passed": 173,
+   "passed": 174,
    "failed": 0,
    "command": "python3 -m pytest -q tests/civic/R13"
   },
@@ -90,14 +90,15 @@
    "passed": 75,
    "total": 75,
    "command": "tests/civic/R13/meetings/meetings_browser.cjs --full (BIRGE_URL стенда)",
-   "sha": null,
+   "sha": "e61c2bfecdfc04de36b7808b505e5f8492ac48cf",
    "env": "облако: FINAL-4 e91acb69 + патчи R13 для R01 (маршруты, ассеты, лист слева), CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
+   "note": "быстрый прогон 1366/375 × ru/kk на e61c2bfe; файлы web/ с тех пор не менялись (74903b7a — только сервер и тесты)",
    "full_run": {
     "status": "PASS",
     "passed": 127,
     "total": 127,
     "sha": "2a89f178",
-    "note": "--full (1366/1024/375 × ru/kk, все состояния) на 2a89f178; e61c2bfe отличается только секцией «Скоро» и DEMO.md — на нём быстрый прогон 1366/375 × ru/kk 75/75; кадры screens/ — с полного прогона"
+    "note": "--full (1366/1024/375 × ru/kk, все состояния); кадры screens/ — с этого прогона"
    }
   },
   "r08_contract_on_r08_branch": {
@@ -114,7 +115,7 @@
    "total": 95,
    "command": "tests/civic/R13/qa/qa_browser.cjs",
    "sha": "1ff8c2da",
-   "note": "«Вопрос акиму» после embedded и П1; файлы qa с тех пор не менялись"
+   "note": "«Вопрос акиму» после embedded и П1; web/civic/qa с тех пор не менялся"
   },
   "r01_gateway_d987a112": {
    "status": "PASS",
