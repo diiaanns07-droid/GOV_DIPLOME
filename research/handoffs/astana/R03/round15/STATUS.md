@@ -140,6 +140,12 @@
   (шкала шрифтов R11). R10 нашёл ложный FAIL своей проверки зон нажатия (::after ui-kit) и исправил её. Новых пунктов
   по R03 нет.
 
+- 02:27–02:36 UTC (35fd84a6 = code_sha DELIVERY), срабатывание 02:25: AMENDMENTS — только П1. R10 принял B0.15:
+  экран ассистента 0 FAIL / 0 WARN (4 варианта), числа F1–F4 = карта и «Картина дня», первый ответ 0,67 с. В B0.16
+  R01 нашёл полную сборку мусора большого процесса pytest в замере R15 — два замера R03 (тайм-аут модели, вопросы
+  сцены) теперь в F.no_gc_pause(), пороги прежние. Копия B0.16 + R03 в одном процессе (R01 R03 R12 R13 R15 R17):
+  1795 passed, 0 failed; R03 round15 там — 95 passed. Код R03 не менялся (как в B0.15).
+
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,
   web/civic/qa/qa.js, SCREENS.questions в birge.js). Два модуля с одним именем ломали бы друг друга.
@@ -153,8 +159,8 @@
    (git worktree + git checkout <их ветка> -- <их пути>; python3 -B -m agent.civic_assistant.analyst.evaluate
    --with-neighbours <db>) и тест tests/civic/R03/round15/test_analyst_neighbours.py.
 3. Ревью R11 (research/round-15-results/R11/REVIEW_R15.md в их ветке): правки по R03 — сразу.
-4. Сборка R01 (B1 16 окт 09:00 UTC, B2 18:00 UTC, FINAL-5 17 окт 13:00 UTC): взял ли R01 code_sha R03 и
-   patches/R01_warm_up.patch (файлы экрана и палитра уже в B0); если в сборке
+4. Сборка R01 (B1 16 окт 09:00 UTC, B2 18:00 UTC, FINAL-5 17 окт 13:00 UTC): взял ли R01 code_sha R03 (прогрев
+   R01 делает сам, patch R01_warm_up.patch не нужен; файлы экрана и палитра уже в сборке); если в сборке
    что-то не так с «Спросить Birge» — исправить в своих путях, обновить DELIVERY.json (code_sha).
 5. Кадры: tests/civic/R03/round15/analyst_screens.cjs (стенд) и analyst_shell_check.cjs (оболочка с patch).
 6. После 17 окт 23:59 Астаны (18:59 UTC): удалить scheduled task trig_01HDRqCuZR25GqKUWS9wJjpG, финальные DELIVERY/STATUS.
