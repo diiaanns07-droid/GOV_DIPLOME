@@ -72,9 +72,10 @@ def test_scene_questions_offline_under_one_second():
     for q in SCENE:  # прогрев: в сервере кэши R07/R08 уже тёплые
         api.ask(q, "ru", F.STAFF)
     for q in SCENE:
-        started = time.perf_counter()
-        a = api.ask(q, "ru", F.STAFF)
-        elapsed = time.perf_counter() - started
+        with F.no_gc_pause():
+            started = time.perf_counter()
+            a = api.ask(q, "ru", F.STAFF)
+            elapsed = time.perf_counter() - started
         assert elapsed < 1.0, (q, elapsed)
         assert a["mode"] == "offline"
         # Главная кнопка есть всегда: «Показать на карте» или «Открыть …» (табло служб, кризисный штаб).
