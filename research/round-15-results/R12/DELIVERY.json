@@ -1,14 +1,14 @@
 {
  "role": "R12",
  "round": 15,
- "delivery": 11,
+ "delivery": 12,
  "title": "Единый календарь работ и «копаем один раз»",
  "branch": "claude/great-newton-8k3474",
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "9a3ae1f42a7682b10717aab1d8f971a6690b3b54",
- "tested_sha": "9a3ae1f42a7682b10717aab1d8f971a6690b3b54",
+ "code_sha": "59ee755b4eea877a941e46b06401fcb37c3c4fac",
+ "tested_sha": "59ee755b4eea877a941e46b06401fcb37c3c4fac",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/SOURCE.json",
@@ -53,7 +53,7 @@
   "i18n_keys": "research/round-15-results/R12/i18n_keys.json (77 ключей wcal.*): 74 уже в словаре R11 c3c376e7, kk совпадает (термин «бөлік»); ждут R11 три ключа wcal.stage.*",
   "neighbours": "R01 B0 74fb8c6d и B0.2 29b4ae9d (R12 1c8d171d в сборке), R06 c2604ea2 (works_v2 + seed_world мира), R02 мир a7251430 (5/5 planned_conflicts, scene8 = cf-w15-01), R17 191f81e7 (вкладка, цвета служб), R03 analyst (conflicts_summary), R08/R17 conflicts_summary()",
   "R17_patch": "не нужен: R17 сам сделал вкладку «Календарь работ» в «Ведомствах» (191f81e7, в R01 B0.2) — проверено браузером; файл patches/R17_agencies_calendar_tab.patch оставлен как история",
-  "for_B1": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor tests/civic/R12 (только пути R12; от 3d4c1afb, взятого в B0.7–B0.13, изменились только web/civic/works-calendar/works-calendar.{js,css} и tests/civic/R12/works/works_calendar.test.cjs — INTEGRATION §13); проверка: tests/civic/R12/works/works_calendar.test.cjs (131/0 на B0.13 + R12 9a3ae1f4), app_qr_acceptance.mjs (35/0), python3 -m pytest -q tests/civic/R10/test_r10_accuracy.py (39 passed на B0.13)"
+  "for_B1": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor tests/civic/R12 (только пути R12; от 3d4c1afb, взятого в B0.7–B0.14, изменились только web/civic/works-calendar/works-calendar.{js,css}, web/civic/qr/print.{js,css} и тесты tests/civic/R12/works/works_calendar.test.cjs, tests/civic/R12/qr/{qr.test.mjs,app_qr_acceptance.mjs} — INTEGRATION §13, §14); проверка: works_calendar.test.cjs (131/0 на B0.14 + R12 59ee755b), app_qr_acceptance.mjs (38/0), node --test tests/civic/R12/qr/qr.test.mjs (8/8), python3 -m pytest -q tests/civic/R10/test_r10_accuracy.py (39 passed на B0.13)"
  },
  "tests": {
   "pytest_R12_all": {
@@ -85,7 +85,7 @@
    "passed": 131,
    "failed": 0,
    "not_run": 0,
-   "how": "стенд R01 B0.13 2184795b + файлы календаря R12 9a3ae1f4 (web/civic/works-calendar), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, мир засеян («civic-world: … R12 39»), вход сотрудника через шлюз R01, 1366/1024/375 × ru/kk + все состояния + вкладка «Ведомств»: сцена 8 первой, чипы не закрывают полосы, «асфальт уже уложен» — совет беречь покрытие, шрифт ≥ 13 px, не больше 3 размеров шрифта (календарь и весь экран вкладки, метрика visual_audit R10), зоны нажатия ≥ 44 px, нажатие у верхнего и нижнего края каждой полосы — сама полоса (с прокруткой ленты), одна главная кнопка во вкладке, точки конфликтов на карте",
+   "how": "стенд R01 B0.14 ed965d9d + файлы R12 59ee755b (web/civic/works-calendar, web/civic/qr); на B0.13 2184795b + 9a3ae1f4 — тоже 131/0, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, мир засеян («civic-world: … R12 39»), вход сотрудника через шлюз R01, 1366/1024/375 × ru/kk + все состояния + вкладка «Ведомств»: сцена 8 первой, чипы не закрывают полосы, «асфальт уже уложен» — совет беречь покрытие, шрифт ≥ 13 px, не больше 3 размеров шрифта (календарь и весь экран вкладки, метрика visual_audit R10), зоны нажатия ≥ 44 px, нажатие у верхнего и нижнего края каждой полосы — сама полоса (с прокруткой ленты), одна главная кнопка во вкладке, точки конфликтов на карте",
    "mutation": "без z-index у заливки полосы проверка края падает: 23/1 (3 полосы отдают нижний край соседней дорожке)",
    "result_file": "research/round-15-results/R12/browser_works_calendar.json"
   },
@@ -146,15 +146,15 @@
   },
   "qr_node": {
    "status": "PASS",
-   "passed": 7,
+   "passed": 8,
    "failed": 0,
-   "how": "node --test tests/civic/R12/qr/qr.test.mjs (стенд qr_stand.py, настоящий engine/civic_geo): паспорт, «Я тоже», ҚАЗ/375, лист печати; retired-номер печатается на свежую замену с пометкой"
+   "how": "node --test tests/civic/R12/qr/qr.test.mjs (стенд qr_stand.py, настоящий engine/civic_geo): паспорт, «Я тоже», ҚАЗ/375, лист печати; retired-номер печатается на свежую замену с пометкой; B-128: «← В Birge» / «← Birge-ге» на «/», зона ≥ 44, Esc в поле не уводит, при печати ссылки нет, Esc вне поля — «/»"
   },
   "qr_app": {
    "status": "PASS",
-   "passed": 35,
+   "passed": 38,
    "failed": 0,
-   "how": "tests/civic/R12/qr/app_qr_acceptance.mjs на R01 B0.2 29b4ae9d + R06 c2604ea2 + R12, мир R02: скан → паспорт → «Я тоже» (R09) → мастер, ҚАЗ 375, подменённая ссылка, лист печати под CSP R01 с настоящим генератором LOCAL-11, ссылка «Распечатать QR» в карточке R07"
+   "how": "tests/civic/R12/qr/app_qr_acceptance.mjs на R01 B0.14 ed965d9d + файлы R12 59ee755b, мир R02: скан → паспорт → «Я тоже» (R09) → мастер, ҚАЗ 375, подменённая ссылка, лист печати под CSP R01 с настоящим генератором LOCAL-11, ссылка «Распечатать QR» в карточке R07; B-128: «← В Birge» по словарю R11, Esc в поле остаётся, Esc → оболочка"
   },
   "map_app_legacy": {
    "status": "PASS с 2 FAIL (компоновка карты раунда 15, не код R12)",
@@ -204,7 +204,7 @@
    "map_375_ru.png",
    "map_375_kk.png"
   ],
-  "note": "Кадры — стенд R01 B0.13 2184795b + файлы календаря R12 9a3ae1f4, демо-мир R02 (CIVIC_DEMO_WORLD=1), 16 окт 04:40 Астаны. Облако без интернета: подложка — офлайн-слой сборки, OpenFreeMap не грузится (настоящий вид — LOCAL-12).",
+  "note": "Кадры — стенд R01 B0.13 2184795b + файлы календаря R12 9a3ae1f4, демо-мир R02 (CIVIC_DEMO_WORLD=1), 16 окт 04:40 Астаны. Облако без интернета: подложка — офлайн-слой сборки, OpenFreeMap не грузится (настоящий вид — LOCAL-12). Кадр листа QR — R01 B0.14 ed965d9d + R12 59ee755b.",
   "states": [
    "state_staff_1366_ru.png",
    "state_not_ready_1366_ru.png",
@@ -215,6 +215,9 @@
   ],
   "embedded": [
    "embedded_r17_tab_1366_ru.png"
+  ],
+  "qr": [
+   "qr_print_back_1366_ru.png"
   ]
  },
  "known_limits": [
@@ -225,7 +228,7 @@
   "R02 ожидает cf-w15-03 medium, R12 по правилу даёт high (раскопка по тем же рёбрам, что новый асфальт) — предложено R02 в INTEGRATION §3.",
   "Реальные работы Нуры (LOCAL-5): файла records.csv нет — NOT_RUN. Импорт готов: как только файл появится, записи лягут на участки как real со ссылкой на источник и покрытием на экране."
  ],
- "next_step": "Круги: AMENDMENTS → R10 (приёмка B0.13 / B1) → R01 B1 16 окт 14:00 Астаны (взять R12 9a3ae1f4: два файла календаря) → прогон проверок R12 на B1 как собрана; LOCAL-5 при появлении файла; визуал по VISUAL_BRIEF + П1.",
+ "next_step": "Круги: AMENDMENTS → R10 (B-128 и аудит agencies-calendar на сборке с R12 59ee755b) → R01 B1 16 окт 14:00 Астаны (взять R12 59ee755b) → прогон проверок R12 на B1 как собрана; LOCAL-5 при появлении файла; визуал по VISUAL_BRIEF + П1.",
  "amendments": {
   "read": [
    "П1 15 окт 17:05 Астаны «Без ИИ-слопа»"
@@ -252,6 +255,10 @@
   "R10-audit-agencies-calendar": {
    "status": "исправлен у R12 (9a3ae1f4)",
    "what": "аудит R10 B0.12 visual_audit agencies-calendar: WARN «4 размера шрифта» [13, 14, 15, 19] — 13 давал только календарь; теперь 14/15/19 на всём экране вкладки (1366/1024/375 × ru/kk). WARN «зоны 40–43 px» — полосы и чипы R12 теперь 44 px; осталась вкладка «Табло» 41 × 44 (ui-kit .bk-tabs без min-width — R11, INTEGRATION §13)"
+  },
+  "B-128": {
+   "status": "исправлен у R12 (59ee755b)",
+   "what": "страница «QR-таблички»: «← В Birge» над заголовком (ключ R11 board.back), Esc вне полей → «/», при печати скрыта; проверено в приложении на B0.14 (38/0)"
   }
  },
  "review": {
