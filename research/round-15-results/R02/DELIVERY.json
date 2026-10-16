@@ -5,10 +5,10 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "fc3d8daa95fcf2b5bea32a8a6b6f933b8497f9aa",
-  "tested_sha": "fc3d8daa95fcf2b5bea32a8a6b6f933b8497f9aa",
+  "code_sha": "cfcccf70eca5093143d025e777c44ecfbdc3adb8",
+  "tested_sha": "cfcccf70eca5093143d025e777c44ecfbdc3adb8",
   "push_status": "OK",
-  "status": "Раунд 15+ (П3): набор «обращения за ночь» для «ИИ-разбора пачки» R04 сдан 16 окт ~18:00 Астаны (срок 17 окт 02:00) — код fc3d8daa; мир R02 (fa9ab80b, в FINAL-5 / FINAL-5.1) не менялся. Дальше — FINAL-6 (17 окт 12:00).",
+  "status": "Раунд 15+ (П3): набор «обращения за ночь» для «ИИ-разбора пачки» R04 сдан 16 окт ~18:00 Астаны (срок 17 окт 02:00) — код cfcccf70; мир R02 (fa9ab80b, в FINAL-5 / FINAL-5.1) не менялся. Дальше — FINAL-6 (17 окт 12:00).",
   "builds": {
     "FINAL-5": "c2276360a322dfce8f484a9f93fd471974987123 — R02 fa9ab80b; стенд R02 14/14, перезапуск 14/14; R10 «можно показывать: да», числа 16/0/0; R15 — блокеров нет",
     "FINAL-5.1": "e8d6cae61787bbe74631edfffcaf19ec038bcce9 — FINAL-5 + документы R14; пути R02 те же; R10 принял (числа 16/0/0)",
@@ -273,14 +273,14 @@
       "passed": 14,
       "failed": 0,
       "skipped": 0,
-      "note": "дерево FINAL-5.1 e8d6cae6 + файлы R02 fc3d8daa (карта R12 247c24a8); в ветке R02 (карта FINAL-4) — 12 passed, 2 skipped с причиной (цели карты и сверка байт в байт — только на тех же данных R12)"
+      "note": "дерево FINAL-5.1 e8d6cae6 + файлы R02 cfcccf70 (карта R12 247c24a8); в ветке R02 (карта FINAL-4) — 12 passed, 2 skipped с причиной (цели карты и сверка байт в байт — только на тех же данных R12)"
     },
     "pytest tests/civic/R02 (все раунды R02) после П3": {
       "status": "PASS",
       "passed": 380,
       "failed": 0,
       "skipped": 1,
-      "note": "дерево FINAL-5.1 + файлы R02 fc3d8daa; в ветке R02 — 375 passed, 6 skipped"
+      "note": "дерево FINAL-5.1 + файлы R02 cfcccf70; в ветке R02 — 375 passed, 6 skipped"
     },
     "python3 -m ml.datasets.demo_intake --check (П3)": {
       "status": "PASS",
@@ -497,8 +497,9 @@
     },
     "gold": {
       "file": "data/civic/astana/demo-world/intake_night_v1.gold.json",
-      "sha256": "649e322ad5dcb826483d10d39553cd1384d64213a6e1219b315124264c17275a",
-      "schema": "birge-intake-night-gold-v1"
+      "sha256": "12a5ee847457d80000130a7baf63de57836b6ab2fdeb8919db102a79f4e363c4",
+      "schema": "birge-intake-night-gold-v1",
+      "note": "у перекрёстка — любой светофор того же перекрёстка (подпись R12, ≤ 150 м) и участки двух его улиц ≤ 60 м (просьба R04 9.8)"
     },
     "summary": {
       "texts": 301,
