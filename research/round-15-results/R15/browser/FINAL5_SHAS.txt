@@ -1,0 +1,6 @@
+FINAL-5 = R01 claude/brave-fermi-nhzetj c2276360 (BUILD.json FINAL-5, 16 окт 13:33 Астаны; П2 — вместо B1)
+тесты R15 в сборке — ac54e27b (побайтно как в ветке R15)
+pytest tests/civic/R15 на c2276360 (16 окт 14:30): 566 passed / 0 failed / 0 xfail / 0 NOT_RUN
+браузер r15_round15 на c2276360 (16 окт 13:30, тот же код): 8 PASS / 0 FAIL / 1 NOT_RUN (works-calendar: R06 не принимает HTML)
+эталон r15_reference на c2276360: 18 / 0 / 0
+гигиена FINAL-4.1 bd3800d8 -> FINAL-5 c2276360 (510 файлов): секретов нет (3 пароля тестовых стендов — только в тестах и примере RUN.txt R01), sqlite/.env/venv/__pycache__ нет, файлов > 5 МБ нет

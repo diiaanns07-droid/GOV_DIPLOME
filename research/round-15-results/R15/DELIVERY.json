@@ -24,7 +24,8 @@
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
   "R11": "17bf4c3e (разбор)",
   "R12": "25237d03 (разбор print.js)",
-  "R05": "b5fe6cc0 (разбор)"
+  "R05": "b5fe6cc0 (разбор)",
+  "FINAL-5": "c2276360 (R01 claude/brave-fermi-nhzetj, BUILD.json FINAL-5)"
  },
  "push_status": "OK (круг 3)",
  "changed_paths": [
@@ -377,7 +378,26 @@
   },
   "package_own_branch": {
    "note": "голый пакет FINAL-4.1: S42 FAIL ожидаемо (исправление шлюза только в сборке R01), прочее — passed или NOT_RUN (модулей ролей нет)"
-  }
+  },
+  "FINAL5_c2276360_all_R15": {
+   "passed": 566,
+   "failed": 0,
+   "xfailed": 0,
+   "xpassed": 0,
+   "skipped_not_run": 0
+  },
+  "FINAL5_browser": {
+   "PASS": 8,
+   "FAIL": 0,
+   "NOT_RUN": 1,
+   "reference_r14": "18/0/0",
+   "files": [
+    "browser/r15_round15_final5.json",
+    "browser/r15_reference_final5.json",
+    "browser/FINAL5_SHAS.txt"
+   ]
+  },
+  "FINAL5_hygiene": "510 файлов FINAL-4.1 -> FINAL-5: секретов нет (3 пароля тестовых стендов), sqlite/.env/venv/>5 МБ нет"
  },
  "findings": {
   "S42": {
@@ -471,7 +491,7 @@
   "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
   "проверка в облаке без интернета; подложка карты — упрощённый фон"
  ],
- "next_step": "П2: 14:00 FINAL-5 — полный tests/civic/R15 + r15_round15.cjs + r15_reference.cjs, блокеры к 15:00, SECURITY_REVIEW §9; 16:00 FINAL-5.1 — повтор при изменениях, финальные STATUS/DELIVERY («Раунд 15 закрыт»)",
+ "next_step": "FINAL-5.1 (16:00 Астаны): повторить при изменении кода сборки; финальные STATUS («Раунд 15 закрыт») и DELIVERY",
  "code_note": "код R15 — только tests/civic/R15/ (тесты и браузерные пробы); чужой код R15 не меняет — patch в INTEGRATION",
  "routes_under_test": {
   "round15_routes": 50,
@@ -488,5 +508,6 @@
   "median_time_to_fix_min": 53,
   "max_time_to_fix": "5 ч (S43)",
   "round14_regressions": 0
- }
+ },
+ "blockers_FINAL5": []
 }
