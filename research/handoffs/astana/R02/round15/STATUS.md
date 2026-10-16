@@ -23,6 +23,8 @@ restored_from: — (роль начата с нуля, прежней ветки
   Champion), 8 срочных групп, 11 «двух служб», 18 без адреса; места — цели карты R12 (FINAL-5+), сцены не задеты.
 - Оценщик метрик П3: python3 -m ml.datasets.demo_intake_eval ответ.json; генератор: python3 -m ml.datasets.demo_intake.
 - Код fc3d8daa; тесты: tests/civic/R02/round15/test_r02r15_intake.py — 14 passed (FINAL-5.1), R02 целиком 380 passed.
+- Стык с R04 (ветка 7867fada): их intake_sample читает набор, analyze — 0,5 с, 143 задачи; оценщик R02 — службы 0,877,
+  повторы F1 0,879, места 0,869, срочные 8/8 групп (INTEGRATION §12; предварительно, оценка — за R04; набор не меняю).
 
 ## Раунд 15 закрыт по П2 (16 окт 2026, 16:00 по Астане; финальный STATUS — 16:24) — итог FINAL-5 / FINAL-5.1
 - Итог R02: демо-мир Астаны birge-demo-world-v1 (схема 1.1) — data/civic/astana/demo-world/world_v1.json, sha256
