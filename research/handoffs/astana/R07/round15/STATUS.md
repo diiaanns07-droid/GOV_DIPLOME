@@ -157,6 +157,8 @@ restored_from: fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.
 
 - (16 окт 01:25 UTC) Круг 14: AMENDMENTS — только П1; у соседей нового для R07 нет.
 
+- (16 окт 02:26 UTC) Круг 15: AMENDMENTS — только П1; у соседей нового для R07 нет.
+
 ## Дальше
 - Своё по промпту сделано (задачи 1–6), поставка — DELIVERY.json (code_sha в нём). Круги до B1 — короткие: AMENDMENTS,
   find_branches.py (R01 / R10 / R11 / R17 / R09 — новые коммиты, касающиеся R07), строка в STATUS.
