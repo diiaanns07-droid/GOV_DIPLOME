@@ -104,10 +104,14 @@ def main() -> None:
                                    "note": "R15 (файлы = a933f361) на сборке R01 B0.17 с кодом R13 этой поставки: "
                                    "round15/test_r15_round15_meetings.py 27/27, test_r15_qa.py 12/12 (без NOT_RUN)"},
             "r08_day_forecast_on_r01_build": {"status": "PASS",
-                                              "note": "сборка R01 B0.16 (4ac57b10), демо-мир, акимат → «Картина дня»: блок R08 "
+                                              "note": "сборка R01 B0.18 (7729c2cc), демо-мир, акимат → «Картина дня»: блок R08 "
                                               "«Прогноз на неделю» из ui.civic_forecast — метка «прототип», 3 территории с причиной, "
                                               "объяснение с числами проверки (57 % против 47 %); 1366 ru/kk и 375 ru, кадры "
-                                              "screens/day-forecast-*.jpg (подписи мест — код 0ef104c2)"},
+                                              "screens/day-forecast-*.jpg (подписи мест — код 385750cb)"},
+            "neighbor_tests_on_b018": {"status": "PASS", "passed": 834, "failed": 0,
+                                       "note": "сборка R01 B0.18 (7729c2cc) с модулями и тестами R13 этой поставки: tests/civic/R08, "
+                                       "tests/civic/R03, tests/civic/R13, R15 test_r15_qa.py + round15/test_r15_round15_meetings.py "
+                                       "(10 skipped, 1 xfailed — их же)"},
             "r10_visual_audit": {"status": "PASS", "passed": 124, "total": 124,
                                  "note": "tests/e2e/visual_audit.cjs R10 @ 900dd0a2 --only meetings,meetings-staff на сборке R01 "
                                  "B0.17 с модулями R13 (демо-мир, 1366/1024/375 × ru/kk): WARN 0, FAIL 0 — на pvG было "
@@ -124,8 +128,8 @@ def main() -> None:
         "patches_for_r01": ["research/round-15-results/R13/patches/r01_meetings_routes.patch",
                             "research/round-15-results/R13/patches/r01_meetings_assets_sheet.patch"],
         "known_limits": [
-            "R01 B0.17 (afaabca1) несёт R13 9ca9bc72 (маршруты meetings.*, ассеты, теги — с B0); в B1 взять code_sha этой "
-            "поставки — сверх 9ca9bc72 подписи мест прогноза и строка «через 3 дня» на телефоне; только пути R13.",
+            "R01 B0.18 (7729c2cc) несёт R13 0ef104c2 (маршруты meetings.*, ассеты, теги — с B0); в B1 взять code_sha этой "
+            "поставки — сверх 0ef104c2 строка «через 3 дня» на телефоне и различимые подписи соседних мест; только пути R13.",
             "С B0.11 R01 ставит «Вопросы и встречи» своим экраном-колонкой 720 px (VISUAL_BRIEF §2 п. 2); строки шторки из "
             "патча R13 §3 не нужны. Кадры и браузер — на этой раскладке (B0.17).",
             "Кнопка «♡» у вопросов — рамка 44 px с прозрачной каймой, видимая таблетка 32 px (вариант R11 R13-3): тёмная "
