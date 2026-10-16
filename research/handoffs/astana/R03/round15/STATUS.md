@@ -11,6 +11,11 @@
     git fetch origin claude/clever-hypatia-q6ts4g
     git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md
 Прочитано: П1 (15 окт 17:05 Астаны, «Без ИИ-слопа») — применено 15 окт ~12:15 UTC (коммит b41da2e6).
+Прочитано: П2 (16 окт 10:30 Астаны, «Сокращённый финал») — график ниже заменяет B1 / B2 / FINAL-5 17 окт и дедлайн 17 окт:
+    до 13:30 Астаны (08:30 UTC) — финальная поставка, новых функций нет (сдано: DELIVERY.json, code_sha = 3085aa61);
+    14:00 (09:00 UTC) — R01 FINAL-5; до 15:45 — только блокеры из списков R10 / R15 (списки к 15:00 = 10:00 UTC);
+    16:00 (11:00 UTC) — FINAL-5.1, раунд закрыт; после — финальные STATUS («Раунд 15 закрыт», итог, SHA) и DELIVERY,
+    push; на следующих кругах — прочитать AMENDMENTS, ответить одной строкой «Раунд 15 закрыт».
 
 ## План
 1. agent/civic_assistant/api.py · ask(question, lang, principal) по CONTRACT §7: офлайн-намерения ru/kk/смешанные →
@@ -159,6 +164,12 @@
   старте сводка R08 считается вместе с фоновым прогревом (у меня 477 / 141 мс в первых ответах, повтор — 33 мс);
   порог выдержан, код R03 не меняю.
 
+- 05:25–05:32 UTC, срабатывание 05:25: новая поправка П2 «Сокращённый финал» — раунд закрывается сегодня в 16:00 Астаны
+  (график — вверху). R01 B0.19 взял R03 233ce8a8 (весь код), весь pytest 5015 / 0; R10 принял B0.18 (ассистент 0 / 0),
+  R15 круг 18 — R03 чисто, у R11 пункты R03 закрыты. Финальная поставка: проверка оболочки analyst_shell_check.cjs теперь
+  кликает и строку конфликта (→ свой конфликт R12), кадры оболочки пересняты на копии B0.19 с миром (+4 кадра
+  конфликта, 1366 ru / 375 kk); DELIVERY.json — final, code_sha 3085aa61 (код = 233ce8a8), known_limits обновлены.
+
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,
   web/civic/qa/qa.js, SCREENS.questions в birge.js). Два модуля с одним именем ломали бы друг друга.
@@ -172,11 +183,12 @@
    (git worktree + git checkout <их ветка> -- <их пути>; python3 -B -m agent.civic_assistant.analyst.evaluate
    --with-neighbours <db>) и тест tests/civic/R03/round15/test_analyst_neighbours.py.
 3. Ревью R11 (research/round-15-results/R11/REVIEW_R15.md в их ветке): правки по R03 — сразу.
-4. Сборка R01 (B1 16 окт 09:00 UTC, B2 18:00 UTC, FINAL-5 17 окт 13:00 UTC): взял ли R01 code_sha R03 (прогрев
-   R01 делает сам, patch R01_warm_up.patch не нужен; файлы экрана и палитра уже в сборке); если в сборке
-   что-то не так с «Спросить Birge» — исправить в своих путях, обновить DELIVERY.json (code_sha).
-5. Кадры: tests/civic/R03/round15/analyst_screens.cjs (стенд) и analyst_shell_check.cjs (оболочка с patch).
-6. После 17 окт 23:59 Астаны (18:59 UTC): удалить scheduled task trig_01HDRqCuZR25GqKUWS9wJjpG, финальные DELIVERY/STATUS.
+4. По П2: FINAL-5 (16 окт 09:00 UTC) — взял ли R01 code_sha R03 (код = 233ce8a8, уже в B0.19); с 09:00 до 10:45 UTC
+   чинить только блокеры R03 из списков R10 / R15 (в своих путях, тесты, DELIVERY code_sha), иначе ничего не менять.
+5. Кадры: tests/civic/R03/round15/analyst_screens.cjs (стенд) и analyst_shell_check.cjs (оболочка сборки с миром).
+6. После 11:00 UTC (FINAL-5.1): финальные STATUS («Раунд 15 закрыт», итог, SHA) и DELIVERY, push. Дальше круги — только
+   AMENDMENTS и строка «Раунд 15 закрыт». После 17 окт 23:59 Астаны (18:59 UTC) — удалить scheduled task
+   trig_01HDRqCuZR25GqKUWS9wJjpG (указание владельца в задании).
 
 ## Вопросы владельцу
 - (решено R11, IA_ROUND15 v1.1) «Спросить Birge» — акимат → «Ещё» → «Инструменты» (#analyst) + палитра Ctrl+K.

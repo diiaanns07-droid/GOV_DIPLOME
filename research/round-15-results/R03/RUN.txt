@@ -55,7 +55,8 @@ R03 · раунд 15 · «Спросить Birge» — ИИ-аналитик а�
       (пароль — от 12 знаков; «пароль» из COMMON не проходит)
   CIVIC_DB_PATH=$DB CIVIC_DEMO=1 python3 -B app.py --port 8655
   → http://127.0.0.1:8655/ → аватар → «Для сотрудников» (operator) → «Ещё» → «Спросить Birge» (или /#analyst, Ctrl+K).
-  Автопроверка (вход, #analyst, вопрос, «Показать на карте» → карточка R07 с тем же числом; 1366 и 375):
+  Автопроверка (вход, #analyst, вопрос, «Показать на карте» → карточка R07 с тем же числом; «Где копаем дважды?» →
+  строка улицы → её конфликт в «Календаре работ» R12; 1366 ru и 375 kk):
   NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_shell_check.cjs <папка для кадров>
   Проверка маршрута без браузера: вход POST /api/civic/v1/session/login → csrf_token; затем
   POST /api/civic/v2/assistant/ask {"question": "...", "lang": "ru"} с cookie, X-CSRF-Token и Origin → 200;
