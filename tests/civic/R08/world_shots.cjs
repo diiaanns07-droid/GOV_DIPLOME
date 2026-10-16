@@ -35,7 +35,9 @@ function pdfPages(file) {
 }
 
 (async () => {
-  const browser = await chromium.launch();
+  // Поле даты «Картины дня» (<input type=date>) Chromium рисует по LANG процесса, а не по языку страницы: без этого в облаке
+  // кадр показывает «10/16/2026» вместо «16.10.2026» (как у R01 1940e4db).
+  const browser = await chromium.launch({ env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" } });
   // 1. без входа
   {
     const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
