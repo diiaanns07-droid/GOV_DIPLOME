@@ -152,6 +152,9 @@ restored_from: fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.
 - (23:26 UTC) Круг 12: AMENDMENTS — только П1. R01 B0.13 (2184795b) взял R07 3d7cb28b — последнюю поставку (code_sha в
   DELIVERY). R08, R10, R11, R15, R17 — нового для R07 нет.
 
+- (16 окт 00:26 UTC) Круг 13: AMENDMENTS — только П1. R15 (ddf6a87f) проверил голову R07 — «чисто»; R01 B0.13 у R15 —
+  565 passed / 0 failed. Остальные соседи — нового для R07 нет.
+
 ## Дальше
 - Своё по промпту сделано (задачи 1–6), поставка — DELIVERY.json (code_sha в нём). Круги до B1 — короткие: AMENDMENTS,
   find_branches.py (R01 / R10 / R11 / R17 / R09 — новые коммиты, касающиеся R07), строка в STATUS.
