@@ -94,14 +94,14 @@ async function waitAnswer(page) {
           check(`scene${i + 1} numbers ${tag}`, nums.length >= 1 && nums.every((n) => /\d/.test(n)), nums.join(" | "));
           check(`scene${i + 1} offline badge ${tag}`, (await page.locator(".ba-mode--offline").count()) === 1);
           if (i === 0) {
-            // П3: у ответа виден значок «ИИ» набора R11 с подсказкой «Подсказка ИИ — проверьте» (ҚАЗ — по словарю).
-            const ai = await page.locator(".ba-answer .ba-ai").evaluate((n) => ({ title: n.getAttribute("title"),
+            // П3: у ответа метка «ИИ» ui-kit R11 (.bk-ai, значок «ai») с подсказкой «Подсказка ИИ — проверьте» (ҚАЗ — по словарю).
+            const ai = await page.locator(".ba-answer .bk-ai").evaluate((n) => ({ title: n.getAttribute("title"),
               label: n.getAttribute("aria-label"), text: n.textContent.trim(),
               href: (n.querySelector("use") || { getAttribute: () => "" }).getAttribute("href") || "",
               size: Math.round(n.querySelector("svg").getBoundingClientRect().width) })).catch(() => null);
-            const want = lang === "kk" ? { title: "ЖИ кеңесі — тексеріңіз", text: "ЖИ" } : { title: "Подсказка ИИ — проверьте", text: "ИИ" };
+            const want = lang === "kk" ? { title: "Жасанды интеллект кеңесі — тексеріңіз", text: "ЖИ" } : { title: "Подсказка ИИ — проверьте", text: "ИИ" };
             check(`AI mark at the answer ${tag}`, !!ai && ai.title === want.title && ai.label === want.title
-              && ai.text === want.text && /#i-sparkle$/.test(ai.href) && ai.size <= 16, JSON.stringify(ai));
+              && ai.text === want.text && /#i-ai$/.test(ai.href) && ai.size <= 16, JSON.stringify(ai));
           }
           check(`scene${i + 1} no h-scroll ${tag}`, await noHScroll(page));
           if (i === 0 || w === 1366) {
