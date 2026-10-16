@@ -1,13 +1,13 @@
 {
   "role": "R04",
   "round": 15,
-  "delivery": "D2 (П3, 16 окт 18:26 по Астане) — code 38caaaaa: intake_analyze / intake_sample / intake_commit, экран web/civic/intake, moderate r04-moderate-4, route r04-route-2. Прошлая финальная — D1.9 f526b942 (в FINAL-5 c2276360 и FINAL-5.1 e8d6cae6; запасная сборка)",
+  "delivery": "D3 (П3, 16 окт 18:40 по Астане) — code b810cbb4: D2 + разбор ошибок на dev-половине набора R02 (перекрёстки, улицы-двойники, сигналы route r04-route-3). Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
   "branch": "claude/gifted-maxwell-i66wwi",
   "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
   "restored_from": null,
   "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
-  "code_sha": "38caaaaa776c1b343d50f82e64149019d55c9cc5",
-  "tested_sha": "38caaaaa776c1b343d50f82e64149019d55c9cc5",
+  "code_sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280",
+  "tested_sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280",
   "push_status": "OK",
   "changed_paths": [
     "ml/civic_replies/__init__.py",
@@ -45,7 +45,12 @@
     "research/round-15-results/R04/INTEGRATION.txt",
     "research/round-15-results/R04/RESULTS.md",
     "research/round-15-results/R04/RUN.txt",
+    "research/round-15-results/R04/intake_eval/README.md",
+    "research/round-15-results/R04/intake_eval/err_analysis_dev.py",
+    "research/round-15-results/R04/intake_eval/eval_halves.py",
     "research/round-15-results/R04/intake_eval/r02_night_blind_a2e004c9.json",
+    "research/round-15-results/R04/intake_eval/r02_night_halves_after_dev_fixes.json",
+    "research/round-15-results/R04/intake_eval/r02_night_halves_blind.json",
     "research/round-15-results/R04/patches/r01_intake_routes.patch",
     "research/round-15-results/R04/patches/r01_web_server_r04_routes.patch"
   ],
@@ -223,11 +228,11 @@
     },
     "P3_R04_pytest": {
       "status": "PASS",
-      "passed": 548,
+      "passed": 559,
       "failed": 0,
       "skipped": 1,
       "cmd": "pytest -q tests/civic/R04",
-      "sha": "38caaaaa776c1b343d50f82e64149019d55c9cc5"
+      "sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280"
     },
     "P3_on_R09_branch": {
       "status": "PASS",
@@ -250,20 +255,23 @@
       "passed": 19,
       "failed": 0,
       "cmd": "tests/civic/R04/intake/http_check_intake.py",
-      "stand": "FINAL-5.1 e8d6cae6 + patches/r01_intake_routes.patch + код R04 + набор R02 fc3d8daa"
+      "stand": "FINAL-5.1 e8d6cae6 + patches/r01_intake_routes.patch + код R04 + набор R02 fc3d8daa",
+      "sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280"
     },
     "P3_stand_ui": {
       "status": "PASS",
       "passed": 88,
       "failed": 0,
       "cmd": "node tests/civic/R04/intake/ui_check_intake.cjs",
-      "sizes": "1366 / 1024 / 375 × ru / kk"
+      "sizes": "1366 / 1024 / 375 × ru / kk",
+      "sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280"
     },
-    "P3_neighbours_moderate": {
+    "P3_neighbours_route_moderate": {
       "status": "PASS",
-      "passed": 622,
+      "passed": 772,
       "failed": 0,
-      "cmd": "pytest tests/civic/R09 R13/qa R15 (profanity, qa, route_policy) R08 feedback (дерево R04)"
+      "sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280",
+      "cmd": "pytest tests/civic/R09 R15/test_r15_profanity R06/test_r06_routing_classifier R01/test_r01_api_v2 R13/qa R08 feedback"
     }
   },
   "screens": [
@@ -282,10 +290,10 @@
     "Языковая модель для черновика выключена (в облаке нет сети); охрана чисел проверена на тестовой функции.",
     "moderate(): перечень чисел по 1–2 цифры (растущий или пары с неверной контрольной цифрой) — не номер, кроме цифр номера Казахстана (код 70x/747/75x/76x/77x, город 71xx/72xx). Зарубежный номер, записанный растущими парами без «+» и подписи («8 91 92 93 94 95»), пройдёт — последний барьер — проверка человеком.",
     "П3: место — только по названию из индекса карты R12 (остановки, дворы с именем, парки, улицы); «двор дома 12», безымянные площадки и переведённые на казахский названия остановок не находятся — «адрес уточнить» (не угадываем).",
-    "П3: одноимённые остановки и улицы-двойники OSM — выбирается одна запись индекса (на мире R02: 12 из 198 найденных мест — другая цель того же имени).",
     "П3: повторы склеиваются только в одной цели и категории; без места — только одинаковые тексты (два «темно на улице» про разные улицы не склеиваются).",
     "П3: «Создать задачи» после сцены 0 добавляет записи «Пример» — числа карты и «Картины дня» растут (присоединение к открытым — 2 задачи из 118 на наборе R02).",
-    "П3: оценка — на синтетическом наборе R02 (один автор, повторы похожи сильнее, чем в жизни); на живых обращениях числа будут ниже."
+    "П3: оценка — на синтетическом наборе R02 (один автор, повторы похожи сильнее, чем в жизни); на живых обращениях числа будут ниже.",
+    "П3: одноимённые остановки OSM — выбирается одна запись индекса; улицы-двойники склеены в одну цель (основная линия улицы); у перекрёстка выбирается центральный из светофоров узла."
   ],
   "next_step": "П3: R01 берёт D2 (38caaaaa) в кандидат FINAL-6 (17 окт 12:00); R04 — разбор ошибок на наборе R02 только с пометкой «после разбора ошибок», ответы соседям (R15 demo, R10 I7, R09 тексты заметками, R11 ключи); 12:00–16:00 — только блокеры R10 / R15; 18:00 — «Раунд 15 закрыт».",
   "amendments": {
@@ -340,7 +348,7 @@
       "note": "По KK_REVIEW_R15 R11 (№ 19, 39, 40) и словарю joint.part.*: части служб — ждёт / в работе / сделано, күтуде / орындалуда / орындалды (было «ждёт очереди», «кезекте», «жұмыста»); «передали» по-казахски — «жіберілді» (было «берілді»). Отвергнутых R11 слов (учаске, дейін, батырма, дағдарыс) в текстах R04 нет."
     }
   },
-  "status": "П3 (раунд 15+ до FINAL-6): поставка D2 — «ИИ-разбор пачки обращений» (сцена 0)",
+  "status": "П3 (раунд 15+ до FINAL-6): поставка D3 — «ИИ-разбор пачки обращений» (сцена 0)",
   "final_builds": {
     "FINAL-5": "c2276360 (16 окт 13:33 по Астане)",
     "FINAL-5.1": "e8d6cae6 (16 окт 15:26; код FINAL-5 + документы R14)",
@@ -350,7 +358,7 @@
     "pipeline": "moderate -> route (сигналы + classify) -> место по индексу карты R12 (search_index) -> повторы (одна цель + категория + то же уточнение или pair_score) -> срочность (явные правила) -> задачи; без сети",
     "sample_numbers": {
       "R04_fixture": "42 -> 22 задачи · 15 служб · 7 срочных · 20 склеено · 6 без адреса",
-      "R02_night": "301 -> 143 задачи · 19 служб · 9 срочных · 158 склеено · 25 без адреса; ready 118 = 116 новых + 2 к открытым (мир FINAL-5.1)"
+      "R02_night": "301 -> 127 задач · 19 служб · 9 срочных · 174 склеено · 21 без адреса; ready 106 = 104 новых + 2 к открытым (стенд FINAL-5.1 + мир + набор R02)"
     },
     "speed": "0,3–0,5 с на 301 текст на стенде (HTTP); 300 текстов < 10 с — тест",
     "eval_R02_blind": {
@@ -370,6 +378,27 @@
       "urgent_precision": 1.0,
       "file": "research/round-15-results/R04/intake_eval/r02_night_blind_a2e004c9.json"
     },
-    "commit": "create_from_intake R09 (если есть) или store.create + metoo; задачи к открытому обращению цели — metoo с текстом; без места — не создаются"
+    "commit": "create_from_intake R09 (если есть) или store.create + metoo; задачи к открытому обращению цели — metoo с текстом; без места — не создаются",
+    "eval_R02_after_dev_fixes": {
+      "note": "ПОСЛЕ РАЗБОРА ОШИБОК — только на dev-половине (чётные группы); отложенная половина не смотрелась; синтетика R02",
+      "full": {
+        "lead_service": 0.9169,
+        "service_set": 0.9103,
+        "two_services_precision": 0.7586,
+        "pairwise_f1": 0.9209,
+        "pairwise_precision": 0.9944,
+        "pairwise_recall": 0.8575,
+        "groups_exact": "33/46",
+        "places_found": 0.9329
+      },
+      "heldout_odd_blind_to_after": {
+        "lead_service": "0.7985 -> 0.8358",
+        "service_set": "0.7836 -> 0.8209",
+        "pairwise_f1": "0.6098 -> 0.6509",
+        "groups_exact": "0.5417 -> 0.5833",
+        "places_found": "0.9213 -> 0.9685"
+      },
+      "files": "research/round-15-results/R04/intake_eval/ (README.md, r02_night_halves_*.json)"
+    }
   }
 }
