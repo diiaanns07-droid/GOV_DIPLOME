@@ -285,6 +285,18 @@
       });
       if (!host.style.getPropertyValue("--rp-left-fixed")) host.style.setProperty("--rp-left", Math.round(left) + "px");
       if (!host.style.getPropertyValue("--rp-right-fixed")) host.style.setProperty("--rp-right", Math.round(right) + "px");
+      // Подпись карты «© OpenStreetMap contributors» не прячем под полосой (ODbL: подпись на виду). Оболочка R01 держит
+      // её у нижнего края свободной части — на 1366 и 1024 ровно под шкалой; тогда полоса поднимается над подписью.
+      // Своя подпись страницы (не MapLibre) — с атрибутом data-rp-attrib (стенд R07).
+      const span = root.querySelector(".rp-bar") ? root.querySelector(".rp-bar").getBoundingClientRect() : null;
+      let lift = 0;
+      if (span && span.width) document.querySelectorAll(".maplibregl-ctrl-attrib, [data-rp-attrib]").forEach((el) => {
+        if (!el.getClientRects().length || getComputedStyle(el).visibility === "hidden") return;
+        const r = el.getBoundingClientRect();
+        if (!r.width || r.top < band || r.top > box.bottom || r.right < span.left || r.left > span.right) return;
+        lift = Math.max(lift, box.bottom - r.top + 8);
+      });
+      host.style.setProperty("--rp-bottom", Math.round(lift) + "px");
     }
     const placeTimer = setInterval(() => { if (!S.destroyed) placeBar(); }, 1000);
     window.addEventListener("resize", placeBar);
