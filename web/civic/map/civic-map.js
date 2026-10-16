@@ -37,6 +37,10 @@
   const STORAGE_KEY = "civic-r03:filters:v1";
   const HASH_KEY = "civic-object";
   const PICK_MAX = 50;   // candidates listed in the overlap chooser
+  // R12, поправка П3 (кадры 02 и 08 FINAL-5.1): на обзоре города (масштаб < 13) объекты не рисуем — кучка колец в центре
+  // наезжала на значки районов R07; город целиком — это тепловая карта (COMMON). Ближе — как раньше; карточка, список
+  // и «Приблизить все» приближают сами (flyTo — не меньше 14).
+  const OBJECTS_MIN_ZOOM = 13;
   const SVGNS = "http://www.w3.org/2000/svg";
   const MOBILE_QUERY = "(max-width: 760px)";
   const MAX_PAGES = 20;
@@ -165,6 +169,7 @@
       { id: L.selPoint, type: "circle", source: SRC, filter: ["all", isPoint, none],
         paint: { "circle-radius": 17.5, "circle-opacity": 0, "circle-stroke-color": "#152c26", "circle-stroke-width": 3 } },
     ];
+    for (const d of defs) d.minzoom = OBJECTS_MIN_ZOOM;
     // Подпись улицы вдоль привязанного участка. MapLibre сам убирает подписи, которые наложились бы
     // друг на друга или на подписи подложки (text-allow-overlap: false), — подписи без наложений.
     if (labelFont) defs.push({ id: L.streetLabel, type: "symbol", source: SRC, minzoom: 14.5,
@@ -203,6 +208,9 @@
     const pathPrefix = typeof opt.pathPrefix === "string" ? opt.pathPrefix : "";
     const title = typeof opt.title === "string" && opt.title ? opt.title : "Что делают рядом";
     const fitOnLoad = opt.fitOnLoad === true;
+    // П3: «показать все» (fitAll — явное действие хоста или fitOnLoad) рисует объекты и мельче 13, пока хост не перейдёт
+    // к другому виду: selectObject(null) (район, город, обзор) или setFilters({area: true}) (улица).
+    let showAll = false;
     let fitted = false;
     // Camera ownership (round 13): the module's own moves carry OWN_MOVE; any other move start (a gesture or
     // the host's fitBounds to a street) bumps camEpoch, which cancels the module's pending moves.
@@ -885,7 +893,7 @@
     async function selectObject(id, o) {
       if (destroyed) return;
       const opts = o || {};
-      if (id === null || id === undefined || id === "") { closeCard(); return; }
+      if (id === null || id === undefined || id === "") { if (showAll) setShowAll(false); closeCard(); return; }
       id = String(id).slice(0, 200);
       // Clicking the object that is already open does not re-run the selection: no second
       // request, no second onSelect (the R01 shell would close an open feedback form).
@@ -1500,11 +1508,19 @@
           if (map.getLayer(def.id)) continue;
           map.addLayer(def, BELOW_LABELS.includes(def.id) ? before : undefined);
         }
+        if (showAll) setShowAll(true);
         updateSelection();
       } catch (e) {
         // Style not loaded yet: the next styledata event retries. Partial layers are removed first.
         removeLayers();
       } finally { addingLayers = false; }
+    }
+    function setShowAll(on) {
+      showAll = !!on;
+      if (!map) return;
+      for (const id of BELOW_LABELS.concat(ON_TOP)) {
+        try { if (map.getLayer(id)) map.setLayerZoomRange(id, showAll ? 0 : OBJECTS_MIN_ZOOM, 24); } catch (e) { /* style gone */ }
+      }
     }
     function removeLayers() {
       if (!map) return;
@@ -1663,6 +1679,7 @@
     // is "pending" until that move ends (or measured right away when no move follows).
     function setFiltersFromHost(f) {
       const turnsOn = !!(f && f.area === true && map);
+      if (f && f.area === true && showAll) setShowAll(false);
       st.filters = C.sanitizeFilters(Object.assign({}, st.filters, f));
       if (turnsOn) {
         st.areaPending = true;
@@ -1785,6 +1802,10 @@
       if (!boxes.length) return false;
       const b = boxes.reduce((a, x) => [Math.min(a[0], x[0]), Math.min(a[1], x[1]), Math.max(a[2], x[2]), Math.max(a[3], x[3])]);
       try {
+        // Объекты разбросаны по городу и целиком влезают только мельче 13: на этот вид рисуем их и там (П3) —
+        // «показать все» не даёт пустую карту.
+        const cam = map.cameraForBounds && map.cameraForBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freePadding(), maxZoom: 14 });
+        if (cam && typeof cam.zoom === "number" && cam.zoom < OBJECTS_MIN_ZOOM) setShowAll(true);
         map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freePadding(), maxZoom: 14, duration: reducedMotion() ? 0 : 700, bearing: camBearing(), pitch: camPitch() }, OWN_MOVE);
       } catch (e) { return false; }
       return true;

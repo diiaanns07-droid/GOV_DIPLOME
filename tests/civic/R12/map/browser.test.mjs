@@ -100,6 +100,14 @@ const objectClearOfPanel = (page, lngLat, mobile) => page.evaluate(([ll, mob]) =
   return { inView, clear, x: Math.round(x), y: Math.round(y), panel: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)] };
 }, [lngLat, !!mobile]);
 
+// П3 (кадры 02 и 08 FINAL-5.1): объекты рисуются с масштаба 13, а стенд открывается на 11,4 — для наведения и нажатий
+// приближаемся к r03-demo-shifted и ждём, пока он отрисуется.
+async function nearDemo(page) {
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4304, 51.1282], zoom: 14 }));
+  await page.waitForFunction(() => window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point"] })
+    .some((f) => f.properties && f.properties.cid === "r03-demo-shifted"), null, { timeout: 10000 });
+}
+
 test("desktop 1440x900: list, layers, legend, no staff calls, no overflow", { skip: SKIP }, async () => {
   const { ctx, page, errors } = await open();
   await settle(page);
@@ -122,6 +130,7 @@ test("desktop 1440x900: list, layers, legend, no staff calls, no overflow", { sk
   assert.ok(!info.calls.some((c) => c.includes("staff")));
   assert.equal(info.count, "12 объектов");
   assert.equal(info.items, 12);
+  // стенд открывается с fitOnLoad — это «показать все» (П3): объекты нарисованы и на вписанном масштабе мельче 13
   assert.ok(!info.rendered.includes("r03-demo-nogeo"), "null geometry is never drawn");
   assert.ok(info.rendered.includes("r03-demo-area") && info.rendered.includes("r03-demo-line"), "polygon and line are drawn");
   assert.deepEqual(await noHorizontalOverflow(page), []);
@@ -252,6 +261,31 @@ test("hostile data: no HTML execution, unsafe links hidden, drafts/other cities 
   await ctx.close();
 });
 
+test("П3: the city overview draws no object rings; from zoom 13 they are drawn; «show all» draws them, host navigation hides them again", { skip: SKIP }, async () => {
+  // как в оболочке Birge: без fitOnLoad (кадры 02 и 08 FINAL-5.1 — кучка колец в центре на обзоре)
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" });
+  await settle(page);
+  const drawn = () => page.evaluate(() => window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point", "civic-r03-point-halo",
+    "civic-r03-point-synthetic", "civic-r03-line", "civic-r03-approx-fill", "civic-r03-area-fill"] }).length);
+  assert.ok(await page.evaluate(() => window.__stand.map.getZoom() < 13));
+  assert.equal(await drawn(), 0, "overview: no rings");
+  await nearDemo(page);
+  assert.ok(await drawn() > 0, "from zoom 13 objects are drawn");
+  assert.equal(await page.evaluate(() => window.__stand.instance.fitAll()), true, "«show all» frames the objects");
+  await settle(page);
+  const z = await page.evaluate(() => window.__stand.map.getZoom());
+  assert.ok(z < 13, "the stand's objects fit only below 13: " + z);
+  await page.waitForFunction(() => window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-line", "civic-r03-area-fill"] }).length >= 2, null, { timeout: 10000 });
+  await page.evaluate(() => window.__stand.instance.selectObject(null));  // host navigation: district, city, overview
+  // символы (кольцо «Пример») гаснут с затуханием MapLibre (~300 мс) — ждём, а не проверяем в одну точку времени
+  const gone = await page.waitForFunction(() => window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point", "civic-r03-point-halo",
+    "civic-r03-point-synthetic", "civic-r03-line", "civic-r03-approx-fill", "civic-r03-area-fill"] }).length === 0, null, { timeout: 5000 })
+    .then(() => true, () => false);
+  assert.ok(gone, "after host navigation the overview has no rings again: " + (await drawn()));
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
 test("server 500 on list: error state, retry recovers", { skip: SKIP }, async () => {
   const { ctx, page } = await open({ fail: "list" });
   assert.equal((await state(page)).list, "error");
@@ -334,6 +368,7 @@ test("stale responses: a slow older card or list never replaces the newer choice
 test("one map click = one selection and one request; hover tooltip; repeated clicks do not stack", { skip: SKIP }, async () => {
   const { ctx, page, errors } = await open({ persist: "0" });
   await settle(page);
+  await nearDemo(page);
   const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.4304, 51.1282]); return { x: c.left + p.x, y: c.top + p.y }; });
   await page.mouse.move(pt.x, pt.y);
   await page.waitForSelector(".civic-r03-tip", { timeout: 3000 });
@@ -348,7 +383,10 @@ test("one map click = one selection and one request; hover tooltip; repeated cli
   await page.evaluate(() => { window.__stand.destroy(); window.__stand.mount(); window.__stand.destroy(); window.__stand.mount(); window.__stand.selects.length = 0; });
   await page.waitForFunction(() => window.__stand.instance.getState().list === "ready");
   await page.waitForTimeout(100);
-  await page.mouse.click(pt.x, pt.y);
+  // открытая карточка сдвигает объект из-под панели (масштаб 14 — объект в центре): точку берём заново
+  await settle(page);
+  const pt2 = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.4304, 51.1282]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.mouse.click(pt2.x, pt2.y);
   await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
   await page.waitForTimeout(150);
   r = await page.evaluate(() => ({ selects: window.__stand.selects.slice() }));
@@ -378,6 +416,7 @@ test("mount/destroy twice: layers, sources, popup, root, map and window listener
   });
   // hover to create the popup, then destroy
   await settle(page);
+  await nearDemo(page);
   const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.4304, 51.1282]); return { x: c.left + p.x, y: c.top + p.y }; });
   await page.mouse.move(pt.x, pt.y);
   await page.waitForSelector(".civic-r03-tip");
@@ -468,6 +507,7 @@ test("mobile 390x844: bottom sheet states keep 3D toggle and attribution reachab
 test("offline basemap: honest fallback message; 3D tilts the camera only; objects still drawn", { skip: SKIP }, async () => {
   const { ctx, page } = await open();
   assert.match(await page.locator("#stand-status").innerText(), /OpenFreeMap недоступна/);
+  await nearDemo(page);
   await page.click("#toggle-3d");
   await page.waitForTimeout(900);
   const r = await page.evaluate(() => ({ pitch: window.__stand.map.getPitch(), status: document.getElementById("stand-status").innerText, drawn: window.__stand.map.queryRenderedFeatures({ layers: ["civic-r03-point"] }).length }));
@@ -830,6 +870,7 @@ test("review: lines and areas show status (hollow planned, solid in progress) an
 test("review: tapping the open object again does not re-fire onSelect or refetch", { skip: SKIP }, async () => {
   const { ctx, page } = await open({ persist: "0" });
   await settle(page);
+  await nearDemo(page);
   const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.4304, 51.1282]); return { x: c.left + p.x, y: c.top + p.y }; });
   await page.mouse.click(pt.x, pt.y);
   await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
