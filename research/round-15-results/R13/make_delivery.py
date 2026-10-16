@@ -101,23 +101,23 @@ def main() -> None:
                                             "round15/test_r01_round15_routes.py, R03 test_analyst_neighbours.py, R06 test_r06r15_notify.py, "
                                             "R08 test_r08_board.py + test_r08_world.py, R15 test_r15_qa.py + round15 notify/meetings, tests/civic/R13"},
             "r15_meetings_tests": {"status": "PASS", "passed": 39, "total": 39,
-                                   "note": "R15 (файлы = a933f361) на сборке R01 B0.17 с кодом R13 этой поставки: "
+                                   "note": "R15 (файлы сборки B0.19) на сборке R01 B0.19 с кодом R13 этой поставки: "
                                    "round15/test_r15_round15_meetings.py 27/27, test_r15_qa.py 12/12 (без NOT_RUN)"},
             "r08_day_forecast_on_r01_build": {"status": "PASS",
                                               "note": "сборка R01 B0.18 (7729c2cc), демо-мир, акимат → «Картина дня»: блок R08 "
                                               "«Прогноз на неделю» из ui.civic_forecast — метка «прототип», 3 территории с причиной, "
                                               "объяснение с числами проверки (57 % против 47 %); 1366 ru/kk и 375 ru, кадры "
                                               "screens/day-forecast-*.jpg (подписи мест — код 385750cb)"},
-            "neighbor_tests_on_b018": {"status": "PASS", "passed": 834, "failed": 0,
-                                       "note": "сборка R01 B0.18 (7729c2cc) с модулями и тестами R13 этой поставки: tests/civic/R08, "
+            "neighbor_tests_on_b019": {"status": "PASS", "passed": 839, "failed": 0,
+                                       "note": "сборка R01 B0.19 (5b696879) с модулями и тестами R13 этой поставки: tests/civic/R08, "
                                        "tests/civic/R03, tests/civic/R13, R15 test_r15_qa.py + round15/test_r15_round15_meetings.py "
                                        "(10 skipped, 1 xfailed — их же)"},
             "r10_visual_audit": {"status": "PASS", "passed": 124, "total": 124,
-                                 "note": "tests/e2e/visual_audit.cjs R10 @ 900dd0a2 --only meetings,meetings-staff на сборке R01 "
-                                 "B0.17 с модулями R13 (демо-мир, 1366/1024/375 × ru/kk): WARN 0, FAIL 0 — на pvG было "
+                                 "note": "tests/e2e/visual_audit.cjs R10 @ 6016a9ac --only meetings,meetings-staff на сборке R01 "
+                                 "B0.19 с модулями R13 (демо-мир, 1366/1024/375 × ru/kk): WARN 0, FAIL 0 — на pvG было "
                                  "WARN «4 размера шрифта» на всех 8 вариантах (то же на B0.15 с 9ca9bc72 инструментом 7b254ef7)"},
             "browser_meetings_demo_world": {"status": "PASS", "passed": 115, "total": 115,
-                                            "note": "meetings_browser.cjs на сборке R01 B0.17 (afaabca1) с CIVIC_DEMO_WORLD=1 (мир R02: "
+                                            "note": "meetings_browser.cjs на сборке R01 B0.19 (5b696879) с CIVIC_DEMO_WORLD=1 (мир R02: "
                                             "R13 24 записи): проверки не зависят от набора данных"},
             "demo_world_on_r01_build": {"status": "PASS", "note": "сборка R01 c9069723, CIVIC_DEMO_WORLD=1: оболочка засевает R13 "
                                         "(m-w15-1/2/3), прошедшая встреча — итог и 4 поручения, связь с обращением мира R09 "
@@ -128,10 +128,10 @@ def main() -> None:
         "patches_for_r01": ["research/round-15-results/R13/patches/r01_meetings_routes.patch",
                             "research/round-15-results/R13/patches/r01_meetings_assets_sheet.patch"],
         "known_limits": [
-            "R01 B0.18 (7729c2cc) несёт R13 0ef104c2 (маршруты meetings.*, ассеты, теги — с B0); в B1 взять code_sha этой "
-            "поставки — сверх 0ef104c2 строка «через 3 дня» на телефоне и различимые подписи соседних мест; только пути R13.",
+            "R01 B0.19 (5b696879) несёт R13 576c1239 (маршруты meetings.*, ассеты, теги — с B0); в FINAL-5 (П2, 14:00) взять "
+            "code_sha этой поставки — сверх 576c1239 различимые подписи соседних мест и ҚАЗ-строки «Вопроса акиму»; только пути R13.",
             "С B0.11 R01 ставит «Вопросы и встречи» своим экраном-колонкой 720 px (VISUAL_BRIEF §2 п. 2); строки шторки из "
-            "патча R13 §3 не нужны. Кадры и браузер — на этой раскладке (B0.17).",
+            "патча R13 §3 не нужны. Кадры и браузер — на этой раскладке (B0.19).",
             "Кнопка «♡» у вопросов — рамка 44 px с прозрачной каймой, видимая таблетка 32 px (вариант R11 R13-3): тёмная "
             "кнопка 44 px на экране одна — «Приду».",
             "Прогноз — прототип на синтетической истории жалоб (погода реальная); на настоящих обращениях не проверялся.",
@@ -139,8 +139,8 @@ def main() -> None:
             "«Связано с проектом акимата» / «…с работой службы», номер записи — только в подсказке сотруднику.",
             "Кадры — облако без подложки карты (П1 правило 6); кадры с настоящей картой — LOCAL-12.",
         ],
-        "next_step": "B1 R01 (16 окт 14:00): проверить, что взят code_sha этой поставки, и прогнать meetings_browser.cjs и "
-                     "qa_browser.cjs на B1; R10 — строки B-105 и B-118 закрыты; R11 — ключи meet.staff.link_pick_* в словаре.",
+        "next_step": "Поправка П2: FINAL-5 в 14:00 по Астане (R01) — проверить, что взят code_sha этой поставки; 14:00–15:45 — "
+                     "только блокеры из списков R10 / R15; 16:00 — FINAL-5.1, раунд закрыт: финальные STATUS и DELIVERY.",
     }
     OUT.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"{OUT.relative_to(ROOT)}: code_sha {code[:10]}, {len(changed)} путей, {len(screens)} кадров")
