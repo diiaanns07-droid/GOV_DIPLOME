@@ -308,6 +308,10 @@ FINAL-6 кандидат 12:00, приёмка R10 12:00–16:00 (блокеры
   pytest R07 221/1, readability 18/18, wave2 38/38, map_tools 7/7, place 10/10, tween PASS, pan 2/2, replay 16/16,
   shots 64/64. INTEGRATION §3е; DELIVERY code_sha 5507e680.
 
+- (16 окт 23:25 UTC) Круг 34: AMENDMENTS — П1–П3, новых нет. R01 B6.7 745eeae5 (22:30 UTC) — R08 / R09 / R11 по
+  B-136; R07 там ещё f3012276 (5507e680 с серым текстом отправлен позже, в 22:36 UTC) — R01 берёт его по DELIVERY code_sha
+  в следующую сборку / кандидат FINAL-6. R04, R11 — тихо. Новых просьб к R07 нет.
+
 ## Дальше
 - R01: взять в FINAL-6 R07 5507e680 — web/civic/heat/heat.css, web/civic/replay/replay.css (серый текст, §3е); остальное
   (f3012276, «Показать на карте» к месту без жалоб) уже в B6.5 / B6.6. FINAL-5.1 (d43dd650) остаётся запасным.
