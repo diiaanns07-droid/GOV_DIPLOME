@@ -485,3 +485,12 @@ R04 в сборке снова его (moderation.py и test_r04_moderate.py и�
 Проверки: pytest R04 / R15 / R02 / R08 / R11 / R12 / R01 round15 — 2136 passed / 0 failed (вкл. T-R04-08 digit-space);
 R04 HTTP intake 19 / 19, экран R04 124 / 124; r15_ia 48 / 0; r15_sheet_fit 63 / 0 / 3 WARN.
 
+### B6.5 (16 окт, 21:30 по Астане) — код `25ee5a39`; BUILD.json теперь называет и промежуточные сборки B6.x
+R04 c4e4581b (экран «Разбора» не ломается при расхождении словаря — R10 B-134 на B6.3; ошибка 400 по-казахски), R07 f3012276
+(«Показать на карте» к месту без жалоб — нужно сцене 0), R11 33260363 (ключ heat.place_empty).
+Проверки: pytest R07 / R04 / R11 / R01 round15 — 1002 / 0; узловой ui_kit R11 — PASS; r15_ia 48 / 0; R04 HTTP intake 19 / 19,
+экран R04 168 / 168.
+**BUILD.json** с этой сборки — «B6.5, intermediate», поле `show_build` — FINAL-5.1 e8d6cae6 (сборка для показа до FINAL-6):
+сторож R10 `watch_b6.sh` гоняет быстрый повтор на каждой B6.x из BUILD.json (STATUS R10); B6.0–B6.4 он не видел — они
+были только в BUILD_LOG. **R10 B-131** (шлюз ждал make_service, у R04 функции) — закрыт R01 в cbb067aa (с B6.2).
+
