@@ -10,7 +10,7 @@
  "tested_sha": {
   "package": "e91acb69",
   "R17": "9d8ec438 (разбор)",
-  "R13": "ece97f53",
+  "R13": "3d5da74d",
   "R03": "fdbfc09a (разбор JS)",
   "R16": "3cc802b9 (разбор)",
   "R04": "4769d0d4 (разбор: черновики ответов, routing)",
@@ -18,12 +18,12 @@
   "R07": "ae749f4e (разбор)",
   "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
   "R09": "0b6d37f8 (разбор)",
-  "R01": "ed965d9d (B0.14 в ветке R01)",
+  "R01": "735a40b5 (B0.14+ в ветке R01, разбор)",
   "R08": "92406c57 (claude/laughing-euler-iv3on3, разбор JS)",
   "R06": "c1e02b02 (разбор)",
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
   "R11": "17bf4c3e (разбор)",
-  "R12": "de492a1b (разбор)",
+  "R12": "25237d03 (разбор print.js)",
   "R05": "b5fe6cc0 (разбор)"
  },
  "push_status": "OK (круг 3)",
@@ -351,6 +351,10 @@
    "xfailed": 0,
    "xpassed": 0,
    "skipped_not_run": 0
+  },
+  "round15_heads": {
+   "R13_3d5da74d_meetings": "27 passed",
+   "R13_3d5da74d_qa_r14": "20 passed + 8 NOT_RUN (раунд 14, -k qa/question)"
   }
  },
  "findings": {
