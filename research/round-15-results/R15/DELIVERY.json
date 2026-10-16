@@ -33,9 +33,10 @@
   "R04_df6ab8c2_moderate5": "moderate+intake R15: 99 passed, 5 xpassed; 4000/4000 совпадает с P-R04-S53",
   "B6.4_e56971a0": "tests/civic/R15 613 passed / 0 failed / 5 xpassed (S54) -> после FIXED moderate+intake 104 passed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена f9b0cc85..e56971a0 чистая",
   "B6.5_25ee5a39": "tests/civic/R15 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена e56971a0..25ee5a39 чистая; R07 heat place() — id по шаблону, без кэша, только данные карты",
-  "B6.5_25ee5a39_round33": "tests/civic/R15 = ce2a15e1: 618 passed / 0 failed (повтор 17 окт 00:38 Астаны, 127 с)"
+  "B6.5_25ee5a39_round33": "tests/civic/R15 = ce2a15e1: 618 passed / 0 failed (повтор 17 окт 00:38 Астаны, 127 с)",
+  "B6.6_83c8aa58": "tests/civic/R15 = ce2a15e1: 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена 25ee5a39..83c8aa58 чистая (CSS, ui-kit index.html, тест R11; JS не менялся)"
  },
- "push_status": "OK (круг 33)",
+ "push_status": "OK (круг 34)",
  "changed_paths": [
   "tests/civic/R15/",
   "research/round-15-results/R15/",

@@ -1,0 +1,3 @@
+Сборка R01 B6.6: claude/brave-fermi-nhzetj @ 83c8aa58 (B6.5 25ee5a39 + R11 d126117d; тесты R15 в сборке — ac54e27b)
+Пробы R15 (круг 34, 17 окт 01:40 Астаны): r15_round15 10 PASS / 0 FAIL / 1 NOT_RUN; r15_reference 18 / 0 / 0
+tests/civic/R15 из ce2a15e1 (поставка П3) на дереве B6.6: 618 passed / 0 failed
