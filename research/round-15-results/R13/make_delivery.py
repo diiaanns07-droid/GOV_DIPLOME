@@ -103,6 +103,10 @@ def main() -> None:
             "r15_meetings_tests": {"status": "PASS", "passed": 39, "total": 39,
                                    "note": "R15 @ b7b75ee3 на сборке R01 B0.15 с кодом R13 этой поставки: "
                                    "round15/test_r15_round15_meetings.py 27/27, test_r15_qa.py 12/12 (без NOT_RUN)"},
+            "r10_visual_audit": {"status": "PASS", "passed": 124, "total": 124,
+                                 "note": "tests/e2e/visual_audit.cjs R10 @ 7b254ef7 --only meetings,meetings-staff на сборке R01 "
+                                 "B0.15 с модулями R13 9ca9bc72 (демо-мир, 1366/1024/375 × ru/kk): WARN 0, FAIL 0 — на pvG было "
+                                 "WARN «4 размера шрифта» на всех 8 вариантах"},
             "browser_meetings_demo_world": {"status": "PASS", "passed": 115, "total": 115,
                                             "note": "meetings_browser.cjs на сборке R01 B0.15 (735a40b5) с CIVIC_DEMO_WORLD=1 (мир R02: "
                                             "R13 24 записи): проверки не зависят от набора данных"},
