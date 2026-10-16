@@ -839,8 +839,10 @@ body.civic-mode .birge-screen-root.nb, body.civic-mode .birge-screen-root > .qa 
 body.civic-mode .birge-screen-root > .mt { max-width: 720px; margin-inline: auto; }
 /* Открыт раздел (лист поверх карты уже не во всю ширину) — элементы карты по краям не выглядывают из-под листа:
    легенда, кнопки карты, подпись карты и 3D-каталог прячутся до возврата на «Карту». */
-body.civic-mode[data-birge-section]:not([data-birge-section="map"]) :is(#birge-legend, .map-tools, .maplibregl-ctrl-bottom-right, .birge-build3d-root) {
-  visibility: hidden; }
+body.civic-mode[data-birge-section]:not([data-birge-section="map"]) :is(#birge-legend, .map-tools, .maplibregl-ctrl-bottom-right, .birge-build3d-root,
+  .maplibregl-ctrl-bottom-right .maplibregl-ctrl) {
+  visibility: hidden; }   /* .maplibregl-ctrl — подпись карты MapLibre ставит себе visible сама; с патчем R05 (подпись в правом
+                             нижнем углу) она выглядывала из-под листа раздела («Мой двор», «Сделаем вместе») */
 
 /* Круг 3 · мелочи (чек-лист №12), только при «движение разрешено»: черта выбранного раздела вырастает из центра;
    подробная легенда под «?» и плашка карты проявляются, а не возникают. */
