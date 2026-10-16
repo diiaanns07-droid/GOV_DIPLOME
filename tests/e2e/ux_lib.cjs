@@ -379,8 +379,19 @@ function sheetMetrics(page, sel) {
       const label = clean(st.innerText).slice(0, 30);
       const keep = sc.scrollTop;
       const r0 = st.getBoundingClientRect();
+      // Плашка группы — во всю ширину листа и с заливкой; узкий чип или прозрачная полоса с плавающим заголовком
+      // («Картина дня · 16 окт», R08 .akim__bar) — приём вида: строки под ним и вокруг видны по замыслу.
+      const scs = getComputedStyle(st), bgA = scs.backgroundColor.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/);
+      const filled = (bgA && (bgA[4] === undefined || +bgA[4] >= 0.1)) || (scs.backdropFilter && scs.backdropFilter !== "none");
+      if (r0.width < sc.clientWidth * 0.6 || !filled) continue;
+      // «Наезжает на строку» — только пока плашка стоит на своём месте (не прилипла): экран, открытый уже прокрученным
+      // (карточка жалобы по ссылке), законно прячет строки под прилипшей плашкой.
+      const pos0 = st.style.position;
+      st.style.position = "static";
+      const atPlace = Math.abs(st.getBoundingClientRect().top - r0.top) <= 2;
+      st.style.position = pos0;
       const next = st.nextElementSibling;
-      if (next && vis(next) && getComputedStyle(next).position !== "sticky") {
+      if (atPlace && next && vis(next) && getComputedStyle(next).position !== "sticky" && label && !clean(next.innerText).startsWith(label)) {
         const rn = next.getBoundingClientRect();
         if (rn.top < r0.bottom - 2 && rn.bottom > r0.top + 2 && clean(next.innerText)) out.stickyOver.push({ sticky: label, row: clean(next.innerText).slice(0, 30), overlap: Math.round(r0.bottom - rn.top) });
       }
@@ -389,17 +400,34 @@ function sheetMetrics(page, sel) {
       await frame();
       const cr = sc.getBoundingClientRect(), r = st.getBoundingClientRect();
       const clipTop = cr.top + (parseFloat(getComputedStyle(sc).borderTopWidth) || 0);
-      if (r.top - clipTop > 3 && r.top >= clipTop && r.top < cr.bottom - 20) {
-        let peek = null;
-        for (const fx of [0.25, 0.5, 0.75]) {
-          for (let y = clipTop + 2; y < r.top - 1 && !peek; y += 4) {
-            const h = document.elementFromPoint(r.left + r.width * fx, y);
-            if (!h || h === sc || !sc.contains(h)) continue;
-            let inSticky = false;
-            for (let n = h; n && n !== sc; n = n.parentElement) if (getComputedStyle(n).position === "sticky") { inSticky = true; break; }
-            if (!inSticky && clean(h.innerText || h.textContent)) peek = { y: Math.round(y - clipTop), text: clean(h.innerText || h.textContent).slice(0, 36) };
+      // Плашка действительно «прилипла»: без sticky она была бы выше (уехала с прокруткой). Последняя плашка в конце
+      // списка (прокрутка упёрлась) стоит на своём месте — строки над ней видны законно.
+      const prevPos = st.style.position;
+      st.style.position = "static";
+      const natural = st.getBoundingClientRect().top;
+      st.style.position = prevPos;
+      const stuck = natural < r.top - 2;
+      if (stuck && r.top - clipTop > 3 && r.top >= clipTop && r.top < cr.bottom - 20) {
+        // Видна строка списка: в полосе над плашкой точка попадает в строку — ближайший элемент с текстом размером со строку
+        // (≤ 150 px, ≤ 240 знаков). Фон контейнера списка (его innerText — весь список) не в счёт: так выходил ложный FAIL.
+        const rowAt = (x, y) => {
+          const h = document.elementFromPoint(x, y);
+          if (!h || h === sc || !sc.contains(h)) return null;
+          for (let n = h; n && n !== sc; n = n.parentElement) if (getComputedStyle(n).position === "sticky") return null;
+          for (let n = h; n && n !== sc; n = n.parentElement) {
+            const txt = clean(n.innerText);
+            if (!txt) continue;
+            const q = n.getBoundingClientRect();
+            return q.height <= 150 && txt.length <= 240 ? txt.slice(0, 36) : null;
           }
-          if (peek) break;
+          return null;
+        };
+        let peek = null;
+        for (let y = clipTop + 2; y < r.top - 1 && !peek; y += 4) {
+          for (let x = r.left + 16; x < r.right - 16 && !peek; x += 36) {
+            const txt = rowAt(x, y);
+            if (txt) peek = { y: Math.round(y - clipTop), text: txt };
+          }
         }
         if (peek) out.stickyPeek.push({ sticky: label, gap: Math.round(r.top - clipTop), peek });
       }
