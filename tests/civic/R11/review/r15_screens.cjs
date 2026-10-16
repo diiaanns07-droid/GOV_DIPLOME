@@ -89,8 +89,12 @@ async function audit(page, lang, w, ruOnly) {
     // VISUAL_BRIEF §4 п. 3 «одна главная кнопка»: тёмные кнопки от 40 px на первом экране (без шапки и знака). Пилюли счёта
     // эталона A (32 px, зона 44 — ::after) сюда не попадают; две и больше — смотреть глазами.
     out.main = [...document.querySelectorAll("button, a.bk-btn, a[role=button]")].filter((e) => vis(e) && !e.closest("#birge-header, .bk-logo, [aria-hidden=true]")
-      && !e.matches(".bk-logo, [aria-pressed=true], [aria-selected=true]")).filter((e) => { const r = e.getBoundingClientRect(); if (r.height < 40 || r.bottom < 0 || r.top > innerHeight) return false;
-      const m = (getComputedStyle(e).backgroundColor.match(/[\d.]+/g) || []).map(Number); return m.length >= 3 && m[0] < 40 && m[1] < 45 && m[2] < 45 && (m[3] === undefined || m[3] > 0.5); })
+      && !e.matches(".bk-logo, [aria-pressed=true], [aria-selected=true]")).filter((e) => { const r = e.getBoundingClientRect(), cs = getComputedStyle(e);
+      // окрашенная высота: «Я приду» R16 — рамка 44 px с прозрачной каймой и background-clip: padding-box, видно 32 px
+      const px = (v) => parseFloat(v) || 0, bd = px(cs.borderTopWidth) + px(cs.borderBottomWidth), pd = px(cs.paddingTop) + px(cs.paddingBottom);
+      const h = r.height - (cs.backgroundClip === "padding-box" ? bd : cs.backgroundClip === "content-box" ? bd + pd : 0);
+      if (h < 40 || r.bottom < 0 || r.top > innerHeight) return false;
+      const m = (cs.backgroundColor.match(/[\d.]+/g) || []).map(Number); return m.length >= 3 && m[0] < 40 && m[1] < 45 && m[2] < 45 && (m[3] === undefined || m[3] > 0.5); })
       .map((e) => (e.textContent.trim().replace(/\s+/g, " ") || e.getAttribute("aria-label") || e.className.toString()).slice(0, 30));
     out.header = document.body.dataset.birgeHeader || "inline";
     out.section = window.BirgeShell && BirgeShell.section;
@@ -110,7 +114,9 @@ function navProblem(mode, lang, nav) {
 }
 
 (async () => {
-  const browser = await chromium.launch();
+  // поле даты <input type=date> рисуется в формате языка системы, а не контекста: в облаке LANG пустой → 10/16/2026;
+  // с ru_RU — 16.10.2026, как на ноутбуке акимата (для ҚАЗ формат тот же — дд.мм.гггг)
+  const browser = await chromium.launch({ env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" } });
   const report = { base: BASE, when: new Date().toISOString(), frames: {}, problems: [] };
   const probe = await browser.newPage();
   await probe.goto(BASE + "/civic/i18n/ru.json");
@@ -126,7 +132,7 @@ function navProblem(mode, lang, nav) {
   });
   await probe.close();
   for (const [w, h, dpr] of SIZES) for (const lang of LANGS) for (const mode of ["resident", "akimat"]) {
-    // язык браузера как у жителя: поле даты «Картины дня» — 16.10.2026, а не 10/16/2026 (en-US облака)
+    // язык браузера как у жителя (navigator.language, Intl); формат поля даты — от LANG процесса браузера (выше)
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: dpr, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
     await ctx.addInitScript(([m, l]) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", l); localStorage.setItem("birge.i18n.lang", l); } catch (e) { /* приватный режим */ } }, [mode, lang]);
     const page = await ctx.newPage();

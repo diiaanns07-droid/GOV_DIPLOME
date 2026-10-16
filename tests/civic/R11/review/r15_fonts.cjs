@@ -27,7 +27,9 @@ const ROUTES = {
 };
 
 (async () => {
-  const browser = await chromium.launch();
+  // поле даты <input type=date> рисуется в формате языка системы, а не контекста: в облаке LANG пустой → 10/16/2026;
+  // с ru_RU — 16.10.2026, как на ноутбуке акимата (для ҚАЗ формат тот же — дд.мм.гггг)
+  const browser = await chromium.launch({ env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" } });
   const report = { base: BASE, when: new Date().toISOString(), lang: LANG, screens: {} };
   for (const w of WIDTHS) for (const mode of ["resident", "akimat"]) {
     const ctx = await browser.newContext({ viewport: { width: w, height: w <= 480 ? 812 : 768 }, deviceScaleFactor: 1, locale: LANG === "kk" ? "kk-KZ" : "ru-RU" });

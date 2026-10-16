@@ -41,7 +41,9 @@ const STEPS = (sc) => [
 ];
 
 (async () => {
-  const browser = await chromium.launch();
+  // поле даты <input type=date> рисуется в формате языка системы, а не контекста: в облаке LANG пустой → 10/16/2026;
+  // с ru_RU — 16.10.2026, как на ноутбуке акимата (для ҚАЗ формат тот же — дд.мм.гггг)
+  const browser = await chromium.launch({ env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" } });
   const probe = await browser.newPage();
   await probe.goto(BASE + "/");
   const scenes = await probe.evaluate(async () => (await fetch("/api/civic/v2/demo/scenes", { headers: { Accept: "application/json" } })).json());
@@ -52,7 +54,7 @@ const STEPS = (sc) => [
   for (const [scene, step, mode, where, only] of STEPS(sc)) {
     for (const w of only ? [only] : SIZES) for (const lang of LANGS) {
       const [vw, vh, dpr] = VIEW[w];
-      // язык браузера как у жителя: поле даты — 16.10.2026, а не 10/16/2026 (en-US облака)
+      // язык браузера как у жителя (navigator.language, Intl); формат поля даты — от LANG процесса браузера (выше)
       const ctx = await browser.newContext({ viewport: { width: vw, height: vh }, deviceScaleFactor: dpr, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
       await ctx.addInitScript(([m, l]) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", l); localStorage.setItem("birge.i18n.lang", l); } catch (e) { /* приватный режим */ } }, [mode, lang]);
       const page = await ctx.newPage();
