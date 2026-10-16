@@ -3,8 +3,8 @@
   "branch": "claude/eloquent-einstein-wvuyje",
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "restored_from": null,
-  "code_sha": "c7c8fbe8847cb994db3c43faaf503f2335b6f9d7",
-  "tested_sha": "c7c8fbe8847cb994db3c43faaf503f2335b6f9d7",
+  "code_sha": "e0ad237003f89bb2e68951354ff16c4b16f04963",
+  "tested_sha": "e0ad237003f89bb2e68951354ff16c4b16f04963",
   "push_status": "OK",
   "environment": "облако Linux; Python 3.13.16, pytest 9.1.1; Node 22.22.0, Playwright 1.56.1, Chromium 1194 (headless); без интернета: подложка карты — упрощённый фон (П1 правило 6)",
   "changed_paths": [
@@ -49,7 +49,7 @@
   "tests": [
     {
       "name": "pytest tests/civic/R06 (рабочая копия = FINAL-4 + R06)",
-      "sha": "c7c8fbe8847cb994db3c43faaf503f2335b6f9d7",
+      "sha": "e0ad237003f89bb2e68951354ff16c4b16f04963",
       "status": "PASS",
       "passed": 726,
       "failed": 0,
@@ -199,5 +199,6 @@
     "Кадры — облако: подложка упрощённая; настоящий вид — LOCAL-12."
   ],
   "next_step": "R01 B1: взять пути R06 из code_sha и 3 строки ленты (INTEGRATION.txt). R06 дальше по кругам: сборка B1 глазами (колокольчик, лента, работы рядом в «Моём дворе» R16), патчи R08/R16, ключи R11, находки R10/R15.",
-  "screens_note": "кадры — облако, дерево «как B1» (R01 197ad600 B0.4 + R06 7f6636cd), 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6)"
+  "screens_note": "кадры — облако, дерево «как B1» (R01 197ad600 B0.4 + R06 7f6636cd), 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6)",
+  "code_note": "после c7c8fbe8 в коде R06 изменились только запасные цвета подписей ленты (notify.css, --c-text-3 → --c-text-2); полный прогон — на c7c8fbe8 (сборка B0.13), часть notify браузера на e0ad2370 и сборке R01 afaabca1 (B0.17): 67 PASS / 0 FAIL"
 }
