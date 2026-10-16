@@ -1,0 +1,24 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index 50e29a26..6abb71b3 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -653,6 +653,19 @@ html.bk-glass-off body.civic-mode .map-tools .bk-glass--control:is([aria-pressed
+   body.civic-mode .maplibregl-ctrl-bottom-right { right: calc(var(--be-edge) + var(--be-panel) + 12px); bottom: 6px; }
+   body.civic-mode[data-civic-drawer="open"] .maplibregl-ctrl-bottom-right { right: calc(var(--be-edge) + var(--be-drawer) + 12px); }
+ }
++/* П3 (R05 → R01): в виде эталона панели справа нет (.civic-panel скрыта стилем) — подпись карты © OpenStreetMap
++   в правом нижнем углу свободной карты, а не левее пустого места под панель: там развёрнутая подпись ложилась под
++   легенду R07 (1024–1100) и под кнопку «Что построить?» (1024–1366). Кнопка — между легендой и подписью. */
++@media (min-width: 761px) {
++  body.civic-mode[data-birge-layout="ref"]:not([data-civic-drawer="open"]) .maplibregl-ctrl-bottom-right { right: var(--be-edge); }
++}
++@media (min-width: 1024px) {
++  body.civic-mode[data-birge-mode="akimat"][data-birge-layout="ref"]:has(#birge-legend .r07-maplegend:not([hidden])) .birge-build3d-root:not([data-catalog="open"]):not(:has(.b3d-dock:is([data-state="placing"], [data-state="card"]))) { left: 490px; right: 264px; }
++}
++/* 761–1023: рядом с легендой места нет — кнопка над её строкой. */
++@media (min-width: 761px) and (max-width: 1023px) {
++  body.civic-mode[data-birge-mode="akimat"][data-birge-layout="ref"]:has(#birge-legend .r07-maplegend:not([hidden])) .birge-build3d-root:not([data-catalog="open"]):not(:has(.b3d-dock:is([data-state="placing"], [data-state="card"]))) { bottom: 72px; }
++}
+ @media (min-width: 761px) and (max-width: 1100px) {
+   body.civic-mode { --be-panel: 360px; --be-drawer: 380px; }
+   body[data-civic-drawer="open"].civic-mode:has(#civic-scenarios:not([hidden])) .map-tools { right: calc(var(--be-edge) + 380px + 12px); }

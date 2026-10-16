@@ -701,7 +701,15 @@ try {
         const host = { legend: R(document.getElementById("birge-legend")), panel: R(document.getElementById("civic-panel")), tools: R(document.querySelector(".map-tools")), header: R(document.querySelector("header.topbar")) };
         const hits = [];
         for (const [a, ra] of Object.entries(mine)) for (const [b, rb] of Object.entries(host)) if (ov(ra, rb)) hits.push(a + "×" + b);
-        return { state: document.querySelector("#birge-build3d-root .b3d-dock")?.dataset.state, hits, dock_w: mine.dock ? Math.round(mine.dock.width) : null };
+        // П3: подпись карты (© OpenStreetMap) — худший случай, развёрнутая, как до первого перетаскивания карты (показ).
+        const at = document.querySelector(".maplibregl-ctrl-attrib");
+        const was = !!at && at.classList.contains("maplibregl-compact-show");
+        if (at && !was) at.classList.add("maplibregl-compact-show");
+        const attrib = R(at);
+        if (at && !was) at.classList.remove("maplibregl-compact-show");
+        const attrib_hits = Object.entries(mine).filter(([, ra]) => ov(ra, attrib)).map(([a]) => a + "×attrib");
+        return { state: document.querySelector("#birge-build3d-root .b3d-dock")?.dataset.state, hits, dock_w: mine.dock ? Math.round(mine.dock.width) : null,
+          attrib: attrib ? [Math.round(attrib.left), Math.round(attrib.right)] : null, attrib_hits };
       });
       const r = { start: await look() };
       if (mode === "akimat" && (await q.$(".birge-b3d-toggle")) && (await q.isVisible(".birge-b3d-toggle"))) {
@@ -717,6 +725,12 @@ try {
   }
   check("r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons", Object.entries(wide).filter(([k]) => k.endsWith("_akimat")).every(([, r]) => r.start.hits.length === 0 && r.catalog && r.catalog.state === "catalog" && r.catalog.hits.length === 0), wide);
   check("resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch)", Object.entries(wide).filter(([k]) => k.endsWith("_resident")).every(([, r]) => r.start.state === "hint" && r.start.hits.length === 0), Object.fromEntries(Object.entries(wide).filter(([k]) => k.endsWith("_resident"))));
+  // 17б. П3: «Что построить?», открытый каталог и подсказка жителя не лежат под развёрнутой подписью карты. На FINAL-5.1
+  // подпись стояла левее пустого места под правую панель (в виде эталона её нет) — в середине нижней строки; исправление
+  // оболочки — research/round-15-results/R05/patches/R01_p3_attrib_bottom_row.patch.
+  check("p3_toggle_catalog_hint_clear_of_map_attribution (R01_p3_attrib_bottom_row.patch)",
+    Object.values(wide).every((r) => [r.start, r.catalog].filter(Boolean).every((s) => s.attrib_hits.length === 0)),
+    Object.fromEntries(Object.entries(wide).map(([k, r]) => [k, { attrib: r.start.attrib, start: r.start.attrib_hits, catalog: r.catalog ? r.catalog.attrib_hits : null }])));
 } catch (e) {
   check("run", false, e.message.split("\n")[0]);
 }
