@@ -76,8 +76,9 @@ function finish() {
         const want = st.value ? st.value.slice(8, 10) + "." + st.value.slice(5, 7) + "." + st.value.slice(0, 4) : "?";
         check(`${tag}: дата поверх поля — «${want}», внутри поля, текст поля прозрачный`,
           st.shown && st.inside && st.text === want && /rgba\(0, 0, 0, 0\)|transparent/.test(st.input_color), st);
-        const box = await page.$(".akim__controls");
-        if (box && SHOTS.has(name)) await box.screenshot({ path: path.join(OUT, `date-${name}.png`) });
+        // Локатор, а не ссылка на элемент: «Картина дня» может перерисоваться (обновление сводки) — локатор найдёт поле заново.
+        const box = page.locator(".akim__controls");
+        if (SHOTS.has(name)) await box.screenshot({ path: path.join(OUT, `date-${name}.png`) });
         await page.focus("#akim-date");
         await page.waitForTimeout(150);
         const f = await page.evaluate(() => ({
@@ -85,7 +86,7 @@ function finish() {
           input_color: getComputedStyle(document.querySelector("#akim-date")).color,
         }));
         check(`${tag}: в фокусе — само поле, наложение скрыто`, !f.shown && !/rgba\(0, 0, 0, 0\)/.test(f.input_color), f);
-        if (box && name === "1366-ru") await box.screenshot({ path: path.join(OUT, `date-${name}-focus.png`) });
+        if (name === "1366-ru") await box.screenshot({ path: path.join(OUT, `date-${name}-focus.png`) });
         check(`${tag}: без ошибок страницы`, errors.length === 0, errors);
         await ctx.close();
       }

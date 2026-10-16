@@ -1,0 +1,633 @@
+{
+ "base": "http://127.0.0.1:8671",
+ "at": "2026-10-16T14:28:24.615Z",
+ "pass": 84,
+ "fail": 2,
+ "not_run": 0,
+ "results": [
+  {
+   "name": "без входа: «Войдите как сотрудник» и одна кнопка",
+   "status": "PASS",
+   "detail": {
+    "actions": [
+     "/#day"
+    ]
+   }
+  },
+  {
+   "name": "вход сотрудника",
+   "status": "PASS",
+   "detail": 200
+  },
+  {
+   "name": "1920-ru: без прокрутки",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: 4 числа = akim/board",
+   "status": "PASS",
+   "detail": {
+    "kpi": [
+     "143",
+     "104",
+     "35",
+     "106"
+    ],
+    "want": [
+     "143",
+     "104",
+     "35",
+     "106"
+    ]
+   }
+  },
+  {
+   "name": "1920-ru: подписи и числа не под мини-графиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1920-ru: баннер кризиса из штаба R17",
+   "status": "PASS",
+   "detail": "Кризис: Буран в Нуре · район Нурас 14 октября, 05:27 · задачи 1 из 4 · служб: 4 · обновлено 13:27"
+  },
+  {
+   "name": "1920-ru: блоки по очереди = slides akim/board",
+   "status": "PASS",
+   "detail": {
+    "ids": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ],
+    "slides": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ]
+   }
+  },
+  {
+   "name": "1920-ru: блок «crisis» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: блок «services» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: колонка R17 — «ответ просрочен»",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: блок «decisions» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: блок «together» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: «Двор недели» со страницы двора R16",
+   "status": "PASS",
+   "detail": "Двор недели: BI City TokyoСубботник во дворе · придут: 14 · 37 соседей в Birge"
+  },
+  {
+   "name": "1920-ru: начатое дело — «идёт сейчас»",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: блок «meetings» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: блок «forecast» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: блок «topics» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: блок «districts» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-ru: карта районов — числа = akim/board",
+   "status": "PASS",
+   "detail": {
+    "map": {
+     "labels": [
+      "38",
+      "21",
+      "27",
+      "290",
+      "32",
+      "18"
+     ],
+     "pins": 3,
+     "w": 300
+    },
+    "want": [
+     "290",
+     "38",
+     "32",
+     "27",
+     "21",
+     "18"
+    ]
+   }
+  },
+  {
+   "name": "1920-ru: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1920-kk: без прокрутки",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: 4 числа = akim/board",
+   "status": "PASS",
+   "detail": {
+    "kpi": [
+     "143",
+     "104",
+     "35",
+     "106"
+    ],
+    "want": [
+     "143",
+     "104",
+     "35",
+     "106"
+    ]
+   }
+  },
+  {
+   "name": "1920-kk: подписи и числа не под мини-графиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1920-kk: баннер кризиса из штаба R17",
+   "status": "PASS",
+   "detail": "Төтенше жағдай: Нұрада боран · Нұра ауданы14 қазан, 05:27 бастап · тапсырмалар: 1/4 · қызметтер: 4 · жаңартылды: 13:27"
+  },
+  {
+   "name": "1920-kk: блоки по очереди = slides akim/board",
+   "status": "PASS",
+   "detail": {
+    "ids": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ],
+    "slides": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ]
+   }
+  },
+  {
+   "name": "1920-kk: блок «crisis» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: блок «services» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: колонка R17 — «ответ просрочен»",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: блок «decisions» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: блок «together» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: «Двор недели» со страницы двора R16",
+   "status": "PASS",
+   "detail": "Апта ауласы: BI City TokyoСубботник во дворе · барады: 14 · Birge-де 37 көрші"
+  },
+  {
+   "name": "1920-kk: начатое дело — «идёт сейчас»",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: блок «meetings» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: блок «forecast» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: блок «topics» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: блок «districts» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1920-kk: карта районов — числа = akim/board",
+   "status": "PASS",
+   "detail": {
+    "map": {
+     "labels": [
+      "38",
+      "21",
+      "27",
+      "290",
+      "32",
+      "18"
+     ],
+     "pins": 3,
+     "w": 278
+    },
+    "want": [
+     "290",
+     "38",
+     "32",
+     "27",
+     "21",
+     "18"
+    ]
+   }
+  },
+  {
+   "name": "1920-kk: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: без прокрутки",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: 4 числа = akim/board",
+   "status": "PASS",
+   "detail": {
+    "kpi": [
+     "143",
+     "104",
+     "35",
+     "106"
+    ],
+    "want": [
+     "143",
+     "104",
+     "35",
+     "106"
+    ]
+   }
+  },
+  {
+   "name": "1366-ru: подписи и числа не под мини-графиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: баннер кризиса из штаба R17",
+   "status": "PASS",
+   "detail": "Кризис: Буран в Нуре · район Нурас 14 октября, 05:27 · задачи 1 из 4 · служб: 4 · обновлено 13:27"
+  },
+  {
+   "name": "1366-ru: блоки по очереди = slides akim/board",
+   "status": "PASS",
+   "detail": {
+    "ids": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ],
+    "slides": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ]
+   }
+  },
+  {
+   "name": "1366-ru: блок «crisis» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: блок «services» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: колонка R17 — «ответ просрочен»",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: блок «decisions» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: блок «together» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: «Двор недели» со страницы двора R16",
+   "status": "PASS",
+   "detail": "Двор недели: BI City TokyoСубботник во дворе · придут: 14 · 37 соседей в Birge"
+  },
+  {
+   "name": "1366-ru: начатое дело — «идёт сейчас»",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: блок «meetings» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: блок «forecast» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: блок «topics» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: блок «districts» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-ru: карта районов — числа = akim/board",
+   "status": "PASS",
+   "detail": {
+    "map": {
+     "labels": [
+      "38",
+      "21",
+      "27",
+      "290",
+      "32",
+      "18"
+     ],
+     "pins": 3,
+     "w": 201
+    },
+    "want": [
+     "290",
+     "38",
+     "32",
+     "27",
+     "21",
+     "18"
+    ]
+   }
+  },
+  {
+   "name": "1366-ru: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: без прокрутки",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: 4 числа = akim/board",
+   "status": "PASS",
+   "detail": {
+    "kpi": [
+     "143",
+     "104",
+     "35",
+     "106"
+    ],
+    "want": [
+     "143",
+     "104",
+     "35",
+     "106"
+    ]
+   }
+  },
+  {
+   "name": "1366-kk: подписи и числа не под мини-графиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: баннер кризиса из штаба R17",
+   "status": "PASS",
+   "detail": "Төтенше жағдай: Нұрада боран · Нұра ауданы14 қазан, 05:27 бастап · тапсырмалар: 1/4 · қызметтер: 4 · жаңартылды: 13:27"
+  },
+  {
+   "name": "1366-kk: блоки по очереди = slides akim/board",
+   "status": "PASS",
+   "detail": {
+    "ids": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ],
+    "slides": [
+     "crisis",
+     "services",
+     "decisions",
+     "together",
+     "meetings",
+     "forecast",
+     "topics",
+     "districts"
+    ]
+   }
+  },
+  {
+   "name": "1366-kk: блок «crisis» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: блок «services» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: колонка R17 — «ответ просрочен»",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: блок «decisions» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: блок «together» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: «Двор недели» со страницы двора R16",
+   "status": "PASS",
+   "detail": "Апта ауласы: BI City TokyoСубботник во дворе · барады: 14 · Birge-де 37 көрші"
+  },
+  {
+   "name": "1366-kk: начатое дело — «идёт сейчас»",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: блок «meetings» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: блок «forecast» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: блок «topics» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: блок «districts» без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "1366-kk: карта районов — числа = akim/board",
+   "status": "PASS",
+   "detail": {
+    "map": {
+     "labels": [
+      "38",
+      "21",
+      "27",
+      "290",
+      "32",
+      "18"
+     ],
+     "pins": 3,
+     "w": 185
+    },
+    "want": [
+     "290",
+     "38",
+     "32",
+     "27",
+     "21",
+     "18"
+    ]
+   }
+  },
+  {
+   "name": "1366-kk: без ошибок в консоли",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "день ru: три карточки соседей",
+   "status": "PASS",
+   "detail": [
+    "agencies",
+    "together",
+    "meetings"
+   ]
+  },
+  {
+   "name": "день ru: «Поддержать» → дело сцены 7",
+   "status": "PASS",
+   "detail": {
+    "support": "#together/i-w15-01",
+    "scene7": "i-w15-01"
+   }
+  },
+  {
+   "name": "день ru: одна кнопка «Открыть кризисный штаб» → идущий штаб",
+   "status": "FAIL",
+   "detail": [
+    "/#agencies/crisis/new/heat_outage"
+   ]
+  },
+  {
+   "name": "день ru: без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "день kk: три карточки соседей",
+   "status": "PASS",
+   "detail": [
+    "agencies",
+    "together",
+    "meetings"
+   ]
+  },
+  {
+   "name": "день kk: «Поддержать» → дело сцены 7",
+   "status": "PASS",
+   "detail": {
+    "support": "#together/i-w15-01",
+    "scene7": "i-w15-01"
+   }
+  },
+  {
+   "name": "день kk: одна кнопка «Открыть кризисный штаб» → идущий штаб",
+   "status": "FAIL",
+   "detail": [
+    "/#agencies/crisis/new/heat_outage"
+   ]
+  },
+  {
+   "name": "день kk: без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "неделя ru: без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "неделя ru: печать — не больше 2 листов A4",
+   "status": "PASS",
+   "detail": 2
+  },
+  {
+   "name": "неделя kk: без технических слов",
+   "status": "PASS"
+  },
+  {
+   "name": "неделя kk: печать — не больше 2 листов A4",
+   "status": "PASS",
+   "detail": 2
+  }
+ ]
+}

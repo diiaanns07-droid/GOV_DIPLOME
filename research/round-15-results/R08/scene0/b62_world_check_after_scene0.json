@@ -1,0 +1,265 @@
+{
+ "base": "http://127.0.0.1:8671",
+ "at": "2026-10-16T14:27:37+00:00",
+ "pass": 18,
+ "fail": 0,
+ "not_run": 0,
+ "results": [
+  {
+   "check": "C2",
+   "name": "районы «Картины дня» (7 дн.) = карта R07 (7 дн.)",
+   "status": "PASS",
+   "detail": {
+    "day": {
+     "nura": 290,
+     "almaty": 38,
+     "saraishyk": 32,
+     "esil": 27,
+     "baikonur": 21,
+     "saryarka": 18
+    },
+    "map": {
+     "nura": 290,
+     "almaty": 38,
+     "saraishyk": 32,
+     "esil": 27,
+     "baikonur": 21,
+     "saryarka": 18
+    }
+   }
+  },
+  {
+   "check": "S0",
+   "name": "вход сотрудника",
+   "status": "PASS",
+   "detail": 200
+  },
+  {
+   "check": "C1",
+   "name": "«Картина дня» = Ситуационный центр: числа (город)",
+   "status": "PASS",
+   "detail": {
+    "day": {
+     "new_day": 143,
+     "new_week": 242,
+     "in_progress": 104,
+     "overdue": 35,
+     "fixed_week": 106
+    },
+    "board": {
+     "new_day": 143,
+     "new_week": 242,
+     "in_progress": 104,
+     "overdue": 35,
+     "fixed_week": 106
+    }
+   }
+  },
+  {
+   "check": "C1",
+   "name": "«Картина дня» = Ситуационный центр: числа (nura)",
+   "status": "PASS",
+   "detail": {
+    "day": {
+     "new_day": 82,
+     "new_week": 138,
+     "in_progress": 43,
+     "overdue": 5,
+     "fixed_week": 45
+    },
+    "board": {
+     "new_day": 82,
+     "new_week": 138,
+     "in_progress": 43,
+     "overdue": 5,
+     "fixed_week": 45
+    }
+   }
+  },
+  {
+   "check": "C3",
+   "name": "районы Ситуационного центра = «Картина дня»",
+   "status": "PASS",
+   "detail": {
+    "board": {
+     "nura": 290,
+     "almaty": 38,
+     "saraishyk": 32,
+     "esil": 27,
+     "baikonur": 21,
+     "saryarka": 18
+    },
+    "day": {
+     "nura": 290,
+     "almaty": 38,
+     "saraishyk": 32,
+     "esil": 27,
+     "baikonur": 21,
+     "saryarka": 18
+    }
+   }
+  },
+  {
+   "check": "C4",
+   "name": "табло служб Ситуационного центра = табло R17 (7 дн.)",
+   "status": "PASS"
+  },
+  {
+   "check": "C5",
+   "name": "«новые за неделю» R08 = «поступило» R17 (7 дн.)",
+   "status": "PASS",
+   "detail": {
+    "r08": 242,
+    "r17": 242
+   }
+  },
+  {
+   "check": "C6",
+   "name": "кризис: Ситуационный центр = «Картина дня»",
+   "status": "PASS",
+   "detail": {
+    "board": [
+     "inc-w15-buran"
+    ],
+    "day": [
+     "inc-w15-buran"
+    ]
+   }
+  },
+  {
+   "check": "C6",
+   "name": "тревога «снег» → «Открыть кризисный штаб» ведёт в идущий штаб",
+   "status": "PASS",
+   "detail": {
+    "link": "/#agencies/crisis/inc-w15-buran",
+    "active": [
+     "inc-w15-buran"
+    ]
+   }
+  },
+  {
+   "check": "C7",
+   "name": "«Жители вместе»: Ситуационный центр = «Картина дня»",
+   "status": "PASS",
+   "detail": {
+    "board": {
+     "upcoming": 5,
+     "joined_upcoming": 41,
+     "done": 3,
+     "neighbors_done": 48,
+     "supported": 3
+    },
+    "day": {
+     "upcoming": 5,
+     "joined_upcoming": 41,
+     "done": 3,
+     "neighbors_done": 48,
+     "supported": 3
+    }
+   }
+  },
+  {
+   "check": "C7",
+   "name": "«двор недели» = страница двора R16 (подпись, соседи)",
+   "status": "PASS",
+   "detail": {
+    "board": {
+     "label_ru": "Двор: BI City Tokyo",
+     "members": 37
+    },
+    "r16": {
+     "label_ru": "Двор: BI City Tokyo",
+     "members": 37
+    }
+   }
+  },
+  {
+   "check": "C7",
+   "name": "«Встречи»: Ситуационный центр = «Картина дня»",
+   "status": "PASS",
+   "detail": {
+    "board": {
+     "total": 4,
+     "overdue": 0,
+     "todo": 1,
+     "in_progress": 1,
+     "done": 2
+    },
+    "day": {
+     "total": 4,
+     "overdue": 0,
+     "todo": 1,
+     "in_progress": 1,
+     "done": 2
+    }
+   }
+  },
+  {
+   "check": "C8",
+   "name": "демо-мир: источники — соседи, фикстур R08 нет",
+   "status": "PASS",
+   "detail": {
+    "crisis": "r17",
+    "services": "r17",
+    "together": "r16",
+    "meetings": "r13",
+    "forecast": "r13-week"
+   }
+  },
+  {
+   "check": "C9",
+   "name": "«Картина недели»: сумма по дням = поступило за неделю",
+   "status": "PASS",
+   "detail": {
+    "series": 242,
+    "kpi": 242
+   }
+  },
+  {
+   "check": "C9",
+   "name": "«Картина недели»: в работе и просрочено = «Картина дня»",
+   "status": "PASS",
+   "detail": {
+    "week": [
+     104,
+     35
+    ],
+    "day": [
+     104,
+     35
+    ]
+   }
+  },
+  {
+   "check": "C9",
+   "name": "«Картина недели» = «Картина дня»: поступило, исправлено, проверено за 7 дней",
+   "status": "PASS",
+   "detail": {
+    "week": [
+     242,
+     106,
+     16
+    ],
+    "day": [
+     242,
+     106,
+     16
+    ]
+   }
+  },
+  {
+   "check": "C10",
+   "name": "«Нужно решение акима»: у каждого пункта есть адрес",
+   "status": "PASS"
+  },
+  {
+   "check": "C11",
+   "name": "сцена 7: «Поддержать» в «Картине дня» — дело сцены",
+   "status": "PASS",
+   "detail": {
+    "pick": "i-w15-01",
+    "scene7": "i-w15-01"
+   }
+  }
+ ]
+}
