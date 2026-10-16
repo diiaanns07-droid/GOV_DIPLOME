@@ -138,6 +138,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "agencies/agencies.js", "agencies/agencies.css", "agencies/crisis-layer.js", "agencies/index.html",
                 # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (раздел #analyst; стенд analyst-demo.html не отдаём).
                 "assistant/analyst.js", "assistant/analyst.css",
+                # П3, R04: «Разбор обращений» — ИИ-разбор пачки (раздел #intake, сцена 0 демо).
+                "intake/intake.js", "intake/intake.css",
                 # R08 раунд 15: «Ситуационный центр» (отдельная страница /civic/board/) и «Картина недели» (печать A4).
                 "board/index.html", "board/board.js", "board/board.css", "akim/week.html", "akim/week.js", "akim/week.css",
                 # R16 раунд 15: «Мой двор» (#yard) и «Сделаем вместе» (#together), слой «Инициативы».

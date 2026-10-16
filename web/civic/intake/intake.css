@@ -1,0 +1,479 @@
+/* Birge · «Разбор обращений» (R04, П3, сцена 0). Только токены и компоненты набора R11 (ui-kit/tokens.css,
+   components.css): строки как в Linear (.bk-lrow), группы (.bk-lgroup), кнопки, метки. П1 — без картинок и эмодзи,
+   значки — спрайт ui-kit/icons.svg. Ширина — по листу оболочки (без пустых полей), текст абзацев — до 72 знаков. */
+
+.bi {
+  --bi-gap: var(--s-4, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--bi-gap);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  color: var(--c-ink, #111);
+  font-family: var(--font, inherit);
+}
+.bi .ic {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── шапка: заголовок, «ИИ-разбор», «Пример» ── */
+.bi-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+.bi-title {
+  margin: 0;
+  font-size: var(--fs-title, 22px);
+  font-weight: var(--fw-semi, 600);
+  line-height: var(--lh-head, 1.2);
+  letter-spacing: var(--ls-title, normal);
+}
+/* Метка «ИИ»: в ui-kit раунда 15+ — .bk-ai (R11, BirgeUI.aiTag); здесь — та же плашка для старой сборки ui-kit. */
+.bi-ai {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px 0 6px;
+  border-radius: var(--r-pill, 999px);
+  background: var(--c-fill, #ececea);
+  color: var(--c-text-2, #444);
+  font-size: var(--fs-xs, 12px);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1;
+  vertical-align: middle;
+  cursor: help;
+}
+.bi .bk-ai .ic,
+.bi-ai .ic {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── ввод ── */
+.bi-lead {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--c-text-2, #444);
+  font-size: var(--fs-body, 15px);
+  line-height: var(--lh-text, 1.5);
+}
+.bi-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+.bi-text {
+  width: 100%;
+  min-height: 220px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid var(--c-line-strong, #c9c9c9);
+  border-radius: var(--r-m, 12px);
+  background: var(--c-surface, #fff);
+  color: var(--c-ink, #111);
+  font: inherit;
+  font-size: var(--fs-small, 14px);
+  line-height: 1.55;
+  resize: vertical;
+  tab-size: 2;
+}
+.bi-text:focus-visible {
+  outline: 2px solid var(--c-focus, #2f6fed);
+  outline-offset: 1px;
+}
+.bk-field--error .bi-text {
+  border-color: var(--c-danger, #c62828);
+}
+.bi-meter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0;
+  color: var(--c-text-3, #6b6b6b);
+  font-size: var(--fs-caption, 13px);
+  font-variant-numeric: tabular-nums;
+}
+.bi-meter__count {
+  color: var(--c-text-2, #444);
+  font-weight: var(--fw-medium, 500);
+}
+.bi-meter.is-over .bi-meter__count,
+.bi-meter.is-over .bi-meter__size {
+  color: var(--c-danger, #c62828);
+}
+.bi-meter__limits {
+  margin-left: auto;
+}
+.bi-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.bi-actions .bk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.bi-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 72ch;
+  margin: 0;
+  color: var(--c-text-3, #6b6b6b);
+  font-size: var(--fs-caption, 13px);
+  line-height: var(--lh-text, 1.5);
+}
+.bi-note .ic {
+  margin-top: 2px;
+}
+.bi-error {
+  margin: 0;
+}
+
+/* ── разбор идёт: живой счётчик ── */
+.bi-run {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 8px 16px;
+  padding: 16px;
+  border-radius: var(--r-l, 16px);
+  background: var(--c-paper, #f6f6f4);
+}
+.bi-run__count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--fs-lead, 17px);
+  font-weight: var(--fw-medium, 500);
+}
+.bi-run__time {
+  margin: 0;
+  color: var(--c-text-2, #444);
+  font-size: var(--fs-lead, 17px);
+  font-variant-numeric: tabular-nums;
+}
+.bi-run__bar {
+  grid-column: 1 / -1;
+  position: relative;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--c-fill, #ececea);
+}
+.bi-run__bar span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -40%;
+  width: 40%;
+  border-radius: 2px;
+  background: var(--c-primary, #111);
+  animation: bi-run 1.1s var(--ease-in-out, ease-in-out) infinite;
+}
+@keyframes bi-run {
+  to { left: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bi-run__bar span {
+    left: 0;
+    width: 100%;
+    opacity: 0.35;
+    animation: none;
+  }
+}
+.bi-skel-ic {
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+}
+
+/* ── итог: «312 обращений → 41 задача · 9 служб · 6 срочных · 37 повторов склеено» ── */
+.bi-sum {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: var(--r-l, 16px);
+  background: var(--c-paper, #f6f6f4);
+}
+.bi-sum__line {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: var(--fw-regular, 400);
+  line-height: 1.3;
+  letter-spacing: var(--ls-title, normal);
+}
+.bi-sum__line:focus {
+  outline: none;
+}
+.bi-sum__line:focus-visible {
+  outline: 2px solid var(--c-focus, #2f6fed);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.bi-sum__part {
+  white-space: nowrap;
+}
+.bi-sum__arrow,
+.bi-sum__dot {
+  color: var(--c-text-3, #6b6b6b);
+}
+.bi-num {
+  font-weight: var(--fw-num, 600);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ls-num, normal);
+}
+.bi-num.is-urgent {
+  color: var(--c-danger, #c62828);
+}
+.bi-sum__meta,
+.bi-sum__demo {
+  margin: 0;
+  color: var(--c-text-3, #6b6b6b);
+  font-size: var(--fs-caption, 13px);
+  font-variant-numeric: tabular-nums;
+}
+.bi-done {
+  margin: 0;
+}
+.bi-done:focus {
+  outline: none;
+}
+.bi-done:focus-visible {
+  outline: 2px solid var(--c-focus, #2f6fed);
+  outline-offset: 2px;
+}
+
+/* ── задачи: группы и строки ── */
+.bi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.bi-gsec {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+/* Заголовок группы не липкий: на «Обращениях» липкая плашка наезжала на первую строку (П3, кадр 05). */
+.bi .bk-lgroup {
+  position: static;
+  margin-top: 0;
+}
+.bi-gsec.is-urgent .bk-lgroup {
+  background: var(--c-danger-soft, #fdecea);
+  color: var(--c-danger, #c62828);
+}
+.bi-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.bi-row {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+}
+.bi-row:focus-visible {
+  outline: 2px solid var(--c-focus, #2f6fed);
+  outline-offset: -2px;
+}
+.bi-row__ic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  color: var(--c-text-2, #444);
+}
+.bi-row__ic.is-urgent {
+  color: var(--c-danger, #c62828);
+}
+.bi-noaddr {
+  color: var(--c-warn, #a15c00);
+  font-weight: var(--fw-medium, 500);
+}
+.bi-code {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.bi-row__chev {
+  display: flex;
+  flex: none;
+  color: var(--c-text-3, #6b6b6b);
+  transition: transform var(--t-fast, 120ms) var(--ease, ease);
+}
+.bi-task.is-open .bi-row__chev {
+  transform: rotate(180deg);
+}
+.bi-task.is-open .bi-row {
+  background: var(--c-fill, #ececea);
+}
+
+/* «Почему так» */
+.bi-why {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 2px 0 8px 46px;
+  padding: 12px 14px;
+  border-left: 2px solid var(--c-line, #e3e3e0);
+  font-size: var(--fs-small, 14px);
+  line-height: var(--lh-text, 1.5);
+}
+.bi-why[hidden] {
+  display: none;
+}
+.bi-why__title {
+  margin: 0;
+  color: var(--c-text-3, #6b6b6b);
+  font-size: var(--fs-caption, 13px);
+  font-weight: var(--fw-medium, 500);
+}
+.bi-why__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.bi-why__line {
+  margin: 0;
+}
+.bi-why__line .bk-ai,
+.bi-why__line .bi-ai {
+  margin-left: 2px;
+}
+.bi-why__existing {
+  color: var(--c-text-2, #444);
+  font-weight: var(--fw-medium, 500);
+}
+.bi-why__note {
+  color: var(--c-text-2, #444);
+}
+.bi-why__urgent {
+  color: var(--c-danger, #c62828);
+  font-weight: var(--fw-medium, 500);
+}
+.bi-why__texts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 80ch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--c-text-2, #444);
+}
+.bi-why__id {
+  color: var(--c-text-3, #6b6b6b);
+  font-size: var(--fs-xs, 12px);
+  font-variant-numeric: tabular-nums;
+}
+.bi-why__more {
+  margin: 0;
+  color: var(--c-text-3, #6b6b6b);
+  font-size: var(--fs-caption, 13px);
+}
+.bi-why__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bi-why__acts .bk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* «Как разбирали» */
+.bi-method {
+  max-width: 80ch;
+  color: var(--c-text-2, #444);
+  font-size: var(--fs-small, 14px);
+  line-height: var(--lh-text, 1.5);
+}
+.bi-method summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap, 44px);
+  cursor: pointer;
+  font-weight: var(--fw-medium, 500);
+}
+.bi-method summary:focus-visible {
+  outline: 2px solid var(--c-focus, #2f6fed);
+  outline-offset: 2px;
+}
+.bi-method ol {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+.bi-method__note {
+  margin: 0;
+  color: var(--c-text-3, #6b6b6b);
+  font-size: var(--fs-caption, 13px);
+}
+
+/* ── планшет и телефон ── */
+@media (max-width: 1100px) {
+  .bi-meter__limits {
+    margin-left: 0;
+  }
+}
+@media (max-width: 720px) {
+  .bi {
+    --bi-gap: var(--s-3, 12px);
+  }
+  .bi-text {
+    min-height: 180px;
+  }
+  .bi-actions .bk-btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+  .bi-sum {
+    padding: 16px;
+  }
+  .bi-sum__line {
+    font-size: 20px;
+  }
+  .bi-why {
+    margin-left: 8px;
+  }
+  .bi-code {
+    display: none;
+  }
+  /* Телефон: название и строка под ним — до двух строк, без обрезки на полуслове */
+  .bi .bk-lrow__title,
+  .bi .bk-lrow__meta {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+  }
+  .bi-row {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+}
