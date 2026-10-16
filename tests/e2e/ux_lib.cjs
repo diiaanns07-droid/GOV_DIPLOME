@@ -105,11 +105,24 @@ function uiScreen(page) {
         const y = q.top + q.height / 2;
         return [[q.left + 2, y], [q.left + q.width / 2, y], [q.right - 2, y]];
       });
+      // Прокрутка — не наложение: часть строки ушла за край своего прокручиваемого контейнера или под его липкую шапку
+      // (position: sticky) — R12 «Қабанбай Батыр даңғылы» под углом шапки шкалы календаря на B0.20, ложный FAIL.
+      let clip = { left: 0, top: 0, right: innerWidth, bottom: innerHeight }, sc = null;
+      for (let n = el.parentElement; n && n !== document.body; n = n.parentElement) {
+        const cs = getComputedStyle(n);
+        if (cs.overflowX === "visible" && cs.overflowY === "visible") continue;
+        const q = n.getBoundingClientRect();
+        clip = { left: Math.max(clip.left, q.left), top: Math.max(clip.top, q.top), right: Math.min(clip.right, q.right), bottom: Math.min(clip.bottom, q.bottom) };
+        if (!sc && /(auto|scroll)/.test(cs.overflowX + " " + cs.overflowY)) sc = n;
+      }
+      const inClip = ([x, y]) => x >= clip.left && x <= clip.right && y >= clip.top && y <= clip.bottom;
+      const stickyIn = (h) => { if (!sc || !sc.contains(h)) return false;
+        for (let n = h; n && n !== sc; n = n.parentElement) if (getComputedStyle(n).position === "sticky") return true; return false; };
       let seen = 0, hidden = 0, by = null;
-      for (const [x, y] of pts) {
+      for (const [x, y] of pts.filter(inClip)) {
         const h = document.elementFromPoint(x, y);
         if (!h || h === el || el.contains(h) || h.contains(el) || clearAt(h, x, y)) seen++;
-        else if (!onMapLayer(h)) { hidden++; by = by || h; }
+        else if (!onMapLayer(h) && !stickyIn(h)) { hidden++; by = by || h; }
       }
       if (seen && hidden) clipped.push(`«${own.slice(0, 28)}» под «${(by.innerText || by.getAttribute("aria-label") || by.tagName).trim().replace(/\s+/g, " ").slice(0, 28)}»`);
     }
