@@ -340,7 +340,7 @@ def typos(text: str, rnd: random.Random, protected: list[str]) -> str:
     """1–2 опечатки в словах вне названий мест (пропуск, перестановка, удвоение буквы)."""
     spans = []
     for name in protected:
-        for m in re.finditer(re.escape(name), text):
+        for m in re.finditer(re.escape(name), text, flags=re.IGNORECASE):
             spans.append((m.start(), m.end()))
     words = [m for m in _WORD.finditer(text) if not any(a <= m.start() < b for a, b in spans)]
     if not words:
@@ -388,17 +388,17 @@ def day_at(minute: int) -> dict:
     return {"day_at": {"day": day, "hour": total // 60, "minute": total % 60}}
 
 
-def since_slots(minute: int) -> dict:
-    t = day_at(minute)["day_at"]
-    h = t["hour"]
-    ru = f"с {h:02d}:{t['minute']:02d}" if (h, t["minute"]) != (0, 0) else "с полуночи"
-    if 21 <= h <= 23:
-        kk = "кештен бері"
-    elif h <= 4:
-        kk = "түн ортасынан бері"
-    else:
-        kk = "таңертеңнен бері"
-    return {"since": ru, "sincek": kk}
+def part_of_night(minute: int) -> str:
+    """вечер — до полуночи, ночь — до 05:00, утро — после."""
+    return "evening" if minute < 150 else "night" if minute < 450 else "morning"
+
+
+def since_slots(start: int, rnd: random.Random) -> dict:
+    """«С какого часа» по началу проблемы — у каждого жителя своя формулировка."""
+    t = day_at(start)["day_at"]
+    words = TX.SINCE[part_of_night(start)]
+    ru = rnd.choice(words["ru"]).format(hm=f"{t['hour']:02d}:{t['minute']:02d}", hw=TX.HOUR_WORDS[t["hour"]])
+    return {"since": ru, "sincek": rnd.choice(words["kk"])}
 
 
 # ---------------------------------------------------------------- сборка
@@ -415,14 +415,16 @@ class Builder:
                 return lang
         return LANG_WEIGHTS[-1][0]
 
-    def render(self, family: str, place: dict, lang: str, since: dict, used: Counter) -> tuple[str, dict]:
+    def render(self, family: str, place: dict, lang: str, start: int, minute: int, used: Counter) -> tuple[str, dict]:
         spec = TX.FAMILIES[family]
         base = lang if lang != "latin" else ("ru" if self.rnd.random() < 0.6 else "kk")
         pool = spec[base]
         slots = dict(place["slots"])
-        slots.update(since)
         rnd = self.rnd
+        part = part_of_night(minute)
+        closers = TX.CLOSE_URGENT if spec["urgent"] else TX.CLOSE
         for _ in range(60):
+            slots.update(since_slots(start, rnd))
             least = min(used[(base, t)] for t in pool)
             tpl = rnd.choice([t for t in pool if used[(base, t)] == least])
             if place["type"] == "yard":
@@ -438,11 +440,11 @@ class Builder:
             say = "kk" if base == "kk" else "ru"
             if base == "mixed":
                 say = rnd.choice(("ru", "kk"))
-            if rnd.random() < 0.22:
-                text = rnd.choice(TX.OPEN[say]) + " " + text
+            if rnd.random() < 0.22 and not text.startswith(TX.GREETINGS):
+                text = rnd.choice(TX.OPEN[say][part]) + " " + text
             if rnd.random() < 0.18:
-                text = text.rstrip() + " " + rnd.choice(TX.CLOSE[say])
-            protected = [v for k, v in place["slots"].items()]
+                text = text.rstrip() + " " + rnd.choice(closers[say])
+            protected = list(place["slots"].values())
             typo = lang != "latin" and rnd.random() < TYPO_SHARE
             if typo:
                 text = typos(text, rnd, protected)
@@ -494,13 +496,12 @@ def build(seed: int = SEED, world: dict | None = None) -> tuple[dict, dict]:
     for gi, item in enumerate(plan(places)):
         family, place, n, window = item["family"], item["place"], item["n"], item["window"]
         start = _minute(b.rnd, window) if n == 1 else (window[0][0] if isinstance(window[0], tuple) else window[0])
-        since = since_slots(start)
         used: Counter = Counter()
         minutes = sorted(_minute(b.rnd, window) for _ in range(n)) if n > 1 else [start]
         key = f"{family}:{place['target']['id']}"
         groups.append({"key": key, "family": family, "place": place})
         for m in minutes:
-            text, meta = b.render(family, place, b.lang(), since, used)
+            text, meta = b.render(family, place, b.lang(), start, m, used)
             rows.append((m, text, meta, key))
     # без места: каждый текст — своя задача («адрес уточнить»)
     for family in sorted(TX.NOADDR):
@@ -534,10 +535,11 @@ def build(seed: int = SEED, world: dict | None = None) -> tuple[dict, dict]:
         place = g["place"]
         if place is None:
             district = (TX.NOADDR_FAMILIES.get(g["family"]) or {}).get("district")
-            gplace = {"type": "district" if district else "none", "target": None, "accept_ids": [], "district": district}
+            gplace = {"type": "district" if district else "none", "target": None, "accept_ids": [], "district": district,
+                      "mentions": []}
         else:
             gplace = {"type": place["type"], "target": place["target"], "accept_ids": place["accept_ids"],
-                      "district": place["district"]}
+                      "district": place["district"], "mentions": sorted(set(place["slots"].values()))}
             if place.get("street_ru"):
                 gplace["street_ru"] = place["street_ru"]
         gold_groups.append({"id": gid[g["key"]], "family": g["family"], **labels, "place": gplace,
