@@ -230,3 +230,11 @@ def test_p3_kind_thumb_is_a_compact_icon_not_a_missing_picture():
     assert re.search(r"\.bk-thumb\.bk-thumb--kind > svg\.ic\.ic \{\s*width: 20px;\s*height: 20px;", COMPONENTS)
     base = re.search(r"\n\.bk-thumb \{(.*?)\n\}", COMPONENTS, re.S).group(1)
     assert "width: 84px;" in base and "height: 84px;" in base, "фото — как было"
+
+
+def test_reference_list_text_is_readable_b136():
+    """R10 B-136: серый текст списков эталона (строки и группы «Обращений», подписи статуса, горячих мест, проекта) — --c-text-2,
+    не --c-text-3 (#7E8A85 давал 3,17–3,58 : 1)."""
+    for sel in (".bk-stline small", ".bk-hot__name small", ".bk-pd__note", ".bk-lgroup__count", ".bk-lrow__meta", ".bk-lrow__time"):
+        body = re.search(r"\n" + re.escape(sel) + r" \{(.*?)\n\}", COMPONENTS, re.S).group(1)
+        assert "color: var(--c-text-2);" in body and "--c-text-3" not in body, sel
