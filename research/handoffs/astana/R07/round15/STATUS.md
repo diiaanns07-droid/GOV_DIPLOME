@@ -199,7 +199,9 @@ restored_from: fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.
     (в оболочке район виден, только когда он выбран).
   Регресс на d43dd650: pytest R07 210/1 skip; хроника 16/16; волна 2 38/38; readability 18/18; pan 2/2; shots 64/64;
   map_tools 7/7; перекраска PASS. Сцены 7–9 (R10 demo_flow_v2) на B0.19 + файлы хроники 14103c7b (= d43dd650):
-  337 PASS / 0 FAIL / 0 NOT_RUN / 0 INFO. Часть 1 на B0.19 + d43dd650 — идёт, итог допишу. DELIVERY.json — финальный (П2).
+  337 PASS / 0 FAIL / 0 NOT_RUN / 0 INFO. Часть 1 (R10 demo_flow --world) на B0.19 + d43dd650: 172 PASS / 0 FAIL / 2 NOT_RUN
+  (как раньше) — e2e_part1_b019/RESULT.md. В оболочке B0.19 строка фильтров с выбранным районом: 1366 — одна строка,
+  375 ҚАЗ — район второй строкой, без переполнения. DELIVERY.json — финальный (П2).
 
 ## Дальше
 - П2: финальная поставка — DELIVERY.json (code_sha d43dd650). FINAL-5 в 14:00 Астаны (09:00 UTC) R01 собирает из веток.
