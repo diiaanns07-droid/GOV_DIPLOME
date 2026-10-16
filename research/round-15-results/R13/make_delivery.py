@@ -103,6 +103,11 @@ def main() -> None:
             "r15_meetings_tests": {"status": "PASS", "passed": 39, "total": 39,
                                    "note": "R15 @ b7b75ee3 на сборке R01 B0.15 с кодом R13 этой поставки: "
                                    "round15/test_r15_round15_meetings.py 27/27, test_r15_qa.py 12/12 (без NOT_RUN)"},
+            "r08_day_forecast_on_r01_build": {"status": "PASS",
+                                              "note": "сборка R01 B0.16 (4ac57b10), демо-мир, акимат → «Картина дня»: блок R08 "
+                                              "«Прогноз на неделю» из ui.civic_forecast — метка «прототип», 3 территории с причиной, "
+                                              "объяснение с числами проверки (57 % против 47 %); 1366 ru/kk и 375 ru, кадры "
+                                              "screens/day-forecast-*.jpg (подписи мест — код 0ef104c2)"},
             "r10_visual_audit": {"status": "PASS", "passed": 124, "total": 124,
                                  "note": "tests/e2e/visual_audit.cjs R10 @ 7b254ef7 --only meetings,meetings-staff на сборке R01 "
                                  "B0.15 с модулями R13 9ca9bc72 (демо-мир, 1366/1024/375 × ru/kk): WARN 0, FAIL 0 — на pvG было "

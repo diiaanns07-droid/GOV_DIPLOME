@@ -5,8 +5,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "путь R13 в FINAL-4 = поставка 6 раунда 14 (0487f2a6), восстанавливать нечего",
- "code_sha": "9ca9bc7288ed38ad5131052f7c49b985d42d3dbf",
- "tested_sha": "9ca9bc7288ed38ad5131052f7c49b985d42d3dbf",
+ "code_sha": "0ef104c294a40a009f0c10e9b54fb9b3ad99f195",
+ "tested_sha": "0ef104c294a40a009f0c10e9b54fb9b3ad99f195",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_forecast/targets.py",
@@ -64,6 +64,7 @@
   "tests/civic/R13/meetings/test_r13_meetings_gateway.py",
   "tests/civic/R13/qa/qa_browser.cjs",
   "tests/civic/R13/qa/test_r13_qa.py",
+  "tests/civic/R13/test_r13_forecast.py",
   "tests/civic/R13/test_r13_forecast_week.py",
   "tests/civic/R13/test_r13_neighbors_contract.py",
   "ui/civic_forecast/__init__.py",
@@ -83,7 +84,7 @@
  "tests": {
   "pytest_tests_civic_R13": {
    "status": "PASS",
-   "passed": 180,
+   "passed": 182,
    "failed": 0,
    "command": "python3 -m pytest -q tests/civic/R13"
   },
@@ -93,7 +94,7 @@
    "total": 179,
    "command": "tests/civic/R13/meetings/meetings_browser.cjs --full (BIRGE_URL стенда)",
    "sha": "9ca9bc7288ed38ad5131052f7c49b985d42d3dbf",
-   "env": "облако: сборка R01 claude/brave-fermi-nhzetj @ 735a40b5 (B0.15: раздел — экран-колонка 720 px) + модули R13 ссылками, CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
+   "env": "облако: сборки R01 claude/brave-fermi-nhzetj — B0.15 735a40b5 (полный прогон, кадры) и B0.16 4ac57b10 (быстрый прогон, «Вопрос акиму») + модули R13 ссылками, CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
    "note": "1366/1024/375 × ru/kk, все состояния; замер R10 B-118 и VISUAL_BRIEF §4 п. 3: зоны нажатия ≥ 44 px, текст ≥ 13 px, не больше 3 размеров шрифта (13 / 15 / 19) на списке, встрече, вкладке «Вопросы», у акимата — список, новая встреча, форма поручения; кадры screens/ — с этого прогона",
    "quick_run": {
     "status": "PASS",
@@ -154,6 +155,10 @@
    "total": 39,
    "note": "R15 @ b7b75ee3 на сборке R01 B0.15 с кодом R13 этой поставки: round15/test_r15_round15_meetings.py 27/27, test_r15_qa.py 12/12 (без NOT_RUN)"
   },
+  "r08_day_forecast_on_r01_build": {
+   "status": "PASS",
+   "note": "сборка R01 B0.16 (4ac57b10), демо-мир, акимат → «Картина дня»: блок R08 «Прогноз на неделю» из ui.civic_forecast — метка «прототип», 3 территории с причиной, объяснение с числами проверки (57 % против 47 %); 1366 ru/kk и 375 ru, кадры screens/day-forecast-*.jpg (подписи мест — код 0ef104c2)"
+  },
   "r10_visual_audit": {
    "status": "PASS",
    "passed": 124,
@@ -211,7 +216,10 @@
   "research/round-15-results/R13/screens/375-ru-r-empty.jpg",
   "research/round-15-results/R13/screens/375-ru-r-error.jpg",
   "research/round-15-results/R13/screens/375-ru-r-list.jpg",
-  "research/round-15-results/R13/screens/375-ru-r-loading.jpg"
+  "research/round-15-results/R13/screens/375-ru-r-loading.jpg",
+  "research/round-15-results/R13/screens/day-forecast-1366-kk.jpg",
+  "research/round-15-results/R13/screens/day-forecast-1366-ru.jpg",
+  "research/round-15-results/R13/screens/day-forecast-375-ru.jpg"
  ],
  "integration": "research/round-15-results/R13/INTEGRATION.txt",
  "patches_for_r01": [
