@@ -31,7 +31,7 @@
 
 /* Дата — главное на экране хроники (иерархия за 2 секунды): крупно, цифры одной ширины */
 .rp-date { grid-area: date; display: flex; flex-direction: column; align-items: flex-start; min-width: 150px; }
-.rp-date .rp-title { margin-bottom: 2px; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--rp-ink-3); }
+.rp-date .rp-title { margin-bottom: 2px; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--rp-ink-2); }
 .rp-day { font-size: 30px; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .rp-wd { margin-top: 2px; font-size: 13px; color: var(--rp-ink-2); }
 .rp-event { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px; min-width: 0; max-width: 100%;
@@ -65,7 +65,7 @@
   box-shadow: 0 0 0 2.5px var(--rp-ink), 0 2px 8px rgba(16, 24, 20, 0.25); will-change: left; pointer-events: none; }
 .rp-ticks { position: absolute; left: 0; right: 0; top: 48px; height: 16px; }
 .rp-tick { position: absolute; top: 0; width: 1px; height: 4px; background: var(--rp-line); }
-.rp-tick span { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: 13px; line-height: 14px; color: var(--rp-ink-3);
+.rp-tick span { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: 13px; line-height: 14px; color: var(--rp-ink-2);
   white-space: nowrap; font-style: normal; font-variant-numeric: tabular-nums; }
 .rp-tick:first-child span { left: 0; transform: none; }
 .rp-tick:last-child span { left: auto; right: 0; transform: none; font-weight: 500; color: var(--rp-ink-2); }
@@ -78,7 +78,7 @@
 .rp-mark--on { background: color-mix(in srgb, var(--c-info, #1f5fa8) 14%, transparent); }
 /* Фоновое долгое событие («Начало отопительного сезона») — тонкая полоса у верха шкалы, не заливка всей недели */
 .rp-mark--background { height: 6px; top: 0; border-left: 0; border-radius: 3px; background: color-mix(in srgb, var(--c-info, #1f5fa8) 18%, transparent); }
-.rp-mark--background .rp-mark__label { top: 8px; background: transparent; box-shadow: none; color: var(--rp-ink-3); font-weight: 500; }
+.rp-mark--background .rp-mark__label { top: 8px; background: transparent; box-shadow: none; color: var(--rp-ink-2); font-weight: 500; }
 .rp-mark--background.rp-mark--on { background: color-mix(in srgb, var(--c-info, #1f5fa8) 28%, transparent); }
 .rp-mark--background.rp-mark--on .rp-mark__label { background: transparent; color: var(--glass-info, #184981); }
 .rp-mark--nolabel .rp-mark__label { visibility: hidden; }

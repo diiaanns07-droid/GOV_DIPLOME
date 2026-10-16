@@ -582,6 +582,8 @@
         state.counts = (res[0] && res[0].counts) || {};
         state.caps = (res[0] && res[0].capabilities) || {};   // раунд 15: to_initiative — есть ли R16 в сборке
         state.appear = true;
+        // Проекты не загрузились — не «0 проектов»: вкладка без числа, внутри — ошибка с «Повторить» (R10 аудит П3, п. 8).
+        state.projectsFailed = !res[1];
         state.projects = res[1] ? res[1].items || [] : [];
         if (state.flash) {
           focusIdea(state.flash);
@@ -701,7 +703,7 @@
       // Телефон: короткие подписи «Идеи · N | Проекты · M» — длинные казахские не переносятся в узком сегменте.
       var full = wide();
       [["ideas", tr(full ? "idea.title" : "common.nav.ideas") + " · " + nIdeas],
-        ["projects", tr(full ? "idea.tab.akimat_projects" : "idea.tab.projects") + " · " + (state.projects || []).length]].forEach(function (t) {
+        ["projects", tr(full ? "idea.tab.akimat_projects" : "idea.tab.projects") + (state.projectsFailed ? "" : " · " + (state.projects || []).length)]].forEach(function (t) {
         var on = state.tab === t[0];
         row.appendChild(h("button", { type: "button", role: "tab", value: t[0], "aria-selected": String(on), tabindex: on ? "0" : "-1",
           "data-key": "tab-" + t[0], onclick: function () { chooseTab(t[0]); } }, [t[1]]));
@@ -752,7 +754,8 @@
       var sel = selected();
       var list = listOf(state.tab);
       if (state.tab === "projects") {
-        if (!list.length) emptyBox(body, tr("akim.proposals.empty"), null, ["square", "sports"], "list");
+        if (state.projectsFailed) stateBox(body, "error", { action: { onClick: load } });
+        else if (!list.length) emptyBox(body, tr("akim.proposals.empty"), null, ["square", "sports"], "list");
         list.forEach(function (p) { body.appendChild(projectCard(p, sel)); });
       } else {
         var open = akimat ? list.filter(function (x) { return !isDecided(x); }) : list;

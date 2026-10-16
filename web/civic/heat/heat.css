@@ -9,7 +9,8 @@
 .r07-root {
   /* Токены эталона A (research/round-14/design/REFERENCE.html :root) — через токены ui-kit R11 (ветка R11 7f0fdb9a: --c-ink
      #121A17, --c-text-2 #4B5752, --c-text-3 #7E8A85, --c-line rgba(18,26,23,.08)); запасные — те же значения эталона.
-     Решение владельца по серому (R10 B-075: #7E8A85 3,4–3,6:1) придёт одной правкой токена R11 — и в R07 тоже. */
+     Серый --r07-ink-3 (#7E8A85, 3,0–3,6 : 1) — только значки; читаемый текст 13–14 px — --r07-ink-2 (7,5 : 1), как в ui-kit
+     R11 по R10 B-136 (ec3d0aef: «--c-text-3 — только подсказки и значки»). */
   --r07-ink: var(--c-ink, #121A17);
   --r07-ink-2: var(--c-text-2, #4B5752);
   --r07-ink-3: var(--c-text-3, #7E8A85);
@@ -57,7 +58,7 @@
 /* Пояснения — серым текстом, без плашек (CLEAN_PASS №2: единственная плашка — срочный случай 104/112) */
 .r07-note { margin: 0; font-size: 13px; color: var(--r07-ink-2); }
 /* «Данные — пример» — одна серая строка внизу панели (CLEAN_PASS R07 №5, ui-kit .bk-footnote) */
-.r07-footnote { margin: 4px var(--r07-gutter) 0; padding: 12px 0 0; border-top: 1px solid var(--r07-line); color: var(--r07-ink-3); font-size: 13px; line-height: 1.4; }
+.r07-footnote { margin: 4px var(--r07-gutter) 0; padding: 12px 0 0; border-top: 1px solid var(--r07-line); color: var(--r07-ink-2); font-size: 13px; line-height: 1.4; }
 .r07-link { position: relative; min-height: 44px; margin: -12px 0; padding: 0; border: 0; background: none; color: var(--r07-link); font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; }
 .r07-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
@@ -67,7 +68,7 @@
  * со статус-иконкой; строки 44 px. Поля — --r07-gutter / --r07-top, как у карточки. */
 .r07-hot { position: relative; padding: var(--r07-top, 18px) var(--r07-gutter) 4px; }
 .r07-lhd { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
-.r07-lhd__days { font-size: 13px; color: var(--r07-ink-3); }
+.r07-lhd__days { font-size: 13px; color: var(--r07-ink-2); }
 .r07-lhd .r07-reset { margin-left: auto; }
 .r07-lhd .r07-x { align-self: center; }
 .r07-lhd .r07-reset + .r07-x { margin-left: 4px; }
@@ -154,7 +155,7 @@
 /* Группы по статусу (Linear): статус-иконка + «Новые» / «В работе» 13/500 серым и число */
 .r07-groups { margin-top: 6px; }
 .r07-gh { display: flex; align-items: center; gap: 8px; margin: 10px 0 2px; font-size: 13px; font-weight: 500; color: var(--r07-ink-2); }
-.r07-gh__n { color: var(--r07-ink-3); font-weight: 400; }
+.r07-gh__n { color: var(--r07-ink-2); font-weight: 400; }
 .r07-list { list-style: none; margin: 0; padding: 0; }
 .r07-list > li + li { border-top: 1px solid var(--r07-line); }
 /* Строка 44 px: статус-иконка, число на плашке цвета места (эталон .cnt 34×26/8, 13/700), название 14/500 в одну строку,
@@ -169,7 +170,7 @@
 .r07-item { padding-block: 6px; }
 .r07-item__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .r07-item__title { font-size: 14px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
-.r07-item__meta { font-size: 13px; line-height: 1.3; color: var(--r07-ink-3); overflow-wrap: anywhere; }
+.r07-item__meta { font-size: 13px; line-height: 1.3; color: var(--r07-ink-2); overflow-wrap: anywhere; }
 /* Нажали на место на обзоре районов — пока карта перелетает к нему, строка «открывается»: подсветка и кольцо на месте
  * темы (дизайн-марафон №8, №10: нажатие не теряется; на ноутбуке ~1 с, на слабом — дольше) */
 .r07-item--busy { background: var(--r07-fill); cursor: progress; }
@@ -223,14 +224,14 @@
 .r07-big b { font-size: 34px; line-height: 1.2; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .r07-big span { font-size: 14px; color: var(--r07-ink-2); }
 /* «Пример» — серое слово, «Содержит грубые слова» — красное слово: без плашек */
-.r07-tag { color: var(--r07-ink-3); font-size: 13px; font-weight: 400; }
+.r07-tag { color: var(--r07-ink-2); font-size: 13px; font-weight: 400; }
 .r07-tag--rude { color: var(--r07-danger); font-weight: 600; }
 /* Статус — один раз (эталон .st): статус-иконка + слово 15, справа серым 13 — срок или дата */
 .r07-statusline { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin: 12px var(--r07-gutter) 0; font-size: 15px; }
 .r07-status { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 400; color: var(--r07-ink); white-space: normal; }
 .r07-root .r07-status::before { content: none; display: none; }   /* точку ui-kit заменяет статус-иконка */
 .r07-sti { flex: none; }
-.r07-statusline__note { margin-left: auto; padding: 0; color: var(--r07-ink-3); font-size: 13px; text-align: right; }
+.r07-statusline__note { margin-left: auto; padding: 0; color: var(--r07-ink-2); font-size: 13px; text-align: right; }
 .r07-statusline__note[data-overdue="true"] { color: var(--r07-danger); font-weight: 600; }
 /* Кнопки эталона: главная (почти чёрная) растягивается, вторая серая — по тексту */
 .r07-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px var(--r07-gutter) 0; }
@@ -245,12 +246,12 @@
 .r07-tabs { display: flex; gap: 18px; margin: 4px calc(-1 * var(--r07-bleed, 0px)) 0; padding: 0 calc(var(--r07-gutter) + var(--r07-bleed, 0px)) 0;
   border-bottom: 1px solid var(--r07-line); overflow-x: auto; scrollbar-width: none; }
 .r07-tabs::-webkit-scrollbar { display: none; }
-.r07-tab { position: relative; flex: none; min-height: 44px; padding: 14px 0 10px; border: 0; background: none; color: var(--r07-ink-3); font-size: 14px; font-weight: 500;
+.r07-tab { position: relative; flex: none; min-height: 44px; padding: 14px 0 10px; border: 0; background: none; color: var(--r07-ink-2); font-size: 14px; font-weight: 500;
   white-space: nowrap; cursor: pointer; transition: color 0.15s var(--r07-ease); }
 /* R11 §22.3 a: зона нажатия ≥ 44 и по ширине («Обзор» 43, «Шолу» 35) — невидимое поле 7 px по бокам (между вкладками 18),
    черта выбранной — по ширине текста, как в эталоне */
 .r07-tab::after { content: ""; position: absolute; inset: 0 -7px; }
-.r07-tab:hover { color: var(--r07-ink-2); }
+.r07-tab:hover { color: var(--r07-ink); }
 .r07-tab[aria-selected="true"] { color: var(--r07-ink); box-shadow: inset 0 -2px 0 var(--r07-ink); }
 .r07-tp { padding: 6px var(--r07-gutter) 0; }
 .r07-tp[hidden] { display: none; }
@@ -293,26 +294,26 @@ a.r07-qr { position: relative; display: inline-flex; align-items: center; min-he
 .r07-details > :not(summary) { margin: 0 0 12px; }
 /* плавно — только когда человек раскрыл блок (класс на 400 мс из bindPanel), а не при каждой перерисовке карточки */
 .r07-details--opening[open] > :not(summary) { animation: r07-enter 220ms var(--r07-ease) backwards; }
-.r07-merged__count { color: var(--r07-ink-3); font-weight: 400; }
+.r07-merged__count { color: var(--r07-ink-2); font-weight: 400; }
 .r07-merged__btn { margin-top: 8px; width: 100%; }
 /* «История»: период и сколько сообщили, жалобы по дням, о чём сообщают */
 .r07-chart, .r07-topics-box { padding-top: 14px; border-top: 1px solid var(--r07-line); margin-top: 2px; }
 .r07-chart .r07-h4, .r07-topics-box .r07-h4 { margin: 0 0 10px; font-size: 14px; font-weight: 600; }
 .r07-spark { display: flex; align-items: flex-end; gap: 4px; height: 56px; padding: 4px; border-radius: 10px; background: var(--r07-paper); }
 .r07-spark > i { flex: 1; border-radius: 4px 4px 0 0; background: #EF9F27; min-height: 2px; }
-.r07-axis { display: flex; justify-content: space-between; margin-top: 4px; font-size: 13px; color: var(--r07-ink-3); }
+.r07-axis { display: flex; justify-content: space-between; margin-top: 4px; font-size: 13px; color: var(--r07-ink-2); }
 .r07-topics { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
 .r07-topics li { display: flex; align-items: center; gap: 10px; }
 .r07-topics li .r07-ic { color: var(--r07-ink-2); }
 .r07-topics li span { flex: 1; }
 .r07-topics li b { font-weight: 500; }
-.r07-topics__sub { display: block; font-size: 13px; color: var(--r07-ink-3); font-weight: 400; }
+.r07-topics__sub { display: block; font-size: 13px; color: var(--r07-ink-2); font-weight: 400; }
 
 /* ---- «Обращения»: цитаты жителей (≤ 2 строк, полностью — в подсказке) с линиями 1 px ---- */
 .r07-quotes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .r07-quotes li { padding: 10px 0; border-bottom: 1px solid var(--r07-line); }
 .r07-quotes li:last-child { border-bottom: 0; }
-.r07-quote__meta { margin: 3px 0 0; font-size: 13px; color: var(--r07-ink-3); display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.r07-quote__meta { margin: 3px 0 0; font-size: 13px; color: var(--r07-ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
 .r07-quote__meta .r07-tag { font-size: 13px; }
 .r07-empty__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 4px; }
 
