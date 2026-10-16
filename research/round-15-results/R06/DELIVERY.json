@@ -3,8 +3,8 @@
   "branch": "claude/eloquent-einstein-wvuyje",
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "restored_from": null,
-  "code_sha": "e0ad237003f89bb2e68951354ff16c4b16f04963",
-  "tested_sha": "e0ad237003f89bb2e68951354ff16c4b16f04963",
+  "code_sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
+  "tested_sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
   "push_status": "OK",
   "environment": "облако Linux; Python 3.13.16, pytest 9.1.1; Node 22.22.0, Playwright 1.56.1, Chromium 1194 (headless); без интернета: подложка карты — упрощённый фон (П1 правило 6)",
   "changed_paths": [
@@ -49,7 +49,7 @@
   "tests": [
     {
       "name": "pytest tests/civic/R06 (рабочая копия = FINAL-4 + R06)",
-      "sha": "e0ad237003f89bb2e68951354ff16c4b16f04963",
+      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
       "status": "PASS",
       "passed": 726,
       "failed": 0,
@@ -57,95 +57,79 @@
       "note": "skip: полный мир R02 (нет файла мира в базе пакета), 2 — прежние условные"
     },
     {
-      "name": "pytest tests/civic/R06 на дереве «как B1»",
+      "name": "pytest tests/civic/R06 на дереве «как FINAL-5»",
+      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
       "status": "PASS",
       "passed": 727,
       "failed": 0,
       "skipped": 2,
-      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)",
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)",
       "note": "включая засев настоящего мира R02 (55 записей) и миграцию на базе FINAL-4"
     },
     {
-      "name": "pytest tests/civic/R01 на дереве «как B1» (код R06 не ломает шлюз и сборку)",
+      "name": "pytest tests/civic/R01 на дереве «как FINAL-5» (код R06 не ломает шлюз и сборку)",
+      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
       "status": "PASS",
       "passed": 365,
       "failed": 0,
       "skipped": 1,
-      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)"
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)"
     },
     {
-      "name": "pytest tests/civic/R16 на дереве «как B1» (идея → инициатива не ломает R16)",
+      "name": "pytest tests/civic/R16 на дереве «как FINAL-5» (идея → инициатива не ломает R16)",
+      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
       "status": "PASS",
-      "passed": 59,
+      "passed": 61,
       "failed": 0,
       "skipped": 0,
-      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)"
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)"
     },
     {
-      "name": "приёмка API R10 tests/civic/R10/api_v2.py на дереве «как B1» — строки R06",
+      "name": "приёмка API R10 tests/civic/R10/api_v2.py на дереве «как FINAL-5»",
+      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
       "status": "PASS",
-      "passed": 10,
+      "passed": 155,
       "failed": 0,
-      "note": "всего по сборке PASS 147 / FAIL 2 / NOT_RUN 4 (FAIL — не R06: 2 строки соседей; на дереве B0 это были R16 POST together/initiatives (far_from_yard на примере R10) и R13 GET meetings/updates (device_id)); прогон на коде 2daa408a (после него в Python R06 менялась только строка документации notify.py)",
-      "env": "дерево «как B1»: R01 29b4ae9d (B0.2) + R06 2daa408a"
+      "not_run": 0,
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)",
+      "note": "маршруты R06 3 / 3 готовы; строки R06 (notifications, notifications/read, ideas/{id}/to-initiative: доступ, ответ, формат §5 и §10, ошибки) — 10 PASS; по всей сборке FAIL 0"
     },
     {
-      "name": "браузер tests/civic/R06/round15/browser_r15.cjs на дереве «как B1»",
+      "name": "браузер tests/civic/R06/round15/browser_r15.cjs на дереве «как FINAL-5»",
+      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
       "status": "PASS",
-      "passed": 273,
+      "passed": 280,
       "failed": 0,
-      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)",
-      "note": "+ на каждом экране R06 и в панели ленты — нет текста мельче --fs-xs (13 px в ui-kit R11 r7)"
-    },
-    {
-      "name": "сценарий демо R10 tests/e2e/demo_flow.cjs (часть 1, шаги 1–7 FINAL-4) на дереве «как B1»",
-      "status": "PASS*",
-      "passed": 169,
-      "failed": 4,
-      "note": "шаг 5 (проект в 3D и голос) — 43/43 PASS, как в FINAL-4; 4 FAIL — не R06: зона нажатия чипа «Хроника» 34 px (R07/R01) на 1366/375 × ru/kk",
-      "env": "дерево «как B1»: R01 29b4ae9d (B0.2) + R06 9422c926 (после него в R06 менялись только «Прочитать все» ленты и тесты)"
-    },
-    {
-      "name": "сценарий демо R10 tests/e2e/demo_flow_v2.cjs (сцены 7–9, демо-мир) на дереве «как B1»",
-      "status": "PASS*",
-      "passed": 156,
-      "failed": 50,
-      "not_run": 3,
-      "note": "строк R06 нет; сцена 8 «асфальт раньше сетей — копаем дважды» (API R12 по работам seed_world R06) — PASS; FAIL — UX экранов R16 (18), R17 (16), R12 (16): зоны нажатия 36 px, контраст; NOT_RUN — маршруты R09 (поставки нет в сборке)",
-      "env": "дерево «как B1»: R01 29b4ae9d (B0.2) + R06 9422c926 (после него в R06 менялись только «Прочитать все» ленты и тесты)"
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)",
+      "note": "1366 / 1024 / 375 × ru / kk: работы v2, идеи и проекты (П1: значок вида ≤ 48 px), лента и колокольчик, «идея → инициатива» с настоящим R16; новое — плитки карточки идеи: слово (район, объект) не рвётся посреди слога (R11 R06-3); нет текста мельче --fs-xs"
     },
     {
       "name": "регресс FINAL-4 R06: tests/civic/R06/round14/design_audit.cjs",
+      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
       "status": "PASS",
       "passed": 284,
       "failed": 0,
-      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)",
-      "sha": "c7c8fbe8847cb994db3c43faaf503f2335b6f9d7"
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)"
     },
     {
       "name": "регресс FINAL-4 R06: tests/civic/R06/round14/app_r01_wave2.cjs",
+      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
       "status": "PASS",
       "passed": 130,
       "failed": 0,
-      "env": "сборка R01 claude/brave-fermi-nhzetj @ aad86127 (B0.13 — уже с R06 c7c8fbe8; дерево tests/civic/R06/round15/tree_r01_build.sh, пути R06 совпадают с поставкой)",
-      "sha": "c7c8fbe8847cb994db3c43faaf503f2335b6f9d7"
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)"
     },
     {
-      "name": "соседи на дереве «как B1»: pytest tests/civic/R02 R10 R15",
-      "sha": "c2604ea2 + R01 c9069723",
-      "status": "PASS*",
-      "passed": 905,
-      "failed": 1,
-      "skipped": 45,
-      "xfailed": 10,
-      "note": "1 FAIL — R15 S42 XPASS(strict): R01 исправил, R15 должен снять xfail (просьба R01); к R06 не относится",
-      "env": "R01 c9069723 (B0) + R06 c2604ea2"
+      "name": "сценарии показа R10: demo_flow.cjs --world (часть 1) и demo_flow_v2.cjs (сцены 7–9)",
+      "status": "PASS",
+      "note": "прогон R01 на кандидате B1 b32945a4 (B0.20, R06 e0ad2370): часть 1 172 / 0 / 2 NOT_RUN (как FINAL-4), сцены 7–9 337 / 0 / 0; после e0ad2370 у R06 изменились только плитки карточки идеи (раздел «Идеи») — ни часть 1, ни сцены 7–9 этот раздел не открывают (поиск по demo_flow*.cjs), поэтому сам R06 не перепрогонял",
+      "env": "R01 BUILD_LOG «Проверки кандидата B1»"
     },
     {
       "name": "стык ленты с настоящими модулями R09/R13/R16/R17 (neighbors_check.py)",
       "sha": "c7c8fbe8 на сборке R01 aad86127 (B0.13) с демо-миром",
       "status": "PASS",
-      "note": "источники R06/R09/R16/R17/R13 ok; житель двора сцены 7 с подпиской на Нуру — 14 новых: работы рядом с двором 2 (≤ 800 м, как вкладка «Работы» R16), работы района 5, кризис R17 3, новости двора R16 4; нет id устройств; ссылки внутренние"
+      "note": "Python R06 с тех пор не менялся; источники R06/R09/R16/R17/R13 ok; житель двора сцены 7 с подпиской на Нуру — 14 новых: работы рядом с двором 2 (≤ 800 м, как вкладка «Работы» R16), работы района 5, кризис R17 3, новости двора R16 4; нет id устройств; ссылки внутренние"
     },
     {
       "name": "кадры с настоящей картой (подложка)",
@@ -155,7 +139,12 @@
     {
       "name": "патч пути «#nearby/<район>/<id>» в модуле R08",
       "status": "NOT_RUN",
-      "note": "патч r08_nearby_path.patch проверен git apply --check на ветках R08 и сборке R01; применяет владелец R08"
+      "note": "r08_nearby_path.patch владелец R08 не применил (в B0.20 nearby.js не читает путь); по П2 новых функций нет — переносится в следующий раунд"
+    },
+    {
+      "name": "патч kind для «идея → инициатива» в модуле R16",
+      "status": "NOT_RUN",
+      "note": "r16_create_from_idea_kind.patch: kind есть у сервиса R16 (service.create_from_idea), но не у функции модуля ui.civic_together.create_from_idea — R06 передаёт kind, только если функция его принимает; иначе вид дела выбирает R16 (greening по виду объекта). Переносится в следующий раунд"
     }
   ],
   "screens": [
@@ -190,15 +179,15 @@
     "research/round-15-results/R06/screens/works-375-ru-list.png"
   ],
   "known_limits": [
-    "Колокольчик: пока у оболочки R01 нет своей кнопки, notify.js ставит свою в «.birge-me» (ноутбук, вид «Житель»); на телефоне лента — «Ещё → Уведомления» (пункт меню аватара «Уведомления · N» — по желанию R01, BirgeNotify.onCount).",
-    "Для ленты в B1 R01 должен добавить 3 строки (CIVIC_ASSETS и два тега) — INTEGRATION.txt «Коротко для R01»; маршруты уже в B0.",
-    "«Работа рядом» по подписке «Рядом» R08 открывает запись только с патчем R08 (r08_nearby_path.patch); без него — лента «Рядом» района.",
-    "kind сотрудника для «идея → инициатива» доходит до R16 только с патчем r16_create_from_idea_kind.patch (иначе — только greening через вид объекта; кнопка в интерфейсе kind не шлёт — вид выбирает R16).",
-    "Обращения R09 в ленте — когда в сборке R09 раунда 15 (updates); в B0.2 источник R09 — absent (лента работает без него).",
+    "«Работа рядом» по подписке «Рядом» R08 открывает запись только с патчем R08 (r08_nearby_path.patch, не применён); без него — лента «Рядом» района.",
+    "kind сотрудника для «идея → инициатива» доходит до R16 только с патчем r16_create_from_idea_kind.patch (не применён); кнопка в интерфейсе kind не шлёт — вид дела выбирает R16.",
+    "Перенос слов в плитках карточки идеи — простое правило слогов ru / kk для слов из словаря (район, вид объекта); на ноутбуке со словарём переносов Chrome может перенести иначе — тоже по слогам.",
+    "Первый запрос ленты после старта сервера — до ~1 с (R10 B-124: собираются все источники), дальше — кэш 5 с на устройство, 5–20 мс.",
     "Демо-мир: записи synthetic (demo:true, «Пример»); без флага CIVIC_DEMO_WORLD — демо FINAL-4 без изменений.",
     "Кадры — облако: подложка упрощённая; настоящий вид — LOCAL-12."
   ],
-  "next_step": "R01 B1: взять пути R06 из code_sha и 3 строки ленты (INTEGRATION.txt). R06 дальше по кругам: сборка B1 глазами (колокольчик, лента, работы рядом в «Моём дворе» R16), патчи R08/R16, ключи R11, находки R10/R15.",
-  "screens_note": "кадры — облако, дерево «как B1» (R01 197ad600 B0.4 + R06 7f6636cd), 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6)",
-  "code_note": "после c7c8fbe8 в коде R06 изменились только запасные цвета подписей ленты (notify.css, --c-text-3 → --c-text-2); полный прогон — на c7c8fbe8 (сборка B0.13), часть notify браузера на e0ad2370 и сборке R01 afaabca1 (B0.17): 67 PASS / 0 FAIL"
+  "next_step": "R01 FINAL-5 (16 окт 14:00 по Астане): взять пути R06 из code_sha — больше ничего не нужно (INTEGRATION.txt «Коротко для R01»). R06 до 16:00 чинит только блокеры из списков R10 / R15; после 16:00 — финальный STATUS «Раунд 15 закрыт».",
+  "screens_note": "кадры — облако, дерево «как FINAL-5» (ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f), 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6); кадр снимается, когда карта оболочки готова",
+  "code_note": "после e0ad2370 (в B0.19 / B0.20) изменились только web/civic/ideas/ideas.js, ideas.css (плитки «район / объект»: шрифт названий 15 px и мягкие переносы по слогам ru / kk — R11 R06-3) и tests/civic/R06/round15/browser_r15.cjs (проверка плиток; кадр — после загрузки карты). Python, маршруты, CIVIC_ASSETS и теги — без изменений",
+  "final": "финальная поставка раунда 15 к FINAL-5 (поправка П2: последние поставки до 13:30 по Астане, FINAL-5 в 14:00)"
 }

@@ -1,27 +1,21 @@
-R06 · раунд 15 · как подключить к сборке (поставка к B1)
+R06 · раунд 15 · как подключить к сборке (финальная поставка к FINAL-5, поправка П2)
 Ветка роли: claude/eloquent-einstein-wvuyje · код — DELIVERY.json (code_sha) · STATUS: research/handoffs/astana/R06/round15/STATUS.md
 Пути R06 (CONTRACT §2): ui/civic_store/, web/civic/proposals/, web/civic/ideas/, web/civic/notify/, tests/civic/R06/.
 Брать в сборку пути целиком; чужие файлы R06 не меняет — правки соседям ниже патчами.
 
 =====================================================================================================
-КОРОТКО ДЛЯ R01 (B1)
+КОРОТКО ДЛЯ R01 (FINAL-5, 16 окт 14:00 по Астане)
 =====================================================================================================
-1. Пути R06 — из code_sha (миграция 10 применяется сама при старте; данные FINAL-4 сохраняются).
-2. Маршруты API v2 R06 в B0 уже есть (notifications.list / notifications.read / ideas.to_initiative) — совместимы:
-   приёмка R10 tests/civic/R10/api_v2.py на дереве «B0.2 + R06» — все строки R06 PASS.
-3. Добавить ТОЛЬКО ленту:
-   ui/web_server.py, CIVIC_ASSETS — рядом с "ideas/ideas.js", "ideas/ideas.css", "proposals/works.js":
-       "notify/notify.js", "notify/notify.css",
-   web/index.html — после <link … /civic/ideas/ideas.css />:
-       <link rel="stylesheet" href="/civic/notify/notify.css" />
-   и после <script defer src="/civic/proposals/works.js"></script>:
-       <script defer src="/civic/notify/notify.js"></script>
-   Ровно это делает tests/civic/R06/round15/tree_r01_build.sh (проверка «как B1»: ветка R01 + пути R06 + эти 3 строки).
-4. Колокольчик: notify.js сам ставит кнопку в «.birge-me» (вид «Житель», ≥ 761 px). В B0.4 (8b1e5f0c) R01 уже
-   подключил: SCREENS.notifications (BirgeNotify), без пункта «Ещё», телефон — первый пункт меню аватара
-   «Уведомления · N» и точка на аватаре по BirgeNotify.onCount — проверено браузером R06 на 197ad600.
-5. seed_world R06 — ui.civic_store.seed_world (как вы уже зовёте в wire()): «civic-world: … R06 55 …».
-Проверено на дереве R01 29b4ae9d (B0.2) + R06: см. DELIVERY.json → tests.
+1. Пути R06 — из code_sha DELIVERY.json (d688c45f). В B0.19 / B0.20 R06 = e0ad2370; после него изменились только
+   web/civic/ideas/ideas.js, web/civic/ideas/ideas.css (плитки «район / объект» в карточке идеи: слово переносится
+   по слогам, а не «Спортпл / ощадка» — R11 R06-3) и тесты tests/civic/R06/round15/browser_r15.cjs. Python, маршруты,
+   CIVIC_ASSETS и теги не менялись — больше ничего добавлять не нужно.
+2. Уже в сборке с B0.4 (проверено на ветке R01 5feed194 = B0.20 + STATUS): маршруты notifications.list / .read /
+   ideas.to_initiative; "notify/notify.js", "notify/notify.css" в CIVIC_ASSETS и два тега в web/index.html
+   (tree_r01_build.sh ничего не досыпал); колокольчик в капсуле «Житель», на телефоне — «Уведомления · N» в меню
+   аватара; seed_world R06 («civic-world: … R06 55 …»).
+3. Проверено на дереве «ветка R01 5feed194 + пути R06 d688c45f»: pytest R06 727/2, R01 365/1, R16 61; браузер R06
+   280/0 (1366 / 1024 / 375 × ru / kk); регресс FINAL-4 design_audit 284/284, app_r01_wave2 130/130 — DELIVERY.json.
 
 =====================================================================================================
 A. ФУНКЦИИ ДЛЯ СОСЕДЕЙ (вызов в процессе, только чтение; нет связи с хранилищем — V2Error 503 module_not_ready)
