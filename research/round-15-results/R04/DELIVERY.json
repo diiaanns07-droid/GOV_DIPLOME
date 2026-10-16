@@ -282,11 +282,11 @@
     "P3_R15_on_R15_branch": {
       "status": "PASS",
       "passed": 99,
-      "xpassed": 2,
+      "xpassed": 5,
       "failed": 0,
-      "branch_sha": "970aa408",
+      "branch_sha": "048092ab",
       "cmd": "pytest -q tests/civic/R15/round15/test_r15_round15_moderate.py tests/civic/R15/round15/test_r15_round15_intake.py (код R04 9c16e868 в дереве R15)",
-      "note": "S53 (тест скорости 500 → 5000 знаков) — PASS; XPASS — нестрогие xfail «два телефона подряд» (moderate-4/5 есть в R04)"
+      "note": "S53 (скорость 500 → 5000 знаков) — PASS; XPASS 5 — тесты S54 (два телефона подряд, «тел 87011234567 (1)» в moderate и на экране итога): закрыто moderate-5"
     },
     "P3_on_R01_B6_2": {
       "status": "PASS",
@@ -295,6 +295,14 @@
       "R04_pytest": "569 passed / 1 skipped",
       "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
       "note": "в дереве B6.2 — код R04 9c16e868 и словарь R11 d0266f76"
+    },
+    "P3_R01_moderate_criterion": {
+      "status": "PASS",
+      "cmd": "moderate(\"8 \" * 2500)",
+      "seconds": 0.024,
+      "limit": 0.2,
+      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+      "note": "критерий R01 (STATUS a59e77dc) для moderate в FINAL-6"
     }
   },
   "screens": [
@@ -352,6 +360,11 @@
       "status": "fixed",
       "sha": "da0925fa",
       "note": "moderate-4 _split_run перебирал все отрезки цепочки (O(n³)); r04-moderate-5: окна ≤ 19 цифр допустимых длин — patch R15 P-R04-S53.diff, прочитан и проверен; 5000 знаков «123 …» — 0,045 с; ответы те же (1500 случайных цепочек); тесты R15 970aa408 — 99 passed, 2 xpassed"
+    },
+    "S54": {
+      "status": "fixed_in_R04_branch",
+      "sha": "da0925fa",
+      "note": "низкая (приватность П3): на B6.2 (moderate-3) два телефона подряд и номер с пометкой «(1)» не скрываются в итоге разбора и тексте записей; закрыто moderate-4/5 — в сборку вместе с исправлением S53 (moderate-5); тесты R15 048092ab — 5 XPASS"
     }
   },
   "neighbour_findings": {
