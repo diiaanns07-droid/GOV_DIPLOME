@@ -1,13 +1,13 @@
 {
  "role": "R04",
  "round": 15,
- "delivery": "D1.8 (для B1 R01, 16 окт 14:00)",
+ "delivery": "D1.9 (для B1 R01, 16 окт 14:00)",
  "branch": "claude/gifted-maxwell-i66wwi",
  "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
  "restored_from": null,
  "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
- "code_sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
- "tested_sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
+ "code_sha": "f526b9425ed311ccd565b984c28ccd585ed90f46",
+ "tested_sha": "f526b9425ed311ccd565b984c28ccd585ed90f46",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_replies/__init__.py",
@@ -53,7 +53,7 @@
    "passed": 110,
    "failed": 0,
    "cmd": "pytest -q tests/civic/R04/round15",
-   "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5"
+   "sha": "f526b9425ed311ccd565b984c28ccd585ed90f46"
   },
   "R04_round14_pytest": {
    "status": "PASS",
@@ -150,7 +150,7 @@
    "failed": 0,
    "skipped": 1,
    "cmd": "pytest -q tests/civic/R04",
-   "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5"
+   "sha": "f526b9425ed311ccd565b984c28ccd585ed90f46"
   },
   "neighbours_using_ml_api": {
    "status": "PASS",
@@ -167,7 +167,7 @@
     "R16": "58/58",
     "R13": "176/176",
     "R15": "69/69 (test_r15_round15_moderate.py, test_r15_profanity.py — в том числе их новый test_number_written_in_short_groups_is_still_masked)",
-    "R09": "594 passed / 1 skipped (@abb38712, код ed24c452)",
+    "R09": "594 passed / 1 skipped (@ecdec585, код f526b942)",
     "R01_build_tests_R01_R04": "823 passed / 2 skipped (@d282aa18, код ed24c452)"
    },
    "heads": "R17@10cce40a R16@0433fab9 R13@ece97f53 R15@5c07f8f0",
@@ -186,8 +186,8 @@
    "status": "PASS",
    "world": "R02 world_v1.json schema 1.1 @ 811f6c78 (743 жалобы, 40 совместных)",
    "route_vs_world_services": "мир 0152ef19: совместных 41/41, лишних «2 служб» 0 из 702, ведущая = служба мира 742/743 (сцена 8 — до «Принять»)",
-   "reply_draft_all_world_records": "743 × ru/kk через хранилище R09 (@abb38712, мир 0152ef19): ошибок 0, длина ≤ 271 (поле 320); повтор службы 0 (было 7), прошедшая дата как срок 0 (было 5; просроченных «новых» 5), с передачей 31 — код ed24c452",
-   "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5"
+   "reply_draft_all_world_records": "743 × ru/kk через хранилище R09 (@ecdec585, мир 0152ef19): ошибок 0, длина ≤ 271 (поле 320); повтор службы 0 (было 7), прошедшая дата как срок 0 (было 5); слова частей и передачи — как в словаре R11 (орындалуда 6, күтуде 1, жіберілді 29) — код f526b942",
+   "sha": "f526b9425ed311ccd565b984c28ccd585ed90f46"
   },
   "stand_http_check_r01_build": {
    "status": "PASS",
@@ -248,6 +248,11 @@
    "status": "fixed",
    "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
    "note": "Найдено R04 на стенде B0.12: просроченная «новая» жалоба — черновик обещал прошедший срок; после передачи служба повторялась дважды; без service ведущей была служба по таблице, а не куда передали; «…, 0 м» в объяснении сцены 8."
+  },
+  "R11_kk_terms": {
+   "status": "aligned",
+   "sha": "f526b9425ed311ccd565b984c28ccd585ed90f46",
+   "note": "По KK_REVIEW_R15 R11 (№ 19, 39, 40) и словарю joint.part.*: части служб — ждёт / в работе / сделано, күтуде / орындалуда / орындалды (было «ждёт очереди», «кезекте», «жұмыста»); «передали» по-казахски — «жіберілді» (было «берілді»). Отвергнутых R11 слов (учаске, дейін, батырма, дағдарыс) в текстах R04 нет."
   }
  }
 }
