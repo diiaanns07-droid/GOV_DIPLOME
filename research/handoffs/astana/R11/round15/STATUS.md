@@ -135,6 +135,8 @@ COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочита
   в репозиторий — `tests/civic/R11/tools/sync_roles.py` (+ extract_obj.cjs; раньше жила только в scratchpad); +4 ключа R13
   (ask.staff.pii.*) → 2865, ru = kk. R13-3 сделан R13 (9ca9bc72). R02 пишет «просьб к R02 нет» — в начало INTEGRATION вынесен
   блок «ОТКРЫТЫЕ ПРОСЬБЫ R11 К РОЛЯМ» (R02-1 с командой применения).
+- 07:23–07:27 — **круг 16** (по триггеру): AMENDMENTS — только П1; ключей нет. B0.16 (4ac57b10) + ui-kit/словарь R11 7a956748 —
+  68 кадров, 0 проблем, лишних главных кнопок нет (R13-3 в сборке). Открыто: R02-1.
 
 ## Соседи (find_branches.py, 15 окт 16:30)
 R01 claude/brave-fermi-nhzetj · R02 claude/affectionate-shannon-jm6ws5 · R03 claude/modest-mccarthy-lrl98u ·
