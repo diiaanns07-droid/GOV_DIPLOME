@@ -6,7 +6,7 @@
 База: origin/claude/clever-hypatia-q6ts4g @ e91acb69 (код FINAL-4 a4937462 + пакет раунда 15)
 restored_from: — (роль начата с нуля; прошлая передача — claude/r14-R11)
 
-**Каждый круг: сначала читать AMENDMENTS.md из ветки пакета** — `git fetch origin claude/clever-hypatia-q6ts4g &&
+**Каждый круг: сначала читать AMENDMENTS.md из ветки пакета** (П1 — 15 окт 17:05; **П2 — 16 окт 10:30: раунд закрывается 16 окт в 16:00**) — `git fetch origin claude/clever-hypatia-q6ts4g &&
 git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md`. Где поправка расходится с промптом,
 COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочитано: П1 (15 окт 17:05, «Без ИИ-слопа») — применяю.
 
@@ -144,6 +144,10 @@ COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочита
 - 10:23–10:28 — **круг 19** (по триггеру): AMENDMENTS — только П1; ключей нет. R02-1 закрыт (fa9ab80b в B0.19, проверено по API).
   B0.19 + словарь — 68 кадров, 0 проблем. Вычитка названий дел ҚАЗ для R02 (просьба R16): «Бораннан кейін ауланы тазалайық»,
   «Аулаға ағаш отырғызамыз», «Кіреберіс алдындағы гүлзарлар».
+- 11:23–11:34 — **круг 20, поправка П2** (16 окт 10:30): раунд закрывается сегодня в 16:00, поставки до 13:30, FINAL-5 в 14:00
+  вместо B1, B2 отменена. Кандидат FINAL-5 R01 B0.20 (24e50493, в нём R11 d20d823f): 102 кадра, 0 проблем; сцены — 50 кадров,
+  ошибок 0. **DESIGN_BOOK_R15 v1** — 30 кадров этой сборки в `research/round-15-results/R11/design-book/`. Финальная поставка
+  R11 — d20d823f (DELIVERY). Дальше — только блокеры R10 / R15 до 15:45; после 16:00 — «Раунд 15 закрыт».
 
 ## Соседи (find_branches.py, 15 окт 16:30)
 R01 claude/brave-fermi-nhzetj · R02 claude/affectionate-shannon-jm6ws5 · R03 claude/modest-mccarthy-lrl98u ·

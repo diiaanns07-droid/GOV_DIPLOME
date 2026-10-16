@@ -7,7 +7,7 @@
  "code_sha": "d20d823f",
  "tested_sha": "d20d823f",
  "push_status": "OK",
- "updated": "2026-10-16 09:27 Астана",
+ "updated": "2026-10-16 11:34 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -31,7 +31,8 @@
   "review_round_2": "REVIEW_R15.md: R17 9 замечаний, R12 5 замечаний (INTEGRATION §4)",
   "review_round_3": "REVIEW_R15.md: R08 3 мелочи, R13 1 замечание",
   "DESIGN_BOOK_R15": "research/round-15-results/R11/DESIGN_BOOK_R15.md — v0 до B1: герои H1–H8, сцены 7–9 по шагам, kk-кадры, что не брать; v1 — после B1",
-  "review_tool": "tests/civic/R11/review/r15_screens.cjs — разбор сборки раунда 15 одной командой (B1, B2, FINAL-5)"
+  "review_tool": "tests/civic/R11/review/r15_screens.cjs — разбор сборки раунда 15 одной командой (B1, B2, FINAL-5)",
+  "design_book_v1": "research/round-15-results/R11/DESIGN_BOOK_R15.md v1 + design-book/ (30 кадров кандидата FINAL-5 B0.20: герои H1–H7, сцены 7–9 по шагам, телефон ҚАЗ; подписи — design-book/scenes.json)"
  },
  "tests": {
   "pytest tests/civic/R11": "PASS 33/33 (d20d823f)",
@@ -57,7 +58,9 @@
   "патчи круга 14": "R13_vote_32px (CSS) — на стенде B0.14: таблетка 32 px в рамке 44, тест R13 «зоны нажатия» и «одна главная кнопка» PASS",
   "node tests/civic/R11 (ui_kit, i18n, lang_order)": "PASS 3/3 (26a24cdb)",
   "витрина ui-kit, Chromium 1366/375 × ru/kk": "PASS 4/4 (26a24cdb)",
-  "стенд B0.15 (R01 735a40b5) + ui-kit R11, r15_screens.cjs --quick": "68 кадров — проблем 0; контраст дат ленты 7,44 : 1, нулей табло 7,54 : 1"
+  "стенд B0.15 (R01 735a40b5) + ui-kit R11, r15_screens.cjs --quick": "68 кадров — проблем 0; контраст дат ленты 7,44 : 1, нулей табло 7,54 : 1",
+  "кандидат FINAL-5 (R01 B0.20 24e50493), r15_screens.cjs": "102 кадра 1366/1024/375 × ru/kk × житель/акимат — проблем 0, лишних главных кнопок 0",
+  "кандидат FINAL-5, r15_scenes.cjs": "50 кадров сцен 7–9 (1366/375 + 1920) — ошибок JS 0"
  },
  "screens": [
   "research/round-15-results/R11/screens/kit15-1366-kk.jpg",
@@ -75,11 +78,12 @@
   "research/round-15-results/R11/screens/r13-b013-board-mark-before-after.png"
  ],
  "known_limits": [
-  "Меню по IA — у R01 с c2df555a; на B0.12 (0121f7bd) — в капсуле на 1366 и 1024 в обоих языках, R01-5 исправлен (B0.8).",
-  "Открыто у ролей (INTEGRATION — блок «ОТКРЫТЫЕ ПРОСЬБЫ» в начале): R02-1 (мир ҚАЗ); по желанию R10 LANG в ролике, R02-2, R08-2, R06-3, R12 улицы.",
-  "Книга экранов v1 — после B1 (16 окт 14:00): кадры сцен на одной сборке, отбор героев H1–H8.",
+  "Меню по IA — в оболочке R01 с c2df555a; в кандидате FINAL-5 — в капсуле на 1366 и 1024 в обоих языках.",
+  "Не блокирует (по желанию ролей): R10 LANG в ролике, R02-2, R08-2, R06-3, R12 улицы календаря; R02 — казахские названия трёх дел (вычитка R11 в INTEGRATION).",
+  "Кадры с настоящей картой и 3D (H8) — LOCAL после раунда (П2).",
   "Казахские термины раунда 15 — черновик до проверки владельцем (KK_REVIEW_R15.md, 43 строки)."
  ],
- "next_step": "Круг 19 (10:23): AMENDMENTS → соседи → словарь; на B1 (14:00) — r15_screens.cjs и r15_scenes.cjs, DESIGN_BOOK v1.",
- "amendments": "П1 «Без ИИ-слопа» (15 окт 17:05) — применена в 2d4f69bc"
+ "next_step": "П2: до 15:45 — только блокеры R11 из списков R10 / R15 по FINAL-5; после 16:00 — финальный STATUS «Раунд 15 закрыт».",
+ "amendments": "П1 «Без ИИ-слопа» (15 окт 17:05) — применена в 2d4f69bc",
+ "final": "Финальная поставка R11 раунда 15 по поправке П2 (16 окт 10:30): code_sha d20d823f — ui-kit и словарь в кандидате FINAL-5 (R01 B0.20 24e50493)"
 }
