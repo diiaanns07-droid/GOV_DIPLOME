@@ -100,8 +100,9 @@ def main() -> None:
                                             "note": "сборка R01 197ad600 (B0.4) с модулями и тестами R13 этой поставки: tests/civic/R01/"
                                             "round15/test_r01_round15_routes.py, R03 test_analyst_neighbours.py, R06 test_r06r15_notify.py, "
                                             "R08 test_r08_board.py + test_r08_world.py, R15 test_r15_qa.py + round15 notify/meetings, tests/civic/R13"},
-            "r15_meetings_tests": {"status": "PASS", "passed": 27, "total": 27,
-                                   "note": "tests/civic/R15/round15/test_r15_round15_meetings.py R15 @ 19748bff на коде R13 этой поставки"},
+            "r15_meetings_tests": {"status": "PASS", "passed": 39, "total": 39,
+                                   "note": "R15 @ b7b75ee3 на сборке R01 B0.15 с кодом R13 этой поставки: "
+                                   "round15/test_r15_round15_meetings.py 27/27, test_r15_qa.py 12/12 (без NOT_RUN)"},
             "browser_meetings_demo_world": {"status": "PASS", "passed": 115, "total": 115,
                                             "note": "meetings_browser.cjs на сборке R01 B0.15 (735a40b5) с CIVIC_DEMO_WORLD=1 (мир R02: "
                                             "R13 24 записи): проверки не зависят от набора данных"},

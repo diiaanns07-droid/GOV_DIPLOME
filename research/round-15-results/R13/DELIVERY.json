@@ -150,9 +150,9 @@
   },
   "r15_meetings_tests": {
    "status": "PASS",
-   "passed": 27,
-   "total": 27,
-   "note": "tests/civic/R15/round15/test_r15_round15_meetings.py R15 @ 19748bff на коде R13 этой поставки"
+   "passed": 39,
+   "total": 39,
+   "note": "R15 @ b7b75ee3 на сборке R01 B0.15 с кодом R13 этой поставки: round15/test_r15_round15_meetings.py 27/27, test_r15_qa.py 12/12 (без NOT_RUN)"
   },
   "browser_meetings_demo_world": {
    "status": "PASS",
