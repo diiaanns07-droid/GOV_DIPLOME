@@ -4,10 +4,10 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "7a956748",
- "tested_sha": "7a956748",
+ "code_sha": "d20d823f",
+ "tested_sha": "d20d823f",
  "push_status": "OK",
- "updated": "2026-10-16 07:06 Астана",
+ "updated": "2026-10-16 09:27 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -34,9 +34,9 @@
   "review_tool": "tests/civic/R11/review/r15_screens.cjs — разбор сборки раунда 15 одной командой (B1, B2, FINAL-5)"
  },
  "tests": {
-  "pytest tests/civic/R11": "PASS 33/33 (7a956748)",
+  "pytest tests/civic/R11": "PASS 33/33 (d20d823f)",
   "node tests/civic/R11 (i18n, lang_order, ui_kit)": "PASS (ea188ed6: i18n, ui_kit)",
-  "i18n_tools check": "PASS — 2865 ключей, ru = kk",
+  "i18n_tools check": "PASS — 2866 ключей, ru = kk",
   "витрина ui-kit, Chromium (Playwright) 1366/375 × ru/kk": "PASS 4/4 (ea188ed6): прокрутки нет, кнопки ≥ 44 px (кнопка баннера кризиса исправлена с 36), текст ≥ 12 px, шрифт с казахскими буквами",
   "R01 с патчем меню (стенд, ветка R01 0b76f9ed)": "pytest tests/civic/R01 198 passed / 1 skipped; browser r14_wave2 43/0; browser r14_shell 43/0",
   "R03 с патчем терминов": "pytest tests/civic/R03 273 passed, 9 skipped, 1 xfailed",
@@ -80,6 +80,6 @@
   "Книга экранов v1 — после B1 (16 окт 14:00): кадры сцен на одной сборке, отбор героев H1–H8.",
   "Казахские термины раунда 15 — черновик до проверки владельцем (KK_REVIEW_R15.md, 43 строки)."
  ],
- "next_step": "Круг 16 (07:23): AMENDMENTS → соседи → словарь; на B1 (14:00) — r15_screens.cjs и r15_scenes.cjs, DESIGN_BOOK v1.",
+ "next_step": "Круг 19 (10:23): AMENDMENTS → соседи → словарь; на B1 (14:00) — r15_screens.cjs и r15_scenes.cjs, DESIGN_BOOK v1.",
  "amendments": "П1 «Без ИИ-слопа» (15 окт 17:05) — применена в 2d4f69bc"
 }
