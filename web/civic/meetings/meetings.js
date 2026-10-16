@@ -1202,7 +1202,8 @@
         "aria-labelledby": "mt-hero-title", "data-anchor": m.id }, [
         dateTile(m.at),
         h("div", { class: "bk-meet__main" }, [
-          h("p", { class: "mt-eyebrow" }, [h("span", { text: tr("meet.next") }), whenWords(m.at) ? h("span", { class: "mt-eyebrow__when", text: " · " + whenWords(m.at) }) : null,
+          h("p", { class: "mt-eyebrow" }, [h("span", { text: tr("meet.next") }), whenWords(m.at) ? h("span", { class: "mt-eyebrow__when" },
+            [h("span", { class: "mt-eyebrow__dot", "aria-hidden": "true", text: "· " }), whenWords(m.at)]) : null,
             m.demo ? demoTag() : null]),
           h("h3", { class: "bk-meet__title mt-hero__title", id: "mt-hero-title", text: pick(m, "title") }),
           h("p", { class: "bk-meet__meta mt-meta" }, [whenSpan(m), placeSpan(m), h("span", null, [icon("user"), h("span", { text: tr("meet.host") })])]),
