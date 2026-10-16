@@ -92,11 +92,17 @@ function screenMetrics(page, sel) {
     // рамка) — как hitBox в ux_lib.cjs. До 16 окт мерилась только рамка (ложные FAIL «Я приду» 32 px, «Скоро · Сделано» 30 px).
     const hitBox = (box) => {
       const r = box.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      const own = (x, y) => { if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return false;
+      // За краем экрана elementFromPoint ничего не видит — там берём зону, заявленную псевдоэлементом (::after «inset: -6px 0»).
+      const own = (x, y) => { if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return "out";
         const h = document.elementFromPoint(x, y); return !!h && (h === box || box.contains(h)); };
-      const grow = (f) => { let k = 0; while (k < 12 && f(k + 1)) k++; return k; };
-      const dh = grow((k) => own(cx, r.top - k)) + grow((k) => own(cx, r.bottom - 1 + k));
-      const dw = grow((k) => own(r.left - k, cy)) + grow((k) => own(r.right - 1 + k, cy));
+      const declared = (side) => { let best = 0;
+        for (const pe of ["::before", "::after"]) { const cs = getComputedStyle(box, pe);
+          if (cs.content === "none" || cs.position !== "absolute" || cs.pointerEvents === "none") continue;
+          const v = parseFloat(cs[side]); if (Number.isFinite(v) && v < 0) best = Math.max(best, -v); }
+        return Math.min(best, 12); };
+      const grow = (f, side) => { let k = 0; while (k < 12) { const o = f(k + 1); if (o === "out") return Math.max(k, declared(side)); if (!o) break; k++; } return k; };
+      const dh = grow((k) => own(cx, r.top - k), "top") + grow((k) => own(cx, r.bottom - 1 + k), "bottom");
+      const dw = grow((k) => own(r.left - k, cy), "left") + grow((k) => own(r.right - 1 + k, cy), "right");
       return { h: Math.round(r.height + dh), w: Math.round(r.width + dw), ...(dh || dw ? { frame: `${Math.round(r.width)}×${Math.round(r.height)}` } : {}) };
     };
     const small = [];
