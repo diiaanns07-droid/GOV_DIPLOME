@@ -2832,6 +2832,8 @@
  "wcal.real.coverage": "работ из открытых источников: {n} · на участке улицы {exact} · примерно {approx}",
  "analyst.empty_action": "Главное за сегодня",
  "analyst.empty_question": "Что сегодня главное?",
+ "analyst.ai": "ИИ",
+ "analyst.ai_hint": "Подсказка ИИ — проверьте",
  "crisis.map.layer": "Кризис",
  "crisis.map.more": "Подробнее",
  "crisis.map.close": "Скрыть",

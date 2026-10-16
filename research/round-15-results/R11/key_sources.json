@@ -1316,5 +1316,7 @@
  "intake.empty.title": "R11 · П3: пустое состояние",
  "intake.error.too_big": "R11 · П3: предел R04",
  "intake.error.text": "R11 · П3: ошибка с действием",
- "intake.staff_only": "R11 · П3: житель без входа"
+ "intake.staff_only": "R11 · П3: житель без входа",
+ "analyst.ai": "R03 analyst.js 09b9659e · П3: метка «ИИ» у ответа (как common.ai.badge)",
+ "analyst.ai_hint": "R03 analyst.js 09b9659e · П3: title метки «ИИ» (как common.ai.hint)"
 }
