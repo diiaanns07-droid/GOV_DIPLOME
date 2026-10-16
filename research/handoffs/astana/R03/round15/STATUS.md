@@ -245,6 +245,9 @@
   R03 в них 09b9659e; 0b494fca (метка = BirgeUI.aiTag R11) ждёт кандидата FINAL-6. R15 круг 27: NOT_RUN «no BirgeAnalyst»
   в r15_round15_r04p3.json — прогон на дереве R04 без файлов экрана R03, не находка по R03. Запросов к R03 нет.
 
+- 15:26–15:27 UTC, срабатывание 15:25: AMENDMENTS — П1–П3 (новых нет). **R01 B6.3 взял R03 0b494fca** (метка = BirgeUI.aiTag
+  R11); pytest B6.3 — 5145 / 0. R10: B-134 / B-135 — экран «Разбора» R04 / ключи R11, не R03. Запросов к R03 нет.
+
 ## Решения по умолчанию (автопилот)
 - Экран аналитика — window.BirgeAnalyst, а не window.BirgeAsk из промпта: BirgeAsk уже занят R13 («Вопрос акиму»,
   web/civic/qa/qa.js, SCREENS.questions в birge.js). Два модуля с одним именем ломали бы друг друга.
