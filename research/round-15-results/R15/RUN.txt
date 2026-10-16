@@ -23,6 +23,8 @@ R15 · раунд 15 · как запустить проверки безопа�
    _intake (R04 «ИИ-разбор пачки», П3: 32 теста; на FINAL-5 c2276360 — NOT_RUN, функций intake ещё нет).
    FINAL-5 c2276360 с тестами круга 26: 567 passed, 0 failed, 38 NOT_RUN (32 intake + 6 строк intake/* шлюза).
    Круг 27: на ветке R04 dce9427b intake — 36/36; moderate — 4 FAIL (S53, падают за секунды), с P-R04-S53 — все PASS.
+   Круг 30: сборка B6.4 e56971a0 (moderate-5) — все зелёные; S53, S54 в FIXED: на сборках с moderate-3 (FINAL-5,
+   FINAL-5.1, B6.2, B6.3) 3 теста S54 падают — ожидаемо (исправления там нет).
 
 4. Браузерная проба (Chromium, строгая CSP шлюза; нужен Node и playwright):
      NODE_PATH=$(npm root -g) node tests/civic/R15/browser/r15_round15.cjs <дерево сборки> <папка отчёта>

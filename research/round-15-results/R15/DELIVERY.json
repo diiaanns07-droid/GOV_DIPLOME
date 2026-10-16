@@ -30,7 +30,8 @@
   "B6.2_06a62c8c": "tests/civic/R15 613 passed / 0 failed / 5 xfail (S54) после правки теста; браузер r15_round15 10/0/1, r15_reference 18/0/0",
   "FINAL5_c2276360_round28": "tests/civic/R15 571 passed / 0 failed / 44 NOT_RUN (intake) / 3 xfail (S54)",
   "B6.3_f9b0cc85": "tests/civic/R15 613 passed / 0 failed / 5 xfail (S54); браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена изменений B6.2->B6.3 чистая",
-  "R04_df6ab8c2_moderate5": "moderate+intake R15: 99 passed, 5 xpassed; 4000/4000 совпадает с P-R04-S53"
+  "R04_df6ab8c2_moderate5": "moderate+intake R15: 99 passed, 5 xpassed; 4000/4000 совпадает с P-R04-S53",
+  "B6.4_e56971a0": "tests/civic/R15 613 passed / 0 failed / 5 xpassed (S54) -> после FIXED moderate+intake 104 passed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена f9b0cc85..e56971a0 чистая"
  },
  "push_status": "OK (круг 3)",
  "changed_paths": [
@@ -482,19 +483,19 @@
   "S53": {
    "owner": "R04",
    "level": "высокий",
-   "status": "исправлено R04 da0925fa (r04-moderate-5 = P-R04-S53), D4 9c16e868 — проверено R15 (тесты, 4000 текстов совпадают); в сборке не было (B6.2/B6.3 — moderate-3); PENDING до сборки с D4",
+   "status": "исправлено R04 da0925fa (r04-moderate-5 = P-R04-S53) — в сборке R01 B6.4 e56971a0: FIXED, регрессия; отчёт 18:59 -> исправлено 19:33 -> в сборке 20:35",
    "patch": "patches/P-R04-S53.diff (git apply на dce9427b — чисто; 4000 случайных текстов — ответы те же)",
    "what": "доступность: _split_run перебирает все отрезки длинной цепочки цифр — O(n³); анонимный POST /moderate «123 …» 1200 знаков — 12,7 с процессора, 5000 — десятки минут; 8 запросов — /api/health ×180",
-   "tests": "test_moderate_is_fast_on_hostile_text[digit-space|digit-groups|phone-chain|short-long], test_large_batch_is_still_fast[hostile] — обычные (падение = регрессия)",
+   "tests": "test_moderate_is_fast_on_hostile_text[…], test_large_batch_is_still_fast[hostile] — обычные",
    "time_to_fix_min": 34,
    "found_fixed_astana": "найдено 18:59 (970aa408) -> исправлено 19:33 (da0925fa)"
   },
   "S54": {
    "owner": "R04/R01",
    "level": "низкий",
-   "status": "исправлено R04 da0925fa (moderate-5), D4 9c16e868 — тесты R15 xpass; в B6.3 ещё moderate-3 (xfail); PENDING до сборки с D4",
+   "status": "исправлено R04 (moderate-4 a2e004c9 / moderate-5 da0925fa) — в сборке R01 B6.4 e56971a0: FIXED, регрессия; отчёт 19:43 -> в сборке 20:35",
    "what": "приватность П3: два телефона подряд и «тел 87011234567 (1)» не скрываются — в итоге intake/analyze и в тексте созданных жалоб (demo: false; видит сотрудник, в публичной карточке текста нет)",
-   "tests": "test_two_phones_in_a_row_are_both_masked (3), test_two_phones_in_a_row_not_on_result_screen (2) — PENDING xfail"
+   "tests": "test_two_phones_in_a_row_are_both_masked (3), test_two_phones_in_a_row_not_on_result_screen (2) — обычные"
   }
  },
  "high_open": 0,
@@ -543,7 +544,7 @@
   "tests": "tests/civic/R15/round15/test_r15_round15_intake.py — 32 теста; + test_r15_round15_gateway.py: intake/* в CONTRACT_STAFF, test_wider_body_limit_stays_on_staff_intake",
   "validated_on": "фейк R15 по контракту п. 9 на дереве FINAL-5 c2276360 (scratch, не в Git): верный 32/32 passed; с дырами — 17 failed (каждая дыра ловится отдельно)",
   "on_FINAL5": "c2276360: 32 NOT_RUN (функций intake ещё нет); test_wider_body_limit_stays_on_staff_intake — passed",
-  "status": "код R04 dce9427b проверен: intake 36/36, браузер 2 шага PASS; S53 (moderate-4) — открыта, patch у R04 и R01; ждём исправления в ветке R04 и кандидата FINAL-6 (17 окт 12:00)",
+  "status": "код R04 D4 9c16e868 в сборке B6.4: intake 36/36 + moderate; S53, S54 — FIXED; ждём кандидата FINAL-6 (17 окт 12:00): весь tests/civic/R15, обе пробы, блокеры к 14:00",
   "browser": "r15_round15.cjs: шаги «intake fake-api all fields» и «intake pasted lines»; на поддельном экране textContent — PASS, innerHTML — FAIL; FINAL-5 c2276360 — 8 PASS / 0 FAIL / 3 NOT_RUN (экрана intake нет)",
   "tested_R04": {
    "sha": "dce9427b",
@@ -552,5 +553,16 @@
    "browser": "intake fake-api all fields PASS (9 видны текстом, 0 вставлено); intake pasted lines PASS"
   }
  },
- "high_open_note": "высоких открытых нет: S53 исправлена R04 (da0925fa), в сборки не попадала"
+ "high_open_note": "высоких открытых нет: S53 исправлена R04 (da0925fa), в сборки не попадала",
+ "findings_summary_p3": {
+  "total": 2,
+  "high": 1,
+  "medium": 0,
+  "low": 1,
+  "fixed": 2,
+  "in_build": 2,
+  "S53_report_to_fix_min": 34,
+  "S53_report_to_build_min": 96,
+  "S54_report_to_build_min": 52
+ }
 }

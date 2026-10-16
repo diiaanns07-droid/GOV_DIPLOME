@@ -1,0 +1,134 @@
+{
+ "tree": "сборка R01 B6.4 — ветка claude/brave-fermi-nhzetj @ e56971a0 (рабочая копия R15)",
+ "at": "2026-10-16T16:30:55.659Z",
+ "seed": [
+  "R06 work: 422 {\"error\": \"validation_failed\", \"message\": \"Проверьте выделенные поля.\", \"fields\": {\"title\": \"HTML не допускается: только простой текст.\", \"why.problem\": \"HTML н"
+ ],
+ "steps": [
+  {
+   "name": "akimat-1366 agencies crisis",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 7,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 meetings card",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 4,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 analyst question",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 3,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 works-calendar",
+   "status": "NOT_RUN",
+   "note": "R06 не принимает HTML в работах (422) — нагрузка в календарь не попадает; CSP чистая",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 together staff tools",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 2,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 situation-center board",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 3,
+   "ready": null,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 intake fake-api all fields",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 9,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 intake pasted lines",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 2,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "resident-375 meetings card",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 3,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "resident-375 together initiatives",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 1,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "resident-375 together my-yard",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 3,
+   "ready": true,
+   "missing": []
+  }
+ ],
+ "counts": {
+  "PASS": 10,
+  "NOT_RUN": 1
+ }
+}
