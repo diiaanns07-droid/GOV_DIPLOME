@@ -1,0 +1,3657 @@
+{
+ "schema": "birge-intake-night-v1",
+ "schema_version": "1.0",
+ "synthetic": true,
+ "demo": true,
+ "seed": 15,
+ "generator": "ml/datasets/demo_intake.py (R02, раунд 15+, поправка П3)",
+ "world": {
+  "schema": "birge-demo-world-v1",
+  "file": "data/civic/astana/demo-world/world_v1.json",
+  "sha256": "dd0e7bba42986c2ea2a1ef1bc387620a9ad7af0708fefc1b4c813482f9c69e07"
+ },
+ "inputs": {
+  "data/civic/astana/geo/objects.json": "247c24a8d38f061c1a5c9d20d452a43814f7e47796ae9312073e20e4995a257f",
+  "data/civic/astana/geo/yards.json": "a3ef73296671bdcb1eeeb8dcee1d172c94fb957cec72cc3c0538c6522bc3018d",
+  "web/civic/map/search_index.json": "9258aa57032015c2bb60d04c2646ce3bd44a9524378889b4d7758180b5b71e06",
+  "engine/civic_scenarios/graphs/MANIFEST.json": "9b44a045e09d41721580e2c45871523dcfeee617f5aca0e086cab983002ee4b1",
+  "data/civic/astana/demo-world/world_v1.json": "dd0e7bba42986c2ea2a1ef1bc387620a9ad7af0708fefc1b4c813482f9c69e07"
+ },
+ "note_ru": "Синтетические обращения жителей «за ночь» для «ИИ-разбора пачки» (сцена 0): ru / kk / вперемешку / латиница, с опечатками и повторами. Места — дворы, остановки, улицы, перекрёстки и парк демо-мира (OpenStreetMap через карту R12). Эталон — отдельный файл intake_night_v1.gold.json; экрану он не нужен.",
+ "night": {
+  "from": {
+   "day_at": {
+    "day": -1,
+    "hour": 21,
+    "minute": 30
+   }
+  },
+  "to": {
+   "day_at": {
+    "day": 0,
+    "hour": 7,
+    "minute": 30
+   }
+  },
+  "note_ru": "время приёма — прошлая ночь (day_at); ml.datasets.demo_world_io.materialize(items, now)"
+ },
+ "limits": {
+  "texts": 301,
+  "max_texts_per_batch": 500,
+  "max_bytes_per_batch": 300000
+ },
+ "items": [
+  {
+   "id": "night-001",
+   "text": "Қайырлы кеш. Николая Гоголя көшесінде жол қашан жөнделеді? Қыркүйекте уәде берген еді.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 30
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-002",
+   "text": "Помогите, пожалуйста. Во дворе ЖК Alau машины паркуются прямо на газоне.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-003",
+   "text": "Alau JK aulasynda atkenshek bir shynjyrda ilinip tur, balalarga qauipti.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 36
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-004",
+   "text": "На улице Айнаколь не горят фонари, полная темнота.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 36
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-005",
+   "text": "Жағалау шағын ауданының ауласында фонарри не горят, қараңғы.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 39
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-006",
+   "text": "Остановка «Жилой комплекс Зелёный Квартал», автообус келмейді уже 40 имнут.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 41
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-007",
+   "text": "Павльон на остановке «Парк Ататюрк» без стелка, ветер насквозь.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 42
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-008",
+   "text": "Қайырлы кеш. «Парк Ататюрк» аялдамасында стекло разбито, сынықтар жатыр.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 42
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-009",
+   "text": "Фонари на улице Е-308 вечером не включились, идти страшно.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 43
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-010",
+   "text": "Jagalau shagyn audanynyn aulasynda jaryq joq keshke dalaga shygu qorqynyshty",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 45
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-011",
+   "text": "«Ақбұлақ-3» ЖК ауласында қоқыс жәшіктері толып кетті, айналасы қоқыс.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 45
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-012",
+   "text": "Жантай батыр көшесінде водоканал жолдды қазып кетті, асфальт жоқ, яма.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 47
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-013",
+   "text": "kuda obraschatsya, esli ksk ne otvechaet na zvonki?",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 48
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-014",
+   "text": "Николая Гоголя көшесінде строительный мусор тастап кетті, үйіліп жатыр. Қашанға дейін күтеміз?",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 48
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-015",
+   "text": "ЖК «Энергетик»: во дворе нет света, фонари у подъездов не горят.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 50
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-016",
+   "text": "Сығанақ көшесінде фонари не горят, мүлдем қараңғы.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 53
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-017",
+   "text": "viktora gyugo koshesinde jylu trassasyn jondegennen keiin trotuar plitkasy toselmei qaldy",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 55
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-018",
+   "text": "Во дворе дома в 4-м микрорайоне из канализационного колодца течёт, запах ужасный.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 55
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-019",
+   "text": "«Жилой комплекс Зелёный Квартал» аялдамасында автобус жоқ, час уже ждём. Очень просим помочь.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 57
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-020",
+   "text": "С остановки «Жилой комплекс Зелёный Квартал» невозможно уеать, автобусов нет уже 40 минут. Спасибо.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 21,
+     "minute": 58
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-021",
+   "text": "Alau ЖК ауласында детская горка сынған, темір шығып тұр, балаларға опасно.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 2
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-022",
+   "text": "Остановка «Жилой комплекс Зелёный Квартал»: вечером автобусы вообще не ходят, как добираться домой? Спасибо.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 6
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-023",
+   "text": "«Жилой комплекс Зелёный Квартал» аялдамасынан кешке үйге жету мүмкін емес, автобус жоқ.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 8
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-024",
+   "text": "Темно на улице Сыганак: целый участок без освещения.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 8
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-025",
+   "text": "В ЖК Grand Champion в подъезде нет света, лампы не горят (блок 2). Просим разобраться.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 11
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-026",
+   "text": "Утром на остановке «Жилой комплекс Зелёный Квартал» толпа, автобусы проезжают переполненные.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 11
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-027",
+   "text": "«Жилой комплекс Зелёный Квартал» — стоим час, ни одного автобуса. Где транспорт?",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 14
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-028",
+   "text": "Добрый вечер. Во дворе дома в 1-м микрорайоне из канализационного колодца течёт, запах ужасный.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 14
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-029",
+   "text": "Мусорка во дворе ЖК «Статус» переполнена, вороны растаскивают пакеты. Очень просим помочь.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 16
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-030",
+   "text": "Қайырлы таң. Омара Хаяма көшесінде открытый люк, қақпағы жоқ, опасно!",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 16
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-031",
+   "text": "Во дворе ЖК «Акбулак-3» мусорные баки переполнены, мусор вокруг контейнеров.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 19
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-032",
+   "text": "Спасибо, что быстро дали отопление в ЖК «Научный»! Дома тпло.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 20
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-033",
+   "text": "На улице Николая Гоголя у обочины свалили строительный мусор, гора уже с машину.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 21
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-034",
+   "text": "На остановке «Жилой комплекс Зелёный Квартал» автобус не приходит больше часа.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 24
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-035",
+   "text": "Остановка «Магазин Pilot»: сломана скамейка, крыша павильона течёт.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 24
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-036",
+   "text": "«Энергетик» ЖК ауласында бездомные собаки көп, түнде үреді.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 28
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-037",
+   "text": "Қайырлы таң. Коксай көшесінде жолда үлкен шұңқыр бар, көліктер дөңгелегін жарып жатыр.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 28
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-038",
+   "text": "Улица Сыганак: шамдар жанбайды, темно как ночью в поле.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 30
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-039",
+   "text": "Добрый вечер. Не вывезли мусор в ЖК «Статус», баки полные второй день.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 32
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-040",
+   "text": "Фонари на улице Сыганак вечером не включились, идти страшно.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 33
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-041",
+   "text": "На улице Кайма Мухамедханова после раскопок водоканала осталлась яма, асфальт не восстановили.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-042",
+   "text": "На улиице Сыганак не горят фонари, полная темнота. Просим разобраться.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 38
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-043",
+   "text": "Qaiyrly kesh. Buqar Jyrau De Luxe JK 2-blok: kireberiste jaryq joq",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 40
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-044",
+   "text": "Во дворе третий день не вывозят мусор.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 40
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-045",
+   "text": "Alau ЖК ауласында қоқыс жәшіктері толып кетті, айналасы қоқыс. Шара қолдануларыңызды сұраймыз.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 42
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-046",
+   "text": "Здравствуйте! Ждём автобус на остановке «Жилмассив Мичурино» 50 минут, люди мёрзнут.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 42
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-047",
+   "text": "Нет крышки на люке, улица Омара Хаяма. Огородите хотя бы!",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 42
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-048",
+   "text": "Автобусы вечером ходят раз в час, это нормально?",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 44
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-049",
+   "text": "Во дворе ЖК Alau у детской горки оторвался металлический лист с острым краем, дети играют рядом.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 44
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-050",
+   "text": "На остановке «Вокзал Нурлы Жол» разбито стекло павильона, осколки на земле.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 44
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-051",
+   "text": "Габита Мусрепова көшесінде көліктер тротуарға тұрып алған, жаяу жүргіншілер жолмен жүреді.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 47
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-052",
+   "text": "Аулада қоқыс үш күннен бері шығарылмаған.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 49
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-053",
+   "text": "Где автобусы? Час стоим на остановке, ни одного.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 49
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-054",
+   "text": "ZhK Respublika: vo dvore net sveta, fonari u podezdov ne goryat.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 51
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-055",
+   "text": "Улица Айнаколь — ни один фонарь не горит, машины едут в темноте.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 51
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-056",
+   "text": "Во дворе ЖК «Энергетик» темно, не горит ни один фонарь.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 54
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-057",
+   "text": "1-ші шағын аудан ауласында скамейки сынған, отыруға жер жоқ. Очень просим помочь.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 56
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-058",
+   "text": "На остановке «ТРЦ Сарыарка» разбито стекло павильона, осколки на земле.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 56
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-059",
+   "text": "Қайырлы таң. «Статус» ЖК-да екі күннен бері қоқыс шығарылмаған.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 22,
+     "minute": 57
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-060",
+   "text": "Сығанақ көшесінде бір де бір шам жанбай тұр.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 0
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-061",
+   "text": "Автобус келмейді уже час, где транспорт?",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 1
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-062",
+   "text": "Respublika ЖК ауласында түнде құрылыс жүріп жатыр, ұйықтай алмаймыз. Рақмет.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 2
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-063",
+   "text": "Jiloi kompleks Zelyonyi Kvartal ayaldamasynda avtobbus bir sagattan beri kelmeeidi.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 6
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-064",
+   "text": "Respublika ЖК ауласында жарық жоқ, кешке далаға шығу қорқынышты.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 6
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-065",
+   "text": "На улице Е-308 машины стоят на тротуаре, пешеходы идут по дороге. Сколько можно ждать?",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 6
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-066",
+   "text": "Galamat Towers ЖК, 1-подъезд: лифт екі күннен бері істемейді. Тезірек көмектесіңіздер.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 9
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-067",
+   "text": "Уважаемый акимат! ЖК «Статус»: контейнеры забиты, пакеты ставят прямо на землю.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 12
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-068",
+   "text": "«Статус» ЖК ауласында көліктер көгалға қойылады.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 14
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-069",
+   "text": "Сығанақ көшесінде көше жарығы жоқ, кекше жүру қорқыншты.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 14
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-070",
+   "text": "В парке Астана урны переполнены, мусор по всем дорожкам.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-071",
+   "text": "Во дворе ЖК «Научный» бегает стая бездомных собак, лают всю ночь.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 20
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-072",
+   "text": "Яма на проезжей части на Коргалжинском шоссе, уже две машины пробили шины.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 21
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-073",
+   "text": "Сығанақ көшесінде шамдар жанбайды, қараңғы. Қашанға дейін күтеміз?",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 22
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-074",
+   "text": "Алькея Маргулана көшесінде гололёд, тротуар мұз, ничем не посыпали. Тезірек көмектесіңіздер.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 23
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-075",
+   "text": "«Городская поликлиника № 1» аялдамасында орындық сынған, шатыры ағып тұр.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 24
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-076",
+   "text": "Здравствуйте! Рақмет, Alau ЖК-да отопление дали, үй жылы.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 26
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-077",
+   "text": "«Жилой комплекс Зелёный Квартал» аялдамасында 50 минут автобус күтіп тұрмыз, тоңдық.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 28
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-078",
+   "text": "«Жилой комплекс Зелёный Квартал» аялдамасында автобус бір сағаттан бері келмейді.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 30
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-079",
+   "text": "На улице Виктора Гюго огромная яма на дороге, ночью машины пробивают колёса. Примите меры.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 30
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-080",
+   "text": "Қайырлы кеш. «Бұқар Жырау De Luxe» ЖК ауласында жылу трассасын жөндеп, көгалды қазып тастады, қалпына келтірмеді. Рақмет.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 30
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-081",
+   "text": "Біздің көшеде бір аптадан бері шам жанбайды.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 33
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-082",
+   "text": "qaiyrly tan. jagalau shagyn audanynyn aulasynda birde-bir sham janbaidy, qarangy.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-083",
+   "text": "Соседняя стройка шумит каждую ночь, сколько можно?",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 42
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-084",
+   "text": "Темно в парке Астана, освещение на дорожках не работает.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 42
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-085",
+   "text": "Опять заставили газон машинами в ЖК Alau, детям негде гулять.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 43
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-086",
+   "text": "Сәлеметсіз бе! Остановка «Талапкер», автобус келмейді уже 40 минут. Шара қолдануларыңызды сұраймыз.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 43
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-087",
+   "text": "Во дворе бегают бездомные собаки.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 44
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-088",
+   "text": "Сыпатай батыр көшесінде су құбырын жөндеп, жолды қазып кетті, асфальт салынбаған.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 47
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-089",
+   "text": "Alau ЖК ауласында машины газонға тұрып алған.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 54
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-090",
+   "text": "Помогите, пожалуйста. В парке Астана не горят фонари на аллеях, гулять страшно.",
+   "received": {
+    "day_at": {
+     "day": -1,
+     "hour": 23,
+     "minute": 59
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-091",
+   "text": "«ТРЦ Сарыарка» аялдамасындағы павильонның әйнегі сынған, сынықтар жерде жатыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 0
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-092",
+   "text": "Vo dvore ZhK Status musornye baki perepolneny musor vokrug konteinerov. Prosim razobratsya",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 3
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-093",
+   "text": "Доброе утро. На улице Габита Мусрепова машины стоят на тротуаре, пешеходы идут по дороге.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 9
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-094",
+   "text": "Жағалау шағын ауданының ауласында бірде-бір шам жанбайды, қараңғы.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 10
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-095",
+   "text": "Темно на улице Айнаколь: целый участок без освещения. Просим разобраться.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 10
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-096",
+   "text": "«Научный» ЖК-да қаңғыбас иттер көп, кешке далаға шығу қорқынышты.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 11
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-097",
+   "text": "Глубокая яма на улице Уали Халфина, в темноте её не видно.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 11
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-098",
+   "text": "Қайырлы кеш. Омара Хаяма көшесінде открытый люк, қақпағы жоқ, опасно! Рақмет.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 11
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-099",
+   "text": "«Энергетик» ЖК ауласында қоқыс жәшіктері толып кетті, айналасы қоқыс.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 14
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-100",
+   "text": "С остановки «ТЦ Keruen City» невозможно уехать, автобусов нет уже 40 минут.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 17
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-101",
+   "text": "ЖК «Бухар Жырау De Luxe», 1-й подъезд: в подъезде и на лестнице темно, свет отлкючился. Просим разобраься.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 18
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-102",
+   "text": "В ЖК «Бухар Жырау De Luxe» в подъезде нет света, лампы не горят (блок 3).",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 20
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-103",
+   "text": "Қайырлы кеш. Шыңғыс Айтматов көшесінде көше жарығы жоқ, кешке жүру қорқынышты.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 20
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-104",
+   "text": "Уилца Сыганак — ни один фонарь не гоорит, машины едут в темноте.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 22
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-105",
+   "text": "«Статус» ЖК ауласында мусор не вывозят, жәшіктер толы.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 25
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-106",
+   "text": "Улица Кайыма Мухамедханова: после ремонта водопровода дорогу не заасфальтировали, яма.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 25
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-107",
+   "text": "Айнаколь көшесінде шамдар жанбайды, қараңғы.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 27
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-108",
+   "text": "Сығанақ көшесінде ремонт дороги когда начнётся? Қыркүйекте обещали.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 27
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-109",
+   "text": "Grand Champion ЖК қасындағы құрылыста техника түні бойы шулайды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 29
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-110",
+   "text": "«ТРЦ Сарыарка» аялдамасында стекло разбито, сынықтар жатыр. Сколько можно ждать?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 30
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-111",
+   "text": "Доброе утро. Утром на остановке «Автобусный парк № 7» толпа, автобусы проезжают переполненные. Просим разобраться.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 31
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-112",
+   "text": "v zhk grand champion net otopleniya s 23:40, batarei holodnye. v kvartire 15 gradusov, deti myorznut.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-113",
+   "text": "Alau ЖК ауласында машины газонға тұрып алған. Шара қолдануларыңызды сұраймыз.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 37
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-114",
+   "text": "Respublika ЖК қасында ночью стройка шуумит, ұйықтау мүммкін емес. Спасибо.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 38
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-115",
+   "text": "Остановка «Вокзал Нурлы Жол»: сломана скамейка, крыша павильона течёт.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 39
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-116",
+   "text": "Е-308 көшесінде асфальт ойылып қалған, түнде көрінбейді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 43
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-117",
+   "text": "Қайырлы таң. Grand Champion ЖК-да жылу жоқ, батареялар суық. Үйде суық, балалар тоңып жатыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 45
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-118",
+   "text": "teploset zakopala transheyu vo dvore doma v 4-m mikroraione a gazon tak i ostavili - odna gryaz",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 46
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-119",
+   "text": "КСК телефон алмаса, қайда хабарласу керек?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 47
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-120",
+   "text": "Respublika ЖК қасындағы құрылыста техника түні бойы шулайды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 49
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-121",
+   "text": "«Научный» ЖК ауласында бездомные собаки көп, түнде үреді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 50
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-122",
+   "text": "Сәлеметсіз бе! Қорғалжын тас жолы мен Тұран даңғылының қиылысында бағдаршам сөніп тұр, жаяу өту қорқынышты.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 0,
+     "minute": 54
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-123",
+   "text": "Бекет Ата көшесінде жылу трассасын жөндегеннен кейін тротуар плиткасы төселмей қалды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 2
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-124",
+   "text": "Уали Халфина көшесінде шамдар жанбадйы, қараңғы.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 2
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-125",
+   "text": "Grand Champion ЖК, 6-блок: лифт екі күннен бері істемейді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 5
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-126",
+   "text": "Қайырлы таң. «Научный» ЖК ауласында иесіз иттер үйір болып жүр, түні бойы үреді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 6
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-127",
+   "text": "Улица Жумекена Нажимеденова: провал асфальта посреди полосы, объезжают по встречке.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 8
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-128",
+   "text": "«Научный» ЖК ауласында қоқыс жәшіктері толып кетті, айналасы қоқыс.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 9
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-129",
+   "text": "Қорғалжын тас жолында асфальт ойылып қалған, түнде көрінбейді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 10
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-130",
+   "text": "perekryostok korgalzhinskoe sh. i pr. turan - svetofor vyklyuchen, probka i signalyat. spasibo.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-131",
+   "text": "Сәлеметсіз бе! Коксай көшесінде строительный мусор тастап кетті, үйіліп жатыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 17
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-132",
+   "text": "Во дворе ЖК Respublika стройка шуммит всю ночь, техника работаеет после 23:00.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 18
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-133",
+   "text": "На улице Бекет Ата теплосеть разрыла тротуар и не положила плитку обратно.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 21
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-134",
+   "text": "«Энергетик» ЖК-да қаңғыбас иттер көп, кшеке далаға шығу қорқынышты.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 23
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-135",
+   "text": "Добрый вечер. Alau ЖК ауласында мусор не вывозят, жәшіктер толы.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 24
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-136",
+   "text": "Galamat Towers ЖК ауласында көліктер көгалға қойылады.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 29
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-137",
+   "text": "Kanalizatsiyu prorvalo vo dvore doma v 1-m mikroraione nechistoty na dorozhke. Prosim razobratsya",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 29
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-138",
+   "text": "«ТРЦ Сарыарка» аялдамасында стекло разбито, сыықтар жатыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 31
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-139",
+   "text": "Қайырлы таң. Қорғалжын тас жолы мен Тұран даңғылының қиылысында бағдаршам түн ортасынан бері сары түспен жыпылықтап тұр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 31
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-140",
+   "text": "qaiyrly kesh. nauchnyi jk aulasynda iesiz itter uiir bolyp jur tuni boiy uredi",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 40
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-141",
+   "text": "uly dala dangylynda jaryq baganasy qulap, symdar trotuarda jatyr!",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 41
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-142",
+   "text": "Срочно помогите, Grand Champion ЖК-да жылу жоқ, балалар ауырып қалады. Қашанға дейін күтеміз?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 43
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-143",
+   "text": "Қорғалжын тас жолы мен Тұран даңғылының қиылысында бағдаршам жұмыс істемейді, көліктер ретсіз жүріп жатыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 51
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-144",
+   "text": "Түнде Нұра ауданында химияның қатты иісі шығады.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 52
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-145",
+   "text": "Темно на проспекте Абылай Хан: целый участок без освещения.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 54
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-146",
+   "text": "Ұлы Дала даңғылында столб құлап жатыр, провода на земле.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 54
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-147",
+   "text": "Коргалжинское ш. и пр. Туран: светофор не работает уже пару часов.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 1,
+     "minute": 56
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-148",
+   "text": "Глубокая яма на улице Жумекена Нажимеденова, в темноте её не видно.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 0
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-149",
+   "text": "Открытый люк на улице Омара Хаяма, прямо на тротуаре у перехода. Опасно.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 0
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-150",
+   "text": "dobroe utro. otoplenie propalo v zhk grand champion s 23:40. zvonili v ksk - nikto ne otvechaet",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 6
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-151",
+   "text": "Здравствуйте! Ұлы Дала даңғылында столб құлап жатыр, провода на земле.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 9
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-152",
+   "text": "Бродячие собаки в ЖК «Акбулак-3», вечером страшно выходить с ребёнком.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 10
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-153",
+   "text": "1-ші шағын аудан ауласында кәріз ағып жатыр, иісі жаман.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-154",
+   "text": "Айнаколь көшесі мен Кордай көшесінің қиылысында бағдаршам түн ортасынан бері сары түспен жыпылықтап тұр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 18
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-155",
+   "text": "Қайырлы таң. Grand Champion ЖК-да отопление жоқ, батареи холодные, балалар тоңып жатыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 18
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-156",
+   "text": "1-ші шағын аудан ауласында иесіз иттер үйір болып жүр, түні бойы үреді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 21
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-157",
+   "text": "Respublika ЖК қасында ночью стройка шумит, ұйықтау мүмкін емес.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 22
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-158",
+   "text": "Na ostanovke Dom Ministerstv razbito steklo pavilona oskolki na zemle",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 25
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-159",
+   "text": "Сәлеметсіз бе! Сыпатай батыр көшесінде водоканал жолды қазып кетті, асфальт жоқ, яма.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 28
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-160",
+   "text": "zdravstvuite! na perekryostke korgalzhinskoe sh. i pr. turan pogas svetofor, chut ne bylo avarii.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 30
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-161",
+   "text": "Пожар у контейнеров во дворе дома в микрорайоне Жагалау, сильный дым, огонь виден с балкона. Сколько можно ждать?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 31
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-162",
+   "text": "Во дворе дома в микрорайоне Жагалау что-то грит возле мусоррки, весь двор в дыму.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 33
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-163",
+   "text": "Улица Алькея Маргулана вся в снегу, ни одной снегоуборочной машины за ночь.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 33
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-164",
+   "text": "Во дворе дома в микрорайоне Жагалау горят мусорные баки, дым валит в окна! Очень просим помочь.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-165",
+   "text": "Ұлы Дала даңғылында сым үзіліп, жерге түсіп жатыр, адамдар жүреді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 39
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-166",
+   "text": "Опять ночная стройка возле ЖК Respublika, бетономешалки и крики до трёх ночи.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 43
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-167",
+   "text": "Не работает светофор на перекрёстке Коргалжинское ш. и пр. Туран, машины едут как попало.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 47
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-168",
+   "text": "Respublika ЖК, 4-блок: лифт екі күннен бері істемейді. Қашанға дейін күтеміз?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 50
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-169",
+   "text": "poryv vodoprovoda na ulitse chingiza aitmatova: voda techyot po proezzhei chasti, asfalt prosel.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 51
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-170",
+   "text": "Раскопали дорогу под трубу на улице Кайыма Мухамедханова и бросили, яма огорожена лентой.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 51
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-171",
+   "text": "temno na ulitse kambar ata: tselyi uchastok bez osvescheniya. skolko mozhno zhdat?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 57
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-172",
+   "text": "Жылу жоқ! Grand Champion ЖК, 4-блок. Батареялар мұздай.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 57
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-173",
+   "text": "На проспекте Туран теплосеть разрыла тротуар и не положила плитку обратно.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 57
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-174",
+   "text": "Қорғалжын тас жолы мен Тұран даңғылының қиылысында светофор не работает, көліктер тоқтамайды. Рақмет.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 2,
+     "minute": 58
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-175",
+   "text": "Нет тепла с 23:40. ЖК Grand Champion, 5-й подъезд. Сколько можно?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 7
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-176",
+   "text": "Светофор не горит, перекрёсток Коргалжинское ш. и пр. Туран. Пешеходы бегут через дорогу.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 7
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-177",
+   "text": "На улице Алькея Маргулана не чистят снег, машины буксуют.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 9
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-178",
+   "text": "Павильон на остановке «ТРЦ Сарыарка» без стекла, ветер насквозь.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 12
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-179",
+   "text": "ЖК Grand Champion: батареи еле тёплые, а к утру совсем остыли. Отопления нет.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 14
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-180",
+   "text": "Здарвствуйте! Қорғалжын тас жолында огромная яма, дөңгелек жарылды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-181",
+   "text": "Сәлеметсіз бе. Grand Champion ЖК-да жылу жоқ, үйде өте суық.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 22
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-182",
+   "text": "На улице Габита Мусрепова не чистят снег, машины буксуют.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 24
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-183",
+   "text": "Gabita Musrepova koshesinde qar tazalanbagan, kolikter taiganap jatyr.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 27
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-184",
+   "text": "Қорғалжын тас жолы мен Тұран даңғылының қиылысында бағдаршам сөнген, машины едут как хотят. Сколько можно ждать?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 29
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-185",
+   "text": "Отключили отопление в ЖК Grand Champion (блок 6), весь подъезд мёрзнет.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 31
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-186",
+   "text": "Grand Champion ЖК-да батареи суық, отопления нет уже несколько часов.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 32
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-187",
+   "text": "Почему в ЖК Grand Champion опять нет тепла? Батареи холодные, дома маленький ребёнок, спим в куртках.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-188",
+   "text": "Пәтерде 15 градус, батареялар жылымайды. Мекенжай: Grand Champion ЖК, 1-подъезд.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 35
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-189",
+   "text": "Galamat Towers ЖК-да кіреберісте газдың иісі бар, көршілер де сезіп отыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 3,
+     "minute": 50
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-190",
+   "text": "В ЖК Grand Champion не греют батареи, в квартире 14 граудсов. У нас поижлые родители.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 0
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-191",
+   "text": "Здравствуйте. С ночи нет отопления в ЖК Grand Champion, в детской 13 градусов.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 5
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-192",
+   "text": "ЖК Galamat Towers, блок 3: в подъезде запах газа, соседи тоже чувствуют.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 8
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-193",
+   "text": "Құрметті әкімдік! Жұмекен Нәжімеденов көшесінде жолда үлкен шұңқыр бар, көліктер дөңгелегін жарып жатыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 8
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-194",
+   "text": "ЖК «Акбулак-3»: контейнеры забиты, пакеты ставят прямо на землю.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 11
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-195",
+   "text": "Пахнет газом на лестнице, ЖК Galamat Towers, блок 1. Страшно, вызовите аварийку.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 25
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-196",
+   "text": "Улица Габита Мусрепова вся в снегу, ни одной снегоуборочной машины за ночь.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 30
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-197",
+   "text": "Galamat Towers ЖК, 1-блок: подъезде газом пахнет, қорқып отырмыз.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-198",
+   "text": "Улица Амины Умурзаковой: из-под асфальта бьёт вода, дорогу размыло. Очень просим помочь.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 35
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-199",
+   "text": "Помогите, пожалуйста. Амина Өмірзақова көшесінде труба жарылды, вода на дороге, асфальт ойылды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 38
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-200",
+   "text": "Жылу қашан беріледі? Grand Champion ЖК-да батареялар суып қалды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 43
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-201",
+   "text": "Доброе утро. Светофор на перекрёстке пр. Абая и пр. Женис мигает жёлтым с 00:50, переходить страшно.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 47
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-202",
+   "text": "Светофор не горит, перекрсток пр. Абая и пр. Женис. Пешеходы бегут через дорогу.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 4,
+     "minute": 57
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-203",
+   "text": "Сәлеметсіз бе! «Статус» ЖК ауласында қоқыс жәшіктері толып кетті, айналасы қоқыс. Шара қолдануларыңызды сұраймыз.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 10
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-204",
+   "text": "Неге Grand Champion ЖК-да жылу жоқ? Түні бойы суықта отырмыз.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 12
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-205",
+   "text": "Пожалуйста, дайте отопление в ЖК Grand Champion! Дети болеют, дома холодно.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 17
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-206",
+   "text": "Пыль от стройки летит в окна весь день.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 17
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-207",
+   "text": "Grand Champion ЖК-да кештен бері жылу берілмей тұр, пәтерде суық.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 25
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-208",
+   "text": "Батареи холодные во всём доме, ЖК Grand Champion. Когда дадут тепло?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 28
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-209",
+   "text": "Нет воды в ЖК «Алтын шар»! Предупреждения не было. Примите меры.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 28
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-210",
+   "text": "Қайым Мұхамедханов көшесінде водоканал жолды қазып кетті, асфальт жоқ, яма.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 32
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-211",
+   "text": "nochyu v raione nura silno pahnet himiei, dyshat tyazhelo.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-212",
+   "text": "На улице Арай тротуар покрылся льдом, ничем не посыпано. Очень просим помочь.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-213",
+   "text": "Үйдің қасында огромная яма, ешкім жөндемейді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-214",
+   "text": "Из кранов не идёт вода. ЖК «Алтын шар», блок 4, подъезд 1. Это авария?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 45
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-215",
+   "text": "Koksai koshesinde trotuar muz bolyp qalgan, qum sebilmegen.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 46
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-216",
+   "text": "Аялдамада бір сағат тұрдық, автобус келмеді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 48
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-217",
+   "text": "Қайырлы таң. «Вокзал Нурлы Жол» аялдамасында автобус бір сағаттан бері келмейді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 50
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-218",
+   "text": "zhk grand champion 3-i podezd: otoplenie otklyuchili bez preduprezhdeniya v kvartirah holodno",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 54
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-219",
+   "text": "Яма на проезжей части на улице Жумекена Нажимеденова, уже две машины пробили шины.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 54
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-220",
+   "text": "Светофор на перекрёстке Коргалжинское ш. и пр. Туран мигает жёлтым с 00:10, переходить страшно.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 5,
+     "minute": 58
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-221",
+   "text": "Во дворе ЖК «Статус» стройка шумит всю ночь, техника работает после 23:00.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 2
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-222",
+   "text": "net otopleniya, batarei holodnye, v kvartire 14 gradusov. pomogite!",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 3
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-223",
+   "text": "Grand Champion ЖК-да жылу өшіп қалды, қарт кісілер мен балалар тоңып отыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 7
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-224",
+   "text": "Сәлеметсіз бе! Амина Өмірзақова көшесінде құбыр жарылып, жолға су ағып жатыр, асфальт опырылды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 10
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-225",
+   "text": "«Вокзал Нурлы Жол» — стоим час, ни одного автобуса. Где транспорт? Примите меры.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 12
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-226",
+   "text": "Коргалжинское шоссе: провал асфальта посреди полосы, объезжают по встречке. Примите меры.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 12
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-227",
+   "text": "Grand Champion ЖК, 2-блок: жылуды ескертусіз өшіріп тастады, балалар ауырып қалады.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-228",
+   "text": "Остановка «Думан», автобус келмейді уже 40 минут.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 16
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-229",
+   "text": "С утра в ЖК «Алтын шар» нет воды совсем. Когда включат?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 22
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-230",
+   "text": "Здравствуйте! Улица Алькея Маргулана вся в снегу, ни одной снегоуборочной машины за ночь.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 24
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-231",
+   "text": "Здравствуйте, в ЖК «Алтын шар» пропала вода с 05:10. Объявления не было.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 25
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-232",
+   "text": "Қорғалжын тас жолы мен Тұран даңғылының қиылысында бағдаршам сөніп тұр, жаяу өту қорқынышты.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 27
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-233",
+   "text": "zhk altyn shar 3-i podezd: net ni holodnoi ni goryachei vody",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 30
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-234",
+   "text": "paterde 15 gradus batareyalar jylymaidy. mekenjai: grand champion jk 5-blok. shara qoldanularynyzdy suraimyz",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 31
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-235",
+   "text": "«Республиканская школа Жас Улан» — стоим час, ни одного автобуса. Где транспорт?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 31
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-236",
+   "text": "Коксай көшесінде гололёд, тротуар мұз, ничем не посыпали. Қашанға дейін күтеміз?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 31
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-237",
+   "text": "«Статус» ЖК ауласында мусор не вывозят, жәшіктер толы. Тезірек көмектесіңіздер.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 32
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-238",
+   "text": "Grand Champion ЖК-да жылу өшіп қалды, қарт кісілер мен балалар тоңып отыр. Шара қолданларыңызды сұрамйыз.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 33
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-239",
+   "text": "На остановке «Вокзал Нурлы Жол» автобус не приходит больше часа. Просим разобраться.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 33
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-240",
+   "text": "Доброе утро. Остановка «Барыс арена»: вечером автобусы вообще не ходят, как добираться домой?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 34
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-241",
+   "text": "Во дворе ЖК «Энергетик» из канализационного колодца течёт, запах ужасный.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 36
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-242",
+   "text": "Холодно в квартире, батареи не греют. Адрес: ЖК Grand Champion, блок 1.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 36
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-243",
+   "text": "На нашей улице неделю не горят фонари.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 39
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-244",
+   "text": "Grand Champion ЖК, 2-подъезд: жылуды ескертусіз өшіріп тастады, балалар ауырып қалады.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 40
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-245",
+   "text": "С остановки «Думан» невозможно уехать, автобусов нет уже 40 минут.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 41
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-246",
+   "text": "Altyn shar JK, 4-blok: uide muldem su joq, bala kishkentai.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 43
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-247",
+   "text": "Здравствуйте! Остановка «ТРЦ Сарыарка»: сломана скамейка, крыша павильона течёт.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 43
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-248",
+   "text": "Grand Champion ЖК-да жылу жоқ, батареялар суық. Үйде суық, балалар тоңып жатыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 45
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-249",
+   "text": "Яма на дороге возле нашего дома, уже год никто не ремонтирует.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 45
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-250",
+   "text": "Сәлеметсіз бе. Grand Champion ЖК-да жылу жоқ, үйде өте суық. Тезірек көмектесіңіздер.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 46
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-251",
+   "text": "Утром на остановке «Вокзал Нурлы Жол» толпа, автобусы проезжают переполненные.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 47
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-252",
+   "text": "В ЖК «Алтын шар» нет холодной воды с 05:10. Ни умыться, ни приготовить.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 50
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-253",
+   "text": "Сәлеметсіз бе! «Думан» аялдамасында автобус бір сағаттан бері келмейді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 50
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-254",
+   "text": "Срочно! Нет отопления в ЖК Grand Champion, на улице минус.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 54
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-255",
+   "text": "Gololyod na trotuare na ulitse Arai, lyudi padayut.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 56
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-256",
+   "text": "Жылу жоқ! Grand Champion ЖК, 6-блок. Батареялар мұздай.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 56
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-257",
+   "text": "Одесский тұйық көшесінде жол жиегінде құрылыс қоқысы үйіліп жатыр.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 56
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-258",
+   "text": "Отключили воду в ЖК «Алтын шар», дома маленький ребёнок, воды нет совсем.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 56
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-259",
+   "text": "Нет отопления в ЖК Grand Champion, батареи леяные. Дома очень холодно. Спасиббо.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 57
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-260",
+   "text": "zhdyom avtobus na ostanovke zhiloi kompleks zelyonyi kvartal 50 minut, lyudi myorznut. prosim razobratsya.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 6,
+     "minute": 58
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-261",
+   "text": "Холодно в квартире, батареи не греют. Адрес: ЖК Grand Champion, блок 4, подъезд 4. Очень просим помочь.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 0
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-262",
+   "text": "Доброе утро. Нет отопления в ЖК Grand Champion, батареи ледяные. Дома очень холодно.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 3
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-263",
+   "text": "Сәлеметсіз бе! 1-ші шағын аудан ауласында кәріз ағып жатыр, иісі жаман.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 3
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-264",
+   "text": "Тротуар на проспекте Туран полностью заставлен машинами. Примите меры.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 3
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-265",
+   "text": "Alau ЖК ауласында көліктер көгалға қойылады. Рақмет.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 4
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-266",
+   "text": "slomalsya lift v zhk galamat towers, blok 2. pozhilye ne mogut spustitsya. skolko mozhno zhdat?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 4
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-267",
+   "text": "Во дворе ЖК «Бухар Жырау De Luxe» после ремонта теплотрассы разрыли газон и не восстановили.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 4
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-268",
+   "text": "Отопление пропало в ЖК Grand Champion с 23:40. Звонили в КСК — никто не отвечает. Примите меры.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 4
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-269",
+   "text": "Неге Grand Champion ЖК-да жылу жоқ? Түні бойы суықта отырмыз. Шара қолдануларыңызды сұраймыз.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 5
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-270",
+   "text": "Құрметті әкімдік! «Барыс арена» аялдамасынан кешке үйге жету мүмкін емес, автобус жоқ.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 6
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-271",
+   "text": "«Статус» ЖК ауласында қоқыс жәшіктері толып кетті, айналасы қоқыс.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 7
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-272",
+   "text": "Vody net vo vsyom dome, ZhK Altyn shar. Skolko zhdat?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 8
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-273",
+   "text": "abylai han dangylynda qar tazalanbagan kolikter taiganap jatyr",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 8
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-274",
+   "text": "Помогите, пожалуйста. Воды нет в ЖК «Алтын шар», краннан су ақпайды. Сколько можно ждать?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 8
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-275",
+   "text": "Қайырлы кеш. «Жилой комплекс Зелёный Квартал» аялдамасынан кешке үйге жету мүмкін емес, автобус жоқ.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 8
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-276",
+   "text": "Помогите, пожалуйста. Отключили воду в ЖК «Алтын шар», дома маленький реебёнок, воды нет совсем. Просим разобраться.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 9
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-277",
+   "text": "Из кранов не идёт вода. ЖК «Алтын шар», блок 1, подъезд 4. Это авария?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 12
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-278",
+   "text": "Су қашан беріледі? «Алтын шар» ЖК, 4-подъезд.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 12
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-279",
+   "text": "В ЖК Grand Champion нет отопления с 23:40, батареи холодные. В квартире 15 градусов, дети мёрзнут.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 13
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-280",
+   "text": "Здравствуйте! Respublika ЖК, 2-подъезд: подъезде свет жоқ.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 13
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-281",
+   "text": "Здрвствуйте, в ЖК «Алтын шар» пропала вода с 05:10. Объявленния не было.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 13
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-282",
+   "text": "«Алтын шар» ЖК, 3-блок: су жоқ, вообще ничего не идёт.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 14
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-283",
+   "text": "Құрметті әкімдік! «Научный» ЖК ауласында фонари не горят, қараңғы. Қашанға дейін күтеміз?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 14
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-284",
+   "text": "salemeetsiz be altyn shar jk-da su joq. apat pa?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-285",
+   "text": "«Ақбұлақ-3» ЖК ауласында орындықтардың бәрі сынған.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-286",
+   "text": "ЖК «Алтын шар», 1-й подъезд: нет ни холодной, ни горячей воды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-287",
+   "text": "Опять заставили газон машинами в ЖК Galamat Towers, детям негде гулять.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-288",
+   "text": "Уважаемый акимат! Воды нет во всём доме, ЖК «Алтын шар». Сколько жать?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 15
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-289",
+   "text": "Нет воды в ЖК «Алтын шар»! Предупреждения не было.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 18
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-290",
+   "text": "«Алтын шар» ЖК-да вода жоқ с утра, когда дадут?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 21
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-291",
+   "text": "Құрметті әкімдік! «Жилой комплекс Зелёный Квартал» аялдамасында 50 минут автобус күтіп тұрмыз, тоңдық.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 21
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-292",
+   "text": "Korgalzhinskoe sh. i pr. Turan: svetofor ne rabotaet uzhe paru chasov",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 22
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-293",
+   "text": "«Алтын шар» ЖК-да су жоқ, таңертеңнен бері краннан су ақпайды. Рақмет.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 23
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-294",
+   "text": "Жылу жоқ в ЖК Grand Champion, дома очень холодно, көмектесіңіздер.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 23
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-295",
+   "text": "Помогите, пожалуйста. С утра в ЖК «Алтын шар» нет воды совсем. Когда включат? Сколько можно ждать?",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 25
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-296",
+   "text": "Сәлеметсіз бе! Жылу қашан беріледі? Grand Champion ЖК-да батареялар суып қалды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 27
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-297",
+   "text": "Су өшіп қалды, «Алтын шар» ЖК-да ескертусіз өшірді.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 28
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-298",
+   "text": "Сәлеметсіз бе! Respublika ЖК ауласында машины газонға тұрып алған.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 28
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-299",
+   "text": "Воды нет в ЖК «Алтын шар», краннан су ақпайды.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 29
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-300",
+   "text": "Қайырлы кеш. Grand Champion ЖК-да кештен бері жылу берілмей тұр, пәтерде суық.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 29
+    }
+   },
+   "demo": true
+  },
+  {
+   "id": "night-301",
+   "text": "Құрметті әкімдік! Омара Хаяма көшесінде открытый люк, қақпағы жоқ, опасно! Шара қолдануларыңызды сұраймыз.",
+   "received": {
+    "day_at": {
+     "day": 0,
+     "hour": 7,
+     "minute": 30
+    }
+   },
+   "demo": true
+  }
+ ]
+}
