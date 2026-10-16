@@ -75,6 +75,16 @@ async function openCalendar(page, lang) {
           // DEMO_SCRIPT R01, сцена 8, шаг 4: «Календарь работ» открывается сразу на конфликте сцены (scene_conflict).
           const first = await page.evaluate(() => document.querySelector(".wcal-focus")?.dataset.conflict || "");
           check(`${w} ${lang}: мир R02 — календарь открывается на сцене 8`, first === "cf-w15-01", first);
+          // Строки конфликта сцены — вверху ленты, сразу под шапкой месяцев: полосы асфальта и раскопки не у нижнего края
+          // окна (в черновике ролика R10 на B0.14 их закрывал субтитр).
+          const raised = await page.waitForFunction(() => {
+            const head = document.querySelector(".wcal-tl .wcal-tl__head");
+            const chip = document.querySelector('.wcal-cchip[data-conflict="cf-w15-01"]');
+            if (!head || !chip) return null;
+            const d = chip.getBoundingClientRect().top - head.getBoundingClientRect().bottom;
+            return d >= -2 && d <= 40 ? { d: Math.round(d) } : null;  // объект: 0 px — тоже попадание
+          }, null, { timeout: 5000 }).then((hd) => hd.jsonValue(), () => null);
+          check(`${w} ${lang}: строки конфликта сцены 8 — вверху ленты`, raised !== null, JSON.stringify(raised));
           await page.click('.wcal-cchip[data-conflict="cf-w15-01"]');
           await page.waitForSelector('.wcal-focus[data-conflict="cf-w15-01"]', { timeout: 5000 });
         }

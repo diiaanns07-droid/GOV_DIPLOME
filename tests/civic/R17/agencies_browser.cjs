@@ -67,6 +67,12 @@ async function setup(page, { lang, mode, tab }) {
 }
 // Прокрутки вбок нет: страница не шире окна, и в экране R17 ничто не вылезает за край — кроме содержимого блоков
 // с собственной прокруткой (вкладки, список дворов, шкала «Календаря работ» R12 .wcal-tl с overflow-x: auto).
+// Кнопки, ссылки, вкладки, поля штаба меньше 44 px (флажок — по его подписи), как hitBox аудита R10 (без «роста» по соседям).
+const tap44 = (page) => page.evaluate(() => [...document.querySelectorAll(".ag button, .ag a[href], .ag [role=button], .ag [role=tab], .ag summary, .ag select, .ag input, .ag textarea")]
+  .filter((e) => e.offsetParent !== null)
+  .map((e) => (/^(checkbox|radio)$/.test(e.type) && e.closest("label")) || e)
+  .map((e) => ({ r: e.getBoundingClientRect(), t: (e.innerText || e.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 28) }))
+  .filter(({ r }) => r.width > 0 && (r.width < 44 || r.height < 44)).map(({ r, t }) => `${t} ${Math.round(r.width)}×${Math.round(r.height)}`));
 const noSideScroll = (page) => page.evaluate(() => {
   const clipped = (e) => { for (let n = e.parentElement; n && !n.classList.contains("ag"); n = n.parentElement) {
     if (/^(auto|scroll)$/.test(getComputedStyle(n).overflowX)) return true; } return false; };   // hidden — не прощаем
@@ -237,10 +243,9 @@ const openAgencies = async (page, base, tab) => {
           return r.width > 0 && (r.right > edge.right + 1 || r.left < edge.left - 1);
         }).map((t) => t.innerText.trim()));
         check(`${tag}: вкладки штаба видны целиком`, tabsCut.length === 0, tabsCut);
-        // Цель п. 10 — 44 px: вкладки и период «7 · 30 · 90» (рамка кнопки, как меряет аудит R10).
-        const under44 = await page.evaluate(() => [...document.querySelectorAll(".ag [role=tab], .ag-seg > button")]
-          .map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && (r.width < 44 || r.height < 44)).map((r) => Math.round(r.width) + "×" + Math.round(r.height)));
-        check(`${tag}: вкладки и период — зона нажатия 44 px`, under44.length === 0, under44);
+        // Цель п. 10 — 44 px у всего, что нажимается в штабе (рамка элемента, как меряет аудит R10 visual_audit).
+        const under44 = await tap44(page);
+        check(`${tag}: всё нажимаемое — зона 44 px`, under44.length === 0, under44);
         check(`${tag}: нет прокрутки вбок`, await noSideScroll(page));
         check(`${tag}: нет непереведённых ключей`, (await rawKeys(page)).length === 0, await rawKeys(page));
         const ux = await uxProbe(page);
@@ -285,6 +290,8 @@ const openAgencies = async (page, base, tab) => {
               .filter((e) => e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1).map((e) => e.textContent.slice(0, 60)));
             check(`${tag}: вкладка ${tab}: заголовки строк и причины передач не обрезаны`, cutRows.length === 0, cutRows);
           }
+          const tabUnder44 = await tap44(page);
+          check(`${tag}: вкладка ${tab}: всё нажимаемое — зона 44 px`, tabUnder44.length === 0, tabUnder44);
           const uxTab = await uxProbe(page);
           check(`${tag}: вкладка ${tab}: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1`, uxTab.tinyN === 0 && uxTab.smallN === 0 && uxTab.lowN === 0, uxTab);
           await page.screenshot({ path: `${OUT}/${tab}-${tag}.png` });

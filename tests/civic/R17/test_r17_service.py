@@ -307,8 +307,12 @@ def test_device_places_reads_r16_yards(service, monkeypatch):
     assert feed["zone_known"] is True and len(feed["items"]) == 2 and feed["items"][0]["district"] == "nura"
     assert call(service, "GET", "/incidents/updates", ctx={"headers": {"X-Birge-Device": "device-none-0001"}})["body"] == \
         {"items": [], "zone_known": False, "since": None}
-    # функция модуля (просьба INTEGRATION §7) главнее хранилища
-    fake.yards_of_device = lambda device: [{"id": nura_yard}]
+    # функция модуля R16 yards_of_device(device_id, db_path=None) главнее хранилища; база — та же, что у R17
+    calls = []
+    fake.yards_of_device = lambda device, db_path=None: calls.append(db_path) or [{"id": nura_yard}]
+    assert svc_mod.device_places("device-other-01", service.store.db_path)[1] == {nura_yard}
+    assert calls == [service.store.db_path]
+    fake.yards_of_device = lambda device: [nura_yard]                       # старая форма без db_path
     assert svc_mod.device_places("device-other-01", service.store.db_path)[1] == {nura_yard}
     del fake.yards_of_device
     fake.default_service = lambda db_path=None: 1 / 0                       # R16 упал
