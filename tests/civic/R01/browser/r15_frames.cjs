@@ -41,7 +41,9 @@ async function main() {
   const port = await freePort();
   const srv = await startServer(port, tmp);
   const base = `http://127.0.0.1:${port}/`;
-  const browser = await chromium.launch();
+  // Поле даты (<input type=date>) Chromium рисует по LANG процесса, а не по locale контекста: без этого в облаке —
+  // «10/16/2026», с ним — «16.10.2026» (и для ҚАЗ тот же формат; подсказка R11, круг 14).
+  const browser = await chromium.launch({ env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" } });
   const shots = [];
   try {
     for (const w of SIZES) for (const lang of LANGS) for (const mode of ["akimat", "resident"]) {

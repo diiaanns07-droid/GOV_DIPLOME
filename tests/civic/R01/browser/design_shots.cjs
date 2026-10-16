@@ -119,7 +119,9 @@ const STATES = [
   const port = await freePort(), tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r01-design-"));
   const srv = await startServer(port, path.join(tmp, "civic.sqlite3"));
   const base = `http://127.0.0.1:${port}/`;
-  const browser = await chromium.launch();
+  // Поле даты (<input type=date>) Chromium рисует по LANG процесса, а не по locale контекста: без этого в облаке —
+  // «10/16/2026», с ним — «16.10.2026» (и для ҚАЗ тот же формат; подсказка R11, круг 14).
+  const browser = await chromium.launch({ env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" } });
   const report = [];
   try {
     for (const size of SIZES) for (const lang of LANGS) for (const [name, mode, prep, extra = {}] of STATES) {

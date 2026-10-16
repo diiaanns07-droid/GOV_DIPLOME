@@ -46,7 +46,9 @@ async function shoot(browser, base, view, file) {
 async function main() {
   if (!BEFORE || !AFTER) { console.error("usage: r15_pairs.cjs <out> <url_before> <url_after> [label_before] [label_after] [--hide-env]"); process.exit(2); }
   fs.mkdirSync(OUT, { recursive: true });
-  const browser = await chromium.launch();
+  // Поле даты (<input type=date>) Chromium рисует по LANG процесса, а не по locale контекста: без этого в облаке —
+  // «10/16/2026», с ним — «16.10.2026» (и для ҚАЗ тот же формат; подсказка R11, круг 14).
+  const browser = await chromium.launch({ env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" } });
   const done = [];
   try {
     for (const view of VIEWS) {
