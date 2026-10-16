@@ -217,17 +217,36 @@
     if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return "few";
     return "many";
   }
-  function tr(key, params) {
-    var i18n = I();
-    if (i18n && typeof i18n.has === "function" && (i18n.has(key) || i18n.has(key, "ru"))) return i18n.t(key, params);
+  // Свой (запасной) текст ключа; форма числа — для params.n.
+  function ownTemplate(key, params) {
     var l = lang();
     var v = KEYS[l][key] != null ? KEYS[l][key] : KEYS.ru[key];
-    if (v == null) return key;
+    if (v == null) return null;
     if (typeof v === "object") {
       var n = params && params.n != null ? Number(params.n) : 0;
       v = v[plural(l, n)] || v.other || v.many;
     }
-    return String(v).replace(/\{(\w+)\}/g, function (w, name) {
+    return String(v);
+  }
+  // Текст словаря — от другого смысла ключа (R10 B-134: словарь и экран разошлись): в нём остался «{…}» или пропали
+  // данные, которые экран передаёт и показывает в своём тексте (службы, место, число).
+  function lostData(text, own, params) {
+    if (/\{\w+\}/.test(text)) return true;
+    return Object.keys(params || {}).some(function (name) {
+      var v = params[name];
+      if (v == null || v === "" || own.indexOf("{" + name + "}") < 0) return false;
+      return typeof v === "number" ? !/\d/.test(text) : text.indexOf(String(v)) < 0;
+    });
+  }
+  function tr(key, params) {
+    var i18n = I();
+    var own = ownTemplate(key, params);
+    if (i18n && typeof i18n.has === "function" && (i18n.has(key) || i18n.has(key, "ru"))) {
+      var text = String(i18n.t(key, params));
+      if (own == null || !lostData(text, own, params)) return text;      // словарь главнее
+    }
+    if (own == null) return key;
+    return own.replace(/\{(\w+)\}/g, function (w, name) {
       if (!params || params[name] == null) return w;
       return typeof params[name] === "number" ? num(params[name]) : String(params[name]);
     });
@@ -386,7 +405,11 @@
       if (status === 413) return { title: tr("intake.error.server_size"), text: "" };
       if (status === 404) return { title: tr("intake.error.expired"), text: "", expired: true };
       if (status === 503) return { title: tr("intake.error.store"), text: "" };
-      if (status === 400 && err.message) return { title: String(err.message), text: "" };
+      // 400: текст сервера — по-русски; на ҚАЗ и без текста (у оболочки тогда «request failed») — свой текст экрана.
+      if (status === 400) {
+        var msg = err.message && err.message !== "request failed" ? String(err.message) : "";
+        return { title: msg && lang() === "ru" ? msg : tr(fallbackKey), text: "" };
+      }
       return { title: tr(fallbackKey), text: "" };
     }
 
@@ -866,7 +889,7 @@
           res.demo ? h("p", { class: "bi-sum__demo", text: tr("intake.demo_note") }) : null,
           h("div", { class: "bi-actions" }, [
             commitBtn,
-            h("button", { type: "button", class: "bk-btn bk-btn--lg", onclick: again }, [tr("intake.again")]),
+            h("button", { type: "button", class: "bk-btn bk-btn--lg", "data-act": "again", onclick: again }, [tr("intake.again")]),
           ]),
           done,
         ]),
@@ -934,7 +957,7 @@
     };
   }
 
-  root.BirgeIntake = { mount: mount, version: "r04-intake-ui-2" };
+  root.BirgeIntake = { mount: mount, version: "r04-intake-ui-3" };
 
   // Раздел оболочки R01 без правки оболочки: «Ещё → Разбор обращений» (вид «Акимат»), Ctrl+K находит по названию.
   function register() {

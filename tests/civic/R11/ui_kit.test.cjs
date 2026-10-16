@@ -20,4 +20,17 @@ for (const [m, first] of [[1, "snow_ice"], [3, "snow_ice"], [4, "roads"], [10, "
 }
 assert.deepStrictEqual(ids, cats.map((c) => c.id), "исходный список не меняется");
 assert.deepStrictEqual(UI.seasonOrder([], new Date(2026, 0, 1)), []);
+// П3: метка «ИИ» — подпись и подсказка экранируются (угроза R15 T-R11-01: помощники ui-kit со строками HTML)
+{
+  const fakeDoc = { createElement: () => ({ className: "", title: "", innerHTML: "" }), addEventListener() {}, readyState: "complete",
+    body: null, documentElement: { dataset: {} }, querySelector: () => null, querySelectorAll: () => [] };
+  const box = { self: { document: fakeDoc } };
+  vm.runInNewContext(fs.readFileSync(path.join(ROOT, "web/civic/ui-kit/ui-kit.js"), "utf8"), box);
+  const tag = box.self.BirgeUI.aiTag({ label: "<img src=x onerror=alert(1)>" });
+  assert.strictEqual(tag.className, "bk-ai");
+  assert.ok(!/<img/.test(tag.innerHTML) && /&lt;img/.test(tag.innerHTML), "подпись метки экранирована");
+  assert.ok(/#i-ai"/.test(tag.innerHTML), "значок i-ai из набора");
+  const plain = box.self.BirgeUI.aiTag();
+  assert.ok(/common\.ai\.badge/.test(plain.innerHTML) && plain.title === "common.ai.hint", "без словаря — ключи, без падения");
+}
 console.log("PASS ui_kit.test.cjs");

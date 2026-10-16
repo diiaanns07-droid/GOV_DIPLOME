@@ -7,6 +7,7 @@
     GET /heat?bbox&days&category&district&zoom  → {generated_at, items:[{target, geometry, weight, level, count, fixed_until, …}]}
     GET /heat/meta                              → категории, легенда, районы, периоды (интерфейс ничего не копирует)
     GET /heat/target?kind&id&days               → одна цель для карточки + «Что пишут жители» (texts.groups)
+                                                   404 «жалоб нет» + place (подпись и точка места), если цель известна
     GET /heat/replay?from&to&step=day&days&category&district&last&format
                                                 → «Хроника города» (раунд 15, replay.py): кадры по дням той же формулой,
                                                   компактно (формы целей один раз, дальше только изменения), отметки событий
@@ -52,7 +53,11 @@ def handle_get(path: str, query: dict | None = None, service=None, staff: bool =
                 return 400, {"error": "bad_request", "field": "id", "message": "нужны kind и id цели"}
             item = svc.target(kind, tid, days=_one(q, "days"), include_real_texts=bool(staff))
             if item is None:
-                return 404, {"error": "not_found", "message": "по этой цели жалоб за период нет"}
+                body = {"error": "not_found", "message": "по этой цели жалоб за период нет"}
+                place = svc.place(kind, tid)   # П3: место без жалоб — карта подлетает к нему («ИИ-разбор» R04)
+                if place:
+                    body["place"] = place
+                return 404, body
             return 200, {"item": item, "legend": svc.config.legend(), "demo": svc.is_demo}
         return 404, {"error": "not_found", "message": "нет такого адреса"}
     except (HeatError, ReplayError) as exc:
