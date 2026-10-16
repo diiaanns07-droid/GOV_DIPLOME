@@ -6,8 +6,8 @@
  "restored_from": "claude/r14-R10@656681ee (tests/e2e и tests/civic/R10 в FINAL-4 те же) + research/round-14-results/R01/patches/R10_demo_flow_reference.patch",
  "code_sha": "58234e5a",
  "tested_sha": "a4937462 (FINAL-4), bd3800d8 (FINAL-4.1), ветка R01: c97aa5f5 и c9069723 (B0), 29b4ae9d (B0.2), c6d62440 (B0.6), 49786917 (B0.9), d893d9b2 (B0.10), 0121f7bd (B0.12), 2184795b (B0.13), aebb9f0a (B0.14), 79c766c1 (B0.15), 49a69c17 (B0.16), 9f44429e (B0.17), 80429928 (B0.18), fd01a0a2 (B0.19), 8f70baf1 (B0.20), fceec354 (B0.21), c2276360 (FINAL-5); превью pvC, pvD, pvE, pvF; стенд «1 000 целей», e8d6cae6 (FINAL-5.1)",
- "push_status": "OK",
- "status": "final — раунд 15 закрыт (П2, 16 окт 16:00 по Астане). Тесты R10 code_sha 58234e5a; приняты FINAL-5 c2276360 и FINAL-5.1 e8d6cae6 — «можно показывать: ДА», блокеров нет",
+ "push_status": "OK (checkpoint)",
+ "status": "П3 (16 окт 17:15 по Астане): раунд снова открыт до FINAL-6. FINAL-5.1 e8d6cae6 принят R10 («можно показывать: ДА») — запасная сборка. Тесты R10 code_sha 58234e5a; в работе — приёмка сцены 0 «ИИ-разбор» и FINAL-6",
  "changed_paths": [
   "research/handoffs/astana/R10/round15/STATUS.md",
   "research/round-15-results/R10/",
@@ -86,7 +86,7 @@
   "казахский проверяется на полноту, не на качество (KK_REVIEW R11); субтитры ролика — текст R14 docs/gton/VIDEO_SCRIPT.md (основа — черновик R10 с вычиткой казахского R11)",
   "FINAL-5.1 принят быстрым повтором (без аудита экранов и эталона, сцены 7–9 на 1366 и 375): код тот же, что в FINAL-5, где они прошли полностью"
  ],
- "next_step": "Раунд 15 закрыт — работы по роли нет. После раунда (по желанию владельца): LOCAL-12 — ролик и кадры с настоящей картой на ноутбуке (demo_video.cjs --basemap real), замер кадров/с (perf_check) и B-124 на ноутбуке с видеокартой; R14 — B-130 (числа docs/gton).",
+ "next_step": "П3: тесты сцены 0 (API intake, экран, Ctrl+K), часть 1 на 1024, проверки видимых дефектов review_final51; 17 окт 07:00 UTC — приёмка кандидата FINAL-6, блокеры к 09:00 UTC, ролик со сценой 0; 12:00 — FINAL-6; 13:00 UTC — закрытие раунда",
  "code_changes_since_eb0876cf": [
   "demo_flow_v2: Ctrl+K «Ситуационный центр» и «QR-таблички» → свои страницы (просьба R08 INTEGRATION §15)",
   "ux_lib + visual_audit: зона нажатия по hit-test — зона ::after ui-kit (.bk-chip, .bk-join, .bk-seg) считается (ложные FAIL B-114/B-125 ушли)",
