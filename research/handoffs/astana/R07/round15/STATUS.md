@@ -283,9 +283,13 @@ FINAL-6 кандидат 12:00, приёмка R10 12:00–16:00 (блокеры
   place_no_complaints 10/10, map_tools 7/7, wave2 38/38, shots 64/64, readability 18/18, pan 2/2, replay 16/16.
   INTEGRATION §3д, screens/p3_place/.
 
+- (16 окт 16:26 UTC) Круг 29: AMENDMENTS — П1–П3, новых нет. R11 добавил heat.place_empty в словарь (33260363; тексты =
+  запасные модуля). R01 — B6.4 e56971a0 (R07 там d43dd650), R10 pv-p3d: «Показать на карте» — PASS (кнопка есть),
+  R04 0f8f508d: кнопка ставит #target задачи. Новых просьб к R07 нет. Код R07 — f3012276 (DELIVERY code_sha).
+
 ## Дальше
 - R01: взять в FINAL-6 код R07 f3012276 (ui/civic_heat/service.py, api.py, web/civic/heat/heat.js — INTEGRATION §3д);
-  R11: ключ heat.place_empty. FINAL-5.1 (d43dd650) остаётся запасным.
+  R11 ключ heat.place_empty уже добавил (33260363). FINAL-5.1 (d43dd650) остаётся запасным.
 - П3 (раунд 15+): кольца — решены R12 a4e99b58 (patch R07 не нужны). На кандидате FINAL-6 (17 окт 12:00 Астаны)
   проверить: обзор без колец, значки районов R07, хроника, сцена 0 → карта, часть 1. 12:00–16:00 — только блокеры
   R10 / R15.
