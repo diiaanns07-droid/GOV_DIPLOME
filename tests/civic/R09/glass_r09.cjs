@@ -219,6 +219,6 @@ async function openPage(browser, size, lang, storage) {
     fs.rmSync(tmp, { recursive: true, force: true });
   }
   const fail = results.filter((r) => !r.ok).length;
-  console.log(`\nИТОГ: ${results.length - fail}/${results.length} PASS`);
+  console.log(`\nИТОГ: ${results.length - fail}/${results.length} ${fail ? "FAIL" : "PASS"}`);
   process.exit(fail ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(2); });
