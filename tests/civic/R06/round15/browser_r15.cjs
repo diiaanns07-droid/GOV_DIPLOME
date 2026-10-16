@@ -238,6 +238,32 @@ async function ideasPart(browser) {
       check(`${tag}: слова в плитках карточки (район, объект) не рвутся посреди слога (R11 R06-3)`,
         wordTiles.length >= 4 && wordTiles.every((x) => !x.bad.length), JSON.stringify(wordTiles.filter((x) => x.bad.length).concat(wordTiles.length < 4 ? [wordTiles] : [])));
       if (width === 1366 && lang === "ru") check(`${tag}: «Спортплощадка» в плитке — с переносом по слогам`, wordTiles.some((x) => x.text === "Спортплощадка"), JSON.stringify(wordTiles.map((x) => x.text)));
+      // R10 B-136: заголовок строки — рамка ≥ 44 px (аудит П3 меряет рамку и ≤ 12 px вокруг; вся карточка нажимается и так).
+      const titleBoxes = await page.$$eval(".ri-pc__open", (els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
+      check(`${tag}: заголовки строк — рамка нажатия ≥ 44 px (R10 B-136)`, titleBoxes.length && titleBoxes.every((x) => x >= 44), JSON.stringify(titleBoxes));
+      if (width === 1366 && lang === "ru") {
+        // Проекты не загрузились (связь оборвалась только у proposals) — не «Проекты · 0»: без числа, внутри «Повторить».
+        const block = (route) => route.abort("failed");
+        await page.route(/\/api\/civic\/v2\/proposals/, block);
+        await page.evaluate(() => { location.hash = "#map"; });
+        await page.waitForFunction(() => document.body.dataset.birgeSection === "map", null, { timeout: 10000 }).catch(() => {});
+        await page.evaluate(() => { location.hash = "#ideas"; });
+        await page.waitForSelector('[data-key="tab-projects"]', { timeout: 15000 }).catch(() => {});
+        await sleep(600);
+        const tabText = await page.$eval('[data-key="tab-projects"]', (e) => e.textContent).catch(() => "");
+        check(`${tag}: проекты не загрузились — во вкладке нет «· 0»`, tabText && !/·/.test(tabText), tabText);
+        await page.click('[data-key="tab-projects"]');
+        await sleep(300);
+        const retry = await page.$(".ri-plist .bk-state--error button, .ri-plist [class*=error] button");
+        check(`${tag}: проекты не загрузились — ошибка с «Повторить»`, !!retry, await page.evaluate(() => (document.querySelector(".ri-plist") || {}).innerText || ""));
+        await page.unroute(/\/api\/civic\/v2\/proposals/, block);
+        if (retry) await retry.click();
+        const back = await page.waitForSelector(".ri-pc[data-proposal]", { timeout: 10000 }).then(() => true, () => false);
+        const tabAfter = await page.$eval('[data-key="tab-projects"]', (e) => e.textContent).catch(() => "");
+        check(`${tag}: после «Повторить» проекты вернулись, число во вкладке`, back && /·\s*\d/.test(tabAfter), tabAfter);
+        await page.click('[data-key="tab-ideas"]').catch(() => {});
+        await sleep(300);
+      }
       // Кадр — с идеей спортплощадки (самое длинное слово плитки).
       const sports = await page.$(`.ri-pc[data-topic="sports"]:not([aria-current="true"]) .ri-pc__open`);
       if (sports) { await sports.click(); await sleep(300); }
