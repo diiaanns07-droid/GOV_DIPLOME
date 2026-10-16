@@ -159,6 +159,7 @@
       "crisis.minutes": "{n} мин",
       "crisis.zone": "Зона: {zone}",
       "crisis.services": "Службы и задачи",
+      "crisis.tasks_progress": "выполнено {done} из {total}",
       "crisis.task.next": "Отметить: {status}",
       "crisis.task.todo": "не начато",
       "crisis.task.doing": "в работе",
@@ -331,6 +332,7 @@
       "crisis.minutes": "{n} мин",
       "crisis.zone": "Аймақ: {zone}",
       "crisis.services": "Қызметтер мен тапсырмалар",
+      "crisis.tasks_progress": "{total} ішінен {done} орындалды",
       "crisis.task.next": "Белгілеу: {status}",
       "crisis.task.todo": "басталмаған",
       "crisis.task.doing": "орындалуда",
@@ -1290,7 +1292,10 @@
         })));
       }
       if (tasks.length) {
-        left.appendChild(h("p", { class: "ag-section-title", text: tr("crisis.services") }));
+        // Прогресс словами, как «Картина недели» R08 (akim.week.crisis.tasks): «выполнено 3 из 5» — сцена 9 DEMO_SCRIPT R01.
+        var doneN = tasks.filter(function (t) { return t.status === "done"; }).length;
+        left.appendChild(h("p", { class: "ag-section-title" }, [tr("crisis.services"),
+          h("span", { class: "ag-section-title__meta", text: " · " + tr("crisis.tasks_progress", { done: num(doneN), total: num(tasks.length) }) })]));
         left.appendChild(h("ul", { class: "ag-tasks" }, tasks.map(function (task) { return taskRow(full, task); })));
       }
       if (full.status === "active" && S.meta) left.appendChild(addTaskForm(full));
