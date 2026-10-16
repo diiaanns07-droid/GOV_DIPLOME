@@ -177,12 +177,50 @@ def kk_street(name_ru: str | None) -> str | None:
     """Казахская подпись улицы без name:kk: тип по-казахски, имя собственное как есть; не улица — без изменений."""
     if not name_ru:
         return name_ru
+    low = name_ru[:1].lower() + name_ru[1:]  # «Улица Касым Кайсенов» — тип с большой буквы
     for ru_type, kk_type in _KK_STREET_TYPES:
-        if name_ru.startswith(ru_type):
+        if low.startswith(ru_type):
             return f"{name_ru[len(ru_type):]} {kk_type}"
         if name_ru.endswith(" " + ru_type.strip()):
             return f"{name_ru[: -len(ru_type)]} {kk_type}"
     return name_ru
+
+
+# Обратное правило: у улицы в OSM только казахское имя — в РУС тип по-русски перед названием, имя собственное как есть,
+# без склонения: «Иван Панфилов көшесі» → «улица Иван Панфилов» (раунд 15: 69 русских подписей были с «көшесі»).
+_RU_STREET_TYPES = (("тұйық көшесі", "переулок"), ("көшесі", "улица"), ("даңғылы", "проспект"), ("тас жолы", "шоссе"),
+                    ("тасжолы", "шоссе"), ("бульвары", "бульвар"), ("алаңы", "площадь"))
+
+
+def ru_street(name: str | None) -> str | None:
+    """Русская подпись улицы с одним казахским именем: тип по-русски, имя собственное как есть; не улица — без изменений."""
+    if not name:
+        return name
+    for kk_type, ru_type in _RU_STREET_TYPES:
+        if name.endswith(" " + kk_type):
+            return f"{ru_type} {name[: -len(kk_type) - 1]}"
+    return name
+
+
+# Участок улицы — без повтора типа: «Участок улицы Анет Баба», «Әнет Баба көшесінің бөлігі» (было «Участок улицы
+# «улица Анет Баба»» и «Көше бөлігі «Әнет Баба көшесі»»). Имя собственное не склоняем — только слово типа.
+_RU_TYPE_GENITIVE = (("улица ", "улицы "), ("проспект ", "проспекта "), ("переулок ", "переулка "), ("шоссе ", "шоссе "),
+                     ("бульвар ", "бульвара "), ("площадь ", "площади "))
+_KK_TYPE_GENITIVE = (("тұйық көшесі", "тұйық көшесінің"), ("көшесі", "көшесінің"), ("даңғылы", "даңғылының"),
+                     ("тас жолы", "тас жолының"), ("бульвары", "бульварының"), ("алаңы", "алаңының"))
+
+
+def _segment_label(name: str, lang: str) -> str:
+    if lang == "kk":
+        for kk_type, genitive in _KK_TYPE_GENITIVE:
+            if name.endswith(" " + kk_type):
+                return f"{name[: -len(kk_type)]}{genitive} бөлігі"
+        return f"Көше бөлігі: {name}"
+    low = name[:1].lower() + name[1:]
+    for ru_type, genitive in _RU_TYPE_GENITIVE:
+        if low.startswith(ru_type):
+            return f"Участок {genitive}{name[len(ru_type):]}"
+    return f"Участок: {name}"
 
 
 def label(target: dict, lang: str) -> str:
@@ -192,7 +230,7 @@ def label(target: dict, lang: str) -> str:
     if lang == "kk":
         name = target.get("name_kk") or kk_street(target.get("name_ru"))
     else:
-        name = target.get("name_ru") or target.get("name_kk")
+        name = ru_street(target.get("name_ru") or target.get("name_kk"))
     kind = target["kind"]
     if lang == "kk":
         base = {"yard": "Аула", "bus_stop": "Аялдама", "playground": "Балалар алаңы", "park": "Саябақ",
@@ -201,11 +239,13 @@ def label(target: dict, lang: str) -> str:
         base = {"yard": "Двор", "bus_stop": "Остановка", "playground": "Детская площадка", "park": "Парк",
                 "waste": "Площадка для мусора", "segment": "Участок улицы"}[kind]
     if name:
-        return f"{base} «{name}»"
+        return _segment_label(name, lang) if kind == "segment" else f"{base} «{name}»"
     near = target.get("near")
     if near:
-        near_name = (near.get("name_kk") or kk_street(near["name_ru"])) if lang == "kk" else near["name_ru"]
+        near_name = (near.get("name_kk") or kk_street(near["name_ru"])) if lang == "kk" else ru_street(near["name_ru"])
+        # По-казахски ориентир стоит перед словом: «А-359 көшесі жанындағы аула» («двор у улицы А-359»), а не
+        # «Аула · жанында А-359 көшесі» (порядок слов русской подписи).
         if near["kind"] == "bus_stop":
-            return f"{base} · жанында «{near_name}» аялдамасы" if lang == "kk" else f"{base} рядом: остановка «{near_name}»"
-        return f"{base} · жанында {near_name}" if lang == "kk" else f"{base} рядом: {near_name}"
+            return f"«{near_name}» аялдамасы жанындағы {base.lower()}" if lang == "kk" else f"{base} рядом: остановка «{near_name}»"
+        return f"{near_name} жанындағы {base.lower()}" if lang == "kk" else f"{base} рядом: {near_name}"
     return base
