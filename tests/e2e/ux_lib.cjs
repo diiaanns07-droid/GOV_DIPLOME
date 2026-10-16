@@ -447,7 +447,11 @@ function sheetMetrics(page, sel) {
     for (const { b, c } of cutNow.slice(0, 6)) {
       const sc = c && c.scrollHeight > c.clientHeight + 4 ? c : null;
       let fEnd = frac(b, c);
-      if (sc) { const keep = sc.scrollTop; sc.scrollTop = sc.scrollHeight; await frame(); fEnd = frac(b, c); sc.scrollTop = keep; await frame(); }
+      // Кнопка посреди прокручиваемой области (к концу прокрутки уходит вверх) — достижима прокруткой, не «обрезана краем»:
+      // считаем лучшую видимость — у конца прокрутки или прокруткой до самой кнопки.
+      if (sc) { const keep = sc.scrollTop; sc.scrollTop = sc.scrollHeight; await frame(); fEnd = frac(b, c);
+        if (fEnd < 0.95) { b.scrollIntoView({ block: "nearest" }); await frame(); fEnd = Math.max(fEnd, frac(b, c)); }
+        sc.scrollTop = keep; await frame(); }
       const item = { t: clean(b.innerText).slice(0, 32), visible: Math.round(frac(b, c) * 100) + "%", atEnd: Math.round(fEnd * 100) + "%", scroll: !!sc };
       (fEnd < 0.95 ? out.cutEnd : out.cutNow).push(item);
     }

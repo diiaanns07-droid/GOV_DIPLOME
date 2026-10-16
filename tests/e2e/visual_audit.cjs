@@ -69,7 +69,14 @@ const SCREENS = [
   { id: "ideas", hash: "#ideas", mode: "resident", global: ["BirgeIdeas"], owner: "R06 + R05", api: API("ideas"), legacy: true },
   { id: "notifications", hash: "#notifications", mode: "resident", global: ["BirgeNotify"], owner: "R06", api: API("notifications"), legacy: true },
   { id: "services", hash: "#services", mode: "akimat", global: ["BirgeServices"], owner: "R08", api: null, legacy: true },
-  { id: "intake", hash: "#intake", mode: "akimat", global: ["BirgeIntake"], owner: "R04", api: API("intake/") },
+  // Сцена 0 при открытии запросов не шлёт (только поле ввода) — «нет связи» проверяем на «Пример» (GET intake/sample).
+  { id: "intake", hash: "#intake", mode: "akimat", global: ["BirgeIntake"], owner: "R04", api: API("intake/"),
+    act: async (page, lang) => {
+      const btn = await firstVisible(page.getByRole("button", { name: lang === "kk" ? /^Үлгі/ : /^Пример/ }));
+      if (!btn) return false;
+      await btn.click({ timeout: 4000 }).catch(() => null);
+      return true;
+    } },
 ];
 const GLOBALS = [...new Set(SCREENS.flatMap((sc) => [].concat(sc.global || [])))];
 // Отдельные страницы (без оболочки): Ситуационный центр и «Картина недели» R08 — только сотрудник.
