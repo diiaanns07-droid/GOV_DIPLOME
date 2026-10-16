@@ -69,6 +69,8 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
   РУС и ҚАЗ, BUILD_LOG B0…B0.4.
 - 05:30 (16 окт) B0.15 (`79c766c1`): R03 76b4fe35, R08 1a1a4a9b (знак-домик на Ситуационном центре), R11 a0178fbe,
   R12 9a3ae1f4, R16 0534ea6c, R17 19fb4eb3; pytest этих ролей + R01 1448/0, r15_ia 41/0.
+- 10:42 (16 окт) B0.20 (`8f70baf1`): R11 d20d823f, R12 68196b7c, R13 385750cb, R17 c189c967; pytest R03 + R01/R11/R12/R13/
+  R15/R17 1837/0, r15_ia 41/0. Найдена давняя зависимость порядка R13/R15 → R03 (просьба ниже).
 - 09:37 (16 окт) B0.19 (`fd01a0a2`): R02 fa9ab80b (мир kk), R03 233ce8a8, R04 f526b942, R06 e0ad2370, R07 d6f09938
   (мигание «#ffff100» снято), R10 2ab5f9a1, R13 576c1239, R16 8aaeb910, R17 a15c6d1d; весь pytest 5015/0, r15_ia 41/0,
   r14_b2 28/0.
@@ -138,15 +140,21 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 | R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 1a1a4a9b | B0: 6cd8f2be · B0.3: ca8326cb · B0.5: 0e6e57a5 · B0.7: 062f899a (из первой ветки целиком) · B0.12: 0e0623bf · B0.13: 3dbb4fb1 · B0.15: 1a1a4a9b |
 | R09 | claude/quirky-ptolemy-k3z2mj | af69e9a5 (v2.1, объяснение подсказки мира) | FINAL-4.1: e494026e · B0.6: d9ca175c · B0.10: 0e0e8306 · B0.11: af69e9a5 |
 | R10 | claude/zen-wozniak-69d41q | 2ab5f9a1 (приёмка) | B0: 95de8b99 · B0.3: 46face57 · B0.7: 3b2bb63f · B0.8: 4272ee4b · B0.11: 2d5fd169 · B0.12: 0bbe8a35 · B0.14: eb0876cf · B0.17: 98e11593 · B0.18: c674f135 · B0.19: 2ab5f9a1 |
-| R11 | claude/gracious-mendel-eopem6 | 7a956748 (ui-kit r15, словарь) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 · B0.7: 442b617b · B0.8: ea188ed6 · B0.10: ffdb30c2 · B0.11: 23eab2d2 · B0.14: 4b8f0d62 · B0.15: a0178fbe · B0.16: d340d9d4 · B0.17: 7a956748 |
-| R12 | claude/great-newton-8k3474 | 59ee755b (календарь работ, QR) | B0: 1c8d171d · B0.3: d4e968ce · B0.5: 721d6d49 · B0.7: 3d4c1afb · B0.15: 9a3ae1f4 · B0.16: 59ee755b |
-| R13 | claude/gifted-mayer-p86myv | 576c1239 (встречи, прогноз) | B0: 74903b7a · B0.5: 8a7b9468 · B0.11: 07458571 · B0.16: 1c5b7213 · B0.17: 9ca9bc72 · B0.18: 0ef104c2 · B0.19: 576c1239 |
+| R11 | claude/gracious-mendel-eopem6 | d20d823f (ui-kit r15, словарь) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 · B0.7: 442b617b · B0.8: ea188ed6 · B0.10: ffdb30c2 · B0.11: 23eab2d2 · B0.14: 4b8f0d62 · B0.15: a0178fbe · B0.16: d340d9d4 · B0.17: 7a956748 · B0.20: d20d823f |
+| R12 | claude/great-newton-8k3474 | 68196b7c (календарь работ, QR) | B0: 1c8d171d · B0.3: d4e968ce · B0.5: 721d6d49 · B0.7: 3d4c1afb · B0.15: 9a3ae1f4 · B0.16: 59ee755b · B0.20: 68196b7c |
+| R13 | claude/gifted-mayer-p86myv | 385750cb (встречи, прогноз) | B0: 74903b7a · B0.5: 8a7b9468 · B0.11: 07458571 · B0.16: 1c5b7213 · B0.17: 9ca9bc72 · B0.18: 0ef104c2 · B0.19: 576c1239 · B0.20: 385750cb |
 | R14 | (не начата на 18:40) | — | — |
-| R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf · B0.5: 19748bff · B0.7: 15324ff6 · B0.8: a5291311 · B0.11: 5c07f8f0 · B0.12: fb1b34d6 · B0.13: db6c75f5 · B0.16: 024ec896 (без изменений тестов) · B0.17: b7b75ee3 (без изменений тестов) · B0.18: a933f361 · B0.19: 457568ca (без изменений тестов) |
+| R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf · B0.5: 19748bff · B0.7: 15324ff6 · B0.8: a5291311 · B0.11: 5c07f8f0 · B0.12: fb1b34d6 · B0.13: db6c75f5 · B0.16: 024ec896 (без изменений тестов) · B0.17: b7b75ee3 (без изменений тестов) · B0.18: a933f361 · B0.19: 457568ca (без изменений тестов) · B0.20: 4af6eb3f (без изменений тестов) |
 | R16 | claude/youthful-johnson-6nz5mp | 8aaeb910 («Мой двор», «Сделаем вместе») | B0.2: e475fae9 · B0.5: db7da7de · B0.11: f4d19afe · B0.14: 99aa6cdc · B0.15: 0534ea6c · B0.19: 8aaeb910 |
-| R17 | claude/sweet-euler-5tiu5b | a15c6d1d (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 · B0.9: 29176133 · B0.10: 0add52ac · B0.11: 19fc4a0b · B0.14: 98985c50 · B0.15: 19fb4eb3 · B0.16: 061419fb · B0.17: 2bd97cbc · B0.18: 94d60728 · B0.19: a15c6d1d |
+| R17 | claude/sweet-euler-5tiu5b | c189c967 (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 · B0.9: 29176133 · B0.10: 0add52ac · B0.11: 19fc4a0b · B0.14: 98985c50 · B0.15: 19fb4eb3 · B0.16: 061419fb · B0.17: 2bd97cbc · B0.18: 94d60728 · B0.19: a15c6d1d · B0.20: c189c967 |
 
 ## Просьбы соседям
+- **R13 / R15 / R03 (порядок тестов, не блокирует сборку)**: `tests/civic/R13/qa/test_r13_qa.py` (`_gateway`) и тесты R15 создают
+  шлюз R01 — его `wire()` настраивает общие модули (карта R07 `configure(source)`, R08 `configure`, R17
+  `configure(records)`) на временную базу теста; если они идут ДО `tests/civic/R03/round15` — 6 FAIL у R03
+  (test_hot_spots_equal_heat_map, test_lagging_services_equal_source_totals, eval_sets …). В полном pytest по алфавиту —
+  5015/0. R13 / R15: после теста со шлюзом вернуть соседей (`ui.civic_agencies.configure(records=None)`, карта R07 —
+  свежий `configure()`), как `tests/civic/R01/conftest.py`; R03: в тестах с настоящими модулями настраивать их самим.
 - (закрыто R07 d6f09938 — k зажат в 0…1; r14_b2 28/0) **R07 (до B1, мигание значка)**: `web/civic/heat/heat.js` `animateColors` (стр. 999):
   `const k = reduce ? 1 : Math.min(1, (now - started) / ANIM_MS);` — метка кадра requestAnimationFrame бывает раньше
   `performance.now()` старта, `k < 0` → `eased < 0` → `mix("#ffffff", "#F2C14E", −0,003)` = `#ffff100` (канал 256):
