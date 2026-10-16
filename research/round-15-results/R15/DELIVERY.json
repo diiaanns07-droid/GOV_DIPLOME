@@ -495,7 +495,7 @@
   "нагрузочного теста лимитов и пентеста развёрнутого стенда не было (SECURITY_REVIEW §11)",
   "облако без интернета: подложка карты — упрощённый фон; кадры с настоящей картой — LOCAL"
  ],
- "next_step": "П3: круги по коду R04/R09/R01 intake; 17 окт 12:00 кандидат FINAL-6 — проверка, блокеры к 14:00; 18:00 — закрытие",
+ "next_step": "П3: круги по коду R04/R09/R01 intake — тесты на их ветках, находки с patch; шаг браузерной пробы для web/civic/intake/; 17 окт 12:00 кандидат FINAL-6 — проверка, блокеры к 14:00; 17:00 FINAL-6; 18:00 — закрытие",
  "code_note": "код R15 — только tests/civic/R15/ (тесты и браузерные пробы); чужой код R15 не меняет — patch в INTEGRATION",
  "routes_under_test": {
   "round15_routes": 50,
@@ -516,8 +516,12 @@
  "blockers_FINAL5": [],
  "round_closed": "П2-этап закрыт 16 окт 16:00 (FINAL-5.1); П3 (16 окт 17:15) — раунд 15+ открыт до FINAL-6, закрытие 17 окт 18:00",
  "p3": {
-  "task": "ИИ-разбор пачки (R04 intake): только сотрудник, пределы размера, без сети, ПДн не в журнале и не в итоге",
-  "threats": "THREATS_R15 §11a T-R04-20…29",
-  "tests": "tests/civic/R15/round15/test_r15_round15_intake.py (NOT_RUN до модуля R04)"
+  "task": "ИИ-разбор пачки (R04 intake): только сотрудник, пределы размера, тексты не наружу, ПДн не в журнале и не на экране итога",
+  "contract": "INTEGRATION R04 п. 9 (62fb832b): ui.civic_ml_api.intake_analyze / intake_sample / intake_commit, шлюз — body целиком, staff=True",
+  "threats": "THREATS_R15 §11a T-R04-20…32 (13)",
+  "tests": "tests/civic/R15/round15/test_r15_round15_intake.py — 32 теста; + test_r15_round15_gateway.py: intake/* в CONTRACT_STAFF, test_wider_body_limit_stays_on_staff_intake",
+  "validated_on": "фейк R15 по контракту п. 9 на дереве FINAL-5 c2276360 (scratch, не в Git): верный 32/32 passed; с дырами — 17 failed (каждая дыра ловится отдельно)",
+  "on_FINAL5": "c2276360: 32 NOT_RUN (функций intake ещё нет); test_wider_body_limit_stays_on_staff_intake — passed",
+  "status": "ждём код R04 (срок 17 окт 11:00)"
  }
 }
