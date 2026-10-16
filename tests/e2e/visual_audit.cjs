@@ -88,12 +88,23 @@ function screenMetrics(page, sel) {
       if (fs > 0) sizes.set(fs, (sizes.get(fs) || 0) + 1);
       if (fs > 0 && fs < 13 && tinyEx.length < 6) tinyEx.push(`${fs}px «${own.slice(0, 28)}»`);
     }
+    // Зона нажатия = рамка + точки вокруг неё, которые ловит та же кнопка (::after ui-kit R11 «inset: -6px 0», прозрачная
+    // рамка) — как hitBox в ux_lib.cjs. До 16 окт мерилась только рамка (ложные FAIL «Я приду» 32 px, «Скоро · Сделано» 30 px).
+    const hitBox = (box) => {
+      const r = box.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      const own = (x, y) => { if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return false;
+        const h = document.elementFromPoint(x, y); return !!h && (h === box || box.contains(h)); };
+      const grow = (f) => { let k = 0; while (k < 12 && f(k + 1)) k++; return k; };
+      const dh = grow((k) => own(cx, r.top - k)) + grow((k) => own(cx, r.bottom - 1 + k));
+      const dw = grow((k) => own(r.left - k, cy)) + grow((k) => own(r.right - 1 + k, cy));
+      return { h: Math.round(r.height + dh), w: Math.round(r.width + dw), ...(dh || dw ? { frame: `${Math.round(r.width)}×${Math.round(r.height)}` } : {}) };
+    };
     const small = [];
     for (const e of root.querySelectorAll("button, a[href], [role=button], [role=tab], input, select, summary, textarea")) {
       if (!vis(e) || e.closest(".maplibregl-marker")) continue;
       const box = (/^(checkbox|radio)$/.test(e.type) && e.closest("label")) || e;
-      const r = box.getBoundingClientRect();
-      if (r.height < 44 || r.width < 44) small.push({ h: Math.round(r.height), w: Math.round(r.width),
+      const z = hitBox(box);
+      if (z.h < 44 || z.w < 44) small.push({ ...z,
         t: (box.innerText || e.getAttribute("aria-label") || e.getAttribute("title") || "").trim().replace(/\s+/g, " ").slice(0, 24) });
     }
     // Вкладка за краем полосы (полоса прокручивается вбок): видна «Төтенше жа…» — подпись выглядит обрезанной.
