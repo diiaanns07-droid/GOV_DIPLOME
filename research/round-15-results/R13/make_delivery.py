@@ -101,7 +101,7 @@ def main() -> None:
                                             "round15/test_r01_round15_routes.py, R03 test_analyst_neighbours.py, R06 test_r06r15_notify.py, "
                                             "R08 test_r08_board.py + test_r08_world.py, R15 test_r15_qa.py + round15 notify/meetings, tests/civic/R13"},
             "r15_meetings_tests": {"status": "PASS", "passed": 39, "total": 39,
-                                   "note": "R15 @ b7b75ee3 на сборке R01 B0.15 с кодом R13 этой поставки: "
+                                   "note": "R15 (файлы = a933f361) на сборке R01 B0.17 с кодом R13 этой поставки: "
                                    "round15/test_r15_round15_meetings.py 27/27, test_r15_qa.py 12/12 (без NOT_RUN)"},
             "r08_day_forecast_on_r01_build": {"status": "PASS",
                                               "note": "сборка R01 B0.16 (4ac57b10), демо-мир, акимат → «Картина дня»: блок R08 "
@@ -109,11 +109,11 @@ def main() -> None:
                                               "объяснение с числами проверки (57 % против 47 %); 1366 ru/kk и 375 ru, кадры "
                                               "screens/day-forecast-*.jpg (подписи мест — код 0ef104c2)"},
             "r10_visual_audit": {"status": "PASS", "passed": 124, "total": 124,
-                                 "note": "tests/e2e/visual_audit.cjs R10 @ 7b254ef7 --only meetings,meetings-staff на сборке R01 "
-                                 "B0.15 с модулями R13 9ca9bc72 (демо-мир, 1366/1024/375 × ru/kk): WARN 0, FAIL 0 — на pvG было "
-                                 "WARN «4 размера шрифта» на всех 8 вариантах"},
+                                 "note": "tests/e2e/visual_audit.cjs R10 @ 900dd0a2 --only meetings,meetings-staff на сборке R01 "
+                                 "B0.17 с модулями R13 (демо-мир, 1366/1024/375 × ru/kk): WARN 0, FAIL 0 — на pvG было "
+                                 "WARN «4 размера шрифта» на всех 8 вариантах (то же на B0.15 с 9ca9bc72 инструментом 7b254ef7)"},
             "browser_meetings_demo_world": {"status": "PASS", "passed": 115, "total": 115,
-                                            "note": "meetings_browser.cjs на сборке R01 B0.15 (735a40b5) с CIVIC_DEMO_WORLD=1 (мир R02: "
+                                            "note": "meetings_browser.cjs на сборке R01 B0.17 (afaabca1) с CIVIC_DEMO_WORLD=1 (мир R02: "
                                             "R13 24 записи): проверки не зависят от набора данных"},
             "demo_world_on_r01_build": {"status": "PASS", "note": "сборка R01 c9069723, CIVIC_DEMO_WORLD=1: оболочка засевает R13 "
                                         "(m-w15-1/2/3), прошедшая встреча — итог и 4 поручения, связь с обращением мира R09 "
@@ -124,10 +124,10 @@ def main() -> None:
         "patches_for_r01": ["research/round-15-results/R13/patches/r01_meetings_routes.patch",
                             "research/round-15-results/R13/patches/r01_meetings_assets_sheet.patch"],
         "known_limits": [
-            "R01 взял поставку R13 07458571 в B0.11 и держит её до B0.15 (маршруты meetings.*, ассеты, теги — с B0); в B1 "
-            "взять code_sha этой поставки (патч R04 PII, «♡» 32 px R13-3) — только пути R13.",
+            "R01 B0.17 (afaabca1) несёт R13 9ca9bc72 (маршруты meetings.*, ассеты, теги — с B0); в B1 взять code_sha этой "
+            "поставки — сверх 9ca9bc72 подписи мест прогноза и строка «через 3 дня» на телефоне; только пути R13.",
             "С B0.11 R01 ставит «Вопросы и встречи» своим экраном-колонкой 720 px (VISUAL_BRIEF §2 п. 2); строки шторки из "
-            "патча R13 §3 не нужны. Кадры и браузер — на этой раскладке (B0.15).",
+            "патча R13 §3 не нужны. Кадры и браузер — на этой раскладке (B0.17).",
             "Кнопка «♡» у вопросов — рамка 44 px с прозрачной каймой, видимая таблетка 32 px (вариант R11 R13-3): тёмная "
             "кнопка 44 px на экране одна — «Приду».",
             "Прогноз — прототип на синтетической истории жалоб (погода реальная); на настоящих обращениях не проверялся.",
