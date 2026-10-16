@@ -25,6 +25,55 @@ RESIDENT_TEXT = "Снег не убран у подъезда, звоните 8 
 
 
 @contextmanager
+def neighbour_defaults():
+    """Настоящие модули соседей — в состоянии по умолчанию на время тестов R03, после — как было (просьба R01, B0.20).
+
+    Тест со шлюзом R01 (R13 qa, R15) делает wire(): карта R07, «Картина дня» R08 и табло R17 после него смотрят в
+    временную базу того теста. Тесты R03 с настоящими модулями сверяются с их демо-данными по умолчанию, поэтому на
+    время теста эта связка снимается, а после возвращается — следующим тестам то же состояние, что было до R03.
+    """
+    import importlib
+    import inspect
+
+    def module(name):
+        try:
+            return importlib.import_module(name)
+        except Exception:  # noqa: BLE001 — модуля нет в сборке: тест сам пропустится (importorskip)
+            return None
+
+    saved = []
+    for name in ("ui.civic_heat", "ui.civic_akim"):   # общий сервис процесса; None — default_service() соберёт заново
+        pkg = module(name)
+        holder = inspect.getmodule(getattr(pkg, "default_service", None)) if pkg else None
+        if holder is not None and hasattr(holder, "_default"):
+            saved.append((holder, holder._default))
+            holder._default = None
+    caches = [getattr(module(name), "reset_cache", None) for name in ("ui.civic_akim.neighbors", "ui.civic_akim.board")]
+    sources, state = module("ui.civic_agencies.sources"), module("ui.civic_agencies.api_state")
+    records = (getattr(sources, "_configured", None) or {}).get("records") if sources else None
+    service = state.current() if state and callable(getattr(state, "current", None)) else None
+    if sources and callable(getattr(sources, "configure", None)):
+        sources.configure(records=None)
+    if state and callable(getattr(state, "reset", None)):
+        state.reset()
+    for reset in caches:
+        if callable(reset):
+            reset()
+    try:
+        yield
+    finally:
+        for holder, value in saved:
+            holder._default = value
+        if sources and callable(getattr(sources, "configure", None)):
+            sources.configure(records=records)
+        if state and callable(getattr(state, "register", None)):
+            state.register(service)
+        for reset in caches:
+            if callable(reset):
+                reset()
+
+
+@contextmanager
 def no_gc_pause():
     """Замер скорости без полной сборки мусора большого процесса pytest.
 
