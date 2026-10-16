@@ -67,6 +67,21 @@ const visibleObject = (page) => page.evaluate(() => {
   }
   return null;
 });
+// П3 (16 окт): объекты карты рисуются с масштаба 13 — на стартовом обзоре города их нет. Перед проверкой рисования
+// приближаем к первому опубликованному объекту-точке пакета R05 (тот же seed-demo, что у этого сервера) и ждём значок.
+const DEMO_POINT = (() => {
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(REPO, "data/civic/astana/demo_synthetic.json"), "utf8"));
+    const it = (pkg.items || []).find((x) => x.publication === "published" && x.geometry && x.geometry.type === "Point");
+    return it ? it.geometry.coordinates : null;
+  } catch (e) { return null; }
+})();
+const nearObject = async (page) => {
+  if (!DEMO_POINT) return;
+  await page.evaluate((c) => map.jumpTo({ center: c, zoom: 14 }), DEMO_POINT);
+  await page.waitForFunction(() => map.queryRenderedFeatures({ layers: ["civic-r03-point"] }).length > 0, null, { timeout: 8000 }).catch(() => null);
+  await sleep(400);  // значок проявляется ~300 мс
+};
 
 try {
   // ---- 1. render: light map, one canvas, R03 layers after the basemap style swap
@@ -103,6 +118,7 @@ try {
   await page.fill(fk("title"), "Проверка R03: рисование поверх публичных объектов (синтетика)");
   await page.click(fk("tool-segment"));  // R12: линии только по улице
   await sleep(300);
+  await nearObject(page);
   const obj = await visibleObject(page);
   if (!obj) notRun("editor drawing over a public object", "no public object visible outside the panels at 1440x900");
   else {
