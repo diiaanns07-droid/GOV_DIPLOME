@@ -39,6 +39,15 @@ FINAL-5.1 не ломать: у R11 — только добавления.
 5. Кандидат FINAL-6 (17 окт 12:00) — r15_screens.cjs + r15_scenes.cjs (+ сцена 0); блокеры — только по спискам R10 / R15.
 6. 18:00 17 окт — финальные STATUS / DELIVERY, «Раунд 15 закрыт».
 
+Как разобрать кандидат FINAL-6 (17 окт 12:00), без догадок:
+- стенд: `git -C <wt-r01> checkout --detach <BUILD.json R01>`; сид — `python3 -B -m ui.civic_store --db D init / seed-demo
+  --package data/civic/astana/demo_synthetic.json / seed-r14-demo / create-editor operator --password-stdin < pw.txt`;
+  `CIVIC_DB_PATH=D CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 timeout 7200 python3 -B app.py --port 8656` (в фоне), ждать «civic-v2: ready»;
+- `NODE_PATH="$(npm root -g)" node tests/civic/R11/review/r15_screens.cjs <BASE> <OUT> <pw>` (108 кадров, в т. ч. #intake),
+  `r15_intake.cjs <BASE> <OUT> <pw>` (сцена 0 по шагам; вход сотрудника — до загрузки страницы), `r15_scenes.cjs` (7–9);
+- словарь: `DRY=1 python3 -B tests/civic/R11/tools/sync_roles.py` — ключи ролей (R04 intake.js в списке);
+- блокеры — только из списков R10 / R15 (к 14:00); правки — только в путях R11.
+
 Вопросы владельцу (решено по умолчанию): казахская метка — «ЖИ» (жасанды интеллект), не «AI»; «пачка» — «топтама»;
 значок разбора в меню — `i-ai`, у «Спросить Birge» остаётся `i-sparkle`.
 
