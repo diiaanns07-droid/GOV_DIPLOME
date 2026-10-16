@@ -3303,16 +3303,24 @@ button.bk-feed__item:hover {
    </article> */
 /* Вид объекта или дела без фото (П1): маленький значок набора R11 на спокойном фоне — без рисунков и сценок.
    Значки видов: сквер i-trees, площадка i-playground, спорт i-ball, остановка i-bus, освещение i-bulb, скамейки i-bench,
-   озеленение i-sprout; дела: уборка i-broom, снег i-snowflake, ремонт i-wrench, помощь соседям i-heart, другое i-dots. */
+   озеленение i-sprout; дела: уборка i-broom, снег i-snowflake, ремонт i-wrench, помощь соседям i-heart, другое i-dots.
+   П3 (кадр 04 «Мой двор», «Ближайшее дело»): серый квадрат 84 px со значком 28 px выглядел как пропавшая картинка —
+   теперь компактный значок вида 40 × 40, как значки ленты (.bk-feed__ic), у верха карточки; текст сразу справа.
+   Настоящее фото (.bk-thumb с <img>) — как было, 84 × 84. */
 .bk-thumb--kind {
   display: grid;
+  align-self: flex-start;
   place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   background: var(--c-fill);
   color: var(--c-text-2);
 }
-.bk-thumb > svg.ic {
-  width: 28px;
-  height: 28px;
+/* Двойной .ic — сильнее модульного «.tg .bk-thumb > svg.ic» (R16, 28 px), чтобы значок вида был 20 px */
+.bk-thumb.bk-thumb--kind > svg.ic.ic {
+  width: 20px;
+  height: 20px;
 }
 /* Подвал карточки инициативы: плашка поддержки и «Я приду» не помещаются в строку на 375 — кнопка уходит вниз вправо
    (карточки проектов эталона с .bk-vote не меняются) */

@@ -220,3 +220,13 @@ def test_list_row_title_keeps_priority_over_meta():
     assert "flex: 1 1 0%;" in meta and "min-width: 0;" in meta
     phone = re.search(r"@media \(max-width: 720px\) \{\s*\.bk-lrow \{.*?\n\}", COMPONENTS, re.S).group(0)
     assert re.search(r"\.bk-lrow__meta \{\s*flex: none;", phone)
+
+
+def test_p3_kind_thumb_is_a_compact_icon_not_a_missing_picture():
+    """П3, кадр 04 «Мой двор» («Ближайшее дело»): вид дела без фото — компактный значок 40 × 40 (как .bk-feed__ic), а не серый
+    квадрат 84 px; значок 20 px сильнее модульного «.tg .bk-thumb > svg.ic» R16; фото .bk-thumb — 84 × 84, как было."""
+    kind = re.search(r"\n\.bk-thumb--kind \{(.*?)\n\}", COMPONENTS, re.S).group(1)
+    assert "width: 40px;" in kind and "height: 40px;" in kind and "align-self: flex-start;" in kind
+    assert re.search(r"\.bk-thumb\.bk-thumb--kind > svg\.ic\.ic \{\s*width: 20px;\s*height: 20px;", COMPONENTS)
+    base = re.search(r"\n\.bk-thumb \{(.*?)\n\}", COMPONENTS, re.S).group(1)
+    assert "width: 84px;" in base and "height: 84px;" in base, "фото — как было"
