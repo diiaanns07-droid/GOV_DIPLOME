@@ -25,6 +25,7 @@ from pathlib import Path
 HARD_API_AREAS = ("доступ", "журнал")
 # Проверки качества вида (VISUAL_BRIEF §4): шрифт, зоны нажатия, контраст, термины — показ не ломают, идут в «смотреть»
 # со ссылкой на BUGS. Функциональные шаги, русские подписи на ҚАЗ, ключи перевода на экране и числа — блокируют.
+LIMIT_TAIL = re.compile(r"\s*≤ 1 с$")  # «… → раздел yard ≤ 1 с» → «… → раздел yard» в строке «Смотреть»
 QUALITY = re.compile(r"шрифт|зоны нажатия|контраст|мелкого текста|термин словаря", re.I)
 
 
@@ -142,7 +143,7 @@ def main() -> int:
         info = [r for r in v2["results"] if r["status"] == "INFO"]
         if info:
             watch.append("сцены 7–9, проверить на ноутбуке (облако — программный WebGL): " + "; ".join(
-                f"{r['layer']} {r['step']} {r['name'][:40]} {((r.get('detail') or {}).get('ms'))} мс, без кадров карты "
+                f"{r['layer']} {r['step']} {LIMIT_TAIL.sub('', r['name'])[:70]}: {((r.get('detail') or {}).get('ms'))} мс, без кадров карты "
                 f"{((r.get('detail') or {}).get('ms_without_map_frames'))} мс" for r in info[:4]))
         bad = [r for r in v2["results"] if r["status"] == "FAIL" and not QUALITY.search(r["name"])]
         soft = [r for r in v2["results"] if r["status"] == "FAIL" and QUALITY.search(r["name"])]
