@@ -18,7 +18,7 @@
   "R07": "ae749f4e (разбор)",
   "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
   "R09": "0b6d37f8 (разбор)",
-  "R01": "aad86127 (B0.13 в ветке R01)",
+  "R01": "ed965d9d (B0.14 в ветке R01)",
   "R08": "92406c57 (claude/laughing-euler-iv3on3, разбор JS)",
   "R06": "c1e02b02 (разбор)",
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
@@ -339,6 +339,13 @@
    "note": "все находки S01–S52 — FIXED (регрессия); до переноса S52 — 563 passed + 2 XPASS"
   },
   "R01_aad86127_B013_all_R15": {
+   "passed": 565,
+   "failed": 0,
+   "xfailed": 0,
+   "xpassed": 0,
+   "skipped_not_run": 0
+  },
+  "R01_ed965d9d_B014_all_R15": {
    "passed": 565,
    "failed": 0,
    "xfailed": 0,
