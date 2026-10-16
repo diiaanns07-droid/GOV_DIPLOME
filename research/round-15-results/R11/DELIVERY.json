@@ -4,10 +4,10 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "3f6b8700",
- "tested_sha": "3f6b8700",
+ "code_sha": "33260363",
+ "tested_sha": "33260363",
  "push_status": "OK",
- "updated": "2026-10-16 20:25 Астана",
+ "updated": "2026-10-16 21:24 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -84,7 +84,9 @@
   "витрина ui-kit, Chromium 1366/375 × ru/kk (d0266f76)": "PASS 4/4",
   "r15_intake.cjs на стенде R01 B6.2 06a62c8c + R04 a86e46a1 + R11 (d0266f76)": "36 кадров 1366/1024/375 × ru/kk — проблем 0; 301 → 127 задач за 0,4–1 с",
   "r15_screens.cjs на стенде R01 B6.2 06a62c8c + R04 a86e46a1 + R11 (d0266f76)": "108 кадров 1366/1024/375 × ru/kk × житель/акимат (с #intake) — проблем 0; «смотреть глазами» 8 (подписи строк «Обращений», улицы календаря R12)",
-  "node tests/civic/R11 (3f6b8700)": "PASS 3/3 — ui_kit.test.cjs: + метка «ИИ» экранирует подпись (R15 T-R11-01)"
+  "node tests/civic/R11 (3f6b8700)": "PASS 3/3 — ui_kit.test.cjs: + метка «ИИ» экранирует подпись (R15 T-R11-01)",
+  "i18n_tools check (33260363)": "PASS — 2938 ключей, ru = kk (+ heat.place_empty R07)",
+  "pytest tests/civic/R11 (33260363)": "PASS 35/35"
  },
  "screens": [
   "research/round-15-results/R11/screens/kit15-1366-kk.jpg",
