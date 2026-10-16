@@ -193,8 +193,8 @@
       }
       return null;
     }
-    // Замер листа: его отступ сверху (плашке группы — top: -отступ) и сколько высоты остаётся экрану. -> сменилась ли
-    // раскладка (одна колонка ↔ две): перерисовываем только тогда.
+    // Замер листа: его отступ сверху (плашке группы — top: -отступ; у листа R01 с 411c5926 отступа нет — 0) и сколько
+    // высоты остаётся экрану. -> сменилась ли раскладка (одна колонка ↔ две): перерисовываем только тогда.
     function measure() {
       var sheet = scrollParent(), pad = 0, fit = 0;
       if (sheet) {
@@ -204,7 +204,9 @@
         fit = Math.floor(sheet.clientHeight - top - (parseFloat(cs.paddingBottom) || 0));
       }
       box.style.setProperty("--bc-stick", (-pad) + "px");
-      var split = !!(splitMq && splitMq.matches) && box.clientWidth >= 860 && fit >= 360;
+      // Ширину экрана не берём в условие: лист оболочки R01 сам узкий (768) у одной колонки и широкий (1080) у двух —
+      // по классу bc-inbox--split (INTEGRATION R01, 411c5926).
+      var split = !!(splitMq && splitMq.matches) && fit >= 360;
       if (split) box.style.setProperty("--bc-fit-h", fit + "px"); else box.style.removeProperty("--bc-fit-h");
       var changed = split !== layout.split;
       layout.split = split;
@@ -679,6 +681,7 @@
       var keepPane = layout.split && oldPane && oldPane.getAttribute("data-key") === (state.open || "") ? oldPane.scrollTop : 0;
       box.innerHTML = "";
       if (layout.split) box.setAttribute("data-split", ""); else box.removeAttribute("data-split");
+      box.classList.toggle("bc-inbox--split", layout.split);
       box.appendChild(title());
       if (state.error === "staff") {
         var shell = window.CivicShell;
