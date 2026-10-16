@@ -134,6 +134,9 @@ BirgeTogether.open("initiative", scenes.initiative) или setSection("yard", {p
        в next, R08 ведёт «Поддержать» на него. Без демо-засева (метки scene_item нет) — просто три ближайших.
   R17  tg.pickups(district=None) -> [{initiative_id, service:"waste", title, point, district, target, starts_at,
        ends_at, note, supported_at}] — задача оператору вывоза после «Поддержать: мешки и вывоз».
+  R17  tg.yards_of_device(device_id, db_path=None) -> ["yard-…", …] — дворы «Я живу здесь» этого устройства, свежие
+       первыми (зона жителя для ленты кризиса и баннера; R17 INTEGRATION §7 ищет её первой, до store.my_yards). Только
+       своё устройство и только id дворов; демо не засевает. Проверено: свежий R17 (sweet-euler 94d60728+) + R16 — 337 passed.
   R08  tg.akim_initiatives(district=None) -> {"items": [...]} — для «Картины дня» / «Картины недели» (ui/civic_akim
        neighbors.FUNCS «initiatives»): опубликованные и «сделано» в виде GET together/initiatives; «на проверке» — только
        id, вид, район, статус (текст не проверен — его нет). tg.akim_yards(district=None) -> {"yards": [{id, label_ru,

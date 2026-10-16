@@ -34,7 +34,8 @@ from .store import TogetherStore
 SCENE = _demo.SCENE
 
 __all__ = ["SCENE", "TogetherService", "TogetherStore", "akim_initiatives", "akim_yards", "configure", "create_from_idea",
-           "default_service", "initiatives_summary", "make_service", "pickups", "seed_world", "updates", "warm_up"]
+           "default_service", "initiatives_summary", "make_service", "pickups", "seed_world", "updates", "warm_up",
+           "yards_of_device"]
 
 
 def updates(device_id, since=None, db_path=None, limit: int = 50) -> list[dict]:
@@ -154,6 +155,20 @@ def akim_yards(district: str | None = None, db_path=None) -> dict | None:
                        "district": y.get("district"), "members": int(y.get("members") or 0),
                        "initiatives": int(y.get("initiatives") or 0), "demo": bool(y.get("demo"))}
                       for y in service.store.yards(district=district, limit=200)]}
+
+
+def yards_of_device(device_id, db_path=None) -> list[str]:
+    """Дворы «Я живу здесь» этого устройства, свежие первыми — для ленты кризиса и баннера R17 (зона жителя). Только
+    своё устройство (его id приходит из того же запроса жителя), только id дворов; нет базы или устройства — [].
+    Демо не засевает (default_service, как akim_*)."""
+    if not isinstance(device_id, str) or not device_id:
+        return []
+    try:
+        service = default_service(db_path)
+        return service.store.my_yards(device_id) if service is not None else []
+    except Exception:  # база ещё создаётся — зона жителя просто без двора
+        logging.getLogger("civic_together").exception("R16: дворы устройства не прочитаны")
+        return []
 
 
 def pickups(district: str | None = None, db_path=None) -> list[dict]:
