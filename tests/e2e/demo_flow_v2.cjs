@@ -577,6 +577,19 @@ async function showCheck(browser, base, lang, staffAcc) {
     await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
     const ok = went && got && got.text > 30 && !got.shell_error;
     add(`UI show-${lang}`, "S", name, ok ? "PASS" : "FAIL", { ms, ...(got || {}) }, went ? owner : "R01", path.basename(f));
+    if (!went) continue;
+    // Путь назад со страницы (B-128): видимая ссылка на главную Birge («← В Birge», ключ board.back) и Esc → «/».
+    const backLabel = T(dict, "board.back", "← В Birge");
+    const link = await page.evaluate((bt) => {
+      const shown = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== "hidden"; };
+      const a = [...document.querySelectorAll("a[href]")].find((e) => shown(e)
+        && (new URL(e.getAttribute("href"), location.href).pathname === "/" || (e.textContent || "").includes(bt)));
+      return a ? { text: (a.textContent || "").trim().slice(0, 30), href: a.getAttribute("href") } : null;
+    }, backLabel.replace(/^←\s*/, "")).catch(() => null);
+    await page.keyboard.press("Escape").catch(() => null);
+    const esc = await page.waitForURL((u) => u.pathname === "/", { timeout: 4000 }).then(() => true, () => false);
+    add(`UI show-${lang}`, "S", `страница ${href}: путь назад в Birge — ссылка «${backLabel}» и Esc`, link && esc ? "PASS" : "FAIL",
+      { link, esc }, owner);
   }
   await ctx.close();
 }
