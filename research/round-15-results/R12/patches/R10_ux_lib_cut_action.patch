@@ -1,0 +1,35 @@
+# R12 → R10 (раунд 15+, П3): проверка «кнопка действия не обрезана краем листа» в tests/e2e/ux_lib.cjs (sheetMetrics, п. 2).
+# База: ветка R10 claude/zen-wozniak-69d41q @ a9607dc2. Применить: git apply (или patch -p1) из корня репозитория.
+# Что меняет: (1) видимая часть контейнера начинается под липкой шапкой у его верхнего края (кнопка в самой шапке — не под ней);
+# (2) «видна ли целиком» — после прокрутки к кнопке, а не «в конец» (кнопку у верхнего края конец прячет ещё дальше);
+# (3) прокрутка для замера мгновенная (scroll-behavior контейнера на время замера — auto), низ — край окна, если он выше.
+# Итог на R01 B6.2 06a62c8c + R12 aae9a5bc, «Календарь работ» во вкладке «Ведомств» (1366/1024/375 × ru/kk): было 4 FAIL, стало 0 FAIL, 2 WARN.
+--- a/tests/e2e/ux_lib.cjs
++++ b/tests/e2e/ux_lib.cjs
+@@ -441,13 +441,24 @@
+       if (!vis(b) || b.closest("li, ul, ol, table, [role=list], [role=listitem], [role=tablist], .maplibregl-map")) return false;
+       const t = clean(b.innerText); const r = b.getBoundingClientRect();
+       return t && t.length <= 40 && !/\n/.test((b.innerText || "").trim()) && r.height <= 64; });
++    // Липкая шапка внутри контейнера (position: sticky, top задан, стоит у его верхнего края) закрывает полосу под собой:
++    // видимая часть контейнера начинается под ней (кнопка в самой шапке — не под ней).
++    const stickyBottom = (c, b) => { if (!c) return 0; const cr = c.getBoundingClientRect(); let y = cr.top;
++      for (const e of c.querySelectorAll("*")) { const cs = getComputedStyle(e); if (cs.position !== "sticky" || cs.top === "auto" || (b && e.contains(b))) continue;
++        const q = e.getBoundingClientRect(); if (q.width > cr.width * 0.5 && Math.abs(q.top - cr.top) <= 2) y = Math.max(y, q.bottom); }
++      return y; };
+     const frac = (b, c) => { const r = b.getBoundingClientRect(), cr = c ? c.getBoundingClientRect() : { top: 0, bottom: innerHeight };
+-      const top = Math.max(r.top, cr.top, 0), bottom = Math.min(r.bottom, cr.bottom, innerHeight); return Math.max(0, bottom - top) / r.height; };
++      const top = Math.max(r.top, cr.top, stickyBottom(c, b), 0), bottom = Math.min(r.bottom, cr.bottom, innerHeight); return Math.max(0, bottom - top) / r.height; };
+     const cutNow = actions.map((b) => ({ b, c: clipOf(b) })).filter(({ b, c }) => { const f = frac(b, c); return f > 0.05 && f < 0.95; });
+     for (const { b, c } of cutNow.slice(0, 6)) {
+       const sc = c && c.scrollHeight > c.clientHeight + 4 ? c : null;
+       let fEnd = frac(b, c);
+-      if (sc) { const keep = sc.scrollTop; sc.scrollTop = sc.scrollHeight; await frame(); fEnd = frac(b, c); sc.scrollTop = keep; await frame(); }
++      // Видна ли кнопка целиком, если прокрутить к ней (а не «в конец»: кнопку у верхнего края конец прячет ещё дальше).
++      // scroll-behavior: smooth у контейнера — мерить после мгновенной прокрутки, а не посреди анимации; низ — край окна, если он выше.
++      if (sc) { const keep = sc.scrollTop, beh = sc.style.scrollBehavior; sc.style.scrollBehavior = "auto";
++        const r0 = b.getBoundingClientRect(), cr0 = sc.getBoundingClientRect(), top0 = Math.max(stickyBottom(sc, b), 0), bot0 = Math.min(cr0.bottom, innerHeight);
++        sc.scrollTop = keep + (r0.top < top0 ? r0.top - top0 : Math.max(0, r0.bottom - bot0)); await frame(); fEnd = frac(b, c);
++        sc.scrollTop = keep; await frame(); sc.style.scrollBehavior = beh; }
+       const item = { t: clean(b.innerText).slice(0, 32), visible: Math.round(frac(b, c) * 100) + "%", atEnd: Math.round(fEnd * 100) + "%", scroll: !!sc };
+       (fEnd < 0.95 ? out.cutEnd : out.cutNow).push(item);
+     }
