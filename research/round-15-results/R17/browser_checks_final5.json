@@ -1,0 +1,1436 @@
+{
+ "base": "http://127.0.0.1:42439",
+ "total": 227,
+ "failed": 0,
+ "not_run": 0,
+ "checks": [
+  {
+   "name": "шлюз: 11 маршрутов R17 подключены",
+   "status": "PASS",
+   "detail": [
+    "agencies.list:ready",
+    "agencies.board:ready",
+    "agencies.joint:ready",
+    "agencies.handoffs:ready",
+    "incidents.list:ready",
+    "incidents.create:ready",
+    "incidents.updates:ready",
+    "incidents.get:ready",
+    "incidents.task:ready",
+    "incidents.update:ready",
+    "incidents.close:ready"
+   ]
+  },
+  {
+   "name": "без входа: просьба войти, табло не показано",
+   "status": "PASS",
+   "detail": "Штаб ведомств\nТабло\nСовместные\nПередачи\nКалендарь работ\nКризис\n· Идёт\n\nШтаб ведомств — для сотрудников акимата\n\nУчётную "
+  },
+  {
+   "name": "без входа: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "1366-ru: все 20 служб на одном экране без прокрутки",
+   "status": "PASS",
+   "detail": {
+    "rows": 20,
+    "lastBottom": 750,
+    "inner": 756,
+    "kpiOpen": "2"
+   }
+  },
+  {
+   "name": "1366-ru: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "2",
+    2
+   ]
+  },
+  {
+   "name": "1366-ru: названия служб не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вкладки штаба видны целиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: зоны нажатия ≥ 40 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: два «просрочено» — разные подписи (ответ R09 и исправление R08)",
+   "status": "PASS",
+   "detail": [
+    "открыто",
+    "ответ просрочен",
+    "не исправлено в срок",
+    "совместных"
+   ]
+  },
+  {
+   "name": "1366-ru: подписи плиток не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: у службы waste отметка вывоза (1)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: раскрытая строка — «Вывоз после дел жителей»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: вывоз без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вкладка joint: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вкладка joint: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1366-ru: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вкладка handoffs: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вкладка handoffs: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1366-ru: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вкладка crisis: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: вкладка crisis: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1366-ru: вкладка «Календарь работ» открылась без просьбы войти",
+   "status": "PASS",
+   "detail": {
+    "mounted": true,
+    "chars": 1165,
+    "login": false,
+    "mains": [
+     "Добавить работу"
+    ]
+   }
+  },
+  {
+   "name": "1366-ru: в календаре одна главная кнопка (R10 B-115)",
+   "status": "PASS",
+   "detail": [
+    "Добавить работу"
+   ]
+  },
+  {
+   "name": "1366-ru: вкладка calendar без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: строка табло → «Обращения» с этой жалобой",
+   "status": "PASS",
+   "detail": {
+    "id": "c-demo3a6def043893e13d",
+    "hash": "#inbox/c-demo3a6def043893e13d",
+    "section": "inbox",
+    "filter": null
+   }
+  },
+  {
+   "name": "1366-ru: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "1366-kk: все 20 служб на одном экране без прокрутки",
+   "status": "PASS",
+   "detail": {
+    "rows": 20,
+    "lastBottom": 750,
+    "inner": 756,
+    "kpiOpen": "2"
+   }
+  },
+  {
+   "name": "1366-kk: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "2",
+    2
+   ]
+  },
+  {
+   "name": "1366-kk: названия служб не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: вкладки штаба видны целиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: зоны нажатия ≥ 40 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: два «просрочено» — разные подписи (ответ R09 и исправление R08)",
+   "status": "PASS",
+   "detail": [
+    "ашық",
+    "жауап мерзімі өтті",
+    "мерзімінде түзетілмеген",
+    "бірлескен"
+   ]
+  },
+  {
+   "name": "1366-kk: подписи плиток не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: у службы waste отметка вывоза (1)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: раскрытая строка — «Вывоз после дел жителей»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: вывоз без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: вкладка joint: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: вкладка joint: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1366-kk: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: вкладка handoffs: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: вкладка handoffs: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1366-kk: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: вкладка crisis: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: вкладка crisis: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1366-kk: вкладка «Календарь работ» открылась без просьбы войти",
+   "status": "PASS",
+   "detail": {
+    "mounted": true,
+    "chars": 1255,
+    "login": false,
+    "mains": [
+     "Жұмыс қосу"
+    ]
+   }
+  },
+  {
+   "name": "1366-kk: в календаре одна главная кнопка (R10 B-115)",
+   "status": "PASS",
+   "detail": [
+    "Жұмыс қосу"
+   ]
+  },
+  {
+   "name": "1366-kk: вкладка calendar без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: строка табло → «Обращения» с этой жалобой",
+   "status": "PASS",
+   "detail": {
+    "id": "c-demo4eca27874085ec47",
+    "hash": "#inbox/c-demo4eca27874085ec47",
+    "section": "inbox",
+    "filter": null
+   }
+  },
+  {
+   "name": "1366-kk: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "1024-ru: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "2",
+    2
+   ]
+  },
+  {
+   "name": "1024-ru: названия служб не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: вкладки штаба видны целиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: зоны нажатия ≥ 40 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: два «просрочено» — разные подписи (ответ R09 и исправление R08)",
+   "status": "PASS",
+   "detail": [
+    "открыто",
+    "ответ просрочен",
+    "не исправлено в срок",
+    "совместных"
+   ]
+  },
+  {
+   "name": "1024-ru: подписи плиток не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: вкладка joint: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: вкладка joint: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1024-ru: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: вкладка handoffs: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: вкладка handoffs: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1024-ru: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: вкладка crisis: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru: вкладка crisis: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1024-ru: вкладка «Календарь работ» открылась без просьбы войти",
+   "status": "PASS",
+   "detail": {
+    "mounted": true,
+    "chars": 1165,
+    "login": false,
+    "mains": [
+     "Добавить работу"
+    ]
+   }
+  },
+  {
+   "name": "1024-ru: в календаре одна главная кнопка (R10 B-115)",
+   "status": "PASS",
+   "detail": [
+    "Добавить работу"
+   ]
+  },
+  {
+   "name": "1024-ru: вкладка calendar без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "1024-kk: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "2",
+    2
+   ]
+  },
+  {
+   "name": "1024-kk: названия служб не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: вкладки штаба видны целиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: зоны нажатия ≥ 40 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: два «просрочено» — разные подписи (ответ R09 и исправление R08)",
+   "status": "PASS",
+   "detail": [
+    "ашық",
+    "жауап мерзімі өтті",
+    "мерзімінде түзетілмеген",
+    "бірлескен"
+   ]
+  },
+  {
+   "name": "1024-kk: подписи плиток не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: вкладка joint: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: вкладка joint: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1024-kk: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: вкладка handoffs: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: вкладка handoffs: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1024-kk: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: вкладка crisis: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk: вкладка crisis: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "1024-kk: вкладка «Календарь работ» открылась без просьбы войти",
+   "status": "PASS",
+   "detail": {
+    "mounted": true,
+    "chars": 1255,
+    "login": false,
+    "mains": [
+     "Жұмыс қосу"
+    ]
+   }
+  },
+  {
+   "name": "1024-kk: в календаре одна главная кнопка (R10 B-115)",
+   "status": "PASS",
+   "detail": [
+    "Жұмыс қосу"
+   ]
+  },
+  {
+   "name": "1024-kk: вкладка calendar без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "375-ru: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "2",
+    2
+   ]
+  },
+  {
+   "name": "375-ru: вкладки штаба видны целиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: зоны нажатия ≥ 40 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: два «просрочено» — разные подписи (ответ R09 и исправление R08)",
+   "status": "PASS",
+   "detail": [
+    "открыто",
+    "ответ просрочен",
+    "не исправлено в срок",
+    "совместных"
+   ]
+  },
+  {
+   "name": "375-ru: подписи плиток не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: у службы waste отметка вывоза (1)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: раскрытая строка — «Вывоз после дел жителей»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: вывоз без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка joint: заголовки строк и причины передач не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка joint: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка joint: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "375-ru: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка handoffs: заголовки строк и причины передач не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка handoffs: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка handoffs: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "375-ru: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: задачи кризиса — значок и текст в одной строке",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка crisis: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: вкладка crisis: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "375-ru: вкладка «Календарь работ» открылась без просьбы войти",
+   "status": "PASS",
+   "detail": {
+    "mounted": true,
+    "chars": 1182,
+    "login": false,
+    "mains": [
+     "Добавить работу"
+    ]
+   }
+  },
+  {
+   "name": "375-ru: в календаре одна главная кнопка (R10 B-115)",
+   "status": "PASS",
+   "detail": [
+    "Добавить работу"
+   ]
+  },
+  {
+   "name": "375-ru: вкладка calendar без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: 20 служб в табло",
+   "status": "PASS",
+   "detail": 20
+  },
+  {
+   "name": "375-kk: KPI «открыто» = API",
+   "status": "PASS",
+   "detail": [
+    "2",
+    2
+   ]
+  },
+  {
+   "name": "375-kk: вкладки штаба видны целиком",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: нет прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: нет непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: зоны нажатия ≥ 40 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: два «просрочено» — разные подписи (ответ R09 и исправление R08)",
+   "status": "PASS",
+   "detail": [
+    "ашық",
+    "жауап мерзімі өтті",
+    "мерзімінде түзетілмеген",
+    "бірлескен"
+   ]
+  },
+  {
+   "name": "375-kk: подписи плиток не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: строка службы раскрывается списком обращений",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: у службы waste отметка вывоза (1)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: раскрытая строка — «Вывоз после дел жителей»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: вывоз без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: вкладка joint без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: вкладка joint без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка joint: заголовки строк и причины передач не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка joint: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка joint: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "375-kk: вкладка handoffs без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: вкладка handoffs без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка handoffs: заголовки строк и причины передач не обрезаны",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка handoffs: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка handoffs: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "375-kk: вкладка crisis без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: вкладка crisis без непереведённых ключей",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: задачи кризиса — значок и текст в одной строке",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка crisis: всё нажимаемое — зона 44 px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: вкладка crisis: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "tiny": [],
+    "tinyN": 0,
+    "small": [],
+    "smallN": 0,
+    "low": [],
+    "lowN": 0
+   }
+  },
+  {
+   "name": "375-kk: вкладка «Календарь работ» открылась без просьбы войти",
+   "status": "PASS",
+   "detail": {
+    "mounted": true,
+    "chars": 1273,
+    "login": false,
+    "mains": [
+     "Жұмыс қосу"
+    ]
+   }
+  },
+  {
+   "name": "375-kk: в календаре одна главная кнопка (R10 B-115)",
+   "status": "PASS",
+   "detail": [
+    "Жұмыс қосу"
+   ]
+  },
+  {
+   "name": "375-kk: вкладка calendar без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "кризис: идёт пример «Буран в Нуре»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "кризис: задача сменила статус (оптимистично и на сервере)",
+   "status": "PASS",
+   "detail": [
+    "done",
+    "done",
+    "todo",
+    "doing"
+   ]
+  },
+  {
+   "name": "кризис: прогресс задач словами («выполнено N из M»)",
+   "status": "PASS",
+   "detail": [
+    " · выполнено 2 из 4",
+    2,
+    4
+   ]
+  },
+  {
+   "name": "кризис: обновление ҚАЗ+РУС появилось в ленте",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "кризис: без казахского текста — ошибка у поля, не отправлено",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "кризис: создан из шаблона «Прорыв водопровода» с задачами служб",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "кризис: закрыт с итогом, в списке «Прошедшие»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "карта: слой «Кризис» включён и нарисован",
+   "status": "PASS",
+   "detail": {
+    "layer": "crisis",
+    "drawn": true,
+    "fill": 31,
+    "firstR07": 34,
+    "underHeat": true
+   }
+  },
+  {
+   "name": "карта: зона кризиса под слоями тепловой карты R07 (цвета мест не тонут)",
+   "status": "PASS",
+   "detail": {
+    "layer": "crisis",
+    "drawn": true,
+    "fill": 31,
+    "firstR07": 34,
+    "underHeat": true
+   }
+  },
+  {
+   "name": "ссылка вида R08 #agencies/crisis=<id> открывает кризис",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "кризис: нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk: «Подробнее» → раздел #crisis/<id> оболочки",
+   "status": "PASS",
+   "detail": "#crisis/inc-demo-blizzard-nura"
+  },
+  {
+   "name": "375-kk: житель зоны видит кризис и обновления",
+   "status": "PASS",
+   "detail": {
+    "updates": 3,
+    "card": "Нұрадағы боран\nАймақ: Нұра ауданы\n09:26 бастап\nҮлгі\n\nЖұмыс істеп жатқан қызметте"
+   }
+  },
+  {
+   "name": "375-kk: жителю не видны внутренние задачи и заметки штаба",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk: карточка на казахском",
+   "status": "PASS",
+   "detail": "Нұрадағы боран\nАймақ: Нұра ауданы\n09:26 бастап\nҮлгі\n\nЖұмыс істеп жатқан қызметте"
+  },
+  {
+   "name": "375-kk: житель — нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru: «Подробнее» → раздел #crisis/<id> оболочки",
+   "status": "PASS",
+   "detail": "#crisis/inc-demo-blizzard-nura"
+  },
+  {
+   "name": "375-ru: житель зоны видит кризис и обновления",
+   "status": "PASS",
+   "detail": {
+    "updates": 3,
+    "card": "Буран в Нуре\nЗона: район Нура\nс 09:26\nПример\n\nРаботают службы: Служба уборки ули"
+   }
+  },
+  {
+   "name": "375-ru: жителю не видны внутренние задачи и заметки штаба",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru: житель — нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru: «Подробнее» → раздел #crisis/<id> оболочки",
+   "status": "PASS",
+   "detail": "#crisis/inc-demo-blizzard-nura"
+  },
+  {
+   "name": "1366-ru: житель зоны видит кризис и обновления",
+   "status": "PASS",
+   "detail": {
+    "updates": 3,
+    "card": "Буран в Нуре\nЗона: район Нура\nс 09:26\nПример\n\nРаботают службы: Служба уборки ули"
+   }
+  },
+  {
+   "name": "1366-ru: жителю не видны внутренние задачи и заметки штаба",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru: житель — нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk: «Подробнее» → раздел #crisis/<id> оболочки",
+   "status": "PASS",
+   "detail": "#crisis/inc-demo-blizzard-nura"
+  },
+  {
+   "name": "1366-kk: житель зоны видит кризис и обновления",
+   "status": "PASS",
+   "detail": {
+    "updates": 3,
+    "card": "Нұрадағы боран\nАймақ: Нұра ауданы\n09:26 бастап\nҮлгі\n\nЖұмыс істеп жатқан қызметте"
+   }
+  },
+  {
+   "name": "1366-kk: жителю не видны внутренние задачи и заметки штаба",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk: карточка на казахском",
+   "status": "PASS",
+   "detail": "Нұрадағы боран\nАймақ: Нұра ауданы\n09:26 бастап\nҮлгі\n\nЖұмыс істеп жатқан қызметте"
+  },
+  {
+   "name": "1366-kk: житель — нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "reduced motion: значок кризиса без пульса",
+   "status": "PASS",
+   "detail": "none"
+  }
+ ]
+}

@@ -35,3 +35,8 @@ R17 D12 + checkpoint 18 (CSS вкладок), CIVIC_DEMO=1, CIVIC_DEMO_WORLD=1 �
   1366 ru / 375 kk; двор в Есиле — 0 (checks/e2e_yard_feed.py, checks/e2e_yard_banner.cjs).
   Кадры screens/world-*.png пересняты на B0.17 (9f44429e) с кодом R17 D18 (финальная поставка П2): табло 1366 ru / kk,
   1024 kk, 375 kk; «Совместные» и «Передачи» 1366 ru / kk и 375 kk; «Буран в Нуре» 1366 ru / kk и 375 kk.
+
+FINAL-5 (16 окт ~14:40 по Астане) — сборка R01 c2276360, в ней R17 622dcf1f (D18, тот же код, что в ветке R17):
+  CONSISTENCY_FINAL5.md / .json — PASS 16 · FAIL 0 · NOT_RUN 0 (C1 5 = 5, C2 2 = 2, C4, D по 10 службам, C3 35 = 35);
+  браузер R17 227/227; pytest R17 276; житель двора в Нуре — incidents/updates 3, лента R06 3, баннер 1366 ru / 375 kk;
+  двор в Есиле — 0. R10: FINAL-5 «можно показывать: да», блокеров нет.

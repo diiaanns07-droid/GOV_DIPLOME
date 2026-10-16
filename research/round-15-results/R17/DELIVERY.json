@@ -147,6 +147,14 @@
    "status": "PASS",
    "env": "ветка R01 @ 9f44429e (B0.17) + код R17 D17 + ui/civic_together R16 454d0dc6 (yards_of_device); раньше — B0.14; CIVIC_DEMO=1, CIVIC_DEMO_WORLD=1",
    "result": "устройство «Я живу здесь» во дворе Нуры (POST together/yards/{id}/join) → GET incidents/updates — 3 обновления «Буран в Нуре», лента R06 GET notifications — те же 3 (module R17); двор в Есиле — 0; баннер жителю на 1366 ru и 375 kk — только у жителя двора в зоне"
+  },
+  "FINAL-5 (R01 c2276360, R17 622dcf1f)": {
+   "status": "PASS",
+   "browser": "227/227 (research/round-15-results/R17/browser_checks_final5.json)",
+   "consistency": "R10 consistency.py с миром — PASS 16 / FAIL 0 (world_check/CONSISTENCY_FINAL5.md)",
+   "resident_yard": "Нура: incidents/updates 3, R06 notifications 3, баннер 1366 ru / 375 kk; Есиль — 0",
+   "pytest": "tests/civic/R17 — 276 passed",
+   "r10": "FINAL-5 «можно показывать: да», блокеров нет (ACCEPTANCE_FINAL5.md R10)"
   }
  },
  "screens": [
