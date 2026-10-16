@@ -1,0 +1,20 @@
+{
+ "labels": [
+  "было · FINAL-4.1 bd3800d8",
+  "стало · B1 (кандидат b32945a4)"
+ ],
+ "before": "http://127.0.0.1:8691/",
+ "after": "http://127.0.0.1:8692/",
+ "views": [
+  "1366_ru_akimat",
+  "1366_kk_akimat",
+  "1366_ru_resident",
+  "1024_ru_akimat",
+  "1024_kk_resident",
+  "375_ru_resident",
+  "375_kk_akimat",
+  "1366_ru_akimat_more",
+  "1366_ru_akimat_day"
+ ],
+ "hide_env": true
+}

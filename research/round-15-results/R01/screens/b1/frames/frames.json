@@ -1,0 +1,706 @@
+[
+ {
+  "file": "1366_ru_akimat_map.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "1366_ru_akimat_day.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "day",
+  "hash": "#day"
+ },
+ {
+  "file": "1366_ru_akimat_agencies-board.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "agencies-board",
+  "hash": "#agencies/board"
+ },
+ {
+  "file": "1366_ru_akimat_agencies-calendar.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "agencies-calendar",
+  "hash": "#agencies/calendar"
+ },
+ {
+  "file": "1366_ru_akimat_agencies-crisis.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "agencies-crisis",
+  "hash": "#agencies/crisis/inc-w15-buran"
+ },
+ {
+  "file": "1366_ru_akimat_together.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "1366_ru_akimat_meetings.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "meetings",
+  "hash": "#meetings"
+ },
+ {
+  "file": "1366_ru_akimat_analyst.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "analyst",
+  "hash": "#analyst"
+ },
+ {
+  "file": "1366_ru_akimat_chronicle.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "chronicle",
+  "hash": ""
+ },
+ {
+  "file": "1366_ru_akimat_board-page.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "board-page",
+  "hash": ""
+ },
+ {
+  "page": "1366_ru_akimat",
+  "errors": []
+ },
+ {
+  "file": "1366_ru_resident_map.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "1366_ru_resident_yard.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "yard",
+  "hash": "#yard/yard-1454082640"
+ },
+ {
+  "file": "1366_ru_resident_together.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "1366_ru_resident_mine.jpg",
+  "size": 1366,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "mine",
+  "hash": ""
+ },
+ {
+  "page": "1366_ru_resident",
+  "errors": []
+ },
+ {
+  "file": "1366_kk_akimat_map.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "1366_kk_akimat_day.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "day",
+  "hash": "#day"
+ },
+ {
+  "file": "1366_kk_akimat_agencies-board.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "agencies-board",
+  "hash": "#agencies/board"
+ },
+ {
+  "file": "1366_kk_akimat_agencies-calendar.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "agencies-calendar",
+  "hash": "#agencies/calendar"
+ },
+ {
+  "file": "1366_kk_akimat_agencies-crisis.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "agencies-crisis",
+  "hash": "#agencies/crisis/inc-w15-buran"
+ },
+ {
+  "file": "1366_kk_akimat_together.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "1366_kk_akimat_meetings.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "meetings",
+  "hash": "#meetings"
+ },
+ {
+  "file": "1366_kk_akimat_analyst.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "analyst",
+  "hash": "#analyst"
+ },
+ {
+  "file": "1366_kk_akimat_chronicle.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "chronicle",
+  "hash": ""
+ },
+ {
+  "file": "1366_kk_akimat_board-page.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "board-page",
+  "hash": ""
+ },
+ {
+  "page": "1366_kk_akimat",
+  "errors": []
+ },
+ {
+  "file": "1366_kk_resident_map.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "1366_kk_resident_yard.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "yard",
+  "hash": "#yard/yard-1454082640"
+ },
+ {
+  "file": "1366_kk_resident_together.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "1366_kk_resident_mine.jpg",
+  "size": 1366,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "mine",
+  "hash": ""
+ },
+ {
+  "page": "1366_kk_resident",
+  "errors": []
+ },
+ {
+  "file": "1024_ru_akimat_map.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "1024_ru_akimat_day.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "day",
+  "hash": "#day"
+ },
+ {
+  "file": "1024_ru_akimat_agencies-board.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "agencies-board",
+  "hash": "#agencies/board"
+ },
+ {
+  "file": "1024_ru_akimat_agencies-calendar.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "agencies-calendar",
+  "hash": "#agencies/calendar"
+ },
+ {
+  "file": "1024_ru_akimat_agencies-crisis.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "agencies-crisis",
+  "hash": "#agencies/crisis/inc-w15-buran"
+ },
+ {
+  "file": "1024_ru_akimat_together.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "1024_ru_akimat_meetings.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "meetings",
+  "hash": "#meetings"
+ },
+ {
+  "file": "1024_ru_akimat_analyst.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "analyst",
+  "hash": "#analyst"
+ },
+ {
+  "file": "1024_ru_akimat_chronicle.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "chronicle",
+  "hash": ""
+ },
+ {
+  "file": "1024_ru_akimat_board-page.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "board-page",
+  "hash": ""
+ },
+ {
+  "page": "1024_ru_akimat",
+  "errors": []
+ },
+ {
+  "file": "1024_ru_resident_map.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "1024_ru_resident_yard.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "yard",
+  "hash": "#yard/yard-1454082640"
+ },
+ {
+  "file": "1024_ru_resident_together.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "1024_ru_resident_mine.jpg",
+  "size": 1024,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "mine",
+  "hash": ""
+ },
+ {
+  "page": "1024_ru_resident",
+  "errors": []
+ },
+ {
+  "file": "1024_kk_akimat_map.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "1024_kk_akimat_day.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "day",
+  "hash": "#day"
+ },
+ {
+  "file": "1024_kk_akimat_agencies-board.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "agencies-board",
+  "hash": "#agencies/board"
+ },
+ {
+  "file": "1024_kk_akimat_agencies-calendar.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "agencies-calendar",
+  "hash": "#agencies/calendar"
+ },
+ {
+  "file": "1024_kk_akimat_agencies-crisis.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "agencies-crisis",
+  "hash": "#agencies/crisis/inc-w15-buran"
+ },
+ {
+  "file": "1024_kk_akimat_together.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "1024_kk_akimat_meetings.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "meetings",
+  "hash": "#meetings"
+ },
+ {
+  "file": "1024_kk_akimat_analyst.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "analyst",
+  "hash": "#analyst"
+ },
+ {
+  "file": "1024_kk_akimat_chronicle.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "chronicle",
+  "hash": ""
+ },
+ {
+  "file": "1024_kk_akimat_board-page.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "board-page",
+  "hash": ""
+ },
+ {
+  "page": "1024_kk_akimat",
+  "errors": []
+ },
+ {
+  "file": "1024_kk_resident_map.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "1024_kk_resident_yard.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "yard",
+  "hash": "#yard/yard-1454082640"
+ },
+ {
+  "file": "1024_kk_resident_together.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "1024_kk_resident_mine.jpg",
+  "size": 1024,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "mine",
+  "hash": ""
+ },
+ {
+  "page": "1024_kk_resident",
+  "errors": []
+ },
+ {
+  "file": "375_ru_akimat_map.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "375_ru_akimat_day.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "day",
+  "hash": "#day"
+ },
+ {
+  "file": "375_ru_akimat_agencies-board.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "agencies-board",
+  "hash": "#agencies/board"
+ },
+ {
+  "file": "375_ru_akimat_agencies-calendar.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "agencies-calendar",
+  "hash": "#agencies/calendar"
+ },
+ {
+  "file": "375_ru_akimat_agencies-crisis.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "agencies-crisis",
+  "hash": "#agencies/crisis/inc-w15-buran"
+ },
+ {
+  "file": "375_ru_akimat_together.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "375_ru_akimat_meetings.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "meetings",
+  "hash": "#meetings"
+ },
+ {
+  "file": "375_ru_akimat_analyst.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "analyst",
+  "hash": "#analyst"
+ },
+ {
+  "file": "375_ru_akimat_chronicle.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "akimat",
+  "name": "chronicle",
+  "hash": ""
+ },
+ {
+  "page": "375_ru_akimat",
+  "errors": []
+ },
+ {
+  "file": "375_ru_resident_map.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "375_ru_resident_yard.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "yard",
+  "hash": "#yard/yard-1454082640"
+ },
+ {
+  "file": "375_ru_resident_together.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "375_ru_resident_mine.jpg",
+  "size": 375,
+  "lang": "ru",
+  "mode": "resident",
+  "name": "mine",
+  "hash": ""
+ },
+ {
+  "page": "375_ru_resident",
+  "errors": []
+ },
+ {
+  "file": "375_kk_akimat_map.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "375_kk_akimat_day.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "day",
+  "hash": "#day"
+ },
+ {
+  "file": "375_kk_akimat_agencies-board.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "agencies-board",
+  "hash": "#agencies/board"
+ },
+ {
+  "file": "375_kk_akimat_agencies-calendar.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "agencies-calendar",
+  "hash": "#agencies/calendar"
+ },
+ {
+  "file": "375_kk_akimat_agencies-crisis.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "agencies-crisis",
+  "hash": "#agencies/crisis/inc-w15-buran"
+ },
+ {
+  "file": "375_kk_akimat_together.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "375_kk_akimat_meetings.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "meetings",
+  "hash": "#meetings"
+ },
+ {
+  "file": "375_kk_akimat_analyst.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "analyst",
+  "hash": "#analyst"
+ },
+ {
+  "file": "375_kk_akimat_chronicle.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "akimat",
+  "name": "chronicle",
+  "hash": ""
+ },
+ {
+  "page": "375_kk_akimat",
+  "errors": []
+ },
+ {
+  "file": "375_kk_resident_map.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "map",
+  "hash": ""
+ },
+ {
+  "file": "375_kk_resident_yard.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "yard",
+  "hash": "#yard/yard-1454082640"
+ },
+ {
+  "file": "375_kk_resident_together.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "together",
+  "hash": "#together"
+ },
+ {
+  "file": "375_kk_resident_mine.jpg",
+  "size": 375,
+  "lang": "kk",
+  "mode": "resident",
+  "name": "mine",
+  "hash": ""
+ },
+ {
+  "page": "375_kk_resident",
+  "errors": []
+ }
+]
