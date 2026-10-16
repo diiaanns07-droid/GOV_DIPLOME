@@ -32,7 +32,7 @@ R13 · раунд 15 · RUN — «Вопросы и встречи», прогн
   Демо-мир R02: CIVIC_DEMO_WORLD=1 — встречи и вопросы приходят из world_v1.json (свои демо-наборы R13 не подмешиваются).
 
 ПРОВЕРКИ
-  python3 -m pytest -q tests/civic/R13                         # 176: сервис встреч, шлюз, прогноз недели, «Вопрос акиму», прогноз
+  python3 -m pytest -q tests/civic/R13                         # 180: сервис встреч, шлюз, прогноз недели, «Вопрос акиму», прогноз
   BIRGE_URL=http://127.0.0.1:8655 BIRGE_STAFF_USER=operator BIRGE_STAFF_PASS=parol-demo-12345 \
     NODE_PATH=$(npm root -g) node tests/civic/R13/meetings/meetings_browser.cjs /tmp/r13-shots [--full]
   (свежая база: проверка меняет данные — встреча, поручение, итог; без маршрутов meetings.* в сборке — SKIP)

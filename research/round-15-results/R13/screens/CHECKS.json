@@ -98,9 +98,12 @@
    "detail": 5
   },
   {
-   "name": "просроченное поручение помечено",
+   "name": "просроченные поручения помечены (как в ответе сервиса)",
    "status": "PASS",
-   "detail": null
+   "detail": {
+    "api": 1,
+    "ui": 1
+   }
   },
   {
    "name": "связь поручения с обращением видна",
@@ -233,7 +236,12 @@
   {
    "name": "статус из строки: «Выполнено», «просрочено» снято",
    "status": "PASS",
-   "detail": null
+   "detail": {
+    "overdueBefore": 1,
+    "overdueAfter": 0,
+    "doneBefore": 1,
+    "doneAfter": 2
+   }
   },
   {
    "name": "связь с проектом: название из списка района",
@@ -243,7 +251,7 @@
   {
    "name": "номер записи — только в подсказке",
    "status": "PASS",
-   "detail": "Номер записи: p-af72da6c5a28"
+   "detail": "Номер записи: p-faf6d3e63d4b"
   },
   {
    "name": "1366-ru встреча (акимат): зоны нажатия не меньше 44 px",
@@ -788,5 +796,5 @@
   "375-kk-r-error.png",
   "375-kk-a-list.png"
  ],
- "build": "R01 claude/brave-fermi-nhzetj @ 0121f7bd (B0.12: экран-колонка 720 px) + модули R13 @ 1512ebba"
+ "build": "R01 claude/brave-fermi-nhzetj @ 735a40b5 (B0.15: экран-колонка 720 px) + модули R13 @ d129e2ec"
 }
