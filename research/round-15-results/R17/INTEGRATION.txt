@@ -5,7 +5,7 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
 для них ниже готовый patch. Какой код брать — code_sha в DELIVERY.json (последняя поставка).
 
 СОСТОЯНИЕ НА 16 ОКТ ~04:00 (Астана)
-  • Сборки R01 B0.11 / B0.12 взяли R17 19fc4a0b (D10). Маршруты, ассеты, теги, configure(records) у R01 есть с B0 —
+  • Сборка R01 B0.14 (aebb9f0a) взяла R17 98985c50 (D11). Маршруты, ассеты, теги, configure(records) у R01 есть с B0 —
     patch из §1 на ветку R01 больше не нужен. Для B1 — только пути R17 из DELIVERY.json (последняя поставка):
       git checkout <code_sha> -- ui/civic_agencies web/civic/agencies tests/civic/R17
   • Проверено: ветка R01 @ c6d62440 (B0.6) + код R17 checkpoint 15 + R16 — браузер 190/190 PASS (в т. ч. проверки R10:
@@ -148,6 +148,10 @@ ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы
            передач не обрезаны» (375);
     шрифты (по желанию) — подписи полей формы штаба 13 px (.ag-form .bk-field__label = --fs-caption). На экранах R17
            остаются 13 (текст), 14 (вкладки ui-kit и «Добавить задачу»), 15 (кнопки ui-kit), 19 (заголовок, числа KPI).
+  Круг 13 R11 (16 окт ~04:40): patches/R17_phone_quotes.patch (к 98985c50) — то же CSS уже в D12 (19fb4eb3, checkpoint 17),
+    второй раз накладывать не нужно. Ключ agencies.col.deadline_hint в словаре (2861) — спасибо, просьб к словарю нет.
+  R12 (по аудиту R10 на B0.12): вкладка «Табло» 41 × 44 — у вкладок штаба теперь min-width 44 px (checkpoint 18, только
+    .ag-head .bk-tabs внутри R17). В ui-kit (.bk-tabs > [role="tab"] min-width: var(--tap)) — на усмотрение R11.
   Цвета служб — 7 цветов по виду службы (KIND_COLORS), контраст ≥ 4,5:1 на белом, без цветов тепловой карты и
   без зелёного; если захотите — перенесите их в tokens.css как --svc-<kind>, я переключу на var().
 
