@@ -69,6 +69,9 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
   РУС и ҚАЗ, BUILD_LOG B0…B0.4.
 - 05:30 (16 окт) B0.15 (`79c766c1`): R03 76b4fe35, R08 1a1a4a9b (знак-домик на Ситуационном центре), R11 a0178fbe,
   R12 9a3ae1f4, R16 0534ea6c, R17 19fb4eb3; pytest этих ролей + R01 1448/0, r15_ia 41/0.
+- 06:43 (16 окт) B0.16 (`49a69c17`, `1940e4db`): R11 d340d9d4, R12 59ee755b, R13 1c5b7213, R17 061419fb; скрипты кадров —
+  LANG=ru_RU.UTF-8 (дата «16.10.2026»). pytest R01/R12/R13/R15/R17 1488/1 — FAIL замера R15 (сборка мусора в замере;
+  с gc.disable() 1489/0), r15_ia 41/0.
 - 04:25 (16 окт) B0.14 (`aebb9f0a`): R10 eb0876cf (шаг 4 части 1 — ключ плитки из akim.js), R11 4b8f0d62, R16 99aa6cdc
   (B-114 закрыт у R16), R17 98985c50; pytest R01/R03/R11/R16/R17 1038/0, r15_ia 41/0. **R10 на B0.14: часть 1 с миром
   172/0/2 (как FINAL-4), сцены 7–9 (1366 ru/kk) 151/0, сцена 7 — 570 / 515 мс.**
@@ -128,15 +131,20 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 | R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 1a1a4a9b | B0: 6cd8f2be · B0.3: ca8326cb · B0.5: 0e6e57a5 · B0.7: 062f899a (из первой ветки целиком) · B0.12: 0e0623bf · B0.13: 3dbb4fb1 · B0.15: 1a1a4a9b |
 | R09 | claude/quirky-ptolemy-k3z2mj | af69e9a5 (v2.1, объяснение подсказки мира) | FINAL-4.1: e494026e · B0.6: d9ca175c · B0.10: 0e0e8306 · B0.11: af69e9a5 |
 | R10 | claude/zen-wozniak-69d41q | eb0876cf (приёмка) | B0: 95de8b99 · B0.3: 46face57 · B0.7: 3b2bb63f · B0.8: 4272ee4b · B0.11: 2d5fd169 · B0.12: 0bbe8a35 · B0.14: eb0876cf |
-| R11 | claude/gracious-mendel-eopem6 | a0178fbe (ui-kit r15, словарь) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 · B0.7: 442b617b · B0.8: ea188ed6 · B0.10: ffdb30c2 · B0.11: 23eab2d2 · B0.14: 4b8f0d62 · B0.15: a0178fbe |
-| R12 | claude/great-newton-8k3474 | 9a3ae1f4 (календарь работ, QR) | B0: 1c8d171d · B0.3: d4e968ce · B0.5: 721d6d49 · B0.7: 3d4c1afb · B0.15: 9a3ae1f4 |
-| R13 | claude/gifted-mayer-p86myv | 07458571 (встречи, прогноз) | B0: 74903b7a · B0.5: 8a7b9468 · B0.11: 07458571 |
+| R11 | claude/gracious-mendel-eopem6 | d340d9d4 (ui-kit r15, словарь) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 · B0.7: 442b617b · B0.8: ea188ed6 · B0.10: ffdb30c2 · B0.11: 23eab2d2 · B0.14: 4b8f0d62 · B0.15: a0178fbe · B0.16: d340d9d4 |
+| R12 | claude/great-newton-8k3474 | 59ee755b (календарь работ, QR) | B0: 1c8d171d · B0.3: d4e968ce · B0.5: 721d6d49 · B0.7: 3d4c1afb · B0.15: 9a3ae1f4 · B0.16: 59ee755b |
+| R13 | claude/gifted-mayer-p86myv | 1c5b7213 (встречи, прогноз) | B0: 74903b7a · B0.5: 8a7b9468 · B0.11: 07458571 · B0.16: 1c5b7213 |
 | R14 | (не начата на 18:40) | — | — |
-| R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf · B0.5: 19748bff · B0.7: 15324ff6 · B0.8: a5291311 · B0.11: 5c07f8f0 · B0.12: fb1b34d6 · B0.13: db6c75f5 |
+| R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf · B0.5: 19748bff · B0.7: 15324ff6 · B0.8: a5291311 · B0.11: 5c07f8f0 · B0.12: fb1b34d6 · B0.13: db6c75f5 · B0.16: 024ec896 (без изменений тестов) |
 | R16 | claude/youthful-johnson-6nz5mp | 0534ea6c («Мой двор», «Сделаем вместе») | B0.2: e475fae9 · B0.5: db7da7de · B0.11: f4d19afe · B0.14: 99aa6cdc · B0.15: 0534ea6c |
-| R17 | claude/sweet-euler-5tiu5b | 19fb4eb3 (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 · B0.9: 29176133 · B0.10: 0add52ac · B0.11: 19fc4a0b · B0.14: 98985c50 · B0.15: 19fb4eb3 |
+| R17 | claude/sweet-euler-5tiu5b | 061419fb (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 · B0.9: 29176133 · B0.10: 0add52ac · B0.11: 19fc4a0b · B0.14: 98985c50 · B0.15: 19fb4eb3 · B0.16: 061419fb |
 
 ## Просьбы соседям
+- **R15** (`tests/civic/R15/round15/test_r15_round15_moderate.py:137`, `test_moderate_is_fast_on_hostile_text`): в общем
+  процессе pytest (R01 + R12 + R13 + R15 + R17) случай `at-words` — 330–370 мс при пороге 0,2 с (два прогона подряд), отдельно
+  — PASS, `moderate` 4–7 мс. В замер попадает полная сборка мусора большого процесса (`gc.collect()` на 0,5 млн объектов —
+  226 мс); тот же набор с `gc.disable()` — 1489/0. Просьба: `gc.collect()` перед замером и `gc.disable()` на время замера
+  (или лучший из 3) — иначе полный pytest сборки B1 может дать этот FAIL.
 - (сделано R08 1a1a4a9b — домик на Ситуационном центре и «Картине недели») **R08 (ревью R11 R08-1, VISUAL_BRIEF §3 «один знак Birge»)**: в шапке Ситуационного центра (`board.js:737`, `.sc-mark`)
   буква «B» в лаймовой плитке. Итоговый знак — домик оболочки (решение R01): плитка 32 px, радиус 8, тёмная `#152C26`,
   домик лаймом `#D7F57C`, линия 2: `<path d="M5 20V9l7-5 7 5v11"/><path d="M9.5 20v-6h5v6"/>` (viewBox 24, fill none,
@@ -163,7 +171,7 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
   часть теста независимой от R13 (подмена ui.civic_forecast без недельной функции).
 - **R15**: S42 исправлен полностью (R01 28893ffc: любой raw-маршрут с staff=True проверяет шлюз) —
   test_gateway_enforces_staff_on_raw_routes теперь XPASS(strict); снимите xfail.
-- **R10 / R12 / R07**: pytest пакета e91acb69 — 2 FAIL `tests/civic/R10/test_r10_accuracy.py` [c24-R12], [c28-R07]
+- (закрыто: R10 46face57, R12 11a5d0ff; на B0.13 test_r10_accuracy 39 passed) **R10 / R12 / R07**: pytest пакета e91acb69 — 2 FAIL `tests/civic/R10/test_r10_accuracy.py` [c24-R12], [c28-R07]
   «объекты = точки OSM» (сдвиг 2–18 м). Причина — новые файлы LOCAL-10 пакета
   `data/civic/astana/osm-objects/raw/crossings.json.gz`, `traffic_signals.json.gz` (другой снимок OSM, чем у объектов
   R12/R07). Нужна сверка с одним снимком или правка проверки R10. Код оболочки ни при чём.
