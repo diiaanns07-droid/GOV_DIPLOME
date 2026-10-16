@@ -4,8 +4,8 @@
  "branch": "claude/youthful-johnson-6nz5mp",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g: FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "0534ea6cbc32137105cad2ed244e0238dfb99c34",
- "tested_sha": "0534ea6cbc32137105cad2ed244e0238dfb99c34",
+ "code_sha": "8aaeb9109f7cc9037a671696e25dcaed54b78e82",
+ "tested_sha": "8aaeb9109f7cc9037a671696e25dcaed54b78e82",
  "push_status": "OK (origin/claude/youthful-johnson-6nz5mp)",
  "amendments_applied": [
   "П1 «Без ИИ-слопа» (15 окт 17:05): без иллюстраций, значки R11 ≤ 48 px, фото «после» — только настоящие"
@@ -28,7 +28,7 @@
   ],
   "screens": "registerScreen yard, together; registerLayer initiatives (выключен по умолчанию)",
   "demo_world": "seed_world(db_path, records, now=None) — yards, initiatives; повтор = сброс демо к виду мира от нового now",
-  "for_neighbors": "updates (R06), create_from_idea (R06), initiatives_summary (R08/R03: next — публичный вид дела, как GET together/initiatives/{id}), akim_initiatives и akim_yards (R08), pickups (R17)",
+  "for_neighbors": "updates (R06), create_from_idea (R06), initiatives_summary (R08/R03: next — публичный вид дела, дело сцены 7 всегда среди ближайших), akim_initiatives и akim_yards (R08), pickups (R17), yards_of_device (R17: дворы «Я живу здесь» устройства)",
   "i18n": "research/round-15-results/R16/i18n_together.json — 248 строковых ключей ru/kk; словарь R11 442b617b совпадает с 247 слово в слово, новый — together.range_days (дело на несколько дней)",
   "warm_up": "ui.civic_together.warm_up(db_path) — R01 с B0.5 вызывает сам после засева мира; seed_world и make_service демо запускают прогрев и сами (один раз на базу, только чтение)",
   "sheet": "«Сделаем вместе» — свой экран, колонка 720 px (решение R01); модуль раскладывается по своей ширине (@container) и в листе по центру, и слева 412 px",
@@ -37,7 +37,7 @@
  "tests": {
   "pytest_r16": {
    "status": "PASS",
-   "passed": 60,
+   "passed": 61,
    "failed": 0,
    "skipped": 0,
    "env": "python3 3.13 + numpy 2.5.3, pytest из uv (PYTHONPATH)",
@@ -66,7 +66,8 @@
     "final4_stand_code_0534ea6c": "258/258 (стенд FINAL-4 + маршруты R16 в памяти; без оболочки раунда 15 одна проверка «На карте» не нужна)",
     "b1_like_r01_7208a580_left_sheet_code_3cc802b9": "264/264 (лист слева — до решения R01)"
    },
-   "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон"
+   "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон",
+   "note": "браузер — на коде 0534ea6c; после него web/ не менялся (8aaeb910: только функция yards_of_device для R17)"
   },
   "scene7": {
    "status": "PASS",
@@ -149,7 +150,8 @@
    "status": "PASS (R16) — 2 чужих",
    "r08": "tests/civic/R08 + R16 на R01 7208a580 с кодом f4d19afe — 360 passed, 1 skipped",
    "r15": "tests/civic/R15/round15/test_r15_round15_together.py — 36 passed, 1 XPASS(strict) S51: находка исправлена (R16 3d0a4c36), R15 снимет xfail (просьба R01)",
-   "r03": "tests/civic/R03 — 296 passed, 1 FAIL test_real_neighbours_if_present на вопросе «Какие службы отстают?» (числа R17); тот же FAIL с кодом R16 из сборки R01 — не R16"
+   "r03": "tests/civic/R03 — 296 passed, 1 FAIL test_real_neighbours_if_present на вопросе «Какие службы отстают?» (числа R17); тот же FAIL с кодом R16 из сборки R01 — не R16",
+   "r17": "свежий R17 (claude/sweet-euler-5tiu5b, checkpoint 20+) + R16 — 337 passed; device_places R17 берёт yards_of_device R16"
   },
   "day_support_r16": {
    "status": "PASS",
