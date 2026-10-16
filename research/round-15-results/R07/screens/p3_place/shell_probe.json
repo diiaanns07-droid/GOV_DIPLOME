@@ -277,5 +277,167 @@
   "errors": [
    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
   ]
+ },
+ {
+  "size": 1024,
+  "lang": "kk",
+  "pick": "empty",
+  "login": 200,
+  "task": {
+   "id": "t1",
+   "target": "area:yard-1026285033",
+   "label": "Двор: ЖК Grand Champion",
+   "existing": false
+  },
+  "heatTarget": [
+   {
+    "status": 404,
+    "place": {
+     "kind": "area",
+     "id": "yard-1026285033",
+     "label_ru": "Двор ЖК «Grand Champion»",
+     "label_kk": "«Grand Champion» ТК ауласы",
+     "anchor": [
+      71.402592,
+      51.111264
+     ],
+     "approximate": false,
+     "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+       [
+        [
+         71.4011553,
+         51.110693
+        ],
+        [
+         71.4012898,
+         51.1111247
+        ],
+        [
+         71.401336,
+         51.1111183
+        ],
+        [
+         71.4019539,
+         51.1110335
+        ],
+        [
+         71.4020342,
+         51.1112126
+        ],
+        [
+         71.4010914,
+         51.1113941
+        ],
+        [
+         71.4013872,
+         51.1121501
+        ],
+        [
+         71.404144,
+         51.1117511
+        ],
+        [
+         71.4035863,
+         51.1103564
+        ],
+        [
+         71.4011824,
+         51.1106893
+        ],
+        [
+         71.4011553,
+         51.110693
+        ]
+       ]
+      ]
+     }
+    }
+   }
+  ],
+  "after": {
+   "section": "map",
+   "hash": "#target=area:yard-1026285033",
+   "selected": null,
+   "cardTitle": null,
+   "zoom": 15,
+   "anchorOnScreen": {
+    "x": 677,
+    "y": 416,
+    "inside": true
+   },
+   "toastCalls": [
+    "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ"
+   ],
+   "toastsInDom": [
+    "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ",
+    "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ",
+    "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ"
+   ],
+   "outline": [
+    [
+     "r07-place-line",
+     2
+    ],
+    [
+     "r07-place-approx",
+     0
+    ],
+    [
+     "r07-place-ring",
+     0
+    ]
+   ]
+  },
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+ },
+ {
+  "size": 1024,
+  "lang": "ru",
+  "pick": "existing",
+  "login": 200,
+  "task": {
+   "id": "t10",
+   "target": "object:osm-node-13915790157",
+   "label": "Остановка «Жилой комплекс Зелёный Квартал»",
+   "existing": true
+  },
+  "heatTarget": [
+   {
+    "status": 200,
+    "place": null
+   }
+  ],
+  "after": {
+   "section": "map",
+   "hash": "#target=object:osm-node-13915790157",
+   "selected": "object:osm-node-13915790157",
+   "cardTitle": "Остановка «Жилой комплекс Зелёный Квартал»",
+   "zoom": 16,
+   "anchorOnScreen": null,
+   "toastCalls": [],
+   "toastsInDom": [],
+   "outline": [
+    [
+     "r07-place-line",
+     0
+    ],
+    [
+     "r07-place-approx",
+     0
+    ],
+    [
+     "r07-place-ring",
+     0
+    ]
+   ]
+  },
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ]
  }
 ]

@@ -25,7 +25,7 @@ API
      replay-attach.js или replay.js + replay.css целиком)
 
 ТЕСТЫ
-  python -m pytest tests/civic/R07 -q                                     # 210 passed, 1 skipped (мир R02 — в сборке)
+  python -m pytest tests/civic/R07 -q                                     # 221 passed, 1 skipped (мир R02 — в сборке)
   R07_PERF=1 python -m pytest tests/civic/R07/test_r07_replay.py -k under_one_second -q
                                                                           # строгий замер: город за 30 дней < 1 с (отдельный
                                                                           # прогон; в общем pytest порог относительный)
@@ -38,6 +38,9 @@ API
                                                                           # щелчок не открывает карточку, значки пропускают
   R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html NODE_PATH=$(npm root -g) node tests/civic/R07/browser/tween_first_frame.cjs
                                                                           # перекраска при кадре раньше старта (R01 B0.18)
+  R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html NODE_PATH=$(npm root -g) node tests/civic/R07/browser/place_no_complaints.cjs
+                                                                          # П3, сцена 0: место без жалоб — перелёт, контур,
+                                                                          # тост с названием; чужой id — «жалоб нет»: 10/10
   R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html NODE_PATH=$(npm root -g) node tests/civic/R07/browser/shots.js <папка>
                                                                           # снимки и проверки стенда: 64/64 (readability.js,
                                                                           # pan_stability.js — так же, 18/18 и 2/2)
