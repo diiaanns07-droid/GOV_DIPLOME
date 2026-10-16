@@ -931,9 +931,8 @@
         : null;
       // Раунд 15: тревога «тема растёт» (снег, ЖКХ) или тревога в районе, где уже идёт кризис, — кнопка штаба R17.
       // Событие "birge:open-crisis" отменяемое: оболочка или R17 открывают штаб у себя; иначе — переход по ссылке.
-      // Одна главная кнопка (VISUAL_BRIEF §2 п. 3): кнопка штаба — только у первой такой тревоги, у остальных — карта.
-      var firstCrisis = ((d0() && d0().pulse && d0().pulse.items) || []).filter(function (x) { return x.crisis && x.crisis.link; })[0];
-      var crisisBtn = a.crisis && a.crisis.link && firstCrisis === a
+      // Одна главная кнопка (VISUAL_BRIEF §2 п. 3): кнопка штаба — только у одной тревоги, у остальных — карта.
+      var crisisBtn = a.crisis && a.crisis.link && crisisAlarm() === a
         ? h("a", {
             class: "bk-btn bk-btn--danger akim-pulse__crisis",
             href: a.crisis.link,
@@ -956,6 +955,15 @@
     }
     function d0() {
       return state.data;
+    }
+    // Чья кнопка штаба: идущий штаб важнее нового (П3). После «ИИ-разбора» (сцена 0) первой может стать тревога без штаба
+    // («ЖКХ: тепло и вода» за ночь), а буран уже идёт — кнопка ведёт в идущий штаб, если его тревога среди трёх видимых;
+    // иначе — у первой тревоги со ссылкой, как раньше (создать штаб из шаблона R17).
+    function crisisAlarm() {
+      var items = (d0() && d0().pulse && d0().pulse.items) || [];
+      var withLink = items.filter(function (x) { return x.crisis && x.crisis.link; });
+      var running = withLink.filter(function (x) { return x.crisis.incident && items.indexOf(x) < 3; });
+      return running[0] || withLink[0];
     }
     function renderPulse(d) {
       var p = d.pulse;
