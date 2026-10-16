@@ -2028,7 +2028,7 @@ p.bk-banner--warn {
 }
 .bk-tabs .bk-num {
   margin-left: 6px;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
 }
 /* Телефон: числа у вкладок не показываем — три вкладки помещаются в строку целиком (решение R11 по вопросу R13, марафон);
    число остаётся в доступном имени вкладки, если модуль его туда кладёт, и в заголовке списка */
@@ -3198,7 +3198,7 @@ p.bk-banner--warn {
 .bk-feed__group {
   margin: 0;
   padding: 12px 8px 4px;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
 }
@@ -3274,7 +3274,7 @@ button.bk-feed__item:hover {
   -webkit-line-clamp: 4;
 }
 .bk-feed__meta {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
 }
 .bk-feed__item[data-unread="true"]::after {
@@ -3579,7 +3579,7 @@ button.bk-feed__item:hover {
 }
 .bk-done__note {
   margin: 4px 0 0;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
 }
 
@@ -3619,7 +3619,7 @@ button.bk-feed__item:hover {
 }
 .bk-svc__role {
   margin-left: 6px;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
   font-weight: var(--fw-regular);
 }
@@ -3643,7 +3643,7 @@ button.bk-feed__item:hover {
   align-items: center;
   gap: 8px;
   min-width: 0;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -3711,7 +3711,7 @@ button.bk-feed__item:hover {
   padding: 0 10px;
   border-bottom: 1px solid var(--c-line-strong);
   background: var(--c-paper);
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
   text-align: right;
@@ -3791,7 +3791,7 @@ button.bk-feed__item:hover {
   font-weight: var(--fw-semi);
 }
 .bk-board__zero {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
 }
 .bk-board td .bk-deadline {
   justify-content: flex-end;
@@ -3873,7 +3873,7 @@ button.bk-feed__item:hover {
   color: var(--c-text-3);
 }
 .bk-handoff__time {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
   white-space: nowrap;
 }
@@ -3914,7 +3914,7 @@ button.bk-feed__item:hover {
 .bk-wcal__months {
   height: 28px;
   border-bottom: 1px solid var(--c-line-strong);
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
 }
@@ -4345,7 +4345,7 @@ button.bk-conflict::after {
   line-height: 1.15;
 }
 .bk-replay__date span {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
 }
 .bk-replay__scrub {
@@ -4564,7 +4564,7 @@ button.bk-conflict::after {
   margin-top: 3px;
 }
 .bk-order__due {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
   text-align: right;
   white-space: nowrap;

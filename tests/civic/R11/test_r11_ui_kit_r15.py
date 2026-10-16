@@ -169,3 +169,18 @@ def test_inactive_tab_label_contrast():
     css = re.sub(r"/\*.*?\*/", "", COMPONENTS, flags=re.S)
     rule = re.search(r'\n\.bk-tabs > \[role="tab"\] \{([^}]*)\}', css).group(1)
     assert "color: var(--c-text-2)" in rule and "c-text-3" not in rule
+
+
+def test_round15_text_is_readable_not_tertiary():
+    """Круг 15 R11 (B-114 R10, колокольчик R06): текст компонентов раунда 15 — не --c-text-3 (3,6 : 1). Даты ленты, подписи
+    таблиц, сроки, месяцы календаря — то, что читают, — --c-text-2 (≥ 4,5 : 1 и на стекле). Третичный — только значки."""
+    css = re.sub(r"/\*.*?\*/", "", COMPONENTS, flags=re.S)
+    start = css.index(".bk-yard {")  # первый компонент раунда 15
+    end = css.index(".bk-dark {", start) if ".bk-dark {" in css[start:] else len(css)
+    offenders = []
+    for sel, body in re.findall(r"\n([^{}\n][^{}]*)\{([^}]*)\}", css[start:end]):
+        if "color: var(--c-text-3)" in body and not re.search(r"\.ic\b|bk-ill", sel):
+            offenders.append(sel.strip())
+    assert not offenders, offenders
+    tabs = re.search(r"\n\.bk-tabs \.bk-num \{([^}]*)\}", css).group(1)
+    assert "var(--c-text-2)" in tabs
