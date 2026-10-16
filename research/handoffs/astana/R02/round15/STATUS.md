@@ -22,7 +22,7 @@ restored_from: — (роль начата с нуля, прежней ветки
 - Эталон: intake_night_v1.gold.json — 115 групп (186 повторов склеить; самая большая — 40: нет отопления в ЖК Grand
   Champion), 8 срочных групп, 11 «двух служб», 18 без адреса; места — цели карты R12 (FINAL-5+), сцены не задеты.
 - Оценщик метрик П3: python3 -m ml.datasets.demo_intake_eval ответ.json; генератор: python3 -m ml.datasets.demo_intake.
-- Код db42fc7e; тесты: tests/civic/R02/round15/test_r02r15_intake.py — 14 passed (FINAL-5.1), R02 целиком 380 passed.
+- Код 9816d0ea; тесты: tests/civic/R02/round15/test_r02r15_intake.py — 14 passed (FINAL-5.1), R02 целиком 380 passed.
 
 ## Раунд 15 закрыт по П2 (16 окт 2026, 16:00 по Астане; финальный STATUS — 16:24) — итог FINAL-5 / FINAL-5.1
 - Итог R02: демо-мир Астаны birge-demo-world-v1 (схема 1.1) — data/civic/astana/demo-world/world_v1.json, sha256
