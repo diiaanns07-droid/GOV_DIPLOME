@@ -9,16 +9,15 @@ R01 · РАУНД 15 · КАК ПОДКЛЮЧИТЬСЯ К ОБОЛОЧКЕ И �
 =====================================================================================================================
 FINAL-5.1 e8d6cae6 — запасная сборка для показа; всё ниже идёт в FINAL-6 (кандидат 17 окт 12:00, FINAL-6 17:00 по Астане).
 
-0.1 Маршруты (ui/web_server.py, V2_ROUTES_ROUND15) — сервис R04, ТОЛЬКО сотрудник:
-  POST /api/civic/v2/intake/analyze   {texts: [...] | sample: "night"}
-  GET  /api/civic/v2/intake/sample
-  POST /api/civic/v2/intake/commit    {batch_id, task_ids}
-  Модуль: ui.civic_ml_api.intake, функция make_service(db_path) -> объект с
-          handle(method, path, query, body, principal, context) -> {"status", "headers", "body"} (как R16 / R17 / R13;
-          path — полный /api/civic/v2/intake/…, body — уже разобранный JSON-объект). Нет модуля — 503 module_not_ready.
-          Назовёте иначе (функции, а не сервис) — напишите в своём INTEGRATION.txt, R01 поправит строку таблицы.
+0.1 Маршруты (ui/web_server.py, V2_ROUTES_ROUND15) — функции R04 по его контракту (INTEGRATION R04 §9.2), ТОЛЬКО сотрудник:
+  POST /api/civic/v2/intake/analyze   {texts: [...] | sample: "night"}  -> ui.civic_ml_api.intake_analyze  (ml.intake_analyze)
+  GET  /api/civic/v2/intake/sample[?name=night]                         -> ui.civic_ml_api.intake_sample   (ml.intake_sample)
+  POST /api/civic/v2/intake/commit    {batch_id, task_ids}              -> ui.civic_ml_api.intake_commit   (ml.intake_commit)
+  Функции получают body целиком (sample — name из адреса, форма «латинское слово» проверена шлюзом), principal
+          сотрудника и context. Ошибки — как у прочих функций: ValueError -> 400, LookupError -> 404 («разбор устарел»),
+          PermissionError -> 403, MLServiceUnavailable (status 503) -> 503. Нет модуля — 503 module_not_ready.
   Шлюз ДО модуля: сессия сотрудника R02 (иначе 401), для POST ещё и X-CSRF-Token (иначе 403 csrf_failed); GET sample —
-          сессии достаточно (как прочие GET сотрудника). Сервис может и сам проверить principal — защита в глубину.
+          сессии достаточно (как прочие GET сотрудника; клиент оболочки шлёт токен и в GET).
   Размер: у POST intake/analyze свой предел тела 320 КБ (300 КБ текстов + JSON-обрамление), у остальных — 64 КБ;
           сверх — 413 too_large. Точные пределы (500 текстов / 300 КБ, пустые строки) проверяет модуль R04 — 400/413
           с понятным текстом; экран R04 проверяет размер файла ДО отправки.

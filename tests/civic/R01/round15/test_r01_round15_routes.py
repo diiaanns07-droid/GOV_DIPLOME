@@ -82,10 +82,10 @@ CONTRACT = [
     ("GET", "notifications", "R06", "ui.civic_store.v2", "list_notifications"),
     ("POST", "notifications/read", "R06", "ui.civic_store.v2", "read_notifications"),
     ("POST", "ideas/{id}/to-initiative", "R06", "ui.civic_store.v2", "idea_to_initiative"),
-    # Поправка П3 (раунд 15+): R04 «ИИ-разбор пачки обращений» (сцена 0) — только сотрудник.
-    ("POST", "intake/analyze", "R04", "ui.civic_ml_api.intake", "make_service"),
-    ("GET", "intake/sample", "R04", "ui.civic_ml_api.intake", "make_service"),
-    ("POST", "intake/commit", "R04", "ui.civic_ml_api.intake", "make_service"),
+    # Поправка П3 (раунд 15+): R04 «ИИ-разбор пачки обращений» (сцена 0) — только сотрудник (INTEGRATION R04 §9.2).
+    ("POST", "intake/analyze", "R04", "ui.civic_ml_api", "intake_analyze"),
+    ("GET", "intake/sample", "R04", "ui.civic_ml_api", "intake_sample"),
+    ("POST", "intake/commit", "R04", "ui.civic_ml_api", "intake_commit"),
 ]
 # «Кто может» из §7: сотрудник (сессия + CSRF).
 STAFF_ROUTES = {
@@ -249,13 +249,14 @@ class Recorder:
     def modules(self):
         services = {name: types.SimpleNamespace(make_service=self.service)
                     for name in ("ui.civic_together", "ui.civic_agencies", "ui.civic_meetings",
-                                 "ui.civic_feedback.v2.integration", "ui.civic_ml_api.intake")}
+                                 "ui.civic_feedback.v2.integration")}
         return dict(services, **{
             "engine.civic_geo.api": types.SimpleNamespace(handle=self.raw),
             "ui.civic_heat.api": types.SimpleNamespace(handle_get=self.raw),
             "ui.civic_akim.api": types.SimpleNamespace(handle_get=self.raw),
             "ui.civic_ml_api": types.SimpleNamespace(route=self.function, reply_draft=self.function,
-                                                     moderate=self.function),
+                                                     moderate=self.function, intake_analyze=self.function,
+                                                     intake_sample=self.function, intake_commit=self.function),
             "agent.civic_assistant.api": types.SimpleNamespace(ask=self.function),
             "ui.civic_store.v2": types.SimpleNamespace(list_notifications=self.function,
                                                        read_notifications=self.function,
@@ -556,9 +557,26 @@ def test_http_intake_analyze_takes_a_bigger_body_than_other_routes(server):
 
 
 def test_intake_limits_are_per_address():
-    assert V2_RATE_LIMITS["intake.analyze"] and V2_RATE_LIMITS["intake.commit"]
-    assert all(not per_target for rules in (V2_RATE_LIMITS["intake.analyze"], V2_RATE_LIMITS["intake.commit"])
+    assert V2_RATE_LIMITS["ml.intake_analyze"] and V2_RATE_LIMITS["ml.intake_commit"]
+    assert all(not per_target for rules in (V2_RATE_LIMITS["ml.intake_analyze"], V2_RATE_LIMITS["ml.intake_commit"])
                for _w, _n, per_target in rules)
+
+
+def test_intake_functions_get_the_body_principal_and_sample_name(tmp_path):
+    # R04 §9.2: тело целиком (функции сами разбирают texts / sample / batch_id / task_ids), principal сотрудника —
+    # без него R04 отвечает 403; у примера — name из адреса (по умолчанию «night»), форма name — до модуля.
+    gateway, recorder, _store = gateway_with_modules(tmp_path)
+    reply = gateway.handle("POST", "/intake/analyze", "", {"sample": "night"}, STAFF)
+    assert reply["status"] == 200, reply
+    _kind, kwargs = recorder.calls[-1]
+    assert kwargs["body"] == {"sample": "night"} and kwargs["principal"] == {"username": "operator", "role": "editor"}
+    reply = gateway.handle("POST", "/intake/commit", "", {"batch_id": "b-7", "task_ids": ["t1"]}, STAFF)
+    assert reply["status"] == 200 and recorder.calls[-1][1]["body"] == {"batch_id": "b-7", "task_ids": ["t1"]}
+    reply = gateway.handle("GET", "/intake/sample", "", None, STAFF)
+    assert reply["status"] == 200 and recorder.calls[-1][1]["name"] == "night"
+    calls = len(recorder.calls)
+    reply = gateway.handle("GET", "/intake/sample", "name=night%0A", None, STAFF)
+    assert reply["status"] == 400 and reply["body"]["field"] == "name" and len(recorder.calls) == calls
 
 
 def test_http_modules_lists_round15(server):

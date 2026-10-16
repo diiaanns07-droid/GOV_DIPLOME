@@ -162,7 +162,7 @@ ASSETS["/civic/board/"] = ASSETS["/civic/board/index.html"]
 CIVIC_PREFIX = "/api/civic/v1"
 CIVIC_MAX_BODY = 64 * 1024
 # Поправка П3 (раунд 15+): «ИИ-разбор пачки обращений» R04 принимает до 500 текстов / 300 КБ за раз — свой предел тела
-# только у этого адреса v2 (300 КБ текстов + JSON-обрамление); точные пределы проверяет модуль R04. Остальным — 64 КБ.
+# только у этого адреса v2 (300 КБ текстов + JSON-обрамление, R04 §9.2); точные пределы проверяет R04. Остальным — 64 КБ.
 CIVIC_V2_BODY_LIMITS = {"/intake/analyze": 320 * 1024}
 CIVIC_MAX_QUERY = 2048
 CIVIC_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")  # \Z: «$» пропускает «id\n» (R15-S36)
@@ -280,8 +280,8 @@ V2_RATE_LIMITS = {
     # П3, R04 «ИИ-разбор пачки» (только сотрудник): разбор — до 500 текстов и нескольких секунд счёта за раз; 30 в минуту
     # и 300 в час с адреса хватает показу и приёмке R10, но не дают занять сервер разбором по кругу. Лимит считается
     # до проверки сотрудника — и аноним с телом 320 КБ упирается в него.
-    "intake.analyze": ((60, 30, False), (3600, 300, False)),
-    "intake.commit": ((60, 20, False), (3600, 200, False)),
+    "ml.intake_analyze": ((60, 30, False), (3600, 300, False)),
+    "ml.intake_commit": ((60, 20, False), (3600, 200, False)),
     "ml.route": ((60, 60, False),),
     "ml.text_check": ((60, 60, False),),
     "notifications.read": ((60, 60, False),),
@@ -863,11 +863,11 @@ V2_ROUTES_ROUND15 = (
     ("POST", ("ideas", "{id}", "to-initiative"), "ideas.to_initiative"),
     # R01: id сцен 7–9 демо-мира для палитры Ctrl+K и режима показа (?show=1)
     ("GET", ("demo", "scenes"), "demo.scenes"),
-    # Поправка П3 (16 окт): R04 «ИИ-разбор пачки обращений» — сцена 0 демо (ui.civic_ml_api.intake, сервис).
-    # Только сотрудник; задачи в «Обращения» пишет сам R04 функциями R09 (в процессе), шлюз жалоб не трогает.
-    ("POST", ("intake", "analyze"), "intake.analyze"),
-    ("GET", ("intake", "sample"), "intake.sample"),
-    ("POST", ("intake", "commit"), "intake.commit"),
+    # Поправка П3 (16 окт): R04 «ИИ-разбор пачки обращений» — сцена 0 демо (ui.civic_ml_api, функции; INTEGRATION
+    # R04 §9). Только сотрудник; задачи в «Обращения» пишет сам R04 функциями R09 (в процессе), шлюз жалоб не трогает.
+    ("POST", ("intake", "analyze"), "ml.intake_analyze"),
+    ("GET", ("intake", "sample"), "ml.intake_sample"),
+    ("POST", ("intake", "commit"), "ml.intake_commit"),
 )
 V2_ROUTES = V2_ROUTES_ROUND14 + V2_ROUTES_ROUND15
 # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
@@ -932,7 +932,6 @@ _TOGETHER = ("ui.civic_together",)
 _AGENCIES = ("ui.civic_agencies",)
 _MEETINGS = ("ui.civic_meetings",)
 _R09 = ("ui.civic_feedback.v2.integration",)
-_INTAKE = ("ui.civic_ml_api.intake",)
 V2_HANDLERS_ROUND15 = {
     "together.initiatives.list": V2Handler("R16", _TOGETHER, "make_service", kind="service", query={
         "bbox": "bbox", "status": "word", "kind": "word", "yard": "id", "district": "district"}),
@@ -1002,10 +1001,12 @@ V2_HANDLERS_ROUND15 = {
     "ideas.to_initiative": V2Handler("R06", ("ui.civic_store.v2",), "idea_to_initiative", staff=True),
     # Свой маршрут шлюза (kind="local"): отвечает сам CivicV2Gateway.<function>().
     "demo.scenes": V2Handler("R01", ("ui.web_server",), "scenes", kind="local"),
-    # П3: сервис R04 make_service(db_path).handle(...) отвечает целиком; шлюз требует сессию R02 (+ CSRF для POST) —
-    # и до модуля: аноним не узнаёт ничего о разборе. Нет модуля — 503 module_not_ready, как у прочих строк раунда 15.
-    **{key: V2Handler("R04", _INTAKE, "make_service", kind="service", staff=True)
-       for key in ("intake.analyze", "intake.sample", "intake.commit")},
+    # П3 (INTEGRATION R04 §9.2): функции R04, как ml.route / ml.reply_draft; тело разбирают сами (texts | sample,
+    # batch_id, task_ids; ValueError -> 400, LookupError -> 404 «разбор устарел», MLServiceUnavailable -> 503).
+    # Шлюз требует сессию R02 (+ CSRF для POST) до модуля и передаёт principal: без него функции R04 отвечают 403.
+    "ml.intake_analyze": V2Handler("R04", ("ui.civic_ml_api",), "intake_analyze", staff=True),
+    "ml.intake_sample": V2Handler("R04", ("ui.civic_ml_api",), "intake_sample", staff=True, query={"name": "word"}),
+    "ml.intake_commit": V2Handler("R04", ("ui.civic_ml_api",), "intake_commit", staff=True),
 }
 V2_HANDLERS.update(V2_HANDLERS_ROUND15)
 
@@ -1574,6 +1575,10 @@ class CivicV2Gateway:
             return args
         if key in ("akim.routing.update", "nearby.subscribe"):  # R08: тело проверяет сам модуль (ValueError -> 400)
             return {"body": body}
+        if key in ("ml.intake_analyze", "ml.intake_commit"):  # П3, R04 §9.2: тело целиком — разбирает модуль
+            return {"body": body}
+        if key == "ml.intake_sample":  # форму name проверил шлюз (query «word»); пример по умолчанию — «за ночь»
+            return {"name": q.get("name") or "night"}
         if key == "akim.decision":
             return {"decision_id": params["id"], "body": body}
         district = q.get("district") or None
