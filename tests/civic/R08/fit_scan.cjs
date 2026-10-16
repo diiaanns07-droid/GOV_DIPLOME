@@ -67,7 +67,8 @@ const SCREENS = [
         const label = (typeof el.className === "string" ? el.className : "") + ":" + el.textContent.trim().slice(0, 20);
         const fsz = parseFloat(cs.fontSize);
         if (own && fsz < 13 && !el.closest("svg")) small.push(label + ":" + cs.fontSize);
-        if ((el.tagName === "BUTTON" || el.tagName === "A" || el.tagName === "SELECT") && (r.height < 44 || r.width < 44)) {
+        // SUMMARY — тоже зона нажатия («Подробнее» у решений — R10 B-136: 32 px не ловилось, пока смотрели кнопки и ссылки)
+        if ((el.tagName === "BUTTON" || el.tagName === "A" || el.tagName === "SELECT" || el.tagName === "SUMMARY") && (r.height < 44 || r.width < 44)) {
           tiny.push((typeof el.className === "string" ? el.className : "") + ":" + Math.round(r.width) + "x" + Math.round(r.height) + ":" + el.textContent.trim().slice(0, 16));
         }
         if (own && cs.textOverflow === "ellipsis" && el.scrollWidth > el.clientWidth) clipped.push(el.textContent.trim().slice(0, 30));

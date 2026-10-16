@@ -71,7 +71,7 @@ async function layoutProblems(page) {
       if (hasText && el.scrollWidth > el.clientWidth + 1 && cs.overflow !== "visible" && el.clientWidth > 0)
         out.clipped.push(el.className + ":" + el.textContent.trim().slice(0, 30));
     }
-    for (const el of document.querySelectorAll("#akim a, #akim button, #akim select, #akim input")) {
+    for (const el of document.querySelectorAll("#akim a, #akim button, #akim select, #akim input, #akim summary")) {
       const r = el.getBoundingClientRect();
       if (r.width && r.height < 44) out.tiny.push((el.className || el.tagName) + ":" + Math.round(r.height));
     }

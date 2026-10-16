@@ -1409,20 +1409,22 @@
   font-size: 14px;
   line-height: 1.35;
 }
+/* «Подробнее» — зона нажатия 44 px (VISUAL_BRIEF §4 п. 10; R10 B-136: было 32). Воздух над строкой и под ней даёт сама
+   зона, поэтому без отступов сверху у блока и у раскрытого текста — карточка выросла на 8 px, а не на 16. */
 .akim-decision__more {
-  margin-top: 4px;
+  margin-top: 0;
 }
 .akim-decision__more > summary {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
+  min-height: 44px;
   cursor: pointer;
   color: var(--c-brand);
   font-size: 13px;
   font-weight: 500;
 }
 .akim-decision__more > p {
-  margin: 4px 0 0;
+  margin: 0;
   font-size: 13px;
   line-height: 1.45;
 }
