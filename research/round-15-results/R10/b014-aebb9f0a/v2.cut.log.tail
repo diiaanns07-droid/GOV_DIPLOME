@@ -1,0 +1,5 @@
+PASS    UI show-ru 7 Ctrl+K «Сцена 7 · Двор вместе» → раздел yard ≤ 1 с — {"ms":668,"section":"yard","network_idle_before":true}
+PASS    UI show-ru 8 Ctrl+K «Сцена 8 · Ведомства вместе» → раздел inbox ≤ 1 с — {"ms":31,"section":"inbox","network_idle_before":true}
+PASS    UI show-ru 9 Ctrl+K «Сцена 9 · Буран» → раздел agencies ≤ 1 с — {"ms":18,"section":"agencies","network_idle_before":true}
+PASS    UI show-ru S Ctrl+K «Ситуационный центр» → своя страница /civic/board/ — {"ms":68,"url":"/civic/board/","text":1193,"shell_error":false}
+PASS    UI show-ru S Ctrl+K «QR-таблички» → своя страница /civic/qr/print.html — {"ms":60,"url":"/civic/qr/print.html","text":467,"shell_error":false}
