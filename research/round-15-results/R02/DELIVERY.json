@@ -5,13 +5,14 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "fa9ab80b44e0a97ebcb4af8640cfc02aedd23a5b",
-  "tested_sha": "fa9ab80b44e0a97ebcb4af8640cfc02aedd23a5b",
+  "code_sha": "db42fc7e10a430104d6f1c996219116f0ca0d8dd",
+  "tested_sha": "db42fc7e10a430104d6f1c996219116f0ca0d8dd",
   "push_status": "OK",
-  "status": "Раунд 15 закрыт (П2, 16 окт 16:00 по Астане). Поставка R02 fa9ab80b — в FINAL-5 c2276360 и FINAL-5.1 e8d6cae6 без изменений; блокеров R02 нет (R10, R15)",
+  "status": "Раунд 15+ (П3): набор «обращения за ночь» для «ИИ-разбора пачки» R04 сдан 16 окт ~18:00 Астаны (срок 17 окт 02:00) — код db42fc7e; мир R02 (fa9ab80b, в FINAL-5 / FINAL-5.1) не менялся. Дальше — FINAL-6 (17 окт 12:00).",
   "builds": {
     "FINAL-5": "c2276360a322dfce8f484a9f93fd471974987123 — R02 fa9ab80b; стенд R02 14/14, перезапуск 14/14; R10 «можно показывать: да», числа 16/0/0; R15 — блокеров нет",
-    "FINAL-5.1": "e8d6cae61787bbe74631edfffcaf19ec038bcce9 — FINAL-5 + документы R14; пути R02 те же; R10 принял (числа 16/0/0)"
+    "FINAL-5.1": "e8d6cae61787bbe74631edfffcaf19ec038bcce9 — FINAL-5 + документы R14; пути R02 те же; R10 принял (числа 16/0/0)",
+    "FINAL-6": "кандидат 17 окт 12:00 Астаны (R01): берёт мир R02 как в FINAL-5.1 + набор П3 (пути R02 из code_sha)"
   },
   "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
   "world": {
@@ -62,7 +63,14 @@
     "research/handoffs/astana/R02/round15/STATUS.md",
     "research/round-15-results/R02/patches/R01_world_reset.patch",
     "research/round-15-results/R02/patches/R07_world_marks_reseed.patch",
-    "research/round-15-results/R02/stand_numbers_builds.json"
+    "research/round-15-results/R02/stand_numbers_builds.json",
+    "ml/datasets/demo_intake.py",
+    "ml/datasets/demo_intake_texts.py",
+    "ml/datasets/demo_intake_eval.py",
+    "data/civic/astana/demo-world/intake_night_v1.json",
+    "data/civic/astana/demo-world/intake_night_v1.gold.json",
+    "data/civic/astana/demo-world/INTAKE.md",
+    "tests/civic/R02/round15/test_r02r15_intake.py"
   ],
   "integration": {
     "R01": "patch R01_world_reset взят в B0.3 (f6324e7e); мир пересобран на данных R12 f8157a68 по просьбе R01 (INTEGRATION §0); для голого FINAL-4 — patches/R01_demo_world.patch",
@@ -259,6 +267,28 @@
       "pytest": "R02 + R09 test_r09v21_world + R12 test_works + R07 test_r07_replay — 455 passed, 1 skipped",
       "demo_world --check": "OK (sha256 c93fb80c…)",
       "stand": "14/14; табло R17 19/19; сцены 2/7/8/9; «Просрочено» R08 = R17, R09 = R17"
+    },
+    "pytest tests/civic/R02/round15/test_r02r15_intake.py (П3)": {
+      "status": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "note": "дерево FINAL-5.1 e8d6cae6 + файлы R02 db42fc7e (карта R12 247c24a8); в ветке R02 (карта FINAL-4) — 12 passed, 2 skipped с причиной (цели карты и сверка байт в байт — только на тех же данных R12)"
+    },
+    "pytest tests/civic/R02 (все раунды R02) после П3": {
+      "status": "PASS",
+      "passed": 380,
+      "failed": 0,
+      "skipped": 1,
+      "note": "дерево FINAL-5.1 + файлы R02 db42fc7e; в ветке R02 — 375 passed, 6 skipped"
+    },
+    "python3 -m ml.datasets.demo_intake --check (П3)": {
+      "status": "PASS",
+      "note": "оба файла байт в байт в дереве FINAL-5.1; в дереве со старой картой — код 2 и причина"
+    },
+    "оценщик: эталон как ответ / каждый текст — своя задача": {
+      "status": "PASS",
+      "note": "1.0 по всем метрикам / F1 повторов 0, ведущая служба 0"
     }
   },
   "consistency_table": {
@@ -452,7 +482,46 @@
     "Жалобы на остановки — только на остановки OSM с названием (46 % остановок в OSM без названия).",
     "Разборщики времени у R07, R12, R13, R16, R17, R10 ждут ISO или плоские поля: работают с миром только после materialize (R01 передаёт материализованный мир; R12 и R10 читают файл сами — им нужна правка из INTEGRATION §6, §10)."
   ],
-  "next_step": "Раунд 15 закрыт — работы по роли нет. Следующий раунд (STATUS «Дальше»): казахские названия дел i-w15-03/-06/-10 и 1–2 казахских дела (вычитка R11, не трогая сцену 7); R11 R02-2 — причины передач на языке жалобы; просьба к R12 §6 (латиница в названиях OSM) — открыта.",
-  "final": true,
-  "final_note": "Финальная поставка по П2 (16 окт 10:30 Астаны); раунд 15 закрыт 16 окт 16:00. B-101 «числа Нуры» закрыт R10 на FINAL-5 демо-миром R02."
+  "next_step": "П3: набор «обращения за ночь» сдан (INTEGRATION §12) — ответить на просьбы R04 / R11 до 17 окт 11:00 Астаны; 17 окт 12:00 — кандидат FINAL-6: стенд R02 (числа мира, перезапуск) и сцена 0 на наборе; блокеры R10 к 14:00 — исправить до 16:00; 18:00 — финальный STATUS / DELIVERY «Раунд 15 закрыт».",
+  "final": false,
+  "final_note": "П3 снова открыл раунд до FINAL-6. Мир R02 — как в FINAL-5 / FINAL-5.1 (fa9ab80b); новое — набор П3 (code_sha). Финальная поставка — к 17 окт 11:00 Астаны, если будут правки.",
+  "intake": {
+    "amendment": "П3 (16 окт 17:15 Астаны) — сцена 0 «ИИ-разбор пачки обращений», владелец R04",
+    "texts": {
+      "file": "data/civic/astana/demo-world/intake_night_v1.json",
+      "sha256": "bab278e4beac01af4e04f2c07421f9b7792fe17d543c82ae2956f509bb79c0f1",
+      "schema": "birge-intake-night-v1",
+      "items": 301,
+      "bytes": 87045
+    },
+    "gold": {
+      "file": "data/civic/astana/demo-world/intake_night_v1.gold.json",
+      "sha256": "c8075b8206f76e1d277c91b3be62b6b025d4e4471b89cae90410136ae3fd7d82",
+      "schema": "birge-intake-night-gold-v1"
+    },
+    "summary": {
+      "texts": 301,
+      "groups": 115,
+      "merged": 186,
+      "largest_group": 40,
+      "urgent_groups": 8,
+      "urgent_texts": 84,
+      "two_service_groups": 11,
+      "two_service_texts": 22,
+      "no_address_texts": 18,
+      "langs": {
+        "ru": 133,
+        "kk": 85,
+        "mixed": 48,
+        "latin": 35
+      },
+      "typos": 28
+    },
+    "datasheet": "data/civic/astana/demo-world/INTAKE.md",
+    "generator": "ml/datasets/demo_intake.py (тексты — demo_intake_texts.py, написаны вручную, не synth_v3)",
+    "scorer": "ml/datasets/demo_intake_eval.py — метрики П3 по ответу analyze(): службы, «две службы», попарная F1 повторов, места, срочность, время",
+    "built_on": "карта R12 objects.json 247c24a8, yards.json a3ef7329, мир dd0e7bba (дерево FINAL-5.1 e8d6cae6); --check байт в байт там же",
+    "labeling": "правила R02: categories_v2, таблица служб Birge (lifecycle.SERVICE_RULES = умолчания R08), пары CONTRACT §5.1, классы срочности; без прогона моделей R04",
+    "integration": "research/round-15-results/R02/INTEGRATION.txt §12"
+  }
 }

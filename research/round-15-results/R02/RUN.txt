@@ -35,6 +35,15 @@ R02 · РАУНД 15 · ДЕМО-МИР — КОМАНДЫ ЗАПУСКА И П�
 4. Засев жалоб мира без сервера (R09 / отладка)
      python3 -c "from ml.datasets.demo_world_seed import seed_world; print(seed_world('/tmp/birge/c.sqlite3'))"
 
+4a. Набор «обращения за ночь» для «ИИ-разбора пачки» R04 (П3, сцена 0) — паспорт data/civic/astana/demo-world/INTAKE.md
+     python3 -m ml.datasets.demo_intake --summary   # сводка: 301 текст, 115 групп, 8 срочных, 11 «двух служб», 18 без адреса
+     python3 -m ml.datasets.demo_intake             # intake_night_v1.json (тексты для экрана) + intake_night_v1.gold.json
+     python3 -m ml.datasets.demo_intake --check     # байт в байт — на данных карты R12 сборки FINAL-5 и новее (inputs);
+                                                    # в дереве со старой картой — код 2 и причина
+     python3 -m ml.datasets.demo_intake_eval ответ.json [--json]   # метрики П3 по ответу analyze() R04
+   Тесты: python3 -m pytest -q tests/civic/R02/round15/test_r02r15_intake.py  (14 passed на FINAL-5.1; со старой картой
+   12 passed, 2 skipped с причиной)
+
 5. LOCAL-14 · живые тексты людей (ноутбук владельца; тексты в Git не попадают никогда)
      python -m ml.labeling.import_form private/form.csv          # → private/form_<дата>.jsonl + .review.txt
      (открыть .review.txt, вычеркнуть то, что похоже на личные данные; обезличивание — регулярные выражения)
@@ -43,12 +52,13 @@ R02 · РАУНД 15 · ДЕМО-МИР — КОМАНДЫ ЗАПУСКА И П�
    Дальше — оценка модели по RUN.txt R03 (результаты без текстов — в ветку R03). В демо-мир живые тексты не идут.
 
 6. Где что
-     data/civic/astana/demo-world/  SCHEMA.md · DATASHEET.md · world_v1.json · world_v1.sample.json · EXPECTED.json
+     data/civic/astana/demo-world/  SCHEMA.md · DATASHEET.md · world_v1.json · world_v1.sample.json · EXPECTED.json ·
+                                    INTAKE.md · intake_night_v1.json · intake_night_v1.gold.json (П3)
      ml/datasets/                   demo_world.py · demo_world_io.py · demo_world_check.py · demo_world_expected.py ·
-                                    demo_world_seed.py
+                                    demo_world_seed.py · demo_intake.py · demo_intake_texts.py · demo_intake_eval.py (П3)
      research/round-15-results/R02/ INVENTORY.md · INTEGRATION.txt · RUN.txt · DELIVERY.json · patches/R01_demo_world.patch ·
                                     stand_numbers_world.json
-     tests/civic/R02/round15/       test_r02r15_demo_world.py · stand_numbers.py
+     tests/civic/R02/round15/       test_r02r15_demo_world.py · stand_numbers.py · test_r02r15_intake.py (П3)
 
 Среда проверки: облако Claude Code, Linux, Python 3.13, pytest 9.1; подложка карты в облаке не грузится (нет интернета) —
 на числа это не влияет.
