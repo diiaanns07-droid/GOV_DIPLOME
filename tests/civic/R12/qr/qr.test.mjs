@@ -221,6 +221,37 @@ test("QR: Kazakh and phone 375 px — no keys, main button visible without scrol
   }
 });
 
+test("print sheet: «← В Birge» and Esc lead back to Birge (R10 B-128); Esc in a field keeps the typed numbers; the link is not printed", { skip: SKIP }, async () => {
+  await set("fake_qr=1");
+  for (const lang of ["ru", "kk"]) {
+    const r = await open("?ids=" + STOP, { path: "/civic/qr/print.html", lang });
+    await r.page.waitForSelector(".bqp-sign");
+    const back = r.page.locator('.bqp-back[data-act="back"]');
+    assert.equal(await back.isVisible(), true);
+    assert.equal((await back.innerText()).trim(), lang === "kk" ? "← Birge-ге" : "← В Birge");
+    assert.equal(await back.getAttribute("href"), "/");
+    const box = await back.boundingBox();
+    assert.ok(box.height >= 44 && box.width >= 44, JSON.stringify(box));
+    // ссылка над заголовком, текст по левому краю заголовка
+    const h1 = await r.page.locator(".bqp-h1").boundingBox();
+    assert.ok(box.y + box.height <= h1.y + 1, "ссылка над заголовком");
+    await r.page.fill("#bqp-ids", STOP + "\nosm-node-1");
+    await r.page.focus("#bqp-ids");
+    await r.page.keyboard.press("Escape");
+    await r.page.waitForTimeout(200);
+    assert.match(r.page.url(), /\/civic\/qr\/print\.html/, "Esc в поле не уводит со страницы");
+    assert.match(await r.page.inputValue("#bqp-ids"), /osm-node-1$/);
+    await r.page.emulateMedia({ media: "print" });
+    assert.equal(await back.isVisible(), false, "в печать идут только таблички");
+    await r.page.emulateMedia({ media: "screen" });
+    await r.page.evaluate(() => document.activeElement && document.activeElement.blur());
+    await Promise.all([r.page.waitForURL((u) => new URL(u).pathname === "/"), r.page.keyboard.press("Escape")]);
+    assert.equal(r.errors.length, 0, r.errors.join("; "));
+    await r.ctx.close();
+  }
+  await set("fake_qr=0");
+});
+
 test("print sheet: QR + domain + bilingual address + number; bad and unknown ids reported; no print without a real generator", { skip: SKIP }, async () => {
   await set("fake_qr=1");
   const ids = [STOP, SIGNAL, "osm-node-1", "<x>"].join(",");

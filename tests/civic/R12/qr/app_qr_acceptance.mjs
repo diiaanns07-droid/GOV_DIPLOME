@@ -206,6 +206,18 @@ try {
         qr.path > 1000 && qr.print && /Распечатать QR/.test(qr.primary || "") && !qr.foreign, qr);
     } else checks.push({ name: "настоящий QR на табличке", status: "NOT_RUN", detail: "в сборке нет web/vendor/qrcode/qrcode.js (LOCAL-11)" });
     await p.screenshot({ path: path.join(OUT, "app-qr-print-1366-ru.png") });
+    // R10 B-128: со страницы печати есть путь назад — «← В Birge» (ключ словаря R11 board.back) и Esc вне полей ввода.
+    const back = await p.evaluate(() => { const a = document.querySelector('.bqp-back[data-act="back"]'); const r = a && a.getBoundingClientRect();
+      return a ? { text: a.textContent.trim(), href: a.getAttribute("href"), h: Math.round(r.height), w: Math.round(r.width) } : null; });
+    check("лист QR: «← В Birge» в шапке, ведёт в Birge, зона ≥ 44 px", !!back && back.text === "← В Birge" && back.href === "/" && back.h >= 44 && back.w >= 44, back);
+    await p.focus("#bqp-ids");
+    await p.keyboard.press("Escape");
+    await p.waitForTimeout(300);
+    check("лист QR: Esc в поле номеров не уводит со страницы", /\/civic\/qr\/print\.html/.test(p.url()), p.url());
+    await p.evaluate(() => document.activeElement && document.activeElement.blur());
+    await Promise.all([p.waitForURL((u) => new URL(u).pathname === "/", { timeout: 15000 }).catch(() => null), p.keyboard.press("Escape")]);
+    const home = await p.waitForFunction(() => !!window.BirgeShell, null, { timeout: 20000 }).then(() => true, () => false);
+    check("лист QR: Esc — назад в Birge (оболочка открылась)", new URL(p.url()).pathname === "/" && home, p.url());
     check("нет ошибок страницы (акимат, лист QR)", errors.length === 0, errors.slice(0, 3));
     await ctx.close();
   }
