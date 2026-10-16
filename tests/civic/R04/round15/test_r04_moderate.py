@@ -208,3 +208,88 @@ def test_speed_under_5ms():
         times.append((time.perf_counter() - t0) * 1000)
     times.sort()
     assert times[int(0.95 * (len(times) - 1))] < 5
+
+
+@pytest.mark.parametrize("text, public, kinds", [
+    # П3 (разбор пачки): номер с пометкой в скобках и два номера подряд склеивались в одну «не номер» цепочку.
+    ("Звоните 87011234567 (1)", "Звоните *** (1)", {"phone"}),
+    ("Мой ИИН 880101300123 (3)", "Мой ИИН *** (3)", {"iin"}),
+    ("тел 87011234567 (12)", "тел *** (12)", {"phone"}),
+    ("8 701 123 45 67 8 701 765 43 21", "*** ***", {"phone"}),
+    ("87011234567 87017654321", "*** ***", {"phone"}),
+])
+def test_number_inside_a_longer_chain(text, public, kinds):
+    res = moderate(text)
+    assert res["text_public"] == public and {f["kind"] for f in res["flags"]} == kinds
+
+
+@pytest.mark.parametrize("text", ["автобусы 70 71 72 73 74 75 76 77 78 79 80", "план 2025-2029 (2025-2026 годы)",
+                                  "дома 15 17 18 20 21 22 23 24 25 26 27"])
+def test_chain_split_keeps_lists_and_years(text):
+    assert moderate(text)["text_public"] == text
+
+
+# R15-S53 (16 окт 18:55): r04-moderate-4 перебирал все отрезки цепочки цифр — O(n³), минуты процессора на один
+# анонимный POST /moderate. Ниже — враждебные цепочки до 5000 знаков (каждая длина — сначала короткая: падаем за
+# доли секунды, а не за минуты) и сверка нового _split_run со старым перебором на случайных коротких цепочках.
+@pytest.mark.parametrize("unit", ["8 ", "123 ", "8 701 123 45 67 ", "1 22 333 4444 ", "+7 ", "70 71 72 ", "1-2 ",
+                                  "8 701 123 45 67 (1) ", "１２３ "])
+def test_long_digit_chains_are_fast(unit):
+    moderate("прогрев")
+    for size in (200, 500, 1000, 2500, 5000):
+        text = (unit * (size // len(unit) + 1))[:size]
+        t0 = time.perf_counter()
+        moderate(text)
+        took = time.perf_counter() - t0
+        assert took < 0.2, (unit, size, round(took, 3))
+
+
+def _split_run_brute(text, start, end, labeled):
+    """Старый перебор r04-moderate-4 (до S53) — только для сверки на коротких цепочках."""
+    from ui.civic_ml_api.moderation import _RUN_GROUP, _classify_run, ascii_digits
+    raw = text[start:end]
+    out = []
+    if "(" in raw or ")" in raw or len(ascii_digits(raw)) <= 19:
+        return None                       # эти ветки S53 не меняет
+    groups = [(m.start() + start, m.end() + start) for m in _RUN_GROUP.finditer(raw)]
+    taken = [False] * len(groups)
+    for wanted in (("phone",), ("iin", "card")):
+        i = 0
+        while i < len(groups):
+            for j in range(len(groups), i, -1):
+                if (i == 0 and j == len(groups)) or any(taken[i:j]) or all(b - a <= 2 for a, b in groups[i:j]):
+                    continue
+                kind = _classify_run(text[groups[i][0]:groups[j - 1][1]], labeled=labeled)
+                if kind in wanted:
+                    out.append((groups[i][0], groups[j - 1][1], kind))
+                    taken[i:j] = [True] * (j - i)
+                    i = j
+                    break
+            else:
+                i += 1
+    return sorted(out)
+
+
+def test_chain_split_same_as_old_brute_force():
+    import random
+    from ui.civic_ml_api.moderation import _split_run
+    rnd = random.Random(53)
+    pieces = ["8 701 123 45 67", "8 707 765 43 21", "+7 702 111 22 33", "701 555 66 77", synthetic_iin("90010130012"),
+              luhn_card("440043004400440"), "45-67-89", "2025", "12", "7", "70 71 72"]
+    compared = found = 0
+    for _ in range(1500):
+        parts = []
+        for _k in range(rnd.randint(3, 12)):
+            parts.append(rnd.choice(pieces) if rnd.random() < 0.4 else
+                         "".join(rnd.choice("0123456789") for _d in range(rnd.randint(1, 4))))
+        text = parts[0]
+        for part in parts[1:]:
+            text += rnd.choice([" ", "-", "  ", "\xa0", " - "]) + part
+        for labeled in (False, True):
+            old = _split_run_brute(text, 0, len(text), labeled)
+            if old is None:
+                continue
+            assert _split_run(text, 0, len(text), labeled) == old, (text, labeled)
+            compared += 1
+            found += bool(old)
+    assert compared > 2000 and found > 500, (compared, found)

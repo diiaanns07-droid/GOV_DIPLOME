@@ -83,6 +83,7 @@ YARDS = {
 STREET_ON = {"Коргалжинское шоссе": "на Коргалжинском шоссе", "Одесский переулок": "в Одесском переулке"}
 STREET_PREFIX = (("улица ", "на улице "), ("проспект ", "на проспекте "), ("переулок ", "в переулке "))
 CROSSING_RADIUS_M = 60.0
+SAME_CROSSING_M = 150.0
 EXCLUDED = {"osm-node-4109037549", "yard-1454082640"}           # сцена 2 (Хан Шатыр), двор сцены 7
 EXCLUDED_STREETS = {"улица Баян Сулу"}                           # сцена 8
 
@@ -103,12 +104,15 @@ class Places:
 
     def __init__(self, world: dict):
         sys.path.insert(0, str(ROOT))
-        from engine.civic_geo import target_geometry
+        from engine.civic_geo import geo, target_geometry
         from engine.civic_geo.graph import get_graph
+        from engine.civic_geo.objects import get_layers
         from ui.civic_heat import geo as heat_geo
 
         self.target_geometry = target_geometry
+        self.haversine_m = geo.haversine_m
         self.graph = get_graph()
+        self.signals = sorted((f.id, f.point) for f in get_layers()[0].items if f.kind == "traffic_signal")
         self.district_of = heat_geo.district_of
         self.index = json.loads(SEARCH_INDEX.read_text(encoding="utf-8"))
         self.world_targets: dict[str, dict] = {}
@@ -186,13 +190,19 @@ class Places:
         xk = t["label_kk"].split(": ", 1)[1]
         if not xk.endswith("қиылысы"):
             raise ValueError(f"нет формы перекрёстка: {sid}")
-        # Светофоров нет в поиске карты: верен и сам светофор, и участки ЭТИХ улиц у него (≤ 60 м) — место по улицам.
+        # Светофоров нет в поиске карты, а у большого перекрёстка их несколько (у каждого подхода): верен любой светофор
+        # с той же подписью R12 не дальше 150 м и участки ДВУХ улиц перекрёстка не дальше 60 м от любого из них.
         point = self.world_targets[sid]["point"]
+        same = [(oid, pt) for oid, pt in self.signals if self.haversine_m(pt, point) <= SAME_CROSSING_M
+                and self.target_geometry({"kind": "object", "id": oid})["label_ru"] == t["label_ru"]]
         cores = [re.sub(r"^(ул|пр|пер)\.\s*|\s*ш\.$", "", part).strip() for part in x.split(" и ")]
-        near = sorted({e.id for _, e, _ in self.graph.nearest(
-            point, CROSSING_RADIUS_M, accept=lambda e: bool(e.name) and any(c in e.name for c in cores))})
-        return {"type": "crossing", "target": t, "accept_ids": [sid] + near, "district": self._district(sid),
-                "slots": {"X": x, "Xkl": xk + "нда"}}
+        near = set()
+        for _, pt in same:
+            near |= {e.id for _, e, _ in self.graph.nearest(
+                pt, CROSSING_RADIUS_M, accept=lambda e: bool(e.name) and any(c in e.name for c in cores))}
+        others = sorted(oid for oid, _ in same if oid != sid)
+        return {"type": "crossing", "target": t, "accept_ids": [sid] + others + sorted(near),
+                "district": self._district(sid), "slots": {"X": x, "Xkl": xk + "нда"}}
 
     def park(self, pid: str, ru: str, ru_in: str, kk: str, kk_loc: str) -> dict:
         return {"type": "park", "target": self.target("object", pid), "accept_ids": [pid], "district": self._district(pid),
@@ -591,7 +601,8 @@ def build(seed: int = SEED, world: dict | None = None) -> tuple[dict, dict]:
                          "теплосеть+озеленение (газон), электросети+освещение (опора с проводами); role lead | support"),
             "place": ("цель карты R12, названная в тексте: двор (area), остановка (object, accept_ids — все стороны остановки "
                       "из поиска карты), участок улицы (segment; засчитывать любой участок той же улицы — street_ru), "
-                      "перекрёсток со светофором (object; accept_ids — светофор и участки двух его улиц не дальше 60 м), "
+                      "перекрёсток со светофором (object; accept_ids — любой светофор этого перекрёстка с той же подписью R12 "
+                      "≤ 150 м и участки двух его улиц ≤ 60 м от них), "
                       "парк (object); type none — места в тексте нет, district — назван только район: верный ответ — "
                       "«адрес уточнить»"),
             "group": ("повторы: одна проблема у одного места — одна группа (одна задача); тексты без места — каждый своя "

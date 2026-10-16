@@ -123,7 +123,7 @@
       "common.ai.hint": "Жасанды интеллект кеңесі — тексеріңіз",
       "intake.lead": "Түнде келген өтініштерді қойыңыз: бір жол — бір өтініш. Birge оларды қызметтерге бөледі, қайталанғандарын біріктіреді, картадан орнын табады және шұғылдарын жоғары шығарады.",
       "intake.field": "Өтініштер — бір жол, бір өтініш",
-      "intake.placeholder": "Хан Шатыр аялдамасының шатыры сынған\nЖК Инжу Арена ауласында контейнерлер толып кетті\nСығанақ көшесінде люк ашық",
+      "intake.placeholder": "Хан Шатыр аялдамасының күнқағары сынған\nІнжу Арена ауласында контейнерлер толып кетті\nСығанақ көшесінде люк ашық",
       "intake.count": "{n} өтініш",
       "intake.size": "300 КБ ішінен {kb} КБ",
       "intake.limits": "Бір ретте 500 өтінішке және 300 КБ-қа дейін",
@@ -172,7 +172,7 @@
       "intake.method_note": "Қорытынды сандарды код есептейді. ЖИ санат пен қызметті ұсынады — қызметкер тексереді.",
       "intake.empty.title": "Өтініштерді қойыңыз немесе үлгіні ашыңыз",
       "intake.error.too_big": "Бір ретте ең көбі — 500 өтініш және 300 КБ",
-      "intake.error.server_size": "Сұрау сервер үшін тым үлкен — бөліктерге бөліңіз.",
+      "intake.error.server_size": "Сұрау сервер үшін тым үлкен — топтаманы бөліктерге бөліңіз.",
       "intake.error.file": "Файл оқылмады. UTF-8 кодтауындағы .txt не .csv мәтіні керек.",
       "intake.staff_only": "Өтініштерді талдау — әкімдік қызметкерлеріне арналған",
       "intake.error.text": "Талдау сәтсіз аяқталды. Байланысты тексеріп, қайталаңыз.",
@@ -661,6 +661,21 @@
       }
       return h("div", { class: "bi-list" }, rows);
     }
+    // Часть итога «127 задач»: число жирным, слово — в форме для показанного числа (и в кадрах счётчика: «95 обращений»,
+    // а не «95 обращение» от итоговых 301). data-value у числа — итог из summary (по нему сверяют проверки).
+    function fillPart(chunk, key, value, total) {
+      var phrase = tr("intake.sum." + key, { n: value });
+      var shown = num(value);
+      var at = phrase.indexOf(shown);
+      chunk.textContent = "";
+      if (at < 0) {
+        chunk.appendChild(doc.createTextNode(phrase));
+        return;
+      }
+      if (at > 0) chunk.appendChild(doc.createTextNode(phrase.slice(0, at)));
+      chunk.appendChild(h("b", { class: "bi-num" + (key === "urgent" && total ? " is-urgent" : ""), "data-value": String(total), text: shown }));
+      chunk.appendChild(doc.createTextNode(phrase.slice(at + shown.length)));
+    }
     // Итог: «312 обращений → 41 задача · 9 служб · 6 срочных · 37 повторов склеено» — числа из summary.
     function summaryLine(s) {
       var parts = [
@@ -671,18 +686,8 @@
       parts.forEach(function (p, i) {
         if (i === 1) visible.appendChild(h("span", { class: "bi-sum__arrow", text: " → " }));
         else if (i > 1) visible.appendChild(h("span", { class: "bi-sum__dot", text: " · " }));
-        var phrase = tr("intake.sum." + p[0], { n: p[1] });
-        var shown = num(p[1]);
-        var at = phrase.indexOf(shown);
-        var numEl = h("b", { class: "bi-num" + (p[0] === "urgent" && p[1] ? " is-urgent" : ""), "data-value": String(p[1]), text: shown });
-        var chunk = h("span", { class: "bi-sum__part" });
-        if (at >= 0) {
-          if (at > 0) chunk.appendChild(doc.createTextNode(phrase.slice(0, at)));
-          chunk.appendChild(numEl);
-          chunk.appendChild(doc.createTextNode(phrase.slice(at + shown.length)));
-        } else {
-          chunk.appendChild(doc.createTextNode(phrase));
-        }
+        var chunk = h("span", { class: "bi-sum__part", "data-key": p[0], "data-value": String(p[1]) });
+        fillPart(chunk, p[0], p[1], p[1]);
         visible.appendChild(chunk);
       });
       var spoken = full[0] + " → " + full.slice(1).join(" · ");
@@ -691,23 +696,24 @@
     function countUp() {
       if (!state.animate) return;
       state.animate = false;
-      var nums = box.querySelectorAll(".bi-sum__line .bi-num");
+      var parts = box.querySelectorAll(".bi-sum__line .bi-sum__part");
       var start = null, DURATION = 700;
       function frame(ts) {
         if (!state.alive) return;
         if (start == null) start = ts;
         var k = Math.min(1, (ts - start) / DURATION);
         var ease = 1 - Math.pow(1 - k, 3);
-        Array.prototype.forEach.call(nums, function (el) {
+        Array.prototype.forEach.call(parts, function (el) {
           var v = Number(el.getAttribute("data-value")) || 0;
-          el.textContent = num(Math.round(v * ease));
+          fillPart(el, el.getAttribute("data-key"), Math.round(v * ease), v);
         });
         if (k < 1) root.requestAnimationFrame(frame);
       }
       if (root.requestAnimationFrame) root.requestAnimationFrame(frame);
     }
+    // Уровни плашки — как в «Обращениях» R09 (complaint-list.js): та же группа там и здесь одного цвета.
     function level(people) {
-      return people >= 10 ? "4" : people >= 4 ? "3" : people >= 2 ? "2" : "1";
+      return people >= 10 ? "4" : people >= 6 ? "3" : people >= 3 ? "2" : "1";
     }
     // «Запах газа — сообщить в 104» при названии «Запах газа» -> «сообщить в 104»; «Нет отопления» -> ничего.
     function urgentNote(task, title) {
@@ -928,7 +934,7 @@
     };
   }
 
-  root.BirgeIntake = { mount: mount, version: "r04-intake-ui-1" };
+  root.BirgeIntake = { mount: mount, version: "r04-intake-ui-2" };
 
   // Раздел оболочки R01 без правки оболочки: «Ещё → Разбор обращений» (вид «Акимат»), Ctrl+K находит по названию.
   function register() {

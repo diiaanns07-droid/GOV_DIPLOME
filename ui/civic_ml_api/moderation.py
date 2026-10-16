@@ -37,7 +37,9 @@ import unicodedata
 
 from ui.civic_ml_api import profanity
 
-VERSION = "r04-moderate-3"   # 2: перечень коротких чисел — не номер; 3: кроме цифр номера Казахстана
+VERSION = "r04-moderate-5"   # 2: перечень коротких чисел — не номер; 3: кроме цифр номера Казахстана;
+                             # 4: номер внутри цепочки — «87011234567 (1)», два телефона подряд (П3);
+                             # 5: R15-S53 — в цепочке только окна ≤ 19 цифр допустимых длин: линейно, а не O(n³)
 MAX_TEXT = 5000
 MASK = "***"
 
@@ -184,6 +186,65 @@ def _classify_run(raw: str, labeled: bool = False) -> str | None:
     return None
 
 
+_RUN_GROUP = re.compile(r"\+?\d+")
+_RUN_MAX_DIGITS = 19   # телефон, ИИН и карта не длиннее 19 цифр: отрезок длиннее _classify_run всё равно отвергнет
+
+
+def _split_run(text: str, start: int, end: int, labeled: bool) -> list[tuple[int, int, str]]:
+    """Цепочка целиком — не номер, но номер внутри (разбор пачки, П3): «87011234567 (1)» — номер и пометка в скобках,
+    «8 701 123 45 67 8 701 765 43 21» — два телефона подряд. Делим по скобке, а цепочку длиннее 19 цифр — на подряд
+    идущие группы, из которых хотя бы одна длиннее 2 цифр (перечень «70 71 72 73 …» номером не становится)."""
+    raw = text[start:end]
+    out: list[tuple[int, int, str]] = []
+    if "(" in raw or ")" in raw:
+        pos = start
+        for part in re.split(r"[()]", raw):
+            s, e = pos, pos + len(part)
+            pos = e + 1
+            while s < e and not (text[s].isdigit() or text[s] == "+"):
+                s += 1
+            while e > s and not text[e - 1].isdigit():
+                e -= 1
+            kind = _classify_run(text[s:e], labeled=labeled) if e > s else None
+            if kind:
+                out.append((s, e, kind))
+        return out
+    if len(ascii_digits(raw)) <= 19:
+        return out
+    groups = [(m.start() + start, m.end() + start) for m in _RUN_GROUP.finditer(raw)]
+    size = [len(ascii_digits(text[a:b])) for a, b in groups]
+    # R15-S53: окно — не больше _RUN_MAX_DIGITS цифр, а «есть ли в окне группа длиннее 2 цифр» — по next_long за O(1).
+    # Без этого перебор всех отрезков цепочки — O(n³): «8 8 8 …» на 5000 знаков — минуты на один POST /moderate.
+    next_long = [len(groups)] * (len(groups) + 1)
+    for k in range(len(groups) - 1, -1, -1):
+        next_long[k] = k if groups[k][1] - groups[k][0] > 2 else next_long[k + 1]
+    prefix = [0]
+    for n in size:
+        prefix.append(prefix[-1] + n)
+    taken = [False] * len(groups)
+    # Длины, которые _classify_run принимает: телефон 6/7/10/11 цифр, ИИН 12, карта 13–19 — другие окна не проверяем.
+    for wanted, lengths in ((("phone",), {6, 7, 10, 11}), (("iin", "card"), set(range(12, _RUN_MAX_DIGITS + 1)))):
+        i = 0                                           # сначала телефоны: «8 701 … 8 701 …» — два номера, не карта
+        while i < len(groups):
+            top, digits = i, 0
+            while top < len(groups) and digits + size[top] <= _RUN_MAX_DIGITS:
+                digits += size[top]
+                top += 1
+            for j in range(top, i, -1):
+                if (prefix[j] - prefix[i] not in lengths or (i == 0 and j == len(groups)) or next_long[i] >= j
+                        or any(taken[i:j])):
+                    continue
+                kind = _classify_run(text[groups[i][0]:groups[j - 1][1]], labeled=labeled)
+                if kind in wanted:
+                    out.append((groups[i][0], groups[j - 1][1], kind))
+                    taken[i:j] = [True] * (j - i)
+                    i = j
+                    break
+            else:
+                i += 1
+    return sorted(out)
+
+
 def _pii_spans(text: str) -> list[tuple[int, int, str]]:
     """[(start, end, kind)] личных данных в исходном тексте, без пересечений (раньше найденное важнее)."""
     spans: list[tuple[int, int, str]] = []
@@ -213,9 +274,13 @@ def _pii_spans(text: str) -> list[tuple[int, int, str]]:
         start, end = m.start(), m.end()
         while end > start and text[end - 1] in " -(\t\xa0":
             end -= 1
-        kind = _classify_run(text[start:end], labeled=bool(_LABEL_BEFORE.search(text[max(0, start - 16):start])))
+        labeled = bool(_LABEL_BEFORE.search(text[max(0, start - 16):start]))
+        kind = _classify_run(text[start:end], labeled=labeled)
         if kind:
             add(start, end, kind)
+        else:
+            for s, e, k in _split_run(text, start, end, labeled):
+                add(s, e, k)
         del raw
     for m in _APARTMENT.finditer(text):
         if m.group("num"):
@@ -234,8 +299,11 @@ def _hint(kinds: list[str], rude: bool) -> tuple[str | None, str | None]:
         return None, None
     ru, kk = [], []
     if kinds:
-        names_ru = ", ".join(LABELS[k][0].lower() if k not in ("email",) else LABELS[k][0] for k in kinds)
-        names_kk = ", ".join(LABELS[k][1].lower() if k not in ("email",) else LABELS[k][1] for k in kinds)
+        # Со строчной — только первое слово; аббревиатуры (ИИН, ЖСН, E-mail) — как есть (R11: было «иин или бин»).
+        def low(label: str) -> str:
+            return label if label[:2].isupper() else label[:1].lower() + label[1:]
+        names_ru = ", ".join(low(LABELS[k][0]) for k in kinds)
+        names_kk = ", ".join(low(LABELS[k][1]) for k in kinds)
         ru.append(f"Личные данные скрыты ({names_ru}): их увидят только сотрудники акимата.")
         kk.append(f"Жеке деректер жасырылды ({names_kk}): оларды тек әкімдік қызметкерлері көреді.")
     if rude:

@@ -101,12 +101,14 @@
 .bk-field--error .bi-text {
   border-color: var(--c-danger, #c62828);
 }
+/* Мелкий текст — --c-text-2 (≥ 4,5 : 1 на бумаге); --c-text-3 даёт 3,17 : 1 (R10 B-135), оставлен только у
+   шеврона строки (значок, не текст). */
 .bi-meter {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 12px;
   margin: 0;
-  color: var(--c-text-3, #6b6b6b);
+  color: var(--c-text-2, #444);
   font-size: var(--bi-fs-s);
   font-variant-numeric: tabular-nums;
 }
@@ -138,7 +140,7 @@
   gap: 6px;
   max-width: 72ch;
   margin: 0;
-  color: var(--c-text-3, #6b6b6b);
+  color: var(--c-text-2, #444);
   font-size: var(--bi-fs-s);
   line-height: var(--lh-text, 1.5);
 }
@@ -237,7 +239,7 @@
 }
 .bi-sum__arrow,
 .bi-sum__dot {
-  color: var(--c-text-3, #6b6b6b);
+  color: var(--c-text-2, #444);
 }
 .bi-num {
   font-weight: var(--fw-num, 600);
@@ -250,7 +252,7 @@
 .bi-sum__meta,
 .bi-sum__demo {
   margin: 0;
-  color: var(--c-text-3, #6b6b6b);
+  color: var(--c-text-2, #444);
   font-size: var(--bi-fs-s);
   font-variant-numeric: tabular-nums;
 }
@@ -292,6 +294,21 @@
 .bi .bk-field__error,
 .bi .bk-banner__note {
   font-size: var(--bi-fs-s);
+}
+/* Плашка «сколько людей» — цвета значков набора R11 (--heat-N-badge / --heat-N-on): у .bk-lrow__cnt белый на
+   --heat-2 — 2,17 : 1, на --heat-3 — 3,93 : 1 (нужно ≥ 4,5 : 1); с этими токенами — 6,8 и 5,0 : 1. */
+.bi .bk-lrow__cnt[data-level="3"] {
+  background: var(--heat-3-badge, #c93b3a);
+  color: var(--heat-3-on, #fff);
+}
+.bi .bk-lrow__cnt[data-level="2"] {
+  background: var(--heat-2-badge, #ef9f27);
+  color: var(--heat-2-on, #152c26);
+}
+/* Подпись строки (службы · место) и счётчики групп — тоже --c-text-2: --c-text-3 ui-kit на бумаге — 3,17 : 1. */
+.bi .bk-lrow__meta,
+.bi .bk-lgroup__count {
+  color: var(--c-text-2, #444);
 }
 .bi .bk-banner__title,
 .bi .bk-btn,
@@ -372,7 +389,7 @@
 }
 .bi-why__title {
   margin: 0;
-  color: var(--c-text-3, #6b6b6b);
+  color: var(--c-text-2, #444);
   font-size: var(--bi-fs-s);
   font-weight: var(--fw-medium, 500);
 }
@@ -410,13 +427,13 @@
   color: var(--c-text-2, #444);
 }
 .bi-why__id {
-  color: var(--c-text-3, #6b6b6b);
+  color: var(--c-text-2, #444);
   font-size: var(--bi-fs-s);
   font-variant-numeric: tabular-nums;
 }
 .bi-why__more {
   margin: 0;
-  color: var(--c-text-3, #6b6b6b);
+  color: var(--c-text-2, #444);
   font-size: var(--bi-fs-s);
 }
 .bi-why__acts {
@@ -455,7 +472,7 @@
 }
 .bi-method__note {
   margin: 0;
-  color: var(--c-text-3, #6b6b6b);
+  color: var(--c-text-2, #444);
   font-size: var(--bi-fs-s);
 }
 

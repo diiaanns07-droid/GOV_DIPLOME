@@ -107,10 +107,11 @@
 .wcal-focus__count { min-width: 52px; text-align: center; }
 
 /* ---------- лента ---------- */
+/* Без scroll-behavior: smooth: плавно едет только прокрутка к чипу (behavior в scrollIntoView); прокрутка кодом
+   (оболочка, тесты, аудит R10) сразу на месте, а не посреди анимации. */
 .wcal-tl {
   position: relative; overflow: auto; overscroll-behavior: contain; max-height: max(260px, calc(100vh - 380px));
   border: 1px solid var(--c-line, rgba(18, 26, 23, .08)); border-radius: var(--r-l, 16px); background: var(--c-surface, #fff);
-  scroll-behavior: smooth;
 }
 .wcal-tl__inner { position: relative; min-width: 100%; }
 .wcal-tl__head { position: sticky; top: 0; z-index: 4; display: flex; height: 48px; background: var(--c-surface, #fff);
@@ -314,7 +315,6 @@
     border-radius: var(--r-glass-sheet, 26px) var(--r-glass-sheet, 26px) var(--r-xl, 18px) var(--r-xl, 18px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .wcal-tl { scroll-behavior: auto; }
   .wcal-skel { animation: none; }
   .wcal-bar__fill, .wcal-cchip__pill, .wcal-link { transition: none; }
 }
