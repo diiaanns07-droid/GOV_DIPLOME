@@ -25,7 +25,8 @@
   "R11": "17bf4c3e (разбор)",
   "R12": "25237d03 (разбор print.js)",
   "R05": "b5fe6cc0 (разбор)",
-  "FINAL-5": "c2276360 (R01 claude/brave-fermi-nhzetj, BUILD.json FINAL-5)"
+  "FINAL-5": "c2276360 (R01 claude/brave-fermi-nhzetj, BUILD.json FINAL-5)",
+  "FINAL-5.1": "e8d6cae6 (код = FINAL-5 c2276360 + docs R14; изменений кода нет)"
  },
  "push_status": "OK (круг 3)",
  "changed_paths": [
@@ -397,7 +398,8 @@
     "browser/FINAL5_SHAS.txt"
    ]
   },
-  "FINAL5_hygiene": "510 файлов FINAL-4.1 -> FINAL-5: секретов нет (3 пароля тестовых стендов), sqlite/.env/venv/>5 МБ нет"
+  "FINAL5_hygiene": "510 файлов FINAL-4.1 -> FINAL-5: секретов нет (3 пароля тестовых стендов), sqlite/.env/venv/>5 МБ нет",
+  "FINAL51_e8d6cae6": "код идентичен FINAL-5 (diff — только docs/gton, docs/birge, отчёты): итог FINAL-5 действует; новые документы без секретов и ПДн"
  },
  "findings": {
   "S42": {
@@ -489,9 +491,11 @@
  ],
  "known_limits": [
   "браузерная проба — на наложении веток ролей (r15_stand.py добавляет маршруты CONTRACT §7 в памяти); на B1 — по сборке R01",
-  "проверка в облаке без интернета; подложка карты — упрощённый фон"
+  "проверка в облаке без интернета; подложка карты — упрощённый фон",
+  "нагрузочного теста лимитов и пентеста развёрнутого стенда не было (SECURITY_REVIEW §11)",
+  "облако без интернета: подложка карты — упрощённый фон; кадры с настоящей картой — LOCAL"
  ],
- "next_step": "FINAL-5.1 (16:00 Астаны): повторить при изменении кода сборки; финальные STATUS («Раунд 15 закрыт») и DELIVERY",
+ "next_step": "Раунд 15 закрыт. Дальше (вне сборки): LOCAL-12 — пробы с настоящей картой; до пилота — SECURITY_REVIEW §8.",
  "code_note": "код R15 — только tests/civic/R15/ (тесты и браузерные пробы); чужой код R15 не меняет — patch в INTEGRATION",
  "routes_under_test": {
   "round15_routes": 50,
@@ -509,5 +513,6 @@
   "max_time_to_fix": "5 ч (S43)",
   "round14_regressions": 0
  },
- "blockers_FINAL5": []
+ "blockers_FINAL5": [],
+ "round_closed": "Раунд 15 закрыт (П2, 16 окт 16:00 Астаны); R15 закончена 15:35"
 }
