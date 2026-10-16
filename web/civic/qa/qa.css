@@ -103,7 +103,7 @@
   padding: 0;
 }
 .qa__week b {
-  font-size: 34px;
+  font-size: 19px;  /* не больше трёх размеров на экране (VISUAL_BRIEF §4 п. 3): число — размер заголовка, не 34 */
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -111,7 +111,7 @@
 }
 .qa__week span {
   color: var(--qa-ink-2);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* ── кнопки как в эталоне (.btn): 44 px, радиус 12, 15/600; главная — почти чёрная, второстепенная — серая подложка ── */
@@ -235,13 +235,11 @@
   margin-top: 10px;
 }
 .qa-card__actions .bk-btn {
-  padding: 0 14px;
-  font-size: 14px;
+  padding: 0 12px;  /* размер — 15, как у всех кнопок (.qa .bk-btn); 14 давал четвёртый размер на экране */
+  white-space: nowrap;  /* подпись кнопки — в одну строку; не помещается — кнопка уходит на следующую строку ряда */
 }
-/* в формах отказа и ответа — ряд эталона .acts: главная кнопка растянута, рядом серая «Отменить» */
-.qa-panel .qa-card__actions {
-  flex-wrap: nowrap;
-}
+/* в формах отказа и ответа — ряд эталона .acts: главная кнопка растянута, рядом серая «Отменить»
+   (375 px: «Опубликовать ответ» + «Отменить» и «Жауапты жариялау» + «Болдырмау» помещаются; уже — «Отменить» строкой ниже) */
 .qa-panel .qa-card__actions :is(.bk-btn--primary, .bk-btn--danger) {
   flex: 1;
 }
@@ -384,7 +382,7 @@
   margin: 0;
   overflow: hidden;
   color: var(--qa-ink);
-  font-size: 14px;
+  font-size: 15px;  /* ответ — основной текст, как вопрос (13 подписи · 15 текст · 19 заголовок) */
   line-height: 1.45;
   white-space: pre-line;
   overflow-wrap: break-word;
@@ -403,7 +401,7 @@
   background: none;
   color: var(--c-brand, #121a17);
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;  /* ссылка-действие — размер подписи, как «Все встречи» и «На карте» */
   font-weight: 500;
   cursor: pointer;
 }
@@ -495,7 +493,7 @@
   align-items: center;
   gap: 10px;
   min-height: 44px;
-  font-size: 14px;
+  font-size: 15px;
   cursor: pointer;
 }
 .qa-reason input {
