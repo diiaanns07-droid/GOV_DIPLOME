@@ -533,13 +533,15 @@
                                "data-key": group.key, onclick: function () { toggle(group); },
                                onmouseenter: function () { hover(group, true); }, onmouseleave: function () { hover(group, false); },
                                onfocus: function () { hover(group, true); }, onblur: function () { hover(group, false); } }, [
+        // Текст места и темы — во внутреннем <span>: многоточие режет его коробка-родитель (overflow: hidden), так обрезку видят
+        // и проверки «не перекрыт» (R10 visual_audit, 1024 kk: хвост текста за многоточием считался «под сроком»).
         h("span", { "class": "bk-lrow__main bc-inbox__text" }, [
-          h("span", { "class": "bk-lrow__title bc-inbox__place" }, [place,
+          h("span", { "class": "bk-lrow__title bc-inbox__place" }, [h("span", {}, place),
             // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
             group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
           // Уточнение — после категории (UX_SPEC §10), не отдельный бейдж. П3: в группе есть задача «ИИ-разбора пачки» R04 —
           // тихая пометка источника в конце этой же серой строки (в карточке — «Источник: разбор пачки»).
-          h("span", { "class": "bk-lrow__meta bc-inbox__what" }, [what,
+          h("span", { "class": "bk-lrow__meta bc-inbox__what" }, [h("span", {}, what),
             group.intake ? h("span", { "class": "bc-tag--intake", title: t("inbox.source.intake") },
               " · " + t("inbox.source.intake_short")) : null])]),
         h("span", { "class": "bk-lrow__cnt bc-inbox__cnt", "data-level": String(level), title: people },

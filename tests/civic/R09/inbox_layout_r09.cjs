@@ -116,6 +116,44 @@ async function variant(browser, base, width, height, lang, staff, intakeId) {
     check(`${tag}: ${wide ? "две колонки «список | карточка»" : "одна колонка"}`, g.split === wide, { split: g.split });
     if (wide) check(`${tag}: экран — по высоте листа, сам лист не прокручивается (прокрутка — у колонок)`,
                     g.sheetScroll && g.sheetScroll.h <= g.sheetScroll.ch + 2, g.sheetScroll);
+    // Текст строк не уходит под соседей — как R10 visual_audit «не обрезан и не перекрыт»: точки по строкам самого текста
+    // (Range), обрезка — только у предков; прозрачная зона нажатия без своего текста в точке не закрывает (1024 kk, П3).
+    const under = await page.evaluate(() => {
+      const clearAt = (hit, x, y) => {
+        const cs = getComputedStyle(hit);
+        if (!/^(transparent|rgba\(0, 0, 0, 0\))$/.test(cs.backgroundColor) || cs.backgroundImage !== "none" || cs.boxShadow !== "none") return false;
+        const rg = document.createRange(); rg.selectNodeContents(hit);
+        return ![...rg.getClientRects()].some((q) => x >= q.left && x <= q.right && y >= q.top && y <= q.bottom);
+      };
+      const bad = [];
+      for (const el of document.querySelectorAll(".bc-inbox__line *")) {
+        const own = [...el.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim());
+        const r = el.getBoundingClientRect();
+        if (!own.length || r.width < 20 || r.top < 0 || r.bottom > innerHeight) continue;
+        let c = { l: 0, t: 0, r: innerWidth, b: innerHeight };
+        for (let n = el.parentElement; n && n !== document.body; n = n.parentElement) {
+          const cs = getComputedStyle(n);
+          if (cs.overflowX === "visible" && cs.overflowY === "visible") continue;
+          const q = n.getBoundingClientRect();
+          c = { l: Math.max(c.l, q.left), t: Math.max(c.t, q.top), r: Math.min(c.r, q.right), b: Math.min(c.b, q.bottom) };
+        }
+        for (const tn of own) {
+          const rg = document.createRange(); rg.selectNodeContents(tn);
+          for (const q of [...rg.getClientRects()].slice(0, 3)) {
+            const y = q.top + q.height / 2;
+            for (const x of [q.left + 2, q.left + q.width / 2, q.right - 2]) {
+              if (x < c.l || x > c.r || y < c.t || y > c.b) continue;
+              const hit = document.elementFromPoint(x, y);
+              if (hit && hit !== el && !el.contains(hit) && !hit.contains(el) && !clearAt(hit, x, y)) {
+                bad.push(`«${tn.textContent.trim().slice(0, 24)}» под «${(hit.innerText || hit.tagName).trim().slice(0, 24)}»`);
+              }
+            }
+          }
+        }
+      }
+      return [...new Set(bad)].slice(0, 4);
+    });
+    check(`${tag}: текст строк не уходит под плашку числа и срок (многоточие — внутри своей коробки)`, under.length === 0, under);
 
     // Строка сцены 8 → карточка: справа (две колонки) или под строкой (одна).
     const pit = page.locator(`.bc-inbox__item[data-target="${PIT_TARGET}"] .bc-inbox__row`).first();

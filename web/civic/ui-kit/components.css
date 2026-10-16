@@ -2386,7 +2386,7 @@ p.bk-banner--warn {
 }
 .bk-stline small {
   margin-left: auto;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-caption);
 }
 .bk-acts {
@@ -2536,7 +2536,7 @@ p.bk-banner--warn {
 }
 .bk-hot__name small {
   display: block;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
   font-weight: var(--fw-regular);
 }
@@ -2729,7 +2729,7 @@ p.bk-banner--warn {
 }
 .bk-pd__note {
   margin: 10px 0 0;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
 }
 /* Метка на карте «Проект · 2027» — лайм (единственное место лайма на карте) */
@@ -2914,7 +2914,7 @@ p.bk-banner--warn {
   margin-top: 0;
 }
 .bk-lgroup__count {
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-variant-numeric: tabular-nums;
 }
 .bk-lrow {
@@ -2978,13 +2978,15 @@ p.bk-banner--warn {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* Подпись берёт только остаток строки (основа 0): сжимается и уходит в многоточие раньше названия. Было 1 1 auto — длинная
+/* Читаемый текст строк и групп списка — --c-text-2 (≥ 4,5 : 1): R10 B-136 нашёл #7E8A85 (--c-text-3) 3,17–3,58 : 1 в «Обращениях»;
+   так же .bk-lrow__time, .bk-lgroup__count, .bk-stline small, .bk-hot__name small, .bk-pd__note. --c-text-3 — только подсказки и значки.
+   Подпись берёт только остаток строки (основа 0): сжимается и уходит в многоточие раньше названия. Было 1 1 auto — длинная
    подпись «Разбора обращений» резала название задачи («Ағу мен опырылған жабын · Омара Хаяма …», обзор R11, П3). */
 .bk-lrow__meta {
   flex: 1 1 0%;
   min-width: 0;
   overflow: hidden;
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -3018,7 +3020,7 @@ p.bk-banner--warn {
 .bk-lrow__time {
   flex: none;
   min-width: 88px; /* колонка: «20 часов назад» / «20 сағат бұрын» — плашки чисел стоят в одну линию */
-  color: var(--c-text-3);
+  color: var(--c-text-2);
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
   text-align: right;
