@@ -5,7 +5,9 @@
 """
 from __future__ import annotations
 
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
+import gc
 import sys
 from pathlib import Path
 
@@ -20,6 +22,23 @@ NOW = datetime(2026, 10, 15, 12, 0, tzinfo=ASTANA)
 STAFF = {"username": "operator", "role": "editor"}
 # Текст жителя с персональными данными: не должен появиться ни в одном ответе аналитика.
 RESIDENT_TEXT = "Снег не убран у подъезда, звоните 8 701 555 12 34, ИИН 900101300123"
+
+
+@contextmanager
+def no_gc_pause():
+    """Замер скорости без полной сборки мусора большого процесса pytest.
+
+    В общем прогоне ролей одна сборка поколения 2 — 0,2 с и больше (R01 B0.16: 0,5 млн объектов — 226 мс); она
+    попадает в замер случайно и меряет размер процесса, а не аналитика.
+    """
+    gc.collect()
+    enabled = gc.isenabled()
+    gc.disable()
+    try:
+        yield
+    finally:
+        if enabled:
+            gc.enable()
 
 
 def _target(kind, tid, ru, kk):

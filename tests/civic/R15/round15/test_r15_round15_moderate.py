@@ -11,6 +11,7 @@ R17 (обновления кризиса) и маршрута POST /moderate (п
 
 from __future__ import annotations
 
+import gc
 import re
 import time
 
@@ -133,10 +134,24 @@ def test_mask_is_whole_and_original_not_echoed(moderate, text, secret):
                                        ("brackets", "(" * 5000), ("dots", "a." * 2500), ("at-words", "x at " * 1000),
                                        ("digits", "7" * 5000), ("mixed", "1 (2 " * 1000)])
 def test_moderate_is_fast_on_hostile_text(moderate, name, text):
-    """T-R04-08: публичный предпросмотр не «вешается» на враждебных 5000 символах (цель R04 — 5 мс на текст)."""
-    started = time.perf_counter()
-    moderate(text[:5000])
-    assert (time.perf_counter() - started) < 0.2, name
+    """T-R04-08: публичный предпросмотр не «вешается» на враждебных 5000 символах (цель R04 — 5 мс на текст).
+
+    Лучший из трёх замеров без сборки мусора (просьба R01, B0.16): в большом общем pytest сборки полный gc.collect()
+    (~0,2 с на 0,5 млн объектов) попадал в замер. Катастрофический возврат регулярки (ReDoS) — секунды каждый раз,
+    его лучший из трёх не скрывает."""
+    gc.collect()
+    was_enabled = gc.isenabled()
+    gc.disable()
+    try:
+        best = float("inf")
+        for _ in range(3):
+            started = time.perf_counter()
+            moderate(text[:5000])
+            best = min(best, time.perf_counter() - started)
+    finally:
+        if was_enabled:
+            gc.enable()
+    assert best < 0.2, (name, round(best, 3))
 
 
 def test_non_string_and_too_long_are_rejected(moderate):

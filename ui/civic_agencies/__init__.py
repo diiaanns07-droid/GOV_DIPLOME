@@ -70,7 +70,7 @@ def updates(device, since=None) -> list[dict]:
     if service is None or not isinstance(device, str):
         return []
     try:
-        districts, yards = device_places(device)
+        districts, yards = device_places(device, service.store.db_path)
         items = resident_feed(service.store, districts, yards, since)
     except Exception:  # noqa: BLE001 — лента R06 не должна падать из-за модуля R17
         return []

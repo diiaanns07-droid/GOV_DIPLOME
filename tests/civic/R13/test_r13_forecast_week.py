@@ -102,7 +102,7 @@ def test_territory_labels_agree_between_languages():
     assert label(yard, "ru") == "Двор «Ақ-Тау»" and label(yard, "kk") == "Аула «Ақ-Тау»"
     unnamed = dict(yard, name_kk=None)
     assert label(unnamed, "ru") == "Двор рядом: остановка «Бухар жырау»"
-    assert label(unnamed, "kk") == "Аула · жанында «Бухар жырау» аялдамасы"
+    assert label(unnamed, "kk") == "«Бухар жырау» аялдамасы жанындағы аула"
     for item in week_block(today=date(2026, 10, 15))["items"]:  # подписи кэша пересчитаны по тому же правилу
         ru, kk = item["target"]["label_ru"], item["target"]["label_kk"]
         assert ("«" in ru) == ("«" in kk)

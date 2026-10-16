@@ -300,8 +300,43 @@ def test_kk_labels_have_no_russian_street_words():
     assert kk_street("улица Кенгир") == "Кенгир көшесі"
     assert kk_street("проспект Нургисы Тлендиева") == "Нургисы Тлендиева даңғылы"
     assert kk_street("ЖК Үркер city") == "ЖК Үркер city"  # не улица — как есть
-    assert label({"kind": "yard", "near": {"kind": "segment", "name_ru": "улица Кенгир"}}, "kk") == "Аула · жанында Кенгир көшесі"
+    assert label({"kind": "yard", "near": {"kind": "segment", "name_ru": "улица Кенгир"}}, "kk") == "Кенгир көшесі жанындағы аула"
     assert label({"kind": "yard", "near": {"kind": "segment", "name_ru": "улица Кенгир"}}, "ru") == "Двор рядом: улица Кенгир"
     words = re.compile(r"\b(улица|проспект|переулок|шоссе|бульвар|площадь)\b")
     bad = [t["id"] for t in load_targets() if words.search(label(t, "kk"))]
     assert bad == [], bad[:5]
+
+
+def test_ru_labels_have_no_kazakh_street_words():
+    """У улицы в OSM только казахское имя — в РУС «улица Иван Панфилов», а не «Иван Панфилов көшесі» (раунд 15)."""
+    import re
+    from ml.civic_forecast.targets import label, load_targets, ru_street
+    assert ru_street("Иван Панфилов көшесі") == "улица Иван Панфилов"
+    assert ru_street("Бауыржан Момышұлы даңғылы") == "проспект Бауыржан Момышұлы"
+    assert ru_street("Ақбұлақ тұйық көшесі") == "переулок Ақбұлақ"
+    assert ru_street("улица Кенгир") == "улица Кенгир" and ru_street("ЖК Family Village") == "ЖК Family Village"
+    near = {"kind": "yard", "near": {"kind": "segment", "name_ru": "Иван Панфилов көшесі", "name_kk": "Иван Панфилов көшесі"}}
+    assert label(near, "ru") == "Двор рядом: улица Иван Панфилов"
+    assert label(near, "kk") == "Иван Панфилов көшесі жанындағы аула"
+    assert ru_street("Алаш тасжолы") == "шоссе Алаш"
+    words = re.compile(r"(көшесі|даңғылы|тұйығы|тас жолы|тасжолы|бульвары)\b")
+    bad = [(t["id"], label(t, "ru")) for t in load_targets() if words.search(label(t, "ru"))]
+    assert bad == [], bad[:5]
+
+
+def test_segment_labels_do_not_repeat_street_type():
+    """«Участок улицы Анет Баба» / «Әнет Баба көшесінің бөлігі», а не «Участок улицы «улица Анет Баба»» (раунд 15)."""
+    import re
+    from ml.civic_forecast.targets import kk_street, label, load_targets
+    seg = {"kind": "segment", "name_ru": "улица Анет Баба", "name_kk": "Әнет Баба көшесі"}
+    assert label(seg, "ru") == "Участок улицы Анет Баба"
+    assert label(seg, "kk") == "Әнет Баба көшесінің бөлігі"
+    assert label({"kind": "segment", "name_ru": "проспект Абая"}, "ru") == "Участок проспекта Абая"
+    assert label({"kind": "segment", "name_ru": "проспект Абая"}, "kk") == "Абая даңғылының бөлігі"
+    assert label({"kind": "segment", "name_ru": "Улица Касым Кайсенов"}, "kk") == "Касым Кайсенов көшесінің бөлігі"
+    assert kk_street("Улица Касым Кайсенов") == "Касым Кайсенов көшесі"
+    assert label({"kind": "segment", "name_ru": "Коргалжинское шоссе"}, "ru") == "Участок: Коргалжинское шоссе"
+    segments = [t for t in load_targets() if t["kind"] == "segment"]
+    assert segments
+    assert not [label(t, "ru") for t in segments if re.search(r"«(улица|Улица|проспект|переулок|шоссе)", label(t, "ru"))]
+    assert not [label(t, "kk") for t in segments if label(t, "kk").startswith("Көше бөлігі «")]

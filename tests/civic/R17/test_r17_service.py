@@ -275,15 +275,57 @@ def test_resident_updates_by_place(service, clock):
     assert [i["text_ru"] for i in fresh] == ["Дороги к школам расчищены"]
 
 
+def test_device_places_reads_r16_yards(service, monkeypatch):
+    """Двор жителя у R16: функция модуля, а пока её нет — default_service(db_path).store.my_yards(device).
+
+    make_service R16 не зовётся (в демо он заново засевает сцену 7); R16 упал или его нет — пусто, не ошибка.
+    Житель двора в Нуре видит обновления бурана в Нуре и без подписки на район.
+    """
+    import sys
+    import types
+    nura_yard = next(y for y, v in __import__("ui.civic_agencies.geo", fromlist=["yards"]).yards().items()
+                     if v["district"] == "nura")
+    seen = {}
+
+    class Store:
+        def my_yards(self, device):
+            seen["device"] = device
+            return [nura_yard, "not-a-yard", {"id": "yard-1"}] if device == "device-yard-0001" else []
+
+    class TogetherService:
+        store = Store()
+
+    fake = types.ModuleType("ui.civic_together")
+    fake.default_service = lambda db_path=None: seen.setdefault("db_path", db_path) and TogetherService()
+    fake.make_service = lambda *a, **k: (_ for _ in ()).throw(AssertionError("make_service R16 пересевает демо"))
+    monkeypatch.setitem(sys.modules, "ui.civic_together", fake)
+    monkeypatch.setitem(sys.modules, "ui.civic_akim.nearby", None)          # без подписок R08
+    districts, yards = svc_mod.device_places("device-yard-0001", service.store.db_path)
+    assert districts == set() and yards == {nura_yard, "yard-1"}
+    assert seen == {"device": "device-yard-0001", "db_path": service.store.db_path}
+    feed = call(service, "GET", "/incidents/updates", ctx={"headers": {"X-Birge-Device": "device-yard-0001"}})["body"]
+    assert feed["zone_known"] is True and len(feed["items"]) == 2 and feed["items"][0]["district"] == "nura"
+    assert call(service, "GET", "/incidents/updates", ctx={"headers": {"X-Birge-Device": "device-none-0001"}})["body"] == \
+        {"items": [], "zone_known": False, "since": None}
+    # функция модуля (просьба INTEGRATION §7) главнее хранилища
+    fake.yards_of_device = lambda device: [{"id": nura_yard}]
+    assert svc_mod.device_places("device-other-01", service.store.db_path)[1] == {nura_yard}
+    del fake.yards_of_device
+    fake.default_service = lambda db_path=None: 1 / 0                       # R16 упал
+    assert svc_mod.device_places("device-yard-0001", service.store.db_path) == (set(), set())
+    monkeypatch.setitem(sys.modules, "ui.civic_together", None)             # R16 нет в сборке
+    assert svc_mod.device_places("device-yard-0001", service.store.db_path) == (set(), set())
+
+
 def test_updates_feed_for_r06_uses_device_places(service, monkeypatch):
-    monkeypatch.setattr(svc_mod, "device_places", lambda device: ({"nura"}, set()))
-    monkeypatch.setattr(agencies, "device_places", lambda device: ({"nura"}, set()))
+    monkeypatch.setattr(svc_mod, "device_places", lambda device, db_path=None: ({"nura"}, set()))
+    monkeypatch.setattr(agencies, "device_places", lambda device, db_path=None: ({"nura"}, set()))
     events = agencies.updates("device-12345678", None)
     assert events and {e["module"] for e in events} == {"R17"}
     for e in events:
         assert set(e) >= {"id", "at", "module", "kind", "target", "title_ru", "title_kk", "link"}
         assert e["kind"] == "incident.update" and e["link"].startswith("#crisis/inc-")
-    monkeypatch.setattr(agencies, "device_places", lambda device: (set(), set()))
+    monkeypatch.setattr(agencies, "device_places", lambda device, db_path=None: (set(), set()))
     assert agencies.updates("device-12345678", None) == []
 
 

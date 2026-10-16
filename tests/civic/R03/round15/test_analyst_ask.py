@@ -394,10 +394,12 @@ def test_bad_model_answer_falls_back_offline(reply, code):
 
 def test_model_timeout_falls_back_offline_quickly():
     stub = F.StubProvider({"order": [], "lead": "x"}, delay_s=1.0)
-    started = time.perf_counter()
-    a = ask("Какие службы отстают?", provider=stub, llm_timeout_s=0.2)
+    with F.no_gc_pause():
+        started = time.perf_counter()
+        a = ask("Какие службы отстают?", provider=stub, llm_timeout_s=0.2)
+        elapsed = time.perf_counter() - started
     assert a["offline_reason"] == "llm_timeout"
-    assert time.perf_counter() - started < 0.9
+    assert elapsed < 0.9
 
 
 def test_env_without_key_means_offline(monkeypatch):
