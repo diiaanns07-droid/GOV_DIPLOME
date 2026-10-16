@@ -5,8 +5,8 @@
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
   "restored_from": null,
-  "code_sha": "0152ef19bb6c8a0599b0e1e1bc53daeb3ebac6b1",
-  "tested_sha": "0152ef19bb6c8a0599b0e1e1bc53daeb3ebac6b1",
+  "code_sha": "fa9ab80b44e0a97ebcb4af8640cfc02aedd23a5b",
+  "tested_sha": "fa9ab80b44e0a97ebcb4af8640cfc02aedd23a5b",
   "push_status": "OK",
   "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
   "world": {
@@ -14,7 +14,7 @@
     "schema": "birge-demo-world-v1",
     "schema_version": "1.1",
     "seed": 15,
-    "sha256": "c93fb80cbdf6630d5e7088fd19921ce794e0139ddd5817ee17a0c767bbd6a146",
+    "sha256": "dd0e7bba42986c2ea2a1ef1bc387620a9ad7af0708fefc1b4c813482f9c69e07",
     "counts": {
       "complaints": 743,
       "people_with_metoo": 1171,
@@ -68,7 +68,8 @@
     "R04": "совместные жалобы — тексты, которые route() читает как те же две службы; 743/743 (INTEGRATION §10a)",
     "R17": "EXPECTED services: «открыто» у совместной — по части службы, как табло R17",
     "R07": "events и closed_at прочитаны (6 отметок); отметки «Хроники» едут с миром при повторном засеве — взято в fcfd9256",
-    "R06": "seed_world на мире: 55 (39 работ + 4 отключения + 12 идей), повтор 55 skipped, reset 55; статусы, голоса, даты = миру; 2 проекта"
+    "R06": "seed_world на мире: 55 (39 работ + 4 отключения + 12 идей), повтор 55 skipped, reset 55; статусы, голоса, даты = миру; 2 проекта",
+    "R11": "patch R11 R02_world_kk (казахские тексты мира: «Ауладағы», «Көше бөлігі», «Ұзақ жылдарға», порядок слов в отчёте дела) применён к генератору, мир пересобран — байт в байт как у R11 (fa9ab80b)"
   },
   "tests": {
     "pytest tests/civic/R02/round15": {
@@ -84,7 +85,7 @@
       "passed": 363,
       "failed": 0,
       "skipped": 4,
-      "seconds": 50
+      "seconds": 54
     },
     "pytest tests/civic/R02/test_r02_schema.py на коде R06 (claude/eloquent-einstein-wvuyje, миграция 10)": {
       "status": "PASS",
