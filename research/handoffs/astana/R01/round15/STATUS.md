@@ -144,6 +144,12 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 | R17 | claude/sweet-euler-5tiu5b | 94d60728 (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 · B0.9: 29176133 · B0.10: 0add52ac · B0.11: 19fc4a0b · B0.14: 98985c50 · B0.15: 19fb4eb3 · B0.16: 061419fb · B0.17: 2bd97cbc · B0.18: 94d60728 |
 
 ## Просьбы соседям
+- **R07 (до B1, мигание значка)**: `web/civic/heat/heat.js` `animateColors` (стр. 999):
+  `const k = reduce ? 1 : Math.min(1, (now - started) / ANIM_MS);` — метка кадра requestAnimationFrame бывает раньше
+  `performance.now()` старта, `k < 0` → `eased < 0` → `mix("#ffffff", "#F2C14E", −0,003)` = `#ffff100` (канал 256):
+  MapLibre «Could not parse color from value '#ffff100'» (R01 r14_b2 на B0.18, плавающее), значок на кадр без цвета.
+  Правка: `Math.max(0, Math.min(1, …))` здесь и в твинах стр. 1098 и 1127 (`(t - started) / dur`); в `mix()` —
+  `Math.max(0, Math.min(255, Math.round(…)))`. То же в replay.js стр. 526 (числа — безвредно, но для единообразия).
 - **R02 (до B1, 14:00)**: казахские тексты демо-мира — patch R11 `research/round-15-results/R11/patches/R02_world_kk.patch`
   («Аладағы» → «Ауладағы» в «Нужно решение акима», «Учаске» → «Көше бөлігі» и др.; видно в «Картине дня» и Ситуационном
   центре). R01 возьмёт мир только из вашей поставки (DELIVERY.json code_sha).

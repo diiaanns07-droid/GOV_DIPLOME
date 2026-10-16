@@ -293,3 +293,12 @@ R13 9ca9bc72 («♡» 32 px с зоной 44), R17 2bd97cbc; у R15 b7b75ee3 и�
 R03 35fd84a6 (тесты), R10 c674f135, R13 0ef104c2 (цели прогноза), тесты R15 a933f361 (замер скорости модерации: gc.collect()
 перед замером, gc.disable() на время, лучший из 3 — просьба R01 B0.16), R17 94d60728.
 Проверки: pytest R01, R03, R12, R13, R15, R17 (тот набор, где был FAIL замера) — **1798 PASS / 0 FAIL**; r15_ia 41 / 0.
+
+### Полный run_checks на B0.18 (`6ecbfaad`, 16 окт до 08:53 по Астане)
+pytest весь tests/ — **5009 PASS / 0 FAIL** (23 skipped, 1 xfailed); web_check, node govtech ×5, R12, R04, R01 explore — PASS;
+браузер: все PASS, кроме **r14 B2 demo path — 27 / 1**: в консоли 1366 три предупреждения MapLibre «Could not parse color
+from value '#ffff100'». Повтор того же набора 3 раза — 28 / 0 (плавающее). Причина найдена — R07 `web/civic/heat/heat.js`
+`animateColors` (стр. 999): `k = Math.min(1, (now - started) / ANIM_MS)`, а метка кадра requestAnimationFrame бывает чуть
+раньше `performance.now()` старта → `k < 0` → `eased < 0` → `mix("#ffffff", "#F2C14E", −0,003)` = «#ffff100» (канал 256;
+проверено расчётом). На кадр значок может мигнуть цветом по умолчанию. Просьба R07 — в STATUS (ограничить `k` снизу нулём и
+канал в `mix()` — 0…255); оболочка не меняется.
