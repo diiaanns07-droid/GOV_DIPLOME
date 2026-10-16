@@ -46,6 +46,10 @@ CONTRACT_STAFF = (
     ("POST", ("assistant", "ask")),
     ("POST", ("ideas", "{id}", "to-initiative")),
     ("POST", ("together", "yards", "{id}", "moderate")),   # R16 [доп.]: имя «старшего по двору» — акимат
+    # П3 (раунд 15+): «ИИ-разбор пачки обращений» R04 — только сотрудник + CSRF (T-R04-20).
+    ("POST", ("intake", "analyze")),
+    ("GET", ("intake", "sample")),
+    ("POST", ("intake", "commit")),
 )
 # Запись жителя (или «все») из CONTRACT §7 -> нужен ли суточный предел на одну цель с адреса (S08).
 CONTRACT_RESIDENT_WRITES = (
