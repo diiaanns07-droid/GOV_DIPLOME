@@ -31,8 +31,8 @@ git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md
 - **16:00** — FINAL-5.1 (если были исправления) + BUILD.json; `docs/gton/` и `docs/birge/` из ветки пакета (R14). Раунд закрыт:
   финальные STATUS («Раунд 15 закрыт», итог, SHA) и DELIVERY.json, push. Дальше на кругах: прочитать AMENDMENTS, одна строка
   «Раунд 15 закрыт», конец хода.
-- Разовые напоминания этой сессии: `trig_01FmY36tNUVUBjofKA5CCHdh` — 13:31 (приём поставок, FINAL-5),
-  `trig_017TeJzT6HJkpAPu7VgmChX6` — 15:50 (FINAL-5.1, закрытие). Часовой триггер — до 17 окт 23:59 (на кругах после
+- Разовые напоминания этой сессии: `trig_01FmY36tNUVUBjofKA5CCHdh` — 13:31 (сработало: FINAL-5),
+  `trig_017TeJzT6HJkpAPu7VgmChX6` — 15:50 (удалено: FINAL-5.1 собран раньше, в 15:26). Часовой триггер — до 17 окт 23:59 (на кругах после
   закрытия — только AMENDMENTS и одна строка).
 
 ### П1 «Без ИИ-слопа» — что это значит для R01
