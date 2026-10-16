@@ -26,7 +26,7 @@
   },
   "demo_world": "включён по умолчанию: run-city.bat / run.bat / run.sh ставят CIVIC_DEMO_WORLD=1 (выключить — =0)",
   "checks": {
-    "pytest": "весь tests/ на B0.19 — 5015 PASS / 0 FAIL; роли после B0.19 (B0.20–B0.23) — 1837 / 0, 2218 / 0, 1586 / 0, 557 / 0; полный run_checks на c2276360 — идёт, итог в BUILD_LOG",
+    "pytest": "полный run_checks на c2276360 — ВСЁ ЗЕЛЁНОЕ: pytest весь tests/ 5017 PASS / 0 FAIL (23 skipped, 1 xfailed); ui.web_check, node govtech ×5, R12 map / editor / glyphs, R04, R01 explore — PASS; браузер: P0, сценарии, город, пустой реестр, шапка r14, B1, B2, волна 2, r15_ia — PASS",
     "R10_part1": "demo_flow --world (1366 / 375 × ru / kk), кандидат b32945a4: 172 PASS / 0 FAIL / 2 NOT_RUN — как FINAL-4",
     "R10_scenes": "demo_flow_v2 (1366 / 1024 / 375 × ru / kk), кандидат b32945a4: 337 PASS / 0 FAIL / 0 NOT_RUN; Ctrl+K сцена 7 — 515–853 мс",
     "R15": "tests/civic/R15 в pytest ролей: PASS (565 / 0 по R15 на B0.16; тест GET demo/scenes — PASS)",

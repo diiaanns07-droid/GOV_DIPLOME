@@ -84,7 +84,7 @@ git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md
 - 05:30 (16 окт) B0.15 (`79c766c1`): R03 76b4fe35, R08 1a1a4a9b (знак-домик на Ситуационном центре), R11 a0178fbe,
   R12 9a3ae1f4, R16 0534ea6c, R17 19fb4eb3; pytest этих ролей + R01 1448/0, r15_ia 41/0.
 - 13:33 (16 окт) B0.23 (R03 2fe5a53b) и **FINAL-5 = `c2276360`** — BUILD.json, DELIVERY.json, DEMO_SCRIPT (таблица FINAL-5);
-  после 13:30 новых поставок нет. Полный run_checks на c2276360 — в работе.
+  после 13:30 новых поставок нет. **Полный run_checks на c2276360 — всё зелёное: pytest 5017/0, узловые и браузерные PASS.**
 - 12:31 (16 окт) B0.22 (`3c360c88`): R06 d688c45f, R10 58234e5a, R13 865289cb (conftest — порядок R13 → R03 исправлен);
   pytest R01/R06/R13/R03 1586/0, r15_ia 41/0.
 - 11:33 (16 окт) B0.21 (`fceec354`): R03 3085aa61, R07 d43dd650, R08 840d62de, R13 b24adf5d, R15 ac54e27b, R17 622dcf1f;

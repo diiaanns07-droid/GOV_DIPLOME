@@ -25,7 +25,7 @@
   "tests": {
     "pytest весь tests/ (B0.19 5b696879)": "PASS 5015 / 0 (23 skipped, 1 xfailed)",
     "pytest ролей после B0.19 (B0.20–B0.23)": "PASS: 1837 / 0, 2218 / 0, 1586 / 0, 557 / 0",
-    "run_checks на FINAL-5 c2276360": "идёт (итог — BUILD_LOG / FINAL-5.1)",
+    "run_checks на FINAL-5 c2276360": "PASS — pytest 5017 / 0, все узловые и браузерные наборы PASS",
     "R10 demo_flow --world, часть 1 (кандидат b32945a4)": "PASS 172 / 0 / 2 (как FINAL-4)",
     "R10 demo_flow_v2, сцены 7–9, 1366 / 1024 / 375 × ru / kk (b32945a4)": "PASS 337 / 0 / 0",
     "browser r15_ia (меню IA_ROUND15, сцены, режим показа, колокольчик, хроника, разделы-страницы)": "PASS 41 / 0",
