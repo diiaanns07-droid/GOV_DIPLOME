@@ -8,6 +8,8 @@
 
 /* ── Форма (экран) ── */
 .bqp-form { display: grid; gap: 16px; max-width: 640px; }
+/* «← В Birge» (R10 B-128): кнопка-ссылка ui-kit 44 px, текст по левому краю заголовка; при печати скрыта вместе с формой */
+.bqp-back { justify-self: start; margin: -12px 0 -8px -12px; }
 .bqp-h1 { margin: 0; font-size: var(--fs-h1, 28px); line-height: 1.2; font-weight: var(--fw-semi, 600); letter-spacing: -0.01em; }
 /* три размера на экране формы: 28 заголовок · 17 текст, подписи полей и кнопки (как .bk-btn) · 13 подсказки;
    строки ≤ 70 знаков (R10 DESIGN_REVIEW круг 2) */

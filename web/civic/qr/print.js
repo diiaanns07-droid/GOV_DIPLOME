@@ -42,6 +42,7 @@
       "qr.sign.call": "Сообщите о проблеме", "qr.sign.how": "Наведите камеру телефона на код",
       "qr.form.size": "Размер таблички", "qr.form.size_a5": "A5 · 148 × 210 мм", "qr.form.size_a6": "A6 · 105 × 148 мм",
       "qr.form.size_hint": "Печать на листах A4: две таблички A5 или четыре A6 — разрезать по пунктиру.",
+      "board.back": "← В Birge",  // ключ словаря R11 (как у Ситуационного центра R08); здесь — запасной текст
     },
     kk: {
       "qr.title": "Нысандардың QR-тақтайшалары", "qr.print": "QR басып шығару", "qr.call": "Осы жерде мәселе бар ма? Телефон камерасын кодқа бағыттаңыз",
@@ -60,6 +61,7 @@
       "qr.sign.call": "Мәселе туралы хабарлаңыз", "qr.sign.how": "Телефон камерасын кодқа бағыттаңыз",
       "qr.form.size": "Тақтайша өлшемі", "qr.form.size_a5": "A5 · 148 × 210 мм", "qr.form.size_a6": "A6 · 105 × 148 мм",
       "qr.form.size_hint": "A4 парағына басылады: екі A5 немесе төрт A6 тақтайша — үзік сызық бойымен қиыңыз.",
+      "board.back": "← Birge-ге",
     },
   };
 
@@ -215,7 +217,19 @@
     var sheet = h(doc, "div", { class: "bqp-sheet" });
     var showBtn = h(doc, "button", { type: "submit", class: "bk-btn bk-btn--primary", "data-act": "show" }, [tx("qr.form.show")]);
     var printBtn = h(doc, "button", { type: "button", class: "bk-btn bqp-print", "data-act": "print", onclick: function () { root.print(); } }, [tx("qr.print")]);
+    // R10 B-128: отдельная страница (Ctrl+K, «Ещё → QR-таблички») — путь назад в Birge, как у Ситуационного центра R08:
+    // ссылка над заголовком и Esc. Esc из поля ввода не уводит со страницы (набранные номера не теряются); печать её прячет.
+    var homeHref = opts.homeHref || "/";
+    var back = h(doc, "a", { class: "bk-btn bk-btn--ghost bqp-back", href: homeHref, "data-act": "back" }, [tx("board.back")]);
+    function onKey(e) {
+      if (e.key !== "Escape" || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      var t = e.target;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName || ""))) return;
+      root.location.assign(homeHref);
+    }
+    doc.addEventListener("keydown", onKey);
     var form = h(doc, "form", { class: "bqp-form no-print", novalidate: true }, [
+      back,
       h(doc, "h1", { class: "bqp-h1", text: tx("qr.title") }),
       h(doc, "p", { class: "bqp-lead", text: tx("qr.form.lead") }),
       h(doc, "div", { class: "bk-field bqp-field" }, [h(doc, "label", { for: "bqp-ids", class: "bk-field__label", text: tx("qr.form.ids") }), idsField,

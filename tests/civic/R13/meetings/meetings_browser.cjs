@@ -39,7 +39,12 @@ async function sizeAudit(page, label) {
       if (!seen(el)) return;
       const r = el.getBoundingClientRect();
       const textLink = el.classList.contains("mt-link");
-      if (r.height < 43.5 || (!textLink && r.width < 43.5)) small.push(name(el) + " " + Math.round(r.width) + "×" + Math.round(r.height));
+      // зона нажатия шире видимой кнопки за счёт ::after (ui-kit .bk-vote: 32 px + inset -6px) — как считает R10 ux_lib
+      const a = getComputedStyle(el, "::after");
+      const zone = a.content !== "none" && a.position === "absolute";
+      const out = (v) => (zone ? Math.max(0, -parseFloat(v) || 0) : 0);
+      const zh = r.height + out(a.top) + out(a.bottom), zw = r.width + out(a.left) + out(a.right);
+      if (zh < 43.5 || (!textLink && zw < 43.5)) small.push(name(el) + " " + Math.round(zw) + "×" + Math.round(zh));
     });
     const tiny = [];
     const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -100,8 +105,10 @@ async function residentFlow(browser, w, h, lang) {
   const hero = await page.$(".mt-hero");
   check(`${tag} ближайшая встреча крупно`, !!hero);
   const heroText = hero ? await hero.innerText() : "";
+  // место — любое (свой набор R13: «Eco Park»; демо-мир R02: другой двор), важно, что подпись места есть
+  const place = hero ? await hero.$eval(".mt-place__label", (el) => el.textContent.trim()).catch(() => "") : "";
   check(`${tag} в карточке: дата, место, «Пример», ведущий без имени`,
-    /18|19|20|21|22|23|24|25|26|27|28|29|30|31|\d/.test(heroText) && /Eco Park/.test(heroText)
+    /\d/.test(heroText) && place.length > 2
       && (kk ? /Үлгі/.test(heroText) && /Аудан әкімі/.test(heroText) : /Пример/.test(heroText) && /аким района/.test(heroText)), heroText.slice(0, 160));
   check(`${tag} одна главная кнопка — «Приду»`, (await primaryCount(page)) === 1 && /Приду|Барамын/.test(await page.textContent(".mt-going")));
   check(`${tag} без прокрутки вбок`, await noSideScroll(page));
@@ -151,15 +158,23 @@ async function residentFlow(browser, w, h, lang) {
     check("вопрос отправлен — «опубликуют после проверки»", !!(await page.$(".mt-sent")));
     await shot(page, `${tag}-r-sent`);
 
-    // Прошедшая встреча: итоги, поручения, «просрочено», связь, ответы
-    await page.click(".mt-rows .mt-row");
+    // Прошедшая встреча: итоги, поручения, «просрочено», связь, ответы (строка с фазой «прошла» — в демо-мире выше неё
+    // может стоять другая предстоящая встреча)
+    await page.click('.mt-rows .mt-row[data-phase="held"]');
     await page.waitForSelector(".mt-dhead", { timeout: 20000 });
     await sleep(400);
     const detail = await page.innerText(".mt-detail");
     check("встреча: «Итоги встречи» и «Поручения»", /Итоги встречи/.test(detail) && /Поручения/.test(detail));
     const orders = await page.$$(".mt-order");
     check("поручения со статусом словом и сроком", orders.length >= 4 && /Выполнено|В работе|Не начато/.test(detail) && /срок/.test(detail), orders.length);
-    check("просроченное поручение помечено", /просрочено/.test(detail));
+    // «просрочено» — ровно у тех поручений, у которых сервис отдал overdue (в наборе R13 такое есть, в демо-мире — может не быть)
+    const late = await page.evaluate(async () => {
+      const id = decodeURIComponent((location.hash.split("/")[1] || ""));
+      const r = await fetch("/api/civic/v2/meetings/" + encodeURIComponent(id), { credentials: "same-origin" });
+      const b = await r.json(); const m = (b.data || b).meeting || {};
+      return { api: (m.orders || []).filter((o) => o.overdue).length, ui: document.querySelectorAll(".mt-order.is-overdue").length };
+    });
+    check("просроченные поручения помечены (как в ответе сервиса)", late.api === late.ui && (late.api === 0 || /просрочено/.test(detail)), late);
     check("связь поручения с обращением видна", !!(await page.$(".mt-linkchip")));
     check("ответы на встрече — цитатой", !!(await page.$(".mt-answer")));
     await sizeAudit(page, `${tag} прошедшая встреча`);
@@ -281,14 +296,20 @@ async function staffFlow(browser, w, h, lang) {
     await page.waitForFunction((n) => document.querySelectorAll(".mt-order").length === n + 1, n0, { timeout: 15000 }).catch(() => null);
     check("поручение добавлено", (await page.$$(".mt-order")).length === n0 + 1);
     await sleep(600);
-    check("у нового поручения видно место обращения", /Обращение: Остановка «Хан Шатыр»/.test(await page.innerText(".mt-orders")));
+    // место обращения — любое (первое по числу сообщивших в районе: в наборе R13 «Хан Шатыр», в демо-мире — своё)
+    check("у нового поручения видно место обращения", /Обращение: [^·\n]{3,}/.test(await page.innerText(".mt-orders")));
+    // Статус из строки: просроченное → «Выполнено» (снимается «просрочено»); нет просроченных (демо-мир) — любое невыполненное.
     const overdueBefore = (await page.$$(".mt-order.is-overdue")).length;
-    const sel = await page.$(".mt-order.is-overdue .mt-select--sm");
+    const doneBefore = (await page.$$(".mt-order.is-done")).length;
+    const sel = (await page.$(".mt-order.is-overdue .mt-select--sm")) || (await page.$(".mt-order:not(.is-done) .mt-select--sm"));
     if (sel) {
+      const wasLate = overdueBefore > 0;
       await sel.selectOption("done");
-      await page.waitForFunction((n) => document.querySelectorAll(".mt-order.is-overdue").length === n - 1, overdueBefore, { timeout: 15000 }).catch(() => null);
-      check("статус из строки: «Выполнено», «просрочено» снято", (await page.$$(".mt-order.is-overdue")).length === overdueBefore - 1);
-    } else check("статус из строки", false, "нет просроченного поручения");
+      await page.waitForFunction((n) => document.querySelectorAll(".mt-order.is-done").length === n + 1, doneBefore, { timeout: 15000 }).catch(() => null);
+      const overdueAfter = (await page.$$(".mt-order.is-overdue")).length, doneAfter = (await page.$$(".mt-order.is-done")).length;
+      check(wasLate ? "статус из строки: «Выполнено», «просрочено» снято" : "статус из строки: «Выполнено»",
+        doneAfter === doneBefore + 1 && overdueAfter === (wasLate ? overdueBefore - 1 : overdueBefore), { overdueBefore, overdueAfter, doneBefore, doneAfter });
+    } else check("статус из строки", false, "нет невыполненного поручения");
     await sleep(1200);  // после смены статуса экран перерисовывается (список и карточка) — дальше только селекторы
     const LINK = ".mt-order:last-child .mt-order__tools .mt-link";
     if (await page.$(LINK)) {

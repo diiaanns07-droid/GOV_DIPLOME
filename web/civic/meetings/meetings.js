@@ -315,6 +315,7 @@
       "ask.staff.reason.not_question": "Это жалоба — её отправляют через «Сообщить о проблеме»",
       "ask.staff.reason.duplicate": "Такой вопрос уже есть", "ask.staff.reason.other": "Другое",
       "ask.staff.pii.phone": "телефон", "ask.staff.pii.iin": "ИИН", "ask.staff.pii.email": "почта", "ask.staff.pii.card": "номер карты",
+      "ask.staff.pii.iban": "номер счёта", "ask.staff.pii.apartment": "номер квартиры", "ask.staff.pii.contact": "контакт в мессенджере",
     },
     kk: {
       "common.tag.demo": "Үлгі", "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты дерек емес",
@@ -328,6 +329,7 @@
       "ask.staff.reason.not_question": "Бұл — шағым, оны «Мәселе туралы хабарлау» арқылы жібереді",
       "ask.staff.reason.duplicate": "Мұндай сұрақ бұрыннан бар", "ask.staff.reason.other": "Басқа себеп",
       "ask.staff.pii.phone": "телефон", "ask.staff.pii.iin": "ЖСН", "ask.staff.pii.email": "электрондық пошта", "ask.staff.pii.card": "карта нөмірі",
+      "ask.staff.pii.iban": "шот нөмірі", "ask.staff.pii.apartment": "пәтер нөмірі", "ask.staff.pii.contact": "мессенджердегі байланыс",
     },
   };
   const WEEKDAYS = {  // 0 — воскресенье, как Date.getUTCDay()
@@ -1289,7 +1291,8 @@
         meta.push(tr(m.phase === "upcoming" ? "meet.staff.registered" : "meet.staff.registered_past", { n: m.registered || 0 }));
         meta.push(tr("meet.staff.questions_count", { n: (m.questions_count && m.questions_count.published) || 0 }));
       }
-      return h("button", { type: "button", class: "mt-row", "data-focus": "row-" + m.id, onclick: () => openMeeting(m.id) }, [
+      return h("button", { type: "button", class: "mt-row", "data-focus": "row-" + m.id, "data-phase": m.phase || null,
+        onclick: () => openMeeting(m.id) }, [
         dateTile(m.at, true),
         h("span", { class: "mt-row__main" }, [
           h("span", { class: "mt-row__title", text: pick(m, "title") }),
