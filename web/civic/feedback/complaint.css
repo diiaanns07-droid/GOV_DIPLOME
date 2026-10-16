@@ -397,6 +397,12 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 @keyframes bc-flash { from { background: var(--c-fill-hover, rgba(18, 26, 23, .1)); } to { background: transparent; } }
 .bc-inbox__line { padding-right: 4px; }
 .bc-inbox__status { color: inherit; }
+/* R10 B-136 (аудит П3, VISUAL_BRIEF §4 п. 10): кнопка-значок «Сменить статус» — сама 44 × 44 (было 28 и зона ::after),
+   значок 16 px по центру; отрицательные поля держат строку на прежнем месте. */
+.bc-inbox .bc-inbox__status--btn { width: 44px; height: 44px; margin: -8px; }
+/* R10 B-136: вторичный текст «Обращений» — --c-text-2 (≈ 7 : 1), а не третичный ui-kit --c-text-3 (3,2–3,6 : 1): тема строки,
+   срок, число в плашке группы. */
+.bc-inbox .bc-inbox__what, .bc-inbox .bc-inbox__meta, .bc-inbox .bc-inbox__gcount { color: var(--c-text-2, #4B5752); }
 .bc-inbox__status--btn:focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 .bc-inbox__row { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; min-height: var(--tap, 44px); padding: 0;
                  border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
@@ -675,7 +681,7 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 /* «Обращения»: части служб совместного обращения под строкой — чипы «значок · служба — статус», меню статуса части. */
 .bc-inbox__parts { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 8px; margin: 0; padding: 0 12px 8px 44px; }
 .bc-inbox__partwrap { position: relative; }
-.bc-inbox__part { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 12px; border: 0;
+.bc-inbox__part { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px; border: 0;
                   border-radius: 999px; background: var(--c-fill, rgba(18, 26, 23, .06)); color: var(--c-ink, #121A17);
                   font: inherit; font-size: var(--fs-caption, 13px); position: relative; }
 button.bc-inbox__part { cursor: pointer; }
