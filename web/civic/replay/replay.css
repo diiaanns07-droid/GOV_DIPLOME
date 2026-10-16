@@ -1,14 +1,15 @@
 /* R07 · «Хроника города» (раунд 15). Стекло на хроме (VISUAL_BRIEF п. 7), токены ui-kit R11 с запасными значениями —
    модуль выглядит так же и без ui-kit (стенд R07). Сетка 8 pt, три размера шрифта: 30 (дата), 14 (подписи), 13 (мета — не мельче 13 px: решение владельца 12 окт, проверка R10 B-112). */
-/* Место над картой: оболочка может сдвинуть полосу от своих панелей — --rp-left / --rp-right (карточка слева 388 + поля) */
-.rp-host { --rp-left: 0px; --rp-right: 0px; position: absolute; left: 0; right: 0; bottom: 0; z-index: 35; height: 0; pointer-events: none; }
+/* Место над картой: оболочка может сдвинуть полосу от своих панелей — --rp-left / --rp-right (карточка слева 388 + поля);
+   --rp-bottom — подъём над подписью карты «© OpenStreetMap», если она под полосой (replay.js placeBar) */
+.rp-host { --rp-left: 0px; --rp-right: 0px; --rp-bottom: 0px; position: absolute; left: 0; right: 0; bottom: 0; z-index: 35; height: 0; pointer-events: none; }
 .rp-root { --rp-ink: var(--c-ink, #121a17); --rp-ink-2: var(--c-text-2, #4b5752); --rp-ink-3: var(--c-text-3, #7e8a85);
   --rp-line: var(--c-line, rgba(18, 26, 23, 0.08)); --rp-fill: var(--c-fill, rgba(18, 26, 23, 0.06));
   --rp-fill-hover: var(--c-fill-hover, rgba(18, 26, 23, 0.1)); --rp-hot: var(--heat-3, #e24b4a); --rp-ok: var(--ok-mark, #3b8a2e);
   --rp-ease: var(--ease, cubic-bezier(0.22, 1, 0.36, 1)); --rp-focus: var(--c-focus, #2f7fd6);
   font-family: var(--font, "Inter", "SF Pro Text", -apple-system, "Segoe UI", system-ui, sans-serif); color: var(--rp-ink); }
 .rp-root *, .rp-root *::before, .rp-root *::after { box-sizing: border-box; }
-.rp { position: absolute; left: calc(var(--rp-left, 0px) + (100% - var(--rp-left, 0px) - var(--rp-right, 0px)) / 2); bottom: 20px;
+.rp { position: absolute; left: calc(var(--rp-left, 0px) + (100% - var(--rp-left, 0px) - var(--rp-right, 0px)) / 2); bottom: max(20px, var(--rp-bottom, 0px));
   width: min(880px, calc(100% - var(--rp-left, 0px) - var(--rp-right, 0px) - 40px)); transform: translateX(-50%); pointer-events: auto;
   animation: rp-in var(--t-slow, 250ms) var(--rp-ease) backwards; }
 .rp.rp--out { opacity: 0; transform: translate(-50%, 8px); transition: opacity 0.2s var(--rp-ease), transform 0.2s var(--rp-ease); }

@@ -82,7 +82,10 @@
   .r07-lhd:has(> .r07-x--desktop) { min-height: 0; padding-right: 0; }
 }
 .r07-filters { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
-.r07-frow { display: flex; align-items: center; gap: 8px; }
+/* Период и район — одной строкой, пока помещаются; не помещается — выбор района уходит на следующую строку (на 375
+   «30 дней» стояло вплотную к «90 дней», по-казахски «Барлық аудандар» выталкивал строку за край экрана) */
+.r07-frow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.r07-frow > .r07-seg { flex: 1 0 auto; }
 .r07-field {
   display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px;
   border: 0; border-radius: 12px; background: var(--r07-fill); color: var(--r07-ink);
@@ -111,7 +114,7 @@
 .r07-seg { position: relative; flex: 1; display: flex; padding: 0 3px; }
 .r07-seg::before { content: ""; position: absolute; inset: 3.5px 0; border-radius: 12px; background: var(--r07-fill); }
 .r07-seg > button {
-  position: relative; flex: 1; height: 44px; padding: 0; border: 0; background: none;
+  position: relative; flex: 1; height: 44px; padding: 0 6px; border: 0; background: none;   /* поля: подписи не слипаются */
   color: var(--r07-ink-2); font-size: 13px; font-weight: 500; line-height: 1.35; white-space: nowrap; cursor: pointer;
   transition: color 0.15s var(--r07-ease);
 }

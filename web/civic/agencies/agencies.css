@@ -1316,11 +1316,11 @@
     padding: 4px;
   }
   .ag-task__text {
-    flex-basis: calc(100% - 48px);
+    flex-basis: calc(100% - 52px);   /* кнопка статуса 44 px + промежуток 8 px: текст в той же строке, что и кнопка */
   }
   .ag-task__svc {
     flex-basis: 100%;
-    padding-left: 40px;
+    padding-left: 52px;               /* служба — под текстом задачи */
     white-space: normal;
   }
   .ag-svcchip {

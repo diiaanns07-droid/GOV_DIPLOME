@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+import json
 import types
 
 import pytest
@@ -265,3 +266,20 @@ def test_show_mode_keeps_protection(srv, ws):
         status, _h2, raw = request(srv, "GET", "/api/civic/v2" + _concrete(pattern) + "?show=1",
                                    headers={"Origin": f"http://127.0.0.1:{port}"})
         assert status in (401, 403, 503), (key, status, raw[:200])
+
+
+def test_demo_scenes_is_ids_only_and_read_only(srv, ws):
+    """T-R01-03: GET demo/scenes (R01, палитра Ctrl+K и режим показа) — только флаг демо-мира и id сцен синтетики:
+    без текстов, людей, устройств; POST туда — не действие (405/404), а не запись."""
+    if not any(key == "demo.scenes" for _m, _p, key in ws.V2_ROUTES):
+        not_run("в шлюзе нет GET demo/scenes (R01)")
+    status, _h, raw = request(srv, "GET", "/api/civic/v2/demo/scenes")
+    assert status == 200, (status, raw[:200])
+    body = json.loads(raw.decode("utf-8"))
+    body = body.get("data", body) if isinstance(body, dict) and isinstance(body.get("ok"), bool) else body
+    assert isinstance(body, dict) and set(body) <= {"world", "scenes"}, body
+    for value in json.dumps(body.get("scenes") or {}, ensure_ascii=False).split('"'):
+        assert len(value) <= 96 and "@" not in value, value   # id, а не текст
+    status_post, _h, _raw = request(srv, "POST", "/api/civic/v2/demo/scenes", {"scene": "x"},
+                                    headers={"Origin": f"http://127.0.0.1:{srv.server_address[1]}"})
+    assert status_post in (403, 404, 405), status_post

@@ -290,6 +290,14 @@ const openAgencies = async (page, base, tab) => {
               .filter((e) => e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1).map((e) => e.textContent.slice(0, 60)));
             check(`${tag}: вкладка ${tab}: заголовки строк и причины передач не обрезаны`, cutRows.length === 0, cutRows);
           }
+          if (tab === "crisis" && w === 375) {
+            // Строка задачи кризиса на телефоне: кнопка статуса и текст — в одной строке (служба — под текстом).
+            const split = await page.evaluate(() => [...document.querySelectorAll(".ag-task")].filter((t) => {
+              const st = t.querySelector(".ag-task__st"), tx = t.querySelector(".ag-task__text");
+              return st && tx && tx.getBoundingClientRect().top >= st.getBoundingClientRect().bottom - 1;
+            }).map((t) => (t.querySelector(".ag-task__text") || {}).textContent));
+            check(`${tag}: задачи кризиса — значок и текст в одной строке`, split.length === 0, split);
+          }
           const tabUnder44 = await tap44(page);
           check(`${tag}: вкладка ${tab}: всё нажимаемое — зона 44 px`, tabUnder44.length === 0, tabUnder44);
           const uxTab = await uxProbe(page);
