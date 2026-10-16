@@ -439,6 +439,7 @@
     const state = {
       status: "loading", data: null, error: null, filters: { district: "", service: "" }, shift: 0,
       selected: null, popover: null, destroyed: false, seq: 0,
+      raised: null,  // конфликт, чьи строки лента уже подняла наверх (поднимаем один раз на выбор, не на каждую перерисовку)
     };
     rootEl.classList.add("wcal", "bk-app");
     rootEl.setAttribute("data-wcal", "1");
@@ -785,10 +786,27 @@
         fitHeight(wrap);
         const g = sel && geom.get(sel.works[0]);
         const target = g ? g.x0 - 80 : today >= from ? x(today) - 120 : 0;
-        if (wrap.scrollWidth > wrap.clientWidth) wrap.scrollLeft = Math.max(0, target);
-        if (g && g.rowTop > wrap.clientHeight - 80) wrap.scrollTop = Math.max(0, g.rowTop - 40);
+        if (wrap.scrollWidth > wrap.clientWidth) jump(wrap, Math.max(0, target), null);
+        // Выбрали конфликт (открытие, сцена, «‹ ›», чип) — его строки вверху ленты, сразу под шапкой месяцев: обе полосы и
+        // связь видны целиком, а не у нижнего края (в ролике R10 сцены 8 их закрывал субтитр). Один раз на выбор:
+        // перерисовка с тем же выбором (ширина листа, данные) ленту не дёргает.
+        if (sel && state.raised !== sel.id) {
+          const tops = sel.works.map((id) => geom.get(id)).filter(Boolean).map((q) => q.rowTop);
+          if (tops.length) {
+            state.raised = sel.id;
+            jump(wrap, null, Math.min(Math.max(0, Math.min(...tops)), Math.max(0, wrap.scrollHeight - wrap.clientHeight)));
+          }
+        }
       });
       return wrap;
+    }
+    // Прокрутка ленты кодом — сразу, без плавной (CSS scroll-behavior: smooth — для прокрутки к чипу): плавную прерывает
+    // смена высоты ленты (fitHeight) и перерисовка (оболочка дважды присылает язык), и лента застревала в начале.
+    function jump(el, left, top) {
+      el.style.scrollBehavior = "auto";
+      if (left !== null) el.scrollLeft = left;
+      if (top !== null) el.scrollTop = top;
+      el.style.scrollBehavior = "";
     }
     function fitHeight(wrap) {
       const r = wrap.getBoundingClientRect();
@@ -1059,10 +1077,11 @@
       }
       rootEl.replaceChildren(...parts);
       rootEl.toggleAttribute("aria-busy", state.status === "loading");
-      if (keep && state.status === "ready") {
-        const tl = rootEl.querySelector(".wcal-tl");
-        if (tl && !active) { tl.scrollLeft = keep.left; tl.scrollTop = keep.top; }
-      }
+      const tl = state.status === "ready" ? rootEl.querySelector(".wcal-tl") : null;
+      if (tl && keep && !active) jump(tl, keep.left, keep.top);
+      // Лента без прежней прокрутки (фокус был внутри, лист раздела поменял ширину) — снова поднять строки выбранного
+      // конфликта (rAF в timeline), а не оставить её в начале списка.
+      else if (tl) state.raised = null;
       if (active) restoreFocus(active);
       if (reopen && state.status === "ready") {
         const w = state.data.works.find((x) => x.id === reopen);

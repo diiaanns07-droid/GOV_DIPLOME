@@ -16,7 +16,8 @@
 
 /* ---------- шапка ---------- */
 .wcal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4, 16px); flex-wrap: wrap; }
-.wcal-head__title { min-width: 0; flex: 1 1 360px; }
+/* 320: на 1366 фильтры «Район · Служба · период» (≈ 664 px) стоят в одной строке с «39 работ…» — лента не опускается */
+.wcal-head__title { min-width: 0; flex: 1 1 320px; }
 .wcal-title { margin: 0; font-size: var(--fs-title, 19px); font-weight: var(--fw-semi, 600); line-height: var(--lh-head, 1.25);
   letter-spacing: var(--ls-title, -0.01em); }
 .wcal-meta { margin: 6px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; font-size: var(--fs-small, 14px);
@@ -196,7 +197,9 @@
 .wcal-add:hover { background: var(--c-fill, rgba(18, 26, 23, .06)); }
 .wcal-add .ic { width: 16px; height: 16px; }
 
-.wcal-cchip { position: absolute; z-index: 4; transform: translate(-50%, -50%); display: inline-flex; align-items: center; height: 44px;
+/* Чип — над полосами (1) и связями (2, раньше в разметке), но под липкими названиями улиц (3) и шапкой месяцев (4):
+   прокрученная лента не показывает чип поверх шапки или колонки улиц. */
+.wcal-cchip { position: absolute; z-index: 2; transform: translate(-50%, -50%); display: inline-flex; align-items: center; height: 44px;
   padding: 0; margin: 0; border: 0; background: transparent; font: inherit; cursor: pointer; }  /* зона нажатия 44 px (п. 10) */
 .wcal-cchip__pill { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border: 1.5px solid var(--c-danger, #b3362e);
   border-radius: var(--r-pill, 999px); background: #fff; color: var(--c-danger, #b3362e); font-size: var(--fs-small, 14px);
