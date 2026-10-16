@@ -58,8 +58,9 @@ def main() -> None:
         "command": "tests/civic/R13/meetings/meetings_browser.cjs --full (BIRGE_URL стенда)",
         "sha": git("rev-parse", args.browser_sha or code),
         "env": args.browser_env + ", CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
-        "note": "1366/1024/375 × ru/kk, все состояния; замер R10 B-118: зоны нажатия ≥ 44 px и текст ≥ 13 px на списке, "
-                "встрече, вкладке «Вопросы» и у акимата; кадры screens/ — с этого прогона",
+        "note": "1366/1024/375 × ru/kk, все состояния; замер R10 B-118 и VISUAL_BRIEF §4 п. 3: зоны нажатия ≥ 44 px, текст "
+                "≥ 13 px, не больше 3 размеров шрифта (13 / 15 / 19) на списке, встрече, вкладке «Вопросы», у акимата — "
+                "список, новая встреча, форма поручения; кадры screens/ — с этого прогона",
         "quick_run": run(args.browser_quick, "meetings_browser.cjs (1366/375 × ru/kk)", "быстрый прогон на свежей базе"),
         "regress_final4": run(args.regress, "meetings_browser.cjs (1366/375 × ru/kk)",
                               "второй стенд: FINAL-4 e91acb69 + патчи R13 (лист слева), свежая база")}
@@ -79,7 +80,8 @@ def main() -> None:
                                        "command": "python3 -m pytest -q tests/civic/R13"},
             "browser_meetings": browser,
             "browser_qa": run(args.qa, "tests/civic/R13/qa/qa_browser.cjs (BIRGE_REPO стенда)",
-                              "«Вопрос акиму»: 375/1366 × ru/kk, житель и акимат; после правок B-118 (44 px, 13 px)"),
+                              "«Вопрос акиму»: 375/1366 × ru/kk, житель и акимат; 44 px, 13 px, не больше 3 размеров "
+                              "шрифта (житель, «С ответом», очередь, отказ, ответ)"),
             "r08_contract_on_r08_branch": {"status": "PASS", "note": "R08 claude/inspiring-johnson-j7wksj @ eca77d34: "
                                            "neighbors.Neighbors + blocks.forecast / meetings_from_block поверх модулей R13 — "
                                            "прогноз source r13, 5 пунктов с причиной (reasons[0]); встречи source r13 (ручной прогон)"},
@@ -100,7 +102,7 @@ def main() -> None:
                                             "R08 test_r08_board.py + test_r08_world.py, R15 test_r15_qa.py + round15 notify/meetings, tests/civic/R13"},
             "r15_meetings_tests": {"status": "PASS", "passed": 27, "total": 27,
                                    "note": "tests/civic/R15/round15/test_r15_round15_meetings.py R15 @ 19748bff на коде R13 этой поставки"},
-            "browser_meetings_demo_world": {"status": "PASS", "passed": 90, "total": 90,
+            "browser_meetings_demo_world": {"status": "PASS", "passed": 115, "total": 115,
                                             "note": "meetings_browser.cjs на сборке R01 B0.15 (735a40b5) с CIVIC_DEMO_WORLD=1 (мир R02: "
                                             "R13 24 записи): проверки не зависят от набора данных"},
             "demo_world_on_r01_build": {"status": "PASS", "note": "сборка R01 c9069723, CIVIC_DEMO_WORLD=1: оболочка засевает R13 "

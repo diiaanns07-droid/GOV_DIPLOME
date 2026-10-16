@@ -47,6 +47,11 @@
    "detail": null
   },
   {
+   "name": "1366-ru список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
    "name": "«Приду» → число +1, кнопка нажата",
    "status": "PASS",
    "detail": {
@@ -126,6 +131,11 @@
    "detail": null
   },
   {
+   "name": "1366-ru прошедшая встреча: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, back, SPAN); 15 (mt-sec__title, mt-result__text, bk-order__text); 19 (title, B, dtitle)"
+  },
+  {
    "name": "Esc — назад к списку встреч, раздел не закрыт",
    "status": "PASS",
    "detail": null
@@ -149,6 +159,11 @@
    "name": "1366-ru вкладка «Вопросы»: текст не меньше 13 px",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "1366-ru вкладка «Вопросы»: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, qa__rule, qa-seg__label); 15 (new, qa-card__text); 19 (title)"
   },
   {
    "name": "«На карте» → карта с целью встречи",
@@ -204,6 +219,36 @@
    "detail": null
   },
   {
+   "name": "1366-ru список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
+  },
+  {
+   "name": "1366-ru новая встреча: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru новая встреча: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru новая встреча: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, back, bk-field__hint); 15 (bk-field__label, create, create-cancel); 19 (title, ntitle)"
+  },
+  {
    "name": "новая встреча создана и открыта (место из карты — «На карте»)",
    "status": "PASS",
    "detail": "Все встречи\n23\nокт\nВстреча акима района Нура с жителями\n\nпятница, 23 окт, 18:30–20:00\nДвор: Eco Park\nНа карте\nВедёт аким"
@@ -222,6 +267,21 @@
    "name": "выбор обращения района подставил номер записи",
    "status": "PASS",
    "detail": "c-demo4eca27874085ec47"
+  },
+  {
+   "name": "1366-ru форма поручения: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru форма поручения: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru форма поручения: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, back, SPAN); 15 (bk-field__label, order-save, order-cancel); 19 (title, B, dtitle)"
   },
   {
    "name": "поручение добавлено",
@@ -246,12 +306,12 @@
   {
    "name": "связь с проектом: название из списка района",
    "status": "PASS",
-   "detail": "Проект: Павильон на остановке «Жағалау-3»"
+   "detail": "Проект: Спортплощадка в микрорайоне Жагалау"
   },
   {
    "name": "номер записи — только в подсказке",
    "status": "PASS",
-   "detail": "Номер записи: p-faf6d3e63d4b"
+   "detail": "Номер записи: p-f88e0a5b4f76"
   },
   {
    "name": "1366-ru встреча (акимат): зоны нажатия не меньше 44 px",
@@ -262,6 +322,11 @@
    "name": "1366-ru встреча (акимат): текст не меньше 13 px",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "1366-ru встреча (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, back, SPAN); 15 (add-order, mt-sec__title, bk-order__text); 19 (title, B, dtitle)"
   },
   {
    "name": "итог встречи обновлён",
@@ -324,6 +389,11 @@
    "detail": null
   },
   {
+   "name": "1366-kk список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
    "name": "1366-kk нет ошибок JS",
    "status": "PASS",
    "detail": []
@@ -367,6 +437,21 @@
    "name": "1366-kk после входа — «Новая встреча»",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "1366-kk список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
   },
   {
    "name": "1366-kk акимат без ошибок JS",
@@ -419,6 +504,11 @@
    "detail": null
   },
   {
+   "name": "1024-ru список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
    "name": "1024-ru нет ошибок JS",
    "status": "PASS",
    "detail": []
@@ -462,6 +552,21 @@
    "name": "1024-ru после входа — «Новая встреча»",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "1024-ru список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
   },
   {
    "name": "1024-ru акимат без ошибок JS",
@@ -514,6 +619,11 @@
    "detail": null
   },
   {
+   "name": "1024-kk список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
    "name": "1024-kk нет ошибок JS",
    "status": "PASS",
    "detail": []
@@ -557,6 +667,21 @@
    "name": "1024-kk после входа — «Новая встреча»",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "1024-kk список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
   },
   {
    "name": "1024-kk акимат без ошибок JS",
@@ -609,6 +734,11 @@
    "detail": null
   },
   {
+   "name": "375-ru список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
    "name": "375-ru нет ошибок JS",
    "status": "PASS",
    "detail": []
@@ -652,6 +782,21 @@
    "name": "375-ru после входа — «Новая встреча»",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "375-ru список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
   },
   {
    "name": "375-ru акимат без ошибок JS",
@@ -704,6 +849,11 @@
    "detail": null
   },
   {
+   "name": "375-kk список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
    "name": "375-kk нет ошибок JS",
    "status": "PASS",
    "detail": []
@@ -747,6 +897,21 @@
    "name": "375-kk после входа — «Новая встреча»",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "375-kk список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
   },
   {
    "name": "375-kk акимат без ошибок JS",
@@ -796,5 +961,5 @@
   "375-kk-r-error.png",
   "375-kk-a-list.png"
  ],
- "build": "R01 claude/brave-fermi-nhzetj @ 735a40b5 (B0.15: экран-колонка 720 px) + модули R13 @ d129e2ec"
+ "build": "R01 claude/brave-fermi-nhzetj @ 735a40b5 (B0.15: экран-колонка 720 px) + модули R13 @ 9ca9bc72"
 }
