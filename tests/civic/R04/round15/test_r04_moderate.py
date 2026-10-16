@@ -208,3 +208,22 @@ def test_speed_under_5ms():
         times.append((time.perf_counter() - t0) * 1000)
     times.sort()
     assert times[int(0.95 * (len(times) - 1))] < 5
+
+
+@pytest.mark.parametrize("text, public, kinds", [
+    # П3 (разбор пачки): номер с пометкой в скобках и два номера подряд склеивались в одну «не номер» цепочку.
+    ("Звоните 87011234567 (1)", "Звоните *** (1)", {"phone"}),
+    ("Мой ИИН 880101300123 (3)", "Мой ИИН *** (3)", {"iin"}),
+    ("тел 87011234567 (12)", "тел *** (12)", {"phone"}),
+    ("8 701 123 45 67 8 701 765 43 21", "*** ***", {"phone"}),
+    ("87011234567 87017654321", "*** ***", {"phone"}),
+])
+def test_number_inside_a_longer_chain(text, public, kinds):
+    res = moderate(text)
+    assert res["text_public"] == public and {f["kind"] for f in res["flags"]} == kinds
+
+
+@pytest.mark.parametrize("text", ["автобусы 70 71 72 73 74 75 76 77 78 79 80", "план 2025-2029 (2025-2026 годы)",
+                                  "дома 15 17 18 20 21 22 23 24 25 26 27"])
+def test_chain_split_keeps_lists_and_years(text):
+    assert moderate(text)["text_public"] == text

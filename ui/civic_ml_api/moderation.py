@@ -37,7 +37,8 @@ import unicodedata
 
 from ui.civic_ml_api import profanity
 
-VERSION = "r04-moderate-3"   # 2: перечень коротких чисел — не номер; 3: кроме цифр номера Казахстана
+VERSION = "r04-moderate-4"   # 2: перечень коротких чисел — не номер; 3: кроме цифр номера Казахстана;
+                             # 4: номер внутри цепочки — «87011234567 (1)», два телефона подряд (П3)
 MAX_TEXT = 5000
 MASK = "***"
 
@@ -184,6 +185,49 @@ def _classify_run(raw: str, labeled: bool = False) -> str | None:
     return None
 
 
+_RUN_GROUP = re.compile(r"\+?\d+")
+
+
+def _split_run(text: str, start: int, end: int, labeled: bool) -> list[tuple[int, int, str]]:
+    """Цепочка целиком — не номер, но номер внутри (разбор пачки, П3): «87011234567 (1)» — номер и пометка в скобках,
+    «8 701 123 45 67 8 701 765 43 21» — два телефона подряд. Делим по скобке, а цепочку длиннее 19 цифр — на подряд
+    идущие группы, из которых хотя бы одна длиннее 2 цифр (перечень «70 71 72 73 …» номером не становится)."""
+    raw = text[start:end]
+    out: list[tuple[int, int, str]] = []
+    if "(" in raw or ")" in raw:
+        pos = start
+        for part in re.split(r"[()]", raw):
+            s, e = pos, pos + len(part)
+            pos = e + 1
+            while s < e and not (text[s].isdigit() or text[s] == "+"):
+                s += 1
+            while e > s and not text[e - 1].isdigit():
+                e -= 1
+            kind = _classify_run(text[s:e], labeled=labeled) if e > s else None
+            if kind:
+                out.append((s, e, kind))
+        return out
+    if len(ascii_digits(raw)) <= 19:
+        return out
+    groups = [(m.start() + start, m.end() + start) for m in _RUN_GROUP.finditer(raw)]
+    taken = [False] * len(groups)
+    for wanted in (("phone",), ("iin", "card")):        # сначала телефоны: «8 701 … 8 701 …» — два номера, не карта
+        i = 0
+        while i < len(groups):
+            for j in range(len(groups), i, -1):
+                if (i == 0 and j == len(groups)) or any(taken[i:j]) or all(b - a <= 2 for a, b in groups[i:j]):
+                    continue
+                kind = _classify_run(text[groups[i][0]:groups[j - 1][1]], labeled=labeled)
+                if kind in wanted:
+                    out.append((groups[i][0], groups[j - 1][1], kind))
+                    taken[i:j] = [True] * (j - i)
+                    i = j
+                    break
+            else:
+                i += 1
+    return sorted(out)
+
+
 def _pii_spans(text: str) -> list[tuple[int, int, str]]:
     """[(start, end, kind)] личных данных в исходном тексте, без пересечений (раньше найденное важнее)."""
     spans: list[tuple[int, int, str]] = []
@@ -213,9 +257,13 @@ def _pii_spans(text: str) -> list[tuple[int, int, str]]:
         start, end = m.start(), m.end()
         while end > start and text[end - 1] in " -(\t\xa0":
             end -= 1
-        kind = _classify_run(text[start:end], labeled=bool(_LABEL_BEFORE.search(text[max(0, start - 16):start])))
+        labeled = bool(_LABEL_BEFORE.search(text[max(0, start - 16):start]))
+        kind = _classify_run(text[start:end], labeled=labeled)
         if kind:
             add(start, end, kind)
+        else:
+            for s, e, k in _split_run(text, start, end, labeled):
+                add(s, e, k)
         del raw
     for m in _APARTMENT.finditer(text):
         if m.group("num"):

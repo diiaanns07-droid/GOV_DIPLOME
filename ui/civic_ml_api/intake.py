@@ -601,18 +601,23 @@ def _task(cluster: list[dict], names: dict) -> dict:
                  "name_kk": (names.get(s["service"]) or {}).get("kk") or s.get("name_kk") or s["service"]}
                 for s in routed.get("services") or []]
     people = len(cluster)
-    why_ru = [routed.get("why_ru") or ""]
-    why_kk = [routed.get("why_kk") or ""]
+    # «Почему так» по частям (экран показывает их строками) и одной строкой why_ru / why_kk.
+    parts = {"services": [routed.get("why_ru") or "", routed.get("why_kk") or ""]}
     if place:
-        why_ru.append(f"Место: {place['label_ru']} — названо в тексте.")
-        why_kk.append(f"Орны: {place['label_kk']} — мәтінде аталған.")
+        parts["place"] = [f"{place['label_ru']} — названо в тексте.", f"{place['label_kk']} — мәтінде аталған."]
     else:
-        why_ru.append("Место в тексте не названо — уточните адрес.")
-        why_kk.append("Мәтінде орын аталмаған — мекенжайды нақтылаңыз.")
+        parts["place"] = ["Место в тексте не названо — уточните адрес.", "Мәтінде орын аталмаған — мекенжайды нақтылаңыз."]
+    parts["repeats"] = None
     if people > 1:
         p_ru, p_kk = _people_words(people)
-        why_ru.append(f"Склеено {p_ru}: одно место, одна категория, похожий текст.")
-        why_kk.append(f"{p_kk} біріктірілді: бір орын, бір санат, ұқсас мәтін.")
+        parts["repeats"] = [f"Склеено {p_ru}: одно место, одна категория, похожий текст.",
+                            f"{p_kk} біріктірілді: бір орын, бір санат, ұқсас мәтін."]
+    parts["urgent"] = [urgent[1] + ".", urgent[2] + "."] if urgent else None
+    why_ru = [parts["services"][0], "Место: " + parts["place"][0] if place else parts["place"][0]]
+    why_kk = [parts["services"][1], "Орны: " + parts["place"][1] if place else parts["place"][1]]
+    if parts["repeats"]:
+        why_ru.append(parts["repeats"][0])
+        why_kk.append(parts["repeats"][1])
     if urgent:
         why_ru.append(f"Срочно: {urgent[1][:1].lower()}{urgent[1][1:]}.")
         why_kk.append(f"Шұғыл: {urgent[2][:1].lower()}{urgent[2][1:]}.")
@@ -628,6 +633,7 @@ def _task(cluster: list[dict], names: dict) -> dict:
         "category": category, "subtopic": subtopic,
         "services": services, "joint": bool(routed.get("joint")),
         "why_ru": " ".join(w for w in why_ru if w), "why_kk": " ".join(w for w in why_kk if w),
+        "why_parts": {k: ({"ru": v[0], "kk": v[1]} if v else None) for k, v in parts.items()},
         "target": target, "point": place["point"] if place else None,
         "district": place["district"] if place else None,
         "address_text": place["label_ru"] if place else "",

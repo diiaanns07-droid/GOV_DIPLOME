@@ -242,6 +242,17 @@ tests/civic/R04/intake/. Всё в процессе, без сети. Числа
       window.BirgeIntake.mount(root, {api, apiBase}) -> {setLang, destroy}; api.v2(method, path, body) — клиент шлюза
       (CSRF сотрудника ставит сам), без него — fetch на apiBase (/api/civic/v2) с CivicShell.csrfToken().
   Ctrl+K «Сцена 0 · ИИ-разбор» — первая в режиме показа (П3).
+  Готовый patch: patches/r01_intake_routes.patch (на FINAL-5.1 e8d6cae6, `git apply` чисто): V2_ROUTES + V2_HANDLERS
+  (ml.intake_analyze / ml.intake_sample / ml.intake_commit, staff=True), arguments() -> {"body": body}, предел тела
+  INTAKE_MAX_BODY = 320 КБ только для /api/civic/v2/intake/analyze (остальным — прежние 64 КБ), CIVIC_ASSETS
+  intake/intake.js + intake.css, web/index.html — <link> и <script defer> после analyst.js. Проверено на стенде
+  (FINAL-5.1 + patch + код R04): tests/civic/R04/intake/http_check_intake.py — 19/19 (вход, CSRF, 403, 400, 413/закрытие
+  > 640 КБ, 300 текстов ≈ 0,3 с по HTTP, commit = ready, повтор без дублей, запись R09 demo, ЛД нет).
+  Раздел оболочки: intake.js сам вызывает BirgeShell.registerScreen({id: "intake", modes: ["akimat"], title {ru, kk}})
+  — пункт «Ещё → Разбор обращений» и адрес #intake появляются без правки birge.js. Если R01 / R11 добавят SCREENS.intake
+  (global ["BirgeIntake"], key меню) — регистрация совместима (известный id берёт режимы и ключ из SCREENS).
+  opts оболочки, которые экран использует: api.v2, openTarget(kind, id) («Показать на карте»), openSection("inbox", id)
+  («Открыть «Обращения»» и «Открыть B-0744»). Esc сворачивает «Почему так» и не уходит в оболочку, пока что-то раскрыто.
 9.3 R09 — запись задач (проверено на ComplaintStore этой ветки + R12 target_geometry: 16 из 16 задач примера, цели не
   «примерные», повтор — 0 новых): intake_commit пишет ТОЛЬКО функциями R09, в процессе (хранилище — connect_store):
   - store.create(payload, device, demo=<пример>) — запись по главному тексту задачи. payload: text (после moderate),
@@ -259,6 +270,11 @@ tests/civic/R04/intake/. Всё в процессе, без сети. Числа
 9.4 R02 — набор «обращения за ночь» (к 17 окт 02:00): удобно data/civic/astana/demo-world/intake_night_v1.json
   {texts: [{id, text, lang}], gold: [{id, category, services: [id…], target_id | null, group, urgent}], demo: true}.
   R04 читает его, если файл есть; иначе — своя фикстура (ui/civic_ml_api/intake_sample_r04.json, 42 текста).
-9.5 R11 — ключи экрана intake.* (ru / kk; список — в intake.js, KEYS), значок «ИИ» (пока i-sparkle), место в меню.
+9.5 R11 — ключи экрана intake.* (ru / kk; список и тексты — web/civic/intake/intake.js, KEYS; словарь главнее: есть
+  ключ в BirgeI18n — берётся он), значок «ИИ» (пока i-sparkle; другое имя — одна строка AI_ICON в intake.js), место в
+  меню (сейчас «Ещё → Разбор обращений», предложение П3 — кнопка «Разобрать пачку» в «Обращениях» + Ctrl+K). Из общих
+  ключей экран берёт common.action.show_on_map, common.tag.demo(_hint), common.state.network_*, joint.role.*,
+  district.*. Термины kk для вычитки: «ЖИ-талдау», «ЖИ кеңесі — тексеріңіз», «шұғыл», «қайталау біріктірілді»,
+  «Мекенжайды нақтылау», «тапсырма».
 9.6 R15 — проверить: только сотрудник; пределы 500 / 300 КБ; тексты не уходят наружу и не пишутся в журнал; на
   экране итога и в задачах — только тексты после moderate().
