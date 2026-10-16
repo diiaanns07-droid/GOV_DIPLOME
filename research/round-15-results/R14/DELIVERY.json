@@ -1,0 +1,32 @@
+{
+  "role": "R14",
+  "branch": "claude/clever-hypatia-q6ts4g",
+  "base_sha": "e91acb69",
+  "restored_from": "claude/r14-R14@19715dbe (docs в FINAL-4)",
+  "code_sha": "63f4c9bc",
+  "tested_sha": "63f4c9bc",
+  "push_status": "OK",
+  "changed_paths": [
+    "docs/gton/SPEECH.md",
+    "docs/gton/JURY_FAQ.md",
+    "docs/gton/NUMBERS.md",
+    "docs/gton/VIDEO_SCRIPT.md",
+    "docs/gton/video_subtitles.json",
+    "docs/birge/RUNBOOK.md",
+    "docs/birge/CONTINUE_WITH_GPT.md",
+    "research/round-15-results/R14/"
+  ],
+  "tests": {
+    "video_subtitles.json": "PASS — валидный JSON, те же 25 ключей текста, что у черновика R10 (+ _about); длина каждой строки ≤ 150 знаков",
+    "числа речи и FAQ": "PASS (ручная сверка) — каждое число раунда 15 есть в FACTS.md с веткой и SHA; F1 на FINAL-5 — сверить",
+    "речь по секундомеру": "NOT_RUN — прогнать вслух на репетиции (цель ≤ 5:00)",
+    "казахский": "NOT_RUN — строки субтитров с ✎ ждут вычитки R11 / владельца"
+  },
+  "screens": [],
+  "known_limits": [
+    "Сжатый R14 по поправке П2: главы диплома (§2–§5, 07_aprobatsiya, 08_ekonomika) и SLIDES.md не сделаны — задачи 3 и 5 промпта, после раунда",
+    "Числа взяты на B0.19 и поставках ролей 16 окт ~10:30; после FINAL-5 сверить F1 и приёмку R10",
+    "Новые казахские фразы субтитров (s2, s4, agencies, crisis, final) — без вычитки носителем"
+  ],
+  "next_step": "R10: ролик с --subtitles docs/gton/video_subtitles.json; R01: взять docs/gton и docs/birge из ветки пакета в FINAL-5.1; после раунда — главы диплома по R14.txt"
+}
