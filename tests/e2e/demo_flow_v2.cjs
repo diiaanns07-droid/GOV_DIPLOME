@@ -799,16 +799,16 @@ async function scene0Flow(browser, base, [w, h], lang, staffAcc, timing) {
     if (rowBtn) {
       await rowBtn.click({ timeout: 4000 }).catch(() => null); await sleep(700);
       const why = await page.evaluate((sel) => { const r = document.querySelector(sel); const w = r && [...r.querySelectorAll(".bi-why, [id*=why]")].find((e) => !e.hidden && e.getClientRects().length);
-        return w ? (w.innerText || "").trim().replace(/\s+/g, " ").slice(0, 160) : null; }, SEL).catch(() => null);
+        return w ? (w.innerText || "").trim().replace(/\s+/g, " ").slice(0, 1200) : null; }, SEL).catch(() => null);
       const whyTitle = T(dict, "intake.why", lang === "kk" ? "Неге солай" : "Почему так");
-      addSoft(layer, "0", "строка задачи раскрывает «Почему так» (службы, место, повторы)", !!why && why.includes(whyTitle), { why }, OWN);
+      addSoft(layer, "0", "строка задачи раскрывает «Почему так» (службы, место, повторы)", !!why && why.includes(whyTitle), { why: why && why.slice(0, 160) }, OWN);
       // В объяснении — данные задачи: название ведущей службы и место (у задачи с местом) — из ответа разбора.
       const t0task = tasks.find((x) => x.id === (firstRow && firstRow.id)) || tasks[0] || {};
       const svc0 = ((t0task.services || [])[0] || {})[lang === "kk" ? "name_kk" : "name_ru"] || "";
       const place0 = t0task.target ? (t0task.target[lang === "kk" ? "label_kk" : "label_ru"] || "") : "";
       const placeCore = place0.replace(/^(Двор|Остановка|Участок|Аула|Аялдама)[:\s]+/i, "").replace(/[«»"]/g, "").slice(0, 18);
       addSoft(layer, "0", "«Почему так» называет службу и место задачи (данные ответа)", !!why && (!svc0 || why.includes(svc0)) && (!placeCore || why.replace(/[«»"]/g, "").includes(placeCore)),
-        { service: svc0, place: place0, why }, OWN + " + R11");
+        { service: svc0, place: place0, why: why && why.slice(0, 200) }, OWN + " + R11");
       const mapRe = new RegExp(esc(T(dict, "common.action.show_on_map", lang === "kk" ? "Картадан көрсету" : "Показать на карте")), "i");
       addSoft(layer, "0", "«Показать на карте» в объяснении задачи с местом", !!(await inRoot(mapRe)), null, OWN);
       const am = await aiMark(page, lang === "kk" ? /Қызметтер:/ : /Службы:/, SEL).catch(() => null);
