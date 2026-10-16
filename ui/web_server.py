@@ -161,6 +161,9 @@ ASSETS["/civic/board/"] = ASSETS["/civic/board/index.html"]
 # A route whose module is not delivered answers 503 — it is never silently open.
 CIVIC_PREFIX = "/api/civic/v1"
 CIVIC_MAX_BODY = 64 * 1024
+# Поправка П3 (раунд 15+): «ИИ-разбор пачки обращений» R04 принимает до 500 текстов / 300 КБ за раз — свой предел тела
+# только у этого адреса v2 (300 КБ текстов + JSON-обрамление); точные пределы проверяет модуль R04. Остальным — 64 КБ.
+CIVIC_V2_BODY_LIMITS = {"/intake/analyze": 320 * 1024}
 CIVIC_MAX_QUERY = 2048
 CIVIC_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")  # \Z: «$» пропускает «id\n» (R15-S36)
 # Order matters: /objects/{id}/feedback must win over /objects/{id}.
@@ -274,6 +277,11 @@ V2_RATE_LIMITS = {
     "together.yards.captain": ((3600, 10, False),),   # R16: имя «старшего по двору» — редко
     "meetings.register": ((60, 20, False), (86400, 20, True)),   # R13 INTEGRATION §2
     "meetings.question": ((60, 3, False), (3600, 20, False), (86400, 30, False)),
+    # П3, R04 «ИИ-разбор пачки» (только сотрудник): разбор — до 500 текстов и нескольких секунд счёта за раз; 30 в минуту
+    # и 300 в час с адреса хватает показу и приёмке R10, но не дают занять сервер разбором по кругу. Лимит считается
+    # до проверки сотрудника — и аноним с телом 320 КБ упирается в него.
+    "intake.analyze": ((60, 30, False), (3600, 300, False)),
+    "intake.commit": ((60, 20, False), (3600, 200, False)),
     "ml.route": ((60, 60, False),),
     "ml.text_check": ((60, 60, False),),
     "notifications.read": ((60, 60, False),),
@@ -855,6 +863,11 @@ V2_ROUTES_ROUND15 = (
     ("POST", ("ideas", "{id}", "to-initiative"), "ideas.to_initiative"),
     # R01: id сцен 7–9 демо-мира для палитры Ctrl+K и режима показа (?show=1)
     ("GET", ("demo", "scenes"), "demo.scenes"),
+    # Поправка П3 (16 окт): R04 «ИИ-разбор пачки обращений» — сцена 0 демо (ui.civic_ml_api.intake, сервис).
+    # Только сотрудник; задачи в «Обращения» пишет сам R04 функциями R09 (в процессе), шлюз жалоб не трогает.
+    ("POST", ("intake", "analyze"), "intake.analyze"),
+    ("GET", ("intake", "sample"), "intake.sample"),
+    ("POST", ("intake", "commit"), "intake.commit"),
 )
 V2_ROUTES = V2_ROUTES_ROUND14 + V2_ROUTES_ROUND15
 # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
@@ -919,6 +932,7 @@ _TOGETHER = ("ui.civic_together",)
 _AGENCIES = ("ui.civic_agencies",)
 _MEETINGS = ("ui.civic_meetings",)
 _R09 = ("ui.civic_feedback.v2.integration",)
+_INTAKE = ("ui.civic_ml_api.intake",)
 V2_HANDLERS_ROUND15 = {
     "together.initiatives.list": V2Handler("R16", _TOGETHER, "make_service", kind="service", query={
         "bbox": "bbox", "status": "word", "kind": "word", "yard": "id", "district": "district"}),
@@ -988,6 +1002,10 @@ V2_HANDLERS_ROUND15 = {
     "ideas.to_initiative": V2Handler("R06", ("ui.civic_store.v2",), "idea_to_initiative", staff=True),
     # Свой маршрут шлюза (kind="local"): отвечает сам CivicV2Gateway.<function>().
     "demo.scenes": V2Handler("R01", ("ui.web_server",), "scenes", kind="local"),
+    # П3: сервис R04 make_service(db_path).handle(...) отвечает целиком; шлюз требует сессию R02 (+ CSRF для POST) —
+    # и до модуля: аноним не узнаёт ничего о разборе. Нет модуля — 503 module_not_ready, как у прочих строк раунда 15.
+    **{key: V2Handler("R04", _INTAKE, "make_service", kind="service", staff=True)
+       for key in ("intake.analyze", "intake.sample", "intake.commit")},
 }
 V2_HANDLERS.update(V2_HANDLERS_ROUND15)
 
@@ -2283,11 +2301,12 @@ class Handler(BaseHTTPRequestHandler):
                 length = int(self.headers.get("Content-Length", "0"))
             except ValueError:
                 length = -1
-            if not 0 < length <= CIVIC_MAX_BODY:
-                if CIVIC_MAX_BODY < length <= CIVIC_MAX_BODY * 2:
+            limit = CIVIC_V2_BODY_LIMITS.get(rel_path, CIVIC_MAX_BODY) if v2 else CIVIC_MAX_BODY
+            if not 0 < length <= limit:
+                if limit < length <= limit * 2:
                     self.rfile.read(length)
                 self.close_connection = True
-                code = 413 if length > CIVIC_MAX_BODY else 400
+                code = 413 if length > limit else 400
                 send(error(code, "too_large" if code == 413 else "empty_body",
                            "Слишком большой запрос." if code == 413 else "Пустой запрос."))
                 return

@@ -82,6 +82,10 @@ CONTRACT = [
     ("GET", "notifications", "R06", "ui.civic_store.v2", "list_notifications"),
     ("POST", "notifications/read", "R06", "ui.civic_store.v2", "read_notifications"),
     ("POST", "ideas/{id}/to-initiative", "R06", "ui.civic_store.v2", "idea_to_initiative"),
+    # Поправка П3 (раунд 15+): R04 «ИИ-разбор пачки обращений» (сцена 0) — только сотрудник.
+    ("POST", "intake/analyze", "R04", "ui.civic_ml_api.intake", "make_service"),
+    ("GET", "intake/sample", "R04", "ui.civic_ml_api.intake", "make_service"),
+    ("POST", "intake/commit", "R04", "ui.civic_ml_api.intake", "make_service"),
 ]
 # «Кто может» из §7: сотрудник (сессия + CSRF).
 STAFF_ROUTES = {
@@ -94,6 +98,7 @@ STAFF_ROUTES = {
     ("GET", "works-calendar"), ("GET", "works-conflicts"), ("GET", "akim/board"), ("GET", "akim/week"),
     ("POST", "meetings"), ("POST", "meetings/{id}/order"), ("POST", "meetings/{id}/result"),
     ("POST", "reply-draft"), ("POST", "assistant/ask"), ("POST", "ideas/{id}/to-initiative"),
+    ("POST", "intake/analyze"), ("GET", "intake/sample"), ("POST", "intake/commit"),
 }
 # Правильный пример каждого запроса (путь с id, адрес, тело).
 SAMPLE = {
@@ -116,6 +121,8 @@ SAMPLE = {
     "assistant/ask": ("", {"question": "Сколько просрочено в Нуре?", "lang": "ru"}),
     "notifications": ("since=2026-10-11T00:00:00%2B05:00", None),
     "notifications/read": ("", {"ids": ["n-1", "n-2"]}),
+    "intake/analyze": ("", {"sample": "night"}),
+    "intake/commit": ("", {"batch_id": "b-1", "task_ids": ["t-1", "t-2"]}),
 }
 
 
@@ -242,7 +249,7 @@ class Recorder:
     def modules(self):
         services = {name: types.SimpleNamespace(make_service=self.service)
                     for name in ("ui.civic_together", "ui.civic_agencies", "ui.civic_meetings",
-                                 "ui.civic_feedback.v2.integration")}
+                                 "ui.civic_feedback.v2.integration", "ui.civic_ml_api.intake")}
         return dict(services, **{
             "engine.civic_geo.api": types.SimpleNamespace(handle=self.raw),
             "ui.civic_heat.api": types.SimpleNamespace(handle_get=self.raw),
@@ -530,6 +537,28 @@ def test_http_foreign_origin_is_refused_on_new_writes(server):
 def test_http_wrong_method_on_new_route(server):
     status, data = request(server, "PUT", "/api/civic/v2/agencies/board", {"days": 1})
     assert status == 405 and data["error"] == "method_not_allowed"
+
+
+def test_http_intake_analyze_takes_a_bigger_body_than_other_routes(server):
+    # П3: пачка до 500 текстов / 300 КБ — свой предел тела только у /intake/analyze; транспорт пропускает тело к шлюзу
+    # (модуля R04 нет — 503), а тот же объём на другой адрес и сверх 320 КБ — 413.
+    texts = [("Svet ne gorit u podezda, temno vecherom. " * 12)[:480]] * 480   # ≈ 234 КБ JSON (request() — ASCII)
+    big = {"texts": texts}
+    assert 64 * 1024 < len(json.dumps(big).encode()) <= web_server.CIVIC_V2_BODY_LIMITS["/intake/analyze"]
+    status, data = request(server, "POST", "/api/civic/v2/intake/analyze", big)
+    assert status == 503 and data["error"] == "module_not_ready" and data["role"] == "R04"
+    status, data = request(server, "POST", "/api/civic/v2/route", big)
+    assert status == 413 and data["error"] == "too_large"
+    status, data = request(server, "POST", "/api/civic/v2/intake/commit", big)
+    assert status == 413 and data["error"] == "too_large"
+    status, data = request(server, "POST", "/api/civic/v2/intake/analyze", {"texts": texts * 2})
+    assert status == 413 and data["error"] == "too_large"
+
+
+def test_intake_limits_are_per_address():
+    assert V2_RATE_LIMITS["intake.analyze"] and V2_RATE_LIMITS["intake.commit"]
+    assert all(not per_target for rules in (V2_RATE_LIMITS["intake.analyze"], V2_RATE_LIMITS["intake.commit"])
+               for _w, _n, per_target in rules)
 
 
 def test_http_modules_lists_round15(server):

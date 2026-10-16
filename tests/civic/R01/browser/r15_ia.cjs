@@ -51,11 +51,12 @@ async function startServer(port, dir) {
 }
 const ready = (page) => page.waitForFunction(() => window.CivicShell?.mode === "civic" && window.BirgeShell && typeof mapReady !== "undefined" && mapReady
   && document.querySelector("#birge-header"), null, { timeout: 40000 }).then(() => page.waitForTimeout(800));
-async function open(browser, url, w, h, mode, block) {
+async function open(browser, url, w, h, mode, block, init) {
   const mobile = w < 761;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile });
   // block: скрипты модулей, которых «нет в сборке» (проверка запасных ходов оболочки при полной сборке).
   for (const pattern of block || []) await ctx.route(pattern, (route) => route.abort());
+  if (init) await ctx.addInitScript(init);   // подменный модуль роли (до скриптов страницы)
   await ctx.addInitScript((m) => { try { localStorage.setItem("birge.mode", m); localStorage.setItem("birge.lang", "ru"); } catch (e) { /* без хранилища */ } }, mode);
   const page = await ctx.newPage();
   page.errs = [];
@@ -80,6 +81,16 @@ const moreMenu = (page) => page.evaluate(() => {
     box: m && !m.hidden ? m.getBoundingClientRect().toJSON() : null,
     button: document.querySelector("#birge-header .birge-nav [data-section=more]").getBoundingClientRect().toJSON() };
 });
+// П3: подменный экран R04 «Разбор обращений» — проверяется оболочка (сцена 0, раздел #intake, опции mount), не модуль R04.
+const STUB_INTAKE = () => {
+  window.BirgeIntake = { mount(root, opts) {
+    const was = window.__intake || { mounts: 0 };
+    window.__intake = { mounts: was.mounts + 1, apiBase: opts.apiBase, api: !!(opts.api && opts.api.v2), section: opts.section,
+      openTarget: typeof opts.openTarget, openSection: typeof opts.openSection, lang: opts.lang };
+    const h = document.createElement("h2"); h.textContent = "Разбор обращений (заглушка R01)"; root.replaceChildren(h);
+    return { destroy() {} };
+  } };
+};
 const palette = async (page) => {
   await page.keyboard.press("Control+k");
   await page.waitForFunction(() => document.querySelectorAll(".birge-palette__item").length > 3, null, { timeout: 8000 }).catch(() => null);
@@ -264,7 +275,13 @@ async function main() {
       show.flag === "1" && show.api === true && show.body === "16px" && (show.status === "none" || show.status === "absent"), show);
     const showItems = await palette(page);
     const firstItem = showItems.find((t) => !/^(Сцены демо)$/.test(t));
-    check("show mode: scenes are the first commands in Ctrl+K", showItems[0] === "Сцены демо" && firstItem === "Сцена 7 · Двор вместе", showItems.slice(0, 5));
+    const sceneItems = showItems.filter((t) => /^Сцена \d/.test(t));
+    // ?screens=all показывает и экран R04 — сцена 0 «ИИ-разбор» (П3) первая, за ней 7–9 мира.
+    check("show mode: scenes are the first commands in Ctrl+K — «Сцена 0 · ИИ-разбор» (П3), then 7–9",
+      showItems[0] === "Сцены демо" && firstItem === "Сцена 0 · ИИ-разбор"
+      && sceneItems.join(" | ") === "Сцена 0 · ИИ-разбор | Сцена 7 · Двор вместе | Сцена 8 · Ведомства вместе | Сцена 9 · Буран", showItems.slice(0, 6));
+    await page.fill(".birge-palette__input", "Сцена 7");
+    await page.waitForTimeout(150);
     await page.keyboard.press("Enter");
     await page.waitForTimeout(500);
     n = await nav(page);
@@ -278,7 +295,10 @@ async function main() {
     await ctx.close();
     // Without the R16 module the scene does not open an empty screen: the yard is shown on the map (#target=area:…).
     ({ ctx, page } = await open(browser, base + "?show=1", 1024, 768, "akimat", ["**/civic/together/together.js"]));
-    await palette(page);
+    const plain = await palette(page);
+    const r04 = await page.evaluate(() => !!window.BirgeIntake);
+    check("«Сцена 0 · ИИ-разбор» only when the R04 screen is in the build (without ?screens=all)",
+      plain.includes("Сцена 0 · ИИ-разбор") === r04, { r04, scenes: plain.filter((t) => /^Сцена \d/.test(t)) });
     await page.fill(".birge-palette__input", "Сцена 7");
     await page.waitForTimeout(150);
     await page.keyboard.press("Enter");
@@ -290,6 +310,32 @@ async function main() {
     await ready(page);
     check("?show=0 turns the show mode off", await page.evaluate(() => !document.documentElement.dataset.birgeShow), null);
     check("no page errors (show mode)", page.errs.length === 0, page.errs);
+    await ctx.close();
+
+    // ------------------------------------------------------------ сцена 0 «ИИ-разбор» (П3): экран R04 из Ctrl+K
+    // Вид «Житель» на входе: сцена сама включает «Акимат». Настоящий модуль R04 (если в сборке) закрыт — проверяем оболочку.
+    ({ ctx, page } = await open(browser, base + "?show=1", 1366, 768, "resident", ["**/civic/intake/intake.js"], STUB_INTAKE));
+    const intakeItems = await palette(page);
+    check("show mode with the R04 screen: «Сцена 0 · ИИ-разбор» is the first command", intakeItems[0] === "Сцены демо"
+      && intakeItems[1] === "Сцена 0 · ИИ-разбор", intakeItems.slice(0, 4));
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(500);
+    n = await nav(page);
+    const intake = await page.evaluate(() => ({ stub: window.__intake || null,
+      title: document.getElementById("birge-screen-title")?.textContent || "" }));
+    check("Сцена 0: akimat view, #intake, «Обращения» highlighted (no own menu item), title «Разбор обращений»",
+      n.mode === "akimat" && n.section === "intake" && n.hash === "#intake" && JSON.stringify(n.pressed) === '["inbox"]'
+      && !n.ids.includes("intake") && intake.title === "Разбор обращений", { n, title: intake.title });
+    check("Сцена 0: R04 mount(root, opts) once — apiBase /api/civic/v2, api.v2, openTarget, openSection",
+      !!intake.stub && intake.stub.mounts === 1 && intake.stub.apiBase === "/api/civic/v2" && intake.stub.api
+      && intake.stub.section === "intake" && intake.stub.openTarget === "function" && intake.stub.openSection === "function", intake.stub);
+    const intakeMore = await page.evaluate(() => window.BirgeShell.moreItems());
+    check("«Разбор обращений» is not an «Ещё» item while «Обращения» is in the menu (PARENT)", !intakeMore.includes("intake"), intakeMore);
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(300);
+    n = await nav(page);
+    check("Esc on «Разбор обращений» returns to the map", n.section === "map", n);
+    check("no page errors (scene 0)", page.errs.length === 0, page.errs);
     await ctx.close();
 
     // ------------------------------------------------------------ «▶ Хроника» R07 (IA R11 §5.8, §7.8)

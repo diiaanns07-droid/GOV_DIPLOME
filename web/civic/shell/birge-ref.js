@@ -389,7 +389,11 @@
     const B = window.BirgeShell, sc = (S.scenes || {})["scene" + n] || {};
     if (!B) return;
     const has = (id, m) => typeof B.available === "function" && B.available(id, m);
-    if (n === 7 && sc.yard) {
+    if (n === 0) {
+      // Сцена 0 (поправка П3): «Разбор обращений» R04 у акимата; дальше ведущий — «Пример: обращения за ночь» → «Разобрать».
+      B.setMode("akimat");
+      B.setSection("intake");
+    } else if (n === 7 && sc.yard) {
       B.setMode("resident");
       const T = window.BirgeTogether;
       // R16 (INTEGRATION §1): двор открывает сам модуль — BirgeTogether.open("yard", id) (по пути раздела или после монтажа).
@@ -409,10 +413,12 @@
       else B.setSection("day");
     }
   }
+  // Сцена 0 «ИИ-разбор» (П3) не зависит от id мира: есть, когда экран R04 в сборке, — первой среди сцен.
   function sceneCommands() {
-    if (!S.scenes) return [];
-    const group = t("shell.palette.scenes");
-    return [7, 8, 9].filter((n) => S.scenes["scene" + n]).map((n) => ({ group, title: t("shell.palette.scene" + n), run: () => openScene(n) }));
+    const group = t("shell.palette.scenes"), B = window.BirgeShell;
+    const ids = (B && typeof B.available === "function" && B.available("intake", "akimat") ? [0] : [])
+      .concat(S.scenes ? [7, 8, 9].filter((n) => S.scenes["scene" + n]) : []);
+    return ids.map((n) => ({ group, title: t("shell.palette.scene" + n), run: () => openScene(n) }));
   }
 
   async function gatherCommands() {

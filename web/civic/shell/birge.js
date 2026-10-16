@@ -33,7 +33,9 @@
   const MORE_GROUPS = { akimat: ["shell.more.group.residents", "shell.more.group.tools"] };
   const MORE_MAX = 7;
   // Без своего пункта, пока в этом виде доступен «родитель» (иначе — в «Ещё», как в FINAL-4). Адрес и Ctrl+K работают.
-  const PARENT = { nearby: "yard", questions: "meetings", works: "agencies", services: "agencies", "works-calendar": "agencies" };
+  // П3: «Разбор обращений» (ИИ-разбор пачки R04) — из «Обращений» (кнопка «Разобрать пачку» R09), Ctrl+K и сцены 0.
+  const PARENT = { nearby: "yard", questions: "meetings", works: "agencies", services: "agencies", "works-calendar": "agencies",
+    intake: "inbox" };
   // Совсем без пункта меню: публичная карточка кризиса R17 открывается баннером, уведомлением и Ctrl+K (IA_ROUND15 §3);
   // «Уведомления» R06 — колокольчик в капсуле справа (ноутбук) и первый пункт меню аватара (телефон), не «Ещё» (§5.7).
   const NO_ITEM = new Set(["crisis", "notifications"]);
@@ -60,6 +62,8 @@
     analyst: { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
     "works-calendar": { global: ["BirgeWorksCalendar"], modes: ["akimat"], owner: "R12", key: { akimat: "shell.nav.works_calendar" } },
     notifications: { global: ["BirgeNotify"], modes: ["resident"], owner: "R06", key: { resident: "shell.nav.notifications" } },
+    // Поправка П3: «ИИ-разбор пачки обращений» R04 (web/civic/intake/, BirgeIntake.mount(root, {apiBase})) — только акимат.
+    intake: { global: ["BirgeIntake"], modes: ["akimat"], owner: "R04", key: { akimat: "shell.nav.intake" } },
   };
   const SECTIONS = ["map", "day", ...Object.keys(SCREENS)];
   // Прежние адреса волны 2 (до схемы R11) ведут в те же разделы.
@@ -132,7 +136,8 @@
   const cleanPath = (path) => (typeof path === "string" && PATH_RE.test(path) ? path : "");
   // ?screens=all — все разделы, и раунда 15 тоже (разбор R11/R10); ?screens=r14 — меню раунда 14: все его разделы,
   // а разделы раунда 15 скрыты, даже если их модули в сборке (регресс запасного меню FINAL-4, r14_wave2.cjs).
-  const R15_IDS = new Set(["yard", "together", "meetings", "agencies", "crisis", "analyst", "works-calendar", "board", "notifications"]);
+  const R15_IDS = new Set(["yard", "together", "meetings", "agencies", "crisis", "analyst", "works-calendar", "board", "notifications",
+    "intake"]);
   const screensParam = () => (/[?&]screens=(all|r14)(?:&|$)/.exec(location.search) || [])[1] || null;
   const screensAll = (id) => { const p = screensParam(); return p === "all" || (p === "r14" && !R15_IDS.has(id)); };
 
@@ -147,7 +152,7 @@
     questions: "info", works: "calendar", qr: "print", services: "building", staff: "user",
     // Раунд 15 (IA_ROUND15 §7.6): значки — из icons.svg ui-kit R11 (новые sparkle, monitor, bell — с его поставки r15).
     yard: "home", together: "heart", meetings: "message", agencies: "building", analyst: "sparkle", board: "monitor",
-    crisis: "alert", "works-calendar": "calendar", notifications: "bell" };
+    crisis: "alert", "works-calendar": "calendar", notifications: "bell", intake: "sparkle" };
   // Пустое состояние экрана (поправка П1 «Без ИИ-слопа», правило 2): одна маленькая монохромная иконка набора R11
   // (40 px, линия как у иконок меню) + короткий текст + одна кнопка. Больших иллюстраций нет. Без innerHTML.
   function stateIcon(name) {
