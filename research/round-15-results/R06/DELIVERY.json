@@ -3,9 +3,9 @@
   "branch": "claude/eloquent-einstein-wvuyje",
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "restored_from": null,
-  "code_sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
-  "tested_sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
-  "round_status": "Раунд 15+ открыт (поправка П3, 16 окт 17:15): до FINAL-6 17 окт; код R06 для FINAL-6 — d688c45f (тот же, что в FINAL-5 / 5.1)",
+  "code_sha": "3dcc334a92e572344e00807d40e94ac1a237feb3",
+  "tested_sha": "3dcc334a92e572344e00807d40e94ac1a237feb3",
+  "round_status": "Раунд 15+ (П3): поставка к FINAL-6 (17 окт 11:00) — R10 B-136, часть R06; до FINAL-6 в сборках R01 B6.x — R06 d688c45f",
   "final_builds": {
     "FINAL-5": "R01 c2276360 (16 окт 14:00) — пути R06 = d688c45f; R10: «можно показывать: да», блокеров нет (API 155/0/0, часть 1 172/0/2, сцены 7–9 337/0/0); R15: без блокеров безопасности",
     "FINAL-5.1": "R01 e8d6cae6 (код FINAL-5 + документы R14) — в BUILD.json R06 = d688c45f; R10 повтор: API 155/0/0, часть 1 172/0/2, сцены 248/0/0"
@@ -63,12 +63,12 @@
     },
     {
       "name": "pytest tests/civic/R06 на дереве «как FINAL-5»",
-      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
+      "sha": "3dcc334a92e572344e00807d40e94ac1a237feb3",
       "status": "PASS",
       "passed": 727,
       "failed": 0,
       "skipped": 2,
-      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)",
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 869505f8 (после B6.6 83c8aa58, R10: «можно показывать: да») + пути R06 3dcc334a (tests/civic/R06/round15/tree_r01_build.sh)",
       "note": "включая засев настоящего мира R02 (55 записей) и миграцию на базе FINAL-4"
     },
     {
@@ -101,28 +101,45 @@
     },
     {
       "name": "браузер tests/civic/R06/round15/browser_r15.cjs на дереве «как FINAL-5»",
-      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
+      "sha": "3dcc334a92e572344e00807d40e94ac1a237feb3",
       "status": "PASS",
-      "passed": 280,
+      "passed": 289,
       "failed": 0,
-      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)",
-      "note": "1366 / 1024 / 375 × ru / kk: работы v2, идеи и проекты (П1: значок вида ≤ 48 px), лента и колокольчик, «идея → инициатива» с настоящим R16; новое — плитки карточки идеи: слово (район, объект) не рвётся посреди слога (R11 R06-3); нет текста мельче --fs-xs"
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 869505f8 (после B6.6 83c8aa58, R10: «можно показывать: да») + пути R06 3dcc334a (tests/civic/R06/round15/tree_r01_build.sh)",
+      "note": "1366 / 1024 / 375 × ru / kk: работы v2, идеи и проекты (П1: значок вида ≤ 48 px), лента и колокольчик, «идея → инициатива» с настоящим R16; плитки карточки идеи — по слогам (R11 R06-3); новое (R10 B-136): рамка заголовка строки ≥ 44 px, проекты не загрузились — вкладка без «· 0», ошибка с «Повторить», после связи данные вернулись"
+    },
+    {
+      "name": "аудит R10 tests/e2e/visual_audit.cjs --only projects,ideas (1366 / 375 ru), версия ветки R10 на 17 окт",
+      "sha": "3dcc334a92e572344e00807d40e94ac1a237feb3",
+      "status": "FAIL*",
+      "passed": 43,
+      "warn": 3,
+      "failed": 2,
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 869505f8 (после B6.6 83c8aa58, R10: «можно показывать: да») + пути R06 3dcc334a (tests/civic/R06/round15/tree_r01_build.sh)",
+      "note": "было на том же дереве с R06 d688c45f: FAIL 4 / WARN 1 (B-136: заголовки строк 19–38 px, «Сквер…» 31 px, ♥ под низом листа). Осталось FAIL 2 — одна капсула ♥ («23»), прокрученная под липкий низ листа «Предложить идею» (у видимых капсул зона 32 + ::after = 44 px); предложение R10 — не считать перекрытые цели (INTEGRATION §П3). WARN: нижняя строка видна частично (докручивается до 100 %), «нет связи» — «Повторить» во вкладке «Проекты»"
+    },
+    {
+      "name": "сверка с эталоном R10 tests/e2e/reference_check.cjs --screens proj",
+      "sha": "3dcc334a92e572344e00807d40e94ac1a237feb3",
+      "status": "PASS",
+      "note": "до и после правки — одинаково (sheet / sheet-title / seg совпадают; pc / vote / pd — как были); геометрию капсулы ♥ правка не трогает",
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 869505f8 (после B6.6 83c8aa58, R10: «можно показывать: да») + пути R06 3dcc334a (tests/civic/R06/round15/tree_r01_build.sh)"
     },
     {
       "name": "регресс FINAL-4 R06: tests/civic/R06/round14/design_audit.cjs",
-      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
+      "sha": "3dcc334a92e572344e00807d40e94ac1a237feb3",
       "status": "PASS",
       "passed": 284,
       "failed": 0,
-      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)"
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 869505f8 (после B6.6 83c8aa58, R10: «можно показывать: да») + пути R06 3dcc334a (tests/civic/R06/round15/tree_r01_build.sh)"
     },
     {
       "name": "регресс FINAL-4 R06: tests/civic/R06/round14/app_r01_wave2.cjs",
-      "sha": "d688c45fead8b1467fc737afc8eaeef8316dc40d",
+      "sha": "3dcc334a92e572344e00807d40e94ac1a237feb3",
       "status": "PASS",
       "passed": 130,
       "failed": 0,
-      "env": "ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f (tests/civic/R06/round15/tree_r01_build.sh — CIVIC_ASSETS и теги ленты уже в сборке, скрипт ничего не досыпал)"
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 869505f8 (после B6.6 83c8aa58, R10: «можно показывать: да») + пути R06 3dcc334a (tests/civic/R06/round15/tree_r01_build.sh)"
     },
     {
       "name": "сценарии показа R10: demo_flow.cjs --world (часть 1) и demo_flow_v2.cjs (сцены 7–9)",
@@ -191,9 +208,9 @@
     "Демо-мир: записи synthetic (demo:true, «Пример»); без флага CIVIC_DEMO_WORLD — демо FINAL-4 без изменений.",
     "Кадры — облако: подложка упрощённая; настоящий вид — LOCAL-12."
   ],
-  "next_step": "FINAL-6 (17 окт 12:00 кандидат, 17:00 сборка): R01 берёт пути R06 из code_sha d688c45f; R06 до 18:00 — только просьбы R01 / блокеры R10 / R15.",
-  "screens_note": "кадры — облако, дерево «как FINAL-5» (ветка R01 claude/brave-fermi-nhzetj @ 5feed194 (код = B0.20 8f70baf1, кандидат FINAL-5; в нём R06 e0ad2370) + пути R06 d688c45f), 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6); кадр снимается, когда карта оболочки готова",
-  "code_note": "после e0ad2370 (в B0.19 / B0.20) изменились только web/civic/ideas/ideas.js, ideas.css (плитки «район / объект»: шрифт названий 15 px и мягкие переносы по слогам ru / kk — R11 R06-3) и tests/civic/R06/round15/browser_r15.cjs (проверка плиток; кадр — после загрузки карты). Python, маршруты, CIVIC_ASSETS и теги — без изменений",
+  "next_step": "FINAL-6 (17 окт 12:00 кандидат, 17:00 сборка): R01 берёт пути R06 из code_sha 3dcc334a — больше ничего не нужно; R06 до 18:00 — только блокеры R10 / R15.",
+  "screens_note": "кадры — облако, дерево «ветка R01 claude/brave-fermi-nhzetj @ 869505f8 (после B6.6 83c8aa58, R10: «можно показывать: да») + пути R06 3dcc334a», 1366×768, 1024×768, 375×812; подложка карты упрощённая (П1 правило 6); кадр снимается, когда карта оболочки готова",
+  "code_note": "после d688c45f (в FINAL-5 / 5.1 и B6.x) изменились только web/civic/ideas/ideas.js и ideas.css (R10 B-136: рамка заголовка строки ≥ 44 px без сдвига раскладки; проекты не загрузились — вкладка без «· 0» и ошибка с «Повторить») и tests/civic/R06/round15/browser_r15.cjs. Python, маршруты, CIVIC_ASSETS и теги — без изменений",
   "p3_notes": [
     "Кольца в центре карты на обзорном масштабе — слои civic-r03-* из web/civic/map/civic-map.js (R12) по 7 синтетическим объектам демо-пакета FINAL-4, которые хранит ui/civic_store (R06); своих слоёв на обзорной карте R06 нет; правка масштаба — у владельца слоя (INTEGRATION §П3).",
     "VISUAL_BRIEF §4 по экранам R06 на FINAL-5.1 (1366 / 1024 / 375 × ru / kk): зоны нажатия ≥ 44 px по hit-test, казахский не обрезан, все состояния есть; размеры шрифта карточки идеи — шкала эталона A ui-kit R11 (WARN у R10, не блокер)."
