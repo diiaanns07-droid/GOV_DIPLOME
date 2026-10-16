@@ -115,7 +115,22 @@
   "browser_shell_integration": {
    "status": "PASS",
    "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_shell_check.cjs <out> http://127.0.0.1:8656",
-   "env": "app.py ветки R01 c9069723 (B0) + пути R03 fe8180fc + R01_warm_up.patch, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 (мир R02), вход operator; 1366 и 375; кадры screens/shell_*.png"
+   "env": "копия ветки R01 5b696879 (B0.19 fd01a0a2: R03 233ce8a8, мир R02 fa9ab80b), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, свежая база, вход operator; 1366 ru и 375 kk; прогон закончен к 05:30 UTC 16 окт",
+   "checks": [
+    "#analyst открывает экран; вопрос сцены → «Показать на карте» → карточка R07 «Двор ЖК «BI City Tokyo»» (7 человек), 1366 и 375",
+    "«Где копаем дважды?» / «Жұмыстар қайшылығы қайда?» → строки по улицам; вторая строка → раздел works-calendar, на экране карточка конфликта той же улицы (ул. Баян Сулу / Баян Сұлу көшесі)",
+    "ошибок JS нет"
+   ],
+   "frames": [
+    "screens/shell_answer_1366_ru.png",
+    "screens/shell_map_1366_ru.png",
+    "screens/shell_conflicts_1366_ru.png",
+    "screens/shell_conflict_opened_1366_ru.png",
+    "screens/shell_answer_375_ru.png",
+    "screens/shell_map_375_ru.png",
+    "screens/shell_conflicts_375_kk.png",
+    "screens/shell_conflict_opened_375_kk.png"
+   ]
   },
   "eval_heldout_set1_first_run": {
    "status": "PASS",
@@ -328,7 +343,11 @@
   "research/round-15-results/R03/screens/shell_answer_1366_ru.png",
   "research/round-15-results/R03/screens/shell_answer_375_ru.png",
   "research/round-15-results/R03/screens/shell_map_1366_ru.png",
-  "research/round-15-results/R03/screens/shell_map_375_ru.png"
+  "research/round-15-results/R03/screens/shell_map_375_ru.png",
+  "research/round-15-results/R03/screens/shell_conflicts_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_conflict_opened_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_conflicts_375_kk.png",
+  "research/round-15-results/R03/screens/shell_conflict_opened_375_kk.png"
  ],
  "known_limits": [
   "В сборке B0.5 (R01) — R03 c6574a39 + прогрев; к B1 — пути этой поставки (тесты без зависимости от порядка, оракул, «көше бөлігі»).",
