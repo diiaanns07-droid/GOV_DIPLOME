@@ -1,0 +1,3534 @@
+{
+ "meta": {
+  "ref": "REFERENCE.html",
+  "root": "r01-final5",
+  "sha": "c2276360",
+  "label": "FINAL5 R01 c2276360",
+  "before": "FINAL-4 a4937462",
+  "when": "2026-10-16T09:06:50.581Z"
+ },
+ "report": {
+  "home": {
+   "reached": true,
+   "login": "ok",
+   "rows": [
+    {
+     "id": "search",
+     "owner": "R01",
+     "ref": {
+      "x": 20,
+      "y": 20,
+      "w": 388,
+      "h": 52,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 400,
+       "color": [
+        126,
+        138,
+        133,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Улица, остановка или район",
+      "all": "Улица, остановка или район /",
+      "cls": ".search.glass"
+     },
+     "build": {
+      "x": 20,
+      "y": 20,
+      "w": 388,
+      "h": 52,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 400,
+       "color": [
+        126,
+        138,
+        133,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "/",
+      "all": "/",
+      "cls": ".civic-explore-field.bk-glass"
+     },
+     "err": null,
+     "status": "близко",
+     "notes": [
+      "шрифт 15 → 13 px"
+     ],
+     "geo": 0,
+     "absent": false,
+     "pixels": 98,
+     "was": {
+      "status": "близко",
+      "pixels": 98
+     }
+    },
+    {
+     "id": "logo",
+     "owner": "R01",
+     "ref": {
+      "x": 33,
+      "y": 31,
+      "w": 30,
+      "h": 30,
+      "radius": 9,
+      "bg": [
+       21,
+       44,
+       38,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".logo"
+     },
+     "build": {
+      "x": 24,
+      "y": 24,
+      "w": 44,
+      "h": 44,
+      "radius": 16,
+      "bg": [
+       21,
+       44,
+       38,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 7,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".bk-logo.birge-ref-logo"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 33,31 30×30 → 24,24 44×44 (Δx -9, Δy -7, Δw 14, Δh 14)",
+      "рамка 0 → 7 px",
+      "радиус 9 → 16"
+     ],
+     "geo": 14,
+     "absent": false,
+     "pixels": 36,
+     "was": {
+      "status": "расходится",
+      "pixels": 36
+     }
+    },
+    {
+     "id": "chips",
+     "owner": "R01",
+     "ref": {
+      "x": 20,
+      "y": 82,
+      "w": 457,
+      "h": 34,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Все",
+      "all": "Все Снег Остановки Освещение Ещё",
+      "cls": ".chips"
+     },
+     "build": {
+      "x": 20,
+      "y": 77,
+      "w": 431,
+      "h": 44,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Все",
+      "all": "Все Снег Остановки Дороги Ещё",
+      "cls": "#birge-chips.birge-chips"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 20,82 457×34 → 20,77 431×44 (Δx 0, Δy -5, Δw -26, Δh 10)"
+     ],
+     "geo": 26,
+     "absent": false,
+     "pixels": 61,
+     "was": {
+      "status": "расходится",
+      "pixels": 59
+     }
+    },
+    {
+     "id": "chip-on",
+     "owner": "R01",
+     "ref": {
+      "x": 20,
+      "y": 82,
+      "w": 52,
+      "h": 34,
+      "radius": 999,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Все",
+      "all": "Все",
+      "cls": ".chip.on"
+     },
+     "build": {
+      "x": 20,
+      "y": 77,
+      "w": 54,
+      "h": 44,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Все",
+      "all": "Все",
+      "cls": ".birge-chip"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 20,82 52×34 → 20,77 54×44 (Δx 0, Δy -5, Δw 2, Δh 10)",
+      "радиус 999 → 0",
+      "фон #121a17 → #000000/0%"
+     ],
+     "geo": 10,
+     "absent": false,
+     "pixels": 64,
+     "was": {
+      "status": "расходится",
+      "pixels": 64
+     }
+    },
+    {
+     "id": "nav",
+     "owner": "R01",
+     "ref": {
+      "x": 445,
+      "y": 20,
+      "w": 476,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Карта",
+      "all": "Карта Картина дня Обращения Проекты Ещё",
+      "cls": ".nav.glass"
+     },
+     "build": {
+      "x": 438,
+      "y": 20,
+      "w": 490,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Карта",
+      "all": "Карта Картина дня Обращения Ведомства Ещё",
+      "cls": ".bk-nav.birge-nav"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 445,20 476×44 → 438,20 490×44 (Δx -7, Δy 0, Δw 14, Δh 0)"
+     ],
+     "geo": 14,
+     "absent": false,
+     "pixels": 85,
+     "was": {
+      "status": "расходится",
+      "pixels": 81
+     }
+    },
+    {
+     "id": "nav-on",
+     "owner": "R01",
+     "ref": {
+      "x": 450,
+      "y": 24,
+      "w": 73,
+      "h": 36,
+      "radius": 999,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Карта",
+      "all": "Карта",
+      "cls": ".on"
+     },
+     "build": {
+      "x": 442,
+      "y": 20,
+      "w": 73,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 4,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Карта",
+      "all": "Карта",
+      "cls": ".birge-nav__item"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 450,24 73×36 → 442,20 73×44 (Δx -8, Δy -4, Δw 0, Δh 8)",
+      "рамка 0 → 4 px"
+     ],
+     "geo": 8,
+     "absent": false,
+     "pixels": 67,
+     "was": {
+      "status": "расходится",
+      "pixels": 68
+     }
+    },
+    {
+     "id": "me",
+     "owner": "R01",
+     "ref": {
+      "x": 1217,
+      "y": 20,
+      "w": 129,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 400,
+       "color": [
+        75,
+        87,
+        82,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "ҚАЗ ·",
+      "all": "ҚАЗ · РУС А",
+      "cls": ".me.glass"
+     },
+     "build": {
+      "x": 1186,
+      "y": 20,
+      "w": 160,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 400,
+       "color": [
+        63,
+        74,
+        70,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "ҚАЗ",
+      "all": "ҚАЗ РУС",
+      "cls": ".birge-me.bk-glass"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 1217,20 129×44 → 1186,20 160×44 (Δx -31, Δy 0, Δw 31, Δh 0)",
+      "цвет текста #4b5752 → #3f4a46"
+     ],
+     "geo": 31,
+     "absent": false,
+     "pixels": 86,
+     "was": {
+      "status": "расходится",
+      "pixels": 86
+     }
+    },
+    {
+     "id": "avatar",
+     "owner": "R01",
+     "ref": {
+      "x": 1305,
+      "y": 24,
+      "w": 36,
+      "h": 36,
+      "radius": 50,
+      "bg": [
+       215,
+       245,
+       124,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 600,
+       "color": [
+        47,
+        74,
+        16,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "А",
+      "all": "А",
+      "cls": ".ava"
+     },
+     "build": {
+      "x": 1298,
+      "y": 20,
+      "w": 44,
+      "h": 44,
+      "radius": 50,
+      "bg": [
+       215,
+       245,
+       124,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".bk-avatar.birge-avatar"
+     },
+     "err": null,
+     "status": "близко",
+     "notes": [
+      "место/размер: эталон 1305,24 36×36 → 1298,20 44×44 (Δx -7, Δy -4, Δw 8, Δh 8)"
+     ],
+     "geo": 8,
+     "absent": false,
+     "pixels": 61,
+     "was": {
+      "status": "расходится",
+      "pixels": 61
+     }
+    },
+    {
+     "id": "sum",
+     "owner": "R08",
+     "ref": {
+      "x": 20,
+      "y": 132,
+      "w": 388,
+      "h": 325,
+      "radius": 18,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Сегодня в Астане",
+      "all": "Сегодня в Астане 34 новых 12 в работе 5 просрочено 11 Двор у",
+      "cls": ".sum.glass"
+     },
+     "build": {
+      "x": 20,
+      "y": 132,
+      "w": 388,
+      "h": 327,
+      "radius": 18,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Сегодня в Астане",
+      "all": "Сегодня в Астане 15 новых 104 в работе 35 просрочено 12 Оста",
+      "cls": "#birge-today.birge-today.akim-today"
+     },
+     "err": null,
+     "status": "близко",
+     "notes": [
+      "фон #ffffff/72% → #ffffff/86%"
+     ],
+     "geo": 2,
+     "absent": false,
+     "pixels": 90,
+     "was": {
+      "status": "близко",
+      "pixels": 90
+     }
+    },
+    {
+     "id": "ctl",
+     "owner": "R01",
+     "ref": {
+      "x": 1300,
+      "y": 258,
+      "w": 46,
+      "h": 252,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "3D",
+      "all": "3D",
+      "cls": ".ctl"
+     },
+     "build": {
+      "x": 1298,
+      "y": 246,
+      "w": 48,
+      "h": 276,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "3D",
+      "all": "3D",
+      "cls": ".map-tools.bk-mapctl"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 1300,258 46×252 → 1298,246 48×276 (Δx -2, Δy -12, Δw 2, Δh 24)"
+     ],
+     "geo": 24,
+     "absent": false,
+     "pixels": 78,
+     "was": {
+      "status": "расходится",
+      "pixels": 84
+     }
+    },
+    {
+     "id": "zoom",
+     "owner": "R01",
+     "ref": {
+      "x": 1300,
+      "y": 312,
+      "w": 46,
+      "h": 90,
+      "radius": 14,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".cap.glass"
+     },
+     "build": {
+      "x": 1298,
+      "y": 306,
+      "w": 48,
+      "h": 96,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".bk-mapctl__group.birge-zoom"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 1300,312 46×90 → 1298,306 48×96 (Δx -2, Δy -6, Δw 2, Δh 6)",
+      "радиус 14 → 999"
+     ],
+     "geo": 6,
+     "absent": false,
+     "pixels": 91,
+     "was": {
+      "status": "расходится",
+      "pixels": 93
+     }
+    },
+    {
+     "id": "legend",
+     "owner": "R01",
+     "ref": {
+      "x": 20,
+      "y": 712,
+      "w": 303,
+      "h": 36,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 400,
+       "color": [
+        75,
+        87,
+        82,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "мало много",
+      "all": "мало много · ✓ исправлено",
+      "cls": ".legend.glass"
+     },
+     "build": {
+      "x": 20,
+      "y": 704,
+      "w": 454,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 400,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "мало",
+      "all": "мало много · исправлено ? Хроника",
+      "cls": ".birge-legend-line.bk-legend--line"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 20,712 303×36 → 20,704 454×44 (Δx 0, Δy -8, Δw 151, Δh 8)",
+      "цвет текста #4b5752 → #121a17"
+     ],
+     "geo": 151,
+     "absent": false,
+     "pixels": 81,
+     "was": {
+      "status": "расходится",
+      "pixels": 81
+     }
+    },
+    {
+     "id": "pin",
+     "owner": "R07",
+     "ref": {
+      "x": 853,
+      "y": 313,
+      "w": 34,
+      "h": 34,
+      "radius": 50,
+      "bg": [
+       226,
+       75,
+       74,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 2,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".c"
+     },
+     "build": {
+      "x": 608,
+      "y": 458,
+      "w": 34,
+      "h": 34,
+      "radius": 50,
+      "bg": [
+       163,
+       45,
+       45,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 2,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".r07-badge__dot"
+     },
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "geo": 0,
+     "absent": false,
+     "pixels": 25,
+     "was": {
+      "status": "совпадает",
+      "pixels": 25
+     }
+    },
+    {
+     "id": "pin-count",
+     "owner": "R07",
+     "ref": {
+      "x": 881,
+      "y": 319,
+      "w": 26,
+      "h": 22,
+      "radius": 0,
+      "bg": [
+       255,
+       255,
+       255,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 700,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "6",
+      "all": "6",
+      "cls": ".n"
+     },
+     "build": {
+      "x": 636,
+      "y": 464,
+      "w": 80,
+      "h": 22,
+      "radius": 0,
+      "bg": [
+       255,
+       255,
+       255,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 700,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "96",
+      "all": "Нура · 96",
+      "cls": ".r07-badge__count"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "размер: эталон 26×22 → 80×22 (место по данным не сравнивается)"
+     ],
+     "geo": 54,
+     "absent": false,
+     "pixels": 60,
+     "was": {
+      "status": "расходится",
+      "pixels": 63
+     }
+    },
+    {
+     "id": "постоянная панель",
+     "owner": "R01",
+     "ref": null,
+     "build": null,
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "absent": true,
+     "pixels": null,
+     "was": {
+      "status": "совпадает",
+      "pixels": null
+     }
+    }
+   ],
+   "diffShare": 34,
+   "wasDiff": 32,
+   "tokens": {
+    "ref": {
+     "--ink": "#121A17",
+     "--ink-2": "#4B5752",
+     "--ink-3": "#7E8A85",
+     "--line": "rgba(18,26,23,.08)",
+     "--paper": "#F3F1EC",
+     "--brand": "#152C26",
+     "--lime": "#D7F57C",
+     "--glass": "rgba(255,255,255,.72)",
+     "--glass-strong": "rgba(255,255,255,.86)",
+     "--r-card": "18px",
+     "--r-pill": "999px",
+     "--r-ctl": "12px",
+     "--font": "\"Inter\",\"SF Pro Text\",-apple-system,\"Segoe UI\",system-ui,sans-serif",
+     "--ease": "cubic-bezier(.22,1,.36,1)"
+    },
+    "build": {
+     "font": "Segoe UI",
+     "color": "rgb(21, 44, 38)",
+     "bg": "rgb(229, 235, 225)"
+    }
+   }
+  },
+  "obj": {
+   "reached": true,
+   "login": "ok",
+   "rows": [
+    {
+     "id": "search",
+     "owner": "R01",
+     "ref": {
+      "x": 20,
+      "y": 20,
+      "w": 388,
+      "h": 52,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 400,
+       "color": [
+        126,
+        138,
+        133,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Улица, остановка или район",
+      "all": "Улица, остановка или район /",
+      "cls": ".search.glass"
+     },
+     "build": {
+      "x": 20,
+      "y": 20,
+      "w": 388,
+      "h": 52,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 400,
+       "color": [
+        126,
+        138,
+        133,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "/",
+      "all": "/",
+      "cls": ".civic-explore-field.bk-glass"
+     },
+     "err": null,
+     "status": "близко",
+     "notes": [
+      "шрифт 15 → 13 px"
+     ],
+     "geo": 0,
+     "absent": false,
+     "pixels": 98,
+     "was": {
+      "status": "близко",
+      "pixels": 98
+     }
+    },
+    {
+     "id": "nav",
+     "owner": "R01",
+     "ref": {
+      "x": 445,
+      "y": 20,
+      "w": 476,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Карта",
+      "all": "Карта Картина дня Обращения Проекты Ещё",
+      "cls": ".nav.glass"
+     },
+     "build": {
+      "x": 438,
+      "y": 20,
+      "w": 490,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Карта",
+      "all": "Карта Картина дня Обращения Ведомства Ещё",
+      "cls": ".bk-nav.birge-nav"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 445,20 476×44 → 438,20 490×44 (Δx -7, Δy 0, Δw 14, Δh 0)"
+     ],
+     "geo": 14,
+     "absent": false,
+     "pixels": 86,
+     "was": {
+      "status": "расходится",
+      "pixels": 83
+     }
+    },
+    {
+     "id": "me",
+     "owner": "R01",
+     "ref": {
+      "x": 1217,
+      "y": 20,
+      "w": 129,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 400,
+       "color": [
+        75,
+        87,
+        82,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "ҚАЗ ·",
+      "all": "ҚАЗ · РУС А",
+      "cls": ".me.glass"
+     },
+     "build": {
+      "x": 1186,
+      "y": 20,
+      "w": 160,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 400,
+       "color": [
+        63,
+        74,
+        70,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "ҚАЗ",
+      "all": "ҚАЗ РУС",
+      "cls": ".birge-me.bk-glass"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 1217,20 129×44 → 1186,20 160×44 (Δx -31, Δy 0, Δw 31, Δh 0)",
+      "цвет текста #4b5752 → #3f4a46"
+     ],
+     "geo": 31,
+     "absent": false,
+     "pixels": 86,
+     "was": {
+      "status": "расходится",
+      "pixels": 86
+     }
+    },
+    {
+     "id": "card",
+     "owner": "R07",
+     "ref": {
+      "x": 20,
+      "y": 84,
+      "w": 388,
+      "h": 559,
+      "radius": 18,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Остановка «Хан Шатыр»",
+      "all": "Остановка «Хан Шатыр» Остановки и транспорт · просп. Туран 6",
+      "cls": ".card.glass"
+     },
+     "build": {
+      "x": 20,
+      "y": 84,
+      "w": 388,
+      "h": 600,
+      "radius": 18,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Остановка «Хан Шатыр»",
+      "all": "Остановка «Хан Шатыр» Остановка · Нура · Пример 12 человек с",
+      "cls": "#civic-panel.civic-panel.bk-glass"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 20,84 388×559 → 20,84 388×600 (Δx 0, Δy 0, Δw 0, Δh 41)"
+     ],
+     "geo": 41,
+     "absent": false,
+     "pixels": 74,
+     "was": {
+      "status": "расходится",
+      "pixels": 76
+     }
+    },
+    {
+     "id": "card-title",
+     "owner": "R07",
+     "ref": {
+      "x": 99,
+      "y": 103,
+      "w": 246,
+      "h": 24,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Остановка «Хан Шатыр»",
+      "all": "Остановка «Хан Шатыр»",
+      "cls": "h2"
+     },
+     "build": {
+      "x": 98,
+      "y": 102,
+      "w": 242,
+      "h": 24,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Остановка «Хан Шатыр»",
+      "all": "Остановка «Хан Шатыр»",
+      "cls": ".r07-card__title"
+     },
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "geo": 4,
+     "absent": false,
+     "pixels": 68,
+     "was": {
+      "status": "совпадает",
+      "pixels": 68
+     }
+    },
+    {
+     "id": "card-close",
+     "owner": "R07",
+     "ref": {
+      "x": 357,
+      "y": 103,
+      "w": 32,
+      "h": 32,
+      "radius": 50,
+      "bg": [
+       18,
+       26,
+       23,
+       0.06
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".x"
+     },
+     "build": {
+      "x": 352,
+      "y": 96,
+      "w": 44,
+      "h": 44,
+      "radius": 50,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".r07-x"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место в «card»/размер: эталон +337,+19 32×32 → +332,+12 44×44 (Δx -5, Δy -7, Δw 12, Δh 12)",
+      "фон #121a17/6% → #000000/0%"
+     ],
+     "geo": 12,
+     "absent": false,
+     "pixels": 95,
+     "was": {
+      "status": "расходится",
+      "pixels": 95
+     }
+    },
+    {
+     "id": "card-count",
+     "owner": "R07",
+     "ref": {
+      "x": 39,
+      "y": 180,
+      "w": 21,
+      "h": 41,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 34,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "6",
+      "all": "6",
+      "cls": "b"
+     },
+     "build": {
+      "x": 38,
+      "y": 166,
+      "w": 43,
+      "h": 41,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 34,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "12",
+      "all": "12",
+      "cls": "b"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место в «card»/размер: эталон +19,+96 21×41 → +18,+82 43×41 (Δx -1, Δy -14, Δw 22, Δh 0)"
+     ],
+     "geo": 22,
+     "absent": false,
+     "pixels": 64,
+     "was": {
+      "status": "расходится",
+      "pixels": 74
+     }
+    },
+    {
+     "id": "card-btn-main",
+     "owner": "R07",
+     "ref": {
+      "x": 39,
+      "y": 268,
+      "w": 240,
+      "h": 44,
+      "radius": 12,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 600,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Отметить исправленным",
+      "all": "Отметить исправленным",
+      "cls": ".btn.p"
+     },
+     "build": {
+      "x": 38,
+      "y": 257,
+      "w": 352,
+      "h": 44,
+      "radius": 12,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 600,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Отметить исправленным",
+      "all": "Отметить исправленным",
+      "cls": ".r07-btn.r07-btn--primary"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место в «card»/размер: эталон +19,+184 240×44 → +18,+173 352×44 (Δx -1, Δy -11, Δw 112, Δh 0)"
+     ],
+     "geo": 112,
+     "absent": false,
+     "pixels": 87,
+     "was": {
+      "status": "расходится",
+      "pixels": 86
+     }
+    },
+    {
+     "id": "card-btn-2",
+     "owner": "R07",
+     "ref": {
+      "x": 287,
+      "y": 268,
+      "w": 102,
+      "h": 44,
+      "radius": 12,
+      "bg": [
+       18,
+       26,
+       23,
+       0.06
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Ответить",
+      "all": "Ответить",
+      "cls": ".btn.s"
+     },
+     "build": {
+      "x": 38,
+      "y": 305,
+      "w": 43,
+      "h": 44,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Обзор",
+      "all": "Обзор",
+      "cls": "#r07-tab-overview.r07-tab"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место в «card»/размер: эталон +267,+184 102×44 → +18,+221 43×44 (Δx -249, Δy 37, Δw -59, Δh 0)",
+      "радиус 12 → 0",
+      "фон #121a17/6% → #000000/0%",
+      "тень нет → есть",
+      "шрифт 15 → 14 px",
+      "вес 600 → 500"
+     ],
+     "geo": 249,
+     "absent": false,
+     "pixels": 78,
+     "was": {
+      "status": "расходится",
+      "pixels": 88
+     }
+    },
+    {
+     "id": "card-tabs",
+     "owner": "R07",
+     "ref": {
+      "x": 21,
+      "y": 316,
+      "w": 386,
+      "h": 44,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Обзор",
+      "all": "Обзор Обращения · 6 История",
+      "cls": ".tabs"
+     },
+     "build": {
+      "x": 20,
+      "y": 305,
+      "w": 388,
+      "h": 45,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Обзор",
+      "all": "Обзор Обращения · 12 История",
+      "cls": ".r07-tabs"
+     },
+     "err": null,
+     "status": "близко",
+     "notes": [
+      "место в «card»/размер: эталон +1,+232 386×44 → +0,+221 388×45 (Δx -1, Δy -11, Δw 2, Δh 1)"
+     ],
+     "geo": 11,
+     "absent": false,
+     "pixels": 92,
+     "was": {
+      "status": "близко",
+      "pixels": 93
+     }
+    },
+    {
+     "id": "pin-sel",
+     "owner": "R07",
+     "ref": {
+      "x": 848,
+      "y": 308,
+      "w": 44,
+      "h": 44,
+      "radius": 50,
+      "bg": [
+       226,
+       75,
+       74,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 2,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".c"
+     },
+     "build": {
+      "x": 646,
+      "y": 322,
+      "w": 48,
+      "h": 48,
+      "radius": 50,
+      "bg": [
+       163,
+       45,
+       45,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 2,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".r07-badge__dot"
+     },
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "geo": 4,
+     "absent": false,
+     "pixels": 15,
+     "was": {
+      "status": "совпадает",
+      "pixels": 26
+     }
+    },
+    {
+     "id": "pin-dim",
+     "owner": "R07",
+     "ref": {
+      "x": 592,
+      "y": 183,
+      "w": 34,
+      "h": 34,
+      "radius": 50,
+      "bg": [
+       163,
+       45,
+       45,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 2,
+      "opacity": 0.35,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".c"
+     },
+     "build": null,
+     "err": null,
+     "status": "НЕТ В СБОРКЕ",
+     "notes": [
+      "элемента нет"
+     ],
+     "absent": false,
+     "pixels": null,
+     "was": {
+      "status": "совпадает",
+      "pixels": 36
+     }
+    },
+    {
+     "id": "ctl",
+     "owner": "R01",
+     "ref": {
+      "x": 1300,
+      "y": 258,
+      "w": 46,
+      "h": 252,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "3D",
+      "all": "3D",
+      "cls": ".ctl"
+     },
+     "build": {
+      "x": 1298,
+      "y": 216,
+      "w": 48,
+      "h": 336,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 600,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "3D",
+      "all": "3D",
+      "cls": ".map-tools.bk-mapctl"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 1300,258 46×252 → 1298,216 48×336 (Δx -2, Δy -42, Δw 2, Δh 84)",
+      "цвет текста #121a17 → #ffffff"
+     ],
+     "geo": 84,
+     "absent": false,
+     "pixels": 63,
+     "was": {
+      "status": "расходится",
+      "pixels": 62
+     }
+    }
+   ],
+   "diffShare": 14,
+   "wasDiff": 14,
+   "tokens": {
+    "ref": null,
+    "build": null
+   }
+  },
+  "proj": {
+   "reached": "через «Ещё»",
+   "login": "ok",
+   "rows": [
+    {
+     "id": "search",
+     "owner": "R01",
+     "ref": {
+      "x": 20,
+      "y": 20,
+      "w": 388,
+      "h": 52,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 400,
+       "color": [
+        126,
+        138,
+        133,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Найти проект или идею",
+      "all": "Найти проект или идею",
+      "cls": ".search.glass"
+     },
+     "build": {
+      "x": 20,
+      "y": 20,
+      "w": 388,
+      "h": 52,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 400,
+       "color": [
+        126,
+        138,
+        133,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "/",
+      "all": "/",
+      "cls": ".civic-explore-field.bk-glass"
+     },
+     "err": null,
+     "status": "близко",
+     "notes": [
+      "шрифт 15 → 13 px"
+     ],
+     "geo": 0,
+     "absent": false,
+     "pixels": 92,
+     "was": {
+      "status": "близко",
+      "pixels": 92
+     }
+    },
+    {
+     "id": "nav",
+     "owner": "R01",
+     "ref": {
+      "x": 445,
+      "y": 20,
+      "w": 476,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        75,
+        87,
+        82,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Карта",
+      "all": "Карта Картина дня Обращения Проекты Ещё",
+      "cls": ".nav.glass"
+     },
+     "build": {
+      "x": 438,
+      "y": 20,
+      "w": 490,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        63,
+        74,
+        70,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Карта",
+      "all": "Карта Картина дня Обращения Ведомства Ещё",
+      "cls": ".bk-nav.birge-nav"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 445,20 476×44 → 438,20 490×44 (Δx -7, Δy 0, Δw 14, Δh 0)",
+      "цвет текста #4b5752 → #3f4a46"
+     ],
+     "geo": 14,
+     "absent": false,
+     "pixels": 68,
+     "was": {
+      "status": "расходится",
+      "pixels": 79
+     }
+    },
+    {
+     "id": "nav-on",
+     "owner": "R01",
+     "ref": {
+      "x": 760,
+      "y": 24,
+      "w": 93,
+      "h": 36,
+      "radius": 999,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Проекты",
+      "all": "Проекты",
+      "cls": ".on"
+     },
+     "build": {
+      "x": 863,
+      "y": 20,
+      "w": 61,
+      "h": 44,
+      "radius": 999,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 4,
+      "opacity": 1,
+      "font": {
+       "size": 14,
+       "weight": 500,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Ещё",
+      "all": "Ещё",
+      "cls": ".birge-nav__item"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 760,24 93×36 → 863,20 61×44 (Δx 103, Δy -4, Δw -32, Δh 8)",
+      "текст «Проекты» → «Ещё»",
+      "рамка 0 → 4 px"
+     ],
+     "geo": 103,
+     "absent": false,
+     "pixels": 57,
+     "was": {
+      "status": "расходится",
+      "pixels": 64
+     }
+    },
+    {
+     "id": "sheet",
+     "owner": "R06",
+     "ref": {
+      "x": 20,
+      "y": 84,
+      "w": 412,
+      "h": 664,
+      "radius": 18,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Проекты и идеи",
+      "all": "Проекты и идеи Идеи жителей · 6 Проекты акимата · 4 Сквер у ",
+      "cls": ".sheet.glass"
+     },
+     "build": {
+      "x": 20,
+      "y": 84,
+      "w": 412,
+      "h": 664,
+      "radius": 18,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Проекты и идеи",
+      "all": "Проекты и идеи Проекты и идеи Идеи жителей · 8 Проекты акима",
+      "cls": "#birge-screen.birge-day.birge-screen"
+     },
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "geo": 0,
+     "absent": false,
+     "pixels": 77,
+     "was": {
+      "status": "совпадает",
+      "pixels": 80
+     }
+    },
+    {
+     "id": "sheet-title",
+     "owner": "R06",
+     "ref": {
+      "x": 39,
+      "y": 106,
+      "w": 152,
+      "h": 23,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Проекты и идеи",
+      "all": "Проекты и идеи",
+      "cls": "b"
+     },
+     "build": {
+      "x": 38,
+      "y": 104,
+      "w": 150,
+      "h": 24,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Проекты и идеи",
+      "all": "Проекты и идеи",
+      "cls": ".ri-sheet-title"
+     },
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "geo": 2,
+     "absent": false,
+     "pixels": 77,
+     "was": {
+      "status": "совпадает",
+      "pixels": 77
+     }
+    },
+    {
+     "id": "seg",
+     "owner": "R06",
+     "ref": {
+      "x": 39,
+      "y": 143,
+      "w": 374,
+      "h": 36,
+      "radius": 12,
+      "bg": [
+       18,
+       26,
+       23,
+       0.06
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 500,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Идеи жителей · 6",
+      "all": "Идеи жителей · 6 Проекты акимата · 4",
+      "cls": ".seg"
+     },
+     "build": {
+      "x": 38,
+      "y": 142,
+      "w": 376,
+      "h": 36,
+      "radius": 12,
+      "bg": [
+       18,
+       26,
+       23,
+       0.06
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 500,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Идеи жителей · 8",
+      "all": "Идеи жителей · 8 Проекты акимата · 7",
+      "cls": ".ri-seg"
+     },
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "geo": 2,
+     "absent": false,
+     "pixels": 94,
+     "was": {
+      "status": "совпадает",
+      "pixels": 95
+     }
+    },
+    {
+     "id": "pc",
+     "owner": "R06",
+     "ref": {
+      "x": 33,
+      "y": 191,
+      "w": 386,
+      "h": 104,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Сквер у ЖК «Амина»",
+      "all": "Сквер у ЖК «Амина» Идея жителей · Нура На проверке 47",
+      "cls": ".pc.on"
+     },
+     "build": {
+      "x": 32,
+      "y": 190,
+      "w": 388,
+      "h": 91,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.72
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Велопарковка у подъезда",
+      "all": "Велопарковка у подъезда Идея жителей · Есиль На проверке",
+      "cls": ".bk-pc.ri-pc"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место в «sheet»/размер: эталон +13,+107 386×104 → +12,+106 388×91 (Δx -1, Δy -1, Δw 2, Δh -13)"
+     ],
+     "geo": 13,
+     "absent": false,
+     "pixels": 72,
+     "was": {
+      "status": "совпадает",
+      "pixels": 77
+     }
+    },
+    {
+     "id": "vote",
+     "owner": "R06",
+     "ref": {
+      "x": 349,
+      "y": 253,
+      "w": 60,
+      "h": 32,
+      "radius": 999,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 600,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "47",
+      "all": "47",
+      "cls": ".vote"
+     },
+     "build": {
+      "x": 349,
+      "y": 449,
+      "w": 61,
+      "h": 32,
+      "radius": 999,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 600,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "58",
+      "all": "58",
+      "cls": ".bk-vote.ri-vote"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место в «pc»/размер: эталон +316,+62 60×32 → +317,+259 61×32 (Δx 1, Δy 197, Δw 1, Δh 0)"
+     ],
+     "geo": 197,
+     "absent": false,
+     "pixels": 91,
+     "was": {
+      "status": "расходится",
+      "pixels": 92
+     }
+    },
+    {
+     "id": "pd",
+     "owner": "R06",
+     "ref": {
+      "x": 942,
+      "y": 132,
+      "w": 340,
+      "h": 458,
+      "radius": 18,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 18,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Сквер у ЖК «Амина»",
+      "all": "Сквер у ЖК «Амина» 47 поддержали 2027 срок ~45 млн ₸ оценка ",
+      "cls": ".pd.glass"
+     },
+     "build": {
+      "x": 942,
+      "y": 132,
+      "w": 340,
+      "h": 304,
+      "radius": 18,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 18,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Велопарковка у подъезда",
+      "all": "Велопарковка у подъезда 0 поддержали Есиль район Сквер объек",
+      "cls": ".bk-pd.ri-pd"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 942,132 340×458 → 942,132 340×304 (Δx 0, Δy 0, Δw 0, Δh -154)"
+     ],
+     "geo": 154,
+     "absent": false,
+     "pixels": 46,
+     "was": {
+      "status": "расходится",
+      "pixels": 72
+     }
+    },
+    {
+     "id": "tag",
+     "owner": "R05",
+     "ref": {
+      "x": 828,
+      "y": 270,
+      "w": 104,
+      "h": 26,
+      "radius": 999,
+      "bg": [
+       215,
+       245,
+       124,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 12,
+       "weight": 700,
+       "color": [
+        47,
+        74,
+        16,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Проект · 2027",
+      "all": "Проект · 2027",
+      "cls": ".tag"
+     },
+     "build": null,
+     "err": null,
+     "status": "НЕТ В СБОРКЕ",
+     "notes": [
+      "элемента нет"
+     ],
+     "absent": false,
+     "pixels": null,
+     "was": {
+      "status": "НЕТ В СБОРКЕ",
+      "pixels": null
+     }
+    }
+   ],
+   "diffShare": 42,
+   "wasDiff": 16,
+   "tokens": {
+    "ref": null,
+    "build": null
+   }
+  },
+  "phone": {
+   "reached": true,
+   "login": null,
+   "rows": [
+    {
+     "id": "p-search",
+     "owner": "R01",
+     "ref": {
+      "x": 14,
+      "y": 54,
+      "w": 347,
+      "h": 50,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 15,
+       "weight": 400,
+       "color": [
+        126,
+        138,
+        133,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Улица, остановка или район",
+      "all": "Улица, остановка или район",
+      "cls": ".p-search.glass"
+     },
+     "build": {
+      "x": 8,
+      "y": 8,
+      "w": 359,
+      "h": 52,
+      "radius": 16,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "/×",
+      "cls": ".civic-explore-field.bk-glass"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 14,54 347×50 → 8,8 359×52 (Δx -6, Δy -46, Δw 12, Δh 2)"
+     ],
+     "geo": 46,
+     "absent": false,
+     "pixels": 80,
+     "was": {
+      "status": "расходится",
+      "pixels": 91
+     }
+    },
+    {
+     "id": "p-sheet",
+     "owner": "R09",
+     "ref": {
+      "x": 0,
+      "y": 452,
+      "w": 375,
+      "h": 360,
+      "radius": 26,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 1,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Рядом с вами",
+      "all": "Рядом с вами ҚАЗ · РУС 6 Остановка «Хан Шатыр» Не горит свет",
+      "cls": ".p-sheet.glass"
+     },
+     "build": {
+      "x": 0,
+      "y": 426,
+      "w": 375,
+      "h": 386,
+      "radius": 26,
+      "bg": [
+       255,
+       255,
+       255,
+       0.86
+      ],
+      "blur": 24,
+      "saturate": 1.8,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Рядом с вами",
+      "all": "Рядом с вами ҚАЗ РУС 1 Остановка «Автоцентр Камаз» Остановка",
+      "cls": ".bk-phsheet.bk-glass"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место/размер: эталон 0,452 375×360 → 0,426 375×386 (Δx 0, Δy -26, Δw 0, Δh 26)"
+     ],
+     "geo": 26,
+     "absent": false,
+     "pixels": 83,
+     "was": {
+      "status": "расходится",
+      "pixels": 79
+     }
+    },
+    {
+     "id": "p-sheet-title",
+     "owner": "R09",
+     "ref": {
+      "x": 17,
+      "y": 478,
+      "w": 131,
+      "h": 23,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Рядом с вами",
+      "all": "Рядом с вами",
+      "cls": "b"
+     },
+     "build": {
+      "x": 16,
+      "y": 461,
+      "w": 124,
+      "h": 23,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 19,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "Рядом с вами",
+      "all": "Рядом с вами",
+      "cls": "#bc-near-title.bk-phsheet__title"
+     },
+     "err": null,
+     "status": "близко",
+     "notes": [
+      "место в «p-sheet»/размер: эталон +17,+26 131×23 → +16,+35 124×23 (Δx -1, Δy 9, Δw -7, Δh 0)"
+     ],
+     "geo": 9,
+     "absent": false,
+     "pixels": 82,
+     "was": {
+      "status": "близко",
+      "pixels": 81
+     }
+    },
+    {
+     "id": "p-hot",
+     "owner": "R09",
+     "ref": {
+      "x": 17,
+      "y": 507,
+      "w": 341,
+      "h": 54,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 700,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "6",
+      "all": "6 Остановка «Хан Шатыр» Не горит свет · в работе",
+      "cls": ".hot"
+     },
+     "build": {
+      "x": 16,
+      "y": 501,
+      "w": 343,
+      "h": 55,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 700,
+       "color": [
+        90,
+        58,
+        0,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "1",
+      "all": "1 Остановка «Автоцентр Камаз» Остановка: павильон, скамья",
+      "cls": ".bc-near__item"
+     },
+     "err": null,
+     "status": "расходится",
+     "notes": [
+      "место в «p-sheet»/размер: эталон +17,+55 341×54 → +16,+75 343×55 (Δx -1, Δy 20, Δw 2, Δh 1)",
+      "цвет текста #ffffff → #5a3a00"
+     ],
+     "geo": 20,
+     "absent": false,
+     "pixels": 81,
+     "was": {
+      "status": "расходится",
+      "pixels": 80
+     }
+    },
+    {
+     "id": "fab",
+     "owner": "R09",
+     "ref": {
+      "x": 16,
+      "y": 724,
+      "w": 343,
+      "h": 54,
+      "radius": 16,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 16,
+       "weight": 600,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Inter"
+      },
+      "off": false,
+      "text": "Сообщить о проблеме",
+      "all": "Сообщить о проблеме",
+      "cls": ".fab"
+     },
+     "build": {
+      "x": 16,
+      "y": 724,
+      "w": 343,
+      "h": 54,
+      "radius": 16,
+      "bg": [
+       18,
+       26,
+       23,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 16,
+       "weight": 600,
+       "color": [
+        255,
+        255,
+        255,
+        1
+       ],
+       "family": "Segoe UI"
+      },
+      "off": false,
+      "text": "Сообщить о проблеме",
+      "all": "Сообщить о проблеме",
+      "cls": ".bk-fab.bc-fab"
+     },
+     "err": null,
+     "status": "близко",
+     "notes": [
+      "шрифт Inter → Segoe UI"
+     ],
+     "geo": 0,
+     "absent": false,
+     "pixels": 93,
+     "was": {
+      "status": "близко",
+      "pixels": 93
+     }
+    },
+    {
+     "id": "fab-icon",
+     "owner": "R09",
+     "ref": {
+      "x": 79,
+      "y": 738,
+      "w": 26,
+      "h": 26,
+      "radius": 8,
+      "bg": [
+       215,
+       245,
+       124,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": "i"
+     },
+     "build": {
+      "x": 79,
+      "y": 738,
+      "w": 26,
+      "h": 26,
+      "radius": 8,
+      "bg": [
+       215,
+       245,
+       124,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".bk-fab__ic.bc-fab__mark"
+     },
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "geo": 0,
+     "absent": false,
+     "pixels": 85,
+     "was": {
+      "status": "совпадает",
+      "pixels": 85
+     }
+    },
+    {
+     "id": "pin",
+     "owner": "R07",
+     "ref": {
+      "x": 123,
+      "y": 233,
+      "w": 34,
+      "h": 34,
+      "radius": 50,
+      "bg": [
+       226,
+       75,
+       74,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 2,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".c"
+     },
+     "build": {
+      "x": 8,
+      "y": 353,
+      "w": 34,
+      "h": 34,
+      "radius": 50,
+      "bg": [
+       239,
+       159,
+       39,
+       1
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": true,
+      "border": 2,
+      "opacity": 1,
+      "font": null,
+      "off": false,
+      "text": "",
+      "all": "",
+      "cls": ".r07-badge__dot"
+     },
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "geo": 0,
+     "absent": false,
+     "pixels": 29,
+     "was": {
+      "status": "совпадает",
+      "pixels": 33
+     }
+    },
+    {
+     "id": "легенда сверху",
+     "owner": "R01",
+     "ref": null,
+     "build": null,
+     "err": null,
+     "status": "совпадает",
+     "notes": [],
+     "absent": true,
+     "pixels": null,
+     "was": {
+      "status": "лишнее",
+      "pixels": null
+     }
+    },
+    {
+     "id": "кнопки карты",
+     "owner": "R01",
+     "ref": null,
+     "build": {
+      "x": 312,
+      "y": 72,
+      "w": 48,
+      "h": 276,
+      "radius": 0,
+      "bg": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "blur": 0,
+      "saturate": null,
+      "shadow": false,
+      "border": 0,
+      "opacity": 1,
+      "font": {
+       "size": 13,
+       "weight": 600,
+       "color": [
+        18,
+        26,
+        23,
+        1
+       ],
+       "family": "Birge Sans"
+      },
+      "off": false,
+      "text": "3D",
+      "all": "3D",
+      "cls": ".map-tools.bk-mapctl"
+     },
+     "err": null,
+     "status": "лишнее",
+     "notes": [
+      "в эталоне телефона кнопок карты нет; в сборке: .map-tools.bk-mapctl 312,72 48×276 «3D»"
+     ],
+     "absent": true,
+     "pixels": null,
+     "was": {
+      "status": "лишнее",
+      "pixels": null
+     }
+    }
+   ],
+   "diffShare": 14,
+   "wasDiff": 13,
+   "tokens": {
+    "ref": null,
+    "build": null
+   }
+  }
+ }
+}
