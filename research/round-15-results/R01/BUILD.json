@@ -1,19 +1,39 @@
 {
-  "build": "FINAL-4.1",
-  "code_sha": "bd3800d8ef5c489ea99b77f2fc9256b99fd4ccb4",
+  "build": "FINAL-5",
+  "code_sha": "c2276360a322dfce8f484a9f93fd471974987123",
   "branch": "claude/brave-fermi-nhzetj",
-  "at": "2026-10-15T17:12:00+05:00",
-  "base": "e91acb69 (пакет claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + research/round-15)",
+  "at": "2026-10-16T13:33:34+05:00",
+  "base": "e91acb69 (пакет claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + research/round-15); прошлая сборка FINAL-4.1 bd3800d8",
+  "schedule": "поправка П2 (16 окт 10:30): FINAL-5 в 14:00 по Астане вместо B1, B2 отменена, FINAL-5.1 в 16:00 — раунд закрыт",
   "roles": {
-    "R01": "bd3800d8 (оболочка: «Ещё» под кнопкой, один знак Birge, поиск телефона во всю ширину, 1024 поля 12, одна шторка на телефоне)",
-    "R07": "fe209c56 (web/civic/heat/heat.js, heat.css) + patches/R01_shell_closable_desktop.patch",
-    "R09": "e494026e (D0: web/civic/feedback, tests/civic/R09)"
+    "R01": "c2276360 (оболочка Birge раунда 15: меню IA_ROUND15, маршруты API v2 раунда 15, демо-мир, режим показа ?show=1, Ctrl+K сцены 7–9, колокольчик R06 и чип «▶ Хроника» R07 в оболочке, разделы-страницы)",
+    "R02": "fa9ab80b (демо-мир world_v1.json: ҚАЗ тексты, субботник сцены 7)",
+    "R03": "2fe5a53b («Спросить Birge»)",
+    "R04": "f526b942 (маршрутизация, модерация, ответы)",
+    "R05": "2acfbbfc (D1.5 — 3D белый макет, ориентиры без моделей (П1))",
+    "R06": "d688c45f («Проекты и идеи», «Уведомления»)",
+    "R07": "d43dd650 (тепловая карта, «Хроника города»)",
+    "R08": "840d62de («Картина дня» 2.0, Ситуационный центр, «Картина недели» (ветка laughing-euler))",
+    "R09": "af69e9a5 («Обращения» v2.1, совместное исполнение)",
+    "R10": "58234e5a (приёмка: demo_flow, demo_flow_v2, аудит)",
+    "R11": "d20d823f (ui-kit раунда 15, словари ru / kk)",
+    "R12": "68196b7c («Календарь работ», QR-таблички)",
+    "R13": "865289cb («Вопросы и встречи», прогноз)",
+    "R14": "— (docs/gton, docs/birge — из ветки пакета в FINAL-5.1)",
+    "R15": "ac54e27b (тесты безопасности)",
+    "R16": "8aaeb910 («Мой двор», «Сделаем вместе»)",
+    "R17": "622dcf1f («Штаб ведомств», кризис)"
   },
-  "demo_world": "нет (флаг CIVIC_DEMO_WORLD появится в следующей сборке)",
+  "demo_world": "включён по умолчанию: run-city.bat / run.bat / run.sh ставят CIVIC_DEMO_WORLD=1 (выключить — =0)",
   "checks": {
-    "pytest": "3599 passed / 2 failed на 0b76f9ed — те же 2 FAIL на базе e91acb69 (R10 accuracy c24-R12, c28-R07: данные LOCAL-10 пакета, см. BUILD_LOG); tests/civic/R09 на bd3800d8: 550 passed",
-    "browser_r01": "на 0b76f9ed: P0, сценарии, город, пустой реестр, шапка 43/0, B1 16/0, B2 28/0, волна 2 42/0; на bd3800d8: шапка 43/0, B1 16/0, B2 28/0, волна 2 42/0",
-    "web_check_and_node": "PASS (ui.web_check, govtech ×5, R12 map/editor/glyphs, R04, R01 explore)"
-  },
-  "next": "маршруты раунда 15 (CONTRACT §7), демо-мир (§11), меню R11 IA_ROUND15, режим показа; B1 — 16 окт 14:00"
+    "pytest": "весь tests/ на B0.19 — 5015 PASS / 0 FAIL; роли после B0.19 (B0.20–B0.23) — 1837 / 0, 2218 / 0, 1586 / 0, 557 / 0; полный run_checks на c2276360 — идёт, итог в BUILD_LOG",
+    "R10_part1": "demo_flow --world (1366 / 375 × ru / kk), кандидат b32945a4: 172 PASS / 0 FAIL / 2 NOT_RUN — как FINAL-4",
+    "R10_scenes": "demo_flow_v2 (1366 / 1024 / 375 × ru / kk), кандидат b32945a4: 337 PASS / 0 FAIL / 0 NOT_RUN; Ctrl+K сцена 7 — 515–853 мс",
+    "R15": "tests/civic/R15 в pytest ролей: PASS (565 / 0 по R15 на B0.16; тест GET demo/scenes — PASS)",
+    "first_badge": "медиана 1,61 с (1366) / 1,43 с (375), порог 3 с",
+    "browser_r01": "r15_ia 41 / 0 (c2276360-кандидаты B0.21–B0.23), r14_wave2 42 / 0, r14_b2 28 / 0",
+    "P1": "82 кадра новых разделов просмотрены — нарушений нет (screens/b1/README.md); моделей ориентиров в web/civic/build3d нет",
+    "visual_brief_3": "8 из 8 дефектов закрыты (таблица в BUILD_LOG)",
+    "world_line": "civic-world: R09 743, R06 55, R16 42, R17 3, R13 24, R12 39 (новых 0), R07 6"
+  }
 }

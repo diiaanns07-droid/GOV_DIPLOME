@@ -44,8 +44,9 @@ git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md
 
 ## Последняя сборка
 
-**FINAL-4.1 = `bd3800d8`** (15 окт, 17:12 по Астане) — `research/round-15-results/R01/BUILD.json`.
-R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты оболочки VISUAL_BRIEF §3. Журнал — BUILD_LOG.md.
+**FINAL-5 = `c2276360`** (16 окт, 13:33 по Астане; поправка П2 — вместо B1) — `research/round-15-results/R01/BUILD.json`.
+Все поставки ролей на 13:30 (таблица ниже), демо-мир по умолчанию, меню IA_ROUND15, сцены 7–9, режим показа.
+Прошлая: FINAL-4.1 = `bd3800d8` (15 окт 17:12). Журнал — BUILD_LOG.md.
 
 ## Сделано
 - 16:24 роль занята, триггер продолжения поставлен.
@@ -82,6 +83,8 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
   РУС и ҚАЗ, BUILD_LOG B0…B0.4.
 - 05:30 (16 окт) B0.15 (`79c766c1`): R03 76b4fe35, R08 1a1a4a9b (знак-домик на Ситуационном центре), R11 a0178fbe,
   R12 9a3ae1f4, R16 0534ea6c, R17 19fb4eb3; pytest этих ролей + R01 1448/0, r15_ia 41/0.
+- 13:33 (16 окт) B0.23 (R03 2fe5a53b) и **FINAL-5 = `c2276360`** — BUILD.json, DELIVERY.json, DEMO_SCRIPT (таблица FINAL-5);
+  после 13:30 новых поставок нет. Полный run_checks на c2276360 — в работе.
 - 12:31 (16 окт) B0.22 (`3c360c88`): R06 d688c45f, R10 58234e5a, R13 865289cb (conftest — порядок R13 → R03 исправлен);
   pytest R01/R06/R13/R03 1586/0, r15_ia 41/0.
 - 11:33 (16 окт) B0.21 (`fceec354`): R03 3085aa61, R07 d43dd650, R08 840d62de, R13 b24adf5d, R15 ac54e27b, R17 622dcf1f;
@@ -149,7 +152,7 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 | Роль | Ветка раунда 15 | Поставка (DELIVERY code_sha) | Взято в сборку |
 |---|---|---|---|
 | R02 | claude/affectionate-shannon-jm6ws5 | fa9ab80b (мир 1.1, ҚАЗ тексты) | B0: 907bfc9d · B0.2: c002aa85 · B0.3: c68b179f · B0.7: eaed8f4f · B0.8: 0152ef19 · B0.19: fa9ab80b |
-| R03 | claude/modest-mccarthy-lrl98u | 3085aa61 («Спросить Birge») | B0: 7724787e · B0.5: c6574a39 · B0.7: 82b1999d · B0.8: cb24034d · B0.10: 90fd9824 · B0.11: 2fa90bfe · B0.12: 084f1168 · B0.15: 76b4fe35 · B0.18: 35fd84a6 · B0.19: 233ce8a8 · B0.21: 3085aa61 |
+| R03 | claude/modest-mccarthy-lrl98u | 2fe5a53b («Спросить Birge») | B0: 7724787e · B0.5: c6574a39 · B0.7: 82b1999d · B0.8: cb24034d · B0.10: 90fd9824 · B0.11: 2fa90bfe · B0.12: 084f1168 · B0.15: 76b4fe35 · B0.18: 35fd84a6 · B0.19: 233ce8a8 · B0.21: 3085aa61 · B0.23 / FINAL-5: 2fe5a53b |
 | R04 | claude/gifted-maxwell-i66wwi | f526b942 (route, moderate, replies) | B0: c5383235 · B0.3: 0affd9d0 · B0.10: be7dcd1a · B0.12: 0d4bb1b6 · B0.13: ed24c452 · B0.19: f526b942 |
 | R05 | claude/bold-cray-dopshy | 2acfbbfc (D1.5, белый макет) | B0.2: 645d6008 · B0.3: 0050c4ce · B0.5: b1e7fcf6 · B0.7: 6d45fa3b · B0.8: 4af0ef5f · B0.10: e30167fe · B0.11: 2acfbbfc |
 | R06 | claude/eloquent-einstein-wvuyje | d688c45f («Уведомления», идеи) | B0.4: 2daa408a · B0.7: 7f6636cd · B0.8: e80d4f46 · B0.10: 66c697c2 · B0.13: c7c8fbe8 · B0.19: e0ad2370 · B0.22: d688c45f |

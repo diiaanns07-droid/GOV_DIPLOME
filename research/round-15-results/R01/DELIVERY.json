@@ -4,42 +4,43 @@
   "branch": "claude/brave-fermi-nhzetj",
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
   "restored_from": "a4937462 (FINAL-4, claude/sharp-dijkstra-0t87gl) — в базе пакета без изменений",
-  "code_sha": "c2df555a",
-  "tested_sha": "c2df555a",
+  "code_sha": "c2276360a322dfce8f484a9f93fd471974987123",
+  "tested_sha": "c2276360a322dfce8f484a9f93fd471974987123",
   "push_status": "OK (push после каждого коммита; см. git log origin/claude/brave-fermi-nhzetj)",
-  "builds": {"FINAL-4.1": "bd3800d8"},
+  "builds": {
+    "FINAL-4.1": "bd3800d8",
+    "FINAL-5": "c2276360"
+  },
+  "schedule": "поправка П2: FINAL-5 — 16 окт 14:00 по Астане (вместо B1, B2 отменена), FINAL-5.1 — 16:00, раунд закрыт",
   "changed_paths": [
-    "ui/web_server.py", "web/civic/shell/birge.js", "web/civic/shell/birge-ref.js", "web/civic/shell/birge.css",
-    "web/civic/shell/birge-ref.css", "web/civic/shell/shell.js", "web/civic/shell/shell-text.js",
-    "tests/civic/R01/round15/", "tests/civic/R01/browser/r15_ia.cjs", "tests/civic/R01/browser/r14_wave2.cjs",
-    "tests/civic/R01/test_r01_api_v2.py", "tests/civic/R01/run_checks.sh",
-    "web/civic/heat/heat.js и heat.css — поставка R07 fe209c56", "web/civic/feedback, tests/civic/R09 — поставка R09 e494026e"
+    "ui/web_server.py (маршруты API v2 раунда 15, демо-мир seed_world, GET demo/scenes, прогрев R03 / R16 / R07, связка wire)",
+    "web/index.html (ассеты и скрипты модулей раунда 15)",
+    "web/civic/shell/birge.js, birge-ref.js, birge.css, birge-ref.css, shell.js, shell-text.js, basemap-style.js, explore.js",
+    "run-city.bat, run.bat, run.sh (демо-мир по умолчанию)",
+    "tests/civic/R01/ (round15/, conftest.py, run_checks.sh, browser/r15_ia.cjs, r15_frames.cjs, r15_pairs.cjs, r15_pairs_merge.py, r15_first_badge.cjs, r14_wave2.cjs, design_shots.cjs)",
+    "research/round-15-results/R01/ (BUILD.json, BUILD_LOG.md, DEMO_SCRIPT.md, DELIVERY.json, screens/)",
+    "research/handoffs/astana/R01/round15/STATUS.md",
+    "пути ролей — только их поставки по DELIVERY code_sha (таблица в STATUS и BUILD.json)"
   ],
   "tests": {
-    "pytest tests/civic/R01/round15": "PASS 154 passed, 1 skipped (мир R02 ещё не в ветке R01)",
-    "pytest R01 + R15 + R06 r14 + R13 + R09": "PASS 1433 passed, 3 skipped (на d987a112)",
-    "pytest весь tests/ (FINAL-4.1, 0b76f9ed)": "FAIL 3599 / 2 — оба R10 accuracy [c24-R12], [c28-R07], те же на базе e91acb69 (данные LOCAL-10 пакета), не оболочка",
-    "browser r15_ia.cjs (новый)": "PASS 25/0 (на c2df555a)",
-    "browser r14_wave2.cjs": "PASS 42/0 (на c2df555a, ?screens=r14)",
-    "browser r14_shell / r14_b1 / r14_b2 / p0_flow (FINAL-4.1 bd3800d8)": "PASS 43/0 · 16/0 · 28/0 · 63/0 (1 NOT_RUN)",
-    "R10 demo_flow на FINAL-4.1": "NOT_RUN (R10 гоняет сам; ~30 мин на прогон)"
+    "pytest весь tests/ (B0.19 5b696879)": "PASS 5015 / 0 (23 skipped, 1 xfailed)",
+    "pytest ролей после B0.19 (B0.20–B0.23)": "PASS: 1837 / 0, 2218 / 0, 1586 / 0, 557 / 0",
+    "run_checks на FINAL-5 c2276360": "идёт (итог — BUILD_LOG / FINAL-5.1)",
+    "R10 demo_flow --world, часть 1 (кандидат b32945a4)": "PASS 172 / 0 / 2 (как FINAL-4)",
+    "R10 demo_flow_v2, сцены 7–9, 1366 / 1024 / 375 × ru / kk (b32945a4)": "PASS 337 / 0 / 0",
+    "browser r15_ia (меню IA_ROUND15, сцены, режим показа, колокольчик, хроника, разделы-страницы)": "PASS 41 / 0",
+    "browser r14_wave2 (меню FINAL-4, ?screens=r14)": "PASS 42 / 0",
+    "первый значок карты (r15_first_badge, 5 прогонов)": "PASS медиана 1,61 с (1366) / 1,43 с (375), порог 3 с"
   },
   "screens": [
-    "research/round-15-results/R01/screens/final41/bylo-stalo-more-1366-ru.jpg",
-    "research/round-15-results/R01/screens/final41/bylo-stalo-more-1366-kk.jpg",
-    "research/round-15-results/R01/screens/final41/bylo-stalo-phone-375-ru.jpg",
-    "research/round-15-results/R01/screens/final41/bylo-stalo-phone-375-kk.jpg",
-    "research/round-15-results/R01/screens/final41/bylo-stalo-1024-ru.jpg",
-    "research/round-15-results/R01/screens/final41/bylo-stalo-1024-kk.jpg",
-    "research/round-15-results/R01/screens/final41/stalo-wizard-one-sheet-375-ru.jpg",
-    "research/round-15-results/R01/screens/final41/stalo-phone-akimat-375-kk.jpg",
-    "research/round-15-results/R01/screens/final41/stalo-1100-kk-capsule-tight.jpg"
+    "research/round-15-results/R01/screens/b1/frames/ (82 кадра новых разделов 1366 / 1024 / 375 × ru / kk)",
+    "research/round-15-results/R01/screens/b1/pairs/ (9 пар «было | стало» FINAL-4.1 → FINAL-5-кандидат)",
+    "research/round-15-results/R01/screens/final41/ (пары FINAL-4.1)"
   ],
   "known_limits": [
-    "Облако без интернета: подложка карты — упрощённый фон, 3D-зданий подложки нет (П1 правило 6; вид проверяет LOCAL-12).",
-    "Демо-мир: флаг CIVIC_DEMO_WORLD в run-city.bat/run.sh не включён — ждём seed_world модулей и регресс R10 части 1.",
-    "Колокольчик R06 и чип «Хроника» R07 в оболочке — когда придут их модули (API в INTEGRATION ролей).",
-    "Значки sparkle/monitor/bell — из ui-kit R11 раунда 15 (берётся в B1)."
+    "облако: тайлы подложки недоступны — карта на упрощённом фоне; кадры с настоящей картой — LOCAL после раунда",
+    "Ctrl+K «Сцена 7» в облаке 0,5–0,85 с (программный WebGL); на ноутбуке с видеокартой быстрее",
+    "дела жителей мира в виде ҚАЗ — по-русски (текст жителя не переводится; предложение R02 — часть дел мира на казахском)"
   ],
-  "next_step": "B1 — 16 окт 14:00 по Астане: поставки ролей по find_branches.py, CIVIC_ASSETS и теги, проверки, BUILD.json"
+  "next_step": "FINAL-5.1 в 16:00 по Астане: только исправления блокеров R10 / R15, docs/gton и docs/birge из ветки пакета (R14); затем STATUS «Раунд 15 закрыт»"
 }
