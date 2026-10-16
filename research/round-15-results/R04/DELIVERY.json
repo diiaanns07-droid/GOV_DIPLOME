@@ -1,13 +1,13 @@
 {
   "role": "R04",
   "round": 15,
-  "delivery": "D4 (П3, 16 окт 19:51 по Астане) — code 9c16e868: D3.3 a3888d13 + исправление R15-S53 (moderate-5, линейно; da0925fa) + патч казахских текстов R11 + экран по R10 B-134 / B-135 (ключи = словарь R11 d0266f76, мелкий текст --c-text-2, плашки людей — токены значков R11, слово в кадрах счётчика) + кадры убраны из папок R04 (тест П1). Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
+  "delivery": "D4.1 (П3, 16 окт 20:43 по Астане) — code c4e4581b: D4 9c16e868 + экран устойчив к расхождению словаря (B-134 на сборке B6.3 со словарём 554961ac), ответ 400 — свой текст в kk; проверка экрана — все состояния (168), HTTP-проверка без мигания. Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
   "branch": "claude/gifted-maxwell-i66wwi",
   "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
   "restored_from": null,
   "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
-  "code_sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
-  "tested_sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+  "code_sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+  "tested_sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
   "push_status": "OK",
   "changed_paths": [
     "ml/civic_replies/__init__.py",
@@ -234,7 +234,7 @@
       "failed": 0,
       "skipped": 1,
       "cmd": "pytest -q tests/civic/R04",
-      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+      "sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
       "note": "+10 тестов S53: враждебные цепочки цифр 200 → 5000 знаков (< 0,2 с) и сверка со старым перебором"
     },
     "P3_on_R09_branch": {
@@ -249,20 +249,23 @@
       "status": "PASS",
       "passed": 19,
       "failed": 0,
+      "runs": 3,
       "cmd": "tests/civic/R04/intake/http_check_intake.py",
-      "stand": "сборка R01 B6.2 06a62c8c + код R04 9c16e868 + словарь R11 d0266f76, мир R02, набор R02 «за ночь»",
-      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
-      "numbers": "301 → 127 задач · 19 служб · 9 срочных · 174 повтора; ready 106 = 104 новых + 2 к открытым; 0,31 с"
+      "stand": "сборка R01 B6.3 f9b0cc85 + код R04 c4e4581b + словарь R11 ec1b0438, мир R02, набор R02 «за ночь»",
+      "sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+      "numbers": "301 → 127 задач · 19 служб · 9 срочных · 174 повтора; ready 106 = 104 новых + 2 к открытым"
     },
     "P3_stand_ui": {
       "status": "PASS",
-      "passed": 124,
+      "passed": 168,
       "failed": 0,
+      "runs": 2,
       "cmd": "node tests/civic/R04/intake/ui_check_intake.cjs",
-      "sizes": "1366 / 1024 / 375 × ru / kk",
-      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
-      "stand": "сборка R01 B6.2 06a62c8c + код R04 + словарь R11 d0266f76",
-      "new_checks": "нет «{n}» и сырых ключей; кнопка «Создать задачи» = подпись + одно число (= ready); «Почему так» с данными; контраст текста ≥ 4,5 : 1 (крупный ≥ 3 : 1); кадры счётчика — слово для показанного числа"
+      "sizes": "1366 / 1024 / 375 × ru / kk + состояния 1366-ru и 375-kk",
+      "sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+      "stand": "сборка R01 B6.3 f9b0cc85 + код R04 + словарь R11 ec1b0438",
+      "old_dictionary": "со словарём B6.3 554961ac (прежние ключи intake.*) — тоже 168 / 168; экран 9c16e868 с ним — FAIL B-134",
+      "states": "не сотрудник; файл .txt / .csv / не UTF-8; 501 строка (без запроса); идёт разбор; «Разобрать другие»; разбор 500 / 413 / 403 / нет связи / 400; пример не загрузился + «Повторить»; «Создать задачи» 404 / 503 + повтор"
     },
     "P3_neighbours_route_moderate": {
       "status": "PASS",
@@ -288,14 +291,6 @@
       "cmd": "pytest -q tests/civic/R15/round15/test_r15_round15_moderate.py tests/civic/R15/round15/test_r15_round15_intake.py (код R04 9c16e868 в дереве R15)",
       "note": "S53 (скорость 500 → 5000 знаков) — PASS; XPASS 5 — тесты S54 (два телефона подряд, «тел 87011234567 (1)» в moderate и на экране итога): закрыто moderate-5"
     },
-    "P3_on_R01_B6_2": {
-      "status": "PASS",
-      "branch_sha": "06a62c8c",
-      "R01_pytest": "374 passed / 1 skipped",
-      "R04_pytest": "569 passed / 1 skipped",
-      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
-      "note": "в дереве B6.2 — код R04 9c16e868 и словарь R11 d0266f76"
-    },
     "P3_R01_moderate_criterion": {
       "status": "PASS",
       "cmd": "moderate(\"8 \" * 2500)",
@@ -303,13 +298,21 @@
       "limit": 0.2,
       "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
       "note": "критерий R01 (STATUS a59e77dc) для moderate в FINAL-6"
+    },
+    "P3_on_R01_B6_3": {
+      "status": "PASS",
+      "branch_sha": "f9b0cc85",
+      "R01_pytest": "374 passed / 1 skipped",
+      "R04_plus_R09_intake": "580 passed / 1 skipped",
+      "sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+      "note": "в дереве B6.3 — код R04 c4e4581b и словарь R11 ec1b0438"
     }
   },
   "screens": [
     "web/civic/intake/intake.js",
     "web/civic/intake/intake.css"
   ],
-  "screens_note": "П3: экран «Разбор обращений» — window.BirgeIntake.mount(root, {api, apiBase, openTarget, openSection, path}) -> {setLang, setPath, destroy}; раздел #intake (SCREENS.intake R01; экран и сам зовёт registerScreen), #intake/sample — пример в поле. Ключи intake.* — те же, что в словаре R11 d0266f76 (ru — 0 расхождений, kk — 0), метка BirgeUI.aiTag(). Кадры 1366 / 1024 / 375 × ru / kk снимает ui_check_intake.cjs на стенде (в репозиторий не кладём — тест П1 test_r04_has_no_images_in_its_paths; screens/README.md).",
+  "screens_note": "П3: экран «Разбор обращений» — window.BirgeIntake.mount(root, {api, apiBase, openTarget, openSection, path}) -> {setLang, setPath, destroy}; раздел #intake (SCREENS.intake R01; экран и сам зовёт registerScreen), #intake/sample — пример в поле. Ключи intake.* — те же, что в словаре R11 d0266f76 (ru — 0 расхождений, kk — 0); если словарь сборки старше и его текст потерял данные экрана или оставил «{…}», экран берёт свой текст ключа (r04-intake-ui-3). Метка BirgeUI.aiTag(). Кадры 1366 / 1024 / 375 × ru / kk снимает ui_check_intake.cjs на стенде (в репозиторий не кладём — тест П1 test_r04_has_no_images_in_its_paths; screens/README.md).",
   "known_limits": [
     "Маршруты /route, /reply-draft, /moderate подключил R01 (2bd5bb5e; сборки B0–B0.6). На чистом FINAL-4 без шлюза R01 их нет — patches/r01_web_server_r04_routes.patch оставлен как справка.",
     "route(): правила и словари написаны вручную; на живых обращениях точность ниже, чем 1.0 набора (независимая оценка — R02 v1_in_v2: 0.868 согласие с категорией). Опечатки («батаоеи», «мсуорка») не ловятся.",
@@ -326,7 +329,7 @@
     "П3: оценка — на синтетическом наборе R02 (один автор, повторы похожи сильнее, чем в жизни); на живых обращениях числа будут ниже.",
     "П3: одноимённые остановки OSM — выбирается одна запись индекса; улицы-двойники склеены в одну цель (основная линия улицы); у перекрёстка выбирается центральный из светофоров узла."
   ],
-  "next_step": "П3: R01 берёт D4 (9c16e868; moderation только r04-moderate-5) и словарь R11 d0266f76 в кандидат FINAL-6 (17 окт 12:00); R10 перепроверяет B-134 / B-135; R11 — по желанию токены значков в .bk-lrow__cnt (INTEGRATION 9.11); 12:00–16:00 — только блокеры R10 / R15; 18:00 — «Раунд 15 закрыт».",
+  "next_step": "П3: R01 берёт D4.1 (c4e4581b; moderation только r04-moderate-5) и словарь R11 d0266f76 или новее в кандидат FINAL-6 (17 окт 12:00; в B6.3 f9b0cc85 — словарь 554961ac, INTEGRATION 9.12); R10 — B-134 / B-135 на кандидате; R11 — по желанию токены значков в .bk-lrow__cnt (9.11); 12:00–16:00 — только блокеры R10 / R15; 18:00 — «Раунд 15 закрыт».",
   "amendments": {
     "P1": {
       "read_at": "2026-10-15T17:15+05:00",
@@ -389,7 +392,7 @@
       "note": "По KK_REVIEW_R15 R11 (№ 19, 39, 40) и словарю joint.part.*: части служб — ждёт / в работе / сделано, күтуде / орындалуда / орындалды (было «ждёт очереди», «кезекте», «жұмыста»); «передали» по-казахски — «жіберілді» (было «берілді»). Отвергнутых R11 слов (учаске, дейін, батырма, дағдарыс) в текстах R04 нет."
     }
   },
-  "status": "П3 (раунд 15+ до FINAL-6): поставка D4 — «ИИ-разбор пачки обращений» (сцена 0); S53 исправлена; B-134 / B-135 — исправлены, ждут перепроверки R10",
+  "status": "П3 (раунд 15+ до FINAL-6): поставка D4.1 — «ИИ-разбор пачки обращений» (сцена 0); S53 / S54 закрыты moderate-5; B-134 / B-135 исправлены (R10 pv-p3d 123/0/0)",
   "final_builds": {
     "FINAL-5": "c2276360 (16 окт 13:33 по Астане)",
     "FINAL-5.1": "e8d6cae6 (16 окт 15:26; код FINAL-5 + документы R14)",
