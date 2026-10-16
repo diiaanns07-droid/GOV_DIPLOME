@@ -200,6 +200,10 @@
   "final_candidate_b019": {
    "status": "PASS",
    "how": "как соберёт R01: ветка R01 B0.19 5b696879 + git checkout 68196b7c -- пути R12 (отличаются только три файла календаря), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, мир R02: works_calendar.test.cjs 137/0 (1366/1024/375 × ru/kk + состояния + вкладка «Ведомств»), app_qr_acceptance.mjs 38/0, pytest tests/civic/R12 + tests/civic/R10/test_r10_accuracy.py 143/0 (в дереве сборки есть мир R02 — тест мира не пропускается), node --test tests/civic/R12/qr/qr.test.mjs 8/8"
+  },
+  "r01_build_b020": {
+   "status": "PASS",
+   "how": "сборка R01 B0.20 8f70baf1 (ветка 24e50493, кандидат B1/FINAL-5) как есть — все пути R12 = 68196b7c; CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: works_calendar.test.cjs 137/0, app_qr_acceptance.mjs 38/0"
   }
  },
  "screens": {
