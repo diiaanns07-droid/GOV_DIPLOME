@@ -20,6 +20,13 @@ SCENE = ("Где в Нуре больше всего жалоб на снег з
          "Какие службы отстают?", "Что с бураном?")
 
 
+@pytest.fixture(autouse=True, scope="module")
+def own_neighbours():
+    """Соседи в состоянии по умолчанию, даже если раньше в процессе шёл тест со шлюзом R01 (R01 B0.20)."""
+    with F.neighbour_defaults():
+        yield
+
+
 @pytest.fixture(autouse=True)
 def real_sources():
     core.reset()

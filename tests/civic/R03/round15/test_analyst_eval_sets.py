@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-import r03_r15_fixtures  # noqa: F401 — путь к корню репозитория
+import r03_r15_fixtures as F  # также путь к корню репозитория
 from agent.civic_assistant.analyst import core, evaluate
 
 pytest.importorskip("ui.civic_heat")
@@ -18,8 +18,15 @@ pytest.importorskip("ui.civic_akim")
 SETS = [Path(evaluate.HERE / name) for name in ("eval_set.json", "eval_set_holdout2.json")]
 
 
+@pytest.fixture(autouse=True, scope="module")
+def own_neighbours():
+    """Соседи в состоянии по умолчанию, даже если раньше в процессе шёл тест со шлюзом R01 (R01 B0.20)."""
+    with F.neighbour_defaults():
+        yield
+
+
 @pytest.fixture(scope="module")
-def oracle():
+def oracle(own_neighbours):
     return evaluate.Oracle()
 
 
