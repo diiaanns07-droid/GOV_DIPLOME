@@ -28,14 +28,13 @@
   // загрузки модулей. Раздел из NAV, вытесненный слотом (projects при agencies), попадает сюда своей группой.
   const MORE = {
     resident: [["together", "meetings", "questions"]],
-    akimat: [["projects", "together", "meetings", "questions"], ["analyst", "board", "qr", "works", "services", "works-calendar"]],
+    // П3 (R11 IA_ROUND15 §11.1): «Разбор обращений» R04 — первый в «Инструментах» (второй вход — кнопка в «Обращениях» R09).
+    akimat: [["projects", "together", "meetings", "questions"], ["intake", "analyst", "board", "qr", "works", "services", "works-calendar"]],
   };
   const MORE_GROUPS = { akimat: ["shell.more.group.residents", "shell.more.group.tools"] };
   const MORE_MAX = 7;
   // Без своего пункта, пока в этом виде доступен «родитель» (иначе — в «Ещё», как в FINAL-4). Адрес и Ctrl+K работают.
-  // П3: «Разбор обращений» (ИИ-разбор пачки R04) — из «Обращений» (кнопка «Разобрать пачку» R09), Ctrl+K и сцены 0.
-  const PARENT = { nearby: "yard", questions: "meetings", works: "agencies", services: "agencies", "works-calendar": "agencies",
-    intake: "inbox" };
+  const PARENT = { nearby: "yard", questions: "meetings", works: "agencies", services: "agencies", "works-calendar": "agencies" };
   // Совсем без пункта меню: публичная карточка кризиса R17 открывается баннером, уведомлением и Ctrl+K (IA_ROUND15 §3);
   // «Уведомления» R06 — колокольчик в капсуле справа (ноутбук) и первый пункт меню аватара (телефон), не «Ещё» (§5.7).
   const NO_ITEM = new Set(["crisis", "notifications"]);
@@ -152,7 +151,7 @@
     questions: "info", works: "calendar", qr: "print", services: "building", staff: "user",
     // Раунд 15 (IA_ROUND15 §7.6): значки — из icons.svg ui-kit R11 (новые sparkle, monitor, bell — с его поставки r15).
     yard: "home", together: "heart", meetings: "message", agencies: "building", analyst: "sparkle", board: "monitor",
-    crisis: "alert", "works-calendar": "calendar", notifications: "bell", intake: "sparkle" };
+    crisis: "alert", "works-calendar": "calendar", notifications: "bell", intake: "ai" };   // i-ai — значок ИИ R11 (П3)
   // Пустое состояние экрана (поправка П1 «Без ИИ-слопа», правило 2): одна маленькая монохромная иконка набора R11
   // (40 px, линия как у иконок меню) + короткий текст + одна кнопка. Больших иллюстраций нет. Без innerHTML.
   function stateIcon(name) {

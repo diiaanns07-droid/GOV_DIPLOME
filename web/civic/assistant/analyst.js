@@ -25,6 +25,9 @@
   var HISTORY = 5;
   var scriptBase = ((doc.currentScript && doc.currentScript.src) || "").replace(/[^/]*$/, "");
   var ICONS = scriptBase + "../ui-kit/icons.svg";
+  // П3 «ИИ должен быть виден»: маленький монохромный значок набора R11 у ответа + подсказка «Подсказка ИИ — проверьте».
+  // Свой значок «ИИ» у R11 появится — заменить имя здесь (сейчас — «sparkle» из набора R11 раунда 15).
+  var AI_ICON = "sparkle";
 
   // Ключи для словаря R11 (передаются в INTEGRATION.txt). Словарь главнее: есть ключ в BirgeI18n — берём его.
   var KEYS = {
@@ -43,6 +46,8 @@
       "analyst.loading": "Считаем по данным…",
       "analyst.offline": "Офлайн-режим",
       "analyst.offline_hint": "Ответ собран кодом по данным Birge, без языковой модели",
+      "analyst.ai": "ИИ",
+      "analyst.ai_hint": "Подсказка ИИ — проверьте",
       "analyst.llm": "Текст — модель, числа — код",
       "analyst.llm_hint": "Языковая модель выбрала порядок и вводную фразу; все числа посчитал код",
       "analyst.how": "Как получен ответ",
@@ -103,6 +108,8 @@
       "analyst.loading": "Деректер бойынша есептеп жатырмыз…",
       "analyst.offline": "Офлайн режим",
       "analyst.offline_hint": "Жауапты код Birge деректері бойынша құрады, тілдік модельсіз",
+      "analyst.ai": "ЖИ",
+      "analyst.ai_hint": "ЖИ кеңесі — тексеріңіз",
       "analyst.llm": "Мәтін — модель, сандар — код",
       "analyst.llm_hint": "Тілдік модель тек реті мен кіріспе сөйлемді таңдады; барлық санды код есептеді",
       "analyst.how": "Жауап қалай алынды",
@@ -531,7 +538,11 @@
       var blocks = a.blocks || [];
       var first = blocks[0];
       // Разметка ui-kit R11 «Спросить Birge»: .bk-answer (+ __q, __nums, __text, __acts), .bk-details, .bk-tag.
+      var aiHint = t("analyst.ai_hint");
       var q = el("p", { className: "bk-answer__q ba-q" }, [
+        // Вопрос понят ИИ (правила разбора; с моделью — ещё порядок и вводная); числа — код по данным (П3).
+        el("span", { className: "ba-ai", role: "img", title: aiHint, "aria-label": aiHint },
+          [icon(AI_ICON, "ba-ai__ic"), el("span", { className: "ba-ai__text", "aria-hidden": "true", text: t("analyst.ai") })]),
         el("span", { className: "ba-q__text", text: "«" + String(a.question).replace(/«/g, "„").replace(/»/g, "“") + "»" }),
         el("span", { className: "ba-q__src", text: " · " + (first ? pick(first.source && first.source.name, state.lang) : "") }),
         a.demo ? el("span", { className: "ba-demo", title: t("analyst.demo_hint"), text: " · " + t("analyst.demo") }) : null,

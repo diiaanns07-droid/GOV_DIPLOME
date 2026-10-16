@@ -2832,6 +2832,8 @@
  "wcal.real.coverage": "работ из открытых источников: {n} · на участке улицы {exact} · примерно {approx}",
  "analyst.empty_action": "Главное за сегодня",
  "analyst.empty_question": "Что сегодня главное?",
+ "analyst.ai": "ИИ",
+ "analyst.ai_hint": "Подсказка ИИ — проверьте",
  "crisis.map.layer": "Кризис",
  "crisis.map.more": "Подробнее",
  "crisis.map.close": "Скрыть",
@@ -2843,6 +2845,8 @@
  "crisis.map.since": "с {time}",
  "crisis.map.closed": "Кризис закрыт",
  "shell.layers.crisis": "Кризис",
+ "shell.nav.intake": "Разбор обращений",
+ "shell.palette.scene0": "Сцена 0 · ИИ-разбор",
  "agencies.pickups.title": "Вывоз после дел жителей",
  "agencies.pickups.hint": "Акимат поддержал дела жителей — после них нужен вывоз: {n}",
  "agencies.pickups.when": "{date}, с {time}",
@@ -2990,6 +2994,8 @@
  "complaint.voice.denied": "Нет доступа к микрофону — разрешите его в браузере или напишите текстом",
  "complaint.voice.failed": "Не получилось распознать — напишите текстом",
  "inbox.filter.clear_district": "Показать все районы",
+ "inbox.intake.open": "Разобрать пачку",
+ "inbox.source.intake": "Источник: разбор пачки",
  "akim.crisis.open": "Открыть кризисный штаб",
  "akim.week.open": "Картина недели",
  "akim.empty.yesterday": "Показать вчера",
@@ -3340,6 +3346,8 @@
  "qr.form.gone": "Объекта {id} нет в свежей карте OSM — проверьте на месте перед печатью.",
  "common.nav.inbox": "Обращения",
  "common.nav.agencies": "Ведомства",
+ "common.ai.badge": "ИИ",
+ "common.ai.hint": "Подсказка ИИ — проверьте",
  "together.range_days": "{day}, {from} — {day2}, {to}",
  "board.kpi.overdue_fix": "Не исправлено в срок",
  "board.kpi.overdue_places": {
@@ -3369,5 +3377,57 @@
  "ask.staff.pii.iban": "номер счёта",
  "ask.staff.pii.apartment": "номер квартиры",
  "ask.staff.pii.contact": "контакт в мессенджере",
- "crisis.tasks_progress": "выполнено {done} из {total}"
+ "crisis.tasks_progress": "выполнено {done} из {total}",
+ "intake.title": "Разбор обращений",
+ "intake.ai_label": "ИИ-разбор",
+ "intake.lead": "Вставьте обращения — каждое с новой строки — или загрузите файл .txt или .csv. Birge разложит их по службам, склеит повторы и поднимет срочные.",
+ "intake.placeholder": "Каждое обращение — с новой строки",
+ "intake.sample": "Пример: обращения за ночь",
+ "intake.file": "Загрузить файл",
+ "intake.analyze": "Разобрать",
+ "intake.progress": "Разбираем: {done} из {total}",
+ "intake.sum.texts": {
+  "one": "{n} обращение",
+  "few": "{n} обращения",
+  "many": "{n} обращений"
+ },
+ "intake.sum.tasks": {
+  "one": "{n} задача",
+  "few": "{n} задачи",
+  "many": "{n} задач"
+ },
+ "intake.sum.services": {
+  "one": "{n} служба",
+  "few": "{n} службы",
+  "many": "{n} служб"
+ },
+ "intake.sum.urgent": {
+  "one": "{n} срочная",
+  "few": "{n} срочные",
+  "many": "{n} срочных"
+ },
+ "intake.sum.merged": {
+  "one": "{n} повтор склеен",
+  "few": "{n} повтора склеены",
+  "many": "{n} повторов склеено"
+ },
+ "intake.sum.no_address": "без адреса: {n}",
+ "intake.group.urgent": "Срочные",
+ "intake.urgent": "Срочно",
+ "intake.why": "Почему так",
+ "intake.why.services": "Службы: {services}",
+ "intake.why.place": "Место: {place}",
+ "intake.why.repeats": "Повторов: {n}",
+ "intake.address_unknown": "Адрес уточнить",
+ "intake.create": "Создать задачи",
+ "intake.created": {
+  "one": "Создана {n} задача в «Обращениях»",
+  "few": "Созданы {n} задачи в «Обращениях»",
+  "many": "Создано {n} задач в «Обращениях»"
+ },
+ "intake.open_inbox": "Открыть «Обращения»",
+ "intake.empty.title": "Вставьте обращения или откройте пример",
+ "intake.error.too_big": "Слишком много за раз: не больше 500 обращений и 300 КБ",
+ "intake.error.text": "Не удалось разобрать. Проверьте связь и повторите.",
+ "intake.staff_only": "Разбор обращений — для сотрудников акимата"
 }

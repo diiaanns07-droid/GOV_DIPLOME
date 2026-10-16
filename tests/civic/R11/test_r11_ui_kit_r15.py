@@ -64,6 +64,7 @@ def test_r15_does_not_redefine_reference_classes():
     css = re.sub(r"/\*.*?\*/", "", r15_section(), flags=re.S)
     new_roots = {c.split("__")[0].split("--")[0] for group in R15_CLASSES.values() for c in group}
     new_roots |= {"bk-dark", "bk-pc__foot", "bk-thumb", "bk-btn__count", "bk-bump"}  # точечные дополнения с модификатором
+    new_roots |= {"bk-ai"}  # П3: метка «ИИ» (BirgeUI.aiTag, в витрине — через JS)
     allowed = tuple("." + r for r in sorted(new_roots, key=len, reverse=True))
     for block in re.findall(r"([^{}]+)\{", css):
         for sel in block.split(","):
@@ -184,3 +185,29 @@ def test_round15_text_is_readable_not_tertiary():
     assert not offenders, offenders
     tabs = re.search(r"\n\.bk-tabs \.bk-num \{([^}]*)\}", css).group(1)
     assert "var(--c-text-2)" in tabs
+
+
+def test_p3_ai_tag_is_small_monochrome_and_explained():
+    """Поправка П3 (16 окт): «ИИ должен быть виден» — малый монохромный значок набора без свечения (П1) и подсказка
+    «Подсказка ИИ — проверьте»; ҚАЗ — «ЖИ» (жасанды интеллект). Роли ставят BirgeUI.aiTag() у подсказок модели."""
+    import json
+    sym = re.search(r'<symbol id="i-ai" viewBox="0 0 24 24">(.*?)</symbol>', ICONS, re.S)
+    assert sym, "нет значка i-ai"
+    assert not re.search(r"gradient|filter|fill=|stroke=|opacity", sym.group(1)), "значок i-ai — только линия набора"
+    rule = re.search(r"\n\.bk-ai \{(.*?)\n\}", r15_section(), re.S)
+    assert rule, ".bk-ai — в разделе раунда 15"
+    body = rule.group(1)
+    assert "color: var(--c-text-2);" in body and "background: var(--c-fill);" in body, "серая плашка, текст ≥ 4,5 : 1"
+    assert not re.search(r"shadow|gradient|filter|animation|--c-brand|--c-accent", body), "без свечения и цвета (П1)"
+    assert int(re.search(r"height: (\d+)px", body).group(1)) <= 24, "метка, не кнопка"
+    js = (KIT / "ui-kit.js").read_text("utf-8")
+    fn = re.search(r"function aiTag\(opts\) \{(.*?)\n  \}", js, re.S).group(1)
+    assert 'tr("common.ai.hint")' in fn and 'tr("common.ai.badge")' in fn and 'icon("ai")' in fn
+    assert "opts.label" in fn, "своя подпись для экрана R04 («ИИ-разбор»)"
+    assert "el.title = hint" in fn and "bk-sr-only" in fn, "подсказка мыши и текст для диктора"
+    assert "aiTag: aiTag" in js
+    ru = json.loads((ROOT / "web/civic/i18n/ru.json").read_text("utf-8"))
+    kk = json.loads((ROOT / "web/civic/i18n/kk.json").read_text("utf-8"))
+    assert (ru["common.ai.badge"], ru["common.ai.hint"]) == ("ИИ", "Подсказка ИИ — проверьте")
+    assert kk["common.ai.badge"] == "ЖИ" and "тексеріңіз" in kk["common.ai.hint"]
+    assert "UI.aiTag()" in SHOWCASE and SHOWCASE.count("<span data-kit-ai></span>") >= 2, "пример в витрине"

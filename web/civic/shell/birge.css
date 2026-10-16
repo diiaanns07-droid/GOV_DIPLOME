@@ -790,6 +790,7 @@ body.civic-mode :is(.map-tools, #birge-legend, .maplibregl-ctrl-attrib) :focus-v
   body.civic-mode #birge-screen[data-screen="analyst"] { --birge-sheet-w: 808px; }        /* R03: колонка 760 */
   body.civic-mode #birge-screen[data-screen="notifications"] { --birge-sheet-w: 608px; }  /* R06: лента 560 */
   body.civic-mode #birge-screen[data-screen="yard"] { --birge-sheet-w: 1008px; }          /* R16 «Мой двор»: 960 */
+  body.civic-mode #birge-screen[data-screen="intake"] { --birge-sheet-w: 1008px; }        /* R04 «Разбор обращений»: 960 (IA §11.2) */
 }
 /* П3 (кадр 05, «Обращения»): липкий заголовок модуля (группа «Новые 21» R09, шапка табло R17) прилипает к краю
    содержимого листа, а прокрученные строки оставались видны в верхнем отступе над ним — «плашка наезжает на строку,

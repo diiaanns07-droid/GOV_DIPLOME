@@ -779,6 +779,12 @@
       // KPI табло или в строке подсказки списков (filtersBar), «Обновить» — в строке «Обновлено» под ними.
       var filters = h("div", { class: "ag-filters" });
       if (S.tab === "crisis") {
+        // «Открыть кризисный штаб» при идущем кризисе — в шапке рядом с «Обновить», а не под карточкой: на 1366 её срезал
+        // нижний край листа (П3, кадр 07 FINAL-5.1). Без кризиса главная кнопка — в пустом состоянии с выбором шаблона.
+        if (activeCount() > 0 && !S.crisis.form && S.incidents) {
+          filters.appendChild(h("button", { type: "button", class: "bk-btn", "data-action": "new-crisis",
+            onclick: function () { openForm(null, null); } }, [svg("i-plus"), tr("crisis.new")]));
+        }
         filters.appendChild(h("button", { type: "button", class: "ag-iconbtn", "aria-label": tr("agencies.refresh"),
           title: tr("agencies.refresh"), onclick: refresh }, [svg("i-refresh")]));
       }
@@ -1231,8 +1237,6 @@
       var active = items.filter(function (x) { return x.status === "active"; });
       var closed = items.filter(function (x) { return x.status === "closed"; });
       var parts = [];
-      var newBtn = h("button", { type: "button", class: "bk-btn" + (active.length ? "" : " bk-btn--primary"), "data-action": "new-crisis",
-        onclick: function () { openForm(null, null); } }, [svg("i-plus"), tr("crisis.new")]);
       if (!active.length) {
         var box = h("div", { class: "ag-empty" });
         S.crisis.pick = S.crisis.pick || "blizzard";
@@ -1255,8 +1259,7 @@
           })));
         }
         var current = S.detail[S.crisis.id] || active.filter(function (x) { return x.id === S.crisis.id; })[0] || active[0];
-        parts.push(crisisView(current));
-        parts.push(h("div", { class: "ag-actions" }, [newBtn]));
+        parts.push(crisisView(current));   // «Открыть кризисный штаб» — в шапке вкладки (renderHead)
       }
       if (closed.length) {
         parts.push(h("p", { class: "ag-section-title", text: tr("crisis.history") }));

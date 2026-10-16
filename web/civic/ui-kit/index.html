@@ -503,7 +503,7 @@
               <span class="bk-field__hint" data-i18n="complaint.step3.hint"></span>
             </label>
             <div class="bk-card__row">
-              <span class="bk-chip bk-chip--suggest" data-kit-icon="snowflake"><span id="kit-suggest"></span></span>
+              <span data-kit-ai></span><span class="bk-chip bk-chip--suggest" data-kit-icon="snowflake"><span id="kit-suggest"></span></span>
               <button class="bk-btn bk-btn--ghost" type="button"><span data-i18n="complaint.step3.change_cat"></span></button>
             </div>
             <p class="bk-field__hint" data-i18n="complaint.step3.privacy"></p>
@@ -818,11 +818,14 @@
           </section>
         </div>
 
+        <h3 class="kit-r15__h"><code>.bk-ai</code> — метка «ИИ» (П3): <code>BirgeUI.aiTag()</code> и <code>aiTag({label})</code> у заголовка «ИИ-разбора» (R04)</h3>
+        <div class="kit-r15__col"><p class="bk-card__row"><span data-kit-ai></span> <span data-kit-ai="intake.ai_label"></span> <span class="bk-tag bk-tag--demo" data-i18n="common.tag.demo"></span></p></div>
+
         <h3 class="kit-r15__h"><code>.bk-answer</code> — «Спросить Birge» (R03)</h3>
         <div class="kit-r15__col">
           <article class="bk-answer"><p class="bk-answer__q" data-s15="a.q"></p>
             <div class="bk-answer__nums"><p class="bk-answer__num"><b>142</b><span data-s15="a.n1"></span></p><p class="bk-answer__num"><b>61</b><span data-s15="a.n2"></span></p><p class="bk-answer__num"><b>43 %</b><span data-s15="a.n3"></span></p></div>
-            <p class="bk-answer__text" data-s15="a.text"></p>
+            <p class="bk-answer__text"><span data-kit-ai></span> <span data-s15="a.text"></span></p>
             <div class="bk-answer__acts"><button class="bk-btn" type="button"><svg class="ic" aria-hidden="true"><use href="icons.svg#i-pin"></use></svg><span data-s15="a.map"></span></button><span class="bk-tag" data-s15="a.offline"></span></div>
             <details class="bk-details"><summary data-s15="a.how"></summary><p class="bk-meta" data-s15="a.src"></p></details></article>
         </div>
@@ -859,7 +862,7 @@
           "chevron-right chevron-down plus minus locate layers filter pin check alert info refresh user users thumb-up " +
           "thumb-down calendar clock cube rotate-left rotate-right globe menu chart list edit building wifi-off send copy " +
           "print playground ball phone camera compass heart school home message " +
-          "bell play pause monitor sparkle handoff shovel cone broom sprout wrench expand megaphone bench paw traffic radiator zap flame siren").split(" ");
+          "bell play pause monitor sparkle handoff shovel cone broom sprout wrench expand megaphone bench paw traffic radiator zap flame siren ai").split(" ");
         var COLORS = ["--c-ink", "--c-text-2", "--c-paper", "--c-brand", "--c-accent", "--c-focus", "--c-danger", "--c-warn",
           "--c-info", "--c-ok", "--c-demo", "--heat-1", "--heat-2", "--heat-3", "--heat-4", "--fixed", "--heat-3-badge", "--fixed-badge"];
         var STAGES = ["planned", "design", "procurement", "construction", "acceptance", "operating"];
@@ -954,6 +957,10 @@
           var street = I.getLang() === "kk" ? "Тұран" : "Туран"; // демо-название улицы
           $("kit-opt-seg").textContent = t("target.kind.segment_short", { street: street });
           $("kit-suggest").textContent = t("complaint.step3.suggest", { category: I.cat("snow_ice") });
+          // П3: метка «ИИ» у подсказки модели (BirgeUI.aiTag — тексты из словаря, перерисовка при смене языка)
+          document.querySelectorAll("[data-kit-ai]").forEach(function (n) {
+            n.replaceChildren(UI.aiTag(n.getAttribute("data-kit-ai") ? { label: t(n.getAttribute("data-kit-ai")) } : undefined));
+          });
           $("kit-stages").innerHTML = stagesHtml(2);
           $("kit-stages-compact").innerHTML = stagesHtml(3);
           $("kit-stages-caption").textContent = t("stage.caption", { i: 4, total: 6, name: t("stage.construction") });

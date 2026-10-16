@@ -390,9 +390,10 @@
     if (!B) return;
     const has = (id, m) => typeof B.available === "function" && B.available(id, m);
     if (n === 0) {
-      // Сцена 0 (поправка П3): «Разбор обращений» R04 у акимата; дальше ведущий — «Пример: обращения за ночь» → «Разобрать».
+      // Сцена 0 (поправка П3, R11 IA §11.1): «Разбор обращений» R04 у акимата с подставленным примером «обращения за ночь»
+      // (путь sample — ещё не разобран); «Разобрать» ведущий нажимает сам. R04 путь не понял — экран открыт, пример — кнопка.
       B.setMode("akimat");
-      B.setSection("intake");
+      B.setSection("intake", { path: "sample" });
     } else if (n === 7 && sc.yard) {
       B.setMode("resident");
       const T = window.BirgeTogether;

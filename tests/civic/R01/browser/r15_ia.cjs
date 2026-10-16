@@ -86,7 +86,7 @@ const STUB_INTAKE = () => {
   window.BirgeIntake = { mount(root, opts) {
     const was = window.__intake || { mounts: 0 };
     window.__intake = { mounts: was.mounts + 1, apiBase: opts.apiBase, api: !!(opts.api && opts.api.v2), section: opts.section,
-      openTarget: typeof opts.openTarget, openSection: typeof opts.openSection, lang: opts.lang };
+      path: opts.path, openTarget: typeof opts.openTarget, openSection: typeof opts.openSection, lang: opts.lang };
     const h = document.createElement("h2"); h.textContent = "Разбор обращений (заглушка R01)"; root.replaceChildren(h);
     return { destroy() {} };
   } };
@@ -116,8 +116,9 @@ async function main() {
     await page.waitForTimeout(250);
     let more = await moreMenu(page);
     const board = await page.evaluate(() => window.BirgeShell.sections().includes("board"));
-    const tools = ["Спросить Birge", ...(board ? ["Ситуационный центр"] : []), "QR-таблички"];
-    check("akimat «Ещё»: two labelled groups — С жителями (Проекты и идеи · Сделаем вместе · Вопросы и встречи), Инструменты (Спросить Birge · Ситуационный центр R08 · QR-таблички); ≤ 7; works/services under «Ведомства»",
+    // ?screens=all показывает и «Разбор обращений» R04 (П3) — первым в «Инструментах» (R11 IA §11.1).
+    const tools = ["Разбор обращений", "Спросить Birge", ...(board ? ["Ситуационный центр"] : []), "QR-таблички"];
+    check("akimat «Ещё»: two labelled groups — С жителями (Проекты и идеи · Сделаем вместе · Вопросы и встречи), Инструменты (Разбор обращений П3 · Спросить Birge · Ситуационный центр R08 · QR-таблички); ≤ 7; works/services under «Ведомства»",
       more.shown && JSON.stringify(more.labels) === '["С жителями","Инструменты"]' && more.items.length <= 7
       && JSON.stringify(more.items) === JSON.stringify(["Проекты и идеи", "Сделаем вместе", "Вопросы и встречи", ...tools]), more);
     check("«Ещё» opens under its button, right edge not past the capsule (VISUAL_BRIEF §3)",
@@ -323,14 +324,15 @@ async function main() {
     n = await nav(page);
     const intake = await page.evaluate(() => ({ stub: window.__intake || null,
       title: document.getElementById("birge-screen-title")?.textContent || "" }));
-    check("Сцена 0: akimat view, #intake, «Обращения» highlighted (no own menu item), title «Разбор обращений»",
-      n.mode === "akimat" && n.section === "intake" && n.hash === "#intake" && JSON.stringify(n.pressed) === '["inbox"]'
+    check("Сцена 0: akimat view, #intake/sample (example in, not analysed — R11 IA §11.1), «Ещё» highlighted, title «Разбор обращений»",
+      n.mode === "akimat" && n.section === "intake" && n.hash === "#intake/sample" && JSON.stringify(n.pressed) === '["more"]'
       && !n.ids.includes("intake") && intake.title === "Разбор обращений", { n, title: intake.title });
-    check("Сцена 0: R04 mount(root, opts) once — apiBase /api/civic/v2, api.v2, openTarget, openSection",
-      !!intake.stub && intake.stub.mounts === 1 && intake.stub.apiBase === "/api/civic/v2" && intake.stub.api
+    check("Сцена 0: R04 mount(root, opts) once — apiBase /api/civic/v2, api.v2, path «sample», openTarget, openSection",
+      !!intake.stub && intake.stub.mounts === 1 && intake.stub.apiBase === "/api/civic/v2" && intake.stub.api && intake.stub.path === "sample"
       && intake.stub.section === "intake" && intake.stub.openTarget === "function" && intake.stub.openSection === "function", intake.stub);
     const intakeMore = await page.evaluate(() => window.BirgeShell.moreItems());
-    check("«Разбор обращений» is not an «Ещё» item while «Обращения» is in the menu (PARENT)", !intakeMore.includes("intake"), intakeMore);
+    check("«Разбор обращений» — the first «Ещё → Инструменты» item of the akimat (R11 IA §11.1)",
+      intakeMore.indexOf("intake") === intakeMore.indexOf("analyst") - 1 && intakeMore.includes("intake"), intakeMore);
     await page.keyboard.press("Escape");
     await page.waitForTimeout(300);
     n = await nav(page);

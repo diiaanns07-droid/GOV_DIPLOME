@@ -215,6 +215,19 @@ support, report, from_idea, demo` (`author_device` нет — его делае�
 R01: при `CIVIC_DEMO=1` и `CIVIC_DEMO_WORLD=1` зовёт все `seed_world` с одним `now` и **не** подмешивает в карту
 синтетику R07 (`ui.civic_heat.demo_seed`) — patch в `research/round-15-results/R02/INTEGRATION.txt`.
 
+## 4a. Набор «обращения за ночь» (П3, отдельные файлы — не часть мира)
+Для «ИИ-разбора пачки» R04 (сцена 0). Паспорт, правила разметки и метрики — `INTAKE.md`.
+- `intake_night_v1.json` (`schema: birge-intake-night-v1`, форма — контракт R04 п. 9.4): `texts[]` = `{id: "night-001",
+  text, lang: ru | kk | mixed | latin, received: {"day_at": …} (прошлая ночь, §1), demo: true}` в порядке прихода;
+  `gold[]` — краткий эталон `{id, category, subtopic, services: [id…] (ведущая первой), target_id | null, group, urgent,
+  urgent_why, place_type, no_address}` (экрану не показывать); `night` — окно ночи; `limits`; `inputs` — sha256 данных
+  карты R12 и мира, на которых собран набор.
+- `intake_night_v1.gold.json` (`schema: birge-intake-night-gold-v1`, `for.sha256` = sha256 файла текстов) —
+  `items[]` (по тексту: `group`, `lang` ru | kk | mixed | latin, `base_lang`, `typos`, `category`, `subtopic`,
+  `services[{id, role: lead | support}]`, `two_services`, `place_type`, `target_id`, `no_address`, `urgent`,
+  `urgent_why`), `groups[]` (группа повторов = одна задача: те же метки + `place {type, target, accept_ids, district,
+  street_ru?, mentions}` + `text_ids`), `summary`, `labeling_ru` (правила).
+
 ## 5. Версии
 `schema_version` растёт при новых полях (1.1, 1.2 …) — старые поля не меняют смысл. Запросы полей — строкой в STATUS
 R02 или в своём INTEGRATION.txt; R02 добавляет в схему и генератор.

@@ -68,6 +68,30 @@
   font-size: 16px; /* iOS не увеличивает страницу при фокусе */
 }
 
+/* дата по-нашему поверх поля (П3): <input type=date> Chromium рисует по языку системы — в облаке «10/16/2026»;
+   в фокусе — само поле (правка с клавиатуры и календарь браузера) */
+.akim__date {
+  position: relative;
+  display: grid;
+}
+.akim__date input:not(:focus),
+.akim__date input:not(:focus)::-webkit-datetime-edit {
+  color: transparent;
+}
+.akim__date-text {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--s-3) + 1px);
+  transform: translateY(-50%);
+  color: var(--c-ink);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.akim__date input:focus + .akim__date-text {
+  display: none;
+}
+
 /* ── на стекле (R11 GLASS.md §4 R08: лист раздела — стекло R01) ──
    Числа — без подложки (ui-kit даёт .bk-kpi на стекле белую подложку 70 %; у нас «без карточек», CLEAN_PASS п. 3);
    дата и район — непрозрачные поля, как остальные формы на стекле (белые с тонкой линией). Цвета текста — только

@@ -9,6 +9,9 @@
  *   BirgeUI.seg(el, onChange)                    → сегментный переключатель (aria-pressed)
  *   BirgeUI.langSwitch(el)                       → ҚАЗ | РУС, связан с BirgeI18n
  *   BirgeUI.state(el, "loading"|"empty"|"error", {title, text, action:{label,onClick}})
+ *   BirgeUI.aiTag({label?})                      → <span class="bk-ai"> «ИИ» / «ЖИ» со значком и подсказкой «Подсказка ИИ —
+ *                                                  проверьте» (title + скрытый текст для диктора); label — своя подпись
+ *                                                  вместо «ИИ» (экран R04: «ИИ-разбор»); раунд 15+, поправка П3
  *   BirgeUI.seasonOrder(categories, date?)       → категории в порядке сезона (волна 1, п. 11): с ноября по март
  *                                                  первая «Снег и гололёд», с апреля по октябрь — «Дороги»; остальные
  *                                                  — как в categories_v2.json. Принимает id или объекты с .id; копия.
@@ -415,6 +418,19 @@
     else if (doc.body) startFade();
   }
 
+  // Метка «ИИ» (П3): у подсказки модели — значок набора и слово, без свечения (П1). Тексты — словарь на момент вызова
+  // (модули перерисовывают экран при смене языка); подсказка — title для мыши и скрытый текст для диктора.
+  function aiTag(opts) {
+    var hint = tr("common.ai.hint");
+    var label = opts && opts.label ? String(opts.label) : tr("common.ai.badge");
+    var el = doc.createElement("span");
+    el.className = "bk-ai";
+    el.title = hint;
+    el.innerHTML = icon("ai") + '<span class="bk-ai__t" aria-hidden="true">' + esc(label) + "</span>" +
+      '<span class="bk-sr-only">' + esc(label === tr("common.ai.badge") ? hint : label + ". " + hint) + "</span>";
+    return el;
+  }
+
   root.BirgeUI = { icon: icon, toast: toast, sheet: sheet, seg: seg, langSwitch: langSwitch, state: state, statusIcon: statusIcon, skelRows: skelRows, loginState: loginState, scrollFade: scrollFade, esc: esc,
-    seasonOrder: seasonOrder, tabs: tabs, menu: menu, illustration: illustration, SPRITE: SPRITE };
+    seasonOrder: seasonOrder, tabs: tabs, menu: menu, illustration: illustration, aiTag: aiTag, SPRITE: SPRITE };
 })(typeof self !== "undefined" ? self : this);

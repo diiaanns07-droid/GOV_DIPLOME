@@ -290,6 +290,18 @@ const openAgencies = async (page, base, tab) => {
               .filter((e) => e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1).map((e) => e.textContent.slice(0, 60)));
             check(`${tag}: вкладка ${tab}: заголовки строк и причины передач не обрезаны`, cutRows.length === 0, cutRows);
           }
+          if (tab === "crisis") {
+            // П3 (кадр 07 FINAL-5.1): «Открыть кризисный штаб» не срезана краем листа — кнопка в шапке вкладки, видна целиком.
+            const nb = await page.evaluate(() => {
+              const b = document.querySelector('[data-action="new-crisis"]');
+              if (!b) return null;
+              let sc = b; while (sc && sc !== document.body) { const o = getComputedStyle(sc).overflowY; if (o === "auto" || o === "scroll") break; sc = sc.parentElement; }
+              const edge = sc && sc !== document.body ? Math.min(innerHeight, sc.getBoundingClientRect().top + sc.clientHeight) : innerHeight;
+              const r = b.getBoundingClientRect();
+              return { top: Math.round(r.top), bottom: Math.round(r.bottom), edge: Math.round(edge), inHead: !!b.closest(".ag-head") };
+            });
+            check(`${tag}: «Открыть кризисный штаб» видна целиком`, !!nb && nb.bottom <= nb.edge && nb.top >= 0, nb);
+          }
           if (tab === "crisis" && w === 375) {
             // Строка задачи кризиса на телефоне: кнопка статуса и текст — в одной строке (служба — под текстом).
             const split = await page.evaluate(() => [...document.querySelectorAll(".ag-task")].filter((t) => {
