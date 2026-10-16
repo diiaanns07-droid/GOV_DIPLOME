@@ -217,9 +217,11 @@ R01: при `CIVIC_DEMO=1` и `CIVIC_DEMO_WORLD=1` зовёт все `seed_world
 
 ## 4a. Набор «обращения за ночь» (П3, отдельные файлы — не часть мира)
 Для «ИИ-разбора пачки» R04 (сцена 0). Паспорт, правила разметки и метрики — `INTAKE.md`.
-- `intake_night_v1.json` (`schema: birge-intake-night-v1`) — то, что нужно экрану: `items[]` = `{id: "night-001",
-  text, received: {"day_at": …} (прошлая ночь, §1), demo: true}` в порядке прихода; `night` — окно ночи; `limits`;
-  `inputs` — sha256 данных карты R12 и мира, на которых собран набор. Эталона здесь нет.
+- `intake_night_v1.json` (`schema: birge-intake-night-v1`, форма — контракт R04 п. 9.4): `texts[]` = `{id: "night-001",
+  text, lang: ru | kk | mixed | latin, received: {"day_at": …} (прошлая ночь, §1), demo: true}` в порядке прихода;
+  `gold[]` — краткий эталон `{id, category, subtopic, services: [id…] (ведущая первой), target_id | null, group, urgent,
+  urgent_why, place_type, no_address}` (экрану не показывать); `night` — окно ночи; `limits`; `inputs` — sha256 данных
+  карты R12 и мира, на которых собран набор.
 - `intake_night_v1.gold.json` (`schema: birge-intake-night-gold-v1`, `for.sha256` = sha256 файла текстов) —
   `items[]` (по тексту: `group`, `lang` ru | kk | mixed | latin, `base_lang`, `typos`, `category`, `subtopic`,
   `services[{id, role: lead | support}]`, `two_services`, `place_type`, `target_id`, `no_address`, `urgent`,

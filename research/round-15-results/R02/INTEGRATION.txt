@@ -297,12 +297,13 @@ ml/datasets/demo_intake_eval.py; тесты tests/civic/R02/round15/test_r02r15_
 8 срочных групп, 11 «двух служб», 18 текстов без адреса («адрес уточнить»).
 
 R04 (владелец разбора):
-  - Пример «за ночь»: items = json.loads(Path("data/civic/astana/demo-world/intake_night_v1.json").read_text("utf-8"))
-    ["items"]; тексты — it["text"]; держите id набора (night-001 …) как text_ids задач — тогда оценщик сверит без
-    перевода; время — ml.datasets.demo_world_io.materialize(items, now) (прошлая ночь; при показе раньше 07:30 —
-    now − 1 сутки). У всего примера demo: true.
-  - Эталон (intake_night_v1.gold.json) — только для оценки и тестов: экрану и маршрутам он не нужен; числа на экране
-    считает ваш код, не эталон.
+  - Форма — ваш контракт п. 9.4: data/civic/astana/demo-world/intake_night_v1.json = {texts: [{id, text, lang,
+    received, demo}], gold: [{id, category, subtopic, services: [id…] (ведущая первой), target_id | null, group, urgent,
+    urgent_why, place_type, no_address}], demo: true} (+ шапка: schema, night, limits, inputs). Держите id набора
+    (night-001 …) как text_ids задач — оценщик сверит без перевода; время — materialize(texts, now) (прошлая ночь;
+    при показе раньше 07:30 — now − 1 сутки).
+  - gold — только для оценки и тестов: экрану не показывать; числа на экране считает ваш код, не эталон. Полный эталон
+    (группы, места с accept_ids, сводка, правила) — intake_night_v1.gold.json, его читает оценщик.
   - Оценка (метрики П3): python3 -m ml.datasets.demo_intake_eval ответ.json [--json] — ответ analyze(): summary
     (+ ms) и tasks [{services [{id, role}], target {kind, id} | null, text_ids, urgent}]. Службы — ведущая и весь
     набор, «две службы»; повторы — попарная F1 + доля групп, собранных точно; места — id из accept_ids (у остановки —

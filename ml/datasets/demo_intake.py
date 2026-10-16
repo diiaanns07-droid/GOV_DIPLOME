@@ -530,7 +530,7 @@ def build(seed: int = SEED, world: dict | None = None) -> tuple[dict, dict]:
     for i, (m, text, meta, key) in enumerate(rows, 1):
         tid = f"night-{i:03d}"
         ids.setdefault(key, []).append(tid)
-        items.append({"id": tid, "text": text, "received": day_at(m), "demo": True})
+        items.append({"id": tid, "text": text, "lang": meta["lang"], "received": day_at(m), "demo": True})
         gold_items.append({"id": tid, "group": key, **meta})
     # группы: номер по первому тексту
     order = sorted(groups, key=lambda g: ids[g["key"]][0])
@@ -565,11 +565,17 @@ def build(seed: int = SEED, world: dict | None = None) -> tuple[dict, dict]:
         "inputs": input_hashes(),
         "note_ru": ("Синтетические обращения жителей «за ночь» для «ИИ-разбора пачки» (сцена 0): ru / kk / вперемешку / "
                     "латиница, с опечатками и повторами. Места — дворы, остановки, улицы, перекрёстки и парк демо-мира "
-                    "(OpenStreetMap через карту R12). Эталон — отдельный файл intake_night_v1.gold.json; экрану он не нужен."),
+                    "(OpenStreetMap через карту R12). Форма — по контракту R04 (INTEGRATION R04 п. 9.4): texts — то, что "
+                    "разбирает экран; gold — краткий эталон для оценки (экрану не показывать). Полный эталон с группами, "
+                    "местами и правилами — intake_night_v1.gold.json, оценщик — ml/datasets/demo_intake_eval.py."),
         "night": {"from": day_at(0), "to": day_at(NIGHT_MINUTES),
-                  "note_ru": "время приёма — прошлая ночь (day_at); ml.datasets.demo_world_io.materialize(items, now)"},
+                  "note_ru": "время приёма — прошлая ночь (day_at); ml.datasets.demo_world_io.materialize(texts, now)"},
         "limits": {"texts": len(items), "max_texts_per_batch": 500, "max_bytes_per_batch": 300_000},
-        "items": items,
+        "texts": items,
+        "gold": [{"id": it["id"], "category": it["category"], "subtopic": it["subtopic"],
+                  "services": [x["id"] for x in it["services"]], "target_id": it["target_id"], "group": it["group"],
+                  "urgent": it["urgent"], "urgent_why": it["urgent_why"], "place_type": it["place_type"],
+                  "no_address": it["no_address"]} for it in gold_items],
     }
     texts_bytes = dump(texts).encode("utf-8")
     gold = {

@@ -6,7 +6,7 @@
  "seed": 15,
  "for": {
   "file": "data/civic/astana/demo-world/intake_night_v1.json",
-  "sha256": "bab278e4beac01af4e04f2c07421f9b7792fe17d543c82ae2956f509bb79c0f1"
+  "sha256": "33d0e602a681a7d4444275cbbdd523d77ce59dd8e0cf67496cacfe639b5b6169"
  },
  "generator": "ml/datasets/demo_intake.py (R02, раунд 15+, поправка П3)",
  "labeling_ru": {

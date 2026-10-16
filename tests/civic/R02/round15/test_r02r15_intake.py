@@ -41,26 +41,36 @@ def _other_inputs(texts: dict) -> list[str]:
     return sorted(k for k, v in (texts.get("inputs") or {}).items() if now.get(k) != v)
 
 
-def test_texts_file_has_only_what_the_screen_needs(texts):
+def test_texts_file_follows_r04_contract(texts, gold):
+    """INTEGRATION R04 п. 9.4: {texts: [{id, text, lang}], gold: [{id, category, services: [id…], target_id, group,
+    urgent}], demo: true}; краткий gold совпадает с полным эталоном."""
     assert texts["schema"] == "birge-intake-night-v1" and texts["demo"] is True and texts["synthetic"] is True
-    ids = [i["id"] for i in texts["items"]]
+    ids = [i["id"] for i in texts["texts"]]
     assert ids == [f"night-{k:03d}" for k in range(1, len(ids) + 1)]
-    for it in texts["items"]:
-        assert set(it) == {"id", "text", "received", "demo"} and it["demo"] is True   # эталона в файле экрана нет
-        assert it["text"].strip() == it["text"] and it["text"]
+    for it in texts["texts"]:
+        assert set(it) == {"id", "text", "lang", "received", "demo"} and it["demo"] is True
+        assert it["text"].strip() == it["text"] and it["text"] and it["lang"] in ("ru", "kk", "mixed", "latin")
+    full = {i["id"]: i for i in gold["items"]}
+    assert [g["id"] for g in texts["gold"]] == ids
+    for g in texts["gold"]:
+        f = full[g["id"]]
+        assert g["services"] == [s["id"] for s in f["services"]] and g["target_id"] == f["target_id"]
+        assert (g["category"], g["subtopic"], g["group"], g["urgent"], g["urgent_why"], g["no_address"]) == \
+            (f["category"], f["subtopic"], f["group"], f["urgent"], f["urgent_why"], f["no_address"])
+    assert all(i["lang"] == full[i["id"]]["lang"] for i in texts["texts"])
 
 
 def test_size_within_r04_batch_limits(texts):
-    n = len(texts["items"])
+    n = len(texts["texts"])
     assert 250 <= n <= 350                                          # П3: ~300
     assert n <= texts["limits"]["max_texts_per_batch"] == 500
-    assert sum(len(i["text"].encode("utf-8")) for i in texts["items"]) <= texts["limits"]["max_bytes_per_batch"]
+    assert sum(len(i["text"].encode("utf-8")) for i in texts["texts"]) <= texts["limits"]["max_bytes_per_batch"]
 
 
 def test_gold_belongs_to_this_texts_file(texts, gold):
     assert gold["schema"] == "birge-intake-night-gold-v1" and gold["demo"] is True
     assert gold["for"]["sha256"] == hashlib.sha256(TEXTS.read_bytes()).hexdigest()
-    assert [i["id"] for i in gold["items"]] == [i["id"] for i in texts["items"]]
+    assert [i["id"] for i in gold["items"]] == [i["id"] for i in texts["texts"]]
     in_groups = [tid for g in gold["groups"] for tid in g["text_ids"]]
     assert sorted(in_groups) == sorted(i["id"] for i in gold["items"])          # группы делят набор без остатка
     by = {g["id"]: g for g in gold["groups"]}
@@ -102,7 +112,7 @@ def test_labels_follow_birge_rules(gold):
 
 def test_place_is_named_in_every_text(texts, gold):
     from ml.datasets.demo_intake import latin
-    text = {i["id"]: i["text"] for i in texts["items"]}
+    text = {i["id"]: i["text"] for i in texts["texts"]}
     lang = {i["id"]: i for i in gold["items"]}
     norm = lambda s: s.lower().replace("«", "").replace("»", "")          # noqa: E731
     for g in gold["groups"]:
@@ -131,27 +141,27 @@ def test_received_last_night_in_order(texts):
     from datetime import datetime
     from ml.datasets import demo_world_io as wio
     seen = []
-    for it in texts["items"]:
+    for it in texts["texts"]:
         d = it["received"]["day_at"]
         minutes = (d["hour"] * 60 + d["minute"] - (21 * 60 + 30)) % (24 * 60)
         assert (d["day"], d["hour"] >= 21) in ((-1, True), (0, False)) and minutes <= 600, it["id"]
         seen.append(minutes)
     assert seen == sorted(seen)
     now = datetime(2026, 10, 16, 9, 0, tzinfo=wio.ASTANA_TZ)
-    iso = wio.materialize(texts["items"], now)
+    iso = wio.materialize(texts["texts"], now)
     assert "2026-10-15T21:30:00+05:00" <= iso[0]["received"] and iso[-1]["received"] <= "2026-10-16T07:30:00+05:00"
 
 
 def test_no_personal_data(texts):
     phone = re.compile(r"(\+?\d[\d\s\-()]{8,}\d)")
-    for it in texts["items"]:
+    for it in texts["texts"]:
         t = it["text"]
         assert not phone.search(t) and "@" not in t and "http" not in t.lower(), it["id"]
 
 
 def test_texts_are_new_not_from_synth_v3_or_world(texts):
     norm = lambda s: re.sub(r"\W+", " ", s.lower()).strip()                 # noqa: E731
-    mine = {norm(i["text"]) for i in texts["items"]}
+    mine = {norm(i["text"]) for i in texts["texts"]}
     world = json.loads((DIR / "world_v1.json").read_text(encoding="utf-8"))
     assert not mine & {norm(c["text"]) for c in world["complaints"]}
     corpus = ROOT / "ml" / "datasets" / "synth_v3" / "data" / "corpus_v3.jsonl"
