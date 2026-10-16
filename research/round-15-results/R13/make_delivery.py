@@ -112,6 +112,10 @@ def main() -> None:
                                        "note": "сборка R01 B0.19 (5b696879) с модулями и тестами R13 этой поставки: tests/civic/R08, "
                                        "tests/civic/R03, tests/civic/R13, R15 test_r15_qa.py + round15/test_r15_round15_meetings.py "
                                        "(10 skipped, 1 xfailed — их же)"},
+            "test_order_r13_before_neighbours": {"status": "PASS", "passed": 1076, "failed": 0,
+                                                  "note": "R01 24e50493: tests/civic/R13 → R03 → R08 → R17 одним процессом (просьба R01 "
+                                                  "B0.20 — раньше 6 FAIL у R03/round15); tests/civic/R13/conftest.py возвращает "
+                                                  "состояние соседей после каждого теста R13"},
             "r10_visual_audit": {"status": "PASS", "passed": 124, "total": 124,
                                  "note": "tests/e2e/visual_audit.cjs R10 @ 6016a9ac --only meetings,meetings-staff на сборке R01 "
                                  "B0.19 с модулями R13 (демо-мир, 1366/1024/375 × ru/kk): WARN 0, FAIL 0 — на pvG было "
@@ -128,8 +132,8 @@ def main() -> None:
         "patches_for_r01": ["research/round-15-results/R13/patches/r01_meetings_routes.patch",
                             "research/round-15-results/R13/patches/r01_meetings_assets_sheet.patch"],
         "known_limits": [
-            "R01 B0.19 (5b696879) несёт R13 576c1239 (маршруты meetings.*, ассеты, теги — с B0); в FINAL-5 (П2, 14:00) взять "
-            "code_sha этой поставки — сверх 576c1239 различимые подписи соседних мест и ҚАЗ-строки «Вопроса акиму»; только пути R13.",
+            "R01 B0.20 (8f70baf1) несёт R13 385750cb (маршруты meetings.*, ассеты, теги — с B0); в FINAL-5 (П2, 14:00) взять "
+            "code_sha этой поставки — сверх 385750cb ҚАЗ-строки «Вопроса акиму» и conftest тестов R13; только пути R13.",
             "С B0.11 R01 ставит «Вопросы и встречи» своим экраном-колонкой 720 px (VISUAL_BRIEF §2 п. 2); строки шторки из "
             "патча R13 §3 не нужны. Кадры и браузер — на этой раскладке (B0.19).",
             "Кнопка «♡» у вопросов — рамка 44 px с прозрачной каймой, видимая таблетка 32 px (вариант R11 R13-3): тёмная "
