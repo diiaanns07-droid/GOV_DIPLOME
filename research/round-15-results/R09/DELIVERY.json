@@ -6,7 +6,8 @@
   "builds": {
     "FINAL-5": "c2276360a322dfce8f484a9f93fd471974987123 (R01, 16 окт 13:33 по Астане) — R09 af69e9a5",
     "FINAL-5.1": "e8d6cae61787bbe74631edfffcaf19ec038bcce9 (R01, 16 окт 15:25 по Астане) — код FINAL-5 + docs/gton и docs/birge R14; R09 af69e9a5",
-    "B6.6": "83c8aa585ea94638dbc92b4b19eaaca1fc3558c6 (R01, промежуточная, 17 окт 00:30 по Астане) — R09 c450badb (D2)"
+    "B6.6": "83c8aa585ea94638dbc92b4b19eaaca1fc3558c6 (R01, промежуточная, 17 окт 00:30 по Астане) — R09 c450badb (D2)",
+    "B6.7": "745eeae5 (R01, промежуточная, 17 окт 03:30 по Астане; BUILD.json 7a6f3793) — R09 12c91061 (D2.1, пути совпадают с поставкой), R11 ec3d0aef, R08 dffb8ca8"
   },
   "branch": "claude/quirky-ptolemy-k3z2mj",
   "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
@@ -94,6 +95,7 @@
   "acceptance": [
     "R10: B6.6 83c8aa58 (R09 c450badb) — «можно показывать: да», B-133 закрыт; B-136 (важно, не блокер) — исправлено в D2.1 (R10 067b95b9, b66-83c8aa58/ACCEPTANCE.md; аудит П3 — 1366 / 375 ru).",
     "R15: B6.6 83c8aa58 — 618 passed / 0 failed, браузер 10/0/1, эталон 18/0/0; блокеров нет (971fe81b).",
+    "R15: D2.1 12c91061 просмотрена — только вид, небезопасного DOM нет (b3305557).",
     "R10: FINAL-5 c2276360 — «можно показывать: да», список блокеров ролям пуст (ACCEPTANCE_FINAL5.md, INTEGRATION §11; API 155/0/0, числа 16/0/0, часть 1 172/0/2, сцены 7–9 337/0/0). 10 WARN аудита — экраны R16 / R17, у R09 нет.",
     "R15: FINAL-5 c2276360 — блокеров безопасности нет (8a9b1a46: tests/civic/R15 566/0, браузер 8/0/1, эталон 18/0/0, гигиена сборки чистая).",
     "FINAL-5.1 e8d6cae6 меняет только docs/ и отчёты — проверки R09 на FINAL-5 действуют без повтора."
@@ -216,6 +218,9 @@
     "дерево сборки: голова R01 869505f8 (с ui-kit R11 — BirgeUI.aiTag) + пути R09 12c91061 + мир R02 из ветки R01 (облако, по одной проверке): voice_r09.cjs — голосовой ввод (заглушка распознавания)": "PASS 15/15",
     "дерево сборки: голова R01 869505f8 (с ui-kit R11 — BirgeUI.aiTag) + пути R09 12c91061 + мир R02 из ветки R01 (облако, по одной проверке): R10 tests/e2e/visual_audit.cjs (ветка R10 a908164b) --only inbox,inbox-card --sizes 1366x768,1024x768,375x812 --langs ru,kk — VISUAL_BRIEF §4, B-136": "PASS 147 / WARN 13 / FAIL 0 / NOT_RUN 0 (WARN — 4 размера шрифта; вкладки 1024 / 375 с прокруткой; кнопки внизу карточки видны прокруткой)",
     "то же дерево + web/civic/ui-kit из ветки R11 a9693579 (B-136 R11 ec3d0aef): R10 tests/e2e/visual_audit.cjs (ветка R10 a908164b) --only inbox,inbox-card --sizes 1366x768,1024x768,375x812 --langs ru,kk — VISUAL_BRIEF §4, B-136": "PASS 147 / WARN 13 / FAIL 0 / NOT_RUN 0 (WARN — 4 размера шрифта; вкладки 1024 / 375 с прокруткой; кнопки внизу карточки видны прокруткой)"
+  },
+  "tests_b67": {
+    "B6.7 7a6f3793 как есть (пути R09 = 12c91061, ui-kit R11 ec3d0aef, мир R02 сборки; облако, по одной проверке, 17 окт 04:25–04:39 по Астане)": "pytest 607 passed · inbox_layout 51/51 · joint 132/132 · route 16/16 · yard 6/6 · app_demo 82/82 · near 22/22 · hover 7/7 · voice 15/15 · browser 502/502 · glass 33/34 (контраст токена R11 --glass-text-2 на 1024, как в FINAL-5) · R10 visual_audit inbox + inbox-card 1366 / 1024 / 375 × ru / kk — 147 PASS / 13 WARN / 0 FAIL"
   },
   "screens_d2": [
     "research/round-15-results/R09/screens/p3/1024-ru-p3-inbox-card-r11kit.jpg",
