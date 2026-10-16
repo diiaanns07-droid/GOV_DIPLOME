@@ -131,6 +131,10 @@ COMMON, IDEA или VISUAL_BRIEF — права поправка. Прочита
 - 06:23–06:32 — **круг 15** (по триггеру): AMENDMENTS — только П1; ключей нет. B0.15 (735a40b5) с новым ui-kit поверх — 68 кадров,
   0 проблем. ui-kit: текст компонентов раунда 15 не третичным цветом (даты лент, шапки табло, сроки, месяцы, числа вкладок —
   --c-text-2, 7,4 : 1); тест test_round15_text_is_readable_not_tertiary. Ждут: R13-3, R02-1.
+- 07:04–07:06 — после перезапуска контейнера (стенд B0.15 остановился, ветка и scratchpad целы): синхронизация словаря перенесена
+  в репозиторий — `tests/civic/R11/tools/sync_roles.py` (+ extract_obj.cjs; раньше жила только в scratchpad); +4 ключа R13
+  (ask.staff.pii.*) → 2865, ru = kk. R13-3 сделан R13 (9ca9bc72). R02 пишет «просьб к R02 нет» — в начало INTEGRATION вынесен
+  блок «ОТКРЫТЫЕ ПРОСЬБЫ R11 К РОЛЯМ» (R02-1 с командой применения).
 
 ## Соседи (find_branches.py, 15 окт 16:30)
 R01 claude/brave-fermi-nhzetj · R02 claude/affectionate-shannon-jm6ws5 · R03 claude/modest-mccarthy-lrl98u ·
@@ -141,6 +145,8 @@ R15 claude/practical-fermi-c58v1u · R16 claude/youthful-johnson-6nz5mp · R17 c
 
 ## Дальше
 - Каждый круг: AMENDMENTS.md → find_branches.py → новые экраны/INTEGRATION ролей → разбор → ключи в словарь → push.
+  Словарь: `git fetch origin && DRY=1 python3 -B tests/civic/R11/tools/sync_roles.py`, затем без DRY; `python3 -B tests/civic/R11/i18n_tools.py check`.
+  Разбор сборки: стенд по RUN (seed-demo, seed-r14-demo, create-editor operator), `tests/civic/R11/review/r15_screens.cjs`, `r15_scenes.cjs`, `r15_fonts.cjs`.
 - Ждать экраны R16, R17, R12, R13, R06 (уведомления), R07 (хроника), R08 (ситуационный центр); проверять их по П1.
 - R01: напомнить в его ветке не нужно — патч меню и INTEGRATION §1 лежат здесь; проверять, взял ли (find_branches --build).
 - VISUAL_BRIEF §3: на B0.3 закрыто всё с участием R11 («Ещё», знак, поиск телефона, 1024 в капсуле); на B1 — повторить

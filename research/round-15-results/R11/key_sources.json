@@ -1277,5 +1277,9 @@
  "ask.status.answered": "R13 · web/civic/qa/qa.js",
  "ask.answer.more": "R13 · web/civic/qa/qa.js",
  "ask.answer.less": "R13 · web/civic/qa/qa.js",
- "agencies.col.deadline_hint": "R17 · web/civic/agencies/agencies.js"
+ "agencies.col.deadline_hint": "R17 · web/civic/agencies/agencies.js",
+ "ask.staff.pii.card": "R13 · web/civic/qa/qa.js",
+ "ask.staff.pii.iban": "R13 · web/civic/qa/qa.js",
+ "ask.staff.pii.apartment": "R13 · web/civic/qa/qa.js",
+ "ask.staff.pii.contact": "R13 · web/civic/qa/qa.js"
 }
