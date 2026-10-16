@@ -235,6 +235,9 @@ class SeparateMixin:
                 "due_at": rec.due_at(row["at"], category),
                 "schema": rec.SCHEMA,
             }
+            if note.get("source") == "intake":
+                # Текст из «ИИ-разбора пачки» (П3): у примера пачки отдельная жалоба — тоже «Пример», источник — пачка.
+                record.update({"demo": bool(base.get("demo")), "source": "intake", "category_source": "model"})
             flag = rec.moderation(record["text"]) if hasattr(rec, "moderation") else None   # п. 8
             if flag:
                 record["moderation"] = flag

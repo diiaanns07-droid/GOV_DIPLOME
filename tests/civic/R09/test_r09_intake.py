@@ -251,3 +251,26 @@ def test_r04_contract_shape_and_alias_create_from_intake(store):
     assert record["intake"]["urgent_why"] == "Темно на остановке у дороги"
     assert record["intake"]["urgent_why_kk"] == "Жол жиегіндегі аялдамада қараңғы"
     assert rec.reporters(record) == 2 and record["service"] == "lighting" and record["route_hint"]["joint"] is False
+
+
+def test_other_texts_of_the_group_are_me_too_notes_and_can_be_separated(store):
+    # Просьба R04 (§9.3): остальные тексты группы — заметками «Я тоже»: видны в «Что объединено», ошибочно склеенное
+    # сотрудник выделит («Это разные проблемы»); у примера пачки выделенная жалоба — тоже «Пример».
+    report = intake.commit_tasks(store, "night-0014", tasks()[:1], TEXTS, demo=True)
+    cid = report["created"][0]["id"]
+    merged = store.merged(KHAN["id"])
+    notes = sorted(m["text"] for m in merged if m["kind"] == "metoo" and m["into"] == cid)
+    assert notes == sorted([TEXTS["t2"], TEXTS["t3"]]) and rec.reporters(store.get(cid)) == 3
+    note_id = next(m["id"] for m in merged if m["text"] == TEXTS["t3"])
+    separated, original = store.separate(note_id, actor="operator1")
+    assert separated["text"] == TEXTS["t3"] and separated["demo"] is True and separated["source"] == "intake"
+    assert original["id"] == cid and rec.reporters(store.get(cid)) == 2
+    # Повтор той же пачки заметки не удваивает.
+    intake.commit_tasks(store, "night-0014", tasks()[:1], TEXTS, demo=True)
+    assert len([m for m in store.merged(KHAN["id"]) if m["kind"] == "metoo" and m["into"] == cid]) == 1
+    # Настоящая пачка (не пример): выделенный текст — настоящая жалоба (demo: false), источник — пачка.
+    real = intake.commit_tasks(store, "real-0001", [dict(tasks()[0], id="r1")], TEXTS)
+    rid = real["created"][0]["id"]
+    nid = next(m["id"] for m in store.merged(KHAN["id"]) if m["kind"] == "metoo" and m["into"] == rid)
+    alone, _ = store.separate(nid, actor="operator1")
+    assert alone["demo"] is False and alone["source"] == "intake"

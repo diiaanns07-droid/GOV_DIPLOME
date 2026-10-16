@@ -19,7 +19,8 @@ texts — тексты пачки ПОСЛЕ moderate() R04 (телефоны, �
 Правила:
   * одна задача → одна жалоба цели: текст — первое обращение группы (оригинал; длиннее 2000 символов — обрезан),
     «Сообщили N человек» — people задачи: автор + N−1 «Я тоже» с синтетическими устройствами (sha256, не настоящие
-    устройства — уведомлений никто не получит);
+    устройства — уведомлений никто не получит); остальные тексты группы — заметками этих «Я тоже» (видны в «Что
+    объединено»; «Это разные проблемы» выделит текст в отдельную жалобу — у примера пачки она тоже «Пример»);
   * id — от (batch_id, task_id): повторный commit той же пачки (целиком или частями) не дублирует записи (existing);
   * место — только найденное R04: point задачи (или target.point / target.center) в границах Астаны; цель проверяется
     картой R12, как у жалобы жителя (подписи — с карты, цель дальше 300 м от точки — «примерное место»); без карты R12
@@ -95,15 +96,22 @@ def _clip(value: str) -> str:
     return text
 
 
-def _text(task: dict, texts: dict[str, str]) -> str:
-    """Оригинал первого обращения группы; нет текстов — текст или заголовок задачи."""
-    candidates = [texts.get(str(tid)) for tid in task.get("text_ids") or [] if isinstance(tid, (str, int))]
-    candidates += [task.get("text"), task.get("title_ru")]
-    for raw in candidates:
+def _texts_of(task: dict, texts: dict[str, str]) -> tuple[str, list[str]]:
+    """(главный текст, остальные тексты группы). Главный — первое обращение группы с текстом; нет текстов — текст или
+    заголовок задачи. Остальные — следующие тексты text_ids (станут заметками «Я тоже», просьба R04 §9.3)."""
+    group = []
+    for tid in task.get("text_ids") or []:
+        raw = texts.get(str(tid)) if isinstance(tid, (str, int)) and not isinstance(tid, bool) else None
+        text = _clip(raw) if isinstance(raw, str) else ""
+        if len(text) >= rec.TEXT_MIN:
+            group.append(rec.parse_text(text))
+    if group:
+        return group[0], group[1:]
+    for raw in (task.get("text"), task.get("title_ru")):
         if isinstance(raw, str):
             text = _clip(raw)
             if len(text) >= rec.TEXT_MIN:
-                return rec.parse_text(text)
+                return rec.parse_text(text), []
     raise IntakeError("text", "нет текста обращения")
 
 
@@ -182,8 +190,9 @@ def _people(task: dict) -> int:
 
 
 def build_record(task: dict, texts: dict[str, str], *, batch_id: str, now, demo: bool = False, actor=None,
-                 method=None, target_lookup=None) -> tuple[dict, list[tuple[str, str]]]:
-    """Задача R04 → (запись v2.1 без номера, [(device_hash, at) «Я тоже»]). IntakeError — задача не подходит."""
+                 method=None, target_lookup=None) -> tuple[dict, list[tuple[str, str, str | None]]]:
+    """Задача R04 → (запись v2.1 без номера, [(device_hash, at, текст | None) «Я тоже»]): у первых «Я тоже» — остальные
+    тексты группы (заметки: видны в «Что объединено», ошибочно склеенное сотрудник разделит). IntakeError — не подходит."""
     if not isinstance(task, dict):
         raise IntakeError("invalid", "задача — объект")
     task_id = task.get("id")
@@ -197,7 +206,7 @@ def build_record(task: dict, texts: dict[str, str], *, batch_id: str, now, demo:
     subtopic = task.get("subtopic")
     if subtopic is not None and categories.subtopic(category, subtopic) is None:
         subtopic = None
-    text = _text(task, texts)
+    text, others = _texts_of(task, texts)
     point = _point(task)
     target = _target(task, point, target_lookup)
     services = _services(task, category, subtopic)
@@ -234,7 +243,7 @@ def build_record(task: dict, texts: dict[str, str], *, batch_id: str, now, demo:
     flag = rec.moderation(text)   # п. 8 (R04): акимат видит оригинал с пометкой
     if flag:
         record["moderation"] = flag
-    metoo = [(intake_device(cid, n), created_at) for n in range(1, people)]
+    metoo = [(intake_device(cid, n), created_at, others[n - 1] if n - 1 < len(others) else None) for n in range(1, people)]
     return record, metoo
 
 
@@ -301,7 +310,15 @@ def commit_tasks(db, batch_id, tasks, texts=None, *, demo: bool = False, now=Non
                 record["code"] = store._next_code(db_tx)
                 store._save(db_tx, record)
                 db_tx.executemany("INSERT OR IGNORE INTO complaint_metoo_v2 (complaint_id, device_hash, at) VALUES (?,?,?)",
-                                  [(record["id"], device, at) for device, at in metoo])
+                                  [(record["id"], device, at) for device, at, _ in metoo])
+                for device, at, text in metoo:
+                    # Остальные тексты группы — заметками «Я тоже», как склейка в мастере жалобы (п. 9): «Что
+                    # объединено» показывает их сотруднику, «Это разные проблемы» выделит ошибочно склеенное.
+                    note = store.parse_metoo_note({"text": text, "point": record["point"], "target": record["target"],
+                                                   "category": record["category"]}) if text else None
+                    if note:
+                        note["source"] = "intake"
+                        store._add_metoo_note(db_tx, record["id"], device, at, note)
                 events.append(store._event(db_tx, "created", record, record["created_at"]))
                 report["created"].append({"task_id": task_id, "id": record["id"], "code": record["code"]})
                 report["people"] += rec.reporters(record)

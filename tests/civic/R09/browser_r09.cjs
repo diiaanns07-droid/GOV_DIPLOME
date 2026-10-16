@@ -1175,8 +1175,12 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
   const groupsSeen = await page.$$eval(".bc-inbox__group", (n) => n.map((g) => ({ id: g.dataset.group,
     head: g.querySelector(".bc-inbox__ghead").textContent.trim(), icon: !!g.querySelector(".bc-inbox__ghead .bc-sicon"),
     rows: [...g.querySelectorAll(".bc-inbox__row")].map((r) => Math.round(r.getBoundingClientRect().height)) })));
-  check(`${tag}: [эталон п.5] группы по статусу со значком, строки плотные (≤ 44 на ноутбуке)`, groupsSeen.length >= 1 &&
-        groupsSeen.every((g) => g.icon && g.rows.length) && (width < 700 || groupsSeen.every((g) => g.rows.every((hgt) => hgt >= 44 && hgt <= 46))),
+  // П3: на ≥ 1200 px — две колонки «список | карточка»; строка узкого списка — в две строки (место / тема), как .bk-lrow
+  // ui-kit на телефоне, до 64 px. В одну колонку — плотная строка 44 (эталон п. 5).
+  const split = await page.evaluate(() => !!document.querySelector(".bc-inbox[data-split]"));
+  check(`${tag}: [эталон п.5] группы по статусу со значком, строки плотные (${split ? "две колонки: строка в две строки ≤ 64" : "≤ 44 на ноутбуке"})`,
+        groupsSeen.length >= 1 && groupsSeen.every((g) => g.icon && g.rows.length) &&
+        (width < 700 || groupsSeen.every((g) => g.rows.every((hgt) => hgt >= 44 && hgt <= (split ? 64 : 46)))),
         JSON.stringify(groupsSeen));
   const key = `${tid}|roads`;
   const row = await page.$(`.bc-inbox__row[data-key="${key}"]`);

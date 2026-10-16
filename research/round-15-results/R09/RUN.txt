@@ -26,6 +26,9 @@ Python 3.11+, Node 18+, Chromium (Playwright; в облаке NODE_PATH=$(npm ro
    NODE_PATH=$(npm root -g) node tests/civic/R09/glass_r09.cjs             # стекло «Моих обращений», запасной белый вид
    NODE_PATH=$(npm root -g) node tests/civic/R09/near_r09.cjs              # шторка «Рядом с вами» оболочки + «одна шторка»
    NODE_PATH=$(npm root -g) node tests/civic/R09/hover_r09.cjs             # «Обращения» ↔ значки карты
+   П3 (раунд 15+): NODE_PATH=$(npm root -g) node tests/civic/R09/inbox_layout_r09.cjs [--root <сборка>] [--screenshots <папка>]
+                  # «Обращения» по кадру 05: ширина листа, две колонки ≥ 1200 / одна ниже, плашка у края, задача пачки,
+                  # «Разобрать пачку» (заглушка экрана R04), метка «ИИ» (если ui-kit умеет aiTag)
 
 3. СТЕНД ПРИЛОЖЕНИЯ (COMMON «Как поднять стенд»; демо-мир — флаг CIVIC_DEMO_WORLD=1 в сборке R01)
    mkdir -p /tmp/birge && python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
@@ -34,6 +37,12 @@ Python 3.11+, Node 18+, Chromium (Playwright; в облаке NODE_PATH=$(npm ro
    printf 'пароль\nпароль\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
    CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8655
    Сцена 8: войти сотрудником → «Обращения» → строка «Участок: улица Баян Сулу» (жалоба мира scene8) → «Принять».
+
+4a. «ИИ-РАЗБОР ПАЧКИ» → ЗАПИСИ R09 ВРУЧНУЮ (П3; в сборке это делает R04 intake/commit)
+   python3 -B -c "from ui.civic_feedback.v2.integration import intake_commit; print(intake_commit('/tmp/birge/demo.sqlite3', \
+     'night-0001', [{'id': 'k1', 'category': 'lighting', 'services': [{'id': 'lighting', 'role': 'lead'}], \
+     'point': [71.406553, 51.131155], 'text_ids': ['t1'], 'people': 3}], {'t1': 'Ночью не горит свет на остановке'}, demo=True))"
+   → {"created": [{"task_id": "k1", "id": "c-i…", "code": "B-…"}], …}; повтор той же пачки — existing, без дублей.
 
 4. ДЕМО-МИР ВРУЧНУЮ (без сервера)
    python3 -B -c "import json; from ui.civic_feedback.v2.integration import seed_world; \
@@ -49,3 +58,15 @@ Python 3.11+, Node 18+, Chromium (Playwright; в облаке NODE_PATH=$(npm ro
    #complaints/district=nura); «Черновик ответа» R04, когда он в сборке.
    Житель: «Работают 2 службы: Водоканал — сделано · Дорожная служба — в работе», «Передано: …» простыми словами,
    «Срок ответа тот же — до …»; причины передач и роли сотрудников не видны.
+
+ПРОГОНЫ РАУНДА 15+ (П3), 16 окт, облако (Linux, Python 3.13, Node 22, Chromium 141; браузер — по одной проверке)
+   Дерево сборки: голова R01 claude/brave-fermi-nhzetj 411c5926 (лист по колонке модуля, intake/* маршруты R01) +
+   пути R09 из рабочей копии (= коммит b0dc2456) + мир R02 из ветки R01:
+     pytest tests/civic/R09 606 passed · inbox_layout 47/47 · joint (мир R02, сцена 8) 132/132 · route 16/16 · yard 6/6 ·
+     app_demo 82/82 · near 22/22 · hover 7/7 · voice 15/15 · glass 33/34 · стенд browser_r09 500/502 (до поправки
+     проверки строк в две колонки, см. ниже).
+   glass 1024-ru «серый на стекле 4,33 < 4,5» — и на голове R01 с кодом R09 af69e9a5 (FINAL-5): токен R11
+     --glass-text-2 #3f4a46 над цветом района карты [204,173,130]; просьба R11 — INTEGRATION §G4.
+   Стенд: на 1366 «Обращения» — две колонки, строка узкого списка в две строки (50 px); правило эталона п. 5
+     «строка ≤ 44» оставлено для одной колонки, для двух — ≤ 64 (browser_r09.cjs).
+
