@@ -207,6 +207,33 @@ async function ideasPart(browser) {
       check(`${tag}: значок по виду — «скамейки» у беседки`, tiles.some((x) => x.kind === "benches"), JSON.stringify(tiles.map((x) => x.kind)));
       const pdBig = await page.$$eval(".ri-pd img, .ri-pd svg", (els) => els.filter((e) => e.getBoundingClientRect().width > 48).length);
       check(`${tag}: в карточке выбранного нет больших картинок (П1)`, pdBig === 0, pdBig);
+      // R11 R06-3: слово в плитке (район, объект) переносится по слогам, а не посреди слога («Спортпл / ощадка»,
+      // «Скамейк / и»): в облаке у Chrome нет словаря переносов. Каждая идея списка по очереди.
+      const wordTiles = [];
+      for (const id of await page.$$eval(".ri-pc[data-idea]", (els) => els.map((e) => e.getAttribute("data-idea")))) {
+        const open = await page.$(`.ri-pc[data-idea="${id}"][aria-current="true"]`);
+        if (!open) await page.click(`.ri-pc[data-idea="${id}"] .ri-pc__open`);
+        await page.waitForSelector(".ri-pd .ri-facts", { timeout: 5000 }).catch(() => {});
+        wordTiles.push(...await page.$$eval(".ri-pd .ri-fact--word > b", (els) => els.map((b) => {
+          const node = b.firstChild, txt = node ? node.textContent : "", tops = [], bad = [];
+          for (let i = 0; i < txt.length; i++) {
+            const r = document.createRange(); r.setStart(node, i); r.setEnd(node, i + 1);
+            const rc = [...r.getClientRects()].filter((q) => q.width > 0.5);
+            tops.push(rc.length ? Math.round(rc[rc.length - 1].top) : null);
+          }
+          for (let i = 1; i < txt.length; i++) {
+            if (tops[i] == null || tops[i - 1] == null || tops[i] <= tops[i - 1] + 2) continue;
+            if (!/[\s­-]/.test(txt[i - 1]) && !/\s/.test(txt[i])) bad.push((txt.slice(0, i) + " / " + txt.slice(i)).replace(/­/g, ""));
+          }
+          return { text: txt.replace(/­/g, ""), bad };
+        })));
+      }
+      check(`${tag}: слова в плитках карточки (район, объект) не рвутся посреди слога (R11 R06-3)`,
+        wordTiles.length >= 4 && wordTiles.every((x) => !x.bad.length), JSON.stringify(wordTiles.filter((x) => x.bad.length).concat(wordTiles.length < 4 ? [wordTiles] : [])));
+      if (width === 1366 && lang === "ru") check(`${tag}: «Спортплощадка» в плитке — с переносом по слогам`, wordTiles.some((x) => x.text === "Спортплощадка"), JSON.stringify(wordTiles.map((x) => x.text)));
+      // Кадр — с идеей спортплощадки (самое длинное слово плитки).
+      const sports = await page.$(`.ri-pc[data-topic="sports"]:not([aria-current="true"]) .ri-pc__open`);
+      if (sports) { await sports.click(); await sleep(300); }
       check(`${tag}: житель может поддержать (капсула-кнопка)`, !!(await page.$("button.ri-vote")));
       await shot(page, `${tag}-resident`);
       check(`${tag}: житель — без ошибок JS`, !page.errs.length, page.errs.join(" | "));

@@ -979,8 +979,29 @@
       if (kind === "benches" || kind === "greening") return tr("idea.topic." + kind);
       return kind && kind !== "other" ? tr("proposal.kind." + kind) : tr("idea.kind_none");
     }
-    function fact(value, label) {
-      return h("div", { class: "ri-fact" }, [h("b", { class: "bk-num", text: value }), h("span", { text: label })]);
+    // Слово в плитке (район, объект) — R11 R06-3: в облаке у Chrome нет словаря переносов, и плитка 77 px рвала слово
+    // где придётся («Скамейк / и», «Спортпл / ощадка»). Мягкие переносы по слогам ru / kk: между гласными, перед одной
+    // согласной, посреди группы согласных (Дет-ская, Спорт-площадка); с каждой стороны не меньше двух букв, не перед й, ь, ъ.
+    var VOWELS = "аәеёиіоөуұүыэюя", NO_START = "йьъ";
+    function softHyphens(text) {
+      return String(text).replace(/[Ѐ-ӿ]{7,}/g, function (w) {
+        var low = w.toLowerCase(), out = "", last = 0, i = 0, j, cut;
+        var vowel = function (k) { return VOWELS.indexOf(low.charAt(k)) >= 0; };
+        while (i < low.length) {
+          if (!vowel(i)) { i++; continue; }
+          for (j = i + 1; j < low.length && !vowel(j); j++) {}
+          if (j >= low.length) break;
+          cut = i + 1 + Math.floor((j - i - 1) / 2);
+          while (cut < j && NO_START.indexOf(low.charAt(cut)) >= 0) cut++;
+          if (cut >= 2 && low.length - cut >= 2) { out += w.slice(last, cut) + "­"; last = cut; }
+          i = j;
+        }
+        return out + w.slice(last);
+      });
+    }
+    function fact(value, label, word) {
+      return h("div", { class: "ri-fact" + (word ? " ri-fact--word" : "") }, [
+        h("b", { class: "bk-num", text: word ? softHyphens(value) : value }), h("span", { text: label })]);
     }
     function detailCard(x) {
       var isProj = state.tab === "projects";
@@ -1004,8 +1025,8 @@
         var year = x.project && x.project.planned_year;
         inner.appendChild(h("div", { class: "bk-facts ri-facts" }, [
           fact(I() ? I().formatNumber(x.votes || 0) : String(x.votes || 0), tr("idea.fact.supported")),
-          year ? fact(String(year), tr("idea.fact.year")) : fact(districtShort(x.district) || "—", tr("idea.fact.district")),
-          fact(objectName(kind || x.topic), tr("idea.fact.object"))]));
+          year ? fact(String(year), tr("idea.fact.year")) : fact(districtShort(x.district) || "—", tr("idea.fact.district"), true),
+          fact(objectName(kind || x.topic), tr("idea.fact.object"), true)]));
         var decision = decisionBlock(x);
         if (decision) inner.appendChild(decision);
         else {
