@@ -18,11 +18,12 @@ from pathlib import Path
 import sys
 
 HARNESS = Path(__file__).resolve().parent / "harness"
-SCREENS = ("together", "agencies", "meetings", "assistant", "works-calendar", "board", "notify")
+SCREENS = ("together", "agencies", "meetings", "assistant", "works-calendar", "board", "notify", "intake")
 MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".html": "text/html; charset=utf-8",
         ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8", ".png": "image/png"}
-# Тело запроса целиком — функциям R03 ask(body=…) и R04 moderate(body=…) (шлюз R01 добавит свой разбор параметров).
-BODY_KEYS = {"r15.assistant.ask", "r15.moderate"}
+# Тело запроса целиком — функциям R03 ask(body=…) и R04 moderate(body=…) (шлюз R01 добавит свой разбор параметров);
+# П3: intake_analyze(body=…) и intake_commit(body=…) R04 (INTEGRATION R04 п. 9.2).
+BODY_KEYS = {"r15.assistant.ask", "r15.moderate", "r15.intake.analyze.post", "r15.intake.commit.post"}
 
 
 def contract_routes(ws):
@@ -76,6 +77,10 @@ def contract_routes(ws):
         ("GET", ("heat", "replay"), raw("R07", "ui.civic_heat.api", "handle_get")),
         ("POST", ("assistant", "ask"), ws.V2Handler("R03", ("agent.civic_assistant.api",), "ask", staff=True)),
         ("POST", ("moderate",), ws.V2Handler("R04", ("ui.civic_ml_api",), "moderate")),
+        # П3: «ИИ-разбор пачки» R04 — только сотрудник (как ml.route / ml.reply_draft в R01).
+        ("POST", ("intake", "analyze"), ws.V2Handler("R04", ("ui.civic_ml_api",), "intake_analyze", staff=True)),
+        ("GET", ("intake", "sample"), ws.V2Handler("R04", ("ui.civic_ml_api",), "intake_sample", staff=True)),
+        ("POST", ("intake", "commit"), ws.V2Handler("R04", ("ui.civic_ml_api",), "intake_commit", staff=True)),
     ]
     out = []
     for method, pattern, handler in rows:

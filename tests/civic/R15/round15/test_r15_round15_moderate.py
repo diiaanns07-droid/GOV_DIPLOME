@@ -5,7 +5,8 @@ R17 (обновления кризиса) и маршрута POST /moderate (п
 - форматы телефона, ИИН (с пробелами), e-mail (в т. ч. «[at]», «собака»), карты, IBAN, квартиры, ники (T-R04-01…07);
 - подпись вплотную к номеру («Тел.8701…», «ИИН-…»), номер через точки, полноширинные цифры — S48 (T-R04-01/02);
 - маска целиком: в text_public нет 7+ цифр исходника; оригинала нет в остальных полях ответа (T-R04-09);
-- скорость на враждебных 5000 символах (ReDoS, публичный маршрут) — T-R04-08.
+- скорость на враждебных 5000 символах (ReDoS, публичный маршрут) — T-R04-08; S53 (r04-moderate-4: перебор отрезков
+  длинной цепочки цифр — O(n³)) — длины растут 500 -> 5000, тест падает на первой медленной, а не висит минутами.
 Нет moderate в ui.civic_ml_api — NOT_RUN.
 """
 
@@ -49,6 +50,7 @@ MUST_MASK = [
     ("пәтер 12, үшінші қабат", "пәтер 12"),
     ("Telegram @aigul_r15", "@aigul_r15"),
     ("пишите t.me/aigul_r15", "t.me/aigul_r15"),
+    ("звоните 8 701 123 45 67 или 8 702 987 65 43", "702 987 65 43"),   # второй номер через слово
 ]
 S48_BYPASS = [
     ("Тел.87011234567 — Айгуль", "87011234567"),
@@ -129,29 +131,54 @@ def test_mask_is_whole_and_original_not_echoed(moderate, text, secret):
     assert secret not in dump(rest), rest
 
 
-@pytest.mark.parametrize("name,text", [("letters", "a" * 5000), ("digit-space", "8 " * 2500), ("at", "@" * 5000),
-                                       ("a@", "a@" * 2500), ("kv", "кв " * 1600), ("dashes", "1-" * 2500),
-                                       ("brackets", "(" * 5000), ("dots", "a." * 2500), ("at-words", "x at " * 1000),
-                                       ("digits", "7" * 5000), ("mixed", "1 (2 " * 1000)])
+HOSTILE = [("letters", "a" * 5000), ("digit-space", "8 " * 2500), ("at", "@" * 5000),
+           ("a@", "a@" * 2500), ("kv", "кв " * 1600), ("dashes", "1-" * 2500),
+           ("brackets", "(" * 5000), ("dots", "a." * 2500), ("at-words", "x at " * 1000),
+           ("digits", "7" * 5000), ("mixed", "1 (2 " * 1000),
+           # S53 (раунд 15+, П3): длинные цепочки групп цифр — r04-moderate-4 перебирал все их отрезки.
+           ("digit-groups", "123 " * 1250), ("phone-chain", "8 701 123 45 67 " * 320), ("short-long", "12 34 567 " * 500)]
+
+
+@pytest.mark.parametrize("name,text", HOSTILE, ids=[n for n, _t in HOSTILE])
 def test_moderate_is_fast_on_hostile_text(moderate, name, text):
-    """T-R04-08: публичный предпросмотр не «вешается» на враждебных 5000 символах (цель R04 — 5 мс на текст).
+    """T-R04-08, S53: публичный предпросмотр не «вешается» на враждебных 5000 символах (цель R04 — 5 мс на текст).
 
     Лучший из трёх замеров без сборки мусора (просьба R01, B0.16): в большом общем pytest сборки полный gc.collect()
     (~0,2 с на 0,5 млн объектов) попадал в замер. Катастрофический возврат регулярки (ReDoS) — секунды каждый раз,
-    его лучший из трёх не скрывает."""
+    его лучший из трёх не скрывает. Длины 500 -> 1000 -> 2000 -> 5000: квадратичный или кубический разбор (S53) падает
+    на первой длине дольше 0,2 с за секунды, а не держит общий pytest сборки минутами."""
     gc.collect()
     was_enabled = gc.isenabled()
     gc.disable()
     try:
-        best = float("inf")
-        for _ in range(3):
-            started = time.perf_counter()
-            moderate(text[:5000])
-            best = min(best, time.perf_counter() - started)
+        for size in (500, 1000, 2000, 5000):
+            best = float("inf")
+            for _ in range(3):
+                started = time.perf_counter()
+                moderate(text[:size])
+                best = min(best, time.perf_counter() - started)
+                if best >= 0.2:
+                    break           # уже медленно — дальше не ждём
+            assert best < 0.2, (name, size, round(best, 3))
     finally:
         if was_enabled:
             gc.enable()
-    assert best < 0.2, (name, round(best, 3))
+
+
+# S54: номер внутри длинной цепочки — два телефона подряд, номер и пометка в скобках. До moderate-4 (FINAL-5, B6.2)
+# не скрываются; форматы нашёл и закрыл R04 (a2e004c9, П3), но moderate-4 ждёт исправления S53 — PENDING (нестрогий
+# xfail): в сборке без moderate-4 — xfail, с ним — xpass; тест следит, что исправление S53 не потеряло эту маску.
+TWO_IN_A_ROW = [("8 701 123 45 67 8 701 765 43 21", ("701 123 45 67", "701 765 43 21")),
+                ("87011234567 (1)", ("87011234567",)),
+                ("тел 87011234567 (1)", ("87011234567",))]
+
+
+@pytest.mark.parametrize("text,secrets", [pytest.param(t, s, marks=xmarks("S54")) for t, s in TWO_IN_A_ROW],
+                         ids=[t for t, _s in TWO_IN_A_ROW])
+def test_two_phones_in_a_row_are_both_masked(moderate, text, secrets):
+    """T-R04-01: два номера подряд и номер с пометкой в скобках — оба скрыты (цепочка длиннее номера — не «число»)."""
+    public = moderate(text)["text_public"]
+    assert not [secret for secret in secrets if secret in public], public
 
 
 def test_non_string_and_too_long_are_rejected(moderate):

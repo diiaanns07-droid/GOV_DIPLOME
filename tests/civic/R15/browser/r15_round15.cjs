@@ -6,6 +6,8 @@
 //   ran      — сработавшие обработчики нагрузки (window.__r15xss);
 //   csp      — нарушения CSP на странице (кроме img-src/connect-src подложки);
 //   shown    — текст нагрузки «R15X» виден как текст: без него шаг NOT_RUN (экран ничего не показал — не доказательство).
+// П3 (раунд 15+): «ИИ-разбор пачки» R04 — шаг с подложным api.v2 (нагрузка во всех полях ответа, harness &fake=1) и шаг
+// с настоящим шлюзом (нагрузка во вставленных строках); экрана web/civic/intake нет — NOT_RUN с причиной.
 // Запуск: NODE_PATH=$(npm root -g) node tests/civic/R15/browser/r15_round15.cjs <дерево сборки> <папка отчёта>
 // Дерево — сборка R01 (B1+) или наложение веток ролей; новые маршруты, которых нет в шлюзе, добавляет r15_stand.py.
 "use strict";
@@ -187,6 +189,35 @@ async function main() {
       await page.goto(`${base}/civic/board/index.html`);
       await sleep(3000);
     });
+    // П3: «ИИ-разбор пачки обращений» R04 (web/civic/intake). С подложным api.v2 (harness &fake=1) нагрузка — во всех полях
+    // ответа разбора, примера и commit; с настоящим шлюзом — в вставленных строках пачки. Экрана нет — NOT_RUN с причиной.
+    const intakeStep = async (fake) => {
+      await page.goto(`${base}/r15/screen.html?m=intake&role=akimat${fake ? "&fake=1" : ""}`);
+      await page.waitForFunction(() => window.__r15ready !== undefined, null, { timeout: 15000 });
+      const ready = await page.evaluate(() => window.__r15ready);
+      if (ready !== true) return "экрана «ИИ-разбор» нет в сборке: " + ready;
+      await sleep(800);
+      const root = page.locator("#r15-root");
+      const area = root.locator("textarea").first();
+      if (await area.count()) await area.fill([PAY("paste1") + " Не горит фонарь во дворе ЖК Инжу Арена",
+        "Яма на дороге на улице Кенесары " + PAY("paste2"), "Не вывозят мусор во дворе ЖК Инжу Арена"].join("\n"));
+      const go = root.locator("button").filter({ hasText: /Разобрать|Талда|Разбор/i }).first();
+      const sample = root.locator("button").filter({ hasText: /пример|за ночь|түнгі/i }).first();
+      if (await go.count()) await go.click();
+      else if (await sample.count()) await sample.click();
+      else return "нет кнопки «Разобрать» / «Пример» — уточнить селектор по экрану R04";
+      await sleep(2500);
+      if (fake) {   // «Создать задачи» — только в подложке: ответ commit с нагрузкой в коде записи
+        const create = root.locator("button").filter({ hasText: /Создать|Құру/i }).first();
+        if (await create.count()) { await create.click(); await sleep(1500); }
+      }
+      // Тексты жителей, «почему так» и срочность R04 показывает в свёрнутых строках задач — раскрыть все (до 16).
+      const folded = root.locator('[aria-expanded="false"]');
+      for (let i = 0; i < 16 && (await folded.count()); i++) { await folded.first().click().catch(() => null); await sleep(200); }
+      await sleep(600);
+    };
+    await step(page, "akimat-1366 intake fake-api all fields", () => intakeStep(true));
+    await step(page, "akimat-1366 intake pasted lines", () => intakeStep(false));
     // Житель, 375×812: без сессии сотрудника.
     const resident = await browser.newContext({ viewport: { width: 375, height: 812 }, locale: "ru-RU", isMobile: true, hasTouch: true });
     await resident.addInitScript(init);

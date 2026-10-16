@@ -46,6 +46,10 @@ CONTRACT_STAFF = (
     ("POST", ("assistant", "ask")),
     ("POST", ("ideas", "{id}", "to-initiative")),
     ("POST", ("together", "yards", "{id}", "moderate")),   # R16 [доп.]: имя «старшего по двору» — акимат
+    # П3 (раунд 15+): «ИИ-разбор пачки обращений» R04 — только сотрудник + CSRF (T-R04-20).
+    ("POST", ("intake", "analyze")),
+    ("GET", ("intake", "sample")),
+    ("POST", ("intake", "commit")),
 )
 # Запись жителя (или «все») из CONTRACT §7 -> нужен ли суточный предел на одну цель с адреса (S08).
 CONTRACT_RESIDENT_WRITES = (
@@ -283,3 +287,30 @@ def test_demo_scenes_is_ids_only_and_read_only(srv, ws):
     status_post, _h, _raw = request(srv, "POST", "/api/civic/v2/demo/scenes", {"scene": "x"},
                                     headers={"Origin": f"http://127.0.0.1:{srv.server_address[1]}"})
     assert status_post in (403, 404, 405), status_post
+
+
+def test_wider_body_limit_stays_on_staff_intake(ws, srv):
+    """T-R04-21 (П3): R04 просит у шлюза предел тела ≥ 320 КБ для intake/analyze. Шире — только у этого маршрута
+    сотрудника: публичные записи жителя по-прежнему 413 на 100 КБ (общий предел шлюза 64 КБ не поднят для всех), а
+    intake/analyze без сессии — 401/403 и с большим телом."""
+    port = srv.server_address[1]
+    origin = {"Origin": f"http://127.0.0.1:{port}"}
+    checked = 0
+    for method, pattern in (("POST", ("moderate",)), ("POST", ("route",)), ("POST", ("together", "initiatives"))):
+        key, _h = _route(ws, method, pattern)
+        if key is None:
+            continue
+        status, _h2, raw = request(srv, method, "/api/civic/v2" + _concrete(pattern), {"text": "x" * 100_000},
+                                   headers={**origin, "X-Birge-Device": DEVICES[2]})
+        assert status == 413, (key, status, raw[:200])
+        checked += 1
+    if not checked:
+        not_run("в шлюзе нет публичных POST moderate / route / together/initiatives")
+    if _route(ws, "POST", ("intake", "analyze"))[0] is None:
+        return
+    try:
+        status, _h3, raw = request(srv, "POST", "/api/civic/v2/intake/analyze", {"texts": ["x" * 1000] * 100},
+                                   headers=origin)
+    except (ConnectionError, OSError):
+        return   # шлюз закрыл соединение до ответа — тело не принято
+    assert status in (401, 403, 413), (status, raw[:200])
