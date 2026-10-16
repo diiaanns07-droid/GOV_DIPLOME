@@ -187,6 +187,10 @@
   "r01_build_b015": {
    "status": "PASS (2 FAIL — B-128 ещё не в сборке)",
    "how": "сборка R01 B0.15 79c766c1 (ветка 735a40b5) как есть — R12 9a3ae1f4 внутри (календарь), лист QR ещё 3d4c1afb; CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: works_calendar.test.cjs 131/0 (вкладка «Ведомств» — 14/15/19, зоны ≥ 44); app_qr_acceptance.mjs 36/2 — FAIL только две проверки B-128 («← В Birge», Esc → оболочка): исправление 59ee755b вышло после B0.15, R01 берёт его в следующую сборку"
+  },
+  "r01_build_b016": {
+   "status": "PASS",
+   "how": "сборка R01 B0.16 49a69c17 (ветка 4ac57b10) как есть — все пути R12 = 59ee755b; CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: works_calendar.test.cjs 131/0 (вкладка «Ведомств» 14/15/19), app_qr_acceptance.mjs 38/0 (B-128: «← В Birge», Esc → оболочка); на вкладке «Ведомств» ни одной зоны < 44 px на 1366/375 × ru/kk (вкладки R17 061419fb — min-width 44)"
   }
  },
  "screens": {
