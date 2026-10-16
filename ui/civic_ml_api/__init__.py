@@ -31,6 +31,7 @@ from ui.civic_ml_api.classify_chain import classify
 from ui.civic_ml_api.errors import MLServiceUnavailable
 from ui.civic_ml_api.initiatives import set_initiative_source, similar_initiatives
 from ui.civic_ml_api.intake import intake_analyze, intake_commit, intake_sample
+from ui.civic_ml_api.intake import places as _intake_places
 from ui.civic_ml_api.moderation import moderate, moderation_record, public_text
 from ui.civic_ml_api.replies import reply_draft
 from ui.civic_ml_api.routing import route, route_hint, set_works_source
@@ -58,6 +59,7 @@ def warmup(background: bool = True):
         route(text="Яма после раскопок водоканала")
         moderate("Проверка модерации")
         deduper_info()
+        _intake_places()  # П3: справочник мест разбора (индекс карты и перекрёстки R12) — ~0,4 с один раз
         warm_cache()  # если хранилище уже подключено
 
     if not background:
