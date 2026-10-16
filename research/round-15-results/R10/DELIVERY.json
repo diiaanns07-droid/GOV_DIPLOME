@@ -4,10 +4,10 @@
  "branch": "claude/zen-wozniak-69d41q",
  "base_sha": "e91acb69",
  "restored_from": "claude/r14-R10@656681ee (tests/e2e и tests/civic/R10 в FINAL-4 те же) + research/round-14-results/R01/patches/R10_demo_flow_reference.patch",
- "code_sha": "eb0876cf",
+ "code_sha": "98e11593",
  "tested_sha": "a4937462 (FINAL-4), bd3800d8 (FINAL-4.1), ветка R01: c97aa5f5 и c9069723 (B0), 29b4ae9d (B0.2), c6d62440 (B0.6), 49786917 (B0.9), d893d9b2 (B0.10), 0121f7bd (B0.12), 2184795b (B0.13), aebb9f0a (B0.14); превью pvC, pvD, pvE, pvF; стенд «1 000 целей»",
  "push_status": "OK (checkpoint)",
- "status": "partial — инструменты раунда 15 готовы и проверены на B0, B0.2 и превью; официальной сборки B1 ещё нет (16 окт 09:00 UTC)",
+ "status": "partial — инструменты раунда 15 проверены на ветках R01 B0 … B0.14 (B0.14 — без FAIL); официальной сборки B1 ещё нет (16 окт 09:00 UTC)",
  "changed_paths": [
   "research/handoffs/astana/R10/round15/STATUS.md",
   "research/round-15-results/R10/",
@@ -67,7 +67,15 @@
  "show_verdict": "Ветки R01 B0.9 … B0.14 (aebb9f0a) — «можно показывать: ДА» (R10, до 16 окт 01:40 UTC); B0.14 — без единого FAIL (часть 1 172/0/2, сцены 332/0/0, аудит 0 FAIL, значок 1,56–2,02 с). Смотреть: сцена 7 на ноутбуке (B-124, облако). Официальной B1 ещё нет (16 окт 09:00 UTC); официальная показываемая — FINAL-4.1",
  "known_limits": [
   "облако без интернета: подложка карты — упрощённый фон; FPS и плавность — программный WebGL (мерить на ноутбуке)",
-  "казахский проверяется на полноту, не на качество (KK_REVIEW R11); субтитры ролика ҚАЗ — черновик R10"
+  "казахский проверяется на полноту, не на качество (KK_REVIEW R11); субтитры ролика — черновик R10, казахский вычитан R11 (окончательный текст — R14 VIDEO_SCRIPT, роль не начата)"
  ],
- "next_step": "B1 16 окт 09:00 UTC: acceptance_r15.sh → ACCEPTANCE_B1, BUGS, П1, вердикт; ночью — превью новых поставок поверх ветки R01"
+ "next_step": "B0.15 (ночью); B1 16 окт 09:00 UTC: acceptance_r15.sh --video → ACCEPTANCE_B1, BUGS, П1, вердикт; стенд «1 000 целей» на B1; B2 18:00 UTC; FINAL-5 17 окт 13:00 UTC — ролик в video/final5/",
+ "code_changes_since_eb0876cf": [
+  "demo_flow_v2: Ctrl+K «Ситуационный центр» и «QR-таблички» → свои страницы (просьба R08 INTEGRATION §15)",
+  "ux_lib + visual_audit: зона нажатия по hit-test — зона ::after ui-kit (.bk-chip, .bk-join, .bk-seg) считается (ложные FAIL B-114/B-125 ушли)",
+  "consistency: время мира через materialize R02 (patches/R10_consistency_world.patch; на мире v1 числа те же)",
+  "video_subtitles.json: вычитка казахского R11 (patches/R10_video_subtitles_kk.patch)",
+  "demo_video: субтитр читается вместе с действиями, сцена начинается с чистого кадра (ролик ҚАЗ 3:54 / РУС 3:47 вместо 4:49 / 4:44)",
+  "summary_r15: строка ИНФО сцен с названием раздела"
+ ]
 }
