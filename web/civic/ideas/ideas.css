@@ -420,6 +420,11 @@ body.civic-mode .ri-pd-host > .ri-pd.bk-glass.bk-glass--strong {
   overflow-wrap: anywhere; /* «Освещение улицы», «Детская площадка» — в две строки, а не «Освещ…» */
   hyphens: auto;
 }
+/* Слово, а не число (район, объект): шрифтом названий (--fs-body, токен «названия в списке проектов»; 16 — цифры фактов),
+   перенос — по слогам (мягкие переносы ideas.js): «Скамейки», «Сарыарка» в одну строку, «Спорт- / площадка» — в две. */
+.ri-fact--word > b {
+  font-size: var(--fs-body, 15px);
+}
 .ri-fact > span {
   display: block;
   color: var(--c-text-2, #4b5752);
