@@ -1,7 +1,7 @@
 R15 · раунд 15 · как запустить проверки безопасности
 
 Что это даёт: любой (R01, роль, Codex на ноутбуке) за 2 минуты проверяет сборку или ветку роли на угрозы раунда 15
-(THREATS_R15.md) и на все 51 находку R15 (раунды 14–15): открытые — xfail, исправленные — регрессия.
+(THREATS_R15.md, с П3 — §11a «ИИ-разбор») и на все 51 находку R15 (раунды 14–15): открытые — xfail, исправленные — регрессия.
 
 1. Тесты R15 на текущей рабочей копии (сборка R01 или эта ветка):
      python3 -m pip install pytest            # если нет
@@ -19,9 +19,19 @@ R15 · раунд 15 · как запустить проверки безопа�
 
 3. Только раунд 15:  python3 -B -m pytest tests/civic/R15/round15 -q -rs
    По ролям: test_r15_round15_gateway.py (R01), _agencies (R17), _meetings (R13), _assistant (R03),
-   _together (R16), _handoffs (R09), _notify (R06), _moderate (R04), _world (R02), _pages (CSP новых страниц).
+   _together (R16), _handoffs (R09), _notify (R06), _moderate (R04), _world (R02), _pages (CSP новых страниц),
+   _intake (R04 «ИИ-разбор пачки», П3: 32 теста; на FINAL-5 c2276360 — NOT_RUN, функций intake ещё нет).
+   FINAL-5 c2276360 с тестами круга 26: 567 passed, 0 failed, 38 NOT_RUN (32 intake + 6 строк intake/* шлюза).
 
-4. Проверка patch R15 перед применением (пример для R01):
+4. Браузерная проба (Chromium, строгая CSP шлюза; нужен Node и playwright):
+     NODE_PATH=$(npm root -g) node tests/civic/R15/browser/r15_round15.cjs <дерево сборки> <папка отчёта>
+     NODE_PATH=$(npm root -g) node tests/civic/R15/browser/r15_reference.cjs <дерево сборки> <папка отчёта>
+   r15_round15: 11 шагов; FAIL — нагрузка <img … onerror> стала разметкой или сработала. П3: шаги «intake fake-api all
+   fields» (подложный api.v2 — нагрузка во всех полях ответа разбора, примера и commit) и «intake pasted lines» (настоящий
+   шлюз) — NOT_RUN «экрана нет», пока R04 не сдал web/civic/intake/intake.js. FINAL-5: 8 PASS / 0 FAIL / 3 NOT_RUN.
+   Шаги проверены на поддельном экране R15 (scratch, не в Git): textContent — оба PASS, innerHTML — оба FAIL.
+
+5. Проверка patch R15 перед применением (пример для R01):
      git apply --check research/round-15-results/R15/patches/P-R01-S42.diff && git apply …
      python3 -B -m pytest tests/civic/R15/round15/test_r15_round15_gateway.py -q   # S42: XPASS(strict) = исправлено
 

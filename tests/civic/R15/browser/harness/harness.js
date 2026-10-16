@@ -1,6 +1,7 @@
 // R15 · обвязка браузерной пробы раунда 15: грузит экран роли и монтирует его в #r15-root, как оболочка R01.
 // ?m=agencies|meetings|analyst|works-calendar|together · &role=akimat|resident · &lang=ru|kk · &hash=<глубокая ссылка>
-// · &view=yard|initiatives (R16).
+// · &view=yard|initiatives (R16) · m=intake&fake=1 — «ИИ-разбор пачки» R04 (П3) с подложным api.v2: нагрузка во ВСЕХ полях
+// ответа разбора, примера и commit (контракт INTEGRATION R04 п. 9.1) — экран должен вывести её текстом.
 // CSRF-токен сотрудника кладёт проба (sessionStorage r15csrf) — экраны берут его через CivicShell.csrfToken().
 (function () {
   "use strict";
@@ -24,8 +25,37 @@
       global: "BirgeWorksCalendar" },
     together: { css: ["/civic/together/together.css"],
       js: ["/civic/together/together-text.js", "/civic/together/together.js"], global: "BirgeTogether" },
-    notify: { css: ["/civic/notify/notify.css"], js: ["/civic/notify/notify.js"], global: "BirgeNotify" }
+    notify: { css: ["/civic/notify/notify.css"], js: ["/civic/notify/notify.js"], global: "BirgeNotify" },
+    intake: { css: ["/civic/intake/intake.css"], js: ["/civic/intake/intake.js"], global: "BirgeIntake" }
   };
+  // П3: подложный клиент шлюза для экрана R04 (как BirgeShell.api.v2: Promise с телом JSON). Нагрузка — в каждом поле.
+  var P = function (tag) { return "<img src=x data-r15x=" + tag + " onerror=__r15x()>R15X"; };
+  var FAKE_API = { calls: [], v2: function (method, path, body) {
+    FAKE_API.calls.push(method + " " + path);
+    var task = function (n, placed) {
+      return { id: "t-" + n, title_ru: P("title" + n) + " фонарь", title_kk: P("titlekk" + n), category: "lighting",
+        subtopic: P("sub" + n), services: [{ id: "akimat", role: "lead", name_ru: P("svc" + n) + " служба", name_kk: P("svckk" + n) }],
+        joint: n === 1, why_ru: P("why" + n) + " почему", why_kk: P("whykk" + n),
+        target: placed ? { kind: "yard", id: "yard-1026285032", label_ru: P("target" + n) + " двор", label_kk: P("targetkk" + n) } : null,
+        point: placed ? [71.404739, 51.1111745] : null, address_text: P("addr" + n) + " адрес", text_ids: ["r15-" + n],
+        people: 3, urgent: n === 1, urgent_why_ru: P("urgent" + n) + " срочно", urgent_why_kk: P("urgentkk" + n) };
+    };
+    var reply;
+    if (/intake\/sample/.test(path)) {
+      reply = { name: "night", texts: [{ id: "r15-1", text: P("sample") + " текст" }], demo: true, source: P("source") };
+    } else if (/intake\/commit/.test(path)) {
+      reply = { batch_id: "b-r15fake0001", created: 1, existing: 0, skipped_no_address: 1, demo: true,
+        records: [{ task_id: "t-1", complaint_id: "c-000000000001", code: P("code") }] };
+    } else if (/intake\/analyze/.test(path)) {
+      reply = { batch_id: "b-r15fake0001", method: P("method"), demo: true, version: P("version"),
+        summary: { total: 3, tasks: 2, services: 1, urgent: 1, merged: 1, no_address: 1, ms: 12 },
+        tasks: [task(1, true), task(2, false)] };
+    } else {
+      return Promise.reject(Object.assign(new Error("R15: нет в подложке"), { status: 404 }));
+    }
+    return new Promise(function (ok) { setTimeout(function () { ok(JSON.parse(JSON.stringify(reply))); }, 50); });
+  } };
+  window.__r15fake = FAKE_API;
   var spec = MODULES[name];
   function load(list, i, done) {
     if (i >= list.length) { done(); return; }
@@ -46,9 +76,11 @@
       try {
         if (window.BirgeI18n && typeof window.BirgeI18n.setLang === "function") window.BirgeI18n.setLang(lang);
       } catch (e) { /* словарь R11 — по желанию */ }
-      window.__r15handle = mod.mount(document.getElementById("r15-root"), {
+      var opts = {
         apiBase: "/api/civic/v2", role: role, mode: role, lang: lang, embedded: false, view: q.get("view") || undefined
-      });
+      };
+      if (q.get("fake") === "1") opts.api = FAKE_API;
+      window.__r15handle = mod.mount(document.getElementById("r15-root"), opts);
       window.__r15ready = true;
     });
   }

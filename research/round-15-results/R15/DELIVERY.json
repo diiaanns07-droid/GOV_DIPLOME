@@ -522,6 +522,7 @@
   "tests": "tests/civic/R15/round15/test_r15_round15_intake.py — 32 теста; + test_r15_round15_gateway.py: intake/* в CONTRACT_STAFF, test_wider_body_limit_stays_on_staff_intake",
   "validated_on": "фейк R15 по контракту п. 9 на дереве FINAL-5 c2276360 (scratch, не в Git): верный 32/32 passed; с дырами — 17 failed (каждая дыра ловится отдельно)",
   "on_FINAL5": "c2276360: 32 NOT_RUN (функций intake ещё нет); test_wider_body_limit_stays_on_staff_intake — passed",
-  "status": "ждём код R04 (срок 17 окт 11:00)"
+  "status": "ждём код R04 (срок 17 окт 11:00)",
+  "browser": "r15_round15.cjs: шаги «intake fake-api all fields» и «intake pasted lines»; на поддельном экране textContent — PASS, innerHTML — FAIL; FINAL-5 c2276360 — 8 PASS / 0 FAIL / 3 NOT_RUN (экрана intake нет)"
  }
 }
