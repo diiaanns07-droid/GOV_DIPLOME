@@ -28,7 +28,9 @@
   "FINAL-5": "c2276360 (R01 claude/brave-fermi-nhzetj, BUILD.json FINAL-5)",
   "FINAL-5.1": "e8d6cae6 (код = FINAL-5 c2276360 + docs R14; изменений кода нет)",
   "B6.2_06a62c8c": "tests/civic/R15 613 passed / 0 failed / 5 xfail (S54) после правки теста; браузер r15_round15 10/0/1, r15_reference 18/0/0",
-  "FINAL5_c2276360_round28": "tests/civic/R15 571 passed / 0 failed / 44 NOT_RUN (intake) / 3 xfail (S54)"
+  "FINAL5_c2276360_round28": "tests/civic/R15 571 passed / 0 failed / 44 NOT_RUN (intake) / 3 xfail (S54)",
+  "B6.3_f9b0cc85": "tests/civic/R15 613 passed / 0 failed / 5 xfail (S54); браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена изменений B6.2->B6.3 чистая",
+  "R04_df6ab8c2_moderate5": "moderate+intake R15: 99 passed, 5 xpassed; 4000/4000 совпадает с P-R04-S53"
  },
  "push_status": "OK (круг 3)",
  "changed_paths": [
@@ -480,20 +482,22 @@
   "S53": {
    "owner": "R04",
    "level": "высокий",
-   "status": "ОТКРЫТА в ветке R04 (moderation.py не менялась до a86e46a1); R01 B6.2 (c9ae7164) взял R04 D2 без moderate-4 — в сборке S53 нет. Закрыть: P-R04-S53 в ветке R04 -> moderate-4 в FINAL-6",
+   "status": "исправлено R04 da0925fa (r04-moderate-5 = P-R04-S53), D4 9c16e868 — проверено R15 (тесты, 4000 текстов совпадают); в сборке не было (B6.2/B6.3 — moderate-3); PENDING до сборки с D4",
    "patch": "patches/P-R04-S53.diff (git apply на dce9427b — чисто; 4000 случайных текстов — ответы те же)",
    "what": "доступность: _split_run перебирает все отрезки длинной цепочки цифр — O(n³); анонимный POST /moderate «123 …» 1200 знаков — 12,7 с процессора, 5000 — десятки минут; 8 запросов — /api/health ×180",
-   "tests": "test_moderate_is_fast_on_hostile_text[digit-space|digit-groups|phone-chain|short-long], test_large_batch_is_still_fast[hostile] — обычные (падение = регрессия)"
+   "tests": "test_moderate_is_fast_on_hostile_text[digit-space|digit-groups|phone-chain|short-long], test_large_batch_is_still_fast[hostile] — обычные (падение = регрессия)",
+   "time_to_fix_min": 34,
+   "found_fixed_astana": "найдено 18:59 (970aa408) -> исправлено 19:33 (da0925fa)"
   },
   "S54": {
    "owner": "R04/R01",
    "level": "низкий",
-   "status": "ОТКРЫТА (круг 28): в сборке B6.2 06a62c8c — moderate-3; исправлено R04 a2e004c9 (moderate-4) — PENDING, в сборку только вместе с исправлением S53",
+   "status": "исправлено R04 da0925fa (moderate-5), D4 9c16e868 — тесты R15 xpass; в B6.3 ещё moderate-3 (xfail); PENDING до сборки с D4",
    "what": "приватность П3: два телефона подряд и «тел 87011234567 (1)» не скрываются — в итоге intake/analyze и в тексте созданных жалоб (demo: false; видит сотрудник, в публичной карточке текста нет)",
    "tests": "test_two_phones_in_a_row_are_both_masked (3), test_two_phones_in_a_row_not_on_result_screen (2) — PENDING xfail"
   }
  },
- "high_open": 1,
+ "high_open": 0,
  "screens": [
   "research/round-15-results/R15/browser/akimat_1366_agencies_crisis.png",
   "research/round-15-results/R15/browser/akimat_1366_analyst_question.png",
@@ -548,5 +552,5 @@
    "browser": "intake fake-api all fields PASS (9 видны текстом, 0 вставлено); intake pasted lines PASS"
   }
  },
- "high_open_note": "S53 — только в ветке R04 (в сборке B6.2 нет: R01 не взял moderate-4); блокер FINAL-6, если moderate-4 возьмут без исправления"
+ "high_open_note": "высоких открытых нет: S53 исправлена R04 (da0925fa), в сборки не попадала"
 }

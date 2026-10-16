@@ -1,0 +1,221 @@
+{
+ "seed": {
+  "repo": "сборка R01 B6.3 @ f9b0cc85 (рабочая копия R15)",
+  "head": "f9b0cc85",
+  "complaint": {
+   "status": 201,
+   "id": "c-4f03416eb4b7563f",
+   "target": {
+    "kind": "area",
+    "id": "cell-193-230",
+    "approximate": true,
+    "label_ru": "Примерное место",
+    "label_kk": "Шамамен орны"
+   }
+  },
+  "metoo": 6,
+  "idea": {
+   "hostile_status": 422,
+   "hostile_error": {
+    "title": "HTML не допускается: только простой текст.",
+    "description": "HTML не допускается: только простой текст."
+   },
+   "plain_status": 201,
+   "db_injected": "ok",
+   "id": "i-3f04de49005d",
+   "publish": "ok"
+  },
+  "question": {
+   "status": 201,
+   "id": "q-85e2bbd8ca29",
+   "publish": "ok",
+   "answer": "ok"
+  },
+  "login": "ok"
+ },
+ "steps": [
+  {
+   "name": "akimat-home",
+   "status": "PASS",
+   "note": "главная: сводка, горячие места, легенда",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "akimat-card",
+   "status": "PASS",
+   "note": "карточка объекта (цитата жалобы)",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": true
+  },
+  {
+   "name": "akimat-card-tabs",
+   "status": "PASS",
+   "note": "вкладок нажато: 3",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "akimat-day",
+   "status": "PASS",
+   "note": "кнопка, вкладок 0, открыто записей с нагрузкой 0",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "akimat-inbox",
+   "status": "PASS",
+   "note": "кнопка, вкладок 6, открыто записей с нагрузкой 0",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "akimat-projects",
+   "status": "PASS",
+   "note": "кнопка, вкладок 2, открыто записей с нагрузкой 2",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "akimat-questions",
+   "status": "PASS",
+   "note": "через адрес, вкладок 3, открыто записей с нагрузкой 1",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": true
+  },
+  {
+   "name": "akimat-search",
+   "status": "PASS",
+   "note": "подсказки поиска и Enter (Поиск по карте)",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "akimat-ctrl-k",
+   "status": "PASS",
+   "note": "командная палитра",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "akimat-url-q",
+   "status": "PASS",
+   "note": "адрес со строкой поиска",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "akimat-url-hash-q",
+   "status": "PASS",
+   "note": "адрес со строкой поиска",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "akimat-url-search",
+   "status": "PASS",
+   "note": "адрес со строкой поиска",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "resident-home",
+   "status": "PASS",
+   "note": "шторка «Рядом с вами», поиск, кнопка «Сообщить»",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "resident-place",
+   "status": "PASS",
+   "note": "карточка места у жителя",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "resident-nearby",
+   "status": "PASS",
+   "note": "кнопка, вкладок 4, открыто записей с нагрузкой 0",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "resident-ideas",
+   "status": "PASS",
+   "note": "кнопка, вкладок 2, открыто записей с нагрузкой 2",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  },
+  {
+   "name": "resident-questions",
+   "status": "PASS",
+   "note": "через адрес, вкладок 3, открыто записей с нагрузкой 2",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": true
+  },
+  {
+   "name": "resident-passport",
+   "status": "PASS",
+   "note": "паспорт объекта по QR",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "private": false,
+   "shows_payload_text": false
+  }
+ ],
+ "pass": 18,
+ "fail": 0,
+ "not_run": 0
+}

@@ -1,0 +1,2 @@
+Сборка R01 B6.3: claude/brave-fermi-nhzetj @ f9b0cc85 (e17ca0e5: R04 a3888d13 с moderate-3, R09 c450badb D2 …)
+Пробы R15 с ветки R15 (круг 29, 16 окт 20:35 Астаны): r15_round15 10 PASS / 0 FAIL / 1 NOT_RUN; r15_reference 18 / 0 / 0
