@@ -3368,5 +3368,6 @@
  "ask.staff.pii.card": "номер карты",
  "ask.staff.pii.iban": "номер счёта",
  "ask.staff.pii.apartment": "номер квартиры",
- "ask.staff.pii.contact": "контакт в мессенджере"
+ "ask.staff.pii.contact": "контакт в мессенджере",
+ "crisis.tasks_progress": "выполнено {done} из {total}"
 }

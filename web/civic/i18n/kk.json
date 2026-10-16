@@ -2863,5 +2863,6 @@
  "ask.staff.pii.card": "карта нөмірі",
  "ask.staff.pii.iban": "шот нөмірі",
  "ask.staff.pii.apartment": "пәтер нөмірі",
- "ask.staff.pii.contact": "мессенджердегі байланыс"
+ "ask.staff.pii.contact": "мессенджердегі байланыс",
+ "crisis.tasks_progress": "{total} ішінен {done} орындалды"
 }
