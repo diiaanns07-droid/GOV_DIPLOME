@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "09b9659eb1a076b5cd2bbef9f7931f334428c314",
- "tested_sha": "09b9659eb1a076b5cd2bbef9f7931f334428c314",
+ "code_sha": "0b494fca0b1c2b41b114168411e6a13a87732f73",
+ "tested_sha": "0b494fca0b1c2b41b114168411e6a13a87732f73",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -110,7 +110,7 @@
    "failed": 0,
    "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_screens.cjs --url http://127.0.0.1:8670",
    "env": "Chromium (Playwright), стенд analyst_devserver.py, 1366/1024/375 × ru/kk, проверки П1 и метрики аудита R10 (≤ 3 размеров шрифта на пустом экране, зоны нажатия ≥ 44 px, видимая надпись скелетона)",
-   "note": "+4 (233ce8a8): строка конфликта называет улицу, вид — подписью; строка — кнопка; с R12 открывает свой конфликт (openConflict), без R12 — вкладку #agencies/calendar; +6 (09b9659e, П3): значок «ИИ» у ответа — подсказка ru / kk, значок набора, ≤ 16 px (1366 / 1024 / 375 × ru / kk)"
+   "note": "+4 (233ce8a8): строка конфликта называет улицу, вид — подписью; строка — кнопка; с R12 открывает свой конфликт (openConflict), без R12 — вкладку #agencies/calendar; +6 (П3, 0b494fca): метка «ИИ» у ответа (.bk-ai, значок i-ai, подсказка ru / kk, ≤ 16 px; 1366 / 1024 / 375 × ru / kk; на стенде — запасная разметка без BirgeUI.aiTag)"
   },
   "browser_shell_integration": {
    "status": "PASS",
@@ -335,10 +335,10 @@
   },
   "shell_ai_mark": {
    "status": "PASS",
-   "env": "копия ветки R01 fbdef66b (FINAL-5.1 + STATUS П3) + web/civic/assistant 09b9659e, мир R02, вход operator",
+   "env": "копия ветки R01 b4749a39 (B6.0 69ff2e0e: ui-kit R11 21893f05 с BirgeUI.aiTag и i-ai) + web/civic/assistant 0b494fca, мир R02, вход operator",
    "checks": [
-    "1366 ru «Какие службы отстают?» / 375 kk «Қай қызметтер артта қалып жатыр?»: значок «ИИ» / «ЖИ» в верхней строке ответа, иконка набора R11 из спрайта сборки отрисована (getBBox > 0), 14 × 14, цвет --c-text-2, filter / box-shadow — none",
-    "подсказка title / aria-label: «Подсказка ИИ — проверьте» / «ЖИ кеңесі — тексеріңіз»; ошибок JS нет",
+    "1366 ru «Какие службы отстают?» / 375 kk: метка BirgeUI.aiTag() в верхней строке ответа — «пилюля» .bk-ai 22 px, значок i-ai отрисован 14 × 14, подпись «ИИ» / «ЖИ» 13 px, цвет --c-text-2, filter / box-shadow — none",
+    "подсказка (title + текст для диктора): «Подсказка ИИ — проверьте» / «Жасанды интеллект кеңесі — тексеріңіз»; ошибок JS нет",
     "analyst_shell_check.cjs на той же копии: карточка карты 1366 / 375, строка конфликта → works-calendar с той же улицей"
    ],
    "frames": [
@@ -434,10 +434,10 @@
  "round_15plus": {
   "amendment": "П3 «Ещё лучше: раунд 15+ до FINAL-6» (16 окт 17:15 Астаны): FINAL-5.1 — запасная сборка; новое — в FINAL-6",
   "r03_tasks": [
-   "ИИ должен быть виден: значок «ИИ» набора R11 у ответа «Спросить Birge» + подсказка «Подсказка ИИ — проверьте» — сделано 09b9659e",
+   "ИИ должен быть виден: метка «ИИ» у ответа «Спросить Birge» — как во всём продукте: BirgeUI.aiTag() ui-kit R11 (.bk-ai, i-ai, подсказка «Подсказка ИИ — проверьте» из словаря); на ui-kit без aiTag — та же разметка — сделано 09b9659e → 0b494fca",
    "свои экраны по чек-листу VISUAL_BRIEF §4 — R10 FINAL-5: analyst 0 FAIL / 0 WARN; новых функций нет"
   ],
-  "for_R11": "ключи analyst.ai («ИИ» / «ЖИ») и analyst.ai_hint («Подсказка ИИ — проверьте» / «ЖИ кеңесі — тексеріңіз») — в словарь (sync_roles.py); свой значок «ИИ» в наборе — назвать в INTEGRATION, R03 сменит AI_ICON (сейчас i-sparkle)",
-  "for_R01": "FINAL-6: пути R03 по code_sha (только web/civic/assistant/analyst.js / .css изменились после 2fe5a53b)"
+  "for_R11": "сделано R11: i-ai, .bk-ai, BirgeUI.aiTag(), ключи analyst.ai / analyst.ai_hint (ҚАЗ «Жасанды интеллект кеңесі — тексеріңіз») — R03 перешёл на них (0b494fca)",
+  "for_R01": "FINAL-6: пути R03 по code_sha (после 2fe5a53b изменились только web/civic/assistant/analyst.js / .css и проверка стенда); в B6.0 — 09b9659e"
  }
 }
