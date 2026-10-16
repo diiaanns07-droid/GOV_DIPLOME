@@ -214,6 +214,13 @@ async function shot(page, name, full) {
       if (width === 1366) {
         const box = await page.$(".akim__controls");
         if (box) await box.screenshot({ path: path.join(OUT, `akim-date-${lang}.png`) });
+        // П3: поле даты Chromium рисует по языку системы (облако — «10/16/2026»); поверх — дата «дд.мм.гггг» из значения поля.
+        const dt = await page.evaluate(() => {
+          const i = document.querySelector("#akim-date"), t = document.querySelector(".akim__date-text");
+          return t ? { text: t.textContent, value: i.value, shown: getComputedStyle(t).display !== "none" } : null;
+        });
+        check(`${tag}: дата в поле — «дд.мм.гггг» при любом языке браузера`, !!dt && dt.shown
+          && dt.text === dt.value.slice(8, 10) + "." + dt.value.slice(5, 7) + "." + dt.value.slice(0, 4), dt);
       }
       // Первый экран по схеме R11 (IA_WAVE2 §5): ноутбук — числа, сводка и первая карточка «Нужно решение акима»
       // (нет решений — первое горячее место); телефон — числа 2×2 и заголовок блока решений.

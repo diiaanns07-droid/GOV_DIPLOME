@@ -601,7 +601,11 @@
         )
       );
       var controls = h("div", { class: "akim__controls" }, [
-        h("label", { class: "bk-field akim__field", for: "akim-date" }, [h("span", { class: "akim__field-label", text: tr("akim.date") }), dateInput]),
+        h("label", { class: "bk-field akim__field", for: "akim-date" }, [h("span", { class: "akim__field-label", text: tr("akim.date") }),
+          // Поле даты Chromium рисует по языку системы, а не страницы: в облачном ролике и на английской системе было бы
+          // «10/16/2026». Пока поле не в фокусе, поверх — дата по-нашему «16.10.2026» (П3, кадр координатора 03).
+          h("span", { class: "akim__date" }, [dateInput,
+            h("span", { class: "akim__date-text", "aria-hidden": "true", text: date.slice(8, 10) + "." + date.slice(5, 7) + "." + date.slice(0, 4) })])]),
         isToday
           ? null
           : h("button", {
