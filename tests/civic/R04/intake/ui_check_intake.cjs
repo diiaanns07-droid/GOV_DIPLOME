@@ -149,6 +149,8 @@ async function checkStates(browser, w, hgt, lang) {
   await page.click(".bi [data-act=run]");
   check(`${tag} 501 lines -> error.too_big, no request`, same(await fieldError(page), await T(page, "intake.error.too_big")) && analyzeCalls === before,
     { calls: analyzeCalls - before });
+  if (OUT) await page.screenshot({ path: path.join(OUT, `${w}-${lang}-7-too-big.png`) });
+  check(`${tag} 501 lines: no horizontal scroll`, await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth) <= 0);
 
   // 6) Идёт разбор: «Разбираем N обращений…», секунды идут, заготовка списка; затем итог.
   const three = "Яма на дороге у дома 5\nНе вывозят мусор третий день\nСломана скамейка в парке";
@@ -181,6 +183,7 @@ async function checkStates(browser, w, hgt, lang) {
     await page.click(".bi [data-act=run]");
     const title = await errorTitle(page);
     check(`${tag} analyze ${name} -> ${key}`, same(title, await T(page, key)) && await page.inputValue(field) === three, title);
+    if (OUT && name === "500") await page.screenshot({ path: path.join(OUT, `${w}-${lang}-6-error.png`) });
     await page.unroute(ANALYZE);
   }
   const msg = "Не больше 500 обращений за раз.";
@@ -226,6 +229,36 @@ async function checkStates(browser, w, hgt, lang) {
   await page.click(".bi .bi-error .bk-btn");
   await page.waitForSelector(".bi .bi-done", { timeout: 15000 }).catch(() => null);
   check(`${tag} store retry -> created / already created`, await page.$(".bi .bi-done") !== null);
+  await ctx.close();
+
+  // 11) «Уменьшить движение»: без счётчика — сразу итоговые числа.
+  ctx = await browser.newContext({ viewport: { width: w, height: hgt }, reducedMotion: "reduce" });
+  page = await ctx.newPage();
+  page.on("pageerror", (e) => errors.push(e.message));
+  await openIntake(page, lang);
+  await page.click(".bi [data-act=sample]");
+  await page.waitForFunction(() => (document.querySelector(".bi .bi-text") || {}).value.length > 100, null, { timeout: 15000 });
+  const rmRes = page.waitForResponse((r) => r.url().endsWith("/intake/analyze") && r.request().method() === "POST");
+  await page.click(".bi [data-act=run]");
+  const rmRaw = await (await rmRes).json();
+  const rmData = rmRaw && rmRaw.ok === true && rmRaw.data ? rmRaw.data : rmRaw;
+  await page.waitForSelector(".bi-sum__line", { timeout: 15000 });
+  const firstFrame = await page.$$eval(".bi-sum__line .bi-num", (els) => els.map((e) => [e.textContent.replace(/\D/g, ""), e.getAttribute("data-value")]));
+  check(`${tag} reduced motion -> final numbers at once`, firstFrame.length === 5 && firstFrame.every(([a, b]) => a === b), firstFrame);
+
+  // 12) «Показать на карте» — оболочка открывает карту на цели этой задачи (#target=вид:id).
+  await page.click(".bi .bi-row");
+  const openId = await page.getAttribute(".bi-task.is-open", "data-task");
+  const task = (rmData.tasks || []).find((t) => t.id === openId) || {};
+  const mapBtn = await page.$(".bi-task.is-open .bi-why__acts .bk-btn");
+  if (task.target && mapBtn) {
+    await mapBtn.click();
+    await page.waitForFunction(() => location.hash.startsWith("#target="), null, { timeout: 5000 }).catch(() => null);
+    const hash = await page.evaluate(() => decodeURIComponent(location.hash));
+    check(`${tag} «Показать на карте» -> #target of the task`, hash === `#target=${task.target.kind}:${task.target.id}`, { hash, target: task.target });
+  } else {
+    check(`${tag} «Показать на карте» -> #target of the task`, false, { openId, target: task.target || null, button: !!mapBtn });
+  }
   check(`${tag} no page errors`, errors.length === 0, errors);
   await ctx.close();
 }
