@@ -2,7 +2,7 @@
  "role": "R05",
  "round": 15,
  "delivery": "D1.7 — раунд 15+ (поправка П3, до FINAL-6): тексты модуля не мельче 13 px; размещение с обзорного вида начинается в городе; патч оболочки R01 — подпись карты не под «Что построить?» и легендой",
- "status": "П3 (16 окт 17:15): раунд снова открыт до FINAL-6 (17 окт 17:00), закрытие 17 окт 18:00. D1.7 сдана и проверена на трёх стендах (FINAL-5.1 как есть / + D1.7 / + D1.7 + патч R01); FINAL-5.1 e8d6cae6 (запасная сборка для показа) — R05 2acfbbfc",
+ "status": "П3: раунд 15+ до FINAL-6 (17 окт 17:00), закрытие 17 окт 18:00. D1.7 f16275a3 и патч оболочки R05 — в сборке R01 B6.3 (e17ca0e5 / a59e77dc, 16 окт 19:32); на B6.3 как есть всё зелёное. FINAL-5.1 e8d6cae6 (запасная) — R05 2acfbbfc",
  "branch": "claude/bold-cray-dopshy",
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "base_code": "FINAL-4 a493746234022664db5f7c9d33c0868082f6f346",
@@ -15,7 +15,8 @@
   "FINAL-5": "c2276360a322dfce8f484a9f93fd471974987123 (R01 claude/brave-fermi-nhzetj, 16 окт 13:33 по Астане)",
   "FINAL-5.1": "e8d6cae61787bbe74631edfffcaf19ec038bcce9 (R01, 16 окт 15:25 по Астане; код = FINAL-5 + docs R14)",
   "r05_paths": "web/civic/build3d/, data/civic/astana/landmarks/ в FINAL-5 и FINAL-5.1 = 2acfbbfc (git diff пуст)",
-  "FINAL-6": "кандидат 17 окт 12:00, сборка 17:00 (П3); взять web/civic/build3d/ на code_sha и патч R01_p3_attrib_bottom_row.patch"
+  "FINAL-6": "кандидат 17 окт 12:00, сборка 17:00 (П3); взять web/civic/build3d/ на code_sha и патч R01_p3_attrib_bottom_row.patch",
+  "B6.3": "e17ca0e5 / a59e77dc (R01, 16 окт 19:32 по Астане): R05 = f16275a3 + патч оболочки R05 — web/civic/build3d совпадает с f16275a3"
  },
  "amendments": [
   "П1 «Без ИИ-слопа» (15 окт 17:05) — принята: модели ориентиров удалены (061a575c), коммит a3749eaa НЕ брать",
@@ -27,12 +28,12 @@
   "data/civic/astana/landmarks/"
  ],
  "r01_patches": [
-  "research/round-15-results/R05/patches/R01_p3_attrib_bottom_row.patch (П3, НОВЫЙ: web/civic/shell/birge.css, +13 строк — подпись карты © OpenStreetMap в правый нижний угол свободной карты, «Что построить?» между легендой и подписью; git apply --check OK на e8d6cae6 и на голове R01 13aa4ac1)",
+  "research/round-15-results/R05/patches/R01_p3_attrib_bottom_row.patch (П3: web/civic/shell/birge.css — подпись карты в правый нижний угол, «Что построить?» между легендой и подписью) — в сборке R01 с B6.3, второй раз не накладывать",
   "research/round-15-results/R05/patches/R01_delta_b03.patch (в сборке R01 с B0.7, 57170575 — не накладывать второй раз)",
   "research/round-15-results/R05/patches/R01_landmarks_search_basemap.patch (в сборке R01 с B0.2)",
   "research/round-15-results/R05/patches/R01_web_server_assets.patch (в сборке R01 с B0.2)"
  ],
- "r01_patches_base": "R01_p3_attrib_bottom_row.patch — на FINAL-5.1 / голове R01 (birge.css не менялась с e8d6cae6); остальные патчи R05 уже в сборке (B0.2, B0.7)",
+ "r01_patches_base": "все патчи R05 уже в сборке R01: B0.2 (полные), B0.7 (дельта), B6.3 (подпись карты, П3)",
  "changed_paths": [
   "D1.7: web/civic/build3d/build3d.css (12 px → --fs-xs 13 px), web/civic/build3d/build3d.js (startPoint: размещение с обзорного вида — в городе)",
   "D1.7: tests/civic/R05/round15/app_visual_audit.mjs (новый — чек-лист VISUAL_BRIEF §4), tests/civic/R05/build3d/app_b2_smoke.mjs (проверка 17б — подпись карты)",
@@ -79,7 +80,8 @@
   "d17_phone_placing": "телефон, акимат, «Что построить?» → «Сквер» с обзорного вида: 375×812 и 360×800 — призрак был «за пределами Астаны», теперь в городе (середина города); 375×667 — в городе и был",
   "p3_visual_audit": "аудит экранов R05 по чек-листу VISUAL_BRIEF §4 (tests/civic/R05/round15/app_visual_audit.mjs: каталог, размещение, карточка сквера и освещения ночью, подсказка жителя, метки на масштабе 16 × 1366 / 1024 / 375 × ru / kk): FINAL-5.1 как есть 16/18 (тексты 12 px; на 375 ru / kk размещение начиналось «за пределами Астаны»), FINAL-5.1 + D1.7 34/34, + патч R01 34/34 — runs/app_visual_audit_on_final51.json, _d17.json, _d17_r01p3.json",
   "p3_on_final51_plus_d17": "FINAL-5.1 e8d6cae6 + D1.7 f16275a3: smoke 3D 30/1 (FAIL только 17б — подпись карты, патч оболочки), карточка 12/0/0, поиск 7/0/1 (вид здания — LOCAL-12), Node 54/54 — runs/r14_app_smoke_d17_on_final51.json, app_card_check_d17.json, app_landmarks_search_d17.json",
-  "p3_plus_r01_patch": "FINAL-5.1 + D1.7 + R01_p3_attrib_bottom_row.patch: smoke 3D 31/31 — runs/r14_app_smoke_d17_r01p3.json"
+  "p3_plus_r01_patch": "FINAL-5.1 + D1.7 + R01_p3_attrib_bottom_row.patch: smoke 3D 31/31 — runs/r14_app_smoke_d17_r01p3.json",
+  "in_r01_build_b63": "сборка R01 B6.3 a59e77dc как есть (R05 = D1.7 f16275a3 + патч оболочки): Node 54/54, аудит §4 34/34, smoke 3D 31/31, карточка 12/0/0, поиск 7/0/1 (вид здания — LOCAL-12), ошибок страницы 0 — runs/*_on_b63.json"
  },
  "acceptance": {
   "R10": "FINAL-5 c2276360 — «можно показывать: ДА», блокеров нет (ACCEPTANCE_FINAL5.md); FINAL-5.1 e8d6cae6 — «ДА», быстрый повтор (final51-e8d6cae6/README.md); П1: 3D R05 — ✅ правило 3, «белый макет» (P1_REVIEW.md); BUGS.md: B-126 (мелочь, R05) — закрыт, других записей R05 нет — ветка R10 claude/zen-wozniak-69d41q @ 692f616f",
@@ -132,7 +134,7 @@
   "Картинки «было» — схема места без проекта (пустой участок / тротуар / улица без фонарей), а не снимок настоящего места",
   "FPS в облаке — программная графика; на ноутбуке с видеокартой — LOCAL-12"
  ],
- "next_step": "R01 к FINAL-6: web/civic/build3d/ на code_sha (D1.7) и patches/R01_p3_attrib_bottom_row.patch; 17 окт 12:00 — проверить кандидат FINAL-6 (аудит §4, smoke, карточка, поиск); 12:00–16:00 — только блокеры R10 / R15; 18:00 — финальные STATUS / DELIVERY. После раунда: LOCAL-12, LOCAL-13",
+ "next_step": "R01: D1.7 и патч уже в B6.3 — для кандидата FINAL-6 брать нечего нового. 17 окт 12:00 — проверить кандидат FINAL-6 (аудит §4, smoke, карточка, поиск, Node); 12:00–16:00 — только блокеры R10 / R15; 18:00 — финальные STATUS / DELIVERY. После раунда: LOCAL-12, LOCAL-13",
  "replaces": "D1.6 2acfbbfc (в FINAL-5 / FINAL-5.1): + build3d.css 12 → 13 px, + build3d.js startPoint (размещение с обзорного вида — в городе)",
  "screens_note": "кадры — настоящий интерфейс: раунд 15 — сборка R01 B0.8 / B0.9; П3 (p3_*) — FINAL-5.1 e8d6cae6 + R05 D1.7 + патч R01_p3_attrib_bottom_row.patch (так будет в FINAL-6, если R01 возьмёт оба), «было» — FINAL-5.1 как есть; облако, упрощённый фон карты"
 }
