@@ -1,14 +1,14 @@
 {
  "role": "R12",
  "round": 15,
- "delivery": 13,
+ "delivery": 14,
  "title": "Единый календарь работ и «копаем один раз»",
  "branch": "claude/great-newton-8k3474",
  "base_sha": "e91acb69",
  "restored_from": null,
  "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
- "code_sha": "68196b7c1653f14d3d1843d8925900bb75328570",
- "tested_sha": "68196b7c1653f14d3d1843d8925900bb75328570",
+ "code_sha": "a4e99b58e473b9cf7fdbc7e9f8c7a294e42947aa",
+ "tested_sha": "a4e99b58e473b9cf7fdbc7e9f8c7a294e42947aa",
  "push_status": "OK",
  "changed_paths": [
   "data/civic/astana/geo/SOURCE.json",
@@ -29,12 +29,14 @@
   "engine/civic_geo/works_calendar.py",
   "tests/civic/R12/fixtures/real_works_TEST.csv",
   "tests/civic/R12/map/app_acceptance.mjs",
+  "tests/civic/R12/map/browser.test.mjs",
   "tests/civic/R12/qr/app_qr_acceptance.mjs",
   "tests/civic/R12/qr/qr.test.mjs",
   "tests/civic/R12/qr/qr_stand.py",
   "tests/civic/R12/test_fresh_snapshot.py",
   "tests/civic/R12/test_works.py",
   "tests/civic/R12/works/works_calendar.test.cjs",
+  "web/civic/map/civic-map.js",
   "web/civic/qr/print.css",
   "web/civic/qr/print.js",
   "web/civic/works-calendar/works-calendar.css",
@@ -54,7 +56,8 @@
   "i18n_keys": "research/round-15-results/R12/i18n_keys.json (77 ключей wcal.*): 74 уже в словаре R11 c3c376e7, kk совпадает (термин «бөлік»); ждут R11 три ключа wcal.stage.*",
   "neighbours": "R01 B0 74fb8c6d и B0.2 29b4ae9d (R12 1c8d171d в сборке), R06 c2604ea2 (works_v2 + seed_world мира), R02 мир a7251430 (5/5 planned_conflicts, scene8 = cf-w15-01), R17 191f81e7 (вкладка, цвета служб), R03 analyst (conflicts_summary), R08/R17 conflicts_summary()",
   "R17_patch": "не нужен: R17 сам сделал вкладку «Календарь работ» в «Ведомствах» (191f81e7, в R01 B0.2) — проверено браузером; файл patches/R17_agencies_calendar_tab.patch оставлен как история",
-  "for_B1": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor tests/civic/R12 (только пути R12; от 59ee755b, взятого в B0.16–B0.18, изменились только web/civic/works-calendar/works-calendar.{js,css} и tests/civic/R12/works/works_calendar.test.cjs — INTEGRATION §15); проверка: works_calendar.test.cjs (137/0 на B0.18 + R12 68196b7c), app_qr_acceptance.mjs (38/0), node --test tests/civic/R12/qr/qr.test.mjs (8/8), python3 -m pytest -q tests/civic/R10/test_r10_accuracy.py (39 passed на B0.13)"
+  "for_B1": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor tests/civic/R12 (только пути R12; от 59ee755b, взятого в B0.16–B0.18, изменились только web/civic/works-calendar/works-calendar.{js,css} и tests/civic/R12/works/works_calendar.test.cjs — INTEGRATION §15); проверка: works_calendar.test.cjs (137/0 на B0.18 + R12 68196b7c), app_qr_acceptance.mjs (38/0), node --test tests/civic/R12/qr/qr.test.mjs (8/8), python3 -m pytest -q tests/civic/R10/test_r10_accuracy.py (39 passed на B0.13)",
+  "for_FINAL6": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor tests/civic/R12 (только пути R12; от 68196b7c изменились только web/civic/map/civic-map.js и tests/civic/R12/map/browser.test.mjs — INTEGRATION §17); маршрутов, ассетов, ключей и данных новых нет"
  },
  "tests": {
   "pytest_R12_all": {
@@ -208,6 +211,10 @@
   "r01_final5": {
    "status": "PASS",
    "how": "FINAL-5 c2276360 и FINAL-5.1 e8d6cae6 — все пути R12 = 68196b7c. Приёмка R10 FINAL-5: API 155/0/0, числа 16/0/0, часть 1 172/0/2, сцены 337/0/0, блокеров нет, B-115 закрыт; финальный ролик (video/final5): сцена 8 — полосы конфликта ул. Баян Сулу над субтитром. R15 FINAL-5: 566/0, блокеров безопасности нет. Списки блокеров ролям к 15:00 — пусты."
+  },
+  "map_p3": {
+   "status": "PASS",
+   "how": "node --test tests/civic/R12/map/browser.test.mjs 70/70 (новый тест П3: обзор без колец, с 13 — рисуются, «показать все», навигация хоста снова прячет); node map + editor 87/87; на FINAL-5.1 e8d6cae6 + civic-map.js R12 (демо-мир): обзор 1366 и 375 — только районы и значки R07, слоёв civic-r03-* нет; R01 tests/civic/R01/browser/r12_city.cjs 81/0, p0_flow.cjs 63/0 (+1 NOT_RUN — подложка OpenFreeMap в облаке)"
   }
  },
  "screens": {
@@ -229,7 +236,7 @@
    "map_375_ru.png",
    "map_375_kk.png"
   ],
-  "note": "Кадры календаря и карты — ветка R01 B0.19 5b696879 + пути R12 68196b7c (кандидат FINAL-5), демо-мир R02 (CIVIC_DEMO_WORLD=1), 16 окт 10:30 Астаны; кадр листа QR — R01 B0.14 ed965d9d + R12 59ee755b (тот же код листа). Облако без интернета: подложка — офлайн-слой сборки, OpenFreeMap не грузится (настоящий вид — LOCAL-12).",
+  "note": "Кадры календаря и карты — ветка R01 B0.19 5b696879 + пути R12 68196b7c (кандидат FINAL-5), демо-мир R02 (CIVIC_DEMO_WORLD=1), 16 окт 10:30 Астаны; кадр листа QR — R01 B0.14 ed965d9d + R12 59ee755b (тот же код листа). Облако без интернета: подложка — офлайн-слой сборки, OpenFreeMap не грузится (настоящий вид — LOCAL-12). Обзор города (map_overview_*) — FINAL-5.1 e8d6cae6 + civic-map.js R12 a4e99b58, ?show=1, демо-мир, 16 окт 18:00 Астаны.",
   "states": [
    "state_staff_1366_ru.png",
    "state_not_ready_1366_ru.png",
@@ -243,6 +250,10 @@
   ],
   "qr": [
    "qr_print_back_1366_ru.png"
+  ],
+  "map_overview": [
+   "map_overview_1366_akimat.png",
+   "map_overview_375_resident.png"
   ]
  },
  "known_limits": [
@@ -254,14 +265,16 @@
   "Реальные работы Нуры (LOCAL-5): файла records.csv нет — NOT_RUN. Импорт готов (engine/civic_geo/real_works.py): записи лягут на участки как real со ссылкой на источник.",
   "Кадры — офлайн-подложка облака; кадры и ролик с настоящей картой — LOCAL-12 после раунда."
  ],
- "next_step": "Раунд 15 закрыт (П2, 16 окт 16:00 Астаны). Следующий раунд: LOCAL-5 (records.csv → настоящие работы Нуры на участках), кадры и ролик с настоящей картой (LOCAL-12), вычитка kk владельцем.",
+ "next_step": "Раунд 15+ (П3): кандидат FINAL-6 в 12:00 17 окт — взять R12 a4e99b58; 12:00–16:00 — только блокеры R10 / R15; R04 — при просьбе помочь с местами по индексу R12; после 18:00 17 окт — STATUS «Раунд 15 закрыт».",
  "amendments": {
   "read": [
    "П1 15 окт 17:05 Астаны «Без ИИ-слопа»",
-   "П2 16 окт 10:30 Астаны «Сокращённый финал: раунд закрывается сегодня в 16:00»"
+   "П2 16 окт 10:30 Астаны «Сокращённый финал: раунд закрывается сегодня в 16:00»",
+   "П3 16 окт 17:15 Астаны «Ещё лучше: раунд 15+ до FINAL-6»"
   ],
   "P1_applied": "Нарисованных зданий и картинок у R12 нет. Убрано: слой свечения на карте, цветная аура выбранной полосы, градиентный блеск скелетона, штриховка-градиент «примерного места» (теперь пунктирная рамка), цветные круги у иконок состояний (теперь одна монохромная иконка ui-kit ≤ 48 px + текст + одна кнопка), зелёный у «нет конфликтов». Поля фильтров — компонент ui-kit .bk-field.",
-  "P2_applied": "Новых функций нет; финальный DELIVERY с code_sha 68196b7c — к 13:30; после FINAL-5 — только блокеры R10 / R15; после 16:00 — STATUS «Раунд 15 закрыт»."
+  "P2_applied": "Новых функций нет; финальный DELIVERY с code_sha 68196b7c — к 13:30; после FINAL-5 — только блокеры R10 / R15; после 16:00 — STATUS «Раунд 15 закрыт».",
+  "P3_applied": "Кадры координатора 02 и 08: кольца в центре на обзоре — слои R12 civic-r03-* (три синтетических объекта демо); объекты рисуются с масштаба 13, «показать все» рисует их и мельче до следующего вида оболочки. Новых функций нет; R04 — подсказки по индексу мест (INTEGRATION §17)."
  },
  "bugs": {
   "B-103": {
@@ -295,11 +308,12 @@
   "fixed": 14,
   "note": "находки и исправления — в сообщении коммита 9e3f1b2d760b38a2fcbcafddcc82ea7293c49b57[:8]"
  },
- "final": true,
- "final_note": "Финальная поставка R12 раунда 15 по поправке владельца П2 (16 окт 10:30 Астаны): R01 собирает FINAL-5 в 14:00 из code_sha; дальше R12 чинит только блокеры из списков R10 / R15.",
- "round_closed": true,
+ "final": false,
+ "final_note": "Поставка 14 — для FINAL-6 (П3): от 68196b7c (FINAL-5 / FINAL-5.1) изменились только web/civic/map/civic-map.js и tests/civic/R12/map/browser.test.mjs.",
+ "round_closed": false,
  "final_builds": {
   "FINAL-5": "c2276360 (R01, 16 окт 13:33 Астаны) — R12 68196b7c; R10: «можно показывать: да», блокеров нет; R15: блокеров нет",
   "FINAL-5.1": "e8d6cae6 (R01, 16 окт 15:25 Астаны, код FINAL-5 + документы R14) — BUILD.json: «R12 68196b7c — «Календарь работ», QR-таблички»; R10 принял («можно показывать: да»)"
- }
+ },
+ "round_note": "Поправка П3 (16 окт 17:15 Астаны) снова открыла раунд до FINAL-6 (кандидат 17 окт 12:00, FINAL-6 17:00, закрытие 18:00 Астаны); FINAL-5.1 e8d6cae6 (R12 68196b7c) — запасная сборка для показа."
 }
