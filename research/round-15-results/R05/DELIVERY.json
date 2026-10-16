@@ -2,7 +2,7 @@
  "role": "R05",
  "round": 15,
  "delivery": "D1.7 — раунд 15+ (поправка П3, до FINAL-6): тексты модуля не мельче 13 px; размещение с обзорного вида начинается в городе; патч оболочки R01 — подпись карты не под «Что построить?» и легендой",
- "status": "П3 (16 окт 17:15): раунд снова открыт до FINAL-6 (17 окт 17:00), закрытие 17 окт 18:00. D1.7 сдана; FINAL-5.1 e8d6cae6 (запасная сборка для показа) — R05 2acfbbfc. Полный набор проверок D1.7 на трёх стендах — дописывается",
+ "status": "П3 (16 окт 17:15): раунд снова открыт до FINAL-6 (17 окт 17:00), закрытие 17 окт 18:00. D1.7 сдана и проверена на трёх стендах (FINAL-5.1 как есть / + D1.7 / + D1.7 + патч R01); FINAL-5.1 e8d6cae6 (запасная сборка для показа) — R05 2acfbbfc",
  "branch": "claude/bold-cray-dopshy",
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "base_code": "FINAL-4 a493746234022664db5f7c9d33c0868082f6f346",
@@ -76,15 +76,16 @@
   "in_r01_build_b19": "сборка R01 B0.19 5b696879 как есть (R05 = D1.6): Node 54/54, smoke 3D 30/30, карточка 12/0/0, поиск 7/0/1 (вид здания — LOCAL-12) — runs/*_on_b19.json",
   "in_final51": "ФИНАЛ: сборка R01 FINAL-5.1 e8d6cae6 как есть (R05 = D1.6 2acfbbfc; код = FINAL-5 c2276360 + docs R14), 16 окт 16:08–16:16 по Астане: Node 54/54 (test_basemap_patch — «патч R05 уже в файле»), smoke 3D 30/30, карточка 12/0/0, поиск 7/0/1 (вид здания-ориентира — LOCAL-12), ошибок страницы 0 — runs/r14_app_smoke_on_final51.json, app_card_check_on_final51.json, app_landmarks_search_on_final51.json",
   "d17_node": "Node 54/54 на f16275a3",
-  "d17_smoke_with_r01_patch": "FINAL-5.1 e8d6cae6 + D1.7 (js+css) + R01_p3_attrib_bottom_row.patch: smoke 3D 31/31 (в т. ч. 17б — подпись карты)",
   "d17_phone_placing": "телефон, акимат, «Что построить?» → «Сквер» с обзорного вида: 375×812 и 360×800 — призрак был «за пределами Астаны», теперь в городе (середина города); 375×667 — в городе и был",
-  "p3_full_set": "полный набор на трёх стендах (FINAL-5.1 / + D1.7 / + D1.7 + патч R01: аудит §4, smoke, карточка, поиск) — дописывается"
+  "p3_visual_audit": "аудит экранов R05 по чек-листу VISUAL_BRIEF §4 (tests/civic/R05/round15/app_visual_audit.mjs: каталог, размещение, карточка сквера и освещения ночью, подсказка жителя, метки на масштабе 16 × 1366 / 1024 / 375 × ru / kk): FINAL-5.1 как есть 16/18 (тексты 12 px; на 375 ru / kk размещение начиналось «за пределами Астаны»), FINAL-5.1 + D1.7 34/34, + патч R01 34/34 — runs/app_visual_audit_on_final51.json, _d17.json, _d17_r01p3.json",
+  "p3_on_final51_plus_d17": "FINAL-5.1 e8d6cae6 + D1.7 f16275a3: smoke 3D 30/1 (FAIL только 17б — подпись карты, патч оболочки), карточка 12/0/0, поиск 7/0/1 (вид здания — LOCAL-12), Node 54/54 — runs/r14_app_smoke_d17_on_final51.json, app_card_check_d17.json, app_landmarks_search_d17.json",
+  "p3_plus_r01_patch": "FINAL-5.1 + D1.7 + R01_p3_attrib_bottom_row.patch: smoke 3D 31/31 — runs/r14_app_smoke_d17_r01p3.json"
  },
  "acceptance": {
   "R10": "FINAL-5 c2276360 — «можно показывать: ДА», блокеров нет (ACCEPTANCE_FINAL5.md); FINAL-5.1 e8d6cae6 — «ДА», быстрый повтор (final51-e8d6cae6/README.md); П1: 3D R05 — ✅ правило 3, «белый макет» (P1_REVIEW.md); BUGS.md: B-126 (мелочь, R05) — закрыт, других записей R05 нет — ветка R10 claude/zen-wozniak-69d41q @ 692f616f",
   "R15": "FINAL-5.1 e8d6cae6 проверена, блокеров безопасности нет — ветка R15 claude/practical-fermi-c58v1u @ 25a42fe6"
  },
- "environment": "облако: Chromium headless + SwiftShader (программная графика); стенды — сборки R01 adb5fba9 (B0.3), df6c9c2f (B0.6), 7f78b1ca (B0.8), 5b696879 (B0.19) и FINAL-5.1 e8d6cae6 (как есть); упрощённый фон карты (OpenFreeMap недоступен)",
+ "environment": "облако: Chromium headless + SwiftShader (программная графика); стенды — сборки R01 adb5fba9 (B0.3), df6c9c2f (B0.6), 7f78b1ca (B0.8), 5b696879 (B0.19), FINAL-5.1 e8d6cae6 (как есть, + D1.7, + D1.7 + патч R01); упрощённый фон карты (OpenFreeMap недоступен)",
  "screens": [
   "research/round-15-results/R05/screens/card_ba_1366_kk_square.png",
   "research/round-15-results/R05/screens/card_ba_1366_ru.png",
@@ -103,7 +104,25 @@
   "research/round-15-results/R05/screens/search_baiterek_1366_ru.png",
   "research/round-15-results/R05/screens/search_khan-shatyr_375_kk.png",
   "research/round-15-results/R05/screens/search_nur-alem_375_ru.png",
-  "research/round-15-results/R05/screens/search_palace-peace_1024_ru.png"
+  "research/round-15-results/R05/screens/search_palace-peace_1024_ru.png",
+  "research/round-15-results/R05/screens/p3_placing_375_ru_before.jpg",
+  "research/round-15-results/R05/screens/p3_placing_375_ru_after.jpg",
+  "research/round-15-results/R05/screens/p3_fs13_label_1366_kk_before.png",
+  "research/round-15-results/R05/screens/p3_fs13_label_1366_kk_after.png",
+  "research/round-15-results/R05/screens/p3_fs13_tags_1366_kk_before.png",
+  "research/round-15-results/R05/screens/p3_fs13_tags_1366_kk_after.png",
+  "research/round-15-results/R05/screens/p3_bottom_row_1024_ru_before.png",
+  "research/round-15-results/R05/screens/p3_bottom_row_1024_ru_after.png",
+  "research/round-15-results/R05/screens/p3_bottom_row_1366_ru_before.png",
+  "research/round-15-results/R05/screens/p3_bottom_row_1366_ru_after.png",
+  "research/round-15-results/R05/screens/p3_catalog_1024_kk.jpg",
+  "research/round-15-results/R05/screens/p3_catalog_375_ru.jpg",
+  "research/round-15-results/R05/screens/p3_placing_1366_kk.jpg",
+  "research/round-15-results/R05/screens/p3_card_square_1366_ru.jpg",
+  "research/round-15-results/R05/screens/p3_card_lighting_night_375_kk.jpg",
+  "research/round-15-results/R05/screens/p3_hint_1024_ru.jpg",
+  "research/round-15-results/R05/screens/p3_labels_z16_1366_kk.jpg",
+  "research/round-15-results/R05/screens/p3_labels_z16_375_ru.jpg"
  ],
  "known_limits": [
   "Центры ориентиров выведены из колец дорожек OSM, контуров зданий в репозитории нет — пометка LOCAL-13 (сверка с Overpass на ноутбуке)",
@@ -115,5 +134,5 @@
  ],
  "next_step": "R01 к FINAL-6: web/civic/build3d/ на code_sha (D1.7) и patches/R01_p3_attrib_bottom_row.patch; 17 окт 12:00 — проверить кандидат FINAL-6 (аудит §4, smoke, карточка, поиск); 12:00–16:00 — только блокеры R10 / R15; 18:00 — финальные STATUS / DELIVERY. После раунда: LOCAL-12, LOCAL-13",
  "replaces": "D1.6 2acfbbfc (в FINAL-5 / FINAL-5.1): + build3d.css 12 → 13 px, + build3d.js startPoint (размещение с обзорного вида — в городе)",
- "screens_note": "кадры — настоящий интерфейс на сборке R01 B0.8 7f78b1ca (карточка — с build3d.css D1.5), 1024 — на B0.9 с build3d.css D1.6"
+ "screens_note": "кадры — настоящий интерфейс: раунд 15 — сборка R01 B0.8 / B0.9; П3 (p3_*) — FINAL-5.1 e8d6cae6 + R05 D1.7 + патч R01_p3_attrib_bottom_row.patch (так будет в FINAL-6, если R01 возьмёт оба), «было» — FINAL-5.1 как есть; облако, упрощённый фон карты"
 }

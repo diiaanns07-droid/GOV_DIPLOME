@@ -5,7 +5,7 @@
 //   п. 3 — не мельче 13 px (ui-kit --fs-xs, решение владельца 12 окт) и не больше 3 размеров шрифта; казахский не обрезан;
 //   п. 3 правил — одна главная кнопка; п. 9 — иконки только из набора ui-kit; п. 10 — зона нажатия ≥ 44 px и видимый
 //   фокус (Tab); метка «Проект · 2027» на карте — тоже не мельче 13 px; размещение с обзорного вида начинается в городе.
-// Запуск:  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_visual_audit.mjs [--url http://127.0.0.1:8655] [--shots папка] [--stand подпись] [--out имя.json]
+// Запуск:  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_visual_audit.mjs [--url http://127.0.0.1:8655] [--shots папка] [--stand подпись] [--out имя.json] [--only состояния]
 // Отчёт — research/round-15-results/R05/runs/app_visual_audit.json.
 import { mkdir, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -20,6 +20,7 @@ const URL0 = arg("--url", "http://127.0.0.1:8655");
 const STAND = arg("--stand", "");
 const OUT = arg("--out", "app_visual_audit.json");
 const SHOTS = arg("--shots", "");  // папка кадров; без неё кадры не пишутся
+const ONLY = arg("--only", "");    // только эти состояния через запятую (catalog,placing,…) — переснять часть
 const { chromium } = require("playwright");
 
 const results = [];
@@ -30,7 +31,7 @@ const pageErrors = [];
 const VIEWS = [
   { w: 1366, h: 768 }, { w: 1024, h: 768 }, { w: 375, h: 812, mobile: true },
 ];
-const STATES = ["catalog", "placing", "card_square", "card_lighting_night", "hint", "labels_z16"];
+const STATES = ["catalog", "placing", "card_square", "card_lighting_night", "hint", "labels_z16"].filter((x) => !ONLY || ONLY.split(",").includes(x));
 
 async function open(view, lang, state) {
   const mode = state === "hint" ? "resident" : "akimat";
@@ -66,8 +67,10 @@ async function open(view, lang, state) {
     await page.waitForSelector('.b3d-dock[data-state="hint"]', { timeout: 15000 });
   } else if (state === "labels_z16") {
     // Метки «Проект · 2027» табличками: карта у сквера на масштабе 16 (на обзорном масштабе они точки и группы с числом).
+    // Проект — в свободную часть карты (выше центра холста): на телефоне центр холста у самой шторки, под кнопкой
+    // «Что построить?» оболочки. Так его видит и человек — модуль поднимает выбранный объект над панелями (keepAboveDock).
     await page.evaluate(() => { const s = window.CivicShell.build3d.getState(); const p = s.proposals.find((x) => x.kind === "square") || s.proposals[0];
-      map.jumpTo({ center: p.geometry.coordinates, zoom: 16 }); });
+      map.easeTo({ center: p.geometry.coordinates, zoom: 16, offset: [0, -Math.round(innerHeight * 0.22)], duration: 0 }); });
   }
   // Камера долетела (у выбранного проекта метки уже табличками, а не точками обзорного масштаба). Карта — глобальная
   // `map` из web/interface.js (window.map — это div#map).
