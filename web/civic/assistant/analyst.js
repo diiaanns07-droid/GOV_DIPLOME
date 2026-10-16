@@ -393,6 +393,16 @@
       }
     }
 
+    // Экран соседа сам переключает раздел и открывает запись (кризис, конфликт работ); иначе — просто раздел.
+    function openRecord(op, section) {
+      var key = op && op.global + "." + op.fn;
+      var target = key && OPENERS[key] && root[op.global] && root[op.global][op.fn];
+      if (typeof target === "function") {
+        try { target.call(root[op.global], op.arg); return; } catch (e) { /* откроем раздел ниже */ }
+      }
+      openSectionPath(section);
+    }
+
     function actionButton(action, primary) {
       if (action.kind === "map.focus") {
         // Главная кнопка экрана — «Спросить» (IA R11 §5.6); действия ответа — вторичные.
@@ -407,15 +417,7 @@
         var o = el("button", { type: "button", className: "bk-btn" + (primary ? "" : " bk-btn--ghost") + " ba-act",
           "data-action": "open" },
           [el("span", { text: pick(action.label, state.lang) }), icon("chevron-right")]);
-        o.addEventListener("click", function () {
-          var op = action.opener, key = op && op.global + "." + op.fn;
-          var target = key && OPENERS[key] && root[op.global] && root[op.global][op.fn];
-          // Экран соседа сам переключает раздел и открывает запись (кризис, конфликт работ); иначе — просто раздел.
-          if (typeof target === "function") {
-            try { target.call(root[op.global], op.arg); return; } catch (e) { /* откроем раздел ниже */ }
-          }
-          openSectionPath(section);
-        });
+        o.addEventListener("click", function () { openRecord(action.opener, section); });
         return o;
       }
       return null;
@@ -449,6 +451,11 @@
           row = el("button", { type: "button", className: "bk-list__item ba-item", "aria-label": t("analyst.open_place", { name: name }) },
             [dot, main, icon("chevron-right", "bk-list__chevron")]);
           row.addEventListener("click", function () { focusOnMap({ target: it.target, days: it.days || (state.answer && state.answer.understood && state.answer.understood.days) }); });
+        } else if (it.opener && it.section && sectionAvailable(it.section)) {
+          // Строка конфликта работ открывает сам конфликт в «Календаре работ» (R12 openConflict).
+          var section = sectionAvailable(it.section);
+          row = el("button", { type: "button", className: "bk-list__item ba-item" }, [main, icon("chevron-right", "bk-list__chevron")]);
+          row.addEventListener("click", function () { openRecord(it.opener, section); });
         } else if (it.service && sectionAvailable("agencies")) {
           // Строка службы ведёт на табло служб (R11 R03-7) — с шевроном, как строки мест.
           row = el("button", { type: "button", className: "bk-list__item ba-item" }, [main, icon("chevron-right", "bk-list__chevron")]);

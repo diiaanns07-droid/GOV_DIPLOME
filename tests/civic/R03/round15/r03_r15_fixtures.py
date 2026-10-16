@@ -303,6 +303,36 @@ def r12_conflicts_summary(district=None):
                      "title_kk": "Екі рет қазамыз", "street_ru": "ул. Сыганак", "street_kk": "Сығанақ көшесі"}]}
 
 
+def r12_world_conflicts_summary(district=None):
+    """Как в мире R02 (B0.16): первые три — «Копаем дважды» на разных улицах; у последнего улицы нет."""
+    def row(cid, kind, severity, ru, kk, street_ru=None, street_kk=None):
+        return {"id": cid, "kind": kind, "severity": severity, "title_ru": ru, "title_kk": kk,
+                "street_ru": street_ru, "street_kk": street_kk,
+                "advice_ru": "Проложите сети без вскрытия покрытия или перенесите раскопку.",
+                "advice_kk": "Желілерді жабынды ашпай төсеңіз немесе қазуды кейінге қалдырыңыз."}
+    return {"conflicts": 5, "high": 3, "source": "fixture", "demo": True, "top": [
+        row("cf-w15-02", "dig_after_surface", "high", "Копаем дважды", "Екі рет қазу", "пр. Кабанбай Батыра",
+            "Қабанбай Батыр даңғылы"),
+        row("cf-w15-01", "dig_after_surface", "high", "Копаем дважды", "Екі рет қазу", "ул. Баян Сулу", "Баян Сұлу көшесі"),
+        row("cf-w15-03", "dig_after_surface", "high", "Копаем дважды", "Екі рет қазу", "ул. Григория Потанина",
+            "Григорий Потанин көшесі"),
+        row("cf-w15-04", "parallel_closures", "medium", "Параллельные улицы перекрыты одновременно",
+            "Қатар көшелер бір уақытта жабылады")]}
+
+
+def r13_forecast_two_yards_one_stop(**_kw):
+    """forecast_response R13 (подписи 0ef104c2): два двора у одной остановки — одна и та же подпись."""
+    def item(tid, ru, kk, level):
+        return {"target": {"kind": "area", "id": tid, "label_ru": ru, "label_kk": kk}, "level": level,
+                "main_category": "snow_ice", "top_reasons": [{"ru": "За последние 3 месяца — 9 жалоб",
+                                                              "kk": "Соңғы 3 айда — 9 шағым"}], "demo": True}
+    stop_ru, stop_kk = "Двор рядом: остановка «Военный городок»", "«Военный городок» аялдамасы жанындағы аула"
+    return {"month": "2026-11", "demo": True, "note_ru": "Прототип на синтетике.", "note_kk": "Синтетикадағы прототип.",
+            "items": [item("yard-1", "Двор рядом: улица Назыма Хикмета", "Назыма Хикмета көшесі жанындағы аула", "high"),
+                      item("yard-2", stop_ru, stop_kk, "high"), item("yard-3", stop_ru, stop_kk, "high"),
+                      item("yard-4", "Двор «Манхэттен»", "Аула «Манхэттен»", "medium")]}
+
+
 def r12_no_works(district=None):
     return {"conflicts": 0, "high": 0, "top": [], "source": "none", "demo": False}
 

@@ -72,6 +72,42 @@ def test_r12_conflicts_summary_and_no_works():
     assert empty["status"] == "empty" and "пока нет записей о работах" in empty["lines"]["ru"][0]
 
 
+def test_r12_conflict_rows_name_the_street_and_open_their_conflict():
+    """Мир B0.16: три «Копаем дважды» подряд — строка называет улицу, вид конфликта — подписью; строка открывает свой
+    конфликт (R12 openConflict), кнопка блока — первый. Без улицы строка — сам вид."""
+    b = block(ask("Где копаем дважды?", works_conflicts=F.r12_world_conflicts_summary), "work_conflicts")
+    assert [i["label"]["ru"] for i in b["items"]] == ["пр. Кабанбай Батыра", "ул. Баян Сулу", "ул. Григория Потанина",
+                                                      "Параллельные улицы перекрыты одновременно"]
+    assert [(i.get("sub") or {}).get("ru") for i in b["items"]] == ["копаем дважды"] * 3 + [None]
+    assert b["items"][1]["label"]["kk"] == "Баян Сұлу көшесі" and b["items"][1]["sub"]["kk"] == "екі рет қазу"
+    assert [i["opener"]["arg"] for i in b["items"]] == ["cf-w15-02", "cf-w15-01", "cf-w15-03", "cf-w15-04"]
+    assert {(i["section"], i["opener"]["global"], i["opener"]["fn"]) for i in b["items"]} == \
+        {("works-calendar", "BirgeWorksCalendar", "openConflict")}
+    assert b["actions"][0]["opener"]["arg"] == "cf-w15-02"
+
+
+def test_browser_conflicts_fixture_matches_current_answer():
+    """analyst_screens.cjs подставляет экрану answer_conflicts_fixture.json — он равен ответу текущего кода
+    (пересобрать: см. строку о фикстуре в analyst_screens.cjs). Времена вызовов (ms) не сравниваем."""
+    def strip(answer):
+        out = {k: v for k, v in answer.items() if k != "ms"}
+        out["calls"] = [{k: v for k, v in c.items() if k != "ms"} for c in answer["calls"]]
+        return out
+    saved = json.loads((Path(__file__).parent / "answer_conflicts_fixture.json").read_text(encoding="utf-8"))
+    assert strip(ask("Где копаем дважды?", works_conflicts=F.r12_world_conflicts_summary)) == strip(saved)
+
+
+def test_r13_forecast_month_in_words_and_one_row_per_label():
+    """«Прогноз на 2026-11» → «на ноябрь 2026»; два двора у одной остановки (одна подпись R13) — одна строка списка,
+    а число мест с высоким риском считает оба."""
+    a = ask("Прогноз по Нуре", forecast=F.r13_forecast_two_yards_one_stop)
+    b = block(a, "forecast")
+    assert b["title"] == {"ru": "Прогноз на ноябрь 2026 в районе Нура", "kk": "2026 жылғы қараша болжамы: Нұра ауданында"}
+    assert [i["target"]["id"] for i in b["items"]] == ["yard-1", "yard-2", "yard-4"]
+    assert b["numbers"][0]["value"] == 3
+    assert b["lines"]["ru"][0] == "Первое в списке — «Двор рядом: улица Назыма Хикмета»."
+
+
 def test_r16_initiatives_summary():
     b = block(ask("Какие инициативы жителей в Нуре?", together_initiatives=F.r16_initiatives_summary), "initiatives")
     assert [n["value"] for n in b["numbers"]] == [4, 34, 2]

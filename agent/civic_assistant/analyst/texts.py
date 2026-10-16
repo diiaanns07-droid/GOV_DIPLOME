@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import json
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -159,6 +160,30 @@ def period(days: int) -> dict:
     if days == 1:
         return {"ru": "за сутки", "kk": "соңғы тәулікте"}
     return {"ru": "за " + days_ru(days), "kk": f"{fmt_num(days)} күнде"}
+
+
+MONTHS_RU = ("январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь",
+             "декабрь")
+MONTHS_KK = ("қаңтар", "ақпан", "наурыз", "сәуір", "мамыр", "маусым", "шілде", "тамыз", "қыркүйек", "қазан", "қараша",
+             "желтоқсан")
+
+
+def month_name(month) -> dict:
+    """«2026-11» → «ноябрь 2026» / «2026 жылғы қараша»; не «ГГГГ-ММ» — как есть (пустое — пустое)."""
+    text = str(month or "").strip()
+    m = re.fullmatch(r"(\d{4})-(\d{2})", text)
+    if not m or not 1 <= int(m.group(2)) <= 12:
+        return both(text, text)
+    year, i = m.group(1), int(m.group(2)) - 1
+    return both(f"{MONTHS_RU[i]} {year}", f"{year} жылғы {MONTHS_KK[i]}")
+
+
+def lower_first(text) -> str:
+    """«Копаем дважды» → «копаем дважды» внутри строки; «ЖК …» и другие сокращения не трогаем."""
+    text = str(text or "")
+    if len(text) > 1 and text[0].isupper() and not text[1].isupper():
+        return text[0].lower() + text[1:]
+    return text
 
 
 def quoted(text) -> str:
