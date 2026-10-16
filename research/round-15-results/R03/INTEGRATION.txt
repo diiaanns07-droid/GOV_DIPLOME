@@ -8,8 +8,10 @@ SHA кода и проверок — research/round-15-results/R03/DELIVERY.json
 ФИНАЛ (П2): в сборке B0.19 (R01, 16 окт 09:37 Астаны) уже R03 233ce8a8 — весь код R03; прогрев «Спросить Birge» в фоне
 после засева мира R01 сделал сам (общий цикл warm_up для R03, R16, R08 — patch R01_warm_up.patch не нужен). К FINAL-5 — пути:
 1) git checkout <code_sha из DELIVERY.json> -- agent/civic_assistant/ web/civic/assistant/ tests/civic/R03/
-   После 233ce8a8 изменилась только проверка оболочки tests/civic/R03/round15/analyst_shell_check.cjs (3085aa61:
-   ещё и строка конфликта → свой конфликт R12) — код, маршрут, файлы экрана, меню — как в B0.19.
+   После 233ce8a8 изменились только тесты: analyst_shell_check.cjs (3085aa61: ещё и строка конфликта → свой конфликт
+   R12) и тесты с настоящими модулями (2fe5a53b, просьба BUILD_LOG B0.20): сами ставят R07 / R08 / R17 по умолчанию и
+   возвращают как было — R13 qa / R15 со шлюзом раньше R03 больше не роняют 6 тестов (R13 R15 R03 R17 R01 в одном
+   процессе — 1701 / 0). Код, маршрут, файлы экрана, меню — как в B0.19.
 2) Проверка: python3 -B -m pytest -q tests/civic/R03/round15 → в сборке R01 со всеми соседями 100 passed (копия B0.16
    4ac57b10 + R03 233ce8a8); на ветке R03 — 99 passed, 1 skipped (нет R17 и R16). Набор B0.16 вместе с R03
    (tests/civic/R01 R03 R12 R13 R15 R17 в одном процессе, тесты 35fd84a6) — 1795 passed, 0 failed.
