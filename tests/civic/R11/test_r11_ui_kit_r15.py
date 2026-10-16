@@ -211,3 +211,12 @@ def test_p3_ai_tag_is_small_monochrome_and_explained():
     assert (ru["common.ai.badge"], ru["common.ai.hint"]) == ("ИИ", "Подсказка ИИ — проверьте")
     assert kk["common.ai.badge"] == "ЖИ" and "тексеріңіз" in kk["common.ai.hint"]
     assert "UI.aiTag()" in SHOWCASE and SHOWCASE.count("<span data-kit-ai></span>") >= 2, "пример в витрине"
+
+
+def test_list_row_title_keeps_priority_over_meta():
+    """Обзор R11 «Разбора обращений» (П3): в строке .bk-lrow подпись берёт только остаток места и режется раньше названия;
+    в колонку (телефон) — по содержимому."""
+    meta = re.search(r"\n\.bk-lrow__meta \{(.*?)\n\}", COMPONENTS, re.S).group(1)
+    assert "flex: 1 1 0%;" in meta and "min-width: 0;" in meta
+    phone = re.search(r"@media \(max-width: 720px\) \{\s*\.bk-lrow \{.*?\n\}", COMPONENTS, re.S).group(0)
+    assert re.search(r"\.bk-lrow__meta \{\s*flex: none;", phone)
