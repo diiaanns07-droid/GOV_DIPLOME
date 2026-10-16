@@ -218,15 +218,20 @@ tests/civic/R04/intake/. Всё в процессе, без сети. Числа
 9.1 Функции (from ui.civic_ml_api import intake_analyze, intake_sample, intake_commit)
   intake_analyze(texts=None, sample=None, body=None)  -> разбор (ValueError -> 400: пусто / > 500 текстов / > 300 КБ)
       texts — список строк, или строка (строка = обращение), или [{id, text}]; sample="night" — пример за ночь.
-      Ответ: {batch_id, summary {total, tasks, services, urgent, merged, no_address, ms}, tasks [...], method, demo,
-              version}; задача — {id, title_ru, title_kk, category, subtopic, services [{id, role, name_ru, name_kk}],
-              joint, why_ru, why_kk, target {kind, id, label_ru, label_kk} | null, point | null, address_text,
-              text_ids, people, urgent, urgent_why_ru, urgent_why_kk}. Тексты жителей наружу — только после
-              moderate() (телефоны, ИИН… — «***»); в журнал тексты не пишутся.
+      Ответ: {batch_id, summary {total, tasks, services, urgent, merged, no_address, ready, pii_masked, ms},
+              tasks [...], services [{id, name_ru, name_kk, tasks, urgent}] (группы по ведущей службе), method
+              {steps_ru, steps_kk, route, dedup, places}, demo, version}; задача — {id, title_ru, title_kk, category,
+              subtopic, services [{id, role, name_ru, name_kk}], joint, why_ru, why_kk, target {kind, id, label_ru,
+              label_kk, object_kind?} | null, point | null, district, address_text, text_ids, people, texts [{id, text}]
+              (≤ 5, после moderate), urgent, urgent_rule, urgent_why (= urgent_why_ru), urgent_why_ru, urgent_why_kk,
+              evidence}. ready — задачи с местом: столько записей создаст «Создать задачи» (R10: число в тосте = ready
+              = созданным записям). Тексты жителей наружу — только после moderate() (телефоны, ИИН… — «***»); в журнал
+              тексты не пишутся. Порядок задач: срочные сверху, затем по числу людей; id t1…tN.
   intake_sample(name="night") -> {name, texts [{id, text}], demo: true, source}   (набор R02, пока его нет — фикстура R04)
-  intake_commit(batch_id, task_ids=None, body=None) -> {batch_id, created, existing, skipped_no_address, records
-      [{task_id, complaint_id, code}], demo}; LookupError -> 404 (разбор устарел — разобрать снова);
-      MLServiceUnavailable -> 503 (хранилище R09 не подключено).
+  intake_commit(batch_id, task_ids=None, body=None) -> {batch_id, created, existing, joined, skipped_no_address, failed,
+      records [{task_id, complaint_id, code, created, joined}], demo}; LookupError -> 404 (разбор устарел — разобрать
+      снова: в памяти 16 последних разборов); MLServiceUnavailable -> 503 (хранилище R09 не подключено).
+  Все три принимают principal / context от шлюза: context без principal -> PermissionError (403).
 9.2 R01 — маршруты v2 (только сотрудник + CSRF, staff=True), как ml.route / ml.reply_draft:
       POST intake/analyze {texts | sample: "night"}  -> "ml.intake_analyze": V2Handler("R04", ("ui.civic_ml_api",), "intake_analyze", staff=True)
       GET  intake/sample                             -> "ml.intake_sample":  …, "intake_sample", staff=True
@@ -237,15 +242,23 @@ tests/civic/R04/intake/. Всё в процессе, без сети. Числа
       window.BirgeIntake.mount(root, {api, apiBase}) -> {setLang, destroy}; api.v2(method, path, body) — клиент шлюза
       (CSRF сотрудника ставит сам), без него — fetch на apiBase (/api/civic/v2) с CivicShell.csrfToken().
   Ctrl+K «Сцена 0 · ИИ-разбор» — первая в режиме показа (П3).
-9.3 R09 — запись задач: intake_commit создаёт жалобы ТОЛЬКО функцией R09 store.create(payload, device_id, demo=True)
-  в процессе (хранилище — то, что шлюз передал в connect_store). payload: text (после moderate), category, subtopic,
-  target {kind, id}, point, district, lang, category_source "model", request_id "in-<batch>-<n>" (повторный commit
-  того же batch_id -> created=False, дублей нет), source "intake", reporters <people>. Задачи без места («адрес
-  уточнить») не создаются — точку не угадываем. Если R09 даст свою точку входа (например
-  integration.create_from_intake(store, items)) — R04 перейдёт на неё; «Источник: разбор пачки» — по полю source.
+9.3 R09 — запись задач (проверено на ComplaintStore этой ветки + R12 target_geometry: 16 из 16 задач примера, цели не
+  «примерные», повтор — 0 новых): intake_commit пишет ТОЛЬКО функциями R09, в процессе (хранилище — connect_store):
+  - store.create(payload, device, demo=<пример>) — запись по главному тексту задачи. payload: text (после moderate),
+    category, subtopic (если R09 отвергнет — повтор без него), target {kind, id}, point, district,
+    category_source "model", request_id "in-<batch>-<task>", source "intake", intake {batch_id, task_id, people}.
+    device "birge-intake-<batch>-<task>": своё у каждой задачи — у R09 лимит 20 записей в час на устройство, а
+    повтор request_id с того же устройства возвращает ту же запись (повторный commit — created=False, дублей нет).
+  - store.metoo(id, device + "-<n>", note={text, point, target, category}) — остальные тексты задачи, как склейка в
+    мастере жалобы (п. 9): «Я тоже» с текстом. Людей в записи (1 + metoo) = people задачи; тексты видны в «Что
+    объединено» (store.merged), ошибочно склеенное сотрудник выделит кнопкой «Это разные проблемы».
+  - Задачи без места («адрес уточнить») не создаются — точку не угадываем.
+  Просьба к R09 (П3): «Источник: разбор пачки» — по полю payload.source == "intake" (сейчас create() его не
+  сохраняет) и, если удобно, intake {batch_id, task_id, people}. Если R09 даст свою точку входа (например
+  integration.create_from_intake(store, items)) — R04 перейдёт на неё.
 9.4 R02 — набор «обращения за ночь» (к 17 окт 02:00): удобно data/civic/astana/demo-world/intake_night_v1.json
   {texts: [{id, text, lang}], gold: [{id, category, services: [id…], target_id | null, group, urgent}], demo: true}.
-  R04 читает его, если файл есть; иначе — своя фикстура (ui/civic_ml_api/intake_sample_r04.json, 40 текстов).
+  R04 читает его, если файл есть; иначе — своя фикстура (ui/civic_ml_api/intake_sample_r04.json, 42 текста).
 9.5 R11 — ключи экрана intake.* (ru / kk; список — в intake.js, KEYS), значок «ИИ» (пока i-sparkle), место в меню.
 9.6 R15 — проверить: только сотрудник; пределы 500 / 300 КБ; тексты не уходят наружу и не пишутся в журнал; на
   экране итога и в задачах — только тексты после moderate().
