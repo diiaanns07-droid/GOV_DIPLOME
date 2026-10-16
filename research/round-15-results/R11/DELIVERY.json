@@ -4,10 +4,10 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "d20d823f",
- "tested_sha": "d20d823f",
+ "code_sha": "a178fd0d",
+ "tested_sha": "a178fd0d",
  "push_status": "OK",
- "updated": "2026-10-16 16:25 Астана",
+ "updated": "2026-10-16 17:42 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -19,7 +19,8 @@
   "research/round-15-results/R11/ (IA_ROUND15.md, INTEGRATION.txt, RUN.txt, DELIVERY.json, kk_notes.json, key_sources.json, screens/)",
   "research/round-15-results/R11/patches/ (R01_menu_ia15.patch, R03_dictionary_terms.patch)",
   "research/round-15-results/R11/REVIEW_R15.md, KK_REVIEW_R15.md",
-  "web/civic/ui-kit/components.css (круг 15: текст компонентов раунда 15 — --c-text-2), tokens.css (правило --c-text-3)"
+  "web/civic/ui-kit/components.css (круг 15: текст компонентов раунда 15 — --c-text-2), tokens.css (правило --c-text-3)",
+  "П3: web/civic/ui-kit/icons.svg (i-ai), components.css (.bk-ai), ui-kit.js (BirgeUI.aiTag), index.html (примеры метки); ru.json / kk.json +36 ключей (2902); tests/civic/R11/test_r11_ui_kit_r15.py (+ тест метки); IA_ROUND15.md §11"
  ],
  "deliverables": {
   "IA_ROUND15": "research/round-15-results/R11/IA_ROUND15.md — меню жителя и акимата, «Ещё» группами, экраны (главное, одна главная кнопка, чего нет, слой), хроника — чип легенды, ситуационный центр — страница, запасные места FINAL-4; опубликован 15 окт ~16:37 Астаны (08bde777)",
@@ -32,7 +33,10 @@
   "review_round_3": "REVIEW_R15.md: R08 3 мелочи, R13 1 замечание",
   "DESIGN_BOOK_R15": "research/round-15-results/R11/DESIGN_BOOK_R15.md — v0 до B1: герои H1–H8, сцены 7–9 по шагам, kk-кадры, что не брать; v1 — после B1",
   "review_tool": "tests/civic/R11/review/r15_screens.cjs — разбор сборки раунда 15 одной командой (B1, B2, FINAL-5)",
-  "design_book_v1": "research/round-15-results/R11/DESIGN_BOOK_R15.md v1 + design-book/ (30 кадров кандидата FINAL-5 B0.20: герои H1–H7, сцены 7–9 по шагам, телефон ҚАЗ; подписи — design-book/scenes.json)"
+  "design_book_v1": "research/round-15-results/R11/DESIGN_BOOK_R15.md v1 + design-book/ (30 кадров кандидата FINAL-5 B0.20: герои H1–H7, сцены 7–9 по шагам, телефон ҚАЗ; подписи — design-book/scenes.json)",
+  "p3_ai_tag": "BirgeUI.aiTag() / .bk-ai / i-ai — малый монохромный значок «ИИ» / «ЖИ» с подсказкой «Подсказка ИИ — проверьте» (П3, без свечения — П1); где ставить — IA_ROUND15 §11.3",
+  "p3_intake_ia": "IA_ROUND15 §11: «Разбор обращений» — «Обращения» → «Разобрать пачку», «Ещё → Инструменты» первым, Ctrl+K «Сцена 0 · ИИ-разбор»; экран R04 по состояниям; 4 нажатия, в режиме показа 2",
+  "p3_keys": "36 ключей ru / kk: shell.nav.intake, shell.palette.scene0, inbox.intake.open, inbox.source.intake, common.ai.*, analyst.ai*, intake.* (28); KK_REVIEW_R15 № 44–46"
  },
  "tests": {
   "pytest tests/civic/R11": "PASS 33/33 (d20d823f)",
@@ -62,7 +66,11 @@
   "кандидат FINAL-5 (R01 B0.20 24e50493), r15_screens.cjs": "102 кадра 1366/1024/375 × ru/kk × житель/акимат — проблем 0, лишних главных кнопок 0",
   "кандидат FINAL-5, r15_scenes.cjs": "50 кадров сцен 7–9 (1366/375 + 1920) — ошибок JS 0",
   "FINAL-5 (R01 c2276360), r15_screens.cjs": "102 кадра 1366/1024/375 × ru/kk × житель/акимат — проблем 0; сцены 50 кадров — ошибок JS 0",
-  "приёмка": "R10: FINAL-5 «можно показывать: да», блокеров нет; R15: блокеров безопасности нет"
+  "приёмка": "R10: FINAL-5 «можно показывать: да», блокеров нет; R15: блокеров безопасности нет",
+  "pytest tests/civic/R11 (a178fd0d)": "PASS 34/34",
+  "node tests/civic/R11 (a178fd0d)": "PASS 3/3",
+  "витрина ui-kit с меткой «ИИ», Chromium 1366/375 × ru/kk (e541a9a8)": "PASS 4/4; метка 22 px, текст rgb(75,87,82) на серой плашке, тени нет, ошибок JS 0",
+  "i18n_tools check (a178fd0d)": "PASS — 2902 ключа, ru = kk"
  },
  "screens": [
   "research/round-15-results/R11/screens/kit15-1366-kk.jpg",
@@ -88,5 +96,5 @@
  "next_step": "Раунд 15 закрыт. Следующий раунд — STATUS «Дальше» (по желанию ролей, LOCAL-кадры, проверка казахских терминов владельцем).",
  "amendments": "П1 «Без ИИ-слопа» (15 окт 17:05) — применена в 2d4f69bc",
  "final": "Финальная поставка R11: code_sha d20d823f — в FINAL-5 (R01 c2276360) и FINAL-5.1 (R01 e8d6cae6)",
- "status": "Раунд 15 закрыт (16 окт 16:00 по Астане, поправка П2)"
+ "status": "Раунд 15+ (П3) — до FINAL-6: метка «ИИ», место «Разбора обращений», ключи; FINAL-5 / FINAL-5.1 — код d20d823f"
 }
