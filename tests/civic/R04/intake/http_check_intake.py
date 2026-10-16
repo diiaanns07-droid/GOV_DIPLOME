@@ -94,8 +94,11 @@ st, body, _ = call("POST", "/intake/analyze", {"texts": []}, H)
 check("analyze empty -> 400", st == 400, (st, body))
 st, body, _ = call("POST", "/intake/analyze", {"texts": ["Яма на дороге"] * 501}, H)
 check("analyze 501 texts -> 400", st == 400, (st, body))
-st, body, _ = call("POST", "/intake/analyze", None, H, raw=json.dumps({"texts": ["я" * 1990] * 90}).encode())
-check("analyze > 300 KB -> 400/413", st in (400, 413), (st, body))
+# Текст 310 КБ (> 300 КБ разбора), тело < 320 КБ шлюза -> 400 самого разбора. ensure_ascii=False: «я» — 2 байта, а не
+# «\u044f» (6 байт; так тело было ~1 МБ, и сервер то отвечал 413, то закрывал соединение — проверка мигала).
+big = json.dumps({"texts": ["я" * 1000] * 155}, ensure_ascii=False).encode()
+st, body, _ = call("POST", "/intake/analyze", None, H, raw=big)
+check("analyze 310 KB of text (body < 320 KB) -> 400", st == 400 and len(big) < 320 * 1024, (st, len(big), body))
 st, body, _ = call("POST", "/intake/analyze", None, H, raw=json.dumps({"texts": ["я" * 1990] * 200}).encode())
 check("analyze body > 640 KB -> 413 or closed", st in (413, 0), (st, body))
 

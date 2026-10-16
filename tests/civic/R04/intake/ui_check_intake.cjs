@@ -6,6 +6,8 @@
 // «Создать задачи» -> «Создано N задач в «Обращениях»» (N = summary.ready), повтор — «уже созданы».
 // С 16 окт 19:50 (R10 B-134 / B-135): нет «{n}» и сырых ключей, кнопка — подпись и одно число, «Почему так» — с данными,
 // контраст текста ≥ 4,5 : 1, в кадрах счётчика итога слово — в форме для показанного числа.
+// С 16 окт 20:40 — состояния (1366-ru, 375-kk): не сотрудник, файл .txt / .csv / не UTF-8, 501 строка, идёт разбор,
+// «Разобрать другие», ошибки разбора 500 / 413 / 403 / нет связи / 400, пример не загрузился, «Создать задачи» 404 / 503.
 const path = require("path");
 let chromium;
 try { ({ chromium } = require("playwright")); } catch (e) { ({ chromium } = require("/opt/node22/lib/node_modules/playwright")); }
@@ -63,6 +65,171 @@ function check(name, ok, detail) {
   console.log((ok ? "PASS " : "FAIL ") + name + (ok ? "" : "  " + JSON.stringify(detail).slice(0, 300)));
 }
 
+// ---------------------------------------------------------------- состояния экрана (П3: «все состояния»)
+// Ожидаемый текст — из словаря оболочки (он главнее запасных текстов экрана); нет ключа — null (сверяем мягче).
+async function T(page, key, params) {
+  return page.evaluate(([k, p]) => {
+    const I = window.BirgeI18n;
+    if (typeof I.has === "function" && !I.has(k)) return null;
+    return I.t(k, p || {});
+  }, [key, params || null]);
+}
+function same(shown, want) {
+  shown = String(shown || "").replace(/\s+/g, " ").trim();
+  return want == null ? shown.length > 0 && !/[{}]|\bintake\./.test(shown) : shown === String(want).replace(/\s+/g, " ").trim();
+}
+async function openIntake(page, lang) {
+  const login = await page.request.post(BASE + "/api/civic/v1/session/login",
+    { data: { username: "operator", password: PASSWORD }, headers: { Origin: BASE } });
+  if (login.status() !== 200) throw new Error("login " + login.status());
+  await page.goto(BASE + "/", { waitUntil: "load" });
+  await page.waitForFunction(() => window.BirgeShell && window.BirgeIntake && window.BirgeI18n, null, { timeout: 30000 });
+  await page.evaluate(async (l) => { await window.BirgeI18n.ready; window.BirgeI18n.setLang(l); }, lang);
+  await page.evaluate(() => window.BirgeShell.setMode("akimat"));
+  await page.waitForTimeout(400);
+  await page.evaluate(() => window.BirgeShell.setSection("intake"));
+  await page.waitForSelector(".bi .bi-text", { timeout: 15000 });
+}
+const ANALYZE = "**/api/civic/v2/intake/analyze", SAMPLE = "**/api/civic/v2/intake/sample", COMMIT = "**/api/civic/v2/intake/commit";
+const json = (status, body) => ({ status, contentType: "application/json", body: JSON.stringify(body) });
+async function errorTitle(page) {
+  await page.waitForSelector(".bi .bi-error", { timeout: 15000 });
+  return page.textContent(".bi .bi-error .bk-error__title");
+}
+async function fieldError(page) {
+  await page.waitForSelector(".bi .bk-field__error", { timeout: 15000 });
+  return page.textContent(".bi .bk-field__error");
+}
+
+async function checkStates(browser, w, hgt, lang) {
+  const tag = `states ${w}-${lang}`;
+  // 1) Не сотрудник (сессии нет): «для сотрудников акимата», без падений.
+  let ctx = await browser.newContext({ viewport: { width: w, height: hgt } });
+  let page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await openIntake(page, lang);
+  await ctx.clearCookies();
+  await page.click(".bi [data-act=sample]");
+  check(`${tag} not staff -> staff_only`, same(await errorTitle(page), await T(page, "intake.staff_only")), await page.textContent(".bi .bi-error"));
+  await ctx.close();
+
+  ctx = await browser.newContext({ viewport: { width: w, height: hgt } });
+  page = await ctx.newPage();
+  page.on("pageerror", (e) => errors.push(e.message));
+  let analyzeCalls = 0;
+  page.on("request", (r) => { if (r.url().endsWith("/intake/analyze")) analyzeCalls++; });
+  await openIntake(page, lang);
+  const field = ".bi .bi-text";
+
+  // 2) Файл .txt: строка = обращение, пустые строки — мимо; счётчик.
+  await page.setInputFiles(".bi input[type=file]", { name: "night.txt", mimeType: "text/plain",
+    buffer: Buffer.from("﻿Яма на дороге у дома 5\r\nНе вывозят мусор третий день\r\n\r\nСломана скамейка в парке\r\n") });
+  await page.waitForFunction(() => (document.querySelector(".bi .bi-text") || {}).value.split("\n").length === 3, null, { timeout: 5000 }).catch(() => null);
+  const txt = await page.inputValue(field);
+  check(`${tag} file .txt -> 3 lines + count`, txt === "Яма на дороге у дома 5\nНе вывозят мусор третий день\nСломана скамейка в парке"
+    && same(await page.textContent(".bi .bi-meter__count"), await T(page, "intake.count", { n: 3 })), txt);
+
+  // 3) Файл .csv: столбец «text», кавычки с разделителем внутри.
+  await page.setInputFiles(".bi input[type=file]", { name: "night.csv", mimeType: "text/csv",
+    buffer: Buffer.from('id;text;district\n1;Яма на дороге у дома 5;Есиль\n2;"Не горит свет; в подъезде темно";Алматы\n') });
+  await page.waitForFunction(() => (document.querySelector(".bi .bi-text") || {}).value.startsWith("Яма на дороге у дома 5\nНе горит"), null, { timeout: 5000 }).catch(() => null);
+  const csv = await page.inputValue(field);
+  check(`${tag} file .csv -> text column`, csv === "Яма на дороге у дома 5\nНе горит свет; в подъезде темно", csv);
+
+  // 4) Не UTF-8 -> «файл не прочитался», текст в поле не тронут.
+  await page.setInputFiles(".bi input[type=file]", { name: "bad.txt", mimeType: "text/plain", buffer: Buffer.from([0x59, 0xc3, 0x28, 0xa0, 0xa1, 0x0a]) });
+  check(`${tag} bad file -> error.file`, same(await fieldError(page), await T(page, "intake.error.file")) && await page.inputValue(field) === csv);
+
+  // 5) Больше 500 обращений: счётчик красный, «Разобрать» — подсказка, запроса нет.
+  const many = Array.from({ length: 501 }, (_, i) => `Обращение номер ${i + 1}: яма на дороге`).join("\n");
+  await page.fill(field, many);
+  const before = analyzeCalls;
+  check(`${tag} 501 lines -> meter over`, await page.$(".bi .bi-meter.is-over") !== null);
+  await page.click(".bi [data-act=run]");
+  check(`${tag} 501 lines -> error.too_big, no request`, same(await fieldError(page), await T(page, "intake.error.too_big")) && analyzeCalls === before,
+    { calls: analyzeCalls - before });
+
+  // 6) Идёт разбор: «Разбираем N обращений…», секунды идут, заготовка списка; затем итог.
+  const three = "Яма на дороге у дома 5\nНе вывозят мусор третий день\nСломана скамейка в парке";
+  await page.fill(field, three);
+  await page.route(ANALYZE, async (route) => { await new Promise((r) => setTimeout(r, 1500)); await route.continue(); });
+  await page.click(".bi [data-act=run]");
+  await page.waitForSelector(".bi[data-view=running]", { timeout: 5000 });
+  const t1 = await page.textContent(".bi .bi-run__time");
+  await page.waitForTimeout(500);
+  const t2 = await page.textContent(".bi .bi-run__time");
+  check(`${tag} running: count, ticking seconds, skeleton`, same(await page.textContent(".bi .bi-run__count"), await T(page, "intake.running", { n: 3 }))
+    && t1 !== t2 && (await page.$$(".bi .bk-lrow--skel")).length >= 3, { t1, t2 });
+  await page.waitForSelector(".bi-sum__line", { timeout: 15000 });
+  await page.unroute(ANALYZE);
+  const total = await page.$eval(".bi-sum__line .bi-num", (e) => Number(e.getAttribute("data-value")));
+  check(`${tag} running -> result (3 texts)`, total === 3, total);
+
+  // 7) «Разобрать другие» — снова поле, текст на месте, фокус в поле.
+  await page.click(".bi [data-act=again]");
+  await page.waitForSelector(".bi[data-view=input]", { timeout: 5000 });
+  check(`${tag} again -> input, text kept, focus`, await page.inputValue(field) === three
+    && await page.evaluate(() => document.activeElement && document.activeElement.classList.contains("bi-text")));
+
+  // 8) Ошибки разбора: 500, 413, 403, нет связи — блок ошибки, текст в поле не потерян; 400 — подсказка поля.
+  for (const [name, reply, key] of [["500", json(500, { ok: false, error: "internal" }), "intake.error.text"],
+                                    ["413", json(413, { ok: false, error: "payload_too_large" }), "intake.error.server_size"],
+                                    ["403", json(403, { ok: false, error: "forbidden" }), "intake.staff_only"],
+                                    ["network", null, "common.state.network_title"]]) {
+    await page.route(ANALYZE, (route) => (reply ? route.fulfill(reply) : route.abort("connectionrefused")));
+    await page.click(".bi [data-act=run]");
+    const title = await errorTitle(page);
+    check(`${tag} analyze ${name} -> ${key}`, same(title, await T(page, key)) && await page.inputValue(field) === three, title);
+    await page.unroute(ANALYZE);
+  }
+  const msg = "Не больше 500 обращений за раз.";
+  await page.route(ANALYZE, (route) => route.fulfill(json(400, { ok: false, error: "bad_request", message: msg })));
+  await page.click(".bi [data-act=run]");
+  const e400 = await fieldError(page);
+  check(`${tag} analyze 400 -> server text (ru) / own text (kk)`, same(e400, lang === "ru" ? msg : await T(page, "intake.error.text")), e400);
+  await page.unroute(ANALYZE);
+  await page.route(ANALYZE, (route) => route.fulfill({ status: 400, contentType: "text/plain", body: "" }));
+  await page.fill(field, three + "\nЕщё одно обращение про яму");
+  await page.click(".bi [data-act=run]");
+  const e400b = await fieldError(page);
+  check(`${tag} analyze 400 without text -> no «request failed»`, same(e400b, await T(page, "intake.error.text")), e400b);
+  await page.unroute(ANALYZE);
+
+  // 9) Пример не загрузился: ошибка с «Повторить»; повтор — пример в поле.
+  await page.route(SAMPLE, (route) => route.fulfill(json(500, { ok: false, error: "internal" })));
+  await page.click(".bi [data-act=sample]");
+  const se = await errorTitle(page);
+  const retry = await page.$(".bi .bi-error .bk-btn");
+  check(`${tag} sample 500 -> error.sample + retry`, same(se, await T(page, "intake.error.sample")) && retry !== null, se);
+  await page.unroute(SAMPLE);
+  if (retry) await retry.click();
+  await page.waitForFunction(() => (document.querySelector(".bi .bi-text") || {}).value.length > 100, null, { timeout: 15000 }).catch(() => null);
+  check(`${tag} sample retry -> sample in the field`, (await page.inputValue(field)).length > 100);
+
+  // 10) «Создать задачи»: 404 — разбор устарел (повтор — к полю), 503 — хранилище (повтор — создаёт).
+  await page.click(".bi [data-act=run]");
+  await page.waitForSelector(".bi-sum__line", { timeout: 15000 });
+  await page.route(COMMIT, (route) => route.fulfill(json(404, { ok: false, error: "not_found" })));
+  await page.click(".bi [data-act=commit]");
+  check(`${tag} commit 404 -> error.expired`, same(await errorTitle(page), await T(page, "intake.error.expired")));
+  await page.unroute(COMMIT);
+  await page.click(".bi .bi-error .bk-btn");
+  await page.waitForSelector(".bi[data-view=input]", { timeout: 5000 }).catch(() => null);
+  check(`${tag} expired retry -> input`, await page.getAttribute(".bi", "data-view") === "input");
+  await page.click(".bi [data-act=run]");
+  await page.waitForSelector(".bi-sum__line", { timeout: 15000 });
+  await page.route(COMMIT, (route) => route.fulfill(json(503, { ok: false, error: "unavailable" })));
+  await page.click(".bi [data-act=commit]");
+  check(`${tag} commit 503 -> error.store`, same(await errorTitle(page), await T(page, "intake.error.store")));
+  await page.unroute(COMMIT);
+  await page.click(".bi .bi-error .bk-btn");
+  await page.waitForSelector(".bi .bi-done", { timeout: 15000 }).catch(() => null);
+  check(`${tag} store retry -> created / already created`, await page.$(".bi .bi-done") !== null);
+  check(`${tag} no page errors`, errors.length === 0, errors);
+  await ctx.close();
+}
+
 (async () => {
   const browser = await chromium.launch(require("fs").existsSync(CHROME) ? { executablePath: CHROME } : {});
   for (const [w, h] of SIZES) {
@@ -98,29 +265,32 @@ function check(name, ok, detail) {
       await page.waitForFunction(() => (document.querySelector(".bi-text") || {}).value.length > 100);
       if (OUT) await page.screenshot({ path: path.join(OUT, `${tag}-2-sample.png`) });
       const apiRes = page.waitForResponse((r) => r.url().endsWith("/intake/analyze") && r.request().method() === "POST");
+      // Кадры счётчика (~0,7 с) смотрит сама страница — с каждого кадра, ещё до ответа сервера (иначе под нагрузкой
+      // проверка начинала смотреть после конца анимации). Слово — в форме для показанного числа (R10 §16 п. 4).
+      await page.evaluate(() => {
+        const I = window.BirgeI18n, rec = { bad: [], seen: [] };
+        const strip = (x) => String(x).replace(/[\d\s\u00a0\u202f]/g, "");
+        window.__r04frames = rec;
+        const t0 = performance.now();
+        (function loop() {
+          document.querySelectorAll(".bi-sum__line .bi-sum__part").forEach((el) => {
+            const b = el.querySelector(".bi-num");
+            if (!b) return;
+            const n = Number(b.textContent.replace(/\D/g, ""));
+            if (el.getAttribute("data-key") === "texts" && !rec.seen.includes(n)) rec.seen.push(n);
+            const want = I.t("intake.sum." + el.getAttribute("data-key"), { n });
+            if (strip(el.textContent) !== strip(want) && rec.bad.length < 4) rec.bad.push([el.textContent, want]);
+          });
+          if (performance.now() - t0 < 8000) requestAnimationFrame(loop);
+        })();
+      });
       await page.focus(".bi-text");
       await page.keyboard.press("Control+Enter");
       const res = await (await apiRes).json();
       const data = res && res.ok === true && res.data ? res.data : res;
       await page.waitForSelector(".bi-sum__line", { timeout: 15000 });
-      // Кадры счётчика (~0,7 с): слово — в форме для показанного числа («95 обращений», не «95 обращение»; R10 §16 п. 4).
-      const frames = await page.evaluate(async () => {
-        const I = window.BirgeI18n, bad = [], seen = new Set();
-        const strip = (x) => String(x).replace(/[\d\s\u00a0\u202f]/g, "");
-        const t0 = performance.now();
-        while (performance.now() - t0 < 900) {
-          document.querySelectorAll(".bi-sum__line .bi-sum__part").forEach((el) => {
-            const b = el.querySelector(".bi-num");
-            if (!b) return;
-            const n = Number(b.textContent.replace(/\D/g, ""));
-            if (el.getAttribute("data-key") === "texts") seen.add(n);
-            const want = I.t("intake.sum." + el.getAttribute("data-key"), { n });
-            if (strip(el.textContent) !== strip(want)) bad.push([el.textContent, want]);
-          });
-          await new Promise((r) => requestAnimationFrame(r));
-        }
-        return { bad: bad.slice(0, 4), values: seen.size };
-      });
+      await page.waitForTimeout(900);   // счёт чисел до итога
+      const frames = await page.evaluate(() => ({ bad: window.__r04frames.bad, values: window.__r04frames.seen.length }));
       check(`${tag} count-up: word form follows the shown number`, frames.bad.length === 0 && frames.values >= 3, frames);
       const shown = await page.$$eval(".bi-sum__line .bi-num", (els) => els.map((e) => Number(e.getAttribute("data-value"))));
       const s = data.summary;
@@ -181,6 +351,7 @@ function check(name, ok, detail) {
       await ctx.close();
     }
   }
+  for (const [w, hgt, lang] of [[1366, 900, "ru"], [375, 812, "kk"]]) await checkStates(browser, w, hgt, lang);
   await browser.close();
   const ok = results.filter((r) => r[1]).length;
   console.log(`SUMMARY ${ok} / ${results.length}`);
