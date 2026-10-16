@@ -100,6 +100,9 @@ def main() -> None:
                                             "R08 test_r08_board.py + test_r08_world.py, R15 test_r15_qa.py + round15 notify/meetings, tests/civic/R13"},
             "r15_meetings_tests": {"status": "PASS", "passed": 27, "total": 27,
                                    "note": "tests/civic/R15/round15/test_r15_round15_meetings.py R15 @ 19748bff на коде R13 этой поставки"},
+            "browser_meetings_demo_world": {"status": "PASS", "passed": 90, "total": 90,
+                                            "note": "meetings_browser.cjs на сборке R01 B0.12 с CIVIC_DEMO_WORLD=1 (мир R02): проверки "
+                                            "не зависят от набора данных"},
             "demo_world_on_r01_build": {"status": "PASS", "note": "сборка R01 c9069723, CIVIC_DEMO_WORLD=1: оболочка засевает R13 "
                                         "(m-w15-1/2/3), прошедшая встреча — итог и 4 поручения, связь с обращением мира R09 "
                                         "(«Двор: BI City Tokyo · Исправлено»); 1366-ru и 375-kk без ошибок JS"},

@@ -5,8 +5,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "путь R13 в FINAL-4 = поставка 6 раунда 14 (0487f2a6), восстанавливать нечего",
- "code_sha": "1512ebba18e3625901751b1a808c942e497a08af",
- "tested_sha": "1512ebba18e3625901751b1a808c942e497a08af",
+ "code_sha": "1c5b7213cf4aa68b3afbb7c547788daa07ce3317",
+ "tested_sha": "1c5b7213cf4aa68b3afbb7c547788daa07ce3317",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_forecast/targets.py",
@@ -153,6 +153,12 @@
    "passed": 27,
    "total": 27,
    "note": "tests/civic/R15/round15/test_r15_round15_meetings.py R15 @ 19748bff на коде R13 этой поставки"
+  },
+  "browser_meetings_demo_world": {
+   "status": "PASS",
+   "passed": 90,
+   "total": 90,
+   "note": "meetings_browser.cjs на сборке R01 B0.12 с CIVIC_DEMO_WORLD=1 (мир R02): проверки не зависят от набора данных"
   },
   "demo_world_on_r01_build": {
    "status": "PASS",
