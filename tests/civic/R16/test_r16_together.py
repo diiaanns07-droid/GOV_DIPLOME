@@ -15,7 +15,8 @@ from urllib.parse import quote
 
 import pytest
 
-from ui.civic_together import akim_initiatives, akim_yards, create_from_idea, initiatives_summary, pickups, seed_world, updates
+from ui.civic_together import (akim_initiatives, akim_yards, create_from_idea, initiatives_summary, pickups, seed_world, updates,
+                                yards_of_device)
 from ui.civic_together import neighbors
 from ui.civic_together.demo import SCENE, next_weekday, rows as demo_rows
 from ui.civic_together.service import make_service
@@ -476,6 +477,15 @@ def test_summary_keeps_the_scene_initiative_among_the_nearest(svc):
     assert [r["starts_at"] for r in rows] == sorted(r["starts_at"] for r in rows)
     svc.store.meta("scene_item", "")
     assert SCENE["initiative"] not in [r["id"] for r in initiatives_summary("nura")["next"]]
+
+def test_yards_of_device_for_r17(svc):
+    """R17 (лента кризиса, баннер): дворы «Я живу здесь» своего устройства — id, свежие первыми; чужого — нет."""
+    assert yards_of_device(DEV_A) == []
+    assert call(svc, "POST", "/yards/yard-1454082638/join", {}, context=ctx(DEV_A))["status"] == 200
+    assert yards_of_device(DEV_A) == ["yard-1454082638"]
+    assert yards_of_device(DEV_B) == [] and yards_of_device("") == [] and yards_of_device(None) == []
+    call(svc, "POST", "/yards/yard-1454082638/leave", {}, context=ctx(DEV_A))
+    assert yards_of_device(DEV_A) == []
 
 # --------------------------------------------------------------------------- похожие, идея -> инициатива
 def test_similar_nearby_same_kind(svc):

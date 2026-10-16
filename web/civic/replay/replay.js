@@ -523,7 +523,7 @@
       };
       if (!dur || (fromP === people && fromF === fixed)) { paint(1); return; }
       const step = (now) => {
-        const k = Math.min(1, (now - started) / dur);
+        const k = Math.max(0, Math.min(1, (now - started) / dur));   // метка кадра бывает раньше старта
         paint(k);
         S.counter = k < 1 ? requestAnimationFrame(step) : null;
       };
@@ -627,7 +627,7 @@
           show(S.index + 1, S.stepMs * 0.92);
           announce();
         }
-        const into = Math.min(1, (now - S.stepStart) / S.stepMs);
+        const into = Math.max(0, Math.min(1, (now - S.stepStart) / S.stepMs));
         S.pos = reduce() ? S.index : S.index - 1 + Math.min(1, into / 0.92);
         if (S.index === 0) S.pos = 0;
         updateBar(false);

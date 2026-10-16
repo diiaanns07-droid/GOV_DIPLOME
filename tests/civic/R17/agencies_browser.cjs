@@ -341,6 +341,11 @@ const openAgencies = async (page, base, tab) => {
       await page.waitForTimeout(800);
       const states = await page.$$eval(".ag-task", (els) => els.map((e) => e.dataset.status));
       check("кризис: задача сменила статус (оптимистично и на сервере)", states.length === 4, states);
+      // Прогресс словами (сцена 9 DEMO_SCRIPT R01: «3 из 5»): «выполнено N из M» = число задач «сделано».
+      const progressText = await page.evaluate(() => (document.querySelector(".ag-section-title__meta") || {}).textContent || "");
+      const doneTasks = states.filter((st) => st === "done").length;
+      check("кризис: прогресс задач словами («выполнено N из M»)", progressText.includes(`выполнено ${doneTasks} из ${states.length}`),
+        [progressText, doneTasks, states.length]);
       await page.fill('[data-form=update] textarea[data-lang=ru]', "Дороги к школам расчищены, автобусы ходят.");
       await page.fill('[data-form=update] textarea[data-lang=kk]', "Мектепке баратын жолдар тазартылды, автобустар жүріп тұр.");
       await page.click("[data-action=send-update]");

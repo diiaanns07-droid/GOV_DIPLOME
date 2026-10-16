@@ -72,7 +72,7 @@ def test_joint_parts_and_handoff_keep_deadline():
                          {"service": "road", "role": "partner", "status": "in_progress"}])
     res = reply_draft(record=rec, now=NOW)
     assert "работают 2 службы: Водоканал — сделано, Дорожная служба — в работе" in res["draft_ru"]
-    assert "екі қызмет жұмыс істейді: Сумен жабдықтау қызметі — орындалды, Жол қызметі — жұмыста" in res["draft_kk"]
+    assert "екі қызмет жұмыс істейді: Сумен жабдықтау қызметі — орындалды, Жол қызметі — орындалуда" in res["draft_kk"]
     rec = dict(REC, status="accepted", handoffs=[{"at": "2026-10-15T11:00:00+05:00", "from": "road", "to": "water",
                                                   "reason": "внутренняя причина сотрудника"}])
     res = reply_draft(record=rec, now=NOW)
@@ -113,7 +113,7 @@ def test_joint_where_no_service_started_yet():
     res = reply_draft(record=rec, now=NOW)
     assert res["template"] == "joint_queued"
     assert "передали двум службам: Теплосеть и Служба озеленения. Каждая отвечает за свою часть." in res["draft_ru"]
-    assert "екі қызметке берілді: Жылу желісі және Көгалдандыру қызметі" in res["draft_kk"]
+    assert "екі қызметке жіберілді: Жылу желісі және Көгалдандыру қызметі" in res["draft_kk"]
     assert "ждёт очереди" not in res["draft_ru"]
 
 

@@ -178,6 +178,8 @@ async function waitAnswer(page) {
     }
 
     // «Открыть «Календарь работ»» (R11 R03-8): вкладка «Ведомств» #agencies/calendar; есть экран R12 — его openConflict.
+    // Фикстура — ответ api.ask("Где копаем дважды?") на F.r12_world_conflicts_summary (как мир B0.16); совпадение с
+    // текущим кодом проверяет test_browser_conflicts_fixture_matches_current_answer.
     const conflicts = fs.readFileSync(path.join(__dirname, "answer_conflicts_fixture.json"), "utf8");
     for (const withR12 of [false, true]) {
       const page = await browser.newPage({ viewport: { width: 1366, height: 768 } });
@@ -189,14 +191,29 @@ async function waitAnswer(page) {
       await page.fill("#ba-input", "Где копаем дважды?");
       await page.press("#ba-input", "Enter");
       await waitAnswer(page);
+      // Строки называют улицу, вид конфликта — подписью (три «Копаем дважды» подряд иначе одинаковые).
+      const rows = page.locator(".ba-items .ba-item");
+      const second = { title: await rows.nth(1).locator(".bk-list__title").textContent(),
+        sub: await rows.nth(1).locator(".bk-list__sub").textContent(), tag: await rows.nth(1).evaluate((n) => n.tagName) };
+      check("conflict row names the street, kind in the sub line", second.title === "ул. Баян Сулу"
+        && /копаем дважды/.test(second.sub || "") && second.tag === "BUTTON", JSON.stringify(second));
       await page.locator('[data-action="open"]').first().click();
       await page.waitForTimeout(150);
       if (withR12) {
         const opened = await page.evaluate(() => window.__opened);
-        check("calendar button calls R12 openConflict when present", opened === "cf-1", String(opened));
+        check("calendar button calls R12 openConflict when present", opened === "cf-w15-02", String(opened));
+        await rows.nth(1).click();
+        await page.waitForTimeout(150);
+        const row = await page.evaluate(() => window.__opened);
+        check("conflict row opens its own conflict (R12 openConflict)", row === "cf-w15-01", String(row));
       } else {
         const line = await page.locator("#stand-map").textContent();
         check("calendar button opens the agencies tab #agencies/calendar (R11 R03-8)", /#agencies\/calendar/.test(line || ""), line);
+        await page.evaluate(() => { document.getElementById("stand-map").textContent = ""; });
+        await rows.nth(1).click();
+        await page.waitForTimeout(150);
+        const rowLine = await page.locator("#stand-map").textContent();
+        check("conflict row without R12 opens the agencies tab #agencies/calendar", /#agencies\/calendar/.test(rowLine || ""), rowLine);
       }
       await page.close();
     }

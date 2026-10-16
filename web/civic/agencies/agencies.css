@@ -687,6 +687,11 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
+.ag-section-title__meta {
+  font-weight: var(--fw-regular, 400);
+  letter-spacing: 0;
+  text-transform: none;
+}
 .ag-quote {
   overflow: hidden;
   color: var(--c-text-2);

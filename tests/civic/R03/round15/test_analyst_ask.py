@@ -239,6 +239,27 @@ def test_growth_district_compare_overdue_conflicts_initiatives_meetings():
     assert [n["value"] for n in orders["numbers"]] == [3, 1, 1]    # 3 поручения, 1 выполнено, 1 просрочено
 
 
+def test_growth_asked_for_a_month_says_it_counts_week_to_week():
+    """Рост тем R08 — только неделя к неделе: на «за месяц» ответ это прямо говорит (последней строкой, не вводной)."""
+    month = block(ask("Что растёт за месяц?"), "category_growth")
+    assert month["lines"]["ru"][-1] == ("Рост считается за 7 дней против прошлой недели, как в «Картине дня»; "
+                                        "сравнения за 30 дней нет.")
+    assert month["lines"]["kk"][-1] == ("Өсім «Күн қорытындысындағыдай» 7 күн мен өткен апта бойынша саналады; "
+                                        "30 күндік салыстыру жоқ.")
+    assert "на 50\u00a0% больше" in month["lines"]["ru"][0]
+    for q in ("Что растёт за неделю?", "Что растёт?"):
+        assert not any("сравнения за" in line for line in block(ask(q), "category_growth")["lines"]["ru"])
+
+
+def test_month_name_and_lower_first():
+    from agent.civic_assistant.analyst.texts import lower_first, month_name
+    assert month_name("2026-11") == {"ru": "ноябрь 2026", "kk": "2026 жылғы қараша"}
+    assert month_name("2027-01") == {"ru": "январь 2027", "kk": "2027 жылғы қаңтар"}
+    assert month_name("2026-13") == {"ru": "2026-13", "kk": "2026-13"} and month_name(None) == {"ru": "", "kk": ""}
+    assert lower_first("Копаем дважды") == "копаем дважды" and lower_first("Екі рет қазу") == "екі рет қазу"
+    assert lower_first("ЖК Family Village") == "ЖК Family Village" and lower_first("") == ""
+
+
 def test_kazakh_answer_and_language_switch_without_refetch():
     a = ask("Қай қызметтер артта қалып жатыр?", lang=None)
     assert a["lang"] == "kk" and a["question_lang"] == "kk"

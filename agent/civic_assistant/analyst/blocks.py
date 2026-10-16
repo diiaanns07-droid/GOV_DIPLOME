@@ -13,8 +13,8 @@ from __future__ import annotations
 from datetime import datetime
 
 from . import sources as S
-from .texts import (MODULES, both, quoted, category_name, count_ru, district_name, fmt_num, fmt_pct, period, plural_ru,
-                    service_name)
+from .texts import (MODULES, both, quoted, category_name, count_ru, district_name, fmt_num, fmt_pct, lower_first,
+                    month_name, period, plural_ru, service_name)
 
 MAX_ITEMS = 5
 SHOW_ON_MAP = both("Показать на карте", "Картадан көрсету")
@@ -247,6 +247,12 @@ def category_growth(ctx) -> Block:
         b.fact(spikes[0].get("value"), "сообщений за 7 дней (пульс)", "7 күндегі хабарлама (пульс)",
                "ui.civic_akim.summary.pulse")
         b.focus(spikes[0].get("target"), 7)
+    if p.days_given and p.days != 7:
+        # Спросили «за месяц», а рост тем R08 считает только неделя к неделе — говорим об этом прямо.
+        b.line(f"Рост считается за 7 дней против прошлой недели, как в «Картине дня»; сравнения "
+               f"{period(p.days)['ru']} нет.",
+               f"Өсім «Күн қорытындысындағыдай» 7 күн мен өткен апта бойынша саналады; {fmt_num(p.days)} күндік "
+               f"салыстыру жоқ.")
     b.open("day", "Открыть «Картину дня»", "«Күн қорытындысын» ашу")
     return b
 
@@ -781,15 +787,20 @@ def work_conflicts(ctx) -> Block:
         b.line(f"Самый важный: {first['title_ru']}" + (f" — {street_ru}" if street_ru else "") + ".",
                f"Ең маңыздысы: {first.get('title_kk') or first['title_ru']}" + (f" — {street_kk}" if street_kk else "") + ".")
     for r in rows[:MAX_ITEMS]:
-        label = both(str(r["title_ru"]), str(r.get("title_kk") or r["title_ru"])) if r.get("title_ru") \
+        kind = both(str(r["title_ru"]), str(r.get("title_kk") or r["title_ru"])) if r.get("title_ru") \
             else kinds.get(r.get("kind"), both(str(r.get("kind") or ""), str(r.get("kind") or "")))
-        sub = both(str(r.get("street_ru") or ""), str(r.get("street_kk") or r.get("street_ru") or "")) \
+        street = both(str(r.get("street_ru") or ""), str(r.get("street_kk") or r.get("street_ru") or "")) \
             if r.get("street_ru") else None
+        # Строка — место, вид конфликта — подписью: у трёх «Копаем дважды» подряд строки иначе одинаковые.
+        label, sub = (street, both(lower_first(kind["ru"]), lower_first(kind["kk"]))) if street else (kind, None)
         item = {"label": label, "value": None, "severity": r.get("severity"), "id": r.get("id"),
                 "value_text": both("серьёзный" if r.get("severity") == "high" else "средний",
                                    "маңызды" if r.get("severity") == "high" else "орташа")}
         if sub:
             item["sub"] = sub
+        if r.get("id"):  # строка открывает свой конфликт в «Календаре работ» (R12 openConflict), как кнопка — первый
+            item["section"] = "works-calendar"
+            item["opener"] = {"global": "BirgeWorksCalendar", "fn": "openConflict", "arg": str(r["id"])}
         b.items.append(item)
     b.open("works-calendar", "Открыть «Календарь работ»", "«Жұмыстар күнтізбесін» ашу",
            opener={"global": "BirgeWorksCalendar", "fn": "openConflict", "arg": str(first.get("id") or "")}
@@ -908,8 +919,9 @@ def forecast(ctx) -> Block:
     if status != "ok" or not isinstance(data, dict):
         b.title = both("Прогноз проблемных мест", "Проблемалы жерлер болжамы")
         return _not_ready(b, status if status != "ok" else "error", "Прогноз", "Болжам")
-    month = str(data.get("month") or "")
-    b.title = both(f"Прогноз на {month} {where['ru']}", f"{month} болжамы: {where['kk']}")
+    month = month_name(data.get("month"))
+    b.title = both(f"Прогноз на {month['ru']} {where['ru']}", f"{month['kk']} болжамы: {where['kk']}") if month["ru"] \
+        else both(f"Прогноз проблемных мест {where['ru']}", f"Проблемалы жерлер болжамы: {where['kk']}")
     b.demo = True
     items = [it for it in data.get("items") or [] if isinstance(it, dict)]
     if p.category:
@@ -928,9 +940,15 @@ def forecast(ctx) -> Block:
     if reasons and isinstance(reasons[0], dict):
         b.line(str(reasons[0].get("ru") or ""), str(reasons[0].get("kk") or reasons[0].get("ru") or ""))
     b.note = both(str(data.get("note_ru") or "Прототип на синтетике."), str(data.get("note_kk") or data.get("note_ru") or ""))
-    for it in items[:MAX_ITEMS]:
-        b.items.append({"label": both(_target_label(it.get("target"), "ru"), _target_label(it.get("target"), "kk")),
-                        "value": None, "level": it.get("level"),
+    seen = set()
+    for it in items:
+        label = both(_target_label(it.get("target"), "ru"), _target_label(it.get("target"), "kk"))
+        if label["ru"] in seen:  # два двора у одной остановки — у R13 одна подпись; в списке — одна строка
+            continue
+        seen.add(label["ru"])
+        if len(b.items) >= MAX_ITEMS:
+            break
+        b.items.append({"label": label, "value": None, "level": it.get("level"),
                         "value_text": both("высокий риск" if it.get("level") == "high" else "средний риск",
                                            "жоғары тәуекел" if it.get("level") == "high" else "орташа тәуекел"),
                         "target": it.get("target")})

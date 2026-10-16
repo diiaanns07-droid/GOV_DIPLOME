@@ -475,7 +475,9 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
   const page = await ctx.newPage();
   const errors = [];
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
-  page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errors.push(m.type() + ": " + m.text().slice(0, 200)); });
+  // Где родилось сообщение (файл:строка) — чтобы владелец нашёл источник без перепрогона (B0.17: «#ffff100» без места).
+  const where = (m) => { const l = m.location && m.location(); return l && l.url ? ` @ ${l.url.replace(/^.*\/civic\//, "").replace(/^https?:\/\/[^/]+\//, "")}:${l.lineNumber}` : ""; };
+  page.on("console", (m) => { if (["error", "warning"].includes(m.type()) && !NOISE.test(m.text())) errors.push(m.type() + ": " + m.text().slice(0, 200) + where(m)); });
   // JPEG 70 %: кадр ~60 КБ вместо ~350 КБ PNG — отчёты лежат в Git.
   const shot = async (s) => { const f = path.join(OUT, `${tag}-${s}.jpg`); await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
     if (GLASS) (glassLog[tag] = glassLog[tag] || {})[s] = await RL.glassSeen(page);

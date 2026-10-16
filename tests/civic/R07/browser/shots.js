@@ -138,11 +138,17 @@ async function colorOnlyCheck(page) {
       });
       // view=nura — крупный план из ссылки: карта не подгоняется (подгонку под 10 мест проверяет open-fit-top10-*)
       if (bad.outside.length) out.push("горячие значки за краем или под шторкой (№5): " + bad.outside.join(", "));
+      // Считаем места, а не кнопки: кружок-кластер — все его места. С раунда 15 кнопка-маркер не уже 44 px, и кружок
+      // тихого двора (1 жалоба), чья кнопка задела бы соседний значок на 2 px, на этом масштабе не ставится — он виден
+      // при приближении; над шторкой остаются кластер «9» (2 места) и два значка — 4 места (в раунде 14 кружки были 34 px
+      // и двор вставал рядом: 4 кнопки, 5 мест).
       const inView = await page.evaluate(() => {
         const sheetTop = document.getElementById("panel").getBoundingClientRect().top;
-        return [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden && b.getBoundingClientRect().bottom < sheetTop && b.getBoundingClientRect().top > 56).length;
+        const members = new Map(window.__heat.badges().filter((b) => b.members).map((b) => [b.key, b.members.length]));
+        return [...document.querySelectorAll(".r07-badge")].filter((b) => !b.hidden && b.getBoundingClientRect().bottom < sheetTop && b.getBoundingClientRect().top > 56)
+          .reduce((n, b) => n + (members.get(b.dataset.key) || 1), 0);
       });
-      if (inView < 4) out.push("над шторкой видно мало значков (№5): " + inView);
+      if (inView < 4) out.push("над шторкой видно мало мест (№5): " + inView);
       return out;
     });
     // Просьба владельца, п. 1: при открытии карта вписывает 10 горячих мест из списка — список и карта совпадают
