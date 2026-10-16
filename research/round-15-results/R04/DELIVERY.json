@@ -1,13 +1,13 @@
 {
   "role": "R04",
   "round": 15,
-  "delivery": "D3.1 (П3, 16 окт 18:46 по Астане) — code dd612de6 = D3 b810cbb4 (разбор ошибок на dev-половине набора R02) + устойчивый тест скорости route (лучшее из трёх). Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
+  "delivery": "D3.2 (П3, 16 окт 18:49 по Астане) — code 0a387ddf: D3 b810cbb4 (разбор ошибок на dev-половине набора R02) + устойчивый тест скорости + экран в три размера шрифта (VISUAL_BRIEF §4) + RUN п. 5. Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
   "branch": "claude/gifted-maxwell-i66wwi",
   "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
   "restored_from": null,
   "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
-  "code_sha": "dd612de67db19522935659144b64306e00055dd8",
-  "tested_sha": "dd612de67db19522935659144b64306e00055dd8",
+  "code_sha": "0a387ddf14649db58d4d1a8b31cb57c77dd95105",
+  "tested_sha": "0a387ddf14649db58d4d1a8b31cb57c77dd95105",
   "push_status": "OK",
   "changed_paths": [
     "ml/civic_replies/__init__.py",
@@ -264,7 +264,7 @@
       "failed": 0,
       "cmd": "node tests/civic/R04/intake/ui_check_intake.cjs",
       "sizes": "1366 / 1024 / 375 × ru / kk",
-      "sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280"
+      "sha": "0a387ddf14649db58d4d1a8b31cb57c77dd95105"
     },
     "P3_neighbours_route_moderate": {
       "status": "PASS",
