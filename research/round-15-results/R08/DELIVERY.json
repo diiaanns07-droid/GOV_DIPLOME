@@ -4,10 +4,10 @@
  "branch": "claude/laughing-euler-iv3on3",
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": "origin/claude/r14-R08 4b215c77 (только браузерные проверки tests/civic/R08/*.cjs; код R08 в FINAL-4 = d5719635 совпадает)",
- "code_sha": "840d62dee6f1665aab10c14889e62c0955c3fccd",
- "tested_sha": "840d62dee6f1665aab10c14889e62c0955c3fccd",
+ "code_sha": "4b6084b0ed06c6788acb304dd7855ee6f78e8784",
+ "tested_sha": "4b6084b0ed06c6788acb304dd7855ee6f78e8784",
  "push_status": "OK (origin/claude/laughing-euler-iv3on3)",
- "summary": "Ситуационный центр (страница /civic/board/, тёмная, 1920/1366 без прокрутки, смена блоков 15 с) + GET akim/board; «Картина дня» 2.0 (решения коротко, кнопка кризисного штаба, три карточки соседей, прогноз; подписи «Не исправлено в срок», «Исправлено за 7 дней» и в плитках, и в сводке текстом; текст не мельче 13 px); «Картина недели» (GET akim/week, окно 7 × 24 ч как в «Картине дня», + A4 ru/kk); соседи R17/R16/R13 — только чтение их функций и открытых маршрутов; поправка П1 применена; на демо-мире R02 и сборке R01 B0.10 числа всех экранов сходятся (world_check 19/19, world_shots 86/86, R10 consistency 16/0/0); в блоке «Районы» — карта районов (контуры OSM, цвет — уровень карты R07).",
+ "summary": "П3 (FINAL-6): поле даты «Картины дня» показывает «дд.мм.гггг» при любом языке браузера — в облаке Chromium рисовал «10/16/2026» (кадр координатора 03); в фокусе — родное поле. Остальное — как в FINAL-5.1: Ситуационный центр (страница /civic/board/, тёмная, 1920/1366 без прокрутки, смена блоков 15 с) + GET akim/board; «Картина дня» 2.0 (решения коротко, кнопка кризисного штаба, три карточки соседей, прогноз; подписи «Не исправлено в срок», «Исправлено за 7 дней» и в плитках, и в сводке текстом; текст не мельче 13 px); «Картина недели» (GET akim/week, окно 7 × 24 ч как в «Картине дня», + A4 ru/kk); соседи R17/R16/R13 — только чтение их функций и открытых маршрутов; поправка П1 применена; на демо-мире R02 и сборке R01 B0.10 числа всех экранов сходятся (world_check 19/19, world_shots 86/86, R10 consistency 16/0/0); в блоке «Районы» — карта районов (контуры OSM, цвет — уровень карты R07).",
  "changed_paths": [
   "ui/civic_akim/api.py",
   "ui/civic_akim/summary.py",
@@ -48,7 +48,8 @@
   "tests/civic/R08/test_r08_text.py",
   "tests/civic/R08/test_r08_summary.py",
   "ui/civic_akim/__init__.py",
-  "tests/civic/R08/test_r08_warm.py"
+  "tests/civic/R08/test_r08_warm.py",
+  "tests/civic/R08/date_check.cjs"
  ],
  "integration": {
   "r01_patch": "research/round-15-results/R08/r01_routes_r08.patch",
@@ -77,10 +78,12 @@
   "r07_patch": "research/round-15-results/R08/patches/R07_records_per_generation.patch"
  },
  "tests": {
-  "pytest tests/civic/R08": "PASS 306, skipped 1 — в рабочей копии и в дереве сборки R01 B0.19 (все модули соседей)",
+  "date_check.cjs (П3: поле даты на сборке R01, браузер с LANG=en_US — как облачный ролик)": "PASS 37 / FAIL 0 на R01 fbdef66b (код FINAL-5.1) + R08 8b53782d — 1366 / 1024 / 375 × ru / kk × обычный вид и ?show=1: «16.10.2026» поверх поля, в фокусе — родное поле, ошибок нет — screens/world/date-p3",
+  "world_shots.cjs и fit_scan.cjs на R01 fbdef66b + R08 8b53782d (П3)": "PASS 86 / 0 и PASS 7 / 0 (fit_scan.json обновлён: ≥ 13 px, контраст, ≥ 44 px, без обрезки)",
+  "pytest tests/civic/R08": "PASS 306, skipped 1 — в рабочей копии и в дереве сборки R01 fbdef66b (код FINAL-5.1) + R08 8b53782d (16 окт, П3)",
   "board_check.cjs (Ситуационный центр, стенд R08)": "PASS 88 / FAIL 0",
   "week_check.cjs (Картина недели, стенд R08)": "PASS 21 / FAIL 0 (+ нажата кнопка своего окна; с датой из «Картины дня» — ни одна)",
-  "ui_check.cjs (Картина дня 2.0, стенд R08)": "PASS 171 / FAIL 0",
+  "ui_check.cjs (Картина дня 2.0, стенд R08)": "PASS 173 / FAIL 0 (П3: + «дата в поле — дд.мм.гггг при любом языке браузера», 1366 ru / kk)",
   "world_check.py (демо-мир R02, сверка чисел)": "PASS 19 / FAIL 0 на R01 B0.19 — research/round-15-results/R08/world_check.json",
   "world_shots.cjs (демо-мир R02, браузер)": "PASS 86 / FAIL 0 на R01 B0.19 — кадры screens/world/ (финальные)",
   "интеграционная сборка для world_*": "сборка R01 B0.19 5b696879 как есть (R08 в ней = 1a1a4a9b) + tests/civic/R08/world_shots.cjs из code_sha; CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, новая база init + create-editor operator",
@@ -209,7 +212,12 @@
   "research/round-15-results/R08/screens/world/entry-b012/board_entry.json",
   "research/round-15-results/R08/screens/world/entry-b012/entry-more-1366-ru.jpg",
   "research/round-15-results/R08/screens/world/entry-b019/board_entry.json",
-  "research/round-15-results/R08/screens/world/entry-b019/entry-more-1366-ru.jpg"
+  "research/round-15-results/R08/screens/world/entry-b019/entry-more-1366-ru.jpg",
+  "research/round-15-results/R08/screens/world/date-p3/date-1366-ru.png",
+  "research/round-15-results/R08/screens/world/date-p3/date-1366-ru-focus.png",
+  "research/round-15-results/R08/screens/world/date-p3/date-1024-kk-show.png",
+  "research/round-15-results/R08/screens/world/date-p3/date-375-kk.png",
+  "research/round-15-results/R08/screens/world/date-p3/date_check.json"
  ],
  "known_limits": [
   "Ситуационный центр и «Картина недели» — только сотруднику: шлюз R01 (staff=True) пускает после входа; без входа — экран «Войдите как сотрудник».",
@@ -218,20 +226,24 @@
   "Две сессии R08 стартовали одновременно; R01 берёт R08 из этой ветки целиком (STATUS R01, таблица ролей).",
   "Карта районов в Ситуационном центре берёт контуры из файла сборки build3d/data/astana-districts.json (INTEGRATION §11); нет файла — полосы.",
   "Карточка «Сегодня в Астане»: подписи 13 px по решению владельца (эталон раунда 14 — 12 px); today_ref_compare разойдётся на кегле этих строк сознательно.",
-  "Казахские тексты новых ключей — в словаре R11 (вычитка R11); 6 фрагментов фраз — только в модуле (решение R11)."
+  "Казахские тексты новых ключей — в словаре R11 (вычитка R11); 6 фрагментов фраз — только в модуле (решение R11).",
+  "Поле даты в фокусе — родное поле браузера: формат по языку системы (русская Windows — «16.10.2026», облачный Chromium — «10/16/2026»); вне фокуса R08 всегда показывает «дд.мм.гггг»."
  ],
- "next_step": "Раунд 15 закрыт. Следующий раунд (не в эту сборку): LOCAL-кадры с настоящей картой; по желанию «Просрочено дольше всех» → «Дольше всех не исправлены»; замер akim/summary после записи на реальных объёмах.",
- "status": "final — Раунд 15 закрыт (П2): R08 840d62de в FINAL-5 c2276360 и FINAL-5.1 e8d6cae6 (BUILD.json R01); R10 — «можно показывать: да», блокеров нет; R15 — блокеров безопасности нет; R11 — 102 кадра, 0 проблем",
+ "next_step": "R01 — взять R08 4b6084b0 в кандидат FINAL-6 (17 окт 12:00 Астаны): после FINAL-5.1 меняются только web/civic/akim/akim.js и akim.css (поле даты) и тесты R08; R10 может запускать tests/civic/R08/date_check.cjs в приёмке. Дальше — только блокеры R10 до 14:00; 18:00 — финальные STATUS / DELIVERY («Раунд 15 закрыт»).",
+ "status": "поставка для FINAL-6 (П3): R08 4b6084b0 = R08 FINAL-5.1 (840d62de) + поле даты «дд.мм.гггг»; запасная FINAL-5.1 e8d6cae6 не меняется (в ней R08 840d62de, R10 — «можно показывать: да»)",
  "final_at": "2026-10-16 ~11:00 Астаны (06:00 UTC)",
- "code_note": "Код экранов и API R08 последний раз менялся в 1a1a4a9b (в сборках R01 с B0.15); 840d62de добавляет только tests/civic/R08/world_shots.cjs (Chromium с LANG=ru_RU — поле даты в кадрах «16.10.2026»).",
+ "code_note": "Код экранов и API R08 после FINAL-5.1 (840d62de) менялся только в web/civic/akim/akim.js и akim.css — поле даты (8b53782d, П3); 4b6084b0 добавляет tests/civic/R08/date_check.cjs и кадры date-p3. API, числа и остальные экраны — как в FINAL-5.1.",
  "final_build": {
   "FINAL-5": "c2276360 (R01, 16 окт 13:26 Астаны)",
   "FINAL-5.1": "e8d6cae6 (R01, 16 окт 15:25 Астаны: код FINAL-5 + документы R14)",
-  "R08_in_build": "840d62de — пути R08 совпадают один в один"
+  "R08_in_build": "840d62de — пути R08 совпадают один в один",
+  "FINAL-6": "кандидат — R01 17 окт 12:00 Астаны, FINAL-6 — 17:00 (если R10 примет; иначе показ на FINAL-5.1)",
+  "R08_for_FINAL-6": "4b6084b0"
  },
  "acceptance": {
   "R10": "FINAL-5 c2276360 — «можно показывать: да», без блокеров: API 155/0/0, числа 16/0/0, часть 1 172/0/2, сцены 337/0/0, аудит 554/10/0",
   "R15": "FINAL-5 c2276360 — 566 passed / 0 failed, браузер 8/0/1, эталон 18/0/0, гигиена сборки чистая; блокеров безопасности нет",
   "R11": "FINAL-5 c2276360 — 102 кадра, 0 проблем; сцены 50 кадров, 0 ошибок JS"
- }
+ },
+ "delivered_at": "2026-10-16 ~17:55 Астаны (12:55 UTC)"
 }
