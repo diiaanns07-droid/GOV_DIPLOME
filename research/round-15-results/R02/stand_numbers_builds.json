@@ -1314,6 +1314,298 @@
    "where": "дерево поставок к B1 (16 окт ~00:00 Астаны): R01 c6d62440 + R04 0affd9d0, R06 7f6636cd, R07 9b1084d9, R08 062f899a, R09 d9ca175c, R12 3d4c1afb, R13 8a7b9468, R16 db7da7de, R17 5650c869; мир R02 0152ef19",
    "same": 14,
    "total": 14
+  },
+  "final5": {
+   "base": "http://127.0.0.1:8671",
+   "now": "2026-10-16T14:25:47+05:00",
+   "rows": [
+    {
+     "metric": "map_people_7d",
+     "stand": 83,
+     "expected": 83,
+     "same": true
+    },
+    {
+     "metric": "map_people_14d",
+     "stand": 91,
+     "expected": 91,
+     "same": true
+    },
+    {
+     "metric": "map_people_30d",
+     "stand": 96,
+     "expected": 96,
+     "same": true
+    },
+    {
+     "metric": "day_new_day",
+     "stand": 8,
+     "expected": 8,
+     "same": true
+    },
+    {
+     "metric": "day_new_week",
+     "stand": 66,
+     "expected": 66,
+     "same": true
+    },
+    {
+     "metric": "day_in_progress",
+     "stand": 43,
+     "expected": 43,
+     "same": true
+    },
+    {
+     "metric": "day_overdue",
+     "stand": 5,
+     "expected": 5,
+     "same": true
+    },
+    {
+     "metric": "day_fixed_week",
+     "stand": 45,
+     "expected": 45,
+     "same": true
+    },
+    {
+     "metric": "day_decisions",
+     "stand": [
+      "c-w1500327",
+      "c-w1500417"
+     ],
+     "expected": [
+      "c-w1500327",
+      "c-w1500417"
+     ],
+     "same": true
+    },
+    {
+     "metric": "inbox_city",
+     "stand": {
+      "new": 21,
+      "in_progress": 72,
+      "waiting_check": 159,
+      "overdue": 5,
+      "reopened": 5
+     },
+     "expected": {
+      "new": 21,
+      "in_progress": 72,
+      "waiting_check": 159,
+      "overdue": 5,
+      "reopened": 5
+     },
+     "same": true
+    },
+    {
+     "metric": "r09_complaints",
+     "stand": 743,
+     "expected": 743,
+     "same": true
+    },
+    {
+     "metric": "r09_complaints_nura",
+     "stand": 267,
+     "expected": 267,
+     "same": true
+    },
+    {
+     "metric": "r09_people_open_7d",
+     "stand": 83,
+     "expected": 83,
+     "same": true
+    },
+    {
+     "metric": "r09_people_open_30d",
+     "stand": 96,
+     "expected": 96,
+     "same": true
+    }
+   ],
+   "extra": {
+    "day_pulse": [
+     [
+      "spike",
+      "snow_ice",
+      60,
+      4.8
+     ],
+     [
+      "spike",
+      "transport",
+      23,
+      6.6
+     ],
+     [
+      "spike",
+      "lighting",
+      8,
+      5.3
+     ],
+     [
+      "new_hot",
+      "transport",
+      12,
+      null
+     ],
+     [
+      "metoo",
+      "transport",
+      8,
+      null
+     ]
+    ],
+    "day_districts_7d": 83
+   },
+   "where": "FINAL-5 c2276360 (R01, 16 окт 13:33 Астаны; = B0.23): пути R02 = поставке fa9ab80b, мир dd0e7bba (--check OK, check 0/0); стенд 16 окт ~14:25 Астаны",
+   "same": 14,
+   "total": 14
+  },
+  "final5_restart": {
+   "base": "http://127.0.0.1:8671",
+   "now": "2026-10-16T14:26:59+05:00",
+   "rows": [
+    {
+     "metric": "map_people_7d",
+     "stand": 83,
+     "expected": 83,
+     "same": true
+    },
+    {
+     "metric": "map_people_14d",
+     "stand": 91,
+     "expected": 91,
+     "same": true
+    },
+    {
+     "metric": "map_people_30d",
+     "stand": 96,
+     "expected": 96,
+     "same": true
+    },
+    {
+     "metric": "day_new_day",
+     "stand": 8,
+     "expected": 8,
+     "same": true
+    },
+    {
+     "metric": "day_new_week",
+     "stand": 66,
+     "expected": 66,
+     "same": true
+    },
+    {
+     "metric": "day_in_progress",
+     "stand": 43,
+     "expected": 43,
+     "same": true
+    },
+    {
+     "metric": "day_overdue",
+     "stand": 5,
+     "expected": 5,
+     "same": true
+    },
+    {
+     "metric": "day_fixed_week",
+     "stand": 45,
+     "expected": 45,
+     "same": true
+    },
+    {
+     "metric": "day_decisions",
+     "stand": [
+      "c-w1500327",
+      "c-w1500417"
+     ],
+     "expected": [
+      "c-w1500327",
+      "c-w1500417"
+     ],
+     "same": true
+    },
+    {
+     "metric": "inbox_city",
+     "stand": {
+      "new": 21,
+      "in_progress": 72,
+      "waiting_check": 159,
+      "overdue": 5,
+      "reopened": 5
+     },
+     "expected": {
+      "new": 21,
+      "in_progress": 72,
+      "waiting_check": 159,
+      "overdue": 5,
+      "reopened": 5
+     },
+     "same": true
+    },
+    {
+     "metric": "r09_complaints",
+     "stand": 743,
+     "expected": 743,
+     "same": true
+    },
+    {
+     "metric": "r09_complaints_nura",
+     "stand": 267,
+     "expected": 267,
+     "same": true
+    },
+    {
+     "metric": "r09_people_open_7d",
+     "stand": 83,
+     "expected": 83,
+     "same": true
+    },
+    {
+     "metric": "r09_people_open_30d",
+     "stand": 96,
+     "expected": 96,
+     "same": true
+    }
+   ],
+   "extra": {
+    "day_pulse": [
+     [
+      "spike",
+      "snow_ice",
+      60,
+      4.8
+     ],
+     [
+      "spike",
+      "transport",
+      23,
+      6.6
+     ],
+     [
+      "spike",
+      "lighting",
+      8,
+      5.3
+     ],
+     [
+      "new_hot",
+      "transport",
+      12,
+      null
+     ],
+     [
+      "metoo",
+      "transport",
+      8,
+      null
+     ]
+    ],
+    "day_districts_7d": 83
+   },
+   "where": "то же, перезапуск на той же базе (строка «R09 743 (новых 0) … R07 6 (новых 0)»)",
+   "same": 14,
+   "total": 14
   }
  },
  "overdue_b1sim2": {
@@ -1351,6 +1643,39 @@
  },
  "overdue_b1_deliveries": {
   "note_ru": "то же сравнение «Просрочено» на дереве поставок к B1 — совпало",
+  "rows": [
+   {
+    "district": "город",
+    "r08_fix": 35,
+    "r17_overdue_fix": 35,
+    "r09_answer": 5,
+    "r17_overdue_answer": 5
+   },
+   {
+    "district": "nura",
+    "r08_fix": 5,
+    "r17_overdue_fix": 5,
+    "r09_answer": 2,
+    "r17_overdue_answer": 2
+   },
+   {
+    "district": "esil",
+    "r08_fix": 11,
+    "r17_overdue_fix": 11,
+    "r09_answer": 2,
+    "r17_overdue_answer": 2
+   },
+   {
+    "district": "almaty",
+    "r08_fix": 3,
+    "r17_overdue_fix": 3,
+    "r09_answer": 0,
+    "r17_overdue_answer": 0
+   }
+  ]
+ },
+ "overdue_final5": {
+  "note_ru": "«Просрочено» на стенде FINAL-5 (и после перезапуска): R08 kpi.overdue (срок исправления) = R17 overdue_fix; R09 «Ответ просрочен» = R17 overdue_answer — совпало",
   "rows": [
    {
     "district": "город",
