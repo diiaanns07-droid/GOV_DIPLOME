@@ -252,3 +252,9 @@ R11 patches/R08_board_mark.patch (a0178fbe, значок ui-kit #i-home) бра�
   второй строке (ru и kk).
 Проверки: board_check 88, week_check 21, ui_check 171 (стенд); на R01 B0.12 + R08 — fit_scan 7/7, world_shots 86/86
   (кадры screens/world/ пересняты на B0.12).
+
+═══ 21. Финальная поставка R08 по П2 (16 окт, ~11:00 по Астане) ═══
+code_sha 840d62de (экраны и API — как в 1a1a4a9b, который в сборках R01 с B0.15; новое — только тестовый скрипт кадров
+  world_shots.cjs с LANG=ru_RU). На сборке R01 B0.19 как есть: pytest R08 306/1 skip, world_check 19/19, world_shots 86/86
+  (кадры screens/world/ финальные), board_entry_check 13/13, fit_scan 7/7, shell_check 28/28, glass_check 53/53 (телефонное
+  стекло 86 % — прежние 4 FAIL ушли), R10 consistency 16/0/0. Для FINAL-5 от R08 ничего не нужно, кроме code_sha.
