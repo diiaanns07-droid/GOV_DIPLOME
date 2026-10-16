@@ -17,12 +17,12 @@ restored_from: — (роль начата с нуля, прежней ветки
 - Потом: стенд R02 на кандидате FINAL-6 (17 окт 12:00), блокеры R10/R15 до 16:00, финальный STATUS к 18:00.
 
 ## НАБОР «ОБРАЩЕНИЯ ЗА НОЧЬ» ГОТОВ (для R04, R09, R10, R14 — П3; подробно INTEGRATION §12, паспорт INTAKE.md)
-- Тексты для экрана: data/civic/astana/demo-world/intake_night_v1.json — 301 текст (ru 133 · kk 85 · вперемешку 48 ·
+- Тексты (форма контракта R04 п. 9.4: texts + краткий gold): intake_night_v1.json — 301 текст (ru 133 · kk 85 · вперемешку 48 ·
   латиница 35, опечатки 28), id night-001…, время приёма — прошлая ночь (day_at), demo: true.
 - Эталон: intake_night_v1.gold.json — 115 групп (186 повторов склеить; самая большая — 40: нет отопления в ЖК Grand
   Champion), 8 срочных групп, 11 «двух служб», 18 без адреса; места — цели карты R12 (FINAL-5+), сцены не задеты.
 - Оценщик метрик П3: python3 -m ml.datasets.demo_intake_eval ответ.json; генератор: python3 -m ml.datasets.demo_intake.
-- Код 9816d0ea; тесты: tests/civic/R02/round15/test_r02r15_intake.py — 14 passed (FINAL-5.1), R02 целиком 380 passed.
+- Код fc3d8daa; тесты: tests/civic/R02/round15/test_r02r15_intake.py — 14 passed (FINAL-5.1), R02 целиком 380 passed.
 
 ## Раунд 15 закрыт по П2 (16 окт 2026, 16:00 по Астане; финальный STATUS — 16:24) — итог FINAL-5 / FINAL-5.1
 - Итог R02: демо-мир Астаны birge-demo-world-v1 (схема 1.1) — data/civic/astana/demo-world/world_v1.json, sha256
