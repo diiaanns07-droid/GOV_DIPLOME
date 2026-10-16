@@ -25,7 +25,7 @@
     "tests/civic/R07/browser/map_tools.cjs, tween_first_frame.cjs (новые); shots.js — места над шторкой на телефоне",
     "web/civic/replay/replay.js, replay.css (16 окт, шлифовка П2): полоса хроники поднимается над подписью карты «© OpenStreetMap contributors», если та под ней (--rp-bottom; .maplibregl-ctrl-attrib или [data-rp-attrib]); web/civic/heat/demo.html — data-rp-attrib у подписи стенда",
     "web/civic/heat/heat.css (16 окт, шлифовка П2): строка «период + район» — поля 6 px у кнопок периода, выбор района уходит на следующую строку, если не помещается (375 ru — подписи вплотную, 375 kk — строка за краем)",
-    "research/round-15-results/R07/patches/R12_registry_points_overview.patch, R01_map_point_min_zoom.patch (П3, 16 окт): точки реестра R12 на обзорном масштабе — опция pointMinZoom (R12) и pointMinZoom: 13 в оболочке (R01); пути R07 не менялись"
+    "research/round-15-results/R07/patches/R12_registry_points_overview.patch, R01_map_point_min_zoom.patch (П3, 16 окт): точки реестра R12 на обзорном масштабе — опция pointMinZoom (R12) и pointMinZoom: 13 в оболочке (R01); пути R07 не менялись — НЕ НУЖНЫ: R12 сделал своё решение a4e99b58"
   ],
   "tests": {
     "pytest tests/civic/R07": "PASS 210 passed, 1 skipped на d43dd650 (мира R02 нет в ветке)",
@@ -63,5 +63,5 @@
     "60 к/с при 1 000 целей не измерено: в облаке программный WebGL (сама карта 6–13 к/с); замер на ноутбуке — LOCAL",
     "Отмотка в прошлое не знает времени пометки дубля и голосов «не могу проверить» — на цвет и число не влияет"
   ],
-  "next_step": "П3 (раунд 15+ до FINAL-6): R12 берёт patch точек реестра (или своё решение), R01 — его и строку оболочки в FINAL-6 (кандидат 17 окт 12:00 Астаны); R07 проверяет кандидат FINAL-6; 12:00–16:00 — только блокеры; 17 окт 18:00 — финальные STATUS / DELIVERY. Код R07 — d43dd650 (в FINAL-5.1). LOCAL после раунда: 60 к/с при 1 000 целей, кадры с настоящей картой"
+  "next_step": "П3 (раунд 15+ до FINAL-6): кольца на обзоре — решены R12 a4e99b58 (patch R07 не нужны); R07 проверяет кандидат FINAL-6 (17 окт 12:00 Астаны): обзор, значки районов, хроника, часть 1; 12:00–16:00 — только блокеры; 17 окт 18:00 — финальные STATUS / DELIVERY. Код R07 — d43dd650 (в FINAL-5.1). LOCAL после раунда: 60 к/с при 1 000 целей, кадры с настоящей картой"
 }
