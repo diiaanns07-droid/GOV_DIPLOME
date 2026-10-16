@@ -582,5 +582,20 @@ function mapOverview(page) {
   });
 }
 
+// Шаблон без подстановки на экране: «Создать {n} задач» (ключ словаря с {n}, а экран числа не подставил) — виден жюри.
+function placeholders(page, sel = "body") {
+  return page.evaluate((s) => {
+    const root = document.querySelector(s) || document.body, out = [];
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let n = w.nextNode(); n && out.length < 6; n = w.nextNode()) {
+      const m = n.textContent.match(/\{[a-z_]{1,24}\}/i);
+      if (!m || n.parentElement.closest("code, pre, script, style, textarea")) continue;
+      const r = n.parentElement.getBoundingClientRect();
+      if (r.width > 1 && r.height > 1) out.push(n.textContent.trim().replace(/\s+/g, " ").slice(0, 50));
+    }
+    return out;
+  }, sel);
+}
+
 module.exports = { NOISE, TECH_WORDS, RAW_KEY, SAME_IN_BOTH, TAB_LIMIT, AUDIT_FONT_MIN, AUDIT_TAP_MIN, uiScreen, uiAudit, cyrLines, untranslated, focusToPrimary,
-  sheetMetrics, aiMark, mapHook, mapOverview };
+  sheetMetrics, aiMark, mapHook, mapOverview, placeholders };

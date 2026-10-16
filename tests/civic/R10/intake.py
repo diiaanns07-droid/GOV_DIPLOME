@@ -468,15 +468,27 @@ class IntakeCheck:
                 said = sum(1 for x in recs if isinstance(x, dict) and x.get("created"))
         self.facts["commit"] = {"tasks": len(ids), "records_before": before, "records_after": after, "said": said}
         placed = sum(1 for t in tasks if t.get("target") or t.get("point"))
-        ready = (analysis.get("summary") or {}).get("ready", placed)
-        self.ok("I7", "записей в «Обращениях» стало больше ровно на число задач с местом (ready)", made == ready == placed,
-                {"задач": len(ids), "с местом": placed, "summary.ready": ready, "новых записей": made}, "R04 + R09")
-        self.ok("I7", "commit называет то же число, что создано (его покажет тост «Создано N задач»)", said == made,
-                {"в ответе": said, "новых записей": made})
+        summ = analysis.get("summary") or {}
+        ready = summ.get("ready", placed)
+        # R04 INTEGRATION 9.7: задачи с местом (ready) = новые записи (created) + уже созданные этой пачкой (existing) +
+        # присоединённые «Я тоже» к ОТКРЫТОМУ обращению той же цели (joined_existing, summary.to_existing).
+        existing = int((data or {}).get("existing") or 0) if isinstance(data, dict) else 0
+        joined_ex = int((data or {}).get("joined_existing") or 0) if isinstance(data, dict) else 0
+        self.ok("I7", "записей в «Обращениях» стало больше ровно на created (его покажет тост «Создано N задач»)", said == made,
+                {"created": said, "новых записей": made}, "R04 + R09")
+        self.ok("I7", "created + existing + joined_existing = ready (задачи с местом)", (said or 0) + existing + joined_ex == ready == placed,
+                {"created": said, "existing": existing, "joined_existing": joined_ex, "summary.ready": ready, "задач с местом": placed,
+                 "summary.to_create": summ.get("to_create"), "summary.to_existing": summ.get("to_existing")}, "R04 + R09")
+        if "to_create" in summ:
+            self.ok("I7", "created = summary.to_create (число на кнопке «Создать задачи»)", said == summ.get("to_create"),
+                    {"created": said, "to_create": summ.get("to_create")}, "R04")
         r2 = self.staff.post(f"{V2}/intake/commit", {"batch_id": analysis.get("batch_id"), "task_ids": ids}, timeout=120)
         again, _ = self.count_records()
-        self.ok("I7", "повтор commit того же batch_id — без дублей", again == after and r2.status < 500,
-                {"status": r2.status, "записей было": after, "стало": again}, "R04 + R09")
+        d2 = unwrap(r2.body) if isinstance(r2.body, dict) else {}
+        c2 = d2.get("created") if isinstance(d2, dict) else None
+        self.ok("I7", "повтор commit того же batch_id — без дублей (записей столько же, created 0)", again == after and r2.status < 500
+                and (c2 in (0, None) or (isinstance(c2, list) and not c2)),
+                {"status": r2.status, "записей было": after, "стало": again, "created": c2}, "R04 + R09")
         new = [after_items[k] for k in after_items if k not in before_items]
         if new:
             src = sum(1 for x in new if SOURCE.search(json.dumps({k: v for k, v in x.items() if "source" in k or "origin" in k
@@ -486,7 +498,8 @@ class IntakeCheck:
             demo = sum(1 for x in new if x.get("demo") is True or x.get("synthetic") is True)
             self.ok("I7", "у созданных из примера — пометка demo", demo == len(new), {"новых": len(new), "demo": demo},
                     "R04 + R09", blocking=False)
-            placed_tasks = [t for t in tasks if t.get("target") or t.get("point")]
+            # к открытому обращению цели (existing, to_existing) люди задачи уходят «Я тоже» в старую запись, не в новую
+            placed_tasks = [t for t in tasks if (t.get("target") or t.get("point")) and not t.get("existing")]
             people_tasks = sum(int(t.get("people") or len(t.get("text_ids") or []) or 1) for t in placed_tasks)
             people_new = sum(int(x.get("reporters") or x.get("people") or 1 + int(x.get("metoo") or 0)) for x in new)
             self.facts["commit"]["people"] = {"в задачах с местом": people_tasks, "в новых записях": people_new}

@@ -13,7 +13,7 @@
 const { chromium } = require("playwright");
 const fs = require("fs"), path = require("path"), os = require("os");
 const L = require("./r10_lib.cjs");
-const { uiScreen, NOISE, sheetMetrics, aiMark, mapHook, mapOverview } = require("./ux_lib.cjs");
+const { uiScreen, NOISE, sheetMetrics, aiMark, mapHook, mapOverview, placeholders } = require("./ux_lib.cjs");
 const { sleep, T, esc, firstVisible } = L;
 
 const args = L.parseArgs(process.argv.slice(2));
@@ -283,7 +283,9 @@ async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, 
   const m = await screenMetrics(page, SEL);
   const own = sc.owner;
   add(sc.id, own, variant, "нет прокрутки вбок", q.scrollW <= q.innerW ? "PASS" : "FAIL", { scrollW: q.scrollW, w: q.innerW }, f);
-  add(sc.id, own, variant, "нет ключей перевода и технических слов", q.raw.length || q.tech.length ? "FAIL" : "PASS", { raw: q.raw.slice(0, 4), tech: q.tech.slice(0, 4) });
+  const ph = await placeholders(page, SEL).catch(() => []);
+  add(sc.id, own, variant, "нет ключей перевода, шаблонов без подстановки ({n}) и технических слов", q.raw.length || q.tech.length || ph.length ? "FAIL" : "PASS",
+    { raw: q.raw.slice(0, 4), tech: q.tech.slice(0, 4), ...(ph.length ? { placeholders: ph } : {}) });
   if (m) {
     const sizes = m.sizes.map(([s]) => s);
     const min = sizes.length ? sizes[0] : null;

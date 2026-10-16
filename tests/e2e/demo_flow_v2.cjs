@@ -18,7 +18,7 @@
 const { chromium } = require("playwright");
 const fs = require("fs"), path = require("path"), os = require("os");
 const L = require("./r10_lib.cjs");
-const { uiScreen, NOISE, aiMark } = require("./ux_lib.cjs");
+const { uiScreen, NOISE, aiMark, placeholders } = require("./ux_lib.cjs");
 const { sleep, T, esc, textRe, firstVisible } = L;
 
 const args = L.parseArgs(process.argv.slice(2));
@@ -777,6 +777,9 @@ async function scene0Flow(browser, base, [w, h], lang, staffAcc, timing) {
     add(layer, "0", "строка итога на экране = числа ответа (обращений, задач, служб, срочных, склеено)", !!line,
       { line, summary: { total: s.total, tasks: s.tasks, services: s.services, urgent: s.urgent, merged: s.merged, ready: s.ready } }, OWN, f);
     addSoft(layer, "0", `разбор с экрана ≤ 10 с (${s.total} текстов, облако; П3)`, tLine <= 10000 && tResp <= 10000, { response_ms: tResp, line_ms: tLine, summary_ms: s.ms }, OWN);
+    // Ведущий читает строку итога — рядом главная кнопка; шаблон без подстановки («Создать {n} задач») видит жюри.
+    const ph = await placeholders(page, SEL).catch(() => []);
+    add(layer, "0", "на экране нет шаблонов без подстановки ({n}, {services} …)", ph.length === 0, ph.length ? { found: ph } : null, OWN + " + R11", f);
     (timing["0"] = timing["0"] || []).push(tLine);
     // Задачи на экране: заголовки из ответа, срочные сверху.
     const tasks = Array.isArray(data.tasks) ? data.tasks : [];
@@ -785,17 +788,33 @@ async function scene0Flow(browser, base, [w, h], lang, staffAcc, timing) {
       const idx = titles.map((x) => txt.indexOf(x)); return idx; }, { sel: SEL, titles: tasks.map((x) => String(x[titleKey] || "").slice(0, 40)) }).catch(() => []);
     const shown = seen.filter((i) => i >= 0).length;
     addSoft(layer, "0", "задачи на экране — заголовки из ответа (все задачи)", tasks.length ? shown === tasks.length : null, { shown, tasks: tasks.length }, OWN);
-    const firstShown = seen.reduce((best, i, k) => (i >= 0 && (best === null || i < seen[best]) ? k : best), null);
-    if (tasks.some((x) => x.urgent)) addSoft(layer, "0", "срочные задачи — наверху списка", firstShown !== null ? !!tasks[firstShown].urgent : null,
-      { first: firstShown !== null ? tasks[firstShown][titleKey] : null }, OWN);
-    // «Почему так»
-    const why = await inRoot(/почему так|неге|неліктен|себебі/i);
-    if (why) {
-      await why.click({ timeout: 4000 }).catch(() => null); await sleep(600);
-      const opened = await page.evaluate((sel) => ((document.querySelector(sel) || {}).innerText || "").length, SEL).catch(() => 0);
-      addSoft(layer, "0", "«Почему так» раскрывает объяснение (службы, место, повторы)", opened > text0.length, { chars_before: text0.length, chars_after: opened }, OWN);
-    } else addSoft(layer, "0", "«Почему так» у задачи", false, "кнопки «Почему так» нет", OWN);
-    addSoft(layer, "0", "«Показать на карте» у задачи с местом", !!(await inRoot(/на карте|картада/i)), null, OWN);
+    // Срочные сверху: первая строка задачи (R04: .bi-task[data-task], .is-urgent) — срочная. Поиск заголовков по тексту
+    // экрана здесь не годится: короткое «Басқа» встречается и в заголовках групп.
+    const firstRow = await page.evaluate((sel) => { const r = document.querySelector(sel); const e = r && r.querySelector(".bi-task, [data-task]");
+      return e ? { id: e.getAttribute("data-task"), urgent: e.classList.contains("is-urgent") } : null; }, SEL).catch(() => null);
+    if (tasks.some((x) => x.urgent)) addSoft(layer, "0", "срочные задачи — наверху списка", firstRow ? firstRow.urgent || !!(tasks.find((x) => x.id === firstRow.id) || {}).urgent : null,
+      firstRow || "строк задач (.bi-task) нет", OWN);
+    // «Почему так»: строка задачи раскрывает объяснение (службы с меткой «ИИ», место, повторы) и «Показать на карте».
+    const rowBtn = await firstVisible(page.locator(SEL + " .bi-task .bi-row, " + SEL + " [data-task] button[aria-expanded]"));
+    if (rowBtn) {
+      await rowBtn.click({ timeout: 4000 }).catch(() => null); await sleep(700);
+      const why = await page.evaluate((sel) => { const r = document.querySelector(sel); const w = r && [...r.querySelectorAll(".bi-why, [id*=why]")].find((e) => !e.hidden && e.getClientRects().length);
+        return w ? (w.innerText || "").trim().replace(/\s+/g, " ").slice(0, 160) : null; }, SEL).catch(() => null);
+      const whyTitle = T(dict, "intake.why", lang === "kk" ? "Неге солай" : "Почему так");
+      addSoft(layer, "0", "строка задачи раскрывает «Почему так» (службы, место, повторы)", !!why && why.includes(whyTitle), { why }, OWN);
+      // В объяснении — данные задачи: название ведущей службы и место (у задачи с местом) — из ответа разбора.
+      const t0task = tasks.find((x) => x.id === (firstRow && firstRow.id)) || tasks[0] || {};
+      const svc0 = ((t0task.services || [])[0] || {})[lang === "kk" ? "name_kk" : "name_ru"] || "";
+      const place0 = t0task.target ? (t0task.target[lang === "kk" ? "label_kk" : "label_ru"] || "") : "";
+      const placeCore = place0.replace(/^(Двор|Остановка|Участок|Аула|Аялдама)[:\s]+/i, "").replace(/[«»"]/g, "").slice(0, 18);
+      addSoft(layer, "0", "«Почему так» называет службу и место задачи (данные ответа)", !!why && (!svc0 || why.includes(svc0)) && (!placeCore || why.replace(/[«»"]/g, "").includes(placeCore)),
+        { service: svc0, place: place0, why }, OWN + " + R11");
+      const mapRe = new RegExp(esc(T(dict, "common.action.show_on_map", lang === "kk" ? "Картадан көрсету" : "Показать на карте")), "i");
+      addSoft(layer, "0", "«Показать на карте» в объяснении задачи с местом", !!(await inRoot(mapRe)), null, OWN);
+      const am = await aiMark(page, lang === "kk" ? /Қызметтер:/ : /Службы:/, SEL).catch(() => null);
+      addSoft(layer, "0", "значок «ИИ» у служб в «Почему так» (П3)", am && am.hint ? !!am.mark : null, am || "строки «Службы:» нет", OWN + " + R11");
+      await shot("0-why");
+    } else addSoft(layer, "0", "строка задачи раскрывает «Почему так»", false, "строк задач с кнопкой нет", OWN);
     // П1 и UX экрана
     const p1 = await page.evaluate((sel) => { const root = document.querySelector(sel); if (!root) return null;
       const big = [...root.querySelectorAll("img, svg, canvas")].map((e) => e.getBoundingClientRect()).filter((r) => r.width > 48 && r.height > 48).length;
@@ -820,7 +839,7 @@ async function scene0Flow(browser, base, [w, h], lang, staffAcc, timing) {
       const cr = await cResp;
       let toast = null;
       for (let i = 0; i < 24 && !toast; i++) {
-        toast = await page.evaluate(() => { const re = /(создан[оаы]?|құрылды)/i;
+        toast = await page.evaluate(() => { const re = /(создан[оаы]?|уже создан|құрылды|жасалды|жасалған|қосылды)/i;
           for (const e of document.querySelectorAll("[role=status], [role=alert], .bk-toast, [class*=toast], [aria-live]")) {
             const txt = (e.innerText || "").trim(); if (txt && re.test(txt)) return txt.replace(/\s+/g, " ").slice(0, 120); }
           return null; }).catch(() => null);
@@ -830,8 +849,19 @@ async function scene0Flow(browser, base, [w, h], lang, staffAcc, timing) {
       const after = await count();
       const made = before !== null && after !== null ? after - before : null;
       const nToast = toast ? Number((toast.match(/\d+/) || [NaN])[0]) : NaN;
-      add(layer, "0", "тост «Создано N задач»: N = новых записей в «Обращениях» = summary.ready", toast !== null && made !== null && nToast === made && made === s.ready,
-        { toast, records_new: made, ready: s.ready, commit_status: cr && cr.status() }, OWN + " + R09", f);
+      // R04 INTEGRATION 9.7: новые записи = created; created + existing + joined_existing = ready (часть задач — «Я тоже» к уже
+      // открытому обращению той же цели). Тост называет created; присоединённые — отдельной строкой.
+      let cj = null;
+      try { const b = cr ? await cr.json() : null; cj = b && b.ok !== undefined && b.data ? b.data : b; } catch (e) { cj = null; }
+      const created = cj ? (Array.isArray(cj.created) ? cj.created.length : cj.created) : null;
+      const joinedEx = cj ? Number(cj.joined_existing || 0) + Number(cj.existing || 0) : 0;
+      // Тост: «Создано N задач» (N = created); тот же пример второй раз — «Эти N задач уже созданы» (N = existing, created 0).
+      const existingN = cj ? Number(cj.existing || 0) : 0, joinedN = cj ? Number(cj.joined_existing || 0) : 0;
+      const wantToast = created ? created : existingN ? existingN : joinedN;
+      add(layer, "0", "«Создать задачи»: новых записей в «Обращениях» = created ответа; тост называет то же число", toast !== null && made !== null && made === created && nToast === wantToast,
+        { toast, records_new: made, created, existing: existingN, joined_existing: joinedN, commit_status: cr && cr.status() }, OWN + " + R09", f);
+      add(layer, "0", "created + присоединённые = summary.ready (задачи с местом)", created !== null && created + joinedEx === s.ready,
+        { created, joined_or_existing: joinedEx, ready: s.ready, to_create: s.to_create, to_existing: s.to_existing }, OWN);
       addSoft(layer, "0", "в тосте — ссылка в «Обращения»", !!(await firstVisible(page.getByRole("link", { name: /обращени|өтініш/i }))) ||
         !!(await firstVisible(page.getByRole("button", { name: /обращени|өтініш/i }))), null, OWN);
     }
