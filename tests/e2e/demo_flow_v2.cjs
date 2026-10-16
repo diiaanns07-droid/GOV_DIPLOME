@@ -2,7 +2,7 @@
 // с П3 (16 окт) — и сцена 0 «ИИ-разбор пачки обращений» (R04, #intake; --no-scene0 — без неё).
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/demo_flow_v2.cjs --root <папка сборки> --out <папка>
-//        [--sizes 1366x768,1024x768,375x812] [--langs ru,kk] [--no-world] [--api-only]
+//        [--sizes 1366x768,1024x768,375x812] [--langs ru,kk] [--no-world] [--api-only] [--no-scene0 | --scene0-only]
 //
 // Часть 1 (шаги 1–7 FINAL-4) проверяет demo_flow.cjs — его запускать отдельно (регресс).
 // Сервер сборки — как run-city.bat демо-мира: CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 (единый демо-мир R02, CONTRACT §11),
@@ -864,11 +864,13 @@ async function scene0Flow(browser, base, [w, h], lang, staffAcc, timing) {
   const timing = { api: {}, ui: {} };
   try {
     marks.api = Date.now();
-    await apiFlow(A, S && !S.error ? S : null, staff, timing.api);
+    // --scene0-only: только сцена 0 (П3) и палитра режима показа — проба поставок R04 / R01 до сборки.
+    const only0 = !!args["scene0-only"];
+    if (!only0) await apiFlow(A, S && !S.error ? S : null, staff, timing.api);
     if (!args["api-only"]) {
       const browser = await chromium.launch();
-      for (const size of SIZES) for (const lang of LANGS) await uiFlow(browser, srv.base, size, lang, S && !S.error ? S : null, srv.staff, timing.ui);
-      for (const lang of LANGS) await boardCheck(browser, srv.base, lang, srv.staff);
+      if (!only0) for (const size of SIZES) for (const lang of LANGS) await uiFlow(browser, srv.base, size, lang, S && !S.error ? S : null, srv.staff, timing.ui);
+      if (!only0) for (const lang of LANGS) await boardCheck(browser, srv.base, lang, srv.staff);
       for (const lang of LANGS) await showCheck(browser, srv.base, lang, srv.staff);
       if (!args["no-scene0"]) for (const size of SIZES) for (const lang of LANGS) await scene0Flow(browser, srv.base, size, lang, srv.staff, timing.ui);
       await browser.close();
