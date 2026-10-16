@@ -1,0 +1,44 @@
+diff --git a/ui/civic_ml_api/moderation.py b/ui/civic_ml_api/moderation.py
+index 4959b233..8cd02d3a 100644
+--- a/ui/civic_ml_api/moderation.py
++++ b/ui/civic_ml_api/moderation.py
+@@ -186,6 +186,7 @@ def _classify_run(raw: str, labeled: bool = False) -> str | None:
+ 
+ 
+ _RUN_GROUP = re.compile(r"\+?\d+")
++_RUN_MAX_DIGITS = 19   # телефон, ИИН и карта не длиннее 19 цифр: отрезок длиннее _classify_run всё равно отвергнет
+ 
+ 
+ def _split_run(text: str, start: int, end: int, labeled: bool) -> list[tuple[int, int, str]]:
+@@ -210,12 +211,27 @@ def _split_run(text: str, start: int, end: int, labeled: bool) -> list[tuple[int
+     if len(ascii_digits(raw)) <= 19:
+         return out
+     groups = [(m.start() + start, m.end() + start) for m in _RUN_GROUP.finditer(raw)]
++    size = [len(ascii_digits(text[a:b])) for a, b in groups]
++    # R15-S53: окно — не больше _RUN_MAX_DIGITS цифр, а «есть ли в окне группа длиннее 2 цифр» — по next_long за O(1).
++    # Без этого перебор всех отрезков цепочки — O(n³): «8 8 8 …» на 5000 знаков — минуты на один POST /moderate.
++    next_long = [len(groups)] * (len(groups) + 1)
++    for k in range(len(groups) - 1, -1, -1):
++        next_long[k] = k if groups[k][1] - groups[k][0] > 2 else next_long[k + 1]
++    prefix = [0]
++    for n in size:
++        prefix.append(prefix[-1] + n)
+     taken = [False] * len(groups)
+-    for wanted in (("phone",), ("iin", "card")):        # сначала телефоны: «8 701 … 8 701 …» — два номера, не карта
+-        i = 0
++    # Длины, которые _classify_run принимает: телефон 6/7/10/11 цифр, ИИН 12, карта 13–19 — другие окна не проверяем.
++    for wanted, lengths in ((("phone",), {6, 7, 10, 11}), (("iin", "card"), set(range(12, _RUN_MAX_DIGITS + 1)))):
++        i = 0                                           # сначала телефоны: «8 701 … 8 701 …» — два номера, не карта
+         while i < len(groups):
+-            for j in range(len(groups), i, -1):
+-                if (i == 0 and j == len(groups)) or any(taken[i:j]) or all(b - a <= 2 for a, b in groups[i:j]):
++            top, digits = i, 0
++            while top < len(groups) and digits + size[top] <= _RUN_MAX_DIGITS:
++                digits += size[top]
++                top += 1
++            for j in range(top, i, -1):
++                if (prefix[j] - prefix[i] not in lengths or (i == 0 and j == len(groups)) or next_long[i] >= j
++                        or any(taken[i:j])):
+                     continue
+                 kind = _classify_run(text[groups[i][0]:groups[j - 1][1]], labeled=labeled)
+                 if kind in wanted:

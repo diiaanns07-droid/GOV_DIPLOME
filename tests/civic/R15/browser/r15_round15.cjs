@@ -211,6 +211,10 @@ async function main() {
         const create = root.locator("button").filter({ hasText: /Создать|Құру/i }).first();
         if (await create.count()) { await create.click(); await sleep(1500); }
       }
+      // Тексты жителей, «почему так» и срочность R04 показывает в свёрнутых строках задач — раскрыть все (до 16).
+      const folded = root.locator('[aria-expanded="false"]');
+      for (let i = 0; i < 16 && (await folded.count()); i++) { await folded.first().click().catch(() => null); await sleep(200); }
+      await sleep(600);
     };
     await step(page, "akimat-1366 intake fake-api all fields", () => intakeStep(true));
     await step(page, "akimat-1366 intake pasted lines", () => intakeStep(false));

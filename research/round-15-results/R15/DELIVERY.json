@@ -474,9 +474,17 @@
    "status": "исправлено: R04 0d4bb1b6 (r04-moderate-3); в сборке R01 B0.12 0121f7bd — FIXED, регрессия",
    "patch": "описание и вариант правки — INTEGRATION.txt, наблюдение круга 10",
    "what": "moderate-2: номер с возрастающими группами по 1–2 цифры («8 70 71 72 73 74») не скрывался без подписи"
+  },
+  "S53": {
+   "owner": "R04",
+   "level": "высокий",
+   "status": "ОТКРЫТА (круг 27, 16 окт 18:55): регрессия в ветке R04 dce9427b (moderate-4, a2e004c9; D2 38caaaaa); в сборках FINAL-5 / FINAL-5.1 / R01 B6.0 — moderate-3, проблемы нет. R01: не брать D2 в FINAL-6 без исправления",
+   "patch": "patches/P-R04-S53.diff (git apply на dce9427b — чисто; 4000 случайных текстов — ответы те же)",
+   "what": "доступность: _split_run перебирает все отрезки длинной цепочки цифр — O(n³); анонимный POST /moderate «123 …» 1200 знаков — 12,7 с процессора, 5000 — десятки минут; 8 запросов — /api/health ×180",
+   "tests": "test_moderate_is_fast_on_hostile_text[digit-space|digit-groups|phone-chain|short-long], test_large_batch_is_still_fast[hostile] — обычные (падение = регрессия)"
   }
  },
- "high_open": 0,
+ "high_open": 1,
  "screens": [
   "research/round-15-results/R15/browser/akimat_1366_agencies_crisis.png",
   "research/round-15-results/R15/browser/akimat_1366_analyst_question.png",
@@ -522,7 +530,14 @@
   "tests": "tests/civic/R15/round15/test_r15_round15_intake.py — 32 теста; + test_r15_round15_gateway.py: intake/* в CONTRACT_STAFF, test_wider_body_limit_stays_on_staff_intake",
   "validated_on": "фейк R15 по контракту п. 9 на дереве FINAL-5 c2276360 (scratch, не в Git): верный 32/32 passed; с дырами — 17 failed (каждая дыра ловится отдельно)",
   "on_FINAL5": "c2276360: 32 NOT_RUN (функций intake ещё нет); test_wider_body_limit_stays_on_staff_intake — passed",
-  "status": "ждём код R04 (срок 17 окт 11:00)",
-  "browser": "r15_round15.cjs: шаги «intake fake-api all fields» и «intake pasted lines»; на поддельном экране textContent — PASS, innerHTML — FAIL; FINAL-5 c2276360 — 8 PASS / 0 FAIL / 3 NOT_RUN (экрана intake нет)"
- }
+  "status": "код R04 dce9427b проверен: intake 36/36, браузер 2 шага PASS; S53 (moderate-4) — открыта, patch у R04 и R01; ждём исправления в ветке R04 и кандидата FINAL-6 (17 окт 12:00)",
+  "browser": "r15_round15.cjs: шаги «intake fake-api all fields» и «intake pasted lines»; на поддельном экране textContent — PASS, innerHTML — FAIL; FINAL-5 c2276360 — 8 PASS / 0 FAIL / 3 NOT_RUN (экрана intake нет)",
+  "tested_R04": {
+   "sha": "dce9427b",
+   "intake_tests": "36 passed",
+   "moderate_tests": "4 failed (S53) / с patch — 62+ passed",
+   "browser": "intake fake-api all fields PASS (9 видны текстом, 0 вставлено); intake pasted lines PASS"
+  }
+ },
+ "high_open_note": "S53 — только в ветке R04 (не в сборке); блокер для FINAL-6, если D2 возьмут без исправления"
 }

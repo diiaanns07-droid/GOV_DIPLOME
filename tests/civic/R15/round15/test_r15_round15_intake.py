@@ -35,6 +35,7 @@ import time
 import pytest
 
 from r15_round15 import CARD, CARD_SPACED, IIN, XSS, data, dump, module, not_run
+from r15_round15 import context as gateway_context, staff_principal
 
 PHONE = "+7 701 123 45 67"
 EMAIL = "r15.resident@mail.kz"
@@ -70,18 +71,20 @@ def _fn(name: str):
 
 
 def _via_body(fn):
-    """Вызов, как у шлюза (п. 9.2: arguments() передаёт тело целиком, body=…); без параметра body — по именам полей."""
+    """Вызов, как у шлюза (п. 9.2: arguments() передаёт тело целиком, body=…); без параметра body — по именам полей.
+    extra — именованные параметры шлюза (context, principal), если функция их объявила."""
     params = inspect.signature(fn).parameters
 
-    def call(body):
+    def call(body, **extra):
+        extra = {key: value for key, value in extra.items() if key in params}
         if "body" in params:
-            kwargs = {"body": body}
+            kwargs = {"body": body, **extra}
             for name, param in params.items():
-                if (name != "body" and param.default is inspect.Parameter.empty
+                if (name not in kwargs and param.default is inspect.Parameter.empty
                         and param.kind in (param.POSITIONAL_OR_KEYWORD, param.KEYWORD_ONLY)):
                     kwargs[name] = body.get(name) if isinstance(body, dict) else None
             return fn(**kwargs)
-        return fn(**{key: value for key, value in (body or {}).items() if key in params})
+        return fn(**{key: value for key, value in (body or {}).items() if key in params}, **extra)
     return call
 
 
@@ -329,14 +332,23 @@ def test_tasks_carry_no_ready_markup(run):
     assert not [key for key in result if "html" in str(key).lower()], list(result)
 
 
-HOSTILE = (["8 " * 450, "@" * 900, "(" * 900, "a." * 450] * 72)[:290]    # ≈ 261 КБ — в пределах П3
+# С буквами: строку из одних цифр route() отвергает (400 на всю пачку) раньше, чем её разберёт moderate() — враждебная
+# часть должна дойти до модерации (S53: цепочки цифр). ≈ 870 знаков на текст, 290 текстов ≈ 270 КБ — в пределах П3.
+HOSTILE = ([f"Яма на дороге, {tail}" for tail in ("8 " * 420, "@" * 840, "(" * 840, "a." * 420, "123 " * 210)] * 58)[:290]
 SAME_PLACE = [f"Яма на дороге на улице Кенесары у дома {i}, " + "колёса бьём каждый день, " * 8 for i in range(500)]
 
 
-@pytest.mark.parametrize("name,texts", [("hostile", HOSTILE), ("same-place-500", SAME_PLACE)])
+@pytest.mark.parametrize("name,texts", [("hostile", HOSTILE), ("same-place-500", SAME_PLACE)],
+                         ids=["hostile", "same-place-500"])
 def test_large_batch_is_still_fast(run, name, texts):
-    """T-R04-28: 260 КБ враждебного текста (цифры через пробел, «@», скобки) и 500 похожих обращений об одном месте
-    (повторы попарно) не занимают сервер надолго; отказ по пределу — тоже ответ."""
+    """T-R04-28, S53: 270 КБ враждебного текста (цифры через пробел, группы цифр, «@», скобки) и 500 похожих обращений
+    об одном месте (повторы попарно) не занимают сервер надолго; отказ по пределу — тоже ответ. Сначала — каждый вид
+    текста по одному на 600 знаках (< 0,5 с): медленный разбор падает за секунды, а не держит pytest часами."""
+    for text in dict.fromkeys(texts[:5]):
+        started = time.perf_counter()
+        _gateway(lambda t=text: run({"texts": [t[:600]]}))
+        spent = time.perf_counter() - started
+        assert spent < 0.5, f"{name}: один текст «{text[:24]}…» на 600 знаков — {spent:.1f} с"
     gc.collect()
     started = time.perf_counter()
     status, reply = _gateway(lambda: run({"texts": texts}))
@@ -403,9 +415,10 @@ def test_commit_with_unknown_batch_or_bad_fields_is_refused(commit, store):
     assert _count(db_path) == 0, "отказной commit создал жалобы"
 
 
-def test_commit_creates_demo_records_once_without_personal_data(run, commit, store):
-    """T-R04-25/29: commit пишет только функцией R09 — жалобы demo и без ПДн; задача не из пачки и задача без места
-    не создаются; повтор того же batch_id не создаёт новых жалоб (request_id «in-<batch>-<n>»)."""
+def test_commit_creates_records_once_without_personal_data(run, commit, store):
+    """T-R04-25/29: commit пишет только функциями R09 — жалобы без ПДн; задача не из пачки и задача без места не
+    создаются; повтор того же batch_id не создаёт новых жалоб. Вставленные сотрудником тексты — настоящие обращения
+    (demo по П3 — только у примера, тест ниже)."""
     st, db_path = store
     analysis = _ok(_gateway(lambda: run({"texts": PII_TEXTS})))
     batch = analysis.get("batch_id")
@@ -433,8 +446,41 @@ def test_commit_creates_demo_records_once_without_personal_data(run, commit, sto
     for complaint_id in created:
         record = st.get(complaint_id)
         assert record is not None, complaint_id
-        assert record.get("demo") is True, f"{complaint_id}: жалоба из разбора не demo"
         assert not _pii_in(record), f"{complaint_id}: ПДн в жалобе: {_pii_in(record)[:3]}"
     status, second = _gateway(lambda: commit({"batch_id": batch, "task_ids": task_ids}))
     assert status in (200, 201, 409), (status, str(second)[:200])
     assert _count(db_path) == after, f"повторный commit того же batch_id создал {_count(db_path) - after} жалоб"
+
+
+def test_sample_commit_records_are_demo(run, commit, store):
+    """T-R04-26 (П3: «у примера demo: true»): жалобы из примера «за ночь» — demo, в настоящие данные не попадают."""
+    st, db_path = store
+    analysis = _ok(_gateway(lambda: run({"sample": "night"})))
+    if not analysis.get("batch_id"):
+        not_run("ответ разбора примера без batch_id")
+    status, reply = _gateway(lambda: commit({"batch_id": analysis["batch_id"],
+                                              "task_ids": [task["id"] for task in analysis["tasks"]]}))
+    if status == 503:
+        not_run("intake_commit: 503 — хранилище R09 не подключено")
+    assert status in (200, 201), (status, str(reply)[:200])
+    created = [r.get("complaint_id") for r in data(reply).get("records") or [] if isinstance(r, dict) and r.get("complaint_id")]
+    assert created and _count(db_path) >= 1, f"commit примера не создал жалоб: {str(reply)[:200]}"
+    not_demo = [cid for cid in created if (st.get(cid) or {}).get("demo") is not True]
+    assert not not_demo, f"жалобы из примера «за ночь» не demo: {not_demo[:3]}"
+
+
+@pytest.mark.parametrize("name,body", [("intake_analyze", {"texts": ["Яма на дороге на улице Кенесары"]}),
+                                       ("intake_sample", {}), ("intake_commit", {"batch_id": "b-r15-unknown-0001"})],
+                         ids=["analyze", "sample", "commit"])
+def test_functions_refuse_gateway_call_without_staff(name, body):
+    """T-R04-20, защита в глубину (контракт R04 п. 9.1: «context без principal -> PermissionError»): если шлюз однажды
+    забудет staff=True, функция сама не отвечает не-сотруднику."""
+    fn = _fn(name)
+    params = inspect.signature(fn).parameters
+    if "context" not in params or "principal" not in params:
+        not_run(f"{name} не принимает context/principal — сотрудника проверяет только шлюз (staff=True)")
+    status, reply = _gateway(lambda: _via_body(fn)(body, context=gateway_context(method="POST"), principal=None))
+    assert status in (401, 403), (name, status, str(reply)[:200])
+    status, reply = _gateway(lambda: _via_body(fn)(body, context=gateway_context(method="POST"),
+                                                   principal=staff_principal()))
+    assert status not in (401, 403, 500), f"{name}: сотрудник с сессией получил {status} {str(reply)[:200]}"
