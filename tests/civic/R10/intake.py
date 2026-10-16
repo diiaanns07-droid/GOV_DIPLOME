@@ -17,6 +17,9 @@ POST intake/commit {batch_id, task_ids} — только сотрудник (с�
   I6. пределы: 501 текст и тело > 300 КБ — понятная ошибка 4xx, не 500 и не обрыв;
   I7. «Создать задачи»: записей в «Обращениях» R09 стало больше ровно на число задач, commit называет то же число;
       повтор того же batch_id — без дублей; у созданных — источник «разбор пачки», у примера — пометка demo.
+  Оценка (справка, не PASS / FAIL): если в сборке есть эталон R02 (data/civic/astana/demo-world/intake_night_v1.gold.json)
+  и его оценщик ml/datasets/demo_intake_eval.py — R10 сам прогоняет оценщик на ответе разбора примера (независимый
+  повтор чисел R04 для FACTS R14; набор синтетический).
 Код возврата 1 при FAIL с blocking.
 """
 from __future__ import annotations
@@ -25,13 +28,14 @@ import argparse
 import json
 import re
 import secrets
+import subprocess
 import sys
 import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from api_v2 import ASTANA, CYR, SERVICES, privacy_issues, understandable, unwrap  # noqa: E402
-from stand import Stand  # noqa: E402
+from stand import PY, Stand  # noqa: E402
 
 V2 = "/api/civic/v2"
 HERE = Path(__file__).resolve().parent
@@ -143,10 +147,6 @@ def summary_consistency(analysis: dict, total_in: int | None) -> list[tuple[str,
     if "ready" in s:
         rows.append(("итог: ready (будет создано записей) = задач с местом", s.get("ready") == with_place,
                      {"summary.ready": s.get("ready"), "задач с местом": with_place}, True))
-    groups_list = analysis.get("services")
-    if isinstance(groups_list, list):
-        rows.append(("итог: служб = групп служб в ответе (services[])", s.get("services") == len(groups_list),
-                     {"summary.services": s.get("services"), "групп": len(groups_list)}, False))
     if total_in is not None:
         rows.append(("итог: обращений = число текстов на входе", s.get("total") == total_in,
                      {"summary.total": s.get("total"), "текстов на входе": total_in,
@@ -343,7 +343,28 @@ class IntakeCheck:
                 {"одинаковых": kk_same, "задач": len(tasks)}, "R04 + R11", blocking=False)
         leak = privacy_issues({"tasks": tasks})
         self.ok("I4", "в итоге нет телефонов, ИИН, e-mail, устройств", not leak, {"нашлось": leak[:4]}, "R04 + R15", blocking=False)
+        groups = data.get("services")
+        if isinstance(groups, list) and isinstance(s.get("services"), int) and s["services"] != len(groups):
+            self.facts["services_note"] = {"summary.services": s["services"], "групп по ведущей службе": len(groups)}
+        self.evaluate(data)
         return data
+
+    # --- оценка R02 (справка)
+    def evaluate(self, data):
+        root = self.s.root
+        gold = root / "data/civic/astana/demo-world/intake_night_v1.gold.json"
+        scorer = root / "ml/datasets/demo_intake_eval.py"
+        if not (gold.exists() and scorer.exists()):
+            self.facts["eval_r02"] = {"нет": "эталона или оценщика R02 нет в сборке"}
+            return
+        answer = Path(self.s.tmp) / "intake_answer.json"
+        answer.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        done = subprocess.run([PY, "-B", "-m", "ml.datasets.demo_intake_eval", str(answer), "--json"], cwd=root,
+                              capture_output=True, text=True, timeout=300)
+        try:
+            self.facts["eval_r02"] = json.loads(done.stdout.strip().splitlines()[-1])
+        except (ValueError, IndexError):
+            self.facts["eval_r02"] = {"ошибка": (done.stderr or done.stdout)[-300:]}
 
     # --- I5 свои тексты и вставка
     def own_texts(self):
@@ -498,6 +519,23 @@ def to_markdown(result, label=""):
                   f"{a.get('wall_ms')} мс (summary.ms {s.get('ms')})", ""]
     if f.get("commit"):
         lines += [f"«Создать задачи»: {json.dumps(f['commit'], ensure_ascii=False)}", ""]
+    e = f.get("eval_r02") or {}
+    if e.get("services"):
+        sv, d, pl, u = e["services"], e["duplicates"], e["places"], e["urgent"]
+        lines += ["Оценка на эталоне R02 (оценщик R02 ml/datasets/demo_intake_eval, прогон R10; набор синтетический):", "",
+                  f"- задач {e['tasks']} при {e['gold_groups']} группах эталона; служба: ведущая {sv['lead_accuracy']}, весь набор "
+                  f"{sv['exact_set']}, «две службы» полнота {sv['two_services_recall']} / точность {sv['two_services_precision']}",
+                  f"- повторы попарно: точность {d['pairwise_precision']}, полнота {d['pairwise_recall']}, F1 {d['pairwise_f1']}; "
+                  f"групп собрано точно {d['groups_exact']} из {d['groups_with_repeats']}",
+                  f"- места: найдено {pl['found_share']} из {pl['with_place']}; без адреса — «уточнить» {pl['no_address_abstained']} "
+                  f"из {pl['without_place']}",
+                  f"- срочные: полнота по текстам {u['recall_texts']}, по группам {u['recall_groups']} ({u['gold_groups']}), "
+                  f"точность {u['precision_texts']}; время {e.get('time_ms')} мс", ""]
+    elif e:
+        lines += [f"Оценка на эталоне R02: {json.dumps(e, ensure_ascii=False)}", ""]
+    if f.get("services_note"):
+        lines += [f"Заметка (не FAIL): {json.dumps(f['services_note'], ensure_ascii=False)} — на экране «N служб» и групп служб "
+                  "разное число (summary.services считает и вторые службы).", ""]
     lines += ["| Статус | Раздел | Проверка | Подробно | Владелец | Ломает показ |", "|---|---|---|---|---|---|"]
     for r in result["rows"]:
         detail = json.dumps(r["detail"], ensure_ascii=False)[:180] if r["detail"] else ""
