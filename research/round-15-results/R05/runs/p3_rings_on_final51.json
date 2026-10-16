@@ -1,0 +1,322 @@
+{
+ "what": "П3: чьи кольца в центре города на обзорном масштабе (кадры R14 review_final51 02 / 08)",
+ "stand": "R01 FINAL-5.1 e8d6cae6 как есть, ?show=1, демо-мир (CIVIC_DEMO_WORLD=1), облако без подложки",
+ "at": "2026-10-16T12:40Z",
+ "views": {
+  "1366": {
+   "mode": "akimat",
+   "zoom": 10.37,
+   "rendered_point_features": [
+    {
+     "layer": "civic-r03-point",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      848,
+      248
+     ],
+     "cid": "demo-astana-construction-unknown",
+     "title": "Демо: строительство с неизвестным статусом",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      884,
+      284
+     ],
+     "cid": "demo-astana-event-weekend",
+     "title": "Демо: городское мероприятие на выходных",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      892,
+      262
+     ],
+     "cid": "demo-astana-roadworks-cancelled",
+     "title": "Демо: отменённое перекрытие проезда",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-synthetic",
+     "type": "symbol",
+     "source": "civic-r03-objects",
+     "screen": [
+      884,
+      284
+     ],
+     "cid": "demo-astana-event-weekend",
+     "title": "Демо: городское мероприятие на выходных",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-synthetic",
+     "type": "symbol",
+     "source": "civic-r03-objects",
+     "screen": [
+      892,
+      262
+     ],
+     "cid": "demo-astana-roadworks-cancelled",
+     "title": "Демо: отменённое перекрытие проезда",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-synthetic",
+     "type": "symbol",
+     "source": "civic-r03-objects",
+     "screen": [
+      848,
+      248
+     ],
+     "cid": "demo-astana-construction-unknown",
+     "title": "Демо: строительство с неизвестным статусом",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-halo",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      848,
+      248
+     ],
+     "cid": "demo-astana-construction-unknown",
+     "title": "Демо: строительство с неизвестным статусом",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-halo",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      884,
+      284
+     ],
+     "cid": "demo-astana-event-weekend",
+     "title": "Демо: городское мероприятие на выходных",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-halo",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      892,
+      262
+     ],
+     "cid": "demo-astana-roadworks-cancelled",
+     "title": "Демо: отменённое перекрытие проезда",
+     "exact": false,
+     "synthetic": true
+    }
+   ],
+   "html_markers": [
+    "r07-badge Нура · 96",
+    "r07-badge Сарайшык · 30",
+    "r07-badge Есиль · 33",
+    "r07-badge Сарыарка · 20",
+    "r07-badge Алматы · 17",
+    "r07-badge Байконур · 12"
+   ],
+   "r05_elements": [
+    {
+     "box": [
+      0,
+      0,
+      1366,
+      768
+     ],
+     "cls": "div.b3d-labels.b3d-labels--projects-off"
+    }
+   ]
+  },
+  "375": {
+   "mode": "resident",
+   "zoom": 9,
+   "rendered_point_features": [
+    {
+     "layer": "civic-r03-point",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      136,
+      79
+     ],
+     "cid": "demo-astana-construction-unknown",
+     "title": "Демо: строительство с неизвестным статусом",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      150,
+      93
+     ],
+     "cid": "demo-astana-event-weekend",
+     "title": "Демо: городское мероприятие на выходных",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      153,
+      85
+     ],
+     "cid": "demo-astana-roadworks-cancelled",
+     "title": "Демо: отменённое перекрытие проезда",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-synthetic",
+     "type": "symbol",
+     "source": "civic-r03-objects",
+     "screen": [
+      150,
+      93
+     ],
+     "cid": "demo-astana-event-weekend",
+     "title": "Демо: городское мероприятие на выходных",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-synthetic",
+     "type": "symbol",
+     "source": "civic-r03-objects",
+     "screen": [
+      153,
+      85
+     ],
+     "cid": "demo-astana-roadworks-cancelled",
+     "title": "Демо: отменённое перекрытие проезда",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-synthetic",
+     "type": "symbol",
+     "source": "civic-r03-objects",
+     "screen": [
+      136,
+      79
+     ],
+     "cid": "demo-astana-construction-unknown",
+     "title": "Демо: строительство с неизвестным статусом",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-halo",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      136,
+      79
+     ],
+     "cid": "demo-astana-construction-unknown",
+     "title": "Демо: строительство с неизвестным статусом",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-halo",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      150,
+      93
+     ],
+     "cid": "demo-astana-event-weekend",
+     "title": "Демо: городское мероприятие на выходных",
+     "exact": false,
+     "synthetic": true
+    },
+    {
+     "layer": "civic-r03-point-halo",
+     "type": "circle",
+     "source": "civic-r03-objects",
+     "screen": [
+      153,
+      85
+     ],
+     "cid": "demo-astana-roadworks-cancelled",
+     "title": "Демо: отменённое перекрытие проезда",
+     "exact": false,
+     "synthetic": true
+    }
+   ],
+   "html_markers": [
+    "r07-badge Нура · 96",
+    "r07-badge Сарайшык · 30",
+    "r07-badge Есиль · 33"
+   ],
+   "r05_elements": [
+    {
+     "box": [
+      0,
+      0,
+      375,
+      812
+     ],
+     "cls": "div.b3d-labels.b3d-labels--projects-off"
+    }
+   ]
+  }
+ },
+ "r05_projects_layer_on_1366": {
+  "zoom": 10.37,
+  "labels": [
+   {
+    "cls": "b3d-label b3d-label--dot",
+    "box": {
+     "x": 856,
+     "y": 447,
+     "w": 34,
+     "h": 34
+    }
+   },
+   {
+    "cls": "b3d-label b3d-label--dot",
+    "box": {
+     "x": 826,
+     "y": 149,
+     "w": 34,
+     "h": 34
+    }
+   },
+   {
+    "cls": "b3d-label b3d-label--dot b3d-label--cluster",
+    "box": {
+     "x": 727,
+     "y": 335,
+     "w": 37,
+     "h": 34
+    }
+   }
+  ],
+  "overlaps_with_r07_badges_or_rings": []
+ },
+ "verdict": "кольца — слои R12 web/civic/map/civic-map.js (civic-r03-point / -point-halo / -point-synthetic), 3 демо-объекта с exact:false; R05 на этом виде ничего не рисует"
+}
