@@ -6,8 +6,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
- "code_sha": "2fe5a53bb2f9ba881eb9e3ec2249d6d212ac6cde",
- "tested_sha": "2fe5a53bb2f9ba881eb9e3ec2249d6d212ac6cde",
+ "code_sha": "09b9659eb1a076b5cd2bbef9f7931f334428c314",
+ "tested_sha": "09b9659eb1a076b5cd2bbef9f7931f334428c314",
  "push_status": "OK",
  "changed_paths": [
   "agent/civic_assistant/analyst/__init__.py",
@@ -106,11 +106,11 @@
   },
   "browser_stand_checks": {
    "status": "PASS",
-   "passed": 130,
+   "passed": 136,
    "failed": 0,
    "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_screens.cjs --url http://127.0.0.1:8670",
    "env": "Chromium (Playwright), стенд analyst_devserver.py, 1366/1024/375 × ru/kk, проверки П1 и метрики аудита R10 (≤ 3 размеров шрифта на пустом экране, зоны нажатия ≥ 44 px, видимая надпись скелетона)",
-   "note": "+4 (233ce8a8): строка конфликта называет улицу, вид — подписью; строка — кнопка; с R12 открывает свой конфликт (openConflict), без R12 — вкладку #agencies/calendar"
+   "note": "+4 (233ce8a8): строка конфликта называет улицу, вид — подписью; строка — кнопка; с R12 открывает свой конфликт (openConflict), без R12 — вкладку #agencies/calendar; +6 (09b9659e, П3): значок «ИИ» у ответа — подсказка ru / kk, значок набора, ≤ 16 px (1366 / 1024 / 375 × ru / kk)"
   },
   "browser_shell_integration": {
    "status": "PASS",
@@ -332,6 +332,22 @@
     "ветка R03: tests/civic/R03/round15 — 99 passed, 1 skipped"
    ],
    "fix": "F.neighbour_defaults(): на время модулей R03 сбросить общий сервис карты R07 и «Картины дня» R08 (default_service соберёт заново), кэши R08, записи и сервис R17; после — вернуть как было"
+  },
+  "shell_ai_mark": {
+   "status": "PASS",
+   "env": "копия ветки R01 fbdef66b (FINAL-5.1 + STATUS П3) + web/civic/assistant 09b9659e, мир R02, вход operator",
+   "checks": [
+    "1366 ru «Какие службы отстают?» / 375 kk «Қай қызметтер артта қалып жатыр?»: значок «ИИ» / «ЖИ» в верхней строке ответа, иконка набора R11 из спрайта сборки отрисована (getBBox > 0), 14 × 14, цвет --c-text-2, filter / box-shadow — none",
+    "подсказка title / aria-label: «Подсказка ИИ — проверьте» / «ЖИ кеңесі — тексеріңіз»; ошибок JS нет",
+    "analyst_shell_check.cjs на той же копии: карточка карты 1366 / 375, строка конфликта → works-calendar с той же улицей"
+   ],
+   "frames": [
+    "screens/shell_ai_mark_1366_ru.png",
+    "screens/shell_ai_mark_375_kk.png",
+    "screens/shell_answer_1366_ru.png",
+    "screens/shell_conflicts_1366_ru.png",
+    "screens/shell_conflicts_375_kk.png"
+   ]
   }
  },
  "screens": [
@@ -358,7 +374,9 @@
   "research/round-15-results/R03/screens/shell_conflicts_1366_ru.png",
   "research/round-15-results/R03/screens/shell_conflict_opened_1366_ru.png",
   "research/round-15-results/R03/screens/shell_conflicts_375_kk.png",
-  "research/round-15-results/R03/screens/shell_conflict_opened_375_kk.png"
+  "research/round-15-results/R03/screens/shell_conflict_opened_375_kk.png",
+  "research/round-15-results/R03/screens/shell_ai_mark_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_ai_mark_375_kk.png"
  ],
  "known_limits": [
   "Код R03 в сборке: B0.19 = 233ce8a8 (весь код); FINAL-5 берёт code_sha этой поставки (код тот же).",
@@ -370,7 +388,7 @@
   "Новые формулировки: 87–93 % верных фактов с первого раза (ASSISTANT_EVAL.md); худший случай — подсказки или верные числа на соседний вопрос, выдуманных чисел нет.",
   "Казахские фразы — сверены R11 (все пункты R03 закрыты); фразы 233ce8a8 (пояснение периода роста, месяц прогноза «2026 жылғы қараша», подпись вида конфликта) R11 не сверял — после раунда."
  ],
- "next_step": "Раунд 15 закрыт. Следующий раунд (по желанию владельца): LOCAL-17 (живая модель) и LOCAL-14 (классификатор на настоящих текстах) — команды в RUN.txt; R11 — сверка казахских фраз 233ce8a8.",
+ "next_step": "П3: FINAL-6 (17 окт 12:00 Астаны кандидат, 17:00 финал) берёт code_sha; R11 — ключи analyst.ai / analyst.ai_hint и (по желанию) свой значок «ИИ»; приёмка R10 12:00–16:00 — чинить только блокеры; 18:00 — раунд закрыт.",
  "amendments": {
   "read": [
    "П1 «Без ИИ-слопа» (15 окт 17:05 Астаны)",
@@ -397,7 +415,7 @@
   "R14_numbers": "NUMBERS 15.2 / 15.3, SPEECH, JURY_FAQ: 92 % (набор 1, 50 вопросов), 87 % (набор 2, 30), провокации 10 из 10 (9 из 10 в первом прогоне) — совпадают с ASSISTANT_EVAL.md; 87 % — без поправки оракула (с ней 93 %), консервативно"
  },
  "final": {
-  "status": "Раунд 15 закрыт (П2, 16 окт 16:00 Астаны) — финальная поставка R03",
+  "status": "Раунд 15 закрыт по П2; снова открыт П3 до FINAL-6 (17 окт): поставка для FINAL-6 — code_sha этой поставки",
   "code_sha": "2fe5a53bb2f9ba881eb9e3ec2249d6d212ac6cde",
   "code_same_as": "233ce8a8 (в R01 B0.19 fd01a0a2 — весь код R03); после него — только тесты и кадры: analyst_shell_check.cjs (3085aa61), тесты с настоящими модулями сами ставят соседей по умолчанию (2fe5a53b)",
   "in_builds": {
@@ -412,5 +430,14 @@
    "LOCAL-17 — живая языковая модель (нужен ключ на ноутбуке; команда в RUN.txt §5)",
    "LOCAL-14 — оценка классификатора на настоящих размеченных текстах (eval_human.py; RUN.txt)"
   ]
+ },
+ "round_15plus": {
+  "amendment": "П3 «Ещё лучше: раунд 15+ до FINAL-6» (16 окт 17:15 Астаны): FINAL-5.1 — запасная сборка; новое — в FINAL-6",
+  "r03_tasks": [
+   "ИИ должен быть виден: значок «ИИ» набора R11 у ответа «Спросить Birge» + подсказка «Подсказка ИИ — проверьте» — сделано 09b9659e",
+   "свои экраны по чек-листу VISUAL_BRIEF §4 — R10 FINAL-5: analyst 0 FAIL / 0 WARN; новых функций нет"
+  ],
+  "for_R11": "ключи analyst.ai («ИИ» / «ЖИ») и analyst.ai_hint («Подсказка ИИ — проверьте» / «ЖИ кеңесі — тексеріңіз») — в словарь (sync_roles.py); свой значок «ИИ» в наборе — назвать в INTEGRATION, R03 сменит AI_ICON (сейчас i-sparkle)",
+  "for_R01": "FINAL-6: пути R03 по code_sha (только web/civic/assistant/analyst.js / .css изменились после 2fe5a53b)"
  }
 }
