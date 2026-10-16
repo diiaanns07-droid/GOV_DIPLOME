@@ -1,5 +1,5 @@
 {
- "build": "R01 claude/brave-fermi-nhzetj @ 24e50493 (B0.20 = кандидат FINAL-5 b32945a4; ui-kit и словарь R11 d20d823f)",
+ "build": "R01 claude/brave-fermi-nhzetj @ 24e50493 (B0.20, кандидат FINAL-5); s9-4 хроника — FINAL-5 c2276360. Остальные кадры на FINAL-5 совпадают (отличия < 1 % — время и счётчики)",
  "when": "2026-10-16T06:29:17.957Z",
  "frames": [
   {
@@ -351,7 +351,8 @@
    "section": "map",
    "path": "",
    "title": "Birge · Астана",
-   "errors": []
+   "errors": [],
+   "build": "FINAL-5 c2276360"
   },
   {
    "file": "s9-4-chronicle-1366-kk.jpg",
@@ -364,7 +365,8 @@
    "section": "map",
    "path": "",
    "title": "Birge · Астана",
-   "errors": []
+   "errors": [],
+   "build": "FINAL-5 c2276360"
   },
   {
    "file": "s9-5-board-1920-ru.jpg",
