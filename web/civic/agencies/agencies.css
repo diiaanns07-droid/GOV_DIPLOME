@@ -257,7 +257,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  min-height: 40px;
+  min-height: 44px;
   border-bottom: 1px solid var(--c-line);
   background: var(--c-surface);
 }
@@ -267,7 +267,7 @@
   justify-content: flex-end;
   gap: 2px;
   min-width: 0;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -528,7 +528,7 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 6px;
   border: 0;
   border-radius: var(--r-s);
@@ -824,7 +824,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 4px;
   border-radius: var(--r-s);
 }
@@ -837,8 +837,8 @@
   align-items: center;
   justify-content: center;
   flex: none;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 0;
   border-radius: 8px;
@@ -992,7 +992,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: 44px;
   font-size: var(--fs-caption);
   cursor: pointer;
 }
@@ -1106,7 +1106,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 6px;
   border: 0;
   border-radius: var(--r-s);
@@ -1122,7 +1122,7 @@
 }
 .ag-link--quiet {
   gap: 4px;
-  min-height: 40px;
+  min-height: 44px;
   color: var(--c-text-2);
   font-size: var(--fs-caption);
   font-weight: var(--fw-regular);
@@ -1132,7 +1132,7 @@
   height: 12px;
 }
 .ag-linkbtn {
-  min-height: 40px;
+  min-height: 44px;
   padding: 2px 4px;
   border: 0;
   border-radius: var(--r-s);

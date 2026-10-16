@@ -410,9 +410,10 @@ METHOD = {
 def device_places(device: str, db_path=None) -> tuple[set, set]:
     """(районы, дворы) жителя по устройству — только чтение у соседей; модуля нет — пусто.
 
-    R16: дворы «Я живу здесь» — функция модуля (имена ниже, просьба INTEGRATION §7), а пока её нет — публичный метод
-    хранилища сервиса R16 на той же базе: default_service(db_path).store.my_yards(device). make_service R16 здесь не
-    зовём: в демо он заново засевает сцену 7. Район двора кризис берёт сам (crisis.in_zone, R12 yards.json);
+    R16: дворы «Я живу здесь» — функция модуля yards_of_device(device_id, db_path) (R16 добавил по INTEGRATION §7; другие
+    имена ниже — на случай старой поставки), без неё — публичный метод хранилища сервиса R16 на той же базе:
+    default_service(db_path).store.my_yards(device). make_service R16 здесь не зовём: в демо он заново засевает сцену 7.
+    Район двора кризис берёт сам (crisis.in_zone, R12 yards.json);
     R08: подписки «Рядом» на район (ui.civic_akim.nearby.subscriptions).
     """
     districts, yards = set(), set()
@@ -429,7 +430,11 @@ def device_places(device: str, db_path=None) -> tuple[set, set]:
         for name in ("yards_of_device", "device_yards", "my_yards", "yards_for_device"):
             fn = getattr(together, name, None)
             if callable(fn):
-                add_yards(fn(device))
+                try:
+                    found = fn(device, db_path=db_path) if db_path else fn(device)   # R16: yards_of_device(device_id, db_path=None)
+                except TypeError:
+                    found = fn(device)
+                add_yards(found)
                 break
         else:
             get_service = getattr(together, "default_service", None)
