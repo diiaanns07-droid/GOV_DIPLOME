@@ -147,9 +147,11 @@ async function main() {
     check("Сцена 8: akimat «Обращения» with #inbox/c-w1500010, ≤ 1 s", n.mode === "akimat" && n.section === "inbox"
       && n.hash === "#inbox/c-w1500010" && sceneMs <= 1000, { n, sceneMs });
     if (await page.evaluate(() => !!window.BirgeComplaintList || !!window.BirgeInbox)) {
-      await page.waitForFunction(() => /Принять|Службы/.test(document.querySelector("#birge-screen .bc-inbox__item--open")?.innerText || ""),
-        null, { timeout: 10000 }).catch(() => null);
-      const card = await page.evaluate(() => document.querySelector("#birge-screen .bc-inbox__item--open")?.innerText || "");
+      // R09 П3: на ≥ 1200 px «Обращения» — две колонки, карточка открытой строки справа (.bc-inbox__pane), ниже — под строкой.
+      const OPEN = "#birge-screen .bc-inbox__item--open, #birge-screen .bc-inbox__pane";
+      await page.waitForFunction((sel) => /Принять|Службы/.test([...document.querySelectorAll(sel)].map((el) => el.innerText).join(" ")),
+        OPEN, { timeout: 10000 }).catch(() => null);
+      const card = await page.evaluate((sel) => [...document.querySelectorAll(sel)].map((el) => el.innerText).join(" "), OPEN);
       check("Сцена 8: the card of the scene complaint is open (ул. Баян Сулу, «нужны 2 службы» → «Принять»)",
         /Баян Сулу|Раскопали|Яма/.test(card) && /2 службы/.test(card) && /Принять/.test(card), card.replace(/\s+/g, " ").slice(0, 220));
     }
