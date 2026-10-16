@@ -340,3 +340,32 @@ def test_segment_labels_do_not_repeat_street_type():
     assert segments
     assert not [label(t, "ru") for t in segments if re.search(r"«(улица|Улица|проспект|переулок|шоссе)", label(t, "ru"))]
     assert not [label(t, "kk") for t in segments if label(t, "kk").startswith("Көше бөлігі «")]
+
+
+def test_neighbouring_places_get_distinct_labels():
+    """Два двора у одной остановки — не одна строка (R03, круг 15): привязка к остановке или названному двору по стороне света
+    и расстоянию; в списках «первые 5» по городу и районам подписи не повторяются."""
+    from ml.civic_forecast.targets import _direction, _distance_text, label, load_targets, qualify_duplicates
+    assert _direction([71.40, 51.10], [71.40, 51.11]) == "n" and _direction([71.40, 51.10], [71.39, 51.10]) == "w"
+    assert _direction([71.40, 51.10], [71.41, 51.09]) == "se"
+    assert _distance_text(380) == "380 м" and _distance_text(1200) == "1,2 км" and _distance_text(1000) == "1 км"
+    stop = {"id": "s1", "kind": "bus_stop", "name_ru": "ЖК Family Village", "name_kk": None, "point": [71.40, 51.10]}
+    near = {"kind": "bus_stop", "name_ru": "ЖК Family Village", "name_kk": None, "distance_m": 150}
+    north = {"id": "y1", "kind": "yard", "name_ru": None, "name_kk": None, "point": [71.40, 51.1013], "near": dict(near)}
+    south = {"id": "y2", "kind": "yard", "name_ru": None, "name_kk": None, "point": [71.40, 51.0980], "near": dict(near)}
+    alone = {"id": "y3", "kind": "yard", "name_ru": None, "name_kk": None, "point": [71.50, 51.20],
+             "near": {"kind": "segment", "name_ru": "улица Кенгир", "distance_m": 90}}
+    assert qualify_duplicates([stop, north, south, alone]) == 2
+    assert label(north, "ru") == "Двор в 140 м к северу от остановки «ЖК Family Village»"
+    assert label(south, "ru") == "Двор в 220 м к югу от остановки «ЖК Family Village»"
+    assert label(north, "kk") == "«ЖК Family Village» аялдамасынан солтүстікке қарай 140 м жердегі аула"
+    assert "ref" not in alone and label(alone, "ru") == "Двор рядом: улица Кенгир"  # подпись не повторяется — как была
+    by_id = {t["id"]: t for t in load_targets()}
+    from ui import civic_forecast
+    cache = civic_forecast._load()
+    for month in cache["months"].values():
+        lists = [month["rank_city"][:5]] + [ids[:5] for ids in month["rank_district"].values()]
+        for ids in lists:
+            for lang in ("ru", "kk"):
+                labels = [label(by_id[i], lang) for i in ids]
+                assert len(set(labels)) == len(labels), labels

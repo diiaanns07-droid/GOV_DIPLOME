@@ -1,6 +1,7 @@
 """CLI R13: python3 -m ml.civic_forecast <команда>.
 
   build-targets [--geo-dir DIR]     собрать data/targets.json из данных R12 (data/civic/astana/geo/)
+  qualify-targets                   в готовом data/targets.json различить одинаковые подписи соседних мест (ref к остановке)
   weather-fixture                   пересоздать синтетическую фикстуру погоды (если нет LOCAL-9)
   history [--seed N]                сводка синтетической истории (JSON)
   backtest [--seeds 2026,2027]      проверка «как будто в прошлом» → RESULTS.md и results.json
@@ -23,6 +24,7 @@ def main(argv=None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     cmd = sub.add_parser("build-targets")
     cmd.add_argument("--geo-dir")
+    sub.add_parser("qualify-targets")
     sub.add_parser("weather-fixture")
     cmd = sub.add_parser("history")
     cmd.add_argument("--seed", type=int)
@@ -40,6 +42,12 @@ def main(argv=None) -> int:
         data = build_targets(Path(args.geo_dir) if args.geo_dir else GEO_DIR)
         TARGETS_PATH.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(json.dumps({k: data[k] for k in ("count", "by_kind", "by_district")}, ensure_ascii=False))
+    elif args.command == "qualify-targets":
+        from .targets import TARGETS_PATH, qualify_duplicates
+        data = json.loads(TARGETS_PATH.read_text(encoding="utf-8"))
+        refs = qualify_duplicates(data["items"])
+        TARGETS_PATH.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        print(json.dumps({"count": data["count"], "ref": refs}, ensure_ascii=False))
     elif args.command == "weather-fixture":
         from .weather import write_fixture
         print(json.dumps(write_fixture(), ensure_ascii=False))

@@ -115,6 +115,7 @@ def build_targets(geo_dir: Path = GEO_DIR, graph_path: Path = GRAPH_PATH, geofen
         item["target_kind"] = KIND_TO_TARGET[item["kind"]]
         out.append(item)
     _add_landmarks(out)
+    qualify_duplicates(out)
     out.sort(key=lambda i: (i["kind"], i["id"]))
     source = json.loads((geo_dir / "SOURCE.json").read_text(encoding="utf-8")) if (geo_dir / "SOURCE.json").exists() else {}
     return {
@@ -161,6 +162,73 @@ def _add_landmarks(items, radius_m: float = LANDMARK_RADIUS_M) -> None:
         if best is not None:
             item["near"] = {"kind": best["kind"], "name_ru": best["name_ru"], "name_kk": best.get("name_kk"),
                             "distance_m": round(best_d)}
+
+
+# Одинаковые подписи соседних мест («Двор рядом: остановка «X»» у двух дворов) в списке прогноза читаются как одна строка
+# (R03, круг 15: в 7 из 14 списков «первые 5» были повторы). Безымянные места с повторяющейся подписью получают ref —
+# привязку к ближайшей названной остановке (точка OSM): сторона света и расстояние; нет остановки ближе 800 м — к ближайшему
+# названному двору (жилой комплекс, его центр); нет и его — то же в радиусе 1,5 км. К улице так не привязываем: от улицы
+# в данных одна точка (середина самой длинной линии), а не сама линия, — «в 300 м к югу от улицы» было бы неправдой.
+REF_RADII_M = (LANDMARK_RADIUS_M, 1500.0)
+_DIRS = ("n", "ne", "e", "se", "s", "sw", "w", "nw")
+DIR_RU = {"n": "к северу", "ne": "к северо-востоку", "e": "к востоку", "se": "к юго-востоку", "s": "к югу",
+          "sw": "к юго-западу", "w": "к западу", "nw": "к северо-западу"}
+DIR_KK = {"n": "солтүстікке қарай", "ne": "солтүстік-шығысқа қарай", "e": "шығысқа қарай",
+          "se": "оңтүстік-шығысқа қарай", "s": "оңтүстікке қарай", "sw": "оңтүстік-батысқа қарай",
+          "w": "батысқа қарай", "nw": "солтүстік-батысқа қарай"}
+
+
+def _direction(origin, point) -> str:
+    """Сторона света точки point относительно origin (8 румбов, 0° — север)."""
+    k = math.cos(math.radians((origin[1] + point[1]) / 2))
+    angle = math.degrees(math.atan2((point[0] - origin[0]) * k, point[1] - origin[1])) % 360
+    return _DIRS[int((angle + 22.5) // 45) % 8]
+
+
+def _distance_text(m: int) -> str:
+    """«380 м», «1,2 км» (запятая — и в РУС, и в ҚАЗ)."""
+    return f"{m} м" if m < 1000 else f"{m / 1000:.1f}".replace(".", ",").replace(",0", "") + " км"
+
+
+def qualify_duplicates(items) -> int:
+    """У безымянных мест с одинаковой подписью (ru или kk) — ref к ближайшей названной остановке. Возвращает число ref."""
+    for item in items:
+        item.pop("ref", None)
+    unnamed = [i for i in items if not i.get("name_ru") and not i.get("name_kk") and i.get("near")]
+    need = set()
+    for lang in ("ru", "kk"):
+        groups = {}
+        for item in unnamed:
+            groups.setdefault(label(item, lang), []).append(item["id"])
+        need.update(i for ids in groups.values() if len(ids) > 1 for i in ids)
+    cell = 0.01  # ~0,7 × 1,1 км; ищем в соседних клетках ±3 — радиус 1,5 км покрыт
+    grids = {}
+    for kind in ("bus_stop", "yard"):
+        grid = grids[kind] = {}
+        for ref in items:
+            if ref["kind"] == kind and ref.get("name_ru"):
+                grid.setdefault((int(ref["point"][0] / cell), int(ref["point"][1] / cell)), []).append(ref)
+    count = 0
+    for item in unnamed:
+        if item["id"] not in need:
+            continue
+        gx, gy = int(item["point"][0] / cell), int(item["point"][1] / cell)
+        for radius, kind in ((r, k) for r in REF_RADII_M for k in ("bus_stop", "yard")):
+            best, best_d = None, radius
+            for dx in range(-3, 4):
+                for dy in range(-3, 4):
+                    for ref in grids[kind].get((gx + dx, gy + dy), ()):
+                        d = _metres(item["point"], ref["point"])
+                        if ref["id"] != item["id"] and d < best_d:
+                            best, best_d = ref, d
+            if best is not None:
+                step = 10 if best_d < 1000 else 100
+                item["ref"] = {"kind": kind, "name_ru": best["name_ru"], "name_kk": best.get("name_kk"),
+                               "dir": _direction(best["point"], item["point"]),
+                               "m": max(10, int(round(best_d / step)) * step)}
+                count += 1
+                break
+    return count
 
 
 def load_targets(path: Path = TARGETS_PATH) -> list[dict]:
@@ -240,6 +308,15 @@ def label(target: dict, lang: str) -> str:
                 "waste": "Площадка для мусора", "segment": "Участок улицы"}[kind]
     if name:
         return _segment_label(name, lang) if kind == "segment" else f"{base} «{name}»"
+    ref = target.get("ref")
+    if ref:  # повтор подписи у соседних мест — привязка к остановке или названному двору (qualify_duplicates)
+        yard = ref.get("kind") == "yard"
+        if lang == "kk":
+            what = ref.get("name_kk") or kk_street(ref["name_ru"])
+            far = _distance_text(ref["m"])
+            return f"«{what}» {'ауласынан' if yard else 'аялдамасынан'} {DIR_KK[ref['dir']]} {far} жердегі {base.lower()}"
+        what = ref.get("name_ru") if yard else ru_street(ref["name_ru"])
+        return f"{base} в {_distance_text(ref['m'])} {DIR_RU[ref['dir']]} от {'двора' if yard else 'остановки'} «{what}»"
     near = target.get("near")
     if near:
         near_name = (near.get("name_kk") or kk_street(near["name_ru"])) if lang == "kk" else ru_street(near["name_ru"])
