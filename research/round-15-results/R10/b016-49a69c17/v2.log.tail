@@ -1,0 +1,60 @@
+PASS    UI 375-kk 9 нет прокрутки вбок — {"scrollW":375,"w":375}
+PASS    UI 375-kk 9 нет ключей перевода и технических слов — {"raw":[],"tech":[]}
+PASS    UI 375-kk 9 шрифт ≥ 13 px — {"tiny":0,"ex":[]}
+PASS    UI 375-kk 9 зоны нажатия ≥ 40 px (цель 44) — {"under40":[]}
+PASS    UI 375-kk 9 контраст текста ≥ 4,5:1 — {"n":0,"ex":[]}
+PASS    UI 375-kk 9 ҚАЗ: на экране нет русских подписей раздела — {"ru":[]}
+PASS    UI 375-kk * консоль без ошибок (кроме шума среды) — []
+PASS    UI board 1920-ru 9 открыта с данными (вход сотрудника принят) — {"state":"ready","login_form":false}
+PASS    UI board 1920-ru 9 без прокрутки на весь экран — {"scrollH":1080,"h":1080,"scrollW":1920,"w":1920}
+PASS    UI board 1920-ru 9 тёмная тема только здесь (.bk-dark, тёмный фон) — {"dark":true,"bg_luminance":0.005}
+PASS    UI board 1920-ru 9 крупные живые числа (≥ 40 px) — читается с 3 м — {"big_numbers":4}
+PASS    UI board 1920-ru 9 мелкого текста нет (≥ 14 px на большом экране) — {"min_font":21.1,"smallest":[[21.1,"Весь город"],[21.1,"Пример"],[21.1,"Пятница, 16 октября"],[21.1,"ҚАЗ"]]}
+PASS    UI board 1920-ru 9 контраст текста ≥ 4,5:1 на тёмном — {"n":0,"ex":[]}
+PASS    UI board 1920-ru 9 пометка «Пример» на синтетике
+PASS    UI board 1920-ru 9 «На весь экран» и «← В Birge» — {"full":true,"back":true}
+PASS    UI board 1920-ru 9 консоль без ошибок — []
+PASS    UI board 1366-ru 9 открыта с данными (вход сотрудника принят) — {"state":"ready","login_form":false}
+PASS    UI board 1366-ru 9 без прокрутки на весь экран — {"scrollH":768,"h":768,"scrollW":1366,"w":1366}
+PASS    UI board 1366-ru 9 тёмная тема только здесь (.bk-dark, тёмный фон) — {"dark":true,"bg_luminance":0.005}
+PASS    UI board 1366-ru 9 крупные живые числа (≥ 40 px) — читается с 3 м — {"big_numbers":4}
+PASS    UI board 1366-ru 9 мелкого текста нет (≥ 14 px на большом экране) — {"min_font":15,"smallest":[[15,"Весь город"],[15,"Пример"],[15,"Пятница, 16 октября"],[15,"ҚАЗ"]]}
+PASS    UI board 1366-ru 9 контраст текста ≥ 4,5:1 на тёмном — {"n":0,"ex":[]}
+PASS    UI board 1366-ru 9 пометка «Пример» на синтетике
+PASS    UI board 1366-ru 9 «На весь экран» и «← В Birge» — {"full":true,"back":true}
+PASS    UI board 1366-ru 9 консоль без ошибок — []
+PASS    UI board 1920-kk 9 открыта с данными (вход сотрудника принят) — {"state":"ready","login_form":false}
+PASS    UI board 1920-kk 9 без прокрутки на весь экран — {"scrollH":1080,"h":1080,"scrollW":1920,"w":1920}
+PASS    UI board 1920-kk 9 тёмная тема только здесь (.bk-dark, тёмный фон) — {"dark":true,"bg_luminance":0.005}
+PASS    UI board 1920-kk 9 крупные живые числа (≥ 40 px) — читается с 3 м — {"big_numbers":4}
+PASS    UI board 1920-kk 9 мелкого текста нет (≥ 14 px на большом экране) — {"min_font":21.1,"smallest":[[21.1,"Бүкіл қала"],[21.1,"Үлгі"],[21.1,"16 қазан, жұма"],[21.1,"ҚАЗ"]]}
+PASS    UI board 1920-kk 9 контраст текста ≥ 4,5:1 на тёмном — {"n":0,"ex":[]}
+PASS    UI board 1920-kk 9 пометка «Пример» на синтетике
+PASS    UI board 1920-kk 9 «На весь экран» и «← В Birge» — {"full":true,"back":true}
+PASS    UI board 1920-kk 9 консоль без ошибок — []
+PASS    UI board 1366-kk 9 открыта с данными (вход сотрудника принят) — {"state":"ready","login_form":false}
+PASS    UI board 1366-kk 9 без прокрутки на весь экран — {"scrollH":768,"h":768,"scrollW":1366,"w":1366}
+PASS    UI board 1366-kk 9 тёмная тема только здесь (.bk-dark, тёмный фон) — {"dark":true,"bg_luminance":0.005}
+PASS    UI board 1366-kk 9 крупные живые числа (≥ 40 px) — читается с 3 м — {"big_numbers":4}
+PASS    UI board 1366-kk 9 мелкого текста нет (≥ 14 px на большом экране) — {"min_font":15,"smallest":[[15,"Бүкіл қала"],[15,"Үлгі"],[15,"16 қазан, жұма"],[15,"ҚАЗ"]]}
+PASS    UI board 1366-kk 9 контраст текста ≥ 4,5:1 на тёмном — {"n":0,"ex":[]}
+PASS    UI board 1366-kk 9 пометка «Пример» на синтетике
+PASS    UI board 1366-kk 9 «На весь экран» и «← В Birge» — {"full":true,"back":true}
+PASS    UI board 1366-kk 9 консоль без ошибок — []
+PASS    UI show-ru S режим показа ?show=1 включён (html[data-birge-show])
+INFO    UI show-ru 7 Ctrl+K «Сцена 7 · Двор вместе» → раздел yard ≤ 1 с — {"ms":1139,"section":"yard","network_idle_before":true,"rt":[{"n":"/api/civic/v2/notifications","start":22,"dur":21,"queue":1,"wait":18},{"n":"/api/civic/v2/modules","start":27,"dur":5,"queue":2,"wait":2},{"n":"/api/civic/v2/together/yards/yard-1454082640","st
+PASS    UI show-ru 8 Ctrl+K «Сцена 8 · Ведомства вместе» → раздел inbox ≤ 1 с — {"ms":26,"section":"inbox","network_idle_before":true}
+PASS    UI show-ru 9 Ctrl+K «Сцена 9 · Буран» → раздел agencies ≤ 1 с — {"ms":16,"section":"agencies","network_idle_before":true}
+PASS    UI show-ru S Ctrl+K «Ситуационный центр» → своя страница /civic/board/ — {"ms":402,"url":"/civic/board/","text":1191,"shell_error":false}
+PASS    UI show-ru S страница /civic/board/: путь назад в Birge — ссылка «← В Birge» и Esc — {"link":{"text":"← В Birge","href":"/#day"},"esc":true}
+PASS    UI show-ru S Ctrl+K «QR-таблички» → своя страница /civic/qr/print.html — {"ms":50,"url":"/civic/qr/print.html","text":477,"shell_error":false}
+PASS    UI show-ru S страница /civic/qr/print.html: путь назад в Birge — ссылка «← В Birge» и Esc — {"link":{"text":"← В Birge","href":"/"},"esc":true}
+PASS    UI show-kk S режим показа ?show=1 включён (html[data-birge-show])
+INFO    UI show-kk 7 Ctrl+K «7-көрініс · Аула бірге» → раздел yard ≤ 1 с — {"ms":1018,"section":"yard","network_idle_before":true,"rt":[{"n":"/api/civic/v2/notifications","start":24,"dur":17,"queue":1,"wait":15},{"n":"/api/civic/v2/modules","start":29,"dur":4,"queue":1,"wait":2},{"n":"/api/civic/v2/together/yards/yard-1454082640","st
+PASS    UI show-kk 8 Ctrl+K «8-көрініс · Ведомстволар бірге» → раздел inbox ≤ 1 с — {"ms":28,"section":"inbox","network_idle_before":true}
+PASS    UI show-kk 9 Ctrl+K «9-көрініс · Боран» → раздел agencies ≤ 1 с — {"ms":14,"section":"agencies","network_idle_before":true}
+PASS    UI show-kk S Ctrl+K «Жағдаяттық орталық» → своя страница /civic/board/ — {"ms":60,"url":"/civic/board/","text":1206,"shell_error":false}
+PASS    UI show-kk S страница /civic/board/: путь назад в Birge — ссылка «← Birge-ге» и Esc — {"link":{"text":"← Birge-ге","href":"/#day"},"esc":true}
+PASS    UI show-kk S Ctrl+K «QR-тақтайшалар» → своя страница /civic/qr/print.html — {"ms":322,"url":"/civic/qr/print.html","text":487,"shell_error":false}
+PASS    UI show-kk S страница /civic/qr/print.html: путь назад в Birge — ссылка «← Birge-ге» и Esc — {"link":{"text":"← Birge-ге","href":"/"},"esc":true}
+ИТОГ: { PASS: 335, FAIL: 0, NOT_RUN: 0, INFO: 2 } → /tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/runs/b016-acc/v2

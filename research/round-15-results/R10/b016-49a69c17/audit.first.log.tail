@@ -1,0 +1,3 @@
+PASS     375-kk   week-page          видимый фокус с клавиатуры (п. 10) — {"tag":"a","text":"← Күн қорытындысы","ring":true,"outline":"solid 3px","shadow":"rgba(255, 255, 255, 0.996) 0px 0px 0px 1"}
+PASS     375-kk   *                  консоль без ошибок на новых экранах — []
+ИТОГ: { PASS: 532, WARN: 40, FAIL: 2, NOT_RUN: 0 } → /tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/runs/b016-acc/audit
