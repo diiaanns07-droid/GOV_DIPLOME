@@ -228,6 +228,19 @@ const openAgencies = async (page, base, tab) => {
             .filter((e) => e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1).map((e) => e.textContent));
           check(`${tag}: названия служб не обрезаны`, cutNames.length === 0, cutNames);
         }
+        // Аудит R10 (visual_audit, «вкладки целиком»): вкладка не уходит за край полосы — на телефоне вкладки в две строки.
+        const tabsCut = await page.evaluate(() => [...document.querySelectorAll(".ag [role=tab]")].filter((t) => {
+          const r = t.getBoundingClientRect(); let edge = { left: 0, right: innerWidth };
+          for (let n = t.parentElement; n && n !== document.body; n = n.parentElement) {
+            if (/(auto|scroll|hidden|clip)/.test(getComputedStyle(n).overflowX)) { const pr = n.getBoundingClientRect(); edge = { left: pr.left, right: pr.right }; break; }
+          }
+          return r.width > 0 && (r.right > edge.right + 1 || r.left < edge.left - 1);
+        }).map((t) => t.innerText.trim()));
+        check(`${tag}: вкладки штаба видны целиком`, tabsCut.length === 0, tabsCut);
+        // Цель п. 10 — 44 px: вкладки и период «7 · 30 · 90» (рамка кнопки, как меряет аудит R10).
+        const under44 = await page.evaluate(() => [...document.querySelectorAll(".ag [role=tab], .ag-seg > button")]
+          .map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && (r.width < 44 || r.height < 44)).map((r) => Math.round(r.width) + "×" + Math.round(r.height)));
+        check(`${tag}: вкладки и период — зона нажатия 44 px`, under44.length === 0, under44);
         check(`${tag}: нет прокрутки вбок`, await noSideScroll(page));
         check(`${tag}: нет непереведённых ключей`, (await rawKeys(page)).length === 0, await rawKeys(page));
         const ux = await uxProbe(page);
