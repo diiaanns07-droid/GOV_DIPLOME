@@ -6,7 +6,7 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "tests/civic/R15 в пакете = claude/r14-R15@540b4d3c + перенос S41 в FIXED (R01, FINAL-4) — восстанавливать нечего",
- "code_sha": "ac54e27b",
+ "code_sha": "ce2a15e1",
  "tested_sha": {
   "package": "e91acb69",
   "R17": "6f80e6af (разбор)",
@@ -32,9 +32,10 @@
   "B6.3_f9b0cc85": "tests/civic/R15 613 passed / 0 failed / 5 xfail (S54); браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена изменений B6.2->B6.3 чистая",
   "R04_df6ab8c2_moderate5": "moderate+intake R15: 99 passed, 5 xpassed; 4000/4000 совпадает с P-R04-S53",
   "B6.4_e56971a0": "tests/civic/R15 613 passed / 0 failed / 5 xpassed (S54) -> после FIXED moderate+intake 104 passed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена f9b0cc85..e56971a0 чистая",
-  "B6.5_25ee5a39": "tests/civic/R15 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена e56971a0..25ee5a39 чистая; R07 heat place() — id по шаблону, без кэша, только данные карты"
+  "B6.5_25ee5a39": "tests/civic/R15 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена e56971a0..25ee5a39 чистая; R07 heat place() — id по шаблону, без кэша, только данные карты",
+  "B6.5_25ee5a39_round33": "tests/civic/R15 = ce2a15e1: 618 passed / 0 failed (повтор 17 окт 00:38 Астаны, 127 с)"
  },
- "push_status": "OK (круг 3)",
+ "push_status": "OK (круг 33)",
  "changed_paths": [
   "tests/civic/R15/",
   "research/round-15-results/R15/",
@@ -518,8 +519,8 @@
   "нагрузочного теста лимитов и пентеста развёрнутого стенда не было (SECURITY_REVIEW §11)",
   "облако без интернета: подложка карты — упрощённый фон; кадры с настоящей картой — LOCAL"
  ],
- "next_step": "П3: круги по коду R04/R09/R01 intake — тесты на их ветках, находки с patch; шаг браузерной пробы для web/civic/intake/; 17 окт 12:00 кандидат FINAL-6 — проверка, блокеры к 14:00; 17:00 FINAL-6; 18:00 — закрытие",
- "code_note": "код R15 — только tests/civic/R15/ (тесты и браузерные пробы); чужой код R15 не меняет — patch в INTEGRATION",
+ "next_step": "П3: R01 берёт tests/civic/R15 из ce2a15e1 в следующую сборку и кандидат FINAL-6; круги — новые сборки R01: весь tests/civic/R15, обе пробы, гигиена; 17 окт 12:00 кандидат FINAL-6 — проверка, блокеры к 14:00; 17:00 FINAL-6; 18:00 — закрытие",
+ "code_note": "код R15 — только tests/civic/R15/ (тесты и браузерные пробы); чужой код R15 не меняет — patch в INTEGRATION. П3 (17 окт 00:40 Астаны): code_sha ac54e27b -> ce2a15e1 — тесты «ИИ-разбора» (intake 38, шлюз intake/*, moderate S53/S54) и шаги пробы экрана intake; только tests/civic/R15/** (7 файлов, +688/-20); в тестах — шаблонные номера (1234567, 7654321, 9876543) и ИИН-заглушки, секретов нет. Условие: R04 >= 9c16e868 (moderate-5) — на moderate-3 три теста S54 падают (сигнал).",
  "routes_under_test": {
   "round15_routes": 50,
   "covered": 50,
@@ -542,10 +543,10 @@
   "task": "ИИ-разбор пачки (R04 intake): только сотрудник, пределы размера, тексты не наружу, ПДн не в журнале и не на экране итога",
   "contract": "INTEGRATION R04 п. 9 (62fb832b): ui.civic_ml_api.intake_analyze / intake_sample / intake_commit, шлюз — body целиком, staff=True",
   "threats": "THREATS_R15 §11a T-R04-20…32 (13)",
-  "tests": "tests/civic/R15/round15/test_r15_round15_intake.py — 32 теста; + test_r15_round15_gateway.py: intake/* в CONTRACT_STAFF, test_wider_body_limit_stays_on_staff_intake",
+  "tests": "tests/civic/R15/round15/test_r15_round15_intake.py — 38 тестов; + test_r15_round15_gateway.py: intake/* в CONTRACT_STAFF, test_wider_body_limit_stays_on_staff_intake",
   "validated_on": "фейк R15 по контракту п. 9 на дереве FINAL-5 c2276360 (scratch, не в Git): верный 32/32 passed; с дырами — 17 failed (каждая дыра ловится отдельно)",
   "on_FINAL5": "c2276360: 32 NOT_RUN (функций intake ещё нет); test_wider_body_limit_stays_on_staff_intake — passed",
-  "status": "код R04 D4 9c16e868 в сборке B6.4: intake 36/36 + moderate; S53, S54 — FIXED; ждём кандидата FINAL-6 (17 окт 12:00): весь tests/civic/R15, обе пробы, блокеры к 14:00",
+  "status": "код R04 D4 9c16e868 в сборке B6.4: intake 36/36 + moderate; S53, S54 — FIXED; поставка R15 для FINAL-6 — code_sha ce2a15e1 (на B6.5 618/0); ждём кандидата FINAL-6 (17 окт 12:00): весь tests/civic/R15, обе пробы, блокеры к 14:00",
   "browser": "r15_round15.cjs: шаги «intake fake-api all fields» и «intake pasted lines»; на поддельном экране textContent — PASS, innerHTML — FAIL; FINAL-5 c2276360 — 8 PASS / 0 FAIL / 3 NOT_RUN (экрана intake нет)",
   "tested_R04": {
    "sha": "dce9427b",
