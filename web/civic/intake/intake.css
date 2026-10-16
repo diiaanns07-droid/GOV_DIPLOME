@@ -1,9 +1,13 @@
 /* Birge · «Разбор обращений» (R04, П3, сцена 0). Только токены и компоненты набора R11 (ui-kit/tokens.css,
    components.css): строки как в Linear (.bk-lrow), группы (.bk-lgroup), кнопки, метки. П1 — без картинок и эмодзи,
-   значки — спрайт ui-kit/icons.svg. Ширина — по листу оболочки (без пустых полей), текст абзацев — до 72 знаков. */
+   значки — спрайт ui-kit/icons.svg. Ширина — по листу оболочки (без пустых полей), текст абзацев — до 72 знаков.
+   Три размера шрифта (VISUAL_BRIEF §4 п. 3): --bi-fs-l — заголовок и строка итога, --bi-fs-m — текст, --bi-fs-s — подписи. */
 
 .bi {
   --bi-gap: var(--s-4, 16px);
+  --bi-fs-l: var(--fs-title, 22px);
+  --bi-fs-m: var(--fs-small, 14px);
+  --bi-fs-s: var(--fs-caption, 13px);
   display: flex;
   flex-direction: column;
   gap: var(--bi-gap);
@@ -33,7 +37,7 @@
 }
 .bi-title {
   margin: 0;
-  font-size: var(--fs-title, 22px);
+  font-size: var(--bi-fs-l);
   font-weight: var(--fw-semi, 600);
   line-height: var(--lh-head, 1.2);
   letter-spacing: var(--ls-title, normal);
@@ -49,7 +53,7 @@
   border-radius: var(--r-pill, 999px);
   background: var(--c-fill, #ececea);
   color: var(--c-text-2, #444);
-  font-size: var(--fs-xs, 12px);
+  font-size: var(--bi-fs-s);
   font-weight: var(--fw-semi, 600);
   line-height: 1;
   vertical-align: middle;
@@ -66,7 +70,7 @@
   max-width: 72ch;
   margin: 0;
   color: var(--c-text-2, #444);
-  font-size: var(--fs-body, 15px);
+  font-size: var(--bi-fs-m);
   line-height: var(--lh-text, 1.5);
 }
 .bi-field {
@@ -85,7 +89,7 @@
   background: var(--c-surface, #fff);
   color: var(--c-ink, #111);
   font: inherit;
-  font-size: var(--fs-small, 14px);
+  font-size: var(--bi-fs-m);
   line-height: 1.55;
   resize: vertical;
   tab-size: 2;
@@ -103,7 +107,7 @@
   gap: 4px 12px;
   margin: 0;
   color: var(--c-text-3, #6b6b6b);
-  font-size: var(--fs-caption, 13px);
+  font-size: var(--bi-fs-s);
   font-variant-numeric: tabular-nums;
 }
 .bi-meter__count {
@@ -135,7 +139,7 @@
   max-width: 72ch;
   margin: 0;
   color: var(--c-text-3, #6b6b6b);
-  font-size: var(--fs-caption, 13px);
+  font-size: var(--bi-fs-s);
   line-height: var(--lh-text, 1.5);
 }
 .bi-note .ic {
@@ -160,13 +164,13 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  font-size: var(--fs-lead, 17px);
+  font-size: var(--bi-fs-m);
   font-weight: var(--fw-medium, 500);
 }
 .bi-run__time {
   margin: 0;
   color: var(--c-text-2, #444);
-  font-size: var(--fs-lead, 17px);
+  font-size: var(--bi-fs-m);
   font-variant-numeric: tabular-nums;
 }
 .bi-run__bar {
@@ -215,7 +219,7 @@
 }
 .bi-sum__line {
   margin: 0;
-  font-size: clamp(20px, 2.2vw, 28px);
+  font-size: var(--bi-fs-l);
   font-weight: var(--fw-regular, 400);
   line-height: 1.3;
   letter-spacing: var(--ls-title, normal);
@@ -247,7 +251,7 @@
 .bi-sum__demo {
   margin: 0;
   color: var(--c-text-3, #6b6b6b);
-  font-size: var(--fs-caption, 13px);
+  font-size: var(--bi-fs-s);
   font-variant-numeric: tabular-nums;
 }
 .bi-done {
@@ -273,6 +277,26 @@
   flex-direction: column;
   gap: 1px;
   min-width: 0;
+}
+/* Плашки и группы ui-kit внутри экрана — тем же размером подписи (три размера на экран). */
+.bi .bk-lrow,
+.bi .bk-lrow__title {
+  font-size: var(--bi-fs-m);
+}
+.bi .bk-lrow__meta,
+.bi .bk-lrow__cnt,
+.bi .bk-lgroup,
+.bi .bk-tag,
+.bi .bk-ai,
+.bi .bk-field__label,
+.bi .bk-field__error,
+.bi .bk-banner__note {
+  font-size: var(--bi-fs-s);
+}
+.bi .bk-banner__title,
+.bi .bk-btn,
+.bi .bk-error__title {
+  font-size: var(--bi-fs-m);
 }
 /* Заголовок группы не липкий: на «Обращениях» липкая плашка наезжала на первую строку (П3, кадр 05). */
 .bi .bk-lgroup {
@@ -340,7 +364,7 @@
   margin: 2px 0 8px 46px;
   padding: 12px 14px;
   border-left: 2px solid var(--c-line, #e3e3e0);
-  font-size: var(--fs-small, 14px);
+  font-size: var(--bi-fs-m);
   line-height: var(--lh-text, 1.5);
 }
 .bi-why[hidden] {
@@ -349,7 +373,7 @@
 .bi-why__title {
   margin: 0;
   color: var(--c-text-3, #6b6b6b);
-  font-size: var(--fs-caption, 13px);
+  font-size: var(--bi-fs-s);
   font-weight: var(--fw-medium, 500);
 }
 .bi-why__facts {
@@ -387,13 +411,13 @@
 }
 .bi-why__id {
   color: var(--c-text-3, #6b6b6b);
-  font-size: var(--fs-xs, 12px);
+  font-size: var(--bi-fs-s);
   font-variant-numeric: tabular-nums;
 }
 .bi-why__more {
   margin: 0;
   color: var(--c-text-3, #6b6b6b);
-  font-size: var(--fs-caption, 13px);
+  font-size: var(--bi-fs-s);
 }
 .bi-why__acts {
   display: flex;
@@ -410,7 +434,7 @@
 .bi-method {
   max-width: 80ch;
   color: var(--c-text-2, #444);
-  font-size: var(--fs-small, 14px);
+  font-size: var(--bi-fs-m);
   line-height: var(--lh-text, 1.5);
 }
 .bi-method summary {
@@ -432,7 +456,7 @@
 .bi-method__note {
   margin: 0;
   color: var(--c-text-3, #6b6b6b);
-  font-size: var(--fs-caption, 13px);
+  font-size: var(--bi-fs-s);
 }
 
 /* ── планшет и телефон ── */
@@ -456,7 +480,7 @@
     padding: 16px;
   }
   .bi-sum__line {
-    font-size: 20px;
+    font-size: var(--bi-fs-l);
   }
   .bi-why {
     margin-left: 8px;
