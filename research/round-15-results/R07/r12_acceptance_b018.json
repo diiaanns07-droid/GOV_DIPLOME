@@ -1,0 +1,136 @@
+{
+ "what": "Приёмка R12 tests/civic/R12/map/app_acceptance.mjs (раунд 13: редактор рисует поверх публичных объектов) на сборке R01 B0.18",
+ "environment": "облако, Chromium (Playwright) headless + SwiftShader, подложка OpenFreeMap недоступна (NOT_RUN); app.py со временной базой (seed-demo), как в самом тесте",
+ "r01_tree": "claude/brave-fermi-nhzetj @ 7729c2cc (B0.18): пути R07 = 3d7cb28b",
+ "before": {
+  "summary": {
+   "pass": 10,
+   "fail": 2,
+   "not_run": 1
+  },
+  "at": "2026-10-16T04:16:11.382Z",
+  "r01_sha": "7729c2ccf55ed4c0b8539dbf5f3289281075c3ad",
+  "web_civic_map_dirty": null,
+  "checks": [
+   {
+    "name": "render: one map canvas with 15 civic-r03 layers and the demo ring image",
+    "status": "PASS"
+   },
+   {
+    "name": "OpenFreeMap basemap and 3D buildings",
+    "status": "NOT_RUN"
+   },
+   {
+    "name": "3D toggle: camera tilts, R03 layers stay",
+    "status": "PASS"
+   },
+   {
+    "name": "host style swap: layers and demo ring re-added, no missing-image warning",
+    "status": "PASS"
+   },
+   {
+    "name": "while the editor draws: a click on a public object goes to the street tool, does not open its card or change #object=",
+    "status": "PASS"
+   },
+   {
+    "name": "while the editor draws: the crosshair stays (no public hover cursor/tooltip)",
+    "status": "FAIL"
+   },
+   {
+    "name": "after cancel: the same click selects a public object again",
+    "status": "FAIL"
+   },
+   {
+    "name": "no page errors (desktop)",
+    "status": "PASS"
+   },
+   {
+    "name": "deep link #object= opens the card and survives reload",
+    "status": "PASS"
+   },
+   {
+    "name": "link to an object that is not (or no longer) published: «Объект не найден … сняли с публикации»",
+    "status": "PASS"
+   },
+   {
+    "name": "no page errors (deep link)",
+    "status": "PASS"
+   },
+   {
+    "name": "phone: list item opens the card",
+    "status": "PASS"
+   },
+   {
+    "name": "no page errors (phone)",
+    "status": "PASS"
+   }
+  ],
+  "r07": "как в B0.18 (3d7cb28b)"
+ },
+ "after": {
+  "summary": {
+   "pass": 12,
+   "fail": 0,
+   "not_run": 1
+  },
+  "at": "2026-10-16T04:16:57.759Z",
+  "r01_sha": "7729c2ccf55ed4c0b8539dbf5f3289281075c3ad",
+  "web_civic_map_dirty": null,
+  "checks": [
+   {
+    "name": "render: one map canvas with 15 civic-r03 layers and the demo ring image",
+    "status": "PASS"
+   },
+   {
+    "name": "OpenFreeMap basemap and 3D buildings",
+    "status": "NOT_RUN"
+   },
+   {
+    "name": "3D toggle: camera tilts, R03 layers stay",
+    "status": "PASS"
+   },
+   {
+    "name": "host style swap: layers and demo ring re-added, no missing-image warning",
+    "status": "PASS"
+   },
+   {
+    "name": "while the editor draws: a click on a public object goes to the street tool, does not open its card or change #object=",
+    "status": "PASS"
+   },
+   {
+    "name": "while the editor draws: the crosshair stays (no public hover cursor/tooltip)",
+    "status": "PASS"
+   },
+   {
+    "name": "after cancel: the same click selects a public object again",
+    "status": "PASS"
+   },
+   {
+    "name": "no page errors (desktop)",
+    "status": "PASS"
+   },
+   {
+    "name": "deep link #object= opens the card and survives reload",
+    "status": "PASS"
+   },
+   {
+    "name": "link to an object that is not (or no longer) published: «Объект не найден … сняли с публикации»",
+    "status": "PASS"
+   },
+   {
+    "name": "no page errors (deep link)",
+    "status": "PASS"
+   },
+   {
+    "name": "phone: list item opens the card",
+    "status": "PASS"
+   },
+   {
+    "name": "no page errors (phone)",
+    "status": "PASS"
+   }
+  ],
+  "r07": "web/civic/heat/heat.js, heat.css, web/civic/replay/replay.js заменены файлами ветки R07 (16 окт, правки §1.9 и §3в INTEGRATION)"
+ },
+ "verdict": "обе находки R12 (§11) закрыты: «while the editor draws: the crosshair stays» и «after cancel: the same click selects a public object again» — FAIL → PASS; остальное без изменений"
+}

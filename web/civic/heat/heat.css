@@ -388,6 +388,9 @@ a.r07-qr { position: relative; display: inline-flex; align-items: center; min-he
 /* Выбор места жалобой (оболочка: body.birge-picking; без неё — heat.setPickMode). Оболочка B3 гасит нажатия
    на значках (birge.css: pointer-events: none) — здесь возвращаем: значок сам передаёт карте щелчок точно в цель. */
 body.birge-picking .r07-badge[data-mode], html.bc-picking .r07-badge[data-mode], .r07-badge.r07-badge--pick { pointer-events: auto; cursor: crosshair; }
+/* Карта у инструмента (редактор R04 рисует участок, сценарий, 3D-проект — heat.js mapTool): значки пропускают нажатие
+   к карте — точка ставится там, где нажали, курсор — крестик инструмента (R12 INTEGRATION §11). */
+.r07-map-tool .r07-badge, html[data-civic-editor-tool] .r07-badge { pointer-events: none; }
 @keyframes r07-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 /* ---- Значок цели на карте — как в эталоне A (research/round-14/design/REFERENCE.html, .pin): кружок 34 px цвета уровня,

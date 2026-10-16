@@ -25,7 +25,7 @@ API
      replay-attach.js или replay.js + replay.css целиком)
 
 ТЕСТЫ
-  python -m pytest tests/civic/R07 -q                                     # 203 passed, 1 skipped (мир R02 — в сборке)
+  python -m pytest tests/civic/R07 -q                                     # 210 passed, 1 skipped (мир R02 — в сборке)
   R07_PERF=1 python -m pytest tests/civic/R07/test_r07_replay.py -k under_one_second -q
                                                                           # строгий замер: город за 30 дней < 1 с (отдельный
                                                                           # прогон; в общем pytest порог относительный)
@@ -33,6 +33,14 @@ API
   NODE_PATH=$(npm root -g) node tests/civic/R07/browser/replay.cjs        # 16/16 (+ лёгкий вход), кадры → research/round-15-results/R07/screens/
   python -m ui.civic_heat.devserver --port 8619 & R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html \
     NODE_PATH=$(npm root -g) node tests/civic/R07/browser/wave2.js <папка>  # регресс волны 2: 38/38
+  R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html NODE_PATH=$(npm root -g) node tests/civic/R07/browser/map_tools.cjs
+                                                                          # карта у инструмента (R12 §11): 7/7 — крестик,
+                                                                          # щелчок не открывает карточку, значки пропускают
+  R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html NODE_PATH=$(npm root -g) node tests/civic/R07/browser/tween_first_frame.cjs
+                                                                          # перекраска при кадре раньше старта (R01 B0.18)
+  R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html NODE_PATH=$(npm root -g) node tests/civic/R07/browser/shots.js <папка>
+                                                                          # снимки и проверки стенда: 64/64 (readability.js,
+                                                                          # pan_stability.js — так же, 18/18 и 2/2)
   python -m ui.civic_heat.devserver --world city1000 --port 8618 &
   NODE_PATH=$(npm root -g) node tests/civic/R07/browser/replay_fps.cjs http://127.0.0.1:8618   # плавность (fps_cloud.json)
   R07_SHELL=http://127.0.0.1:8655/ NODE_PATH=$(npm root -g) node tests/civic/R07/browser/first_badge_shell.cjs 5

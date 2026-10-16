@@ -401,15 +401,18 @@
     const v = parseInt(m[1], 16);
     return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
   }
+  // Канал — всегда 0…255: метка кадра requestAnimationFrame бывает раньше performance.now() старта, и t < 0 давал
+  // «#ffff100» (R01 r14_b2 на B0.18: MapLibre «Could not parse color», значок на кадр без цвета).
+  const channel = (v) => Math.max(0, Math.min(255, Math.round(v)));
   function mix(a, b, t) {
     const x = hexToRgb(a), y = hexToRgb(b);
-    const c = x.map((v, i) => Math.round(v + (y[i] - v) * t));
+    const c = x.map((v, i) => channel(v + (y[i] - v) * t));
     return "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
   }
   // Цвет с прозрачностью (хроника: новая цель проявляется из прозрачного, ушедшая — гаснет)
   function mixA(a, b, t, alpha) {
     const x = hexToRgb(a), y = hexToRgb(b);
-    const c = x.map((v, i) => Math.round(v + (y[i] - v) * t));
+    const c = x.map((v, i) => channel(v + (y[i] - v) * t));
     return "rgba(" + c.join(",") + "," + Math.max(0, Math.min(1, alpha)).toFixed(3) + ")";
   }
   function keyOf(target) { return target.kind + ":" + target.id; }
@@ -927,13 +930,28 @@
       const clickable = ["r07-seg", "r07-seg-dashed", "r07-area-fill", "r07-obj-dot", "r07-district-fill"];
       clickable.forEach((id) => {
         map.on("click", id, onFeatureClick);
-        map.on("mouseenter", id, () => { map.getCanvas().style.cursor = "pointer"; });
-        map.on("mouseleave", id, () => { map.getCanvas().style.cursor = ""; });
+        map.on("mouseenter", id, () => { hovered.add(id); syncCursor(); });
+        map.on("mouseleave", id, () => { hovered.delete(id); syncCursor(); });
       });
+    }
+
+    // «Рука» над целью — своя и только когда щелчок по цели что-то делает. Чужой курсор (крестик мастера жалобы или
+    // инструмента карты) не заменяем и не стираем: раньше уход с цели ставил "" и крестик пропадал до конца рисования.
+    const hovered = new Set();
+    let ownCursor = false;
+    function syncCursor() {
+      let cs = null;
+      try { cs = map ? map.getCanvas().style : null; } catch (e) { cs = null; }
+      if (!cs) return;
+      const want = hovered.size > 0 && !R.on && !isPicking() && !mapTool();
+      if (want && (!cs.cursor || cs.cursor === "pointer")) { cs.cursor = "pointer"; ownCursor = true; }
+      // пока стоит крестик, «рука» под ним остаётся нашей: инструмент вернёт её, закончившись, — тогда и снимем
+      else if (!want && ownCursor && cs.cursor !== "crosshair") { if (cs.cursor === "pointer") cs.cursor = ""; ownCursor = false; }
     }
 
     function onFeatureClick(e) {
       if (isPicking()) return;   // щелчок — для мастера жалобы, карточка цели под ним не открывается
+      if (mapTool()) return;     // щелчок — инструменту карты (редактор рисует участок, 3D-проект, место идеи)
       if (R.on) return;          // хроника: карта показывает прошлый день, карточки «сегодня» не открываются
       const f = e.features && e.features[0];
       if (!f) return;
@@ -996,7 +1014,7 @@
       const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const started = performance.now();
       const step = (now) => {
-        const k = reduce ? 1 : Math.min(1, (now - started) / ANIM_MS);
+        const k = reduce ? 1 : Math.max(0, Math.min(1, (now - started) / ANIM_MS));   // первый кадр бывает раньше старта
         const eased = 1 - Math.pow(1 - k, 3);
         changes.forEach((c) => map.setFeatureState({ source: c.src, id: c.key }, { color: mix(c.from, c.to, eased) }));
         if (k < 1) S.anim = requestAnimationFrame(step);
@@ -1095,7 +1113,7 @@
       const started = performance.now();
       const step = (t) => {
         const c0 = performance.now();
-        const k = Math.min(1, (t - started) / dur);
+        const k = Math.max(0, Math.min(1, (t - started) / dur));
         const e = 1 - Math.pow(1 - k, 3);   // ease-out, как перекраска карты (VISUAL_BRIEF п. 5)
         list.forEach((c) => apply(c, e));
         R.cost.ms += performance.now() - c0;
@@ -1123,7 +1141,7 @@
       const started = performance.now();
       const step = (t) => {
         const c0 = performance.now();
-        const k = Math.min(1, (t - started) / dur);
+        const k = Math.max(0, Math.min(1, (t - started) / dur));
         const e = 1 - Math.pow(1 - k, 3);
         R.cost.ms -= c0;   // время чисел — в ту же копилку, что перетекание цвета
         els.forEach((c) => {
@@ -1710,6 +1728,36 @@
     const isPicking = () => S.picking || document.body.classList.contains("birge-picking") ||
       document.documentElement.classList.contains("bc-picking");
 
+    // Карта у инструмента (R12 INTEGRATION §11; контракт R04: пока редактор рисует, щелчок по карте — только редактору).
+    // Редактор R04 рисует участок (html[data-civic-editor-tool], CivicEditor.isDrawing() — держатся до конца щелчка, которым
+    // инструмент закончился), сценарий выбирает перекрытие (civic-scenarios:tool), ставят 3D-проект (civic-build3d:tool,
+    // .b3d-dock[data-state=placing]), выбирают место идеи (body.ri-picking). Тогда цель R07 не открывает карточку и не ставит
+    // «руку» поверх крестика, а значки пропускают нажатие к карте (heat.css .r07-map-tool): точка — там, где нажали.
+    const TOOL_EVENTS = ["civic-editor:tool", "civic-scenarios:tool", "civic-build3d:tool"];
+    const toolOwners = new Map();   // событие → элемент, объявивший инструмент; элемент снят со страницы — инструмента нет
+    function mapTool() {
+      for (const [type, el] of toolOwners) {
+        if (el && el.isConnected === false) toolOwners.delete(type);
+        else return true;
+      }
+      let drawing = false;
+      try { drawing = !!(window.CivicEditor && typeof window.CivicEditor.isDrawing === "function" && window.CivicEditor.isDrawing()); } catch (e) { drawing = false; }
+      const on = drawing || document.documentElement.hasAttribute("data-civic-editor-tool") ||
+        document.body.classList.contains("ri-picking") || !!document.querySelector(".b3d-dock[data-state='placing']");
+      // панель инструмента сняли без «выключения» — значки снова ловят нажатие с первого же наведения или щелчка
+      if (!on && map && !S.destroyed) map.getContainer().classList.remove("r07-map-tool");
+      return on;
+    }
+    function onToolEvent(ev) {
+      if (ev.detail && ev.detail.active) toolOwners.set(ev.type, ev.target);
+      else toolOwners.delete(ev.type);
+      if (!map || S.destroyed) return;
+      const on = mapTool();
+      map.getContainer().classList.toggle("r07-map-tool", on);
+      if (on) hideTip();
+      syncCursor();
+    }
+
     function forwardPick(key, ev) {
       const m = S.markers.get(key);
       const it = m && m.item;
@@ -1725,6 +1773,7 @@
 
     function onBadgeClick(key, ev) {
       if (isPicking()) { forwardPick(key, ev); return; }
+      if (mapTool()) return;   // карта у инструмента: мышью значок нажатие пропускает (heat.css), Enter — тоже не карточка
       const it = findItem(key);
       if (!it) return;
       if (R.on) {
@@ -2614,6 +2663,7 @@
     window.addEventListener("birge:lang", onLang);
     document.addEventListener("birge:lang", onLang);
     document.addEventListener("keydown", onKey);
+    TOOL_EVENTS.forEach((type) => document.addEventListener(type, onToolEvent));
     if (opts.hash !== false) window.addEventListener("hashchange", onHash);
     // «Горячее место» в «Картине дня» R08 шлёт отменяемое "birge:open-target". В сборке его ловит оболочка R01;
     // модуль ловит сам только по просьбе (opts.handleOpenTarget), чтобы не мешать оболочке переключить вкладку.
@@ -2713,6 +2763,7 @@
       window.removeEventListener("birge:lang", onLang);
       document.removeEventListener("birge:lang", onLang);
       document.removeEventListener("keydown", onKey);
+      TOOL_EVENTS.forEach((type) => document.removeEventListener(type, onToolEvent));
       window.removeEventListener("hashchange", onHash);
       document.removeEventListener("birge:open-target", onOpenTarget);
       if (S.legendEl) S.legendEl.remove();
@@ -2721,7 +2772,7 @@
       for (const c of S.clusters) c.marker.remove();
       S.clusters = [];
       if (S.tipEl) S.tipEl.remove();
-      if (map) map.getContainer().classList.remove("r07-focusing");
+      if (map) map.getContainer().classList.remove("r07-focusing", "r07-map-tool");
       if (map) {
         map.off("moveend", onMoveEnd);
         map.off("styledata", onStyleData);
