@@ -292,10 +292,12 @@
   flex: none;
   align-items: center;
   gap: 6px;
-  height: 32px;  /* видимая — 32 (эталон A, R11 R13-3); зона нажатия 44 — ::after ниже */
+  height: 44px;  /* рамка 44 — зона нажатия; видимая таблетка 32 — прозрачная кайма 6 px (как .mt-vote, R11 R13-3) */
   padding: 0 12px;
-  border: 0;
-  border-radius: 999px;
+  border: solid transparent;
+  border-width: 6px 0;
+  background-clip: padding-box;
+  border-radius: 16px / 22px;  /* внутри каймы — ровно 16 px: полукруглые концы таблетки 32 px */
   background: var(--c-primary, #121a17);
   color: var(--c-on-primary, #fff);
   font: inherit;
@@ -306,9 +308,7 @@
   transition: transform 150ms var(--qa-ease), background-color 150ms var(--qa-ease);
 }
 .qa .qa-vote::after {
-  content: "";
-  position: absolute;
-  inset: -6px -4px;
+  content: none;  /* зона нажатия — сама рамка 44 px */
 }
 .qa .qa-vote:hover {
   background: var(--c-primary-hover, #26312c);

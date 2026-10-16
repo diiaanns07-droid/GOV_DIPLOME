@@ -364,8 +364,12 @@ async function staffFlow(browser, w, h, lang) {
     console.log("SKIP: в сборке нет маршрутов meetings.* (нужен патч R01 или сборка B1+)");
     process.exit(0);
   }
-  const browser = await chromium.launch(fs.existsSync("/opt/pw-browsers/chromium-1194/chrome-linux/chrome")
-    ? { executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" } : {});
+  // Формат <input type=date> Chromium берёт из LANG процесса, а не из locale контекста (R11, круг 14): иначе «10/16/2026».
+  const browser = await chromium.launch({
+    ...(fs.existsSync("/opt/pw-browsers/chromium-1194/chrome-linux/chrome")
+      ? { executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" } : {}),
+    env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" },
+  });
   const sizes = FULL ? [[1366, 768], [1024, 768], [375, 812]] : [[1366, 768], [375, 812]];
   try {
     for (const [w, h] of sizes) for (const lang of ["ru", "kk"]) {

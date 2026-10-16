@@ -98,8 +98,12 @@ const worstContrast = (page) => page.evaluate(() => {
   const port = await freePort(), base = `http://127.0.0.1:${port}`;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r13-qa-"));
   const srv = await startServer(port, path.join(tmp, "civic.sqlite3"));
-  const browser = await chromium.launch(fs.existsSync("/opt/pw-browsers/chromium-1194/chrome-linux/chrome")
-    ? { executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" } : {});
+  // Формат <input type=date> Chromium берёт из LANG процесса, а не из locale контекста (R11, круг 14): иначе «10/16/2026».
+  const browser = await chromium.launch({
+    ...(fs.existsSync("/opt/pw-browsers/chromium-1194/chrome-linux/chrome")
+      ? { executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" } : {}),
+    env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" },
+  });
   try {
     for (const lang of ["ru", "kk"]) {
       for (const [w, hgt] of [[375, 812], [1366, 768]]) {
