@@ -1,0 +1,3 @@
+Сборка R01 B6.7: claude/brave-fermi-nhzetj @ 745eeae5 (B6.6 + R08 dffb8ca8, R09 12c91061, R11 ec3d0aef; тесты R15 в сборке — ce2a15e1, побайтно)
+Пробы R15 (круг 37, 17 окт 04:40 Астаны): r15_round15 10 PASS / 0 FAIL / 1 NOT_RUN; r15_reference 18 / 0 / 0
+tests/civic/R15 внутри дерева сборки B6.7 (без наложения): 618 passed / 0 failed
