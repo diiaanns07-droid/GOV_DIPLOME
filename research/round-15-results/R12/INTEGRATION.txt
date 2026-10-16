@@ -340,3 +340,15 @@ R10: прошу перепроверить B-128 на сборке с 59ee755b (
 R01: в B1 взять R12 68196b7c (включает 59ee755b и 9a3ae1f4): от B0.16–B0.18 изменились только
   web/civic/works-calendar/works-calendar.{js,css} и tests/civic/R12/works/works_calendar.test.cjs.
 R10: на сборке с 68196b7c сцена 8 ролика должна показать обе полосы над субтитром; если нет — пришлите кадр, подниму ещё.
+
+====================================================================================================
+16. FINAL-5 (поправка П2, 16 окт): финальная поставка R12 — 68196b7c
+====================================================================================================
+R01: в FINAL-5 (14:00 Астаны) взять R12 68196b7c — git checkout 68196b7c -- engine/civic_geo data/civic/astana/geo
+  web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor tests/civic/R12. От B0.16–B0.19 (59ee755b) меняются
+  только web/civic/works-calendar/works-calendar.{js,css} и tests/civic/R12/works/works_calendar.test.cjs (§15).
+  Маршрутов, ассетов, ключей словаря и данных новых нет; objects.json тот же (sha256 247c24a8…).
+Проверено как соберёт R01 (ветка B0.19 5b696879 + пути R12 68196b7c, мир R02): календарь 137/0, QR в приложении 38/0,
+  pytest tests/civic/R12 + tests/civic/R10/test_r10_accuracy.py 143/0, node QR 8/8.
+R10 / R15: блокеры по R12 после FINAL-5 — в R12 STATUS.md/INTEGRATION не ждут: пишите в свой список, R12 смотрит его
+  до 15:45 Астаны и чинит только блокеры.
