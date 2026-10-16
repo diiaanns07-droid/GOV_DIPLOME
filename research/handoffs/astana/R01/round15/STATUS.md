@@ -69,6 +69,8 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
   РУС и ҚАЗ, BUILD_LOG B0…B0.4.
 - 05:30 (16 окт) B0.15 (`79c766c1`): R03 76b4fe35, R08 1a1a4a9b (знак-домик на Ситуационном центре), R11 a0178fbe,
   R12 9a3ae1f4, R16 0534ea6c, R17 19fb4eb3; pytest этих ролей + R01 1448/0, r15_ia 41/0.
+- 07:30 (16 окт) B0.17 (`9f44429e`): R10 98e11593, R11 7a956748 (ui-kit: текст раунда 15 — --c-text-2), R13 9ca9bc72,
+  R17 2bd97cbc; pytest R01/R10/R11/R13/R17 903/0, r15_ia 41/0, r14_wave2 42/0.
 - 06:43 (16 окт) B0.16 (`49a69c17`, `1940e4db`): R11 d340d9d4, R12 59ee755b, R13 1c5b7213, R17 061419fb; скрипты кадров —
   LANG=ru_RU.UTF-8 (дата «16.10.2026»). pytest R01/R12/R13/R15/R17 1488/1 — FAIL замера R15 (сборка мусора в замере;
   с gc.disable() 1489/0), r15_ia 41/0.
@@ -130,16 +132,19 @@ R07 fe209c56 + патч оболочки R07, R09 D0 e494026e, дефекты о
 | R07 | claude/birge-r07-round-15-zjp4ob | 3d7cb28b («Хроника», один расчёт карты) | B0.2: 52dee9a4 · B0.3: fcfd9256 · B0.7: 9b1084d9 · B0.11: c6c7f94e · B0.13: 3d7cb28b |
 | R08 | **claude/laughing-euler-iv3on3** (первая заявка) · вторая сессия claude/inspiring-johnson-j7wksj | 1a1a4a9b | B0: 6cd8f2be · B0.3: ca8326cb · B0.5: 0e6e57a5 · B0.7: 062f899a (из первой ветки целиком) · B0.12: 0e0623bf · B0.13: 3dbb4fb1 · B0.15: 1a1a4a9b |
 | R09 | claude/quirky-ptolemy-k3z2mj | af69e9a5 (v2.1, объяснение подсказки мира) | FINAL-4.1: e494026e · B0.6: d9ca175c · B0.10: 0e0e8306 · B0.11: af69e9a5 |
-| R10 | claude/zen-wozniak-69d41q | eb0876cf (приёмка) | B0: 95de8b99 · B0.3: 46face57 · B0.7: 3b2bb63f · B0.8: 4272ee4b · B0.11: 2d5fd169 · B0.12: 0bbe8a35 · B0.14: eb0876cf |
-| R11 | claude/gracious-mendel-eopem6 | d340d9d4 (ui-kit r15, словарь) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 · B0.7: 442b617b · B0.8: ea188ed6 · B0.10: ffdb30c2 · B0.11: 23eab2d2 · B0.14: 4b8f0d62 · B0.15: a0178fbe · B0.16: d340d9d4 |
+| R10 | claude/zen-wozniak-69d41q | 98e11593 (приёмка) | B0: 95de8b99 · B0.3: 46face57 · B0.7: 3b2bb63f · B0.8: 4272ee4b · B0.11: 2d5fd169 · B0.12: 0bbe8a35 · B0.14: eb0876cf · B0.17: 98e11593 |
+| R11 | claude/gracious-mendel-eopem6 | 7a956748 (ui-kit r15, словарь) | B0: b6ced41d · B0.2: c3c376e7 · B0.5: 201ba4f6 · B0.7: 442b617b · B0.8: ea188ed6 · B0.10: ffdb30c2 · B0.11: 23eab2d2 · B0.14: 4b8f0d62 · B0.15: a0178fbe · B0.16: d340d9d4 · B0.17: 7a956748 |
 | R12 | claude/great-newton-8k3474 | 59ee755b (календарь работ, QR) | B0: 1c8d171d · B0.3: d4e968ce · B0.5: 721d6d49 · B0.7: 3d4c1afb · B0.15: 9a3ae1f4 · B0.16: 59ee755b |
-| R13 | claude/gifted-mayer-p86myv | 1c5b7213 (встречи, прогноз) | B0: 74903b7a · B0.5: 8a7b9468 · B0.11: 07458571 · B0.16: 1c5b7213 |
+| R13 | claude/gifted-mayer-p86myv | 9ca9bc72 (встречи, прогноз) | B0: 74903b7a · B0.5: 8a7b9468 · B0.11: 07458571 · B0.16: 1c5b7213 · B0.17: 9ca9bc72 |
 | R14 | (не начата на 18:40) | — | — |
-| R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf · B0.5: 19748bff · B0.7: 15324ff6 · B0.8: a5291311 · B0.11: 5c07f8f0 · B0.12: fb1b34d6 · B0.13: db6c75f5 · B0.16: 024ec896 (без изменений тестов) |
+| R15 | claude/practical-fermi-c58v1u | тесты — голова ветки | B0: 4995f2bf · B0.5: 19748bff · B0.7: 15324ff6 · B0.8: a5291311 · B0.11: 5c07f8f0 · B0.12: fb1b34d6 · B0.13: db6c75f5 · B0.16: 024ec896 (без изменений тестов) · B0.17: b7b75ee3 (без изменений тестов) |
 | R16 | claude/youthful-johnson-6nz5mp | 0534ea6c («Мой двор», «Сделаем вместе») | B0.2: e475fae9 · B0.5: db7da7de · B0.11: f4d19afe · B0.14: 99aa6cdc · B0.15: 0534ea6c |
-| R17 | claude/sweet-euler-5tiu5b | 061419fb (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 · B0.9: 29176133 · B0.10: 0add52ac · B0.11: 19fc4a0b · B0.14: 98985c50 · B0.15: 19fb4eb3 · B0.16: 061419fb |
+| R17 | claude/sweet-euler-5tiu5b | 2bd97cbc (штаб ведомств) | B0: 75300896 · B0.2: 191f81e7 · B0.5: d75e3cd9 · B0.7: 5650c869 · B0.9: 29176133 · B0.10: 0add52ac · B0.11: 19fc4a0b · B0.14: 98985c50 · B0.15: 19fb4eb3 · B0.16: 061419fb · B0.17: 2bd97cbc |
 
 ## Просьбы соседям
+- **R02 (до B1, 14:00)**: казахские тексты демо-мира — patch R11 `research/round-15-results/R11/patches/R02_world_kk.patch`
+  («Аладағы» → «Ауладағы» в «Нужно решение акима», «Учаске» → «Көше бөлігі» и др.; видно в «Картине дня» и Ситуационном
+  центре). R01 возьмёт мир только из вашей поставки (DELIVERY.json code_sha).
 - **R15** (`tests/civic/R15/round15/test_r15_round15_moderate.py:137`, `test_moderate_is_fast_on_hostile_text`): в общем
   процессе pytest (R01 + R12 + R13 + R15 + R17) случай `at-words` — 330–370 мс при пороге 0,2 с (два прогона подряд), отдельно
   — PASS, `moderate` 4–7 мс. В замер попадает полная сборка мусора большого процесса (`gc.collect()` на 0,5 млн объектов —
