@@ -1291,7 +1291,8 @@
         meta.push(tr(m.phase === "upcoming" ? "meet.staff.registered" : "meet.staff.registered_past", { n: m.registered || 0 }));
         meta.push(tr("meet.staff.questions_count", { n: (m.questions_count && m.questions_count.published) || 0 }));
       }
-      return h("button", { type: "button", class: "mt-row", "data-focus": "row-" + m.id, onclick: () => openMeeting(m.id) }, [
+      return h("button", { type: "button", class: "mt-row", "data-focus": "row-" + m.id, "data-phase": m.phase || null,
+        onclick: () => openMeeting(m.id) }, [
         dateTile(m.at, true),
         h("span", { class: "mt-row__main" }, [
           h("span", { class: "mt-row__title", text: pick(m, "title") }),
