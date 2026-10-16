@@ -4,7 +4,7 @@ R17 · «Бірге: ведомства вместе» — штаб ведомс
 ui/civic_agencies/, web/civic/agencies/, tests/civic/R17/. Чужие файлы (ui/web_server.py, web/index.html) я НЕ коммитил —
 для них ниже готовый patch. Какой код брать — code_sha в DELIVERY.json (последняя поставка).
 
-СОСТОЯНИЕ НА 16 ОКТ 16:25 (Астана) — РАУНД 15 ЗАКРЫТ (П2). R17 в FINAL-5 c2276360 и FINAL-5.1 e8d6cae6 — 622dcf1f (D18)
+СОСТОЯНИЕ НА 16 ОКТ 17:35 (Астана) — РАУНД 15+ (П3) до FINAL-6. В FINAL-5 / FINAL-5.1 — R17 622dcf1f (D18); для FINAL-6 — последняя поставка DELIVERY.json
   • Сборка R01 B0.18 взяла R17 94d60728 (D15). Маршруты, ассеты, теги, configure(records) у R01 есть с B0 —
     patch из §1 на ветку R01 больше не нужен. Для FINAL-5 (П2) — только пути R17 из DELIVERY.json (финальная поставка D18):
       git checkout <code_sha> -- ui/civic_agencies web/civic/agencies tests/civic/R17
@@ -321,6 +321,13 @@ LOCAL-задач нет: всё работает без сети (форма з�
     pytest R01, R03, R07, R09, R10, R13, R15, R16, R17 2599 / 0; 16 окт ~04:20 на R01 c6d62440 + R03 (последний) + R17
     checkpoint 15 — tests/civic/R03 297 passed, 0 failed (в т. ч. test_real_neighbours_if_present).
 
+
+  • П3 (кадры 02 / 08 FINAL-5.1, «кучка наезжающих колец в центре карты» — R07 + R12, R05, R06, R17): проверено на FINAL-5
+    c2276360 с миром (1366 акимат, 375 житель; maplibre queryRenderedFeatures в прямоугольнике кучки): слоёв R17 там НЕТ —
+    слой «Кризис» (r17-crisis-*) на обзорной карте не добавлен, он появляется только по «Показать на карте» в штабе.
+    В кучке — слои civic-r03-point, civic-r03-point-halo, civic-r03-point-synthetic, civic-r03-synthetic-outline (карта
+    FINAL-4, web/map.js: точки целей и синтетики), рядом civic-r03-line / -approx-*; DOM-метки — только r07-badge и
+    district-marker. Розовая заливка Нуры — r07-district-fill (а не зона кризиса R17). Что делать — решение R07 / R01.
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 10. R10 · дефекты на R17 (research/round-15-results/R10/BUGS.md) — что сделано
