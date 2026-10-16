@@ -1,13 +1,13 @@
 {
   "role": "R04",
   "round": 15,
-  "delivery": "D3.3 (П3, 16 окт 18:50 по Астане) — code a3888d13: D3 b810cbb4 (разбор ошибок на dev-половине набора R02) + устойчивый тест скорости + экран в три размера шрифта (VISUAL_BRIEF §4) + казахские тексты экрана по словарю R11 + RUN п. 5. Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
+  "delivery": "D4 (П3, 16 окт 19:51 по Астане) — code 9c16e868: D3.3 a3888d13 + исправление R15-S53 (moderate-5, линейно; da0925fa) + патч казахских текстов R11 + экран по R10 B-134 / B-135 (ключи = словарь R11 d0266f76, мелкий текст --c-text-2, плашки людей — токены значков R11, слово в кадрах счётчика) + кадры убраны из папок R04 (тест П1). Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
   "branch": "claude/gifted-maxwell-i66wwi",
   "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
   "restored_from": null,
   "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
-  "code_sha": "a3888d1363cb08266ee71a65d684e32a8d9b7f5c",
-  "tested_sha": "a3888d1363cb08266ee71a65d684e32a8d9b7f5c",
+  "code_sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+  "tested_sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
   "push_status": "OK",
   "changed_paths": [
     "ml/civic_replies/__init__.py",
@@ -50,9 +50,11 @@
     "research/round-15-results/R04/intake_eval/eval_halves.py",
     "research/round-15-results/R04/intake_eval/r02_night_blind_a2e004c9.json",
     "research/round-15-results/R04/intake_eval/r02_night_halves_after_dev_fixes.json",
+    "research/round-15-results/R04/intake_eval/r02_night_halves_after_dev_fixes_gold_cfcccf70.json",
     "research/round-15-results/R04/intake_eval/r02_night_halves_blind.json",
     "research/round-15-results/R04/patches/r01_intake_routes.patch",
-    "research/round-15-results/R04/patches/r01_web_server_r04_routes.patch"
+    "research/round-15-results/R04/patches/r01_web_server_r04_routes.patch",
+    "research/round-15-results/R04/screens/README.md"
   ],
   "functions": {
     "route": "ui.civic_ml_api.route(text?, category?, subtopic?, point?, body?) -> POST /api/civic/v2/route (все)",
@@ -228,11 +230,12 @@
     },
     "P3_R04_pytest": {
       "status": "PASS",
-      "passed": 559,
+      "passed": 569,
       "failed": 0,
       "skipped": 1,
       "cmd": "pytest -q tests/civic/R04",
-      "sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280"
+      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+      "note": "+10 тестов S53: враждебные цепочки цифр 200 → 5000 знаков (< 0,2 с) и сверка со старым перебором"
     },
     "P3_on_R09_branch": {
       "status": "PASS",
@@ -242,36 +245,32 @@
       "cmd": "pytest -q tests/civic/R04/intake tests/civic/R09/test_r09_intake.py (код R04 скопирован в дерево R09)",
       "note": "путь create_from_intake R09"
     },
-    "P3_R15_intake_on_R15_branch": {
-      "status": "1_DISAGREEMENT",
-      "passed": 31,
-      "failed": 1,
-      "branch_sha": "1748bce7",
-      "cmd": "pytest -q tests/civic/R15/round15/test_r15_round15_intake.py",
-      "note": "test_commit_creates_demo_records_once_without_personal_data ждёт demo у записей из вставленных текстов; по П3 demo — только у примера (INTEGRATION 9.6)"
-    },
     "P3_stand_http": {
       "status": "PASS",
       "passed": 19,
       "failed": 0,
       "cmd": "tests/civic/R04/intake/http_check_intake.py",
-      "stand": "FINAL-5.1 e8d6cae6 + patches/r01_intake_routes.patch + код R04 + набор R02 fc3d8daa",
-      "sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280"
+      "stand": "сборка R01 B6.2 06a62c8c + код R04 9c16e868 + словарь R11 d0266f76, мир R02, набор R02 «за ночь»",
+      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+      "numbers": "301 → 127 задач · 19 служб · 9 срочных · 174 повтора; ready 106 = 104 новых + 2 к открытым; 0,31 с"
     },
     "P3_stand_ui": {
       "status": "PASS",
-      "passed": 88,
+      "passed": 124,
       "failed": 0,
       "cmd": "node tests/civic/R04/intake/ui_check_intake.cjs",
       "sizes": "1366 / 1024 / 375 × ru / kk",
-      "sha": "a3888d1363cb08266ee71a65d684e32a8d9b7f5c"
+      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+      "stand": "сборка R01 B6.2 06a62c8c + код R04 + словарь R11 d0266f76",
+      "new_checks": "нет «{n}» и сырых ключей; кнопка «Создать задачи» = подпись + одно число (= ready); «Почему так» с данными; контраст текста ≥ 4,5 : 1 (крупный ≥ 3 : 1); кадры счётчика — слово для показанного числа"
     },
     "P3_neighbours_route_moderate": {
       "status": "PASS",
-      "passed": 772,
+      "passed": 1032,
       "failed": 0,
-      "sha": "b810cbb47b226ce3fbe35366a34f94b1cb5a1280",
-      "cmd": "pytest tests/civic/R09 R15/test_r15_profanity R06/test_r06_routing_classifier R01/test_r01_api_v2 R13/qa R08 feedback"
+      "skipped": 1,
+      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+      "cmd": "pytest tests/civic/R09 tests/civic/R15/test_r15_profanity.py tests/civic/R06/test_r06_routing_classifier.py tests/civic/R01/test_r01_api_v2.py tests/civic/R13/qa tests/civic/R08"
     },
     "P3_on_R01_B6_1": {
       "status": "PASS",
@@ -279,13 +278,30 @@
       "R01_pytest": "374 passed / 1 skipped",
       "R04_plus_api_v2": "687 passed / 1 skipped",
       "sha": "dd612de67db19522935659144b64306e00055dd8"
+    },
+    "P3_R15_on_R15_branch": {
+      "status": "PASS",
+      "passed": 99,
+      "xpassed": 2,
+      "failed": 0,
+      "branch_sha": "970aa408",
+      "cmd": "pytest -q tests/civic/R15/round15/test_r15_round15_moderate.py tests/civic/R15/round15/test_r15_round15_intake.py (код R04 9c16e868 в дереве R15)",
+      "note": "S53 (тест скорости 500 → 5000 знаков) — PASS; XPASS — нестрогие xfail «два телефона подряд» (moderate-4/5 есть в R04)"
+    },
+    "P3_on_R01_B6_2": {
+      "status": "PASS",
+      "branch_sha": "06a62c8c",
+      "R01_pytest": "374 passed / 1 skipped",
+      "R04_pytest": "569 passed / 1 skipped",
+      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+      "note": "в дереве B6.2 — код R04 9c16e868 и словарь R11 d0266f76"
     }
   },
   "screens": [
     "web/civic/intake/intake.js",
     "web/civic/intake/intake.css"
   ],
-  "screens_note": "П3: экран «Разбор обращений» — window.BirgeIntake.mount(root, {api, apiBase, openTarget, openSection, path}) -> {setLang, setPath, destroy}; раздел #intake (SCREENS.intake R01; экран и сам зовёт registerScreen), #intake/sample — пример в поле. Ключи — словарь R11 intake.* (+ новые, INTEGRATION 9.5), метка BirgeUI.aiTag(). Кадры 1366 / 1024 / 375 × ru / kk сняты проверкой ui_check_intake.cjs на стенде (в репозиторий не кладём).",
+  "screens_note": "П3: экран «Разбор обращений» — window.BirgeIntake.mount(root, {api, apiBase, openTarget, openSection, path}) -> {setLang, setPath, destroy}; раздел #intake (SCREENS.intake R01; экран и сам зовёт registerScreen), #intake/sample — пример в поле. Ключи intake.* — те же, что в словаре R11 d0266f76 (ru — 0 расхождений, kk — 0), метка BirgeUI.aiTag(). Кадры 1366 / 1024 / 375 × ru / kk снимает ui_check_intake.cjs на стенде (в репозиторий не кладём — тест П1 test_r04_has_no_images_in_its_paths; screens/README.md).",
   "known_limits": [
     "Маршруты /route, /reply-draft, /moderate подключил R01 (2bd5bb5e; сборки B0–B0.6). На чистом FINAL-4 без шлюза R01 их нет — patches/r01_web_server_r04_routes.patch оставлен как справка.",
     "route(): правила и словари написаны вручную; на живых обращениях точность ниже, чем 1.0 набора (независимая оценка — R02 v1_in_v2: 0.868 согласие с категорией). Опечатки («батаоеи», «мсуорка») не ловятся.",
@@ -302,12 +318,12 @@
     "П3: оценка — на синтетическом наборе R02 (один автор, повторы похожи сильнее, чем в жизни); на живых обращениях числа будут ниже.",
     "П3: одноимённые остановки OSM — выбирается одна запись индекса; улицы-двойники склеены в одну цель (основная линия улицы); у перекрёстка выбирается центральный из светофоров узла."
   ],
-  "next_step": "П3: R01 берёт D2 (38caaaaa) в кандидат FINAL-6 (17 окт 12:00); R04 — разбор ошибок на наборе R02 только с пометкой «после разбора ошибок», ответы соседям (R15 demo, R10 I7, R09 тексты заметками, R11 ключи); 12:00–16:00 — только блокеры R10 / R15; 18:00 — «Раунд 15 закрыт».",
+  "next_step": "П3: R01 берёт D4 (9c16e868; moderation только r04-moderate-5) и словарь R11 d0266f76 в кандидат FINAL-6 (17 окт 12:00); R10 перепроверяет B-134 / B-135; R11 — по желанию токены значков в .bk-lrow__cnt (INTEGRATION 9.11); 12:00–16:00 — только блокеры R10 / R15; 18:00 — «Раунд 15 закрыт».",
   "amendments": {
     "P1": {
       "read_at": "2026-10-15T17:15+05:00",
       "package_sha": "2d329b2c",
-      "applied": "У R04 нет экрана, кадров и слайдов — выходы только текстовые. Правило 4 (без эмодзи и украшений) и правила 1–2, 7 (без картинок) закреплены тестом test_r04_amendment_p1.py (2/2)."
+      "applied": "До П3 у R04 не было экрана — выходы только текстовые. С П3 — экран «Разбор обращений» без картинок (значки набора R11, метка BirgeUI.aiTag). Правило 4 (без эмодзи) — test_r04_amendment_p1.py и ui_check_intake.cjs; правила 1–2, 7 — в папках R04 нет картинок (тест; кадры D3 убраны 16 окт 19:30, снимаются вне репозитория)."
     },
     "P2": {
       "read_at": "2026-10-16T10:26+05:00",
@@ -317,7 +333,7 @@
     "P3": {
       "read_at": "2026-10-16T17:26+05:00",
       "package_sha": "102f887d",
-      "applied": "R04 — владелец «ИИ-разбора пачки» (сцена 0): intake.py (analyze / sample / commit), экран web/civic/intake, тесты tests/civic/R04/intake, оценка на наборе R02. Поставка D2 — до 17 окт 11:00 (сейчас 38caaaaa)."
+      "applied": "R04 — владелец «ИИ-разбора пачки» (сцена 0): intake.py (analyze / sample / commit), экран web/civic/intake, тесты tests/civic/R04/intake, оценка на наборе R02. Поставка D4 — 9c16e868 (до 17 окт 11:00 — только исправления)."
     }
   },
   "patches_for_neighbours": {
@@ -331,6 +347,11 @@
       "status": "fixed",
       "sha": "d8448d48",
       "note": "подпись вплотную к номеру, номер через точки, полноширинные цифры; тест R15 test_label_glued_dotted_and_fullwidth_numbers — 5/5 XPASS(strict) с кодом R04"
+    },
+    "S53": {
+      "status": "fixed",
+      "sha": "da0925fa",
+      "note": "moderate-4 _split_run перебирал все отрезки цепочки (O(n³)); r04-moderate-5: окна ≤ 19 цифр допустимых длин — patch R15 P-R04-S53.diff, прочитан и проверен; 5000 знаков «123 …» — 0,045 с; ответы те же (1500 случайных цепочек); тесты R15 970aa408 — 99 passed, 2 xpassed"
     }
   },
   "neighbour_findings": {
@@ -355,7 +376,7 @@
       "note": "По KK_REVIEW_R15 R11 (№ 19, 39, 40) и словарю joint.part.*: части служб — ждёт / в работе / сделано, күтуде / орындалуда / орындалды (было «ждёт очереди», «кезекте», «жұмыста»); «передали» по-казахски — «жіберілді» (было «берілді»). Отвергнутых R11 слов (учаске, дейін, батырма, дағдарыс) в текстах R04 нет."
     }
   },
-  "status": "П3 (раунд 15+ до FINAL-6): поставка D3 — «ИИ-разбор пачки обращений» (сцена 0)",
+  "status": "П3 (раунд 15+ до FINAL-6): поставка D4 — «ИИ-разбор пачки обращений» (сцена 0); S53 исправлена; B-134 / B-135 — исправлены, ждут перепроверки R10",
   "final_builds": {
     "FINAL-5": "c2276360 (16 окт 13:33 по Астане)",
     "FINAL-5.1": "e8d6cae6 (16 окт 15:26; код FINAL-5 + документы R14)",
@@ -406,6 +427,27 @@
         "places_found": "0.9213 -> 0.9685"
       },
       "files": "research/round-15-results/R04/intake_eval/ (README.md, r02_night_halves_*.json)"
+    },
+    "eval_R02_after_dev_fixes_gold_cfcccf70": {
+      "note": "ПОСЛЕ РАЗБОРА ОШИБОК (dev — чётные группы); эталон R02 cfcccf70: перекрёсток — любой светофор того же узла (просьба R04 9.8); синтетика R02",
+      "full": {
+        "lead_service": 0.9169,
+        "service_set": 0.9103,
+        "pairwise_f1": 0.9209,
+        "groups_exact": "33/46",
+        "places_found": 0.9788
+      },
+      "dev_even": {
+        "places_found": "0.9038 -> 0.9872 (только из-за эталона)"
+      },
+      "heldout_odd": {
+        "lead_service": 0.8358,
+        "pairwise_f1": 0.6509,
+        "places_found": 0.9685,
+        "note": "не изменилась — групп с перекрёстками в отложенной половине нет"
+      },
+      "blind_on_new_gold": "слепой код a2e004c9 — те же числа, что раньше (правила перекрёстков у него не было)",
+      "file": "research/round-15-results/R04/intake_eval/r02_night_halves_after_dev_fixes_gold_cfcccf70.json"
     }
   }
 }

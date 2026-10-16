@@ -49,8 +49,10 @@ R04 · РАУНД 15 · КАК ЗАПУСТИТЬ И ПРОВЕРИТЬ
    git apply research/round-15-results/R04/patches/r01_intake_routes.patch (только в своей копии), затем как в п. 3
    (CIVIC_DEMO_WORLD=1 — мир R02; набор «за ночь» — data/civic/astana/demo-world/intake_night_v1.json, если есть):
    R04_STAND=http://127.0.0.1:8655 python3 -B tests/civic/R04/intake/http_check_intake.py     # 19 проверок
-   R04_STAND=http://127.0.0.1:8655 node tests/civic/R04/intake/ui_check_intake.cjs <папка-кадров>   # 88 проверок,
-       1366 / 1024 / 375 × ru / kk; Chromium — /opt/pw-browsers (R04_CHROME — другой путь)
+   R04_STAND=http://127.0.0.1:8655 node tests/civic/R04/intake/ui_check_intake.cjs <папка-кадров>   # 124 проверки,
+       1366 / 1024 / 375 × ru / kk; Chromium — /opt/pw-browsers (R04_CHROME — другой путь); кадры — вне репозитория (тест П1)
+       (16 окт 19:50: + нет «{n}» и сырых ключей, кнопка = подпись + одно число, «Почему так» с данными, контраст ≥ 4,5 : 1,
+       кадры счётчика итога; стенд — сборка R01 B6.2 06a62c8c + код R04 + словарь R11 d0266f76)
    Перезапуск стенда: процесс python запускайте отдельной командой (не «cd … && … &»), иначе $! — оболочка, и
    старый сервер переживёт kill (порт занят, новая база не та).
    Оценка на наборе R02 (оценщик R02): research/round-15-results/R04/intake_eval/README.md — eval_halves.py
