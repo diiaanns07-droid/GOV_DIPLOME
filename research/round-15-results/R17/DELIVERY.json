@@ -33,7 +33,15 @@
    ]
   },
   "owner": "R01",
-  "note": "Сборка R01 B0 (74fb8c6d) уже взяла R17 @ 75300896 вместе с маршрутами, ассетами, тегами и configure(records) — для B1 patch не нужен: git checkout <code_sha> -- ui/civic_agencies web/civic/agencies tests/civic/R17"
+  "note": "Сборка R01 B0 (74fb8c6d) уже взяла R17 @ 75300896 вместе с маршрутами, ассетами, тегами и configure(records) — для B1 patch не нужен: git checkout <code_sha> -- ui/civic_agencies web/civic/agencies tests/civic/R17",
+  "for_R01_alert_slot": {
+   "file": "research/round-15-results/R17/patches/R01_alert_slot_beside_panel.patch",
+   "applies_to": "claude/brave-fermi-nhzetj (голова 16 окт, B6.0 69ff2e0e) — git apply --check OK",
+   "touches": [
+    "web/civic/shell/birge.css: слот .birge-alert справа от открытой левой панели (≥ 761 px)"
+   ],
+   "why": "П3 / R12 §18: на 1024 плашка кризиса закрывала «×» паспорта QR в левой панели"
+  }
  },
  "api": {
   "module": "ui.civic_agencies",

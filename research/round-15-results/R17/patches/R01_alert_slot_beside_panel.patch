@@ -1,0 +1,19 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index ce2fdfac..4a3d115f 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -1032,6 +1032,14 @@ html[data-birge-show="1"] body.civic-mode .civic-explore-notices { display: none
+ .birge-alert { position: fixed; z-index: 44; top: 76px; left: var(--birge-nav-left, 50%); transform: translateX(-50%); width: min(560px, calc(100vw - 40px)); }
+ .birge-alert:empty { display: none; }
+ body.civic-mode:not([data-birge-section="map"]) .birge-alert { display: none; }
++/* Пока открыта левая панель (карточка, паспорт QR и др.: data-birge-left не none / summary / replay / near) — слот плашки
++   кризиса справа от неё, а не по центру поверх панели: на 1024 «×» паспорта QR оказывался под плашкой и открывал кризис
++   (R12 INTEGRATION §18, R17). Панель — 20…408 px; справа оставлены 76 px под кнопки карты. Телефон — как было. */
++@media (min-width: 761px) {
++  body.civic-mode[data-birge-layout="ref"]:not([data-birge-left="none"], [data-birge-left="summary"], [data-birge-left="replay"], [data-birge-left="near"]) .birge-alert {
++    left: 420px; transform: none; width: min(560px, calc(100vw - 420px - 76px));
++  }
++}
+ @media (max-width: 760px) {
+   .birge-alert { top: 68px; left: 8px; right: 8px; width: auto; transform: none; }
+ }
