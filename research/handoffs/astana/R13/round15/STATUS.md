@@ -222,6 +222,9 @@ restored_from: — (роль начата с нуля в этом раунде; 
   api_state, привязку R06 civic_store.v2 и источник R04 similar — как советует ui/civic_agencies/api_state.py. Теперь
   R13 qa → R03 round15 147/0, R13 + R03 + R08 + R17 одним процессом 1076/0; pytest R13 183/0. Код модулей не менялся.
   ФИНАЛЬНАЯ ПОСТАВКА 5.8 — code_sha 865289cb (для FINAL-5).
+- 12:24 круг 18: AMENDMENTS — П1, П2 (новых нет). R01 B0.21 (fceec354, pytest 2218/0) взял R13 b24adf5d; FINAL-5 — в 14:00
+  (берёт code_sha из DELIVERY: 865289cb = b24adf5d + conftest тестов R13). Новых просьб к R13 нет (R07: сброс карты у них
+  уже есть). Новых функций по П2 не начинаю.
 
 ## Дальше
 - Каждый круг: AMENDMENTS.md пакета → find_branches.py → соседи (R01 сборка, R02 мир, R06 лента, R08 блоки, R10 дефекты,
