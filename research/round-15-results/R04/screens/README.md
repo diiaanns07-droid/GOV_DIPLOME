@@ -2,7 +2,7 @@
 
 Стенд: FINAL-5.1 e8d6cae6 + маршруты intake (patches/r01_intake_routes.patch; у R01 — cbb067aa) + код R04 b810cbb4 +
 набор R02 «обращения за ночь» (fc3d8daa), демо-мир R02, вход сотрудника. Снято проверкой
-tests/civic/R04/intake/ui_check_intake.cjs (88/88) — Chromium, 16 окт 18:50 по Астане, чистая база стенда. Всё на кадрах — синтетика
+tests/civic/R04/intake/ui_check_intake.cjs (88/88) — Chromium, 16 окт 18:42 по Астане, чистая база стенда. Всё на кадрах — синтетика
 («Пример»); места — OpenStreetMap.
 
 - intake-1366-ru-3-result.png — итог «301 обращение → 127 задач · 19 служб · 9 срочных · 174 повтора склеено», срочные сверху;
