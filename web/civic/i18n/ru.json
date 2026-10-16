@@ -3496,5 +3496,10 @@
  "intake.error.commit": "Задачи не созданы. Повторите.",
  "intake.error.sample": "Пример не загрузился. Повторите.",
  "inbox.source.intake_short": "Разбор пачки",
- "inbox.pane.empty": "Выберите обращение в списке слева"
+ "inbox.pane.empty": "Выберите обращение в списке слева",
+ "heat.place_empty": {
+  "one": "{place}: за {n} день жалоб нет",
+  "few": "{place}: за {n} дня жалоб нет",
+  "many": "{place}: за {n} дней жалоб нет"
+ }
 }

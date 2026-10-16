@@ -1353,5 +1353,6 @@
  "intake.joined": "R04 · web/civic/intake/intake.js",
  "intake.empty.title": "R04 · web/civic/intake/intake.js",
  "intake.staff_only": "R04 · web/civic/intake/intake.js",
- "intake.error.text": "R04 · web/civic/intake/intake.js"
+ "intake.error.text": "R04 · web/civic/intake/intake.js",
+ "heat.place_empty": "R07 · web/civic/heat/heat.js"
 }

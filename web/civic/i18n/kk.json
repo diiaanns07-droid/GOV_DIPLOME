@@ -2935,5 +2935,6 @@
  "intake.error.commit": "Тапсырмалар жасалмады. Қайталаңыз.",
  "intake.error.sample": "Үлгі жүктелмеді. Қайталаңыз.",
  "inbox.source.intake_short": "Топтаманы талдау",
- "inbox.pane.empty": "Сол жақтағы тізімнен өтінішті таңдаңыз"
+ "inbox.pane.empty": "Сол жақтағы тізімнен өтінішті таңдаңыз",
+ "heat.place_empty": "{place}: соңғы {n} күнде шағым жоқ"
 }
