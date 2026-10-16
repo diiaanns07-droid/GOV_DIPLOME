@@ -2,7 +2,7 @@
  "label": "FINAL-5.1 e8d6cae6 — база П3",
  "root": "/tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/builds/r01-final51",
  "sha": "e8d6cae6",
- "when": "2026-10-16T13:15:47.257Z",
+ "when": "2026-10-16T13:34:29.381Z",
  "sizes": [
   "1366x768",
   "375x812"
@@ -13,7 +13,7 @@
  "counts": {
   "PASS": 230,
   "WARN": 23,
-  "FAIL": 23,
+  "FAIL": 21,
   "NOT_RUN": 2
  },
  "rows": [
@@ -238,7 +238,7 @@
     "text": "Назад",
     "ring": true,
     "outline": "solid 3px",
-    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+    "shadow": "rgba(255, 255, 255, 0.957) 0px 0px 0px 1"
    },
    "shot": null
   },
@@ -441,7 +441,7 @@
     "text": "Предложить дело для двор",
     "ring": true,
     "outline": "solid 3px",
-    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
    },
    "shot": null
   },
@@ -842,7 +842,7 @@
    "check": "экран открыт с содержимым",
    "status": "PASS",
    "detail": {
-    "chars": 20650
+    "chars": 20651
    },
    "shot": "1366-ru-inbox.jpg"
   },
@@ -1049,7 +1049,7 @@
     "text": "Все\n262",
     "ring": true,
     "outline": "solid 3px",
-    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+    "shadow": "rgba(255, 255, 255, 0.765) 0px 0px 0px 1"
    },
    "shot": null
   },
@@ -1073,7 +1073,7 @@
    "check": "экран открыт с содержимым",
    "status": "PASS",
    "detail": {
-    "chars": 21302
+    "chars": 21303
    },
    "shot": "1366-ru-inbox-card.jpg"
   },
@@ -1232,8 +1232,8 @@
       "sticky": "Новые 21",
       "gap": 24,
       "peek": {
-       "y": 2,
-       "text": "Показать на карте B-0010 · Новое · С"
+       "y": 10,
+       "text": "B-0010 · Новое · Сообщили 3 человека"
       }
      },
      {
@@ -1245,13 +1245,7 @@
       }
      }
     ],
-    "over": [
-     {
-      "sticky": "Новые 21",
-      "row": "Остановка «Хан Шатыр» Остановк",
-      "overlap": 196
-     }
-    ]
+    "over": []
    },
    "shot": "1366-ru-inbox-card.jpg"
   },
@@ -1436,33 +1430,6 @@
     "emoji": []
    },
    "shot": null
-  },
-  {
-   "screen": "day",
-   "owner": "R08",
-   "variant": "1366-ru",
-   "check": "липкая плашка: над ней не видно строк при прокрутке, на строку не наезжает (П3, кадр 05)",
-   "status": "FAIL",
-   "detail": {
-    "peek": [
-     {
-      "sticky": "Картина дня · 16 окт",
-      "gap": 32,
-      "peek": {
-       "y": 2,
-       "text": "25 Новые обращения больше на 92 % че"
-      }
-     }
-    ],
-    "over": [
-     {
-      "sticky": "Картина дня · 16 окт",
-      "row": "Картина дня · 16 окт Весь горо",
-      "overlap": 52
-     }
-    ]
-   },
-   "shot": "1366-ru-day.jpg"
   },
   {
    "screen": "day",
@@ -1700,7 +1667,7 @@
     "text": "Закрыть",
     "ring": true,
     "outline": "solid 3px",
-    "shadow": "rgba(255, 255, 255, 0.957) 0px 0px 0px 1"
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
    },
    "shot": null
   },
@@ -1894,7 +1861,7 @@
     "text": "Закрыть",
     "ring": true,
     "outline": "solid 3px",
-    "shadow": "rgba(255, 255, 255, 0.984) 0px 0px 0px 1"
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
    },
    "shot": null
   },
@@ -2492,7 +2459,7 @@
     "text": "Назад",
     "ring": true,
     "outline": "solid 3px",
-    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+    "shadow": "rgba(255, 255, 255, 0.957) 0px 0px 0px 1"
    },
    "shot": null
   },
@@ -2985,7 +2952,7 @@
    "check": "экран открыт с содержимым",
    "status": "PASS",
    "detail": {
-    "chars": 20650
+    "chars": 20651
    },
    "shot": "375-ru-inbox.jpg"
   },
@@ -3124,7 +3091,7 @@
       "gap": 16,
       "peek": {
        "y": 2,
-       "text": "Остановки и транспорт · Долго ждать,"
+       "text": "Остановка «Хан Шатыр» Остановки и тр"
       }
      },
      {
@@ -3132,7 +3099,7 @@
       "gap": 16,
       "peek": {
        "y": 2,
-       "text": "Двор: BI City Tokyo"
+       "text": "Двор: BI City Tokyo Снег и гололёд ·"
       }
      }
     ],
@@ -3183,7 +3150,7 @@
    "check": "экран открыт с содержимым",
    "status": "PASS",
    "detail": {
-    "chars": 21302
+    "chars": 21303
    },
    "shot": "375-ru-inbox-card.jpg"
   },
@@ -3333,7 +3300,7 @@
       "gap": 16,
       "peek": {
        "y": 2,
-       "text": "Дороги · Яма, разбитый асфальт"
+       "text": "Участок: улица Баян Сулу Дороги · Ям"
       }
      },
      {
@@ -3341,17 +3308,11 @@
       "gap": 16,
       "peek": {
        "y": 2,
-       "text": "Двор: BI City Tokyo"
+       "text": "Двор: BI City Tokyo Снег и гололёд ·"
       }
      }
     ],
-    "over": [
-     {
-      "sticky": "Новые 21",
-      "row": "Остановка «Хан Шатыр» Остановк",
-      "overlap": 454
-     }
-    ]
+    "over": []
    },
    "shot": "375-ru-inbox-card.jpg"
   },
@@ -3387,7 +3348,7 @@
     "text": "Все\n262",
     "ring": true,
     "outline": "solid 3px",
-    "shadow": "rgba(255, 255, 255, 0.957) 0px 0px 0px 1"
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
    },
    "shot": null
   },
@@ -3516,33 +3477,6 @@
     "emoji": []
    },
    "shot": null
-  },
-  {
-   "screen": "day",
-   "owner": "R08",
-   "variant": "375-ru",
-   "check": "липкая плашка: над ней не видно строк при прокрутке, на строку не наезжает (П3, кадр 05)",
-   "status": "FAIL",
-   "detail": {
-    "peek": [
-     {
-      "sticky": "Картина дня · 16 окт",
-      "gap": 24,
-      "peek": {
-       "y": 2,
-       "text": "25 Новые обращения больше на 92 % че"
-      }
-     }
-    ],
-    "over": [
-     {
-      "sticky": "Картина дня · 16 окт",
-      "row": "Картина дня · 16 окт Весь горо",
-      "overlap": 52
-     }
-    ]
-   },
-   "shot": "375-ru-day.jpg"
   },
   {
    "screen": "day",
@@ -3752,7 +3686,7 @@
     "text": "Закрыть",
     "ring": true,
     "outline": "solid 3px",
-    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
    },
    "shot": null
   },
@@ -3932,7 +3866,7 @@
     "text": "Закрыть",
     "ring": true,
     "outline": "solid 3px",
-    "shadow": "rgba(255, 255, 255, 0.957) 0px 0px 0px 1"
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
    },
    "shot": null
   },
