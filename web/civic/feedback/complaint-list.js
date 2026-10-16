@@ -180,6 +180,41 @@
     var scrollOpen = false;
     var staffHandle = null;
     var alive = true;
+    // П3 (кадр 05 review_final51): «Обращения» — на всю ширину листа оболочки, без пустых полей. На ≥ 1200 px — две
+    // колонки, как в почте: список | карточка, у каждой своя прокрутка (экран — ровно по высоте листа). Ниже — одна колонка,
+    // лист прокручивается как прежде, а липкая плашка группы встаёт к самому краю листа: над ней не видно уехавших строк.
+    var splitMq = window.matchMedia ? window.matchMedia("(min-width: 1200px)") : null;
+    var layout = { split: false };
+
+    function scrollParent() {
+      for (var el = box.parentElement; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+        var oy = window.getComputedStyle(el).overflowY;
+        if ((oy === "auto" || oy === "scroll") && el.clientHeight > 0) return el;
+      }
+      return null;
+    }
+    // Замер листа: его отступ сверху (плашке группы — top: -отступ) и сколько высоты остаётся экрану. -> сменилась ли
+    // раскладка (одна колонка ↔ две): перерисовываем только тогда.
+    function measure() {
+      var sheet = scrollParent(), pad = 0, fit = 0;
+      if (sheet) {
+        var cs = window.getComputedStyle(sheet);
+        pad = parseFloat(cs.paddingTop) || 0;
+        var top = box.getBoundingClientRect().top - sheet.getBoundingClientRect().top - sheet.clientTop + sheet.scrollTop;
+        fit = Math.floor(sheet.clientHeight - top - (parseFloat(cs.paddingBottom) || 0));
+      }
+      box.style.setProperty("--bc-stick", (-pad) + "px");
+      var split = !!(splitMq && splitMq.matches) && box.clientWidth >= 860 && fit >= 360;
+      if (split) box.style.setProperty("--bc-fit-h", fit + "px"); else box.style.removeProperty("--bc-fit-h");
+      var changed = split !== layout.split;
+      layout.split = split;
+      return changed;
+    }
+    var relayoutTimer = null;
+    function relayout() {
+      clearTimeout(relayoutTimer);
+      relayoutTimer = setTimeout(function () { if (alive && measure()) render(); }, 100);
+    }
 
     function closeStaff() {
       if (staffHandle) { try { staffHandle.destroy(); } catch (e) { /* компонент уже снят */ } }
@@ -212,7 +247,19 @@
 
     function title() {
       var tag = opts.titleTag || "h2";
-      return h(tag, { "class": "bc-inbox__title", id: "bc-inbox-title" }, t("shell.nav.inbox"));
+      var heading = h(tag, { "class": "bc-inbox__title", id: "bc-inbox-title" }, t("shell.nav.inbox"));
+      // П3: «Разобрать пачку» — вход в «ИИ-разбор пачки обращений» R04 (раздел #intake оболочки R01; R11 IA §11.1:
+      // шапка списка справа, вторичная .bk-btn со значком i-ai). Только когда экран R04 есть в сборке (window.BirgeIntake):
+      // в FINAL-5.1 кнопки нет.
+      if (!(window.BirgeIntake && typeof window.BirgeIntake.mount === "function")) return heading;
+      var open = function () {
+        if (typeof opts.openSection === "function") { opts.openSection("intake"); return; }
+        if (window.BirgeShell && typeof window.BirgeShell.setSection === "function") { window.BirgeShell.setSection("intake"); return; }
+        window.location.hash = "#intake";
+      };
+      return h("div", { "class": "bc-inbox__head" }, [heading,
+        h("button", { "class": "bk-btn bc-inbox__intake", type: "button", onclick: open },
+          [C().icon ? C().icon("ai") : null, h("span", {}, t("inbox.intake.open"))])]);
     }
 
     // Фильтр одной службы (R17 «Штаб ведомств» → строка службы): чип «Служба: Водоканал ×» над вкладками.
@@ -340,7 +387,7 @@
       // «Сделано» — с обязательной строкой «что сделала служба»: открываем карточку с формой заметки этой службы.
       if (status === "done") {
         state.open = group.key; state.openPart = part.service; render();
-        var note = box.querySelector(".bc-inbox__item--open [name=part_note]");
+        var note = box.querySelector(".bc-inbox__detail [name=part_note]");
         if (note) note.focus();
         return;
       }
@@ -433,13 +480,46 @@
       return h("span", { "class": "bc-inbox__status-wrap" }, [btn, menu]);
     }
 
-    function row(group) {
-      var expanded = state.open === group.key;
+    function placeLabel(group) {
       var place = C().targetLabel(group.target);
       // Общая подпись «Примерное место» у нескольких строк неразличима (R11 разбор 5 №4б) — добавляем номер.
       if (group.target && group.target.approximate && place === t("complaint.step2.approximate") && group.complaints[0]) {
         place += " · " + group.complaints[0].code;
       }
+      return place;
+    }
+
+    // Раскрытая группа: «Показать на карте», номера жалоб группы и карточка действий сотрудника (complaint-staff.js).
+    // Одна колонка — под строкой; две колонки (≥ 1200 px) — справа, с названием места сверху.
+    function detailNode(group, inPane) {
+      var detail = h("div", { "class": "bc-inbox__detail", "data-key": group.key });
+      if (inPane) detail.appendChild(h("h3", { "class": "bc-inbox__pane-title" }, placeLabel(group)));
+      if (typeof opts.openTarget === "function" && group.target && group.target.id) {
+        detail.appendChild(h("button", { "class": "bk-btn bc-inbox__map", type: "button",
+                                         onclick: function () { opts.openTarget(group.target.kind, group.target.id, 14); } },
+          t("common.action.show_on_map")));
+      }
+      var main = group.complaints[0];
+      if (group.complaints.length > 1) {
+        detail.appendChild(h("p", { "class": "bc-meta" }, group.complaints.map(function (c) { return c.code; }).join(" · ")));
+      }
+      var holder = h("div", { "class": "bc-inbox__staff" });
+      detail.appendChild(holder);
+      if (main && !readonly(main) && window.BirgeComplaintStaff) {
+        staffHandle = window.BirgeComplaintStaff.mount(holder, { complaintId: main.id, csrf: csrfToken, openFix: state.openFix,
+          openPart: state.openPart || null,
+          onChange: function (complaint) { syncParts(group, complaint); refreshCounts(); } });
+        state.openFix = false; state.openPart = null;
+      } else if (main && readonly(main)) {
+        // Примеры не меняются (как в карточке R07: «Это пример: статус примеров не меняется»).
+        holder.appendChild(h("p", { "class": "bc-meta" }, t("heat.example_readonly")));
+      }
+      return detail;
+    }
+
+    function row(group) {
+      var expanded = state.open === group.key;
+      var place = placeLabel(group);
       var what = C().categoryLabel(group.category) + (group.subtopic ? " · " + C().subtopicLabel(group.category, group.subtopic) : "") +
         (group.complaints.length > 1 ? " · " + t("inbox.complaints", { n: group.complaints.length }) : "");
       var due = deadlineNode(group.deadline);
@@ -472,30 +552,7 @@
           [statusControl(group), head]));
       var partsNode = partsLine(group);
       if (partsNode) li.appendChild(partsNode);
-      if (expanded) {
-        var detail = h("div", { "class": "bc-inbox__detail" });
-        if (typeof opts.openTarget === "function" && group.target && group.target.id) {
-          detail.appendChild(h("button", { "class": "bk-btn bc-inbox__map", type: "button",
-                                           onclick: function () { opts.openTarget(group.target.kind, group.target.id, 14); } },
-            t("common.action.show_on_map")));
-        }
-        var main = group.complaints[0];
-        if (group.complaints.length > 1) {
-          detail.appendChild(h("p", { "class": "bc-meta" }, group.complaints.map(function (c) { return c.code; }).join(" · ")));
-        }
-        var holder = h("div", { "class": "bc-inbox__staff" });
-        detail.appendChild(holder);
-        li.appendChild(detail);
-        if (main && !readonly(main) && window.BirgeComplaintStaff) {
-          staffHandle = window.BirgeComplaintStaff.mount(holder, { complaintId: main.id, csrf: csrfToken, openFix: state.openFix,
-            openPart: state.openPart || null,
-            onChange: function (complaint) { syncParts(group, complaint); refreshCounts(); } });
-          state.openFix = false; state.openPart = null;
-        } else if (main && readonly(main)) {
-          // Примеры не меняются (как в карточке R07: «Это пример: статус примеров не меняется»).
-          holder.appendChild(h("p", { "class": "bc-meta" }, t("heat.example_readonly")));
-        }
-      }
+      if (expanded && !layout.split) li.appendChild(detailNode(group, false));
       return li;
     }
 
@@ -573,7 +630,7 @@
       state.tab = "all"; state.menu = null; state.open = want.key; state.openFix = !!want.fix;
       return true;
     }
-    function onOpenRequest() { if (takePending()) { render(); var what = box.querySelector(".bc-inbox__item--open [name=what_done]"); if (what) what.focus(); } }
+    function onOpenRequest() { if (takePending()) { render(); var what = box.querySelector(".bc-inbox__detail [name=what_done]"); if (what) what.focus(); } }
     function onChanged() { load(true); }
 
     function startFix(group) {
@@ -581,7 +638,7 @@
       state.open = group.key;
       state.openFix = true;
       render();
-      var what = box.querySelector(".bc-inbox__item--open [name=what_done]");
+      var what = box.querySelector(".bc-inbox__detail [name=what_done]");
       if (what) what.focus();
     }
 
@@ -615,7 +672,13 @@
       // чтобы открытая карточка не прыгала под рукой.
       if (state.pending) { state.data = state.pending; state.pending = null; }
       closeStaff();
+      measure();
+      // Две колонки: список и карточка — свои прокрутки; перерисовка не сбрасывает их на начало.
+      var oldList = box.querySelector(".bc-inbox__groups"), oldPane = box.querySelector(".bc-inbox__pane");
+      var keepList = layout.split && oldList ? oldList.scrollTop : 0;
+      var keepPane = layout.split && oldPane && oldPane.getAttribute("data-key") === (state.open || "") ? oldPane.scrollTop : 0;
       box.innerHTML = "";
+      if (layout.split) box.setAttribute("data-split", ""); else box.removeAttribute("data-split");
       box.appendChild(title());
       if (state.error === "staff") {
         var shell = window.CivicShell;
@@ -674,7 +737,18 @@
             h("span", { "class": "bk-lgroup__count bc-inbox__gcount" }, String(list.length))]),
           h("ul", { "class": "bk-llist bc-inbox__list" }, list.map(row))]));
       });
-      box.appendChild(groups);
+      if (layout.split) {
+        var openGroup = null;
+        items.some(function (g) { if (g.key === state.open) { openGroup = g; return true; } return false; });
+        var pane = h("div", { "class": "bc-inbox__pane", "data-key": openGroup ? openGroup.key : null, role: "region",
+                              "aria-label": openGroup ? placeLabel(openGroup) : t("inbox.pane.empty") },
+          openGroup ? detailNode(openGroup, true) : h("p", { "class": "bc-inbox__pane-empty" }, t("inbox.pane.empty")));
+        box.appendChild(h("div", { "class": "bc-inbox__body" }, [groups, pane]));
+        if (keepList) groups.scrollTop = keepList;
+        if (keepPane) pane.scrollTop = keepPane;
+      } else {
+        box.appendChild(groups);
+      }
       state.enter = false;
       if (scrollOpen) {   // открыто по пути или из табло R17 — строка в видимой части экрана, а не ниже края
         scrollOpen = false;
@@ -717,6 +791,11 @@
       if (state.partMenu && !(e.target.closest && e.target.closest(".bc-inbox__partwrap"))) { state.partMenu = null; render(); }
     }
     box.addEventListener("keydown", onKey);
+    window.addEventListener("resize", relayout);
+    if (splitMq && splitMq.addEventListener) splitMq.addEventListener("change", relayout);
+    else if (splitMq && splitMq.addListener) splitMq.addListener(relayout);
+    var sizeWatch = window.ResizeObserver ? new window.ResizeObserver(relayout) : null;
+    if (sizeWatch) sizeWatch.observe(box);
     document.addEventListener("click", onOutside);
     window.addEventListener("birge:target-hover", onMapHover);
     window.addEventListener("birge:inbox-open", onOpenRequest);
@@ -734,6 +813,10 @@
       setPath: setPath,
       destroy: function () {
         alive = false; closeStaff(); window.removeEventListener("birge:lang", onLang);
+        clearTimeout(relayoutTimer); window.removeEventListener("resize", relayout);
+        if (splitMq && splitMq.removeEventListener) splitMq.removeEventListener("change", relayout);
+        else if (splitMq && splitMq.removeListener) splitMq.removeListener(relayout);
+        if (sizeWatch) sizeWatch.disconnect();
         if (live === handle) live = null;
         document.removeEventListener("click", onOutside); window.removeEventListener("birge:target-hover", onMapHover);
         window.removeEventListener("birge:inbox-open", onOpenRequest); window.removeEventListener("birge:inbox-changed", onChanged);

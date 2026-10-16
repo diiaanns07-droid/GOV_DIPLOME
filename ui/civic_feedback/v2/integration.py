@@ -204,3 +204,11 @@ def intake_commit(db=None, batch_id: str = "", tasks=(), texts=None, *, demo: bo
     "skipped": [{"task_id", "reason"}]}. ValueError — неверная пачка целиком. Подробно — intake.py."""
     from .intake import commit_tasks
     return commit_tasks(db, batch_id, tasks, texts, demo=demo, now=now, actor=actor, method=method)
+
+
+def create_from_intake(store=None, items=(), *, batch_id: str = "", texts=None, demo: bool = False, actor=None,
+                       method=None, now=None) -> dict:
+    """То же, что intake_commit, под именем из контракта R04 (INTEGRATION R04 §9.3): store — хранилище, которое шлюз
+    передал R04 в connect_store (или None — хранилище шлюза), items — задачи пачки."""
+    from .intake import commit_tasks
+    return commit_tasks(store, batch_id, items, texts, demo=demo, now=now, actor=actor, method=method)

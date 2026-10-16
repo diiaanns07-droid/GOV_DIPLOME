@@ -421,7 +421,8 @@ def inbox(records: list[dict], now: datetime, tab: str | None = None) -> dict:
         group["rude"] = group.get("rude", False) or rude
         group["complaints"].append({"id": record["id"], "code": record.get("code"), "status": record.get("status"),
                                     "reporters": rec.reporters(record), "tab": rtab, "demo": bool(record.get("demo")),
-                                    "rude": rude, "intake": bool(record.get("intake"))})
+                                    "rude": rude,
+                                    "intake": bool(record.get("intake") or record.get("source") == "intake")})
         info = deadline(record, now)
         if info and _deadline_rank(info) > _deadline_rank(group["deadline"]):
             group["deadline"] = info

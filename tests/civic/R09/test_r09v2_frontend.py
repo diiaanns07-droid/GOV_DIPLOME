@@ -402,8 +402,12 @@ def test_design_marathon_round7_r11_edits():
     assert "transform" not in fab and "left: 50%" not in fab
     assert ".bc-fab { left: 0; right: 0; margin-inline: auto; width: max-content; transform: none; }" in css
     assert "translateX(-50%)" not in css and "body.civic-mode .bc-fab { right: 56px; }" in css
-    # D-1: колонка «Обращений» 720.  D-7: скелетон на стекле — белая карточка с волосяной линией.
-    assert ".bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px;" in css
+    # D-1 (колонка «Обращений» 720) отменён поправкой П3 (кадр 05): «Обращения» — на всю ширину листа, плашка группы — к
+    # краю листа, на ≥ 1200 px — две колонки.  D-7: скелетон на стекле — белая карточка с волосяной линией.
+    assert ".bc-inbox { display: flex; flex-direction: column; gap: 12px; color: var(--c-ink, #121A17); }" in css
+    assert "max-width: 720px" not in css.split(".bc-inbox {", 1)[1].split("}", 1)[0]
+    assert ".bc-inbox .bc-inbox__ghead { top: var(--bc-stick, 0px); }" in css
+    assert "grid-template-columns: minmax(360px, 5fr) minmax(0, 7fr)" in css
     assert ".bk-glass .bc-skel-card { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px rgba(16, 24, 22, .08); }" in css
     # D-5: «Пример» — одна сноска под списком; метка — у раскрытой карточки и у похожей на шаге «Я тоже».
     assert 'h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint"))' in JS

@@ -87,9 +87,10 @@ def test_tasks_become_working_complaints_with_people_service_and_source(store):
     assert khan["category_source"] == "model" and khan["model"]["label"] == "lighting"
     assert khan["target"]["id"] == KHAN["id"] and khan["point"] == KHAN["point"]
     assert khan["due_at"] == rec.due_at(khan["created_at"], "lighting")
+    assert khan["source"] == "intake"
     assert khan["intake"] == {"batch_id": "night-0001", "task_id": "k1", "people": 3, "urgent": False,
-                              "urgent_why": None, "method": "r04-intake-1", "at": khan["created_at"],
-                              "by": "Сотрудник акимата"}
+                              "urgent_why": None, "urgent_why_kk": None, "method": "r04-intake-1",
+                              "at": khan["created_at"], "by": "Сотрудник акимата"}
     # Ведущая служба — явная: таблица R08 её не меняет (выбор подтвердил сотрудник «Создать задачи»).
     r08 = lambda c, s: {"id": "akimat", "ru": "Аппарат акима района"}
     assert joint.lead_service(khan, r08) == "lighting"
@@ -231,3 +232,22 @@ def test_district_comes_from_the_task_or_the_map_districts(store):
         expected = None
     report = intake.commit_tasks(store, "night-0012", [dict(tasks()[0], id="d2")], TEXTS)
     assert store.get(report["created"][0]["id"])["district"] == expected
+
+
+def test_r04_contract_shape_and_alias_create_from_intake(store):
+    # Форма задачи из INTEGRATION R04 §9.1: services с name_*, joint, urgent_why_ru / _kk, point задачи, target без точки.
+    task = {"id": "r04-1", "title_ru": "Нет света на остановке", "title_kk": "Аялдамада жарық жоқ", "category": "lighting",
+            "subtopic": None, "services": [{"id": "lighting", "role": "lead", "name_ru": "Служба освещения",
+                                            "name_kk": "Жарықтандыру қызметі"}],
+            "joint": False, "why_ru": "Освещение", "why_kk": "Жарық", "target": {k: KHAN[k] for k in ("kind", "id", "label_ru")},
+            "point": KHAN["point"], "address_text": "Хан Шатыр", "text_ids": ["t1", "t2"], "people": 2,
+            "urgent": True, "urgent_why_ru": "Темно на остановке у дороги", "urgent_why_kk": "Жол жиегіндегі аялдамада қараңғы"}
+    report = integration.create_from_intake(store, [task], batch_id="night-0013",
+                                            texts=[{"id": "t1", "text": "Свет не горит, номер +7 *** *** ** **"},
+                                                   {"id": "t2", "text": "Темно"}], demo=True)
+    assert [c["task_id"] for c in report["created"]] == ["r04-1"]
+    record = store.get(report["created"][0]["id"])
+    assert record["text"] == "Свет не горит, номер +7 *** *** ** **"       # то, что дал R04 после moderate()
+    assert record["intake"]["urgent_why"] == "Темно на остановке у дороги"
+    assert record["intake"]["urgent_why_kk"] == "Жол жиегіндегі аялдамада қараңғы"
+    assert rec.reporters(record) == 2 and record["service"] == "lighting" and record["route_hint"]["joint"] is False

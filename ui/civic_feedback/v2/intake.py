@@ -10,9 +10,11 @@ R04 (ui/civic_ml_api/intake.py) раскладывает пачку тексто
     # -> {"batch_id", "total", "people", "created": [{"task_id", "id", "code"}], "existing": [{"task_id", "id", "code"}],
     #     "skipped": [{"task_id", "reason"}]}      reason: no_place · category · text · invalid
 
-Задача — как в ответе R04 analyze (П3): {id, title_ru, title_kk, category, subtopic?, services [{id, role}], why_ru,
-why_kk, target | null, point?, district?, address_text, text_ids, people, urgent, urgent_why, score?, model_version?}.
-texts — тексты пачки: {text_id: текст} или [{"id", "text"}] (список строк — id = номер строки с 0).
+Задача — как в ответе R04 intake_analyze (INTEGRATION R04 §9.1): {id, title_ru, title_kk, category, subtopic,
+services [{id, role, name_*}], joint, why_ru, why_kk, target {kind, id, label_ru, label_kk} | null, point | null, district?,
+address_text, text_ids, people, urgent, urgent_why_ru, urgent_why_kk, score?, model_version?}.
+texts — тексты пачки ПОСЛЕ moderate() R04 (телефоны, ИИН — «***»; R09 хранит то, что дали): {text_id: текст} или
+[{"id", "text"}] (список строк — id = номер строки с 0); у задачи может быть и свой text.
 
 Правила:
   * одна задача → одна жалоба цели: текст — первое обращение группы (оригинал; длиннее 2000 символов — обрезан),
@@ -29,8 +31,8 @@ texts — тексты пачки: {text_id: текст} или [{"id", "text"}]
     2 службы» (route_hint, «Принять» в карточке), как у жалобы жителя: совместное исполнение решает сотрудник;
   * срок ответа (рабочие дни РК), номер B-0001, пометка грубых слов R04, номер 104/112 — как у жалобы жителя;
   * пример (sample «night», demo=True) — demo: true («Пример»), но записи рабочие: с ними идёт сцена 0;
-  * в записи — intake {batch_id, task_id, people, urgent, urgent_why, method, at, by}: в «Обращениях» — «Источник:
-    разбор пачки». Публично (карта, житель) intake не отдаётся — record.public_view.
+  * в записи — source "intake" и intake {batch_id, task_id, people, urgent, urgent_why, urgent_why_kk, method, at, by}:
+    в «Обращениях» — «Источник: разбор пачки». Публично (карта, житель) их нет — record.public_view.
 """
 
 from __future__ import annotations
@@ -211,6 +213,7 @@ def build_record(task: dict, texts: dict[str, str], *, batch_id: str, now, demo:
         banner["banner_shown"] = False
     urgent = task.get("urgent") is True
     people = _people(task)
+    why_ru = task.get("urgent_why_ru", task.get("urgent_why"))
     record = {
         "id": cid, "code": None, "created_at": created_at, "text": text, "lang": rec.detect_lang(text),
         "category": category, "category_source": "model", "subtopic": subtopic, "emergency": banner,
@@ -221,8 +224,10 @@ def build_record(task: dict, texts: dict[str, str], *, batch_id: str, now, demo:
         "metoo": people - 1, "duplicate_of": None, "demo": bool(demo),
         "due_at": rec.due_at(created_at, category),
         "service": services[0], "service_source": "intake", "services": [], "handoffs": [], "route_hint": hint,
+        "source": "intake",
         "intake": {"batch_id": batch_id, "task_id": task_id, "people": people, "urgent": urgent,
-                   "urgent_why": _note(task.get("urgent_why")) if urgent else None,
+                   "urgent_why": _note(why_ru) if urgent else None,
+                   "urgent_why_kk": _note(task.get("urgent_why_kk")) if urgent else None,
                    "method": _note(method, METHOD_MAX), "at": created_at, "by": _note(actor, 80)},
         "schema": rec.SCHEMA,
     }
