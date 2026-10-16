@@ -315,6 +315,7 @@
       "ask.staff.reason.not_question": "Это жалоба — её отправляют через «Сообщить о проблеме»",
       "ask.staff.reason.duplicate": "Такой вопрос уже есть", "ask.staff.reason.other": "Другое",
       "ask.staff.pii.phone": "телефон", "ask.staff.pii.iin": "ИИН", "ask.staff.pii.email": "почта", "ask.staff.pii.card": "номер карты",
+      "ask.staff.pii.iban": "номер счёта", "ask.staff.pii.apartment": "номер квартиры", "ask.staff.pii.contact": "контакт в мессенджере",
     },
     kk: {
       "common.tag.demo": "Үлгі", "common.tag.demo_hint": "Көрсетуге арналған үлгі, нақты дерек емес",
@@ -328,6 +329,7 @@
       "ask.staff.reason.not_question": "Бұл — шағым, оны «Мәселе туралы хабарлау» арқылы жібереді",
       "ask.staff.reason.duplicate": "Мұндай сұрақ бұрыннан бар", "ask.staff.reason.other": "Басқа себеп",
       "ask.staff.pii.phone": "телефон", "ask.staff.pii.iin": "ЖСН", "ask.staff.pii.email": "электрондық пошта", "ask.staff.pii.card": "карта нөмірі",
+      "ask.staff.pii.iban": "шот нөмірі", "ask.staff.pii.apartment": "пәтер нөмірі", "ask.staff.pii.contact": "мессенджердегі байланыс",
     },
   };
   const WEEKDAYS = {  // 0 — воскресенье, как Date.getUTCDay()

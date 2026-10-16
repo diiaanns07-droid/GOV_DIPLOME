@@ -39,7 +39,12 @@ async function sizeAudit(page, label) {
       if (!seen(el)) return;
       const r = el.getBoundingClientRect();
       const textLink = el.classList.contains("mt-link");
-      if (r.height < 43.5 || (!textLink && r.width < 43.5)) small.push(name(el) + " " + Math.round(r.width) + "×" + Math.round(r.height));
+      // зона нажатия шире видимой кнопки за счёт ::after (ui-kit .bk-vote: 32 px + inset -6px) — как считает R10 ux_lib
+      const a = getComputedStyle(el, "::after");
+      const zone = a.content !== "none" && a.position === "absolute";
+      const out = (v) => (zone ? Math.max(0, -parseFloat(v) || 0) : 0);
+      const zh = r.height + out(a.top) + out(a.bottom), zw = r.width + out(a.left) + out(a.right);
+      if (zh < 43.5 || (!textLink && zw < 43.5)) small.push(name(el) + " " + Math.round(zw) + "×" + Math.round(zh));
     });
     const tiny = [];
     const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);

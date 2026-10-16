@@ -286,6 +286,30 @@ def test_pii_hint_does_not_fire_on_ordinary_numbers(text, kinds):
     assert pii_kinds(text) == kinds
 
 
+# R04 (INTEGRATION §3, patches/r13_pii_labels.patch): карта — не «ИИН + карта», запасной фильтр закрывает её целиком,
+# сотруднику видны все виды R04 (счёт, квартира, контакт), а не только четыре своих.
+@pytest.mark.parametrize("text, kinds", [
+    ("Списали деньги с карты 4400 4302 1234 5678", ["card"]),
+    ("Мой ИИН 900101300123, прошу проверить", ["iin"]),
+    ("Карта 4400430212345678", ["card"]),
+])
+def test_card_number_is_not_taken_for_iin(text, kinds):
+    assert pii_kinds(text) == kinds
+
+
+def test_fallback_filter_masks_the_whole_card_and_staff_sees_r04_kinds(monkeypatch):
+    import sys
+    from ui.civic_qa.service import QuestionService, moderate_text
+    monkeypatch.setitem(sys.modules, "ui.civic_ml_api", None)  # R04 нет — свой запасной фильтр
+    public, flags = moderate_text("Деньги ушли с карты 4400 4302 1234 5678, верните", "ru")
+    assert "4400" not in public and "5678" not in public and flags == ["card"]
+    row = {"id": "q-x", "text": "Пишите в телеграм, квартира 12", "text_public": "Пишите ***, квартира ***", "lang": "ru",
+           "district": "nura", "status": "pending", "votes": 0, "base_votes": 0, "created_at": "2026-10-15T10:00:00Z",
+           "flags": '["contact", "apartment", "iban"]'}
+    view = QuestionService._staff_view(row)
+    assert view["pii"] == ["iban", "apartment", "contact"]  # порядок — как в подсказке экрана
+
+
 # ---------------------------------------------------------------- что видят все
 def test_public_view_has_no_device_staff_login_or_reject_reason(demo):
     _s, page = call(demo, "GET", "/questions", query="tab=new&device_id=" + DEV_A)

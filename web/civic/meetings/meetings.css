@@ -390,10 +390,20 @@
   font-size: 13px;
   font-variant-numeric: tabular-nums;
 }
+/* Видимая высота — 32 px, как у «♡» в списке идей (эталон A): зона нажатия 44 px уже даёт .bk-vote::after ui-kit
+   (приёмка R10 считает ::after). Тёмная кнопка 44 px на экране одна — «Приду» (VISUAL_BRIEF §4 п. 3; R11 R13-3). */
 .mt-vote {
   min-width: 64px;
-  min-height: 44px;
   justify-content: center;
+}
+/* Запасная зона нажатия 44 px, если в сборке ui-kit без .bk-vote::after (его правило главнее — у :where нет веса). */
+:where(.mt .mt-vote) {
+  position: relative;
+}
+:where(.mt .mt-vote)::after {
+  content: "";
+  position: absolute;
+  inset: -6px 0;
 }
 .mt-vote[disabled] {
   opacity: 0.55;

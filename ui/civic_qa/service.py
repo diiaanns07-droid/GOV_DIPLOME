@@ -42,8 +42,10 @@ ASTANA = timezone(timedelta(hours=5))
 # Подсказка модератору «похоже на личные данные» (сам вопрос не меняем: решает человек, причина — personal_data).
 PII_PATTERNS = (
     ("phone", re.compile(r"(?<![\d+])(?:(?:\+\s*)?[78][\s(-]*)?7(?:[\s().-]{0,2}\d){9}(?!\d)")),
-    ("iin", re.compile(r"(?<!\d)(?:\d[\s-]?){11}\d(?!\d)")),
+    # 12 цифр — но не кусок более длинного номера (карта 4400 4302 1234 5678 — не ИИН).
+    ("iin", re.compile(r"(?<!\d[\s-])(?<!\d)(?:\d[\s-]?){11}\d(?![\s-]?\d)")),
     ("email", re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")),
+    ("card", re.compile(r"(?<!\d[\s-])(?<!\d)(?:\d[\s-]?){12,18}\d(?![\s-]?\d)")),  # 13–19 цифр
 )
 
 
@@ -280,7 +282,8 @@ class QuestionService:
         view = QuestionService._public_view(row)
         flags = _flags(row.get("flags"))
         found = set(pii_kinds(row["text"])) | set(flags)
-        pii = [kind for kind in ("phone", "iin", "email", "card") if kind in found]  # порядок — как в подсказке экрана
+        kinds = ("phone", "iin", "email", "card", "iban", "apartment", "contact")  # порядок — как в подсказке экрана
+        pii = [kind for kind in kinds if kind in found]
         rude = _rude(row["text"])
         if "profanity" in flags or "rude" in flags:
             rude = True

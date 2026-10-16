@@ -161,8 +161,15 @@ const worstContrast = (page) => page.evaluate(() => {
           await page.waitForSelector("#birge-header [data-section=more]", { state: "visible", timeout: 20000 });
           await page.click("#birge-header [data-section=more]");
           const items = await page.$$eval(".birge-more-menu [role=menuitem]", (els) => els.map((e) => [e.dataset.section, e.textContent]));
-          check(`${tag} житель: «Ещё» → «Вопрос акиму»`, items.some(([id]) => id === "questions"), items);
-          await page.click(".birge-more-menu [data-section=questions]");
+          // IA раунда 15 (R11 §5.3): «Вопрос акиму» — вкладка «Вопросы» раздела «Вопросы и встречи», своего пункта нет
+          const hasQa = items.some(([id]) => id === "questions"), hasMeetings = items.some(([id]) => id === "meetings");
+          check(`${tag} житель: «Ещё» → «Вопрос акиму» (раунд 15: «Вопросы и встречи» → «Вопросы»)`, hasQa || hasMeetings, items);
+          if (hasQa) await page.click(".birge-more-menu [data-section=questions]");
+          else {
+            await page.click(".birge-more-menu [data-section=meetings]");
+            await page.waitForSelector('.mt-seg [role=tab][value="questions"]', { timeout: 20000 });
+            await page.click('.mt-seg [role=tab][value="questions"]');
+          }
           await page.waitForSelector(".qa-card", { timeout: 20000 });
         }
         if (w === 375 && lang === "ru") {
