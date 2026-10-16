@@ -86,9 +86,12 @@ def test_task_issues():
     far = task("y", [2])
     far["target"]["point"] = [76.9, 43.2]  # Алматы
     assert any("вне Астаны" in i for i in task_issues(far, CATS))
+    # без места: пустой address_text — можно («адрес уточнить» пишет экран), а точка без цели — угаданное место
     lost = task("z", [3], target=False)
     lost["address_text"] = ""
-    assert any("адрес уточнить" in i for i in task_issues(lost, CATS))
+    assert task_issues(lost, CATS) == []
+    lost["point"] = [71.43, 51.13]
+    assert any("угадано" in i for i in task_issues(lost, CATS))
 
 
 def test_sample_shapes():

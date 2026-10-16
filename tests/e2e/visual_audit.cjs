@@ -13,7 +13,7 @@
 const { chromium } = require("playwright");
 const fs = require("fs"), path = require("path"), os = require("os");
 const L = require("./r10_lib.cjs");
-const { uiScreen, NOISE } = require("./ux_lib.cjs");
+const { uiScreen, NOISE, sheetMetrics, aiMark, mapHook, mapOverview } = require("./ux_lib.cjs");
 const { sleep, T, esc, firstVisible } = L;
 
 const args = L.parseArgs(process.argv.slice(2));
@@ -58,7 +58,17 @@ const SCREENS = [
       return true;
     } },
   { id: "meetings-staff", hash: "#meetings", mode: "akimat", global: "BirgeMeetings", owner: "R13", api: API("meetings") },
+  // П3 (16 окт): все листы-разделы — R01 проверяет ширину листа, роли — свои экраны по VISUAL_BRIEF §4; сцена 0 R04.
+  // legacy — экраны до раунда 15: «нет связи» у них — «смотреть» (WARN), остальное по VISUAL_BRIEF §4 — как у новых.
+  { id: "inbox", hash: "#inbox", mode: "akimat", global: ["BirgeInbox", "BirgeComplaintList"], owner: "R09", api: API("complaints"), legacy: true },
+  { id: "day", hash: "#day", mode: "akimat", global: null, owner: "R08", api: API("akim/summary"), root: "#birge-day:not([hidden])", legacy: true },
+  { id: "projects", hash: "#projects", mode: "akimat", global: ["BirgeProjects", "BirgeIdeas"], owner: "R06 + R05", api: API("(proposals|ideas)"), legacy: true },
+  { id: "ideas", hash: "#ideas", mode: "resident", global: ["BirgeIdeas"], owner: "R06 + R05", api: API("ideas"), legacy: true },
+  { id: "notifications", hash: "#notifications", mode: "resident", global: ["BirgeNotify"], owner: "R06", api: API("notifications"), legacy: true },
+  { id: "services", hash: "#services", mode: "akimat", global: ["BirgeServices"], owner: "R08", api: null, legacy: true },
+  { id: "intake", hash: "#intake", mode: "akimat", global: ["BirgeIntake"], owner: "R04", api: API("intake/") },
 ];
+const GLOBALS = [...new Set(SCREENS.flatMap((sc) => [].concat(sc.global || [])))];
 // Отдельные страницы (без оболочки): Ситуационный центр и «Картина недели» R08 — только сотрудник.
 const PAGES = [
   { id: "board-page", urls: ["civic/board/", "civic/board/index.html"], owner: "R08", api: API("akim/board") },
@@ -168,6 +178,7 @@ async function auditVariant(browser, base, [w, h], lang, staffAcc) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
     locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
   await ctx.addInitScript((lg) => { try { localStorage.setItem("birge.lang", lg); } catch (e) { /* без хранилища */ } }, lang);
+  await ctx.addInitScript(mapHook);
   if (staffAcc && staffAcc.user) {
     await ctx.request.post(base + "api/civic/v1/session/login", { data: { username: staffAcc.user, password: staffAcc.pass },
       headers: { Origin: base.replace(/\/$/, "") } }).catch(() => null);
@@ -183,22 +194,32 @@ async function auditVariant(browser, base, [w, h], lang, staffAcc) {
   await page.goto(base);
   await page.waitForFunction(() => document.readyState === "complete" && document.body.innerText.length > 50, null, { timeout: 40000 }).catch(() => null);
   await sleep(2500);
-  const globals = await page.evaluate(() => ["BirgeTogether", "BirgeAgencies", "BirgeWorksCalendar", "BirgeMeetings", "BirgeAnalyst"].filter((g) => !!window[g])).catch(() => []);
+  const globals = await page.evaluate((gs) => gs.filter((g) => !!window[g]), GLOBALS).catch(() => []);
   const SEL = "#birge-screen:not([hidden])";
-  const mounted = async () => page.evaluate((s) => { const r = document.querySelector(s); return r ? (r.innerText || "").trim().length : 0; }, SEL).catch(() => 0);
   let mode = null;
+  const mounted = async (sel = SEL) => page.evaluate((s) => { const r = document.querySelector(s); return r ? (r.innerText || "").trim().length : 0; }, sel).catch(() => 0);
   const errorsBefore = () => errors.length;
+  // П3, кадры 02 и 08: обзорная карта (житель и акимат) — точки каких слоёв рисуются на масштабе < 13 и наезжают друг на друга.
+  for (const md of ["resident", "akimat"]) {
+    if (ONLY && !ONLY.has("map-overview")) break;
+    await setMode(md); mode = md;
+    await page.evaluate(() => { location.hash = "#map"; }).catch(() => null);
+    await sleep(2500);
+    await overview(page, variant, md);
+  }
 
   for (const sc of SCREENS) {
     if (ONLY && !ONLY.has(sc.id)) continue;
     if (!sc.hash) { add(sc.id, sc.owner, variant, "экран", "NOT_RUN", "нет записи демо-мира для адреса"); continue; }
-    if (!globals.includes(sc.global)) { add(sc.id, sc.owner, variant, "экран", "NOT_RUN", `модуля ${sc.global} нет на странице`); continue; }
+    const need = [].concat(sc.global || []);
+    if (need.length && !need.some((g) => globals.includes(g))) { add(sc.id, sc.owner, variant, "экран", "NOT_RUN", `модуля ${need.join(" / ")} нет на странице`); continue; }
     if (mode !== sc.mode) { await setMode(sc.mode); mode = sc.mode; }
     const e0 = errorsBefore();
     await page.evaluate(() => { location.hash = "#map"; }).catch(() => null); await sleep(400);
     await page.evaluate((hh) => { location.hash = hh; }, sc.hash).catch(() => null);
     await sleep(2600);
-    let chars = await mounted();
+    const rootSel = sc.root || SEL;
+    let chars = await mounted(rootSel);
     if (sc.id === "agencies-calendar" && !(await page.evaluate((s) => !!document.querySelector(s + " .wcal"), SEL).catch(() => false))) {
       add(sc.id, sc.owner, variant, "вкладка «Календарь работ» в «Ведомствах» (IA_ROUND15)", "FAIL", "вкладки нет — открыт свой раздел #works-calendar");
       await page.evaluate((hh) => { location.hash = hh; }, sc.alt).catch(() => null); await sleep(2600);
@@ -212,7 +233,7 @@ async function auditVariant(browser, base, [w, h], lang, staffAcc) {
     const f = path.basename(shot);
     if (chars < 30) { add(sc.id, sc.owner, variant, "экран открыт с содержимым", "FAIL", { chars, hash: sc.hash }, f); continue; }
     add(sc.id, sc.owner, variant, "экран открыт с содержимым", "PASS", { chars }, f);
-    await measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, true);
+    await measure(page, sc, variant, lang, w, f, rootSel, retryRe, errors, e0, true);
   }
   // Отдельные страницы R08.
   for (const pg of PAGES) {
@@ -232,6 +253,26 @@ async function auditVariant(browser, base, [w, h], lang, staffAcc) {
   }
   add("*", "по тексту ошибки", variant, "консоль без ошибок на новых экранах", errors.length ? "FAIL" : "PASS", errors.slice(0, 5));
   await ctx.close();
+}
+
+// Чей слой: префикс id слоя → роль (кольца FINAL-5.1 — civic-r03-point*: web/civic/map/civic-map.js, объекты карты R12).
+const LAYER_OWNER = [[/^civic-r03-|^r12-|works|geo/i, "R12"], [/^r05-|build3d|project/i, "R05"], [/^r06-|ideas|proposal/i, "R06"],
+  [/^r17-|crisis|incident/i, "R17"], [/^r16-|together|yard/i, "R16"], [/^r13-|meeting/i, "R13"]];
+const layerOwner = (layers) => [...new Set(layers.map((l) => (LAYER_OWNER.find(([re]) => re.test(l)) || [null, "R07"])[1]))].join(" + ");
+
+async function overview(page, variant, md) {
+  const o = await mapOverview(page).catch((e) => { console.log("OVERVIEW-ERR", e.message); return null; });
+  if (process.env.R10_DEBUG) console.log("OVERVIEW", JSON.stringify(o));
+  const id = "map-overview-" + md;
+  if (!o) { add(id, "R07", variant, "обзорная карта: точки слоёв на масштабе < 13", "NOT_RUN", "экземпляр карты не найден (перехват mapHook)"); return; }
+  if (o.zoom >= 13) { add(id, "R07", variant, "обзорная карта: точки слоёв на масштабе < 13", "NOT_RUN", { zoom: o.zoom, why: "карта не на обзорном масштабе" }); return; }
+  const owner = o.layers.length ? `${layerOwner(o.layers)} (+ R07)` : "R07";
+  const shot = path.join(OUT, `${variant}-${id}.jpg`);
+  await page.screenshot({ path: shot, type: "jpeg", quality: 70 }).catch(() => null);
+  add(id, owner, variant, "обзорная карта (< 13): нет кучки наезжающих значков и колец (П3, кадры 02, 08)", o.close.length || o.underBadge.length ? "FAIL" : "PASS",
+    { zoom: o.zoom, close: o.close, underBadge: o.underBadge, layers: o.layers }, path.basename(shot));
+  if (!o.close.length && o.points) add(id, owner, variant, "обзорная карта (< 13): точки объектов — один значок с числом или скрыть (П3)", "WARN",
+    { points: o.points, layers: o.layers, sample: o.sample });
 }
 
 async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, inShell, pageUrl) {
@@ -260,6 +301,18 @@ async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, 
   if (m && m.tabsCut.length) add(sc.id, own, variant, "вкладки целиком (полоса вкладок не режет подпись краем)", "WARN", { cut: m.tabsCut });
   if (m) add(sc.id, own, variant, "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)", m.bigIll.length || m.emoji.length ? "FAIL" : "PASS",
     { big: m.bigIll.slice(0, 4), emoji: m.emoji });
+  // П3 — то, что видно на кадрах FINAL-5.1 (review_final51): лист раздела.
+  const sh = inShell ? await sheetMetrics(page, SEL).catch(() => null) : null;
+  if (sh) {
+    if (sh.stickyPeek.length || sh.stickyOver.length) add(sc.id, own, variant, "липкая плашка: над ней не видно строк при прокрутке, на строку не наезжает (П3, кадр 05)", "FAIL",
+      { peek: sh.stickyPeek.slice(0, 2), over: sh.stickyOver.slice(0, 2) }, f);
+    add(sc.id, own, variant, "кнопка действия не обрезана краем листа (П3, кадр 07)", sh.cutEnd.length ? "FAIL" : sh.cutNow.length ? "WARN" : "PASS",
+      { atEnd: sh.cutEnd.slice(0, 3), initial: sh.cutNow.slice(0, 3) }, f);
+    if (sh.margins) add(sc.id, `R01 + ${own}`, variant, "лист не шире содержимого: без пустых полей слева и справа (П3, R01)",
+      sh.margins.left > 96 && sh.margins.right > 96 ? "WARN" : "PASS", sh.margins, f);
+    add(sc.id, own, variant, "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)", sh.placeholder.length ? "WARN" : "PASS",
+      sh.placeholder.length ? sh.placeholder : null, f);
+  }
   const fc = await focusCheck(page, SEL);
   add(sc.id, own, variant, "видимый фокус с клавиатуры (п. 10)", fc === null ? "NOT_RUN" : fc.ring ? "PASS" : "FAIL", fc || "Tab не дошёл до элементов экрана");
   // Состояние «нет связи» (п. 8) — один размер на язык (1366): запросы модуля оборваны → понятный текст и «Повторить»,
@@ -281,7 +334,7 @@ async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, 
     let back = null;
     if (retry) { await retry.click({ timeout: 4000 }).catch(() => null); await sleep(2500); back = !(await firstVisible(page.getByRole("button", { name: retryRe }))); }
     add(sc.id, own, variant, "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
-      msg.length > 10 && retry && back !== false ? "PASS" : "FAIL", { message: msg.slice(0, 90), retry: !!retry, recovered: back }, path.basename(shot));
+      msg.length > 10 && retry && back !== false ? "PASS" : sc.legacy ? "WARN" : "FAIL", { message: msg.slice(0, 90), retry: !!retry, recovered: back }, path.basename(shot));
     // Ошибки консоли от оборванных запросов — ожидаемые, в счёт экрана не идут.
     errors.splice(e0);
   }

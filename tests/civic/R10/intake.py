@@ -139,6 +139,14 @@ def summary_consistency(analysis: dict, total_in: int | None) -> list[tuple[str,
     dup = len(ids) - len(set(map(str, ids)))
     rows.append(("у каждого текста не больше одной задачи (без двойного счёта)", dup == 0,
                  {"текстов в задачах": len(ids), "повторно": dup}, True))
+    with_place = sum(1 for t in tasks if t.get("target") or t.get("point"))
+    if "ready" in s:
+        rows.append(("итог: ready (будет создано записей) = задач с местом", s.get("ready") == with_place,
+                     {"summary.ready": s.get("ready"), "задач с местом": with_place}, True))
+    groups_list = analysis.get("services")
+    if isinstance(groups_list, list):
+        rows.append(("итог: служб = групп служб в ответе (services[])", s.get("services") == len(groups_list),
+                     {"summary.services": s.get("services"), "групп": len(groups_list)}, False))
     if total_in is not None:
         rows.append(("итог: обращений = число текстов на входе", s.get("total") == total_in,
                      {"summary.total": s.get("total"), "текстов на входе": total_in,
@@ -161,16 +169,16 @@ def task_issues(task, cats: set[str]) -> list[str]:
             bad.append(f"служба {sid!r} не из справочника §3")
     target = task.get("target")
     if target:
-        pt = target.get("point") or target.get("coords") or (
+        pt = task.get("point") or target.get("point") or target.get("coords") or (
             [target.get("lon"), target.get("lat")] if target.get("lon") is not None else None)
         if isinstance(pt, (list, tuple)) and len(pt) == 2 and all(isinstance(v, (int, float)) for v in pt):
             if not (ASTANA[0] <= pt[0] <= ASTANA[2] and ASTANA[1] <= pt[1] <= ASTANA[3]):
                 bad.append(f"место вне Астаны {pt}")
         if not target.get("id"):
             bad.append("у места нет id")
-    elif not (task.get("address_text") or "").strip():
-        bad.append("нет места и нет «адрес уточнить» (address_text)")
-    if task.get("urgent") and not (task.get("urgent_why") or "").strip():
+    elif task.get("point"):
+        bad.append("точка без цели — место угадано?")
+    if task.get("urgent") and not (task.get("urgent_why") or task.get("urgent_why_ru") or "").strip():
         bad.append("срочно без причины (urgent_why)")
     if not task.get("text_ids"):
         bad.append("нет text_ids")
@@ -349,12 +357,14 @@ class IntakeCheck:
             if not cond:
                 self.add("I5", "свои тексты: " + name, "FAIL", detail, blocking=blocking)
         tasks = data.get("tasks") or []
-        # text_ids своих текстов — номера строк: с 0 или с 1 (номер len(OWN) бывает только при счёте с 1)
-        one_based = any(str(len(OWN)) in [str(x) for x in (t.get("text_ids") or [])] for t in tasks)
+        # text_ids своих текстов (строки без id): R04 нумерует «t1…tN» с 1; годится и номер строки с 0 или с 1.
+        ids_all = [str(x) for t in tasks for x in (t.get("text_ids") or [])]
+        one_based = str(len(OWN)) in ids_all or f"t{len(OWN)}" in ids_all
 
         def find(key):
-            idx = [i for i, (k, _) in enumerate(OWN) if k == key][0] + (1 if one_based else 0)
-            return next((t for t in tasks if str(idx) in [str(x) for x in (t.get("text_ids") or [])]), None)
+            i = [n for n, (k, _) in enumerate(OWN) if k == key][0]
+            want = {f"t{i + 1}", str(i + 1)} if one_based else {str(i), f"t{i}"}
+            return next((t for t in tasks if want & {str(x) for x in (t.get("text_ids") or [])}), None)
 
         d1, d2 = find("dup1"), find("dup2")
         if d1 and d1.get("target"):
@@ -368,13 +378,15 @@ class IntakeCheck:
         self.ok("I5", "«открытый люк возле школы, дети» — срочно (явные правила П3)", bool(u and u.get("urgent")),
                 {"urgent": (u or {}).get("urgent"), "почему": (u or {}).get("urgent_why")}, blocking=False)
         na = find("noaddr")
-        self.ok("I5", "текст без места — без цели, «адрес уточнить» (не угадывать)",
-                bool(na) and not na.get("target") and bool((na.get("address_text") or "").strip()),
-                {"target": (na or {}).get("target"), "address_text": (na or {}).get("address_text")}, blocking=False)
+        self.ok("I5", "текст без места — без цели и без точки (не угадывать; на экране — «адрес уточнить»)",
+                bool(na) and not na.get("target") and not na.get("point"),
+                {"target": (na or {}).get("target"), "point": (na or {}).get("point"), "address_text": (na or {}).get("address_text")},
+                blocking=False)
         mx = find("mixed")
         self.ok("I5", "текст по-казахски про ту же остановку — разобран (категория, служба)",
                 bool(mx) and bool(task_services(mx)),
-                {"задача": (mx or {}).get("title_ru"), "категория": (mx or {}).get("category")}, blocking=False)
+                {"задача": (mx or {}).get("title_ru"), "категория": (mx or {}).get("category"),
+                 "вместе с русским повтором": bool(mx and d1 and mx is d1)}, blocking=False)
 
     def paste(self, sample, analysis_sample):
         texts = [t["text"] for t in sample]
@@ -430,9 +442,14 @@ class IntakeCheck:
         if isinstance(data, dict):
             v = data.get("created", data.get("count", data.get("records")))
             said = len(v) if isinstance(v, list) else v
+            if isinstance(said, bool) or said is None:  # created — флаг у записей: считаем новые
+                recs = data.get("records") if isinstance(data.get("records"), list) else []
+                said = sum(1 for x in recs if isinstance(x, dict) and x.get("created"))
         self.facts["commit"] = {"tasks": len(ids), "records_before": before, "records_after": after, "said": said}
-        self.ok("I7", "записей в «Обращениях» стало больше ровно на число задач", made == len(ids),
-                {"задач": len(ids), "новых записей": made}, "R04 + R09")
+        placed = sum(1 for t in tasks if t.get("target") or t.get("point"))
+        ready = (analysis.get("summary") or {}).get("ready", placed)
+        self.ok("I7", "записей в «Обращениях» стало больше ровно на число задач с местом (ready)", made == ready == placed,
+                {"задач": len(ids), "с местом": placed, "summary.ready": ready, "новых записей": made}, "R04 + R09")
         self.ok("I7", "commit называет то же число, что создано (его покажет тост «Создано N задач»)", said == made,
                 {"в ответе": said, "новых записей": made})
         r2 = self.staff.post(f"{V2}/intake/commit", {"batch_id": analysis.get("batch_id"), "task_ids": ids}, timeout=120)
@@ -448,9 +465,12 @@ class IntakeCheck:
             demo = sum(1 for x in new if x.get("demo") is True or x.get("synthetic") is True)
             self.ok("I7", "у созданных из примера — пометка demo", demo == len(new), {"новых": len(new), "demo": demo},
                     "R04 + R09", blocking=False)
-            people_tasks = sum(int(t.get("people") or len(t.get("text_ids") or []) or 1) for t in tasks)
-            people_new = sum(int(x.get("reporters") or x.get("people") or 1) for x in new)
-            self.facts["commit"]["people"] = {"в задачах": people_tasks, "в записях": people_new}
+            placed_tasks = [t for t in tasks if t.get("target") or t.get("point")]
+            people_tasks = sum(int(t.get("people") or len(t.get("text_ids") or []) or 1) for t in placed_tasks)
+            people_new = sum(int(x.get("reporters") or x.get("people") or 1 + int(x.get("metoo") or 0)) for x in new)
+            self.facts["commit"]["people"] = {"в задачах с местом": people_tasks, "в новых записях": people_new}
+            self.ok("I7", "людей в новых записях = людей в задачах (1 + «Я тоже» с текстами)", people_new == people_tasks,
+                    {"в задачах": people_tasks, "в записях": people_new}, "R04 + R09", blocking=False)
 
     def summary(self):
         counts = {s: sum(1 for r in self.rows if r["status"] == s) for s in ("PASS", "FAIL", "NOT_RUN")}
