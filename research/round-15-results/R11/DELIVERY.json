@@ -4,10 +4,10 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "d126117d",
- "tested_sha": "d126117d",
+ "code_sha": "ec3d0aef",
+ "tested_sha": "ec3d0aef",
  "push_status": "OK",
- "updated": "2026-10-16 23:29 Астана",
+ "updated": "2026-10-17 02:27 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -22,7 +22,8 @@
   "web/civic/ui-kit/components.css (круг 15: текст компонентов раунда 15 — --c-text-2), tokens.css (правило --c-text-3)",
   "П3: web/civic/ui-kit/icons.svg (i-ai), components.css (.bk-ai), ui-kit.js (BirgeUI.aiTag), index.html (примеры метки); ru.json / kk.json +36 ключей (2902); tests/civic/R11/test_r11_ui_kit_r15.py (+ тест метки); IA_ROUND15.md §11",
   "П3 (круг 25): components.css (.bk-lrow__meta — остаток строки), ru.json / kk.json — 59 ключей intake.* экрана R04 (2935), tests/civic/R11/review/r15_intake.cjs, tools/sync_roles.py (+ R04 intake.js)",
-  "П3 (за R16, кадр 04): components.css .bk-thumb--kind — значок вида 40 × 40 / 20 px вместо квадрата 84 px; index.html; тест"
+  "П3 (за R16, кадр 04): components.css .bk-thumb--kind — значок вида 40 × 40 / 20 px вместо квадрата 84 px; index.html; тест",
+  "R10 B-136 (часть R11): components.css — серый текст списков (.bk-lrow__meta, __time, .bk-lgroup__count, .bk-stline small, .bk-hot__name small, .bk-pd__note) → --c-text-2"
  ],
  "deliverables": {
   "IA_ROUND15": "research/round-15-results/R11/IA_ROUND15.md — меню жителя и акимата, «Ещё» группами, экраны (главное, одна главная кнопка, чего нет, слой), хроника — чип легенды, ситуационный центр — страница, запасные места FINAL-4; опубликован 15 окт ~16:37 Астаны (08bde777)",
@@ -91,7 +92,10 @@
   "pytest tests/civic/R11 (33260363)": "PASS 35/35",
   "pytest tests/civic/R11 (d126117d)": "PASS 36/36",
   "витрина ui-kit, Chromium 1366/375 × ru/kk (d126117d)": "PASS 4/4",
-  "«Мой двор» и «Сделаем вместе» на стенде R01 7493ea1f + R11 (d126117d)": "1366/375 × ru/kk: значки видов 40×40 / 20 px, прокрутки 0, сырых ключей 0, русских подписей 0, ошибок JS 0"
+  "«Мой двор» и «Сделаем вместе» на стенде R01 7493ea1f + R11 (d126117d)": "1366/375 × ru/kk: значки видов 40×40 / 20 px, прокрутки 0, сырых ключей 0, русских подписей 0, ошибок JS 0",
+  "pytest tests/civic/R11 (ec3d0aef)": "PASS 37/37",
+  "витрина ui-kit, Chromium 1366/375 × ru/kk (ec3d0aef)": "PASS 4/4",
+  "контраст «Обращений» на R01 d5dfcbcf + R11 (ec3d0aef)": "подписи строк 7,54 : 1, числа групп 6,68 : 1, сроки 7,54 : 1 (было 3,17–3,58)"
  },
  "screens": [
   "research/round-15-results/R11/screens/kit15-1366-kk.jpg",
