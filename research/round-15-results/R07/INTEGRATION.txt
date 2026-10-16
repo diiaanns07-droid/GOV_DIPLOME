@@ -261,6 +261,9 @@ make_service(db).handle GET incidents). Кризис о событии мира 
 - R01: ничего нового в оболочке. Взять из code_sha ui/civic_heat/service.py, api.py, web/civic/heat/heat.js. Маршрут
   heat.target (V2Handler kind=raw) отдаёт тело 404 как есть — проверено на f9b0cc85.
 - R11: ключ heat.place_empty (§5); запасной текст в модуле есть.
+- R15: place — только открытые данные карты (OSM / реестр R12: подпись, центр, форма места). Из жалоб в него ничего
+  не попадает; «примерные места» по точке жалобы (cell-…, complaint-point) place не получают. Проверки R15 на
+  /heat/target (паспорт QR) идут по цели с жалобой — ответ 200, как раньше.
 - R10: проверка на стенде — tests/civic/R07/browser/place_no_complaints.cjs (10/10); сцена 0 в оболочке —
   screens/p3_place/shell_probe.json. В консоли браузера остаётся строка «Failed to load resource: … 404» на
   /heat/target. Она была и до правки (статус ответа не менялся); если проверка считает ошибки консоли, её нужно
