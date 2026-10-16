@@ -4672,6 +4672,35 @@ button.bk-conflict::after {
   }
 }
 
+/* ── Метка «ИИ» (поправка П3, 16 окт): где подсказку дала модель — малый монохромный значок набора + слово ──
+   <span class="bk-ai" title="Подсказка ИИ — проверьте"><svg class="ic" aria-hidden="true"><use href="…#i-ai"/></svg>
+     <span class="bk-ai__t" aria-hidden="true">ИИ</span><span class="bk-sr-only">Подсказка ИИ — проверьте</span></span>
+   Проще — BirgeUI.aiTag(): тексты из словаря (common.ai.badge «ИИ» / «ЖИ», common.ai.hint). Ставить рядом с «Похоже на: …»
+   (мастер жалобы R09), «Похоже, нужны 2 службы» (R09 / R04), ответом «Спросить Birge» (R03), в «ИИ-разборе» (R04).
+   Без свечения, градиента и цвета (П1): серая плашка как .bk-tag, текст --c-text-2 (≥ 4,5 : 1); не кнопка — подсказка
+   для мыши в title, для диктора — скрытый текст. */
+.bk-ai {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--c-fill);
+  color: var(--c-text-2);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semi);
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: help;
+}
+.bk-ai .ic {
+  width: 14px;
+  height: 14px;
+}
+
 /* ── Ответ «Спросить Birge» (R03): крупные числа, 2–4 строки, «Показать на карте», «Как получен ответ» свёрнуто ──
    <article class="bk-answer"><p class="bk-answer__q">Где больше всего жалоб на снег?</p>
      <div class="bk-answer__nums"><p class="bk-answer__num"><b>142</b>жалобы на снег за неделю</p>…</div>
