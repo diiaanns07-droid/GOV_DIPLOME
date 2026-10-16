@@ -99,6 +99,7 @@
       "heat.loading": "Загружаем жалобы…",
       // Пустой фильтр (UX_REVIEW R11, день 3, №8) — ключи и тексты из общего словаря R11
       "heat.empty.title": { one: "За {n} день жалоб нет", few: "За {n} дня жалоб нет", many: "За {n} дней жалоб нет" },
+      "heat.place_empty": { one: "{place}: за {n} день жалоб нет", few: "{place}: за {n} дня жалоб нет", many: "{place}: за {n} дней жалоб нет" },
       "heat.empty.hint": "Попробуйте период побольше",
       "heat.empty.hint_filters": "Попробуйте другой период или сбросьте фильтры",
       "heat.empty.show_days": { one: "Показать {n} день", few: "Показать {n} дня", many: "Показать {n} дней" },
@@ -228,6 +229,7 @@
       "heat.group.work": "Орындалуда",
       "heat.loading": "Шағымдар жүктеліп жатыр…",
       "heat.empty.title": { other: "Соңғы {n} күнде шағым жоқ" },
+      "heat.place_empty": { other: "{place}: соңғы {n} күнде шағым жоқ" },
       "heat.empty.hint": "Ұзағырақ кезеңді таңдап көріңіз",
       "heat.empty.hint_filters": "Басқа кезеңді таңдаңыз немесе сүзгілерді тазартыңыз",
       "heat.empty.show_days": { other: "Соңғы {n} күнді көрсету" },
@@ -516,6 +518,8 @@
       legendEl: null,         // легенда на карте
       fitted: false,          // карта уже подогнана под горячие места (один раз, до первого касания)
       pendingSelect: null,    // цель из ссылки / «Картины дня», ждёт загрузки данных
+      pendingPlace: null,     // место той же цели без жалоб (404 /heat/target с place) — для честного тоста с названием
+      shownPlace: null,       // это место на карте: тёмный контур без цвета жалоб, пока не выбрали другое
       busyKey: null,          // строка «Горячих мест», которая «открывается» (перелёт к цели и её загрузка)
       detailsOpen: new Map(), // «цель|блок» → раскрыт ли «Подробнее» (выбор человека переживает перерисовку карточки)
       prevColors: new Map(),  // ключ → цвет до обновления (для плавного перехода)
@@ -698,7 +702,9 @@
         if (S.mode === "targets" && !S.pendingMoving) {
           S.pendingSelect = null;   // за этот период жалоб по цели нет — честно сказать, а не молчать
           clearBusy();
-          toast(t("heat.empty.title", { n: S.filters.days }));
+          const place = S.pendingPlace && S.pendingPlace.key === key ? S.pendingPlace : null;
+          S.pendingPlace = null;
+          toast(place && label(place) ? t("heat.place_empty", { place: label(place), n: S.filters.days }) : t("heat.empty.title", { n: S.filters.days }));
         } else if (!S.pendingMoving && !(map && map.isMoving())) clearBusy();   // цель не открылась (перелёта не было) — строка не «крутится»
         return;
       }
@@ -781,6 +787,7 @@
       const daysChanged = Number.isInteger(days) && days >= 1 && days <= 365 && days !== S.filters.days;
       if (daysChanged) S.filters.days = days;
       S.fitted = true;            // переход по ссылке важнее стартовой подгонки
+      showPlace(null);
       if (!daysChanged && findItem(key)) { select(key, true); return; }
       S.pendingSelect = key;
       S.pendingMoving = true;
@@ -795,7 +802,18 @@
           // ждём конца перелёта (если камера уже на месте, moveend может не прийти — страховка 1,2 с)
           await new Promise((done) => { map.once("moveend", done); setTimeout(done, 1200); map.easeTo({ center: item.anchor, zoom, offset: freeOffset(), duration: moveMs(600) }); });
         }
-      } catch (err) { /* цели за период нет или сеть — ниже честно скажем */ }
+      } catch (err) {
+        // Цели за период нет или сеть — ниже честно скажем. П3, сцена 0: «Показать на карте» у задачи «ИИ-разбора» R04
+        // ведёт и на место без жалоб — сервер присылает его подпись и точку (place), карта всё равно летит туда.
+        const place = err && err.status === 404 && err.body && err.body.place;
+        if (place && Array.isArray(place.anchor) && map) {
+          S.pendingPlace = Object.assign({ key }, place);
+          showPlace(S.pendingPlace);
+          const zoom = Math.max(map.getZoom(), kind === "object" ? 16 : 15);
+          await new Promise((done) => { map.once("moveend", done); setTimeout(done, 1200); map.easeTo({ center: place.anchor, zoom, offset: freeOffset(), duration: moveMs(600) }); });
+          if (S.shownPlace && S.shownPlace.key === key) placePulse(place.anchor);
+        }
+      }
       S.pendingMoving = false;
       await load();
     }
@@ -806,6 +824,28 @@
     function clearBusy() {
       S.busyKey = null;
       panel.querySelectorAll(".r07-item--busy").forEach((b) => { b.classList.remove("r07-item--busy"); b.removeAttribute("aria-busy"); });
+    }
+    // Место цели без жалоб на карте — до выбора другой цели, следующего перехода или «Хроники».
+    function placeData() {
+      const p = S.shownPlace, type = String((p && p.geometry && p.geometry.type) || "");
+      if (!type) return { type: "FeatureCollection", features: [] };
+      const shape = type.includes("Point") ? "point" : type.includes("LineString") ? "line" : "area";
+      return { type: "FeatureCollection", features: [{ type: "Feature", geometry: p.geometry, properties: { shape, approx: Boolean(p.approximate) } }] };
+    }
+    function showPlace(place) {
+      if (!place && !S.shownPlace) return;
+      S.shownPlace = place && place.geometry ? place : null;
+      const src = map && layersReady && map.getSource(SRC_PLACE);
+      if (src) src.setData(placeData());
+    }
+    // Одно спокойное кольцо там, куда прилетела карта (тот же пульс, что у новой жалобы, тёмный — не цвет уровня)
+    function placePulse(anchor) {
+      if (!map || !window.maplibregl) return;
+      const el = document.createElement("div");
+      el.className = "r07-pulse";
+      el.style.setProperty("--r07-c", "#152c26");
+      const marker = new window.maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(anchor).addTo(map);
+      setTimeout(() => marker.remove(), 2200);
     }
 
     function parseHash() {
@@ -823,7 +863,7 @@
     }
 
     // ----- слои карты -----
-    const SRC = "r07-heat", SRC_PTS = "r07-heat-pts";
+    const SRC = "r07-heat", SRC_PTS = "r07-heat-pts", SRC_PLACE = "r07-place";
     let layersReady = false;
 
     function beforeLayerId() {
@@ -908,6 +948,16 @@
       add({ id: "r07-obj-halo", type: "circle", source: SRC_PTS, minzoom: 15, paint: haloPaint });
       add({ id: "r07-obj-dot", type: "circle", source: SRC_PTS, minzoom: 15,
         paint: { "circle-color": color, "circle-radius": 6, "circle-stroke-color": "#ffffff", "circle-stroke-width": 2 } });
+      // Место без жалоб (П3, «Показать на карте» из «ИИ-разбора»): тёмный контур, как у выбранной цели, без цвета жалоб;
+      // точка — кольцо; пунктир — примерное место (как в легенде).
+      map.addSource(SRC_PLACE, { type: "geojson", data: placeData() });
+      const PLACE_W = ["case", ["==", ["get", "shape"], "line"], 5, 3];
+      add({ id: "r07-place-line", type: "line", source: SRC_PLACE, filter: ["all", ["!=", ["get", "shape"], "point"], ["!", ["boolean", ["get", "approx"], false]]],
+        layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#152c26", "line-width": PLACE_W } });
+      add({ id: "r07-place-approx", type: "line", source: SRC_PLACE, filter: ["all", ["!=", ["get", "shape"], "point"], ["boolean", ["get", "approx"], false]],
+        paint: { "line-color": "#152c26", "line-width": PLACE_W, "line-dasharray": [2, 1.5] } });
+      add({ id: "r07-place-ring", type: "circle", source: SRC_PLACE, filter: ["==", ["get", "shape"], "point"],
+        paint: { "circle-color": "rgba(255,255,255,0.6)", "circle-radius": 9, "circle-stroke-color": "#152c26", "circle-stroke-width": 3 } });
 
       // Прозрачность слоёв без фокуса — режим фокуса умножает её на 0,4 у всех целей, кроме выбранной.
       S.layerOpacity = {
@@ -1164,6 +1214,7 @@
       R.fading = [];
       R.cost = { ms: 0, n: 0, draws: 0, drawMs: 0 };
       if (S.selected) { S.selected = null; updateSelectionLayer(); }
+      showPlace(null);
       hideTip();
       root.classList.add("r07-root--replay");
       if (map) map.getContainer().classList.add("r07-replaying");
@@ -1788,6 +1839,7 @@
     }
 
     function select(key, moveMap) {
+      showPlace(null);
       S.selected = key;
       updateSelectionLayer();
       for (const [k, m] of S.markers) m.el.classList.toggle("r07-badge--selected", k === key);
@@ -2645,6 +2697,7 @@
     }
     function onKey(ev) {
       if (R.on) return;
+      if (ev.key === "Escape") showPlace(null);   // контур места без жалоб — как карточка, по Esc
       if (ev.key === "Escape" && S.selected) { S.selected = null; updateSelectionLayer(); render(); drawBadges(); }
     }
     if (map) {
@@ -2699,7 +2752,7 @@
       //  commands() — пункты командной палитры акимата (Ctrl+K, README правило 2): [{ id, group, title, hint, run }] —
       //    открыть горячее место, период 7 / 30 / 90, «Взять в работу» / «Отметить исправленным» у открытого места.
       commands: () => commands(),
-      close: () => { if (!S.selected) return false; S.selected = null; updateSelectionLayer(); render(); drawBadges(); return true; },
+      close: () => { showPlace(null); if (!S.selected) return false; S.selected = null; updateSelectionLayer(); render(); drawBadges(); return true; },
       // Режим выбора места жалобой без класса body.birge-picking (другая оболочка): значки передают щелчок карте.
       setPickMode: (on) => {
         S.picking = !!on;
@@ -2745,7 +2798,7 @@
       try { style = map.getStyle(); } catch (e) { style = null; }
       const own = ((style && style.layers) || []).map((l) => l.id).filter((id) => id.startsWith("r07-"));
       own.forEach((id) => { try { if (map.getLayer(id)) map.removeLayer(id); } catch (e) { /* стиль сменился */ } });
-      [SRC, SRC_PTS].forEach((id) => { try { if (map.getSource(id)) map.removeSource(id); } catch (e) { /* стиль сменился */ } });
+      [SRC, SRC_PTS, SRC_PLACE].forEach((id) => { try { if (map.getSource(id)) map.removeSource(id); } catch (e) { /* стиль сменился */ } });
       layersReady = false;
     }
     function destroy() {

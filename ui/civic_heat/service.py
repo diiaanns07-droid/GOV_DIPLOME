@@ -8,6 +8,7 @@ invalidate() (его должен дёргать R09 после create / metoo /
 from __future__ import annotations
 
 import logging
+import re
 import threading
 import time
 from datetime import datetime, timedelta, timezone
@@ -270,6 +271,33 @@ class HeatService:
 
     def districts(self, *, days=None, category=None, now=None) -> list:
         return self.heat(days=days, category=category, zoom=0, now=now)["items"]
+
+    # id целей, которые бывают у жалоб (как QR_ID в heat.js): объект OSM, участок улицы, двор
+    _PLACE_ID = re.compile(r"^(osm-(node|way|relation)-\d{1,15}|osm-w\d{1,15}-\d{1,6}|yard-r?\d{1,15}(-\d{1,3})?)$")
+
+    def place(self, kind: str, target_id: str) -> dict | None:
+        """Место цели, по которой жалоб за период нет: {kind, id, label_ru, label_kk, anchor, approximate, geometry} или None.
+
+        П3, сцена 0: «Показать на карте» у задачи «ИИ-разбора» R04 ведёт на цель, жалоб по которой ещё нет (их создаст
+        «Создать задачи») — карта всё равно подлетает к месту и называет его. id приходит снаружи, поэтому только
+        допустимые виды id и разбор без кэша (TargetResolver кэширует по id — чужие id не должны его раздувать).
+        """
+        if kind not in ("object", "segment", "area") or not isinstance(target_id, str) or not self._PLACE_ID.match(target_id):
+            return None
+        resolve = getattr(self.resolver, "_resolve", None)
+        try:
+            found = (resolve(kind, target_id, {"kind": kind, "id": target_id}, None) if resolve
+                     else self.resolver.resolve({"kind": kind, "id": target_id}))
+        except Exception:
+            return None
+        if not found or not found.get("geometry"):
+            return None
+        anchor = found.get("anchor") or geo.anchor_of(found["geometry"])
+        if not anchor:
+            return None
+        return {"kind": kind, "id": target_id, "label_ru": found.get("label_ru"), "label_kk": found.get("label_kk"),
+                "anchor": [round(float(anchor[0]), 6), round(float(anchor[1]), 6)], "approximate": bool(found.get("approximate")),
+                "geometry": found["geometry"]}
 
     def target(self, kind: str, target_id: str, *, days=None, now=None, include_real_texts: bool = False,
                with_texts: bool = True) -> dict | None:
