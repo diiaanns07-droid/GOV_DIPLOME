@@ -42,3 +42,16 @@ R04 · РАУНД 15 · КАК ЗАПУСТИТЬ И ПРОВЕРИТЬ
         -H 'Origin: http://127.0.0.1:8655' -d '{"text":"Звоните 8 701 123 45 67"}'
 
 4) Для диплома — числа качества route(): RESULTS.md (журнал прогонов test, независимая проверка на корпусах R02).
+
+5) П3 · «ИИ-разбор пачки обращений» (сцена 0).
+   pytest -q tests/civic/R04/intake                     # analyze / места / commit (фикстура R04 42 текста; без сети)
+   Стенд — сборка R01 с маршрутами intake/* (claude/brave-fermi-nhzetj @ cbb067aa и новее) или FINAL-5.1 +
+   git apply research/round-15-results/R04/patches/r01_intake_routes.patch (только в своей копии), затем как в п. 3
+   (CIVIC_DEMO_WORLD=1 — мир R02; набор «за ночь» — data/civic/astana/demo-world/intake_night_v1.json, если есть):
+   R04_STAND=http://127.0.0.1:8655 python3 -B tests/civic/R04/intake/http_check_intake.py     # 19 проверок
+   R04_STAND=http://127.0.0.1:8655 node tests/civic/R04/intake/ui_check_intake.cjs <папка-кадров>   # 88 проверок,
+       1366 / 1024 / 375 × ru / kk; Chromium — /opt/pw-browsers (R04_CHROME — другой путь)
+   Перезапуск стенда: процесс python запускайте отдельной командой (не «cd … && … &»), иначе $! — оболочка, и
+   старый сервер переживёт kill (порт занят, новая база не та).
+   Оценка на наборе R02 (оценщик R02): research/round-15-results/R04/intake_eval/README.md — eval_halves.py
+   (весь набор, dev и отложенная половина).
