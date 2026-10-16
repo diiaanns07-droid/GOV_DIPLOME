@@ -53,7 +53,7 @@ const UI_STOPS = args.stop ? [STOP] : [STOP,
   { id: "osm-node-2716977767", name: "Национальный кардиологический центр", name_kk: "Ұлттық кардиохирургиялық орталық", point: [71.4131502, 51.1276695] }];
 const NURA_BBOX = "71.375,51.115,71.420,51.140";
 const DEVICE = "r10-e2e-device-" + Date.now();
-const { NOISE, TAB_LIMIT, uiScreen, uiAudit, cyrLines, untranslated, focusToPrimary } = require("./ux_lib.cjs");
+const { NOISE, TAB_LIMIT, uiScreen, uiAudit, cyrLines, untranslated, focusToPrimary, aiMark } = require("./ux_lib.cjs");
 const RL = require("./r10_lib.cjs");  // стекло: glassMode / glassSeen
 
 // Python: переменная PYTHON (например .venv\Scripts\python на Windows), иначе python3 / python.
@@ -586,6 +586,11 @@ async function uiFlow(browser, base, [w, h], lang, apiCtx, staff, vi) {
     const suggested = await visibleText(dlg, textRe(sugg));
     const catShown = await visibleText(dlg, new RegExp(esc(cat), "i"));
     step("2", `модель предложила категорию «${cat}» («${sugg}»)`, !!box && suggested && catShown, { textbox: !!box, suggested, catShown }, await shot("2-category"));
+    // П3 (R11 + R09): ИИ виден — маленький значок «ИИ» с подсказкой «Подсказка ИИ — проверьте» у «Похоже на:» (не блокер).
+    if (suggested) {
+      const m = await aiMark(page, textRe(sugg), "[role=dialog]").catch(() => null);
+      step("2", "значок «ИИ» у подсказки «Похоже на:» (П3)", m && m.hint ? !!m.mark : null, m || "подсказки на экране нет");
+    }
     const sendRe = textRe(T(dict, ["complaint.step3.send", "complaint.send"], lang === "kk" ? "Жіберу" : "Отправить"));
     const metooRe = new RegExp("^" + esc(T(dict, "complaint.step4.metoo", lang === "kk" ? "Мен де" : "Я тоже")) + "$", "i");
     // До FINAL-2 «Отправить» — на шаге текста. С волны 1 R09: «Далее» → «Об этом уже сообщили N» («Я тоже») или

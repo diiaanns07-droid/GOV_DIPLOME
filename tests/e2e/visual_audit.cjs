@@ -30,7 +30,7 @@ function worldScenes() {
     const w = JSON.parse(fs.readFileSync(path.join(ROOT, "data/civic/astana/demo-world/world_v1.json"), "utf8"));
     const sc = w.scenes || {};
     return { yard: (sc.scene7 || {}).yard, initiative: (sc.scene7 || {}).initiative, incident: (sc.scene9 || {}).incident,
-      conflict: (sc.scene8 || {}).conflict };
+      conflict: (sc.scene8 || {}).conflict, complaint8: (sc.scene8 || {}).complaint };
   } catch (e) { return {}; }
 }
 const W15 = worldScenes();
@@ -61,6 +61,9 @@ const SCREENS = [
   // П3 (16 окт): все листы-разделы — R01 проверяет ширину листа, роли — свои экраны по VISUAL_BRIEF §4; сцена 0 R04.
   // legacy — экраны до раунда 15: «нет связи» у них — «смотреть» (WARN), остальное по VISUAL_BRIEF §4 — как у новых.
   { id: "inbox", hash: "#inbox", mode: "akimat", global: ["BirgeInbox", "BirgeComplaintList"], owner: "R09", api: API("complaints"), legacy: true },
+  // Жалоба сцены 8 на свежем сервере: подсказка R04 «Похоже, нужны 2 службы» ещё не принята — у неё значок «ИИ» (П3).
+  { id: "inbox-card", hash: W15.complaint8 ? `#inbox/${W15.complaint8}` : null, mode: "akimat", global: ["BirgeInbox", "BirgeComplaintList"],
+    owner: "R09 + R11", api: null, legacy: true, ai: { ru: /Похоже, нужн[аы] .*служб/i, kk: /қызмет керек сияқты/i } },
   { id: "day", hash: "#day", mode: "akimat", global: null, owner: "R08", api: API("akim/summary"), root: "#birge-day:not([hidden])", legacy: true },
   { id: "projects", hash: "#projects", mode: "akimat", global: ["BirgeProjects", "BirgeIdeas"], owner: "R06 + R05", api: API("(proposals|ideas)"), legacy: true },
   { id: "ideas", hash: "#ideas", mode: "resident", global: ["BirgeIdeas"], owner: "R06 + R05", api: API("ideas"), legacy: true },
@@ -301,6 +304,25 @@ async function measure(page, sc, variant, lang, w, f, SEL, retryRe, errors, e0, 
   if (m && m.tabsCut.length) add(sc.id, own, variant, "вкладки целиком (полоса вкладок не режет подпись краем)", "WARN", { cut: m.tabsCut });
   if (m) add(sc.id, own, variant, "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)", m.bigIll.length || m.emoji.length ? "FAIL" : "PASS",
     { big: m.bigIll.slice(0, 4), emoji: m.emoji });
+  // П3: ИИ виден — значок «ИИ» (R11) у подсказки ИИ; у «Спросить Birge» — у ответа (после вопроса).
+  if (sc.ai) {
+    const am = await aiMark(page, sc.ai[lang] || sc.ai.ru, SEL).catch(() => null);
+    add(sc.id, own, variant, "значок «ИИ» у подсказки ИИ (П3)", am && am.hint ? (am.mark ? "PASS" : "WARN") : "NOT_RUN", am && am.hint ? am : "подсказки на экране нет", f);
+  }
+  if (sc.id === "analyst" && sc.act && w === 1366) {
+    const asked = await sc.act(page, lang).catch(() => false);
+    if (asked) {
+      await sleep(4000);
+      const anyMark = await page.evaluate((s) => { const r = document.querySelector(s); if (!r) return null;
+        const MARK = /(^|[^А-Яа-яЁё])(ИИ|ЖИ)([^А-Яа-яЁё]|$)|\bAI\b|жасанды/i;
+        for (const e of r.querySelectorAll("*")) { for (const a of ["title", "aria-label", "data-tooltip"]) { const v = e.getAttribute(a); if (v && MARK.test(v)) return `${a}: «${v.slice(0, 40)}»`; }
+          const own = [...e.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim(); if (/^(ИИ|ЖИ|AI)$/.test(own)) return `текст «${own}»`; }
+        return null; }, SEL).catch(() => null);
+      add(sc.id, own, variant, "значок «ИИ» у ответа «Спросить Birge» (П3)", anyMark ? "PASS" : "WARN", anyMark || "значка «ИИ» на экране после ответа нет", f);
+      await page.evaluate((hh) => { location.hash = "#map"; location.hash = hh; }, sc.hash).catch(() => null);
+      await sleep(2000);
+    }
+  }
   // П3 — то, что видно на кадрах FINAL-5.1 (review_final51): лист раздела.
   const sh = inShell ? await sheetMetrics(page, SEL).catch(() => null) : null;
   if (sh) {
