@@ -41,6 +41,8 @@ API
   R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html NODE_PATH=$(npm root -g) node tests/civic/R07/browser/place_no_complaints.cjs
                                                                           # П3, сцена 0: место без жалоб — перелёт, контур,
                                                                           # тост с названием; чужой id — «жалоб нет»: 10/10
+  NODE_PATH=$(npm root -g) node tests/civic/R07/browser/contrast.cjs      # серый текст панели и хроники ≥ 4,5 : 1 (стенды
+                                                                          # 8619 и 8617, R07_BASE / R07_WORLD): 9/9
   R07_BASE=http://127.0.0.1:8619/civic/heat/demo.html NODE_PATH=$(npm root -g) node tests/civic/R07/browser/shots.js <папка>
                                                                           # снимки и проверки стенда: 64/64 (readability.js,
                                                                           # pan_stability.js — так же, 18/18 и 2/2)
