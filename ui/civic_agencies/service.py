@@ -304,7 +304,7 @@ class AgencyService:
         if device is not None and (not isinstance(device, str) or not DEVICE_RE.match(device)):
             raise ApiError(400, "bad_request", "X-Birge-Device: строка 8–128 символов.", "device_id")
         if device:
-            more_d, more_y = device_places(device)
+            more_d, more_y = device_places(device, self.store.db_path)
             districts |= more_d
             yards |= more_y
         items = resident_feed(self.store, districts, yards, since)
@@ -407,25 +407,37 @@ METHOD = {
 
 
 # ---------------------------------------------------------------------- жители: зона и лента
-def device_places(device: str) -> tuple[set, set]:
+def device_places(device: str, db_path=None) -> tuple[set, set]:
     """(районы, дворы) жителя по устройству — только чтение у соседей; модуля нет — пусто.
 
-    R16: дворы «Я живу здесь» (имена функций ниже — по prompt R16, сверка в INTEGRATION.txt);
+    R16: дворы «Я живу здесь» — функция модуля (имена ниже, просьба INTEGRATION §7), а пока её нет — публичный метод
+    хранилища сервиса R16 на той же базе: default_service(db_path).store.my_yards(device). make_service R16 здесь не
+    зовём: в демо он заново засевает сцену 7. Район двора кризис берёт сам (crisis.in_zone, R12 yards.json);
     R08: подписки «Рядом» на район (ui.civic_akim.nearby.subscriptions).
     """
     districts, yards = set(), set()
+
+    def add_yards(items):
+        for item in items or []:
+            yid = item.get("id") if isinstance(item, dict) else item
+            if isinstance(yid, str) and YARD_RE.match(yid):
+                yards.add(yid)
+
     try:
         import importlib
         together = importlib.import_module("ui.civic_together")
         for name in ("yards_of_device", "device_yards", "my_yards", "yards_for_device"):
             fn = getattr(together, name, None)
             if callable(fn):
-                for item in fn(device) or []:
-                    yid = item.get("id") if isinstance(item, dict) else item
-                    if isinstance(yid, str) and YARD_RE.match(yid):
-                        yards.add(yid)
+                add_yards(fn(device))
                 break
-    except Exception:  # noqa: BLE001 — R16 нет в сборке
+        else:
+            get_service = getattr(together, "default_service", None)
+            tg = (get_service(db_path) if db_path else get_service()) if callable(get_service) else None
+            mine = getattr(getattr(tg, "store", None), "my_yards", None)
+            if callable(mine):
+                add_yards(mine(device))
+    except Exception:  # noqa: BLE001 — R16 нет в сборке или его база недоступна
         pass
     try:
         from ui.civic_akim.nearby import subscriptions  # type: ignore
