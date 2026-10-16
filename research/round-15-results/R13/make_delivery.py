@@ -112,6 +112,11 @@ def main() -> None:
                                        "note": "сборка R01 B0.19 (5b696879) с модулями и тестами R13 этой поставки: tests/civic/R08, "
                                        "tests/civic/R03, tests/civic/R13, R15 test_r15_qa.py + round15/test_r15_round15_meetings.py "
                                        "(10 skipped, 1 xfailed — их же)"},
+            "final5_build_check": {"status": "PASS",
+                                   "note": "FINAL-5 c2276360 (R01, в сборке R13 865289cb; файлы R13 = код поставки) как есть, без "
+                                   "ссылок: встречи --full 179/179, демо-мир 115/115, «Вопрос акиму» 111/111, аудит R10 "
+                                   "(meetings, meetings-staff) 124/0/0; R10 — «можно показывать: да», блокеров нет; R15 — "
+                                   "блокеров безопасности нет"},
             "test_order_r13_before_neighbours": {"status": "PASS", "passed": 1076, "failed": 0,
                                                   "note": "R01 24e50493: tests/civic/R13 → R03 → R08 → R17 одним процессом (просьба R01 "
                                                   "B0.20 — раньше 6 FAIL у R03/round15); tests/civic/R13/conftest.py возвращает "
@@ -143,8 +148,8 @@ def main() -> None:
             "«Связано с проектом акимата» / «…с работой службы», номер записи — только в подсказке сотруднику.",
             "Кадры — облако без подложки карты (П1 правило 6); кадры с настоящей картой — LOCAL-12.",
         ],
-        "next_step": "Поправка П2: FINAL-5 в 14:00 по Астане (R01) — проверить, что взят code_sha этой поставки; 14:00–15:45 — "
-                     "только блокеры из списков R10 / R15; 16:00 — FINAL-5.1, раунд закрыт: финальные STATUS и DELIVERY.",
+        "next_step": "Поправка П2: FINAL-5 c2276360 несёт эту поставку и проверена (блокеров R10 / R15 нет); 16:00 — FINAL-5.1, "
+                     "раунд закрыт: финальные STATUS («Раунд 15 закрыт») и DELIVERY.",
     }
     OUT.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"{OUT.relative_to(ROOT)}: code_sha {code[:10]}, {len(changed)} путей, {len(screens)} кадров")
