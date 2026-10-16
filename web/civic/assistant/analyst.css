@@ -237,6 +237,22 @@
 .ba-q__text {
   color: var(--c-ink);
 }
+/* П3: значок «ИИ» у ответа — монохромный, без свечения (П1); подсказка — title / aria-label. */
+.ba-ai {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-right: 8px;
+  vertical-align: -2px;
+  color: var(--c-text-2);
+  font-weight: var(--fw-medium);
+  cursor: help;
+}
+.ba-ai .ba-ai__ic {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
 .ba-mode {
   display: inline-flex;
   align-items: center;
