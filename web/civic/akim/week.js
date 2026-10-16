@@ -256,6 +256,14 @@
     Object.keys(attrs || {}).forEach(function (k) { el.setAttribute(k, attrs[k]); });
     return el;
   }
+  // Знак Birge — домик оболочки (R01 birge.css .brand-mark; VISUAL_BRIEF §3 «один знак», ревью R11 R08-1), без буквы.
+  function homeMark() {
+    var s = svg("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2",
+      "stroke-linecap": "round", "stroke-linejoin": "round", "aria-hidden": "true", focusable: "false" });
+    s.appendChild(svg("path", { d: "M5 20V9l7-5 7 5v11" }));
+    s.appendChild(svg("path", { d: "M9.5 20v-6h5v6" }));
+    return s;
+  }
   function icon(name, cls) {
     var s = svg("svg", { class: "ic" + (cls ? " " + cls : ""), "aria-hidden": "true", focusable: "false" });
     s.appendChild(svg("use", { href: ICONS + "#i-" + name }));
@@ -410,7 +418,7 @@
       var demoAll = d.demo && d.demo.any;
       var head = h("header", { class: "wk-head" }, [
         h("div", { class: "wk-head__main" }, [
-          h("p", { class: "wk-brand" }, [h("span", { class: "wk-brand__mark", "aria-hidden": "true", text: "B" }), "Birge"]),
+          h("p", { class: "wk-brand" }, [h("span", { class: "wk-brand__mark", "aria-hidden": "true" }, [homeMark()]), "Birge"]),
           h("h1", { class: "wk-title", text: tr("week.title") + " · " + (w["label_" + l] || w.label_ru) + " " + year }),
           // Окно — 7 × 24 ч, как «за неделю» в «Картине дня» и «за 7 дней» на карте и Ситуационном центре (R10 C5).
           h("p", { class: "wk-meta", text: [scope, w.current ? tr("week.window.now", { time: clockOf(w.as_of) }) : tr("week.window.past", { date: asOf }),

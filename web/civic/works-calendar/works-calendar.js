@@ -29,9 +29,9 @@
   const LAYER_ID = "works-conflicts";
   const DAY = 86400000;
   const LANE_H = 30;          // высота дорожки полосы: полоса 24 + зазор 6
-  const ROW_PAD = 8;          // поля строки сверху и снизу
-  const CHIP_LANE = 32;       // дорожка чипов конфликта над полосами строки: чип (зона 40 px) не закрывает полосу
-  const HIT = 40;             // зона нажатия полосы и чипа (R10 B-111, правило ≥ 40, цель 44); видимая полоса — 24 px внутри
+  const ROW_PAD = 10;         // поля строки сверху и снизу: строка в одну дорожку — 44 px, как зона нажатия
+  const CHIP_LANE = 34;       // дорожка чипов конфликта над полосами строки: зона чипа (44 px) кончается над полосой
+  const HIT = 44;             // зона нажатия полосы и чипа (VISUAL_BRIEF §4 п. 10); видимая полоса — 24 px внутри (CSS top 10)
   const BAR_H = 24;
   const MIN_MONTH_W = 46;     // уже — месяц не читается: лента прокручивается вбок (телефон — 60)
   const SKELETON_DELAY = 150; // скелетон не раньше 150 мс (COMMON «Качество»)
@@ -322,7 +322,7 @@
     svg.append(use);
     return svg;
   }
-  // Подпись на полосе: белая на тёмном цвете службы, тёмная — на светлом (контраст ≥ 4.5:1 у 13 px).
+  // Подпись на полосе: белая на тёмном цвете службы, тёмная — на светлом (контраст ≥ 4.5:1 у 14 px).
   function textOn(hex) {
     const m = /^#?([0-9a-f]{6})$/i.exec(hex || "");
     if (!m) return "#fff";
@@ -330,18 +330,18 @@
     const L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
     return (1.05) / (L + 0.05) >= 4.5 ? "#fff" : "#121a17";
   }
-  // Ширина подписи полосы (13 px, 500) — по шрифту страницы; без canvas — оценка 7,5 px на знак.
+  // Ширина подписи полосы (14 px, 500) — по шрифту страницы; без canvas — оценка 8,1 px на знак.
   let measureCtx = null;
   function textWidth(text) {
     try {
       if (!measureCtx) {
         measureCtx = doc.createElement("canvas").getContext("2d");
         const fam = getComputedStyle(doc.body).getPropertyValue("--font").trim() || "Inter, system-ui, sans-serif";
-        measureCtx.font = "500 13px " + fam;  // подписи полос — 13 px (решение владельца 12 окт: мельче 13 нет)
+        measureCtx.font = "500 14px " + fam;  // подписи ленты — 14 px (--fs-small; на экране три размера: 14/15/19)
       }
       return measureCtx.measureText(text).width;
     } catch (e) {
-      return text.length * 7.5;  // нет canvas: средняя ширина знака Inter 13 px
+      return text.length * 8.1;  // нет canvas: средняя ширина знака Inter 14 px
     }
   }
   const reducedMotion = () => !!(root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -865,7 +865,7 @@
           cx = (x0 + Math.max(x0, x1)) / 2;
           stemTo = Math.min(a.y, b.y) - 15;
         }
-        const half = (textWidth(tr("wcal.chip." + c.kind)) * 1.04 + 24) / 2;  // 13 px полужирный + поля 10 + рамка
+        const half = (textWidth(tr("wcal.chip." + c.kind)) * 1.04 + 24) / 2;  // 14 px полужирный + поля 10 + рамка
         const y = Math.min(a.rowTop, b.rowTop) + ROW_PAD / 2 + CHIP_LANE / 2;
         cx = Math.min(Math.max(cx, half + 2), width - half - 2);
         const lane = lanes.get(y) || [];

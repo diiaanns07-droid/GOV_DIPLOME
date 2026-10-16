@@ -266,6 +266,12 @@ const openAgencies = async (page, base, tab) => {
           await page.waitForTimeout(500);
           check(`${tag}: вкладка ${tab} без прокрутки вбок`, await noSideScroll(page));
           check(`${tag}: вкладка ${tab} без непереведённых ключей`, (await rawKeys(page)).length === 0, await rawKeys(page));
+          if (w === 375 && tab !== "crisis") {
+            // R11 круг 12 (R17-6): на телефоне заголовок строки и причина передачи — целиком (2–3 строки), не многоточием.
+            const cutRows = await page.evaluate(() => [...document.querySelectorAll(".ag-lrow__title, .ag-quote")]
+              .filter((e) => e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1).map((e) => e.textContent.slice(0, 60)));
+            check(`${tag}: вкладка ${tab}: заголовки строк и причины передач не обрезаны`, cutRows.length === 0, cutRows);
+          }
           const uxTab = await uxProbe(page);
           check(`${tag}: вкладка ${tab}: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1`, uxTab.tinyN === 0 && uxTab.smallN === 0 && uxTab.lowN === 0, uxTab);
           await page.screenshot({ path: `${OUT}/${tab}-${tag}.png` });

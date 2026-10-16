@@ -679,6 +679,19 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Телефон: заголовок строки, причина передачи и итог штаба — целиком, а не первые 40 знаков (R11 круг 12, R17-6) */
+@media (max-width: 760px) {
+  .ag-lrow__title,
+  .ag-quote {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+  }
+  .ag-quote {
+    -webkit-line-clamp: 3;
+  }
+}
 
 /* ───── кризисный штаб ───── */
 .ag-crisis {
@@ -889,6 +902,10 @@
 }
 .ag-form .bk-field {
   margin: 0;
+}
+/* Подпись поля — подпись (13 px, как .bk-field__hint), а не 14 px панели: шкала R11 круг 12 (13 подписи · 14 строки · 15 кнопки) */
+.ag-form .bk-field__label {
+  font-size: var(--fs-caption);
 }
 .ag-form textarea {
   min-height: 64px;

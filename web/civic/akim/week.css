@@ -75,15 +75,20 @@
   font-size: 13px;
   font-weight: 600;
 }
-.wk-brand__mark {
+.wk-brand__mark { /* знак оболочки: тёмная плитка, домик лаймом; на бумаге плитка печатается (иначе лайм на белом не виден) */
   display: inline-grid;
   place-items: center;
   width: 20px;
   height: 20px;
-  border-radius: 6px;
+  border-radius: 5px;
   background: var(--c-brand, #152c26);
-  color: #fff;
-  font-size: 13px;
+  color: #d7f57c;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.wk-brand__mark svg {
+  width: 14px;
+  height: 14px;
 }
 .wk-title {
   margin: 0;
