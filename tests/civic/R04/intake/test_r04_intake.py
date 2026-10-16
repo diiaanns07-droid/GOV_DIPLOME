@@ -25,6 +25,12 @@ TASK_FIELDS = {"id", "title_ru", "title_kk", "category", "subtopic", "services",
 _EMOJI = re.compile("[\U0001F300-\U0001FAFF☀-➿\U0001F000-\U0001F2FF]")
 
 
+@pytest.fixture(autouse=True)
+def pin_r04_fixture(monkeypatch, tmp_path):
+    """Пример — фикстура R04 (42 текста), даже если в сборке уже есть набор R02 (просьба R01, B6.0)."""
+    monkeypatch.setattr(intake, "SAMPLE_R02", tmp_path / "no_r02_set.json")
+
+
 @pytest.fixture(scope="module")
 def night():
     return analyze(FIXTURE_TEXTS)
@@ -226,3 +232,15 @@ def test_gateway_functions_staff_only_and_body():
     with pytest.raises(ValueError):
         api.intake_analyze(body={"sample": 1}, context=ctx, principal=staff)
     assert api.intake_sample(context=ctx, principal=staff)["demo"] is True
+
+
+def test_r02_night_set_is_preferred_when_present(monkeypatch, tmp_path):
+    r02 = tmp_path / "intake_night_v1.json"
+    r02.write_text(json.dumps({"demo": True, "texts": [{"id": "night-001", "text": "На остановке Хан Шатыр сломан навес",
+                                                        "lang": "ru", "received": "x"}],
+                               "gold": [{"id": "night-001"}]}, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(intake, "SAMPLE_R02", r02)
+    data = load_sample("night")
+    assert data["texts"] == [{"id": "night-001", "text": "На остановке Хан Шатыр сломан навес"}]
+    assert data["source"].startswith("R02") and "gold" not in data            # эталон экрану не отдаётся
+    assert analyze(sample="night")["tasks"][0]["text_ids"] == ["night-001"]

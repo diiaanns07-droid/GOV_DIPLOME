@@ -38,22 +38,25 @@
   line-height: var(--lh-head, 1.2);
   letter-spacing: var(--ls-title, normal);
 }
-.bi-aitag {
+/* Метка «ИИ»: в ui-kit раунда 15+ — .bk-ai (R11, BirgeUI.aiTag); здесь — та же плашка для старой сборки ui-kit. */
+.bi-ai {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 4px;
-}
-.bi-aitag .ic {
-  width: 14px;
-  height: 14px;
-}
-.bi-aimark {
-  display: inline-flex;
-  vertical-align: -2px;
-  color: var(--c-text-3, #6b6b6b);
+  height: 22px;
+  padding: 0 8px 0 6px;
+  border-radius: var(--r-pill, 999px);
+  background: var(--c-fill, #ececea);
+  color: var(--c-text-2, #444);
+  font-size: var(--fs-xs, 12px);
+  font-weight: var(--fw-semi, 600);
+  line-height: 1;
+  vertical-align: middle;
   cursor: help;
 }
-.bi-aimark .ic {
+.bi .bk-ai .ic,
+.bi-ai .ic {
   width: 14px;
   height: 14px;
 }
@@ -350,17 +353,20 @@
   font-weight: var(--fw-medium, 500);
 }
 .bi-why__facts {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 4px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.bi-why__line {
   margin: 0;
 }
-.bi-why__facts dt {
-  color: var(--c-text-3, #6b6b6b);
+.bi-why__line .bk-ai,
+.bi-why__line .bi-ai {
+  margin-left: 2px;
 }
-.bi-why__facts dd {
-  min-width: 0;
-  margin: 0;
+.bi-why__existing {
+  color: var(--c-text-2, #444);
+  font-weight: var(--fw-medium, 500);
 }
 .bi-why__note {
   color: var(--c-text-2, #444);
@@ -454,13 +460,6 @@
   }
   .bi-why {
     margin-left: 8px;
-  }
-  .bi-why__facts {
-    grid-template-columns: 1fr;
-    gap: 2px;
-  }
-  .bi-why__facts dd {
-    margin-bottom: 6px;
   }
   .bi-code {
     display: none;

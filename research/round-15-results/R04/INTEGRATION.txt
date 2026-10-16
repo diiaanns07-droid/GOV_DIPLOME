@@ -218,20 +218,30 @@ tests/civic/R04/intake/. Всё в процессе, без сети. Числа
 9.1 Функции (from ui.civic_ml_api import intake_analyze, intake_sample, intake_commit)
   intake_analyze(texts=None, sample=None, body=None)  -> разбор (ValueError -> 400: пусто / > 500 текстов / > 300 КБ)
       texts — список строк, или строка (строка = обращение), или [{id, text}]; sample="night" — пример за ночь.
-      Ответ: {batch_id, summary {total, tasks, services, urgent, merged, no_address, ready, pii_masked, ms},
-              tasks [...], services [{id, name_ru, name_kk, tasks, urgent}] (группы по ведущей службе), method
-              {steps_ru, steps_kk, route, dedup, places}, demo, version}; задача — {id, title_ru, title_kk, category,
-              subtopic, services [{id, role, name_ru, name_kk}], joint, why_ru, why_kk, target {kind, id, label_ru,
-              label_kk, object_kind?} | null, point | null, district, address_text, text_ids, people, texts [{id, text}]
-              (≤ 5, после moderate), urgent, urgent_rule, urgent_why (= urgent_why_ru), urgent_why_ru, urgent_why_kk,
-              evidence}. ready — задачи с местом: столько записей создаст «Создать задачи» (R10: число в тосте = ready
-              = созданным записям). Тексты жителей наружу — только после moderate() (телефоны, ИИН… — «***»); в журнал
-              тексты не пишутся. Порядок задач: срочные сверху, затем по числу людей; id t1…tN.
-  intake_sample(name="night") -> {name, texts [{id, text}], demo: true, source}   (набор R02, пока его нет — фикстура R04)
-  intake_commit(batch_id, task_ids=None, body=None) -> {batch_id, created, existing, joined, skipped_no_address, failed,
-      records [{task_id, complaint_id, code, created, joined}], demo}; LookupError -> 404 (разбор устарел — разобрать
-      снова: в памяти 16 последних разборов); MLServiceUnavailable -> 503 (хранилище R09 не подключено).
-  Все три принимают principal / context от шлюза: context без principal -> PermissionError (403).
+      Ответ: {batch_id, summary {total, tasks, services, urgent, merged, no_address, ready, to_existing, to_create,
+              pii_masked, ms}, tasks [...], services [{id, name_ru, name_kk, tasks, urgent}] (группы по ведущей службе),
+              method {steps_ru, steps_kk, route, dedup, places}, demo, version}; задача — {id, title_ru, title_kk,
+              category, subtopic, services [{id, role, name_ru, name_kk}], joint, why_ru, why_kk, why_parts {services,
+              place, repeats, urgent, existing?: {ru, kk}}, target {kind, id, label_ru, label_kk, object_kind?} | null,
+              point | null, district, address_text, text_ids, people, texts [{id, text}] (≤ 5, после moderate), urgent,
+              urgent_rule, urgent_why (= urgent_why_ru), urgent_why_ru, urgent_why_kk, evidence, existing {id, code,
+              status, people} | null}. Тексты жителей наружу — только после moderate() (телефоны, ИИН… — «***»); в
+              журнал тексты не пишутся. Порядок задач: срочные сверху, затем по числу людей; id t1…tN.
+      ЧИСЛА «СОЗДАТЬ ЗАДАЧИ» (R10, R14): ready — задачи с местом; из них to_existing — у цели уже есть ОТКРЫТОЕ
+      обращение той же категории и уточнения (просьба R01, П3: меньше новых записей — карта и «Картина дня» после сцены 0
+      меняются меньше; повтор склеен и с тем, что уже пришло) — их тексты станут «Я тоже» с текстом к нему;
+      to_create — новые записи R09. Пример присоединяется только к записям «Пример», настоящие тексты — только к
+      настоящим; записи этой же пачки — не «уже открытые». На стенде FINAL-5.1 + мир + набор R02: 301 → 143 задачи,
+      ready 118 = 116 новых + 2 к открытым, 25 «адрес уточнить».
+  intake_sample(name="night") -> {name, texts [{id, text}], demo: true, source}   (набор R02, если файл есть в сборке;
+      иначе фикстура R04 — 42 текста; эталон gold экрану не отдаётся)
+  intake_commit(batch_id, task_ids=None, body=None) -> {batch_id, created, existing, joined_existing, joined,
+      skipped_no_address, failed, records [{task_id, complaint_id, code, created, joined_existing?, joined?}], demo};
+      created + existing + joined_existing = ready (по выбранным task_ids); повтор того же batch_id — created 0,
+      joined 0. LookupError -> 404 (разбор устарел — разобрать снова: в памяти 16 последних разборов);
+      MLServiceUnavailable -> 503 (хранилище R09 не подключено).
+  Все три принимают principal / context от шлюза: context без principal -> PermissionError (403); intake_commit
+  передаёт R09 actor = principal.username.
 9.2 R01 — маршруты v2 (только сотрудник + CSRF, staff=True), как ml.route / ml.reply_draft:
       POST intake/analyze {texts | sample: "night"}  -> "ml.intake_analyze": V2Handler("R04", ("ui.civic_ml_api",), "intake_analyze", staff=True)
       GET  intake/sample                             -> "ml.intake_sample":  …, "intake_sample", staff=True
@@ -253,28 +263,51 @@ tests/civic/R04/intake/. Всё в процессе, без сети. Числа
   (global ["BirgeIntake"], key меню) — регистрация совместима (известный id берёт режимы и ключ из SCREENS).
   opts оболочки, которые экран использует: api.v2, openTarget(kind, id) («Показать на карте»), openSection("inbox", id)
   («Открыть «Обращения»» и «Открыть B-0744»). Esc сворачивает «Почему так» и не уходит в оболочку, пока что-то раскрыто.
-9.3 R09 — запись задач (проверено на ComplaintStore этой ветки + R12 target_geometry: 16 из 16 задач примера, цели не
-  «примерные», повтор — 0 новых): intake_commit пишет ТОЛЬКО функциями R09, в процессе (хранилище — connect_store):
-  - store.create(payload, device, demo=<пример>) — запись по главному тексту задачи. payload: text (после moderate),
-    category, subtopic (если R09 отвергнет — повтор без него), target {kind, id}, point, district,
-    category_source "model", request_id "in-<batch>-<task>", source "intake", intake {batch_id, task_id, people}.
-    device "birge-intake-<batch>-<task>": своё у каждой задачи — у R09 лимит 20 записей в час на устройство, а
-    повтор request_id с того же устройства возвращает ту же запись (повторный commit — created=False, дублей нет).
-  - store.metoo(id, device + "-<n>", note={text, point, target, category}) — остальные тексты задачи, как склейка в
-    мастере жалобы (п. 9): «Я тоже» с текстом. Людей в записи (1 + metoo) = people задачи; тексты видны в «Что
-    объединено» (store.merged), ошибочно склеенное сотрудник выделит кнопкой «Это разные проблемы».
-  - Задачи без места («адрес уточнить») не создаются — точку не угадываем.
-  Просьба к R09 (П3): «Источник: разбор пачки» — по полю payload.source == "intake" (сейчас create() его не
-  сохраняет) и, если удобно, intake {batch_id, task_id, people}. Если R09 даст свою точку входа (например
-  integration.create_from_intake(store, items)) — R04 перейдёт на неё.
+9.3 R09 — запись задач: intake_commit пишет ТОЛЬКО функциями R09, в процессе (хранилище — connect_store):
+  - новые задачи — ui.civic_feedback.v2.integration.create_from_intake(store, items, batch_id=, texts=, demo=, actor=,
+    method="r04-intake-1") (R09 INTEGRATION §G1, 40a0f7a6+): одна транзакция на пачку, id записи — от (batch_id,
+    task_id), «Сообщили N человек» = people, source "intake". items — задачи без служебных полей, главный текст первым в
+    text_ids (+ поле text), texts — {text_id: текст после moderate}. Ответ R09 created / existing / skipped(no_place →
+    skipped_no_address, иное → failed) переводится в ответ R04 (выше). Проверено на ветке R09 f48ea40c + код R04:
+    tests/civic/R04/intake 80/80 и tests/civic/R09/test_r09_intake.py 10/10.
+  - сборка без create_from_intake (FINAL-5.1) — запасной путь: store.create(payload, device, demo=…) по главному тексту
+    (device "birge-intake-<batch>-<task>": у create предел 20 в час на устройство; request_id "in-<batch>-<task>" —
+    повтор без дублей) + store.metoo(id, device-<n>, note={text, point, target, category}) по остальным текстам.
+  - задачи с открытым обращением цели (to_existing) — store.metoo(id, device-<n>, note=…) по каждому тексту задачи:
+    «Я тоже» с текстом, как склейка в мастере жалобы (п. 9) — видны в «Что объединено», ошибочно склеенное сотрудник
+    выделит («Это разные проблемы»). Устройства постоянные: повтор — «already», голоса не удваиваются.
+  - задачи без места («адрес уточнить») не создаются — точку не угадываем.
+  Просьба к R09: в create_from_intake сохранять остальные тексты группы (texts по text_ids, кроме первого) заметками
+  «Я тоже» (как _add_metoo_note у metoo) — сейчас они только счётчиком people, и в «Что объединено» их не видно, а
+  выделить ошибочно склеенное нечем (в запасном пути R04 они есть).
 9.4 R02 — набор «обращения за ночь» (к 17 окт 02:00): удобно data/civic/astana/demo-world/intake_night_v1.json
   {texts: [{id, text, lang}], gold: [{id, category, services: [id…], target_id | null, group, urgent}], demo: true}.
   R04 читает его, если файл есть; иначе — своя фикстура (ui/civic_ml_api/intake_sample_r04.json, 42 текста).
-9.5 R11 — ключи экрана intake.* (ru / kk; список и тексты — web/civic/intake/intake.js, KEYS; словарь главнее: есть
-  ключ в BirgeI18n — берётся он), значок «ИИ» (пока i-sparkle; другое имя — одна строка AI_ICON в intake.js), место в
-  меню (сейчас «Ещё → Разбор обращений», предложение П3 — кнопка «Разобрать пачку» в «Обращениях» + Ctrl+K). Из общих
-  ключей экран берёт common.action.show_on_map, common.tag.demo(_hint), common.state.network_*, joint.role.*,
-  district.*. Термины kk для вычитки: «ЖИ-талдау», «ЖИ кеңесі — тексеріңіз», «шұғыл», «қайталау біріктірілді»,
-  «Мекенжайды нақтылау», «тапсырма».
-9.6 R15 — проверить: только сотрудник; пределы 500 / 300 КБ; тексты не уходят наружу и не пишутся в журнал; на
-  экране итога и в задачах — только тексты после moderate().
+9.5 R11 — экран берёт ваши ключи (словарь главнее, у экрана — запасной текст тех же ключей): intake.title, ai_label,
+  lead, placeholder, sample, file, analyze, sum.texts|tasks|services|urgent|merged|no_address, group.urgent, urgent,
+  why, why.services {services}, why.place {place}, why.repeats {n}, address_unknown, create (+ число на кнопке —
+  .bk-btn__count), created, open_inbox, empty.title, error.too_big, error.text, staff_only; common.ai.badge,
+  common.ai.hint; метка — BirgeUI.aiTag() (значок i-ai), в старой сборке ui-kit — своя плашка .bi-ai с i-sparkle.
+  intake.progress {done}/{total} не используется: разбор идёт одним запросом (~0,3–0,5 с на 301 текст), «готово N из M»
+  честно не узнать — экран показывает «Разбираем N обращений…» и секунды. Новые ключи R04 (просьба добавить и вычитать
+  ҚАЗ; тексты — web/civic/intake/intake.js, KEYS): intake.running, seconds, field, count, size, limits, privacy,
+  sample_loading, sum.existing, sum.pii, sum.time, demo_note, task.existing, task.people, why.repeats_reason,
+  why.single, why.texts, why.more, open_record, create_none, creating, created_before, joined, skipped, again, method,
+  method_note, error.server_size, error.file, error.expired, error.store, error.commit, error.sample; district.* —
+  из общего словаря. Раздел: SCREENS.intake R01 (shell.nav.intake); экран и сам вызывает registerScreen({id: "intake"}) —
+  с SCREENS.intake это совместимо (режимы и подпись — из SCREENS); #intake/sample (Ctrl+K «Сцена 0») — пример подставлен в поле, остаётся «Разобрать».
+9.6 R15 — проверено вашим tests/civic/R15/round15/test_r15_round15_intake.py на ветке R15 1748bce7 + код R04: 31 / 32.
+  Расхождение одно — test_commit_creates_demo_records_once_without_personal_data ждёт demo: true у ВСЕХ записей из
+  разбора. По П3 «у примера demo: true»: записи из текстов, которые вставил сотрудник, — настоящие (demo: false), как
+  жалоба жителя (иначе настоящие обращения из колл-центра попадут в «Пример»). Просьба: demo ждать только при
+  {sample: "night"}; для вставленных текстов — demo: false и source "intake". Остальное (только сотрудник, пределы,
+  без сети и записи файлов, ПДн нет в ответе / журнале / записях, повтор без дублей, задача без места не создаётся) — PASS.
+9.7 R10 — I7 «записей стало больше ровно на число задач»: верно «записей стало больше на created; created + existing +
+  joined_existing = summary.ready» (to_existing задач идут «Я тоже» в уже открытые обращения цели). Ваши свои тексты
+  I5 (вставка, demo: false) к записям мира «Пример» не присоединяются — для них created = ready. Сцена 0 на наборе R02
+  в мире: ready 118 = 116 новых + 2 к открытым (стенд FINAL-5.1 + R04 + набор R02).
+9.8 R02 — оценка на вашем наборе (оценщик ml/datasets/demo_intake_eval.py, эталон intake_night_v1.gold.json), СЛЕПАЯ —
+  код R04 написан до знакомства с набором (7867fada / a2e004c9, правил по набору не меняли): ведущая служба 0,877 ·
+  весь набор служб 0,870 · «две службы» полнота 1,0 / точность 0,733 · повторы попарно P 0,997 / R 0,786 / F1 0,879,
+  групп с повторами собрано точно 23 из 46 · места 0,869 из 283 · «адрес уточнить» 18 из 18 · срочные: группы 8 из 8,
+  полнота по текстам 0,905, точность 1,0 · 0,3–0,5 с на 301 текст. Файл: intake_eval/r02_night_blind_a2e004c9.json.

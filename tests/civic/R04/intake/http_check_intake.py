@@ -99,12 +99,16 @@ check("analyze > 300 KB -> 400/413", st in (400, 413), (st, body))
 st, body, _ = call("POST", "/intake/analyze", None, H, raw=json.dumps({"texts": ["я" * 1990] * 200}).encode())
 check("analyze body > 640 KB -> 413 or closed", st in (413, 0), (st, body))
 
+# ready = новые записи (created; если пачку уже создавали — existing) + задачи к уже открытым обращениям цели.
 st, done, ms = call("POST", "/intake/commit", {"batch_id": res.get("batch_id")}, H)
-check("commit -> 200 created == ready", st == 200 and done.get("created") == s.get("ready") and done.get("failed") == 0,
+handled = done.get("created", 0) + done.get("existing", 0) + done.get("joined_existing", 0)
+check("commit -> 200, created + existing + joined_existing == ready", st == 200 and handled == s.get("ready")
+      and done.get("failed") == 0 and done.get("skipped_no_address") == s.get("no_address"),
       (st, {k: v for k, v in done.items() if k != "records"}))
 print("   commit:", json.dumps({k: v for k, v in done.items() if k != "records"}, ensure_ascii=False), "|", ms, "ms")
 st, again, _ = call("POST", "/intake/commit", {"batch_id": res.get("batch_id")}, H)
-check("commit again -> no duplicates", st == 200 and again.get("created") == 0 and again.get("existing") == s.get("ready"),
+check("commit again -> no duplicates", st == 200 and again.get("created") == 0 and again.get("joined") == 0
+      and again.get("existing", 0) + again.get("joined_existing", 0) == s.get("ready"),
       (st, {k: v for k, v in again.items() if k != "records"}))
 rec = next((r for r in done.get("records") or [] if r.get("complaint_id")), None)
 if rec:

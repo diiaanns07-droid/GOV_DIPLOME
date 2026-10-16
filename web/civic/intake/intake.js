@@ -27,7 +27,10 @@
   var MAX_BYTES = 300 * 1024;
   var MAX_FILE = 2 * 1024 * 1024;          // файл больше — не читаем (300 КБ текста — предел разбора)
   var MIN_TEXT = 3;
-  var AI_ICON = "sparkle";                  // значок «ИИ» набора R11 (П3); новое имя — одна строка здесь
+  // Значок «ИИ» набора R11 (П3): i-ai и BirgeUI.aiTag() в ui-kit раунда 15+; в старой сборке ui-kit — i-sparkle.
+  function aiIcon() {
+    return root.BirgeUI && typeof root.BirgeUI.aiTag === "function" ? "ai" : "sparkle";
+  }
   var scriptBase = ((doc.currentScript && doc.currentScript.src) || "").replace(/[^/]*$/, "");
   var ICONS = scriptBase + "../ui-kit/icons.svg";
   // Значки категорий — как в web/civic/ui-kit/categories_v2.json (R11).
@@ -40,8 +43,9 @@
   var KEYS = {
     ru: {
       "intake.title": "Разбор обращений",
-      "intake.ai": "ИИ-разбор",
-      "intake.ai_hint": "Подсказка ИИ — проверьте",
+      "intake.ai_label": "ИИ-разбор",
+      "common.ai.badge": "ИИ",
+      "common.ai.hint": "Подсказка ИИ — проверьте",
       "intake.lead": "Вставьте обращения, пришедшие за ночь: одна строка — одно обращение. Birge разложит их по службам, склеит повторы, найдёт место на карте и поднимет срочные.",
       "intake.field": "Обращения — одна строка, одно обращение",
       "intake.placeholder": "На остановке Хан Шатыр сломан навес\nВо дворе ЖК Инжу Арена переполнены баки\nНа улице Сыганак открытый люк",
@@ -51,7 +55,7 @@
       "intake.file": "Файл .txt или .csv",
       "intake.sample": "Пример: обращения за ночь",
       "intake.sample_loading": "Загружаем пример…",
-      "intake.run": "Разобрать",
+      "intake.analyze": "Разобрать",
       "intake.privacy": "Телефоны и ИИН закрываются до разбора. Тексты не уходят за пределы сервера Birge.",
       "intake.running": { one: "Разбираем {n} обращение…", few: "Разбираем {n} обращения…", many: "Разбираем {n} обращений…" },
       "intake.seconds": "{s} с",
@@ -61,39 +65,42 @@
       "intake.sum.urgent": { one: "{n} срочная", few: "{n} срочные", many: "{n} срочных" },
       "intake.sum.merged": { one: "{n} повтор склеен", few: "{n} повтора склеено", many: "{n} повторов склеено" },
       "intake.sum.no_address": "без адреса: {n}",
+      "intake.sum.existing": "к открытым обращениям: {n}",
       "intake.sum.pii": "личные данные закрыты: {n}",
       "intake.sum.time": "разобрано за {s} с",
       "intake.demo_note": "Пример: обращения придуманы, остановки, дворы и улицы — OpenStreetMap.",
       "intake.group.urgent": "Срочно",
-      "intake.task.no_address": "Адрес уточнить",
+      "intake.address_unknown": "Адрес уточнить",
+      "intake.task.existing": "к {code}",
       "intake.task.services": { one: "{n} служба", few: "{n} службы", many: "{n} служб" },
       "intake.task.people": { one: "{n} обращение", few: "{n} обращения", many: "{n} обращений" },
       "intake.why": "Почему так",
-      "intake.why.services": "Службы",
-      "intake.why.place": "Место",
-      "intake.why.repeats": "Повторы",
-      "intake.why.urgent": "Срочно",
+      "intake.why.services": "Службы: {services}",
+      "intake.why.place": "Место: {place}",
+      "intake.why.repeats": "Повторов: {n}",
+      "intake.why.repeats_reason": "одно место, одна категория, похожий текст",
+      "intake.urgent": "Срочно",
       "intake.why.texts": "Обращения",
       "intake.why.more": { one: "и ещё {n} обращение", few: "и ещё {n} обращения", many: "и ещё {n} обращений" },
       "intake.why.single": "Одно обращение — повторов нет.",
       "intake.open_record": "Открыть {code}",
-      "intake.create": { one: "Создать {n} задачу", few: "Создать {n} задачи", many: "Создать {n} задач" },
+      "intake.create": "Создать задачи",
       "intake.create_none": "Нет задач с адресом",
       "intake.creating": "Создаём задачи…",
       "intake.created": { one: "Создана {n} задача в «Обращениях»", few: "Создано {n} задачи в «Обращениях»", many: "Создано {n} задач в «Обращениях»" },
       "intake.created_before": { one: "Эта задача уже создана", few: "Эти {n} задачи уже созданы", many: "Эти {n} задач уже созданы" },
+      "intake.joined": { one: "{n} задача — к уже открытому обращению", few: "{n} задачи — к уже открытым обращениям", many: "{n} задач — к уже открытым обращениям" },
       "intake.skipped": { one: "{n} задача без адреса не создана — уточните место.", few: "{n} задачи без адреса не созданы — уточните место.", many: "{n} задач без адреса не создано — уточните место." },
       "intake.open_inbox": "Открыть «Обращения»",
       "intake.again": "Разобрать другие",
       "intake.method": "Как разбирали",
       "intake.method_note": "Числа итога считает код. ИИ подсказывает категорию и службы — сотрудник проверяет.",
-      "intake.error.empty": "Вставьте хотя бы одно обращение — строку от 3 знаков.",
-      "intake.error.too_many": "Не больше 500 обращений за раз — разделите пачку.",
-      "intake.error.too_big": "Не больше 300 КБ текста за раз — разделите пачку.",
+      "intake.empty.title": "Вставьте обращения или откройте пример",
+      "intake.error.too_big": "Слишком много за раз: не больше 500 обращений и 300 КБ",
       "intake.error.server_size": "Запрос слишком большой для сервера — разделите пачку на части.",
       "intake.error.file": "Файл не прочитался. Нужен текст .txt или .csv в кодировке UTF-8.",
-      "intake.error.login": "Разбор обращений доступен сотрудникам акимата. Войдите и повторите.",
-      "intake.error.failed": "Не получилось разобрать. Повторите.",
+      "intake.staff_only": "Разбор обращений — для сотрудников акимата",
+      "intake.error.text": "Не удалось разобрать. Проверьте связь и повторите.",
       "intake.error.expired": "Разбор устарел (сервер перезапускался) — разберите ещё раз.",
       "intake.error.store": "Хранилище обращений не подключено — задачи не созданы.",
       "intake.error.commit": "Задачи не созданы. Повторите.",
@@ -111,8 +118,9 @@
     },
     kk: {
       "intake.title": "Өтініштерді талдау",
-      "intake.ai": "ЖИ-талдау",
-      "intake.ai_hint": "ЖИ кеңесі — тексеріңіз",
+      "intake.ai_label": "ЖИ-талдау",
+      "common.ai.badge": "ЖИ",
+      "common.ai.hint": "Жасанды интеллект кеңесі — тексеріңіз",
       "intake.lead": "Түнде келген өтініштерді қойыңыз: бір жол — бір өтініш. Birge оларды қызметтерге бөледі, қайталанғандарын біріктіреді, картадан орнын табады және шұғылдарын жоғары шығарады.",
       "intake.field": "Өтініштер — бір жол, бір өтініш",
       "intake.placeholder": "Хан Шатыр аялдамасының шатыры сынған\nЖК Инжу Арена ауласында контейнерлер толып кетті\nСығанақ көшесінде люк ашық",
@@ -120,9 +128,9 @@
       "intake.size": "300 КБ ішінен {kb} КБ",
       "intake.limits": "Бір жолы 500 өтінішке және 300 КБ-қа дейін",
       "intake.file": ".txt не .csv файлы",
-      "intake.sample": "Үлгі: түнгі өтініштер",
+      "intake.sample": "Үлгі: түнде түскен өтініштер",
       "intake.sample_loading": "Үлгі жүктеліп жатыр…",
-      "intake.run": "Талдау",
+      "intake.analyze": "Талдау",
       "intake.privacy": "Телефон мен ЖСН талдауға дейін жабылады. Мәтіндер Birge серверінен тыс жіберілмейді.",
       "intake.running": "{n} өтініш талданып жатыр…",
       "intake.seconds": "{s} с",
@@ -132,39 +140,42 @@
       "intake.sum.urgent": "{n} шұғыл",
       "intake.sum.merged": "{n} қайталау біріктірілді",
       "intake.sum.no_address": "мекенжайсыз: {n}",
+      "intake.sum.existing": "ашық өтініштерге: {n}",
       "intake.sum.pii": "жеке деректер жабылды: {n}",
       "intake.sum.time": "{s} с ішінде талданды",
       "intake.demo_note": "Үлгі: өтініштер ойдан құрастырылған, аялдамалар, аулалар мен көшелер — OpenStreetMap.",
       "intake.group.urgent": "Шұғыл",
-      "intake.task.no_address": "Мекенжайды нақтылау",
+      "intake.address_unknown": "Мекенжайды нақтылау",
+      "intake.task.existing": "{code} өтінішіне",
       "intake.task.services": "{n} қызмет",
       "intake.task.people": "{n} өтініш",
-      "intake.why": "Неге бұлай",
-      "intake.why.services": "Қызметтер",
-      "intake.why.place": "Орны",
-      "intake.why.repeats": "Қайталаулар",
-      "intake.why.urgent": "Шұғыл",
+      "intake.why": "Неге солай",
+      "intake.why.services": "Қызметтер: {services}",
+      "intake.why.place": "Орны: {place}",
+      "intake.why.repeats": "Қайталау: {n}",
+      "intake.why.repeats_reason": "бір орын, бір санат, ұқсас мәтін",
+      "intake.urgent": "Шұғыл",
       "intake.why.texts": "Өтініштер",
       "intake.why.more": "тағы {n} өтініш",
       "intake.why.single": "Бір өтініш — қайталау жоқ.",
       "intake.open_record": "{code} ашу",
-      "intake.create": "{n} тапсырма құру",
+      "intake.create": "Тапсырмаларды жасау",
       "intake.create_none": "Мекенжайы бар тапсырма жоқ",
       "intake.creating": "Тапсырмалар құрылып жатыр…",
-      "intake.created": "«Өтініштер» бөлімінде {n} тапсырма құрылды",
-      "intake.created_before": "Бұл {n} тапсырма бұрын құрылған",
+      "intake.created": "«Өтініштер» бөлімінде {n} тапсырма жасалды",
+      "intake.created_before": "Бұл {n} тапсырма бұрын жасалған",
+      "intake.joined": "{n} тапсырма — ашық өтініштерге қосылды",
       "intake.skipped": "Мекенжайсыз {n} тапсырма құрылмады — орнын нақтылаңыз.",
-      "intake.open_inbox": "«Өтініштерді» ашу",
+      "intake.open_inbox": "«Өтініштер» бөлімін ашу",
       "intake.again": "Басқаларын талдау",
       "intake.method": "Қалай талданды",
       "intake.method_note": "Қорытынды сандарды код есептейді. ЖИ санат пен қызметті ұсынады — қызметкер тексереді.",
-      "intake.error.empty": "Кемінде бір өтініш қойыңыз — 3 таңбадан ұзын жол.",
-      "intake.error.too_many": "Бір жолы 500 өтініштен аспауы керек — бөліп жіберіңіз.",
-      "intake.error.too_big": "Бір жолы 300 КБ-тан аспауы керек — бөліп жіберіңіз.",
+      "intake.empty.title": "Өтініштерді қойыңыз немесе үлгіні ашыңыз",
+      "intake.error.too_big": "Бір ретте ең көбі — 500 өтініш және 300 КБ",
       "intake.error.server_size": "Сұраныс сервер үшін тым үлкен — бөліктерге бөліңіз.",
       "intake.error.file": "Файл оқылмады. UTF-8 кодтауындағы .txt не .csv мәтіні керек.",
-      "intake.error.login": "Өтініштерді талдау әкімдік қызметкерлеріне қолжетімді. Кіріп, қайталаңыз.",
-      "intake.error.failed": "Талдау сәтсіз аяқталды. Қайталаңыз.",
+      "intake.staff_only": "Өтініштерді талдау — әкімдік қызметкерлеріне арналған",
+      "intake.error.text": "Талдау сәтсіз аяқталды. Байланысты тексеріп, қайталаңыз.",
       "intake.error.expired": "Талдау ескірді (сервер қайта іске қосылды) — қайта талдаңыз.",
       "intake.error.store": "Өтініштер қоймасы қосылмаған — тапсырмалар құрылмады.",
       "intake.error.commit": "Тапсырмалар құрылмады. Қайталаңыз.",
@@ -255,9 +266,14 @@
     return svg;
   }
   // Значок «ИИ»: монохромный, без свечения (П1); подсказка — title и текст для чтения с экрана.
-  function aiMark() {
-    var hint = tr("intake.ai_hint");
-    return h("span", { class: "bi-aimark", title: hint }, [icon(AI_ICON), h("span", { class: "bk-sr-only", text: hint })]);
+  // Метка «ИИ» R11: серая плашка без свечения (П1), подсказка «Подсказка ИИ — проверьте» — title и текст для диктора.
+  function aiTag(label) {
+    if (root.BirgeUI && typeof root.BirgeUI.aiTag === "function") {
+      try { return root.BirgeUI.aiTag(label ? { label: label } : undefined); } catch (e) { /* ниже — своя */ }
+    }
+    var hint = tr("common.ai.hint"), text = label || tr("common.ai.badge");
+    return h("span", { class: "bk-ai bi-ai", title: hint }, [icon(aiIcon()), h("span", { class: "bk-ai__t", "aria-hidden": "true", text: text }),
+      h("span", { class: "bk-sr-only", text: label ? label + ". " + hint : hint })]);
   }
   function toast(text, opts) {
     if (root.BirgeUI && typeof root.BirgeUI.toast === "function") root.BirgeUI.toast(text, opts || {});
@@ -366,7 +382,7 @@
     function errorInfo(err, fallbackKey) {
       var status = err && err.status;
       if (!status) return { title: tr("common.state.network_title"), text: tr("common.state.network_text") };
-      if (status === 401 || status === 403) return { title: tr("intake.error.login"), text: "", login: true };
+      if (status === 401 || status === 403) return { title: tr("intake.staff_only"), text: "", login: true };
       if (status === 413) return { title: tr("intake.error.server_size"), text: "" };
       if (status === 404) return { title: tr("intake.error.expired"), text: "", expired: true };
       if (status === 503) return { title: tr("intake.error.store"), text: "" };
@@ -377,9 +393,8 @@
     // ---------------------------------------------------------------- действия
     function inputCheck() {
       var rows = lines(state.text);
-      if (!rows.length) return { error: tr("intake.error.empty"), rows: rows };
-      if (rows.length > MAX_TEXTS) return { error: tr("intake.error.too_many"), rows: rows };
-      if (utf8Bytes(state.text) > MAX_BYTES) return { error: tr("intake.error.too_big"), rows: rows };
+      if (!rows.length) return { error: tr("intake.empty.title"), rows: rows };
+      if (rows.length > MAX_TEXTS || utf8Bytes(state.text) > MAX_BYTES) return { error: tr("intake.error.too_big"), rows: rows };
       return { error: null, rows: rows };
     }
     function run() {
@@ -420,7 +435,7 @@
         if (!state.alive || req !== state.request) return;
         stopTick();
         state.view = "input";
-        var info = errorInfo(err, "intake.error.failed");
+        var info = errorInfo(err, "intake.error.text");
         if (err && err.status === 400) state.fieldError = info.title;
         else state.error = info;
         render();
@@ -501,10 +516,10 @@
           if (r.complaint_id) state.records[r.task_id] = { code: r.code, complaint_id: r.complaint_id };
         });
         render();
-        var created = Number(data.created) || 0;
-        var text = created ? tr("intake.created", { n: created })
-          : tr("intake.created_before", { n: Number(data.existing) || 0 });
-        toast(text, { type: "ok", action: { label: tr("intake.open_inbox"), onClick: openInbox } });
+        var text = doneTitle(data);
+        var joined = Number(data.joined_existing) || 0;
+        if (joined && (Number(data.created) || Number(data.existing))) text += " · " + tr("intake.joined", { n: joined });
+        toast(text, { type: "ok", action: { label: tr("intake.open_inbox"), onClick: function () { openInbox(); } } });
         var banner = box.querySelector(".bi-done");
         if (banner) banner.focus();
       }, function (err) {
@@ -514,6 +529,13 @@
         render();
         toast(info.title, { type: "error" });
       });
+    }
+    // «Создано N задач в «Обращениях»»; ничего нового — «уже созданы» или «к открытым обращениям».
+    function doneTitle(data) {
+      var created = Number(data.created) || 0, existing = Number(data.existing) || 0, joined = Number(data.joined_existing) || 0;
+      if (created) return tr("intake.created", { n: created });
+      if (existing) return tr("intake.created_before", { n: existing });
+      return tr("intake.joined", { n: joined });
     }
     function openInbox(complaintId) {
       if (typeof opts.openSection === "function") opts.openSection("inbox", complaintId || undefined);
@@ -549,7 +571,7 @@
       var demo = state.view === "result" && state.result && state.result.demo;
       return h("div", { class: "bi-head" }, [
         h(opts.titleTag === "h1" ? "h1" : "h2", { class: "bi-title", id: id + "-title", text: tr("intake.title") }),
-        h("span", { class: "bk-tag bi-aitag", title: tr("intake.ai_hint") }, [icon(AI_ICON), tr("intake.ai")]),
+        aiTag(tr("intake.ai_label")),
         demo ? h("span", { class: "bk-tag bk-tag--demo", title: tr("common.tag.demo_hint"), text: tr("common.tag.demo") }) : null,
       ]);
     }
@@ -602,7 +624,7 @@
           state.fieldError ? h("p", { class: "bk-field__error", id: errId, role: "alert", text: state.fieldError }) : null,
         ]),
         h("div", { class: "bi-actions" }, [
-          h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--lg", "data-act": "run", onclick: run }, [icon(AI_ICON), tr("intake.run")]),
+          h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--lg", "data-act": "run", onclick: run }, [icon(aiIcon()), tr("intake.analyze")]),
           h("button", { type: "button", class: "bk-btn bk-btn--lg", "data-act": "sample", onclick: loadSample,
             "aria-busy": state.sampleBusy ? "true" : null, disabled: state.sampleBusy },
           [tr(state.sampleBusy ? "intake.sample_loading" : "intake.sample")]),
@@ -622,7 +644,7 @@
     function runningView() {
       return [
         h("div", { class: "bi-run", role: "status", "aria-live": "polite" }, [
-          h("p", { class: "bi-run__count" }, [icon(AI_ICON), tr("intake.running", { n: state.runCount })]),
+          h("p", { class: "bi-run__count" }, [icon(aiIcon()), tr("intake.running", { n: state.runCount })]),
           h("p", { class: "bi-run__time", "aria-hidden": "true", text: tr("intake.seconds", { s: seconds(0) }) }),
           h("div", { class: "bi-run__bar", "aria-hidden": "true" }, [h("span")]),
         ]),
@@ -717,12 +739,14 @@
         h("span", { class: "bk-lrow__main" }, [
           h("span", { class: "bk-lrow__title", text: title }),
           h("span", { class: "bk-lrow__meta" }, [
-            task.target ? null : h("span", { class: "bi-noaddr", text: tr("intake.task.no_address") }),
+            task.target ? null : h("span", { class: "bi-noaddr", text: tr("intake.address_unknown") }),
             task.target || !meta.filter(Boolean).length ? null : " · ",
             meta.filter(Boolean).join(" · "),
           ]),
         ]),
-        record ? h("span", { class: "bk-tag bi-code", text: record.code }) : null,
+        record ? h("span", { class: "bk-tag bi-code", text: record.code })
+          : task.existing && task.target ? h("span", { class: "bk-tag bi-code", title: pick(task.why_parts && task.why_parts.existing),
+            text: tr("intake.task.existing", { code: task.existing.code || "" }) }) : null,
         h("span", { class: "bk-lrow__cnt", "data-level": level(task.people), title: tr("intake.task.people", { n: task.people }) }, [
           num(task.people), h("span", { class: "bk-sr-only", text: " — " + tr("intake.task.people", { n: task.people }) }),
         ]),
@@ -732,29 +756,32 @@
         btn, whyPanel(task, whyId, open),
       ]);
     }
+    // «Почему так» — строками словаря R11: «Службы: …» (с меткой «ИИ»: службы подсказала модель), «Место: …»,
+    // «Повторов: N — одно место, одна категория, похожий текст», «Срочно: …», уже открытое обращение той же цели.
     function whyPanel(task, whyId, open) {
       var p = task.why_parts || {};
-      var facts = h("dl", { class: "bi-why__facts" });
-      function fact(labelKey, content) {
-        facts.appendChild(h("dt", { text: tr(labelKey) }));
-        facts.appendChild(h("dd", {}, content));
-      }
       var svc = (task.services || []).map(function (s) {
         var name = lang() === "kk" ? s.name_kk || s.name_ru : s.name_ru;
         return name + " — " + tr("joint.role." + (s.role === "partner" ? "partner" : "lead"));
       }).join("; ");
-      fact("intake.why.services", [h("span", { class: "bi-why__svc", text: svc + "." }), " ", aiMark(), " ",
-        h("span", { class: "bi-why__note", text: pick(p.services) })]);
-      fact("intake.why.place", [pick(p.place)]);
-      fact("intake.why.repeats", [p.repeats ? pick(p.repeats) : tr("intake.why.single")]);
-      if (task.urgent) fact("intake.why.urgent", [h("span", { class: "bi-why__urgent", text: pick(p.urgent) })]);
+      var place = pick(p.place).replace(/\.$/, "");
+      var lines = [
+        h("p", { class: "bi-why__line" }, [h("span", { class: "bi-why__svc", text: tr("intake.why.services", { services: svc }) }),
+          " ", aiTag(), p.services ? h("span", { class: "bi-why__note", text: " " + pick(p.services) }) : null]),
+        h("p", { class: "bi-why__line", text: tr("intake.why.place", { place: place }) }),
+        h("p", { class: "bi-why__line", text: task.people > 1
+          ? tr("intake.why.repeats", { n: task.people - 1 }) + " — " + tr("intake.why.repeats_reason") + "."
+          : tr("intake.why.single") }),
+        task.urgent ? h("p", { class: "bi-why__line bi-why__urgent", text: tr("intake.urgent") + ": " + pick(p.urgent) }) : null,
+        p.existing ? h("p", { class: "bi-why__line bi-why__existing", text: pick(p.existing) }) : null,
+      ];
       var texts = h("ul", { class: "bi-why__texts", "aria-label": tr("intake.why.texts") },
         (task.texts || []).map(function (t) { return h("li", {}, [h("span", { class: "bi-why__id", text: t.id }), " ", t.text]); }));
       var rest = task.people - (task.texts || []).length;
       var record = state.records[task.id];
       return h("div", { class: "bi-why", id: whyId, hidden: !open }, [
         h("p", { class: "bi-why__title", text: tr("intake.why") }),
-        facts,
+        h("div", { class: "bi-why__facts" }, lines),
         texts,
         rest > 0 ? h("p", { class: "bi-why__more", text: tr("intake.why.more", { n: rest }) }) : null,
         h("div", { class: "bi-why__acts" }, [
@@ -788,6 +815,7 @@
       var tasks = res.tasks || [];
       var meta = [];
       if (s.no_address) meta.push(tr("intake.sum.no_address", { n: s.no_address }));
+      if (s.to_existing) meta.push(tr("intake.sum.existing", { n: s.to_existing }));
       if (s.pii_masked) meta.push(tr("intake.sum.pii", { n: s.pii_masked }));
       meta.push(tr("intake.sum.time", { s: seconds(s.ms || 0) }));
       var c = state.commit || {};
@@ -796,12 +824,15 @@
         [icon("list"), tr("intake.open_inbox")])
         : h("button", { type: "button", class: "bk-btn bk-btn--primary bk-btn--lg", "data-act": "commit", onclick: commit,
           disabled: c.busy || !ready, "aria-busy": c.busy ? "true" : null },
-        [icon("check"), c.busy ? tr("intake.creating") : ready ? tr("intake.create", { n: ready }) : tr("intake.create_none")]);
+        [icon("check"), c.busy ? tr("intake.creating") : ready ? tr("intake.create") : tr("intake.create_none"),
+          !c.busy && ready ? h("span", { class: "bk-btn__count", "aria-hidden": "true", text: num(ready) }) : null,
+          !c.busy && ready ? h("span", { class: "bk-sr-only", text: " — " + tr("intake.sum.tasks", { n: ready }) }) : null]);
       var done = null;
       if (c.done) {
         var created = Number(c.done.created) || 0, existing = Number(c.done.existing) || 0;
         done = h("div", { class: "bk-banner bi-done", role: "status", tabindex: "-1" }, [
-          h("p", { class: "bk-banner__title", text: created ? tr("intake.created", { n: created }) : tr("intake.created_before", { n: existing }) }),
+          h("p", { class: "bk-banner__title", text: doneTitle(c.done) }),
+          c.done.joined_existing && (created || existing) ? h("p", { class: "bk-banner__note", text: tr("intake.joined", { n: c.done.joined_existing }) }) : null,
           c.done.skipped_no_address ? h("p", { class: "bk-banner__note", text: tr("intake.skipped", { n: c.done.skipped_no_address }) }) : null,
         ]);
       } else if (c.error) {
@@ -835,7 +866,7 @@
         ]),
         list,
         steps.length ? h("details", { class: "bi-method" }, [
-          h("summary", {}, [aiMark(), " ", tr("intake.method")]),
+          h("summary", {}, [aiTag(), " ", tr("intake.method")]),
           h("ol", {}, steps.map(function (st) { return h("li", { text: st }); })),
           h("p", { class: "bi-method__note", text: tr("intake.method_note") }),
         ]) : null,
@@ -878,9 +909,15 @@
     var offLang = I() && typeof I().onChange === "function" ? I().onChange(relang) : null;
     if (I() && I().ready && typeof I().ready.then === "function") I().ready.then(relang, relang);
     render();
+    // #intake/sample (Ctrl+K «Сцена 0 · ИИ-разбор», R11 IA §11.1): пример уже в поле — остаётся «Разобрать».
+    function setPath(path) {
+      if (String(path || "").replace(/^\//, "") === "sample" && state.view === "input" && !state.sampleBusy) loadSample();
+    }
+    setPath(opts.path);
 
     return {
       setLang: relang,
+      setPath: setPath,
       destroy: function () {
         state.alive = false;
         stopTick();

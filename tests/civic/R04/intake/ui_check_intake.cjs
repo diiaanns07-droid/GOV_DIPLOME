@@ -93,9 +93,11 @@ function check(name, ok, detail) {
         const done = raw && raw.ok === true && raw.data ? raw.data : raw;
         await page.waitForSelector(".bi-done", { timeout: 15000 });
         const banner = await page.textContent(".bi-done .bk-banner__title");
-        check(`${tag} commit: created + existing = ready`, done.created + done.existing === s.ready && done.failed === 0, done);
-        check(`${tag} commit banner`, done.created ? banner.includes(String(done.created)) && /Создан|құрылды/.test(banner)
-          : /уже создан|бұрын құрылған/.test(banner), banner);
+        // ready = новые записи (created; при повторе — existing) + задачи к уже открытым обращениям (joined_existing)
+        check(`${tag} commit: created + existing + joined_existing = ready`,
+          done.created + done.existing + (done.joined_existing || 0) === s.ready && done.failed === 0, done);
+        check(`${tag} commit banner`, done.created ? banner.includes(String(done.created)) && /Создан|жасалды|құрылды/.test(banner)
+          : done.existing ? /уже создан|бұрын жасалған|бұрын құрылған/.test(banner) : /открыт|ашық/.test(banner), banner);
         if (OUT) await page.screenshot({ path: path.join(OUT, `${tag}-5-commit.png`) });
       }
       check(`${tag} no page errors`, pageErrors.length === 0, pageErrors);

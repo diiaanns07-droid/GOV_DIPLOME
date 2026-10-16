@@ -643,9 +643,43 @@ def _task(cluster: list[dict], names: dict) -> dict:
         "urgent_why": urgent[1] if urgent else None,                   # П3: поле контракта (ru), ниже — ru / kk
         "urgent_why_ru": urgent[1] if urgent else None, "urgent_why_kk": urgent[2] if urgent else None,
         "evidence": routed.get("evidence"),
+        "existing": None,        # открытое обращение той же цели и категории — заполняет _attach_existing
         "_record_text": head["text_public"],
+        "_head_id": head["id"],
         "_others": [(r["id"], r["text_public"]) for r in cluster if r is not head],
     }
+
+
+def _attach_existing(tasks: list[dict], batch_id: str, demo: bool) -> None:
+    """Задача, у цели которой уже есть открытое обращение той же категории (хранилище R09, connect_store), не создаёт
+    новую запись: её тексты присоединятся к нему как «Я тоже» с текстом (просьба R01, П3: числа карты и «Картины дня»
+    растут меньше, повтор склеен и с тем, что уже пришло). Свой пример к настоящим записям не цепляется и наоборот;
+    записи этой же пачки (повторный разбор после «Создать задачи») — не «уже открытые»."""
+    store = _store()
+    if store is None or not callable(getattr(store, "list", None)):
+        return
+    for task in tasks:
+        if not task["target"]:
+            continue
+        try:
+            rows = store.list(category=task["category"], status=OPEN_STATUSES, target_id=task["target"]["id"], limit=20)
+        except Exception:  # noqa: BLE001 — нет записей / старое хранилище: просто создаём новые
+            continue
+        for row in rows:
+            if (bool(row.get("demo")) != bool(demo) or row.get("duplicate_of")
+                    or (row.get("intake") or {}).get("batch_id") == batch_id
+                    or row.get("id") in _OWN_RECORDS.get(batch_id, ())):
+                continue
+            if task["subtopic"] and row.get("subtopic") and row["subtopic"] != task["subtopic"]:
+                continue     # как у склейки: «навес» и «расписание» одной остановки — разные проблемы
+            task["existing"] = {"id": row.get("id"), "code": row.get("code"), "status": row.get("status"),
+                                "people": 1 + int(row.get("metoo") or 0)}
+            code = row.get("code") or row.get("id")
+            parts = task["why_parts"]
+            parts["existing"] = {
+                "ru": f"Уже есть открытое обращение {code}: та же цель и категория — тексты присоединятся к нему («Я тоже»).",
+                "kk": f"{code} ашық өтініші бар: орны мен санаты бірдей — мәтіндер соған қосылады («Мен де»)."}
+            break
 
 
 def analyze(texts=None, *, sample: str | None = None, keep: bool = True) -> dict:
@@ -672,13 +706,18 @@ def analyze(texts=None, *, sample: str | None = None, keep: bool = True) -> dict
     for n, task in enumerate(tasks, 1):
         task["id"] = f"t{n}"
     batch_id = hashlib.sha256((VERSION + "\n" + "\n".join(f"{i}\t{t}" for i, t in items)).encode("utf-8")).hexdigest()[:16]
+    _attach_existing(tasks, batch_id, demo)
+    ready = sum(1 for t in tasks if t["target"] is not None)
+    to_existing = sum(1 for t in tasks if t["target"] is not None and t["existing"])
     summary = {
         "total": len(items), "tasks": len(tasks),
         "services": len({s["id"] for t in tasks for s in t["services"]}),
         "urgent": sum(1 for t in tasks if t["urgent"]),
         "merged": sum(t["people"] - 1 for t in tasks),
         "no_address": sum(1 for t in tasks if t["target"] is None),
-        "ready": sum(1 for t in tasks if t["target"] is not None),     # столько записей создаст «Создать задачи»
+        # «Создать задачи»: ready = задачи с местом; из них to_existing — к уже открытому обращению той же цели и
+        # категории («Я тоже» с текстом), to_create — новые записи R09. Записей станет ровно to_create.
+        "ready": ready, "to_existing": to_existing, "to_create": ready - to_existing,
         "pii_masked": sum(1 for r in rows if r["pii"]),
         "ms": 0,
     }
@@ -711,6 +750,8 @@ def _public(task: dict) -> dict:
 # ---------------------------------------------------------------- «Создать задачи» (только функциями R09)
 _BATCHES: "OrderedDict[str, dict]" = OrderedDict()
 _BATCHES_LOCK = threading.Lock()
+_OWN_RECORDS: dict[str, set] = {}      # batch_id -> id записей, созданных этой пачкой (запасной путь без intake в записи)
+OPEN_STATUSES = ("new", "accepted", "in_progress")
 
 
 def _remember(batch_id: str, tasks: list[dict], demo: bool) -> None:
@@ -726,12 +767,35 @@ def _store():
     return complaint_store()
 
 
-def commit(batch_id, task_ids=None, *, store=None) -> dict:
-    """Задачи разбора -> жалобы R09 в процессе, только функциями хранилища R09:
-    store.create(payload, device, demo=…) — запись по главному тексту задачи; остальные тексты задачи —
-    store.metoo(id, device, note={text, point, target, category}): «Я тоже» с текстом, как при склейке в мастере жалобы
-    (п. 9) — акимат видит их в «Что объединено» и может выделить ошибочно склеенное («Это разные проблемы»).
-    Повтор того же batch_id — без дублей: request_id и устройства задачи постоянны. Задачи без места не создаются."""
+def _r09_entry():
+    """Точка входа R09 для задач разбора (INTEGRATION R09 §G1) или None, если в сборке R09 старше."""
+    try:
+        from ui.civic_feedback.v2.integration import create_from_intake
+    except Exception:  # noqa: BLE001
+        return None
+    return create_from_intake
+
+
+def _for_r09(task: dict) -> dict:
+    """Задача для R09: без служебных полей; главный текст — первым (R09 берёт текст первого обращения группы)."""
+    out = _public(task)
+    head = task["_head_id"]
+    out["text_ids"] = [head] + [i for i in task["text_ids"] if i != head]
+    out["text"] = task["_record_text"]
+    out.pop("texts", None)
+    out.pop("existing", None)
+    return out
+
+
+def commit(batch_id, task_ids=None, *, store=None, actor=None) -> dict:
+    """Задачи разбора -> обращения R09, в процессе и только функциями R09:
+      * задача с открытым обращением той же цели и категории (existing, см. _attach_existing) — store.metoo(id, device,
+        note={text, point, target, category}) по каждому её тексту: «Я тоже» с текстом, как склейка в мастере жалобы
+        (п. 9) — тексты видны в «Что объединено», ошибочно склеенное сотрудник выделит («Это разные проблемы»);
+      * остальные — create_from_intake R09 (одна транзакция на пачку, «Сообщили N человек» = people, source "intake");
+        в сборке без неё — store.create + store.metoo (своё устройство у задачи: у create предел 20 в час на устройство).
+    Повтор того же batch_id — без дублей (id записи R09 — от batch_id и задачи; устройства «Я тоже» постоянны).
+    Задачи без места не создаются: точку не угадываем."""
     if not isinstance(batch_id, str) or not re.fullmatch(r"[0-9a-f]{16}", batch_id):
         raise ValueError("batch_id: номер разбора из ответа intake/analyze.")
     if task_ids is not None and (not isinstance(task_ids, list) or len(task_ids) > MAX_TEXTS
@@ -745,55 +809,113 @@ def commit(batch_id, task_ids=None, *, store=None) -> dict:
     if store is None or not callable(getattr(store, "create", None)):
         raise MLServiceUnavailable("source_not_connected", "Хранилище обращений не подключено.")
     wanted = set(task_ids) if task_ids is not None else None
-    created = existing = joined = skipped = failed = 0
-    records = []
-    for task in batch["tasks"]:
-        if wanted is not None and task["id"] not in wanted:
-            continue
-        if not task["target"] or not task["point"]:
-            skipped += 1
-            continue
-        target = {"kind": task["target"]["kind"], "id": task["target"]["id"]}
-        payload = {"text": task["_record_text"], "category": task["category"], "category_source": "model",
-                   "target": target, "point": task["point"], "request_id": f"in-{batch_id}-{task['id']}",
-                   "source": "intake", "intake": {"batch_id": batch_id, "task_id": task["id"],
-                                                  "people": task["people"]}}
-        if task["subtopic"]:
-            payload["subtopic"] = task["subtopic"]
-        if task["district"]:
-            payload["district"] = task["district"]
-        # Своё устройство у каждой задачи: у R09 лимит записей в час на устройство, а повтор request_id с того же
-        # устройства возвращает уже созданную запись (так повторный commit не плодит дублей).
-        device = f"{DEVICE_PREFIX}-{batch_id}-{task['id']}"
+    chosen = [t for t in batch["tasks"] if wanted is None or t["id"] in wanted]
+    ready = [t for t in chosen if t["target"] and t["point"]]
+    out = {"batch_id": batch_id, "created": 0, "existing": 0, "joined_existing": 0, "joined": 0,
+           "skipped_no_address": len(chosen) - len(ready), "failed": 0, "records": [], "demo": batch["demo"]}
+    fresh = []
+    for task in ready:
+        if task.get("existing") and callable(getattr(store, "metoo", None)):
+            _join_existing(store, batch_id, task, out)
+        else:
+            fresh.append(task)
+    entry = _r09_entry()
+    if fresh and entry is not None and callable(getattr(store, "_tx", None)):
+        _create_r09(entry, store, batch_id, batch, fresh, out, actor)
+    else:
+        for task in fresh:
+            _create_fallback(store, batch_id, batch, task, out)
+    return out
+
+
+def _device(batch_id: str, task: dict, n: int) -> str:
+    """Устройство n-го текста задачи (1 — главный). Постоянное: повтор commit — «уже», а не новый голос."""
+    base = f"{DEVICE_PREFIX}-{batch_id}-{task['id']}"
+    return base if n == 1 else f"{base}-{n}"
+
+
+def _note(task: dict, text: str) -> dict:
+    return {"text": text, "point": task["point"], "target": {"kind": task["target"]["kind"], "id": task["target"]["id"]},
+            "category": task["category"]}
+
+
+def _join_existing(store, batch_id: str, task: dict, out: dict) -> None:
+    existing = task["existing"]
+    texts = [task["_record_text"]] + [text for _id, text in task["_others"]]
+    added = 0
+    for n, text in enumerate(texts, 1):
         try:
-            record, was_created = store.create(payload, device, demo=batch["demo"])
-        except Exception as exc:  # noqa: BLE001 — уточнение не подошло к категории R09 и т. п.: пробуем без него
-            record = None
-            if payload.pop("subtopic", None) is not None:
-                try:
-                    record, was_created = store.create(payload, device, demo=batch["demo"])
-                except Exception as exc2:  # noqa: BLE001
-                    exc = exc2
-            if record is None:
-                failed += 1
-                records.append({"task_id": task["id"], "error": type(exc).__name__})
+            _rec, result = store.metoo(existing["id"], _device(batch_id, task, n), note=_note(task, text))
+        except Exception:  # noqa: BLE001 — обращение закрыли или удалили: этот текст не присоединён
+            continue
+        added += result == "added"
+    out["joined_existing"] += 1
+    out["joined"] += added
+    out["records"].append({"task_id": task["id"], "complaint_id": existing["id"], "code": existing.get("code"),
+                           "created": False, "joined_existing": True, "joined": added})
+
+
+def _create_r09(entry, store, batch_id: str, batch: dict, tasks: list[dict], out: dict, actor) -> None:
+    texts = {}
+    for task in tasks:
+        texts[task["_head_id"]] = task["_record_text"]
+        texts.update({text_id: text for text_id, text in task["_others"]})
+    by_id = {t["id"]: t for t in tasks}
+    report = entry(store, [_for_r09(t) for t in tasks], batch_id=batch_id, texts=texts, demo=batch["demo"],
+                   actor=actor or "Сотрудник акимата", method=VERSION)
+    for kind in ("created", "existing"):
+        for item in report.get(kind) or []:
+            task = by_id.get(item.get("task_id")) or {}
+            out[kind] += 1
+            out["joined"] += max(0, int(task.get("people") or 1) - 1) if kind == "created" else 0
+            out["records"].append({"task_id": item.get("task_id"), "complaint_id": item.get("id"),
+                                   "code": item.get("code"), "created": kind == "created"})
+    for item in report.get("skipped") or []:
+        if item.get("reason") == "no_place":
+            out["skipped_no_address"] += 1
+        else:
+            out["failed"] += 1
+            out["records"].append({"task_id": item.get("task_id"), "error": item.get("reason")})
+
+
+def _create_fallback(store, batch_id: str, batch: dict, task: dict, out: dict) -> None:
+    """Старая сборка R09 без create_from_intake: store.create по главному тексту + «Я тоже» с текстом остальных."""
+    target = {"kind": task["target"]["kind"], "id": task["target"]["id"]}
+    payload = {"text": task["_record_text"], "category": task["category"], "category_source": "model",
+               "target": target, "point": task["point"], "request_id": f"in-{batch_id}-{task['id']}",
+               "source": "intake", "intake": {"batch_id": batch_id, "task_id": task["id"], "people": task["people"]}}
+    if task["subtopic"]:
+        payload["subtopic"] = task["subtopic"]
+    if task["district"]:
+        payload["district"] = task["district"]
+    device = _device(batch_id, task, 1)
+    record = None
+    try:
+        record, was_created = store.create(payload, device, demo=batch["demo"])
+    except Exception as exc:  # noqa: BLE001 — уточнение не подошло к категории R09 и т. п.: пробуем без него
+        error = exc
+        if payload.pop("subtopic", None) is not None:
+            try:
+                record, was_created = store.create(payload, device, demo=batch["demo"])
+            except Exception as exc2:  # noqa: BLE001
+                error = exc2
+        if record is None:
+            out["failed"] += 1
+            out["records"].append({"task_id": task["id"], "error": type(error).__name__})
+            return
+    _OWN_RECORDS.setdefault(batch_id, set()).add(record.get("id"))
+    out["created" if was_created else "existing"] += 1
+    added = 0
+    if callable(getattr(store, "metoo", None)):
+        for n, (_text_id, text) in enumerate(task["_others"], 2):
+            try:
+                _rec, result = store.metoo(record["id"], _device(batch_id, task, n), note=_note(task, text))
+            except Exception:  # noqa: BLE001 — «Я тоже» не причина не создать задачу
                 continue
-        created += bool(was_created)
-        existing += not was_created
-        added = 0
-        if callable(getattr(store, "metoo", None)):
-            for n, (_text_id, text) in enumerate(task["_others"], 2):
-                note = {"text": text, "point": task["point"], "target": target, "category": task["category"]}
-                try:
-                    _rec, result = store.metoo(record["id"], f"{device}-{n}", note=note)
-                except Exception:  # noqa: BLE001 — «Я тоже» не причина не создать задачу
-                    continue
-                added += result == "added"
-        joined += added
-        records.append({"task_id": task["id"], "complaint_id": record.get("id"), "code": record.get("code"),
-                        "created": bool(was_created), "joined": added})
-    return {"batch_id": batch_id, "created": created, "existing": existing, "joined": joined,
-            "skipped_no_address": skipped, "failed": failed, "records": records, "demo": batch["demo"]}
+            added += result == "added"
+    out["joined"] += added
+    out["records"].append({"task_id": task["id"], "complaint_id": record.get("id"), "code": record.get("code"),
+                           "created": bool(was_created), "joined": added})
 
 
 # ---------------------------------------------------------------- функции для шлюза R01 (маршруты intake/*)
@@ -828,7 +950,8 @@ def intake_commit(batch_id=None, task_ids=None, body=None, principal=None, conte
     if isinstance(body, dict):
         batch_id = body.get("batch_id", batch_id)
         task_ids = body.get("task_ids", task_ids)
-    return commit(batch_id, task_ids)
+    actor = principal.get("username") if isinstance(principal, dict) and isinstance(principal.get("username"), str) else None
+    return commit(batch_id, task_ids, actor=actor)
 
 
 __all__ = ["VERSION", "MAX_TEXTS", "MAX_BYTES", "Places", "analyze", "commit", "intake_analyze", "intake_commit",
