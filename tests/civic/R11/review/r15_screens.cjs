@@ -22,13 +22,14 @@ const fs = require("fs");
 const path = require("path");
 const { chromium } = require("playwright");
 
-const [BASE, OUT, PWFILE] = process.argv.slice(2);
-if (!BASE || !OUT || !PWFILE) { console.error("node r15_screens.cjs <BASE> <OUT> <файл-пароля> [--only kk] [--quick]"); process.exit(2); }
+const MAIN = require.main === module;   // как модуль (r15_intake.cjs) — только audit / shellReady / ruOnlyTexts
+const [BASE, OUT, PWFILE] = MAIN ? process.argv.slice(2) : [];
+if (MAIN && (!BASE || !OUT || !PWFILE)) { console.error("node r15_screens.cjs <BASE> <OUT> <файл-пароля> [--only kk] [--quick]"); process.exit(2); }
 const args = process.argv.slice(5);
-const ONLY = args.includes("--only") ? args[args.indexOf("--only") + 1] : null;
-const QUICK = args.includes("--quick");
-const PASSWORD = fs.readFileSync(PWFILE, "utf8").trim();
-fs.mkdirSync(OUT, { recursive: true });
+const ONLY = MAIN && args.includes("--only") ? args[args.indexOf("--only") + 1] : null;
+const QUICK = MAIN && args.includes("--quick");
+const PASSWORD = MAIN ? fs.readFileSync(PWFILE, "utf8").trim() : "";
+if (MAIN) fs.mkdirSync(OUT, { recursive: true });
 
 const SIZES = QUICK ? [[1366, 768, 1], [375, 812, 2]] : [[1366, 768, 1], [1024, 768, 1], [375, 812, 2]];
 const LANGS = ONLY ? [ONLY] : ["ru", "kk"];
@@ -36,7 +37,7 @@ const LANGS = ONLY ? [ONLY] : ["ru", "kk"];
 const ROUTES = {
   resident: ["map", "mine", "yard", "together", "meetings", "ideas", "crisis"],
   akimat: ["day", "inbox", "agencies", "agencies/joint", "agencies/handoffs", "agencies/calendar", "agencies/crisis",
-    "together", "meetings", "analyst"],
+    "together", "meetings", "analyst", "intake"],   // intake — «Разбор обращений» R04 (П3); шаги сцены 0 — r15_intake.cjs
 };
 // Капсула меню (IA §2–3): что ждём на 1366 и 1024; «Мой двор» / «Ведомства» — когда модуль роли в сборке.
 const NAV = {
@@ -45,7 +46,7 @@ const NAV = {
   akimat: { ru: ["Карта", "Картина дня", "Обращения", ["Ведомства", "Проекты и идеи"], "Ещё"],
     kk: ["Карта", "Күн қорытындысы", "Өтініштер", ["Ведомстволар", "Жобалар мен идеялар"], "Тағы"] },
 };
-const KEY_RE = /\b(common|shell|together|agencies|crisis|wcal|meet|board|replay|analyst|notify|idea|works|joint|mine|inbox|complaint|staff|heat|akim|reply|handoff)\.[a-z0-9_]+(\.[a-z0-9_]+)*\b/;
+const KEY_RE = /\b(common|shell|together|agencies|crisis|wcal|meet|board|replay|analyst|notify|idea|works|joint|mine|inbox|complaint|staff|heat|akim|reply|handoff|intake)\.[a-z0-9_]+(\.[a-z0-9_]+)*\b/;
 
 async function shellReady(page) {
   await page.waitForFunction(() => window.BirgeShell && document.querySelector("#birge-header"), null, { timeout: 40000 });
@@ -113,24 +114,31 @@ function navProblem(mode, lang, nav) {
   return null;
 }
 
-(async () => {
+async function ruOnlyTexts(browser, base) {
+  // подписи, у которых в словаре есть другой казахский текст: в ҚАЗ их быть не должно
+  const probe = await browser.newPage();
+  await probe.goto(base + "/civic/i18n/ru.json");
+  const out = await probe.evaluate(async () => {
+    const [ru, kk] = await Promise.all(["ru", "kk"].map((l) => fetch(`/civic/i18n/${l}.json`).then((r) => r.json())));
+    const res = new Set();
+    for (const k of Object.keys(ru)) {
+      const z = kk[k], vals = typeof ru[k] === "string" ? [ru[k]] : Object.values(ru[k] || {});
+      const zs = typeof z === "string" ? [z] : Object.values(z || {});
+      for (const v of vals) if (typeof v === "string" && v.trim().length >= 3 && !v.includes("{") && !zs.includes(v)) res.add(v.trim());
+    }
+    return [...res];
+  });
+  await probe.close();
+  return out;
+}
+module.exports = { audit, shellReady, ruOnlyTexts, KEY_RE };
+
+if (MAIN) (async () => {
   // поле даты <input type=date> рисуется в формате языка системы, а не контекста: в облаке LANG пустой → 10/16/2026;
   // с ru_RU — 16.10.2026, как на ноутбуке акимата (для ҚАЗ формат тот же — дд.мм.гггг)
   const browser = await chromium.launch({ env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" } });
   const report = { base: BASE, when: new Date().toISOString(), frames: {}, problems: [] };
-  const probe = await browser.newPage();
-  await probe.goto(BASE + "/civic/i18n/ru.json");
-  const ruOnly = await probe.evaluate(async () => {
-    const [ru, kk] = await Promise.all(["ru", "kk"].map((l) => fetch(`/civic/i18n/${l}.json`).then((r) => r.json())));
-    const out = new Set();
-    for (const k of Object.keys(ru)) {
-      const z = kk[k], vals = typeof ru[k] === "string" ? [ru[k]] : Object.values(ru[k] || {});
-      const zs = typeof z === "string" ? [z] : Object.values(z || {});
-      for (const v of vals) if (typeof v === "string" && v.trim().length >= 3 && !v.includes("{") && !zs.includes(v)) out.add(v.trim());
-    }
-    return [...out];
-  });
-  await probe.close();
+  const ruOnly = await ruOnlyTexts(browser, BASE);
   for (const [w, h, dpr] of SIZES) for (const lang of LANGS) for (const mode of ["resident", "akimat"]) {
     // язык браузера как у жителя (navigator.language, Intl); формат поля даты — от LANG процесса браузера (выше)
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: dpr, locale: lang === "kk" ? "kk-KZ" : "ru-RU" });

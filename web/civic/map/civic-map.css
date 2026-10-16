@@ -1212,20 +1212,22 @@
    «Коротко» — строки с линией 1 px (подпись слева, значение справа 500) вместо серой плашки, статус работ — иконкой
    того же языка, что статусы жалоб ui-kit (правило Linear 3): ○ запланировано · ◐ идут работы · ⊙✓ завершено ·
    ⊘ отменено. Разметка и логика карточки — прежние (только стили).
+   VISUAL_BRIEF §4 п. 3 (П3, 16 окт): три размера на карточке — 13 подписи (вид работ, «Сейчас», «Сроки», даты правок) ·
+   15 ответы, текст и кнопки (как .bk-btn) · 19 название; 14 эталона (вид, строки «Коротко», статус) был четвёртым.
    =================================================================================================== */
 .civic-r03-card-title { margin: 4px 0 4px; font-size: 19px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
 @media (max-width: 760px) { .civic-r03-card-title { font-size: 19px; } }
-.civic-r03-item-kind, .civic-r03-card-kind { font-size: 14px; font-weight: 400; color: var(--c-text-2, #4b5752); }
+.civic-r03-item-kind, .civic-r03-card-kind { font-size: 13px; font-weight: 400; color: var(--c-text-2, #4b5752); }
 .civic-r03-summary {
-  gap: 0 16px; margin: 12px 0 16px; padding: 0; background: transparent; border: 0; border-radius: 0; font-size: 14px;
+  gap: 0 16px; margin: 12px 0 16px; padding: 0; background: transparent; border: 0; border-radius: 0; font-size: 15px;
   grid-template-columns: minmax(104px, auto) 1fr;
 }
 .civic-r03-summary dt, .civic-r03-summary dd { padding: 10px 0; border-top: 1px solid var(--c-line, rgba(18, 26, 23, 0.08)); }
 .civic-r03-summary dt:first-of-type, .civic-r03-summary dt:first-of-type + dd { border-top: 0; }
-.civic-r03-summary dt { padding-top: 11px; font-size: 14px; color: var(--c-text-2, #4b5752); }
+.civic-r03-summary dt { padding-top: 12px; font-size: 13px; color: var(--c-text-2, #4b5752); }
 .civic-r03-summary dd { text-align: right; font-weight: 500; }
 .civic-r03-summary dd .civic-r03-muted, .civic-r03-summary dd .civic-r03-nodata { font-weight: 400; }
-.civic-r03-status { gap: 8px; font-size: 14px; font-weight: 500; }
+.civic-r03-status { gap: 8px; font-size: 15px; font-weight: 500; }
 .civic-r03-status::before { width: 14px; height: 14px; border-radius: 0; background: var(--st-icon) center / 14px 14px no-repeat; }
 .civic-r03-status-planned { --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.9' fill='none' stroke='%237e8a85' stroke-width='2'/%3E%3C/svg%3E"); }
 .civic-r03-status-in_progress { --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.9' fill='none' stroke='%23ef9f27' stroke-width='2'/%3E%3Cpath d='M7 3.4a3.6 3.6 0 0 1 0 7.2Z' fill='%23ef9f27'/%3E%3C/svg%3E"); }
@@ -1234,4 +1236,9 @@
 .civic-r03-status:not([class*="civic-r03-status-"]) { --st-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='5.9' fill='none' stroke='%237e8a85' stroke-width='2' stroke-dasharray='2 2.4'/%3E%3C/svg%3E"); }
 .civic-r03-shift-chip { display: inline-block; }
 .civic-r03-sec { padding: 14px 0; }
-.civic-r03-dl { font-size: 14px; }
+.civic-r03-dl { font-size: 15px; }
+/* П3 (VISUAL_BRIEF §4 п. 3 — казахский не обрезан): подпись «Картадан көрсету» / «Показать на карте» длиннее прежнего
+   «На карте» — в узкой карточке (375 ҚАЗ — на 10 px за край карточки, 320 — за край экрана) «На карте» сжимается и
+   переносит подпись на вторую строку; «← Все объекты» остаётся одной строкой. */
+.civic-r03-card-top > .civic-r03-btn { flex: none; }
+.civic-r03-card-top > [data-r03-action="fly"] { flex: 0 1 auto; min-width: 0; white-space: normal; line-height: 1.25; }

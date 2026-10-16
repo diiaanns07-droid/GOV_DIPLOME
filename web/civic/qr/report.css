@@ -3,7 +3,10 @@
    .bk-quote, .bk-more), статус-иконки — .bk-status[data-status] (правило Linear 3), появление — .bk-enter-left.
    Ниже — только то, чего в ui-kit нет (тон плитки, «Спасибо», скелетон, ошибки), и те же размеры эталона запасом
    (размеры шрифта — числами эталона: у старого ui-kit токены --fs-* другие):
-   пока в сборке старый ui-kit без .bk-objcard, паспорт выглядит так же. Цвета — токены ui-kit, в скобках — эталон. */
+   пока в сборке старый ui-kit без .bk-objcard, паспорт выглядит так же. Цвета — токены ui-kit, в скобках — эталон.
+   VISUAL_BRIEF §4 (П3, 16 окт): три размера шрифта на экране — 34 число · 19 название · 14 всё остальное (строка
+   статуса, срок, кнопки, «Пример», мета списка — тоже 14: эталон давал 12/13/15 рядом с 14); то, что читают (срок,
+   вкладки, даты, мета), — --c-text-2 (≥ 4,5:1; --c-text-3 3,5:1 — только плейсхолдер и значки, токены R11). */
 .bq-report {
   position: relative;
   box-sizing: border-box;
@@ -36,7 +39,7 @@
 .bq-title:focus { outline: none; }
 .bq-title:focus-visible { outline: 2px solid var(--c-focus, #2f7fd6); outline-offset: 2px; border-radius: 4px; }
 .bq-sub { margin: 3px 0 0; font-size: 14px; color: var(--c-text-2, #4b5752); }
-.bq-demo { margin-left: 8px; font-size: 12px; vertical-align: 1px; }
+.bq-demo { margin-left: 8px; font-size: 14px; }  /* .bk-tag--demo: тихое слово тем же размером, что подпись (было 12) */
 .bq-x {
   position: relative; flex: none; display: flex; align-items: center; justify-content: center;
   width: 32px; height: 32px; margin-left: auto; padding: 0; border: 0; border-radius: 50%;
@@ -48,21 +51,21 @@
 .bq-x:active { scale: 0.94; }
 .bq-x .ic { width: 16px; height: 16px; }
 .bq-x:focus-visible { outline: 2px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
-.bq-approx { display: inline-block; margin: 12px 18px 0; }
+.bq-approx { display: inline-block; margin: 12px 18px 0; font-size: 14px; }
 
 /* ── Сколько людей и статус ── */
 .bq-big { display: flex; align-items: baseline; gap: 8px; margin: 0; padding: 16px 18px 0; }
 .bq-big b { font-size: 34px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .bq-big span { font-size: 14px; color: var(--c-text-2, #4b5752); }
-.bq-st { display: flex; align-items: center; gap: 8px; margin: 12px 18px 0; font-size: 15px; }
-.bq-st .bk-status { font-weight: 400; white-space: normal; }
-.bq-st small { margin-left: auto; padding-left: 8px; color: var(--c-text-3, #7e8a85); font-size: 13px; white-space: nowrap; }
+.bq-st { display: flex; align-items: center; gap: 8px; margin: 12px 18px 0; font-size: 14px; }
+.bq-st .bk-status { font-size: 14px; font-weight: 400; white-space: normal; }  /* .bk-status ui-kit — 15 */
+.bq-st small { margin-left: auto; padding-left: 8px; color: var(--c-text-2, #4b5752); font-size: 14px; white-space: nowrap; }
 .bq-done { display: flex; align-items: center; gap: 8px; margin: 12px 18px 0; color: var(--ok-mark, #3b8a2e); font-size: 14px; }
 .bq-done .ic, .bq-notice .ic { width: 18px; height: 18px; flex: none; }
 
 /* ── Кнопки: главная тёмная во всю ширину, вторая — серая по тексту (эталон .btn.p / .btn.s) ── */
 .bq-actions { display: flex; gap: 8px; padding: 16px 18px 0; }
-.bq-btn { min-height: 44px; padding: 10px 16px; border-radius: var(--r-m, 12px); font-size: 15px; font-weight: 600; line-height: 1.25; }
+.bq-btn { min-height: 44px; padding: 10px 16px; border-radius: var(--r-m, 12px); font-size: 14px; font-weight: 600; line-height: 1.25; }
 .bq-btn--p { flex: 1 1 auto; min-width: 40%; }
 .bq-btn--s { flex: 0 1 auto; max-width: 58%; }
 .bq-btn .ic { width: 18px; height: 18px; }
@@ -75,14 +78,16 @@
 .bq-notice--ok { background: var(--c-ok-soft, #eaf3de); color: #27500a; }
 .bq-notice--error { background: var(--c-danger-soft, #fcebeb); color: var(--heat-4, #a32d2d); }
 
-/* ── Вкладки «Обзор · Обращения · История»: та же картинка, зона нажатия 44 (поле 16 — внутри вкладки) ── */
+/* ── Вкладки «Обзор · Обращения · История»: та же картинка, зона нажатия 44 (поле 16 — внутри вкладки);
+   в ширину — тоже ≥ 44: невидимая зона на половину зазора 18 с каждой стороны («Шолу» 38 → 56) ── */
 .bq-tabs { display: flex; gap: 18px; margin: 4px 0 0; padding: 0 18px; border-bottom: 1px solid var(--c-line, rgba(18, 26, 23, 0.08)); }
 .bq-tabs > .bq-tab {
-  min-height: 0; padding: 16px 0 8px; border: 0; border-bottom: 2px solid transparent; background: none;
-  font: inherit; font-size: 14px; font-weight: 500; line-height: 18px; color: var(--c-text-3, #7e8a85); cursor: pointer;
+  position: relative; min-height: 0; padding: 16px 0 8px; border: 0; border-bottom: 2px solid transparent; background: none;
+  font: inherit; font-size: 14px; font-weight: 500; line-height: 18px; color: var(--c-text-2, #4b5752); cursor: pointer;
   transition: color var(--t-fast, 150ms) var(--ease, ease-out), border-color var(--t-fast, 150ms) var(--ease, ease-out);
 }
-.bq-tabs > .bq-tab:hover { color: var(--c-text-2, #4b5752); }
+.bq-tabs > .bq-tab::after { content: ""; position: absolute; inset: 0 -9px; }
+.bq-tabs > .bq-tab:hover { color: var(--c-ink, #121a17); }
 .bq-tabs > .bq-tab[aria-selected="true"] { color: var(--c-ink, #121a17); border-bottom-color: var(--c-ink, #121a17); }
 .bq-tabs > .bq-tab:focus-visible { outline: 2px solid var(--c-focus, #2f7fd6); outline-offset: -2px; }
 
@@ -114,12 +119,12 @@
 .bq-row--link { padding: 4px 0; }
 .bq-row--skel .bk-skel--line { flex: 1 1 auto; height: 14px; }
 .bq-case__what { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
-.bq-case__meta { color: var(--c-text-3, #7e8a85); font-size: 12px; }
-.bq-case__status { margin-left: auto; font-size: 13px; }
-.bq-hist time { min-width: 56px; color: var(--c-text-3, #7e8a85); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bq-case__meta { color: var(--c-text-2, #4b5752); font-size: 14px; }
+.bq-case__status { margin-left: auto; font-size: 14px; }
+.bq-hist time { min-width: 56px; color: var(--c-text-2, #4b5752); font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .bq-hist .bk-status { font-size: 14px; font-weight: 400; }
 .bq-sec { padding: 10px 0 12px; }
-.bq-h3 { margin: 0 0 8px; color: var(--c-text-3, #7e8a85); font-size: 13px; font-weight: 500; }
+.bq-h3 { margin: 0 0 8px; color: var(--c-text-2, #4b5752); font-size: 14px; font-weight: 500; }
 .bq-spark { height: 40px; }
 .bq-empty { margin: 0; padding: 12px 0; color: var(--c-text-2, #4b5752); }
 
@@ -127,7 +132,8 @@
 .bq-top { display: flex; justify-content: flex-end; padding: 18px 18px 0; }
 .bq-error { padding: 0 18px; }
 .bq-error .bq-actions { flex-direction: column; width: 100%; padding: 8px 0 0; }
-.bq-error .bk-btn { min-height: 44px; border-radius: var(--r-m, 12px); }
+.bq-error .bk-btn { min-height: 44px; border-radius: var(--r-m, 12px); font-size: 14px; }
+.bq-error .bk-error__title { font-size: 19px; }  /* те же 3 размера, что у карточки: 19 заголовок · 14 текст и кнопки */
 
 /* ── Скелетон в форме карточки — ничего не «прыгает», когда придут данные ── */
 .bq-skel__tile { width: 48px; height: 48px; border-radius: var(--r-tile, 14px); }

@@ -394,6 +394,14 @@
     return el;
   }
 
+  // П3 «ИИ должен быть виден» (R11 IA §11.3): метка «ИИ» / «ЖИ» ui-kit — серая плашка со значком i-ai и подсказкой
+  // «Подсказка ИИ — проверьте»; ставится перед подсказкой модели. Без BirgeUI.aiTag (старый ui-kit) — метки нет.
+  function aiTag() {
+    var ui = window.BirgeUI;
+    if (!ui || typeof ui.aiTag !== "function") return null;
+    try { return ui.aiTag(); } catch (e) { return null; }
+  }
+
   function icon(name) {
     // Иконки ui-kit R11. Если файла нет — пустой значок, подпись рядом всё равно есть (правило 3).
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -1074,6 +1082,8 @@
         box.appendChild(h("div", { "class": "bc-cat-row" }, [
           h("span", { "class": "bc-cat-row__label" },
             state.categorySource === "model" ? t("complaint.step3.suggested") : t("complaint.step3.chosen")),
+          // Категорию подсказала модель — метка «ИИ» перед чипом подсказки (житель выбрал сам — метки нет).
+          state.categorySource === "model" ? aiTag() : null,
           h("button", { "class": "bk-chip", type: "button", "aria-pressed": "true",
                         onclick: function () { state.gridOpen = true; renderCategory(); } },
             // Галочку у выбранного чипа рисует ui-kit (.bk-chip[aria-pressed=true]::before) — своей не добавляем.
@@ -2284,7 +2294,7 @@
     emergency: emergency, seasonalCategories: seasonalCategories, version: "r09-round15-joint",
     // Для компонентов сотрудника и списка акимата (complaint-staff.js, complaint-list.js) — те же подписи.
     displayStatus: displayStatus, categoryLabel: categoryLabel, subtopicLabel: subtopicLabel,
-    targetLabel: targetLabel, statusBadge: statusBadge, statusIcon: statusIcon, icon: icon, illustration: illustration,
+    targetLabel: targetLabel, statusBadge: statusBadge, statusIcon: statusIcon, icon: icon, illustration: illustration, aiTag: aiTag,
     categoryIcon: function (id) { var c = category(id); return c ? c.icon : "dots"; },
     mountNear: mountNear
   };

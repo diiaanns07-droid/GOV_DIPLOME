@@ -169,9 +169,10 @@ def deadline(record: dict, now: datetime) -> dict | None:
     return workdays.deadline_info(rec.parse_iso(record.get("due_at")), now, done=answered)
 
 
-# Раунд 15 (CONTRACT §5.1): ведущая служба, выбранная явно — передача, совместное исполнение (части служб), демо-мир.
+# Раунд 15 (CONTRACT §5.1): ведущая служба, выбранная явно — передача, совместное исполнение (части служб), демо-мир,
+# «ИИ-разбор пачки» (П3: службу подсказал R04, сотрудник подтвердил «Создать задачи»).
 # «table» (служба по таблице на момент подачи) явной не считается: такая жалоба следует за таблицей R08, как в FINAL-4.
-EXPLICIT_SERVICE_SOURCES = frozenset({"staff", "handoff", "joint", "world"})
+EXPLICIT_SERVICE_SOURCES = frozenset({"staff", "handoff", "joint", "world", "intake"})
 
 
 def explicit_service(record: dict) -> str | None:
@@ -420,7 +421,8 @@ def inbox(records: list[dict], now: datetime, tab: str | None = None) -> dict:
         group["rude"] = group.get("rude", False) or rude
         group["complaints"].append({"id": record["id"], "code": record.get("code"), "status": record.get("status"),
                                     "reporters": rec.reporters(record), "tab": rtab, "demo": bool(record.get("demo")),
-                                    "rude": rude})
+                                    "rude": rude,
+                                    "intake": bool(record.get("intake") or record.get("source") == "intake")})
         info = deadline(record, now)
         if info and _deadline_rank(info) > _deadline_rank(group["deadline"]):
             group["deadline"] = info

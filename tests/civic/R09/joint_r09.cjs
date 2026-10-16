@@ -103,10 +103,10 @@ async function variant(browser, base, width, height, lang, staff) {
     // Строка ямы — цель жалобы сцены 8 (фикстура: «Участок ул. Сарайшык»; мир R02: «Участок: улица Баян Сулу»).
     const row = page.locator(`.bc-inbox__item[data-target="${PIT_TARGET}"]`).first();
     await row.locator(".bc-inbox__row").click();
-    const block = await page.waitForSelector(".bc-inbox__item--open .bc-joint", { timeout: 8000 }).then(() => true, () => false);
-    const parts0 = block ? await page.$$eval(".bc-inbox__item--open .bc-joint__part", (n) => n.map((x) => x.getAttribute("data-service"))) : [];
+    const block = await page.waitForSelector(".bc-inbox__detail .bc-joint", { timeout: 8000 }).then(() => true, () => false);
+    const parts0 = block ? await page.$$eval(".bc-inbox__detail .bc-joint__part", (n) => n.map((x) => x.getAttribute("data-service"))) : [];
     check(`${tag}: в карточке — блок «Службы»: ведущая по таблице (Дорожная служба)`, block && parts0.join() === "road", parts0);
-    const hint = clean(await page.textContent(".bc-inbox__item--open .bc-joint-hint").catch(() => ""));
+    const hint = clean(await page.textContent(".bc-inbox__detail .bc-joint-hint").catch(() => ""));
     check(`${tag}: подсказка R04 — «${say.hint}»`, hint.includes(say.hint), hint.slice(0, 120));
     // R04 в сборке (ml.route готов): у подсказки мира — строка «почему» (засев берёт объяснение у route(), patch R04).
     const r04 = await page.evaluate(async () => {
@@ -117,38 +117,38 @@ async function variant(browser, base, width, height, lang, staff) {
       } catch (e) { return false; }
     });
     if (r04) {
-      const why = clean(await page.textContent(".bc-inbox__item--open .bc-joint-hint__why").catch(() => ""));
+      const why = clean(await page.textContent(".bc-inbox__detail .bc-joint-hint__why").catch(() => ""));
       check(`${tag}: у подсказки мира — объяснение R04 («${why.slice(0, 50)}…»)`, why.length > 20, why.slice(0, 120));
     }
     await shot(page, `joint-${tag}-1-hint`);
     // «Принять» — одним нажатием: Водоканал ведущая, Дорожная служба участвует.
-    await page.click(".bc-inbox__item--open .bc-joint-hint__accept");
-    await page.waitForFunction(() => document.querySelectorAll(".bc-inbox__item--open .bc-joint__part").length === 2, null, { timeout: 8000 })
+    await page.click(".bc-inbox__detail .bc-joint-hint__accept");
+    await page.waitForFunction(() => document.querySelectorAll(".bc-inbox__detail .bc-joint__part").length === 2, null, { timeout: 8000 })
       .catch(() => null);
-    const parts1 = await page.$$eval(".bc-inbox__item--open .bc-joint__part", (n) => n.map((x) => x.getAttribute("data-service")));
-    const roles = clean(await page.textContent(".bc-inbox__item--open .bc-joint__parts").catch(() => ""));
+    const parts1 = await page.$$eval(".bc-inbox__detail .bc-joint__part", (n) => n.map((x) => x.getAttribute("data-service")));
+    const roles = clean(await page.textContent(".bc-inbox__detail .bc-joint__parts").catch(() => ""));
     check(`${tag}: «Принять» → совместное исполнение: Водоканал (ведущая) и Дорожная служба`, parts1.join() === "water,road" &&
           roles.includes(say.water) && roles.includes(say.road), { parts1, roles: roles.slice(0, 120) });
-    const hintGone = await page.$(".bc-inbox__item--open .bc-joint-hint");
+    const hintGone = await page.$(".bc-inbox__detail .bc-joint-hint");
     check(`${tag}: подсказка исчезла после «Принять»`, !hintGone);
     // Водоканал — «Сделано» с заметкой для жителей.
-    await page.click('.bc-inbox__item--open .bc-joint__part[data-service="water"] .bc-joint__segbtn[data-status="done"]');
-    await page.fill(".bc-inbox__item--open [name=part_note]", say.note);
+    await page.click('.bc-inbox__detail .bc-joint__part[data-service="water"] .bc-joint__segbtn[data-status="done"]');
+    await page.fill(".bc-inbox__detail [name=part_note]", say.note);
     await shot(page, `joint-${tag}-2-part-note`);
-    await page.click(".bc-inbox__item--open .bc-joint__noteform button[type=submit]");
-    await page.waitForSelector('.bc-inbox__item--open .bc-joint__part[data-service="water"][data-status="done"]', { timeout: 8000 }).catch(() => null);
-    const fixBtn = await page.$eval(".bc-inbox__item--open .bc-staff__open-fix", (b) => ({ disabled: b.disabled,
-      wait: (document.querySelector(".bc-inbox__item--open .bc-joint__waiting") || {}).textContent || "" })).catch(() => null);
+    await page.click(".bc-inbox__detail .bc-joint__noteform button[type=submit]");
+    await page.waitForSelector('.bc-inbox__detail .bc-joint__part[data-service="water"][data-status="done"]', { timeout: 8000 }).catch(() => null);
+    const fixBtn = await page.$eval(".bc-inbox__detail .bc-staff__open-fix", (b) => ({ disabled: b.disabled,
+      wait: (document.querySelector(".bc-inbox__detail .bc-joint__waiting") || {}).textContent || "" })).catch(() => null);
     check(`${tag}: «Отметить исправленным» ждёт Дорожную службу («${say.waiting}…»)`, fixBtn && fixBtn.disabled &&
           fixBtn.wait.includes(say.waiting) && fixBtn.wait.includes(say.road), fixBtn);
     await shot(page, `joint-${tag}-3-waiting`);
     // «Черновик ответа» R04 — только если маршрут reply-draft готов в сборке (GET /modules); текст — в «Обновление для всех».
-    const draftBtn = await page.$(".bc-inbox__item--open .bc-staff__draft:not([hidden])");
+    const draftBtn = await page.$(".bc-inbox__detail .bc-staff__draft:not([hidden])");
     if (draftBtn) {
       await draftBtn.click();
-      await page.waitForFunction(() => { const a = document.querySelector(".bc-inbox__item--open [name=text]"); return a && a.value.length > 20; },
+      await page.waitForFunction(() => { const a = document.querySelector(".bc-inbox__detail [name=text]"); return a && a.value.length > 20; },
         null, { timeout: 8000 }).catch(() => null);
-      const draft = await page.$eval(".bc-inbox__item--open [name=text]", (a) => a.value).catch(() => "");
+      const draft = await page.$eval(".bc-inbox__detail [name=text]", (a) => a.value).catch(() => "");
       check(`${tag}: «Черновик ответа» R04 — текст в «Обновление для всех», сотрудник правит`, draft.length > 20, draft.slice(0, 120));
       await shot(page, `joint-${tag}-3b-draft`);
     } else {
@@ -171,20 +171,20 @@ async function variant(browser, base, width, height, lang, staff) {
     const other = page.locator(`.bc-inbox__group[data-group="new"] .bc-inbox__item[data-world="true"]:not([data-target="${PIT_TARGET}"])`).first();
     if (await other.count()) {
       await other.locator(".bc-inbox__row").click();
-      await page.waitForSelector(".bc-inbox__item--open .bc-joint__open-handoff", { timeout: 8000 });
-      await page.click(".bc-inbox__item--open .bc-joint__open-handoff");
-      const to = await page.$eval(".bc-inbox__item--open [name=to]", (sel) => [...sel.options].some((o) => o.value === "road") ? "road" : "landscaping");
-      await page.selectOption(".bc-inbox__item--open [name=to]", to);
-      await page.click('.bc-inbox__item--open .bc-joint__reasons [data-reason="not_our_zone"]');
+      await page.waitForSelector(".bc-inbox__detail .bc-joint__open-handoff", { timeout: 8000 });
+      await page.click(".bc-inbox__detail .bc-joint__open-handoff");
+      const to = await page.$eval(".bc-inbox__detail [name=to]", (sel) => [...sel.options].some((o) => o.value === "road") ? "road" : "landscaping");
+      await page.selectOption(".bc-inbox__detail [name=to]", to);
+      await page.click('.bc-inbox__detail .bc-joint__reasons [data-reason="not_our_zone"]');
       await shot(page, `joint-${tag}-5-handoff-form`);
-      await page.click(".bc-inbox__item--open .bc-joint__handoff button[type=submit]");
+      await page.click(".bc-inbox__detail .bc-joint__handoff button[type=submit]");
       const want = to === "road" ? say.handoff : (lang === "kk" ? "Жіберілді: Абаттандыру қызметі" : "Передано: Служба благоустройства");
       // Причина-чип в истории — на языке экрана (сервер хранит русскую подпись кода для журналов R17).
       const reason = lang === "kk" ? "Біздің жауапкершілік аймағы емес" : "Не наша зона ответственности";
-      await page.waitForFunction((w) => { const n = document.querySelector(".bc-inbox__item--open .bc-staff__note");
+      await page.waitForFunction((w) => { const n = document.querySelector(".bc-inbox__detail .bc-staff__note");
         return n && n.textContent.includes(w); }, want, { timeout: 8000 }).catch(() => null);
-      const note = clean(await page.textContent(".bc-inbox__item--open .bc-staff__note").catch(() => ""));
-      const hist = clean(await page.textContent(".bc-inbox__item--open .bc-joint__history").catch(() => ""));
+      const note = clean(await page.textContent(".bc-inbox__detail .bc-staff__note").catch(() => ""));
+      const hist = clean(await page.textContent(".bc-inbox__detail .bc-joint__history").catch(() => ""));
       check(`${tag}: «Передать в другую службу» → «${want}…», в «Передачах» — причина «${reason}» и роль`, note.includes(want) &&
             /→/.test(hist) && hist.includes(reason), { note, hist: hist.slice(0, 160) });
       await shot(page, `joint-${tag}-6-handoff-done`);

@@ -208,6 +208,15 @@ async function variant(browser, base, width, height, lang, staff, opts = {}) {
   const chip = await page.waitForSelector(".bc-cat-row .bk-chip[aria-pressed='true']", { timeout: 8000 })
     .then(async () => (await page.textContent(".bc-cat-row")).trim(), () => "");
   check(`${tag}: модель подсказывает «Освещение»`, /Освещение|Жарықтандыру/.test(chip), chip);
+  // П3 «ИИ должен быть виден» (R11 IA §11.3): метка «ИИ» ui-kit — перед чипом подсказки категории; старый ui-kit — без метки.
+  const ai = await page.evaluate(() => {
+    const tagEl = document.querySelector(".bc-cat-row .bk-ai"), chipEl = document.querySelector(".bc-cat-row .bk-chip");
+    return { kit: !!(window.BirgeUI && typeof window.BirgeUI.aiTag === "function"), tag: !!tagEl,
+             before: !!(tagEl && chipEl && (tagEl.compareDocumentPosition(chipEl) & Node.DOCUMENT_POSITION_FOLLOWING)),
+             hint: tagEl ? tagEl.getAttribute("title") : null };
+  });
+  check(`${tag}: ${ai.kit ? "метка «ИИ» перед подсказкой категории" : "ui-kit без aiTag — у подсказки категории метки нет"}`,
+        ai.kit ? ai.tag && ai.before && !!ai.hint : !ai.tag, ai);
   seen.suggested = chip;
   seen.category = chip;
   await shot(page, `app-${tag}-3-text`);

@@ -367,8 +367,10 @@
       var same = hint.services.length === now.length && hint.services.every(function (sid) { return now.indexOf(sid) >= 0; });
       if (same || hint.accepted_at) return null;
       var why = C().lang && C().lang() === "kk" ? (hint.why_kk || hint.why_ru) : hint.why_ru;
+      // П3 (R11 IA §11.3): подсказку дала модель R04 — метка «ИИ» в строке заголовка плашки; без неё — значок «люди».
+      var tag = C().aiTag ? C().aiTag() : null;
       return h("div", { "class": "bk-banner bc-joint-hint", role: "note" }, [
-        h("p", { "class": "bc-joint-hint__title" }, [C().icon ? C().icon("users") : null,
+        h("p", { "class": "bc-joint-hint__title" }, [tag || (C().icon ? C().icon("users") : null),
           h("span", {}, t("joint.hint.title", { n: hint.services.length, list: joinNames(hint.services) }))]),
         why ? h("p", { "class": "bc-meta bc-joint-hint__why" }, why) : null,
         h("div", { "class": "bc-joint-hint__actions" }, [
@@ -598,6 +600,10 @@
         // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
         root.appendChild(h("p", { "class": "bc-meta" }, C().categoryLabel(current.category) +
           (current.subtopic ? " · " + C().subtopicLabel(current.category, current.subtopic) : "")));
+        // П3: обращение пришло пачкой и разобрано ИИ (R04 «ИИ-разбор»), задачу создал сотрудник — откуда оно.
+        if (current.intake || current.source === "intake") {
+          root.appendChild(h("p", { "class": "bc-meta bc-staff__source" }, t("inbox.source.intake")));
+        }
         // Текст жителя — оригинал, только акимату (staff_view); грубые слова — пометкой (п. 8, R10 B-064).
         // В карточке цели R07 (compact) тексты показывает сама карточка («Что пишут жители»).
         if (current.text) {

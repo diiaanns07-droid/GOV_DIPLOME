@@ -1175,8 +1175,12 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
   const groupsSeen = await page.$$eval(".bc-inbox__group", (n) => n.map((g) => ({ id: g.dataset.group,
     head: g.querySelector(".bc-inbox__ghead").textContent.trim(), icon: !!g.querySelector(".bc-inbox__ghead .bc-sicon"),
     rows: [...g.querySelectorAll(".bc-inbox__row")].map((r) => Math.round(r.getBoundingClientRect().height)) })));
-  check(`${tag}: [эталон п.5] группы по статусу со значком, строки плотные (≤ 44 на ноутбуке)`, groupsSeen.length >= 1 &&
-        groupsSeen.every((g) => g.icon && g.rows.length) && (width < 700 || groupsSeen.every((g) => g.rows.every((hgt) => hgt >= 44 && hgt <= 46))),
+  // П3: на ≥ 1200 px — две колонки «список | карточка»; строка узкого списка — в две строки (место / тема), как .bk-lrow
+  // ui-kit на телефоне, до 64 px. В одну колонку — плотная строка 44 (эталон п. 5).
+  const split = await page.evaluate(() => !!document.querySelector(".bc-inbox[data-split]"));
+  check(`${tag}: [эталон п.5] группы по статусу со значком, строки плотные (${split ? "две колонки: строка в две строки ≤ 64" : "≤ 44 на ноутбуке"})`,
+        groupsSeen.length >= 1 && groupsSeen.every((g) => g.icon && g.rows.length) &&
+        (width < 700 || groupsSeen.every((g) => g.rows.every((hgt) => hgt >= 44 && hgt <= (split ? 64 : 46)))),
         JSON.stringify(groupsSeen));
   const key = `${tid}|roads`;
   const row = await page.$(`.bc-inbox__row[data-key="${key}"]`);
@@ -1204,7 +1208,7 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
   check(`${tag}: [эталон п.4] после ответа — статус на сервере «в работе», строка там же`, afterTake === "in_progress" &&
         await page.$eval(`.bc-inbox__item[data-key="${key}"]`, (li) => li.closest(".bc-inbox__group").dataset.group) === "in_progress", afterTake);
   await page.click(`.bc-inbox__row[data-key="${key}"]`);
-  await page.waitForSelector(".bc-inbox__item--open .bc-staff__open-fix", { timeout: 8000 });
+  await page.waitForSelector(".bc-inbox__detail .bc-staff__open-fix", { timeout: 8000 });
   const prim = await page.$$eval(".bc-inbox .bk-btn--primary", (n) => n.map((b) => b.textContent.trim()));
   check(`${tag}: [защита п.4] раскрыта одна группа, одна главная кнопка «${prim[0]}»`, prim.length === 1, prim.join(" | "));
   // Эталон п.2: команды для палитры Ctrl+K оболочки (R01) — «Отметить исправленным — место» для этой цели.
@@ -1237,22 +1241,22 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
           .every((n) => { const r = n.getBoundingClientRect(); return !r.width || r.right <= innerWidth + 1; })));
   await shot(page, `${tag}-inbox`);
   // Сотрудник сообщает об устранении прямо из списка → группа уходит во «Ждут проверки».
-  await page.click(".bc-inbox__item--open .bc-staff__open-fix");
-  await page.fill(".bc-inbox__item--open [name=what_done]", lang === "kk" ? "Шұңқыр жамалды" : "Заделали яму");
+  await page.click(".bc-inbox__detail .bc-staff__open-fix");
+  await page.fill(".bc-inbox__detail [name=what_done]", lang === "kk" ? "Шұңқыр жамалды" : "Заделали яму");
   // R10 B-056: фото «после» под CSP сборки (connect-src 'self') и сбой загрузки — сообщение в форме, ничего не отмечено.
-  await page.setInputFiles(".bc-inbox__item--open .bc-photo-input", { name: "after.jpg", mimeType: "image/jpeg", buffer: await exifJpeg(page, 640, 480) });
-  await page.waitForSelector(".bc-inbox__item--open .bc-thumb img", { timeout: 8000 });
+  await page.setInputFiles(".bc-inbox__detail .bc-photo-input", { name: "after.jpg", mimeType: "image/jpeg", buffer: await exifJpeg(page, 640, 480) });
+  await page.waitForSelector(".bc-inbox__detail .bc-thumb img", { timeout: 8000 });
   await page.route("**/photos", (route) => route.abort());
-  await page.click(".bc-inbox__item--open .bc-staff__fix button[type=submit]");
-  const failed = await page.waitForSelector(".bc-inbox__item--open .bc-staff__fix-error", { timeout: 8000 }).then(async (e) => (await e.textContent()).trim(), () => "");
+  await page.click(".bc-inbox__detail .bc-staff__fix button[type=submit]");
+  const failed = await page.waitForSelector(".bc-inbox__detail .bc-staff__fix-error", { timeout: 8000 }).then(async (e) => (await e.textContent()).trim(), () => "");
   const still = (await deviceApi(base, "GET", `/complaints/${made.data.complaint.id}`, null, "dev-r09-inbox-stranger-1")).data.complaint.status;
-  const enabled = await page.$eval(".bc-inbox__item--open .bc-staff__fix button[type=submit]", (b) => !b.disabled);
+  const enabled = await page.$eval(".bc-inbox__detail .bc-staff__fix button[type=submit]", (b) => !b.disabled);
   check(`${tag}: [B-056] фото не загрузилось — «${failed.slice(0, 40)}…», кнопка доступна, обращение не отмечено`,
         (lang === "kk" ? /Фото жүктелмеді/.test(failed) : /Фото не загрузилось/.test(failed)) && enabled && still !== "fixed", still);
   await page.unroute("**/photos");
   page.problems = page.problems.filter((p) => !/photos|ERR_FAILED|Failed to load/.test(p));   // обрыв подставлен тестом
-  await page.click(".bc-inbox__item--open .bc-staff__fix button[type=submit]");
-  await page.waitForFunction(() => !document.querySelector(".bc-inbox__item--open [name=what_done]"), null, { timeout: 15000 });
+  await page.click(".bc-inbox__detail .bc-staff__fix button[type=submit]");
+  await page.waitForFunction(() => !document.querySelector(".bc-inbox__detail [name=what_done]"), null, { timeout: 15000 });
   await page.click(".bc-inbox__tab[data-tab='waiting_check']");
   const moved = await page.waitForSelector(`.bc-inbox__row[data-key="${key}"]`, { timeout: 8000 }).then(() => true, () => false);
   check(`${tag}: [§2.5] после «Сообщить жителям» — во вкладке «Ждут проверки»`, moved);
@@ -1269,8 +1273,8 @@ async function inboxScreen(browser, base, lang, width, height, tag, point) {
     check(`${tag}: [D-5] «Пример» — сноской под списком, не в строках`, note.rowTags === 0 && /пример|үлгі/i.test(note.footnote), JSON.stringify(note));
     await page.evaluate(() => document.querySelector(".bc-inbox__item[data-demo] .bc-inbox__row").click());
     await page.waitForSelector(".bc-inbox__item--open", { timeout: 5000 });
-    const ro = await page.evaluate(() => ({ form: !!document.querySelector(".bc-inbox__item--open .bc-staff"),
-      text: document.querySelector(".bc-inbox__item--open .bc-inbox__detail").textContent }));
+    const ro = await page.evaluate(() => ({ form: !!document.querySelector(".bc-inbox__detail .bc-staff"),
+      text: document.querySelector(".bc-inbox__detail").textContent }));
     check(`${tag}: пример «Пример» — без действий, с пояснением`, !ro.form && (lang === "kk" ? /үлгі/.test(ro.text) : /пример/.test(ro.text)), ro.text.slice(0, 80));
   }
   await page.evaluate((l) => BirgeComplaint.setLang(l === "kk" ? "ru" : "kk"), lang);

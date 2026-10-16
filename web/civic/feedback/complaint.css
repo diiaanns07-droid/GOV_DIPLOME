@@ -333,6 +333,8 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-staff__text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0; overflow-wrap: anywhere; }
 /* «Содержит грубые слова» — слово цветом опасности, без плашки (чистый дизайн R11). */
 .bc-tag--rude { color: var(--c-danger, #b3362e); background: transparent; padding: 0; font-size: var(--fs-caption, 13px); font-weight: var(--fw-semi, 600); }
+/* П3: источник «Разбор пачки» — тихая пометка в конце серой строки темы (не кнопка, не цвет статуса). */
+.bc-tag--intake { color: inherit; white-space: nowrap; }
 /* Формы сотрудника — непрозрачные и на стекле (R11 GLASS.md §2: «что сделали», паспорт): карточка R07, лист «Обращений». */
 .bk-glass .bc-staff__form { background: var(--c-surface, #fff); border-top: 0; border-radius: var(--r-m, 10px); padding: 12px; }
 .bc-staff__fix-error { margin: 0; font-weight: 600; color: var(--c-danger, #b3362e); }
@@ -341,7 +343,38 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 /* Акимат · «Обращения» (complaint-list.js, раздел #complaints оболочки R01) — список как в Linear (правило 5 эталона A):
    фильтры-чипы сверху, группы по статусу, плотные строки 44 px с границей 1 px вместо теней, статус значком и смена
    статуса прямо из строки. Цвета и линии — эталона (research/round-14/design/REFERENCE.html, :root). */
-.bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px; margin: 0 auto; color: var(--c-ink, #121A17); }   /* колонка 720 (R11 D-1) */
+.bc-inbox { display: flex; flex-direction: column; gap: 12px; color: var(--c-ink, #121A17); }
+/* П3 (кадр 05 review_final51): на всю ширину листа оболочки — без пустых белых полей слева и справа (была колонка 720,
+   R11 D-1). Липкая плашка группы — к самому краю листа (top: -отступ листа; отступ меряет complaint-list.js): над
+   плашкой больше не видно уехавших строк с обрезанным текстом. */
+.bc-inbox .bc-inbox__ghead { top: var(--bc-stick, 0px); }
+.bc-inbox__head { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; }
+.bc-inbox__intake { flex: none; display: inline-flex; align-items: center; gap: 8px; }
+/* ≥ 1200 px — две колонки, как в почте: список | карточка; экран ровно по высоте листа (--bc-fit-h), у каждой колонки
+   своя прокрутка, плашки групп липнут к верху списка. Ниже 1200 px — одна колонка, как прежде. */
+.bc-inbox[data-split] { height: var(--bc-fit-h, auto); min-height: 0; }
+.bc-inbox[data-split] > * { flex: none; }
+.bc-inbox[data-split] > .bc-inbox__body { flex: 1 1 auto; min-height: 0; display: grid;
+                                        grid-template-columns: minmax(360px, 5fr) minmax(0, 7fr); gap: 16px; }
+.bc-inbox[data-split] .bc-inbox__groups { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
+.bc-inbox[data-split] .bc-inbox__ghead { top: 0; }
+.bc-inbox__pane { min-height: 0; overflow-y: auto; overscroll-behavior: contain; background: var(--c-surface, #fff);
+                  border-radius: var(--r-m, 12px); box-shadow: inset 0 0 0 1px var(--c-line, rgba(18, 26, 23, .08)); }
+.bc-inbox__pane .bc-inbox__detail { padding: 16px 20px 20px; }
+.bc-inbox__pane-title { margin: 0; font-size: var(--fs-body, 15px); font-weight: var(--fw-semi, 600); overflow-wrap: anywhere; }
+/* Ничего не выбрано — тихая подсказка посередине колонки (без рисунков, П1). */
+.bc-inbox__pane:not([data-key]) { display: flex; align-items: center; justify-content: center; }
+.bc-inbox__pane-empty { margin: 0; padding: 24px 20px; color: var(--c-text-2, #4B5752); font-size: var(--fs-small, 14px); text-align: center; }
+/* Выбранная строка списка — заливкой, как письмо в почте (карточка — справа, под строкой ничего нет). */
+.bc-inbox[data-split] .bc-inbox__item--open > .bk-lrow, .bc-inbox[data-split] .bc-inbox__item--open > .bc-inbox__line {
+  background: var(--c-fill, rgba(18, 26, 23, .06)); border-radius: var(--r-s, 8px); }
+/* Список в левой колонке узкий (≈ 420 px): место и тема — в две строки, срок под числом, как на телефоне. */
+/* … как .bk-lrow на телефоне (ui-kit R11, ≤ 720 px): название и тема — в две строки, строка 52. */
+.bc-inbox[data-split] .bk-lrow { min-height: 52px; }
+.bc-inbox[data-split] .bc-inbox__text { flex-direction: column; align-items: stretch; gap: 1px; }
+.bc-inbox[data-split] .bc-inbox__place, .bc-inbox[data-split] .bc-inbox__what { white-space: normal; overflow: visible; }
+.bc-inbox[data-split] .bc-inbox__meta { white-space: normal; min-width: 0; max-width: 92px; line-height: 1.25; }
+.bc-inbox[data-split] .bc-inbox__row { padding: 8px 0; }
 .bc-inbox__title { margin: 0; font-size: var(--fs-title, 19px); font-weight: var(--fw-semi, 600); letter-spacing: var(--ls-title, -.01em); }   /* заголовок листа эталона 19/600 */
 .bc-inbox__tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }   /* затухание края — .bk-scroll-x ui-kit */
 .bc-inbox__tabs::-webkit-scrollbar { display: none; }
@@ -624,9 +657,11 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
    новых цветов), не главная кнопка экрана. */
 .bc-joint-hint { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 12px; border-radius: var(--r-m, 10px);
                  background: var(--c-fill, #eff1f2); color: var(--c-ink, #121A17); }
-.bc-joint-hint__title .ic { color: var(--c-text-2, #4B5752); }
+.bc-joint-hint__title > .ic { color: var(--c-text-2, #4B5752); }
 .bc-joint-hint__title { display: flex; align-items: flex-start; gap: 8px; margin: 0; font-weight: var(--fw-semi, 600); }
-.bc-joint-hint__title .ic { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+.bc-joint-hint__title > .ic { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+/* Метка «ИИ» ui-kit (22 px) — на линии первой строки заголовка. */
+.bc-joint-hint__title > .bk-ai { margin-top: -1px; }
 .bc-joint-hint__why { margin: 0 0 0 28px; }
 .bc-joint-hint__actions { display: flex; align-items: center; gap: 16px; margin-left: 28px; flex-wrap: wrap; }
 .bc-joint-hint__actions .bk-btn { min-height: 44px; }

@@ -35,9 +35,39 @@ def found(text, category=None):
     ("фонари не горят на улице Шарбаккл", ("street", "улица Шарбаккол")),        # одна опечатка рядом с «улице»
     ("На остановке «улица Сарытогай» наледь", ("bus_stop", "Остановка «улица Сарытогай»")),  # длинное имя важнее
     ("дом 206 на улице Абая", ("street", "улица Абая")),                 # номер дома — не «улица 206»
+    # П3, разбор ошибок на половине набора R02 (обобщаемые случаи):
+    ("Не работает освещение на улице Айнаколь от остановки до перекрёстка", ("street", "улица Айнаколь")),  # «улице» вплотную
+    ("Қорғалжын тас жолында огромная яма", ("street", "Коргалжинское шоссе")),       # казахское «тас жолы»
+    ("v zhk buhar zhyrau de luxe v podezde net sveta", ("yard", "Двор: Бұқар Жырау De Luxe")),   # қ -> х
+    ("spasibo, v zhk alau teplo", ("yard", "Двор: Alau")),              # ЖК вплотную — и маленькими буквами
+    ("«Жилой комплекс Зелёный Квартал» аялдмаасында автобус жоқ",        # опечатка в слове «аялдама»
+     ("bus_stop", "Остановка «Жилой комплекс Зелёный Квартал»")),
 ])
 def test_place_found(text, expected):
     assert found(text) == expected
+
+
+def test_street_twins_are_one_street():
+    """OSM делит улицу на линии с разными подписями: «Жумекена Нажимеденова» и «Жұмекен Нәжімеденов» — одна цель."""
+    a = places().find("Жұмекен Нәжімеденов көшесінде шұңқыр")
+    b = places().find("Улица Жумекена Нажимеденова: провал асфальта")
+    assert a["id"] == b["id"]
+
+
+@pytest.mark.parametrize("text", ["Не горит светофор на перекрёстке Коргалжинское ш. и пр. Туран",
+                                  "Қорғалжын тас жолы мен Тұран даңғылының қиылысында бағдаршам сөніп тұр",
+                                  "Qorgaljyn tas joly men Turan dangylynyn qiylysynda bagdarsham jumys istemeidi",
+                                  "Не работает сетофор на перекрёскте Коргалжинское ш. и пр. Туран"])
+def test_junction_of_two_streets(text):
+    """«Перекрёсток A и B» — светофор R12 с этими двумя улицами (data/civic/astana/geo/objects.json)."""
+    hit = places().find(text)
+    assert hit["kind"] == "traffic_signal" and hit["id"].startswith("osm-node-")
+    assert "Коргалжинское шоссе" in hit["label_ru"] and "Туран" in hit["label_ru"]
+
+
+def test_stop_name_without_stop_word_for_transport():
+    assert places().find("«Барыс арена» — стоим час, ни одного автобуса") is None      # без категории — не угадываем
+    assert found("«Барыс арена» — стоим час, ни одного автобуса", "transport") == ("bus_stop", "Остановка «Барыс арена»")
 
 
 @pytest.mark.parametrize("text", [

@@ -402,8 +402,12 @@ def test_design_marathon_round7_r11_edits():
     assert "transform" not in fab and "left: 50%" not in fab
     assert ".bc-fab { left: 0; right: 0; margin-inline: auto; width: max-content; transform: none; }" in css
     assert "translateX(-50%)" not in css and "body.civic-mode .bc-fab { right: 56px; }" in css
-    # D-1: колонка «Обращений» 720.  D-7: скелетон на стекле — белая карточка с волосяной линией.
-    assert ".bc-inbox { display: flex; flex-direction: column; gap: 12px; max-width: 720px;" in css
+    # D-1 (колонка «Обращений» 720) отменён поправкой П3 (кадр 05): «Обращения» — на всю ширину листа, плашка группы — к
+    # краю листа, на ≥ 1200 px — две колонки.  D-7: скелетон на стекле — белая карточка с волосяной линией.
+    assert ".bc-inbox { display: flex; flex-direction: column; gap: 12px; color: var(--c-ink, #121A17); }" in css
+    assert "max-width: 720px" not in css.split(".bc-inbox {", 1)[1].split("}", 1)[0]
+    assert ".bc-inbox .bc-inbox__ghead { top: var(--bc-stick, 0px); }" in css
+    assert "grid-template-columns: minmax(360px, 5fr) minmax(0, 7fr)" in css
     assert ".bk-glass .bc-skel-card { background: var(--c-surface, #fff); box-shadow: inset 0 0 0 1px rgba(16, 24, 22, .08); }" in css
     # D-5: «Пример» — одна сноска под списком; метка — у раскрытой карточки и у похожей на шаге «Я тоже».
     assert 'h("p", { "class": "bk-footnote bc-demo-note" }, t("common.tag.demo_hint"))' in JS
@@ -473,7 +477,8 @@ def test_reference_a_r09():
     assert "}, 150);" in LIST_JS and "}, 150);" in JS and "var mineCache = null;" in JS
     # Правило 2 (R01 — палитра Ctrl+K, R09 — смена статуса): команды «Взять в работу — место» и «Отметить исправленным — место».
     cmd = LIST_JS.split("function commands(opts)", 1)[1].split("function mount(root, opts)", 1)[0]
-    assert 't("heat.take") + " — " + place' in cmd and 't("heat.mark_fixed") + " — " + place' in cmd and "if (g.demo && !g.world) return;" in cmd
+    # Примеры (demo без мира) — без команд; записи «ИИ-разбора пачки» (П3, intake) — рабочие, как жалобы мира.
+    assert 't("heat.take") + " — " + place' in cmd and 't("heat.mark_fixed") + " — " + place' in cmd and "if (g.demo && !g.world && !g.intake) return;" in cmd
     assert '"birge:inbox-open"' in LIST_JS and '"birge:inbox-changed"' in LIST_JS and "function takePending()" in LIST_JS
     # «Рядом с вами» (шторка телефона R07/R01): обращения жителя, ждущие его проверки, — waitingChecks().
     assert "waitingChecks: waitingChecks," in JS and 'return item.can_verify;' in JS.split("function waitingChecks()", 1)[1].split("return {", 1)[0]

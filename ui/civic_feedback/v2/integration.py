@@ -128,6 +128,7 @@ def make_service(db_path, *, target_lookup=None, assignee_lookup="auto", route_l
 #   R17 «Штаб ведомств»:  service_parts(db, days=30) · handoffs(db, days=30)
 #   R16 «Мой двор»:       yard_complaints(db, "yard-123", targets=[...], polygon=...)
 #   R06 лента:            updates(device, since)  (CONTRACT §5.8)
+# Запись (раунд 15+, П3): R04 «ИИ-разбор пачки» — intake_commit(None, batch_id, tasks, texts, demo=…) создаёт жалобы.
 _STORES: dict[str, ComplaintStore] = {}
 _DEFAULT: list[ComplaintStore] = []
 
@@ -193,3 +194,21 @@ def seed_world(db_path, records, now=None, *, reset: bool = True) -> dict:
     "reset", "invalid", "total"}. Подробно — world_seed.py."""
     from .world_seed import seed_world as seed
     return seed(db_path, records, now=now, reset=reset)
+
+
+def intake_commit(db=None, batch_id: str = "", tasks=(), texts=None, *, demo: bool = False, actor=None, method=None,
+                  now=None) -> dict:
+    """«ИИ-разбор пачки обращений» R04 (П3, сцена 0): задачи пачки → жалобы R09 одной транзакцией, событие «created» у
+    каждой. Идемпотентно по (batch_id, task_id); без точки задача не создаётся (skipped: no_place — «адрес уточнить»).
+    db=None — хранилище шлюза. -> {"batch_id", "total", "people", "created": [{"task_id", "id", "code"}], "existing",
+    "skipped": [{"task_id", "reason"}]}. ValueError — неверная пачка целиком. Подробно — intake.py."""
+    from .intake import commit_tasks
+    return commit_tasks(db, batch_id, tasks, texts, demo=demo, now=now, actor=actor, method=method)
+
+
+def create_from_intake(store=None, items=(), *, batch_id: str = "", texts=None, demo: bool = False, actor=None,
+                       method=None, now=None) -> dict:
+    """То же, что intake_commit, под именем из контракта R04 (INTEGRATION R04 §9.3): store — хранилище, которое шлюз
+    передал R04 в connect_store (или None — хранилище шлюза), items — задачи пачки."""
+    from .intake import commit_tasks
+    return commit_tasks(store, batch_id, items, texts, demo=demo, now=now, actor=actor, method=method)

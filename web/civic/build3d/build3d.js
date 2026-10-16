@@ -2857,11 +2857,6 @@
       } else setHint(touch ? "build3d.hint.touch" : "proposal.place_hint");
       setTool(true);
       ensureExisting();
-      // UX_REVIEW день 3 #20: на 16-м масштабе сквер — 70 px, фонари — штрихи. Выбрав объект в каталоге,
-      // пользователь сам просит размещение, поэтому плавно приближаем до 17.5 (наклон и поворот не трогаем).
-      if (o.autoZoom && map.getZoom() < PLACE_ZOOM - 0.5) {
-        map.easeTo({ zoom: PLACE_ZOOM, duration: reducedMotion() ? 0 : 700 });
-      }
       updateGhost(true);
       render();
       // Панель размещения уже на месте — призрак в видимую часть карты, если центр холста ею закрыт.
@@ -2869,6 +2864,22 @@
         S.ghost.pos = focusLngLat();
         updateGhost(false);
         render();
+      }
+      // UX_REVIEW день 3 #20: на 16-м масштабе сквер — 70 px, фонари — штрихи. Выбрав объект в каталоге,
+      // пользователь сам просит размещение, поэтому плавно приближаем до 17.5 (наклон и поворот не трогаем) — вокруг
+      // центра видимой части карты, а не центра холста: на телефоне оболочка держит город над шторкой, центр холста —
+      // под шторкой за городом, и призрак вставал «за пределами Астаны» (П3, кадр 375 акимата). Если и центр видимой
+      // части за городом — под него приводим точку города (startPoint).
+      if (o.autoZoom && map.getZoom() < PLACE_ZOOM - 0.5) {
+        var fl = focusLngLat(),
+          at = startPoint(fl),
+          ms = reducedMotion() ? 0 : 700;
+        if (at === fl) map.easeTo({ zoom: PLACE_ZOOM, around: fl, duration: ms });
+        else {
+          var fp = map.project(fl),
+            cpt = map.project(map.getCenter()); // смещение — от центра карты с учётом отступов хозяина (как keepAboveDock)
+          map.easeTo({ center: at, zoom: PLACE_ZOOM, offset: [fp.x - cpt.x, fp.y - cpt.y], duration: ms });
+        }
       }
       focusDock("[data-action=place]");
       return true;
@@ -3188,6 +3199,21 @@
       // Ниже середины полосы: над объектом встанет табличка «Проект · 2027».
       var q = map.unproject([(f.x0 + f.x1) / 2, f.y0 + (f.y1 - f.y0) * 0.7]);
       return [q.lng, q.lat];
+    }
+    // Где начать размещение (П3): точка под центром видимой части карты, если она в городе; иначе — середина города
+    // (city_bbox районов: на телефоне на обзорном виде центр видимой части бывает южнее города), а если и она не в
+    // районах — первая точка города на пути к ней. Районы ещё не загружены — точка как есть.
+    function startPoint(fl) {
+      if (!districts || Core.districtAt(districts, fl)) return fl;
+      var b = districts.city_bbox;
+      if (!b) return fl;
+      var mid = [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
+      if (Core.districtAt(districts, mid)) return mid;
+      for (var i = 1; i <= 20; i++) {
+        var q = [fl[0] + ((mid[0] - fl[0]) * i) / 20, fl[1] + ((mid[1] - fl[1]) * i) / 20];
+        if (Core.districtAt(districts, q)) return q;
+      }
+      return fl;
     }
     function phoneLayout() {
       try {

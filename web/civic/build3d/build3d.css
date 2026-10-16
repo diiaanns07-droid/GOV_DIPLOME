@@ -579,7 +579,7 @@
   line-height: 1.3;
 }
 .b3d-pd__fact span {
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px); /* мельче 13 px текста нет (ui-kit --fs-xs, решение владельца 12 окт) */
   color: var(--c-text-2, #4b5752);
 }
 .b3d-pd__status {
@@ -610,11 +610,12 @@
   color: #ffffff;
   box-shadow: none;
 }
-/* Строка «Это опрос…» — мелко, как в эталоне (12 px), но вторым цветом текста (#4B5752), а не третьим #7E8A85
+/* Строка «Это опрос…» — мелко (13 px: эталон давал 12, но мельче 13 текста нет — ui-kit --fs-xs, решение владельца
+   12 окт), вторым цветом текста (#4B5752), а не третьим #7E8A85
    (.bk-pd__note ui-kit): 3,4–3,6 : 1 ниже нормы 4,5 (UX_BRIEF правило 2; R10 regress-pv3 считает такие строки FAIL),
    а строка важна — «решает акимат». */
 .b3d-pd .b3d-pd__honest {
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px);
   line-height: 1.4;
   color: var(--c-text-2, #4b5752);
   margin-top: -4px;
@@ -716,7 +717,8 @@
   transition: opacity var(--t-fast, 200ms) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 /* Метка «Проект · 2027» — один в один с эталоном (research/round-14/design/REFERENCE.html, вариант A, .tag): лайм
-   #D7F57C, текст #2F4A10 12 px 700, высота 26, поля 0 10, капсула, тень 0 4 12; без рамки, хвостика и значка.
+   #D7F57C, текст #2F4A10 700, высота 26, поля 0 10, капсула, тень 0 4 12; без рамки, хвостика и значка. Текст 13 px, а не
+   12 эталона: мельче 13 текста нет (ui-kit --fs-xs, решение владельца 12 окт; П3, чек-лист VISUAL_BRIEF §4).
    Лайм в эталоне — только логотип, профиль и метка «Проект». Токены ui-kit, когда R11 их добавит, — с запасными
    значениями эталона. Зона нажатия вокруг — по-прежнему 48 px (.b3d-label). Селектор с .b3d-labels — сильнее .bk-tag
    ui-kit при любом порядке подключения стилей. */
@@ -733,7 +735,7 @@
   color: var(--c-lime-ink, #2f4a10);
   box-shadow: 0 4px 12px rgba(16, 24, 20, 0.18);
   font-family: var(--font, "Inter", "SF Pro Text", -apple-system, "Segoe UI", system-ui, sans-serif);
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px);
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
@@ -1027,7 +1029,7 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.86);
   color: var(--c-text-2, #4b5752);
-  font-size: 12px;
+  font-size: var(--fs-xs, 13px); /* мельче 13 px текста нет (ui-kit --fs-xs, решение владельца 12 окт) */
   font-weight: var(--fw-semi, 600);
   line-height: 18px;
   pointer-events: none;

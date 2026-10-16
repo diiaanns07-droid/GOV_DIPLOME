@@ -31,6 +31,7 @@ MODS = [  # роль, ветка, файл, имя объекта словаря
     ("R05", "claude/bold-cray-dopshy", "web/civic/build3d/build3d.js", "STRINGS"),
     ("R12", "claude/great-newton-8k3474", "web/civic/qr/print.js", "TEXT"),
     ("R13", "claude/gifted-mayer-p86myv", "web/civic/qa/qa.js", "KEYS"),
+    ("R04", "claude/gifted-maxwell-i66wwi", "web/civic/intake/intake.js", "KEYS"),   # П3: «Разбор обращений»
 ]
 ru = json.loads((ROOT / "web/civic/i18n/ru.json").read_text("utf-8"))
 kk = json.loads((ROOT / "web/civic/i18n/kk.json").read_text("utf-8"))

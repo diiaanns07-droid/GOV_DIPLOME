@@ -492,6 +492,36 @@ async function shot(page, name, full) {
   }
 
   {
+    // П3: одна кнопка штаба — у тревоги с идущим штабом среди трёх видимых (после «ИИ-разбора» первой может стать тревога
+    // без штаба — «ЖКХ: тепло и вода»), иначе — у первой тревоги со ссылкой. Тревога об одном месте ведёт на карту.
+    const alarm = (category, crisis, extra) => ({ kind: "spike_city", category, district: null, value: 40, base: 4, ratio: 10, weeks: 4,
+      score: 400, districts: [{ district: "nura", value: 30, ratio: 9, ru: "Нура", kk: "Нұра" }], target: null,
+      category_ru: category === "utilities" ? "ЖКХ: тепло и вода" : "Снег и гололёд", category_kk: category === "utilities" ? "ТКШ: жылу мен су" : "Қар және көктайғақ",
+      district_ru: null, district_kk: null, ...(crisis ? { crisis } : {}), ...(extra || {}) });
+    const fresh = { link: "/#agencies/crisis/new/heat_outage", incident: null, kind: "heat_outage" };
+    const running = { link: "/#agencies/crisis/inc-7", incident: "inc-7", kind: "blizzard" };
+    const place = { ...((realSummary.pulse.items || []).find((x) => x.kind === "new_hot" && x.target) || { kind: "new_hot", category: "yards",
+      district: "esil", value: 5, score: 7, target: { kind: "area", id: "yard-1", label_ru: "Двор", label_kk: "Аула" },
+      category_ru: "Дворы и площадки", category_kk: "Аулалар мен алаңдар", district_ru: "Есиль", district_kk: "Есіл" }) };
+    delete place.crisis;
+    const cases = [
+      ["первая — новый штаб, вторая — идущий → кнопка у второй, в идущий штаб", [alarm("utilities", fresh), alarm("snow_ice", running), place], 1, running.link],
+      ["идущего штаба нет → кнопка у первой тревоги со ссылкой", [alarm("utilities", fresh), place, alarm("snow_ice", null)], 0, fresh.link],
+      ["идущий штаб только под «Ещё» → кнопка у первой видимой", [alarm("utilities", fresh), place, place, alarm("snow_ice", running)], 0, fresh.link],
+    ];
+    for (const [name, items, at, href] of cases) {
+      const s = JSON.parse(JSON.stringify(realSummary));
+      s.pulse = { available: true, items: JSON.parse(JSON.stringify(items)), base_weeks: 4 };
+      const { ctx, page } = await open(browser, { width: 1366, height: 768, lang: "ru", route: (route) => route.fulfill({ json: s }) });
+      await waitState(page, "ok");
+      const got = await page.evaluate(() => [...document.querySelectorAll(".akim-pulse__item")].map((li, i) =>
+        [i, (li.querySelector(".akim-pulse__crisis") || {}).getAttribute ? li.querySelector(".akim-pulse__crisis").getAttribute("href") : null]).filter((x) => x[1]));
+      check(`пульс: ${name}`, got.length === 1 && got[0][0] === at && got[0][1] === href, got);
+      await ctx.close();
+    }
+  }
+
+  {
     // Реестр объектов пуст (район без работ) или все идут по графику — блока нет (CLEAN_PASS п. 6), не «идут по графику».
     const none = JSON.parse(JSON.stringify(realSummary));
     Object.assign(none.objects, { available: true, late: [], stale: [], late_count: 0, stale_count: 0, total: 0 });

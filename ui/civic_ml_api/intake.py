@@ -43,6 +43,7 @@ DEVICE_PREFIX = "birge-intake"
 
 ROOT = Path(__file__).resolve().parents[2]
 INDEX_PATH = ROOT / "web" / "civic" / "map" / "search_index.json"
+OBJECTS_PATH = ROOT / "data" / "civic" / "astana" / "geo" / "objects.json"   # R12: светофоры и перекрёстки с улицами
 SAMPLE_R02 = ROOT / "data" / "civic" / "astana" / "demo-world" / "intake_night_v1.json"
 SAMPLE_R04 = Path(__file__).with_name("intake_sample_r04.json")
 
@@ -211,13 +212,29 @@ _GENERIC = {"сквер", "парк", "саябак", "саябагы", "бул�
 _LABEL_TYPES = {"улица", "ул", "проспект", "пр", "переулок", "пер", "шоссе", "бульвар", "проезд", "тупик", "трасса",
                 "коше", "кошеси", "дангыл", "дангылы", "тупиги", "жолы"}
 _STREET_TYPES = (("street", ("улиц", "коше"), {"ул"}), ("avenue", ("проспект", "данг"), {"пр"}),
-                 ("lane", ("переул",), {"пер"}), ("highway", ("шоссе", "трасс"), set()),
+                 ("lane", ("переул",), {"пер"}), ("highway", ("шоссе", "трасс", "жол"), {"ш"}),
                  ("boulevard", ("бульвар",), set()), ("passage", ("проезд",), set()), ("deadend", ("тупик",), set()))
 
 
 def _is_context(word: str, kind: str) -> bool:
     prefixes, exact = CONTEXT[kind]
-    return word in exact or word.startswith(prefixes)
+    if word in exact or word.startswith(prefixes):
+        return True
+    # Опечатка в длинном слове-подсказке: «аялдмаасында», «остоновке» (одна правка или перестановка двух букв).
+    return any(len(pre) >= 6 and any(_one_edit(word[:n], pre, swap=True) for n in (len(pre) - 1, len(pre), len(pre) + 1))
+               for pre in prefixes)
+
+
+# Перекрёсток: «на перекрёстке Коргалжинское ш. и пр. Туран», «Тұран даңғылының қиылысында», «светофор на углу …».
+_JUNCTION_WORDS = ("перекрест", "пересечен", "угол", "углу", "киылыс", "светофор", "багдарш")
+_SIGNAL_WORDS = ("светофор", "багдарш")
+
+
+def _starts(word: str, prefixes) -> bool:
+    """Начало слова — одно из prefixes; у длинных (от 6 букв) — и с одной опечаткой: «перекрёскте», «сетофор»."""
+    return word.startswith(prefixes) or any(
+        len(pre) >= 6 and any(_one_edit(word[:n], pre, swap=True) for n in (len(pre) - 1, len(pre), len(pre) + 1))
+        for pre in prefixes)
 
 
 def _street_type(word: str) -> str | None:
@@ -227,12 +244,13 @@ def _street_type(word: str) -> str | None:
     return None
 
 
-KIND_RANK = {"bus_stop": 1, "yard": 1, "park": 1, "playground": 1, "street": 2}
+KIND_RANK = {"bus_stop": 1, "yard": 1, "park": 1, "playground": 1, "traffic_signal": 1, "intersection": 1, "street": 2}
 CATEGORY_KIND = {  # какую цель брать первой, если в тексте их несколько
     "transport": "bus_stop", "yards": "yard", "waste": "yard", "utilities": "yard", "parking": "yard",
     "noise_safety": "yard", "roads": "street", "sidewalks": "street", "snow_ice": "street",
 }
-TARGET_KIND = {"bus_stop": "object", "park": "object", "playground": "object", "yard": "area", "street": "segment"}
+TARGET_KIND = {"bus_stop": "object", "park": "object", "playground": "object", "yard": "area", "street": "segment",
+               "traffic_signal": "object", "intersection": "object"}
 
 
 def _tokenize(text: str) -> tuple[list[str], list[bool]]:
@@ -272,16 +290,23 @@ def _token_match(text_tok: str, name_tok: str) -> int:
     return 0
 
 
-def _one_edit(a: str, b: str) -> bool:
-    """Строки отличаются одной правкой: замена, пропуск или лишняя буква."""
+def _one_edit(a: str, b: str, swap: bool = False) -> bool:
+    """Строки отличаются одной правкой: замена, пропуск или лишняя буква (swap — и перестановка двух соседних)."""
     if len(a) > len(b):
         a, b = b, a
     i = 0
     while i < len(a) and a[i] == b[i]:
         i += 1
     if len(a) == len(b):
-        return a[i + 1:] == b[i + 1:]
+        if a[i + 1:] == b[i + 1:]:
+            return True
+        return swap and i + 1 < len(a) and a[i] == b[i + 1] and a[i + 1] == b[i] and a[i + 2:] == b[i + 2:]
     return a[i:] == b[i + 1:]
+
+
+def _street_key(name: str) -> tuple:
+    """Имя улицы без типа и окончаний: «улица Жумекена Нажимеденова» = «Жұмекен Нәжімеденов көшесі»."""
+    return tuple(_stem(t) for t in tokens(name) if t not in _LABEL_TYPES)
 
 
 def _distinctive(variant: tuple[str, ...]) -> bool:
@@ -290,9 +315,13 @@ def _distinctive(variant: tuple[str, ...]) -> bool:
 
 
 class Places:
-    """Справочник мест из индекса поиска R12: имя -> цель. Ищет названия в тексте с падежными окончаниями."""
+    """Справочник мест из данных карты R12: имя -> цель. Ищет названия в тексте с падежными окончаниями.
+    index — поиск карты (web/civic/map/search_index.json: остановки, дворы, парки, улицы); objects — объекты R12
+    (data/civic/astana/geo/objects.json): светофоры и перекрёстки с названиями двух улиц — «перекрёсток A и B»."""
 
-    def __init__(self, index: dict):
+    TWIN_GAP_M = 500     # одноимённые записи улицы ближе этого — одна улица (OSM дробит улицу на линии с разными подписями)
+
+    def __init__(self, index: dict, objects: dict | None = None):
         self.schema = index.get("schema")
         self.entries: list[dict] = []
         self.by_key: dict[str, list[tuple[tuple[str, ...], int]]] = {}
@@ -302,27 +331,80 @@ class Places:
                 continue  # спортплощадки «Футбольное поле» — общее имя без места
             self._add(kind, obj["id"], obj.get("ru"), obj.get("kk"), obj.get("c"), obj.get("d"), obj.get("also"))
         for street in index.get("streets") or []:
-            self._add("street", street["seg"], street.get("ru"), street.get("kk"), street.get("c"), street.get("d"))
+            self._add("street", street["seg"], street.get("ru"), street.get("kk"), street.get("c"), street.get("d"),
+                      bbox=street.get("b"))
+        self._link_twins()
+        self.junctions: dict[frozenset, list[dict]] = {}
+        for obj in (objects or {}).get("items") or []:
+            if obj.get("kind") in ("traffic_signal", "intersection") and len(obj.get("streets_ru") or []) == 2 \
+                    and isinstance(obj.get("point"), list):
+                keys = {_street_key(n) for n in obj["streets_ru"]}
+                kk = obj.get("streets_kk") or []
+                if len(keys) == 2 and all(keys):
+                    self.junctions.setdefault(frozenset(keys), []).append(obj)
+                kk_keys = {_street_key(n) for n in kk}
+                if len(kk) == 2 and len(kk_keys) == 2 and all(kk_keys) and kk_keys != keys:
+                    self.junctions.setdefault(frozenset(kk_keys), []).append(obj)
 
-    def _add(self, kind, target_id, label_ru, label_kk, point, district, also=None):
+    def _add(self, kind, target_id, label_ru, label_kk, point, district, also=None, bbox=None):
         if not label_ru or not isinstance(point, list):
             return
         stype = None
         if kind == "street":
             stype = next((_street_type(t) for t in tokens(label_ru) if t in _LABEL_TYPES), None)
         entry = {"kind": kind, "id": target_id, "label_ru": label_ru, "label_kk": label_kk or label_ru,
-                 "point": point, "district": district, "also": list(also or []), "stype": stype}
+                 "point": point, "district": district, "also": list(also or []), "stype": stype,
+                 "bbox": bbox if isinstance(bbox, list) and len(bbox) == 4 else None,
+                 "key": _street_key(label_ru) if kind == "street" else None}
         idx = len(self.entries)
+        entry["canon"] = idx
         self.entries.append(entry)
         for variant in self._variants(kind, label_ru, label_kk):
             if variant and not all(t in _GENERIC for t in variant):
                 self.by_key.setdefault(variant[0][:3], []).append((variant, idx))
 
+    def _link_twins(self) -> None:
+        """«улица Жумекена Нажимеденова» и «улица Жумекен Нажимеденов», «Садовая улица» и «улица Садовая» — одна улица:
+        повтор ищется в одной цели. Главная запись — с районом и русской подписью «улица / проспект …»."""
+        groups: dict[tuple, list[int]] = {}
+        for idx, entry in enumerate(self.entries):
+            if entry["kind"] == "street" and entry["key"]:
+                groups.setdefault(entry["key"], []).append(idx)
+        for members in groups.values():
+            if len(members) < 2:
+                continue
+            # Главная — с районом и самая длинная (основная линия улицы), затем с русской подписью «улица …».
+            members.sort(key=lambda i: (self.entries[i]["district"] is None, -self._span(self.entries[i]),
+                                        not re.match(r"(?i)(улица|проспект|переулок|шоссе|бульвар)\b",
+                                                     self.entries[i]["label_ru"])))
+            for i in members:
+                if self.entries[i]["canon"] != i:
+                    continue
+                for j in members:
+                    if j != i and self.entries[j]["canon"] == j and self._near(self.entries[i], self.entries[j]):
+                        self.entries[j]["canon"] = i
+
+    @staticmethod
+    def _span(entry: dict) -> float:
+        b = entry["bbox"]
+        return ((b[2] - b[0]) * 70_000) ** 2 + ((b[3] - b[1]) * 111_000) ** 2 if b else 0.0
+
+    def _near(self, a: dict, b: dict) -> bool:
+        if not a["bbox"] or not b["bbox"]:
+            return False
+        (ax1, ay1, ax2, ay2), (bx1, by1, bx2, by2) = a["bbox"], b["bbox"]
+        dx = max(0.0, max(ax1, bx1) - min(ax2, bx2)) * 70_000     # градус долготы на широте Астаны ≈ 70 км
+        dy = max(0.0, max(ay1, by1) - min(ay2, by2)) * 111_000
+        return (dx * dx + dy * dy) ** 0.5 <= self.TWIN_GAP_M
+
     @staticmethod
     def _variants(kind, label_ru, label_kk) -> set[tuple[str, ...]]:
         """Последовательности слов, по которым место ищется в тексте."""
         names = set()
-        for label in (label_ru, label_kk):
+        labels = [label_ru, label_kk]
+        # Казахское «қ» в русской записи имени часто «х»: «Бұқар Жырау» — «Бухар Жырау».
+        labels += [lb.replace("қ", "х").replace("Қ", "Х") for lb in (label_ru, label_kk) if lb and "қ" in lb.lower()]
+        for label in labels:
             if not label:
                 continue
             quoted = re.findall(r"«([^»]+)»", label)
@@ -344,9 +426,14 @@ class Places:
         return names
 
     def find(self, text: str, category: str | None = None) -> dict | None:
-        """Лучшее место, названное в тексте, или None («адрес уточнить»)."""
+        """Лучшее место, названное в тексте, или None («адрес уточнить»). category — категория обращения: при
+        нескольких местах берётся подходящее к ней (транспорт — остановка, мусор — двор, яма — улица)."""
         toks, caps = _tokenize(text)
-        found = []
+        raw = unicodedata.normalize("NFC", str(text))
+        found, streets = [], {}
+        transport = category == "transport" and any(_is_context(w, "bus_stop") or w.startswith(("маршрут", "транспорт",
+                                                                                                 "табло", "автобус"))
+                                                    for w in toks)
         for i, tok in enumerate(toks):
             for variant, idx in self.by_key.get(tok[:3], ()):
                 n = len(variant)
@@ -355,12 +442,20 @@ class Places:
                 levels = [_token_match(toks[i + j], variant[j]) for j in range(n)]
                 if not all(levels):
                     continue
-                entry = self.entries[idx]
+                entry = self.entries[self.entries[idx]["canon"]]
+                if entry["kind"] == "street" and min(levels) >= 2:
+                    streets.setdefault(entry["key"], entry)          # для «перекрёстка A и B» — и без слова «улица»
                 ok = self._context_ok(entry, variant, toks, caps, i, i + n)
+                if not ok and entry["kind"] == "bus_stop" and transport and (_distinctive(variant) or
+                                                                             self._quoted(raw, variant)):
+                    ok = 1   # «„Барыс арена“ — стоим час, ни одного автобуса»: транспорт, имя остановки — в тексте
                 if ok and min(levels) == 1 and not (entry["kind"] == "street" and self._typed(toks, i, i + n)):
                     ok = 0                                   # опечатка — только у улицы рядом со словом «улица»
                 if ok:
                     found.append((i, n, entry, ok, sum(levels)))
+        junction = self._junction(toks, streets)
+        if junction is not None:
+            return junction
         if not found:
             return None
         # Название внутри более длинного («улица Сарытогай» внутри остановки «улица Сарытогай») не считается.
@@ -371,11 +466,44 @@ class Places:
         def rank(item):
             i, n, entry, ok, exact = item
             kind = entry["kind"]
-            plain = 0 if kind != "street" or ok == 2 or entry["stype"] in (None, "street") else 1
-            return (0 if kind == prefer else KIND_RANK.get(kind, 3), -n, -ok, -exact, plain, i,
-                    0 if entry["district"] else 1)
+            # Улица со словом «улица / проспект» вплотную (ok 3) — не слабее остановки или двора, названных рядом:
+            # «освещение на улице Айнаколь от остановки до перекрёстка» — это улица.
+            base = 1 if kind == "street" and ok == 3 else KIND_RANK.get(kind, 3)
+            plain = 0 if kind != "street" or ok >= 2 or entry["stype"] in (None, "street") else 1
+            return (0 if kind == prefer else base, -n, -ok, -exact, plain, i, 0 if entry["district"] else 1)
 
         return min(found, key=rank)[2]
+
+    def _junction(self, toks, streets: dict) -> dict | None:
+        """«Перекрёсток A и B» / «A мен B қиылысы»: светофор (если речь о светофоре) или узел R12 этих двух улиц."""
+        if len(streets) < 2 or not self.junctions or not any(_starts(w, _JUNCTION_WORDS) for w in toks):
+            return None
+        keys = list(streets)
+        signal_talk = any(_starts(w, _SIGNAL_WORDS) for w in toks)
+        for a in range(len(keys)):
+            for b in range(a + 1, len(keys)):
+                objs = self.junctions.get(frozenset((keys[a], keys[b])))
+                if not objs:
+                    continue
+                kinds = ("traffic_signal", "intersection") if signal_talk else ("intersection", "traffic_signal")
+                pool = next(([o for o in objs if o["kind"] == k] for k in kinds if any(o["kind"] == k for o in objs)), objs)
+                cx = sum(o["point"][0] for o in pool) / len(pool)
+                cy = sum(o["point"][1] for o in pool) / len(pool)
+                obj = min(pool, key=lambda o: ((o["point"][0] - cx) ** 2 + (o["point"][1] - cy) ** 2, o["id"]))
+                ru, kk = obj["streets_ru"], obj.get("streets_kk") or obj["streets_ru"]
+                if obj["kind"] == "traffic_signal":
+                    label_ru, label_kk = f"Светофор: {ru[0]} и {ru[1]}", f"Бағдаршам: {kk[0]} мен {kk[1]}"
+                else:
+                    label_ru, label_kk = f"Перекрёсток: {ru[0]} и {ru[1]}", f"Қиылыс: {kk[0]} мен {kk[1]}"
+                return {"kind": obj["kind"], "id": obj["id"], "label_ru": label_ru, "label_kk": label_kk,
+                        "point": obj["point"], "district": streets[keys[a]]["district"] or streets[keys[b]]["district"],
+                        "also": [], "stype": None, "key": None, "canon": None}
+        return None
+
+    @staticmethod
+    def _quoted(raw: str, variant) -> bool:
+        """Имя в кавычках-ёлочках в самом тексте: «Барыс арена»."""
+        return any(tuple(tokens(q)) == tuple(variant) for q in re.findall(r"«([^»]{2,60})»", raw))
 
     @staticmethod
     def _typed(toks, start, end) -> bool:
@@ -384,7 +512,8 @@ class Places:
 
     @staticmethod
     def _context_ok(entry, variant, toks, caps, start, end) -> int:
-        """0 — не место; 1 — место; 2 — место, и тип улицы в тексте тот же («проспект Абая», а не «улица Абая»)."""
+        """0 — не место; 1 — место; 2 — тип улицы в тексте тот же («проспект Абая», а не «улица Абая»); 3 — и стоит
+        вплотную к имени («на улице Айнаколь», «Сауран көшесі»)."""
         kind = entry["kind"]
         if kind in ("park", "playground"):
             return 1  # слово-тип («парк», «саябағы») уже внутри названия
@@ -395,6 +524,9 @@ class Places:
                 near = toks[max(0, start - 1):start] + toks[end:end + 1]
             types = {_street_type(w) for w in near} - {None}
             if types:
+                adjacent = {_street_type(w) for w in toks[max(0, start - 1):start] + toks[end:end + 1]} - {None}
+                if entry["stype"] in adjacent:
+                    return 3
                 return 2 if entry["stype"] in types else 1
             if _distinctive(variant):
                 return 1
@@ -404,6 +536,9 @@ class Places:
         if kind == "yard":
             if any(_is_context(t, "yard") for t in variant) or _distinctive(variant):
                 return 1                                         # «1 микрорайон», «Инжу Арена»
+            adjacent = toks[max(0, start - 1):start] + toks[end:end + 1]
+            if single and any(_is_context(w, "yard_strong") for w in adjacent):
+                return 1                                         # «ЖК Alau», «Alau ЖК-да» — и маленькими буквами
             window = toks[max(0, start - 3):start] + toks[end:end + 2]
             if single:  # «Жарык», «Энергетик» — обычные слова: нужен «двор / ЖК» рядом и большая буква
                 return int(caps[start] and any(_is_context(w, "yard_strong") for w in window))
@@ -417,13 +552,20 @@ _PLACES_LOCK = threading.Lock()
 
 
 def places() -> Places | None:
-    """Справочник мест (лениво, один раз на процесс). Нет индекса R12 — None: места не ищем."""
+    """Справочник мест (лениво, один раз на процесс). Нет индекса R12 — None: места не ищем. Нет objects.json —
+    без перекрёстков."""
     with _PLACES_LOCK:
         if "obj" not in _PLACES:
             try:
-                _PLACES["obj"] = Places(json.loads(INDEX_PATH.read_text(encoding="utf-8")))
+                index = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
             except (OSError, ValueError):
                 _PLACES["obj"] = None
+                return None
+            try:
+                objects = json.loads(OBJECTS_PATH.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                objects = None
+            _PLACES["obj"] = Places(index, objects)
         return _PLACES["obj"]
 
 
@@ -534,6 +676,10 @@ def _analyze_items(items: list[tuple[str, str]]) -> list[dict]:
         point = place["point"] if place else None
         routed = route(text=text, point=point)
         category = routed.get("category") or "other"
+        if gaz and place is None and category == "transport":
+            place = gaz.find(text, category)     # «„Барыс арена“ — ни одного автобуса»: имя остановки без слова «остановка»
+            if place:
+                routed = route(text=text, point=place["point"])
         if gaz and place and CATEGORY_KIND.get(category) and CATEGORY_KIND[category] != place["kind"]:
             place = gaz.find(text, category) or place   # несколько мест — берём то, что подходит к категории
             if place["point"] != point:
@@ -572,12 +718,18 @@ def _cluster(rows: list[dict], dd) -> list[list[dict]]:
     return clusters
 
 
+# Разные уточнения, но одна беда: мусор не вывозят — значит, баки переполнены.
+SAME_PROBLEM = {frozenset(("not_collected", "bins_full"))}
+
+
 def _same_problem(head: dict, row: dict, dd) -> bool:
     """Одна цель и категория уже совпали. Разные уточнения («навес» и «расписание») — разные задачи; то же уточнение,
     тот же текст или pair_score модуля дублей не ниже порога — повтор."""
     a, b = head["subtopic"], row["subtopic"]
-    if a and b and a != b:
+    if a and b and a != b and frozenset((a, b)) not in SAME_PROBLEM:
         return False
+    if a and b and a != b:
+        return True
     if (a and a == b) or head["norm"] == row["norm"]:
         return True
     if dd is None:
@@ -670,7 +822,8 @@ def _attach_existing(tasks: list[dict], batch_id: str, demo: bool) -> None:
                     or (row.get("intake") or {}).get("batch_id") == batch_id
                     or row.get("id") in _OWN_RECORDS.get(batch_id, ())):
                 continue
-            if task["subtopic"] and row.get("subtopic") and row["subtopic"] != task["subtopic"]:
+            if (task["subtopic"] and row.get("subtopic") and row["subtopic"] != task["subtopic"]
+                    and frozenset((task["subtopic"], row["subtopic"])) not in SAME_PROBLEM):
                 continue     # как у склейки: «навес» и «расписание» одной остановки — разные проблемы
             task["existing"] = {"id": row.get("id"), "code": row.get("code"), "status": row.get("status"),
                                 "people": 1 + int(row.get("metoo") or 0)}

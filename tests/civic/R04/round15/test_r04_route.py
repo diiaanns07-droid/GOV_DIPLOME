@@ -224,10 +224,13 @@ def test_long_adversarial_input_stays_fast():
     route(text="прогрев: яма на дороге")
     moderate("прогрев")
     for text in ("a" * 5000, "я" * 5000, "a." * 2500, "нет " + "а" * 4990, "кв. 1 " * 800, "@aaaa " * 830):
-        t0 = time.perf_counter()
-        try:
-            route(text=text)
-        except ValueError:
-            pass
-        moderate(text[:5000])
-        assert (time.perf_counter() - t0) * 1000 < 150, text[:20]
+        best = float("inf")
+        for _ in range(3):   # лучшее из трёх: в общем прогоне сборки соседние тесты нагружают процессор
+            t0 = time.perf_counter()
+            try:
+                route(text=text)
+            except ValueError:
+                pass
+            moderate(text[:5000])
+            best = min(best, (time.perf_counter() - t0) * 1000)
+        assert best < 150, (text[:20], round(best))

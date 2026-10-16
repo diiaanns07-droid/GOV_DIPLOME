@@ -30,7 +30,7 @@ NOTE_MAX = lifecycle.WHAT_DONE_MAX
 REASON_MIN, REASON_MAX = 3, 160
 # Откуда взята ведущая служба. «table» — по таблице R08/R09 на момент подачи: такая служба следует за таблицей
 # (правки акимата в R08 видны сразу, как в FINAL-4). Остальные — явный выбор, таблица их не меняет.
-SERVICE_SOURCES = ("table", "staff", "handoff", "joint", "world")
+SERVICE_SOURCES = ("table", "staff", "handoff", "joint", "world", "intake")
 EXPLICIT_SOURCES = lifecycle.EXPLICIT_SERVICE_SOURCES
 
 # Причины передачи — чипы на экране сотрудника (ключи R11 handoff.reason.<id>; запасной текст — здесь и в
