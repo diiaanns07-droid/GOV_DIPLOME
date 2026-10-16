@@ -301,6 +301,15 @@ const openAgencies = async (page, base, tab) => {
               return { top: Math.round(r.top), bottom: Math.round(r.bottom), edge: Math.round(edge), inHead: !!b.closest(".ag-head") };
             });
             check(`${tag}: «Открыть кризисный штаб» видна целиком`, !!nb && nb.bottom <= nb.edge && nb.top >= 0, nb);
+            // Аудит R10 (кнопка действия у края листа): на 1024 «Закрыть с итогом» внизу карточки была за краем листа —
+            // действия кризиса теперь под заголовком и видны целиком без прокрутки.
+            const acts = await page.evaluate(() => [...document.querySelectorAll('.ag-crisis [data-action="show-map"], .ag-crisis [data-action="chronicle"], .ag-crisis [data-action="close-crisis"]')].map((b) => {
+              let sc = b; while (sc && sc !== document.body) { const o = getComputedStyle(sc).overflowY; if (o === "auto" || o === "scroll") break; sc = sc.parentElement; }
+              const edge = sc && sc !== document.body ? Math.min(innerHeight, sc.getBoundingClientRect().top + sc.clientHeight) : innerHeight;
+              const r = b.getBoundingClientRect();
+              return { a: b.dataset.action, top: Math.round(r.top), bottom: Math.round(r.bottom), edge: Math.round(edge) };
+            }));
+            check(`${tag}: действия кризиса видны целиком без прокрутки`, acts.length >= 2 && acts.every((x) => x.top >= 0 && x.bottom <= x.edge), acts);
           }
           if (tab === "crisis" && w === 375) {
             // Строка задачи кризиса на телефоне: кнопка статуса и текст — в одной строке (служба — под текстом).
