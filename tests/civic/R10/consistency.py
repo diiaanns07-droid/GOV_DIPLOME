@@ -440,6 +440,15 @@ class Consistency:
             data = json.loads(path.read_text(encoding="utf-8"))
         except ValueError:
             return {}
+        try:
+            # Время мира — помощником R02 (ISO от «сейчас», R02 INTEGRATION §10, patches/R10_consistency_world.patch);
+            # нет помощника в сборке — разбор ниже (ago_hours / ago_days / ISO), на мире v1 числа те же.
+            if str(self.s.root) not in sys.path:
+                sys.path.insert(0, str(self.s.root))
+            from ml.datasets.demo_world_io import materialize
+            data = materialize(data, self.now)
+        except Exception:
+            pass
         complaints = [c for c in data.get("complaints", []) if isinstance(c, dict) and c.get("district") == self.d]
 
         def age_days(c):

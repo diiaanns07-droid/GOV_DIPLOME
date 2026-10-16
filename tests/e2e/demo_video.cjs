@@ -47,8 +47,9 @@ const SHOT_Q = 72;
 // Темп пауз: 0,6 — ролик ≤ 5 мин (VISUAL_BRIEF №12) с частью 2; субтитр всё равно держится не меньше времени чтения.
 const PACE = FAST ? 0.35 : Math.max(0.3, Math.min(2, Number(args.pace || 0.5)));
 const pause = (ms) => sleep(Math.round(ms * PACE));
-// Часть времени чтения даёт следующий шаг сцены (нажатие, перелёт карты): субтитр висит до следующего — вычитаем ~1,5 с.
-const READ_AHEAD = 2000;
+// Время чтения субтитра идёт вместе с действиями сцены (их субтитр и описывает): say() ждёт только паузу сцены, а следующий
+// субтитр (или quiet) не заменит текущий, пока тот не провисел len / READ_CPS с. Раньше say() ждал чтения целиком минус 2 с
+// и только потом шли нажатия — ролик ҚАЗ был 4:49–4:55 из 5:00, а вычитка R11 удлинила казахский текст на ~80 знаков.
 const READ_CPS = 17;   // знаков в секунду: удобная скорость чтения субтитров (норма 15–17); 17 — запас под 5 мин для ҚАЗ
 const wait = (ms) => sleep(ms);
 const log = (...xs) => console.log(new Date().toISOString().slice(11, 19), ...xs);
@@ -172,22 +173,27 @@ async function recordLang(browser, lang) {
   const cues = [], scenes = [], skipped = [], shots = [];
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message.slice(0, 200)));
-  let open = null, trim = 0;
+  let open = null, trim = 0, readUntil = 0;
   const at = () => (Date.now() - t0) / 1000;
+  // Субтитр на экране не меньше времени чтения (1 с на READ_CPS знаков, кроме --fast): дочитать перед заменой.
+  const readOut = async () => { const w = readUntil - Date.now(); if (w > 0) await sleep(w); };
   const say = async (key, hold = 4200, vars = {}) => {
     let text = sub(key);
     for (const [k, v] of Object.entries(vars)) text = text.replace("{" + k + "}", v);
+    await readOut();
     if (open) { open.end = at(); cues.push(open); }
     open = text ? { start: at(), end: null, text, key } : null;
     await page.evaluate((x) => window.__r10v && window.__r10v.sub(x), text).catch(() => null);
-    // Субтитр должен успеть прочитаться: не меньше 1 с на READ_CPS знаков, кроме --fast.
-    await sleep(Math.max(Math.round(hold * PACE), FAST || !text ? 0 : Math.round(text.length / READ_CPS * 1000) - READ_AHEAD));
+    readUntil = Date.now() + (FAST || !text ? 0 : Math.round(text.length / READ_CPS * 1000));
+    await sleep(Math.round(hold * PACE));
   };
-  const quiet = async () => { if (open) { open.end = at(); cues.push(open); open = null; }
+  const quiet = async () => { await readOut(); if (open) { open.end = at(); cues.push(open); open = null; }
     await page.evaluate(() => window.__r10v && window.__r10v.sub("")).catch(() => null); };
   const title = async (text, ms = 2600) => { await page.evaluate((x) => window.__r10v && window.__r10v.title(x), text).catch(() => null);
     await pause(ms); await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null); };
-  const scene = (id) => { const s = { id, start: at(), end: null, ok: true, notes: [] }; scenes.push(s); return s; };
+  // Новая сцена — с чистого кадра: прошлый субтитр дочитывается и уходит до перехода (иначе подпись табло висела бы над
+  // «Календарём работ»). Внутри сцены чтение идёт вместе с действиями.
+  const scene = async (id) => { await quiet(); const s = { id, start: at(), end: null, ok: true, notes: [] }; scenes.push(s); return s; };
   const done = (s, ok = true, note) => { s.end = at(); s.ok = s.ok && ok; if (note) s.notes.push(note); log(lang, s.id, ok ? "ok" : "НЕ ВЫШЛО", note || ""); };
   const shot = async (name) => { const f = path.join(OUT, `${lang}-${name}.jpg`);
     await page.screenshot({ path: f, type: "jpeg", quality: SHOT_Q }).catch(() => null); shots.push(path.basename(f)); };
@@ -249,9 +255,7 @@ async function recordLang(browser, lang) {
     if (PARTS.includes(1)) await part1();
     if (PARTS.includes(2)) await part2();
     await say("final", 6500);
-    // Последний субтитр — без «следующего шага сцены»: дочитать целиком (READ_AHEAD здесь не вычитается).
-    if (!FAST) await sleep(READ_AHEAD);
-    await quiet();
+    await quiet();  // дочитать последний субтитр целиком
     await pause(1200);
   } catch (e) {
     errors.push("сценарий: " + String(e.message || e).slice(0, 300));
@@ -282,7 +286,7 @@ async function recordLang(browser, lang) {
   // ---------------------------------------------------------------------------------------------- часть 1 (FINAL-4)
   async function part1() {
     // Заголовок части и вступление — сразу, вид «Акимат» включается под них (без пустых секунд в начале).
-    let s = scene("intro");
+    let s = await scene("intro");
     await page.evaluate((x) => window.__r10v && window.__r10v.title(x), sub("part1")).catch(() => null);
     await say("intro", 2400);
     await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null);
@@ -292,7 +296,7 @@ async function recordLang(browser, lang) {
     done(s);
 
     // Шаги 1–2: житель, жалоба на остановку, категория, «Я тоже».
-    s = scene("complaint");
+    s = await scene("complaint");
     await setMode("resident");
     await say("s1", 1800);
     const startLabel = word("complaint.start.button", "Сообщить о проблеме", "Мәселе туралы хабарлау");
@@ -333,7 +337,7 @@ async function recordLang(browser, lang) {
     } else done(s, false, "форма жалобы или остановка не найдены");
 
     // Шаг 3: тепловая карта у акимата, «Горячие места».
-    s = scene("heat");
+    s = await scene("heat");
     await setMode("akimat");
     await say("s3", 600);
     await flyTo(STOP.point, 14.6, 2600);
@@ -353,7 +357,7 @@ async function recordLang(browser, lang) {
     done(s, hotOpen, hotOpen ? null : "ссылки «Все горячие места» нет");
 
     // Шаг 4: «Картина дня».
-    s = scene("day");
+    s = await scene("day");
     const dayRe = exact(word("common.nav.day", "Картина дня", "Күн қорытындысы"));
     const day = await header(dayRe, 2600);
     if (day) {
@@ -373,7 +377,7 @@ async function recordLang(browser, lang) {
     const doProject = !SKIP.has("project");
     if (!doProject) skipped.push({ scene: "project", owner: "R05",
       why: "шаг 5 (проект в 3D) не снимался: --skip project" });
-    if (doProject) s = scene("project");
+    if (doProject) s = await scene("project");
     if (doProject && !login && srv.staff && srv.staff.user) {
       if (await header(textRe(lang === "kk" ? "Қызметкерлерге" : "Для сотрудников"), 1600)) {
         const user = await firstVisible(page.locator("input[autocomplete=username], input[name=username]"));
@@ -466,7 +470,7 @@ async function recordLang(browser, lang) {
     if (doProject) done(s, login && placed, !login ? "вход сотрудника не удался" : placed ? null : "проект не поставлен");
 
     // Шаги 6–7: служба → «Взять в работу» → «Отметить исправленным» → сообщение жителям; житель «Да, исправлено».
-    s = scene("fixed");
+    s = await scene("fixed");
     let verified = false;
     if (login) {
       await setMode("akimat");
@@ -542,13 +546,14 @@ async function recordLang(browser, lang) {
     for (const p of plan.filter((x) => !x.ok)) skipped.push({ scene: p.id, owner: p.owner, why: `нет в сборке: ${p.why}` });
     const go = async (hash, after = 2400) => { await page.evaluate((hh) => { location.hash = hh; }, hash).catch(() => null); await wait(after); };
     const toMap = async () => { await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null); await wait(900); };
+    await quiet();  // заставка «Часть 2» — без субтитра части 1
     await page.evaluate((x) => window.__r10v && window.__r10v.title(x), sub("part2")).catch(() => null);
     await pause(1800);
     await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null);
     if (!plan.some((x) => x.ok)) { await say("skipped", 4200); return; }
     // --- сцена 7: «Мой двор» → «Я приду»
     if (plan[0].ok) {
-      const s = scene("scene7-yard");
+      const s = await scene("scene7-yard");
       await setMode("resident");
       await go(`#yard/${W15.yard}`);
       await say("yard", 4200);
@@ -566,7 +571,7 @@ async function recordLang(browser, lang) {
     }
     // --- сцена 8, житель: «Мои обращения» → «2 службы: Водоканал — сделано · Дорожная служба — в работе»
     if (plan[1].ok) {
-      const s = scene("scene8-joint");
+      const s = await scene("scene8-joint");
       await setMode("resident");
       await go("#mine", 2600);
       await say("agencies", 5200);
@@ -578,7 +583,7 @@ async function recordLang(browser, lang) {
     // --- сцена 8: «Штаб ведомств» (табло) и «Календарь работ»
     if (plan[2].ok || plan[3].ok) await setMode("akimat");
     if (plan[2].ok) {
-      const s = scene("scene8-board");
+      const s = await scene("scene8-board");
       await go("#agencies/board");
       await say("board", 5200);
       await page.mouse.move(W / 2, H / 2); await page.mouse.wheel(0, 260); await pause(1200);
@@ -586,7 +591,7 @@ async function recordLang(browser, lang) {
       done(s);
     }
     if (plan[3].ok) {
-      const s = scene("scene8-works");
+      const s = await scene("scene8-works");
       await go("#agencies/calendar");
       // Вкладка «Календарь работ» у R17 (191f81e7+); без неё — свой раздел R12.
       if (!(await page.evaluate(() => !!document.querySelector("#birge-screen:not([hidden]) .wcal")).catch(() => false))) await go("#works-calendar");
@@ -596,7 +601,7 @@ async function recordLang(browser, lang) {
     }
     // --- сцена 9: кризисный штаб и «Хроника города»
     if (plan[4].ok) {
-      const s = scene("scene9-crisis");
+      const s = await scene("scene9-crisis");
       await setMode("akimat");
       // Адрес штаба: #agencies/crisis/<id> (R17 191f81e7+; внутри уже открытых «Ведомств» прежний вид crisis=<id>
       // вкладку не переключает), прежний #agencies/crisis=<id>, публичная карточка #crisis/<id>. В кадр — только когда
@@ -616,7 +621,7 @@ async function recordLang(browser, lang) {
       await toMap();
     }
     if (plan[5].ok) {
-      const s = scene("scene9-replay");
+      const s = await scene("scene9-replay");
       await page.evaluate(() => { const m = typeof map !== "undefined" ? map : null; if (m) m.flyTo({ center: [71.40, 51.13], zoom: 11.6, duration: 1200 }); }).catch(() => null);
       await wait(1500);
       await say("replay", 600);

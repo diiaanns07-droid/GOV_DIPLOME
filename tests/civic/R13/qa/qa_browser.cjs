@@ -57,6 +57,24 @@ const openSection = async (page, base, mode, lang) => {
   if (GLASS) await page.evaluate(() => document.getElementById("birge-screen")?.classList.add("bk-glass"));
   await page.waitForTimeout(400);
 };
+// VISUAL_BRIEF §4 п. 3 (R10 visual_audit): не больше трёх размеров шрифта на экране — 13 подписи, 15 текст, 19 заголовок.
+// Внутри «Вопросов и встреч» считаем весь раздел (.mt), отдельно — экран «Вопроса акиму» (.qa).
+const fontSizes = (page) => page.evaluate(() => {
+  const root = document.querySelector(".mt") || document.querySelector(".qa");
+  const m = {};
+  for (const el of root ? root.querySelectorAll("*") : []) {
+    const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+    const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+    if (!own || r.width <= 1 || r.height <= 1 || cs.visibility === "hidden" || cs.display === "none" || el.closest(".bk-sr-only, .sr-only, svg")) continue;
+    const k = Math.round(parseFloat(cs.fontSize) * 2) / 2;
+    (m[k] = m[k] || new Set()).add((el.className || el.tagName).toString().split(" ")[0]);
+  }
+  return Object.entries(m).map(([k, v]) => k + " (" + [...v].slice(0, 3).join(", ") + ")");
+});
+const fontCheck = async (page, label) => {
+  const sizes = await fontSizes(page);
+  check(`${label}: не больше 3 размеров шрифта`, sizes.length <= 3, sizes.join("; "));
+};
 // Стекло (GLASS.md §2): у корня .qa своего фона нет; формы (вопрос, отказ, ответ) — непрозрачные.
 const glassRules = (page) => page.evaluate(() => {
   const alpha = (c) => { const m = /rgba?\(([^)]+)\)/.exec(c); if (!m) return 1; const p = m[1].split(",").map(Number); return p.length > 3 ? p[3] : 1; };
@@ -98,8 +116,12 @@ const worstContrast = (page) => page.evaluate(() => {
   const port = await freePort(), base = `http://127.0.0.1:${port}`;
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "r13-qa-"));
   const srv = await startServer(port, path.join(tmp, "civic.sqlite3"));
-  const browser = await chromium.launch(fs.existsSync("/opt/pw-browsers/chromium-1194/chrome-linux/chrome")
-    ? { executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" } : {});
+  // Формат <input type=date> Chromium берёт из LANG процесса, а не из locale контекста (R11, круг 14): иначе «10/16/2026».
+  const browser = await chromium.launch({
+    ...(fs.existsSync("/opt/pw-browsers/chromium-1194/chrome-linux/chrome")
+      ? { executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" } : {}),
+    env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" },
+  });
   try {
     for (const lang of ["ru", "kk"]) {
       for (const [w, hgt] of [[375, 812], [1366, 768]]) {
@@ -147,6 +169,7 @@ const worstContrast = (page) => page.evaluate(() => {
         check(`${tag} житель: на карте ничего нового`, r.inMap === 0, r.inMap);
         check(`${tag} житель: «Ещё» в меню`, r.more.includes("more"), r.more);
         check(`${tag} житель: нет прокрутки вбок`, await noSideScroll(page));
+        await fontCheck(page, `${tag} житель`);
         await page.screenshot({ path: path.join(OUT, `${tag}-resident-top.png`) });
         const gr = await glassRules(page);
         check(`${tag} стекло: у корня экрана своего фона нет`, gr.rootClear, gr);
@@ -246,6 +269,7 @@ const worstContrast = (page) => page.evaluate(() => {
           (d.querySelector(".qa-answer__text") || {}).textContent || ""]));
         check(`${tag} житель: в «С ответом» у ответов подпись и дата`, signs.length >= 2 && signs.every(([sg, t]) => /·/.test(sg) && t.length > 20), signs.slice(0, 2));
         await page.screenshot({ path: path.join(OUT, `${tag}-resident-answered.png`) });
+        await fontCheck(page, `${tag} житель, «С ответом»`);
         check(`${tag} житель: нет ошибок JS`, page.errs.length === 0, page.errs.slice(0, 3));
         await ctx.close();
 
@@ -271,6 +295,7 @@ const worstContrast = (page) => page.evaluate(() => {
         check(`${tag} акимат: очередь на проверке, подсказка о личных данных`, a.cards >= 1 && a.pii.length >= 1, a);
         check(`${tag} акимат: без главной кнопки в списке`, a.primary === 0, a.primary);
         check(`${tag} акимат: нет прокрутки вбок`, await noSideScroll(sp));
+        await fontCheck(sp, `${tag} акимат, очередь`);
         await sp.screenshot({ path: path.join(OUT, `${tag}-akimat-queue.png`) });
         if (GLASS) {
           const wcs = await worstContrast(sp);
@@ -289,6 +314,7 @@ const worstContrast = (page) => page.evaluate(() => {
             const need = await sp.$eval(`.qa-card[data-id="${next}"] .qa-form__error`, (e) => e.textContent).catch(() => null);
             await sp.click(`.qa-card[data-id="${next}"] .qa-reason input`);
             await sp.screenshot({ path: path.join(OUT, `${tag}-akimat-reject.png`) });
+            await fontCheck(sp, `${tag} акимат, отказ`);
             await sp.click(`.qa-card[data-id="${next}"] .qa-panel button[type=submit]`);
             await sp.waitForFunction((id) => !document.querySelector(`.qa-card[data-id="${id}"]`), next, { timeout: 10000 });
             check(`${tag} акимат: отказ только с причиной`, !!need, need);
@@ -303,6 +329,7 @@ const worstContrast = (page) => page.evaluate(() => {
           await sp.screenshot({ path: path.join(OUT, `${tag}-akimat-answer.png`) });
           const ar = await glassRules(sp);
           check(`${tag} форма ответа акима непрозрачная`, ar.formsOpaque && ar.forms.length === 1, ar);
+          await fontCheck(sp, `${tag} акимат, ответ`);
           await sp.click(`.qa-card[data-id="${topId}"] .qa-panel button[type=submit]`);
           await sp.waitForFunction((id) => !document.querySelector(`.qa-card[data-id="${id}"] .qa-panel`), topId, { timeout: 10000 });
           await sp.click(".qa-tabs > button:nth-child(3)"); await idle(sp);

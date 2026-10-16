@@ -48,12 +48,24 @@ function uiScreen(page) {
     const all = [...document.querySelectorAll("button, a[href], [role=button], input, select, summary, textarea")].filter(vis)
       .filter((e) => !e.closest(".maplibregl-ctrl-attrib"));
     const mapBadges = all.filter(onMap).map((e) => Math.round(e.getBoundingClientRect().height));
+    // Зона нажатия — рамка плюс то, что ловит нажатие вокруг неё: ui-kit R11 расширяет мелкие кнопки псевдоэлементом
+    // (.bk-chip 34 px и .bk-join 32 px — ::after «inset: -5 / -6px 0» → 44 px; .bk-seg, .bk-x, .bk-vote), роли — прозрачной
+    // рамкой. Точки за краем рамки, которые elementFromPoint отдаёт той же кнопке, — её зона (до 12 px с каждой стороны).
+    // До 16 окт мерилась только рамка — «Я приду» 32 px и «▶ Хроника» 34 px были ложными FAIL (BUGS B-114, B-125).
+    const hitBox = (box) => {
+      const r = box.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      const own = (x, y) => { if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return false;
+        const h = document.elementFromPoint(x, y); return !!h && (h === box || box.contains(h)); };
+      const grow = (f) => { let k = 0; while (k < 12 && f(k + 1)) k++; return k; };
+      const dh = grow((k) => own(cx, r.top - k)) + grow((k) => own(cx, r.bottom - 1 + k));
+      const dw = grow((k) => own(r.left - k, cy)) + grow((k) => own(r.right - 1 + k, cy));
+      return { h: Math.round(r.height + dh), w: Math.round(r.width + dw), ...(dh || dw ? { frame: `${Math.round(r.width)}×${Math.round(r.height)}` } : {}) };
+    };
     const targets = all.filter((e) => !onMap(e))
       .map((e) => {
         // У флажка зона нажатия — вся подпись <label>, а не 18-пиксельный квадрат.
         const box = (/^(checkbox|radio)$/.test(e.type) && e.closest("label")) || e;
-        const r = box.getBoundingClientRect();
-        return { h: Math.round(r.height), w: Math.round(r.width), t: (box.innerText || e.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 24) };
+        return { ...hitBox(box), t: (box.innerText || e.getAttribute("aria-label") || "").trim().replace(/\s+/g, " ").slice(0, 24) };
       });
     // Текст, который ЧАСТИЧНО закрыт чужим элементом (одна панель наехала на другую, как B-039): у надписи есть видимые
     // и закрытые точки. Полностью закрытое (панель под «Картиной дня») и значки на карте не считаем.

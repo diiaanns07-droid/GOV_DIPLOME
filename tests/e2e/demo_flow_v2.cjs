@@ -543,6 +543,41 @@ async function showCheck(browser, base, lang, staffAcc) {
     add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → раздел ${want[n][0]} ≤ 1 с`, status,
       { ms, section: sec, network_idle_before: idle, ...extra }, "R01", path.basename(f));
   }
+  // Пункты палитры — отдельные страницы (раздел с href, R08 INTEGRATION §15): «Ситуационный центр» R08 и «QR-таблички» R12.
+  // Ctrl+K → Enter должен открыть страницу, как пункт «Ещё», а не экран оболочки «Раздел не удалось открыть».
+  const errTitle = T(dict, "shell.screen.error_title", "Раздел не удалось открыть");
+  for (const [id, key, urlRe, href, owner] of [["board", "shell.nav.board", /\/civic\/board\//, "/civic/board/", "R08"],
+    ["qr", "shell.nav.qr", /\/civic\/qr\//, "/civic/qr/print.html", "R12"]]) {
+    const title = T(dict, key, null);
+    const name = `Ctrl+K «${title || id}» → своя страница ${href}`;
+    await page.goto(base + "?show=1").catch(() => null);
+    await page.waitForFunction(() => document.readyState === "complete" && window.BirgeShell, null, { timeout: 30000 }).catch(() => null);
+    await page.evaluate(() => { const B = window.BirgeShell; if (B && B.setMode) B.setMode("akimat"); }).catch(() => null);
+    await sleep(1500);
+    await page.keyboard.press("Escape").catch(() => null);
+    await page.keyboard.press("Control+k").catch(() => null);
+    await sleep(500);
+    const input = await firstVisible(page.locator(".birge-palette__input"));
+    if (!input || !title) { add(`UI show-${lang}`, "S", name, "NOT_RUN", input ? `нет ключа ${key}` : "палитры Ctrl+K нет", "R01"); continue; }
+    await input.fill(title).catch(() => null);
+    let offered = false;
+    for (let i = 0; i < 10 && !offered; i++) {
+      await sleep(200);
+      offered = await page.evaluate((tt) => [...document.querySelectorAll(".birge-palette__item")].some((li) => (li.textContent || "").includes(tt)), title).catch(() => false);
+    }
+    if (!offered) { add(`UI show-${lang}`, "S", name, "NOT_RUN", "пункта нет в палитре (раздел-страница не зарегистрирован)", owner); continue; }
+    const t0 = Date.now();
+    await page.keyboard.press("Enter").catch(() => null);
+    const went = await page.waitForURL(urlRe, { timeout: 8000 }).then(() => true, () => false);
+    const ms = went ? Date.now() - t0 : null;
+    await sleep(2000);
+    const got = await page.evaluate((et) => ({ url: location.pathname, text: ((document.body && document.body.innerText) || "").trim().length,
+      shell_error: ((document.body && document.body.innerText) || "").includes(et) })).catch(() => null);
+    const f = path.join(OUT, `show-${lang}-page-${id}.jpg`);
+    await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null);
+    const ok = went && got && got.text > 30 && !got.shell_error;
+    add(`UI show-${lang}`, "S", name, ok ? "PASS" : "FAIL", { ms, ...(got || {}) }, went ? owner : "R01", path.basename(f));
+  }
   await ctx.close();
 }
 

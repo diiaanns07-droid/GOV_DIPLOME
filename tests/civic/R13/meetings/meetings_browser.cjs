@@ -26,8 +26,8 @@ const check = (name, ok, detail) => {
   console.log((ok ? "PASS " : "FAIL ") + name + (detail != null ? " — " + JSON.stringify(detail).slice(0, 240) : ""));
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-// R10 B-118 (VISUAL_BRIEF §4 п. 10, шкала 13/15/17): в разделе каждая кнопка, поле, вкладка — не меньше 44 × 44 px
-// (ссылка-текст — 44 в высоту), каждый видимый текст — не меньше 13 px. Скрытое для глаза (bk-sr-only) не считаем.
+// R10 B-118 (VISUAL_BRIEF §4 п. 10): в разделе каждая кнопка, поле, вкладка — не меньше 44 × 44 px (ссылка-текст — 44 в
+// высоту), каждый видимый текст — не меньше 13 px, размеров шрифта — не больше трёх (п. 3). Скрытое для глаза не считаем.
 async function sizeAudit(page, label) {
   const res = await page.evaluate(() => {
     const root = document.querySelector(".mt");
@@ -46,18 +46,23 @@ async function sizeAudit(page, label) {
       const zh = r.height + out(a.top) + out(a.bottom), zw = r.width + out(a.left) + out(a.right);
       if (zh < 43.5 || (!textLink && zw < 43.5)) small.push(name(el) + " " + Math.round(zw) + "×" + Math.round(zh));
     });
-    const tiny = [];
+    const tiny = [], sizes = {};
     const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     while (walk.nextNode()) {
       const el = walk.currentNode.parentElement;
       if (!walk.currentNode.textContent.trim() || !el || !seen(el) || el.closest(".bk-sr-only, .sr-only")) continue;
       const fs = parseFloat(getComputedStyle(el).fontSize);
       if (fs < 12.5) tiny.push(name(el) + " " + fs + "px");
+      const k = Math.round(fs * 2) / 2;
+      (sizes[k] = sizes[k] || new Set()).add(name(el));
     }
-    return { small: [...new Set(small)], tiny: [...new Set(tiny)] };
+    return { small: [...new Set(small)], tiny: [...new Set(tiny)],
+      sizes: Object.entries(sizes).map(([k, v]) => k + " (" + [...v].slice(0, 3).join(", ") + ")") };
   });
   check(`${label}: зоны нажатия не меньше 44 px`, res.small.length === 0, res.small.slice(0, 6).join("; ") || null);
   check(`${label}: текст не меньше 13 px`, res.tiny.length === 0, res.tiny.slice(0, 6).join("; ") || null);
+  // VISUAL_BRIEF §4 п. 3 (R10 visual_audit): не больше трёх размеров на экране — 13 подписи, 15 текст, 19 заголовки.
+  check(`${label}: не больше 3 размеров шрифта`, res.sizes.length <= 3, res.sizes.join("; "));
 }
 const shots = [];
 
@@ -259,6 +264,7 @@ async function staffFlow(browser, w, h, lang) {
   await page.waitForSelector(".mt-lead .bk-btn--primary", { timeout: 30000 }).catch(() => null);
   check(`${tag} после входа — «Новая встреча»`, /Новая встреча|Жаңа кездесу/.test(await page.textContent(".mt-lead .bk-btn--primary").catch(() => "")));
   await shot(page, `${tag}-a-list`);
+  await sizeAudit(page, `${tag} список (акимат)`);
   if (w === 1366 && lang === "ru") {
     // Новая встреча
     await page.click(".mt-lead .bk-btn--primary");
@@ -266,6 +272,7 @@ async function staffFlow(browser, w, h, lang) {
     await sleep(1500);  // подсказки мест из поиска карты
     await page.fill('.mt-form [name="place"]', "Двор: Eco Park");
     await shot(page, `${tag}-a-new`);
+    await sizeAudit(page, `${tag} новая встреча`);
     await page.click(".mt-form button[type=submit]");
     await page.waitForSelector(".mt-dhead", { timeout: 20000 }).catch(() => null);
     const created = await page.innerText(".mt-detail").catch(() => "");
@@ -292,6 +299,7 @@ async function staffFlow(browser, w, h, lang) {
       check("выбор обращения района подставил номер записи", (await page.inputValue('.mt-form [name="link_id"]')) === value, value);
     } else check("выбор обращения района", false, "нет списка");
     await shot(page, `${tag}-a-order-form`);
+    await sizeAudit(page, `${tag} форма поручения`);
     await page.click(".mt-form button[type=submit]");
     await page.waitForFunction((n) => document.querySelectorAll(".mt-order").length === n + 1, n0, { timeout: 15000 }).catch(() => null);
     check("поручение добавлено", (await page.$$(".mt-order")).length === n0 + 1);
@@ -364,8 +372,12 @@ async function staffFlow(browser, w, h, lang) {
     console.log("SKIP: в сборке нет маршрутов meetings.* (нужен патч R01 или сборка B1+)");
     process.exit(0);
   }
-  const browser = await chromium.launch(fs.existsSync("/opt/pw-browsers/chromium-1194/chrome-linux/chrome")
-    ? { executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" } : {});
+  // Формат <input type=date> Chromium берёт из LANG процесса, а не из locale контекста (R11, круг 14): иначе «10/16/2026».
+  const browser = await chromium.launch({
+    ...(fs.existsSync("/opt/pw-browsers/chromium-1194/chrome-linux/chrome")
+      ? { executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" } : {}),
+    env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" },
+  });
   const sizes = FULL ? [[1366, 768], [1024, 768], [375, 812]] : [[1366, 768], [375, 812]];
   try {
     for (const [w, h] of sizes) for (const lang of ["ru", "kk"]) {
