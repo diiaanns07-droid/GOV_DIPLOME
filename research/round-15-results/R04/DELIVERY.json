@@ -1,7 +1,7 @@
 {
   "role": "R04",
   "round": 15,
-  "delivery": "D2 (П3, 16 окт 19:40 по Астане) — code 38caaaaa: intake_analyze / intake_sample / intake_commit, экран web/civic/intake, moderate r04-moderate-4, route r04-route-2. Прошлая финальная — D1.9 f526b942 (в FINAL-5 c2276360 и FINAL-5.1 e8d6cae6; запасная сборка)",
+  "delivery": "D2 (П3, 16 окт 18:26 по Астане) — code 38caaaaa: intake_analyze / intake_sample / intake_commit, экран web/civic/intake, moderate r04-moderate-4, route r04-route-2. Прошлая финальная — D1.9 f526b942 (в FINAL-5 c2276360 и FINAL-5.1 e8d6cae6; запасная сборка)",
   "branch": "claude/gifted-maxwell-i66wwi",
   "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
   "restored_from": null,
