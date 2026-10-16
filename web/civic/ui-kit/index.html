@@ -818,6 +818,9 @@
           </section>
         </div>
 
+        <h3 class="kit-r15__h"><code>.bk-ai</code> — метка «ИИ» (П3): <code>BirgeUI.aiTag()</code> и <code>aiTag({label})</code> у заголовка «ИИ-разбора» (R04)</h3>
+        <div class="kit-r15__col"><p class="bk-card__row"><span data-kit-ai></span> <span data-kit-ai="intake.ai_label"></span> <span class="bk-tag bk-tag--demo" data-i18n="common.tag.demo"></span></p></div>
+
         <h3 class="kit-r15__h"><code>.bk-answer</code> — «Спросить Birge» (R03)</h3>
         <div class="kit-r15__col">
           <article class="bk-answer"><p class="bk-answer__q" data-s15="a.q"></p>
@@ -955,7 +958,9 @@
           $("kit-opt-seg").textContent = t("target.kind.segment_short", { street: street });
           $("kit-suggest").textContent = t("complaint.step3.suggest", { category: I.cat("snow_ice") });
           // П3: метка «ИИ» у подсказки модели (BirgeUI.aiTag — тексты из словаря, перерисовка при смене языка)
-          document.querySelectorAll("[data-kit-ai]").forEach(function (n) { n.replaceChildren(UI.aiTag()); });
+          document.querySelectorAll("[data-kit-ai]").forEach(function (n) {
+            n.replaceChildren(UI.aiTag(n.getAttribute("data-kit-ai") ? { label: t(n.getAttribute("data-kit-ai")) } : undefined));
+          });
           $("kit-stages").innerHTML = stagesHtml(2);
           $("kit-stages-compact").innerHTML = stagesHtml(3);
           $("kit-stages-caption").textContent = t("stage.caption", { i: 4, total: 6, name: t("stage.construction") });

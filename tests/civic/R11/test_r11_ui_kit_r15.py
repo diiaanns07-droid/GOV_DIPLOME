@@ -201,8 +201,9 @@ def test_p3_ai_tag_is_small_monochrome_and_explained():
     assert not re.search(r"shadow|gradient|filter|animation|--c-brand|--c-accent", body), "без свечения и цвета (П1)"
     assert int(re.search(r"height: (\d+)px", body).group(1)) <= 24, "метка, не кнопка"
     js = (KIT / "ui-kit.js").read_text("utf-8")
-    fn = re.search(r"function aiTag\(\) \{(.*?)\n  \}", js, re.S).group(1)
+    fn = re.search(r"function aiTag\(opts\) \{(.*?)\n  \}", js, re.S).group(1)
     assert 'tr("common.ai.hint")' in fn and 'tr("common.ai.badge")' in fn and 'icon("ai")' in fn
+    assert "opts.label" in fn, "своя подпись для экрана R04 («ИИ-разбор»)"
     assert "el.title = hint" in fn and "bk-sr-only" in fn, "подсказка мыши и текст для диктора"
     assert "aiTag: aiTag" in js
     ru = json.loads((ROOT / "web/civic/i18n/ru.json").read_text("utf-8"))
