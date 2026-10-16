@@ -31,7 +31,8 @@
   "FINAL5_c2276360_round28": "tests/civic/R15 571 passed / 0 failed / 44 NOT_RUN (intake) / 3 xfail (S54)",
   "B6.3_f9b0cc85": "tests/civic/R15 613 passed / 0 failed / 5 xfail (S54); браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена изменений B6.2->B6.3 чистая",
   "R04_df6ab8c2_moderate5": "moderate+intake R15: 99 passed, 5 xpassed; 4000/4000 совпадает с P-R04-S53",
-  "B6.4_e56971a0": "tests/civic/R15 613 passed / 0 failed / 5 xpassed (S54) -> после FIXED moderate+intake 104 passed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена f9b0cc85..e56971a0 чистая"
+  "B6.4_e56971a0": "tests/civic/R15 613 passed / 0 failed / 5 xpassed (S54) -> после FIXED moderate+intake 104 passed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена f9b0cc85..e56971a0 чистая",
+  "B6.5_25ee5a39": "tests/civic/R15 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена e56971a0..25ee5a39 чистая; R07 heat place() — id по шаблону, без кэша, только данные карты"
  },
  "push_status": "OK (круг 3)",
  "changed_paths": [

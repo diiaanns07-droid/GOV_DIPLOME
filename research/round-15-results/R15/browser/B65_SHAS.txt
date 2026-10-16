@@ -1,0 +1,2 @@
+Сборка R01 B6.5: claude/brave-fermi-nhzetj @ 25ee5a39 (R04 c4e4581b, R07 f3012276, R11 33260363)
+Пробы R15 (круг 31, 16 окт 22:35 Астаны): r15_round15 10 PASS / 0 FAIL / 1 NOT_RUN; r15_reference 18 / 0 / 0
