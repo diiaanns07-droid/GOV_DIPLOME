@@ -4,10 +4,10 @@
  "branch": "claude/gracious-mendel-eopem6",
  "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g = FINAL-4 a4937462 + пакет раунда 15)",
  "restored_from": null,
- "code_sha": "33260363",
- "tested_sha": "33260363",
+ "code_sha": "d126117d",
+ "tested_sha": "d126117d",
  "push_status": "OK",
- "updated": "2026-10-16 21:24 Астана",
+ "updated": "2026-10-16 23:29 Астана",
  "changed_paths": [
   "web/civic/ui-kit/components.css (раздел «Раунд 15» перед стеклом — только новые классы)",
   "web/civic/ui-kit/tokens.css (--zone-*, --sc-*, тёмные токены .bk-dark только для ситуационного центра)",
@@ -21,7 +21,8 @@
   "research/round-15-results/R11/REVIEW_R15.md, KK_REVIEW_R15.md",
   "web/civic/ui-kit/components.css (круг 15: текст компонентов раунда 15 — --c-text-2), tokens.css (правило --c-text-3)",
   "П3: web/civic/ui-kit/icons.svg (i-ai), components.css (.bk-ai), ui-kit.js (BirgeUI.aiTag), index.html (примеры метки); ru.json / kk.json +36 ключей (2902); tests/civic/R11/test_r11_ui_kit_r15.py (+ тест метки); IA_ROUND15.md §11",
-  "П3 (круг 25): components.css (.bk-lrow__meta — остаток строки), ru.json / kk.json — 59 ключей intake.* экрана R04 (2935), tests/civic/R11/review/r15_intake.cjs, tools/sync_roles.py (+ R04 intake.js)"
+  "П3 (круг 25): components.css (.bk-lrow__meta — остаток строки), ru.json / kk.json — 59 ключей intake.* экрана R04 (2935), tests/civic/R11/review/r15_intake.cjs, tools/sync_roles.py (+ R04 intake.js)",
+  "П3 (за R16, кадр 04): components.css .bk-thumb--kind — значок вида 40 × 40 / 20 px вместо квадрата 84 px; index.html; тест"
  ],
  "deliverables": {
   "IA_ROUND15": "research/round-15-results/R11/IA_ROUND15.md — меню жителя и акимата, «Ещё» группами, экраны (главное, одна главная кнопка, чего нет, слой), хроника — чип легенды, ситуационный центр — страница, запасные места FINAL-4; опубликован 15 окт ~16:37 Астаны (08bde777)",
@@ -39,7 +40,8 @@
   "p3_intake_ia": "IA_ROUND15 §11: «Разбор обращений» — «Обращения» → «Разобрать пачку», «Ещё → Инструменты» первым, Ctrl+K «Сцена 0 · ИИ-разбор»; экран R04 по состояниям; 4 нажатия, в режиме показа 2",
   "p3_keys": "словарь 2937 = 2937: меню, палитра, кнопка «Обращений», метка «ИИ», intake.* (61 — имена и ru = KEYS intake.js R04 a86e46a1, окончательно; ҚАЗ — R04 по словарю R11, свои — placeholder и server_size); KK_REVIEW_R15 № 44–48",
   "p3_intake_review": "REVIEW_R15 круг 25: «Разбор обращений» R04 a2e004c9 на R01 b4749a39 — 36 кадров 1366/1024/375 × ru/kk, проблем 0 после правки ui-kit; 301 → 143 задачи за 0,4–2,2 с; кадры screens/p3-intake/",
-  "r04_kk_patch": "patches/R04_kk_texts.patch к R04 a86e46a1: «2 службы», срок раскопки, «түзету мерзімі», подсказка модерации (аббревиатуры), причины срочности и названия intake.py; tests/civic/R04 558 / 1 skipped / 1 failed (тот же 1 — на чистой a86e46a1)"
+  "r04_kk_patch": "patches/R04_kk_texts.patch к R04 a86e46a1: «2 службы», срок раскопки, «түзету мерзімі», подсказка модерации (аббревиатуры), причины срочности и названия intake.py; tests/civic/R04 558 / 1 skipped / 1 failed (тот же 1 — на чистой a86e46a1)",
+  "p3_kind_thumb": "«Мой двор» / «Сделаем вместе»: вид дела без фото — компактный значок 40 × 40 (как .bk-feed__ic), фото — 84 × 84; проверено на R01 7493ea1f 1366/375 × ru/kk (screens/p3-yard/)"
  },
  "tests": {
   "pytest tests/civic/R11": "PASS 33/33 (d20d823f)",
@@ -86,7 +88,10 @@
   "r15_screens.cjs на стенде R01 B6.2 06a62c8c + R04 a86e46a1 + R11 (d0266f76)": "108 кадров 1366/1024/375 × ru/kk × житель/акимат (с #intake) — проблем 0; «смотреть глазами» 8 (подписи строк «Обращений», улицы календаря R12)",
   "node tests/civic/R11 (3f6b8700)": "PASS 3/3 — ui_kit.test.cjs: + метка «ИИ» экранирует подпись (R15 T-R11-01)",
   "i18n_tools check (33260363)": "PASS — 2938 ключей, ru = kk (+ heat.place_empty R07)",
-  "pytest tests/civic/R11 (33260363)": "PASS 35/35"
+  "pytest tests/civic/R11 (33260363)": "PASS 35/35",
+  "pytest tests/civic/R11 (d126117d)": "PASS 36/36",
+  "витрина ui-kit, Chromium 1366/375 × ru/kk (d126117d)": "PASS 4/4",
+  "«Мой двор» и «Сделаем вместе» на стенде R01 7493ea1f + R11 (d126117d)": "1366/375 × ru/kk: значки видов 40×40 / 20 px, прокрутки 0, сырых ключей 0, русских подписей 0, ошибок JS 0"
  },
  "screens": [
   "research/round-15-results/R11/screens/kit15-1366-kk.jpg",
