@@ -455,7 +455,8 @@ class ComplaintsV2Service:
         data = lifecycle.inbox(records, self.store._now(), tab)
         # Раунд 15: у группы — службы самой срочной жалобы (ведущая первой) и признак совместного исполнения.
         # world — жалоба демо-мира R02: с ней работают сцены 7–9 (действия сотрудника доступны; при следующем запуске
-        # демо мир возвращается в исходное состояние). Прочие примеры (demo_seed «Хан Шатыр») — только просмотр.
+        # демо мир возвращается в исходное состояние). Записи «ИИ-разбора пачки» (П3, сцена 0; пример — тоже demo) —
+        # рабочие. Прочие примеры (demo_seed «Хан Шатыр») — только просмотр.
         worlds = {r["id"] for r in records if r.get("world")}
         for group in data["items"]:
             for item in group["complaints"]:
@@ -463,13 +464,14 @@ class ComplaintsV2Service:
             # Пример (demo без мира) — только просмотр: в группе он идёт после рабочих жалоб (сортировка устойчивая —
             # внутри прежний порядок), чтобы карточка и части служб строки были у той, с которой сотрудник работает, —
             # как у быстрых действий строки. Иначе цель «Хан Шатыр» в мире R02 открывалась на примере без действий.
-            group["complaints"].sort(key=lambda c: bool(c["demo"]) and not c["world"])
+            group["complaints"].sort(key=lambda c: bool(c["demo"]) and not c["world"] and not c.get("intake"))
             top = parts_of.get(group["complaints"][0]["id"]) if group["complaints"] else None
             group["services"] = [{"service": p["service"], "role": p["role"], "status": p["status"]} for p in top or []]
             group["joint"] = len(group["services"]) > 1
             for item in group["complaints"]:
                 item["lead"] = (parts_of.get(item["id"]) or [{}])[0].get("service")
             group["world"] = any(item["world"] for item in group["complaints"])
+            group["intake"] = any(item.get("intake") for item in group["complaints"])
         data["tab"] = tab
         data["service"] = service
         data["district"] = district

@@ -473,7 +473,8 @@ def test_reference_a_r09():
     assert "}, 150);" in LIST_JS and "}, 150);" in JS and "var mineCache = null;" in JS
     # Правило 2 (R01 — палитра Ctrl+K, R09 — смена статуса): команды «Взять в работу — место» и «Отметить исправленным — место».
     cmd = LIST_JS.split("function commands(opts)", 1)[1].split("function mount(root, opts)", 1)[0]
-    assert 't("heat.take") + " — " + place' in cmd and 't("heat.mark_fixed") + " — " + place' in cmd and "if (g.demo && !g.world) return;" in cmd
+    # Примеры (demo без мира) — без команд; записи «ИИ-разбора пачки» (П3, intake) — рабочие, как жалобы мира.
+    assert 't("heat.take") + " — " + place' in cmd and 't("heat.mark_fixed") + " — " + place' in cmd and "if (g.demo && !g.world && !g.intake) return;" in cmd
     assert '"birge:inbox-open"' in LIST_JS and '"birge:inbox-changed"' in LIST_JS and "function takePending()" in LIST_JS
     # «Рядом с вами» (шторка телефона R07/R01): обращения жителя, ждущие его проверки, — waitingChecks().
     assert "waitingChecks: waitingChecks," in JS and 'return item.can_verify;' in JS.split("function waitingChecks()", 1)[1].split("return {", 1)[0]

@@ -91,3 +91,17 @@ def test_amendment_p1_no_large_illustrations_no_glow():
         code = re.sub(r"(^|\s)//[^\n]*", "", re.sub(r"/\*.*?\*/", "", code, flags=re.S))   # комментарии — не интерфейс
         found = emoji.search(code)
         assert not found, code[max(0, found.start() - 60):found.end() + 20]
+
+
+def test_intake_source_label_and_intake_examples_stay_workable():
+    # П3, сцена 0: записи «ИИ-разбора пачки» R04 — с пометкой источника (строка и карточка) на обоих языках; пример
+    # пачки (demo) — рабочий, как жалобы демо-мира: «только просмотр» — лишь у demo_seed «Хан Шатыр».
+    data = strings()
+    for lang in ("ru", "kk"):
+        for key in ("inbox.source.intake", "inbox.source.intake_short"):
+            assert data[lang].get(key), (lang, key)
+    assert data["ru"]["inbox.source.intake"] == "Источник: разбор пачки"
+    assert "function readonly(c) { return !!(c && c.demo && !c.world && !c.intake); }" in LIST_JS
+    assert "g.demo && !g.world && !g.intake" in LIST_JS
+    assert 'group.intake ? h("span", { "class": "bk-tag bc-tag--intake"' in LIST_JS
+    assert 'if (current.intake) root.appendChild(h("p", { "class": "bc-meta bc-staff__source" }, t("inbox.source.intake")))' in STAFF_JS

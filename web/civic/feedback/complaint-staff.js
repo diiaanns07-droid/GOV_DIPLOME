@@ -598,6 +598,8 @@
         // Уточнение — вторая строка после категории (UX_SPEC §10), не отдельный бейдж.
         root.appendChild(h("p", { "class": "bc-meta" }, C().categoryLabel(current.category) +
           (current.subtopic ? " · " + C().subtopicLabel(current.category, current.subtopic) : "")));
+        // П3: обращение пришло пачкой и разобрано ИИ (R04 «ИИ-разбор»), задачу создал сотрудник — откуда оно.
+        if (current.intake) root.appendChild(h("p", { "class": "bc-meta bc-staff__source" }, t("inbox.source.intake")));
         // Текст жителя — оригинал, только акимату (staff_view); грубые слова — пометкой (п. 8, R10 B-064).
         // В карточке цели R07 (compact) тексты показывает сама карточка («Что пишут жители»).
         if (current.text) {

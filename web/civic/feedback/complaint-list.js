@@ -132,8 +132,9 @@
   // и так есть в строке «Обращений»: «Взять в работу — <место>» (сразу) и «Отметить исправленным — <место>» (открывает
   // строку с формой «что сделали»). commands({ api }) → Promise<[{ id, title, hint, run() }]>; примеры (demo) не меняются.
   var pendingOpen = null;   // { key, fix } — какую строку открыть, когда список смонтируют / загрузят
-  // Пример, который нельзя менять: синтетика шага 2 демо («Хан Шатыр»). Жалобы демо-мира (world) — рабочие.
-  function readonly(c) { return !!(c && c.demo && !c.world); }
+  // Пример, который нельзя менять: синтетика шага 2 демо («Хан Шатыр»). Жалобы демо-мира (world) и «ИИ-разбора пачки»
+  // (intake, П3: пример пачки — тоже demo) — рабочие.
+  function readonly(c) { return !!(c && c.demo && !c.world && !c.intake); }
   function commands(opts) {
     opts = opts || {};
     var call = client(opts);
@@ -144,7 +145,7 @@
       if (!res.ok) return [];
       var out = [];
       (res.data.items || []).forEach(function (g) {
-        if (g.demo && !g.world) return;
+        if (g.demo && !g.world && !g.intake) return;
         var place = C().targetLabel(g.target), hint = C().categoryLabel(g.category) + " · " + t("inbox.people", { n: g.people });
         var take = ids(g, ["new", "accepted"]), fix = ids(g, ["new", "accepted", "in_progress"]);
         if (take.length) out.push({ id: "take:" + g.key, title: t("heat.take") + " — " + place, hint: hint, run: function () {
@@ -453,7 +454,10 @@
         h("span", { "class": "bk-lrow__main bc-inbox__text" }, [
           h("span", { "class": "bk-lrow__title bc-inbox__place" }, [place,
             // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
-            group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
+            group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null,
+            // П3: задача создана «ИИ-разбором пачки» R04 — тихая пометка источника (в карточке — «Источник: …»).
+            group.intake ? h("span", { "class": "bk-tag bc-tag--intake", title: t("inbox.source.intake") },
+              t("inbox.source.intake_short")) : null]),
           // Уточнение — после категории (UX_SPEC §10), не отдельный бейдж.
           h("span", { "class": "bk-lrow__meta bc-inbox__what" }, what)]),
         h("span", { "class": "bk-lrow__cnt bc-inbox__cnt", "data-level": String(level), title: people },
