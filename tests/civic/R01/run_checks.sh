@@ -39,6 +39,8 @@ if node -e "require('playwright')" >/dev/null 2>&1; then
     step "browser r14 wave 2 menu and screens" node tests/civic/R01/browser/r14_wave2.cjs "$OUT/r14_wave2"
     # Раунд 15: меню и экраны по IA_ROUND15 R11, #раздел/путь, Esc, пустое состояние П1, сцены демо-мира, ?show=1.
     step "browser r15 IA, scenes and show mode" node tests/civic/R01/browser/r15_ia.cjs "$OUT/r15_ia"
+    # Поправка П3: лист каждого раздела = ширине содержимого (пустое поле сверх отступа ≤ 24 px), 1366 / 1024 / 375.
+    step "browser r15 sheet widths (P3)" node tests/civic/R01/browser/r15_sheet_fit.cjs "$OUT/r15_sheet_fit"
 else
     echo "NOT_RUN browser smokes (playwright not installed)"
 fi

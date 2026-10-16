@@ -774,9 +774,34 @@ body.civic-mode :is(.birge-more-item, #birge-account .bk-menu__item, #birge-laye
 body.civic-mode :is(.map-tools, #birge-legend, .maplibregl-ctrl-attrib) :focus-visible { outline: 3px solid var(--c-focus, #2f7fd6); outline-offset: 2px; }
 
 /* Лист раздела на широком экране — плавающая стеклянная карточка шириной до 1080, по центру, по краям видна карта
-   (было: во всю ширину 1342 при содержимом 720–960 — пустое стекло по бокам). До 1104 px — как раньше, 12 от краёв. */
-@media (min-width: 1105px) {
-  body.civic-mode .birge-day.bk-glass { left: max(12px, calc(50% - 540px)); right: max(12px, calc(50% - 540px)); }
+   (было: во всю ширину 1342 при содержимом 720–960 — пустое стекло по бокам). Уже 1104 px — 12 от краёв, как раньше.
+   Поправка П3 (кадры FINAL-5.1): ширина листа = ширине содержимого, без пустых белых полей. Разделы-колонки — лист по
+   колонке модуля + отступы 24 (--birge-sheet-w), по центру, и на 1024 тоже; дашборды («Картина дня», «Ведомства»,
+   «Календарь работ») — до 1080. Колонку задаёт CSS модуля (R11 D-1: списки 720); сменилась — поправить таблицу ниже,
+   проверка — tests/civic/R01/browser/r15_sheet_fit.cjs (пустое поле сверх отступа ≤ 24 px на 1366 / 1024 / 375). */
+@media (min-width: 761px) {
+  body.civic-mode .birge-day.bk-glass { left: max(12px, calc(50% - var(--birge-sheet-w, 1080px) / 2));
+    right: max(12px, calc(50% - var(--birge-sheet-w, 1080px) / 2)); }
+  /* списки 720: «Работы и отключения» R06, «Службы» и «Рядом» R08, «Сделаем вместе» R16, «Вопросы и встречи» R13,
+     кризис жителю R17; «Обращения» R09 — пока одна колонка (две колонки ≥ 1200 — класс .bc-inbox--split, лист 1080) */
+  body.civic-mode #birge-screen:is([data-screen="works"], [data-screen="services"], [data-screen="nearby"],
+    [data-screen="together"], [data-screen="meetings"], [data-screen="crisis"]) { --birge-sheet-w: 768px; }
+  body.civic-mode #birge-screen[data-screen="inbox"]:not(:has(.bc-inbox--split)) { --birge-sheet-w: 768px; }
+  body.civic-mode #birge-screen[data-screen="analyst"] { --birge-sheet-w: 808px; }        /* R03: колонка 760 */
+  body.civic-mode #birge-screen[data-screen="notifications"] { --birge-sheet-w: 608px; }  /* R06: лента 560 */
+  body.civic-mode #birge-screen[data-screen="yard"] { --birge-sheet-w: 1008px; }          /* R16 «Мой двор»: 960 */
+}
+/* П3 (кадр 05, «Обращения»): липкий заголовок модуля (группа «Новые 21» R09, шапка табло R17) прилипает к краю
+   содержимого листа, а прокрученные строки оставались видны в верхнем отступе над ним — «плашка наезжает на строку,
+   текст обрезан». Верхний отступ листа — первая строка содержимого (::before), а не поле прокрутки: прокрученное уходит
+   под край листа, липкое прилипает к самому краю. Листы слева («Вопрос акиму», «Проекты и идеи») — свои правила. */
+body.civic-mode:not([data-birge-section="questions"]) .birge-day.bk-glass:not([data-screen="projects"]):not([data-screen="ideas"]) {
+  padding-top: 0; }
+body.civic-mode:not([data-birge-section="questions"]) .birge-day.bk-glass:not([data-screen="projects"]):not([data-screen="ideas"])::before {
+  content: ""; display: block; height: var(--s-6, 24px); }
+@media (max-width: 760px) {
+  body.civic-mode:not([data-birge-section="questions"]) .birge-day.bk-glass:not([data-screen="projects"]):not([data-screen="ideas"])::before {
+    height: var(--s-4, 16px); }
 }
 /* Значки пунктов меню — 20 px, цвет второго текста; выбранный пункт — цвет текста. */
 body.civic-mode .birge-menu-ic { width: 20px; height: 20px; color: var(--c-text-2, #5b6a64); flex: none; }

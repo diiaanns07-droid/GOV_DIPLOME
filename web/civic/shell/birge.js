@@ -678,7 +678,15 @@
     }
     state.screenHandle = null;
     screen?.classList.remove("birge-day--module");
-    screen?.querySelector("#birge-screen-root")?.replaceChildren();
+    const root = screen?.querySelector("#birge-screen-root");
+    if (root) {
+      root.replaceChildren();
+      // П3 (кадры листов): модули вешают на общий корень свой класс и стиль (R06 «Работы» .rw, R08 «Службы» .svc, «Рядом»
+      // .nb — колонка 720) и при уходе не снимают — следующий раздел («Ведомства», «Спросить Birge») сжимался в ту же
+      // колонку с обрезанной таблицей. Корень каждого раздела начинается чистым.
+      root.className = "birge-day-root birge-screen-root";
+      for (const name of root.getAttributeNames()) if (!["id", "class"].includes(name)) root.removeAttribute(name);
+    }
     if (screen) { screen.dataset.screen = ""; screen.dataset.path = ""; }
   }
   // Опции модулю экрана (контракт — INTEGRATION.txt §11): тот же клиент API, язык, вид; переходы делает оболочка.
