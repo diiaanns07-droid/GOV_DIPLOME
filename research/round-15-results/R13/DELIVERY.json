@@ -5,8 +5,8 @@
  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
  "restored_from": null,
  "restored_note": "путь R13 в FINAL-4 = поставка 6 раунда 14 (0487f2a6), восстанавливать нечего",
- "code_sha": "07458571350152716edc899ce372105bee6168af",
- "tested_sha": "07458571350152716edc899ce372105bee6168af",
+ "code_sha": "1512ebba18e3625901751b1a808c942e497a08af",
+ "tested_sha": "1512ebba18e3625901751b1a808c942e497a08af",
  "push_status": "OK",
  "changed_paths": [
   "ml/civic_forecast/targets.py",
@@ -39,8 +39,6 @@
   "research/round-15-results/R13/screens/1366-ru-a-new.jpg",
   "research/round-15-results/R13/screens/1366-ru-a-next.jpg",
   "research/round-15-results/R13/screens/1366-ru-a-order-form.jpg",
-  "research/round-15-results/R13/screens/1366-ru-col720-detail.jpg",
-  "research/round-15-results/R13/screens/1366-ru-col720-list.jpg",
   "research/round-15-results/R13/screens/1366-ru-r-empty.jpg",
   "research/round-15-results/R13/screens/1366-ru-r-error.jpg",
   "research/round-15-results/R13/screens/1366-ru-r-form-error.jpg",
@@ -64,6 +62,8 @@
   "tests/civic/R13/meetings/meetings_browser.cjs",
   "tests/civic/R13/meetings/test_r13_meetings.py",
   "tests/civic/R13/meetings/test_r13_meetings_gateway.py",
+  "tests/civic/R13/qa/qa_browser.cjs",
+  "tests/civic/R13/qa/test_r13_qa.py",
   "tests/civic/R13/test_r13_forecast_week.py",
   "tests/civic/R13/test_r13_neighbors_contract.py",
   "ui/civic_forecast/__init__.py",
@@ -83,7 +83,7 @@
  "tests": {
   "pytest_tests_civic_R13": {
    "status": "PASS",
-   "passed": 176,
+   "passed": 180,
    "failed": 0,
    "command": "python3 -m pytest -q tests/civic/R13"
   },
@@ -92,24 +92,20 @@
    "passed": 146,
    "total": 146,
    "command": "tests/civic/R13/meetings/meetings_browser.cjs --full (BIRGE_URL стенда)",
-   "sha": "07458571350152716edc899ce372105bee6168af",
-   "env": "облако: сборка R01 claude/brave-fermi-nhzetj @ 0121f7bd (B0.12: раздел — экран-колонка 720 px, меню «Мой двор») + модули R13 ссылками, CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
+   "sha": "1512ebba18e3625901751b1a808c942e497a08af",
+   "env": "облако: сборка R01 claude/brave-fermi-nhzetj @ 0121f7bd (B0.12: раздел — экран-колонка 720 px) + модули R13 ссылками, CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
    "note": "1366/1024/375 × ru/kk, все состояния; замер R10 B-118: зоны нажатия ≥ 44 px и текст ≥ 13 px на списке, встрече, вкладке «Вопросы» и у акимата; кадры screens/ — с этого прогона",
    "quick_run": {
     "status": "PASS",
     "passed": 90,
     "total": 90,
     "command": "meetings_browser.cjs (1366/375 × ru/kk)",
-    "sha": "07458571350152716edc899ce372105bee6168af",
+    "sha": "1512ebba18e3625901751b1a808c942e497a08af",
     "note": "быстрый прогон на свежей базе"
    },
    "regress_final4": {
-    "status": "PASS",
-    "passed": 90,
-    "total": 90,
-    "command": "meetings_browser.cjs (1366/375 × ru/kk)",
-    "sha": "07458571350152716edc899ce372105bee6168af",
-    "note": "второй стенд: FINAL-4 e91acb69 + патчи R13 (лист слева), свежая база"
+    "status": "NOT_RUN",
+    "note": "в этой поставке не гонялся"
    }
   },
   "browser_qa": {
@@ -117,7 +113,7 @@
    "passed": 95,
    "total": 95,
    "command": "tests/civic/R13/qa/qa_browser.cjs (BIRGE_REPO стенда)",
-   "sha": "07458571350152716edc899ce372105bee6168af",
+   "sha": "1512ebba18e3625901751b1a808c942e497a08af",
    "note": "«Вопрос акиму»: 375/1366 × ru/kk, житель и акимат; после правок B-118 (44 px, 13 px)"
   },
   "r08_contract_on_r08_branch": {
