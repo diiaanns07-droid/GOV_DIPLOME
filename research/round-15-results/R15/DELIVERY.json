@@ -11,14 +11,14 @@
   "package": "e91acb69",
   "R17": "e286eccf (разбор)",
   "R13": "4f5946dd (разбор)",
-  "R03": "fdbfc09a (разбор JS)",
+  "R03": "b522eeb4",
   "R16": "00015128 (разбор)",
-  "R04": "018f2330",
-  "R02": "01ecf59e (claude/affectionate-shannon-jm6ws5)",
-  "R07": "ae749f4e (разбор)",
+  "R04": "24883664 (разбор шаблонов)",
+  "R02": "01eb1389 (claude/affectionate-shannon-jm6ws5)",
+  "R07": "40f7a2b1 (разбор heat.js)",
   "overlay": "research/round-15-results/R15/browser/OVERLAY_SHAS.txt",
   "R09": "0b6d37f8 (разбор)",
-  "R01": "afaabca1 (B0.17 в ветке R01; сервер как B0.16)",
+  "R01": "7729c2cc (B0.17+ в ветке R01)",
   "R08": "92406c57 (claude/laughing-euler-iv3on3, разбор JS)",
   "R06": "c1e02b02 (разбор)",
   "overlay2": "research/round-15-results/R15/browser/OVERLAY2_SHAS.txt",
@@ -363,6 +363,10 @@
    "xpassed": 0,
    "skipped_not_run": 0,
    "note": "тест скорости moderate — лучший из 3 без GC (просьба R01: полный gc.collect() большого pytest попадал в замер)"
+  },
+  "round18_heads": {
+   "R02_01eb1389_world": "4 passed",
+   "R03_b522eeb4_assistant": "17 passed"
   }
  },
  "findings": {
