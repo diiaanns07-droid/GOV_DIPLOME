@@ -1,0 +1,4927 @@
+{
+ "meta": {
+  "root": "/tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/builds/r01-b6-25ee5a39",
+  "sha": "25ee5a39",
+  "world": true,
+  "seeds": [
+   "seed-demo",
+   "seed-r14-demo"
+  ],
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "when": "2026-10-16T17:46:40.217Z",
+  "machine": {
+   "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+   "cores": 4,
+   "mem_gb": 16,
+   "platform": "linux 6.18.44-fc-v139",
+   "node": "v22.22.0"
+  },
+  "total_ms": 309040
+ },
+ "counts": {
+  "PASS": 352,
+  "FAIL": 0,
+  "NOT_RUN": 2,
+  "INFO": 0
+ },
+ "timing": {
+  "api": {
+   "7": [
+    159,
+    37,
+    78,
+    7,
+    95,
+    50,
+    64
+   ],
+   "8": [
+    21,
+    17,
+    43,
+    3,
+    54,
+    47
+   ],
+   "9": [
+    312,
+    61,
+    9,
+    5,
+    95
+   ]
+  },
+  "ui": {
+   "0": [
+    457,
+    350,
+    411,
+    419
+   ],
+   "7": [
+    14204,
+    14239,
+    13716,
+    13746
+   ],
+   "8": [
+    15234,
+    15382,
+    14660,
+    14797
+   ],
+   "9": [
+    7059,
+    7100,
+    6891,
+    6876
+   ],
+   "0w": [
+    10845,
+    11168,
+    10210,
+    11086
+   ]
+  }
+ },
+ "results": [
+  {
+   "layer": "мир",
+   "step": "0",
+   "name": "файл демо-мира R02 и scenes (сцены 7–9)",
+   "status": "PASS",
+   "detail": {
+    "scenes": [
+     "step2",
+     "scene7",
+     "scene8",
+     "scene9"
+    ],
+    "counts": {
+     "yards": 32,
+     "complaints": 743,
+     "works": 43,
+     "planned_conflicts": 5,
+     "ideas": 12,
+     "initiatives": 10,
+     "incidents": 3,
+     "meetings": 3,
+     "questions": 17,
+     "events": 4
+    }
+   },
+   "owner": "R02",
+   "shot": null,
+   "ms": 12
+  },
+  {
+   "layer": "API",
+   "step": "7",
+   "name": "«Мой двор»: название, соседи — число, проблемы и инициативы двора",
+   "status": "PASS",
+   "detail": {
+    "label": "Двор: BI City Tokyo",
+    "members": 37,
+    "problems": 1,
+    "initiatives": 2
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 10764
+  },
+  {
+   "layer": "API",
+   "step": "7",
+   "name": "в «Моём дворе» есть инициатива сцены i-w15-01",
+   "status": "PASS",
+   "detail": {
+    "items": [
+     "i-w15-01"
+    ]
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 10765
+  },
+  {
+   "layer": "API",
+   "step": "7",
+   "name": "«Я приду» до сцены = 14 (демо-мир)",
+   "status": "PASS",
+   "detail": {
+    "joined": 14
+   },
+   "owner": "R16 + R02",
+   "shot": null,
+   "ms": 10802
+  },
+  {
+   "layer": "API",
+   "step": "7",
+   "name": "«Я приду» → 15",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "joined": 15
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 10887
+  },
+  {
+   "layer": "API",
+   "step": "7",
+   "name": "акимат «Поддержать: мешки и вывоз» → у инициативы «Поддержано акиматом»",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "support": {
+     "by_akimat": true,
+     "inventory": true,
+     "pickup_service": "waste",
+     "note": "Мешки и вывоз в 14:00",
+     "at": "2026-10-16T22:41:42+05:00"
+    }
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 11033
+  },
+  {
+   "layer": "API",
+   "step": "7",
+   "name": "сделанная инициатива: статус done, отчёт «Сделано вместе: N соседей»",
+   "status": "PASS",
+   "detail": {
+    "status": "done",
+    "report": "Посадили 6 саженцев и покрасили скамейки — сделано вместе: 15 соседей",
+    "joined": 15
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 11097
+  },
+  {
+   "layer": "API",
+   "step": "8",
+   "name": "ИИ: «Нужны 2 службы» — маршрутизация жалобы сцены (вода + дороги)",
+   "status": "PASS",
+   "detail": {
+    "services": [
+     "water",
+     "road"
+    ],
+    "joint": true
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 11119
+  },
+  {
+   "layer": "API",
+   "step": "8",
+   "name": "сотрудник: совместное исполнение — 2 службы у обращения",
+   "status": "PASS",
+   "detail": {
+    "status": 200
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 11136
+  },
+  {
+   "layer": "API",
+   "step": "8",
+   "name": "сотрудник: часть «Водоканал — сделано»",
+   "status": "PASS",
+   "detail": {
+    "status": 200
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 11180
+  },
+  {
+   "layer": "API",
+   "step": "8",
+   "name": "у жителя паспорт с двумя службами и их статусами",
+   "status": "PASS",
+   "detail": {
+    "services": [
+     "water:done",
+     "road:todo"
+    ],
+    "shape": "joint.services"
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 11184
+  },
+  {
+   "layer": "API",
+   "step": "8",
+   "name": "«Штаб ведомств»: табло служб (строки служб, без имён людей)",
+   "status": "PASS",
+   "detail": {
+    "rows": 20
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 11238
+  },
+  {
+   "layer": "API",
+   "step": "8",
+   "name": "«Календарь работ»: конфликт «асфальт раньше сетей — копаем дважды» и совет ru/kk",
+   "status": "PASS",
+   "detail": {
+    "found": true,
+    "n": 2,
+    "kind": "dig_after_surface"
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 11286
+  },
+  {
+   "layer": "API",
+   "step": "9",
+   "name": "«Картина дня»: пульс «Снег в Нуре ×N»",
+   "status": "PASS",
+   "detail": {
+    "pulse": [
+     "spike_city:snow_ice:-:×4",
+     "spike:transport:nura:×6.6",
+     "spike:lighting:nura:×5.3"
+    ]
+   },
+   "owner": "R08 + R02",
+   "shot": null,
+   "ms": 11600
+  },
+  {
+   "layer": "API",
+   "step": "9",
+   "name": "«Картина дня»: у тревоги «Снег» ссылка «Открыть кризисный штаб» (R17)",
+   "status": "PASS",
+   "detail": {
+    "crisis": {
+     "link": "/#agencies/crisis/inc-w15-buran",
+     "incident": "inc-w15-buran",
+     "kind": "blizzard"
+    }
+   },
+   "owner": "R08 + R17",
+   "shot": null,
+   "ms": 11661
+  },
+  {
+   "layer": "API",
+   "step": "9",
+   "name": "кризисный штаб: зона «Нура», 4 службы с задачами, обновления ru/kk",
+   "status": "PASS",
+   "detail": {
+    "status": "active",
+    "tasks": [
+     "street_cleaning",
+     "transport",
+     "heating",
+     "akimat"
+    ],
+    "updates": 3
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 11670
+  },
+  {
+   "layer": "API",
+   "step": "9",
+   "name": "житель зоны получает обновления кризиса",
+   "status": "PASS",
+   "detail": {
+    "n": 3
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 11675
+  },
+  {
+   "layer": "API",
+   "step": "9",
+   "name": "«Хроника города»: кадры недели с датой (и отметка «Буран»)",
+   "status": "PASS",
+   "detail": {
+    "frames": 8,
+    "annotations": true
+   },
+   "owner": "R07",
+   "shot": null,
+   "ms": 11772
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "оболочка: разделы раунда 15 (IA_ROUND15)",
+   "status": "PASS",
+   "detail": {
+    "ids": [
+     "map",
+     "day",
+     "inbox",
+     "agencies",
+     "more",
+     "mine",
+     "yard",
+     "ideas",
+     "projects",
+     "together",
+     "meetings",
+     "intake",
+     "analyst",
+     "board",
+     "qr"
+    ],
+    "globals": [
+     "BirgeTogether",
+     "BirgeAgencies",
+     "BirgeWorksCalendar",
+     "BirgeReplay",
+     "BirgeMeetings",
+     "BirgeAnalyst",
+     "BirgeNotify"
+    ]
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 14884
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "«Мой двор» открыт по адресу #yard/yard-1454082640",
+   "status": "PASS",
+   "detail": {
+    "title": "Мой двор",
+    "chars": 756,
+    "section": "yard"
+   },
+   "owner": "R16",
+   "shot": "1366-ru-7-yard.jpg",
+   "ms": 19342
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "в шапке двора — название и 3 числа (соседей · проблем · инициатив)",
+   "status": "PASS",
+   "detail": {
+    "label": "Двор: BI City Tokyo"
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 19357
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R16",
+   "shot": "1366-ru-7-yard.jpg",
+   "ms": 19385
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 19385
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 19385
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 19385
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 19385
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "в «Обзоре» — инициатива «Субботник во дворе»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16",
+   "shot": null,
+   "ms": 19395
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "нет связи: понятное сообщение и «Повторить», после связи данные вернулись (#yard/yard-1454082640)",
+   "status": "PASS",
+   "detail": {
+    "message": "Мой двор\nНазад\n\nНе удалось загрузить\n\nПроверьте связь и повторите.\n\nПовторить",
+    "retry": true,
+    "recovered": true
+   },
+   "owner": "R16",
+   "shot": "1366-ru-7-offline.jpg",
+   "ms": 25215
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "карточка инициативы → «Я приду» → счётчик +1 (по миру 14 → 15)",
+   "status": "PASS",
+   "detail": {
+    "pressed": true,
+    "before": 15,
+    "after": 16
+   },
+   "owner": "R16",
+   "shot": "1366-ru-7-join.jpg",
+   "ms": 29088
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "житель: «Мои обращения» — две службы и статус каждой (совместное исполнение)",
+   "status": "PASS",
+   "detail": {
+    "metoo": 200,
+    "line": {
+     "text": "Работают 2 службы: Водоканал — сделано Дорожная служба — ждёт",
+     "parts": [
+      "done",
+      "reported_fixed",
+      "todo",
+      "new"
+     ]
+    }
+   },
+   "owner": "R09",
+   "shot": "1366-ru-8-mine-joint.jpg",
+   "ms": 33816
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8m",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R09",
+   "shot": "1366-ru-8-mine-joint.jpg",
+   "ms": 33843
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8m",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 33843
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8m",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 33843
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8m",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 33843
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8m",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 33843
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "вход сотрудника для сцен 8–9",
+   "status": "PASS",
+   "detail": {
+    "status": 200
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 34879
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "«Штаб ведомств» → «Табло» открыт",
+   "status": "PASS",
+   "detail": {
+    "title": "Штаб ведомств",
+    "chars": 1302
+   },
+   "owner": "R17",
+   "shot": "1366-ru-8-board.jpg",
+   "ms": 42293
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R17",
+   "shot": "1366-ru-8-board.jpg",
+   "ms": 42367
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 42367
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 42367
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 42367
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 42367
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "нет связи: понятное сообщение и «Повторить», после связи данные вернулись (#agencies/board)",
+   "status": "PASS",
+   "detail": {
+    "message": "Штаб ведомств\nШтаб ведомств\nТабло\nСовместные\nПередачи\nКалендарь работ\nКризис\n· Идёт\n\nНет связи с сер",
+    "retry": true,
+    "recovered": true
+   },
+   "owner": "R17",
+   "shot": "1366-ru-8-offline.jpg",
+   "ms": 48148
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "«Календарь работ» открыт",
+   "status": "PASS",
+   "detail": {
+    "title": "Штаб ведомств",
+    "chars": 2041
+   },
+   "owner": "R12",
+   "shot": "1366-ru-8-calendar.jpg",
+   "ms": 50524
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8c",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R12",
+   "shot": "1366-ru-8-calendar.jpg",
+   "ms": 50578
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8c",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 50579
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8c",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 50579
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8c",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 50579
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8c",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 50579
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "8",
+   "name": "конфликт сцены «копаем дважды» (улица Баян Сулу) по ссылке #works-calendar/cf-w15-01: улица и совет видны",
+   "status": "PASS",
+   "detail": {
+    "advice": "Сначала замените сети, потом кладите асфальт. Водо",
+    "street": "Баян Сулу",
+    "seenAdvice": true,
+    "seenStreet": true
+   },
+   "owner": "R12",
+   "shot": "1366-ru-8-conflict.jpg",
+   "ms": 52958
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "9",
+   "name": "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»",
+   "status": "PASS",
+   "detail": {
+    "button": true,
+    "text": "Открыть кризисный штаб"
+   },
+   "owner": "R08 + R17",
+   "shot": "1366-ru-9-day.jpg",
+   "ms": 57581
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "9",
+   "name": "подпись кнопки штаба — термин словаря R11 (board.crisis.open)",
+   "status": "PASS",
+   "detail": {
+    "shown": "Открыть кризисный штаб",
+    "r11": "Открыть кризисный штаб"
+   },
+   "owner": "R08 + R11",
+   "shot": null,
+   "ms": 57581
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "9",
+   "name": "кризис inc-w15-buran: штаб «Буран в Нуре» открыт по адресу",
+   "status": "PASS",
+   "detail": {
+    "addr": "#agencies/crisis/inc-w15-buran",
+    "title": "Штаб ведомств",
+    "chars": 1375
+   },
+   "owner": "R17",
+   "shot": "1366-ru-9-crisis.jpg",
+   "ms": 59893
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "9",
+   "name": "в штабе видны задачи служб (4 в демо-мире)",
+   "status": "PASS",
+   "detail": {
+    "seen": 4,
+    "of": 4
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 59980
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "9",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R17",
+   "shot": "1366-ru-9-crisis.jpg",
+   "ms": 60018
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "9",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 60018
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "9",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 60018
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "9",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 60018
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "9",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 60018
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды)",
+   "status": "PASS",
+   "detail": [],
+   "owner": "по тексту ошибки",
+   "shot": null,
+   "ms": 60018
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "оболочка: разделы раунда 15 (IA_ROUND15)",
+   "status": "PASS",
+   "detail": {
+    "ids": [
+     "map",
+     "day",
+     "inbox",
+     "agencies",
+     "more",
+     "mine",
+     "yard",
+     "ideas",
+     "projects",
+     "together",
+     "meetings",
+     "intake",
+     "analyst",
+     "board",
+     "qr"
+    ],
+    "globals": [
+     "BirgeTogether",
+     "BirgeAgencies",
+     "BirgeWorksCalendar",
+     "BirgeReplay",
+     "BirgeMeetings",
+     "BirgeAnalyst",
+     "BirgeNotify"
+    ]
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 63024
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "«Мой двор» открыт по адресу #yard/yard-1454082640",
+   "status": "PASS",
+   "detail": {
+    "title": "Аулам",
+    "chars": 771,
+    "section": "yard"
+   },
+   "owner": "R16",
+   "shot": "1366-kk-7-yard.jpg",
+   "ms": 67526
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "в шапке двора — название и 3 числа (соседей · проблем · инициатив)",
+   "status": "PASS",
+   "detail": {
+    "label": "Аула: BI City Tokyo"
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 67541
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R16",
+   "shot": "1366-kk-7-yard.jpg",
+   "ms": 67569
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 67569
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 67569
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 67569
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 67569
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 67574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "в «Обзоре» — инициатива «Субботник во дворе»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16",
+   "shot": null,
+   "ms": 67585
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "нет связи: понятное сообщение и «Повторить», после связи данные вернулись (#yard/yard-1454082640)",
+   "status": "PASS",
+   "detail": {
+    "message": "Аулам\nАртқа\n\nЖүктеу мүмкін болмады\n\nБайланысты тексеріп, қайталаңыз.\n\nҚайталау",
+    "retry": true,
+    "recovered": true
+   },
+   "owner": "R16",
+   "shot": "1366-kk-7-offline.jpg",
+   "ms": 73393
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "карточка инициативы → «Я приду» → счётчик +1 (по миру 14 → 15)",
+   "status": "PASS",
+   "detail": {
+    "pressed": true,
+    "before": 16,
+    "after": 17
+   },
+   "owner": "R16",
+   "shot": "1366-kk-7-join.jpg",
+   "ms": 77263
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "житель: «Мои обращения» — две службы и статус каждой (совместное исполнение)",
+   "status": "PASS",
+   "detail": {
+    "metoo": 200,
+    "line": {
+     "text": "2 қызмет жұмыс істейді: Сумен жабдықтау қызметі — орындалды Жол қызметі — күтуде",
+     "parts": [
+      "done",
+      "reported_fixed",
+      "todo",
+      "new"
+     ]
+    }
+   },
+   "owner": "R09",
+   "shot": "1366-kk-8-mine-joint.jpg",
+   "ms": 81982
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8m",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R09",
+   "shot": "1366-kk-8-mine-joint.jpg",
+   "ms": 82009
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8m",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 82009
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8m",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 82009
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8m",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 82009
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8m",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 82009
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8m",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 82017
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "вход сотрудника для сцен 8–9",
+   "status": "PASS",
+   "detail": {
+    "status": 200
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 83001
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "«Штаб ведомств» → «Табло» открыт",
+   "status": "PASS",
+   "detail": {
+    "title": "Ведомстволар штабы",
+    "chars": 1372
+   },
+   "owner": "R17",
+   "shot": "1366-kk-8-board.jpg",
+   "ms": 90405
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R17",
+   "shot": "1366-kk-8-board.jpg",
+   "ms": 90463
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 90463
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 90463
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 90463
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 90463
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 90467
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "нет связи: понятное сообщение и «Повторить», после связи данные вернулись (#agencies/board)",
+   "status": "PASS",
+   "detail": {
+    "message": "Ведомстволар штабы\nВедомстволар штабы\nТабло\nБірлескен\nЖіберулер\nЖұмыстар күнтізбесі\nЖедел штаб\n· Жүр",
+    "retry": true,
+    "recovered": true
+   },
+   "owner": "R17",
+   "shot": "1366-kk-8-offline.jpg",
+   "ms": 96398
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "«Календарь работ» открыт",
+   "status": "PASS",
+   "detail": {
+    "title": "Ведомстволар штабы",
+    "chars": 2131
+   },
+   "owner": "R12",
+   "shot": "1366-kk-8-calendar.jpg",
+   "ms": 98733
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8c",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R12",
+   "shot": "1366-kk-8-calendar.jpg",
+   "ms": 98796
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8c",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 98796
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8c",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 98796
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8c",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 98796
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8c",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 98796
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8c",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 98799
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "8",
+   "name": "конфликт сцены «копаем дважды» (Баян Сұлу көшесі) по ссылке #works-calendar/cf-w15-01: улица и совет видны",
+   "status": "PASS",
+   "detail": {
+    "advice": "Алдымен желілерді ауыстырыңыз, содан кейін асфальт",
+    "street": "Баян Сұлу",
+    "seenAdvice": true,
+    "seenStreet": true
+   },
+   "owner": "R12",
+   "shot": "1366-kk-8-conflict.jpg",
+   "ms": 101184
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»",
+   "status": "PASS",
+   "detail": {
+    "button": true,
+    "text": "Жедел штабты ашу"
+   },
+   "owner": "R08 + R17",
+   "shot": "1366-kk-9-day.jpg",
+   "ms": 105817
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "подпись кнопки штаба — термин словаря R11 (board.crisis.open)",
+   "status": "PASS",
+   "detail": {
+    "shown": "Жедел штабты ашу",
+    "r11": "Жедел штабты ашу"
+   },
+   "owner": "R08 + R11",
+   "shot": null,
+   "ms": 105817
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "кризис inc-w15-buran: штаб «Нұрада боран» открыт по адресу",
+   "status": "PASS",
+   "detail": {
+    "addr": "#agencies/crisis/inc-w15-buran",
+    "title": "Ведомстволар штабы",
+    "chars": 1469
+   },
+   "owner": "R17",
+   "shot": "1366-kk-9-crisis.jpg",
+   "ms": 108184
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "в штабе видны задачи служб (4 в демо-мире)",
+   "status": "PASS",
+   "detail": {
+    "seen": 4,
+    "of": 4
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 108239
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R17",
+   "shot": "1366-kk-9-crisis.jpg",
+   "ms": 108278
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 108278
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 108278
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 108278
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 108278
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "9",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 108284
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды)",
+   "status": "PASS",
+   "detail": [],
+   "owner": "по тексту ошибки",
+   "shot": null,
+   "ms": 108284
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "оболочка: разделы раунда 15 (IA_ROUND15)",
+   "status": "PASS",
+   "detail": {
+    "ids": [
+     "map",
+     "day",
+     "inbox",
+     "agencies",
+     "more",
+     "mine",
+     "yard",
+     "ideas",
+     "together",
+     "meetings"
+    ],
+    "globals": [
+     "BirgeTogether",
+     "BirgeAgencies",
+     "BirgeWorksCalendar",
+     "BirgeReplay",
+     "BirgeMeetings",
+     "BirgeAnalyst",
+     "BirgeNotify"
+    ]
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 111199
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "«Мой двор» открыт по адресу #yard/yard-1454082640",
+   "status": "PASS",
+   "detail": {
+    "title": "Мой двор",
+    "chars": 745,
+    "section": "yard"
+   },
+   "owner": "R16",
+   "shot": "375-ru-7-yard.jpg",
+   "ms": 115299
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "в шапке двора — название и 3 числа (соседей · проблем · инициатив)",
+   "status": "PASS",
+   "detail": {
+    "label": "Двор: BI City Tokyo"
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 115313
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R16",
+   "shot": "375-ru-7-yard.jpg",
+   "ms": 115337
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 115337
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 115337
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 115337
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 115337
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "в «Обзоре» — инициатива «Субботник во дворе»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16",
+   "shot": null,
+   "ms": 115347
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "нет связи: понятное сообщение и «Повторить», после связи данные вернулись (#yard/yard-1454082640)",
+   "status": "PASS",
+   "detail": {
+    "message": "Мой двор\nНазад\n\nНе удалось загрузить\n\nПроверьте связь и повторите.\n\nПовторить",
+    "retry": true,
+    "recovered": true
+   },
+   "owner": "R16",
+   "shot": "375-ru-7-offline.jpg",
+   "ms": 121072
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "карточка инициативы → «Я приду» → счётчик +1 (по миру 14 → 15)",
+   "status": "PASS",
+   "detail": {
+    "pressed": true,
+    "before": 17,
+    "after": 18
+   },
+   "owner": "R16",
+   "shot": "375-ru-7-join.jpg",
+   "ms": 124915
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "житель: «Мои обращения» — две службы и статус каждой (совместное исполнение)",
+   "status": "PASS",
+   "detail": {
+    "metoo": 200,
+    "line": {
+     "text": "Работают 2 службы: Водоканал — сделано Дорожная служба — ждёт",
+     "parts": [
+      "done",
+      "reported_fixed",
+      "todo",
+      "new"
+     ]
+    }
+   },
+   "owner": "R09",
+   "shot": "375-ru-8-mine-joint.jpg",
+   "ms": 129581
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8m",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R09",
+   "shot": "375-ru-8-mine-joint.jpg",
+   "ms": 129607
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8m",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 129607
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8m",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 129607
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8m",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 129607
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8m",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 129607
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "вход сотрудника для сцен 8–9",
+   "status": "PASS",
+   "detail": {
+    "status": 200
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 130607
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "«Штаб ведомств» → «Табло» открыт",
+   "status": "PASS",
+   "detail": {
+    "title": "Штаб ведомств",
+    "chars": 2304
+   },
+   "owner": "R17",
+   "shot": "375-ru-8-board.jpg",
+   "ms": 137647
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R17",
+   "shot": "375-ru-8-board.jpg",
+   "ms": 137678
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 137678
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 137678
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 137678
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 137678
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "нет связи: понятное сообщение и «Повторить», после связи данные вернулись (#agencies/board)",
+   "status": "PASS",
+   "detail": {
+    "message": "Штаб ведомств\nТабло\nСовместные\nПередачи\nКалендарь работ\nКризис\n· Идёт\n\nНет связи с сервером\n\nПроверь",
+    "retry": true,
+    "recovered": true
+   },
+   "owner": "R17",
+   "shot": "375-ru-8-offline.jpg",
+   "ms": 143411
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "«Календарь работ» открыт",
+   "status": "PASS",
+   "detail": {
+    "title": "Штаб ведомств",
+    "chars": 2027
+   },
+   "owner": "R12",
+   "shot": "375-ru-8-calendar.jpg",
+   "ms": 145675
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8c",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R12",
+   "shot": "375-ru-8-calendar.jpg",
+   "ms": 145723
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8c",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 145723
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8c",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 145723
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8c",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 145723
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8c",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 145723
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "8",
+   "name": "конфликт сцены «копаем дважды» (улица Баян Сулу) по ссылке #works-calendar/cf-w15-01: улица и совет видны",
+   "status": "PASS",
+   "detail": {
+    "advice": "Сначала замените сети, потом кладите асфальт. Водо",
+    "street": "Баян Сулу",
+    "seenAdvice": true,
+    "seenStreet": true
+   },
+   "owner": "R12",
+   "shot": "375-ru-8-conflict.jpg",
+   "ms": 148021
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "9",
+   "name": "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»",
+   "status": "PASS",
+   "detail": {
+    "button": true,
+    "text": "Открыть кризисный штаб"
+   },
+   "owner": "R08 + R17",
+   "shot": "375-ru-9-day.jpg",
+   "ms": 152549
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "9",
+   "name": "подпись кнопки штаба — термин словаря R11 (board.crisis.open)",
+   "status": "PASS",
+   "detail": {
+    "shown": "Открыть кризисный штаб",
+    "r11": "Открыть кризисный штаб"
+   },
+   "owner": "R08 + R11",
+   "shot": null,
+   "ms": 152549
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "9",
+   "name": "кризис inc-w15-buran: штаб «Буран в Нуре» открыт по адресу",
+   "status": "PASS",
+   "detail": {
+    "addr": "#agencies/crisis/inc-w15-buran",
+    "title": "Штаб ведомств",
+    "chars": 1361
+   },
+   "owner": "R17",
+   "shot": "375-ru-9-crisis.jpg",
+   "ms": 154814
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "9",
+   "name": "в штабе видны задачи служб (4 в демо-мире)",
+   "status": "PASS",
+   "detail": {
+    "seen": 4,
+    "of": 4
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 154881
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "9",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R17",
+   "shot": "375-ru-9-crisis.jpg",
+   "ms": 154912
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "9",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 154912
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "9",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 154912
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "9",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 154912
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "9",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 154912
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды)",
+   "status": "PASS",
+   "detail": [],
+   "owner": "по тексту ошибки",
+   "shot": null,
+   "ms": 154912
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "оболочка: разделы раунда 15 (IA_ROUND15)",
+   "status": "PASS",
+   "detail": {
+    "ids": [
+     "map",
+     "day",
+     "inbox",
+     "agencies",
+     "more",
+     "mine",
+     "yard",
+     "ideas",
+     "together",
+     "meetings"
+    ],
+    "globals": [
+     "BirgeTogether",
+     "BirgeAgencies",
+     "BirgeWorksCalendar",
+     "BirgeReplay",
+     "BirgeMeetings",
+     "BirgeAnalyst",
+     "BirgeNotify"
+    ]
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 158772
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "«Мой двор» открыт по адресу #yard/yard-1454082640",
+   "status": "PASS",
+   "detail": {
+    "title": "Аулам",
+    "chars": 761,
+    "section": "yard"
+   },
+   "owner": "R16",
+   "shot": "375-kk-7-yard.jpg",
+   "ms": 162885
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "в шапке двора — название и 3 числа (соседей · проблем · инициатив)",
+   "status": "PASS",
+   "detail": {
+    "label": "Аула: BI City Tokyo"
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 162900
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R16",
+   "shot": "375-kk-7-yard.jpg",
+   "ms": 162925
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 162925
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 162925
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 162925
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 162925
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R16",
+   "shot": null,
+   "ms": 162930
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "в «Обзоре» — инициатива «Субботник во дворе»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16",
+   "shot": null,
+   "ms": 162953
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "нет связи: понятное сообщение и «Повторить», после связи данные вернулись (#yard/yard-1454082640)",
+   "status": "PASS",
+   "detail": {
+    "message": "Аулам\nАртқа\n\nЖүктеу мүмкін болмады\n\nБайланысты тексеріп, қайталаңыз.\n\nҚайталау",
+    "retry": true,
+    "recovered": true
+   },
+   "owner": "R16",
+   "shot": "375-kk-7-offline.jpg",
+   "ms": 168692
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "карточка инициативы → «Я приду» → счётчик +1 (по миру 14 → 15)",
+   "status": "PASS",
+   "detail": {
+    "pressed": true,
+    "before": 18,
+    "after": 19
+   },
+   "owner": "R16",
+   "shot": "375-kk-7-join.jpg",
+   "ms": 172518
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "житель: «Мои обращения» — две службы и статус каждой (совместное исполнение)",
+   "status": "PASS",
+   "detail": {
+    "metoo": 200,
+    "line": {
+     "text": "2 қызмет жұмыс істейді: Сумен жабдықтау қызметі — орындалды Жол қызметі — күтуде",
+     "parts": [
+      "done",
+      "reported_fixed",
+      "todo",
+      "new"
+     ]
+    }
+   },
+   "owner": "R09",
+   "shot": "375-kk-8-mine-joint.jpg",
+   "ms": 177194
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8m",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R09",
+   "shot": "375-kk-8-mine-joint.jpg",
+   "ms": 177217
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8m",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 177217
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8m",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 177217
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8m",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 177217
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8m",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 177217
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8m",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R09",
+   "shot": null,
+   "ms": 177221
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "вход сотрудника для сцен 8–9",
+   "status": "PASS",
+   "detail": {
+    "status": 200
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 178244
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "«Штаб ведомств» → «Табло» открыт",
+   "status": "PASS",
+   "detail": {
+    "title": "Ведомстволар штабы",
+    "chars": 2531
+   },
+   "owner": "R17",
+   "shot": "375-kk-8-board.jpg",
+   "ms": 185381
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R17",
+   "shot": "375-kk-8-board.jpg",
+   "ms": 185421
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 185421
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 185421
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 185421
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 185421
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 185425
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "нет связи: понятное сообщение и «Повторить», после связи данные вернулись (#agencies/board)",
+   "status": "PASS",
+   "detail": {
+    "message": "Ведомстволар штабы\nТабло\nБірлескен\nЖіберулер\nЖұмыстар күнтізбесі\nЖедел штаб\n· Жүріп жатыр\n\nСервермен",
+    "retry": true,
+    "recovered": true
+   },
+   "owner": "R17",
+   "shot": "375-kk-8-offline.jpg",
+   "ms": 191151
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "«Календарь работ» открыт",
+   "status": "PASS",
+   "detail": {
+    "title": "Ведомстволар штабы",
+    "chars": 2107
+   },
+   "owner": "R12",
+   "shot": "375-kk-8-calendar.jpg",
+   "ms": 193429
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8c",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R12",
+   "shot": "375-kk-8-calendar.jpg",
+   "ms": 193490
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8c",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 193490
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8c",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 193490
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8c",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 193490
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8c",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 193490
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8c",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 193494
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "8",
+   "name": "конфликт сцены «копаем дважды» (Баян Сұлу көшесі) по ссылке #works-calendar/cf-w15-01: улица и совет видны",
+   "status": "PASS",
+   "detail": {
+    "advice": "Алдымен желілерді ауыстырыңыз, содан кейін асфальт",
+    "street": "Баян Сұлу",
+    "seenAdvice": true,
+    "seenStreet": true
+   },
+   "owner": "R12",
+   "shot": "375-kk-8-conflict.jpg",
+   "ms": 195813
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "«Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб»",
+   "status": "PASS",
+   "detail": {
+    "button": true,
+    "text": "Жедел штабты ашу"
+   },
+   "owner": "R08 + R17",
+   "shot": "375-kk-9-day.jpg",
+   "ms": 200328
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "подпись кнопки штаба — термин словаря R11 (board.crisis.open)",
+   "status": "PASS",
+   "detail": {
+    "shown": "Жедел штабты ашу",
+    "r11": "Жедел штабты ашу"
+   },
+   "owner": "R08 + R11",
+   "shot": null,
+   "ms": 200329
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "кризис inc-w15-buran: штаб «Нұрада боран» открыт по адресу",
+   "status": "PASS",
+   "detail": {
+    "addr": "#agencies/crisis/inc-w15-buran",
+    "title": "Ведомстволар штабы",
+    "chars": 1450
+   },
+   "owner": "R17",
+   "shot": "375-kk-9-crisis.jpg",
+   "ms": 202593
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "в штабе видны задачи служб (4 в демо-мире)",
+   "status": "PASS",
+   "detail": {
+    "seen": 4,
+    "of": 4
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 202660
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R17",
+   "shot": "375-kk-9-crisis.jpg",
+   "ms": 202687
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 202687
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "шрифт ≥ 13 px",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 202687
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "зоны нажатия ≥ 40 px (цель 44)",
+   "status": "PASS",
+   "detail": {
+    "under40": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 202687
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 202687
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "9",
+   "name": "ҚАЗ: на экране нет русских подписей раздела",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "owner": "R17",
+   "shot": null,
+   "ms": 202689
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды)",
+   "status": "PASS",
+   "detail": [],
+   "owner": "по тексту ошибки",
+   "shot": null,
+   "ms": 202689
+  },
+  {
+   "layer": "UI board 1920-ru",
+   "step": "9",
+   "name": "открыта с данными (вход сотрудника принят)",
+   "status": "PASS",
+   "detail": {
+    "state": "ready",
+    "login_form": false
+   },
+   "owner": "R08",
+   "shot": "board-1920-ru.jpg",
+   "ms": 206835
+  },
+  {
+   "layer": "UI board 1920-ru",
+   "step": "9",
+   "name": "без прокрутки на весь экран",
+   "status": "PASS",
+   "detail": {
+    "scrollH": 1080,
+    "h": 1080,
+    "scrollW": 1920,
+    "w": 1920
+   },
+   "owner": "R08",
+   "shot": "board-1920-ru.jpg",
+   "ms": 206835
+  },
+  {
+   "layer": "UI board 1920-ru",
+   "step": "9",
+   "name": "тёмная тема только здесь (.bk-dark, тёмный фон)",
+   "status": "PASS",
+   "detail": {
+    "dark": true,
+    "bg_luminance": 0.005
+   },
+   "owner": "R08",
+   "shot": "board-1920-ru.jpg",
+   "ms": 206835
+  },
+  {
+   "layer": "UI board 1920-ru",
+   "step": "9",
+   "name": "крупные живые числа (≥ 40 px) — читается с 3 м",
+   "status": "PASS",
+   "detail": {
+    "big_numbers": 4
+   },
+   "owner": "R08",
+   "shot": "board-1920-ru.jpg",
+   "ms": 206835
+  },
+  {
+   "layer": "UI board 1920-ru",
+   "step": "9",
+   "name": "мелкого текста нет (≥ 14 px на большом экране)",
+   "status": "PASS",
+   "detail": {
+    "min_font": 21.1,
+    "smallest": [
+     [
+      21.1,
+      "Весь город"
+     ],
+     [
+      21.1,
+      "Пример"
+     ],
+     [
+      21.1,
+      "Пятница, 16 октября"
+     ],
+     [
+      21.1,
+      "ҚАЗ"
+     ]
+    ]
+   },
+   "owner": "R08",
+   "shot": "board-1920-ru.jpg",
+   "ms": 206835
+  },
+  {
+   "layer": "UI board 1920-ru",
+   "step": "9",
+   "name": "контраст текста ≥ 4,5:1 на тёмном",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R08",
+   "shot": "board-1920-ru.jpg",
+   "ms": 206835
+  },
+  {
+   "layer": "UI board 1920-ru",
+   "step": "9",
+   "name": "пометка «Пример» на синтетике",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08",
+   "shot": "board-1920-ru.jpg",
+   "ms": 206835
+  },
+  {
+   "layer": "UI board 1920-ru",
+   "step": "9",
+   "name": "«На весь экран» и «← В Birge»",
+   "status": "PASS",
+   "detail": {
+    "full": true,
+    "back": true
+   },
+   "owner": "R08",
+   "shot": "board-1920-ru.jpg",
+   "ms": 206866
+  },
+  {
+   "layer": "UI board 1920-ru",
+   "step": "9",
+   "name": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "owner": "R08",
+   "shot": "board-1920-ru.jpg",
+   "ms": 206866
+  },
+  {
+   "layer": "UI board 1366-ru",
+   "step": "9",
+   "name": "открыта с данными (вход сотрудника принят)",
+   "status": "PASS",
+   "detail": {
+    "state": "ready",
+    "login_form": false
+   },
+   "owner": "R08",
+   "shot": "board-1366-ru.jpg",
+   "ms": 210786
+  },
+  {
+   "layer": "UI board 1366-ru",
+   "step": "9",
+   "name": "без прокрутки на весь экран",
+   "status": "PASS",
+   "detail": {
+    "scrollH": 768,
+    "h": 768,
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R08",
+   "shot": "board-1366-ru.jpg",
+   "ms": 210786
+  },
+  {
+   "layer": "UI board 1366-ru",
+   "step": "9",
+   "name": "тёмная тема только здесь (.bk-dark, тёмный фон)",
+   "status": "PASS",
+   "detail": {
+    "dark": true,
+    "bg_luminance": 0.005
+   },
+   "owner": "R08",
+   "shot": "board-1366-ru.jpg",
+   "ms": 210786
+  },
+  {
+   "layer": "UI board 1366-ru",
+   "step": "9",
+   "name": "крупные живые числа (≥ 40 px) — читается с 3 м",
+   "status": "PASS",
+   "detail": {
+    "big_numbers": 4
+   },
+   "owner": "R08",
+   "shot": "board-1366-ru.jpg",
+   "ms": 210786
+  },
+  {
+   "layer": "UI board 1366-ru",
+   "step": "9",
+   "name": "мелкого текста нет (≥ 14 px на большом экране)",
+   "status": "PASS",
+   "detail": {
+    "min_font": 15,
+    "smallest": [
+     [
+      15,
+      "Весь город"
+     ],
+     [
+      15,
+      "Пример"
+     ],
+     [
+      15,
+      "Пятница, 16 октября"
+     ],
+     [
+      15,
+      "ҚАЗ"
+     ]
+    ]
+   },
+   "owner": "R08",
+   "shot": "board-1366-ru.jpg",
+   "ms": 210786
+  },
+  {
+   "layer": "UI board 1366-ru",
+   "step": "9",
+   "name": "контраст текста ≥ 4,5:1 на тёмном",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R08",
+   "shot": "board-1366-ru.jpg",
+   "ms": 210786
+  },
+  {
+   "layer": "UI board 1366-ru",
+   "step": "9",
+   "name": "пометка «Пример» на синтетике",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08",
+   "shot": "board-1366-ru.jpg",
+   "ms": 210786
+  },
+  {
+   "layer": "UI board 1366-ru",
+   "step": "9",
+   "name": "«На весь экран» и «← В Birge»",
+   "status": "PASS",
+   "detail": {
+    "full": true,
+    "back": true
+   },
+   "owner": "R08",
+   "shot": "board-1366-ru.jpg",
+   "ms": 210816
+  },
+  {
+   "layer": "UI board 1366-ru",
+   "step": "9",
+   "name": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "owner": "R08",
+   "shot": "board-1366-ru.jpg",
+   "ms": 210816
+  },
+  {
+   "layer": "UI board 1920-kk",
+   "step": "9",
+   "name": "открыта с данными (вход сотрудника принят)",
+   "status": "PASS",
+   "detail": {
+    "state": "ready",
+    "login_form": false
+   },
+   "owner": "R08",
+   "shot": "board-1920-kk.jpg",
+   "ms": 214858
+  },
+  {
+   "layer": "UI board 1920-kk",
+   "step": "9",
+   "name": "без прокрутки на весь экран",
+   "status": "PASS",
+   "detail": {
+    "scrollH": 1080,
+    "h": 1080,
+    "scrollW": 1920,
+    "w": 1920
+   },
+   "owner": "R08",
+   "shot": "board-1920-kk.jpg",
+   "ms": 214858
+  },
+  {
+   "layer": "UI board 1920-kk",
+   "step": "9",
+   "name": "тёмная тема только здесь (.bk-dark, тёмный фон)",
+   "status": "PASS",
+   "detail": {
+    "dark": true,
+    "bg_luminance": 0.005
+   },
+   "owner": "R08",
+   "shot": "board-1920-kk.jpg",
+   "ms": 214858
+  },
+  {
+   "layer": "UI board 1920-kk",
+   "step": "9",
+   "name": "крупные живые числа (≥ 40 px) — читается с 3 м",
+   "status": "PASS",
+   "detail": {
+    "big_numbers": 4
+   },
+   "owner": "R08",
+   "shot": "board-1920-kk.jpg",
+   "ms": 214858
+  },
+  {
+   "layer": "UI board 1920-kk",
+   "step": "9",
+   "name": "мелкого текста нет (≥ 14 px на большом экране)",
+   "status": "PASS",
+   "detail": {
+    "min_font": 21.1,
+    "smallest": [
+     [
+      21.1,
+      "Бүкіл қала"
+     ],
+     [
+      21.1,
+      "Үлгі"
+     ],
+     [
+      21.1,
+      "16 қазан, жұма"
+     ],
+     [
+      21.1,
+      "ҚАЗ"
+     ]
+    ]
+   },
+   "owner": "R08",
+   "shot": "board-1920-kk.jpg",
+   "ms": 214858
+  },
+  {
+   "layer": "UI board 1920-kk",
+   "step": "9",
+   "name": "контраст текста ≥ 4,5:1 на тёмном",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R08",
+   "shot": "board-1920-kk.jpg",
+   "ms": 214858
+  },
+  {
+   "layer": "UI board 1920-kk",
+   "step": "9",
+   "name": "пометка «Пример» на синтетике",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08",
+   "shot": "board-1920-kk.jpg",
+   "ms": 214858
+  },
+  {
+   "layer": "UI board 1920-kk",
+   "step": "9",
+   "name": "«На весь экран» и «← В Birge»",
+   "status": "PASS",
+   "detail": {
+    "full": true,
+    "back": true
+   },
+   "owner": "R08",
+   "shot": "board-1920-kk.jpg",
+   "ms": 214891
+  },
+  {
+   "layer": "UI board 1920-kk",
+   "step": "9",
+   "name": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "owner": "R08",
+   "shot": "board-1920-kk.jpg",
+   "ms": 214891
+  },
+  {
+   "layer": "UI board 1366-kk",
+   "step": "9",
+   "name": "открыта с данными (вход сотрудника принят)",
+   "status": "PASS",
+   "detail": {
+    "state": "ready",
+    "login_form": false
+   },
+   "owner": "R08",
+   "shot": "board-1366-kk.jpg",
+   "ms": 218837
+  },
+  {
+   "layer": "UI board 1366-kk",
+   "step": "9",
+   "name": "без прокрутки на весь экран",
+   "status": "PASS",
+   "detail": {
+    "scrollH": 768,
+    "h": 768,
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R08",
+   "shot": "board-1366-kk.jpg",
+   "ms": 218837
+  },
+  {
+   "layer": "UI board 1366-kk",
+   "step": "9",
+   "name": "тёмная тема только здесь (.bk-dark, тёмный фон)",
+   "status": "PASS",
+   "detail": {
+    "dark": true,
+    "bg_luminance": 0.005
+   },
+   "owner": "R08",
+   "shot": "board-1366-kk.jpg",
+   "ms": 218837
+  },
+  {
+   "layer": "UI board 1366-kk",
+   "step": "9",
+   "name": "крупные живые числа (≥ 40 px) — читается с 3 м",
+   "status": "PASS",
+   "detail": {
+    "big_numbers": 4
+   },
+   "owner": "R08",
+   "shot": "board-1366-kk.jpg",
+   "ms": 218837
+  },
+  {
+   "layer": "UI board 1366-kk",
+   "step": "9",
+   "name": "мелкого текста нет (≥ 14 px на большом экране)",
+   "status": "PASS",
+   "detail": {
+    "min_font": 15,
+    "smallest": [
+     [
+      15,
+      "Бүкіл қала"
+     ],
+     [
+      15,
+      "Үлгі"
+     ],
+     [
+      15,
+      "16 қазан, жұма"
+     ],
+     [
+      15,
+      "ҚАЗ"
+     ]
+    ]
+   },
+   "owner": "R08",
+   "shot": "board-1366-kk.jpg",
+   "ms": 218837
+  },
+  {
+   "layer": "UI board 1366-kk",
+   "step": "9",
+   "name": "контраст текста ≥ 4,5:1 на тёмном",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R08",
+   "shot": "board-1366-kk.jpg",
+   "ms": 218837
+  },
+  {
+   "layer": "UI board 1366-kk",
+   "step": "9",
+   "name": "пометка «Пример» на синтетике",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08",
+   "shot": "board-1366-kk.jpg",
+   "ms": 218837
+  },
+  {
+   "layer": "UI board 1366-kk",
+   "step": "9",
+   "name": "«На весь экран» и «← В Birge»",
+   "status": "PASS",
+   "detail": {
+    "full": true,
+    "back": true
+   },
+   "owner": "R08",
+   "shot": "board-1366-kk.jpg",
+   "ms": 218867
+  },
+  {
+   "layer": "UI board 1366-kk",
+   "step": "9",
+   "name": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "owner": "R08",
+   "shot": "board-1366-kk.jpg",
+   "ms": 218868
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "S",
+   "name": "режим показа ?show=1 включён (html[data-birge-show])",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01",
+   "shot": null,
+   "ms": 222774
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "0",
+   "name": "Ctrl+K: «Сцена 0 · ИИ-разбор» — первая среди сцен в режиме показа (П3)",
+   "status": "PASS",
+   "detail": {
+    "order": [
+     "Сцена 0 · ИИ-разбор",
+     "Сцена 7 · Двор вместе",
+     "Сцена 8 · Ведомства вместе",
+     "Сцена 9 · Буран"
+    ]
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 223541,
+   "soft": true
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "0",
+   "name": "Ctrl+K «Сцена 0 · ИИ-разбор» → раздел intake ≤ 1 с",
+   "status": "PASS",
+   "detail": {
+    "ms": 18,
+    "section": "intake",
+    "network_idle_before": true
+   },
+   "owner": "R01",
+   "shot": "show-ru-scene0.jpg",
+   "ms": 225233
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "7",
+   "name": "Ctrl+K «Сцена 7 · Двор вместе» → раздел yard ≤ 1 с",
+   "status": "PASS",
+   "detail": {
+    "ms": 412,
+    "section": "yard",
+    "network_idle_before": true
+   },
+   "owner": "R01",
+   "shot": "show-ru-scene7.jpg",
+   "ms": 227459
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "8",
+   "name": "Ctrl+K «Сцена 8 · Ведомства вместе» → раздел inbox ≤ 1 с",
+   "status": "PASS",
+   "detail": {
+    "ms": 26,
+    "section": "inbox",
+    "network_idle_before": true
+   },
+   "owner": "R01",
+   "shot": "show-ru-scene8.jpg",
+   "ms": 229553
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "8",
+   "name": "значок «ИИ» у подсказки «Похоже, нужны 2 службы» (П3)",
+   "status": "NOT_RUN",
+   "detail": "подсказки «нужны 2 службы» нет на экране сцены 8",
+   "owner": "R11 + R09",
+   "shot": "show-ru-scene8.jpg",
+   "ms": 229563,
+   "soft": true
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "9",
+   "name": "Ctrl+K «Сцена 9 · Буран» → раздел agencies ≤ 1 с",
+   "status": "PASS",
+   "detail": {
+    "ms": 15,
+    "section": "agencies",
+    "network_idle_before": true
+   },
+   "owner": "R01",
+   "shot": "show-ru-scene9.jpg",
+   "ms": 231337
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "S",
+   "name": "Ctrl+K «Ситуационный центр» → своя страница /civic/board/",
+   "status": "PASS",
+   "detail": {
+    "ms": 79,
+    "url": "/civic/board/",
+    "text": 1180,
+    "shell_error": false
+   },
+   "owner": "R08",
+   "shot": "show-ru-page-board.jpg",
+   "ms": 236475
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "S",
+   "name": "страница /civic/board/: путь назад в Birge — ссылка «← В Birge» и Esc",
+   "status": "PASS",
+   "detail": {
+    "link": {
+     "text": "← В Birge",
+     "href": "/#day"
+    },
+    "esc": true
+   },
+   "owner": "R08",
+   "shot": null,
+   "ms": 236782
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "S",
+   "name": "Ctrl+K «QR-таблички» → своя страница /civic/qr/print.html",
+   "status": "PASS",
+   "detail": {
+    "ms": 63,
+    "url": "/civic/qr/print.html",
+    "text": 477,
+    "shell_error": false
+   },
+   "owner": "R12",
+   "shot": "show-ru-page-qr.jpg",
+   "ms": 241752
+  },
+  {
+   "layer": "UI show-ru",
+   "step": "S",
+   "name": "страница /civic/qr/print.html: путь назад в Birge — ссылка «← В Birge» и Esc",
+   "status": "PASS",
+   "detail": {
+    "link": {
+     "text": "← В Birge",
+     "href": "/"
+    },
+    "esc": true
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 242084
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "S",
+   "name": "режим показа ?show=1 включён (html[data-birge-show])",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01",
+   "shot": null,
+   "ms": 245816
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "0",
+   "name": "Ctrl+K: «0-көрініс · ЖИ-талдау» — первая среди сцен в режиме показа (П3)",
+   "status": "PASS",
+   "detail": {
+    "order": [
+     "0-көрініс · ЖИ-талдау",
+     "7-көрініс · Аула бірге",
+     "8-көрініс · Ведомстволар бірге",
+     "9-көрініс · Боран",
+     "Тұрғын"
+    ]
+   },
+   "owner": "R01",
+   "shot": null,
+   "ms": 246572,
+   "soft": true
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "0",
+   "name": "Ctrl+K «0-көрініс · ЖИ-талдау» → раздел intake ≤ 1 с",
+   "status": "PASS",
+   "detail": {
+    "ms": 17,
+    "section": "intake",
+    "network_idle_before": true
+   },
+   "owner": "R01",
+   "shot": "show-kk-scene0.jpg",
+   "ms": 248251
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "7",
+   "name": "Ctrl+K «7-көрініс · Аула бірге» → раздел yard ≤ 1 с",
+   "status": "PASS",
+   "detail": {
+    "ms": 421,
+    "section": "yard",
+    "network_idle_before": true
+   },
+   "owner": "R01",
+   "shot": "show-kk-scene7.jpg",
+   "ms": 250498
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "8",
+   "name": "Ctrl+K «8-көрініс · Ведомстволар бірге» → раздел inbox ≤ 1 с",
+   "status": "PASS",
+   "detail": {
+    "ms": 24,
+    "section": "inbox",
+    "network_idle_before": true
+   },
+   "owner": "R01",
+   "shot": "show-kk-scene8.jpg",
+   "ms": 252502
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "8",
+   "name": "значок «ИИ» у подсказки «Похоже, нужны 2 службы» (П3)",
+   "status": "NOT_RUN",
+   "detail": "подсказки «нужны 2 службы» нет на экране сцены 8",
+   "owner": "R11 + R09",
+   "shot": "show-kk-scene8.jpg",
+   "ms": 252512,
+   "soft": true
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "9",
+   "name": "Ctrl+K «9-көрініс · Боран» → раздел agencies ≤ 1 с",
+   "status": "PASS",
+   "detail": {
+    "ms": 14,
+    "section": "agencies",
+    "network_idle_before": true
+   },
+   "owner": "R01",
+   "shot": "show-kk-scene9.jpg",
+   "ms": 254172
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "S",
+   "name": "Ctrl+K «Жағдаяттық орталық» → своя страница /civic/board/",
+   "status": "PASS",
+   "detail": {
+    "ms": 63,
+    "url": "/civic/board/",
+    "text": 1211,
+    "shell_error": false
+   },
+   "owner": "R08",
+   "shot": "show-kk-page-board.jpg",
+   "ms": 259207
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "S",
+   "name": "страница /civic/board/: путь назад в Birge — ссылка «← Birge-ге» и Esc",
+   "status": "PASS",
+   "detail": {
+    "link": {
+     "text": "← Birge-ге",
+     "href": "/#day"
+    },
+    "esc": true
+   },
+   "owner": "R08",
+   "shot": null,
+   "ms": 259489
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "S",
+   "name": "Ctrl+K «QR-тақтайшалар» → своя страница /civic/qr/print.html",
+   "status": "PASS",
+   "detail": {
+    "ms": 48,
+    "url": "/civic/qr/print.html",
+    "text": 487,
+    "shell_error": false
+   },
+   "owner": "R12",
+   "shot": "show-kk-page-qr.jpg",
+   "ms": 264303
+  },
+  {
+   "layer": "UI show-kk",
+   "step": "S",
+   "name": "страница /civic/qr/print.html: путь назад в Birge — ссылка «← Birge-ге» и Esc",
+   "status": "PASS",
+   "detail": {
+    "link": {
+     "text": "← Birge-ге",
+     "href": "/"
+    },
+    "esc": true
+   },
+   "owner": "R12",
+   "shot": null,
+   "ms": 264553
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "«Разбор обращений» открыт (#intake, вид «Акимат»)",
+   "status": "PASS",
+   "detail": {
+    "section": "intake",
+    "chars": 475
+   },
+   "owner": "R04 + R01",
+   "shot": "1366-ru-0-start.jpg",
+   "ms": 270350
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "метки «ИИ-разбор» и «Пример» на экране (П3)",
+   "status": "PASS",
+   "detail": {
+    "ai": true,
+    "sample": true
+   },
+   "owner": "R04 + R11",
+   "shot": "1366-ru-0-start.jpg",
+   "ms": 270353,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "кнопка «Пример: обращения за ночь»",
+   "status": "PASS",
+   "detail": "Пример: обращения за ночь",
+   "owner": "R04",
+   "shot": "1366-ru-0-start.jpg",
+   "ms": 270383
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "кнопка «Разобрать»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 271161
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "POST intake/analyze из экрана → 200",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "ms": 315
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 271569
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "строка итога на экране = числа ответа (обращений, задач, служб, срочных, склеено)",
+   "status": "PASS",
+   "detail": {
+    "line": "301 обращение → 127 задач · 19 служб · 9 срочных · 174 повтора склеено",
+    "summary": {
+     "total": 301,
+     "tasks": 127,
+     "services": 19,
+     "urgent": 9,
+     "merged": 174,
+     "ready": 106
+    }
+   },
+   "owner": "R04",
+   "shot": "1366-ru-0-result.jpg",
+   "ms": 271820
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "разбор с экрана ≤ 10 с (301 текстов, облако; П3)",
+   "status": "PASS",
+   "detail": {
+    "response_ms": 315,
+    "line_ms": 457,
+    "summary_ms": 257
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 271820,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "на экране нет шаблонов без подстановки ({n}, {services} …)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04 + R11",
+   "shot": "1366-ru-0-result.jpg",
+   "ms": 271824
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "задачи на экране — заголовки из ответа (все задачи)",
+   "status": "PASS",
+   "detail": {
+    "shown": 127,
+    "tasks": 127
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 271830,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "срочные задачи — наверху списка",
+   "status": "PASS",
+   "detail": {
+    "id": "t1",
+    "urgent": true
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 271832,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "строка задачи раскрывает «Почему так» (службы, место, повторы)",
+   "status": "PASS",
+   "detail": {
+    "why": "Почему так Службы: Теплосеть — ведущая ИИ Подсказка ИИ — проверьте По таблице служб: «Нет отопления» — Теплосеть. Место: Двор: ЖК Grand Champion — названо в тек"
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 272675,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "«Почему так» называет службу и место задачи (данные ответа)",
+   "status": "PASS",
+   "detail": {
+    "service": "Теплосеть",
+    "place": "Двор: ЖК Grand Champion",
+    "why": "Почему так Службы: Теплосеть — ведущая ИИ Подсказка ИИ — проверьте По таблице служб: «Нет отопления» — Теплосеть. Место: Двор: ЖК Grand Champion — названо в тексте Повторов: 39 — одно место, одна кате"
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 272675,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "«Показать на карте» в объяснении задачи с местом",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 272764,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "значок «ИИ» у служб в «Почему так» (П3)",
+   "status": "PASS",
+   "detail": {
+    "hint": true,
+    "mark": "title: «Подсказка ИИ — проверьте»"
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 272770,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "П1: без картинок и эмодзи на экране разбора",
+   "status": "PASS",
+   "detail": {
+    "big": 0,
+    "emoji": []
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 272910,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 273081,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "нет ключей перевода на экране",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 273081
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 273081,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "кнопка «Создать задачи»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 273319
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "«Создать задачи»: новых записей в «Обращениях» = created ответа; тост называет то же число",
+   "status": "PASS",
+   "detail": {
+    "toast": "Создано 104 задачи в «Обращениях» 2 задачи — к уже открытым обращениям 21 задача без адреса не создана — уточните место.",
+    "records_new": 104,
+    "created": 104,
+    "existing": 0,
+    "joined_existing": 2,
+    "commit_status": 200
+   },
+   "owner": "R04 + R09",
+   "shot": "1366-ru-0-created.jpg",
+   "ms": 274113
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "created + присоединённые = summary.ready (задачи с местом)",
+   "status": "PASS",
+   "detail": {
+    "created": 104,
+    "joined_or_existing": 2,
+    "ready": 106,
+    "to_create": 104,
+    "to_existing": 2
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 274113
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "в тосте — ссылка в «Обращения»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 274243,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "Tab: фокус внутри экрана и виден",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "ring": true
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 274404,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "Esc — назад на карту",
+   "status": "PASS",
+   "detail": {
+    "section": "map"
+   },
+   "owner": "R04 + R01",
+   "shot": null,
+   "ms": 275646,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "консоль без ошибок (сцена 0)",
+   "status": "PASS",
+   "detail": [],
+   "owner": "по тексту ошибки",
+   "shot": null,
+   "ms": 275646
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "«Разбор обращений» открыт (#intake, вид «Акимат»)",
+   "status": "PASS",
+   "detail": {
+    "section": "intake",
+    "chars": 519
+   },
+   "owner": "R04 + R01",
+   "shot": "1366-kk-0-start.jpg",
+   "ms": 282114
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "метки «ИИ-разбор» и «Пример» на экране (П3)",
+   "status": "PASS",
+   "detail": {
+    "ai": true,
+    "sample": true
+   },
+   "owner": "R04 + R11",
+   "shot": "1366-kk-0-start.jpg",
+   "ms": 282116,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "кнопка «Пример: обращения за ночь»",
+   "status": "PASS",
+   "detail": "Үлгі: түнде түскен өтініштер",
+   "owner": "R04",
+   "shot": "1366-kk-0-start.jpg",
+   "ms": 282151
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "кнопка «Разобрать»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 282897
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "POST intake/analyze из экрана → 200",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "ms": 248
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 283215
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "строка итога на экране = числа ответа (обращений, задач, служб, срочных, склеено)",
+   "status": "PASS",
+   "detail": {
+    "line": "301 өтініш → 127 тапсырма · 19 қызмет · 9 шұғыл · 174 қайталау біріктірілді",
+    "summary": {
+     "total": 301,
+     "tasks": 127,
+     "services": 19,
+     "urgent": 9,
+     "merged": 174,
+     "ready": 106
+    }
+   },
+   "owner": "R04",
+   "shot": "1366-kk-0-result.jpg",
+   "ms": 283393
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "разбор с экрана ≤ 10 с (301 текстов, облако; П3)",
+   "status": "PASS",
+   "detail": {
+    "response_ms": 248,
+    "line_ms": 350,
+    "summary_ms": 203
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 283393,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "на экране нет шаблонов без подстановки ({n}, {services} …)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04 + R11",
+   "shot": "1366-kk-0-result.jpg",
+   "ms": 283397
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "задачи на экране — заголовки из ответа (все задачи)",
+   "status": "PASS",
+   "detail": {
+    "shown": 127,
+    "tasks": 127
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 283406,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "срочные задачи — наверху списка",
+   "status": "PASS",
+   "detail": {
+    "id": "t1",
+    "urgent": true
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 283408,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "строка задачи раскрывает «Почему так» (службы, место, повторы)",
+   "status": "PASS",
+   "detail": {
+    "why": "Неге солай Қызметтер: Жылу желісі — жетекші ЖИ Жасанды интеллект кеңесі — тексеріңіз Қызметтер кестесі бойынша: «Жылу жоқ» — Жылу желісі. Орны: Аула: ЖК Grand C"
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 284220,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "«Почему так» называет службу и место задачи (данные ответа)",
+   "status": "PASS",
+   "detail": {
+    "service": "Жылу желісі",
+    "place": "Аула: ЖК Grand Champion",
+    "why": "Неге солай Қызметтер: Жылу желісі — жетекші ЖИ Жасанды интеллект кеңесі — тексеріңіз Қызметтер кестесі бойынша: «Жылу жоқ» — Жылу желісі. Орны: Аула: ЖК Grand Champion — мәтінде аталған Қайталау: 39 —"
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 284220,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "«Показать на карте» в объяснении задачи с местом",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 284318,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "значок «ИИ» у служб в «Почему так» (П3)",
+   "status": "PASS",
+   "detail": {
+    "hint": true,
+    "mark": "title: «Жасанды интеллект кеңесі — тексеріңіз»"
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 284323,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "П1: без картинок и эмодзи на экране разбора",
+   "status": "PASS",
+   "detail": {
+    "big": 0,
+    "emoji": []
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 284455,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 284591,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "нет ключей перевода на экране",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 284591
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 284591,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "кнопка «Создать задачи»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 284846
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "«Создать задачи»: новых записей в «Обращениях» = created ответа; тост называет то же число",
+   "status": "PASS",
+   "detail": {
+    "toast": "Бұл 104 тапсырма бұрын жасалған 2 тапсырма — ашық өтініштерге қосылды Мекенжайсыз 21 тапсырма жасалмады — орнын нақтылаң",
+    "records_new": 0,
+    "created": 0,
+    "existing": 104,
+    "joined_existing": 2,
+    "commit_status": 200
+   },
+   "owner": "R04 + R09",
+   "shot": "1366-kk-0-created.jpg",
+   "ms": 285611
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "created + присоединённые = summary.ready (задачи с местом)",
+   "status": "PASS",
+   "detail": {
+    "created": 0,
+    "joined_or_existing": 106,
+    "ready": 106,
+    "to_create": 104,
+    "to_existing": 2
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 285611
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "в тосте — ссылка в «Обращения»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 285712,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "Tab: фокус внутри экрана и виден",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "ring": true
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 285874,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "Esc — назад на карту",
+   "status": "PASS",
+   "detail": {
+    "section": "map"
+   },
+   "owner": "R04 + R01",
+   "shot": null,
+   "ms": 287117,
+   "soft": true
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "консоль без ошибок (сцена 0)",
+   "status": "PASS",
+   "detail": [],
+   "owner": "по тексту ошибки",
+   "shot": null,
+   "ms": 287117
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "«Разбор обращений» открыт (#intake, вид «Акимат»)",
+   "status": "PASS",
+   "detail": {
+    "section": "intake",
+    "chars": 475
+   },
+   "owner": "R04 + R01",
+   "shot": "375-ru-0-start.jpg",
+   "ms": 292854
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "метки «ИИ-разбор» и «Пример» на экране (П3)",
+   "status": "PASS",
+   "detail": {
+    "ai": true,
+    "sample": true
+   },
+   "owner": "R04 + R11",
+   "shot": "375-ru-0-start.jpg",
+   "ms": 292858,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "кнопка «Пример: обращения за ночь»",
+   "status": "PASS",
+   "detail": "Пример: обращения за ночь",
+   "owner": "R04",
+   "shot": "375-ru-0-start.jpg",
+   "ms": 292888
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "кнопка «Разобрать»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 293630
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "POST intake/analyze из экрана → 200",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "ms": 299
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 294011
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "строка итога на экране = числа ответа (обращений, задач, служб, срочных, склеено)",
+   "status": "PASS",
+   "detail": {
+    "line": "301 обращение → 127 задач · 19 служб · 9 срочных · 174 повтора склеено",
+    "summary": {
+     "total": 301,
+     "tasks": 127,
+     "services": 19,
+     "urgent": 9,
+     "merged": 174,
+     "ready": 106
+    }
+   },
+   "owner": "R04",
+   "shot": "375-ru-0-result.jpg",
+   "ms": 294113
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "разбор с экрана ≤ 10 с (301 текстов, облако; П3)",
+   "status": "PASS",
+   "detail": {
+    "response_ms": 299,
+    "line_ms": 411,
+    "summary_ms": 257
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 294113,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "на экране нет шаблонов без подстановки ({n}, {services} …)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04 + R11",
+   "shot": "375-ru-0-result.jpg",
+   "ms": 294118
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "задачи на экране — заголовки из ответа (все задачи)",
+   "status": "PASS",
+   "detail": {
+    "shown": 127,
+    "tasks": 127
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 294125,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "срочные задачи — наверху списка",
+   "status": "PASS",
+   "detail": {
+    "id": "t1",
+    "urgent": true
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 294132,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "строка задачи раскрывает «Почему так» (службы, место, повторы)",
+   "status": "PASS",
+   "detail": {
+    "why": "Почему так Службы: Теплосеть — ведущая ИИ Подсказка ИИ — проверьте По таблице служб: «Нет отопления» — Теплосеть. Место: Двор: ЖК Grand Champion — названо в тек"
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 294931,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "«Почему так» называет службу и место задачи (данные ответа)",
+   "status": "PASS",
+   "detail": {
+    "service": "Теплосеть",
+    "place": "Двор: ЖК Grand Champion",
+    "why": "Почему так Службы: Теплосеть — ведущая ИИ Подсказка ИИ — проверьте По таблице служб: «Нет отопления» — Теплосеть. Место: Двор: ЖК Grand Champion — названо в тексте Повторов: 39 — одно место, одна кате"
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 294931,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "«Показать на карте» в объяснении задачи с местом",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 295036,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "значок «ИИ» у служб в «Почему так» (П3)",
+   "status": "PASS",
+   "detail": {
+    "hint": true,
+    "mark": "title: «Подсказка ИИ — проверьте»"
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 295041,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "П1: без картинок и эмодзи на экране разбора",
+   "status": "PASS",
+   "detail": {
+    "big": 0,
+    "emoji": []
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 295103,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 295202,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "нет ключей перевода на экране",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 295202
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 295202,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "кнопка «Создать задачи»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 295524
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "«Создать задачи»: новых записей в «Обращениях» = created ответа; тост называет то же число",
+   "status": "PASS",
+   "detail": {
+    "toast": "Эти 104 задачи уже созданы 2 задачи — к уже открытым обращениям 21 задача без адреса не создана — уточните место.",
+    "records_new": 0,
+    "created": 0,
+    "existing": 104,
+    "joined_existing": 2,
+    "commit_status": 200
+   },
+   "owner": "R04 + R09",
+   "shot": "375-ru-0-created.jpg",
+   "ms": 296112
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "created + присоединённые = summary.ready (задачи с местом)",
+   "status": "PASS",
+   "detail": {
+    "created": 0,
+    "joined_or_existing": 106,
+    "ready": 106,
+    "to_create": 104,
+    "to_existing": 2
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 296112
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "в тосте — ссылка в «Обращения»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 296199,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "Tab: фокус внутри экрана и виден",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "ring": true
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 296358,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "Esc — назад на карту",
+   "status": "PASS",
+   "detail": {
+    "section": "map"
+   },
+   "owner": "R04 + R01",
+   "shot": null,
+   "ms": 297597,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "консоль без ошибок (сцена 0)",
+   "status": "PASS",
+   "detail": [],
+   "owner": "по тексту ошибки",
+   "shot": null,
+   "ms": 297598
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "«Разбор обращений» открыт (#intake, вид «Акимат»)",
+   "status": "PASS",
+   "detail": {
+    "section": "intake",
+    "chars": 519
+   },
+   "owner": "R04 + R01",
+   "shot": "375-kk-0-start.jpg",
+   "ms": 304264
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "метки «ИИ-разбор» и «Пример» на экране (П3)",
+   "status": "PASS",
+   "detail": {
+    "ai": true,
+    "sample": true
+   },
+   "owner": "R04 + R11",
+   "shot": "375-kk-0-start.jpg",
+   "ms": 304266,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "кнопка «Пример: обращения за ночь»",
+   "status": "PASS",
+   "detail": "Үлгі: түнде түскен өтініштер",
+   "owner": "R04",
+   "shot": "375-kk-0-start.jpg",
+   "ms": 304294
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "кнопка «Разобрать»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 305070
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "POST intake/analyze из экрана → 200",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "ms": 322
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 305455
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "строка итога на экране = числа ответа (обращений, задач, служб, срочных, склеено)",
+   "status": "PASS",
+   "detail": {
+    "line": "301 өтініш → 127 тапсырма · 19 қызмет · 9 шұғыл · 174 қайталау біріктірілді",
+    "summary": {
+     "total": 301,
+     "tasks": 127,
+     "services": 19,
+     "urgent": 9,
+     "merged": 174,
+     "ready": 106
+    }
+   },
+   "owner": "R04",
+   "shot": "375-kk-0-result.jpg",
+   "ms": 305565
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "разбор с экрана ≤ 10 с (301 текстов, облако; П3)",
+   "status": "PASS",
+   "detail": {
+    "response_ms": 322,
+    "line_ms": 419,
+    "summary_ms": 272
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 305565,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "на экране нет шаблонов без подстановки ({n}, {services} …)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04 + R11",
+   "shot": "375-kk-0-result.jpg",
+   "ms": 305571
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "задачи на экране — заголовки из ответа (все задачи)",
+   "status": "PASS",
+   "detail": {
+    "shown": 127,
+    "tasks": 127
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 305577,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "срочные задачи — наверху списка",
+   "status": "PASS",
+   "detail": {
+    "id": "t1",
+    "urgent": true
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 305587,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "строка задачи раскрывает «Почему так» (службы, место, повторы)",
+   "status": "PASS",
+   "detail": {
+    "why": "Неге солай Қызметтер: Жылу желісі — жетекші ЖИ Жасанды интеллект кеңесі — тексеріңіз Қызметтер кестесі бойынша: «Жылу жоқ» — Жылу желісі. Орны: Аула: ЖК Grand C"
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 306401,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "«Почему так» называет службу и место задачи (данные ответа)",
+   "status": "PASS",
+   "detail": {
+    "service": "Жылу желісі",
+    "place": "Аула: ЖК Grand Champion",
+    "why": "Неге солай Қызметтер: Жылу желісі — жетекші ЖИ Жасанды интеллект кеңесі — тексеріңіз Қызметтер кестесі бойынша: «Жылу жоқ» — Жылу желісі. Орны: Аула: ЖК Grand Champion — мәтінде аталған Қайталау: 39 —"
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 306402,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "«Показать на карте» в объяснении задачи с местом",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 306496,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "значок «ИИ» у служб в «Почему так» (П3)",
+   "status": "PASS",
+   "detail": {
+    "hint": true,
+    "mark": "title: «Жасанды интеллект кеңесі — тексеріңіз»"
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 306500,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "П1: без картинок и эмодзи на экране разбора",
+   "status": "PASS",
+   "detail": {
+    "big": 0,
+    "emoji": []
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 306560,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 306657,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "нет ключей перевода на экране",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "owner": "R04 + R11",
+   "shot": null,
+   "ms": 306658
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "контраст текста ≥ 4,5:1",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 306658,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "кнопка «Создать задачи»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 306912
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "«Создать задачи»: новых записей в «Обращениях» = created ответа; тост называет то же число",
+   "status": "PASS",
+   "detail": {
+    "toast": "Бұл 104 тапсырма бұрын жасалған 2 тапсырма — ашық өтініштерге қосылды Мекенжайсыз 21 тапсырма жасалмады — орнын нақтылаң",
+    "records_new": 0,
+    "created": 0,
+    "existing": 104,
+    "joined_existing": 2,
+    "commit_status": 200
+   },
+   "owner": "R04 + R09",
+   "shot": "375-kk-0-created.jpg",
+   "ms": 307422
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "created + присоединённые = summary.ready (задачи с местом)",
+   "status": "PASS",
+   "detail": {
+    "created": 0,
+    "joined_or_existing": 106,
+    "ready": 106,
+    "to_create": 104,
+    "to_existing": 2
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 307422
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "в тосте — ссылка в «Обращения»",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "shot": null,
+   "ms": 307530,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "Tab: фокус внутри экрана и виден",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "ring": true
+   },
+   "owner": "R04",
+   "shot": null,
+   "ms": 307690,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "Esc — назад на карту",
+   "status": "PASS",
+   "detail": {
+    "section": "map"
+   },
+   "owner": "R04 + R01",
+   "shot": null,
+   "ms": 308941,
+   "soft": true
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "консоль без ошибок (сцена 0)",
+   "status": "PASS",
+   "detail": [],
+   "owner": "по тексту ошибки",
+   "shot": null,
+   "ms": 308942
+  }
+ ]
+}
