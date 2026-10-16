@@ -282,8 +282,11 @@ def _hint(kinds: list[str], rude: bool) -> tuple[str | None, str | None]:
         return None, None
     ru, kk = [], []
     if kinds:
-        names_ru = ", ".join(LABELS[k][0].lower() if k not in ("email",) else LABELS[k][0] for k in kinds)
-        names_kk = ", ".join(LABELS[k][1].lower() if k not in ("email",) else LABELS[k][1] for k in kinds)
+        # Со строчной — только первое слово; аббревиатуры (ИИН, ЖСН, E-mail) — как есть (R11: было «иин или бин»).
+        def low(label: str) -> str:
+            return label if label[:2].isupper() else label[:1].lower() + label[1:]
+        names_ru = ", ".join(low(LABELS[k][0]) for k in kinds)
+        names_kk = ", ".join(low(LABELS[k][1]) for k in kinds)
         ru.append(f"Личные данные скрыты ({names_ru}): их увидят только сотрудники акимата.")
         kk.append(f"Жеке деректер жасырылды ({names_kk}): оларды тек әкімдік қызметкерлері көреді.")
     if rude:
