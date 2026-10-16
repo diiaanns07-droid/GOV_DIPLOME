@@ -37,7 +37,8 @@ R05 · раунд 15 · RUN (как запустить и что теперь м
   node --test tests/civic/R05/build3d/test_models.mjs tests/civic/R05/build3d/test_core.mjs   # модели проектов (раунд 14)
   NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_landmarks_search.mjs   # стенд: поиск → перелёт
   NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_card_check.mjs         # стенд: шторка, день/ночь, каталог
-    (у обоих: --url адрес, --shots папка кадров, --stand «что за стенд» — в отчёт, --out имя отчёта в runs/)
+  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_visual_audit.mjs       # стенд: чек-лист VISUAL_BRIEF §4 (П3)
+    (у всех трёх: --url адрес, --shots папка кадров, --stand «что за стенд» — в отчёт, --out имя отчёта в runs/)
   NODE_PATH=$(npm root -g) node tests/civic/R05/build3d/app_b2_smoke.mjs http://127.0.0.1:8655/ <файл пароля>  # 3D в оболочке
   NODE_PATH=$(npm root -g) node tests/civic/R05/build3d/browser_check.mjs --no-shots  # демо-страница модуля (раунд 14)
   Браузерные проверки — по одной (несколько браузеров сразу в облаке дают ложные таймауты).
