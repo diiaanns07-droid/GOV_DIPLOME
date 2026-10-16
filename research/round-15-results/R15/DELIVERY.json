@@ -26,7 +26,9 @@
   "R12": "25237d03 (разбор print.js)",
   "R05": "b5fe6cc0 (разбор)",
   "FINAL-5": "c2276360 (R01 claude/brave-fermi-nhzetj, BUILD.json FINAL-5)",
-  "FINAL-5.1": "e8d6cae6 (код = FINAL-5 c2276360 + docs R14; изменений кода нет)"
+  "FINAL-5.1": "e8d6cae6 (код = FINAL-5 c2276360 + docs R14; изменений кода нет)",
+  "B6.2_06a62c8c": "tests/civic/R15 613 passed / 0 failed / 5 xfail (S54) после правки теста; браузер r15_round15 10/0/1, r15_reference 18/0/0",
+  "FINAL5_c2276360_round28": "tests/civic/R15 571 passed / 0 failed / 44 NOT_RUN (intake) / 3 xfail (S54)"
  },
  "push_status": "OK (круг 3)",
  "changed_paths": [
@@ -478,10 +480,17 @@
   "S53": {
    "owner": "R04",
    "level": "высокий",
-   "status": "ОТКРЫТА (круг 27, 16 окт 18:55): регрессия в ветке R04 dce9427b (moderate-4, a2e004c9; D2 38caaaaa); в сборках FINAL-5 / FINAL-5.1 / R01 B6.0 — moderate-3, проблемы нет. R01: не брать D2 в FINAL-6 без исправления",
+   "status": "ОТКРЫТА в ветке R04 (moderation.py не менялась до a86e46a1); R01 B6.2 (c9ae7164) взял R04 D2 без moderate-4 — в сборке S53 нет. Закрыть: P-R04-S53 в ветке R04 -> moderate-4 в FINAL-6",
    "patch": "patches/P-R04-S53.diff (git apply на dce9427b — чисто; 4000 случайных текстов — ответы те же)",
    "what": "доступность: _split_run перебирает все отрезки длинной цепочки цифр — O(n³); анонимный POST /moderate «123 …» 1200 знаков — 12,7 с процессора, 5000 — десятки минут; 8 запросов — /api/health ×180",
    "tests": "test_moderate_is_fast_on_hostile_text[digit-space|digit-groups|phone-chain|short-long], test_large_batch_is_still_fast[hostile] — обычные (падение = регрессия)"
+  },
+  "S54": {
+   "owner": "R04/R01",
+   "level": "низкий",
+   "status": "ОТКРЫТА (круг 28): в сборке B6.2 06a62c8c — moderate-3; исправлено R04 a2e004c9 (moderate-4) — PENDING, в сборку только вместе с исправлением S53",
+   "what": "приватность П3: два телефона подряд и «тел 87011234567 (1)» не скрываются — в итоге intake/analyze и в тексте созданных жалоб (demo: false; видит сотрудник, в публичной карточке текста нет)",
+   "tests": "test_two_phones_in_a_row_are_both_masked (3), test_two_phones_in_a_row_not_on_result_screen (2) — PENDING xfail"
   }
  },
  "high_open": 1,
@@ -539,5 +548,5 @@
    "browser": "intake fake-api all fields PASS (9 видны текстом, 0 вставлено); intake pasted lines PASS"
   }
  },
- "high_open_note": "S53 — только в ветке R04 (не в сборке); блокер для FINAL-6, если D2 возьмут без исправления"
+ "high_open_note": "S53 — только в ветке R04 (в сборке B6.2 нет: R01 не взял moderate-4); блокер FINAL-6, если moderate-4 возьмут без исправления"
 }

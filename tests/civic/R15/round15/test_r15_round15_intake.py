@@ -31,10 +31,11 @@ import socket
 import sqlite3
 import subprocess
 import time
+from pathlib import Path
 
 import pytest
 
-from r15_round15 import CARD, CARD_SPACED, IIN, XSS, data, dump, module, not_run
+from r15_round15 import CARD, CARD_SPACED, IIN, XSS, data, dump, module, not_run, xmarks
 from r15_round15 import context as gateway_context, staff_principal
 
 PHONE = "+7 701 123 45 67"
@@ -237,10 +238,23 @@ def test_sample_name_is_not_a_file_path(run, name, monkeypatch):
 
 
 # ------------------------------------------------------------------ тексты не уходят наружу (T-R04-22)
+def _connected_store_db():
+    """База хранилища R09, которое шлюз подключил (connect_store), — её разбор читает («уже открытые» обращения цели)."""
+    try:
+        getter = getattr(importlib.import_module("ui.civic_ml_api.similar_search"), "complaint_store", None)
+    except ModuleNotFoundError:
+        return None
+    store = getter() if callable(getter) else None
+    path = getattr(store, "db_path", None)
+    return Path(str(path)).resolve() if path else None
+
+
 def test_analyze_stays_in_process(run, monkeypatch):
-    """T-R04-22: разбор в процессе — без соединений, внешних процессов и записи файлов, и с ключом модели в окружении."""
+    """T-R04-22: разбор в процессе — без соединений, внешних процессов и записи файлов, и с ключом модели в окружении.
+    Открыть можно только базу R09, подключённую шлюзом (поиск открытых обращений цели), — и без новых записей в ней."""
     attempts, writes = [], []
     run({"texts": _benign(4)})   # модели и индексы загружаются при первом вызове (чтение) — это до проверки
+    store_db = _connected_store_db()
 
     def blocked(kind, what):
         attempts.append((kind, str(what)[:80]))
@@ -258,11 +272,22 @@ def test_analyze_stays_in_process(run, monkeypatch):
         return real_open(file, mode, *args, **kwargs)
 
     def watched_sqlite(database, *args, **kwargs):
-        writes.append(f"sqlite:{database}")
+        if store_db is None or Path(str(database)).resolve() != store_db:
+            writes.append(f"sqlite:{database}")
         return real_connect(database, *args, **kwargs)
+
+    def complaints() -> int | None:
+        if store_db is None or not store_db.exists():
+            return None
+        with closing(real_connect(store_db)) as db:
+            try:
+                return db.execute("SELECT COUNT(*) FROM complaints_v2").fetchone()[0]
+            except sqlite3.Error:
+                return None
 
     for name in LLM_ENV:
         monkeypatch.setenv(name, "r15-fake-key-not-real")
+    before = complaints()
     with monkeypatch.context() as patch:
         patch.setattr(socket.socket, "connect", lambda self, addr: blocked("connect", addr))
         patch.setattr(socket.socket, "connect_ex", lambda self, addr: blocked("connect", addr))
@@ -279,6 +304,7 @@ def test_analyze_stays_in_process(run, monkeypatch):
     assert sample[0] in (200, 404), f"пример «за ночь» без сети: {sample[0]} {str(sample[1])[:200]}"
     assert not attempts, f"разбор пытался выйти наружу: {attempts[:3]}"
     assert not writes, f"разбор писал на диск (тексты жителей с ПДн): {writes[:3]}"
+    assert complaints() == before, "разбор (не commit) добавил записи в хранилище R09"
 
 
 # ------------------------------------------------------------------ ПДн не на экране итога и не в журнале (T-R04-23/24)
@@ -289,6 +315,20 @@ def test_analysis_has_no_personal_data(run):
     assert not _pii_in(result), f"ПДн в ответе разбора: {_pii_in(result)[:4]}"
     as_dicts = _ok(_gateway(lambda: run({"texts": [{"id": f"r15-{i}", "text": t} for i, t in enumerate(PII_TEXTS)]})))
     assert not _pii_in(as_dicts), f"ПДн в ответе разбора [{{id, text}}]: {_pii_in(as_dicts)[:4]}"
+
+
+TWO_PHONES = [("Не горит фонарь во дворе ЖК Инжу Арена, звоните 8 701 123 45 67 8 701 765 43 21",
+               ("701 123 45 67", "701 765 43 21")),
+              ("Яма на дороге на улице Кенесары, тел 87011234567 (1)", ("87011234567", "701 123 45 67"))]
+
+
+@pytest.mark.parametrize("text,secrets", [pytest.param(t, s, marks=xmarks("S54")) for t, s in TWO_PHONES],
+                         ids=["two-phones", "phone-with-mark"])
+def test_two_phones_in_a_row_not_on_result_screen(run, text, secrets):
+    """S54 (T-R04-23): два телефона подряд и номер с пометкой «(1)» — не в итоге разбора (moderate-4 R04 + S53)."""
+    result = _ok(_gateway(lambda: run({"texts": [text]})))
+    shown = [secret for secret in secrets if secret in dump(result)]
+    assert not shown, f"номер в итоге разбора: {shown}"
 
 
 def test_log_and_console_have_no_texts_or_personal_data(run, caplog, capsys):

@@ -165,15 +165,16 @@ def test_moderate_is_fast_on_hostile_text(moderate, name, text):
             gc.enable()
 
 
-# r04-moderate-4 (П3, a2e004c9): номер внутри длинной цепочки — два телефона подряд, номер и пометка в скобках. До
-# moderate-4 (FINAL-5) такие номера не скрывались; не находка R15 (нашёл и исправил R04). Нестрогий xfail: в сборке
-# без moderate-4 — xfail, с ним — xpass; тест следит, что исправление S53 не потеряло эту маску.
+# S54: номер внутри длинной цепочки — два телефона подряд, номер и пометка в скобках. До moderate-4 (FINAL-5, B6.2)
+# не скрываются; форматы нашёл и закрыл R04 (a2e004c9, П3), но moderate-4 ждёт исправления S53 — PENDING (нестрогий
+# xfail): в сборке без moderate-4 — xfail, с ним — xpass; тест следит, что исправление S53 не потеряло эту маску.
 TWO_IN_A_ROW = [("8 701 123 45 67 8 701 765 43 21", ("701 123 45 67", "701 765 43 21")),
-                ("87011234567 (1)", ("87011234567",))]
+                ("87011234567 (1)", ("87011234567",)),
+                ("тел 87011234567 (1)", ("87011234567",))]
 
 
-@pytest.mark.parametrize("text,secrets", TWO_IN_A_ROW, ids=[t for t, _s in TWO_IN_A_ROW])
-@pytest.mark.xfail(strict=False, reason="r04-moderate-4 (R04 a2e004c9, П3): номер внутри цепочки — ждёт сборки R01")
+@pytest.mark.parametrize("text,secrets", [pytest.param(t, s, marks=xmarks("S54")) for t, s in TWO_IN_A_ROW],
+                         ids=[t for t, _s in TWO_IN_A_ROW])
 def test_two_phones_in_a_row_are_both_masked(moderate, text, secrets):
     """T-R04-01: два номера подряд и номер с пометкой в скобках — оба скрыты (цепочка длиннее номера — не «число»)."""
     public = moderate(text)["text_public"]
