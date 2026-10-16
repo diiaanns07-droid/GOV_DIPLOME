@@ -58,8 +58,15 @@ async function newPage(browser, width, lang, mode) {
   page.on("pageerror", (e) => page.errs.push(e.message));
   return page;
 }
+// Кадр — когда карта оболочки готова (в облаке — или «упрощённая подложка»): без «Загружаем карту…» за панелью.
+async function mapSettled(page) {
+  await page.waitForFunction(() => { const s = document.getElementById("map-status");
+    return !s || s.classList.contains("hidden") || document.body.classList.contains("offline-basemap"); }, null, { timeout: 20000 }).catch(() => {});
+}
 async function shot(page, name) {
-  if (OUT) await page.screenshot({ path: path.join(OUT, name + ".png"), fullPage: false });
+  if (!OUT) return;
+  await mapSettled(page);
+  await page.screenshot({ path: path.join(OUT, name + ".png"), fullPage: false });
 }
 async function login(page) {
   const status = await page.evaluate(async (pw) => {
