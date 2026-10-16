@@ -82,6 +82,7 @@ YARDS = {
 # Улицы: русская форма «на …» по типу; особые — вручную.
 STREET_ON = {"Коргалжинское шоссе": "на Коргалжинском шоссе", "Одесский переулок": "в Одесском переулке"}
 STREET_PREFIX = (("улица ", "на улице "), ("проспект ", "на проспекте "), ("переулок ", "в переулке "))
+CROSSING_RADIUS_M = 60.0
 EXCLUDED = {"osm-node-4109037549", "yard-1454082640"}           # сцена 2 (Хан Шатыр), двор сцены 7
 EXCLUDED_STREETS = {"улица Баян Сулу"}                           # сцена 8
 
@@ -114,7 +115,7 @@ class Places:
         self.street_segments: dict[tuple[str, str], Counter] = {}
         for c in world["complaints"]:
             t = c["target"]
-            self.world_targets.setdefault(t["id"], {"target": t, "district": c["district"]})
+            self.world_targets.setdefault(t["id"], {"target": t, "district": c["district"], "point": c.get("point")})
             if t["kind"] == "segment":
                 e = self.graph.by_id.get(t["id"])
                 if e and e.name:
@@ -185,7 +186,12 @@ class Places:
         xk = t["label_kk"].split(": ", 1)[1]
         if not xk.endswith("қиылысы"):
             raise ValueError(f"нет формы перекрёстка: {sid}")
-        return {"type": "crossing", "target": t, "accept_ids": [sid], "district": self._district(sid),
+        # Светофоров нет в поиске карты: верен и сам светофор, и участки ЭТИХ улиц у него (≤ 60 м) — место по улицам.
+        point = self.world_targets[sid]["point"]
+        cores = [re.sub(r"^(ул|пр|пер)\.\s*|\s*ш\.$", "", part).strip() for part in x.split(" и ")]
+        near = sorted({e.id for _, e, _ in self.graph.nearest(
+            point, CROSSING_RADIUS_M, accept=lambda e: bool(e.name) and any(c in e.name for c in cores))})
+        return {"type": "crossing", "target": t, "accept_ids": [sid] + near, "district": self._district(sid),
                 "slots": {"X": x, "Xkl": xk + "нда"}}
 
     def park(self, pid: str, ru: str, ru_in: str, kk: str, kk_loc: str) -> dict:
@@ -579,8 +585,9 @@ def build(seed: int = SEED, world: dict | None = None) -> tuple[dict, dict]:
                          "теплосеть+озеленение (газон), электросети+освещение (опора с проводами); role lead | support"),
             "place": ("цель карты R12, названная в тексте: двор (area), остановка (object, accept_ids — все стороны остановки "
                       "из поиска карты), участок улицы (segment; засчитывать любой участок той же улицы — street_ru), "
-                      "перекрёсток со светофором (object), парк (object); type none — места в тексте нет, district — "
-                      "назван только район: верный ответ — «адрес уточнить»"),
+                      "перекрёсток со светофором (object; accept_ids — светофор и участки двух его улиц не дальше 60 м), "
+                      "парк (object); type none — места в тексте нет, district — назван только район: верный ответ — "
+                      "«адрес уточнить»"),
             "group": ("повторы: одна проблема у одного места — одна группа (одна задача); тексты без места — каждый своя "
                       "группа; одно место с разными проблемами — разные группы"),
             "urgent": {k: v for k, v in TX.URGENT.items()},
