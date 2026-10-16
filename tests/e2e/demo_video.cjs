@@ -322,7 +322,9 @@ async function recordLang(browser, lang) {
         return null; }, SEL).catch(() => null);
       if (!line) await sleep(250);
     }
-    await pause(1200);
+    // Счётчик итога R04 доигрывает ~0,7 с (числа растут до summary) — кадр и субтитр после него, по настоящему времени.
+    await sleep(1500);
+    await pause(600);
     await shot("0-intake");
     await say("intake_result", 2400);
     const why = await button(/почему так|неге|неліктен|себебі/i, scope);
