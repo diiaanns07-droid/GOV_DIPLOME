@@ -1,7 +1,7 @@
 // R10 · раунд 15 · демо-ролик Birge: автоматическая запись сценария v2 (IDEA §3) в Playwright, 1366×768, ҚАЗ и РУС.
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/demo_video.cjs --root <папка сборки> --out <папка>
-//        [--langs kk,ru] [--parts 1,2] [--world] [--basemap simplified|real] [--glass keep|off|auto]
+//        [--langs kk,ru] [--parts 0,1,2] [--world] [--basemap simplified|real] [--glass keep|off|auto]
 //        [--subtitles <json>] [--pace 0.5] [--fast] [--no-mp4] [--skip project|none] [--cursor-steps 10]
 //
 // Что получается в <out> (на каждый язык):
@@ -13,7 +13,8 @@
 // docs/gton/VIDEO_SCRIPT.md R14, казахский проверяет R11), --subtitles <файл> — свой текст.
 // Облако: подложка OpenFreeMap не грузится — карта с упрощённым фоном, в кадре это подписано (--basemap simplified).
 // Ноутбук с интернетом (LOCAL-16): --basemap real — пометка про подложку не ставится.
-// Сценарий: часть 1 — шаги 1–7 DEMO_SCRIPT R01 (FINAL-4); часть 2 — сцены 7–9 «Бірге» (IDEA §3), если их модули есть в
+// Сценарий: сцена 0 — «ИИ-разбор пачки обращений» R04 (поправка П3; есть экран — снимается первой, субтитры intake /
+// intake_result R14); часть 1 — шаги 1–7 DEMO_SCRIPT R01 (FINAL-4); часть 2 — сцены 7–9 «Бірге» (IDEA §3), если их модули есть в
 // сборке; нет модуля — сцена не записывается, причина в MANIFEST (в ролике — одна строка «появятся в FINAL-5»).
 // Каждый язык — свой сервер с чистой временной базой (сценарий меняет данные: «Я тоже», проект, статусы).
 "use strict";
@@ -27,7 +28,7 @@ const args = L.parseArgs(process.argv.slice(2));
 const ROOT = path.resolve(args.root || path.join(__dirname, "../.."));
 const OUT = path.resolve(args.out || path.join(os.tmpdir(), "r10-video"));
 const LANGS = String(args.langs || "kk,ru").split(",");
-const PARTS = String(args.parts || "1,2").split(",").map(Number);
+const PARTS = String(args.parts || "0,1,2").split(",").map(Number);
 const [W, H] = String(args.size || "1366x768").split("x").map(Number);
 const FAST = !!args.fast;                       // паузы ×0,35 — пробный прогон, не для показа
 const STEPS = Math.max(4, Math.min(30, Number(args["cursor-steps"] || 10)));  // шаги движения курсора к кнопке
@@ -252,6 +253,7 @@ async function recordLang(browser, lang) {
     await page.evaluate((x) => window.__r10v && window.__r10v.badge(x), sub(BASEMAP === "real" ? "badge_real" : "badge")).catch(() => null);
     trim = Math.max(0, at() - 0.4);  // начало ролика — готовая карта, без белой страницы загрузки
 
+    if (PARTS.includes(0)) await part0();
     if (PARTS.includes(1)) await part1();
     if (PARTS.includes(2)) await part2();
     await say("final", 6500);
@@ -282,6 +284,54 @@ async function recordLang(browser, lang) {
     bytes: webm ? fs.statSync(webm).size : 0,
     mp4_bytes: mp4 ? fs.statSync(mp4).size : 0, scenes, skipped, cues: cues.length, shots, page_errors: errors.slice(0, 8),
     seeds: srv.seeds };
+
+  // ---------------------------------------------------------------------------------------------- сцена 0 (П3)
+  // «Ночью пришли сотни обращений» → «Пример: обращения за ночь» → «Разобрать» → итог (числа считает код) → «Создать
+  // задачи». Вход сотрудника — до записи (preLogin). Экрана R04 нет — сцена не снимается, причина в MANIFEST.
+  async function part0() {
+    const has = await page.evaluate(() => !!window.BirgeIntake).catch(() => false);
+    if (!has || !preLogin) { skipped.push({ scene: "intake", why: !has ? "экрана R04 «Разбор обращений» нет в сборке (П3)" : "вход сотрудника не удался" }); return; }
+    const s = await scene("intake");
+    const title0 = T(dict, "shell.palette.scene0", lang === "kk" ? "0-көрініс · ЖИ-талдау" : "Сцена 0 · ИИ-разбор");
+    await page.evaluate((x) => window.__r10v && window.__r10v.title(x), title0).catch(() => null);
+    await setMode("akimat");
+    // Как ведущий: Ctrl+K «Сцена 0» (R01); нет команды — адрес #intake.
+    let via = "hash";
+    await page.keyboard.press("Control+k").catch(() => null);
+    await pause(500);
+    const input = await firstVisible(page.locator(".birge-palette__input"));
+    if (input) {
+      await input.type(title0.split("·")[0].trim(), { delay: FAST ? 0 : 45 }).catch(() => null);
+      await pause(600);
+      const offered = await page.evaluate((tt) => [...document.querySelectorAll(".birge-palette__item")].some((li) => (li.textContent || "").includes(tt)), title0).catch(() => false);
+      if (offered) { await page.keyboard.press("Enter").catch(() => null); via = "ctrl+k"; } else await page.keyboard.press("Escape").catch(() => null);
+    }
+    if (via === "hash") await page.evaluate(() => { location.hash = "#intake"; }).catch(() => null);
+    await pause(1600);
+    await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null);
+    const SEL = "#birge-screen:not([hidden])";
+    const scope = page.locator(SEL);
+    await say("intake", 900);
+    const sampled = await pressText(/пример|үлгі|мысал/i, 1400, scope);
+    const ran = await pressText(lang === "kk" ? /^\s*(талда|талдау)/i : /^\s*разобрать/i, 600, scope);
+    // Итог разбора — строка с числами; ждём до 12 с (живой счётчик).
+    let line = null;
+    for (let i = 0; i < 48 && ran && !line; i++) {
+      line = await page.evaluate((sel) => { const r = document.querySelector(sel); if (!r) return null;
+        for (const e of r.querySelectorAll("*")) { const txt = (e.innerText || "").trim(); if (txt.length < 160 && /→/.test(txt) && (txt.match(/\d+/g) || []).length >= 4) return txt; }
+        return null; }, SEL).catch(() => null);
+      if (!line) await sleep(250);
+    }
+    await pause(1200);
+    await shot("0-intake");
+    await say("intake_result", 2400);
+    const why = await button(/почему так|неге|неліктен|себебі/i, scope);
+    if (why) { await press(why, 2200); }
+    const created = await pressText(lang === "kk" ? /құру|жасау/i : /создать задачи|создать/i, 2600, scope);
+    await shot("0-created");
+    done(s, sampled && ran && !!line, !sampled ? "нет кнопки «Пример»" : !ran ? "нет кнопки «Разобрать»" : !line ? "итог разбора не появился" : null);
+    s.notes.push(`вход: ${via}; итог: ${line ? line.replace(/\s+/g, " ").slice(0, 100) : "—"}; создано: ${created}`);
+  }
 
   // ---------------------------------------------------------------------------------------------- часть 1 (FINAL-4)
   async function part1() {
