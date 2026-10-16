@@ -328,6 +328,9 @@ async function main() {
 
     // ---------------------------------------------------------------- a role module plugs in (no ?screens=r14)
     ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+    // П3: с «Разбором обращений» R04 «Ещё» акимата заполнено по схеме R11 до предела 7 — ссылке роли вне схемы (ниже)
+    // места нет. Проверяем механизм registerScreen, поэтому экран R04 в этом контексте не грузим.
+    await ctx.route("**/civic/intake/intake.js", (route) => route.abort());
     page = await newPage(ctx);
     await page.goto(base);
     await ready(page);
