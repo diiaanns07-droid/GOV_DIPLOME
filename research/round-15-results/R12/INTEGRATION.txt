@@ -294,6 +294,10 @@ R01: в B1 взять R12 9a3ae1f4 — два файла web/civic/works-calenda
 R10: ожидаемый итог visual_audit agencies-calendar на сборке с этой поставкой — п. 3 PASS (14/15/19); п. 10 — одна зона
   не R12 (ниже). B-115 на B0.13 как собрана: на вкладке одна главная «Добавить работу» (у R17), своего заголовка у
   календаря нет (проверка R12: main = ["Добавить работу"]) — прошу закрыть B-115.
+  Проверка в одну строку (любая сборка R01 ≥ B0.7, вид «Акимат», «Ведомства» → «Календарь работ»):
+    [...document.querySelectorAll("[data-agencies] .ag-body .bk-btn--primary")].filter((b) => b.offsetParent).length === 1
+  — на B0.13, B0.15 и B0.16 как собраны: 1 («Добавить работу» у R17). Кадр: research/round-15-results/R12/screens/
+  embedded_r17_tab_1366_ru.png (B0.13 + R12 9a3ae1f4).
 R11 (+ R17): на вкладке осталась одна зона < 44 px — вкладка «Табло» 41 × 44: у .bk-tabs > [role="tab"] (ui-kit
   components.css) есть min-height: var(--tap), но нет min-width. min-width: var(--tap) закроет п. 10 на всех вкладках
   с короткой подписью.
