@@ -191,7 +191,9 @@ async function recordLang(browser, lang) {
     await page.evaluate(() => window.__r10v && window.__r10v.sub("")).catch(() => null); };
   const title = async (text, ms = 2600) => { await page.evaluate((x) => window.__r10v && window.__r10v.title(x), text).catch(() => null);
     await pause(ms); await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null); };
-  const scene = (id) => { const s = { id, start: at(), end: null, ok: true, notes: [] }; scenes.push(s); return s; };
+  // Новая сцена — с чистого кадра: прошлый субтитр дочитывается и уходит до перехода (иначе подпись табло висела бы над
+  // «Календарём работ»). Внутри сцены чтение идёт вместе с действиями.
+  const scene = async (id) => { await quiet(); const s = { id, start: at(), end: null, ok: true, notes: [] }; scenes.push(s); return s; };
   const done = (s, ok = true, note) => { s.end = at(); s.ok = s.ok && ok; if (note) s.notes.push(note); log(lang, s.id, ok ? "ok" : "НЕ ВЫШЛО", note || ""); };
   const shot = async (name) => { const f = path.join(OUT, `${lang}-${name}.jpg`);
     await page.screenshot({ path: f, type: "jpeg", quality: SHOT_Q }).catch(() => null); shots.push(path.basename(f)); };
@@ -284,7 +286,7 @@ async function recordLang(browser, lang) {
   // ---------------------------------------------------------------------------------------------- часть 1 (FINAL-4)
   async function part1() {
     // Заголовок части и вступление — сразу, вид «Акимат» включается под них (без пустых секунд в начале).
-    let s = scene("intro");
+    let s = await scene("intro");
     await page.evaluate((x) => window.__r10v && window.__r10v.title(x), sub("part1")).catch(() => null);
     await say("intro", 2400);
     await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null);
@@ -294,7 +296,7 @@ async function recordLang(browser, lang) {
     done(s);
 
     // Шаги 1–2: житель, жалоба на остановку, категория, «Я тоже».
-    s = scene("complaint");
+    s = await scene("complaint");
     await setMode("resident");
     await say("s1", 1800);
     const startLabel = word("complaint.start.button", "Сообщить о проблеме", "Мәселе туралы хабарлау");
@@ -335,7 +337,7 @@ async function recordLang(browser, lang) {
     } else done(s, false, "форма жалобы или остановка не найдены");
 
     // Шаг 3: тепловая карта у акимата, «Горячие места».
-    s = scene("heat");
+    s = await scene("heat");
     await setMode("akimat");
     await say("s3", 600);
     await flyTo(STOP.point, 14.6, 2600);
@@ -355,7 +357,7 @@ async function recordLang(browser, lang) {
     done(s, hotOpen, hotOpen ? null : "ссылки «Все горячие места» нет");
 
     // Шаг 4: «Картина дня».
-    s = scene("day");
+    s = await scene("day");
     const dayRe = exact(word("common.nav.day", "Картина дня", "Күн қорытындысы"));
     const day = await header(dayRe, 2600);
     if (day) {
@@ -375,7 +377,7 @@ async function recordLang(browser, lang) {
     const doProject = !SKIP.has("project");
     if (!doProject) skipped.push({ scene: "project", owner: "R05",
       why: "шаг 5 (проект в 3D) не снимался: --skip project" });
-    if (doProject) s = scene("project");
+    if (doProject) s = await scene("project");
     if (doProject && !login && srv.staff && srv.staff.user) {
       if (await header(textRe(lang === "kk" ? "Қызметкерлерге" : "Для сотрудников"), 1600)) {
         const user = await firstVisible(page.locator("input[autocomplete=username], input[name=username]"));
@@ -468,7 +470,7 @@ async function recordLang(browser, lang) {
     if (doProject) done(s, login && placed, !login ? "вход сотрудника не удался" : placed ? null : "проект не поставлен");
 
     // Шаги 6–7: служба → «Взять в работу» → «Отметить исправленным» → сообщение жителям; житель «Да, исправлено».
-    s = scene("fixed");
+    s = await scene("fixed");
     let verified = false;
     if (login) {
       await setMode("akimat");
@@ -544,13 +546,14 @@ async function recordLang(browser, lang) {
     for (const p of plan.filter((x) => !x.ok)) skipped.push({ scene: p.id, owner: p.owner, why: `нет в сборке: ${p.why}` });
     const go = async (hash, after = 2400) => { await page.evaluate((hh) => { location.hash = hh; }, hash).catch(() => null); await wait(after); };
     const toMap = async () => { await page.evaluate(() => window.BirgeShell && window.BirgeShell.setSection("map")).catch(() => null); await wait(900); };
+    await quiet();  // заставка «Часть 2» — без субтитра части 1
     await page.evaluate((x) => window.__r10v && window.__r10v.title(x), sub("part2")).catch(() => null);
     await pause(1800);
     await page.evaluate(() => window.__r10v && window.__r10v.title("")).catch(() => null);
     if (!plan.some((x) => x.ok)) { await say("skipped", 4200); return; }
     // --- сцена 7: «Мой двор» → «Я приду»
     if (plan[0].ok) {
-      const s = scene("scene7-yard");
+      const s = await scene("scene7-yard");
       await setMode("resident");
       await go(`#yard/${W15.yard}`);
       await say("yard", 4200);
@@ -568,7 +571,7 @@ async function recordLang(browser, lang) {
     }
     // --- сцена 8, житель: «Мои обращения» → «2 службы: Водоканал — сделано · Дорожная служба — в работе»
     if (plan[1].ok) {
-      const s = scene("scene8-joint");
+      const s = await scene("scene8-joint");
       await setMode("resident");
       await go("#mine", 2600);
       await say("agencies", 5200);
@@ -580,7 +583,7 @@ async function recordLang(browser, lang) {
     // --- сцена 8: «Штаб ведомств» (табло) и «Календарь работ»
     if (plan[2].ok || plan[3].ok) await setMode("akimat");
     if (plan[2].ok) {
-      const s = scene("scene8-board");
+      const s = await scene("scene8-board");
       await go("#agencies/board");
       await say("board", 5200);
       await page.mouse.move(W / 2, H / 2); await page.mouse.wheel(0, 260); await pause(1200);
@@ -588,7 +591,7 @@ async function recordLang(browser, lang) {
       done(s);
     }
     if (plan[3].ok) {
-      const s = scene("scene8-works");
+      const s = await scene("scene8-works");
       await go("#agencies/calendar");
       // Вкладка «Календарь работ» у R17 (191f81e7+); без неё — свой раздел R12.
       if (!(await page.evaluate(() => !!document.querySelector("#birge-screen:not([hidden]) .wcal")).catch(() => false))) await go("#works-calendar");
@@ -598,7 +601,7 @@ async function recordLang(browser, lang) {
     }
     // --- сцена 9: кризисный штаб и «Хроника города»
     if (plan[4].ok) {
-      const s = scene("scene9-crisis");
+      const s = await scene("scene9-crisis");
       await setMode("akimat");
       // Адрес штаба: #agencies/crisis/<id> (R17 191f81e7+; внутри уже открытых «Ведомств» прежний вид crisis=<id>
       // вкладку не переключает), прежний #agencies/crisis=<id>, публичная карточка #crisis/<id>. В кадр — только когда
@@ -618,7 +621,7 @@ async function recordLang(browser, lang) {
       await toMap();
     }
     if (plan[5].ok) {
-      const s = scene("scene9-replay");
+      const s = await scene("scene9-replay");
       await page.evaluate(() => { const m = typeof map !== "undefined" ? map : null; if (m) m.flyTo({ center: [71.40, 51.13], zoom: 11.6, duration: 1200 }); }).catch(() => null);
       await wait(1500);
       await say("replay", 600);
