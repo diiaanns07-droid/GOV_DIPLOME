@@ -17,7 +17,7 @@ R03 · раунд 15 · «Спросить Birge» — ИИ-аналитик а�
 1. ТЕСТЫ (без сети, ~2 с)
 ====================================================================================================
   python3 -B -m pytest -q tests/civic/R03/round15
-  → 94 passed, 1 skipped (тест со всеми настоящими соседями сразу — когда в сборке есть R17 и R16): разбор вопросов
+  → 99 passed, 1 skipped (тест со всеми настоящими соседями сразу — когда в сборке есть R17 и R16): разбор вопросов
     ru/kk/вперемешку, ask() с соседями-фикстурами CONTRACT §5 и аргументами шлюза R01 (lang mixed, district), «модуля
     нет», ошибки соседей, приватность, «инструкции» и любые флаги безопасности (модель не зовётся, R15 S44), модель-заглушка
     (порядок, вычёркивание чисел, не JSON, тайм-аут), прогрев warm_up() (без сотрудника, лимита и модели), вложенные
@@ -32,7 +32,7 @@ R03 · раунд 15 · «Спросить Birge» — ИИ-аналитик а�
   python3 -B tests/civic/R03/round15/analyst_devserver.py --port 8670
   → http://127.0.0.1:8670/civic/assistant/analyst-demo.html   (?lang=kk — казахский, ?q=вопрос — сразу спросить)
   Только 127.0.0.1, сотрудник — демо «operator» без входа (в сборке маршрут закрыт сессией и CSRF).
-  Проверки и кадры 1366/1024/375 × ru/kk (124 проверки: сцены, «Показать на карте», ҚАЗ/РУС без нового запроса,
+  Проверки и кадры 1366/1024/375 × ru/kk (130 проверок: сцены, «Показать на карте», ҚАЗ/РУС без нового запроса,
   скелетон с надписью «Считаем по данным…», нет сети, 503, 403, пустой вопрос, Enter/Esc/Tab, нет горизонтальной
   прокрутки; как в аудите R10: на пустом экране ≤ 3 размеров шрифта, все кнопки и чипы ≥ 44 × 44 px):
   NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_screens.cjs --url http://127.0.0.1:8670 \
@@ -40,14 +40,13 @@ R03 · раунд 15 · «Спросить Birge» — ИИ-аналитик а�
   Браузерные проверки — по одной (COMMON): несколько браузеров сразу дают ложные тайм-ауты.
 
 ====================================================================================================
-3. В НАСТОЯЩЕЙ ОБОЛОЧКЕ (пока R01 не взял поставку — на копии его ветки)
+3. В НАСТОЯЩЕЙ ОБОЛОЧКЕ (на копии ветки R01)
 ====================================================================================================
-  Маршрут assistant.ask и пункт меню у R01 уже есть; не хватает только файлов экрана (CIVIC_ASSETS + index.html).
+  В ветке R01 с B0 есть маршрут assistant.ask, файлы экрана, пункт меню и палитра; с B0.5 — прогрев после засева мира
+  (патчи R01_assistant_ask / R01_palette_commands / R01_warm_up применять не нужно, они оставлены для сверки).
+  Новее B0.15 (76b4fe35) — только пути R03 из code_sha DELIVERY.json:
   git worktree add --detach /tmp/r03wt origin/claude/brave-fermi-nhzetj && cd /tmp/r03wt
-  git checkout origin/claude/modest-mccarthy-lrl98u -- agent/civic_assistant web/civic/assistant tests/civic/R03 \
-      ml/civic_classifier_v2/eval_human.py research/round-15-results/R03/patches
-  git apply research/round-15-results/R03/patches/R01_assistant_ask.patch
-  git apply research/round-15-results/R03/patches/R01_palette_commands.patch      # по желанию, Ctrl+K
+  git checkout origin/claude/modest-mccarthy-lrl98u -- agent/civic_assistant web/civic/assistant tests/civic/R03
   DB=/tmp/birge/demo.sqlite3; mkdir -p /tmp/birge
   python3 -B -m ui.civic_store --db $DB init
   python3 -B -m ui.civic_store --db $DB seed-demo --package data/civic/astana/demo_synthetic.json
@@ -64,12 +63,13 @@ R03 · раунд 15 · «Спросить Birge» — ИИ-аналитик а�
   GET /api/civic/v2/modules → "assistant.ask": ready.
   В облаке нет интернета: подложка OpenFreeMap не грузится, карта рисует упрощённый фон — это нормально.
 
-  С демо-миром R02 и прогревом (как будет в B1): на копии ветки R01 (c9069723 и новее) — пути R03 и
-  git apply research/round-15-results/R03/patches/R01_warm_up.patch; база — init и create-editor (как выше, без seed-*),
-  CIVIC_DB_PATH=$DB CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8656
-  → «civic-world: R09 743, R17 3, R13 17, R12 39». Первый вопрос сразу после «civic-v2: ready»: 0,7–1,2 с (без
-  прогрева — 3,4 с: карта R07 грузит геометрию), дальше миллисекунды. Кадры оболочки:
+  С демо-миром R02 и прогревом (как в B1): копия ветки R01 + пути R03 (как выше); база — init и create-editor (без
+  seed-*), CIVIC_DB_PATH=$DB CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8656
+  → B0.16: «civic-world: R09 743, R06 55, R16 42, R17 3, R13 24, R12 39, R07 6». Первый вопрос сразу после
+  «civic-v2: ready» — меньше секунды (R10 на B0.15 / B0.16: 0,67 / 0,19 с), дальше миллисекунды. Кадры оболочки:
   NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_shell_check.cjs <папка> http://127.0.0.1:8656
+  Списки на мире: «Где копаем дважды?» — строки по улицам, строка «ул. Баян Сулу» → «Календарь работ» на этом
+  конфликте; «Прогноз по Нуре» — «на ноябрь 2026»; «Что растёт за месяц?» — последняя строка о недельном сравнении.
 
 ====================================================================================================
 4. ОЦЕНКА ДЛЯ ДИПЛОМА (офлайн, ~5 с)
