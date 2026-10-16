@@ -221,8 +221,8 @@
  },
  "patches_for_neighbours": {
   "R17": "не нужен: R17 D8 (29176133) сам блокирует card / iban / apartment / contact в обновлениях кризиса; их пропуск card с luhn_ok == 0 и iin с checksum_ok == 0 совместим (с r04-moderate-2 перечни чисел и так не помечаются). Файл patches/r17_crisis_pii.patch оставлен для истории.",
-  "R13": "research/round-15-results/R04/patches/r13_pii_labels.patch — подписи card/iban/apartment/contact ru/kk (qa.js — иначе сотрудник видит сырую строку ask.staff.pii.card), все семь видов в _staff_view, шаблон ИИН не берёт кусок номера карты, запасной шаблон карты (R13 @ 97d6ccdf: apply OK, tests/civic/R13 176/176)",
-  "R11": "research/round-15-results/R04/patches/r11_pii_labels.patch — те же подписи в web/civic/i18n/ru.json, kk.json (R11 @ d94a2983: apply OK, tests/civic/R11 31/31)",
+  "R13": "ПРИМЕНЁН: R13 1512ebba (поставка 5) — подписи card/iban/apartment/contact ru/kk в qa.js и meetings.js, все семь видов в _staff_view, шаблон ИИН не берёт кусок номера карты, запасной шаблон карты; R13 с ML-API R04 ed24c452 — 180/180; подсказка сотруднику на примере «t.me/…, кв. 45, счёт KZ…, карта 4400 …» — card, iban, apartment, contact (было iin, card).",
+  "R11": "по желанию: patches/r11_pii_labels.patch — те же подписи в общих словарях web/civic/i18n (на R11 @ c9eeb860 apply OK). После R13 1512ebba сырой строки уже нет: qa.js берёт подпись из своего запасного словаря.",
   "R09": "ПРИМЕНЁН: R09 D1.2 (af69e9a5) — объяснение R04 у подсказок мира «нужны 2 службы» при засеве (и запасной путь при засеве по пути к базе). Файл patches/r09_world_hint_why.patch — для истории."
  },
  "r15_findings": {

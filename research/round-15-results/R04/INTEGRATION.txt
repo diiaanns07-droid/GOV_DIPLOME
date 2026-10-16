@@ -104,6 +104,8 @@ world_seed.explain_hint берёт объяснение у store.route_lookup (R
 • Проверено 15 окт 17:21 (их ветка + ML-API R04, их pytest): R16 40/40, R13 166/166, R17 39/39, R09 578/578.
 • R16 (ui/civic_together/moderation.py): совместимо — берёт text_public и flags[].kind. similar_initiatives —
   см. п. 4.
+• R13 — ПРИМЕНЕНО 16 окт 00:37 (R13 1512ebba): подписи всех видов, семь видов в _staff_view, ИИН ≠ кусок карты,
+  запасной шаблон карты; R13 с ML-API R04 ed24c452 — 180/180. Patch для словарей R11 — теперь по желанию.
 • R13 (ui/civic_qa/service.py moderate_text): совместимо (text_public, flags[].kind) — жителю номер карты, счёта,
   квартиры и ник уже закрыты «***». Подсказка сотруднику (уточнено 15 окт 22:50 — в 21:26 я описал её неточно):
   _staff_view оставляет только phone / iin / email / card, поэтому счёт, квартира и ник сотруднику не называются
