@@ -534,12 +534,12 @@
         h("span", { "class": "bk-lrow__main bc-inbox__text" }, [
           h("span", { "class": "bk-lrow__title bc-inbox__place" }, [place,
             // П. 8: акимат видит оригинал с пометкой (как карточка R07) — R10 B-064.
-            group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null,
-            // П3: задача создана «ИИ-разбором пачки» R04 — тихая пометка источника (в карточке — «Источник: …»).
-            group.intake ? h("span", { "class": "bk-tag bc-tag--intake", title: t("inbox.source.intake") },
-              t("inbox.source.intake_short")) : null]),
-          // Уточнение — после категории (UX_SPEC §10), не отдельный бейдж.
-          h("span", { "class": "bk-lrow__meta bc-inbox__what" }, what)]),
+            group.rude ? h("span", { "class": "bk-tag bc-tag--rude" }, t("moderation.rude")) : null]),
+          // Уточнение — после категории (UX_SPEC §10), не отдельный бейдж. П3: в группе есть задача «ИИ-разбора пачки» R04 —
+          // тихая пометка источника в конце этой же серой строки (в карточке — «Источник: разбор пачки»).
+          h("span", { "class": "bk-lrow__meta bc-inbox__what" }, [what,
+            group.intake ? h("span", { "class": "bc-tag--intake", title: t("inbox.source.intake") },
+              " · " + t("inbox.source.intake_short")) : null])]),
         h("span", { "class": "bk-lrow__cnt bc-inbox__cnt", "data-level": String(level), title: people },
           [h("span", { "aria-hidden": "true" }, String(group.people)), h("span", { "class": "bc-sr" }, people)]),
         h("span", { "class": "bk-lrow__time bc-inbox__meta" }, due || ""),

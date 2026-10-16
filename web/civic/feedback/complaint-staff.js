@@ -367,8 +367,10 @@
       var same = hint.services.length === now.length && hint.services.every(function (sid) { return now.indexOf(sid) >= 0; });
       if (same || hint.accepted_at) return null;
       var why = C().lang && C().lang() === "kk" ? (hint.why_kk || hint.why_ru) : hint.why_ru;
+      // П3 (R11 IA §11.3): подсказку дала модель R04 — метка «ИИ» в строке заголовка плашки; без неё — значок «люди».
+      var tag = C().aiTag ? C().aiTag() : null;
       return h("div", { "class": "bk-banner bc-joint-hint", role: "note" }, [
-        h("p", { "class": "bc-joint-hint__title" }, [C().icon ? C().icon("users") : null,
+        h("p", { "class": "bc-joint-hint__title" }, [tag || (C().icon ? C().icon("users") : null),
           h("span", {}, t("joint.hint.title", { n: hint.services.length, list: joinNames(hint.services) }))]),
         why ? h("p", { "class": "bc-meta bc-joint-hint__why" }, why) : null,
         h("div", { "class": "bc-joint-hint__actions" }, [

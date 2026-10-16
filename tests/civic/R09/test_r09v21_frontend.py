@@ -103,6 +103,6 @@ def test_intake_source_label_and_intake_examples_stay_workable():
     assert data["ru"]["inbox.source.intake"] == "Источник: разбор пачки"
     assert "function readonly(c) { return !!(c && c.demo && !c.world && !c.intake); }" in LIST_JS
     assert "g.demo && !g.world && !g.intake" in LIST_JS
-    assert 'group.intake ? h("span", { "class": "bk-tag bc-tag--intake"' in LIST_JS
+    assert 'group.intake ? h("span", { "class": "bc-tag--intake", title: t("inbox.source.intake") }' in LIST_JS
     assert 'if (current.intake || current.source === "intake") {' in STAFF_JS
     assert 'h("p", { "class": "bc-meta bc-staff__source" }, t("inbox.source.intake"))' in STAFF_JS

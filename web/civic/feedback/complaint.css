@@ -333,8 +333,8 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
 .bc-staff__text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0; overflow-wrap: anywhere; }
 /* «Содержит грубые слова» — слово цветом опасности, без плашки (чистый дизайн R11). */
 .bc-tag--rude { color: var(--c-danger, #b3362e); background: transparent; padding: 0; font-size: var(--fs-caption, 13px); font-weight: var(--fw-semi, 600); }
-/* П3: источник «Разбор пачки» — тихая серая пометка в строке (не кнопка, не цвет статуса). */
-.bc-tag--intake { color: var(--c-text-2, #5f6368); background: transparent; padding: 0; font-size: var(--fs-caption, 13px); font-weight: 400; white-space: nowrap; }
+/* П3: источник «Разбор пачки» — тихая пометка в конце серой строки темы (не кнопка, не цвет статуса). */
+.bc-tag--intake { color: inherit; white-space: nowrap; }
 /* Формы сотрудника — непрозрачные и на стекле (R11 GLASS.md §2: «что сделали», паспорт): карточка R07, лист «Обращений». */
 .bk-glass .bc-staff__form { background: var(--c-surface, #fff); border-top: 0; border-radius: var(--r-m, 10px); padding: 12px; }
 .bc-staff__fix-error { margin: 0; font-weight: 600; color: var(--c-danger, #b3362e); }
@@ -657,9 +657,11 @@ html.bc-picking .maplibregl-marker * { cursor: crosshair; }
    новых цветов), не главная кнопка экрана. */
 .bc-joint-hint { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 12px; border-radius: var(--r-m, 10px);
                  background: var(--c-fill, #eff1f2); color: var(--c-ink, #121A17); }
-.bc-joint-hint__title .ic { color: var(--c-text-2, #4B5752); }
+.bc-joint-hint__title > .ic { color: var(--c-text-2, #4B5752); }
 .bc-joint-hint__title { display: flex; align-items: flex-start; gap: 8px; margin: 0; font-weight: var(--fw-semi, 600); }
-.bc-joint-hint__title .ic { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+.bc-joint-hint__title > .ic { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+/* Метка «ИИ» ui-kit (22 px) — на линии первой строки заголовка. */
+.bc-joint-hint__title > .bk-ai { margin-top: -1px; }
 .bc-joint-hint__why { margin: 0 0 0 28px; }
 .bc-joint-hint__actions { display: flex; align-items: center; gap: 16px; margin-left: 28px; flex-wrap: wrap; }
 .bc-joint-hint__actions .bk-btn { min-height: 44px; }
