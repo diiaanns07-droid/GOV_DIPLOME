@@ -329,6 +329,8 @@ async function recordLang(browser, lang) {
     await say("intake_result", 2400);
     const why = await button(/почему так|неге|неліктен|себебі/i, scope);
     if (why) { await press(why, 2200); }
+    // Тост R04 «Создано N задач…» — внизу по центру, там же, где субтитр: субтитр дочитывается и уходит до нажатия.
+    await quiet();
     const created = await pressText(lang === "kk" ? /құру|жасау/i : /создать задачи|создать/i, 2600, scope);
     await shot("0-created");
     done(s, sampled && ran && !!line, !sampled ? "нет кнопки «Пример»" : !ran ? "нет кнопки «Разобрать»" : !line ? "итог разбора не появился" : null);
