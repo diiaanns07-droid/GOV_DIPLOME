@@ -1,6 +1,6 @@
 {
- "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт — все кадры книги на одной сборке (v1.2)",
- "when": "2026-10-17T02:31:22.102Z",
+ "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт — все кадры книги на одной сборке (v1.3)",
+ "when": "2026-10-17T04:25:13.759Z",
  "frames": [
   {
    "file": "s0-1-empty-1366-ru.jpg",
@@ -14,7 +14,7 @@
    "path": "",
    "title": "Разбор обращений",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-1-empty-1366-kk.jpg",
@@ -28,7 +28,7 @@
    "path": "",
    "title": "Өтініштерді талдау",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-2-sample-1366-ru.jpg",
@@ -42,7 +42,7 @@
    "path": "",
    "title": "Разбор обращений",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-2-sample-1366-kk.jpg",
@@ -56,7 +56,7 @@
    "path": "",
    "title": "Өтініштерді талдау",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-3-result-1366-ru.jpg",
@@ -70,7 +70,7 @@
    "path": "",
    "title": "Разбор обращений",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-3-result-1366-kk.jpg",
@@ -84,7 +84,7 @@
    "path": "",
    "title": "Өтініштерді талдау",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-4-why-1366-ru.jpg",
@@ -98,7 +98,7 @@
    "path": "",
    "title": "Разбор обращений",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-4-why-1366-kk.jpg",
@@ -112,7 +112,7 @@
    "path": "",
    "title": "Өтініштерді талдау",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-5-created-1366-ru.jpg",
@@ -126,7 +126,7 @@
    "path": "",
    "title": "Разбор обращений",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-1-empty-375-kk.jpg",
@@ -140,7 +140,7 @@
    "path": "",
    "title": "Өтініштерді талдау",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s0-3-result-375-kk.jpg",
@@ -154,7 +154,7 @@
    "path": "",
    "title": "Өтініштерді талдау",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-1-yard-1366-ru.jpg",
@@ -168,7 +168,7 @@
    "path": "yard-1454082640",
    "title": "Мой двор",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-1-yard-1366-kk.jpg",
@@ -182,7 +182,7 @@
    "path": "yard-1454082640",
    "title": "Аулам",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-1-yard-375-kk.jpg",
@@ -196,7 +196,7 @@
    "path": "yard-1454082640",
    "title": "Аулам",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-2-initiative-1366-ru.jpg",
@@ -210,7 +210,7 @@
    "path": "i-w15-01",
    "title": "Сделаем вместе",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-2-initiative-1366-kk.jpg",
@@ -224,7 +224,7 @@
    "path": "i-w15-01",
    "title": "Бірге жасайық",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-2-initiative-375-kk.jpg",
@@ -238,7 +238,7 @@
    "path": "i-w15-01",
    "title": "Бірге жасайық",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-3-done-1366-ru.jpg",
@@ -252,7 +252,7 @@
    "path": "i-w15-02",
    "title": "Сделаем вместе",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-3-done-1366-kk.jpg",
@@ -266,7 +266,7 @@
    "path": "i-w15-02",
    "title": "Бірге жасайық",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-4-staff-queue-1366-ru.jpg",
@@ -280,7 +280,7 @@
    "path": "",
    "title": "Сделаем вместе",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s7-4-staff-queue-1366-kk.jpg",
@@ -294,7 +294,7 @@
    "path": "",
    "title": "Бірге жасайық",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s8-1-board-1366-ru.jpg",
@@ -308,7 +308,7 @@
    "path": "",
    "title": "Штаб ведомств",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s8-1-board-1366-kk.jpg",
@@ -322,7 +322,7 @@
    "path": "",
    "title": "Ведомстволар штабы",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s8-1-board-375-kk.jpg",
@@ -336,7 +336,7 @@
    "path": "",
    "title": "Ведомстволар штабы",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s8-2-complaint-1366-ru.jpg",
@@ -350,7 +350,7 @@
    "path": "c-w1500010",
    "title": "Обращения",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s8-2-complaint-1366-kk.jpg",
@@ -364,7 +364,7 @@
    "path": "c-w1500010",
    "title": "Өтініштер",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s8-3-handoffs-1366-ru.jpg",
@@ -378,7 +378,7 @@
    "path": "handoffs",
    "title": "Штаб ведомств",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s8-3-handoffs-1366-kk.jpg",
@@ -392,7 +392,7 @@
    "path": "handoffs",
    "title": "Ведомстволар штабы",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s8-4-calendar-1366-ru.jpg",
@@ -406,7 +406,7 @@
    "path": "calendar",
    "title": "Штаб ведомств",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s8-4-calendar-1366-kk.jpg",
@@ -420,7 +420,7 @@
    "path": "calendar",
    "title": "Ведомстволар штабы",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-1-day-1366-ru.jpg",
@@ -434,7 +434,7 @@
    "path": "",
    "title": "Картина дня",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-1-day-1366-kk.jpg",
@@ -448,7 +448,7 @@
    "path": "",
    "title": "Күн қорытындысы",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-2-hq-1366-ru.jpg",
@@ -462,7 +462,7 @@
    "path": "crisis/inc-w15-buran",
    "title": "Штаб ведомств",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-2-hq-1366-kk.jpg",
@@ -476,7 +476,7 @@
    "path": "crisis/inc-w15-buran",
    "title": "Ведомстволар штабы",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-3-public-1366-ru.jpg",
@@ -490,7 +490,7 @@
    "path": "inc-w15-buran",
    "title": "Кризисный штаб",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-3-public-1366-kk.jpg",
@@ -504,7 +504,7 @@
    "path": "inc-w15-buran",
    "title": "Жедел штаб",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-3-public-375-kk.jpg",
@@ -518,7 +518,7 @@
    "path": "inc-w15-buran",
    "title": "Жедел штаб",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-4-chronicle-1366-ru.jpg",
@@ -532,7 +532,7 @@
    "path": "",
    "title": "Birge · Астана",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-4-chronicle-1366-kk.jpg",
@@ -546,7 +546,7 @@
    "path": "",
    "title": "Birge · Астана",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-5-board-1920-ru.jpg",
@@ -560,7 +560,7 @@
    "path": null,
    "title": "Ситуационный центр · Birge",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "s9-5-board-1920-kk.jpg",
@@ -574,7 +574,7 @@
    "path": null,
    "title": "Жағдаяттық орталық · Birge",
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "h7-analyst-1366-ru.jpg",
@@ -594,7 +594,7 @@
     "15"
    ],
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   },
   {
    "file": "h7-analyst-1366-kk.jpg",
@@ -614,7 +614,7 @@
     "15"
    ],
    "errors": [],
-   "build": "R01 B6.8 7c926eb4 (R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
+   "build": "R01 B6.9 63bb6e6d (= B6.8 + патч R11 R16_kk_weekday; R11 ec3d0aef, R04 c4e4581b, R09 12c91061, R03 0b494fca); стенд R11, 17 окт"
   }
  ]
 }
