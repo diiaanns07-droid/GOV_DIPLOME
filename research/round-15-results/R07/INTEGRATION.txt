@@ -290,6 +290,7 @@ make_service(db).handle GET incidents). Кризис о событии мира 
   research/round-15-results/R07/contrast_r07.json. Регресс стенда: readability 18/18, wave2 38/38, map_tools 7/7,
   place_no_complaints 10/10, tween_first_frame PASS, pan 2/2, replay 16/16, shots 64/64; pytest R07 221 / 1 skip.
 - R01: взять web/civic/heat/heat.css и web/civic/replay/replay.css из code_sha 5507e680 (JS и Python R07 — те же, что f3012276).
+  Взято: B6.8 7c926eb4 — все пути R07 = 5507e680 (сверено у R07).
 - R10: на кандидате FINAL-6 панель R07 можно мерить тем же правилом, что B-136 (≥ 4,5 : 1) — tests/civic/R07/browser/contrast.cjs.
 - R11: ничего не нужно — токены те же, R07 только выбрал --c-text-2 для читаемого текста, как ui-kit.
 
