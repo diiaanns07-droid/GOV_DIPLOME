@@ -117,6 +117,12 @@ def main() -> None:
                                    "ссылок: встречи --full 179/179, демо-мир 115/115, «Вопрос акиму» 111/111, аудит R10 "
                                    "(meetings, meetings-staff) 124/0/0; R10 — «можно показывать: да», блокеров нет; R15 — "
                                    "блокеров безопасности нет"},
+            "final6_build_check": {"status": "PASS",
+                                   "note": "FINAL-6 cb62a6b8 (R01 BUILD.json; код = B6.9 63bb6e6d; в сборке R13 865289cb, файлы R13 = "
+                                   "код поставки) как есть, без ссылок: pytest tests/civic/R13 183/0, встречи --full 179/179, "
+                                   "демо-мир 115/115, «Вопрос акиму» 111/111, аудит R10 (инструмент R10 @ 067b95b9 с проверкой "
+                                   "«кнопка не обрезана краем листа»; meetings, meetings-staff, 1366/1024/375 × ru/kk) 148/0/0; "
+                                   "R10 b627aba7 — «можно показывать: ДА»"},
             "test_order_r13_before_neighbours": {"status": "PASS", "passed": 1076, "failed": 0,
                                                   "note": "R01 24e50493: tests/civic/R13 → R03 → R08 → R17 одним процессом (просьба R01 "
                                                   "B0.20 — раньше 6 FAIL у R03/round15); tests/civic/R13/conftest.py возвращает "
@@ -137,8 +143,8 @@ def main() -> None:
         "patches_for_r01": ["research/round-15-results/R13/patches/r01_meetings_routes.patch",
                             "research/round-15-results/R13/patches/r01_meetings_assets_sheet.patch"],
         "known_limits": [
-            "FINAL-5 c2276360 и FINAL-5.1 e8d6cae6 (R01) несут R13 865289cb — код этой поставки (маршруты meetings.*, ассеты, "
-            "теги — с B0).",
+            "FINAL-6 cb62a6b8, FINAL-5 c2276360 и FINAL-5.1 e8d6cae6 (R01) несут R13 865289cb — код этой поставки (маршруты "
+            "meetings.*, ассеты, теги — с B0).",
             "С B0.11 R01 ставит «Вопросы и встречи» своим экраном-колонкой 720 px (VISUAL_BRIEF §2 п. 2); строки шторки из "
             "патча R13 §3 не нужны. Кадры и браузер — на этой раскладке (B0.19).",
             "Кнопка «♡» у вопросов — рамка 44 px с прозрачной каймой, видимая таблетка 32 px (вариант R11 R13-3): тёмная "
@@ -148,10 +154,11 @@ def main() -> None:
             "«Связано с проектом акимата» / «…с работой службы», номер записи — только в подсказке сотруднику.",
             "Кадры — облако без подложки карты (П1 правило 6); кадры с настоящей картой — LOCAL-12.",
         ],
-        "round_status": "Раунд 15+ (поправка П3): снова открыт до FINAL-6, 17 окт 17:00; основная часть закрыта 16 окт 16:00 (П2)",
-        "in_builds": {"FINAL-5": "c2276360", "FINAL-5.1": "e8d6cae6"},
-        "next_step": "Раунд 15+ (П3): код R13 865289cb — в FINAL-5 c2276360 и запасной FINAL-5.1 e8d6cae6; для R13 — только свои экраны "
-                     "по VISUAL_BRIEF §4, новых функций нет; 17 окт 12:00 — проверка на кандидате FINAL-6, блокеры к 14:00, 18:00 — финал.",
+        "round_status": "Раунд 15 закрыт (поправка П4, 17 окт): FINAL-6 cb62a6b8 принят R10; запасная сборка показа — FINAL-5.1 "
+                        "e8d6cae6",
+        "in_builds": {"FINAL-5": "c2276360", "FINAL-5.1": "e8d6cae6", "FINAL-6": "cb62a6b8"},
+        "next_step": "Раунд 15 закрыт (П4). Код R13 865289cb — в FINAL-6 cb62a6b8, FINAL-5 c2276360 и запасной FINAL-5.1 e8d6cae6. "
+                     "Незаконченное — STATUS «Дальше» для следующего раунда.",
     }
     OUT.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"{OUT.relative_to(ROOT)}: code_sha {code[:10]}, {len(changed)} путей, {len(screens)} кадров")
