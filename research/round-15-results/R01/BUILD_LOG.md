@@ -535,3 +535,9 @@ BUILD.json — B6.8 (intermediate).
 origin/claude/clever-hypatia-q6ts4g -- docs/gton docs/birge research/round-15-results/R14` — SPEECH.md «Сцена 0» (числа читать
 с экрана), субтитры `intake` / `intake_result` (video_subtitles.json, VIDEO_SCRIPT.md), папка результатов R14 (FACTS, RUN,
 кадры review_final51). До этого docs в ветке были равны R14 63f4c9bc. Кода нет — BUILD.json остаётся B6.8.
+
+### 17 окт, 07:47 по Астане — полный run_checks на B6.8 (`875b4542`, код `7c926eb4`) — задел для кандидата FINAL-6
+Рабочее дерево проверок, 07:27–07:47: **pytest 5228 / 0** (23 skipped, 1 xfailed, 9 мин 14 с), ui.web_check, узловые наборы
+(govtech ×5, R12 ×3, R04, R01 explore) и браузерные (P0, сценарии, r12 ×2, r14 шапка / B1 / B2 / wave 2 42 / 0, r15_ia 48 / 0,
+r15_sheet_fit 63 / 0 / 3 WARN — пустая лента «Уведомлений») — все PASS. Следом — проверки кандидата: R04 intake по HTTP и
+экран, R10 часть 1 с миром и сцены 7–9 на 1366 ru, кадры П1.
