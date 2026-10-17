@@ -516,7 +516,7 @@
       "together.reason.other": "Басқа",
       "together.feed.kind.problem.new": "Тұрғындар хабарлады",
       "together.feed.kind.problem.fixed": "Түзетілді",
-      "together.wd": ["жс", "дс", "сс", "ср", "бс", "жм", "сн"],
+      "together.wd": ["жс", "дс", "сс", "ср", "бс", "жм", "сб"],
       "together.months": ["қаң", "ақп", "нау", "сәу", "мам", "мау", "шіл", "там", "қыр", "қаз", "қар", "жел"],
       "together.bring.cleanup": ["қолғап", "қап", "тырма", "сыпырғыш"],
       "together.bring.greening": ["қолғап", "күрек", "шелек", "суғарғыш"],
