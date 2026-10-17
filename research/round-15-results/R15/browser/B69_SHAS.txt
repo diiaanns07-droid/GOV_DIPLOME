@@ -1,0 +1,3 @@
+Сборка R01 B6.9: claude/brave-fermi-nhzetj @ 63bb6e6d (B6.8 + R11 R16_kk_weekday: казахская «сб» в словаре дней «Мой двор» / «Сделаем вместе»; тексты речи и видео docs/gton; тесты R15 в сборке — ce2a15e1, без изменений)
+Пробы R15 (круг 42, 17 окт 09:33 Астаны): r15_round15 10 PASS / 0 FAIL / 1 NOT_RUN; r15_reference 18 / 0 / 0
+tests/civic/R15 внутри дерева сборки B6.9: 618 passed / 0 failed
