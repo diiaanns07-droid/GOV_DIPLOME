@@ -25,6 +25,8 @@ fs.mkdirSync(OUT, { recursive: true });
 const SIZES = QUICK ? [[1366, 768, 1], [375, 812, 2]] : [[1366, 768, 1], [1024, 768, 1], [375, 812, 2]];
 
 async function shot(page, report, tag, lang, w, ruOnly, errors, extra) {
+  // курсор — в угол над картой: после нажатия он оставался над строкой списка, и в кадре была подсветка наведения
+  await page.mouse.move(4, 4);
   await page.waitForTimeout(500);
   await page.screenshot({ path: path.join(OUT, tag + ".jpg"), type: "jpeg", quality: 80 });
   const a = await audit(page, lang, w, ruOnly);

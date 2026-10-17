@@ -1,0 +1,2027 @@
+{
+ "base": "http://127.0.0.1:8656",
+ "when": "2026-10-17T02:27:53.657Z",
+ "frames": {
+  "1366-ru-resident-map": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Сообщить о проблеме"
+   ],
+   "header": "inline",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "1366-ru-resident-mine": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Сообщить о проблеме"
+   ],
+   "header": "inline",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "1366-ru-resident-yard": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Выбрать на карте"
+   ],
+   "header": "inline",
+   "section": "yard",
+   "title": "Мой двор",
+   "errors": []
+  },
+  "1366-ru-resident-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Предложить дело для двора"
+   ],
+   "header": "inline",
+   "section": "together",
+   "title": "Сделаем вместе",
+   "errors": []
+  },
+  "1366-ru-resident-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Приду31"
+   ],
+   "header": "inline",
+   "section": "meetings",
+   "title": "Вопросы и встречи",
+   "errors": []
+  },
+  "1366-ru-resident-ideas": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Поддержать"
+   ],
+   "header": "inline",
+   "section": "ideas",
+   "title": "Идеи",
+   "errors": []
+  },
+  "1366-ru-resident-crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Показать зону на карте"
+   ],
+   "header": "inline",
+   "section": "crisis",
+   "title": "Кризисный штаб",
+   "errors": []
+  },
+  "1366-ru-akimat-day": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "day",
+   "title": "Картина дня",
+   "errors": []
+  },
+  "1366-ru-akimat-inbox": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "inbox",
+   "title": "Обращения",
+   "errors": []
+  },
+  "1366-ru-akimat-agencies": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1366-ru-akimat-agencies_joint": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1366-ru-akimat-agencies_handoffs": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1366-ru-akimat-agencies_calendar": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Добавить работу"
+   ],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1366-ru-akimat-agencies_crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Отправить обновление жителям"
+   ],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1366-ru-akimat-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Опубликовать"
+   ],
+   "header": "inline",
+   "section": "together",
+   "title": "Сделаем вместе",
+   "errors": []
+  },
+  "1366-ru-akimat-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Новая встреча"
+   ],
+   "header": "inline",
+   "section": "meetings",
+   "title": "Вопросы и встречи",
+   "errors": []
+  },
+  "1366-ru-akimat-analyst": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Спросить"
+   ],
+   "header": "inline",
+   "section": "analyst",
+   "title": "Спросить Birge",
+   "errors": []
+  },
+  "1366-ru-akimat-intake": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Разобрать"
+   ],
+   "header": "inline",
+   "section": "intake",
+   "title": "Разбор обращений",
+   "errors": []
+  },
+  "1366-kk-resident-map": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Мәселе туралы хабарлау"
+   ],
+   "header": "inline",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "1366-kk-resident-mine": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Мәселе туралы хабарлау"
+   ],
+   "header": "inline",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "1366-kk-resident-yard": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Картадан таңдау"
+   ],
+   "header": "inline",
+   "section": "yard",
+   "title": "Аулам",
+   "errors": []
+  },
+  "1366-kk-resident-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Аулаға іс ұсыну"
+   ],
+   "header": "inline",
+   "section": "together",
+   "title": "Бірге жасайық",
+   "errors": []
+  },
+  "1366-kk-resident-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Барамын31"
+   ],
+   "header": "inline",
+   "section": "meetings",
+   "title": "Сұрақтар мен кездесулер",
+   "errors": []
+  },
+  "1366-kk-resident-ideas": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Қолдау"
+   ],
+   "header": "inline",
+   "section": "ideas",
+   "title": "Идеялар",
+   "errors": []
+  },
+  "1366-kk-resident-crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Аймақты картадан көрсету"
+   ],
+   "header": "inline",
+   "section": "crisis",
+   "title": "Жедел штаб",
+   "errors": []
+  },
+  "1366-kk-akimat-day": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "day",
+   "title": "Күн қорытындысы",
+   "errors": []
+  },
+  "1366-kk-akimat-inbox": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "inbox",
+   "title": "Өтініштер",
+   "errors": []
+  },
+  "1366-kk-akimat-agencies": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1366-kk-akimat-agencies_joint": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1366-kk-akimat-agencies_handoffs": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1366-kk-akimat-agencies_calendar": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [
+    "wcal-row__street: Қарасақал Ерімбет көшесі",
+    "wcal-row__street: Шәмші Қалдаяқов көшесі",
+    "wcal-row__street: Ілияс Жансүгіров көшесі",
+    "wcal-row__street: Қарқаралы тас жолы көшесі"
+   ],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Жұмыс қосу"
+   ],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1366-kk-akimat-agencies_crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Тұрғындарға жаңарту жіберу"
+   ],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1366-kk-akimat-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Жариялау"
+   ],
+   "header": "inline",
+   "section": "together",
+   "title": "Бірге жасайық",
+   "errors": []
+  },
+  "1366-kk-akimat-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Жаңа кездесу"
+   ],
+   "header": "inline",
+   "section": "meetings",
+   "title": "Сұрақтар мен кездесулер",
+   "errors": []
+  },
+  "1366-kk-akimat-analyst": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Сұрау"
+   ],
+   "header": "inline",
+   "section": "analyst",
+   "title": "Birge-ден сұрау",
+   "errors": []
+  },
+  "1366-kk-akimat-intake": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Талдау"
+   ],
+   "header": "inline",
+   "section": "intake",
+   "title": "Өтініштерді талдау",
+   "errors": []
+  },
+  "1024-ru-resident-map": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Сообщить о проблеме"
+   ],
+   "header": "inline",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "1024-ru-resident-mine": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Сообщить о проблеме"
+   ],
+   "header": "inline",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "1024-ru-resident-yard": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Выбрать на карте"
+   ],
+   "header": "inline",
+   "section": "yard",
+   "title": "Мой двор",
+   "errors": []
+  },
+  "1024-ru-resident-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Предложить дело для двора"
+   ],
+   "header": "inline",
+   "section": "together",
+   "title": "Сделаем вместе",
+   "errors": []
+  },
+  "1024-ru-resident-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Приду31"
+   ],
+   "header": "inline",
+   "section": "meetings",
+   "title": "Вопросы и встречи",
+   "errors": []
+  },
+  "1024-ru-resident-ideas": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Поддержать"
+   ],
+   "header": "inline",
+   "section": "ideas",
+   "title": "Идеи",
+   "errors": []
+  },
+  "1024-ru-resident-crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Ещё"
+   ],
+   "main": [
+    "Показать зону на карте"
+   ],
+   "header": "inline",
+   "section": "crisis",
+   "title": "Кризисный штаб",
+   "errors": []
+  },
+  "1024-ru-akimat-day": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "day",
+   "title": "Картина дня",
+   "errors": []
+  },
+  "1024-ru-akimat-inbox": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "inbox",
+   "title": "Обращения",
+   "errors": []
+  },
+  "1024-ru-akimat-agencies": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1024-ru-akimat-agencies_joint": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1024-ru-akimat-agencies_handoffs": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1024-ru-akimat-agencies_calendar": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Добавить работу"
+   ],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1024-ru-akimat-agencies_crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Отправить обновление жителям"
+   ],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "1024-ru-akimat-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Опубликовать"
+   ],
+   "header": "inline",
+   "section": "together",
+   "title": "Сделаем вместе",
+   "errors": []
+  },
+  "1024-ru-akimat-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Новая встреча"
+   ],
+   "header": "inline",
+   "section": "meetings",
+   "title": "Вопросы и встречи",
+   "errors": []
+  },
+  "1024-ru-akimat-analyst": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Спросить"
+   ],
+   "header": "inline",
+   "section": "analyst",
+   "title": "Спросить Birge",
+   "errors": []
+  },
+  "1024-ru-akimat-intake": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Ещё"
+   ],
+   "main": [
+    "Разобрать"
+   ],
+   "header": "inline",
+   "section": "intake",
+   "title": "Разбор обращений",
+   "errors": []
+  },
+  "1024-kk-resident-map": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Мәселе туралы хабарлау"
+   ],
+   "header": "inline",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "1024-kk-resident-mine": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Мәселе туралы хабарлау"
+   ],
+   "header": "inline",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "1024-kk-resident-yard": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Картадан таңдау"
+   ],
+   "header": "inline",
+   "section": "yard",
+   "title": "Аулам",
+   "errors": []
+  },
+  "1024-kk-resident-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Аулаға іс ұсыну"
+   ],
+   "header": "inline",
+   "section": "together",
+   "title": "Бірге жасайық",
+   "errors": []
+  },
+  "1024-kk-resident-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Барамын31"
+   ],
+   "header": "inline",
+   "section": "meetings",
+   "title": "Сұрақтар мен кездесулер",
+   "errors": []
+  },
+  "1024-kk-resident-ideas": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Қолдау"
+   ],
+   "header": "inline",
+   "section": "ideas",
+   "title": "Идеялар",
+   "errors": []
+  },
+  "1024-kk-resident-crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Менің өтініштерім",
+    "Аулам",
+    "Идеялар",
+    "Тағы"
+   ],
+   "main": [
+    "Аймақты картадан көрсету"
+   ],
+   "header": "inline",
+   "section": "crisis",
+   "title": "Жедел штаб",
+   "errors": []
+  },
+  "1024-kk-akimat-day": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "day",
+   "title": "Күн қорытындысы",
+   "errors": []
+  },
+  "1024-kk-akimat-inbox": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "inbox",
+   "title": "Өтініштер",
+   "errors": []
+  },
+  "1024-kk-akimat-agencies": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1024-kk-akimat-agencies_joint": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1024-kk-akimat-agencies_handoffs": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1024-kk-akimat-agencies_calendar": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [
+    "wcal-row__street: Қарасақал Ерімбет көшесі",
+    "wcal-row__street: Шәмші Қалдаяқов көшесі",
+    "wcal-row__street: Ілияс Жансүгіров көшесі",
+    "wcal-row__street: Қарқаралы тас жолы көшесі"
+   ],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Жұмыс қосу"
+   ],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1024-kk-akimat-agencies_crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Тұрғындарға жаңарту жіберу"
+   ],
+   "header": "inline",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "1024-kk-akimat-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Жариялау"
+   ],
+   "header": "inline",
+   "section": "together",
+   "title": "Бірге жасайық",
+   "errors": []
+  },
+  "1024-kk-akimat-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Жаңа кездесу"
+   ],
+   "header": "inline",
+   "section": "meetings",
+   "title": "Сұрақтар мен кездесулер",
+   "errors": []
+  },
+  "1024-kk-akimat-analyst": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Сұрау"
+   ],
+   "header": "inline",
+   "section": "analyst",
+   "title": "Birge-ден сұрау",
+   "errors": []
+  },
+  "1024-kk-akimat-intake": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Тағы"
+   ],
+   "main": [
+    "Талдау"
+   ],
+   "header": "inline",
+   "section": "intake",
+   "title": "Өтініштерді талдау",
+   "errors": []
+  },
+  "375-ru-resident-map": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Сообщить о проблеме"
+   ],
+   "header": "compact",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "375-ru-resident-mine": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Сообщить о проблеме"
+   ],
+   "header": "compact",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "375-ru-resident-yard": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Выбрать на карте"
+   ],
+   "header": "compact",
+   "section": "yard",
+   "title": "Мой двор",
+   "errors": []
+  },
+  "375-ru-resident-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Предложить дело для двора"
+   ],
+   "header": "compact",
+   "section": "together",
+   "title": "Сделаем вместе",
+   "errors": []
+  },
+  "375-ru-resident-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Приду31"
+   ],
+   "header": "compact",
+   "section": "meetings",
+   "title": "Вопросы и встречи",
+   "errors": []
+  },
+  "375-ru-resident-ideas": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "ideas",
+   "title": "Идеи",
+   "errors": []
+  },
+  "375-ru-resident-crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Показать зону на карте"
+   ],
+   "header": "compact",
+   "section": "crisis",
+   "title": "Кризисный штаб",
+   "errors": []
+  },
+  "375-ru-akimat-day": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "day",
+   "title": "Картина дня",
+   "errors": []
+  },
+  "375-ru-akimat-inbox": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "inbox",
+   "title": "Обращения",
+   "errors": []
+  },
+  "375-ru-akimat-agencies": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "375-ru-akimat-agencies_joint": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "375-ru-akimat-agencies_handoffs": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "375-ru-akimat-agencies_calendar": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [
+    "wcal-row__street: пр. Кабанбай Батыра",
+    "wcal-row__street: ул. Бейбитшилик",
+    "wcal-row__street: ул. Елубая Тайбекова",
+    "wcal-row__street: ул. Карасакал Еримбет",
+    "wcal-row__street: ул. Шамши Калдаяков",
+    "wcal-row__street: Коргалжинское ш.",
+    "wcal-row__street: пр. Абылай Хана",
+    "wcal-row__street: ул. Кыз Жибек",
+    "wcal-row__street: Әйтеке Би көшесі",
+    "wcal-row__street: пр. Мангилик Ел",
+    "wcal-row__street: ул. Илияс Жансугурова",
+    "wcal-row__street: ул. Сарайшык"
+   ],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Добавить работу"
+   ],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "375-ru-akimat-agencies_crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Штаб ведомств",
+   "errors": []
+  },
+  "375-ru-akimat-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Опубликовать"
+   ],
+   "header": "compact",
+   "section": "together",
+   "title": "Сделаем вместе",
+   "errors": []
+  },
+  "375-ru-akimat-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Новая встреча"
+   ],
+   "header": "compact",
+   "section": "meetings",
+   "title": "Вопросы и встречи",
+   "errors": []
+  },
+  "375-ru-akimat-analyst": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Спросить"
+   ],
+   "header": "compact",
+   "section": "analyst",
+   "title": "Спросить Birge",
+   "errors": []
+  },
+  "375-ru-akimat-intake": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Разобрать"
+   ],
+   "header": "compact",
+   "section": "intake",
+   "title": "Разбор обращений",
+   "errors": []
+  },
+  "375-kk-resident-map": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Мәселе туралы хабарлау"
+   ],
+   "header": "compact",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "375-kk-resident-mine": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Мәселе туралы хабарлау"
+   ],
+   "header": "compact",
+   "section": "map",
+   "title": "",
+   "errors": []
+  },
+  "375-kk-resident-yard": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Картадан таңдау"
+   ],
+   "header": "compact",
+   "section": "yard",
+   "title": "Аулам",
+   "errors": []
+  },
+  "375-kk-resident-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Аулаға іс ұсыну"
+   ],
+   "header": "compact",
+   "section": "together",
+   "title": "Бірге жасайық",
+   "errors": []
+  },
+  "375-kk-resident-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Барамын31"
+   ],
+   "header": "compact",
+   "section": "meetings",
+   "title": "Сұрақтар мен кездесулер",
+   "errors": []
+  },
+  "375-kk-resident-ideas": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "ideas",
+   "title": "Идеялар",
+   "errors": []
+  },
+  "375-kk-resident-crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Аймақты картадан көрсету"
+   ],
+   "header": "compact",
+   "section": "crisis",
+   "title": "Жедел штаб",
+   "errors": []
+  },
+  "375-kk-akimat-day": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "day",
+   "title": "Күн қорытындысы",
+   "errors": []
+  },
+  "375-kk-akimat-inbox": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "inbox",
+   "title": "Өтініштер",
+   "errors": []
+  },
+  "375-kk-akimat-agencies": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "375-kk-akimat-agencies_joint": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "375-kk-akimat-agencies_handoffs": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "375-kk-akimat-agencies_calendar": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [
+    "wcal-row__street: Қабанбай Батыр даңғылы",
+    "wcal-row__street: Григорий Потанин көшесі",
+    "wcal-row__street: Қаныш Сәтбаев көшесі",
+    "wcal-row__street: Күлтегін көшесі",
+    "wcal-row__street: Бейбітшілік көшесі",
+    "wcal-row__street: Елубай Тайбеков көшесі",
+    "wcal-row__street: Пушкин көшесі",
+    "wcal-row__street: Қарасақал Ерімбет көшесі",
+    "wcal-row__street: Шәмші Қалдаяқов көшесі",
+    "wcal-row__street: Атырау көшесі",
+    "wcal-row__street: Қорғалжын тас жолы",
+    "wcal-row__street: Ақжол даңғылы"
+   ],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Жұмыс қосу"
+   ],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "375-kk-akimat-agencies_crisis": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [],
+   "header": "compact",
+   "section": "agencies",
+   "title": "Ведомстволар штабы",
+   "errors": []
+  },
+  "375-kk-akimat-together": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Жариялау"
+   ],
+   "header": "compact",
+   "section": "together",
+   "title": "Бірге жасайық",
+   "errors": []
+  },
+  "375-kk-akimat-meetings": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Жаңа кездесу"
+   ],
+   "header": "compact",
+   "section": "meetings",
+   "title": "Сұрақтар мен кездесулер",
+   "errors": []
+  },
+  "375-kk-akimat-analyst": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Сұрау"
+   ],
+   "header": "compact",
+   "section": "analyst",
+   "title": "Birge-ден сұрау",
+   "errors": []
+  },
+  "375-kk-akimat-intake": {
+   "scroll": 0,
+   "cut": [],
+   "cut_rows": [],
+   "keys": [],
+   "ru_in_kk": [],
+   "nav": [],
+   "main": [
+    "Талдау"
+   ],
+   "header": "compact",
+   "section": "intake",
+   "title": "Өтініштерді талдау",
+   "errors": []
+  }
+ },
+ "problems": []
+}

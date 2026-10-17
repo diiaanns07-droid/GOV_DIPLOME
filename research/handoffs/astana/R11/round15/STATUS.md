@@ -57,7 +57,14 @@ FINAL-5.1 не ломать: у R11 — только добавления.
    словарь = модули ролей.
 4м. 17 окт 07:24 — тихий круг: поправок нет (П1–П3), словарь = модули ролей; новых сборок после B6.8 нет, R10 и R15 — без
    новых находок; R03, R04, R09 — только STATUS.
-5. Кандидат FINAL-6 (17 окт 12:00) — r15_screens.cjs + r15_scenes.cjs (+ сцена 0); блокеры — только по спискам R10 / R15.
+4н. 17 окт 07:28–07:45 — предпрогон кандидата FINAL-6 на чистой B6.8 7c926eb4 (ui-kit и словарь = R11 ec3d0aef; REVIEW круг 29):
+   r15_screens 108 кадров — проблем 0; сцены 7–9 — 50 кадров, ошибок JS 0; сцена 0 — 36 кадров, проблем 0 (301 — 0,39–0,90 с).
+   Книга экранов v1.2 — все 43 кадра на B6.8; H7 — ответ «Спросить Birge» с меткой «ИИ» (новый инструмент r15_h7.cjs).
+   Находка ҚАЗ (не блокер): суббота «сн» в датах «Мой двор» (together-text.js R16, R16 закрыт) → patches/R16_kk_weekday.patch
+   для R01 (INTEGRATION П3, KK_REVIEW № 49; tests/civic/R16 61 / 0 с патчем). Отчёты — screens/b68-prerun/. code_sha не менялся.
+5. Кандидат FINAL-6 (17 окт 12:00) — r15_screens.cjs + r15_scenes.cjs + r15_intake.cjs + r15_h7.cjs; сравнить с предпрогоном
+   B6.8 (screens/b68-prerun/), переснять изменившиеся кадры книги; взял ли R01 patches/R16_kk_weekday.patch; блокеры — только по
+   спискам R10 / R15.
 6. 18:00 17 окт — финальные STATUS / DELIVERY, «Раунд 15 закрыт».
 
 Как разобрать кандидат FINAL-6 (17 окт 12:00), без догадок:
@@ -65,7 +72,9 @@ FINAL-5.1 не ломать: у R11 — только добавления.
   --package data/civic/astana/demo_synthetic.json / seed-r14-demo / create-editor operator --password-stdin < pw.txt`;
   `CIVIC_DB_PATH=D CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 timeout 7200 python3 -B app.py --port 8656` (в фоне), ждать «civic-v2: ready»;
 - `NODE_PATH="$(npm root -g)" node tests/civic/R11/review/r15_screens.cjs <BASE> <OUT> <pw>` (108 кадров, в т. ч. #intake),
-  `r15_intake.cjs <BASE> <OUT> <pw>` (сцена 0 по шагам; вход сотрудника — до загрузки страницы), `r15_scenes.cjs` (7–9);
+  `r15_intake.cjs <BASE> <OUT> <pw>` (сцена 0 по шагам, на чистой базе; вход сотрудника — до загрузки страницы),
+  `r15_scenes.cjs <BASE> <OUT> <pw> --sizes 1366,375` (7–9), `r15_h7.cjs <BASE> <OUT> <pw> --sizes 1366` (H7);
+- книга: сравнить кадры с design-book/ (отличие > 1 % — смотреть глазами и заменить), scenes.json — сборка кандидата;
 - словарь: `DRY=1 python3 -B tests/civic/R11/tools/sync_roles.py` — ключи ролей (R04 intake.js в списке);
 - блокеры — только из списков R10 / R15 (к 14:00); правки — только в путях R11.
 
