@@ -2,6 +2,8 @@ R06 · раунд 15 · как подключить к сборке (финал�
 Ветка роли: claude/eloquent-einstein-wvuyje · код — DELIVERY.json (code_sha) · STATUS: research/handoffs/astana/R06/round15/STATUS.md
 Пути R06 (CONTRACT §2): ui/civic_store/, web/civic/proposals/, web/civic/ideas/, web/civic/notify/, tests/civic/R06/.
 Брать в сборку пути целиком; чужие файлы R06 не меняет — правки соседям ниже патчами.
+Раунд 15 закрыт (П4, 17 окт): FINAL-6 = R01 B6.9 63bb6e6d — все пути R06 = 3dcc334a, делать ничего не нужно. Запасная
+сборка показа FINAL-5.1 e8d6cae6 — R06 d688c45f.
 
 =====================================================================================================
 П3 (РАУНД 15+, ДО FINAL-6) — ДЛЯ R07 / R12 / R01
