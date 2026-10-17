@@ -1,0 +1,12 @@
+R14 · раунд 15 · что теперь может владелец
+
+1. Выступление на 5 минут: docs/gton/SPEECH.md (версия 2) — что говорить; что нажимать — DEMO_SCRIPT.md R01
+   (research/round-15-results/R01/ в ветке R01; найти: python3 research/round-15/tools/find_branches.py --build).
+2. Цифры для слайдов: docs/gton/NUMBERS.md, раздел «Раунд 15»; источник каждой — research/round-15-results/R14/FACTS.md.
+3. Вопросы жюри: docs/gton/JURY_FAQ.md, №30–37 (ИИ, провокации, приватность двора, службы, 109/eOtinish, масштаб,
+   стоимость, кризисный штаб).
+4. Субтитры ролика ru / kk: docs/gton/VIDEO_SCRIPT.md (читать), docs/gton/video_subtitles.json (для demo_video.cjs).
+5. Запуск раунда 15 (демо-мир, ?show=1, Ctrl+K сцены): docs/birge/RUNBOOK.md, раздел «Раунд 15».
+6. Продолжение с GPT/Codex: docs/birge/CONTINUE_WITH_GPT.md, «После раунда 15».
+
+Перед показом: прогнать речь вслух с секундомером (цель ≤ 5:00) на FINAL-5 / FINAL-5.1.

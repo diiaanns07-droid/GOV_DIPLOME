@@ -529,3 +529,9 @@ R06: заголовки строк идей и проектов — рамка �
 серый текст в панели карты и строке «Хроники». Проверки: pytest R06 / R07 — 949 / 0; r15_ia 48 / 0; r15_sheet_fit 63 / 0 / 3 WARN.
 BUILD.json — B6.8 (intermediate).
 
+
+### 17 окт, 07:33 по Астане — R14 78c6564e (docs, к FINAL-6): речь и субтитры сцены 0
+По INTEGRATION R14 («к FINAL-6 R01 берёт docs/gton и docs/birge из ветки пакета»): `git checkout
+origin/claude/clever-hypatia-q6ts4g -- docs/gton docs/birge research/round-15-results/R14` — SPEECH.md «Сцена 0» (числа читать
+с экрана), субтитры `intake` / `intake_result` (video_subtitles.json, VIDEO_SCRIPT.md), папка результатов R14 (FACTS, RUN,
+кадры review_final51). До этого docs в ветке были равны R14 63f4c9bc. Кода нет — BUILD.json остаётся B6.8.

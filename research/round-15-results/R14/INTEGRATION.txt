@@ -1,0 +1,19 @@
+R14 · раунд 15 · как подключить к сборке
+
+Ветка: claude/clever-hypatia-q6ts4g (ветка пакета; R14 ведёт координатор по поправке П2). Поставка: DELIVERY.json, code_sha 63f4c9bc.
+
+R01 (FINAL-5 / FINAL-5.1 / FINAL-6 по П3): взять только пути R14 из ветки пакета —
+  git checkout origin/claude/clever-hypatia-q6ts4g -- docs/gton docs/birge research/round-15-results/R14
+Кода нет: маршруты, CIVIC_ASSETS, registerScreen и словарь не меняются.
+
+R10 (ролик): текст субтитров — docs/gton/video_subtitles.json (ключи как у tests/e2e/fixtures/video_subtitles.json):
+  node tests/e2e/demo_video.cjs --url http://127.0.0.1:8611 --lang ru --subtitles docs/gton/video_subtitles.json
+  node tests/e2e/demo_video.cjs --url http://127.0.0.1:8611 --lang kk --subtitles docs/gton/video_subtitles.json
+  Не успели — ролик с черновиком R10, это не блокер. Изменены только s2, s4, agencies, crisis, final (см. VIDEO_SCRIPT.md).
+
+R11: вычитать казахские строки субтитров с ✎ в docs/gton/VIDEO_SCRIPT.md (s2, s4, agencies, crisis, final).
+
+LOCAL: нет новых задач. Кадры и ролик с настоящей картой — LOCAL-12 и LOCAL-16 (research/round-15/LOCAL_TASKS.md).
+
+П3 (сцена 0 «ИИ-разбор»): речь — SPEECH.md, раздел «Сцена 0»; субтитры — ключи intake, intake_result в
+docs/gton/video_subtitles.json (R10: в ролике перед intro).
