@@ -1,13 +1,13 @@
 {
   "role": "R04",
   "round": 15,
-  "delivery": "D4.1 (П3, 16 окт 20:43 по Астане) — code c4e4581b: D4 9c16e868 + экран устойчив к расхождению словаря (B-134 на сборке B6.3 со словарём 554961ac), ответ 400 — свой текст в kk; проверка экрана — все состояния (168), HTTP-проверка без мигания. Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
+  "delivery": "D4.2 (П3, 17 окт 08:26 по Астане) — code 0f8f508d: код тот же, что D4.1 c4e4581b (экран устойчив к расхождению словаря, ответ 400 — свой текст в kk); отличие — только проверка экрана tests/civic/R04/intake/ui_check_intake.cjs (174: + «уменьшить движение», «Показать на карте» -> #target задачи, без прокрутки вбок при 501 строке). Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
   "branch": "claude/gifted-maxwell-i66wwi",
   "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
   "restored_from": null,
   "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
-  "code_sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
-  "tested_sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+  "code_sha": "0f8f508db86a8bbbaba013dd9b709107a7723c49",
+  "tested_sha": "0f8f508db86a8bbbaba013dd9b709107a7723c49",
   "push_status": "OK",
   "changed_paths": [
     "ml/civic_replies/__init__.py",
@@ -475,5 +475,5 @@
       "file": "research/round-15-results/R04/intake_eval/r02_night_halves_after_dev_fixes_gold_cfcccf70.json"
     }
   },
-  "final_note_p3": "R01 B6.4 e56971a0 несёт D4 9c16e868; кандидат FINAL-6 берёт code_sha этой поставки — D4.1 c4e4581b (отличие от D4 — только экран web/civic/intake/intake.js и проверки)"
+  "final_note_p3": "R01 B6.5–B6.8 несут код D4.1 c4e4581b (R01 на B6.8: HTTP 19 / 19, экран 168 / 168); D4.2 0f8f508d — тот же код + проверка экрана на 174 (на B6.4 + экран D4.1: 174 / 174). Для кандидата FINAL-6 — code_sha этой поставки."
 }
