@@ -43,6 +43,13 @@ R02 · РАУНД 15 · ДЕМО-МИР — КОМАНДЫ ЗАПУСКА И П�
      python3 -m ml.datasets.demo_intake_eval ответ.json [--json]   # метрики П3 по ответу analyze() R04
    Тесты: python3 -m pytest -q tests/civic/R02/round15/test_r02r15_intake.py  (14 passed на FINAL-5.1; со старой картой
    12 passed, 2 skipped с причиной)
+   Сцена 0 на живом стенде (сотрудник; пример → разбор → оценщик → «Создать задачи» и повтор):
+     python3 tests/civic/R02/round15/stand_scene0.py --base http://127.0.0.1:8656 --password-file /tmp/birge/pw.txt \
+         [--no-commit] [--out scene0.json]
+   На B6.8: 301 → 127 задач, создать 106 (104 + 2), повтор — 0 новых, код 0. После commit числа мира нарочно другие —
+   stand_numbers.py (п. 3) запускать ДО сцены 0. Вернуть мир после репетиции — не перезапуском на той же базе, а копией:
+     python3 -B -m ui.civic_store --db $D backup /tmp/birge/before.sqlite3          # сервер закрыт, до репетиции
+     python3 -B -m ui.civic_store --db $D restore --yes /tmp/birge/before.sqlite3   # сервер закрыт, после репетиции
 
 5. LOCAL-14 · живые тексты людей (ноутбук владельца; тексты в Git не попадают никогда)
      python -m ml.labeling.import_form private/form.csv          # → private/form_<дата>.jsonl + .review.txt

@@ -53,6 +53,7 @@
     "data/civic/astana/demo-world/EXPECTED.json",
     "tests/civic/R02/round15/test_r02r15_demo_world.py",
     "tests/civic/R02/round15/stand_numbers.py",
+    "tests/civic/R02/round15/stand_scene0.py",
     "tests/civic/R02/test_r02_schema.py",
     "research/round-15-results/R02/INVENTORY.md",
     "research/round-15-results/R02/INTEGRATION.txt",
@@ -63,6 +64,7 @@
     "research/handoffs/astana/R02/round15/STATUS.md",
     "research/round-15-results/R02/patches/R01_world_reset.patch",
     "research/round-15-results/R02/patches/R07_world_marks_reseed.patch",
+    "research/round-15-results/R02/patches/R01_demo_script_scene0_reset.patch",
     "research/round-15-results/R02/stand_numbers_builds.json",
     "ml/datasets/demo_intake.py",
     "ml/datasets/demo_intake_texts.py",
@@ -289,6 +291,14 @@
     "оценщик: эталон как ответ / каждый текст — своя задача": {
       "status": "PASS",
       "note": "1.0 по всем метрикам / F1 повторов 0, ведущая служба 0"
+    },
+    "стенд B6.8 7c926eb4 (база кандидата FINAL-6): R02 целиком, мир, набор, числа, сцена 0": {
+      "status": "PASS",
+      "pytest tests/civic/R02": "380 passed, 1 skipped (55 с); round15 + schema — 59 passed",
+      "checks": "demo_world --check OK (dd0e7bba), demo_world_check 0/0, demo_intake --check OK",
+      "stand_numbers": "14/14, перезапуск 14/14",
+      "stand_scene0": "пример = набор R02, 127 задач, создать 106 (104 + 2), повтор 0, код выхода 0",
+      "note": "17 окт ~08:30–08:55 Астаны, worktree сборки R01; подробно — stand_numbers_builds.json (b68*)"
     }
   },
   "consistency_table": {
@@ -465,6 +475,19 @@
           "handoffs_30d": "14",
           "scenes": "2 («Хан Шатыр» 12 на значке), 7 (двор — 200), 8 (cf-w15-01 у R12), 9 (inc-w15-buran активен, 3 обновления)",
           "overdue": "R08 = R17 overdue_fix (35 / 5 / 11 / 3); R09 = R17 overdue_answer (5 / 2 / 2 / 0)"
+        },
+        {
+          "build": "B6.8 7c926eb4 (R01, база кандидата FINAL-6; R02 cfcccf70, мир dd0e7bba) — предпрогон R02 17 окт ~08:30 Астаны",
+          "stand_vs_world": "14/14",
+          "restart": "14/14, «R09 743 (новых 0) … R07 6 (новых 0)» — у всех семи «новых 0»",
+          "r17_board_open_by_service": "19/19 (строка gas — 0: в мире нет жалоб газовой службы)",
+          "joint_30d": "18 / 8",
+          "handoffs_30d": "14",
+          "scenes": "2 («Хан Шатыр» 12 на значке), 7 (двор — 200), 8 (cf-w15-01 у R12), 9 (inc-w15-buran активен, 3 обновления) — и до, и после сцены 0",
+          "overdue": "R08 = R17 overdue_fix (35 / 5 / 11 / 3); R09 = R17 overdue_answer (3 / 1 / 1 / 0 — суббота, срок ответа в рабочих днях)",
+          "scene0": "пример 301 = набор R02; 127 задач · 19 служб · 9 срочных · 174 склеено · 21 без адреса, 448 мс; оценщик R02: ведущая служба 0,917, F1 повторов 0,921 (групп точно 0,717), места 0,979, срочные 8/8 групп (тексты 0,905, точность 1,0); «Создать задачи» 104 + 2, повтор — 0",
+          "after_scene0": "Нура: люди на карте 7/14/30 дн. 83/91/96 → 296/304/309, жалобы R09 743 → 847 (Нура 267 → 332), «Картина дня» новых за день / неделю 3 / 66 → 68 / 131, «Обращения» new 23 → 109 и in_progress 72 → 71 (группа = цель + категория, вкладка по самой ранней записи — правило R09); в работе / просрочено / исправлено / решения акима — 43 / 5 / 45 / 2 без изменений; первый всплеск «Пульса» — «ЖКХ 80» вместо «снег и гололёд 60»",
+          "rehearsal_reset": "перезапуск run-city на той же базе записи сцены 0 НЕ убирает (R09 847, люди Нуры 282 / 290 / 295, на показе «Создать задачи» — «уже созданы 104»); civic_store backup до репетиции → restore после — 14/14 и сцена 0 снова 106 → 104 + 2; правка DEMO_SCRIPT — patches/R01_demo_script_scene0_reset.patch (INTEGRATION §12)"
         }
       ],
       "nura_same_on_all_screens": "карта 7/14/30 дн. 83/91/96 = люди открытых жалоб R09 83/96 = районы «Картины дня» 83 — на всех сборках, включая FINAL-5"
@@ -482,7 +505,7 @@
     "Жалобы на остановки — только на остановки OSM с названием (46 % остановок в OSM без названия).",
     "Разборщики времени у R07, R12, R13, R16, R17, R10 ждут ISO или плоские поля: работают с миром только после materialize (R01 передаёт материализованный мир; R12 и R10 читают файл сами — им нужна правка из INTEGRATION §6, §10)."
   ],
-  "next_step": "П3: набор «обращения за ночь» сдан (INTEGRATION §12) — ответить на просьбы R04 / R11 до 17 окт 11:00 Астаны; 17 окт 12:00 — кандидат FINAL-6: стенд R02 (числа мира, перезапуск) и сцена 0 на наборе; блокеры R10 к 14:00 — исправить до 16:00; 18:00 — финальный STATUS / DELIVERY «Раунд 15 закрыт».",
+  "next_step": "Предпрогон стенда R02 на B6.8 (база кандидата FINAL-6): 14/14, перезапуск 14/14, табло, сцены, «Просрочено», сцена 0 на наборе (числа R01 совпали). Найдено для R01: перезапуск run-city.bat не убирает задачи с репетиции сцены 0 — правка DEMO_SCRIPT (копия базы до репетиции, restore после) — patches/R01_demo_script_scene0_reset.patch. 17 окт 12:00 — кандидат FINAL-6: тот же прогон; блокеры R10 к 14:00 — исправить до 16:00; 18:00 — финальный STATUS / DELIVERY «Раунд 15 закрыт».",
   "final": false,
   "final_note": "П3 снова открыл раунд до FINAL-6. Мир R02 — как в FINAL-5 / FINAL-5.1 (fa9ab80b); новое — набор П3 (code_sha). Финальная поставка — к 17 окт 11:00 Астаны, если будут правки.",
   "intake": {
@@ -525,5 +548,10 @@
     "built_on": "карта R12 objects.json 247c24a8, yards.json a3ef7329, мир dd0e7bba (дерево FINAL-5.1 e8d6cae6); --check байт в байт там же",
     "labeling": "правила R02: categories_v2, таблица служб Birge (lifecycle.SERVICE_RULES = умолчания R08), пары CONTRACT §5.1, классы срочности; без прогона моделей R04",
     "integration": "research/round-15-results/R02/INTEGRATION.txt §12"
+  },
+  "stand_tools": {
+    "tests/civic/R02/round15/stand_numbers.py": "14 чисел стенда против мира (до сцены 0)",
+    "tests/civic/R02/round15/stand_scene0.py": "сцена 0 на стенде: пример = набор R02, разбор, оценщик, «Создать задачи» и повтор (17 окт)",
+    "note_ru": "Инструменты стенда; pytest их не собирает. Продукт R02 не менялся — code_sha поставки остаётся cfcccf70, брать инструменты в сборку не обязательно (R10 может запускать их из ветки R02)."
   }
 }
