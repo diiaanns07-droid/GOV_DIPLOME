@@ -6,7 +6,7 @@
  "restored_from": "claude/r14-R10@656681ee (tests/e2e и tests/civic/R10 в FINAL-4 те же) + research/round-14-results/R01/patches/R10_demo_flow_reference.patch",
  "code_sha": "67166feb (тесты R10 П3: intake.py, сцена 0 в demo_flow_v2 / demo_video, аудит П3); до П3 — 58234e5a",
  "tested_sha": "a4937462 (FINAL-4), bd3800d8 (FINAL-4.1), ветка R01: c97aa5f5 и c9069723 (B0), 29b4ae9d (B0.2), c6d62440 (B0.6), 49786917 (B0.9), d893d9b2 (B0.10), 0121f7bd (B0.12), 2184795b (B0.13), aebb9f0a (B0.14), 79c766c1 (B0.15), 49a69c17 (B0.16), 9f44429e (B0.17), 80429928 (B0.18), fd01a0a2 (B0.19), 8f70baf1 (B0.20), fceec354 (B0.21), c2276360 (FINAL-5); превью pvC, pvD, pvE, pvF; стенд «1 000 целей», e8d6cae6 (FINAL-5.1), 25ee5a39 (B6.5), 83c8aa58 (B6.6), 745eeae5 (B6.7), 7c926eb4 (B6.8), 63bb6e6d (B6.9), cb62a6b8 (FINAL-6)",
- "push_status": "OK (checkpoint)",
+ "push_status": "OK — итог раунда 15+ b627aba7 (17 окт 07:25 UTC)",
  "status": "Раунд 15 закрыт (П4, 17 окт). FINAL-6 cb62a6b8 (= код B6.9 63bb6e6d) принят R10 — «можно показывать: ДА», блокеров нет; окончательный ролик со сценой 0 — video/final6/ (ҚАЗ 4:13, РУС 3:59). Запасная сборка — FINAL-5.1 e8d6cae6.",
  "changed_paths": [
   "research/handoffs/astana/R10/round15/STATUS.md",

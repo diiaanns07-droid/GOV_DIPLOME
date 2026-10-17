@@ -127,4 +127,4 @@ docs/gton), после раунда. П1 «Без ИИ-слопа» — нару
 - принятые сборки: FINAL-5 c2276360, FINAL-5.1 e8d6cae6, ветка R01 B6.5 25ee5a39 … B6.9 63bb6e6d, **FINAL-6 cb62a6b8**
   (ветка R01 claude/brave-fermi-nhzetj)
 - итог раунда 15+ R10 — этот коммит (FINAL-6 принят, ролик video/final6/, DELIVERY и STATUS «Раунд 15 закрыт»), ветка
-  claude/zen-wozniak-69d41q; SHA и статус push — в сообщении сессии и следующей строкой
+  claude/zen-wozniak-69d41q — `b627aba7`, push OK 17 окт 07:25 UTC
