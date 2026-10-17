@@ -1,0 +1,589 @@
+{
+ "at": "2026-10-17T06:31:14.249Z",
+ "url": "http://127.0.0.1:8659",
+ "code_head": "63bb6e6d",
+ "stand": "R01 claude/brave-fermi-nhzetj @ 63bb6e6d (B6.9) как есть — R05 = D1.7 f16275a3 + патч оболочки R05",
+ "env": "облако: Chromium headless + SwiftShader, упрощённый фон карты",
+ "checklist": "VISUAL_BRIEF §4 пп. 3, 9, 10 + правило 3 (одна главная кнопка)",
+ "results": [
+  {
+   "id": "catalog_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 0
+   }
+  },
+  {
+   "id": "card_lighting_night_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "hint_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "hint",
+    "r05_sizes": [
+     16
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [],
+    "r06_sizes": [],
+    "label_sizes": [
+     13
+    ],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "catalog_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 0
+   }
+  },
+  {
+   "id": "card_lighting_night_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "hint_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "hint",
+    "r05_sizes": [
+     16
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [],
+    "r06_sizes": [],
+    "label_sizes": [
+     13
+    ],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "catalog_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 0
+   }
+  },
+  {
+   "id": "card_lighting_night_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "hint_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "hint",
+    "r05_sizes": [
+     16
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [],
+    "r06_sizes": [],
+    "label_sizes": [
+     13
+    ],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "catalog_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 0
+   }
+  },
+  {
+   "id": "card_lighting_night_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "hint_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "hint",
+    "r05_sizes": [
+     16
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [],
+    "r06_sizes": [],
+    "label_sizes": [
+     13
+    ],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "catalog_375_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_375_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_375_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "card_lighting_night_375_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_375_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [],
+    "r06_sizes": [],
+    "label_sizes": [
+     13
+    ],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "catalog_375_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_375_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_375_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "card_lighting_night_375_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_375_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [],
+    "r06_sizes": [],
+    "label_sizes": [
+     13
+    ],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  }
+ ],
+ "pageErrors": []
+}
