@@ -1,0 +1,18 @@
+diff --git a/tests/civic/R10/consistency.py b/tests/civic/R10/consistency.py
+index fb5544d9..37d42ca1 100644
+--- a/tests/civic/R10/consistency.py
++++ b/tests/civic/R10/consistency.py
+@@ -321,6 +321,13 @@ class Consistency:
+             data = json.loads(path.read_text(encoding="utf-8"))
+         except ValueError:
+             return {}
++        try:
++            # Время мира R02 — объекты {"ago_hours": h} (SCHEMA R02 §1): в ISO от «сейчас» (R02 INTEGRATION §10).
++            sys.path.insert(0, str(self.s.root))
++            from ml.datasets.demo_world_io import materialize
++            data = materialize(data, self.now)
++        except Exception:  # нет помощника R02 — поля ago_days / created_at, как раньше
++            pass
+         complaints = [c for c in data.get("complaints", []) if isinstance(c, dict) and c.get("district") == self.d]
+ 
+         def age_days(c):

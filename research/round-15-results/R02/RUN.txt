@@ -1,0 +1,71 @@
+R02 · РАУНД 15 · ДЕМО-МИР — КОМАНДЫ ЗАПУСКА И ПРОВЕРКИ
+
+Что теперь можно: поднять стенд Birge, где карта, «Обращения», «Картина дня», табло служб и «Мой двор» показывают
+числа по ОДНИМ синтетическим записям (743 жалобы за 60 дней, «Буран в Нуре», работы с конфликтами, дворы, инициативы,
+кризис, встречи) — без противоречий FINAL-4 («Нура · 80» на карте и 2 записи в «Обращениях»).
+
+1. Пересобрать мир и проверить (Python 3.11+, без сети, ~5 с каждая команда)
+     python3 -m ml.datasets.demo_world              # world_v1.json + world_v1.sample.json, печатает сводку и sha256
+     python3 -m ml.datasets.demo_world --check      # воспроизводимость: тот же sha256, что в файле (на тех же файлах карты
+                                                    # R12, что в шапке мира inputs; на других — код 2 и причина)
+     python3 -m ml.datasets.demo_world_expected     # EXPECTED.json — числа экранов кодом R07/R08/R09 (опорный момент)
+     python3 -m ml.datasets.demo_world_expected --now 2026-10-17T18:00:00+05:00 --print   # на свой момент
+     python3 -m ml.datasets.demo_world_check        # форматы, id, цели R12, люди = жалобы + «Я тоже», ПДн, demo: true
+   Тесты: python3 -m pytest -q tests/civic/R02/round15 tests/civic/R02/test_r02_schema.py      (39 passed)
+
+2. Стенд с демо-миром (облако или ноутбук; пока R01 не взял patch — применить его локально, файл R01 не коммитить)
+     git apply research/round-15-results/R02/patches/R01_demo_world.patch
+     mkdir -p /tmp/birge && D=/tmp/birge/world.sqlite3
+     python3 -B -m ui.civic_store --db $D init
+     python3 -B -m ui.civic_store --db $D seed-demo --package data/civic/astana/demo_synthetic.json
+     python3 -B -m ui.civic_store --db $D seed-r14-demo
+     python3 -B -m ui.civic_store --db $D create-editor operator --password-stdin      # пароль 12+ символов
+     CIVIC_DB_PATH=$D CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8656
+   В консоли: «civic-demo-world: R09: inserted 743, …; R06: …» (у модулей без seed_world — «нет seed_world»).
+   Повторный запуск: «R09: … reset 743» — демо-записи возвращаются в исходный вид от нового «сейчас» (репетиция не
+   съедает показ). Без CIVIC_DEMO_WORLD=1 — демо как в FINAL-4.
+   Windows (ноутбук): set CIVIC_DEMO_WORLD=1 перед run-city.bat (когда R01 включит patch в сборку).
+
+3. Сверка живого стенда с миром (то, что рисует интерфейс, против EXPECTED на тот же момент)
+     printf '<пароль>' > /tmp/birge/pw.txt
+     python3 tests/civic/R02/round15/stand_numbers.py --base http://127.0.0.1:8656 --password-file /tmp/birge/pw.txt \
+         --out research/round-15-results/R02/stand_numbers_world.json
+   Ожидается «OK» в 14 строках (карта 7/14/30 дней, «Картина дня», «Обращения», список R09) и код выхода 0.
+
+4. Засев жалоб мира без сервера (R09 / отладка)
+     python3 -c "from ml.datasets.demo_world_seed import seed_world; print(seed_world('/tmp/birge/c.sqlite3'))"
+
+4a. Набор «обращения за ночь» для «ИИ-разбора пачки» R04 (П3, сцена 0) — паспорт data/civic/astana/demo-world/INTAKE.md
+     python3 -m ml.datasets.demo_intake --summary   # сводка: 301 текст, 115 групп, 8 срочных, 11 «двух служб», 18 без адреса
+     python3 -m ml.datasets.demo_intake             # intake_night_v1.json (тексты для экрана) + intake_night_v1.gold.json
+     python3 -m ml.datasets.demo_intake --check     # байт в байт — на данных карты R12 сборки FINAL-5 и новее (inputs);
+                                                    # в дереве со старой картой — код 2 и причина
+     python3 -m ml.datasets.demo_intake_eval ответ.json [--json]   # метрики П3 по ответу analyze() R04
+   Тесты: python3 -m pytest -q tests/civic/R02/round15/test_r02r15_intake.py  (14 passed на FINAL-5.1; со старой картой
+   12 passed, 2 skipped с причиной)
+   Сцена 0 на живом стенде (сотрудник; пример → разбор → оценщик → «Создать задачи» и повтор):
+     python3 tests/civic/R02/round15/stand_scene0.py --base http://127.0.0.1:8656 --password-file /tmp/birge/pw.txt \
+         [--no-commit] [--out scene0.json]
+   На B6.8: 301 → 127 задач, создать 106 (104 + 2), повтор — 0 новых, код 0. После commit числа мира нарочно другие —
+   stand_numbers.py (п. 3) запускать ДО сцены 0. Вернуть мир после репетиции — не перезапуском на той же базе, а копией:
+     python3 -B -m ui.civic_store --db $D backup /tmp/birge/before.sqlite3          # сервер закрыт, до репетиции
+     python3 -B -m ui.civic_store --db $D restore --yes /tmp/birge/before.sqlite3   # сервер закрыт, после репетиции
+
+5. LOCAL-14 · живые тексты людей (ноутбук владельца; тексты в Git не попадают никогда)
+     python -m ml.labeling.import_form private/form.csv          # → private/form_<дата>.jsonl + .review.txt
+     (открыть .review.txt, вычеркнуть то, что похоже на личные данные; обезличивание — регулярные выражения)
+     web/labeling/index.html — двойной щелчок, разметка 300 текстов без мыши (~2 ч), Ctrl+S — экспорт JSONL
+     python -m ml.labeling.agreement private/labels_A.jsonl private/labels_B.jsonl   # согласие разметчиков (kappa)
+   Дальше — оценка модели по RUN.txt R03 (результаты без текстов — в ветку R03). В демо-мир живые тексты не идут.
+
+6. Где что
+     data/civic/astana/demo-world/  SCHEMA.md · DATASHEET.md · world_v1.json · world_v1.sample.json · EXPECTED.json ·
+                                    INTAKE.md · intake_night_v1.json · intake_night_v1.gold.json (П3)
+     ml/datasets/                   demo_world.py · demo_world_io.py · demo_world_check.py · demo_world_expected.py ·
+                                    demo_world_seed.py · demo_intake.py · demo_intake_texts.py · demo_intake_eval.py (П3)
+     research/round-15-results/R02/ INVENTORY.md · INTEGRATION.txt · RUN.txt · DELIVERY.json · patches/R01_demo_world.patch ·
+                                    stand_numbers_world.json
+     tests/civic/R02/round15/       test_r02r15_demo_world.py · stand_numbers.py · test_r02r15_intake.py (П3)
+
+Среда проверки: облако Claude Code, Linux, Python 3.13, pytest 9.1; подложка карты в облаке не грузится (нет интернета) —
+на числа это не влияет.
