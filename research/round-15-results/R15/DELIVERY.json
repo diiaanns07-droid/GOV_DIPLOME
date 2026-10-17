@@ -35,9 +35,10 @@
   "B6.5_25ee5a39": "tests/civic/R15 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена e56971a0..25ee5a39 чистая; R07 heat place() — id по шаблону, без кэша, только данные карты",
   "B6.5_25ee5a39_round33": "tests/civic/R15 = ce2a15e1: 618 passed / 0 failed (повтор 17 окт 00:38 Астаны, 127 с)",
   "B6.6_83c8aa58": "tests/civic/R15 = ce2a15e1: 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена 25ee5a39..83c8aa58 чистая (CSS, ui-kit index.html, тест R11; JS не менялся)",
-  "B6.7_745eeae5": "тесты R15 в сборке = ce2a15e1 (побайтно), запуск в дереве сборки: 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена 83c8aa58..745eeae5 чистая (CSS, 6 строк JS R09 — текст через h())"
+  "B6.7_745eeae5": "тесты R15 в сборке = ce2a15e1 (побайтно), запуск в дереве сборки: 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена 83c8aa58..745eeae5 чистая (CSS, 6 строк JS R09 — текст через h())",
+  "B6.8_7c926eb4": "тесты R15 в сборке = ce2a15e1, запуск в дереве сборки: 618 passed / 0 failed; браузер r15_round15 10/0/1, r15_reference 18/0/0; гигиена 745eeae5..7c926eb4 чистая (CSS, 7 строк JS R06 — состояние ошибки, без вставки HTML)"
  },
- "push_status": "OK (круг 37)",
+ "push_status": "OK (круг 38)",
  "changed_paths": [
   "tests/civic/R15/",
   "research/round-15-results/R15/",
