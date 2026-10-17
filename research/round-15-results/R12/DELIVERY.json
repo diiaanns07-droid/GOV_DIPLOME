@@ -256,7 +256,7 @@
   },
   "final6_candidate": {
    "status": "PASS",
-   "how": "код кандидата FINAL-6 = R01 B6.9 63bb6e6d как собран (окно поставок закрыто в 11:01, R12 aae9a5bc — пути R12 совпадают с веткой R12), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, «civic-world: … R12 39», «civic-v2: ready … R12»; 17 окт 11:27–11:50 Астаны",
+   "how": "код кандидата FINAL-6 = R01 B6.9 63bb6e6d как собран (окно поставок закрыто в 11:01, R12 aae9a5bc — пути R12 совпадают с веткой R12), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, «civic-world: … R12 39», «civic-v2: ready … R12»; 17 окт 11:27–11:34 Астаны",
    "result": {
     "pytest": "tests/civic/R12 + tests/civic/R10/test_r10_accuracy.py 143/0",
     "calendar_in_app": "tests/civic/R12/works/works_calendar.test.cjs 137/0",
